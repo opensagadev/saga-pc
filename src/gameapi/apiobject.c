@@ -158,7 +158,7 @@ void AnimList_NoLoad(i32 character_id, ...) {
         animation = character != NULL ? character->animations : NULL;
         if (animation != NULL) {
             while (animation->name != NULL) {
-                animation->flags |= 0x8000;
+                animation->flags |= CHARANIM_NO_LOAD;
                 animation++;
             }
         }
@@ -184,7 +184,7 @@ void AnimList_RequestAnimGroups(i32 character_id, ...) {
         }
         while (animation->name != NULL) {
             if (animation->unknown_0a == group_id) {
-                animation->flags &= ~0x8000;
+                animation->flags &= ~CHARANIM_NO_LOAD;
             }
             animation++;
         }
@@ -1362,7 +1362,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
         for (model_index = 0; model_index < apicharsys->permanent_model_count; ++model_index, ++model) {
             for (animation_id = 0; animation_id < apicharsys->model_id_capacity; ++animation_id) {
                 if ((model->model_data_b[animation_id] != NULL || model->model_data_c[animation_id] != NULL) &&
-                    (model->animation_configs[animation_id]->flags & 1) == 0) {
+                    (model->animation_configs[animation_id]->flags & CHARANIM_AREA) == 0) {
                     model->animation_configs[animation_id] = NULL;
                     model->model_data_b[animation_id] = NULL;
                     model->model_data_c[animation_id] = NULL;
@@ -1425,9 +1425,9 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
         }
         if (pak != NULL) {
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) == 0 &&
-                    ((area_animation != 0 && (animation->flags & 1) != 0) || (area_animation == 0 && (animation->flags & 1) == 0))) {
-                    if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
+                if ((animation->flags & CHARANIM_NO_LOAD) == 0 && ((area_animation != 0 && (animation->flags & CHARANIM_AREA) != 0) ||
+                                                                   (area_animation == 0 && (animation->flags & CHARANIM_AREA) == 0))) {
+                    if ((animation->flags & CHARANIM_LOAD) != 0 && model->model_data_b[animation->action_id] == NULL) {
                         if (RedirectAnimFn == NULL || RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
                             NuStrCpy(path, directory);
                             NuStrCat(path, animation->name);
@@ -1454,9 +1454,9 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
             buffer->addr -= NuFilePakCondense(pak);
             animation = area_models != 0 && list->count != 0 ? ((CHARACTERDATA *)&apicharsys->char_data[model_id])->animations : NULL;
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) == 0 &&
-                    ((area_animation != 0 && (animation->flags & 1) != 0) || (area_animation == 0 && (animation->flags & 1) == 0))) {
-                    if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
+                if ((animation->flags & CHARANIM_NO_LOAD) == 0 && ((area_animation != 0 && (animation->flags & CHARANIM_AREA) != 0) ||
+                                                                   (area_animation == 0 && (animation->flags & CHARANIM_AREA) == 0))) {
+                    if ((animation->flags & CHARANIM_LOAD) != 0 && model->model_data_b[animation->action_id] == NULL) {
                         if (RedirectAnimFn == NULL || RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
                             NuStrCpy(path, directory);
                             NuStrCat(path, animation->name);
@@ -1511,9 +1511,9 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
             }
         } else {
             for (; animation != NULL && animation->name != NULL; ++animation) {
-                if ((animation->flags & 0x8000) == 0 &&
-                    ((area_animation != 0 && (animation->flags & 1) != 0) || (area_animation == 0 && (animation->flags & 1) == 0))) {
-                    if ((animation->flags & 4) != 0 && model->model_data_b[animation->action_id] == NULL) {
+                if ((animation->flags & CHARANIM_NO_LOAD) == 0 && ((area_animation != 0 && (animation->flags & CHARANIM_AREA) != 0) ||
+                                                                   (area_animation == 0 && (animation->flags & CHARANIM_AREA) == 0))) {
+                    if ((animation->flags & CHARANIM_LOAD) != 0 && model->model_data_b[animation->action_id] == NULL) {
                         if (RedirectAnimFn == NULL || RedirectAnimFn(RedirectAnimDir, RedirectAnimList, animation, path) == 0) {
                             NuStrCpy(path, directory);
                             NuStrCat(path, animation->name);

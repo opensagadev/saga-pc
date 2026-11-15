@@ -45,6 +45,15 @@ typedef struct CHARCONFIG {            // size 0xfc8
     char animation_names[100][40];                  // 0x028
 } CHARCONFIG;
 
+/* CHARCONFIG.flags: what the character config being read has given so far. */
+#define CHARCONFIG_BSA_DEFAULT 0x1 /* bsa_default on: new animations start with CHARANIM_BSA */
+#define CHARCONFIG_LAYERS 0x2      /* the layers are read into this character (layer keywords count) */
+#define CHARCONFIG_TURN_RATE 0x4   /* turn_rate */
+#define CHARCONFIG_TURN_RATE_2 0x8 /* turn_rate_2 (without it, it copies turn_rate) */
+#define CHARCONFIG_TIMEBASE 0x10   /* timebaseupdate1-4 (without them, a vehicle gets vehicle_timebase_*) */
+#define CHARCONFIG_ANIMATIONS 0x20 /* the animations are read into the character's arena */
+#define CHARCONFIG_PERMANENT 0x40  /* the permanent bit: effect_start blocks are read */
+
 CHARCONFIG charconfig = {0};
 
 /* Defined at the end of this file; called with and without a path. */
@@ -142,7 +151,7 @@ static void CC_SetTimebase(NUFPAR *parser, i32 index) {
             i32 frames = NuAToI(parser->word_buffer_ptr);
             charconfig.runtime->ai_update_distances[index] = distance;
             charconfig.runtime->ai_update_intervals[index] = (u8)frames;
-            charconfig.flags |= 0x10;
+            charconfig.flags |= CHARCONFIG_TIMEBASE;
         }
     }
 }
@@ -174,7 +183,7 @@ static void CC_scale(NUFPAR *parser) {
 static void CC_layer(NUFPAR *parser) {
     u32 bit;
     i32 i;
-    if ((charconfig.flags & 2) == 0 || charconfig.runtime->layer_count >= 32) {
+    if ((charconfig.flags & CHARCONFIG_LAYERS) == 0 || charconfig.runtime->layer_count >= 32) {
         return;
     }
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 24) {
@@ -270,9 +279,9 @@ static void CC_ride_layersoff(NUFPAR *parser) {
 static void CC_bsa_default(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
-            charconfig.flags |= 1;
+            charconfig.flags |= CHARCONFIG_BSA_DEFAULT;
         } else if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-            charconfig.flags &= ~1;
+            charconfig.flags &= ~CHARCONFIG_BSA_DEFAULT;
         }
     }
 }
@@ -479,9 +488,9 @@ static void CC_anim_start(NUFPAR *parser) {
 
     memset(&animation, 0, sizeof(animation));
     animation.action_id = -1;
-    animation.flags = 6;
-    if ((charconfig.flags & 1) != 0) {
-        animation.flags = 14;
+    animation.flags = CHARANIM_CYCLE | CHARANIM_LOAD;
+    if ((charconfig.flags & CHARCONFIG_BSA_DEFAULT) != 0) {
+        animation.flags = CHARANIM_CYCLE | CHARANIM_LOAD | CHARANIM_BSA;
     }
     animation.blend_in_time = 0.2f;
     animation.blend_out_time = 0.2f;
@@ -606,7 +615,7 @@ static void CC_anim_start(NUFPAR *parser) {
         } else if (NuStrICmp(parser->word_buffer_ptr, "extra_character_off") == 0) {
             CC_SetAnimMiscFlags(parser, &animation, CHARANIM_MISC_EXTRA_CHARACTER_OFF);
         } else if (NuStrICmp(parser->word_buffer_ptr, "effect_start") == 0) {
-            if ((charconfig.flags & 0x40) != 0 && (charconfig.flags & 0x20) != 0) {
+            if ((charconfig.flags & CHARCONFIG_PERMANENT) != 0 && (charconfig.flags & CHARCONFIG_ANIMATIONS) != 0) {
                 if (charconfig.effect_count < 32) {
                     CC_ReadAnimEffect(parser, &animation, charconfig.character_id, charconfig.effect_scratch, &charconfig.effect_count);
                 }
@@ -621,7 +630,7 @@ static void CC_anim_start(NUFPAR *parser) {
             if (animation.action_id == -1) {
                 return;
             }
-            if ((charconfig.flags & 0x20) != 0) {
+            if ((charconfig.flags & CHARCONFIG_ANIMATIONS) != 0) {
                 NuStrCpy(charconfig.animation_names[charconfig.animation_count], name);
                 charconfig.character->animations[charconfig.animation_count++] = animation;
                 charconfig.arena->addr += sizeof(animation);
@@ -896,7 +905,7 @@ static void CC_turn_rate(NUFPAR *parser) {
     const f32 rate = NuFParGetFloat(parser);
     if (rate > 0.0f) {
         charconfig.runtime->turn_rate = rate;
-        charconfig.flags |= 4;
+        charconfig.flags |= CHARCONFIG_TURN_RATE;
     }
 }
 
@@ -904,7 +913,7 @@ static void CC_turn_rate_2(NUFPAR *parser) {
     const f32 rate = NuFParGetFloat(parser);
     if (rate > 0.0f) {
         charconfig.runtime->turn_rate_2 = rate;
-        charconfig.flags |= 8;
+        charconfig.flags |= CHARCONFIG_TURN_RATE_2;
     }
 }
 
@@ -1822,14 +1831,14 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     if (data->layers == NULL && (character->model_flags & CHARACTER_MODEL_CONFIGURED) == 0 && arena != NULL && arena_end != NULL) {
         data->layers = layers;
         charconfig.runtime->layer_count = 0;
-        charconfig.flags |= 2;
+        charconfig.flags |= CHARCONFIG_LAYERS;
     } else {
         charconfig.named_layers = data->layer_count > 0;
     }
     if (charconfig.character->animations == NULL && charconfig.arena != NULL && charconfig.arena_end != NULL) {
         charconfig.arena->addr = (charconfig.arena->addr + 3) & ~3u;
         charconfig.character->animations = charconfig.arena->void_ptr;
-        charconfig.flags |= 0x20;
+        charconfig.flags |= CHARCONFIG_ANIMATIONS;
     }
     parser = NuFParCreateMem("character", buffer, 0xffff);
     if (parser != NULL) {
@@ -1842,10 +1851,10 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         NuFParDestroy(parser);
     }
     charconfig.character->model_flags |= CHARACTER_MODEL_CONFIGURED;
-    if ((charconfig.flags & 4) != 0 && (charconfig.flags & 8) == 0) {
+    if ((charconfig.flags & CHARCONFIG_TURN_RATE) != 0 && (charconfig.flags & CHARCONFIG_TURN_RATE_2) == 0) {
         charconfig.runtime->turn_rate_2 = charconfig.runtime->turn_rate;
     }
-    if ((charconfig.flags & 0x10) == 0 && (charconfig.character->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
+    if ((charconfig.flags & CHARCONFIG_TIMEBASE) == 0 && (charconfig.character->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
         for (i = 0; i < 4; ++i) {
             charconfig.runtime->ai_update_distances[i] = vehicle_timebase_dist[i];
             charconfig.runtime->ai_update_intervals[i] = (u8)vehicle_timebase_nframes[i];
@@ -1855,7 +1864,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
                                   &charconfig.runtime->jump_height);
     CharConfig_CalculateJumpStats(charconfig.runtime->second_jump_speed, charconfig.runtime->gravity,
                                   &charconfig.runtime->second_jump_duration, &charconfig.runtime->second_jump_height);
-    if ((charconfig.flags & 0x20) != 0) {
+    if ((charconfig.flags & CHARCONFIG_ANIMATIONS) != 0) {
         charconfig.character->animation_count = charconfig.animation_count;
         charconfig.character->animations[charconfig.animation_count].name = NULL;
         charconfig.character->animations[charconfig.animation_count].action_id = -1;
@@ -1874,7 +1883,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
             charconfig.arena->addr += charconfig.effect_count * sizeof(*effects);
         }
     }
-    if ((charconfig.flags & 2) != 0) {
+    if ((charconfig.flags & CHARCONFIG_LAYERS) != 0) {
         if (charconfig.runtime->layer_count <= 0) {
             charconfig.runtime->layers = NULL;
             charconfig.runtime->layer_count = 0;

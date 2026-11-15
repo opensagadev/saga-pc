@@ -213,7 +213,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (object->character_context == CHARACTER_CONTEXT_LEDGE) {
         if (object->pad->buttons_pressed & GAMEPAD_JUMP) {
             StartJump(object, 0);
-            object->flags_e24 |= 0x1000;
+            object->flags_e24 |= APIOBJECT_NO_JUMP;
             f32 height = object->external_force.y + (f64)0.2f - object->jump_start_height;
             if (height > 0.0f) {
                 object->velocity.y = NuFsqrt(object->character_data->game_character->gravity * -2.0 * height);

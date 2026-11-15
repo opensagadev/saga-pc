@@ -360,7 +360,7 @@ extern "C" void Batarang_Release(GAMEOBJECT *object, i32 mode) {
     BATARANG_PACKET(object)->velocity.z = (f32)(4.0 * NU_COS_LUT(object->movement_facing_angle));
     NewRumble(object->pad->bound_pad, 0.5f, 0);
     BATARANG_PACKET(object)->position = object->collision_position;
-    if (object->flags_e24 & 8) {
+    if (object->flags_e24 & APIOBJECT_LOCATORS_VALID) {
         i32 joint = object->character_data->game_character->throw_locator;
         if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
             BATARANG_PACKET(object)->position = *reinterpret_cast<NUVEC *>(&object->locator_matrices[joint].m30);
@@ -388,7 +388,7 @@ extern "C" {
     static u32 Batarang_GetTargetPos(BATARANG_NATIVE *batarang, int index, NUVEC *position) {
         if (batarang->flight_state.in_flight != 0 && batarang->active > 0 && index == batarang->active) {
             *position = batarang->owner->collision_position;
-            if ((batarang->owner->flags_e24 & 8) != 0) {
+            if ((batarang->owner->flags_e24 & APIOBJECT_LOCATORS_VALID) != 0) {
                 GAMEOBJECT *owner = batarang->owner;
                 i32 joint = owner->character_data->game_character->throw_locator;
                 if (joint != -1 && owner->character_model->points_of_interest[joint] != NULL) {
@@ -736,7 +736,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             u32 released = (object->context_variant_flags >> 6) & 1;
             if (released && object->landing_followup == 1 && 0.2f <= object->context_timer) {
                 StartJump(object, 0);
-                object->flags_e24 |= 0x1000;
+                object->flags_e24 |= APIOBJECT_NO_JUMP;
                 goto finish;
             }
             if (released && object->pad->input_magnitude > 0.0f && object->context_timer >= 0.3f) {
@@ -780,9 +780,10 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
         PLAYERCHARACTERCONFIG *runtime = object->character_data->game_character;
         batarang = BATARANG_PACKET(object);
         if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (runtime->flags_090 & CHARACTER_RUNTIME_GOT_BATARANG) == 0 ||
-             batarang == NULL || batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 || (object->flags_e24 & 8) == 0 ||
-             object->model_draw_result == 0 || !(object->camera_screen_position.z > 0.0f) || !(object->hold_timer >= 0.25f) ||
-             object->unknown_281 == 0 || ObjLandReady(object) == 0)) {
+             batarang == NULL || batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 ||
+             (object->flags_e24 & APIOBJECT_LOCATORS_VALID) == 0 || object->model_draw_result == 0 ||
+             !(object->camera_screen_position.z > 0.0f) || !(object->hold_timer >= 0.25f) || object->unknown_281 == 0 ||
+             ObjLandReady(object) == 0)) {
             return;
         }
         object->flags_e20 |= 0x00400000;

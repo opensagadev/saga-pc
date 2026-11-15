@@ -417,7 +417,7 @@ extern "C" {
         NUVEC translation;
         NUVEC scale;
         NUANGVEC angles;
-        if (set->flags & 1) {
+        if (set->flags & ANI3_NODE_ROTATION) {
             if (set->curves[3] != NULL) {
                 rotation.x = NuAnimCurveCalcVal2(set->curves[3], time);
             } else {
@@ -440,7 +440,7 @@ extern "C" {
         } else {
             NuMtxSetIdentity(matrix);
         }
-        if (set->flags & 8) {
+        if (set->flags & ANI3_NODE_SCALE) {
             if (set->curves[6] != NULL) {
                 scale.x = NuAnimCurveCalcVal2(set->curves[6], time);
             } else {
@@ -815,32 +815,32 @@ extern "C" {
             }
             joint = &target->joints[index];
             flags = item->flags;
-            if ((flags & 1) != 0) {
+            if ((flags & NUJOINT_OVERRIDE_ROTATE) != 0) {
                 joint->rotation.x = item->rotation.x + joint->rotation.x;
                 joint->rotation.y = item->rotation.y + joint->rotation.y;
                 joint->rotation.z = item->rotation.z + joint->rotation.z;
                 angles.x = (i32)(joint->rotation.x * PC_NUANG_PER_RADIAN);
                 angles.y = (i32)(joint->rotation.y * PC_NUANG_PER_RADIAN);
                 angles.z = (i32)(joint->rotation.z * PC_NUANG_PER_RADIAN);
-                if ((flags & 8) != 0) {
+                if ((flags & NUJOINT_OVERRIDE_LIMIT_X) != 0) {
                     PC_LEGACY_LIMIT_ANGLE(angles.x, item->rotation_max[0], item->rotation_min[0]);
                 }
-                if ((flags & 0x10) != 0) {
+                if ((flags & NUJOINT_OVERRIDE_LIMIT_Y) != 0) {
                     PC_LEGACY_LIMIT_ANGLE(angles.y, item->rotation_max[1], item->rotation_min[1]);
                 }
-                if ((flags & 0x20) != 0) {
+                if ((flags & NUJOINT_OVERRIDE_LIMIT_Z) != 0) {
                     PC_LEGACY_LIMIT_ANGLE(angles.z, item->rotation_max[2], item->rotation_min[2]);
                 }
                 joint->rotation.x = (f32)(angles.x * PC_RADIAN_PER_NUANG);
                 joint->rotation.y = (f32)(angles.y * PC_RADIAN_PER_NUANG);
                 joint->rotation.z = (f32)(angles.z * PC_RADIAN_PER_NUANG);
             }
-            if ((flags & 4) != 0) {
+            if ((flags & NUJOINT_OVERRIDE_SCALE) != 0) {
                 joint->scale.x = item->scale.x + joint->scale.x;
                 joint->scale.y = item->scale.y + joint->scale.y;
                 joint->scale.z = item->scale.z + joint->scale.z;
             }
-            if ((flags & 2) != 0) {
+            if ((flags & NUJOINT_OVERRIDE_TRANSLATE) != 0) {
                 joint->translation.x = item->translation.x + joint->translation.x;
                 joint->translation.y = item->translation.y + joint->translation.y;
                 joint->translation.z = item->translation.z + joint->translation.z;
@@ -2724,7 +2724,7 @@ extern "C" {
         NUVEC translation;
         NUVEC temporary;
         i32 component;
-        if ((first->flags & 1) || (second->flags & 1) || (flags & 1)) {
+        if ((first->flags & ANI3_NODE_ROTATION) || (second->flags & ANI3_NODE_ROTATION) || (flags & 1)) {
             for (component = 0; component < 3; ++component) {
                 if (first->curves[component + 3] != NULL) {
                     r0[component] = NuAnimCurveCalcVal2(first->curves[component + 3], first_time);
@@ -2795,10 +2795,10 @@ extern "C" {
         } else {
             NuMtxSetIdentity(matrix);
         }
-        if ((first->flags & 0x20) || (second->flags & 0x20)) {
+        if ((first->flags & ANI3_NODE_BIND_ROTATION) || (second->flags & ANI3_NODE_BIND_ROTATION)) {
             NuMtxMulRVU0(matrix, matrix, &joint->bind_matrix);
         }
-        if ((first->flags & 8) || (second->flags & 8) || (flags & 4)) {
+        if ((first->flags & ANI3_NODE_SCALE) || (second->flags & ANI3_NODE_SCALE) || (flags & 4)) {
             for (component = 0; component < 3; ++component) {
                 if (first->curves[component + 6] != NULL) {
                     s0[component] = NuAnimCurveCalcVal2(first->curves[component + 6], first_time);
@@ -2885,11 +2885,11 @@ extern "C" {
         }
         override_flags = override != NULL ? override->flags : 0;
 
-        if ((node_flags & 1) == 0 && (override_flags & 1) == 0) {
+        if ((node_flags & ANI3_NODE_ROTATION) == 0 && (override_flags & 1) == 0) {
             NuMtxSetIdentity(matrix);
         } else {
             NUVEC rotation;
-            if ((node_flags & 1) != 0) {
+            if ((node_flags & ANI3_NODE_ROTATION) != 0) {
                 PC_LEGACY_CURVE_STORE(rotation.x, 3);
                 PC_LEGACY_CURVE_STORE(rotation.y, 4);
                 PC_LEGACY_CURVE_STORE(rotation.z, 5);
@@ -2919,15 +2919,15 @@ extern "C" {
             }
             NuMtxSetRotateXYZVU0(matrix, &angles);
         }
-        if ((node_flags & 0x20) != 0) {
+        if ((node_flags & ANI3_NODE_BIND_ROTATION) != 0) {
             NuMtxMulRVU0(matrix, matrix, &joint->bind_matrix);
         }
 
-        if ((node_flags & 8) == 0 && (override_flags & 4) == 0) {
+        if ((node_flags & ANI3_NODE_SCALE) == 0 && (override_flags & 4) == 0) {
             /* Original three DWORD loads/stores: preserve all IEEE payload bits. */
             memcpy(scale, parent_scale, sizeof(*scale));
         } else {
-            if ((node_flags & 8) != 0) {
+            if ((node_flags & ANI3_NODE_SCALE) != 0) {
                 PC_LEGACY_CURVE_STORE(scale->x, 6);
                 PC_LEGACY_CURVE_STORE(scale->y, 7);
                 PC_LEGACY_CURVE_STORE(scale->z, 8);
@@ -2944,7 +2944,7 @@ extern "C" {
             scale->y = (f32)((f64)scale->y * parent_scale->y);
             scale->z = (f32)((f64)scale->z * parent_scale->z);
         }
-        if ((node_flags & 0x10) != 0) {
+        if ((node_flags & ANI3_NODE_SCALE_COMPENSATE) != 0) {
             NUVEC reciprocal;
             /* Equality detects either signed zero; unordered values proceed to
              * reciprocal just as original x87 parity tests, no NaN safety guard. */
@@ -3304,7 +3304,7 @@ extern "C" {
         for (index = 0; index < count; ++index, ++matrix, ++scale, ++rotation, ++nodes, ++joint) {
             parent = nodes->parent_index;
             flags = *joint_flags++;
-            if ((flags & 1) != 0) {
+            if ((flags & ANI3_NODE_ROTATION) != 0) {
                 *rotation = *(NUQUAT *)&joint->rotation;
             } else {
                 *rotation = identity;
@@ -3316,7 +3316,7 @@ extern "C" {
                 parent_scale = &scales[255];
             }
             NuQuatToMtx(rotation, matrix);
-            if ((flags & 8) != 0) {
+            if ((flags & ANI3_NODE_SCALE) != 0) {
                 scale->x = joint->scale.x * parent_scale->x;
                 scale->y = parent_scale->y * joint->scale.y;
                 scale->z = parent_scale->z * joint->scale.z;
@@ -3324,10 +3324,10 @@ extern "C" {
             } else {
                 *scale = *parent_scale;
             }
-            if ((flags & 0x10) != 0) {
+            if ((flags & ANI3_NODE_SCALE_COMPENSATE) != 0) {
                 scale->x = scale->y = scale->z = 1.0f;
             }
-            if ((flags & 2) != 0) {
+            if ((flags & ANI3_NODE_TRANSLATION) != 0) {
                 root_values.x = joint->translation.x;
                 root_values.y = joint->translation.y;
                 root_values.z = -joint->translation.z;
@@ -3354,7 +3354,7 @@ extern "C" {
                     root_fn(matrix, root_data, &root_values, &root_values, root_translation, 0.0f);
                     root_fn = NULL;
                 }
-                if ((flags & 0x40) != 0) {
+                if ((flags & ANI3_NODE_ROOT_UNSCALED) != 0) {
                     scale->x = scale->y = scale->z = 1.0f;
                 }
             }
@@ -3431,7 +3431,7 @@ extern "C" {
         for (index = 0; index < count; ++index, ++matrix, ++joint, ++scale, ++hierarchy_joint) {
             parent = hierarchy_joint->parent_index;
             flags = *joint_flags++;
-            if ((flags & 1) != 0) {
+            if ((flags & ANI3_NODE_ROTATION) != 0) {
                 rotation.x = joint->rotation.x;
                 rotation.y = joint->rotation.y;
                 rotation.z = joint->rotation.z;
@@ -3439,13 +3439,14 @@ extern "C" {
                 angles.y = (i32)(rotation.y * PC_NUANG_PER_RADIAN);
                 angles.z = (i32)(rotation.z * PC_NUANG_PER_RADIAN);
                 NuMtxSetRotateXYZVU0(matrix, &angles);
-                if ((flags & 0x20) != 0) {
+                if ((flags & ANI3_NODE_BIND_ROTATION) != 0) {
                     NuMtxMulRVU0(matrix, matrix, &hierarchy_joint->bind_matrix);
                 }
             } else {
-                NuAnimMtxCopyPrivate(matrix, (flags & 0x20) != 0 ? &hierarchy_joint->bind_matrix : &ANI3_EVAL_IDENTITY_MATRIX);
+                NuAnimMtxCopyPrivate(matrix,
+                                     (flags & ANI3_NODE_BIND_ROTATION) != 0 ? &hierarchy_joint->bind_matrix : &ANI3_EVAL_IDENTITY_MATRIX);
             }
-            if ((flags & 8) != 0) {
+            if ((flags & ANI3_NODE_SCALE) != 0) {
                 scale->x = joint->scale.x;
                 scale->y = joint->scale.y;
                 scale->z = joint->scale.z;
@@ -3457,7 +3458,7 @@ extern "C" {
             } else {
                 *scale = ANI3_EVAL_SCALE_ARRAY[object->joints[index].parent_index];
             }
-            if ((flags & 0x10) != 0) {
+            if ((flags & ANI3_NODE_SCALE_COMPENSATE) != 0) {
                 parent_scale = &ANI3_EVAL_SCALE_ARRAY[parent];
                 if (parent_scale->x != 0.0f && parent_scale->y != 0.0f && parent_scale->z != 0.0f) {
                     inverse.x = 1.0f / parent_scale->x;
@@ -3472,7 +3473,7 @@ extern "C" {
                 }
                 NuMtxScaleVU0(matrix, &inverse);
             }
-            if ((flags & 2) != 0) {
+            if ((flags & ANI3_NODE_TRANSLATION) != 0) {
                 translation.x = joint->translation.x;
                 translation.y = joint->translation.y;
                 translation.z = joint->translation.z;
@@ -3492,7 +3493,7 @@ extern "C" {
                 root_fn = NULL;
             }
             if (parent == 255) {
-                if ((flags & 0x40) != 0) {
+                if ((flags & ANI3_NODE_ROOT_UNSCALED) != 0) {
                     scale->x = scale->y = scale->z = 1.0f;
                 }
             } else {

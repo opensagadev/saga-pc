@@ -436,7 +436,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
         f32 distance;
         if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 || (blowup->status_flags & BLOWUP_STATUS_DRAWN) == 0 ||
             (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 || (blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 ||
-            (blowup->draw_flags & 0x1000000) == 0) {
+            (blowup->draw_flags & BLOWUP_OPTION_TORPEDO_TARGET) == 0) {
             continue;
         }
         distance = NuVecDistSqr(&blowup->mid_position, position, &delta);

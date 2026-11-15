@@ -924,7 +924,7 @@ static void Grapple_InitializeSwingAngle(GAMEOBJECT *object) {
 
 static void Grapple_Jump(GAMEOBJECT *object) {
     StartJump(object, 0);
-    object->flags_e24 |= 0x1000;
+    object->flags_e24 |= APIOBJECT_NO_JUMP;
     GameAudio_PlaySfx(0x45, &object->collision_position, 0, 0);
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(LEGOHINT_GRAPPLE);
@@ -966,7 +966,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
             object->unknown_7b3 = 0;
             object->unknown_7aa = LEGOACT_GRAPPLE_IDLE;
             object->context_duration = 0.0f;
-            object->context_variant_flags &= ~0x100;
+            object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
             object->context_hover_target_y = 0.1f;
             object->unknown_7a8 = 0x2000;
             object->big_jump_animation = 0;
@@ -1000,15 +1000,15 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         const u16 input_angle = GamePad_InputAngle(object, object->pad);
         if (object->pad->input_magnitude == 0.0f && !GRAPPLE_CURRENT->disabled) {
             if ((object->pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
-                if ((object->context_variant_flags & 0x100) != 0) {
-                    object->context_variant_flags &= ~0x100;
+                if ((object->context_variant_flags & APIOBJECT_GRAPPLE_CLIMB) != 0) {
+                    object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
                 } else {
-                    object->context_variant_flags |= 0x100;
+                    object->context_variant_flags |= APIOBJECT_GRAPPLE_CLIMB;
                     object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
                 }
             }
         } else {
-            object->context_variant_flags &= ~0x100;
+            object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
         }
         if (object->pad->input_magnitude != 0.0f || ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->input_flags != 0) {
             const i32 difference = RotDiff(GRAPPLE_CURRENT->y_rotation, input_angle);
@@ -1038,7 +1038,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
             object->movement_facing_angle = static_cast<u16>(GRAPPLE_CURRENT->y_rotation + 0x8000);
         }
         object->unknown_7aa = LEGOACT_GRAPPLE_IDLE;
-        if ((object->context_variant_flags & 0x100) != 0 || (object->big_jump_animation <= 15 && up)) {
+        if ((object->context_variant_flags & APIOBJECT_GRAPPLE_CLIMB) != 0 || (object->big_jump_animation <= 15 && up)) {
             if (object->context_hover_target_y > 0.0f) {
                 f32 speed;
                 if (-1 != LEGOACT_GRAPPLE_UP && object->character_model->model_data_b[LEGOACT_GRAPPLE_UP] != NULL) {
@@ -1212,10 +1212,10 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         object->unknown_7b3 = 0;
         object->context_hover_target_y = GrapplesFabs(grapple->shadow_probe_position.y - object->upper_position.y);
         if (grapple->disabled) {
-            object->context_variant_flags &= ~0x100;
+            object->context_variant_flags &= ~APIOBJECT_GRAPPLE_CLIMB;
             SetWeaponIn(object);
         } else {
-            object->context_variant_flags |= 0x100;
+            object->context_variant_flags |= APIOBJECT_GRAPPLE_CLIMB;
             object->movement_facing_angle = static_cast<u16>(grapple->y_rotation + 0x8000);
         }
         GameCam_Blend(NULL, 0.5f, 0.0f, 1);

@@ -77,7 +77,7 @@ extern "C" {
         }
         set = turret->anim_set;
         memset(turret, 0, sizeof(*turret));
-        turret->behavior_flags |= 0x802;
+        turret->behavior_flags |= TURRET_ORIGIN_AT_ANIMATION | TURRET_OPPONENT_RANGE_FIRES;
         turret->fire_interval = 1.0f;
         turret->pitch_turn_speed = 8.0f;
         turret->flags &= 0xf7fe;
@@ -188,7 +188,7 @@ extern "C" {
             if (GizmoFileReadName(name)) {
                 turret->blowup_type = (i16)GizmoBlowupGetNameTableId(name);
                 if (turret->blowup_type != -1) {
-                    turret->flags |= 0x100;
+                    turret->flags |= TURRET_FLAG_BLOWUP_PENDING;
                 }
             }
             turret->y_rotation = (u16)EdFileReadShort();
@@ -218,9 +218,9 @@ extern "C" {
         }
         turret = system->turrets;
         for (i = 0; i < system->count; ++i, ++turret) {
-            if (turret->flags & 0x100) {
+            if (turret->flags & TURRET_FLAG_BLOWUP_PENDING) {
                 i32 type_id = GizmoBlowupGetTypeFromNameTableId((WORLDINFO *)world, turret->blowup_type);
-                turret->flags &= ~0x100;
+                turret->flags &= ~TURRET_FLAG_BLOWUP_PENDING;
                 turret->blowup_type = (i16)type_id;
             }
         }
@@ -271,7 +271,7 @@ extern "C" {
             turret = (GIZTURRET_s *)gizmo->object;
             turret->active = active != 0;
             if (turret->active) {
-                turret->flags &= (u16)~0x30;
+                turret->flags &= (u16) ~(TURRET_FLAG_AIM_AT_FIXED_ANGLES | TURRET_FLAG_UPDATE_DISABLED);
                 turret->shots_fired = 0;
             }
         }
@@ -315,7 +315,7 @@ extern "C" {
         TURRET_ANIM_DATA *data;
         NUMTX *primary;
         NUMTX *secondary;
-        turret->flags |= 6;
+        turret->flags |= TURRET_FLAG_ACTIVE | TURRET_FLAG_VISIBLE;
         turret->state = turret->initial_state;
         turret->shots_fired = 0;
         turret->primary_anim_obj = NULL;
@@ -334,17 +334,17 @@ extern "C" {
             if (world->terrain != NULL && NuSpecialExistsFn(&object->special)) {
                 data->platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&object->special));
                 if (data->platform_id != -1) {
-                    turret->flags |= 0x200;
+                    turret->flags |= TURRET_FLAG_HAS_PLATFORM;
                 }
             }
         }
         turret->room_id = world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &turret->position) : -1;
-        if (turret->behavior_flags & 2) {
+        if (turret->behavior_flags & TURRET_ORIGIN_AT_ANIMATION) {
             turret->opponent_origin = turret->position;
             GameAnimSet_GetAveragePos(turret->anim_set, &turret->opponent_origin, 0, 1, 1);
             turret->initial_origin = turret->opponent_origin;
         }
-        if (turret->behavior_flags & 0x800) {
+        if (turret->behavior_flags & TURRET_OPPONENT_RANGE_FIRES) {
             turret->fire_range = turret->opponent_range;
             turret->initial_origin = turret->opponent_origin;
         }
@@ -560,7 +560,7 @@ extern "C" {
                                                 turret->fire_cooldown = turret->fire_interval;
                                             }
                                             turret->rapid_fire_pending = 0;
-                                            if (turret->behavior_flags & 0x200) {
+                                            if (turret->behavior_flags & TURRET_LEAD_TARGET) {
                                                 autoaim_target = GizTurret_GetTgt(turret, primary_draw);
                                             }
                                         }
@@ -578,8 +578,8 @@ extern "C" {
                                         desired_yaw = turret->fixed_yaw;
                                         goto autonomous_apply;
                                     }
-                                    if ((turret->behavior_flags & 0xc0) == 0xc0) {
-                                        if ((turret->behavior_flags & 0x100) && turret->primary_anim_obj != NULL &&
+                                    if ((turret->behavior_flags & (TURRET_NO_PITCH | TURRET_NO_YAW)) == (TURRET_NO_PITCH | TURRET_NO_YAW)) {
+                                        if ((turret->behavior_flags & TURRET_ON_SCREEN_ONLY) && turret->primary_anim_obj != NULL &&
                                             NuSpecialExistsFn(&turret->primary_anim_obj->special) &&
                                             !NuSpecialGetOnScreenFn(&turret->primary_anim_obj->special)) {
                                             goto autonomous_apply;
@@ -616,16 +616,17 @@ extern "C" {
                                         if (target_position == NULL) {
                                             goto autonomous_apply;
                                         }
-                                        if ((turret->behavior_flags & 0x200) && target_velocity != NULL && bolt_type != NULL) {
+                                        if ((turret->behavior_flags & TURRET_LEAD_TARGET) && target_velocity != NULL && bolt_type != NULL) {
                                             GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&reference->m30), primary_draw,
                                                                                target_position, target_velocity, bolt_type->unknown_10,
                                                                                &direction, NULL, turret->controller != NULL);
                                         } else {
                                             NuVecSub(&direction, target_position, reinterpret_cast<NUVEC *>(&reference->m30));
                                         }
-                                        if ((turret->behavior_flags & 0xc0) != 0xc0) {
+                                        if ((turret->behavior_flags & (TURRET_NO_PITCH | TURRET_NO_YAW)) !=
+                                            (TURRET_NO_PITCH | TURRET_NO_YAW)) {
                                             NuVecInvMtxRotate(&local_direction, &direction, reference);
-                                            if (!(turret->behavior_flags & 0x80)) {
+                                            if (!(turret->behavior_flags & TURRET_NO_YAW)) {
                                                 desired_yaw = NuAngAdd(
                                                     static_cast<i32>(NuAtan2(-local_direction.x, -local_direction.z) * 10430.378f), 0);
                                                 if (turret->yaw_upper != 0 && desired_yaw > turret->yaw_upper) {
@@ -634,7 +635,7 @@ extern "C" {
                                                     desired_yaw = turret->yaw_lower;
                                                 }
                                             }
-                                            if (!(turret->behavior_flags & 0x40)) {
+                                            if (!(turret->behavior_flags & TURRET_NO_PITCH)) {
                                                 NuVecRotateY(&local_direction, &local_direction, -desired_yaw);
                                                 if (secondary_base != NULL) {
                                                     local_direction.y -= turret->relative_matrix.m31;
@@ -654,7 +655,7 @@ extern "C" {
                                                 }
                                             }
                                         }
-                                        if ((turret->behavior_flags & 0x100) && turret->primary_anim_obj != NULL &&
+                                        if ((turret->behavior_flags & TURRET_ON_SCREEN_ONLY) && turret->primary_anim_obj != NULL &&
                                             NuSpecialExistsFn(&turret->primary_anim_obj->special) &&
                                             !NuSpecialGetOnScreenFn(&turret->primary_anim_obj->special)) {
                                             goto autonomous_apply;
@@ -672,7 +673,7 @@ extern "C" {
                                     if (!(turret->primary_anim_obj != NULL && NuSpecialExistsFn(&turret->primary_anim_obj->special))) {
                                         desired_yaw = NuAngAdd(desired_yaw, turret->base_y_rotation);
                                     }
-                                    if (turret->behavior_flags & 0x400) {
+                                    if (turret->behavior_flags & TURRET_SNAP_AIM) {
                                         turret->pitch = desired_pitch;
                                         turret->yaw = desired_yaw;
                                     } else {
@@ -694,7 +695,7 @@ extern "C" {
                                             }
                                             NuMtxMul(primary_draw, &turret->relative_matrix, secondary_draw);
                                         }
-                                        if (turret->pitch != 0 && !(turret->behavior_flags & 0x40)) {
+                                        if (turret->pitch != 0 && !(turret->behavior_flags & TURRET_NO_PITCH)) {
                                             NuMtxPreRotateX(primary_draw, turret->pitch);
                                         }
                                     }
@@ -732,7 +733,7 @@ extern "C" {
                                         turret->rotation_sound_playing = 1;
                                     }
                                 }
-                                if (should_fire && bolt_type != NULL && MiniCutCam == 0 && (turret->behavior_flags & 0x4000) == 0) {
+                                if (should_fire && bolt_type != NULL && MiniCutCam == 0 && (turret->behavior_flags & TURRET_CAMERA) == 0) {
                                     if (turret->fire_sfx != -1) {
                                         GameAudio_PlaySfxById(turret->fire_sfx, reinterpret_cast<NUVEC *>(&reference->m30), 0, 0);
                                         BoltNoSfx = 1;
@@ -760,7 +761,7 @@ extern "C" {
                                             NuMtxPreTranslate(&muzzle_matrix, offset);
                                         }
                                         NUMTX direction_matrix = *primary_draw;
-                                        if (turret->behavior_flags & 0x40) {
+                                        if (turret->behavior_flags & TURRET_NO_PITCH) {
                                             NuMtxPreRotateX(&direction_matrix, turret->pitch);
                                         }
                                         NuMtxPreRotateY(&direction_matrix, 0x8000);
@@ -813,8 +814,9 @@ extern "C" {
         if (system != NULL) {
             turret = system->turrets;
             for (index = 0; index < system->count; ++index, ++turret) {
-                if (turret->active && turret->visible && (turret->behavior_flags & 0x4000) != 0 && (turret->behavior_flags & 0x10) == 0 &&
-                    turret->opponent != NULL && NuVecDistSqr(&GameCam->position, &turret->position, NULL) < 36.0f) {
+                if (turret->active && turret->visible && (turret->behavior_flags & TURRET_CAMERA) != 0 &&
+                    (turret->behavior_flags & 0x10) == 0 && turret->opponent != NULL &&
+                    NuVecDistSqr(&GameCam->position, &turret->position, NULL) < 36.0f) {
                     return 1;
                 }
             }
@@ -824,7 +826,7 @@ extern "C" {
 
     static i32 GizTurretPointWithinBounds(GIZTURRET_s *turret, NUVEC *position) {
         NUVEC local;
-        if (turret->behavior_flags & 1) {
+        if (turret->behavior_flags & TURRET_BOUNDED) {
             NuVecSub(&local, position, &turret->opponent_origin);
             NuVecRotateY(&local, &local, -turret->y_rotation);
             if (local.x > turret->opponent_bounds.x) {
@@ -872,10 +874,11 @@ extern "C" {
             return;
         }
         turret->opponent = NULL;
-        if (!(turret->flags & 4) || !(turret->flags & 2) || (turret->flags & 0x38)) {
+        if (!(turret->flags & TURRET_FLAG_VISIBLE) || !(turret->flags & TURRET_FLAG_ACTIVE) ||
+            (turret->flags & (TURRET_FLAG_AIM_LOCKED | TURRET_FLAG_AIM_AT_FIXED_ANGLES | TURRET_FLAG_UPDATE_DISABLED))) {
             return;
         }
-        if (turret->behavior_flags & 4) {
+        if (turret->behavior_flags & TURRET_TARGETS_BADDIES) {
             candidates = baddies;
             count = baddy_count;
         } else {
@@ -889,10 +892,10 @@ extern "C" {
         for (index = 0; index < count; ++index) {
             candidate = candidates[index]->owner;
             flags = turret->behavior_flags;
-            if (!(flags & 0x4000) && (candidate->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE)) {
+            if (!(flags & TURRET_CAMERA) && (candidate->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE)) {
                 continue;
             }
-            if ((flags & 0x20) && candidate->rider == NULL) {
+            if ((flags & TURRET_TARGETS_RIDERS) && candidate->rider == NULL) {
                 continue;
             }
             distance = NuVecDistSqr(&candidate->collision_position, &turret->opponent_origin, NULL);
@@ -946,10 +949,10 @@ extern "C" {
             f32 best_distance = 1000000000.0f;
             f32 distance;
             for (i32 i = 0; i < system->count; ++i, ++turret) {
-                if ((turret->flags & 4) == 0) {
+                if ((turret->flags & TURRET_FLAG_VISIBLE) == 0) {
                     continue;
                 }
-                if ((turret->flags & 2) == 0) {
+                if ((turret->flags & TURRET_FLAG_ACTIVE) == 0) {
                     continue;
                 }
                 distance = NuVecDistSqr(position, &turret->position, NULL);
@@ -977,10 +980,10 @@ extern "C" {
         }
         turret = system->turrets;
         for (index = 0; index < system->count; ++index, ++turret) {
-            if (!(turret->flags & 4) || (turret->room_id >= 0 && world->rooms_visible_ptr[turret->room_id] == 0)) {
+            if (!(turret->flags & TURRET_FLAG_VISIBLE) || (turret->room_id >= 0 && world->rooms_visible_ptr[turret->room_id] == 0)) {
                 continue;
             }
-            if (turret->behavior_flags & 0x1000) {
+            if (turret->behavior_flags & TURRET_REFLECTION) {
                 GameAnimSet_DrawReflection(turret->anim_set, 2, turret->reflection_alpha, NULL);
             }
         }
@@ -1025,7 +1028,7 @@ extern "C" {
                 }
                 break;
             case 1:
-                if ((turret->flags & 0x80) != 0) {
+                if ((turret->flags & TURRET_FLAG_FIRED_THIS_FRAME) != 0) {
                     return 1;
                 }
                 break;
@@ -1115,22 +1118,22 @@ extern "C" {
             }
             word = index / 32;
             bit = 1u << (index & 31);
-            if (!(record->flags & 4)) {
+            if (!(record->flags & TURRET_FLAG_VISIBLE)) {
                 progress->visible[word] &= ~bit;
             }
-            if (!(record->flags & 2)) {
+            if (!(record->flags & TURRET_FLAG_ACTIVE)) {
                 progress->enabled[word] &= ~bit;
             }
-            if (record->flags & 8) {
+            if (record->flags & TURRET_FLAG_AIM_LOCKED) {
                 progress->reward[word] |= bit;
             }
-            if (record->flags & 0x10) {
+            if (record->flags & TURRET_FLAG_AIM_AT_FIXED_ANGLES) {
                 progress->fired[word] |= bit;
             }
-            if (record->flags & 0x20) {
+            if (record->flags & TURRET_FLAG_UPDATE_DISABLED) {
                 progress->stopped[word] |= bit;
             }
-            if (record->flags & 0x400) {
+            if (record->flags & TURRET_FLAG_REWARD_RELEASED) {
                 progress->completed[word] |= bit;
             }
             progress->timers[index] = record->state;
@@ -1156,10 +1159,10 @@ extern "C" {
                 judder = qrand() < 0x8000 ? 0.4f : -0.4f;
                 GameCam_Judder(GameCam, judder, 2, NULL);
                 NewRumbleAllPlayers(1.0f, 0.0f, 0, 0);
-                if (turret->behavior_flags & 0x2000) {
-                    turret->flags |= 0x10;
+                if (turret->behavior_flags & TURRET_STAYS_WHEN_DESTROYED) {
+                    turret->flags |= TURRET_FLAG_AIM_AT_FIXED_ANGLES;
                 } else {
-                    turret->flags |= 0x20;
+                    turret->flags |= TURRET_FLAG_UPDATE_DISABLED;
                     GameAnimSet_SetVisibility(turret->anim_set, 0);
                     if (turret->anim_set != NULL) {
                         for (object = turret->anim_set->objects; object != NULL; object = object->next) {
@@ -1178,15 +1181,16 @@ extern "C" {
                 if (turret->destroy_sfx != -1) {
                     GameAudio_PlaySfxById(turret->destroy_sfx, &centre, 0, 0);
                 }
-                if (turret->completion_score != 0 && ((turret->flags & 0x400) == 0 || (turret->behavior_flags & 0x40000) != 0)) {
+                if (turret->completion_score != 0 &&
+                    ((turret->flags & TURRET_FLAG_REWARD_RELEASED) == 0 || (turret->behavior_flags & TURRET_REWARD_EVERY_TIME) != 0)) {
                     NuVecAdd(&position, &centre, &turret->pickup_offset);
                     NuVecRotateX(&direction, &v010, (u16)turret->pickup_pitch);
                     NuVecRotateY(&direction, &direction, (u16)turret->pickup_yaw);
                     AddPickups(turret->completion_score, 0, 0, 0, &position, &direction, 2.0f, -1, turret->pickup_radius, 2000000.0f, NULL,
                                1, 0);
-                    turret->flags |= 0x400;
+                    turret->flags |= TURRET_FLAG_REWARD_RELEASED;
                 }
-                if ((turret->behavior_flags & 0x4010) == 0x4000 && LEGOHINT_SHOOTCAMERAS != -1) {
+                if ((turret->behavior_flags & 0x4010) == TURRET_CAMERA && LEGOHINT_SHOOTCAMERAS != -1) {
                     Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
                 }
             } else if (player != -1 && (Player[player]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -1212,7 +1216,9 @@ extern "C" {
             count = system->count;
             turret = system->turrets;
             for (index = 0; index < count; ++index, ++turret) {
-                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 || (turret->flags & 0x200) == 0) {
+                if ((turret->flags & TURRET_FLAG_VISIBLE) == 0 || (turret->flags & TURRET_FLAG_ACTIVE) == 0 ||
+                    (turret->flags & (TURRET_FLAG_AIM_AT_FIXED_ANGLES | TURRET_FLAG_UPDATE_DISABLED)) != 0 ||
+                    (turret->flags & TURRET_FLAG_HAS_PLATFORM) == 0) {
                     continue;
                 }
                 animation = turret->anim_set->objects;
@@ -1220,9 +1226,9 @@ extern "C" {
                     if (((TURRET_ANIM_DATA *)animation->object_data)->platform_id == bolt->hit_platform) {
                         type = BoltType_FindByID(bolt->type_id, world);
                         owner = bolt->owner;
-                        if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL) {
+                        if (owner != NULL && (turret->behavior_flags & TURRET_RIDER_BOLTS_ONLY) != 0 && owner->rider == NULL) {
                             damage = 0;
-                        } else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 &&
+                        } else if (owner != NULL && (turret->behavior_flags & TURRET_PLAYER_BOLTS_ONLY) != 0 &&
                                    (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                             damage = 0;
                         } else {
@@ -1283,7 +1289,8 @@ extern "C" {
             gizmo = set->gizmos;
             for (index = 0; index < set->count; ++index, ++gizmo) {
                 turret = (GIZTURRET_s *)gizmo->object;
-                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
+                if ((turret->flags & TURRET_FLAG_VISIBLE) == 0 || (turret->flags & TURRET_FLAG_ACTIVE) == 0 ||
+                    (turret->flags & (TURRET_FLAG_AIM_AT_FIXED_ANGLES | TURRET_FLAG_UPDATE_DISABLED)) != 0 ||
                     turret->primary_anim_obj == NULL) {
                     continue;
                 }
@@ -1368,8 +1375,9 @@ extern "C" {
         if (system != NULL) {
             turret = system->turrets;
             for (index = 0; index < system->count; ++index, ++turret) {
-                if ((turret->flags & 4) == 0 || (turret->flags & 2) == 0 || (turret->flags & 0x30) != 0 ||
-                    turret->primary_anim_obj == NULL || (turret->flags & 0x200) != 0) {
+                if ((turret->flags & TURRET_FLAG_VISIBLE) == 0 || (turret->flags & TURRET_FLAG_ACTIVE) == 0 ||
+                    (turret->flags & (TURRET_FLAG_AIM_AT_FIXED_ANGLES | TURRET_FLAG_UPDATE_DISABLED)) != 0 ||
+                    turret->primary_anim_obj == NULL || (turret->flags & TURRET_FLAG_HAS_PLATFORM) != 0) {
                     continue;
                 }
                 turret_radius = NuSpecialGetOriginRadius(&turret->primary_anim_obj->special);

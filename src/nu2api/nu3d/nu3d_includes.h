@@ -93,6 +93,24 @@ typedef struct NUHGOBJ_JOINT_OVERRIDE { // size 0x34
     u8 unknown_32[2];                   // 0x32
 } NUHGOBJ_JOINT_OVERRIDE;
 
+/* NUHGOBJ_JOINT_OVERRIDE.flags: what an override adds to the animated joint (the head turn of animation.c sets
+ * ROTATE and the limits). */
+#define NUJOINT_OVERRIDE_ROTATE 0x1    /* rotation is added */
+#define NUJOINT_OVERRIDE_TRANSLATE 0x2 /* translation is added */
+#define NUJOINT_OVERRIDE_SCALE 0x4     /* scale is added */
+#define NUJOINT_OVERRIDE_LIMIT_X 0x8   /* the X angle is held within rotation_min[0]..rotation_max[0] */
+#define NUJOINT_OVERRIDE_LIMIT_Y 0x10
+#define NUJOINT_OVERRIDE_LIMIT_Z 0x20
+
+/* The per-joint node flags of an animation (ANI3_BUFFER.joint_flags, NUANIM_LEGACY_SET.flags): which curves the
+ * joint has (CurveGroupMasks: translation 2, rotation 1, scale 8) and how its matrix is built. */
+#define ANI3_NODE_ROTATION 0x1
+#define ANI3_NODE_TRANSLATION 0x2
+#define ANI3_NODE_SCALE 0x8
+#define ANI3_NODE_SCALE_COMPENSATE 0x10 /* the parent's scale is divided out */
+#define ANI3_NODE_BIND_ROTATION 0x20    /* the rotation is applied on top of the joint's bind matrix */
+#define ANI3_NODE_ROOT_UNSCALED 0x40    /* a root joint's accumulated scale restarts at 1 */
+
 typedef struct ANI3_SCALEMIN { // size 0x8
     f32 scale;                 // 0x0
     f32 minimum;               // 0x4

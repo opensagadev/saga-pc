@@ -104,6 +104,21 @@ enum {
     TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP = 2
 };
 
+/* TERRAIN_SURFACE.flags (TerSurface, indexed by the terrain type), from what the game does on each surface. Bits
+ * 0x8 (a lighting fade), 0x10, 0x40, 0x200 (the grabber's shadow) and 0x2000 are not named yet. */
+#define TERSURFACE_DEADLY 0x1            /* TerrainKillPlayer kills on it */
+#define TERSURFACE_REFLECTIVE 0x2        /* characters, bolts and the grabber are reflected in it */
+#define TERSURFACE_DUST 0x4              /* SURFACEBITS_DUST: dust effects on it */
+#define TERSURFACE_HURTS 0x80            /* a vehicle touching it is hit and the pad rumbles */
+#define TERSURFACE_CONVEYOR 0x100        /* Conveyor_AdjustSpeed moves what stands on it */
+#define TERSURFACE_SLIDE 0x400           /* CanObjSlide: characters slide down it */
+#define TERSURFACE_BOLT_MIRROR 0x800     /* bolts deflect from it at the exact mirror angle */
+#define TERSURFACE_BOLT_DEFLECT 0x1000   /* bolts deflect from it; a platform of it gets the bolt's debris */
+#define TERSURFACE_KILLS_LIVING 0x4000   /* kills a character that is not a droid or a ghost */
+#define TERSURFACE_KILLS_STANDING 0x8000 /* kills what touches it, a player only standing on it */
+#define TERSURFACE_CLIMBABLE 0x10000     /* CanClimbSurface */
+#define TERSURFACE_PUSH_SLIDE 0x20000    /* push blocks slide on it; pushing a wall of it starts at once */
+
 typedef struct terrain_surface_s { // size 0xc
     f32 movement_scale;            // 0x0
     u32 flags;                     // 0x4
@@ -421,6 +436,13 @@ struct edcam_s {              // size 0x94
 enum { EDCAM_FREEDOM_INVERT_PAD_PITCH = 64 };
 
 enum { GIZSPINNER_FLAG_VALID = 1 };
+
+/* GIZSPINNER_s.flags: the level file's byte (the loader sets VALID and clears INACTIVE and INVISIBLE). */
+#define GIZSPINNER_FLAG_INACTIVE 0x2         /* GizSpinner_Activate(0): pushes fail */
+#define GIZSPINNER_FLAG_HIDDEN 0x4           /* GizSpinner_SetVisibility(0): not drawn outside the editor, no platform */
+#define GIZSPINNER_FLAG_SHADOW_MODE_ONLY 0x8 /* halted and let go while ShadowMode is 0 */
+#define GIZSPINNER_FLAG_SPRING_BACK 0x10     /* turns back to its start when nobody pushes it */
+#define GIZSPINNER_FLAG_INVISIBLE 0x20       /* its animation set is not visible: pushes fail */
 
 enum { EDCAM_FREEDOM_DISTANCE = 32 };
 
@@ -1348,6 +1370,23 @@ struct gizforce_s {                    // size 0xa4
 extern "C" {
 #endif
 
+    /* EXPLOSION.flags (AddExplosion's flags), from what UpdateExplosion does with each; 0x10000 (with AS_BOLT, the
+     * same-side test outside the arcade) is not named yet. */
+#define EXPLOSION_HITS_CHARACTERS 0x1
+#define EXPLOSION_HITS_BLOWUPS 0x2 /* GizmoBlowUp_Hit when no character was hit */
+#define EXPLOSION_HITS_PARTS 0x4   /* Bolt_HitParts with a one-point bolt */
+#define EXPLOSION_KNOCKBACK 0x8    /* pushes the characters away, the owner's side too */
+#define EXPLOSION_AS_BOLT 0x10     /* a ring of debris; blowups take it as a bolt hit */
+#define EXPLOSION_KILLS 0x20       /* kills what is not a boss, through shields */
+#define EXPLOSION_SHAKE 0x40       /* rumbles every pad and judders the camera */
+#define EXPLOSION_SPARES_DROIDS 0x80
+#define EXPLOSION_CARRIED 0x100          /* a carried object's: no characters, blowups take a carried hit */
+#define EXPLOSION_TRANSFORM 0x200        /* blowups take a transform hit; kills count in the arcade */
+#define EXPLOSION_KILLS_NON_BOSS 0x800   /* kills what is not a boss */
+#define EXPLOSION_HITS_FLICKERING 0x2000 /* hits players whose vehicle hit timer runs */
+#define EXPLOSION_SPARES_PLAYERS 0x4000
+#define EXPLOSION_BLOWUP_EXPLOSION 0x8000 /* blowups take an explosion hit, not a batarang hit */
+
     /* One of the eight explosions that run at a time (Explosions, a ring that AddExplosion advances). */
     typedef struct EXPLOSION {      // size 0x38
         i32 hit_identity_mask[2];   // 0x00 collision identities of the objects already hit
@@ -1731,6 +1770,39 @@ struct STATUS_STAGE_s {                                                         
     f32 unknown_1c;                                                                              // 0x1c
 };
 
+/* GIZTURRET_s.behavior_flags: the level file's options (GizTurret_Reset sets ORIGIN_AT_ANIMATION and
+ * OPPONENT_RANGE_FIRES), from what the turret code does with each; 0x8 and 0x10 (a droid preference in the
+ * target choice), 0x8000 (bolt flag 0x10) are not named yet. */
+#define TURRET_BOUNDED 0x1                 /* targets only inside opponent_bounds around opponent_origin */
+#define TURRET_ORIGIN_AT_ANIMATION 0x2     /* opponent_origin is the animation set's average position */
+#define TURRET_TARGETS_BADDIES 0x4         /* targets baddies, not goodies */
+#define TURRET_TARGETS_RIDERS 0x20         /* targets only characters that ride something */
+#define TURRET_NO_PITCH 0x40               /* aims in yaw only */
+#define TURRET_NO_YAW 0x80                 /* aims in pitch only; with NO_PITCH it fires without aiming */
+#define TURRET_ON_SCREEN_ONLY 0x100        /* does not fire while its special is off screen */
+#define TURRET_LEAD_TARGET 0x200           /* aims at the intercept point of a moving target */
+#define TURRET_SNAP_AIM 0x400              /* turns to the aim at once, not at the turn speeds */
+#define TURRET_OPPONENT_RANGE_FIRES 0x800  /* fires within opponent_range */
+#define TURRET_REFLECTION 0x1000           /* drawn in reflections */
+#define TURRET_STAYS_WHEN_DESTROYED 0x2000 /* destroyed, it keeps its fixed angles instead of hiding */
+#define TURRET_CAMERA 0x4000               /* a security camera: never fires, the shoot-cameras hint */
+#define TURRET_RIDER_BOLTS_ONLY 0x10000    /* only bolts of a riding owner damage it */
+#define TURRET_PLAYER_BOLTS_ONLY 0x20000   /* only bolts of an active player damage it */
+#define TURRET_REWARD_EVERY_TIME 0x40000   /* the completion score is released at every destruction */
+
+/* GIZTURRET_s.flags, named like its bitfields. */
+#define TURRET_FLAG_ACTIVE 0x2
+#define TURRET_FLAG_VISIBLE 0x4
+#define TURRET_FLAG_AIM_LOCKED 0x8
+#define TURRET_FLAG_AIM_AT_FIXED_ANGLES 0x10
+#define TURRET_FLAG_UPDATE_DISABLED 0x20
+#define TURRET_FLAG_RAPID_FIRE_PENDING 0x40
+#define TURRET_FLAG_FIRED_THIS_FRAME 0x80
+#define TURRET_FLAG_BLOWUP_PENDING 0x100
+#define TURRET_FLAG_HAS_PLATFORM 0x200
+#define TURRET_FLAG_REWARD_RELEASED 0x400
+#define TURRET_FLAG_ROTATION_SOUND_PLAYING 0x800
+
 struct GIZTURRET_s {                          // size 0x13c
     u8 unknown_00[8];                         // 0x000
     char name[16];                            // 0x008
@@ -1984,6 +2056,24 @@ struct GIZTURRETSYS_s {                  // size 0x10
     i8 opponent_cursor;                  // 0xc
     i8 unknown_0d[3];                    // 0xd
 };
+
+/* GIZSPINNER_s.state_flags: the level file's options (0x2, 0x4, 0x400, 0x800 set at reset, 0x4000, 0x8000) and the
+ * runtime bits the loader clears (0x20, 0x40, 0x100, 0x200), from GizSpinner_Push, _Spin, _Update and _Reset. The
+ * pushing side is the terrain type under the character (30 or 31), for a bolt the type it hit. */
+#define SPINNER_STATE_TURNING_POSITIVE 0x1 /* the last push or spin turned it the positive way */
+#define SPINNER_STATE_POSITIVE 0x2         /* a push from side 30 turns it the positive way */
+#define SPINNER_STATE_REVERSED 0x4         /* a push from side 30 plays the animation backwards */
+#define SPINNER_STATE_PUSHABLE 0x8         /* the four-armed spinner characters push (GizSpinner_Find with alternate set) */
+#define SPINNER_STATE_NO_JUDDER 0x10       /* the next update stops without the judder (set by the reset) */
+#define SPINNER_STATE_HALTED 0x20          /* deactivated: the next push does nothing and the update stops the animation */
+#define SPINNER_STATE_PUSHED 0x40          /* a push turned it this frame */
+#define SPINNER_STATE_NUDGE_POSITIVE 0x100 /* pushed against its end: drawn turned a little the positive way */
+#define SPINNER_STATE_NUDGE_NEGATIVE 0x200 /* the same the negative way */
+#define SPINNER_STATE_RELEASE_AT_END 0x400 /* a push past the end lets go of the pusher */
+#define SPINNER_STATE_SHADOW 0x800         /* stands on ground with a shadow: the shadow is drawn */
+#define SPINNER_STATE_JUDDERED 0x2000      /* stopped with the camera judder */
+#define SPINNER_STATE_SIDE_30_ONLY 0x4000  /* only bolts that hit side 30 spin it */
+#define SPINNER_STATE_SIDE_31_ONLY 0x8000  /* only bolts that hit side 31 spin it */
 
 typedef struct GIZSPINNER_s GIZSPINNER_s;
 

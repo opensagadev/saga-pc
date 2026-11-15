@@ -15,6 +15,21 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+/* GIZMO_LEVER.flags, named like the bitfields of LEVER_FLAG_BITS (lever.c); the level file sets AUTO_RESET,
+ * HIDE_BASE and HIDE_TARGET_INDICATOR. */
+#define LEVER_FLAG_INTERACTING 0x1
+#define LEVER_FLAG_BEING_PULLED 0x2
+#define LEVER_FLAG_GOODIE 0x4 /* pulled by a goodie (not a baddie, not neutral) */
+#define LEVER_FLAG_BADDIE 0x8
+#define LEVER_FLAG_VISIBLE 0x10
+#define LEVER_FLAG_AUTO_RESET 0x20
+#define LEVER_FLAG_RETURNING 0x40
+#define LEVER_FLAG_ENABLED 0x80
+#define LEVER_FLAG_HIDE_BASE 0x100
+#define LEVER_FLAG_HIDE_TARGET_INDICATOR 0x200
+#define LEVER_FLAG_INTERACTION_FINISHED 0x800
+#define LEVER_FLAG_PULLED_DOWN 0x1000
+
 typedef struct GIZMO_LEVER GIZMO_LEVER;
 
 struct GIZMO_LEVER {            // size 0xa0

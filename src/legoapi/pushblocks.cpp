@@ -840,7 +840,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
         if (p->flag_000 != 0 || p->flag_006 != 0) {
             i32 surface = p->terrain_info[0];
             if (p->terrain_info[1] == surface && p->terrain_info[2] == surface && p->terrain_info[3] == surface) {
-                if (static_cast<u32>(surface) <= 31u && (TerSurface[surface].flags & 0x20000u) != 0) {
+                if (static_cast<u32>(surface) <= 31u && (TerSurface[surface].flags & TERSURFACE_PUSH_SLIDE) != 0) {
                     p->packed_state_flags |= 0x40u;
                 } else {
                     p->packed_state_flags &= ~0x40u;

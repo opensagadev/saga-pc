@@ -123,7 +123,8 @@ GIZMO_LEVER *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *ob
         f32 candidate_distance;
         if (object != NULL) {
             NUVEC target;
-            if ((lever->flags & 0x80) == 0 || (lever->flags & 0x10) == 0 || (lever->flags & 3) != 0 || lever->pull_progress != 0.0f ||
+            if ((lever->flags & LEVER_FLAG_ENABLED) == 0 || (lever->flags & LEVER_FLAG_VISIBLE) == 0 ||
+                (lever->flags & (LEVER_FLAG_INTERACTING | LEVER_FLAG_BEING_PULLED)) != 0 || lever->pull_progress != 0.0f ||
                 lever->floor_position.y == 2000000.0f) {
                 continue;
             }
@@ -144,7 +145,7 @@ GIZMO_LEVER *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *ob
 }
 
 i32 Lever_FullyPulledDown(GIZMO_LEVER *lever) {
-    return (lever->flags & 0x10) != 0 && (lever->flags & 2) != 0 && lever->pull_progress >= 1.0f;
+    return (lever->flags & LEVER_FLAG_VISIBLE) != 0 && (lever->flags & LEVER_FLAG_BEING_PULLED) != 0 && lever->pull_progress >= 1.0f;
 }
 
 void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
@@ -178,11 +179,11 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_BADDIE) != 0) {
-            ((GIZMO_LEVER *)object->grapple)->flags |= 8;
+            ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_BADDIE;
         } else if ((object->character_data->model_flags & CHARACTER_MODEL_NEUTRAL) == 0) {
-            ((GIZMO_LEVER *)object->grapple)->flags |= 4;
+            ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_GOODIE;
         }
-        ((GIZMO_LEVER *)object->grapple)->flags |= 0x800;
+        ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_INTERACTION_FINISHED;
         object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
@@ -220,7 +221,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
         object->movement_facing_angle = ((GIZMO_LEVER *)object->grapple)->yaw;
-        ((GIZMO_LEVER *)object->grapple)->flags |= 1;
+        ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_INTERACTING;
         ((GIZMO_LEVER *)object->grapple)->pull_progress = 0.0f;
         ((GIZMO_LEVER *)object->grapple)->auto_reset_timer = 0.0f;
     }
@@ -274,9 +275,9 @@ static void Lever_Reset(GIZMO_LEVER *lever) {
         lever->target_offset.y = (f64)height + (f64)0.005f;
         FindAnglesZX(&ShadNorm, &lever->terrain_pitch, &lever->terrain_roll);
     }
-    lever->flags |= 0x90;
+    lever->flags |= LEVER_FLAG_VISIBLE | LEVER_FLAG_ENABLED;
     lever->animation_frame = 0;
-    if ((lever->flags & 2) == 0 || (lever->flags & 0x20) == 0) {
+    if ((lever->flags & LEVER_FLAG_BEING_PULLED) == 0 || (lever->flags & LEVER_FLAG_AUTO_RESET) == 0) {
         lever->pull_progress = 0.0f;
         lever->auto_reset_timer = 0.0f;
         lever->flags &= 0xefb0;
@@ -304,7 +305,7 @@ static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     GIZMO_LEVER *lever;
     (void)mode;
     lever = gizmo->object;
-    if ((lever->flags & 0x80) != 0) {
+    if ((lever->flags & LEVER_FLAG_ENABLED) != 0) {
         switch (output) {
             case 0:
                 if (Lever_FullyPulledDown(lever) != 0) {
@@ -312,12 +313,12 @@ static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
                 }
                 break;
             case 1:
-                if ((lever->flags & 4) != 0 && Lever_FullyPulledDown(lever) != 0) {
+                if ((lever->flags & LEVER_FLAG_GOODIE) != 0 && Lever_FullyPulledDown(lever) != 0) {
                     return 1;
                 }
                 break;
             case 2:
-                if ((lever->flags & 8) != 0 && Lever_FullyPulledDown(lever) != 0) {
+                if ((lever->flags & LEVER_FLAG_BADDIE) != 0 && Lever_FullyPulledDown(lever) != 0) {
                     return 1;
                 }
                 break;
@@ -489,7 +490,8 @@ static i32 Levers_Load(void *world_ptr, void *data) {
             ((LEVER_WORLD *)world)->levers[index].model_variant = EdFileReadChar();
             if (version >= 2) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags = (((LEVER_WORLD *)world)->levers[index].flags & ~0x20) | (bit << 5);
+                ((LEVER_WORLD *)world)->levers[index].flags =
+                    (((LEVER_WORLD *)world)->levers[index].flags & ~LEVER_FLAG_AUTO_RESET) | (bit << 5);
             }
             if (version >= 3) {
                 ((LEVER_WORLD *)world)->levers[index].auto_reset_delay = EdFileReadFloat();
@@ -498,9 +500,10 @@ static i32 Levers_Load(void *world_ptr, void *data) {
             }
             if (version >= 4) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags = (((LEVER_WORLD *)world)->levers[index].flags & ~0x100) | (bit << 8);
+                ((LEVER_WORLD *)world)->levers[index].flags =
+                    (((LEVER_WORLD *)world)->levers[index].flags & ~LEVER_FLAG_HIDE_BASE) | (bit << 8);
             } else {
-                ((LEVER_WORLD *)world)->levers[index].flags &= ~0x100;
+                ((LEVER_WORLD *)world)->levers[index].flags &= ~LEVER_FLAG_HIDE_BASE;
             }
             if (version >= 5) {
                 EdFileReadNuVec(&((LEVER_WORLD *)world)->levers[index].target_offset);
@@ -513,7 +516,8 @@ static i32 Levers_Load(void *world_ptr, void *data) {
             }
             if (version >= 6) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags = (((LEVER_WORLD *)world)->levers[index].flags & ~0x200) | (bit << 9);
+                ((LEVER_WORLD *)world)->levers[index].flags =
+                    (((LEVER_WORLD *)world)->levers[index].flags & ~LEVER_FLAG_HIDE_TARGET_INDICATOR) | (bit << 9);
             }
             ((LEVER_WORLD *)world)->levers[index].platform_id = -1;
         }
@@ -543,7 +547,7 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
         return;
     }
     for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index, ++lever) {
-        if (!LEVER_BITS(lever)->being_pulled && (lever->flags & 0x1800) == 0) {
+        if (!LEVER_BITS(lever)->being_pulled && (lever->flags & (LEVER_FLAG_INTERACTION_FINISHED | LEVER_FLAG_PULLED_DOWN)) == 0) {
             lever->animation_frame = 0;
             continue;
         }
@@ -554,16 +558,16 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
             lever->auto_reset_timer -= FRAMETIME;
             if (lever->auto_reset_timer <= 0.0f) {
                 lever->auto_reset_timer = 0.0f;
-                lever->flags = (lever->flags & ~0x800) | 0x1040;
+                lever->flags = (lever->flags & ~LEVER_FLAG_INTERACTION_FINISHED) | LEVER_FLAG_RETURNING | LEVER_FLAG_PULLED_DOWN;
                 lever->pull_progress = 0.6f;
             }
-        } else if (!LEVER_BITS(lever)->returning && (lever->flags & 0x1000) == 0) {
+        } else if (!LEVER_BITS(lever)->returning && (lever->flags & LEVER_FLAG_PULLED_DOWN) == 0) {
             if (lever->pull_progress < 1.0f) {
                 lever->pull_progress += FRAMETIME;
                 if (lever->pull_progress > 1.0f) {
                     lever->pull_progress = 1.0f;
                     PlaySfx("SwLever", &lever->position);
-                    if ((lever->flags & 0x20) != 0) {
+                    if ((lever->flags & LEVER_FLAG_AUTO_RESET) != 0) {
                         lever->auto_reset_timer = lever->auto_reset_delay;
                     }
                 }
@@ -661,7 +665,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
         NUMTX base_matrix;
         NUMTX target_matrix;
         i32 status_special;
-        if ((lever->flags & 0x10) == 0) {
+        if ((lever->flags & LEVER_FLAG_VISIBLE) == 0) {
             continue;
         }
         if (StartupGameFlag1 != 0 && animated_special != NULL) {
@@ -669,12 +673,12 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
             if (lever->pull_progress > 0.0f) {
                 if (lever->auto_reset_timer > 0.0f) {
                     animation_frame = 32.0f;
-                } else if ((lever->flags & 0x40) == 0) {
+                } else if ((lever->flags & LEVER_FLAG_RETURNING) == 0) {
                     animation_frame = (f32)((f64)lever->pull_progress * 31.0 + 1.0);
                 } else {
                     animation_frame = (f32)(((f64)0.6f - (f64)lever->pull_progress) * 32.0 / (f64)0.6f + 32.0);
                 }
-            } else if ((lever->flags & 0x83) == 0x80) {
+            } else if ((lever->flags & (LEVER_FLAG_INTERACTING | LEVER_FLAG_BEING_PULLED | LEVER_FLAG_ENABLED)) == LEVER_FLAG_ENABLED) {
                 if (lever->idle_animation_timer > 0.0f) {
                     lever->idle_animation_timer = lever->idle_animation_timer - FRAMETIME;
                     if (lever->idle_animation_timer < 0.0f) {
@@ -702,18 +706,19 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
         if (world->level_objects[lever->model_special_index].active != 0) {
             NuSpecialDrawAt(&world->level_objects[lever->model_special_index].special, &animated_matrix);
         }
-        if (world->level_objects[31].active != 0 && (lever->flags & 0x100) == 0) {
+        if (world->level_objects[31].active != 0 && (lever->flags & LEVER_FLAG_HIDE_BASE) == 0) {
             NuSpecialDrawAt(&world->level_objects[31].special, &lever->matrix);
         }
         status_special = 43;
-        if ((lever->flags & 0x80) != 0) {
+        if ((lever->flags & LEVER_FLAG_ENABLED) != 0) {
             i32 draw_target;
             i32 draw_ready;
             if (lever->pull_progress >= 1.0f) {
                 status_special = 42;
             }
-            draw_target = (lever->flags & 0x200) == 0 && lever->target_offset.y != 2000000.0f && world->level_objects[85].active != 0;
-            draw_ready = (lever->flags & 3) == 0 && world->level_objects[41].active != 0;
+            draw_target = (lever->flags & LEVER_FLAG_HIDE_TARGET_INDICATOR) == 0 && lever->target_offset.y != 2000000.0f &&
+                          world->level_objects[85].active != 0;
+            draw_ready = (lever->flags & (LEVER_FLAG_INTERACTING | LEVER_FLAG_BEING_PULLED)) == 0 && world->level_objects[41].active != 0;
             if (draw_ready) {
                 NuSpecialDrawAtAlpha(&world->level_objects[41].special, &target_matrix, ready_alpha);
             }
@@ -746,7 +751,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
         } else if (lever->pull_progress == 0.0f && ParticlesPerSecond(0.5f, FRAMETIME) > 0) {
             AddGameDebris(WORLD->game_debris_sys, 0x57, &lever->position);
         }
-        if (world->level_objects[status_special].active != 0 && (lever->flags & 0x100) == 0) {
+        if (world->level_objects[status_special].active != 0 && (lever->flags & LEVER_FLAG_HIDE_BASE) == 0) {
             NuSpecialDrawAt(&world->level_objects[status_special].special, &base_matrix);
         }
     }

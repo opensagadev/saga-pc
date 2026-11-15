@@ -270,7 +270,7 @@ void HothEscapeB_Reset(WORLDINFO *world) {
     HothEscapeBLocator = AIPathFindLocator(world->ai_sys, "snow_mob");
     HothEscapeBSnowmob = GetNamedGameObject(world->ai_sys, "snowmob_1");
     TerSurface[9].movement_scale = TerSurface[17].movement_scale;
-    TerSurface[9].flags = TerSurface[17].flags & ~2u;
+    TerSurface[9].flags = TerSurface[17].flags & ~TERSURFACE_REFLECTIVE;
 }
 
 void HothEscapeB_Update(WORLDINFO *world) {
@@ -805,7 +805,7 @@ void AsteroidChaseD_Update(WORLDINFO *unused0) {
         melee_wavePhase = 2;
     }
     for (index = 0; index < 16; ++index) {
-        if (StarDestroyerTurrets[index] != NULL && (StarDestroyerTurrets[index]->flags & 0x20) != 0) {
+        if (StarDestroyerTurrets[index] != NULL && (StarDestroyerTurrets[index]->flags & TURRET_FLAG_UPDATE_DISABLED) != 0) {
             --turretAliveCount;
             StarDestroyerTurrets[index] = NULL;
         }

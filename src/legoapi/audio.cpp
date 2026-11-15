@@ -371,7 +371,7 @@ extern "C" {
         CHARACTERANIM_CONFIG *config;
         ANIMPACKET *packet = &object->anim_packet;
         if (object->terrain_platform_id != -1 || object->supporting_platform_id != -1 ||
-            ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & 2) != 0)) {
+            ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & TERSURFACE_REFLECTIVE) != 0)) {
             on_platform = 1;
         } else {
             on_platform = 0;

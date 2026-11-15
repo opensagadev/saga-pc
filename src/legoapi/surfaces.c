@@ -47,7 +47,7 @@ void Surfaces_Reset(void) {
     SURFACEBITS_NODUST = 0;
     for (i = 0; i < 32; ++i) {
         u16 surface_bit = (u16)(1 << i);
-        if (TerSurface[i].flags & 4) {
+        if (TerSurface[i].flags & TERSURFACE_DUST) {
             SURFACEBITS_DUST |= surface_bit;
         } else {
             SURFACEBITS_NODUST |= surface_bit;
@@ -73,7 +73,7 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
         }
         object->reflection_enabled = 2;
         if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0 &&
-            (TerSurface[surface_index].flags & 2u) != 0) {
+            (TerSurface[surface_index].flags & TERSURFACE_REFLECTIVE) != 0) {
             object->reflection_height = floor_height;
         } else {
             object->reflection_height = 2000000.0f;

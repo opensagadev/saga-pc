@@ -1746,10 +1746,10 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
     u32 flags;
 
     flags = TerSurface[surface].flags;
-    if ((flags & 1) == 0 &&
-        ((flags & 0x4000) == 0 || (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0 ||
+    if ((flags & TERSURFACE_DEADLY) == 0 &&
+        ((flags & TERSURFACE_KILLS_LIVING) == 0 || (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0 ||
          (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) &&
-        ((flags & 0x8000) == 0 || (object->player_index != -1 && !(normal->y > 0.0f)))) {
+        ((flags & TERSURFACE_KILLS_STANDING) == 0 || (object->player_index != -1 && !(normal->y > 0.0f)))) {
         return 0;
     }
     InstantKillParts(object, 1, 0.0f);
@@ -2382,7 +2382,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     }
                                     break;
                                 }
-                                if ((TerSurface[surface].flags & 0x80) != 0 && WORLD->current_level != BONUS_GUNSHIPA_LDATA) {
+                                if ((TerSurface[surface].flags & TERSURFACE_HURTS) != 0 && WORLD->current_level != BONUS_GUNSHIPA_LDATA) {
                                     NewRumble(object->pad->bound_pad, 0.6f, 0);
                                     NewBuzz(object->pad->bound_pad, 0.1f, 0);
                                     if (object->origin_scale_override != 1.0f && CannotKill(object) == 0) {
@@ -2436,7 +2436,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     saved_rescue_surface = 0;
                                     if (StartupGameFlag1 == 0 && StartupGameFlag0 == 0 && api->unknown_283 == 6 &&
                                         (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32) {
-                                        if ((TerSurface[(i8)api->jump_animation_state].flags & 1) != 0) {
+                                        if ((TerSurface[(i8)api->jump_animation_state].flags & TERSURFACE_DEADLY) != 0) {
                                             saved_rescue_surface = 1;
                                         } else {
                                             if (object->vehicle_hit_timer <= 0.0f) {
@@ -4128,7 +4128,7 @@ i32 DrawGameObjectsProcess(void) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
             continue;
         }
-        object->flags_e24 &= ~8u;
+        object->flags_e24 &= ~APIOBJECT_LOCATORS_VALID;
         ((DRAW_PROCESS_FLAGS *)object)->origin_joint_was_ready = object->origin_joint_ready;
         object->origin_joint_ready = 0;
         if (object->dead != 0 && (object->unknown_1010 > 0.0f || object->death_delay == 0.0f)) {

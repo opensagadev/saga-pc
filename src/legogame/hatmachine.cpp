@@ -77,6 +77,13 @@ struct HATMACHINE {         // size 0xa0
     u8 reserved_9c[4];     // 0x9c
 };
 
+/* HATMACHINE.flags. */
+#define HATMACHINE_FLAG_IN_USE 0x1 /* a character works it; cleared when its animation ends */
+#define HATMACHINE_FLAG_OUTPUT 0x2 /* the gizmo output (HatMachine_GetOutput) */
+#define HATMACHINE_FLAG_VISIBLE 0x4
+#define HATMACHINE_FLAG_ENABLED 0x8
+#define HATMACHINE_FLAG_HIDE_TARGET 0x20 /* the level file's hidden byte: no target indicator */
+
 struct HATMACHINE_SYS {   // size 0x10
     i32 count;            // 0x0
     i32 reserved_04;      // 0x4
@@ -129,8 +136,8 @@ extern "C" HATMACHINE *HatMachine_FindNearest(WORLDINFO *world, NUVEC *position,
         HATMACHINE *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
         f32 candidate_distance;
         if (object != NULL) {
-            if ((machine->flags & 8) == 0 || (machine->flags & 4) == 0 || (machine->flags & 3) != 0 ||
-                machine->player_position.y == 2000000.0f) {
+            if ((machine->flags & HATMACHINE_FLAG_ENABLED) == 0 || (machine->flags & HATMACHINE_FLAG_VISIBLE) == 0 ||
+                (machine->flags & (HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) != 0 || machine->player_position.y == 2000000.0f) {
                 continue;
             }
             NUVEC target;
@@ -151,7 +158,7 @@ extern "C" HATMACHINE *HatMachine_FindNearest(WORLDINFO *world, NUVEC *position,
 }
 
 extern "C" i32 HatMachine_BeingUsed(HATMACHINE *machine) {
-    return machine->flags & 1;
+    return machine->flags & HATMACHINE_FLAG_IN_USE;
 }
 
 struct HAT_USE_REQUEST {   // size 0x7a4
@@ -197,7 +204,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 machine->state_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
             }
             f32 end_frame = -AnimListFrame(object->character_model, object->unknown_7aa, 0);
-            machine->flags |= 1;
+            machine->flags |= HATMACHINE_FLAG_IN_USE;
             machine->state_elapsed = end_frame;
             machine->state_duration -= end_frame;
             machine->idle_bounce_timer = 0.0f;
@@ -396,7 +403,7 @@ extern "C" {
             }
             if (version >= 5) {
                 u8 hidden = EdFileReadChar();
-                system->machines[index].flags = (system->machines[index].flags & ~0x20) | ((hidden & 1) << 5);
+                system->machines[index].flags = (system->machines[index].flags & ~HATMACHINE_FLAG_HIDE_TARGET) | ((hidden & 1) << 5);
             }
             system->machines[index].platform_id = -1;
         }
@@ -474,10 +481,10 @@ extern "C" {
             HATMACHINE *machine = &((HATMACHINE_WORLD *)world)->hat_machine_sys->machines[index];
             const i32 word = index / 32;
             const u32 mask = 1u << (index % 32);
-            if ((machine->flags & 4) == 0) {
+            if ((machine->flags & HATMACHINE_FLAG_VISIBLE) == 0) {
                 progress->visible_mask[word] &= ~mask;
             }
-            if ((machine->flags & 8) == 0) {
+            if ((machine->flags & HATMACHINE_FLAG_ENABLED) == 0) {
                 progress->enabled_mask[word] &= ~mask;
             }
         }
@@ -499,7 +506,8 @@ extern "C" {
             machine->target_offset.y = (f64)height + (f64)0.005f;
             FindAnglesZX(&ShadNorm, &machine->terrain_pitch, &machine->terrain_roll);
         }
-        machine->flags = (machine->flags & ~3) | 12;
+        machine->flags =
+            (machine->flags & ~(HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) | HATMACHINE_FLAG_VISIBLE | HATMACHINE_FLAG_ENABLED;
         machine->animation_state = 0;
         machine->hat_delay = 0.0f;
         machine->state_duration = 0.0f;
@@ -570,7 +578,7 @@ extern "C" {
                     machine->hat_delay = 1.0f;
                 }
             }
-            if ((machine->flags & 1) != 0 && machine->animation_state > 0) {
+            if ((machine->flags & HATMACHINE_FLAG_IN_USE) != 0 && machine->animation_state > 0) {
                 machine->state_elapsed += elapsed;
                 if (machine->state_elapsed > machine->state_duration) {
                     ++machine->animation_state;
@@ -579,7 +587,7 @@ extern "C" {
                     }
                     machine->state_elapsed = 0.0f;
                     if (machine->animation_state > 6) {
-                        machine->flags &= ~1;
+                        machine->flags &= ~HATMACHINE_FLAG_IN_USE;
                         machine->animation_state = 0;
                         machine->state_duration = 0.0f;
                         machine->hat_delay = 0.6f;
@@ -672,7 +680,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
     }
     for (i32 index = 0; index < system->count; ++index) {
         HATMACHINE *machine = &system->machines[index];
-        if ((machine->flags & 4) == 0 && editor_active == 0) {
+        if ((machine->flags & HATMACHINE_FLAG_VISIBLE) == 0 && editor_active == 0) {
             continue;
         }
         f32 frame = machine->state_elapsed;
@@ -682,7 +690,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
         if (world->level_objects[283].active != 0) {
             NuSpecialDrawAt(&world->level_objects[283].special, &machine->matrix);
         }
-        if ((machine->flags & 8) != 0) {
+        if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0) {
             if (world->level_objects[286].active != 0) {
                 NuSpecialDrawAt(&world->level_objects[286].special, &machine->matrix);
             }
@@ -697,7 +705,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             u32 bits;
         } magnitude;
 
-        if ((machine->flags & 0x20) == 0 && machine->target_offset.y != 2000000.0f && world->level_objects[85].active != 0) {
+        if ((machine->flags & HATMACHINE_FLAG_HIDE_TARGET) == 0 && machine->target_offset.y != 2000000.0f &&
+            world->level_objects[85].active != 0) {
             NUVEC target;
             Hat_GetAbsTargetPos(machine, &target);
             NuMtxSetRotationY(&matrix, spin_angle);
@@ -710,7 +719,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             NuMtxScaleU(&matrix, 0.8f);
             NuMtxTranslate(&matrix, &target);
             NuMtxPreScaleU(&matrix, machine->scale);
-            NuSpecialDrawAtAlpha(&world->level_objects[85].special, &matrix, (machine->flags & 1) != 0 ? 0.0f : target_pulse);
+            NuSpecialDrawAtAlpha(&world->level_objects[85].special, &matrix,
+                                 (machine->flags & HATMACHINE_FLAG_IN_USE) != 0 ? 0.0f : target_pulse);
         }
         if (StartupGameFlag1 != 0) {
             if (specials[0] != NULL && animations[0] != NULL) {
@@ -728,7 +738,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 } else {
                     machine->animation_time = 0.0f;
                     frame = 0.0f;
-                    if ((machine->flags & 8) != 0 && (machine->flags & 3) == 0) {
+                    if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0 &&
+                        (machine->flags & (HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) == 0) {
                         if (machine->idle_bounce_timer > 0.0f) {
                             machine->idle_bounce_timer -= FRAMETIME;
                             if (machine->idle_bounce_timer < 0.0f) {
@@ -750,7 +761,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 if (world->level_objects[(i8)machine->model_special_index].active != 0) {
                     NuSpecialDrawAt(&world->level_objects[(i8)machine->model_special_index].special, &matrix);
                 }
-                if ((machine->flags & 8) != 0 && (machine->flags & 3) == 0 && world->level_objects[41].active != 0) {
+                if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0 &&
+                    (machine->flags & (HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) == 0 && world->level_objects[41].active != 0) {
                     NuSpecialDrawAtAlpha(&world->level_objects[41].special, &matrix, ready_alpha);
                 }
             }
@@ -770,7 +782,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                     }
                 }
             }
-            if ((machine->flags & 8) != 0 && machine->displayed_hat != 0 &&
+            if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0 && machine->displayed_hat != 0 &&
                 world->level_objects[machine->displayed_hat + 249].active != 0) {
                 offset = HatMachine_HatOffset;
                 if (machine->animation_time < 2.35f) {
@@ -815,7 +827,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 if (world->level_objects[(i8)machine->model_special_index].active != 0) {
                     NuSpecialDrawAt(&world->level_objects[(i8)machine->model_special_index].special, &matrix);
                 }
-                if ((machine->flags & 8) != 0 && (machine->flags & 3) == 0 && world->level_objects[41].active != 0) {
+                if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0 &&
+                    (machine->flags & (HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) == 0 && world->level_objects[41].active != 0) {
                     NuSpecialDrawAtAlpha(&world->level_objects[41].special, &matrix, ready_alpha);
                 }
             }
@@ -886,7 +899,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 NuMtxTranslate(&matrix, &offset);
                 NuSpecialDrawAt(&world->level_objects[284].special, &matrix);
             }
-            if ((machine->flags & 8) != 0 && machine->displayed_hat != 0 &&
+            if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0 && machine->displayed_hat != 0 &&
                 world->level_objects[machine->displayed_hat + 249].active != 0) {
                 offset = HatMachine_HatOffset;
                 switch (machine->animation_state) {

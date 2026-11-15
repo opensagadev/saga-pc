@@ -1054,7 +1054,7 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
         if (animations[0xa9] != NULL && animations[0xac] != NULL) {
             choices[count++] = 0xa9;
         }
-        if (!(flags & 0x200)) {
+        if (!(flags & OBJHIT_EXPLOSION)) {
             if (animations[0x3d] != NULL) {
                 choices[count++] = 0x3d;
             }
@@ -2594,13 +2594,13 @@ void UpdateGameObjects(WORLDINFO *world) {
             (player1->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             show[1] = show[0] = 1;
         } else {
-            if (player0 != NULL && (player0->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (player0->flags_e24 & 8) != 0 &&
-                player0->rider != NULL &&
+            if (player0 != NULL && (player0->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                (player0->flags_e24 & APIOBJECT_LOCATORS_VALID) != 0 && player0->rider != NULL &&
                 (player0->id == GameObjectRotationAtstId || player0->id == (u16)id_ATST_LOWRES || player0->id == (u16)id_ATAT)) {
                 show[0] = 2;
             }
-            if (player1 != NULL && (player1->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (player1->flags_e24 & 8) != 0 &&
-                player1->rider != NULL &&
+            if (player1 != NULL && (player1->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                (player1->flags_e24 & APIOBJECT_LOCATORS_VALID) != 0 && player1->rider != NULL &&
                 (player1->id == GameObjectRotationAtstId || player1->id == (u16)id_ATST_LOWRES || player1->id == (u16)id_ATAT)) {
                 show[1] = 2;
             }
@@ -2722,7 +2722,8 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         } else if (object->id == id_DRAGBOMB) {
             GameCam_NewShake(GameCam, 1.0f, 1.0f, 1.0f);
             NewRumbleAllPlayers(1.0f, 0.1f, 0, 0);
-            AddExplosion(&object->collision_position, (f32)((f64)AreaPickupScale * (f64)0.6f), 0.5f, NULL, -1, 0x807);
+            AddExplosion(&object->collision_position, (f32)((f64)AreaPickupScale * (f64)0.6f), 0.5f, NULL, -1,
+                         EXPLOSION_HITS_CHARACTERS | EXPLOSION_HITS_BLOWUPS | EXPLOSION_HITS_PARTS | EXPLOSION_KILLS_NON_BOSS);
             if (Cheat_IsOn(5)) {
                 debris[0] = 125;
                 debris[1] = 126;
@@ -3413,9 +3414,9 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         (!target->unknown_7b3 || (attacker && !(attacker->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)))) {
         return 0;
     }
-    if (!(damage == -1 && (flags & 0x200))) {
+    if (!(damage == -1 && (flags & OBJHIT_EXPLOSION))) {
         if (target->character_context == CHARACTER_CONTEXT_JUMP &&
-            (target->action_movement_state == 4 || target->action_movement_state == 3)) {
+            (target->action_movement_state == JUMP_KIND_SLAM || target->action_movement_state == JUMP_KIND_LUNGE)) {
             return 0;
         }
         if (target->character_context == CHARACTER_CONTEXT_LAND_SLAM || target->character_context == CHARACTER_CONTEXT_LAND_LUNGE) {
@@ -3440,7 +3441,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
     if (damage > 0 || damage == -1) {
         target->portal_flags |= 1;
     }
-    if (flags & 0x100) {
+    if (flags & OBJHIT_SABRE) {
         if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) ||
             (target->character_context != CHARACTER_CONTEXT_NONE &&
              (target->character_context == LEGOCONTEXT_LAND_SLAM || target->character_context == LEGOCONTEXT_LAND_LUNGE))) {
@@ -3462,7 +3463,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         }
     }
     if (target->origin_scale_override >= 1.0f) {
-        if (flags & 0x100) {
+        if (flags & OBJHIT_SABRE) {
             if (damage == -1 ||
                 (LEGOCONTEXT_COMBO != -1 && attacker->character_context == LEGOCONTEXT_COMBO && attacker->combo_branch == 6)) {
                 ObjHitShield(attacker, target, target->shield_hitpoints, bolt);
@@ -3481,11 +3482,11 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         if (damage > 1 || damage < 0) {
             damage = 1;
         }
-    } else if (attacker && (flags & 0x100) && attacker->character_context == CHARACTER_CONTEXT_COMBO && attacker->combo_branch == 6 &&
-               target->player_index == -1) {
+    } else if (attacker && (flags & OBJHIT_SABRE) && attacker->character_context == CHARACTER_CONTEXT_COMBO &&
+               attacker->combo_branch == 6 && target->player_index == -1) {
         damage = -1;
     }
-    if ((target->portal_flags & APIOBJECT_IMMUNE_TO_BOLTS) && (flags & 0x80)) {
+    if ((target->portal_flags & APIOBJECT_IMMUNE_TO_BOLTS) && (flags & OBJHIT_BOLT)) {
         damage = 0;
     } else {
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks && (flags & OBJHIT_FROM_PLAYER) &&
@@ -3586,7 +3587,7 @@ impact:
         } else if (VehicleArea || (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks)) {
             i32 bits = attacker && attacker->unknown_280 <= 1 ? 1 << attacker->unknown_280 : 0;
             GameAudio_PlaySfx(40, &target->collision_position, bits, 0);
-        } else if (flags & 0x40) {
+        } else if (flags & OBJHIT_PUNCH) {
             if (attacker && attacker->character_context == CHARACTER_CONTEXT_PUNCH &&
                 (AnimMiscFlags(attacker->character_model, attacker->unknown_7aa) & 4)) {
                 PlaySfx("WhipHit", &target->collision_position);
@@ -3612,7 +3613,8 @@ impact:
         target->spawn_protection_timer = 2.5f;
         goto finish;
     }
-    if ((target->character_data->model_flags & CHARACTER_MODEL_DROID) && !target->current_hp && (flags & 0x40) && random_unit > 0.75f) {
+    if ((target->character_data->model_flags & CHARACTER_MODEL_DROID) && !target->current_hp && (flags & OBJHIT_PUNCH) &&
+        random_unit > 0.75f) {
         DeactivatePlayer(target, 5.0f, NULL);
         goto finish;
     }
@@ -3690,7 +3692,7 @@ impact:
                     goto hurt;
                 }
             }
-            if (StartupGameFlag1 || (flags & 0x200) || attacker == NULL || target->player_index != -1 ||
+            if (StartupGameFlag1 || (flags & OBJHIT_EXPLOSION) || attacker == NULL || target->player_index != -1 ||
                 (target->portal_flags & APIOBJECT_BOSS) || 0x8000 <= qrand() || (target->flags_1fc_word & APIOBJECT_FLAG_DONT_PUSH)) {
                 goto ordinary_death;
             }
@@ -3756,7 +3758,7 @@ impact:
         if (!parts_angle) {
             if (!attacker) {
                 parts_angle = NULL;
-            } else if (flags & 0x240) {
+            } else if (flags & (OBJHIT_PUNCH | OBJHIT_EXPLOSION)) {
                 computed_angle = NuAtan2D(target->position.x - attacker->position.x, target->position.z - attacker->position.z);
                 parts_angle = (i16 *)(&computed_angle);
             }

@@ -74,13 +74,13 @@ void StartJump(GAMEOBJECT *object, i32 movement_state) {
         object->action_movement_state = (u8)movement_state;
         object->unknown_7aa = LEGOACT_JUMP;
         object->context_timer = 0.0f;
-        attack_jump = movement_state == 4 || movement_state == 3;
+        attack_jump = movement_state == JUMP_KIND_SLAM || movement_state == JUMP_KIND_LUNGE;
         object->jump_start_height = object->collision_min.y;
         object->airborne_action_timer = 0.0f;
         object->jump_sequence = 1;
         // Bits 12 and 15 cleared, bit 16 set for attack jumps (movement states 3 and 4).
         object->context_variant_flags = (object->context_variant_flags & ~0x19000) | ((attack_jump & 1) << 16);
-        if ((u8)movement_state != 6 && (u8)movement_state != 7) {
+        if ((u8)movement_state != JUMP_KIND_ZIPUP && (u8)movement_state != 7) {
             PlayJumpSfx(object, 0);
         }
     }
@@ -267,11 +267,11 @@ i32 StartFallLand(GAMEOBJECT *object, i32 action) {
             ResetMiniAnimPacket(&view->mini_animation, -1);
             view->fall_animation_time = 0.0f;
             object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-            object->flags_e24 = (object->flags_e24 & ~0x800) | ((object->flags_e24 & 0x400) << 1);
+            object->flags_e24 = (object->flags_e24 & ~APIOBJECT_FALL_LANDING) | ((object->flags_e24 & APIOBJECT_FALL_LAND) << 1);
             return 1;
         }
     }
-    object->flags_e24 &= ~0x400;
+    object->flags_e24 &= ~APIOBJECT_FALL_LAND;
     return 0;
 }
 
@@ -320,7 +320,7 @@ void BackFlipCode(GAMEOBJECT *object) {
 i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
     if (LEGOCONTEXT_JUMP != -1) {
         object->character_context = (i8)LEGOCONTEXT_JUMP;
-        object->action_movement_state = 4;
+        object->action_movement_state = JUMP_KIND_SLAM;
         object->unknown_7aa = JumpSlamAction;
         object->context_timer = 0.0f;
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -351,7 +351,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
     i32 player_flag;
     i32 flip_kind;
     i32 force_flip;
-    if ((object->flags_e24 & 0x1000) != 0) {
+    if ((object->flags_e24 & APIOBJECT_NO_JUMP) != 0) {
         return;
     }
     force_flip = -1;
@@ -415,7 +415,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             ((ZipUpLandCombatRollContext == -1 || object->character_context != ZipUpLandCombatRollContext) ||
              ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_COMBAT_ROLL_CAN_GET_UP) != 0 &&
               !(object->unknown_7b3 == 1 && aux->landing_followup == 0))) &&
-            object->pad->input_magnitude > 0.0f && (object->flags_e24 & 0x800) == 0) {
+            object->pad->input_magnitude > 0.0f && (object->flags_e24 & APIOBJECT_FALL_LANDING) == 0) {
             object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
@@ -480,7 +480,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             u8 movement_state;
             i32 restart_jump;
             if ((variant_flags & 0x1000) != 0) {
-                object->flags_e24 |= 0x8000;
+                object->flags_e24 |= APIOBJECT_BOLTS_PASS;
             }
             if ((object->flags_e20 & 0x100000) != 0 && jump_held == 0) {
                 object->flags_e20 &= ~0x100000u;
@@ -498,14 +498,14 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 }
             }
             object->context_timer += FRAMETIME;
-            if (movement_state == 8 && (variant_flags & APIOBJECT_JUMP_FALLING) == 0 &&
+            if (movement_state == JUMP_KIND_COMBAT_ROLL && (variant_flags & APIOBJECT_JUMP_FALLING) == 0 &&
                 object->character_model->model_data_b[object->unknown_7aa] != NULL && object->context_timer >= object->context_duration &&
                 LEGOACT_COMBATROLL_FALL != -1 && object->character_model->model_data_b[LEGOACT_COMBATROLL_FALL] != NULL) {
                 variant_flags |= APIOBJECT_JUMP_FALLING;
                 object->context_variant_flags = variant_flags;
             }
-            if ((movement_state == 8 || movement_state == 2 || movement_state == 0) && object->context_timer >= 2.0f &&
-                object->position.y >= object->start_position.y && object->unknown_281 == 0) {
+            if ((movement_state == JUMP_KIND_COMBAT_ROLL || movement_state == JUMP_KIND_COMBO || movement_state == 0) &&
+                object->context_timer >= 2.0f && object->position.y >= object->start_position.y && object->unknown_281 == 0) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
                 aux->jump_reentry_timer = 0.0f;
                 aux->fall_animation_timer = 0.2f;
@@ -515,16 +515,19 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             if ((movement_state == 5 && (0 != ((object->unknown_281 & 1)) ||
                                          (player_flag == 0 && object->contact_count != 0 && object->jump_variant_state == 3))) ||
                 (movement_state != 5 && object->unknown_281 != 0 && object->context_timer >= 0.1f) ||
-                ((movement_state == 4 || movement_state == 3) && object->context_timer >= 2.5f)) {
+                ((movement_state == JUMP_KIND_SLAM || movement_state == JUMP_KIND_LUNGE) && object->context_timer >= 2.5f)) {
                 restart_jump = 0;
                 if (player_flag != 0) {
                     object->portal_flags |= 0x800;
                 }
-                if (jump_held != 0 && 0 == ((object->flags_e20 & 0x100000)) && object->action_movement_state != 3 &&
-                    object->action_movement_state != 4 && object->action_movement_state != 5 && object->action_movement_state != 8) {
-                    if ((object->action_movement_state == 1 && object->pad->input_magnitude > 0.0f && (0x200000 & object->flags_e20) != 0 &&
+                if (jump_held != 0 && 0 == ((object->flags_e20 & 0x100000)) && object->action_movement_state != JUMP_KIND_LUNGE &&
+                    object->action_movement_state != JUMP_KIND_SLAM && object->action_movement_state != 5 &&
+                    object->action_movement_state != JUMP_KIND_COMBAT_ROLL) {
+                    if ((object->action_movement_state == JUMP_KIND_FLIP && object->pad->input_magnitude > 0.0f &&
+                         (0x200000 & object->flags_e20) != 0 &&
                          abs(RotDiff(object->movement_facing_angle, object->current_input_angle)) > 0x6aaa) ||
-                        (object->action_movement_state == 2 && object->pad->input_magnitude > 0.0f && (0x200000 & object->flags_e20) != 0 &&
+                        (object->action_movement_state == JUMP_KIND_COMBO && object->pad->input_magnitude > 0.0f &&
+                         (0x200000 & object->flags_e20) != 0 &&
                          abs(RotDiff(object->movement_facing_angle, object->current_input_angle)) < 0x1555)) {
                         force_flip = 1;
                     }
@@ -726,14 +729,15 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 game_character = object->character_data->game_character;
                 if (DoubleJump_JediSlam != 0 && (animation_set & 0x10) != 0 && action_pressed != 0 && object->velocity.y > -1.25f &&
                     (object->context_variant_flags & APIOBJECT_JUMP_FALLING) == 0 &&
-                    ((movement_state == 0 && (object->jump_sequence == 2 || game_character->single_jump_slam)) || movement_state == 1 ||
-                     movement_state == 2) &&
+                    ((movement_state == 0 && (object->jump_sequence == 2 || game_character->single_jump_slam)) ||
+                     movement_state == JUMP_KIND_FLIP || movement_state == JUMP_KIND_COMBO) &&
                     JumpSlamAction != -1 && object->character_model->model_data_b[JumpSlamAction] != NULL) {
                     if (Slam_Start(object, SLAMJUMPSPEED) != 0) {
                         PlaySabreSfx(NULL, object, NULL, 0);
-                        if (object->action_movement_state == 1 || object->action_movement_state == 2) {
+                        if (object->action_movement_state == JUMP_KIND_FLIP || object->action_movement_state == JUMP_KIND_COMBO) {
                             ResetAnimPacket(&object->anim_packet, -1);
-                            if (object->action_movement_state == 2 && (object->context_variant_flags & APIOBJECT_JUMP_FLIP) == 0) {
+                            if (object->action_movement_state == JUMP_KIND_COMBO &&
+                                (object->context_variant_flags & APIOBJECT_JUMP_FLIP) == 0) {
                                 object->unknown_276 += 0x8000;
                                 object->facing_angle += 0x8000;
                                 object->movement_facing_angle += 0x8000;
@@ -777,7 +781,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                     if ((animation_set & 0x110) == 0 &&
                         0 == ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_HIGH_JUMP))) {
                         if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_COMBAT_ROLL) != 0) {
-                            object->action_movement_state = 8;
+                            object->action_movement_state = JUMP_KIND_COMBAT_ROLL;
                             object->context_variant_flags &= ~APIOBJECT_JUMP_FALLING;
                             object->unknown_7aa = LEGOACT_COMBATROLL_JUMP;
                             object->context_duration = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
@@ -883,7 +887,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                     if (1 == flip_kind && StartBackFlip(object)) {
                         return;
                     }
-                    object->action_movement_state = 1;
+                    object->action_movement_state = JUMP_KIND_FLIP;
                     object->unknown_7aa = LEGOACT_FLIP;
                     ResetAnimPacket(&object->anim_packet, object->unknown_7aa);
                     object->velocity.y = object->character_data->game_character->second_jump_speed;
@@ -891,7 +895,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 object->character_context = LEGOCONTEXT_JUMP;
                 object->context_timer = 0.0f;
                 object->context_variant_flags &= ~(APIOBJECT_JUMP_ATTACK | 0x1000u);
-                if (object->action_movement_state == 1 && LEGOACT_FLIP != -1 &&
+                if (object->action_movement_state == JUMP_KIND_FLIP && LEGOACT_FLIP != -1 &&
                     object->character_model->model_data_b[LEGOACT_FLIP] != NULL) {
                     object->unknown_7aa = LEGOACT_FLIP;
                 }
@@ -989,7 +993,8 @@ void BigJumpCode(GAMEOBJECT *object) {
                 object->velocity.x = object->velocity.y = object->velocity.z = 0.0f;
                 if ((object->flags_ef0 & 0x2000) != 0) {
                     FindSlamOrigin(object, &origin, NULL);
-                    AddExplosion(&origin, 2.0f, 0.4f, object, object->slam_effect, 0x19);
+                    AddExplosion(&origin, 2.0f, 0.4f, object, object->slam_effect,
+                                 EXPLOSION_HITS_CHARACTERS | EXPLOSION_KNOCKBACK | EXPLOSION_AS_BOLT);
                 }
                 AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
             }

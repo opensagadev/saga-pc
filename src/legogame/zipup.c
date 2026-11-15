@@ -482,7 +482,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
 
     transport = (ZIPUP_TRANSPORT_VIEW *)object;
     if (object->character_context == CHARACTER_CONTEXT_ZIP_UP) {
-        if (object->action_movement_state == 1) {
+        if (object->action_movement_state == JUMP_KIND_FLIP) {
             NUVEC delta;
             f32 *playing;
             f32 fraction;
@@ -566,7 +566,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         destination = object->unknown_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
         if ((zipup->flags_word & 1) == 0) {
             if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f || object->context_timer >= 5.0f) {
-                StartJump(object, 6);
+                StartJump(object, JUMP_KIND_ZIPUP);
                 PlaySfx(GrapDetach_text, &object->collision_position);
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     Hint_SetComplete(0x262);

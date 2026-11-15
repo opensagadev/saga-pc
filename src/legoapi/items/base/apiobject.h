@@ -190,6 +190,10 @@ extern "C" {
 #define APIOBJECT_COMBO_ENDED 0x2   /* the combo context ended (animation end, blend-out or no press in time) */
 #define APIOBJECT_COMBO_WAITING 0x4 /* between hits: a press within combo_input_timer continues the combo */
 
+/* gameobject_s.context_variant_flags in the grapple and teleport contexts. */
+#define APIOBJECT_GRAPPLE_CLIMB 0x100    /* hanging on a grapple: facing it and pulling up (the special button toggles it) */
+#define APIOBJECT_TELEPORT_REVERSE 0x400 /* the teleport path is travelled from its other end */
+
 /* gameobject_s.tag_flags, from the tagging code (legoapi_tag.c) and the SetTaggable AI action. */
 #define APIOBJECT_TAG_DISABLED 0x2         /* SetTaggable FALSE: cannot be tagged to or dropped in on */
 #define APIOBJECT_TAG_PENDING 0x4          /* a tag to pending_tag_target waits for tag_cooldown */
@@ -215,16 +219,34 @@ extern "C" {
 #define APIOBJECT_PREFERS_PLAYERS 0x40000000        /* PrefersPlayers */
 #define APIOBJECT_NO_GRAVITY 0x80000000u            /* ApplyGravity FALSE */
 
+/* gameobject_s.action_movement_state in the jump context: the kind of jump, from the starts that set it (the force
+ * pushed and deactivated contexts use the field for other values). 0 is the plain jump; 5 (a jump with JumpCode's
+ * animation set bit 4, the droids' hover) and 7 are not named yet. */
+#define JUMP_KIND_FLIP 1        /* JumpCode's flip (LEGOACT_FLIP) */
+#define JUMP_KIND_COMBO 2       /* StartComboJump */
+#define JUMP_KIND_LUNGE 3       /* StartLunge */
+#define JUMP_KIND_SLAM 4        /* Slam_Start */
+#define JUMP_KIND_ZIPUP 6       /* the jump off a zip-up */
+#define JUMP_KIND_COMBAT_ROLL 8 /* the combat roll jump (LEGOACT_COMBATROLL_JUMP) */
+#define JUMP_KIND_PUSH_OFF 9    /* the jump out of pushing (pushing.c) */
+
 /* gameobject_s.flags_e24: movement runtime bits, from their setters. */
 #define APIOBJECT_GOT_VICTIM 0x1             /* a lunge ate its target (Condition_GotVictim); killed when the eating ends */
+#define APIOBJECT_BOUNDARY_TURN 0x2          /* turned away from a collision normal or the turn-around splines; TurnCode waits */
+#define APIOBJECT_LOOP_TURN 0x4              /* a turn asked for in a loop context: the turn starts from the lean */
+#define APIOBJECT_LOCATORS_VALID 0x8         /* the locator matrices are this frame's (cleared before the draw) */
 #define APIOBJECT_CABLE_TARGET_FOUND 0x10    /* CableTargetGameObject found a target for the cable in range */
 #define APIOBJECT_TELEPORT_WAITING 0x20      /* an active player waits at a teleport for the other one */
 #define APIOBJECT_ACTION_TAPPED 0x40         /* the action button was released within 0.25 s of its press */
 #define APIOBJECT_GRAPPLE_AT_MAX_LENGTH 0x80 /* the grapple rope is let out to Grapple_MaximumLength */
 #define APIOBJECT_PUNCH_LANDED 0x100         /* the last punch hit something (the hit debris is the next type) */
 #define APIOBJECT_AT_INTERFACE 0x200         /* working a panel or the hat machine (no droid self-destruct) */
-#define APIOBJECT_MAGNET_CLIMB 0x2000        /* climbing a magnet surface (context variant 5): the lean is kept */
-#define APIOBJECT_DETONATOR_THROW 0x4000     /* the detonator's release frame passed: ThermalDetonator_Throw after the animation */
+#define APIOBJECT_FALL_LAND 0x400            /* the next landing plays the fall landing (force push end, tightrope) */
+#define APIOBJECT_FALL_LANDING 0x800         /* the landing started as a fall landing: stick input does not cut it */
+#define APIOBJECT_NO_JUMP 0x1000         /* a ledge, climb, grapple, batarang, push or tightrope start this frame: JumpCode does nothing */
+#define APIOBJECT_MAGNET_CLIMB 0x2000    /* climbing a magnet surface (context variant 5): the lean is kept */
+#define APIOBJECT_DETONATOR_THROW 0x4000 /* the detonator's release frame passed: ThermalDetonator_Throw after the animation */
+#define APIOBJECT_BOLTS_PASS 0x8000      /* bolts pass through it this frame (a stun death, a jump with context bit 0x1000) */
 
 /* gameobject_s.flags_ef0: AI script actions. */
 #define APIOBJECT_IGNORE_SHOVE_SYSTEM 0x1           /* IgnoreShoveSystem */
@@ -618,7 +640,9 @@ typedef struct APIOBJECT {                          // size 0x29c
 } APIOBJECT;
 
 /* CHARACTERANIM_CONFIG.flags: the keywords of an anim_start block of a character config (CC_anim_start). */
+#define CHARANIM_AREA 0x1                  /* loaded with the area's animations, not the character's */
 #define CHARANIM_CYCLE 0x2                 /* cycle on */
+#define CHARANIM_LOAD 0x4                  /* the animation file is loaded (set for every anim_start) */
 #define CHARANIM_BSA 0x8                   /* bsa on */
 #define CHARANIM_IDLE 0x10                 /* type idle */
 #define CHARANIM_TRANSLATE 0x20            /* translate */
@@ -627,6 +651,7 @@ typedef struct APIOBJECT {                          // size 0x29c
 #define CHARANIM_FOOTSTEPS 0x100           /* footsteps */
 #define CHARANIM_GUN_OFF 0x400             /* gun_off, gun off */
 #define CHARANIM_GUN_ON 0x800              /* gun_on, gun on */
+#define CHARANIM_NO_LOAD 0x8000            /* AnimList_NoLoad: not loaded at all */
 #define CHARANIM_FOOTSTEPS_4FRAMES 0x10000 /* footsteps 4frames */
 #define CHARANIM_FOOTSTEPS_JUDDER 0x20000  /* footsteps judder */
 #define CHARANIM_FOOTSTEPS_SHAKE 0x40000   /* footsteps shake */

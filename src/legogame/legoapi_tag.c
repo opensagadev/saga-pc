@@ -841,8 +841,8 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
     if (MiniCutCam != 0 || (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || object->dead != 0 ||
         !(object->takeover_timer <= 0.0f) || object->character_context == CHARACTER_CONTEXT_DOOMED ||
         (object->character_context != CHARACTER_CONTEXT_NONE &&
-         (object->character_context != CHARACTER_CONTEXT_JUMP || object->action_movement_state == 3 ||
-          object->action_movement_state == 4))) {
+         (object->character_context != CHARACTER_CONTEXT_JUMP || object->action_movement_state == JUMP_KIND_LUNGE ||
+          object->action_movement_state == JUMP_KIND_SLAM))) {
         return;
     }
     {

@@ -46,7 +46,9 @@ static i32 LedgeTerrain_Attach(GAMEOBJECT *object, u16 facing, NUVEC *position, 
         return 0;
     }
     surface = (i8)object->contact_material[0];
-    if (surface >= 0 ? surface < 32 && (TerSurface[surface].flags & 0x581) != 0 : 0) { /* the original surface-flag macro shape */
+    if (surface >= 0 ? surface < 32 && (TerSurface[surface].flags &
+                                        (TERSURFACE_DEADLY | TERSURFACE_HURTS | TERSURFACE_CONVEYOR | TERSURFACE_SLIDE)) != 0
+                     : 0) { /* the original surface-flag macro shape */
         return 0;
     }
     if (object->contact_position.y <= object->collision_position.y - (f64)0.05f ||
@@ -97,7 +99,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
             f32 height;
             StartJump(object, 0);
-            object->flags_e24 |= 0x1000;
+            object->flags_e24 |= APIOBJECT_NO_JUMP;
             height = object->external_force.y + (f64)0.1f - object->jump_start_height;
             if (height > 0.0f) {
                 object->velocity.y = NuFsqrt(object->character_data->game_character->gravity * -2.0 * height);
@@ -244,7 +246,7 @@ i32 LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
 i32 (*CanMagnetClimbFn)(GAMEOBJECT *) = 0;
 
 i32 CanClimbSurface(GAMEOBJECT *object, i32 surface) {
-    if ((u32)surface > 31 || (TerSurface[surface].flags & 0x10000) == 0) {
+    if ((u32)surface > 31 || (TerSurface[surface].flags & TERSURFACE_CLIMBABLE) == 0) {
         return 0;
     }
     if (surface == 5 && (CanMagnetClimbFn == NULL || CanMagnetClimbFn(object) == 0)) {
@@ -286,7 +288,7 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         u16 input_angle;
         if ((object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 && object->context_variant != 5) {
             StartJump(object, 0);
-            object->flags_e24 |= 0x1000;
+            object->flags_e24 |= APIOBJECT_NO_JUMP;
             object->velocity.x = -NuTrigTable[object->movement_facing_angle >> 1] * object->character_data->game_character->run_speed;
             object->velocity.z =
                 -NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * object->character_data->game_character->run_speed;
@@ -539,7 +541,7 @@ void ClimbObject_FindNormal(CLIMB_SLOT *object) {
         origin.z = node->position.z;
         if (NewRayCastScaleYMask(&origin, &displacement, 0.0f, 1.0f, 0,
                                  GetSurfaceInfoDefaultMask.word | GetSurfaceInfoRuntimeMask.word | 0x5f) != 0 &&
-            (TerSurface[(i8)NewRayCastGetImpactTerrainType()].flags & 0x10000) != 0) {
+            (TerSurface[(i8)NewRayCastGetImpactTerrainType()].flags & TERSURFACE_CLIMBABLE) != 0) {
             object->flags |= 1;
             object->normal = ShadNorm;
             object->impact_x = origin.x + displacement.x;

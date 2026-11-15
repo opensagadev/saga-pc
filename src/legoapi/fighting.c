@@ -347,7 +347,7 @@ void AutoWeaponOnOff(GAMEOBJECT *object) {
         return;
     }
     flags = object->character_model->animation_configs[animation]->flags;
-    if ((flags & 0x400) != 0) {
+    if ((flags & CHARANIM_GUN_OFF) != 0) {
         if (object->weapon_scale > 0.0f) {
             if ((object->anim_packet.flags & 4) != 0) {
                 if (object->anim_packet.blending != 0) {
@@ -359,7 +359,7 @@ void AutoWeaponOnOff(GAMEOBJECT *object) {
                 SetWeaponIn(object);
             }
         }
-    } else if ((flags & 0x800) != 0 && object->weapon_scale < 1.0f) {
+    } else if ((flags & CHARANIM_GUN_ON) != 0 && object->weapon_scale < 1.0f) {
         if ((object->anim_packet.flags & 4) != 0) {
             if (object->anim_packet.blending != 0) {
                 FastWeaponOut(object, 0);
@@ -431,7 +431,7 @@ i32 CanStepBack(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[context].flags) & 0x10000) != 0) {
         return 1;
     }
-    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == 3) {
+    if (LEGOCONTEXT_JUMP != -1 && context == LEGOCONTEXT_JUMP && object->action_movement_state == JUMP_KIND_LUNGE) {
         return 1;
     }
     if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) && LEGOCONTEXT_COMBO != 0 &&
@@ -455,7 +455,7 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
     if (blowup != NULL) {
         target_position = &blowup->mid_position;
         if ((LEGOCONTEXT_COMBO != -1 && object->character_context == LEGOCONTEXT_COMBO) ||
-            (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == 3)) {
+            (LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->action_movement_state == JUMP_KIND_LUNGE)) {
             inner_distance = object->collision_radius * PlayerStepInnerAction + blowup->target_radius;
             outer_distance = object->collision_radius * PlayerStepOuterAction + blowup->target_radius;
         } else {
@@ -467,7 +467,7 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
             return 0;
         }
         if ((LEGOCONTEXT_COMBO == -1 || object->character_context != LEGOCONTEXT_COMBO) &&
-            (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP || object->action_movement_state != 3)) {
+            (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP || object->action_movement_state != JUMP_KIND_LUNGE)) {
             return 0;
         }
         target_position = &object->force_target->collision_position;
@@ -581,7 +581,8 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
                 if (LEGOCONTEXT_PUNCH != -1 && target->character_context == LEGOCONTEXT_PUNCH) {
                     goto finish;
                 }
-                if (LEGOCONTEXT_JUMP != -1 && target->character_context == LEGOCONTEXT_JUMP && attacker->action_movement_state == 3) {
+                if (LEGOCONTEXT_JUMP != -1 && target->character_context == LEGOCONTEXT_JUMP &&
+                    attacker->action_movement_state == JUMP_KIND_LUNGE) {
                     goto finish;
                 }
             }

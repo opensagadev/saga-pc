@@ -366,7 +366,7 @@ void Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     Whip_Release(object);
     SuperCarry_Release(object);
     SpecialMove_ReleaseVictim(object);
-    object->flags_e24 &= ~0xc00;
+    object->flags_e24 &= ~(APIOBJECT_FALL_LAND | APIOBJECT_FALL_LANDING);
 }
 
 void Player_ResetContexts(void *packet_ptr) {

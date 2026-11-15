@@ -60,7 +60,7 @@ void DrawExplosions(void) {
 }
 
 static void Explosion_Feedback(EXPLOSION *explosion) {
-    if ((explosion->flags & 0x40) != 0) {
+    if ((explosion->flags & EXPLOSION_SHAKE) != 0) {
         NewRumbleAllPlayers(0.5f, 0.1f, 0, 0);
         GameCam_HitJudder();
     } else if (explosion->owner != NULL) {
@@ -97,7 +97,7 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
     progress = explosion->time / explosion->duration;
     radius = explosion->radius * progress;
     angle = explosion->random_angle;
-    if ((explosion->flags & 0x10) != 0) {
+    if ((explosion->flags & EXPLOSION_AS_BOLT) != 0) {
         vertical_offset = (f64)progress * TerrainScanMargin10;
         for (i = 0; i < 5; ++i) {
             count = ParticlesPerSecond(40.0f, FRAMETIME);
@@ -114,7 +114,7 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
     maximum.z = radius + explosion->position.z;
     minimum.y = explosion->position.y - radius;
     maximum.y = radius + explosion->position.y;
-    if ((explosion->flags & 0x100) == 0) {
+    if ((explosion->flags & EXPLOSION_CARRIED) == 0) {
         target = Obj;
         for (i = 0; i < HIGHGAMEOBJECT; ++i, ++target) {
             object = target;
@@ -129,13 +129,13 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
             if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
                 continue;
             }
-            if ((explosion->flags & 0x80) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
+            if ((explosion->flags & EXPLOSION_SPARES_DROIDS) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
                 continue;
             }
-            if ((explosion->flags & 0x4000) != 0 && object->player_index != -1) {
+            if ((explosion->flags & EXPLOSION_SPARES_PLAYERS) != 0 && object->player_index != -1) {
                 continue;
             }
-            if ((explosion->flags & 8) == 0 &&
+            if ((explosion->flags & EXPLOSION_KNOCKBACK) == 0 &&
                 ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(explosion->hit_identity_mask)) != 0 || explosion->owner == target)) {
                 continue;
             }
@@ -147,7 +147,7 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                                            &explosion->position, radius, radius)) {
                 continue;
             }
-            if ((explosion->flags & 8) != 0) {
+            if ((explosion->flags & EXPLOSION_KNOCKBACK) != 0) {
                 x = object->collision_position.x - explosion->position.x;
                 z = object->collision_position.z - explosion->position.z;
                 if (z == 0.0f && x == 0.0f) {
@@ -161,14 +161,14 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                 normalized = (f32)(z * inverse);
                 object->movement_direction_z = normalized * ExplosionKnockbackScale;
             }
-            if (hit_character || (explosion->flags & 1) == 0) {
+            if (hit_character || (explosion->flags & EXPLOSION_HITS_CHARACTERS) == 0) {
                 continue;
             }
             if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(explosion->hit_identity_mask)) != 0 || target == explosion->owner ||
                 target->spawn_protection_timer > 0.0f || (target->flags_ef0 & 0x400000) != 0) {
                 continue;
             }
-            if (object->player_index != -1 && !(target->vehicle_hit_timer <= 0.0f) && (explosion->flags & 0x2000) == 0) {
+            if (object->player_index != -1 && !(target->vehicle_hit_timer <= 0.0f) && (explosion->flags & EXPLOSION_HITS_FLICKERING) == 0) {
                 continue;
             }
             if (explosion->owner != NULL && !(Arcade_GetMode(NULL) == 0 && (explosion->flags & 0x10010) != 0)) {
@@ -185,7 +185,7 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
             explosion->hit_identity_mask[1] |= object->collision_identity_mask[1];
             if ((f64)target->origin_scale_override >= (f64)0.99f) {
                 ObjHitShield(explosion->owner, target, target->shield_hitpoints, NULL);
-                if ((explosion->flags & 0x20) == 0) {
+                if ((explosion->flags & EXPLOSION_KILLS) == 0) {
                     hit_character = 1;
                     continue;
                 }
@@ -196,9 +196,10 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
             }
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasInvincibility(target)) {
                 damage = 0;
-            } else if ((explosion->flags & 0x800) != 0 && (target->portal_flags & APIOBJECT_BOSS) == 0) {
+            } else if ((explosion->flags & EXPLOSION_KILLS_NON_BOSS) != 0 && (target->portal_flags & APIOBJECT_BOSS) == 0) {
                 damage = -1;
-            } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & APIOBJECT_BOSS) == 0 && target->current_hp > 0) {
+            } else if ((explosion->flags & EXPLOSION_KILLS) != 0 && (target->portal_flags & APIOBJECT_BOSS) == 0 &&
+                       target->current_hp > 0) {
                 damage = -1;
             } else {
                 damage = explosion->damage;
@@ -211,13 +212,14 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                     source = Player[1];
                 }
             }
-            hit_flags = explosion->hit_flags | ((explosion->flags & 0x200) != 0 ? 0x4200 : 0x200);
+            hit_flags = explosion->hit_flags | ((explosion->flags & EXPLOSION_TRANSFORM) != 0 ? 0x4200 : 0x200);
             if (ObjHitObj(source, target, damage, hit_flags, 0, 1) == 2) {
                 if (source != NULL) {
                     NewRumble(source->pad->bound_pad, 0.5f, 0);
                 }
                 ++explosion->kill_count;
-                if ((explosion->flags & 0x200) != 0 && (explosion->player_index == 0 || explosion->player_index == 1) && Arcade != 0) {
+                if ((explosion->flags & EXPLOSION_TRANSFORM) != 0 && (explosion->player_index == 0 || explosion->player_index == 1) &&
+                    Arcade != 0) {
                     if (object->unknown_280 <= 1) {
                         Arcade_PlayerKilled((object->unknown_280 ^ 1) & 1, 0);
                     } else if (object->player_index == -1) {
@@ -229,22 +231,22 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
             hit_character = 1;
         }
     }
-    if (!hit_character && (explosion->flags & 2) != 0) {
-        if ((explosion->flags & 0x10) != 0) {
+    if (!hit_character && (explosion->flags & EXPLOSION_HITS_BLOWUPS) != 0) {
+        if ((explosion->flags & EXPLOSION_AS_BOLT) != 0) {
             hit_type = 3;
-        } else if ((explosion->flags & 0x100) != 0) {
+        } else if ((explosion->flags & EXPLOSION_CARRIED) != 0) {
             hit_type = 7;
-        } else if ((explosion->flags & 0x200) != 0) {
+        } else if ((explosion->flags & EXPLOSION_TRANSFORM) != 0) {
             hit_type = 8;
         } else {
-            hit_type = (explosion->flags & 0x8000) != 0 ? 9 : 2;
+            hit_type = (explosion->flags & EXPLOSION_BLOWUP_EXPLOSION) != 0 ? 9 : 2;
         }
         if (GizmoBlowUp_Hit(explosion->owner, &explosion->position, 1, radius, &minimum, &maximum, NULL, hit_type, NULL)) {
             Explosion_Feedback(explosion);
             return;
         }
     }
-    if (!((explosion->flags & 0x100) == 0 && (explosion->flags & 4) != 0)) {
+    if (!((explosion->flags & EXPLOSION_CARRIED) == 0 && (explosion->flags & EXPLOSION_HITS_PARTS) != 0)) {
         return;
     }
     bolt.owner = explosion->owner;

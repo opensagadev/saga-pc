@@ -562,7 +562,7 @@ extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
             object->position.y = object->launch_origin.y - object->character_top * object->origin_scale;
         }
         u32 origin_flag = (object->flags_e24 >> 3) & 1;
-        object->flags_e24 &= ~8;
+        object->flags_e24 &= ~APIOBJECT_LOCATORS_VALID;
         GameObjectOrigin(object);
         object->origin_hold = origin_flag;
         return 1;
@@ -589,7 +589,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 }
             }
             if (object->velocity.y <= 0.0f && TightRope_Attach(object, WORLD) == 0 && object->unknown_281 != 0) {
-                object->flags_e24 |= 0x400;
+                object->flags_e24 |= APIOBJECT_FALL_LAND;
                 if (object->unknown_7aa != ACTION_FALL || StartFallLand(object, -1) == 0) {
                     if (object->character_model->model_data_b[7] != NULL && object->pad->input_magnitude == 0.0f) {
                         object->character_context = CHARACTER_CONTEXT_LAND_JUMP;
@@ -601,7 +601,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                         object->character_context = CHARACTER_CONTEXT_NONE;
                     }
                 }
-                object->flags_e24 &= ~0x400;
+                object->flags_e24 &= ~APIOBJECT_FALL_LAND;
             }
             if (object->character_context == CHARACTER_CONTEXT_TIGHTROPE && object->grapple == rope) {
                 TightRope_MoveUpdate(object, 1);
@@ -623,7 +623,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 ResetAnimPacket(&object->anim_packet, -1);
             } else {
                 StartJump(object, 0);
-                object->flags_e24 |= 0x1000;
+                object->flags_e24 |= APIOBJECT_NO_JUMP;
             }
             return;
         }
@@ -660,7 +660,8 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
     }
     if (object->character_context != CHARACTER_CONTEXT_NONE) {
         if (object->character_context != CHARACTER_CONTEXT_JUMP || !(object->context_timer >= (f64)0.1f) ||
-            object->action_movement_state == 3 || object->action_movement_state == 4 || object->action_movement_state == 8) {
+            object->action_movement_state == JUMP_KIND_LUNGE || object->action_movement_state == JUMP_KIND_SLAM ||
+            object->action_movement_state == JUMP_KIND_COMBAT_ROLL) {
             return;
         }
     }

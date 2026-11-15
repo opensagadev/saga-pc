@@ -160,7 +160,7 @@ extern "C" {
         } else {
             spinner->unknown_094 = z_extent;
         }
-        spinner->state_flags |= 8;
+        spinner->state_flags |= SPINNER_STATE_PUSHABLE;
         spinner->animation_speed = 1.0f;
         spinner->type = 4;
         spinner->animation_points[0] = 1.0f;
@@ -311,7 +311,7 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                 spinner_field_98 = version >= 8 ? EdFileReadFloat() : 0.0f;
                 initial_animation_point = version >= 9 ? EdFileReadFloat() : animation_speed;
                 if (special_missing) {
-                    world->spinners[index].flags &= ~1u;
+                    world->spinners[index].flags &= ~GIZSPINNER_FLAG_VALID;
                     SpinnerMissingSpecial(world->spinners[index].name, special_name);
                     --world->spinner_count;
                     --index;
@@ -326,7 +326,7 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
                 world->spinners[index].state_flags = spinner_state_flags;
                 world->spinners[index].flags = spinner_flags;
                 world->spinners[index].unknown_098 = spinner_field_98;
-                world->spinners[index].flags |= 1;
+                world->spinners[index].flags |= GIZSPINNER_FLAG_VALID;
                 world->spinners[index].flags &= 0xddu;
             }
             return 1;
@@ -415,7 +415,7 @@ extern "C" GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *nam
     }
     for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if (spinner != NULL && (spinner->flags & 1) != 0 && NuStrCmp(NuSpecialGetName(&spinner->special), name) == 0) {
+        if (spinner != NULL && (spinner->flags & GIZSPINNER_FLAG_VALID) != 0 && NuStrCmp(NuSpecialGetName(&spinner->special), name) == 0) {
             return spinner;
         }
     }
@@ -437,7 +437,7 @@ extern "C" void GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time)
     for (index = 0; index < world->current_level->max_spinners; ++index) {
         EnableShadowMapRendering(0);
         spinner = &world->spinners[index];
-        if (!(spinner->flags & 1) || ((spinner->flags & 4) && editor_active == 0)) {
+        if (!(spinner->flags & GIZSPINNER_FLAG_VALID) || ((spinner->flags & GIZSPINNER_FLAG_HIDDEN) && editor_active == 0)) {
             continue;
         }
         if (NuSpecialExistsFn(&spinner->special)) {
@@ -451,7 +451,8 @@ extern "C" void GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time)
             }
         }
         ResetShadowMapRendering();
-        if (!(spinner->state_flags & 0x800) || !NuSpecialExistsFn(&spinner->special) || !NuSpecialGetVisibilityFn(&spinner->special)) {
+        if (!(spinner->state_flags & SPINNER_STATE_SHADOW) || !NuSpecialExistsFn(&spinner->special) ||
+            !NuSpecialGetVisibilityFn(&spinner->special)) {
             continue;
         }
         ground_height = spinner->ground_height;
@@ -490,7 +491,7 @@ extern "C" void GizSpinner_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, v
         return;
     }
     for (i = 0; i < w->current_level->max_spinners; ++i) {
-        if ((w->spinners[i].flags & 1) && NuStrLen(w->spinners[i].name) != 0) {
+        if ((w->spinners[i].flags & GIZSPINNER_FLAG_VALID) && NuStrLen(w->spinners[i].name) != 0) {
             AddGizmo(giz, type, NULL, &w->spinners[i]);
         }
     }
@@ -551,12 +552,15 @@ static void SpinnerSeekOutput(GIZSPINNER_s *spinner, i32 output) {
     GAMEANIMOBJ *object;
     NUINSTANIM *instance;
     if (spinner == NULL || spinner->anim_set == NULL || (object = spinner->primary_anim_obj) == NULL ||
-        (instance = object->instance_animation) == NULL || output == -1 || (spinner->state_flags & 0x40) != 0) {
+        (instance = object->instance_animation) == NULL || output == -1 || (spinner->state_flags & SPINNER_STATE_PUSHED) != 0) {
         return;
     }
     f32 rate = instance->fparam1;
     u32 flags = spinner->state_flags;
-    i32 direction = ((flags & 2) != 0 && (flags & 4) == 0) || ((flags & 2) == 0 && (flags & 4) != 0) ? 1 : -1;
+    i32 direction = ((flags & SPINNER_STATE_POSITIVE) != 0 && (flags & SPINNER_STATE_REVERSED) == 0) ||
+                            ((flags & SPINNER_STATE_POSITIVE) == 0 && (flags & SPINNER_STATE_REVERSED) != 0)
+                        ? 1
+                        : -1;
     f32 length = (f64)object->end_frame - object->start_frame + 1.0;
     f32 target;
     if (spinner->output_count == 1) {
@@ -610,11 +614,11 @@ extern "C" void GizSpinner_PushFail(GAMEOBJECT *object, GIZSPINNER_s *) {
 extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
     f32 frame_time = FRAMETIME;
     i32 rotation_step = (i32)((f64)frame_time * 5461.0);
-    spinner->state_flags &= ~0x300u;
+    spinner->state_flags &= ~(SPINNER_STATE_NUDGE_POSITIVE | SPINNER_STATE_NUDGE_NEGATIVE);
 
     i32 result = 0;
-    if ((spinner->state_flags & 0x20) != 0) {
-        spinner->state_flags &= ~0x20u;
+    if ((spinner->state_flags & SPINNER_STATE_HALTED) != 0) {
+        spinner->state_flags &= ~SPINNER_STATE_HALTED;
         goto finalize;
     }
 
@@ -623,10 +627,10 @@ extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
         i32 at_end = spinner->anim_set->state == GAMEANIMSET_STATE_AT_END;
         u32 flags = spinner->state_flags;
         i32 clear_context = 0;
-        u32 end_flag = flags & 0x400;
+        u32 end_flag = flags & SPINNER_STATE_RELEASE_AT_END;
 
         if (context == 0x1e) {
-            if ((flags & 4) != 0) {
+            if ((flags & SPINNER_STATE_REVERSED) != 0) {
                 if (at_start != 0) {
                     if (spinner->anim_set->object_count != 0) {
                         goto stop_forward;
@@ -638,7 +642,7 @@ extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
             } else if (at_end && spinner->anim_set->object_count != 0) {
                 goto stop_forward;
             }
-            if ((flags & 2) != 0) {
+            if ((flags & SPINNER_STATE_POSITIVE) != 0) {
                 spinner->rotation += rotation_step;
             } else {
                 spinner->rotation -= rotation_step;
@@ -646,15 +650,15 @@ extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
             goto rotated;
 
         stop_forward:
-            flags &= ~0x40u;
+            flags &= ~SPINNER_STATE_PUSHED;
             spinner->state_flags = flags;
-            if ((flags & 2) != 0) {
-                flags |= 0x100u;
+            if ((flags & SPINNER_STATE_POSITIVE) != 0) {
+                flags |= SPINNER_STATE_NUDGE_POSITIVE;
             } else {
-                flags |= 0x200u;
+                flags |= SPINNER_STATE_NUDGE_NEGATIVE;
             }
         } else {
-            if ((flags & 4) != 0) {
+            if ((flags & SPINNER_STATE_REVERSED) != 0) {
                 if (at_end && spinner->anim_set->object_count != 0) {
                     goto stop_reverse;
                 }
@@ -666,7 +670,7 @@ extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
                 clear_context = 1;
                 goto stop_reverse;
             }
-            if ((flags & 2) != 0) {
+            if ((flags & SPINNER_STATE_POSITIVE) != 0) {
                 spinner->rotation -= rotation_step;
             } else {
                 spinner->rotation += rotation_step;
@@ -674,12 +678,12 @@ extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
             goto rotated;
 
         stop_reverse:
-            flags &= ~0x40u;
+            flags &= ~SPINNER_STATE_PUSHED;
             spinner->state_flags = flags;
-            if ((flags & 2) != 0) {
-                flags |= 0x200u;
+            if ((flags & SPINNER_STATE_POSITIVE) != 0) {
+                flags |= SPINNER_STATE_NUDGE_NEGATIVE;
             } else {
-                flags |= 0x100u;
+                flags |= SPINNER_STATE_NUDGE_POSITIVE;
             }
         }
         spinner->state_flags = flags;
@@ -689,15 +693,15 @@ extern "C" i32 GizSpinner_Push(GIZSPINNER_s *spinner, i32 context) {
         goto finalize;
 
     rotated:
-        spinner->state_flags = flags | 0x40;
+        spinner->state_flags = flags | SPINNER_STATE_PUSHED;
         result = 1;
     }
 
 finalize:
     if (RotDiff(spinner->rotation, spinner->previous_rotation) < 0) {
-        spinner->state_flags |= 1;
+        spinner->state_flags |= SPINNER_STATE_TURNING_POSITIVE;
     } else {
-        spinner->state_flags &= ~1u;
+        spinner->state_flags &= ~SPINNER_STATE_TURNING_POSITIVE;
     }
     spinner->room_index = static_cast<i8>(context);
     spinner->target_rotation = spinner->rotation;
@@ -707,10 +711,10 @@ finalize:
 }
 
 extern "C" i32 GizSpinner_Spin(GIZSPINNER_s *spinner, i32 context) {
-    if ((spinner->state_flags & 0x4000) != 0 && context != 0x1e) {
+    if ((spinner->state_flags & SPINNER_STATE_SIDE_30_ONLY) != 0 && context != 0x1e) {
         return 2;
     }
-    if ((spinner->state_flags & 0x8000) != 0 && context != 0x1f) {
+    if ((spinner->state_flags & SPINNER_STATE_SIDE_31_ONLY) != 0 && context != 0x1f) {
         return 2;
     }
 
@@ -724,31 +728,31 @@ extern "C" i32 GizSpinner_Spin(GIZSPINNER_s *spinner, i32 context) {
 
     f32 speed;
     u32 flags = spinner->state_flags;
-    if ((context == 0x1e && (flags & 4) == 0) || (context != 0x1e && (flags & 4) != 0)) {
+    if ((context == 0x1e && (flags & SPINNER_STATE_REVERSED) == 0) || (context != 0x1e && (flags & SPINNER_STATE_REVERSED) != 0)) {
         if (spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) {
             return 2;
         }
         speed = spinner->animation_speed;
-        if ((context == 0x1e && (flags & 2) != 0) || (context != 0x1e && (flags & 2) == 0)) {
-            flags |= 1;
+        if ((context == 0x1e && (flags & SPINNER_STATE_POSITIVE) != 0) || (context != 0x1e && (flags & SPINNER_STATE_POSITIVE) == 0)) {
+            flags |= SPINNER_STATE_TURNING_POSITIVE;
         } else {
-            flags &= ~1u;
+            flags &= ~SPINNER_STATE_TURNING_POSITIVE;
         }
     } else {
         if (GameAnimSet_IsAnimationReset(spinner->anim_set) != 0) {
             return 2;
         }
         speed = -spinner->animation_speed;
-        if ((context == 0x1f && (flags & 2) == 0) || (context != 0x1f && (flags & 2) != 0)) {
-            flags |= 1;
+        if ((context == 0x1f && (flags & SPINNER_STATE_POSITIVE) == 0) || (context != 0x1f && (flags & SPINNER_STATE_POSITIVE) != 0)) {
+            flags |= SPINNER_STATE_TURNING_POSITIVE;
         } else {
-            flags &= ~1u;
+            flags &= ~SPINNER_STATE_TURNING_POSITIVE;
         }
     }
     spinner->state_flags = flags;
 
     i32 step = 0x10000 / spinner->type;
-    if ((spinner->state_flags & 1) != 0) {
+    if ((spinner->state_flags & SPINNER_STATE_TURNING_POSITIVE) != 0) {
         spinner->target_rotation = spinner->rotation + step;
     } else {
         spinner->target_rotation = spinner->rotation - step;
@@ -763,14 +767,15 @@ extern "C" i32 GizSpinner_GetTargetPoints(GIZSPINNER_s *spinner, NUVEC *position
     if (spinner == NULL) {
         return 0;
     }
-    u32 flags = spinner->state_flags & 6;
+    u32 flags = spinner->state_flags & (SPINNER_STATE_POSITIVE | SPINNER_STATE_REVERSED);
     if (spinner->type == 0) {
         return 0;
     }
     i32 step = 65536 / spinner->type;
     f32 y = spinner->position.y + spinner->unknown_098;
     u16 position_angle = spinner->unknown_08c + spinner->initial_rotation + spinner->rotation + 0x8000;
-    u16 direction_angle = (flags == 0 || flags == 6) ? position_angle + 0x4000 : position_angle - 0x4000;
+    u16 direction_angle =
+        (flags == 0 || flags == (SPINNER_STATE_POSITIVE | SPINNER_STATE_REVERSED)) ? position_angle + 0x4000 : position_angle - 0x4000;
     i32 count = 0;
     for (; count < spinner->type; ++count) {
         if (directions != NULL) {
@@ -802,7 +807,7 @@ extern "C" void GizSpinner_StoreProgressData(void *world_ptr, void *data, void *
     }
     for (index = 0; index < world->current_level->max_spinners; ++index, ++progress) {
         spinner = &world->spinners[index];
-        if (spinner->flags & 1) {
+        if (spinner->flags & GIZSPINNER_FLAG_VALID) {
             progress->flags |= 1;
             progress->rotation = spinner->target_rotation;
             progress->flags = (u8)((progress->flags & ~4u) | ((~(spinner->flags >> 1) & 1u) << 2));
@@ -840,14 +845,14 @@ static void SpinnerResetEntry(GIZSPINNER_s *spinner, SpinnerProgressEntry *progr
             GameAnimSet_JumpToAnimPos(spinner->anim_set, progress->position);
         }
         if ((progress->flags & 4) != 0) {
-            spinner->flags &= ~2u;
+            spinner->flags &= ~GIZSPINNER_FLAG_INACTIVE;
         } else {
-            spinner->flags |= 2;
+            spinner->flags |= GIZSPINNER_FLAG_INACTIVE;
         }
         if ((progress->flags & 2) != 0) {
-            spinner->flags &= ~4u;
+            spinner->flags &= ~GIZSPINNER_FLAG_HIDDEN;
         } else {
-            spinner->flags |= 4;
+            spinner->flags |= GIZSPINNER_FLAG_HIDDEN;
         }
     } else {
         spinner->rotation = spinner->initial_rotation;
@@ -858,7 +863,8 @@ static void SpinnerResetEntry(GIZSPINNER_s *spinner, SpinnerProgressEntry *progr
     spinner->previous_rotation = spinner->rotation;
     spinner->room_index = -1;
     spinner->state = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0 : (spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) + 1;
-    spinner->state_flags = (spinner->state_flags & ~0x300u) | 0x10;
+    spinner->state_flags =
+        (spinner->state_flags & ~(SPINNER_STATE_NUDGE_POSITIVE | SPINNER_STATE_NUDGE_NEGATIVE)) | SPINNER_STATE_NO_JUDDER;
     NuMtxSetRotationY(&spinner->matrix, spinner->initial_rotation);
     NuMtxTranslate(&spinner->matrix, &spinner->position);
     NewTerrPlatformsOff();
@@ -868,7 +874,7 @@ static void SpinnerResetEntry(GIZSPINNER_s *spinner, SpinnerProgressEntry *progr
         spinner->ground_height = LevelConfigFarDistance;
     }
     if ((f64)spinner->ground_height != GameObjectNearFloorNoFloorHeight && ShadowInfo() == 2) {
-        spinner->state_flags |= 0x800;
+        spinner->state_flags |= SPINNER_STATE_SHADOW;
     }
 }
 
@@ -876,10 +882,10 @@ extern "C" void GizSpinner_Activate(void *gizmo_pointer, i32 active) {
     if (gizmo_pointer != NULL) {
         GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO *)gizmo_pointer)->object;
         if (active != 0) {
-            spinner->flags &= (u8)~0x22;
-            spinner->state_flags &= ~0x20u;
+            spinner->flags &= (u8) ~(GIZSPINNER_FLAG_INACTIVE | GIZSPINNER_FLAG_INVISIBLE);
+            spinner->state_flags &= ~SPINNER_STATE_HALTED;
         } else {
-            spinner->flags |= 2;
+            spinner->flags |= GIZSPINNER_FLAG_INACTIVE;
         }
     }
 }
@@ -899,7 +905,7 @@ extern "C" void GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {
     }
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO *)gizmo_pointer)->object;
     if (visible != 0) {
-        spinner->flags &= (u8)~4;
+        spinner->flags &= (u8)~GIZSPINNER_FLAG_HIDDEN;
         if (spinner->platform_id == -1) {
             i32 instance_index = NuSpecialGetInstanceix(&spinner->special);
             FindPlatInst(instance_index);
@@ -931,7 +937,7 @@ extern "C" void GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {
                                                                                  1.0f, spinner->rotation, 0, 0.0f);
         }
     } else {
-        spinner->flags |= 4;
+        spinner->flags |= GIZSPINNER_FLAG_HIDDEN;
         DeletePlatinst(spinner->platform_id);
         spinner->platform_id = -1;
         for (i32 index = 0; index < spinner->type; ++index) {
@@ -975,7 +981,7 @@ extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 c
         if (count >= capacity) {
             break;
         }
-        if ((world->spinners[index].flags & 1) == 0) {
+        if ((world->spinners[index].flags & GIZSPINNER_FLAG_VALID) == 0) {
             continue;
         }
         object = cached_spinner->anim_set->objects;
@@ -998,7 +1004,7 @@ extern "C" {
     static void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT *bolt, SPINNER_HIT_FLAGS_STACK argument) {
         u8 *hit_flags = argument.value;
         GAMEOBJECT *owner = bolt->owner;
-        if (spinner == NULL || (spinner->state_flags & 8) != 0) {
+        if (spinner == NULL || (spinner->state_flags & SPINNER_STATE_PUSHABLE) != 0) {
             return;
         }
         i32 state = GizSpinner_Spin(spinner, bolt->unknown_104);
@@ -1013,10 +1019,10 @@ extern "C" {
 
 extern "C" i32 GizSpinner_BoltHitPlatAll(WORLDINFO *, void *spinner_ptr, BOLT *bolt, u8 *hit_flags) {
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)spinner_ptr;
-    if (spinner == NULL || (spinner->flags & 1) == 0 || (spinner->flags & 4) != 0) {
+    if (spinner == NULL || (spinner->flags & GIZSPINNER_FLAG_VALID) == 0 || (spinner->flags & GIZSPINNER_FLAG_HIDDEN) != 0) {
         return 0;
     }
-    if ((spinner->flags & 0x22) != 0 && spinner->platform_id == bolt->hit_platform) {
+    if ((spinner->flags & (GIZSPINNER_FLAG_INACTIVE | GIZSPINNER_FLAG_INVISIBLE)) != 0 && spinner->platform_id == bolt->hit_platform) {
         return 1;
     }
     SPINNER_HIT_FLAGS_STACK argument = {hit_flags};
@@ -1053,8 +1059,10 @@ extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *result_po
     for (i32 index = 0; index < set->count; ++index, set = &((GIZMOSYS_PREFIX *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
         GIZMO *gizmo = &set->gizmos[index];
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if (spinner->flags == 0 || (spinner->flags & 0x26) != 0 || (spinner->state_flags & 8) != 0 || spinner->position.x < minimum.x ||
-            spinner->position.x > maximum.x || spinner->position.z < minimum.z || spinner->position.z > maximum.z) {
+        if (spinner->flags == 0 ||
+            (spinner->flags & (GIZSPINNER_FLAG_INACTIVE | GIZSPINNER_FLAG_HIDDEN | GIZSPINNER_FLAG_INVISIBLE)) != 0 ||
+            (spinner->state_flags & SPINNER_STATE_PUSHABLE) != 0 || spinner->position.x < minimum.x || spinner->position.x > maximum.x ||
+            spinner->position.z < minimum.z || spinner->position.z > maximum.z) {
             continue;
         }
         target_position.y = spinner->position.y + spinner->unknown_098;
@@ -1120,14 +1128,15 @@ extern "C" GIZSPINNER_s *GizSpinner_Find(WORLDINFO *world, NUVEC *position, i32 
     GIZSPINNER_s *nearest = NULL;
     for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if ((spinner->flags & 1) == 0 || (spinner->flags & 0x26) != 0) {
+        if ((spinner->flags & GIZSPINNER_FLAG_VALID) == 0 ||
+            (spinner->flags & (GIZSPINNER_FLAG_INACTIVE | GIZSPINNER_FLAG_HIDDEN | GIZSPINNER_FLAG_INVISIBLE)) != 0) {
             continue;
         }
         if (alternate != 0) {
-            if ((spinner->state_flags & 8) == 0) {
+            if ((spinner->state_flags & SPINNER_STATE_PUSHABLE) == 0) {
                 continue;
             }
-        } else if ((spinner->state_flags & 8) != 0) {
+        } else if ((spinner->state_flags & SPINNER_STATE_PUSHABLE) != 0) {
             continue;
         }
         NUVEC spinner_position = spinner->position;
@@ -1149,7 +1158,8 @@ extern "C" GIZSPINNER_s *GizSpinner_FindNearest(NUVEC *position, WORLDINFO *worl
     }
     for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if ((spinner->flags & 1) == 0 || (spinner->flags & 0x26) != 0) {
+        if ((spinner->flags & GIZSPINNER_FLAG_VALID) == 0 ||
+            (spinner->flags & (GIZSPINNER_FLAG_INACTIVE | GIZSPINNER_FLAG_HIDDEN | GIZSPINNER_FLAG_INVISIBLE)) != 0) {
             continue;
         }
         NUVEC spinner_position = spinner->position;
@@ -1176,14 +1186,14 @@ extern "C" i32 GizSpinner_GetOutput(void *gizmo_pointer, i32 output_index, i32 u
 
 extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     u32 flags = spinner->state_flags;
-    i32 initial_no_judder = flags & 0x10;
-    flags &= ~0x10u;
-    i32 initial_positive_offset = flags & 0x100;
-    i32 initial_negative_offset = flags & 0x200;
-    flags &= ~0x300u;
+    i32 initial_no_judder = flags & SPINNER_STATE_NO_JUDDER;
+    flags &= ~SPINNER_STATE_NO_JUDDER;
+    i32 initial_positive_offset = flags & SPINNER_STATE_NUDGE_POSITIVE;
+    i32 initial_negative_offset = flags & SPINNER_STATE_NUDGE_NEGATIVE;
+    flags &= ~(SPINNER_STATE_NUDGE_POSITIVE | SPINNER_STATE_NUDGE_NEGATIVE);
     spinner->state_flags = flags;
     i32 stopped = 0;
-    if ((flags & 0x20) != 0) {
+    if ((flags & SPINNER_STATE_HALTED) != 0) {
         GameAnimSet_Stop(spinner->anim_set);
         stopped = 1;
     }
@@ -1193,7 +1203,7 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     maximum.x = spinner->unknown_09c + spinner->position.x;
     minimum.z = spinner->position.z - spinner->unknown_09c;
     maximum.z = spinner->unknown_09c + spinner->position.z;
-    if ((spinner->state_flags & 0x0c) == 0) {
+    if ((spinner->state_flags & (SPINNER_STATE_REVERSED | SPINNER_STATE_PUSHABLE)) == 0) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
@@ -1253,9 +1263,9 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
             f32 phase = 1.0 - (f64)remaining * 4.0;
             f32 blend = NuTrigTable[((i32)((f64)phase * 16384.0) >> 1) & 0x7fff];
             i32 difference = RotDiff(spinner->previous_rotation, spinner->target_rotation);
-            if ((spinner->state_flags & 1) != 0 && difference < 0) {
+            if ((spinner->state_flags & SPINNER_STATE_TURNING_POSITIVE) != 0 && difference < 0) {
                 difference += 0x10000;
-            } else if ((spinner->state_flags & 1) == 0 && difference > 0) {
+            } else if ((spinner->state_flags & SPINNER_STATE_TURNING_POSITIVE) == 0 && difference > 0) {
                 difference -= 0x10000;
             }
             spinner->rotation = (u16)(i32)((f64)difference * blend + spinner->previous_rotation);
@@ -1263,8 +1273,8 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
         goto animation_updated;
     }
     if (spinner->room_index != -1) {
-        if ((spinner->room_index == 0x1e && (spinner->state_flags & 4) == 0) ||
-            (spinner->room_index != 0x1e && (spinner->state_flags & 4) != 0)) {
+        if ((spinner->room_index == 0x1e && (spinner->state_flags & SPINNER_STATE_REVERSED) == 0) ||
+            (spinner->room_index != 0x1e && (spinner->state_flags & SPINNER_STATE_REVERSED) != 0)) {
             play_speed = spinner->anim_set->state == GAMEANIMSET_STATE_AT_END ? 0.0f : spinner->animation_speed;
         } else {
             play_speed = GameAnimSet_IsAnimationReset(spinner->anim_set) != 0 ? 0.0f : -spinner->animation_speed;
@@ -1276,10 +1286,11 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
         }
         goto animation_updated;
     }
-    if ((spinner->flags & 0x10) == 0 || ((spinner->state_flags & 0x400) != 0 && spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) ||
+    if ((spinner->flags & GIZSPINNER_FLAG_SPRING_BACK) == 0 ||
+        ((spinner->state_flags & SPINNER_STATE_RELEASE_AT_END) != 0 && spinner->anim_set->state == GAMEANIMSET_STATE_AT_END) ||
         !(spinner->spin_timer <= 0.0f)) {
         GameAnimSet_Stop(spinner->anim_set);
-        spinner->state_flags &= ~0x40u;
+        spinner->state_flags &= ~SPINNER_STATE_PUSHED;
         goto animation_updated;
     }
     if (spinner->spin_timer > -0.0f) { // never true here: the test above already ruled out > 0
@@ -1291,7 +1302,8 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
         goto stop_animation;
     }
     play_speed = -spinner->animation_points[0];
-    if ((spinner->state_flags & 6) != 0 && (spinner->state_flags & 6) != 6) {
+    if ((spinner->state_flags & (SPINNER_STATE_POSITIVE | SPINNER_STATE_REVERSED)) != 0 &&
+        (spinner->state_flags & (SPINNER_STATE_POSITIVE | SPINNER_STATE_REVERSED)) != (SPINNER_STATE_POSITIVE | SPINNER_STATE_REVERSED)) {
         spinner->rotation += (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * -5461.0));
     } else {
         spinner->rotation += (i32)(((f64)spinner->animation_points[0] / spinner->animation_speed) * ((f64)FRAMETIME * 5461.0));
@@ -1317,7 +1329,7 @@ animation_updated:
         NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
         GameCam_Judder(GameCam, -0.2f, 0, NULL);
         GameAudio_PlaySfx(0x39, &spinner->position, 0, 0);
-        spinner->state_flags |= 0x2000;
+        spinner->state_flags |= SPINNER_STATE_JUDDERED;
     }
     spinner->room_index = -1;
     spinner->unknown_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
@@ -1332,7 +1344,7 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
     }
     for (i32 index = 0; index < world->current_level->max_spinners; ++index) {
         GIZSPINNER_s *spinner = &world->spinners[index];
-        if ((spinner->flags & 1) == 0) {
+        if ((spinner->flags & GIZSPINNER_FLAG_VALID) == 0) {
             continue;
         }
         u16 step = spinner->type != 0 ? (u16)(0x10000 / spinner->type) : 0;
@@ -1351,13 +1363,13 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
             angle += step;
         }
         if (GameAnimSet_GetVisibility(spinner->anim_set) == 0) {
-            spinner->flags |= 0x20;
-        } else if ((spinner->flags & 0x20) != 0) {
-            spinner->flags &= ~0x20u;
+            spinner->flags |= GIZSPINNER_FLAG_INVISIBLE;
+        } else if ((spinner->flags & GIZSPINNER_FLAG_INVISIBLE) != 0) {
+            spinner->flags &= ~GIZSPINNER_FLAG_INVISIBLE;
         }
-        if ((spinner->flags & 0x22) != 0) {
-            spinner->state_flags = (spinner->state_flags & ~0x40u) | 0x20;
-            if ((spinner->flags & 4) == 0 && qrand() < 0x800) {
+        if ((spinner->flags & (GIZSPINNER_FLAG_INACTIVE | GIZSPINNER_FLAG_INVISIBLE)) != 0) {
+            spinner->state_flags = (spinner->state_flags & ~SPINNER_STATE_PUSHED) | SPINNER_STATE_HALTED;
+            if ((spinner->flags & GIZSPINNER_FLAG_HIDDEN) == 0 && qrand() < 0x800) {
                 NUVEC position = spinner->position;
                 position.y = (f64)position.y + (f64)0.3f;
                 if (GizSpinnerGDeb_Fail[0] != -1) {
@@ -1368,8 +1380,8 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
                 }
             }
         }
-        if ((spinner->flags & 8) != 0 && ShadowMode == 0) {
-            spinner->state_flags = (spinner->state_flags & ~0x40u) | 0x20;
+        if ((spinner->flags & GIZSPINNER_FLAG_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0) {
+            spinner->state_flags = (spinner->state_flags & ~SPINNER_STATE_PUSHED) | SPINNER_STATE_HALTED;
             if (SpinnerOwner(spinner) != NULL) {
                 Player[index]->character_context = CHARACTER_CONTEXT_NONE;
                 Player[index]->grapple = NULL;
@@ -1377,10 +1389,10 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
         }
         if (spinner->output_pause_time > 0.0f) {
             spinner->output_pause_time -= FRAMETIME;
-            spinner->state_flags = (spinner->state_flags & ~0x40u) | 0x20;
+            spinner->state_flags = (spinner->state_flags & ~SPINNER_STATE_PUSHED) | SPINNER_STATE_HALTED;
             if (spinner->output_pause_time <= 0.0f) {
                 spinner->output_pause_time = 0.0f;
-                spinner->state_flags &= ~0x20u;
+                spinner->state_flags &= ~SPINNER_STATE_HALTED;
             }
         }
         GizSpinner_Update(spinner);
@@ -1394,8 +1406,10 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
             }
         }
         if (output != -1) {
-            if (spinner->spin_timer == 0.0f && (spinner->flags & 0x32) == 0 && (spinner->state_flags & 8) != 0 &&
-                ((spinner->state_flags & 0x400) == 0 || spinner->anim_set->state != GAMEANIMSET_STATE_AT_END)) {
+            if (spinner->spin_timer == 0.0f &&
+                (spinner->flags & (GIZSPINNER_FLAG_INACTIVE | GIZSPINNER_FLAG_SPRING_BACK | GIZSPINNER_FLAG_INVISIBLE)) == 0 &&
+                (spinner->state_flags & SPINNER_STATE_PUSHABLE) != 0 &&
+                ((spinner->state_flags & SPINNER_STATE_RELEASE_AT_END) == 0 || spinner->anim_set->state != GAMEANIMSET_STATE_AT_END)) {
                 SpinnerSeekOutput(spinner, output);
             }
         } else {
@@ -1456,7 +1470,7 @@ extern "C" void GizSpinner_ResetAll(WORLDINFO *world, void *unused, SpinnerProgr
         return;
     }
     for (index = 0; index < world->current_level->max_spinners; ++index) {
-        if ((world->spinners[index].flags & 1) != 0) {
+        if ((world->spinners[index].flags & GIZSPINNER_FLAG_VALID) != 0) {
             SpinnerResetEntry(&world->spinners[index], &progress[index]);
         }
     }

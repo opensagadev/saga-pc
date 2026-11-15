@@ -210,13 +210,13 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
         joints->overrides[joints->count].rotation.x < -HeadMovementThreshold ||
         joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
         joints->overrides[joints->count].rotation.y < -HeadMovementThreshold) {
-        joints->overrides[joints->count].flags = 1;
+        joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE;
         if (allowed) {
             if (joints->overrides[joints->count].rotation.x != 0.0f) {
-                joints->overrides[joints->count].flags |= 8;
+                joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_X;
             }
             if (joints->overrides[joints->count].rotation.y != 0.0f) {
-                joints->overrides[joints->count].flags |= 16;
+                joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
             }
         }
     }
@@ -312,13 +312,13 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
             joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.z < -HeadMovementThreshold) {
-            joints->overrides[joints->count].flags = 1;
+            joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE;
             if (allowed) {
                 if (joints->overrides[joints->count].rotation.y != 0.0f) {
-                    joints->overrides[joints->count].flags |= 16;
+                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
                 }
                 if (joints->overrides[joints->count].rotation.z != 0.0f) {
-                    joints->overrides[joints->count].flags |= 32;
+                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Z;
                 }
             }
         }
@@ -415,13 +415,13 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
             joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
             joints->overrides[joints->count].rotation.z < -HeadMovementThreshold) {
-            joints->overrides[joints->count].flags = 1;
+            joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE;
             if (allowed) {
                 if (joints->overrides[joints->count].rotation.y != 0.0f) {
-                    joints->overrides[joints->count].flags |= 16;
+                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
                 }
                 if (joints->overrides[joints->count].rotation.z != 0.0f) {
-                    joints->overrides[joints->count].flags |= 32;
+                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Z;
                 }
             }
         }
@@ -478,7 +478,7 @@ void CloakMovement(GAMEOBJECT *object) {
         (1.0f - phase) * object->character_data->game_character->unknown_060 + phase * object->character_data->game_character->unknown_05c;
     joints->overrides[joints->count].rotation.z = phase;
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
-        joints->overrides[joints->count].flags = 0x21;
+        joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE | NUJOINT_OVERRIDE_LIMIT_Z;
         if (object->character_data->game_character->unknown_05c < object->character_data->game_character->unknown_060) {
             joints->overrides[joints->count].rotation_max[2] =
                 (i32)((f64)object->character_data->game_character->unknown_060 * AIPathAngularScale);
@@ -524,7 +524,7 @@ void HairMovement(GAMEOBJECT *object) {
     joints->overrides[joints->count].joint_index = object->character_data->game_character->cloak_joint_2;
     joints->overrides[joints->count].rotation.z = phase;
     if (joints->overrides[joints->count].rotation.z != 0.0f) {
-        joints->overrides[joints->count].flags = 0x21;
+        joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE | NUJOINT_OVERRIDE_LIMIT_Z;
         if (HairMovementRestAngle > HairMovementFallAngle) {
             joints->overrides[joints->count].rotation_max[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
             joints->overrides[joints->count].rotation_min[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);

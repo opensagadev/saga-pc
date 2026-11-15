@@ -426,7 +426,7 @@ void GizBlowup_Respawn(GIZMOBLOWUP *blowup) {
         return;
     }
     Blowup_Reset(blowup);
-    if (BonusArea && VehicleArea && (blowup->draw_flags & 0x1000000)) {
+    if (BonusArea && VehicleArea && (blowup->draw_flags & BLOWUP_OPTION_TORPEDO_TARGET)) {
         if (NuSpecialExistsFn(&blowup->type->animated_special)) {
             NuSpecialSetVisibility(&blowup->type->animated_special, 0);
         }
@@ -442,7 +442,7 @@ void GizBlowup_Respawn(GIZMOBLOWUP *blowup) {
     blowup->status_flags &= 0xfdf1e401;
     animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
-        if (BonusArea && VehicleArea && (blowup->draw_flags & 0x1000000) && (blowup->status_flags & 0x100000)) {
+        if (BonusArea && VehicleArea && (blowup->draw_flags & BLOWUP_OPTION_TORPEDO_TARGET) && (blowup->status_flags & 0x100000)) {
             animation->flags |= NUINSTANIM_FLAG_PLAYING;
         }
         if ((animation->flags & NUINSTANIM_FLAG_PLAYING) && (animation->flags & NUINSTANIM_FLAG_REPEATING)) {
@@ -696,7 +696,7 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i3
     }
     if (flags & BLOWUP_EFFECT_EXPLOSION) {
         explosion_flags = (blowup->draw_flags & BLOWUP_OPTION_CARRIED_ONLY) ? 0x122 : 0x27;
-        if (blowup->draw_flags & 0x10000000) {
+        if (blowup->draw_flags & BLOWUP_OPTION_KNOCKBACK) {
             explosion_flags |= 8;
         }
         AddExplosion(position, blowup->effect_delay, 0.5f, NULL, -1, explosion_flags);
@@ -740,7 +740,7 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP *blowup, i32 effects, i32 hit_type, i32 damage
                     }
                     blowup->status_flags &= ~0x80000;
                 }
-            } else if ((blowup->draw_flags & 0x800000) != 0) {
+            } else if ((blowup->draw_flags & BLOWUP_OPTION_SPECIAL_ANIMATION) != 0) {
                 if (animation->ltime < type->animation_start_frame || animation->ltime > type->animation_end_frame) {
                     return 0;
                 }
@@ -806,7 +806,7 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP *blowup, i32 effects, i32 hit_type, i32 damage
     if (damage == -1 || (i8)blowup->remaining_health <= 0) {
         destroyed = 1;
         blowup->remaining_health = 0;
-        if ((type->animation_flags & 0x2000) != 0 && (blowup->draw_flags & 0x800000) != 0) {
+        if ((type->animation_flags & 0x2000) != 0 && (blowup->draw_flags & BLOWUP_OPTION_SPECIAL_ANIMATION) != 0) {
             NuSpecialSetVisibility(&type->animated_special, 0);
         }
         blowup->status_flags = (blowup->status_flags & 0xfe733fff) | BLOWUP_STATUS_BLOWN_UP;
@@ -1098,7 +1098,8 @@ i32 GizBlowup_InitSingleTerrain(GIZMOBLOWUP *blowup) {
     }
     if (blowup->platform_id == -1) {
         instance = NuSpecialGetInstanceix(&blowup->type->animated_special);
-        if (((blowup->draw_flags & 0x2000) == 0 || (blowup->draw_flags & 0x800000) != 0) && (blowup->draw_flags & 0x20000000) != 0) {
+        if (((blowup->draw_flags & 0x2000) == 0 || (blowup->draw_flags & BLOWUP_OPTION_SPECIAL_ANIMATION) != 0) &&
+            (blowup->draw_flags & BLOWUP_OPTION_SHARED_PLATFORM) != 0) {
             blowup->platform_id = (i16)FindPlatInst(instance);
         } else {
             blowup->platform_id = (i16)NewPlatInst(blowup, instance);
@@ -1466,8 +1467,8 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
             }
             blowup.secondary_flags = 0;
             if (version < 30) {
-                if (blowup.draw_flags & 0x100) {
-                    blowup.draw_flags &= ~0x100u;
+                if (blowup.draw_flags & BLOWUP_OPTION_POWERUP) {
+                    blowup.draw_flags &= ~BLOWUP_OPTION_POWERUP;
                     blowup.secondary_flags = 1;
                 }
                 if (blowup.draw_flags & BLOWUP_OPTION_REFLECTION) {
@@ -1741,22 +1742,23 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
     for (index = 0; index < WORLD->gizmo_blowup_count; ++index, ++blowup) {
         i32 point;
         if ((blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) || !(blowup->status_flags & BLOWUP_STATUS_ACTIVE) ||
-            !(blowup->status_flags & BLOWUP_STATUS_VISIBLE) || (exclude_flag_1 && (blowup->draw_flags & 0x80000) && airborne_damage)) {
+            !(blowup->status_flags & BLOWUP_STATUS_VISIBLE) ||
+            (exclude_flag_1 && (blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) && airborne_damage)) {
             continue;
         }
-        if (exclude_flag_2 && (blowup->draw_flags & 0x200000) && (hit_type == 8 || hit_type == 9) && BlowupExFunc != NULL &&
+        if (exclude_flag_2 && (blowup->draw_flags & BLOWUP_OPTION_EX_FUNC) && (hit_type == 8 || hit_type == 9) && BlowupExFunc != NULL &&
             BlowupExFunc(blowup, hit_type)) {
             continue;
         }
         if (bolt != NULL && (blowup->platform_id != -1 || (blowup->draw_flags & BLOWUP_OPTION_SHOOTABLE) == 0 ||
-                             ((blowup->draw_flags & 0x80000) && (object == NULL || object->rider == NULL)))) {
+                             ((blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) && (object == NULL || object->rider == NULL)))) {
             continue;
         }
         if (hit_type == 0) {
             if ((blowup->draw_flags & 0x10000) == 0) {
                 continue;
             }
-        } else if (hit_type == 3 && (blowup->draw_flags & 0x200000)) {
+        } else if (hit_type == 3 && (blowup->draw_flags & BLOWUP_OPTION_EX_FUNC)) {
             continue;
         }
         if (((blowup->draw_flags & BLOWUP_OPTION_SHADOW_MODE_ONLY) && ShadowMode == 0) ||
@@ -2036,7 +2038,7 @@ void GizmoBlowupVisibilityOverrides(WORLDINFO *world) {
     GIZMOBLOWUPTYPE *type;
     i32 index;
     for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
-        if ((blowup->type->animation_flags & 0x2000) && !(blowup->draw_flags & 0x800000)) {
+        if ((blowup->type->animation_flags & 0x2000) && !(blowup->draw_flags & BLOWUP_OPTION_SPECIAL_ANIMATION)) {
             NuSpecialSetVisibility(&blowup->type->animated_special, 0);
         }
     }
@@ -2281,7 +2283,7 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
             GIZMOBLOWUP *shadow_blowup = blowup;
             GIZMOBLOWUP *burst_blowup = blowup;
             for (instance_index = 0; instance_index < type->instance_count; ++instance_index, ++blowup) {
-                if (blowup->draw_flags & 0x800000) {
+                if (blowup->draw_flags & BLOWUP_OPTION_SPECIAL_ANIMATION) {
                     blowup->status_flags |= BLOWUP_STATUS_DRAWN;
                     NuCameraTransformScreenClip(&((BLOWUP_SCREEN_DRAW *)blowup)->screen_position, &blowup->position, 1, NULL);
                     continue;

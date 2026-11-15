@@ -1589,7 +1589,7 @@ extern "C" {
             return;
         }
         i32 surface = ShadowInfo();
-        if (static_cast<u32>(surface) > 0x20 || (TerSurface[surface].flags & 2) == 0) {
+        if (static_cast<u32>(surface) > 0x20 || (TerSurface[surface].flags & TERSURFACE_REFLECTIVE) == 0) {
             return;
         }
         WORLDINFO *world = WorldInfo_CurrentlyActive();
@@ -1938,7 +1938,7 @@ extern "C" {
                     surface = ShadowInfo();
                 }
             }
-            if (surface < 0 || surface > 31 || (TerSurface[surface].flags & 2) == 0) {
+            if (surface < 0 || surface > 31 || (TerSurface[surface].flags & TERSURFACE_REFLECTIVE) == 0) {
                 ground_height = 2000000.0f;
             }
             if (ground_height == 2000000.0f && platform != -1) {

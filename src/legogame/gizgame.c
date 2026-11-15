@@ -97,7 +97,7 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT *bolt, NUVEC *points, 
         hit_points = points;
         mode = 3;
     }
-    if (gizmotypes != NULL && system != NULL && (bolt->hit_flags & 0x800) != 0) {
+    if (gizmotypes != NULL && system != NULL && (bolt->hit_flags & OBJHIT_HITS_GIZMOS) != 0) {
         type = (BOLT_GIZMO_TYPE *)gizmotypes->types;
         set = ((GIZMOSYS_PREFIX *)system)->sets;
         for (i = 0; i < gizmotypes->count; ++i, ++set, ++type) {

@@ -62,14 +62,14 @@ void PartImpact_ThermalDetonator(PART *part) {
         return;
     }
     surface = (i8)part->unknown_209;
-    if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & 0x1000) != 0) {
+    if (surface >= 0 && surface < 32 && (TerSurface[surface].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
         PlaySfx("imp_thermalDet_attach", &part->position);
         stuck = 2;
     } else {
         GameShadow(NULL, &part->position, 5.0f, -1);
         shadow = ShadowInfo();
         if (shadow <= 31) {
-            if ((TerSurface[shadow].flags & 0x1000) != 0) {
+            if ((TerSurface[shadow].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
                 PlaySfx("imp_thermalDet_attach", &part->position);
                 stuck = 2;
             } else {
@@ -124,7 +124,7 @@ void PartUpdate_ThermalDetonator(PART *part) {
     }
     if (part->position.y > height) {
         surface = ShadowInfo();
-        if ((u32)surface + 1 <= 17 && (TerSurface[surface].flags & 2) != 0) {
+        if ((u32)surface + 1 <= 17 && (TerSurface[surface].flags & TERSURFACE_REFLECTIVE) != 0) {
             part->reflection_height = height;
             part->active |= 0x20000;
         }

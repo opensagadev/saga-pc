@@ -158,16 +158,16 @@ void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS *input, i32 enabled) {
         for (; animation->name != NULL; ++animation) {
             i32 i;
             if (enabled == 0) {
-                animation->flags &= ~0x8000u;
+                animation->flags &= ~CHARANIM_NO_LOAD;
                 continue;
             }
-            animation->flags |= 0x8000u;
+            animation->flags |= CHARANIM_NO_LOAD;
             if (customiser->animation_ids_to_load == NULL) {
                 continue;
             }
             for (i = 0; (i16)customiser->animation_ids_to_load[i] != -1; ++i) {
                 if (customiser->animation_ids_to_load[i] == (u16)animation->action_id) {
-                    animation->flags &= ~0x8000u;
+                    animation->flags &= ~CHARANIM_NO_LOAD;
                     break;
                 }
             }

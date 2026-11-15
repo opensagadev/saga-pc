@@ -345,7 +345,7 @@ void GameObjectOrigin(GAMEOBJECT *object) {
     object->flags_1f8 |= 0x100;
     if (object->use_model_origin > 0 && (joint = object->character_data->game_character->model_origin_joint) != -1 &&
         object->character_model != NULL && object->character_model->points_of_interest[joint] != NULL) {
-        if ((object->flags_e24 & 8) != 0) {
+        if ((object->flags_e24 & APIOBJECT_LOCATORS_VALID) != 0) {
             object->collision_position.x = object->locator_matrices[joint].m30 + object->previous_velocity.x * FRAMETIME;
             object->collision_position.y = (f32)((f64)(object->locator_matrices[joint].m31 + object->previous_velocity.y * FRAMETIME) +
                                                  (f64)((object->character_bottom + object->character_top) * object->origin_scale) * 0.5);

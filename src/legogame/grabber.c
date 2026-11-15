@@ -360,7 +360,7 @@ static i32 GrabberFindShadow(NUVEC *position, GRABBER *grabber) {
         if ((u32)surface <= 31 && (TerSurface[surface].flags & 0x200) != 0) {
             grabber->shadow_height = height;
             FindAnglesZX(&ShadNorm, &grabber->shadow_z_angle, &grabber->shadow_x_angle);
-            if ((TerSurface[surface].flags & 2) != 0) {
+            if ((TerSurface[surface].flags & TERSURFACE_REFLECTIVE) != 0) {
                 grabber->floor_height = height;
             } else {
                 grabber->floor_height = 2000000.0f;
@@ -416,7 +416,8 @@ void PartKill_Grabber(PART *part, i32 unused1) {
             AddFiniteShotPART(blowup->type->particle_types[i], position, 1);
         }
     }
-    AddExplosion(position, 0.6f, 0.3f, NULL, -1, 0x27);
+    AddExplosion(position, 0.6f, 0.3f, NULL, -1,
+                 EXPLOSION_HITS_CHARACTERS | EXPLOSION_HITS_BLOWUPS | EXPLOSION_HITS_PARTS | EXPLOSION_KILLS);
     GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
     NewRumbleAllPlayers(0.7f, 0.0f, 0, 0);
 }

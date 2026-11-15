@@ -1688,7 +1688,7 @@ f32 FindReflectionNoPlatforms(NUVEC *position) {
     height = NewShadowEx(position, 0.0f, 5.0f, 5.0f, -1);
     if (height != GameObjectNearFloorNoFloorHeight) {
         material = ShadowInfo();
-        if ((u32)material <= 31u && (TerSurface[material].flags & 2u) != 0) {
+        if ((u32)material <= 31u && (TerSurface[material].flags & TERSURFACE_REFLECTIVE) != 0) {
             return height;
         }
     }

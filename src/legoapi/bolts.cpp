@@ -446,7 +446,7 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal
     reflected.z = incoming->z - normal->z * twice_dot;
     NuVecNorm(&reflected, &reflected);
     FindAnglesXY(&reflected, NULL, NULL);
-    if (bolt->unknown_104 < 0 || bolt->unknown_104 >= 32 || !(TerSurface[bolt->unknown_104].flags & 0x800)) {
+    if (bolt->unknown_104 < 0 || bolt->unknown_104 >= 32 || !(TerSurface[bolt->unknown_104].flags & TERSURFACE_BOLT_MIRROR)) {
         i_temp_xrot += (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0);
         temp_yrot = (u16)(temp_yrot + (i32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 10922.0 - 5461.0));
     }
@@ -944,7 +944,7 @@ static i32 Bolt_HitPlatPrivate(BOLT *bolt, u8 *hit_flags) {
     i32 blowup_hit = 0;
     u32 exclude = GetLevelExBlowupFlags();
     Bolt_PlayHitSfx(bolt);
-    if ((bolt->hit_flags & 0x800) != 0 && GizmoSys_BoltHitPlat(WORLD->gizmo_sys, WORLD, bolt, hit_flags)) {
+    if ((bolt->hit_flags & OBJHIT_HITS_GIZMOS) != 0 && GizmoSys_BoltHitPlat(WORLD->gizmo_sys, WORLD, bolt, hit_flags)) {
         return 1;
     }
     GIZMOBLOWUP *blowup = GizmoBlowUp_FindFromPlatID(WORLD, bolt->hit_platform);
@@ -952,11 +952,11 @@ static i32 Bolt_HitPlatPrivate(BOLT *bolt, u8 *hit_flags) {
         if ((blowup->draw_flags & BLOWUP_OPTION_SHOOTABLE) != 0) {
             if ((exclude & 1) != 0 && bolt->owner != NULL) {
                 i32 field_028_positive = bolt->owner->character_data->game_character->unknown_028 > 0.0f;
-                if ((blowup->draw_flags & 0x80000) != 0 && field_028_positive) {
+                if ((blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) != 0 && field_028_positive) {
                     return 0;
                 }
             }
-            if (bolt->owner != NULL && (blowup->draw_flags & 0x80000) != 0 && bolt->owner->rider == NULL) {
+            if (bolt->owner != NULL && (blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) != 0 && bolt->owner->rider == NULL) {
                 return 0;
             }
             if (GizmoBlowupBlowup(blowup, 1, BLOWUP_HIT_BOLT, bolt->type->unknown_3c, NULL, 1) != 0 && bolt->owner != NULL) {
@@ -966,7 +966,8 @@ static i32 Bolt_HitPlatPrivate(BOLT *bolt, u8 *hit_flags) {
         }
         blowup_hit = 1;
     }
-    if (bolt->unknown_104 != -1 && ((TerSurface[bolt->unknown_104].flags & 0x1800) != 0 || blowup_hit)) {
+    if (bolt->unknown_104 != -1 &&
+        ((TerSurface[bolt->unknown_104].flags & (TERSURFACE_BOLT_MIRROR | TERSURFACE_BOLT_DEFLECT)) != 0 || blowup_hit)) {
         GameAudio_PlaySfx(41, &bolt->position, 0, 0);
         Bolt_AddDeflectedBolt(bolt, &bolt->direction, &bolt->hit_normal, hit_flags);
         if (bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -1327,7 +1328,7 @@ extern "C" i32 Bolt_HitGameObjects(BOLT *bolt, NUVEC *points, NUVEC *minimum, NU
             continue;
         }
         if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
-            (object->flags_e24 & 0x8000) != 0) {
+            (object->flags_e24 & APIOBJECT_BOLTS_PASS) != 0) {
             continue;
         }
         if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->player_index != -1 && object->player_index != -1) {
@@ -1408,7 +1409,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     } else {
         bolt->hit_flags = hit_flags;
     }
-    bolt->hit_flags |= 0x80;
+    bolt->hit_flags |= OBJHIT_BOLT;
     u32 flags = type->flags_60;
     if (owner != NULL) {
         if ((owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -1642,7 +1643,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                         FindAnglesZX(&ShadNorm, &bolt->surface_x_rotation, &bolt->surface_z_rotation);
                     }
                     u32 surface = ShadowInfo();
-                    if (surface <= 31 && (TerSurface[surface].flags & 2) != 0) {
+                    if (surface <= 31 && (TerSurface[surface].flags & TERSURFACE_REFLECTIVE) != 0) {
                         bolt->reflection_height = height;
                     } else if (static_cast<f32>(NewShadowOnPlatform()) != -1.0f) {
                         bolt->reflection_height = FindReflectionNoPlatforms(&bolt->position);
@@ -1686,7 +1687,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 Bolt_Reflect(&bolt->hit_normal, &bolt->velocity, &reflection);
                 NuVecScale(&reflection, &reflection, 0.2f);
                 surface_hit = 1;
-                if (bolt->hit_platform != -1 && bolt->unknown_104 != -1 && (TerSurface[bolt->unknown_104].flags & 0x1000) != 0) {
+                if (bolt->hit_platform != -1 && bolt->unknown_104 != -1 &&
+                    (TerSurface[bolt->unknown_104].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
                     BoltSys->debris(bolt, points, -1, &reflection, surface_hit);
                 } else {
                     BoltSys->debris(bolt, points, -1, &reflection, 0);
@@ -1720,12 +1722,12 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     goto stop_targeting;
                 }
             } else if (surface_hit && bolt->hit_platform != -1 && bolt->unknown_104 != -1 &&
-                       (TerSurface[bolt->unknown_104].flags & 0x1000) != 0) {
+                       (TerSurface[bolt->unknown_104].flags & TERSURFACE_BOLT_DEFLECT) != 0) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 Bolt_AddDeflectedBolt(bolt, &bolt->direction, &bolt->hit_normal, processed);
             }
-            if (surface_hit && bolt->unknown_104 >= 0 && bolt->unknown_104 < 32 && (TerSurface[bolt->unknown_104].flags & 0x800) != 0 &&
-                (bolt->flags & 0x8000) == 0) {
+            if (surface_hit && bolt->unknown_104 >= 0 && bolt->unknown_104 < 32 &&
+                (TerSurface[bolt->unknown_104].flags & TERSURFACE_BOLT_MIRROR) != 0 && (bolt->flags & 0x8000) == 0) {
                 GameAudio_PlaySfx(41, &bolt->position, 0, 0);
                 Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, processed);
             } else if ((bolt->flags & BOLT_TROOPER_BOLT) == 0) {
@@ -1767,7 +1769,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     continue;
                 }
                 if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
-                    (object->flags_e24 & 0x8000) != 0) {
+                    (object->flags_e24 & APIOBJECT_BOLTS_PASS) != 0) {
                     continue;
                 }
                 if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->player_index != -1 && object->player_index != -1) {

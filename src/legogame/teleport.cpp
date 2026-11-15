@@ -366,14 +366,14 @@ extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared)
 static void TeleportGetSegment(i32 *start, i32 *end, GAMEOBJECT *object) {
     TELEPORT_MOTION *teleport = (TELEPORT_MOTION *)object->grapple;
     if ((teleport->flags & 4) != 0) {
-        if ((object->context_variant_flags & 0x400) != 0) {
+        if ((object->context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0) {
             *start = 0;
             *end = 3;
         } else {
             *start = 3;
             *end = 0;
         }
-    } else if ((object->context_variant_flags & 0x400) != 0) {
+    } else if ((object->context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0) {
         if (object->big_jump_animation > 0) {
             *start = 2;
             *end = 3;
@@ -461,7 +461,7 @@ extern "C" void Teleport_NetMoveCode(GAMEOBJECT *object) {
     if (object->character_context != CHARACTER_CONTEXT_TELEPORT || object->unknown_7b3 != 0) {
         return;
     }
-    i32 rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
+    i32 rotation = (object->context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0 ? 0x4000 : 0xc000;
     for (i32 flap = 0; flap < 2; ++flap) {
         if (NuSpecialExistsFn(&(&((TELEPORT_MOTION *)object->grapple)->flap1_special)[flap])) {
             if (!(NuVecDistSqr(&object->collision_position,
@@ -486,7 +486,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
     }
     if (object->character_context == CHARACTER_CONTEXT_TELEPORT) {
         if (object->unknown_7b3 == 0) {
-            i32 first_rotation = (object->context_variant_flags & 0x400) != 0 ? 0x4000 : 0xc000;
+            i32 first_rotation = (object->context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0 ? 0x4000 : 0xc000;
             for (i32 i = 0; i < 2; ++i) {
                 if (NuSpecialExistsFn(&(&((TELEPORT_MOTION *)object->grapple)->flap1_special)[i])) {
                     NUVEC *position = &object->collision_position;
@@ -552,7 +552,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                 object->character_context = CHARACTER_CONTEXT_TELEPORT;
                 object->unknown_7b3 = 1;
                 object->context_timer = 2.0f;
-                object->start_position = teleport->path->pts[(object->context_variant_flags & 0x400) != 0 ? 1 : 2];
+                object->start_position = teleport->path->pts[(object->context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0 ? 1 : 2];
                 object->position = object->start_position;
                 GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
                 return;
@@ -580,7 +580,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                 } else {
                     progress = 1.0f - object->context_timer * 0.5;
                 }
-                if ((object->context_variant_flags & 0x400) != 0) {
+                if ((object->context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0) {
                     start_index = 1;
                     end_index = 2;
                 } else {

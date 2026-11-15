@@ -244,7 +244,9 @@ void Bolt_Debris_LSW(BOLT *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no
         NewRumble(bolt->owner->pad->bound_pad, 0.3f, 0);
         PlaySfx("exp_thermalDet", points);
         GameCam_HitJudder();
-        explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1, 0xa067);
+        explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1,
+                                 EXPLOSION_HITS_CHARACTERS | EXPLOSION_HITS_BLOWUPS | EXPLOSION_HITS_PARTS | EXPLOSION_KILLS |
+                                     EXPLOSION_SHAKE | EXPLOSION_HITS_FLICKERING | EXPLOSION_BLOWUP_EXPLOSION);
         if (explosion != NULL && Arcade != 0) {
             GAMEOBJECT *owner = bolt->owner;
             if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&

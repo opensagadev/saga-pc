@@ -185,7 +185,7 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
     if (owner->special_move_timer <= 0.0f) {
         destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         if (owner->character_context == CHARACTER_CONTEXT_TELEPORT || owner->character_context == CHARACTER_CONTEXT_ZIP_UP ||
-            (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == 6)) {
+            (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == JUMP_KIND_ZIPUP)) {
             packet->movement_destination = destination->position;
             packet->movement_stopping_distance = 0.0f;
             SetSpecialMove(owner, destination, NULL, 2);
@@ -222,7 +222,7 @@ i32 StarWars_MidSpecialMove_UseHatch(AISYS *system, AIPACKET *packet, APIOBJECT 
     switch ((i8)owner->unknown_1087) {
         case 0:
             if (owner->character_context == CHARACTER_CONTEXT_TELEPORT || owner->character_context == CHARACTER_CONTEXT_ZIP_UP ||
-                (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == 6)) {
+                (owner->character_context == CHARACTER_CONTEXT_JUMP && owner->action_movement_state == JUMP_KIND_ZIPUP)) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                 owner->ai_packet.movement_stopping_distance = 0.0f;
                 ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;

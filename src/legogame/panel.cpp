@@ -1586,7 +1586,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     position.x = object->upper_position.x;
     position.y = (f32)((f64)object->character_top * object->origin_scale + object->position.y + (f64)0.05f);
     position.z = object->upper_position.z;
-    if ((object->flags_e24 & 8) != 0) {
+    if ((object->flags_e24 & APIOBJECT_LOCATORS_VALID) != 0) {
         f32 x_sum = 0.0f;
         f32 z_sum = 0.0f;
         f32 max_y = object->collision_position.y;
