@@ -7,6 +7,14 @@
 #include "nu2api/numath/nuvec.h"
 
 typedef struct HATMACHINE HATMACHINE;
+
+/* HATMACHINE.flags. */
+#define HATMACHINE_FLAG_IN_USE 0x1 /* a character works it; cleared when its animation ends */
+#define HATMACHINE_FLAG_OUTPUT 0x2 /* the gizmo output (HatMachine_GetOutput) */
+#define HATMACHINE_FLAG_VISIBLE 0x4
+#define HATMACHINE_FLAG_ENABLED 0x8
+#define HATMACHINE_FLAG_HIDE_TARGET 0x20 /* the level file's hidden byte: no target indicator */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

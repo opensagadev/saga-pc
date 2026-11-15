@@ -1260,6 +1260,18 @@ typedef struct gizobstacle_s {              // size 0xa0
 #define GIZOBSTACLE_TRIGGER_LATCHED 0x40
 #define GIZOBSTACLE_DESTROYED 0x80
 
+/* gizobstacle_s.config_flags: the level file's options for the proximity trigger (GizObstacleUpdate_Proximity and
+ * GizObstacle_SatisfyingTerrainChecks); 0x40, 0x80, 0x100, 0x200, 0x800 and 0x1000 are not named yet. */
+#define GIZOBSTACLE_CONFIG_INVERTED 0x1       /* the output is on while nobody is in range */
+#define GIZOBSTACLE_CONFIG_AVERAGE_CENTRE 0x2 /* the trigger centre is the animation set's average position */
+#define GIZOBSTACLE_CONFIG_PLAYERS_ONLY 0x4
+#define GIZOBSTACLE_CONFIG_VEHICLES_ONLY 0x8
+#define GIZOBSTACLE_CONFIG_STAND_ON 0x10 /* the character must stand on one of its platforms */
+#define GIZOBSTACLE_CONFIG_ACTIVE_PLAYERS_ONLY 0x20
+#define GIZOBSTACLE_CONFIG_RIDERS_ONLY 0x400
+#define GIZOBSTACLE_CONFIG_ALL_PLAYERS 0x2000 /* every player must be in range */
+#define GIZOBSTACLE_CONFIG_BADDIES_ONLY 0x4000
+
 /* gizobstacle_s.progress_flags, from gizobstacle.c. */
 #define OBSTACLE_ACTIVE 0x1            /* GizmoObstacle_Activate (saved in the progress) */
 #define OBSTACLE_VISIBLE 0x2           /* saved in the progress */
@@ -1366,6 +1378,20 @@ struct gizforce_s {                    // size 0xa4
 #define GIZFORCE_COMPLETION_PENDING 0x8000  /* a bolt hit set it moving; cleared when complete */
 #define GIZFORCE_DESTROYED 0x10000          /* blown up or thrown, hidden for good */
 #define GIZFORCE_BEING_USED 0x200000        /* a character is using the force */
+
+/* gizforce_s.config_flags: the level file's options (before version 13 LINE_OF_SIGHT is set for every force), from
+ * what the force code does with each; 0x2 (the force does not complete and sinks back) is not named yet. */
+#define GIZFORCE_CONFIG_REFLECTION 0x4      /* drawn in reflections */
+#define GIZFORCE_CONFIG_REPEAT_REWARD 0x8   /* the reset clears REWARD_RELEASED */
+#define GIZFORCE_CONFIG_DARK_SIDE 0x10      /* only baddies or a super force use it; red sparkles */
+#define GIZFORCE_CONFIG_BLOWUP_EACH 0x20    /* the completion blowup at every animated object */
+#define GIZFORCE_CONFIG_BASE_SOCKET 0x40    /* a base special (along_socket) hidden at the end */
+#define GIZFORCE_CONFIG_BOLT_MOVES 0x100    /* a bolt hit sets it moving */
+#define GIZFORCE_CONFIG_BOLT_DESTROYS 0x200 /* a bolt hit blows it up */
+#define GIZFORCE_CONFIG_PER_OBJECT 0x400    /* each animated object is used and sparkles on its own */
+#define GIZFORCE_CONFIG_LINE_OF_SIGHT 0x800 /* the line of sight to it is tested */
+#define GIZFORCE_CONFIG_SHADOW 0x1000       /* drawn into the shadow map */
+#define GIZFORCE_CONFIG_NO_SHOVE 0x2000     /* its platforms do not shove characters */
 #ifdef __cplusplus
 extern "C" {
 #endif

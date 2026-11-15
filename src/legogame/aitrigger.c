@@ -417,11 +417,11 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                             }
                             if (gizmo->type_id == force_gizmotype_id) {
                                 TRIGGER_FORCE *force = gizmo->object;
-                                if ((force->config_flags & 0x10) != 0) {
+                                if ((force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) != 0) {
                                     if (!CharCategory_IsCategory(object, 1)) {
                                         continue;
                                     }
-                                    if ((force->config_flags & 0x10) == 0 && !CharCategory_IsCategory(object, 0)) {
+                                    if ((force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) == 0 && !CharCategory_IsCategory(object, 0)) {
                                         continue;
                                     }
                                 } else if (!CharCategory_IsCategory(object, 0)) {

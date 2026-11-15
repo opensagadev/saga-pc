@@ -2595,7 +2595,7 @@ void GameAIProcess(void) {
                 (object->ai_packet.capabilities & LEGO_AIPATHCNX_R2D2GLIDE) == 0) {
                 object->jump_variant_state = 0;
             }
-            if (object->character_context == CHARACTER_CONTEXT_FLOAT && object->suit != NULL && (object->suit->flags & 0x10) != 0) {
+            if (object->character_context == CHARACTER_CONTEXT_FLOAT && object->suit != NULL && (object->suit->flags & SUIT_WATER) != 0) {
                 object->pad->buttons_held |= GAMEPAD_SPECIAL;
             }
             connection = object->ai_packet.path_info.connection;

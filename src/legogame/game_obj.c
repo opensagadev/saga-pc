@@ -368,7 +368,7 @@ void ManageGameObjects(void) {
                             break;
                         case 1:
                             group = object->ai_packet.group;
-                            if (group != NULL && (group->flags & 2) == 0) {
+                            if (group != NULL && (group->flags & AIGROUP_ALL_DEAD) == 0) {
                                 break;
                             }
                             alive = 1;
@@ -398,8 +398,8 @@ void ManageGameObjects(void) {
                                                 }
                                             }
                                         }
-                                        object->ai_packet.group->flags &= ~8u;
-                                        object->ai_packet.group->flags &= ~4u;
+                                        object->ai_packet.group->flags &= ~AIGROUP_FORMATION;
+                                        object->ai_packet.group->flags &= ~AIGROUP_REVERSED;
                                     } else {
                                         object->ai_packet.spawn_delay = 0.0f;
                                         if (object->id == (u16)id_PKDROID) {
@@ -2131,7 +2131,7 @@ void UpdateGameObjects(WORLDINFO *world) {
                 } else if (object->active_trigger_set != NULL && (object->active_trigger_set->flags_low & 2) != 0) {
                     object->flags_ef4 |= APIOBJECT_AI_EVERY_FRAME;
                     interval = 1;
-                } else if (object->ai_packet.group != NULL && 0 != (object->ai_packet.group->flags & 8)) {
+                } else if (object->ai_packet.group != NULL && 0 != (object->ai_packet.group->flags & AIGROUP_FORMATION)) {
                     object->flags_ef4 |= APIOBJECT_AI_EVERY_FRAME;
                     interval = 1;
                 } else if (world->rooms_visible_ptr[object->portal_room] == 0 || object->model_draw_result == 0) {
@@ -2872,7 +2872,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         group = object->ai_packet.group;
         if (group->leader == (APIOBJECT *)object) {
             group->leader = NULL;
-            if ((group->flags & 4) != 0) {
+            if ((group->flags & AIGROUP_REVERSED) != 0) {
                 for (i = group->member_count - 1; i >= 0; --i) {
                     if (group->members[i] != NULL) {
                         candidate = group->members[i]->owner;

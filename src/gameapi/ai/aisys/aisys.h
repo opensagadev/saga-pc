@@ -365,6 +365,13 @@ typedef struct AILOCATORSET { // size 0x1c
     u8 *assigned;             // 0x18
 } AILOCATORSET;
 
+/* AIGROUP.flags, from CreateAIGroup, the group update and the formation moves; 0x10 (the rows keep their own
+ * heading off the path) is not named yet. */
+#define AIGROUP_IN_USE 0x1    /* CreateAIGroup takes the first group without it */
+#define AIGROUP_ALL_DEAD 0x2  /* no member is alive */
+#define AIGROUP_REVERSED 0x4  /* the formation is mirrored and led from its last row */
+#define AIGROUP_FORMATION 0x8 /* the members move in formation (AIMoveInstruction, FormationMove) */
+
 typedef struct AIGROUP {           // size 0x134
     struct APIOBJECT *leader;      // 0x000
     i16 rotation_speed;            // 0x004

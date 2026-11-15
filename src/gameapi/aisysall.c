@@ -3443,9 +3443,9 @@ AIGROUP *CreateAIGroup(AISYS *system, i32 count_across, f32 x_spacing, f32 z_spa
     }
     group = system->groups;
     for (index = 0; index < 16; ++index, ++group) {
-        if ((group->flags & 1) == 0) {
-            system->groups[index].flags |= 1;
-            group->flags &= ~8u;
+        if ((group->flags & AIGROUP_IN_USE) == 0) {
+            system->groups[index].flags |= AIGROUP_IN_USE;
+            group->flags &= ~AIGROUP_FORMATION;
             group->x_spacing = x_spacing;
             group->z_spacing = z_spacing;
             group->count_across = (u8)count_across;
@@ -3568,11 +3568,11 @@ void AISysProcess(AISYS *system, APIOBJECT *player_1, APIOBJECT *player_2) {
     }
     for (index = 0; index < 16; ++index) {
         AIGROUP *group = &system->groups[index];
-        if ((group->flags & 1) != 0) {
+        if ((group->flags & AIGROUP_IN_USE) != 0) {
             if (group->member_is_alive != 0) {
-                group->flags &= ~2u;
+                group->flags &= ~AIGROUP_ALL_DEAD;
             } else {
-                group->flags |= 2;
+                group->flags |= AIGROUP_ALL_DEAD;
             }
         }
     }
@@ -5662,8 +5662,8 @@ static void FormationMove(AIGROUP *group, i32 (*move)(AIGROUP *, AIROW *, AIROW 
     AIROW *row;
     turning = 0;
     previous = NULL;
-    if (move != NULL && (group->flags & 8u)) {
-        if ((group->flags & 4u)) {
+    if (move != NULL && (group->flags & AIGROUP_FORMATION)) {
+        if ((group->flags & AIGROUP_REVERSED)) {
             for (i = group->row_count - 1; i >= 0; --i) {
                 row = &group->rows[i];
                 if (row->is_alive) {
@@ -13496,7 +13496,7 @@ void AIMoveInstruction(AIPACKET *packet, NUVEC *destination, f32 stopping_distan
                        f32 movement_parameter) {
     AIGROUP *group;
     group = packet->group;
-    if (group != NULL && (group->flags & 8u)) {
+    if (group != NULL && (group->flags & AIGROUP_FORMATION)) {
         switch (mode) {
             case 1:
                 if (group->leader == (APIOBJECT *)packet->owner) {
@@ -13551,7 +13551,7 @@ void AIFormationFollow(AIPACKET *packet) {
                 offset.x = -offset.x;
             }
         }
-        if ((group->flags & 4u)) {
+        if ((group->flags & AIGROUP_REVERSED)) {
             offset.x = -offset.x;
         }
         offset.y = 0.0f;
@@ -13560,7 +13560,7 @@ void AIFormationFollow(AIPACKET *packet) {
         NuVecAdd(&destination, &offset, &row->position);
         packet->flags |= 8u;
         mode = 5;
-        if (packet->group != NULL && (packet->group->flags & 8u)) {
+        if (packet->group != NULL && (packet->group->flags & AIGROUP_FORMATION)) {
             mode = 1;
         }
         packet->fallback_destination = destination;

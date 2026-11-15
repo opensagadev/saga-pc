@@ -904,7 +904,7 @@ static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK *door) 
 }
 
 static i32 CanMagnetClimb_Game(GAMEOBJECT *object) {
-    return object->suit != NULL && (object->suit->flags & 0x40) != 0;
+    return object->suit != NULL && (object->suit->flags & SUIT_MAGNET) != 0;
 }
 
 static u32 CanPushObstacles_Game(GAMEOBJECT *object) {
@@ -932,7 +932,7 @@ static u32 CanPushBlocks_Game(GAMEOBJECT *object) {
 }
 
 static i32 CanGlide_Game(GAMEOBJECT *object) {
-    return object->suit != NULL && (object->suit->flags & 2) != 0;
+    return object->suit != NULL && (object->suit->flags & SUIT_GLIDE) != 0;
 }
 
 static i32 UsingExtraActions_Game(GAMEOBJECT *object) {

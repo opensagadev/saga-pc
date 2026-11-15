@@ -77,13 +77,6 @@ struct HATMACHINE {         // size 0xa0
     u8 reserved_9c[4];     // 0x9c
 };
 
-/* HATMACHINE.flags. */
-#define HATMACHINE_FLAG_IN_USE 0x1 /* a character works it; cleared when its animation ends */
-#define HATMACHINE_FLAG_OUTPUT 0x2 /* the gizmo output (HatMachine_GetOutput) */
-#define HATMACHINE_FLAG_VISIBLE 0x4
-#define HATMACHINE_FLAG_ENABLED 0x8
-#define HATMACHINE_FLAG_HIDE_TARGET 0x20 /* the level file's hidden byte: no target indicator */
-
 struct HATMACHINE_SYS {   // size 0x10
     i32 count;            // 0x0
     i32 reserved_04;      // 0x4

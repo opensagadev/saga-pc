@@ -893,9 +893,9 @@ void DrawOffsetCode(GAMEOBJECT *object, i32 reset) {
     f32 step;
 
     if (object->suit != NULL) {
-        if ((object->suit->flags & 0x10) != 0) {
+        if ((object->suit->flags & SUIT_WATER) != 0) {
             target.y = 0.0076f;
-        } else if ((object->suit->flags & 0x40) != 0) {
+        } else if ((object->suit->flags & SUIT_MAGNET) != 0) {
             target.y = MAGNETOFFSET;
         }
     }
@@ -2988,7 +2988,7 @@ void Glide_MoveCode(GAMEOBJECT *object) {
     if ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0) {
         return;
     }
-    if (!can_glide && (object->suit == NULL || (object->suit->flags & 2) == 0)) {
+    if (!can_glide && (object->suit == NULL || (object->suit->flags & SUIT_GLIDE) == 0)) {
         return;
     }
     if ((object->pad->buttons_pressed & GAMEPAD_JUMP) == 0 || object->unknown_281 != 0) {
@@ -6161,7 +6161,7 @@ static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32
     } else {
         object->anim_packet.requested_animation = ACTION_RUN;
     }
-    if (object->suit != NULL && (object->suit->flags & 0x40) != 0 &&
+    if (object->suit != NULL && (object->suit->flags & SUIT_MAGNET) != 0 &&
         !(object->character_context == CHARACTER_CONTEXT_CLIMB && object->context_variant == 5)) {
         if (object->anim_packet.requested_animation == ACTION_TIPTOE && object->character_model->model_data_b[0xc6] != NULL) {
             object->anim_packet.requested_animation = ACTION_MAGNET_TIPTOE;
@@ -7056,7 +7056,7 @@ void FloatCode(GAMEOBJECT *object) {
                (object->character_context != CHARACTER_CONTEXT_JUMP || !(object->velocity.y > 0.0f)) &&
                object->character_context != CHARACTER_CONTEXT_LEDGE) {
         object->character_context = CHARACTER_CONTEXT_FLOAT;
-        if (object->suit != NULL && (object->suit->flags & 0x10) != 0) {
+        if (object->suit != NULL && (object->suit->flags & SUIT_WATER) != 0) {
             object->velocity.y *= 0.25f;
         }
         FloatAdvance(object);
@@ -7543,7 +7543,7 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
             mini->packet.requested_animation = 1;
         }
         UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f, FRAMETIME);
-    } else if (object->suit != NULL && (object->suit->flags & 2) != 0) {
+    } else if (object->suit != NULL && (object->suit->flags & SUIT_GLIDE) != 0) {
         model_id = apicharsys->playermodelids[dat_007f17bc];
         if (model_id == -1) {
             return;
@@ -10129,7 +10129,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         object->target_velocity.y = (object->water_height - (object->collision_min.y + (object->collision_max.y - object->collision_min.y) *
                                                                                            PlayerFloatHeightFraction)) *
                                     3.0f;
-        if (object->suit != NULL && (object->suit->flags & 0x10) != 0) {
+        if (object->suit != NULL && (object->suit->flags & SUIT_WATER) != 0) {
             if ((object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
                 if (object->upper_position.y < object->water_height) {
                     object->target_velocity.y = 0.6f;
@@ -12475,10 +12475,10 @@ after_gravity:
         Teleport_MoveCode(object, special_pressed);
     }
     if (!StartupGameFlag1 && !StartupGameFlag0) {
-        if (object->suit != NULL && (object->suit->flags & 4) != 0) {
+        if (object->suit != NULL && (object->suit->flags & SUIT_DEMOLITION) != 0) {
             Detonator_MoveCode(object);
         }
-        if (object->suit != NULL && (object->suit->flags & 8) != 0) {
+        if (object->suit != NULL && (object->suit->flags & SUIT_SONAR) != 0) {
             SuitBlowupCode(WORLD, object);
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0) {

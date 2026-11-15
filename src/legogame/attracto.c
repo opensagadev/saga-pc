@@ -549,7 +549,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     i32 available = 0;
     char text[32];
     NUVEC position;
-    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->suit != NULL && (object->suit->flags & 0x80) != 0) {
+    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->suit != NULL && (object->suit->flags & SUIT_ATTRACT) != 0) {
         GAME_MESSAGE *message;
         available = 1;
         sprintf(text, "%i", object->unknown_1062);

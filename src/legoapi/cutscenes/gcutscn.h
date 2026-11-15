@@ -178,6 +178,14 @@ typedef struct cut_load_locator_s { // size 0x64
     u8 unknown_5c[8];               // 0x5c
 } CUT_LOAD_LOCATOR;
 
+/* cut_load_locator_type_s.flags: what drives the locators of the type, from CutSceneLocatorFixUp and the locator
+ * update, which take the first bit set in this order: DEBRIS, FUNCTION, VFX, SFX, LOOK_AT. */
+#define CUTLOCATOR_DEBRIS 0x1   /* a debris effect by name (LookupDebrisEffectPage) */
+#define CUTLOCATOR_FUNCTION 0x2 /* a locator function by name (CutFindLocatorFunction) */
+#define CUTLOCATOR_SFX 0x4      /* a sound (NuCutSceneRequestSFX, NuCutSceneSFXUpdate) */
+#define CUTLOCATOR_LOOK_AT 0x8  /* CutSceneLocatorLookAtUpdate */
+#define CUTLOCATOR_VFX 0x10     /* a visual effect (LookupLocatorVfxFn) */
+
 typedef struct cut_load_locator_type_s { // size 0xc
     char *name;                          // 0x0
     u8 flags;                            // 0x4
@@ -272,6 +280,11 @@ typedef struct cut_load_trigger_system_s {
     i32 count;
     CUT_LOAD_TRIGGER_EVENT *events;
 } CUT_LOAD_TRIGGER_SYSTEM;
+
+/* cut_scene_load_s.flags, from the cut scene loader and the stream code; 0x2 (kept over a reload) is not named yet. */
+#define CUTSCENE_STREAMED 0x1       /* the animation streams through two stream buffers */
+#define CUTSCENE_HAS_SFX 0x4        /* a locator type requested a sound */
+#define CUTSCENE_STREAM_PENDING 0x8 /* a stream part not yet swapped in: its pointers are fixed up then */
 
 struct cut_scene_load_s {                                        // size 0x5c
     i32 version;                                                 // 0x00

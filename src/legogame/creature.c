@@ -3281,7 +3281,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     }
     suit = object->suit;
     if (suit != NULL && object->id == (u16)ID_DEFAULTCHARACTER_A) {
-        if ((suit->flags & 4) != 0) {
+        if ((suit->flags & SUIT_DEMOLITION) != 0) {
             mask = (mask & ~cape) | SpecialLayer[0].mask;
             mask = (mask & ~SpecialLayer[3].mask) | SpecialLayer[5].mask;
             if ((mask & SpecialLayer[20].mask) != 0) {
@@ -3290,9 +3290,9 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
                 mask = (mask & ~SpecialLayer[21].mask) | SpecialLayer[25].mask;
             }
             mask = (mask & ~SpecialLayer[17].mask) | SpecialLayer[19].mask;
-        } else if ((suit->flags & 2) != 0) {
+        } else if ((suit->flags & SUIT_GLIDE) != 0) {
             mask &= ~cape;
-        } else if ((suit->flags & 8) != 0) {
+        } else if ((suit->flags & SUIT_SONAR) != 0) {
             mask = (mask & ~cape) | SpecialLayer[1].mask | SpecialLayer[7].mask;
             mask = (mask & ~SpecialLayer[3].mask) | SpecialLayer[4].mask;
             if ((mask & SpecialLayer[20].mask) != 0) {
@@ -3308,7 +3308,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
             } else if ((mask & SpecialLayer[10].mask) != 0) {
                 mask = (mask & ~SpecialLayer[10].mask) | SpecialLayer[16].mask;
             }
-        } else if ((suit->flags & 1) != 0) {
+        } else if ((suit->flags & SUIT_SHADOW) != 0) {
             mask |= SpecialLayer[2].mask;
             if ((mask & SpecialLayer[8].mask) != 0) {
                 mask = (mask & ~SpecialLayer[8].mask) | SpecialLayer[11].mask;
@@ -3319,7 +3319,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
             }
         }
     } else if (suit != NULL && object->id == (u16)ID_DEFAULTCHARACTER_B) {
-        if ((suit->flags & 0x10) != 0) {
+        if ((suit->flags & SUIT_WATER) != 0) {
             mask = (mask & ~hair & ~cape) | SpecialLayer[27].mask;
             if ((mask & SpecialLayer[30].mask) != 0) {
                 mask = (mask & ~SpecialLayer[30].mask) | SpecialLayer[39].mask;
@@ -3328,7 +3328,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
             } else if ((mask & SpecialLayer[32].mask) != 0) {
                 mask = (mask & ~SpecialLayer[32].mask) | SpecialLayer[41].mask;
             }
-        } else if ((suit->flags & 0x40) != 0) {
+        } else if ((suit->flags & SUIT_MAGNET) != 0) {
             mask = (mask & ~cape) | SpecialLayer[26].mask;
             if ((mask & SpecialLayer[30].mask) != 0) {
                 mask = (mask & ~SpecialLayer[30].mask) | SpecialLayer[36].mask;
@@ -3337,7 +3337,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
             } else if ((mask & SpecialLayer[32].mask) != 0) {
                 mask = (mask & ~SpecialLayer[32].mask) | SpecialLayer[38].mask;
             }
-        } else if ((suit->flags & 0x20) != 0) {
+        } else if ((suit->flags & SUIT_TECHNOLOGY) != 0) {
             mask = (mask & ~cape) | SpecialLayer[28].mask;
             if ((mask & SpecialLayer[30].mask) != 0) {
                 mask = (mask & ~SpecialLayer[30].mask) | SpecialLayer[33].mask;
@@ -3346,7 +3346,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
             } else if ((mask & SpecialLayer[32].mask) != 0) {
                 mask = (mask & ~SpecialLayer[32].mask) | SpecialLayer[35].mask;
             }
-        } else if ((suit->flags & 0x80) != 0) {
+        } else if ((suit->flags & SUIT_ATTRACT) != 0) {
             mask = (mask & ~cape) | SpecialLayer[29].mask;
         }
     }
@@ -4517,7 +4517,7 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
     i32 current_animation;
     DRAW_ATTACHMENTS_PACKET animation;
     NUMTX *override_matrix = NULL;
-    if (object->suit != NULL && (object->suit->flags & 2) != 0) {
+    if (object->suit != NULL && (object->suit->flags & SUIT_GLIDE) != 0) {
         if (object->id != (u16)ID_DEFAULTCHARACTER_A) {
             return;
         }

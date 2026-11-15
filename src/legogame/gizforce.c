@@ -315,7 +315,7 @@ static void ForceFindBaseSpecial(GIZFORCE *force) {
         return;
     }
     memset(&force->along_socket, 0, sizeof(force->along_socket));
-    if (!(force->config_flags & 0x40)) {
+    if (!(force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET)) {
         return;
     }
     for (object = force->anim_set->objects; object != NULL; object = object->next) {
@@ -381,7 +381,7 @@ i32 GizForces_Load(void *world_pointer, void *system_pointer) {
         }
         force->config_flags = (u32)EdFileReadInt();
         if (version <= 12) {
-            force->config_flags |= 0x800;
+            force->config_flags |= GIZFORCE_CONFIG_LINE_OF_SIGHT;
         }
         force->group_index = (u8)EdFileReadChar();
         if (version >= 11) {
@@ -453,7 +453,7 @@ i32 GizForces_Load(void *world_pointer, void *system_pointer) {
             force->loop_sfx_id = -1;
             force->stop_sfx_id = -1;
         }
-        if (force->config_flags & 0x40) {
+        if (force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) {
             ForceFindBaseSpecial(force);
         }
     }
@@ -729,13 +729,13 @@ void GizForces_Draw(void *world_pointer, void *system_pointer, f32 unused) {
             continue;
         }
         ResetShadowMapRendering();
-        if (force->config_flags & 4) {
+        if (force->config_flags & GIZFORCE_CONFIG_REFLECTION) {
             GameAnimSet_DrawReflection(force->anim_set, 2, force->vertical_range, NULL);
         }
-        if (!(force->config_flags & 0x1000)) {
+        if (!(force->config_flags & GIZFORCE_CONFIG_SHADOW)) {
             EnableShadowMapRendering(0);
         }
-        if (!(force->config_flags & 0x40) || !(force->runtime_flags & GIZFORCE_SOCKET_HIDDEN)) {
+        if (!(force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) || !(force->runtime_flags & GIZFORCE_SOCKET_HIDDEN)) {
             continue;
         }
         object = force->anim_set->objects;
@@ -744,7 +744,7 @@ void GizForces_Draw(void *world_pointer, void *system_pointer, f32 unused) {
         }
         draw_matrix = NuSpecialGetDrawMtx(&object->special);
         NuSpecialDrawAt(&force->along_socket, draw_matrix);
-        if (force->config_flags & 4) {
+        if (force->config_flags & GIZFORCE_CONFIG_REFLECTION) {
             reflection_height = force->vertical_range + draw_matrix->m31;
             if (MatrixReflection(draw_matrix, 2, reflection_height, WORLD->current_level->reflection_y, &reflection)) {
                 NuRndrStartReflectionRender(0);
@@ -789,7 +789,7 @@ i32 ForceAnimationDone(GIZFORCE *force) {
 
 i32 GizForce_Complete(GIZFORCE *force) {
     if (!(force->config_flags & 2) && (!(force->force_range > 0.0f) || (force->runtime_flags & GIZFORCE_SHAKE_DONE)) &&
-        (!(force->config_flags & 0x40) || (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN))) {
+        (!(force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) || (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN))) {
         if (force->anim_set != NULL) {
             if (force->runtime_flags & GIZFORCE_STACK_COMPLETE) {
                 if (force->anim_set->state != GAMEANIMSET_STATE_AT_START) {
@@ -1038,7 +1038,7 @@ static i32 GizForces_BoltHitPlat(GIZFORCE *force, WORLDINFO *world, i32 player_i
         return 0;
     }
     config = force->config_flags;
-    if ((config & 0x100) != 0) {
+    if ((config & GIZFORCE_CONFIG_BOLT_MOVES) != 0) {
         force->runtime_flags = flags | GIZFORCE_COMPLETION_PENDING;
         if (player_index != -1) {
             player = Player[player_index];
@@ -1047,9 +1047,9 @@ static i32 GizForces_BoltHitPlat(GIZFORCE *force, WORLDINFO *world, i32 player_i
             }
         }
         return 1;
-    } else if ((config & 0x200) != 0) {
+    } else if ((config & GIZFORCE_CONFIG_BOLT_DESTROYS) != 0) {
         if (force->blowup_type != -1) {
-            if ((config & 0x20) != 0) {
+            if ((config & GIZFORCE_CONFIG_BLOWUP_EACH) != 0) {
                 if (force->anim_set != NULL) {
                     animation = force->anim_set->objects;
                     while (animation != NULL) {
@@ -1334,7 +1334,7 @@ void GizmoForce_Activate(GIZMO *gizmo, i32 active) {
         force->unknown_48 = 0.0f;
         force->unknown_50 = 0.0f;
         force->runtime_flags &= 0xfffeffafu;
-        if (force->config_flags & 8) {
+        if (force->config_flags & GIZFORCE_CONFIG_REPEAT_REWARD) {
             force->runtime_flags &= ~GIZFORCE_REWARD_RELEASED;
         }
         force->runtime_flags &= 0xffff87ffu;
@@ -1515,7 +1515,8 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                         force->unknown_48 = 0.0f;
                     }
                     if (force->unknown_48 == 0.0f) {
-                        if ((force->config_flags & 0x40) != 0 && (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) != 0) {
+                        if ((force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0 &&
+                            (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) != 0) {
                             GameAnimSet_SetVisibility(force->anim_set, 1);
                             force->runtime_flags &= ~GIZFORCE_SOCKET_HIDDEN;
                         }
@@ -1548,7 +1549,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 } else {
                     force->unknown_50 = 0.0f;
                 }
-                if ((force->config_flags & 0x40) != 0 && (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) == 0 &&
+                if ((force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0 && (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) == 0 &&
                     ForceAnimationDone(force) && (force->force_range == 0.0f || (force->runtime_flags & GIZFORCE_SHAKE_DONE) != 0)) {
                     GameAnimSet_SetVisibility(force->anim_set, 0);
                     force->runtime_flags |= GIZFORCE_SOCKET_HIDDEN;
@@ -1607,7 +1608,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                     PlaySfx("LegoForm", &force->position);
                 }
             }
-            if ((force->config_flags & 0x2000) == 0) {
+            if ((force->config_flags & GIZFORCE_CONFIG_NO_SHOVE) == 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
                     GIZFORCEANIMDATA_s *data = object->object_data;
                     if ((data->flags & 2) == 0 && data->platform_id != -1) {
@@ -1622,11 +1623,13 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                     force->runtime_flags |= GIZFORCE_STACK_COMPLETE;
                 }
             } else if (!(force->force_range > 0.0f && (force->runtime_flags & GIZFORCE_SHAKE_DONE) == 0) &&
-                       !((force->config_flags & 0x40) != 0 && (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) == 0) &&
-                       (force->anim_set->animated_object_count != 0 || force->force_range > 0.0f || (force->config_flags & 0x40) != 0) &&
+                       !((force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0 &&
+                         (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) == 0) &&
+                       (force->anim_set->animated_object_count != 0 || force->force_range > 0.0f ||
+                        (force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0) &&
                        (force->runtime_flags & GIZFORCE_COMPLETION_RELEASED) == 0) {
                 if (force->blowup_type != -1) {
-                    if ((force->config_flags & 0x20) != 0) {
+                    if ((force->config_flags & GIZFORCE_CONFIG_BLOWUP_EACH) != 0) {
                         if (force->anim_set != NULL) {
                             for (object = force->anim_set->objects; object != NULL; object = object->next) {
                                 NUVEC *position = NuSpecialGetDrawPos(&object->special);
@@ -1680,11 +1683,11 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         if ((force->runtime_flags & GIZFORCE_COMPLETION_PENDING) != 0 && GizForce_Complete(force)) {
             force->runtime_flags &= ~GIZFORCE_COMPLETION_PENDING;
         }
-        if (!force->destroyed && (force->config_flags & 0x300) != 0) {
+        if (!force->destroyed && (force->config_flags & (GIZFORCE_CONFIG_BOLT_MOVES | GIZFORCE_CONFIG_BOLT_DESTROYS)) != 0) {
             system->hit_test_gizmos[system->hit_test_gizmo_count++] = gizmo;
         }
         if ((i8)force->runtime_flags < 0 && !GizForce_Complete(force)) {
-            if ((force->config_flags & 0x400) != 0) {
+            if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
                     GIZFORCEANIMDATA_s *data = object->object_data;
                     if ((data->unknown_04 & 1) != 0 || !NuSpecialExistsFn(&object->special)) {
@@ -1704,7 +1707,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                     NuVecRotateZ(&particle_offset, &particle_offset, qrand());
                     NuVecRotateY(&particle_offset, &particle_offset, (u16)qrand());
                     NuVecAdd(&centre, &centre, &particle_offset);
-                    if ((force->config_flags & 0x10) != 0) {
+                    if ((force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) != 0) {
                         if ((force->runtime_flags & 0x20000) == 0) {
                             AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[110].effect, &centre,
                                                               (i32)((f64)radius * 90.0), FRAMETIME, 0, 0, NULL);
@@ -1728,7 +1731,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 NuVecRotateZ(&particle_offset, &particle_offset, qrand());
                 NuVecRotateY(&particle_offset, &particle_offset, (u16)qrand());
                 NuVecAdd(&centre, &centre, &particle_offset);
-                if ((force->config_flags & 0x10) != 0) {
+                if ((force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) != 0) {
                     AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[110].effect, &centre, (i32)((f64)radius * 90.0),
                                                       FRAMETIME, 0, 0, NULL);
                 } else {
@@ -1738,7 +1741,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
             }
         }
         force->runtime_flags &= ~0x20000u;
-        if ((force->config_flags & 0x400) != 0) {
+        if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
             for (object = force->anim_set->objects; object != NULL; object = object->next) {
                 ((GIZFORCEANIMDATA_s *)object->object_data)->unknown_04 &= ~1u;
             }
@@ -1779,7 +1782,8 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         if (fields->using_object != NULL || fields->unavailable_flags != 0) {
             continue;
         }
-        if ((fields->config_flags & 0x10) && !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE) && !super_force) {
+        if ((fields->config_flags & GIZFORCE_CONFIG_DARK_SIDE) && !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE) &&
+            !super_force) {
             continue;
         }
         group = fields->group;
@@ -1809,7 +1813,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         if (distance > fields->interaction_radius * fields->interaction_radius) {
             continue;
         }
-        if (fields->config_flags & 0x400) {
+        if (fields->config_flags & GIZFORCE_CONFIG_PER_OBJECT) {
             for (animation = fields->anim_set->objects; animation != NULL; animation = animation->next) {
                 if (animation->flags & 1) {
                     continue;
@@ -1849,7 +1853,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         }
         if (oldest != NULL) {
             los->queried_at[oldest->index] = LevelTimer.update_count;
-            if (((GIZFORCE_BEST *)oldest->force)->config_flags & 0x800) {
+            if (((GIZFORCE_BEST *)oldest->force)->config_flags & GIZFORCE_CONFIG_LINE_OF_SIGHT) {
                 ((GIZFORCE_LOS_BEST *)object->gizforce_los_info)->clear_bits[oldest->index >> 5] &= ~(1u << (oldest->index & 31));
                 if (oldest->animation != NULL) {
                     NUVEC *draw_position = NuSpecialGetDrawPos(&oldest->animation->special);

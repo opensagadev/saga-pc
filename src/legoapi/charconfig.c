@@ -45,15 +45,6 @@ typedef struct CHARCONFIG {            // size 0xfc8
     char animation_names[100][40];                  // 0x028
 } CHARCONFIG;
 
-/* CHARCONFIG.flags: what the character config being read has given so far. */
-#define CHARCONFIG_BSA_DEFAULT 0x1 /* bsa_default on: new animations start with CHARANIM_BSA */
-#define CHARCONFIG_LAYERS 0x2      /* the layers are read into this character (layer keywords count) */
-#define CHARCONFIG_TURN_RATE 0x4   /* turn_rate */
-#define CHARCONFIG_TURN_RATE_2 0x8 /* turn_rate_2 (without it, it copies turn_rate) */
-#define CHARCONFIG_TIMEBASE 0x10   /* timebaseupdate1-4 (without them, a vehicle gets vehicle_timebase_*) */
-#define CHARCONFIG_ANIMATIONS 0x20 /* the animations are read into the character's arena */
-#define CHARCONFIG_PERMANENT 0x40  /* the permanent bit: effect_start blocks are read */
-
 CHARCONFIG charconfig = {0};
 
 /* Defined at the end of this file; called with and without a path. */

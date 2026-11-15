@@ -5616,7 +5616,7 @@ i32 Action_SetZeroAcceleration(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
 
 i32 Action_BreakFormation(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_4, i32 param_5, f32 param_6) {
     if (packet != NULL && packet->group != NULL) {
-        packet->group->flags &= ~8u;
+        packet->group->flags &= ~AIGROUP_FORMATION;
     }
     return 1;
 }
@@ -5625,7 +5625,7 @@ i32 Action_FormationMove(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     (void)sys;
     (void)processor;
     if (packet != NULL && packet->group != NULL) {
-        packet->group->flags |= 8u;
+        packet->group->flags |= AIGROUP_FORMATION;
     }
     (void)params;
     (void)param_4;
@@ -8721,7 +8721,7 @@ i32 Action_UseForce(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
         return 0;
     }
     valid_category = 1;
-    if (view->config_flags & 0x10) {
+    if (view->config_flags & GIZFORCE_CONFIG_DARK_SIDE) {
         if (CharCategory_IsCategory(object, 1) == 0) {
             valid_category = 0;
         }
@@ -9916,7 +9916,7 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
         } else if (gizmo->type_id == force_gizmotype_id) {
             AI_TRIGGER_FORCE *force = gizmo->object;
             i32 is_category;
-            if ((force->config_flags & 0x10) != 0) {
+            if ((force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) != 0) {
                 is_category = CharCategory_IsCategory(object, 1);
             } else {
                 is_category = CharCategory_IsCategory(object, 0);

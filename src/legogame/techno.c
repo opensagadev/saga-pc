@@ -698,7 +698,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
     } else {
         if (!((((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || object->unknown_f00 == 2) && object->suit != NULL &&
-               (object->suit->flags & 0x20) != 0) ||
+               (object->suit->flags & SUIT_TECHNOLOGY) != 0) ||
               (StartupGameFlag1 != 0 && StartupGameFlag0 != 0))) {
             return;
         }

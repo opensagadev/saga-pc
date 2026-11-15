@@ -439,26 +439,26 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
 void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *system, CUT_LOAD_LOCATOR_INSTANCE *instance,
                              CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent, i32 paused) {
     CUT_LOAD_LOCATOR_TYPE *type = &system->types[locator->type_index];
-    if ((type->flags & 1) != 0) {
+    if ((type->flags & CUTLOCATOR_DEBRIS) != 0) {
         if (paused == 0) {
             CutSceneLocatorDebrisUpdate(locator, system, instance, frame, parent);
         }
-    } else if ((type->flags & 2) != 0) {
+    } else if ((type->flags & CUTLOCATOR_FUNCTION) != 0) {
         if (type->function_index != 0xffff) {
             CUT_UPDATE_ENTRY *entry = &((CUT_UPDATE_ENTRY *)CutSceneLocatorFunctions)[type->function_index];
             if (entry->update != NULL) {
                 entry->update(owner, system, instance, locator, frame, parent, paused);
             }
         }
-    } else if ((type->flags & 0x10) != 0) {
+    } else if ((type->flags & CUTLOCATOR_VFX) != 0) {
         if (paused == 0) {
             CutSceneLocatorVfxUpdate(locator, system, instance, frame, parent);
         }
-    } else if ((type->flags & 4) != 0) {
+    } else if ((type->flags & CUTLOCATOR_SFX) != 0) {
         if (NuCutSceneSFXUpdate != NULL && ((CUT_INSTANCE_LOAD *)owner)->rate != 0.0f) {
             NuCutSceneSFXUpdate(system, instance, locator, frame, parent, paused);
         }
-    } else if ((type->flags & 8) != 0) {
+    } else if ((type->flags & CUTLOCATOR_LOOK_AT) != 0) {
         if (paused == 0) {
             CutSceneLocatorLookAtUpdate(instance, locator, frame, parent, owner);
         }

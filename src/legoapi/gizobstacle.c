@@ -502,7 +502,7 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
         }
     }
     obstacle->room_id = world->current_gscn ? NuPortalWhichRoom(world->current_gscn, &obstacle->position) : -1;
-    if (obstacle->config_flags & 2) {
+    if (obstacle->config_flags & GIZOBSTACLE_CONFIG_AVERAGE_CENTRE) {
         GameAnimSet_GetAveragePos(obstacle->anim_set, &obstacle->secondary_position, 0, 1, 1);
     }
     GameAnimSet_EvaluateState(obstacle->anim_set);
@@ -580,7 +580,7 @@ static i32 GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT
         if ((!object->unknown_281 && !(object->flags_ef4 & 0x20000000)) || object->jump_animation_state != obstacle->trigger_mode) {
             return 0;
         }
-    } else if (obstacle->config_flags & 0x10) {
+    } else if (obstacle->config_flags & GIZOBSTACLE_CONFIG_STAND_ON) {
         if (!object->unknown_281 && !(object->flags_ef4 & 0x20000000)) {
             return 0;
         }
@@ -611,14 +611,16 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         GAMEOBJECT *object;
         if (obstacle->mode == 1 || obstacle->mode == 2 || obstacle->mode == 5 || obstacle->mode == 6) {
             if ((obstacle->mode == 1 || obstacle->mode == 5) && GameCam->mode != GAMECAM_MODE_NONE && obstacle->trigger_mode == 0xff &&
-                !(obstacle->config_flags & 0x4435)) {
+                !(obstacle->config_flags &
+                  (GIZOBSTACLE_CONFIG_INVERTED | GIZOBSTACLE_CONFIG_PLAYERS_ONLY | GIZOBSTACLE_CONFIG_STAND_ON |
+                   GIZOBSTACLE_CONFIG_ACTIVE_PLAYERS_ONLY | GIZOBSTACLE_CONFIG_RIDERS_ONLY | GIZOBSTACLE_CONFIG_BADDIES_ONLY))) {
                 distance = NuVecDistSqr(&GameCam->position, &obstacle->secondary_position, NULL);
                 if (distance < closest && GizObstacle_PosWithinBox(obstacle, &GameCam->position)) {
                     closest = distance;
                     closest_position = &GameCam->position;
                 }
             }
-            if (!(obstacle->config_flags & 1)) {
+            if (!(obstacle->config_flags & GIZOBSTACLE_CONFIG_INVERTED)) {
                 for (i = 0; i < ngizobstacletriggers; ++i) {
                     distance = NuVecDistSqr(&obstacle->secondary_position, GizObstacleTriggers[i], NULL);
                     if (distance < closest && GizObstacle_PosWithinBox(obstacle, GizObstacleTriggers[i])) {
@@ -639,13 +641,17 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             if (player != -1) {
                 players |= 1 << player;
             }
-            if ((obstacle->config_flags & 4) && player == -1) {
+            if ((obstacle->config_flags & GIZOBSTACLE_CONFIG_PLAYERS_ONLY) && player == -1) {
                 continue;
             }
-            if (((obstacle->config_flags & 0x20) && !(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) ||
-                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) || ((obstacle->config_flags & 0x400) && !object->rider) ||
-                ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE)) ||
-                ((obstacle->config_flags & 8) && !(object->character_data->model_flags & CHARACTER_MODEL_VEHICLE)) ||
+            if (((obstacle->config_flags & GIZOBSTACLE_CONFIG_ACTIVE_PLAYERS_ONLY) &&
+                 !(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) ||
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) ||
+                ((obstacle->config_flags & GIZOBSTACLE_CONFIG_RIDERS_ONLY) && !object->rider) ||
+                ((obstacle->config_flags & GIZOBSTACLE_CONFIG_BADDIES_ONLY) &&
+                 !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE)) ||
+                ((obstacle->config_flags & GIZOBSTACLE_CONFIG_VEHICLES_ONLY) &&
+                 !(object->character_data->model_flags & CHARACTER_MODEL_VEHICLE)) ||
                 (GizObstacleExcludeFn && GizObstacleExcludeFn(obstacle, object))) {
                 continue;
             }
@@ -674,19 +680,19 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                         players &= ~(1 << object->player_index);
                     }
                 }
-            } else if ((obstacle->config_flags & 0x2000) && object->player_index != -1 &&
+            } else if ((obstacle->config_flags & GIZOBSTACLE_CONFIG_ALL_PLAYERS) && object->player_index != -1 &&
                        distance < obstacle->trigger_radius * obstacle->trigger_radius &&
                        GizObstacle_PosWithinBox(obstacle, &object->collision_position) &&
                        GizObstacle_SatisfyingTerrainChecks(obstacle, object)) {
                 players &= ~(1 << object->player_index);
             }
         }
-        if (obstacle->config_flags & 1) {
+        if (obstacle->config_flags & GIZOBSTACLE_CONFIG_INVERTED) {
             if (!closest_position) {
                 obstacle->triggering_object = closest_object;
                 obstacle->proximity_output = 1;
             }
-        } else if (closest_position && (!(obstacle->config_flags & 0x2000) || !players)) {
+        } else if (closest_position && (!(obstacle->config_flags & GIZOBSTACLE_CONFIG_ALL_PLAYERS) || !players)) {
             obstacle->triggering_object = closest_object;
             obstacle->proximity_output = 1;
         }
