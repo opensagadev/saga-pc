@@ -82,7 +82,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
         ClearSpecialMove(owner);
     } else if (owner->character_context != CHARACTER_CONTEXT_JUMP &&
                (owner->position.y < owner->ai_packet.special_move_node->min_height ||
-                (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
+                (packet->path_info.connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_TEMPORARY_BLOCK) != 0 ||
                 ((capabilities & 0x40) != 0 && owner->unknown_281 != 0))) {
         ClearSpecialMove(owner);
     }
@@ -433,18 +433,19 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
     u32 flags;
     u32 capabilities;
     STARWARS_PREPARE *entry;
+
     if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
         owner->pad->buttons_pressed |= GAMEPAD_JUMP;
     }
     flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
-    if (flags != 0 && (flags & 0x40000000) == 0) {
+    if (flags != 0 && (flags & AIPATHCNX_PERMANENT_BLOCK) == 0) {
         capabilities = flags & packet->capabilities;
         if ((flags & 0x8000) != 0 && (owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 &&
             owner->takeover_target == NULL && owner->character_context != CHARACTER_CONTEXT_GET_IN && (capabilities & 0xffff7fff) == 0) {
             AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
             return 1;
         }
-        if (capabilities != 0 && (flags & 0x98000000) == 0) {
+        if (capabilities != 0 && (flags & (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
             for (entry = starwars_prepareforspecialmove; entry->prepare != NULL; ++entry) {
                 if ((entry->capabilities & capabilities) != 0) {
                     if (entry->prepare(packet, apiobject, checks) != 0) {
@@ -461,7 +462,8 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
         }
     }
     if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
-        (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0) {
+        (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+         (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
         TryToTeleportToNextNode(
             owner, &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]], 0);
     }

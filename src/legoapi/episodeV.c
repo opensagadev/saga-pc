@@ -924,7 +924,7 @@ void CloudCityTrapC_Update(WORLDINFO *world) {
     if (netclient != 0 || LevPathCnx[0] == NULL) {
         return;
     }
-    LevPathCnx[0]->traversal_flags[LevPathCnxDir] &= ~(LEGO_AIPATHCNX_BIGJUMP | LEGO_AIPATHCNX_R2D2GLIDE | 0x80000000);
+    LevPathCnx[0]->traversal_flags[LevPathCnxDir] &= ~(LEGO_AIPATHCNX_BIGJUMP | LEGO_AIPATHCNX_R2D2GLIDE | AIPATHCNX_TEMPORARY_BLOCK);
     if ((LevGizObst[1] != NULL && LevGizObst[1]->anim_set->state != 0 && player->collision_position.z < -20.0f) ||
         player->collision_position.z < -21.0f) {
         active = LEGO_AIPATHCNX_BIGJUMP;

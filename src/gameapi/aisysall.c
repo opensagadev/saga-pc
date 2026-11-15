@@ -81,11 +81,7 @@ void AIScriptMissingConditionDiagnostic(const char *format, ...);
  * call only through a function type without a prototype. */
 #define AI_SCRIPT_DIAGNOSTIC_BARE(diagnostic) ((void (*)())(diagnostic))()
 
-enum {
-    AIPATHINFO_FLAG_ON_PATH_LOCAL = 0x01,
-    AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL = 0x04,
-    AIPATH_CONNECTION_FLAG_RESELECT_ROUTE_LOCAL = 0x98000000u
-};
+enum { AIPATHINFO_FLAG_ON_PATH_LOCAL = 0x01, AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL = 0x04 };
 
 extern void (*GameAISYSRebuildFromEditorDataFn)(AISYS_PC *, VARIPTR *, VARIPTR *);
 
@@ -4627,8 +4623,8 @@ void AIPathNodeUpdatePos(void *context, AIPATH *path, AIPATHNODE *node) {
                 other = &path->nodes[connection->node_indices[0]];
             }
             if ((other->runtime_flags & 0x04) == 0) {
-                connection->traversal_flags[0] &= 0xefffffffu;
-                connection->traversal_flags[1] &= 0xefffffffu;
+                connection->traversal_flags[0] &= ~AIPATHCNX_HIDDEN;
+                connection->traversal_flags[1] &= ~AIPATHCNX_HIDDEN;
             }
         }
     } else if (NuSpecialGetVisibilityFn(&node->special_handle) == 0) {
@@ -4636,8 +4632,8 @@ void AIPathNodeUpdatePos(void *context, AIPATH *path, AIPATHNODE *node) {
             node->runtime_flags |= 0x04;
             for (connection_index = 0; connection_index < node->connection_count; ++connection_index) {
                 connection = node->connections[connection_index];
-                connection->traversal_flags[0] |= 0x10000000u;
-                connection->traversal_flags[1] |= 0x10000000u;
+                connection->traversal_flags[0] |= AIPATHCNX_HIDDEN;
+                connection->traversal_flags[1] |= AIPATHCNX_HIDDEN;
             }
             return;
         }
@@ -4661,11 +4657,11 @@ void AIPathNodeUpdatePos(void *context, AIPATH *path, AIPATHNODE *node) {
 
         if (connection->max_horizontal_distance != 0.0f) {
             if (connection->horizontal_distance > node->radius + connection->max_horizontal_distance + other->radius) {
-                connection->traversal_flags[0] |= 0x08000000u;
-                connection->traversal_flags[1] |= 0x08000000u;
+                connection->traversal_flags[0] |= AIPATHCNX_TOO_LONG;
+                connection->traversal_flags[1] |= AIPATHCNX_TOO_LONG;
             } else {
-                connection->traversal_flags[0] &= 0xf7ffffffu;
-                connection->traversal_flags[1] &= 0xf7ffffffu;
+                connection->traversal_flags[0] &= ~AIPATHCNX_TOO_LONG;
+                connection->traversal_flags[1] &= ~AIPATHCNX_TOO_LONG;
             }
         }
     }
@@ -4911,7 +4907,7 @@ void AISysCharacterSetPathCnx(AIPACKET *packet, NUVEC *position, AIPATHCNX *conn
 
     connection_flags = connection->traversal_flags[direction];
     if (connection_flags != 0) {
-        if ((connection_flags & AIPATH_CONNECTION_FLAG_RESELECT_ROUTE_LOCAL) != 0) {
+        if ((connection_flags & (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_TEMPORARY_BLOCK)) != 0) {
             AISysFindRoute(packet);
             return;
         }
@@ -5986,7 +5982,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
                         destination_distance_1 = FLT_MAX;
                     }
                 }
-                if ((connection->traversal_flags[packet->path_info.direction] & 0x40000000) == 0) {
+                if ((connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_PERMANENT_BLOCK) == 0) {
                     {
                         if (destination_distance_0 != FLT_MAX && endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
                             candidate = AIPathNodeDistanceToPathNode(packet->path_info.path,
@@ -6024,7 +6020,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
                         }
                     }
                 }
-                if ((connection->traversal_flags[0 == packet->path_info.direction] & 0x40000000) == 0) {
+                if ((connection->traversal_flags[0 == packet->path_info.direction] & AIPATHCNX_PERMANENT_BLOCK) == 0) {
                     {
                         if (destination_distance_0 != FLT_MAX && endpoint_distances[packet->path_info.direction] != FLT_MAX) {
                             candidate =
@@ -6098,8 +6094,10 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
                 } while (next != NULL);
             } else {
                 // MATCH-EXCEPTION: the original tests the signed flags as a 64-bit value (cdq) here and below.
-                flags = (destination_connection->traversal_flags[0] | destination_connection->traversal_flags[1]) & 0xdfffffff;
-                if (((u64)flags & 0xd8000000) == 0 && (flags == 0 || (packet->capabilities & flags) != 0) &&
+                flags =
+                    (destination_connection->traversal_flags[0] | destination_connection->traversal_flags[1]) & ~AIPATHCNX_LINK_OBSTACLE;
+                if (((u64)flags & (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0 &&
+                    (flags == 0 || (packet->capabilities & flags) != 0) &&
                     WithinConnection(system, &packet->terrain_origin, packet->path_info.path, destination_connection, checks,
                                      packet->path_info.connection, packet->current_route, object->object_id, NULL, object->collision_radius,
                                      0) != 0) {
@@ -6120,7 +6118,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
     }
     current_2 = packet->path_info.connection;
     flags = current_2->traversal_flags[packet->path_info.direction];
-    if ((flags & 0xd8000000) != 0) {
+    if ((flags & (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) != 0) {
         packet->movement_destination = path->nodes[current_2->node_indices[packet->path_info.direction]].position;
         packet->flags |= AIPACKET_PATH_BLOCKED;
         packet->movement_stopping_distance = 0.0f;
@@ -6186,7 +6184,7 @@ void AIMoveToDestination(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object, 
     if (next != NULL) {
         flags = next->traversal_flags[direction];
         if (((u64)flags & 0xdfffffff) != 0) {
-            if ((flags & 0xd8000000) != 0) {
+            if ((flags & (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) != 0) {
                 packet->movement_destination = object->position;
                 packet->flags |= AIPACKET_PATH_BLOCKED;
                 packet->movement_stopping_distance = 0.0f;
@@ -6322,7 +6320,7 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET *packet, API
             }
         }
 
-        if ((packet->path_info.connection->traversal_flags[1] & 0x40000000u) == 0) {
+        if ((packet->path_info.connection->traversal_flags[1] & AIPATHCNX_PERMANENT_BLOCK) == 0) {
             candidate = AIPathNodeDistanceToPathNode(path, packet->path_info.connection->node_indices[0],
                                                      destination_connection->node_indices[0], packet->current_route, 0) +
                         partial_distance + destination_a;
@@ -6338,7 +6336,7 @@ static void AIRetreatFromDestinationPath(AISYS_PC *system, AIPACKET *packet, API
                 direction = 1;
             }
         }
-        if ((packet->path_info.connection->traversal_flags[0] & 0x40000000u) == 0) {
+        if ((packet->path_info.connection->traversal_flags[0] & AIPATHCNX_PERMANENT_BLOCK) == 0) {
             candidate_2 = AIPathNodeDistanceToPathNode(packet->path_info.path, packet->path_info.connection->node_indices[1],
                                                        packet->fallback_path_info.connection->node_indices[0], packet->current_route, 0) +
                           partial_distance_2 + destination_a;
@@ -7182,7 +7180,7 @@ void FindAIDirectionedRandomPointOnNetwork2D(AIPACKET *packet, NUVEC *position, 
                 AIPATHNODE *candidate_end;
                 i32 reverse = fun_00520a00(packet, junction->connections[i], &candidate_start, &candidate_end, direction);
                 fun_005209e0(&delta, &candidate_start->position, &candidate_end->position, junction->connections[i]->horizontal_distance);
-                if ((junction->connections[i]->traversal_flags[reverse] & 0xc0000000) == 0) {
+                if ((junction->connections[i]->traversal_flags[reverse] & (AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
                     f32 dot = direction->z * delta.z + direction->x * delta.x;
                     if (dot > best_dot) {
                         best_dot = dot;
@@ -8259,7 +8257,7 @@ void pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32
     vertices[1].position.x -= radius * direction.z * 0.5;
     vertices[1].position.z += radius * direction.x * 0.5;
     AiRndrLine3d(vertices, NULL, NULL);
-    if (flags & 0x40000000) {
+    if (flags & AIPATHCNX_PERMANENT_BLOCK) {
         NuVecScale(&vertices[0].position, &direction, radius * 0.5);
         vertices[0].position.y = 0.0f;
         NuVecAdd(&vertices[0].position, &vertices[0].position, &start);
@@ -8269,7 +8267,7 @@ void pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32
         vertices[1].position.x -= radius * direction.z * 0.5;
         vertices[1].position.z += radius * direction.x * 0.5;
         AiRndrLine3d(vertices, NULL, NULL);
-    } else if (flags & 0x80000000) {
+    } else if (flags & AIPATHCNX_TEMPORARY_BLOCK) {
         NUVEC centre = vertices[0].position;
         vertices[0].colour = colour / 2;
         vertices[1].colour = colour / 2;
@@ -8281,7 +8279,7 @@ void pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32
         vertices[1].position.x -= radius * direction.z * 0.25;
         vertices[1].position.z += radius * direction.x * 0.25;
         AiRndrLine3d(vertices, NULL, NULL);
-    } else if (flags & 0x20000000) {
+    } else if (flags & AIPATHCNX_LINK_OBSTACLE) {
         NUVEC centre = vertices[0].position;
         NuVecScale(&vertices[0].position, &direction, radius);
         vertices[0].position.y = 0.0f;
@@ -8708,7 +8706,7 @@ static void pathEditorCalcRouteIterator(AIPATH *path, f32 *distances, u8 *visite
         for (index = 0; index < node->connection_count; ++index) {
             AIPATHCNX *connection = node->connections[index];
             i32 direction = connection->node_indices[0] != current;
-            if ((connection->traversal_flags[direction] & 0x40000000) == 0 &&
+            if ((connection->traversal_flags[direction] & AIPATHCNX_PERMANENT_BLOCK) == 0 &&
                 (route_mask == 0 || (connection->route_mask & route_mask) != 0)) {
                 pathEditorCalcRouteIterator(path, distances, visited, current, connection->node_indices[!direction], new_distance,
                                             route_mask);
@@ -8766,7 +8764,7 @@ static void pathEditorPopulateRouteMatrix(AIPATH *path, i32 route_mask, f32 **di
                 i32 direction = connection->node_indices[0] != source;
                 i32 neighbor;
                 f32 distance;
-                if (connection->traversal_flags[direction] & 0x40000000) {
+                if (connection->traversal_flags[direction] & AIPATHCNX_PERMANENT_BLOCK) {
                     continue;
                 }
                 if (route_mask != 0 && !(connection->route_mask & route_mask)) {
@@ -12487,9 +12485,9 @@ void AIPathCnxSetTemporaryBlock(AIPATH *path, char *from_name, char *to_name, i3
         connection = from->connections[index];
         if (connection != NULL) {
             if (blocked != 0) {
-                connection->traversal_flags[direction] |= 0x80000000u;
+                connection->traversal_flags[direction] |= AIPATHCNX_TEMPORARY_BLOCK;
             } else {
-                connection->traversal_flags[direction] &= 0x7fffffffu;
+                connection->traversal_flags[direction] &= ~AIPATHCNX_TEMPORARY_BLOCK;
             }
         }
         return;
@@ -12560,15 +12558,15 @@ i32 Action_PathConnectionMaxLength(AISYS_PC *sys, AISCRIPTPROCESS *processor, AI
             if (connection != NULL) {
                 connection->max_horizontal_distance = length;
                 if (length == 0.0f) {
-                    connection->traversal_flags[0] &= ~0x08000000;
-                    connection->traversal_flags[1] &= ~0x08000000;
+                    connection->traversal_flags[0] &= ~AIPATHCNX_TOO_LONG;
+                    connection->traversal_flags[1] &= ~AIPATHCNX_TOO_LONG;
                 } else if (connection->horizontal_distance >
                            length + sys->path_sys->active_path->nodes[0].radius + sys->path_sys->active_path->nodes[0].radius) {
-                    connection->traversal_flags[0] |= 0x08000000;
-                    connection->traversal_flags[1] |= 0x08000000;
+                    connection->traversal_flags[0] |= AIPATHCNX_TOO_LONG;
+                    connection->traversal_flags[1] |= AIPATHCNX_TOO_LONG;
                 } else {
-                    connection->traversal_flags[0] &= ~0x08000000;
-                    connection->traversal_flags[1] &= ~0x08000000;
+                    connection->traversal_flags[0] &= ~AIPATHCNX_TOO_LONG;
+                    connection->traversal_flags[1] &= ~AIPATHCNX_TOO_LONG;
                 }
             }
         }
@@ -12600,7 +12598,7 @@ i32 Action_PathConnectionObstacle(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIP
         }
         if (from != NULL && to != NULL) {
             connection = AIPAthFindPathCnx(sys, NULL, from, to, &direction);
-            if (connection != NULL && (connection->traversal_flags[0] & 0x20000000) != 0) {
+            if (connection != NULL && (connection->traversal_flags[0] & AIPATHCNX_LINK_OBSTACLE) != 0) {
                 connection->open = open;
             }
         }
@@ -13056,7 +13054,8 @@ static u32 CharacterTestPathCnx(AISYS_PC *system, APIOBJECT *object, AIPACKET *p
                 if (direction != -1) {
                     flags = connection->traversal_flags[direction];
                 }
-                if (flags != 0 && ((packet->capabilities & flags) == 0 || (flags & 0x98000000) != 0)) {
+                if (flags != 0 && ((packet->capabilities & flags) == 0 ||
+                                   (flags & (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_TEMPORARY_BLOCK)) != 0)) {
                     return 0;
                 }
             }
@@ -14393,9 +14392,9 @@ void locatorEditor_Enter(void) {
 }
 
 void aieditor_RegisterDefaultPathCnxTypes(void) {
-    aieditor_RegisterPathCnxType("Permanent Block", 0x40000000, NULL, 0);
-    aieditor_RegisterPathCnxType("Temporary Block", 0x80000000, NULL, 0);
-    aieditor_RegisterPathCnxType("Link Obstacle", 0x20000000, NULL, 1);
+    aieditor_RegisterPathCnxType("Permanent Block", AIPATHCNX_PERMANENT_BLOCK, NULL, 0);
+    aieditor_RegisterPathCnxType("Temporary Block", AIPATHCNX_TEMPORARY_BLOCK, NULL, 0);
+    aieditor_RegisterPathCnxType("Link Obstacle", AIPATHCNX_LINK_OBSTACLE, NULL, 1);
 }
 
 void pathEditor_DestroyNode(EDAIPATHNODE_s *node, EDAIPATH_s *path) {

@@ -751,11 +751,11 @@ void EmperorFightA_Update(WORLDINFO *world) {
             EmperorFloorRouteOn = 1;
             for (i = 0; i < world->ai_sys->path_sys->active_path->connection_count; ++i) {
                 if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_on) {
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= ~AIPATHCNX_TEMPORARY_BLOCK;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= ~AIPATHCNX_TEMPORARY_BLOCK;
                 } else if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_off) {
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= AIPATHCNX_TEMPORARY_BLOCK;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= AIPATHCNX_TEMPORARY_BLOCK;
                 }
             }
         } else {
@@ -765,11 +765,11 @@ void EmperorFightA_Update(WORLDINFO *world) {
             EmperorFloorRouteOn = 0;
             for (i = 0; i < world->ai_sys->path_sys->active_path->connection_count; ++i) {
                 if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_on) {
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= 0x80000000;
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= 0x80000000;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] |= AIPATHCNX_TEMPORARY_BLOCK;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] |= AIPATHCNX_TEMPORARY_BLOCK;
                 } else if (world->ai_sys->path_sys->active_path->connections[i].route_mask & routemask_efloor_off) {
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= 0x7fffffff;
-                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= 0x7fffffff;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[0] &= ~AIPATHCNX_TEMPORARY_BLOCK;
+                    world->ai_sys->path_sys->active_path->connections[i].traversal_flags[1] &= ~AIPATHCNX_TEMPORARY_BLOCK;
                 }
             }
         }

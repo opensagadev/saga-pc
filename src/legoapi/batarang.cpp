@@ -954,7 +954,7 @@ extern "C" {
             ClearSpecialMove(owner);
         } else if (owner->character_context != CHARACTER_CONTEXT_JUMP &&
                    (owner->position.y < owner->ai_packet.special_move_node->min_height ||
-                    (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0)) {
+                    (packet->path_info.connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_TEMPORARY_BLOCK) != 0)) {
             ClearSpecialMove(owner);
         }
         if (owner->ai_packet.special_move_node != NULL) {
@@ -1672,7 +1672,7 @@ extern "C" {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         }
         if (packet->path_info.connection->traversal_flags[packet->path_info.direction] != 0 &&
-            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x40000000) == 0) {
+            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_PERMANENT_BLOCK) == 0) {
             capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
             if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x8000) != 0 &&
                 (owner->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 &&
@@ -1681,7 +1681,8 @@ extern "C" {
                 AIScriptSetBaseScriptStateByName(&apiobject->ai->script_processor, "TakeOverJump");
                 return 1;
             }
-            if (capabilities != 0 && (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x98000000) == 0) {
+            if (capabilities != 0 && (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+                                      (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
                 for (entry = batman_prepareforspecialmove; entry->prepare != NULL; ++entry) {
                     if ((entry->capabilities & capabilities) != 0) {
                         if (entry->prepare(packet, apiobject, checks) != 0) {
@@ -1698,7 +1699,8 @@ extern "C" {
             }
         }
         if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
-            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0) {
+            (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+             (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
             TryToTeleportToNextNode(
                 owner, &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]], 0);
         }

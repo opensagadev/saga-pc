@@ -383,14 +383,14 @@ void DeathStarEscapeC_Update(WORLDINFO *world) {
     }
     if (NuSpecialGetVisibilityFn(&LevHSpecial[2]) != 0 && (position = NuSpecialGetDrawPos(&LevHSpecial[2])) != NULL &&
         position->x < 77.25f) {
-        LevPathCnx[0]->traversal_flags[0] &= ~0x80000000;
-        LevPathCnx[0]->traversal_flags[1] &= ~0x80000000;
+        LevPathCnx[0]->traversal_flags[0] &= ~AIPATHCNX_TEMPORARY_BLOCK;
+        LevPathCnx[0]->traversal_flags[1] &= ~AIPATHCNX_TEMPORARY_BLOCK;
         if (LevAIMessage[0] != NULL) {
             LevAIMessage[0]->value = 1.0f;
         }
     } else {
-        LevPathCnx[0]->traversal_flags[0] |= 0x80000000;
-        LevPathCnx[0]->traversal_flags[1] |= 0x80000000;
+        LevPathCnx[0]->traversal_flags[0] |= AIPATHCNX_TEMPORARY_BLOCK;
+        LevPathCnx[0]->traversal_flags[1] |= AIPATHCNX_TEMPORARY_BLOCK;
     }
 }
 

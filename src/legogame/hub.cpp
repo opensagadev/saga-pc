@@ -4259,7 +4259,7 @@ extern "C" {
         } else if (owner->character_context != CHARACTER_CONTEXT_JUMP && owner->character_context != CHARACTER_CONTEXT_LEDGE &&
                    owner->character_context != CHARACTER_CONTEXT_LEDGE_TERRAIN &&
                    (owner->position.y < owner->ai_packet.special_move_node->min_height ||
-                    (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80000000) != 0 ||
+                    (packet->path_info.connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_TEMPORARY_BLOCK) != 0 ||
                     owner->special_move_timer < -5.0f)) {
             ClearSpecialMove(owner);
         }
@@ -5018,9 +5018,9 @@ extern "C" {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
         }
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction];
-        if (flags != 0 && (flags & 0x40000000) == 0) {
+        if (flags != 0 && (flags & AIPATHCNX_PERMANENT_BLOCK) == 0) {
             capabilities = flags & packet->capabilities;
-            if (capabilities != 0 && (flags & 0x98000000) == 0) {
+            if (capabilities != 0 && (flags & (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
                 for (entry = IndyPrepareSpecialMove; entry->prepare != NULL; ++entry) {
                     if ((entry->capabilities & capabilities) != 0) {
                         if (entry->prepare(packet, apiobject, checks) != 0) {
@@ -5038,7 +5038,8 @@ extern "C" {
             }
         }
         if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f &&
-            (packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0xd8000000) == 0) {
+            (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
+             (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
             TryToTeleportToNextNode(
                 owner, &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]], 0);
         }

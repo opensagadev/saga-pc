@@ -41,6 +41,14 @@ struct gameobject_s;
 typedef struct AIPATHNODE AIPATHNODE;
 typedef struct AIPATHROUTE AIPATHROUTE;
 
+/* AIPATHCNX.traversal_flags: the low bits are the game's connection types (LEGO_AIPATHCNX_*, set per game at
+ * start-up); the top bits are the AI editor's connection types (aieditor_RegisterPathCnxType) and runtime state. */
+#define AIPATHCNX_TOO_LONG 0x08000000        /* longer than the connection's max_horizontal_distance */
+#define AIPATHCNX_HIDDEN 0x10000000          /* an end node's special is hidden */
+#define AIPATHCNX_LINK_OBSTACLE 0x20000000   /* "Link Obstacle" */
+#define AIPATHCNX_PERMANENT_BLOCK 0x40000000 /* "Permanent Block" */
+#define AIPATHCNX_TEMPORARY_BLOCK 0x80000000 /* "Temporary Block", also set and cleared by the BlockPath action */
+
 typedef struct AIPATHCNX {           // size 0x24
     u32 traversal_flags[2];          // 0x00
     u32 original_traversal_flags[2]; // 0x08
