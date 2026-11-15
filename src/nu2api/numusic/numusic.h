@@ -37,6 +37,16 @@ class NuMusic { // size 0x1e4
         void SetEntryTime(f32 time);
     };
 
+/* NuMusic::Voice.status: the NuMusicVoiceStatusText names. */
+#define NUMUSIC_VOICE_IDLE_PENDING 0
+#define NUMUSIC_VOICE_IDLE 1
+#define NUMUSIC_VOICE_PAUSED_PENDING 2
+#define NUMUSIC_VOICE_PAUSED 3
+#define NUMUSIC_VOICE_SEEKING_PENDING 4
+#define NUMUSIC_VOICE_SEEKING 5
+#define NUMUSIC_VOICE_PLAYPENDING 6
+#define NUMUSIC_VOICE_PLAYING 7
+
     class Voice { // size 0x34
       public:
         i32 stream_index; // 0x130

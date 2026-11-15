@@ -184,7 +184,7 @@ extern "C" {
             return;
         }
         if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && newgamecam == 0 &&
-            !(HUB_ADATA != NULL && WORLD->area == HUB_ADATA && GameCam->mode == 4)) {
+            !(HUB_ADATA != NULL && WORLD->area == HUB_ADATA && GameCam->mode == GAMECAM_MODE_DOOR_CUT)) {
             target = 1.0f;
         } else {
             target = 0.0f;

@@ -608,7 +608,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         i32 i;
         GAMEOBJECT *object;
         if (obstacle->mode == 1 || obstacle->mode == 2 || obstacle->mode == 5 || obstacle->mode == 6) {
-            if ((obstacle->mode == 1 || obstacle->mode == 5) && GameCam->mode != -1 && obstacle->trigger_mode == 0xff &&
+            if ((obstacle->mode == 1 || obstacle->mode == 5) && GameCam->mode != GAMECAM_MODE_NONE && obstacle->trigger_mode == 0xff &&
                 !(obstacle->config_flags & 0x4435)) {
                 distance = NuVecDistSqr(&GameCam->position, &obstacle->secondary_position, NULL);
                 if (distance < closest && GizObstacle_PosWithinBox(obstacle, &GameCam->position)) {

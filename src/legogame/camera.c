@@ -454,9 +454,9 @@ void MoveGameCamera(GAMECAMERA *camera) {
     previous_mode = camera->mode;
     camera->previous_mode = camera->mode;
     previous_sock_position = camera->sock_position;
-    camera->mode = -1;
+    camera->mode = GAMECAM_MODE_NONE;
     if (ViewCam.gamepad != NULL) {
-        camera->mode = 5;
+        camera->mode = GAMECAM_MODE_VIEWCAM;
     }
     if (newgamecam) {
         newgamecamtime += FRAMETIME;
@@ -465,13 +465,13 @@ void MoveGameCamera(GAMECAMERA *camera) {
         }
     }
     if (menu_id == 14 && HubMiniKitViewerSpline != NULL) {
-        camera->mode = 9;
+        camera->mode = GAMECAM_MODE_MINIKIT_VIEWER;
     } else if (menu_id == 8 && WORLD->camera_splines[24] != NULL) {
-        camera->mode = 6;
+        camera->mode = GAMECAM_MODE_MISSION;
     } else if (SHOPACTIVE && shopcampos != NULL && shopcamlookat != NULL) {
-        camera->mode = 8;
+        camera->mode = GAMECAM_MODE_SHOP;
     } else if (menu_id == 12 && WORLD->camera_splines[15] != NULL) {
-        camera->mode = 7;
+        camera->mode = GAMECAM_MODE_CUSTOMISE;
     } else if (ObstacleCamSpl != NULL && (ObstacleCamTime <= ObstacleCamEnd || ObstacleCamHoldUntilPlayersMove)) {
         f32 old_time = ObstacleCamTime;
         if (ObstacleCamEnd > ObstacleCamTime) {
@@ -481,7 +481,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
             ObstacleCamTime = ObstacleCamEnd;
             if (ObstacleCamHoldUntilPlayersMove) {
                 i32 i;
-                camera->mode = 2;
+                camera->mode = GAMECAM_MODE_OBSTACLE;
                 for (i = 0; ObstacleCamHoldUntilPlayersMove && i < 2; i++) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
@@ -505,11 +505,11 @@ void MoveGameCamera(GAMECAMERA *camera) {
                 goto choose_gameplay_camera;
             }
         } else if (ObstacleCamTime >= ObstacleCamStart && ObstacleCamEnd > ObstacleCamTime) {
-            camera->mode = 2;
+            camera->mode = GAMECAM_MODE_OBSTACLE;
             if (ObstacleCamStart > 0.0f && ObstacleCamStart > old_time && ObstacleCamBlendInTime <= 0.0f) {
                 camera->blend_duration = 0.0f;
                 camera->blend_time = 0.0f;
-                camera->previous_mode = -1;
+                camera->previous_mode = GAMECAM_MODE_NONE;
                 CutBorderScale = 1.0f;
             }
         } else {
@@ -517,49 +517,50 @@ void MoveGameCamera(GAMECAMERA *camera) {
         }
     } else if (Door_UseCutCam && Door_CutLookAtPlayers && Door_CutCamWait > 0.0f) {
         Door_CutCamWait -= FRAMETIME;
-        camera->mode = 4;
+        camera->mode = GAMECAM_MODE_DOOR_CUT;
     } else {
         goto choose_gameplay_camera;
     }
     goto mode_selected;
 choose_gameplay_camera:
-    if (camera->mode == -1) {
-        camera->mode = 0;
+    if (camera->mode == GAMECAM_MODE_NONE) {
+        camera->mode = GAMECAM_MODE_DEFAULT;
         if (Door_UseCutCam && GameTimer.update_count == 0) {
-            camera->mode = 4;
+            camera->mode = GAMECAM_MODE_DOOR_CUT;
         } else if (WORLD->current_level == TITLES_LDATA && WORLD->camera_splines[2] != NULL) {
-            camera->mode = 3;
+            camera->mode = GAMECAM_MODE_TITLES;
         } else if (PLAYERCOUNT > 0 && WORLD->sock_sys != NULL) {
-            camera->mode = 1;
+            camera->mode = GAMECAM_MODE_SOCKS;
             if (GUNSHIPAHACK && WORLD->current_level == BONUS_GUNSHIPA_LDATA && WORLD->sock_sys->socks[0].valid) {
-                camera->mode = 11;
+                camera->mode = GAMECAM_MODE_GUNSHIP;
             }
         }
     }
 mode_selected:
     if (camera->mode != previous_mode) {
-        if (previous_mode == 4) {
+        if (previous_mode == GAMECAM_MODE_DOOR_CUT) {
             GameCam_Blend(camera, Door_CutCamBlendTime, Door_CutLookAtPlayers ? 0.0f : Door_CutCamWait, 1);
             Door_UseCutCam = 0;
-        } else if (previous_mode != -1) {
+        } else if (previous_mode != GAMECAM_MODE_NONE) {
             f32 duration;
-            if (camera->mode == 2) {
+            if (camera->mode == GAMECAM_MODE_OBSTACLE) {
                 duration = ObstacleCamBlendInTime;
-            } else if (camera->mode == 9 || previous_mode == 9 || camera->mode == 6 || previous_mode == 6) {
+            } else if (camera->mode == GAMECAM_MODE_MINIKIT_VIEWER || previous_mode == GAMECAM_MODE_MINIKIT_VIEWER ||
+                       camera->mode == GAMECAM_MODE_MISSION || previous_mode == GAMECAM_MODE_MISSION) {
                 duration = 1.5f;
-            } else if (camera->mode == 8 || previous_mode == 8) {
+            } else if (camera->mode == GAMECAM_MODE_SHOP || previous_mode == GAMECAM_MODE_SHOP) {
                 duration = CamShopBlendTime;
-            } else if (camera->mode == 7 || previous_mode == 7) {
+            } else if (camera->mode == GAMECAM_MODE_CUSTOMISE || previous_mode == GAMECAM_MODE_CUSTOMISE) {
                 duration = GAMEDEMO ? 3.0f : 1.5f;
             } else {
                 duration = blend_duration;
             }
-            if (camera->previous_mode != -1 && duration != 0.0f) {
+            if (camera->previous_mode != GAMECAM_MODE_NONE && duration != 0.0f) {
                 GameCam_Blend(camera, duration, 0.0f, 1);
             }
         }
     }
-    if (camera->mode == 2 || camera->mode == 4) {
+    if (camera->mode == GAMECAM_MODE_OBSTACLE || camera->mode == GAMECAM_MODE_DOOR_CUT) {
         MiniCutCam = camera->blend_time < camera->blend_duration ? 1 : (ObstacleCamHoldUntilPlayersMove ? 3 : 2);
     } else if (camera->blend_time < camera->blend_duration && (camera->previous_camera_mode == 2 || camera->previous_camera_mode == 4)) {
         MiniCutCam = 4;
@@ -574,7 +575,7 @@ mode_selected:
     roll_hint_valid = 0;
     // The per-mode camera blend duration starts afresh after transition selection.
     blend_duration = 0.5f;
-    selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD *)&GamePadStorage[0];
+    selected_pad = camera->mode == GAMECAM_MODE_VIEWCAM ? ViewCam.gamepad : (GAMEPAD *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
     GAME_CAMERA_ABSOLUTE(magnitude, left_y);
     if (magnitude < 34.0f) {
@@ -602,7 +603,7 @@ mode_selected:
     switch (camera->mode) {
         i32 index;
 
-        case 1: {
+        case GAMECAM_MODE_SOCKS: {
             i32 i;
             // Case 1 prefix. Original 0x111314..0x1129bf and its child branches.
 
@@ -975,7 +976,7 @@ mode_selected:
 
             break;
         }
-        case 2: {
+        case GAMECAM_MODE_OBSTACLE: {
             Minicam_Update();
             if (ObstacleCamCutCamPtr != NULL) {
                 ObstacleCamCutPts[0] = *ObstacleCamCutCamPtr;
@@ -996,7 +997,7 @@ mode_selected:
             break;
         }
 
-        case 4: {
+        case GAMECAM_MODE_DOOR_CUT: {
             position = DoorCutCameraPosition0;
             target = DoorCutCameraPosition1;
             if (Door_CutLookAtPlayers != 0) {
@@ -1005,7 +1006,7 @@ mode_selected:
             ComplexSockPosition(WORLD->sock_sys, &position, -1, -1, &camera->sock_position);
             break;
         }
-        case 3:
+        case GAMECAM_MODE_TITLES:
             position = WORLD->camera_splines[2]->pts[0];
             target = WORLD->camera_splines[2]->pts[1];
             if (StartupGameFlag0 != 0) {
@@ -1017,7 +1018,7 @@ mode_selected:
         // signed-stick conversion and deadzone handling in the common prologue.
         // `selected_pad` is the GAMEPAD_s at the original esp+0x108.
         // left_x/left_y correspond to xmm7/xmm6; right_y/right_x to esp+0xfc/+0x104.
-        case 5: {
+        case GAMECAM_MODE_VIEWCAM: {
             f32 speed;
             f32 distance;
             GAME_CAMERA_ABSOLUTE(distance, ViewCam.distance);
@@ -1052,7 +1053,7 @@ mode_selected:
             break;
         }
 
-        case 7: {
+        case GAMECAM_MODE_CUSTOMISE: {
             position = WORLD->camera_splines[15]->pts[0];
             target = WORLD->camera_splines[15]->pts[1];
             Customiser_GetActiveWeirdoIndex(&index, &shared_count);
@@ -1074,21 +1075,21 @@ mode_selected:
             position.z += NU_SIN_LUT(((u16)((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))) * 0.025f;
             break;
         }
-        case 8:
+        case GAMECAM_MODE_SHOP:
             position = *shopcampos;
             GetShopCamLookPos(&target);
             position.x += 0.1f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 9.321f) / 9.321f * 65536.0f)))));
             position.y += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 5.792f) / 5.792f * 65536.0f)))));
             position.z += 0.05f * NU_SIN_LUT(((u16)(((i32)(NuFmod(GameTimer.time_elapsed, 7.183f) / 7.183f * 65536.0f)))));
             break;
-        case 9:
+        case GAMECAM_MODE_MINIKIT_VIEWER:
             position = HubMiniKitViewerSpline->pts[0];
             target = HubMiniKitViewerSpline->pts[1];
             target.y += HUB_MINIKITVIEWER_CAMDY;
             position_seek = 10.0f;
             angle_seek = 10.0f;
             break;
-        case 6: {
+        case GAMECAM_MODE_MISSION: {
             NUVEC *points = WORLD->camera_splines[24]->pts;
             memcpy(&position, &points[0], sizeof(position));
             memcpy(&target, &points[1], sizeof(target));
@@ -1098,7 +1099,7 @@ mode_selected:
             break;
         }
 
-        case 11: {
+        case GAMECAM_MODE_GUNSHIP: {
             u16 yaw;
             NUVEC ahead;
             NUVEC lateral;

@@ -208,12 +208,12 @@ NuMusic::Voice *NuMusic::FindIdleVoice(void) {
     i32 index;
 
     for (index = 0; index < 2; index++) {
-        if (voices[index].status == 1) {
+        if (voices[index].status == NUMUSIC_VOICE_IDLE) {
             return &voices[index];
         }
     }
     for (index = 0; index < 2; index++) {
-        if (voices[index].status == 3) {
+        if (voices[index].status == NUMUSIC_VOICE_PAUSED) {
             return &voices[index];
         }
     }
@@ -226,11 +226,11 @@ i32 NuMusic::StopAll(i32 mode) {
 
     (void)mode;
     for (voice_index = 0, voice = voices; voice_index < 2; ++voice_index, ++voice) {
-        if (voice->status != 0 && voice->status != 1) {
+        if (voice->status != NUMUSIC_VOICE_IDLE_PENDING && voice->status != NUMUSIC_VOICE_IDLE) {
             NuSound3StopStereoStream(voice->stream_index * 2);
-            if (voice->status != 1) {
+            if (voice->status != NUMUSIC_VOICE_IDLE) {
                 voice->play_time = 0.0f;
-                voice->status = 1;
+                voice->status = NUMUSIC_VOICE_IDLE;
             }
             voice->track_index = 0;
             memset(voice->tracks, 0, sizeof(voice->tracks));
@@ -291,7 +291,8 @@ i32 NuMusic::PauseTrack(u32 class_mask) {
         for (track_index = 0; track_index < 6; track_index++) {
             if (tracks_to_pause[track_index] != NULL) {
                 voice = FindVoiceByTrack(tracks_to_pause[track_index]);
-                if (voice != NULL && (voice->status == 6 || voice->status == 7) && (voice->flags_word & 2) == 0) {
+                if (voice != NULL && (voice->status == NUMUSIC_VOICE_PLAYPENDING || voice->status == NUMUSIC_VOICE_PLAYING) &&
+                    (voice->flags_word & 2) == 0) {
                     NuSound3PauseStereoStream(voice->stream_index * 2);
                     voice->flags_word |= 2;
                     changed = 1;
@@ -321,7 +322,8 @@ i32 NuMusic::ResumeTrack(u32 class_mask) {
         for (track_index = 0; track_index < 6; track_index++) {
             if (tracks_to_resume[track_index] != NULL) {
                 voice = FindVoiceByTrack(tracks_to_resume[track_index]);
-                if (voice != NULL && (voice->status == 6 || voice->status == 7) && (voice->flags_word & 2) != 0) {
+                if (voice != NULL && (voice->status == NUMUSIC_VOICE_PLAYPENDING || voice->status == NUMUSIC_VOICE_PLAYING) &&
+                    (voice->flags_word & 2) != 0) {
                     NuSound3ResumeStereoStream(voice->stream_index * 2);
                     voice->flags_word &= ~2U;
                     changed = 1;
@@ -469,20 +471,20 @@ i32 NuMusic::GetStatus(u32 class_mask, i32 *per_class_status) {
     for (voice_index = 0, voice = voices; voice_index < 2; voice_index++, voice++) {
         if (voice->tracks[voice->track_index] != NULL && (voice->tracks[voice->track_index]->clazz & class_mask) != 0) {
             switch (voice->status) {
-                case 1:
+                case NUMUSIC_VOICE_IDLE:
                     voice_status = 0;
                     break;
-                case 0:
-                case 2:
-                case 4:
-                case 5:
-                case 6:
+                case NUMUSIC_VOICE_IDLE_PENDING:
+                case NUMUSIC_VOICE_PAUSED_PENDING:
+                case NUMUSIC_VOICE_SEEKING_PENDING:
+                case NUMUSIC_VOICE_SEEKING:
+                case NUMUSIC_VOICE_PLAYPENDING:
                     voice_status = 1;
                     break;
-                case 3:
+                case NUMUSIC_VOICE_PAUSED:
                     voice_status = 2;
                     break;
-                case 7:
+                case NUMUSIC_VOICE_PLAYING:
                     voice_status = 4;
                     break;
             }
@@ -629,13 +631,13 @@ i32 NuMusic::Voice::Unload(void) {
                                              tracks[track_index]->start_offset, 1);
             last_volume = 0.0f;
             tracks[track_index]->ManageEntryTime();
-            if (result != 0 && status != 4) {
-                status = 4;
+            if (result != 0 && status != NUMUSIC_VOICE_SEEKING_PENDING) {
+                status = NUMUSIC_VOICE_SEEKING_PENDING;
                 play_time = 0.0f;
             }
         } else {
-            if (status != 0) {
-                status = 0;
+            if (status != NUMUSIC_VOICE_IDLE_PENDING) {
+                status = NUMUSIC_VOICE_IDLE_PENDING;
                 play_time = 0.0f;
             }
             tracks[track_index] = NULL;
@@ -672,7 +674,7 @@ void NuMusic::Process(f32 delta) {
     Voice *voice = voices;
     for (i32 index = 0; index < 2; ++index) {
         Track *track = voice[index].tracks[voice[index].track_index];
-        if (track != NULL && voice[index].status == 7) {
+        if (track != NULL && voice[index].status == NUMUSIC_VOICE_PLAYING) {
             duck_gain = MIN(duck_gain, track->duck_volume);
             duck_rate = 1.0f / track->duck_fade > duck_rate ? 1.0f / track->duck_fade : duck_rate;
         }
@@ -688,15 +690,15 @@ void NuMusic::Process(f32 delta) {
         Track *current_track = voice->tracks[voice->track_index];
         if (delta != 0.0f) {
             i32 stream_status = NuSound3GetStereoStreamStatus(voice->stream_index * 2);
-            if (voice->status == 7 && voice->fade_rate != 0.0f) {
+            if (voice->status == NUMUSIC_VOICE_PLAYING && voice->fade_rate != 0.0f) {
                 voice->gain += voice->fade_rate * delta;
                 voice->gain = MAX(0.0f, MIN(1.0f, voice->gain));
                 if (voice->gain == 0.0f) {
                     voice->fade_rate = 0.0f;
                     if ((voice->flags & 1) != 0) {
                         NuSound3StopStereoStream(voice->stream_index * 2);
-                        if (voice->status != 0) {
-                            voice->status = 0;
+                        if (voice->status != NUMUSIC_VOICE_IDLE_PENDING) {
+                            voice->status = NUMUSIC_VOICE_IDLE_PENDING;
                             voice->play_time = 0.0f;
                         }
                         voice->flags_word &= ~1U;
@@ -706,14 +708,14 @@ void NuMusic::Process(f32 delta) {
                                                          current_track->start_offset, 1);
                         voice->last_volume = 0.0f;
                         current_track->ManageEntryTime();
-                        if (result != 0 && voice->status != 4) {
-                            voice->status = 4;
+                        if (result != 0 && voice->status != NUMUSIC_VOICE_SEEKING_PENDING) {
+                            voice->status = NUMUSIC_VOICE_SEEKING_PENDING;
                             voice->play_time = 0.0f;
                         }
                     } else {
                         NuSound3PauseStereoStream(voice->stream_index * 2);
-                        if (voice->status != 3) {
-                            voice->status = 3;
+                        if (voice->status != NUMUSIC_VOICE_PAUSED) {
+                            voice->status = NUMUSIC_VOICE_PAUSED;
                             voice->play_time = 0.0f;
                         }
                     }
@@ -722,41 +724,41 @@ void NuMusic::Process(f32 delta) {
                 }
             }
             switch (voice->status) {
-                case 0:
+                case NUMUSIC_VOICE_IDLE_PENDING:
                     if (stream_status == 0) {
                         voice->play_time = 0.0f;
-                        voice->status = 1;
+                        voice->status = NUMUSIC_VOICE_IDLE;
                         voice->fade_rate = 0.0f;
                         voice->track_index = 0;
                         voice->gain = 0.0f;
                         voice->tracks[0] = NULL;
                     }
                     break;
-                case 4:
+                case NUMUSIC_VOICE_SEEKING_PENDING:
                     if (stream_status == 2) {
                         voice->play_time = 0.0f;
-                        voice->status = 5;
+                        voice->status = NUMUSIC_VOICE_SEEKING;
                     } else if (stream_status == 0 && voice->play_time > 0.25f) {
                         voice->play_time = 0.0f;
-                        voice->status = 5;
+                        voice->status = NUMUSIC_VOICE_SEEKING;
                     }
                     break;
-                case 5:
+                case NUMUSIC_VOICE_SEEKING:
                     if (stream_status != 2) {
                         voice->play_time = 0.0f;
-                        voice->status = 3;
+                        voice->status = NUMUSIC_VOICE_PAUSED;
                     }
                     break;
-                case 6:
+                case NUMUSIC_VOICE_PLAYPENDING:
                     if (stream_status == 1) {
                         voice->play_time = 0.0f;
-                        voice->status = 7;
+                        voice->status = NUMUSIC_VOICE_PLAYING;
                     }
                     break;
-                case 7:
+                case NUMUSIC_VOICE_PLAYING:
                     if (stream_status == 0) {
                         voice->play_time = 0.0f;
-                        voice->status = 3;
+                        voice->status = NUMUSIC_VOICE_PAUSED;
                         if (voice->tracks[voice->track_index] != NULL) {
                             NuSound3StopStereoStream(voice->stream_index * 2);
                             if (voice->tracks[voice->track_index]->clazz == 8) {
@@ -802,7 +804,7 @@ void NuMusic::InitVoiceManager(void) {
         voice->fade_rate = 0.0f;
         voice->gain = 1.0f;
         voice->stream_index = i;
-        voice->status = 1;
+        voice->status = NUMUSIC_VOICE_IDLE;
         voice->last_volume = -1.0f;
         voice->play_time = 0.0f;
     }
@@ -1289,9 +1291,9 @@ i32 NuMusic::Voice::Load(Track *track, i32 subtrack) {
     tracks[track_index] = track;
     track_sub[track_index] = subtrack;
     flags_word &= ~2U;
-    if (status != 1) {
+    if (status != NUMUSIC_VOICE_IDLE) {
         play_time = 0.0f;
-        status = 1;
+        status = NUMUSIC_VOICE_IDLE;
     }
     return 1;
 }
@@ -1305,7 +1307,8 @@ i32 NuMusic::Voice::Cue(void) {
     if (tracks[track_index]->file_indexes[track_sub[track_index]] == -1) {
         return -4;
     }
-    if (status == 6 || status == 7 || status == 4 || status == 5) {
+    if (status == NUMUSIC_VOICE_PLAYPENDING || status == NUMUSIC_VOICE_PLAYING || status == NUMUSIC_VOICE_SEEKING_PENDING ||
+        status == NUMUSIC_VOICE_SEEKING) {
         return -5;
     }
     result = NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, 6, 0, 10,
@@ -1313,9 +1316,9 @@ i32 NuMusic::Voice::Cue(void) {
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
     if (result != 0) {
-        if (status != 4) {
+        if (status != NUMUSIC_VOICE_SEEKING_PENDING) {
             play_time = 0.0f;
-            status = 4;
+            status = NUMUSIC_VOICE_SEEKING_PENDING;
         }
         return 1;
     }
@@ -1335,13 +1338,13 @@ i32 NuMusic::Voice::Play(void) {
     fade_rate = 0.0f;
     flags_word &= ~1U;
     if (tracks[track_index]->clazz != 8 && (other_track == NULL || other_track->clazz != 8)) {
-        if (other->status == 7) {
+        if (other->status == NUMUSIC_VOICE_PLAYING) {
             other->fade_rate = -1.0f;
             fade_rate = 1.0f;
             other->flags_word &= ~1U;
             target_gain = gain;
         } else if (tracks[track_index]->start_offset != 0.0f) {
-            if (status == 6 || status == 7) {
+            if (status == NUMUSIC_VOICE_PLAYPENDING || status == NUMUSIC_VOICE_PLAYING) {
                 fade_rate = 1.0f;
                 target_gain = gain;
             } else {
@@ -1351,18 +1354,18 @@ i32 NuMusic::Voice::Play(void) {
         }
     }
     gain = target_gain;
-    if (NuSound3GetStereoStreamStatus(stream_index * 2) == 0 && status == 3) {
-        status = 1;
+    if (NuSound3GetStereoStreamStatus(stream_index * 2) == 0 && status == NUMUSIC_VOICE_PAUSED) {
+        status = NUMUSIC_VOICE_IDLE;
     }
-    if (status == 3) {
+    if (status == NUMUSIC_VOICE_PAUSED) {
         NuSound3ResumeStereoStream(stream_index * 2);
-        if (status != 6) {
+        if (status != NUMUSIC_VOICE_PLAYPENDING) {
             play_time = 0.0f;
-            status = 6;
+            status = NUMUSIC_VOICE_PLAYPENDING;
         }
         return 1;
     }
-    if (status == 6 || status == 7) {
+    if (status == NUMUSIC_VOICE_PLAYPENDING || status == NUMUSIC_VOICE_PLAYING) {
         return 1;
     }
     Track *track = tracks[track_index];
@@ -1371,9 +1374,9 @@ i32 NuMusic::Voice::Play(void) {
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
     if (result != 0) {
-        if (status != 6) {
+        if (status != NUMUSIC_VOICE_PLAYPENDING) {
             play_time = 0.0f;
-            status = 6;
+            status = NUMUSIC_VOICE_PLAYPENDING;
         }
         return 1;
     }
@@ -1406,7 +1409,7 @@ i32 NuMusic::CueTrack(u32 class_mask) {
         if (track->clazz == 8) {
             voice = FindVoiceByClass(8);
             if (voice != NULL) {
-                if (voice->status == 6 || voice->status == 7) {
+                if (voice->status == NUMUSIC_VOICE_PLAYPENDING || voice->status == NUMUSIC_VOICE_PLAYING) {
                     return -5;
                 }
                 if (voice->Load(track, selected_subtrack) != 0) {
@@ -1438,10 +1441,10 @@ i32 NuMusic::PlayTrackI(u32 class_mask, u32 prepare_only) {
         return -3;
     }
     if (track->clazz != 0x10) {
-        if (FindVoiceByClassAndStatus(0x10, 6) != NULL) {
+        if (FindVoiceByClassAndStatus(0x10, NUMUSIC_VOICE_PLAYPENDING) != NULL) {
             return CueTrack(class_mask);
         }
-        if (FindVoiceByClassAndStatus(0x10, 7) != NULL) {
+        if (FindVoiceByClassAndStatus(0x10, NUMUSIC_VOICE_PLAYING) != NULL) {
             return CueTrack(class_mask);
         }
     }
@@ -1452,7 +1455,7 @@ i32 NuMusic::PlayTrackI(u32 class_mask, u32 prepare_only) {
     if (track->clazz == 8) {
         voice = FindVoiceByClass(8);
         if (voice != NULL) {
-            if (voice->status != 1 && voice->status != 3) {
+            if (voice->status != NUMUSIC_VOICE_IDLE && voice->status != NUMUSIC_VOICE_PAUSED) {
                 return -5;
             }
             if (voice->Load(track, track_index) != 0) {
@@ -1583,22 +1586,22 @@ i32 NuMusic::StopTrack(u32 class_mask, i32 fade) {
             if (tracks[i] != NULL) {
                 voice = FindVoiceByTrack(tracks[i]);
                 if (voice != NULL) {
-                    if (voice->status == 6 || voice->status == 7) {
+                    if (voice->status == NUMUSIC_VOICE_PLAYPENDING || voice->status == NUMUSIC_VOICE_PLAYING) {
                         if ((fade & 1) != 0) {
                             voice->flags_word |= 1;
                             voice->fade_rate = -1.0f;
                         } else {
                             NuSound3StopStereoStream(voice->stream_index * 2);
-                            if (voice->status != 0) {
-                                voice->status = 0;
+                            if (voice->status != NUMUSIC_VOICE_IDLE_PENDING) {
+                                voice->status = NUMUSIC_VOICE_IDLE_PENDING;
                                 voice->play_time = 0.0f;
                             }
                         }
                         result = 1;
-                    } else if (voice->status == 2 || voice->status == 3) {
+                    } else if (voice->status == NUMUSIC_VOICE_PAUSED_PENDING || voice->status == NUMUSIC_VOICE_PAUSED) {
                         NuSound3StopStereoStream(voice->stream_index * 2);
-                        if (voice->status != 0) {
-                            voice->status = 0;
+                        if (voice->status != NUMUSIC_VOICE_IDLE_PENDING) {
+                            voice->status = NUMUSIC_VOICE_IDLE_PENDING;
                             voice->play_time = 0.0f;
                         }
                         result = 1;

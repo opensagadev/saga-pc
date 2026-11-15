@@ -338,7 +338,7 @@ void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, 
         }
     }
     if (start <= 0.0f && blend_in <= 0.0f) {
-        GameCam->mode = -1;
+        GameCam->mode = GAMECAM_MODE_NONE;
         GameCam->blend_time = GameCam->blend_duration;
     }
     Hint_CancelCurrent();

@@ -88,6 +88,8 @@ same function initialises and steps (its values are indexes).
 | `ObjHitObj` flags, `BOLT_PC.hit_flags` (6 bits) | `OBJHIT_*` (hits.h) | `ObjHitObj_Flags`: the attacker's side (SetSide keywords) and whether it is an active player; players' bolts may hit gizmos (0x800, `Bolt_HitPlatPrivate`) |
 | `eduiitem_s.type` | `EDUIITEM_*` (edui.h) | the type each `eduiItem*Create` constructor stores |
 | `AIEDITORSETTINGS.display_options` (8 bits) | `AIEDITOR_*` (aisysall.c) | the AI editor menu toggles and their labels (Draw All Paths, Snap Height, Stop Platforms, ...) |
+| `NuMusic::Voice.status` | `NUMUSIC_VOICE_*` (numusic.h) | the `NuMusicVoiceStatusText` names (IDLE_PENDING ... PLAYING) |
+| `gamecamera_s.mode`, `previous_mode`, `LEGOCAMMODE_DOORCUT`/`_OBSTACLE` | `GAMECAM_MODE_*` (legoapi_types.h) | the camera update's choice of camera for each condition (sock system, obstacle spline, door cut, ViewCam pad, shop, minikit viewer, the mission_cam, char_cam and point_cam level splines); the game sets `LEGOCAMMODE_DOORCUT` 4 and `LEGOCAMMODE_OBSTACLE` 2 |
 
 ## Still literal (meaning not known yet)
 

@@ -1299,7 +1299,7 @@ void KeepOnScreen(GAMEOBJECT *object) {
     if (MiniCutCam != 0 || GetMenuID() != -1) {
         return;
     }
-    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && GameCam->mode == 0x0b) {
+    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && GameCam->mode == GAMECAM_MODE_GUNSHIP) {
         GunshipKeepOnScreen(object);
         return;
     }

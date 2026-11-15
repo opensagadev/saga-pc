@@ -85,7 +85,7 @@ void GameCam_Blend(GAMECAMERA *camera, f32 duration, f32 curve, i32 mode) {
     if (camera == NULL) {
         camera = GameCam;
     }
-    if (!(duration > 0.0f) || camera->mode == -1) {
+    if (!(duration > 0.0f) || camera->mode == GAMECAM_MODE_NONE) {
         return;
     }
     camera->blend_start_pitch = camera->desired_pitch;
@@ -340,8 +340,8 @@ void GameCam_Reset(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
-    camera->previous_mode = -1;
-    camera->mode = -1;
+    camera->previous_mode = GAMECAM_MODE_NONE;
+    camera->mode = GAMECAM_MODE_NONE;
     camera->sock_position.segment = -1;
     camera->sock_position.sock_index = -1;
     camera->judder_time = 0.0f;

@@ -464,6 +464,21 @@ class NetLogFile { // size 0x2114
 };
 #endif
 
+/* gamecamera_s.mode: the camera GameCam_Update picks (LEGOCAMMODE_DOORCUT and LEGOCAMMODE_OBSTACLE are set to 4 and 2
+ * at start-up); the spline modes use the level splines mission_cam, char_cam and point_cam. */
+#define GAMECAM_MODE_NONE (-1) /* none chosen yet: the next update picks one */
+#define GAMECAM_MODE_DEFAULT 0
+#define GAMECAM_MODE_SOCKS 1    /* follows the players through the sock system */
+#define GAMECAM_MODE_OBSTACLE 2 /* an obstacle or DynamicCameraCut spline */
+#define GAMECAM_MODE_TITLES 3   /* the titles level's point_cam spline */
+#define GAMECAM_MODE_DOOR_CUT 4
+#define GAMECAM_MODE_VIEWCAM 5   /* ViewCam has a pad */
+#define GAMECAM_MODE_MISSION 6   /* the mission menu's mission_cam spline */
+#define GAMECAM_MODE_CUSTOMISE 7 /* the customiser menu's char_cam spline */
+#define GAMECAM_MODE_SHOP 8
+#define GAMECAM_MODE_MINIKIT_VIEWER 9 /* the hub's minikit viewer spline */
+#define GAMECAM_MODE_GUNSHIP 11       /* GUNSHIPAHACK on the gunship bonus level */
+
 typedef struct gamecamera_s { // size 0x230
 
     union { // size 0x38
