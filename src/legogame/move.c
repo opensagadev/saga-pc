@@ -184,7 +184,7 @@ typedef struct move_gunship_level_flags_s {
 extern f32 DirectionalGrappleSeekScale;
 extern f32 DirectionalZipUpSeekRate;
 
-typedef struct directional_zipup_pc_s {
+typedef struct directional_zipup_s {
     u8 unknown_00[0x1c];
     NUVEC hook_origin;
     u8 unknown_28[0x28];
@@ -195,47 +195,47 @@ typedef struct directional_zipup_pc_s {
     u8 flags;
 } DIRECTIONAL_ZIPUP;
 
-typedef struct directional_tube_pc_s {
+typedef struct directional_tube_s {
     u8 unknown_00[0x24];
     f32 momentum_y;
 } DIRECTIONAL_TUBE;
 
-typedef struct directional_lever_pc_s {
+typedef struct directional_lever_s {
     u8 unknown_00[0x40];
     NUVEC floor_position;
 } DIRECTIONAL_LEVER;
 
-typedef struct directional_hatmachine_pc_s {
+typedef struct directional_hatmachine_s {
     u8 unknown_00[0x64];
     NUVEC player_position;
 } DIRECTIONAL_HATMACHINE;
 
-typedef struct directional_techno_pc_s {
+typedef struct directional_techno_s {
     u8 unknown_00[0x1c];
     NUVEC ground_position;
 } DIRECTIONAL_TECHNO;
 
-typedef struct directional_attracto_pc_s {
+typedef struct directional_attracto_s {
     u8 unknown_00[0x64];
     NUVEC active_position;
 } DIRECTIONAL_ATTRACTO;
 
-typedef struct directional_securitydoor_pc_s {
+typedef struct directional_securitydoor_s {
     u8 unknown_00[0xa4];
     NUVEC player_position;
 } DIRECTIONAL_SECURITYDOOR;
 
-typedef struct directional_signal_pc_s {
+typedef struct directional_signal_s {
     u8 unknown_00[0x84];
     NUVEC target_position;
 } DIRECTIONAL_SIGNAL;
 
-typedef struct directional_buildit_pc_s {
+typedef struct directional_buildit_s {
     u8 unknown_00[0x72];
     u8 state_flags;
 } DIRECTIONAL_BUILDIT;
 
-typedef struct directional_world_pc_s {
+typedef struct directional_world_s {
     u8 unknown_00[0x46ec];
     void *grabber;
 } DIRECTIONAL_WORLD;

@@ -249,82 +249,82 @@ extern "C" void MenuUpdateEffects(MENU *menu) {
 extern "C" void MenuDrawVideo(MENU *menu) {
     char text[256];
     GRAPHICS_DISPLAY_MODE *mode = &PCDeviceBackend.modes[PCDeviceBackend.requested_mode];
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    NuSPrintf(text, "%s: %d x %d", MenuPcStrings[19], mode->width, mode->height);
+    NuSPrintf(text, "%s: %d x %d", MenuSettingsStrings[19], mode->width, mode->height);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    NuSPrintf(text, "%s: %dHz", MenuPcStrings[20], mode->refresh_rate);
+    NuSPrintf(text, "%s: %dHz", MenuSettingsStrings[20], mode->refresh_rate);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
     switch (MenuVideoOptions.aspect_mode) {
         case 0:
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            NuSPrintf(text, "%s: 4:3", MenuPcStrings[22]);
+            NuSPrintf(text, "%s: 4:3", MenuSettingsStrings[22]);
             break;
         case 1:
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            NuSPrintf(text, "%s: 16:9", MenuPcStrings[22]);
+            NuSPrintf(text, "%s: 16:9", MenuSettingsStrings[22]);
             break;
         case 2:
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            NuSPrintf(text, "%s: 16:10", MenuPcStrings[22]);
+            NuSPrintf(text, "%s: 16:10", MenuSettingsStrings[22]);
             break;
         case 3: {
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            const char *automatic = MenuPcStrings[24];
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            const char *automatic = MenuSettingsStrings[24];
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            NuSPrintf(text, "%s: %s", MenuPcStrings[22], automatic);
+            NuSPrintf(text, "%s: %s", MenuSettingsStrings[22], automatic);
             break;
         }
         default:
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            NuSPrintf(text, "%s: ERROR", MenuPcStrings[22]);
+            NuSPrintf(text, "%s: ERROR", MenuSettingsStrings[22]);
             break;
     }
     DrawMenuEntryEx(menu, text, (u8)MenuA);
     const char *value;
     if (MenuVideoOptions.hires_enabled) {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[15];
+        value = MenuSettingsStrings[15];
     } else {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[16];
+        value = MenuSettingsStrings[16];
     }
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    NuSPrintf(text, "%s: %s", MenuPcStrings[23], value);
+    NuSPrintf(text, "%s: %s", MenuSettingsStrings[23], value);
     DrawMenuEntryEx(menu, text, (u8)((PcWindowOptions.option459 ? 255 : 64) * MenuAlpha));
     if (!PCDeviceBackend.HasRequestedModeChanged() && !MenuVideoOptions.Changed()) {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        NuSPrintf(text, "%s", MenuPcStrings[10]);
+        NuSPrintf(text, "%s", MenuSettingsStrings[10]);
         DrawMenuEntryEx(menu, text, (u8)MenuA);
     } else {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        NuSPrintf(text, "%s", MenuPcStrings[8]);
+        NuSPrintf(text, "%s", MenuSettingsStrings[8]);
         DrawMenuEntryEx(menu, text, (u8)((menu_flash ? 255 : 0) * MenuAlpha));
     }
 }
@@ -334,133 +334,133 @@ extern "C" void MenuDrawEffects(MENU *menu) {
     const char *value;
     if (PcWindowOptions.usehires) {
         if (PCDeviceBackend.requested_multisample == 6) {
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            value = MenuPcStrings[31];
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            value = MenuSettingsStrings[31];
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
+            NuSPrintf(text, "%s: %s", MenuSettingsStrings[30], value);
         } else {
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            value = MenuPcStrings[16];
-            if (!MenuPcStringsInitialized) {
-                MenuPcStringsInit();
+            value = MenuSettingsStrings[16];
+            if (!MenuSettingsStringsInitialized) {
+                MenuSettingsStringsInit();
             }
-            NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
+            NuSPrintf(text, "%s: %s", MenuSettingsStrings[30], value);
         }
         DrawMenuEntryEx(menu, text, (u8)(MenuAlpha * 64.0));
     } else {
         switch (PCDeviceBackend.requested_multisample) {
             case 1:
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                NuSPrintf(text, "%s: 2X", MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 2X", MenuSettingsStrings[30]);
                 break;
             case 2:
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                NuSPrintf(text, "%s: 4X", MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 4X", MenuSettingsStrings[30]);
                 break;
             case 3:
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                NuSPrintf(text, "%s: 8X", MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 8X", MenuSettingsStrings[30]);
                 break;
             case 4:
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                NuSPrintf(text, "%s: 16X", MenuPcStrings[30]);
+                NuSPrintf(text, "%s: 16X", MenuSettingsStrings[30]);
                 break;
             case 6:
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                value = MenuPcStrings[31];
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                value = MenuSettingsStrings[31];
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
+                NuSPrintf(text, "%s: %s", MenuSettingsStrings[30], value);
                 break;
             default:
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                value = MenuPcStrings[16];
-                if (!MenuPcStringsInitialized) {
-                    MenuPcStringsInit();
+                value = MenuSettingsStrings[16];
+                if (!MenuSettingsStringsInitialized) {
+                    MenuSettingsStringsInit();
                 }
-                NuSPrintf(text, "%s: %s", MenuPcStrings[30], value);
+                NuSPrintf(text, "%s: %s", MenuSettingsStrings[30], value);
                 break;
         }
         DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeMultisample() ? 255 : 64) * MenuAlpha));
     }
     if (MenuCanChangeShadows() && MenuVideoOptions.shadows_enabled) {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[15];
+        value = MenuSettingsStrings[15];
     } else {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[16];
+        value = MenuSettingsStrings[16];
     }
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    NuSPrintf(text, "%s: %s", MenuPcStrings[32], value);
+    NuSPrintf(text, "%s: %s", MenuSettingsStrings[32], value);
     DrawMenuEntryEx(menu, text, (u8)((MenuCanChangeShadows() ? 255 : 64) * MenuAlpha));
     if (MenuVideoOptions.bloom_enabled) {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[15];
+        value = MenuSettingsStrings[15];
     } else {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[16];
+        value = MenuSettingsStrings[16];
     }
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    NuSPrintf(text, "%s: %s", MenuPcStrings[33], value);
+    NuSPrintf(text, "%s: %s", MenuSettingsStrings[33], value);
     DrawMenuEntryEx(menu, text, 255);
     if (MenuVideoOptions.speed_blur_enabled) {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[15];
+        value = MenuSettingsStrings[15];
     } else {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        value = MenuPcStrings[16];
+        value = MenuSettingsStrings[16];
     }
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    NuSPrintf(text, "%s: %s", MenuPcStrings[35], value);
+    NuSPrintf(text, "%s: %s", MenuSettingsStrings[35], value);
     DrawMenuEntryEx(menu, text, 255);
     if (!PCDeviceBackend.HasRequestedModeChanged() && !MenuVideoOptions.Changed()) {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        NuSPrintf(text, "%s", MenuPcStrings[10]);
+        NuSPrintf(text, "%s", MenuSettingsStrings[10]);
         DrawMenuEntryEx(menu, text, (u8)MenuA);
     } else {
-        if (!MenuPcStringsInitialized) {
-            MenuPcStringsInit();
+        if (!MenuSettingsStringsInitialized) {
+            MenuSettingsStringsInit();
         }
-        NuSPrintf(text, "%s", MenuPcStrings[8]);
+        NuSPrintf(text, "%s", MenuSettingsStrings[8]);
         DrawMenuEntryEx(menu, text, (u8)((menu_flash ? 255 : 0) * MenuAlpha));
     }
 }
@@ -498,14 +498,14 @@ extern "C" void MenuEnterVideoConfirm(MENU *menu) {
 
 extern "C" void MenuDrawVideoConfirm(MENU *menu) {
     char text[256];
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    DrawMenuEntryEx(menu, (char *)MenuPcStrings[25], (u8)MenuA);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[25], (u8)MenuA);
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    NuSPrintf(text, "%s (%ds)", MenuPcStrings[27], (i32)(MenuVideoConfirmDuration - menu->menu_time) + 1);
+    NuSPrintf(text, "%s (%ds)", MenuSettingsStrings[27], (i32)(MenuVideoConfirmDuration - menu->menu_time) + 1);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
 }
 
@@ -551,14 +551,14 @@ extern "C" void MenuEnterHiresNotice(MENU *menu) {
 }
 
 extern "C" void MenuDrawHiresNotice(MENU *menu) {
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    MenuDrawNotice((char *)MenuPcStrings[28], 255, 255, 255);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    MenuDrawNotice((char *)MenuSettingsStrings[28], 255, 255, 255);
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    DrawMenuEntryEx(menu, (char *)MenuPcStrings[13], (u8)MenuA);
+    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[13], (u8)MenuA);
 }
 
 extern "C" void MenuUpdateHiresNotice(MENU *menu) {
@@ -592,14 +592,14 @@ extern "C" void fun_005094a0(MENU *) {
 }
 
 extern "C" void MenuDrawQuit(MENU *menu) {
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    DrawMenuEntryEx(menu, (char *)MenuPcStrings[3], (u8)MenuA);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[3], (u8)MenuA);
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], (u8)MenuA);
+    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[1], (u8)MenuA);
 }
 
 extern "C" void MenuUpdateQuit(MENU *menu) {

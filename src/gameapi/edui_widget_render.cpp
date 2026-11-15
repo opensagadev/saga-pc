@@ -1231,7 +1231,7 @@ extern "C" void AddColourPick(eduimenu_s *parent, eduiitem_s *item, f32 *red, f3
     eduiItemSetText(cp_info, text);
 }
 
-typedef union edui_gradient_colour_pc_u { // size 0x4
+typedef union edui_gradient_colour_u { // size 0x4
     u32 word;
     u8 channel[4];
 } EDUI_GRADIENT_COLOUR;

@@ -32,7 +32,7 @@ extern "C" {
     extern const char PermLegalSpanish[11];
     extern const char PermLegalFrench[10];
     extern const char PermLegalUS[4];
-    extern const char PermLegalPcPrefix[];
+    extern const char PermLegalPlatformPrefix[];
     void LoadPermLoadLegalTexture(void);
     void StartPerm(void);
     void EndPerm(void);

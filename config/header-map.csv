@@ -495,9 +495,9 @@ assert:-#310,assert,,1980,1980,1,gameapi/gui/apimenu.h,follow-type,MENU
 assert:-#311,assert,,1981,1981,1,gameapi/gui/apimenu.h,follow-type,MENU
 assert:-#312,assert,,1982,1982,1,gameapi/gui/apimenu.h,follow-type,MENU
 assert:-#313,assert,,1983,1983,1,gameapi/gui/apimenu.h,follow-type,MENU
-struct:MENU_PC_STRING_ENTRY,struct,MENU_PC_STRING_ENTRY,1985,1988,5,nu2api/nuwin32/Stubs.h,users,MENU_PC_STRING_ENTRY: only nu2api/nuwin32/Stubs.cpp pc-path
-assert:-#314,assert,,1990,1990,2,nu2api/nuwin32/Stubs.h,follow-type,MENU_PC_STRING_ENTRY
-assert:-#315,assert,,1991,1991,1,nu2api/nuwin32/Stubs.h,follow-type,MENU_PC_STRING_ENTRY
+struct:MENU_SETTINGS_STRING_ENTRY,struct,MENU_SETTINGS_STRING_ENTRY,1985,1988,5,nu2api/nuwin32/Stubs.h,users,MENU_SETTINGS_STRING_ENTRY: only nu2api/nuwin32/Stubs.cpp pc-path
+assert:-#314,assert,,1990,1990,2,nu2api/nuwin32/Stubs.h,follow-type,MENU_SETTINGS_STRING_ENTRY
+assert:-#315,assert,,1991,1991,1,nu2api/nuwin32/Stubs.h,follow-type,MENU_SETTINGS_STRING_ENTRY
 struct:menufninfo_s,struct,menufninfo_s MENUFNINFO,1993,2005,14,gameapi/gui/apimenu.h,android,MENUFNINFO
 assert:-#316,assert,,2007,2007,2,gameapi/gui/apimenu.h,follow-type,MENUFNINFO
 assert:-#317,assert,,2008,2008,1,gameapi/gui/apimenu.h,follow-type,MENUFNINFO
@@ -1424,7 +1424,7 @@ assert:-#1102,assert,,4924,4924,1,legoapi/world/levels/episode.h,follow-type,EPI
 assert:-#1103,assert,,4925,4925,1,legoapi/world/levels/episode.h,follow-type,EPISODEDATA
 assert:-#1104,assert,,4926,4926,1,legoapi/world/levels/episode.h,follow-type,EPISODEDATA
 assert:-#1105,assert,,4927,4927,1,legoapi/world/levels/episode.h,follow-type,EPISODEDATA
-struct:area_fixup_pc_entry_s,struct,area_fixup_pc_entry_s AREAFIXUP,4929,4932,5,legoapi/world/area.h,android-stem,AREAFIXUP -> AREAFIXUP
+struct:area_fixup_entry_s,struct,area_fixup_entry_s AREAFIXUP,4929,4932,5,legoapi/world/area.h,android-stem,AREAFIXUP -> AREAFIXUP
 assert:-#1106,assert,,4934,4934,2,legoapi/world/area.h,follow-type,AREAFIXUP
 assert:-#1107,assert,,4935,4935,1,legoapi/world/area.h,follow-type,AREAFIXUP
 struct:area_supercounter_pickup_s,struct,area_supercounter_pickup_s AREA_SUPERCOUNTER_PICKUP,4937,4946,11,legoapi/world/areas.h,rule,used most in legoapi/areas.c (15) android-path
@@ -5170,7 +5170,7 @@ function:MenuReset,function,MenuReset,13187,13187,1,gameapi/gui/apimenu.h,androi
 function:MenuEnterNewGame,function,MenuEnterNewGame,13188,13188,1,legoapi/menus/screens/gamemenuall.h,android,MenuEnterNewGame
 function:MenuDrawNewGame,function,MenuDrawNewGame,13189,13189,1,legoapi/menus/screens/menu.h,android,MenuDrawNewGame
 function:MenuUpdateNewGame,function,MenuUpdateNewGame,13190,13190,1,legoapi/menus/screens/menu.h,android,MenuUpdateNewGame
-function:MenuPcStringsInit,function,MenuPcStringsInit,13191,13191,1,nu2api/nuwin32/Stubs.h,symbol,nu2api/nuwin32/Stubs.cpp pc-path
+function:MenuSettingsStringsInit,function,MenuSettingsStringsInit,13191,13191,1,nu2api/nuwin32/Stubs.h,symbol,nu2api/nuwin32/Stubs.cpp pc-path
 variable:dat_00827800,variable,dat_00827800,13192,13192,1,nu2api/nuwin32/Stubs.h,users,dat_00827800: only nu2api/nuwin32/Stubs.cpp pc-path
 variable:dat_00827940,variable,dat_00827940,13193,13193,1,nu2api/nuwin32/Stubs.h,users,dat_00827940: only nu2api/nuwin32/Stubs.cpp pc-path
 variable:dat_00827a80,variable,dat_00827a80,13194,13194,1,nu2api/nuwin32/Stubs.h,users,dat_00827a80: only nu2api/nuwin32/Stubs.cpp pc-path
@@ -5178,8 +5178,8 @@ variable:dat_00827bc0,variable,dat_00827bc0,13195,13195,1,nu2api/nuwin32/Stubs.h
 variable:dat_00827d00,variable,dat_00827d00,13196,13196,1,nu2api/nuwin32/Stubs.h,users,dat_00827d00: only nu2api/nuwin32/Stubs.cpp pc-path
 variable:dat_00827e40,variable,dat_00827e40,13197,13197,1,nu2api/nuwin32/Stubs.h,users,dat_00827e40: only nu2api/nuwin32/Stubs.cpp pc-path
 variable:dat_00827f80,variable,dat_00827f80,13198,13198,1,nu2api/nuwin32/Stubs.h,users,dat_00827f80: only nu2api/nuwin32/Stubs.cpp pc-path
-variable:MenuPcStrings,variable,MenuPcStrings,13199,13199,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
-variable:MenuPcStringsInitialized,variable,MenuPcStringsInitialized,13200,13200,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
+variable:MenuSettingsStrings,variable,MenuSettingsStrings,13199,13199,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
+variable:MenuSettingsStringsInitialized,variable,MenuSettingsStringsInitialized,13200,13200,1,legoapi/menus/screens/gamemenuall.h,rule,used most in gameapi/gamemenuall.cpp (42) android-path
 variable:dat_00880824,variable,dat_00880824,13201,13201,1,legoapi/menus/screens/menu.h,users,dat_00880824: only legogame/menu.cpp android-path
 variable:dat_008808fc,variable,dat_008808fc,13202,13202,1,legoapi/menus/screens/menu.h,users,dat_008808fc: only legogame/menu.cpp android-path
 variable:dat_00880850,variable,dat_00880850,13203,13203,1,legoapi/menus/screens/menu.h,users,dat_00880850: only legogame/menu.cpp android-path
@@ -6120,7 +6120,7 @@ variable:PermLegalSpanish,variable,PermLegalSpanish,14281,14281,1,legogame/start
 variable:PermLegalFrench,variable,PermLegalFrench,14282,14282,1,legogame/startup.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:PermLegalUS,variable,PermLegalUS,14283,14283,1,legogame/startup.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:PermLegalDirectoryPc,variable,PermLegalDirectoryPc,14284,14284,1,legogame/startup.h,users,PermLegalDirectoryPc: only legogame/startup.cpp android-path
-variable:PermLegalPcPrefix,variable,PermLegalPcPrefix,14285,14285,1,legogame/startup.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
+variable:PermLegalPlatformPrefix,variable,PermLegalPlatformPrefix,14285,14285,1,legogame/startup.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 function:LoadPermLoadLegalTexture,function,LoadPermLoadLegalTexture,14286,14286,1,legogame/startup.h,symbol,legogame/startup.cpp android-path
 variable:debinf_count,variable,debinf_count,14287,14287,1,gameapi/edptl.h,rule,used most in gameapi/gameliball.cpp[edptl.c] (16) pc-path
 variable:debtab,variable,debtab,14288,14288,1,legoapi/render/fx/game_deb.h,android,debtab (also gameapi/edtools/edanim_internal.h)
@@ -11387,7 +11387,7 @@ function:CutScenePlayer_Configure,function,CutScenePlayer_Configure,22732,22732,
 function:Batarang_StartTargetting,function,Batarang_StartTargetting,22733,22733,1,legoapi/items/collect/batarang.h,android,Batarang_StartTargetting
 function:BatarangGetObjectFromCharId,function,BatarangGetObjectFromCharId,22734,22734,1,legoapi/items/collect/batarang.h,symbol,legogame/batarang.c android-path
 function:KeepPointOnScreen,function,KeepPointOnScreen,22735,22735,1,legoapi/characters/motion.h,android,KeepPointOnScreen
-struct:shader_uniform_record_pc_s,struct,shader_uniform_record_pc_s ShaderUniformRecord,22741,22750,11,nu2api/nu3d/nushader.h,android-stem,ShaderUniformRecord -> ShaderUniformRecord
+struct:shader_uniform_record_s,struct,shader_uniform_record_s ShaderUniformRecord,22741,22750,11,nu2api/nu3d/nushader.h,android-stem,ShaderUniformRecord -> ShaderUniformRecord
 assert:-#4452,assert,,22752,22752,2,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
 assert:-#4453,assert,,22753,22753,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord
 assert:-#4454,assert,,22754,22754,1,nu2api/nu3d/nushader.h,follow-type,ShaderUniformRecord

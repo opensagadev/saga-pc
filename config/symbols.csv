@@ -13698,7 +13698,7 @@ address,symbol,size,ctype
 0x6dece0,_fun_006dece0,1,
 0x6decf0,_fun_006decf0,13,
 0x6ded00,_fun_006ded00,28,
-0x6ded20,_MenuPcStringsInit,177,void __cdecl(void)
+0x6ded20,MenuSettingsStringsInit,177,void __cdecl(void)
 0x6dede0,_NuMcCheckCardPresent,3,"i32 __cdecl (i32, i32)"
 0x6dedf0,_NuMcCheckCardChanged,3,"i32 __cdecl (i32, i32)"
 0x6dee00,_NuMcCheckCardFormatted,3,"i32 __cdecl (i32, i32)"
@@ -39191,13 +39191,13 @@ address,symbol,size,ctype
 0x82764c,_PcFilterKeys,24,FILTERKEYS
 0x827664,_PcArgc,4,i32
 0x00827730,_ps2_scratch_free,4,
-0x827800,_dat_00827800,320,MENU_PC_STRING_ENTRY[40]
-0x827940,_dat_00827940,320,MENU_PC_STRING_ENTRY[40]
-0x827a80,_dat_00827a80,320,MENU_PC_STRING_ENTRY[40]
-0x827bc0,_dat_00827bc0,320,MENU_PC_STRING_ENTRY[40]
-0x827d00,_dat_00827d00,320,MENU_PC_STRING_ENTRY[40]
-0x827e40,_dat_00827e40,320,MENU_PC_STRING_ENTRY[40]
-0x827f80,_dat_00827f80,320,MENU_PC_STRING_ENTRY[40]
+0x827800,_dat_00827800,320,MENU_SETTINGS_STRING_ENTRY[40]
+0x827940,_dat_00827940,320,MENU_SETTINGS_STRING_ENTRY[40]
+0x827a80,_dat_00827a80,320,MENU_SETTINGS_STRING_ENTRY[40]
+0x827bc0,_dat_00827bc0,320,MENU_SETTINGS_STRING_ENTRY[40]
+0x827d00,_dat_00827d00,320,MENU_SETTINGS_STRING_ENTRY[40]
+0x827e40,_dat_00827e40,320,MENU_SETTINGS_STRING_ENTRY[40]
+0x827f80,_dat_00827f80,320,MENU_SETTINGS_STRING_ENTRY[40]
 0x8281e0,_PCGraphicsPositionUvDeclaration,24,PC_VERTEX_ELEMENT[3]
 0x8281f8,_PCGraphicsScreenUvDeclaration,24,PC_VERTEX_ELEMENT[3]
 0x828210,_PCGraphicsScreenColourUvDeclaration,32,PC_VERTEX_ELEMENT[4]
@@ -43582,8 +43582,8 @@ address,symbol,size,ctype
 0x00297ad74,_nu_current_thread_id,4,volatile u32
 0x297ad84,_dat_0297ad84,4,i32
 0x0297ad94,_nuvideo_global_vbcnt,4,volatile i32
-0x297ada0,_MenuPcStrings,156,const char *[39]
-0x297ae3c,_MenuPcStringsInitialized,4,i32
+0x297ada0,MenuSettingsStrings,156,const char *[39]
+0x297ae3c,MenuSettingsStringsInitialized,4,i32
 0x0297ae40,_PCFrameCriticalSectionIndex,4,i32
 0x297ae44,_PCFrameLoadingYieldEnabledPC,1,u8
 0x297ae48,_PcApiCallBuffer,4,void *

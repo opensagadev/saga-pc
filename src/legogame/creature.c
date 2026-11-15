@@ -277,7 +277,7 @@ i32 MovePlayer_GUNSHIPIN(GAMEOBJECT *object);
 i32 MovePlayer_POD(GAMEOBJECT *object);
 void MovePlayer_DIRECTIONAL(GAMEOBJECT *object);
 
-typedef struct moveplayer_pad_bits_pc_s {
+typedef struct moveplayer_pad_bits_s {
     u16 low : 3;
     u16 waggle : 1;
     u16 high : 12;

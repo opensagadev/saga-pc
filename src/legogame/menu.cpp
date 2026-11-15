@@ -662,18 +662,18 @@ extern "C" void MenuDrawNewGame(MENU *menu) {
     DrawMenuEntryEx(menu, TTab[dat_008808fc], alpha);
     DrawMenuEntryEx(menu, TTab[dat_00880850], alpha);
     DrawMenuEntryEx(menu, TTab[dat_00880bc4], alpha);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    DrawMenuEntryEx(menu, (char *)MenuPcStrings[18], alpha);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[18], alpha);
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    DrawMenuEntryEx(menu, (char *)MenuPcStrings[29], alpha);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[29], alpha);
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    DrawMenuEntryEx(menu, (char *)MenuPcStrings[1], alpha);
+    DrawMenuEntryEx(menu, (char *)MenuSettingsStrings[1], alpha);
 }
 
 extern "C" {
@@ -981,14 +981,14 @@ extern "C" void MenuDrawPauseMain(MENU *menu) {
     GameDrawMenuEntry(menu, TTab[dat_00880838]);
     GameDrawMenuEntry(menu, TTab[dat_00880850]);
     GameDrawMenuEntry(menu, TTab[dat_00880bc4]);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    GameDrawMenuEntry(menu, (char *)MenuPcStrings[18]);
-    if (!MenuPcStringsInitialized) {
-        MenuPcStringsInit();
+    GameDrawMenuEntry(menu, (char *)MenuSettingsStrings[18]);
+    if (!MenuSettingsStringsInitialized) {
+        MenuSettingsStringsInit();
     }
-    GameDrawMenuEntry(menu, (char *)MenuPcStrings[29]);
+    GameDrawMenuEntry(menu, (char *)MenuSettingsStrings[29]);
     if (!SuperStory && !ChallengeMode && !Mission_Active(NULL)) {
         GameDrawMenuEntry(menu, TTab[dat_0088090c]);
     } else {

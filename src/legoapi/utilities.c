@@ -56,12 +56,12 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 
 /* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
-typedef struct shadow_platform_entry_pc_s {
+typedef struct shadow_platform_entry_s {
     GAMEOBJECT *object;
     u8 unknown_04_14[0x10];
 } SHADOW_PLATFORM_ENTRY;
 
-struct shadow_platform_list_pc_s {
+struct shadow_platform_list_s {
     u8 unknown_00_04[4];
     i32 count;
     u8 unknown_08_18[0x10];
@@ -496,7 +496,7 @@ f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
         }
         if (world != NULL && world->shadow_platform_list != NULL && VehicleArea == 0 &&
             (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
-            struct shadow_platform_list_pc_s *list = world->shadow_platform_list;
+            struct shadow_platform_list_s *list = world->shadow_platform_list;
             for (i = 0; i < list->count; ++i) {
                 if (list->entries[i].object != NULL) {
                     handles[handle_count++] = list->entries[i].object->level_object_index;

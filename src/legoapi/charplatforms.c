@@ -17,16 +17,16 @@
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/numath/numtx.h"
 
-typedef struct terrain_player_platform_record_pc_s { // size 0x14
-    u8 unknown_0[0xe];                               // 0x00
-    i16 platform_id;                                 // 0x0e
-    GAMEOBJECT *object;                              // 0x10
+typedef struct terrain_player_platform_record_s { // size 0x14
+    u8 unknown_0[0xe];                            // 0x00
+    i16 platform_id;                              // 0x0e
+    GAMEOBJECT *object;                           // 0x10
 } TERRAIN_PLAYER_PLATFORM_RECORD;
 
-typedef struct terrain_player_platform_sys_pc_s { // size 0x1c
-    u8 unknown_0[4];                              // 0x00
-    i32 count;                                    // 0x04
-    TERRAIN_PLAYER_PLATFORM_RECORD entries[1];    // 0x08
+typedef struct terrain_player_platform_sys_s { // size 0x1c
+    u8 unknown_0[4];                           // 0x00
+    i32 count;                                 // 0x04
+    TERRAIN_PLAYER_PLATFORM_RECORD entries[1]; // 0x08
 } TERRAIN_PLAYER_PLATFORM_SYS;
 
 GAMEOBJECT *CharPlatform_FindObjFromPlatID(void *system, i32 id) {

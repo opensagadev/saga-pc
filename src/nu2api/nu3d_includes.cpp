@@ -11060,7 +11060,7 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST *scene, VISIBILITY_RESULT_READE
     }
 }
 
-typedef union visibility_display_special_reader_pc_u { // size 0xd0
+typedef union visibility_display_special_reader_u { // size 0xd0
     NUDISPLAY_SPECIAL common;
 
     struct {                         // size 0xc8
@@ -14930,7 +14930,7 @@ extern "C" {
 
     /* Unsized reference only: no inferred allocation or emitted backing. */
 
-    typedef union visibility_tree_flag_word_pc_u { // size 0x4
+    typedef union visibility_tree_flag_word_u { // size 0x4
         u32 word;
 
         struct {                   // size 0x4

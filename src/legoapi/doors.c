@@ -134,7 +134,7 @@ typedef struct player_world_doors_s { // size 0x46a4
     PLAYER_DOOR *start_door;          // 0x46a0
 } PLAYER_WORLD_DOORS;
 
-typedef union player_position_sock_pc_u { // size 0x38
+typedef union player_position_sock_u { // size 0x38
     SOCKPOSITION sock;
 
     struct {          // size 0x8

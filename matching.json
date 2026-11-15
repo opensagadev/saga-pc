@@ -329301,8 +329301,8 @@
       "status": "not implemented"
     },
     {
-      "name": "MenuPcStringsInit",
-      "symbol": "_MenuPcStringsInit",
+      "name": "MenuSettingsStringsInit",
+      "symbol": "MenuSettingsStringsInit",
       "address": "0x006ded20",
       "units": [
         "src/legoapi/menu_titles.cpp"
@@ -887076,8 +887076,8 @@
       "status": "exact"
     },
     {
-      "name": "MenuPcStrings",
-      "symbol": "_MenuPcStrings",
+      "name": "MenuSettingsStrings",
+      "symbol": "MenuSettingsStrings",
       "address": "0x0297ada0",
       "units": [
         "src/legoapi/menu_titles.cpp"
@@ -887097,8 +887097,8 @@
       "status": "exact"
     },
     {
-      "name": "MenuPcStringsInitialized",
-      "symbol": "_MenuPcStringsInitialized",
+      "name": "MenuSettingsStringsInitialized",
+      "symbol": "MenuSettingsStringsInitialized",
       "address": "0x0297ae3c",
       "units": [
         "src/legoapi/menu_titles.cpp"

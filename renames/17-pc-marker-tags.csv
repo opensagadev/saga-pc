@@ -1,0 +1,41 @@
+old,new,evidence
+ai_force_platform_object_data_pc_s,ai_force_platform_object_data_s,pc marker dropped from the tag: the plain tag is free
+ai_force_platform_record_pc_s,ai_force_platform_record_s,pc marker dropped from the tag: the plain tag is free
+ai_force_platform_terrain_pc_s,ai_force_platform_terrain_s,pc marker dropped from the tag: the plain tag is free
+ai_on_object_platform_pc_s,ai_on_object_platform_s,pc marker dropped from the tag: the plain tag is free
+area_fixup_pc_entry_s,area_fixup_entry_s,pc marker dropped from the tag: the plain tag is free
+area_loading_pad_reader_pc_s,area_loading_pad_reader_s,pc marker dropped from the tag: the plain tag is free
+collision_platform_push_view_pc_s,collision_platform_push_view_s,pc marker dropped from the tag: the plain tag is free
+directional_attracto_pc_s,directional_attracto_s,pc marker dropped from the tag: the plain tag is free
+directional_buildit_pc_s,directional_buildit_s,pc marker dropped from the tag: the plain tag is free
+directional_hatmachine_pc_s,directional_hatmachine_s,pc marker dropped from the tag: the plain tag is free
+directional_lever_pc_s,directional_lever_s,pc marker dropped from the tag: the plain tag is free
+directional_securitydoor_pc_s,directional_securitydoor_s,pc marker dropped from the tag: the plain tag is free
+directional_signal_pc_s,directional_signal_s,pc marker dropped from the tag: the plain tag is free
+directional_techno_pc_s,directional_techno_s,pc marker dropped from the tag: the plain tag is free
+directional_tube_pc_s,directional_tube_s,pc marker dropped from the tag: the plain tag is free
+directional_world_pc_s,directional_world_s,pc marker dropped from the tag: the plain tag is free
+directional_zipup_pc_s,directional_zipup_s,pc marker dropped from the tag: the plain tag is free
+edui_gradient_colour_pc_u,edui_gradient_colour_u,pc marker dropped from the tag: the plain tag is free
+hub_freeplay_pad_reader_pc_s,hub_freeplay_pad_reader_s,pc marker dropped from the tag: the plain tag is free
+hub_pad_reader_pc_s,hub_pad_reader_s,pc marker dropped from the tag: the plain tag is free
+moveplayer_pad_bits_pc_s,moveplayer_pad_bits_s,pc marker dropped from the tag: the plain tag is free
+player_position_sock_pc_u,player_position_sock_u,pc marker dropped from the tag: the plain tag is free
+registry_buildit_record_pc_s,registry_buildit_record_s,pc marker dropped from the tag: the plain tag is free
+registry_buildit_system_pc_s,registry_buildit_system_s,pc marker dropped from the tag: the plain tag is free
+registry_force_record_pc_s,registry_force_record_s,pc marker dropped from the tag: the plain tag is free
+registry_force_system_pc_s,registry_force_system_s,pc marker dropped from the tag: the plain tag is free
+rtl_direction_lookup_pc_s,rtl_direction_lookup_s,pc marker dropped from the tag: the plain tag is free
+shader_uniform_record_pc_s,shader_uniform_record_s,pc marker dropped from the tag: the plain tag is free
+shadow_platform_entry_pc_s,shadow_platform_entry_s,pc marker dropped from the tag: the plain tag is free
+shadow_platform_list_pc_s,shadow_platform_list_s,pc marker dropped from the tag: the plain tag is free
+terrain_platform_reader_pc_s,terrain_platform_reader_s,pc marker dropped from the tag: the plain tag is free
+terrain_player_platform_record_pc_s,terrain_player_platform_record_s,pc marker dropped from the tag: the plain tag is free
+terrain_player_platform_sys_pc_s,terrain_player_platform_sys_s,pc marker dropped from the tag: the plain tag is free
+visibility_display_special_reader_pc_u,visibility_display_special_reader_u,pc marker dropped from the tag: the plain tag is free
+visibility_tree_flag_word_pc_u,visibility_tree_flag_word_u,pc marker dropped from the tag: the plain tag is free
+MenuPcStrings,MenuSettingsStrings,the settings menu text (resolution, refresh rate, aspect, effects) that the language tables do not hold
+MenuPcStringsInit,MenuSettingsStringsInit,the settings menu text (resolution, refresh rate, aspect, effects) that the language tables do not hold
+MenuPcStringsInitialized,MenuSettingsStringsInitialized,the settings menu text (resolution, refresh rate, aspect, effects) that the language tables do not hold
+MENU_PC_STRING_ENTRY,MENU_SETTINGS_STRING_ENTRY,an entry of the settings menu text tables
+PermLegalPcPrefix,PermLegalPlatformPrefix,declared next to the per-language legal texture names and never defined: the platform prefix of those names

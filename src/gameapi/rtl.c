@@ -1341,9 +1341,9 @@ void edrtlCalculateBurnoutEx(BURN_SET *set, BURN_PARAMETERS *parameters, NUVEC *
     edrtlCalculateBurnout(set, &parameters->unknown_24, &parameters->unknown_14, &parameters->unknown_1c, camera_position, frame_time);
 }
 
-typedef struct rtl_direction_lookup_pc_s { // size 0x4690
-    u32 header;                            // 0x0000
-    RTL_LIGHT lights[129];                 // 0x0004
+typedef struct rtl_direction_lookup_s { // size 0x4690
+    u32 header;                         // 0x0000
+    RTL_LIGHT lights[129];              // 0x0004
 } RTL_DIRECTION_LOOKUP;
 
 i32 rtlGetDirection(RTL_SET *set, i32 index, NUVEC **out) {

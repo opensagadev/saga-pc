@@ -20,7 +20,7 @@
 #include "gameapi/edpart.h"
 
 extern "C" {
-    MENU_PC_STRING_ENTRY dat_00827800[40] = {
+    MENU_SETTINGS_STRING_ENTRY dat_00827800[40] = {
         {0,  "Quit"                                                       },
         {1,  "Quit to Windows"                                            },
         {2,  "Quit to Demos Menu"                                         },
@@ -62,7 +62,7 @@ extern "C" {
         {38, "Show Game Controls"                                         },
         {39, NULL                                                         },
     };
-    MENU_PC_STRING_ENTRY dat_00827940[40] = {
+    MENU_SETTINGS_STRING_ENTRY dat_00827940[40] = {
         {0,  "Quit"                                                       },
         {1,  "Quit to Windows"                                            },
         {2,  "Quit to Demos Menu"                                         },
@@ -104,7 +104,7 @@ extern "C" {
         {38, "Show Game Controls"                                         },
         {39, NULL                                                         },
     };
-    MENU_PC_STRING_ENTRY dat_00827a80[40] = {
+    MENU_SETTINGS_STRING_ENTRY dat_00827a80[40] = {
         {0,  "Quitter"                                                                     },
         {1,  "Revenir sous Windows"                                                        },
         {2,  "Quitter au menu D\303\251mo"                                                 },
@@ -146,7 +146,7 @@ extern "C" {
         {38, "Show Game Controls"                                                          },
         {39, NULL                                                                          },
     };
-    MENU_PC_STRING_ENTRY dat_00827bc0[40] = {
+    MENU_SETTINGS_STRING_ENTRY dat_00827bc0[40] = {
         {0,  "Ende"                                                                             },
         {1,  "Zur\303\274ck zu Windows"                                                         },
         {2,  "Schlie\303\237en und zum Demo-Men\303\274"                                        },
@@ -188,7 +188,7 @@ extern "C" {
         {38, "Show Game Controls"                                                               },
         {39, NULL                                                                               },
     };
-    MENU_PC_STRING_ENTRY dat_00827d00[40] = {
+    MENU_SETTINGS_STRING_ENTRY dat_00827d00[40] = {
         {0,  "Esci"                                                                 },
         {1,  "Torna a Windows"                                                      },
         {2,  "Esci al Menu Demo"                                                    },
@@ -230,7 +230,7 @@ extern "C" {
         {38, "Show Game Controls"                                                   },
         {39, NULL                                                                   },
     };
-    MENU_PC_STRING_ENTRY dat_00827e40[40] = {
+    MENU_SETTINGS_STRING_ENTRY dat_00827e40[40] = {
         {0,  "Salir"                                                        },
         {1,  "Salir a Windows"                                              },
         {2,  "Salir al menu del demo"                                       },
@@ -272,7 +272,7 @@ extern "C" {
         {38, "Show Game Controls"                                           },
         {39, NULL                                                           },
     };
-    MENU_PC_STRING_ENTRY dat_00827f80[40] = {
+    MENU_SETTINGS_STRING_ENTRY dat_00827f80[40] = {
         {0,  "Forlad"                                                                    },
         {1,  "Forlad til Windows"                                                        },
         {2,  "Slut og g\303\245 til Demo-menuen"                                         },
@@ -314,12 +314,12 @@ extern "C" {
         {38, "Show Game Controls"                                                        },
         {39, NULL                                                                        },
     };
-    const char *MenuPcStrings[39] = {0};
-    i32 MenuPcStringsInitialized = 0;
+    const char *MenuSettingsStrings[39] = {0};
+    i32 MenuSettingsStringsInitialized = 0;
 }
 
-extern "C" void MenuPcStringsInit(void) {
-    MENU_PC_STRING_ENTRY *entry = dat_00827940;
+extern "C" void MenuSettingsStringsInit(void) {
+    MENU_SETTINGS_STRING_ENTRY *entry = dat_00827940;
     switch (NuLanguageGet()) {
         case NULANGUAGE_US_ENGLISH:
             entry = dat_00827800;
@@ -340,12 +340,12 @@ extern "C" void MenuPcStringsInit(void) {
             entry = dat_00827f80;
             break;
     }
-    memset(MenuPcStrings, 0, sizeof(MenuPcStrings));
+    memset(MenuSettingsStrings, 0, sizeof(MenuSettingsStrings));
     while (entry->text != NULL) {
-        MenuPcStrings[entry->id] = entry->text;
+        MenuSettingsStrings[entry->id] = entry->text;
         ++entry;
     }
-    MenuPcStringsInitialized = 1;
+    MenuSettingsStringsInitialized = 1;
 }
 
 extern "C" {

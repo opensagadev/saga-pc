@@ -252,10 +252,10 @@ typedef struct ai_been_to_level_progress_s { // size 0x2e28
     u8 unknown_2804[0x624];                  // 0x2804
 } AI_BEEN_TO_LEVEL_PROGRESS;
 
-typedef struct ai_on_object_platform_pc_s { // size 0x6c
-    u8 unknown_00[0x40];                    // 0x00
-    NUMTX *scene_object;                    // 0x40
-    u8 unknown_44[0x28];                    // 0x44
+typedef struct ai_on_object_platform_s { // size 0x6c
+    u8 unknown_00[0x40];                 // 0x00
+    NUMTX *scene_object;                 // 0x40
+    u8 unknown_44[0x28];                 // 0x44
 } AI_ON_OBJECT_PLATFORM;
 
 typedef struct ai_on_object_terrain_s { // size 0x6c
@@ -282,20 +282,20 @@ extern const f64 ActionSnapWeightedRandomZero;
 
 typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS_PC *, AIPACKET *);
 
-typedef struct ai_force_platform_record_pc_s { // size 0x6c
-    u8 unknown_00[0x40];                       // 0x00
-    NUMTX *scene_matrix;                       // 0x40
-    u8 unknown_44[0x28];                       // 0x44
+typedef struct ai_force_platform_record_s { // size 0x6c
+    u8 unknown_00[0x40];                    // 0x00
+    NUMTX *scene_matrix;                    // 0x40
+    u8 unknown_44[0x28];                    // 0x44
 } AI_FORCE_PLATFORM_RECORD;
 
-typedef struct ai_force_platform_terrain_pc_s { // size 0x6c
-    u8 unknown_00[0x68];                        // 0x00
-    AI_FORCE_PLATFORM_RECORD *platforms;        // 0x68
+typedef struct ai_force_platform_terrain_s { // size 0x6c
+    u8 unknown_00[0x68];                     // 0x00
+    AI_FORCE_PLATFORM_RECORD *platforms;     // 0x68
 } AI_FORCE_PLATFORM_TERRAIN;
 
-typedef struct ai_force_platform_object_data_pc_s { // size 0x4
-    u8 unknown_00[2];                               // 0x0
-    i16 platform_id;                                // 0x2
+typedef struct ai_force_platform_object_data_s { // size 0x4
+    u8 unknown_00[2];                            // 0x0
+    i16 platform_id;                             // 0x2
 } AI_FORCE_PLATFORM_OBJECT_DATA;
 
 typedef struct ai_trigger_world_s {    // size 0x467c

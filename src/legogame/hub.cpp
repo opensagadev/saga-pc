@@ -205,7 +205,7 @@ typedef struct hub_minikit_pieces_s {
 
 #define HUB_SIN_LUT(a) (NuTrigTable[(((i32)(a)) >> 1) & 0x7fff])
 
-typedef struct hub_pad_reader_pc_s {
+typedef struct hub_pad_reader_s {
     void *pad;
     u32 held;
     u8 unknown_08[0x58];
@@ -303,7 +303,7 @@ extern "C" i32 freeplaymode;
 extern "C" i32 freeplay_selected[2];
 extern "C" i32 fpcount;
 
-typedef struct hub_freeplay_pad_reader_pc_s {
+typedef struct hub_freeplay_pad_reader_s {
     u8 unknown_00[0x78];
     u32 digital_buttons_pressed;
 } HUB_FREEPLAY_PAD_READER;

@@ -42,8 +42,8 @@ extern "C" {
     extern i32 header_g;
     extern i32 header_b;
     void MenuEnterNewGame(MENU *menu);
-    extern const char *MenuPcStrings[39];
-    extern i32 MenuPcStringsInitialized;
+    extern const char *MenuSettingsStrings[39];
+    extern i32 MenuSettingsStringsInitialized;
     extern i32 startnewgame_initiated;
     extern i32 startnewgame;
     i32 SplitTextFindNextWS(u8 *text, i32 position);

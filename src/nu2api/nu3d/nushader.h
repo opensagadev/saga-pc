@@ -15,15 +15,15 @@ extern "C" {
 }
 #endif
 
-typedef struct shader_uniform_record_pc_s { // size 0x5c
-    const char *vertex_name;                // 0x00
-    const char *fragment_name;              // 0x04
-    i32 value_count;                        // 0x08
-    i32 field_c;                            // 0x0c
-    i32 stage_mask;                         // 0x10
-    i32 register_index;                     // 0x14
-    i32 unknown_18;                         // 0x18
-    f32 values[16];                         // 0x1c
+typedef struct shader_uniform_record_s { // size 0x5c
+    const char *vertex_name;             // 0x00
+    const char *fragment_name;           // 0x04
+    i32 value_count;                     // 0x08
+    i32 field_c;                         // 0x0c
+    i32 stage_mask;                      // 0x10
+    i32 register_index;                  // 0x14
+    i32 unknown_18;                      // 0x18
+    f32 values[16];                      // 0x1c
 } ShaderUniformRecord;
 
 #ifdef __cplusplus

@@ -137,7 +137,7 @@ typedef struct trigger_force_object_s {
 
 void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 
-typedef struct registry_force_record_pc_s {
+typedef struct registry_force_record_s {
     u8 unknown_00[0x28];
     GAMEANIMSET *anim_set;
     u8 unknown_2c[0x5c];
@@ -146,7 +146,7 @@ typedef struct registry_force_record_pc_s {
     u32 runtime_flags;
 } REGISTRY_FORCE_RECORD;
 
-typedef struct registry_force_system_pc_s {
+typedef struct registry_force_system_s {
     REGISTRY_FORCE_RECORD *forces;
     REGISTRY_FORCE_RECORD **visible_forces;
     GIZMO_PC **hit_test_gizmos;

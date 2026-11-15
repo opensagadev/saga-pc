@@ -38,12 +38,12 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 
 /* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
  */
-typedef struct shadow_platform_entry_pc_s { // size 0x14
-    GAMEOBJECT *object;                     // 0x00
-    u8 unknown_04_14[0x10];                 // 0x04
+typedef struct shadow_platform_entry_s { // size 0x14
+    GAMEOBJECT *object;                  // 0x00
+    u8 unknown_04_14[0x10];              // 0x04
 } SHADOW_PLATFORM_ENTRY;
 
-struct shadow_platform_list_pc_s {    // size 0x2c
+struct shadow_platform_list_s {       // size 0x2c
     u8 unknown_00_04[4];              // 0x00
     i32 count;                        // 0x04
     u8 unknown_08_18[0x10];           // 0x08

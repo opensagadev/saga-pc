@@ -174,7 +174,7 @@ typedef struct {
 } ADD_BUILDIT;
 
 /* These allocation records use the PC strides, rather than the larger views. */
-typedef struct registry_buildit_record_pc_s {
+typedef struct registry_buildit_record_s {
     u8 unknown_00[0x10];
     GAMEANIMSET *anim_set;
     u8 unknown_14[0x64];
@@ -182,7 +182,7 @@ typedef struct registry_buildit_record_pc_s {
     u16 flags;
 } REGISTRY_BUILDIT_RECORD;
 
-typedef struct registry_buildit_system_pc_s {
+typedef struct registry_buildit_system_s {
     REGISTRY_BUILDIT_RECORD *buildits;
     u16 count;
     u16 capacity;

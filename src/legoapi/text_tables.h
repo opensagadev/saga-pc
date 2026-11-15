@@ -325,10 +325,10 @@ typedef struct area_loading_clock_reader_s { // size 0x7c24
     f32 elapsed_time;                        // 0x7c20
 } AREA_LOADING_CLOCK_READER;
 
-typedef struct area_loading_pad_reader_pc_s { // size 0x60
-    u8 unknown_0000[8];                       // 0x00
-    u32 buttons_pressed;                      // 0x08
-    u8 unknown_000c[0x54];                    // 0x0c
+typedef struct area_loading_pad_reader_s { // size 0x60
+    u8 unknown_0000[8];                    // 0x00
+    u32 buttons_pressed;                   // 0x08
+    u8 unknown_000c[0x54];                 // 0x0c
 } AREA_LOADING_PAD_READER;
 
 typedef struct character_ai_capabilities_s {
@@ -358,9 +358,9 @@ typedef struct collision_masks_view_s { // size 0x1f8
     u64 collision_contact_mask;         // 0x1f0
 } COLLISION_MASKS_VIEW;
 
-typedef struct collision_platform_push_view_pc_s { // size 0xdc8
-    u8 unknown_0000[0xdc4];                        // 0x000
-    f32 platform_push_timer;                       // 0xdc4
+typedef struct collision_platform_push_view_s { // size 0xdc8
+    u8 unknown_0000[0xdc4];                     // 0x000
+    f32 platform_push_timer;                    // 0xdc4
 } COLLISION_PLATFORM_PUSH_VIEW;
 
 typedef struct combat_attack_counter_s { // size 0x1084

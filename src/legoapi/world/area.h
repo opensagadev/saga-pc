@@ -5,9 +5,9 @@
 struct area_data_s;
 struct level_data_s;
 
-typedef struct area_fixup_pc_entry_s { // size 0x8
-    char *name;                        // 0x0
-    struct area_data_s **area;         // 0x4
+typedef struct area_fixup_entry_s { // size 0x8
+    char *name;                     // 0x0
+    struct area_data_s **area;      // 0x4
 } AREAFIXUP;
 
 #ifdef __cplusplus
