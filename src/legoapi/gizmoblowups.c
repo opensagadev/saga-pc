@@ -127,19 +127,6 @@ typedef struct blowup_effect_type_s {   // size 0xfc
     u8 fragment_count;                  // 0xfa
 } BLOWUP_EFFECT_TYPE;
 
-/* Bit view of GIZMOBLOWUP_PC.status_flags, whose bits are stored as bitfields. Stands in for a
- * bitfield member of the shared struct. */
-typedef struct BLOWUP_STATUS_BITS { // size 0x4
-    u32 blown_up : 1;               // 0x0:0
-    u32 unknown_1 : 13;             // 0x0:1
-    u32 visible : 1;                // 0x0:14
-    u32 unknown_15 : 8;             // 0x0:15
-    u32 active : 1;                 // 0x0:23
-    u32 unknown_24 : 4;             // 0x0:24
-    u32 secondary_output : 1;       // 0x0:28
-    u32 unknown_29 : 3;             // 0x0:29
-} BLOWUP_STATUS_BITS;
-
 typedef struct {              // size 0x100
     u32 blown_up[16];         // 0x00
     u32 activated[16];        // 0x40
@@ -335,14 +322,14 @@ void Blowup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
         return;
     }
     blowup = gizmo->object;
-    ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible = visible != 0;
+    blowup->visible = visible != 0;
     if (blowup->platform_id != -1) {
         PlatOnOff(blowup->platform_id, visible);
     }
-    if (((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible == 0 && blowup->anti_node != NULL) {
+    if (blowup->visible == 0 && blowup->anti_node != NULL) {
         GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, blowup->anti_node);
         blowup->anti_node = NULL;
-    } else if (((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible && blowup->anti_node == NULL) {
+    } else if (blowup->visible && blowup->anti_node == NULL) {
         blowup->status_flags |= 0x10000;
     }
 }
@@ -2171,7 +2158,7 @@ void Blowup_Activate(GIZMO_PC *gizmo, i32 active) {
         return;
     }
     blowup = gizmo->object;
-    ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->active = active != 0;
+    blowup->active = active != 0;
     animation = NuSpecialGetInstAnim(&blowup->type->animated_special);
     if (animation != NULL) {
         if (active == 0) {
@@ -2206,18 +2193,18 @@ void Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
             if (progress != NULL && index < 512) {
                 word = index / 32;
                 bit = 1 << (index & 31);
-                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->blown_up = (progress->blown_up[word] & bit) != 0;
-                old_visible = ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible;
-                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible = (progress->visible[word] & bit) != 0;
+                blowup->blown_up = (progress->blown_up[word] & bit) != 0;
+                old_visible = blowup->visible;
+                blowup->visible = (progress->visible[word] & bit) != 0;
                 if (!old_visible) {
-                    if (((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible) {
+                    if (blowup->visible) {
                         GizBlowup_InitSingleTerrain(blowup);
                     }
-                } else if (!((BLOWUP_STATUS_BITS *)&blowup->status_flags)->visible) {
+                } else if (!blowup->visible) {
                     GizBlowup_DeleteSingleTerrain(blowup);
                 }
-                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->active = (progress->activated[word] & bit) != 0;
-                ((BLOWUP_STATUS_BITS *)&blowup->status_flags)->secondary_output = (progress->secondary_output[word] & bit) != 0;
+                blowup->active = (progress->activated[word] & bit) != 0;
+                blowup->secondary_output = (progress->secondary_output[word] & bit) != 0;
             }
             if (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) {
                 blowup->animation_time = 0.0f;
