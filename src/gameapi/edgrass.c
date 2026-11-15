@@ -572,16 +572,16 @@ void edgraSortVectorBuffer(i32 index) {
         i32 i;
         NUVEC *tail;
         PCByteCopy(temporary, GrassClumps[index].vector_buffer, bytes);
-        tail = (NUVEC *)GrassClumps[index].vector_buffer + GrassClumps[index].element_count;
+        tail = GrassClumps[index].vector_buffer + GrassClumps[index].element_count;
         PCByteCopy(GrassClumps[index].vector_buffer, tail, (u8 *)edgra_free_vecbuffer - (u8 *)tail);
         PCByteCopy((u8 *)edgra_free_vecbuffer - bytes, temporary, bytes);
         edgra_last_clump_in_buffer = index;
         for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
-            if (i != index && GrassClumps[i].element_count && (u8 *)GrassClumps[i].vector_buffer > (u8 *)GrassClumps[index].vector_buffer) {
-                GrassClumps[i].vector_buffer = (void *)((u32)GrassClumps[i].vector_buffer - bytes);
+            if (i != index && GrassClumps[i].element_count && GrassClumps[i].vector_buffer > GrassClumps[index].vector_buffer) {
+                GrassClumps[i].vector_buffer = (NUVEC *)((u32)GrassClumps[i].vector_buffer - bytes);
             }
         }
-        GrassClumps[index].vector_buffer = (u8 *)edgra_free_vecbuffer - bytes;
+        GrassClumps[index].vector_buffer = (NUVEC *)((u8 *)edgra_free_vecbuffer - bytes);
         edgraInitAllClumps();
     }
 }
@@ -781,9 +781,9 @@ i32 edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR
             if (version >= 8) {
                 edgra_page_vectors_valid[page] = 1;
                 for (element = 0; element < clump->element_count; ++element) {
-                    ((NUVEC *)clump->vector_buffer)[element].x = EdFileReadFloat();
-                    ((NUVEC *)clump->vector_buffer)[element].y = EdFileReadFloat();
-                    ((NUVEC *)clump->vector_buffer)[element].z = EdFileReadFloat();
+                    clump->vector_buffer[element].x = EdFileReadFloat();
+                    clump->vector_buffer[element].y = EdFileReadFloat();
+                    clump->vector_buffer[element].z = EdFileReadFloat();
                 }
             } else {
                 edgra_page_vectors_valid[page] = 0;
@@ -872,7 +872,7 @@ void edgraClumpPlace(i32 index, NUVEC *position) {
             GrassClumps[index].element_count = edgra_clump_size;
         }
     }
-    edgra_free_vecbuffer = (NUVEC *)GrassClumps[index].vector_buffer + GrassClumps[index].element_count;
+    edgra_free_vecbuffer = GrassClumps[index].vector_buffer + GrassClumps[index].element_count;
     edgraInitAllClumps();
 }
 

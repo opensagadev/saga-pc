@@ -65,7 +65,7 @@ extern "C" {
         u8 unknown_43;             // 0x43
         f32 unknown_44;            // 0x44
         NUMTX *matrices;           // 0x48
-        void *vector_buffer;       // 0x4c
+        NUVEC *vector_buffer;      // 0x4c
     } PC_EDGRACLUMP;
 
     typedef struct PC_EDGRAINDIVIDUAL { // size 0x20

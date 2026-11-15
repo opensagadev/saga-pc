@@ -322,16 +322,6 @@ typedef struct CUT_CONTROLLER_INSTANCE { // size 0x9c
     f32 rate;                            // 0x98
 } CUT_CONTROLLER_INSTANCE;
 
-typedef struct CUT_CONTROLLER_PLAYER { // size 0x8
-    void *clips;                       // 0x0
-    void *active;                      // 0x4
-} CUT_CONTROLLER_PLAYER;
-
-typedef struct CUT_CONTROLLER_CLIP { // size 0x8
-    u32 unknown_00;                  // 0x0
-    char name[1];                    // 0x4
-} CUT_CONTROLLER_CLIP;
-
 typedef struct CUT_CONTROLLER_PROGRESS { // size 0x2801
     u8 unknown_00[0x2800];               // 0x0000
     u8 scene_flags;                      // 0x2800
@@ -2074,7 +2064,7 @@ extern "C" {
         i32 area_id;
         i32 episode;
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
-            clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
+            clips = CutScenePlayer->clips;
             area_id = LDataList[clips[clip_id].level_id].area_index;
             if (area_id != -1) {
                 if ((ADataList[area_id].flags & AREAFLAG_ENDING_AREA) != 0) {
@@ -2094,9 +2084,9 @@ extern "C" {
     void CutScenePlayer_Start(i32 clip_id) {
         CUT_PLAYER_CLIP_CONFIG *clips;
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
-            clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
+            clips = CutScenePlayer->clips;
             NewLevelFromMenu(&LDataList[clips[clip_id].level_id], -1, -1, 1);
-            CutScenePlayer->active = &((CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips)[clip_id];
+            CutScenePlayer->active = &(CutScenePlayer->clips)[clip_id];
             NextArea_FreePlay = 0;
             FreePlay = 0;
         }
@@ -2124,7 +2114,7 @@ extern "C" {
                 sprintf(title, "Clip %i", id + 1);
             }
             if (mode != 0) {
-                clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
+                clips = CutScenePlayer->clips;
                 switch (clips[id].type) {
                     case 0:
                         if (CutScenePlayer->intro_text != NULL) {
@@ -2154,7 +2144,7 @@ extern "C" {
             }
         }
         if (subtitle != NULL) {
-            clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
+            clips = CutScenePlayer->clips;
             level = &LDataList[clips[id].level_id];
             area_id = level->area_index;
             if (area_id == -1) {
@@ -2218,7 +2208,7 @@ extern "C" {
         if (CutScene_StartFn != NULL) {
             CutScene_StartFn(reinterpret_cast<CUTINFO *>(cut));
         }
-        if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL) {
+        if (CutScenePlayer != NULL && CutScenePlayer->active != NULL) {
             CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(cut));
         }
         f32 rate = cut->frames_per_second * FRAMETIME;
@@ -2312,8 +2302,7 @@ extern "C" {
             CUTINFO *cut = NULL;
             CUTSYS_PC *system = world->cutscene_sys;
             if (CutScenePlayer != NULL) {
-                CUT_CONTROLLER_CLIP *clip =
-                    reinterpret_cast<CUT_CONTROLLER_CLIP *>(reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active);
+                CUT_PLAYER_CLIP_CONFIG *clip = CutScenePlayer->active;
                 if (clip != NULL && system->count > 0) {
                     if (clip->name[0] != 0) {
                         cut = CutScene_Find(system, clip->name);
@@ -2346,8 +2335,7 @@ extern "C" {
     static i32 CutInstEndStop = 0;
 
     void CutScenes_End(void) {
-        if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL && NewLData != NULL &&
-            NewLData == HUB_LDATA) {
+        if (CutScenePlayer != NULL && CutScenePlayer->active != NULL && NewLData != NULL && NewLData == HUB_LDATA) {
             PCFrameSetLoadingYieldEnabled(0);
             return;
         }
@@ -2367,7 +2355,7 @@ extern "C" {
 
     void CutScenes_Update(WORLDINFO *world, i32 paused) {
         i32 active_before[32];
-        if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL && CutStopInfo != NULL) {
+        if (CutScenePlayer != NULL && CutScenePlayer->active != NULL && CutStopInfo != NULL) {
             CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(CutStopInfo));
         }
         CutInstEnd[0] = NULL;
@@ -2514,13 +2502,13 @@ extern "C" {
         if (skip_level != -1) {
             NewLData = &LDataList[skip_level];
             if (HUB_LDATA != NULL && NewLData == HUB_LDATA) {
-                if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL) {
+                if (CutScenePlayer != NULL && CutScenePlayer->active != NULL) {
                     NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                     RenderHubFromCutscenePlayer = 1;
                 } else if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_ENDING_AREA) != 0) {
                     NewLData = SuperStory != 0 ? STATUS_LDATA : CREDITS_LDATA;
                 }
-            } else if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL &&
+            } else if (CutScenePlayer != NULL && CutScenePlayer->active != NULL &&
                        (NewLData->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && (stop_cut->end_flags & 2) == 0) {
                 NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                 RenderHubFromCutscenePlayer = 1;
@@ -2534,7 +2522,7 @@ extern "C" {
             }
         } else {
             CUTINFO *next = NewCutScene(NULL, world->cutscene_sys, stop_cut->next_cutscene, 0);
-            if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL && next == NULL) {
+            if (CutScenePlayer != NULL && CutScenePlayer->active != NULL && next == NULL) {
                 NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                 RenderHubFromCutscenePlayer = 1;
             } else if ((stop_cut->flags & 0x400) != 0) {

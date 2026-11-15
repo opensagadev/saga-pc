@@ -1809,7 +1809,7 @@ void DrawSubItems(void) {
                 id = (u16)item->item_id;
                 if (shopcutsceneplayer != NULL && CutScenePlayer_CanStart(id) != 0) {
                     blank = &toolblank;
-                    level = &LDataList[((CUT_PLAYER_CLIP_CONFIG *)shopcutsceneplayer->clips)[id].level_id];
+                    level = &LDataList[shopcutsceneplayer->clips[id].level_id];
                     area = level->area_index;
                     episode = (i8)level->episode;
                     if (episode != -1) {

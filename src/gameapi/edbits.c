@@ -612,7 +612,7 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
             position.z = sample->position.z;
             if (GrassClumps[clump_index].kind == 3) {
                 if (terrain_enabled && calculate_vectors) {
-                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] = NuFadeObjGetAngleTerrainValues(&position);
+                    GrassClumps[clump_index].vector_buffer[element] = NuFadeObjGetAngleTerrainValues(&position);
                 }
                 NuMtxSetIdentity(current_matrix);
                 NuMtxRotateZ(
@@ -622,27 +622,27 @@ void edgraCalculatePage(i8 page, i32 calculate_vectors) {
                     current_matrix,
                     IndGrassClumps[GrassClumps[clump_index].individual_index * EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP + element].unknown_12);
                 if (slope_enabled) {
-                    NuMtxRotateZ(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].z));
-                    NuMtxRotateX(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].x));
+                    NuMtxRotateZ(current_matrix, (i32)GrassClumps[clump_index].vector_buffer[element].z);
+                    NuMtxRotateX(current_matrix, (i32)GrassClumps[clump_index].vector_buffer[element].x);
                 }
                 NuMtxScale(current_matrix, &scale);
                 if (terrain_enabled) {
-                    position.y = height_offset + ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].y;
+                    position.y = height_offset + GrassClumps[clump_index].vector_buffer[element].y;
                 }
                 NuMtxTranslate(current_matrix, &position);
             } else {
                 if (terrain_enabled && calculate_vectors) {
-                    ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element] = NuFadeObjGetAngleTerrainValues(&position);
+                    GrassClumps[clump_index].vector_buffer[element] = NuFadeObjGetAngleTerrainValues(&position);
                 }
                 NuMtxSetIdentity(current_matrix);
                 NuMtxPreRotateY(current_matrix, (u16)(NuRandIntSeeded(&seed)));
                 if (slope_enabled) {
-                    NuMtxRotateZ(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].z));
-                    NuMtxRotateX(current_matrix, (i32)(((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].x));
+                    NuMtxRotateZ(current_matrix, (i32)GrassClumps[clump_index].vector_buffer[element].z);
+                    NuMtxRotateX(current_matrix, (i32)GrassClumps[clump_index].vector_buffer[element].x);
                 }
                 NuMtxScale(current_matrix, &scale);
                 if (terrain_enabled) {
-                    position.y = height_offset + ((NUVEC *)GrassClumps[clump_index].vector_buffer)[element].y;
+                    position.y = height_offset + GrassClumps[clump_index].vector_buffer[element].y;
                 }
                 NuMtxTranslate(current_matrix, &position);
                 if (GrassClumps[clump_index].kind == 1) {
