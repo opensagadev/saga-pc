@@ -148,8 +148,8 @@ i32 NuDisplayListAddRenderScene(void) {
 
     for (node = sort_list; node != NULL; node = node->sys_next) {
         sub = node->legacy_display_scene;
-        if (sub != NULL && (*(u32 *)&sub->flags & 0x10) != 0) {
-            if ((*(u32 *)&sub->flags & 0x2) == 0) {
+        if (sub != NULL && (sub->render_flags & 0x10) != 0) {
+            if ((sub->render_flags & 0x2) == 0) {
                 continue;
             }
             rebuilt = (NUSORTPRI *)((cursor->addr + 3U) & ~3U);
@@ -187,7 +187,7 @@ i32 NuDisplayListAddRenderScene(void) {
             if ((node->flags & 0x2) != 0) {
                 continue;
             }
-            if (sub != NULL && (*(u32 *)&sub->flags & 0x6) == 0) {
+            if (sub != NULL && (sub->render_flags & 0x6) == 0) {
                 continue;
             }
             pris[count++] = node;

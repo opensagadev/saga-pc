@@ -10,17 +10,18 @@ struct nuhspecial_s;
 
 typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
 
-typedef struct nudisplayscene_pc_s { // size 0x78
-    u8 unknown_0000[0x58];           // 0x00
-    u8 *material_used_front;         // 0x58
-    u8 *material_used_back;          // 0x5c
-    u8 unknown_0060[0x14];           // 0x60
+typedef struct nudisplayscene_s {        // size 0x78
+    u8 unknown_0000[0x54];               // 0x00
+    struct nudisplaylist_s **dlist_mtls; // 0x54
+    u8 *material_used_front;             // 0x58
+    u8 *material_used_back;              // 0x5c
+    u8 unknown_0060[0x14];               // 0x60
 
     union { // size 0x4
         u16 flags;
         u32 render_flags;
     }; // 0x74
-} NUDISPLAYSCENE_PC;
+} NUDISPLAYSCENE;
 
 /* NUDISPLAYLISTITEM.type, named after the text DisplayListPrintItem prints for each. */
 #define NUDLIST_MTL 0x80
@@ -89,15 +90,15 @@ extern "C" {
 }
 #endif
 
-struct nudisplaylist_pc_s {   // size 0x28
-    NUDISPLAYSCENE_PC *scene; // 0x00
-    i32 material_id;          // 0x04
-    void *render_state;       // 0x08
-    u8 unknown_000c[8];       // 0x0c
-    void *material_last;      // 0x14
-    void *dynamic_geometry;   // 0x18
-    u8 unknown_001c[8];       // 0x1c
-    void *items;              // 0x24
+struct nudisplaylist_pc_s { // size 0x28
+    NUDISPLAYSCENE *scene;  // 0x00
+    i32 material_id;        // 0x04
+    void *render_state;     // 0x08
+    u8 unknown_000c[8];     // 0x0c
+    void *material_last;    // 0x14
+    void *dynamic_geometry; // 0x18
+    u8 unknown_001c[8];     // 0x1c
+    void *items;            // 0x24
 };
 
 #ifdef __cplusplus
@@ -135,14 +136,6 @@ typedef struct nudisplaylist_s {         // size 0x38
     NUDISPLAYLISTITEM *scene_next;       // 0x30
     i32 scene_buffer;                    // 0x34
 } NUDISPLAYLIST;
-
-typedef struct nudisplayscene_s { // size 0x78
-    u8 opaque_00_54[0x54];        // 0x00
-    NUDISPLAYLIST **dlist_mtls;   // 0x54
-    u8 opaque_58_74[0x1c];        // 0x58
-    u8 flags;                     // 0x74
-    u8 opaque_75_78[0x3];         // 0x75
-} NUDISPLAYSCENE;
 
 typedef struct nusortpri_s {      // size 0x24
     i32 sort_pri;                 // 0x00

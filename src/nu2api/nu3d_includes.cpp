@@ -10717,7 +10717,7 @@ extern "C" {
                             }
                             NUDISPLAYLIST_PC *list =
                                 material->shadow_set > 0 ? &light->render_sets[set].variant : &light->render_sets[set].regular;
-                            list->scene = reinterpret_cast<NUDISPLAYSCENE_PC *>(scene);
+                            list->scene = reinterpret_cast<NUDISPLAYSCENE *>(scene);
                             NuDisplayListLinkItems(list, 1);
                             NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);
                             item->type = NUDLIST_MTL;

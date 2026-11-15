@@ -576,11 +576,11 @@ assert:-#378,assert,,2300,2300,1,nu2api/nu3d/numtl.h,follow-type,NUMTL
 assert:-#379,assert,,2301,2301,1,nu2api/nu3d/numtl.h,follow-type,NUMTL
 assert:-#380,assert,,2302,2302,1,nu2api/nu3d/numtl.h,follow-type,NUMTL
 assert:-#381,assert,,2303,2303,1,nu2api/nu3d/numtl.h,follow-type,NUMTL
-struct:nudisplayscene_pc_s,struct,nudisplayscene_pc_s NUDISPLAYSCENE_PC,2305,2315,12,nu2api/nu3d/nudlist.h,android-stem,nudisplayscene_pc_s -> nudisplayscene_s
-assert:-#382,assert,,2317,2317,2,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE_PC
-assert:-#383,assert,,2318,2318,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE_PC
-assert:-#384,assert,,2319,2319,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE_PC
-assert:-#385,assert,,2320,2320,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE_PC
+struct:nudisplayscene_s,struct,nudisplayscene_s NUDISPLAYSCENE,2305,2315,12,nu2api/nu3d/nudlist.h,android-stem,nudisplayscene_s -> nudisplayscene_s
+assert:-#382,assert,,2317,2317,2,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE
+assert:-#383,assert,,2318,2318,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE
+assert:-#384,assert,,2319,2319,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE
+assert:-#385,assert,,2320,2320,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE
 struct:nudisplaylist_pc_s,struct,nudisplaylist_pc_s,2322,2331,11,nu2api/nu3d/nudlist.h,android-stem,nudisplaylist_pc_s -> nudisplaylist_s
 assert:-#386,assert,,2333,2333,2,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
 assert:-#387,assert,,2334,2334,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
