@@ -10089,7 +10089,7 @@ i32 Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
 i32 Action_UsePanel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                     f32 elapsed) {
     GAMEOBJECT *object;
-    BULK_AI_PANEL *panel;
+    PANEL_MOVEMENT *panel;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
@@ -10098,7 +10098,7 @@ i32 Action_UsePanel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
         i32 index;
         for (index = 0; index < param_count; ++index) {
             GIZMO_PC *gizmo;
-            BULK_AI_PANEL *panel;
+            PANEL_MOVEMENT *panel;
             f32 height;
             char *name = NuStrIStr(params[index], (char *)"name=");
             if (name == NULL) {

@@ -6,7 +6,35 @@
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/world/world.h"
+#include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
+
+/* A wall panel that a character of the right kind uses (protocol droid, bounty hunter, storm trooper). */
+typedef struct panel_movement_s { // size 0x90
+    NUMTX matrix;                 // 0x00
+    char name[16];                // 0x40
+    NUVEC position;               // 0x50
+    u16 y_rotation;               // 0x5c
+    u8 unknown_5e[3];             // 0x5e
+    u8 model_variant;             // 0x61
+    u8 flags;                     // 0x62
+    u8 draw_flags;                // 0x63
+    NUVEC floor_position;         // 0x64
+    NUVEC target_offset;          // 0x70
+    u16 unknown_7c;               // 0x7c
+    u16 unknown_7e;               // 0x7e
+    u16 arm_x_rotation;           // 0x80
+    u16 target_pitch;             // 0x82
+    u16 target_roll;              // 0x84
+    i16 platform_id;              // 0x86
+    f32 activation_time;          // 0x88
+    f32 target_scale;             // 0x8c
+} PANEL_MOVEMENT;
+
+typedef struct panel_load_system_s { // size 0x8
+    i32 count;                       // 0x0
+    PANEL_MOVEMENT *panels;          // 0x4
+} PANEL_SYSTEM;
 
 #ifdef __cplusplus
 extern "C" {

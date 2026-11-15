@@ -395,12 +395,6 @@ typedef struct {          // size 0xa4
     u8 opaque[0xa4 - 16]; // 0x10
 } ADD_FORCE;
 
-typedef struct {               // size 0x90
-    u8 opaque_00[0x40];        // 0x00
-    char name[16];             // 0x40
-    u8 opaque_50[0x90 - 0x50]; // 0x50
-} ADD_PANEL;
-
 typedef struct {          // size 0xfc
     char name[16];        // 0x00
     u8 opaque[0xfc - 16]; // 0x10

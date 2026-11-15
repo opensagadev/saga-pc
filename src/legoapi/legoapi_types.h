@@ -981,7 +981,6 @@ typedef struct FADER_s FADER_s;
 typedef struct GIZBUILDITSYS_s GIZBUILDITSYS_s;
 typedef struct GIZFORCESYS_s GIZFORCESYS_s;
 typedef struct GIZMOPICKUPRUNTIMESYS_s GIZMOPICKUPRUNTIMESYS_s;
-typedef struct GIZPANELSYS_s GIZPANELSYS_s;
 typedef struct GIZTURRETSYS_s GIZTURRETSYS_s;
 typedef struct LEVER_s LEVER_s;
 typedef struct SPECIALMINIKITSYS_s SPECIALMINIKITSYS_s;
@@ -1026,11 +1025,6 @@ struct LEVER_s {                             // size 0xa8
 
     char model_variant; // 0x9e
     u8 unknown_9f[9];   // 0x9f
-};
-
-struct GIZPANELSYS_s {         // size 0x8
-    i32 count;                 // 0x0
-    struct GIZPANEL_s *panels; // 0x4
 };
 
 struct TRAFFICANIMSYS_s {                        // size 0x77e4

@@ -43,46 +43,11 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
 
-typedef struct registry_panel_record_pc_s {
-    u8 storage[0x90];
-} REGISTRY_PANEL_RECORD;
-
-typedef struct registry_panel_system_pc_s {
-    i32 count;
-    REGISTRY_PANEL_RECORD *panels;
-} REGISTRY_PANEL_SYSTEM;
-
 typedef struct {
     u32 triggered[1];
     u32 enabled[1];
     u32 visible[1];
 } PANEL_PROGRESS;
-
-typedef struct panel_movement_s {
-    NUMTX matrix;
-    char name[16];
-    NUVEC position;
-    u16 y_rotation;
-    u8 unknown_5e[3];
-    u8 model_variant;
-    u8 flags;
-    u8 draw_flags;
-    NUVEC floor_position;
-    NUVEC target_offset;
-    u16 unknown_7c;
-    u16 unknown_7e;
-    u16 arm_x_rotation;
-    u16 target_pitch;
-    u16 target_roll;
-    i16 platform_id;
-    f32 activation_time;
-    f32 target_scale;
-} PANEL_MOVEMENT;
-
-typedef struct panel_load_system_s {
-    i32 count;
-    PANEL_MOVEMENT *panels;
-} PANEL_SYSTEM;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern const f64 PanelVariantTwoTargetY;
@@ -96,9 +61,6 @@ extern u8 PanelStormActive;
 extern u8 PanelDroidActive;
 extern u8 PanelBountyHunterActive;
 void SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
-
-/* Hint updater records keep their packed field offsets. */
-struct panel_movement_s;
 
 /* Terrain helper private to these callers (panel arrives in ESI). */
 static void GizPanel_CreateTerrain(PANEL_MOVEMENT *panel) {
@@ -129,13 +91,13 @@ static void GizPanel_CreateTerrain(PANEL_MOVEMENT *panel) {
 
 void GizPanel_InitTerrain(WORLDINFO *world) {
     i32 index;
-    PANEL_SYSTEM *system = (PANEL_SYSTEM *)world->giz_panel_sys;
+    PANEL_SYSTEM *system = world->giz_panel_sys;
     if (system == NULL) {
         return;
     }
-    for (index = 0; index < ((PANEL_SYSTEM *)world->giz_panel_sys)->count; ++index) {
-        ((PANEL_SYSTEM *)world->giz_panel_sys)->panels[index].platform_id = -1;
-        GizPanel_CreateTerrain(&((PANEL_SYSTEM *)world->giz_panel_sys)->panels[index]);
+    for (index = 0; index < world->giz_panel_sys->count; ++index) {
+        world->giz_panel_sys->panels[index].platform_id = -1;
+        GizPanel_CreateTerrain(&world->giz_panel_sys->panels[index]);
     }
 }
 
@@ -198,7 +160,7 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
     if (world == NULL || world->giz_panel_sys == NULL) {
         return 0;
     }
-    system = (PANEL_SYSTEM *)world->giz_panel_sys;
+    system = world->giz_panel_sys;
     if (system->count != 0) {
         return 0;
     }
@@ -250,19 +212,18 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
 
 void *GizPanels_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;
-    REGISTRY_PANEL_SYSTEM *system;
+    PANEL_SYSTEM *system;
     world->giz_panel_sys = NULL;
     if (world->current_level->max_levers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->giz_panel_sys = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += sizeof(REGISTRY_PANEL_SYSTEM);
-        memset(world->giz_panel_sys, 0, sizeof(REGISTRY_PANEL_SYSTEM));
+        world->giz_buffer.addr += sizeof(PANEL_SYSTEM);
+        memset(world->giz_panel_sys, 0, sizeof(PANEL_SYSTEM));
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        system = (REGISTRY_PANEL_SYSTEM *)world->giz_panel_sys;
+        system = world->giz_panel_sys;
         system->panels = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD);
-        memset(((REGISTRY_PANEL_SYSTEM *)world->giz_panel_sys)->panels, 0,
-               world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD));
+        world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(PANEL_MOVEMENT);
+        memset(world->giz_panel_sys->panels, 0, world->current_level->max_gizpanels * sizeof(PANEL_MOVEMENT));
     }
     return world->giz_panel_sys;
 }
@@ -373,8 +334,8 @@ PANEL_MOVEMENT *GizPanel_FindByName(WORLDINFO *world, char *name) {
     if (world == NULL || world->giz_panel_sys == NULL) {
         return NULL;
     }
-    panel = ((PANEL_SYSTEM *)world->giz_panel_sys)->panels;
-    for (index = 0; index < ((PANEL_SYSTEM *)world->giz_panel_sys)->count; index++, panel++) {
+    panel = world->giz_panel_sys->panels;
+    for (index = 0; index < world->giz_panel_sys->count; index++, panel++) {
         if (NuStrICmp(panel->name, name) == 0) {
             return panel;
         }
@@ -390,8 +351,8 @@ PANEL_MOVEMENT *GizPanel_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJE
     if (world == NULL || world->giz_panel_sys == NULL) {
         return NULL;
     }
-    system = (PANEL_SYSTEM *)world->giz_panel_sys;
-    for (index = 0; index < system->count; ++index, system = (PANEL_SYSTEM *)world->giz_panel_sys) {
+    system = world->giz_panel_sys;
+    for (index = 0; index < system->count; ++index, system = world->giz_panel_sys) {
         PANEL_MOVEMENT *panel = &system->panels[index];
         f32 distance;
         if (object != NULL) {
@@ -420,7 +381,7 @@ PANEL_MOVEMENT *GizPanel_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJE
 
 void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
     WORLDINFO *world = world_pointer;
-    PANEL_SYSTEM *system = (PANEL_SYSTEM *)world->giz_panel_sys;
+    PANEL_SYSTEM *system = world->giz_panel_sys;
     GAMEOBJECT *nearest_player = NULL;
     NUVEC nearest_direction;
     i32 index;
@@ -519,7 +480,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     if (world == NULL) {
         return;
     }
-    system = (PANEL_SYSTEM *)world->giz_panel_sys;
+    system = world->giz_panel_sys;
     if (system == NULL || system->count == 0) {
         return;
     }
@@ -712,8 +673,8 @@ void GizPanel_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
         return;
     }
     for (i = 0; i < w->giz_panel_sys->count; ++i) {
-        if (NuStrLen(((ADD_PANEL *)w->giz_panel_sys->panels)[i].name) != 0) {
-            AddGizmo(giz, type, NULL, &((ADD_PANEL *)w->giz_panel_sys->panels)[i]);
+        if (NuStrLen(w->giz_panel_sys->panels[i].name) != 0) {
+            AddGizmo(giz, type, NULL, &w->giz_panel_sys->panels[i]);
         }
     }
 }
@@ -1079,7 +1040,7 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
     if (world == NULL) {
         return;
     }
-    system = (PANEL_SYSTEM *)world->giz_panel_sys;
+    system = world->giz_panel_sys;
     if (system == NULL || system->panels == NULL) {
         return;
     }

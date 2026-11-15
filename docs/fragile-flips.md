@@ -56,3 +56,8 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | one MISSIONSYS record (0x30) | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 94.56 % | 95.37 % |
 | one MISSIONSYS record (0x30) | InitGameAfterConfig | legogame/game.cpp | 82.2372 % | 82.2397 % |
 | data-move declarations into headers | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
+| PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 95.18 % |
+| PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
+| PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.06 % | 95.37 % |
+| PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | NuDeferredFilterGen::render | nu2api/nu3d_includes.cpp | 93.90 % | 93.89 % |
+| PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | InitGameAfterConfig | legogame/game.cpp | 82.2372 % | 82.2397 % |

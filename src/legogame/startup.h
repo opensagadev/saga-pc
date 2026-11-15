@@ -63,16 +63,6 @@ extern "C" {
 }
 #endif
 
-typedef struct bulk_ai_panel_s {
-    u8 unknown_00[0x50];
-    NUVEC position;
-    u8 unknown_5c[5];
-    u8 model_variant;
-    u8 flags;
-    u8 unknown_63;
-    NUVEC floor_position;
-} BULK_AI_PANEL;
-
 typedef struct LIGHTING_LOAD_WORLD {
     u8 unknown_000[0x104];
     VARIPTR buffer;
