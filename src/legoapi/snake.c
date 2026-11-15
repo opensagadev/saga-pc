@@ -37,19 +37,6 @@ extern f32 SnakeSegmentSpacing;
 extern f32 SnakeHeadHeight;
 extern f32 SnakeYawSeekRate;
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define PI_OVER_4 0.785398f
-#define NEG_1_OVER_6 PCPathArcSineCoefficient3
-#define NEG_3_OVER_40 PCPathArcSineCoefficient5
-#define NEG_5_OVER_112 PCPathArcSineCoefficient7
-#define NEG_35_OVER_1152 PCPathArcSineCoefficient9
-#define MAX_SHORT_OVER_PI 10430.4f
-#define POW2(x) ((x) * (x))
-#define POW3(x) ((x) * POW2(x))
-#define POW4(x) (POW2(x) * POW2(x))
-#define POW5(x) (POW2(x) * POW3(x))
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 SnakeFabs(f32 f) {
     f32 rv;
@@ -86,19 +73,6 @@ i32 SnakeASin(f32 sin) {
             NEG_35_OVER_1152 * POW4(unknown_b * unknown_c * unknown_a) * POW5(unknown_b * unknown_c * unknown_a)) *
            MAX_SHORT_OVER_PI;
 }
-
-#undef MIN
-#undef MAX
-#undef PI_OVER_4
-#undef NEG_1_OVER_6
-#undef NEG_3_OVER_40
-#undef NEG_5_OVER_112
-#undef NEG_35_OVER_1152
-#undef MAX_SHORT_OVER_PI
-#undef POW2
-#undef POW3
-#undef POW4
-#undef POW5
 
 f32 SnakeSegmentSpacing = 0.15f;
 f32 SnakeHeadHeight = 0.15f;

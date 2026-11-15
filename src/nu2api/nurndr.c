@@ -1180,8 +1180,6 @@ void RenderPostClearScreen(void) {
 #ifndef RENDER_POST_ALPHA_CACHE
 #define RENDER_POST_ALPHA_CACHE cacheValues
 #endif
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define IMAGE_TAN_HALF_FOV(v)                                                                                                              \
     (NuTrigTable[(i32)((v) * 10430.378f) >> 1 & 0x7fff] / NuTrigTable[(16384 - (i32)((v) * -10430.378f)) >> 1 & 0x7fff])
 #define POST_IMAGE_UV(U, V)                                                                                                                \

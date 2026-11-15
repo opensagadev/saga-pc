@@ -28,5 +28,16 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+/* The arcsine series of NuASin, which several units write out in place: x + x^3 (-1/6) + ... in NUANG units. */
+#define PI_OVER_4 0.785398f
+#define NEG_1_OVER_6 PCPathArcSineCoefficient3
+#define NEG_3_OVER_40 PCPathArcSineCoefficient5
+#define NEG_5_OVER_112 PCPathArcSineCoefficient7
+#define NEG_35_OVER_1152 PCPathArcSineCoefficient9
+#define MAX_SHORT_OVER_PI 10430.4f
+#define POW2(x) ((x) * (x))
+#define POW3(x) ((x) * POW2(x))
+#define POW4(x) (POW2(x) * POW2(x))
+#define POW5(x) (POW2(x) * POW3(x))
 #define NU_SIN_LUT(ang) NuTrigTable[(i32)(ang) >> 1 & 0x7fff]
 #define NU_COS_LUT(ang) NuTrigTable[((i32)(ang) + 0x4000) >> 1 & 0x7fff]

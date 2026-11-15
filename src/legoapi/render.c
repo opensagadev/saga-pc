@@ -22,10 +22,8 @@ typedef struct render_post_prim_vertex_s { // size 0x18
 #define GRID_TAN_HALF_FOV(half_fov)                                                                                                        \
     (NuTrigTable[(i32)((half_fov) * 10430.378f) >> 1 & 0x7fff] / NuTrigTable[(16384 - (i32)((half_fov) * -10430.378f)) >> 1 & 0x7fff])
 #ifndef MIN
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 #ifndef MAX
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 #define RGBA_TO_NUCOLOUR32(r, g, b, a) ((u32)(u8)(r) | ((u32)(u8)(g) << 8) | ((u32)(u8)(b) << 16) | ((u32)(u8)(a) << 24))
 #define ALPHA_GRID_INLINE_COLOUR                                                                                                           \

@@ -124,8 +124,6 @@ static i32 NuRDPIExpression(NURDPICTX_PC *context);
 #define NUPAD_PLAY 2
 #define NUPAD_RECORD 1
 #define NUPAD_NORM 0
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 typedef struct FRAME_PAD_RAMP_PC {
     f32 threshold;

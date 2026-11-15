@@ -525,30 +525,6 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad);
         (id) = index_;                                                                                                                     \
     } while (0)
 
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-
-#define PI_OVER_4 0.785398f
-
-#define NEG_1_OVER_6 PCPathArcSineCoefficient3
-
-#define NEG_3_OVER_40 PCPathArcSineCoefficient5
-
-#define NEG_5_OVER_112 PCPathArcSineCoefficient7
-
-#define NEG_35_OVER_1152 PCPathArcSineCoefficient9
-
-#define MAX_SHORT_OVER_PI 10430.4f
-
-#define POW2(x) ((x) * (x))
-
-#define POW3(x) ((x) * POW2(x))
-
-#define POW4(x) (POW2(x) * POW2(x))
-
-#define POW5(x) (POW2(x) * POW3(x))
-
 extern NUFPCOMJMP AIScriptStateCommands[5];
 
 typedef struct aiscript_const_record_s { // size 0x24
