@@ -39,6 +39,12 @@ else:
     from tools.lib import ROOT, compiled_objects, object_path
 
 STATE = ROOT / "build/proof/state.json"
+
+
+def matching_digest():
+    """sha256 of the committed report (matching.json), or None."""
+    path = ROOT / "matching.json"
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
 CHECKS = [
     ("format", ["tools/check.py", "--format"]),
     ("budget", ["tools/budget.py", "--guard"]),
@@ -229,6 +235,11 @@ def main(argv=None):
         state = json.loads(STATE.read_text()) if STATE.is_file() else {}
         changed = sorted(k for k in set(digests) | set(state.get("objects", {}))
                          if digests.get(k) != state.get("objects", {}).get(k))
+        # The skip is only sound when matching.json is the report this state proved: a matching.json
+        # restored or edited since (a checkout, a rebase) must be recomputed, not refreshed.
+        if not changed and state and state.get("matching") != matching_digest():
+            changed = sorted(digests)
+            print("identity: matching.json is not the proven report; matching again")
         timings.append(("identity", time.monotonic() - start, 0))
         print(f"identity: {len(changed)} of {len(digests)} objects changed code/data"
               + ("" if state else " (no proven state yet)"))
@@ -293,7 +304,7 @@ def main(argv=None):
     ok = not failures and not lost
     if ok:
         STATE.parent.mkdir(parents=True, exist_ok=True)
-        STATE.write_text(json.dumps({"objects": digests}, indent=1) + "\n")
+        STATE.write_text(json.dumps({"objects": digests, "matching": matching_digest()}, indent=1) + "\n")
     print(f"proof: {'PASS' if ok else 'FAIL'}; {summary}; {time.monotonic() - total:.0f} s"
           + (f"; failed: {', '.join(failures)}" if failures else ""))
     return 0 if ok else 1
