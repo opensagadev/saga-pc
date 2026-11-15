@@ -69,6 +69,13 @@ extern "C" {
 }
 #endif
 typedef struct DOOR_s DOOR_s;
+
+/* DOOR_s.flags (door_config_s while loading): the door config keywords that set them. */
+#define DOOR_FLAG_ONE_WAY 0x1                /* 1_way, one_way */
+#define DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS 0x2 /* cam_lookatplayers */
+#define DOOR_FLAG_DO_NOT_USE 0x4             /* do_not_use */
+#define DOOR_FLAG_USE_AS_START 0x8           /* use_as_start */
+#define DOOR_FLAG_TWO_PLAYERS_ONLY 0x10      /* 2_player_only, two_players_only and spellings */
 #ifdef __cplusplus
 extern "C" {
 #endif

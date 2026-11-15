@@ -992,21 +992,21 @@ void DagobahE_Init(WORLDINFO *world) {
         dagobah_training = 1;
         door = Door_FindByName(world, "door_e_to_b");
         if (door != NULL) {
-            door->flags |= 4;
+            door->flags |= DOOR_FLAG_DO_NOT_USE;
         }
         door = Door_FindByName(world, "door_b_to_e");
         if (door != NULL) {
-            door->flags |= 4;
+            door->flags |= DOOR_FLAG_DO_NOT_USE;
         }
     } else {
         dagobah_training = 0;
         door = Door_FindByName(world, "door_e_to_b");
         if (door != NULL) {
-            door->flags &= ~4;
+            door->flags &= ~DOOR_FLAG_DO_NOT_USE;
         }
         door = Door_FindByName(world, "door_b_to_e");
         if (door != NULL) {
-            door->flags &= ~4;
+            door->flags &= ~DOOR_FLAG_DO_NOT_USE;
         }
     }
     SetGizAIMessage(gizaimessagesys, "DagobahTraining", (f32)dagobah_training, NULL);

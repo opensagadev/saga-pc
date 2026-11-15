@@ -41,6 +41,8 @@ a name). Prove the result like any change.
 | `SPECIAL_MINIKIT.flags` | `SPECIAL_MINIKIT_*` (gizmopickups.h) | the specialminikit keywords (draw_at_start, draw_while_animating, draw_at_end, orientate, at_gizmo) |
 | `GIZMOPICKUP.flags` (4 bits) | `GIZMOPICKUP_STATE_*` (gizmopickups.h) | `GizmoPickup_TurnOnPickup`, the draw loop, collecting, the saved-minikit alternate type |
 | cut scene instance `flags_88` (all views, 6 bits) | `NUGCUTSCENE_INST_*` (nugcutscene.h) | what `instNuGCutSceneStart`/`End`/`Reset`, the `instNuGCutSceneSet*` transforms and `instNuGCutSceneClipTest` set and test |
+| `EdRef.member_offset` pseudo ids (0x8000000n) | `EDREF_LIGHT_*`, `EDREF_FOG_*`, `EDREF_PLACEABLE_*`, `EDREF_SPLINE_*`, `EDREF_KNOT_*`, `EDREF_SPECIAL_OBJECT_*` (edlevelall.h) | the member label each editor class registers with the id; `EdRefPlaceable` 0x80000006 is registered as both "Pos" and "Mtx" and stays literal |
+| `DOOR_s.flags`, `door_config_s.flags` | `DOOR_FLAG_*` (door.h) | the door config keywords (one_way, cam_lookatplayers, do_not_use, use_as_start, two_players_only) |
 | `AIPACKET.flags` (5 of its bits) | `AIPACKET_*` (apiobject.h) | AI script actions and conditions that set or test them (`IgnoreWallSplines`, `CheckWallSplines`, `SetCircleDirection`, `PathBlocked`, `SetFormationCommander`) |
 
 ## Still literal (meaning not known yet)

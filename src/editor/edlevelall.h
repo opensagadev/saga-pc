@@ -456,6 +456,45 @@ struct EdDefunctList { // size 0xc
 
 /* One member of an editor class: where it sits in the object, its type and
  * the control that edits it. Attribute bit 30 marks a pointer member. */
+/* EdRef.member_offset pseudo ids (0x80000000 | n) of the editor classes whose members are not plain offsets; each
+ * is named after the label its class registers ("Light" for EdRefRTL). */
+#define EDREF_FOG_NAME 0x80000002
+#define EDREF_FOG_FOG_COLOUR 0x80000003
+#define EDREF_FOG_FOG_ALPHA 0x80000004
+#define EDREF_FOG_HAZE_COLOUR 0x80000005
+#define EDREF_FOG_HAZE_DENSITY 0x80000006
+#define EDREF_FOG_BLUR_DENSITY 0x80000007
+#define EDREF_FOG_DOF_F_STOP 0x80000008
+#define EDREF_FOG_POSITION 0x80000009
+#define EDREF_KNOT_SPLINE 0x80000001
+#define EDREF_KNOT_RADIUS 0x80000002
+#define EDREF_KNOT_POS 0x80000003
+#define EDREF_KNOT_IN 0x80000004
+#define EDREF_KNOT_OUT 0x80000005
+#define EDREF_LIGHT_NAME 0x80000002
+#define EDREF_LIGHT_POS_ROT 0x80000003
+#define EDREF_LIGHT_TYPE 0x80000004
+#define EDREF_LIGHT_CAST_SHADOWS 0x80000006
+#define EDREF_LIGHT_SPECULAR 0x80000007
+#define EDREF_LIGHT_INNER 0x80000008
+#define EDREF_LIGHT_OUTER 0x80000009
+#define EDREF_LIGHT_ASSOCIATE_IDS 0x8000000a
+#define EDREF_LIGHT_EXCLUDE_IDS 0x8000000b
+#define EDREF_LIGHT_USER_ID 0x8000000c
+#define EDREF_LIGHT_GROUP_ID 0x8000000d
+#define EDREF_LIGHT_MODIFIER_ID 0x8000000e
+#define EDREF_PLACEABLE_LEDFILE 0x80000001
+#define EDREF_PLACEABLE_ATTRIBUTES 0x80000002
+#define EDREF_PLACEABLE_NAME 0x80000003
+#define EDREF_PLACEABLE_PARAMS 0x80000005
+#define EDREF_SPECIAL_OBJECT_OBJECT 0x80000008
+#define EDREF_SPECIAL_OBJECT_VISIBLE 0x80000009
+#define EDREF_SPECIAL_OBJECT_COLLISION 0x8000000a
+#define EDREF_SPLINE_STEP 0x80000001
+#define EDREF_SPLINE_HEIGHT 0x80000002
+#define EDREF_SPLINE_DROP 0x80000003
+#define EDREF_SPLINE_CLOSED 0x80000004
+
 class EdRef : public CSListLink<EdRef> { // size 0x28
   public:
     EdRef(char *type_name, char *member_name, i32 offset, i32 member_size, i32 member_attributes, EdControl *member_control, i32 group);

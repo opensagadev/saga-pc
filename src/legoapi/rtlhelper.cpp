@@ -738,47 +738,47 @@ void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) 
     RTL_LIGHT *light = static_cast<RTL_LIGHT *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000002:
+        case EDREF_LIGHT_NAME:
             sprintf(static_cast<char *>(data), "Light%d", light - curr_set->lights);
             break;
-        case 0x80000003: {
+        case EDREF_LIGHT_POS_ROT: {
             NUMTX *matrix = static_cast<NUMTX *>(data);
             RtlHelperCopyMtx(matrix, &ANI3_EVAL_IDENTITY_MATRIX);
             matrix->translation = light->position;
             NuMtxAlignZ(matrix, &light->direction);
             break;
         }
-        case 0x80000004:
+        case EDREF_LIGHT_TYPE:
             *static_cast<i32 *>(data) = light->type;
             break;
         case 0x80000005:
             *static_cast<i32 *>(data) = light->disabled;
             break;
-        case 0x80000006:
+        case EDREF_LIGHT_CAST_SHADOWS:
             *static_cast<i32 *>(data) = light->cast_shadow;
             break;
-        case 0x80000007:
+        case EDREF_LIGHT_SPECULAR:
             *static_cast<i32 *>(data) = light->has_specular;
             break;
-        case 0x80000008:
+        case EDREF_LIGHT_INNER:
             *static_cast<f32 *>(data) = light->inner_radius;
             break;
-        case 0x80000009:
+        case EDREF_LIGHT_OUTER:
             *static_cast<f32 *>(data) = light->outer_radius;
             break;
-        case 0x8000000a:
+        case EDREF_LIGHT_ASSOCIATE_IDS:
             *static_cast<i32 *>(data) = static_cast<u16>(light->unknown_5e);
             break;
-        case 0x8000000b:
+        case EDREF_LIGHT_EXCLUDE_IDS:
             *static_cast<i32 *>(data) = static_cast<u16>(light->unknown_60);
             break;
-        case 0x8000000c:
+        case EDREF_LIGHT_USER_ID:
             *static_cast<i32 *>(data) = light->unknown_68;
             break;
-        case 0x8000000d:
+        case EDREF_LIGHT_GROUP_ID:
             *static_cast<i32 *>(data) = light->group_id;
             break;
-        case 0x8000000e:
+        case EDREF_LIGHT_MODIFIER_ID:
             *static_cast<i32 *>(data) = light->unknown_7b;
             break;
     }
@@ -789,25 +789,25 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
     f32 radius;
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000003: {
+        case EDREF_LIGHT_POS_ROT: {
             NUMTX *matrix = static_cast<NUMTX *>(data);
             light->position = matrix->translation;
             light->direction = *reinterpret_cast<NUVEC *>(&matrix->m20);
             break;
         }
-        case 0x80000004:
+        case EDREF_LIGHT_TYPE:
             light->type = *static_cast<u8 *>(data);
             break;
         case 0x80000005:
             light->disabled = *static_cast<u8 *>(data);
             break;
-        case 0x80000006:
+        case EDREF_LIGHT_CAST_SHADOWS:
             light->cast_shadow = *static_cast<u8 *>(data);
             break;
-        case 0x80000007:
+        case EDREF_LIGHT_SPECULAR:
             light->has_specular = *static_cast<u8 *>(data);
             break;
-        case 0x80000008:
+        case EDREF_LIGHT_INNER:
             if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f)) {
                 *static_cast<f32 *>(data) = 0.1f;
             }
@@ -817,7 +817,7 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
                 light->outer_radius = radius;
             }
             break;
-        case 0x80000009:
+        case EDREF_LIGHT_OUTER:
             if (*static_cast<f32 *>(data) < static_cast<f64>(0.1f)) {
                 *static_cast<f32 *>(data) = 0.1f;
             }
@@ -827,21 +827,21 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
                 light->inner_radius = radius;
             }
             break;
-        case 0x8000000a:
+        case EDREF_LIGHT_ASSOCIATE_IDS:
             light->unknown_5e = *static_cast<i16 *>(data);
             light->unknown_60 &= ~light->unknown_5e;
             break;
-        case 0x8000000b:
+        case EDREF_LIGHT_EXCLUDE_IDS:
             light->unknown_60 = *static_cast<i16 *>(data);
             light->unknown_5e &= ~light->unknown_60;
             break;
-        case 0x8000000c:
+        case EDREF_LIGHT_USER_ID:
             light->unknown_68 = *static_cast<u16 *>(data);
             break;
-        case 0x8000000d:
+        case EDREF_LIGHT_GROUP_ID:
             light->group_id = *static_cast<u8 *>(data);
             break;
-        case 0x8000000e:
+        case EDREF_LIGHT_MODIFIER_ID:
             light->unknown_7b = *static_cast<i8 *>(data);
             break;
     }
@@ -874,9 +874,10 @@ void RTLHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Light", this, 0x8400000);
 #pragma pop_macro("RegisterClass")
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "String", "Name", EDREF_LIGHT_NAME, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x80, 0, 0x10000100, NULL, 0));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Type", 0x80000004, 0, 0, RTLHELPER_NEW(EdEnumControl)(rtl_helper_type_items)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefRTL, "Int", "Type", EDREF_LIGHT_TYPE, 0, 0, RTLHELPER_NEW(EdEnumControl)(rtl_helper_type_items)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
                               EdRef("Colour3", "Hi Col", 0x24, 0, 0, RTLHELPER_NEW(EdColourControl), 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
@@ -889,20 +890,20 @@ void RTLHelper::Initialise() {
                               EdRef("Float", "High Rand", 0x48, 0, 0, new EdFloatControl, 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Low Time", 0x4c, 0, 0, new EdFloatControl, 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Low Rand", 0x50, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "VuMtx", "Pos/Rot", 0x80000003, 0, 0x18, RTLHELPER_NEW(EdMatrixControl)));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Inner", 0x80000008, 0, 0, new EdFloatControl));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Outer", 0x80000009, 0, 0, new EdFloatControl));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "VuMtx", "Pos/Rot", EDREF_LIGHT_POS_ROT, 0, 0x18, RTLHELPER_NEW(EdMatrixControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Inner", EDREF_LIGHT_INNER, 0, 0, new EdFloatControl));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Float", "Outer", EDREF_LIGHT_OUTER, 0, 0, new EdFloatControl));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Associate IDs", EDREF_LIGHT_ASSOCIATE_IDS, 0, 0,
+                                        RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Exclude IDs", EDREF_LIGHT_EXCLUDE_IDS, 0, 0,
+                                        RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "User ID", EDREF_LIGHT_USER_ID, 0, 0, new EdIntControl(0, 16)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Group ID", EDREF_LIGHT_GROUP_ID, 0, 0, new EdIntControl(0, 255)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Modifier Id", EDREF_LIGHT_MODIFIER_ID, 0, 0, new EdIntControl(0, 32)));
+    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Cast Shadows", EDREF_LIGHT_CAST_SHADOWS, 0, 0,
+                                        RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
     object_class->AddType(
-        RTLHELPER_REF(EdRefRTL, "Int", "Associate IDs", 0x8000000a, 0, 0, RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefRTL, "Int", "Exclude IDs", 0x8000000b, 0, 0, RTLHELPER_NEW(EdBitControl)(0xffff, EdEnumControl::YesNoItems)));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "User ID", 0x8000000c, 0, 0, new EdIntControl(0, 16)));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Group ID", 0x8000000d, 0, 0, new EdIntControl(0, 255)));
-    object_class->AddType(RTLHELPER_REF(EdRefRTL, "Int", "Modifier Id", 0x8000000e, 0, 0, new EdIntControl(0, 32)));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefRTL, "Int", "Cast Shadows", 0x80000006, 0, 0, RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
-    object_class->AddType(
-        RTLHELPER_REF(EdRefRTL, "Int", "Specular", 0x80000007, 0, 0, RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
+        RTLHELPER_REF(EdRefRTL, "Int", "Specular", EDREF_LIGHT_SPECULAR, 0, 0, RTLHELPER_NEW(EdEnumControl)(EdEnumControl::YesNoItems)));
 }
 
 /* Editor member references into a fog zone; colours are edited as 0..1
@@ -921,10 +922,10 @@ void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) 
     RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000002:
+        case EDREF_FOG_NAME:
             sprintf(static_cast<char *>(data), "Fog%d", fog - curr_set->fog);
             break;
-        case 0x80000003: {
+        case EDREF_FOG_FOG_COLOUR: {
             NUVEC *colour = static_cast<NUVEC *>(data);
             u8 *bytes = reinterpret_cast<u8 *>(&fog->colour);
             colour->x = bytes[0] * (1.0f / 255.0f);
@@ -932,10 +933,10 @@ void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             colour->z = bytes[2] * (1.0f / 255.0f);
             break;
         }
-        case 0x80000004:
+        case EDREF_FOG_FOG_ALPHA:
             *static_cast<f32 *>(data) = reinterpret_cast<u8 *>(&fog->colour)[3] * (1.0f / 128.0f);
             break;
-        case 0x80000005: {
+        case EDREF_FOG_HAZE_COLOUR: {
             NUVEC *colour = static_cast<NUVEC *>(data);
             u8 *bytes = reinterpret_cast<u8 *>(&fog->low_quality_colour);
             colour->x = bytes[0] * (1.0f / 255.0f);
@@ -943,16 +944,16 @@ void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             colour->z = (1.0f / 255.0f) * bytes[2];
             break;
         }
-        case 0x80000006:
+        case EDREF_FOG_HAZE_DENSITY:
             *static_cast<f32 *>(data) = reinterpret_cast<u8 *>(&fog->low_quality_colour)[3] * (1.0f / 128.0f);
             break;
-        case 0x80000007:
+        case EDREF_FOG_BLUR_DENSITY:
             *static_cast<f32 *>(data) = fog->low_quality_density * (1.0f / 128.0f);
             break;
-        case 0x80000008:
+        case EDREF_FOG_DOF_F_STOP:
             *static_cast<f32 *>(data) = fog->depth_of_field_fstop * 0.1f;
             break;
-        case 0x80000009:
+        case EDREF_FOG_POSITION:
             *static_cast<NUVEC *>(data) = fog->position;
             break;
     }
@@ -962,18 +963,18 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
     RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000003: {
+        case EDREF_FOG_FOG_COLOUR: {
             NUVEC *colour = static_cast<NUVEC *>(data);
             fog->colour = (fog->colour & 0xff000000) |
                           (((static_cast<u32>(colour->z * 255.0f) & 0xff) << 8 | (static_cast<u32>(colour->y * 255.0f) & 0xff)) << 8) |
                           (static_cast<u32>(colour->x * 255.0f) & 0xff);
             break;
         }
-        case 0x80000004:
+        case EDREF_FOG_FOG_ALPHA:
             reinterpret_cast<u8 *>(&fog->colour)[3] = 0;
             fog->colour |= static_cast<u32>(*static_cast<f32 *>(data) * 128.0f) << 24;
             break;
-        case 0x80000005: {
+        case EDREF_FOG_HAZE_COLOUR: {
             NUVEC *colour = static_cast<NUVEC *>(data);
             fog->low_quality_colour =
                 (fog->low_quality_colour & 0xff000000) |
@@ -982,17 +983,17 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
 
             break;
         }
-        case 0x80000006:
+        case EDREF_FOG_HAZE_DENSITY:
             reinterpret_cast<u8 *>(&fog->low_quality_colour)[3] = 0;
             fog->low_quality_colour |= static_cast<u32>(*static_cast<f32 *>(data) * 128.0f) << 24;
             break;
-        case 0x80000007:
+        case EDREF_FOG_BLUR_DENSITY:
             fog->low_quality_density = static_cast<i32>(*static_cast<f32 *>(data) * 128.0f);
             break;
-        case 0x80000008:
+        case EDREF_FOG_DOF_F_STOP:
             fog->depth_of_field_fstop = static_cast<u8>(*static_cast<f32 *>(data) * 10.0f);
             break;
-        case 0x80000009:
+        case EDREF_FOG_POSITION:
             fog->position = *static_cast<NUVEC *>(data);
             break;
     }
@@ -1005,21 +1006,23 @@ void FogHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Fog", this, 0x8400000);
 #pragma pop_macro("RegisterClass")
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "String", "Name", 0x80000002, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "String", "Name", EDREF_FOG_NAME, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x38, 0, 0x10000100, NULL, 0));
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "Colour3", "Fog Colour", 0x80000003, 0, 0, RTLHELPER_NEW(EdColourControl)));
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "Fog Alpha", 0x80000004, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Colour3", "Fog Colour", EDREF_FOG_FOG_COLOUR, 0, 0, RTLHELPER_NEW(EdColourControl)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Float", "Fog Alpha", EDREF_FOG_FOG_ALPHA, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
                               EdRef("Float", "Fog Density", 0x2c, 0, 0, new EdFloatControl(0.0f, 4.0f), 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Fog Start", 0x0, 0, 0, new EdFloatControl, 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Float", "Fog End", 0x4, 0, 0, new EdFloatControl, 0));
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "Colour3", "Haze Colour", 0x80000005, 0, 0, RTLHELPER_NEW(EdColourControl)));
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "Haze Density", 0x80000006, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "Blur Density", 0x80000007, 0, 0, new EdFloatControl(0.0f, 1.0f)));
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "DOF F-Stop", 0x80000008, 0, 0, new EdFloatControl(1.0f, 21.0f)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Colour3", "Haze Colour", EDREF_FOG_HAZE_COLOUR, 0, 0, RTLHELPER_NEW(EdColourControl)));
+    object_class->AddType(
+        RTLHELPER_REF(EdRefFog, "Float", "Haze Density", EDREF_FOG_HAZE_DENSITY, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "Blur Density", EDREF_FOG_BLUR_DENSITY, 0, 0, new EdFloatControl(0.0f, 1.0f)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "Float", "DOF F-Stop", EDREF_FOG_DOF_F_STOP, 0, 0, new EdFloatControl(1.0f, 21.0f)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
                               EdRef("Float", "Range", 0x1c, 0, 0, new EdFloatControl(1.0f, 1000.0f), 0));
-    object_class->AddType(RTLHELPER_REF(EdRefFog, "VuVec", "Position", 0x80000009, 0, 8, RTLHELPER_NEW(EdVectorControl)));
+    object_class->AddType(RTLHELPER_REF(EdRefFog, "VuVec", "Position", EDREF_FOG_POSITION, 0, 8, RTLHELPER_NEW(EdVectorControl)));
 }
 
 #undef RTLHELPER_NEW

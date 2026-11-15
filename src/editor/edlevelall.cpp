@@ -4157,13 +4157,13 @@ void EdRefSpecialObject::GetMemberData(void *object, i32 requested_type, void *d
     SpecialObject *special_object = static_cast<SpecialObject *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000008:
+        case EDREF_SPECIAL_OBJECT_OBJECT:
             *static_cast<nuhspecial_s *>(data) = special_object->special;
             break;
-        case 0x80000009:
+        case EDREF_SPECIAL_OBJECT_VISIBLE:
             *static_cast<i32 *>(data) = NuSpecialGetVisibilityFn(&special_object->special);
             break;
-        case 0x8000000a:
+        case EDREF_SPECIAL_OBJECT_COLLISION:
             *static_cast<i32 *>(data) = NuSpecialGetCollision(&special_object->special);
             break;
     }
@@ -4173,13 +4173,13 @@ void EdRefSpecialObject::SetMemberData(void *object, i32 requested_type, void *d
     SpecialObject *special_object = static_cast<SpecialObject *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000008:
+        case EDREF_SPECIAL_OBJECT_OBJECT:
             special_object->special = *static_cast<nuhspecial_s *>(data);
             break;
-        case 0x80000009:
+        case EDREF_SPECIAL_OBJECT_VISIBLE:
             NuSpecialSetVisibility(&special_object->special, *static_cast<i32 *>(data));
             break;
-        case 0x8000000a:
+        case EDREF_SPECIAL_OBJECT_COLLISION:
             NuSpecialSetCollision(&special_object->special, *static_cast<i32 *>(data));
             break;
     }
@@ -6950,16 +6950,16 @@ void EdRefSpline::GetMemberData(void *object, i32 requested_type, void *data, i3
     SplineObject *spline = static_cast<SplineObject *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000001:
+        case EDREF_SPLINE_STEP:
             *static_cast<f32 *>(data) = spline->step;
             break;
-        case 0x80000002:
+        case EDREF_SPLINE_HEIGHT:
             *static_cast<f32 *>(data) = spline->height;
             break;
-        case 0x80000003:
+        case EDREF_SPLINE_DROP:
             *static_cast<i32 *>(data) = spline->drop != 0;
             break;
-        case 0x80000004:
+        case EDREF_SPLINE_CLOSED:
             *static_cast<i32 *>(data) = spline->closed;
             break;
         default:
@@ -6974,25 +6974,25 @@ void EdRefSpline::SetMemberData(void *object, i32 requested_type, void *data, i3
     SplineObject *spline = static_cast<SplineObject *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000001:
+        case EDREF_SPLINE_STEP:
             spline->step = *static_cast<f32 *>(data);
             if (theSplineHelper.auto_generate_points) {
                 spline->points.Clear();
             }
             break;
-        case 0x80000002:
+        case EDREF_SPLINE_HEIGHT:
             spline->height = *static_cast<f32 *>(data);
             if (theSplineHelper.auto_generate_points) {
                 spline->points.Clear();
             }
             break;
-        case 0x80000003:
+        case EDREF_SPLINE_DROP:
             spline->drop = *static_cast<i32 *>(data) != 0;
             if (theSplineHelper.auto_generate_points) {
                 spline->points.Clear();
             }
             break;
-        case 0x80000004:
+        case EDREF_SPLINE_CLOSED:
             spline->closed = *static_cast<i32 *>(data);
             if (theSplineHelper.auto_generate_points) {
                 spline->points.Clear();
@@ -7014,19 +7014,19 @@ void EdRefKnot::GetMemberData(void *object, i32 requested_type, void *data, i32 
     SplineKnot *knot = static_cast<SplineKnot *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000001:
+        case EDREF_KNOT_SPLINE:
             NuStrNCpy(static_cast<char *>(data), knot->spline->GetName(), data_size);
             break;
-        case 0x80000002:
+        case EDREF_KNOT_RADIUS:
             *static_cast<f32 *>(data) = KnotHelperRadius * EdManipulator::Scale;
             break;
-        case 0x80000003:
+        case EDREF_KNOT_POS:
             VuVecCopy(*static_cast<VuVec *>(data), knot->position);
             break;
-        case 0x80000004:
+        case EDREF_KNOT_IN:
             VuVecCopy(*static_cast<VuVec *>(data), knot->in_tangent);
             break;
-        case 0x80000005:
+        case EDREF_KNOT_OUT:
             VuVecCopy(*static_cast<VuVec *>(data), knot->out_tangent);
             break;
         default:
@@ -8957,16 +8957,17 @@ void PlaceableHelper::Initialise() {
 #undef RegisterClass
     EdClass *object_class = theRegistry.RegisterClass("Placeable", NULL, 0);
 #pragma pop_macro("RegisterClass")
-    EdRefPlaceable *reference =
-        new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable("Short", "LEDFile", 0x80000001, 0, 0x10000100, NULL);
-    object_class->AddType(reference);
-    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable("Int", "Attributes", 0x80000002, 0, 1, NULL);
+    EdRefPlaceable *reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
+        EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, 0x10000100, NULL);
     object_class->AddType(reference);
     reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-        EdRefPlaceable("String", "Name", 0x80000003, 250, 2, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
+        EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, 1, NULL);
     object_class->AddType(reference);
     reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
-        "String", "Params", 0x80000005, 250, 0, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
+        "String", "Name", EDREF_PLACEABLE_NAME, 250, 2, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
+    object_class->AddType(reference);
+    reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
+        "String", "Params", EDREF_PLACEABLE_PARAMS, 250, 0, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
     object_class->AddType(reference);
     reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
         EdRefPlaceable("VuMtx", "Mtx", 0x80000006, 0, 0x38, new (theMemoryManager.AllocPool(sizeof(EdMatrixControl), 1)) EdMatrixControl);
@@ -8977,13 +8978,13 @@ void EdRefPlaceable::GetMemberData(void *object, i32 requested_type, void *data,
     Placeable *placeable = static_cast<Placeable *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000001:
+        case EDREF_PLACEABLE_LEDFILE:
             *static_cast<i16 *>(data) = placeable->led_file;
             break;
-        case 0x80000002:
+        case EDREF_PLACEABLE_ATTRIBUTES:
             *static_cast<i32 *>(data) = placeable->attributes;
             break;
-        case 0x80000003: {
+        case EDREF_PLACEABLE_NAME: {
             const char *object_name = placeable->GetName();
             if (object_name != NULL) {
                 NuStrNCpy(static_cast<char *>(data), object_name, data_size);
@@ -8992,7 +8993,7 @@ void EdRefPlaceable::GetMemberData(void *object, i32 requested_type, void *data,
             }
             break;
         }
-        case 0x80000005: {
+        case EDREF_PLACEABLE_PARAMS: {
             /* Tests the reference's own name, not the parameter text. */
             const char *params = placeable->params.data ? placeable->params.data + 1 : NULL;
             if (name != NULL) {
@@ -9019,20 +9020,20 @@ void EdRefPlaceable::SetMemberData(void *object, i32 requested_type, void *data,
     Placeable *placeable = static_cast<Placeable *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000001:
+        case EDREF_PLACEABLE_LEDFILE:
             placeable->led_file = *static_cast<i16 *>(data);
             break;
-        case 0x80000002:
+        case EDREF_PLACEABLE_ATTRIBUTES:
             placeable->attributes = *static_cast<i32 *>(data);
             break;
-        case 0x80000003:
+        case EDREF_PLACEABLE_NAME:
             if (NuStrLen(static_cast<char *>(data)) > 0) {
                 placeable->SetName(static_cast<char *>(data));
             } else {
                 placeable->SetName(NULL);
             }
             break;
-        case 0x80000005:
+        case EDREF_PLACEABLE_PARAMS:
             if (NuStrLen(static_cast<char *>(data)) > 0) {
                 placeable->params.Set(static_cast<char *>(data));
             } else {
@@ -9424,20 +9425,20 @@ void SceneObjectHelper::Initialise() {
 #pragma pop_macro("RegisterClass")
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Placeable", "Placeable", 0, 0, 0, NULL, 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
-        "NuHSpecial", "Object", 0x80000008, 0, 0,
+        "NuHSpecial", "Object", EDREF_SPECIAL_OBJECT_OBJECT, 0, 0,
         new (theMemoryManager.AllocPool(sizeof(EdSpecialObjectControl), 1)) EdSpecialObjectControl));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
-        "Int", "Visible", 0x80000009, 0, 0,
+        "Int", "Visible", EDREF_SPECIAL_OBJECT_VISIBLE, 0, 0,
         new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
-        "Int", "Collision", 0x8000000a, 0, 0,
+        "Int", "Collision", EDREF_SPECIAL_OBJECT_COLLISION, 0, 0,
         new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("Int", "Attributes", 0x80000002, 0, 0x10400000, NULL));
+                              EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, 0x10400000, NULL));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("Short", "LEDFile", 0x80000001, 0, 0x10400000, NULL));
+                              EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, 0x10400000, NULL));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("String", "Name", 0x80000003, 250, 0x10400000, NULL));
+                              EdRefPlaceable("String", "Name", EDREF_PLACEABLE_NAME, 250, 0x10400000, NULL));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
                               EdRefPlaceable("VuMtx", "Pos", 0x80000006, 0, 0x10400000, NULL));
     thePlaceableHelper.RegisterObjectType("Scene Object", this);
@@ -9582,10 +9583,10 @@ void EdRefKnot::SetMemberData(void *object, i32 requested_type, void *data, i32 
     SplineKnot *knot = static_cast<SplineKnot *>(object);
     CheckType(requested_type);
     switch (member_offset) {
-        case 0x80000001:
-        case 0x80000002:
+        case EDREF_KNOT_SPLINE:
+        case EDREF_KNOT_RADIUS:
             return;
-        case 0x80000003: {
+        case EDREF_KNOT_POS: {
             VuVec *position = static_cast<VuVec *>(data);
             __declspec(align(16)) VuVec delta;
             delta.x = position->x - knot->position.x;
@@ -9609,13 +9610,13 @@ void EdRefKnot::SetMemberData(void *object, i32 requested_type, void *data, i32 
             }
             break;
         }
-        case 0x80000004:
+        case EDREF_KNOT_IN:
             VuVecCopy(knot->in_tangent, *static_cast<VuVec *>(data));
             if (theSplineHelper.auto_generate_points && knot->spline != NULL) {
                 knot->spline->points.Clear();
             }
             break;
-        case 0x80000005:
+        case EDREF_KNOT_OUT:
             VuVecCopy(knot->out_tangent, *static_cast<VuVec *>(data));
             if (theSplineHelper.auto_generate_points && knot->spline != NULL) {
                 knot->spline->points.Clear();
@@ -9636,14 +9637,14 @@ void SplineHelper::Initialise() {
         "String", "Spline", 0xc, 0x20, 2, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl, 0));
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x44, 0, 0x10000100, NULL, 0));
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
-                              EdRefSpline("Float", "Height", 0x80000002, 0, 0, new EdFloatControl));
+                              EdRefSpline("Float", "Height", EDREF_SPLINE_HEIGHT, 0, 0, new EdFloatControl));
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
-                              EdRefSpline("Float", "Step", 0x80000001, 0, 0, new EdFloatControl(0.0f, 1000.0f)));
+                              EdRefSpline("Float", "Step", EDREF_SPLINE_STEP, 0, 0, new EdFloatControl(0.0f, 1000.0f)));
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1)) EdRefSpline(
-        "Int", "Drop", 0x80000003, 0, 0,
+        "Int", "Drop", EDREF_SPLINE_DROP, 0, 0,
         new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1)) EdRefSpline(
-        "Int", "Closed", 0x80000004, 0, 0,
+        "Int", "Closed", EDREF_SPLINE_CLOSED, 0, 0,
         new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
 
 #pragma push_macro("RegisterClass")
@@ -9651,19 +9652,20 @@ void SplineHelper::Initialise() {
     EdClass *knot_class = theRegistry.RegisterClass("Knot", &theKnotHelper, 0x18400000);
 #pragma pop_macro("RegisterClass")
     theKnotHelper.position_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "Pos", 0x80000003, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+        EdRefKnot("VuVec", "Pos", EDREF_KNOT_POS, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
     theKnotHelper.in_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "In", 0x80000004, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+        EdRefKnot("VuVec", "In", EDREF_KNOT_IN, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
     theKnotHelper.out_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "Out", 0x80000005, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
-    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1)) EdRefKnot(
-        "String", "Spline", 0x80000001, 0x20, 0x10000002, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl));
+        EdRefKnot("VuVec", "Out", EDREF_KNOT_OUT, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
+                            EdRefKnot("String", "Spline", EDREF_KNOT_SPLINE, 0x20, 0x10000002,
+                                      new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl));
     knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x44, 0, 0x10000100, NULL, 0));
     knot_class->AddType(theKnotHelper.position_ref);
     knot_class->AddType(theKnotHelper.in_tangent_ref);
     knot_class->AddType(theKnotHelper.out_tangent_ref);
     knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-                            EdRefKnot("Float", "Radius", 0x80000002, 0, 0x10000040, NULL));
+                            EdRefKnot("Float", "Radius", EDREF_KNOT_RADIUS, 0, 0x10000040, NULL));
 }
 
 void SplineHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {

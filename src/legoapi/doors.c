@@ -410,19 +410,19 @@ static void D_cam_blend_time(NUFPAR_PC *parser) {
 }
 
 static void D_cam_lookatplayers(NUFPAR_PC *parser) {
-    D_door->flags |= 2;
+    D_door->flags |= DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS;
 }
 
 static void D_one_way(NUFPAR_PC *parser) {
-    D_door->flags |= 1;
+    D_door->flags |= DOOR_FLAG_ONE_WAY;
 }
 
 static void D_two_player_only(NUFPAR_PC *parser) {
-    D_door->flags |= 0x10;
+    D_door->flags |= DOOR_FLAG_TWO_PLAYERS_ONLY;
 }
 
 static void D_do_not_use(NUFPAR_PC *parser) {
-    D_door->flags |= 4;
+    D_door->flags |= DOOR_FLAG_DO_NOT_USE;
 }
 
 static void D_next_sock(NUFPAR_PC *parser) {
@@ -447,7 +447,7 @@ static void D_vehicle(NUFPAR_PC *parser) {
 }
 
 static void D_use_as_start(NUFPAR_PC *parser) {
-    D_door->flags |= 8;
+    D_door->flags |= DOOR_FLAG_USE_AS_START;
 }
 
 static void D_cut_scene(NUFPAR_PC *parser) {
@@ -564,7 +564,7 @@ void Door_SetCutCam(DOOR_s *door) {
     Door_CutCamWaitTime = door->camera_wait;
     Door_CutCamWait = Door_CutCamWaitTime;
     Door_CutCamBlendTime = door->camera_blend_time;
-    Door_CutLookAtPlayers = door->flags & 2;
+    Door_CutLookAtPlayers = door->flags & DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS;
 }
 
 void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
@@ -572,8 +572,9 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     i32 destination;
     i32 index;
     (void)player_triggered;
-    if ((door->flags & 0x10) != 0 && (Player[0] == NULL || (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
-                                      Player[1] == NULL || (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
+    if ((door->flags & DOOR_FLAG_TWO_PLAYERS_ONLY) != 0 &&
+        (Player[0] == NULL || (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || Player[1] == NULL ||
+         (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
         return;
     }
     if (NewLData != NULL) {
@@ -676,7 +677,7 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     current.y = object->position.y + centre_height;
     current.z = object->position.z;
     for (index = 0; index < WORLD->door_count; ++index, ++door) {
-        if ((door->flags & 4) != 0 || door->active != 0) {
+        if ((door->flags & DOOR_FLAG_DO_NOT_USE) != 0 || door->active != 0) {
             continue;
         }
         if (Mission_Active(NULL) != NULL && door->level != world->level_idx) {
@@ -689,7 +690,7 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
         direction = 0;
         if (previous_distance < 0.0f && current_distance >= 0.0f) {
             direction = 1;
-        } else if ((door->flags & 1) == 0 && previous_distance >= 0.0f && current_distance < 0.0f) {
+        } else if ((door->flags & DOOR_FLAG_ONE_WAY) == 0 && previous_distance >= 0.0f && current_distance < 0.0f) {
             direction = 2;
         }
         if (direction == 0) {
@@ -705,7 +706,7 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
             NuPtInPoly(&intersection, &door->point1, &door->opposite_midpoint, &door->point3, &door->plane) == 0) {
             continue;
         }
-        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && ((door->flags & 0x10) == 0 || two_players)) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && ((door->flags & DOOR_FLAG_TWO_PLAYERS_ONLY) == 0 || two_players)) {
             Door_GoThrough(world, door, 1);
             return;
         }
