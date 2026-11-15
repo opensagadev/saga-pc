@@ -1,4 +1,16 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/items/collect/shard.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/props/objects/legoapi_signal.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/NuMotionAccumFilter.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 /* The shop code clamps through nested min/max macros: the inner min is evaluated twice. */
 

@@ -1,4 +1,16 @@
-#include "saga.h"
+#include "legoapi/items/fx/ripples.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/fx/game_deb.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nu3d/nutex.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 #include <string.h>
 
 typedef struct ripple_effect_cleanup_s { // size 0x28

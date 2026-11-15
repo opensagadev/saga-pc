@@ -1,4 +1,21 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/action_info.h"
+#include "legoapi/characters/motion/contexts.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/transport/tubes.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/props/objects/techno.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 TubesFabs(f32 f) {

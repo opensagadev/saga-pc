@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "legoapi/actions/character/specialmoves.h"
+#include "legoapi/actions/character/specialmoves_types.h"
+#include "legoapi/actions/combat/hits.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/contexts.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/game_obj.h"
+#include "legoapi/misc/gamemain.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 void SpecialMovesConfigMissing(char *filename);
 

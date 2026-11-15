@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "batman.h"
+#include "globals.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/core/input/timing.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/lib/text.h"
+#include "legoapi/menus/core/gamemessages.h"
+#include "legoapi/menus/core/panel.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/mission.h"
+#include "legoapi/world/missions.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/nutrig.h"
 
 void ResetFrameCounters(void) {
     MainFrameCounters.warmup_frame = 0;

@@ -1,5 +1,16 @@
 #include <stdio.h>
-#include "saga.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/screens/gamestatus_lsw.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nuprim.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
+#include "nu2api/nushadermtldesc_gen.h"
+#include "nu2api/nustencilshadows_PC.h"
 #undef DrawStatusText
 
 /* Source-first scratch candidate; unclosed real leaf declarations only. */

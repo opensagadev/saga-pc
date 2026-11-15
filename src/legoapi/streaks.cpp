@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "gameapi/edtools/edrender.h"
+#include "legoapi/actions/character/streaks.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/misc/gamemain.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nu3d/nutex.h"
+#include "nu2api/numath/nuvec.h"
 extern "C" {
     STREAK_NODE StreakNodes[128] = {0};
     NUMTL *streakmtl_ref = 0;

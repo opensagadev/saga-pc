@@ -1,4 +1,20 @@
-#include "saga.h"
+#include "legoapi/actions/combat/whip.h"
+#include "legoapi/actions/movement/carrying.h"
+#include "legoapi/actions/movement/climbing.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/animation_ids.h"
+#include "legoapi/characters/motion/animlist.h"
+#include "legoapi/characters/motion/contexts.h"
+#include "legoapi/characters/motion/gameanim.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/items/base/animpacket.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/misc/gamemain.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct whip_basis_s { // size 0x76c
     u8 unknown_000[0x748];    // 0x000

@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "legoapi/gizmos/traps/shards.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 void SetDepthOfField(void) {
 }

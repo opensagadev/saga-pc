@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/lib/text.h"
+#include "legoapi/menus/core/panel.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/menus/screens/customise.h"
+#include "legoapi/menus/screens/menu.h"
+#include "legoapi/menus/screens/shop.h"
+#include "legoapi/text_tables.h"
+#include "legoapi/world/levels.h"
+#include "legoapi/world/missions.h"
+#include "legogame/game.h"
+#include "legogame/gamestatus.h"
+#include "legogame/startup.h"
 extern "C" {
     i16 dat_008806dc = 0;
     i16 dat_008806e0 = 0;

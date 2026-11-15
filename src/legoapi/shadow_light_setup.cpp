@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nudynamiclight_renderset_gen.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec4.h"
 
 extern "C" {
     extern NUMTX PostShadowProjection;

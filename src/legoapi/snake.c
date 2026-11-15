@@ -1,4 +1,21 @@
-#include "saga.h"
+#include "legoapi/actions/character/snake.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/game_obj.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/render/fx/parts.h"
+#include "legoapi/world/world.h"
+#include "legogame/batman_gameai.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/numath/nuang.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 #include <string.h>
 

@@ -1,4 +1,22 @@
-#include "saga.h"
+#include "gamelib/util/Utilities.h"
+#include "globals.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/render/light/surfaces.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "legogame/game.h"
+#include "nu2api/numath/nuvec.h"
 #include <string.h>
 
 extern const f64 GameObjectNearFloorNoFloorHeight;

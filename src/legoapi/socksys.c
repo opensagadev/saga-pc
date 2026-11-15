@@ -1,6 +1,19 @@
 #include <stdio.h>
 #include <string.h>
-#include "saga.h"
+#include "legoapi/props/system/socksys.h"
+#include "legoapi/render/core/terrain.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/nuspline.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuquat.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 #define SOCK_BOUNDS_OVERLAP(a, b, c, d, ignore_y)                                                                                          \
     ((c)->x <= (b)->x && (a)->x <= (d)->x && (c)->z <= (b)->z && (a)->z <= (d)->z && ((ignore_y) || ((c)->y <= (b)->y && (a)->y <= (d)->y)))
 #define SOCK_BOUNDS_SEPARATE(a, b, c, d, ignore_y)                                                                                         \
