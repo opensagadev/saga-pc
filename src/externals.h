@@ -36,90 +36,90 @@ typedef struct IDirectSound3DBufferVtbl IDirectSound3DBufferVtbl;
 
 typedef void *DSOUND_OPAQUE_METHOD;
 
-typedef struct PC_DS_CAPS_VIEW {
-    DWORD size;
-    DWORD remaining[23];
+typedef struct PC_DS_CAPS_VIEW { // size 0x60
+    DWORD size;                  // 0x00
+    DWORD remaining[23];         // 0x04
 } PC_DS_CAPS_VIEW;
 
-typedef struct PC_DS_BUFFER_DESC_VIEW {
-    DWORD size;
-    DWORD flags;
-    DWORD bytes;
-    DWORD reserved;
-    WAVEFORMATEX *format;
-    GUID algorithm;
+typedef struct PC_DS_BUFFER_DESC_VIEW { // size 0x24
+    DWORD size;                         // 0x00
+    DWORD flags;                        // 0x04
+    DWORD bytes;                        // 0x08
+    DWORD reserved;                     // 0x0c
+    WAVEFORMATEX *format;               // 0x10
+    GUID algorithm;                     // 0x14
 } PC_DS_BUFFER_DESC_VIEW;
 
 struct IDirectSound8 {
     const IDirectSound8Vtbl *vtable;
 };
 
-struct IDirectSound8Vtbl {
-    HRESULT(__stdcall *query_interface)(IDirectSound8 *, REFIID, void **);
-    ULONG(__stdcall *add_ref)(IDirectSound8 *);
-    ULONG(__stdcall *release)(IDirectSound8 *);
-    HRESULT(__stdcall *create_sound_buffer)
+struct IDirectSound8Vtbl {                                                 // size 0x24
+    HRESULT(__stdcall *query_interface)(IDirectSound8 *, REFIID, void **); // 0x00
+    ULONG(__stdcall *add_ref)(IDirectSound8 *);                            // 0x04
+    ULONG(__stdcall *release)(IDirectSound8 *);                            // 0x08
+    HRESULT(__stdcall *create_sound_buffer)                                // 0x0c
     (IDirectSound8 *, const PC_DS_BUFFER_DESC_VIEW *, IDirectSoundBuffer **, IUnknown *);
-    HRESULT(__stdcall *get_caps)(IDirectSound8 *, PC_DS_CAPS_VIEW *);
-    HRESULT(__stdcall *duplicate_sound_buffer)(IDirectSound8 *, IDirectSoundBuffer *, IDirectSoundBuffer **);
-    HRESULT(__stdcall *set_cooperative_level)(IDirectSound8 *, HWND, DWORD);
-    void *unknown_1c;
-    HRESULT(__stdcall *get_speaker_config)(IDirectSound8 *, DWORD *);
+    HRESULT(__stdcall *get_caps)(IDirectSound8 *, PC_DS_CAPS_VIEW *);                                         // 0x10
+    HRESULT(__stdcall *duplicate_sound_buffer)(IDirectSound8 *, IDirectSoundBuffer *, IDirectSoundBuffer **); // 0x14
+    HRESULT(__stdcall *set_cooperative_level)(IDirectSound8 *, HWND, DWORD);                                  // 0x18
+    void *unknown_1c;                                                                                         // 0x1c
+    HRESULT(__stdcall *get_speaker_config)(IDirectSound8 *, DWORD *);                                         // 0x20
 };
 
 struct IDirectSoundBuffer {
     const IDirectSoundBufferVtbl *vtable;
 };
 
-struct IDirectSoundBufferVtbl {
-    HRESULT(__stdcall *query_interface)(IDirectSoundBuffer *, REFIID, void **);
-    ULONG(__stdcall *add_ref)(IDirectSoundBuffer *);
-    ULONG(__stdcall *release)(IDirectSoundBuffer *);
-    DSOUND_OPAQUE_METHOD get_caps;
-    HRESULT(__stdcall *get_current_position)(IDirectSoundBuffer *, DWORD *, DWORD *);
-    DSOUND_OPAQUE_METHOD get_format;
-    HRESULT(__stdcall *get_volume)(IDirectSoundBuffer *, LONG *);
-    DSOUND_OPAQUE_METHOD get_pan;
-    DSOUND_OPAQUE_METHOD get_frequency;
-    HRESULT(__stdcall *get_status)(IDirectSoundBuffer *, DWORD *);
-    DSOUND_OPAQUE_METHOD initialize;
-    HRESULT(__stdcall *lock)(IDirectSoundBuffer *, DWORD, DWORD, void **, DWORD *, void **, DWORD *, DWORD);
-    HRESULT(__stdcall *play)(IDirectSoundBuffer *, DWORD, DWORD, DWORD);
-    HRESULT(__stdcall *set_current_position)(IDirectSoundBuffer *, DWORD);
-    HRESULT(__stdcall *set_format)(IDirectSoundBuffer *, const WAVEFORMATEX *);
-    HRESULT(__stdcall *set_volume)(IDirectSoundBuffer *, LONG);
-    DSOUND_OPAQUE_METHOD set_pan;
-    HRESULT(__stdcall *set_frequency)(IDirectSoundBuffer *, DWORD);
-    HRESULT(__stdcall *stop)(IDirectSoundBuffer *);
-    HRESULT(__stdcall *unlock)(IDirectSoundBuffer *, void *, DWORD, void *, DWORD);
-    HRESULT(__stdcall *restore)(IDirectSoundBuffer *);
+struct IDirectSoundBufferVtbl {                                                                              // size 0x54
+    HRESULT(__stdcall *query_interface)(IDirectSoundBuffer *, REFIID, void **);                              // 0x00
+    ULONG(__stdcall *add_ref)(IDirectSoundBuffer *);                                                         // 0x04
+    ULONG(__stdcall *release)(IDirectSoundBuffer *);                                                         // 0x08
+    DSOUND_OPAQUE_METHOD get_caps;                                                                           // 0x0c
+    HRESULT(__stdcall *get_current_position)(IDirectSoundBuffer *, DWORD *, DWORD *);                        // 0x10
+    DSOUND_OPAQUE_METHOD get_format;                                                                         // 0x14
+    HRESULT(__stdcall *get_volume)(IDirectSoundBuffer *, LONG *);                                            // 0x18
+    DSOUND_OPAQUE_METHOD get_pan;                                                                            // 0x1c
+    DSOUND_OPAQUE_METHOD get_frequency;                                                                      // 0x20
+    HRESULT(__stdcall *get_status)(IDirectSoundBuffer *, DWORD *);                                           // 0x24
+    DSOUND_OPAQUE_METHOD initialize;                                                                         // 0x28
+    HRESULT(__stdcall *lock)(IDirectSoundBuffer *, DWORD, DWORD, void **, DWORD *, void **, DWORD *, DWORD); // 0x2c
+    HRESULT(__stdcall *play)(IDirectSoundBuffer *, DWORD, DWORD, DWORD);                                     // 0x30
+    HRESULT(__stdcall *set_current_position)(IDirectSoundBuffer *, DWORD);                                   // 0x34
+    HRESULT(__stdcall *set_format)(IDirectSoundBuffer *, const WAVEFORMATEX *);                              // 0x38
+    HRESULT(__stdcall *set_volume)(IDirectSoundBuffer *, LONG);                                              // 0x3c
+    DSOUND_OPAQUE_METHOD set_pan;                                                                            // 0x40
+    HRESULT(__stdcall *set_frequency)(IDirectSoundBuffer *, DWORD);                                          // 0x44
+    HRESULT(__stdcall *stop)(IDirectSoundBuffer *);                                                          // 0x48
+    HRESULT(__stdcall *unlock)(IDirectSoundBuffer *, void *, DWORD, void *, DWORD);                          // 0x4c
+    HRESULT(__stdcall *restore)(IDirectSoundBuffer *);                                                       // 0x50
 };
 
 struct IDirectSound3DBuffer {
     const IDirectSound3DBufferVtbl *vtable;
 };
 
-struct IDirectSound3DBufferVtbl {
-    HRESULT(__stdcall *query_interface)(IDirectSound3DBuffer *, REFIID, void **);
-    ULONG(__stdcall *add_ref)(IDirectSound3DBuffer *);
-    ULONG(__stdcall *release)(IDirectSound3DBuffer *);
-    DSOUND_OPAQUE_METHOD get_all_parameters;
-    DSOUND_OPAQUE_METHOD get_cone_angles;
-    DSOUND_OPAQUE_METHOD get_cone_orientation;
-    DSOUND_OPAQUE_METHOD get_cone_outside_volume;
-    DSOUND_OPAQUE_METHOD get_max_distance;
-    DSOUND_OPAQUE_METHOD get_min_distance;
-    DSOUND_OPAQUE_METHOD get_mode;
-    DSOUND_OPAQUE_METHOD get_position;
-    DSOUND_OPAQUE_METHOD get_velocity;
-    DSOUND_OPAQUE_METHOD set_all_parameters;
-    DSOUND_OPAQUE_METHOD set_cone_angles;
-    DSOUND_OPAQUE_METHOD set_cone_orientation;
-    DSOUND_OPAQUE_METHOD set_cone_outside_volume;
-    HRESULT(__stdcall *set_max_distance)(IDirectSound3DBuffer *, float, DWORD);
-    HRESULT(__stdcall *set_min_distance)(IDirectSound3DBuffer *, float, DWORD);
-    HRESULT(__stdcall *set_mode)(IDirectSound3DBuffer *, DWORD, DWORD);
-    HRESULT(__stdcall *set_position)(IDirectSound3DBuffer *, float, float, float, DWORD);
+struct IDirectSound3DBufferVtbl {                                                         // size 0x50
+    HRESULT(__stdcall *query_interface)(IDirectSound3DBuffer *, REFIID, void **);         // 0x00
+    ULONG(__stdcall *add_ref)(IDirectSound3DBuffer *);                                    // 0x04
+    ULONG(__stdcall *release)(IDirectSound3DBuffer *);                                    // 0x08
+    DSOUND_OPAQUE_METHOD get_all_parameters;                                              // 0x0c
+    DSOUND_OPAQUE_METHOD get_cone_angles;                                                 // 0x10
+    DSOUND_OPAQUE_METHOD get_cone_orientation;                                            // 0x14
+    DSOUND_OPAQUE_METHOD get_cone_outside_volume;                                         // 0x18
+    DSOUND_OPAQUE_METHOD get_max_distance;                                                // 0x1c
+    DSOUND_OPAQUE_METHOD get_min_distance;                                                // 0x20
+    DSOUND_OPAQUE_METHOD get_mode;                                                        // 0x24
+    DSOUND_OPAQUE_METHOD get_position;                                                    // 0x28
+    DSOUND_OPAQUE_METHOD get_velocity;                                                    // 0x2c
+    DSOUND_OPAQUE_METHOD set_all_parameters;                                              // 0x30
+    DSOUND_OPAQUE_METHOD set_cone_angles;                                                 // 0x34
+    DSOUND_OPAQUE_METHOD set_cone_orientation;                                            // 0x38
+    DSOUND_OPAQUE_METHOD set_cone_outside_volume;                                         // 0x3c
+    HRESULT(__stdcall *set_max_distance)(IDirectSound3DBuffer *, float, DWORD);           // 0x40
+    HRESULT(__stdcall *set_min_distance)(IDirectSound3DBuffer *, float, DWORD);           // 0x44
+    HRESULT(__stdcall *set_mode)(IDirectSound3DBuffer *, DWORD, DWORD);                   // 0x48
+    HRESULT(__stdcall *set_position)(IDirectSound3DBuffer *, float, float, float, DWORD); // 0x4c
 };
 
 typedef struct _XINPUT_STATE XINPUT_STATE;

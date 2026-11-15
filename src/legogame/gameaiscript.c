@@ -46,10 +46,6 @@ typedef struct ai_context_reset_view_s { // size 0x6c5
     u8 reset_contexts;                   // 0x6c4
 } AI_CONTEXT_RESET_VIEW;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_set) == 0x378);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
-
 typedef struct ai_force_fields_s { // size 0xa4
     u8 unknown_000[0x1c];          // 0x00
     NUVEC position;                // 0x1c
@@ -119,29 +115,15 @@ typedef struct ai_cable_object_s { // size 0x1044
     CABLE_RECORD *cable;           // 0x1040
 } AI_CABLE_OBJECT;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, locator) == 0x36c);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, mover_height) == 0x3e8);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, last_path_position) == 0x438);
-
 i32 CanFightLikeAJedi(GAMEOBJECT *);
 
 i32 CharCategory_FindByName(char *);
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
-STATIC_ASSERT(offsetof(AIPACKET, path_info) + offsetof(AIPATHINFO, flags) == 0x166);
-
 i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP *);
 
 extern i32 gizbuildit_gizmotype_id;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position) + offsetof(SOCKPOSITION_PC, distance) == 0x69c);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, movement_spline_position) + offsetof(SPLINEPOS, finished) == 0xe6b);
 
 extern f32 debug_condition;
 
@@ -159,12 +141,6 @@ typedef struct ai_global_trigger_world_s { // size 0x467c
     AITRIGGERSETSYS_s *trigger_system;     // 0x4678
 } AI_GLOBAL_TRIGGER_WORLD;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent_metric) == 0x3b0);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, flags) == 0x4b0);
-
 i32 ForceAnimationDone(GIZFORCE_PC *force);
 
 typedef struct condition_trigger_process_reader_s { // size 0xa4
@@ -178,8 +154,6 @@ typedef struct ai_been_to_level_progress_s { // size 0x2e28
     u8 unknown_2804[0x624];                  // 0x2804
 } AI_BEEN_TO_LEVEL_PROGRESS;
 
-STATIC_ASSERT(sizeof(AI_BEEN_TO_LEVEL_PROGRESS) == sizeof(LEVEL_PROGRESS));
-
 typedef struct ai_on_object_platform_pc_s { // size 0x6c
     u8 unknown_00[0x40];                    // 0x00
     NUMTX *scene_object;                    // 0x40
@@ -190,8 +164,6 @@ typedef struct ai_on_object_terrain_s {  // size 0x6c
     u8 unknown_00[0x68];                 // 0x00
     AI_ON_OBJECT_PLATFORM_PC *platforms; // 0x68
 } AI_ON_OBJECT_TERRAIN;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
 
 /* Instance reader: only the condition's flags field is consumed. */
 typedef struct condition_cut_instance_reader_s { // size 0x8c

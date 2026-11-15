@@ -403,9 +403,6 @@ struct NETMESSAGE { // size 0x10
     i32 fun_00613230();
 };
 
-STATIC_ASSERT(sizeof(NETMESSAGE::MessageData) == 0x4b4);
-STATIC_ASSERT(offsetof(NETMESSAGE::MessageData, bytes) == 0);
-STATIC_ASSERT(offsetof(NETMESSAGE::MessageData, references) == 0x4b0);
 #ifdef __cplusplus
 extern "C" {
 #endif

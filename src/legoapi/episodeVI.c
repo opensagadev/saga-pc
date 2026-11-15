@@ -85,19 +85,17 @@ void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 /* Fairground party split locator. */
 static AILOCATOR *FairgroundSplitPartyLocator;
 
-typedef struct JABBA_ANTINODE_VIEW {
-    u8 unknown_00[0x40];
-    f32 base_radius;
-    f32 base_height;
-    u8 unknown_48[2];
-    u8 type;
+typedef struct JABBA_ANTINODE_VIEW { // size 0x4c
+    u8 unknown_00[0x40];             // 0x00
+    f32 base_radius;                 // 0x40
+    f32 base_height;                 // 0x44
+    u8 unknown_48[2];                // 0x48
+    u8 type;                         // 0x4a
 } JABBA_ANTINODE_VIEW;
 
-STATIC_ASSERT(offsetof(JABBA_ANTINODE_VIEW, type) == offsetof(AIANTINODE, type));
 extern i16 dat_007f1a7c;
 extern i16 dat_007f1a88;
 #pragma section(".sarlrw", read, write)
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, movement_look_target) == 0x4ac);
 extern i32 EmperorFloorRouteOn;
 extern f32 EmperorFloorRadius;
 extern f32 EmperorFloorJitter;

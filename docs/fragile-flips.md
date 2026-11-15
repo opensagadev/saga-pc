@@ -19,3 +19,6 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | conflicting unit types unified | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | different | exact |
 | 27 more repeated types into headers | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
 | view types out of decomp.h | BoulderSpawn | legogame/episodeIII.c | exact | different |
+| repeated unit types into headers (bf2074d8) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
+| layout asserts deleted | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % (newly fragile: two asserts fewer in the unit) |
+| layout asserts deleted | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |

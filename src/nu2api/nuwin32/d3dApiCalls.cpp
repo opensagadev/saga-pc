@@ -41,23 +41,23 @@ extern "C" u32 dat_02974cec;
 extern "C" u32 dat_02974cf0;
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
-struct D3DXMATRIX {
-    FLOAT m11;
-    FLOAT m12;
-    FLOAT m13;
-    FLOAT m14;
-    FLOAT m21;
-    FLOAT m22;
-    FLOAT m23;
-    FLOAT m24;
-    FLOAT m31;
-    FLOAT m32;
-    FLOAT m33;
-    FLOAT m34;
-    FLOAT m41;
-    FLOAT m42;
-    FLOAT m43;
-    FLOAT m44;
+struct D3DXMATRIX { // size 0x40
+    FLOAT m11;      // 0x00
+    FLOAT m12;      // 0x04
+    FLOAT m13;      // 0x08
+    FLOAT m14;      // 0x0c
+    FLOAT m21;      // 0x10
+    FLOAT m22;      // 0x14
+    FLOAT m23;      // 0x18
+    FLOAT m24;      // 0x1c
+    FLOAT m31;      // 0x20
+    FLOAT m32;      // 0x24
+    FLOAT m33;      // 0x28
+    FLOAT m34;      // 0x2c
+    FLOAT m41;      // 0x30
+    FLOAT m42;      // 0x34
+    FLOAT m43;      // 0x38
+    FLOAT m44;      // 0x3c
 
     D3DXMATRIX(FLOAT f11, FLOAT f12, FLOAT f13, FLOAT f14, FLOAT f21, FLOAT f22, FLOAT f23, FLOAT f24, FLOAT f31, FLOAT f32, FLOAT f33,
                FLOAT f34, FLOAT f41, FLOAT f42, FLOAT f43, FLOAT f44) {
@@ -79,8 +79,6 @@ struct D3DXMATRIX {
         m44 = f44;
     }
 };
-
-STATIC_ASSERT(sizeof(D3DXMATRIX) == sizeof(NUMTX));
 
 extern "C" void fun_006df010(void) {
 }

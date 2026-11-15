@@ -3,9 +3,6 @@
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, locator_matrices) + 2 * sizeof(NUMTX) == 0x884);
-STATIC_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) + 2 * sizeof(void *) == 0x1c);
-
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 

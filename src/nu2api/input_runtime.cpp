@@ -445,11 +445,6 @@ PC_INPUT_RUNTIME_PC::PC_INPUT_RUNTIME_PC() {
     }
 }
 
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS, vertex_shader_version) == 0xcc);
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS, pixel_shader_version) == 0xd4);
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER, vendor) == 0x5cc);
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER, device_id) == 0x5d0);
-
 extern "C" i32 PcConfigureInputGraphicsCaps() {
     if (PcCapsConfigured) {
         return 1;

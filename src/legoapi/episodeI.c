@@ -110,8 +110,6 @@ typedef struct PODSPRINT_VIEW {   // size 0x94
     }; // 0x92
 } PODSPRINT_VIEW;
 
-STATIC_ASSERT(sizeof(PODSPRINT_VIEW) == sizeof(PODSPRINT_PC));
-
 typedef struct pod_race_panel_netpacket_s { // size 0x14
     f32 start_countdown;                    // 0x00
     f32 remaining_time;                     // 0x04

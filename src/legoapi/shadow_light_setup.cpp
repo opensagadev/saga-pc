@@ -6,9 +6,6 @@ extern "C" {
     extern NUCAMERA *EdMainCurrentCamera;
 }
 
-STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m20) == 0xd8);
-STATIC_ASSERT(offsetof(GAMECAMERA, render_mtx) + offsetof(NUMTX, m30) == 0xe8);
-
 void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustum(NUCAMERA *camera, const f32 *splits, i32 split_count) {
     f32 aspect = 1.0f / camera->aspect;
     f32 fov = ((f64)camera->fov * 180.0) / 3.1415927410125732;

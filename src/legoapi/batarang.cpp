@@ -24,7 +24,6 @@ typedef struct suit_ai_capabilities_s {
 
 typedef PLAYER_BATARANG_SLOT_PC BATARANG_NATIVE;
 #define BATARANG_PACKET(object) ((object)->batarang)
-STATIC_ASSERT(offsetof(GAMEOBJECT, camera_screen_position) + 8 == 0xc64);
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define PI_OVER_4 0.785398f

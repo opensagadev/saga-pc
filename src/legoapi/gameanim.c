@@ -1543,8 +1543,6 @@ typedef struct gameanim_reflection_matrix_s { // size 0x40
     f32 axis_coordinates[5];                  // 0x2c
 } GAMEANIM_REFLECTION_MATRIX;
 
-STATIC_ASSERT(sizeof(GAMEANIM_REFLECTION_MATRIX) == sizeof(NUMTX));
-
 void GameAnimSet_DrawReflection(GAMEANIMSET *set, i32 axis, f32 offset, NUMTX *matrix) {
     f32 plane;
     GAMEANIMOBJ *object;

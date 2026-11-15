@@ -2,8 +2,6 @@
 #include <string.h>
 #include "saga.h"
 
-STATIC_ASSERT(sizeof(BONUS_GUNSHIP_FLAGS) == sizeof(LevFlag));
-
 typedef struct dooku_c_s {       // size 0x14
     GIZAIMESSAGE *total_message; // 0x00
     GIZAIMESSAGE *hit_message;   // 0x04

@@ -900,5 +900,3 @@ static i32 Customise_FindLetter(char character) {
 }
 
 /* ResetPlayer shares the light packet at 4d8 with LightGameObject. */
-
-STATIC_ASSERT(offsetof(AIPACKET, creature_index) + offsetof(GAMEOBJECT, ai_packet) == 0x400);

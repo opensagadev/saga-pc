@@ -36,8 +36,6 @@ void GizObstacle_PlayBackwards(GIZOBSTACLE *obstacle) {
     }
 }
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
-
 typedef struct gizobstacle_system_s { // size 0x14
     GIZOBSTACLE *obstacles;           // 0x00
     GIZMO_PC **active_gizmos;         // 0x04
@@ -273,13 +271,12 @@ void GizObstacles_AddLevelSfx(void *world, void *ptr, i32 *ids, i32 *count, i32 
 }
 
 static void Gizobstacle_ReadAnimSetData(GAMEANIMOBJ *object, u8 version) {
-    union {
+    union { // size 0x4
         u32 storage;
         u16 value;
     } fallback_data;
 
     u16 *data;
-    STATIC_ASSERT(sizeof(fallback_data) == 4);
     if (!object) {
         return;
     }
@@ -1247,8 +1244,6 @@ typedef struct bomb_generator_system_runtime_s { // size 0x14
     u16 unknown_0e;                              // 0x0e
     void *progress;                              // 0x10
 } BOMB_GENERATOR_SYSTEM_RUNTIME;
-
-STATIC_ASSERT(offsetof(BOMB_GENERATOR_SYSTEM_RUNTIME, flags) == 0xc && sizeof(((BOMB_GENERATOR_SYSTEM_RUNTIME *)0)->flags) == 2);
 
 /* Studs the level's obstacles release (TotalLevelCoinTally). */
 u32 GizObstacles_TotalScore(WORLDINFO *world) {

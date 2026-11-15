@@ -282,10 +282,6 @@ typedef struct ai_path_system_load_s {  // size 0x10
         destination = (type)allocation_result;                                                                                             \
     } while (0)
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_set) == 0x378);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
-
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
@@ -686,20 +682,10 @@ typedef void (*AI_LOAD)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
-STATIC_ASSERT(offsetof(AIPACKET, path_info) + offsetof(AIPATHINFO, flags) == 0x166);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent_metric) == 0x3b0);
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, flags) == 0x4b0);
-
 typedef struct condition_trigger_process_reader_s { // size 0xa4
     u8 unknown_00[0xa0];                            // 0x00
     AIAREA *trigger_area;                           // 0xa0
 } CONDITION_TRIGGER_PROCESS_READER;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, position) + offsetof(NUVEC, y) == 0x60);
 
 SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 

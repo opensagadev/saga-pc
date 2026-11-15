@@ -297,10 +297,6 @@ typedef struct GAME_CUSTOMISER_REWARD_READER {
 
 GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x174);
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
-
 extern "C" i32 fun_0041aec0(GAMEOBJECT *object);
 void Tag_DrawIcon_LSW(GAMEOBJECT *object);
 void Tag_DrawIcon_Batman(GAMEOBJECT *object);

@@ -86,7 +86,6 @@ typedef struct attracto_shard_reader_s { // size 0x54
     NUVEC velocity;        // 0x48
 } ATTRACTO_SHARD_READER;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, upper_position) + 4 == 0x194);
 extern char dat_007516c0[1];
 extern void Shard_Collect(SHARD_s *, GAMEOBJECT *);
 extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);

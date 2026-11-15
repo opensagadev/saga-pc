@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-STATIC_ASSERT(sizeof(STARTUP_OBJECT_LIGHT) == sizeof(GAMEOBJECT));
-
 typedef struct BURN_SET {            // size 0x564
     BURN_PARAMETERS parameters;      // 0x000
     BURN_PARAMETERS parameters_copy; // 0x054

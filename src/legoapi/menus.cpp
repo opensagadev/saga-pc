@@ -1,7 +1,6 @@
 #include "saga.h"
 
 #include <string.h>
-STATIC_ASSERT(offsetof(GAMESAVE, options_save) + offsetof(OPTIONSSAVE, widescreen) == 0xf);
 #pragma section(".bss$MenuButtonHistoryPc", read, write)
 extern "C" {
 

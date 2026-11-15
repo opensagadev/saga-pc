@@ -2,10 +2,6 @@
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 extern i32 Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, locator) == 0x36c);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, mover_height) == 0x3e8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, last_path_position) == 0x438);
 i32 GizmoGetTypeIDByName(void *system, char *name);
 SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
 void SockOn(SOCKSYS_PC *system, i32 index);

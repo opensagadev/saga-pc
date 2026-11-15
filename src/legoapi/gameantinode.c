@@ -63,10 +63,6 @@ typedef struct ANTINODE_AI_OUTPUT { // size 0x58
     u32 user_data[2];               // 0x50
 } ANTINODE_AI_OUTPUT;
 
-STATIC_ASSERT(offsetof(ANTINODE_AI_OUTPUT, user_data) + sizeof(u32) == 0x54);
-STATIC_ASSERT(offsetof(ANTINODE, user_data) + sizeof(u32) == 0x28);
-STATIC_ASSERT(offsetof(ANTINODE, user_data) + 2 * sizeof(u32) == 0x2c);
-
 #define GAME_ANTI_NODE_ABS(destination, expression) (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */

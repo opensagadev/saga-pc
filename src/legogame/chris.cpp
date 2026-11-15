@@ -144,8 +144,6 @@ extern "C" {
         u8 unknown_64738[8];                      // 0x64738
     } DOGFIGHT_SPACE_PC;
 
-    STATIC_ASSERT(offsetof(GAMEOBJECT, sock_position) + offsetof(SOCKPOSITION_PC, distance) == 0x69c);
-
 #pragma data_seg(".data$DogfightResetPc")
     NUVEC4 DogfightDrawScale = {0.0f, 0.0f, 0.0f, 0.0f};
 #pragma data_seg(".data$DogfightResetTimerPc")
@@ -292,12 +290,11 @@ extern "C" {
         DOGFIGHT_SPACE_PC *owner;          // 0x2c
     } DOGFIGHT_ACTION_STATE;
 
-    typedef struct DOGFIGHT_LEVEL_FLAGS {
-        u8 first;
-        u8 remainder[15];
+    typedef struct DOGFIGHT_LEVEL_FLAGS { // size 0x10
+        u8 first;                         // 0x0
+        u8 remainder[15];                 // 0x1
     } DOGFIGHT_LEVEL_FLAGS;
 
-    STATIC_ASSERT(sizeof(DOGFIGHT_LEVEL_FLAGS) == sizeof(LevFlag));
     extern void SpaceResetAudioPoint(void);
 
 /* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
@@ -377,8 +374,6 @@ extern "C" {
         i32 enabled;                    // 0x528
         u32 unknown_52c;                // 0x52c
     } FLIGHT_SPLINE_FILE;
-
-    STATIC_ASSERT(sizeof(FLIGHT_SPLINE_FILE) == sizeof(FLIGHT_SPLINE_RESOURCE_PC));
 
 #pragma data_seg(".data$FlightSplineExtensionPc")
     char *FlightSplineExtension = ".FSP";

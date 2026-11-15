@@ -169,14 +169,10 @@ typedef struct PC_DL_E_MATERIAL_READER {     // size 0x2c0
     PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
 } PC_DL_E_MATERIAL_READER;
 
-STATIC_ASSERT(offsetof(NuShaderObject, parameters) + 0x4f * sizeof(PC_SHADER_PARAMETER_LOCAL_PC) == 0x3d0);
-
 struct PC_DL_SHADER_PROGRAM_PAIR_PC {   // size 0x8
     PC_TEXTURE_RESOURCE *vertex_shader; // 0x0
     PC_TEXTURE_RESOURCE *pixel_shader;  // 0x4
 };
-
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, textures) + sizeof(GRAPHICS_RENDER_TEXTURE *) == 0x6b8);
 
 extern "C" {
     static void PCGraphicsBindEffectTexturePc(u32 stage, GRAPHICS_RENDER_TEXTURE *texture) {

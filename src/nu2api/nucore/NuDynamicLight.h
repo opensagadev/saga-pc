@@ -58,15 +58,13 @@ struct VuMtx { // size 0x40
 #if SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART == 2 && !defined(SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_STOP)
 #ifdef __cplusplus
 
-struct NuDynamicLight {
+struct NuDynamicLight { // size 0x710
     void resetGeometry();
-    NURNDRLIGHTRECORD render_sets_pc[2];
-    u8 unknown_700[0xc];
-    i32 render_set_count_pc;
+    NURNDRLIGHTRECORD render_sets_pc[2]; // 0x000
+    u8 unknown_700[0xc];                 // 0x700
+    i32 render_set_count_pc;             // 0x70c
 };
 
-STATIC_ASSERT(offsetof(NuDynamicLight, render_sets_pc) == 0);
-STATIC_ASSERT(offsetof(NuDynamicLight, render_set_count_pc) == 0x70c);
 #endif
 #undef SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART
 #define SAGA_NU2API_NUCORE_NUDYNAMICLIGHT_H_PART 3

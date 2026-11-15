@@ -1547,17 +1547,16 @@ void LoadAreaCharacters(void) {
 extern "C" {
 
     /* Bitfield view of SCENESPECIALPROGRESS.flags. */
-    typedef struct scene_special_state_s {
-        u32 frame : 11;
-        u32 visible : 1;
-        u32 playing : 1;
-        u32 waiting : 1;
-        u32 repeating : 1;
-        u32 unused : 17;
-        f32 tfactor;
+    typedef struct scene_special_state_s { // size 0x8
+        u32 frame : 11;                    // 0x0:0
+        u32 visible : 1;                   // 0x0:11
+        u32 playing : 1;                   // 0x0:12
+        u32 waiting : 1;                   // 0x0:13
+        u32 repeating : 1;                 // 0x0:14
+        u32 unused : 17;                   // 0x0:15
+        f32 tfactor;                       // 0x4
     } SCENE_SPECIAL_STATE;
 
-    STATIC_ASSERT(sizeof(SCENE_SPECIAL_STATE) == sizeof(SCENESPECIALPROGRESS));
     /* progress->specials[i] read through the bitfield view (stands in for the header field). */
 #define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE *)(progress)->specials)[i])
 

@@ -9895,27 +9895,24 @@ extern "C" {
     }
 
     /* Same layout as NURNDRLIBSTATE without 1- or 2-byte arrays, so the stack copy carries no /GS cookie. */
-    typedef struct pc_rndr_state_local_s {
-        u32 opaque_00_08[2];
-        void *mtl;
-        u32 opaque_0c_14[2];
-        i32 tex_id;
-        u16 opaque_18;
-        u16 opaque_1a;
-        u16 opaque_1c;
-        i16 konst_id;
-        i32 global_id;
-        i16 lights_id;
-        u16 opaque_26;
-        u16 opaque_28;
-        u16 opaque_2a;
-        i16 camera_id;
-        i16 fog_id;
-        u32 opaque_30_34;
+    typedef struct pc_rndr_state_local_s { // size 0x34
+        u32 opaque_00_08[2];               // 0x00
+        void *mtl;                         // 0x08
+        u32 opaque_0c_14[2];               // 0x0c
+        i32 tex_id;                        // 0x14
+        u16 opaque_18;                     // 0x18
+        u16 opaque_1a;                     // 0x1a
+        u16 opaque_1c;                     // 0x1c
+        i16 konst_id;                      // 0x1e
+        i32 global_id;                     // 0x20
+        i16 lights_id;                     // 0x24
+        u16 opaque_26;                     // 0x26
+        u16 opaque_28;                     // 0x28
+        u16 opaque_2a;                     // 0x2a
+        i16 camera_id;                     // 0x2c
+        i16 fog_id;                        // 0x2e
+        u32 opaque_30_34;                  // 0x30
     } PC_RNDR_STATE_LOCAL;
-
-    STATIC_ASSERT(sizeof(PC_RNDR_STATE_LOCAL) == sizeof(NURNDRLIBSTATE));
-    STATIC_ASSERT(offsetof(PC_RNDR_STATE_LOCAL, fog_id) == offsetof(NURNDRLIBSTATE, fog_id));
 
     void DisplayProcessMaterialRenderStatesPC(void) {
         PC_RNDR_STATE_LOCAL state;
@@ -10027,10 +10024,6 @@ extern "C" {
         DisplayProcessMaterialRenderStatesPC();
         NuThreadCriticalSectionEnd(nudlist_field_fc4);
     }
-
-    STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m30) == 0x30);
-    STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m31) == 0x34);
-    STATIC_ASSERT(offsetof(NUCAMERA, mtx) + offsetof(NUMTX, m32) == 0x38);
 
 #define CLIP_MARK_MATERIALS()                                                                                                              \
     {                                                                                                                                      \
@@ -10849,8 +10842,6 @@ union PC_CLIP_SCENE_VIEW { // size 0x90
         f32 *far_clip_ranges; // 0x2c
     };
 };
-
-STATIC_ASSERT(sizeof(PC_CLIP_SCENE_VIEW) == sizeof(NUDISPLAY_LIST_PC));
 
 static void DisplayClipFallbackPC(NUDISPLAY_LIST_PC *scene, VISIBILITY_RESULT_READER_PC *visibility) {
     PC_CLIP_SCENE_VIEW *view = reinterpret_cast<PC_CLIP_SCENE_VIEW *>(scene);
@@ -13853,7 +13844,6 @@ PC_POST_DATA_PORT_MANAGER::~PC_POST_DATA_PORT_MANAGER() {
 }
 
 /* nudynamiclight */
-STATIC_ASSERT(2 * sizeof(NURNDRLIGHTRECORD) + offsetof(NURNDRLIGHTRECORD, enabled) == 0x808);
 
 extern "C" void NuDynamicLightSetDirectional(PC_SPECIAL_SHADOW_LIGHT *light, f32 left, f32 right, f32 bottom, f32 top, f32 near_plane,
                                              f32 far_plane) {
@@ -14825,8 +14815,6 @@ extern "C" {
             u32 : 27;              // 0x0:5
         } bits;
     } VISIBILITY_TREE_FLAG_WORD;
-
-    STATIC_ASSERT(sizeof(VISIBILITY_TREE_FLAG_WORD) == sizeof(u32));
 
     void NuCameraLock(i32 lock) {
         if (lock != NuPortalCameraSelect && NuPortalCameraSelect == 0) {

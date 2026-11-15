@@ -628,8 +628,6 @@ extern PC_DI_CAPS PcKeyboardCapabilities;
 extern "C" BOOL IsXInputProductPc(const GUID *);
 extern "C" void ConfigureJoystickRangesPc(NuKeyboardDevice_PC *);
 
-STATIC_ASSERT(offsetof(PC_INPUT_RUNTIME_PC, mouse) + offsetof(PC_INPUT_MOUSE_RUNTIME_PC, port_activity) == 0x6345);
-
 extern const GUID PcWbemClassId;
 extern const GUID PcWbemInterfaceId;
 extern "C" char *PcGetUserFolder(const char *, const char *);

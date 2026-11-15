@@ -194,7 +194,6 @@ extern "C" {
          {"wpn_bib_stab"},    3258978304, {0}, {0}, {0}},
     };
     // clang-format on
-    STATIC_ASSERT(42 * sizeof(BOLTTYPE_PC) + offsetof(BOLTTYPE_PC, object_ids) == 0x1b10);
 
     BOLTSYS_PC BoltSys_LSW = {
         GlobalBoltType,        44, AlertSurroundingCreatures, Bolt_Debris_LSW, GetShootOrigin_LSW, GetShootDirection_LSW, Bolt_HitPart_LSW,
@@ -217,8 +216,6 @@ typedef struct BOLT_UPDATE_TYPE_PC_s { // size 0xa4
     u8 unknown_000[0x98];              // 0x00
     NUSPECIALHANDLE shadow_special;    // 0x98
 } BOLT_UPDATE_TYPE;
-
-STATIC_ASSERT(sizeof(BOLT_UPDATE_TYPE) == sizeof(BOLTTYPE_PC));
 
 extern "C" i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
 

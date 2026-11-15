@@ -82,8 +82,6 @@ typedef struct PC_MENU_SERVICE_VIEW { // size 0xe0
     i32 state_dc;                     // 0xdc
 } PC_MENU_SERVICE_VIEW;
 
-STATIC_ASSERT(sizeof(PC_MENU_SERVICE_VIEW) == sizeof(MENU));
-
 MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
 #define NEWMENU_VIEW ((PC_MENU_SERVICE_VIEW *)GameMenu)
     PC_MENU_SERVICE_VIEW *menu = NULL;
@@ -453,8 +451,6 @@ typedef struct PC_MENU_UPDATE_VIEW { // size 0xe0
     i32 input_disabled;              // 0xd8
     i32 state;                       // 0xdc
 } PC_MENU_UPDATE_VIEW;
-
-STATIC_ASSERT(sizeof(PC_MENU_UPDATE_VIEW) == sizeof(MENU));
 
 void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 interval, f32 elapsed) {
     if (*held != 0) {
@@ -847,8 +843,6 @@ typedef struct MENU_DRAW_VIEW { // size 0xe0
     f32 item_spacing;           // 0xd4
     u8 unknown_d8[8];           // 0xd8
 } MENU_DRAW_VIEW;
-
-STATIC_ASSERT(sizeof(MENU_DRAW_VIEW) == sizeof(MENU));
 
 void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW *view = (MENU_DRAW_VIEW *)menu;

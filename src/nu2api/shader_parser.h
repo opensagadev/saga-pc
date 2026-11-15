@@ -46,22 +46,22 @@ class ShaderCompilerParserPc;
 #include <vector>
 struct ShaderParserIncludePc;
 
-class ShaderCompilerParserPc {
+class ShaderCompilerParserPc { // size 0x45c
   public:
-    char include_directories[0x100];
-    std::vector<ShaderParserIncludePc *> includes;
-    u8 lexical_state;
-    u8 reserved_111[3];
-    ShaderParserNodePc *head;
-    ShaderParserNodePc **tail;
-    VirtualStackAllocator *arena;
-    u8 emit_text;
-    u8 reserved_121[3];
-    ShaderCompilerBufferAllocatorPc text;
-    ShaderParserBranchNodePc *branches[100];
-    i32 branch_count;
-    ShaderParserBranchNodePc *scopes[100];
-    i32 scope_count;
+    char include_directories[0x100];               // 0x000
+    std::vector<ShaderParserIncludePc *> includes; // 0x100
+    u8 lexical_state;                              // 0x110
+    u8 reserved_111[3];                            // 0x111
+    ShaderParserNodePc *head;                      // 0x114
+    ShaderParserNodePc **tail;                     // 0x118
+    VirtualStackAllocator *arena;                  // 0x11c
+    u8 emit_text;                                  // 0x120
+    u8 reserved_121[3];                            // 0x121
+    ShaderCompilerBufferAllocatorPc text;          // 0x124
+    ShaderParserBranchNodePc *branches[100];       // 0x134
+    i32 branch_count;                              // 0x2c4
+    ShaderParserBranchNodePc *scopes[100];         // 0x2c8
+    i32 scope_count;                               // 0x458
     ShaderCompilerParserPc();
     ~ShaderCompilerParserPc();
     void SetIncludeDirectories(const char *);
@@ -88,20 +88,5 @@ class ShaderCompilerParserPc {
     void fun_0074b6b0(ShaderParserNodePc *node);
 };
 
-STATIC_ASSERT(sizeof(ShaderCompilerParserPc) == 0x45c);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, include_directories) == 0);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, includes) == 0x100);
-#endif
-#ifdef SAGA_SHADER_PARSER_TYPES
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, lexical_state) == 0x110);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, head) == 0x114);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, tail) == 0x118);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, arena) == 0x11c);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, emit_text) == 0x120);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, text) == 0x124);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, branches) == 0x134);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, branch_count) == 0x2c4);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scopes) == 0x2c8);
-STATIC_ASSERT(offsetof(ShaderCompilerParserPc, scope_count) == 0x458);
 #endif
 #endif

@@ -34,14 +34,14 @@ typedef struct bomb_generator_runtime_s {
     };
 } BOMB_GENERATOR_RUNTIME;
 
-typedef struct bomb_generator_system_runtime_s {
-    BOMB_GENERATOR_RUNTIME *items;
-    u16 count;
-    u16 capacity;
-    void *pool;
-    i16 flags;
-    u16 unknown_0e;
-    void *progress;
+typedef struct bomb_generator_system_runtime_s { // size 0x14
+    BOMB_GENERATOR_RUNTIME *items;               // 0x00
+    u16 count;                                   // 0x04
+    u16 capacity;                                // 0x06
+    void *pool;                                  // 0x08
+    i16 flags;                                   // 0x0c
+    u16 unknown_0e;                              // 0x0e
+    void *progress;                              // 0x10
 } BOMB_GENERATOR_SYSTEM_RUNTIME;
 
 typedef struct bomb_generator_progress_s {

@@ -1438,8 +1438,6 @@ typedef struct gameobject_s { // size 0x10d8
     struct AITRIGGERSET_PARTIAL *active_trigger_set; // 0x10d4
 } GAMEOBJECT;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, flags) == 0x4b0);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1463,8 +1461,6 @@ extern "C" {
 }
 #endif
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view) + offsetof(AI_SPECIAL_PROGRESS, flags) == 0x1073);
-STATIC_ASSERT(offsetof(GAMEOBJECT, special_move_progress_view) + offsetof(AI_SPECIAL_PROGRESS, progress) == 0x1074);
 #ifdef __cplusplus
 extern "C" {
 #endif

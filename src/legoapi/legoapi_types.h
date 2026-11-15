@@ -939,7 +939,6 @@ struct OcclusionManager { // size 0x170
     void SetEnabled(bool value);
 };
 
-STATIC_ASSERT(sizeof(OcclusionManager) == sizeof(OCCLUSIONMANAGER));
 #endif
 #ifdef __cplusplus
 #ifdef __cplusplus

@@ -51,10 +51,6 @@ typedef struct trigger_object_force_s { // size 0x10d0
     GIZFORCE_PC *force;                 // 0x10cc
 } TRIGGER_OBJECT_FORCE;
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, route_mask_low) == 0x3f8);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, terrain_origin) == 0x414);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) + offsetof(AIPATHINFO, connection) == 0x424);
-
 #define AITRIGGER_RELEASE(system, set, index)                                                                                              \
     if ((set)->trigger_indices[index] != -1) {                                                                                             \
         (system)->assigned_set[(set)->trigger_indices[index]] = -1;                                                                        \

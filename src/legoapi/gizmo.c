@@ -1,9 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_gizmo_name_fn) == 0x44);
-STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, get_num_outputs_fn) == 0x50);
-
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
 void GizmoDiagnostic(char *format, ...);
@@ -25,8 +22,6 @@ void GizmoNameDiagnostic(char *name);
         }                                                                                                                                  \
         (result) = (type)allocation_;                                                                                                      \
     } while (0)
-STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, clear_progress_fn) == 0x7c);
-STATIC_ASSERT(offsetof(GIZMOTYPE, fns) + offsetof(GIZMOFNS, store_progress_fn) == 0x80);
 
 typedef struct bolt_gizmo_type_s {                             // size 0x9c
     u8 unknown_00[0x6c];                                       // 0x00

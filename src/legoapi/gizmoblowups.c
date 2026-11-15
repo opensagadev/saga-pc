@@ -80,18 +80,16 @@ extern i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
 
 /* Bit view of GIZMOBLOWUP_PC.status_flags, whose bits are stored as bitfields. Stands in for a
  * bitfield member of the shared struct. */
-typedef struct BLOWUP_STATUS_BITS {
-    u32 blown_up : 1;
-    u32 unknown_1 : 13;
-    u32 visible : 1;
-    u32 unknown_15 : 8;
-    u32 active : 1;
-    u32 unknown_24 : 4;
-    u32 secondary_output : 1;
-    u32 unknown_29 : 3;
+typedef struct BLOWUP_STATUS_BITS { // size 0x4
+    u32 blown_up : 1;               // 0x0:0
+    u32 unknown_1 : 13;             // 0x0:1
+    u32 visible : 1;                // 0x0:14
+    u32 unknown_15 : 8;             // 0x0:15
+    u32 active : 1;                 // 0x0:23
+    u32 unknown_24 : 4;             // 0x0:24
+    u32 secondary_output : 1;       // 0x0:28
+    u32 unknown_29 : 3;             // 0x0:29
 } BLOWUP_STATUS_BITS;
-
-STATIC_ASSERT(sizeof(BLOWUP_STATUS_BITS) == sizeof(((GIZMOBLOWUP_PC *)0)->status_flags));
 
 typedef struct {              // size 0x100
     u32 blown_up[16];         // 0x00

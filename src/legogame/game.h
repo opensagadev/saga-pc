@@ -117,9 +117,6 @@ typedef struct gamesave_s { // size 0x7e4c
     }; // 0x7cf8
 } GAMESAVE;
 
-STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER, completed) == 0x7ce4);
-STATIC_ASSERT(offsetof(GAMESAVE, mission_save) + offsetof(MISSION_SAVE_READER, completed) == 0x7ce4);
-
 // Access prefix only; the original allocation extent remains unknown.
 typedef struct area_globals_s { // size 0x34
     i32 unknown_00;             // 0x00

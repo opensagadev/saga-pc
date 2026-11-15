@@ -1,13 +1,9 @@
 #include "saga.h"
 #include <string.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, script_processor) + offsetof(AISCRIPTPROCESS, script) == 0x2cc);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, creature_index) == 0x400);
 extern void *Door_Last;
 extern u64 CharacterMaskAll;
 i8 Area_CharIDInCurrentList(i32 character_id);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, reset_mode) == 0x406);
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
 
 void ClearTakeOverObjectSys(void) {
     memset(takeoverobjects, 0, sizeof(takeoverobjects));

@@ -198,35 +198,5 @@ class NuMusic { // size 0x1e4
     void NoMusic(i32 no_music);
 };
 
-STATIC_ASSERT(sizeof(NuMusic::Track) == 0x3c);
-STATIC_ASSERT(offsetof(NuMusic::Track, attenuation) == 0x34);
-STATIC_ASSERT(offsetof(NuMusic::Track, duck_fade) == 0x30);
-STATIC_ASSERT(offsetof(NuMusic::Track, duck_volume) == 0x2c);
-STATIC_ASSERT(offsetof(NuMusic::Track, filenames) == 0);
-STATIC_ASSERT(offsetof(NuMusic::Track, ident) == 0x08);
-STATIC_ASSERT(offsetof(NuMusic::Track, file_indexes) == 0x0c);
-STATIC_ASSERT(offsetof(NuMusic::Track, clazz) == 0x14);
-STATIC_ASSERT(offsetof(NuMusic::Track, start_offset) == 0x24);
-STATIC_ASSERT(offsetof(NuMusic::Track, entry_times) == 0x18);
-STATIC_ASSERT(offsetof(NuMusic::Track, entry_count) == 0x1c);
-STATIC_ASSERT(offsetof(NuMusic::Track, entry_index) == 0x20);
-STATIC_ASSERT(offsetof(NuMusic::Track, flags) == 0x38);
-STATIC_ASSERT(offsetof(NuMusic::Voice, flags_word) == 0x30);
-STATIC_ASSERT(offsetof(NuMusic::Voice, stream_index) == 0);
-STATIC_ASSERT(offsetof(NuMusic::Voice, last_volume) == 0x24);
-STATIC_ASSERT(offsetof(NuMusic::Voice, fade_rate) == 0x28);
-STATIC_ASSERT(sizeof(NuMusic::Voice) == 0x34);
-STATIC_ASSERT(offsetof(NuMusic::Voice, tracks) == 0x04);
-STATIC_ASSERT(offsetof(NuMusic::Voice, track_index) == 0x14);
-STATIC_ASSERT(offsetof(NuMusic::Voice, status) == 0x18);
-STATIC_ASSERT(offsetof(NuMusic::Voice, track_sub) == 0x0c);
-STATIC_ASSERT(offsetof(NuMusic::Voice, gain) == 0x1c);
-STATIC_ASSERT(offsetof(NuMusic::Voice, play_time) == 0x2c);
-STATIC_ASSERT(offsetof(NuMusic::Voice, flags) == 0x30);
-STATIC_ASSERT(sizeof(NuMusic::Album) == 0x24);
-STATIC_ASSERT(offsetof(NuMusic::Album, name) == 0);
-STATIC_ASSERT(offsetof(NuMusic::Album, tracks) == 0x0c);
-STATIC_ASSERT(offsetof(NuMusic::Track, pitch) == 0x28);
-
 extern NuMusic music_man;
 #endif

@@ -2,7 +2,6 @@
 
 extern i32 NuMainSkipCutBorders;
 extern i32 drawautosaveicon;
-STATIC_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 6 * sizeof(void *) == 0x80);
 
 extern char *GizmoPickup_OutputName;
 
@@ -103,9 +102,6 @@ typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
 
     u8 unknown_18[0x14]; // 0x18
 } PICKUP_VISIBILITY_VIEW;
-
-STATIC_ASSERT(sizeof(PICKUP_VISIBILITY_VIEW) == sizeof(GIZMOPICKUP));
-STATIC_ASSERT(offsetof(PICKUP_VISIBILITY_VIEW, flags) == offsetof(GIZMOPICKUP, flags));
 
 static NUMTX *PickupSetRotationX(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

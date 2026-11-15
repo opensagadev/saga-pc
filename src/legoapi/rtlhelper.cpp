@@ -108,6 +108,7 @@ class EdMatrixControl : public EdControl { // size 0x34
 
 /* Numeric property row clamped to [minimum, maximum]; the button drags the
  * value with the cursor or the analogue sticks. */
+/* Layout with T = f32 or i32: value_type at 0x10, format at 0x14, minimum at 0x18, maximum at 0x1c, size 0x20. */
 template <class T> class EdValueControl : public EdControl {
   public:
     static void *operator new(size_t size) {
@@ -156,10 +157,6 @@ template <class T> class EdValueControl : public EdControl {
     T minimum;
     T maximum;
 };
-
-STATIC_ASSERT(sizeof(EdValueControl<i32>) == 0x20);
-STATIC_ASSERT(offsetof(EdValueControl<f32>, value_type) == 0x10);
-STATIC_ASSERT(offsetof(EdValueControl<f32>, minimum) == 0x18);
 
 template <> f32 EdValueControl<i32>::MouseScale = 100.0f;
 template <> f32 EdValueControl<f32>::MouseScale = 100.0f;

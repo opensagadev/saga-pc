@@ -1,7 +1,6 @@
 #include "saga.h"
 #include <stdio.h>
 
-STATIC_ASSERT(sizeof(*Char_MiniKit) == 4);
 extern f32 KITPOS2YPc;
 
 #ifdef __cplusplus

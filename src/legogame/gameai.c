@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdio.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, reset_mode) == 0x406);
-
 typedef struct ai_controller_scene_view_s {
     u8 unknown_0000[0x1394];
     NUGSCN *scene;

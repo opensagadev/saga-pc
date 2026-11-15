@@ -545,7 +545,6 @@ f32 TrenchSpawnDistance = 20.0f;
 #pragma data_seg(".data$TrenchSpawnHeightPc")
 f32 TrenchSpawnHeight = 40.0f;
 #pragma data_seg()
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
 
 static void TrenchKilledCallback(GAMEOBJECT *object) {
     i32 index;

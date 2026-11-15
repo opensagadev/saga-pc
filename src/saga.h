@@ -7,7 +7,6 @@
 
 #include "nu2api/nucore/common.h"
 #include "decomp.h"
-#include "externals/dsound.h"
 #include "nu2api/numath/nuang.h"
 #include "nu2api/nucore/nulist.h"
 #include "legoapi/menus/screens/movies.h"

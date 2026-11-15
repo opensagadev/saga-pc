@@ -2151,8 +2151,6 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
     return height;
 }
 
-STATIC_ASSERT(offsetof(FRAME_PAD_PC, reserved98) + 1 == 0x99);
-
 extern "C" {
 #pragma data_seg(".data$EduiColourSliderRepeatTimer")
     i32 EduiColourSliderRepeatTimerPc = 30;

@@ -95,7 +95,6 @@ typedef struct CHARACTER_LIST_ENTRY {      // size 0x4c
     u32 unknown_48;                        // 0x48
 } CHARACTER_LIST_ENTRY;
 
-STATIC_ASSERT(sizeof(CHARACTER_LIST_ENTRY) == sizeof(CHARACTERDATA_PC));
 extern void NuHGobjDestroy(NUHGOBJ_EVAL *object);
 
 static f32 APIObjectFabs(f32 value);

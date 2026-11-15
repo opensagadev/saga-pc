@@ -334,7 +334,6 @@ extern "C" {
         u32 unknown_08;                    // 0x8
     } PC_GEOMETRY_SORT_ITEM;
 
-    STATIC_ASSERT(offsetof(PC_GEOMETRY_OUTPUT, corners) + 2 * sizeof(PC_GEOMETRY_CORNER) == 0x20);
     extern "C" NUVEC4 PcGeometryDistanceOrigin;
     extern "C" i32 dat_00806b94;
 

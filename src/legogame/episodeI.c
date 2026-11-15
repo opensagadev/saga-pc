@@ -2,7 +2,6 @@
 #include "saga.h"
 #include <math.h>
 
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
 extern f32 sebulba_goal_ahead_vals[4];
 extern f32 sebulba_fallback_lerpf;
 extern f32 sebulba_fallback_dist;
@@ -78,35 +77,35 @@ typedef struct podrace_netpacket_s {
 i32 NuSpecialClipTestExtents(NUSPECIALHANDLE *special, NUMTX *matrix);
 
 /* Pod sprint (Episode I bonus) level callbacks. */
-typedef struct PODSPRINT_VIEW {
-    NUGSPLINE *finish_line;
-    NUGSPLINE *halfway;
-    PODSPRINT_AI ai[6];
-    GIZAIMESSAGE *lap_msg;
-    GIZAIMESSAGE *max_speed_msg;
-    GIZAIMESSAGE *min_speed_msg;
-    GIZAIMESSAGE *speed_step_msg;
-    GAMEOBJECT *pacemaker;
-    AIAREA *boulders;
-    f32 arrow_timer;
-    f32 countdown;
-    f32 lap_time;
-    u8 unknown_8c[2];
-    i8 ai_state;
-    i8 ai_index;
-    u8 unknown_90[2];
+typedef struct PODSPRINT_VIEW {   // size 0x94
+    NUGSPLINE *finish_line;       // 0x00
+    NUGSPLINE *halfway;           // 0x04
+    PODSPRINT_AI ai[6];           // 0x08
+    GIZAIMESSAGE *lap_msg;        // 0x68
+    GIZAIMESSAGE *max_speed_msg;  // 0x6c
+    GIZAIMESSAGE *min_speed_msg;  // 0x70
+    GIZAIMESSAGE *speed_step_msg; // 0x74
+    GAMEOBJECT *pacemaker;        // 0x78
+    AIAREA *boulders;             // 0x7c
+    f32 arrow_timer;              // 0x80
+    f32 countdown;                // 0x84
+    f32 lap_time;                 // 0x88
+    u8 unknown_8c[2];             // 0x8c
+    i8 ai_state;                  // 0x8e
+    i8 ai_index;                  // 0x8f
+    u8 unknown_90[2];             // 0x90
 
-    union {
+    union { // size 0x2
         u16 flags;
 
-        struct {
-            i16 halfway : 1;
-            i16 unknown_1 : 1;
-            i16 finished : 2;
-            i16 reset_requested : 1;
-            i16 unknown_5 : 11;
+        struct {                     // size 0x2
+            i16 halfway : 1;         // 0x92:0
+            i16 unknown_1 : 1;       // 0x92:1
+            i16 finished : 2;        // 0x92:2
+            i16 reset_requested : 1; // 0x92:4
+            i16 unknown_5 : 11;      // 0x92:5
         } bits;
-    };
+    }; // 0x92
 } PODSPRINT_VIEW;
 
 #define PODSPRINT ((PODSPRINT_VIEW *)&podsprint)

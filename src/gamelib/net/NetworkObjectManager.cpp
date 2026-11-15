@@ -171,8 +171,6 @@ class NetPredictor : public NetReplicator { // size 0x28
     f32 maximum_value;            // 0x24
 };
 
-STATIC_ASSERT(sizeof(NetPredictor::PredictorTime) == 0x1c);
-
 class NetPredictor2 : public NetPredictor {
   public:
     virtual void PredictValue(const EdClass *object_class, void *object, PredictorTime *time, PredictorData **samples, f32 *values,

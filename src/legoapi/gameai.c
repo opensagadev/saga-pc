@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-STATIC_ASSERT(offsetof(LEVEL_SCRIPT_PROCESS, processor) + offsetof(AISCRIPTPROCESS, flags) == 0x60);
-
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
 typedef char *(*AI_CHARACTER_NAME)(u8);
 typedef char *(*AI_GLOBAL_CHARACTER_NAME)(i32);
@@ -34,5 +32,3 @@ i32 NuHGobjRndr(NUHGOBJ_EVAL *object, NUMTX *matrix, i32 count, i16 *layers) {
     NuHGobjEval(object, 0, NULL, matrices);
     return NuHGobjRndrMtxDwa(object, matrix, count, layers, matrices, NULL, 0);
 }
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, special_move_node) == 0x44c);

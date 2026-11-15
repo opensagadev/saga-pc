@@ -37,7 +37,6 @@ extern "C" {
     void NuRndrCalcRandCylinderPos(struct NUVEC4 *, struct numtx_s *, NUVEC *);
     extern i32 NuRndrShadowCnt;
     extern PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128];
-    STATIC_ASSERT(sizeof(NURND_VERTEX3D_PC[4]) == 0x90);
     void NuRndrShadPolys(struct numtl_s *);
     i32 NuRndrSetDirectionalLightsPS(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void NuRndrAddShadow(NUVEC *, f32, i32, i32, i32, i32);

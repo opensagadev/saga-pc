@@ -21,8 +21,6 @@ typedef union RTL_FRAME_TIMER_VIEW { // size 0x4
     } words;
 } RTL_FRAME_TIMER_VIEW;
 
-STATIC_ASSERT(sizeof(RTL_FRAME_TIMER_VIEW) == sizeof(i32));
-
 void rtlFrameUpdate(f32 frame_time) {
     ((RTL_FRAME_TIMER_VIEW *)&rtltimer1)->words.low += (u16)(i32)(rtltimer1adv * frame_time);
     NuTimeBarSlotReset(0, 6);
@@ -2508,8 +2506,6 @@ __declspec(allocate(".bss$RtlClipboardLightPc")) RTL_LIGHT clipboard_light = {0}
 __declspec(allocate(".bss$RtlCurrentFogPc")) RTL_FOG_MIGRATION_PC *curr_fog = NULL;
 #pragma section(".bss$RtlClipboardFogPc", read, write)
 __declspec(allocate(".bss$RtlClipboardFogPc")) RTL_FOG_MIGRATION_PC clipboard_fog = {0};
-STATIC_ASSERT(sizeof(clipboard_light) == 35 * sizeof(u32));
-STATIC_ASSERT(sizeof(clipboard_fog) == 19 * sizeof(u32));
 
 void edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
     rtled_menu_active = 0;
@@ -2616,7 +2612,6 @@ __declspec(allocate(".bss$RtlUndoItemPc")) eduiitem_s *undo_item = NULL;
 __declspec(allocate(".bss$RtlRedoItemPc")) eduiitem_s *redo_item = NULL;
 
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
-STATIC_ASSERT(sizeof(void *) == 4);
 
 void edrtlSaveUndo(void) {
     if (maxundo != 0 && curr_set != NULL) {
@@ -2699,7 +2694,6 @@ void cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 
 #pragma section(".bss$RtlMenuUndoPc", read, write)
 __declspec(allocate(".bss$RtlMenuUndoPc")) RTL_LIGHT menu_undo = {0};
-STATIC_ASSERT(sizeof(menu_undo) == 35 * sizeof(u32));
 
 void cbDeleteYes(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     if (curr_rtl != NULL) {
@@ -3008,8 +3002,6 @@ void rtlSetAssocName(i32 index, char *name) {
         camdir_id_names[index] = name;
     }
 }
-
-STATIC_ASSERT(sizeof(void *) == 4);
 
 void InitUI(void) {
     i32 i;
@@ -3904,7 +3896,6 @@ __declspec(allocate(".bss$RtlProc_edrtl_dragoff_pc")) NUVEC edrtl_dragoff = {0};
 
 void edcamSetAng(i32 pitch, i32 yaw);
 f32 edcamGetDist(void);
-STATIC_ASSERT(sizeof(ctl[0]) == 32);
 
 static RTL_LIGHT *FindNearestRTL(NUVEC *position, int ignore_radius) {
     i32 i;

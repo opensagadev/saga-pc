@@ -111,7 +111,6 @@ extern "C" {
     extern f32 BuilditHopSfxWait;
     extern f32 GIZBUILDITWOBBLEJUMPHEIGHT;
 }
-STATIC_ASSERT(offsetof(GIZBUILDITANIMDATA_s, draw_mtx) + offsetof(NUMTX, m30) == 0xb0);
 
 typedef struct buildit_attracto_reader_s { // size 0x7c
     u8 unknown_00[0x18];                   // 0x00

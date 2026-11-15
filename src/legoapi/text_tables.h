@@ -465,10 +465,10 @@ typedef struct collision_techno_view_s { // size 0x69
     u8 flags;                            // 0x68
 } COLLISION_TECHNO_VIEW;
 
-typedef struct startup_object_light_s {
-    u8 unknown_000[0x1fc];
-    u32 flags;
-    u8 unknown_200[0xc04];
-    i32 dynamic_light_id;
-    u8 unknown_e08[0x2d0];
+typedef struct startup_object_light_s { // size 0x10d8
+    u8 unknown_000[0x1fc];              // 0x0000
+    u32 flags;                          // 0x01fc
+    u8 unknown_200[0xc04];              // 0x0200
+    i32 dynamic_light_id;               // 0x0e04
+    u8 unknown_e08[0x2d0];              // 0x0e08
 } STARTUP_OBJECT_LIGHT;

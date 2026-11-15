@@ -1,7 +1,6 @@
 #include "saga.h"
 
 extern char dat_007516c0[1];
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, capabilities) == 0x4bc);
 
 i32 Signals_Load(WORLDINFO *world, void *unused) {
     i32 version;

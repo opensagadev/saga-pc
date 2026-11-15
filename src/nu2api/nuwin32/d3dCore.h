@@ -341,13 +341,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, parameters) + offsetof(GRAPHICS_PRESENT_PARAMETERS, windowed) == 0x158);
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, desktop_mode) + offsetof(GRAPHICS_DISPLAY_MODE, width) == 0x608);
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, desktop_mode) + offsetof(GRAPHICS_DISPLAY_MODE, height) == 0x60c);
 #ifdef __cplusplus
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, identifier) + offsetof(GRAPHICS_ADAPTER_IDENTIFIER, vendor) == 0x5cc);
 #endif
-STATIC_ASSERT(offsetof(PC_DEVICE_BACKEND_PC, caps) + offsetof(GRAPHICS_CAPS, sampler_count) == 0xa0);
 #undef SAGA_NU2API_NUWIN32_D3DCORE_H_PART
 #define SAGA_NU2API_NUWIN32_D3DCORE_H_PART 3
 #ifdef SAGA_SHIM

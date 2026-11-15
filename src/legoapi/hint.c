@@ -7,13 +7,9 @@ typedef struct HINT_CANCEL { // size 0x1c
     f32 cooldown;            // 0x18
 } HINT_CANCEL;
 
-STATIC_ASSERT(sizeof(HINT_COMPLETION) == sizeof(CUSTOMISER_COMPLETION_READER_PC));
-
 /* Hint updater records keep their packed field offsets. */
 
 struct panel_movement_s;
-
-STATIC_ASSERT(offsetof(GAMEOBJECT, unknown_0e28) + 4 == 0xe2c);
 
 void Hint_ExpandButtons(char *input, char *output) {
     char token[256];

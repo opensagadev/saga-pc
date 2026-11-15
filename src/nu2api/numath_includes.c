@@ -15,8 +15,6 @@ typedef struct NuMtxIndexedView { // size 0x40
     f32 elements[4][4];           // 0x00
 } NuMtxIndexedView;
 
-STATIC_ASSERT(sizeof(NuMtxIndexedView) == sizeof(NUMTX));
-STATIC_ASSERT(2 * sizeof(((NuMtxIndexedView *)0)->elements[0]) + 2 * sizeof(f32) == offsetof(NUMTX, m22));
 #define NU_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
 #define NU_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 

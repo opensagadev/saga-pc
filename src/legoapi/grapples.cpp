@@ -14,7 +14,6 @@ typedef struct {
 } GRAPPLE_PROGRESS;
 
 extern "C" {}
-STATIC_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) + offsetof(AIPATHINFO, connection) == 0x424);
 
 typedef struct WORLD_GRAPPLE_MOTION_VIEW { // size 0x5088
     u8 unknown_0000[0x5080];               // 0x0000

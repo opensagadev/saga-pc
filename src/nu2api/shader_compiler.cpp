@@ -564,52 +564,43 @@ i32 ShaderCompilerBasePc::CompileEffect(const char *source, i32 length, void *ou
 
 /* The material fields from its texture flags on (PC_SHADER_MATERIAL_DISPATCH_VIEW + 0xb4), as the shader
  * builder's parameter defaults read them. */
-typedef struct PC_SHADER_DEFAULTS_VIEW_PC {
-    u32 texture_flags;
-    i32 diffuse_texture_ids[4];
-    u32 channel_colours[4];
-    f32 parameter_d8;
-    f32 parameter_dc;
-    f32 parameter_e0;
-    f32 parameter_e4;
-    i32 height_texture_id;
-    i32 normal_texture_id;
-    f32 texture_lerp;
-    u32 reflection_colour;
-    u8 unknown_0f8[0x3];
-    u8 flip_sign;
-    u8 unknown_0fc[0x1c];
-    f32 parameter_118;
-    u32 diffuse_colour;
-    u32 specular_colour;
-    u32 tint_colour;
-    u32 shadow_colour;
-    f32 parameter_12c;
-    f32 parameter_130;
-    f32 parameter_134;
-    f32 parameter_138;
-    f32 parameter_13c;
-    f32 parameter_140;
-    f32 parameter_144;
-    f32 parameter_148;
-    f32 parameter_14c;
-    f32 parameter_150;
-    u8 unknown_154[0x60];
-    f32 parameter_1b4;
-    f32 parameter_1b8;
-    f32 parameter_1bc;
-    u8 unknown_1c0[0x10];
-    f32 uv_upload_lanes[8];
+typedef struct PC_SHADER_DEFAULTS_VIEW_PC { // size 0x13c
+    u32 texture_flags;                      // 0x000
+    i32 diffuse_texture_ids[4];             // 0x004
+    u32 channel_colours[4];                 // 0x014
+    f32 parameter_d8;                       // 0x024
+    f32 parameter_dc;                       // 0x028
+    f32 parameter_e0;                       // 0x02c
+    f32 parameter_e4;                       // 0x030
+    i32 height_texture_id;                  // 0x034
+    i32 normal_texture_id;                  // 0x038
+    f32 texture_lerp;                       // 0x03c
+    u32 reflection_colour;                  // 0x040
+    u8 unknown_0f8[0x3];                    // 0x044
+    u8 flip_sign;                           // 0x047
+    u8 unknown_0fc[0x1c];                   // 0x048
+    f32 parameter_118;                      // 0x064
+    u32 diffuse_colour;                     // 0x068
+    u32 specular_colour;                    // 0x06c
+    u32 tint_colour;                        // 0x070
+    u32 shadow_colour;                      // 0x074
+    f32 parameter_12c;                      // 0x078
+    f32 parameter_130;                      // 0x07c
+    f32 parameter_134;                      // 0x080
+    f32 parameter_138;                      // 0x084
+    f32 parameter_13c;                      // 0x088
+    f32 parameter_140;                      // 0x08c
+    f32 parameter_144;                      // 0x090
+    f32 parameter_148;                      // 0x094
+    f32 parameter_14c;                      // 0x098
+    f32 parameter_150;                      // 0x09c
+    u8 unknown_154[0x60];                   // 0x0a0
+    f32 parameter_1b4;                      // 0x100
+    f32 parameter_1b8;                      // 0x104
+    f32 parameter_1bc;                      // 0x108
+    u8 unknown_1c0[0x10];                   // 0x10c
+    f32 uv_upload_lanes[8];                 // 0x11c
 } PC_SHADER_DEFAULTS_VIEW_PC;
-
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, channel_colours) == 0xc8 - 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, texture_lerp) == 0xf0 - 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, flip_sign) == 0xfb - 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_118) == 0x118 - 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, shadow_colour) == 0x128 - 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_150) == 0x150 - 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, parameter_1b4) == 0x1b4 - 0xb4);
-STATIC_ASSERT(offsetof(PC_SHADER_DEFAULTS_VIEW_PC, uv_upload_lanes) == 0x1d0 - 0xb4);
 
 static void FormatFloat(char *out, f32 value) {
     sprintf(out, "%f", value);

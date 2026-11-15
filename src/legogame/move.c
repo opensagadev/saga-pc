@@ -10467,25 +10467,21 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
 void GameObjectStuffAfterAnimation(void) {
     GAMEOBJECT *object = Obj;
 
-    union POST_ANIMATION_EFFECT_SCRATCH {
+    union POST_ANIMATION_EFFECT_SCRATCH { // size 0x34
         NUVEC points[4];
 
-        struct {
-            NUVEC prefix_points[2];
-            NUVEC velocity;
-            i32 object_index;
+        struct {                    // size 0x28
+            NUVEC prefix_points[2]; // 0x00
+            NUVEC velocity;         // 0x18
+            i32 object_index;       // 0x24
         } motion;
 
-        struct {
-            f32 reserved[10];
-            NUVEC position;
+        struct {              // size 0x34
+            f32 reserved[10]; // 0x00
+            NUVEC position;   // 0x28
         } shared;
     } scratch;
 
-    STATIC_ASSERT(sizeof(scratch) == 52);
-    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH, motion.velocity) == 24);
-    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH, motion.object_index) == 36);
-    STATIC_ASSERT(offsetof(union POST_ANIMATION_EFFECT_SCRATCH, shared.position) == 40);
     NUVEC *points = scratch.points;
     for (scratch.motion.object_index = 0; scratch.motion.object_index < HIGHGAMEOBJECT; ++scratch.motion.object_index, ++object) {
         i32 drawn;

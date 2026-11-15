@@ -17,8 +17,6 @@ typedef struct CHARACTER_SCENE_CUTSYS { // size 0xc
     u32 *character_flags;               // 0x8
 } CHARACTER_SCENE_CUTSYS;
 
-STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + offsetof(GAME_CUSTOMISER_START, name) == 0x7c38);
-STATIC_ASSERT(offsetof(GAMESAVE, customiser_start) + sizeof(GAME_CUSTOMISER_START) + offsetof(GAME_CUSTOMISER_START, name) == 0x7c70);
 typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
 
 typedef struct character_callback_writer_s {

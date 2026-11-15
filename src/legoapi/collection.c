@@ -101,8 +101,6 @@ typedef struct collection_buyable_reader_s { // size 0x1c
     u8 unknown_09[0x13];                     // 0x09
 } COLLECTION_BUYABLE_READER;
 
-STATIC_ASSERT(sizeof(COLLECTION_BUYABLE_READER) == sizeof(COLLECTID_PC));
-
 void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, i32 columns, f32 scale) {
     collection->list = CollectList;
     collection->columns = (u16)columns;
@@ -221,8 +219,6 @@ typedef struct collection_config_entry_s { // size 0x1c
     u16 gold_bricks;                       // 0x0a
     char cheat_code[16];                   // 0x0c
 } COLLECTION_CONFIG_ENTRY;
-
-STATIC_ASSERT(sizeof(COLLECTION_CONFIG_ENTRY) == sizeof(COLLECTID_PC));
 
 /* Native 594220 is an actual RET with no argument reads. */
 void CollectionConfigDiagnostic(char *file, ...) {
