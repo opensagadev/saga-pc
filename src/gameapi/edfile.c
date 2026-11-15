@@ -3854,8 +3854,10 @@ void eduicbMenuOpenAllexpanders(eduimenu_s *menu) {
 
 i32 EduiRenderWidth = 0;
 i32 EduiSelectionMaterial = 0;
+struct eduimenu_s *active_menu = 0;
 u32 EduiItemOutlineColour = 0x80ffffff;
 u32 EduiMarkedItemOutlineColour = 0x0000ff00;
+f32 edui_cursor_x = 50.0f;
 
 static void EduiDrawDisabledItem(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
 
@@ -4072,6 +4074,7 @@ extern void NuStrToLower(char *text);
 char FileSelFilterBlocks[8][96] = {0};
 i32 ed_init = 0;
 char FileSelFilterOutBlocks[8][12] = {0};
+char *textrow[4] = {0};
 i32 FileSelFilterBlockCount = 0;
 i32 FileSelFilterOutBlockCount = 0;
 char FileSelVolumeNames[1024] = {0};

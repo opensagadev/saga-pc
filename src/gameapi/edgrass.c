@@ -117,6 +117,9 @@ void edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual_clumps,
     NuFadeObjSetup(buffer, end, 0x3000, clumps);
 }
 
+i32 edgra_nearest_instance = 0;
+i32 edgra_page_used[8] = {0};
+NUMTX *edgra_page_matrix_stack[8] = {0};
 i32 edgra_page_vectors_valid[8] = {0};
 
 void edgraStartPage(i8 page) {
@@ -920,6 +923,11 @@ void edgraInstancePlace(i32 index, NUVEC *position) {
     edgraInitAllClumps();
 }
 
+NUGSCN *edgra_page_scene[8] = {0};
+struct eduimenu_s *edgra_options_menu = 0;
+i32 edgra_filter = 0;
+i32 edgra_units_used = 0;
+i32 edgra_clumps_used = 0;
 i32 edgra_pageid = 0;
 i32 edgra_rotz = 0;
 i32 edgra_roty = 0;
@@ -1095,6 +1103,7 @@ void edgraCreateOptionsMenu(void) {
 }
 
 i32 edgra_cam_ay = 0;
+f32 edgra_size = 0;
 
 void edgraDoInput(FRAME_PAD *pad) {
     if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {

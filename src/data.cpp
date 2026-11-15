@@ -201,22 +201,6 @@ extern "C" {
 extern "C" {
     extern char dat_007516c0[];
     char *apiGameSubTitle = dat_007516c0;
-    char *apitxt_YES = "Yes";
-    char *apitxt_NO = "No";
-    char *apitxt_GAMESAVING = "Saving game...";
-    char *apitxt_GAMELOADING = "Loading game...";
-    char *apitxt_FAILEDTOLOAD = "Failed to Load";
-    char *apitxt_FAILEDTOSAVE = "Failed to Save";
-    char *apitxt_FAILEDTOOVERWRITE = "Failed to Overwrite";
-    char *apitxt_NODATAAVAILABLE = "No %s data present";
-    char *apitxt_AUTOSAVE_ENABLED = "Autosave will now use Game %i";
-    char *apitxt_FORMATTINGCOMPLETE = "Formatting complete";
-    char *apitxt_DELETECOMPLETE = "Delete complete";
-    char *apitxt_NOTENOUGHSPACE = "Insufficient drive space to save games.";
-}
-
-extern "C" {
-    char *AiLevelPathName = dat_007516c0;
 }
 
 extern "C" {
@@ -3370,7 +3354,6 @@ i32 ChallengeMode = 0;
 i32 fade_draw_suppressed = 0;
 i32 PLAYERCOUNT = 0;
 i32 Area = -1;
-i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
 i32 NewMode = 0;
 i32 reset_load = 1;
@@ -3395,7 +3378,6 @@ extern "C" {
     extern const f64 VehicleTurnPhaseOffset = 16384.0;
     extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
     extern const f64 BoltTargetRandomDenominator = 65535.0;
-    extern const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
     u16 GameObjectRotationAtstId = 0xffff;
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
@@ -3775,15 +3757,6 @@ extern "C" {
     i16 PlayerList[8] = {0};
     i32 netclient = 0;
     extern const char GizAIMessage_NameFormat[3] = "%s";
-    LANGUAGEDATA Game_LanguageList[7] = {
-        {1,  apitxt_ENGLISH},
-        {2,  apitxt_FRENCH },
-        {4,  apitxt_GERMAN },
-        {5,  apitxt_ITALIAN},
-        {3,  apitxt_SPANISH},
-        {8,  apitxt_DANISH },
-        {-1, NULL          }
-    };
     LANGUAGEDATA Text_LanguageList_Default[7] = {
         {1,  apitxt_ENGLISH},
         {2,  apitxt_FRENCH },
@@ -3836,13 +3809,6 @@ extern "C" {
 
     extern const f32 LevelConfigFarDistance = 2000000.0f;
 
-    i32 edanim_page_on[8] = {0};
-    i32 edanim_page_used[8] = {0};
-    NUGSCN *edanim_page_scene[8] = {0};
-    i32 edanim_next_param = 0;
-    i32 edanim_params_used = 0;
-    EDANIM_PARAM AnimParams[64] = {0};
-
     void MenuEnterNoMemoryCard(MENU *);
     void MenuDrawNoData(MENU *);
     void MenuDrawLoading(MENU *);
@@ -3858,41 +3824,6 @@ extern "C" {
     void fun_00509490(MENU *);
     void fun_005094a0(MENU *);
 
-    MENUFNINFO MenuInfo[100] = {
-        {1000, MenuEnterSave,            MenuDrawSave,            MenuUpdateSave,            MenuExitSave,         -1, -1, 0, 1, 1, 0},
-        {1001, NULL,                     MenuDrawDoNotRemoveCard, MenuUpdateDoNotRemoveCard, NULL,                 -1, -1, 0, 0, 0, 0},
-        {1002, MenuEnterInsertCard,      MenuDrawInsertCard,      MenuUpdateInsertCard,      NULL,                 -1, -1, 0, 1, 1, 0},
-        {1004, MenuEnterNoMemoryCard,    MenuDrawNoMemoryCard,    MenuUpdateNoMemoryCard,    NULL,                 -1, -1, 0, 1, 1, 0},
-        {1003, NULL,                     MenuDrawNotEnoughSpace,  MenuUpdateNotEnoughSpace,  NULL,                 -1, -1, 0, 1, 1, 0},
-        {1005, NULL,                     MenuDrawNoData,          MenuUpdateNoData,          NULL,                 -1, -1, 0, 1, 1, 0},
-        {1006, NULL,                     MenuDrawFormatConfirm,   MenuUpdateFormatConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
-        {1007, NULL,                     MenuDrawFormatting,      MenuUpdateFormatting,      NULL,                 -1, -1, 0, 0, 0, 0},
-        {1008, MenuEnterSaveConfirm,     MenuDrawSaveConfirm,     MenuUpdateSaveConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
-        {1009, NULL,                     MenuDrawSaving,          MenuUpdateSaving,          NULL,                 -1, -1, 0, 0, 0, 0},
-        {1010, MenuEnterAutoSaveWarning, MenuDrawAutoSaveWarning, MenuUpdateAutoSaveWarning, NULL,                 -1, -1, 0, 1, 0, 0},
-        {1011, MenuEnterAutoSaveCancel,  MenuDrawAutoSaveCancel,  MenuUpdateAutoSaveCancel,  NULL,                 -1, -1, 0, 1, 1, 0},
-        {1012, MenuEnterLoad,            MenuDrawLoad,            MenuUpdateLoad,            MenuExitLoad,         -1, -1, 0, 1, 1, 0},
-        {1013, NULL,                     MenuDrawLoadConfirm,     MenuUpdateLoadConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
-        {1014, NULL,                     MenuDrawLoading,         MenuUpdateLoading,         NULL,                 -1, -1, 0, 0, 0, 0},
-        {1015, NULL,                     MenuDrawDeleting,        MenuUpdateDeleting,        NULL,                 -1, -1, 0, 0, 0, 0},
-        {1016, NULL,                     MenuDrawSaveCancel,      MenuUpdateSaveCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
-        {1017, NULL,                     MenuDrawLoadCancel,      MenuUpdateLoadCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
-        {1018, NULL,                     MenuDrawFormatCancel,    MenuUpdateFormatCancel,    NULL,                 -1, -1, 0, 1, 1, 0},
-        {1019, MenuEnterCardWarning,     MenuDrawCardWarning,     MenuUpdateCardWarning,     MenuExitCardWarning,  -1, -1, 0, 1, 0, 0},
-        {1020, NULL,                     MenuDrawFileCorrupt,     MenuUpdateFileCorrupt,     NULL,                 -1, -1, 0, 1, 1, 0},
-        {1021, MenuEnterHeaderSave,      NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
-        {1022, MenuEnterStartNewGame,    NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
-        {1023, NULL,                     MenuDrawDeleteConfirm,   MenuUpdateDeleteConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
-        {1024, fun_00509470,             fun_00509480,            fun_00509490,              fun_005094a0,         -1, -1, 0, 0, 0, 0},
-        {1025, MenuEnterVideo,           MenuDrawVideo,           MenuUpdateVideo,           MenuExitVideo,        -1, -1, 0, 0, 0, 0},
-        {1026, MenuEnterEffects,         MenuDrawEffects,         MenuUpdateEffects,         MenuExitEffects,      -1, -1, 0, 0, 0, 0},
-        {1027, MenuEnterVideoConfirm,    MenuDrawVideoConfirm,    MenuUpdateVideoConfirm,    MenuExitVideoConfirm, -1, -1, 0, 0, 0, 0},
-        {1028, MenuEnterHiresNotice,     MenuDrawHiresNotice,     MenuUpdateHiresNotice,     MenuExitHiresNotice,  -1, -1, 0, 0, 0, 0},
-        {1029, MenuEnterQuit,            MenuDrawQuit,            MenuUpdateQuit,            MenuExitQuit,         -1, -1, 0, 0, 0, 0},
-        {1030, NULL,                     NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
-    };
-    i32 MenuSFX = -1;
-    extern const f64 nu_wind_phase_scale = 1.0 / 256.0;
     extern const f32 PCKeyboardDefaultValue = 0.1f;
     f32 dme_sy = 1.0f;
     AREA_DATA *GUNSHIP_ADATA = 0;
@@ -3913,31 +3844,6 @@ extern "C" {
     void MenuUpdateBonusWin(MENU *);
     void MenuDrawBonusComplete(MENU *);
     void MenuUpdateBonusComplete(MENU *);
-    MENUFNINFO GameMenuInfo[23] = {
-        {0,  MenuEnterTitles,         MenuDrawTitles,         MenuUpdateTitles,         NULL,                   -1, -1, 0, 0, 0, 0},
-        {1,  MenuEnterNewGame,        MenuDrawNewGame,        MenuUpdateNewGame,        NULL,                   -1, -1, 0, 1, 0, 0},
-        {2,  NULL,                    MenuDrawPauseMain,      MenuUpdatePauseMain,      NULL,                   -1, -1, 0, 0, 0, 0},
-        {3,  NULL,                    MenuDrawPauseRestart,   MenuUpdatePauseRestart,   NULL,                   -1, -1, 0, 0, 0, 0},
-        {4,  MenuEnterOptions,        MenuDrawOptions,        MenuUpdateOptions,        MenuExitOptions,        0,  0,  0, 1, 1, 0},
-        {5,  NULL,                    MenuDrawExtras,         MenuUpdateExtras,         NULL,                   0,  0,  0, 0, 0, 0},
-        {6,  NULL,                    MenuDrawPauseExit,      MenuUpdatePauseExit,      NULL,                   -1, -1, 0, 0, 0, 0},
-        {7,  NULL,                    MenuDrawSelectLanguage, MenuUpdateSelectLanguage, NULL,                   0,  0,  0, 0, 0, 0},
-        {8,  MenuInitMissions,        MenuDrawMissions,       MenuUpdateMissions,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {9,  NULL,                    MenuDrawEndMission,     MenuUpdateEndMission,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {10, NULL,                    MenuDrawEndChallenge,   MenuUpdateEndChallenge,   NULL,                   -1, -1, 0, 0, 0, 0},
-        {11, NULL,                    Arcade_DrawEndMenu,     Arcade_UpdateEndMenu,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {12, NULL,                    MenuDrawCustomiser,     MenuUpdateCustomiser,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {13, NULL,                    MenuDrawShop,           MenuUpdateShop,           NULL,                   -1, -1, 0, 0, 0, 0},
-        {14, NULL,                    MenuDrawMiniKit,        MenuUpdateMiniKit,        NULL,                   -1, -1, 0, 0, 0, 0},
-        {15, MenuInitSelectMode,      MenuDrawSelectMode,     MenuUpdateSelectMode,     NULL,                   -1, -1, 0, 0, 0, 0},
-        {16, MenuInitBonusMode,       MenuDrawBonusMode,      MenuUpdateBonusMode,      NULL,                   -1, -1, 0, 0, 0, 0},
-        {17, MenuInitFreePlay,        MenuDrawFreePlay,       MenuUpdateFreePlay,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {18, NULL,                    NULL,                   Credits_UpdateMenu,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {19, NULL,                    MenuDrawBonusWin,       MenuUpdateBonusWin,       NULL,                   -1, -1, 0, 0, 0, 0},
-        {20, NULL,                    MenuDrawBonusComplete,  MenuUpdateBonusComplete,  NULL,                   -1, -1, 0, 0, 0, 0},
-        {21, MenuEnterControlSetup,   MenuDrawControlSetup,   MenuUpdateControlSetup,   NULL,                   -1, -1, 0, 0, 0, 0},
-        {22, MenuEnterSelectControls, MenuDrawControlSetup,   MenuUpdateSelectControls, MenuExitSelectControls, 0,  0,  0, 0, 0, 0},
-    };
 
     i32 PS2_VCNTR_X = 320;
     i32 PS2_VCNTR_Y = 240;
@@ -4014,11 +3920,6 @@ extern "C" {
 extern "C" {
     i16 id_GEONOSIAN = -1;
     i16 id_CHEWBACCA = -1;
-}
-
-extern "C" {
-
-    i32 part_scene_pageid[32] = {0};
 }
 
 extern "C" {
@@ -4165,21 +4066,14 @@ extern "C" {
 }
 
 extern "C" {
-    i32 edgra_page_used[8] = {0};
-    NUGSCN *edgra_page_scene[8] = {0};
-    NUMTX *edgra_page_matrix_stack[8] = {0};
-    i32 edgra_clumps_used = 0;
     void edgraInit(void);
     void edgraClose(void);
     void edgraEnter(void);
     i32 edgraProc(f32 delta_time, FRAME_PAD *pad);
     void edgraRender(void);
-    ed_module_s edgradesc = {NULL, NULL, "Grass Editor", edgraInit,  edgraClose, edgraEnter,  NULL,
-                             NULL, NULL, NULL,           0x73617267, edgraProc,  edgraRender, NULL};
 }
 
 extern "C" {
-    i32 edgra_units_used = 0;
     i32 freechunkcontrolsptr = 0;
 }
 
@@ -4188,18 +4082,11 @@ extern "C" {
 }
 
 extern "C" {
-    f32 debris_thinning_level = 1.0f;
     u8 PCFrameLoadingYieldEnabledPC = 0;
 }
 
 extern "C" {
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
-}
-
-extern "C" {
-    i32 edbits_anim_page = 0;
-    i32 edanim_particle_mode = 0;
-    i32 edanim_nearest_param_id = 0;
 }
 
 extern "C" {
@@ -4269,9 +4156,6 @@ extern "C" {
     void edanimEnter(void);
     i32 edanimProc(f32 delta_time, FRAME_PAD *pad);
     void edanimRender(void);
-    ed_module_s edanimdesc = {NULL, NULL, "Anim Editor", edanimInit, edanimClose, edanimEnter,  NULL,
-                              NULL, NULL, NULL,          0x6d696e61, edanimProc,  edanimRender, NULL};
-    i32 edbits_editor_state = 0;
 }
 
 extern "C" {
@@ -4811,12 +4695,6 @@ extern "C" {
 
 extern "C" {
     i16 DefaultAnimationJabbaId = -1;
-    u8 MENUENTRYG = 127;
-    u8 MENUENTRYB = 255;
-    u8 MENUFLASH0G = 255;
-    u8 MENUFLASH0B = 255;
-    u8 MENUFLASH1R = 127;
-    u8 MENUFLASH1B = 255;
     f32 dme_sx = 1.0f;
     u8 dme_r = 0;
     u8 dme_g = 0;
@@ -4891,11 +4769,6 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    char SaveFolderPathPc[256] = {0};
-    i32 saveload_slotcode[6] = {0};
-}
-
-extern "C" {
     char SaveProductCode[12] = {0};
 }
 
@@ -4960,11 +4833,6 @@ extern "C" {
     void edppApply(void);
     i32 edppProc(f32 delta_time, FRAME_PAD *pad);
     void edppRender(void);
-    ed_module_s edptldesc = {
-        NULL,       NULL, "Particle Positioner", edppInit, edppClose, edppEnter, NULL, edppApply, NULL, NULL, 0x706c7470, edppProc,
-        edppRender, NULL};
-
-    u8 edpp_effect_list = 0;
 
 }
 
@@ -4987,33 +4855,9 @@ extern "C" {}
 
 extern "C" {}
 
-extern "C" {
-
-    struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
-
-    struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
-}
-
 extern "C" {}
 
 extern "C" {}
-
-extern "C" {
-
-    char edbits_level_save_directory[256] = {0};
-
-    char edbits_level_save_name[256] = {0};
-
-    char edbits_level_save_extension[256] = {0};
-}
-
-extern "C" {
-
-    struct eduimenu_s *edgra_options_menu = 0;
-
-    struct eduimenu_s *edgra_active_menu = 0;
-
-}
 
 extern "C" {
 
@@ -5022,14 +4866,6 @@ extern "C" {
     void edbriEnter(void);
     i32 edbriProc(f32 delta_time, FRAME_PAD *pad);
     void edbriRender(void);
-    ed_module_s edbridesc = {NULL, NULL, "Bridge Editor", edbriInit, edbriClose,  edbriEnter, NULL, NULL,
-                             NULL, NULL, 0x64697262,      edbriProc, edbriRender, NULL};
-}
-
-extern "C" {
-
-    i32 edgra_filter = 0;
-
 }
 
 extern "C" {
@@ -5039,29 +4875,6 @@ extern "C" {
 }
 
 extern "C" {}
-
-extern "C" {
-    struct eduimenu_s *active_menu = 0;
-
-    f32 edui_cursor_x = 50.0f;
-
-    char *textrow[4] = {0};
-
-}
-
-extern "C" {
-    i32 edgra_nearest_instance = 0;
-}
-
-extern "C" {
-
-    i32 edanim_nearest_sound = 0;
-}
-
-extern "C" {
-
-    i32 edanim_nearest_particle = 0;
-}
 
 extern "C" {
     edcam_s edcam_default = {
@@ -5095,10 +4908,6 @@ extern "C" {
     edcam_s *gp_cam = &edcam_default;
 }
 
-extern "C" {
-    f32 edgra_size = 0;
-}
-
 extern "C" {}
 
 extern "C" {
@@ -5109,9 +4918,9 @@ extern "C" {
 
     // Frontend strings: language-selected index/string tables.
 
-    extern const char dat_0075f2c0[3] = "No";
-    extern const char dat_0075f2c4[4] = "Yes";
-    extern const char dat_0076b274[4] = "Off";
+    extern const char dat_0075f2c0[3];
+    extern const char dat_0075f2c4[4];
+    extern const char dat_0076b274[4];
     MENU_PC_STRING_ENTRY dat_00827800[40] = {
         {0,  "Quit"                                                       },
         {1,  "Quit to Windows"                                            },
@@ -5968,18 +5777,7 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32] = {};
-}
-
-extern "C" {
     void xEndState(NUFPAR *parser);
-    NUFPCOMJMP AIScriptStateCommands[5] = {
-        {"CONDITIONS",      xConditions},
-        {"ACTIONS",         xActions   },
-        {"REFERENCESCRIPT", xRefScript },
-        {"}",               xEndState  },
-        {NULL,              NULL       }
-    };
 }
 
 extern "C" {

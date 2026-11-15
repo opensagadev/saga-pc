@@ -109,6 +109,9 @@
 #include "nu2api/nuwin32/Stubs.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include <string.h>
+#include "legoapi/menus/screens/customise.h"
+#include "legoapi/menus/screens/missions.h"
+#include "legoapi/world/levels/hub.h"
 
 extern "C" void NuMainTrailerLeaf(void);
 
@@ -212,6 +215,54 @@ extern "C" {
     DAT_HANDLES NuDatHandles = {0};
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&dat_008810c0, NULL};
     i32 PlayTrailer = -1;
+    void Arcade_DrawEndMenu(MENU *);
+    void Arcade_UpdateEndMenu(MENU *);
+    void Credits_UpdateMenu(MENU *);
+    void MenuDrawBonusComplete(MENU *);
+    void MenuDrawBonusWin(MENU *);
+    void MenuDrawEndChallenge(MENU *);
+    void MenuDrawEndMission(MENU *);
+    void MenuDrawMiniKit(MENU *);
+    void MenuUpdateBonusComplete(MENU *);
+    void MenuUpdateBonusWin(MENU *);
+    void MenuUpdateEndChallenge(MENU *);
+    void MenuUpdateEndMission(MENU *);
+    void MenuUpdateMiniKit(MENU *);
+    void MenuUpdatePauseRestart(MENU *);
+    MENUFNINFO GameMenuInfo[23] = {
+        {0,  MenuEnterTitles,         MenuDrawTitles,         MenuUpdateTitles,         NULL,                   -1, -1, 0, 0, 0, 0},
+        {1,  MenuEnterNewGame,        MenuDrawNewGame,        MenuUpdateNewGame,        NULL,                   -1, -1, 0, 1, 0, 0},
+        {2,  NULL,                    MenuDrawPauseMain,      MenuUpdatePauseMain,      NULL,                   -1, -1, 0, 0, 0, 0},
+        {3,  NULL,                    MenuDrawPauseRestart,   MenuUpdatePauseRestart,   NULL,                   -1, -1, 0, 0, 0, 0},
+        {4,  MenuEnterOptions,        MenuDrawOptions,        MenuUpdateOptions,        MenuExitOptions,        0,  0,  0, 1, 1, 0},
+        {5,  NULL,                    MenuDrawExtras,         MenuUpdateExtras,         NULL,                   0,  0,  0, 0, 0, 0},
+        {6,  NULL,                    MenuDrawPauseExit,      MenuUpdatePauseExit,      NULL,                   -1, -1, 0, 0, 0, 0},
+        {7,  NULL,                    MenuDrawSelectLanguage, MenuUpdateSelectLanguage, NULL,                   0,  0,  0, 0, 0, 0},
+        {8,  MenuInitMissions,        MenuDrawMissions,       MenuUpdateMissions,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {9,  NULL,                    MenuDrawEndMission,     MenuUpdateEndMission,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {10, NULL,                    MenuDrawEndChallenge,   MenuUpdateEndChallenge,   NULL,                   -1, -1, 0, 0, 0, 0},
+        {11, NULL,                    Arcade_DrawEndMenu,     Arcade_UpdateEndMenu,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {12, NULL,                    MenuDrawCustomiser,     MenuUpdateCustomiser,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {13, NULL,                    MenuDrawShop,           MenuUpdateShop,           NULL,                   -1, -1, 0, 0, 0, 0},
+        {14, NULL,                    MenuDrawMiniKit,        MenuUpdateMiniKit,        NULL,                   -1, -1, 0, 0, 0, 0},
+        {15, MenuInitSelectMode,      MenuDrawSelectMode,     MenuUpdateSelectMode,     NULL,                   -1, -1, 0, 0, 0, 0},
+        {16, MenuInitBonusMode,       MenuDrawBonusMode,      MenuUpdateBonusMode,      NULL,                   -1, -1, 0, 0, 0, 0},
+        {17, MenuInitFreePlay,        MenuDrawFreePlay,       MenuUpdateFreePlay,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {18, NULL,                    NULL,                   Credits_UpdateMenu,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {19, NULL,                    MenuDrawBonusWin,       MenuUpdateBonusWin,       NULL,                   -1, -1, 0, 0, 0, 0},
+        {20, NULL,                    MenuDrawBonusComplete,  MenuUpdateBonusComplete,  NULL,                   -1, -1, 0, 0, 0, 0},
+        {21, MenuEnterControlSetup,   MenuDrawControlSetup,   MenuUpdateControlSetup,   NULL,                   -1, -1, 0, 0, 0, 0},
+        {22, MenuEnterSelectControls, MenuDrawControlSetup,   MenuUpdateSelectControls, MenuExitSelectControls, 0,  0,  0, 0, 0, 0},
+    };
+    LANGUAGEDATA Game_LanguageList[7] = {
+        {1,  apitxt_ENGLISH},
+        {2,  apitxt_FRENCH },
+        {4,  apitxt_GERMAN },
+        {5,  apitxt_ITALIAN},
+        {3,  apitxt_SPANISH},
+        {8,  apitxt_DANISH },
+        {-1, NULL          }
+    };
 }
 
 extern "C" {
@@ -674,6 +725,10 @@ extern "C" {
 }
 
 i32 Game_Exit(i32);
+
+extern "C" {
+    i32 ResetOldFStop = 0;
+}
 
 extern "C" int NuMain(int argc, char **argv) {
     WORLDINFO *saved_world;

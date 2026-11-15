@@ -85,6 +85,7 @@ char edbits_general_save_extension[256] = {0};
 char edbits_datapath[256] = {0};
 struct NUGSCN_s *edbits_things_scene = 0;
 void *edbits_base_terrain = 0;
+i32 edbits_editor_state = 0;
 i32 edbits_cubecount = 0;
 
 void edbitsRegisterThingsScene(NUGSCN *scene) {

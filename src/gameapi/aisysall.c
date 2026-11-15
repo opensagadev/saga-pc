@@ -95,7 +95,11 @@ extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 
 extern i32 ai_onlyusepackfile;
 
+extern char dat_007516c0[1];
+const char dat_0075f2c0[3] = "No";
+const char dat_0075f2c4[4] = "Yes";
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
+const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
 
 /* Path-build view of the runtime path system (AIPATHSYS is opaque here). */
 typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
@@ -437,6 +441,7 @@ typedef struct AI_EDITOR_SPECIAL_TERRAIN { // size 0x6c
 
 i16 disable_cylinder_check = 0;
 i32 AIPathConnectionTypeCount = 0;
+AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32] = {0};
 f32 AiEditorUpperHeightOverride = 0;
 f32 AiEditorLowerHeightOverride = 0;
 
@@ -11819,6 +11824,14 @@ void xRefScript(NUFPAR *parser) {
     }
 }
 
+NUFPCOMJMP AIScriptStateCommands[5] = {
+    {"CONDITIONS",      xConditions},
+    {"ACTIONS",         xActions   },
+    {"REFERENCESCRIPT", xRefScript },
+    {"}",               xEndState  },
+    {NULL,              NULL       }
+};
+
 static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
     AISCRIPT *script = NULL;
     AISTATE *state;
@@ -18425,6 +18438,7 @@ f32 default_xspacing = 0.4f;
 f32 default_zspacing = 0.4f;
 i32 ai_usepackfile = 1;
 f32 ai_moveradius = 0.1f;
+char *AiLevelPathName = dat_007516c0;
 f32 antinode_time = 1.0f;
 f32 antinode_reverse_time = 1.0f;
 

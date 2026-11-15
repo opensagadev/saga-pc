@@ -42,6 +42,37 @@ objects define that `config/symbols.csv` does not map (never compared).
 Rule: a data symbol is compared by its own bytes at its mapped size; a zero gap between two symbols is
 part of neither and is not scored (not reproduced and not in the total), only reported as gap bytes.
 
+## Where a global is defined
+
+Each global is defined in the unit whose code owns it, the way the original
+sources were split. `src/data.cpp` held most of them while placement had to be
+pinned; with the honest-size rule (above) placement no longer scores, so they
+move out by this rule, applied by script from the build objects' relocations:
+
+1. Used by the code of exactly one unit: defined in that unit.
+2. Used by several units of one module (`src/<module>/`): defined in the unit
+   that references it most (ties: the lower layer, then the name); the others
+   see the module header's declaration.
+3. Used by several modules: a pooled literal (a `const` float, double or
+   string that VC8 would emit as one `__real@`/`??_C@` constant shared by
+   every module) goes to `src/shared_constants.c`; any other object goes to
+   the lowest layer that uses it (nu2api, gamelib, gameframework, gameapi,
+   legoapi, legogame, editor, then the top level), in its most-referencing unit.
+4. Used only by other data (a string or a sub-table that only a table names):
+   defined with that table. When the tables that name it go to different
+   units, rule 2 or 3 picks among those units. A `static` string stays
+   `static`; no static is shared by tables of two units.
+5. Used by nothing: defined in the unit its retail address lies among (the
+   original object order), or by the subsystem its name gives.
+
+A table goes after the definitions in its unit that its initialiser names, and
+the unit includes the module headers those names come from. A definition that
+other units' tables still name leaves an `extern` declaration with them (until
+the declaration pass moves it into the owner's module header). Initialisers keep
+their values; masks, colours and values with the top bit set are written in
+hex, and a matrix, vec4, plane or SSE operand that retail keeps 16-aligned
+declares `__declspec(align(16))`.
+
 ### What `matching.json` covers
 
 `tools/match.py` compares each mapped data symbol with a known size as one

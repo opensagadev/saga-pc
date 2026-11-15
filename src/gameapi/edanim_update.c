@@ -38,6 +38,8 @@ static f32 EdAnimFabs(f32 value) {
 
 i32 EdAnimLocalFrameCount = 0;
 
+i32 edanim_page_on[8] = {0};
+
 void edanimUpdateObjects(f32 elapsed) {
     NUINSTANIM *animation;
     nuhspecial_s special;

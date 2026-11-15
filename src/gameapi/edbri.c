@@ -23,6 +23,7 @@
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/nugscn_gen.h"
 #include "nu2api/numath/nuvec.h"
+#include "gameapi/ai/aisys/aisys.h"
 
 extern struct eduimenu_s *edbri_plankinstance_menu;
 extern struct eduimenu_s *edbri_postinstance_menu;
@@ -350,6 +351,10 @@ void edbriInit(void) {
     edbri_plank_instance_type = -1;
     edbri_post_instance_type = -1;
 }
+
+i32 edbriProc(f32 delta_time, FRAME_PAD *pad);
+ed_module_s edbridesc = {NULL, NULL, "Bridge Editor", edbriInit, edbriClose,  edbriEnter, NULL, NULL,
+                         NULL, NULL, 0x64697262,      edbriProc, edbriRender, NULL};
 
 void edbriStartPage(i32 page_number) {
     i8 page = (i8)page_number;

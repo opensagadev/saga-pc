@@ -1182,6 +1182,8 @@ void edpartCancelSoundControlMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     if (edui_last_item->highlighted)                                                                                                       \
     edpart_soundcontrol_menu->selected = edui_last_item
 
+const char dat_0076b274[4] = "Off";
+
 void edpartSoundControlMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_soundcontrol_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelSoundControlMenu, "Sound Control");
@@ -1508,9 +1510,12 @@ i32 edpartSaveEffects(char *filename, u8 page) {
 
 i32 EdFileBackup(char *source, char *destination);
 struct eduimenu_s *edpart_varstart_menu = 0;
+struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
+struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
 NUVEC edpart_entry_position = {0};
 i32 edpart_curr = 0;
 struct eduimenu_s *edpart_emittime_menu = 0;
+i32 part_scene_pageid[32] = {0};
 struct eduimenu_s *edpart_cutoff_menu = 0;
 eduimenu_s *edpart_message_menu = NULL;
 NUVEC PartEditorCameraPos = {0};
@@ -1620,6 +1625,10 @@ void edpartFileSaveEffectsGeneral(eduimenu_s *parent, eduiitem_s *unused1, u32 u
         edpartSaveMessage(parent, "Save Failed", 0);
     }
 }
+
+char edbits_level_save_directory[256] = {0};
+char edbits_level_save_name[256] = {0};
+char edbits_level_save_extension[256] = {0};
 
 void edpartFileSaveEffectsLevel(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     char directory[256];

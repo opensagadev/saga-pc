@@ -20,6 +20,7 @@
 #include "nu2api/nugscn_gen.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
+#include "gameapi/ai/aisys/aisys.h"
 
 extern struct eduimenu_s *edgra_sscale_menu;
 void EdFileWrite(void *data, i32 len);
@@ -153,6 +154,10 @@ void edgracbCancelGlobalsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
 NUVEC edgra_cam_pos = {0};
 struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
+void edgraClose(void);
+void edgraEnter(void);
+i32 edgraProc(f32 delta_time, FRAME_PAD *pad);
+struct eduimenu_s *edgra_active_menu = 0;
 
 void edgraDrawCursor(void) {
     NURND_VERTEX3D line[2];
@@ -437,6 +442,9 @@ void edgraInit(void) {
     edgra_free_vecbuffer = edgra_vecbuffer;
     edgra_instance_type = -1;
 }
+
+ed_module_s edgradesc = {NULL, NULL, "Grass Editor", edgraInit,  edgraClose, edgraEnter,  NULL,
+                         NULL, NULL, NULL,           0x73617267, edgraProc,  edgraRender, NULL};
 
 void edgraSetThinning(i32 clumps, i32 elements) {
     edgra_clumpthin = clumps;

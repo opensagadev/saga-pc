@@ -220,3 +220,7 @@ config/oddscan-budget.json long-file 12 a legogame unit passes the long-file lim
 config/castscan-budget.json size-literal 4 new class (tools/sizeofnames.py): the size literals whose sizeof would spell a placeholder, PC-suffixed or view name keep their literal until the name is fixed
 config/castscan-budget.json declaration-type 1550 scanner change: names in a sizeof operand are no longer uses of their declaration, so two declarations are now cast at most of their (evaluated) uses; same casts, same tree
 config/declscan-budget.json C 528 a unit's extern of a global moved into the same unit is now a forward declaration of it (gameapi data move, same construct)
+config/declscan-budget.json A 23 gameapi data move: two globals data.cpp defined now sit in the unit that also kept its own extern of them (same construct, new place)
+config/declscan-budget.json C 533 gameapi data move: a unit's extern of a global that moved into the same unit is now a forward declaration of it (same construct, new place)
+config/declscan-budget.json D 1360 gameapi data move: the menu and parser tables carry the prototypes and string externs data.cpp declared for them into their units (same declarations, new place; the declaration pass moves them into headers)
+config/oddscan-budget.json address-name 16289 gameapi data move: the carried prototypes of the unported menu callbacks (fun_00509470 ...) and string externs name the same addresses a second time, in the units their tables moved to

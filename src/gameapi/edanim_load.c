@@ -23,6 +23,7 @@
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/nugscn_gen.h"
 #include "nu2api/numath/nuvec.h"
+#include "gameapi/ai/aisys/aisys.h"
 
 /* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
 #define EDANIM_SOUND_NAME(type) ((char *)0)
@@ -444,6 +445,10 @@ void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 }
 
 i32 edSfxAllCount = 0;
+void edanimClose(void);
+void edanimEnter(void);
+i32 edanim_next_param = 0;
+NUGSCN *edanim_page_scene[8] = {0};
 
 static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
@@ -586,10 +591,15 @@ void edanimRender() {
 
 i32 edanimParamCreate(i32 instance);
 
+i32 edanim_particle_mode = 0;
+i32 edanim_page_used[8] = {0};
+i32 edanim_nearest_param_id = 0;
+i32 edanim_params_used = 0;
 i32 edanim_emitrotz = 0;
 i32 edanim_emitroty = 0;
 NUGSCN *edbits_base_scene = 0;
 char edbits_level_filename[256] = {0};
+i32 edbits_anim_page = 0;
 
 void edanimRenderParticleEmitters(i32 parameter_index) {
     nuhspecial_s special;
@@ -856,9 +866,12 @@ void edanimDoInput(FRAME_PAD *pad) {
     }
 }
 
+i32 edanim_nearest_sound = 0;
 i8 edbits_what_game = 0;
 struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
+i32 edanim_nearest_particle = 0;
 NUVEC edanim_cam_pos = {0};
+EDANIM_PARAM AnimParams[64] = {0};
 
 void edanimDrawCursor(void) {
     NURND_VERTEX3D line[2];
@@ -1056,3 +1069,6 @@ i32 edanimProc(f32 delta_time, FRAME_PAD *pad) {
     }
     return 0;
 }
+
+ed_module_s edanimdesc = {NULL, NULL, "Anim Editor", edanimInit, edanimClose, edanimEnter,  NULL,
+                          NULL, NULL, NULL,          0x6d696e61, edanimProc,  edanimRender, NULL};

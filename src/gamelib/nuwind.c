@@ -6,6 +6,8 @@
 
 extern i32 dat_009739d4;
 
+const f64 nu_wind_phase_scale = 1.0 / 256.0;
+
 void NuWindAnimate(NUWIND *wind, f32 frame_time) {
     if (wind != NULL) {
         wind->phase += nu_wind_phase_scale * wind->phase_speed_scale * frame_time;

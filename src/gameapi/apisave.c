@@ -15,9 +15,36 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nucore/nutime.h"
 #include <stdio.h>
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/players.h"
+#include "legogame/game.h"
+#include "nu2api/nuwin32/pcapi.h"
 
 extern i32 saveload_slotused[];
 
+void fun_00509470(MENU *);
+void fun_00509480(MENU *);
+void fun_00509490(MENU *);
+void fun_005094a0(MENU *);
+i32 MenuSFX = -1;
+u8 MENUENTRYG = 127;
+u8 MENUENTRYB = 255;
+u8 MENUFLASH0G = 255;
+u8 MENUFLASH0B = 255;
+u8 MENUFLASH1R = 127;
+u8 MENUFLASH1B = 255;
+char *apitxt_YES = "Yes";
+char *apitxt_NO = "No";
+char *apitxt_GAMESAVING = "Saving game...";
+char *apitxt_GAMELOADING = "Loading game...";
+char *apitxt_FAILEDTOLOAD = "Failed to Load";
+char *apitxt_FAILEDTOSAVE = "Failed to Save";
+char *apitxt_FAILEDTOOVERWRITE = "Failed to Overwrite";
+char *apitxt_NODATAAVAILABLE = "No %s data present";
+char *apitxt_AUTOSAVE_ENABLED = "Autosave will now use Game %i";
+char *apitxt_FORMATTINGCOMPLETE = "Formatting complete";
+char *apitxt_DELETECOMPLETE = "Delete complete";
+char *apitxt_NOTENOUGHSPACE = "Insufficient drive space to save games.";
 i32 SAVESLOTS = 6;
 f32 memcard_autosavecanceldelay = 1.5f;
 
@@ -1433,3 +1460,37 @@ void MenuDrawAutoSaveWarning(MENU *menu) {
     menu->draw_y = MENUBOTY;
     DrawMenuEntryEx(menu, apitxt_OK, (u8)MenuA);
 }
+
+MENUFNINFO MenuInfo[100] = {
+    {1000, MenuEnterSave,            MenuDrawSave,            MenuUpdateSave,            MenuExitSave,         -1, -1, 0, 1, 1, 0},
+    {1001, NULL,                     MenuDrawDoNotRemoveCard, MenuUpdateDoNotRemoveCard, NULL,                 -1, -1, 0, 0, 0, 0},
+    {1002, MenuEnterInsertCard,      MenuDrawInsertCard,      MenuUpdateInsertCard,      NULL,                 -1, -1, 0, 1, 1, 0},
+    {1004, MenuEnterNoMemoryCard,    MenuDrawNoMemoryCard,    MenuUpdateNoMemoryCard,    NULL,                 -1, -1, 0, 1, 1, 0},
+    {1003, NULL,                     MenuDrawNotEnoughSpace,  MenuUpdateNotEnoughSpace,  NULL,                 -1, -1, 0, 1, 1, 0},
+    {1005, NULL,                     MenuDrawNoData,          MenuUpdateNoData,          NULL,                 -1, -1, 0, 1, 1, 0},
+    {1006, NULL,                     MenuDrawFormatConfirm,   MenuUpdateFormatConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
+    {1007, NULL,                     MenuDrawFormatting,      MenuUpdateFormatting,      NULL,                 -1, -1, 0, 0, 0, 0},
+    {1008, MenuEnterSaveConfirm,     MenuDrawSaveConfirm,     MenuUpdateSaveConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
+    {1009, NULL,                     MenuDrawSaving,          MenuUpdateSaving,          NULL,                 -1, -1, 0, 0, 0, 0},
+    {1010, MenuEnterAutoSaveWarning, MenuDrawAutoSaveWarning, MenuUpdateAutoSaveWarning, NULL,                 -1, -1, 0, 1, 0, 0},
+    {1011, MenuEnterAutoSaveCancel,  MenuDrawAutoSaveCancel,  MenuUpdateAutoSaveCancel,  NULL,                 -1, -1, 0, 1, 1, 0},
+    {1012, MenuEnterLoad,            MenuDrawLoad,            MenuUpdateLoad,            MenuExitLoad,         -1, -1, 0, 1, 1, 0},
+    {1013, NULL,                     MenuDrawLoadConfirm,     MenuUpdateLoadConfirm,     NULL,                 -1, -1, 0, 1, 1, 0},
+    {1014, NULL,                     MenuDrawLoading,         MenuUpdateLoading,         NULL,                 -1, -1, 0, 0, 0, 0},
+    {1015, NULL,                     MenuDrawDeleting,        MenuUpdateDeleting,        NULL,                 -1, -1, 0, 0, 0, 0},
+    {1016, NULL,                     MenuDrawSaveCancel,      MenuUpdateSaveCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
+    {1017, NULL,                     MenuDrawLoadCancel,      MenuUpdateLoadCancel,      NULL,                 -1, -1, 0, 1, 1, 0},
+    {1018, NULL,                     MenuDrawFormatCancel,    MenuUpdateFormatCancel,    NULL,                 -1, -1, 0, 1, 1, 0},
+    {1019, MenuEnterCardWarning,     MenuDrawCardWarning,     MenuUpdateCardWarning,     MenuExitCardWarning,  -1, -1, 0, 1, 0, 0},
+    {1020, NULL,                     MenuDrawFileCorrupt,     MenuUpdateFileCorrupt,     NULL,                 -1, -1, 0, 1, 1, 0},
+    {1021, MenuEnterHeaderSave,      NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
+    {1022, MenuEnterStartNewGame,    NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
+    {1023, NULL,                     MenuDrawDeleteConfirm,   MenuUpdateDeleteConfirm,   NULL,                 -1, -1, 0, 1, 1, 0},
+    {1024, fun_00509470,             fun_00509480,            fun_00509490,              fun_005094a0,         -1, -1, 0, 0, 0, 0},
+    {1025, MenuEnterVideo,           MenuDrawVideo,           MenuUpdateVideo,           MenuExitVideo,        -1, -1, 0, 0, 0, 0},
+    {1026, MenuEnterEffects,         MenuDrawEffects,         MenuUpdateEffects,         MenuExitEffects,      -1, -1, 0, 0, 0, 0},
+    {1027, MenuEnterVideoConfirm,    MenuDrawVideoConfirm,    MenuUpdateVideoConfirm,    MenuExitVideoConfirm, -1, -1, 0, 0, 0, 0},
+    {1028, MenuEnterHiresNotice,     MenuDrawHiresNotice,     MenuUpdateHiresNotice,     MenuExitHiresNotice,  -1, -1, 0, 0, 0, 0},
+    {1029, MenuEnterQuit,            MenuDrawQuit,            MenuUpdateQuit,            MenuExitQuit,         -1, -1, 0, 0, 0, 0},
+    {1030, NULL,                     NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
+};

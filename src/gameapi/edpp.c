@@ -655,6 +655,7 @@ struct eduimenu_s *ptlclipmenu = 0;
 i32 edpp_curr = 0;
 static edui_slider_s *ptlrepeatbox_x_slider = NULL;
 static edui_slider_s *ptlrepeatbox_z_slider = NULL;
+f32 debris_thinning_level = 1.0f;
 i32 debris_detail_level = 4;
 DEBRISGENERATOR gensorttab[13] = {GenDebIndex,          GenDebDummy,        GenDebDummy,         GenDebDummy,
                                   GenDebDummy,          GenDebDummy,        GenDebIndexRadial,   GenDebIndexRadialRotor,
@@ -3779,6 +3780,7 @@ void cbPtlCancel(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 i32 edpp_first_time_this_level = 0;
+u8 edpp_effect_list = 0;
 
 void edppEnter(void) {
     NUVEC origin = {0.0f, 0.0f, 0.0f};
@@ -4290,6 +4292,9 @@ void edppInit(void) {
     eduiMenuAddItem(ptloptmenu, eduiItemToggleCreate(1, colours, 0, 1, cbPtlSnapToggle, "Snap"));
     eduiMenuAddItem(ptloptmenu, eduiItemSelCreate(1, colours, 0, 0, edptlcbJumpToGameLocation, "Jump To Game Location"));
 }
+
+ed_module_s edptldesc = {
+    NULL, NULL, "Particle Positioner", edppInit, edppClose, edppEnter, NULL, edppApply, NULL, NULL, 0x706c7470, edppProc, edppRender, NULL};
 
 extern void *CurTerr;
 
