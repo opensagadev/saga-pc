@@ -1757,7 +1757,7 @@ void ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
     packet->animation_index = animation;
     packet->blending = 0;
     packet->flags = 4;
-    packet->overlay_animation = -1;
+    packet->overlay_animation = ACTION_NONE;
     packet->reversed_3e = 0;
     packet->reversed_3c = 0;
     packet->reversed_3d = 0;
@@ -1910,9 +1910,9 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, f32 
         return;
     }
 
-    if (packet->overlay_animation == -1) {
+    if (packet->overlay_animation == ACTION_NONE) {
         if (packet->blending != 0) {
-            if (packet->requested_animation != -1 && packet->requested_animation != packet->blend_target_animation &&
+            if (packet->requested_animation != ACTION_NONE && packet->requested_animation != packet->blend_target_animation &&
                 model->model_data_b[packet->requested_animation] != NULL &&
                 model->animation_configs[packet->requested_animation]->blend_in_time == 0.0f) {
                 packet->animation_index = packet->requested_animation;
@@ -1961,7 +1961,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, f32 
 
     begin_transition:
 
-        if (packet->previous_animation != -1 && packet->requested_animation != -1 &&
+        if (packet->previous_animation != ACTION_NONE && packet->requested_animation != ACTION_NONE &&
             model->model_data_b[packet->previous_animation] != NULL && model->model_data_b[packet->requested_animation] != NULL) {
             if (model->animation_configs[packet->previous_animation]->blend_out_time > blend_step &&
                 model->animation_configs[packet->requested_animation]->blend_in_time > blend_step) {
@@ -2031,7 +2031,7 @@ void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, f32 
 
 update_timers:
     // End-frame services can change overlay state; it is reloaded here.
-    if (packet->overlay_animation != -1) {
+    if (packet->overlay_animation != ACTION_NONE) {
         if (model->model_data_b[packet->requested_animation] != NULL && model->model_data_b[packet->overlay_animation] != NULL) {
             packet->blend_source_time = UpdateAnimTimer(model, packet, packet->requested_animation, packet->blend_source_time, frame_step,
                                                         movement_speed, 0, (char *)&packet->reversed_3c, backwards, backwards_multiplier);
@@ -2047,7 +2047,7 @@ update_timers:
                 UpdateAnimTimer(model, packet, packet->blend_target_animation, packet->blend_target_time, frame_step, movement_speed, 1,
                                 (char *)&packet->reversed_3d, backwards, backwards_multiplier);
         }
-    } else if (packet->animation_index != -1 && model->model_data_b[packet->animation_index] != NULL) {
+    } else if (packet->animation_index != ACTION_NONE && model->model_data_b[packet->animation_index] != NULL) {
         if (paused != 0) {
             frame_step = 0.0f;
         }
@@ -2079,7 +2079,7 @@ void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET_PC *destinat
     destination->reversed_3c = 0;
     destination->reversed_3d = 0;
     destination->reversed_3e = 0;
-    destination->overlay_animation = -1;
+    destination->overlay_animation = ACTION_NONE;
 }
 
 void AnimPacketFullToMini(ANIMPACKET_PC *source, DRAW_ATTACHMENTS_MINI *destination) {
@@ -2223,7 +2223,7 @@ void RootFnEx(NUMTX *matrix, void *data, NUVEC *sampled_root, NUVEC *unused_targ
     object->previous_animation_root = *sampled_root;
     object->previous_animation_root_time = object->anim_packet.current_time;
 
-    if (object->anim_packet.requested_animation != -1) {
+    if (object->anim_packet.requested_animation != ACTION_NONE) {
         CHARACTERANIM_CONFIG *animation;
         NUVEC root_translation;
 
@@ -2463,7 +2463,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
         return 0;
     }
     if (animation != NULL) {
-        if (animation->overlay_animation != -1) {
+        if (animation->overlay_animation != ACTION_NONE) {
             if (animation->requested_animation >= 0 && animation->requested_animation < apicharsys->model_id_capacity &&
                 model->model_data_b[animation->requested_animation] != NULL && animation->overlay_animation >= 0 &&
                 animation->overlay_animation < apicharsys->model_id_capacity && model->model_data_b[animation->overlay_animation] != NULL) {
@@ -2568,7 +2568,7 @@ i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *chara
 
         evaluated = 0;
         if (animation != NULL && drawcharactermodel_noani == 0 && drawcharactermodel_restpose == 0) {
-            if (animation->overlay_animation != -1) {
+            if (animation->overlay_animation != ACTION_NONE) {
                 if (animation->requested_animation >= 0 && animation->requested_animation < apicharsys->model_id_capacity &&
                     model->model_data_b[animation->requested_animation] != NULL && animation->overlay_animation >= 0 &&
                     animation->overlay_animation < apicharsys->model_id_capacity &&
@@ -2708,7 +2708,7 @@ cleanup:
     drawcharactermodel_noani = 0;
     drawcharactermodel_restpose = 0;
     if (animation != NULL && drawcharactermodel_keepmergeaction == 0) {
-        animation->overlay_animation = -1;
+        animation->overlay_animation = ACTION_NONE;
     }
     drawcharactermodel_keepmergeaction = 0;
     return result;

@@ -619,7 +619,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                         } else {
                             object->unknown_7aa = LEGOACT_SUPERCARRY_LAND;
                         }
-                        if (object->unknown_7aa != -1) {
+                        if (object->unknown_7aa != ACTION_NONE) {
                             object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
                             if (object->context_timer <= 0.0f) {
                                 object->context_timer = 0.5f;
@@ -726,7 +726,7 @@ i32 SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     object->target_velocity.x = 0.0f;
     object->target_velocity.z = 0.0f;
     if (input_speed > 0.0f) {
-        if ((object->unknown_7b3 == 3 || object->unknown_7b3 == 1) && object->unknown_7aa != -1 &&
+        if ((object->unknown_7b3 == 3 || object->unknown_7b3 == 1) && object->unknown_7aa != ACTION_NONE &&
             object->character_model->model_data_b[object->unknown_7aa] != NULL) {
             speed = AnimSpeed(object->character_model, object->unknown_7aa);
         } else if (object->unknown_7b3 == 3 || object->unknown_7b3 == 6) {

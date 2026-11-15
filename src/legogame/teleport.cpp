@@ -607,7 +607,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         if ((object->flags_1fc & 0x80)) {
             Hint_SetComplete(0x268);
         }
-        object->unknown_7aa = 30;
+        object->unknown_7aa = ACTION_CRAWL;
         object->unknown_7b3 = 0;
         object->big_jump_animation = 0;
         TeleportGetSegment(&start_index, &end_index, object);

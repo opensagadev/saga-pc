@@ -466,7 +466,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->context_timer = 0.0f;
             object->character_context = CHARACTER_CONTEXT_SIGNAL;
             object->grapple = signal;
-            object->unknown_7aa = 0x96;
+            object->unknown_7aa = ACTION_CHANGE;
             object->context_duration = AnimDuration((i16)object->id, 0x96, 0.0f, 0.0f, 1);
             if (object->context_duration <= 0.0f) {
                 object->context_duration = 1.0f;
@@ -538,7 +538,7 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (object->unknown_281 != 0 && ObjLandReady(object) != 0 && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
             object->character_context = CHARACTER_CONTEXT_SONAR;
             object->context_timer = 0.0f;
-            object->unknown_7aa = 0x9c;
+            object->unknown_7aa = ACTION_SONAR;
             object->context_duration = 0.3f;
         }
     }

@@ -211,20 +211,20 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             f32 speed;
             if (push > NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9f] != NULL) {
-                    object->unknown_7aa = 0x9f;
-                    speed = AnimSpeed(object->character_model, 0x9f);
+                    object->unknown_7aa = ACTION_LEDGE_RIGHT;
+                    speed = AnimSpeed(object->character_model, ACTION_LEDGE_RIGHT);
                 } else {
                     speed = 0.5f;
                 }
             } else if (push < -NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9e] != NULL) {
-                    object->unknown_7aa = 0x9e;
-                    speed = -AnimSpeed(object->character_model, 0x9e);
+                    object->unknown_7aa = ACTION_LEDGE_LEFT;
+                    speed = -AnimSpeed(object->character_model, ACTION_LEDGE_LEFT);
                 } else {
                     speed = -0.5f;
                 }
             } else {
-                object->unknown_7aa = 0x9d;
+                object->unknown_7aa = ACTION_LEDGE_IDLE;
                 return;
             }
             if (speed == 0.0f) {
@@ -242,17 +242,17 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                             NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed)};
             NuVecAdd(&position, &object->external_force, &offset);
             if (LedgeAttachPoint(world, &position, &minimum, &maximum, &angle) == NULL) {
-                object->unknown_7aa = 0x9d;
+                object->unknown_7aa = ACTION_LEDGE_IDLE;
                 return;
             }
             LedgeSetAttachPosition(object, &position, angle + 0x8000);
             if (object->external_force.x == previous.x && object->external_force.y == previous.y &&
                 object->external_force.z == previous.z) {
-                object->unknown_7aa = 0x9d;
+                object->unknown_7aa = ACTION_LEDGE_IDLE;
             }
             return;
         }
-        object->unknown_7aa = 0x9d;
+        object->unknown_7aa = ACTION_LEDGE_IDLE;
         return;
     }
     if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f)) {
@@ -281,7 +281,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
     object->character_context = CHARACTER_CONTEXT_LEDGE;
-    object->unknown_7aa = 0x9d;
+    object->unknown_7aa = ACTION_LEDGE_IDLE;
     object->velocity = v000;
     LedgeSetAttachPosition(object, &position, angle + 0x8000);
 }

@@ -866,23 +866,23 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         panel = object->grapple;
         if (panel->model_variant == 2) {
             if (object->character_model->model_data_b[0x46] != NULL) {
-                object->unknown_7aa = 0x46;
+                object->unknown_7aa = ACTION_INTERFACE3;
             } else {
-                object->unknown_7aa = 0x45;
+                object->unknown_7aa = ACTION_INTERFACE2;
             }
             Hint_SetComplete(0x261);
             Hint_SetComplete(0x26a);
         } else if (panel->model_variant == 3) {
             if (object->character_model->model_data_b[0x45] == NULL && object->character_model->model_data_b[0x46] != NULL) {
-                object->unknown_7aa = 0x46;
+                object->unknown_7aa = ACTION_INTERFACE3;
             } else {
-                object->unknown_7aa = 0x45;
+                object->unknown_7aa = ACTION_INTERFACE2;
             }
             MakeBaddiesForgetAboutParty(1);
             Hint_SetComplete(0x260);
             Hint_SetComplete(0x269);
         } else {
-            object->unknown_7aa = 0x18;
+            object->unknown_7aa = ACTION_INTERFACE;
             if (panel->model_variant == 1) {
                 if (!InStory() || (((PANEL_MOVEMENT *)object->grapple)->draw_flags & 4) == 0) {
                     GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);

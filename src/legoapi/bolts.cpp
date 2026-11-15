@@ -1773,7 +1773,7 @@ extern "C" {
         aimed_position = object->attack_target_position;
         BoltSys->shoot_origin(object, &origin);
         heading = BoltSys->shoot_direction(object, &direction);
-        if (object->character_context != CHARACTER_CONTEXT_NONE && object->unknown_7aa != -1) {
+        if (object->character_context != CHARACTER_CONTEXT_NONE && object->unknown_7aa != ACTION_NONE) {
             if ((u16)object->unknown_7aa == BoltShootClassId0) {
                 heading = (u16)(heading + 0x4000);
             } else if ((u16)object->unknown_7aa == BoltShootClassId1) {

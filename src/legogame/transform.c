@@ -115,7 +115,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 object->context_timer = 0.0f;
                 object->character_context = CHARACTER_CONTEXT_TRANSFORM;
                 object->grapple = nearest;
-                object->unknown_7aa = 160;
+                object->unknown_7aa = ACTION_TRANSFORM;
                 object->context_duration = AnimDuration((i16)object->id, 160, 0.0f, 0.0f, 1);
                 if (object->context_duration <= 0.0f) {
                     object->context_duration = 1.0f;

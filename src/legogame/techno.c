@@ -683,7 +683,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->character_context = CHARACTER_CONTEXT_TECHNO;
             object->context_timer = 0.0f;
             object->techno = (TECHNO_PC *)techno;
-            object->unknown_7aa = 0x99;
+            object->unknown_7aa = ACTION_HACK;
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             if (object->unknown_280 == 0 || object->unknown_280 == 1) {

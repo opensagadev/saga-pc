@@ -673,8 +673,9 @@ static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
 }
 
 static void Punch_HitExtraCode_LSW(GAMEOBJECT *object, NUVEC *position) {
-    if (object->id == (u16)id_GAMORREANGUARD && ((object->character_context == CHARACTER_CONTEXT_PUNCH && object->unknown_7aa == 0x56) ||
-                                                 object->character_context == CHARACTER_CONTEXT_LAND_LUNGE)) {
+    if (object->id == (u16)id_GAMORREANGUARD &&
+        ((object->character_context == CHARACTER_CONTEXT_PUNCH && object->unknown_7aa == ACTION_PUNCH3) ||
+         object->character_context == CHARACTER_CONTEXT_LAND_LUNGE)) {
         NewRumbleAllPlayers(0.4f, 0.0f, 1, 0);
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         GameCam_Judder(GameCam, 0.25f, 0, &object->collision_position);
@@ -845,7 +846,8 @@ static i32 BoltInitSfx_LSW(GAMEOBJECT *object) {
 }
 
 static void GameObjectDimensionsExtra_LSW(GAMEOBJECT *object) {
-    if (object->id == (u16)id_ATAT && object->character_context == CHARACTER_CONTEXT_DEACTIVATED && object->unknown_7aa == 0x41) {
+    if (object->id == (u16)id_ATAT && object->character_context == CHARACTER_CONTEXT_DEACTIVATED &&
+        object->unknown_7aa == ACTION_DEACTIVATED) {
         object->bounds_radius += object->bounds_radius;
     }
 }

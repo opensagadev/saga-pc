@@ -313,9 +313,9 @@ static i32 GrabberFindShadow(NUVEC *position, GRABBER_PC *grabber) {
 
 static void GrabberGrabVictim(GAMEOBJECT *victim) {
     victim->character_context = CHARACTER_CONTEXT_GRABBED;
-    victim->unknown_7aa = 0x68;
+    victim->unknown_7aa = ACTION_GRABBED;
     if (victim->character_model->model_data_b[104] == NULL) {
-        victim->unknown_7aa = 5;
+        victim->unknown_7aa = ACTION_FALL;
     }
     NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
     victim->context_timer = 0.0f;
@@ -493,7 +493,7 @@ static void Grabber_SetVictimPos(GRABBER_PC *grabber) {
             PlaySfx("imp_C3PO_magnet", &position);
             grabber->victim->unknown_7b3 = 1;
         }
-    } else if (victim->unknown_7aa == 5) {
+    } else if (victim->unknown_7aa == ACTION_FALL) {
         victim->position.x = position.x - NU_SIN_LUT(victim->unknown_276) * victim->bounds_half_height;
         grabber->victim->position.y = position.y;
         victim = grabber->victim;
@@ -768,7 +768,7 @@ void Grabber_Update(WORLDINFO *world) {
             NUVEC low;
             NUVEC high;
 
-            frame = AnimPlaying(&grabber->animation, 0x66, 1, 0);
+            frame = AnimPlaying(&grabber->animation, ACTION_PICKUP, 1, 0);
             if (frame == NULL) {
                 break;
             }
@@ -786,7 +786,7 @@ void Grabber_Update(WORLDINFO *world) {
             if ((grabber->flags & 2) != 0) {
                 break;
             }
-            value = AnimListFrame(grabber->character_model, 0x66, 0);
+            value = AnimListFrame(grabber->character_model, ACTION_PICKUP, 0);
             if (!(value > 0.0f) || !(*frame >= value)) {
                 break;
             }
@@ -829,7 +829,7 @@ void Grabber_Update(WORLDINFO *world) {
             break;
         }
         case 3:
-            frame = AnimPlaying(&grabber->animation, 0x67, 1, 0);
+            frame = AnimPlaying(&grabber->animation, ACTION_DROP, 1, 0);
             if (frame == NULL) {
                 break;
             }
@@ -844,7 +844,7 @@ void Grabber_Update(WORLDINFO *world) {
                 if ((grabber->flags & 2) != 0) {
                     break;
                 }
-                value = AnimListFrame(grabber->character_model, 0x67, 0);
+                value = AnimListFrame(grabber->character_model, ACTION_DROP, 0);
                 if (!(value > 0.0f) || !(*frame >= value)) {
                     break;
                 }
@@ -945,16 +945,16 @@ void Grabber_Update(WORLDINFO *world) {
         grabber->animation.previous_animation = grabber->animation.animation_index;
         switch (grabber->state) {
             case 1:
-                grabber->animation.requested_animation = 0x66;
+                grabber->animation.requested_animation = ACTION_PICKUP;
                 break;
             case 2:
-                grabber->animation.requested_animation = 0xf;
+                grabber->animation.requested_animation = ACTION_IDLE2;
                 break;
             case 3:
-                grabber->animation.requested_animation = 0x67;
+                grabber->animation.requested_animation = ACTION_DROP;
                 break;
             default:
-                grabber->animation.requested_animation = 1;
+                grabber->animation.requested_animation = ACTION_IDLE;
                 break;
         }
         UpdateAnimPacket(grabber->character_model, &grabber->animation, FRAMETIME * 30.0f, grabber->speed, FRAMETIME, 0.0f);

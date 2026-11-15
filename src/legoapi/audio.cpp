@@ -377,7 +377,7 @@ extern "C" {
                 PlaySfxByIdAndSetVolume(sound, &object->lower_position, 0.5f);
             }
         }
-        if (packet->blending == 0 && packet->animation_index != -1) {
+        if (packet->blending == 0 && packet->animation_index != ACTION_NONE) {
             config = object->character_model->animation_configs[packet->animation_index];
             if (config != NULL) {
                 if ((config->flags & CHARANIM_FOOTSTEPS_JUDDER) != 0) {

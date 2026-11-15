@@ -816,7 +816,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         if (alignment == 0) {
             object->pitch_angle = object->roll_angle = 0;
         } else if (magnet) {
-            if (object->unknown_7aa == 6 || object->unknown_7aa == 5) {
+            if (object->unknown_7aa == ACTION_JUMP || object->unknown_7aa == ACTION_FALL) {
                 object->pitch_angle = 0;
                 object->roll_angle = 0;
             } else {
@@ -848,7 +848,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
             u16 target_x;
             u16 target_z;
             if (magnet) {
-                if (object->unknown_7aa == 6 || object->unknown_7aa == 5) {
+                if (object->unknown_7aa == ACTION_JUMP || object->unknown_7aa == ACTION_FALL) {
                     object->pitch_angle = 0;
                     target_z = 0;
                     object->roll_angle = 0;
@@ -966,7 +966,7 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
             target->unknown_7aa = (i16)animation;
             speed = AnimSpeed(target->character_model, (i16)animation);
             view->animation_speed = speed;
-            if (target->unknown_7aa != 0xb9 && target->unknown_7aa != 0x3d) {
+            if (target->unknown_7aa != ACTION_STUN_DIE && target->unknown_7aa != ACTION_TAKEHIT) {
                 if (speed <= 0.0f) {
                     view->animation_speed = 1.0f;
                 } else if (speed <= (f64)0.8f) {
@@ -1001,7 +1001,7 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
                 target->movement_facing_angle = NuAtan2D(-dx, -dz);
             }
             target->jump_variant_state = saved_jump_state;
-            return target->unknown_7aa == 0xb9 ? 2 : 1;
+            return target->unknown_7aa == ACTION_STUN_DIE ? 2 : 1;
         }
     }
     return 0;
@@ -1022,10 +1022,10 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
             if (source != NULL && (source->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) &&
                 object->character_data->game_character->weapon_action == 1 && object->character_model->model_data_b[0x62] != NULL) {
                 duration = 4.0f;
-                object->unknown_7aa = 0x62;
+                object->unknown_7aa = ACTION_IDLE7;
             } else if (object->character_model->model_data_b[0x81] != NULL &&
                        !(object->character_model->animation_configs[0x81]->flags & CHARANIM_CYCLE)) {
-                object->unknown_7aa = 0x81;
+                object->unknown_7aa = ACTION_DEACTIVATE;
             } else {
                 object->unknown_7aa = object->character_model->model_data_b[0x41] != NULL ? 0x41 : 1;
             }
@@ -1047,7 +1047,7 @@ void ActivatePlayer(GAMEOBJECT *object) {
     object->character_context = CHARACTER_CONTEXT_NONE;
     if (object->character_model->model_data_b[0x80] != NULL) {
         object->character_context = CHARACTER_CONTEXT_ACTIVATE;
-        object->unknown_7aa = 0x80;
+        object->unknown_7aa = ACTION_ACTIVATE;
         object->context_timer = AnimDuration((i16)object->id, 0x80, 0.0f, 0.0f, 1);
         object->context_duration = 0.0f;
     }
@@ -3472,9 +3472,9 @@ impact:
                 goto ordinary_death;
             }
             target->character_context = CHARACTER_CONTEXT_DIE_AIR;
-            target->unknown_7aa = 0xb8;
+            target->unknown_7aa = ACTION_DIE_AIR;
             if (target->character_model->model_data_b[0xb8] == NULL) {
-                target->unknown_7aa = 5;
+                target->unknown_7aa = ACTION_FALL;
             }
             target->current_hp = 1;
             target->context_timer = 0.0f;

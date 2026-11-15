@@ -942,7 +942,7 @@ void UpdateCharacterIdle(GAMEOBJECT *object) {
         default_idle = GetDefaultIdle(object);
     } else if (requested == 1 && object->anim_packet.previous_animation == alternate) {
         default_idle = 1;
-    } else if (requested == alternate && object->anim_packet.previous_animation == 1) {
+    } else if (requested == alternate && object->anim_packet.previous_animation == ACTION_IDLE) {
         default_idle = alternate;
     } else {
         default_idle = -1;
@@ -2201,7 +2201,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     {
                                         ClearLastSafeTakeOver(object);
                                         Player_ClearContext(object, 1);
-                                        object->unknown_7aa = 5;
+                                        object->unknown_7aa = ACTION_FALL;
                                         if (object->character_context != CHARACTER_CONTEXT_NONE &&
                                             api->character_model->model_data_b[api->anim_packet.requested_animation] != NULL) {
                                             object->unknown_7aa = api->anim_packet.requested_animation;
@@ -2368,10 +2368,10 @@ void AnimatePlayer(GAMEOBJECT *object) {
     if ((object->anim_packet.flags & 4) != 0) {
         time = NULL;
         if (object->anim_packet.blending != 0) {
-            if (object->anim_packet.blend_target_animation == 0x5f) {
+            if (object->anim_packet.blend_target_animation == ACTION_BUILD) {
                 time = &object->anim_packet.blend_target_time;
             }
-        } else if (object->anim_packet.animation_index == 0x5f) {
+        } else if (object->anim_packet.animation_index == ACTION_BUILD) {
             time = &object->anim_packet.current_time;
         }
         if (time != NULL) {
@@ -2468,7 +2468,7 @@ i32 AnakinGreenSabre(GAMEOBJECT *object) {
 static f32 ParaphernaliaWeaponScale(GAMEOBJECT *object) {
     f32 *frame;
     if (object->character_data->game_character->hover_fall_mode == 9) {
-        frame = AnimPlaying(&object->anim_packet, 0x5e, 1, 0);
+        frame = AnimPlaying(&object->anim_packet, ACTION_HELMETON, 1, 0);
         if (frame != NULL && *frame >= 18.0f && *frame <= 65.0f) {
             if (*frame <= 27.0) {
                 return (f32)(((f64)*frame - 18.0) / 9.0);
@@ -3624,7 +3624,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
         object->character_model->action_animations[0x41] != NULL) {
         object->context_timer = 1000000000.0f;
         object->character_context = CHARACTER_CONTEXT_DEACTIVATED;
-        object->unknown_7aa = 0x41;
+        object->unknown_7aa = ACTION_DEACTIVATED;
         ResetAnimPacket(&object->anim_packet, 0x41);
     }
 }
@@ -4269,14 +4269,15 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
         }
         character_id = dat_007f17bc;
         AnimPacketMiniToFull((DRAW_ATTACHMENTS_MINI *)object->mini_anim_packet, &animation.packet);
-    } else if (object->id == (u16)PunchRangeUnitId &&
-               (AnimPlaying(&object->anim_packet, 0x51, 1, 1) != NULL || AnimPlaying(&object->anim_packet, 0x55, 1, 1) != NULL ||
-                AnimPlaying(&object->anim_packet, 0x56, 1, 1) != NULL || AnimPlaying(&object->anim_packet, 0x94, 1, 1) != NULL)) {
+    } else if (object->id == (u16)PunchRangeUnitId && (AnimPlaying(&object->anim_packet, ACTION_PUNCH, 1, 1) != NULL ||
+                                                       AnimPlaying(&object->anim_packet, ACTION_PUNCH2, 1, 1) != NULL ||
+                                                       AnimPlaying(&object->anim_packet, ACTION_PUNCH3, 1, 1) != NULL ||
+                                                       AnimPlaying(&object->anim_packet, ACTION_PUNCH_BEHIND, 1, 1) != NULL)) {
         character_id = PunchRangeCompanionId;
         memcpy(&animation, (u8 *)object + offsetof(GAMEOBJECT, anim_packet), sizeof(animation));
-        if (animation.packet.blending != 0 && animation.packet.blend_target_animation != 0x51 &&
-            animation.packet.blend_target_animation != 0x55 && animation.packet.blend_target_animation != 0x56 &&
-            animation.packet.blend_target_animation != 0x94) {
+        if (animation.packet.blending != 0 && animation.packet.blend_target_animation != ACTION_PUNCH &&
+            animation.packet.blend_target_animation != ACTION_PUNCH2 && animation.packet.blend_target_animation != ACTION_PUNCH3 &&
+            animation.packet.blend_target_animation != ACTION_PUNCH_BEHIND) {
             return;
         }
     } else if (object->id == (u16)dat_007f17c8) {
@@ -4424,7 +4425,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
         DrawObjectOnCharacter(WORLD, object, 0xf0, NULL, object->character_data->game_character->weapon_shoot_joints[0], -1,
                               object->locator_matrices, 0, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
-    if (object->character_data->game_character->weapon_action == 1 && AnimPlaying(&object->anim_packet, 0x60, 1, 1) != NULL) {
+    if (object->character_data->game_character->weapon_action == 1 && AnimPlaying(&object->anim_packet, ACTION_IDLE5, 1, 1) != NULL) {
         DrawObjectOnCharacter(WORLD, object, 9, NULL, object->character_data->game_character->weapon_joints[0], -1,
                               object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     } else if (object->weapon_scale > 0.0f) {
@@ -4528,7 +4529,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     if (config->weapon_action == 1) {
         special_locator = config->thingy_locator;
         if (special_locator == -1 || object->character_model->points_of_interest[special_locator] == NULL ||
-            (time = AnimPlaying(&object->anim_packet, 0x6b, 1, 1)) == NULL) {
+            (time = AnimPlaying(&object->anim_packet, ACTION_COMMUNICATE, 1, 1)) == NULL) {
             return;
         }
         if ((*time >= 70.0f && *time <= 210.0) || (*time >= 310.0f && *time <= 433.0)) {
@@ -4556,10 +4557,10 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                 NuSpecialDrawAt(&WORLD->level_objects[10].special, special_matrix);
             }
         }
-    } else if (((i16)(object->id)) == dat_007f1820 && (time = AnimPlaying(&object->anim_packet, 1, 0, 0)) != NULL) {
-        start = AnimListFrame(object->character_model, 1, 0);
+    } else if (((i16)(object->id)) == dat_007f1820 && (time = AnimPlaying(&object->anim_packet, ACTION_IDLE, 0, 0)) != NULL) {
+        start = AnimListFrame(object->character_model, ACTION_IDLE, 0);
         if (start >= 1.0f) {
-            finish = AnimListFrame(object->character_model, 1, 1);
+            finish = AnimListFrame(object->character_model, ACTION_IDLE, 1);
             if (finish >= start && *time > start && *time < finish) {
                 fraction = (*time - start) / (finish - start);
 

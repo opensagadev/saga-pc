@@ -702,7 +702,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
 
             zipup = object->grapple;
             object->action_movement_state = 0;
-            object->unknown_7aa = 0x2a;
+            object->unknown_7aa = ACTION_UP;
             hook = &zipup->hook_origin;
             if (endpoint == 0) {
                 object->unknown_7b3 = 0;

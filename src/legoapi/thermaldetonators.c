@@ -174,7 +174,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     locator = object->character_data->game_character->throw_locator;
     blocked = 0;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == 0x6e) {
+        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == ACTION_THROW2) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
@@ -247,7 +247,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     }
     locator = object->character_data->game_character->throw_locator;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == 0x6e) {
+        if (object->id == (u16)id_JANGOFETT && object->unknown_7aa == ACTION_THROW2) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
@@ -349,14 +349,14 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     }
     object->character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
     if (object->jump_variant_state == 1) {
-        object->unknown_7aa = 0x6f;
+        object->unknown_7aa = ACTION_THROW3;
     } else if ((object->flags_e20 & 0x10000) != 0) {
-        object->unknown_7aa = 0x6e;
+        object->unknown_7aa = ACTION_THROW2;
     } else {
-        object->unknown_7aa = 0x65;
+        object->unknown_7aa = ACTION_THROW;
     }
     if (object->character_model->action_animations[object->unknown_7aa] == NULL) {
-        object->unknown_7aa = 0x65;
+        object->unknown_7aa = ACTION_THROW;
     }
     if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 1) != NULL) {
         ResetAnimPacket(&object->anim_packet, -1);

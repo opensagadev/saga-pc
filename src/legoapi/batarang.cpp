@@ -360,7 +360,7 @@ extern "C" {
 extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
     ResetAnimPacket(&object->anim_packet, -1);
     object->character_context = CHARACTER_CONTEXT_THROW_QUICK;
-    object->unknown_7aa = 0xb2;
+    object->unknown_7aa = ACTION_THROW_QUICK;
     object->context_timer = AnimDuration((i16)object->id, 0xb2, 0.0f, 0.0f, 1);
 }
 
@@ -529,7 +529,7 @@ i32 Batarang_StartTargetting(GAMEOBJECT *object) {
             object->context_timer = 0.0f;
             object->landing_followup = 0;
             object->character_context = CHARACTER_CONTEXT_BATARANG;
-            object->unknown_7aa = 0x90;
+            object->unknown_7aa = ACTION_TARGET;
             packet->owner = object;
             object->batarang->active = 0;
             object->batarang->sight_position.x = object->camera_screen_position.x;
@@ -587,7 +587,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                 if (BATARANG_PACKET(object)->active > 0) {
                     object->context_variant_flags &= ~0x20000U;
                     object->unknown_7b3 = 1;
-                    object->unknown_7aa = 0x65;
+                    object->unknown_7aa = ACTION_THROW;
                     f32 duration = AnimDuration((i16)object->id, 0x65, 0.0f, 0.0f, 1);
                     object->context_duration = duration;
                     if (duration <= 0.0f) {
@@ -806,7 +806,7 @@ extern "C" void Batarangs_Update(void) {
             } else if (owner->pad->input_magnitude == 0 && owner->character_context == CHARACTER_CONTEXT_NONE &&
                        owner->character_model->model_data_b[0x98] != NULL) {
                 owner->character_context = CHARACTER_CONTEXT_CATCH;
-                owner->unknown_7aa = 0x98;
+                owner->unknown_7aa = ACTION_CATCH;
                 batarang->owner->context_timer = AnimDuration((i16)batarang->owner->id, batarang->owner->unknown_7aa, 0, 0, 1);
             }
             batarang->flight_state.in_flight = 0;

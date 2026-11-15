@@ -150,7 +150,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             object->unknown_7b3 = 0;
             FastWeaponIn(object, 0);
             object->flags_e24 |= 0x200;
-            object->unknown_7aa = 0x5d;
+            object->unknown_7aa = ACTION_PULLLEVER;
             machine->animation_state = 1;
             if (StartupGameFlag1 != 0) {
                 machine->state_duration = 3.0f;
@@ -199,18 +199,18 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     ((object->character_data->game_character->flags_090 & 0x10) != 0 ||
                      (object->id == (u16)id_PRINCESSLEIABOUSHH && FreePlay != 0))) {
                     if (machine->animation_state == 2) {
-                        object->unknown_7aa = 0x6d;
+                        object->unknown_7aa = ACTION_HELMETON2;
                         object->unknown_7b3 = 1;
                         object->context_timer = AnimDuration((i16)object->id, 0x6d, 0.0f, 0.0f, 1);
                         machine->state_duration = (f64)object->context_timer * (f64)0.35f;
                         return;
                     }
-                    object->unknown_7aa = 1;
+                    object->unknown_7aa = ACTION_IDLE;
                     return;
                 }
                 if (object->character_model->model_data_b[0x5e] != NULL) {
                     if (machine->animation_state == 2) {
-                        object->unknown_7aa = 0x5e;
+                        object->unknown_7aa = ACTION_HELMETON;
                         object->unknown_7b3 = 1;
                         object->context_timer = AnimDuration((i16)object->id, 0x5e, 0.0f, 0.0f, 1);
                         if (StartupGameFlag1 == 0) {
@@ -218,13 +218,13 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                         }
                         return;
                     }
-                    object->unknown_7aa = 1;
+                    object->unknown_7aa = ACTION_IDLE;
                     return;
                 }
                 if (machine->animation_state != 2) {
                     return;
                 }
-                object->unknown_7aa = 1;
+                object->unknown_7aa = ACTION_IDLE;
                 object->unknown_7b3 = 1;
                 machine->state_duration = 0.2f;
                 return;

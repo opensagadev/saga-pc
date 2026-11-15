@@ -10957,15 +10957,15 @@ i32 Action_ThrowDetonator(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET
     object = ((APIOBJECT *)packet->owner)->owner;
     object->character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
     if (object->jump_variant_state == 1) {
-        object->unknown_7aa = 0x6f;
+        object->unknown_7aa = ACTION_THROW3;
     } else if ((object->unknown_e22 & 1) != 0) {
-        object->unknown_7aa = 0x6e;
+        object->unknown_7aa = ACTION_THROW2;
     } else {
-        object->unknown_7aa = 0x65;
+        object->unknown_7aa = ACTION_THROW;
     }
     model = object->character_model;
     if (model->model_data_b[object->unknown_7aa] == NULL) {
-        object->unknown_7aa = 0x65;
+        object->unknown_7aa = ACTION_THROW;
     }
     object->context_variant_flags &= ~0x40u;
     if (model->model_data_b[object->unknown_7aa] != NULL) {
@@ -12068,7 +12068,7 @@ i32 Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
                         attached_zipup = object->attached_zipup;
                         object->context_variant_flags |= 0x20;
                         object->character_context = CHARACTER_CONTEXT_ZIP_UP;
-                        object->unknown_7aa = 0x2a;
+                        object->unknown_7aa = ACTION_UP;
                         object->movement_facing_angle = NuAtan2D(attached_zipup->upper_position.x - attached_zipup->lower_position.x,
                                                                  attached_zipup->upper_position.z - attached_zipup->lower_position.z);
                         object->flags_e20 |= 0x10000;
@@ -12093,7 +12093,7 @@ i32 Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
                         object->unknown_7a4 = rotation;
                     } else if (zipdown != 0 && !(fall_chance > 0.0f && NuRandFloat() < fall_chance)) {
                         object->character_context = CHARACTER_CONTEXT_ZIP_DOWN;
-                        object->unknown_7aa = 0x2a;
+                        object->unknown_7aa = ACTION_UP;
                         object->external_force = object->upper_position;
                         SetWeaponOut(object);
                     }

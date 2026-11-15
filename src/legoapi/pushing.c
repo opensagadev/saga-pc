@@ -58,7 +58,7 @@ i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_diff
         }
         difference = abs(difference);
         if (difference > 0x4e38 ||
-            (difference > 0x1555 && object->unknown_7aa != -1 &&
+            (difference > 0x1555 && object->unknown_7aa != ACTION_NONE &&
              (object->unknown_7aa == LEGOACT_WALLSHUFFLE_RIGHT || object->unknown_7aa == LEGOACT_WALLSHUFFLE_LEFT))) {
             if (normal_angle != NULL) {
                 *normal_angle = angle;

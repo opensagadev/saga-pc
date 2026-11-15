@@ -148,7 +148,7 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         return;
     }
 no_action:
-    rider->unknown_7aa = 0x6c;
+    rider->unknown_7aa = ACTION_RIDE;
 }
 
 i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
@@ -197,10 +197,10 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     model = rider->character_model;
     if (model->action_animations[6] != NULL) {
         ResetAnimPacket(&rider->anim_packet, -1);
-        rider->unknown_7aa = 6;
+        rider->unknown_7aa = ACTION_JUMP;
         rider->context_duration = AnimDuration((i16)rider->id, 6, 0.0f, 0.0f, 1);
     } else {
-        rider->unknown_7aa = 5;
+        rider->unknown_7aa = ACTION_FALL;
         rider->context_duration = 0.5f;
     }
     if (vehicle->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
@@ -739,7 +739,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         object->position.y = (destination.y - object->external_force.y) * fraction + object->external_force.y;
         object->position.z = (destination.z - object->external_force.z) * fraction + object->external_force.z;
         height = target->bounds_half_height;
-        if (object->unknown_7aa == 6 || object->unknown_7aa == 0xc9) {
+        if (object->unknown_7aa == ACTION_JUMP || object->unknown_7aa == ACTION_MAGNET_JUMP) {
             if (object->character_data->game_character->jump_height > height) {
                 height = object->character_data->game_character->jump_height;
             }

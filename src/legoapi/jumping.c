@@ -389,7 +389,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             (ZipUpLandCombatRollContext == -1 || object->character_context != ZipUpLandCombatRollContext)) {
             goto jump_takeoff;
         }
-        if (((object->flags_1fc & 0x80) != 0 || object->character_context != LEGOCONTEXT_LAND_JUMP || object->unknown_7aa == -1 ||
+        if (((object->flags_1fc & 0x80) != 0 || object->character_context != LEGOCONTEXT_LAND_JUMP || object->unknown_7aa == ACTION_NONE ||
              (object->unknown_7aa != LEGOACT_FALLLAND && object->unknown_7aa != LEGOACT_BACKPACKFALLLAND)) &&
             (LEGOCONTEXT_LAND_LUNGE == -1 || object->character_context != LEGOCONTEXT_LAND_LUNGE) &&
             (LEGOCONTEXT_LAND_SLAM == -1 || object->character_context != LEGOCONTEXT_LAND_SLAM) &&
@@ -845,7 +845,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                         }
                     } else {
                         if ((animation_set & 0x40) != 0 &&
-                            (object->unknown_7aa == -1 || object->character_model->model_data_b[object->unknown_7aa] == NULL)) {
+                            (object->unknown_7aa == ACTION_NONE || object->character_model->model_data_b[object->unknown_7aa] == NULL)) {
                             object->unknown_7aa = LEGOACT_FALL;
                         }
                         object->velocity.y = object->character_data->game_character->jump_speed;

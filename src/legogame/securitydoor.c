@@ -385,7 +385,7 @@ static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door,
     object->context_timer = 0.0f;
     object->character_context = CHARACTER_CONTEXT_SECURITY;
     object->grapple = door;
-    object->unknown_7aa = 0xad;
+    object->unknown_7aa = ACTION_SECURITY;
     object->context_duration = AnimDuration((i16)object->id, 0xad, 0.0f, 0.0f, 1);
     if (object->context_duration <= 0.0f) {
         object->context_duration = 1.0f;

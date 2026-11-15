@@ -471,7 +471,7 @@ void TrenchMove(GAMEOBJECT *object) {
         } else if (object->character_context != CHARACTER_CONTEXT_LOOP && player->character_context == CHARACTER_CONTEXT_LOOP &&
                    player->context_timer < 0.75 * VehicleLoopTime) {
             object->character_context = player->character_context;
-            object->unknown_7aa = 1;
+            object->unknown_7aa = ACTION_IDLE;
             object->context_duration = VehicleLoopTime;
             object->context_timer = VehicleLoopTime;
         }

@@ -503,7 +503,7 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
 static void AttractoStartSuction(GAMEOBJECT *object) {
     object->character_context = CHARACTER_CONTEXT_ATTRACTO_TARGET;
     object->context_timer = 0.0f;
-    object->unknown_7aa = 0x9a;
+    object->unknown_7aa = ACTION_ATTRACT;
     object->context_duration = 0.2f;
     object->external_force.x = object->camera_screen_position.x;
     object->external_force.y = object->camera_screen_position.y;
@@ -618,7 +618,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 object->character_context = CHARACTER_CONTEXT_ATTRACTO_DEPOSIT;
                 object->context_timer = 0.0f;
                 object->grapple = attracto;
-                object->unknown_7aa = 0x9b;
+                object->unknown_7aa = ACTION_TRANSFER;
                 object->movement_facing_angle = attracto->angle;
                 return;
             }

@@ -208,7 +208,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 object->unknown_7b3 = 0;
                 object->character_context = CHARACTER_CONTEXT_PICK_UP_DETONATOR;
                 FastWeaponIn(object, 0);
-                object->unknown_7aa = 0x66;
+                object->unknown_7aa = ACTION_PICKUP;
                 object->grapple = nearest;
                 object->movement_facing_angle =
                     NuAtan2D(nearest->position.x - object->position.x, nearest->position.z - object->position.z);
@@ -225,7 +225,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                     object->unknown_7b3 = 0;
                     object->character_context = CHARACTER_CONTEXT_PLACE_DETONATOR;
                     FastWeaponIn(object, 0);
-                    object->unknown_7aa = 0x8d;
+                    object->unknown_7aa = ACTION_PUTDOWN;
                     object->unknown_7a4 = object->unknown_1056;
                     object->takeover_start_angle = (u16)qrand();
                     object->unknown_7a8 = object->unknown_1058;

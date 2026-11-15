@@ -175,7 +175,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->context_hover_target_y = 0.0f;
         object->character_context = CHARACTER_CONTEXT_PULL_LEVER;
         object->grapple = lever;
-        object->unknown_7aa = 0x5d;
+        object->unknown_7aa = ACTION_PULLLEVER;
         object->context_duration = AnimDuration((i16)object->id, 0x5d, 0.0f, 0.0f, 1);
         if (object->context_duration <= 0.0f) {
             object->context_duration = 1.0f;

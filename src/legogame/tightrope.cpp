@@ -246,7 +246,7 @@ extern "C" {
             object = Obj;
             for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
                 if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->character_context != CHARACTER_CONTEXT_TIGHTROPE ||
-                    object->unknown_7aa == 6 || object->unknown_7aa == 5 || object->grapple != rope) {
+                    object->unknown_7aa == ACTION_JUMP || object->unknown_7aa == ACTION_FALL || object->grapple != rope) {
                     continue;
                 }
                 positions[count] =
@@ -427,7 +427,7 @@ static i32 TightRopeSetPosition(TIGHTROPE_MOTION *rope, NUVEC *position, GAMEOBJ
 
 static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
     i32 result = 1;
-    if (object->pad->input_magnitude > 0.0f && object->unknown_7aa != 0x8f) {
+    if (object->pad->input_magnitude > 0.0f && object->unknown_7aa != ACTION_TIGHTROPE_GETON) {
         NUVEC previous = object->launch_origin;
         TIGHTROPE_MOTION *rope = ((TIGHTROPE_MOTION *)(object->grapple));
         f32 input = PushingTowardsAngle(GamePad_InputAngle(object, object->pad), rope->rotation);
@@ -438,8 +438,8 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
             if (jumping == 0) {
                 rope = ((TIGHTROPE_MOTION *)(object->grapple));
                 object->movement_facing_angle = rope->rotation;
-                object->unknown_7aa = 0x89;
-                speed = AnimSpeed(object->character_model, 0x89);
+                object->unknown_7aa = ACTION_TIGHTROPE_MOVE;
+                speed = AnimSpeed(object->character_model, ACTION_TIGHTROPE_MOVE);
             } else {
                 speed = 0.6f;
             }
@@ -448,14 +448,14 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
             if (jumping == 0) {
                 rope = ((TIGHTROPE_MOTION *)(object->grapple));
                 object->movement_facing_angle = rope->rotation + 0x8000;
-                object->unknown_7aa = 0x89;
-                speed = AnimSpeed(object->character_model, 0x89);
+                object->unknown_7aa = ACTION_TIGHTROPE_MOVE;
+                speed = AnimSpeed(object->character_model, ACTION_TIGHTROPE_MOVE);
             } else {
                 speed = 0.6f;
             }
         } else {
             if (jumping == 0) {
-                object->unknown_7aa = 0x88;
+                object->unknown_7aa = ACTION_TIGHTROPE_IDLE;
             }
             return result;
         }
@@ -467,10 +467,10 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
         result = TightRopeSetPosition(rope, &object->launch_origin, object);
         if (jumping == 0 && object->launch_origin.x == previous.x && object->launch_origin.y == previous.y &&
             object->launch_origin.z == previous.z) {
-            object->unknown_7aa = 0x88;
+            object->unknown_7aa = ACTION_TIGHTROPE_IDLE;
         }
     } else if (jumping == 0) {
-        object->unknown_7aa = 0x88;
+        object->unknown_7aa = ACTION_TIGHTROPE_IDLE;
     }
     return result;
 }
@@ -486,10 +486,10 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
         if (object->character_model->model_data_b[0x8f] != NULL &&
             ((object->character_data->game_character->flags_090 & 0x80000) == 0 ||
              (object->upper_position.y - object->lower_position.y) * 0.25f + object->lower_position.y < position.y)) {
-            object->unknown_7aa = 0x8f;
+            object->unknown_7aa = ACTION_TIGHTROPE_GETON;
             object->context_timer = AnimDuration((i16)object->id, 0x8f, 0.0f, 0.0f, 1);
         } else {
-            object->unknown_7aa = 0x88;
+            object->unknown_7aa = ACTION_TIGHTROPE_IDLE;
         }
         object->launch_origin = position;
         if (abs(RotDiff(((TIGHTROPE_MOTION *)(object->grapple))->rotation, object->movement_facing_angle)) <= 0x4000) {
@@ -559,15 +559,15 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 }
             } else if (state == 6) {
                 if (object->context_timer >= object->context_duration) {
-                    object->unknown_7aa = 5;
+                    object->unknown_7aa = ACTION_FALL;
                 }
             }
             if (object->velocity.y <= 0.0f && TightRope_Attach(object, WORLD) == 0 && object->unknown_281 != 0) {
                 object->flags_e24 |= 0x400;
-                if (object->unknown_7aa != 5 || StartFallLand(object, -1) == 0) {
+                if (object->unknown_7aa != ACTION_FALL || StartFallLand(object, -1) == 0) {
                     if (object->character_model->model_data_b[7] != NULL && object->pad->input_magnitude == 0.0f) {
                         object->character_context = CHARACTER_CONTEXT_LAND_JUMP;
-                        object->unknown_7aa = 7;
+                        object->unknown_7aa = ACTION_LAND;
                         object->context_timer = AnimDuration((i16)object->id, 7, 0.0f, 0.0f, 1);
                         ((TIGHTROPE_OBJECT_AUX *)object)->jump_reentry_timer = 0.2f;
                         ResetAnimPacket(&object->anim_packet, -1);
@@ -587,7 +587,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
         if (jump_pressed != 0) {
             if ((object->flags_1fc & 0x80) != 0) {
                 object->velocity.y = 2.0f;
-                object->unknown_7aa = 6;
+                object->unknown_7aa = ACTION_JUMP;
                 object->context_timer = 0.0f;
                 f32 duration = AnimDuration((i16)object->id, 6, 0.0f, 0.0f, 0);
                 object->context_duration = duration;
@@ -602,7 +602,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
             return;
         }
         if (state == 0x8f) {
-            f32 *playing = AnimPlaying(&object->anim_packet, 0x8f, 1, 0);
+            f32 *playing = AnimPlaying(&object->anim_packet, ACTION_TIGHTROPE_GETON, 1, 0);
             if (playing != NULL) {
                 f32 frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
 
@@ -613,11 +613,12 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 } else {
                     object->context_timer -= FRAMETIME;
                     if (object->context_timer <= 0.0f) {
-                        object->unknown_7aa = 0x88;
+                        object->unknown_7aa = ACTION_TIGHTROPE_IDLE;
                     }
                 }
             }
-        } else if (TightRope_MoveUpdate(object, 0) == 0 && object->unknown_7aa != 0x8f && object->external_force.y >= 0.5f) {
+        } else if (TightRope_MoveUpdate(object, 0) == 0 && object->unknown_7aa != ACTION_TIGHTROPE_GETON &&
+                   object->external_force.y >= 0.5f) {
             StartJump(object, 0);
             if ((object->character_data->game_character->flags_090 & 0x80000) != 0) {
                 object->velocity.y = 1.2f;
@@ -669,6 +670,6 @@ extern "C" {
         object->target_velocity.y -= qrand() * PlayerRandomScale * amplitude;
         object->target_velocity.z +=
             (qrand() * PlayerRandomScale - NuQFntHalfScale) * amplitude * NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
-        return object->unknown_7aa != 6 && object->unknown_7aa != 5;
+        return object->unknown_7aa != ACTION_JUMP && object->unknown_7aa != ACTION_FALL;
     }
 }
