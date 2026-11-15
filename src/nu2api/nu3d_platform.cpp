@@ -2801,11 +2801,11 @@ extern "C" {
         NuTexGetHeight(texture_id);
         buffer->addr = (buffer->addr + 15) & ~15U;
         font->platform_data = (NUQFNT_RENDER_DATA *)buffer->void_ptr;
-        buffer->addr += 0x58;
+        buffer->addr += sizeof(*platform);
         platform = font->platform_data;
         font->color_abgr = &platform->colour;
-        font->x_scale = (f32 *)((u8 *)platform + 0x50);
-        font->y_scale = (f32 *)((u8 *)platform + 0x54);
+        font->x_scale = &platform->x_scale;
+        font->y_scale = &platform->y_scale;
         font->material = NuMtlCreateEx(1, plane);
         if (font->material != NULL) {
             ((NUQFNT_ATLAS_MATERIAL *)font->material)->diffuse.x = 1.0f;

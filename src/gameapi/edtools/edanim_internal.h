@@ -31,7 +31,7 @@ typedef struct edanim_param_s { // size 0x2d4
     i32 sound_ids[8];           // 0x200
     i32 sound_flags[8];         // 0x220
     f32 sound_values[8];        // 0x240
-    f32 sound_positions[8][3];  // 0x260
+    NUVEC sound_positions[8];   // 0x260
     i32 platform_id;            // 0x2c0
     f32 bounce_impulse;         // 0x2c4
     f32 bounce_spring;          // 0x2c8

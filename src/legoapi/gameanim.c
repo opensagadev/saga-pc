@@ -977,7 +977,7 @@ i32 edanimFileSave(char *path) {
                 EdFileWrite(AnimParams[i].sound_names[index], sizeof(AnimParams[i].sound_names[index]));
                 EdFileWriteInt(AnimParams[i].sound_flags[index]);
                 EdFileWriteFloat(AnimParams[i].sound_values[index]);
-                EdFileWriteNuVec((NUVEC *)AnimParams[i].sound_positions[index]);
+                EdFileWriteNuVec(&AnimParams[i].sound_positions[index]);
             }
             EdFileWriteFloat(AnimParams[i].bounce_impulse);
             EdFileWriteFloat(AnimParams[i].bounce_spring);

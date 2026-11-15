@@ -453,7 +453,7 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
     f32 best;
     i32 index;
 
-    shard = world->shards;
+    shard = (ATTRACTO_SHARD_READER *)world->shards;
     if (shard == NULL) {
         return NULL;
     }

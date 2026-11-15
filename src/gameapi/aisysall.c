@@ -10281,20 +10281,20 @@ void creatureEditorSaveData(AIPATHSYS *system) {
         EdFileWriteFloat(creature->script_params[3]);
         if (creature->trigger_area != NULL) {
             EdFileWriteInt(1);
-            EdFileWrite((u8 *)creature->trigger_area + 8, 16);
+            EdFileWrite(creature->trigger_area->name, 16);
         } else {
             EdFileWriteInt(0);
         }
         if (creature->locator != NULL) {
             EdFileWriteInt(1);
-            EdFileWrite((u8 *)creature->locator + 8, 16);
+            EdFileWrite(creature->locator->name, 16);
         } else {
             EdFileWriteInt(0);
         }
         if (aidata_version > 16) {
             if (creature->respawn_locator != NULL) {
                 EdFileWriteInt(1);
-                EdFileWrite((u8 *)creature->respawn_locator + 8, 16);
+                EdFileWrite(creature->respawn_locator->name, 16);
             } else {
                 EdFileWriteInt(0);
             }
@@ -10311,7 +10311,7 @@ void creatureEditorSaveData(AIPATHSYS *system) {
             }
             switch (creature->activation) {
                 case 1:
-                    EdFileWrite((u8 *)creature->activation_area + 8, 16);
+                    EdFileWrite(creature->activation_area->name, 16);
                     break;
             }
         }

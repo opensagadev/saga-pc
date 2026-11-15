@@ -624,7 +624,7 @@ i32 GizForce_UpdateHint(HINT *hint) {
     for (index = 0; index < 2; ++index) {
         GAMEOBJECT *object = Player[index];
         if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->transform_alpha > 0.0f && object->transform_target != NULL &&
-            object->unknown_0e28[4] == 0) {
+            object->glow_kind == 0) {
             return 1;
         }
     }

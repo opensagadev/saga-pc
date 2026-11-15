@@ -12,7 +12,7 @@ void edanimSoundDestroy(i32 parameter_index, i32 sound_index) {
     for (i = sound_index; i < AnimParams[parameter_index].sound_count - 1; ++i) {
         AnimParams[parameter_index].sound_ids[i] = AnimParams[parameter_index].sound_ids[i + 1];
         AnimParams[parameter_index].sound_values[i] = AnimParams[parameter_index].sound_values[i + 1];
-        memcpy(AnimParams[parameter_index].sound_positions[i], AnimParams[parameter_index].sound_positions[i + 1], sizeof(NUVEC));
+        memcpy(&AnimParams[parameter_index].sound_positions[i], &AnimParams[parameter_index].sound_positions[i + 1], sizeof(NUVEC));
         strcpy(AnimParams[parameter_index].sound_names[i], AnimParams[parameter_index].sound_names[i + 1]);
     }
     --AnimParams[parameter_index].sound_count;
@@ -155,7 +155,7 @@ void edanimUpdateObjects(f32 elapsed) {
                         NuMtxInvRSS(&matrix, NuSpecialGetMtx(&special));
                         NuMtxMul(&matrix, &matrix, NuSpecialGetDrawMtx(&special));
                         /* Uses the completed particle-loop index here. */
-                        position = *(NUVEC *)AnimParams[index].sound_positions[particle_index];
+                        position = AnimParams[index].sound_positions[particle_index];
                         NuVecMtxTransform(&position, &position, &matrix);
                     }
                 } else if (AnimParams[index].sound_names[sound_index][0] != 0) {

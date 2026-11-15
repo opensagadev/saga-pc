@@ -1125,20 +1125,16 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
         }
         NuMtxTranslate(&matrix, &bolt->position);
         i32 drawn[2];
-        drawn[0] = NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[0])
-                       ? NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[0], &matrix)
-                       : 0;
-        drawn[1] = NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[1])
-                       ? NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[1], &matrix)
-                       : 0;
+        drawn[0] = NuSpecialExistsFn(&type->specials[0]) ? NuSpecialDrawAt(&type->specials[0], &matrix) : 0;
+        drawn[1] = NuSpecialExistsFn(&type->specials[1]) ? NuSpecialDrawAt(&type->specials[1], &matrix) : 0;
         if (static_cast<f64>(bolt->reflection_height) != 2000000.0) {
             NUMTX reflection;
             if (MatrixReflectionVU0_AXISY(&matrix, bolt->reflection_height, world->current_level->reflection_y, &reflection)) {
-                if (NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[2])) {
-                    NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[2], &reflection);
+                if (NuSpecialExistsFn(&type->specials[2])) {
+                    NuSpecialDrawAt(&type->specials[2], &reflection);
                 }
-                if (NuSpecialExistsFn(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[3])) {
-                    NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[3], &reflection);
+                if (NuSpecialExistsFn(&type->specials[3])) {
+                    NuSpecialDrawAt(&type->specials[3], &reflection);
                 }
             }
         }
@@ -1150,7 +1146,7 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
             matrix.m30 = bolt->position.x;
             matrix.m31 = static_cast<f32>(static_cast<f64>(bolt->unknown_e4) + static_cast<f64>(0.005f));
             matrix.m32 = bolt->position.z;
-            NuSpecialDrawAt(&reinterpret_cast<nuhspecial_s *>(type->specials_68)[4], shadow_matrix);
+            NuSpecialDrawAt(&type->specials[4], shadow_matrix);
         }
         if (drawn[0] != 0 || drawn[1] != 0) {
             bolt->unknown_102 = 1;
@@ -1312,7 +1308,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     BoltNoObjectMomentum = 0;
     i32 shoot_id = -1;
     BoltShootIdScratch = -1;
-    if (type == NULL || !NuSpecialExistsFn(reinterpret_cast<nuhspecial_s *>(type->specials_68))) {
+    if (type == NULL || !NuSpecialExistsFn(type->specials)) {
         return;
     }
     if (bolt->active != 0) {
@@ -1508,7 +1504,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
 extern "C" BOLT_PC *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
     BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
     BOLT_PC *bolt = NULL;
-    if (type != NULL && NuSpecialExistsFn(reinterpret_cast<nuhspecial_s *>(type->specials_68))) {
+    if (type != NULL && NuSpecialExistsFn(type->specials)) {
         bolt = Bolt_Alloc();
         if (bolt != NULL) {
             u16 owner_index = owner ? (u16)(owner - Obj) : 0xffff;

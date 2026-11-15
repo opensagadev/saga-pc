@@ -2533,7 +2533,7 @@ static void ParaphernaliaThrust(GAMEOBJECT *object, i32 reflection) {
             object->character_model->points_of_interest[locator] == NULL) {
             continue;
         }
-        ratio = (f32)((f64)((u8 *)object)[0xe28 + effect_index++] / 255.0);
+        ratio = (f32)((f64)object->effect_noise[effect_index++] / 255.0);
         scaling.x = (f32)((((f64)ratio - 0.5) * 0.5) * object->thrust_effect_scale + object->thrust_effect_scale);
         if (scaling.x <= 0.0f) {
             continue;

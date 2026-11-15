@@ -98,12 +98,6 @@ extern "C" {
         u8 unknown_82[10];                                                       // 0x82
     } RTL_LIGHT;
 
-    typedef struct RTL_SET {   // size 0x4f84
-        u32 header;            // 0x0000
-        RTL_LIGHT lights[128]; // 0x0004
-        u8 fog[0x980];         // 0x4604
-    } RTL_SET;
-
     typedef struct rtl_fog_migration_s {                                         // size 0x4c
         f32 start;                                                               // 0x00
         f32 end;                                                                 // 0x04
@@ -123,6 +117,12 @@ extern "C" {
         f32 density_wii;                                                         // 0x3c
         u8 unknown_40[0xc];                                                      // 0x40
     } RTL_FOG_MIGRATION_PC;
+
+    typedef struct RTL_SET {          // size 0x4f84
+        u32 header;                   // 0x0000
+        RTL_LIGHT lights[128];        // 0x0004
+        RTL_FOG_MIGRATION_PC fog[32]; // 0x4604
+    } RTL_SET;
 
     RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET *set, NUVEC *position);
 

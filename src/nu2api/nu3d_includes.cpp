@@ -5205,12 +5205,6 @@ extern "C" {
         NUQFNT_RENDER_DATA *platform_data; // 0x48
     } FONT_LOAD_READER;
 
-    typedef struct FONT_RENDER_STORAGE { // size 0x58
-        NUQFNT_RENDER_DATA draw;         // 0x00
-        f32 x_scale;                     // 0x50
-        f32 y_scale;                     // 0x54
-    } FONT_RENDER_STORAGE;
-
     typedef struct FONT_PTR_BLOCK { // size 0x8
         VUFNT *font;                // 0x0
         void *texture;              // 0x4
@@ -5447,7 +5441,7 @@ extern "C" {
         VARIPTR saved;
         char filename[1024];
         FONT_LOAD_READER *reader;
-        FONT_RENDER_STORAGE *platform;
+        NUQFNT_RENDER_DATA *platform;
         i32 size;
         i32 texture_id;
         if (font != NULL) {
@@ -5463,13 +5457,13 @@ extern "C" {
             reader->glyphs = (VUFNTCHAR *)((u32)reader->glyphs + (u32)font);
             reader->unicode_map = (VUCHARIDX *)((u32)reader->unicode_map + (u32)font);
             buffer->addr = (buffer->addr + size + 15) & ~15U;
-            platform = (FONT_RENDER_STORAGE *)buffer->void_ptr;
-            reader->platform_data = &platform->draw;
+            platform = (NUQFNT_RENDER_DATA *)buffer->void_ptr;
+            reader->platform_data = platform;
             buffer->addr += sizeof(*platform);
-            platform = (FONT_RENDER_STORAGE *)reader->platform_data;
+            platform = reader->platform_data;
             reader->x_scale = &platform->x_scale;
             reader->y_scale = &platform->y_scale;
-            reader->colour = &platform->draw.colour;
+            reader->colour = &platform->colour;
             if (texture_path == NULL) {
                 sprintf(filename, "%s", path);
             } else {
@@ -5509,8 +5503,8 @@ extern "C" {
         FONT_LOAD_READER *result = (FONT_LOAD_READER *)((buffer->addr + 15) & ~15U);
         i32 i;
         i32 index;
-        buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(*result) + sizeof(FONT_RENDER_STORAGE);
-        memset(result, 0, sizeof(*result) + sizeof(FONT_RENDER_STORAGE));
+        buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(*result) + sizeof(NUQFNT_RENDER_DATA);
+        memset(result, 0, sizeof(*result) + sizeof(NUQFNT_RENDER_DATA));
         result->platform_data = (NUQFNT_RENDER_DATA *)(result + 1);
         result->glyph_count = font->glyph_count;
         result->legacy_font = font;
@@ -8541,7 +8535,7 @@ extern "C" {
     i32 NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
         PC_MATERIAL_CREATE_SHADER description;
         FONT_LOAD_READER *reader = (FONT_LOAD_READER *)font;
-        FONT_RENDER_STORAGE *platform;
+        NUQFNT_RENDER_DATA *platform;
         font->material = NuMtlCreate(1);
         ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.x = 1.0f;
         ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.y = 1.0f;
@@ -8566,13 +8560,13 @@ extern "C" {
         description.vertex_format = (description.vertex_format & ~0x3000U) | 0x40901U;
         NuMtlSetShaderDescPS(font->material, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&description);
         NuMtlUpdate(font->material);
-        platform = (FONT_RENDER_STORAGE *)((buffer->addr + 15) & ~15U);
-        reader->platform_data = &platform->draw;
+        platform = (NUQFNT_RENDER_DATA *)((buffer->addr + 15) & ~15U);
+        reader->platform_data = platform;
         buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(*platform);
-        platform = (FONT_RENDER_STORAGE *)reader->platform_data;
+        platform = reader->platform_data;
         reader->x_scale = &platform->x_scale;
         reader->y_scale = &platform->y_scale;
-        reader->colour = &platform->draw.colour;
+        reader->colour = &platform->colour;
         reader->header = NULL;
         return 0;
     }

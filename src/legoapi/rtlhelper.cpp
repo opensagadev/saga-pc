@@ -619,8 +619,6 @@ RTL_SET *RTLHelper::GetIndexedSet() {
     return NULL;
 }
 
-#define RTLHELPER_FOGS(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)
-
 /* EdClassInterface for the fog volumes of the current light set. */
 class FogHelper : public EdClassInterface { // size 0x8
   public:
@@ -651,7 +649,7 @@ i32 FogHelper::GetNumObjects() {
     i32 count = 0;
     i32 i;
     for (i = 0; i < 32; i++) {
-        if (RTLHELPER_FOGS(curr_set)[i].type != 0) {
+        if (curr_set->fog[i].type != 0) {
             count++;
         }
     }
@@ -663,11 +661,11 @@ void *FogHelper::GetNextObject(void *object) {
     i32 i;
     if (rtl_set != NULL) {
         if (object == NULL) {
-            return &RTLHELPER_FOGS(rtl_set)[0];
+            return &rtl_set->fog[0];
         }
-        for (i = static_cast<RTL_FOG_MIGRATION_PC *>(object) - RTLHELPER_FOGS(rtl_set) + 1; i < 32; i++) {
-            if (RTLHELPER_FOGS(rtl_set)[i].type != 0) {
-                return &RTLHELPER_FOGS(rtl_set)[i];
+        for (i = static_cast<RTL_FOG_MIGRATION_PC *>(object) - rtl_set->fog + 1; i < 32; i++) {
+            if (rtl_set->fog[i].type != 0) {
+                return &rtl_set->fog[i];
             }
         }
     }
@@ -697,14 +695,14 @@ void *FogHelper::CreateObject(void *, i32, i32) {
     /* fogAlloc, inlined here in the single C++ rtl unit. */
     if (curr_set != NULL) {
         for (i = 0; i < 32; i++) {
-            if (RTLHELPER_FOGS(curr_set)[i].type == 0) {
+            if (curr_set->fog[i].type == 0) {
                 goto found;
             }
         }
     }
     return NULL;
 found:
-    fog = &RTLHELPER_FOGS(curr_set)[i];
+    fog = &curr_set->fog[i];
     if (fog != NULL) {
         fog->type = 1;
         fog->position = APIObjectZeroMomentumPC;
@@ -924,7 +922,7 @@ void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) 
     CheckType(requested_type);
     switch (member_offset) {
         case 0x80000002:
-            sprintf(static_cast<char *>(data), "Fog%d", fog - RTLHELPER_FOGS(curr_set));
+            sprintf(static_cast<char *>(data), "Fog%d", fog - curr_set->fog);
             break;
         case 0x80000003: {
             NUVEC *colour = static_cast<NUVEC *>(data);

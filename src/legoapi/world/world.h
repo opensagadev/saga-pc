@@ -105,7 +105,7 @@ typedef struct BOLTTYPE_PC_s { // size 0xa4
         i16 hit_sound_id;
     }; // 0x66
 
-    u8 specials_68[0x3c]; // 0x68
+    struct nuhspecial_s specials[5]; // 0x68
 } BOLTTYPE_PC;
 
 #ifdef __cplusplus
@@ -241,7 +241,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct GRAPPLE_DYNAMIC *grapples;                          // 0x5080
     i32 grapple_count;                                         // 0x5084
     u8 unknown_5088[0x8];                                      // 0x5088
-    void *shards;                                              // 0x5090
+    struct SHARD_s *shards;                                    // 0x5090
     i32 shard_count;                                           // 0x5094
     void *attractos;                                           // 0x5098
     i32 attracto_count;                                        // 0x509c

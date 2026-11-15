@@ -934,7 +934,6 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
 
 // Version 2/3 sets kept their fog table in the light slots from 64 onwards.
 #define RTL_OLD_FOG(set) ((RTL_FOG_MIGRATION_PC *)&(set)->lights[64])
-#define RTL_FOG(set) ((RTL_FOG_MIGRATION_PC *)(set)->fog)
 
 RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     RTL_SET *set;
@@ -957,7 +956,7 @@ RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
         case 3:
             i = 32;
             while (i--) {
-                RTL_FOG(set)[i] = RTL_OLD_FOG(set)[i];
+                set->fog[i] = RTL_OLD_FOG(set)[i];
             }
             for (i = 64; i < 128; ++i) {
                 set->lights[i].type = 0;
@@ -2189,8 +2188,8 @@ RTL_FOG_MIGRATION_PC *fogAlloc(void) {
     i32 i;
     if (curr_set != NULL) {
         for (i = 0; i < 32; ++i) {
-            if (((RTL_FOG_MIGRATION_PC *)curr_set->fog)[i].type == 0) {
-                return &((RTL_FOG_MIGRATION_PC *)curr_set->fog)[i];
+            if (curr_set->fog[i].type == 0) {
+                return &curr_set->fog[i];
             }
         }
     }
@@ -2199,7 +2198,7 @@ RTL_FOG_MIGRATION_PC *fogAlloc(void) {
 
 void fogFree(RTL_FOG_MIGRATION_PC *fog) {
     RTL_FOG_MIGRATION_PC *next = fog + 1;
-    while (fog < &((RTL_FOG_MIGRATION_PC *)curr_set->fog)[32] && fog->type != 0) {
+    while (fog < &curr_set->fog[32] && fog->type != 0) {
         *fog = *next;
         ++fog;
         ++next;
@@ -2215,18 +2214,15 @@ RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET *set, NUVEC *position) {
     f32 distance_squared;
     if (fog_set != NULL) {
         for (i = 0; i < 32; ++i) {
-            if (((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].type == 0) {
+            if (fog_set->fog[i].type == 0) {
                 continue;
             }
-            distance_squared = (position->x - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.x) *
-                                   (position->x - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.x) +
-                               (position->y - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.y) *
-                                   (position->y - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.y) +
-                               (position->z - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.z) *
-                                   (position->z - ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].position.z);
-            if (distance_squared < ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius * ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius) {
+            distance_squared = (position->x - fog_set->fog[i].position.x) * (position->x - fog_set->fog[i].position.x) +
+                               (position->y - fog_set->fog[i].position.y) * (position->y - fog_set->fog[i].position.y) +
+                               (position->z - fog_set->fog[i].position.z) * (position->z - fog_set->fog[i].position.z);
+            if (distance_squared < fog_set->fog[i].radius * fog_set->fog[i].radius) {
                 if (selected != -1) {
-                    if (((RTL_FOG_MIGRATION_PC *)fog_set->fog)[i].radius < ((RTL_FOG_MIGRATION_PC *)fog_set->fog)[selected].radius) {
+                    if (fog_set->fog[i].radius < fog_set->fog[selected].radius) {
                         selected = i;
                     }
                 } else {
@@ -2235,7 +2231,7 @@ RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET *set, NUVEC *position) {
             }
         }
         if (selected != -1) {
-            return &((RTL_FOG_MIGRATION_PC *)fog_set->fog)[selected];
+            return &fog_set->fog[selected];
         }
     }
     return NULL;
@@ -4020,17 +4016,17 @@ static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
         if (hide_types[curr_set->lights[i].type]) {
             continue;
         }
-        distance = ((RTL_FOG(curr_set)[i].position.x - position->x) * (RTL_FOG(curr_set)[i].position.x - position->x)) +
-                   (RTL_FOG(curr_set)[i].position.y - position->y) * (RTL_FOG(curr_set)[i].position.y - position->y) +
-                   (RTL_FOG(curr_set)[i].position.z - position->z) * (RTL_FOG(curr_set)[i].position.z - position->z);
-        if (distance < RTL_FOG(curr_set)[i].radius * RTL_FOG(curr_set)[i].radius && distance < nearest_distance) {
+        distance = ((curr_set->fog[i].position.x - position->x) * (curr_set->fog[i].position.x - position->x)) +
+                   (curr_set->fog[i].position.y - position->y) * (curr_set->fog[i].position.y - position->y) +
+                   (curr_set->fog[i].position.z - position->z) * (curr_set->fog[i].position.z - position->z);
+        if (distance < curr_set->fog[i].radius * curr_set->fog[i].radius && distance < nearest_distance) {
             nearest_distance = distance;
             nearest = i;
         }
     }
     if (nearest != -1) {
         curFogLoc = nearest;
-        return &RTL_FOG(curr_set)[nearest];
+        return &curr_set->fog[nearest];
     }
     return NULL;
 }
@@ -4051,9 +4047,9 @@ static RTL_FOG_MIGRATION_PC *SelectPrevFog(void) {
     }
     if (curr_set != NULL) {
         while (index != curFogLoc) {
-            if (RTL_FOG(curr_set)[index].type != 0) {
+            if (curr_set->fog[index].type != 0) {
                 curFogLoc = index;
-                return &RTL_FOG(curr_set)[index];
+                return &curr_set->fog[index];
             }
             if (index == 0) {
                 index = 32;
@@ -4078,9 +4074,9 @@ static RTL_FOG_MIGRATION_PC *SelectNextFog(void) {
     }
     if (curr_set != NULL) {
         while (index != curFogLoc) {
-            if (RTL_FOG(curr_set)[index].type != 0) {
+            if (curr_set->fog[index].type != 0) {
                 curFogLoc = index;
-                return &RTL_FOG(curr_set)[index];
+                return &curr_set->fog[index];
             }
             if (index >= 32) {
                 index = -1;
@@ -4294,7 +4290,7 @@ void edrtlDrawFog(RTL_FOG_MIGRATION_PC *fog) {
 void edrtlDrawFogs(void) {
     i32 index;
     for (index = 0; index < 32; ++index) {
-        edrtlDrawFog(&RTL_FOG(curr_set)[index]);
+        edrtlDrawFog(&curr_set->fog[index]);
     }
 }
 

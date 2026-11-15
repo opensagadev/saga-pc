@@ -1235,7 +1235,9 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x0e24
 
-    u8 unknown_0e28[7];    // 0x0e28
+    u8 effect_noise[4];    // 0x0e28
+    u8 glow_kind;          // 0x0e2c
+    u8 unknown_0e2d[2];    // 0x0e2d
     u8 block_latch;        // 0x0e2f
     u8 quick_shoot_flags;  // 0x0e30
     u8 unknown_0e31;       // 0x0e31

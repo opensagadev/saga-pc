@@ -756,12 +756,14 @@ typedef struct NUHGOBJ_POI { // size 0x50
     u8 unknown_45[11];       // 0x45
 } NUHGOBJ_POI;
 
-typedef struct nuqfnt_render_data_s { // size 0x50
+typedef struct nuqfnt_render_data_s { // size 0x58
     u32 colour;                       // 0x00
     f32 x;                            // 0x04
     f32 y;                            // 0x08
     f32 z;                            // 0x0c
     NUMTX matrix;                     // 0x10
+    f32 x_scale;                      // 0x50
+    f32 y_scale;                      // 0x54
 } NUQFNT_RENDER_DATA;
 
 #ifdef __cplusplus

@@ -131,7 +131,7 @@ void edanimDetermineNearestSound(float distance) {
     base_position = NuSpecialGetPos(&special);
 
     if (edanim_nearest_sound != -1) {
-        NuVecAdd(&world_position, base_position, ((NUVEC *)(AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound])));
+        NuVecAdd(&world_position, base_position, &AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound]);
         NuVecSub(&delta, &edanim_cam_pos, &world_position);
         length = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (length == 0.0f) {
@@ -141,7 +141,7 @@ void edanimDetermineNearestSound(float distance) {
     edanim_nearest_sound = -1;
     for (sound = 0; sound < AnimParams[edanim_nearest_param_id].sound_count; ++sound) {
         f32 candidate;
-        NuVecAdd(&world_position, base_position, ((NUVEC *)(AnimParams[edanim_nearest_param_id].sound_positions[sound])));
+        NuVecAdd(&world_position, base_position, &AnimParams[edanim_nearest_param_id].sound_positions[sound]);
         NuVecSub(&delta, &edanim_cam_pos, &world_position);
         candidate = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         if (distance < 0.0f || candidate < distance) {
@@ -286,7 +286,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
                 AnimParams[slot].sound_ids[item] = -1;
                 AnimParams[slot].sound_flags[item] = EdFileReadInt();
                 AnimParams[slot].sound_values[item] = EdFileReadFloat();
-                EdFileReadNuVec((NUVEC *)AnimParams[slot].sound_positions[item]);
+                EdFileReadNuVec(&AnimParams[slot].sound_positions[item]);
             }
         }
         for (item = 0; item < extra; ++item) {
@@ -613,9 +613,9 @@ void edanimRenderSoundEmitters(i32 parameter_index) {
             continue;
         }
         colour = edanim_sound_mode && edanim_nearest_sound == sound ? 0xffff0000 : 0xffffffff;
-        edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound][0],
-                                base_position->y + AnimParams[parameter_index].sound_positions[sound][1],
-                                base_position->z + AnimParams[parameter_index].sound_positions[sound][2], 0.25f, colour,
+        edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound].x,
+                                base_position->y + AnimParams[parameter_index].sound_positions[sound].y,
+                                base_position->z + AnimParams[parameter_index].sound_positions[sound].z, 0.25f, colour,
                                 (PC_SCENE_MTL_VIEW *)edanim_mtl);
     }
 }
@@ -623,7 +623,7 @@ void edanimRenderSoundEmitters(i32 parameter_index) {
 void edanimSoundPlace(i32 sound_index, NUVEC *position) {
     nuhspecial_s special;
     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
-    NuVecSub((NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[sound_index], position, NuSpecialGetPos(&special));
+    NuVecSub(&AnimParams[edanim_nearest_param_id].sound_positions[sound_index], position, NuSpecialGetPos(&special));
 }
 
 void edanimParticlePlace(i32 particle_index, NUVEC *position) {
@@ -727,7 +727,7 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
                 if (edanim_nearest_sound != -1) {
                     NuGScnGetSpecial(&special, edbits_base_scene, edanim_nearest);
                     origin = NuSpecialGetPos(&special);
-                    NuVecAdd(&position, origin, (NUVEC *)AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound]);
+                    NuVecAdd(&position, origin, &AnimParams[edanim_nearest_param_id].sound_positions[edanim_nearest_sound]);
                     edcamSetPos(&position);
                     edanim_sound_type = AnimParams[edanim_nearest_param_id].sound_ids[edanim_nearest_sound];
                 }

@@ -32,7 +32,7 @@ struct nuhspecial_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AddGameMsgCount(NUVEC *position, i32 count, i32 total, u8 red, u8 green, u8 blue, f32 field_0xd4);
+    void AddGameMsgCount(NUVEC *position, i32 count, i32 total, u8 red, u8 green, u8 blue, f32 value);
     void AddFancyMessage(char *text, f32 x, f32 y, f32 scale, f32 duration, i32 message_id, i32 colour_type);
     extern i32 GameMessageIndex;
     void ResetGameMessages(void);

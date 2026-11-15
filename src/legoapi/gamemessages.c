@@ -429,15 +429,15 @@ i32 FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude)
     return count;
 }
 
-void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, unsigned char green, unsigned char blue, float field_0xd4) {
-    void *message;
+void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, unsigned char green, unsigned char blue, float value) {
+    GAME_MESSAGE_PC *message;
     char text[32];
     sprintf(text, "%i/%i", count, total);
 
     message = position != NULL ? AddGameMessage(text, position, 0.6f, NULL, 0.8f, red, green, blue, 0x4023, 1.0f)
                                : AddGameMessage(text, &v001, 0.6f, NULL, 0.8f, red, green, blue, 0x4020, 1.0f);
     if (message != NULL) {
-        *(float *)((char *)(message) + 0xd4) = field_0xd4;
+        message->parameter_d4 = value;
     }
 }
 

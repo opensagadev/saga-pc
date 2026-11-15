@@ -32,14 +32,14 @@ i32 Shards_Load(WORLDINFO *world, void *unused) {
         version = EdFileReadInt();
         world->shard_count = EdFileReadInt();
         for (index = 0; index < world->shard_count; ++index) {
-            EdFileRead(((SHARD_s *)world->shards)[index].name, 16);
-            EdFileReadNuVec(&((SHARD_s *)world->shards)[index].position);
+            EdFileRead(world->shards[index].name, 16);
+            EdFileReadNuVec(&world->shards[index].position);
             if (version >= 2) {
-                ((SHARD_s *)world->shards)[index].angle_x = EdFileReadShort();
-                ((SHARD_s *)world->shards)[index].angle_z = EdFileReadShort();
+                world->shards[index].angle_x = EdFileReadShort();
+                world->shards[index].angle_z = EdFileReadShort();
             } else {
-                ((SHARD_s *)world->shards)[index].angle_x = 0;
-                ((SHARD_s *)world->shards)[index].angle_z = 0;
+                world->shards[index].angle_x = 0;
+                world->shards[index].angle_z = 0;
             }
         }
         return 1;
@@ -88,7 +88,7 @@ void Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS *progress) {
     }
     progress_record = world->shards;
     for (index = 0; index < world->shard_count; ++index, ++progress_record) {
-        ShardInitRecord(world, &((SHARD_s *)world->shards)[index]);
+        ShardInitRecord(world, &world->shards[index]);
         if (progress != NULL && index < 128) {
             i32 word = index / 32;
             u32 mask = 1u << (index & 31);
@@ -117,7 +117,7 @@ void Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
     WORLDINFO *world = data;
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
-        ((SHARD_s *)world->shards)[index].state_flags &= ~0x20u;
+        world->shards[index].state_flags &= ~0x20u;
     }
 }
 
@@ -253,8 +253,8 @@ i32 Shards_GetMaxGizmos(WORLDINFO *world) {
 void Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
-        if (NuStrLen(((SHARD_s *)world->shards)[index].name) != 0) {
-            AddGizmo(system, type, NULL, &((SHARD_s *)world->shards)[index]);
+        if (NuStrLen(world->shards[index].name) != 0) {
+            AddGizmo(system, type, NULL, &world->shards[index]);
         }
     }
 }
