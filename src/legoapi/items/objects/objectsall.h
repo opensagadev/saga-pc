@@ -24,7 +24,7 @@
 
 #if SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_PART == 1 && !defined(SAGA_LEGOAPI_ITEMS_OBJECTS_OBJECTSALL_H_STOP)
 
-struct FRAME_PAD_PC;
+struct FRAME_PAD;
 struct NUGSCN_s;
 struct eduiitem_s;
 struct eduimenu_s;
@@ -81,7 +81,7 @@ typedef struct parttype_lookup_s { // size 0x178
     f32 last_used_time;  // 0x16c
     f32 scale;           // 0x170
     u8 unknown_174[0x4]; // 0x174
-} PARTTYPE_LOOKUP_PC;
+} PARTTYPE_LOOKUP;
 
 typedef struct partdebrisentry_s { // size 0x14
     i32 id;                        // 0x00
@@ -94,13 +94,13 @@ typedef struct partdebrissys_s { // size 0xc
     PARTDEBRISENTRY *entries;    // 0x8
 } PARTDEBRISSYS;
 
-typedef struct rtlset_s RTLSET_PC;
+typedef struct rtlset_s RTLSET;
 struct PART_PC;
 
 typedef struct debris_collision_entry_s { // size 0x8
     i32 key_index;                        // 0x0
     u32 flags;                            // 0x4
-} DEBRIS_COLLISION_ENTRY_PC;
+} DEBRIS_COLLISION_ENTRY;
 
 typedef struct PART_PC PART_PC;
 #ifdef __cplusplus
@@ -111,7 +111,7 @@ extern "C" {
         i32 base_effect_index;            // 0x0
         i32 scaled_effect_index;          // 0x4
         f32 scale;                        // 0x8
-    } DEBRIS_SCALE_CACHE_PC;
+    } DEBRIS_SCALE_CACHE;
 
     extern char KillPartsLegoSingleText[11];
 
@@ -138,9 +138,9 @@ extern "C" {
         i16 unknown_46;              // 0x46
         i32 instance_id;             // 0x48
         i32 trailing_state_words[8]; // 0x4c
-    } PART_EMIT_PC;
+    } PART_EMIT;
 
-    extern PART_EMIT_PC part_emits[40];
+    extern PART_EMIT part_emits[40];
     extern i32 part_page_on[8];
     extern f32 debris_render_scale;
     extern i32 edbits_editor_state;
@@ -156,10 +156,10 @@ extern "C" {
     i32 AddPARTEffect(i32, NUVEC *);
     void PARTStartOffset(i32, f32);
     extern u32 partseed;
-    extern RTLSET_PC *PartRTL;
-    extern PARTTYPE_LOOKUP_PC part_types[128];
+    extern RTLSET *PartRTL;
+    extern PARTTYPE_LOOKUP part_types[128];
 
-    extern PARTTYPE_LOOKUP_PC part_types[128];
+    extern PARTTYPE_LOOKUP part_types[128];
     void NuPartSetSeed(i32 seed);
 
     extern i32 part_types_used;
@@ -176,7 +176,7 @@ extern "C" {
     extern NUVEC PartEditorCameraPos;
     extern i32 PartGeneralPage;
     extern i32 PartLevelPage;
-    void edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page);
+    void edpartLoadSingleType(PARTTYPE_LOOKUP *record, i32 version, i32 page);
     void edpartDetermineNearest(f32 distance);
     void UpdatePartEmits(f32 time);
     i32 PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);
@@ -234,7 +234,7 @@ extern "C" {
     i32 edpartLookupObjectInScene(char *name, struct NUGSCN_s *scene);
     i32 edpartLoadPageEx(char *path, i8 mode, struct NUGSCN_s **scenes, i32 scene_count);
     i32 edpartLoadPage(char *, i8, struct NUGSCN_s *);
-    void edpartDoInput(struct FRAME_PAD_PC *pad);
+    void edpartDoInput(struct FRAME_PAD *pad);
 #ifdef __cplusplus
 }
 #endif
@@ -277,12 +277,12 @@ extern "C" {
         u8 green;                        // 0x5
         u8 blue;                         // 0x6
         u8 unknown_7;                    // 0x7
-    } DEBRIS_COLOUR_KEY_PC;
+    } DEBRIS_COLOUR_KEY;
 
     typedef struct debris_float_key_s { // size 0x8
         f32 time;                       // 0x0
         f32 value;                      // 0x4
-    } DEBRIS_FLOAT_KEY_PC;
+    } DEBRIS_FLOAT_KEY;
 
     typedef struct debris_info_s {   // size 0x428
         char name[16];               // 0x000
@@ -329,26 +329,26 @@ extern "C" {
         f32 jib_x_amplitude;                      // 0x0b4
         f32 jib_y_frequency;                      // 0x0b8
         f32 jib_y_amplitude;                      // 0x0bc
-        DEBRIS_COLOUR_KEY_PC colour_keys[8];      // 0x0c0
-        DEBRIS_FLOAT_KEY_PC alpha_keys[8];        // 0x100
+        DEBRIS_COLOUR_KEY colour_keys[8];         // 0x0c0
+        DEBRIS_FLOAT_KEY alpha_keys[8];           // 0x100
         f32 particle_parameter_a;                 // 0x140
         f32 particle_parameter_b;                 // 0x144
         f32 min_size;                             // 0x148
         f32 max_size;                             // 0x14c
-        DEBRIS_FLOAT_KEY_PC width_keys[8];        // 0x150
-        DEBRIS_FLOAT_KEY_PC height_keys[8];       // 0x190
+        DEBRIS_FLOAT_KEY width_keys[8];           // 0x150
+        DEBRIS_FLOAT_KEY height_keys[8];          // 0x190
         f32 min_rotation;                         // 0x1d0
         f32 max_rotation;                         // 0x1d4
-        DEBRIS_FLOAT_KEY_PC rotation_keys[8];     // 0x1d8
-        DEBRIS_FLOAT_KEY_PC field_218_keys[8];    // 0x218
-        DEBRIS_FLOAT_KEY_PC field_258_keys[8];    // 0x258
+        DEBRIS_FLOAT_KEY rotation_keys[8];        // 0x1d8
+        DEBRIS_FLOAT_KEY field_218_keys[8];       // 0x218
+        DEBRIS_FLOAT_KEY field_258_keys[8];       // 0x258
         f32 texture_u0;                           // 0x298
         f32 texture_v0;                           // 0x29c
         f32 texture_u1;                           // 0x2a0
         f32 texture_v1;                           // 0x2a4
         struct debris_part_header_s *native_data; // 0x2a8
         f32 last_render_time;                     // 0x2ac
-        DEBRIS_FLOAT_KEY_PC collision_keys[8];    // 0x2b0
+        DEBRIS_FLOAT_KEY collision_keys[8];       // 0x2b0
         i8 process_spheres;                       // 0x2f0
         i8 time_group;                            // 0x2f1
         u8 collision_flags;                       // 0x2f2
@@ -358,9 +358,9 @@ extern "C" {
         f32 torus_radius1;                        // 0x304
         f32 torus_radius2;                        // 0x308
         f32 torus_lifetime;                       // 0x30c
-        DEBRIS_FLOAT_KEY_PC torus_keys1[8];       // 0x310
-        DEBRIS_FLOAT_KEY_PC torus_keys2[8];       // 0x350
-        DEBRIS_FLOAT_KEY_PC torus_keys3[8];       // 0x390
+        DEBRIS_FLOAT_KEY torus_keys1[8];          // 0x310
+        DEBRIS_FLOAT_KEY torus_keys2[8];          // 0x350
+        DEBRIS_FLOAT_KEY torus_keys3[8];          // 0x390
         i16 particle_keys[8];                     // 0x3d0
         i32 sound_data[12];                       // 0x3e0
         i8 trail_count;                           // 0x410
@@ -372,9 +372,9 @@ extern "C" {
         f32 radial_floor;                         // 0x41c
         f32 scale;                                // 0x420
         i32 base_effect_index;                    // 0x424
-    } DEBRIS_INFO_PC;
+    } DEBRIS_INFO;
 
-    extern DEBRIS_INFO_PC DebrisNullEffect;
+    extern DEBRIS_INFO DebrisNullEffect;
     extern struct eduimenu_s *edpart_cutoff_menu;
     extern struct eduimenu_s *edpart_scaletype_menu;
     extern struct eduimenu_s *edpart_type_menu;

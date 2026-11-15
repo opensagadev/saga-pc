@@ -83,7 +83,7 @@ extern "C" {
     i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
     nuhspecial_s thingsSceneArm = {0};
     nuhspecial_s thingsSceneBase = {0};
-    static ADDGIZMOTYPE_PC GizmoRegistrySpinnerAddTypePc = {0};
+    static ADDGIZMOTYPE GizmoRegistrySpinnerAddTypePc = {0};
 }
 
 extern "C" void SpinnerMissingSpecial(char *format, ...) {
@@ -483,7 +483,7 @@ extern "C" i32 GizSpinner_GetMaxGizmos(void *world_ptr) {
     return world->current_level->max_spinners;
 }
 
-extern "C" void GizSpinner_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+extern "C" void GizSpinner_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     i32 i;
     (void)data;
@@ -1034,7 +1034,7 @@ extern "C" i32 GizSpinner_BoltHitPlatPc(WORLDINFO *, void *spinner_ptr, BOLT_PC 
     return 0;
 }
 
-extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *result_position, NUVEC *result_velocity, void *, NUVEC *position,
+extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *result_position, NUVEC *result_velocity, void *, NUVEC *position,
                                              NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32, i32) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GIZMO_PC *result = NULL;
@@ -1050,8 +1050,8 @@ extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET_PC *, f32 *, NUVEC *result
     minimum.z = position->z - radius;
     maximum.x = position->x + radius;
     maximum.z = position->z + radius;
-    GIZMOSET_PC *set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[spinner_gizmotype_id];
-    for (i32 index = 0; index < set->count; ++index, set = &((GIZMOSYS_PREFIX_PC *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
+    GIZMOSET *set = &((GIZMOSYS_PREFIX *)world->gizmo_sys)->sets[spinner_gizmotype_id];
+    for (i32 index = 0; index < set->count; ++index, set = &((GIZMOSYS_PREFIX *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
         GIZMO_PC *gizmo = &set->gizmos[index];
         GIZSPINNER_s *spinner = &world->spinners[index];
         if (spinner->flags == 0 || (spinner->flags & 0x26) != 0 || (spinner->state_flags & 8) != 0 || spinner->position.x < minimum.x ||
@@ -1468,8 +1468,8 @@ extern "C" i32 GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i32, f32, 
     return 0;
 }
 
-extern "C" ADDGIZMOTYPE_PC *Spinner_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistrySpinnerAddTypePc;
+extern "C" ADDGIZMOTYPE *Spinner_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE *addtype = &GizmoRegistrySpinnerAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.late_update_fn = NULL;
     addtype->fns.activate_rev_fn = NULL;
@@ -1480,13 +1480,13 @@ extern "C" ADDGIZMOTYPE_PC *Spinner_RegisterGizmo(i32 type_id) {
     addtype->name = "Spinner";
     addtype->prefix = "";
     addtype->fns.options = 0x40;
-    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizSpinner_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizSpinner_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizSpinner_AddGizmos;
     addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizSpinners_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizSpinner_Draw;
     addtype->fns.panel_draw_fn = (void (*)(void *, void *, f32))GizSpinner_PanelDraw;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizSpinner_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizSpinner_GetOutput;
+    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))GizSpinner_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizSpinner_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizSpinner_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizSpinner_Activate;
@@ -1495,7 +1495,7 @@ extern "C" ADDGIZMOTYPE_PC *Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.using_special_fn = (void *)GizSpinner_UsingSpecial;
     addtype->fns.bolt_hit_plat_fn = (void *)GizSpinner_BoltHitPlatPc;
     addtype->fns.get_best_bolt_target_fn =
-        (GIZMO_PC * (*)(GIZMOSET_PC *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
+        (GIZMO_PC * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
             GizSpinner_GetBestBoltTarget;
     addtype->fns.bolt_hit_fn = (void *)GizSpinner_HasBoltHit;
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizSpinner_AllocateProgressData;
@@ -1503,6 +1503,6 @@ extern "C" ADDGIZMOTYPE_PC *Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizSpinner_StoreProgressData;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizSpinner_ResetAll;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizSpinner_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(*)(void *, void *))GizSpinner_Load;
+    addtype->fns.load_fn = (i32 (*)(void *, void *))GizSpinner_Load;
     return addtype;
 }

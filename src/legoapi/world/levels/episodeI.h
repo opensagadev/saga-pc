@@ -68,7 +68,7 @@ extern "C" {
     extern f32 PodDustEmissionRate;
     extern f32 PodDustHeightScale;
     i32 PodRace_InStartCountdown(WORLDINFO *);
-    void SetPodMergeAnims(ANIMPACKET_PC *, i32);
+    void SetPodMergeAnims(ANIMPACKET *, i32);
     extern u8 gunship_flags[10];
     extern struct gameobject_s *Maul_obj;
     void PodRaceReset(void);
@@ -104,7 +104,7 @@ typedef struct client_mines_s { // size 0x318
     u32 present_words[2];       // 0x300
     u32 exploded_words[2];      // 0x308
     u32 unknown_310[2];         // 0x310
-} CLIENT_MINES_PC;
+} CLIENT_MINES;
 
 typedef struct pod_race_countdown_reader_s { // size 0xb004
     u8 unknown_0000[0xb000];                 // 0x0000
@@ -126,4 +126,4 @@ typedef struct gungan_a_s { // size 0x114
     i16 model_index;        // 0x108
     i16 unknown_10a;        // 0x10a
     i16 models[4];          // 0x10c
-} GUNGAN_A_PC;
+} GUNGAN_A;

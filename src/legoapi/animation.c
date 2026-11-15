@@ -49,7 +49,7 @@ typedef struct character_joint_movement_s { // size 0x1080
     }
 
 void AddFootSteps(GAMEOBJECT *object) {
-    ANIMPACKET_PC *packet = &object->anim_packet;
+    ANIMPACKET *packet = &object->anim_packet;
     CHARACTERANIM_CONFIG *config;
     i32 valid_interval;
     i32 crossed;

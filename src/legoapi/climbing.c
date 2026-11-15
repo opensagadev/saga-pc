@@ -507,12 +507,12 @@ i32 Hang_SetTargetMom(GAMEOBJECT *object) {
 }
 
 void *CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
-    CLIMB_SYSTEM_PC *system = NULL;
+    CLIMB_SYSTEM *system = NULL;
     if (count != 0) {
         system = GameBufferAlloc(buffer, end, sizeof(*system));
         if (system != NULL) {
             system->capacity = (u16)count;
-            system->objects = GameBufferAlloc(buffer, end, system->capacity * sizeof(CLIMB_SLOT_PC));
+            system->objects = GameBufferAlloc(buffer, end, system->capacity * sizeof(CLIMB_SLOT));
         }
     }
     return system;
@@ -522,7 +522,7 @@ i32 LedgeTerrain_CheckAnims = 1;
 f32 LEDGETERRAINLOOKAHEAD = 0.02f;
 i32 ClimbNormalProbeCount = 8;
 
-void ClimbObject_FindNormal(CLIMB_SLOT_PC *object) {
+void ClimbObject_FindNormal(CLIMB_SLOT *object) {
     AIPATHNODE *first = &object->path->nodes[object->connection->node_indices[0]];
     AIPATHNODE *second = &object->path->nodes[object->connection->node_indices[1]];
     AIPATHNODE *node = first->position.y < second->position.y ? first : second;
@@ -554,12 +554,12 @@ void InitClimbObjectSys(WORLDINFO *world) {
     i32 connection_index;
     AIPATH *path;
     AIPATHCNX *connection;
-    CLIMB_SLOT_PC *object;
+    CLIMB_SLOT *object;
     if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL || world->climb_objects == NULL) {
         return;
     }
     world->climb_objects->count = 0;
-    memset(world->climb_objects->objects, 0, world->climb_objects->capacity * sizeof(CLIMB_SLOT_PC));
+    memset(world->climb_objects->objects, 0, world->climb_objects->capacity * sizeof(CLIMB_SLOT));
     for (index = 0; index < world->ai_sys->path_sys->path_count; ++index) {
         path = world->ai_sys->path_sys->paths[index];
         if (path == NULL) {
@@ -578,9 +578,9 @@ void InitClimbObjectSys(WORLDINFO *world) {
     }
 }
 
-CLIMB_SLOT_PC *FindClimbObject(CLIMB_SYSTEM_PC *system, AIPATHCNX *connection) {
+CLIMB_SLOT *FindClimbObject(CLIMB_SYSTEM *system, AIPATHCNX *connection) {
     i32 index;
-    CLIMB_SLOT_PC *object;
+    CLIMB_SLOT *object;
     if (system != NULL) {
         object = system->objects;
         for (index = 0; index < system->count; ++index, ++object) {

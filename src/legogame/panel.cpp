@@ -1366,7 +1366,7 @@ extern "C" {
             }
         }
         {
-            GAMEPAD_RUNTIME_INPUT_PC *pads = (GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage;
+            GAMEPAD_RUNTIME_INPUT *pads = (GAMEPAD_RUNTIME_INPUT *)GamePadStorage;
             if (pads[0].input_ready == 0 || (pads[0].bound_pad->flags & 4) == 0) {
                 NuPadMapPlayerToPort(0, PcInput_GetFirstKeyboardPort() + 1);
             }
@@ -1392,7 +1392,7 @@ extern "C" {
             if (StartupGameFlag1 == 0 && LevelNameTime > 0.0f &&
                 (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && WORLD->current_level != TITLES_LDATA &&
                 WORLD->current_level != CREDITS_LDATA) {
-                LEVELDATA_PC *level = WORLD->current_level;
+                LEVELDATA *level = WORLD->current_level;
                 char *name =
                     level->title_text_id != 0xffff && level->title_text_id != (u16)tUNKNOWN ? TTab[(i16)level->title_text_id] : level->name;
                 if (name != NULL) {
@@ -1558,7 +1558,7 @@ extern "C" {
 }
 
 void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     NUVEC position;
     i32 first_red;
     i32 first_green;
@@ -1634,7 +1634,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
 }
 
 void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     NUVEC position;
     i32 id;
     if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||

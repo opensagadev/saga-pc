@@ -84,76 +84,76 @@ typedef struct PC_FILEEXTINFO { // size 0x10
     char len;                   // 0xf
 } PC_FILEEXTINFO;
 
-typedef struct FRAME_SCANNED_PAD_PC { // size 0x84
-    u8 is_valid;                      // 0x00
-    u8 reserved01[3];                 // 0x01
-    i32 mapped_to_pad;                // 0x04
-    u8 analog_left_x;                 // 0x08
-    u8 analog_left_y;                 // 0x09
-    u8 analog_right_x;                // 0x0a
-    u8 analog_right_y;                // 0x0b
-    u8 analog_l1;                     // 0x0c
-    u8 analog_l2;                     // 0x0d
-    u8 analog_r1;                     // 0x0e
-    u8 analog_r2;                     // 0x0f
-    u32 digital_buttons;              // 0x10
-    u32 digital_buttons_pressed;      // 0x14
-    u32 digital_buttons_released;     // 0x18
-    u32 digital_buttons_prev;         // 0x1c
-    i32 analog_button_flags;          // 0x20
-    i32 digital_left_x;               // 0x24
-    i32 digital_left_y;               // 0x28
-    i32 digital_right_x;              // 0x2c
-    i32 digital_right_y;              // 0x30
-    i32 deadzone;                     // 0x34
-    f32 left_x_normal;                // 0x38
-    f32 left_y_normal;                // 0x3c
-    f32 left_x_unknown;               // 0x40
-    f32 left_y_unknown;               // 0x44
-    f32 left_x_unknown2;              // 0x48
-    f32 left_y_unknown2;              // 0x4c
-    f32 right_x_unknown2;             // 0x50
-    f32 right_y_unknown2;             // 0x54
-    f32 right_x_normal;               // 0x58
-    f32 right_y_normal;               // 0x5c
-    f32 right_x_unknown;              // 0x60
-    f32 right_y_unknown;              // 0x64
-    f32 left_up_ramp;                 // 0x68
-    f32 left_down_ramp;               // 0x6c
-    f32 left_left_ramp;               // 0x70
-    f32 left_right_ramp;              // 0x74
-    u8 analog_left_pad_left;          // 0x78
-    u8 analog_left_pad_right;         // 0x79
-    u8 analog_left_pad_up;            // 0x7a
-    u8 analog_left_pad_down;          // 0x7b
-    u8 unknown_7c;                    // 0x7c
-    u8 unknown_7d;                    // 0x7d
-    u8 unknown_7e;                    // 0x7e
-    u8 unknown_7f;                    // 0x7f
-    u8 unknown_80;                    // 0x80
-    u8 unknown_81;                    // 0x81
-    u8 unknown_82;                    // 0x82
-    u8 unknown_83;                    // 0x83
-} FRAME_SCANNED_PAD_PC;
+typedef struct FRAME_SCANNED_PAD { // size 0x84
+    u8 is_valid;                   // 0x00
+    u8 reserved01[3];              // 0x01
+    i32 mapped_to_pad;             // 0x04
+    u8 analog_left_x;              // 0x08
+    u8 analog_left_y;              // 0x09
+    u8 analog_right_x;             // 0x0a
+    u8 analog_right_y;             // 0x0b
+    u8 analog_l1;                  // 0x0c
+    u8 analog_l2;                  // 0x0d
+    u8 analog_r1;                  // 0x0e
+    u8 analog_r2;                  // 0x0f
+    u32 digital_buttons;           // 0x10
+    u32 digital_buttons_pressed;   // 0x14
+    u32 digital_buttons_released;  // 0x18
+    u32 digital_buttons_prev;      // 0x1c
+    i32 analog_button_flags;       // 0x20
+    i32 digital_left_x;            // 0x24
+    i32 digital_left_y;            // 0x28
+    i32 digital_right_x;           // 0x2c
+    i32 digital_right_y;           // 0x30
+    i32 deadzone;                  // 0x34
+    f32 left_x_normal;             // 0x38
+    f32 left_y_normal;             // 0x3c
+    f32 left_x_unknown;            // 0x40
+    f32 left_y_unknown;            // 0x44
+    f32 left_x_unknown2;           // 0x48
+    f32 left_y_unknown2;           // 0x4c
+    f32 right_x_unknown2;          // 0x50
+    f32 right_y_unknown2;          // 0x54
+    f32 right_x_normal;            // 0x58
+    f32 right_y_normal;            // 0x5c
+    f32 right_x_unknown;           // 0x60
+    f32 right_y_unknown;           // 0x64
+    f32 left_up_ramp;              // 0x68
+    f32 left_down_ramp;            // 0x6c
+    f32 left_left_ramp;            // 0x70
+    f32 left_right_ramp;           // 0x74
+    u8 analog_left_pad_left;       // 0x78
+    u8 analog_left_pad_right;      // 0x79
+    u8 analog_left_pad_up;         // 0x7a
+    u8 analog_left_pad_down;       // 0x7b
+    u8 unknown_7c;                 // 0x7c
+    u8 unknown_7d;                 // 0x7d
+    u8 unknown_7e;                 // 0x7e
+    u8 unknown_7f;                 // 0x7f
+    u8 unknown_80;                 // 0x80
+    u8 unknown_81;                 // 0x81
+    u8 unknown_82;                 // 0x82
+    u8 unknown_83;                 // 0x83
+} FRAME_SCANNED_PAD;
 
-typedef union FRAME_RECORD_CURSOR_PC {
+typedef union FRAME_RECORD_CURSOR {
     u8 *u8_ptr;
     u32 *u32_ptr;
     f32 *f32_ptr;
-} FRAME_RECORD_CURSOR_PC;
+} FRAME_RECORD_CURSOR;
 
-typedef struct FRAME_PAD_RECORD_PC { // size 0x28
-    i32 mode;                        // 0x00
-    u8 *buf_start;                   // 0x04
-    u8 *buf_end;                     // 0x08
-    FRAME_RECORD_CURSOR_PC record;   // 0x0c
-    i32 buf_size;                    // 0x10
-    char *filepath;                  // 0x14
-    i32 should_end;                  // 0x18
-    u32 end_record_buttons;          // 0x1c
-    u32 end_play_buttons;            // 0x20
-    i32 is_recording;                // 0x24
-} FRAME_PAD_RECORD_PC;
+typedef struct FRAME_PAD_RECORD { // size 0x28
+    i32 mode;                     // 0x00
+    u8 *buf_start;                // 0x04
+    u8 *buf_end;                  // 0x08
+    FRAME_RECORD_CURSOR record;   // 0x0c
+    i32 buf_size;                 // 0x10
+    char *filepath;               // 0x14
+    i32 should_end;               // 0x18
+    u32 end_record_buttons;       // 0x1c
+    u32 end_play_buttons;         // 0x20
+    i32 is_recording;             // 0x24
+} FRAME_PAD_RECORD;
 
 #ifdef __cplusplus
 extern "C" {
@@ -240,7 +240,7 @@ typedef struct nualloc_manager_prefix_s { // size 0x10
     u32 size;                             // 0x4
     u32 block_count;                      // 0x8
     u32 used_bytes;                       // 0xc
-} NUALLOC_MANAGER_PREFIX_PC;
+} NUALLOC_MANAGER_PREFIX;
 
 typedef struct nualloc_manager_block_s { // size 0xc
 

@@ -20,7 +20,7 @@ extern i32 saveload_slotused[];
 
 i32 SAVESLOTS = 6;
 
-void SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave, SAVE_VOID_FN_PC draw_save_icon) {
+void SaveSystemInitialise(i32 slots, SAVE_HASH_FN hashfn, void *save, i32 save_size, i32 autosave, SAVE_VOID_FN draw_save_icon) {
     SAVESLOTS = slots;
     if (slots >= 6) {
         SAVESLOTS = 6;
@@ -33,8 +33,8 @@ void SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 sav
     memcard_drawasiconfn = draw_save_icon;
 }
 
-void SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, void *header, i32 header_size, i32 autosave,
-                            SAVE_VOID_FN_PC draw_save_icon) {
+void SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN hashfn, void *save, i32 save_size, void *header, i32 header_size, i32 autosave,
+                            SAVE_VOID_FN draw_save_icon) {
     memcard_hashfn = hashfn;
     memcard_savedata = save;
     memcard_savedatasize = save_size;
@@ -51,7 +51,7 @@ void SaveSystemInitialiseEx(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 s
     }
 }
 
-void SetSaveSuccessFn(SAVE_VOID_FN_PC callback) {
+void SetSaveSuccessFn(SAVE_VOID_FN callback) {
     savesuccessfn = callback;
 }
 
@@ -800,13 +800,13 @@ void *memcard_savedata = NULL;
 void *memcard_savedatabuffer = NULL;
 i32 memcard_savedatasize = 0;
 i32 memcard_autosave = 0;
-SAVE_HASH_FN_PC memcard_hashfn = NULL;
+SAVE_HASH_FN memcard_hashfn = NULL;
 void (*memcard_drawasiconfn)(void) = 0;
 void *memcard_headerdata = NULL;
 void *memcard_headerdatabuffer = NULL;
 i32 memcard_headerdatasize = 0;
 i32 memcard_slotsused = 0;
-SAVE_VOID_FN_PC savesuccessfn = NULL;
+SAVE_VOID_FN savesuccessfn = NULL;
 VUFNT *QFont2D = 0;
 VUFNT *QFont2DLower = 0;
 VUFNT *QFont2DZ = NULL;

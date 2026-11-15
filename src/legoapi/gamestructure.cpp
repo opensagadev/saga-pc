@@ -199,7 +199,7 @@ i32 Game_Exit(i32 last_area) {
     return 0;
 }
 
-extern "C" LEVELDATA_PC *CanSaveAndExit(WORLDINFO *world) {
+extern "C" LEVELDATA *CanSaveAndExit(WORLDINFO *world) {
     if (GAMEDEMO == 0 && SuperStory == 0 && world->area != NULL && world->area != HUB_ADATA &&
         (world->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_HUB_AREA | AREAFLAG_SUPER_BONUS)) == 0 &&
         Mission_Active(NULL) == NULL && ChallengeMode == 0 && Arcade == 0 && CutScenePlayer_Active() == NULL && Game_AreaSave != NULL &&
@@ -210,7 +210,7 @@ extern "C" LEVELDATA_PC *CanSaveAndExit(WORLDINFO *world) {
 }
 
 extern "C" {
-    CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSave = NULL;
+    CUSTOMISER_COMPLETION_READER *CustomiserCompletionSave = NULL;
     i32 HubCompletionPoints = 0;
     void (*Game_100PercentFn)(void) = NULL;
 }

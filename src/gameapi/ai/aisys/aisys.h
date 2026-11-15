@@ -324,20 +324,20 @@ typedef struct AIANTINODE {      // size 0x58
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern AI_PARSE_SPEED_PC AIActionParseSpeedFn;
-    extern AI_CHARACTER_DISTANCE_PC GetViewRangeFn;
-    extern AI_CHARACTER_DISTANCE_PC GetHearDistanceFn;
-    extern AI_CHARACTER_DISTANCE_PC GetMaxViewHeightFn;
-    extern AI_CHARACTER_DISTANCE_PC GetMinViewHeightFn;
-    extern AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn;
+    extern AI_PARSE_SPEED AIActionParseSpeedFn;
+    extern AI_CHARACTER_DISTANCE GetViewRangeFn;
+    extern AI_CHARACTER_DISTANCE GetHearDistanceFn;
+    extern AI_CHARACTER_DISTANCE GetMaxViewHeightFn;
+    extern AI_CHARACTER_DISTANCE GetMinViewHeightFn;
+    extern AI_LEVEL_CHARACTER_TYPE_ID SpecialRouteCharacterTypeIDFn;
     extern AIANTINODE dynamic_antinodes[64];
     AIANTINODE *AIAntinodeCreate(NUVEC *, f32);
     AIANTINODE *AIAntinodeCreateSingleFrame(NUVEC *, f32);
     void AIAntinodeDestroy(AIANTINODE *);
     void AIAntinodeMove(AIANTINODE *, NUVEC *, f32, f32, f32);
     f32 AIPathNodeDistanceToPathNode(AIPATH *, i32, i32, i32, u32);
-    typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, struct nuhspecial_s *);
-    extern AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
+    typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK)(void *, struct nuhspecial_s *);
+    extern AISYS_SPECIAL_NODE_CALLBACK AISysSpecialNodeCallback;
     i32 WithinConnection(void *, NUVEC *, AIPATH *, AIPATHCNX *, i32, AIPATHCNX *, i32, i32, AIPATHINFO *, f32, i32);
     void AIPathNodeUpdatePos(void *, AIPATH *, AIPATHNODE *);
 #ifdef __cplusplus
@@ -352,7 +352,7 @@ extern "C" {
 
 #if SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART == 4 && !defined(SAGA_GAMEAPI_AI_AISYS_AISYS_H_STOP)
 
-typedef struct APIOBJECT *(*APIOBJECT_FROM_ID_PC)(u8);
+typedef struct APIOBJECT *(*APIOBJECT_FROM_ID)(u8);
 
 typedef struct AILOCATORSET { // size 0x1c
     char name[0x10];          // 0x00
@@ -427,31 +427,31 @@ struct AISYS_PC {           // size 0x1394
     struct APIOBJECT *player_2; // 0x1390
 };
 
-typedef void (*AI_SCRIPT_FIRST_ACTION_PC)(AISYS_PC *, struct AIPACKET *, struct AISCRIPTPROCESS *);
+typedef void (*AI_SCRIPT_FIRST_ACTION)(AISYS_PC *, struct AIPACKET *, struct AISCRIPTPROCESS *);
 
-typedef i32 (*AI_GAME_PARAM_TO_FLOAT_PC)(struct AIPACKET *, struct AISCRIPTPROCESS *, char *, f32 *);
+typedef i32 (*AI_GAME_PARAM_TO_FLOAT)(struct AIPACKET *, struct AISCRIPTPROCESS *, char *, f32 *);
 #ifdef __cplusplus
 extern "C" {
 #endif
     void DestroyAIGroup(AIGROUP *);
     void AIScriptLoadAllPakFile(void *, char *, VARIPTR *, VARIPTR *, AISYS_PC *);
-    typedef NUVEC *(*AI_ORIGIN_POSITION_PC)(AISYS_PC *, struct AIPACKET *);
-    extern AI_ORIGIN_POSITION_PC GetOriginPositionFn;
+    typedef NUVEC *(*AI_ORIGIN_POSITION)(AISYS_PC *, struct AIPACKET *);
+    extern AI_ORIGIN_POSITION GetOriginPositionFn;
     f32 AIParamToFloatEx(struct AIPACKET *, struct AISCRIPTPROCESS *, char *);
     void AIScriptProcess(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, struct AISCRIPTPROCESS *, f32);
     void AISysProcessCharacter(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, i32, f32, i32, i32);
-    void InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT_PC);
-    extern AI_SCRIPT_FIRST_ACTION_PC ScriptProcessFirstTimeActionFn;
+    void InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT);
+    extern AI_SCRIPT_FIRST_ACTION ScriptProcessFirstTimeActionFn;
     extern struct AIPACKET *current_packet;
-    extern AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn;
-    extern APIOBJECT_FROM_ID_PC APIOBJECTFromObjIDFn;
+    extern AI_GAME_PARAM_TO_FLOAT GameParamToFloatFn;
+    extern APIOBJECT_FROM_ID APIOBJECTFromObjIDFn;
     void AISysProcess(AISYS_PC *, struct APIOBJECT *, struct APIOBJECT *);
-    typedef f32 (*AI_CHARACTER_GOAL_SPEED_PC)(struct APIOBJECT *);
+    typedef f32 (*AI_CHARACTER_GOAL_SPEED)(struct APIOBJECT *);
     void AISysGetCharacterPathPos(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, i32, i32);
     void AIMoveInstruction(struct AIPACKET *, NUVEC *, f32, AIPATHINFO *, i32, f32);
     void AIFormationFollow(struct AIPACKET *);
     void AISysUpdateCharacterPathPos(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, i32, f32);
-    void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID_PC);
+    void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID);
     void AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *, AILOCATORSET *);
     void AILocatorSet_AssignNearestLocator(AISYS_PC *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32);
     void AILocatorSet_AssignFurthestLocator(AISYS_PC *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32);
@@ -466,8 +466,8 @@ extern "C" {
     AIPATHNODE *AIPathFindNode(AISYS_PC *, AIPATH *, char *);
     void *AIPAthFindPathCnx(AISYS_PC *, AIPATH *, char *, char *, i32 *);
     void AIScriptInitConditions(AISYS_PC *sys);
-    typedef struct APIOBJECT *(*GAMEOBJECT_LOOKUP_CALLBACK_PC)(void *, char *);
-    extern GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback;
+    typedef struct APIOBJECT *(*GAMEOBJECT_LOOKUP_CALLBACK)(void *, char *);
+    extern GAMEOBJECT_LOOKUP_CALLBACK GetNamedGameObjectCallback;
     void AISysCharacterSetPath(struct AIPACKET *, AIPATH *);
     void AISysFindRoute(struct AIPACKET *);
     void AISysCharacterSetPathCnx(struct AIPACKET *, NUVEC *, AIPATHCNX *, i32);
@@ -512,9 +512,9 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern AI_BIG_JUMP_TO_DESTINATION_PC AIBigJumpToDestinationFn;
+    extern AI_BIG_JUMP_TO_DESTINATION AIBigJumpToDestinationFn;
 
-    extern AI_RESPAWN_ON_PATH_PC AIRespawnOnPathFn;
+    extern AI_RESPAWN_ON_PATH AIRespawnOnPathFn;
 #ifdef __cplusplus
 }
 #endif

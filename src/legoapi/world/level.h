@@ -151,7 +151,7 @@ typedef struct level_display_s { // size 0x10
     u8 bg_green_bottom;          // 0xd
     u8 bg_blue_top;              // 0xe
     u8 bg_blue_bottom;           // 0xf
-} LEVEL_DISPLAY_PC;
+} LEVEL_DISPLAY;
 
 typedef struct level_data_s { // size 0x130
     char dir[0x40];           // 0x000
@@ -162,18 +162,18 @@ typedef struct level_data_s { // size 0x130
         u16 title_text_id;
     }; // 0x060
 
-    i16 index;                // 0x062
-    u32 flags;                // 0x064
-    void *callbacks[7];       // 0x068
-    LEVEL_DISPLAY_PC display; // 0x084
-    i16 music_index;          // 0x094
-    i16 sfx_ambient;          // 0x096
-    i16 max_ter_platforms;    // 0x098
-    i16 max_ter_groups;       // 0x09a
-    i16 music_other_index;    // 0x09c
-    i16 unknown_009e;         // 0x09e
-    u8 mipmap_mode;           // 0x0a0
-    u8 blob_shadow_alpha;     // 0x0a1
+    i16 index;             // 0x062
+    u32 flags;             // 0x064
+    void *callbacks[7];    // 0x068
+    LEVEL_DISPLAY display; // 0x084
+    i16 music_index;       // 0x094
+    i16 sfx_ambient;       // 0x096
+    i16 max_ter_platforms; // 0x098
+    i16 max_ter_groups;    // 0x09a
+    i16 music_other_index; // 0x09c
+    i16 unknown_009e;      // 0x09e
+    u8 mipmap_mode;        // 0x0a0
+    u8 blob_shadow_alpha;  // 0x0a1
 
     union { // size 0x1
         u8 unknown_00a2;
@@ -246,11 +246,11 @@ typedef struct level_data_s { // size 0x130
     f32 wind_speed;                // 0x110
     f32 wind_size;                 // 0x114
     i32 music_tracks[6];           // 0x118
-} LEVELDATA_PC;
+} LEVELDATA;
 
 typedef struct level_fixup_s { // size 0x24
     char *name;                // 0x00
-    LEVELDATA_PC **level;      // 0x04
+    LEVELDATA **level;         // 0x04
     void *load;                // 0x08
     void *init;                // 0x0c
     void *reset;               // 0x10
@@ -258,25 +258,25 @@ typedef struct level_fixup_s { // size 0x24
     void *always_update;       // 0x18
     void *draw;                // 0x1c
     void *draw_status;         // 0x20
-} LEVELFIXUP_PC;
+} LEVELFIXUP;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern LEVELDATA_PC *TITLES_LDATA;
+    extern LEVELDATA *TITLES_LDATA;
     struct cutinfo_s *NewCutScene(struct cutinfo_s *cutscene, struct cutsys_s *system, char *name, i32 unused_4);
     void Levels_FixUp(struct level_fixup_s *levels);
-    LEVELDATA_PC *Level_FindByName(char *name, i32 *index);
-    extern LEVELDATA_PC *LDataList;
-    extern LEVELDATA_PC *NEWGAME_LDATA;
-    extern LEVELDATA_PC *LOADGAME_LDATA;
-    extern LEVELDATA_PC *LastLData;
-    extern LEVELDATA_PC *NewLData;
+    LEVELDATA *Level_FindByName(char *name, i32 *index);
+    extern LEVELDATA *LDataList;
+    extern LEVELDATA *NEWGAME_LDATA;
+    extern LEVELDATA *LOADGAME_LDATA;
+    extern LEVELDATA *LastLData;
+    extern LEVELDATA *NewLData;
     void ClearLevelProgress(i32 index, struct WORLDINFO_s *world);
     struct BOLTTYPE_PC_s *BoltType_FindByID(i32, struct WORLDINFO_s *);
     void ResetLevel(struct WORLDINFO_s *world, char *cutscene, i32 unused);
-    void Level_SetDefaults(LEVELDATA_PC *level);
-    extern LEVELDATA_PC *levelconfig_ldata;
+    void Level_SetDefaults(LEVELDATA *level);
+    extern LEVELDATA *levelconfig_ldata;
     i32 BoltType_FindIDByName(const char *, struct WORLDINFO_s *);
     void Level_Update(struct WORLDINFO_s *world);
     void Level_Draw(struct WORLDINFO_s *world);

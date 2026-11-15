@@ -140,7 +140,7 @@ extern f32 ShopTopExtraOffset;
 extern f32 ShopTopHintOffset;
 
 /* Shop state machine. */
-typedef struct SHOP_INPUT_PC {
+typedef struct SHOP_INPUT {
     i32 left_pressed;
     i32 right_pressed;
     i32 up_pressed;
@@ -151,7 +151,7 @@ typedef struct SHOP_INPUT_PC {
     i32 down_held;
     i32 confirm;
     i32 cancel;
-} SHOP_INPUT_PC;
+} SHOP_INPUT;
 
 typedef i32 (*SHOP_MENU_CALLBACK)(void *);
 typedef void (*SHOP_DRAW_CALLBACK)(void);
@@ -162,7 +162,7 @@ extern i32 ShopOldDrawLevel;
 extern i32 ShopMenu;
 extern f32 ShopSlideTimer;
 extern char ShopUserCode[6];
-/* The interaction batch shares SHOP_INPUT_PC and the Shop*Pc state above.
+/* The interaction batch shares SHOP_INPUT and the Shop*Pc state above.
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
@@ -182,8 +182,8 @@ extern f32 ShopPurchasePulseDuration;
     positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                                         \
     positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                                         \
     positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
-extern AREA_DATA_PC *ANEWHOPE_ADATA;
-extern AREA_DATA_PC *ANAKINSFLIGHT_ADATA;
+extern AREA_DATA *ANEWHOPE_ADATA;
+extern AREA_DATA *ANAKINSFLIGHT_ADATA;
 extern i32 ShopCodeCharacter;
 extern i32 ShopCodeValid;
 extern i32 ShopCodeMoveSfxLock;
@@ -278,9 +278,9 @@ static i32 Shop_CharacterUnlocked(i32 character_id) {
 }
 
 /* Same-unit helper taking its input in EAX. */
-static void Shop_GetInput(SHOP_INPUT_PC *input) {
+static void Shop_GetInput(SHOP_INPUT *input) {
     i32 player;
-    GAMEPAD_RUNTIME_INPUT_PC *pad;
+    GAMEPAD_RUNTIME_INPUT *pad;
     u32 held;
     u32 pressed;
     memset(input, 0, sizeof(*input));
@@ -288,7 +288,7 @@ static void Shop_GetInput(SHOP_INPUT_PC *input) {
         if (MissionMenuPacket.active_player[player] == 0) {
             continue;
         }
-        pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
+        pad = (GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player];
         if ((pad->pressed & GAMEPAD_MENUSELECT) != 0 && netclient == 0) {
             input->confirm = 1;
             return;
@@ -989,7 +989,7 @@ void SelectSubItem(void) {
 /* Uses direct shop-pad input, buys on one confirm, and has no touch rows,
  * item-selection mode, or cursor input. */
 i32 SubItemMenu(void *menu) {
-    SHOP_INPUT_PC input;
+    SHOP_INPUT input;
     shopitem_s *items = NULL;
     i32 *ids;
     i32 *count;
@@ -1197,7 +1197,7 @@ i32 CodeMenu(void *menu) {
     i32 right = 0;
     i32 confirm = 0;
     i32 cancel = 0;
-    SHOP_INPUT_PC input;
+    SHOP_INPUT input;
     SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     f32 factor;
     f32 phase;
@@ -1646,7 +1646,7 @@ void DrawSubItems(void) {
     i32 angle;
     nuhspecial_s *blank;
     nuhspecial_s *film;
-    LEVELDATA_PC *level;
+    LEVELDATA *level;
     SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     if (ShopPurchasePulse > 0.0f) {
         bing = ShopPurchasePulse / ShopPurchasePulseDuration;
@@ -2065,7 +2065,7 @@ static void ShopMtxSetIdentity(NUMTX *matrix) {
 /* Ignores the generic MENU confirm/cursor fields and permits selection of all
  * six shelves. */
 i32 ItemMenu(void *menu) {
-    SHOP_INPUT_PC input;
+    SHOP_INPUT input;
     i32 entry_picked = picked;
     i32 candidate = picked;
     i32 selection = -1;

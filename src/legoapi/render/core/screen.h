@@ -56,10 +56,10 @@ extern "C" {
         f32 low_quality_density;            // 0x20
         f32 low_quality_colour_channels[4]; // 0x24
         u32 low_quality_colour;             // 0x34
-    } GAMEFOG_STATE_PC;
+    } GAMEFOG_STATE;
 
-    extern GAMEFOG_STATE_PC GameFog;
-    extern GAMEFOG_STATE_PC GameFogOld;
+    extern GAMEFOG_STATE GameFog;
+    extern GAMEFOG_STATE GameFogOld;
     void GameFog_Update(struct WORLDINFO_s *world);
     extern i32 back_rgba[2];
     extern i32 old_pause_state;

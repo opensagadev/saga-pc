@@ -712,7 +712,7 @@ void CollideGameObjects(WORLDINFO *world) {
                 selected_player = Player[player_index];
                 if (selected_player == NULL || !(selected_player->flags_1fc_word & APIOBJECT_FLAG_IN_USE) ||
                     !(selected_player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object == selected_player ||
-                    !(((COLLISION_PLATFORM_PUSH_VIEW_PC *)selected_player)->platform_push_timer > 0) ||
+                    !(((COLLISION_PLATFORM_PUSH_VIEW *)selected_player)->platform_push_timer > 0) ||
                     selected_player->supporting_platform_id != object->level_object_index ||
                     (selected_player->terrain_platform_id == object->level_object_index &&
                      (selected_player->unknown_281 != 0 || GameObjectNearFloor(selected_player, 3.0f, NULL) != 0))) {
@@ -1609,7 +1609,7 @@ void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *un
 GAMEOBJECT *TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared, u32 model_mask,
                              i32 directional, i32 require_drawn, i32 bolt_id) {
     NUVEC aim = *direction;
-    BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, WORLD);
+    BOLTTYPE *bolt = BoltType_FindByID(bolt_id, WORLD);
     u16 near_angle = TargetDeg_Near;
     u16 mid_angle = TargetDeg_Mid;
     u16 far_angle = TargetDeg_Far;
@@ -2422,7 +2422,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             }
             if (object->arrow_blend > 0.0f) {
                 NUVEC position;
-                ADD_GAME_MESSAGE_PC message;
+                ADD_GAME_MESSAGE message;
                 char text[128];
                 i32 joint = object->character_data->game_character->ride_locator;
                 f32 height;
@@ -2529,7 +2529,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         }
         for (i = 0; i < 2; ++i) {
             NUVEC position;
-            ADD_GAME_MESSAGE_PC message;
+            ADD_GAME_MESSAGE message;
             u16 phase;
             object = Player[i];
             if (object == NULL || show[i] == 0 || object->dead != 0) {
@@ -3064,7 +3064,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
     u16 random_rotation_a;
     u16 random_rotation_b;
     i32 random_variant;
-    CHARACTERDATA_PC *layer_character;
+    CHARACTERDATA *layer_character;
     u32 layers;
     NUMTX joint_matrices[256];
     i16 render_indices[32];

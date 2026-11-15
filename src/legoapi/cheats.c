@@ -20,10 +20,10 @@
 static f32 Cheat_PowerUpTime = 0;
 i32 POWERUP_TEXTID = 0;
 
-CHEATSYSTEM_PC *CheatSystemPtr = &CheatSystem;
+CHEATSYSTEM *CheatSystemPtr = &CheatSystem;
 
-void Cheats_Init(CHEAT_PC *cheats) {
-    CHEATSYSTEM_PC *system;
+void Cheats_Init(CHEAT *cheats) {
+    CHEATSYSTEM *system;
 
     system = CheatSystemPtr;
     system->cheats = cheats;
@@ -51,11 +51,11 @@ i32 Cheat_FindByName(char *name) {
 i32 ONEPLAYERPOWERUPS = 1;
 
 void Cheats_SetFlags(void) {
-    CHEATSYSTEM_PC *system = CheatSystemPtr;
+    CHEATSYSTEM *system = CheatSystemPtr;
     i32 index;
     system->flags = 0;
     for (index = 0; index < system->count; ++index) {
-        CHEAT_PC *cheat = &system->cheats[index];
+        CHEAT *cheat = &system->cheats[index];
         if (cheat->enabled == 0) {
             if (ONEPLAYERPOWERUPS != 0 || !(Cheat_PowerUpTime > 0.0f)) {
                 continue;
@@ -93,7 +93,7 @@ void Cheat_SetOn(i32 cheat, i32 on, i32 update_save) {
 }
 
 i32 Cheat_IsOn(i32 cheat) {
-    CHEAT_PC *cheats;
+    CHEAT *cheats;
     if (cheat < 0 || cheat >= CheatSystemPtr->count) {
         return 0;
     }
@@ -144,7 +144,7 @@ u32 Cheat_MultiplyScore(u32 score) {
 }
 
 void Cheats_TurnOff(i32 only_powerups) {
-    CHEATSYSTEM_PC *system = CheatSystemPtr;
+    CHEATSYSTEM *system = CheatSystemPtr;
     i32 index;
     for (index = 0; index < system->count; ++index) {
         if (only_powerups == 0 || (system->cheats[index].flags & 0x200000) != 0) {
@@ -157,7 +157,7 @@ void Cheats_TurnOff(i32 only_powerups) {
 f32 CHEAT_POWERUPTIME = 20.0f;
 
 void Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
-    GAME_MESSAGE_PC *display;
+    GAME_MESSAGE *display;
     if (ONEPLAYERPOWERUPS != 0) {
         if (object == NULL) {
             return;
@@ -221,7 +221,7 @@ void Cheats_FrameUpdate(void) {
 }
 
 void Cheat_SetArea(i32 cheat, i32 area_index) {
-    CHEAT_PC *cheats;
+    CHEAT *cheats;
 
     if (cheat < 0 || cheat >= CheatSystemPtr->count || area_index < 0 || area_index >= AREACOUNT) {
         return;

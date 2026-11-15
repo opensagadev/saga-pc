@@ -36,8 +36,8 @@ extern "C" {
     extern f32 BuildUpScale;
     extern f32 CoinTotalScale;
     extern f32 DrawBuildUpTime;
-    extern AREA_DATA_PC *PODRACE_ADATA;
-    extern AREA_DATA_PC *GUNSHIP_ADATA;
+    extern AREA_DATA *PODRACE_ADATA;
+    extern AREA_DATA *GUNSHIP_ADATA;
     i32 EffectOffProgress_Update(LEVEL_PROGRESS *progress, char *name, i32 enabled);
     void EffectOffProgress_Reset(LEVEL_PROGRESS *progress);
     void LevelProgress_ReserveBufferSpace(VARIPTR *buffer, VARIPTR buffer_end);
@@ -74,12 +74,12 @@ extern "C" {
     extern f32 pod_roll_target[2];
     extern const char AICombatLastAttackerName[14];
     extern const char AICombatOpponentTypeName[13];
-    extern AREA_DATA_PC *JEDI_ADATA;
-    extern AREA_DATA_PC *DOOKU_ADATA;
+    extern AREA_DATA *JEDI_ADATA;
+    extern AREA_DATA *DOOKU_ADATA;
     extern PODSPRINT_PC podsprint;
     extern u16 temp_xrot;
     extern u16 temp_zrot;
-    extern AREA_DATA_PC *GUNSHIP_ADATA;
+    extern AREA_DATA *GUNSHIP_ADATA;
     extern f32 PANEL3DMULX;
     extern struct gizaimessagesys_s *gizaimessagesys;
     extern GAMECAMERA *GameCam;

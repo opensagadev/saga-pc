@@ -23,8 +23,8 @@ extern "C" {
 
     i32 Batarang_FindTarget(WORLDINFO *, GAMEOBJECT *, i32);
     void Batarang_Release(GAMEOBJECT *, i32);
-    i32 Batarang_InitRicochet(PLAYER_BATARANG_SLOT_PC *, NUVEC *);
-    i32 Batarang_SeekToTarget(PLAYER_BATARANG_SLOT_PC *);
+    i32 Batarang_InitRicochet(PLAYER_BATARANG_SLOT *, NUVEC *);
+    i32 Batarang_SeekToTarget(PLAYER_BATARANG_SLOT *);
     void Batarang_MoveCode(GAMEOBJECT *);
     void Batarang_StartThrowQuick(GAMEOBJECT *);
     void Batarangs_Update(void);

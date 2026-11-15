@@ -82,7 +82,7 @@ typedef struct racepod_resource_s {
     i32 yaw;
     i32 unknown_0078;
     f32 speed;
-    FLIGHT_SPLINE_RESOURCE_PC *spline;
+    FLIGHT_SPLINE_RESOURCE *spline;
     f32 start;
     i16 model_id;
     i16 unknown_008a;
@@ -90,11 +90,11 @@ typedef struct racepod_resource_s {
     GAMEOBJECT *object;
     void *next;
     u8 unknown_0098[8];
-} RACEPOD_RESOURCE_PC;
+} RACEPOD_RESOURCE;
 
 typedef struct podrace_resource_s {
-    FLIGHT_SPLINE_RESOURCE_PC splines[32];
-    RACEPOD_RESOURCE_PC lap_entries[16];
+    FLIGHT_SPLINE_RESOURCE splines[32];
+    RACEPOD_RESOURCE lap_entries[16];
     f32 lap_countdown;
     f32 mushroom_timer;
     f32 lap_display;
@@ -118,13 +118,13 @@ static f32 PodSebulbaThrowGravity;
 typedef struct retakeg_netpacket_s {
     i16 guard_a;
     i16 guard_b;
-} RETAKEG_NETPACKET_PC;
+} RETAKEG_NETPACKET;
 
 extern i16 dat_007f19ac;
 extern i16 dat_007f19b0;
 extern i16 dat_007f19b4;
 void ChrisAllocLevelStuff(WORLDINFO *world);
-void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
+void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity);
 /* PodRace_A mine spawner and renderer. */
 i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
 void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble);
@@ -213,7 +213,7 @@ static void PodMatrixCopyPrivate(NUMTX *destination, const NUMTX *source) {
     destination->m33 = source->m33;
 }
 
-GUNGAN_A_PC gungan_a = {0};
+GUNGAN_A gungan_a = {0};
 
 void GunganA_Init(WORLDINFO *world) {
     char name[32];
@@ -301,7 +301,7 @@ void PodRaceSnipersUpdate(void) {
     NUVEC direction;
     static i32 player_ix = 0;
     i32 bolttype = (WORLD->current_level == PODSPRINTA_LDATA) ? 0x29 : 0x28;
-    BOLTTYPE_PC *type = BoltType_FindByID(bolttype, WORLD);
+    BOLTTYPE *type = BoltType_FindByID(bolttype, WORLD);
     for (i = 0; i < PodRace_nsnipers; i++) {
         i32 j;
         i32 in_range = 0;
@@ -368,8 +368,8 @@ void PodRaceSnipersUpdate(void) {
     }
 }
 
-MINESYS_PC minesys = {0};
-CLIENT_MINES_PC client_mines = {0};
+MINESYS minesys = {0};
+CLIENT_MINES client_mines = {0};
 
 void fun_004d8970(NUVEC **positions, u32 **present_words, u32 **exploded_words) {
     *positions = client_mines.positions;
@@ -418,7 +418,7 @@ static void *CreatePodRaceMinePc(NUVEC *pos) {
     NUVEC mine_pos;
     NUVEC ray_pos;
     NUVEC delta;
-    MINE_ENTRY_PC *entry;
+    MINE_ENTRY *entry;
     f32 distance;
     f32 y;
     i32 i;
@@ -464,7 +464,7 @@ static void *CreatePodRaceMinePc(NUVEC *pos) {
     return NULL;
 }
 
-static void PodRaceExplodeMine(MINE_ENTRY_PC *entry, GAMEOBJECT *object) {
+static void PodRaceExplodeMine(MINE_ENTRY *entry, GAMEOBJECT *object) {
     u64 mask;
     if (minesys.mine_debris != -1) {
         AddGameDebris(WORLD->game_debris_sys, minesys.mine_debris, &entry->pos);
@@ -499,7 +499,7 @@ static f32 PodMineGrowTime = 1.0f;
 void UpdatePodRaceMines(void) {
     GAMEOBJECT *objects[64];
     NUVEC delta;
-    MINE_ENTRY_PC *entry;
+    MINE_ENTRY *entry;
     GAMEOBJECT *object;
     i32 count;
     i32 i;
@@ -586,7 +586,7 @@ void PodRaceADraw(WORLDINFO *world) {
     i32 i;
     if (netclient == 0) {
         if (NuSpecialExistsFn(&minesys.mine_special) != 0) {
-            MINE_ENTRY_PC *entry = minesys.mines;
+            MINE_ENTRY *entry = minesys.mines;
             for (i = 0; i < 64; i++, entry++) {
                 if (entry->active != 0) {
                     scale.x = scale.y = scale.z = entry->grow_alpha;
@@ -639,7 +639,7 @@ void PodRaceAUpdate(void) {
 /* Private owner of the active PodRace block. */
 static PODRACE_RESOURCE *PodRacePc = NULL;
 
-static RACEPOD_RESOURCE_PC *RacePodAllocatePrivate(void) {
+static RACEPOD_RESOURCE *RacePodAllocatePrivate(void) {
     PODRACE_RESOURCE *race = PodRacePc;
     i32 slot;
     for (slot = 0; slot < 16; ++slot) {
@@ -650,7 +650,7 @@ static RACEPOD_RESOURCE_PC *RacePodAllocatePrivate(void) {
     return NULL;
 }
 
-static void RacePodAlignPrivate(RACEPOD_RESOURCE_PC *pod, NUVEC4 *direction, f32 blend, i32 alternate) {
+static void RacePodAlignPrivate(RACEPOD_RESOURCE *pod, NUVEC4 *direction, f32 blend, i32 alternate) {
     NUVEC4 axis;
     __declspec(align(16)) NUVEC4 local;
     i16 yaw;
@@ -715,7 +715,7 @@ static f32 PodSebulbaFarThrow = 10.0f;
 static f32 PodSebulbaThrowSpread = 3.0f;
 static f32 PodSebulbaThrowAhead = 3.0f;
 
-static i32 PodRaceUpdatePod(RACEPOD_RESOURCE_PC *pod, WORLDINFO *world) {
+static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
     __declspec(align(16)) NUVEC4 direction;
     NUVEC origin;
     NUVEC velocity;
@@ -1072,7 +1072,7 @@ static f32 PodPacemakerTextScale = 0.08f;
 
 void UpdatePacemakerDisplay(WORLDINFO *world) {
     NUVEC position;
-    GAME_MESSAGE_PC *message;
+    GAME_MESSAGE *message;
     if (PodPacemaker == NULL) {
         return;
     }
@@ -1307,7 +1307,7 @@ i32 Action_Sebulba(AISYS_PC *unused0, AISCRIPTPROCESS *process, AIPACKET *packet
     struct gameobject_s *object;
     struct gameobject_s *target;
     SOCKSYS_PC *sock;
-    SOCKPOSITION_PC ahead;
+    SOCKPOSITION ahead;
     NUVEC goal;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
@@ -1642,7 +1642,7 @@ static f32 PodSprintArrowHeight = 0.75f;
 
 static void PodSprint_UpdatePacemaker(WORLDINFO *world) {
     NUVEC position;
-    GAME_MESSAGE_PC *message;
+    GAME_MESSAGE *message;
     if (PODSPRINT->pacemaker == NULL) {
         PODSPRINT->pacemaker = GetNamedGameObject(world->ai_sys, "SebulbasPod");
         if (PODSPRINT->pacemaker == NULL) {
@@ -1914,7 +1914,7 @@ i32 Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS *process, AIPACKET *packet,
         base_speed = object->character_data->game_character->run_speed;
         if (object->sock_position.sock_index != -1 && object->sock_position.sock_index == player->sock_position.sock_index) {
             SOCKSYS_PC *sock_sys = WORLD->sock_sys;
-            SOCK_PC *sock = &sock_sys->socks[object->sock_position.sock_index];
+            SOCK *sock = &sock_sys->socks[object->sock_position.sock_index];
             if (player2 != NULL) {
                 GAMEOBJECT *lead;
                 distance = MidDistanceFromSockStart(sock_sys, &player2->sock_position) -
@@ -1985,7 +1985,7 @@ i32 Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS *process, AIPACKET *packet,
     return 0;
 }
 
-RETAKEG_NETPACKET_PC *retakeg_netpacket = NULL;
+RETAKEG_NETPACKET *retakeg_netpacket = NULL;
 static GIZAIMESSAGE *RetakeG_TotalGuards_msg = NULL;
 static GIZAIMESSAGE *RetakeG_GuardsToRescue_msg = NULL;
 
@@ -2267,8 +2267,8 @@ i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packe
     i32 i;
     i32 spline_index;
     PODRACE_RESOURCE *race;
-    FLIGHT_SPLINE_RESOURCE_PC *spline;
-    RACEPOD_RESOURCE_PC *pod;
+    FLIGHT_SPLINE_RESOURCE *spline;
+    RACEPOD_RESOURCE *pod;
     f64 duration;
     f32 difference;
     NUVEC4 position;

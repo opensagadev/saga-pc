@@ -117,7 +117,7 @@ i32 fun_004ff2c0(void) {
 
 extern i32 FileDirectoryMcOpenPc(i32 port, i32 slot, char *path);
 extern void FileDirectoryMcClosePc(i32 file);
-extern i32 FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
+extern i32 FileDirectoryMcReadPc(i32 file, FILE_DIRECTORY_ENTRY *entry);
 
 NUFILE NuFileOpenDir(char *path) {
     char formatted[256];
@@ -154,8 +154,8 @@ void NuFileCloseDir(NUFILE file) {
     FileDirectoryHostClosePc(file - 1);
 }
 
-i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
-    FILE_DIRECTORY_HOST_ENTRY_PC host;
+i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY *entry) {
+    FILE_DIRECTORY_HOST_ENTRY host;
     i32 result;
     u32 flags;
     i32 length = 0;
@@ -188,7 +188,7 @@ i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY_PC *entry) {
     return length;
 }
 
-i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY_PC *entry) {
+i32 FileDirectoryHostReadPc(i32 file, FILE_DIRECTORY_HOST_ENTRY *entry) {
     SYSTEMTIME time;
     u32 flags = 0x100;
     if ((FileDirectoryFindDataPc[file].dwFileAttributes & 1) != 0) {

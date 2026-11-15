@@ -18,12 +18,12 @@
 extern "C" {
 #endif
     void DestroyRippleMtls(WORLDINFO *);
-    void AddRipple(RIPPLE_SET_PC *, NUMTX *, f32, f32, f32, f32, u32, u32, i32, NUMTL *, NUVEC *);
+    void AddRipple(RIPPLE_SET *, NUMTX *, f32, f32, f32, f32, u32, u32, i32, NUMTL *, NUVEC *);
     i32 LookupRippleEffectIndex(char *);
-    void InitRipples(RIPPLE_SET_PC **, VARIPTR *, VARIPTR *, i32);
-    void ResetRippleSet(RIPPLE_SET_PC *);
-    void UpdateRippleSet(RIPPLE_SET_PC *);
-    void DrawRippleSet(RIPPLE_SET_PC *);
+    void InitRipples(RIPPLE_SET **, VARIPTR *, VARIPTR *, i32);
+    void ResetRippleSet(RIPPLE_SET *);
+    void UpdateRippleSet(RIPPLE_SET *);
+    void DrawRippleSet(RIPPLE_SET *);
 #ifdef __cplusplus
 }
 #endif

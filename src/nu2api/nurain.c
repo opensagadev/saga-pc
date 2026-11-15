@@ -79,7 +79,7 @@ void NuRainProcess(i32 paused) {
                 f32 dy = global_camera.mtx.m31 + global_camera.mtx.m21 * 3.5 - NuRainOldCameraMtx.m31 - NuRainOldCameraMtx.m21 * 3.5;
                 f32 dz = global_camera.mtx.m32 + global_camera.mtx.m22 * 3.5 - NuRainOldCameraMtx.m32 - NuRainOldCameraMtx.m22 * 3.5;
                 for (i = 0; i < debkeydata[NuRainKey].allocated_chunk_count * 32; i++) {
-                    DEBRISPARTICLE_PC *particle = &debkeydata[NuRainKey].particle_chunks[i / 32]->particles[i % 32];
+                    DEBRISPARTICLE *particle = &debkeydata[NuRainKey].particle_chunks[i / 32]->particles[i % 32];
                     particle->position.x += dx;
                     particle->position.y += dy;
                     particle->position.z += dz;
@@ -108,7 +108,7 @@ void NuRainProcess(i32 paused) {
                     NuRainTilt = -0x4000;
                 }
                 for (i = 0; i < count; i++) {
-                    DEBRISPARTICLE_PC *particle;
+                    DEBRISPARTICLE *particle;
                     f32 spread;
                     f32 distance;
                     f32 height;

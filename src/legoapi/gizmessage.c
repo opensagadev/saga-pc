@@ -85,7 +85,7 @@ GIZAIMESSAGESYS *gizaimessagesys = 0;
 
 i32 gizaimessage_gizmotype_id = -1;
 
-void GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
+void GizAIMessage_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
     GIZAIMESSAGE *message;
     (void)type;
     (void)world;
@@ -144,8 +144,8 @@ static i32 GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo) {
     return ((GIZAIMESSAGE *)gizmo->object)->output_count;
 }
 
-ADDGIZMOTYPE_PC *GizAIMessage_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+ADDGIZMOTYPE *GizAIMessage_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
 
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Message";

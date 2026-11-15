@@ -5,7 +5,7 @@
 #include "nu2api/nufile/nufpar.h"
 
 typedef struct CHARCONFIG {
-    CHARACTERDATA_PC *character;
+    CHARACTERDATA *character;
     PLAYERCHARACTERCONFIG *runtime;
     GAMECHARACTERLAYER *layer_scratch;
 
@@ -38,7 +38,7 @@ typedef struct charconfig_variant_reader_s {
     u8 unknown_117[9];
 } CHARCONFIG_VARIANT_READER;
 
-static void CC_variant(NUFPAR_PC *parser) {
+static void CC_variant(NUFPAR *parser) {
     if (NuFParGetWord(parser) == 0) {
         return;
     }

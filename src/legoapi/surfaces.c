@@ -23,7 +23,7 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 
 typedef struct world_conveyor_s {
     u8 unknown_00[0x128];
-    LEVELDATA_PC *current_level;
+    LEVELDATA *current_level;
     u8 unknown_12c[0x5044];
     void *conveyor;
 } WORLD_CONVEYOR;

@@ -106,7 +106,7 @@ struct PC_HG_SHADOW_GROUP {          // size 0x10
     ((CHARACTERANIM_CONFIG *)(object)->character_model->animation_configs[(object)->anim_packet.blend_target_animation])
 
 struct PC_ANIMATION_RENDER_VIEW { // size 0x48
-    ANIMPACKET_PC packet;         // 0x00
+    ANIMPACKET packet;            // 0x00
     f32 overlay_weight;           // 0x44
 };
 
@@ -121,7 +121,7 @@ typedef struct minianimpacket_s { // size 0x24
     i16 current_animation_id;     // 0x1e
     i16 previous_animation_id;    // 0x20
     i16 requested_animation_id;   // 0x22
-} MINIANIMPACKET_PC;
+} MINIANIMPACKET;
 
 typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
     u32 pointer_table;                    // 0x0
@@ -1020,7 +1020,7 @@ void SetAPIObjPlaySfxByIdFn(void (*play_sfx)(i32, NUVEC *)) {
     APIObjPlaySfxByIdFn = play_sfx;
 }
 
-void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_data, ANIMPACKET_PC *packet, NUMTX *locator_matrices,
+void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_data, ANIMPACKET *packet, NUMTX *locator_matrices,
                     GAMEOBJECT *object, CHARACTER_EFFECT_CONFIG *effects, i32 paused, f32 frame_time,
                     void (*footprint_callback)(void *, GAMEOBJECT *, i32, i32), APIDEBRISSYS *debris_sys) {
     i32 animation_id;
@@ -1376,7 +1376,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
     char model_pack[0x100];
     char pak_path[0x100];
     CHARACTER_MODEL_LAYERS *model;
-    CHARACTERDATA_PC *character;
+    CHARACTERDATA *character;
     CHARACTERANIM_CONFIG *animation;
     i32 model_index;
     i32 animation_id;
@@ -1410,7 +1410,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
         return;
     }
     while ((model_id = list->model_id) != -1 && apicharsys->loaded_model_count < apicharsys->model_capacity) {
-        character = (CHARACTERDATA_PC *)&apicharsys->char_data[model_id];
+        character = (CHARACTERDATA *)&apicharsys->char_data[model_id];
         NuStrCpy(directory, "chars\\");
         NuStrCat(directory, character->dir);
         NuStrCat(directory, "\\");
@@ -1444,7 +1444,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
             }
             loaded = 1;
         }
-        animation = area_models != 0 && list->count != 0 ? ((CHARACTERDATA_PC *)&apicharsys->char_data[model_id])->animations : NULL;
+        animation = area_models != 0 && list->count != 0 ? ((CHARACTERDATA *)&apicharsys->char_data[model_id])->animations : NULL;
         pak = NULL;
         if (nopakfile == 0) {
             NuStrCpy(pak_path, directory_pack);
@@ -1483,7 +1483,7 @@ void APILoadCharacterModels(APICHARACTERMODELLIST *list, i32 area_animation, VAR
                 }
             }
             buffer->addr -= NuFilePakCondense(pak);
-            animation = area_models != 0 && list->count != 0 ? ((CHARACTERDATA_PC *)&apicharsys->char_data[model_id])->animations : NULL;
+            animation = area_models != 0 && list->count != 0 ? ((CHARACTERDATA *)&apicharsys->char_data[model_id])->animations : NULL;
             for (; animation != NULL && animation->name != NULL; ++animation) {
                 if ((animation->flags & 0x8000) == 0 &&
                     ((area_animation != 0 && (animation->flags & 1) != 0) || (area_animation == 0 && (animation->flags & 1) == 0))) {
@@ -1612,7 +1612,7 @@ void APIDumpCharacterModels(i32 mode) {
     }
 }
 
-i16 FindAnimIX(CHARACTERDATA_PC *character, char *name) {
+i16 FindAnimIX(CHARACTERDATA *character, char *name) {
     CHARACTERANIM_CONFIG *animation;
     if (character != NULL) {
         animation = character->animations;
@@ -1713,7 +1713,7 @@ void PCStoreModelLocatorCoordinates(CHARACTER_MODEL_LAYERS *model, NUMTX *world_
     }
 }
 
-void EvalModelAnim(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, NUMTX *world_matrix, NUMTX *joint_matrices,
+void EvalModelAnim(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, NUMTX *world_matrix, NUMTX *joint_matrices,
                    DWA_WEIGHT_BLOCK ***dwa_output, NUVEC *locator_positions, NUMTX *locator_matrices, u32 layer_mask) {
     i16 render_indices[32];
     i32 render_count = MakeLayerList(model, render_indices, layer_mask);
@@ -1787,7 +1787,7 @@ f32 BlendTimeBetweenAnims(CHARACTER_MODEL_LAYERS *model, i32 source_animation, i
     return time;
 }
 
-void ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
+void ResetAnimPacket(ANIMPACKET *packet, i32 animation) {
     if (packet == NULL) {
         return;
     }
@@ -1805,7 +1805,7 @@ void ResetAnimPacket(ANIMPACKET_PC *packet, i32 animation) {
     packet->reversed_3d = 0;
 }
 
-void ResetMiniAnimPacket(MINIANIMPACKET_PC *packet, i32 animation) {
+void ResetMiniAnimPacket(MINIANIMPACKET *packet, i32 animation) {
     if (packet == NULL) {
         return;
     }
@@ -1819,7 +1819,7 @@ void ResetMiniAnimPacket(MINIANIMPACKET_PC *packet, i32 animation) {
     packet->flags = 4;
 }
 
-void SetAnimTimeRandom(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet) {
+void SetAnimTimeRandom(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet) {
     f64 duration;
     if (model == NULL || packet == NULL) {
         return;
@@ -1839,8 +1839,8 @@ f32 GetAnimTimeRandom(CHARACTER_MODEL_LAYERS *model, i32 animation) {
     return 0.0f;
 }
 
-static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, i16 animation, f32 time, f32 frame_step,
-                           f32 movement_speed, i32 report_events, char *reversed, i32 backwards, f32 backwards_multiplier) {
+static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, i16 animation, f32 time, f32 frame_step, f32 movement_speed,
+                           i32 report_events, char *reversed, i32 backwards, f32 backwards_multiplier) {
     i32 looped = 0;
     f32 rate = model->animation_configs[animation]->playback_rate;
     f32 reference_speed = model->animation_configs[animation]->movement_speed;
@@ -1923,7 +1923,7 @@ static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet,
     return time;
 }
 
-void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, f32 frame_step, f32 movement_speed, f32 blend_step,
+void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, f32 frame_step, f32 movement_speed, f32 blend_step,
                       f32 backwards_multiplier) {
     i32 backwards = 0;
     i32 interrupted_reversed = 0;
@@ -2104,7 +2104,7 @@ update_timers:
     }
 }
 
-void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET_PC *destination) {
+void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
     destination->blend_elapsed_pc = source->blend_elapsed;
@@ -2124,7 +2124,7 @@ void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET_PC *destinat
     destination->overlay_animation = ACTION_NONE;
 }
 
-void AnimPacketFullToMini(ANIMPACKET_PC *source, DRAW_ATTACHMENTS_MINI *destination) {
+void AnimPacketFullToMini(ANIMPACKET *source, DRAW_ATTACHMENTS_MINI *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
     destination->blend_elapsed = source->blend_elapsed_pc;
@@ -2142,7 +2142,7 @@ void AnimPacketFullToMini(ANIMPACKET_PC *source, DRAW_ATTACHMENTS_MINI *destinat
 
 void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS *model, DRAW_ATTACHMENTS_MINI *mini, f32 frame_step, f32 movement_speed, f32 blend_step) {
     union {
-        ANIMPACKET_PC packet;
+        ANIMPACKET packet;
         u32 words[18];
     } full;
 
@@ -2151,7 +2151,7 @@ void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS *model, DRAW_ATTACHMENTS_MINI *
     AnimPacketFullToMini(&full.packet, mini);
 }
 
-i32 AnimBlendingFromTo(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, i32 source_animation, i32 target_animation) {
+i32 AnimBlendingFromTo(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, i32 source_animation, i32 target_animation) {
     if (packet->blending != 0 && source_animation != -1 && packet->blend_source_animation == source_animation && target_animation != -1 &&
         packet->blend_target_animation == target_animation) {
         if (model != NULL && (model->model_data_b[source_animation] == NULL || model->model_data_b[target_animation] == NULL)) {
@@ -2162,7 +2162,7 @@ i32 AnimBlendingFromTo(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *packet, i32
     return 0;
 }
 
-f32 *AnimPlaying(ANIMPACKET_PC *packet, i32 animation, i32 target, i32 source) {
+f32 *AnimPlaying(ANIMPACKET *packet, i32 animation, i32 target, i32 source) {
     if (animation == -1) {
         return NULL;
     }
@@ -2179,7 +2179,7 @@ f32 *AnimPlaying(ANIMPACKET_PC *packet, i32 animation, i32 target, i32 source) {
     return NULL;
 }
 
-i32 CurrentAnim(ANIMPACKET_PC *packet) {
+i32 CurrentAnim(ANIMPACKET *packet) {
     if (packet->blending != 0) {
         return packet->blend_target_animation;
     }
@@ -2214,7 +2214,7 @@ f32 *AnimListFrameArray(CHARACTER_MODEL_LAYERS *model, i32 animation) {
     return model->animation_configs[animation]->event_frames;
 }
 
-i32 AnimPacketModelsCompatible(ANIMPACKET_PC *packet, i32 source_id, i32 target_id) {
+i32 AnimPacketModelsCompatible(ANIMPACKET *packet, i32 source_id, i32 target_id) {
     CHARACTER_MODEL_LAYERS *source;
     CHARACTER_MODEL_LAYERS *target;
     i32 source_model;
@@ -2491,7 +2491,7 @@ void APITransparentCharDraw(NUHGOBJ_EVAL *hierarchy, NUMTX *world, i32 render_co
     }
 }
 
-i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_data, ANIMPACKET_PC *animation, NUMTX *matrix,
+i32 APIDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_data, ANIMPACKET *animation, NUMTX *matrix,
                           NUMTX *unused_matrix, NUMTX *reflection_matrix, NUVEC *locator_positions, NUMTX *locator_matrices,
                           GAMEOBJECT *object, u32 flags, NUHGOBJ_JOINT_OVERRIDE *joint_overrides, i32 joint_override_count, i32 paused,
                           f32 frame_time, NUMTX *output_matrices, void (*footprint_callback)(void *, GAMEOBJECT *, i32, i32),
@@ -2811,9 +2811,9 @@ i32 ActionFromName(const char *name) {
     return -1;
 }
 
-CHARACTERDATA_PC *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum, i32 *count_out,
-                                         i32 game_stride, PLAYERCHARACTERCONFIG **game_data_out) {
-    NUFPAR_PC *parser;
+CHARACTERDATA *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum, i32 *count_out, i32 game_stride,
+                                      PLAYERCHARACTERCONFIG **game_data_out) {
+    NUFPAR *parser;
     CHARACTER_LIST_ENTRY *first;
     CHARACTER_LIST_ENTRY *current;
     i16 directory_offsets[500];
@@ -2918,7 +2918,7 @@ CHARACTERDATA_PC *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARI
         if (count_out != NULL) {
             *count_out = count;
         }
-        return (CHARACTERDATA_PC *)first;
+        return (CHARACTERDATA *)first;
     }
     PCCharacterSystemExistingNoOp(file);
     return NULL;

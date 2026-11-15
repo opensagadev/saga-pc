@@ -65,10 +65,10 @@ typedef struct CUT_CHARACTER_ANIMATION { // size 0x64
     i8 start_frame;                      // 0x63
 } CUT_CHARACTER_ANIMATION;
 
-typedef struct cut_scene_load_s CUT_SCENE_LOAD_PC;
+typedef struct cut_scene_load_s CUT_SCENE_LOAD;
 typedef struct cut_load_character_s CUT_LOAD_CHARACTER;
 typedef struct cut_load_character_instance_s CUT_LOAD_CHARACTER_INSTANCE;
-typedef struct cut_locator_function_entry_s CUT_LOCATOR_FUNCTION_ENTRY_PC;
+typedef struct cut_locator_function_entry_s CUT_LOCATOR_FUNCTION_ENTRY;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,14 +78,14 @@ extern "C" {
     typedef struct cut_load_locator_type_s CUT_LOAD_LOCATOR_TYPE;
     typedef struct cut_load_locator_system_s CUT_LOAD_LOCATOR_SYSTEM;
     extern void (*NuCutSceneResetCharacters)(struct instnugcutscene_s *);
-    typedef void (*CUT_DRAW_RENDER_CALLBACK_PC)(struct instnugcutscene_s *, void *, void *, void *, f32, i32);
-    typedef void (*CUT_DRAW_EVAL_CALLBACK_PC)(struct instnugcutscene_s *, void *, void *, void *, f32);
-    typedef void (*CUT_DRAW_RIGID_CALLBACK_PC)(void *, struct nuhspecial_s *, NUMTX *);
+    typedef void (*CUT_DRAW_RENDER_CALLBACK)(struct instnugcutscene_s *, void *, void *, void *, f32, i32);
+    typedef void (*CUT_DRAW_EVAL_CALLBACK)(struct instnugcutscene_s *, void *, void *, void *, f32);
+    typedef void (*CUT_DRAW_RIGID_CALLBACK)(void *, struct nuhspecial_s *, NUMTX *);
     void instGetLookAtLocatorInfo(struct instnugcutscene_s *, struct CUT_LOOKAT_STATE *);
     void instNuGCutLocatorUpdate(struct instnugcutscene_s *, CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *,
                                  CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
     extern i32 CutSceneSingleStreamBuffer;
-    extern CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctions;
+    extern CUT_LOCATOR_FUNCTION_ENTRY *CutSceneLocatorFunctions;
     f32 *PCCutLocatorAni3(CUT_LOCATOR_ANIMATION *, NUMTX *, f32);
     void PCCutCharacterAni3(CUT_CHARACTER_ANIMATION *, f32, NUMTX *, i32 *, u32 *, f32 *, f32 *, f32 *, i32 *);
     i32 PCCutAni3CurveInteger(struct ANI3_HEADER *, f32 *, i32);
@@ -228,13 +228,13 @@ typedef struct cut_load_locator_system_s { // size 0xc
     u8 unknown_0a[2];                      // 0xa
 } CUT_LOAD_LOCATOR_SYSTEM;
 
-typedef struct cut_load_rigid_s {   // size 0x5c
-    NUMTX matrix;                   // 0x00
-    char *name;                     // 0x40
-    struct NUGSCN_s *scene;         // 0x44
-    void *special;                  // 0x48
-    void *animation;                // 0x4c
-    STATE_ANIM_PC *state_animation; // 0x50
+typedef struct cut_load_rigid_s { // size 0x5c
+    NUMTX matrix;                 // 0x00
+    char *name;                   // 0x40
+    struct NUGSCN_s *scene;       // 0x44
+    void *special;                // 0x48
+    void *animation;              // 0x4c
+    STATE_ANIM *state_animation;  // 0x50
 
     union { // size 0x4
         i32 index;
@@ -288,18 +288,18 @@ typedef struct cut_load_camera_system_s { // size 0x24
     i32 count;                            // 0x00
     CUT_LOAD_CAMERA *cameras;             // 0x04
     void *animation;                      // 0x08
-    STATE_ANIM_PC *state_animation;       // 0x0c
+    STATE_ANIM *state_animation;          // 0x0c
     i8 starting_camera;                   // 0x10
     i8 target_camera_map[11];             // 0x11
     void *focus_animation;                // 0x1c
-    STATE_ANIM_PC *focus_state_animation; // 0x20
+    STATE_ANIM *focus_state_animation;    // 0x20
 } CUT_LOAD_CAMERA_SYSTEM;
 
 typedef struct cut_load_trigger_event_s { // size 0xc
     i16 index;                            // 0x0
     u16 unknown_02;                       // 0x2
     char *name;                           // 0x4
-    STATE_ANIM_PC *state_animation;       // 0x8
+    STATE_ANIM *state_animation;          // 0x8
 } CUT_LOAD_TRIGGER_EVENT;
 
 typedef struct cut_load_trigger_system_s {
@@ -430,8 +430,8 @@ typedef struct cut_instance_load_s {    // size 0xf8
     struct instnugcutscene_s *previous; // 0x04
     char name[16];                      // 0x08
     NUMTX matrix;                       // 0x18
-    CUT_SCENE_LOAD_PC *scene;           // 0x58
-    CUT_SCENE_LOAD_PC *saved_scene;     // 0x5c
+    CUT_SCENE_LOAD *scene;              // 0x58
+    CUT_SCENE_LOAD *saved_scene;        // 0x5c
     NUVEC center;                       // 0x60
     NUVEC bounds_min;                   // 0x6c
     NUVEC bounds_max;                   // 0x78
@@ -492,7 +492,7 @@ typedef struct cut_instance_load_s {    // size 0xf8
     void *pending_stream;                             // 0xec
     u32 allocation_size;                              // 0xf0
     struct instnugcutscene_s *queued_stream_instance; // 0xf4
-} CUT_INSTANCE_LOAD_PC;
+} CUT_INSTANCE_LOAD;
 
 struct cut_locator_function_entry_s { // size 0x14
     char *name;                       // 0x00

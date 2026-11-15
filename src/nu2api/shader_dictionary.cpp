@@ -119,7 +119,7 @@ ShaderMacroDefinitionPc *ShaderCompilerDictionaryPc::FindDefinition(const char *
 
 // AddDefinition body; inlined into EmitProgram only.
 char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena);
-#define SHADER_ADD_DEFINITION_PC(DICTIONARY, NAME, VALUE, EMIT)                                                                            \
+#define SHADER_ADD_DEFINITION(DICTIONARY, NAME, VALUE, EMIT)                                                                               \
     do {                                                                                                                                   \
         ShaderMacroDefinitionPc *definition = (DICTIONARY)->FindDefinition(NAME);                                                          \
         if (definition != NULL) {                                                                                                          \
@@ -156,7 +156,7 @@ char *ShaderCloneArenaStringPc(const char *source, VirtualStackAllocator *arena)
 // noinline: the original calls AddDefinition out of line from ShaderCompilerDictionaryPc::EmitVertexInput; VC8 would
 // inline it there.
 __declspec(noinline) void ShaderCompilerDictionaryPc::AddDefinition(const char *name, const char *value, i32 emit) {
-    SHADER_ADD_DEFINITION_PC(this, name, value, emit);
+    SHADER_ADD_DEFINITION(this, name, value, emit);
 }
 
 void ShaderCompilerDictionaryPc::BindOutputBuffer(ShaderCompilerBufferAllocatorPc *buffer) {
@@ -768,7 +768,7 @@ void ShaderCompilerDictionaryPc::EmitProgram(ShaderCompilerBufferAllocatorPc *ou
         output->AppendText("#define ");
         output->AppendText(alias);
         output->AppendText("\r\n");
-        SHADER_ADD_DEFINITION_PC(this, alias, NULL, 0);
+        SHADER_ADD_DEFINITION(this, alias, NULL, 0);
         if (node->type == 21) {
             continue;
         }

@@ -18,7 +18,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale);
+    void DrawGameMessage_Targets(GAME_MESSAGE *message, NUVEC *position, f32 scale);
     i32 DrawPanel3DObject(f32, f32, f32, f32, f32, f32, u16, u16, u16, nuhspecial_s *, i32, f32);
     void DrawCharIcon(i32, f32, f32, f32, f32, i32, f32, f32, i32, nuhspecial_s *);
     extern i32 dco_locatorposonly;

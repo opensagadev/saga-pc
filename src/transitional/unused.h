@@ -228,7 +228,7 @@ struct PLAYERPACKET_s {                             // size 0x798
     u8 context_state_flags;                         // 0x101
     u8 pad_102[1234];                               // 0x102
     NUVEC reset_up_direction;                       // 0x5d4
-    struct GAMEPAD_PC *gamepad;                     // 0x5e0
+    struct GAMEPAD *gamepad;                        // 0x5e0
     u8 pad_5e4[32];                                 // 0x5e4
     void *unknown_604;                              // 0x604
     u8 pad_608[4];                                  // 0x608
@@ -817,7 +817,7 @@ extern "C" {
     void HothBattle_AssignSpawnLocator(struct gameobject_s *object, struct AILOCATOR *locator, struct AILOCATORSET *set);
     extern i16 id_SPEEDERBIKESNOW;
     void eduiMenuEnsureSelection(struct eduimenu_s *menu);
-    i32 eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
+    i32 eduiMenuProcessSelectedItem(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD *pad);
     extern u8 hub_makefreeplaylist_addotherid;
     extern i32 hub_new_level;
     void edpartRemoveInstance(struct parttype_lookup_s *type, i32 index);

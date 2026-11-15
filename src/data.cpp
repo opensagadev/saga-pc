@@ -218,18 +218,18 @@ extern "C" {
     i32 MenuKeyboardPendingPc = 0;
     u32 GAMEPAD_MENUCANCEL = PAD_BUTTON_TRIANGLE;
     u32 GAMEPAD_SELECT = PAD_BUTTON_SELECT;
-    COLLECTION_BUILD_PC MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
 }
 
 extern "C" {
-    LEVELDATA_PC *dat_0087b0b4 = NULL;
-    LEVELDATA_PC *dat_0087b0b8 = NULL;
-    LEVELDATA_PC *dat_0087b0bc = NULL;
-    LEVELDATA_PC *dat_0087b1c0 = NULL;
-    LEVELDATA_PC *dat_0087b1d0 = NULL;
-    LEVELDATA_PC *dat_0087b200 = NULL;
-    LEVELDATA_PC *dat_0087b204 = NULL;
-    LEVELDATA_PC *dat_0087b208 = NULL;
+    LEVELDATA *dat_0087b0b4 = NULL;
+    LEVELDATA *dat_0087b0b8 = NULL;
+    LEVELDATA *dat_0087b0bc = NULL;
+    LEVELDATA *dat_0087b1c0 = NULL;
+    LEVELDATA *dat_0087b1d0 = NULL;
+    LEVELDATA *dat_0087b200 = NULL;
+    LEVELDATA *dat_0087b204 = NULL;
+    LEVELDATA *dat_0087b208 = NULL;
 }
 
 extern "C" {
@@ -250,7 +250,7 @@ extern "C" {
 }
 
 extern "C" {
-    LEVELDATA_PC *WorldArchiveOneLevels[11] = {NULL};
+    LEVELDATA *WorldArchiveOneLevels[11] = {NULL};
 }
 
 extern "C" {
@@ -790,7 +790,7 @@ static const PC_DI_OBJECT_FORMAT PcMouseDataFormatObjects[11] = {
 };
 extern const PC_DI_DATA_FORMAT PcMouseDataFormat = {24, 16, 2, 20, 11, PcMouseDataFormatObjects};
 // clang-format off: nested arrays wider than the column limit
-PC_INPUT_CONFIG_PC PcStaticInputConfigs[24] = {
+PC_INPUT_CONFIG PcStaticInputConfigs[24] = {
     {"USB Joystick     ",
      0x30e8f,
      {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50,
@@ -2784,7 +2784,7 @@ static char dat_00775ec0[7] = "TTales";
 
 const char *PcCompanyName = dat_00775ec0;
 const char *PcProductName = dat_00775eb4;
-TEXT_INPUT_LABELS_PC dat_00820560 = {
+TEXT_INPUT_LABELS dat_00820560 = {
     {{dat_0077536c, dat_0077535c, dat_0077534c, dat_0077533c, dat_00775330, dat_0077532c, dat_00775328, dat_00775310,
       dat_00775308, dat_00775300, dat_007752f8, dat_007752ec, dat_007752e0, dat_007752d4, dat_007752bc, dat_007752a4,
       dat_0077528c, dat_00775274, dat_0077525c, dat_00775244, dat_0077522c, dat_00775214, dat_00775208, dat_007751fc,
@@ -2796,7 +2796,7 @@ TEXT_INPUT_LABELS_PC dat_00820560 = {
     dat_00775074,
     dat_00775064
 };
-TEXT_INPUT_LABELS_PC dat_00820480 = {
+TEXT_INPUT_LABELS dat_00820480 = {
     {{dat_00775694, dat_00775688,        dat_0077567c, dat_00775670, dat_00775668, dat_00775664, dat_0077565c, dat_00775648,
       dat_00775640, dat_00775638,        dat_00775630, dat_00775624, dat_00775618, dat_0077560c, dat_007755fc, dat_007755e8,
       dat_007755d8, dat_007755c8,        dat_007755b4, dat_007755a0, dat_00775590, dat_0077557c, dat_00775570, dat_00775564,
@@ -2808,7 +2808,7 @@ TEXT_INPUT_LABELS_PC dat_00820480 = {
     dat_00775424,
     dat_00775418
 };
-TEXT_INPUT_LABELS_PC dat_00820aa0 = {
+TEXT_INPUT_LABELS dat_00820aa0 = {
     {{dat_00773df8, dat_00773dec, dat_00773de4, dat_00773dd8, dat_00773dd0, dat_00773dc8, dat_00773dc0, dat_00773dac,
       dat_00773da4, dat_00773d9c, dat_00773d94, dat_00773d88, dat_00773d7c, dat_00773d70, dat_00773d4c, dat_00773d28,
       dat_00773d08, dat_00773ce8, dat_00773cc8, dat_00773ca8, dat_00773c88, dat_00773c68, dat_00773c5c, dat_00773c50,
@@ -2820,7 +2820,7 @@ TEXT_INPUT_LABELS_PC dat_00820aa0 = {
     dat_00773a90,
     dat_00773a78
 };
-TEXT_INPUT_LABELS_PC dat_00820d40 = {
+TEXT_INPUT_LABELS dat_00820d40 = {
     {{dat_00773278, dat_0077325c, dat_00773240, dat_00773220, dat_00773218, dat_00773210, dat_0077419c, dat_007731fc,
       dat_007731f4, dat_007731ec, dat_007731e4, dat_007731d8, dat_007731cc, dat_007731c0, dat_007731a0, dat_00773180,
       dat_00773168, dat_00773150, dat_00773130, dat_00773114, dat_007730fc, dat_007730e8, dat_007730dc, dat_007730d0,
@@ -2832,7 +2832,7 @@ TEXT_INPUT_LABELS_PC dat_00820d40 = {
     dat_00772ef4,
     dat_00772eec
 };
-TEXT_INPUT_LABELS_PC dat_00820c60 = {
+TEXT_INPUT_LABELS dat_00820c60 = {
     {{dat_007735bc, dat_007735a8, dat_00773594, dat_00773580, dat_00773578, dat_00773570, dat_00773568, dat_00774b9c,
       dat_00773560, dat_00773558, dat_00773550, dat_00773544, dat_00773538, dat_0077352c, dat_00773518, dat_00773504,
       dat_007734f0, dat_007734dc, dat_007734c8, dat_007734b0, dat_0077349c, dat_00773488, dat_00773480, dat_00773478,
@@ -2844,7 +2844,7 @@ TEXT_INPUT_LABELS_PC dat_00820c60 = {
     dat_00773344,
     dat_00773334
 };
-TEXT_INPUT_LABELS_PC dat_00820b80 = {
+TEXT_INPUT_LABELS dat_00820b80 = {
     {{dat_007739a0, dat_00773984, dat_0077396c, dat_00773950, dat_00773944, dat_0077393c, dat_00773934, dat_00775648,
       dat_0077392c, dat_00773924, dat_0077391c, dat_00773910, dat_00773904, dat_007738f8, dat_007738dc, dat_007738c0,
       dat_007738a8, dat_0077388c, dat_00773870, dat_00773858, dat_00773840, dat_00773828, dat_0077381c, dat_00773810,
@@ -2856,7 +2856,7 @@ TEXT_INPUT_LABELS_PC dat_00820b80 = {
     dat_0077368c,
     dat_0077367c
 };
-TEXT_INPUT_LABELS_PC dat_00820640 = {
+TEXT_INPUT_LABELS dat_00820640 = {
     {{dat_00774f68, dat_00774f54, dat_00774f40, dat_00774f2c, dat_00774f24, dat_00774f1c, dat_00774f14, dat_00774f04,
       dat_00774efc, dat_00774ef4, dat_00774eec, dat_00774ee0, dat_00774ed4, dat_00774ec8, dat_00774eb4, dat_00774ea0,
       dat_00774e8c, dat_00774e78, dat_00774e64, dat_00774e4c, dat_00774e34, dat_00774e1c, dat_00774e14, dat_00774e0c,
@@ -2868,7 +2868,7 @@ TEXT_INPUT_LABELS_PC dat_00820640 = {
     dat_00774ce4,
     dat_00774cd8
 };
-TEXT_INPUT_LABELS_PC dat_008209c0 = {
+TEXT_INPUT_LABELS dat_008209c0 = {
     {{dat_007741e8, dat_007741d4, dat_007741c4, dat_007741b4, dat_007741ac, dat_007741a4, dat_0077419c, dat_00774188,
       dat_00759770, dat_00774184, dat_00774180, dat_00774174, dat_00774168, dat_0077415c, dat_00774144, dat_0077412c,
       dat_00774114, dat_007740fc, dat_007740e8, dat_007740d4, dat_007740c0, dat_007740a8, dat_0077409c, dat_00774090,
@@ -2880,7 +2880,7 @@ TEXT_INPUT_LABELS_PC dat_008209c0 = {
     dat_00773f14,
     dat_00773f08
 };
-TEXT_INPUT_LABELS_PC dat_00820e20 = {
+TEXT_INPUT_LABELS dat_00820e20 = {
     {{dat_00772e1c, dat_00772e08, dat_00772df8, dat_00772de4, dat_00772ddc, dat_00774bb4, dat_00772dd4, dat_00774b9c,
       dat_00772dcc, dat_00772dc4, dat_00772dbc, dat_00772db0, dat_00772da4, dat_00772d98, dat_00772d7c, dat_00772d60,
       dat_00772d48, dat_00772d30, dat_00772d14, dat_00772cfc, dat_00772ce8, dat_00772cd0, dat_00772cc8, dat_00772cc0,
@@ -2892,7 +2892,7 @@ TEXT_INPUT_LABELS_PC dat_00820e20 = {
     dat_00772bd8,
     dat_00774948
 };
-TEXT_INPUT_LABELS_PC dat_008210c0 = {
+TEXT_INPUT_LABELS dat_008210c0 = {
     {{dat_00772150, dat_00772138, dat_00772120, dat_00772108, dat_007720fc, dat_007720f0, dat_007720e4, dat_00774b9c,
       dat_007720dc, dat_007720d4, dat_007720cc, dat_007720c0, dat_007720b4, dat_007720a8, dat_00772094, dat_0077207c,
       dat_00772064, dat_00772050, dat_00772038, dat_00772020, dat_00772008, dat_00771ff0, dat_00771fe0, dat_00771fd0,
@@ -2904,7 +2904,7 @@ TEXT_INPUT_LABELS_PC dat_008210c0 = {
     dat_00771e48,
     dat_00771e38
 };
-TEXT_INPUT_LABELS_PC dat_00820f00 = {
+TEXT_INPUT_LABELS dat_00820f00 = {
     {{dat_00772b34, dat_00772b20, dat_00772b0c, dat_00772afc, dat_00772af0, dat_00772ae8, dat_00772ae0, dat_00772acc,
       dat_00772ac4, dat_00772abc, dat_00772ab4, dat_00772aa4, dat_00772a94, dat_00772a84, dat_00772a6c, dat_00772a54,
       dat_00772a3c, dat_00772a24, dat_00772a0c, dat_007729f4, dat_007729dc, dat_007729c4, dat_007729b8, dat_007729ac,
@@ -2916,7 +2916,7 @@ TEXT_INPUT_LABELS_PC dat_00820f00 = {
     dat_00772840,
     dat_00772830
 };
-TEXT_INPUT_LABELS_PC dat_00820fe0 = {
+TEXT_INPUT_LABELS dat_00820fe0 = {
     {{dat_00772760, dat_00772750, dat_00772744, dat_00772738, dat_00772728, dat_00772718, dat_00772708, dat_007726e8,
       dat_007726dc, dat_007726d0, dat_007726c4, dat_007726ac, dat_00772694, dat_0077267c, dat_00772650, dat_00772624,
       dat_007725f8, dat_007725d0, dat_007725a4, dat_00772574, dat_00772548, dat_0077251c, dat_0077250c, dat_007724fc,
@@ -2928,7 +2928,7 @@ TEXT_INPUT_LABELS_PC dat_00820fe0 = {
     dat_007722c4,
     dat_0077229c
 };
-TEXT_INPUT_LABELS_PC dat_00820800 = {
+TEXT_INPUT_LABELS dat_00820800 = {
     {{dat_007748a4, dat_0077488c, dat_00774878, dat_00774860, dat_00774bb8, dat_00774858, dat_00774850, dat_00774b9c,
       dat_00774848, dat_00774840, dat_00774838, dat_0077482c, dat_00774820, dat_00774814, dat_007747fc, dat_007747e4,
       dat_007747d0, dat_007747bc, dat_007747a4, dat_00774790, dat_00774780, dat_00774770, dat_00774768, dat_00774760,
@@ -2940,7 +2940,7 @@ TEXT_INPUT_LABELS_PC dat_00820800 = {
     dat_00774674,
     dat_00774664
 };
-TEXT_INPUT_LABELS_PC dat_00820720 = {
+TEXT_INPUT_LABELS dat_00820720 = {
     {{dat_00774bf8, dat_00774be4, dat_00774bd4, dat_00774bc0, dat_00774bb8, dat_00774bb4, dat_00774bac, dat_00774b9c,
       dat_00774b94, dat_00774b8c, dat_00774b84, dat_00774b78, dat_00774b6c, dat_00774b60, dat_00774b44, dat_00774b28,
       dat_00774b10, dat_00774af8, dat_00774adc, dat_00774ac4, dat_00774aac, dat_00774a94, dat_00774a8c, dat_00774a84,
@@ -2952,7 +2952,7 @@ TEXT_INPUT_LABELS_PC dat_00820720 = {
     dat_00774954,
     dat_00774948
 };
-TEXT_INPUT_LABELS_PC dat_008208e0 = {
+TEXT_INPUT_LABELS dat_008208e0 = {
     {{dat_00774590, dat_00774584, dat_00774578, dat_0077456c, dat_00774560, dat_00774558, dat_00774550, dat_0077453c,
       dat_00774530, dat_00774524, dat_00774518, dat_0077450c, dat_00774500, dat_007744f4, dat_007744e0, dat_007744cc,
       dat_007744b8, dat_007744a4, dat_00774490, dat_0077447c, dat_00774468, dat_00774454, dat_00774448, dat_0077443c,
@@ -3443,19 +3443,19 @@ extern "C" {
         0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}
     };
 
-    PLAYER_BATARANG_SLOT_PC BatarangPackets[8] = {0};
+    PLAYER_BATARANG_SLOT BatarangPackets[8] = {0};
 
     SUIT_LAYERS *PlayerSuit[8] = {0};
 
     PLAYER_COIN_PACKET_PC CoinPacket[2] = {0};
 
-    PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2] = {0};
+    PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2] = {0};
 
     u8 PlayerTorpedoCount[8] = {0};
 
     GAMEOBJECT BackUpPlayers[2] = {0};
 
-    SOCKPOSITION_PC OldPlrSPos[8] = {0};
+    SOCKPOSITION OldPlrSPos[8] = {0};
 
     i32 Hub_UsePlayerList = 0;
 
@@ -3486,7 +3486,7 @@ i32 UsePlayerList = 0;
 
 extern "C" {
     u32 PCImplodeWordMask = 0xffffffff;
-    BOLTSYS_PC GlobalBoltSystem_Default = {
+    BOLTSYS GlobalBoltSystem_Default = {
         &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
     };
     NUSTRINGBANK StringBank[3] = {0};
@@ -3554,13 +3554,13 @@ extern "C" {
     i32 StartupGameFlag0 = 0;
     i32 StartupGameFlag1 = 1;
 
-    AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback = 0;
+    AISYS_SPECIAL_NODE_CALLBACK AISysSpecialNodeCallback = 0;
     extern const __declspec(align(16)) NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
         1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
-    TERRAIN_SET_PC *CurrentTerrain = 0;
-    GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback = 0;
-    TERRAIN_LAYER_PC TerLayer[17] = {
+    TERRAIN_SET *CurrentTerrain = 0;
+    GAMEOBJECT_LOOKUP_CALLBACK GetNamedGameObjectCallback = 0;
+    TERRAIN_LAYER TerLayer[17] = {
         {0x00000000, 0x0000ffff, 0x40000000},
         {0x00000000, 0x0000ffff, 0x40000000},
         {0x00000000, 0x0000ffff, 0x3f800000},
@@ -3596,7 +3596,7 @@ extern "C" {
     f32 FRAMETIME = 0;
     extern const f32 NuPrimPS2XScale = 0.003125f;
     extern const f32 NuPrimPS2YScale = -1.0f / 112.0f;
-    NUFPAR_PC NuFParRecords[4] = {0};
+    NUFPAR NuFParRecords[4] = {0};
     char NuFParBuffers[4][0x1000] = {0};
     i32 file_criticalsection = 0;
     PC_NUDATFILEINFO *unpack_file_info = 0;
@@ -3615,7 +3615,7 @@ extern "C" {
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
-    LEVELSPLINE_PC LevelSplinesTable[26] = {
+    LEVELSPLINE LevelSplinesTable[26] = {
         {NULL, "start",           2, 0,    -1, -1},
         {NULL, "start_cam",       2, 0,    -1, -1},
         {NULL, "point_cam",       2, 2,    -1, -1},
@@ -3658,9 +3658,9 @@ extern "C" {
     u16 PodRaceCDieAngle = 90;
     NUVEC GunshipADiePos = {10.0f, -1.0f, -20.0f};
     NUVEC GunshipBDiePos = {0.0f, -1.0f, -150.0f};
-    LEVELDATA_PC *PODRACEA_LDATA = 0;
+    LEVELDATA *PODRACEA_LDATA = 0;
     i32 LSW1 = 0;
-    LEVELDATA_PC *DEATHSTARBATTLED_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLED_LDATA = 0;
     i16 id_SPEEDERBIKE = -1;
     i16 id_ANAKINSPOD = -1;
     i16 id_ANAKINSPODGREEN = -1;
@@ -3675,8 +3675,8 @@ extern "C" {
     void *game_cutscenes_podsprint_out_of_time = 0;
     void *game_cutscenes_podsprint_sebulba = 0;
     void *game_cutscenes_dogfight_die = 0;
-    LEVELDATA_PC *PODSPRINTA_LDATA = 0;
-    LEVELDATA_PC *PODRACEB_LDATA = 0;
+    LEVELDATA *PODSPRINTA_LDATA = 0;
+    LEVELDATA *PODRACEB_LDATA = 0;
     u16 podrace_die_angle_a = 0;
     u16 podrace_die_angle_b = 0;
     u16 podrace_die_angle_c = 0;
@@ -3734,8 +3734,8 @@ extern "C" {
     i32 DontDoFileUpperCaseHack = 0;
     HINSTANCE PCInputWindow = 0;
     HWND PCInputInstance = 0;
-    PC_DEVICE_BACKEND_PC PCDeviceBackend;
-    NuKeyboardOwner_PC nu_keyboard_owner;
+    PC_DEVICE_BACKEND PCDeviceBackend;
+    NuKeyboardOwner nu_keyboard_owner;
     i32 nu_keyboard_device_flags = 0;
     i32 nu_keyboard_repeat_countdown = 0;
 
@@ -3770,7 +3770,7 @@ extern "C" {
     };
     PC_NUDATFILEINFO pc_dat_file_infos[20] = {0};
     PC_NUMEMFILE pc_memfiles[20] = {0};
-    CHEATSYSTEM_PC CheatSystem = {0};
+    CHEATSYSTEM CheatSystem = {0};
 
     extern char AreaFixUpName_Jedi[8] = "Jedi";
     extern char AreaFixUpName_Gungan[8] = "Gungan";
@@ -3835,70 +3835,70 @@ extern "C" {
     extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
     extern char AreaFixUpName_Map[4] = "map";
 
-    AREA_DATA_PC *GOTHAMSTREETS_ADATA = 0;
-    AREA_DATA_PC *ROOFTOPS_ADATA = 0;
-    AREA_DATA_PC *FAIRGROUND_ADATA = 0;
-    AREA_DATA_PC *NEGOTIATIONS_ADATA = 0;
-    AREA_DATA_PC *GUNGAN_ADATA = 0;
-    AREA_DATA_PC *RESCUE_ADATA = 0;
-    AREA_DATA_PC *PODSPRINT_ADATA = 0;
-    AREA_DATA_PC *RETAKE_ADATA = 0;
-    AREA_DATA_PC *MAUL_ADATA = 0;
-    AREA_DATA_PC *KAMINO_ADATA = 0;
-    AREA_DATA_PC *FACTORY_ADATA = 0;
-    AREA_DATA_PC *JEDI_ADATA = 0;
-    AREA_DATA_PC *DOOKU_ADATA = 0;
-    AREA_DATA_PC *CRUISER_ADATA = 0;
-    AREA_DATA_PC *GRIEVOUS_ADATA = 0;
-    AREA_DATA_PC *KASHYYYK_ADATA = 0;
-    AREA_DATA_PC *TEMPLE_ADATA = 0;
-    AREA_DATA_PC *BLOCKADERUNNER_ADATA = 0;
-    AREA_DATA_PC *TATOOINE_ADATA = 0;
-    AREA_DATA_PC *MOSEISLEY_ADATA = 0;
-    AREA_DATA_PC *DEATHSTARRESCUE_ADATA = 0;
-    AREA_DATA_PC *DEATHSTARESCAPE_ADATA = 0;
-    AREA_DATA_PC *DEATHSTARBATTLE_ADATA = 0;
-    AREA_DATA_PC *HOTHBATTLE_ADATA = 0;
-    LEVELDATA_PC *HOTHBATTLEA_LDATA = 0;
-    AREA_DATA_PC *HOTHESCAPE_ADATA = 0;
-    AREA_DATA_PC *ASTEROIDCHASE_ADATA = 0;
-    AREA_DATA_PC *DAGOBAH_ADATA = 0;
-    AREA_DATA_PC *CLOUDCITYTRAP_ADATA = 0;
-    AREA_DATA_PC *CLOUDCITYESCAPE_ADATA = 0;
-    AREA_DATA_PC *JABBASPALACE_ADATA = 0;
-    AREA_DATA_PC *SARLACCPIT_ADATA = 0;
-    AREA_DATA_PC *SPEEDERCHASE_ADATA = 0;
-    AREA_DATA_PC *ENDORBATTLE_ADATA = 0;
-    AREA_DATA_PC *DEATHSTARBATTLE2_ADATA = 0;
-    AREA_DATA_PC *EMPERORFIGHT_ADATA = 0;
-    AREA_DATA_PC *E1CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E2CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E3CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E4CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E5CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E6CHARACTER_ADATA = 0;
-    AREA_DATA_PC *E1VEHICLE_ADATA = 0;
-    AREA_DATA_PC *E2VEHICLE_ADATA = 0;
-    AREA_DATA_PC *E3VEHICLE_ADATA = 0;
-    AREA_DATA_PC *E4VEHICLE_ADATA = 0;
-    AREA_DATA_PC *E5VEHICLE_ADATA = 0;
-    AREA_DATA_PC *E6VEHICLE_ADATA = 0;
-    AREA_DATA_PC *PODRACE_ADATA = 0;
-    AREA_DATA_PC *ANAKINSFLIGHT_ADATA = 0;
-    AREA_DATA_PC *BONUS_GUNSHIP_ADATA = 0;
-    AREA_DATA_PC *ANEWHOPE_ADATA = 0;
-    AREA_DATA_PC *LEGOCITY_ADATA = 0;
-    AREA_DATA_PC *NEWTOWN_ADATA = 0;
-    AREA_DATA_PC *LOSTTEMPLE_ADATA = 0;
-    AREA_DATA_PC *SENATE_ADATA = 0;
-    AREA_DATA_PC *UTAPAU_ADATA = 0;
-    AREA_DATA_PC *HOTH_ADATA = 0;
-    AREA_DATA_PC *BONUSDAGOBAH_ADATA = 0;
-    AREA_DATA_PC *BONUSKAMINO_ADATA = 0;
-    AREA_DATA_PC *BONUSKASHYYYK_ADATA = 0;
-    AREA_DATA_PC *JIMTEST_ADATA = 0;
+    AREA_DATA *GOTHAMSTREETS_ADATA = 0;
+    AREA_DATA *ROOFTOPS_ADATA = 0;
+    AREA_DATA *FAIRGROUND_ADATA = 0;
+    AREA_DATA *NEGOTIATIONS_ADATA = 0;
+    AREA_DATA *GUNGAN_ADATA = 0;
+    AREA_DATA *RESCUE_ADATA = 0;
+    AREA_DATA *PODSPRINT_ADATA = 0;
+    AREA_DATA *RETAKE_ADATA = 0;
+    AREA_DATA *MAUL_ADATA = 0;
+    AREA_DATA *KAMINO_ADATA = 0;
+    AREA_DATA *FACTORY_ADATA = 0;
+    AREA_DATA *JEDI_ADATA = 0;
+    AREA_DATA *DOOKU_ADATA = 0;
+    AREA_DATA *CRUISER_ADATA = 0;
+    AREA_DATA *GRIEVOUS_ADATA = 0;
+    AREA_DATA *KASHYYYK_ADATA = 0;
+    AREA_DATA *TEMPLE_ADATA = 0;
+    AREA_DATA *BLOCKADERUNNER_ADATA = 0;
+    AREA_DATA *TATOOINE_ADATA = 0;
+    AREA_DATA *MOSEISLEY_ADATA = 0;
+    AREA_DATA *DEATHSTARRESCUE_ADATA = 0;
+    AREA_DATA *DEATHSTARESCAPE_ADATA = 0;
+    AREA_DATA *DEATHSTARBATTLE_ADATA = 0;
+    AREA_DATA *HOTHBATTLE_ADATA = 0;
+    LEVELDATA *HOTHBATTLEA_LDATA = 0;
+    AREA_DATA *HOTHESCAPE_ADATA = 0;
+    AREA_DATA *ASTEROIDCHASE_ADATA = 0;
+    AREA_DATA *DAGOBAH_ADATA = 0;
+    AREA_DATA *CLOUDCITYTRAP_ADATA = 0;
+    AREA_DATA *CLOUDCITYESCAPE_ADATA = 0;
+    AREA_DATA *JABBASPALACE_ADATA = 0;
+    AREA_DATA *SARLACCPIT_ADATA = 0;
+    AREA_DATA *SPEEDERCHASE_ADATA = 0;
+    AREA_DATA *ENDORBATTLE_ADATA = 0;
+    AREA_DATA *DEATHSTARBATTLE2_ADATA = 0;
+    AREA_DATA *EMPERORFIGHT_ADATA = 0;
+    AREA_DATA *E1CHARACTER_ADATA = 0;
+    AREA_DATA *E2CHARACTER_ADATA = 0;
+    AREA_DATA *E3CHARACTER_ADATA = 0;
+    AREA_DATA *E4CHARACTER_ADATA = 0;
+    AREA_DATA *E5CHARACTER_ADATA = 0;
+    AREA_DATA *E6CHARACTER_ADATA = 0;
+    AREA_DATA *E1VEHICLE_ADATA = 0;
+    AREA_DATA *E2VEHICLE_ADATA = 0;
+    AREA_DATA *E3VEHICLE_ADATA = 0;
+    AREA_DATA *E4VEHICLE_ADATA = 0;
+    AREA_DATA *E5VEHICLE_ADATA = 0;
+    AREA_DATA *E6VEHICLE_ADATA = 0;
+    AREA_DATA *PODRACE_ADATA = 0;
+    AREA_DATA *ANAKINSFLIGHT_ADATA = 0;
+    AREA_DATA *BONUS_GUNSHIP_ADATA = 0;
+    AREA_DATA *ANEWHOPE_ADATA = 0;
+    AREA_DATA *LEGOCITY_ADATA = 0;
+    AREA_DATA *NEWTOWN_ADATA = 0;
+    AREA_DATA *LOSTTEMPLE_ADATA = 0;
+    AREA_DATA *SENATE_ADATA = 0;
+    AREA_DATA *UTAPAU_ADATA = 0;
+    AREA_DATA *HOTH_ADATA = 0;
+    AREA_DATA *BONUSDAGOBAH_ADATA = 0;
+    AREA_DATA *BONUSKAMINO_ADATA = 0;
+    AREA_DATA *BONUSKASHYYYK_ADATA = 0;
+    AREA_DATA *JIMTEST_ADATA = 0;
 
-    AREAFIXUP_PC AreaFixUpLSW[65] = {
+    AREAFIXUP AreaFixUpLSW[65] = {
         {AreaFixUpName_Map,              &HUB_ADATA                },
         {AreaFixUpName_Negotiations,     &NEGOTIATIONS_ADATA       },
         {AreaFixUpName_Gungan,           &GUNGAN_ADATA             },
@@ -3966,12 +3966,12 @@ extern "C" {
         {NULL,                           NULL                      },
     };
 
-    AREAFIXUP_PC AreaFixUpLostTemple[2] = {
+    AREAFIXUP AreaFixUpLostTemple[2] = {
         {AreaFixUpName_Losttemple, &LOSTTEMPLE_ADATA},
         {NULL,                     NULL             },
     };
 
-    AREAFIXUP_PC AreaFixUpGotham[5] = {
+    AREAFIXUP AreaFixUpGotham[5] = {
         {AreaFixUpName_Batcave,       &HUB_ADATA          },
         {AreaFixUpName_Gothamstreets, &GOTHAMSTREETS_ADATA},
         {AreaFixUpName_Rooftops,      &ROOFTOPS_ADATA     },
@@ -4041,7 +4041,7 @@ extern "C" {
     extern const f64 NuTime_RefreshRate = 60.0;
     NUGSCN *edbits_base_scene = 0;
     void *edbits_base_terrain = 0;
-    TERRAIN_SURFACE_PC TerSurface[32] = {
+    TERRAIN_SURFACE TerSurface[32] = {
         {1.0f, 0,      0xffff},
         {1.0f, 65,     0xffff},
         {1.0f, 2,      0xffff},
@@ -4083,7 +4083,7 @@ extern "C" {
     NUGSCN *edanim_page_scene[8] = {0};
     i32 edanim_next_param = 0;
     i32 edanim_params_used = 0;
-    EDANIM_PARAM_PC AnimParams[64] = {0};
+    EDANIM_PARAM AnimParams[64] = {0};
 
     void MenuEnterNoMemoryCard(MENU *);
     void MenuDrawNoData(MENU *);
@@ -4146,7 +4146,7 @@ extern "C" {
     f32 ownermomf = 5.0f;
     f32 max_cable_length = 15.0f;
     f32 tow_length = 6.0f;
-    AREA_DATA_PC *GUNSHIP_ADATA = 0;
+    AREA_DATA *GUNSHIP_ADATA = 0;
     u8 cables[0xf60] = {0};
     i32 nsegments_drawn = 0;
     i32 solid_cable = 0;
@@ -4253,15 +4253,15 @@ extern "C" {
 extern "C" {
     f32 TargetDist_Near2 = 0;
 
-    LEVELDATA_PC *DEATHSTARRESCUEA_LDATA = 0;
+    LEVELDATA *DEATHSTARRESCUEA_LDATA = 0;
     extern const f32 ForcePushApproachInnerSquare = 0.010000001f;
     extern const f32 ForcePushApproachOuterSquare = 0.040000003f;
     u16 id_GONKDROID = 0xffff;
-    APIOBJECT_FROM_ID_PC APIOBJECTFromObjIDFn = 0;
+    APIOBJECT_FROM_ID APIOBJECTFromObjIDFn = 0;
     i16 PCArcadeModeText0 = 0;
     i16 PCArcadeModeText1 = 0;
     i16 PCArcadeModeText2 = 0;
-    ARCADE_MODE_PC Arcade_Mode[7] = {
+    ARCADE_MODE Arcade_Mode[7] = {
         {&PCArcadeModeText0, 0,      0x19},
         {&PCArcadeModeText1, 10,     0x12},
         {&PCArcadeModeText1, 25,     0x12},
@@ -4287,8 +4287,8 @@ extern "C" {
 }
 
 extern "C" {
-    AI_RESPAWN_ON_PATH_PC AIRespawnOnPathFn = 0;
-    AI_CHARACTER_GOAL_SPEED_PC GetCharacterGoalSpeedFn = 0;
+    AI_RESPAWN_ON_PATH AIRespawnOnPathFn = 0;
+    AI_CHARACTER_GOAL_SPEED GetCharacterGoalSpeedFn = 0;
 }
 
 extern "C" {
@@ -4310,7 +4310,7 @@ extern "C" {
 
 extern "C" {
     GAMEOBJECT *CarWashHack = 0;
-    LEVELDATA_PC *MOSEISLEYB_LDATA = 0;
+    LEVELDATA *MOSEISLEYB_LDATA = 0;
     i16 id_LANDSPEEDER = -1;
     i16 id_WOOKIEFLYER = -1;
     i16 id_IMPERIALGUARD = -1;
@@ -4327,11 +4327,11 @@ extern "C" {
     f32 GameDeflectPartSpeed = 5.0f;
 
     PODSPRINT_PC podsprint = {0};
-    AI_SCRIPT_FIRST_ACTION_PC ScriptProcessFirstTimeActionFn = 0;
+    AI_SCRIPT_FIRST_ACTION ScriptProcessFirstTimeActionFn = 0;
 }
 
 extern "C" {
-    AI_GAME_PARAM_TO_FLOAT_PC GameParamToFloatFn = 0;
+    AI_GAME_PARAM_TO_FLOAT GameParamToFloatFn = 0;
     APIDEBRISSYS *perm_debrissys = 0;
 }
 
@@ -4339,16 +4339,16 @@ extern "C" {
     i16 id_TIEFIGHTER = -1;
     i16 id_XWING = -1;
     i16 id_STAP2 = -1;
-    AI_PARSE_SPEED_PC AIActionParseSpeedFn = 0;
-    AI_CHARACTER_DISTANCE_PC GetViewRangeFn = 0;
-    AI_CHARACTER_DISTANCE_PC GetHearDistanceFn = 0;
-    AI_CHARACTER_DISTANCE_PC GetMaxViewHeightFn = 0;
-    AI_CHARACTER_DISTANCE_PC GetMinViewHeightFn = 0;
-    AI_ORIGIN_POSITION_PC GetOriginPositionFn = 0;
+    AI_PARSE_SPEED AIActionParseSpeedFn = 0;
+    AI_CHARACTER_DISTANCE GetViewRangeFn = 0;
+    AI_CHARACTER_DISTANCE GetHearDistanceFn = 0;
+    AI_CHARACTER_DISTANCE GetMaxViewHeightFn = 0;
+    AI_CHARACTER_DISTANCE GetMinViewHeightFn = 0;
+    AI_ORIGIN_POSITION GetOriginPositionFn = 0;
 }
 
 extern "C" {
-    CHECK_LOST_DATA_PC CheckLostDataFn = 0;
+    CHECK_LOST_DATA CheckLostDataFn = 0;
 // Includes the utility WORD at +0x10000.
     CONFIG_BUFFER ConfigBuffer = {0};
 }
@@ -4380,7 +4380,7 @@ extern "C" {
 }
 
 extern "C" {
-    AI_BIG_JUMP_TO_DESTINATION_PC AIBigJumpToDestinationFn = 0;
+    AI_BIG_JUMP_TO_DESTINATION AIBigJumpToDestinationFn = 0;
 }
 
 extern "C" {
@@ -4410,7 +4410,7 @@ extern "C" {
 extern "C" {
     i32 nethost = 0;
     i16 id_PKDROID = -1;
-    LEVELDATA_PC *NEGOTIATIONSC_LDATA = 0;
+    LEVELDATA *NEGOTIATIONSC_LDATA = 0;
 }
 
 extern "C" {
@@ -4429,14 +4429,14 @@ extern "C" {
 
 extern "C" {
 // Hub arrays are two-entry source views; full original capacities remain unknown.
-    MISSIONSYS_PC *MissionSys = 0;
+    MISSIONSYS *MissionSys = 0;
 }
 
 extern "C" {
     f32 idealgoalrange = 1.5f;
     f32 engagefiretime = 1.5f;
     f32 DEFAULT_MOVE_RANGE = 0;
-    AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn = 0;
+    AI_LEVEL_CHARACTER_TYPE_ID LevelCharacterTypeIDFn = 0;
 }
 
 extern "C" {
@@ -4513,7 +4513,7 @@ extern "C" {
 }
 
 extern "C" {
-    PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
+    PC_DEVICE_STATE_CACHE PCDeviceStateCachePc;
     i32 nufile_lsn_allowed = 1;
 }
 
@@ -4577,7 +4577,7 @@ extern "C" {
     void edgraInit(void);
     void edgraClose(void);
     void edgraEnter(void);
-    i32 edgraProc(f32 delta_time, FRAME_PAD_PC *pad);
+    i32 edgraProc(f32 delta_time, FRAME_PAD *pad);
     void edgraRender(void);
     ed_module_s edgradesc = {NULL, NULL, "Grass Editor", edgraInit,  edgraClose, edgraEnter,  NULL,
                              NULL, NULL, NULL,           0x73617267, edgraProc,  edgraRender, NULL};
@@ -4698,7 +4698,7 @@ extern "C" {
     void edanimInit(void);
     void edanimClose(void);
     void edanimEnter(void);
-    i32 edanimProc(f32 delta_time, FRAME_PAD_PC *pad);
+    i32 edanimProc(f32 delta_time, FRAME_PAD *pad);
     void edanimRender(void);
     ed_module_s edanimdesc = {NULL, NULL, "Anim Editor", edanimInit, edanimClose, edanimEnter,  NULL,
                               NULL, NULL, NULL,          0x6d696e61, edanimProc,  edanimRender, NULL};
@@ -4717,7 +4717,7 @@ extern "C" {
     char ScoreCounterName[8] = "Counter";
     char PickupCoinsLandName[10] = "CoinsLand";
     u8 CoinTab[4] = {0, 1, 2, 3};
-    ADD_GAME_MESSAGE_PC AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
+    ADD_GAME_MESSAGE AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
                                               NULL, 0,     0.0f,  0.0f, NULL, NULL, NULL, NULL, NULL, -1, 0,    255,  0};
     i16 BigJumpLandFallback = -1;
     i16 BigJumpLandSecondary = -1;
@@ -4907,7 +4907,7 @@ extern "C" {
 
 extern "C" {
     // Selected input view: cumulative eligible writes <=384; actual PC capacity unknown.
-    GIZFORCE_TARGET_RECORD_PC PossibleForceTargets[384] = {0};
+    GIZFORCE_TARGET_RECORD PossibleForceTargets[384] = {0};
 
     TIMER LevelTimer = {0};
 }
@@ -5325,51 +5325,51 @@ extern "C" {
 
     i32 CanPunchGirls = 1;
 
-    LEVELDATA_PC *MOSEISLEYC_LDATA = 0;
+    LEVELDATA *MOSEISLEYC_LDATA = 0;
 
     i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
 }
 
 extern "C" {
-    LEVELDATA_PC *NEGOTIATIONSA_LDATA = 0;
+    LEVELDATA *NEGOTIATIONSA_LDATA = 0;
 
-    LEVELDATA_PC *NEGOTIATIONSB_LDATA = 0;
+    LEVELDATA *NEGOTIATIONSB_LDATA = 0;
 
-    LEVELDATA_PC *GUNGAN_A_LDATA = 0;
+    LEVELDATA *GUNGAN_A_LDATA = 0;
 
-    LEVELDATA_PC *RESCUEC_LDATA = 0;
+    LEVELDATA *RESCUEC_LDATA = 0;
 
-    LEVELDATA_PC *RETAKEB_LDATA = 0;
+    LEVELDATA *RETAKEB_LDATA = 0;
 
-    LEVELDATA_PC *RETAKED_LDATA = 0;
+    LEVELDATA *RETAKED_LDATA = 0;
 
-    LEVELDATA_PC *RETAKEE_LDATA = 0;
+    LEVELDATA *RETAKEE_LDATA = 0;
 
-    LEVELDATA_PC *TATOOINEA_LDATA = 0;
+    LEVELDATA *TATOOINEA_LDATA = 0;
 
-    LEVELDATA_PC *TATOOINEB_LDATA = 0;
+    LEVELDATA *TATOOINEB_LDATA = 0;
 
-    LEVELDATA_PC *MOSEISLEYA_LDATA = 0;
+    LEVELDATA *MOSEISLEYA_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARRESCUEB_LDATA = 0;
+    LEVELDATA *DEATHSTARRESCUEB_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARRESCUEC_LDATA = 0;
+    LEVELDATA *DEATHSTARRESCUEC_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARRESCUEE_LDATA = 0;
+    LEVELDATA *DEATHSTARRESCUEE_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARESCAPEA_LDATA = 0;
+    LEVELDATA *DEATHSTARESCAPEA_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARESCAPEB_LDATA = 0;
+    LEVELDATA *DEATHSTARESCAPEB_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARESCAPEC_LDATA = 0;
+    LEVELDATA *DEATHSTARESCAPEC_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARESCAPED_LDATA = 0;
+    LEVELDATA *DEATHSTARESCAPED_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARBATTLEA_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLEA_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARBATTLEB_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLEB_LDATA = 0;
 
-    LEVELDATA_PC *DEATHSTARBATTLEC_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLEC_LDATA = 0;
 
     f32 TorpedoGrabRangeSquared = 36.0f;
 }
@@ -5557,7 +5557,7 @@ extern "C" {
 }
 
 extern "C" {
-    RIPPLE_SET_PC *RippleSet = NULL;
+    RIPPLE_SET *RippleSet = NULL;
     f32 RipplePerturbation = 0.15f;
     f32 RippleSfxCooldown = 0.5f;
     f32 ForceFieldRippleRate = 100.0f;
@@ -5587,13 +5587,13 @@ extern "C" {
     APICHARACTERMODELLIST PermModelList[1] = {
         {-1, 0}
     };
-    COLLECTION_BUILD_PC MasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD_PC CharacterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD_PC VehicleCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD_PC ShopCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD_PC JediCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD_PC BlasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD_PC BountyHunterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD MasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD CharacterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD VehicleCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD ShopCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD JediCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD BlasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD BountyHunterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
     i16 PermanentWeirdo1Id = -1;
     i16 PermanentWeirdo2Id = -1;
     i16 PermanentCustomiserActions[5] = {97, 190, 98, 99, -1};
@@ -5852,7 +5852,7 @@ extern "C" {
 }
 
 extern "C" {
-    ANIM_REDIRECT_VIEW_PC AnimRedirectList_LSW[41] = {
+    ANIM_REDIRECT_VIEW AnimRedirectList_LSW[41] = {
         {"ride_bantha_new_blasterchar",      112, {0, 0}},
         {"ride_bantha_new_jedichar",         112, {0, 0}},
         {"ride_bantha_old_blasterchar",      112, {0, 0}},
@@ -5895,7 +5895,7 @@ extern "C" {
         {"ride_tcannon_old_jedichar",        194, {0, 0}},
         {NULL,                               0,   {0, 0}},
     };
-    ANIM_REDIRECT_VIEW_PC AnimRedirectList_Batman[1] = {
+    ANIM_REDIRECT_VIEW AnimRedirectList_Batman[1] = {
         {NULL, 0, {0, 0}},
     };
 }
@@ -6102,7 +6102,7 @@ extern "C" {
     void edppClose(void);
     void edppEnter(void);
     void edppApply(void);
-    i32 edppProc(f32 delta_time, FRAME_PAD_PC *pad);
+    i32 edppProc(f32 delta_time, FRAME_PAD *pad);
     void edppRender(void);
     ed_module_s edptldesc = {
         NULL,       NULL, "Particle Positioner", edppInit, edppClose, edppEnter, NULL, edppApply, NULL, NULL, 0x706c7470, edppProc,
@@ -6273,7 +6273,7 @@ extern "C" {
     void edbriInit(void);
     void edbriClose(void);
     void edbriEnter(void);
-    i32 edbriProc(f32 delta_time, FRAME_PAD_PC *pad);
+    i32 edbriProc(f32 delta_time, FRAME_PAD *pad);
     void edbriRender(void);
     ed_module_s edbridesc = {NULL, NULL, "Bridge Editor", edbriInit, edbriClose,  edbriEnter, NULL, NULL,
                              NULL, NULL, 0x64697262,      edbriProc, edbriRender, NULL};
@@ -7129,7 +7129,7 @@ extern "C" {
     i16 dat_007f1b24 = -1;
     i16 dat_007f1b28 = -1;
     i16 dat_007f1b48 = -1;
-    CHARFIXUP_PC CharacterFixupTable[219] = {
+    CHARFIXUP CharacterFixupTable[219] = {
         {const_cast<char *>("weirdo1"),                    &PermanentWeirdo1Id                                    },
         {const_cast<char *>("weirdo2"),                    &PermanentWeirdo2Id                                    },
         {const_cast<char *>(dat_0075314c),                 &ID_DEFAULTCHARACTER_A                                 },
@@ -7624,7 +7624,7 @@ extern "C" {
     char dat_0075491c[] = "shop_tool24";
     char dat_00754908[] = "adaptivedifficulty";
     char dat_00754900[] = "------";
-    CHEAT_PC ExtrasCheats[46] = {
+    CHEAT ExtrasCheats[46] = {
         {dat_00754f5c, &dat_00880990, 0, {0, 0}, -1, -1, dat_00754f54, 25000, dat_00754f48, 0x100},
         {dat_00754f44, &dat_0088104c, 0, {0, 0}, -1, -1, dat_00754f3c, 8000, dat_00754f30, 0x0},
         {dat_00754f24, &dat_00880994, 0, {0, 0}, -1, -1, dat_00754f1c, 10000, dat_00754f10, 0x0},
@@ -7924,8 +7924,8 @@ extern "C" {
     void (*AIPathNodeDeletedFn)(struct EDAIPATHNODE_s *) = NULL;
     void (*AIPathNodeMovedFn)(struct EDAIPATHNODE_s *) = NULL;
     void (*AIPathDeletedFn)(struct EDAIPATH_s *) = NULL;
-    AI_PREPARING_SPECIAL_MOVE_PC PreparingForSpecialMoveFn = 0;
-    AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn = 0;
+    AI_PREPARING_SPECIAL_MOVE PreparingForSpecialMoveFn = 0;
+    AI_MID_SPECIAL_MOVE MidSpecialMoveFn = 0;
 }
 
 extern "C" {
@@ -7937,7 +7937,7 @@ extern "C" {
 }
 
 extern "C" {
-    void xEndState(NUFPAR_PC *parser);
+    void xEndState(NUFPAR *parser);
     NUFPCOMJMP AIScriptStateCommands[5] = {
         {"CONDITIONS",      xConditions},
         {"ACTIONS",         xActions   },

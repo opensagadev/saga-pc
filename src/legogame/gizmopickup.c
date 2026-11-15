@@ -89,7 +89,7 @@ void Pup_UpdatePowerUp(WORLDINFO *world, GIZMOPICKUP *pickup) {
     PlaySfx("Grv_GuardWeaponLp", &pickup->position);
 }
 
-static void PowerUp_UpdateMsg(GAME_MESSAGE_PC *message) {
+static void PowerUp_UpdateMsg(GAME_MESSAGE *message) {
     message->parameter_e2 = (u16)(i32)(message->parameter_e2 + 16384.0 * FRAMETIME);
     if (message->player_index == 0 || message->player_index == 1) {
         message->target_position.y = PowerUp_GetPanelY(message->player_index) + STATSPOSY;
@@ -98,7 +98,7 @@ static void PowerUp_UpdateMsg(GAME_MESSAGE_PC *message) {
 
 static void PowerUp_ExistingIconPrivate(i32 player_index) {
     NUVEC position;
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     position.x = player_index == 0 ? -ICONX : ICONX;
     position.y = PowerUp_GetPanelY(player_index) + STATSPOSY;
     position.z = 1.0f;
@@ -113,7 +113,7 @@ static void PowerUp_ExistingIconPrivate(i32 player_index) {
     AddGameMsg(&message);
 }
 
-static void PowerUp_EndMsg(GAME_MESSAGE_PC *message) {
+static void PowerUp_EndMsg(GAME_MESSAGE *message) {
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
     if (FindGameMsgsWithID(7, 0, message->player_index, message)) {
         PowerUp_ExistingIconPrivate(message->player_index);
@@ -122,8 +122,8 @@ static void PowerUp_EndMsg(GAME_MESSAGE_PC *message) {
 
 void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags) {
     NUVEC target;
-    ADD_GAME_MESSAGE_PC message;
-    GAME_MESSAGE_PC *queued;
+    ADD_GAME_MESSAGE message;
+    GAME_MESSAGE *queued;
     u16 panel_rotation;
     (void)flags;
     if (object == NULL || (object->player_index != 0 && object->player_index != 1)) {
@@ -182,8 +182,8 @@ void PowerUp_Update(GAMEOBJECT *object) {
 
 void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
     NUVEC target;
-    ADD_GAME_MESSAGE_PC message;
-    GAME_MESSAGE_PC *queued;
+    ADD_GAME_MESSAGE message;
+    GAME_MESSAGE *queued;
     LEVEL_OBJECT_RUNTIME *objects;
     (void)world;
     (void)type;
@@ -247,11 +247,11 @@ void Pup_UpdatePurpleCoin(WORLDINFO *world, GIZMOPICKUP *pickup) {
     }
 }
 
-void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE_PC *message) {
+void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE *message) {
     message->target_position.x = cointotal_x[message->player_index];
 }
 
-void EndScoreMessage(GAME_MESSAGE_PC *message) {
+void EndScoreMessage(GAME_MESSAGE *message) {
     i32 icon;
     OBJECT_COIN_PACKET *player;
     u32 old_coins;
@@ -339,7 +339,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     NUVEC target;
     f32 target_scale;
     u32 score;
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     char text[8];
     (void)ignored;
     if (object != NULL) {
@@ -447,7 +447,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     }
 }
 
-static void EndRedBrickMessage(GAME_MESSAGE_PC *message) {
+static void EndRedBrickMessage(GAME_MESSAGE *message) {
     (void)message;
     if (AreaGlobals.unknown_08 != 0) {
         AreaGlobals.unknown_08 = 2;
@@ -459,7 +459,7 @@ static void EndRedBrickMessage(GAME_MESSAGE_PC *message) {
 }
 
 void CollectRedBrick(NUVEC *position) {
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     NUVEC target;
     AddGameDebris(WORLD->game_debris_sys, 0x62, position);
     GameAudio_PlaySfxById(GetSfxId(dat_00758c14), position, 3, 0);
@@ -488,7 +488,7 @@ void CollectRedBrick(NUVEC *position) {
 }
 
 void CollectMinikit(NUVEC *position, char *name, i32 flags) {
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     NUVEC target;
     i32 area_id;
     (void)flags;
@@ -1161,7 +1161,7 @@ void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJ
     NUVEC target;
     f32 target_scale;
     GIZMO_PICKUP_TYPE *pickup;
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     (void)unused;
     (void)owner;
     if (coins == 0) {

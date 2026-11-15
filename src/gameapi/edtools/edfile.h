@@ -10,7 +10,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-struct FRAME_PAD_PC;
+struct FRAME_PAD;
 struct eduiitem_s;
 struct eduimenu_s;
 
@@ -39,7 +39,7 @@ extern "C" {
      * Blank CSV ctype prevents an external plain two-stack-argument call. */
 
     u32 EdFileReadUnsignedInt(void);
-    i32 cbProcessColourPick(struct eduimenu_s *menu, struct eduiitem_s *item, f32 delta_time, struct FRAME_PAD_PC *pad);
+    i32 cbProcessColourPick(struct eduimenu_s *menu, struct eduiitem_s *item, f32 delta_time, struct FRAME_PAD *pad);
     void cbToggleIndicatorMode(struct eduimenu_s *arg0, struct eduiitem_s *item, u32 arg2);
     void cbCopy(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     void cbPaste(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);

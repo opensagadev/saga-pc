@@ -391,7 +391,7 @@ extern "C" {
     }
 
     void *Ledges_ReserveBufferSpace(WORLDINFO *world) {
-        LEVELDATA_PC *level = world->current_level;
+        LEVELDATA *level = world->current_level;
         world->ledges = NULL;
         world->ledge_count = 0;
         if (level->max_ledges > 0) {
@@ -479,7 +479,7 @@ extern "C" {
         return world != NULL ? world->current_level->max_ledges : 0;
     }
 
-    void Ledges_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
+    void Ledges_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, void *unused) {
         for (i32 i = 0; i < world->ledge_count; ++i) {
             if (NuStrLen(((LEDGE_MOTION *)world->ledges)[i].name) != 0) {
                 AddGizmo(system, type_id, NULL, &((LEDGE_MOTION *)world->ledges)[i]);
@@ -544,15 +544,15 @@ extern "C" {
 extern "C" {
     char *LedgeOutputName = "CanUse";
     char *LedgeRegistryNamePc = "Ledge";
-    ADDGIZMOTYPE_PC LedgeAddType = {0};
+    ADDGIZMOTYPE LedgeAddType = {0};
 
-    ADDGIZMOTYPE_PC *Ledges_RegisterGizmo(i32 unused_type_id) {
+    ADDGIZMOTYPE *Ledges_RegisterGizmo(i32 unused_type_id) {
         char *name = LedgeRegistryNamePc;
         LedgeAddType = Default_ADDGIZMOTYPE;
         LedgeAddType.name = name;
         LedgeAddType.prefix = dat_007516c0;
         LedgeAddType.fns.options = 0x20;
-        LedgeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Ledges_GetMaxGizmos;
+        LedgeAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Ledges_GetMaxGizmos;
         LedgeAddType.fns.add_gizmos_fn = (void *)Ledges_AddGizmos;
         LedgeAddType.fns.early_update_fn = NULL;
         LedgeAddType.fns.late_update_fn = NULL;
@@ -576,7 +576,7 @@ extern "C" {
         LedgeAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))Ledges_StoreProgress;
         LedgeAddType.fns.reset_fn = (void (*)(void *, void *, void *))Ledges_Reset;
         LedgeAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Ledges_ReserveBufferSpace;
-        LedgeAddType.fns.load_fn = (i32(*)(void *, void *))Ledges_Load;
+        LedgeAddType.fns.load_fn = (i32 (*)(void *, void *))Ledges_Load;
         LedgeAddType.fns.post_load_fn = NULL;
         LedgeAddType.fns.add_level_sfx_fn = NULL;
         return &LedgeAddType;

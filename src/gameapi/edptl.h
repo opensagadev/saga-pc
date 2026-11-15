@@ -78,7 +78,7 @@ extern "C" {
 
     i32 edbriLoadPage(char *path, void *scene);
 
-    typedef struct debris_key_s DEBRISKEY_PC;
+    typedef struct debris_key_s DEBRISKEY;
 #define PCGrassTerrainScene CurrentTerrain // NOLINT(readability-identifier-naming)
     extern i32 debrischunks;
     extern i32 debrischunksglass;
@@ -137,10 +137,10 @@ extern "C" {
         NUVEC emission_position;                             // 0x19c
         NUVEC momentum;                                      // 0x1a8
         NUVEC emitter_momentum;                              // 0x1b4
-        DEBRISGENERATOR_PC generator;                        // 0x1c0
-        DEBRISMOMENTUMADJUSTER_PC momentum_adjuster;         // 0x1c4
-        DEBRISKEY_PC *previous;                              // 0x1c8
-        DEBRISKEY_PC *next;                                  // 0x1cc
+        DEBRISGENERATOR generator;                           // 0x1c0
+        DEBRISMOMENTUMADJUSTER momentum_adjuster;            // 0x1c4
+        DEBRISKEY *previous;                                 // 0x1c8
+        DEBRISKEY *next;                                     // 0x1cc
         i16 emitter_rotation_x;                              // 0x1d0
         i16 emitter_rotation_y;                              // 0x1d2
         i32 finite_count;                                    // 0x1d4
@@ -250,14 +250,14 @@ extern "C" {
     typedef struct debris_render_chunk_s {              // size 0x64
         struct debris_particle_chunk_s *particle_chunk; // 0x00
         struct debris_info_s *effect;                   // 0x04
-        DEBRISKEY_PC *key;                              // 0x08
+        DEBRISKEY *key;                                 // 0x08
         NUMTX effect_orientation;                       // 0x0c
         NUVEC position;                                 // 0x4c
         struct debris_render_chunk_s *previous;         // 0x58
         struct debris_render_chunk_s *next;             // 0x5c
         u16 render_priority;                            // 0x60
         u8 fields_062[2];                               // 0x62
-    } DEBRIS_RENDER_CHUNK_PC;
+    } DEBRIS_RENDER_CHUNK;
 
     extern i32 EdAnimLocalFrameCount;
     void cbPtlAddEffect(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);

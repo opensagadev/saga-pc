@@ -181,7 +181,7 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     }
 }
 
-void edcamMoveEx(FRAME_PAD_PC *pad, f32 delta_time) {
+void edcamMoveEx(FRAME_PAD *pad, f32 delta_time) {
     if (edmain_cursor_enabled != 0) {
         if (PadFlyMode == 0 || NuKeyboard(0x38) != 0) {
             do_maya_mouse_camera(gp_cam);
@@ -198,7 +198,7 @@ void edcamMoveEx(FRAME_PAD_PC *pad, f32 delta_time) {
     }
 }
 
-void edcamMove(FRAME_PAD_PC *pad) {
+void edcamMove(FRAME_PAD *pad) {
     edcamMoveEx(pad, NuTimeGetFrameTime());
 }
 
@@ -322,7 +322,7 @@ i32 fun_006d6c90(void) {
 }
 
 /* Private Source proposal; append in keyboard_read.c after old source. */
-void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
+void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     f32 frame_scale = (f32)(delta_time / (f64)(1.0f / 60.0f));
     f32 move_speed;
     f32 zoom_speed;
@@ -402,7 +402,7 @@ void do_Pad_flymode_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
     }
 }
 
-void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD_PC *pad) {
+void do_Pad_Standard_camera(edcam_s *camera, f32 delta_time, FRAME_PAD *pad) {
     NUVEC movement;
     f32 frame_scale;
     f32 move_speed;

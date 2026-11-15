@@ -55,11 +55,11 @@ extern "C" {
     i32 AIPathCheckExtents(AIPATH *, NUVEC *);
     void AICircle(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
     void AIMoveDirectlyToDestination(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
-    void xConditions(NUFPAR_PC *parser);
-    void xActions(NUFPAR_PC *parser);
-    void xConditionMacro(NUFPAR_PC *parser);
-    void xActionMacro(NUFPAR_PC *parser);
-    void xRefScript(NUFPAR_PC *parser);
+    void xConditions(NUFPAR *parser);
+    void xActions(NUFPAR *parser);
+    void xConditionMacro(NUFPAR *parser);
+    void xActionMacro(NUFPAR *parser);
+    void xRefScript(NUFPAR *parser);
     i16 PCPathArcSine(f32);
     i32 Action_NoTerrain(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
     i32 Action_NoLosCheck(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
@@ -95,11 +95,11 @@ extern "C" {
     void AIRetreatFromDestination2(AISYS_PC *, AIPACKET *, APIOBJECT *, i32);
     void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
     void routeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
-    void xConst(NUFPAR_PC *parser);
-    void xDeriveFromScript(NUFPAR_PC *parser);
-    void xInclude(NUFPAR_PC *parser);
-    void xParam(NUFPAR_PC *parser);
-    void xState(NUFPAR_PC *parser);
+    void xConst(NUFPAR *parser);
+    void xDeriveFromScript(NUFPAR *parser);
+    void xInclude(NUFPAR *parser);
+    void xParam(NUFPAR *parser);
+    void xState(NUFPAR *parser);
 #ifdef __cplusplus
 }
 #endif

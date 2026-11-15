@@ -38,7 +38,7 @@ extern "C" {
     extern KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState;
     i32 KaminoInside(void);
     i32 KaminoDiscoOn(void);
-    extern AREA_DATA_PC *KAMINO_ADATA;
+    extern AREA_DATA *KAMINO_ADATA;
     extern struct gizmo_s *forcetube;
     extern nuhspecial_s green_light;
     extern char *paint_light_name[3];

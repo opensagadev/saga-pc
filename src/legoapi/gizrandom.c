@@ -158,8 +158,8 @@ GIZMO_PC *createGizRandom(void *unused, i32 output_count, i32 *weights, char *na
     return AddGizmo(world->gizmo_sys, gizrandom_gizmotype_id, NULL, random);
 }
 
-ADDGIZMOTYPE_PC *GizRandom_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+ADDGIZMOTYPE *GizRandom_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
 
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "GizRandom";

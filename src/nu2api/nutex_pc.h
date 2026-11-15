@@ -18,9 +18,9 @@ extern "C" {
     i32 NuTexPixelBits(i32 type);
     i32 NuTexImageSize(i32 type, i32 width, i32 height);
     i32 NuTexImageSizeMips(i32 type, i32 width, i32 height, i32 mips);
-    i32 NuTexLoadBmp(const char *path, i32 mips, NUTEXBMP_PC *bitmap);
-    NUTEXBMP_PC *NuTexCreateBmp(const char *path);
-    void PCGraphicsBindTextureDimensions(NUTEXDIM_PC *, u32);
+    i32 NuTexLoadBmp(const char *path, i32 mips, NUTEXBMP *bitmap);
+    NUTEXBMP *NuTexCreateBmp(const char *path);
+    void PCGraphicsBindTextureDimensions(NUTEXDIM *, u32);
     void NuTexReleaseResources(void);
     void NuTexRestoreResources(void);
 #ifdef __cplusplus

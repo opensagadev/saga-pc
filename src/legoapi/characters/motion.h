@@ -72,7 +72,7 @@ extern "C" {
     void UpdateLastSafePosition(GAMEOBJECT *);
     i32 StartBigJump(GAMEOBJECT *, NUVEC *, i32, f32, f32, i32);
     i32 ObjInTube(GAMEOBJECT *);
-    GAMEPAD_PC *ViewCamGetGamePad(void);
+    GAMEPAD *ViewCamGetGamePad(void);
     void CharPivot_Init(struct CHARPIVOT *);
     void CharPivot_Check(GAMEOBJECT *, NUVEC *);
     f32 SeekLinearF(f32, f32, f32);

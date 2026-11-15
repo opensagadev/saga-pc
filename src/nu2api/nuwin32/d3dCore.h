@@ -27,7 +27,7 @@ struct PC_BUFFER_RESOURCE;
 
 struct GRAPHICS_FACTORY;
 struct GRAPHICS_RENDER_TEXTURE;
-struct PC_D3D9_DEVICE_PC;
+struct PC_D3D9_DEVICE;
 
 typedef struct PC_TEXTURE_RESOURCE PC_TEXTURE_RESOURCE;
 
@@ -106,7 +106,7 @@ typedef struct GRAPHICS_PRESENT_PARAMETERS { // size 0x38
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern PC_WINDOW_OPTIONS_PC PcWindowOptions;
+    extern PC_WINDOW_OPTIONS PcWindowOptions;
 #ifdef __cplusplus
 }
 #endif
@@ -134,51 +134,51 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef void *PC_DEVICE_TEXTURE_CACHE_PC[5];
-typedef i32 PC_DEVICE_SAMPLER_CACHE_PC[8][14];
-typedef i32 PC_DEVICE_RENDER_CACHE_PC[12];
+typedef void *PC_DEVICE_TEXTURE_CACHE[5];
+typedef i32 PC_DEVICE_SAMPLER_CACHE[8][14];
+typedef i32 PC_DEVICE_RENDER_CACHE[12];
 
-typedef struct PC_DEVICE_STATE_CACHE_PC {      // size 0x220
-    PC_TEXTURE_RESOURCE *vertex_declaration;   // 0x000
-    struct PC_BUFFER_RESOURCE *index_buffer;   // 0x004
-    struct PC_BUFFER_RESOURCE *vertex_buffer;  // 0x008
-    u32 stream_stride;                         // 0x00c
-    u32 stream_number;                         // 0x010
-    u32 stream_offset;                         // 0x014
-    PC_DEVICE_TEXTURE_CACHE_PC textures;       // 0x018
-    PC_DEVICE_SAMPLER_CACHE_PC sampler_states; // 0x02c
-    i32 state_key;                             // 0x1ec
-    PC_DEVICE_RENDER_CACHE_PC render_states;   // 0x1f0
+typedef struct PC_DEVICE_STATE_CACHE {        // size 0x220
+    PC_TEXTURE_RESOURCE *vertex_declaration;  // 0x000
+    struct PC_BUFFER_RESOURCE *index_buffer;  // 0x004
+    struct PC_BUFFER_RESOURCE *vertex_buffer; // 0x008
+    u32 stream_stride;                        // 0x00c
+    u32 stream_number;                        // 0x010
+    u32 stream_offset;                        // 0x014
+    PC_DEVICE_TEXTURE_CACHE textures;         // 0x018
+    PC_DEVICE_SAMPLER_CACHE sampler_states;   // 0x02c
+    i32 state_key;                            // 0x1ec
+    PC_DEVICE_RENDER_CACHE render_states;     // 0x1f0
 #ifdef __cplusplus
-    PC_DEVICE_STATE_CACHE_PC() {
+    PC_DEVICE_STATE_CACHE() {
         Invalidate();
     }
 
     void Invalidate();
 #endif
-} PC_DEVICE_STATE_CACHE_PC;
+} PC_DEVICE_STATE_CACHE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     /* External COM protocols only; no objects or method tables defined here. */
-    typedef struct D3DX_BUFFER_METHODS_PC {                                       // size 0x14
+    typedef struct D3DX_BUFFER_METHODS {                                          // size 0x14
         HRESULT(__stdcall *query_interface)(ID3DXBuffer *, const IID *, void **); // 0x00
         ULONG(__stdcall *add_ref)(ID3DXBuffer *);                                 // 0x04
         ULONG(__stdcall *release)(ID3DXBuffer *);                                 // 0x08
         void *(__stdcall *get_buffer_pointer)(ID3DXBuffer *);                     // 0x0c
         DWORD(__stdcall *get_buffer_size)(ID3DXBuffer *);                         // 0x10
-    } D3DX_BUFFER_METHODS_PC;
+    } D3DX_BUFFER_METHODS;
 
     struct ID3DXBuffer {
-        const D3DX_BUFFER_METHODS_PC *methods;
+        const D3DX_BUFFER_METHODS *methods;
     };
 
     extern HWND PCInputInstance;
     extern HRESULT PCDeviceLastResult;
     extern u8 PCDeviceStateCacheEnabled;
-    extern PC_DEVICE_STATE_CACHE_PC PCDeviceStateCachePc;
+    extern PC_DEVICE_STATE_CACHE PCDeviceStateCachePc;
     extern u32 PCDevicePrimitiveUPCallCountPc;
     void PCDeviceDrawIndexedPrimitiveUPPc(i32, u32, u32, u32, const void *, i32, const void *, u32);
     extern u32 PCDeviceIndexedPrimitiveUPCallCountPc;
@@ -225,9 +225,9 @@ struct PC_EFFECT_SURFACE {                                                      
 #endif
 };
 
-typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
+typedef struct PC_DEVICE_BACKEND {          // size 0x700
     struct GRAPHICS_FACTORY *factory;       // 0x000
-    struct PC_D3D9_DEVICE_PC *device;       // 0x004
+    struct PC_D3D9_DEVICE *device;          // 0x004
     GRAPHICS_CAPS caps;                     // 0x008
     GRAPHICS_PRESENT_PARAMETERS parameters; // 0x138
     PC_VIEWPORT requested_viewport;         // 0x170
@@ -302,8 +302,8 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
     PC_TEXTURE_RESOURCE *target_cache[4];        // 0x6f0
 
 #ifdef __cplusplus
-    PC_DEVICE_BACKEND_PC();
-    ~PC_DEVICE_BACKEND_PC();
+    PC_DEVICE_BACKEND();
+    ~PC_DEVICE_BACKEND();
     void Shutdown();
     void DrawPostEffectQuad();
     void DrawPostEffectIndexed();
@@ -381,12 +381,12 @@ typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
     u32 fun_006dbaf0();
     void fun_006dbb00(u8 windowed);
 #endif
-} PC_DEVICE_BACKEND_PC;
+} PC_DEVICE_BACKEND;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern PC_DEVICE_BACKEND_PC PCDeviceBackend;
+    extern PC_DEVICE_BACKEND PCDeviceBackend;
     extern void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS *);
     void PCDeviceEvictManagedResources();
 #ifdef __cplusplus

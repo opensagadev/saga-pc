@@ -177,7 +177,7 @@ typedef struct cut_memory_instance_s { // size 0xf4
     f32 accumulated_stream_duration;   // 0xe0
     u8 unknown_e4[0xc];                // 0xe4
     u32 allocation_size;               // 0xf0
-} CUT_MEMORY_INSTANCE_PC;
+} CUT_MEMORY_INSTANCE;
 
 typedef struct cut_memory_entry_s { // size 0x10
     void *handle;                   // 0x0
@@ -185,7 +185,7 @@ typedef struct cut_memory_entry_s { // size 0x10
     f32 accumulated_duration;       // 0x8
     u8 flags;                       // 0xc
     u8 unknown_0d[3];               // 0xd
-} CUT_MEMORY_ENTRY_PC;
+} CUT_MEMORY_ENTRY;
 
 typedef struct cut_memory_vertex_s { // size 0x10
     f32 x;                           // 0x0
@@ -201,19 +201,19 @@ i32 DefragCutSceneListSize = 0;
 void *DefragCutSceneBaseMem = NULL;
 void *DefragInstBaseMem = NULL;
 void *DefragInstEndMem = NULL;
-CUT_MEMORY_ENTRY_PC *DefragCutSceneListBase = NULL;
+CUT_MEMORY_ENTRY *DefragCutSceneListBase = NULL;
 i32 (*TriggerLocatorVfxFn)(i32, NUMTX *) = 0;
-CUT_MEMORY_INSTANCE_PC *(*DefragGetInstFn)(void *) = NULL;
-CUT_MEMORY_ENTRY_PC *DefragCutSceneList = NULL;
-CUT_MEMORY_INSTANCE_PC *(*DefragCreateInstFn)(void *, CUT_MEMORY_SCENE *, VARIPTR *) = NULL;
+CUT_MEMORY_INSTANCE *(*DefragGetInstFn)(void *) = NULL;
+CUT_MEMORY_ENTRY *DefragCutSceneList = NULL;
+CUT_MEMORY_INSTANCE *(*DefragCreateInstFn)(void *, CUT_MEMORY_SCENE *, VARIPTR *) = NULL;
 void (*UpdateLocatorVfxFn)(i32, NUMTX *) = 0;
 void (*DefragInstDestroyedFn)(void *) = NULL;
 
 void instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_end, void *inst_base, void *inst_end,
-                                 CUT_MEMORY_INSTANCE_PC *(*get_inst)(void *),
-                                 CUT_MEMORY_INSTANCE_PC *(*create_inst)(void *, CUT_MEMORY_SCENE *, VARIPTR *),
+                                 CUT_MEMORY_INSTANCE *(*get_inst)(void *),
+                                 CUT_MEMORY_INSTANCE *(*create_inst)(void *, CUT_MEMORY_SCENE *, VARIPTR *),
                                  void (*inst_destroyed)(void *)) {
-    DefragCutSceneList = (CUT_MEMORY_ENTRY_PC *)(((u32)list_storage + 3) & ~3);
+    DefragCutSceneList = (CUT_MEMORY_ENTRY *)(((u32)list_storage + 3) & ~3);
     DefragCutSceneListBase = DefragCutSceneList;
     DefragCutSceneBaseMem = cut_base;
     DefragCutSceneEndMem = cut_end;
@@ -232,8 +232,8 @@ void instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_e
 }
 
 void instNuGCutSceneAddCleanUpItem(void *handle, i32 enabled) {
-    CUT_MEMORY_INSTANCE_PC *instance = DefragGetInstFn(handle);
-    CUT_MEMORY_ENTRY_PC *entry;
+    CUT_MEMORY_INSTANCE *instance = DefragGetInstFn(handle);
+    CUT_MEMORY_ENTRY *entry;
     if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
         ((void (*)(void))CutSceneLoadDiagnostic)();
     }
@@ -256,9 +256,9 @@ static void CutSceneSetPrimitiveColour(i32 colour) {
 }
 
 void DisplayCutSceneMemory(void) {
-    CUT_MEMORY_ENTRY_PC *entry;
-    CUT_MEMORY_ENTRY_PC *end;
-    CUT_MEMORY_INSTANCE_PC *instance;
+    CUT_MEMORY_ENTRY *entry;
+    CUT_MEMORY_ENTRY *end;
+    CUT_MEMORY_INSTANCE *instance;
     CUT_MEMORY_SCENE *scene;
     u32 start;
     u32 finish;
@@ -456,7 +456,7 @@ static CUT_SCRIPT_NODE *CutScriptNodeAlloc(i32 type, VARIPTR *buffer, CUT_SCRIPT
     (buffer)->addr += strlen((fp)->word_buffer_ptr) + 1;                                                                                   \
     sprintf((field), (fp)->word_buffer_ptr)
 
-CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused) {
+CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
     CUT_SCRIPT_NODE *head = NULL;
     CUT_SCRIPT_NODE *prev = NULL;
     CUT_SCRIPT_NODE *node;
@@ -568,7 +568,7 @@ CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused)
     return head;
 }
 
-static CUT_SCRIPT *CutScriptRead(NUFPAR_PC *fp, VARIPTR *buffer, i32 unused) {
+static CUT_SCRIPT *CutScriptRead(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
     CUT_SCRIPT *script;
     buffer->addr = (buffer->addr + 0xf) & ~0xfU;
     script = buffer->void_ptr;
@@ -583,7 +583,7 @@ CUT_SCRIPT *CutScriptLoad(char *file, VARIPTR *buffer, i32 unused) {
     CUT_SCRIPT *head = NULL;
     CUT_SCRIPT *prev = NULL;
     CUT_SCRIPT *script;
-    NUFPAR_PC *fp = NuFParCreate(file);
+    NUFPAR *fp = NuFParCreate(file);
     if (fp != NULL) {
         NuFParGetWord(fp);
         while (NuFParGetLine(fp) != 0) {
@@ -687,11 +687,11 @@ i32 (*LookupLocatorVfxFn)(char *) = 0;
 typedef struct cut_app_command_s { // size 0x8
     char *name;                    // 0x0
     void (*fn)(char *);            // 0x4
-} CUT_APP_COMMAND_PC;
+} CUT_APP_COMMAND;
 
-CUT_APP_COMMAND_PC *CutScriptAppCommands = NULL;
+CUT_APP_COMMAND *CutScriptAppCommands = NULL;
 
-void CutScriptSetAppCommands(CUT_APP_COMMAND_PC *commands) {
+void CutScriptSetAppCommands(CUT_APP_COMMAND *commands) {
     CutScriptAppCommands = commands;
 }
 
@@ -1090,7 +1090,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *
     INSTNUGCUTSCENE *instance;
     INSTNUGCUTSCENE *chain;
     nuhspecial_s special;
-    CUT_APP_COMMAND_PC *command;
+    CUT_APP_COMMAND *command;
     i32 count;
     i32 done;
     for (; node != NULL; node = node->next) {
@@ -1249,7 +1249,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *
 }
 
 i32 CutScriptRun(CUT_SCRIPT *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
-    CUT_APP_COMMAND_PC *command = CutScriptAppCommands;
+    CUT_APP_COMMAND *command = CutScriptAppCommands;
     if (NuStrNICmp(name, "Fn", 2) == 0) {
         for (; command != NULL && command->name != NULL; ++command) {
             if (NuStrICmp(name + 2, command->name) == 0) {

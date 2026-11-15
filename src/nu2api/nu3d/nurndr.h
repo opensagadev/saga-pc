@@ -21,12 +21,12 @@ typedef struct nurnd_vertex3d_s { // size 0x24
     u32 colour;                   // 0x18
     f32 u;                        // 0x1c
     f32 v;                        // 0x20
-} NURND_VERTEX3D_PC;
+} NURND_VERTEX3D;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NURND_VERTEX3D_PC NuRndrShadowVertices[4];
+    extern NURND_VERTEX3D NuRndrShadowVertices[4];
 
     void WindShear(struct numtx_s *, struct numtx_s *, i32, i32);
     extern f32 global_windscale;
@@ -62,9 +62,9 @@ extern "C" {
     extern NUVEC NuRndrDebRangeInv;
     void NuRndrSetDebBox(NUVEC *);
     /* Current shared TYPE100/INSTANCE114/TERRAIN_SET views suffice; no new layout slots. */
-    i32 NuRndrLine3d(NURND_VERTEX3D_PC *, struct numtl_s *, struct numtx_s *);
-    i32 NuRndrStrip3d(NURND_VERTEX3D_PC *, struct numtl_s *, struct numtx_s *, i32);
-    i32 NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *, i32, struct numtx_s *, struct numtl_s *);
+    i32 NuRndrLine3d(NURND_VERTEX3D *, struct numtl_s *, struct numtx_s *);
+    i32 NuRndrStrip3d(NURND_VERTEX3D *, struct numtl_s *, struct numtx_s *, i32);
+    i32 NuRndrTriStrip3dClip(NURND_VERTEX3D *, i32, struct numtx_s *, struct numtl_s *);
     void NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour);
     extern i32 PS2_REZ_W;
     extern i32 PS2_REZ_H;

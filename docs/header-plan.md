@@ -347,7 +347,7 @@ owner by the first rule that applies:
 3. A type that only saga.h uses goes where most of its saga.h users go. A
    use of a typedef or macro counts as a use of what it stands for. A struct
    whose units reach it only through a forward typedef
-   (`typedef struct debris_key_s DEBRISKEY_PC;`) goes where the typedef
+   (`typedef struct debris_key_s DEBRISKEY;`) goes where the typedef
    went.
 
 This decides 728 rows:
@@ -377,27 +377,27 @@ The 50 largest `rule` rows:
 | name | kind | lines | target | why |
 |---|---|---:|---|---|
 | `PLAYERCHARACTERCONFIG` | struct | 157 | `legoapi/characters/motion/move.h` | used most in legogame/move.c (25) |
-| `PC_D3D9_METHODS_PC` | struct | 131 | `nu2api/nufmv/pc/Bink/dsplay_bink.h` | used in saga.h only, most by nu2api/nufmv/pc/Bink/dsplay_bink.h (1) |
-| `PC_DEVICE_BACKEND_PC` | struct | 125 | `nu2api/nuwin32/d3dCore.h` | used most in nu2api/nuwin32/d3dCore.cpp (44) |
+| `PC_D3D9_METHODS` | struct | 131 | `nu2api/nufmv/pc/Bink/dsplay_bink.h` | used in saga.h only, most by nu2api/nufmv/pc/Bink/dsplay_bink.h (1) |
+| `PC_DEVICE_BACKEND` | struct | 125 | `nu2api/nuwin32/d3dCore.h` | used most in nu2api/nuwin32/d3dCore.cpp (44) |
 | `gamesave_s` | struct | 90 | `legogame/game.h` | used most in legogame/game.c (2) |
 | `debris_info_s` | struct | 90 | `gameapi/edtools/edgra.h` | used most in gameapi/gameliball.cpp[edgra.c] (65) |
 | `PART_PC` | struct | 90 | `legoapi/items/objects/objectsall.h` | used most in gameapi/objectsall.cpp (56) |
 | `EdClassInterface` | class | 89 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (16) |
 | `GIZMOBLOWUP_PC` | struct | 88 | `legoapi/gizmo/object/gizmoblowups.h` | used most in legoapi/gizmoblowups.c (104) |
-| `PC_WINDOW_OPTIONS_PC` | struct | 73 | `nu2api/pc_options.h` | used most in nu2api/pc_options.cpp (33) |
-| `debris_key_s` | struct | 71 | `gameapi/edptl.h` | with its typedef DEBRISKEY_PC (rule) |
-| `FRAME_PAD_PC` | struct | 59 | `gameapi/edtools/edui.h` | used most in gameapi/edtoolsall.cpp[edui.cpp] (52) |
+| `PC_WINDOW_OPTIONS` | struct | 73 | `nu2api/pc_options.h` | used most in nu2api/pc_options.cpp (33) |
+| `debris_key_s` | struct | 71 | `gameapi/edptl.h` | with its typedef DEBRISKEY (rule) |
+| `FRAME_PAD` | struct | 59 | `gameapi/edtools/edui.h` | used most in gameapi/edtoolsall.cpp[edui.cpp] (52) |
 | `ShaderCompilerDictionaryPc` | struct | 58 | `gamelib/util/CRC16.h` | used most in nu2api/CRC16.cpp (25) |
 | `PC_SPECIAL_SHADOW_LIGHT` | struct | 57 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (16) |
 | `parttype_lookup_s` | struct | 53 | `legoapi/items/objects/objectsall.h` | used most in gameapi/objectsall.cpp (9) |
 | `nurndrlibscene_s` | struct | 52 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (3) |
-| `FRAME_SCANNED_PAD_PC` | struct | 52 | `nu2api/huffdecode.h` | used most in nu2api/nucore_includes.cpp[huffdecode.c] (2) |
+| `FRAME_SCANNED_PAD` | struct | 52 | `nu2api/huffdecode.h` | used most in nu2api/nucore_includes.cpp[huffdecode.c] (2) |
 | `ADDPART` | struct | 48 | `legoapi/items/objects/game_obj.h` | used most in legogame/game_obj.c (8) |
 | `GIZMOPICKUP` | struct | 46 | `legoapi/gizmos/fx/gizmopickups.h` | used most in legoapi/gizmopickups.c (36) |
 | `GIZMO_LEVER` | struct | 43 | `legoapi/gizmos/object/lever.h` | used most in legogame/lever.c (51) |
 | `nudisplay_list_s` | struct | 42 | `nu2api/nu3d/nu3d_includes.h` | used most in nu2api/nu3d_includes.cpp (45) |
 | `player_batarang_slot_s` | struct | 41 | `legogame/batman_gameai.h` | used most in legogame/batman_gameai.c (9) |
-| `PC_INPUT_CONFIG_PC` | pack | 40 | `nu2api/PCInput.h` | used most in nu2api/PCInput.cpp (20) |
+| `PC_INPUT_CONFIG` | pack | 40 | `nu2api/PCInput.h` | used most in nu2api/PCInput.cpp (20) |
 | `ShaderCompilerParserPc` | class | 40 | `nu2api/shader_parser.h` | used most in nu2api/shader_parser.cpp (25) |
 | `FLOWBOX` | struct | 39 | `legoapi/gizmo/base/gizflow.h` | used most in legoapi/gizflow.c (36) |
 | `HINT` | struct | 36 | `legoapi/menus/core/hint.h` | used most in legoapi/hint.c (20) |
@@ -407,13 +407,13 @@ The 50 largest `rule` rows:
 | `CHARACTERANIM_CONFIG` | struct | 34 | `legoapi/items/base/apiobject.h` | used most in gameapi/apiobject.c (19) |
 | `area_data_s` | struct | 32 | `legoapi/lib/hub.h` | used most in legogame/hub.cpp (14) |
 | `WavReader` | pack | 32 | `nu2api/wavreader.h` | used most in nu2api/wavreader.cpp (15) |
-| `TERRAIN_SET_PC` | struct | 31 | `legoapi/render/core/gameliball.h` | used most in gameapi/gameliball.cpp (113) |
-| `PC_SHADER_PARAMETER_LOCAL_PC` | struct | 31 | `nu2api/nu3d/nushaderobject.h` | used most in nu2api/nushaderobject.cpp (14) |
+| `TERRAIN_SET` | struct | 31 | `legoapi/render/core/gameliball.h` | used most in gameapi/gameliball.cpp (113) |
+| `PC_SHADER_PARAMETER_LOCAL` | struct | 31 | `nu2api/nu3d/nushaderobject.h` | used most in nu2api/nushaderobject.cpp (14) |
 | `EdInputContext` | struct | 31 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (56) |
 | `AREA_SAVE_PICKUP` | struct | 30 | `legoapi/items/collect/shard.h` | used most in legoapi/shard.c (2) |
-| `GAMEPAD_PC` | struct | 30 | `legoapi/characters/motion/move.h` | used most in legogame/move.c (18) |
+| `GAMEPAD` | struct | 30 | `legoapi/characters/motion/move.h` | used most in legogame/move.c (18) |
 | `add_game_message_s` | struct | 30 | `legoapi/gizmo/object/gizmopickup.h` | used most in legogame/gizmopickup.c (7) |
-| `NuKeyboardOwner_PC` | struct | 29 | `nu2api/PCInput.h` | used most in nu2api/PCInput.cpp (11) |
+| `NuKeyboardOwner` | struct | 29 | `nu2api/PCInput.h` | used most in nu2api/PCInput.cpp (11) |
 | `GIZMOBLOWUPTYPE` | struct | 29 | `legoapi/gizmo/object/gizmoblowups.h` | used most in legoapi/gizmoblowups.c (45) |
 | `EdRef` | class | 29 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (96) |
 | `RTL_DATA` | struct | 27 | `legoapi/render/core/rtl.h` | used most in gameapi/rtl.c (15) |
@@ -607,7 +607,7 @@ Transferred, by proposed owner:
 
 PC declarations, with their owner:
 
-- `PAD_INPUT_PC` (struct, line 5329): `legoapi/misc/legoapi_status.h`
+- `PAD_INPUT` (struct, line 5329): `legoapi/misc/legoapi_status.h`
 - `PlayerCarryRotationScale` (macro, line 10251): `nu2api/nuerror_gen.h`
 - `EdppUnresolvedInstances` (variable, line 12050): `gameapi/edptl.h`
 - `PC_STEREO_SAMPLE_METADATA` (forward, line 12272): `nu2api/numusic_gen.h`
@@ -667,7 +667,7 @@ the meaning of either, unless one of these holds (`dependency_graph`):
   declaration).
 - **Use.** One declares a name the other mentions. A mention of a macro or
   typedef also mentions what it stands for, transitively. A use of
-  `DEBRIS_PARTICLE_CHUNK_PC` needs `struct debris_particle_chunk_s`
+  `DEBRIS_PARTICLE_CHUNK` needs `struct debris_particle_chunk_s`
   complete when it accesses members.
 - **Macros.** One is a macro definition or `#undef` and the other contains
   its name.
@@ -888,7 +888,7 @@ rules in 2.1:
 - a typedef named after `void` by the segmenter (`typedef void (__cdecl
   bgprocdofn)(...)`);
 - uses through a forward typedef that need the struct complete
-  (`DEBRIS_PARTICLE_CHUNK_PC`, `CUTSYS_PC`);
+  (`DEBRIS_PARTICLE_CHUNK`, `CUTSYS_PC`);
 - `-std=c89` turning comments into tokens;
 - for the dependency analysis, parameter names that matched CRT names.
 

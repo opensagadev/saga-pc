@@ -45,7 +45,7 @@ extern "C" {
                 u8 reserved_18[8]; // 0x18
             };
         }; // 0x08
-    } MISSIONSYS_PC;
+    } MISSIONSYS;
 
 #ifdef __cplusplus
 }
@@ -55,8 +55,8 @@ struct MISSION_SAVE_READER;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Missions_PartyAvailable(MISSIONSYS_PC *);
-    i32 Missions_NumCompleted(MISSIONSYS_PC *, struct MISSION_SAVE_READER *, i32);
+    i32 Missions_PartyAvailable(MISSIONSYS *);
+    i32 Missions_NumCompleted(MISSIONSYS *, struct MISSION_SAVE_READER *, i32);
     extern f32 MissionIconGap;
     extern f32 MissionIconStep;
     extern i16 MissionMenuInstructionText;

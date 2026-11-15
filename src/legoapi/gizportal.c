@@ -144,8 +144,8 @@ static void Portals_Reset(void *world_ptr, void *data, void *progress_ptr) {
     }
 }
 
-ADDGIZMOTYPE_PC *Portal_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+ADDGIZMOTYPE *Portal_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Portal";
     addtype.prefix = PortalRegistrationPrefix;

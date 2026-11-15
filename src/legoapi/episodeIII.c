@@ -13,7 +13,7 @@ typedef struct cruiserc_s {       // size 0x14
     GIZAIMESSAGE *free_palpatine; // 0x08
     GAMEOBJECT *palpatine;        // 0x0c
     AILOCATOR *palpatine_locator; // 0x10
-} CRUISERC_PC;
+} CRUISERC;
 
 typedef struct vaderc_s {              // size 0x98
     GIZAIMESSAGE *final_fight_message; // 0x00
@@ -23,7 +23,7 @@ typedef struct vaderc_s {              // size 0x98
     u8 progress_mask;                  // 0x94
     u8 players_dead;                   // 0x95
     u8 reserved_96[2];                 // 0x96
-} VADERC_PC;
+} VADERC;
 
 void GrievousA_Init(WORLDINFO *world) {
 }

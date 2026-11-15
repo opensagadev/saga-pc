@@ -121,7 +121,7 @@ typedef struct kaminoc_packet_s {
     i16 sound_mask;
     u8 complete;
     u8 reserved_0d;
-} KAMINOC_PACKET_PC;
+} KAMINOC_PACKET;
 
 typedef struct {                    // size 0x158
     FORCE_PROGRESS_RECORD *records; // 0x000

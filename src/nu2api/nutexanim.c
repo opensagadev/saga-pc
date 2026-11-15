@@ -584,7 +584,7 @@ static i32 TextureAnimationExternalLabelIndexPrivate(char *name) {
     return xdeflabtabcnt - 1;
 }
 
-static i32 TextureAnimationReadComparisonPrivate(NUFPAR_PC *parser) {
+static i32 TextureAnimationReadComparisonPrivate(NUFPAR *parser) {
     char *word;
     NuFParGetWord(parser);
     word = parser->word_buffer_ptr;
@@ -609,25 +609,25 @@ static i32 TextureAnimationReadComparisonPrivate(NUFPAR_PC *parser) {
     }
 }
 
-static void TextureAnimationScriptMaskPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationScriptMaskPrivate(NUFPAR *parser) {
     TextureAnimationParseProgramPrivate->mask = (u16)NuFParGetInt(parser);
 }
 
-static void TextureAnimationTexPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationTexPrivate(NUFPAR *parser) {
     i32 value = NuFParGetInt(parser);
     TEXTURE_ANIM_PROGRAM *p = TextureAnimationParseProgramPrivate;
     p->instructions[p->instruction_count++] = 0;
     p->instructions[p->instruction_count++] = (i16)value;
 }
 
-static void TextureAnimationTexRandomPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationTexRandomPrivate(NUFPAR *parser) {
     i32 value = NuFParGetInt(parser);
     TEXTURE_ANIM_PROGRAM *p = TextureAnimationParseProgramPrivate;
     p->instructions[p->instruction_count++] = 1;
     p->instructions[p->instruction_count++] = (i16)value;
 }
 
-static void TextureAnimationTexAdjustPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationTexAdjustPrivate(NUFPAR *parser) {
     i32 amount = NuFParGetInt(parser);
     i32 lower = NuFParGetInt(parser);
     i32 upper = NuFParGetInt(parser);
@@ -638,7 +638,7 @@ static void TextureAnimationTexAdjustPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)upper;
 }
 
-static void TextureAnimationTexAdjustRandomPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationTexAdjustRandomPrivate(NUFPAR *parser) {
     i32 lower_adjust = NuFParGetInt(parser);
     i32 upper_adjust = NuFParGetInt(parser);
     i32 lower = NuFParGetInt(parser);
@@ -651,7 +651,7 @@ static void TextureAnimationTexAdjustRandomPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)upper;
 }
 
-static void TextureAnimationWaitPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationWaitPrivate(NUFPAR *parser) {
     i32 value = NuFParGetInt(parser);
     i32 random = NuFParGetInt(parser);
     TEXTURE_ANIM_PROGRAM *p = TextureAnimationParseProgramPrivate;
@@ -660,7 +660,7 @@ static void TextureAnimationWaitPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)(i32)(random * (f64)(1.0f / 60.0f) * 4096.0);
 }
 
-static void TextureAnimationRatePrivate(NUFPAR_PC *parser) {
+static void TextureAnimationRatePrivate(NUFPAR *parser) {
     i32 value = NuFParGetInt(parser);
     i32 random = NuFParGetInt(parser);
     TEXTURE_ANIM_PROGRAM *p = TextureAnimationParseProgramPrivate;
@@ -669,28 +669,28 @@ static void TextureAnimationRatePrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)(i32)(random * (f64)(1.0f / 60.0f) * 4096.0);
 }
 
-static void TextureAnimationOnPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationOnPrivate(NUFPAR *parser) {
     i32 signal = NuFParGetInt(parser);
     TEXTURE_ANIM_PROGRAM *p = TextureAnimationParseProgramPrivate;
     p->on_signal[signal] = p->instruction_count;
     p->on_mask |= 1u << signal;
 }
 
-static void TextureAnimationOffPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationOffPrivate(NUFPAR *parser) {
     i32 signal = NuFParGetInt(parser);
     TEXTURE_ANIM_PROGRAM *p = TextureAnimationParseProgramPrivate;
     p->off_signal[signal] = p->instruction_count;
     p->off_mask |= 1u << signal;
 }
 
-static void TextureAnimationLabelPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationLabelPrivate(NUFPAR *parser) {
     i32 label;
     NuFParGetWord(parser);
     label = TextureAnimationLabelIndexPrivate(parser->word_buffer_ptr);
     TextureAnimationLabelOffsetsPrivate[label] = TextureAnimationParseProgramPrivate->instruction_count;
 }
 
-static void TextureAnimationGotoPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationGotoPrivate(NUFPAR *parser) {
     i32 label;
     TEXTURE_ANIM_PROGRAM *p;
     NuFParGetWord(parser);
@@ -700,7 +700,7 @@ static void TextureAnimationGotoPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)label;
 }
 
-static void TextureAnimationGosubPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationGosubPrivate(NUFPAR *parser) {
     i32 label;
     TEXTURE_ANIM_PROGRAM *p;
     NuFParGetWord(parser);
@@ -710,7 +710,7 @@ static void TextureAnimationGosubPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)label;
 }
 
-static void TextureAnimationBranchPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationBranchPrivate(NUFPAR *parser) {
     i32 comparison = TextureAnimationReadComparisonPrivate(parser);
     i32 value = NuFParGetInt(parser);
     i32 label;
@@ -724,12 +724,12 @@ static void TextureAnimationBranchPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)label;
 }
 
-static void TextureAnimationReturnPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationReturnPrivate(NUFPAR *parser) {
     (void)parser;
     TextureAnimationParseProgramPrivate->instructions[TextureAnimationParseProgramPrivate->instruction_count++] = 12;
 }
 
-static void TextureAnimationRepeatPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationRepeatPrivate(NUFPAR *parser) {
     i32 value = NuFParGetInt(parser);
     i32 random;
     TEXTURE_ANIM_PROGRAM *p;
@@ -743,12 +743,12 @@ static void TextureAnimationRepeatPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)random;
 }
 
-static void TextureAnimationRepeatEndPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationRepeatEndPrivate(NUFPAR *parser) {
     (void)parser;
     TextureAnimationParseProgramPrivate->instructions[TextureAnimationParseProgramPrivate->instruction_count++] = 14;
 }
 
-static void TextureAnimationUntilPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationUntilPrivate(NUFPAR *parser) {
     i32 comparison = TextureAnimationReadComparisonPrivate(parser);
     i32 value = NuFParGetInt(parser);
     TEXTURE_ANIM_PROGRAM *p = TextureAnimationParseProgramPrivate;
@@ -757,18 +757,18 @@ static void TextureAnimationUntilPrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)value;
 }
 
-static void TextureAnimationEndPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationEndPrivate(NUFPAR *parser) {
     (void)parser;
     TextureAnimationParseProgramPrivate->instructions[TextureAnimationParseProgramPrivate->instruction_count++] = 16;
 }
 
-static void TextureAnimationScriptNamePrivate(NUFPAR_PC *parser) {
+static void TextureAnimationScriptNamePrivate(NUFPAR *parser) {
     NuFParGetWord(parser);
     parser->word_buffer_ptr[32] = 0;
     strcpy(TextureAnimationParseProgramPrivate->name, parser->word_buffer_ptr);
 }
 
-static void TextureAnimationExternalDefinitionPrivate(NUFPAR_PC *parser) {
+static void TextureAnimationExternalDefinitionPrivate(NUFPAR *parser) {
     i32 label;
     TEXTURE_ANIM_PROGRAM *p;
     NuFParGetWord(parser);
@@ -779,7 +779,7 @@ static void TextureAnimationExternalDefinitionPrivate(NUFPAR_PC *parser) {
     p->label_count++;
 }
 
-static void TextureAnimationExternalReferencePrivate(NUFPAR_PC *parser) {
+static void TextureAnimationExternalReferencePrivate(NUFPAR *parser) {
     i32 label;
     TEXTURE_ANIM_PROGRAM *p;
     NuFParGetWord(parser);
@@ -957,7 +957,7 @@ void NuTexAnimEnvDestroy(PC_TEXTURE_ANIM_ENV *environment) {
 TEXTURE_ANIM_PROGRAM *NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIPTR end, i32 fps) {
     TEXTURE_ANIM_PROGRAM *program;
     TEXTURE_ANIM_PROGRAM *head;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     i32 length;
     TEXTURE_ANIM_PROGRAM *result;
     (void)fps;
@@ -1032,7 +1032,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     i32 size;
     i32 item;
     NUFILE file;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     char *name;
     if (nutexanim_usepakfile != 0) {
         NuStrCpy(filename, path);

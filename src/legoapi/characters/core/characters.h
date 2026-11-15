@@ -61,7 +61,7 @@ extern "C" {
         char *name;                         // 0x0
         u32 model_flags;                    // 0x4
         u32 game_flags;                     // 0x8
-    } CHAR_CATEGORY_RECORD_PC;
+    } CHAR_CATEGORY_RECORD;
 
     void CharScenes_Init(VARIPTR *, VARIPTR *);
     void CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);

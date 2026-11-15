@@ -125,7 +125,7 @@ extern u8 *Game_LevelSave;
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
-i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *, WORLDINFO *);
+i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *, WORLDINFO *);
 
 typedef struct pickup_counter_turret_s { // size 0x13c
     u8 unknown_000[0x13a];               // 0x000
@@ -363,7 +363,7 @@ i32 GizmoPickups_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void GizmoPickups_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void GizmoPickups_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
     (void)data;
@@ -940,7 +940,7 @@ GIZMOPICKUP *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unus
     return NULL;
 }
 
-void GameMsg_Draw_MiniKitDetector(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
+void GameMsg_Draw_MiniKitDetector(GAME_MESSAGE *message, NUVEC *position, f32 scale) {
     f32 excess = 1.0e9f;
     NUVEC screen = *position;
     i32 clipped = 0;
@@ -1013,7 +1013,7 @@ void GameMsg_Draw_MiniKitDetector(GAME_MESSAGE_PC *message, NUVEC *position, f32
 }
 
 void MiniKitDetector(NUVEC *position) {
-    ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+    ADD_GAME_MESSAGE message = AddGameMsg_Default;
     message.text = LEGOASCII_BIGARROW != NULL ? LEGOASCII_BIGARROW : txt_UNKNOWN;
     message.position = position;
     message.flags = 0x40083;
@@ -1103,7 +1103,7 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
     SPECIAL_MINIKIT *cursor;
     SPECIAL_MINIKIT_SYSTEM *system;
     i32 count;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     view->special_minikits = NULL;
     if (world->current_gscn == NULL) {
         return;
@@ -1278,8 +1278,8 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
     f32 nearest_distance;
     NUVEC *nearest;
     GIZMO_PICKUP_TYPE *type;
-    AREA_SUPERCOUNTER_PC *counter;
-    AREA_SUPERCOUNTER_PICKUP_PC *counter_pickup;
+    AREA_SUPERCOUNTER *counter;
+    AREA_SUPERCOUNTER_PICKUP *counter_pickup;
     GIZMO_PC *gizmo;
     i32 effect_flags;
     NUVEC position;
@@ -1401,10 +1401,10 @@ void GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_ti
 char *GizmoRegistryGizmoPickupsNamePtrPc = "GizmoPickup";
 f32 AreaPickupGravity = 0;
 f32 AreaPickupScale = 0;
-static ADDGIZMOTYPE_PC GizmoRegistryGizmoPickupsAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryGizmoPickupsAddTypePc = {0};
 
-ADDGIZMOTYPE_PC *GizmoPickups_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizmoPickupsAddTypePc;
+ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE *addtype = &GizmoRegistryGizmoPickupsAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizmoRegistryGizmoPickupsNamePtrPc;
     addtype->fns.early_update_fn = NULL;
@@ -1418,12 +1418,12 @@ ADDGIZMOTYPE_PC *GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->prefix = "";
     addtype->fns.options = 0x100;
-    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizmoPickups_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizmoPickups_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizmoPickups_AddGizmos;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizmoPickups_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizmoPickups_Draw;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoPickup_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoPickup_GetOutput;
+    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))GizmoPickup_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoPickup_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizmoPickup_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoPickup_Activate;
@@ -1434,7 +1434,7 @@ ADDGIZMOTYPE_PC *GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizmoPickups_StoreProgress;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizmoPickups_ResetPc;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizmoPickups_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(*)(void *, void *))GizmoPickups_Load;
+    addtype->fns.load_fn = (i32 (*)(void *, void *))GizmoPickups_Load;
     addtype->fns.post_load_fn = (void (*)(void *, void *))GizmoPickups_PostLoad;
     gizmopickup_typeid = type_id;
     return addtype;

@@ -46,7 +46,7 @@ typedef struct customiser_anims_load_s {
 } CUSTOMISER_ANIMS_LOAD;
 
 typedef struct customiser_config_s {
-    CUSTOM_CATEGORY_CONFIG_PC *categories[9];
+    CUSTOM_CATEGORY_CONFIG *categories[9];
     CUSTOM_PIECE_CONFIG *piece_sets[9];
     i32 piece_counts[9];
     i16 character_ids[2];
@@ -516,7 +516,7 @@ void Customiser_LoadAll(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
                     i32 item;
                     i32 size;
                     void *data;
-                    ((i32(*)(char *, char *, i32))NuFileExtConvert)(converted_path, path, 0x80);
+                    ((i32 (*)(char *, char *, i32))NuFileExtConvert)(converted_path, path, 0x80);
                     item = NuFilePakGetItem(texture_pack, converted_path);
                     if (item != -1 && NuFilePakGetItemInfo(texture_pack, item, &data, &size) != 0) {
                         data = NuPtrBlockFix(data);
@@ -736,7 +736,7 @@ i32 Customiser_GetIcon(CUSTOMISER_LAYERS *input, const void *save_input, i32 unu
     return PCArcadeUnpairedIconModel;
 }
 
-static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivate[9] = {
+static CUSTOM_CATEGORY_CONFIG CustomiserSetDataPrivate[9] = {
     {"hat_hair",    1, -1, {1, 0}, "chars\\weirdo\\all\\hat_hair_all.gsc"},
     {"head",        1, -1, {0, 0}, "chars\\weirdo\\all\\head_all.gsc"    },
     {NULL,          0, -1, {0, 0}, NULL                                  },
@@ -751,9 +751,9 @@ static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivate[9] = {
 void *Game_Customiser = 0;
 
 CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character, i32 second_character,
-                                        i32 (*available)(CUSTOMPIECE_LAYERS *), void (*configure_piece)(CUSTOMPIECE_LAYERS *, NUFPAR_PC *),
+                                        i32 (*available)(CUSTOMPIECE_LAYERS *), void (*configure_piece)(CUSTOMPIECE_LAYERS *, NUFPAR *),
                                         i32 (*weapon_from_name)(char *), void *save_input, i16 *animations) {
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     CUSTOMISER_CONFIG *customiser;
     CUSTOM_SAVE_CONFIG *save = save_input;
     i32 category;

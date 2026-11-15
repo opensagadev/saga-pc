@@ -115,9 +115,9 @@ void GameCam_HitRoll(void) {
     GameCam_Judder(GameCam, amount, 2, NULL);
 }
 
-NARROWSOCKEXCEPTION_PC *NarrowSockException = 0;
+NARROWSOCKEXCEPTION *NarrowSockException = 0;
 
-void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *exceptions) {
+void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION *exceptions) {
     i32 level_index;
     if (exceptions == NULL) {
         return;
@@ -187,7 +187,7 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                     look = AlternateGameCallback(Player[i]);
                 }
                 if (look == 2) {
-                    GAMEPAD_PC *pad = Player[i]->pad;
+                    GAMEPAD *pad = Player[i]->pad;
                     if (pad->input_mode == 1) {
                         u32 buttons = pad->buttons_held;
                         u32 horizontal = buttons & (GAMEPAD_DLEFT | GAMEPAD_DRIGHT);
@@ -217,7 +217,7 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                     camera->unknown_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 } else if (look == 1) {
-                    FRAME_PAD_PC *bound_pad = Player[i]->pad->bound_pad;
+                    FRAME_PAD *bound_pad = Player[i]->pad->bound_pad;
                     x = (f32)bound_pad->analog_right_x - 127.5f;
                     x *= 1.0f / 127.5f;
                     y = (f32)bound_pad->analog_right_y - 127.5f;
@@ -408,9 +408,9 @@ void SetCameraMatrices(void) {
 
 #undef GAME_CAMERA_ABSOLUTE
 
-static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 level_index) {
-    NARROWSOCKEXCEPTION_PC *exception;
-    NARROWSOCKEXCEPTION_PC *list;
+static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION *position, i32 level_index) {
+    NARROWSOCKEXCEPTION *exception;
+    NARROWSOCKEXCEPTION *list;
     if (system == NULL || position->sock_index == -1) {
         return 0;
     }

@@ -32,7 +32,7 @@ extern "C" char HubButtonStringBuffer[];
 extern "C" {}
 
 extern "C" {
-    LEVELFIXUP_PC LevelFixupStartup[2] = {
+    LEVELFIXUP LevelFixupStartup[2] = {
         {"losttemple_c", &UpdateSockets_LDATA, NULL, NULL, (void *)LostTempleC_Reset, (void *)LostTempleC_Update, NULL, NULL, NULL},
         {NULL,           NULL,                 NULL, NULL, NULL,                      NULL,                       NULL, NULL, NULL}
     };

@@ -14,12 +14,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void PostFilterBlitTexture(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, POST_SHADER_PROGRAM_PC *,
+    void PostFilterBlitTexture(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, POST_SHADER_PROGRAM *,
                                GRAPHICS_RENDER_TEXTURE *);
     void NuPostEffectResize(void);
     void PCGraphicsCreatePostEffectWorkTexture(i32 width, i32 height);
     void PostBlur7x7High(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod, i32 iterations,
-                         i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program);
+                         i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program);
     void PostGaussianKernel(i32 width, i32 height, NUVEC4 *taps, f32 scale);
 #ifdef __cplusplus
 }

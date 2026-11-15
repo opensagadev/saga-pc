@@ -892,7 +892,7 @@ class EdVectorControl : public EdControl { // size 0x1c
     static void Drag(eduiitem_s *item) {
         edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
         property->button_latched = 1;
-        FRAME_PAD_PC *pad = EdControl::Input->pad;
+        FRAME_PAD *pad = EdControl::Input->pad;
         f32 value = NuAToF(property->property_text);
         f32 dx;
         f32 dy;
@@ -937,7 +937,7 @@ class EdMatrixControl : public EdControl { // size 0x34
     static void Drag(eduiitem_s *item) {
         edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
         property->button_latched = 1;
-        FRAME_PAD_PC *pad = EdControl::Input->pad;
+        FRAME_PAD *pad = EdControl::Input->pad;
         f32 value = NuAToF(property->property_text);
         f32 dx;
         f32 dy;
@@ -5495,7 +5495,7 @@ i32 ClassObjectList::IsInList(EdClass *object_class) {
     return 0;
 }
 
-void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed, bool) {
+void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD *new_pad, f32 elapsed, bool) {
     f32 cursor_y = 0.5f;
     f32 cursor_x = 0.5f;
     f32 mouse_y;
@@ -10865,7 +10865,7 @@ void LevelEditor::ProcessEvenWhenPaused(ThingProcessData *data) {
         return;
     }
     f32 t = data->frame_time;
-    FRAME_PAD_PC *pad = reinterpret_cast<FRAME_PAD_PC *>(data->pads[0]);
+    FRAME_PAD *pad = reinterpret_cast<FRAME_PAD *>(data->pads[0]);
     text_length = 0;
     memset(info_text, 0, sizeof(info_text));
     memset(reserved_0xf00, 0, 0x80);

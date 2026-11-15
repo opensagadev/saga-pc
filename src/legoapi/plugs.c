@@ -19,16 +19,16 @@ typedef struct carry_plug_s { // size 0x34
     u8 plugged : 1;           // 0x23:2
     u8 unknown_23 : 5;        // 0x23:3
     u8 unknown_24[0x10];      // 0x24
-} CARRY_PLUG_PC;
+} CARRY_PLUG;
 
 typedef struct carry_plug_sys_s { // size 0x8
-    CARRY_PLUG_PC *plugs;         // 0x0
+    CARRY_PLUG *plugs;            // 0x0
     i32 count;                    // 0x4
-} CARRY_PLUG_SYS_PC;
+} CARRY_PLUG_SYS;
 
-CARRY_PLUG_PC *Plug_FindNearest(CARRY_PLUG_SYS_PC *system, NUVEC *position, f32 *distance_squared, i32 only_unplugged) {
-    CARRY_PLUG_PC *nearest = NULL;
-    CARRY_PLUG_PC *plug;
+CARRY_PLUG *Plug_FindNearest(CARRY_PLUG_SYS *system, NUVEC *position, f32 *distance_squared, i32 only_unplugged) {
+    CARRY_PLUG *nearest = NULL;
+    CARRY_PLUG *plug;
     f32 best = 1000000000.0f;
     f32 distance;
     i32 i;
@@ -51,7 +51,7 @@ CARRY_PLUG_PC *Plug_FindNearest(CARRY_PLUG_SYS_PC *system, NUVEC *position, f32 
     return nearest;
 }
 
-void Plug_MakeDrawMtx(CARRY_PLUG_PC *plug, NUMTX *matrix) {
+void Plug_MakeDrawMtx(CARRY_PLUG *plug, NUMTX *matrix) {
     NuMtxSetRotationY(matrix, plug->rotation_y);
     NuMtxRotateZ(matrix, plug->rotation_z);
     NuMtxRotateX(matrix, plug->rotation_x);
@@ -60,7 +60,7 @@ void Plug_MakeDrawMtx(CARRY_PLUG_PC *plug, NUMTX *matrix) {
 
 typedef struct plug_world_callbacks_s { // size 0x5170
     u8 unknown[0x516c];                 // 0x0000
-    CARRY_PLUG_SYS_PC *plug_system;     // 0x516c
+    CARRY_PLUG_SYS *plug_system;        // 0x516c
 } PLUG_WORLD_CALLBACKS;
 
 typedef struct plug_progress_s { // size 0xc
@@ -72,15 +72,15 @@ typedef struct plug_progress_s { // size 0xc
 static void *Plugs_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     PLUG_WORLD_CALLBACKS *view = (PLUG_WORLD_CALLBACKS *)world;
-    CARRY_PLUG_PC *plugs;
+    CARRY_PLUG *plugs;
     view->plug_system = NULL;
     if (world->current_level->max_plugs > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        plugs = (CARRY_PLUG_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->current_level->max_plugs * sizeof(CARRY_PLUG_PC);
+        plugs = (CARRY_PLUG *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_plugs * sizeof(CARRY_PLUG);
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        view->plug_system = (CARRY_PLUG_SYS_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += sizeof(CARRY_PLUG_SYS_PC);
+        view->plug_system = (CARRY_PLUG_SYS *)world->giz_buffer.addr;
+        world->giz_buffer.addr += sizeof(CARRY_PLUG_SYS);
         view->plug_system->plugs = plugs;
         view->plug_system->count = 0;
     }
@@ -89,7 +89,7 @@ static void *Plugs_ReserveBufferSpace(void *world_ptr) {
 
 static i32 Plugs_Load(void *world_ptr, void *data) {
     PLUG_WORLD_CALLBACKS *world = world_ptr;
-    CARRY_PLUG_PC *plug;
+    CARRY_PLUG *plug;
     i32 i;
     i32 version;
     (void)data;
@@ -116,14 +116,14 @@ static i32 Plugs_Load(void *world_ptr, void *data) {
 
 static void Plug_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        CARRY_PLUG_PC *plug = gizmo->object;
+        CARRY_PLUG *plug = gizmo->object;
         plug->active = active != 0;
     }
 }
 
 static void Plug_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        CARRY_PLUG_PC *plug = gizmo->object;
+        CARRY_PLUG *plug = gizmo->object;
         plug->visible = visible != 0;
     }
 }
@@ -131,7 +131,7 @@ static void Plug_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
 static void Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
     PLUG_WORLD_CALLBACKS *world = world_ptr;
     PLUG_PROGRESS *progress = progress_ptr;
-    CARRY_PLUG_PC *plug;
+    CARRY_PLUG *plug;
     i32 i;
     (void)data;
     if (world == NULL || world->plug_system == NULL) {
@@ -187,11 +187,11 @@ static void Plugs_AddGizmos(void *system, i32 type_id, void *world_ptr, void *da
 }
 
 static char *Plug_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? ((CARRY_PLUG_PC *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? ((CARRY_PLUG *)gizmo->object)->name : NULL;
 }
 
 static i32 Plug_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    CARRY_PLUG_PC *plug = gizmo->object;
+    CARRY_PLUG *plug = gizmo->object;
     (void)output;
     (void)mode;
     return plug->visible && plug->active && plug->plugged;
@@ -214,7 +214,7 @@ static NUVEC *Plug_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((CARRY_PLUG_PC *)gizmo->object)->position;
+    return &((CARRY_PLUG *)gizmo->object)->position;
 }
 
 static void *Plugs_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -234,7 +234,7 @@ static void Plugs_ClearProgress(void *world, void *progress_ptr) {
 static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     PLUG_WORLD_CALLBACKS *world = world_ptr;
     PLUG_PROGRESS *progress = progress_ptr;
-    CARRY_PLUG_PC *plug;
+    CARRY_PLUG *plug;
     i32 i;
     (void)data;
     if (progress == NULL) {
@@ -269,8 +269,8 @@ static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
 i32 plug_gizmotype_id = -1;
 const char *PlugGizmoName = "Plug";
 
-ADDGIZMOTYPE_PC *Plugs_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC PlugsAddType = {0};
+ADDGIZMOTYPE *Plugs_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE PlugsAddType = {0};
     PlugsAddType = Default_ADDGIZMOTYPE;
     PlugsAddType.name = PlugGizmoName;
     PlugsAddType.prefix = "";

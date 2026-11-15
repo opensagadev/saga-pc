@@ -16,11 +16,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void *DisplayListBuildLightPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *DisplayListBuildFogPacket(NUGLOBALRNDRSTATE_PC *state);
-    void *DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE_PC *);
+    void *DisplayListBuildLightPacket(NUGLOBALRNDRSTATE *state);
+    void *DisplayListBuildKonstPacket(NUGLOBALRNDRSTATE *state);
+    void *DisplayListBuildReflectionPacket(NUGLOBALRNDRSTATE *state);
+    void *DisplayListBuildFogPacket(NUGLOBALRNDRSTATE *state);
+    void *DisplayListBuildVertexGroupPacket(NUGLOBALRNDRSTATE *);
     void NuPtlDmaSlotsExhausted(void);
     void DisplayListSpecialTransformNoOp(nuhspecial_s *special, NUMTX *matrix);
     void NuVpBuildScalingTemplate(void);

@@ -24,7 +24,7 @@ typedef struct repeat_sfx_entry_s { // size 0x10
     f32 start_delay;                // 0x4
     f32 repeat_delay;               // 0x8
     NUVEC *position;                // 0xc
-} REPEAT_SFX_ENTRY_PC;
+} REPEAT_SFX_ENTRY;
 
 typedef struct optionssave_s { // size 0xd
 
@@ -90,7 +90,7 @@ extern "C" {
     extern const char AITransferLiteral757a38[12];
     extern const char AITransferLiteral757a70[11];
     extern i32 BeenAttacked;
-    extern REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32];
+    extern REPEAT_SFX_ENTRY RepeatSfxQueue[32];
     extern i32 RepeatSfxQueueHead;
     void PlayRepeatSfx(char *, i32, f32, char, f32, NUVEC *);
     void UpdateRepeatSfx(void);

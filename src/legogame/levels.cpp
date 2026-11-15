@@ -137,13 +137,13 @@ extern "C" {
 }
 
 extern "C" {
-    extern AREA_DATA_PC *ANEWHOPE_ADATA;
+    extern AREA_DATA *ANEWHOPE_ADATA;
 }
 
 extern "C" {
     void MusicClearAll(void);
     void SoundKillAll(void);
-    void GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
+    void GamePlayMusic(LEVELDATA *, i32, OPTIONSSAVE *);
 }
 void legoSetMusicVolume(f32);
 extern "C" {
@@ -177,11 +177,11 @@ extern "C" {
     extern f32 PermCollectionScale;
 }
 #define LEVEL_BYTE_CALLBACK(name, field)                                                                                                   \
-    void name(NUFPAR_PC *parser) {                                                                                                         \
+    void name(NUFPAR *parser) {                                                                                                            \
         levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                                               \
     }
 #define LEVEL_WORD_CALLBACK(name, field)                                                                                                   \
-    void name(NUFPAR_PC *parser) {                                                                                                         \
+    void name(NUFPAR *parser) {                                                                                                            \
         levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                                              \
     }
 extern "C" void KashyyykD_Init(WORLDINFO *);
@@ -409,7 +409,7 @@ extern "C" void FairgroundbadA_Init(WORLDINFO *);
 extern "C" void FairgroundbadA_Update(WORLDINFO *);
 extern "C" void FairgroundbadA_Draw(WORLDINFO *);
 extern "C" {
-    extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
+    extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 }
 extern "C" void ChrisDogFightAInit(WORLDINFO *);
 extern "C" void ChrisDogFightAReset(WORLDINFO *);
@@ -471,8 +471,8 @@ typedef struct world_load_reader_s {
 
 extern "C" {
     void Level_LoadConfigFile(WORLDINFO *);
-    void LevelConfig_BeforeLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
-    void LevelConfig_AfterLoad(LEVELDATA_PC *, char *, NUFPCOMJMP *);
+    void LevelConfig_BeforeLoad(LEVELDATA *, char *, NUFPCOMJMP *);
+    void LevelConfig_AfterLoad(LEVELDATA *, char *, NUFPCOMJMP *);
     void *CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
 }
 extern "C" void Attractos_InitTerrain(WORLDINFO *);
@@ -554,7 +554,7 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
     i32 models[2];
     i32 index;
     u32 flags;
-    AREA_DATA_PC *lost_temple;
+    AREA_DATA *lost_temple;
     if (WORLD != NULL && WORLD->area != NULL && WORLD->area == HUB_ADATA && bonusmodearcade != 0) {
         flags = Arcade_Mode[ArcadeItem.mode].flags;
     } else {
@@ -1594,7 +1594,7 @@ void LoadAreaCharacters(void) {
             }
         } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTime && skip_text_scroll == 0 &&
                    (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTime))) {
-            AREA_LOADING_PAD_READER_PC *pads = (AREA_LOADING_PAD_READER_PC *)GamePadStorage;
+            AREA_LOADING_PAD_READER *pads = (AREA_LOADING_PAD_READER *)GamePadStorage;
             if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 || NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
             } else {
@@ -1978,7 +1978,7 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_shards, max_shards)
 
-    void LC_BL_max_spinners(NUFPAR_PC *parser) {
+    void LC_BL_max_spinners(NUFPAR *parser) {
         levelconfig_ldata->max_spinners = (u8)NuFParGetInt(parser);
         if (levelconfig_ldata->max_spinners > 8) {
             levelconfig_ldata->max_spinners = 8;
@@ -1989,28 +1989,28 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_minicutParts, max_minicut_stages)
 
-    void LC_BL_max_gizmoblowuptypes(NUFPAR_PC *parser) {
+    void LC_BL_max_gizmoblowuptypes(NUFPAR *parser) {
         levelconfig_ldata->max_gizmoblowuptypes = (i16)NuFParGetInt(parser);
         if ((u16)levelconfig_ldata->max_gizmoblowuptypes > 0xff) {
             levelconfig_ldata->max_gizmoblowuptypes = 0xff;
         }
     }
 
-    void LC_BL_max_gizmoblowups(NUFPAR_PC *parser) {
+    void LC_BL_max_gizmoblowups(NUFPAR *parser) {
         levelconfig_ldata->max_gizmoblowups = (i16)NuFParGetInt(parser);
         if ((u16)levelconfig_ldata->max_gizmoblowups > 0x200) {
             levelconfig_ldata->max_gizmoblowups = 0x200;
         }
     }
 
-    void LC_BL_max_pushblocks(NUFPAR_PC *parser) {
+    void LC_BL_max_pushblocks(NUFPAR *parser) {
         levelconfig_ldata->max_pushblocks = (u8)NuFParGetInt(parser);
         if (levelconfig_ldata->max_pushblocks > 0x10) {
             levelconfig_ldata->max_pushblocks = 0x10;
         }
     }
 
-    void LC_BL_max_pushblock_endpos(NUFPAR_PC *parser) {
+    void LC_BL_max_pushblock_endpos(NUFPAR *parser) {
         levelconfig_ldata->max_pushblock_endpos = (u8)NuFParGetInt(parser);
         if (levelconfig_ldata->max_pushblock_endpos > 0x40) {
             levelconfig_ldata->max_pushblock_endpos = 0x40;
@@ -2059,11 +2059,11 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_plugs, max_plugs)
 
-    void LC_BL_wind_speed(NUFPAR_PC *parser) {
+    void LC_BL_wind_speed(NUFPAR *parser) {
         levelconfig_ldata->wind_speed = NuFParGetFloat(parser);
     }
 
-    void LC_BL_wind_size(NUFPAR_PC *parser) {
+    void LC_BL_wind_size(NUFPAR *parser) {
         levelconfig_ldata->wind_size = NuFParGetFloat(parser);
     }
 }
@@ -2166,9 +2166,9 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     } else if ((world->current_level->flags & LEVEL_STATUS) != 0 && world->area != NULL && world->area->minikit_id != -1) {
-        MiniKit_Load((MINIKIT_PC *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
+        MiniKit_Load((MINIKIT *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
         if (resource->minikit.scene != NULL) {
-            MiniKit_InitPieces((MINIKIT_PC *)&resource->minikit, 10, &world->giz_buffer, &world->buffer_end);
+            MiniKit_InitPieces((MINIKIT *)&resource->minikit, 10, &world->giz_buffer, &world->buffer_end);
         }
         if (abort_load != 0) {
             goto abort;
@@ -2403,121 +2403,121 @@ extern "C" void Credits_Draw_Game(WORLDINFO *world) {
 }
 
 extern "C" {
-    static LEVELDATA_PC *dat_0087b2cc = NULL;
-    static LEVELDATA_PC *dat_0087b2d0 = NULL;
-    static LEVELDATA_PC *dat_0087b2d4 = NULL;
-    static LEVELDATA_PC *dat_0087b2d8 = NULL;
-    LEVELDATA_PC *dat_0087b2dc = NULL;
+    static LEVELDATA *dat_0087b2cc = NULL;
+    static LEVELDATA *dat_0087b2d0 = NULL;
+    static LEVELDATA *dat_0087b2d4 = NULL;
+    static LEVELDATA *dat_0087b2d8 = NULL;
+    LEVELDATA *dat_0087b2dc = NULL;
     i32 loadareacharacters_no_backdrop_reset = 0;
     i32 FreePlayModelCount = 0;
-    static LEVELDATA_PC *dat_0087b0d4 = NULL;
-    LEVELDATA_PC *MAULA_LDATA = 0;
-    static LEVELDATA_PC *dat_0087b0d0 = NULL;
-    static LEVELDATA_PC *dat_0087b0dc = NULL;
-    LEVELDATA_PC *MAULD_LDATA = 0;
-    static LEVELDATA_PC *dat_0087b0e4 = NULL;
-    LEVELDATA_PC *MAULF_LDATA = 0;
-    LEVELDATA_PC *JEDI_B_LDATA = NULL;
-    LEVELDATA_PC *dat_0087b0f0 = NULL;
-    LEVELDATA_PC *GUNSHIPA_LDATA = 0;
-    LEVELDATA_PC *GUNSHIPB_LDATA = 0;
-    LEVELDATA_PC *BONUS_GUNSHIPA_LDATA = 0;
-    LEVELDATA_PC *BONUS_GUNSHIPB_LDATA = 0;
-    LEVELDATA_PC *CollisionVehicleExcludedLevel = NULL;
-    static LEVELDATA_PC *dat_0087b108 = NULL;
-    static LEVELDATA_PC *dat_0087b10c = NULL;
-    static LEVELDATA_PC *dat_0087b110 = NULL;
-    LEVELDATA_PC *BOUNTYHUNTERPURSUITE_LDATA = 0;
-    LEVELDATA_PC *DOGFIGHTA_LDATA = 0;
-    LEVELDATA_PC *FACTORYB_LDATA = 0;
-    LEVELDATA_PC *FACTORYD_LDATA = 0;
-    LEVELDATA_PC *FACTORYF_LDATA = 0;
-    LEVELDATA_PC *FACTORYG_LDATA = 0;
-    LEVELDATA_PC *dat_0087b12c = NULL;
-    LEVELDATA_PC *KAMINOC_LDATA = 0;
-    LEVELDATA_PC *KAMINOE_LDATA = 0;
-    LEVELDATA_PC *dat_0087b138 = NULL;
-    LEVELDATA_PC *DOOKUC_LDATA = 0;
-    LEVELDATA_PC *dat_0087b140 = NULL;
-    static LEVELDATA_PC *dat_0087b144 = NULL;
-    LEVELDATA_PC *dat_0087b148 = NULL;
-    static LEVELDATA_PC *dat_0087b14c = NULL;
-    LEVELDATA_PC *dat_0087b150 = NULL;
-    LEVELDATA_PC *dat_0087b154 = NULL;
-    static LEVELDATA_PC *dat_0087b158 = NULL;
-    static LEVELDATA_PC *dat_0087b15c = NULL;
-    LEVELDATA_PC *KASHYYYKD_LDATA = 0;
-    LEVELDATA_PC *dat_0087b164 = NULL;
-    LEVELDATA_PC *CRUISERC_LDATA = 0;
-    LEVELDATA_PC *CRUISERD_LDATA = 0;
-    LEVELDATA_PC *dat_0087b170 = NULL;
-    LEVELDATA_PC *CRUISERG_LDATA = 0;
-    LEVELDATA_PC *VADERA_LDATA = 0;
-    LEVELDATA_PC *dat_0087b17c = NULL;
-    LEVELDATA_PC *VADERC_LDATA = 0;
-    LEVELDATA_PC *WorldArchiveThreeLevels[4] = {NULL};
-    LEVELDATA_PC *dat_0087b194 = NULL;
-    LEVELDATA_PC *ObstacleReturnLevel = 0;
-    static LEVELDATA_PC *dat_0087b19c = NULL;
-    LEVELDATA_PC *dat_0087b1a8 = NULL;
-    LEVELDATA_PC *TATOOINEE_LDATA = NULL;
-    LEVELDATA_PC *dat_0087b1bc = NULL;
-    static LEVELDATA_PC *dat_0087b20c = NULL;
-    LEVELDATA_PC *dat_0087b210 = NULL;
-    LEVELDATA_PC *HOTHESCAPEA_LDATA = 0;
-    LEVELDATA_PC *dat_0087b218 = NULL;
-    LEVELDATA_PC *HOTHESCAPEC_LDATA = 0;
-    LEVELDATA_PC *dat_0087b220 = NULL;
-    LEVELDATA_PC *ASTEROIDCHASEA_LDATA = NULL;
-    LEVELDATA_PC *dat_0087b228 = NULL;
-    LEVELDATA_PC *ASTEROIDCHASEC_LDATA = 0;
-    LEVELDATA_PC *ASTEROIDCHASED_LDATA = 0;
-    LEVELDATA_PC *ASTEROIDCHASEMITRO_LDATA = NULL;
-    LEVELDATA_PC *CLOUDCITYESCAPEA_LDATA = 0;
-    static LEVELDATA_PC *dat_0087b25c = NULL;
-    LEVELDATA_PC *DAGOBAHC_LDATA = 0;
-    LEVELDATA_PC *dat_0087b264 = NULL;
-    LEVELDATA_PC *dat_0087b268 = NULL;
-    LEVELDATA_PC *DEATHSTAR2BATTLEA_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLEB_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLED_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLEE_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLEF_LDATA = 0;
-    LEVELDATA_PC *DEATHSTAR2BATTLEG_LDATA = 0;
-    LEVELDATA_PC *dat_0087b284 = NULL;
-    LEVELDATA_PC *EMPERORFIGHTA_LDATA = 0;
-    LEVELDATA_PC *SARLACCPITA_LDATA = 0;
-    LEVELDATA_PC *SARLACCPITB_LDATA = 0;
-    LEVELDATA_PC *SARLACCPITC_LDATA = 0;
-    static LEVELDATA_PC *dat_0087b24c = NULL;
-    LEVELDATA_PC *dat_0087b250 = NULL;
-    LEVELDATA_PC *SPEEDERCHASEA_LDATA = 0;
-    LEVELDATA_PC *dat_0087b258 = NULL;
-    static LEVELDATA_PC *dat_0087b23c = NULL;
-    LEVELDATA_PC *CLOUDCITYESCAPEC_LDATA = 0;
-    LEVELDATA_PC *CLOUDCITYTRAPA_LDATA = 0;
-    LEVELDATA_PC *CLOUDCITYTRAPB_LDATA = 0;
-    static LEVELDATA_PC *dat_0087b298 = NULL;
-    static LEVELDATA_PC *dat_0087b29c = NULL;
-    LEVELDATA_PC *JABBASPALACEA_LDATA = 0;
-    LEVELDATA_PC *JABBASPALACEB_LDATA = 0;
-    LEVELDATA_PC *JABBASPALACED_LDATA = 0;
-    LEVELDATA_PC *JABBASPALACEE_LDATA = 0;
-    LEVELDATA_PC *dat_0087b2b0 = NULL;
-    LEVELDATA_PC *ENDORBATTLEA_LDATA = 0;
-    LEVELDATA_PC *ENDORBATTLEB_LDATA = 0;
-    LEVELDATA_PC *ENDORBATTLEC_LDATA = 0;
-    LEVELDATA_PC *ENDORBATTLED_LDATA = 0;
-    LEVELDATA_PC *dat_0087b2c4 = NULL;
-    LEVELDATA_PC *UpdateSockets_LDATA = 0;
-    static LEVELDATA_PC *dat_0087af58 = NULL;
-    static LEVELDATA_PC *dat_0087af5c = NULL;
-    static LEVELDATA_PC *dat_0087af60 = NULL;
-    AREA_DATA_PC *VADER_ADATA = 0;
+    static LEVELDATA *dat_0087b0d4 = NULL;
+    LEVELDATA *MAULA_LDATA = 0;
+    static LEVELDATA *dat_0087b0d0 = NULL;
+    static LEVELDATA *dat_0087b0dc = NULL;
+    LEVELDATA *MAULD_LDATA = 0;
+    static LEVELDATA *dat_0087b0e4 = NULL;
+    LEVELDATA *MAULF_LDATA = 0;
+    LEVELDATA *JEDI_B_LDATA = NULL;
+    LEVELDATA *dat_0087b0f0 = NULL;
+    LEVELDATA *GUNSHIPA_LDATA = 0;
+    LEVELDATA *GUNSHIPB_LDATA = 0;
+    LEVELDATA *BONUS_GUNSHIPA_LDATA = 0;
+    LEVELDATA *BONUS_GUNSHIPB_LDATA = 0;
+    LEVELDATA *CollisionVehicleExcludedLevel = NULL;
+    static LEVELDATA *dat_0087b108 = NULL;
+    static LEVELDATA *dat_0087b10c = NULL;
+    static LEVELDATA *dat_0087b110 = NULL;
+    LEVELDATA *BOUNTYHUNTERPURSUITE_LDATA = 0;
+    LEVELDATA *DOGFIGHTA_LDATA = 0;
+    LEVELDATA *FACTORYB_LDATA = 0;
+    LEVELDATA *FACTORYD_LDATA = 0;
+    LEVELDATA *FACTORYF_LDATA = 0;
+    LEVELDATA *FACTORYG_LDATA = 0;
+    LEVELDATA *dat_0087b12c = NULL;
+    LEVELDATA *KAMINOC_LDATA = 0;
+    LEVELDATA *KAMINOE_LDATA = 0;
+    LEVELDATA *dat_0087b138 = NULL;
+    LEVELDATA *DOOKUC_LDATA = 0;
+    LEVELDATA *dat_0087b140 = NULL;
+    static LEVELDATA *dat_0087b144 = NULL;
+    LEVELDATA *dat_0087b148 = NULL;
+    static LEVELDATA *dat_0087b14c = NULL;
+    LEVELDATA *dat_0087b150 = NULL;
+    LEVELDATA *dat_0087b154 = NULL;
+    static LEVELDATA *dat_0087b158 = NULL;
+    static LEVELDATA *dat_0087b15c = NULL;
+    LEVELDATA *KASHYYYKD_LDATA = 0;
+    LEVELDATA *dat_0087b164 = NULL;
+    LEVELDATA *CRUISERC_LDATA = 0;
+    LEVELDATA *CRUISERD_LDATA = 0;
+    LEVELDATA *dat_0087b170 = NULL;
+    LEVELDATA *CRUISERG_LDATA = 0;
+    LEVELDATA *VADERA_LDATA = 0;
+    LEVELDATA *dat_0087b17c = NULL;
+    LEVELDATA *VADERC_LDATA = 0;
+    LEVELDATA *WorldArchiveThreeLevels[4] = {NULL};
+    LEVELDATA *dat_0087b194 = NULL;
+    LEVELDATA *ObstacleReturnLevel = 0;
+    static LEVELDATA *dat_0087b19c = NULL;
+    LEVELDATA *dat_0087b1a8 = NULL;
+    LEVELDATA *TATOOINEE_LDATA = NULL;
+    LEVELDATA *dat_0087b1bc = NULL;
+    static LEVELDATA *dat_0087b20c = NULL;
+    LEVELDATA *dat_0087b210 = NULL;
+    LEVELDATA *HOTHESCAPEA_LDATA = 0;
+    LEVELDATA *dat_0087b218 = NULL;
+    LEVELDATA *HOTHESCAPEC_LDATA = 0;
+    LEVELDATA *dat_0087b220 = NULL;
+    LEVELDATA *ASTEROIDCHASEA_LDATA = NULL;
+    LEVELDATA *dat_0087b228 = NULL;
+    LEVELDATA *ASTEROIDCHASEC_LDATA = 0;
+    LEVELDATA *ASTEROIDCHASED_LDATA = 0;
+    LEVELDATA *ASTEROIDCHASEMITRO_LDATA = NULL;
+    LEVELDATA *CLOUDCITYESCAPEA_LDATA = 0;
+    static LEVELDATA *dat_0087b25c = NULL;
+    LEVELDATA *DAGOBAHC_LDATA = 0;
+    LEVELDATA *dat_0087b264 = NULL;
+    LEVELDATA *dat_0087b268 = NULL;
+    LEVELDATA *DEATHSTAR2BATTLEA_LDATA = 0;
+    LEVELDATA *DEATHSTAR2BATTLEB_LDATA = 0;
+    LEVELDATA *DEATHSTAR2BATTLED_LDATA = 0;
+    LEVELDATA *DEATHSTAR2BATTLEE_LDATA = 0;
+    LEVELDATA *DEATHSTAR2BATTLEF_LDATA = 0;
+    LEVELDATA *DEATHSTAR2BATTLEG_LDATA = 0;
+    LEVELDATA *dat_0087b284 = NULL;
+    LEVELDATA *EMPERORFIGHTA_LDATA = 0;
+    LEVELDATA *SARLACCPITA_LDATA = 0;
+    LEVELDATA *SARLACCPITB_LDATA = 0;
+    LEVELDATA *SARLACCPITC_LDATA = 0;
+    static LEVELDATA *dat_0087b24c = NULL;
+    LEVELDATA *dat_0087b250 = NULL;
+    LEVELDATA *SPEEDERCHASEA_LDATA = 0;
+    LEVELDATA *dat_0087b258 = NULL;
+    static LEVELDATA *dat_0087b23c = NULL;
+    LEVELDATA *CLOUDCITYESCAPEC_LDATA = 0;
+    LEVELDATA *CLOUDCITYTRAPA_LDATA = 0;
+    LEVELDATA *CLOUDCITYTRAPB_LDATA = 0;
+    static LEVELDATA *dat_0087b298 = NULL;
+    static LEVELDATA *dat_0087b29c = NULL;
+    LEVELDATA *JABBASPALACEA_LDATA = 0;
+    LEVELDATA *JABBASPALACEB_LDATA = 0;
+    LEVELDATA *JABBASPALACED_LDATA = 0;
+    LEVELDATA *JABBASPALACEE_LDATA = 0;
+    LEVELDATA *dat_0087b2b0 = NULL;
+    LEVELDATA *ENDORBATTLEA_LDATA = 0;
+    LEVELDATA *ENDORBATTLEB_LDATA = 0;
+    LEVELDATA *ENDORBATTLEC_LDATA = 0;
+    LEVELDATA *ENDORBATTLED_LDATA = 0;
+    LEVELDATA *dat_0087b2c4 = NULL;
+    LEVELDATA *UpdateSockets_LDATA = 0;
+    static LEVELDATA *dat_0087af58 = NULL;
+    static LEVELDATA *dat_0087af5c = NULL;
+    static LEVELDATA *dat_0087af60 = NULL;
+    AREA_DATA *VADER_ADATA = 0;
 }
 
 extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
-    LEVELDATA_PC *level;
+    LEVELDATA *level;
     i32 index;
     Levels_FixUp(fixup);
     level = Level_FindByName("titles", NULL);
@@ -3335,7 +3335,7 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
 
 extern "C" {
 
-    void Level_SetDefaults(LEVELDATA_PC *level) {
+    void Level_SetDefaults(LEVELDATA *level) {
         level->max_gameantinodes = 0x100;
         level->max_gizmoblowups = 0x40;
         level->max_pickups = 0x100;

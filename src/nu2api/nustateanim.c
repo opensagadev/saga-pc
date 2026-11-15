@@ -7,8 +7,8 @@
 
 void *fun_00601de0(i32 size, i32 alignment);
 
-STATE_ANIM_PC *StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta) {
-    state = state ? (STATE_ANIM_PC *)((u32)state + delta) : NULL;
+STATE_ANIM *StateAnimFixPtrs(STATE_ANIM *state, i32 delta) {
+    state = state ? (STATE_ANIM *)((u32)state + delta) : NULL;
     if (state != NULL) {
         state->times = state->times ? (f32 *)((u32)state->times + delta) : NULL;
         state->values = state->values ? (u8 *)((u32)state->values + delta) : NULL;
@@ -16,7 +16,7 @@ STATE_ANIM_PC *StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta) {
     return state;
 }
 
-i32 StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame) {
+i32 StateAnimEvaluate2(STATE_ANIM *state, u8 *index, u8 *value, f32 frame) {
     i32 cursor = *index;
     i32 old_value;
     i32 new_value;
@@ -50,7 +50,7 @@ i32 StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame) {
 }
 
 void ReadInstAnimBlockDlist(NUFILE file, NUGSCN *scene) {
-    NUDISPLAY_LIST_PC *display_list = scene->display_list;
+    NUDISPLAY_LIST *display_list = scene->display_list;
     NUINSTANIM *animations;
     i32 i;
     scene->num_instance_animations = NuFileReadInt(file);

@@ -16,11 +16,11 @@
    (see SpecialMovesConfigMissing). */
 void MissionsConfigMissing(char *filename);
 
-MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, MISSION_SAVE_READER *save) {
-    NUFPAR_PC *parser;
+MISSIONSYS *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, MISSION_SAVE_READER *save) {
+    NUFPAR *parser;
     MISSION_SYSTEM_READER temporary;
     MISSION_SYSTEM_READER *destination;
-    MISSIONDATA_PC *mission;
+    MISSIONDATA *mission;
     i32 character;
     parser = NuFParCreate(file);
     if (parser == NULL) {
@@ -86,7 +86,7 @@ MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *bu
             if (mission->find_character != -1 && mission->level != -1) {
                 ++temporary.count;
                 ++mission;
-                buffer_start->addr += sizeof(MISSIONDATA_PC);
+                buffer_start->addr += sizeof(MISSIONDATA);
             }
         }
     }
@@ -98,7 +98,7 @@ MISSIONSYS_PC *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *bu
     destination = buffer_start->void_ptr;
     PCByteCopy(destination, &temporary, sizeof(temporary));
     buffer_start->addr = (buffer_start->addr + sizeof(temporary) + 3) & ~3u;
-    return (MISSIONSYS_PC *)destination;
+    return (MISSIONSYS *)destination;
 }
 
 void Mission_Clear(MISSIONSYS_s *ms) {
@@ -113,7 +113,7 @@ void Mission_Clear(MISSIONSYS_s *ms) {
     ResetTimer(&ms->timer, 0.0f);
 }
 
-MISSIONDATA_PC *Mission_Active(MISSIONSYS_PC *system) {
+MISSIONDATA *Mission_Active(MISSIONSYS *system) {
     if (system == NULL) {
         system = MissionSys;
         if (system == NULL) {
@@ -126,7 +126,7 @@ MISSIONDATA_PC *Mission_Active(MISSIONSYS_PC *system) {
     return NULL;
 }
 
-i32 Mission_CurrentState(MISSIONSYS_PC *system) {
+i32 Mission_CurrentState(MISSIONSYS *system) {
     MISSION_SYSTEM_READER *reader;
     if (system == NULL) {
         system = MissionSys;
@@ -141,7 +141,7 @@ i32 Mission_CurrentState(MISSIONSYS_PC *system) {
     return 0;
 }
 
-i32 Missions_PartyAvailable(MISSIONSYS_PC *system) {
+i32 Missions_PartyAvailable(MISSIONSYS *system) {
     MISSION_SYSTEM_READER *reader;
     i32 index;
     if (system == NULL) {
@@ -158,7 +158,7 @@ i32 Missions_PartyAvailable(MISSIONSYS_PC *system) {
     return 1;
 }
 
-i32 Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER *save, i32 complete) {
+i32 Missions_NumCompleted(MISSIONSYS *system, MISSION_SAVE_READER *save, i32 complete) {
     MISSION_SYSTEM_READER *reader;
     i32 index;
     i32 total = 0;
@@ -182,7 +182,7 @@ i32 Missions_NumCompleted(MISSIONSYS_PC *system, MISSION_SAVE_READER *save, i32 
     return total;
 }
 
-GAMEOBJECT *Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
+GAMEOBJECT *Mission_FindTarget(MISSIONSYS *system, u64 *identity) {
     MISSION_SYSTEM_READER *reader;
     GAMEOBJECT *target;
     if (system == NULL) {
@@ -202,7 +202,7 @@ GAMEOBJECT *Mission_FindTarget(MISSIONSYS_PC *system, u64 *identity) {
     return NULL;
 }
 
-i32 Missions_PickupsOff(MISSIONSYS_PC *system) {
+i32 Missions_PickupsOff(MISSIONSYS *system) {
     MISSION_SYSTEM_READER *reader;
     if (system == NULL) {
         system = MissionSys;

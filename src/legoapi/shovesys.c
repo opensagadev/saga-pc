@@ -20,9 +20,9 @@ typedef struct shove_object_s { // size 0x18
 typedef struct shove_system_s { // size 0x184
     SHOVE_OBJECT objects[16];   // 0x000
     i32 count;                  // 0x180
-} SHOVE_SYSTEM_PC;
+} SHOVE_SYSTEM;
 
-static SHOVE_SYSTEM_PC ShoveSystem = {0};
+static SHOVE_SYSTEM ShoveSystem = {0};
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 ShovesysFabs(f32 f) {

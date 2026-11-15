@@ -10,63 +10,63 @@
 #include <shlobj.h>
 #include <string.h>
 
-GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND_PC::fun_006daee0() {
+GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND::fun_006daee0() {
     return &desktop_mode;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetWidth(i32 value) {
+void PC_WINDOW_OPTIONS::SetWidth(i32 value) {
     client_width = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetHeight(i32 value) {
+void PC_WINDOW_OPTIONS::SetHeight(i32 value) {
     client_height = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetDeviceWidth(i32 value) {
+void PC_WINDOW_OPTIONS::SetDeviceWidth(i32 value) {
     device_width = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetDeviceHeight(i32 value) {
+void PC_WINDOW_OPTIONS::SetDeviceHeight(i32 value) {
     device_height = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetRefresh(i32 value) {
+void PC_WINDOW_OPTIONS::SetRefresh(i32 value) {
     refresh_rate = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetMultisample(i32 value) {
+void PC_WINDOW_OPTIONS::SetMultisample(i32 value) {
     multisample = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetAspectMode(i32 value) {
+void PC_WINDOW_OPTIONS::SetAspectMode(i32 value) {
     aspect_mode = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetWindowX(i32 value) {
+void PC_WINDOW_OPTIONS::SetWindowX(i32 value) {
     window_x = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetWindowY(i32 value) {
+void PC_WINDOW_OPTIONS::SetWindowY(i32 value) {
     window_y = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetMouseSensitivity(i32 value) {
+void PC_WINDOW_OPTIONS::SetMouseSensitivity(i32 value) {
     mousesensitivity = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetInvertY(u8 value) {
+void PC_WINDOW_OPTIONS::SetInvertY(u8 value) {
     inverty = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetVibration(u8 value) {
+void PC_WINDOW_OPTIONS::SetVibration(u8 value) {
     vibration = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetForceShaderModel(i32 value) {
+void PC_WINDOW_OPTIONS::SetForceShaderModel(i32 value) {
     forceshadermodel = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::Save() {
+void PC_WINDOW_OPTIONS::Save() {
     FILE *file = fopen(file_name, "w");
     if (file != NULL) {
         fprintf(file, "FileVersion            %d\n", PCOptionsFileVersion);
@@ -101,15 +101,15 @@ void PC_WINDOW_OPTIONS_PC::Save() {
     }
 }
 
-void PC_WINDOW_OPTIONS_PC::SetBloomMethod(i32 value) {
+void PC_WINDOW_OPTIONS::SetBloomMethod(i32 value) {
     bloommethod = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetShadowMethod(i32 value) {
+void PC_WINDOW_OPTIONS::SetShadowMethod(i32 value) {
     shadowmethod = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetSpeedBlurSupported(u8 value) {
+void PC_WINDOW_OPTIONS::SetSpeedBlurSupported(u8 value) {
     speedblursupported = value;
 }
 
@@ -143,7 +143,7 @@ extern "C" void PCOptionsBuildFolder(char *destination) {
     }
 }
 
-void PC_WINDOW_OPTIONS_PC::Defaults() {
+void PC_WINDOW_OPTIONS::Defaults() {
     context = -1;
     device_width = PCDeviceBackend.desktop_mode.width <= 1024u ? PCDeviceBackend.desktop_mode.width : 1024u;
     device_height = PCDeviceBackend.desktop_mode.width > 1024u ? 768u : PCDeviceBackend.desktop_mode.height;
@@ -175,7 +175,7 @@ void PC_WINDOW_OPTIONS_PC::Defaults() {
     forceshadermodel = 0;
 }
 
-void PC_WINDOW_OPTIONS_PC::Validate() {
+void PC_WINDOW_OPTIONS::Validate() {
     if (device_width <= 0) {
         device_width = PCDeviceBackend.desktop_mode.width;
     }
@@ -227,127 +227,127 @@ extern "C" void fun_006db900(void) {
     PcWindowOptions.Save();
 }
 
-PC_WINDOW_OPTIONS_PC::PC_WINDOW_OPTIONS_PC() : context(-1), speedblursupported(1), option459(1) {
+PC_WINDOW_OPTIONS::PC_WINDOW_OPTIONS() : context(-1), speedblursupported(1), option459(1) {
     Defaults();
 }
 
-PC_WINDOW_OPTIONS_PC PcWindowOptions;
+PC_WINDOW_OPTIONS PcWindowOptions;
 
-void PC_WINDOW_OPTIONS_PC::InitializePath() {
+void PC_WINDOW_OPTIONS::InitializePath() {
     PCOptionsBuildFolder(file_name);
     strcat(file_name, "pcconfig.txt");
     Defaults();
 }
 
-static void PCOptionsReadFileVersion(NUFPAR_PC *parser) {
+static void PCOptionsReadFileVersion(NUFPAR *parser) {
     PcWindowOptions.context = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadScreenWidth(NUFPAR_PC *parser) {
+static void PCOptionsReadScreenWidth(NUFPAR *parser) {
     PcWindowOptions.device_width = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadScreenHeight(NUFPAR_PC *parser) {
+static void PCOptionsReadScreenHeight(NUFPAR *parser) {
     PcWindowOptions.device_height = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadWindowWidth(NUFPAR_PC *parser) {
+static void PCOptionsReadWindowWidth(NUFPAR *parser) {
     PcWindowOptions.client_width = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadWindowHeight(NUFPAR_PC *parser) {
+static void PCOptionsReadWindowHeight(NUFPAR *parser) {
     PcWindowOptions.client_height = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadWindowLeft(NUFPAR_PC *parser) {
+static void PCOptionsReadWindowLeft(NUFPAR *parser) {
     PcWindowOptions.window_x = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadWindowTop(NUFPAR_PC *parser) {
+static void PCOptionsReadWindowTop(NUFPAR *parser) {
     PcWindowOptions.window_y = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadScreenRefreshRate(NUFPAR_PC *parser) {
+static void PCOptionsReadScreenRefreshRate(NUFPAR *parser) {
     PcWindowOptions.refresh_rate = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadFSAA(NUFPAR_PC *parser) {
+static void PCOptionsReadFSAA(NUFPAR *parser) {
     PcWindowOptions.multisample = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadWidescreen(NUFPAR_PC *parser) {
+static void PCOptionsReadWidescreen(NUFPAR *parser) {
     PcWindowOptions.aspect_mode = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadSFXVolume(NUFPAR_PC *parser) {
+static void PCOptionsReadSFXVolume(NUFPAR *parser) {
     PcWindowOptions.sfxvolume = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadMusicVolume(NUFPAR_PC *parser) {
+static void PCOptionsReadMusicVolume(NUFPAR *parser) {
     PcWindowOptions.musicvolume = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadMasterVolume(NUFPAR_PC *parser) {
+static void PCOptionsReadMasterVolume(NUFPAR *parser) {
     PcWindowOptions.mastervolume = NuFParGetIntRDP(parser);
 }
 
-extern "C" void PCOptionsReadMusicEnabled(NUFPAR_PC *parser) {
+extern "C" void PCOptionsReadMusicEnabled(NUFPAR *parser) {
     PcWindowOptions.musicenabled = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadMouseSensitivity(NUFPAR_PC *parser) {
+static void PCOptionsReadMouseSensitivity(NUFPAR *parser) {
     PcWindowOptions.mousesensitivity = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadInvertY(NUFPAR_PC *parser) {
+static void PCOptionsReadInvertY(NUFPAR *parser) {
     PcWindowOptions.inverty = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadVibration(NUFPAR_PC *parser) {
+static void PCOptionsReadVibration(NUFPAR *parser) {
     PcWindowOptions.vibration = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadBloomMethod(NUFPAR_PC *parser) {
+static void PCOptionsReadBloomMethod(NUFPAR *parser) {
     PcWindowOptions.bloommethod = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadDesiredBloomMethod(NUFPAR_PC *parser) {
+static void PCOptionsReadDesiredBloomMethod(NUFPAR *parser) {
     PcWindowOptions.desiredbloommethod = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadBloomEnabled(NUFPAR_PC *parser) {
+static void PCOptionsReadBloomEnabled(NUFPAR *parser) {
     PcWindowOptions.bloomenabled = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadShadowMethod(NUFPAR_PC *parser) {
+static void PCOptionsReadShadowMethod(NUFPAR *parser) {
     PcWindowOptions.shadowmethod = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadDesiredShadowMethod(NUFPAR_PC *parser) {
+static void PCOptionsReadDesiredShadowMethod(NUFPAR *parser) {
     PcWindowOptions.desiredshadowmethod = NuFParGetIntRDP(parser);
 }
 
-static void PCOptionsReadShadowsEnabled(NUFPAR_PC *parser) {
+static void PCOptionsReadShadowsEnabled(NUFPAR *parser) {
     PcWindowOptions.shadowsenabled = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadSpeedBlurSupported(NUFPAR_PC *parser) {
+static void PCOptionsReadSpeedBlurSupported(NUFPAR *parser) {
     PcWindowOptions.speedblursupported = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadSpeedBlurEnabled(NUFPAR_PC *parser) {
+static void PCOptionsReadSpeedBlurEnabled(NUFPAR *parser) {
     PcWindowOptions.speedblurenabled = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadUseHires(NUFPAR_PC *parser) {
+static void PCOptionsReadUseHires(NUFPAR *parser) {
     PcWindowOptions.usehires = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadUseHiresPending(NUFPAR_PC *parser) {
+static void PCOptionsReadUseHiresPending(NUFPAR *parser) {
     PcWindowOptions.usehirespending = NuFParGetIntRDP(parser) > 0;
 }
 
-static void PCOptionsReadForceShaderModel(NUFPAR_PC *parser) {
+static void PCOptionsReadForceShaderModel(NUFPAR *parser) {
     PcWindowOptions.forceshadermodel = NuFParGetIntRDP(parser);
 }
 
@@ -385,9 +385,9 @@ extern "C" {
     i32 PCOptionsFileVersion = 2;
 }
 
-void PC_WINDOW_OPTIONS_PC::Load() {
+void PC_WINDOW_OPTIONS::Load() {
     char fallback[260];
-    NUFPAR_PC *parser = NuFParCreate(file_name);
+    NUFPAR *parser = NuFParCreate(file_name);
     if (parser == NULL) {
         NuFileGetCurrentDirectory(fallback);
         strcat(fallback, "pcconfig.txt");
@@ -412,15 +412,15 @@ void PC_WINDOW_OPTIONS_PC::Load() {
     Validate();
 }
 
-u32 PC_DEVICE_BACKEND_PC::fun_006dbae0() {
+u32 PC_DEVICE_BACKEND::fun_006dbae0() {
     return shader_flags;
 }
 
-u32 PC_DEVICE_BACKEND_PC::fun_006dbaf0() {
+u32 PC_DEVICE_BACKEND::fun_006dbaf0() {
     return render_target_flags;
 }
 
-void PC_DEVICE_BACKEND_PC::fun_006dbb00(u8 windowed) {
+void PC_DEVICE_BACKEND::fun_006dbb00(u8 windowed) {
     requested_windowed = windowed;
 }
 
@@ -432,51 +432,51 @@ extern "C" i32 fun_006dbb20(void) {
     return 0;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetDesiredBloomMethod(i32 value) {
+void PC_WINDOW_OPTIONS::SetDesiredBloomMethod(i32 value) {
     desiredbloommethod = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetBloomEnabled(u8 value) {
+void PC_WINDOW_OPTIONS::SetBloomEnabled(u8 value) {
     bloomenabled = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetDesiredShadowMethod(i32 value) {
+void PC_WINDOW_OPTIONS::SetDesiredShadowMethod(i32 value) {
     desiredshadowmethod = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetShadowsEnabled(u8 value) {
+void PC_WINDOW_OPTIONS::SetShadowsEnabled(u8 value) {
     shadowsenabled = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetSpeedBlurEnabled(u8 value) {
+void PC_WINDOW_OPTIONS::SetSpeedBlurEnabled(u8 value) {
     speedblurenabled = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetUseHires(u8 value) {
+void PC_WINDOW_OPTIONS::SetUseHires(u8 value) {
     usehires = value;
     usehirespending = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetUseHiresPending(u8 value) {
+void PC_WINDOW_OPTIONS::SetUseHiresPending(u8 value) {
     usehirespending = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetOption459(u8 value) {
+void PC_WINDOW_OPTIONS::SetOption459(u8 value) {
     option459 = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetSfxVolume(i32 value) {
+void PC_WINDOW_OPTIONS::SetSfxVolume(i32 value) {
     sfxvolume = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetMusicVolume(i32 value) {
+void PC_WINDOW_OPTIONS::SetMusicVolume(i32 value) {
     musicvolume = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetMasterVolume(i32 value) {
+void PC_WINDOW_OPTIONS::SetMasterVolume(i32 value) {
     mastervolume = value;
 }
 
-void PC_WINDOW_OPTIONS_PC::SetMusicEnabled(u8 value) {
+void PC_WINDOW_OPTIONS::SetMusicEnabled(u8 value) {
     musicenabled = value;
 }

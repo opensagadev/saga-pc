@@ -49,7 +49,7 @@ struct debris_particle_s;
 struct BOLTTYPE_PC_s;
 struct FLOWBOX;
 struct FORCE_RESET_GROUP;
-struct FRAME_PAD_PC;
+struct FRAME_PAD;
 struct GIZFLOW;
 struct GIZMOPICKUP;
 struct NUGSCN_s;
@@ -138,7 +138,7 @@ typedef struct terrain_surface_s { // size 0xc
             u16 unknown_object_high_word; // 0xa
         };
     }; // 0x8
-} TERRAIN_SURFACE_PC;
+} TERRAIN_SURFACE;
 
 struct bolt_s;
 struct bolt_s;
@@ -149,7 +149,7 @@ typedef struct narrowsockexception_s { // size 0x10
     i16 sock_index;                    // 0x6
     f32 start_distance;                // 0x8
     f32 end_distance;                  // 0xc
-} NARROWSOCKEXCEPTION_PC;
+} NARROWSOCKEXCEPTION;
 
 typedef struct cutsys_s CUTSYS_PC;
 typedef struct gameanimsys_s GAMEANIMSYS;
@@ -218,7 +218,7 @@ typedef struct OCCLUSIONMANAGER_s { // size 0x170
     u8 unknown_0168[8];             // 0x168
 } OCCLUSIONMANAGER;
 
-typedef struct gizforce_s GIZFORCE_PC;
+typedef struct gizforce_s GIZFORCE;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -258,11 +258,11 @@ extern "C" {
         i8 facing_mode;              // 0x53
         i16 facing_rotation_x;       // 0x54
         i16 facing_rotation_y;       // 0x56
-    } EDPP_PARTICLE_PC;
+    } EDPP_PARTICLE;
 
     struct GIZTURRET_s;
 
-    typedef struct ripple_set_s RIPPLE_SET_PC;
+    typedef struct ripple_set_s RIPPLE_SET;
 #ifdef __cplusplus
 }
 #endif
@@ -494,7 +494,7 @@ class NetLogFile { // size 0x2114
 typedef struct gamecamera_s { // size 0x230
 
     union { // size 0x38
-        SOCKPOSITION_PC sock_position;
+        SOCKPOSITION sock_position;
 
         struct {           // size 0x2
             u8 unknown_00; // 0x000
@@ -648,7 +648,7 @@ typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
     TERRAIN_SCAN_WORD scan_words[512]; // 0x00c
 } TERRAIN_INDEX_LEVEL;
 
-typedef struct TERRAIN_SET_PC {                 // size 0xa490
+typedef struct TERRAIN_SET {                    // size 0xa490
     struct TERRAIN_GROUP_PC *groups;            // 0x0000
     u8 unknown_004[0x60];                       // 0x0004
     void *unknown_064;                          // 0x0064
@@ -677,9 +677,9 @@ typedef struct TERRAIN_SET_PC {                 // size 0xa490
     i32 max_group_indices;                      // 0xa484
     i32 max_groups;                             // 0xa488
     i32 max_platforms;                          // 0xa48c
-} TERRAIN_SET_PC;
+} TERRAIN_SET;
 
-typedef TERRAIN_SET_PC TERRSET;
+typedef TERRAIN_SET TERRSET;
 
 #ifdef __cplusplus
 extern "C" {
@@ -704,7 +704,7 @@ typedef struct levelspline_s { // size 0x10
     u16 max_points;            // 0xa
     i16 level;                 // 0xc
     i16 area;                  // 0xe
-} LEVELSPLINE_PC;
+} LEVELSPLINE;
 
 /* nuinstanim_s.flags: the animation editor's control modes start (0x1) and loop (0x8) instance animations, and the
  * game animation sets copy their `repeating` setting into 0x8. */
@@ -992,14 +992,14 @@ typedef struct BOLTSYS_PC_s {                                    // size 0x20
     u16 (*shoot_direction)(struct gameobject_s *, NUVEC *);      // 0x14
     i32 (*hit_part)(struct bolt_s *, struct PART_PC *);          // 0x18
     i32 (*alternate_fire)(struct gameobject_s *, i32);           // 0x1c
-} BOLTSYS_PC;
+} BOLTSYS;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern BOLTSYS_PC BoltSys_Batman;
+    extern BOLTSYS BoltSys_Batman;
 
-    extern BOLTSYS_PC BoltSys_LSW;
+    extern BOLTSYS BoltSys_LSW;
 #ifdef __cplusplus
 }
 #endif
@@ -1015,10 +1015,10 @@ typedef void (*PICKUP_UPDATE_FN)(struct WORLDINFO_s *, struct GIZMOPICKUP *);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern BOLTSYS_PC *BoltSys;
+    extern BOLTSYS *BoltSys;
 
     struct GIZTURRETSYS_s;
-    typedef struct pushblock_s PUSH_BLOCK_PC;
+    typedef struct pushblock_s PUSH_BLOCK;
 #ifdef __cplusplus
 }
 #endif
@@ -2074,12 +2074,12 @@ struct GAMEANTINODE_s {          // size 0x38
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef struct debris_particle_s *(*DEBRISGENERATOR_PC)(struct debris_key_s *, struct debris_info_s *, f32);
+    typedef struct debris_particle_s *(*DEBRISGENERATOR)(struct debris_key_s *, struct debris_info_s *, f32);
 
-    extern DEBRISGENERATOR_PC gensorttab[13];
-    typedef void (*DEBRISMOMENTUMADJUSTER_PC)(struct debris_key_s *, struct debris_info_s *, struct debris_particle_s *);
+    extern DEBRISGENERATOR gensorttab[13];
+    typedef void (*DEBRISMOMENTUMADJUSTER)(struct debris_key_s *, struct debris_info_s *, struct debris_particle_s *);
 
-    extern DEBRISMOMENTUMADJUSTER_PC gencodetab[7];
+    extern DEBRISMOMENTUMADJUSTER gencodetab[7];
 #ifdef __cplusplus
 }
 #endif
@@ -2146,7 +2146,7 @@ class ThingManager { // size 0x24
     static void cbEdTimingSelect(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
     static void edTimingInit();
     static void edTimingEnter();
-    static i32 edTimingProc(f32 delta_time, struct FRAME_PAD_PC *pad);
+    static i32 edTimingProc(f32 delta_time, struct FRAME_PAD *pad);
     static void edTimingRender();
 
     BaseThing **things;  // 0x04
@@ -2190,11 +2190,11 @@ typedef struct mine_entry_s { // size 0x1c
     f32 grow_alpha;           // 0x14
     u16 rotx;                 // 0x18
     u16 roty;                 // 0x1a
-} MINE_ENTRY_PC;
+} MINE_ENTRY;
 
 typedef struct minesys_s {           // size 0x748
     nuhspecial_s mine_special;       // 0x000
-    MINE_ENTRY_PC mines[64];         // 0x00c
+    MINE_ENTRY mines[64];            // 0x00c
     f32 mine_radius;                 // 0x70c
     f32 spawn_timer;                 // 0x710
     struct AIAREA *nomine_areas[10]; // 0x714
@@ -2202,7 +2202,7 @@ typedef struct minesys_s {           // size 0x748
     i16 mine_debris;                 // 0x73e
     i32 mine_part;                   // 0x740
     f32 update_timer;                // 0x744
-} MINESYS_PC;
+} MINESYS;
 
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 13

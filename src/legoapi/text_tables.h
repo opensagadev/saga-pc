@@ -137,10 +137,10 @@ typedef struct GIZFORCE_LOS_BEST { // size 0x34
     u32 queried_at[1];             // 0x30
 } GIZFORCE_LOS_BEST;
 
-typedef struct GIZFORCE_PLATFORM_BEST_PC { // size 0x4
-    u8 unknown_000[2];                     // 0x0
-    i16 platform_id;                       // 0x2
-} GIZFORCE_PLATFORM_BEST_PC;
+typedef struct GIZFORCE_PLATFORM_BEST { // size 0x4
+    u8 unknown_000[2];                  // 0x0
+    i16 platform_id;                    // 0x2
+} GIZFORCE_PLATFORM_BEST;
 
 typedef struct HINT_WORLD_TELEPORT { // size 0x4688
     u8 reserved00[0x4684];           // 0x0000
@@ -242,7 +242,7 @@ typedef struct area_loading_pad_reader_pc_s { // size 0x60
     u8 unknown_0000[8];                       // 0x00
     u32 buttons_pressed;                      // 0x08
     u8 unknown_000c[0x54];                    // 0x0c
-} AREA_LOADING_PAD_READER_PC;
+} AREA_LOADING_PAD_READER;
 
 typedef struct character_ai_capabilities_s {
     u8 unknown_00[0x44];
@@ -274,7 +274,7 @@ typedef struct collision_masks_view_s { // size 0x1f8
 typedef struct collision_platform_push_view_pc_s { // size 0xdc8
     u8 unknown_0000[0xdc4];                        // 0x000
     f32 platform_push_timer;                       // 0xdc4
-} COLLISION_PLATFORM_PUSH_VIEW_PC;
+} COLLISION_PLATFORM_PUSH_VIEW;
 
 typedef struct combat_attack_counter_s { // size 0x1084
     u8 unknown_000[0x1083];              // 0x0000

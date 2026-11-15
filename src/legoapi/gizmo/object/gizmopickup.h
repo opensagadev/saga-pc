@@ -48,9 +48,9 @@ extern "C" {
         u8 allow_temporary;              // 0x4d
         u8 target_is_coin_total;         // 0x4e
         u8 unknown_4f;                   // 0x4f
-    } ADD_GAME_MESSAGE_PC;
+    } ADD_GAME_MESSAGE;
 
-    extern ADD_GAME_MESSAGE_PC AddGameMsg_Default;
+    extern ADD_GAME_MESSAGE AddGameMsg_Default;
 #ifdef __cplusplus
 }
 #endif
@@ -107,7 +107,7 @@ struct game_message_s {              // size 0x114
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern GAME_MESSAGE_PC GameMessage[128];
+    extern GAME_MESSAGE GameMessage[128];
     void Pup_CollectCoin(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
     void Pup_UpdateBlueCoin(struct WORLDINFO_s *, GIZMOPICKUP *);
     void Pup_UpdatePurpleCoin(struct WORLDINFO_s *, GIZMOPICKUP *);

@@ -34,7 +34,7 @@ static f32 GameMessagesFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-GAME_MESSAGE_PC GameMessage[128] = {0};
+GAME_MESSAGE GameMessage[128] = {0};
 
 void ResetGameMessages(void) {
     i32 i;
@@ -45,9 +45,9 @@ void ResetGameMessages(void) {
 
 i32 GameMessageIndex = 0;
 
-GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
-    GAME_MESSAGE_PC *slot;
-    GAME_MESSAGE_PC fallback;
+GAME_MESSAGE *AddGameMsg(ADD_GAME_MESSAGE *message) {
+    GAME_MESSAGE *slot;
+    GAME_MESSAGE fallback;
     i32 temporary = 0;
     f32 best = 1000000.0f;
     f32 value;
@@ -80,7 +80,7 @@ GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     }
     if (slot_index == -1 && message->allow_temporary != 0) {
         slot = &fallback;
-        memset(slot, 0, sizeof(GAME_MESSAGE_PC));
+        memset(slot, 0, sizeof(GAME_MESSAGE));
         temporary = 1;
     } else {
         if (slot_index != -1) {
@@ -181,9 +181,9 @@ found:
     return slot;
 }
 
-GAME_MESSAGE_PC *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position, f32 target_scale, u8 red, u8 green, u8 blue,
-                                u32 flags, f32 duration) {
-    ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+GAME_MESSAGE *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *target_position, f32 target_scale, u8 red, u8 green, u8 blue,
+                             u32 flags, f32 duration) {
+    ADD_GAME_MESSAGE message = AddGameMsg_Default;
     message.text = text;
     message.position = position;
     message.scale = scale;
@@ -198,7 +198,7 @@ GAME_MESSAGE_PC *AddGameMessage(char *text, NUVEC *position, f32 scale, NUVEC *t
 }
 
 void UpdateGameMessages(void) {
-    GAME_MESSAGE_PC *message = GameMessage;
+    GAME_MESSAGE *message = GameMessage;
     GAME_MESSAGE_CALLBACK callback;
     f32 rounded_time;
     f32 ratio;
@@ -292,8 +292,8 @@ void UpdateGameMessages(void) {
 }
 
 void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *camera_direction) {
-    GAME_MESSAGE_PC *message = GameMessage;
-    GAME_MESSAGE_PC *end = message + 128;
+    GAME_MESSAGE *message = GameMessage;
+    GAME_MESSAGE *end = message + 128;
     for (; message != end; ++message) {
         f32 width;
         NUVEC target;
@@ -325,10 +325,10 @@ void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *c
     }
 }
 
-nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message) = NULL;
+nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE *message) = NULL;
 
 void DrawGameMessages(void) {
-    GAME_MESSAGE_PC *message;
+    GAME_MESSAGE *message;
     i32 index;
     for (index = 0; index < 128; ++index) {
         u32 flags;
@@ -429,8 +429,8 @@ void DrawGameMessages(void) {
     }
 }
 
-i32 FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude) {
-    GAME_MESSAGE_PC *message = GameMessage;
+i32 FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE *exclude) {
+    GAME_MESSAGE *message = GameMessage;
     i32 count = 0;
     i32 index;
     for (index = 0; index < 128; ++index, ++message) {
@@ -446,7 +446,7 @@ i32 FindGameMsgsWithID(i32 id, i32 remove, i32 player, GAME_MESSAGE_PC *exclude)
 }
 
 void AddGameMsgCount(NUVEC *position, i32 count, i32 total, unsigned char red, unsigned char green, unsigned char blue, float value) {
-    GAME_MESSAGE_PC *message;
+    GAME_MESSAGE *message;
     char text[32];
     sprintf(text, "%i/%i", count, total);
 

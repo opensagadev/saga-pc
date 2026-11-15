@@ -45,8 +45,8 @@
 #include <string.h>
 
 static char *NuFParBufferBase = 0;
-void (*fnInterpreterError)(NUFPAR_PC *parser) = 0;
-static NUFPAR_PC *NuFParRecordBase = 0;
+void (*fnInterpreterError)(NUFPAR *parser) = 0;
+static NUFPAR *NuFParRecordBase = 0;
 
 typedef struct numemblklink_s {  // size 0x4
     struct numemblklink_s *next; // 0x0
@@ -110,11 +110,11 @@ typedef struct nurdpfcontext_s {               // size 0x14
     char *input;                               // 0x08
     i32 position;                              // 0x0c
     i32 (*get_variable)(char *, f32 *, i32 *); // 0x10
-} NURDPFCTX_PC;
+} NURDPFCTX;
 
 enum { RDPF_ADD, RDPF_SUBTRACT, RDPF_MULTIPLY, RDPF_DIVIDE, RDPF_LEFT_PAREN, RDPF_RIGHT_PAREN, RDPF_END, RDPF_NUMBER, RDPF_VARIABLE };
 
-static f32 NuRDPFExpression(NURDPFCTX_PC *context);
+static f32 NuRDPFExpression(NURDPFCTX *context);
 
 typedef struct nurdpicontext_s { // size 0x14
     i32 token;                   // 0x00
@@ -122,7 +122,7 @@ typedef struct nurdpicontext_s { // size 0x14
     char *input;                 // 0x08
     i32 position;                // 0x0c
     NURDPGETVARFN get_variable;  // 0x10
-} NURDPICTX_PC;
+} NURDPICTX;
 
 enum {
     RDPI_ADD,
@@ -149,24 +149,24 @@ enum {
     RDPI_GREATER_EQUAL
 };
 
-static i32 NuRDPIExpression(NURDPICTX_PC *context);
+static i32 NuRDPIExpression(NURDPICTX *context);
 
 /* PC manager prefix and block header touched by the allocator. */
 
-#define NUGENERICPAD FRAME_SCANNED_PAD_PC
+#define NUGENERICPAD FRAME_SCANNED_PAD
 #define ANALOG_CENTER 0x80
 #define NUPAD_PLAY 2
 #define NUPAD_RECORD 1
 #define NUPAD_NORM 0
 
-typedef struct FRAME_PAD_RAMP_PC {
+typedef struct FRAME_PAD_RAMP {
     f32 threshold;
     f32 value;
-} FRAME_PAD_RAMP_PC;
+} FRAME_PAD_RAMP;
 
-static FRAME_SCANNED_PAD_PC g_nupadScannedPads[16] = {0};
+static FRAME_SCANNED_PAD g_nupadScannedPads[16] = {0};
 static f32 FramePadRampRatePc = 0.1f;
-static FRAME_PAD_RAMP_PC FramePadRampValuesPc[5] = {
+static FRAME_PAD_RAMP FramePadRampValuesPc[5] = {
     {0.0f,  0.0f },
     {0.5f,  0.1f },
     {0.75f, 0.25f},
@@ -258,13 +258,13 @@ static i32 NuFileMatchExtensionPC(char *extension, char *path_end, i32 path_len)
 static PC_FILEEXTINFO *NuFileExtGetInfoPC(char *path, i32 path_len);
 static i32 ishexnum(char value);
 static i32 hexcodetoint(char value);
-static void NuRDPIGetToken(NURDPICTX_PC *context);
-static i32 NuRDPIPrimary(NURDPICTX_PC *context);
-static i32 NuRDPITerm(NURDPICTX_PC *context);
-static void NuRDPFGetToken(NURDPFCTX_PC *context);
-static f32 NuRDPFPrimary(NURDPFCTX_PC *context);
-static f32 NuRDPFTerm(NURDPFCTX_PC *context);
-static NUFPAR_PC *NuAllocFPar(void);
+static void NuRDPIGetToken(NURDPICTX *context);
+static i32 NuRDPIPrimary(NURDPICTX *context);
+static i32 NuRDPITerm(NURDPICTX *context);
+static void NuRDPFGetToken(NURDPFCTX *context);
+static f32 NuRDPFPrimary(NURDPFCTX *context);
+static f32 NuRDPFTerm(NURDPFCTX *context);
+static NUFPAR *NuAllocFPar(void);
 static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK *block);
 static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK **allocated, NUALLOC_MANAGER_BLOCK **remainder, NUALLOC_MANAGER_BLOCK *block,
                                 u32 *size, u32 alignment);
@@ -2870,7 +2870,7 @@ u32 NuFilePakGetSize(void *pak) {
     return size;
 }
 
-char NuGetChar(NUFPAR_PC *parser) {
+char NuGetChar(NUFPAR *parser) {
     char c;
     i32 len;
 
@@ -2898,7 +2898,7 @@ char NuGetChar(NUFPAR_PC *parser) {
     return c;
 }
 
-u16 NuGetWChar(NUFPAR_PC *parser) {
+u16 NuGetWChar(NUFPAR *parser) {
     unsigned char lo;
     unsigned char hi;
     u16 c;
@@ -2911,7 +2911,7 @@ u16 NuGetWChar(NUFPAR_PC *parser) {
     return c;
 }
 
-i32 NuFParGetLineW(NUFPAR_PC *parser) {
+i32 NuFParGetLineW(NUFPAR *parser) {
     u16 c;
     i32 len;
     u16 *line;
@@ -3001,7 +3001,7 @@ i32 NuFParGetLineW(NUFPAR_PC *parser) {
     } while (1);
 }
 
-i32 NuFParGetLine(NUFPAR_PC *parser) {
+i32 NuFParGetLine(NUFPAR *parser) {
     char c;
     i32 len;
     i32 at_end_of_line;
@@ -3094,11 +3094,11 @@ i32 NuFParGetLine(NUFPAR_PC *parser) {
     } while (1);
 }
 
-void NuFParUnGetWord(NUFPAR_PC *parser) {
+void NuFParUnGetWord(NUFPAR *parser) {
     parser->line_position = old_line_pos;
 }
 
-i32 NuFParGetWordW(NUFPAR_PC *parser) {
+i32 NuFParGetWordW(NUFPAR *parser) {
     i32 length;
     i32 in_quoted_text;
     u16 *line;
@@ -3162,7 +3162,7 @@ i32 NuFParGetWordW(NUFPAR_PC *parser) {
     return length;
 }
 
-i32 NuFParGetWord(NUFPAR_PC *parser) {
+i32 NuFParGetWord(NUFPAR *parser) {
     i32 in_quoted_text;
     i32 found_quotes = 0;
     i32 length;
@@ -3225,7 +3225,7 @@ i32 NuFParGetWord(NUFPAR_PC *parser) {
     return length;
 }
 
-i32 NuFParGetInt(NUFPAR_PC *parser) {
+i32 NuFParGetInt(NUFPAR *parser) {
     char buffer[64];
 
     NuFParGetWord(parser);
@@ -3247,7 +3247,7 @@ i32 NuFParGetInt(NUFPAR_PC *parser) {
     return 0;
 }
 
-f32 NuFParGetFloat(NUFPAR_PC *parser) {
+f32 NuFParGetFloat(NUFPAR *parser) {
     char buffer[64];
 
     NuFParGetWord(parser);
@@ -3263,7 +3263,7 @@ f32 NuFParGetFloat(NUFPAR_PC *parser) {
     return 0.0f;
 }
 
-void NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value) {
+void NuFParGetOptionalFloat(NUFPAR *parser, f32 *value) {
     char buffer[64];
 
     NuFParGetWord(parser);
@@ -3281,7 +3281,7 @@ void NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value) {
     }
 }
 
-void NuFParGetOptionalInt(NUFPAR_PC *parser, i32 *value) {
+void NuFParGetOptionalInt(NUFPAR *parser, i32 *value) {
     char buffer[64];
 
     NuFParGetWord(parser);
@@ -3299,7 +3299,7 @@ void NuFParGetOptionalInt(NUFPAR_PC *parser, i32 *value) {
     }
 }
 
-i32 NuFParGetIntRDP(NUFPAR_PC *parser) {
+i32 NuFParGetIntRDP(NUFPAR *parser) {
     char buffer[64];
 
     NuFParGetWord(parser);
@@ -3323,7 +3323,7 @@ NUMEMBLK *NuMemBlkCreateVari(i32 element_size, i32 count, u32 alignment_mask, VA
     return pool;
 }
 
-f32 NuFParGetFloatRDP(NUFPAR_PC *parser) {
+f32 NuFParGetFloatRDP(NUFPAR *parser) {
     char buffer[64];
 
     NuFParGetWord(parser);
@@ -3358,7 +3358,7 @@ static i32 isnum(char c) {
     }
 }
 
-static void NuRDPIGetToken(NURDPICTX_PC *context) {
+static void NuRDPIGetToken(NURDPICTX *context) {
     char variable[256];
     i32 length;
 
@@ -3558,7 +3558,7 @@ static void NuRDPIGetToken(NURDPICTX_PC *context) {
     }
 }
 
-static i32 NuRDPIPrimary(NURDPICTX_PC *context) {
+static i32 NuRDPIPrimary(NURDPICTX *context) {
     i32 value;
 
     switch (context->token) {
@@ -3590,7 +3590,7 @@ static i32 NuRDPIPrimary(NURDPICTX_PC *context) {
     }
 }
 
-static i32 NuRDPITerm(NURDPICTX_PC *context) {
+static i32 NuRDPITerm(NURDPICTX *context) {
     i32 value = NuRDPIPrimary(context);
 
     for (;;) {
@@ -3637,7 +3637,7 @@ static i32 NuRDPITerm(NURDPICTX_PC *context) {
     }
 }
 
-static i32 NuRDPIExpression(NURDPICTX_PC *context) {
+static i32 NuRDPIExpression(NURDPICTX *context) {
     i32 right;
     i32 value = NuRDPITerm(context);
 
@@ -3679,7 +3679,7 @@ static i32 NuRDPIExpression(NURDPICTX_PC *context) {
     }
 }
 
-void NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
+void NuFParGetPos(NUFPAR *parser, NUFPARPOS *position) {
     position->line_number = parser->line_number;
     position->line_position = parser->line_position;
     position->character_position = parser->character_position;
@@ -3687,7 +3687,7 @@ void NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
     position->buffer_end = parser->buffer_end;
 }
 
-void NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
+void NuFParSetPos(NUFPAR *parser, NUFPARPOS *position) {
     parser->character_position = position->character_position;
     parser->line_position = position->line_position;
 
@@ -3696,7 +3696,7 @@ void NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position) {
     }
 }
 
-i32 NuFParPushCom(NUFPAR_PC *parser, NUFPCOMJMP *commands) {
+i32 NuFParPushCom(NUFPAR *parser, NUFPCOMJMP *commands) {
     if (parser->command_position >= 7) {
         return -1;
     }
@@ -3707,7 +3707,7 @@ i32 NuFParPushCom(NUFPAR_PC *parser, NUFPCOMJMP *commands) {
     return parser->command_position;
 }
 
-i32 NuFParPushComCTX(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands) {
+i32 NuFParPushComCTX(NUFPAR *parser, NUFPCOMJMPCTX *commands) {
     if (parser->command_position >= 7) {
         return -1;
     }
@@ -3718,7 +3718,7 @@ i32 NuFParPushComCTX(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands) {
     return parser->command_position;
 }
 
-i32 NuFParPushCom2(NUFPAR_PC *parser, NUFPCOMJMP *commands, NUFPCOMJMP *commands2) {
+i32 NuFParPushCom2(NUFPAR *parser, NUFPCOMJMP *commands, NUFPCOMJMP *commands2) {
     if (parser->command_position >= 7) {
         return -1;
     }
@@ -3728,7 +3728,7 @@ i32 NuFParPushCom2(NUFPAR_PC *parser, NUFPCOMJMP *commands, NUFPCOMJMP *commands
     return parser->command_position;
 }
 
-i32 NuFParPushComCTX2(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX *commands2) {
+i32 NuFParPushComCTX2(NUFPAR *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX *commands2) {
     if (parser->command_position >= 7) {
         return -1;
     }
@@ -3739,13 +3739,13 @@ i32 NuFParPushComCTX2(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX 
     return parser->command_position;
 }
 
-void NuFParPopCom(NUFPAR_PC *parser) {
+void NuFParPopCom(NUFPAR *parser) {
     if (parser->command_position >= 0) {
         parser->command_position--;
     }
 }
 
-i32 NuFParInterpretWord(NUFPAR_PC *parser) {
+i32 NuFParInterpretWord(NUFPAR *parser) {
     char buffer[64];
     i32 index;
     NUFPCOMJMP *commands;
@@ -3787,7 +3787,7 @@ i32 NuFParInterpretWord(NUFPAR_PC *parser) {
     return 0;
 }
 
-i32 NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context) {
+i32 NuFParInterpretWordCTX(NUFPAR *parser, void *context) {
     char buffer[64];
     i32 index;
     NUFPCOMJMPCTX *commands;
@@ -3837,7 +3837,7 @@ void NuRDPFVariableError(char *name) {
     (void)name;
 }
 
-static void NuRDPFGetToken(NURDPFCTX_PC *context) {
+static void NuRDPFGetToken(NURDPFCTX *context) {
     char variable[256];
     i32 length;
     f32 multiplier;
@@ -3988,7 +3988,7 @@ static void NuRDPFGetToken(NURDPFCTX_PC *context) {
     }
 }
 
-static f32 NuRDPFPrimary(NURDPFCTX_PC *context) {
+static f32 NuRDPFPrimary(NURDPFCTX *context) {
     f32 value;
 
     switch (context->token) {
@@ -4017,7 +4017,7 @@ static f32 NuRDPFPrimary(NURDPFCTX_PC *context) {
     }
 }
 
-static f32 NuRDPFTerm(NURDPFCTX_PC *context) {
+static f32 NuRDPFTerm(NURDPFCTX *context) {
     f32 value = NuRDPFPrimary(context);
 
     for (;;) {
@@ -4036,7 +4036,7 @@ static f32 NuRDPFTerm(NURDPFCTX_PC *context) {
     }
 }
 
-static f32 NuRDPFExpression(NURDPFCTX_PC *context) {
+static f32 NuRDPFExpression(NURDPFCTX *context) {
     f32 value = NuRDPFTerm(context);
 
     for (;;) {
@@ -4062,7 +4062,7 @@ NUFPCOMFN NuFParSetInterpreterErrorHandler(NUFPCOMFN handler) {
     return previous;
 }
 
-void NuFParSuspend(NUFPAR_PC *parser) {
+void NuFParSuspend(NUFPAR *parser) {
     if (parser->file_handle >= 0x400 && parser->file_handle < 0x800) {
         return;
     }
@@ -4075,7 +4075,7 @@ void NuFParSuspend(NUFPAR_PC *parser) {
     parser->file_handle = 0;
 }
 
-void NuFParResume(NUFPAR_PC *parser) {
+void NuFParResume(NUFPAR *parser) {
     NUFILE file_handle;
 
     if (parser->file_handle >= 0x400 && parser->file_handle < 0x800) {
@@ -4102,7 +4102,7 @@ void NuFParInit(i32 max_count, i32 buffer_size) {
     NuFParBufferBase = &NuFParBuffers[0][0];
 }
 
-static NUFPAR_PC *NuAllocFPar(void) {
+static NUFPAR *NuAllocFPar(void) {
     i32 index;
 
     if (NuFParRecordBase == NULL) {
@@ -4113,7 +4113,7 @@ static NUFPAR_PC *NuAllocFPar(void) {
 
     for (index = 0; index < 4; index++) {
         if (NuFParRecordBase[index].file_buffer == NULL) {
-            memset(&NuFParRecordBase[index], 0, sizeof(NUFPAR_PC));
+            memset(&NuFParRecordBase[index], 0, sizeof(NUFPAR));
             NuFParRecordBase[index].file_buffer = NuFParBufferBase + index * 0x1000;
             memset(NuFParRecordBase[index].file_buffer, 0, 0x1000);
             return &NuFParRecordBase[index];
@@ -4123,12 +4123,12 @@ static NUFPAR_PC *NuAllocFPar(void) {
     return NULL;
 }
 
-void NuFreeFPar(NUFPAR_PC *parser) {
+void NuFreeFPar(NUFPAR *parser) {
     parser->file_buffer = NULL;
 }
 
-NUFPAR_PC *NuFParOpen(NUFILE file_handle) {
-    NUFPAR_PC *parser = NuAllocFPar();
+NUFPAR *NuFParOpen(NUFILE file_handle) {
+    NUFPAR *parser = NuAllocFPar();
 
     if (parser != NULL) {
         u16 first_word;
@@ -4172,16 +4172,16 @@ NUFPAR_PC *NuFParOpen(NUFILE file_handle) {
     return parser;
 }
 
-void NuFParDestroy(NUFPAR_PC *parser) {
+void NuFParDestroy(NUFPAR *parser) {
     NUFILE file_handle = parser->file_handle;
 
     NuFreeFPar(parser);
     NuFileClose(file_handle);
 }
 
-NUFPAR_PC *NuFParCreate(char *file_name) {
+NUFPAR *NuFParCreate(char *file_name) {
     NUFILE file_handle;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
 
     if (NuFileExists(file_name)) {
         file_handle = NuFileOpenDF(file_name, 0, curr_dat, 0);
@@ -4197,8 +4197,8 @@ NUFPAR_PC *NuFParCreate(char *file_name) {
     return NULL;
 }
 
-NUFPAR_PC *NuFParCreateGivenFH(char *file_name, NUFILE file_handle) {
-    NUFPAR_PC *parser;
+NUFPAR *NuFParCreateGivenFH(char *file_name, NUFILE file_handle) {
+    NUFPAR *parser;
 
     if (file_handle != 0) {
         parser = NuFParOpen(file_handle);
@@ -4211,9 +4211,9 @@ NUFPAR_PC *NuFParCreateGivenFH(char *file_name, NUFILE file_handle) {
     return NULL;
 }
 
-NUFPAR_PC *NuFParCreateMem(char *name, char *buffer, i32 buffer_size) {
+NUFPAR *NuFParCreateMem(char *name, char *buffer, i32 buffer_size) {
     NUFILE file_handle;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
 
     if (buffer_size != 0 && buffer != NULL) {
         file_handle = NuMemFileOpen(buffer, buffer_size, 0);
@@ -4872,7 +4872,7 @@ static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK *block) {
 }
 
 /* Consistency check hook; empty. */
-static void NuAllocManagerCheck(NUALLOC_MANAGER_PREFIX_PC *manager) {
+static void NuAllocManagerCheck(NUALLOC_MANAGER_PREFIX *manager) {
 }
 
 static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK **allocated, NUALLOC_MANAGER_BLOCK **remainder, NUALLOC_MANAGER_BLOCK *block,
@@ -4906,8 +4906,8 @@ static NUALLOC_MANAGER_BLOCK *NuAllocManagerNextBlock(NUALLOC_MANAGER_BLOCK *blo
 }
 
 /* Carves a heap of size bytes from *buffer: a free-list sentinel, two used guard blocks and one free block. */
-NUALLOC_MANAGER_PREFIX_PC *NuAllocManagerCreate(VARIPTR *buffer, VARIPTR buffer_end, u32 size) {
-    NUALLOC_MANAGER_PREFIX_PC *manager;
+NUALLOC_MANAGER_PREFIX *NuAllocManagerCreate(VARIPTR *buffer, VARIPTR buffer_end, u32 size) {
+    NUALLOC_MANAGER_PREFIX *manager;
     NUALLOC_MANAGER_BLOCK *list;
     NUALLOC_MANAGER_BLOCK *first;
     NUALLOC_MANAGER_BLOCK *last;
@@ -4948,13 +4948,13 @@ NUALLOC_MANAGER_PREFIX_PC *NuAllocManagerCreate(VARIPTR *buffer, VARIPTR buffer_
     return manager;
 }
 
-void NuAllocManagerDestroy(NUALLOC_MANAGER_PREFIX_PC *manager) {
+void NuAllocManagerDestroy(NUALLOC_MANAGER_PREFIX *manager) {
 }
 
-void NuAllocManagerDump(NUALLOC_MANAGER_PREFIX_PC *manager) {
+void NuAllocManagerDump(NUALLOC_MANAGER_PREFIX *manager) {
 }
 
-void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment, u32 unused) {
+void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 alignment, u32 unused) {
     NUALLOC_MANAGER_BLOCK *list = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
     NUALLOC_MANAGER_BLOCK *block;
     NUALLOC_MANAGER_BLOCK *allocated;
@@ -4986,7 +4986,7 @@ void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 a
     return NuAllocManagerPayload(allocated);
 }
 
-void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
+void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
     void *base = manager->base;
     NUALLOC_MANAGER_BLOCK *sentinel = (NUALLOC_MANAGER_BLOCK *)((u32)base + 16);
     NUALLOC_MANAGER_BLOCK *block;
@@ -5022,11 +5022,11 @@ void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
     }
 }
 
-u32 NuAllocManagerGetBlockCount(NUALLOC_MANAGER_PREFIX_PC *manager) {
+u32 NuAllocManagerGetBlockCount(NUALLOC_MANAGER_PREFIX *manager) {
     return manager->block_count;
 }
 
-u32 NuAllocManagerGetFreeBlockCount(NUALLOC_MANAGER_PREFIX_PC *manager) {
+u32 NuAllocManagerGetFreeBlockCount(NUALLOC_MANAGER_PREFIX *manager) {
     NUALLOC_MANAGER_BLOCK *block = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
     u32 count = 0;
     while (block != NULL) {
@@ -5036,11 +5036,11 @@ u32 NuAllocManagerGetFreeBlockCount(NUALLOC_MANAGER_PREFIX_PC *manager) {
     return count;
 }
 
-u32 NuAllocManagerGetUsedBytes(NUALLOC_MANAGER_PREFIX_PC *manager) {
+u32 NuAllocManagerGetUsedBytes(NUALLOC_MANAGER_PREFIX *manager) {
     return manager->used_bytes;
 }
 
-u32 NuAllocManagerGetFreeBytes(NUALLOC_MANAGER_PREFIX_PC *manager) {
+u32 NuAllocManagerGetFreeBytes(NUALLOC_MANAGER_PREFIX *manager) {
     NUALLOC_MANAGER_BLOCK *block = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
     u32 total = 0;
     while (block != NULL) {
@@ -5052,7 +5052,7 @@ u32 NuAllocManagerGetFreeBytes(NUALLOC_MANAGER_PREFIX_PC *manager) {
 
 /* Moves an allocation above the free block that follows it and returns its new payload. The free block is
    rebuilt at the old payload address, 12 bytes past the old header. No caller. */
-void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX_PC *manager, void *payload) {
+void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
     NUALLOC_MANAGER_BLOCK *block;
     NUALLOC_MANAGER_BLOCK *next;
     NUALLOC_MANAGER_BLOCK *list;
@@ -5109,22 +5109,22 @@ void fun_004efd30(void) {
     unpack_file_pos = -1;
 }
 
-void *NuAllocManagerAllocateDefault(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size) {
+void *NuAllocManagerAllocateDefault(NUALLOC_MANAGER_PREFIX *manager, u32 size) {
     return NuAllocManagerAllocate(manager, size, 4, 0);
 }
 
-void *NuAllocManagerAllocateFlags(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 flags) {
+void *NuAllocManagerAllocateFlags(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 flags) {
     return NuAllocManagerAllocate(manager, size, 4, flags);
 }
 
-void *NuAllocManagerAllocateAligned(NUALLOC_MANAGER_PREFIX_PC *manager, u32 size, u32 alignment) {
+void *NuAllocManagerAllocateAligned(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 alignment) {
     return NuAllocManagerAllocate(manager, size, alignment, 0);
 }
 
 /* Lists every tracked allocation of at least min_size bytes, then the running total. */
 
 f32 NuRDPFVar(char *input, i32 (*get_variable)(char *, f32 *, i32 *)) {
-    NURDPFCTX_PC context;
+    NURDPFCTX context;
 
     context.input = input;
     context.position = 0;
@@ -6711,7 +6711,7 @@ i32 NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *la
     char *line_buf;
     char *tmp_buf;
     NUFILE mem_file;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     NUSTRING *strings;
     i32 column;
     i32 label_column;
@@ -6878,7 +6878,7 @@ i32 NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
     void *mem_buf;
     i32 bytes_read;
     NUFILE mem_file;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     i32 len;
     char *tmp_buf;
     i32 file_index;
@@ -7218,7 +7218,7 @@ void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
     void *mem_buf;
     i32 bytes_read;
     NUFILE file;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     u16 word[128];
     i32 file_index;
 
@@ -7699,7 +7699,7 @@ void NuErrorSleep(void) {
     i32 index;
     f32 y;
     char *message;
-    FRAME_PAD_PC pad;
+    FRAME_PAD pad;
     NuTime start;
     NuTime now;
     NuTime elapsed;
@@ -7863,7 +7863,7 @@ f32 NuFrameEnd(void) {
 }
 
 void NuPadRecordLoad(char *filepath, VARIPTR *buffer, VARIPTR end) {
-    FRAME_PAD_RECORD_PC *record = &nuapi.pad_record;
+    FRAME_PAD_RECORD *record = &nuapi.pad_record;
     NUFILE file;
     i32 size;
     (void)buffer;
@@ -7889,7 +7889,7 @@ void NuPadRecordLoad(char *filepath, VARIPTR *buffer, VARIPTR end) {
 }
 
 void NuPadRecordInit(i32 mode, char *filepath, VARIPTR *buffer, VARIPTR end, i32 size) {
-    FRAME_PAD_RECORD_PC *record = &nuapi.pad_record;
+    FRAME_PAD_RECORD *record = &nuapi.pad_record;
     switch (mode) {
         case NUPAD_RECORD:
             record->mode = NUPAD_RECORD;
@@ -8052,8 +8052,8 @@ static void DeadZoneValueXY(i32 *x_value, i32 *y_value, i32 deadzone) {
     }
 }
 
-FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
-    FRAME_PAD_PC *pad = NuAlloc(sizeof(FRAME_PAD_PC) + 0x800, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 180);
+FRAME_PAD *NuPadOpen(i32 device, i32 slot) {
+    FRAME_PAD *pad = NuAlloc(sizeof(FRAME_PAD) + 0x800, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 180);
     if (pad != NULL) {
         memset(pad, 0, sizeof(*pad));
         pad->device = device;
@@ -8065,7 +8065,7 @@ FRAME_PAD_PC *NuPadOpen(i32 device, i32 slot) {
     return pad;
 }
 
-void NuPadClose(FRAME_PAD_PC *pad) {
+void NuPadClose(FRAME_PAD *pad) {
     NuPadClosePS(pad);
     NuFree(pad, "d:\\projects\\game_saga\\nu2api.saga\\nucore\\nupad.cpp", 204);
 }
@@ -8425,7 +8425,7 @@ void NuPadSetDirectMappingState(i32 state) {
     FramePadDirectMappingPc = state;
 }
 
-i32 NuPadRead(FRAME_PAD_PC *pad) {
+i32 NuPadRead(FRAME_PAD *pad) {
     i32 device;
 
     if (g_nupadMapping[pad->device].port != -1 || (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid)) {
@@ -8492,7 +8492,7 @@ i32 NuPadRead(FRAME_PAD_PC *pad) {
     return 0;
 }
 
-void NuPadSetMotors(FRAME_PAD_PC *pad, i32 motor0, i32 motor1) {
+void NuPadSetMotors(FRAME_PAD *pad, i32 motor0, i32 motor1) {
     if (FramePadDirectMappingPc && g_nupadScannedPads[pad->device].is_valid) {
         NuPadSetMotorsPS(pad->device, motor0, motor1);
     } else if (g_nupadMapping[pad->device].port != -1) {
@@ -8501,9 +8501,9 @@ void NuPadSetMotors(FRAME_PAD_PC *pad, i32 motor0, i32 motor1) {
 }
 
 void NuPadRecordEndFrame() {
-    FRAME_RECORD_CURSOR_PC *cursor;
+    FRAME_RECORD_CURSOR *cursor;
     if (nuapi.pad_record.is_recording) {
-        cursor = (FRAME_RECORD_CURSOR_PC *)&nuapi.pad_record.buf_start;
+        cursor = (FRAME_RECORD_CURSOR *)&nuapi.pad_record.buf_start;
         nuapi.pad_record.is_recording = 0;
     }
     cursor = &nuapi.pad_record.record;
@@ -8565,7 +8565,7 @@ void NuPadSetStatus(i32 pad, i32 status) {
 }
 
 void NuPadRecordPlay(NUGENERICPAD *pad) {
-    FRAME_RECORD_CURSOR_PC *record_ptr;
+    FRAME_RECORD_CURSOR *record_ptr;
 
     if (pad->is_valid && nuapi.pad_record.mode == NUPAD_PLAY && (pad->digital_buttons & nuapi.pad_record.end_play_buttons) != 0) {
         nuapi.pad_record.mode = NUPAD_NORM;
@@ -8638,7 +8638,7 @@ void NuPadRecordSave(char *filepath) {
     NUFILE file;
     u32 size;
     u8 *start;
-    FRAME_PAD_RECORD_PC *record = &nuapi.pad_record;
+    FRAME_PAD_RECORD *record = &nuapi.pad_record;
     if (record->mode == NUPAD_RECORD && record->record.u8_ptr != record->buf_start) {
         if (filepath != NULL) {
             file = NuFileOpenDF(filepath, 1, curr_dat, 0);
@@ -8930,7 +8930,7 @@ static i32 hexcodetoint(char value) {
 }
 
 i32 NuRDPIVar(char *input, NURDPGETVARFN get_variable) {
-    NURDPICTX_PC context;
+    NURDPICTX context;
 
     context.input = input;
     context.position = 0;

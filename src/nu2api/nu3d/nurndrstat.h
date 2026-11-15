@@ -62,21 +62,21 @@ typedef struct nuglobalrndrstate_s { // size 0x1a4
     u32 reflection_state;            // 0x194
     void *reflection_packet_cache;   // 0x198
     u8 unknown_019c[8];              // 0x19c
-} NUGLOBALRNDRSTATE_PC;
+} NUGLOBALRNDRSTATE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE_PC *);
-    void DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE_PC *state);
-    void RndrStateCopyGlobalState(NUGLOBALRNDRSTATE_PC *state);
-    void RndrStateResetGlobalState(NUGLOBALRNDRSTATE_PC *state);
+    void DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE *);
+    void DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE *state);
+    void RndrStateCopyGlobalState(NUGLOBALRNDRSTATE *state);
+    void RndrStateResetGlobalState(NUGLOBALRNDRSTATE *state);
     void RndrStateResetSharedGlobalState(void);
     void RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint, NUMTL *material);
     void RndrStateSetReflection(i32 reflection);
     void RndrStateUpdate(NURNDRLIBSTATE *, NUMTL *, NUDISPLAYLISTITEM *);
     void RndrStateUpdateFx(NURNDRLIBSTATE *, NUDISPLAYLISTITEM *);
-    extern NUGLOBALRNDRSTATE_PC render_state;
+    extern NUGLOBALRNDRSTATE render_state;
 
     void NuRndrStateInit(void);
 #ifdef __cplusplus

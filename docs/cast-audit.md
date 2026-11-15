@@ -107,7 +107,7 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 4 | 209 | layout-compatible | `NUVEC4 <-> nuvec_s` (src/saga.h:101, 84) |  | 13 |
 | 5 | 195 | signedness | `field gameobject_s.id: u16 -> short` | src/saga.h:7001 | 41 |
 | 6 | 157 | field-address | `field numtx_s.m30 (address): f32 -> nuvec_s *` | src/saga.h:134 | 40 |
-| 7 | 109 | void-pointer-cpp, byte-pointer | `variable CurrentTerrain: void * -> TERRAIN_SET_PC *` | src/saga.h:16538 | 5 |
+| 7 | 109 | void-pointer-cpp, byte-pointer | `variable CurrentTerrain: void * -> TERRAIN_SET *` | src/saga.h:16538 | 5 |
 | 8 | 109 | declaration-type | `variable edui_font: void * -> vufnt_s *` | src/saga.h:28831 | 1 |
 | 9 | 102 | byte-pointer, void-pointer-cpp | `field APIOBJECT.owner: void * -> gameobject_s *` | src/saga.h:1560 | 6 |
 | 10 | 92 | duplicate-type | `part_runtime_type_s <-> parttype_lookup_s` (src/gameapi/edpart.c:9) |  | 1 |
@@ -122,11 +122,11 @@ casts; the 135 with ten or more casts explain 4,540, the 335 with five or more
 | 19 | 44 | duplicate-type | `LEVER_WORLD <-> WORLDINFO_s` (src/legogame/lever.c:35) |  | 1 |
 | 20 | 43 | record-pun | `TERRAIN_POLYGON_INFO <-> TERRAIN_SHAPE_BATCH` (src/saga.h:642, 927) |  | 4 |
 | 21 | 39 | duplicate-type | `permanent_material_reader_s <-> numtl_s` (src/legoapi/screen.cpp:25) |  | 1 |
-| 22 | 37 | declaration-type | `variable nu_input_state: NuKeyboardState_PC * -> PC_INPUT_RUNTIME_PC *` | src/saga.h:13692 | 2 |
+| 22 | 37 | declaration-type | `variable nu_input_state: NuKeyboardState * -> PC_INPUT_RUNTIME *` | src/saga.h:13692 | 2 |
 | 23 | 36 | const | `variable AIGameCharacterName: const char[11] -> char *` | src/saga.h:14517 | 1 |
 | 24 | 34 | void-pointer-cpp, byte-pointer | `field nuspecial_handle_s.scene: void * -> NUGSCN_s *` | src/saga.h:1072 | 12 |
 | 25 | 34 | declaration-type | `variable id_ATAT: i16 -> unsigned short` | src/saga.h:14282 | 8 |
-| 26 | 33 | duplicate-type | `GRAPHICS_DEVICE_PC <-> PC_D3D9_DEVICE_PC` (src/nu2api/pc_device.cpp:531) |  | 1 |
+| 26 | 33 | duplicate-type | `GRAPHICS_DEVICE <-> PC_D3D9_DEVICE` (src/nu2api/pc_device.cpp:531) |  | 1 |
 | 27 | 32 | duplicate-type | `debris_material_s <-> numtl_s` (src/legoapi/parts.c:878) |  | 1 |
 | 28 | 32 | duplicate-type | `PC_DI_RANGE <-> PC_DI_PROPERTY` (src/nu2api/pc_input.cpp:208) |  | 1 |
 | 29 | 31 | byte-pointer | `field variptr_u.void_ptr: void * -> locator_prim_vertex_s *` | src/saga.h:1944 | 1 |
@@ -183,7 +183,7 @@ stamp ignored); the Debug kind of each touched unit compiles.
 |---|---:|---|
 | Redundant casts of `legogame/bolt.c` (56), `legogame/gizforce.c` (55), `gameapi/apiobject.c` (39 of 48) | 150 | identical |
 | `TerI` declared `TerrainQuery_s *` in `data.cpp` and the four unit externs; five alias macros (`TERRAIN_QUERY_PC`, `TERI`, ...) gone; one `static_cast` added for the C++ scratch allocation | 125 − 1 | identical (data, terrain_scan, terrain_collision, terrain_query, nuterrain) |
-| `dir_list` declared `struct FILE_DIRECTORY_ENTRY_PC *` (`data.cpp`, `edfile.c`); its directory bit named `FILE_DIRECTORY_FLAG_DIRECTORY_PC` | 16 | identical |
+| `dir_list` declared `struct FILE_DIRECTORY_ENTRY *` (`data.cpp`, `edfile.c`); its directory bit named `FILE_DIRECTORY_FLAG_DIRECTORY` | 16 | identical |
 | `podrace_netpacket` typed; the two local Pod race packet structs, which differed only in the word at 0x0c (`u32 unknown_0c` / `f32 lap_alpha`), merged into `PODRACE_NETPACKET` | 10 | identical |
 | `vadera_netpacket` typed `VADERA_NETPACKET *` | 6 | identical |
 
@@ -303,7 +303,7 @@ Left in this class, each needing more than a declaration change:
 union or a cast per type), `CutStopInfo`, `gameobject_s.cable`,
 `nudisplaylist_pc_s.items`/`render_state` (two or three record types each),
 `EdLevelFnt` (an `i32` font handle passed as a pointer), the unit-local types
-`TimeBarSet`, `POST_SHADER_PROGRAM_PC`, `LEDGE_MOTION` and
+`TimeBarSet`, `POST_SHADER_PROGRAM`, `LEDGE_MOTION` and
 `NUANIM_LEGACY_CHUNK` (need moving into headers first), `part_types` and the
 screen material readers (duplicate types), and the signedness roots
 (`id_*` globals, `EdFileReadChar`), which are matching experiments.

@@ -148,12 +148,12 @@ typedef struct hub_area_info_s {
     f32 panel_offset;
     f32 panel_scale;
     i32 flags;
-    AREA_DATA_PC *area;
+    AREA_DATA *area;
     void *door;
     nuhspecial_s lock;
     void *bonus_gizmo;
     void *second_bonus_gizmo;
-} HUB_AREA_INFO_PC;
+} HUB_AREA_INFO;
 
 extern "C" char AreaFixUpName_Senate[];
 extern "C" char AreaFixUpName_Losttemple[];
@@ -182,8 +182,8 @@ extern "C" {
     extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
     extern u32 LEGO_AIPATHCNX_JUMP_NOW;
     extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
-    void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
-    void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
+    void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE);
+    void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE);
 }
 
 typedef struct hub_minikit_piece_s {
@@ -209,7 +209,7 @@ typedef struct hub_pad_reader_pc_s {
     void *pad;
     u32 held;
     u8 unknown_08[0x58];
-} HUB_PAD_READER_PC;
+} HUB_PAD_READER;
 
 /* Draw3D on PC has no sign/episode scene branch. */
 typedef struct hub_game_stats_reader_s {
@@ -226,10 +226,10 @@ typedef struct hub_episode_info_s {
     const char *lock_on_name;
     i32 force_open;
     u32 unknown_10;
-    EPISODEDATA_PC *data;
+    EPISODEDATA *data;
     void *door;
     nuhspecial_s lock_on;
-} HUB_EPISODE_INFO_PC;
+} HUB_EPISODE_INFO;
 
 typedef struct hub_init_world_reader_s {
     u8 unknown_00[0x13c];
@@ -266,7 +266,7 @@ extern "C" u8 HubEpisodeBlue;
 extern "C" i32 hub_selectmode;
 extern "C" f32 HubSelectMenuY;
 extern "C" char *Trailer[6];
-extern "C" AREA_DATA_PC **ArcadeLevel[12];
+extern "C" AREA_DATA **ArcadeLevel[12];
 extern "C" i32 Arcade_Score[2];
 extern "C" i32 PCArcadePointGoals[5];
 extern "C" f32 HubArcadeMenuY;
@@ -306,7 +306,7 @@ extern "C" i32 fpcount;
 typedef struct hub_freeplay_pad_reader_pc_s {
     u8 unknown_00[0x78];
     u32 digital_buttons_pressed;
-} HUB_FREEPLAY_PAD_READER_PC;
+} HUB_FREEPLAY_PAD_READER;
 
 static f32 HubFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
@@ -410,7 +410,7 @@ static void MiniKitRotateZ(NUMTX *m, NUANG a) {
     m->m31 = (m30 * sinx) + (m->m31 * cosx);
 }
 
-static void HubResolveAreaInfo(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
+static void HubResolveAreaInfo(HUB_AREA_INFO *info, WORLDINFO *world) {
     HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     for (; info->area_name != NULL; ++info) {
         info->door = GizmoFindByName(w->gizmo_system, -1, (char *)info->door_name);
@@ -421,7 +421,7 @@ static void HubResolveAreaInfo(HUB_AREA_INFO_PC *info, WORLDINFO *world) {
     }
 }
 
-static HUB_AREA_INFO_PC HubAreaInfo[51] = {
+static HUB_AREA_INFO HubAreaInfo[51] = {
     {AreaFixUpName_Negotiations, "de1_1",        "lock_1_1_on", NULL,      NULL, 0.1f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"gungan",                   "de1_2",        "lock_1_2_on", NULL,      NULL, 0.025f,  0.8f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"palacerescue",             "de1_3",        "lock_1_3_on", NULL,      NULL, 0.0f,    0.5f, 1,   NULL, NULL, {0}, NULL, NULL},
@@ -480,7 +480,7 @@ extern "C" {
 
 extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT *buildit) {
     if (HubAreaInfo[0].area_name != NULL) {
-        HUB_AREA_INFO_PC *info = HubAreaInfo;
+        HUB_AREA_INFO *info = HubAreaInfo;
         do {
             if (info->bonus_gizmo != NULL && ((GIZMO_PC *)info->bonus_gizmo)->object == buildit) {
                 return 1;
@@ -550,7 +550,7 @@ static void HubUpdateBonusBuildIts(WORLDINFO *world) {
     }
 }
 
-static void HubResolveEpisodeInfo(HUB_EPISODE_INFO_PC *info, WORLDINFO *world) {
+static void HubResolveEpisodeInfo(HUB_EPISODE_INFO *info, WORLDINFO *world) {
     HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     for (; info->episode != -1; ++info) {
         if (info->episode >= 0 && info->episode < EPISODECOUNT) {
@@ -645,8 +645,8 @@ extern "C" i32 fun_00475340() {
     return Arcade_BothPlayersActive() != 0;
 }
 
-static AREA_DATA_PC *HubArcadePlayableArea(i32 *unavailable) {
-    AREA_DATA_PC *area = *ArcadeLevel[ArcadeItem.level];
+static AREA_DATA *HubArcadePlayableArea(i32 *unavailable) {
+    AREA_DATA *area = *ArcadeLevel[ArcadeItem.level];
     if (area == NULL || Game.area_save[area->index].complete == 0) {
         if (unavailable != NULL) {
             *unavailable = 1;
@@ -673,7 +673,7 @@ static void HubDrawArcadeMenu(i32 selected, f32 alpha) {
                 if (text[0] != 0) {
                     NuStrCat(text, ": ");
                 }
-                AREA_DATA_PC *area = *ArcadeLevel[ArcadeItem.entries[i].index];
+                AREA_DATA *area = *ArcadeLevel[ArcadeItem.entries[i].index];
                 if (area != NULL && area->name_id != 0 && TTab[area->name_id] != NULL) {
                     NuStrCat(text, TTab[area->name_id]);
                 } else {
@@ -724,7 +724,7 @@ static void HubDrawArcadeMenu(i32 selected, f32 alpha) {
                 }
                 break;
             case 4: {
-                AREA_DATA_PC *area = *ArcadeLevel[ArcadeItem.level];
+                AREA_DATA *area = *ArcadeLevel[ArcadeItem.level];
                 if (area == NULL || Game.area_save[area->index].complete == 0) {
                     opacity /= 3;
                 }
@@ -856,7 +856,7 @@ extern "C" {
     }
 
     void Arcade_AwardPoint(i32 player_index, i32 reset_score, i32 unused) {
-        ADD_GAME_MESSAGE_PC message = PCArcadeMessageTemplate;
+        ADD_GAME_MESSAGE message = PCArcadeMessageTemplate;
         NUVEC position;
         char text[32];
         i32 earned;
@@ -1138,7 +1138,7 @@ static void HubDrawBonusModeMenu(i32 selected, f32 alpha) {
     }
 }
 
-static inline COLLECTION_BUILD_PC *HubFreePlayCollection(i32 area) {
+static inline COLLECTION_BUILD *HubFreePlayCollection(i32 area) {
     const u16 flags = ADataList[area].flags;
     if ((flags & AREAFLAG_VEHICLE_AREA) != 0) {
         if ((flags & AREAFLAG_BONUS_AREA) != 0) {
@@ -1254,7 +1254,7 @@ static void HubUpdateIconWibble(void) {
     }
 }
 
-static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, i32 direction, i32 current) {
+static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD *collection, i32 player, i32 direction, i32 current) {
     const i32 other = (player - 1) & 1;
     const i32 count = collection->count;
     const i32 columns = collection->columns;
@@ -1356,7 +1356,7 @@ extern "C" {
 }
 
 extern "C" void Hub_UpdateFreePlaySelect(void) {
-    COLLECTION_BUILD_PC *collection;
+    COLLECTION_BUILD *collection;
     if ((ADataList[hub_freeplay_area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
         collection = (ADataList[hub_freeplay_area].flags & AREAFLAG_BONUS_AREA) != 0 ? &MiniKitCollection : &VehicleCollection;
     } else {
@@ -1401,7 +1401,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 if (MissionMenuPacket.active_player[player] == 0) {
                     continue;
                 }
-                const u32 digital = ((HUB_FREEPLAY_PAD_READER_PC *)GamePadStorage[player].pad)->digital_buttons_pressed;
+                const u32 digital = ((HUB_FREEPLAY_PAD_READER *)GamePadStorage[player].pad)->digital_buttons_pressed;
                 if ((digital & GAMEPAD_MENUSELECT) != 0) {
                     select = 1;
                 } else if ((digital & GAMEPAD_MENUCANCEL) != 0) {
@@ -1566,7 +1566,7 @@ extern "C" {
     f32 HubMiniKitOpenThreshold = 1.0;
 }
 
-static void HubDrawIconCursorsPc(COLLECTION_BUILD_PC *collection, i32 active_cursors, f32 alpha, f32 scale) {
+static void HubDrawIconCursorsPc(COLLECTION_BUILD *collection, i32 active_cursors, f32 alpha, f32 scale) {
     if (alpha <= 0.0f || scale < 0.0f) {
         return;
     }
@@ -1626,7 +1626,7 @@ extern "C" {
         buffer->addr = (buffer->addr + 3) & ~3u;
         view->hub_minikits = (u8 *)buffer->void_ptr;
         buffer->addr = (buffer->addr + AREACOUNT * 0x7c + 3) & ~3u;
-        view->pieces_by_id = (MINIKIT_PC **)buffer->void_ptr;
+        view->pieces_by_id = (MINIKIT **)buffer->void_ptr;
         size = AREACOUNT * 4;
         memset(view->pieces_by_id, 0, size);
         buffer->addr += size;
@@ -1637,7 +1637,7 @@ extern "C" {
             piece_count = (ADataList[i].flags & AREAFLAG_MINIKIT) != 0 ? 10 : 0;
             minikit_id = ADataList[i].minikit_id;
             if (piece_count > 0 && minikit_id != -1) {
-                view->pieces_by_id[i] = (MINIKIT_PC *)buffer->void_ptr;
+                view->pieces_by_id[i] = (MINIKIT *)buffer->void_ptr;
                 buffer->addr += 0x18;
                 MiniKit_Load(view->pieces_by_id[i], minikit_id, buffer, end, NULL);
                 if (view->pieces_by_id[i]->scene != NULL) {
@@ -1657,7 +1657,7 @@ extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
     i32 i;
     if (kit != NULL) {
         for (i = 0; i < AREACOUNT; ++i, ++kit) {
-            HUB_AREA_INFO_PC *info;
+            HUB_AREA_INFO *info;
             f32 height;
             kit->position.y = 2000000.0f;
             kit->scale = 0;
@@ -1700,14 +1700,14 @@ static i32 Hub_UpdateMiniKitBounds(i32 area_index, WORLDINFO *world) {
         return 0;
     }
     HUB_MINIKIT_RUNTIME *kit = &w->minikits[area_index];
-    HUB_AREA_INFO_PC *info = NULL;
-    for (HUB_AREA_INFO_PC *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
+    HUB_AREA_INFO *info = NULL;
+    for (HUB_AREA_INFO *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
         if (entry->area != NULL && entry->area->index == area_index) {
             info = entry;
             break;
         }
     }
-    const CHARACTERDATA_PC *data = &CDataList[model];
+    const CHARACTERDATA *data = &CDataList[model];
     const f32 bottom = data->bottom;
     const f32 top = data->top;
     const f32 radius = data->collision_radius;
@@ -1807,7 +1807,7 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
                 kit->target_rotation = TurnRot(kit->target_rotation, angle + 0x8000, (u16)(i32)((f64)kit->scale * 32768.0), NULL);
             }
             kit->target_piece_count = count[i];
-            const HUB_PAD_READER_PC *pads = (const HUB_PAD_READER_PC *)GamePadStorage;
+            const HUB_PAD_READER *pads = (const HUB_PAD_READER *)GamePadStorage;
             if (viewer && count[i] >= pieces->piece_count &&
                 ((MissionMenuPacket.active_player[0] != 0 && (pads[0].held & GAMEPAD_JUMP) != 0) ||
                  (MissionMenuPacket.active_player[1] != 0 && (pads[1].held & GAMEPAD_JUMP) != 0))) {
@@ -1922,8 +1922,8 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         if (((HUB_WORLD_READER *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1) {
             continue;
         }
-        HUB_AREA_INFO_PC *info = NULL;
-        for (HUB_AREA_INFO_PC *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
+        HUB_AREA_INFO *info = NULL;
+        for (HUB_AREA_INFO *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
             if (entry->area != NULL && area == entry->area->index) {
                 info = entry;
                 break;
@@ -2035,7 +2035,7 @@ static f32 HubAreaPanelTwo[6] = {-0.3f, 0.0f, 0.6f, -0.6f, 0.0f, 0.3f};
 extern "C" f32 *HubAreaPanelX = HubAreaPanelTwo;
 
 void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
-    AREA_DATA_PC *area = &ADataList[area_index];
+    AREA_DATA *area = &ADataList[area_index];
     const i32 alpha = (i32)(phase * 128.0);
     if (LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area_index) {
         SmartTextEx(TTab[dat_008807e8], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
@@ -2058,7 +2058,7 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
         return;
     }
     if (Game.area_save[area_index].area_complete != 0 && (area->flags & AREAFLAG_BONUS_AREA) == 0) {
-        Episode_CountOpenAreas(area->episode_index, area_index, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
+        Episode_CountOpenAreas(area->episode_index, area_index, (COLLECTION_AREA_SAVE *)Game.area_save);
         char text[128];
         if (HubBothTrueJediGoldBricks != 0) {
             DrawBuildUpBar(HubAreaPanelX[1], HubEpisodeTitleY + PANEL_MINIKITY - PANEL_MINIKITCOUNTY, 100, 100,
@@ -2104,7 +2104,7 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
 
 static void HubDrawMiniKitStats(i32 index, f32 phase) {
     char title[128];
-    AREA_DATA_PC *area = &ADataList[index];
+    AREA_DATA *area = &ADataList[index];
     const i32 alpha = static_cast<i32>(phase * 128.0);
     f32 scale;
     char *text;
@@ -2202,7 +2202,7 @@ extern "C" void Hub_UpdateKit(void) {
     }
 }
 
-static HUB_EPISODE_INFO_PC HubEpisodeInfo[10] = {
+static HUB_EPISODE_INFO HubEpisodeInfo[10] = {
     {0,  1, "DE1",      "lock_1_on", 0, 0, NULL, NULL, {0}},
     {1,  1, "DE2",      "lock_2_on", 0, 0, NULL, NULL, {0}},
     {2,  1, "DE3",      "lock_3_on", 0, 0, NULL, NULL, {0}},
@@ -2215,10 +2215,10 @@ static HUB_EPISODE_INFO_PC HubEpisodeInfo[10] = {
     {-1, 0, NULL,       NULL,        0, 0, NULL, NULL, {0}},
 };
 extern "C" {
-    AREA_DATA_PC **ArcadeLevel[12] = {&SENATE_ADATA,      &UTAPAU_ADATA,        &HOTH_ADATA,        &BONUSDAGOBAH_ADATA,
-                                      &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA, &E1CHARACTER_ADATA, &E2CHARACTER_ADATA,
-                                      &E3CHARACTER_ADATA, &E4CHARACTER_ADATA,   &E5CHARACTER_ADATA, &E6CHARACTER_ADATA};
-    ARCADE_ITEM_PC ArcadeItem = {
+    AREA_DATA **ArcadeLevel[12] = {&SENATE_ADATA,      &UTAPAU_ADATA,        &HOTH_ADATA,        &BONUSDAGOBAH_ADATA,
+                                   &BONUSKAMINO_ADATA, &BONUSKASHYYYK_ADATA, &E1CHARACTER_ADATA, &E2CHARACTER_ADATA,
+                                   &E3CHARACTER_ADATA, &E4CHARACTER_ADATA,   &E5CHARACTER_ADATA, &E6CHARACTER_ADATA};
+    ARCADE_ITEM ArcadeItem = {
         {&PCArcadeLevelText,
          0, 12,
          0, &PCArcadeModeText,
@@ -2398,9 +2398,9 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
 
 static void HubDrawEpisodeStats(i32 episode_index, f32 phase) {
     char text[256];
-    EPISODEDATA_PC *episode = &EDataList[episode_index];
+    EPISODEDATA *episode = &EDataList[episode_index];
     const i32 alpha = (i32)(128.0 * phase);
-    Episode_CountOpenAreas(episode_index, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
+    Episode_CountOpenAreas(episode_index, -1, (COLLECTION_AREA_SAVE *)Game.area_save);
     if (EpCompleteCount == 0) {
         if (episode->name_id != -1) {
             SmartTextEx(TTab[episode->name_id], 0.0f, HubEpisodeTitleY, 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize, HubEpisodeTitleSize,
@@ -2479,7 +2479,7 @@ extern "C" void MenuUpdateFreePlay(MENU *) {
 extern "C" {
 
     void Hub_ActivateDoorMenu(void *argument) {
-        LEVELDATA_PC **level = (LEVELDATA_PC **)argument;
+        LEVELDATA **level = (LEVELDATA **)argument;
         i32 area = (*level)->area_index;
         i32 menu;
         if (area == -1) {
@@ -2628,7 +2628,7 @@ static void HubDrawBonusStats(f32 alpha, i32 area, i32 episode, i32 mode) {
     }
 }
 
-static void HubDrawSuperBonusStats(AREA_DATA_PC *area, f32 alpha) {
+static void HubDrawSuperBonusStats(AREA_DATA *area, f32 alpha) {
     const i32 opacity = (i32)(alpha * 128.0);
     if (area == NULL) {
         SmartTextEx((char *)"?", 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize, 0,
@@ -2727,7 +2727,7 @@ static void HubDrawBonusMode(void) {
     }
     f32 prompt_alpha = .333f;
     if (bonusmodearcade != 0) {
-        AREA_DATA_PC *area;
+        AREA_DATA *area;
         if ((hub_bonusmode == 4 && (area = *ArcadeLevel[ArcadeItem.level]) != NULL && Game.area_save[area->index].complete != 0) ||
             (hub_bonusmode == 3 && ArcadeItem.entries[3].index == 1)) {
             prompt_alpha = 1.0f;
@@ -2765,7 +2765,7 @@ static void HubDrawBonusMode(void) {
 
 /* Copied collection data chooses the default model pair. */
 void HubInitFreePlaySelect(i32 area, i32 first_model, i32 second_model) {
-    COLLECTION_BUILD_PC *collection = HubFreePlayCollection(area);
+    COLLECTION_BUILD *collection = HubFreePlayCollection(area);
     i32 first;
     i32 second;
     if (collection == &VehicleCollection) {
@@ -2825,7 +2825,7 @@ static f32 HubFreePlayFinalSize = 0.35f;
 static f32 HubFreePlayNameY = 0.125f;
 
 static void Hub_DrawFreePlaySelect(void) {
-    COLLECTION_BUILD_PC *collection;
+    COLLECTION_BUILD *collection;
     if ((ADataList[hub_freeplay_area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
         collection = (ADataList[hub_freeplay_area].flags & AREAFLAG_BONUS_AREA) != 0 ? &MiniKitCollection : &VehicleCollection;
     } else {
@@ -2841,7 +2841,7 @@ static void Hub_DrawFreePlaySelect(void) {
         }
         alpha = 1.0f - alpha;
         if (alpha > 0.0f) {
-            AREA_DATA_PC *area = &ADataList[HubDoorArea];
+            AREA_DATA *area = &ADataList[HubDoorArea];
             if ((area->flags & AREAFLAG_SUPER_BONUS) != 0) {
                 HubDrawSuperBonusStats(area, alpha);
                 HubDrawBonusModeMenu(0, alpha);
@@ -3555,7 +3555,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             i32 mini_count = 0;
             i32 i = 0;
             for (; i < EPISODECOUNT; ++i) {
-                Episode_CountOpenAreas(i, -1, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
+                Episode_CountOpenAreas(i, -1, (COLLECTION_AREA_SAVE *)Game.area_save);
                 mini_count += EpMiniKitCount;
                 mini_total += EpMiniKitTotal;
                 char_count += EpCharKitCount;
@@ -3614,7 +3614,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             i32 gold_count = 0;
             i32 gold_total = 0;
             i32 count = AREACOUNT;
-            AREA_DATA_PC *area = ADataList;
+            AREA_DATA *area = ADataList;
             AREA_SAVE_PICKUP *save = Game.area_save;
             if (count > 0) {
                 for (; count != 0; --count, ++area, ++save) {
@@ -3656,7 +3656,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
         }
     }
     if (HubLastArea != -1 && HubEpisodeTime > 0.0f) {
-        AREA_DATA_PC *area = &ADataList[HubLastArea];
+        AREA_DATA *area = &ADataList[HubLastArea];
         if (area->flags & AREAFLAG_SUPER_BONUS) {
             HubDrawSuperBonusStats(area, HubEpisodeTime);
         } else if (area->flags & AREAFLAG_BONUS_AREA) {
@@ -3719,7 +3719,7 @@ static void HubUpdateSelectMode(void) {
         return;
     }
     const i32 area = LDataList[HubDoorNewLevel].area_index;
-    LEVELDATA_PC *level = &LDataList[HubDoorNewLevel];
+    LEVELDATA *level = &LDataList[HubDoorNewLevel];
     const i32 lost_temple = LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area;
     switch (selectmodemode) {
         case 0: {
@@ -3984,7 +3984,7 @@ static void HubUpdateBonusMode(void) {
                             ArcadeItem.entries[3].index = 0;
                         }
                     } else if (hub_bonusmode == 4) {
-                        AREA_DATA_PC *area = *ArcadeLevel[ArcadeItem.level];
+                        AREA_DATA *area = *ArcadeLevel[ArcadeItem.level];
                         if (area == NULL || Game.area_save[area->index].complete == 0) {
                             GameAudio_PlaySfx(0x32, NULL, 0, 0);
                         } else {
@@ -4182,7 +4182,7 @@ extern "C" {
 
     /* Uncalled. */
     i32 IndyConnectionHelperIsType(GAMEOBJECT *owner, u8 type) {
-        AI_HELPER_SLOT_PC *helper = owner->indy_connection_helper;
+        AI_HELPER_SLOT *helper = owner->indy_connection_helper;
         if (helper != NULL && owner->ai_packet.path_info.connection == helper->connection &&
             (helper->direction == 0xff || owner->ai_packet.path_info.direction == helper->direction)) {
             return type == helper->type;
@@ -4279,7 +4279,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_ClimbUp(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        INDY_GUIDELINE_PC *guide;
+        INDY_GUIDELINE *guide;
         i32 endpoint;
         f32 distance;
         f32 height;
@@ -4334,7 +4334,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_ClimbDown(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        INDY_GUIDELINE_PC *guide;
+        INDY_GUIDELINE *guide;
         i32 endpoint;
         f32 distance;
         f32 height;
@@ -4390,7 +4390,7 @@ extern "C" {
         return 1;
     }
 
-    i32 IndyGrappleHelperOccupied(AI_HELPER_SLOT_PC *helper, GAMEOBJECT *owner, AIPATHCNX *connection, u8 direction, u8 type) {
+    i32 IndyGrappleHelperOccupied(AI_HELPER_SLOT *helper, GAMEOBJECT *owner, AIPATHCNX *connection, u8 direction, u8 type) {
         GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)helper->target;
         return Grapple_Occupied(grapple, owner, owner->ai_packet.path_info.connection) != NULL;
     }
@@ -5020,14 +5020,14 @@ extern "C" {
         return 0;
     }
 
-    AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFns[10] = {
+    AI_MID_SPECIAL_MOVE IndyMidSpecialMoveFns[10] = {
         Indy_MidSpecialMove_Default,    Indy_MidSpecialMove_StartJump,  Indy_MidSpecialMove_BigJump,      Indy_MidSpecialMove_ClimbUp,
         Indy_MidSpecialMove_ClimbDown,  Indy_MidSpecialMove_SwingPc,    Indy_MidSpecialMove_GrappleStart, Indy_MidSpecialMove_GrappleClimb,
         Indy_MidSpecialMove_GrappleEnd, Indy_MidSpecialMove_WhipSwingPc};
 
     i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
         GAMEOBJECT *owner = apiobject->owner;
-        AI_MID_SPECIAL_MOVE_PC callback;
+        AI_MID_SPECIAL_MOVE callback;
         owner->special_move_timer -= FRAMETIME;
         if (owner->ai_packet.special_move_node != NULL) {
             if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
@@ -5166,7 +5166,7 @@ extern "C" {
         return 0;
     }
 
-    SOCKPOSITION_PC LostTempleExitSockPosition = {0};
+    SOCKPOSITION LostTempleExitSockPosition = {0};
     void *HubBuildIt = NULL;
 }
 

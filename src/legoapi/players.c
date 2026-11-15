@@ -45,7 +45,7 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
+typedef void (*CHARACTER_UPDATE_CALLBACK)(GAMEOBJECT *);
 
 struct minianimpacket_s {       // size 0x24
     f32 current_time;           // 0x00
@@ -76,7 +76,7 @@ typedef struct player_reset_packet_s { // size 0x780
     f32 context_animation_time;        // 0x0fc
     i8 context_target;                 // 0x100
     u8 unknown_101[0x4df];             // 0x101
-    GAMEPAD_PC *gamepad;               // 0x5e0
+    GAMEPAD *gamepad;                  // 0x5e0
     u8 unknown_5e4[0x28];              // 0x5e4
     void *linked_object;               // 0x60c
     u8 unknown_610[0x38];              // 0x610
@@ -123,7 +123,7 @@ typedef struct player_reset_packet_s { // size 0x780
 GAMEOBJECT *AddCreature(i32 model, i32 mode);
 
 typedef union player_position_sock_pc_u { // size 0x38
-    SOCKPOSITION_PC sock;
+    SOCKPOSITION sock;
 
     struct {          // size 0x8
         i32 location; // 0x00
@@ -295,7 +295,7 @@ NUVEC *Player_StartPos(GAMEOBJECT *object) {
     return position != NULL ? position : PlayerStart[0].position;
 }
 
-i32 Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
+i32 Players_AveragePos(NUVEC *position, SOCKPOSITION *socket_position) {
     NUVEC total = {0.0f, 0.0f, 0.0f};
     f32 count = 0.0f;
     i32 i;
@@ -346,7 +346,7 @@ i32 CanPullLevers(i32 id) {
     return (flags & (CHARACTER_MODEL_JEDI | CHARACTER_MODEL_BLASTER | CHARACTER_MODEL_TELEPORT)) != 0;
 }
 
-PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn = 0;
+PLAYER_CLEAR_CONTEXT_CALLBACK Player_ClearContextFn = 0;
 
 void Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     if (Player_ClearContextFn != NULL) {
@@ -400,7 +400,7 @@ void Player_ResetContexts(void *packet_ptr) {
 }
 
 i32 MovingBackwards(GAMEOBJECT *object) {
-    GAMEPAD_PC *pad = object->pad;
+    GAMEPAD *pad = object->pad;
     i32 difference;
     if (pad->operator_data != NULL && pad->input_magnitude != 0.0f) {
         difference = RotDiff(object->pad->input_angle + GameCam->input_yaw, object->unknown_276);
@@ -823,7 +823,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         GameObjectOrigin(object);
         ResetRumble(&object->pad->rumble);
         ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
-        ResetMiniAnimPacket((MINIANIMPACKET_PC *)object->mini_anim_packet, -1);
+        ResetMiniAnimPacket((MINIANIMPACKET *)object->mini_anim_packet, -1);
         object->sock_position.sock_index = -1;
         object->sock_position.segment = -1;
         if (WORLD->sock_sys != NULL) {

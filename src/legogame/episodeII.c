@@ -65,7 +65,7 @@ typedef struct dooku_c_s {
     GIZAIMESSAGE *total_message;
     GIZAIMESSAGE *hit_message;
     nuhspecial_s node;
-} DOOKU_C_PC;
+} DOOKU_C;
 
 void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 void DrawForceBackEffect(nuhspecial_s *special);
@@ -87,7 +87,7 @@ typedef struct kaminodisco_s {
     u8 reserved_3dd[3];
     GIZAIMESSAGE *next_tile_message;
     GIZAIMESSAGE *complete_message;
-} KAMINODISCO_PC;
+} KAMINODISCO;
 
 typedef struct kamino_progress_gizmo_reader_s {
     u8 opaque_00_94[0x94];
@@ -136,7 +136,7 @@ typedef struct kamino_e_s {
     i8 fire_index;
     u8 departing;
     i16 platform;
-} KAMINO_E_PC;
+} KAMINO_E;
 
 extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
@@ -1042,7 +1042,7 @@ void FactoryB_Draw(WORLDINFO *world) {
     DrawPaintLights();
 }
 
-static DOOKU_C_PC dooku_c = {0};
+static DOOKU_C dooku_c = {0};
 
 void DookuC_Reset(WORLDINFO *world) {
     memset(&dooku_c, 0, sizeof(dooku_c));
@@ -1107,7 +1107,7 @@ void FactoryG_Update(WORLDINFO *world) {
         return;
     }
     for (i = 0; i < 4; i++) {
-        if (GizForce_Complete((GIZFORCE_PC *)force_array[i]) != 0) {
+        if (GizForce_Complete((GIZFORCE *)force_array[i]) != 0) {
             complete++;
         }
     }
@@ -1137,8 +1137,8 @@ void KaminoA_AlwaysUpdate(WORLDINFO *world) {
     debris_object_switches[1] = CUTSTOPGAME == 0 && GameCam->sock_position.sock_index != 5 && GameCam->sock_position.sock_index != 6;
 }
 
-KAMINODISCO_PC kaminodisco = {0};
-KAMINOC_PACKET_PC *kaminoc_netpacket = NULL;
+KAMINODISCO kaminodisco = {0};
+KAMINOC_PACKET *kaminoc_netpacket = NULL;
 nuhspecial_s disco_on_spin[3] = {0};
 GIZMO_PC *disco_off_spina[3] = {0};
 nuhspecial_s walllights[2] = {0};
@@ -1154,7 +1154,7 @@ void KaminoC_Init(WORLDINFO *world) {
     char name[32];
     i32 i;
     memset(&kaminodisco, 0, sizeof(kaminodisco));
-    kaminoc_netpacket = SetLevelHack(sizeof(KAMINOC_PACKET_PC));
+    kaminoc_netpacket = SetLevelHack(sizeof(KAMINOC_PACKET));
     kaminodisco.tile_count = 0;
     do {
         if (kaminodisco.tile_count < 9) {
@@ -1483,7 +1483,7 @@ void KaminoE_Init(WORLDINFO *world) {
     }
 }
 
-KAMINO_E_PC kamino_e = {0};
+KAMINO_E kamino_e = {0};
 
 void KaminoE_Reset(WORLDINFO *world) {
     char name[16];

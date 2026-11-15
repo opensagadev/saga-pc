@@ -40,7 +40,7 @@ extern "C" {
     extern ADDPART Default_ADDPART;
     PART_PC *HitParts(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32);
     void AddVariableShotDebrisEffectTimed5(i32, NUVEC *, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *, u16, i8);
-    void SetPartRTLSet(RTLSET_PC *rtl_set);
+    void SetPartRTLSet(RTLSET *rtl_set);
     void LoadPartFile(WORLDINFO *);
     i32 FindPartDebris(PARTDEBRISSYS *, char *);
     void AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);

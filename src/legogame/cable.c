@@ -492,7 +492,7 @@ void UpdateCables(void) {
 
 void DrawCables(void) {
     CABLE_RECORD *cable = (CABLE_RECORD *)cables;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     NUVEC step;
     i32 index;
 

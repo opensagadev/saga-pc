@@ -871,7 +871,7 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     }
 }
 
-void AddDebrisEffectToStack(DEBRISKEY_PC *key);
+void AddDebrisEffectToStack(DEBRISKEY *key);
 
 typedef struct debris_animation_effect_s { // size 0xb0
     u8 unknown_000[0xa8];                  // 0x00
@@ -909,16 +909,16 @@ void edmainSetLocVec(NUVEC *location);
 static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;
 i32 part_page_on[8] = {0};
-PARTTYPE_LOOKUP_PC part_types[128] = {0};
+PARTTYPE_LOOKUP part_types[128] = {0};
 PART_PC *Part = 0;
 i32 edpart_nearest_orphans = 0;
 static NUVEC PartImpactNormalPrivate = {0};
-RTLSET_PC *PartRTL = 0;
+RTLSET *PartRTL = 0;
 f32 partglobaltime = 0;
 i32 part_types_used = 0;
 i32 part_emits_used = 0;
 static i32 PartRaycastsEnabledPrivate = 1;
-DEBRIS_INFO_PC DebrisNullEffect = {
+DEBRIS_INFO DebrisNullEffect = {
     "null",
     0,
     0,
@@ -1211,7 +1211,7 @@ PART_PC *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 r
     NUVEC minimum;
     NUVEC maximum;
     PART_PC *best = NULL;
-    BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, WORLD);
+    BOLTTYPE *bolt = BoltType_FindByID(bolt_id, WORLD);
     PART_PC *part = Part;
     PART_PC *previous = NULL;
     f32 nearest_distance = range_squared;
@@ -1290,7 +1290,7 @@ PART_PC *Part_FindFromHSpecial(nuhspecial_s *special) {
     return NULL;
 }
 
-void SetPartRTLSet(RTLSET_PC *rtl_set) {
+void SetPartRTLSet(RTLSET *rtl_set) {
     PartRTL = rtl_set;
 }
 
@@ -1556,7 +1556,7 @@ void DebrisStartOffset(i32 handle, f32 offset) {
 
 void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     i32 i;
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 newly_allocated;
     i32 key_index;
     f32 now;
@@ -1659,16 +1659,16 @@ void AddRotatedDebrisEffect(i32 *handle, i32 effect, f32 x, f32 y, f32 z, i16 ro
     DebrisEmitterOrientation(*handle, rotation_x, rotation_y, 0);
 }
 
-DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+DEBRISPARTICLE *GenDebIndexSpheroid(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
     i32 trail;
-    DEBRISPARTICLE_PC *particle;
+    DEBRISPARTICLE *particle;
     NUVEC vector;
     i32 angle_y;
     f64 random;
     f32 sine;
     i32 angle_z;
     NUMTX scale;
-    DEBRISPARTICLE_PC *trail_particle;
+    DEBRISPARTICLE *trail_particle;
     if (key->particle_cursor >= key->particle_count) {
         key->particle_cursor = 0;
     }
@@ -1766,7 +1766,7 @@ void DebrisEmitterOrientationMtx(i32 handle, NUMTX *source) {
 
 void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC *momentum, NUVEC *position_delta, i32 count, f32 duration,
                                        NUMTX *emitter_orientation, NUMTX *particle_orientation, u16 render_priority, i8 timed_flags) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     NUVEC clipped_position;
 
     f32 thinning;
@@ -1786,16 +1786,16 @@ void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC 
     i32 particle_count;
     i32 particle_key_slot;
     i32 new_key_index;
-    DEBRISKEY_PC *key;
+    DEBRISKEY *key;
     i32 required_particles;
     i32 required_chunks;
     i32 new_chunk_count;
     i32 total_chunk_count;
-    DEBRISPARTICLE_PC *generated;
+    DEBRISPARTICLE *generated;
     i32 chunk_index;
-    DEBRIS_CHUNK_CONTROL_PC *control;
-    DEBRIS_CHUNK_CONTROL_PC **stack;
-    DEBRIS_PARTICLE_CHUNK_PC *last_chunk;
+    DEBRIS_CHUNK_CONTROL *control;
+    DEBRIS_CHUNK_CONTROL **stack;
+    DEBRIS_PARTICLE_CHUNK *last_chunk;
 
     if (debris_suspended != 0 || update_debris_enabled == 0 || effect_index == -1 || effect_index == 0 || effect_index >= debinf_count) {
         return;
@@ -2068,7 +2068,7 @@ i32 AddScaledVariableShotDebrisEffect(i32 effect, NUVEC *position, i32 count, f3
     return scaled;
 }
 
-void DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
+void DebrisDrawCalculateClipBoxes(DEBRIS_INFO *effect, DEBRISKEY *key) {
     NUMTX matrix;
     f32 padding;
     f32 radius;
@@ -2123,7 +2123,7 @@ i32 g_renderingDebris = 0;
 i32 edbits_editmode = 0;
 
 void DebrisDraw(i32 unused, i32 pass) {
-    DEBRIS_RENDER_CHUNK_PC *chunk;
+    DEBRIS_RENDER_CHUNK *chunk;
     i32 drawn = 0;
     (void)unused;
     if (debris_suspended != 0) {
@@ -2132,8 +2132,8 @@ void DebrisDraw(i32 unused, i32 pass) {
     _NuTimeBarSlotBegin(0, 12, "deb");
     DebMat[7]->texture_id = (i16)debris_rt;
     for (chunk = ParticleChunkRenderStack[pass]; chunk != NULL; chunk = chunk->next) {
-        DEBRIS_INFO_PC *effect;
-        DEBRISKEY_PC *key;
+        DEBRIS_INFO *effect;
+        DEBRISKEY *key;
         NUMTX matrix;
         NUVEC position;
         f32 render_time;
@@ -2282,7 +2282,7 @@ void AddVariableShotDebrisEffectTimed1(i32 effect, NUVEC *position, i32 count, f
 }
 
 void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 duration, NUMTX *orientation) {
-    PARTTYPE_LOOKUP_PC *type = &part_types[effect_index];
+    PARTTYPE_LOOKUP *type = &part_types[effect_index];
     f32 interval;
     f32 aligned_time;
     f32 emission_time;
@@ -2456,7 +2456,7 @@ void DebrisSetDetailLevels(i32 handle, i32 detail_levels) {
     debkeydata[handle].orientation_flags = (u8)detail_levels;
 }
 
-void AddDebrisEffectToStack(DEBRISKEY_PC *key) {
+void AddDebrisEffectToStack(DEBRISKEY *key) {
     if (debris_keystack != NULL) {
         debris_keystack->next = key;
     }
@@ -2554,7 +2554,7 @@ NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 dept
 
 i32 DebrisArenaInitialized = 0;
 i16 *freedebkeys = 0;
-DEBRIS_PART_HEADER_PC **DmaDebTypes = 0;
+DEBRIS_PART_HEADER **DmaDebTypes = 0;
 
 void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VARIPTR trash_end, char *texture_name, i32 chunk_count,
                   i32 glass_chunk_count, i32 key_count, i32 effect_count) {
@@ -2570,37 +2570,37 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     DebrisArenaInitialized = 1;
     NuRegisterEndFrameCallBackFn(DebrisProcessTimeSlip);
     buffer->addr = (buffer->addr + 15) & ~15u;
-    debris_chunk_controls = (DEBRIS_CHUNK_CONTROL_PC *)buffer->addr;
-    buffer->addr += (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC);
-    freechunkcontrols = (DEBRIS_CHUNK_CONTROL_PC **)buffer->addr;
-    buffer->addr += (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL_PC *);
-    freedebchunks = (DEBRIS_PARTICLE_CHUNK_PC **)buffer->addr;
-    buffer->addr += debrischunks * sizeof(DEBRIS_PARTICLE_CHUNK_PC *);
-    freedebchunksglass = (DEBRIS_PARTICLE_CHUNK_PC **)buffer->addr;
-    buffer->addr += debrischunksglass * sizeof(DEBRIS_PARTICLE_CHUNK_PC *);
-    ParticleChunkToRender = (DEBRIS_RENDER_CHUNK_PC *)buffer->addr;
-    buffer->addr += (debrischunks + debrischunksglass) * sizeof(DEBRIS_RENDER_CHUNK_PC);
+    debris_chunk_controls = (DEBRIS_CHUNK_CONTROL *)buffer->addr;
+    buffer->addr += (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL);
+    freechunkcontrols = (DEBRIS_CHUNK_CONTROL **)buffer->addr;
+    buffer->addr += (debrischunks + debrischunksglass) * 2 * sizeof(DEBRIS_CHUNK_CONTROL *);
+    freedebchunks = (DEBRIS_PARTICLE_CHUNK **)buffer->addr;
+    buffer->addr += debrischunks * sizeof(DEBRIS_PARTICLE_CHUNK *);
+    freedebchunksglass = (DEBRIS_PARTICLE_CHUNK **)buffer->addr;
+    buffer->addr += debrischunksglass * sizeof(DEBRIS_PARTICLE_CHUNK *);
+    ParticleChunkToRender = (DEBRIS_RENDER_CHUNK *)buffer->addr;
+    buffer->addr += (debrischunks + debrischunksglass) * sizeof(DEBRIS_RENDER_CHUNK);
     buffer->addr = (buffer->addr + 15) & ~15u;
-    debkeydata = (DEBRISKEY_PC *)buffer->addr;
-    buffer->addr += maxdebkeys * sizeof(DEBRISKEY_PC);
+    debkeydata = (DEBRISKEY *)buffer->addr;
+    buffer->addr += maxdebkeys * sizeof(DEBRISKEY);
     freedebkeys = (i16 *)buffer->addr;
     buffer->addr += maxdebkeys * sizeof(i16);
-    effecttypes = (DEBRIS_INFO_PC *)buffer->addr;
-    buffer->addr += debinf_count * sizeof(DEBRIS_INFO_PC);
-    debtab = (DEBRIS_INFO_PC **)buffer->addr;
-    buffer->addr += debinf_count * sizeof(DEBRIS_INFO_PC *);
-    DmaDebTypes = (DEBRIS_PART_HEADER_PC **)buffer->addr;
-    buffer->addr += EDPP_MAX_DMADEBTYPES * sizeof(DEBRIS_PART_HEADER_PC *);
-    spherecolldata = (DEBRIS_COLLISION_ENTRY_PC *)buffer->addr;
-    buffer->addr += maxdebkeys * sizeof(DEBRIS_COLLISION_ENTRY_PC);
-    toruscolldata = (DEBRIS_COLLISION_ENTRY_PC *)buffer->addr;
-    buffer->addr += maxdebkeys * sizeof(DEBRIS_COLLISION_ENTRY_PC);
-    debscale = (DEBRIS_SCALE_CACHE_PC *)buffer->addr;
-    buffer->addr += EDPP_SCALE_TYPES * sizeof(DEBRIS_SCALE_CACHE_PC);
+    effecttypes = (DEBRIS_INFO *)buffer->addr;
+    buffer->addr += debinf_count * sizeof(DEBRIS_INFO);
+    debtab = (DEBRIS_INFO **)buffer->addr;
+    buffer->addr += debinf_count * sizeof(DEBRIS_INFO *);
+    DmaDebTypes = (DEBRIS_PART_HEADER **)buffer->addr;
+    buffer->addr += EDPP_MAX_DMADEBTYPES * sizeof(DEBRIS_PART_HEADER *);
+    spherecolldata = (DEBRIS_COLLISION_ENTRY *)buffer->addr;
+    buffer->addr += maxdebkeys * sizeof(DEBRIS_COLLISION_ENTRY);
+    toruscolldata = (DEBRIS_COLLISION_ENTRY *)buffer->addr;
+    buffer->addr += maxdebkeys * sizeof(DEBRIS_COLLISION_ENTRY);
+    debscale = (DEBRIS_SCALE_CACHE *)buffer->addr;
+    buffer->addr += EDPP_SCALE_TYPES * sizeof(DEBRIS_SCALE_CACHE);
     memset(freedebkeys, 0, maxdebkeys * sizeof(i16));
-    memset(debkeydata, 0, maxdebkeys * sizeof(DEBRISKEY_PC));
-    memset(effecttypes, 0, debinf_count * sizeof(DEBRIS_INFO_PC));
-    memset(debtab, 0, debinf_count * sizeof(DEBRIS_INFO_PC *));
+    memset(debkeydata, 0, maxdebkeys * sizeof(DEBRISKEY));
+    memset(effecttypes, 0, debinf_count * sizeof(DEBRIS_INFO));
+    memset(debtab, 0, debinf_count * sizeof(DEBRIS_INFO *));
     memset(debscale, 0, EDPP_SCALE_TYPES * sizeof(u32));
     for (i = 0; i < maxdebkeys; ++i) {
         spherecolldata[i].key_index = i;
@@ -2887,7 +2887,7 @@ i32 fun_006489a0(char *name) {
     return LookupDebrisEffectPageOnly(name, edpart_load_particle_page);
 }
 
-void edpartLoadSingleType(PARTTYPE_LOOKUP_PC *record, i32 version, i32 page) {
+void edpartLoadSingleType(PARTTYPE_LOOKUP *record, i32 version, i32 page) {
     PART_RUNTIME_TYPE *type = (PART_RUNTIME_TYPE *)record;
     char name[16];
     i32 i;
@@ -3154,7 +3154,7 @@ void edpartDetermineNearest(f32 distance) {
 
 void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_create_type != -1) {
-        PARTTYPE_LOOKUP_PC *type = &part_types[edpart_create_type];
+        PARTTYPE_LOOKUP *type = &part_types[edpart_create_type];
         edpart_name_menu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, edpartCancelChangeNameMenu, "Type Name");
         if (edpart_name_menu != NULL) {
             eduiMenuAddItem(edpart_name_menu, eduiItemTextPickCreate(0, edblack, edpartChangeName, "Name: "));
@@ -3186,8 +3186,8 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         for (; index < 128; ++index) {
             if (part_types[index].name[0] == '\0') {
                 u32 name_length;
-                PARTTYPE_LOOKUP_PC *source = &part_types[edpart_create_type];
-                PARTTYPE_LOOKUP_PC *copy = &part_types[index];
+                PARTTYPE_LOOKUP *source = &part_types[edpart_create_type];
+                PARTTYPE_LOOKUP *copy = &part_types[index];
                 *copy = *source;
                 name_length = strlen(source->name);
                 if (name_length <= 12) {
@@ -3503,7 +3503,7 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 }
             }
             for (i = 0; i < skipped_types; ++i) {
-                edpartLoadSingleType((PARTTYPE_LOOKUP_PC *)&discarded_type, version, page);
+                edpartLoadSingleType((PARTTYPE_LOOKUP *)&discarded_type, version, page);
             }
             emitter_count = EdFileReadInt();
             emitter_slot = 0;
@@ -3593,7 +3593,7 @@ void UpdatePartEmits(f32 time) {
     i32 axis;
     i32 remaining;
     i32 variant;
-    PART_EMIT_PC *emitter;
+    PART_EMIT *emitter;
     PART_RUNTIME_TYPE *type;
     ADDPART params;
     NUVEC position;
@@ -3952,7 +3952,7 @@ void edpartDestroyAllEffects(void) {
     }
 }
 
-void edpartDoInput(FRAME_PAD_PC *pad) {
+void edpartDoInput(FRAME_PAD *pad) {
     extern i32 edpart_copy_mode;
     extern i32 edpart_copyroty;
     extern i32 edpart_rotz;
@@ -4198,7 +4198,7 @@ void edpartDrawCursor(void) {
     i32 rotation_z;
     i32 rotation_y;
     NUVEC vector;
-    NURND_VERTEX3D_PC line[2];
+    NURND_VERTEX3D line[2];
 
     if (edpart_copy_mode != 0) {
         rotation_z = edpart_copyrotz;
@@ -4664,7 +4664,7 @@ void edpartDestroyAllPages(void) {
     }
 }
 
-i32 edpartProc(float delta_time, FRAME_PAD_PC *pad) {
+i32 edpartProc(float delta_time, FRAME_PAD *pad) {
     edpart_count += 5;
     if (edpart_active_menu) {
         eduiMenuProcess(edpart_active_menu, delta_time, pad);

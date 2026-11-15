@@ -133,7 +133,7 @@ extern "C" {
 
     void WorldInfo_ReArrangeBuffers(i32 area1, i32 area2) {
         VARIPTR *buffer_end = &WorldInfo[1].buffer_end;
-        AREA_DATA_PC *areas;
+        AREA_DATA *areas;
         u8 single_buffer = AREAFLAG_SINGLE_BUFFER;
         u32 end;
 
@@ -343,7 +343,7 @@ extern "C" {
     void PortalDoors_Configure(WORLDINFO *world, char *config) {
         PORTAL_DOOR_WORLD *view = (PORTAL_DOOR_WORLD *)world;
         PORTAL_DOOR *cursor;
-        NUFPAR_PC *parser;
+        NUFPAR *parser;
         view->portal_doors = NULL;
         view->portal_door_count = 0;
         if (world->current_gscn == NULL) {
@@ -426,7 +426,7 @@ extern "C" {
     }
 
     void EquivalentObjects_Configure(WORLDINFO *world, char *config) {
-        NUFPAR_PC *parser;
+        NUFPAR *parser;
         EQUIVALENT_GROUP *cursor;
         world->equivalent_groups = NULL;
         world->equivalent_group_count = 0;
@@ -494,7 +494,7 @@ extern "C" {
     }
 
     void LoadTerrainFile(WORLDINFO *world) {
-        LEVELDATA_PC *level = world->current_level;
+        LEVELDATA *level = world->current_level;
 
         world->terrain = NULL;
         if ((level->flags & LEVEL_TERRAIN) != 0) {
@@ -785,7 +785,7 @@ extern "C" {
         f32 best_distance;
         f32 distance;
         AREA_LEVEL_LOAD *load;
-        LEVELDATA_PC *status;
+        LEVELDATA *status;
         if (LOADEROFF != 0 || BGLOAD == 0 || world->area == NULL || (world->area->flags & AREAFLAG_SINGLE_BUFFER) || NewLData != NULL ||
             Mission_Active(NULL) != NULL) {
             return;

@@ -37,7 +37,7 @@ typedef struct level_sfx_world_view_s { // size 0x5078
     u8 unknown_46e8[4];                 // 0x46e8
     void *grabber;                      // 0x46ec
     u8 unknown_46f0[0x960];             // 0x46f0
-    LEVEL_SFX_PULSE_PC *pulses_sys;     // 0x5050
+    LEVEL_SFX_PULSE *pulses_sys;        // 0x5050
     u8 unknown_5054[0x18];              // 0x5054
     i32 nlevers;                        // 0x506c
     u8 unknown_5070[4];                 // 0x5070
@@ -54,12 +54,12 @@ typedef struct level_sfx_cut_s { // size 0xe8
     LEVEL_SFX_CUT_SLOT sfx[6];   // 0x70
 } LEVEL_SFX_CUT;
 
-AREA_DATA_PC *DEATHSTARRESCUE_ADATA;
+AREA_DATA *DEATHSTARRESCUE_ADATA;
 i32 ShadowMode = 0;
 
 i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    AREA_DATA_PC *area = world->area;
+    AREA_DATA *area = world->area;
     if ((area == HOTHESCAPE_ADATA || world->current_level == JABBASPALACEE_LDATA) && on_platform == 0) {
         return GetSfxId("fs_ice");
     }
@@ -84,7 +84,7 @@ i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform) {
 }
 
 i32 GameAudio_CheckReverb_LSW(void) {
-    LEVELDATA_PC *level = WorldInfo_CurrentlyActive()->current_level;
+    LEVELDATA *level = WorldInfo_CurrentlyActive()->current_level;
     if (level == dat_0087b200) {
         return 1;
     }
@@ -103,9 +103,9 @@ void SetLevelSfxBits(WORLDINFO *world) {
     i32 j;
     i32 character_id;
     i32 portal;
-    LEVELDATA_PC *level;
+    LEVELDATA *level;
     i16 model_id;
-    CHARACTERDATA_PC *character;
+    CHARACTERDATA *character;
     PLAYERCHARACTERCONFIG *game_character;
     CHARACTER_EFFECT_CONFIG *effect;
     i32 double_score_sfx;

@@ -87,7 +87,7 @@ static void DrawLightningBolts(GAMEOBJECT *object, GAMEOBJECT *target, i32 light
 }
 
 typedef struct GIZFORCE_GROUP_BEST { // size 0x28
-    GIZFORCE_PC *forces[9];          // 0x00
+    GIZFORCE *forces[9];             // 0x00
     u8 flags;                        // 0x24
     u8 unknown_25;                   // 0x25
     u8 count;                        // 0x26
@@ -111,7 +111,7 @@ typedef struct GIZFORCE_BEST {  // size 0xa4
 
 typedef struct GIZFORCE_SYS_BEST { // size 0x18
     u8 unknown_000[4];             // 0x00
-    GIZFORCE_PC **visible_forces;  // 0x04
+    GIZFORCE **visible_forces;     // 0x04
     u8 unknown_008[8];             // 0x08
     u16 visible_count;             // 0x10
     u8 unknown_012[2];             // 0x12
@@ -120,7 +120,7 @@ typedef struct GIZFORCE_SYS_BEST { // size 0x18
 
 typedef struct GIZFORCE_OBJECT_BEST { // size 0x10d4
     u8 unknown_000[0x10cc];           // 0x0000
-    GIZFORCE_PC *target;              // 0x10cc
+    GIZFORCE *target;                 // 0x10cc
     GAMEANIMOBJ *animation;           // 0x10d0
 } GIZFORCE_OBJECT_BEST;
 
@@ -166,7 +166,7 @@ static void *GizForces_ReserveBufferSpace(void *world_ptr) {
 
 typedef struct trigger_force_object_s { // size 0x10d0
     u8 unknown_000[0x10cc];             // 0x0000
-    GIZFORCE_PC *force;                 // 0x10cc
+    GIZFORCE *force;                    // 0x10cc
 } TRIGGER_FORCE_OBJECT;
 
 /* Append to gizforce.c; canonical164B PC record/system344 view already owned. */

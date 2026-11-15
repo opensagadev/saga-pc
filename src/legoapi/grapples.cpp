@@ -431,7 +431,7 @@ extern "C" {
                 continue;
             }
             if (grapple->disabled && !grapple->reversed && Grapple_Occupied(grapple, NULL, NULL) == NULL) {
-                NURND_VERTEX3D_PC vertices[2];
+                NURND_VERTEX3D vertices[2];
                 vertices[0].position = grapple->hook_position;
                 if (GrappleCurvedRopeEnabled != 0) {
                     DrawRopeCurved(&vertices[0].position, grapple->rope_points, 6, 0, NULL);
@@ -520,7 +520,7 @@ extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
         return;
     }
 
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     NUVEC *positions[2];
     grapple = (GRAPPLE_MOTION *)object->grapple;
     vertices[1].colour = vertices[0].colour = grapple->reversed ? 0xff003f5fu : GRAPPLE_RGBA;
@@ -578,7 +578,7 @@ extern "C" {
         return 0;
     }
 
-    void Grapples_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+    void Grapples_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
         WORLDINFO *w = (WORLDINFO *)world_ptr;
         i32 i;
         (void)data;
@@ -817,10 +817,10 @@ extern "C" {
     i32 LEGOHINT_GRAPPLE = -1;
     GRAPPLE_DYNAMIC DynamicGrapplePc[4] = {0};
     i32 Grapple_RopeSwingsAvailable = 0;
-    static ADDGIZMOTYPE_PC GizmoRegistryGrapplesAddTypePc = {0};
+    static ADDGIZMOTYPE GizmoRegistryGrapplesAddTypePc = {0};
 
-    ADDGIZMOTYPE_PC *Grapples_RegisterGizmo(i32 type_id) {
-        ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGrapplesAddTypePc;
+    ADDGIZMOTYPE *Grapples_RegisterGizmo(i32 type_id) {
+        ADDGIZMOTYPE *addtype = &GizmoRegistryGrapplesAddTypePc;
         *addtype = Default_ADDGIZMOTYPE;
         addtype->name = GizmoRegistryGrapplesNamePtrPc;
         addtype->fns.early_update_fn = NULL;
@@ -836,12 +836,12 @@ extern "C" {
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->prefix = "";
         addtype->fns.options = 0x8;
-        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Grapples_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))Grapples_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)Grapples_AddGizmos;
         addtype->fns.late_update_fn = (void (*)(void *, void *, f32))Grapples_Update;
         addtype->fns.draw_fn = (void (*)(void *, void *, f32))Grapples_Draw;
         addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Grapple_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
+        addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
         addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Grapple_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)Grapple_GetNumOutputs;
         addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Grapple_Activate;
@@ -851,7 +851,7 @@ extern "C" {
         addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))Grapples_StoreProgress;
         addtype->fns.reset_fn = (void (*)(void *, void *, void *))Grapples_Reset;
         addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))Grapples_ReserveBufferSpace;
-        addtype->fns.load_fn = (i32(*)(void *, void *))Grapples_Load;
+        addtype->fns.load_fn = (i32 (*)(void *, void *))Grapples_Load;
         grapple_gizmotype_id = type_id;
         return addtype;
     }
@@ -1306,7 +1306,7 @@ extern "C" {
 }
 
 extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material) {
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     NUVEC previous;
     NUVEC middle;
     i32 index;

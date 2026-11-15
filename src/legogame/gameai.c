@@ -117,26 +117,26 @@ i32 NuHGobjRndr(NUHGOBJ_EVAL *, NUMTX *, i32, i16 *);
 void RegisterAIScriptActions(AIACTIONDEF *);
 void RegisterAIScriptConditions(AICONDITIONDEF *);
 void SetScriptErrorLevel(i32);
-void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
-void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC);
+void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
+void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
 void InitFn_LevelCharacterName(AI_CHARACTER_NAME);
 void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME);
-void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID_PC);
+void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID);
 void InitFn_GlobalCharacterTypeID(i32 (*)(char *));
 void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME);
 void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER);
 void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ);
 void InitFn_ClearAICreatures(AI_CLEAR_CREATURES);
 void InitFn_GameAILoad(void (*)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *));
-void InitFn_AIActionParseSpeed(AI_PARSE_SPEED_PC);
-void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH_PC);
-void InitFn_GetViewRange(AI_CHARACTER_DISTANCE_PC);
-void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE_PC);
-void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE_PC);
-void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC);
+void InitFn_AIActionParseSpeed(AI_PARSE_SPEED);
+void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH);
+void InitFn_GetViewRange(AI_CHARACTER_DISTANCE);
+void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE);
+void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE);
+void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE);
 void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT);
 void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN);
-void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION_PC);
+void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION);
 void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *);
 i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
 void ClearAICreatures(void);
@@ -1476,7 +1476,7 @@ void ClearSpecialMove(GAMEOBJECT *object) {
     object->indy_guideline_state.endpoint = 0;
 }
 
-void AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
+void AIPathCnxControlSysReset(AI_CONTROL_SYSTEM *system) {
     i32 index;
     if (system == NULL) {
         return;
@@ -1489,7 +1489,7 @@ void AIPathCnxControlSysReset(AI_CONTROL_SYSTEM_PC *system) {
     }
 }
 
-struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *system, AISYS_PC *ai, AIPATH *path, char *from, char *to,
+struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *system, AISYS_PC *ai, AIPATH *path, char *from, char *to,
                                                         i32 target_type, char *target_name, i32 fake_animation_id, i32 gizmo_output) {
     nuhspecial_s special;
     struct AIPATHCNXCONTROLLER_s *controller = NULL;
@@ -1579,7 +1579,7 @@ struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *sy
     return controller;
 }
 
-void fun_0043cf70(AI_CONTROL_SYSTEM_PC *system, AI_CONTROL_SLOT *controller) {
+void fun_0043cf70(AI_CONTROL_SYSTEM *system, AI_CONTROL_SLOT *controller) {
     if (system != NULL && controller != NULL) {
         NuLinkedListRemove(&system->active, &controller->links);
         memset(controller, 0, sizeof(*controller));
@@ -1645,7 +1645,7 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
     }
 }
 
-void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM_PC *system) {
+void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
     struct AIPATHCNXCONTROLLER_s *controller;
     NUINSTANIM *animation;
     CONTROLLER_CUT_VIEW *cut;
@@ -2130,7 +2130,7 @@ i32 AI_GetMaxGizmos(void *world_ptr) {
     return 32;
 }
 
-void AI_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void AI_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD *)world_ptr)->items;
     i32 i;
     (void)data;
@@ -2216,10 +2216,10 @@ void AI_Activate(void *input, i32 active) {
     }
 }
 
-static ADDGIZMOTYPE_PC GizmoRegistryAIAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryAIAddTypePc = {0};
 
-ADDGIZMOTYPE_PC *AI_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryAIAddTypePc;
+ADDGIZMOTYPE *AI_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE *addtype = &GizmoRegistryAIAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.options = 0x0;
     addtype->fns.early_update_fn = NULL;
@@ -2244,10 +2244,10 @@ ADDGIZMOTYPE_PC *AI_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->name = "AIProcessor";
     addtype->prefix = "ai_";
-    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))AI_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))AI_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)AI_AddGizmos;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))AI_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))AI_GetOutput;
+    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))AI_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))AI_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)AI_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))AI_Activate;
@@ -2301,7 +2301,7 @@ void GameAIProcess(void) {
     i32 ground_checks;
     u8 ai_update_flags;
     i32 defend;
-    BOLTTYPE_PC *bolt;
+    BOLTTYPE *bolt;
     f32 scale;
     f32 dot;
     f32 threshold;
@@ -2892,7 +2892,7 @@ void GameAISysReset(AISYS_PC *system) {
 }
 
 void *AIPathCnxControlSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
-    AI_CONTROL_SYSTEM_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
+    AI_CONTROL_SYSTEM *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
         system->controllers = AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_CONTROL_SLOT));

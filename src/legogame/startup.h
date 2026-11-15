@@ -26,7 +26,7 @@ extern "C" {
     extern i32 loadlegal_done;
     extern i32 LoadPerm_StringsLoaded;
     extern NUGSCN *save_icon_scene;
-    extern LEVELSPLINE_PC LevelSplinesTable[26];
+    extern LEVELSPLINE LevelSplinesTable[26];
     extern i32 LevelHackDataSize;
     extern i16 ID_DEFAULTCHARACTER_LSW_A;
     extern i16 ID_DEFAULTCHARACTER_LSW_B;
@@ -59,7 +59,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern CHARFIXUP_PC CharacterFixupTable[219];
+    extern CHARFIXUP CharacterFixupTable[219];
 
     extern TEXTENTRY Text_TableMenu[167];
     extern TEXTENTRY Text_TableGame[347];

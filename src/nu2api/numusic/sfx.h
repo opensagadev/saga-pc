@@ -20,7 +20,7 @@ extern "C" {
     extern u16 GlobalSfxBits[100];
     i32 GetSfxId(char *name);
     void PlaySfxByIdEx(i32, NUVEC *, f32, f32);
-    extern SFX_RECORD_PC *SfxInfo;
+    extern SFX_RECORD *SfxInfo;
     void InitSfx(VARIPTR *cursor, VARIPTR end, const char *file);
 #ifdef __cplusplus
 }

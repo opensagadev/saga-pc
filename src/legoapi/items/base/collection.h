@@ -20,9 +20,9 @@ extern "C" {
     i32 InCollectList_Index(i32, COLLECTID_PC *, i32);
     i32 Collection_GotAnyOfType(i32, u32);
 
-    void Collection_CreateMaster(char *, i16 *, COLLECTION_BUILD_PC *, i32, f32);
-    void Collection_CreateCustom(char *, i16 *, COLLECTION_BUILD_PC *, u32, u32, u32, i32, i32, VARIPTR *, VARIPTR *, i32, f32);
-    i32 Collection_GetIDList(COLLECTION_BUILD_PC *, u32, u32, i16 *, i32 *, i32 *, i32);
+    void Collection_CreateMaster(char *, i16 *, COLLECTION_BUILD *, i32, f32);
+    void Collection_CreateCustom(char *, i16 *, COLLECTION_BUILD *, u32, u32, u32, i32, i32, VARIPTR *, VARIPTR *, i32, f32);
+    i32 Collection_GetIDList(COLLECTION_BUILD *, u32, u32, i16 *, i32 *, i32 *, i32);
     extern i32 COLLECTION_COMPLETIONCOUNT;
 
     void Collection_Configure(char *, VARIPTR *, VARIPTR *);
@@ -55,7 +55,7 @@ extern "C" {
     extern f32 COLLECTION_DX;
     extern f32 COLLECTION_DY;
     extern f32 COLLECTION_ICONSIZE;
-    void Collection_Draw(COLLECTION_BUILD_PC *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
+    void Collection_Draw(COLLECTION_BUILD *, f32, f32, f32, APICHARACTERMODELLIST *, f32, i32);
 #ifdef __cplusplus
 }
 #endif

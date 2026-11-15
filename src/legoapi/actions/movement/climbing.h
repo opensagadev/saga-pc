@@ -35,14 +35,14 @@ typedef struct climb_slot_s {     // size 0x20
     struct AIPATHCNX *connection; // 0x14
     struct AIPATH *path;          // 0x18
     u32 flags;                    // 0x1c
-} CLIMB_SLOT_PC;
+} CLIMB_SLOT;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern i32 LedgeTerrain_CheckAnims;
     extern i32 ClimbNormalProbeCount;
-    void ClimbObject_FindNormal(CLIMB_SLOT_PC *object);
+    void ClimbObject_FindNormal(CLIMB_SLOT *object);
 #ifdef __cplusplus
 }
 #endif
@@ -80,7 +80,7 @@ extern "C" {
     void WeaponScalingCode(struct gameobject_s *);
     void LedgeTerrain_MoveCode(struct gameobject_s *);
     void InitClimbObjectSys(struct WORLDINFO_s *world);
-    CLIMB_SLOT_PC *FindClimbObject(struct climb_system_s *system, struct AIPATHCNX *connection);
+    CLIMB_SLOT *FindClimbObject(struct climb_system_s *system, struct AIPATHCNX *connection);
 #ifdef __cplusplus
 }
 #endif

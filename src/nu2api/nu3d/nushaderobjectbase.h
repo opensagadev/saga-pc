@@ -25,12 +25,12 @@ struct PC_SHADER_WATER_MATERIAL_VIEW;
 
 #if SAGA_NU2API_NU3D_NUSHADEROBJECTBASE_H_PART == 1 && !defined(SAGA_NU2API_NU3D_NUSHADEROBJECTBASE_H_STOP)
 
-struct PC_SHADER_PARAMETER_LOCAL_PC;
+struct PC_SHADER_PARAMETER_LOCAL;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct PC_SHADER_PARAMETER_LOCAL_PC *PCShaderAllocateParameter(NuShaderObject *, i32);
+    struct PC_SHADER_PARAMETER_LOCAL *PCShaderAllocateParameter(NuShaderObject *, i32);
 #ifdef __cplusplus
 }
 #endif

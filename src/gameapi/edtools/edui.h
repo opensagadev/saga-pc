@@ -25,7 +25,7 @@
 struct edcam_s;
 struct numtl_s;
 
-/* FRAME_PAD_PC.digital_buttons and friends: PS2 pad bits. The level editor's pad help (LevelEditor::LevelEditor,
+/* FRAME_PAD.digital_buttons and friends: PS2 pad bits. The level editor's pad help (LevelEditor::LevelEditor,
  * SetPadText) labels each; it calls 0x400 "R1", which is R3. */
 #define PAD_BUTTON_L2 0x1
 #define PAD_BUTTON_R2 0x2
@@ -44,7 +44,7 @@ struct numtl_s;
 #define PAD_BUTTON_DOWN 0x4000
 #define PAD_BUTTON_LEFT 0x8000
 
-typedef struct FRAME_PAD_PC {     // size 0xa4
+typedef struct FRAME_PAD {        // size 0xa4
     i32 device;                   // 0x00
     i32 slot;                     // 0x04
     i32 stage;                    // 0x08
@@ -101,7 +101,7 @@ typedef struct FRAME_PAD_PC {     // size 0xa4
     u8 unknown_b0;            // 0xa0
     u8 unknown_b1;            // 0xa1
     u8 reserveda2[2];         // 0xa2
-} FRAME_PAD_PC;
+} FRAME_PAD;
 
 #ifdef __cplusplus
 extern "C" {
@@ -169,7 +169,7 @@ struct eduiitem_s {              // size 0x48
     char *text;                                                                                              // 0x24
     i32 colours[4];                                                                                          // 0x28
     i32 (*input)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2, u32 arg3);                      // 0x38
-    i32 (*process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);   // 0x3c
+    i32 (*process)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD *arg3);      // 0x3c
     i32 (*render)(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5); // 0x40
     void (*destroy)(struct eduimenu_s *arg0, struct eduiitem_s *arg1);                                       // 0x44
 };
@@ -185,21 +185,21 @@ struct edui_gradient_node_s {              // size 0x20
     u32 metadata;                          // 0x1c
 };
 
-struct ed_module_s {                                     // size 0x38
-    struct ed_module_s *next;                            // 0x00
-    struct ed_module_s *previous;                        // 0x04
-    char *name;                                          // 0x08
-    void (*init)(void);                                  // 0x0c
-    void (*close)(void);                                 // 0x10
-    void (*activate)(void);                              // 0x14
-    void (*deactivate)(void);                            // 0x18
-    void (*apply)(void);                                 // 0x1c
-    void (*write)(i32 arg0);                             // 0x20
-    void (*read)(i32 arg0);                              // 0x24
-    u32 block_id;                                        // 0x28
-    i32 (*process)(f32 arg0, struct FRAME_PAD_PC *arg1); // 0x2c
-    void (*render)(void);                                // 0x30
-    void *reserved;                                      // 0x34
+struct ed_module_s {                                  // size 0x38
+    struct ed_module_s *next;                         // 0x00
+    struct ed_module_s *previous;                     // 0x04
+    char *name;                                       // 0x08
+    void (*init)(void);                               // 0x0c
+    void (*close)(void);                              // 0x10
+    void (*activate)(void);                           // 0x14
+    void (*deactivate)(void);                         // 0x18
+    void (*apply)(void);                              // 0x1c
+    void (*write)(i32 arg0);                          // 0x20
+    void (*read)(i32 arg0);                           // 0x24
+    u32 block_id;                                     // 0x28
+    i32 (*process)(f32 arg0, struct FRAME_PAD *arg1); // 0x2c
+    void (*render)(void);                             // 0x30
+    void *reserved;                                   // 0x34
 };
 
 struct eduiiattr_s { // size 0x10
@@ -428,36 +428,36 @@ extern "C" {
     void eduiMenuRender(struct eduimenu_s *menu);
     void cbSubMenu(struct eduimenu_s *menu, struct eduiitem_s *item);
     extern struct eduimenu_s *default_active_menu;
-    i32 eduiMenuProcessAux(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
-    i32 eduiProcessInteracts(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
+    i32 eduiMenuProcessAux(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD *pad);
+    i32 eduiProcessInteracts(struct eduimenu_s *menu, struct FRAME_PAD *pad);
     extern struct eduimenu_s *submenu0;
     void eduiCreateMessageMenu(struct eduimenu_s *parent, char *message, i32 highlighted);
     i32 eduiMenuAttach(struct eduimenu_s *menu, struct eduimenu_s *child);
-    i32 eduiMenuProcess(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad);
+    i32 eduiMenuProcess(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD *pad);
     void eduiItemSliderSetVal(struct edui_slider_s *item, f32 value);
     void eduicbItemSliderDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 eduicbProcessColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
-    i32 eduicbProcessSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
-    i32 eduicbProcessSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 eduicbProcessColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD *arg3);
+    i32 eduicbProcessSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD *arg3);
+    i32 eduicbProcessSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD *arg3);
     i32 eduicbRenderCheck(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     i32 eduicbRenderColourSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     i32 eduicbRenderSel(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     i32 eduicbRenderSlider(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     i32 eduicbRenderSliderInt(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     void eduicbItemTextPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 eduicbProcessTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 eduicbProcessTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD *arg3);
     i32 eduicbRenderTextPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     void eduiItemTextPickSetFmt(struct edui_textpicker_s *item, char *format);
     void eduicbItemFilePickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
-    i32 eduicbProcessFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD_PC *arg3);
+    i32 eduicbProcessFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, f32 arg2, struct FRAME_PAD *arg3);
     i32 eduicbRenderFilePick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     void eduiMenuDestroyItems(struct eduimenu_s *menu);
     void eduiMenuDestroy(struct eduimenu_s *menu);
     i32 eduiMenuDetach(struct eduimenu_s *menu);
-    i32 eduiMenuProcessInput(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD_PC *pad, i32 item_result);
+    i32 eduiMenuProcessInput(struct eduimenu_s *menu, f32 delta_time, struct FRAME_PAD *pad, i32 item_result);
     void eduicbMenuCloseAllexpanders(struct eduimenu_s *menu);
     void cbInteractMenuKeySelect(struct eduimenu_s *menu);
-    i32 eduiCheckForPadMenuCancel(struct eduimenu_s *menu, struct FRAME_PAD_PC *pad);
+    i32 eduiCheckForPadMenuCancel(struct eduimenu_s *menu, struct FRAME_PAD *pad);
     void eduicbItemGradPickDestroy(struct eduimenu_s *arg0, struct eduiitem_s *arg1);
     i32 eduicbRenderGradPick(struct eduimenu_s *arg0, struct eduiitem_s *arg1, i32 arg2, i32 arg3, i32 arg4, i32 arg5);
     void cbInteractMenuScrollTo(struct eduimenu_s *menu, char *text);
@@ -570,10 +570,10 @@ extern "C" {
     eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours);
     eduimenu_s *eduiGetActiveMenuParent(void);
     extern i32 eduiPropTextPos;
-    f32 eduiGetAnalougePadValue(FRAME_PAD_PC *pad);
+    f32 eduiGetAnalougePadValue(FRAME_PAD *pad);
     i32 eduiGetCameraEnabled(void);
     i32 eduiItemPropSetText(edui_prop_s *item, char *text);
-    i32 eduiUsedAlgPad(FRAME_PAD_PC *pad);
+    i32 eduiUsedAlgPad(FRAME_PAD *pad);
     void eduiFlushInteracts(void);
     void eduiGetCursorCoords(f32 *x, f32 *y);
     void eduiGetCursorDelta(f32 *x, f32 *y);
@@ -582,7 +582,7 @@ extern "C" {
     void eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item);
     void eduiMenuSetAttr(eduimenu_s *menu, const u32 *colours);
     void eduiMenuSortItemsByTxt(eduimenu_s *menu);
-    void eduiProcessCursor(f32 delta_time, FRAME_PAD_PC *pad);
+    void eduiProcessCursor(f32 delta_time, FRAME_PAD *pad);
     void eduiRenderCursor(void);
     void eduiSetActiveMenu(eduimenu_s *menu);
     void eduiSetCursorCoords(f32 x, f32 y);

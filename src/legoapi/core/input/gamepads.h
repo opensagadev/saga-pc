@@ -31,20 +31,20 @@ extern "C" {
     void NewRumble(void *, f32, i32);
     void NewBuzz(void *, f32, i32);
     f32 GamePad_Rotate(GAMEOBJECT *);
-    i32 GamePad_Waggle(GAMEPAD_PC *);
+    i32 GamePad_Waggle(GAMEPAD *);
     extern i32 GAMEPAD_DUP;
     extern i32 GAMEPAD_DDOWN;
     extern i32 GAMEPAD_DLEFT;
     extern i32 GAMEPAD_DRIGHT;
     extern i32 GAMEPAD_LIFT;
-    u16 GamePad_InputAngle(GAMEOBJECT *, GAMEPAD_PC *);
+    u16 GamePad_InputAngle(GAMEOBJECT *, GAMEPAD *);
     extern u32 GAMEPAD_JUMP;
     extern u32 GAMEPAD_ACTION;
     extern u32 GAMEPAD_SPECIAL;
     extern u32 GAMEPAD_TAG;
     extern void NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index);
     void ResetRumble(RUMBLE_PACKET_RESOURCE *);
-    GAMEPAD_PC *GamePad_Allocate(void);
+    GAMEPAD *GamePad_Allocate(void);
     extern u32 GAMEPAD_TOGGLELEFT;
     extern u32 GAMEPAD_TOGGLERIGHT;
     extern u32 GAMEPAD_START;
@@ -61,7 +61,7 @@ extern "C" {
 
     i32 ReadPad(i32 port);
     void ReadPads(void);
-    extern FRAME_PAD_PC *pActivePad;
+    extern FRAME_PAD *pActivePad;
     void PadOutPause(i32 port, struct WORLDINFO_s *world);
     void DoInput(WORLDINFO *world);
     void PadOutPause(i32, WORLDINFO *);

@@ -106,14 +106,14 @@ typedef struct BOLTTYPE_PC_s { // size 0xa4
     }; // 0x66
 
     struct nuhspecial_s specials[5]; // 0x68
-} BOLTTYPE_PC;
+} BOLTTYPE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern BOLTTYPE_PC GlobalBoltType[44];
+    extern BOLTTYPE GlobalBoltType[44];
 
-    extern BOLTTYPE_PC GlobalBoltType_Default;
+    extern BOLTTYPE GlobalBoltType_Default;
 #ifdef __cplusplus
 }
 #endif
@@ -218,7 +218,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     u8 unknown_4704[0xc];                                      // 0x4704
     LEVELSFXENTRY level_sfx[64];                               // 0x4710
     i32 level_sfx_count;                                       // 0x4b10
-    BOLTTYPE_PC bolt_types[8];                                 // 0x4b14
+    BOLTTYPE bolt_types[8];                                    // 0x4b14
     struct FADER_s *faders;                                    // 0x5034
     i32 fader_count;                                           // 0x5038
     void *mini_trooper_packets;                                // 0x503c
@@ -338,7 +338,7 @@ typedef struct minikit_s {          // size 0x18
     i8 area_index;                  // 0x09
     i16 model_id;                   // 0x0a
     nuhspecial_s shadow;            // 0x0c
-} MINIKIT_PC;
+} MINIKIT;
 
 typedef struct HUBMINIKIT_s HUBMINIKIT_s;
 typedef struct PORTALDOOR_s PORTALDOOR_s;
@@ -388,9 +388,9 @@ typedef struct level_sfx_gizmotype_s {
 
 typedef struct world_minikit_reader_s { // size 0x2ae4
     u8 unknown_0000[0x2968];            // 0x0000
-    MINIKIT_PC minikit;                 // 0x2968
+    MINIKIT minikit;                    // 0x2968
     u8 unknown_2980[4];                 // 0x2980
-    MINIKIT_PC **pieces_by_id;          // 0x2984
+    MINIKIT **pieces_by_id;             // 0x2984
     u8 unknown_2988[0x158];             // 0x2988
     u8 *hub_minikits;                   // 0x2ae0
 } WORLD_MINIKIT_READER;

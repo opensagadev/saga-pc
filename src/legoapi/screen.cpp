@@ -318,7 +318,7 @@ extern "C" {
     }
 
     static f32 GameFogDuration = 0;
-    GAMEFOG_STATE_PC GameFogOld = {{0}};
+    GAMEFOG_STATE GameFogOld = {{0}};
     static void *GameFogSet = 0;
     static i32 GameFogSnap = 0;
     nuhspecial_s RenderBackdropSpecials[4] = {0};
@@ -341,16 +341,16 @@ extern "C" {
     i32 ScreenStillY = -12;
     i32 ScreenStillWidth = 10260;
     i32 ScreenStillHeight = 3592;
-    static GAMEFOG_STATE_PC GameFogNew = {{0}};
-    GAMEFOG_STATE_PC GameFog = {{0}};
+    static GAMEFOG_STATE GameFogNew = {{0}};
+    GAMEFOG_STATE GameFog = {{0}};
     i32 back_rgba[2] = {0};
     struct NUGSCN_s *FadeLoop_ObjScene = 0;
     NUGSCN *backdrop_scene = 0;
     static f32 dof_fstop = 0;
 
     void GameFog_Update(WORLDINFO *world) {
-        RTL_FOG_MIGRATION_PC *previous = (RTL_FOG_MIGRATION_PC *)GameFogSet;
-        RTL_FOG_MIGRATION_PC *fog;
+        RTL_FOG_MIGRATION *previous = (RTL_FOG_MIGRATION *)GameFogSet;
+        RTL_FOG_MIGRATION *fog;
         f32 blend;
         if (world->rtl_set != NULL && !(CUTSTOPGAME != 0 && CutStopInfo != NULL && (((CUTINFO *)CutStopInfo)->flags & 4) != 0)) {
             fog = rtlGetFogSet((RTL_SET *)world->rtl_set, &pNuCam->mtx.translation);
@@ -450,7 +450,7 @@ extern "C" {
     }
 }
 
-extern "C" void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
+extern "C" void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours) {
     CUT_DISPLAY_VIEW *cut = (CUT_DISPLAY_VIEW *)CutStopInfo;
     i32 top_r;
     i32 top_g;

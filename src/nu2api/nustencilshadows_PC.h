@@ -48,7 +48,7 @@ typedef struct nutexbmp_colour_s {
     u8 green;
     u8 red;
     u8 alpha;
-} NUTEXBMP_COLOUR_PC;
+} NUTEXBMP_COLOUR;
 
 typedef struct nutexbmp_s { // size 0x24
     i32 type;               // 0x00
@@ -58,7 +58,7 @@ typedef struct nutexbmp_s { // size 0x24
     u8 *data;               // 0x10
     u8 *palette;            // 0x14
     u32 unknown_18[3];      // 0x18
-} NUTEXBMP_PC;
+} NUTEXBMP;
 
 typedef struct nulgtvertex_s { // size 0x18
     f32 x;                     // 0x00
@@ -133,7 +133,7 @@ extern "C" {
     extern void *NuDebrisVertexData;
     extern u32 NuDebrisFrameVertexCount;
 
-    typedef struct debris_particle_chunk_s DEBRIS_PARTICLE_CHUNK_PC;
+    typedef struct debris_particle_chunk_s DEBRIS_PARTICLE_CHUNK;
     void PCDeviceCreateVertexBuffer(u32, u32, u32, i32, PC_BUFFER_RESOURCE **);
     void PCDeviceCreateIndexBuffer(u32, u32, i32, i32, PC_BUFFER_RESOURCE **, HANDLE *);
     extern i32 nu_water_reset_state;
@@ -165,7 +165,7 @@ extern "C" {
     extern u8 NuUnresolvedTextureDds[0x2080];
     extern const u8 NuUnresolvedTextureDDS[8320];
     extern char NuTexBmpErrorText[0x80];
-    extern NUTEXBMP_COLOUR_PC NuTexBmpPalette[0x100];
+    extern NUTEXBMP_COLOUR NuTexBmpPalette[0x100];
     extern i32 NuQFntScanX;
     extern i32 NuQFntScanY;
     extern i32 SceneUploadBufferSizePC;
@@ -188,9 +188,9 @@ extern "C" {
         f32 height_scale;                          // 0x24
         f32 x_offset;                              // 0x28
         f32 y_offset;                              // 0x2c
-    } RENDER_POST_VIEWPORT_PREFIX_PC;
+    } RENDER_POST_VIEWPORT_PREFIX;
 
-    extern RENDER_POST_VIEWPORT_PREFIX_PC RenderPostViewportPrefix;
+    extern RENDER_POST_VIEWPORT_PREFIX RenderPostViewportPrefix;
     extern u32 NuDebrisIdealDynamicVBSize;
     extern u8 PCGraphicsRenderTextureActive[32];
     extern i32 PCGraphicsRenderTextureBytes;
@@ -231,10 +231,10 @@ extern "C" {
     void PCDeviceDrawPrimitivePc(i32, u32, u32);
     void PCDeviceDrawIndexedPrimitivePc(i32, i32, u32, u32, u32, u32);
     extern i32 NuDisplayMaterialDistortTexture;
-    typedef void (*PC_DISPLAY_ITEM_HANDLER_PC)(void *);
+    typedef void (*PC_DISPLAY_ITEM_HANDLER)(void *);
 
-    extern PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefix[49];
-    extern PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable;
+    extern PC_DISPLAY_ITEM_HANDLER PCDisplayItemHandlerPrefix[49];
+    extern PC_DISPLAY_ITEM_HANDLER *CurrentItemTable;
 #ifdef __cplusplus
 }
 #endif
@@ -255,11 +255,11 @@ extern "C" {
     extern i32 NuLgtStateEnabled;
     extern i32 NuLgtStateUnknown;
 
-    typedef struct PC_GOBJ_REGISTRY_AUX_PC {  // size 0x10
-        struct PC_GOBJ_REGISTRY_AUX_PC *next; // 0x0
-        u8 unknown_04[8];                     // 0x4
-        void *payload;                        // 0xc
-    } PC_GOBJ_REGISTRY_AUX_PC;
+    typedef struct PC_GOBJ_REGISTRY_AUX {  // size 0x10
+        struct PC_GOBJ_REGISTRY_AUX *next; // 0x0
+        u8 unknown_04[8];                  // 0x4
+        void *payload;                     // 0xc
+    } PC_GOBJ_REGISTRY_AUX;
 
     extern i32 NuGobjRegistryInitializedPc;
     extern i32 NuGobjRegistryCountPc;
@@ -299,7 +299,7 @@ typedef struct debris_part_header_s { // size 0xa4c
     f32 texture_v1;                   // 0x034
     u8 fields_038[20];                // 0x038
     DEBRIS_PARTICLE_FRAME frames[64]; // 0x04c
-} DEBRIS_PART_HEADER_PC;
+} DEBRIS_PART_HEADER;
 
 typedef struct SCENE_VIDEO_RESOURCE_HEADER { // size 0x18
     u16 vertex_buffer_count;                 // 0x00
@@ -320,7 +320,7 @@ extern "C" {
     extern NUDISPLAYLISTITEM nudlist_2d_static;
     extern VARIPTR nudlist_stream_cursor;
     void PCDeviceCreateVertexDeclaration(const struct PC_VERTEX_ELEMENT *, struct PC_TEXTURE_RESOURCE **);
-    extern DEBRIS_PART_HEADER_PC *NuDebrisLastHeader;
+    extern DEBRIS_PART_HEADER *NuDebrisLastHeader;
     extern SCENE_VIDEO_RESOURCE_HEADER SceneVideoResourcesPC;
     extern VARIPTR SceneUploadBufferStartPC;
     extern VARIPTR SceneUploadBufferCursorPC;
@@ -340,25 +340,25 @@ extern "C" {
         struct PC_TEXTURE_RESOURCE *resource; // 0x10
     } PC_GOBJ_NATIVE_RESOURCE;
 
-    typedef struct PC_GOBJ_REGISTRY_CHILD_PC {    // size 0x3c
-        struct PC_GOBJ_REGISTRY_CHILD_PC *next;   // 0x00
+    typedef struct PC_GOBJ_REGISTRY_CHILD {       // size 0x3c
+        struct PC_GOBJ_REGISTRY_CHILD *next;      // 0x00
         u8 unknown_04[0x1c];                      // 0x04
         void *owned_buffer;                       // 0x20
         u8 unknown_24[8];                         // 0x24
-        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;       // 0x2c
+        PC_GOBJ_REGISTRY_AUX *auxiliary;          // 0x2c
         u8 unknown_30[8];                         // 0x30
         PC_GOBJ_NATIVE_RESOURCE *native_resource; // 0x38
-    } PC_GOBJ_REGISTRY_CHILD_PC;
+    } PC_GOBJ_REGISTRY_CHILD;
 
-    typedef struct PC_GOBJ_REGISTRY_ENTRY_PC {      // size 0x14
-        struct PC_GOBJ_REGISTRY_ENTRY_PC *next;     // 0x00
-        struct PC_GOBJ_REGISTRY_ENTRY_PC *previous; // 0x04
-        u8 unknown_08[4];                           // 0x08
-        PC_GOBJ_REGISTRY_CHILD_PC *children;        // 0x0c
-        PC_GOBJ_REGISTRY_AUX_PC *auxiliary;         // 0x10
-    } PC_GOBJ_REGISTRY_ENTRY_PC;
+    typedef struct PC_GOBJ_REGISTRY_ENTRY {      // size 0x14
+        struct PC_GOBJ_REGISTRY_ENTRY *next;     // 0x00
+        struct PC_GOBJ_REGISTRY_ENTRY *previous; // 0x04
+        u8 unknown_08[4];                        // 0x08
+        PC_GOBJ_REGISTRY_CHILD *children;        // 0x0c
+        PC_GOBJ_REGISTRY_AUX *auxiliary;         // 0x10
+    } PC_GOBJ_REGISTRY_ENTRY;
 
-    extern PC_GOBJ_REGISTRY_ENTRY_PC *NuGobjRegistryFirstPc;
+    extern PC_GOBJ_REGISTRY_ENTRY *NuGobjRegistryFirstPc;
 #ifdef __cplusplus
 }
 #endif
@@ -495,11 +495,11 @@ extern "C" {
 
     extern GRAPHICS_RENDER_TEXTURE PCGraphicsRenderTextures[32];
 
-    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDebrisPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialGlassPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnDecalPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialFaceOnPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR_PC *NuDisplayMaterialDefaultPrograms;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDebrisPrograms;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialGlassPrograms;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnDecalPrograms;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnPrograms;
+    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDefaultPrograms;
 #ifdef __cplusplus
 }
 #endif
@@ -527,7 +527,7 @@ extern "C" {
 
     /* Minimum selected native producer/reader view; original allocation unknown. */
     typedef struct FRAME_NATIVE_TEXTURE {               // size 0x30
-        NUTEXDIM_PC dimensions;                         // 0x00
+        NUTEXDIM dimensions;                            // 0x00
         struct GRAPHICS_RENDER_TEXTURE *render_texture; // 0x28
         i32 texture_id;                                 // 0x2c
     } FRAME_NATIVE_TEXTURE;
@@ -573,7 +573,7 @@ extern "C" {
         u32 unknown_014;                      // 0x014
         u32 unknown_018;                      // 0x018
         u32 unknown_01c;                      // 0x01c
-        DEBRISPARTICLE_PC particles[32];      // 0x020
+        DEBRISPARTICLE particles[32];         // 0x020
         u32 end_command;                      // 0x420
     };
 

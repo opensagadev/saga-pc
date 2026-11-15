@@ -15,10 +15,10 @@
 extern "C" {
 #endif
 
-    i32 NuTexCreateNative(NUTEXDIM_PC *);
-    void NuTexCreatePS(NUTEXDIM_PC *);
+    i32 NuTexCreateNative(NUTEXDIM *);
+    void NuTexCreatePS(NUTEXDIM *);
     void NuTexDestroy(i32 texture_id);
-    void NuTexDestroyPS(NUTEXDIM_PC *texture);
+    void NuTexDestroyPS(NUTEXDIM *texture);
     i32 NuTexResolveReference(NUGSCN *, i32);
     i32 NuTexRead(char *, VARIPTR *, VARIPTR);
     void NuTexInitEx(VARIPTR *buffer, i32 count);

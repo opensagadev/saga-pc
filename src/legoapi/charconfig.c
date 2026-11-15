@@ -20,7 +20,7 @@
 extern i32 configureallcharacters_perm;
 
 typedef struct CHARCONFIG {            // size 0xfc8
-    CHARACTERDATA_PC *character;       // 0x000
+    CHARACTERDATA *character;          // 0x000
     PLAYERCHARACTERCONFIG *runtime;    // 0x004
     GAMECHARACTERLAYER *layer_scratch; // 0x008
 
@@ -110,7 +110,7 @@ f32 CharConfigAbsFloat(f32 value) {
     return *(f32 *)&bits;
 }
 
-static i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *mask) {
+static i32 CC_ReadNumericLayerMask(NUFPAR *parser, u32 *mask) {
     i32 count = 0;
     *mask = 0;
     while (NuFParGetWord(parser) != 0) {
@@ -123,7 +123,7 @@ static i32 CC_ReadNumericLayerMask(NUFPAR_PC *parser, u32 *mask) {
     return count;
 }
 
-static i32 CC_ReadNamedLayerMask(NUFPAR_PC *parser, u32 *mask) {
+static i32 CC_ReadNamedLayerMask(NUFPAR *parser, u32 *mask) {
     i32 count = 0;
     *mask = 0;
     while (NuFParGetWord(parser) != 0) {
@@ -136,14 +136,14 @@ static i32 CC_ReadNamedLayerMask(NUFPAR_PC *parser, u32 *mask) {
     return count;
 }
 
-static i32 CC_ReadLayerMask(NUFPAR_PC *parser, u32 *mask) {
+static i32 CC_ReadLayerMask(NUFPAR *parser, u32 *mask) {
     if (charconfig.named_layers == 0) {
         return CC_ReadNumericLayerMask(parser, mask);
     }
     return CC_ReadNamedLayerMask(parser, mask);
 }
 
-static void CC_ReadJoint(NUFPAR_PC *parser, i8 *joint) {
+static void CC_ReadJoint(NUFPAR *parser, i8 *joint) {
     if (NuFParGetWord(parser) != 0) {
         i32 index = NuAToI(parser->word_buffer_ptr);
         if (index >= 0) {
@@ -152,7 +152,7 @@ static void CC_ReadJoint(NUFPAR_PC *parser, i8 *joint) {
     }
 }
 
-static void CC_ReadLocator(NUFPAR_PC *parser, i8 *locator) {
+static void CC_ReadLocator(NUFPAR *parser, i8 *locator) {
     if (NuFParGetWord(parser) != 0) {
         i32 index = NuAToI(parser->word_buffer_ptr);
         if (index >= -1 && index <= 15) {
@@ -161,20 +161,20 @@ static void CC_ReadLocator(NUFPAR_PC *parser, i8 *locator) {
     }
 }
 
-static i32 CC_ReadOnOff(NUFPAR_PC *parser) {
+static i32 CC_ReadOnOff(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         return 0;
     }
     return 1;
 }
 
-static void CC_ReadSfx(NUFPAR_PC *parser, i16 *sfx) {
+static void CC_ReadSfx(NUFPAR *parser, i16 *sfx) {
     if (NuFParGetWord(parser) != 0) {
         *sfx = (i16)GetSfxId(parser->word_buffer_ptr);
     }
 }
 
-static void CC_ReadStreakLocators(NUFPAR_PC *parser, i8 *locators) {
+static void CC_ReadStreakLocators(NUFPAR *parser, i8 *locators) {
     i32 i;
     for (i = 0; i < 2; ++i) {
         locators[i] = -1;
@@ -187,7 +187,7 @@ static void CC_ReadStreakLocators(NUFPAR_PC *parser, i8 *locators) {
     }
 }
 
-static void CC_SetTimebase(NUFPAR_PC *parser, i32 index) {
+static void CC_SetTimebase(NUFPAR *parser, i32 index) {
     if (NuFParGetWord(parser) != 0) {
         f32 distance = NuAToF(parser->word_buffer_ptr);
         if (NuFParGetWord(parser) != 0) {
@@ -199,31 +199,31 @@ static void CC_SetTimebase(NUFPAR_PC *parser, i32 index) {
     }
 }
 
-static void CC_name_id(NUFPAR_PC *parser) {
+static void CC_name_id(NUFPAR *parser) {
     charconfig.character->name_id = NuFParGetInt(parser);
 }
 
-static void CC_mass(NUFPAR_PC *parser) {
+static void CC_mass(NUFPAR *parser) {
     charconfig.character->scaled_radius = NuFParGetFloat(parser);
 }
 
-static void CC_radius(NUFPAR_PC *parser) {
+static void CC_radius(NUFPAR *parser) {
     charconfig.character->collision_radius = NuFParGetFloat(parser);
 }
 
-static void CC_miny(NUFPAR_PC *parser) {
+static void CC_miny(NUFPAR *parser) {
     charconfig.character->bottom = NuFParGetFloat(parser);
 }
 
-static void CC_maxy(NUFPAR_PC *parser) {
+static void CC_maxy(NUFPAR *parser) {
     charconfig.character->top = NuFParGetFloat(parser);
 }
 
-static void CC_scale(NUFPAR_PC *parser) {
+static void CC_scale(NUFPAR *parser) {
     charconfig.character->model_scale = NuFParGetFloat(parser);
 }
 
-static void CC_layer(NUFPAR_PC *parser) {
+static void CC_layer(NUFPAR *parser) {
     u32 bit;
     i32 i;
     if ((charconfig.flags & 2) == 0 || charconfig.runtime->layer_count >= 32) {
@@ -249,37 +249,37 @@ static void CC_layer(NUFPAR_PC *parser) {
     charconfig.runtime->make_layer_list = MakeLayerList_Name;
 }
 
-static void CC_fixed_layers(NUFPAR_PC *parser) {
+static void CC_fixed_layers(NUFPAR *parser) {
     CC_FLAGS094.fixed_layers = CC_ReadOnOff(parser);
 }
 
-static void CC_hair_layer_index(NUFPAR_PC *parser) {
+static void CC_hair_layer_index(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         const i32 locator = NuAToI(parser->word_buffer_ptr);
         charconfig.runtime->hair_layer = (i8)(locator);
     }
 }
 
-static void CC_cape_layer_index(NUFPAR_PC *parser) {
+static void CC_cape_layer_index(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         const i32 locator = NuAToI(parser->word_buffer_ptr);
         charconfig.runtime->cape_layer = (i8)(locator);
     }
 }
 
-static void CC_hair_layer(NUFPAR_PC *parser) {
+static void CC_hair_layer(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         charconfig.runtime->hair_layer = (i8)(LayerFromName(charconfig.runtime, parser->word_buffer_ptr));
     }
 }
 
-static void CC_cape_layer(NUFPAR_PC *parser) {
+static void CC_cape_layer(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         charconfig.runtime->cape_layer = (i8)(LayerFromName(charconfig.runtime, parser->word_buffer_ptr));
     }
 }
 
-static void CC_layers_special(NUFPAR_PC *parser) {
+static void CC_layers_special(NUFPAR *parser) {
     u32 *mask = &charconfig.runtime->layer_mask_special;
     i32 count = CC_ReadLayerMask(parser, mask);
     if (count != 0) {
@@ -288,7 +288,7 @@ static void CC_layers_special(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_layers_high(NUFPAR_PC *parser) {
+static void CC_layers_high(NUFPAR *parser) {
     u32 *mask = &charconfig.runtime->layer_mask;
     i32 count = CC_ReadLayerMask(parser, mask);
     if (count != 0) {
@@ -296,7 +296,7 @@ static void CC_layers_high(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_layers_medium(NUFPAR_PC *parser) {
+static void CC_layers_medium(NUFPAR *parser) {
     u32 *mask = &charconfig.runtime->layer_mask_medium;
     i32 count = CC_ReadLayerMask(parser, mask);
     if (count != 0) {
@@ -304,22 +304,22 @@ static void CC_layers_medium(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_layers_low(NUFPAR_PC *parser) {
+static void CC_layers_low(NUFPAR *parser) {
     u32 *mask = &charconfig.runtime->layer_mask_low;
     i32 count = CC_ReadLayerMask(parser, mask);
 }
 
-static void CC_layers_dead(NUFPAR_PC *parser) {
+static void CC_layers_dead(NUFPAR *parser) {
     u32 *mask = &charconfig.runtime->layer_mask_dead;
     i32 count = CC_ReadLayerMask(parser, mask);
 }
 
-static void CC_ride_layersoff(NUFPAR_PC *parser) {
+static void CC_ride_layersoff(NUFPAR *parser) {
     u32 *mask = &charconfig.runtime->ride_layers_off;
     i32 count = CC_ReadLayerMask(parser, mask);
 }
 
-static void CC_bsa_default(NUFPAR_PC *parser) {
+static void CC_bsa_default(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
             charconfig.flags |= 1;
@@ -329,21 +329,21 @@ static void CC_bsa_default(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_SetAnimFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation, u32 flags) {
+static void CC_SetAnimFlags(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, u32 flags) {
     animation->flags |= flags;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         animation->flags &= ~flags;
     }
 }
 
-static void CC_SetAnimMiscFlags(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation, u16 flags) {
+static void CC_SetAnimMiscFlags(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, u16 flags) {
     animation->misc_flags |= flags;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         animation->misc_flags &= ~flags;
     }
 }
 
-static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation, i32 character_id, CHARACTER_EFFECT_CONFIG *effects,
+static void CC_ReadAnimEffect(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, i32 character_id, CHARACTER_EFFECT_CONFIG *effects,
                               i32 *effect_count) {
     CHARACTER_EFFECT_CONFIG *effect;
     if (animation->action_id == -1) {
@@ -509,7 +509,7 @@ static void CC_ReadAnimEffect(NUFPAR_PC *parser, CHARACTERANIM_CONFIG *animation
     }
 }
 
-static void CC_anim_start(NUFPAR_PC *parser) {
+static void CC_anim_start(NUFPAR *parser) {
     char name[40];
     CHARACTERANIM_CONFIG animation;
     if (charconfig.animation_count >= 100) {
@@ -709,84 +709,84 @@ static void CC_anim_start(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_collision_locator(NUFPAR_PC *parser) {
+static void CC_collision_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->collision_locator);
 }
 
-static void CC_weapon_locator_1(NUFPAR_PC *parser) {
+static void CC_weapon_locator_1(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[0]);
 }
 
-static void CC_weapon_locator_2(NUFPAR_PC *parser) {
+static void CC_weapon_locator_2(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[1]);
 }
 
-static void CC_weapon_locator_3(NUFPAR_PC *parser) {
+static void CC_weapon_locator_3(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[2]);
 }
 
-static void CC_weapon_locator_4(NUFPAR_PC *parser) {
+static void CC_weapon_locator_4(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_joints[3]);
 }
 
-static void CC_weapon_shoot_locator_1(NUFPAR_PC *parser) {
+static void CC_weapon_shoot_locator_1(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[0]);
 }
 
-static void CC_weapon_shoot_locator_2(NUFPAR_PC *parser) {
+static void CC_weapon_shoot_locator_2(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[1]);
 }
 
-static void CC_weapon_shoot_locator_3(NUFPAR_PC *parser) {
+static void CC_weapon_shoot_locator_3(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[2]);
 }
 
-static void CC_weapon_shoot_locator_4(NUFPAR_PC *parser) {
+static void CC_weapon_shoot_locator_4(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->weapon_shoot_joints[3]);
 }
 
-static void CC_shield_locator(NUFPAR_PC *parser) {
+static void CC_shield_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->shield_locator);
 }
 
-static void CC_throw_locator(NUFPAR_PC *parser) {
+static void CC_throw_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->throw_locator);
 }
 
-static void CC_place_locator(NUFPAR_PC *parser) {
+static void CC_place_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->place_locator);
 }
 
-static void CC_grapple_locator(NUFPAR_PC *parser) {
+static void CC_grapple_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->grapple_locators[0]);
     CC_ReadLocator(parser, &charconfig.runtime->grapple_locators[1]);
 }
 
-static void CC_extra_character_locator(NUFPAR_PC *parser) {
+static void CC_extra_character_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->extra_character_locator);
 }
 
-static void CC_ride_locator(NUFPAR_PC *parser) {
+static void CC_ride_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->ride_locator);
 }
 
-static void CC_poo_locator(NUFPAR_PC *parser) {
+static void CC_poo_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->poo_locator);
 }
 
-static void CC_head_locator(NUFPAR_PC *parser) {
+static void CC_head_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->head_locator);
 }
 
-static void CC_rocket_locator(NUFPAR_PC *parser) {
+static void CC_rocket_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->rocket_locator);
 }
 
-static void CC_thingy_locator(NUFPAR_PC *parser) {
+static void CC_thingy_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->thingy_locator);
 }
 
-static void CC_helmet_locator(NUFPAR_PC *parser) {
+static void CC_helmet_locator(NUFPAR *parser) {
     CC_ReadLocator(parser, &charconfig.runtime->helmet_locator);
 }
 
@@ -795,7 +795,7 @@ static void CC_helmet_locator(NUFPAR_PC *parser) {
 // rotating the loop; a static inline function leaves a COMDAT in the object, so it is written as a macro.
 #define CC_READ_LOCATOR_INDEX(parser, locator) (NuFParGetWord(parser) == 0 ? 0 : (*(locator) = NuAToI((parser)->word_buffer_ptr), 1))
 
-static void CC_shadow_locators(NUFPAR_PC *parser) {
+static void CC_shadow_locators(NUFPAR *parser) {
     u32 locator;
     charconfig.runtime->shadow_locators = 0;
     while (CC_READ_LOCATOR_INDEX(parser, &locator)) {
@@ -805,7 +805,7 @@ static void CC_shadow_locators(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_thrust_locators(NUFPAR_PC *parser) {
+static void CC_thrust_locators(NUFPAR *parser) {
     u32 locator;
     charconfig.runtime->thrust_locators = 0;
     while (CC_READ_LOCATOR_INDEX(parser, &locator)) {
@@ -815,7 +815,7 @@ static void CC_thrust_locators(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_hand_locators(NUFPAR_PC *parser) {
+static void CC_hand_locators(NUFPAR *parser) {
     i32 i;
     for (i = 0; i < 2; ++i) {
         charconfig.runtime->hand_locators[i] = -1;
@@ -828,71 +828,71 @@ static void CC_hand_locators(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_streak_1_locators(NUFPAR_PC *parser) {
+static void CC_streak_1_locators(NUFPAR *parser) {
     CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[0]);
 }
 
-static void CC_streak_2_locators(NUFPAR_PC *parser) {
+static void CC_streak_2_locators(NUFPAR *parser) {
     CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[1]);
 }
 
-static void CC_streak_3_locators(NUFPAR_PC *parser) {
+static void CC_streak_3_locators(NUFPAR *parser) {
     CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[2]);
 }
 
-static void CC_streak_4_locators(NUFPAR_PC *parser) {
+static void CC_streak_4_locators(NUFPAR *parser) {
     CC_ReadStreakLocators(parser, charconfig.runtime->streak_joints[3]);
 }
 
-static void CC_head_joint(NUFPAR_PC *parser) {
+static void CC_head_joint(NUFPAR *parser) {
     CC_ReadJoint(parser, &charconfig.runtime->head_joint);
 }
 
-static void CC_cloak_joint(NUFPAR_PC *parser) {
+static void CC_cloak_joint(NUFPAR *parser) {
     CC_ReadJoint(parser, &charconfig.runtime->cloak_joint);
 }
 
-static void CC_cloak_joint2(NUFPAR_PC *parser) {
+static void CC_cloak_joint2(NUFPAR *parser) {
     CC_ReadJoint(parser, &charconfig.runtime->cloak_joint_2);
 }
 
-static void CC_sfx_die(NUFPAR_PC *parser) {
+static void CC_sfx_die(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_die);
 }
 
-static void CC_sfx_hurt(NUFPAR_PC *parser) {
+static void CC_sfx_hurt(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_hurt);
 }
 
-static void CC_sfx_grunt(NUFPAR_PC *parser) {
+static void CC_sfx_grunt(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_grunt);
 }
 
-static void CC_sfx_engine(NUFPAR_PC *parser) {
+static void CC_sfx_engine(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_engine);
 }
 
-static void CC_sfx_shoot(NUFPAR_PC *parser) {
+static void CC_sfx_shoot(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_shoot);
 }
 
-static void CC_sfx_footstep(NUFPAR_PC *parser) {
+static void CC_sfx_footstep(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_footstep);
 }
 
-static void CC_sfx_chatter(NUFPAR_PC *parser) {
+static void CC_sfx_chatter(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_chatter);
 }
 
-static void CC_chatter_delay(NUFPAR_PC *parser) {
+static void CC_chatter_delay(NUFPAR *parser) {
     charconfig.runtime->flags_11e = (u8)(NuFParGetInt(parser));
 }
 
-static void CC_sfx_sabre(NUFPAR_PC *parser) {
+static void CC_sfx_sabre(NUFPAR *parser) {
     CC_ReadSfx(parser, &charconfig.runtime->sfx_sabre);
 }
 
-static void CC_sfx_misc(NUFPAR_PC *parser) {
+static void CC_sfx_misc(NUFPAR *parser) {
     i32 index = 0;
     while (index < 6 && charconfig.runtime->sfx_misc[index] != -1) {
         ++index;
@@ -906,43 +906,43 @@ static void CC_sfx_misc(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_clear_sfx_misc(NUFPAR_PC *parser) {
+static void CC_clear_sfx_misc(NUFPAR *parser) {
     charconfig.runtime->sfx_misc[0] = -1;
 }
 
-static void CC_cloak_up_angle(NUFPAR_PC *parser) {
+static void CC_cloak_up_angle(NUFPAR *parser) {
     charconfig.runtime->unknown_05c = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
-static void CC_cloak_down_angle(NUFPAR_PC *parser) {
+static void CC_cloak_down_angle(NUFPAR *parser) {
     charconfig.runtime->unknown_060 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
-static void CC_viewrange(NUFPAR_PC *parser) {
+static void CC_viewrange(NUFPAR *parser) {
     charconfig.runtime->viewdistance = NuFParGetFloat(parser);
 }
 
-static void CC_heardistance(NUFPAR_PC *parser) {
+static void CC_heardistance(NUFPAR *parser) {
     charconfig.runtime->heardistance = NuFParGetFloat(parser);
 }
 
-static void CC_max_viewheight(NUFPAR_PC *parser) {
+static void CC_max_viewheight(NUFPAR *parser) {
     charconfig.runtime->maxviewheight = NuFParGetFloat(parser);
 }
 
-static void CC_min_viewheight(NUFPAR_PC *parser) {
+static void CC_min_viewheight(NUFPAR *parser) {
     charconfig.runtime->minviewheight = NuFParGetFloat(parser);
 }
 
-static void CC_mediumres_swapdist(NUFPAR_PC *parser) {
+static void CC_mediumres_swapdist(NUFPAR *parser) {
     charconfig.runtime->layer_distance_medium = NuFParGetFloat(parser);
 }
 
-static void CC_lowres_swapdist(NUFPAR_PC *parser) {
+static void CC_lowres_swapdist(NUFPAR *parser) {
     charconfig.runtime->layer_distance_low = NuFParGetFloat(parser);
 }
 
-static void CC_turn_rate(NUFPAR_PC *parser) {
+static void CC_turn_rate(NUFPAR *parser) {
     const f32 rate = NuFParGetFloat(parser);
     if (rate > 0.0f) {
         charconfig.runtime->turn_rate = rate;
@@ -950,7 +950,7 @@ static void CC_turn_rate(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_turn_rate_2(NUFPAR_PC *parser) {
+static void CC_turn_rate_2(NUFPAR *parser) {
     const f32 rate = NuFParGetFloat(parser);
     if (rate > 0.0f) {
         charconfig.runtime->turn_rate_2 = rate;
@@ -958,110 +958,110 @@ static void CC_turn_rate_2(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_SetRuntimeFlag(NUFPAR_PC *parser, u32 flag) {
+static void CC_SetRuntimeFlag(NUFPAR *parser, u32 flag) {
     charconfig.runtime->flags_090 |= flag;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         charconfig.runtime->flags_090 &= ~flag;
     }
 }
 
-static void CC_banking(NUFPAR_PC *parser) {
+static void CC_banking(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_BANKING);
 }
 
-static void CC_choke(NUFPAR_PC *parser) {
+static void CC_choke(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CHOKE);
 }
 
-static void CC_lightning(NUFPAR_PC *parser) {
+static void CC_lightning(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_LIGHTNING);
 }
 
-static void CC_resist_zap(NUFPAR_PC *parser) {
+static void CC_resist_zap(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_RESIST_ZAP);
 }
 
-static void CC_ghost(NUFPAR_PC *parser) {
+static void CC_ghost(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_GHOST);
 }
 
-static void CC_has_no_turn(NUFPAR_PC *parser) {
+static void CC_has_no_turn(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HAS_NO_TURN);
 }
 
-static void CC_speed_up_time(NUFPAR_PC *parser) {
+static void CC_speed_up_time(NUFPAR *parser) {
     charconfig.runtime->speed_up_time = NuFParGetFloat(parser);
 }
 
-static void CC_slow_down_time(NUFPAR_PC *parser) {
+static void CC_slow_down_time(NUFPAR *parser) {
     charconfig.runtime->slow_down_time = NuFParGetFloat(parser);
 }
 
-static void CC_jump_move_speed_scale(NUFPAR_PC *parser) {
+static void CC_jump_move_speed_scale(NUFPAR *parser) {
     charconfig.runtime->jump_move_speed_scale = NuFParGetFloat(parser);
 }
 
-static void CC_loop_height(NUFPAR_PC *parser) {
+static void CC_loop_height(NUFPAR *parser) {
     charconfig.runtime->unknown_088 = NuFParGetFloat(parser);
 }
 
-static void CC_no_tiptoe(NUFPAR_PC *parser) {
+static void CC_no_tiptoe(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_NO_TIPTOE);
 }
 
-static void CC_already_got_hat(NUFPAR_PC *parser) {
+static void CC_already_got_hat(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_ALREADY_GOT_HAT);
 }
 
-static void CC_not_got_hat(NUFPAR_PC *parser) {
+static void CC_not_got_hat(NUFPAR *parser) {
     charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_ALREADY_GOT_HAT;
 }
 
-static void CC_punch_weapon_out(NUFPAR_PC *parser) {
+static void CC_punch_weapon_out(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_PUNCH_WEAPON_OUT);
 }
 
-static void CC_can_take_over(NUFPAR_PC *parser) {
+static void CC_can_take_over(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_TAKE_OVER);
 }
 
-static void CC_turning_circle(NUFPAR_PC *parser) {
+static void CC_turning_circle(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TURNING_CIRCLE);
 }
 
-static void CC_slide_orientation(NUFPAR_PC *parser) {
+static void CC_slide_orientation(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SLIDE_ORIENTATION);
 }
 
-static void CC_can_drag_bombs(NUFPAR_PC *parser) {
+static void CC_can_drag_bombs(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_DRAG_BOMBS);
 }
 
-static void CC_extra_toggle(NUFPAR_PC *parser) {
+static void CC_extra_toggle(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_EXTRA_TOGGLE);
 }
 
-static void CC_can_flatten(NUFPAR_PC *parser) {
+static void CC_can_flatten(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAN_FLATTEN);
 }
 
-static void CC_tightrope_walk(NUFPAR_PC *parser) {
+static void CC_tightrope_walk(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TIGHTROPE_WALK);
 }
 
-static void CC_car_wheels(NUFPAR_PC *parser) {
+static void CC_car_wheels(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CAR_WHEELS);
 }
 
-static void CC_is_a_girl(NUFPAR_PC *parser) {
+static void CC_is_a_girl(NUFPAR *parser) {
     charconfig.runtime->flags_090 |= CHARACTER_RUNTIME_IS_A_GIRL;
 }
 
-static void CC_is_a_boy(NUFPAR_PC *parser) {
+static void CC_is_a_boy(NUFPAR *parser) {
     charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_IS_A_GIRL;
 }
 
-static void CC_icon(NUFPAR_PC *parser) {
+static void CC_icon(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         charconfig.character->icon_model = (i16)(LevelObject_FindIndexFromName(parser->word_buffer_ptr));
         if (charconfig.character->icon_model == -1 && configureallcharacters_perm != 0) {
@@ -1074,57 +1074,57 @@ static void CC_icon(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_weapon(NUFPAR_PC *parser) {
+static void CC_weapon(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         charconfig.runtime->weapon_model = (i16)(LevelObject_FindIndexFromName(parser->word_buffer_ptr));
     }
 }
 
-static void CC_shield_hit_points(NUFPAR_PC *parser) {
+static void CC_shield_hit_points(NUFPAR *parser) {
     charconfig.runtime->shield_hitpoints = (u8)(NuFParGetInt(parser));
 }
 
-static void CC_stop_speed(NUFPAR_PC *parser) {
+static void CC_stop_speed(NUFPAR *parser) {
     charconfig.runtime->stop_speed = NuFParGetFloat(parser);
 }
 
-static void CC_idle_speed(NUFPAR_PC *parser) {
+static void CC_idle_speed(NUFPAR *parser) {
     charconfig.runtime->idle_speed = NuFParGetFloat(parser);
 }
 
-static void CC_tiptoe_speed(NUFPAR_PC *parser) {
+static void CC_tiptoe_speed(NUFPAR *parser) {
     charconfig.runtime->tiptoe_speed = NuFParGetFloat(parser);
 }
 
-static void CC_walk_speed(NUFPAR_PC *parser) {
+static void CC_walk_speed(NUFPAR *parser) {
     charconfig.runtime->walk_speed = NuFParGetFloat(parser);
 }
 
-static void CC_run_speed(NUFPAR_PC *parser) {
+static void CC_run_speed(NUFPAR *parser) {
     charconfig.runtime->run_speed = NuFParGetFloat(parser);
 }
 
-static void CC_backwards_factor(NUFPAR_PC *parser) {
+static void CC_backwards_factor(NUFPAR *parser) {
     charconfig.runtime->backwards_factor = NuFParGetFloat(parser);
 }
 
-static void CC_air_gravity(NUFPAR_PC *parser) {
+static void CC_air_gravity(NUFPAR *parser) {
     charconfig.runtime->gravity = NuFParGetFloat(parser);
 }
 
-static void CC_jump_speed(NUFPAR_PC *parser) {
+static void CC_jump_speed(NUFPAR *parser) {
     charconfig.runtime->jump_speed = NuFParGetFloat(parser);
 }
 
-static void CC_jump_2_speed(NUFPAR_PC *parser) {
+static void CC_jump_2_speed(NUFPAR *parser) {
     charconfig.runtime->second_jump_speed = NuFParGetFloat(parser);
 }
 
-static void CC_acceleration(NUFPAR_PC *parser) {
+static void CC_acceleration(NUFPAR *parser) {
     charconfig.runtime->acceleration = NuFParGetFloat(parser);
 }
 
-static void CC_streak(NUFPAR_PC *parser) {
+static void CC_streak(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "red") == 0) {
             charconfig.runtime->streak_color = 0;
@@ -1138,130 +1138,130 @@ static void CC_streak(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_hit_points(NUFPAR_PC *parser) {
+static void CC_hit_points(NUFPAR *parser) {
     charconfig.runtime->hitpoints = (u8)(NuFParGetInt(parser));
 }
 
-static void CC_SetModelFlag(NUFPAR_PC *parser, u32 flag) {
+static void CC_SetModelFlag(NUFPAR *parser, u32 flag) {
     charconfig.character->model_flags |= flag;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         charconfig.character->model_flags &= ~flag;
     }
 }
 
-static void CC_baddie(NUFPAR_PC *parser) {
+static void CC_baddie(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_BADDIE);
 }
 
-static void CC_jedi(NUFPAR_PC *parser) {
+static void CC_jedi(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_JEDI);
 }
 
-static void CC_droid(NUFPAR_PC *parser) {
+static void CC_droid(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_DROID);
 }
 
-static void CC_protocol(NUFPAR_PC *parser) {
+static void CC_protocol(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_DROID | CHARACTER_MODEL_PROTOCOL);
 }
 
-static void CC_astromech(NUFPAR_PC *parser) {
+static void CC_astromech(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_DROID | CHARACTER_MODEL_ASTROMECH);
 }
 
-static void CC_cannon(NUFPAR_PC *parser) {
+static void CC_cannon(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_CANNON);
 }
 
-static void CC_bounty_hunter(NUFPAR_PC *parser) {
+static void CC_bounty_hunter(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_BOUNTY_HUNTER);
 }
 
-static void CC_blaster(NUFPAR_PC *parser) {
+static void CC_blaster(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_BLASTER | CHARACTER_MODEL_CAN_FIRE);
 }
 
-static void CC_teleport(NUFPAR_PC *parser) {
+static void CC_teleport(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_TELEPORT);
 }
 
-static void CC_zipup(NUFPAR_PC *parser) {
+static void CC_zipup(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_ZIPUP);
 }
 
-static void CC_untargetable(NUFPAR_PC *parser) {
+static void CC_untargetable(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_UNTARGETABLE);
 }
 
-static void CC_orientate(NUFPAR_PC *parser) {
+static void CC_orientate(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_ORIENTATE);
 }
 
-static void CC_neutral(NUFPAR_PC *parser) {
+static void CC_neutral(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_NEUTRAL);
 }
 
-static void CC_complex_shadow(NUFPAR_PC *parser) {
+static void CC_complex_shadow(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_COMPLEX_SHADOW);
 }
 
-static void CC_shadow_orientation(NUFPAR_PC *parser) {
+static void CC_shadow_orientation(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SHADOW_ORIENTATION);
 }
 
-static void CC_can_open_doors(NUFPAR_PC *parser) {
+static void CC_can_open_doors(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_OPEN_DOORS);
 }
 
-static void CC_non_stick(NUFPAR_PC *parser) {
+static void CC_non_stick(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_NON_STICK);
 }
 
-static void CC_can_shoot_offscreen(NUFPAR_PC *parser) {
+static void CC_can_shoot_offscreen(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_SHOOT_OFFSCREEN);
 }
 
-static void CC_can_fire(NUFPAR_PC *parser) {
+static void CC_can_fire(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_FIRE);
 }
 
-static void CC_can_poo(NUFPAR_PC *parser) {
+static void CC_can_poo(NUFPAR *parser) {
     CC_FLAGS094.can_poo = CC_ReadOnOff(parser);
 }
 
-static void CC_can_zap(NUFPAR_PC *parser) {
+static void CC_can_zap(NUFPAR *parser) {
     CC_FLAGS098.can_zap = CC_ReadOnOff(parser);
 }
 
-static void CC_put_weapon_away_on_shoot(NUFPAR_PC *parser) {
+static void CC_put_weapon_away_on_shoot(NUFPAR *parser) {
     CC_FLAGS098.put_weapon_away_on_shoot = CC_ReadOnOff(parser);
 }
 
-static void CC_always_stop_to_shoot(NUFPAR_PC *parser) {
+static void CC_always_stop_to_shoot(NUFPAR *parser) {
     CC_FLAGS098.always_stop_to_shoot = CC_ReadOnOff(parser);
 }
 
-static void CC_second_shot_only(NUFPAR_PC *parser) {
+static void CC_second_shot_only(NUFPAR *parser) {
     CC_FLAGS098.second_shot_only = CC_ReadOnOff(parser);
 }
 
-static void CC_no_start_punch_sfx(NUFPAR_PC *parser) {
+static void CC_no_start_punch_sfx(NUFPAR *parser) {
     CC_FLAGS098.no_start_punch_sfx = CC_ReadOnOff(parser);
 }
 
-static void CC_single_jump_slam(NUFPAR_PC *parser) {
+static void CC_single_jump_slam(NUFPAR *parser) {
     CC_FLAGS098.single_jump_slam = CC_ReadOnOff(parser);
 }
 
-static void CC_dont_draw_rider(NUFPAR_PC *parser) {
+static void CC_dont_draw_rider(NUFPAR *parser) {
     CC_FLAGS098.dont_draw_rider = CC_ReadOnOff(parser);
 }
 
-static void CC_minikit(NUFPAR_PC *parser) {
+static void CC_minikit(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_MINIKIT);
 }
 
-static void CC_minikit_with_scene(NUFPAR_PC *parser) {
+static void CC_minikit_with_scene(NUFPAR *parser) {
     charconfig.character->model_flags |= CHARACTER_MODEL_MINIKIT;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         charconfig.character->model_flags &= ~CHARACTER_MODEL_MINIKIT;
@@ -1269,187 +1269,187 @@ static void CC_minikit_with_scene(NUFPAR_PC *parser) {
     CC_FLAGS094.minikit_with_scene = charconfig.character->model_flags >> 26;
 }
 
-static void CC_minikit_noscenewhenplayable(NUFPAR_PC *parser) {
+static void CC_minikit_noscenewhenplayable(NUFPAR *parser) {
     CC_FLAGS094.minikit_noscenewhenplayable = CC_ReadOnOff(parser);
 }
 
-static void CC_lift_hover(NUFPAR_PC *parser) {
+static void CC_lift_hover(NUFPAR *parser) {
     CC_FLAGS094.lift_hover = CC_ReadOnOff(parser);
 }
 
-static void CC_glide_anytime(NUFPAR_PC *parser) {
+static void CC_glide_anytime(NUFPAR *parser) {
     CC_FLAGS094.glide_anytime = CC_ReadOnOff(parser);
 }
 
-static void CC_can_communicate(NUFPAR_PC *parser) {
+static void CC_can_communicate(NUFPAR *parser) {
     CC_FLAGS094.can_communicate = CC_ReadOnOff(parser);
 }
 
-static void CC_immune_to_magnets(NUFPAR_PC *parser) {
+static void CC_immune_to_magnets(NUFPAR *parser) {
     CC_FLAGS094.immune_to_magnets = CC_ReadOnOff(parser);
 }
 
-static void CC_immune_to_forcepush(NUFPAR_PC *parser) {
+static void CC_immune_to_forcepush(NUFPAR *parser) {
     CC_FLAGS094.immune_to_forcepush = CC_ReadOnOff(parser);
 }
 
-static void CC_cannot_kill(NUFPAR_PC *parser) {
+static void CC_cannot_kill(NUFPAR *parser) {
     CC_FLAGS094.cannot_kill = CC_ReadOnOff(parser);
 }
 
-static void CC_wait_for_weapon_in_out(NUFPAR_PC *parser) {
+static void CC_wait_for_weapon_in_out(NUFPAR *parser) {
     CC_FLAGS094.wait_for_weapon_in_out = CC_ReadOnOff(parser);
 }
 
-static void CC_double_jump_hover(NUFPAR_PC *parser) {
+static void CC_double_jump_hover(NUFPAR *parser) {
     CC_FLAGS094.double_jump_hover = CC_ReadOnOff(parser);
 }
 
-static void CC_no_category(NUFPAR_PC *parser) {
+static void CC_no_category(NUFPAR *parser) {
     CC_FLAGS094.no_category = CC_ReadOnOff(parser);
 }
 
-static void CC_no_force(NUFPAR_PC *parser) {
+static void CC_no_force(NUFPAR *parser) {
     CC_FLAGS094.no_force = CC_ReadOnOff(parser);
 }
 
-static void CC_white_lightning(NUFPAR_PC *parser) {
+static void CC_white_lightning(NUFPAR *parser) {
     CC_FLAGS094.white_lightning = CC_ReadOnOff(parser);
 }
 
-static void CC_buck_rider(NUFPAR_PC *parser) {
+static void CC_buck_rider(NUFPAR *parser) {
     CC_FLAGS094.buck_rider = CC_ReadOnOff(parser);
 }
 
-static void CC_die_usecurrentlayers(NUFPAR_PC *parser) {
+static void CC_die_usecurrentlayers(NUFPAR *parser) {
     CC_FLAGS094.die_usecurrentlayers = CC_ReadOnOff(parser);
 }
 
-static void CC_no_weapon_draw(NUFPAR_PC *parser) {
+static void CC_no_weapon_draw(NUFPAR *parser) {
     CC_FLAGS094.no_weapon_draw = CC_ReadOnOff(parser);
 }
 
-static void CC_no_jump_fire(NUFPAR_PC *parser) {
+static void CC_no_jump_fire(NUFPAR *parser) {
     CC_FLAGS094.no_jump_fire = CC_ReadOnOff(parser);
 }
 
-static void CC_hover_over_mud(NUFPAR_PC *parser) {
+static void CC_hover_over_mud(NUFPAR *parser) {
     CC_FLAGS094.hover_over_mud = CC_ReadOnOff(parser);
 }
 
-static void CC_toggle_if_not_in_collection(NUFPAR_PC *parser) {
+static void CC_toggle_if_not_in_collection(NUFPAR *parser) {
     CC_FLAGS094.toggle_if_not_in_collection = CC_ReadOnOff(parser);
 }
 
-static void CC_toggle_if_in_minikit_bonus(NUFPAR_PC *parser) {
+static void CC_toggle_if_in_minikit_bonus(NUFPAR *parser) {
     CC_FLAGS094.toggle_if_in_minikit_bonus = CC_ReadOnOff(parser);
 }
 
-static void CC_deflect_bolts_in_minikit_bonus(NUFPAR_PC *parser) {
+static void CC_deflect_bolts_in_minikit_bonus(NUFPAR *parser) {
     CC_FLAGS094.deflect_bolts_in_minikit_bonus = CC_ReadOnOff(parser);
 }
 
-static void CC_has_grapple(NUFPAR_PC *parser) {
+static void CC_has_grapple(NUFPAR *parser) {
     CC_FLAGS094.has_grapple = CC_ReadOnOff(parser);
 }
 
-static void CC_hover_wings(NUFPAR_PC *parser) {
+static void CC_hover_wings(NUFPAR *parser) {
     CC_FLAGS094.hover_wings = CC_ReadOnOff(parser);
 }
 
-static void CC_has_whip(NUFPAR_PC *parser) {
+static void CC_has_whip(NUFPAR *parser) {
     CC_FLAGS094.has_whip = CC_ReadOnOff(parser);
 }
 
-static void CC_respawn(NUFPAR_PC *parser) {
+static void CC_respawn(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_RESPAWN);
 }
 
-static void CC_vehicle(NUFPAR_PC *parser) {
+static void CC_vehicle(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_VEHICLE);
 }
 
-static void CC_only_active_when_taken_over(NUFPAR_PC *parser) {
+static void CC_only_active_when_taken_over(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER);
 }
 
-static void CC_beast(NUFPAR_PC *parser) {
+static void CC_beast(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_BEAST);
 }
 
-static void CC_prefers_brawling(NUFPAR_PC *parser) {
+static void CC_prefers_brawling(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_PREFERS_BRAWLING);
 }
 
-static void CC_dontpush(NUFPAR_PC *parser) {
+static void CC_dontpush(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_DONT_PUSH);
 }
 
-static void CC_dont_move_out_of_way(NUFPAR_PC *parser) {
+static void CC_dont_move_out_of_way(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_DONT_MOVE_OUT_OF_WAY);
 }
 
-static void CC_dontmove(NUFPAR_PC *parser) {
+static void CC_dontmove(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_DONT_MOVE);
 }
 
-static void CC_jetpack(NUFPAR_PC *parser) {
+static void CC_jetpack(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_JETPACK);
 }
 
-static void CC_oldheadmovement(NUFPAR_PC *parser) {
+static void CC_oldheadmovement(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_OLD_HEAD_MOVEMENT);
 }
 
-static void CC_atatheadmovement(NUFPAR_PC *parser) {
+static void CC_atatheadmovement(NUFPAR *parser) {
     CC_FLAGS094.atatheadmovement = 1;
 }
 
-static void CC_cannotbigjump(NUFPAR_PC *parser) {
+static void CC_cannotbigjump(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_CANNOT_BIG_JUMP);
 }
 
-static void CC_no_offpath_teleport(NUFPAR_PC *parser) {
+static void CC_no_offpath_teleport(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_NO_OFFPATH_TELEPORT);
 }
 
-static void CC_no_kill_parts(NUFPAR_PC *parser) {
+static void CC_no_kill_parts(NUFPAR *parser) {
     CC_SetModelFlag(parser, CHARACTER_MODEL_NO_KILL_PARTS);
 }
 
-static void CC_high_jump(NUFPAR_PC *parser) {
+static void CC_high_jump(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HIGH_JUMP);
 }
 
-static void CC_super_strength(NUFPAR_PC *parser) {
+static void CC_super_strength(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_SUPER_STRENGTH);
 }
 
-static void CC_transformatron(NUFPAR_PC *parser) {
+static void CC_transformatron(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TRANSFORMATRON);
 }
 
-static void CC_bypass_security(NUFPAR_PC *parser) {
+static void CC_bypass_security(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_BYPASS_SECURITY);
 }
 
-static void CC_hazard_protection(NUFPAR_PC *parser) {
+static void CC_hazard_protection(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_HAZARD_PROTECTION);
 }
 
-static void CC_wall_jump(NUFPAR_PC *parser) {
+static void CC_wall_jump(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_WALL_JUMP);
 }
 
-static void CC_got_batarang(NUFPAR_PC *parser) {
+static void CC_got_batarang(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_GOT_BATARANG);
 }
 
-static void CC_tightrope_tilt(NUFPAR_PC *parser) {
+static void CC_tightrope_tilt(NUFPAR *parser) {
     CC_SetRuntimeFlag(parser, CHARACTER_RUNTIME_TIGHTROPE_TILT);
 }
 
-static void CC_combat_roll(NUFPAR_PC *parser) {
+static void CC_combat_roll(NUFPAR *parser) {
     charconfig.runtime->flags_090 |= CHARACTER_RUNTIME_COMBAT_ROLL;
     CC_FLAGS094.combat_roll_can_get_up = 0;
     CC_FLAGS094.combat_roll_can_direct_land = 0;
@@ -1464,51 +1464,51 @@ static void CC_combat_roll(NUFPAR_PC *parser) {
     }
 }
 
-static void CC_has_scene_element(NUFPAR_PC *parser) {
+static void CC_has_scene_element(NUFPAR *parser) {
     charconfig.character->flags |= 1;
 }
 
-static void CC_dont_turn(NUFPAR_PC *parser) {
+static void CC_dont_turn(NUFPAR *parser) {
     CC_FLAGS094.dont_turn = CC_ReadOnOff(parser);
 }
 
-static void CC_no_jump(NUFPAR_PC *parser) {
+static void CC_no_jump(NUFPAR *parser) {
     CC_FLAGS094.no_jump = CC_ReadOnOff(parser);
 }
 
-static void CC_no_shoot(NUFPAR_PC *parser) {
+static void CC_no_shoot(NUFPAR *parser) {
     CC_FLAGS094.no_shoot = CC_ReadOnOff(parser);
 }
 
-static void CC_blobshadow_size(NUFPAR_PC *parser) {
+static void CC_blobshadow_size(NUFPAR *parser) {
     charconfig.runtime->unknown_08c = CharConfigAbsFloat(NuFParGetFloat(parser));
 }
 
-static void CC_blobshadow_alpha(NUFPAR_PC *parser) {
+static void CC_blobshadow_alpha(NUFPAR *parser) {
     charconfig.runtime->blob_shadow_alpha = (u8)(NuFParGetInt(parser));
 }
 
-static void CC_hover_height(NUFPAR_PC *parser) {
+static void CC_hover_height(NUFPAR *parser) {
     charconfig.runtime->unknown_028 = NuFParGetFloat(parser);
 }
 
-static void CC_hover_time(NUFPAR_PC *parser) {
+static void CC_hover_time(NUFPAR *parser) {
     charconfig.runtime->jump_hold_duration = CharConfigAbsFloat(NuFParGetFloat(parser));
 }
 
-static void CC_maxheadturn(NUFPAR_PC *parser) {
+static void CC_maxheadturn(NUFPAR *parser) {
     charconfig.runtime->unknown_050 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
-static void CC_maxheadtilt(NUFPAR_PC *parser) {
+static void CC_maxheadtilt(NUFPAR *parser) {
     charconfig.runtime->unknown_054 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
-static void CC_headrotrate(NUFPAR_PC *parser) {
+static void CC_headrotrate(NUFPAR *parser) {
     charconfig.runtime->unknown_058 = (NuFParGetFloat(parser) * 3.1415927f) / 180.0f;
 }
 
-static void CC_coin_value(NUFPAR_PC *parser) {
+static void CC_coin_value(NUFPAR *parser) {
     i32 value = NuFParGetInt(parser);
     if (value > 10000) {
         value = 10000;
@@ -1518,19 +1518,19 @@ static void CC_coin_value(NUFPAR_PC *parser) {
     charconfig.runtime->coin_value = (i16)(value / 10) * 10;
 }
 
-static void CC_set_timebaseupdate1(NUFPAR_PC *parser) {
+static void CC_set_timebaseupdate1(NUFPAR *parser) {
     CC_SetTimebase(parser, 0);
 }
 
-static void CC_set_timebaseupdate2(NUFPAR_PC *parser) {
+static void CC_set_timebaseupdate2(NUFPAR *parser) {
     CC_SetTimebase(parser, 0);
 }
 
-static void CC_set_timebaseupdate3(NUFPAR_PC *parser) {
+static void CC_set_timebaseupdate3(NUFPAR *parser) {
     CC_SetTimebase(parser, 0);
 }
 
-static void CC_set_timebaseupdate4(NUFPAR_PC *parser) {
+static void CC_set_timebaseupdate4(NUFPAR *parser) {
     CC_SetTimebase(parser, 0);
 }
 
@@ -1762,7 +1762,7 @@ static f32 CharConfigFdiv(f32 a, f32 b) {
 
 static i32 RedirectTextFile(char *text, char *filename, i32 filename_capacity) {
     i32 result = 0;
-    NUFPAR_PC *parser = NuFParCreateMem("redirect", text, 0xffff);
+    NUFPAR *parser = NuFParCreateMem("redirect", text, 0xffff);
     if (parser != NULL) {
         while (NuFParGetLine(parser) != 0) {
             if (Text_StripComments(parser->line_buffer_ptr, parser->line_buffer_ptr, 1) == 0) {
@@ -1802,14 +1802,14 @@ void CharConfig_CalculateJumpStats(float jump_speed, float gravity, float *durat
 
 static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR *arena, VARIPTR *arena_end, i32 permanent, char *text,
                       i32 text_length, i32 redirect, NUFPCOMJMP *game_keywords) {
-    CHARACTERDATA_PC *character = (CHARACTERDATA_PC *)&apicharsys->char_data[character_id];
+    CHARACTERDATA *character = (CHARACTERDATA *)&apicharsys->char_data[character_id];
     char redirected_name[64];
     char path[128];
     i32 redirected = 0;
     GAMECHARACTERLAYER layers[32];
     CHARACTER_EFFECT_CONFIG effects[33];
     PLAYERCHARACTERCONFIG *data;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     char *buffer;
     i32 length;
     i32 size;
@@ -1955,7 +1955,7 @@ void CharConfig_ConfigureAll(i32 permanent, NUFPCOMJMP *game_keywords) {
     char filename[256];
     char directory[256];
     char original_path[256];
-    CHARACTERDATA_PC *character;
+    CHARACTERDATA *character;
     i32 id;
     configureallcharacters_perm = permanent;
     if (CHARPAK != 0 && permanent != 0) {

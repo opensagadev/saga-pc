@@ -142,7 +142,7 @@ void PCShaderObjectInitHLSLPc(NuShaderObject *shader, const u32 *key, i32 index,
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetScalarValues(i32 first_element, i32 count, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetScalarValues(i32 first_element, i32 count, const f32 *values) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + first_element, values, count);
     } else {
@@ -150,7 +150,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetScalarValues(i32 first_element, i32 count,
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorValues(i32 first_element, i32 count, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetVectorValues(i32 first_element, i32 count, const f32 *values) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + first_element, values, count);
     } else {
@@ -158,7 +158,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorValues(i32 first_element, i32 count,
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32 first_element, i32 count, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetMatrixValues(i32 first_element, i32 count, const f32 *values) {
     NUMTX transposed[32];
     for (i32 i = 0; i < count; ++i) {
         NuMtxTranspose(&transposed[i], (NUMTX *)(values + i * 16));
@@ -174,19 +174,19 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetMatrixValues(i32 first_element, i32 count,
     }
 }
 
-i32 PC_SHADER_PARAMETER_LOCAL_PC::fun_00742180() {
+i32 PC_SHADER_PARAMETER_LOCAL::fun_00742180() {
     return register_index;
 }
 
-PC_SHADER_PARAMETER_LOCAL_PC *PC_SHADER_PARAMETER_LOCAL_PC::fun_00742190() {
+PC_SHADER_PARAMETER_LOCAL *PC_SHADER_PARAMETER_LOCAL::fun_00742190() {
     return next;
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::fun_007421a0(PC_SHADER_PARAMETER_LOCAL_PC *parameter) {
+void PC_SHADER_PARAMETER_LOCAL::fun_007421a0(PC_SHADER_PARAMETER_LOCAL *parameter) {
     next = parameter;
 }
 
-PC_SHADER_PARAMETER_LOCAL_PC *PC_SHADER_PARAMETER_LOCAL_PC::fun_007421b0() {
+PC_SHADER_PARAMETER_LOCAL *PC_SHADER_PARAMETER_LOCAL::fun_007421b0() {
     return this;
 }
 
@@ -195,7 +195,7 @@ extern "C" i32 fun_007421c0(void) {
 }
 
 extern "C" void NuShaderObjectSetElementsfv(NuShaderObject *shader, i32 semantic, i32 first_element, i32 count, const f32 *values) {
-    PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
+    PC_SHADER_PARAMETER_LOCAL *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0) {
         return;
     }
@@ -216,7 +216,7 @@ extern "C" void NuShaderObjectSetElementsfv(NuShaderObject *shader, i32 semantic
 
 extern "C" void NuShaderObjectSetElementsfv_transpose(NuShaderObject *shader, i32 semantic, i32 first_element, i32 count,
                                                       const f32 *values) {
-    PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantic];
+    PC_SHADER_PARAMETER_LOCAL *parameter = &shader->parameters[semantic];
     if (parameter->register_index < 0) {
         return;
     }
@@ -315,7 +315,7 @@ typedef struct PC_SHADER_MATERIAL_DISPATCH_VIEW { // size 0x2a0
     i32 unfiltered_texture_id;                    // 0x29c
 } PC_SHADER_MATERIAL_DISPATCH_VIEW;
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetScalar(f32 value) {
+void PC_SHADER_PARAMETER_LOCAL::SetScalar(f32 value) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, &value, 1);
     } else {
@@ -323,7 +323,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetScalar(f32 value) {
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetVector(const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetVector(const f32 *values) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, values, 1);
     } else {
@@ -331,7 +331,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetVector(const f32 *values) {
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorElement(i32 index, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetVectorElement(i32 index, const f32 *values) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index + index, values, 1);
     } else {
@@ -339,11 +339,11 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetVectorElement(i32 index, const f32 *values
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::fun_007424a0(i32 first_element, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::fun_007424a0(i32 first_element, const f32 *values) {
     SetMatrixValues(first_element, 1, values);
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::fun_00742720(i32 index, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::fun_00742720(i32 index, const f32 *values) {
     switch ((i32)(metadata << 4) >> 28) {
         case 1:
             SetValues(index, 1, values);
@@ -359,7 +359,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::fun_00742720(i32 index, const f32 *values) {
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetFloat2(const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetFloat2(const f32 *values) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, values, 1);
     } else {
@@ -367,7 +367,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetFloat2(const f32 *values) {
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetFloat3(const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetFloat3(const f32 *values) {
     if ((metadata & 0xf0000000U) == 0x10000000U) {
         PCDeviceSetVertexShaderConstantsF(register_index, values, 1);
     } else {
@@ -375,7 +375,7 @@ void PC_SHADER_PARAMETER_LOCAL_PC::SetFloat3(const f32 *values) {
     }
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetValues(i32 first_element, i32 count, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetValues(i32 first_element, i32 count, const f32 *values) {
     switch ((i32)(metadata << 4) >> 28) {
         case 1:
             SetScalarValues(first_element, count, values);
@@ -459,7 +459,7 @@ static void PCShaderSamplerWrapPc(i32 u_mode, u32 stage, i32 v_mode) {
 
 extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *original_material) {
     PC_SHADER_MATERIAL_DISPATCH_VIEW *material = reinterpret_cast<PC_SHADER_MATERIAL_DISPATCH_VIEW *>(original_material);
-    PC_SHADER_PARAMETER_LOCAL_PC *parameter = shader->active_parameters;
+    PC_SHADER_PARAMETER_LOCAL *parameter = shader->active_parameters;
     NUVEC4 vector_2;
     NUVEC4 vector_10;
     NUVEC4 vector_11;
@@ -947,7 +947,7 @@ extern "C" void PCShaderSetMaterialParametersPc(NuShaderObject *shader, NUMTL *o
 extern "C" void fun_00743970(void) {
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::fun_00743e10(i32 first_element, i32 count, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::fun_00743e10(i32 first_element, i32 count, const f32 *values) {
     switch ((i32)(metadata << 4) >> 28) {
         case 1:
             SetScalarValues(first_element, count, values);

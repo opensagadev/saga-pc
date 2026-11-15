@@ -958,7 +958,7 @@ i32 rtlDynamicSetDirection(i32 id, NUVEC *direction) {
 }
 
 // Version 2/3 sets kept their fog table in the light slots from 64 onwards.
-#define RTL_OLD_FOG(set) ((RTL_FOG_MIGRATION_PC *)&(set)->lights[64])
+#define RTL_OLD_FOG(set) ((RTL_FOG_MIGRATION *)&(set)->lights[64])
 
 RTL_SET *rtlLoadSet(char *path, VARIPTR *buffer, i32 buffer_end) {
     RTL_SET *set;
@@ -1363,13 +1363,13 @@ void edrtlCalculateBurnoutEx(BURN_SET *set, BURN_PARAMETERS *parameters, NUVEC *
 typedef struct rtl_direction_lookup_pc_s { // size 0x4690
     u32 header;                            // 0x0000
     RTL_LIGHT lights[129];                 // 0x0004
-} RTL_DIRECTION_LOOKUP_PC;
+} RTL_DIRECTION_LOOKUP;
 
 i32 rtlGetDirection(RTL_SET *set, i32 index, NUVEC **out) {
     if (set == NULL || out == NULL || (u32)index > 128u) {
         return 0;
     }
-    *out = &((RTL_DIRECTION_LOOKUP_PC *)set)->lights[index].direction;
+    *out = &((RTL_DIRECTION_LOOKUP *)set)->lights[index].direction;
     return 1;
 }
 
@@ -2209,7 +2209,7 @@ void rtlFree(RTL_LIGHT *light) {
     light->type = 0;
 }
 
-RTL_FOG_MIGRATION_PC *fogAlloc(void) {
+RTL_FOG_MIGRATION *fogAlloc(void) {
     i32 i;
     if (curr_set != NULL) {
         for (i = 0; i < 32; ++i) {
@@ -2221,8 +2221,8 @@ RTL_FOG_MIGRATION_PC *fogAlloc(void) {
     return NULL;
 }
 
-void fogFree(RTL_FOG_MIGRATION_PC *fog) {
-    RTL_FOG_MIGRATION_PC *next = fog + 1;
+void fogFree(RTL_FOG_MIGRATION *fog) {
+    RTL_FOG_MIGRATION *next = fog + 1;
     while (fog < &curr_set->fog[32] && fog->type != 0) {
         *fog = *next;
         ++fog;
@@ -2232,7 +2232,7 @@ void fogFree(RTL_FOG_MIGRATION_PC *fog) {
     fog->type = 0;
 }
 
-RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET *set, NUVEC *position) {
+RTL_FOG_MIGRATION *rtlGetFogSet(RTL_SET *set, NUVEC *position) {
     i32 i;
     RTL_SET *fog_set = set;
     i32 selected = -1;
@@ -2319,14 +2319,14 @@ void SelectPrevRTL(void) {
     }
 }
 
-extern RTL_FOG_MIGRATION_PC *curr_fog;
+extern RTL_FOG_MIGRATION *curr_fog;
 /* Fog editor mode and cursor size; the mode has its own section to keep the data layout. */
 i32 fogmode = 0;
 i32 rtl_error = 0;
 f32 cursor_size = 1.0f;
 
 // forceinline: the original inlines this into edrtlDrawLightEx, which VC8's own heuristics do not.
-static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
+static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D *vertices) {
     __declspec(align(16)) NUVEC first = vertices[0].position;
     __declspec(align(16)) NUVEC second = vertices[1].position;
     if (matrix != NULL) {
@@ -2344,7 +2344,7 @@ static __forceinline void edrtlRndrLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vert
 
 void edrtlDrawCursor(void) {
     /* The frame holds three vertices; only two are used. */
-    NURND_VERTEX3D_PC line[3];
+    NURND_VERTEX3D line[3];
     line[0].position.x = burn_editor_position.x - cursor_size;
     line[0].position.y = burn_editor_position.y;
     line[0].position.z = burn_editor_position.z;
@@ -2391,7 +2391,7 @@ void edrtlDrawLightEx(i32 index, i32 style) {
     u32 colour;
     u32 inner_colour;
     u32 outer_colour;
-    NURND_VERTEX3D_PC line[2];
+    NURND_VERTEX3D line[2];
 
     colour = (((u32)(curr_set->lights[index].colour.z * 255.0) & 0xff) << 16 | 0x80000000) |
              (((u32)(curr_set->lights[index].colour.y * 255.0) & 0xff) << 8) | ((u32)(curr_set->lights[index].colour.x * 255.0) & 0xff);
@@ -2516,8 +2516,8 @@ i32 delete_menu_active = 0;
 i32 rtl_zoff = 0;
 i32 hide_types[8] = {0};
 RTL_LIGHT clipboard_light = {0};
-RTL_FOG_MIGRATION_PC *curr_fog = NULL;
-RTL_FOG_MIGRATION_PC clipboard_fog = {0};
+RTL_FOG_MIGRATION *curr_fog = NULL;
+RTL_FOG_MIGRATION clipboard_fog = {0};
 
 void edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
     rtled_menu_active = 0;
@@ -2773,14 +2773,14 @@ void rtlCbFogAlpha(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons
 }
 
 void rtlCbFogDensity(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->density = ((struct edui_slider_s *)item)->value;
     }
 }
 
 void rtlCbFogDensityWii(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->density_wii = ((struct edui_slider_s *)item)->value;
     }
@@ -2794,7 +2794,7 @@ void rtlCbHazeDensity(struct eduimenu_s *menu, struct eduiitem_s *item, u32 butt
 }
 
 void rtlCbBlurDensity(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->low_quality_density = (i32)(((struct edui_slider_s *)item)->value * 128.0);
     }
@@ -3507,7 +3507,7 @@ void cbFogAdjFar(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 void cbDOFFStop(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->depth_of_field_fstop = (u8)(i32)(((edui_slider_s *)item)->value * 10.0);
     }
@@ -3587,42 +3587,42 @@ void cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 void cbFogColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         AddColourPick(menu, item, NULL, NULL, NULL, &fog->colour);
     }
 }
 
 void cbHazeColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         AddColourPick(menu, item, NULL, NULL, NULL, &fog->low_quality_colour);
     }
 }
 
 void cbFogStart(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->start = ((edui_slider_s *)item)->value;
     }
 }
 
 void cbFogEnd(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->end = ((edui_slider_s *)item)->value;
     }
 }
 
 void cbFogStartPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->start_psp = ((edui_slider_s *)item)->value;
     }
 }
 
 void cbFogEndPSP(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    RTL_FOG_MIGRATION_PC *fog = curr_fog;
+    RTL_FOG_MIGRATION *fog = curr_fog;
     if (fog != NULL) {
         fog->end_psp = ((edui_slider_s *)item)->value;
     }
@@ -3824,7 +3824,7 @@ static RTL_LIGHT *FindNearestRTL(NUVEC *position, int ignore_radius) {
     return nearest != -1 ? &curr_set->lights[nearest] : NULL;
 }
 
-i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
+i32 edrtlProcRTL(f32 delta_time, FRAME_PAD *pad) {
     f32 dist;
     i16 previous_yaw;
     i16 previous_pitch;
@@ -4020,7 +4020,7 @@ i32 rtl_near_clip_at_cursor = 0;
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
 i32 RTL_EditorActive = 0;
 
-static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
+static RTL_FOG_MIGRATION *FindNearestFog(NUVEC *position) {
     i32 i;
     i32 nearest = -1;
     f32 nearest_distance = FLT_MAX;
@@ -4044,14 +4044,14 @@ static RTL_FOG_MIGRATION_PC *FindNearestFog(NUVEC *position) {
     return NULL;
 }
 
-RTL_FOG_MIGRATION_PC *edrtlGetFogSet(void) {
+RTL_FOG_MIGRATION *edrtlGetFogSet(void) {
     if (fogmode == 0) {
         return curr_fog;
     }
     return FindNearestFog((NUVEC *)&global_camera.mtx.m30);
 }
 
-static RTL_FOG_MIGRATION_PC *SelectPrevFog(void) {
+static RTL_FOG_MIGRATION *SelectPrevFog(void) {
     i32 index;
     i32 count = 0;
     index = curFogLoc - 1;
@@ -4077,7 +4077,7 @@ static RTL_FOG_MIGRATION_PC *SelectPrevFog(void) {
     return NULL;
 }
 
-static RTL_FOG_MIGRATION_PC *SelectNextFog(void) {
+static RTL_FOG_MIGRATION *SelectNextFog(void) {
     i32 index;
     i32 count = 0;
     if (curFogLoc == -1 || curFogLoc == 31) {
@@ -4104,11 +4104,11 @@ static RTL_FOG_MIGRATION_PC *SelectNextFog(void) {
     return NULL;
 }
 
-static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 edrtlProcFog(f32 delta_time, FRAME_PAD *pad) {
     static i32 dragging;
     static NUVEC dragoff;
     static NUVEC dragstart;
-    static RTL_FOG_MIGRATION_PC *drag_fog;
+    static RTL_FOG_MIGRATION *drag_fog;
     f32 distance;
     f32 camera_step;
 
@@ -4205,7 +4205,7 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
     return 0;
 }
 
-static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD *pad) {
     if (edrtl_edit_burnset == NULL) {
         edrtl_edit_burnset = NuAlloc(sizeof(BURN_SET), "d:\\projects\\game_saga\\gameapi.saga\\rtl\\rtl.c", 5092);
         edrtlInitBurnset(edrtl_edit_burnset);
@@ -4271,7 +4271,7 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
     return (pad->digital_buttons_pressed & PAD_BUTTON_START) ? 1 : 0;
 }
 
-static i32 edrtlProc(f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 edrtlProc(f32 delta_time, FRAME_PAD *pad) {
     lockflash -= delta_time;
     if (lockflash < 0.0f) {
         lockflash += lockflash_rate;
@@ -4288,7 +4288,7 @@ static i32 edrtlProc(f32 delta_time, FRAME_PAD_PC *pad) {
     return 1;
 }
 
-void edrtlDrawFog(RTL_FOG_MIGRATION_PC *fog) {
+void edrtlDrawFog(RTL_FOG_MIGRATION *fog) {
     if (fog != NULL) {
         i32 colour = (fog->colour & 0xffffff) | 0x80000000;
         switch (fog->type) {

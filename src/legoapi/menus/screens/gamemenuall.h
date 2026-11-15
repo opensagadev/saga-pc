@@ -59,8 +59,8 @@ extern "C" {
     extern i32 Menu_InLoadFlow;
 
     void MenuRepeat(i32 *, i32 *, f32 *, u8 *, f32, f32);
-    typedef i32 (*SAVE_HASH_FN_PC)(void);
-    typedef void (*SAVE_VOID_FN_PC)(void);
+    typedef i32 (*SAVE_HASH_FN)(void);
+    typedef void (*SAVE_VOID_FN)(void);
     extern f32 memcard_autosavecanceldelay;
     extern i32 memcard_slot;
     extern i32 memcard_loadneeded;
@@ -90,12 +90,12 @@ extern "C" {
     extern f32 memcard_message_delay;
     extern f32 memcard_result_delay;
     extern i32 memcard_cardchanged;
-    extern SAVE_HASH_FN_PC memcard_hashfn;
+    extern SAVE_HASH_FN memcard_hashfn;
     extern void *memcard_headerdata;
     extern void *memcard_headerdatabuffer;
     extern i32 memcard_headerdatasize;
     extern i32 memcard_slotsused;
-    extern SAVE_VOID_FN_PC savesuccessfn;
+    extern SAVE_VOID_FN savesuccessfn;
     extern i32 saveload_autosavedisabled;
     void UpdateSaveSlots(void);
     void loadsaveCallEachFrame(void);

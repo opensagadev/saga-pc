@@ -140,7 +140,7 @@ extern "C" {
 
 typedef struct main_controller_world_view_s { // size 0x4674
     u8 unknown_0000[0x4670];                  // 0x0000
-    AI_CONTROL_SYSTEM_PC *control_system;     // 0x4670
+    AI_CONTROL_SYSTEM *control_system;        // 0x4670
 } MAIN_CONTROLLER_WORLD_VIEW;
 
 extern "C" void DrawSaveSlots(MENU *, f32);
@@ -156,7 +156,7 @@ extern "C" {
     void WorldInfo_Activate(void);
     void FindGameCutScenes(void);
     void DebrisGlassInit(void);
-    void GamePlayMusic(LEVELDATA_PC *level, i32 start, OPTIONSSAVE *options);
+    void GamePlayMusic(LEVELDATA *level, i32 start, OPTIONSSAVE *options);
     void CheckResetBits(void);
     void Movie_Play(char *name, VARIPTR *buffer, VARIPTR *end, f32 frame_time, void *callback, f32 volume);
     void Areas_OpenAll(i32 mode);
@@ -176,7 +176,7 @@ extern "C" {
     void WorldInfo_DrawScene(WORLDINFO *world);
     void PortalDoors_Update(WORLDINFO *world);
     u8 IsGrabbingScreen(void);
-    void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours);
+    void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours);
     void NuMtlAnimateSetSpeedScale(f32 scale);
     void NuMtlAnimateSetMask(i32 mask);
     void NuRndrGlobalFrameCountPause(i32 paused);
@@ -209,7 +209,7 @@ extern "C" {
     i32 frameout = 0;
     i64 frameout_count = 0;
     i32 HubMainRenderTimeHack = 0;
-    DAT_HANDLES_PC NuDatHandles = {0};
+    DAT_HANDLES NuDatHandles = {0};
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&dat_008810c0, NULL};
     i32 PlayTrailer = -1;
 }
@@ -223,7 +223,7 @@ extern "C" {
  * NuMainSplineDebugMode is set, and mode 2 animates the dash pattern. */
 static void NuMainDrawSplines(NUGSCN *gscn) {
     i32 colours[8] = {-1, -1, -1, -1, 0, 0, 0, 0};
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     NUGSPLINE *spline;
     NUVEC *point;
     i32 animate;
@@ -258,7 +258,7 @@ static void NuMainDrawSplines(NUGSCN *gscn) {
 /* PC splits NuMain's per-frame game update and world render into helpers. */
 static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     GAMEOBJECT *object;
-    LEVELDATA_PC *level;
+    LEVELDATA *level;
     FADETYPE fade_type;
     i32 i;
     void (*callback)(WORLDINFO *);
@@ -346,7 +346,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuRndrGlobalFrameCountPause(1);
         pNuCam->mtx = GameCam->render_mtx;
         NuCameraSet(pNuCam);
-        UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
+        UpdateGameMenu((GAMEPAD *)GamePadStorage, 1);
         for (i = 0; i < 2; ++i) {
             object = Player[i];
             if (object != NULL) {
@@ -425,7 +425,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 adaptivedifficulty.accumulator = 0.0f;
             }
             Teleports_UpdateAfterGameObjects(world);
-            Pulses_Update((LEVEL_SFX_PULSE_PC *)world->pulses_sys);
+            Pulses_Update((LEVEL_SFX_PULSE *)world->pulses_sys);
             Detonators_Update();
             Batarangs_Update();
             UpdateCables();
@@ -465,7 +465,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             Hint_Process(FRAMETIME);
             Cheats_FrameUpdate();
         }
-        UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
+        UpdateGameMenu((GAMEPAD *)GamePadStorage, 1);
         Debris(0);
         if (CUTSTOPGAME == 0) {
             DebrisKillPlayers();

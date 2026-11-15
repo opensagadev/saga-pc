@@ -413,7 +413,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     NuAnimInit(animation_count, buffer, *end);
     NuTexAnimInitMutex();
     if (audio_enabled) {
-        NuSound3InitV(buffer, *end, video_parameter, 1, (SFX_FILE_INFO_PC *)audio_gate, 2, audio_buffer_size, 3, audio_channels, 4,
+        NuSound3InitV(buffer, *end, video_parameter, 1, (SFX_FILE_INFO *)audio_gate, 2, audio_buffer_size, 3, audio_channels, 4,
                       audio_capacity, 0);
     }
     if (audio_gate && audio_names && audio_parameter) {
@@ -455,23 +455,23 @@ extern "C" void fun_006dc6f0(void) {
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
-i32 PC_WINDOW_OPTIONS_PC::fun_006dc710() {
+i32 PC_WINDOW_OPTIONS::fun_006dc710() {
     return client_width;
 }
 
-i32 PC_WINDOW_OPTIONS_PC::fun_006dc720() {
+i32 PC_WINDOW_OPTIONS::fun_006dc720() {
     return client_height;
 }
 
-i32 PC_WINDOW_OPTIONS_PC::fun_006dc730() {
+i32 PC_WINDOW_OPTIONS::fun_006dc730() {
     return window_x;
 }
 
-i32 PC_WINDOW_OPTIONS_PC::fun_006dc740() {
+i32 PC_WINDOW_OPTIONS::fun_006dc740() {
     return window_y;
 }
 
-i32 PC_DEVICE_BACKEND_PC::fun_006dc750() {
+i32 PC_DEVICE_BACKEND::fun_006dc750() {
     return parameters.windowed == 1;
 }
 

@@ -367,8 +367,8 @@ static void *GizSpecial_ReserveBuffer(void *world_ptr) {
     return fields->specials;
 }
 
-ADDGIZMOTYPE_PC *GizSpecial_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+ADDGIZMOTYPE *GizSpecial_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "NuSpecial";
     addtype.prefix = gizspecial_prefix;

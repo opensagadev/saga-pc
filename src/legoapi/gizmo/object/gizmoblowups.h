@@ -208,11 +208,11 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef i32 (*LEVEL_BLOWUP_CALLBACK_PC)(GIZMOBLOWUP_PC *, i32);
+typedef i32 (*LEVEL_BLOWUP_CALLBACK)(GIZMOBLOWUP_PC *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void SetLevelBlowupCallback(LEVEL_BLOWUP_CALLBACK_PC callback);
+    void SetLevelBlowupCallback(LEVEL_BLOWUP_CALLBACK callback);
 #ifdef __cplusplus
 }
 #endif

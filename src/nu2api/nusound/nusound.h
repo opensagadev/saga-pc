@@ -289,7 +289,7 @@ extern "C" {
     void PCStereoStartPacket(struct PC_STEREO_PLAY_PACKET *packet);
     extern struct nudathdr_s *NuSoundDat;
     void NuSound3SetDat(struct nudathdr_s *header);
-    extern MUSICPLAYBACK_PC Music;
+    extern MUSICPLAYBACK Music;
     struct numtx_s *NuSound3GetListener(void);
     extern struct numtx_s *NuSound3Listener;
 #ifdef __cplusplus
@@ -311,7 +311,7 @@ struct nusound_filename_info_s { // size 0x1c
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuSound3SetSampleTable(SFX_FILE_INFO_PC *, VARIPTR *, VARIPTR);
+    void NuSound3SetSampleTable(SFX_FILE_INFO *, VARIPTR *, VARIPTR);
     i32 NuSound3InitV(VARIPTR *, VARIPTR, i32, i32, ...);
     i32 PCSoundInitialize(struct PC_SOUND_INIT_CONFIG *);
     struct nusound_filename_info_s *ConfigureMusic(char *, VARIPTR *, VARIPTR *);

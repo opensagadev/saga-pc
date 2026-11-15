@@ -644,65 +644,65 @@ static i32 load_nflowboxes = 0;
 static char load_name[32] = {0};
 GIZACTIONDEF *gizactiondefs = 0;
 
-static void GizFlowConfigGizmoType(NUFPAR_PC *parser) {
+static void GizFlowConfigGizmoType(NUFPAR *parser) {
     NuFParGetWord(parser);
     if (parser->word_buffer_ptr != NULL) {
         load_gizmotype = GizmoGetTypeIDByName(load_gizflow->gizmo_sys, parser->word_buffer_ptr);
     }
 }
 
-static void GizFlowConfigGizmoName(NUFPAR_PC *parser) {
+static void GizFlowConfigGizmoName(NUFPAR *parser) {
     NuFParGetWord(parser);
     if (parser->word_buffer_ptr != NULL) {
         NuStrNCpy(load_gizmoname, parser->word_buffer_ptr, 32);
     }
 }
 
-static void GizFlowConfigStartInvis(NUFPAR_PC *parser) {
+static void GizFlowConfigStartInvis(NUFPAR *parser) {
     load_g_flags |= 1;
 }
 
-static void GizFlowConfigEndInvis(NUFPAR_PC *parser) {
+static void GizFlowConfigEndInvis(NUFPAR *parser) {
     load_g_flags |= 2;
 }
 
-static void GizFlowConfigReverse(NUFPAR_PC *parser) {
+static void GizFlowConfigReverse(NUFPAR *parser) {
     load_g_flags |= 4;
 }
 
-static void GizFlowConfigEndDeact(NUFPAR_PC *parser) {
+static void GizFlowConfigEndDeact(NUFPAR *parser) {
     load_g_flags |= 8;
 }
 
-static void GizFlowConfigOutputOnly(NUFPAR_PC *parser) {
+static void GizFlowConfigOutputOnly(NUFPAR *parser) {
     load_g_flags = 0x10;
 }
 
-static void GizFlowConfigNotStoryMode(NUFPAR_PC *parser) {
+static void GizFlowConfigNotStoryMode(NUFPAR *parser) {
     load_g_flags |= 0x20;
 }
 
-static void GizFlowConfigNotFreeplay(NUFPAR_PC *parser) {
+static void GizFlowConfigNotFreeplay(NUFPAR *parser) {
     load_g_flags |= 0x40;
 }
 
-static void GizFlowConfigReverseInvis(NUFPAR_PC *parser) {
+static void GizFlowConfigReverseInvis(NUFPAR *parser) {
     load_g_flags |= 0x80;
 }
 
-static void GizFlowConfigGizRandomTime(NUFPAR_PC *parser) {
+static void GizFlowConfigGizRandomTime(NUFPAR *parser) {
     load_t_randomTime = 1;
 }
 
-static void GizFlowConfigGizTimer(NUFPAR_PC *parser) {
+static void GizFlowConfigGizTimer(NUFPAR *parser) {
     load_t_time = NuFParGetFloat(parser);
 }
 
-static void GizFlowConfigRand_NumOutputs(NUFPAR_PC *parser) {
+static void GizFlowConfigRand_NumOutputs(NUFPAR *parser) {
     load_r_noutputs = NuFParGetInt(parser);
 }
 
-static void GizFlowConfigRand_OutputChance(NUFPAR_PC *parser) {
+static void GizFlowConfigRand_OutputChance(NUFPAR *parser) {
     i32 index;
 
     index = NuFParGetInt(parser);
@@ -727,7 +727,7 @@ static NUFPCOMJMP cfgtab_gizmo[] = {
     {NULL,                 NULL                          },
 };
 
-static void GizFlowConfigGizmo(NUFPAR_PC *parser) {
+static void GizFlowConfigGizmo(NUFPAR *parser) {
     FLOWBOXGIZMODATA *data;
     i32 name_size;
 
@@ -871,7 +871,7 @@ static void GizFlowConfigRemapParent(i32 id) {
     }
 }
 
-static void GizFlowConfigChild(NUFPAR_PC *parser) {
+static void GizFlowConfigChild(NUFPAR *parser) {
     i32 child;
 
     if (load_nchildren < 32) {
@@ -884,7 +884,7 @@ static void GizFlowConfigChild(NUFPAR_PC *parser) {
     }
 }
 
-static void GizFlowConfigParent(NUFPAR_PC *parser) {
+static void GizFlowConfigParent(NUFPAR *parser) {
     i32 parent;
     i32 index;
 
@@ -904,7 +904,7 @@ static void GizFlowConfigParent(NUFPAR_PC *parser) {
     }
 }
 
-static void GizFlowConfigChildCollapse(NUFPAR_PC *parser) {
+static void GizFlowConfigChildCollapse(NUFPAR *parser) {
     GIZFLOW_REMAP *entry;
     i32 index;
     i32 value;
@@ -918,7 +918,7 @@ static void GizFlowConfigChildCollapse(NUFPAR_PC *parser) {
     }
 }
 
-static void GizFlowConfigParentCollapse(NUFPAR_PC *parser) {
+static void GizFlowConfigParentCollapse(NUFPAR *parser) {
     GIZFLOW_REMAP *entry;
     i32 index;
     i32 value;
@@ -942,7 +942,7 @@ static NUFPCOMJMP cfgtab_collapse[] = {
     {NULL,     NULL                       },
 };
 
-static void GizFlowConfigCollapse(NUFPAR_PC *parser) {
+static void GizFlowConfigCollapse(NUFPAR *parser) {
     load_nparents = 0;
     load_nchildren = 0;
     NuFParPushCom(parser, cfgtab_collapse);
@@ -959,7 +959,7 @@ static void GizFlowConfigCollapse(NUFPAR_PC *parser) {
     ++numRemaps;
 }
 
-static void GizFlowConfigSumBox(NUFPAR_PC *parser) {
+static void GizFlowConfigSumBox(NUFPAR *parser) {
     load_conditionParam = NuFParGetInt(parser);
 }
 
@@ -976,7 +976,7 @@ typedef struct GIZFLOW_CONDITION_TYPE GIZFLOW_CONDITION_TYPE;
 struct GIZFLOW_CONDITION_TYPE { // size 0xc
     i32 type;                   // 0x0
     char *name;                 // 0x4
-    void (*load)(NUFPAR_PC *);  // 0x8
+    void (*load)(NUFPAR *);     // 0x8
 };
 
 static GIZFLOW_CONDITION_TYPE gizflow_condition_types[] = {
@@ -989,7 +989,7 @@ static GIZFLOW_CONDITION_TYPE gizflow_condition_types[] = {
     {-1, NULL,      NULL               },
 };
 
-static void GizFlowConfigConditionType(NUFPAR_PC *parser) {
+static void GizFlowConfigConditionType(NUFPAR *parser) {
     i32 index;
     GIZFLOW_CONDITION_TYPE *type;
 
@@ -1005,7 +1005,7 @@ static void GizFlowConfigConditionType(NUFPAR_PC *parser) {
     }
 }
 
-static void GizFlowConfigMonitorInputsPc(NUFPAR_PC *parser) {
+static void GizFlowConfigMonitorInputsPc(NUFPAR *parser) {
     load_flowbox->state_flags |= 0x200;
 }
 
@@ -1015,7 +1015,7 @@ static NUFPCOMJMP cfgtab_condition[] = {
     {NULL,            NULL                        },
 };
 
-static void GizFlowConfigCondition(NUFPAR_PC *parser) {
+static void GizFlowConfigCondition(NUFPAR *parser) {
     u8 *condition;
 
     if (load_flowbox == NULL) {
@@ -1044,7 +1044,7 @@ static void GizFlowConfigCondition(NUFPAR_PC *parser) {
     }
 }
 
-static void GizFlowConfigAction(NUFPAR_PC *parser) {
+static void GizFlowConfigAction(NUFPAR *parser) {
     i32 i;
     FLOWBOXACTION *previous;
     char parameters[16][64];
@@ -1135,24 +1135,24 @@ void RegisterGizActions(GIZACTIONDEF *definitions) {
     gizactiondefs = definitions;
 }
 
-static void GizFlowConfigName(NUFPAR_PC *parser) {
+static void GizFlowConfigName(NUFPAR *parser) {
     NuFParGetWord(parser);
     if (parser->word_buffer_ptr != NULL) {
         NuStrNCpy(load_name, parser->word_buffer_ptr, 32);
     }
 }
 
-static void GizFlowConfigNumGizmos(NUFPAR_PC *parser) {
+static void GizFlowConfigNumGizmos(NUFPAR *parser) {
     load_numgizmos = NuFParGetInt(parser);
 }
 
-static void GizFlowConfigAIAssistID(NUFPAR_PC *parser) {
+static void GizFlowConfigAIAssistID(NUFPAR *parser) {
     i32 value;
     value = NuFParGetInt(parser);
     ((GIZFLOW_BOX_LOADER_PREFIX *)load_flowbox)->assist_id = (u8)value;
 }
 
-static void GizFlowConfigFlowBoxCount(NUFPAR_PC *parser) {
+static void GizFlowConfigFlowBoxCount(NUFPAR *parser) {
     ++load_nflowboxes;
 }
 
@@ -1168,7 +1168,7 @@ static NUFPCOMJMP cfgtab_flowbox[] = {
     {NULL,         NULL                   },
 };
 
-static void GizFlowConfigFlowBox(NUFPAR_PC *parser) {
+static void GizFlowConfigFlowBox(NUFPAR *parser) {
     i32 i;
 
     load_nparents = 0;
@@ -1221,7 +1221,7 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
     GIZFLOW_REMAP remaps[96];
     GIZFLOW *flow;
     NUFILE file;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
 
     flow = NULL;
     numRemaps = 0;

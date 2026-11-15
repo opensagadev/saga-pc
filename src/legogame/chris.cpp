@@ -216,7 +216,7 @@ extern "C" {
         {"door_to_c2", 583.72998f,  167.5f     },
     };
 
-    extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
+    extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity);
 
     typedef struct DOGFIGHT_SPEEDUP { // size 0x8
         f32 distance;                 // 0x0
@@ -314,7 +314,7 @@ extern "C" {
     extern void SpaceResetAudioPoint(void);
 
     /* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
-    SOCKPOSITION_PC *DogfightSelectedSock = NULL;
+    SOCKPOSITION *DogfightSelectedSock = NULL;
     i32 DogfightDrawSelectedSock = 0;
     i32 DogfightHideGeometry = 0;
     i32 DogfightDrawSpline = 0;
@@ -323,7 +323,7 @@ extern "C" {
     i32 DogfightBoltModelsFirst[4] = {303, 305, 301, 301};
     i32 DogfightBoltModelsSecond[4] = {304, 306, 302, 302};
     extern i32 DogfightDebrisKeys[4];
-    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
+    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
     f32 DogfightCollisionRadiusSquared = 2.0f;
 
@@ -384,11 +384,11 @@ extern "C" {
     static void DrawQuickBolts(DOGFIGHT_QUICK_BUFFER *buffer);
     DOGFIGHT_QUICK_BOLT *QuickBoltRecordAllocate(DOGFIGHT_QUICK_BUFFER *buffer);
     static i32 QuickBoltCreate(DOGFIGHT_QUICK_BUFFER *buffer, NUMTX *matrix, NUVEC4 *velocity, f32 duration, i32 type, i32 model_id);
-    static void SampleFlightSpline(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count);
-    static f32 FlightSplineLegacyLength(FLIGHT_SPLINE_RESOURCE_PC *spline);
-    static f32 FlightSplineCumulativeLength(FLIGHT_SPLINE_RESOURCE_PC *spline);
+    static void SampleFlightSpline(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *points, i32 count);
+    static f32 FlightSplineLegacyLength(FLIGHT_SPLINE_RESOURCE *spline);
+    static f32 FlightSplineCumulativeLength(FLIGHT_SPLINE_RESOURCE *spline);
     static void FlightSplineLoadRecord(FLIGHT_SPLINE_FILE *spline, i32 version, i32 index);
-    static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode);
+    static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE *spline, i32 mode);
     static void DogfightResetCrosses(DOGFIGHT_CROSS *crosses, i32 count);
     static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE_PC *space);
     static void DogfightResetSplineHistory(DOGFIGHT_SPLINE_HISTORY *records, i32 count);
@@ -413,7 +413,7 @@ extern "C" {
     void ChrisAllocLevelStuff(WORLDINFO *world);
     static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity);
     i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
-    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count);
+    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count);
     void ChrisAnakinCInit();
     static void SpawnFlightFighter(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_FIGHTER *record);
     static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE_PC *space);
@@ -672,7 +672,7 @@ extern "C" {
         return 0;
     }
 
-    void CalcSplinePoint(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 along) {
+    void CalcSplinePoint(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *result, f32 along) {
         f32 scaled = (spline->point_count - 1) * along;
         i32 index = (i32)scaled;
         f32 fraction = scaled - index;
@@ -794,7 +794,7 @@ extern "C" {
         result->w = (next->w - current->w) * fraction + current->w;
     }
 
-    void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance) {
+    void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *result, f32 distance) {
         i32 index;
         if (distance >= spline->length) {
             distance = 1.0f;
@@ -811,7 +811,7 @@ extern "C" {
         CalcSplinePoint(spline, result, distance);
     }
 
-    static void SampleFlightSpline(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *points, i32 count) {
+    static void SampleFlightSpline(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *points, i32 count) {
         f32 step;
         f32 along;
         i32 i;
@@ -825,7 +825,7 @@ extern "C" {
         points[count - 1] = spline->points[spline->point_count - 1];
     }
 
-    static f32 FlightSplineLegacyLength(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    static f32 FlightSplineLegacyLength(FLIGHT_SPLINE_RESOURCE *spline) {
         f32 distance = 0.0f;
         f32 along = 1.0f;
         NUVEC4 current;
@@ -855,7 +855,7 @@ extern "C" {
         return distance;
     }
 
-    static f32 FlightSplineCumulativeLength(FLIGHT_SPLINE_RESOURCE_PC *spline) {
+    static f32 FlightSplineCumulativeLength(FLIGHT_SPLINE_RESOURCE *spline) {
         f32 distance = 0.0f;
         i32 point;
         i32 sample;
@@ -912,7 +912,7 @@ extern "C" {
         }
     }
 
-    void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity) {
+    void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity) {
         char filename[256];
         i32 version;
         i32 count;
@@ -956,7 +956,7 @@ extern "C" {
     }
 
     /* The debug paths keep these vector evaluations without line submission calls. */
-    static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE_PC *spline, i32 mode) {
+    static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE *spline, i32 mode) {
         NUVEC4 points[512];
         __declspec(align(16)) NUVEC4 direction;
         __declspec(align(16)) NUVEC4 axis;
@@ -2250,8 +2250,8 @@ extern "C" {
         return 0;
     }
 
-    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION_PC *position, i32 mode, i32 count) {
-        SOCK_PC *sock;
+    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count) {
+        SOCK *sock;
         __declspec(align(16)) NUVEC a;
         __declspec(align(16)) NUVEC b;
         __declspec(align(16)) NUVEC c;
@@ -2400,7 +2400,7 @@ extern "C" {
         fighter->shoot_timer = 0.0f;
         fighter->active = 1;
         fighter->parent = NULL;
-        fighter->spline = (FLIGHT_SPLINE_RESOURCE_PC *)spline;
+        fighter->spline = (FLIGHT_SPLINE_RESOURCE *)spline;
         fighter->health = 1;
         fighter->hit_count = 0;
         fighter->fired = 0;
@@ -2630,10 +2630,10 @@ extern "C" {
         ChrisAllocLevelStuff(world);
         DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
         for (i = 0; i < 256; ++i) {
-            ((FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines)[i].point_count = 0;
+            ((FLIGHT_SPLINE_RESOURCE *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines)[i].point_count = 0;
         }
         if (world->current_level == DOGFIGHTA_LDATA) {
-            FlightSpline_Init(world, (FLIGHT_SPLINE_RESOURCE_PC *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
+            FlightSpline_Init(world, (FLIGHT_SPLINE_RESOURCE *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
         }
         DogfightResetSplineHistory(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
     }

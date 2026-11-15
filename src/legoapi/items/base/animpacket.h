@@ -29,16 +29,16 @@ typedef struct animpacket_s {   // size 0x44
     u8 unknown_40;              // 0x40
     u8 unknown_41;              // 0x41
     i16 overlay_animation;      // 0x42
-} ANIMPACKET_PC;
+} ANIMPACKET;
 
-typedef struct minianimpacket_s MINIANIMPACKET_PC;
+typedef struct minianimpacket_s MINIANIMPACKET;
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    void ResetMiniAnimPacket(MINIANIMPACKET_PC *, i32);
-    f32 *AnimPlaying(ANIMPACKET_PC *, i32, i32, i32);
-    i32 AnimBlendingFromTo(struct CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, i32, i32);
+    void ResetMiniAnimPacket(MINIANIMPACKET *, i32);
+    f32 *AnimPlaying(ANIMPACKET *, i32, i32, i32);
+    i32 AnimBlendingFromTo(struct CHARACTER_MODEL_LAYERS *, ANIMPACKET *, i32, i32);
 #ifdef __cplusplus
 }
 #endif

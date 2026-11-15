@@ -23,7 +23,7 @@ extern "C" {
     i32 Shop_UpdateHint(HINT *);
     extern i32 shop_from_cutsceneplayer;
 #ifdef __cplusplus
-    extern CHEAT_PC ExtrasCheats[46];
+    extern CHEAT ExtrasCheats[46];
 #ifdef __cplusplus
 }
 #endif
@@ -31,13 +31,13 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern COLLECTION_BUILD_PC ShopCollection;
+    extern COLLECTION_BUILD ShopCollection;
     extern i32 POINTS_PER_HINT;
     extern i32 SHOPHINTCOUNT;
     extern i32 CutScenePlayCount;
     extern void (*drawptr)(void);
     extern i32 picked;
-    extern CHEAT_PC ExtrasCheats[46];
+    extern CHEAT ExtrasCheats[46];
     extern struct shopitem_s *BrickItems;
     extern i32 BrickShelfIds[7];
     extern struct shopitem_s *CharItems;

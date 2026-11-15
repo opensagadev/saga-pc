@@ -15,12 +15,12 @@ struct AISYS_PC;
 struct APIOBJECT;
 struct gameobject_s;
 
-typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(struct AIPACKET *, struct APIOBJECT *, i32);
+typedef i32 (*AI_PREPARING_SPECIAL_MOVE)(struct AIPACKET *, struct APIOBJECT *, i32);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern AI_PREPARING_SPECIAL_MOVE_PC PreparingForSpecialMoveFn;
+    extern AI_PREPARING_SPECIAL_MOVE PreparingForSpecialMoveFn;
 
     typedef struct BATARANG_TARGET_s { // size 0x14
         void *object;                  // 0x00
@@ -92,13 +92,13 @@ extern "C" {
                 }; // 0xae
             };
         }; // 0x00
-    } PLAYER_BATARANG_SLOT_PC;
+    } PLAYER_BATARANG_SLOT;
 
-    extern PLAYER_BATARANG_SLOT_PC BatarangPackets[8];
+    extern PLAYER_BATARANG_SLOT BatarangPackets[8];
     extern i16 PunchRangeUnitId;
-    typedef i32 (*AI_MID_SPECIAL_MOVE_PC)(struct AISYS_PC *, struct AIPACKET *, struct APIOBJECT *);
+    typedef i32 (*AI_MID_SPECIAL_MOVE)(struct AISYS_PC *, struct AIPACKET *, struct APIOBJECT *);
 
-    extern AI_MID_SPECIAL_MOVE_PC MidSpecialMoveFn;
+    extern AI_MID_SPECIAL_MOVE MidSpecialMoveFn;
     extern const f64 PCPathArcSineCoefficient3;
     extern const f64 PCPathArcSineCoefficient5;
     extern const f64 PCPathArcSineCoefficient7;

@@ -2303,7 +2303,7 @@ extern "C" void CubeImpact(NUMTX *current, NUMTX *previous, NUVEC *normal, f32 s
 }
 
 extern "C" void TerrainWallSideSlide(NUVEC *movement, void *id, f32 speed, f32 upward_scale, NUANG angle) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     if (terrain == NULL) {
         return;
     }
@@ -2390,7 +2390,7 @@ extern "C" void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *
 }
 
 extern "C" i32 fun_0067bf00(i32 instance) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     i32 index = -1;
     i32 i;
     for (i = 0; i < terrain->max_platforms; ++i) {

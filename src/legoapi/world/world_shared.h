@@ -85,12 +85,12 @@ extern "C" {
     void *AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
     void *CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
     APIOBJECTSYS *APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
-    void MiniKit_Load(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *, void *);
-    void MiniKit_InitPieces(MINIKIT_PC *, i32, VARIPTR *, VARIPTR *);
+    void MiniKit_Load(MINIKIT *, i32, VARIPTR *, VARIPTR *, void *);
+    void MiniKit_InitPieces(MINIKIT *, i32, VARIPTR *, VARIPTR *);
     void Hub_LoadAndFixUpMiniKits(WORLDINFO *, VARIPTR *, VARIPTR *);
-    void CharacterMiniKits_Load(COLLECTION_BUILD_PC *, WORLDINFO *, VARIPTR *, VARIPTR *);
+    void CharacterMiniKits_Load(COLLECTION_BUILD *, WORLDINFO *, VARIPTR *, VARIPTR *);
     void RippleEffects_Configure(WORLDINFO *, char *);
-    extern COLLECTION_BUILD_PC MiniKitCollection;
+    extern COLLECTION_BUILD MiniKitCollection;
     void CharScenes_LevelLoad(WORLDINFO *);
 #ifdef __cplusplus
 }

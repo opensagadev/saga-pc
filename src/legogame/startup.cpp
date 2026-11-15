@@ -82,9 +82,9 @@ extern "C" void Alt_registerStatusScreen(void);
 extern "C" void Alt_registerStatusScreenExtra(void);
 extern "C" {
     void MiniKits_Init(VARIPTR *, VARIPTR *);
-    void CharCategories_Init(CHAR_CATEGORY_RECORD_PC *);
-    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefault[6];
-    extern CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLsw[10];
+    void CharCategories_Init(CHAR_CATEGORY_RECORD *);
+    extern CHAR_CATEGORY_RECORD StartupCharCategoriesDefault[6];
+    extern CHAR_CATEGORY_RECORD StartupCharCategoriesLsw[10];
     extern char *StartupCharVariantNames[23];
 }
 extern "C" void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));
@@ -117,9 +117,9 @@ extern "C" {
     void RegisterHelpers(void);
     void LSW_registerStatusScreen(void);
 
-    extern LEVELDATA_PC *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out,
-                                              void *set_defaults_fn);
-    extern AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
+    extern LEVELDATA *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out,
+                                           void *set_defaults_fn);
+    extern AREA_DATA *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
 
     extern "C" {
         extern NUMTL *FadeMtl;
@@ -342,7 +342,7 @@ extern "C" {
 
             NuStringFilterLoad("stuff\\text\\badwords.txt", &permbuffer_ptr, permbuffer_end);
             MusicInfo = ConfigureMusic("audio\\music.txt", &permbuffer_ptr, &permbuffer_end);
-            SfxSetFileTable((SFX_FILE_INFO_PC *)MusicInfo);
+            SfxSetFileTable((SFX_FILE_INFO *)MusicInfo);
             InitSfx(&permbuffer_ptr, permbuffer_end, "Audio\\Audio.cfg");
             InitStillRender(&permbuffer_ptr, permbuffer_end);
 
@@ -519,7 +519,7 @@ extern "C" {
                 NuCameraSet(&global_camera);
                 readpads_always = 1;
                 ReadPads();
-                UpdateGameMenu((GAMEPAD_PC *)&GamePadStorage[0], 0);
+                UpdateGameMenu((GAMEPAD *)&GamePadStorage[0], 0);
                 UpdateTimer(&GlobalTimer);
                 menu_flash = NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.2f) < 0.1f;
                 if (NOSOUND == 0) {

@@ -334,7 +334,7 @@ struct HATMACHINE_PROGRESS { // size 0xc
     u32 visible_mask[1];     // 0x8
 };
 
-extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
+extern "C" ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 extern "C" i32 hatmachine_gizmotype_id;
 extern "C" {
     static void HatMachine_Draw(void *, void *, f32);
@@ -591,8 +591,8 @@ extern "C" {
     }
 }
 
-extern "C" ADDGIZMOTYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC HatMachineAddType = {0};
+extern "C" ADDGIZMOTYPE *HatMachine_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE HatMachineAddType = {0};
     HatMachineAddType = Default_ADDGIZMOTYPE;
     HatMachineAddType.name = (char *)"HatMachine";
     HatMachineAddType.prefix = (char *)"";
@@ -604,7 +604,7 @@ extern "C" ADDGIZMOTYPE_PC *HatMachine_RegisterGizmo(i32 type_id) {
     HatMachineAddType.fns.draw_fn = HatMachine_Draw;
     HatMachineAddType.fns.panel_draw_fn = NULL;
     HatMachineAddType.fns.get_gizmo_name_fn = (char *(*)(struct gizmo_s *))HatMachine_GetGizmoName;
-    HatMachineAddType.fns.get_output_fn = (i32(*)(struct gizmo_s *, i32, i32))HatMachine_GetOutput;
+    HatMachineAddType.fns.get_output_fn = (i32 (*)(struct gizmo_s *, i32, i32))HatMachine_GetOutput;
     HatMachineAddType.fns.get_output_name_fn = (char *(*)(struct gizmo_s *, i32))HatMachine_GetOutputName;
     HatMachineAddType.fns.get_num_outputs_fn = (void *)HatMachine_GetNumOutputs;
     HatMachineAddType.fns.activate_fn = (void (*)(struct gizmo_s *, i32))HatMachine_Activate;

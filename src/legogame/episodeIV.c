@@ -358,7 +358,7 @@ void DeathStarEscapeD_Update(WORLDINFO *world) {
     LevChatterSfx("Dianoga_Groan", &position);
 }
 
-void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
+void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA *level, f32 radius, f32 *distance);
 
 void MosEisleyD_AlwaysUpdate(WORLDINFO *world) {
     LevelStreaming_DoorOverride(world, dat_0087b1c0, 7.5f, NULL);
@@ -374,7 +374,7 @@ void DeathStarRescueC_AlwaysUpdate(WORLDINFO *world) {
 
 void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
     NUVEC position;
-    SOCKPOSITION_PC socket_position;
+    SOCKPOSITION socket_position;
     if (Players_AveragePos(&position, &socket_position) && socket_position.sock_index != -1) {
         if (DEATHSTARESCAPEA_LDATA != NULL && socket_position.sock_index < 6) {
             other_level_override = DEATHSTARESCAPEA_LDATA->index;
@@ -385,7 +385,7 @@ void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *world) {
 }
 
 /* Death Star battle midtro level slot (never assigned by FixUpLevels). */
-LEVELDATA_PC *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
+LEVELDATA *DEATHSTARBATTLEMIDTRO_LDATA = NULL;
 
 void DeathStarBattleC_AlwaysUpdate(WORLDINFO *world) {
     if (FreePlay == 0) {
@@ -404,10 +404,10 @@ typedef struct trenchrun_s { // size 0x20
     NUVEC position;          // 0x0c
     i32 midtro_played;       // 0x18
     f32 spawn_timer;         // 0x1c
-} TRENCHRUN_PC;
+} TRENCHRUN;
 
 /* Death Star trench run state. */
-static TRENCHRUN_PC trenchrun;
+static TRENCHRUN trenchrun;
 
 void DeathStarBattleDInit(WORLDINFO *world) {
 }
@@ -440,7 +440,7 @@ void TrenchMove(GAMEOBJECT *object) {
     f32 height_difference;
     i32 roll;
     i32 target_roll;
-    GAMEPAD_PC *pad;
+    GAMEPAD *pad;
     f32 input_magnitude;
     u16 input_angle;
     object->previous_floor_height = object->floor_height;

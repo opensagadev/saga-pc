@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuDisplayListRecalculateMaterialStartsPC(NUDISPLAY_LIST_PC *);
+    void NuDisplayListRecalculateMaterialStartsPC(NUDISPLAY_LIST *);
     void PCDisplayListCriticalSectionEnter(void);
     void PCDisplayListCriticalSectionLeave(void);
     void NuRndrInitStartupMaterials(void);

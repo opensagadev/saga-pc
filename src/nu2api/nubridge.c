@@ -86,13 +86,13 @@ void NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 count, i
     }
 }
 
-NUBRIDGE_PC Bridges[8] = {0};
+NUBRIDGE Bridges[8] = {0};
 i32 NuBridgeProc = 0;
 
 void NuBridgeDraw(NUMTL *material) {
     i32 b;
     i32 i;
-    NUBRIDGE_PC *bridge;
+    NUBRIDGE *bridge;
     i32 n;
     i32 group;
     NUVEC4 point;
@@ -171,7 +171,7 @@ void fun_00545530(void) {
 void NuBridgeUpdate(NUVEC *position) {
     i32 b;
     i32 i;
-    NUBRIDGE_PC *bridge;
+    NUBRIDGE *bridge;
     f32 t;
     f32 side;
     i32 n;
@@ -455,7 +455,7 @@ void NuBridgeUpdate(NUVEC *position) {
 
 i32 NuBridgeAlloc(void) {
     i32 index;
-    NUBRIDGE_PC *bridge = Bridges;
+    NUBRIDGE *bridge = Bridges;
     for (index = 0; index < 8; ++index, ++bridge) {
         if (!bridge->active) {
             return index;
@@ -466,7 +466,7 @@ i32 NuBridgeAlloc(void) {
 
 void NuBridgeInit(void) {
     void *saved_terrain = TerrainGetCur();
-    NUBRIDGE_PC *bridge = Bridges;
+    NUBRIDGE *bridge = Bridges;
     i32 i;
     i32 j;
     for (i = 0; i < 8; ++i, ++bridge) {
@@ -485,7 +485,7 @@ void NuBridgeInit(void) {
 
 void NuBridgeRemove(i32 index) {
     void *saved_terrain;
-    NUBRIDGE_PC *bridge;
+    NUBRIDGE *bridge;
     i32 j;
     if ((u32)index > 7) {
         return;
@@ -513,7 +513,7 @@ i32 NuBridgeCreate(NUGSCN *scene, nuhspecial_s *first, nuhspecial_s *second, NUV
                    i32 unknown_ae7, u32 colour) {
     i32 index;
     i32 i;
-    NUBRIDGE_PC *bridge;
+    NUBRIDGE *bridge;
     NUVEC delta;
     NUVEC side;
     f32 inverse_length;

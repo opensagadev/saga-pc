@@ -155,8 +155,8 @@ void DebrisSetRenderGroup(i32 group) {
 }
 
 void PARTStartOffset(i32 index, f32 offset) {
-    PART_EMIT_PC *emitter;
-    PARTTYPE_LOOKUP_PC *type;
+    PART_EMIT *emitter;
+    PARTTYPE_LOOKUP *type;
     f32 period;
     f64 random_product;
     f32 interval;
@@ -273,9 +273,9 @@ i32 DebAlloc(void) {
     return slot;
 }
 
-void DebrisStartOffsetEx(DEBRISKEY_PC *key, f32 offset) {
+void DebrisStartOffsetEx(DEBRISKEY *key, f32 offset) {
     i32 frame_count = (i32)(60.0 * offset);
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     f32 now;
     f32 start;
     f32 interval;

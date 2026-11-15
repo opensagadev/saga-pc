@@ -16,7 +16,7 @@
 extern "C" {
 #endif
     extern f32 BUCK_RIDERJUMPCLEARANCE;
-    extern TAG_DRAW_ICON_PC BuckStartExtraFn;
+    extern TAG_DRAW_ICON BuckStartExtraFn;
     /* Existing provider declaration absent from the current header. */
     void Buck_MoveCode(GAMEOBJECT *, i32);
 #ifdef __cplusplus
@@ -28,12 +28,12 @@ typedef struct tag_transfer_s { // size 0x38
     NUVEC previous[3];          // 0x04
     f32 height_fraction[3];     // 0x28
     f32 elapsed;                // 0x34
-} TAG_TRANSFER_PC;
+} TAG_TRANSFER;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern TAG_TRANSFER_PC TagTransfers[2];
+    extern TAG_TRANSFER TagTransfers[2];
     void Tag_ResetTransfers(void);
     void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target);
     void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count);

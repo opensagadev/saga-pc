@@ -12,7 +12,7 @@
 
 /* Draws one line between two vertices, optionally transformed by a matrix
  * (copied to aligned storage when it is not 16-byte aligned). */
-static void RndrVtxLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
+static void RndrVtxLine3d(NUMTX *matrix, NURND_VERTEX3D *vertices) {
     __declspec(align(16)) NUVEC first = vertices[0].position;
     __declspec(align(16)) NUVEC second = vertices[1].position;
     if (matrix != NULL) {
@@ -31,7 +31,7 @@ static void RndrVtxLine3d(NUMTX *matrix, NURND_VERTEX3D_PC *vertices) {
 /* Camera-facing circle outline around centre. */
 void RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *) {
     NUMTX matrix = global_camera.mtx;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     i32 step;
     i32 i;
     matrix.m30 = centre->x;
@@ -54,7 +54,7 @@ void RndrOSphere(NUVEC *centre, f32 radius, i32 colour, i32 segments, NUMTL *) {
 /* Circle outline in the XZ plane around centre. */
 extern "C" void RndrCircleXZ(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
     NUMTX matrix = NuMtxSetIdentityTemplate;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     i32 step;
     i32 i;
     matrix.m30 = centre->x;
@@ -78,7 +78,7 @@ extern "C" void RndrCircleXZ(NUVEC *centre, f32 radius, i32 colour, i32 segments
 void RndrOSquare(NUVEC *centre, f32 radius, i32 colour, NUMTL *) {
     f32 corners[8] = {-1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
     NUMTX matrix = global_camera.mtx;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     i32 i;
     matrix.m30 = centre->x;
     matrix.m31 = centre->y;

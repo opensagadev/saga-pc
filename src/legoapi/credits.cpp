@@ -37,12 +37,12 @@ typedef struct credit_type_s { // size 0x18
     u8 colour[4];              // 0x10
     u8 reserved[3];            // 0x14
     i8 type;                   // 0x17
-} CREDIT_TYPE_PC;
+} CREDIT_TYPE;
 
 static f32 Credits_Duration = 120.0f;
 static f32 CreditsSize = 0;
 extern "C" {
-    CREDIT_RECORD_PC *CreditList = NULL;
+    CREDIT_RECORD *CreditList = NULL;
     f32 CreditsFinishedTime = 0.0f;
     i32 CreditsFlag = 0;
     f32 CreditsAlpha = 0.0f;
@@ -51,7 +51,7 @@ static i32 CreditCount = 0;
 extern "C" {
     f32 CreditsTime = 0.0f;
 }
-static CREDIT_TYPE_PC CreditType[5] = {
+static CREDIT_TYPE CreditType[5] = {
     {"heading", 0.4f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
     {"company", 0.6f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
     {"title",   0.35f, 0.825f, {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
@@ -59,7 +59,7 @@ static CREDIT_TYPE_PC CreditType[5] = {
     {"credit",  0.45f, 1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
 };
 
-static CREDIT_TYPE_PC *CreditsFindType(char *word) {
+static CREDIT_TYPE *CreditsFindType(char *word) {
     i32 index;
     for (index = 0; index < 5; ++index) {
         if (NuStrICmp(CreditType[index].name, word) == 0) {
@@ -69,7 +69,7 @@ static CREDIT_TYPE_PC *CreditsFindType(char *word) {
     return NULL;
 }
 
-static void CreditsReadColour(NUFPAR_PC *parser, u8 *colour, i32 maximum) {
+static void CreditsReadColour(NUFPAR *parser, u8 *colour, i32 maximum) {
     f32 value;
     if (NuFParGetWord(parser)) {
         value = NuAToF(parser->word_buffer_ptr);
@@ -87,8 +87,8 @@ static void CreditsReadColour(NUFPAR_PC *parser, u8 *colour, i32 maximum) {
     }
 }
 
-static void CreditsInitCredit(CREDIT_RECORD_PC *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green, u8 blue, u8 alpha,
-                              u8 alignment, VARIPTR *buffer, VARIPTR *end) {
+static void CreditsInitCredit(CREDIT_RECORD *credit, char *text, f32 x, f32 y, f32 scale, u8 red, u8 green, u8 blue, u8 alpha, u8 alignment,
+                              VARIPTR *buffer, VARIPTR *end) {
     char *copy = NULL;
     i32 length = NuStrLen(text);
     if (length != 0) {
@@ -108,10 +108,10 @@ static void CreditsInitCredit(CREDIT_RECORD_PC *credit, char *text, f32 x, f32 y
 
 void Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     char filename[256];
-    CREDIT_RECORD_PC *credit;
-    CREDIT_RECORD_PC *previous;
-    NUFPAR_PC *parser;
-    CREDIT_TYPE_PC *type;
+    CREDIT_RECORD *credit;
+    CREDIT_RECORD *previous;
+    NUFPAR *parser;
+    CREDIT_TYPE *type;
     f32 y;
     i32 index;
     CreditsSize = 0.0f;
@@ -126,7 +126,7 @@ void Credits_Load(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     NuStrCpy(filename, "stuff\\text\\");
     NuStrCat(filename, "english");
     NuStrCat(filename, "_credits.txt");
-    CreditList = (CREDIT_RECORD_PC *)GameBufferAlloc(buffer, end, 24000);
+    CreditList = (CREDIT_RECORD *)GameBufferAlloc(buffer, end, 24000);
     credit = CreditList;
     CreditCount = 0;
     previous = NULL;
@@ -233,7 +233,7 @@ typedef struct credits_completion_reader_s { // size 0x4
     u8 flags;                                // 0x3
 } CREDITS_COMPLETION_READER;
 
-static void CreditsDrawList(CREDIT_RECORD_PC *credit, f32 time) {
+static void CreditsDrawList(CREDIT_RECORD *credit, f32 time) {
     char percentage[32];
     f32 x;
     i32 alpha;

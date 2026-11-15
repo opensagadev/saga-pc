@@ -183,9 +183,9 @@ typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
 
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 
-typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
+typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 
-extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
+extern CHECK_ANTINODE_FN checkantinodefns[3];
 
 typedef struct INTERACTION_ANTINODE_SHAPE_VIEW { // size 0x48
     u8 unknown[0x40];                            // 0x00
@@ -208,7 +208,7 @@ static void AISysCheckAntinode_Circle(APIOBJECT *object, AIANTINODE *antinode, N
 static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius);
 static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius);
 
-CHECK_ANTINODE_FN_PC checkantinodefns[3] = {AISysCheckAntinode_Circle, AISysCheckAntinode_Ellipse, AISysCheckAntinode_Rectangle};
+CHECK_ANTINODE_FN checkantinodefns[3] = {AISysCheckAntinode_Circle, AISysCheckAntinode_Ellipse, AISysCheckAntinode_Rectangle};
 f32 AIPathConnectionMargin = 0.05f;
 f32 AIMovementInstructionPositiveThreshold = 0.5f;
 f32 AIMovementInstructionNegativeThreshold = -0.5f;
@@ -351,12 +351,12 @@ typedef struct condition_trigger_process_s { // size 0xa4
     AIAREA *trigger_area;                    // 0xa0
 } CONDITION_TRIGGER_PROCESS;
 
-typedef struct AI_EDITOR_MODE_ENTRY {       // size 0x30
-    char name[32];                          // 0x00
-    void (*enter)(void);                    // 0x20
-    eduimenu_s *(*process)(FRAME_PAD_PC *); // 0x24
-    void (*draw)(i32, i32, f32, f32);       // 0x28
-    void (*leave)(void);                    // 0x2c
+typedef struct AI_EDITOR_MODE_ENTRY {    // size 0x30
+    char name[32];                       // 0x00
+    void (*enter)(void);                 // 0x20
+    eduimenu_s *(*process)(FRAME_PAD *); // 0x24
+    void (*draw)(i32, i32, f32, f32);    // 0x28
+    void (*leave)(void);                 // 0x2c
 } AI_EDITOR_MODE_ENTRY;
 
 typedef struct AI_EDITOR_MODE_BANK { // size 0x184
@@ -424,15 +424,15 @@ extern i32 AIPathConnectionTypeCount;
 
 extern AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32];
 
-typedef struct AI_EDITOR_SPECIAL_PLATFORM_PC { // size 0x6c
-    u8 unknown_00[0x4a];                       // 0x00
-    i16 instance_index;                        // 0x4a
-    u8 unknown_4c[0x20];                       // 0x4c
-} AI_EDITOR_SPECIAL_PLATFORM_PC;
+typedef struct AI_EDITOR_SPECIAL_PLATFORM { // size 0x6c
+    u8 unknown_00[0x4a];                    // 0x00
+    i16 instance_index;                     // 0x4a
+    u8 unknown_4c[0x20];                    // 0x4c
+} AI_EDITOR_SPECIAL_PLATFORM;
 
-typedef struct AI_EDITOR_SPECIAL_TERRAIN {    // size 0x6c
-    u8 unknown_00[0x68];                      // 0x00
-    AI_EDITOR_SPECIAL_PLATFORM_PC *platforms; // 0x68
+typedef struct AI_EDITOR_SPECIAL_TERRAIN { // size 0x6c
+    u8 unknown_00[0x68];                   // 0x00
+    AI_EDITOR_SPECIAL_PLATFORM *platforms; // 0x68
 } AI_EDITOR_SPECIAL_TERRAIN;
 
 i16 disable_cylinder_check = 0;
@@ -523,13 +523,13 @@ extern NUFPCOMJMP AIScriptStateCommands[5];
 typedef struct aiscript_const_record_s { // size 0x24
     char name[32];                       // 0x00
     f32 default_val;                     // 0x20
-} AISCRIPT_CONST_RECORD_PC;
+} AISCRIPT_CONST_RECORD;
 
 static void *load_pakfile = 0;
 
 static char *load_path = 0;
 
-static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecords[8] = {0};
+static AISCRIPT_CONST_RECORD AIScriptConstantRecords[8] = {0};
 f32 AiRndrCullDistance = 0;
 VARIPTR *aiscript_load_buffer = 0;
 
@@ -545,7 +545,7 @@ static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARI
 /* Set by AiSysOnlyUsePakFile; warns when a package lacks a script file. */
 i32 ai_onlyusepackfile = 0;
 AISCRIPTPROCESS *AiSysStateDebugee = 0;
-AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn = 0;
+AI_LEVEL_CHARACTER_TYPE_ID SpecialRouteCharacterTypeIDFn = 0;
 
 i32 aidata_version = 20;
 static NUFPCOMJMP AIScriptCommands[9] = {
@@ -681,7 +681,7 @@ typedef struct condition_trigger_process_reader_s { // size 0xa4
     AIAREA *trigger_area;                           // 0xa0
 } CONDITION_TRIGGER_PROCESS_READER;
 
-SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
+SOCK *FindSock(SOCKSYS_PC *system, char *name);
 
 static f32 AIPathSafeDivide(f32 numerator, f32 denominator) {
     if (numerator == 0.0f || denominator == 0.0f) {
@@ -758,7 +758,7 @@ static void AiRndrSetCullDistance(f32 distance) {
     AiRndrCullDistance = distance;
 }
 
-void AiRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *unused1, NUMTX *matrix) {
+void AiRndrLine3d(NURND_VERTEX3D *vertices, NUMTL *unused1, NUMTX *matrix) {
     NUVEC first = vertices[0].position;
     NUVEC second = vertices[1].position;
     NUMTX matrix_copy;
@@ -1050,7 +1050,7 @@ f32 AiParseExpression(char *expr) {
     return value;
 }
 
-static void ConditionsParseFinalise(AICONDITION *cond, NUFPAR_PC *parser) {
+static void ConditionsParseFinalise(AICONDITION *cond, NUFPAR *parser) {
     NuFParGetWord(parser);
     if (NuStrICmp(parser->word_buffer_ptr, "goto") == 0) {
         cond->flags &= (u16)~2;
@@ -1073,11 +1073,11 @@ static void ConditionsParseFinalise(AICONDITION *cond, NUFPAR_PC *parser) {
     }
 }
 
-void xEndState(NUFPAR_PC *parser) {
+void xEndState(NUFPAR *parser) {
     NuFParPopCom(parser);
 }
 
-static NUFPAR_PC *AIScriptOpenParser(void *pak, char *filename, char *path) {
+static NUFPAR *AIScriptOpenParser(void *pak, char *filename, char *path) {
     char script_name[64];
     char filepath[128];
     char *extension;
@@ -1117,7 +1117,7 @@ static NUFPAR_PC *AIScriptOpenParser(void *pak, char *filename, char *path) {
     return NULL;
 }
 
-void xState(NUFPAR_PC *parser) {
+void xState(NUFPAR *parser) {
     VARIPTR *buffer;
     VARIPTR *end_buffer;
     AISTATE *state;
@@ -1167,7 +1167,7 @@ void xState(NUFPAR_PC *parser) {
     aiscript_load_actions = NULL;
 }
 
-void xParam(NUFPAR_PC *parser) {
+void xParam(NUFPAR *parser) {
     i32 index;
 
     if (aiscript_load_script == NULL) {
@@ -1181,7 +1181,7 @@ void xParam(NUFPAR_PC *parser) {
     aiscript_load_script->params[index].default_value = NuFParGetFloat(parser);
 }
 
-void xConst(NUFPAR_PC *parser) {
+void xConst(NUFPAR *parser) {
     if (NuStrLen(parser->word_buffer_ptr) >= 31) {
         AIScriptMissingStateDiagnostic(parser->word_buffer_ptr);
     }
@@ -1191,7 +1191,7 @@ void xConst(NUFPAR_PC *parser) {
     AIScriptConstCursorPc++;
 }
 
-static void AIScriptParseCommands(NUFPAR_PC *parser, VARIPTR *buffer, VARIPTR *end, AISCRIPT *script) {
+static void AIScriptParseCommands(NUFPAR *parser, VARIPTR *buffer, VARIPTR *end, AISCRIPT *script) {
     if (script == NULL) {
         return;
     }
@@ -1211,7 +1211,7 @@ static void AIScriptParseCommands(NUFPAR_PC *parser, VARIPTR *buffer, VARIPTR *e
     aiscript_load_refs = NULL;
 }
 
-void xDeriveFromScript(NUFPAR_PC *parser) {
+void xDeriveFromScript(NUFPAR *parser) {
     i32 done;
 
     if (aiscript_load_script == NULL || aiscript_load_script->derived_from != NULL) {
@@ -2981,12 +2981,12 @@ void AiSysSetStateDebugee(AISCRIPTPROCESS *processor) {
     AiSysStateDebugee = processor;
 }
 
-void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC function) {
+void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID function) {
     LevelCharacterTypeIDFn = function;
     SpecialRouteCharacterTypeIDFn = function;
 }
 
-void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID_PC function) {
+void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID function) {
     SpecialRouteCharacterTypeIDFn = function;
 }
 
@@ -2999,7 +2999,7 @@ void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME function) {
     SpecialRouteCharacterNameFn = function;
 }
 
-void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID_PC function) {
+void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID function) {
     LevelCharacterGlobalIDFn = function;
 }
 
@@ -3023,15 +3023,15 @@ void InitFn_ClearAICreatures(AI_CLEAR_CREATURES function) {
     ClearAICreaturesFn = function;
 }
 
-void InitFn_GetCharacterGoalSpeedFn(AI_CHARACTER_GOAL_SPEED_PC callback) {
+void InitFn_GetCharacterGoalSpeedFn(AI_CHARACTER_GOAL_SPEED callback) {
     GetCharacterGoalSpeedFn = callback;
 }
 
 void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *function) {
-    AISysSpecialNodeCallback = (AISYS_SPECIAL_NODE_CALLBACK_PC)function;
+    AISysSpecialNodeCallback = (AISYS_SPECIAL_NODE_CALLBACK)function;
 }
 
-void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID_PC callback) {
+void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID callback) {
     APIOBJECTFromObjIDFn = callback;
 }
 
@@ -3039,39 +3039,39 @@ void InitFn_GameAILoad(AI_LOAD function) {
     GameAILoadFn = function;
 }
 
-void InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT_PC callback) {
+void InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT callback) {
     GameParamToFloatFn = callback;
 }
 
-void InitFn_ScriptProcessFirstTimeAction(AI_SCRIPT_FIRST_ACTION_PC callback) {
+void InitFn_ScriptProcessFirstTimeAction(AI_SCRIPT_FIRST_ACTION callback) {
     ScriptProcessFirstTimeActionFn = callback;
 }
 
-void InitFn_AIActionParseSpeed(AI_PARSE_SPEED_PC function) {
+void InitFn_AIActionParseSpeed(AI_PARSE_SPEED function) {
     AIActionParseSpeedFn = function;
 }
 
-void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH_PC function) {
+void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH function) {
     AIRespawnOnPathFn = function;
 }
 
-void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION_PC callback) {
+void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION callback) {
     AIBigJumpToDestinationFn = callback;
 }
 
-void InitFn_GetViewRange(AI_CHARACTER_DISTANCE_PC function) {
+void InitFn_GetViewRange(AI_CHARACTER_DISTANCE function) {
     GetViewRangeFn = function;
 }
 
-void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE_PC function) {
+void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE function) {
     GetHearDistanceFn = function;
 }
 
-void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE_PC function) {
+void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE function) {
     GetMaxViewHeightFn = function;
 }
 
-void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE_PC function) {
+void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE function) {
     GetMinViewHeightFn = function;
 }
 
@@ -3870,7 +3870,7 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
 }
 
 static void AISysDrawBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 colour) {
-    NURND_VERTEX3D_PC corners[8];
+    NURND_VERTEX3D corners[8];
     i32 i;
     corners[0].position.x = minimum->x;
     corners[0].position.y = minimum->y;
@@ -6564,9 +6564,9 @@ i32 AISysGetCharacterWaypoint(AIPACKET *packet, NUVEC *position) {
 
 void LocaledbitsDrawSolidCircleXY(NUVEC *centre, f32 radius, f32 lower_y, f32 upper_y, u32 colour, i32 unused5, i32 segments) {
     i32 i;
-    NURND_VERTEX3D_PC vertices[2];
-    NURND_VERTEX3D_PC *first = &(vertices[0]);
-    NURND_VERTEX3D_PC *second = &(vertices[1]);
+    NURND_VERTEX3D vertices[2];
+    NURND_VERTEX3D *first = &(vertices[0]);
+    NURND_VERTEX3D *second = &(vertices[1]);
     (*second).position.x = centre->x;
     (*second).position.y = centre->y;
     (*second).position.z = centre->z + radius;
@@ -6596,9 +6596,9 @@ void LocaledbitsDrawSolidCircleXY(NUVEC *centre, f32 radius, f32 lower_y, f32 up
 void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 rotation, f32 lower_y, f32 upper_y, u32 colour,
                                    i32 unused7, i32 segments) {
     i32 i;
-    NURND_VERTEX3D_PC vertices[2];
-    NURND_VERTEX3D_PC *first = &(vertices[0]);
-    NURND_VERTEX3D_PC *second = &(vertices[1]);
+    NURND_VERTEX3D vertices[2];
+    NURND_VERTEX3D *first = &(vertices[0]);
+    NURND_VERTEX3D *second = &(vertices[1]);
     (*second).position.x = 0.0f;
     (*second).position.y = 0.0f;
     (*second).position.z = radius_z;
@@ -6635,9 +6635,9 @@ void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i3
 
 void LocaledbitsDrawCircleXY(NUVEC *centre, f32 radius, u32 colour, i32 unused3, i32 segments) {
     i32 i;
-    NURND_VERTEX3D_PC vertices[2];
-    NURND_VERTEX3D_PC *first = &(vertices[0]);
-    NURND_VERTEX3D_PC *second = &(vertices[1]);
+    NURND_VERTEX3D vertices[2];
+    NURND_VERTEX3D *first = &(vertices[0]);
+    NURND_VERTEX3D *second = &(vertices[1]);
     (*second).position.x = centre->x;
     (*second).position.y = centre->y;
     (*second).position.z = centre->z + radius;
@@ -6950,11 +6950,11 @@ void InitFn_AIPathDeleted(void (*callback)(struct EDAIPATH_s *)) {
     AIPathDeletedFn = callback;
 }
 
-void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC function) {
+void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE function) {
     PreparingForSpecialMoveFn = function;
 }
 
-void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC function) {
+void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE function) {
     MidSpecialMoveFn = function;
 }
 
@@ -6969,7 +6969,7 @@ void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN function) {
 /* Unreferenced; callers inline the same registration through
  * AIEDITOR_REGISTER. It tail-jumps to the diagnostic with EAX
  * already -1, which needs it in this unit. */
-i32 aieditor_Register(char *name, void (*enter)(void), eduimenu_s *(*process)(FRAME_PAD_PC *), void (*draw)(i32, i32, f32, f32),
+i32 aieditor_Register(char *name, void (*enter)(void), eduimenu_s *(*process)(FRAME_PAD *), void (*draw)(i32, i32, f32, f32),
                       void (*leave)(void)) {
     AI_EDITOR_MODE_ENTRY *entry;
     i32 index = -1;
@@ -7734,7 +7734,7 @@ void DrawLocator(NUVEC *position, f32 width, i32 direction, i32 colour) {
     NUVEC offset;
     NUVEC centre;
     NUVEC arrow;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     vertices[0].colour = colour;
     vertices[1].colour = colour;
     centre = *position;
@@ -8020,7 +8020,7 @@ static i32 pathEditor_DisconnectNodes(EDAIPATHNODE_s *node, EDAIPATHNODE_s *othe
 }
 
 static void AiPathDrawSolidEdge(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     NUVEC direction;
     f32 distance = NuVecXZDist(&first->position, &second->position, &direction);
     if (distance > 0.0f) {
@@ -8095,7 +8095,7 @@ static void AiPathDrawSolidEdge(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u
 static void AiPathDrawWireEdge(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u32 colour) {
     NUVEC direction;
     NUVEC side;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     f32 distance;
     i32 angle;
 
@@ -8158,7 +8158,7 @@ static void AiPathDrawWireEdge(EDAIPATHNODE_s *first, EDAIPATHNODE_s *second, u3
 }
 
 static void AiPathDrawCross(NUVEC *position, f32 radius, u32 colour) {
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     vertices[0].colour = colour;
     vertices[1].colour = colour;
     vertices[0].position = *position;
@@ -8189,7 +8189,7 @@ void pathEditorDrawConnectionInfo(NUVEC *position, f32 radius, NUVEC *other, u32
     NUVEC end;
     NUVEC direction;
     f32 length;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     if (flags == 0) {
         return;
     }
@@ -8369,7 +8369,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                     route_colour = 0xff00ffff;
                 }
                 if (node->connections[slot].route_mask & active_route) {
-                    NURND_VERTEX3D_PC route_vertices[2];
+                    NURND_VERTEX3D route_vertices[2];
                     route_vertices[0].position = node->position;
                     route_vertices[0].colour = route_colour;
                     route_vertices[0].position.y += aiEditor_DrawYOffset + (f64)0.02f;
@@ -8613,7 +8613,7 @@ static void pathEditorDrawRoute(void) {
     i32 end;
     i32 next;
     u32 edge;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
 
     if (aieditor->cached_path_system == NULL) {
         return;
@@ -11123,7 +11123,7 @@ void creatureEditor_RenderAllCreatures(void) {
          creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
         i32 group;
         for (group = 0; group < creature->group_count; ++group) {
-            NURND_VERTEX3D_PC vertices[2];
+            NURND_VERTEX3D vertices[2];
             NUVEC position;
             vertices[0].colour = -1;
             vertices[1].colour = -1;
@@ -11219,7 +11219,7 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
                          : (aieditor->nearest_creature == creature ? -1 : 0);
         for (group = 0; group < creature->group_count; ++group, colour = 0) {
             NUVEC position;
-            NURND_VERTEX3D_PC line[2];
+            NURND_VERTEX3D line[2];
             if (!(creature->valid_positions & ((u64)1 << group)) || !creatureEditor_IsSelectable(creature)) {
                 continue;
             }
@@ -11404,7 +11404,7 @@ i32 AITerrShadowOnPlatform(void) {
     return platform;
 }
 
-void xConditions(NUFPAR_PC *parser) {
+void xConditions(NUFPAR *parser) {
     i32 complex_idx = 0;
 
     while (NuFParGetLine(parser) != 0) {
@@ -11568,7 +11568,7 @@ void xConditions(NUFPAR_PC *parser) {
     }
 }
 
-void xActions(NUFPAR_PC *parser) {
+void xActions(NUFPAR *parser) {
     while (NuFParGetLine(parser) != 0) {
         AIACTION *action;
 
@@ -11656,7 +11656,7 @@ void xActions(NUFPAR_PC *parser) {
 }
 
 void AIScriptOpenPakFileParse(AISCRIPT **script_ref, void *pak, char *filename, char *path, VARIPTR *buffer, VARIPTR *end) {
-    NUFPAR_PC *parser = AIScriptOpenParser(pak, filename, path);
+    NUFPAR *parser = AIScriptOpenParser(pak, filename, path);
     char script_name[64];
     char *extension;
     AISCRIPT *script;
@@ -11683,7 +11683,7 @@ void AIScriptOpenPakFileParse(AISCRIPT **script_ref, void *pak, char *filename, 
     }
 }
 
-void xConditionMacro(NUFPAR_PC *parser) {
+void xConditionMacro(NUFPAR *parser) {
     AICONDITIONMACRO *macro;
     VARIPTR *buffer;
     VARIPTR *buffer_end;
@@ -11706,7 +11706,7 @@ void xConditionMacro(NUFPAR_PC *parser) {
     }
 }
 
-void xActionMacro(NUFPAR_PC *parser) {
+void xActionMacro(NUFPAR *parser) {
     AIACTIONMACRO *macro;
     VARIPTR *buffer;
     VARIPTR *buffer_end;
@@ -11727,7 +11727,7 @@ void xActionMacro(NUFPAR_PC *parser) {
     }
 }
 
-void xInclude(NUFPAR_PC *parser) {
+void xInclude(NUFPAR *parser) {
     VARIPTR *saved_buffer = aiscript_load_buffer;
     VARIPTR *saved_end = aiscript_load_end_buffer;
     AISCRIPT *saved_script = aiscript_load_script;
@@ -11741,7 +11741,7 @@ void xInclude(NUFPAR_PC *parser) {
     aiscript_load_end_buffer = saved_end;
 }
 
-void xRefScript(NUFPAR_PC *parser) {
+void xRefScript(NUFPAR *parser) {
     AIREFSCRIPT *reference;
     VARIPTR saved_buffer;
     char *copy;
@@ -11839,7 +11839,7 @@ static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARI
 
 void AIScriptLoadAllPakFile(void *pak, char *path, VARIPTR *buffer, VARIPTR *end_buffer, AISYS_PC *sys) {
     NULISTHDR *scripts;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     NUFILE file;
     void *memfile;
     i32 memfile_size;
@@ -13674,7 +13674,7 @@ void aieditor_Reset(void) {
     aieditor_SetCurrentScript("default", NULL);
 }
 
-i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD_PC *pad, f32 frame_delta_time, u32 exit_buttons) {
+i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD *pad, f32 frame_delta_time, u32 exit_buttons) {
     NUVEC movement;
     NUVEC previous_position;
     f32 terrain_height;
@@ -13684,7 +13684,7 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD_PC *pad, f32 frame_delta_time, 
     f32 closest;
     f32 distance;
     i32 hit;
-    eduimenu_s *(*process)(FRAME_PAD_PC *);
+    eduimenu_s *(*process)(FRAME_PAD *);
     aieditor->pad_buttons = pad->digital_buttons;
     aieditor->pad_pressed = pad->digital_buttons_pressed;
     if (aieditor->main_menu != NULL) {
@@ -14201,7 +14201,7 @@ void locatorEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     NUVEC delta;
     f32 range;
     i32 text_x = (x + 10) * 16;
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     NUVEC current;
     NUVEC previous;
     NUVEC direction;
@@ -16906,7 +16906,7 @@ eduimenu_s *antinodeEditor_MainMenu(void) {
     return NULL;
 }
 
-eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
+eduimenu_s *antinodeEditor_Process(FRAME_PAD *pad) {
     EDANTINODE_s *first;
     i32 skip_platforms;
     i32 forward;
@@ -17155,7 +17155,7 @@ eduimenu_s *creatureEditorOptionsMenu(void) {
     return NULL;
 }
 
-eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
+eduimenu_s *creatureEditor_Process(FRAME_PAD *pad) {
     EDAICREATURE_s *creature;
     char base[16];
     char name[16];
@@ -17365,7 +17365,7 @@ eduimenu_s *areaEditorOptionsMenu(void) {
     return NULL;
 }
 
-eduimenu_s *areaEditor_Process(FRAME_PAD_PC *pad) {
+eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
     EDAIAREA_s *previous;
     EDAIAREA_s *area;
     char name[16];
@@ -17554,7 +17554,7 @@ eduimenu_s *locatorEditor_MainMenu(void) {
     return NULL;
 }
 
-eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
+eduimenu_s *locatorEditor_Process(FRAME_PAD *pad) {
     char base[16];
     i32 angle;
     EDAICREATURE_s *hover_creature;
@@ -17879,7 +17879,7 @@ eduimenu_s *pathEditor_MainMenu(void) {
     return NULL;
 }
 
-eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
+eduimenu_s *pathEditor_Process(FRAME_PAD *pad) {
     EDAIPATH_s *path;
     EDAIPATHNODE_s *previous;
     EDAIPATHNODE_s *nearest;
@@ -18155,7 +18155,7 @@ eduimenu_s *routeEditor_MainMenu(void) {
     return NULL;
 }
 
-eduimenu_s *routeEditor_Process(FRAME_PAD_PC *pad) {
+eduimenu_s *routeEditor_Process(FRAME_PAD *pad) {
     EDAIPATHNODE_s *nearest;
     EDAIPATHNODE_s *node;
     NUVEC *pos;

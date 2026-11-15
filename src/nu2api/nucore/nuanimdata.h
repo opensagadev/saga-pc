@@ -32,4 +32,4 @@ typedef struct state_anim_s { // size 0xc
     u16 unknown_0002;         // 0x2
     f32 *times;               // 0x4
     u8 *values;               // 0x8
-} STATE_ANIM_PC;
+} STATE_ANIM;

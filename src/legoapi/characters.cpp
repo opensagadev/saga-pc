@@ -42,15 +42,15 @@ typedef struct CHARACTER_SCENE_CUTSYS { // size 0xc
     u32 *character_flags;               // 0x8
 } CHARACTER_SCENE_CUTSYS;
 
-typedef void (*CHARACTER_UPDATE_CALLBACK_PC)(GAMEOBJECT *);
+typedef void (*CHARACTER_UPDATE_CALLBACK)(GAMEOBJECT *);
 
 typedef struct character_callback_writer_s {
     i32 name_id;
     u32 model_flags;
     u8 unknown_08[0x10];
-    CHARACTER_UPDATE_CALLBACK_PC move;
-    CHARACTER_UPDATE_CALLBACK_PC animate;
-    CHARACTER_UPDATE_CALLBACK_PC post_animate;
+    CHARACTER_UPDATE_CALLBACK move;
+    CHARACTER_UPDATE_CALLBACK animate;
+    CHARACTER_UPDATE_CALLBACK post_animate;
 } CHARACTER_CALLBACK_WRITER;
 
 struct KILLPARTS_WORLD_SCENES {
@@ -59,7 +59,7 @@ struct KILLPARTS_WORLD_SCENES {
 };
 
 extern "C" {
-    CHAR_CATEGORY_RECORD_PC StartupCharCategoriesDefault[6] = {
+    CHAR_CATEGORY_RECORD StartupCharCategoriesDefault[6] = {
         {"SuperJump",        0x0u, 0x400000u },
         {"SuperStrength",    0x0u, 0x800000u },
         {"Transformatron",   0x0u, 0x1000000u},
@@ -67,7 +67,7 @@ extern "C" {
         {"HazardProtection", 0x0u, 0x4000000u},
         {NULL,               0x0u, 0x0u      },
     };
-    CHAR_CATEGORY_RECORD_PC StartupCharCategoriesLsw[10] = {
+    CHAR_CATEGORY_RECORD StartupCharCategoriesLsw[10] = {
         {(char *)AreaFixUpName_Jedi, 0x8u,       0x0u     },
         {"JediBaddie",               0xcu,       0x0u     },
         {"BountyHunter",             0x1100080u, 0x0u     },
@@ -100,7 +100,7 @@ i32 CharIDFromName(const char *name) {
     return -1;
 }
 
-extern "C" CHARACTERDATA_PC *CDataFromName(const char *name) {
+extern "C" CHARACTERDATA *CDataFromName(const char *name) {
     i32 index;
 
     for (index = 0; index < CHARCOUNT; ++index) {
@@ -113,12 +113,12 @@ extern "C" CHARACTERDATA_PC *CDataFromName(const char *name) {
 
 // Character subsystem callback.
 i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG *animation, char *output_path) {
-    const ANIM_REDIRECT_VIEW_PC *redirect;
+    const ANIM_REDIRECT_VIEW *redirect;
     const char *name;
     if (list == NULL) {
         return 0;
     }
-    for (redirect = (const ANIM_REDIRECT_VIEW_PC *)list; (name = redirect->name) != NULL; ++redirect) {
+    for (redirect = (const ANIM_REDIRECT_VIEW *)list; (name = redirect->name) != NULL; ++redirect) {
         if (redirect->animation_id == animation->action_id && NuStrICmp(name, animation->name) == 0) {
             NuStrCpy(output_path, directory);
             NuStrCat(output_path, animation->name);
@@ -234,10 +234,10 @@ extern "C" void CharScenes_AreaDump() {
 extern "C" {
     i32 CHARCATEGORYCOUNT = 0;
     static NUGSCN **IconScene = 0;
-    CHARACTERDATA_PC *CDataList = 0;
+    CHARACTERDATA *CDataList = 0;
     i32 CHARCOUNT = 0;
     KILLPARTS_CHARSCENE *KillPartsCharSceneArea = 0;
-    CHAR_CATEGORY_RECORD_PC *CharCategory = 0;
+    CHAR_CATEGORY_RECORD *CharCategory = 0;
     PLAYERCHARACTERCONFIG *GCDataList = 0;
     u8 *Game_CharacterSave = 0;
     i32 drawcharicon_find = 0;
@@ -412,7 +412,7 @@ extern "C" {
         return count;
     }
 
-    void CharCategories_Init(CHAR_CATEGORY_RECORD_PC *categories) {
+    void CharCategories_Init(CHAR_CATEGORY_RECORD *categories) {
         CharCategory = categories;
         CHARCATEGORYCOUNT = 0;
         if (categories != NULL) {
@@ -436,7 +436,7 @@ extern "C" {
     }
 
     i32 CharCategory_IsCategory(GAMEOBJECT *object, i32 index) {
-        CHAR_CATEGORY_RECORD_PC *category;
+        CHAR_CATEGORY_RECORD *category;
         if (index < 0 || index >= CHARCATEGORYCOUNT) {
             return 0;
         }
@@ -457,8 +457,8 @@ extern "C" {
     }
 
     void SetMoveAndAnimateFunctions(u32 model_mask, u32 model_value, u32 game_mask, u32 game_value, i32 movement_type,
-                                    CHARACTER_UPDATE_CALLBACK_PC move, CHARACTER_UPDATE_CALLBACK_PC animate,
-                                    CHARACTER_UPDATE_CALLBACK_PC post_animate) {
+                                    CHARACTER_UPDATE_CALLBACK move, CHARACTER_UPDATE_CALLBACK animate,
+                                    CHARACTER_UPDATE_CALLBACK post_animate) {
         i32 index;
         for (index = 0; index < CHARCOUNT; ++index) {
             if (model_mask != 0 && (CDataList[index].model_flags & model_mask) != model_value) {
@@ -514,7 +514,7 @@ extern "C" {
         i16 candidates[500];
         i32 count = 0;
         i32 id;
-        CHARACTERDATA_PC *character = CDataList;
+        CHARACTERDATA *character = CDataList;
         for (id = 0; id < CHARCOUNT; ++id, ++character) {
             PLAYERCHARACTERCONFIG *runtime;
             if (excluded != NULL && InModelList(excluded, id, NULL) != 0) {

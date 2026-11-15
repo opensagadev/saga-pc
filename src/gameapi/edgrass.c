@@ -1077,7 +1077,7 @@ void edgraCreateOptionsMenu(void) {
 
 i32 edgra_cam_ay = 0;
 
-void edgraDoInput(FRAME_PAD_PC *pad) {
+void edgraDoInput(FRAME_PAD *pad) {
     if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
         edcamMove(pad);
     }
@@ -1243,7 +1243,7 @@ void edgraDoInput(FRAME_PAD_PC *pad) {
     }
 }
 
-i32 edgraProc(f32 delta_time, FRAME_PAD_PC *pad) {
+i32 edgraProc(f32 delta_time, FRAME_PAD *pad) {
     if (edgra_active_menu) {
         eduiMenuProcess(edgra_active_menu, delta_time, pad);
         return 0;

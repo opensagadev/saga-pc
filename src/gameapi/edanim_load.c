@@ -206,7 +206,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
     char discarded_name[16];
     NUVEC discarded_position;
     nuhspecial_s special;
-    TERRAIN_SET_PC *terrain;
+    TERRAIN_SET *terrain;
     TERRAIN_PLATFORM_PC *platform;
     page = -1;
     for (index = 0; index < 8; ++index) {
@@ -601,7 +601,7 @@ void edanimRenderParticleEmitters(i32 parameter_index) {
             continue;
         }
         if (edanim_particle_mode && edanim_nearest_particle == particle) {
-            DEBRIS_INFO_PC *definition = debtab[AnimParams[parameter_index].effect_ids[particle]];
+            DEBRIS_INFO *definition = debtab[AnimParams[parameter_index].effect_ids[particle]];
             if (definition->generator_type == DEBRIS_GENERATOR_NORMAL) {
                 edbitsDrawCube(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
                                base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
@@ -677,7 +677,7 @@ void edanimSoundCreate(NUVEC *position) {
     }
 }
 
-void edanimDoInput(FRAME_PAD_PC *pad) {
+void edanimDoInput(FRAME_PAD *pad) {
     nuhspecial_s special;
     NUVEC position;
     NUVEC *origin;
@@ -857,7 +857,7 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
 struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
 
 void edanimDrawCursor(void) {
-    NURND_VERTEX3D_PC line[2];
+    NURND_VERTEX3D line[2];
     NUVEC direction;
     nuhspecial_s special;
     line[0].colour = 0xffffffff;
@@ -1033,7 +1033,7 @@ void edanimInit(void) {
     eduiMenuAddItem(edanim_options_menu, eduiItemSelCreate(1, colours, 0, 0, edanimcbMCTBMenu, (char *)("Memory Card Test Bed...")));
 }
 
-i32 edanimProc(f32 delta_time, FRAME_PAD_PC *pad) {
+i32 edanimProc(f32 delta_time, FRAME_PAD *pad) {
     if (edanim_active_menu) {
         eduiMenuProcess(edanim_active_menu, delta_time, pad);
         return 0;

@@ -32,7 +32,7 @@ extern "C" {
     extern char **modifier_names;
     extern RTL_LIGHT *rtl_locked;
     void rtlFree(RTL_LIGHT *light);
-    void fogFree(RTL_FOG_MIGRATION_PC *fog);
+    void fogFree(RTL_FOG_MIGRATION *fog);
 }
 
 /* The engine's VuVec helpers (the same header edlevelall.cpp uses). VC8 inlines them here and keeps
@@ -191,7 +191,7 @@ template <class T> void EdValueControl<T>::cbChanged(eduimenu_s *, eduiitem_s *i
 template <class T> void EdValueControl<T>::cbButton(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     edui_prop_s *property = reinterpret_cast<edui_prop_s *>(item);
     EdValueControl *control = static_cast<EdValueControl *>(item->data_ptr);
-    FRAME_PAD_PC *pad = EdControl::Input->pad;
+    FRAME_PAD *pad = EdControl::Input->pad;
     f32 sensitivity = GetSensitivity(item);
     property->button_latched = 1;
     T value = (T)NuAToF(property->property_text);
@@ -649,7 +649,7 @@ class FogHelper : public EdClassInterface { // size 0x8
     virtual void *CreateObject(void *data, i32 guid, i32 flags);
 
     virtual void DestroyObject(void *object, i32) {
-        fogFree(static_cast<RTL_FOG_MIGRATION_PC *>(object));
+        fogFree(static_cast<RTL_FOG_MIGRATION *>(object));
     }
 
     virtual void Render(void *object, i32 selected);
@@ -680,7 +680,7 @@ void *FogHelper::GetNextObject(void *object) {
         if (object == NULL) {
             return &rtl_set->fog[0];
         }
-        for (i = static_cast<RTL_FOG_MIGRATION_PC *>(object) - rtl_set->fog + 1; i < 32; i++) {
+        for (i = static_cast<RTL_FOG_MIGRATION *>(object) - rtl_set->fog + 1; i < 32; i++) {
             if (rtl_set->fog[i].type != 0) {
                 return &rtl_set->fog[i];
             }
@@ -692,7 +692,7 @@ void *FogHelper::GetNextObject(void *object) {
 /* The fog's editor sphere; a spherical fog also shows its extent, boxed when
  * selected. */
 void FogHelper::Render(void *object, i32 selected) {
-    RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
+    RTL_FOG_MIGRATION *fog = static_cast<RTL_FOG_MIGRATION *>(object);
     ClassObject fog_object(object_class, fog);
     theClassEditor.DrawObjectSphere(fog_object, fog->colour);
     switch (fog->type) {
@@ -707,7 +707,7 @@ void FogHelper::Render(void *object, i32 selected) {
 
 /* A new fog zone in the first free slot of the current set. */
 void *FogHelper::CreateObject(void *, i32, i32) {
-    RTL_FOG_MIGRATION_PC *fog;
+    RTL_FOG_MIGRATION *fog;
     i32 i;
     /* fogAlloc, inlined here in the single C++ rtl unit. */
     if (curr_set != NULL) {
@@ -936,7 +936,7 @@ class EdRefFog : public EdRef {
 };
 
 void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) {
-    RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
+    RTL_FOG_MIGRATION *fog = static_cast<RTL_FOG_MIGRATION *>(object);
     CheckType(requested_type);
     switch (member_offset) {
         case EDREF_FOG_NAME:
@@ -977,7 +977,7 @@ void EdRefFog::GetMemberData(void *object, i32 requested_type, void *data, i32) 
 }
 
 void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, i16 *) {
-    RTL_FOG_MIGRATION_PC *fog = static_cast<RTL_FOG_MIGRATION_PC *>(object);
+    RTL_FOG_MIGRATION *fog = static_cast<RTL_FOG_MIGRATION *>(object);
     CheckType(requested_type);
     switch (member_offset) {
         case EDREF_FOG_FOG_COLOUR: {

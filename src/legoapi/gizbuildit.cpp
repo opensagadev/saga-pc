@@ -180,17 +180,17 @@ typedef struct registry_buildit_record_pc_s {
     u8 unknown_14[0x64];
     i16 blowup_type;
     u16 flags;
-} REGISTRY_BUILDIT_RECORD_PC;
+} REGISTRY_BUILDIT_RECORD;
 
 typedef struct registry_buildit_system_pc_s {
-    REGISTRY_BUILDIT_RECORD_PC *buildits;
+    REGISTRY_BUILDIT_RECORD *buildits;
     u16 count;
     u16 capacity;
     u16 max_animation_objects;
     u16 padding;
     GAMEANIMOBJPOOL *anim_pool;
     GAMEANIMOBJ **anim_objects;
-} REGISTRY_BUILDIT_SYSTEM_PC;
+} REGISTRY_BUILDIT_SYSTEM;
 
 extern "C" {
     extern i32 gizbuildit_gizmotype_id;
@@ -716,8 +716,8 @@ extern "C" {
     }
 
     void GizBuildIts_PostLoad(void *world, void *pointer) {
-        REGISTRY_BUILDIT_SYSTEM_PC *system = (REGISTRY_BUILDIT_SYSTEM_PC *)pointer;
-        REGISTRY_BUILDIT_RECORD_PC *buildit;
+        REGISTRY_BUILDIT_SYSTEM *system = (REGISTRY_BUILDIT_SYSTEM *)pointer;
+        REGISTRY_BUILDIT_RECORD *buildit;
         i32 i;
         if (system == NULL) {
             return;
@@ -734,13 +734,13 @@ extern "C" {
 
     void *GizBuildIts_ReserveBufferSpace(void *pointer) {
         WORLDINFO *world = (WORLDINFO *)pointer;
-        REGISTRY_BUILDIT_SYSTEM_PC *system;
+        REGISTRY_BUILDIT_SYSTEM *system;
         i32 i;
-        system = (REGISTRY_BUILDIT_SYSTEM_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
+        system = (REGISTRY_BUILDIT_SYSTEM *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(*system));
         system->capacity = world->current_level->max_buildits;
         system->max_animation_objects = (u16)world->current_level->max_buildit_objects;
-        system->buildits = (REGISTRY_BUILDIT_RECORD_PC *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
-                                                                         system->capacity * sizeof(*system->buildits));
+        system->buildits = (REGISTRY_BUILDIT_RECORD *)GameBufferAlloc(&world->giz_buffer, &world->buffer_end,
+                                                                      system->capacity * sizeof(*system->buildits));
         system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 200, system->max_animation_objects);
         system->anim_objects =
             (GAMEANIMOBJ **)GameBufferAlloc(&world->giz_buffer, &world->buffer_end, system->max_animation_objects * sizeof(void *));
@@ -1044,7 +1044,7 @@ extern "C" {
         return 0;
     }
 
-    void GizBuildIts_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
+    void GizBuildIts_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
         GIZBUILDITSYS_s *s = (GIZBUILDITSYS_s *)data;
         i32 i;
         (void)world;
@@ -1712,10 +1712,10 @@ extern "C" {
     i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle) = NULL;
     i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT *input, GAMEOBJECT *object) = NULL;
     void (*GizBuildIt_FinishFn)(struct GIZBUILDIT *input) = NULL;
-    static ADDGIZMOTYPE_PC GizmoRegistryGizBuildItsAddTypePc = {0};
+    static ADDGIZMOTYPE GizmoRegistryGizBuildItsAddTypePc = {0};
 
-    ADDGIZMOTYPE_PC *GizBuildIts_RegisterGizmo(i32 type_id) {
-        ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizBuildItsAddTypePc;
+    ADDGIZMOTYPE *GizBuildIts_RegisterGizmo(i32 type_id) {
+        ADDGIZMOTYPE *addtype = &GizmoRegistryGizBuildItsAddTypePc;
         *addtype = Default_ADDGIZMOTYPE;
         addtype->name = GizmoRegistryGizBuildItsNamePtrPc;
         addtype->fns.panel_draw_fn = NULL;
@@ -1728,13 +1728,13 @@ extern "C" {
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->prefix = "";
         addtype->fns.options = 0x60;
-        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizBuildIts_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizBuildIts_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)GizBuildIts_AddGizmos;
         addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizBuildIts_EarlyUpdate;
         addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizBuildIts_LateUpdate;
         addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizBuildIts_Draw;
         addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoBuildit_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
+        addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
         addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoBuildit_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)GizmoBuildit_GetNumOutputs;
         addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoBuildit_Activate;
@@ -1745,7 +1745,7 @@ extern "C" {
         addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizBuildIts_StoreProgress;
         addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizBuildIts_Reset;
         addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizBuildIts_ReserveBufferSpace;
-        addtype->fns.load_fn = (i32(*)(void *, void *))GizBuildIts_Load;
+        addtype->fns.load_fn = (i32 (*)(void *, void *))GizBuildIts_Load;
         addtype->fns.post_load_fn = (void (*)(void *, void *))GizBuildIts_PostLoad;
         gizbuildit_gizmotype_id = type_id;
         return addtype;

@@ -18,7 +18,7 @@ extern "C" {
     void MenuInitMissions(MENU *);
     void MenuUpdateMissions(MENU *);
     void MenuDrawMissions(MENU *);
-    void InitMission(MISSIONSYS_PC *, i32);
+    void InitMission(MISSIONSYS *, i32);
 #ifdef __cplusplus
 }
 #endif

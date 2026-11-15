@@ -23,5 +23,5 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-i32 Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE_PC *);
+i32 Episode_CountOpenAreas(i32, i32, COLLECTION_AREA_SAVE *);
 #endif

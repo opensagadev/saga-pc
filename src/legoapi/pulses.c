@@ -58,12 +58,12 @@ struct level_sfx_pulse_prefix_s {    // size 0x20
     u8 unknown_1f;                   // 0x1f
 };
 
-typedef struct PULSE_WORLD_VIEW {   // size 0x5054
-    u8 unknown_0[0x5050];           // 0x0000
-    LEVEL_SFX_PULSE_PC *pulses_sys; // 0x5050
+typedef struct PULSE_WORLD_VIEW { // size 0x5054
+    u8 unknown_0[0x5050];         // 0x0000
+    LEVEL_SFX_PULSE *pulses_sys;  // 0x5050
 } PULSE_WORLD_VIEW;
 
-void Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacity) {
+void Pulses_AddSfx(LEVEL_SFX_PULSE *system, i32 *ids, i32 *count, i32 capacity) {
     if (system == NULL) {
         return;
     }
@@ -85,8 +85,8 @@ void Pulses_AddSfx(LEVEL_SFX_PULSE_PC *system, i32 *ids, i32 *count, i32 capacit
 }
 
 void Pulses_Configure(WORLDINFO *world, char *config) {
-    NUFPAR_PC *parser;
-    LEVEL_SFX_PULSE_PC pulse_sys;
+    NUFPAR *parser;
+    LEVEL_SFX_PULSE pulse_sys;
     PULSE *pulse;
     ((PULSE_WORLD_VIEW *)world)->pulses_sys = NULL;
     if (world->current_gscn == NULL) {
@@ -209,12 +209,12 @@ outer_lines:
     }
 
     world->giz_buffer.addr = (u32)pulse;
-    ((PULSE_WORLD_VIEW *)world)->pulses_sys = (LEVEL_SFX_PULSE_PC *)world->giz_buffer.addr;
+    ((PULSE_WORLD_VIEW *)world)->pulses_sys = (LEVEL_SFX_PULSE *)world->giz_buffer.addr;
     *((PULSE_WORLD_VIEW *)world)->pulses_sys = pulse_sys;
-    world->giz_buffer.addr = ((world->giz_buffer.addr + sizeof(LEVEL_SFX_PULSE_PC) + 3U) & ~3U);
+    world->giz_buffer.addr = ((world->giz_buffer.addr + sizeof(LEVEL_SFX_PULSE) + 3U) & ~3U);
 }
 
-void Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
+void Pulses_Reset(LEVEL_SFX_PULSE *system) {
     i32 i;
     if (system == NULL) {
         return;
@@ -230,7 +230,7 @@ void Pulses_Reset(LEVEL_SFX_PULSE_PC *system) {
     }
 }
 
-void Pulses_Update(LEVEL_SFX_PULSE_PC *system) {
+void Pulses_Update(LEVEL_SFX_PULSE *system) {
     WORLDINFO *world;
     NUVEC hit_direction;
     i32 i;

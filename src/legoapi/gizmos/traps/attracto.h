@@ -13,12 +13,12 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
-typedef struct attracto_s ATTRACTO_PC;
+typedef struct attracto_s ATTRACTO;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    ATTRACTO_PC *Attracto_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
-    void Attracto_GetPos_Top(ATTRACTO_PC *, NUVEC *);
+    ATTRACTO *Attracto_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
+    void Attracto_GetPos_Top(ATTRACTO *, NUVEC *);
 #ifdef __cplusplus
 }
 #endif

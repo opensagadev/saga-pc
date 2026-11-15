@@ -5,7 +5,7 @@
 
 #include "nu2api/nucore/common.h"
 
-struct FRAME_PAD_PC;
+struct FRAME_PAD;
 struct edcam_s;
 struct edui_colour_pick_s;
 struct edui_interact_s;
@@ -20,7 +20,7 @@ extern "C" {
     i32 FS_PrevNameLen(char *name);
     void eduiItemColourPickSetHSV(struct edui_colour_pick_s *item, f32 hue, f32 saturation, f32 value);
     void eduicbCancelMessageMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    void do_Pad_Standard_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD_PC *pad);
+    void do_Pad_Standard_camera(struct edcam_s *camera, f32 delta_time, struct FRAME_PAD *pad);
     void do_mouse_flymode_camera(struct edcam_s *camera, f32 delta_time);
     void cbCancelSubMenu(struct eduimenu_s *menu, struct eduimenu_s *arg1);
     void cbSetAutoSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);

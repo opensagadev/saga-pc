@@ -14,7 +14,7 @@
 extern "C" {
 #endif
     /* Actual empty separate original source operation; no invented provider. */
-    void DisplayGenerateTransformsNoOp(NUDISPLAY_LIST_PC *);
+    void DisplayGenerateTransformsNoOp(NUDISPLAY_LIST *);
     void NuDisplayListCamera(void *);
     void NuDisplayListVertexGroups(void *);
     void NuDisplayListVertexOffsets(void *);

@@ -28,7 +28,7 @@ struct numtl_s;
 
 #if SAGA_EDITOR_EDLEVELALL_H_PART == 1 && !defined(SAGA_EDITOR_EDLEVELALL_H_STOP)
 
-struct FRAME_PAD_PC;
+struct FRAME_PAD;
 struct eduiiattr_s;
 struct eduiitem_s;
 struct eduimenu_s;
@@ -915,23 +915,23 @@ extern ClassEditor theClassEditor;
 /* The editor's per-frame input state: the camera
  * view, the cursor ray and 40 logical inputs with press/release/repeat
  * edges. */
-struct EdInputContext {       // size 0x260
-    VuVec view_position;      // 0x000
-    VuVec view_direction;     // 0x010
-    VuVec ray_start;          // 0x020
-    VuVec ray_direction;      // 0x030
-    struct FRAME_PAD_PC *pad; // 0x040
-    f32 delta_time;           // 0x044
-    f32 current_time;         // 0x048
-    f32 repeat_window;        // 0x04c
-    u8 held[40];              // 0x050
-    u8 pressed[40];           // 0x078
-    u8 released[40];          // 0x0a0
-    u8 repeated[40];          // 0x0c8
-    u8 cleared[40];           // 0x0f0
-    f32 values[40];           // 0x118
-    f32 repeat_times[40];     // 0x1b8
-    u8 reserved_258[8];       // 0x258
+struct EdInputContext {    // size 0x260
+    VuVec view_position;   // 0x000
+    VuVec view_direction;  // 0x010
+    VuVec ray_start;       // 0x020
+    VuVec ray_direction;   // 0x030
+    struct FRAME_PAD *pad; // 0x040
+    f32 delta_time;        // 0x044
+    f32 current_time;      // 0x048
+    f32 repeat_window;     // 0x04c
+    u8 held[40];           // 0x050
+    u8 pressed[40];        // 0x078
+    u8 released[40];       // 0x0a0
+    u8 repeated[40];       // 0x0c8
+    u8 cleared[40];        // 0x0f0
+    f32 values[40];        // 0x118
+    f32 repeat_times[40];  // 0x1b8
+    u8 reserved_258[8];    // 0x258
 
     void Set(i32 input, f32 value, f32 repeat_delay);
     void fun_006c1fc0(i32 input, i32 value, f32 repeat_delay);
@@ -941,7 +941,7 @@ struct EdInputContext {       // size 0x260
     f32 GetRelease(i32 input);
     f32 GetHold(i32 input);
     f32 GetRepeat(i32 input);
-    void Update(struct nucamera_s *camera, struct FRAME_PAD_PC *new_pad, f32 elapsed, bool menu_active);
+    void Update(struct nucamera_s *camera, struct FRAME_PAD *new_pad, f32 elapsed, bool menu_active);
 };
 #endif
 

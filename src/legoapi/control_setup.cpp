@@ -116,7 +116,7 @@ u8 PC_CONTROL_SCREEN::HasMissingBindings(void) {
 }
 
 void PC_CONTROL_SCREEN::RefreshItems(void) {
-    PC_INPUT_CONFIG_PC *configuration = NULL;
+    PC_INPUT_CONFIG *configuration = NULL;
     for (i32 i = 0; i < 2; ++i) {
         configuration = PcInputFindConfigPc(1, ports[selected_player], i);
         if (configuration) {
@@ -501,7 +501,7 @@ extern "C" {
         PcControlScreen.Initialize(players, player, resolve_bank, drop_in);
     }
 
-    i32 PcControlUpdate(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 elapsed) {
+    i32 PcControlUpdate(FRAME_PAD *first, FRAME_PAD *second, f32 elapsed) {
         return PcControlScreen.Update(first, second, elapsed);
     }
 
@@ -547,7 +547,7 @@ extern "C" {
     u32 PcControlPressed[2] = {0};
 }
 
-i32 PC_CONTROL_SCREEN::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 dt) {
+i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
     i32 device = PcInput_GetCtrlStringPlayer();
     if (device < 0) {
         device = 0;
@@ -594,7 +594,7 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 dt)
             opacity = fade;
             break;
         case 2: {
-            FRAME_PAD_PC *pads[2] = {first, second};
+            FRAME_PAD *pads[2] = {first, second};
             i32 escape = NuKeyboard(1);
             for (i32 i = 0; i < player_count; ++i) {
                 PcControlPressed[i] = 0;
@@ -875,7 +875,7 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 dt)
                                     case 40: {
                                         i32 key = selected_player;
                                         for (i32 attempt = 0; attempt < 2; ++attempt) {
-                                            PC_INPUT_CONFIG_PC *config = PcInputFindConfigPc(1, ports[selected_player], key);
+                                            PC_INPUT_CONFIG *config = PcInputFindConfigPc(1, ports[selected_player], key);
                                             if (config) {
                                                 PcInputInstallConfigPc(config, ports[selected_player], selected_player, 1, selected_player);
                                                 PcInputResolveAuxiliaryConflictsPc(selected_player, player_count);

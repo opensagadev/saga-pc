@@ -71,7 +71,7 @@ i32 fun_006de9c0(void) {
     return 1;
 }
 
-i32 fun_006de9d0(FRAME_PAD_PC *pad) {
+i32 fun_006de9d0(FRAME_PAD *pad) {
     return GamePadReadBackendPc(pad, -1);
 }
 

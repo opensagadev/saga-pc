@@ -20,7 +20,7 @@ i32 NumSfxNames = 0;
 static i32 NumSfxInst = 0;
 i32 NuSound3GroupSampleCount = 0;
 i32 NuSound3GroupCount = 0;
-SFX_FILE_INFO_PC *SfxFileTable = 0;
+SFX_FILE_INFO *SfxFileTable = 0;
 i32 SfxFileCount = 0;
 f32 SfxAudioVersion = 0;
 i32 NOSOUND = 0;
@@ -204,7 +204,7 @@ i32 GroupBuffer_GetSampleByIndex(i32 group_id, i32 sample_index) {
     return NuSound3GroupSampleIds[NuSound3Groups[group_id].first_sample + sample_index];
 }
 
-void AudioGroup_Parse(NUFPAR_PC *parser) {
+void AudioGroup_Parse(NUFPAR *parser) {
     i32 first = 1;
     i32 group_id = -1;
 
@@ -363,7 +363,7 @@ void PlaySfxByIdEx(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {
     }
 }
 
-void SfxSetFileTable(SFX_FILE_INFO_PC *records) {
+void SfxSetFileTable(SFX_FILE_INFO *records) {
     i32 index;
 
     SfxFileTable = records;
@@ -892,7 +892,7 @@ void PauseGameCut(void) {
 }
 
 void RestoreGameCut(void) {
-    MUSICPLAYBACK_PC *music = &Music;
+    MUSICPLAYBACK *music = &Music;
 
     if (NOMUSIC != 0 && NOSOUND != 0) {
         return;
@@ -1124,12 +1124,12 @@ i32 NuSound3LoadingSfx(void) {
     return NuSound3LoadingSfxPc != 0;
 }
 
-SFX_RECORD_PC *SfxRevertInfo = 0;
+SFX_RECORD *SfxRevertInfo = 0;
 char SfxNameSlots[1601][32] = {0};
-SFX_FILE_INFO_PC *SfxFileInfo = 0;
+SFX_FILE_INFO *SfxFileInfo = 0;
 char SfxFilenameSlots[1601][64] = {0};
 
-static void fnAudioSample(NUFPAR_PC *fpar) {
+static void fnAudioSample(NUFPAR *fpar) {
     char *str;
     u32 hash;
     i32 i;
@@ -1296,11 +1296,11 @@ static void fnAudioSample(NUFPAR_PC *fpar) {
     }
     SfxInfo[NumSfxInst].sample_id_flags &= ~0x100000u;
     SfxInfo[NumSfxInst].sample_id_flags |= 0x200000u;
-    PCByteCopy(&SfxRevertInfo[NumSfxInst], &SfxInfo[NumSfxInst], sizeof(SFX_RECORD_PC));
+    PCByteCopy(&SfxRevertInfo[NumSfxInst], &SfxInfo[NumSfxInst], sizeof(SFX_RECORD));
     NumSfxInst++;
 }
 
-static void fnAudioAudio(NUFPAR_PC *parser) {
+static void fnAudioAudio(NUFPAR *parser) {
     SfxAudioVersion = NuFParGetFloat(parser);
 }
 
@@ -1310,7 +1310,7 @@ static NUFPCOMJMP audioCom[] = {
     {"Group",  AudioGroup_Parse},
     {NULL,     NULL            }
 };
-MUSICPLAYBACK_PC Music = {0, -1, 0, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0, -1, NULL};
+MUSICPLAYBACK Music = {0, -1, 0, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0, -1, NULL};
 
 void InitSoundInfo(i32 index) {
     SfxInfo[index].sample_id_flags |= 0x7fff;
@@ -1340,7 +1340,7 @@ void InitSoundInfo(i32 index) {
 }
 
 void LoadSfx(const char *file, VARIPTR *cursor, VARIPTR end) {
-    NUFPAR_PC *parser = NuFParCreate((char *)file);
+    NUFPAR *parser = NuFParCreate((char *)file);
     i32 count;
     if (parser != NULL) {
         NuFParPushCom(parser, audioCom);
@@ -1371,15 +1371,15 @@ void InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
     cursor->addr = (cursor->addr + 3) & ~3u;
     SfxHashHeads = cursor->void_ptr;
     cursor->addr += 0x200;
-    SfxFileInfo = (SFX_FILE_INFO_PC *)((cursor->addr + 3) & ~3u);
-    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_FILE_INFO_PC);
-    memset(SfxFileInfo, 0, 1600 * sizeof(SFX_FILE_INFO_PC));
-    SfxInfo = (SFX_RECORD_PC *)((cursor->addr + 3) & ~3u);
-    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_RECORD_PC);
-    memset(SfxInfo, 0, 1600 * sizeof(SFX_RECORD_PC));
-    SfxRevertInfo = (SFX_RECORD_PC *)((cursor->addr + 3) & ~3u);
-    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_RECORD_PC);
-    memset(SfxRevertInfo, 0, 1600 * sizeof(SFX_RECORD_PC));
+    SfxFileInfo = (SFX_FILE_INFO *)((cursor->addr + 3) & ~3u);
+    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_FILE_INFO);
+    memset(SfxFileInfo, 0, 1600 * sizeof(SFX_FILE_INFO));
+    SfxInfo = (SFX_RECORD *)((cursor->addr + 3) & ~3u);
+    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_RECORD);
+    memset(SfxInfo, 0, 1600 * sizeof(SFX_RECORD));
+    SfxRevertInfo = (SFX_RECORD *)((cursor->addr + 3) & ~3u);
+    cursor->addr = ((cursor->addr + 3) & ~3u) + 1600 * sizeof(SFX_RECORD);
+    memset(SfxRevertInfo, 0, 1600 * sizeof(SFX_RECORD));
     SfxBuildCRCTable(cursor, end);
     for (i = 0; i < 256; ++i) {
         SfxHashHeads[i] = -1;

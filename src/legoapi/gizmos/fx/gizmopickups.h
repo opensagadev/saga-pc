@@ -27,7 +27,7 @@ struct WORLDINFO_s;
 struct gameobject_s;
 struct player_coin_packet_s;
 
-typedef struct game_message_s GAME_MESSAGE_PC;
+typedef struct game_message_s GAME_MESSAGE;
 
 /* SPECIAL_MINIKIT.flags (gizmopickups.c): the specialminikit keywords that set them. */
 #define SPECIAL_MINIKIT_DRAW_ALWAYS 0x1          /* until a draw_at_* keyword */

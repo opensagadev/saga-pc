@@ -41,13 +41,13 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 typedef struct shadow_platform_entry_pc_s { // size 0x14
     GAMEOBJECT *object;                     // 0x00
     u8 unknown_04_14[0x10];                 // 0x04
-} SHADOW_PLATFORM_ENTRY_PC;
+} SHADOW_PLATFORM_ENTRY;
 
-struct shadow_platform_list_pc_s {       // size 0x2c
-    u8 unknown_00_04[4];                 // 0x00
-    i32 count;                           // 0x04
-    u8 unknown_08_18[0x10];              // 0x08
-    SHADOW_PLATFORM_ENTRY_PC entries[1]; // 0x18
+struct shadow_platform_list_pc_s {    // size 0x2c
+    u8 unknown_00_04[4];              // 0x00
+    i32 count;                        // 0x04
+    u8 unknown_08_18[0x10];           // 0x08
+    SHADOW_PLATFORM_ENTRY entries[1]; // 0x18
 };
 
 typedef struct gameobject_collision_reset_s { // size 0x2b8
@@ -154,7 +154,7 @@ extra:
 }
 
 void ScaleGameObject(GAMEOBJECT *object) {
-    CHARACTERDATA_PC *character = object->character_data;
+    CHARACTERDATA *character = object->character_data;
     object->scaled_radius = character->scaled_radius * object->origin_scale;
     object->collision_radius = object->collision_radius_unscaled * object->origin_scale;
     object->unknown_b0 = object->collision_radius * object->collision_y_scale;
@@ -162,7 +162,7 @@ void ScaleGameObject(GAMEOBJECT *object) {
 }
 
 void GetTopBot(GAMEOBJECT *object) {
-    CHARACTERDATA_PC *character = object->character_data;
+    CHARACTERDATA *character = object->character_data;
     object->character_bottom = character->bottom;
     object->character_top = character->top;
     if (object->collision_radius_unscaled == 0.0f) {
@@ -444,7 +444,7 @@ void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO 
     }
 }
 
-LAST_SAFE_POS_EXTRA_PC LastSafePosExtraFn = 0;
+LAST_SAFE_POS_EXTRA LastSafePosExtraFn = 0;
 
 void UpdateLastSafePosition(GAMEOBJECT *object) {
     GAMEOBJECT *terrain_object;
@@ -565,8 +565,8 @@ void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
 /* Bitwise absolute value through a float temporary. */
 
 // Copies the antinode timer and its 0x8000 flag from one creature's packet to the other's.
-typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
-extern CHECK_ANTINODE_FN_PC checkantinodefns[3];
+typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
+extern CHECK_ANTINODE_FN checkantinodefns[3];
 
 typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
     u8 unknown_000[0xd4];                // 0x000

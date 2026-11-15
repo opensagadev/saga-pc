@@ -19,15 +19,15 @@
 #define DEBRIS_RANDOM_SPREAD(range) (NuRandFloatSeeded(&debrisseed) * 2.0f * (range) - (range))
 
 extern "C" {
-    DEBRISPARTICLE_PC *GenDebDummy(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebDummy(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         return GenDebIndex(key, effect, time);
     }
 
-    DEBRISPARTICLE_PC *GenDebIndex(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebIndex(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -66,7 +66,7 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE_PC *trail_particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+            DEBRISPARTICLE *trail_particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
             key->particle_cursor++;
             *trail_particle = *particle;
             trail_particle->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -78,14 +78,14 @@ extern "C" {
         return particle;
     }
 
-    DEBRISPARTICLE_PC *GenDebIndexRadial(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebIndexRadial(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -126,7 +126,7 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -137,14 +137,14 @@ extern "C" {
         return particle;
     }
 
-    DEBRISPARTICLE_PC *GenDebIndexRadialRotor(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebIndexRadialRotor(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -186,7 +186,7 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -207,14 +207,14 @@ extern "C" {
         return particle;
     }
 
-    DEBRISPARTICLE_PC *GenDebIndexImprovedRadial(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebIndexImprovedRadial(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -261,7 +261,7 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -272,14 +272,14 @@ extern "C" {
         return particle;
     }
 
-    DEBRISPARTICLE_PC *GenDebIndexRadialStar(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebIndexRadialStar(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -328,7 +328,7 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE_PC *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -339,15 +339,15 @@ extern "C" {
         return particle;
     }
 
-    DEBRISPARTICLE_PC *GenDebIndexBounceY(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebIndexBounceY(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[key->particle_cursor / 32];
-        DEBRISPARTICLE_PC *particle = &chunk->particles[key->particle_cursor % 32];
+        DEBRIS_PARTICLE_CHUNK *chunk = key->particle_chunks[key->particle_cursor / 32];
+        DEBRISPARTICLE *particle = &chunk->particles[key->particle_cursor % 32];
         particle->start_time = time;
         key->emission_epoch = time;
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
@@ -408,7 +408,7 @@ extern "C" {
         return particle;
     }
 
-    DEBRISPARTICLE_PC *GenDebIndexBounceXZ(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, float time) {
+    DEBRISPARTICLE *GenDebIndexBounceXZ(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         NUVEC normal = {1.0f, 0.0f, 0.0f};
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
@@ -416,8 +416,8 @@ extern "C" {
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[key->particle_cursor / 32];
-        DEBRISPARTICLE_PC *particle = &chunk->particles[key->particle_cursor % 32];
+        DEBRIS_PARTICLE_CHUNK *chunk = key->particle_chunks[key->particle_cursor / 32];
+        DEBRISPARTICLE *particle = &chunk->particles[key->particle_cursor % 32];
         particle->start_time = time;
         key->emission_epoch = time;
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;

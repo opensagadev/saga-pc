@@ -56,7 +56,7 @@ typedef struct nurnd_vertex2d_s { // size 0x1c
     f32 rhw;                      // 0x0c
     u32 colour;                   // 0x10
     f32 uv[2];                    // 0x14
-} NURND_VERTEX2D_PC;
+} NURND_VERTEX2D;
 
 #define NU_PORTAL_STACK_SIZE 0x3000
 
@@ -174,7 +174,7 @@ typedef struct nuprim_vertex_group_source_s { // size 0x8
     u8 flags;                                 // 0x2
     u8 unknown_03;                            // 0x3
     i8 *values;                               // 0x4
-} NUPRIM_VERTEX_GROUP_SOURCE_PC;
+} NUPRIM_VERTEX_GROUP_SOURCE;
 
 typedef struct nurndrlibstate_s { // size 0x34
     u8 opaque_00_08[0x8];         // 0x00
@@ -335,7 +335,7 @@ extern "C" {
     extern i32 ddmaxjoints;
     extern i32 NumQuatPushes;
     extern u8 AnimQuatSaved[4];
-    extern NUPRIM_VERTEX_GROUP_SOURCE_PC *NuPrimVertexGroupSource;
+    extern NUPRIM_VERTEX_GROUP_SOURCE *NuPrimVertexGroupSource;
     void NuTexAnimRemoveList(void *);
     i32 NuTexGetUnresolvedTextureTIDPS(void);
     extern i32 PCDisplayMaterialDeleteCount;
@@ -379,10 +379,10 @@ extern "C" {
         f32 direction_far_angle;                // 0x40
         f32 direction_near_scale;               // 0x44
         f32 direction_bias;                     // 0x48
-    } RENDER_POST_BLOOM_READER_PC;
+    } RENDER_POST_BLOOM_READER;
 
     i16 RenderPostASin(f32);
-    void DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER_PC *);
+    void DrawAlphaGrid(i32, i32, RENDER_POST_BLOOM_READER *);
 
     void NuTexAnimSetSignals(u32 signals);
     void NuTexAnimProcess(f32 frame_time);
@@ -566,7 +566,7 @@ typedef struct nutexdim_s {        // size 0x28
     void *image_data;              // 0x1c
     u32 image_size;                // 0x20
     PC_TEXTURE_RESOURCE *resource; // 0x24
-} NUTEXDIM_PC;
+} NUTEXDIM;
 
 #ifdef __cplusplus
 extern "C" {
@@ -608,12 +608,12 @@ extern "C" {
     extern NUVPCURRENT vpDevice;
 
     void NuQFntDestroy(VUFNT *);
-    extern NUTEXDIM_PC **NuTextureDimensions;
+    extern NUTEXDIM **NuTextureDimensions;
     extern NUVPCURRENT vpCurrent;
     void NuDisplayListStreamAlloc(VARIPTR *cursor, i32 end_unused, i32 count);
     extern VARIPTR PCDisplayMaterialStreamStart;
     extern VARIPTR PCDisplayMaterialStreamEnd;
-    NUTEXDIM_PC *NuTextureGetDimensions(i32);
+    NUTEXDIM *NuTextureGetDimensions(i32);
     extern NULSTHDR *g_overrideList;
     extern VARIPTR fstack;
     extern VARIPTR fstack_top;
@@ -621,14 +621,14 @@ extern "C" {
     void NuDisplayListCreateDynMtlList_candidate(VARIPTR *, VARIPTR);
 
     void NuRndrArenaInit(VARIPTR *, VARIPTR);
-    i32 NuTexRegisterDimensions(NUTEXDIM_PC *texture);
+    i32 NuTexRegisterDimensions(NUTEXDIM *texture);
 
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
 
-struct POST_SHADER_PROGRAM_PC {         // size 0x10
+struct POST_SHADER_PROGRAM {            // size 0x10
     PC_TEXTURE_RESOURCE *vertex_shader; // 0x0
     PC_TEXTURE_RESOURCE *pixel_shader;  // 0x4
     u32 unknown_08[2];                  // 0x8
@@ -719,8 +719,8 @@ typedef struct ANI3_GLOBALBUFFER { // size 0x10
     u8 *joint_flags; // 0xc
 } ANI3_GLOBALBUFFER;
 
-typedef void (*ANI3_ROOT_CALLBACK_PC)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
-typedef void (*ANI3_EVAL_CALLBACK_PC)(NUMTX *, void *, NUQUAT *);
+typedef void (*ANI3_ROOT_CALLBACK)(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
+typedef void (*ANI3_EVAL_CALLBACK)(NUMTX *, void *, NUQUAT *);
 
 typedef struct NUHGOBJ_EVAL_JOINT { // size 0x60
     NUMTX bind_matrix;              // 0x00
@@ -872,9 +872,9 @@ extern "C" {
     extern NUCAMERA NuPortalRestoreCamera;
     void NuAnimData2CalcTime(NUANIMDATA2 *, f32, NUANIM_TIME2 *);
     /* C extern declarations: */
-    i32 StateAnimEvaluate2(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
-    i32 StateAnimEvaluate(STATE_ANIM_PC *state, u8 *index, u8 *value, f32 frame);
-    STATE_ANIM_PC *StateAnimFixPtrs(STATE_ANIM_PC *state, i32 delta);
+    i32 StateAnimEvaluate2(STATE_ANIM *state, u8 *index, u8 *value, f32 frame);
+    i32 StateAnimEvaluate(STATE_ANIM *state, u8 *index, u8 *value, f32 frame);
+    STATE_ANIM *StateAnimFixPtrs(STATE_ANIM *state, i32 delta);
 
     typedef struct CAMERA_SAVED_STATE { // size 0x420
         NUCAMERA camera;                // 0x000
@@ -954,7 +954,7 @@ typedef struct nudisplay_list_s {            // size 0x90
     u8 unknown_84[0x4];                               // 0x84
     u8 *portal_visibility_overrides;                  // 0x88
     struct PC_MATERIAL_ANIM_SET *material_animations; // 0x8c
-} NUDISPLAY_LIST_PC;
+} NUDISPLAY_LIST;
 
 typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
     u8 unknown_0[0x110];                      // 0x000
@@ -980,7 +980,7 @@ typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
     NUVEC bounds_max;                         // 0x1b8
 } NUHGOBJ_EVAL;
 
-typedef void (*NUJOINTPROCANIMFN_PC)(ANI3_BUFFER *, NUHGOBJ_EVAL *, i32, NUHGOBJ_JOINT_OVERRIDE *);
+typedef void (*NUJOINTPROCANIMFN)(ANI3_BUFFER *, NUHGOBJ_EVAL *, i32, NUHGOBJ_JOINT_OVERRIDE *);
 
 /* PC NuDynamicLight::RenderSet. */
 typedef struct NU_LIGHT_SHADOW_LIST_VIEW {     // size 0x44
@@ -1046,7 +1046,7 @@ extern "C" {
 
     extern NUMTL **PCDisplayMaterialAddQueue;
     NUDISPLAYLISTITEM *NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *, NUMTL *, VARIPTR *, VARIPTR);
-    i32 NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count);
+    i32 NuRndrLineStrip2d(NURND_VERTEX2D *vertices, NUMTL *material, i32 count);
 
     typedef struct PC_MATERIAL_ANIM_SET {  // size 0x10
         u8 unknown_0[12];                  // 0x0
@@ -1054,10 +1054,10 @@ extern "C" {
     } PC_MATERIAL_ANIM_SET;
 
     extern NUMTL **PCDisplayMaterialDeleteQueue;
-    extern NUDISPLAY_LIST_PC *PCDisplayScenes[256];
-    extern NUDISPLAY_LIST_PC PCDynamicDisplayScene;
+    extern NUDISPLAY_LIST *PCDisplayScenes[256];
+    extern NUDISPLAY_LIST PCDynamicDisplayScene;
 
-    void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER_PC *parameters);
+    void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER *parameters);
 
     i32 NuDynamicLightIsEnabled(NURNDRLIGHTRECORD *records);
 
@@ -1121,7 +1121,7 @@ extern "C" {
 
     void NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *material);
     void NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material);
-    void DisplaySceneRndrSpecials(NUDISPLAY_LIST_PC *, i32, i32);
+    void DisplaySceneRndrSpecials(NUDISPLAY_LIST *, i32, i32);
 #ifdef __cplusplus
 }
 #endif
@@ -1201,7 +1201,7 @@ extern "C" {
     extern NUDISPLAYLISTRENDERSCENE *PCSafeRenderScenes[24];
 
     extern NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24];
-    void SetProceduralAnimationFn(NUJOINTPROCANIMFN_PC callback);
+    void SetProceduralAnimationFn(NUJOINTPROCANIMFN callback);
 
     /* Qualified CPU visibility/tree views; original owning extents remain unknown. */
     typedef struct visibility_result_reader_s { // size 0x2c
@@ -1216,13 +1216,13 @@ extern "C" {
         void *context;                          // 0x20
         u8 *instance_tree_bits;                 // 0x24
         u32 flags;                              // 0x28
-    } VISIBILITY_RESULT_READER_PC;
+    } VISIBILITY_RESULT_READER;
 
-    extern VISIBILITY_RESULT_READER_PC *myvisi;
+    extern VISIBILITY_RESULT_READER *myvisi;
     extern NURNDRLIBSCENE sceneParameters[16];
-    void NuVisiOcclusion(VISIBILITY_RESULT_READER_PC *);
-    VISIBILITY_RESULT_READER_PC *NuVisiEvaluate(NUGSCN *, void *);
-    void NuVisiInstTree(VISIBILITY_RESULT_READER_PC *, NUGSCN *);
+    void NuVisiOcclusion(VISIBILITY_RESULT_READER *);
+    VISIBILITY_RESULT_READER *NuVisiEvaluate(NUGSCN *, void *);
+    void NuVisiInstTree(VISIBILITY_RESULT_READER *, NUGSCN *);
     NUGSCN *PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
     i32 findrange(struct NUGSCN_s *arg0, i32 arg1);
     void NuSpecialSetDrawPos(struct nuhspecial_s *special, struct nuvec_s *pos);
@@ -1350,7 +1350,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
 
         struct {                       // size 0x10
             NUVEC shadow_direction_pc; // 0x770
-            f32 light_direction_w_pc;  // 0x77c
+            f32 light_direction_w;     // 0x77c
         };
     }; // 0x770
 

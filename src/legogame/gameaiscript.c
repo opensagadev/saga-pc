@@ -133,7 +133,7 @@ typedef struct AIOBSTACLE_PARTIAL { // size 0xa0
 
 void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
-typedef void (*CHECK_ANTINODE_FN_PC)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
+typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 
 /* AISYS PC callbacks. */
 
@@ -153,7 +153,7 @@ typedef struct ai_force_fields_s { // size 0xa4
 
 typedef struct ai_force_object_s { // size 0x10d0
     u8 unknown_000[0x10cc];        // 0x0000
-    GIZFORCE_PC *force;            // 0x10cc
+    GIZFORCE *force;               // 0x10cc
 } AI_FORCE_OBJECT;
 
 /* AISYS callback family: seven-argument callbacks. */
@@ -229,7 +229,7 @@ typedef struct ai_global_trigger_world_s { // size 0x467c
     AITRIGGERSETSYS_s *trigger_system;     // 0x4678
 } AI_GLOBAL_TRIGGER_WORLD;
 
-i32 ForceAnimationDone(GIZFORCE_PC *force);
+i32 ForceAnimationDone(GIZFORCE *force);
 
 typedef struct condition_trigger_process_reader_s { // size 0xa4
     u8 unknown_00[0xa0];                            // 0x00
@@ -246,11 +246,11 @@ typedef struct ai_on_object_platform_pc_s { // size 0x6c
     u8 unknown_00[0x40];                    // 0x00
     NUMTX *scene_object;                    // 0x40
     u8 unknown_44[0x28];                    // 0x44
-} AI_ON_OBJECT_PLATFORM_PC;
+} AI_ON_OBJECT_PLATFORM;
 
-typedef struct ai_on_object_terrain_s {  // size 0x6c
-    u8 unknown_00[0x68];                 // 0x00
-    AI_ON_OBJECT_PLATFORM_PC *platforms; // 0x68
+typedef struct ai_on_object_terrain_s { // size 0x6c
+    u8 unknown_00[0x68];                // 0x00
+    AI_ON_OBJECT_PLATFORM *platforms;   // 0x68
 } AI_ON_OBJECT_TERRAIN;
 
 /* Instance reader: only the condition's flags field is consumed. */
@@ -264,7 +264,7 @@ typedef struct condition_hat_name_reader_s { // size 0x50
     char name[16];                           // 0x40
 } CONDITION_HAT_NAME_READER;
 
-SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
+SOCK *FindSock(SOCKSYS_PC *system, char *name);
 
 void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
 
@@ -276,17 +276,17 @@ typedef struct ai_force_platform_record_pc_s { // size 0x6c
     u8 unknown_00[0x40];                       // 0x00
     NUMTX *scene_matrix;                       // 0x40
     u8 unknown_44[0x28];                       // 0x44
-} AI_FORCE_PLATFORM_RECORD_PC;
+} AI_FORCE_PLATFORM_RECORD;
 
 typedef struct ai_force_platform_terrain_pc_s { // size 0x6c
     u8 unknown_00[0x68];                        // 0x00
-    AI_FORCE_PLATFORM_RECORD_PC *platforms;     // 0x68
-} AI_FORCE_PLATFORM_TERRAIN_PC;
+    AI_FORCE_PLATFORM_RECORD *platforms;        // 0x68
+} AI_FORCE_PLATFORM_TERRAIN;
 
 typedef struct ai_force_platform_object_data_pc_s { // size 0x4
     u8 unknown_00[2];                               // 0x0
     i16 platform_id;                                // 0x2
-} AI_FORCE_PLATFORM_OBJECT_DATA_PC;
+} AI_FORCE_PLATFORM_OBJECT_DATA;
 
 typedef struct ai_trigger_world_s {    // size 0x467c
     u8 unknown_0000[0x4678];           // 0x0000
@@ -346,10 +346,9 @@ i32 GizTechno_CanUseTechno(GAMEOBJECT *object, BULK_AI_TECHNO *techno);
 
 typedef struct ai_action_controller_world_s { // size 0x4674
     u8 unknown_0000[0x4670];                  // 0x0000
-    AI_CONTROL_SYSTEM_PC *control_system;     // 0x4670
+    AI_CONTROL_SYSTEM *control_system;        // 0x4670
 } AI_ACTION_CONTROLLER_WORLD;
-struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH *, char *, char *, i32, char *, i32,
-                                                        i32);
+struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS_PC *, AIPATH *, char *, char *, i32, char *, i32, i32);
 void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
 const char dat_00757e34[10];
 const char dat_00757d98[10];
@@ -989,7 +988,7 @@ f32 Condition_PlayerUsingForce(AISYS_PC *system, AISCRIPTPROCESS *process, AIPAC
 }
 
 f32 Condition_EitherPlayerUsingForce(AISYS_PC *unused0, AISCRIPTPROCESS *unused1, AIPACKET *unused2, char *unused3, void *argument) {
-    GIZFORCE_PC *force = argument;
+    GIZFORCE *force = argument;
     if (GizForce_GameObjUsingForce(player, force) != 0) {
         return 1.0f;
     }
@@ -1001,7 +1000,7 @@ f32 Condition_EitherPlayerUsingForce(AISYS_PC *unused0, AISCRIPTPROCESS *unused1
 
 void *Condition_OnForcePlatformInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     GIZMO_PC *gizmo = GizmoFindByName(WORLD->gizmo_sys, force_gizmotype_id, name);
-    GIZFORCE_PC *force;
+    GIZFORCE *force;
     if (gizmo != NULL) {
         force = gizmo->object;
         if (force != NULL && (force->runtime_flags & 0x100) != 0) {
@@ -1012,10 +1011,10 @@ void *Condition_OnForcePlatformInit(AISYS_PC *system, char *name, AISCRIPT *scri
 }
 
 f32 Condition_OnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    GIZFORCE_PC *force = argument;
+    GIZFORCE *force = argument;
     GAMEOBJECT *object;
     i16 platform_id;
-    AI_FORCE_PLATFORM_TERRAIN_PC *terrain;
+    AI_FORCE_PLATFORM_TERRAIN *terrain;
     GAMEANIMOBJ *animation;
     if (force == NULL || packet == NULL || packet->owner == NULL) {
         return 0.0f;
@@ -1028,13 +1027,13 @@ f32 Condition_OnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACK
     if (platform_id == -1) {
         return 0.0f;
     }
-    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
+    terrain = (AI_FORCE_PLATFORM_TERRAIN *)CurrentTerrain;
     if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)) {
         return 0.0f;
     }
     animation = force->anim_set->objects;
     while (animation != NULL) {
-        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id) {
+        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
             return 1.0f;
         }
         animation = animation->next;
@@ -1043,10 +1042,10 @@ f32 Condition_OnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACK
 }
 
 f32 Condition_PlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    GIZFORCE_PC *force = argument;
+    GIZFORCE *force = argument;
     GAMEOBJECT *object;
     i16 platform_id;
-    AI_FORCE_PLATFORM_TERRAIN_PC *terrain;
+    AI_FORCE_PLATFORM_TERRAIN *terrain;
     GAMEANIMOBJ *animation;
     if (force == NULL) {
         return 0.0f;
@@ -1059,13 +1058,13 @@ f32 Condition_PlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, 
     if (platform_id == -1) {
         return 0.0f;
     }
-    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
+    terrain = (AI_FORCE_PLATFORM_TERRAIN *)CurrentTerrain;
     if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)) {
         return 0.0f;
     }
     animation = force->anim_set->objects;
     while (animation != NULL) {
-        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id) {
+        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
             return 1.0f;
         }
         animation = animation->next;
@@ -1074,17 +1073,17 @@ f32 Condition_PlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, 
 }
 
 f32 Condition_EitherPlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    GIZFORCE_PC *force = argument;
+    GIZFORCE *force = argument;
     GAMEOBJECT *first;
     GAMEOBJECT *second;
-    AI_FORCE_PLATFORM_TERRAIN_PC *terrain;
+    AI_FORCE_PLATFORM_TERRAIN *terrain;
     i32 eligible;
     i16 platform_id;
     GAMEANIMOBJ *animation;
     if (force != NULL) {
         first = player;
         if (first != NULL) {
-            terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
+            terrain = (AI_FORCE_PLATFORM_TERRAIN *)CurrentTerrain;
             eligible = 0;
             if (first->unknown_281 != 0 || first->unknown_282 != 0) {
                 platform_id = first->supporting_platform_id;
@@ -1103,11 +1102,11 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *pro
                 animation = force->anim_set->objects;
                 while (animation != NULL) {
                     if ((eligible & 1) != 0 &&
-                        first->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id) {
+                        first->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
                         return 1.0f;
                     }
                     if ((eligible & 2) != 0 &&
-                        second->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA_PC *)animation->object_data)->platform_id) {
+                        second->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
                         return 1.0f;
                     }
                     animation = animation->next;
@@ -1119,7 +1118,7 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *pro
 }
 
 f32 Condition_ForceBeingUsed(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    GIZFORCE_PC *force = argument;
+    GIZFORCE *force = argument;
     if (force != NULL && ((force->runtime_flags & 0x200000) != 0 || force->reset_word != 0)) {
         return 1.0f;
     }
@@ -2855,7 +2854,7 @@ void *Condition_AreaCompleteInit(AISYS_PC *system, char *name, AISCRIPT *script)
 }
 
 f32 Condition_AreaComplete(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    AREA_DATA_PC *area = argument;
+    AREA_DATA *area = argument;
     if (area != NULL && Game.area_save[area->index].area_complete == 1) {
         return 1.0f;
     }
@@ -4359,7 +4358,7 @@ i32 Action_SnapToOrigin(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
 i32 Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                               f32 elapsed) {
     GAMEOBJECT *object = NULL;
-    SOCKPOSITION_PC sock_position;
+    SOCKPOSITION sock_position;
     NUVEC offset = {0.0f, 0.0f, 0.0f};
     NUVEC ring_offset;
     f32 distance = 0.0f;
@@ -6897,7 +6896,7 @@ i32 Action_EnableSock(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
             if (value != NULL) {
                 sock_index = (i32)(AIParamToFloat(processor, value + 3));
             } else if ((value = NuStrIStr(params[index], (char *)"name=")) != NULL) {
-                SOCK_PC *sock = FindSock(WORLD->sock_sys, value + 5);
+                SOCK *sock = FindSock(WORLD->sock_sys, value + 5);
                 if (sock != NULL) {
                     sock_index = sock - WORLD->sock_sys->socks;
                 }
@@ -7513,7 +7512,7 @@ i32 Action_CnxHelper(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
                     direction = 0xff;
                 }
                 if (grapple != NULL) {
-                    AI_HELPER_SLOT_PC *helper =
+                    AI_HELPER_SLOT *helper =
                         AIPathCnxHelperSys_AddHelper(WORLD->ai_connection_helpers, connection, (u8)direction, grapple, 1);
                     if (helper != NULL) {
                         helper->jump_off_dy = jump_off_dy;
@@ -8632,8 +8631,8 @@ i32 Action_TagCharacter(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
 
 i32 Action_UseForce(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta) {
     GAMEOBJECT *object;
-    GIZFORCE_PC *force;
-    GIZFORCE_PC *candidates[16];
+    GIZFORCE *force;
+    GIZFORCE *candidates[16];
     AI_FORCE_FIELDS *view;
     GIZMO_PC *gizmo;
     char *name;
@@ -11384,7 +11383,7 @@ i32 Action_SetTechnoComplete(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPAC
                              f32 elapsed) {
     i32 complete = 1;
     GAMEOBJECT *object = NULL;
-    TECHNO_PC *techno = NULL;
+    TECHNO *techno = NULL;
     i32 index;
     char *value;
     if (packet != NULL && packet->owner != NULL) {
@@ -11435,7 +11434,7 @@ i32 Action_DrawBossHitPoints(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPAC
 
 i32 Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                          f32 elapsed) {
-    LEVELDATA_PC *level;
+    LEVELDATA *level;
     char *cutscene_name;
     char *value;
     i32 index;
@@ -11486,7 +11485,7 @@ choose_level:
 
 i32 Action_GoToNewLevel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                         f32 elapsed) {
-    LEVELDATA_PC *level = NULL;
+    LEVELDATA *level = NULL;
     char *cutscene_name = NULL;
     char *value;
     i32 index;
@@ -11782,7 +11781,7 @@ i32 Action_RaceOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *
                         f32 elapsed) {
     GAMEOBJECT *actor;
     GAMEOBJECT *opponent;
-    SOCKPOSITION_PC projected_position;
+    SOCKPOSITION projected_position;
     NUVEC opponent_offset;
     NUVEC actor_offset;
     NUVEC destination;

@@ -15,7 +15,7 @@
 typedef struct dat_handles_s { // size 0x1c
     NUDATHDR *previous;        // 0x00
     NUDATHDR *episode[6];      // 0x04
-} DAT_HANDLES_PC;
+} DAT_HANDLES;
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +23,7 @@ extern "C" {
     extern i32 CutSceneWaiting;
     extern f32 brickimpactwait;
 
-    extern DAT_HANDLES_PC NuDatHandles;
+    extern DAT_HANDLES NuDatHandles;
     extern const char EpisodeIDat[14];
     extern const char EpisodeIIDat[15];
     extern const char EpisodeIIIDat[16];

@@ -630,7 +630,7 @@ struct EduiSeparatorView {              // size 0x4c
     i32 (*interact)(edui_interact_s *); // 0x48
 };
 
-extern "C" i32 eduicbProcessSeparator(eduimenu_s *unused_menu, eduiitem_s *unused_item, f32 unused_delta_time, FRAME_PAD_PC *unused_pad) {
+extern "C" i32 eduicbProcessSeparator(eduimenu_s *unused_menu, eduiitem_s *unused_item, f32 unused_delta_time, FRAME_PAD *unused_pad) {
     return 0;
 }
 
@@ -977,7 +977,7 @@ extern "C" {
     static eduiitem_s *cp_info = NULL;
     static eduiitem_s *cp_copy = NULL;
     static eduiitem_s *cp_paste = NULL;
-    static i32 (*cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *) = NULL;
+    static i32 (*cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD *) = NULL;
     static f32 *EduiColourTargetRed = NULL;
     static f32 *EduiColourTargetGreen = NULL;
     struct numtx_s *ed_remap_mtx = 0;
@@ -1030,7 +1030,7 @@ void eduiItemColourPickSetRGB(edui_colour_pick_s *item, f32 red, f32 green, f32 
     item->cursor_y = item->value;
 }
 
-i32 cbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 cbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_colour_pick_s *picker = cp_item;
     i32 result = cp_process(menu, item, delta_time, pad);
     char text[256];
@@ -1361,7 +1361,7 @@ typedef struct edui_colour_pick_flags_s { // size 0x74
     void (*changed)(eduimenu_s *, eduiitem_s *, u32); // 0x70
 } EDUI_COLOUR_PICK_FLAGS;
 
-extern "C" i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+extern "C" i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     EDUI_COLOUR_PICK_FLAGS *pick = (EDUI_COLOUR_PICK_FLAGS *)item;
     if (!edui_cursor_buttons) {
         pick->dragging_colour = 0;
@@ -1572,7 +1572,7 @@ extern "C" {
 }
 
 /* Moves the graph cursor with the left stick, scales the axes with the shoulder buttons and edits points. */
-extern "C" i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+extern "C" i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_graph_s *picker = (edui_graph_s *)item;
     i32 stick_x = pad->analog_left_x - 128;
     i32 stick_y = pad->analog_left_y - 128;
@@ -1910,7 +1910,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     return result;
 }
 
-extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_slider_s *slider = (edui_slider_s *)item;
     u32 buttons = pad->digital_buttons;
     if ((buttons & 4) && (buttons & 8)) {
@@ -2157,7 +2157,7 @@ extern "C" {
     f32 EduiColourSliderDynamicScalePc = 0.0f;
 }
 
-static void EduiColourSliderSet(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, f32 value, FRAME_PAD_PC *pad) {
+static void EduiColourSliderSet(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, f32 value, FRAME_PAD *pad) {
     slider->value = value;
     slider->normalized_value = (value - slider->minimum) / slider->range;
     slider->change_timer = 60;
@@ -2166,7 +2166,7 @@ static void EduiColourSliderSet(edui_slider_s *slider, eduimenu_s *menu, eduiite
     }
 }
 
-static void EduiColourSliderRound(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, FRAME_PAD_PC *pad, f32 value) {
+static void EduiColourSliderRound(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, FRAME_PAD *pad, f32 value) {
     f32 step = slider->granularity;
     if (value > 0.0f) {
         value += step * 0.5;
@@ -2182,7 +2182,7 @@ static void EduiColourSliderRound(edui_slider_s *slider, eduimenu_s *menu, eduii
     }
 }
 
-extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32 unused_delta_time, FRAME_PAD_PC *pad) {
+extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32 unused_delta_time, FRAME_PAD *pad) {
     edui_slider_s *slider = (edui_slider_s *)item;
     if ((pad->digital_buttons & PAD_BUTTON_L1) && (pad->digital_buttons & PAD_BUTTON_R1)) {
         if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 0.0) {
@@ -2279,7 +2279,7 @@ extern "C" i32 eduiGradPickRead(eduiitem_s *item, EDUI_GRADIENT_STAGE *stages, i
     return count;
 }
 
-extern "C" i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+extern "C" i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_colour_pick_s *pick = (edui_colour_pick_s *)item;
     i32 left = pad->analog_l1 ? pad->analog_l1 : pad->analog_l2;
     i32 right = pad->analog_r1 ? pad->analog_r1 : pad->analog_r2;

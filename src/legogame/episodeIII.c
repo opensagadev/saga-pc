@@ -6,7 +6,7 @@ typedef struct dooku_c_s {       // size 0x14
     GIZAIMESSAGE *total_message; // 0x00
     GIZAIMESSAGE *hit_message;   // 0x04
     nuhspecial_s node;           // 0x08
-} DOOKU_C_PC;
+} DOOKU_C;
 
 typedef struct kaminodisco_s {       // size 0x3e8
     AIAREA *area;                    // 0x000
@@ -24,7 +24,7 @@ typedef struct kaminodisco_s {       // size 0x3e8
     u8 reserved_3dd[3];              // 0x3dd
     GIZAIMESSAGE *next_tile_message; // 0x3e0
     GIZAIMESSAGE *complete_message;  // 0x3e4
-} KAMINODISCO_PC;
+} KAMINODISCO;
 
 typedef struct kaminoe_turret_reader_s { // size 0x140
     u8 opaque_00_1c[0x1c];               // 0x000
@@ -63,7 +63,7 @@ typedef struct kamino_e_s {               // size 0x78
     i8 fire_index;                        // 0x74
     u8 departing;                         // 0x75
     i16 platform;                         // 0x76
-} KAMINO_E_PC;
+} KAMINO_E;
 
 #define KAMINO_DISCO_AREA_MASK_SET(world, area)                                                                                            \
     ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
@@ -84,18 +84,18 @@ typedef struct cruiserc_s {
     GIZAIMESSAGE *free_palpatine;
     GAMEOBJECT *palpatine;
     AILOCATOR *palpatine_locator;
-} CRUISERC_PC;
+} CRUISERC;
 
 typedef struct cruiserc_netpacket_s {
     i16 free_palpatine;
     i16 dooku_fight;
-} CRUISERC_NETPACKET_PC;
+} CRUISERC_NETPACKET;
 
 typedef struct cruiserd_netpacket_s {
     f32 frame;
     f32 speed;
     u32 flags;
-} CRUISERD_NETPACKET_PC;
+} CRUISERD_NETPACKET;
 
 typedef struct vadera_netpacket_s {
     u16 count;
@@ -111,10 +111,10 @@ typedef struct vaderc_s {
     u8 progress_mask;
     u8 players_dead;
     u8 reserved_96[2];
-} VADERC_PC;
+} VADERC;
 
 extern i16 dat_007f1a0c;
-GIZFORCE_PC *GizForces_FindForce(WORLDINFO *world, char *name);
+GIZFORCE *GizForces_FindForce(WORLDINFO *world, char *name);
 
 void CruiserAInit(WORLDINFO *world) {
     ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 0;
@@ -137,8 +137,8 @@ void CruiserAUpdate(WORLDINFO *world) {
     }
 }
 
-CRUISERC_PC cruiser_c = {0};
-CRUISERC_NETPACKET_PC *crusiserc_netpacket = NULL;
+CRUISERC cruiser_c = {0};
+CRUISERC_NETPACKET *crusiserc_netpacket = NULL;
 
 void CruiserCReset(WORLDINFO *world) {
     crusiserc_netpacket = SetLevelHack(4);
@@ -183,10 +183,10 @@ void CruiserCPanel(WORLDINFO *world) {
     }
 }
 
-CRUISERD_NETPACKET_PC *cruiserd_netpacket = NULL;
+CRUISERD_NETPACKET *cruiserd_netpacket = NULL;
 static i32 CruiserE_ix = 0;
 static nuhspecial_s CruiserD_Lift = {NULL, NULL, NULL};
-static CRUISERD_LIFT_ANIM_PC *CruiserD_LiftAnim = NULL;
+static CRUISERD_LIFT_ANIM *CruiserD_LiftAnim = NULL;
 static i32 CruiserD_Lift_plat_id = 0;
 
 void CruiserDInit(WORLDINFO *world) {
@@ -545,7 +545,7 @@ void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
 }
 
 static f32 VaderA_TimeLimits[3] = {30.0f, 15.0f, 0.0f};
-VADERA_PC vader_a = {0};
+VADERA vader_a = {0};
 
 static void VaderA_StartCollapseStage(WORLDINFO *world) {
     i32 path_index;
@@ -706,7 +706,7 @@ void VaderB_Update(WORLDINFO *world) {
     }
 }
 
-VADERC_PC vader_c = {0};
+VADERC vader_c = {0};
 void *vaderc_netpacket = NULL;
 i32 Vader_ObiWanKilledAnakin = 0;
 

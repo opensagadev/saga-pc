@@ -64,8 +64,8 @@ static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
 void (*Text_GameSetLanguageFn)(i32) = 0;
 
-extern i32 NuFParGetLineW(NUFPAR_PC *parser);
-extern i32 NuFParGetWordW(NUFPAR_PC *parser);
+extern i32 NuFParGetLineW(NUFPAR *parser);
+extern i32 NuFParGetWordW(NUFPAR *parser);
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
@@ -222,7 +222,7 @@ void IntroText_SetTextID(i32 id) {
     }
 }
 
-static i32 Text_IsOtherPlatformWord(NUFPAR_PC *parser) {
+static i32 Text_IsOtherPlatformWord(NUFPAR *parser) {
     if (NuStrICmp(parser->word_buffer_ptr, "360") == 0) {
         return 1;
     }
@@ -253,7 +253,7 @@ static i32 Text_IsOtherPlatformWord(NUFPAR_PC *parser) {
 
 void Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) {
     u8 *out = *buffer;
-    NUFPAR_PC *parser = NuFParCreate(path);
+    NUFPAR *parser = NuFParCreate(path);
     i32 index;
     i32 length;
 
@@ -1316,7 +1316,7 @@ typedef struct text_crawl_view_s { // size 0x10
     u8 paragraph_count;            // 0xc
     i8 area;                       // 0xd
     u8 unknown_0e[2];              // 0xe
-} TEXT_CRAWL_VIEW_PC;
+} TEXT_CRAWL_VIEW;
 
 typedef struct text_crawl_mission_view_s { // size 0x8
     u8 unknown_00[4];                      // 0x0
@@ -1324,7 +1324,7 @@ typedef struct text_crawl_mission_view_s { // size 0x8
     i16 text_id;                           // 0x6
 } TEXT_CRAWL_MISSION_VIEW;
 
-static TEXT_CRAWL_VIEW_PC *TextCrawlCurrent = 0;
+static TEXT_CRAWL_VIEW *TextCrawlCurrent = 0;
 u16 TextCrawlRotateY = 0;
 u16 TextCrawlRotateZ = 0;
 u32 TextCrawlRed = 0;
@@ -1338,7 +1338,7 @@ u8 TextCrawlBlue = 255;
 u32 TextCrawlGreen = 111;
 u16 TextCrawlRotateX = 13107;
 
-void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
+void TextCrawl_Init(TEXT_CRAWL_VIEW *crawl, i32 id, i32 reset) {
     if (crawl == NULL || QFont3DZ == NULL) {
         return;
     }
@@ -1354,7 +1354,7 @@ void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
 }
 
 void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
-    AREA_DATA_PC *area;
+    AREA_DATA *area;
     TEXT_CRAWL_MISSION_VIEW *mission;
     i32 body_text_id;
     i32 episode_index;

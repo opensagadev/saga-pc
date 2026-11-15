@@ -107,7 +107,7 @@ extern "C" void skin_trace_capture_geometry(TraceWord geometry, TraceWord materi
                 }
             }
         } else {
-            PC_SHADER_PARAMETER_LOCAL_PC *parameter = &shader->parameters[semantics[i]];
+            PC_SHADER_PARAMETER_LOCAL *parameter = &shader->parameters[semantics[i]];
             unsigned int stage = (parameter->metadata & 0xf0000000U) == 0x10000000U ? 0 : 1;
             TraceParameter &out = draw.parameter[i * 2 + stage];
             out.stage = stage;

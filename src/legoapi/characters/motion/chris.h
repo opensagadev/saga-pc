@@ -37,9 +37,9 @@ extern "C" {
         u8 unknown_0514[16];                  // 0x514
         i32 id;                               // 0x524
         u8 unknown_0528[8];                   // 0x528
-    } FLIGHT_SPLINE_RESOURCE_PC;
+    } FLIGHT_SPLINE_RESOURCE;
 
-    void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE_PC *spline, NUVEC4 *result, f32 distance);
+    void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *result, f32 distance);
     extern f32 MulAdd;
     extern f32 MulDist;
     extern f32 SpeedAdd;

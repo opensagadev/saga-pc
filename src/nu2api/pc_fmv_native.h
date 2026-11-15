@@ -3,28 +3,28 @@
 #include "externals/bink.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nufmv/pc/Bink/dsplay_bink.h"
-struct RADFMV_TEXTURE_PC;
+struct RADFMV_TEXTURE;
 
-struct RADFMV_LOCK_PC {
+struct RADFMV_LOCK {
     i32 pitch;
     void *bits;
 };
 
-struct RADFMV_TEXTURE_METHODS_PC {                                                           // size 0x54
-    void *unknown_00[2];                                                                     // 0x00
-    ULONG(__stdcall *release)(RADFMV_TEXTURE_PC *);                                          // 0x08
-    void *unknown_0c[16];                                                                    // 0x0c
-    HRESULT(__stdcall *lock)(RADFMV_TEXTURE_PC *, u32, RADFMV_LOCK_PC *, const RECT *, u32); // 0x4c
-    HRESULT(__stdcall *unlock)(RADFMV_TEXTURE_PC *, u32);                                    // 0x50
+struct RADFMV_TEXTURE_METHODS {                                                        // size 0x54
+    void *unknown_00[2];                                                               // 0x00
+    ULONG(__stdcall *release)(RADFMV_TEXTURE *);                                       // 0x08
+    void *unknown_0c[16];                                                              // 0x0c
+    HRESULT(__stdcall *lock)(RADFMV_TEXTURE *, u32, RADFMV_LOCK *, const RECT *, u32); // 0x4c
+    HRESULT(__stdcall *unlock)(RADFMV_TEXTURE *, u32);                                 // 0x50
 };
 
-struct RADFMV_TEXTURE_PC {
-    const RADFMV_TEXTURE_METHODS_PC *methods;
+struct RADFMV_TEXTURE {
+    const RADFMV_TEXTURE_METHODS *methods;
 };
 
-struct RADFMV_CONTEXT_PC {     // size 0x28
+struct RADFMV_CONTEXT {        // size 0x28
     GRAPHICS_FACTORY *factory; // 0x00
-    PC_D3D9_DEVICE_PC *device; // 0x04
+    PC_D3D9_DEVICE *device;    // 0x04
     HWND window;               // 0x08
     u32 alpha_format;          // 0x0c
     u32 opaque_format;         // 0x10
@@ -35,43 +35,43 @@ struct RADFMV_CONTEXT_PC {     // size 0x28
     u32 permits_nonpow2;       // 0x24
 };
 
-struct RADFMV_IMAGE_PC {          // size 0x50
-    PC_D3D9_DEVICE_PC *device;    // 0x00
-    u32 format;                   // 0x04
-    u32 bink_format;              // 0x08
-    u32 alpha;                    // 0x0c
-    u32 bytes_per_pixel;          // 0x10
-    u32 width;                    // 0x14
-    u32 height;                   // 0x18
-    u32 lock_index;               // 0x1c
-    u32 single_texture;           // 0x20
-    u32 pitch;                    // 0x24
-    u32 texture_count;            // 0x28
-    u32 full_columns;             // 0x2c
-    u32 full_rows;                // 0x30
-    u32 remainder_width;          // 0x34
-    u32 remainder_height;         // 0x38
-    u32 source_remainder_width;   // 0x3c
-    u32 source_remainder_height;  // 0x40
-    u32 maximum_texture;          // 0x44
-    RADFMV_TEXTURE_PC **textures; // 0x48
-    RADFMV_TEXTURE_PC *texture;   // 0x4c
+struct RADFMV_IMAGE {            // size 0x50
+    PC_D3D9_DEVICE *device;      // 0x00
+    u32 format;                  // 0x04
+    u32 bink_format;             // 0x08
+    u32 alpha;                   // 0x0c
+    u32 bytes_per_pixel;         // 0x10
+    u32 width;                   // 0x14
+    u32 height;                  // 0x18
+    u32 lock_index;              // 0x1c
+    u32 single_texture;          // 0x20
+    u32 pitch;                   // 0x24
+    u32 texture_count;           // 0x28
+    u32 full_columns;            // 0x2c
+    u32 full_rows;               // 0x30
+    u32 remainder_width;         // 0x34
+    u32 remainder_height;        // 0x38
+    u32 source_remainder_width;  // 0x3c
+    u32 source_remainder_height; // 0x40
+    u32 maximum_texture;         // 0x44
+    RADFMV_TEXTURE **textures;   // 0x48
+    RADFMV_TEXTURE *texture;     // 0x4c
 };
 
 extern "C" {
-    i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *, u32, RADFMV_CONTEXT_PC *);
-    void RadFmvBeginScenePc(RADFMV_CONTEXT_PC *);
-    void RadFmvEndScenePc(RADFMV_CONTEXT_PC *);
-    void RadFmvResizePc(RADFMV_CONTEXT_PC *, u32, u32);
-    void RadFmvBlitImagePc(RADFMV_IMAGE_PC *, f32, f32, f32, f32, f32);
-    void RadFmvDrawLinesPc(RADFMV_IMAGE_PC *, f32, f32, f32, f32);
-    i32 RadFmvLockImagePc(RADFMV_IMAGE_PC *, void **, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *, u32);
-    void RadFmvUnlockImagePc(RADFMV_IMAGE_PC *);
-    RADFMV_IMAGE_PC *RadFmvCreateImagePc(RADFMV_CONTEXT_PC *, u32, u32, u32, u32);
-    void RadFmvDestroyImagePc(RADFMV_IMAGE_PC *);
+    i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *, u32, RADFMV_CONTEXT *);
+    void RadFmvBeginScenePc(RADFMV_CONTEXT *);
+    void RadFmvEndScenePc(RADFMV_CONTEXT *);
+    void RadFmvResizePc(RADFMV_CONTEXT *, u32, u32);
+    void RadFmvBlitImagePc(RADFMV_IMAGE *, f32, f32, f32, f32, f32);
+    void RadFmvDrawLinesPc(RADFMV_IMAGE *, f32, f32, f32, f32);
+    i32 RadFmvLockImagePc(RADFMV_IMAGE *, void **, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *, u32);
+    void RadFmvUnlockImagePc(RADFMV_IMAGE *);
+    RADFMV_IMAGE *RadFmvCreateImagePc(RADFMV_CONTEXT *, u32, u32, u32, u32);
+    void RadFmvDestroyImagePc(RADFMV_IMAGE *);
 }
 
-struct PC_FMV_BINK_PC {           // size 0x254
+struct PC_FMV_BINK {              // size 0x254
     u32 width;                    // 0x000
     u32 height;                   // 0x004
     u32 frames;                   // 0x008
@@ -82,10 +82,10 @@ struct PC_FMV_BINK_PC {           // size 0x254
     u32 *track_ids;               // 0x250
 };
 
-struct PC_FMV_MOVIE_PC {             // size 0x48
-    PC_FMV_BINK_PC *bink;            // 0x00
+struct PC_FMV_MOVIE {                // size 0x48
+    PC_FMV_BINK *bink;               // 0x00
     u32 unknown_04;                  // 0x04
-    RADFMV_IMAGE_PC *image;          // 0x08
+    RADFMV_IMAGE *image;             // 0x08
     u32 unknown_0c;                  // 0x0c
     i32 playing;                     // 0x10
     i32 texture_id;                  // 0x14
@@ -104,17 +104,17 @@ struct PC_FMV_MOVIE_PC {             // size 0x48
 };
 
 extern "C" {
-    extern PC_FMV_MOVIE_PC FmvMoviePc;
+    extern PC_FMV_MOVIE FmvMoviePc;
     extern i32 FmvInitializedPc;
     extern i32 FmvState1Pc;
     extern i32 FmvState2Pc;
-    i32 FmvInitializePc(HWND, GRAPHICS_FACTORY *, PC_D3D9_DEVICE_PC *, IDirectSound8 *);
-    i32 FmvOpenPc(PC_FMV_MOVIE_PC *, const char *, i32, f32, i32);
-    void FmvFramePc(PC_FMV_MOVIE_PC *);
-    void FmvClosePc(PC_FMV_MOVIE_PC *);
-    void FmvFadePc(PC_FMV_MOVIE_PC *, f32);
-    void FmvReleaseImagePc(PC_FMV_MOVIE_PC *);
-    void FmvRestoreImagePc(PC_FMV_MOVIE_PC *);
+    i32 FmvInitializePc(HWND, GRAPHICS_FACTORY *, PC_D3D9_DEVICE *, IDirectSound8 *);
+    i32 FmvOpenPc(PC_FMV_MOVIE *, const char *, i32, f32, i32);
+    void FmvFramePc(PC_FMV_MOVIE *);
+    void FmvClosePc(PC_FMV_MOVIE *);
+    void FmvFadePc(PC_FMV_MOVIE *, f32);
+    void FmvReleaseImagePc(PC_FMV_MOVIE *);
+    void FmvRestoreImagePc(PC_FMV_MOVIE *);
     void FmvReleasePc(void);
     void FmvRestorePc(void);
     void FmvOptionErrorPc(i32, const char *, i32);

@@ -116,15 +116,15 @@ extern "C" {
         u8 unknown_3a[2];                                                        // 0x3a
         f32 density_wii;                                                         // 0x3c
         u8 unknown_40[0xc];                                                      // 0x40
-    } RTL_FOG_MIGRATION_PC;
+    } RTL_FOG_MIGRATION;
 
-    typedef struct RTL_SET {          // size 0x4f84
-        u32 header;                   // 0x0000
-        RTL_LIGHT lights[128];        // 0x0004
-        RTL_FOG_MIGRATION_PC fog[32]; // 0x4604
+    typedef struct RTL_SET {       // size 0x4f84
+        u32 header;                // 0x0000
+        RTL_LIGHT lights[128];     // 0x0004
+        RTL_FOG_MIGRATION fog[32]; // 0x4604
     } RTL_SET;
 
-    RTL_FOG_MIGRATION_PC *rtlGetFogSet(RTL_SET *set, NUVEC *position);
+    RTL_FOG_MIGRATION *rtlGetFogSet(RTL_SET *set, NUVEC *position);
 
     typedef struct RTL_INDEX { // size 0x28
         i32 enabled;           // 0x00

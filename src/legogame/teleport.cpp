@@ -54,7 +54,7 @@ typedef struct WORLD_TELEPORT_CONFIG { // size 0x4688
     u8 unknown_108[0x34];              // 0x0108
     NUGSCN *scene;                     // 0x013c
     u8 unknown_140[0x2988];            // 0x0140
-    GIZMOSYS_PREFIX_PC *gizmo_system;  // 0x2ac8
+    GIZMOSYS_PREFIX *gizmo_system;     // 0x2ac8
     u8 unknown_2acc[0x1bb4];           // 0x2acc
     TELEPORT_CONFIG *teleports;        // 0x4680
     i32 teleport_count;                // 0x4684
@@ -67,7 +67,7 @@ typedef struct TELEPORT_KEYWORDS { // size 0x64
 
 extern "C" {
     i32 Teleport_GetMaxGizmos(void *);
-    void Teleport_AddGizmos(GIZMOSYS_PC *, i32, void *, void *);
+    void Teleport_AddGizmos(GIZMOSYS *, i32, void *, void *);
     char *Teleport_GetGizmoName(GIZMO_PC *);
     i32 Teleport_GetOutput(GIZMO_PC *, i32, i32);
     char *Teleport_GetOutputName(GIZMO_PC *, i32);
@@ -117,16 +117,16 @@ typedef struct {
 } ADD_TELEPORT_WORLD;
 
 extern "C" {
-    static void Tel_1_way(NUFPAR_PC *parser);
-    static void Tel_Hacky_Cam(NUFPAR_PC *parser);
-    static void Tel_crawl(NUFPAR_PC *parser);
-    static void Tel_duration(NUFPAR_PC *parser);
-    static void Tel_flap(NUFPAR_PC *parser);
-    static void Tel_flip_flap(NUFPAR_PC *parser);
-    static void Tel_name(NUFPAR_PC *parser);
-    static void Tel_obj(NUFPAR_PC *parser);
-    static void Tel_range(NUFPAR_PC *parser);
-    static void Tel_spline(NUFPAR_PC *parser);
+    static void Tel_1_way(NUFPAR *parser);
+    static void Tel_Hacky_Cam(NUFPAR *parser);
+    static void Tel_crawl(NUFPAR *parser);
+    static void Tel_duration(NUFPAR *parser);
+    static void Tel_flap(NUFPAR *parser);
+    static void Tel_flip_flap(NUFPAR *parser);
+    static void Tel_name(NUFPAR *parser);
+    static void Tel_obj(NUFPAR *parser);
+    static void Tel_range(NUFPAR *parser);
+    static void Tel_spline(NUFPAR *parser);
 }
 extern "C" {
     static TELEPORT_CONFIG *Tel_teleport = 0;
@@ -147,7 +147,7 @@ extern "C" {
           {NULL, NULL}}
     };
 
-    static void Tel_spline(NUFPAR_PC *parser) {
+    static void Tel_spline(NUFPAR *parser) {
         i32 index;
         TELEPORT_CONFIG *teleport;
         if (NuFParGetWord(parser) == 0) {
@@ -174,43 +174,43 @@ extern "C" {
         }
     }
 
-    static void Tel_duration(NUFPAR_PC *parser) {
+    static void Tel_duration(NUFPAR *parser) {
         Tel_teleport->duration = NuFParGetFloat(parser);
     }
 
-    static void Tel_range(NUFPAR_PC *parser) {
+    static void Tel_range(NUFPAR *parser) {
         f32 range = NuFParGetFloat(parser);
         Tel_teleport->flags |= 2;
         Tel_teleport->range_squared = range * range;
     }
 
-    static void Tel_1_way(NUFPAR_PC *parser) {
+    static void Tel_1_way(NUFPAR *parser) {
         Tel_teleport->flags |= 1;
         (void)parser;
     }
 
-    static void Tel_crawl(NUFPAR_PC *parser) {
+    static void Tel_crawl(NUFPAR *parser) {
         Tel_teleport->flags |= 4;
         (void)parser;
     }
 
-    static void Tel_flip_flap(NUFPAR_PC *parser) {
+    static void Tel_flip_flap(NUFPAR *parser) {
         Tel_teleport->flags |= 8;
         (void)parser;
     }
 
-    static void Tel_Hacky_Cam(NUFPAR_PC *parser) {
+    static void Tel_Hacky_Cam(NUFPAR *parser) {
         Tel_teleport->flags |= 0x10;
         (void)parser;
     }
 
-    static void Tel_obj(NUFPAR_PC *parser) {
+    static void Tel_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
             NuSpecialFind(Tel_worldinfo->scene, &Tel_teleport->blocking_special, parser->word_buffer_ptr, 1);
         }
     }
 
-    static void Tel_flap(NUFPAR_PC *parser) {
+    static void Tel_flap(NUFPAR *parser) {
         if (NuFParGetWord(parser) == 0) {
             return;
         }
@@ -225,7 +225,7 @@ extern "C" {
         }
     }
 
-    static void Tel_name(NUFPAR_PC *parser) {
+    static void Tel_name(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
             GizmoGetUniqueName(((WORLD_TELEPORT_CONFIG *)WORLD)->gizmo_system, TeleportConfigData.name_prefix, parser->word_buffer_ptr,
                                Tel_teleport->name, 0x40);
@@ -235,7 +235,7 @@ extern "C" {
     void Teleports_Configure(WORLDINFO *world_ptr, char *config) {
         WORLD_TELEPORT_CONFIG *world = (WORLD_TELEPORT_CONFIG *)world_ptr;
         TELEPORT_CONFIG *teleport;
-        NUFPAR_PC *parser;
+        NUFPAR *parser;
         i32 active;
         world->teleports = NULL;
         if (world->scene == NULL) {
@@ -709,7 +709,7 @@ extern "C" {
         return 0;
     }
 
-    void Teleport_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+    void Teleport_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
         ADD_TELEPORT_WORLD *w = (ADD_TELEPORT_WORLD *)world_ptr;
         i32 i;
         (void)data;
@@ -745,11 +745,11 @@ extern "C" {
         return 1;
     }
 
-    static ADDGIZMOTYPE_PC GizmoRegistryTeleportAddTypePc = {0};
+    static ADDGIZMOTYPE GizmoRegistryTeleportAddTypePc = {0};
     i32 teleport_gizmotype_id = -1;
 
-    ADDGIZMOTYPE_PC *Teleport_RegisterGizmo(i32 type_id) {
-        ADDGIZMOTYPE_PC *addtype = &GizmoRegistryTeleportAddTypePc;
+    ADDGIZMOTYPE *Teleport_RegisterGizmo(i32 type_id) {
+        ADDGIZMOTYPE *addtype = &GizmoRegistryTeleportAddTypePc;
         *addtype = Default_ADDGIZMOTYPE;
         addtype->prefix = TeleportConfigData.name_prefix;
         addtype->fns.options = 0x0;
@@ -770,14 +770,14 @@ extern "C" {
         addtype->fns.post_load_fn = NULL;
         addtype->fns.add_level_sfx_fn = NULL;
         addtype->name = "Teleport";
-        addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Teleport_GetMaxGizmos;
+        addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))Teleport_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)Teleport_AddGizmos;
         addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Teleport_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Teleport_GetOutput;
+        addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))Teleport_GetOutput;
         addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Teleport_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)Teleport_GetNumOutputs;
         addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Teleport_Activate;
-        addtype->fns.activate_rev_fn = (i32(*)(GIZMO_PC *, i32, i32))Teleport_ActivateRev;
+        addtype->fns.activate_rev_fn = (i32 (*)(GIZMO_PC *, i32, i32))Teleport_ActivateRev;
         teleport_gizmotype_id = type_id;
         return addtype;
     }

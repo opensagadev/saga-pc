@@ -167,7 +167,7 @@ void SetLevelExBlowupFlags(u32 flags) {
     EXBLOWUPFLAGS = flags;
 }
 
-void SetLevelBlowupCallback(LEVEL_BLOWUP_CALLBACK_PC callback) {
+void SetLevelBlowupCallback(LEVEL_BLOWUP_CALLBACK callback) {
     if (callback != NULL) {
         BlowupExFunc = callback;
     }
@@ -277,7 +277,7 @@ i32 Blowup_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void Blowup_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void Blowup_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
     (void)data;
@@ -1882,7 +1882,7 @@ GIZMOBLOWUP_PC *GizmoBlowUp_FindByName(WORLDINFO *world, char *name) {
 GIZMOBLOWUP_PC *GizmoBlowUp_Target(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared, i32 directional,
                                    i32 planar, i32 bolt_id) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    BOLTTYPE_PC *bolt = BoltType_FindByID(bolt_id, world);
+    BOLTTYPE *bolt = BoltType_FindByID(bolt_id, world);
     u16 near_angle = TargetDeg_Near;
     u16 mid_angle = TargetDeg_Mid;
     u16 far_angle = TargetDeg_Far;
@@ -2384,10 +2384,10 @@ i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
 void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
 void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
 i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
-static ADDGIZMOTYPE_PC GizmoRegistryNewBlowupAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryNewBlowupAddTypePc = {0};
 
-ADDGIZMOTYPE_PC *NewBlowup_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryNewBlowupAddTypePc;
+ADDGIZMOTYPE *NewBlowup_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE *addtype = &GizmoRegistryNewBlowupAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizmoRegistryNewBlowupNamePtrPc;
     addtype->fns.panel_draw_fn = NULL;
@@ -2400,25 +2400,25 @@ ADDGIZMOTYPE_PC *NewBlowup_RegisterGizmo(i32 type_id) {
     addtype->fns.add_level_sfx_fn = NULL;
     addtype->prefix = "";
     addtype->fns.options = 0x100;
-    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Blowup_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))Blowup_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)Blowup_AddGizmos;
     addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizmoBlowupEarlyUpdate;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizmoBlowupLateUpdate;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizmoBlowupBurstDraw;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Blowup_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Blowup_GetOutput;
+    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))Blowup_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Blowup_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)Blowup_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Blowup_Activate;
     addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))Blowup_SetVisibility;
-    addtype->fns.get_visibility_fn = (i32(*)(GIZMO_PC *))Blowup_GetVisibility;
+    addtype->fns.get_visibility_fn = (i32 (*)(GIZMO_PC *))Blowup_GetVisibility;
     addtype->fns.get_pos_fn = (void *)GizmoBlowup_GetPos;
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))Blowup_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void (*)(void *, void *))Blowup_ClearProgress;
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))Blowup_StoreProgress;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))Blowups_Reset;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))gizmoblowup_reservebuffers;
-    addtype->fns.load_fn = (i32(*)(void *, void *))gizmoblowup_Load;
+    addtype->fns.load_fn = (i32 (*)(void *, void *))gizmoblowup_Load;
     blowup_gizmotype_id = type_id;
     return addtype;
 }

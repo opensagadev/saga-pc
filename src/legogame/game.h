@@ -282,13 +282,13 @@ extern "C" {
 typedef struct customiser_completion_reader_s { // size 0x4
     u8 unknown_00[3];                           // 0x0
     u8 flags;                                   // 0x3
-} CUSTOMISER_COMPLETION_READER_PC;
+} CUSTOMISER_COMPLETION_READER;
 
-typedef struct ANIM_REDIRECT_VIEW_PC { // size 0x8
-    const char *name;                  // 0x0
-    i16 animation_id;                  // 0x4
-    u8 unknown_06[2];                  // 0x6
-} ANIM_REDIRECT_VIEW_PC;
+typedef struct ANIM_REDIRECT_VIEW { // size 0x8
+    const char *name;               // 0x0
+    i16 animation_id;               // 0x4
+    u8 unknown_06[2];               // 0x6
+} ANIM_REDIRECT_VIEW;
 
 #ifdef __cplusplus
 extern "C" {
@@ -313,8 +313,8 @@ extern "C" {
     extern struct area_data_s *BONUSKAMINO_ADATA;
     extern struct area_data_s *BONUSKASHYYYK_ADATA;
     void NewGame(void);
-    extern ANIM_REDIRECT_VIEW_PC AnimRedirectList_LSW[41];
-    extern ANIM_REDIRECT_VIEW_PC AnimRedirectList_Batman[1];
+    extern ANIM_REDIRECT_VIEW AnimRedirectList_LSW[41];
+    extern ANIM_REDIRECT_VIEW AnimRedirectList_Batman[1];
 
     extern u8 CheatC3poBitsEnabled;
     extern i32 deathstar_hold_count;
@@ -448,7 +448,7 @@ typedef struct custom_category_config_s {
     i8 material_tag;
     u8 material_indices[2];
     char *scene_file;
-} CUSTOM_CATEGORY_CONFIG_PC;
+} CUSTOM_CATEGORY_CONFIG;
 
 /* custom_piece_config_s.availability_flags: the piece keywords of the customiser config (Customiser_Configure);
  * "100_percent N" and "default N" take a side, 1 or 2. */

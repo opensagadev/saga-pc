@@ -279,8 +279,8 @@ i32 GizMiniCut_Load(void *world_ptr, void *data) {
     return 1;
 }
 
-ADDGIZMOTYPE_PC *MiniCut_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC MiniCutAddType = {0};
+ADDGIZMOTYPE *MiniCut_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE MiniCutAddType = {0};
     (void)type_id;
     MiniCutAddType = Default_ADDGIZMOTYPE;
     MiniCutAddType.name = "MiniCut";

@@ -93,12 +93,12 @@ typedef struct gizforce_target_record_s { // size 0x10
     struct gameanimobj_s *animation;      // 0x4
     f32 distance;                         // 0x8
     i32 index;                            // 0xc
-} GIZFORCE_TARGET_RECORD_PC;
+} GIZFORCE_TARGET_RECORD;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern GIZFORCE_TARGET_RECORD_PC PossibleForceTargets[];
+    extern GIZFORCE_TARGET_RECORD PossibleForceTargets[];
     i32 GizForce_FindBestForceTarget(void *, struct gameobject_s *);
 
     i32 GizForce_StoodOnForce(struct gizforce_s *, struct gameobject_s *);

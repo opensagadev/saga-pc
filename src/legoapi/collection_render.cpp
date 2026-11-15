@@ -11,7 +11,7 @@ extern "C" {
     void (*Collection_GetSelectingPlayerIDsFn)(i16 *ids) = NULL;
 }
 
-extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f32 scale, APICHARACTERMODELLIST *models, f32 alpha,
+extern "C" void Collection_Draw(COLLECTION_BUILD *collection, f32 x, f32 y, f32 scale, APICHARACTERMODELLIST *models, f32 alpha,
                                 i32 hide_selected) {
     f32 dx = COLLECTION_DX * scale;
     const f32 dy = COLLECTION_DY * scale;

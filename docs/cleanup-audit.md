@@ -181,14 +181,14 @@ The 20 most-used resolved fields (the pilot batch, section 8):
 | 9 | `gameobject_s.flags_1f8` | u32 | flags | 175 | 15 | - |
 | 10 | `gameobject_s.portal_flags` | u32 | flags | 154 | 31 | - |
 | 11 | `GIZMOBLOWUP_PC.status_flags` | u32 | flags | 153 | 26 | - |
-| 12 | `FRAME_PAD_PC.digital_buttons_pressed` | u32 | flags | 151 | 14 | `PAD_BUTTON_*` |
+| 12 | `FRAME_PAD.digital_buttons_pressed` | u32 | flags | 151 | 14 | `PAD_BUTTON_*` |
 | 13 | `PLAYERCHARACTERCONFIG.flags_090` | u32 | flags | 147 | 30 | - |
 | 14 | `gameobject_s.flags_ef0` | u32 | flags | 143 | 32 | - |
 | 15 | `AIPACKET.flags` | u32 | flags | 140 | 24 | - |
 | 16 | `gameobject_s.flags_ef4` | u32 | flags | 126 | 32 | - |
 | 17 | `debris_info_s.generator_type` | i8 | enum | 120 | 7 | - |
 | 18 | `animpacket_s.requested_animation` | i16 | enum | 110 | 36 | animation ids |
-| 19 | `FRAME_PAD_PC.digital_buttons` | u32 | flags | 110 | 14 | `PAD_BUTTON_*` names 6 |
+| 19 | `FRAME_PAD.digital_buttons` | u32 | flags | 110 | 14 | `PAD_BUTTON_*` names 6 |
 | 20 | `area_data_s.flags` | u16 | flags | 89 | 14 | Android `enum AREA_FLAGS` (value overlap 0.93) |
 
 Ambiguous member names (`*.flags`, `*.type`, `*.state`: 43 fields, 1,269

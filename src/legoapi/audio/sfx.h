@@ -18,12 +18,12 @@ extern "C" {
 #endif
 
     void Shadow_SetMode(void);
-    extern AREA_DATA_PC *NEWTOWN_ADATA;
-    extern AREA_DATA_PC *HOTHESCAPE_ADATA;
+    extern AREA_DATA *NEWTOWN_ADATA;
+    extern AREA_DATA *HOTHESCAPE_ADATA;
     extern SoundTable CurrentSFXTAB;
     void AddFootSteps(GAMEOBJECT *);
     extern f32 sfx_wait;
-    extern LEVELDATA_PC *dat_0087b264;
+    extern LEVELDATA *dat_0087b264;
     extern i32 CruiserD_LiftChase;
     i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform);
     i32 GameAudio_CheckReverb_LSW(void);

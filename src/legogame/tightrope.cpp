@@ -60,7 +60,7 @@ typedef struct TIGHTROPE_OBJECT_AUX { // size 0xd2c
 typedef struct tightrope_progress_recovered_s {
     u32 active_mask[1];
     u32 visible_mask[1];
-} TIGHTROPE_PROGRESS_PC;
+} TIGHTROPE_PROGRESS;
 
 extern "C" {
     extern char dat_007516c0[1];
@@ -103,7 +103,7 @@ extern "C" {
     }
 
     void *TightRopes_ReserveBufferSpace(WORLDINFO *world) {
-        LEVELDATA_PC *level = world->current_level;
+        LEVELDATA *level = world->current_level;
         world->tightropes = NULL;
         world->tightrope_count = 0;
         if (level->max_tightropes > 0) {
@@ -125,7 +125,7 @@ extern "C" {
         rope->active = 1;
     }
 
-    void TightRopes_Reset(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
+    void TightRopes_Reset(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS *progress) {
         TIGHTROPE_s *rope;
         i32 index;
         if (world == NULL || world->tightropes == NULL) {
@@ -230,7 +230,7 @@ extern "C" {
         NUMTX matrix;
         NUVEC *positions[64];
         f32 distances[64];
-        NURND_VERTEX3D_PC vertices[66];
+        NURND_VERTEX3D vertices[66];
         i32 index;
         i32 endpoint;
         if (rope == NULL) {
@@ -327,7 +327,7 @@ extern "C" {
         return world != NULL ? world->current_level->max_tightropes : 0;
     }
 
-    void TightRopes_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
+    void TightRopes_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, void *unused) {
         i32 index;
         for (index = 0; index < world->tightrope_count; ++index) {
             if (NuStrLen(world->tightropes[index].name) != 0) {
@@ -354,17 +354,17 @@ extern "C" {
     }
 
     void *TightRopes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-        return GizmoBufferAlloc(buffer, end, sizeof(TIGHTROPE_PROGRESS_PC));
+        return GizmoBufferAlloc(buffer, end, sizeof(TIGHTROPE_PROGRESS));
     }
 
-    void TightRopes_ClearProgress(void *world, TIGHTROPE_PROGRESS_PC *progress) {
+    void TightRopes_ClearProgress(void *world, TIGHTROPE_PROGRESS *progress) {
         if (progress != NULL) {
             progress->active_mask[0] = 0xffffffffu;
             progress->visible_mask[0] = 0xffffffffu;
         }
     }
 
-    void TightRopes_StoreProgress(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS_PC *progress) {
+    void TightRopes_StoreProgress(WORLDINFO *world, void *unused, TIGHTROPE_PROGRESS *progress) {
         TIGHTROPE_s *rope;
         i32 index;
         if (progress == NULL) {
@@ -389,15 +389,15 @@ extern "C" {
     }
 
     char *TightRopeRegistryNamePc = "TightRope";
-    ADDGIZMOTYPE_PC TightRopeAddType = {0};
+    ADDGIZMOTYPE TightRopeAddType = {0};
 
-    ADDGIZMOTYPE_PC *TightRopes_RegisterGizmo(i32 unused_type_id) {
+    ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32 unused_type_id) {
         char *name = TightRopeRegistryNamePc;
         TightRopeAddType = Default_ADDGIZMOTYPE;
         TightRopeAddType.name = name;
         TightRopeAddType.prefix = dat_007516c0;
         TightRopeAddType.fns.options = 8;
-        TightRopeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))TightRopes_GetMaxGizmos;
+        TightRopeAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))TightRopes_GetMaxGizmos;
         TightRopeAddType.fns.add_gizmos_fn = (void *)TightRopes_AddGizmos;
         TightRopeAddType.fns.early_update_fn = NULL;
         TightRopeAddType.fns.late_update_fn = NULL;
@@ -421,7 +421,7 @@ extern "C" {
         TightRopeAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))TightRopes_StoreProgress;
         TightRopeAddType.fns.reset_fn = (void (*)(void *, void *, void *))TightRopes_Reset;
         TightRopeAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))TightRopes_ReserveBufferSpace;
-        TightRopeAddType.fns.load_fn = (i32(*)(void *, void *))TightRopes_Load;
+        TightRopeAddType.fns.load_fn = (i32 (*)(void *, void *))TightRopes_Load;
         TightRopeAddType.fns.post_load_fn = NULL;
         TightRopeAddType.fns.add_level_sfx_fn = NULL;
         return &TightRopeAddType;

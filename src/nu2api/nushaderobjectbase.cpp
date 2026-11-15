@@ -97,11 +97,11 @@ extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, PC_SH
     PCShaderWaterLastFrame = nuapi.frame_count;
 }
 
-i32 PC_SHADER_PARAMETER_LOCAL_PC::fun_00743c90() {
+i32 PC_SHADER_PARAMETER_LOCAL::fun_00743c90() {
     return register_index >= 0;
 }
 
-void PC_SHADER_PARAMETER_LOCAL_PC::SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values) {
+void PC_SHADER_PARAMETER_LOCAL::SetTransposedMatrixValues(i32 first_element, i32 count, const f32 *values) {
     i32 vector_count = (i8)register_count - first_element * 4;
     if (count * 4 < vector_count) {
         vector_count = count * 4;
@@ -127,7 +127,7 @@ void PCShaderObjectDestroyHLSLPc(NuShaderObject *shader) {
     NuShaderObjectDestroy(shader);
 }
 
-PC_SHADER_PARAMETER_LOCAL_PC *PCShaderAllocateParameter(NuShaderObject *shader, i32 index) {
+PC_SHADER_PARAMETER_LOCAL *PCShaderAllocateParameter(NuShaderObject *shader, i32 index) {
     return &shader->parameters[index];
 }
 

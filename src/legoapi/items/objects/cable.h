@@ -32,7 +32,7 @@ extern "C" {
     extern f32 max_cable_length;
     extern f32 default_tow_length;
     extern f32 tow_length;
-    extern LEVELDATA_PC *dat_0087b208;
+    extern LEVELDATA *dat_0087b208;
     void DestroyCable(struct CABLE_s *cable);
     extern i32 atat_locators[4];
     extern f32 cable_damping;

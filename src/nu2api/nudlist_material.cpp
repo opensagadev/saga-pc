@@ -199,7 +199,7 @@ typedef struct PC_DL_E_MATERIAL_READER {     // size 0x2c0
     PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
 } PC_DL_E_MATERIAL_READER;
 
-struct PC_DL_SHADER_PROGRAM_PAIR_PC {   // size 0x8
+struct PC_DL_SHADER_PROGRAM_PAIR {      // size 0x8
     PC_TEXTURE_RESOURCE *vertex_shader; // 0x0
     PC_TEXTURE_RESOURCE *pixel_shader;  // 0x4
 };
@@ -218,9 +218,9 @@ extern "C" {
     }
 }
 
-static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR_PC *);
+static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR *);
 
-static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR_PC *programs) {
+static void PCDisplayHandlerBindPrograms(PC_DL_SHADER_PROGRAM_PAIR *programs) {
     if (programs != NULL) {
         if (NuDisplayHandlerVertexShaderCachePc != programs->vertex_shader) {
             PCDeviceSetVertexShaderPc(programs->vertex_shader);
@@ -485,7 +485,7 @@ extern "C" {
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                                              \
     do {                                                                                                                                   \
-        POST_SHADER_PROGRAM_PC *bound = (bound_program);                                                                                   \
+        POST_SHADER_PROGRAM *bound = (bound_program);                                                                                      \
         if (bound != NULL) {                                                                                                               \
             if (NuDisplayHandlerVertexShaderCachePc != bound->vertex_shader) {                                                             \
                 PCDeviceSetVertexShaderPc(bound->vertex_shader);                                                                           \
@@ -544,14 +544,14 @@ struct __declspec(align(16)) POST_BLUR_LOW_OFFSET {
     } while (0)
 
 extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
-                               i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
+                               i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program) {
     f32 weights[4] = {.25f, .25f, .25f, .25f};
     f32 rounded_radius = (f32)ceil((f64)radius);
     i32 guard = (i32)rounded_radius * 3;
     PC_VIEWPORT viewport;
     i32 work_width = PCGraphicsPostEffectWorkTexture->width;
     i32 work_height = PCGraphicsPostEffectWorkTexture->height;
-    PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)program);
+    PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR *)program);
     for (i32 lod = 0; lod < levels; ++lod) {
         GRAPHICS_RENDER_TEXTURE *input;
         i32 input_lod;
@@ -679,7 +679,7 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
 }
 
 extern "C" void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
-                                    i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM_PC *program) {
+                                    i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program) {
     if (PCDeviceHardwareVertexProcessingPC >= 2) {
         PostBlur7x7High(source, source_lod, textures, first_lod, iterations, levels, mip_chain, radius, program);
     } else {
@@ -757,7 +757,7 @@ void NuMainFilter::RenderBloom() {
             PCGraphicsSetSamplerTuple(0, tuple);
         }
         PCDeviceSetTexture(0, normal_texture->resource);
-        PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)PostCopyTexProgram);
+        PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR *)PostCopyTexProgram);
         PCDeviceBackend.SetColorWriteMask(1, 0, 0);
         PCDeviceBackend.DrawPostEffectQuad();
         PCDeviceSetTexture(0, NULL);
@@ -792,7 +792,7 @@ void NuMainFilter::RenderBloom() {
     } else {
         program = output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL ? programs[6] : platform_programs[0];
     }
-    PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)program);
+    PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR *)program);
     if (PCDeviceHardwareVertexProcessingPC < 4) {
         NUMTX inverse_view;
         NuMtxInvH(&inverse_view, &PcGeometryViewMatrix);
@@ -879,7 +879,7 @@ void NuPostFilterGen::copy(GRAPHICS_RENDER_TEXTURE *color, PC_FRAMEBUFFER *outpu
 
 /* Same unit as ??_GNuMainFilter: the atexit thunks for its static surfaces expand the inline destructor. */
 extern "C" void PostFilterCopyTexture(GRAPHICS_RENDER_TEXTURE *destination, i32 destination_level, GRAPHICS_RENDER_TEXTURE *source,
-                                      i32 source_level, POST_SHADER_PROGRAM_PC *program, GRAPHICS_RENDER_TEXTURE *extra) {
+                                      i32 source_level, POST_SHADER_PROGRAM *program, GRAPHICS_RENDER_TEXTURE *extra) {
     if (program == PostCopyTexProgram) {
         static PC_EFFECT_SURFACE source_surface;
         static PC_EFFECT_SURFACE destination_surface;
@@ -912,7 +912,7 @@ extern "C" {
 f32 NuSpeedBlurVertexScale = 40000.0f;
 
 void NuSpeedBlurFilter::render() {
-    extern POST_SHADER_PROGRAM_PC *PostCopyTexProgram;
+    extern POST_SHADER_PROGRAM *PostCopyTexProgram;
     PC_FRAMEBUFFER *output = (PC_FRAMEBUFFER *)PostPortOutFramebuffer.manager->entries[PostPortOutFramebuffer.index].data;
     PC_POST_BUFFER_PROXY *color = (PC_POST_BUFFER_PROXY *)PostPortColorBuffer.manager->entries[PostPortColorBuffer.index].data;
     if (!color->resolved) {
@@ -932,11 +932,11 @@ void NuSpeedBlurFilter::render() {
     PCGraphicsBindFramebuffer(output);
     if (output == PcBootSecondaryFramebuffer && PCDeviceBackend.textures[0] != NULL) {
         color_texture->flags = (color_texture->flags & 0xfc13ffff) | 0x120000;
-        PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)PostCopyTexProgram);
+        PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR *)PostCopyTexProgram);
         PCGraphicsBindEffectTexturePc(0, color_texture);
         PCDeviceBackend.DrawPostEffectQuad();
     }
-    PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR_PC *)programs[0]);
+    PCDisplayHandlerBindPrograms((PC_DL_SHADER_PROGRAM_PAIR *)programs[0]);
     PCDeviceSetVertexShaderConstantsF(platform_uniform, constants, 2);
     PCGraphicsPostEffectBackBufferTexture->flags =
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;

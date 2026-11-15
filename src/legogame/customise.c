@@ -60,7 +60,7 @@ typedef struct customiser_names_s {
 } CUSTOMISER_NAMES;
 
 typedef struct customiser_config_s {
-    CUSTOM_CATEGORY_CONFIG_PC *categories[9];
+    CUSTOM_CATEGORY_CONFIG *categories[9];
     CUSTOM_PIECE_CONFIG *piece_sets[9];
     i32 piece_counts[9];
     i16 character_ids[2];
@@ -83,7 +83,7 @@ typedef struct customiser_game_setting_s {
     char *name;
     u32 model_flags;
     u32 gameplay_flags;
-} CUSTOMISER_GAME_SETTING_PC;
+} CUSTOMISER_GAME_SETTING;
 
 typedef struct custom_accessory_resource_s {
     NUGSCN *scene;
@@ -103,12 +103,12 @@ typedef struct custom_piece_anim_s {
     u16 target_angle;
     u16 current_angle;
     u8 unknown_12[2];
-} CUSTOM_PIECE_ANIM_PC;
+} CUSTOM_PIECE_ANIM;
 
 /* Native customiser packet allocation stride is 0x48; canonical API view
  * currently covers offsets 0..0x43. Preserve its unknown four-byte tail. */
 typedef struct customiser_anim_packet_s {
-    ANIMPACKET_PC packet;
+    ANIMPACKET packet;
     u8 unknown_44[4];
 } CUSTOMISER_ANIM_PACKET;
 
@@ -142,7 +142,7 @@ typedef struct custom_material_update_s {
 
 extern NUVEC CustomisePos[2];
 i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category);
-i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
+i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 i32 Customiser_GetIcon(CUSTOMISER_LAYERS *input, const void *save_input, i32 unused);
 extern i16 dat_00880fa0;
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
@@ -257,7 +257,7 @@ void FinishWeirdoNames(i32 which) {
     name[15] = '\0';
 }
 
-static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 maximum) {
+static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM *anim, u16 minimum, u16 maximum) {
     i32 index;
     f64 difference;
     f64 blend;
@@ -283,7 +283,7 @@ static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM_PC *anim, u16 minimum, u16 m
     }
 }
 
-static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivate[] = {
+static CUSTOMISER_GAME_SETTING CustomiserGameSettingsPrivate[] = {
     {"bountyhunter",       0x1000000, 0         },
     {"jedi",               8,         0         },
     {"sith",               0xc,       2         },
@@ -293,9 +293,9 @@ static CUSTOMISER_GAME_SETTING_PC CustomiserGameSettingsPrivate[] = {
     {NULL,                 0,         0         }
 };
 
-void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR_PC *parser) {
+void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR *parser) {
     CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
-    CUSTOMISER_GAME_SETTING_PC *setting;
+    CUSTOMISER_GAME_SETTING *setting;
     for (setting = CustomiserGameSettingsPrivate; setting->name != NULL; ++setting) {
         if (NuStrICmp(parser->word_buffer_ptr, setting->name) == 0) {
             piece->model_flags |= setting->model_flags;
@@ -420,9 +420,9 @@ i32 PermanentCustomPieceAvailable(CUSTOMPIECE_LAYERS *input) {
     return 1;
 }
 
-static CUSTOM_PIECE_ANIM_PC CustomiseArmsAnim[2] = {0};
-static CUSTOM_PIECE_ANIM_PC CustomiseLegsAnim[2] = {0};
-static CUSTOM_PIECE_ANIM_PC CustomiseHeadAnim[2] = {0};
+static CUSTOM_PIECE_ANIM CustomiseArmsAnim[2] = {0};
+static CUSTOM_PIECE_ANIM CustomiseLegsAnim[2] = {0};
+static CUSTOM_PIECE_ANIM CustomiseHeadAnim[2] = {0};
 static u16 CustomiseTiltX[2] = {0};
 static u16 CustomiseBob[2] = {0};
 static u16 CustomiseTiltZ[2] = {0};
@@ -560,7 +560,7 @@ void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
     }
     for (side = 0; side < 2; ++side) {
         const u16 *selection = Game.customiser_start[side].pieces;
-        CHARACTERDATA_PC *character = &CDataList[customiser->character_ids[side]];
+        CHARACTERDATA *character = &CDataList[customiser->character_ids[side]];
         PLAYERCHARACTERCONFIG *config = character->game_character;
         u32 mask;
         config->flags_090 = 0;
@@ -657,7 +657,7 @@ i32 CustomiserMenu_Update(void) {
     cancel = 0;
 
     for (player = 0; player < 2; ++player) {
-        GAMEPAD_RUNTIME_INPUT_PC *pad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player];
+        GAMEPAD_RUNTIME_INPUT *pad = (GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player];
         select[player] = 0;
         CustomiseNameBoardTMul[player] = CustomiseMode[player] == 1 ? 1.0f : 0.0f;
         CustomiseNameBoardMul[player] =
@@ -673,10 +673,10 @@ i32 CustomiserMenu_Update(void) {
     }
     if (cancel != 0 && CustomiseMode[0] != 1 && CustomiseMode[1] != 1) {
         if (GAMEDEMO != 0 && MissionMenuPacket.active_player[0] != 0 && MissionMenuPacket.active_player[1] != 0) {
-            if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[0])->pressed & GAMEPAD_MENUCANCEL) != 0) {
+            if ((((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[0])->pressed & GAMEPAD_MENUCANCEL) != 0) {
                 MissionMenuPacket.selected[0] = MissionMenuPacket.selected[0] == 0;
             }
-            if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[1])->pressed & GAMEPAD_MENUCANCEL) != 0) {
+            if ((((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[1])->pressed & GAMEPAD_MENUCANCEL) != 0) {
                 MissionMenuPacket.selected[1] = MissionMenuPacket.selected[1] == 0;
             }
             if (MissionMenuPacket.selected[0] != 0 && MissionMenuPacket.selected[1] != 0) {
@@ -699,10 +699,9 @@ i32 CustomiserMenu_Update(void) {
             if (MissionMenuPacket.active_player[player] == 0) {
                 continue;
             }
-            held = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_held |
-                   ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held;
-            pressed = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->pressed |
-                      ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_pressed;
+            held = ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->left_held | ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->held;
+            pressed = ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->pressed |
+                      ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->left_pressed;
 
             if (active_count == 1 && MissionMenuPacket.customise_other_player[player] != 0) {
                 side = player == 0;
@@ -879,7 +878,7 @@ i32 CustomiserMenu_Update(void) {
                 i32 category;
                 i32 angle;
                 PlaySfx("ToggleChar", position);
-                NewBuzzFrames(((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad, 1, 0);
+                NewBuzzFrames(((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->bound_pad, 1, 0);
                 for (category = 0; category < 9; ++category) {
                     if (customiser->piece_counts[category] > 0) {
                         i32 piece;
@@ -1056,7 +1055,7 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
     i32 colour;
     i32 side;
     i32 category;
-    ADD_GAME_MESSAGE_PC message;
+    ADD_GAME_MESSAGE message;
     if (customiser == NULL) {
         return;
     }
@@ -1074,7 +1073,7 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
                                                                            : -1;
         u32 torso_flags;
         CHARACTER_MODEL_LAYERS *model;
-        ANIMPACKET_PC *packet;
+        ANIMPACKET *packet;
         i32 saber_colour;
         i32 intro;
         u16 angle;

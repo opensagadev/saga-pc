@@ -45,12 +45,12 @@
 
 typedef struct registry_panel_record_pc_s {
     u8 storage[0x90];
-} REGISTRY_PANEL_RECORD_PC;
+} REGISTRY_PANEL_RECORD;
 
 typedef struct registry_panel_system_pc_s {
     i32 count;
-    REGISTRY_PANEL_RECORD_PC *panels;
-} REGISTRY_PANEL_SYSTEM_PC;
+    REGISTRY_PANEL_RECORD *panels;
+} REGISTRY_PANEL_SYSTEM;
 
 typedef struct {
     u32 triggered[1];
@@ -245,19 +245,19 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
 
 void *GizPanels_ReserveBufferSpace(void *pointer) {
     WORLDINFO *world = pointer;
-    REGISTRY_PANEL_SYSTEM_PC *system;
+    REGISTRY_PANEL_SYSTEM *system;
     world->giz_panel_sys = NULL;
     if (world->current_level->max_levers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->giz_panel_sys = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += sizeof(REGISTRY_PANEL_SYSTEM_PC);
-        memset(world->giz_panel_sys, 0, sizeof(REGISTRY_PANEL_SYSTEM_PC));
+        world->giz_buffer.addr += sizeof(REGISTRY_PANEL_SYSTEM);
+        memset(world->giz_panel_sys, 0, sizeof(REGISTRY_PANEL_SYSTEM));
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        system = (REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys;
+        system = (REGISTRY_PANEL_SYSTEM *)world->giz_panel_sys;
         system->panels = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD_PC);
-        memset(((REGISTRY_PANEL_SYSTEM_PC *)world->giz_panel_sys)->panels, 0,
-               world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD_PC));
+        world->giz_buffer.addr += world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD);
+        memset(((REGISTRY_PANEL_SYSTEM *)world->giz_panel_sys)->panels, 0,
+               world->current_level->max_gizpanels * sizeof(REGISTRY_PANEL_RECORD));
     }
     return world->giz_panel_sys;
 }
@@ -698,7 +698,7 @@ i32 GizPanel_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-void GizPanel_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world_ptr, void *data) {
+void GizPanel_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
     (void)data;
@@ -1130,10 +1130,10 @@ void GizPanel_Activate(void *input, i32 active) {
     }
 }
 
-static ADDGIZMOTYPE_PC GizmoRegistryGizPanelAddTypePc = {0};
+static ADDGIZMOTYPE GizmoRegistryGizPanelAddTypePc = {0};
 
-ADDGIZMOTYPE_PC *GizPanel_RegisterGizmo(i32 type_id) {
-    ADDGIZMOTYPE_PC *addtype = &GizmoRegistryGizPanelAddTypePc;
+ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32 type_id) {
+    ADDGIZMOTYPE *addtype = &GizmoRegistryGizPanelAddTypePc;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->fns.early_update_fn = NULL;
     addtype->fns.panel_draw_fn = NULL;
@@ -1150,12 +1150,12 @@ ADDGIZMOTYPE_PC *GizPanel_RegisterGizmo(i32 type_id) {
     addtype->name = "Panel";
     addtype->prefix = "";
     addtype->fns.options = 0xc;
-    addtype->fns.get_max_gizmos_fn = (i32(*)(void *))GizPanel_GetMaxGizmos;
+    addtype->fns.get_max_gizmos_fn = (i32 (*)(void *))GizPanel_GetMaxGizmos;
     addtype->fns.add_gizmos_fn = (void *)GizPanel_AddGizmos;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizPanel_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizPanel_Draw;
     addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizPanel_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
+    addtype->fns.get_output_fn = (i32 (*)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
     addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizPanel_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizPanel_GetNumOutputs;
     addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizPanel_Activate;
@@ -1165,6 +1165,6 @@ ADDGIZMOTYPE_PC *GizPanel_RegisterGizmo(i32 type_id) {
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizPanels_StoreProgress;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizPanels_Reset;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizPanels_ReserveBufferSpace;
-    addtype->fns.load_fn = (i32(*)(void *, void *))GizPanel_Load;
+    addtype->fns.load_fn = (i32 (*)(void *, void *))GizPanel_Load;
     return addtype;
 }

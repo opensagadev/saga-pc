@@ -465,7 +465,7 @@ extern "C" void MenuDrawEffects(MENU *menu) {
     }
 }
 
-void PC_DEVICE_BACKEND_PC::RestoreSavedMode() {
+void PC_DEVICE_BACKEND::RestoreSavedMode() {
     requested_windowed = saved_windowed;
     if (saved_mode < mode_count) {
         requested_mode = saved_mode;

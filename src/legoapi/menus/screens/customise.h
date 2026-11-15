@@ -12,7 +12,7 @@
 #endif
 
 struct CUSTOMPIECE_LAYERS;
-struct FRAME_PAD_PC;
+struct FRAME_PAD;
 struct WORLDINFO_s;
 struct nufpar_s;
 
@@ -23,19 +23,19 @@ typedef struct CUSTOMISER_LAYERS {     // size 0x70
     i16 character_ids[2];              // 0x6c
 } CUSTOMISER_LAYERS;
 
-typedef struct GAMEPAD_RUNTIME_INPUT_PC { // size 0x60
-    struct FRAME_PAD_PC *bound_pad;       // 0x00
-    u32 held;                             // 0x04
-    u32 pressed;                          // 0x08
-    u32 left_held;                        // 0x0c
-    u32 left_pressed;                     // 0x10
-    u32 left_previous;                    // 0x14
-    u32 right_held;                       // 0x18
-    u32 right_pressed;                    // 0x1c
-    u32 right_previous;                   // 0x20
-    u8 input_ready;                       // 0x24
-    u8 unknown_25[0x60 - 0x25];           // 0x25
-} GAMEPAD_RUNTIME_INPUT_PC;
+typedef struct GAMEPAD_RUNTIME_INPUT { // size 0x60
+    struct FRAME_PAD *bound_pad;       // 0x00
+    u32 held;                          // 0x04
+    u32 pressed;                       // 0x08
+    u32 left_held;                     // 0x0c
+    u32 left_pressed;                  // 0x10
+    u32 left_previous;                 // 0x14
+    u32 right_held;                    // 0x18
+    u32 right_pressed;                 // 0x1c
+    u32 right_previous;                // 0x20
+    u8 input_ready;                    // 0x24
+    u8 unknown_25[0x60 - 0x25];        // 0x25
+} GAMEPAD_RUNTIME_INPUT;
 
 #ifdef __cplusplus
 extern "C" {

@@ -88,8 +88,8 @@ i32 FindTexAnimFromMtl(NUHGOBJ_EVAL *hierarchy, NUMTL *material) {
 
 void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *owner, CUT_LOOKAT_STATE *state) {
     CUT_LOOKAT_LOCATOR_INFO *locator = state->locator;
-    CUT_INSTANCE_LOAD_PC *instance = (CUT_INSTANCE_LOAD_PC *)owner;
-    CUT_SCENE_LOAD_PC *scene;
+    CUT_INSTANCE_LOAD *instance = (CUT_INSTANCE_LOAD *)owner;
+    CUT_SCENE_LOAD *scene;
     CUT_LOAD_CHARACTER_ANIMATION *animations;
     NUHGOBJ_EVAL *hierarchy;
     i32 i;
@@ -307,7 +307,7 @@ typedef struct CUT_LOOKAT_MATERIAL_VALUES { // size 0x88
 static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT_LOAD_LOCATOR *locator, f32 frame, NUMTX *parent,
                                         INSTNUGCUTSCENE *owner) {
     CUT_LOOKAT_STATE *state;
-    CUT_INSTANCE_LOAD_PC *owner_view = (CUT_INSTANCE_LOAD_PC *)owner;
+    CUT_INSTANCE_LOAD *owner_view = (CUT_INSTANCE_LOAD *)owner;
     NUHGOBJ_EVAL *hierarchy;
     CUT_LOOKAT_HIERARCHY *hierarchy_view;
     CUT_LOOKAT_MATERIAL_VALUES *eye_material;
@@ -455,7 +455,7 @@ void instNuGCutLocatorUpdate(INSTNUGCUTSCENE *owner, CUT_LOAD_LOCATOR_SYSTEM *sy
             CutSceneLocatorVfxUpdate(locator, system, instance, frame, parent);
         }
     } else if ((type->flags & 4) != 0) {
-        if (NuCutSceneSFXUpdate != NULL && ((CUT_INSTANCE_LOAD_PC *)owner)->rate != 0.0f) {
+        if (NuCutSceneSFXUpdate != NULL && ((CUT_INSTANCE_LOAD *)owner)->rate != 0.0f) {
             NuCutSceneSFXUpdate(system, instance, locator, frame, parent, paused);
         }
     } else if ((type->flags & 8) != 0) {

@@ -74,7 +74,7 @@ static i32 goldbrickmsgcount = 0;
 
 typedef struct status_world_minikit_reader_s {
     u8 unknown_0000[0x2968];
-    MINIKIT_PC minikit;
+    MINIKIT minikit;
 } STATUS_WORLD_MINIKIT_READER;
 
 extern "C" i16 dat_00880bc0;
@@ -976,7 +976,7 @@ i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
 
 extern "C" {
     f32 StatusMiniKitDirectionOffsetPc = 0.035f;
-    STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCache[10] = {0};
+    STATUS_MINIKIT_DRAW_CACHE StatusMiniKitDrawCache[10] = {0};
 }
 
 void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet, f32 phase) {
@@ -1101,7 +1101,7 @@ void AddStatusMiniKitParts(void) {
         for (i32 coin = 0; coin < 5; ++coin) {
             NUVEC position = {0.0f, (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.1f), 1.0f};
             NuVecRotateZ(&position, &position, qrand());
-            ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+            ADD_GAME_MESSAGE message = AddGameMsg_Default;
             message.position = &position;
             message.target_scale = 0.75f;
             message.player_index = (i8)(qrand() / 0x8000);
@@ -1134,7 +1134,7 @@ extern "C" {
     f32 StatusPromptStepY = -0.2f;
 
     void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha) {
-        AREA_DATA_PC *areas = ADataList;
+        AREA_DATA *areas = ADataList;
         i32 labels[2];
         i32 locked = 0;
         i32 count;

@@ -35,7 +35,7 @@ struct AIPATHNODE;
 struct AITRIGGERSET_PARTIAL;
 struct DRAW_ATTACHMENTS_MINI;
 struct GAMEDEBRISENTRY;
-struct GAMEPAD_PC;
+struct GAMEPAD;
 struct PLAYERCHARACTERCONFIG;
 struct SUIT_LAYERS;
 struct TUBE;
@@ -728,7 +728,7 @@ typedef struct gameobject_s { // size 0x10d8
         struct {                         // size 0x4c
             struct gameobject_s *objptr; // 0x0000
             u8 unknown_0004[4];          // 0x0004
-            ANIMPACKET_PC anim_packet;   // 0x0008
+            ANIMPACKET anim_packet;      // 0x0008
         };
 
         struct {                             // size 0x40
@@ -922,7 +922,7 @@ typedef struct gameobject_s { // size 0x10d8
     u8 unknown_664[0xc];      // 0x0664
 
     union { // size 0x38
-        SOCKPOSITION_PC sock_position;
+        SOCKPOSITION sock_position;
 
         struct {                  // size 0x30
             u8 unknown_0670;      // 0x0670
@@ -1032,7 +1032,7 @@ typedef struct gameobject_s { // size 0x10d8
     struct gameobject_s *pending_tag_target; // 0x07c8
 
     union { // size 0x4
-        SOCKROT_PC sock_angles;
+        SOCKROT sock_angles;
 
         struct {                   // size 0x4
             u16 sock_body_pitch;   // 0x07cc
@@ -1103,14 +1103,14 @@ typedef struct gameobject_s { // size 0x10d8
         NUVEC attack_target_velocity;
     }; // 0x0c8c
 
-    NUVEC suspension_normal;                 // 0x0c98
-    struct GAMEPAD_PC *pad;                  // 0x0ca4
-    SOCKPOSITION_PC *previous_sock_position; // 0x0ca8
-    u32 directional_input_state;             // 0x0cac
-    struct PART_PC *incoming_part;           // 0x0cb0
-    struct PART_PC *blocked_part;            // 0x0cb4
-    struct PART_PC *force_part;              // 0x0cb8
-    struct SUIT_LAYERS *suit;                // 0x0cbc
+    NUVEC suspension_normal;              // 0x0c98
+    struct GAMEPAD *pad;                  // 0x0ca4
+    SOCKPOSITION *previous_sock_position; // 0x0ca8
+    u32 directional_input_state;          // 0x0cac
+    struct PART_PC *incoming_part;        // 0x0cb0
+    struct PART_PC *blocked_part;         // 0x0cb4
+    struct PART_PC *force_part;           // 0x0cb8
+    struct SUIT_LAYERS *suit;             // 0x0cbc
 
     union { // size 0x4
         struct gameobject_s *unknown_cc0;
@@ -1636,8 +1636,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AnimPacketMiniToFull(struct DRAW_ATTACHMENTS_MINI *, ANIMPACKET_PC *);
-    void AnimPacketFullToMini(ANIMPACKET_PC *, struct DRAW_ATTACHMENTS_MINI *);
+    void AnimPacketMiniToFull(struct DRAW_ATTACHMENTS_MINI *, ANIMPACKET *);
+    void AnimPacketFullToMini(ANIMPACKET *, struct DRAW_ATTACHMENTS_MINI *);
 #ifdef __cplusplus
 }
 #endif

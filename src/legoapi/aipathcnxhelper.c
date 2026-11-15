@@ -10,11 +10,11 @@
 extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
 
 void *AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
-    AI_HELPER_SYSTEM_PC *system = NULL;
+    AI_HELPER_SYSTEM *system = NULL;
     if (count != 0) {
         system = AISysBufferAlloc(buffer, end, sizeof(*system));
         if (system != NULL) {
-            system->helpers = AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_HELPER_SLOT_PC));
+            system->helpers = AISysBufferAlloc(buffer, end, (u32)count * sizeof(AI_HELPER_SLOT));
             if (system->helpers != NULL) {
                 system->capacity = (i16)count;
             }
@@ -23,10 +23,10 @@ void *AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     return system;
 }
 
-void AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
+void AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM *system) {
     if (system != NULL) {
         if (system->count != 0) {
-            memset(system->helpers, 0, system->count * sizeof(AI_HELPER_SLOT_PC));
+            memset(system->helpers, 0, system->count * sizeof(AI_HELPER_SLOT));
             system->count = 0;
         }
         if (AIPathCnxHelperSysInitFn != NULL) {
@@ -35,11 +35,11 @@ void AIPathCnxHelperSysReset(WORLDINFO *world, AI_HELPER_SYSTEM_PC *system) {
     }
 }
 
-AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIPATHCNX *connection, u8 direction, void *target, u8 type) {
-    AI_HELPER_SLOT_PC *helper = NULL;
+AI_HELPER_SLOT *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM *system, AIPATHCNX *connection, u8 direction, void *target, u8 type) {
+    AI_HELPER_SLOT *helper = NULL;
     if (system != NULL) {
         if (system->count < system->capacity && connection != NULL && target != NULL) {
-            AI_HELPER_SLOT_PC *existing = system->helpers;
+            AI_HELPER_SLOT *existing = system->helpers;
             i32 index;
             for (index = 0; index < system->count; ++index, ++existing) {
                 if (existing->connection == connection && type == existing->type && target == existing->target) {
@@ -60,9 +60,9 @@ AI_HELPER_SLOT_PC *AIPathCnxHelperSys_AddHelper(AI_HELPER_SYSTEM_PC *system, AIP
     return helper;
 }
 
-AI_HELPER_SLOT_PC *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM_PC *system, GAMEOBJECT *object, AIPATHCNX *connection, u8 direction, u8 type,
-                                           AI_HELPER_FILTER_PC filter) {
-    AI_HELPER_SLOT_PC *helper;
+AI_HELPER_SLOT *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM *system, GAMEOBJECT *object, AIPATHCNX *connection, u8 direction, u8 type,
+                                        AI_HELPER_FILTER filter) {
+    AI_HELPER_SLOT *helper;
     i32 index;
     if (connection == NULL && object != NULL) {
         connection = object->ai_packet.path_info.connection;

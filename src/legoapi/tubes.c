@@ -117,10 +117,10 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
             continue;
         }
         if (LEGOCONTEXT_GLIDE != -1 && object->character_context == LEGOCONTEXT_GLIDE) {
-            object->techno = (TECHNO_PC *)tube;
+            object->techno = (TECHNO *)tube;
             return;
         }
-        object->techno = (TECHNO_PC *)tube;
+        object->techno = (TECHNO *)tube;
         object->character_context = (i8)LEGOCONTEXT_TUBE;
         object->jump_variant_state = 0;
         cooldown = (TUBE_COOLDOWN_VIEW *)tube;
@@ -156,7 +156,7 @@ typedef struct tube_callbacks_s { // size 0x40
 
     u8 padding[3];                // 0x35
     u32 occupied_object_masks[2]; // 0x38
-} TUBE_CALLBACKS_PC;
+} TUBE_CALLBACKS;
 
 typedef struct tube_progress_s { // size 0x8
     /* Indexes both masks by tube / 32, although only 32 tubes are stored. */
@@ -171,20 +171,20 @@ static void *Tubes_ReserveBufferSpace(void *world_ptr) {
     if (world->current_level->max_tubes > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->tubes = (TUBE *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->current_level->max_tubes * sizeof(TUBE_CALLBACKS_PC);
+        world->giz_buffer.addr += world->current_level->max_tubes * sizeof(TUBE_CALLBACKS);
     }
     return world->tubes;
 }
 
 static void Tube_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        TUBE_CALLBACKS_PC *tube = gizmo->object;
+        TUBE_CALLBACKS *tube = gizmo->object;
         tube->bits.active = active != 0;
     }
 }
 
 static i32 Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only) {
-    TUBE_CALLBACKS_PC *tube;
+    TUBE_CALLBACKS *tube;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
@@ -202,13 +202,13 @@ static i32 Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only) {
 
 static void Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        TUBE_CALLBACKS_PC *tube = gizmo->object;
+        TUBE_CALLBACKS *tube = gizmo->object;
         tube->bits.visible = visible != 0;
     }
 }
 
 /* Derived cylinder values; an out-of-line copy is kept before Tubes_Reset. */
-static void Tube_ResetDerived(TUBE_CALLBACKS_PC *tube) {
+static void Tube_ResetDerived(TUBE_CALLBACKS *tube) {
     tube->top = tube->position.y + tube->height;
     tube->radius_squared = tube->radius * tube->radius;
     tube->flags |= 3;
@@ -217,13 +217,13 @@ static void Tube_ResetDerived(TUBE_CALLBACKS_PC *tube) {
 static void Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     TUBE_PROGRESS *progress = progress_ptr;
-    TUBE_CALLBACKS_PC *tube;
+    TUBE_CALLBACKS *tube;
     i32 i;
     (void)data;
     if (world == NULL || world->tubes == NULL) {
         return;
     }
-    tube = (TUBE_CALLBACKS_PC *)world->tubes;
+    tube = (TUBE_CALLBACKS *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
         Tube_ResetDerived(tube);
         if (progress != NULL && i < 32) {
@@ -247,11 +247,11 @@ static i32 Tubes_GetMaxGizmos(void *world_ptr) {
 }
 
 static char *Tube_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? ((TUBE_CALLBACKS_PC *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? ((TUBE_CALLBACKS *)gizmo->object)->name : NULL;
 }
 
 static i32 Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    TUBE_CALLBACKS_PC *tube = gizmo->object;
+    TUBE_CALLBACKS *tube = gizmo->object;
     (void)output;
     (void)mode;
     return tube->bits.visible && tube->bits.active;
@@ -274,7 +274,7 @@ static NUVEC *Tube_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((TUBE_CALLBACKS_PC *)gizmo->object)->position;
+    return &((TUBE_CALLBACKS *)gizmo->object)->position;
 }
 
 static void *Tubes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -293,7 +293,7 @@ static void Tubes_ClearProgress(void *world, void *progress_ptr) {
 static void Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     TUBE_PROGRESS *progress = progress_ptr;
-    TUBE_CALLBACKS_PC *tube;
+    TUBE_CALLBACKS *tube;
     i32 i;
     (void)data;
     if (progress == NULL) {
@@ -304,7 +304,7 @@ static void Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
     if (world == NULL || world->tubes == NULL) {
         return;
     }
-    tube = (TUBE_CALLBACKS_PC *)world->tubes;
+    tube = (TUBE_CALLBACKS *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
         i32 word;
         u32 bit;
@@ -327,22 +327,22 @@ static void Tubes_AddGizmos(void *system, i32 type_id, void *world_ptr, void *da
     i32 i;
     (void)data;
     for (i = 0; i < world->tube_count; ++i) {
-        if (NuStrLen(((TUBE_CALLBACKS_PC *)world->tubes)[i].name) != 0) {
-            AddGizmo(system, type_id, NULL, &((TUBE_CALLBACKS_PC *)world->tubes)[i]);
+        if (NuStrLen(((TUBE_CALLBACKS *)world->tubes)[i].name) != 0) {
+            AddGizmo(system, type_id, NULL, &((TUBE_CALLBACKS *)world->tubes)[i]);
         }
     }
 }
 
 static i32 Tubes_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
-    TUBE_CALLBACKS_PC *tube;
+    TUBE_CALLBACKS *tube;
     i32 version;
     i32 i;
     (void)data;
     if (world->tube_count == 0) {
         version = EdFileReadInt();
         world->tube_count = EdFileReadInt();
-        tube = (TUBE_CALLBACKS_PC *)world->tubes;
+        tube = (TUBE_CALLBACKS *)world->tubes;
         for (i = 0; i < world->tube_count; ++i, ++tube) {
             EdFileRead(tube->name, 16);
             EdFileReadNuVec(&tube->position);
@@ -360,24 +360,24 @@ static i32 Tubes_Load(void *world_ptr, void *data) {
     return 0;
 }
 
-void Tube_SetObjBit(TUBE_CALLBACKS_PC *tube, i32 index) {
+void Tube_SetObjBit(TUBE_CALLBACKS *tube, i32 index) {
     tube->occupied_object_masks[index / 32] |= 1u << (index & 31);
 }
 
-i32 Tube_IsObjBitSet(TUBE_CALLBACKS_PC *tube, i32 index) {
+i32 Tube_IsObjBitSet(TUBE_CALLBACKS *tube, i32 index) {
     return (tube->occupied_object_masks[index / 32] & (1u << (index & 31))) != 0;
 }
 
 static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
     WORLDINFO *world = world_ptr;
-    TUBE_CALLBACKS_PC *tube;
+    TUBE_CALLBACKS *tube;
     i32 i;
     i32 j;
     (void)data;
     if (world == NULL || world->tubes == NULL) {
         return;
     }
-    tube = (TUBE_CALLBACKS_PC *)world->tubes;
+    tube = (TUBE_CALLBACKS *)world->tubes;
     for (i = 0; i < world->tube_count; ++i, ++tube) {
         if (tube->audio_cooldown > 0.0f) {
             tube->audio_cooldown -= frame_time;
@@ -430,8 +430,8 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
 
 const char *TubeGizmoName = "Tube";
 
-ADDGIZMOTYPE_PC *Tubes_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC TubesAddType = {0};
+ADDGIZMOTYPE *Tubes_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE TubesAddType = {0};
     TubesAddType = Default_ADDGIZMOTYPE;
     TubesAddType.name = TubeGizmoName;
     TubesAddType.prefix = "";

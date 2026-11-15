@@ -38,7 +38,7 @@ typedef struct edanim_param_s { // size 0x2d4
     f32 bounce_damping;         // 0x2cc
     i8 page;                    // 0x2d0
     u8 unknown_2d1[3];          // 0x2d1
-} EDANIM_PARAM_PC;
+} EDANIM_PARAM;
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,7 +46,7 @@ extern "C" {
     void edanimParamReset(void);
     void edanimStartAllPages(void);
     extern NUGSCN *edbits_base_scene;
-    extern EDANIM_PARAM_PC AnimParams[64];
+    extern EDANIM_PARAM AnimParams[64];
     extern i32 edanim_page_on[8];
     extern i32 edanim_page_used[8];
     extern NUGSCN *edanim_page_scene[8];

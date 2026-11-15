@@ -50,7 +50,7 @@ typedef struct terrain_layer_s { // size 0xc
     u32 flags;                   // 0x0
     u32 unknown_04;              // 0x4
     u32 unknown_08;              // 0x8
-} TERRAIN_LAYER_PC;
+} TERRAIN_LAYER;
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,9 +95,9 @@ extern "C" {
     extern f32 MAXFRAMETIME;
     extern i32 NOSOUND;
     extern i32 CHARPAK;
-    typedef void (*CHECK_LOST_DATA_PC)(void *);
+    typedef void (*CHECK_LOST_DATA)(void *);
     extern i32 ShadowMode;
-    extern CHECK_LOST_DATA_PC CheckLostDataFn;
+    extern CHECK_LOST_DATA CheckLostDataFn;
     extern i32 LevSafePlatID[2];
     extern i32 CUTSKIPLOCK;
     extern i32 BonusArea;
@@ -149,7 +149,7 @@ extern "C" {
     extern i32 BonusScore[2];
     extern i32 BuildUpTotal;
     extern i32 BuildUpDone;
-    extern TERRAIN_LAYER_PC TerLayer[17];
+    extern TERRAIN_LAYER TerLayer[17];
     extern NUVEC nusound_special_positions[5];
     extern u8 CutSceneCameraCTRL;
     extern i32 NOAICREATURES;
@@ -347,8 +347,8 @@ extern "C" {
     extern struct level_data_s *DEATHSTAR2BATTLEA_LDATA;
     extern struct level_data_s *ASTEROIDCHASED_LDATA;
     extern struct level_data_s *DEATHSTARRESCUEA_LDATA;
-    extern ARCADE_MODE_PC Arcade_Mode[7];
-    extern ARCADE_ITEM_PC ArcadeItem;
+    extern ARCADE_MODE Arcade_Mode[7];
+    extern ARCADE_ITEM ArcadeItem;
     extern struct level_data_s *HOTHBATTLEA_LDATA;
     extern struct nugspline_s *ObstacleCamSpl;
 

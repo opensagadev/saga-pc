@@ -135,7 +135,7 @@ typedef struct player_world_doors_s { // size 0x46a4
 } PLAYER_WORLD_DOORS;
 
 typedef union player_position_sock_pc_u { // size 0x38
-    SOCKPOSITION_PC sock;
+    SOCKPOSITION sock;
 
     struct {          // size 0x8
         i32 location; // 0x00
@@ -231,7 +231,7 @@ static i32 Door_GetMaxGizmos(void *door) {
     return 0;
 }
 
-static void Door_AddGizmos(GIZMOSYS_PC *gizmo_sys, i32 type_id, void *world_ptr, void *unused3) {
+static void Door_AddGizmos(GIZMOSYS *gizmo_sys, i32 type_id, void *world_ptr, void *unused3) {
     WORLDINFO *world = world_ptr;
     if (world != NULL && world->doors != NULL) {
         i32 i;
@@ -278,8 +278,8 @@ void Door_Activate(GIZMO_PC *gizmo, i32 value) {
     door->active = value == 0;
 }
 
-ADDGIZMOTYPE_PC *Door_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+ADDGIZMOTYPE *Door_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
 
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "Door";
@@ -372,7 +372,7 @@ NUVEC DoorCutCameraPosition1 = {0};
 f32 Door_CutCamBlendTime = 0;
 void *Door_Last = 0;
 
-static void D_spline(NUFPAR_PC *parser) {
+static void D_spline(NUFPAR *parser) {
     i32 i;
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 64) {
         return;
@@ -396,7 +396,7 @@ static void D_spline(NUFPAR_PC *parser) {
     }
 }
 
-static void D_level(NUFPAR_PC *parser) {
+static void D_level(NUFPAR *parser) {
     i32 index;
     if (NuFParGetWord(parser) != 0) {
         Level_FindByName(parser->word_buffer_ptr, &index);
@@ -406,7 +406,7 @@ static void D_level(NUFPAR_PC *parser) {
     }
 }
 
-static void D_level_freeplay(NUFPAR_PC *parser) {
+static void D_level_freeplay(NUFPAR *parser) {
     i32 index;
     if (NuFParGetWord(parser) != 0) {
         Level_FindByName(parser->word_buffer_ptr, &index);
@@ -416,7 +416,7 @@ static void D_level_freeplay(NUFPAR_PC *parser) {
     }
 }
 
-static void D_cam_spline(NUFPAR_PC *parser) {
+static void D_cam_spline(NUFPAR *parser) {
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 32) {
         return;
     }
@@ -428,38 +428,38 @@ static void D_cam_spline(NUFPAR_PC *parser) {
     }
 }
 
-static void D_cam_wait(NUFPAR_PC *parser) {
+static void D_cam_wait(NUFPAR *parser) {
     D_door->camera_wait = NuFParGetFloat(parser);
 }
 
-static void D_cam_blend_time(NUFPAR_PC *parser) {
+static void D_cam_blend_time(NUFPAR *parser) {
     D_door->camera_blend = NuFParGetFloat(parser);
 }
 
-static void D_cam_lookatplayers(NUFPAR_PC *parser) {
+static void D_cam_lookatplayers(NUFPAR *parser) {
     D_door->flags |= DOOR_FLAG_CAMERA_LOOK_AT_PLAYERS;
 }
 
-static void D_one_way(NUFPAR_PC *parser) {
+static void D_one_way(NUFPAR *parser) {
     D_door->flags |= DOOR_FLAG_ONE_WAY;
 }
 
-static void D_two_player_only(NUFPAR_PC *parser) {
+static void D_two_player_only(NUFPAR *parser) {
     D_door->flags |= DOOR_FLAG_TWO_PLAYERS_ONLY;
 }
 
-static void D_do_not_use(NUFPAR_PC *parser) {
+static void D_do_not_use(NUFPAR *parser) {
     D_door->flags |= DOOR_FLAG_DO_NOT_USE;
 }
 
-static void D_next_sock(NUFPAR_PC *parser) {
+static void D_next_sock(NUFPAR *parser) {
     i32 index = NuFParGetInt(parser);
     if ((u32)index <= 63) {
         D_door->next_sock = (u8)index;
     }
 }
 
-static void D_vehicle(NUFPAR_PC *parser) {
+static void D_vehicle(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "all") == 0) {
             D_door->vehicle_mask_low = 0xffff;
@@ -473,11 +473,11 @@ static void D_vehicle(NUFPAR_PC *parser) {
     }
 }
 
-static void D_use_as_start(NUFPAR_PC *parser) {
+static void D_use_as_start(NUFPAR *parser) {
     D_door->flags |= DOOR_FLAG_USE_AS_START;
 }
 
-static void D_cut_scene(NUFPAR_PC *parser) {
+static void D_cut_scene(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         D_door->cutscene = CutScene_Find(WorldInfo_CurrentlyLoading()->cutscene_sys, parser->word_buffer_ptr);
     }
@@ -510,7 +510,7 @@ char door_gizmotype_id = -1;
 
 void Doors_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_DOOR_CONFIG *world = (WORLD_DOOR_CONFIG *)world_ptr;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     DOOR_CONFIG *door;
     i32 in_door;
     world->doors = NULL;

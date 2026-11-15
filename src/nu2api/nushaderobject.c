@@ -49,8 +49,8 @@ void PCShaderProbeHLSLConstants(NuShaderObject *shader, ID3DXConstantTable *vert
         ID3DXConstantTable *table = vertex_constants;
         const char *handle;
         i32 stage = 1;
-        PC_SHADER_PARAMETER_LOCAL_PC *parameter;
-        D3DX_CONSTANT_DESCRIPTION_PC description;
+        PC_SHADER_PARAMETER_LOCAL *parameter;
+        D3DX_CONSTANT_DESCRIPTION description;
         UINT description_count;
         handle = PCShaderFindConstantPc(uniform, table, uniform->vertex_name, stage);
         if (handle == NULL) {
@@ -88,7 +88,7 @@ void PCShaderProbeHLSLConstants(NuShaderObject *shader, ID3DXConstantTable *vert
             parameter->register_index = (i16)(description.register_index + 0x101);
         }
         if ((PCDeviceHardwareVertexProcessingPC != 4 && uniform->unknown_18 != 0) || uniform->register_index < 0) {
-            PC_SHADER_PARAMETER_LOCAL_PC *previous = shader->active_parameters;
+            PC_SHADER_PARAMETER_LOCAL *previous = shader->active_parameters;
             if (previous != NULL && parameter->register_index > previous->register_index) {
                 while (previous->next != NULL && previous->next->register_index <= parameter->register_index) {
                     previous = previous->next;

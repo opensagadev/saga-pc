@@ -2019,7 +2019,7 @@ extern "C" {
 }
 
 extern "C" i32 TerrainFreeId(void *id) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     i32 i = 0;
     if (terrain == NULL) {
         return 0;
@@ -2073,8 +2073,8 @@ extern "C" i32 TerrainInfoExtra(void) {
     return -1;
 }
 
-extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *previous, i32 rotating, TERRAIN_SET_PC *source) {
-    TERRAIN_SET_PC *terrain;
+extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *previous, i32 rotating, TERRAIN_SET *source) {
+    TERRAIN_SET *terrain;
     TERRAIN_GROUP *group;
     i32 index;
     i32 i;

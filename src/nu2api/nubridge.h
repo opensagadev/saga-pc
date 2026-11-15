@@ -42,12 +42,12 @@ typedef struct nubridge_s {      // size 0xb0c
     f32 load_multiplier;         // 0xb00
     f32 unknown_b04;             // 0xb04
     f32 unknown_b08;             // 0xb08
-} NUBRIDGE_PC;
+} NUBRIDGE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUBRIDGE_PC Bridges[8];
+    extern NUBRIDGE Bridges[8];
     extern i32 NuBridgeProc;
     void NuBridgeUpdate(NUVEC *);
     void NuBridgeDraw(NUMTL *);

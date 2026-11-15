@@ -38,7 +38,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-struct PC_DL_SHADER_PROGRAM_PAIR_PC;
+struct PC_DL_SHADER_PROGRAM_PAIR;
 #ifdef __cplusplus
 extern "C" {
 #endif

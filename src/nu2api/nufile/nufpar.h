@@ -31,7 +31,7 @@ typedef struct nufparpos_s { // size 0x14
     i32 character_position;  // 0x08
     i32 buffer_start;        // 0x0c
     i32 buffer_end;          // 0x10
-} NUFPARPOS_PC;
+} NUFPARPOS;
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,54 +83,54 @@ typedef struct nufpar_s {    // size 0x584
     u8 unknown_057a[2];     // 0x57a
     char *separator_list;   // 0x57c
     char *separator_tokens; // 0x580
-} NUFPAR_PC;
+} NUFPAR;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern NUFPAR_PC NuFParRecords[4];
+    extern NUFPAR NuFParRecords[4];
 #ifdef __cplusplus
 }
 #endif
 
-typedef struct nufpcomjmp_s {            // size 0x8
-    char *keyword;                       // 0x0
-    void (*callback)(NUFPAR_PC *parser); // 0x4
+typedef struct nufpcomjmp_s {         // size 0x8
+    char *keyword;                    // 0x0
+    void (*callback)(NUFPAR *parser); // 0x4
 } NUFPCOMJMP;
 
-typedef struct nufpcomjmpctx_s {                        // size 0x8
-    char *keyword;                                      // 0x0
-    void (*callback)(NUFPAR_PC *parser, void *context); // 0x4
+typedef struct nufpcomjmpctx_s {                     // size 0x8
+    char *keyword;                                   // 0x0
+    void (*callback)(NUFPAR *parser, void *context); // 0x4
 } NUFPCOMJMPCTX;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    NUFPAR_PC *NuFParOpen(NUFILE file_handle);
-    NUFPAR_PC *NuFParCreate(char *file_name);
-    NUFPAR_PC *NuFParCreateMem(char *file_name, char *buffer, i32 size);
-    NUFPAR_PC *NuFParCreateGivenFH(char *file_name, NUFILE file_handle);
-    void NuFParDestroy(NUFPAR_PC *parser);
-    i32 NuFParGetLine(NUFPAR_PC *parser);
-    i32 NuFParGetWord(NUFPAR_PC *parser);
-    void NuFParUnGetWord(NUFPAR_PC *parser);
-    i32 NuFParGetInt(NUFPAR_PC *parser);
-    f32 NuFParGetFloat(NUFPAR_PC *parser);
-    f32 NuFParGetFloatRDP(NUFPAR_PC *parser);
-    i32 NuFParGetIntRDP(NUFPAR_PC *parser);
-    void NuFParGetOptionalFloat(NUFPAR_PC *parser, f32 *value);
-    void NuFParGetOptionalInt(NUFPAR_PC *parser, i32 *value);
-    i32 NuFParPushCom2(NUFPAR_PC *parser, NUFPCOMJMP *primary, NUFPCOMJMP *secondary);
-    i32 NuFParPushCom(NUFPAR_PC *parser, NUFPCOMJMP *commands);
-    i32 NuFParPushComCTX(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands);
-    i32 NuFParPushComCTX2(NUFPAR_PC *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX *commands2);
-    void NuFParPopCom(NUFPAR_PC *parser);
-    i32 NuFParInterpretWord(NUFPAR_PC *parser);
-    i32 NuFParInterpretWordCTX(NUFPAR_PC *parser, void *context);
-    void NuFParGetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
-    void NuFParSetPos(NUFPAR_PC *parser, NUFPARPOS_PC *position);
-    void NuFParSuspend(NUFPAR_PC *parser);
-    void NuFParResume(NUFPAR_PC *parser);
+    NUFPAR *NuFParOpen(NUFILE file_handle);
+    NUFPAR *NuFParCreate(char *file_name);
+    NUFPAR *NuFParCreateMem(char *file_name, char *buffer, i32 size);
+    NUFPAR *NuFParCreateGivenFH(char *file_name, NUFILE file_handle);
+    void NuFParDestroy(NUFPAR *parser);
+    i32 NuFParGetLine(NUFPAR *parser);
+    i32 NuFParGetWord(NUFPAR *parser);
+    void NuFParUnGetWord(NUFPAR *parser);
+    i32 NuFParGetInt(NUFPAR *parser);
+    f32 NuFParGetFloat(NUFPAR *parser);
+    f32 NuFParGetFloatRDP(NUFPAR *parser);
+    i32 NuFParGetIntRDP(NUFPAR *parser);
+    void NuFParGetOptionalFloat(NUFPAR *parser, f32 *value);
+    void NuFParGetOptionalInt(NUFPAR *parser, i32 *value);
+    i32 NuFParPushCom2(NUFPAR *parser, NUFPCOMJMP *primary, NUFPCOMJMP *secondary);
+    i32 NuFParPushCom(NUFPAR *parser, NUFPCOMJMP *commands);
+    i32 NuFParPushComCTX(NUFPAR *parser, NUFPCOMJMPCTX *commands);
+    i32 NuFParPushComCTX2(NUFPAR *parser, NUFPCOMJMPCTX *commands, NUFPCOMJMPCTX *commands2);
+    void NuFParPopCom(NUFPAR *parser);
+    i32 NuFParInterpretWord(NUFPAR *parser);
+    i32 NuFParInterpretWordCTX(NUFPAR *parser, void *context);
+    void NuFParGetPos(NUFPAR *parser, NUFPARPOS *position);
+    void NuFParSetPos(NUFPAR *parser, NUFPARPOS *position);
+    void NuFParSuspend(NUFPAR *parser);
+    void NuFParResume(NUFPAR *parser);
 #ifdef __cplusplus
 }
 #endif

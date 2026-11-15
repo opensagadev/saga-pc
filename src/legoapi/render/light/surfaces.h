@@ -25,7 +25,7 @@ extern "C" {
     void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height);
     extern void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
     extern u16 SURFACEBITS_DUST;
-    extern TERRAIN_SURFACE_PC TerSurface[32];
+    extern TERRAIN_SURFACE TerSurface[32];
 #ifdef __cplusplus
 }
 #endif

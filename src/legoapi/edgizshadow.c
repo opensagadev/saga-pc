@@ -156,8 +156,8 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
 
 i32 edGizShadow_gizmotype_id = 0;
 
-ADDGIZMOTYPE_PC *EdGizShadowMachine_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+ADDGIZMOTYPE *EdGizShadowMachine_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = "ShadowEditor";
     addtype.prefix = "";

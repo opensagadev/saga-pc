@@ -256,8 +256,8 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
 }
 
 i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused) {
-    GAMEPAD_PC *source_pad;
-    GAMEPAD_PC *destination_pad;
+    GAMEPAD *source_pad;
+    GAMEPAD *destination_pad;
     f32 source_da8;
     i32 source_hp;
     i32 destination_hp;
@@ -464,7 +464,7 @@ found:
     return 1;
 }
 
-TAG_DRAW_ICON_PC Tag_DrawIconFn = 0;
+TAG_DRAW_ICON Tag_DrawIconFn = 0;
 
 void Tag_Check(GAMEOBJECT *object) {
     GAMEOBJECT *target;

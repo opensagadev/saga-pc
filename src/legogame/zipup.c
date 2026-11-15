@@ -1076,10 +1076,10 @@ static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
 
 NUMTL *ropemtl = 0;
 i32 CanDrawZipUpSwirls = 0;
-static ADDGIZMOTYPE_PC ZipUpAddTypePc = {0};
+static ADDGIZMOTYPE ZipUpAddTypePc = {0};
 i32 ZipUpRopeModulation = 0;
 
-extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
+extern ADDGIZMOTYPE *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc = Default_ADDGIZMOTYPE;
     ZipUpAddTypePc.name = ZipUpTypeNamePtr;
     ZipUpAddTypePc.prefix = "";
@@ -1108,7 +1108,7 @@ extern ADDGIZMOTYPE_PC *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddTypePc.fns.store_progress_fn = (void (*)(void *, void *, void *))ZipUps_StoreProgress;
     ZipUpAddTypePc.fns.reset_fn = (void (*)(void *, void *, void *))ZipUps_Reset;
     ZipUpAddTypePc.fns.reserve_buffer_space_fn = (void *(*)(void *))ZipUps_ReserveBufferSpace;
-    ZipUpAddTypePc.fns.load_fn = (i32(*)(void *, void *))ZipUps_Load;
+    ZipUpAddTypePc.fns.load_fn = (i32 (*)(void *, void *))ZipUps_Load;
     ZipUpAddTypePc.fns.post_load_fn = NULL;
     ZipUpAddTypePc.fns.add_level_sfx_fn = NULL;
     zipup_gizmotype_id = type_id;
@@ -1268,7 +1268,7 @@ void DrawRopeSingle(NUVEC *start, NUVEC *end, float amount, NUMTL *material, flo
     RopeMtxSetRotationZ(&matrix, z_rotation);
     RopeMtxRotateX(&matrix, x_rotation);
     NuMtxTranslate(&matrix, start);
-    NuRndrTriStrip3dClip((NURND_VERTEX3D_PC *)vertices, 10, &matrix, material);
+    NuRndrTriStrip3dClip((NURND_VERTEX3D *)vertices, 10, &matrix, material);
     if (Cheat_IsOn(3) == 0 || VehicleArea != 0) {
         return;
     }
@@ -1348,7 +1348,7 @@ void ZipUps_DrawLines() {
             end->position = ((ZIPUP_TRANSPORT_VIEW *)object)->entry;
             if (object->id == (u16)ZipUpLineCharacterId) {
                 start->position = object->position;
-                NuRndrLine3d((NURND_VERTEX3D_PC *)start, ZipUpLineMaterial, NULL);
+                NuRndrLine3d((NURND_VERTEX3D *)start, ZipUpLineMaterial, NULL);
                 continue;
             }
             ZipUp_GetStartPoint(object, &start->position);

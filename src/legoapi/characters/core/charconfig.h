@@ -123,7 +123,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern BOLTSYS_PC GlobalBoltSystem_Default;
+    extern BOLTSYS GlobalBoltSystem_Default;
     void AddAnimEffects(struct CHARACTER_MODEL_LAYERS *, struct apicharacterdata_s *, struct animpacket_s *, struct numtx_s *,
                         struct gameobject_s *, CHARACTER_EFFECT_CONFIG *, i32, f32, void (*)(void *, struct gameobject_s *, i32, i32),
                         struct APIDEBRISSYS *);

@@ -67,16 +67,16 @@ extern "C" {
 
     typedef struct player_force_los_slot_s { // size 0x630
         u8 unknown_00[0x630];                // 0x000
-    } PLAYER_FORCE_LOS_SLOT_PC;
+    } PLAYER_FORCE_LOS_SLOT;
 
     extern i32 Hub_UsePlayerList;
     extern i16 Area_PlayerIDList[9];
     extern APICHARACTERMODELLIST Area_StoryModelList[49];
-    extern SOCKPOSITION_PC OldPlrSPos[8];
+    extern SOCKPOSITION OldPlrSPos[8];
     extern struct SUIT_LAYERS *PlayerSuit[8];
     extern u8 PlayerTorpedoCount[8];
     extern PLAYER_COIN_PACKET_PC CoinPacket[2];
-    extern PLAYER_FORCE_LOS_SLOT_PC GizForceLOSInfo[2];
+    extern PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2];
     extern GAMEOBJECT BackUpPlayers[2];
 
     typedef union LEGOOBJ_DEFAULT_LAST_COIN_STORAGE { // size 0x4
@@ -103,8 +103,8 @@ extern "C" {
     extern i32 netclient;
     extern i32 PlayerID[2];
     extern i16 PlayerList[8];
-    typedef i32 (*LAST_SAFE_POS_EXTRA_PC)(GAMEOBJECT *);
-    extern LAST_SAFE_POS_EXTRA_PC LastSafePosExtraFn;
+    typedef i32 (*LAST_SAFE_POS_EXTRA)(GAMEOBJECT *);
+    extern LAST_SAFE_POS_EXTRA LastSafePosExtraFn;
     extern i32 DEFAULT_PLAYERHITPOINTS;
     extern f32 TOGGLEHOLDTIME;
     extern i32 LIFTPLAYER;
@@ -128,8 +128,8 @@ extern "C" {
     extern const char AIControlAllNonPartyName[14];
     extern const char AIControlDefaultTitleName[8];
 
-    typedef void (*PLAYER_CLEAR_CONTEXT_CALLBACK_PC)(GAMEOBJECT *, i32);
-    extern PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn;
+    typedef void (*PLAYER_CLEAR_CONTEXT_CALLBACK)(GAMEOBJECT *, i32);
+    extern PLAYER_CLEAR_CONTEXT_CALLBACK Player_ClearContextFn;
     void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 model_capacity, i32 model_id_capacity,
                              i32 animation_capacity, APICHARACTERDATA *characters, void (*set_lights)(APIOBJECT *));
     CHARACTER_MODEL_LAYERS *APICharacterLoaded(i32);
@@ -168,12 +168,12 @@ extern "C" {
     /* C++ only, complete neutral class in original shadow owner; method in shared
        declaration needed for natural WorldInfo_Init member caller later. No adapter. */
 
-    typedef struct player_item_type_reset_s PLAYER_ITEM_TYPE_RESET_PC;
+    typedef struct player_item_type_reset_s PLAYER_ITEM_TYPE_RESET;
     i32 Player_HasDeflectBolts(GAMEOBJECT *);
     i32 Player_HasDoubleBoltDamage_FromBolt(struct bolt_s *);
-    void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *);
+    void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET *);
     void PlayerItemTypes_Reset(struct WORLDINFO_s *);
-    PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32);
+    PLAYER_ITEM_TYPE_RESET *PlayerItemType_Find(i32);
     void SetPlayer(void);
 
     void APILoadCharacterModels(APICHARACTERMODELLIST *, i32, VARIPTR *, VARIPTR, i32);
@@ -186,7 +186,7 @@ extern "C" {
     u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *distance_squared, u8 require_character_flags,
                               u32 character_flags);
 
-    i32 Players_AveragePos(NUVEC *, SOCKPOSITION_PC *);
+    i32 Players_AveragePos(NUVEC *, SOCKPOSITION *);
 #ifdef __cplusplus
 }
 #endif

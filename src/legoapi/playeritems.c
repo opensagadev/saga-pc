@@ -5,10 +5,10 @@
 #include "legoapi/world/world.h"
 #include <string.h>
 
-static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType = 0;
+static PLAYER_ITEM_TYPE_RESET *PlayerItemType = 0;
 static i32 PlayerItemTypeCount = 0;
 
-void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET_PC *types) {
+void PlayerItemTypes_Init(PLAYER_ITEM_TYPE_RESET *types) {
     PlayerItemType = NULL;
     PlayerItemTypeCount = 0;
     if (types == NULL) {
@@ -33,7 +33,7 @@ void PlayerItemTypes_Reset(WORLDINFO *world) {
     }
 }
 
-void PlayerItem_Set(WEAPON_AMMO_PC *item, VEHICLE_WEAPON_ITEM *type) {
+void PlayerItem_Set(WEAPON_AMMO *item, VEHICLE_WEAPON_ITEM *type) {
     item->type = type;
     if (type != NULL) {
         item->ammo = type->start_ammo;
@@ -44,7 +44,7 @@ void PlayerItem_Set(WEAPON_AMMO_PC *item, VEHICLE_WEAPON_ITEM *type) {
     }
 }
 
-PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32 id) {
+PLAYER_ITEM_TYPE_RESET *PlayerItemType_Find(i32 id) {
     i32 index;
     if (PlayerItemType == NULL) {
         return NULL;
@@ -57,7 +57,7 @@ PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType_Find(i32 id) {
     return NULL;
 }
 
-i32 PlayerItem_GotAmmo(WEAPON_AMMO_PC *item) {
+i32 PlayerItem_GotAmmo(WEAPON_AMMO *item) {
     if (item == NULL) {
         return 1;
     }

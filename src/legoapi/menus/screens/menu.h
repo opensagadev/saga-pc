@@ -63,7 +63,7 @@ extern "C" {
 #endif
     extern u8 MenuKeyboardOverrideActivePc;
     extern i32 MenuKeyboardPendingPc;
-    void UpdateGameMenu(GAMEPAD_PC *, i32);
+    void UpdateGameMenu(GAMEPAD *, i32);
     extern char *apitxt_PCPRESSSTARTFE;
     extern f32 newgamewait;
     extern u8 AlternateHudColourBytes[8];

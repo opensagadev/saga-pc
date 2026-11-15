@@ -6,33 +6,33 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include <vector>
 
-struct POST_VERTEX_SHADER_CACHE_ENTRY_PC { // size 0x8
-    PC_TEXTURE_RESOURCE *shader;           // 0x0
-    const DWORD *tokens;                   // 0x4
+struct POST_VERTEX_SHADER_CACHE_ENTRY { // size 0x8
+    PC_TEXTURE_RESOURCE *shader;        // 0x0
+    const DWORD *tokens;                // 0x4
 };
 
-struct POST_PIXEL_SHADER_CACHE_ENTRY_PC { // size 0x8
-    PC_TEXTURE_RESOURCE *shader;          // 0x0
-    const DWORD *tokens;                  // 0x4
+struct POST_PIXEL_SHADER_CACHE_ENTRY { // size 0x8
+    PC_TEXTURE_RESOURCE *shader;       // 0x0
+    const DWORD *tokens;               // 0x4
 };
 
-struct POST_SHADER_PROGRAM_POOL_PC {     // size 0x40c
-    POST_SHADER_PROGRAM_PC programs[64]; // 0x000
-    u8 occupied[8];                      // 0x400
-    i32 cursor;                          // 0x408
-    POST_SHADER_PROGRAM_PC *Allocate(void);
-    POST_SHADER_PROGRAM_POOL_PC *fun_006051a0();
+struct POST_SHADER_PROGRAM_POOL {     // size 0x40c
+    POST_SHADER_PROGRAM programs[64]; // 0x000
+    u8 occupied[8];                   // 0x400
+    i32 cursor;                       // 0x408
+    POST_SHADER_PROGRAM *Allocate(void);
+    POST_SHADER_PROGRAM_POOL *fun_006051a0();
     i32 fun_00605480(i32 index);
     void fun_006054a0(i32 index, bool set);
 };
 
 extern "C" {
-    POST_SHADER_PROGRAM_POOL_PC PostShaderProgramPoolPc = {0};
-    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC> PostVertexShaderCachePc;
-    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC> PostPixelShaderCachePc;
+    POST_SHADER_PROGRAM_POOL PostShaderProgramPoolPc = {0};
+    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY> PostVertexShaderCachePc;
+    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY> PostPixelShaderCachePc;
 }
 
-POST_SHADER_PROGRAM_PC *POST_SHADER_PROGRAM_POOL_PC::Allocate(void) {
+POST_SHADER_PROGRAM *POST_SHADER_PROGRAM_POOL::Allocate(void) {
     i32 index = cursor;
     for (; index < 64; ++index) {
         if (((i8)occupied[index >> 3] >> (index & 7) & 1) == 0) {
@@ -62,7 +62,7 @@ i32 FRAME_NATIVE_TEXTURE_POOL::fun_00605170(FRAME_NATIVE_TEXTURE *record) {
     return index <= 15;
 }
 
-POST_SHADER_PROGRAM_POOL_PC *POST_SHADER_PROGRAM_POOL_PC::fun_006051a0() {
+POST_SHADER_PROGRAM_POOL *POST_SHADER_PROGRAM_POOL::fun_006051a0() {
     memset(occupied, 0, sizeof(occupied));
     cursor = 0;
     return this;
@@ -80,11 +80,11 @@ i32 FRAME_NATIVE_TEXTURE_POOL::fun_00605460(i32 index) {
     return occupied[index >> 3] >> (index & 7) & 1;
 }
 
-i32 POST_SHADER_PROGRAM_POOL_PC::fun_00605480(i32 index) {
+i32 POST_SHADER_PROGRAM_POOL::fun_00605480(i32 index) {
     return (i8)occupied[index >> 3] >> (index & 7) & 1;
 }
 
-void POST_SHADER_PROGRAM_POOL_PC::fun_006054a0(i32 index, bool set) {
+void POST_SHADER_PROGRAM_POOL::fun_006054a0(i32 index, bool set) {
     if (set) {
         occupied[index >> 3] |= 1 << (index & 7);
     } else {
@@ -98,10 +98,10 @@ void FRAME_NATIVE_TEXTURE_POOL::fun_0060a010(FRAME_NATIVE_TEXTURE *record) {
     cursor = index;
 }
 
-extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens, const DWORD *pixel_tokens) {
-    POST_VERTEX_SHADER_CACHE_ENTRY_PC vertex = {NULL, vertex_tokens};
-    POST_PIXEL_SHADER_CACHE_ENTRY_PC pixel = {NULL, pixel_tokens};
-    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC>::iterator vertex_it = PostVertexShaderCachePc.begin();
+extern "C" POST_SHADER_PROGRAM *PostShaderProgramCreatePc(i32 mode, const DWORD *vertex_tokens, const DWORD *pixel_tokens) {
+    POST_VERTEX_SHADER_CACHE_ENTRY vertex = {NULL, vertex_tokens};
+    POST_PIXEL_SHADER_CACHE_ENTRY pixel = {NULL, pixel_tokens};
+    std::vector<POST_VERTEX_SHADER_CACHE_ENTRY>::iterator vertex_it = PostVertexShaderCachePc.begin();
     for (; vertex_it != PostVertexShaderCachePc.end(); ++vertex_it) {
         if (vertex_it->tokens == vertex.tokens) {
             vertex = *vertex_it;
@@ -112,7 +112,7 @@ extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWO
         PCDeviceCreateVertexShader(vertex.tokens, &vertex.shader);
         PostVertexShaderCachePc.push_back(vertex);
     }
-    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC>::iterator pixel_it = PostPixelShaderCachePc.begin();
+    std::vector<POST_PIXEL_SHADER_CACHE_ENTRY>::iterator pixel_it = PostPixelShaderCachePc.begin();
     for (; pixel_it != PostPixelShaderCachePc.end(); ++pixel_it) {
         if (pixel_it->tokens == pixel.tokens) {
             pixel = *pixel_it;
@@ -124,7 +124,7 @@ extern "C" POST_SHADER_PROGRAM_PC *PostShaderProgramCreatePc(i32 mode, const DWO
         PostPixelShaderCachePc.push_back(pixel);
     }
     if (vertex.shader != NULL && pixel.shader != NULL) {
-        POST_SHADER_PROGRAM_PC *program = PostShaderProgramPoolPc.Allocate();
+        POST_SHADER_PROGRAM *program = PostShaderProgramPoolPc.Allocate();
         program->vertex_shader = vertex.shader;
         program->pixel_shader = pixel.shader;
         return program;
@@ -142,17 +142,17 @@ extern "C" {
     extern const DWORD dat_00765e40[];
     extern const DWORD dat_00765f30[];
     extern const DWORD dat_007660d0[];
-    POST_SHADER_PROGRAM_PC *PostCopyTexProgram = 0;
-    POST_SHADER_PROGRAM_PC *dat_00973820 = 0;
-    POST_SHADER_PROGRAM_PC *PostCopyTexLodProgram = 0;
-    POST_SHADER_PROGRAM_PC *dat_0097382c = 0;
-    POST_SHADER_PROGRAM_PC *PostBlendTexProgram = 0;
-    POST_SHADER_PROGRAM_PC *PostBlur5x5Program = 0;
-    POST_SHADER_PROGRAM_PC *PostBlur7x7Program = 0;
+    POST_SHADER_PROGRAM *PostCopyTexProgram = 0;
+    POST_SHADER_PROGRAM *dat_00973820 = 0;
+    POST_SHADER_PROGRAM *PostCopyTexLodProgram = 0;
+    POST_SHADER_PROGRAM *dat_0097382c = 0;
+    POST_SHADER_PROGRAM *PostBlendTexProgram = 0;
+    POST_SHADER_PROGRAM *PostBlur5x5Program = 0;
+    POST_SHADER_PROGRAM *PostBlur7x7Program = 0;
     PC_TEXTURE_RESOURCE *NuDisplayHandlerVertexShaderCachePc = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayHandlerPixelShaderCachePc = NULL;
-    POST_SHADER_PROGRAM_PC *PostCopyAuxProgram = 0;
-    POST_SHADER_PROGRAM_PC *PostBlurAuxProgram = 0;
+    POST_SHADER_PROGRAM *PostCopyAuxProgram = 0;
+    POST_SHADER_PROGRAM *PostBlurAuxProgram = 0;
 }
 
 extern "C" void PostFilterInitPrograms(i32 width, i32 height) {
@@ -170,7 +170,7 @@ extern "C" void PostFilterInitPrograms(i32 width, i32 height) {
     PostBlurAuxProgram = PostShaderProgramCreatePc(2, dat_00765e40, dat_00765d90);
 }
 
-extern "C" void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM_PC *program) {
+extern "C" void NuShaderProgramMakeCurrent(POST_SHADER_PROGRAM *program) {
     if (program != NULL) {
         if (NuDisplayHandlerVertexShaderCachePc != program->vertex_shader) {
             PCDeviceSetVertexShaderPc(program->vertex_shader);
@@ -201,7 +201,7 @@ extern "C" FRAME_NATIVE_TEXTURE *fun_0060bf20(void *, FRAME_NATIVE_TEXTURE_POOL 
     return pool->Allocate();
 }
 
-extern "C" POST_SHADER_PROGRAM_PC *fun_0060bf30(void *, POST_SHADER_PROGRAM_POOL_PC *pool) {
+extern "C" POST_SHADER_PROGRAM *fun_0060bf30(void *, POST_SHADER_PROGRAM_POOL *pool) {
     return pool->Allocate();
 }
 

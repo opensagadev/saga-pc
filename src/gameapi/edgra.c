@@ -154,7 +154,7 @@ struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
 struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
 
 void edgraDrawCursor(void) {
-    NURND_VERTEX3D_PC line[2];
+    NURND_VERTEX3D line[2];
     NUVEC arrow;
     nuhspecial_s special;
     line[0].colour = 0xffffffff;

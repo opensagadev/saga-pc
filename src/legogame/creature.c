@@ -114,7 +114,7 @@ typedef struct PLAYER_PACKET_RESET { // size 0x788
     u8 context_state_flags;          // 0x101
     u8 unknown_102[0x4d2];           // 0x102
     NUVEC reset_up_direction;        // 0x5d4
-    GAMEPAD_PC *gamepad;             // 0x5e0
+    GAMEPAD *gamepad;                // 0x5e0
     u8 unknown_5e4[0x20];            // 0x5e4
     void *unknown_604;               // 0x604
     u8 unknown_608[0xc];             // 0x608
@@ -159,7 +159,7 @@ typedef struct PLAYER_PACKET_RESET { // size 0x788
     f32 unknown_784;                 // 0x784
 } PLAYER_PACKET_RESET;
 
-typedef struct GAMEPAD_RESET_PC {  // size 0x5c
+typedef struct GAMEPAD_RESET {     // size 0x5c
     void *bound_pad;               // 0x00
     u32 buttons_held;              // 0x04
     u32 buttons_pressed;           // 0x08
@@ -178,7 +178,7 @@ typedef struct GAMEPAD_RESET_PC {  // size 0x5c
     void *operator_data;           // 0x54
     u8 unknown_058[0x2];           // 0x58
     u16 runtime_flags;             // 0x5a
-} GAMEPAD_RESET_PC;
+} GAMEPAD_RESET;
 
 typedef struct TERRAIN_PLAYER_IMPACT { // size 0x1c
     NUVEC position;                    // 0x00
@@ -188,17 +188,17 @@ typedef struct TERRAIN_PLAYER_IMPACT { // size 0x1c
     u8 normal_flags;                   // 0x1b
 } TERRAIN_PLAYER_IMPACT;
 
-typedef struct TERRAIN_PLAYER_PLATFORM_RECORD_PC { // size 0x14
-    u8 unknown_0[0xe];                             // 0x00
-    i16 platform_id;                               // 0x0e
-    GAMEOBJECT *object;                            // 0x10
-} TERRAIN_PLAYER_PLATFORM_RECORD_PC;
+typedef struct TERRAIN_PLAYER_PLATFORM_RECORD { // size 0x14
+    u8 unknown_0[0xe];                          // 0x00
+    i16 platform_id;                            // 0x0e
+    GAMEOBJECT *object;                         // 0x10
+} TERRAIN_PLAYER_PLATFORM_RECORD;
 
-typedef struct TERRAIN_PLAYER_PLATFORM_SYS_PC {   // size 0x1c
-    u8 unknown_0[4];                              // 0x00
-    i32 count;                                    // 0x04
-    TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
-} TERRAIN_PLAYER_PLATFORM_SYS_PC;
+typedef struct TERRAIN_PLAYER_PLATFORM_SYS {   // size 0x1c
+    u8 unknown_0[4];                           // 0x00
+    i32 count;                                 // 0x04
+    TERRAIN_PLAYER_PLATFORM_RECORD entries[1]; // 0x08
+} TERRAIN_PLAYER_PLATFORM_SYS;
 
 typedef struct TERRAIN_PLAYER_GRABBER { // size 0x564
     u8 unknown_0[0x554];                // 0x000
@@ -281,7 +281,7 @@ typedef struct moveplayer_pad_bits_pc_s {
     u16 low : 3;
     u16 waggle : 1;
     u16 high : 12;
-} MOVEPLAYER_PAD_BITS_PC;
+} MOVEPLAYER_PAD_BITS;
 
 static __inline f32 PlayersFabs(f32 value) {
     u32 bits = *(u32 *)&value & 0x7fffffff;
@@ -305,13 +305,13 @@ typedef struct CHARACTER_IDLE_POLICY {
 f32 animduration_blendouttime;
 i32 CharacterLoadAreaModels;
 i16 dat_007f18c4;
-i32 AnimPacketModelsCompatible(ANIMPACKET_PC *packet, i32 source_id, i32 target_id);
+i32 AnimPacketModelsCompatible(ANIMPACKET *packet, i32 source_id, i32 target_id);
 
 typedef struct SPECIAL_LAYER_PC_s {
     i16 *character_id;
     const char *name;
     u32 mask;
-} SPECIAL_LAYER_PC;
+} SPECIAL_LAYER;
 
 typedef struct player_suit_name_s {
     u8 unknown_000[0x4];
@@ -397,7 +397,7 @@ typedef struct player_init_extra_s {
     u8 unknown_0000[0x454];
     f32 unknown_454;
     u8 unknown_0458[0xcc0 - 0x458];
-    PLAYER_BATARANG_SLOT_PC *batarang;
+    PLAYER_BATARANG_SLOT *batarang;
     u8 unknown_0cc4[0x1062 - 0xcc4];
     i16 previous_state;
 } PLAYER_INIT_EXTRA;
@@ -411,7 +411,7 @@ typedef struct player_init_flags_s {
 extern i32 movegamecamera_forcesock;
 
 typedef union DRAW_ATTACHMENTS_PACKET {
-    ANIMPACKET_PC packet;
+    ANIMPACKET packet;
     u32 words[18];
 } DRAW_ATTACHMENTS_PACKET;
 
@@ -559,7 +559,7 @@ static void GameDrawMtxRotateZ(NUMTX *matrix, NUANG angle) {
     matrix->m31 = (m30 * sine) + (matrix->m31 * cosine);
 }
 
-void FixUpCharacters(CHARFIXUP_PC *fixup) {
+void FixUpCharacters(CHARFIXUP *fixup) {
     i32 i;
     for (i = 0; i < CHARCOUNT; ++i) {
         GCDataList[i] = GCDATA_DEFAULT;
@@ -658,7 +658,7 @@ void ExtraCharacterFixUpAfterConfig(void) {
     }
 }
 
-void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
+void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA *character) {
     PLAYER_PACKET_RESET *packet = opaque_packet;
     i32 i;
     (void)character;
@@ -669,18 +669,18 @@ void ResetPlayerPacket(void *opaque_packet, CHARACTERDATA_PC *character) {
     packet->secondary_lean_angle = 0;
     packet->tertiary_lean_angle = 0;
     Player_ResetContexts(packet);
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->buttons_held = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->buttons_pressed = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->buttons_released = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->left_directions = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->previous_left_directions = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->right_directions = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->previous_right_directions = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->unknown_20 = 0;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->rumble_field_40 = 0.0f;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->rumble_amount = 0.0f;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->rumble_field_48 = 0.0f;
-    ((GAMEPAD_RESET_PC *)packet->gamepad)->rumble_time = 0.0f;
+    ((GAMEPAD_RESET *)packet->gamepad)->buttons_held = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->buttons_pressed = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->buttons_released = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->left_directions = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->previous_left_directions = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->right_directions = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->previous_right_directions = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->unknown_20 = 0;
+    ((GAMEPAD_RESET *)packet->gamepad)->rumble_field_40 = 0.0f;
+    ((GAMEPAD_RESET *)packet->gamepad)->rumble_amount = 0.0f;
+    ((GAMEPAD_RESET *)packet->gamepad)->rumble_field_48 = 0.0f;
+    ((GAMEPAD_RESET *)packet->gamepad)->rumble_time = 0.0f;
     packet->gamepad->runtime_flags &= (u16)~2;
     packet->gamepad->runtime_flags &= (u16)~4;
     packet->gamepad->runtime_flags &= (u16)~0x10;
@@ -780,7 +780,7 @@ void DeactivateCharacter(char *name) {
 }
 
 void SetGameObjectCharacterData(GAMEOBJECT *object) {
-    CHARACTERDATA_PC *data = object->character_data;
+    CHARACTERDATA *data = object->character_data;
     object->origin_scale = data->model_scale;
     object->collision_radius_unscaled = data->collision_radius;
     object->character_bottom = data->bottom;
@@ -978,7 +978,7 @@ void ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
 
 static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
     CHARACTER_IDLE_STATE *state = (CHARACTER_IDLE_STATE *)object;
-    CHARACTERDATA_PC *character = object->character_data;
+    CHARACTERDATA *character = object->character_data;
     i32 alternate = ((CHARACTER_IDLE_POLICY *)character->game_character)->use_standard_idle == 0 &&
                             (character->model_flags & CHARACTER_MODEL_BLASTER) != 0
                         ? 118
@@ -1035,7 +1035,7 @@ static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
 
 void UpdateCharacterIdle(GAMEOBJECT *object) {
     CHARACTER_IDLE_STATE *state = (CHARACTER_IDLE_STATE *)object;
-    CHARACTERDATA_PC *character;
+    CHARACTERDATA *character;
     i32 alternate;
     i32 default_idle;
     i16 requested;
@@ -1234,7 +1234,7 @@ void KeepOnScreen(GAMEOBJECT *object) {
 }
 
 void MovePlayerSpline(GAMEOBJECT *object) {
-    GAMEPAD_PC *pad = object->pad;
+    GAMEPAD *pad = object->pad;
     f32 speed;
     f32 distance;
     f32 hover;
@@ -1351,7 +1351,7 @@ void MovePlayerSpline(GAMEOBJECT *object) {
 }
 
 void MovePlayer(GAMEOBJECT *object) {
-    GAMEPAD_PC *pad = object->pad;
+    GAMEPAD *pad = object->pad;
     i32 analog_x;
     i32 analog_y;
     i32 menu_id;
@@ -1468,7 +1468,7 @@ void MovePlayer(GAMEOBJECT *object) {
                         pad->input_angle = NuAtan2D(pad->input_direction_z, input.z);
                     }
                     waggle = GamePad_Waggle(object->pad);
-                    ((MOVEPLAYER_PAD_BITS_PC *)&pad->runtime_flags)->waggle = waggle;
+                    ((MOVEPLAYER_PAD_BITS *)&pad->runtime_flags)->waggle = waggle;
                     pad->waggle_magnitude = object == Player[0] || object == Player[1] ? GamePad_Rotate(object) : 0.0f;
                 }
             } else {
@@ -1635,7 +1635,7 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
 
 void TerrainPlayer(GAMEOBJECT *object) {
     NUVEC forward;
-    GAMEPAD_PC *entry_pad;
+    GAMEPAD *entry_pad;
     i32 entry_underwater;
     i32 entry_intersects_water;
     i32 entry_menu_id;
@@ -1878,7 +1878,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     i32 object_index;
                     i32 excluded_platforms[32];
                     i32 excluded_count;
-                    TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms;
+                    TERRAIN_PLAYER_PLATFORM_SYS *platforms;
                     i32 i;
 
                     collision_position.x = api->position.x;
@@ -1956,7 +1956,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             excluded_platforms[excluded_count++] = blowup->platform_id;
                         }
                     }
-                    platforms = ((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc));
+                    platforms = ((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc));
                     if (platforms != NULL && VehicleArea == 0) {
                         i32 player;
 
@@ -2137,7 +2137,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 } else {
                     GAMEOBJECT *platform_owner;
 
-                    platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc)),
+                    platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc)),
                                                                     api->supporting_platform_id);
                     if (platform_owner != NULL && platform_owner->character_data->game_character->unknown_028 > 0.0f) {
                         platform_owner->velocity.y = entry_vertical_velocity * 0.5f + platform_owner->velocity.y;
@@ -2156,8 +2156,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 } else {
                     GAMEOBJECT *platform_owner;
 
-                    platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc)),
-                                                                    entry_platform);
+                    platform_owner =
+                        CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc)), entry_platform);
                     if (platform_owner != NULL && platform_owner->character_data->game_character->unknown_028 > 0.0f) {
                         platform_owner->velocity.y -= entry_vertical_velocity * 0.5f;
                     }
@@ -2167,7 +2167,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
             if (VehicleArea == 0 && ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) && api->supporting_platform_id != -1) {
                 GAMEOBJECT *platform_owner;
 
-                platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS_PC *)(WORLD->shadow_platform_list_pc)),
+                platform_owner = CharPlatform_FindObjFromPlatID(((TERRAIN_PLAYER_PLATFORM_SYS *)(WORLD->shadow_platform_list_pc)),
                                                                 api->supporting_platform_id);
                 if (platform_owner != NULL) {
                     const PLAYERCHARACTERCONFIG *data;
@@ -2440,7 +2440,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
 }
 
 void AnimatePlayer(GAMEOBJECT *object) {
-    GAMEPAD_PC *pad = object->pad;
+    GAMEPAD *pad = object->pad;
     CHARACTER_MODEL_LAYERS *model = object->character_model;
     i16 override_from;
     f32 direction;
@@ -3091,7 +3091,7 @@ GAMEOBJECT *GetOtherActivePlayer(GAMEOBJECT *object) {
     return NULL;
 }
 
-static SPECIAL_LAYER_PC SpecialLayer[42] = {
+static SPECIAL_LAYER SpecialLayer[42] = {
     {&ID_DEFAULTCHARACTER_A, "bombbackpack",        0},
     {&ID_DEFAULTCHARACTER_A, "sonargun",            0},
     {&ID_DEFAULTCHARACTER_A, "infrared_goggles",    0},
@@ -3382,7 +3382,7 @@ void ResetPlayerMoves(GAMEOBJECT *object) {
 }
 
 void InitPlayerAI(GAMEOBJECT *object) {
-    CHARACTERDATA_PC *character;
+    CHARACTERDATA *character;
     i32 can_pull_levers;
     u8 type;
     char *name;
@@ -3553,7 +3553,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     DestroySnakeBody(object);
     object->id = (u16)id;
     object->character_model = &apicharsys->models[apicharsys->playermodelids[id]];
-    object->character_data = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
+    object->character_data = (CHARACTERDATA *)&apicharsys->char_data[id];
     velocity = object->velocity;
     health = object->current_hp;
     hitpoints = object->unknown_107e;
@@ -3598,7 +3598,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     object->current_hp = health;
     object->unknown_107e = hitpoints;
     object->flags_1fc_bit_13 = saved_flag;
-    ResetMiniAnimPacket((MINIANIMPACKET_PC *)object->mini_anim_packet, -1);
+    ResetMiniAnimPacket((MINIANIMPACKET *)object->mini_anim_packet, -1);
     object->weapon_scale = ((object->flags_e20 >> 16) & 1) != 0 ? 1.0 : 0.0;
     object->unknown_e33 = 0;
     if (on_surface == 0) {
@@ -3803,7 +3803,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     if (apicharsys->playermodelids[id] == -1) {
         return 0;
     }
-    object->character_data = (CHARACTERDATA_PC *)&apicharsys->char_data[id];
+    object->character_data = (CHARACTERDATA *)&apicharsys->char_data[id];
     object->layer_mask = object->character_data->game_character->layer_mask;
     object->flags_1f8 = 0;
     object->level_object_index = -1;
@@ -3873,7 +3873,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     return 1;
 }
 
-i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *animation, NUMTX *matrix, NUMTX *secondary_matrix,
+i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *animation, NUMTX *matrix, NUMTX *secondary_matrix,
                            NUMTX *reflection_matrix, NUMTX *auxiliary_matrix, GAMEOBJECT *object, u32 flags) {
     NUMTX special_matrix;
     NUMTX scaled_matrix;
@@ -4344,7 +4344,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
     }
 }
 
-static void DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices, ANIMPACKET_PC *animation, i32 locator,
+static void DrawExtraCharacterLayerBits(GAMEOBJECT *object, i32 character_id, NUMTX *joint_matrices, ANIMPACKET *animation, i32 locator,
                                         NUMTX *override_matrix) {
     i16 model_index;
     CHARACTER_MODEL_LAYERS *model;

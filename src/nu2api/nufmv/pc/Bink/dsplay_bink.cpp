@@ -9,37 +9,37 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct RADFMV_DEVICE_METHODS_PC {                                                                        // size 0x168
-    void *unknown_000[2];                                                                                // 0x000
-    ULONG(__stdcall *release)(PC_D3D9_DEVICE_PC *);                                                      // 0x008
-    void *unknown_00c[14];                                                                               // 0x00c
-    HRESULT(__stdcall *present)(PC_D3D9_DEVICE_PC *, const RECT *, const RECT *, HWND, const RGNDATA *); // 0x044
-    void *unknown_048[5];                                                                                // 0x048
-    HRESULT(__stdcall *create_texture)                                                                   // 0x05c
-    (PC_D3D9_DEVICE_PC *, u32, u32, u32, u32, u32, u32, RADFMV_TEXTURE_PC **, HANDLE *);
-    void *unknown_060[17];                                                                   // 0x060
-    HRESULT(__stdcall *begin_scene)(PC_D3D9_DEVICE_PC *);                                    // 0x0a4
-    HRESULT(__stdcall *end_scene)(PC_D3D9_DEVICE_PC *);                                      // 0x0a8
-    HRESULT(__stdcall *clear)(PC_D3D9_DEVICE_PC *, u32, const void *, u32, u32, f32, u32);   // 0x0ac
-    void *unknown_0b0[39];                                                                   // 0x0b0
-    HRESULT(__stdcall *draw_primitive_up)(PC_D3D9_DEVICE_PC *, u32, u32, const void *, u32); // 0x14c
-    void *unknown_150[5];                                                                    // 0x150
-    HRESULT(__stdcall *set_fvf)(PC_D3D9_DEVICE_PC *, u32);                                   // 0x164
+struct RADFMV_DEVICE_METHODS {                                                                        // size 0x168
+    void *unknown_000[2];                                                                             // 0x000
+    ULONG(__stdcall *release)(PC_D3D9_DEVICE *);                                                      // 0x008
+    void *unknown_00c[14];                                                                            // 0x00c
+    HRESULT(__stdcall *present)(PC_D3D9_DEVICE *, const RECT *, const RECT *, HWND, const RGNDATA *); // 0x044
+    void *unknown_048[5];                                                                             // 0x048
+    HRESULT(__stdcall *create_texture)                                                                // 0x05c
+    (PC_D3D9_DEVICE *, u32, u32, u32, u32, u32, u32, RADFMV_TEXTURE **, HANDLE *);
+    void *unknown_060[17];                                                                // 0x060
+    HRESULT(__stdcall *begin_scene)(PC_D3D9_DEVICE *);                                    // 0x0a4
+    HRESULT(__stdcall *end_scene)(PC_D3D9_DEVICE *);                                      // 0x0a8
+    HRESULT(__stdcall *clear)(PC_D3D9_DEVICE *, u32, const void *, u32, u32, f32, u32);   // 0x0ac
+    void *unknown_0b0[39];                                                                // 0x0b0
+    HRESULT(__stdcall *draw_primitive_up)(PC_D3D9_DEVICE *, u32, u32, const void *, u32); // 0x14c
+    void *unknown_150[5];                                                                 // 0x150
+    HRESULT(__stdcall *set_fvf)(PC_D3D9_DEVICE *, u32);                                   // 0x164
 };
 
-struct RADFMV_FACTORY_METHODS_PC {                                                      // size 0x2c
+struct RADFMV_FACTORY_METHODS {                                                         // size 0x2c
     void *unknown_000[10];                                                              // 0x00
     HRESULT(__stdcall *check_format)(GRAPHICS_FACTORY *, u32, u32, u32, u32, u32, u32); // 0x28
 };
 
-#define RAD_DEVICE_METHODS(device) reinterpret_cast<const RADFMV_DEVICE_METHODS_PC *>((device)->methods)
-#define RAD_FACTORY_METHODS(factory) reinterpret_cast<const RADFMV_FACTORY_METHODS_PC *>((factory)->methods)
+#define RAD_DEVICE_METHODS(device) reinterpret_cast<const RADFMV_DEVICE_METHODS *>((device)->methods)
+#define RAD_FACTORY_METHODS(factory) reinterpret_cast<const RADFMV_FACTORY_METHODS *>((factory)->methods)
 
 extern "C" i32 RadFmvCheckFormatPc(GRAPHICS_FACTORY *factory, u32 format, u32 display_format) {
     return RAD_FACTORY_METHODS(factory)->check_format(factory, 0, 1, display_format, 0, 3, format) >= 0;
 }
 
-extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *factory, u32 display_format, RADFMV_CONTEXT_PC *context) {
+extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *factory, u32 display_format, RADFMV_CONTEXT *context) {
     const u32 formats[7][4] = {
         {22, 0, 4, 0},
         {20, 8, 3, 0},
@@ -72,13 +72,13 @@ extern "C" i32 RadFmvInitializeFormatsPc(GRAPHICS_FACTORY *factory, u32 display_
     return i != 7;
 }
 
-extern "C" RADFMV_CONTEXT_PC *RadFmvOpenPc(HWND window) {
+extern "C" RADFMV_CONTEXT *RadFmvOpenPc(HWND window) {
     GRAPHICS_PRESENT_PARAMETERS present = {0};
     GRAPHICS_DISPLAY_MODE mode;
     GRAPHICS_CAPS caps;
     GRAPHICS_FACTORY *factory;
-    PC_D3D9_DEVICE_PC *device;
-    RADFMV_CONTEXT_PC *context;
+    PC_D3D9_DEVICE *device;
+    RADFMV_CONTEXT *context;
     factory = reinterpret_cast<GRAPHICS_FACTORY *>(Direct3DCreate9(32));
     if (factory == NULL) {
         return NULL;
@@ -87,7 +87,7 @@ extern "C" RADFMV_CONTEXT_PC *RadFmvOpenPc(HWND window) {
         factory->methods->release(factory);
         return NULL;
     }
-    context = (RADFMV_CONTEXT_PC *)malloc(sizeof(RADFMV_CONTEXT_PC));
+    context = (RADFMV_CONTEXT *)malloc(sizeof(RADFMV_CONTEXT));
     if (context == NULL) {
         factory->methods->release(factory);
         return NULL;
@@ -114,7 +114,7 @@ extern "C" RADFMV_CONTEXT_PC *RadFmvOpenPc(HWND window) {
     return context;
 }
 
-extern "C" void RadFmvClosePc(RADFMV_CONTEXT_PC *context) {
+extern "C" void RadFmvClosePc(RADFMV_CONTEXT *context) {
     if (context) {
         if (context->device) {
             RAD_DEVICE_METHODS(context->device)->release(context->device);
@@ -132,21 +132,21 @@ extern "C" const char *RadFmvDescribePc(void) {
     return "Direct3D9";
 }
 
-extern "C" void RadFmvBeginScenePc(RADFMV_CONTEXT_PC *context) {
+extern "C" void RadFmvBeginScenePc(RADFMV_CONTEXT *context) {
     if (context) {
         RAD_DEVICE_METHODS(context->device)->clear(context->device, 0, NULL, 1, 0xff000000, 1.0f, 0);
         RAD_DEVICE_METHODS(context->device)->begin_scene(context->device);
     }
 }
 
-extern "C" void RadFmvEndScenePc(RADFMV_CONTEXT_PC *context) {
+extern "C" void RadFmvEndScenePc(RADFMV_CONTEXT *context) {
     if (context) {
         RAD_DEVICE_METHODS(context->device)->end_scene(context->device);
         RAD_DEVICE_METHODS(context->device)->present(context->device, NULL, NULL, NULL, NULL);
     }
 }
 
-extern "C" void RadFmvResizePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height) {
+extern "C" void RadFmvResizePc(RADFMV_CONTEXT *context, u32 width, u32 height) {
     PC_VIEWPORT viewport;
     if (width < 1) {
         width = 1;
@@ -182,10 +182,10 @@ static u32 RadFmvRoundTexturePc(u32 size) {
     return size > 2 ? 4 : size;
 }
 
-RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, u32 pitch, u32 bytes, u32 width, u32 height) {
+RADFMV_TEXTURE *RadFmvCreateTexturePc(PC_D3D9_DEVICE *device, u32 format, u32 pitch, u32 bytes, u32 width, u32 height) {
     (void)pitch;
-    RADFMV_TEXTURE_PC *texture = NULL;
-    RADFMV_LOCK_PC locked;
+    RADFMV_TEXTURE *texture = NULL;
+    RADFMV_LOCK locked;
     if (RAD_DEVICE_METHODS(device)->create_texture(device, width, height, 1, 0x200, format, 0, &texture, NULL) < 0) {
         if (RAD_DEVICE_METHODS(device)->create_texture(device, width, height, 1, 0, format, 1, &texture, NULL) < 0) {
             return texture;
@@ -204,19 +204,19 @@ RADFMV_TEXTURE_PC *RadFmvCreateTexturePc(PC_D3D9_DEVICE_PC *device, u32 format, 
     return texture;
 }
 
-struct RADFMV_VERTEX_PC { // size 0x20
-    f32 x;                // 0x00
-    f32 y;                // 0x04
-    f32 z;                // 0x08
-    f32 rhw;              // 0x0c
-    u32 diffuse;          // 0x10
-    u32 specular;         // 0x14
-    f32 u;                // 0x18
-    f32 v;                // 0x1c
+struct RADFMV_VERTEX { // size 0x20
+    f32 x;             // 0x00
+    f32 y;             // 0x04
+    f32 z;             // 0x08
+    f32 rhw;           // 0x0c
+    u32 diffuse;       // 0x10
+    u32 specular;      // 0x14
+    f32 u;             // 0x18
+    f32 v;             // 0x1c
 };
 
-static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scale, f32 y_scale, i32 width, i32 height, f32 alpha) {
-    RADFMV_VERTEX_PC vertices[4];
+static void RadFmvDrawQuadPc(PC_D3D9_DEVICE *device, f32 x, f32 y, f32 x_scale, f32 y_scale, i32 width, i32 height, f32 alpha) {
+    RADFMV_VERTEX vertices[4];
     vertices[0].x = (f32)(x - 0.5);
     vertices[0].y = (f32)(y - 0.5);
     vertices[0].z = 0;
@@ -240,8 +240,8 @@ static void RadFmvDrawQuadPc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 x_scal
     RAD_DEVICE_METHODS(device)->draw_primitive_up(device, 5, 2, vertices, 32);
 }
 
-static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 xs, f32 ys, i32 w, i32 h) {
-    RADFMV_VERTEX_PC vertices[12];
+static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE *device, f32 x, f32 y, f32 xs, f32 ys, i32 w, i32 h) {
+    RADFMV_VERTEX vertices[12];
     vertices[0].x = x;
     vertices[0].y = y;
     vertices[0].z = 0;
@@ -276,7 +276,7 @@ static void RadFmvDrawOutlinePc(PC_D3D9_DEVICE_PC *device, f32 x, f32 y, f32 xs,
     RAD_DEVICE_METHODS(device)->draw_primitive_up(device, 2, 6, vertices, 32);
 }
 
-static void RadFmvSetDrawStatePc(RADFMV_IMAGE_PC *image, f32 alpha) {
+static void RadFmvSetDrawStatePc(RADFMV_IMAGE *image, f32 alpha) {
     if (alpha >= 0.9999 && image->alpha == 0) {
         image->device->methods->set_render_state(image->device, 27, 0);
         image->device->methods->set_texture_stage_state(image->device, 0, 4, 2);
@@ -293,7 +293,7 @@ static void RadFmvSetDrawStatePc(RADFMV_IMAGE_PC *image, f32 alpha) {
     image->device->methods->set_texture_stage_state(image->device, 0, 1, 4);
 }
 
-RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha, u32 maximum) {
+RADFMV_IMAGE *RadFmvCreateTiledPc(RADFMV_CONTEXT *context, u32 width, u32 height, u32 alpha, u32 maximum) {
     u32 bytes = alpha ? context->alpha_bytes : context->opaque_bytes;
     u32 pitch = (bytes * width + 15) & ~15u;
     u32 columns = width / maximum;
@@ -303,12 +303,12 @@ RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 
     u32 rh = height % maximum;
     u32 texture_height = RadFmvRoundTexturePc(rh);
     u32 count = ((width + maximum - 1) / maximum) * ((height + maximum - 1) / maximum);
-    RADFMV_IMAGE_PC *image = static_cast<RADFMV_IMAGE_PC *>(malloc(0x50 + count * 4));
+    RADFMV_IMAGE *image = static_cast<RADFMV_IMAGE *>(malloc(0x50 + count * 4));
     if (!image) {
         return NULL;
     }
     memset(image, 0, 0x50);
-    image->textures = reinterpret_cast<RADFMV_TEXTURE_PC **>(image + 1);
+    image->textures = reinterpret_cast<RADFMV_TEXTURE **>(image + 1);
     image->pitch = pitch;
     image->bytes_per_pixel = bytes;
     image->full_columns = columns;
@@ -325,7 +325,7 @@ RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 
     image->maximum_texture = maximum;
     image->bink_format = alpha ? context->alpha_bink_format : context->opaque_bink_format;
     image->format = alpha ? context->alpha_format : context->opaque_format;
-    RADFMV_TEXTURE_PC **out = image->textures;
+    RADFMV_TEXTURE **out = image->textures;
     for (u32 row = 0; row < image->full_rows; ++row) {
         for (u32 col = 0; col < image->full_columns; ++col) {
             *out++ = RadFmvCreateTexturePc(context->device, image->format, image->pitch, image->bytes_per_pixel, image->maximum_texture,
@@ -362,7 +362,7 @@ RADFMV_IMAGE_PC *RadFmvCreateTiledPc(RADFMV_CONTEXT_PC *context, u32 width, u32 
     return image;
 }
 
-void RadFmvDestroyTiledPc(RADFMV_IMAGE_PC *image) {
+void RadFmvDestroyTiledPc(RADFMV_IMAGE *image) {
     if (image->textures) {
         for (u32 i = 0; i < image->texture_count; ++i) {
             if (image->textures[i]) {
@@ -374,8 +374,8 @@ void RadFmvDestroyTiledPc(RADFMV_IMAGE_PC *image) {
     }
 }
 
-i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h, u32 discard) {
-    RADFMV_LOCK_PC locked;
+i32 RadFmvLockTiledPc(RADFMV_IMAGE *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h, u32 discard) {
+    RADFMV_LOCK locked;
     if (image->lock_index >= image->texture_count ||
         image->textures[image->lock_index]->methods->lock(image->textures[image->lock_index], 0, &locked, NULL, discard ? 0x2000 : 0) < 0) {
         image->lock_index = 0;
@@ -409,13 +409,13 @@ i32 RadFmvLockTiledPc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *su
     return 1;
 }
 
-void RadFmvUnlockTiledPc(RADFMV_IMAGE_PC *image) {
+void RadFmvUnlockTiledPc(RADFMV_IMAGE *image) {
     image->textures[image->lock_index - 1]->methods->unlock(image->textures[image->lock_index - 1], 0);
 }
 
-void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
+void RadFmvBlitTiledPc(RADFMV_IMAGE *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
     RadFmvSetDrawStatePc(image, alpha);
-    RADFMV_TEXTURE_PC **texture = image->textures;
+    RADFMV_TEXTURE **texture = image->textures;
     f32 x_step = (f32)image->maximum_texture * xs;
     f32 y_step = (f32)image->maximum_texture * ys;
     f32 px;
@@ -450,7 +450,7 @@ void RadFmvBlitTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32
     }
 }
 
-void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
+void RadFmvOutlineTiledPc(RADFMV_IMAGE *image, f32 x, f32 y, f32 xs, f32 ys) {
     f32 x_step = (f32)image->maximum_texture * xs;
     f32 y_step = (f32)image->maximum_texture * ys;
     f32 px;
@@ -478,20 +478,20 @@ void RadFmvOutlineTiledPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) 
     }
 }
 
-void RadFmvBlitSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
+void RadFmvBlitSinglePc(RADFMV_IMAGE *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
     RadFmvSetDrawStatePc(image, alpha);
     image->device->methods->set_texture(image->device, 0, image->texture);
     RadFmvDrawQuadPc(image->device, x, y, xs, ys, image->width, image->height, alpha);
 }
 
-void RadFmvOutlineSinglePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
+void RadFmvOutlineSinglePc(RADFMV_IMAGE *image, f32 x, f32 y, f32 xs, f32 ys) {
     RadFmvDrawOutlinePc(image->device, x, y, xs, ys, image->width, image->height);
 }
 
-i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h, u32 discard) {
+i32 RadFmvLockSinglePc(RADFMV_IMAGE *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h, u32 discard) {
     if (!image->lock_index) {
         if (pixels || pitch) {
-            RADFMV_LOCK_PC locked;
+            RADFMV_LOCK locked;
             if (image->texture->methods->lock(image->texture, 0, &locked, NULL, discard ? 0x2000 : 0) < 0) {
                 return 0;
             }
@@ -524,13 +524,13 @@ i32 RadFmvLockSinglePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *s
     return 0;
 }
 
-void RadFmvUnlockSinglePc(RADFMV_IMAGE_PC *image) {
+void RadFmvUnlockSinglePc(RADFMV_IMAGE *image) {
     image->texture->methods->unlock(image->texture, 0);
 }
 
-RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha, u32 maximum) {
+RADFMV_IMAGE *RadFmvCreateSinglePc(RADFMV_CONTEXT *context, u32 width, u32 height, u32 alpha, u32 maximum) {
     (void)maximum;
-    RADFMV_IMAGE_PC *image = static_cast<RADFMV_IMAGE_PC *>(malloc(0x50));
+    RADFMV_IMAGE *image = static_cast<RADFMV_IMAGE *>(malloc(0x50));
     if (!image) {
         return NULL;
     }
@@ -553,14 +553,14 @@ RADFMV_IMAGE_PC *RadFmvCreateSinglePc(RADFMV_CONTEXT_PC *context, u32 width, u32
     return image;
 }
 
-void RadFmvDestroySinglePc(RADFMV_IMAGE_PC *image) {
+void RadFmvDestroySinglePc(RADFMV_IMAGE *image) {
     if (image->texture) {
         image->texture->methods->release(image->texture);
     }
     free(image);
 }
 
-extern "C" void RadFmvBlitImagePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
+extern "C" void RadFmvBlitImagePc(RADFMV_IMAGE *image, f32 x, f32 y, f32 xs, f32 ys, f32 alpha) {
     if (image) {
         if (image->single_texture) {
             RadFmvBlitSinglePc(image, x, y, xs, ys, alpha);
@@ -570,7 +570,7 @@ extern "C" void RadFmvBlitImagePc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, 
     }
 }
 
-extern "C" void RadFmvDrawLinesPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, f32 ys) {
+extern "C" void RadFmvDrawLinesPc(RADFMV_IMAGE *image, f32 x, f32 y, f32 xs, f32 ys) {
     if (image) {
         if (image->single_texture) {
             RadFmvOutlineSinglePc(image, x, y, xs, ys);
@@ -580,7 +580,7 @@ extern "C" void RadFmvDrawLinesPc(RADFMV_IMAGE_PC *image, f32 x, f32 y, f32 xs, 
     }
 }
 
-extern "C" i32 RadFmvLockImagePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
+extern "C" i32 RadFmvLockImagePc(RADFMV_IMAGE *image, void **pixels, u32 *pitch, u32 *surface, u32 *x, u32 *y, u32 *w, u32 *h,
                                  u32 discard) {
     if (!image) {
         return 0;
@@ -589,7 +589,7 @@ extern "C" i32 RadFmvLockImagePc(RADFMV_IMAGE_PC *image, void **pixels, u32 *pit
                                  : RadFmvLockTiledPc(image, pixels, pitch, surface, x, y, w, h, discard);
 }
 
-extern "C" void RadFmvUnlockImagePc(RADFMV_IMAGE_PC *image) {
+extern "C" void RadFmvUnlockImagePc(RADFMV_IMAGE *image) {
     if (image) {
         if (image->single_texture) {
             RadFmvUnlockSinglePc(image);
@@ -599,14 +599,14 @@ extern "C" void RadFmvUnlockImagePc(RADFMV_IMAGE_PC *image) {
     }
 }
 
-extern "C" RADFMV_IMAGE_PC *RadFmvCreateImagePc(RADFMV_CONTEXT_PC *context, u32 width, u32 height, u32 alpha, u32 maximum) {
+extern "C" RADFMV_IMAGE *RadFmvCreateImagePc(RADFMV_CONTEXT *context, u32 width, u32 height, u32 alpha, u32 maximum) {
     if ((RadFmvRoundTexturePc(width) == width && RadFmvRoundTexturePc(height) == height) || context->permits_nonpow2) {
         return RadFmvCreateSinglePc(context, width, height, alpha, maximum);
     }
     return RadFmvCreateTiledPc(context, width, height, alpha, maximum);
 }
 
-extern "C" void RadFmvDestroyImagePc(RADFMV_IMAGE_PC *image) {
+extern "C" void RadFmvDestroyImagePc(RADFMV_IMAGE *image) {
     if (image) {
         if (image->single_texture) {
             RadFmvDestroySinglePc(image);

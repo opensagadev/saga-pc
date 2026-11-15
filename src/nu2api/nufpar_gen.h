@@ -15,7 +15,7 @@ struct nualloc_manager_block_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void NuFreeFPar(NUFPAR_PC *parser);
+    void NuFreeFPar(NUFPAR *parser);
 #ifdef __cplusplus
 }
 #endif

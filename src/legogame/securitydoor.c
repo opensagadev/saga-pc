@@ -51,18 +51,18 @@ typedef struct security_door_record_s { // size 0xc0
     u16 terrain_angle_x;   // 0xb2
     f32 opening;           // 0xb4
     u8 unknown_b8[8];      // 0xb8
-} SECURITY_DOOR_RECORD_PC;
+} SECURITY_DOOR_RECORD;
 
 typedef struct security_door_progress_s { // size 0xc
     u32 visible_mask[1];                  // 0x0
     u32 active_mask[1];                   // 0x4
     u32 opened_mask[1];                   // 0x8
-} SECURITY_DOOR_PROGRESS_PC;
+} SECURITY_DOOR_PROGRESS;
 
 extern char dat_007516c0[1];
 extern char *SecurityDoor_OutputName;
 
-static void SecurityDoorUpdateMatrices(SECURITY_DOOR_RECORD_PC *door, u16 angle) {
+static void SecurityDoorUpdateMatrices(SECURITY_DOOR_RECORD *door, u16 angle) {
     NUVEC translation = {0.0f, 0.0f, 0.0f};
     NuMtxSetRotationY(&door->leaf_matrix[0], -angle);
     translation.x = 0.2667f;
@@ -77,12 +77,12 @@ static void SecurityDoorUpdateMatrices(SECURITY_DOOR_RECORD_PC *door, u16 angle)
 }
 
 i32 SecurityDoors_Load(WORLDINFO *world, void *unused) {
-    SECURITY_DOOR_RECORD_PC *door;
+    SECURITY_DOOR_RECORD *door;
     i32 index;
     if (world->security_door_count == 0) {
         EdFileReadInt();
         world->security_door_count = EdFileReadInt();
-        door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+        door = (SECURITY_DOOR_RECORD *)world->security_doors;
         for (index = 0; index < world->security_door_count; ++index, ++door) {
             EdFileRead(door->name, 16);
             EdFileReadNuVec(&door->position);
@@ -96,40 +96,40 @@ i32 SecurityDoors_Load(WORLDINFO *world, void *unused) {
 void SecurityDoors_InitTerrain(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < world->security_door_count; ++index) {
-        ((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].platform_id[0] =
-            NewPlatPickupInst(&((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].leaf_matrix[0], 5);
-        ((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].platform_id[1] =
-            NewPlatPickupInst(&((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].leaf_matrix[1], 6);
+        ((SECURITY_DOOR_RECORD *)world->security_doors)[index].platform_id[0] =
+            NewPlatPickupInst(&((SECURITY_DOOR_RECORD *)world->security_doors)[index].leaf_matrix[0], 5);
+        ((SECURITY_DOOR_RECORD *)world->security_doors)[index].platform_id[1] =
+            NewPlatPickupInst(&((SECURITY_DOOR_RECORD *)world->security_doors)[index].leaf_matrix[1], 6);
     }
 }
 
 void *SecurityDoors_ReserveBufferSpace(WORLDINFO *world) {
-    LEVELDATA_PC *level = world->current_level;
+    LEVELDATA *level = world->current_level;
     world->security_doors = NULL;
     world->security_door_count = 0;
     if (level->max_securitydoors > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
         world->security_doors = world->giz_buffer.void_ptr;
-        world->giz_buffer.addr += level->max_securitydoors * sizeof(SECURITY_DOOR_RECORD_PC);
+        world->giz_buffer.addr += level->max_securitydoors * sizeof(SECURITY_DOOR_RECORD);
     }
     return world->security_doors;
 }
 
 void SecurityDoor_Activate(GIZMO_PC *gizmo, i32 active) {
     if (gizmo != NULL) {
-        SECURITY_DOOR_RECORD_PC *door = gizmo->object;
+        SECURITY_DOOR_RECORD *door = gizmo->object;
         door->bits.active = active != 0;
     }
 }
 
 void SecurityDoor_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     if (gizmo != NULL) {
-        SECURITY_DOOR_RECORD_PC *door = gizmo->object;
+        SECURITY_DOOR_RECORD *door = gizmo->object;
         door->bits.visible = visible != 0;
     }
 }
 
-static void SecurityDoorInitRecord(SECURITY_DOOR_RECORD_PC *door) {
+static void SecurityDoorInitRecord(SECURITY_DOOR_RECORD *door) {
     f32 height;
     door->player_position.y = 0.0f;
     door->player_position.x = 0.0f;
@@ -151,13 +151,13 @@ static void SecurityDoorInitRecord(SECURITY_DOOR_RECORD_PC *door) {
     PlatInstRotate(door->platform_id[1], 1);
 }
 
-void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS_PC *progress) {
-    SECURITY_DOOR_RECORD_PC *door;
+void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS *progress) {
+    SECURITY_DOOR_RECORD *door;
     i32 index;
     if (world == NULL || world->security_doors == NULL) {
         return;
     }
-    door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+    door = (SECURITY_DOOR_RECORD *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         i32 word;
         u32 mask;
@@ -179,12 +179,12 @@ void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS_
 }
 
 void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
-    SECURITY_DOOR_RECORD_PC *door;
+    SECURITY_DOOR_RECORD *door;
     i32 index;
     if (world == NULL || world->security_doors == NULL) {
         return;
     }
-    door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+    door = (SECURITY_DOOR_RECORD *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         NUANG angle;
         if (door->state == 2 && door->opening < 1.0f) {
@@ -207,9 +207,9 @@ void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     }
 }
 
-SECURITY_DOOR_RECORD_PC *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
-    SECURITY_DOOR_RECORD_PC *nearest = NULL;
-    SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+SECURITY_DOOR_RECORD *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+    SECURITY_DOOR_RECORD *nearest = NULL;
+    SECURITY_DOOR_RECORD *door = (SECURITY_DOOR_RECORD *)world->security_doors;
     f32 best = 1000000000.0f;
     i32 index;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
@@ -234,7 +234,7 @@ SECURITY_DOOR_RECORD_PC *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *posit
 }
 
 void SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
-    SECURITY_DOOR_RECORD_PC *door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+    SECURITY_DOOR_RECORD *door = (SECURITY_DOOR_RECORD *)world->security_doors;
     GAMEOBJECT *nearest_player = NULL;
     u16 rotation;
     f32 pulse;
@@ -288,21 +288,21 @@ i32 SecurityDoors_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_securitydoors : 0;
 }
 
-void SecurityDoors_AddGizmos(GIZMOSYS_PC *system, i32 type_id, WORLDINFO *world, void *unused) {
+void SecurityDoors_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->security_door_count; ++index) {
-        if (NuStrLen(((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index].name) != 0) {
-            AddGizmo(system, type_id, NULL, &((SECURITY_DOOR_RECORD_PC *)world->security_doors)[index]);
+        if (NuStrLen(((SECURITY_DOOR_RECORD *)world->security_doors)[index].name) != 0) {
+            AddGizmo(system, type_id, NULL, &((SECURITY_DOOR_RECORD *)world->security_doors)[index]);
         }
     }
 }
 
 char *SecurityDoor_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo != NULL ? ((SECURITY_DOOR_RECORD_PC *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? ((SECURITY_DOOR_RECORD *)gizmo->object)->name : NULL;
 }
 
 i32 SecurityDoor_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
-    return (((SECURITY_DOOR_RECORD_PC *)gizmo->object)->flags >> 2) & 1;
+    return (((SECURITY_DOOR_RECORD *)gizmo->object)->flags >> 2) & 1;
 }
 
 char *SecurityDoor_GetOutputName(GIZMO_PC *gizmo, i32 output) {
@@ -314,10 +314,10 @@ i32 SecurityDoor_GetNumOutputs(GIZMO_PC *gizmo) {
 }
 
 void *SecurityDoors_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
-    return GizmoBufferAlloc(buffer, end, sizeof(SECURITY_DOOR_PROGRESS_PC));
+    return GizmoBufferAlloc(buffer, end, sizeof(SECURITY_DOOR_PROGRESS));
 }
 
-void SecurityDoors_ClearProgress(void *world, SECURITY_DOOR_PROGRESS_PC *progress) {
+void SecurityDoors_ClearProgress(void *world, SECURITY_DOOR_PROGRESS *progress) {
     if (progress != NULL) {
         progress->visible_mask[0] = 0xffffffffu;
         progress->active_mask[0] = 0xffffffffu;
@@ -325,8 +325,8 @@ void SecurityDoors_ClearProgress(void *world, SECURITY_DOOR_PROGRESS_PC *progres
     }
 }
 
-void SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS_PC *progress) {
-    SECURITY_DOOR_RECORD_PC *door;
+void SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS *progress) {
+    SECURITY_DOOR_RECORD *door;
     i32 index;
     if (progress == NULL) {
         return;
@@ -337,7 +337,7 @@ void SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURITY_DOOR_P
     if (world == NULL || world->security_doors == NULL) {
         return;
     }
-    door = (SECURITY_DOOR_RECORD_PC *)world->security_doors;
+    door = (SECURITY_DOOR_RECORD *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         i32 word;
         u32 mask;
@@ -362,21 +362,21 @@ NUVEC *SecurityDoor_GetPos(GIZMO_PC *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((SECURITY_DOOR_RECORD_PC *)gizmo->object)->position;
+    return &((SECURITY_DOOR_RECORD *)gizmo->object)->position;
 }
 
 char *SecurityDoor_OutputName = "Opened";
 
 char *SecurityDoorRegistryNamePc = "SecurityDoor";
-ADDGIZMOTYPE_PC SecurityDoorAddType = {0};
+ADDGIZMOTYPE SecurityDoorAddType = {0};
 
-ADDGIZMOTYPE_PC *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
+ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     char *name = SecurityDoorRegistryNamePc;
     SecurityDoorAddType = Default_ADDGIZMOTYPE;
     SecurityDoorAddType.name = name;
     SecurityDoorAddType.prefix = dat_007516c0;
     SecurityDoorAddType.fns.options = 12;
-    SecurityDoorAddType.fns.get_max_gizmos_fn = (i32(*)(void *))SecurityDoors_GetMaxGizmos;
+    SecurityDoorAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))SecurityDoors_GetMaxGizmos;
     SecurityDoorAddType.fns.add_gizmos_fn = (void *)SecurityDoors_AddGizmos;
     SecurityDoorAddType.fns.early_update_fn = NULL;
     SecurityDoorAddType.fns.late_update_fn = (void (*)(void *, void *, f32))SecurityDoors_Update;
@@ -400,13 +400,13 @@ ADDGIZMOTYPE_PC *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     SecurityDoorAddType.fns.store_progress_fn = (void *)SecurityDoors_StoreProgress;
     SecurityDoorAddType.fns.reset_fn = (void *)SecurityDoors_Reset;
     SecurityDoorAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))SecurityDoors_ReserveBufferSpace;
-    SecurityDoorAddType.fns.load_fn = (i32(*)(void *, void *))SecurityDoors_Load;
+    SecurityDoorAddType.fns.load_fn = (i32 (*)(void *, void *))SecurityDoors_Load;
     SecurityDoorAddType.fns.post_load_fn = NULL;
     SecurityDoorAddType.fns.add_level_sfx_fn = NULL;
     return &SecurityDoorAddType;
 }
 
-static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door, i32 facing) {
+static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD *door, i32 facing) {
     object->context_variant_flags &= ~0x40u;
     object->context_timer = 0.0f;
     object->character_context = CHARACTER_CONTEXT_SECURITY;
@@ -418,10 +418,10 @@ static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD_PC *door,
     }
     object->context_variant_flags |= 0x20;
     if (facing != 0) {
-        object->movement_facing_angle = ((SECURITY_DOOR_RECORD_PC *)object->grapple)->yaw + 0x8000;
-        ((SECURITY_DOOR_RECORD_PC *)object->grapple)->state = 1;
+        object->movement_facing_angle = ((SECURITY_DOOR_RECORD *)object->grapple)->yaw + 0x8000;
+        ((SECURITY_DOOR_RECORD *)object->grapple)->state = 1;
     } else {
-        object->movement_facing_angle = ((SECURITY_DOOR_RECORD_PC *)object->grapple)->yaw;
+        object->movement_facing_angle = ((SECURITY_DOOR_RECORD *)object->grapple)->yaw;
     }
 }
 
@@ -454,7 +454,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if ((object->context_variant_flags & 0x20) != 0) {
             object->context_variant_flags |= 0x40;
-            ((SECURITY_DOOR_RECORD_PC *)object->grapple)->state = 2;
+            ((SECURITY_DOOR_RECORD *)object->grapple)->state = 2;
             NewRumble(object->pad->bound_pad, 0.6f, 0);
         }
         return;
@@ -466,7 +466,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     {
         f32 range = (f64)object->bounds_radius + 0.25;
         f32 distance;
-        SECURITY_DOOR_RECORD_PC *door = SecurityDoor_FindNearest(world, &object->lower_position, object, &distance);
+        SECURITY_DOOR_RECORD *door = SecurityDoor_FindNearest(world, &object->lower_position, object, &distance);
         if (door == NULL) {
             return;
         }

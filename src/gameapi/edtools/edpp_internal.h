@@ -18,7 +18,7 @@ extern "C" {
     extern i32 edpp_page_on[8];
     extern i32 edpp_instances_used;
     extern i32 edpp_types_used;
-    extern EDPP_PARTICLE_PC edpp_ptls[512];
+    extern EDPP_PARTICLE edpp_ptls[512];
     extern i32 edpp_nearest;
     extern NUVEC edpp_cam_pos;
     extern i32 edpp_emitrotx;

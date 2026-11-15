@@ -75,12 +75,12 @@ static f32 HitsFabs(f32 f) {
     return rv;
 }
 
-GAMEPAD_PC *GamePad_Allocate(void) {
+GAMEPAD *GamePad_Allocate(void) {
     i32 index;
     for (index = 0; index < 64; ++index) {
         if ((GamePadStorage[index].allocated & 1) == 0) {
             GamePadStorage[index].allocated |= 1;
-            return (GAMEPAD_PC *)&GamePadStorage[index];
+            return (GAMEPAD *)&GamePadStorage[index];
         }
     }
     return NULL;
@@ -121,7 +121,7 @@ u16 PlayerPadPreviousAngle[2] = {0};
 f32 PlayerPadCurrentSpeed[2] = {0};
 
 f32 GamePad_Rotate(GAMEOBJECT *object) {
-    GAMEPAD_PC *pad;
+    GAMEPAD *pad;
     i32 index;
     i32 current_delta;
     i32 previous_delta;
@@ -144,7 +144,7 @@ f32 GamePad_Rotate(GAMEOBJECT *object) {
     return 0.0f;
 }
 
-i32 GamePad_Waggle(GAMEPAD_PC *pad) {
+i32 GamePad_Waggle(GAMEPAD *pad) {
     if (pad->input_magnitude != 0.0f && abs(RotDiff(pad->previous_input_angle, pad->input_angle)) > 0x2000) {
         return 1;
     }
@@ -228,7 +228,7 @@ void DieRumble(GAMEOBJECT *object) {
 }
 
 void KillRumble(GAMEOBJECT *object) {
-    FRAME_PAD_PC *pad;
+    FRAME_PAD *pad;
     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         pad = object->pad->bound_pad;
@@ -239,7 +239,7 @@ void KillRumble(GAMEOBJECT *object) {
 }
 
 void HitRumble(GAMEOBJECT *object) {
-    FRAME_PAD_PC *pad;
+    FRAME_PAD *pad;
     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         pad = object->pad->bound_pad;
@@ -258,7 +258,7 @@ void TakeHitRumble(GAMEOBJECT *object, f32 strength) {
 
 void FloatRumble(GAMEOBJECT *object) {
     f32 strength;
-    FRAME_PAD_PC *pad;
+    FRAME_PAD *pad;
     if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         strength = HitsFabs(object->velocity.y);
         strength = (f32)((f64)strength / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
@@ -298,9 +298,9 @@ void ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
 
 i32 fun_0054ace0(i32 index, i32 require_ready) {
     i32 menu = GetMenuID();
-    if ((require_ready && !((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].input_ready) ||
-        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4) ||
-        (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
+    if ((require_ready && !((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].input_ready) ||
+        (((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].bound_pad->flags & 4) || (LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) ||
+        (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
         return 0;
     }
     return 1;
@@ -314,8 +314,8 @@ void PadOutPause(i32 index, WORLDINFO *world) {
         return;
     }
     menu = GetMenuID();
-    if (!((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].input_ready ||
-        (((GAMEPAD_RUNTIME_INPUT_PC *)GamePadStorage)[index].bound_pad->flags & 4)) {
+    if (!((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].input_ready ||
+        (((GAMEPAD_RUNTIME_INPUT *)GamePadStorage)[index].bound_pad->flags & 4)) {
         return;
     }
     if ((LEGOMENU_NEWGAME != -1 && menu == LEGOMENU_NEWGAME) || (LEGOMENU_CREDITS != -1 && menu == LEGOMENU_CREDITS)) {
@@ -347,12 +347,12 @@ void PadOutPause(i32 index, WORLDINFO *world) {
     }
 }
 
-FRAME_PAD_PC *pActivePad = 0;
+FRAME_PAD *pActivePad = 0;
 i32 readpads_always = 0;
 
 i32 ReadPad(i32 port) {
-    GAMEPAD_RUNTIME_INPUT_PC *gamepad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[port];
-    FRAME_PAD_PC *pad = gamepad->bound_pad;
+    GAMEPAD_RUNTIME_INPUT *gamepad = (GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[port];
+    FRAME_PAD *pad = gamepad->bound_pad;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 mode;
     f32 axis_x;
@@ -441,7 +441,7 @@ void DoInput(WORLDINFO *world) {
     i32 keyboard_mask;
     i32 changed;
     i32 index;
-    FRAME_PAD_PC *pad;
+    FRAME_PAD *pad;
     GAMEOBJECT *player;
     i32 escape;
     if (world == NULL) {
@@ -459,7 +459,7 @@ void DoInput(WORLDINFO *world) {
     }
     changed = PlayersDropInOut();
     for (index = 0; index < 2; ++index) {
-        pad = ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[index])->bound_pad;
+        pad = ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[index])->bound_pad;
         player = Player[index];
         if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn()) {
             continue;
@@ -532,7 +532,7 @@ void DoInput(WORLDINFO *world) {
     }
 }
 
-u16 GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
+u16 GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD *pad) {
     if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->sock_position.sock_index != -1) {
         if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & SOCK_FLAG_MOVE_ANGLE) != 0) {
             return (u16)(pad->input_angle + object->sock_heading + WORLD->sock_sys->socks[object->sock_position.sock_index].input_yaw);

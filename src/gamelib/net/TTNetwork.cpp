@@ -424,7 +424,7 @@ void TTNetwork::Update() {
     }
 }
 
-#define TT_PAD(data, index) reinterpret_cast<FRAME_PAD_PC *>((data)->pads[index])
+#define TT_PAD(data, index) reinterpret_cast<FRAME_PAD *>((data)->pads[index])
 
 void TTNetwork::ProcessEvenWhenPaused(ThingProcessData *data) {
     if (state != 0) {

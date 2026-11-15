@@ -10,11 +10,11 @@
 #include "legoapi/world/world.h"
 #endif
 
-typedef struct credit_record_s CREDIT_RECORD_PC;
+typedef struct credit_record_s CREDIT_RECORD;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern CREDIT_RECORD_PC *CreditList;
+    extern CREDIT_RECORD *CreditList;
 
     void Credits_Load(WORLDINFO *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus

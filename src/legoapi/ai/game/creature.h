@@ -47,7 +47,7 @@ extern "C" {
     void StoreProgressAICharacter(LEVEL_PROGRESS *progress);
     void AICreatureResumeScript(GAMEOBJECT *);
     void PlayerInitCapabilitiesVariant0(GAMEOBJECT *);
-    void ResetPlayerPacket(void *, CHARACTERDATA_PC *);
+    void ResetPlayerPacket(void *, CHARACTERDATA *);
     void SetGameObjectCharacterData(GAMEOBJECT *);
     void ResetCharacterIdle(GAMEOBJECT *, i32, i32);
     void ResetPlayerMoves(GAMEOBJECT *);
@@ -66,7 +66,7 @@ extern "C" {
     extern i16 DefaultAnimationJabbaId;
     void UpdateCharacterIdle(GAMEOBJECT *);
     extern i16 DefaultAnimationJabbaId;
-    void FixUpCharacters(CHARFIXUP_PC *);
+    void FixUpCharacters(CHARFIXUP *);
     void ExtraCharacterFixUpAfterConfig(void);
     void MovePlayer(struct gameobject_s *object);
     void MovePlayerSpline(struct gameobject_s *object);

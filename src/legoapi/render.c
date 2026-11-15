@@ -80,7 +80,7 @@ typedef struct render_post_prim_vertex_s { // size 0x18
         NuPrim2DAddXYZ((vx), (vy), 0.0f);                                                                                                  \
     } while (0)
 
-void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER_PC *parameters) {
+void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
     f32 inv_col = 1.0f / (cols - 1);
     f32 inv_row = 1.0f / (rows - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;

@@ -10,7 +10,7 @@
 #include "gameapi/gui/apimenu.h"
 #endif
 
-struct FRAME_PAD_PC;
+struct FRAME_PAD;
 struct language_data_s;
 struct numtl_s;
 struct vufnt_s;
@@ -174,7 +174,7 @@ struct PC_CONTROL_SCREEN {                  // size 0xec4
     i32 HashConfiguration(void);
     void SaveConfiguration(void);
     i32 WaitForRelease(void);
-    i32 Update(struct FRAME_PAD_PC *, struct FRAME_PAD_PC *, f32);
+    i32 Update(struct FRAME_PAD *, struct FRAME_PAD *, f32);
     void DrawDeadzone(f32, f32, f32, f32, f32, f32, f32, f32);
     void QueueText(char *, f32, f32, f32, i32, f32, f32, u32, f32, f32, u32);
     f32 DrawText(char *, f32, f32, f32, i32, f32, f32, u32, i32, f32);

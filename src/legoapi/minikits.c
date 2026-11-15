@@ -49,7 +49,7 @@ void MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
     buffer->addr += (u32)CHARCOUNT * 4u;
 }
 
-void MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void *unused) {
+void MiniKit_Load(MINIKIT *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void *unused) {
     char path[256];
     (void)unused;
     minikit->scene = NULL;
@@ -79,7 +79,7 @@ f32 PANEL_MINIKITY = 0.03f;
 f32 PANEL_MINIKITCOUNTSCALE = 0.5f;
 f32 PANEL_MINIKITCOUNTY = -0.1f;
 
-void MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
+void MiniKit_InitPieces(MINIKIT *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
     i32 direction_counts[6];
     i32 index;
     i32 direction;
@@ -116,12 +116,12 @@ void MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR
 }
 
 void CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection_plane, f32 reflection_height) {
-    MINIKIT_PC *kit;
+    MINIKIT *kit;
     i32 i;
     if (Char_MiniKit == NULL) {
         return;
     }
-    kit = (MINIKIT_PC *)Char_MiniKit[id];
+    kit = (MINIKIT *)Char_MiniKit[id];
     if (kit == NULL) {
         return;
     }
@@ -145,7 +145,7 @@ void CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection
 
 VARIPTR minikits_savecharacterbufferptr = {0};
 
-void CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
+void CharacterMiniKits_Load(COLLECTION_BUILD *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
     i32 i;
     i32 character_id;
@@ -160,7 +160,7 @@ void CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, V
     }
     buffer->addr = (buffer->addr + 3) & ~3u;
     view->pieces_by_id = buffer->void_ptr;
-    table_size = CHARCOUNT * sizeof(MINIKIT_PC *);
+    table_size = CHARCOUNT * sizeof(MINIKIT *);
     memset(view->pieces_by_id, 0, table_size);
     buffer->addr += table_size;
     for (i = 0; i < collection->count; ++i) {
@@ -184,7 +184,7 @@ void CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, V
         view->pieces_by_id[character_id]->model_id = (i16)character_id;
         if (view->pieces_by_id[character_id]->scene != NULL) {
             MiniKit_InitPieces(view->pieces_by_id[character_id], 10, buffer, end);
-            ((MINIKIT_PC **)Char_MiniKit)[character_id] = view->pieces_by_id[character_id];
+            ((MINIKIT **)Char_MiniKit)[character_id] = view->pieces_by_id[character_id];
         } else {
             view->pieces_by_id[character_id] = NULL;
             buffer->addr -= 0x18;
@@ -276,14 +276,14 @@ void DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
     Text3D(text, x, y + PANEL_MINIKITCOUNTY, 1.0f, scale, scale, scale, 0, 255, 0, 127);
 }
 
-void MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
+void MiniKit_GameMsg_Update(GAME_MESSAGE *message) {
     message->parameter_e2 = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     message->parameter_e0 = (u16)(NU_SIN_LUT(message->parameter_e2 * 2) * 1820.0);
 }
 
 f32 MiniKitScale = 0;
 
-void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
+void MiniKit_GameMsg_End(GAME_MESSAGE *message) {
     MiniKitScale = 2.0f;
     if (WorldInfo_CurrentlyActive()->area != NULL && (i16)message->icon != -1) {
         if ((i16)message->icon == MiniKitModelId) {

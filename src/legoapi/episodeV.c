@@ -85,7 +85,7 @@ void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, nuhsp
 
 /* Rotating rock at the end of AsteroidChase C. */
 
-void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
+void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA *level, f32 radius, f32 *distance);
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
     do {                                                                                                                                   \

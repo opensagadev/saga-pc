@@ -42,7 +42,7 @@ extern "C" {
         u8 index;             // 0x12
         u8 unknown_13[5];     // 0x13
     };
-    typedef struct mission_data_s MISSIONDATA_PC;
+    typedef struct mission_data_s MISSIONDATA;
 #ifdef __cplusplus
 }
 #endif
@@ -66,7 +66,7 @@ extern "C" {
 extern "C" {
 #endif
     extern struct mission_sys_s *MissionSys;
-    MISSIONDATA_PC *Mission_Active(struct mission_sys_s *);
+    MISSIONDATA *Mission_Active(struct mission_sys_s *);
     void CheckMissionEnd(struct mission_sys_s *system);
     struct mission_sys_s *Missions_Configure(char *, VARIPTR *, VARIPTR *, struct MISSION_SAVE_READER *);
     void EndMission(struct mission_sys_s *, i32, i32);

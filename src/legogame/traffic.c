@@ -53,19 +53,19 @@ static TRAFFICANIM *parse_trafficanim = 0;
 static TRAFFICANIMSYS *parse_trafficanimsys = 0;
 static WORLDINFO *parse_worldinfo = 0;
 
-static void Traffic_tfactor(NUFPAR_PC *parser) {
+static void Traffic_tfactor(NUFPAR *parser) {
     reference_trafficanim.tfactor = NuFParGetFloat(parser);
 }
 
-static void Traffic_rand_interval(NUFPAR_PC *parser) {
+static void Traffic_rand_interval(NUFPAR *parser) {
     reference_trafficanim.random_interval = NuFParGetFloat(parser);
 }
 
-static void Traffic_frame_interval(NUFPAR_PC *parser) {
+static void Traffic_frame_interval(NUFPAR *parser) {
     reference_trafficanim.frame_interval = NuFParGetFloat(parser);
 }
 
-static void TrafficAnim_yoffset(NUFPAR_PC *parser) {
+static void TrafficAnim_yoffset(NUFPAR *parser) {
     if (parse_trafficanim != NULL) {
         parse_trafficanim->y_offset = NuFParGetFloat(parser);
     }
@@ -91,7 +91,7 @@ static i32 Traffic_FindVehicle(char *name) {
     return -1;
 }
 
-static void Traffic_vehicle(NUFPAR_PC *parser) {
+static void Traffic_vehicle(NUFPAR *parser) {
     i32 index;
     if (NuFParGetWord(parser) == 0 || parse_trafficanimsys == NULL || reference_trafficanim.vehicle_count >= 16) {
         return;
@@ -108,7 +108,7 @@ static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {
     {NULL,      NULL               }
 };
 
-static void Traffic_animobj(NUFPAR_PC *parser) {
+static void Traffic_animobj(NUFPAR *parser) {
     nuhspecial_s special;
     NUINSTANIM *instance;
     TRAFFICANIM *animation;
@@ -146,7 +146,7 @@ static NUFPCOMJMP Traffic_ConfigKeywords[] = {
 
 void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     TRAFFIC_WORLD_VIEW *view = (TRAFFIC_WORLD_VIEW *)world;
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     VARIPTR old_buffer;
     VARIPTR old_end;
     i32 parsing = 0;

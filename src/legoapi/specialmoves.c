@@ -17,7 +17,7 @@
 
 void SpecialMovesConfigMissing(char *filename);
 
-static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 *variant, i16 *animation) {
+static void SpecialMove_ConfigParticipant(NUFPAR *parser, i16 *character, i8 *variant, i16 *animation) {
     while (NuFParGetWord(parser)) {
         if (NuStrICmp(parser->word_buffer_ptr, "character") == 0) {
             if (NuFParGetWord(parser)) {
@@ -39,7 +39,7 @@ struct specialmove_s *SpecialMove = 0;
 i32 SpecialMoveCount = 0;
 
 void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     SPECIALMOVE *move;
     SpecialMove = NULL;
     SpecialMoveCount = 0;

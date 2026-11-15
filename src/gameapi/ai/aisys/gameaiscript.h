@@ -162,7 +162,7 @@ typedef struct climb_system_s {   // size 0x8
     struct climb_slot_s *objects; // 0x0
     u16 count;                    // 0x4
     u16 capacity;                 // 0x6
-} CLIMB_SYSTEM_PC;
+} CLIMB_SYSTEM;
 
 #ifdef __cplusplus
 extern "C" {

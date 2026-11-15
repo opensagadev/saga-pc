@@ -68,7 +68,7 @@ void Signals_InitTerrain(WORLDINFO *world) {
 }
 
 void *Signals_ReserveBufferSpace(WORLDINFO *world) {
-    LEVELDATA_PC *level = world->current_level;
+    LEVELDATA *level = world->current_level;
     world->signals = NULL;
     world->signal_count = 0;
     if (level->max_signals > 0) {
@@ -215,7 +215,7 @@ void Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
                 }
                 target_scale = 0.0f;
             } else {
-                ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+                ADD_GAME_MESSAGE message = AddGameMsg_Default;
                 message.text = TTab[*signal->suit->text_id];
                 message.position = &signal->target_position;
                 message.scale = 1.0f;
@@ -390,15 +390,15 @@ void Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
 }
 
 char *SignalRegistryNamePc = "Signal";
-ADDGIZMOTYPE_PC SignalAddType = {0};
+ADDGIZMOTYPE SignalAddType = {0};
 
-ADDGIZMOTYPE_PC *Signals_RegisterGizmo(i32 unused_type_id) {
+ADDGIZMOTYPE *Signals_RegisterGizmo(i32 unused_type_id) {
     char *name = SignalRegistryNamePc;
     SignalAddType = Default_ADDGIZMOTYPE;
     SignalAddType.name = name;
     SignalAddType.prefix = dat_007516c0;
     SignalAddType.fns.options = 0x28;
-    SignalAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
+    SignalAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Signals_GetMaxGizmos;
     SignalAddType.fns.add_gizmos_fn = (void *)Signals_AddGizmos;
     SignalAddType.fns.early_update_fn = NULL;
     SignalAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Signals_Update;
@@ -422,7 +422,7 @@ ADDGIZMOTYPE_PC *Signals_RegisterGizmo(i32 unused_type_id) {
     SignalAddType.fns.store_progress_fn = (void (*)(void *, void *, void *))Signals_StoreProgress;
     SignalAddType.fns.reset_fn = (void (*)(void *, void *, void *))Signals_Reset;
     SignalAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Signals_ReserveBufferSpace;
-    SignalAddType.fns.load_fn = (i32(*)(void *, void *))Signals_Load;
+    SignalAddType.fns.load_fn = (i32 (*)(void *, void *))Signals_Load;
     SignalAddType.fns.post_load_fn = NULL;
     SignalAddType.fns.add_level_sfx_fn = NULL;
     return &SignalAddType;

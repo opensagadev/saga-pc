@@ -12,7 +12,7 @@
 #define KEY_TYPE_ALTERNATE(filter)                                                                                                         \
     ((filter)->variant == 0 && ((filter)->descriptor->flags & 0x80000000) && ((filter)->descriptor->flags & 0x800000) != 0)
 
-union PC_SHADER_KEY_BLOCK_PC {
+union PC_SHADER_KEY_BLOCK {
     u8 bytes[104];
 
     struct {
@@ -29,7 +29,7 @@ extern "C" {
 
 extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER_VIEW *filter, i32 pixel_stage) {
     const PC_SHADER_FILTER_DESC_VIEW *desc = filter->descriptor;
-    PC_SHADER_KEY_BLOCK_PC block;
+    PC_SHADER_KEY_BLOCK block;
     u64 layer_word;
     u32 layer_low;
     i32 vertex_flags;
@@ -103,7 +103,7 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
     }
     block.bytes[0x2c] = 1;
     if (filter->material != NULL && filter->material->texture_id != 0) {
-        NUTEXDIM_PC *texture = NuTextureGetDimensions(filter->material->texture_id);
+        NUTEXDIM *texture = NuTextureGetDimensions(filter->material->texture_id);
         if (texture != NULL && texture->resource != NULL) {
             texture->resource->methods->get_level_desc(texture->resource, 0, &dimensions);
             if (dimensions.format == 0x31545844) {
@@ -141,7 +141,7 @@ extern "C" void NuShaderObjectKeySetUberShaderHash(const u8 *hash) {
 
 /* The key of a program described by flags alone. No caller. */
 extern "C" void NuShaderObjectKeyGenerate4(u32 *key, u32 flags, i32) {
-    PC_SHADER_KEY_BLOCK_PC block;
+    PC_SHADER_KEY_BLOCK block;
     memset(&block, 0, sizeof(block));
     block.bytes[0x14] = 1;
     block.words.program_hash[0] = ShaderProgramHashPC[0];

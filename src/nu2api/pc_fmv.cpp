@@ -8,8 +8,8 @@
 #include "pc_fmv_native.h"
 #include <stdarg.h>
 #include <string.h>
-typedef i32 (*FMV_INPUT_CALLBACK_PC)(void);
-typedef void (*FMV_DRAW_CALLBACK_PC)(void);
+typedef i32 (*FMV_INPUT_CALLBACK)(void);
+typedef void (*FMV_DRAW_CALLBACK)(void);
 
 extern "C" i32 NuFmvPlayV(i32 option, ...) {
     va_list args;
@@ -46,10 +46,10 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
                 volume = *va_arg(args, f32 *);
                 break;
             case 7:
-                callback = va_arg(args, FMV_INPUT_CALLBACK_PC);
+                callback = va_arg(args, FMV_INPUT_CALLBACK);
                 break;
             case 15:
-                FmvDrawCallbackPc = va_arg(args, FMV_DRAW_CALLBACK_PC);
+                FmvDrawCallbackPc = va_arg(args, FMV_DRAW_CALLBACK);
                 break;
             case 8:
                 va_arg(args, i32);

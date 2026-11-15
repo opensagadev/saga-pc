@@ -38,7 +38,7 @@
 #include <string.h>
 
 extern "C" {
-    AREA_DATA_PC *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
+    AREA_DATA *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
     void AreasConfigDiagnostic(char *message);
 }
 
@@ -47,7 +47,7 @@ extern "C" {
     i32 BonusArea = 0;
 }
 
-AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
+AREA_DATA *Area_FindByName(char *name, i32 *index_out) {
     i32 index;
 
     for (index = 0; index < AREACOUNT; ++index) {
@@ -66,7 +66,7 @@ AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
 }
 
 void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
-    AREA_DATA_PC *area;
+    AREA_DATA *area;
     i32 area_index;
 
     (void)buffer_end;
@@ -77,7 +77,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
     buffer->addr = (buffer->addr + 3) & ~3u;
     area = ADataList;
     for (area_index = 0; area_index < AREACOUNT; ++area_index, ++area) {
-        NUFPAR_PC *parser;
+        NUFPAR *parser;
         char path[0x100];
         i32 resident_count;
 
@@ -127,7 +127,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
     buffer->addr = (buffer->addr + 3) & ~3u;
 }
 
-void Areas_FixUp(AREAFIXUP_PC *fixup) {
+void Areas_FixUp(AREAFIXUP *fixup) {
     if (fixup != NULL) {
         while (fixup->name != NULL) {
             if (fixup->area != NULL) {
@@ -138,7 +138,7 @@ void Areas_FixUp(AREAFIXUP_PC *fixup) {
     }
 }
 
-LEVELDATA_PC *Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
+LEVELDATA *Area_FindStatusLevel(AREA_DATA *area, i32 *index_out) {
     i32 index;
 
     if (index_out != NULL) {
@@ -157,7 +157,7 @@ LEVELDATA_PC *Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
     return NULL;
 }
 
-LEVELDATA_PC *Area_FindNextPlayLevel(i32 level_index) {
+LEVELDATA *Area_FindNextPlayLevel(i32 level_index) {
     i32 area_index;
     i32 area_level_index;
 
@@ -189,11 +189,11 @@ void SuperCounters_Reset(i32 area_index) {
     }
 }
 
-AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world, AREA_SUPERCOUNTER_PICKUP_PC **pickup_out) {
+AREA_SUPERCOUNTER *SuperCounter_FindFromNameAndLevel(char *name, WORLDINFO *world, AREA_SUPERCOUNTER_PICKUP **pickup_out) {
     if (world->area != NULL && world->area->super_counters != NULL) {
-        AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
+        AREA_SUPERCOUNTER *counter = world->area->super_counters;
         for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
-            AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
+            AREA_SUPERCOUNTER_PICKUP *pickup = counter->pickups;
             for (i32 pickup_index = 0; pickup_index < counter->pickup_count; ++pickup_index, ++pickup) {
                 if (pickup->level_index == world->level_idx && NuStrICmp(pickup->name, name) == 0) {
                     if (pickup_out != NULL) {
@@ -226,13 +226,13 @@ extern "C" {
     u16 AREA_DEFAULTCHALLENGETIME = 600;
 }
 
-AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
-    NUFPAR_PC *parser;
+AREA_DATA *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
+    NUFPAR *parser;
     i32 index;
     i32 area_count;
     i32 in_area;
-    AREA_DATA_PC *area_base;
-    AREA_DATA_PC *area;
+    AREA_DATA *area_base;
+    AREA_DATA *area;
 
     parser = NuFParCreate(path);
     if (parser == NULL) {
@@ -243,7 +243,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
         return NULL;
     }
 
-    area_base = (AREA_DATA_PC *)((buffer->addr + 3) & ~3u);
+    area_base = (AREA_DATA *)((buffer->addr + 3) & ~3u);
     buffer->void_ptr = area_base;
     area = area_base;
     area_count = 0;
@@ -483,17 +483,17 @@ extern "C" {
     APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
     i32 last_area = 0;
     i32 Area_FreePlayModelCount = 0;
-    AREA_GLOBALS_PC AreaGlobals = {0};
+    AREA_GLOBALS AreaGlobals = {0};
     i32 Area_MissionModelCount = 0;
     i32 Area_StoryModelCount = 0;
     i32 VehicleArea = 0;
     APICHARACTERMODELLIST Area_MissionModelList[49] = {0};
-    AREA_DATA_PC *ADataList = 0;
-    AREA_DATA_PC *LastAData = 0;
+    AREA_DATA *ADataList = 0;
+    AREA_DATA *LastAData = 0;
     i32 AREACOUNT = 0;
-    AREA_DATA_PC *HUB_ADATA = 0;
+    AREA_DATA *HUB_ADATA = 0;
     i32 reset_area = 0;
-    COLLECTION_AREA_SAVE_PC *Game_AreaSave = 0;
+    COLLECTION_AREA_SAVE *Game_AreaSave = 0;
 }
 
 extern "C" {
@@ -570,7 +570,7 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
     }
     NuStrCat(path, ".txt");
 
-    NUFPAR_PC *fp = NuFParCreate(path);
+    NUFPAR *fp = NuFParCreate(path);
     if (fp == NULL) {
         Area_PlayerModelList[0].model_id = s[0];
         Area_PlayerModelList[0].count = 1;
@@ -590,8 +590,8 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
         return;
     }
 
-    AREA_SUPERCOUNTER_PC counters[10];
-    AREA_SUPERCOUNTER_PC *counter = NULL;
+    AREA_SUPERCOUNTER counters[10];
+    AREA_SUPERCOUNTER *counter = NULL;
     i32 in_counter = 0;
     i32 counter_count = 0;
     i32 level_index;
@@ -734,7 +734,7 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
             ++LevelLoadCount;
         } else if (area != -1 && NuStrICmp(fp->word_buffer_ptr, "music") == 0) {
             if (NuFParGetWord(fp) != 0) {
-                AREA_DATA_PC *area_data = &ADataList[area];
+                AREA_DATA *area_data = &ADataList[area];
                 area_data->area_music = GetMusicIndex(fp->word_buffer_ptr, MusicInfo, -1);
                 const i32 quiet = music_man.GetTrackHandle(1, fp->word_buffer_ptr);
                 const i32 action = music_man.GetTrackHandle(2, fp->word_buffer_ptr);
@@ -816,10 +816,10 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
     Area_PlayerIDList[index] = -1;
     if (counter_count > 0) {
         characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 3) & ~3u;
-        ADataList[area].super_counters = (AREA_SUPERCOUNTER_PC *)characterbuffer_ptr.addr;
-        PCByteCopy(ADataList[area].super_counters, counters, counter_count * sizeof(AREA_SUPERCOUNTER_PC));
+        ADataList[area].super_counters = (AREA_SUPERCOUNTER *)characterbuffer_ptr.addr;
+        PCByteCopy(ADataList[area].super_counters, counters, counter_count * sizeof(AREA_SUPERCOUNTER));
         ADataList[area].super_counter_count = (u8)counter_count;
-        characterbuffer_ptr.addr += counter_count * sizeof(AREA_SUPERCOUNTER_PC);
+        characterbuffer_ptr.addr += counter_count * sizeof(AREA_SUPERCOUNTER);
     }
 }
 
@@ -850,8 +850,8 @@ extern "C" void DumpAreaData(i32 mode, i32) {
 
 extern "C" u8 *Game_LevelSave;
 
-extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINFO *world) {
-    AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
+extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *counter, WORLDINFO *world) {
+    AREA_SUPERCOUNTER_PICKUP *pickup = counter->pickups;
     i32 index;
     i32 saved;
     LEVELSAVE_s *save;
@@ -877,15 +877,15 @@ extern "C" i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER_PC *counter, WORLDINF
 
 /* Append to areas.cpp; native573780316 +5738c0295. */
 
-extern "C" AREA_SUPERCOUNTER_PC *SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position, void *output_pointer) {
-    AREA_SUPERCOUNTER_PICKUP_PC **output = (AREA_SUPERCOUNTER_PICKUP_PC **)output_pointer;
+extern "C" AREA_SUPERCOUNTER *SuperCounters_FindPickup(WORLDINFO *world, void *gizmo, NUVEC *position, void *output_pointer) {
+    AREA_SUPERCOUNTER_PICKUP **output = (AREA_SUPERCOUNTER_PICKUP **)output_pointer;
     if (world->area != NULL && world->area->super_counters != NULL) {
-        AREA_SUPERCOUNTER_PC *counter = world->area->super_counters;
+        AREA_SUPERCOUNTER *counter = world->area->super_counters;
         f32 closest = 1000000000.0f;
-        AREA_SUPERCOUNTER_PC *found_counter = NULL;
-        AREA_SUPERCOUNTER_PICKUP_PC *found_pickup = NULL;
+        AREA_SUPERCOUNTER *found_counter = NULL;
+        AREA_SUPERCOUNTER_PICKUP *found_pickup = NULL;
         for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index, ++counter) {
-            AREA_SUPERCOUNTER_PICKUP_PC *pickup = counter->pickups;
+            AREA_SUPERCOUNTER_PICKUP *pickup = counter->pickups;
             for (i32 index = 0; index < counter->pickup_count; ++index, ++pickup) {
                 if (pickup->level_index == world->level_idx && pickup->gizmo == gizmo) {
                     if (pickup->position_gizmo == NULL) {
@@ -894,7 +894,7 @@ extern "C" AREA_SUPERCOUNTER_PC *SuperCounters_FindPickup(WORLDINFO *world, void
                         }
                         return counter;
                     }
-                    NUVEC *draw_position = GizmoGetPos((GIZMOSYS_PC *)world->gizmo_sys, pickup->position_gizmo);
+                    NUVEC *draw_position = GizmoGetPos((GIZMOSYS *)world->gizmo_sys, pickup->position_gizmo);
                     if (draw_position != NULL) {
                         f32 distance = NuVecDistSqr(position, draw_position, NULL);
                         if (distance < closest) {
@@ -922,8 +922,8 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP *g
     if (Players_AveragePos(&position, NULL) == 0) {
         position = GameCam->position;
     }
-    AREA_SUPERCOUNTER_PICKUP_PC *pickup;
-    AREA_SUPERCOUNTER_PC *counter = SuperCounters_FindPickup(WORLD, gizmo, &position, &pickup);
+    AREA_SUPERCOUNTER_PICKUP *pickup;
+    AREA_SUPERCOUNTER *counter = SuperCounters_FindPickup(WORLD, gizmo, &position, &pickup);
     if (counter != NULL) {
         gizmo_pickup->flags &= (u8) ~(GIZMOPICKUP_STATE_ENABLED | GIZMOPICKUP_STATE_VISIBLE);
         if (counter->collected_count < counter->pickup_count) {
@@ -933,7 +933,7 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP *g
             }
             NUVEC *message_position;
             if (pickup->position_gizmo != NULL) {
-                message_position = GizmoGetPos((GIZMOSYS_PC *)WORLD->gizmo_sys, pickup->position_gizmo);
+                message_position = GizmoGetPos((GIZMOSYS *)WORLD->gizmo_sys, pickup->position_gizmo);
             } else if (NuSpecialExistsFn((nuhspecial_s *)&pickup->position_special) != 0) {
                 message_position = NuSpecialGetDrawPos((nuhspecial_s *)&pickup->position_special);
             } else {
@@ -951,7 +951,7 @@ extern "C" void SuperCounters_FixUpGizmos(WORLDINFO *world) {
         return;
     }
     for (i32 counter_index = 0; counter_index < world->area->super_counter_count; ++counter_index) {
-        AREA_SUPERCOUNTER_PICKUP_PC *pickup = world->area->super_counters[counter_index].pickups;
+        AREA_SUPERCOUNTER_PICKUP *pickup = world->area->super_counters[counter_index].pickups;
         for (i32 index = 0; index < world->area->super_counters[counter_index].pickup_count; ++index, ++pickup) {
             pickup->gizmo = GizmoFindByName(world->gizmo_sys, -1, pickup->name);
             pickup->position_gizmo = NULL;

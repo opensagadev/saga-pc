@@ -16,9 +16,9 @@
 extern "C" i32 special_debug;
 extern "C" void PCSpecialEmptyHandler(...);
 extern "C" {
-    SOCK_PC *FindSock(SOCKSYS_PC *sys, char *name) {
+    SOCK *FindSock(SOCKSYS_PC *sys, char *name) {
         if (sys != NULL) {
-            SOCK_PC *sock = sys->socks;
+            SOCK *sock = sys->socks;
             for (i32 index = 0; index < 64; ++index, ++sock) {
                 if (sock->valid && NuStrICmp(name, sock->name) == 0) {
                     return sock;
@@ -113,5 +113,5 @@ extern "C" {
 }
 extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
-extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM_PC *, AISYS_PC *, AIPATH *, char *, char *, i32,
-                                                                   char *, i32, i32);
+extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS_PC *, AIPATH *, char *, char *, i32, char *,
+                                                                   i32, i32);

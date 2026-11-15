@@ -33,14 +33,14 @@
 #include "nu2api/nucore/nucore_includes.h"
 #include "nu2api/numath/nufloat.h"
 
-typedef struct MENU_INPUT_PAD_PC {
-    FRAME_PAD_PC *bound_pad;
+typedef struct MENU_INPUT_PAD {
+    FRAME_PAD *bound_pad;
     u32 held;
     u32 pressed;
     u32 alternate_held;
     u32 alternate_pressed;
     u8 unknown_14[0x4c];
-} MENU_INPUT_PAD_PC;
+} MENU_INPUT_PAD;
 
 // noinline: the original calls EndMissionsMenu out of line from MenuUpdateMissions; VC8 would inline it there.
 __declspec(noinline) void EndMissionsMenu(void) {
@@ -243,14 +243,14 @@ void MenuDrawEndMission(MENU *menu) {
     }
 }
 
-void InitMission(MISSIONSYS_PC *system, i32 index) {
+void InitMission(MISSIONSYS *system, i32 index) {
     system->active_mission = &system->missions[index];
     system->state = 1;
     ResetTimer(&system->timer, 0.0f);
     Cheats_TurnOff(0);
 }
 
-void EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
+void EndMission(MISSIONSYS *system, i32 state, i32 show_message) {
     if (netclient == 0 || show_message == 0) {
         system->state = (u8)state;
         SetBonusWinner(qrand() / 0x8000);
@@ -266,7 +266,7 @@ void EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
     }
 }
 
-void CheckMissionEnd(MISSIONSYS_PC *system) {
+void CheckMissionEnd(MISSIONSYS *system) {
     GAMEOBJECT *target;
     GAMEOBJECT *candidate;
     u64 mask;
@@ -323,7 +323,7 @@ void MenuUpdateMissions(MENU *menu) {
         cancel = 1;
     }
     for (player = 0; player < 2; ++player) {
-        MENU_INPUT_PAD_PC *pad;
+        MENU_INPUT_PAD *pad;
         u32 pressed;
         u32 directions;
         if (start != 0 || cancel != 0) {
@@ -332,7 +332,7 @@ void MenuUpdateMissions(MENU *menu) {
         if (MissionMenuPacket.active_player[player] == 0) {
             continue;
         }
-        pad = (MENU_INPUT_PAD_PC *)&GamePadStorage[player];
+        pad = (MENU_INPUT_PAD *)&GamePadStorage[player];
         pressed = pad->pressed;
         if ((pressed & GAMEPAD_MENUSELECT) != 0) {
             if (MissionMenuPacket.active_player[0] == 0 || MissionMenuPacket.active_player[1] == 0) {

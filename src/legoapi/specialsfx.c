@@ -253,8 +253,8 @@ void LoadSpecialSfxFile(void *world_ptr) {
 void fun_005b1ea0(void) {
 }
 
-void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 category) {
-    DEBRIS_INFO_PC *effect = destination;
+void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category) {
+    DEBRIS_INFO *effect = destination;
     i32 i;
     char sound_name[16];
     EdFileRead(effect->name, sizeof(effect->name));

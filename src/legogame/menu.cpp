@@ -114,7 +114,7 @@ void legoSetMusicVolume(f32);
 extern "C" {
     void MusicClearAll(void);
     void SoundKillAll(void);
-    void GamePlayMusic(LEVELDATA_PC *, i32, OPTIONSSAVE *);
+    void GamePlayMusic(LEVELDATA *, i32, OPTIONSSAVE *);
     i32 Movie_Play(char *, VARIPTR *, VARIPTR *, f32, i32 (*)(void), f32);
     extern char *Trailer[6];
 }
@@ -132,20 +132,20 @@ extern "C" {
     extern f32 MenuSaveSlotsStepY;
 }
 
-typedef struct MENU_INPUT_PAD_PC {
-    FRAME_PAD_PC *bound_pad;
+typedef struct MENU_INPUT_PAD {
+    FRAME_PAD *bound_pad;
     u32 held;
     u32 pressed;
     u32 alternate_held;
     u32 alternate_pressed;
     u8 unknown_14[0x4c];
-} MENU_INPUT_PAD_PC;
+} MENU_INPUT_PAD;
 
 extern "C" {
     extern i8 DropInPendingPlayer;
     extern i8 DropInConfigurationPlayer;
     void PcControlInitialize(i32, i32, i32, u8);
-    i32 PcControlUpdate(FRAME_PAD_PC *, FRAME_PAD_PC *, f32);
+    i32 PcControlUpdate(FRAME_PAD *, FRAME_PAD *, f32);
     void PcControlDraw(void);
 }
 
@@ -160,7 +160,7 @@ extern "C" {
     }
 
     void MenuUpdateControlSetup(MENU *) {
-        i32 result = PcControlUpdate((FRAME_PAD_PC *)Game_NuPad[0], (FRAME_PAD_PC *)Game_NuPad[1], FRAMETIME);
+        i32 result = PcControlUpdate((FRAME_PAD *)Game_NuPad[0], (FRAME_PAD *)Game_NuPad[1], FRAMETIME);
         if (DropInConfigurationPlayer >= 0) {
             if (result == 3) {
                 DropInPendingPlayer = DropInConfigurationPlayer;
@@ -185,7 +185,7 @@ extern "C" {
     }
 
     void MenuUpdateSelectControls(MENU *) {
-        i32 result = PcControlUpdate((FRAME_PAD_PC *)Game_NuPad[0], (FRAME_PAD_PC *)Game_NuPad[1], FRAMETIME);
+        i32 result = PcControlUpdate((FRAME_PAD *)Game_NuPad[0], (FRAME_PAD *)Game_NuPad[1], FRAMETIME);
         if (result == 2) {
             BackupMenu();
         } else if (result == 3) {
@@ -563,16 +563,16 @@ extern "C" void MenuUpdateNewGame(MENU *menu) {
     }
 
     for (i32 player = 0; player < 2; ++player) {
-        if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held & GAMEPAD_START) != 0) {
-            NuPadSetStatus(((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad->device, 1);
+        if ((((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->held & GAMEPAD_START) != 0) {
+            NuPadSetStatus(((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->bound_pad->device, 1);
         }
-        if (((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->input_ready == 0 ||
-            ((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->bound_pad->is_valid == 0) {
+        if (((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->input_ready == 0 ||
+            ((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->bound_pad->is_valid == 0) {
             PlayerProgress[player].active = 0;
-        } else if ((((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->held &
+        } else if ((((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->held &
                     (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT | GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION |
                      GAMEPAD_SPECIAL | GAMEPAD_TAG | GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0 ||
-                   (((GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[player])->left_held &
+                   (((GAMEPAD_RUNTIME_INPUT *)&GamePadStorage[player])->left_held &
                     (GAMEPAD_DUP | GAMEPAD_DDOWN | GAMEPAD_DLEFT | GAMEPAD_DRIGHT)) != 0) {
             if (g_nupadMapping[player].is_active != 0) {
                 PlayerProgress[player].active = 1;
@@ -670,7 +670,7 @@ extern "C" {
         }
     }
 
-    void UpdateGameMenu(GAMEPAD_PC *pad, i32 check_buttons) {
+    void UpdateGameMenu(GAMEPAD *pad, i32 check_buttons) {
         MENU *menu;
         i32 menu_id = GetMenuID();
         i32 menu_active;
@@ -719,7 +719,7 @@ extern "C" {
         previous_menu = menu->menu;
         both_pads = 0;
         if ((Paused != 0 || NetPaused != 0) && pause_i_pad != -1) {
-            pad = (GAMEPAD_PC *)&GamePadStorage[pause_i_pad];
+            pad = (GAMEPAD *)&GamePadStorage[pause_i_pad];
         } else if (WORLD == NULL) {
             both_pads = 1;
         } else if (menu_id != -1 && WORLD->current_level == TITLES_LDATA) {
@@ -729,7 +729,7 @@ extern "C" {
         } else if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
                    (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             both_pads = 1;
-        } else if (pad == (GAMEPAD_PC *)&GamePadStorage[0]) {
+        } else if (pad == (GAMEPAD *)&GamePadStorage[0]) {
             if (WORLD->current_level == CREDITS_LDATA) {
                 first_active = PlayerProgress[0].active;
                 second_active = PlayerProgress[1].active;
@@ -738,7 +738,7 @@ extern "C" {
                     readpads_always = 1;
                 }
                 if (second_active != 0 && first_active == 0) {
-                    pad = (GAMEPAD_PC *)&GamePadStorage[1];
+                    pad = (GAMEPAD *)&GamePadStorage[1];
                 }
             } else if (Player[0] != NULL && Player[1] != NULL) {
                 second_active = Player[1]->player_controlled;
@@ -791,14 +791,14 @@ extern "C" {
                 alternate_held = 0;
                 alternate_pressed = 0;
             } else if (both_pads != 0) {
-                MENU_INPUT_PAD_PC *first = (MENU_INPUT_PAD_PC *)&GamePadStorage[0];
-                MENU_INPUT_PAD_PC *second = (MENU_INPUT_PAD_PC *)&GamePadStorage[1];
+                MENU_INPUT_PAD *first = (MENU_INPUT_PAD *)&GamePadStorage[0];
+                MENU_INPUT_PAD *second = (MENU_INPUT_PAD *)&GamePadStorage[1];
                 held = first->held | second->held;
                 pressed = first->pressed | second->pressed;
                 alternate_held = first->alternate_held | second->alternate_held;
                 alternate_pressed = first->alternate_pressed | second->alternate_pressed;
             } else {
-                MENU_INPUT_PAD_PC *input = (MENU_INPUT_PAD_PC *)pad;
+                MENU_INPUT_PAD *input = (MENU_INPUT_PAD *)pad;
                 held = input->held;
                 pressed = input->pressed;
                 alternate_held = input->alternate_held;
@@ -931,7 +931,7 @@ extern "C" void MenuUpdatePauseMain(MENU *menu) {
         if (item == drop_item) {
             i32 player = -1;
             for (i32 i = 0; i < 8; ++i) {
-                if (Player[i] && Player[i]->pad == (GAMEPAD_PC *)&GamePadStorage[pause_i_pad]) {
+                if (Player[i] && Player[i]->pad == (GAMEPAD *)&GamePadStorage[pause_i_pad]) {
                     player = i;
                 }
                 if (Player[i]) {
@@ -1019,7 +1019,7 @@ extern "C" void MenuDrawPauseRestart(MENU *menu) {
 
 extern "C" void MenuUpdatePauseExit(MENU *menu) {
     if (menu->confirm_pressed) {
-        LEVELDATA_PC *save_level = CanSaveAndExit(WORLD);
+        LEVELDATA *save_level = CanSaveAndExit(WORLD);
         if (save_level) {
             if (menu->selected_item == 0) {
                 NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
@@ -1066,7 +1066,7 @@ extern "C" void MenuUpdatePauseExit(MENU *menu) {
 }
 
 extern "C" void MenuDrawPauseExit(MENU *menu) {
-    LEVELDATA_PC *save_level = CanSaveAndExit(WORLD);
+    LEVELDATA *save_level = CanSaveAndExit(WORLD);
     f32 spacing = 1.5f;
     char *warning;
     char *title;

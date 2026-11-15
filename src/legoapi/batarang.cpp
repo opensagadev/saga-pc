@@ -54,14 +54,14 @@ extern "C" {
     void ClearSpecialMove(GAMEOBJECT *);
 }
 
-typedef struct batman_prepare_s {         // size 0x8
-    u32 capabilities;                     // 0x0
-    AI_PREPARING_SPECIAL_MOVE_PC prepare; // 0x4
-} BATMAN_PREPARE_PC;
+typedef struct batman_prepare_s {      // size 0x8
+    u32 capabilities;                  // 0x0
+    AI_PREPARING_SPECIAL_MOVE prepare; // 0x4
+} BATMAN_PREPARE;
 
 extern "C" {
-    extern BATMAN_PREPARE_PC batman_prepareforspecialmove[11];
-    extern AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8];
+    extern BATMAN_PREPARE batman_prepareforspecialmove[11];
+    extern AI_MID_SPECIAL_MOVE batman_midspecialmovefns[8];
 }
 
 typedef struct suit_ai_capabilities_s {
@@ -69,7 +69,7 @@ typedef struct suit_ai_capabilities_s {
     u32 path_capabilities;
 } SUIT_AI_CAPABILITIES;
 
-typedef PLAYER_BATARANG_SLOT_PC BATARANG_NATIVE;
+typedef PLAYER_BATARANG_SLOT BATARANG_NATIVE;
 #define BATARANG_PACKET(object) ((object)->batarang)
 extern "C" {
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
@@ -79,8 +79,8 @@ extern "C" {
     extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
     extern u32 LEGO_AIPATHCNX_JUMP_NOW;
     extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
-    void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
-    void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
+    void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE);
+    void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE);
 }
 
 extern "C" {
@@ -416,7 +416,7 @@ extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
 void Batarangs_Reset(void) {
     i32 i;
     for (i = 0; i < 8; ++i) {
-        PLAYER_BATARANG_SLOT_PC *slot = &BatarangPackets[i];
+        PLAYER_BATARANG_SLOT *slot = &BatarangPackets[i];
         slot->flight_state.in_flight = 0;
         slot->active = 0;
         slot->owner = NULL;
@@ -511,7 +511,7 @@ extern "C" void Batarangs_Draw(void) {
 }
 
 void Batarangs_CheckLostData(void *data) {
-    PLAYER_BATARANG_SLOT_PC *batarang = BatarangPackets;
+    PLAYER_BATARANG_SLOT *batarang = BatarangPackets;
     i32 i;
     i32 j;
     i32 k;
@@ -567,7 +567,7 @@ extern "C" void Batarang_GetSightInfo(i32 character, i32 *red, i32 *green, i32 *
 }
 
 i32 Batarang_StartTargetting(GAMEOBJECT *object) {
-    PLAYER_BATARANG_SLOT_PC *packet;
+    PLAYER_BATARANG_SLOT *packet;
     if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GOT_BATARANG) != 0) {
         packet = object->batarang;
         packet->cooldown = (object->id == (u16)ID_DEFAULTCHARACTER_B) ? 51 : 50;
@@ -657,7 +657,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             } else {
                 if ((object->character_model->model_data_b[object->unknown_7aa] == NULL ||
                      AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) != NULL)) {
-                    GAMEPAD_PC *pad = object->pad;
+                    GAMEPAD *pad = object->pad;
                     object->context_timer += FRAMETIME;
                     f32 x = pad->input_direction_z * 1.25f;
                     f32 y = 1.25f * pad->input_direction_x;
@@ -682,7 +682,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     char text[32];
                     NUVEC position;
                     Batarang_GetSightInfo((i16)object->id, &colour[0], &colour[1], &colour[2], text);
-                    ADD_GAME_MESSAGE_PC message;
+                    ADD_GAME_MESSAGE message;
                     memcpy(&message, &AddGameMsg_Default, sizeof(message));
                     message.scale = 1.0f;
                     message.green = static_cast<u8>(colour[1]);
@@ -1316,7 +1316,7 @@ extern "C" {
 
     i32 Batman_MidSpecialMove_ClimbUp(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        INDY_GUIDELINE_PC *guide;
+        INDY_GUIDELINE *guide;
         i32 endpoint;
         f32 distance;
         f32 height;
@@ -1369,7 +1369,7 @@ extern "C" {
 
     i32 Batman_MidSpecialMove_ClimbDown(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        INDY_GUIDELINE_PC *guide;
+        INDY_GUIDELINE *guide;
         i32 endpoint;
         f32 distance;
         f32 height;
@@ -1626,7 +1626,7 @@ extern "C" {
         return 0;
     }
 
-    BATMAN_PREPARE_PC batman_prepareforspecialmove[11] = {
+    BATMAN_PREPARE batman_prepareforspecialmove[11] = {
         {4,          Batman_PrepareJump        },
         {0x23,       Batman_PrepareJump        },
         {8,          Batman_PrepareGrapple     },
@@ -1643,7 +1643,7 @@ extern "C" {
     i32 Batman_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32 checks) {
         GAMEOBJECT *owner = apiobject->owner;
         u32 capabilities;
-        BATMAN_PREPARE_PC *entry;
+        BATMAN_PREPARE *entry;
 
         if (owner->character_context == CHARACTER_CONTEXT_LEDGE) {
             owner->pad->buttons_pressed |= GAMEPAD_JUMP;
@@ -1682,7 +1682,7 @@ extern "C" {
         return 0;
     }
 
-    AI_MID_SPECIAL_MOVE_PC batman_midspecialmovefns[8] = {
+    AI_MID_SPECIAL_MOVE batman_midspecialmovefns[8] = {
         Batman_MidSpecialMove_Default, Batman_MidSpecialMove_StartJump, Batman_MidSpecialMove_SpecialUse, Batman_MidSpecialMove_BigJump,
         Batman_MidSpecialMove_Glide,   Batman_MidSpecialMove_ClimbUp,   Batman_MidSpecialMove_ClimbDown,  Batman_MidSpecialMove_Grapple,
     };
@@ -1690,7 +1690,7 @@ extern "C" {
     i32 Batman_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
         GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
         GAMEOBJECT *owner = object->objptr;
-        AI_MID_SPECIAL_MOVE_PC function;
+        AI_MID_SPECIAL_MOVE function;
         owner->special_move_timer -= FRAMETIME;
         if (owner->ai_packet.special_move_node != NULL) {
             if (owner->unknown_1086 != 4 && TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
@@ -1724,7 +1724,7 @@ extern "C" {
 
     void PlayerInitCapabilitiesDefault(GAMEOBJECT *object) {
         CHARACTER_MODEL_LAYERS *model = object->character_model;
-        CHARACTERDATA_PC *character = object->character_data;
+        CHARACTERDATA *character = object->character_data;
         object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES *)character)->path_capabilities | 0x20000040;
         if (model->action_animations[0x88] != NULL && model->action_animations[0x89] != NULL) {
             if ((character->game_character->flags_090 & CHARACTER_RUNTIME_TIGHTROPE_WALK) != 0) {

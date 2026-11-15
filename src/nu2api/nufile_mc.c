@@ -134,7 +134,7 @@ void FileDirectoryMcClosePc(i32 file) {
     (void)file;
 }
 
-i32 FileDirectoryMcReadPc(i32 file, struct FILE_DIRECTORY_ENTRY_PC *entry) {
+i32 FileDirectoryMcReadPc(i32 file, struct FILE_DIRECTORY_ENTRY *entry) {
     (void)file;
     (void)entry;
     return 0;

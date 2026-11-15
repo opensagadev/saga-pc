@@ -236,7 +236,7 @@ extern "C" f32 StreakAlphaScale;
 
 extern "C" void DrawStreaks(void) {
     for (STREAK_HEADER *header = streakhdrs_used; header != NULL; header = header->next) {
-        NURND_VERTEX3D_PC vertices[256];
+        NURND_VERTEX3D vertices[256];
         i32 vertex_count = 0;
         u32 colour;
         for (STREAK_NODE *node = header->nodes; node != NULL; node = node->next) {

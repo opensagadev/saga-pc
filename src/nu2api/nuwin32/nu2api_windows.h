@@ -16,7 +16,7 @@ extern "C" {
 }
 #endif
 
-typedef LRESULT (*PC_WINDOW_CALLBACK_PC)(HWND, UINT, WPARAM, LPARAM, i32 *);
+typedef LRESULT (*PC_WINDOW_CALLBACK)(HWND, UINT, WPARAM, LPARAM, i32 *);
 #ifdef __cplusplus
 
 extern "C" void PcShutdown(void);
@@ -26,7 +26,7 @@ extern "C" LRESULT __stdcall WindowProcPc(HWND, UINT, WPARAM, LPARAM);
 extern "C" {
 #endif
     i32 CreateWindowPc(HINSTANCE, i32, u16);
-    void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC);
+    void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK);
     void SetAccessibility(u8);
     void ParsePlatformArgumentsPc(char *);
 #ifdef __cplusplus
@@ -55,7 +55,7 @@ extern "C" {
     extern char PcExecutableFilename[260];
     i32 CreateWindowPc(HINSTANCE, i32, u16);
     extern char *PcArgv[];
-    extern PC_WINDOW_CALLBACK_PC PcWindowCallbacks[];
+    extern PC_WINDOW_CALLBACK PcWindowCallbacks[];
     void PcQuitToWindows(void);
 #ifdef __cplusplus
 }

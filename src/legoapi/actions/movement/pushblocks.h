@@ -19,17 +19,17 @@ extern "C" {
 #endif
     i32 Push_UpdateHints(HINT *);
     extern u16 PushBlockFacingTolerance;
-    PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *, GAMEOBJECT *, f32);
+    PUSH_BLOCK *NearestFacingPushBlock(WORLDINFO *, GAMEOBJECT *, f32);
     i32 PushBlock(GAMEOBJECT *);
 
-    void PushSeekComplete(PUSH_BLOCK_PC *, i32);
-    i32 OtherBlockInRange(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
-    i32 SnapPosTaken(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, i32);
-    i32 TerrainBlockOnBlock(WORLDINFO *, PUSH_BLOCK_PC *, NUVEC *, f32 *);
+    void PushSeekComplete(PUSH_BLOCK *, i32);
+    i32 OtherBlockInRange(WORLDINFO *, PUSH_BLOCK *, NUVEC *, i32);
+    i32 SnapPosTaken(WORLDINFO *, PUSH_BLOCK *, NUVEC *, i32);
+    i32 TerrainBlockOnBlock(WORLDINFO *, PUSH_BLOCK *, NUVEC *, f32 *);
 
-    PUSH_BLOCK_PC *BlockInBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, PUSH_BLOCK_PC **);
-    void MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
-    void MoveBlocks(WORLDINFO *, PUSH_BLOCK_PC *, i32, NUVEC *);
+    PUSH_BLOCK *BlockInBlock(WORLDINFO *, PUSH_BLOCK *, i32, PUSH_BLOCK **);
+    void MoveBlocksOverBlock(WORLDINFO *, PUSH_BLOCK *, i32, NUVEC *);
+    void MoveBlocks(WORLDINFO *, PUSH_BLOCK *, i32, NUVEC *);
     void UpdatePushBlocks(void *, void *, f32);
     extern f32 PushVelocitySeekRate;
     extern f32 PushFallingSpeed;
@@ -39,8 +39,8 @@ extern "C" {
     extern f32 PushRumbleWindowPc;
     extern f32 PushBlockOverlapShrink;
     extern i32 PushBlockHintId;
-    void KnockPushBlock(PUSH_BLOCK_PC *, NUVEC *);
-    PUSH_BLOCK_PC *NearestPushBlock(WORLDINFO *, NUVEC *, f32);
+    void KnockPushBlock(PUSH_BLOCK *, NUVEC *);
+    PUSH_BLOCK *NearestPushBlock(WORLDINFO *, NUVEC *, f32);
     extern char *PushBlocksName;
     extern f32 PushRumbleWindowPc;
     extern f32 PushRumblePeriod;

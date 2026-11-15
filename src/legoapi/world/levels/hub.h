@@ -23,7 +23,7 @@ extern "C" {
     i32 Hub_PanelBusy(void);
     void Hub_ActivateDoorMenu(void *arg0);
     extern i32 hub_selectmode;
-    extern AREA_DATA_PC **ArcadeLevel[12];
+    extern AREA_DATA **ArcadeLevel[12];
 
     void WipeBackToHub(void);
     void Hub_UpdateFreePlaySelect(void);

@@ -24,7 +24,7 @@ typedef struct nulgtlaser_s { // size 0x38
     u8 padding[2];            // 0x2e
     u32 colour;               // 0x30
     i32 seed;                 // 0x34
-} NULGTLASER_PC;
+} NULGTLASER;
 
 typedef struct nulgtarclaser_s { // size 0x44
     NUVEC start;                 // 0x00
@@ -39,7 +39,7 @@ typedef struct nulgtarclaser_s { // size 0x44
     i32 colour;                  // 0x38
     i32 flags;                   // 0x3c
     i32 seed;                    // 0x40
-} NULGTARCLASER_PC;
+} NULGTARCLASER;
 
 typedef struct nulgtarcmaterial_s { // size 0x14
     NUMTL *material;                // 0x00
@@ -47,7 +47,7 @@ typedef struct nulgtarcmaterial_s { // size 0x14
     f32 v0;                         // 0x08
     f32 u1;                         // 0x0c
     f32 v1;                         // 0x10
-} NULGTARCMATERIAL_PC;
+} NULGTARCMATERIAL;
 
 #ifdef __cplusplus
 extern "C" {
@@ -57,12 +57,12 @@ extern "C" {
     extern i32 NuLgtLaserCnt;
     extern i32 NuLgtLaserOldCnt;
     extern i32 NuLgtSeed;
-    extern NULGTARCMATERIAL_PC NuLgtArcMtl[4];
-    extern NULGTLASER_PC NuLgtLaserData[64];
+    extern NULGTARCMATERIAL NuLgtArcMtl[4];
+    extern NULGTLASER NuLgtLaserData[64];
     extern i32 NuLgtArcLaserCnt;
     extern i32 NuLgtArcLaserOldCnt;
     extern i32 NuLgtArcLaserFrame;
-    extern NULGTARCLASER_PC NuLgtArcLaserData[16];
+    extern NULGTARCLASER NuLgtArcLaserData[16];
     void NuLgtLaser(i32 type, f32 width, f32 segment_length, f32 width_wobble, NUVEC *start, NUVEC *delta, u32 colour, f32 end_width,
                     f32 length);
 #ifdef __cplusplus

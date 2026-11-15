@@ -10,38 +10,38 @@
 #include "nu2api/numath/nuvec4.h"
 #include <math.h>
 
-typedef struct racepod_resource_s {    // size 0xa0
-    NUMTX matrix;                      // 0x00
-    NUVEC4 previous_axis;              // 0x40
-    NUVEC4 previous_position;          // 0x50
-    NUVEC4 previous_displacement;      // 0x60
-    i32 pitch;                         // 0x70
-    i32 yaw;                           // 0x74
-    i32 unknown_0078;                  // 0x78
-    f32 speed;                         // 0x7c
-    FLIGHT_SPLINE_RESOURCE_PC *spline; // 0x80
-    f32 start;                         // 0x84
-    i16 model_id;                      // 0x88
-    i16 unknown_008a;                  // 0x8a
-    f32 distance;                      // 0x8c
-    GAMEOBJECT *object;                // 0x90
-    void *next;                        // 0x94
-    u8 unknown_0098[8];                // 0x98
-} RACEPOD_RESOURCE_PC;
+typedef struct racepod_resource_s { // size 0xa0
+    NUMTX matrix;                   // 0x00
+    NUVEC4 previous_axis;           // 0x40
+    NUVEC4 previous_position;       // 0x50
+    NUVEC4 previous_displacement;   // 0x60
+    i32 pitch;                      // 0x70
+    i32 yaw;                        // 0x74
+    i32 unknown_0078;               // 0x78
+    f32 speed;                      // 0x7c
+    FLIGHT_SPLINE_RESOURCE *spline; // 0x80
+    f32 start;                      // 0x84
+    i16 model_id;                   // 0x88
+    i16 unknown_008a;               // 0x8a
+    f32 distance;                   // 0x8c
+    GAMEOBJECT *object;             // 0x90
+    void *next;                     // 0x94
+    u8 unknown_0098[8];             // 0x98
+} RACEPOD_RESOURCE;
 
-typedef struct podrace_resource_s {        // size 0xb030
-    FLIGHT_SPLINE_RESOURCE_PC splines[32]; // 0x0000
-    RACEPOD_RESOURCE_PC lap_entries[16];   // 0xa600
-    f32 lap_countdown;                     // 0xb000
-    f32 mushroom_timer;                    // 0xb004
-    f32 lap_display;                       // 0xb008
-    f32 previous_lap_display;              // 0xb00c
-    f32 max_lap_time;                      // 0xb010
-    f32 lap_time_increment;                // 0xb014
-    i32 attempts_per_increment;            // 0xb018
-    i32 attempts;                          // 0xb01c
-    u8 flags;                              // 0xb020
-    u8 unknown_b021[15];                   // 0xb021
+typedef struct podrace_resource_s {     // size 0xb030
+    FLIGHT_SPLINE_RESOURCE splines[32]; // 0x0000
+    RACEPOD_RESOURCE lap_entries[16];   // 0xa600
+    f32 lap_countdown;                  // 0xb000
+    f32 mushroom_timer;                 // 0xb004
+    f32 lap_display;                    // 0xb008
+    f32 previous_lap_display;           // 0xb00c
+    f32 max_lap_time;                   // 0xb010
+    f32 lap_time_increment;             // 0xb014
+    i32 attempts_per_increment;         // 0xb018
+    i32 attempts;                       // 0xb01c
+    u8 flags;                           // 0xb020
+    u8 unknown_b021[15];                // 0xb021
 } PODRACE_RESOURCE;
 
 /* Episode I level callbacks installed by FixUpLevels. */

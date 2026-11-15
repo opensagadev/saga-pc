@@ -30,12 +30,12 @@ extern "C" {
         f32 height;          // 0x18
         f32 zoom_step;       // 0x1c
         u32 unknown_20;      // 0x20
-        GAMEPAD_PC *gamepad; // 0x24
+        GAMEPAD *gamepad;    // 0x24
     } VIEWCAM;
 
     extern i32 GUNSHIPAHACK;
 
-    extern NARROWSOCKEXCEPTION_PC *NarrowSockException;
+    extern NARROWSOCKEXCEPTION *NarrowSockException;
     i32 ObjInNarrowSock(GAMEOBJECT *, SOCKSYS_PC *, i32);
     void SetCameraMatrices(void);
 

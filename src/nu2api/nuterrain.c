@@ -43,8 +43,8 @@ i32 edgra_instance_type = 0;
 struct eduimenu_s *ptlemitvelmenu = 0;
 NUMTL *edanim_mtl = 0;
 struct eduimenu_s *ptlreadoutmenu = 0;
-DEBRIS_PARTICLE_CHUNK_PC **freedebchunksglass = 0;
-DEBRIS_PARTICLE_CHUNK_PC **freedebchunks = 0;
+DEBRIS_PARTICLE_CHUNK **freedebchunksglass = 0;
+DEBRIS_PARTICLE_CHUNK **freedebchunks = 0;
 NUVEC TerrainCastAuxNormal = {0};
 struct eduimenu_s *emittimemenu = 0;
 TERRAIN_CALLBACK_LIFECYCLE PlatCallback[8] = {0};
@@ -98,7 +98,7 @@ void fun_0066cc00(void (*function)(void *argument)) {
 }
 
 i32 PlatInstGetHit(i32 index) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     if (terrain == NULL || index < 0 || index >= terrain->max_platforms) {
         return 0;
     }
@@ -106,7 +106,7 @@ i32 PlatInstGetHit(i32 index) {
 }
 
 void PlatInstCenter(i32 index, NUVEC *position) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     if (terrain != NULL && index >= 0 && index < terrain->max_platforms) {
         *position = terrain->groups[terrain->platforms[index].terrain_group_index].origin;
     }
@@ -123,7 +123,7 @@ void ScanTerrIDRemovePlat(i32 platform_index) {
 }
 
 i32 NewPlatInst(void *object, i32 instance) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     i32 new_index;
     i32 source_index;
     i32 i;
@@ -185,7 +185,7 @@ i32 NewPlatInst(void *object, i32 instance) {
 }
 
 i32 NewPlatInstMSitu(void *object, i32 source) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     i32 new_index;
     i32 i;
 
@@ -237,7 +237,7 @@ i32 NewPlatInstMSitu(void *object, i32 source) {
 }
 
 i32 NewMSituTerrEx(NUVEC *position, TERRAIN_SKIN_STREAM *data, NUVEC *minimum, NUVEC *maximum, f32 radius) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
 
     if (terrain == NULL) {
         return -1;
@@ -336,7 +336,7 @@ i32 ShadowRoofInfo(void) {
 }
 
 i32 NewShadowOnPlatform(void) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *group;
     if (terrain == NULL || castnum == -1) {
         return -1;
@@ -1440,7 +1440,7 @@ f32 NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i
 
 /* Local existing nuterrain.c access views; no new storage definition. */
 void PlatOnOff(i32 platform_index, i32 enabled) {
-    TERRAIN_SET_PC *terrain;
+    TERRAIN_SET *terrain;
     i32 group_index;
     terrain = CurrentTerrain;
     if (terrain == NULL || platform_index < 0 || platform_index >= terrain->max_platforms) {
@@ -2074,22 +2074,22 @@ void TerrainSetPlatConnectTol(f32 tolerance) {
     TerConTol = tolerance;
 }
 
-typedef struct TERRAIN_PLATFORM_LIFECYCLE_PC { // size 0x6c
-    NUMTX previous_matrix;                     // 0x00
-    NUMTX *scene_matrix;                       // 0x40
-    i32 motion_status;                         // 0x44
-    i16 terrain_group_index;                   // 0x48
-    i16 scene_object_index;                    // 0x4a
-    u32 flags;                                 // 0x4c
-    i16 bounce_frames;                         // 0x50
-    u8 unknown_52[2];                          // 0x52
-    f32 bounce_impulse;                        // 0x54
-    f32 bounce_offset;                         // 0x58
-    f32 bounce_velocity;                       // 0x5c
-    f32 bounce_spring;                         // 0x60
-    f32 bounce_damping;                        // 0x64
-    u32 *instance_flags;                       // 0x68
-} TERRAIN_PLATFORM_LIFECYCLE_PC;
+typedef struct TERRAIN_PLATFORM_LIFECYCLE { // size 0x6c
+    NUMTX previous_matrix;                  // 0x00
+    NUMTX *scene_matrix;                    // 0x40
+    i32 motion_status;                      // 0x44
+    i16 terrain_group_index;                // 0x48
+    i16 scene_object_index;                 // 0x4a
+    u32 flags;                              // 0x4c
+    i16 bounce_frames;                      // 0x50
+    u8 unknown_52[2];                       // 0x52
+    f32 bounce_impulse;                     // 0x54
+    f32 bounce_offset;                      // 0x58
+    f32 bounce_velocity;                    // 0x5c
+    f32 bounce_spring;                      // 0x60
+    f32 bounce_damping;                     // 0x64
+    u32 *instance_flags;                    // 0x68
+} TERRAIN_PLATFORM_LIFECYCLE;
 
 void noterraininit(void) {
     terraincnt = 0;
@@ -2122,14 +2122,14 @@ void TerrainPlatformOldUpdate(void) {
     CurrentTerrain->removed_platform_count = 0;
     curSphereter = 0;
     for (i = 0; i < CurrentTerrain->max_platforms; ++i) {
-        if (((TERRAIN_PLATFORM_LIFECYCLE_PC *)CurrentTerrain->platforms)[i].scene_matrix != NULL) {
-            ((TERRAIN_PLATFORM_LIFECYCLE_PC *)CurrentTerrain->platforms)[i].previous_matrix =
-                *((TERRAIN_PLATFORM_LIFECYCLE_PC *)CurrentTerrain->platforms)[i].scene_matrix;
+        if (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[i].scene_matrix != NULL) {
+            ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[i].previous_matrix =
+                *((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[i].scene_matrix;
         }
     }
 }
 
-#define TERRAIN_TPNU_PLATFORM(index) (((TERRAIN_PLATFORM_LIFECYCLE_PC *)CurrentTerrain->platforms)[index])
+#define TERRAIN_TPNU_PLATFORM(index) (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index])
 
 void TerrainPlatformNewUpdate(void) {
     i32 i;
@@ -2238,7 +2238,7 @@ void TerrainPlatformNewUpdate(void) {
     for (i = 0; i < CurrentTerrain->platform_cell.group_count; ++i, ++group_index) {
         TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[*group_index];
         i32 index = group->scene_index;
-        TERRAIN_PLATFORM_LIFECYCLE_PC *platform = &TERRAIN_TPNU_PLATFORM(index);
+        TERRAIN_PLATFORM_LIFECYCLE *platform = &TERRAIN_TPNU_PLATFORM(index);
         if (platform->instance_flags != NULL) {
             if ((platform->flags & 4) != 0) {
                 if ((*platform->instance_flags & 2) == 0) {
@@ -2314,7 +2314,7 @@ NUVEC TerCrossProduct(NUVEC *a, NUVEC *b) {
 #undef TERRAIN_TPNU_PLATFORM
 
 i32 FindPlatInst(i32 instance) {
-    TERRAIN_SET_PC *terrain;
+    TERRAIN_SET *terrain;
     i32 index;
     i32 result = -1;
     if (instance != -1) {
@@ -2330,7 +2330,7 @@ i32 FindPlatInst(i32 instance) {
 }
 
 void PlatInstRotate(i32 platform_index, i32 enabled) {
-    TERRAIN_SET_PC *terrain;
+    TERRAIN_SET *terrain;
     if (platform_index >= 0) {
         terrain = CurrentTerrain;
         if (platform_index < terrain->max_platforms) {
@@ -2363,7 +2363,7 @@ u8 TerrWallTab[4] = {0};
 i32 freeDmaDebType = 0;
 i32 PlatSkinMaxStore = 0;
 u8 *PlatSkinMem = 0;
-EDPP_PARTICLE_PC edpp_ptls[512] = {0};
+EDPP_PARTICLE edpp_ptls[512] = {0};
 TERRAIN_WALL_POINT *WallSplList = 0;
 u16 NuTerrPlatsOff = 0;
 struct eduimenu_s *edptl_damage_menu = 0;
@@ -2374,7 +2374,7 @@ u8 debris_object_switches[128] = {0};
 TERRAIN_POLYGON_INFO *ShadPoly = 0;
 i16 TerrainShadowFloorIndex = 0;
 i32 edgra_cam_ax = 0;
-DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2] = {0};
+DEBRIS_CHUNK_CONTROL *debris_chunk_control_stack[2] = {0};
 u32 TerrainUpadteCnt = 0;
 i32 PlatSkinMaxSize = 0;
 i32 edgra_page_calculate_done[8] = {0};
@@ -2541,7 +2541,7 @@ void terrainpickupinit(char *path, void **buffer) {
 }
 
 void AddPickupTerr(i32 type, NUVEC *position) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     i16 source;
     i32 count;
     if (terrain == NULL) {
@@ -2702,7 +2702,7 @@ i32 NewPlatPickupInst(void *object, i32 type) {
 }
 
 void ReassignPickupInst(i32 index, i32 type) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *source;
     TERRAIN_GROUP_PC *group;
     i16 source_index;
@@ -3121,7 +3121,7 @@ i32 SfxRefCounts[1601] = {0};
 i32 edgra_clump_size = 0;
 i32 edpp_snap_enabled = 0;
 i32 edanim_nearest = 0;
-DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols = 0;
+DEBRIS_CHUNK_CONTROL **freechunkcontrols = 0;
 struct eduimenu_s *ptlgravmenu = 0;
 i16 TerrainRoofIndex = 0;
 i32 edpp_cam_ax = 0;
@@ -3277,7 +3277,7 @@ void TerrainSkinPrepareGroup(i32 group_index, TERRAIN_SKIN_STREAM *output, const
  * skin preparation call. */
 
 i32 TerrainSkinCreateInfo(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index,
-                          i16 mode, TERRAIN_SET_PC *source_terrain) {
+                          i16 mode, TERRAIN_SET *source_terrain) {
     TERRAIN_SKIN_INFO *info;
     i32 count;
     i32 skin_index;
@@ -3363,7 +3363,7 @@ void TerrainSkinResetArena(void) {
 /* Temporary bounds and cell selectors are carved backwards from the
  * supplied end. */
 u8 *TerrainSkinRebuildIndex(i32 pool_slots) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     TERRAIN_GROUP_PC *group;
     TERRAIN_SKIN_USE_RECORD *use;
     i16 *selectors;
@@ -3524,7 +3524,7 @@ u8 *TerrainSkinRebuildIndex(i32 pool_slots) {
 }
 
 TERRAIN_GROUP_PC *fun_00681cc0(i32 instance) {
-    TERRAIN_SET_PC *terrain = CurrentTerrain;
+    TERRAIN_SET *terrain = CurrentTerrain;
     i32 index = -1;
     i32 i;
     if (terrain == NULL) {
@@ -3554,12 +3554,12 @@ const char *TerrErrorString(i32 error) {
 }
 
 /* A sound table followed by the NULL-terminated sfx name list it is built from. */
-typedef struct SOUND_REGISTRY_PC { // size 0xcc
-    SoundTable table;              // 0x00
-    char **names;                  // 0xc8
-} SOUND_REGISTRY_PC;
+typedef struct SOUND_REGISTRY { // size 0xcc
+    SoundTable table;           // 0x00
+    char **names;               // 0xc8
+} SOUND_REGISTRY;
 
-void RegisterSounds(SOUND_REGISTRY_PC *registry) {
+void RegisterSounds(SOUND_REGISTRY *registry) {
     char **name = registry->names;
     memset(registry->table.bits, 0, sizeof(registry->table.bits));
     /* The original tests the advancing cursor rather than the name it points at. */
@@ -3605,7 +3605,7 @@ void TerrainScanWallSpline(TERRAIN_SPATIAL_NODE *node) {
     }
 }
 
-void TerrainAddWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
+void TerrainAddWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET *terrain) {
     TERRAIN_SPATIAL_CHUNK *chunk = (TERRAIN_SPATIAL_CHUNK *)((u8 *)node - offsetof(TERRAIN_SPATIAL_CHUNK, node));
     chunk->previous = terrain->spatial_nodes;
     terrain->spatial_nodes = node;
@@ -3613,7 +3613,7 @@ void TerrainAddWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
 
 #define TERRAIN_SPATIAL_PREVIOUS(n) (((TERRAIN_SPATIAL_CHUNK *)((u8 *)(n) - offsetof(TERRAIN_SPATIAL_CHUNK, node)))->previous)
 
-void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain) {
+void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET *terrain) {
     TERRAIN_SPATIAL_NODE *current;
     TERRAIN_SPATIAL_NODE *last;
     if (terrain == NULL) {
@@ -3639,20 +3639,20 @@ void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET_PC *terrain
 
 #undef TERRAIN_SPATIAL_PREVIOUS
 
-#define TERRAIN_BOUNCE_PLATFORM_PC ((TERRAIN_PLATFORM_LIFECYCLE_PC *)CurrentTerrain->platforms)
+#define TERRAIN_BOUNCE_PLATFORM ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)
 
 void PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping) {
     if (index >= 0) {
         if (index < CurrentTerrain->max_platforms) {
-            if (TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_impulse == 0.0f) {
-                TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_offset = 0.0f;
-                TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_velocity = 0.0f;
+            if (TERRAIN_BOUNCE_PLATFORM[index].bounce_impulse == 0.0f) {
+                TERRAIN_BOUNCE_PLATFORM[index].bounce_offset = 0.0f;
+                TERRAIN_BOUNCE_PLATFORM[index].bounce_velocity = 0.0f;
             }
-            TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_impulse = impulse;
-            TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_spring = spring;
-            TERRAIN_BOUNCE_PLATFORM_PC[index].bounce_damping = damping;
+            TERRAIN_BOUNCE_PLATFORM[index].bounce_impulse = impulse;
+            TERRAIN_BOUNCE_PLATFORM[index].bounce_spring = spring;
+            TERRAIN_BOUNCE_PLATFORM[index].bounce_damping = damping;
         }
     }
 }
 
-#undef TERRAIN_BOUNCE_PLATFORM_PC
+#undef TERRAIN_BOUNCE_PLATFORM

@@ -57,7 +57,7 @@ struct attracto_s {      // size 0x74
 
 typedef struct attracto_world_reader_s { // size 0x50a0
     u8 unknown_00[0x5098];               // 0x0000
-    ATTRACTO_PC *attractos;              // 0x5098
+    ATTRACTO *attractos;                 // 0x5098
     i32 attracto_count;                  // 0x509c
 } ATTRACTO_WORLD_READER;
 
@@ -168,7 +168,7 @@ void Attractos_InitTerrain(WORLDINFO *world) {
 }
 
 void *Attractos_ReserveBufferSpace(WORLDINFO *world) {
-    LEVELDATA_PC *level = world->current_level;
+    LEVELDATA *level = world->current_level;
     world->attractos = NULL;
     world->attracto_count = 0;
     if (level->max_attractos > 0) {
@@ -260,7 +260,7 @@ void Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     attracto = world->attractos;
     for (index = 0; index < world->attracto_count; ++index, ++attracto) {
         NUVEC position;
-        GAME_MESSAGE_PC *message;
+        GAME_MESSAGE *message;
         if (!attracto->visible || !attracto->active || attracto->filled) {
             continue;
         }
@@ -275,10 +275,10 @@ void Attractos_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     }
 }
 
-ATTRACTO_PC *Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+ATTRACTO *Attracto_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     ATTRACTO_WORLD_READER *reader = (ATTRACTO_WORLD_READER *)world;
-    ATTRACTO_PC *attracto = reader->attractos;
-    ATTRACTO_PC *nearest = NULL;
+    ATTRACTO *attracto = reader->attractos;
+    ATTRACTO *nearest = NULL;
     f32 best = 1.0e9f;
     i32 index;
     for (index = 0; index < reader->attracto_count; ++index, ++attracto) {
@@ -353,7 +353,7 @@ i32 Attractos_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_attractos : 0;
 }
 
-void Attractos_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
+void Attractos_AddGizmos(GIZMOSYS *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->attracto_count; ++index) {
         if (NuStrLen(((ATTRACTO_RECORD *)world->attractos)[index].name) != 0) {
@@ -428,7 +428,7 @@ NUVEC *Attracto_GetPos(GIZMO_PC *gizmo) {
     return &((ATTRACTO_RECORD *)gizmo->object)->position;
 }
 
-void Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
+void Attracto_GetPos_Top(ATTRACTO *attracto, NUVEC *position) {
     if (attracto != NULL && position != NULL) {
         *position = attracto->position;
         position->y = position->y + 1.0;
@@ -436,15 +436,15 @@ void Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
 }
 
 char *AttractoRegistryNamePc = "Attracto";
-ADDGIZMOTYPE_PC AttractoAddType = {0};
+ADDGIZMOTYPE AttractoAddType = {0};
 
-ADDGIZMOTYPE_PC *Attractos_RegisterGizmo(i32 unused_type_id) {
+ADDGIZMOTYPE *Attractos_RegisterGizmo(i32 unused_type_id) {
     char *name = AttractoRegistryNamePc;
     AttractoAddType = Default_ADDGIZMOTYPE;
     AttractoAddType.name = name;
     AttractoAddType.prefix = dat_007516c0;
     AttractoAddType.fns.options = 0x2c;
-    AttractoAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Attractos_GetMaxGizmos;
+    AttractoAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Attractos_GetMaxGizmos;
     AttractoAddType.fns.add_gizmos_fn = (void *)Attractos_AddGizmos;
     AttractoAddType.fns.early_update_fn = NULL;
     AttractoAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Attractos_Update;
@@ -468,7 +468,7 @@ ADDGIZMOTYPE_PC *Attractos_RegisterGizmo(i32 unused_type_id) {
     AttractoAddType.fns.store_progress_fn = (void *)Attractos_StoreProgress;
     AttractoAddType.fns.reset_fn = (void *)Attractos_Reset;
     AttractoAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Attractos_ReserveBufferSpace;
-    AttractoAddType.fns.load_fn = (i32(*)(void *, void *))Attractos_Load;
+    AttractoAddType.fns.load_fn = (i32 (*)(void *, void *))Attractos_Load;
     AttractoAddType.fns.post_load_fn = NULL;
     AttractoAddType.fns.add_level_sfx_fn = NULL;
     return &AttractoAddType;
@@ -550,7 +550,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     char text[32];
     NUVEC position;
     if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->suit != NULL && (object->suit->flags & 0x80) != 0) {
-        GAME_MESSAGE_PC *message;
+        GAME_MESSAGE *message;
         available = 1;
         sprintf(text, "%i", object->unknown_1062);
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);

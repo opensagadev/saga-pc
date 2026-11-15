@@ -288,7 +288,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
     }
 
     if (LEGOCONTEXT_PUSHOBSTACLE != -1 && object->character_context == LEGOCONTEXT_PUSHOBSTACLE) {
-        GAMEPAD_PC *pad = object->pad;
+        GAMEPAD *pad = object->pad;
         i32 forward = 0;
         i32 stopped = 0;
         i32 moving = 0;

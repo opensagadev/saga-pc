@@ -19,8 +19,8 @@ extern "C" {
     extern i32 MiniKitModelId;
     extern i32 CharKitModelId;
     void CollectMinikit(NUVEC *, char *, i32);
-    void MiniKit_GameMsg_Update(GAME_MESSAGE_PC *);
-    void MiniKit_GameMsg_End(GAME_MESSAGE_PC *);
+    void MiniKit_GameMsg_Update(GAME_MESSAGE *);
+    void MiniKit_GameMsg_End(GAME_MESSAGE *);
     void CharacterMiniKits_Dump(WORLDINFO *);
     extern i32 *Char_MiniKit;
     extern VARIPTR minikits_savecharacterbufferptr;

@@ -40,7 +40,7 @@
 #include "nu2api/numath/nuvec.h"
 static f32 PushBlockGapEpsilon = 0.00999999978f;
 
-extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
+extern "C" ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 extern "C" char *PushBlocksName;
 
 typedef struct PUSH_SUPPORT_BLOCK_VIEW {
@@ -84,8 +84,8 @@ typedef struct PUSH_RUNTIME_BLOCK_VIEW {
     } extra_terrain_info;
 
     i32 previous_extra_terrain_info;
-    PUSH_BLOCK_PC *supporting_block;
-    PUSH_BLOCK_PC *previous_supporting_block;
+    PUSH_BLOCK *supporting_block;
+    PUSH_BLOCK *previous_supporting_block;
     nuhspecial_s special;
     GAMEOBJECT *pushing_object;
     i32 platform_id;
@@ -153,8 +153,8 @@ extern "C" {
     }
 }
 
-extern "C" void KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
-    PUSH_BLOCK_PC *block = opaque_block;
+extern "C" void KnockPushBlock(PUSH_BLOCK *opaque_block, NUVEC *direction) {
+    PUSH_BLOCK *block = opaque_block;
     if (block != NULL) {
         block->velocity.x = -direction->x;
         block->velocity.y = -direction->y;
@@ -170,7 +170,7 @@ extern "C" {
 }
 
 extern "C" void ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i32) {
-    PUSH_BLOCK_PC *block = opaque;
+    PUSH_BLOCK *block = opaque;
     block->platform_id = FindPlatInst(NuSpecialGetInstanceix(&block->special));
     SetAnimFrame(&block->special, 1.0f);
     block->packed_state_flags &= 0xfdfc70f2u;
@@ -192,7 +192,7 @@ extern "C" void ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i3
 
 extern "C" void ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
     WORLDINFO *world = opaque;
-    PUSH_BLOCK_PC *block = world->push_blocks;
+    PUSH_BLOCK *block = world->push_blocks;
     if (block == NULL) {
         return;
     }
@@ -246,7 +246,7 @@ extern "C" void ResetPushProgress(WORLDINFO *opaque, void *progress_data) {
     }
 }
 
-extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
+extern "C" PUSH_BLOCK *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *object, float range) {
     WORLDINFO *push_world = world;
     if (push_world == NULL || push_world->push_blocks == NULL || push_world->push_block_count == 0 || LEGOCONTEXT_PUSH == -1 ||
         object->character_context != LEGOCONTEXT_PUSH) {
@@ -260,7 +260,7 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
     max_y -= adjust;
     min_y += adjust;
     i32 mode;
-    PUSH_BLOCK_PC *nearest = NULL;
+    PUSH_BLOCK *nearest = NULL;
     if (facing == 0 || facing > 0x10000 - PushBlockFacingTolerance || (facing > 0 && facing < PushBlockFacingTolerance)) {
         mode = 2;
     } else if (facing == 0x4000 || (facing > 0x4000 - PushBlockFacingTolerance && facing < 0x4000 + PushBlockFacingTolerance)) {
@@ -276,7 +276,7 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
     nearest = NULL;
     f32 gap = 0.0f;
     for (i32 i = 0; i < push_world->push_block_count; ++i) {
-        PUSH_BLOCK_PC *block = &push_world->push_blocks[i];
+        PUSH_BLOCK *block = &push_world->push_blocks[i];
         if (NuSpecialExistsFn(&block->special) != 0) {
             if (NuSpecialGetOnScreenFn(&block->special) == 0) {
                 continue;
@@ -409,7 +409,7 @@ extern "C" PUSH_BLOCK_PC *NearestFacingPushBlock(WORLDINFO *world, GAMEOBJECT *o
 }
 
 extern "C" i32 PushBlock(GAMEOBJECT *object) {
-    PUSH_BLOCK_PC *block = NearestFacingPushBlock(WORLD, object, 2.0f);
+    PUSH_BLOCK *block = NearestFacingPushBlock(WORLD, object, 2.0f);
     if (block != NULL) {
         block->pushing_object = object;
         block->packed_state_flags |= 1;
@@ -424,16 +424,16 @@ extern "C" {
 
     f32 PushBlockOverlapShrink = 0.0f;
 
-    PUSH_BLOCK_PC *BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded, PUSH_BLOCK_PC **support) {
+    PUSH_BLOCK *BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_block, i32 excluded, PUSH_BLOCK **support) {
         WORLDINFO *world = opaque_world;
-        PUSH_BLOCK_PC *block = opaque_block;
+        PUSH_BLOCK *block = opaque_block;
         NUVEC *position = block->position;
         i32 i;
         if (support != NULL) {
             *support = NULL;
         }
         for (i = 0; i < world->push_block_count; ++i) {
-            PUSH_BLOCK_PC *other;
+            PUSH_BLOCK *other;
             NUVEC offset;
             NUVEC minimum;
             NUVEC maximum;
@@ -481,7 +481,7 @@ extern "C" {
                 f32 gap = offset.y - maximum.y;
                 if (gap > 0.0f) {
                     if (*support != NULL) {
-                        PUSH_BLOCK_PC *previous = *support;
+                        PUSH_BLOCK *previous = *support;
                         f32 previous_gap;
                         offset = *position;
                         offset.y -= previous->position->y;
@@ -507,7 +507,7 @@ extern "C" {
         return NULL;
     }
 
-    void MoveBlocksOverBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded, NUVEC *delta) {
+    void MoveBlocksOverBlock(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_block, i32 excluded, NUVEC *delta) {
         PUSH_RUNTIME_WORLD_VIEW *world = (PUSH_RUNTIME_WORLD_VIEW *)opaque_world;
         PUSH_RUNTIME_BLOCK_VIEW *block = (PUSH_RUNTIME_BLOCK_VIEW *)opaque_block;
         NUVEC *position;
@@ -562,17 +562,17 @@ extern "C" {
             other->ground_offset -= delta->y;
             other_position->z = delta->z + other_position->z;
             other->packed_state_flags |= 4u;
-            if (BlockInBlock(opaque_world, (PUSH_BLOCK_PC *)other, index, &other->supporting_block) != NULL) {
+            if (BlockInBlock(opaque_world, (PUSH_BLOCK *)other, index, &other->supporting_block) != NULL) {
                 other->packed_state_flags |= 0x400u;
             }
             NuSpecialUpdate(&other->special);
         }
     }
 
-    void MoveBlocks(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 index, NUVEC *velocity) {
+    void MoveBlocks(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_block, i32 index, NUVEC *velocity) {
         PUSH_RUNTIME_BLOCK_VIEW *block = (PUSH_RUNTIME_BLOCK_VIEW *)opaque_block;
         NUVEC delta;
-        PUSH_BLOCK_PC *hit;
+        PUSH_BLOCK *hit;
         i32 j;
         delta.x = velocity->x;
         delta.y = 0.0f;
@@ -615,7 +615,7 @@ extern "C" {
         }
     }
 
-    i32 TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *points, f32 *heights) {
+    i32 TerrainBlockOnBlock(WORLDINFO *opaque_world, PUSH_BLOCK *block, NUVEC *points, f32 *heights) {
         i32 i;
         i32 j;
         if (points == NULL || heights == NULL) {
@@ -630,7 +630,7 @@ extern "C" {
             PUSH_SUPPORT_BLOCK_VIEW *other = &world->blocks[i];
             NUVEC min;
             NUVEC max;
-            if ((PUSH_BLOCK_PC *)other == block) {
+            if ((PUSH_BLOCK *)other == block) {
                 continue;
             }
             max = min = *other->position;
@@ -649,15 +649,15 @@ extern "C" {
     }
 }
 
-extern "C" i32 OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, NUVEC *position, i32 excluded) {
+extern "C" i32 OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK *opaque_block, NUVEC *position, i32 excluded) {
     WORLDINFO *world = opaque_world;
-    PUSH_BLOCK_PC *block = opaque_block;
+    PUSH_BLOCK *block = opaque_block;
     NUVEC centre;
     f32 radius;
     NuSpecialGetRadius(&block->special, &centre, &radius);
     radius *= radius;
     for (i32 i = 0; i < world->push_block_count; ++i) {
-        PUSH_BLOCK_PC *other;
+        PUSH_BLOCK *other;
         NUVEC minimum;
         NUVEC maximum;
         f32 other_radius;
@@ -692,7 +692,7 @@ extern "C" i32 OtherBlockInRange(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_
 
 extern "C" {
 
-    i32 SnapPosTaken(WORLDINFO *opaque_world, PUSH_BLOCK_PC *block, NUVEC *position, i32 excluded) {
+    i32 SnapPosTaken(WORLDINFO *opaque_world, PUSH_BLOCK *block, NUVEC *position, i32 excluded) {
         PUSH_SUPPORT_WORLD_VIEW *world = (PUSH_SUPPORT_WORLD_VIEW *)opaque_world;
         i32 count = world->count;
         i32 i;
@@ -719,8 +719,8 @@ extern "C" {
     }
 }
 
-extern "C" void PushSeekComplete(PUSH_BLOCK_PC *opaque_block, i32 index) {
-    PUSH_BLOCK_PC *block = opaque_block;
+extern "C" void PushSeekComplete(PUSH_BLOCK *opaque_block, i32 index) {
+    PUSH_BLOCK *block = opaque_block;
     block->completed_snap_positions |= (u8)(1 << index);
     block->packed_state_flags &= ~0x200u;
     if ((block->packed_state_flags & 0x20000000u) == 0) {
@@ -740,7 +740,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
     }
     snap_time = 0.25f;
     for (i32 index = 0; index < world->push_block_count; ++index) {
-        PUSH_BLOCK_PC *p = &world->push_blocks[index];
+        PUSH_BLOCK *p = &world->push_blocks[index];
         p->push_visible = NuSpecialGetVisibilityFn(&p->special);
         if (p->push_visible == 0) {
             continue;
@@ -884,13 +884,13 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
         }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
-        PUSH_BLOCK_PC *p = &world->push_blocks[index];
+        PUSH_BLOCK *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) != 0 && (p->packed_state_flags & 0x06000100u) == 0 && (p->packed_state_flags & 0x69u) != 0) {
             MoveBlocks(world, p, index, &p->velocity);
         }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
-        PUSH_BLOCK_PC *p = &world->push_blocks[index];
+        PUSH_BLOCK *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000000u) != 0) {
             continue;
         }
@@ -995,7 +995,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
         }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
-        PUSH_BLOCK_PC *p = &world->push_blocks[index];
+        PUSH_BLOCK *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0 || (p->packed_state_flags & 0x02000100u) != 0) {
             continue;
         }
@@ -1045,7 +1045,7 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
         }
     }
     for (i32 index = 0; index < world->push_block_count; ++index) {
-        PUSH_BLOCK_PC *p = &world->push_blocks[index];
+        PUSH_BLOCK *p = &world->push_blocks[index];
         if ((p->packed_state_flags & 0x40000u) == 0) {
             continue;
         }
@@ -1075,16 +1075,16 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
     }
 }
 
-extern "C" PUSH_BLOCK_PC *NearestPushBlock(WORLDINFO *opaque_world, NUVEC *position, f32 range) {
+extern "C" PUSH_BLOCK *NearestPushBlock(WORLDINFO *opaque_world, NUVEC *position, f32 range) {
     WORLDINFO *world = opaque_world;
     if (world == NULL || position == NULL) {
         return NULL;
     }
     NUVEC minimum = {position->x - range, position->y - range, position->z - range};
     NUVEC maximum = {position->x + range, position->y + range, position->z + range};
-    PUSH_BLOCK_PC *nearest = NULL;
+    PUSH_BLOCK *nearest = NULL;
     f32 nearest_distance = 1000000000.0f;
-    PUSH_BLOCK_PC *block = world->push_blocks;
+    PUSH_BLOCK *block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         if ((block->packed_state_flags & 0x00040000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
             (block->packed_state_flags & 0x100u) != 0) {
@@ -1129,13 +1129,13 @@ extern "C" {
 
 static void *PushBlocks_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
-    LEVELDATA_PC *level = world->current_level;
+    LEVELDATA *level = world->current_level;
     world->push_blocks = NULL;
     world->push_block_count = 0;
     if (level->max_pushblocks > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-        world->push_blocks = static_cast<PUSH_BLOCK_PC *>(world->giz_buffer.void_ptr);
-        world->giz_buffer.addr += level->max_pushblocks * sizeof(PUSH_BLOCK_PC);
+        world->push_blocks = static_cast<PUSH_BLOCK *>(world->giz_buffer.void_ptr);
+        world->giz_buffer.addr += level->max_pushblocks * sizeof(PUSH_BLOCK);
     }
     return world->push_blocks;
 }
@@ -1145,11 +1145,11 @@ static void Push_Reset(void *world, void *, void *progress) {
 }
 
 static void Push_Activate(GIZMO_PC *gizmo, i32 active) {
-    PUSH_BLOCK_PC *block;
+    PUSH_BLOCK *block;
     WORLDINFO *world;
     i32 index;
     if (gizmo != NULL) {
-        block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
+        block = static_cast<PUSH_BLOCK *>(gizmo->object);
         block->push_active = active != 0;
         if (active != 0) {
             world = WORLD;
@@ -1167,7 +1167,7 @@ static void Push_Activate(GIZMO_PC *gizmo, i32 active) {
 }
 
 static void Push_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
-    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
+    PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
     block->push_visible = visible != 0;
     NuSpecialSetVisibility(&block->special, visible);
     for (i32 index = 0; index < block->end_position_count; ++index) {
@@ -1191,13 +1191,13 @@ static void Push_AddGizmos(void *system, i32 type_id, void *world_ptr, void *) {
 
 static char *GizPush_GetGizmoName(GIZMO_PC *gizmo) {
     if (gizmo != NULL) {
-        return static_cast<PUSH_BLOCK_PC *>(gizmo->object)->name;
+        return static_cast<PUSH_BLOCK *>(gizmo->object)->name;
     }
     return NULL;
 }
 
 static i32 GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
-    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
+    PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
     if (block != NULL) {
         if (output_index == 0) {
             if (block->completed_snap_positions == 0) {
@@ -1226,7 +1226,7 @@ extern "C" {
 }
 
 static char *GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
-    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
+    PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
     if (output_index < 0 || output_index > block->output_count) {
         return NULL;
     }
@@ -1239,7 +1239,7 @@ static char *GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
 }
 
 static i32 GizPush_GetNumOutputs(GIZMO_PC *gizmo) {
-    return static_cast<PUSH_BLOCK_PC *>(gizmo->object)->output_count;
+    return static_cast<PUSH_BLOCK *>(gizmo->object)->output_count;
 }
 
 static void *Push_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -1273,7 +1273,7 @@ static void Push_StoreProgress(void *world_ptr, void *, void *progress_ptr) {
     if (world == NULL || world->push_blocks == NULL) {
         return;
     }
-    PUSH_BLOCK_PC *block = world->push_blocks;
+    PUSH_BLOCK *block = world->push_blocks;
     for (i32 index = 0; index < world->push_block_count && index < 16; ++index, ++block) {
         const i32 word = index / 32;
         const u32 mask = 1u << (index & 31);
@@ -1311,7 +1311,7 @@ static i32 edpush_Load(void *world_ptr, void *) {
         i32 valid_count = 0;
         char special_name[256];
         for (i32 file_index = 0; file_index < world->push_block_count; ++file_index) {
-            PUSH_BLOCK_PC *block = &world->push_blocks[valid_count];
+            PUSH_BLOCK *block = &world->push_blocks[valid_count];
             i32 missing = 0;
             memset(special_name, 0, sizeof(special_name));
             EdFileRead(special_name, EdFileReadChar());
@@ -1385,7 +1385,7 @@ static i32 edpush_Load(void *world_ptr, void *) {
 
 static i32 Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT_PC *bolt, u8 *) {
     WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
-    PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(blocks_ptr);
+    PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(blocks_ptr);
     if (block != NULL) {
         for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
             if ((block->packed_state_flags & 0x40000u) == 0 || (block->packed_state_flags & 0x01000000u) == 0 ||
@@ -1424,8 +1424,8 @@ static i32 Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT_PC *bo
 
 i32 pushblock_gizmotype_id = 0;
 
-extern "C" ADDGIZMOTYPE_PC *Push_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+extern "C" ADDGIZMOTYPE *Push_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
     char *name = PushBlocksName;
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = name;
@@ -1462,10 +1462,10 @@ extern "C" ADDGIZMOTYPE_PC *Push_RegisterGizmo(i32 type_id) {
 }
 
 extern "C" void ResetSinglePushBlockHeight(WORLDINFO *world, struct pushblock_s *opaque, i32 index) {
-    PUSH_BLOCK_PC *block = opaque;
+    PUSH_BLOCK *block = opaque;
     BlockInBlock(world, block, index, &block->supporting_block);
     if (block->supporting_block != NULL) {
-        PUSH_BLOCK_PC *support = block->supporting_block;
+        PUSH_BLOCK *support = block->supporting_block;
         block->ground_height = support->position->y + support->bounds_max.y + PushBlockGapEpsilon;
     }
     f32 height = block->bounds_min.y + block->position->y;
@@ -1491,7 +1491,7 @@ extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
     pushposincrease = 0;
     world->push_block_positions = static_cast<NUVEC *>(world->giz_buffer.void_ptr);
     world->giz_buffer.addr = (world->giz_buffer.addr + world->current_level->max_pushblock_endpos * sizeof(NUVEC) + 3) & ~3u;
-    PUSH_BLOCK_PC *block = world->push_blocks;
+    PUSH_BLOCK *block = world->push_blocks;
     ResetPushProgress(opaque, progress);
     for (i32 index = 0; index < world->push_block_count; ++index, ++block) {
         block->animation_positions = 0;

@@ -34,9 +34,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-i32 Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **operator_object) {
+i32 Techno_FindOperator(void *target, GAMEPAD **pad, GAMEOBJECT **operator_object) {
     i32 index;
-    TECHNO_PC *techno;
+    TECHNO *techno;
     for (index = 0; index < 8; ++index) {
         if (Player[index] != NULL && Player[index]->character_context == CHARACTER_CONTEXT_TECHNO && Player[index]->techno != NULL) {
             techno = Player[index]->techno;
@@ -55,8 +55,8 @@ i32 Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **operator_ob
     return 0;
 }
 
-TECHNO_PC *Technos_FindControllingTechno(GAMEOBJECT *object) {
-    TECHNO_PC *techno;
+TECHNO *Technos_FindControllingTechno(GAMEOBJECT *object) {
+    TECHNO *techno;
     i32 i;
     i32 count;
     if (object == NULL) {
@@ -192,7 +192,7 @@ typedef struct techno_progress_s { // size 0x8
     u32 visible[1];                // 0x4
 } TECHNO_PROGRESS;
 
-TECHNO_CONFIG_PC TechnoSys = {
+TECHNO_CONFIG TechnoSys = {
     0.2f,
     {85, 44, -1, -1},
     {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
@@ -464,7 +464,7 @@ static void *Technos_ReserveBufferSpace(void *world_ptr) {
     world->techno_count = 0;
     if (level->max_technos > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-        world->technos = (TECHNO_PC *)world->giz_buffer.addr;
+        world->technos = (TECHNO *)world->giz_buffer.addr;
         world->giz_buffer.addr += level->max_technos * sizeof(TECHNO_CALLBACK);
     }
     return world->technos;
@@ -511,8 +511,8 @@ static i32 Technos_Load(void *world_ptr, void *data) {
 i32 techno_gizmotype_id = -1;
 const char *TechnoRegistrationName = "Techno";
 
-ADDGIZMOTYPE_PC *Technos_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC addtype = {0};
+ADDGIZMOTYPE *Technos_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE addtype = {0};
     addtype = Default_ADDGIZMOTYPE;
     addtype.name = TechnoRegistrationName;
     addtype.prefix = "";
@@ -600,7 +600,7 @@ NUVEC *Technos_TgtPos(TECHNO_s *techno) {
 
 f32 TechnoMoveSpeed[2] = {0.0f, 0.0f};
 
-TECHNO_PC *Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
+TECHNO *Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     TECHNO_CALLBACK *nearest = NULL;
     TECHNO_CALLBACK *techno = (TECHNO_CALLBACK *)world->technos;
     f32 nearest_distance = 1000000000.0f;
@@ -623,10 +623,10 @@ TECHNO_PC *Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *obj
     if (distance != NULL) {
         *distance = nearest_distance;
     }
-    return (TECHNO_PC *)nearest;
+    return (TECHNO *)nearest;
 }
 
-void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
+void Technos_MoveTarget(TECHNO *techno_pointer, GAMEOBJECT *object) {
     TECHNO_CALLBACK *techno = (TECHNO_CALLBACK *)techno_pointer;
     f32 speed;
     f32 rate;
@@ -718,7 +718,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (Techno_isReady((TECHNO_s *)techno) != 0) {
             object->character_context = CHARACTER_CONTEXT_TECHNO;
             object->context_timer = 0.0f;
-            object->techno = (TECHNO_PC *)techno;
+            object->techno = (TECHNO *)techno;
             object->unknown_7aa = ACTION_HACK;
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);

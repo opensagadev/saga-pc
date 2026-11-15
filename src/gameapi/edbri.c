@@ -655,7 +655,7 @@ void edbriCreateOptionsMenu(void) {
     eduiMenuAddItem(edbri_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edbricbFileLoad, "Load Bridges"));
 }
 
-void edbriDoInput(FRAME_PAD_PC *pad) {
+void edbriDoInput(FRAME_PAD *pad) {
     i32 index;
     if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
         edcamMove(pad);
@@ -808,7 +808,7 @@ NUMTL *edbri_mtl = NULL;
 i32 edbri_page_on[8] = {0};
 
 void edbriDrawCursor(void) {
-    NURND_VERTEX3D_PC line[2];
+    NURND_VERTEX3D line[2];
     NUVEC extent;
     line[0].colour = 0xffffffff;
     line[1].colour = 0xffffffff;

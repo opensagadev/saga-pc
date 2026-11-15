@@ -745,8 +745,8 @@ const char *GizObstacleRegistrationNamePtr = "GizObstacle";
 void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
     WORLDINFO *world = world_ptr;
     GIZOBSTACLE_SYSTEM *system = data;
-    GIZMOSYS_PREFIX_PC *gizmo_sys;
-    GIZMOSET_PC *set;
+    GIZMOSYS_PREFIX *gizmo_sys;
+    GIZMOSET *set;
     GIZMO_PC *gizmo;
     i32 i;
     (void)time;
@@ -958,10 +958,10 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     return 1;
 }
 
-GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET_PC *set, f32 *result_distance, NUVEC *result_position, NUVEC *result_velocity,
+GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET *set, f32 *result_distance, NUVEC *result_position, NUVEC *result_velocity,
                                          void *object_ptr, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared,
                                          i32 directional, i32 planar, i32 bolt_id) {
-    BOLTTYPE_PC *type = BoltType_FindByID(bolt_id, WORLD);
+    BOLTTYPE *type = BoltType_FindByID(bolt_id, WORLD);
     u16 near_angle = TargetDeg_Near;
     u16 mid_angle = TargetDeg_Mid;
     u16 far_angle = TargetDeg_Far;
@@ -1140,7 +1140,7 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *
 
                 OBSTACLE_ANIM_OBJECT_DATA *object_data = object->object_data;
                 if (object_data->platform == bolt->hit_platform) {
-                    BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, world);
+                    BOLTTYPE *type = BoltType_FindByID(bolt->type_id, world);
                     GAMEOBJECT *owner = bolt->owner;
                     i32 player = owner ? owner->player_index : -1;
                     GizObstacles_Hit(world, obstacle, &bolt->position, player, type->unknown_3c);
@@ -1194,7 +1194,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
             }
         }
         if (nearest) {
-            BOLTTYPE_PC *type;
+            BOLTTYPE *type;
             GAMEOBJECT *owner;
             i32 player;
             if (hit_type != 2 && hit_type != 7 && bolt) {
@@ -1224,9 +1224,9 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
     return 0;
 }
 
-ADDGIZMOTYPE_PC *GizObstacles_RegisterGizmo(i32 type_id) {
-    static ADDGIZMOTYPE_PC GizObstaclesAddType = {0};
-    ADDGIZMOTYPE_PC *addtype = &GizObstaclesAddType;
+ADDGIZMOTYPE *GizObstacles_RegisterGizmo(i32 type_id) {
+    static ADDGIZMOTYPE GizObstaclesAddType = {0};
+    ADDGIZMOTYPE *addtype = &GizObstaclesAddType;
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizObstacleRegistrationNamePtr;
     addtype->prefix = "";

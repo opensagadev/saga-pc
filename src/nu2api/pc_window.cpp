@@ -22,13 +22,13 @@
 static i32 PcArgc = 1; // not address-exposed: kept in a register across the tokenizer
 
 extern "C" {
-    PC_WINDOW_CALLBACK_PC PcWindowCallbacks[1] = {NULL};
+    PC_WINDOW_CALLBACK PcWindowCallbacks[1] = {NULL};
     WNDCLASSEXA PcWindowClass = {0};
     /* Command line: module slot 0 and scratch slot 1. */
     char *PcArgv[2] = {NULL, NULL};
 }
 
-extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
+extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK callback) {
     PcWindowCallbacks[PcWindowCallbackCount++] = callback;
 }
 
@@ -509,7 +509,7 @@ extern "C" {
 
 extern "C" void PcCreateCursorMaterialPc(void) {
     if (PcCursorTextureIdPc == -1) {
-        NUTEXDIM_PC *texture = static_cast<NUTEXDIM_PC *>(NuAlloc(sizeof(NUTEXDIM_PC), ".\\windows.cpp", 0x642));
+        NUTEXDIM *texture = static_cast<NUTEXDIM *>(NuAlloc(sizeof(NUTEXDIM), ".\\windows.cpp", 0x642));
         memset(texture, 0, sizeof(*texture));
         texture->image_data = PcCursorImagePc;
         texture->image_size = sizeof(PcCursorImagePc);

@@ -399,7 +399,7 @@ i32 EdFileBackup(char *source, char *destination) {
     return 0;
 }
 
-i32 FS_GetPadWithRepeat(FRAME_PAD_PC *pad, float repeat, float elapsed) {
+i32 FS_GetPadWithRepeat(FRAME_PAD *pad, float repeat, float elapsed) {
     static i32 LastPad = 0;
     static float PadRepeat = 0;
 
@@ -431,13 +431,13 @@ void FS_SetFileSelPathFromName(char *name) {
         }
     }
     if (file_name[0] != '\0') {
-        ((i32(*)(char *, char *, i32))(&NuFileExtConvert))(FS_LastFileName, file_name, 255);
+        ((i32 (*)(char *, char *, i32))(&NuFileExtConvert))(FS_LastFileName, file_name, 255);
     } else {
         FS_LastFileName[0] = '\0';
     }
 }
 
-extern struct FILE_DIRECTORY_ENTRY_PC *dir_list;
+extern struct FILE_DIRECTORY_ENTRY *dir_list;
 extern i32 edui_filepick_listsize;
 
 static void eduiFilePickAllocDirList(void) {
@@ -798,7 +798,7 @@ void cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
     menu->unknown_10 = menu->selected;
 }
 
-static i32 eduicbProcessSel(eduimenu_s *menu, eduiitem_s *item, f32 unused2, FRAME_PAD_PC *pad) {
+static i32 eduicbProcessSel(eduimenu_s *menu, eduiitem_s *item, f32 unused2, FRAME_PAD *pad) {
     edui_sel_s *selection = ((edui_sel_s *)(item));
     if (pad->digital_buttons_pressed & EDUI_CURSOR_PRIMARY) {
         eduiMenuHighlight(menu, item);
@@ -962,7 +962,7 @@ void cbgpcfgAdd(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     eduiMenuDestroy(menu);
 }
 
-i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
 i32 eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
 i32 eduicbRenderGreyPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
 
@@ -1062,7 +1062,7 @@ void eduiCreate3LineMessageMenu(eduimenu_s *parent, char *first, char *second, c
     }
 }
 
-i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
+i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD *pad) {
     struct eduimenu_s *parent;
     if (!pad || !(pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE)) {
         return 0;
@@ -1081,7 +1081,7 @@ i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     return 1;
 }
 
-i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i32 item_result) {
+i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 item_result) {
     static f32 up_rept = 0;
     static f32 down_rept = 0;
     u32 up_button;
@@ -1439,7 +1439,7 @@ edui_gradient_node_s *eduiGradStageAdd(edui_gradient_pick_s *item, f32 time, f32
     return stage;
 }
 
-i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
 
 eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text) {
     edui_gradient_pick_s *item = NuAlloc(sizeof(edui_gradient_pick_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xaa2);
@@ -1825,7 +1825,7 @@ void eduiGetCursorDelta(f32 *x, f32 *y) {
 }
 
 /* 1 when the left stick is off centre, 2 for the right stick. */
-i32 eduiUsedAlgPad(FRAME_PAD_PC *pad) {
+i32 eduiUsedAlgPad(FRAME_PAD *pad) {
     if (pad != NULL) {
         if (pad->analog_left_x < 0x40 || pad->analog_left_x > 0xc0 || pad->analog_left_y < 0x40 || pad->analog_left_y > 0xc0) {
             return 1;
@@ -1967,11 +1967,11 @@ void PcGetMousePositionPc(f32 *x, f32 *y);
 void PcSetMousePositionPc(f32 x, f32 y);
 u32 edui_cursor_buttons_old;
 i32 edui_cursor_locked;
-struct FILE_DIRECTORY_ENTRY_PC *dir_list = 0;
+struct FILE_DIRECTORY_ENTRY *dir_list = 0;
 
 /* A stick nudge recentres the cursor, otherwise it follows the mouse; holding
  * key 0x38 locks it, parking the OS cursor where the editor cursor is. */
-void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD_PC *pad) {
+void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD *pad) {
     u8 centred = 0;
     (void)delta_time;
     if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
@@ -2006,7 +2006,7 @@ void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD_PC *pad) {
     edui_cursor_buttons_db = (edui_cursor_buttons ^ edui_cursor_buttons_old) & edui_cursor_buttons;
 }
 
-void fun_00627540(f32 delta_time, FRAME_PAD_PC *pad) {
+void fun_00627540(f32 delta_time, FRAME_PAD *pad) {
     if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
         edui_cursor_x = 320.0f;
         edui_cursor_y = 112.0f;
@@ -2029,7 +2029,7 @@ void fun_00627540(f32 delta_time, FRAME_PAD_PC *pad) {
     edui_cursor_buttons_db = (edui_cursor_buttons ^ edui_cursor_buttons_old) & edui_cursor_buttons;
 }
 
-void eduiProcessCursor(f32 delta_time, FRAME_PAD_PC *pad) {
+void eduiProcessCursor(f32 delta_time, FRAME_PAD *pad) {
     eduiProcessCursorDefault(delta_time, pad);
 }
 
@@ -2117,7 +2117,7 @@ static i32 EduiExpanderOverButton(EDUI_EXPANDER *expander) {
     return 0;
 }
 
-static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     (void)delta_time;
     if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
@@ -2239,7 +2239,7 @@ i32 EduiMenuHasFocus(eduimenu_s *menu) {
     return !EduiUsingMenuFocus || menu == active_menu;
 }
 
-i32 EduiMenuProcessSelected(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 EduiMenuProcessSelected(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad) {
     if (menu && menu->selected && !menu->selected->disabled && menu->selected->process) {
         return menu->selected->process(menu, menu->selected, delta_time, pad);
     }
@@ -2522,7 +2522,7 @@ static i32 EduiPropKeyboardPc(edui_prop_s *property, eduimenu_s *menu) {
 }
 
 /* Runs the button callback while it is held (or the item is activated). */
-static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD_PC *pad) {
+static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD *pad) {
     edui_camera_enabled = 1;
     if (property->button_held || (property->base.type == 17 && (pad->digital_buttons & PAD_BUTTON_CROSS))) {
         if (property->button) {
@@ -2537,7 +2537,7 @@ static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD_PC 
     return 0;
 }
 
-static i32 eduicbProcessProp(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 eduicbProcessProp(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     (void)delta_time;
     EduiPropDragLabel((edui_prop_s *)item, menu);
     EduiPropKeyboardPc((edui_prop_s *)item, menu);
@@ -2891,7 +2891,7 @@ static void eduicbItemDestroyFilter(eduimenu_s *menu, eduiitem_s *item) {
     eduicbItemDestroyProp(menu, item);
 }
 
-static i32 eduicbProcessFilter(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 eduicbProcessFilter(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_filter_s *filter = (edui_filter_s *)item;
     i32 changed = 0;
     char *query;
@@ -2991,7 +2991,7 @@ eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *valu
 
 /* Analog pad rate for the editor: the left stick moves coarsely, the right
  * stick finely, while the cursor button (bit 6) is held. */
-f32 eduiGetAnalougePadValue(FRAME_PAD_PC *pad) {
+f32 eduiGetAnalougePadValue(FRAME_PAD *pad) {
     f32 value = 0.0f;
     if (pad != NULL && (pad->digital_buttons & PAD_BUTTON_CROSS)) {
         if (pad->analog_left_x > 192) {
@@ -3069,7 +3069,7 @@ void eduiMenuSetDisabled(eduimenu_s *menu, i32 disabled) {
     }
 }
 
-i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
 i32 eduicbRenderColourPick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 height);
 i32 eduicbInteractColourPick(edui_interact_s *interact);
 
@@ -3112,7 +3112,7 @@ i32 eduicbRenderTexturePick(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
 
 /* The left stick pans the selected texture corner (scaled by the zoom), the
  * shoulder buttons zoom, and the face buttons snap, switch corners or apply. */
-static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_texture_pick_s *pick = (edui_texture_pick_s *)item;
     i32 stick_x = pad->analog_left_x - 128;
     i32 stick_y = pad->analog_left_y - 128;
@@ -3199,7 +3199,7 @@ eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, c
     return NULL;
 }
 
-i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad);
+i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);
 i32 eduicbRenderGraph(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 selected);
 void nugraphInit(nugraph_s *graph);
 i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count);
@@ -3399,7 +3399,7 @@ i32 fun_00619fe0(void) {
     return 0;
 }
 
-static i32 EduiTextPickKeyboardPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD_PC *pad) {
+static i32 EduiTextPickKeyboardPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD *pad) {
     u32 modifiers;
     i32 key = NuKeyGet(&modifiers);
     NuStrLen(picker->value);
@@ -3487,7 +3487,7 @@ void eduiAddPropTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
     }
 }
 
-static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD_PC *pad) {
+static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD *pad) {
     if (picker == NULL || !picker->editing) {
         if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             eduiAddTextPickEnt(menu, &picker->base);
@@ -3534,7 +3534,7 @@ static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_
     return 1;
 }
 
-i32 eduicbProcessTextPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 eduicbProcessTextPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     (void)delta_time;
     EduiTextPickKeyboardPc((edui_textpicker_s *)item, menu, pad);
     EduiTextPickPadPc((edui_textpicker_s *)item, menu, pad);
@@ -3618,7 +3618,7 @@ eduiitem_s *eduiItemFilePickCreate(u32 data, void *colours, void *callback, char
     return NULL;
 }
 
-i32 eduiMenuProcess(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 eduiMenuProcess(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad) {
     i32 result;
     processing_menu = menu;
     if (menu->child == NULL) {
@@ -4175,12 +4175,12 @@ i32 FS_FileNameFilter(char *name) {
     return 0;
 }
 
-/* FILE_DIRECTORY_ENTRY_PC.flags: the entry is a directory (listed as <name>, opened on selection). */
-enum FILE_DIRECTORY_FLAG_PC { FILE_DIRECTORY_FLAG_DIRECTORY_PC = 8 };
+/* FILE_DIRECTORY_ENTRY.flags: the entry is a directory (listed as <name>, opened on selection). */
+enum FILE_DIRECTORY_FLAG { FILE_DIRECTORY_FLAG_DIRECTORY = 8 };
 
 /* The key cascade tests the key pointers instead of the keys, so the year
  * only decides when the two pointers differ. */
-static void eduiFilePickDateKeys(FILE_DIRECTORY_ENTRY_PC *a, FILE_DIRECTORY_ENTRY_PC *b, i32 *key_a, i32 *key_b) {
+static void eduiFilePickDateKeys(FILE_DIRECTORY_ENTRY *a, FILE_DIRECTORY_ENTRY *b, i32 *key_a, i32 *key_b) {
     *key_a = a->modified.year;
     *key_b = b->modified.year;
     if (key_a == key_b) {
@@ -4220,8 +4220,8 @@ i32 eduiFilePickCompareDateReverse(void *a, void *b) {
 }
 
 i32 eduiFilePickCompareSize(void *a, void *b) {
-    i32 size_a = ((FILE_DIRECTORY_ENTRY_PC *)a)->size;
-    i32 size_b = ((FILE_DIRECTORY_ENTRY_PC *)b)->size;
+    i32 size_a = ((FILE_DIRECTORY_ENTRY *)a)->size;
+    i32 size_b = ((FILE_DIRECTORY_ENTRY *)b)->size;
     if (size_a < size_b) {
         return -1;
     }
@@ -4229,8 +4229,8 @@ i32 eduiFilePickCompareSize(void *a, void *b) {
 }
 
 i32 eduiFilePickCompareSizeReverse(void *a, void *b) {
-    i32 size_a = ((FILE_DIRECTORY_ENTRY_PC *)a)->size;
-    i32 size_b = ((FILE_DIRECTORY_ENTRY_PC *)b)->size;
+    i32 size_a = ((FILE_DIRECTORY_ENTRY *)a)->size;
+    i32 size_b = ((FILE_DIRECTORY_ENTRY *)b)->size;
     if (size_a < size_b) {
         return 1;
     }
@@ -4238,11 +4238,11 @@ i32 eduiFilePickCompareSizeReverse(void *a, void *b) {
 }
 
 i32 eduiFilePickCompareName(void *a, void *b) {
-    return NuStrCmp(((FILE_DIRECTORY_ENTRY_PC *)a)->name, ((FILE_DIRECTORY_ENTRY_PC *)b)->name);
+    return NuStrCmp(((FILE_DIRECTORY_ENTRY *)a)->name, ((FILE_DIRECTORY_ENTRY *)b)->name);
 }
 
 i32 eduiFilePickCompareNameReverse(void *a, void *b) {
-    return NuStrCmp(((FILE_DIRECTORY_ENTRY_PC *)b)->name, ((FILE_DIRECTORY_ENTRY_PC *)a)->name);
+    return NuStrCmp(((FILE_DIRECTORY_ENTRY *)b)->name, ((FILE_DIRECTORY_ENTRY *)a)->name);
 }
 
 /* File picker directory menu: the picker and menu it was opened for. */
@@ -4277,14 +4277,14 @@ static void eduicbSelectDirectoryEntry(eduimenu_s *menu, eduiitem_s *item, u32 v
         }
         filepick_item->reopen_directory = 1;
     }
-    if (dir_list[item->data].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC) {
+    if (dir_list[item->data].flags & FILE_DIRECTORY_FLAG_DIRECTORY) {
         if (filepick_item->filename[0]) {
             NuStrCat(filepick_item->filename, "/");
         }
         NuStrCat(filepick_item->filename, dir_list[item->data].name);
         filepick_item->reopen_directory = 1;
     }
-    if (!(dir_list[item->data].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC)) {
+    if (!(dir_list[item->data].flags & FILE_DIRECTORY_FLAG_DIRECTORY)) {
         NuStrCpy(filepick_item->name, dir_list[item->data].name);
         if (filepick_item->changed) {
             filepick_item->changed(filepick_menu, &filepick_item->base, value);
@@ -4319,7 +4319,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             dir_size++;
         }
         if (picker->compare_entries) {
-            qsort(dir_list, dir_size, sizeof(FILE_DIRECTORY_ENTRY_PC), (i32(*)(const void *, const void *))picker->compare_entries);
+            qsort(dir_list, dir_size, sizeof(FILE_DIRECTORY_ENTRY), (i32 (*)(const void *, const void *))picker->compare_entries);
         }
         if (picker->filename[0]) {
             item = eduiItemSelCreate(9999, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, "<..>");
@@ -4327,7 +4327,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             eduiMenuAddItem(directory_menu, item);
         }
         for (index = 0; index < dir_size; index++) {
-            if (dir_list[index].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC) {
+            if (dir_list[index].flags & FILE_DIRECTORY_FLAG_DIRECTORY) {
                 NuSPrintf(text, "<%s>", dir_list[index].name);
                 item = eduiItemSelCreate(index, picker->base.colours, 0, 1, eduicbSelectDirectoryEntry, text);
                 item->text_alignment = 0x10;
@@ -4338,7 +4338,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
             if (picker->filter[0] && !NuStrIStr(dir_list[index].name, picker->filter)) {
                 continue;
             }
-            if (dir_list[index].flags & FILE_DIRECTORY_FLAG_DIRECTORY_PC) {
+            if (dir_list[index].flags & FILE_DIRECTORY_FLAG_DIRECTORY) {
                 continue;
             }
             NuSPrintf(text, "%s  ( size=%d  date=%d/%d/%d %d:%d )", dir_list[index].name, dir_list[index].size,
@@ -4357,7 +4357,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
     eduiMenuAttach(menu, directory_menu);
 }
 
-i32 eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_file_pick_s *picker = (edui_file_pick_s *)item;
     (void)delta_time;
     if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) || picker->reopen_directory) {
@@ -4367,7 +4367,7 @@ i32 eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FR
     return 0;
 }
 
-extern i32 NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY_PC *entry);
+extern i32 NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY *entry);
 
 typedef struct FS_PACKED_ENTRY_HEADER { // size 0x7
     u8 kind;                            // 0x0
@@ -4380,7 +4380,7 @@ typedef struct FS_PACKED_ENTRY_HEADER { // size 0x7
 } FS_PACKED_ENTRY_HEADER;
 
 void FS_GetDirList(char *path, char *filter, char *filter_out) {
-    FILE_DIRECTORY_ENTRY_PC entry;
+    FILE_DIRECTORY_ENTRY entry;
     FS_PACKED_ENTRY_HEADER header;
     char *next = FS_FileList;
     char *drive;
@@ -4548,7 +4548,7 @@ static i32 fun_006272a0(eduimenu_s *menu, edui_interact_s *interact) {
     return result;
 }
 
-i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
+i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD *pad) {
     i32 result = 0;
     i32 index;
     edui_interact_s *interact;
@@ -4573,7 +4573,7 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     return result;
 }
 
-i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 eduiMenuProcessAux(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad) {
     if (EduiMenuHasFocus(menu)) {
         i32 result;
         EduiMenuEnsureSelected(menu);
@@ -4863,7 +4863,7 @@ void RenderFileSel(void) {
     RenderFileSel3(1);
 }
 
-i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_gradient_pick_s *gradient = (edui_gradient_pick_s *)item;
     edui_gradient_node_s *stage;
     f32 lower;
@@ -4930,7 +4930,7 @@ i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time
     return 0;
 }
 
-i32 ProcessFileSel3(f32 elapsed, FRAME_PAD_PC *pad) {
+i32 ProcessFileSel3(f32 elapsed, FRAME_PAD *pad) {
     i32 buttons;
     i32 length;
     char *separator;
@@ -5037,7 +5037,7 @@ i32 ProcessFileSel3(f32 elapsed, FRAME_PAD_PC *pad) {
     return 0;
 }
 
-i32 ProcessFileSel2(f32 elapsed, FRAME_PAD_PC *pad) {
+i32 ProcessFileSel2(f32 elapsed, FRAME_PAD *pad) {
     return ProcessFileSel3(elapsed, pad);
 }
 
@@ -5046,7 +5046,7 @@ void FileSelKill(void) {
     FS_Active = 0;
 }
 
-void ProcessFileSel(f32 elapsed, FRAME_PAD_PC *pad) {
+void ProcessFileSel(f32 elapsed, FRAME_PAD *pad) {
     ProcessFileSel3(elapsed, pad);
     RenderFileSel();
     if (pad->digital_buttons & PAD_BUTTON_TRIANGLE) {
@@ -5089,7 +5089,7 @@ typedef struct EDUI_FILE_SELECT {                                     // size 0x
     void (*changed)(eduimenu_s *menu, eduiitem_s *item, u32 buttons); // 0x60
 } EDUI_FILE_SELECT;
 
-static i32 eduicbProcessFileSel(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
+static i32 eduicbProcessFileSel(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     if (ProcessFileSel3(delta_time, pad) && ((EDUI_FILE_SELECT *)item)->changed) {
         ((EDUI_FILE_SELECT *)item)->changed(menu, item, pad->digital_buttons);
     }
@@ -5171,12 +5171,12 @@ void CreateTestMenu(void *font) {
     }
 }
 
-void TestMenu(FRAME_PAD_PC *pad) {
+void TestMenu(FRAME_PAD *pad) {
     eduiMenuProcess(testmenu0, 0.016666668f, pad);
     eduiMenuRender(testmenu0);
 }
 
-void fun_0062a4b0(f32 delta_time, FRAME_PAD_PC *pad) {
+void fun_0062a4b0(f32 delta_time, FRAME_PAD *pad) {
     eduiitem_s *item;
     if (ed_main_menu) {
         for (item = ed_main_menu->first; item; item = item->next) {
@@ -5189,7 +5189,7 @@ void fun_0062a4b0(f32 delta_time, FRAME_PAD_PC *pad) {
     }
 }
 
-i32 edmainProcess(f32 delta_time, FRAME_PAD_PC *pad) {
+i32 edmainProcess(f32 delta_time, FRAME_PAD *pad) {
     i32 result;
     editor_return = 0;
     if (edmain_cursor_enabled) {

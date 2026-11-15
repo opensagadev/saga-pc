@@ -322,7 +322,7 @@ void ShaderCompilerBasePc::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Sha
     }
     bool swizzle = true;
     if (filter->material != NULL && filter->material->texture_id != 0) {
-        NUTEXDIM_PC *texture = NuTextureGetDimensions(filter->material->texture_id);
+        NUTEXDIM *texture = NuTextureGetDimensions(filter->material->texture_id);
         if (texture != NULL && texture->resource != NULL) {
             PC_TEXTURE_LEVEL_DESC dimensions;
             texture->resource->methods->get_level_desc(texture->resource, 0, &dimensions);
@@ -543,16 +543,16 @@ bool ShaderCompilerBasePc::LoadFile(const char *name) {
 }
 
 /* Method table of ID3DXEffectCompiler as far as it is called here. */
-typedef struct D3DX_EFFECT_COMPILER_METHODS_PC {
+typedef struct D3DX_EFFECT_COMPILER_METHODS {
     HRESULT(__stdcall *query_interface)(ID3DXEffectCompiler *, const IID *, void **);
     ULONG(__stdcall *add_ref)(ID3DXEffectCompiler *);
     ULONG(__stdcall *release)(ID3DXEffectCompiler *);
     void *unknown_0c[56];
     HRESULT(__stdcall *compile_effect)(ID3DXEffectCompiler *, DWORD, ID3DXBuffer **, ID3DXBuffer **);
-} D3DX_EFFECT_COMPILER_METHODS_PC;
+} D3DX_EFFECT_COMPILER_METHODS;
 
 struct ID3DXEffectCompiler {
-    const D3DX_EFFECT_COMPILER_METHODS_PC *methods;
+    const D3DX_EFFECT_COMPILER_METHODS *methods;
 };
 
 /* Compiles an effect from source into output; returns the compiled size. No caller. */
@@ -574,43 +574,43 @@ i32 ShaderCompilerBasePc::CompileEffect(const char *source, i32 length, void *ou
 
 /* The material fields from its texture flags on (PC_SHADER_MATERIAL_DISPATCH_VIEW + 0xb4), as the shader
  * builder's parameter defaults read them. */
-typedef struct PC_SHADER_DEFAULTS_VIEW_PC { // size 0x13c
-    u32 texture_flags;                      // 0x000
-    i32 diffuse_texture_ids[4];             // 0x004
-    u32 channel_colours[4];                 // 0x014
-    f32 parameter_d8;                       // 0x024
-    f32 parameter_dc;                       // 0x028
-    f32 parameter_e0;                       // 0x02c
-    f32 parameter_e4;                       // 0x030
-    i32 height_texture_id;                  // 0x034
-    i32 normal_texture_id;                  // 0x038
-    f32 texture_lerp;                       // 0x03c
-    u32 reflection_colour;                  // 0x040
-    u8 unknown_0f8[0x3];                    // 0x044
-    u8 flip_sign;                           // 0x047
-    u8 unknown_0fc[0x1c];                   // 0x048
-    f32 parameter_118;                      // 0x064
-    u32 diffuse_colour;                     // 0x068
-    u32 specular_colour;                    // 0x06c
-    u32 tint_colour;                        // 0x070
-    u32 shadow_colour;                      // 0x074
-    f32 parameter_12c;                      // 0x078
-    f32 parameter_130;                      // 0x07c
-    f32 parameter_134;                      // 0x080
-    f32 parameter_138;                      // 0x084
-    f32 parameter_13c;                      // 0x088
-    f32 parameter_140;                      // 0x08c
-    f32 parameter_144;                      // 0x090
-    f32 parameter_148;                      // 0x094
-    f32 parameter_14c;                      // 0x098
-    f32 parameter_150;                      // 0x09c
-    u8 unknown_154[0x60];                   // 0x0a0
-    f32 parameter_1b4;                      // 0x100
-    f32 parameter_1b8;                      // 0x104
-    f32 parameter_1bc;                      // 0x108
-    u8 unknown_1c0[0x10];                   // 0x10c
-    f32 uv_upload_lanes[8];                 // 0x11c
-} PC_SHADER_DEFAULTS_VIEW_PC;
+typedef struct PC_SHADER_DEFAULTS_VIEW { // size 0x13c
+    u32 texture_flags;                   // 0x000
+    i32 diffuse_texture_ids[4];          // 0x004
+    u32 channel_colours[4];              // 0x014
+    f32 parameter_d8;                    // 0x024
+    f32 parameter_dc;                    // 0x028
+    f32 parameter_e0;                    // 0x02c
+    f32 parameter_e4;                    // 0x030
+    i32 height_texture_id;               // 0x034
+    i32 normal_texture_id;               // 0x038
+    f32 texture_lerp;                    // 0x03c
+    u32 reflection_colour;               // 0x040
+    u8 unknown_0f8[0x3];                 // 0x044
+    u8 flip_sign;                        // 0x047
+    u8 unknown_0fc[0x1c];                // 0x048
+    f32 parameter_118;                   // 0x064
+    u32 diffuse_colour;                  // 0x068
+    u32 specular_colour;                 // 0x06c
+    u32 tint_colour;                     // 0x070
+    u32 shadow_colour;                   // 0x074
+    f32 parameter_12c;                   // 0x078
+    f32 parameter_130;                   // 0x07c
+    f32 parameter_134;                   // 0x080
+    f32 parameter_138;                   // 0x084
+    f32 parameter_13c;                   // 0x088
+    f32 parameter_140;                   // 0x08c
+    f32 parameter_144;                   // 0x090
+    f32 parameter_148;                   // 0x094
+    f32 parameter_14c;                   // 0x098
+    f32 parameter_150;                   // 0x09c
+    u8 unknown_154[0x60];                // 0x0a0
+    f32 parameter_1b4;                   // 0x100
+    f32 parameter_1b8;                   // 0x104
+    f32 parameter_1bc;                   // 0x108
+    u8 unknown_1c0[0x10];                // 0x10c
+    f32 uv_upload_lanes[8];              // 0x11c
+} PC_SHADER_DEFAULTS_VIEW;
 
 static void FormatFloat(char *out, f32 value) {
     sprintf(out, "%f", value);
@@ -630,7 +630,7 @@ static void FormatColour(i32 colour, char *out) {
 }
 
 /* The default value of shader parameter id as an HLSL literal; ids without one leave out untouched. */
-void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW_PC *material, i32 id, char *out, i32 unused) {
+void __stdcall ShaderParameterDefaultPc(const PC_SHADER_DEFAULTS_VIEW *material, i32 id, char *out, i32 unused) {
     switch (id) {
         case 0:
             FormatColour(material->diffuse_colour, out);

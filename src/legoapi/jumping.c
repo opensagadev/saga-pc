@@ -44,7 +44,7 @@ struct minianimpacket_s {       // size 0x24
 
 typedef struct beast_fall_land_view_s { // size 0xdb0
     u8 unknown_0[0x7d0];                // 0x000
-    MINIANIMPACKET_PC mini_animation;   // 0x7d0
+    MINIANIMPACKET mini_animation;      // 0x7d0
     u8 unknown_7f4[0xdac - 0x7f4];      // 0x7f4
     f32 fall_animation_time;            // 0xdac
 } BEAST_FALL_LAND_VIEW;
@@ -53,7 +53,7 @@ typedef struct jump_auxiliary_fields_s {
     u8 unknown_000[0x7b1];
     u8 landing_followup;
     u8 unknown_7b2[0x1e];
-    MINIANIMPACKET_PC mini_animation;
+    MINIANIMPACKET mini_animation;
     u8 unknown_7f4[0x530];
     f32 ground_grace_timer;
     f32 jump_reentry_timer;

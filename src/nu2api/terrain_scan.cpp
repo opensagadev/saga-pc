@@ -11,8 +11,8 @@ extern "C" {
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
-#define TERRAIN_PLATFORM_OF_PC(group_arg) (CurrentTerrain->platforms[(group_arg).scene_index])
-#define TERRAIN_PLATFORM_MATRIX_PC(group_arg) (TERRAIN_PLATFORM_OF_PC(group_arg).scene_object)
+#define TERRAIN_PLATFORM_OF(group_arg) (CurrentTerrain->platforms[(group_arg).scene_index])
+#define TERRAIN_PLATFORM_MATRIX(group_arg) (TERRAIN_PLATFORM_OF(group_arg).scene_object)
 #define TERRAIN_CROSS_PRODUCT(result_arg, a_arg, b_arg)                                                                                    \
     do {                                                                                                                                   \
         NUVEC cross;                                                                                                                       \
@@ -311,32 +311,32 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             f32 local_max_y;
             f32 local_max_z;
             if (platform.scene_object != NULL) {
-                if (TERRAIN_PLATFORM_MATRIX_PC(group)->m30 > TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m30) {
+                if (TERRAIN_PLATFORM_MATRIX(group)->m30 > TERRAIN_PLATFORM_OF(group).previous_matrix.m30) {
                     local_min_x = min_x - group.origin.x;
-                    local_max_x = (TERRAIN_PLATFORM_MATRIX_PC(group)->m30 - TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m30) + max_x -
-                                  group.origin.x;
+                    local_max_x =
+                        (TERRAIN_PLATFORM_MATRIX(group)->m30 - TERRAIN_PLATFORM_OF(group).previous_matrix.m30) + max_x - group.origin.x;
                 } else {
                     local_max_x = max_x - group.origin.x;
-                    local_min_x = (TERRAIN_PLATFORM_MATRIX_PC(group)->m30 - TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m30) + min_x -
-                                  group.origin.x;
+                    local_min_x =
+                        (TERRAIN_PLATFORM_MATRIX(group)->m30 - TERRAIN_PLATFORM_OF(group).previous_matrix.m30) + min_x - group.origin.x;
                 }
-                if (TERRAIN_PLATFORM_MATRIX_PC(group)->m31 > TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m31) {
+                if (TERRAIN_PLATFORM_MATRIX(group)->m31 > TERRAIN_PLATFORM_OF(group).previous_matrix.m31) {
                     local_min_y = min_y - group.origin.y;
-                    local_max_y = (TERRAIN_PLATFORM_MATRIX_PC(group)->m31 - TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m31) + max_y -
-                                  group.origin.y;
+                    local_max_y =
+                        (TERRAIN_PLATFORM_MATRIX(group)->m31 - TERRAIN_PLATFORM_OF(group).previous_matrix.m31) + max_y - group.origin.y;
                 } else {
                     local_max_y = max_y - group.origin.y;
-                    local_min_y = (TERRAIN_PLATFORM_MATRIX_PC(group)->m31 - TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m31) + min_y -
-                                  group.origin.y;
+                    local_min_y =
+                        (TERRAIN_PLATFORM_MATRIX(group)->m31 - TERRAIN_PLATFORM_OF(group).previous_matrix.m31) + min_y - group.origin.y;
                 }
-                if (TERRAIN_PLATFORM_MATRIX_PC(group)->m32 > TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m32) {
+                if (TERRAIN_PLATFORM_MATRIX(group)->m32 > TERRAIN_PLATFORM_OF(group).previous_matrix.m32) {
                     local_min_z = min_z - group.origin.z;
-                    local_max_z = (TERRAIN_PLATFORM_MATRIX_PC(group)->m32 - TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m32) + max_z -
-                                  group.origin.z;
+                    local_max_z =
+                        (TERRAIN_PLATFORM_MATRIX(group)->m32 - TERRAIN_PLATFORM_OF(group).previous_matrix.m32) + max_z - group.origin.z;
                 } else {
                     local_max_z = max_z - group.origin.z;
-                    local_min_z = (TERRAIN_PLATFORM_MATRIX_PC(group)->m32 - TERRAIN_PLATFORM_OF_PC(group).previous_matrix.m32) + min_z -
-                                  group.origin.z;
+                    local_min_z =
+                        (TERRAIN_PLATFORM_MATRIX(group)->m32 - TERRAIN_PLATFORM_OF(group).previous_matrix.m32) + min_z - group.origin.z;
                 }
             } else {
                 local_max_x = max_x - group.origin.x;
@@ -387,13 +387,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         vertices[2].y = shape->vertices[2].y;
                         vertices[2].z = shape->vertices[2].z;
                         vertices[2].w = 0.0f;
-                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_PLATFORM_MATRIX_PC(group));
+                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_PLATFORM_MATRIX(group));
                         if (shape->normals[1].y < 65535.0f) {
                             vertices[3].x = shape->vertices[3].x;
                             vertices[3].y = shape->vertices[3].y;
                             vertices[3].z = shape->vertices[3].z;
                             vertices[3].w = 0.0f;
-                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_PLATFORM_MATRIX_PC(group));
+                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_PLATFORM_MATRIX(group));
                         } else {
                             vertices[3] = vertices[2];
                         }

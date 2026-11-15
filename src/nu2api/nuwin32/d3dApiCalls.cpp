@@ -89,15 +89,15 @@ struct D3DXMATRIX { // size 0x40
 extern "C" void fun_006df010(void) {
 }
 
-i32 PC_DEVICE_BACKEND_PC::fun_006df050() {
+i32 PC_DEVICE_BACKEND::fun_006df050() {
     return multisample_index != 0;
 }
 
-u32 PC_DEVICE_BACKEND_PC::fun_006df060() {
+u32 PC_DEVICE_BACKEND::fun_006df060() {
     return state600;
 }
 
-u32 PC_DEVICE_BACKEND_PC::fun_006df070() {
+u32 PC_DEVICE_BACKEND::fun_006df070() {
     return state604;
 }
 

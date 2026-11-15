@@ -25,7 +25,7 @@ extern "C" {
     extern const char AIScriptKeywordDeriveFromScript[17];
     extern const char AIScriptKeywordActionMacro[12];
     extern const char AIScriptKeywordConditionMacro[15];
-    extern ANI3_EVAL_CALLBACK_PC AnimBuffEvalCB;
+    extern ANI3_EVAL_CALLBACK AnimBuffEvalCB;
     extern void **AnimBuffEvalData;
     extern i32 *AnimBuffEvalJoint;
     f32 NuAnimEndFrameOld(void *animation_data);
@@ -45,9 +45,9 @@ extern "C" {
     void *NuAnimData2LoadBuffFromPAK(void *, i32);
     void *NuAnimData2LoadBuffEx(char *, VARIPTR *, VARIPTR *, void **);
     void *NuAnimData2LoadBuff(char *, VARIPTR *, VARIPTR *);
-    void NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK_PC callback, void **data, i32 *joints);
-    void NuAnimBuffEvaluate_3_QuatB(NUMTX *, ANI3_BUFFER *, NUHGOBJ_EVAL *, NUMTX *, ANI3_HEADER *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
-    void NuAnimBuffEvaluate_3(ANI3_BUFFER *, NUHGOBJ_EVAL *, NUMTX *, ANI3_HEADER *, ANI3_ROOT_CALLBACK_PC, NUVEC *, void *);
+    void NuAnimBuffEvaluateCallback(ANI3_EVAL_CALLBACK callback, void **data, i32 *joints);
+    void NuAnimBuffEvaluate_3_QuatB(NUMTX *, ANI3_BUFFER *, NUHGOBJ_EVAL *, NUMTX *, ANI3_HEADER *, ANI3_ROOT_CALLBACK, NUVEC *, void *);
+    void NuAnimBuffEvaluate_3(ANI3_BUFFER *, NUHGOBJ_EVAL *, NUMTX *, ANI3_HEADER *, ANI3_ROOT_CALLBACK, NUVEC *, void *);
     i32 NuAnimNumNodes(NUANIMDATA2 *);
     f32 NuAnimCurve2CalcValEx(DWA_CURVE_CELL *, NUANIM_TIME2 *, u32);
     extern i32 MaxAnimJoints;

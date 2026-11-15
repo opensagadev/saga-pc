@@ -21,7 +21,7 @@ struct nuvec_s;
 
 struct WORLDINFO_s;
 
-typedef struct area_supercounter_s AREA_SUPERCOUNTER_PC;
+typedef struct area_supercounter_s AREA_SUPERCOUNTER;
 
 typedef struct area_supercounter_pickup_s { // size 0x30
     void *gizmo;                            // 0x00
@@ -32,7 +32,7 @@ typedef struct area_supercounter_pickup_s { // size 0x30
     i16 level_index;                        // 0x2c
     u8 use_special;                         // 0x2e
     u8 unknown_002f;                        // 0x2f
-} AREA_SUPERCOUNTER_PICKUP_PC;
+} AREA_SUPERCOUNTER_PICKUP;
 
 #ifdef __cplusplus
 extern "C" {
@@ -119,22 +119,21 @@ extern "C" {
 
 #if SAGA_LEGOAPI_WORLD_AREAS_H_PART == 2 && !defined(SAGA_LEGOAPI_WORLD_AREAS_H_STOP)
 
-struct area_supercounter_s {                 // size 0x1e8
-    AREA_SUPERCOUNTER_PICKUP_PC pickups[10]; // 0x000
-    u16 pickup_count;                        // 0x1e0
-    u16 collected_count;                     // 0x1e2
-    u8 red;                                  // 0x1e4
-    u8 green;                                // 0x1e5
-    u8 blue;                                 // 0x1e6
-    u8 processed_flags;                      // 0x1e7
+struct area_supercounter_s {              // size 0x1e8
+    AREA_SUPERCOUNTER_PICKUP pickups[10]; // 0x000
+    u16 pickup_count;                     // 0x1e0
+    u16 collected_count;                  // 0x1e2
+    u8 red;                               // 0x1e4
+    u8 green;                             // 0x1e5
+    u8 blue;                              // 0x1e6
+    u8 processed_flags;                   // 0x1e7
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     void SuperCounters_FixUpGizmos(struct WORLDINFO_s *world);
-    AREA_SUPERCOUNTER_PC *SuperCounter_FindFromNameAndLevel(char *name, struct WORLDINFO_s *world,
-                                                            AREA_SUPERCOUNTER_PICKUP_PC **pickup_out);
+    AREA_SUPERCOUNTER *SuperCounter_FindFromNameAndLevel(char *name, struct WORLDINFO_s *world, AREA_SUPERCOUNTER_PICKUP **pickup_out);
     void SuperCounters_ResetProcessed(struct WORLDINFO_s *world);
     struct area_supercounter_s *SuperCounters_FindPickup(struct WORLDINFO_s *arg0, void *arg1, struct nuvec_s *arg2, void *arg3);
 #ifdef __cplusplus
@@ -172,9 +171,9 @@ extern "C" {
         i32 unknown_20;             // 0x20
         u32 arcade_player_kills[2]; // 0x24
         u32 arcade_ai_kills[2];     // 0x2c
-    } AREA_GLOBALS_PC;
+    } AREA_GLOBALS;
 
-    extern AREA_GLOBALS_PC AreaGlobals;
+    extern AREA_GLOBALS AreaGlobals;
 #ifdef __cplusplus
 }
 #endif

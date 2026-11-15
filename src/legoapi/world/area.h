@@ -11,7 +11,7 @@ struct level_data_s;
 typedef struct area_fixup_pc_entry_s { // size 0x8
     char *name;                        // 0x0
     struct area_data_s **area;         // 0x4
-} AREAFIXUP_PC;
+} AREAFIXUP;
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +23,7 @@ extern "C" {
     struct area_data_s *Area_FindByName(char *name, i32 *index_out);
     struct level_data_s *Area_FindStatusLevel(struct area_data_s *area, i32 *index_out);
     struct level_data_s *Area_FindNextPlayLevel(i32 level_index);
-    void Areas_FixUp(AREAFIXUP_PC *fixup);
+    void Areas_FixUp(AREAFIXUP *fixup);
     void FixUpAreas(void);
     extern u16 AREA_DEFAULTBONUSTIMETRIALTIME;
     extern u16 AREA_DEFAULTCHALLENGETIME;

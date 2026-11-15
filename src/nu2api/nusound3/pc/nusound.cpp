@@ -35,7 +35,7 @@ static i32 PCSoundUpdateClock = 0;
 extern "C" {
     CRITICAL_SECTION SoundSampleCriticalSection = {0};
 }
-static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
+static SFX_FILE_INFO *PCStereoSampleMetadata = 0;
 extern "C" {
     CRITICAL_SECTION SoundVoiceCriticalSection = {0};
 }
@@ -892,7 +892,7 @@ void SoundVoiceManagerPC::ClearSamples(void) {
     LeaveCriticalSection(&SoundSampleCriticalSection);
 }
 
-void NuSound3SetSampleTable(SFX_FILE_INFO_PC *info, VARIPTR *cursor, VARIPTR end) {
+void NuSound3SetSampleTable(SFX_FILE_INFO *info, VARIPTR *cursor, VARIPTR end) {
     char directory[0x800];
     char filename[0x800];
     i32 i;

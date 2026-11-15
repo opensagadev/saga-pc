@@ -369,7 +369,7 @@ extern "C" {
         i32 sound;
         i32 alternate;
         CHARACTERANIM_CONFIG *config;
-        ANIMPACKET_PC *packet = &object->anim_packet;
+        ANIMPACKET *packet = &object->anim_packet;
         if (object->terrain_platform_id != -1 || object->supporting_platform_id != -1 ||
             ((surface = (i8)object->jump_animation_state) != -1 && (TerSurface[surface].flags & 2) != 0)) {
             on_platform = 1;
@@ -423,7 +423,7 @@ extern "C" {
     }
 
     void PlayGruntSfx(GAMEOBJECT *object) {
-        CHARACTERDATA_PC *character = object->character_data;
+        CHARACTERDATA *character = object->character_data;
         i32 sfx;
         if (character->game_character->sfx_grunt != -1) {
             sfx = character->game_character->sfx_grunt;
@@ -444,7 +444,7 @@ extern "C" {
     }
 
     void PlayHurtSfx(GAMEOBJECT *object) {
-        CHARACTERDATA_PC *character = object->character_data;
+        CHARACTERDATA *character = object->character_data;
         i32 sfx;
         if (character->game_character->sfx_hurt != -1) {
             sfx = character->game_character->sfx_hurt;
@@ -583,7 +583,7 @@ extern "C" {
     i32 MusicOther = 0;
     i32 MusicSeekIndex = 0;
     i32 MusicActiveReset = 0;
-    REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32] = {0};
+    REPEAT_SFX_ENTRY RepeatSfxQueue[32] = {0};
     SoundTable CurrentSFXTAB = {0};
     i16 *AmbientPairTab = 0;
     i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *) = NULL;
@@ -649,7 +649,7 @@ void PlayRepeatSfx(char *name, i32 sfx_id, f32 start_delay, char play_count, f32
 }
 
 void UpdateRepeatSfx(void) {
-    REPEAT_SFX_ENTRY_PC *entry = RepeatSfxQueue;
+    REPEAT_SFX_ENTRY *entry = RepeatSfxQueue;
     i32 index;
     for (index = 0; index < 32; ++index, ++entry) {
         switch (entry->state) {
@@ -674,7 +674,7 @@ void UpdateRepeatSfx(void) {
                     entry->start_delay = entry->repeat_delay;
                     entry->state = 3;
                 } else {
-                    memset(entry, 0, sizeof(REPEAT_SFX_ENTRY_PC));
+                    memset(entry, 0, sizeof(REPEAT_SFX_ENTRY));
                     entry->state = 0;
                 }
                 break;
@@ -765,7 +765,7 @@ extern "C" {
     i32 last_currentmusicpair_quiet = -1;
 }
 
-extern "C" void GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAVE *options) {
+extern "C" void GamePlayMusic(LEVELDATA *level, i32 check, OPTIONSSAVE *options) {
     i32 other = MusicOther;
     i32 music_other;
 
@@ -820,7 +820,7 @@ extern "C" i32 fun_00548c30() {
     return 0;
 }
 
-extern "C" void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
+extern "C" void ProcessMusicChanges(LEVELDATA *level, OPTIONSSAVE *options) {
     if (GameAudio_ActionMusicFn != NULL) {
         MusicActiveReset = GameAudio_ActionMusicFn();
     } else {

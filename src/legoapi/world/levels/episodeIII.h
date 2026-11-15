@@ -39,7 +39,7 @@ extern "C" {
     extern struct PART_PC *boulder_part[2];
     void Boulder_Move(PART_PC *, f32);
     void Boulder_Kill(PART_PC *, i32);
-    extern VADERA_PC vader_a;
+    extern VADERA vader_a;
 #ifdef __cplusplus
 }
 #endif
@@ -54,15 +54,15 @@ typedef struct cruiserd_lift_anim_s { // size 0x60
     f32 fparam1;                      // 0x54
     f32 prev_eval_time;               // 0x58
     u16 animation_index;              // 0x5c
-} CRUISERD_LIFT_ANIM_PC;
+} CRUISERD_LIFT_ANIM;
 
 typedef struct terrain_platform_reader_pc_s { // size 0x6c
     u8 opaque_00_40[0x40];                    // 0x00
     NUMTX *scene_object;                      // 0x40
     u8 opaque_44_6c[0x28];                    // 0x44
-} TERRAIN_PLATFORM_READER_PC;
+} TERRAIN_PLATFORM_READER;
 
-typedef struct terrain_set_reader_s {      // size 0x6c
-    u8 opaque_00_68[0x68];                 // 0x00
-    TERRAIN_PLATFORM_READER_PC *platforms; // 0x68
+typedef struct terrain_set_reader_s {   // size 0x6c
+    u8 opaque_00_68[0x68];              // 0x00
+    TERRAIN_PLATFORM_READER *platforms; // 0x68
 } TERRAIN_SET_READER;

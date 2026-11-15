@@ -167,7 +167,7 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
     }
 }
 
-TAG_TRANSFER_PC TagTransfers[2];
+TAG_TRANSFER TagTransfers[2];
 
 void Tag_ResetTransfers(void) {
     TagTransfers[0].elapsed = 0.5f;
@@ -210,7 +210,7 @@ void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
     f32 phase;
     f32 height;
     f32 lower;
-    TAG_TRANSFER_PC *transfer;
+    TAG_TRANSFER *transfer;
     GAMEOBJECT *source;
     GAMEOBJECT *target;
     NUVEC from;
@@ -295,7 +295,7 @@ void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     }
 }
 
-TAG_DRAW_ICON_PC BuckStartExtraFn = 0;
+TAG_DRAW_ICON BuckStartExtraFn = 0;
 
 void Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
     CHARACTER_MODEL_LAYERS *model;

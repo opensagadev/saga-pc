@@ -77,33 +77,33 @@ i32 SolveQuadratic(f32 a, f32 b, f32 c, f32 *first, f32 *second) {
     return 1;
 }
 
-void GenDebMomAdjFromPos(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
+void GenDebMomAdjFromPos(DEBRISKEY *key, DEBRIS_INFO *effect, DEBRISPARTICLE *particle) {
     particle->momentum.x = particle->position.x * 2.0;
     particle->momentum.z = particle->position.z * 2.0;
 }
 
-void GenDebMomAdjFromPosAll(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
+void GenDebMomAdjFromPosAll(DEBRISKEY *key, DEBRIS_INFO *effect, DEBRISPARTICLE *particle) {
     particle->momentum.x = particle->position.x * (f64)5.4f;
     particle->momentum.y = particle->position.y * (f64)5.4f;
     particle->momentum.z = particle->position.z * (f64)5.4f;
 }
 
-void GenDebMomAdjFromPosRev(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
+void GenDebMomAdjFromPosRev(DEBRISKEY *key, DEBRIS_INFO *effect, DEBRISPARTICLE *particle) {
     particle->momentum.x = -particle->position.x;
     particle->momentum.z = -particle->position.z;
 }
 
-void GenDebMomAdjFromSplash(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
+void GenDebMomAdjFromSplash(DEBRISKEY *key, DEBRIS_INFO *effect, DEBRISPARTICLE *particle) {
     particle->momentum.x = particle->position.x * 4.0;
     particle->momentum.z = particle->position.z * 4.0;
 }
 
-void GenDebMomAdjFromAshRock(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
+void GenDebMomAdjFromAshRock(DEBRISKEY *key, DEBRIS_INFO *effect, DEBRISPARTICLE *particle) {
     particle->momentum.x = particle->position.x * 16.0;
     particle->momentum.z = particle->position.z * 16.0;
 }
 
-void GenDebMomAdjFromPosRevTree(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect, DEBRISPARTICLE_PC *particle) {
+void GenDebMomAdjFromPosRevTree(DEBRISKEY *key, DEBRIS_INFO *effect, DEBRISPARTICLE *particle) {
     particle->momentum.x += particle->position.x * -(f64)0.6f;
     particle->momentum.z += particle->position.z * -(f64)0.6f;
     particle->position.y -= NuFsqrt(particle->position.x * particle->position.x + particle->position.z * particle->position.z) * (f64)0.4f;

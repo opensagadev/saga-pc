@@ -22,7 +22,7 @@
 
 #if SAGA_LEGOAPI_PROPS_OBJECTS_TECHNO_H_PART == 1 && !defined(SAGA_LEGOAPI_PROPS_OBJECTS_TECHNO_H_STOP)
 
-struct GAMEPAD_PC;
+struct GAMEPAD;
 struct addgizmotype_s;
 struct gameobject_s;
 struct nuhspecial_s;
@@ -37,7 +37,7 @@ typedef struct techno_s { // size 0x70
         struct gameobject_s *controlled_player;
         struct nuhspecial_s *controlled_special;
     }; // 0x6c
-} TECHNO_PC;
+} TECHNO;
 
 typedef struct techno_config_s { // size 0x4c
     f32 interaction_time;        // 0x00
@@ -45,16 +45,16 @@ typedef struct techno_config_s { // size 0x4c
     NUVEC idle_offsets[3];       // 0x0c
     i16 hand_object_ids[2];      // 0x30
     NUVEC hand_offsets[2];       // 0x34
-} TECHNO_CONFIG_PC;
+} TECHNO_CONFIG;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern const char *TechnoRegistrationName;
-    extern TECHNO_CONFIG_PC TechnoSys;
+    extern TECHNO_CONFIG TechnoSys;
     extern i32 techno_gizmotype_id;
     struct addgizmotype_s *Technos_RegisterGizmo(i32 type_id);
-    extern TECHNO_CONFIG_PC TechnoSys;
+    extern TECHNO_CONFIG TechnoSys;
     extern const char *TechnoRegistrationName;
     extern i32 techno_gizmotype_id;
 #ifdef __cplusplus
@@ -112,9 +112,9 @@ struct TECHNO_s {          // size 0x70
 #ifdef __cplusplus
 extern "C" {
 #endif
-    TECHNO_PC *Technos_FindControllingTechno(struct gameobject_s *);
+    TECHNO *Technos_FindControllingTechno(struct gameobject_s *);
 
-    i32 Techno_FindOperator(void *, struct GAMEPAD_PC **, struct gameobject_s **);
+    i32 Techno_FindOperator(void *, struct GAMEPAD **, struct gameobject_s **);
 #ifdef __cplusplus
 }
 #endif

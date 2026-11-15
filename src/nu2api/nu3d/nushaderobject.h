@@ -35,11 +35,11 @@ extern "C" {
 #endif
     void PCShaderNativeUnInit(NuShaderObject *);
 
-    typedef struct PC_SHADER_PARAMETER_LOCAL_PC PC_SHADER_PARAMETER_LOCAL_PC;
+    typedef struct PC_SHADER_PARAMETER_LOCAL PC_SHADER_PARAMETER_LOCAL;
 
-    struct PC_SHADER_PARAMETER_LOCAL_PC { // size 0xc
-        i16 register_index;               // 0x0
-        u16 unknown_02;                   // 0x2
+    struct PC_SHADER_PARAMETER_LOCAL { // size 0xc
+        i16 register_index;            // 0x0
+        u16 unknown_02;                // 0x2
 
         union { // size 0x4
             u32 metadata;
@@ -52,7 +52,7 @@ extern "C" {
             };
         }; // 0x4
 
-        PC_SHADER_PARAMETER_LOCAL_PC *next; // 0x8
+        PC_SHADER_PARAMETER_LOCAL *next; // 0x8
 #ifdef __cplusplus
         void SetScalarValues(i32 first_element, i32 count, const f32 *values);
         void SetVectorValues(i32 first_element, i32 count, const f32 *values);
@@ -65,9 +65,9 @@ extern "C" {
         void SetFloat3(const f32 *values);
         void SetValues(i32 first_element, i32 count, const f32 *values);
         i32 fun_00742180();
-        PC_SHADER_PARAMETER_LOCAL_PC *fun_00742190();
-        void fun_007421a0(PC_SHADER_PARAMETER_LOCAL_PC *parameter);
-        PC_SHADER_PARAMETER_LOCAL_PC *fun_007421b0();
+        PC_SHADER_PARAMETER_LOCAL *fun_00742190();
+        void fun_007421a0(PC_SHADER_PARAMETER_LOCAL *parameter);
+        PC_SHADER_PARAMETER_LOCAL *fun_007421b0();
         void fun_007424a0(i32 first_element, const f32 *values);
         void fun_00742720(i32 index, const f32 *values);
         i32 fun_00743c90();
@@ -75,22 +75,22 @@ extern "C" {
 #endif
     };
 
-    typedef struct D3DX_CONSTANT_DESCRIPTION_PC { // size 0x30
-        const char *name;                         // 0x00
-        i32 register_set;                         // 0x04
-        UINT register_index;                      // 0x08
-        UINT register_count;                      // 0x0c
-        i32 class_kind;                           // 0x10
-        i32 type_kind;                            // 0x14
-        UINT rows;                                // 0x18
-        UINT columns;                             // 0x1c
-        UINT elements;                            // 0x20
-        UINT struct_members;                      // 0x24
-        UINT bytes;                               // 0x28
-        const void *default_value;                // 0x2c
-    } D3DX_CONSTANT_DESCRIPTION_PC;
+    typedef struct D3DX_CONSTANT_DESCRIPTION { // size 0x30
+        const char *name;                      // 0x00
+        i32 register_set;                      // 0x04
+        UINT register_index;                   // 0x08
+        UINT register_count;                   // 0x0c
+        i32 class_kind;                        // 0x10
+        i32 type_kind;                         // 0x14
+        UINT rows;                             // 0x18
+        UINT columns;                          // 0x1c
+        UINT elements;                         // 0x20
+        UINT struct_members;                   // 0x24
+        UINT bytes;                            // 0x28
+        const void *default_value;             // 0x2c
+    } D3DX_CONSTANT_DESCRIPTION;
 
-    typedef struct D3DX_CONSTANT_TABLE_METHODS_PC {                                      // size 0x28
+    typedef struct D3DX_CONSTANT_TABLE_METHODS {                                         // size 0x28
         HRESULT(__stdcall *query_interface)(ID3DXConstantTable *, const IID *, void **); // 0x00
         ULONG(__stdcall *add_ref)(ID3DXConstantTable *);                                 // 0x04
         ULONG(__stdcall *release)(ID3DXConstantTable *);                                 // 0x08
@@ -98,14 +98,14 @@ extern "C" {
         DWORD(__stdcall *get_buffer_size)(ID3DXConstantTable *);                         // 0x10
         HRESULT(__stdcall *get_description)(ID3DXConstantTable *, void *);               // 0x14
         HRESULT(__stdcall *get_constant_description)                                     // 0x18
-        (ID3DXConstantTable *, const char *, D3DX_CONSTANT_DESCRIPTION_PC *, UINT *);
+        (ID3DXConstantTable *, const char *, D3DX_CONSTANT_DESCRIPTION *, UINT *);
         UINT(__stdcall *get_sampler_index)(ID3DXConstantTable *, const char *);                          // 0x1c
         const char *(__stdcall *get_constant)(ID3DXConstantTable *, const char *, UINT);                 // 0x20
         const char *(__stdcall *get_constant_by_name)(ID3DXConstantTable *, const char *, const char *); // 0x24
-    } D3DX_CONSTANT_TABLE_METHODS_PC;
+    } D3DX_CONSTANT_TABLE_METHODS;
 
     struct ID3DXConstantTable {
-        const D3DX_CONSTANT_TABLE_METHODS_PC *methods;
+        const D3DX_CONSTANT_TABLE_METHODS *methods;
     };
 
     extern const f32 PCSamplerBiasMinimum;

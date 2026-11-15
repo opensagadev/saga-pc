@@ -62,7 +62,7 @@ void MakePlayPlanes(GAMECAMERA *camera);
 void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);
 void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference);
 extern NUMTX CutCamMtx;
-extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
+extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 extern struct nuvec_s *shopcamlookat;
 extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;
@@ -126,7 +126,7 @@ static f32 CameraFabs(f32 f) {
     return rv;
 }
 
-f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND_PC *backend) {
+f32 __fastcall PCDeviceBackend_GetActiveAspectPc(PC_DEVICE_BACKEND *backend) {
     switch (PcWindowOptions.aspect_mode) {
         case 1:
             return 1.7777778f;
@@ -252,7 +252,7 @@ VIEWCAM ViewCam = {
      -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL
 };
 
-void ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
+void ViewCamSetActive(i32 mode, GAMEPAD *gamepad) {
     if (player != NULL) {
         ViewCam.mode = mode;
         if (mode != 0) {
@@ -268,7 +268,7 @@ i32 ViewCamGetMode(void) {
     return ViewCam.mode;
 }
 
-GAMEPAD_PC *ViewCamGetGamePad(void) {
+GAMEPAD *ViewCamGetGamePad(void) {
     return ViewCam.gamepad;
 }
 
@@ -348,7 +348,7 @@ void UpdatePlayerCameraOcclusion(void) {
 void MoveGameCamera(GAMECAMERA *camera) {
     i32 menu_id;
     i32 previous_mode;
-    SOCKPOSITION_PC previous_sock_position;
+    SOCKPOSITION previous_sock_position;
     NUVEC position;
     NUVEC offset;
     NUVEC direction;
@@ -356,7 +356,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
     f32 position_seek;
     f32 angle_seek;
     NUVEC target;
-    struct GAMEPAD_PC *selected_pad;
+    struct GAMEPAD *selected_pad;
     f32 left_y;
     f32 left_x;
     f32 right_y;
@@ -549,7 +549,7 @@ mode_selected:
     roll_hint_valid = 0;
     // The per-mode camera blend duration starts afresh after transition selection.
     blend_duration = 0.5f;
-    selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD_PC *)&GamePadStorage[0];
+    selected_pad = camera->mode == 5 ? ViewCam.gamepad : (GAMEPAD *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
     GAME_CAMERA_ABSOLUTE(magnitude, left_y);
     if (magnitude < 34.0f) {

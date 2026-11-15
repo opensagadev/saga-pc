@@ -64,7 +64,7 @@ i32 Shards_Load(WORLDINFO *world, void *unused) {
 }
 
 void *Shards_ReserveBufferSpace(WORLDINFO *world) {
-    LEVELDATA_PC *level = world->current_level;
+    LEVELDATA *level = world->current_level;
     world->shards = NULL;
     world->shard_count = 0;
     if (level->max_shards > 0) {
@@ -266,7 +266,7 @@ i32 Shards_GetMaxGizmos(WORLDINFO *world) {
     return world != NULL ? world->current_level->max_shards : 0;
 }
 
-void Shards_AddGizmos(GIZMOSYS_PC *system, i32 type, WORLDINFO *world, void *unused) {
+void Shards_AddGizmos(GIZMOSYS *system, i32 type, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
         if (NuStrLen(world->shards[index].name) != 0) {
@@ -332,15 +332,15 @@ void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS *progre
 }
 
 char *ShardRegistryNamePc = "Shard";
-ADDGIZMOTYPE_PC ShardAddType = {0};
+ADDGIZMOTYPE ShardAddType = {0};
 
-ADDGIZMOTYPE_PC *Shards_RegisterGizmo(i32 unused_type_id) {
+ADDGIZMOTYPE *Shards_RegisterGizmo(i32 unused_type_id) {
     char *name = ShardRegistryNamePc;
     ShardAddType = Default_ADDGIZMOTYPE;
     ShardAddType.name = name;
     ShardAddType.prefix = dat_007516c0;
     ShardAddType.fns.options = 0x30;
-    ShardAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Shards_GetMaxGizmos;
+    ShardAddType.fns.get_max_gizmos_fn = (i32 (*)(void *))Shards_GetMaxGizmos;
     ShardAddType.fns.add_gizmos_fn = (void *)Shards_AddGizmos;
     ShardAddType.fns.early_update_fn = Shards_UpdateBeforeCharacters;
     ShardAddType.fns.late_update_fn = (void (*)(void *, void *, f32))Shards_UpdateAfterCharacters;
@@ -364,7 +364,7 @@ ADDGIZMOTYPE_PC *Shards_RegisterGizmo(i32 unused_type_id) {
     ShardAddType.fns.store_progress_fn = (void *)Shards_StoreProgress;
     ShardAddType.fns.reset_fn = (void *)Shards_Reset;
     ShardAddType.fns.reserve_buffer_space_fn = (void *(*)(void *))Shards_ReserveBufferSpace;
-    ShardAddType.fns.load_fn = (i32(*)(void *, void *))Shards_Load;
+    ShardAddType.fns.load_fn = (i32 (*)(void *, void *))Shards_Load;
     ShardAddType.fns.post_load_fn = NULL;
     ShardAddType.fns.add_level_sfx_fn = NULL;
     return &ShardAddType;

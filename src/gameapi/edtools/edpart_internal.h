@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern PARTTYPE_LOOKUP_PC *edpart_nearest_type;
+    extern PARTTYPE_LOOKUP *edpart_nearest_type;
     extern struct parttype_lookup_s *edpart_nearest_type;
 #ifdef __cplusplus
 }

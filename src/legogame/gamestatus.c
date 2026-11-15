@@ -1185,7 +1185,7 @@ i32 StatusCollectionAppearSoundPlayed = 0;
 i32 StatusCollectionMoveSoundPlayed = 0;
 
 void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    COLLECTION_BUILD_PC *collection = (packet->unknown_b0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
+    COLLECTION_BUILD *collection = (packet->unknown_b0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1281,7 +1281,7 @@ void CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
 
 void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
-    COLLECTION_BUILD_PC *collection = (packet->unknown_b0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
+    COLLECTION_BUILD *collection = (packet->unknown_b0 & 0x80) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1911,7 +1911,7 @@ void BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
             if (stage->unknown_1c <= accumulated) {
                 NextStatusStage(packet);
             } else if (previous < 2.0f && accumulated >= 2.0f) {
-                ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+                ADD_GAME_MESSAGE message = AddGameMsg_Default;
                 char text[256];
                 NUVEC position;
                 PlaySfx("TrueJedi_100pc", NULL);
@@ -1988,7 +1988,7 @@ void ChallangeCash_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                 i32 coin;
                 f32 delay = 0.0f;
                 for (coin = 0; coin < 50; ++coin) {
-                    ADD_GAME_MESSAGE_PC message;
+                    ADD_GAME_MESSAGE message;
                     NUVEC position = {0.0f, (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f)) * (f64)0.1f), 1.0f};
                     NuVecRotateZ(&position, &position, qrand());
                     message = AddGameMsg_Default;

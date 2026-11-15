@@ -15,8 +15,8 @@ extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r
                                u8 flash1_g, u8 flash1_b);
 #include <string.h>
 #include <stdio.h>
-extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
-extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLsw[4] = {
+extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION *);
+extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d",  -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
     {"deathstar2battle_c", -1, 0, 30.0f, 999.0f},
@@ -59,15 +59,15 @@ extern "C" {
     extern f32 PodAvalancheShakeRange;
     extern i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     extern i16 dat_007f18c4;
-    extern AREA_DATA_PC *MOSEISLEY_ADATA;
-    extern AREA_DATA_PC *TATOOINE_ADATA;
+    extern AREA_DATA *MOSEISLEY_ADATA;
+    extern AREA_DATA *TATOOINE_ADATA;
 }
 extern "C" TIMER ChallengeTimer;
 extern "C" {
-    extern LEVELDATA_PC *CLOUDCITYTRAPB_LDATA;
+    extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
     void Hub_LockUnlockDoors(WORLDINFO *world);
     extern void *game_cutscenes_droid_factory_conveyor;
-    extern AREA_DATA_PC *ROOFTOPS_ADATA;
+    extern AREA_DATA *ROOFTOPS_ADATA;
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
@@ -75,8 +75,8 @@ extern "C" {
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, suit) == 0xcbc);
 GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS, flags) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA_PC, game_character) == 0x24);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA_PC, model_flags) == 4);
+GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, game_character) == 0x24);
+GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, model_flags) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, weapon_action) == 0x116);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
@@ -87,9 +87,9 @@ GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, level_id) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, type) == 2);
 GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, guest_episode) == 3);
 GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, name) == 4);
-GAME_PUBLISHER_ASSERT(sizeof(LEVELDATA_PC) == 0x130);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, area_index) == 0xa3);
-GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA_PC, index) == 0x7c);
+GAME_PUBLISHER_ASSERT(sizeof(LEVELDATA) == 0x130);
+GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, area_index) == 0xa3);
+GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA, index) == 0x7c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_context) == 0x7b5);
@@ -112,7 +112,7 @@ typedef struct buck_rotation_reader_s {
 
 GAME_PUBLISHER_ASSERT(offsetof(BUCK_ROTATION_READER, rotation) == 0x27a);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pad) == 0xca4);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD_PC, bound_pad) == 0);
+GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD, bound_pad) == 0);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 
 typedef struct game_callback_weapon_flags_s {
@@ -138,8 +138,8 @@ GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, ai_trigger_set) == 0x4678);
 GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, flags) == 0x2800);
 GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, giz_flow_progress) == 0x2c24);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, callbacks) + 2 * sizeof(void *) == 0x70);
-GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS_PC, area_phase) == 0xc);
+GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, callbacks) + 2 * sizeof(void *) == 0x70);
+GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS, area_phase) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
@@ -181,7 +181,7 @@ typedef struct game_door_callback_s {
 } GAME_DOOR_CALLBACK;
 
 GAME_PUBLISHER_ASSERT(offsetof(GAME_DOOR_CALLBACK, level_id) == 0xf0);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, index) == 0x62);
+GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, index) == 0x62);
 GAME_PUBLISHER_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK, level_id));
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, doomed_escape_locator) == 0xf14);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, current_route) == 0x404);
@@ -195,7 +195,7 @@ GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
 GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, type) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, unknown_18) == 0x18);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA_PC, flags) == 0x64);
+GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, flags) == 0x64);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);
@@ -209,12 +209,12 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
                            (player)->ai_packet.nearest_opponent_metric < 3.0f)))
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, score) == 0xdc);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, target_is_coin_total) == 0xfe);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, position_a) == 0x7c);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, position) == 0x94);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, has_start_position) == 0xf9);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE_PC, icon) == 0xe6);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, score) == 0xdc);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, target_is_coin_total) == 0xfe);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, position_a) == 0x7c);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, position) == 0x94);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, has_start_position) == 0xf9);
+GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, icon) == 0xe6);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
 GAME_PUBLISHER_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
@@ -399,10 +399,10 @@ extern "C" void InitGameBeforeConfig(void) {
     SaveSystemInitialise(6, MakeSaveHash, &Game, sizeof(Game), 1, DrawAutoSaveIcon);
     Game_OptionsSave = &Game.options_save;
     Game_LevelSave = Game.level_save;
-    Game_AreaSave = (COLLECTION_AREA_SAVE_PC *)Game.area_save;
+    Game_AreaSave = (COLLECTION_AREA_SAVE *)Game.area_save;
     EpisodeSave = Game.episode_save;
     Game_CharacterSave = Game.character_save;
-    CustomiserCompletionSave = (CUSTOMISER_COMPLETION_READER_PC *)&Game.save_hash;
+    CustomiserCompletionSave = (CUSTOMISER_COMPLETION_READER *)&Game.save_hash;
     Game_MissionSave = &Game.mission_save;
     ResetSeeds();
     ResetTimer(&GlobalTimer, 0.0f);
@@ -436,11 +436,11 @@ static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK *door) 
     if (world->current_level == VADERA_LDATA) {
         VaderA_GoneThroughDoor(world, reinterpret_cast<DOOR_s *>(door));
     }
-    LEVELDATA_PC *finish_level = PODRACEB_LDATA;
+    LEVELDATA *finish_level = PODRACEB_LDATA;
     if (finish_level != NULL) {
         u16 door_level = door->level_id;
         u16 finish_index = (u16)finish_level->index;
-        LEVELDATA_PC *start_level = PODRACEA_LDATA;
+        LEVELDATA *start_level = PODRACEA_LDATA;
         if (door_level == finish_index && world->current_level == start_level && Lap == 3) {
             if (FreePlay != 0) {
                 CompleteLevel(world);
@@ -534,7 +534,7 @@ static void Player_ClearContext_Game(GAMEOBJECT *object, i32 release_takeover) {
 
 static i32 GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *result, u16 *angle) {
     WORLDINFO *world = (WORLDINFO *)context;
-    ATTRACTO_PC *attracto;
+    ATTRACTO *attracto;
     if (world == NULL) {
         world = WorldInfo_CurrentlyActive();
     }
@@ -550,16 +550,16 @@ static i32 GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *r
 }
 
 static i32 Fighting_WeaponInAction_Game(GAMEOBJECT *object) {
-    CHARACTERDATA_PC *data = object->character_data;
+    CHARACTERDATA *data = object->character_data;
     return data->game_character->weapon_action == 0 && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 126 : 16;
 }
 
 static i32 Fighting_WeaponOutAction_Game(GAMEOBJECT *object) {
-    CHARACTERDATA_PC *data = object->character_data;
+    CHARACTERDATA *data = object->character_data;
     return data->game_character->weapon_action == 0 && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 127 : 17;
 }
 
-static void GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
+static void GameMsg_EndDelay_Game(GAME_MESSAGE *message) {
     i32 random;
     if (message->score <= 0) {
         return;
@@ -939,8 +939,8 @@ static void CutScene_OverrideConfigFileName_LSW(char *filename, i32 unused0, i32
 
 static i32 CheckMusicOther(void) {
     NUVEC position;
-    SOCKPOSITION_PC socket_position;
-    LEVELDATA_PC *level;
+    SOCKPOSITION socket_position;
+    LEVELDATA *level;
     if (Players_AveragePos(&position, &socket_position) != 0) {
         level = WORLD->current_level;
         if (level == HUB_LDATA) {
@@ -1041,7 +1041,7 @@ static void LEGO_100PercentFn(void) {
 }
 
 static i32 LastSafePosExtra(GAMEOBJECT *object) {
-    LEVELDATA_PC *level = WORLD->current_level;
+    LEVELDATA *level = WORLD->current_level;
     if (level == dat_0087b1a8 && object->jump_animation_state == 0x0e) {
         return 1;
     }
@@ -1057,7 +1057,7 @@ static i32 LastSafePosExtra(GAMEOBJECT *object) {
 
 static i32 ActionMusicSockChoice(void) {
     NUVEC position;
-    SOCKPOSITION_PC socket_position;
+    SOCKPOSITION socket_position;
     if (Players_AveragePos(&position, &socket_position) != 0) {
         const i8 socket = socket_position.sock_index;
         if (socket == 6) {
@@ -1198,7 +1198,7 @@ static i32 GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 void GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
-    LEVELDATA_PC *level = WORLD->current_level;
+    LEVELDATA *level = WORLD->current_level;
     GAME_GIZMO_SFX_CAMERA_READER *camera = (GAME_GIZMO_SFX_CAMERA_READER *)GameCam;
     (void)unused;
     if (level == PODSPRINTA_LDATA && (camera->sock == 10 || camera->sock == 11 || camera->sock == 12) && camera->sock_distance > 145.0f &&
@@ -1211,7 +1211,7 @@ void GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
     }
 }
 
-static nuhspecial_s *GameMsg_GetExtraObj(GAME_MESSAGE_PC *message) {
+static nuhspecial_s *GameMsg_GetExtraObj(GAME_MESSAGE *message) {
     if (message->icon == 0xd0) {
         return &WORLD->level_objects[0xd1].special;
     }
@@ -1379,7 +1379,7 @@ extern "C" {
     void ReCalculateCompletionPoints(void) {
         SHOP_COMPLETION_GAME *save = reinterpret_cast<SHOP_COMPLETION_GAME *>(&Game);
         i32 i;
-        AREA_DATA_PC *area;
+        AREA_DATA *area;
         AREASAVE_s *area_save;
         save->completion_points = 0;
         save->gold_bricks = 0;
@@ -1668,7 +1668,7 @@ extern "C" void CheckResetBits(void) {
     Hint_CancelCurrent();
     Teleports_Reset(WORLD);
     TrafficAnimSys_Reset(WORLD->trafficanim_sys);
-    Pulses_Reset((LEVEL_SFX_PULSE_PC *)WORLD->pulses_sys);
+    Pulses_Reset((LEVEL_SFX_PULSE *)WORLD->pulses_sys);
     NuSound3StopRumble();
     ResetTimer(&GameTimer, 0.0f);
     ResetTimer(&GamePlayTimer, 0.0f);
@@ -1812,7 +1812,7 @@ extern "C" void CheckResetBits(void) {
     ResetRadios();
     SpecialMiniKits_Reset(WORLD);
     SuperCounters_FixUpGizmos(WORLD);
-    AITriggerSetSysReset((TRIGGER_SYSTEM_PC *)WORLD->ai_trigger_set);
+    AITriggerSetSysReset((TRIGGER_SYSTEM *)WORLD->ai_trigger_set);
     AITriggerSysAutoSetUp(WORLD, (AITRIGGERSETSYS_s *)WORLD->ai_trigger_set);
     if ((ResetBits & 0x10) != 0) {
         for (i = 0; i < 8; ++i) {
@@ -2150,7 +2150,7 @@ extern "C" {
     }
 
     void PartKill_ForceThrow(PART_PC *part, i32 reason) {
-        LEVELDATA_PC *level;
+        LEVELDATA *level;
         i32 debris = -1;
         i32 part_debris = -1;
         i32 type;
@@ -2611,7 +2611,7 @@ static void GizBuildIt_FinishFn_Game(GIZBUILDIT *input) {
 
 static CUT_DRAW_SETTINGS InitCutSettingsLsw = {0x5b, 0x5c, 0xe7, 2, 0};
 static CUT_DRAW_SETTINGS InitCutSettingsAlternate = {0x5b, 0x5c, 0xe7, 2, 1};
-static PLAYER_ITEM_TYPE_RESET_PC InitPlayerItemTypes[2] = {
+static PLAYER_ITEM_TYPE_RESET InitPlayerItemTypes[2] = {
     {15, {6, 0}, "blue", 2, 0, {0, 0}},
     {-1, {0, 0}, NULL,   0, 0, {0, 0}}
 };
@@ -2656,7 +2656,7 @@ void InitGameAfterConfig(void) {
     }
 
     for (i32 area_id = 0; area_id < AREACOUNT; ++area_id) {
-        AREA_DATA_PC *area = &ADataList[area_id];
+        AREA_DATA *area = &ADataList[area_id];
         i32 area_index;
         area->episode_index = (u8)Episode_ContainsArea(area_id, &area_index);
         area->area_index = (u8)area_index;
@@ -2705,7 +2705,7 @@ void InitGameAfterConfig(void) {
     }
 
     for (i32 level_id = 0; level_id < LEVELCOUNT; ++level_id) {
-        LEVELDATA_PC *level = &LDataList[level_id];
+        LEVELDATA *level = &LDataList[level_id];
         if ((i16)level->title_text_id < 0 || (i16)level->title_text_id >= 800) {
             level->title_text_id = tUNKNOWN;
         }

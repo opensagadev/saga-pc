@@ -28,21 +28,21 @@
 
 extern f32 StarWarsJumpDistance[3];
 
-typedef struct STARWARS_PREPARE {         // size 0x8
-    u32 capabilities;                     // 0x0
-    AI_PREPARING_SPECIAL_MOVE_PC prepare; // 0x4
+typedef struct STARWARS_PREPARE {      // size 0x8
+    u32 capabilities;                  // 0x0
+    AI_PREPARING_SPECIAL_MOVE prepare; // 0x4
 } STARWARS_PREPARE;
 
 extern STARWARS_PREPARE starwars_prepareforspecialmove[8];
-extern AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4];
+extern AI_MID_SPECIAL_MOVE starwars_midspecialmovefns[4];
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
 extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
 extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
 extern u32 LEGO_AIPATHCNX_JUMP_NOW;
 extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 void ClearSpecialMove(GAMEOBJECT *);
-void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE_PC);
-void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE_PC);
+void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE);
+void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE);
 
 i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
@@ -471,7 +471,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
 i32 StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner = object->objptr;
-    AI_MID_SPECIAL_MOVE_PC function;
+    AI_MID_SPECIAL_MOVE function;
     owner->special_move_timer -= FRAMETIME;
     if (owner->ai_packet.special_move_node != NULL) {
         if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
@@ -510,7 +510,7 @@ void StarWars_GameAISysInit(void) {
 }
 
 void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
-    CHARACTERDATA_PC *character = object->character_data;
+    CHARACTERDATA *character = object->character_data;
     object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES *)character)->path_capabilities | 0x20180040;
     if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
         object->ai_packet.capabilities |= 0x100;
@@ -809,7 +809,7 @@ check:
 }
 
 f32 StarWarsJumpDistance[3] = {0.8f, 1.2f, 1.5f};
-AI_MID_SPECIAL_MOVE_PC starwars_midspecialmovefns[4] = {
+AI_MID_SPECIAL_MOVE starwars_midspecialmovefns[4] = {
     StarWars_MidSpecialMove_Default,
     StarWars_MidSpecialMove_StartJump,
     StarWars_MidSpecialMove_UseHatch,

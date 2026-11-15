@@ -115,7 +115,7 @@ typedef struct collection_buyable_reader_s { // size 0x1c
     u8 unknown_09[0x13];                     // 0x09
 } COLLECTION_BUYABLE_READER;
 
-void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, i32 columns, f32 scale) {
+void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD *collection, i32 columns, f32 scale) {
     collection->list = CollectList;
     collection->columns = (u16)columns;
     collection->count = (u16)CollectCount;
@@ -124,7 +124,7 @@ void Collection_CreateMaster(char *name, i16 *title_id, COLLECTION_BUILD_PC *col
     collection->scale = scale;
 }
 
-void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD_PC *collection, u32 required_model_flags, u32 excluded_model_flags,
+void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD *collection, u32 required_model_flags, u32 excluded_model_flags,
                              u32 required_game_flags, i32 require_buyable, i32 columns, VARIPTR *buffer, VARIPTR *buffer_end,
                              i32 use_all_characters, f32 scale) {
     i32 index;
@@ -191,7 +191,7 @@ extern "C" {
 }
 #endif
 
-i32 Collection_GetIDList(COLLECTION_BUILD_PC *collection, u32 mask, u32 required, i16 *out, i32 *first, i32 *second, i32 unused) {
+i32 Collection_GetIDList(COLLECTION_BUILD *collection, u32 mask, u32 required, i16 *out, i32 *first, i32 *second, i32 unused) {
     i32 index;
     i32 count = 0;
     if (first != NULL) {
@@ -240,7 +240,7 @@ void CollectionConfigDiagnostic(char *file, ...) {
 }
 
 void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
-    NUFPAR_PC *parser = NuFParCreate(file);
+    NUFPAR *parser = NuFParCreate(file);
     COLLECTION_CONFIG_ENTRY *entry;
     i32 area;
     (void)end;

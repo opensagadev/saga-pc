@@ -89,30 +89,30 @@ typedef struct gizmoset_s { // size 0x14
     i32 max_count;          // 0x08
     GIZMO_PC *gizmos;       // 0x0c
     void *data;             // 0x10
-} GIZMOSET_PC;
+} GIZMOSET;
 
 typedef struct gizmosys_s {
-    GIZMOSET_PC *sets;
+    GIZMOSET *sets;
     char *error_log;
     u16 flags;
     u16 padding;
-} GIZMOSYS_PC;
+} GIZMOSYS;
 
 typedef struct addgizmotype_s { // size 0x78
     char *name;                 // 0x00
     char *prefix;               // 0x04
     GIZMOFNS fns;               // 0x08
-} ADDGIZMOTYPE_PC;
+} ADDGIZMOTYPE;
 
 #ifdef __cplusplus
-extern "C" ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
+extern "C" ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 #else
-extern ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE;
+extern ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 #endif
 
 typedef struct gizmosys_prefix_s { // size 0x4
-    GIZMOSET_PC *sets;             // 0x0
-} GIZMOSYS_PREFIX_PC;
+    GIZMOSET *sets;                // 0x0
+} GIZMOSYS_PREFIX;
 
 #ifdef __cplusplus
 extern "C" {
@@ -127,12 +127,12 @@ extern "C" {
     void GizmoActivateReverse(void *system, void *gizmo, i32 reverse, i32 visibility, i32 mode);
     void GizmoSetVisibility(void *system, void *gizmo, i32 visible, i32 mode);
     void GizmoActivate(void *system, void *gizmo, i32 active, i32 mode);
-    void GizmoTypeStoreProgress(GIZMOSYS_PC *system, void *world, i32 progress_index, i32 type_id, char *name);
+    void GizmoTypeStoreProgress(GIZMOSYS *system, void *world, i32 progress_index, i32 type_id, char *name);
     struct addgizmotype_s;
     GIZMO_PC *AddGizmo(void *system, i32 type_id, char *name, void *object);
     /* Original gizmo.c private error caller group; existing local CONFIG_SYSTEM view retained. */
     i32 GizmoFileReadName(char *);
-    i32 GizmoGetUniqueName(GIZMOSYS_PREFIX_PC *, char *, char *, char *, i32);
+    i32 GizmoGetUniqueName(GIZMOSYS_PREFIX *, char *, char *, char *, i32);
 
     struct addgizmotype_s;
 
@@ -142,9 +142,9 @@ extern "C" {
 
     struct addgizmotype_s;
 
-    typedef struct addgizmotype_s TECHNO_REGISTRATION_PC;
-    typedef struct addgizmotype_s PORTAL_REGISTRATION_PC;
-    typedef struct addgizmotype_s SHADOW_REGISTRATION_PC;
+    typedef struct addgizmotype_s TECHNO_REGISTRATION;
+    typedef struct addgizmotype_s PORTAL_REGISTRATION;
+    typedef struct addgizmotype_s SHADOW_REGISTRATION;
     struct nuvec_s *GizmoGetPos(struct gizmosys_s *gizmo_sys, void *gizmo);
     char *GizmoGetName(struct gizmo_s *gizmo);
     void GizmoSysPanelDraw(void *, void *, f32);
@@ -204,7 +204,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX_PC *, struct WORLDINFO_s *, i32 *, i32 *, i32);
+    void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX *, struct WORLDINFO_s *, i32 *, i32 *, i32);
 
     i32 GizmoSys_SetBestBoltTarget(void *, struct WORLDINFO_s *, struct gameobject_s *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
     i32 GizmoSys_BoltHitPlat(void *, struct WORLDINFO_s *, struct bolt_s *, u8 *);

@@ -30,11 +30,11 @@ struct STATUSPACKET_s;
 struct STATUS_STAGE_s;
 struct WORLDINFO_s;
 
-typedef struct PAD_INPUT_PC {
+typedef struct PAD_INPUT {
     u8 unknown_00[0x92];
     u8 analog_left_x;
     u8 analog_left_y;
-} PAD_INPUT_PC;
+} PAD_INPUT;
 
 typedef struct RUMBLE_PACKET_RESOURCE { // size 0x14
 
@@ -118,13 +118,13 @@ typedef struct status_minikit_draw_cache_s { // size 0x48
     NUMTX matrix;                            // 0x00
     MINIKIT_PIECE *piece;                    // 0x40
     i32 active;                              // 0x44
-} STATUS_MINIKIT_DRAW_CACHE_PC;
+} STATUS_MINIKIT_DRAW_CACHE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern COLLECTION_BUILD_PC MasterCollection;
-    extern STATUS_MINIKIT_DRAW_CACHE_PC StatusMiniKitDrawCache[10];
+    extern COLLECTION_BUILD MasterCollection;
+    extern STATUS_MINIKIT_DRAW_CACHE StatusMiniKitDrawCache[10];
     extern PART_LIGHTING_DATA StatusMiniKitPartLighting;
 #ifdef __cplusplus
 }
@@ -140,7 +140,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern AREA_DATA_PC *GOTHAMSTREETS_ADATA;
+    extern AREA_DATA *GOTHAMSTREETS_ADATA;
     void StatusStage_Reset(struct STATUS_STAGE_s *stage);
     void NextStatusStage(struct STATUSPACKET_s *);
     void RegisterStatusScreen(struct STATUS_STAGE_s *, i32 *, const struct REGISTER_STATUS_PACKET *);
@@ -149,7 +149,7 @@ extern "C" {
     void StatusPacketReset(struct STATUSPACKET_s *);
     i32 newCharactersCollected(struct STATUSPACKET_s *);
     void InitStatusScreen(struct WORLDINFO_s *);
-    extern AREA_DATA_PC *NEGOTIATIONS_ADATA;
+    extern AREA_DATA *NEGOTIATIONS_ADATA;
     void SetDrawGoldBrick(struct STATUSPACKET_s *, i32);
     void DrawBonusTime(struct STATUSPACKET_s *, f32, i32);
     extern struct STATUS_STAGE_s *StatusStages;

@@ -22,10 +22,10 @@ typedef struct episode_area_save_reader_s { // size 0xc
 extern "C" {
     void EpisodesConfigDiagnostic(char *path);
 
-    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
-        NUFPAR_PC *parser = NuFParCreate(path);
-        EPISODEDATA_PC *episode_base;
-        EPISODEDATA_PC *episode;
+    EPISODEDATA *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
+        NUFPAR *parser = NuFParCreate(path);
+        EPISODEDATA *episode_base;
+        EPISODEDATA *episode;
         i32 episode_count;
         i32 in_episode;
 
@@ -38,7 +38,7 @@ extern "C" {
         }
 
         buffer->addr = (buffer->addr + 3) & ~3u;
-        episode_base = (EPISODEDATA_PC *)buffer->void_ptr;
+        episode_base = (EPISODEDATA *)buffer->void_ptr;
         episode = episode_base;
         episode_count = 0;
         in_episode = 0;
@@ -58,7 +58,7 @@ extern "C" {
                     }
                 } else if (NuStrICmp(parser->word_buffer_ptr, "area") == 0) {
                     if (episode->area_count < 10 && NuFParGetWord(parser) != 0) {
-                        AREA_DATA_PC *area;
+                        AREA_DATA *area;
                         i32 area_index;
                         i32 prior_episode_index;
                         i32 area_slot;
@@ -122,7 +122,7 @@ extern "C" {
 }
 
 extern "C" {
-    EPISODEDATA_PC *EDataList = 0;
+    EPISODEDATA *EDataList = 0;
     i32 EPISODECOUNT = 0;
 }
 
@@ -130,7 +130,7 @@ i32 Episode_ContainsArea(i32 area_id, i32 *area_index) {
     i32 i;
     i32 j;
     for (i = 0; i < EPISODECOUNT; ++i) {
-        EPISODEDATA_PC *episode = &EDataList[i];
+        EPISODEDATA *episode = &EDataList[i];
         for (j = 0; j < episode->area_count; ++j) {
             if (episode->area_ids[j] == area_id) {
                 if (area_index != NULL) {
@@ -148,10 +148,10 @@ i32 Episode_ContainsArea(i32 area_id, i32 *area_index) {
 
 extern "C" {
 
-    u32 Episode_FindAreaFromFlags(EPISODEDATA_PC *episode, u32 flags, u32 wanted) {
+    u32 Episode_FindAreaFromFlags(EPISODEDATA *episode, u32 flags, u32 wanted) {
         i32 index;
         for (index = 0; index < episode->area_count; ++index) {
-            AREA_DATA_PC *area = &ADataList[episode->area_ids[index]];
+            AREA_DATA *area = &ADataList[episode->area_ids[index]];
             if ((area->flags & flags) == wanted) {
                 return area->index;
             }
@@ -161,8 +161,8 @@ extern "C" {
 }
 
 /* An early NULL save guard does not initialize the output count. */
-extern "C" i32 Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
-    COLLECTION_AREA_SAVE_PC *saves = Game_AreaSave;
+extern "C" i32 Episode_IsComplete(EPISODEDATA *episode, i32 *count) {
+    COLLECTION_AREA_SAVE *saves = Game_AreaSave;
     i32 completed = 0;
     if (saves == NULL) {
         return 0;
@@ -181,7 +181,7 @@ extern "C" i32 Episode_IsComplete(EPISODEDATA_PC *episode, i32 *count) {
 extern "C" i32 Episodes_Completed(void) {
     i32 completed = 0;
     for (i32 i = 0; i < EPISODECOUNT; ++i) {
-        EPISODEDATA_PC *episode = &EDataList[i];
+        EPISODEDATA *episode = &EDataList[i];
         i32 complete = 0;
         if (Game_AreaSave != NULL) {
             for (i32 j = 0; j < episode->regular_areas; ++j) {
@@ -230,7 +230,7 @@ extern "C" {
 
 /* Resets every counter even on the -1 path, counts the superstory brick
  * regardless of area filter, and has no pack-unlock guard. */
-i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SAVE_PC *saves) {
+i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SAVE *saves) {
     i32 open = 0;
     EpCompleteCount = EpCompleteTotal = 0;
     EpMiniKitCount = EpMiniKitTotal = 0;
@@ -249,7 +249,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             EpGoldBrickCount = 1;
         }
     }
-    EPISODEDATA_PC *episode = &EDataList[episode_index];
+    EPISODEDATA *episode = &EDataList[episode_index];
     for (i32 i = 0; i < episode->area_count; ++i) {
         i32 id = episode->area_ids[i];
         if (area_index != -1 && id != area_index) {

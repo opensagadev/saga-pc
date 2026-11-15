@@ -71,7 +71,7 @@ extern "C" {
 
         u8 minikit_complete; // 0x4
         u8 unknown_05[7];    // 0x5
-    } COLLECTION_AREA_SAVE_PC;
+    } COLLECTION_AREA_SAVE;
 
     i32 Percent_UpdateHint(HINT *);
     i32 IndyUnlocked_UpdateHint(HINT *);
@@ -101,16 +101,16 @@ typedef struct collection_build_s { // size 0x14
     i16 *title_id;                  // 0x08
     char *name;                     // 0x0c
     f32 scale;                      // 0x10
-} COLLECTION_BUILD_PC;
+} COLLECTION_BUILD;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern COLLECTION_BUILD_PC BountyHunterCollection;
+    extern COLLECTION_BUILD BountyHunterCollection;
 
-    extern COLLECTION_BUILD_PC BlasterCollection;
+    extern COLLECTION_BUILD BlasterCollection;
 
-    extern COLLECTION_BUILD_PC JediCollection;
+    extern COLLECTION_BUILD JediCollection;
 
     extern f32 hub_minikitviewer_movewait;
     extern f32 hub_minikitviewer_move;
@@ -145,8 +145,8 @@ extern "C" {
     extern i16 TextCrawlChapterId;
     extern i16 TextCrawlVehicleBonusId;
     extern i16 TextCrawlCharacterBonusId;
-    extern COLLECTION_BUILD_PC CharacterCollection;
-    extern COLLECTION_BUILD_PC VehicleCollection;
+    extern COLLECTION_BUILD CharacterCollection;
+    extern COLLECTION_BUILD VehicleCollection;
     extern MISSION_MENU_PACKET MissionMenuPacket;
     extern f32 MissionDropInAlpha;
     extern f32 HubMiniKitPanelTime;
@@ -316,7 +316,7 @@ typedef struct area_data_s {                    // size 0x9c
     u8 text_id_value;    // 0x96
     u8 unknown_0097;     // 0x97
     i16 *hub_player_ids; // 0x98
-} AREA_DATA_PC;
+} AREA_DATA;
 
 #ifdef __cplusplus
 extern "C" {
@@ -348,11 +348,11 @@ extern "C" {
 
     typedef struct INDY_PREPARE_SPECIAL_MOVE { // size 0x8
         u32 capabilities;                      // 0x0
-        AI_PREPARING_SPECIAL_MOVE_PC prepare;  // 0x4
+        AI_PREPARING_SPECIAL_MOVE prepare;     // 0x4
     } INDY_PREPARE_SPECIAL_MOVE;
 
     extern INDY_PREPARE_SPECIAL_MOVE IndyPrepareSpecialMove[7];
-    extern AI_MID_SPECIAL_MOVE_PC IndyMidSpecialMoveFns[10];
+    extern AI_MID_SPECIAL_MOVE IndyMidSpecialMoveFns[10];
     i32 IndyGrappleHelperOccupied(struct ai_helper_slot_s *helper, struct gameobject_s *owner, struct AIPATHCNX *connection, u8 direction,
                                   u8 type);
 #ifdef __cplusplus

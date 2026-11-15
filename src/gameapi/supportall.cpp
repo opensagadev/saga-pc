@@ -297,7 +297,7 @@ void ThingManager::edTimingEnter() {
     }
 }
 
-i32 ThingManager::edTimingProc(f32 delta_time, FRAME_PAD_PC *pad) {
+i32 ThingManager::edTimingProc(f32 delta_time, FRAME_PAD *pad) {
     NuFntSet(0);
     NuFntScale(12, 12);
     eduiMenuProcess(edTimingMenu, delta_time, pad);

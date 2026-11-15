@@ -22,7 +22,7 @@ typedef struct cheat_s { // size 0x20
     i32 extra_price;     // 0x14
     char *extra_name;    // 0x18
     u32 flags;           // 0x1c
-} CHEAT_PC;
+} CHEAT;
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,7 +31,7 @@ extern "C" {
     extern i32 POWERUP_TEXTID;
     void Cheat_StartPowerUp(NUVEC *, GAMEOBJECT *);
     extern f32 CHEAT_POWERUPTIME;
-    void Cheats_Init(CHEAT_PC *cheats);
+    void Cheats_Init(CHEAT *cheats);
     i32 Cheat_FindByName(char *name);
     void Cheat_SetArea(i32 cheat, i32 area_index);
     i32 Cheat_PowerUpActive(i32);

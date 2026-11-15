@@ -39,11 +39,11 @@
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 extern i32 Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 i32 GizmoGetTypeIDByName(void *system, char *name);
-SOCK_PC *FindSock(SOCKSYS_PC *system, char *name);
+SOCK *FindSock(SOCKSYS_PC *system, char *name);
 void SockOn(SOCKSYS_PC *system, i32 index);
 void SockOff(SOCKSYS_PC *system, i32 index);
-void GizForce_PlayForwards(GIZFORCE_PC *force);
-void GizForce_PlayBackwards(GIZFORCE_PC *force);
+void GizForce_PlayForwards(GIZFORCE *force);
+void GizForce_PlayBackwards(GIZFORCE *force);
 i32 turret_gizmotype_id;
 
 typedef struct GIZACTION_FORCE_ANIMATION { // size 0xa4
@@ -545,7 +545,7 @@ void GizActions_CompleteLevel(GIZFLOW *unused0, FLOWBOX *unused1, char **params,
 
 void GizActions_GoToNewLevel(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {
     i32 i;
-    LEVELDATA_PC *level = NULL;
+    LEVELDATA *level = NULL;
     char *cutscene_name = NULL;
     for (i = 0; i < count; ++i) {
         char *value = NuStrIStr(params[i], "level=");
@@ -706,12 +706,12 @@ void GizActions_PlayForce(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 cou
                         force->flags |= 0x8000;
                         GameAnimSet_JumpToEnd(force->anim_set);
                     } else {
-                        GizForce_PlayForwards((GIZFORCE_PC *)force);
+                        GizForce_PlayForwards((GIZFORCE *)force);
                     }
                 } else if (snap != 0) {
                     GameAnimSet_JumpToStart(force->anim_set);
                 } else {
-                    GizForce_PlayBackwards((GIZFORCE_PC *)force);
+                    GizForce_PlayBackwards((GIZFORCE *)force);
                 }
             }
         }
@@ -821,7 +821,7 @@ void GizActions_EnableSock(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i3
         } else {
             value = NuStrIStr(params[i], "name=");
             if (value != NULL) {
-                SOCK_PC *sock = FindSock(WORLD->sock_sys, value + 5);
+                SOCK *sock = FindSock(WORLD->sock_sys, value + 5);
                 if (sock != NULL) {
                     index = sock - WORLD->sock_sys->socks;
                 }

@@ -47,7 +47,7 @@ typedef struct edpp_file_particle_s { // size 0x58
 
 extern const f64 ActionSnapWeightedRandomZero;
 
-static void UpdateTotalPtls(DEBRIS_INFO_PC *effect) {
+static void UpdateTotalPtls(DEBRIS_INFO *effect) {
     f32 active = 0.0f;
     f32 elapsed = 0.0f;
     f64 emission;
@@ -173,7 +173,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     struct eduimenu_s *parent = NULL;
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
         i32 type = debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index;
-        DEBRIS_INFO_PC *effect = debtab[type];
+        DEBRIS_INFO *effect = debtab[type];
         if (effect->particle_type != item->data) {
             if (item->data == 2) {
                 edpp_ptls[edpp_nearest].render_priority = 40000;
@@ -246,7 +246,7 @@ eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, c
 /* Stores the picked texture corners in the effect (biased by 524288 so the
  * coordinates keep 1/256 steps) and closes the selector. */
 static void cbPtlChangeTextureSelect(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     edui_texture_pick_s *texture;
     eduimenu_s *parent = NULL;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
@@ -273,7 +273,7 @@ NUMTL *DebMat[9] = {0};
 void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
-        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        DEBRIS_INFO *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         if (textureselectmenu == NULL) {
             edui_texture_pick_s *texture;
             textureselectmenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, NULL, "Texture Select");
@@ -311,7 +311,7 @@ void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
 void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
-        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        DEBRIS_INFO *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         texturemenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelTextureMenu, "Texture");
         if (texturemenu) {
             eduiMenuAddItem(texturemenu, eduiItemCheckCreate(0, colours, effect->particle_type == DEBRIS_PARTICLE_ADDITIVE, 1,
@@ -347,7 +347,7 @@ void cbPtlQuickDeleteMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         for (type = 1; type < debinf_count; ++type) {
             i32 index;
             i32 used;
-            DEBRIS_INFO_PC *effect;
+            DEBRIS_INFO *effect;
             if (!debtab[type]) {
                 continue;
             }
@@ -383,7 +383,7 @@ i32 edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
     i32 skipped = 0;
     i8 original_flag = flag;
     i32 type_index = 1;
-    DEBRIS_INFO_PC discarded;
+    DEBRIS_INFO discarded;
     i32 page_index = -1;
     if (flag == 6) {
         flag = 1;
@@ -585,7 +585,7 @@ void cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     for (index = 1; index < debinf_count; ++index) {
         if (debtab[index] == NULL) {
             debtab[index] = &effecttypes[index];
-            memcpy(debtab[index], debtab[0], sizeof(DEBRIS_INFO_PC));
+            memcpy(debtab[index], debtab[0], sizeof(DEBRIS_INFO));
             debtab[index]->status = 1;
             sprintf(debtab[index]->name, "New%d", index);
             debtab[index]->category = edpp_effect_list;
@@ -638,7 +638,7 @@ static void cbPtlCancelEmitTimeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 }
 
 static void cbPtlChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
         return;
@@ -653,7 +653,7 @@ static void cbPtlChangeGenRate(eduimenu_s *unused0, eduiitem_s *item, u32 unused
 }
 
 static void cbPtlChangeETime(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
         return;
@@ -668,7 +668,7 @@ static void cbPtlChangeETime(eduimenu_s *unused0, eduiitem_s *item, u32 unused2)
 }
 
 static void cbPtlChangeIvalOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
         return;
@@ -683,7 +683,7 @@ static void cbPtlChangeIvalOn(eduimenu_s *unused0, eduiitem_s *item, u32 unused2
 }
 
 static void cbPtlChangeIvalOnRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
         return;
@@ -698,7 +698,7 @@ static void cbPtlChangeIvalOnRan(eduimenu_s *unused0, eduiitem_s *item, u32 unus
 }
 
 static void cbPtlChangeIvalOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
         return;
@@ -713,7 +713,7 @@ static void cbPtlChangeIvalOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused
 }
 
 static void cbPtlChangeIvalOffRan(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
         return;
@@ -728,7 +728,7 @@ static void cbPtlChangeIvalOffRan(eduimenu_s *unused0, eduiitem_s *item, u32 unu
 }
 
 void edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     i32 instance_id;
     if (edpp_nearest == -1) {
         return;
@@ -745,7 +745,7 @@ void edptlcbApplyNumGhosts(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 void cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
-        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        DEBRIS_INFO *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         changegenratemenu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, cbCancelChangeGenRateMenu, "Particles per Second");
         if (changegenratemenu == NULL) {
             return;
@@ -761,7 +761,7 @@ void cbChangeGenRateMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 void cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     if (!(edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1)) {
-        DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
+        DEBRIS_INFO *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         etimemenu = eduiMenuCreate(70, 70, 180, 250, ed_fnt, cbCancelChangeETimeMenu, "Particle Life");
         if (etimemenu == NULL) {
             return;
@@ -776,7 +776,7 @@ void cbChangeETimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 
 void cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-    DEBRIS_INFO_PC *effect;
+    DEBRIS_INFO *effect;
     if (edpp_nearest == -1 || edpp_ptls[edpp_nearest].instance_id == -1) {
         return;
     }
@@ -805,9 +805,9 @@ u32 eddarkred[4] = {0x80000050, 0x80ff0000, 0x80808080, 0x80404040};
 i32 edpp_create_type = -1;
 f32 edpp_scale_factor = 1.0f;
 i32 debinf_count = 0;
-DEBRIS_INFO_PC **debtab = 0;
-DEBRIS_INFO_PC *effecttypes = 0;
-DEBRISKEY_PC *debkeydata = 0;
+DEBRIS_INFO **debtab = 0;
+DEBRIS_INFO *effecttypes = 0;
+DEBRISKEY *debkeydata = 0;
 i32 edbits_particle_general_page = 0;
 i32 EdppTypesError = 0;
 i32 edpp_types_used = 0;

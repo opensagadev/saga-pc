@@ -140,7 +140,7 @@ typedef struct torpedo_packet_alloc_s { // size 0x88
     u8 count;                           // 0x00
     u8 flags;                           // 0x01
     u8 unknown_02[0x86];                // 0x02
-} TORPEDO_PACKET_ALLOC_PC;
+} TORPEDO_PACKET_ALLOC;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 TorpedoFabs(f32 f) {
@@ -229,7 +229,7 @@ static void TorpedoRotateY(NUMTX *m, NUANG angle) {
     m->m32 = m->m32 * cos_y - m30 * sin_y;
 }
 
-static TORPEDO_PACKET_ALLOC_PC TorpedoPackets[16] = {0};
+static TORPEDO_PACKET_ALLOC TorpedoPackets[16] = {0};
 u8 TorpedoFillEnabled = 0;
 
 void fun_004d2290(void) {
@@ -482,7 +482,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
 }
 
 void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET *packet) {
-    BOLTTYPE_PC *type = BoltType_FindByID(15, WORLD);
+    BOLTTYPE *type = BoltType_FindByID(15, WORLD);
     void *target;
     u8 target_type;
     f32 range;
@@ -634,7 +634,7 @@ void TorpedoHitTarget(BOLT_PC *bolt) {
     packet->flags = 1;
 }
 
-void DrawGameMessage_Targets(GAME_MESSAGE_PC *message, NUVEC *position, f32 scale) {
+void DrawGameMessage_Targets(GAME_MESSAGE *message, NUVEC *position, f32 scale) {
     u32 phase = (u16)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.25f) * 4.0 * 65536.0);
     i32 alpha = (i32)(((f64)NuTrigTable[phase >> 1] * (f64)0.2f + (f64)0.8f) * message->alpha);
     char vertical[3];
@@ -742,8 +742,8 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     TORPEDO_RUNTIME *packet = (TORPEDO_RUNTIME *)object->torpedo;
     TORPEDO_TIMERS *timers = (TORPEDO_TIMERS *)object;
     TORPEDO_MACHINE_READER *machine;
-    BOLTTYPE_PC *type;
-    GAME_MESSAGE_PC *message;
+    BOLTTYPE *type;
+    GAME_MESSAGE *message;
     NUVEC *target_position;
     void *target;
     f32 distance;

@@ -120,7 +120,7 @@ extern "C" {
 
     /* 44 records; the configuration is published in InitGameAfterConfig. */
     // clang-format off: aligned table wider than the column limit
-    BOLTTYPE_PC GlobalBoltType[44] = {
+    BOLTTYPE GlobalBoltType[44] = {
         {"red",             4.0f,  2.0f,  0.0f,  0.125f, 1.0f,  0.1f, {{-65484, 131071, -1, 0}},    -1, 0, 1,  255, 0, 0,
          NULL,             NULL,                 NULL,                NULL,                 NULL,          {"Blaster"},
          {"Blast_Hit"},       0,          {0}, {0}, {0}},
@@ -256,10 +256,10 @@ extern "C" {
     };
     // clang-format on
 
-    BOLTSYS_PC BoltSys_LSW = {
+    BOLTSYS BoltSys_LSW = {
         GlobalBoltType,        44, AlertSurroundingCreatures, Bolt_Debris_LSW, GetShootOrigin_LSW, GetShootDirection_LSW, Bolt_HitPart_LSW,
         Bolt_AlternateFire_LSW};
-    BOLTSYS_PC BoltSys_Batman = {GlobalBoltType, 44, AlertSurroundingCreatures, NULL, NULL, GetShootDirection_Batman, NULL, NULL};
+    BOLTSYS BoltSys_Batman = {GlobalBoltType, 44, AlertSurroundingCreatures, NULL, NULL, GetShootDirection_Batman, NULL, NULL};
 }
 
 /* Private collision helpers and callers retain their original translation-unit group. */
@@ -430,7 +430,7 @@ extern "C" void Bolt_Reflect(NUVEC *normal, NUVEC *incoming, NUVEC *out) {
 }
 
 extern "C" void Bolt_AddDeflectedBolt(BOLT_PC *bolt, NUVEC *incoming, NUVEC *normal, u8 *processed) {
-    BOLTTYPE_PC *type = bolt->type;
+    BOLTTYPE *type = bolt->type;
     NUVEC reflected;
     NUVEC position;
     NUMTX matrix;
@@ -568,33 +568,33 @@ extern "C" {
         }
     }
 
-    static void BT_name(NUFPAR_PC *parser) {
+    static void BT_name(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 15) {
             NuStrCpy(BT_bolttype->name, parser->word_buffer_ptr);
         }
     }
 
-    static void BT_speed(NUFPAR_PC *parser) {
+    static void BT_speed(NUFPAR *parser) {
         BT_bolttype->unknown_10 = NuFParGetFloat(parser);
     }
 
-    static void BT_duration(NUFPAR_PC *parser) {
+    static void BT_duration(NUFPAR *parser) {
         BT_bolttype->unknown_14 = NuFParGetFloat(parser);
     }
 
-    static void BT_radius(NUFPAR_PC *parser) {
+    static void BT_radius(NUFPAR *parser) {
         BT_bolttype->unknown_1c = NuFParGetFloat(parser);
     }
 
-    static void BT_scale(NUFPAR_PC *parser) {
+    static void BT_scale(NUFPAR *parser) {
         BT_bolttype->unknown_20 = NuFParGetFloat(parser);
     }
 
-    static void BT_rand_angle(NUFPAR_PC *parser) {
+    static void BT_rand_angle(NUFPAR *parser) {
         BT_bolttype->unknown_40 = (i32)((f64)NuFParGetFloat(parser) * (f64)(65536.0f / 360.0f));
     }
 
-    static void BT_sceneconfig(NUFPAR_PC *parser) {
+    static void BT_sceneconfig(NUFPAR *parser) {
         if (NuFParGetWord(parser) == 0) {
             return;
         }
@@ -609,7 +609,7 @@ extern "C" {
         }
     }
 
-    static void BT_obj(NUFPAR_PC *parser) {
+    static void BT_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
             if (NuSpecialFind(BT_scene, &BT_bolttype->specials.object_special, parser->word_buffer_ptr, 1) != 0) {
                 BT_bolttype->specials.reference_object_special = BT_bolttype->specials.object_special;
@@ -617,13 +617,13 @@ extern "C" {
         }
     }
 
-    static void BT_ref_obj(NUFPAR_PC *parser) {
+    static void BT_ref_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
             NuSpecialFind(BT_scene, &BT_bolttype->specials.reference_object_special, parser->word_buffer_ptr, 1);
         }
     }
 
-    static void BT_glow_obj(NUFPAR_PC *parser) {
+    static void BT_glow_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
             if (NuSpecialFind(BT_scene, &BT_bolttype->specials.glow_special, parser->word_buffer_ptr, 1) != 0) {
                 BT_bolttype->specials.reference_glow_special = BT_bolttype->specials.glow_special;
@@ -631,25 +631,25 @@ extern "C" {
         }
     }
 
-    static void BT_ref_glow_obj(NUFPAR_PC *parser) {
+    static void BT_ref_glow_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
             NuSpecialFind(BT_scene, &BT_bolttype->specials.reference_glow_special, parser->word_buffer_ptr, 1);
         }
     }
 
-    static void BT_shadow_obj(NUFPAR_PC *parser) {
+    static void BT_shadow_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0 && BT_scene != NULL) {
             NuSpecialFind(BT_scene, &BT_bolttype->specials.shadow_special, parser->word_buffer_ptr, 1);
         }
     }
 
-    static void BT_debris(NUFPAR_PC *parser) {
+    static void BT_debris(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
             BT_bolttype->debris_id = (i16)(FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr));
         }
     }
 
-    static void BT_debris_moving(NUFPAR_PC *parser) {
+    static void BT_debris_moving(NUFPAR *parser) {
         if (BT_gdeb_moving_count < 2 && NuFParGetWord(parser) != 0) {
             BT_bolttype->moving_debris[BT_gdeb_moving_count] = (i16)FindGameDebris(BT_worldinfo->game_debris_sys, parser->word_buffer_ptr);
             BT_bolttype->moving_debris_counts[BT_gdeb_moving_count] = (i16)abs((i32)NuFParGetFloat(parser));
@@ -657,61 +657,61 @@ extern "C" {
         }
     }
 
-    static void BT_part_hit(NUFPAR_PC *parser) {
+    static void BT_part_hit(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
             BT_bolttype->unknown_38 = (i16)(FindPartDebris(BT_worldinfo->part_debris_sys, parser->word_buffer_ptr));
         }
     }
 
-    static void BT_sfx_shoot(NUFPAR_PC *parser) {
+    static void BT_sfx_shoot(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
             BT_bolttype->shoot_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
         }
     }
 
-    static void BT_sfx_hit(NUFPAR_PC *parser) {
+    static void BT_sfx_hit(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
             BT_bolttype->hit_sfx_id = (i16)(GetSfxId(parser->word_buffer_ptr));
         }
     }
 
-    static void BT_damage(NUFPAR_PC *parser) {
+    static void BT_damage(NUFPAR *parser) {
         BT_bolttype->unknown_3c = (u8)(NuFParGetInt(parser));
     }
 
-    static void BT_nodeflect(NUFPAR_PC *parser) {
+    static void BT_nodeflect(NUFPAR *parser) {
         BT_bolttype->flags_60 |= 0x100;
     }
 
-    static void BT_converge(NUFPAR_PC *parser) {
+    static void BT_converge(NUFPAR *parser) {
         BT_bolttype->flags_60 |= 0x400;
     }
 
-    static void BT_canonlyhitplayers(NUFPAR_PC *parser) {
+    static void BT_canonlyhitplayers(NUFPAR *parser) {
         BT_bolttype->flags_60 |= 0x80;
     }
 
-    static void BT_no_terrain(NUFPAR_PC *parser) {
+    static void BT_no_terrain(NUFPAR *parser) {
         BT_bolttype->flags_60 |= 4;
     }
 
-    static void BT_no_collide(NUFPAR_PC *parser) {
+    static void BT_no_collide(NUFPAR *parser) {
         BT_bolttype->flags_60 |= 0x10000;
     }
 
-    static void BT_trooper_bolt(NUFPAR_PC *parser) {
+    static void BT_trooper_bolt(NUFPAR *parser) {
         BT_bolttype->flags_60 |= 0x80000;
     }
 
-    static void BT_single_debris(NUFPAR_PC *parser) {
+    static void BT_single_debris(NUFPAR *parser) {
         BT_bolttype->flags_60 |= 0x40000000;
     }
 
     f32 BoltShootParameter = 0.1f;
-    BOLTTYPE_PC GlobalBoltType_Default = {
+    BOLTTYPE GlobalBoltType_Default = {
         "null", 4.0f,   2.0f,   0.0f, 0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}}, -1, 0, 1, -1, 0, 0, NULL, NULL, NULL, NULL,
         NULL,   {NULL}, {NULL}, 0,    {-1},   {-1}, {0}};
-    BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
+    BOLTSYS *BoltSys = &GlobalBoltSystem_Default;
     static NUFPCOMJMP BoltType_ConfigKeywords[] = {
         {("name"),              BT_name             },
         {("speed"),             BT_speed            },
@@ -742,8 +742,8 @@ extern "C" {
         {NULL,                  NULL                },
     };
 
-    BOLTTYPE_PC *BoltType_FindByID(i32 id, WORLDINFO *world) {
-        BOLTSYS_PC *system = BoltSys;
+    BOLTTYPE *BoltType_FindByID(i32 id, WORLDINFO *world) {
+        BOLTSYS *system = BoltSys;
         if (id >= 0 && id < system->count) {
             return &system->types[id];
         }
@@ -908,7 +908,7 @@ extern "C" {
         }
     }
 
-    void BoltSys_Init(BOLTSYS_PC *system) {
+    void BoltSys_Init(BOLTSYS *system) {
         i32 i;
         for (i = 0; i < system->count; ++i) {
             system->types[i].shoot_sound_id = -1;
@@ -1008,7 +1008,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
     message.Read32(client);
     BOLT_PC *bolt = &Bolt[bolt_index];
     GAMEOBJECT *object = &Obj[object_index];
-    BOLTTYPE_PC *type = bolt->type;
+    BOLTTYPE *type = bolt->type;
     if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         BoltSys->stop_targeting(bolt->owner, &bolt->position);
     }
@@ -1163,7 +1163,7 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
         if (bolt->active == 0) {
             continue;
         }
-        BOLTTYPE_PC *type = bolt->type;
+        BOLTTYPE *type = bolt->type;
         f32 size = type->scale_callback != NULL ? type->scale_callback(bolt) : bolt->scale;
         NUMTX matrix = bolt->effect_orientation;
         if (bolt->time < type->unknown_24) {
@@ -1218,7 +1218,7 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
 extern "C" {
     void BoltTypes_Configure(WORLDINFO *world, char *config) {
         memset(world->bolt_types, 0, sizeof(world->bolt_types));
-        NUFPAR_PC *parser = NuFParCreateMem("bolttypes", config, 0xffff);
+        NUFPAR *parser = NuFParCreateMem("bolttypes", config, 0xffff);
         if (parser == NULL) {
             return;
         }
@@ -1352,7 +1352,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     message.Read32(hit_flags);
     GAMEOBJECT *owner = owner_index >= 0 ? &Obj[owner_index] : NULL;
     /* BoltType_FindByID(type_id, WORLD), inlined. */
-    BOLTTYPE_PC *type;
+    BOLTTYPE *type;
     if (type_id >= 0 && type_id < BoltSys->count) {
         type = &BoltSys->types[type_id];
     } else if (WORLD != NULL && type_id >= BoltSys->count && type_id < BoltSys->count + 8) {
@@ -1564,7 +1564,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
 }
 
 extern "C" BOLT_PC *Bolt_Add(GAMEOBJECT *owner, NUVEC *position, NUMTX *matrix, i32 type_id, i32 flags) {
-    BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
+    BOLTTYPE *type = BoltType_FindByID(type_id, WORLD);
     BOLT_PC *bolt = NULL;
     if (type != NULL && NuSpecialExistsFn(type->specials)) {
         bolt = Bolt_Alloc();
@@ -1599,7 +1599,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 bolt->owner = NULL;
             }
         }
-        BOLTTYPE_PC *type = bolt->type;
+        BOLTTYPE *type = bolt->type;
         if ((bolt->flags & 4) == 0) {
             bolt->ray_time -= FRAMETIME;
             if (bolt->ray_time <= 0.0f) {
@@ -1794,7 +1794,7 @@ extern "C" {
         i32 bolts[5];
         i32 bolt_count = 0;
         i32 used_locator = 0;
-        BOLTTYPE_PC *type = BoltType_FindByID(type_id, WORLD);
+        BOLTTYPE *type = BoltType_FindByID(type_id, WORLD);
         i32 sound_count = 0;
         u32 flags = type->flags_60;
         f32 speed = type->unknown_10;

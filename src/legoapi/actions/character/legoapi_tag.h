@@ -14,9 +14,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef void (*TAG_DRAW_ICON_PC)(GAMEOBJECT *);
+    typedef void (*TAG_DRAW_ICON)(GAMEOBJECT *);
     extern i32 Tag_Mode;
-    extern TAG_DRAW_ICON_PC Tag_DrawIconFn;
+    extern TAG_DRAW_ICON Tag_DrawIconFn;
     extern f32 TakeOverATATJumpScale;
     extern f32 SpeederChaseATATExitSpeed;
     extern f32 SpeederChaseATATExitHeight;

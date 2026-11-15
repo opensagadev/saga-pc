@@ -1,0 +1,337 @@
+old,new,evidence
+NUFPAR_PC,NUFPAR,pc marker dropped: the plain name is free
+LEVELDATA_PC,LEVELDATA,pc marker dropped: the plain name is free
+FRAME_PAD_PC,FRAME_PAD,pc marker dropped: the plain name is free
+DEBRIS_INFO_PC,DEBRIS_INFO,pc marker dropped: the plain name is free
+AREA_DATA_PC,AREA_DATA,pc marker dropped: the plain name is free
+ADDGIZMOTYPE_PC,ADDGIZMOTYPE,pc marker dropped: the plain name is free
+DEBRIS_ENGINE_KEYS_PC,DEBRIS_ENGINE_KEYS,pc marker dropped: the plain name is free
+CUT_INSTANCE_LOAD_PC,CUT_INSTANCE_LOAD,pc marker dropped: the plain name is free
+GIZFORCE_PC,GIZFORCE,pc marker dropped: the plain name is free
+PUSH_BLOCK_PC,PUSH_BLOCK,pc marker dropped: the plain name is free
+GAMEPAD_PC,GAMEPAD,pc marker dropped: the plain name is free
+NUDISPLAY_LIST_PC,NUDISPLAY_LIST,pc marker dropped: the plain name is free
+DEBRISPARTICLE_PC,DEBRISPARTICLE,pc marker dropped: the plain name is free
+NURND_VERTEX3D_PC,NURND_VERTEX3D,pc marker dropped: the plain name is free
+NUTEXDIM_PC,NUTEXDIM,pc marker dropped: the plain name is free
+SOCKPOSITION_PC,SOCKPOSITION,pc marker dropped: the plain name is free
+DEBRISKEY_PC,DEBRISKEY,pc marker dropped: the plain name is free
+CUT_SCENE_LOAD_PC,CUT_SCENE_LOAD,pc marker dropped: the plain name is free
+GIZMOSYS_PC,GIZMOSYS,pc marker dropped: the plain name is free
+GAME_MESSAGE_PC,GAME_MESSAGE,pc marker dropped: the plain name is free
+CHARACTERDATA_PC,CHARACTERDATA,pc marker dropped: the plain name is free
+SOCK_PC,SOCK,pc marker dropped: the plain name is free
+RTL_FOG_MIGRATION_PC,RTL_FOG_MIGRATION,pc marker dropped: the plain name is free
+ANIMPACKET_PC,ANIMPACKET,pc marker dropped: the plain name is free
+COLLECTION_BUILD_PC,COLLECTION_BUILD,pc marker dropped: the plain name is free
+SECURITY_DOOR_RECORD_PC,SECURITY_DOOR_RECORD,pc marker dropped: the plain name is free
+CUT_INSTANCE_LIFECYCLE_PC,CUT_INSTANCE_LIFECYCLE,pc marker dropped: the plain name is free
+GIZMOSET_PC,GIZMOSET,pc marker dropped: the plain name is free
+TERRAIN_SET_PC,TERRAIN_SET,pc marker dropped: the plain name is free
+BOLTTYPE_PC,BOLTTYPE,pc marker dropped: the plain name is free
+DEBRIS_CHUNK_CONTROL_PC,DEBRIS_CHUNK_CONTROL,pc marker dropped: the plain name is free
+DEBRIS_PARTICLE_CHUNK_PC,DEBRIS_PARTICLE_CHUNK,pc marker dropped: the plain name is free
+NUGLOBALRNDRSTATE_PC,NUGLOBALRNDRSTATE,pc marker dropped: the plain name is free
+RIPPLE_NODE_PC,RIPPLE_NODE,pc marker dropped: the plain name is free
+ADD_GAME_MESSAGE_PC,ADD_GAME_MESSAGE,pc marker dropped: the plain name is free
+FLIGHT_SPLINE_RESOURCE_PC,FLIGHT_SPLINE_RESOURCE,pc marker dropped: the plain name is free
+TUBE_CALLBACKS_PC,TUBE_CALLBACKS,pc marker dropped: the plain name is free
+CARRY_PLUG_PC,CARRY_PLUG,pc marker dropped: the plain name is free
+NUALLOC_MANAGER_PREFIX_PC,NUALLOC_MANAGER_PREFIX,pc marker dropped: the plain name is free
+STATE_ANIM_PC,STATE_ANIM,pc marker dropped: the plain name is free
+NUTEXBMP_PC,NUTEXBMP,pc marker dropped: the plain name is free
+AI_CHARACTER_DISTANCE_PC,AI_CHARACTER_DISTANCE,pc marker dropped: the plain name is free
+DEBRIS_RENDER_CHUNK_PC,DEBRIS_RENDER_CHUNK,pc marker dropped: the plain name is free
+EPISODEDATA_PC,EPISODEDATA,pc marker dropped: the plain name is free
+SFX_FILE_INFO_PC,SFX_FILE_INFO,pc marker dropped: the plain name is free
+MISSIONSYS_PC,MISSIONSYS,pc marker dropped: the plain name is free
+RIPPLE_SET_PC,RIPPLE_SET,pc marker dropped: the plain name is free
+AI_MID_SPECIAL_MOVE_PC,AI_MID_SPECIAL_MOVE,pc marker dropped: the plain name is free
+AREA_SUPERCOUNTER_PC,AREA_SUPERCOUNTER,pc marker dropped: the plain name is free
+MINIKIT_PC,MINIKIT,pc marker dropped: the plain name is free
+DEBRIS_PART_HEADER_PC,DEBRIS_PART_HEADER,pc marker dropped: the plain name is free
+AI_HELPER_SLOT_PC,AI_HELPER_SLOT,pc marker dropped: the plain name is free
+DEBRIS_FLOAT_KEY_PC,DEBRIS_FLOAT_KEY,pc marker dropped: the plain name is free
+LEVEL_SFX_PULSE_PC,LEVEL_SFX_PULSE,pc marker dropped: the plain name is free
+PARTTYPE_LOOKUP_PC,PARTTYPE_LOOKUP,pc marker dropped: the plain name is free
+GAMEPAD_RESET_PC,GAMEPAD_RESET,pc marker dropped: the plain name is free
+VISIBILITY_RESULT_READER_PC,VISIBILITY_RESULT_READER,pc marker dropped: the plain name is free
+AI_CONTROL_SYSTEM_PC,AI_CONTROL_SYSTEM,pc marker dropped: the plain name is free
+AREA_SUPERCOUNTER_PICKUP_PC,AREA_SUPERCOUNTER_PICKUP,pc marker dropped: the plain name is free
+GIZMOSYS_PREFIX_PC,GIZMOSYS_PREFIX,pc marker dropped: the plain name is free
+TECHNO_PC,TECHNO,pc marker dropped: the plain name is free
+ANI3_ROOT_CALLBACK_PC,ANI3_ROOT_CALLBACK,pc marker dropped: the plain name is free
+SFX_RECORD_PC,SFX_RECORD,pc marker dropped: the plain name is free
+TERRAIN_PLATFORM_MATRIX_PC,TERRAIN_PLATFORM_MATRIX,pc marker dropped: the plain name is free
+BOLTSYS_PC,BOLTSYS,pc marker dropped: the plain name is free
+GRABBER_PC,GRABBER,pc marker dropped: the plain name is free
+TERRAIN_PLATFORM_OF_PC,TERRAIN_PLATFORM_OF,pc marker dropped: the plain name is free
+PLAYER_BATARANG_SLOT_PC,PLAYER_BATARANG_SLOT,pc marker dropped: the plain name is free
+CHEAT_PC,CHEAT,pc marker dropped: the plain name is free
+AI_PREPARING_SPECIAL_MOVE_PC,AI_PREPARING_SPECIAL_MOVE,pc marker dropped: the plain name is free
+SOCKROT_PC,SOCKROT,pc marker dropped: the plain name is free
+NURDPFCTX_PC,NURDPFCTX,pc marker dropped: the plain name is free
+NURDPICTX_PC,NURDPICTX,pc marker dropped: the plain name is free
+AREAFIXUP_PC,AREAFIXUP,pc marker dropped: the plain name is free
+AI_LEVEL_CHARACTER_TYPE_ID_PC,AI_LEVEL_CHARACTER_TYPE_ID,pc marker dropped: the plain name is free
+MINIANIMPACKET_PC,MINIANIMPACKET,pc marker dropped: the plain name is free
+SAVE_VOID_FN_PC,SAVE_VOID_FN,pc marker dropped: the plain name is free
+CLIMB_SLOT_PC,CLIMB_SLOT,pc marker dropped: the plain name is free
+TRIGGER_SYSTEM_PC,TRIGGER_SYSTEM,pc marker dropped: the plain name is free
+COLLECTION_AREA_SAVE_PC,COLLECTION_AREA_SAVE,pc marker dropped: the plain name is free
+INDY_GUIDELINE_PC,INDY_GUIDELINE,pc marker dropped: the plain name is free
+CHAR_CATEGORY_RECORD_PC,CHAR_CATEGORY_RECORD,pc marker dropped: the plain name is free
+TERRAIN_PLAYER_PLATFORM_SYS_PC,TERRAIN_PLAYER_PLATFORM_SYS,pc marker dropped: the plain name is free
+ATTRACTO_PC,ATTRACTO,pc marker dropped: the plain name is free
+HUB_AREA_INFO_PC,HUB_AREA_INFO,pc marker dropped: the plain name is free
+NUPRIM_VERTEX_GROUP_SOURCE_PC,NUPRIM_VERTEX_GROUP_SOURCE,pc marker dropped: the plain name is free
+NUBRIDGE_PC,NUBRIDGE,pc marker dropped: the plain name is free
+CHEATSYSTEM_PC,CHEATSYSTEM,pc marker dropped: the plain name is free
+NARROWSOCKEXCEPTION_PC,NARROWSOCKEXCEPTION,pc marker dropped: the plain name is free
+CHARACTER_UPDATE_CALLBACK_PC,CHARACTER_UPDATE_CALLBACK,pc marker dropped: the plain name is free
+CREDIT_RECORD_PC,CREDIT_RECORD,pc marker dropped: the plain name is free
+RACEPOD_RESOURCE_PC,RACEPOD_RESOURCE,pc marker dropped: the plain name is free
+FRAME_SCANNED_PAD_PC,FRAME_SCANNED_PAD,pc marker dropped: the plain name is free
+TERRAIN_PLATFORM_LIFECYCLE_PC,TERRAIN_PLATFORM_LIFECYCLE,pc marker dropped: the plain name is free
+TERRAIN_BOUNCE_PLATFORM_PC,TERRAIN_BOUNCE_PLATFORM,pc marker dropped: the plain name is free
+SAVE_HASH_FN_PC,SAVE_HASH_FN,pc marker dropped: the plain name is free
+AI_HELPER_SYSTEM_PC,AI_HELPER_SYSTEM,pc marker dropped: the plain name is free
+CARRY_PLUG_SYS_PC,CARRY_PLUG_SYS,pc marker dropped: the plain name is free
+PLAYER_ITEM_TYPE_RESET_PC,PLAYER_ITEM_TYPE_RESET,pc marker dropped: the plain name is free
+DEBRIS_COLLISION_ENTRY_PC,DEBRIS_COLLISION_ENTRY,pc marker dropped: the plain name is free
+CUT_MEMORY_INSTANCE_PC,CUT_MEMORY_INSTANCE,pc marker dropped: the plain name is free
+CUT_MEMORY_ENTRY_PC,CUT_MEMORY_ENTRY,pc marker dropped: the plain name is free
+AI_FORCE_PLATFORM_TERRAIN_PC,AI_FORCE_PLATFORM_TERRAIN,pc marker dropped: the plain name is free
+SCREENGRAB_TILE_PARAMS_PC,SCREENGRAB_TILE_PARAMS,pc marker dropped: the plain name is free
+LEVELSPLINE_PC,LEVELSPLINE,pc marker dropped: the plain name is free
+GIZFORCE_TARGET_RECORD_PC,GIZFORCE_TARGET_RECORD,pc marker dropped: the plain name is free
+CHECK_ANTINODE_FN_PC,CHECK_ANTINODE_FN,pc marker dropped: the plain name is free
+PART_EMIT_PC,PART_EMIT,pc marker dropped: the plain name is free
+EDPP_PARTICLE_PC,EDPP_PARTICLE,pc marker dropped: the plain name is free
+WEAPON_AMMO_PC,WEAPON_AMMO,pc marker dropped: the plain name is free
+CHAR_PLATFORM_SYSTEM_PC,CHAR_PLATFORM_SYSTEM,pc marker dropped: the plain name is free
+CUT_LOCATOR_FUNCTION_ENTRY_PC,CUT_LOCATOR_FUNCTION_ENTRY,pc marker dropped: the plain name is free
+MINE_ENTRY_PC,MINE_ENTRY,pc marker dropped: the plain name is free
+MISSIONDATA_PC,MISSIONDATA,pc marker dropped: the plain name is free
+GAMEFOG_STATE_PC,GAMEFOG_STATE,pc marker dropped: the plain name is free
+REGISTRY_PANEL_SYSTEM_PC,REGISTRY_PANEL_SYSTEM,pc marker dropped: the plain name is free
+FRAME_PAD_RECORD_PC,FRAME_PAD_RECORD,pc marker dropped: the plain name is free
+APIOBJECT_FROM_ID_PC,APIOBJECT_FROM_ID,pc marker dropped: the plain name is free
+AI_RESPAWN_ON_PATH_PC,AI_RESPAWN_ON_PATH,pc marker dropped: the plain name is free
+AI_CHARACTER_GOAL_SPEED_PC,AI_CHARACTER_GOAL_SPEED,pc marker dropped: the plain name is free
+AI_GAME_PARAM_TO_FLOAT_PC,AI_GAME_PARAM_TO_FLOAT,pc marker dropped: the plain name is free
+AI_PARSE_SPEED_PC,AI_PARSE_SPEED,pc marker dropped: the plain name is free
+AI_BIG_JUMP_TO_DESTINATION_PC,AI_BIG_JUMP_TO_DESTINATION,pc marker dropped: the plain name is free
+CHARFIXUP_PC,CHARFIXUP,pc marker dropped: the plain name is free
+AI_LEVEL_CHARACTER_GLOBAL_ID_PC,AI_LEVEL_CHARACTER_GLOBAL_ID,pc marker dropped: the plain name is free
+TAG_DRAW_ICON_PC,TAG_DRAW_ICON,pc marker dropped: the plain name is free
+REPEAT_SFX_ENTRY_PC,REPEAT_SFX_ENTRY,pc marker dropped: the plain name is free
+CHARACTER_CONTEXT_INFO_PC,CHARACTER_CONTEXT_INFO,pc marker dropped: the plain name is free
+TERRAIN_PLAYER_PLATFORM_RECORD_PC,TERRAIN_PLAYER_PLATFORM_RECORD,pc marker dropped: the plain name is free
+CHAR_PLATFORM_PC,CHAR_PLATFORM,pc marker dropped: the plain name is free
+CUT_DRAW_RENDER_CALLBACK_PC,CUT_DRAW_RENDER_CALLBACK,pc marker dropped: the plain name is free
+CUT_DRAW_EVAL_CALLBACK_PC,CUT_DRAW_EVAL_CALLBACK,pc marker dropped: the plain name is free
+CUT_DRAW_RIGID_CALLBACK_PC,CUT_DRAW_RIGID_CALLBACK,pc marker dropped: the plain name is free
+CUT_APP_COMMAND_PC,CUT_APP_COMMAND,pc marker dropped: the plain name is free
+REGISTRY_BUILDIT_SYSTEM_PC,REGISTRY_BUILDIT_SYSTEM,pc marker dropped: the plain name is free
+GUIDELINE_PROGRESS_PC,GUIDELINE_PROGRESS,pc marker dropped: the plain name is free
+RTLSET_PC,RTLSET,pc marker dropped: the plain name is free
+RENDER_POST_BLOOM_READER_PC,RENDER_POST_BLOOM_READER,pc marker dropped: the plain name is free
+CUSTOM_PIECE_ANIM_PC,CUSTOM_PIECE_ANIM,pc marker dropped: the plain name is free
+AI_FORCE_PLATFORM_OBJECT_DATA_PC,AI_FORCE_PLATFORM_OBJECT_DATA,pc marker dropped: the plain name is free
+SECURITY_DOOR_PROGRESS_PC,SECURITY_DOOR_PROGRESS,pc marker dropped: the plain name is free
+TIGHTROPE_PROGRESS_PC,TIGHTROPE_PROGRESS,pc marker dropped: the plain name is free
+ANI3_EVAL_CALLBACK_PC,ANI3_EVAL_CALLBACK,pc marker dropped: the plain name is free
+NUJOINTPROCANIMFN_PC,NUJOINTPROCANIMFN,pc marker dropped: the plain name is free
+RENDER_POST_VIEWPORT_PREFIX_PC,RENDER_POST_VIEWPORT_PREFIX,pc marker dropped: the plain name is free
+NUFPARPOS_PC,NUFPARPOS,pc marker dropped: the plain name is free
+LEVEL_DISPLAY_PC,LEVEL_DISPLAY,pc marker dropped: the plain name is free
+AISYS_SPECIAL_NODE_CALLBACK_PC,AISYS_SPECIAL_NODE_CALLBACK,pc marker dropped: the plain name is free
+AI_SCRIPT_FIRST_ACTION_PC,AI_SCRIPT_FIRST_ACTION,pc marker dropped: the plain name is free
+DEBRISGENERATOR_PC,DEBRISGENERATOR,pc marker dropped: the plain name is free
+DEBRISMOMENTUMADJUSTER_PC,DEBRISMOMENTUMADJUSTER,pc marker dropped: the plain name is free
+TAG_TRANSFER_PC,TAG_TRANSFER,pc marker dropped: the plain name is free
+AREA_GLOBALS_PC,AREA_GLOBALS,pc marker dropped: the plain name is free
+BATMAN_PREPARE_PC,BATMAN_PREPARE,pc marker dropped: the plain name is free
+AWKWARD_SHAPE_SPHERE_PC,AWKWARD_SHAPE_SPHERE,pc marker dropped: the plain name is free
+CHAR_PLATFORM_WORLD_PC,CHAR_PLATFORM_WORLD,pc marker dropped: the plain name is free
+CREDIT_TYPE_PC,CREDIT_TYPE,pc marker dropped: the plain name is free
+CUSTOM_CATEGORY_CONFIG_PC,CUSTOM_CATEGORY_CONFIG,pc marker dropped: the plain name is free
+DEBRIS_SCALE_CACHE_PC,DEBRIS_SCALE_CACHE,pc marker dropped: the plain name is free
+SHADOW_PLATFORM_ENTRY_PC,SHADOW_PLATFORM_ENTRY,pc marker dropped: the plain name is free
+REGISTRY_BUILDIT_RECORD_PC,REGISTRY_BUILDIT_RECORD,pc marker dropped: the plain name is free
+LEVELFIXUP_PC,LEVELFIXUP,pc marker dropped: the plain name is free
+TECHNO_CONFIG_PC,TECHNO_CONFIG,pc marker dropped: the plain name is free
+MUSICPLAYBACK_PC,MUSICPLAYBACK,pc marker dropped: the plain name is free
+GIZFORCE_PLATFORM_BEST_PC,GIZFORCE_PLATFORM_BEST,pc marker dropped: the plain name is free
+REGISTRY_FORCE_RECORD_PC,REGISTRY_FORCE_RECORD,pc marker dropped: the plain name is free
+REGISTRY_PANEL_RECORD_PC,REGISTRY_PANEL_RECORD,pc marker dropped: the plain name is free
+NURND_VERTEX2D_PC,NURND_VERTEX2D,pc marker dropped: the plain name is free
+NUTEXBMP_COLOUR_PC,NUTEXBMP_COLOUR,pc marker dropped: the plain name is free
+DAT_HANDLES_PC,DAT_HANDLES,pc marker dropped: the plain name is free
+PLAYER_FORCE_LOS_SLOT_PC,PLAYER_FORCE_LOS_SLOT,pc marker dropped: the plain name is free
+GAMEOBJECT_LOOKUP_CALLBACK_PC,GAMEOBJECT_LOOKUP_CALLBACK,pc marker dropped: the plain name is free
+TERRAIN_LAYER_PC,TERRAIN_LAYER,pc marker dropped: the plain name is free
+EDANIM_PARAM_PC,EDANIM_PARAM,pc marker dropped: the plain name is free
+ARCADE_MODE_PC,ARCADE_MODE,pc marker dropped: the plain name is free
+AI_ORIGIN_POSITION_PC,AI_ORIGIN_POSITION,pc marker dropped: the plain name is free
+CHECK_LOST_DATA_PC,CHECK_LOST_DATA,pc marker dropped: the plain name is free
+CLIMB_SYSTEM_PC,CLIMB_SYSTEM,pc marker dropped: the plain name is free
+AI_EDITOR_SPECIAL_PLATFORM_PC,AI_EDITOR_SPECIAL_PLATFORM,pc marker dropped: the plain name is free
+ARCADE_ITEM_PC,ARCADE_ITEM,pc marker dropped: the plain name is free
+AI_HELPER_FILTER_PC,AI_HELPER_FILTER,pc marker dropped: the plain name is free
+LAST_SAFE_POS_EXTRA_PC,LAST_SAFE_POS_EXTRA,pc marker dropped: the plain name is free
+PLAYER_CLEAR_CONTEXT_CALLBACK_PC,PLAYER_CLEAR_CONTEXT_CALLBACK,pc marker dropped: the plain name is free
+CUT_LOCATOR_SYSTEM_LIFECYCLE_PC,CUT_LOCATOR_SYSTEM_LIFECYCLE,pc marker dropped: the plain name is free
+CUT_LOCATOR_INSTANCE_SYSTEM_PC,CUT_LOCATOR_INSTANCE_SYSTEM,pc marker dropped: the plain name is free
+CRUISERC_PC,CRUISERC,pc marker dropped: the plain name is free
+VADERC_PC,VADERC,pc marker dropped: the plain name is free
+CUSTOMISER_COMPLETION_READER_PC,CUSTOMISER_COMPLETION_READER,pc marker dropped: the plain name is free
+LEVEL_BLOWUP_CALLBACK_PC,LEVEL_BLOWUP_CALLBACK,pc marker dropped: the plain name is free
+STATUS_MINIKIT_DRAW_CACHE_PC,STATUS_MINIKIT_DRAW_CACHE,pc marker dropped: the plain name is free
+TEXT_CRAWL_VIEW_PC,TEXT_CRAWL_VIEW,pc marker dropped: the plain name is free
+AREA_LOADING_PAD_READER_PC,AREA_LOADING_PAD_READER,pc marker dropped: the plain name is free
+VADERA_PC,VADERA,pc marker dropped: the plain name is free
+CUSTOMISER_GAME_SETTING_PC,CUSTOMISER_GAME_SETTING,pc marker dropped: the plain name is free
+DOOKU_C_PC,DOOKU_C,pc marker dropped: the plain name is free
+KAMINODISCO_PC,KAMINODISCO,pc marker dropped: the plain name is free
+KAMINO_E_PC,KAMINO_E,pc marker dropped: the plain name is free
+KAMINOC_PACKET_PC,KAMINOC_PACKET,pc marker dropped: the plain name is free
+REGISTRY_FORCE_SYSTEM_PC,REGISTRY_FORCE_SYSTEM,pc marker dropped: the plain name is free
+HUB_PAD_READER_PC,HUB_PAD_READER,pc marker dropped: the plain name is free
+HUB_EPISODE_INFO_PC,HUB_EPISODE_INFO,pc marker dropped: the plain name is free
+MOTION_PLATFORM_CONTACT_READER_PC,MOTION_PLATFORM_CONTACT_READER,pc marker dropped: the plain name is free
+NULGTLASER_PC,NULGTLASER,pc marker dropped: the plain name is free
+NULGTARCLASER_PC,NULGTARCLASER,pc marker dropped: the plain name is free
+NULGTARCMATERIAL_PC,NULGTARCMATERIAL,pc marker dropped: the plain name is free
+FRAME_PAD_RAMP_PC,FRAME_PAD_RAMP,pc marker dropped: the plain name is free
+SOUND_REGISTRY_PC,SOUND_REGISTRY,pc marker dropped: the plain name is free
+AISCRIPT_CONST_RECORD_PC,AISCRIPT_CONST_RECORD,pc marker dropped: the plain name is free
+PORTAL_REGISTRATION_PC,PORTAL_REGISTRATION,pc marker dropped: the plain name is free
+DEBRIS_COLOUR_KEY_PC,DEBRIS_COLOUR_KEY,pc marker dropped: the plain name is free
+MINESYS_PC,MINESYS,pc marker dropped: the plain name is free
+SHOVE_SYSTEM_PC,SHOVE_SYSTEM,pc marker dropped: the plain name is free
+COLLISION_PLATFORM_PUSH_VIEW_PC,COLLISION_PLATFORM_PUSH_VIEW,pc marker dropped: the plain name is free
+CLIENT_MINES_PC,CLIENT_MINES,pc marker dropped: the plain name is free
+GUNGAN_A_PC,GUNGAN_A,pc marker dropped: the plain name is free
+CRUISERD_LIFT_ANIM_PC,CRUISERD_LIFT_ANIM,pc marker dropped: the plain name is free
+TERRAIN_PLATFORM_READER_PC,TERRAIN_PLATFORM_READER,pc marker dropped: the plain name is free
+MOVEPLAYER_PAD_BITS_PC,MOVEPLAYER_PAD_BITS,pc marker dropped: the plain name is free
+SPECIAL_LAYER_PC,SPECIAL_LAYER,pc marker dropped: the plain name is free
+RETAKEG_NETPACKET_PC,RETAKEG_NETPACKET,pc marker dropped: the plain name is free
+CRUISERC_NETPACKET_PC,CRUISERC_NETPACKET,pc marker dropped: the plain name is free
+CRUISERD_NETPACKET_PC,CRUISERD_NETPACKET,pc marker dropped: the plain name is free
+TRENCHRUN_PC,TRENCHRUN,pc marker dropped: the plain name is free
+AI_ON_OBJECT_PLATFORM_PC,AI_ON_OBJECT_PLATFORM,pc marker dropped: the plain name is free
+AI_FORCE_PLATFORM_RECORD_PC,AI_FORCE_PLATFORM_RECORD,pc marker dropped: the plain name is free
+HUB_FREEPLAY_PAD_READER_PC,HUB_FREEPLAY_PAD_READER,pc marker dropped: the plain name is free
+TORPEDO_PACKET_ALLOC_PC,TORPEDO_PACKET_ALLOC,pc marker dropped: the plain name is free
+TECHNO_REGISTRATION_PC,TECHNO_REGISTRATION,pc marker dropped: the plain name is free
+SHADOW_REGISTRATION_PC,SHADOW_REGISTRATION,pc marker dropped: the plain name is free
+PC_INPUT_RUNTIME_PC,PC_INPUT_RUNTIME,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_D3D9_DEVICE_PC,PC_D3D9_DEVICE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DEVICE_BACKEND_PC,PC_DEVICE_BACKEND,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_WINDOW_OPTIONS_PC,PC_WINDOW_OPTIONS,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_CONFIG_PC,PC_INPUT_CONFIG,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_SHADER_PARAMETER_LOCAL_PC,PC_SHADER_PARAMETER_LOCAL,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DL_SHADER_PROGRAM_PAIR_PC,PC_DL_SHADER_PROGRAM_PAIR,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_BINDING_PC,PC_INPUT_BINDING,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_FMV_MOVIE_PC,PC_FMV_MOVIE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_DEVICE_PC,PC_INPUT_DEVICE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_GOBJ_REGISTRY_ENTRY_PC,PC_GOBJ_REGISTRY_ENTRY,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_FMV_BINK_PC,PC_FMV_BINK,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_GOBJ_REGISTRY_CHILD_PC,PC_GOBJ_REGISTRY_CHILD,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_GOBJ_REGISTRY_AUX_PC,PC_GOBJ_REGISTRY_AUX,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DI_MOUSE_STATE_PC,PC_DI_MOUSE_STATE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DISPLAY_ITEM_HANDLER_PC,PC_DISPLAY_ITEM_HANDLER,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_TEXTURE_CREATE_DEVICE_PC,PC_TEXTURE_CREATE_DEVICE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_SAMPLE_PC,PC_INPUT_SAMPLE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DI_DEVICE_INTERFACE_PC,PC_DI_DEVICE_INTERFACE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DEVICE_STATE_CACHE_PC,PC_DEVICE_STATE_CACHE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_RAW_SAMPLE_PC,PC_INPUT_RAW_SAMPLE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_XINPUT_CAPABILITIES_PC,PC_XINPUT_CAPABILITIES,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_SHADOW_EDGE_PC,PC_SHADOW_EDGE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_FMV_REALTIME_PC,PC_FMV_REALTIME,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_WINDOW_CALLBACK_PC,PC_WINDOW_CALLBACK,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_PLATFORM_POLICY_PC,PC_PLATFORM_POLICY,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_CAPTURE_PC,PC_INPUT_CAPTURE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_MOUSE_RUNTIME_PC,PC_INPUT_MOUSE_RUNTIME,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_GEOMETRY_INPUT_PC,PC_GEOMETRY_INPUT,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_COMMAND_PC,PC_INPUT_COMMAND,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_XINPUT_GAMEPAD_PC,PC_XINPUT_GAMEPAD,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_COMMAND_FILTER_PC,PC_INPUT_COMMAND_FILTER,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_INPUT_EXPORT_METADATA_PC,PC_INPUT_EXPORT_METADATA,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_GEOMETRY_BASIS_INPUT_RECORD_PC,PC_GEOMETRY_BASIS_INPUT_RECORD,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_D3D9_METHODS_PC,PC_D3D9_METHODS,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_SHADER_KEY_BLOCK_PC,PC_SHADER_KEY_BLOCK,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_SHADER_DEFAULTS_VIEW_PC,PC_SHADER_DEFAULTS_VIEW,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DI_DEVICE_METHODS_PC,PC_DI_DEVICE_METHODS,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_XINPUT_STATE_PC,PC_XINPUT_STATE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DI_JOYSTICK_STATE_PC,PC_DI_JOYSTICK_STATE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DEVICE_TEXTURE_CACHE_PC,PC_DEVICE_TEXTURE_CACHE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DEVICE_SAMPLER_CACHE_PC,PC_DEVICE_SAMPLER_CACHE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_DEVICE_RENDER_CACHE_PC,PC_DEVICE_RENDER_CACHE,pc marker dropped: the plain name is free (PC_ prefix kept)
+PC_PLATFORM_POLICY_METHODS_PC,PC_PLATFORM_POLICY_METHODS,pc marker dropped: the plain name is free (PC_ prefix kept)
+POST_SHADER_PROGRAM_PC,POST_SHADER_PROGRAM,pc marker dropped: the plain name is free
+GRAPHICS_DEVICE_PC,GRAPHICS_DEVICE,pc marker dropped: the plain name is free
+TEXT_INPUT_LABELS_PC,TEXT_INPUT_LABELS,pc marker dropped: the plain name is free
+RADFMV_IMAGE_PC,RADFMV_IMAGE,pc marker dropped: the plain name is free
+GAMEPAD_RUNTIME_INPUT_PC,GAMEPAD_RUNTIME_INPUT,pc marker dropped: the plain name is free
+NuKeyboardDevice_PC,NuKeyboardDevice,pc marker dropped: the plain name is free
+NuKeyboardOwner_PC,NuKeyboardOwner,pc marker dropped: the plain name is free
+RADFMV_CONTEXT_PC,RADFMV_CONTEXT,pc marker dropped: the plain name is free
+FILE_DIRECTORY_ENTRY_PC,FILE_DIRECTORY_ENTRY,pc marker dropped: the plain name is free
+RADFMV_TEXTURE_PC,RADFMV_TEXTURE,pc marker dropped: the plain name is free
+MENU_INPUT_PAD_PC,MENU_INPUT_PAD,pc marker dropped: the plain name is free
+TEXT_INPUT_MANAGER_PC,TEXT_INPUT_MANAGER,pc marker dropped: the plain name is free
+POST_SHADER_PROGRAM_POOL_PC,POST_SHADER_PROGRAM_POOL,pc marker dropped: the plain name is free
+ANIM_REDIRECT_VIEW_PC,ANIM_REDIRECT_VIEW,pc marker dropped: the plain name is free
+SHOP_INPUT_PC,SHOP_INPUT,pc marker dropped: the plain name is free
+NuKeyboardState_PC,NuKeyboardState,pc marker dropped: the plain name is free
+FRAME_RECORD_CURSOR_PC,FRAME_RECORD_CURSOR,pc marker dropped: the plain name is free
+NU_FMV_TEXTURE_PC,NU_FMV_TEXTURE,pc marker dropped: the plain name is free
+FILE_DIRECTORY_RAW_TIME_PC,FILE_DIRECTORY_RAW_TIME,pc marker dropped: the plain name is free
+FILE_DIRECTORY_FLAG_DIRECTORY_PC,FILE_DIRECTORY_FLAG_DIRECTORY,pc marker dropped: the plain name is free
+RADFMV_LOCK_PC,RADFMV_LOCK,pc marker dropped: the plain name is free
+FILE_DIRECTORY_HOST_ENTRY_PC,FILE_DIRECTORY_HOST_ENTRY,pc marker dropped: the plain name is free
+FILE_DIRECTORY_TIME_PC,FILE_DIRECTORY_TIME,pc marker dropped: the plain name is free
+DIRECTIONAL_ZIPUP_PC,DIRECTIONAL_ZIPUP,pc marker dropped: the plain name is free
+NuKeyboardInitTriplet_PC,NuKeyboardInitTriplet,pc marker dropped: the plain name is free
+NuKeyboardInitLayout_PC,NuKeyboardInitLayout,pc marker dropped: the plain name is free
+NuKeyboardActionState_PC,NuKeyboardActionState,pc marker dropped: the plain name is free
+D3DX_CONSTANT_DESCRIPTION_PC,D3DX_CONSTANT_DESCRIPTION,pc marker dropped: the plain name is free
+POST_VERTEX_SHADER_CACHE_ENTRY_PC,POST_VERTEX_SHADER_CACHE_ENTRY,pc marker dropped: the plain name is free
+POST_PIXEL_SHADER_CACHE_ENTRY_PC,POST_PIXEL_SHADER_CACHE_ENTRY,pc marker dropped: the plain name is free
+TERRAIN_SURFACE_PC,TERRAIN_SURFACE,pc marker dropped: the plain name is free
+DIRECTIONAL_WORLD_PC,DIRECTIONAL_WORLD,pc marker dropped: the plain name is free
+NuKeyboardInitKeyRecord_PC,NuKeyboardInitKeyRecord,pc marker dropped: the plain name is free
+NuKeyboardProfile_PC,NuKeyboardProfile,pc marker dropped: the plain name is free
+NuKeyboardActionRecord_PC,NuKeyboardActionRecord,pc marker dropped: the plain name is free
+D3DX_CONSTANT_TABLE_METHODS_PC,D3DX_CONSTANT_TABLE_METHODS,pc marker dropped: the plain name is free
+RADFMV_VERTEX_PC,RADFMV_VERTEX,pc marker dropped: the plain name is free
+TEXT_INPUT_BINDING_PC,TEXT_INPUT_BINDING,pc marker dropped: the plain name is free
+TEXT_INPUT_DEVICE_KIND_PC,TEXT_INPUT_DEVICE_KIND,pc marker dropped: the plain name is free
+D3DX_BUFFER_METHODS_PC,D3DX_BUFFER_METHODS,pc marker dropped: the plain name is free
+D3DX_EFFECT_COMPILER_METHODS_PC,D3DX_EFFECT_COMPILER_METHODS,pc marker dropped: the plain name is free
+SHADER_ADD_DEFINITION_PC,SHADER_ADD_DEFINITION,pc marker dropped: the plain name is free
+FMV_SOUND_SYSTEM_OPEN_PC,FMV_SOUND_SYSTEM_OPEN,pc marker dropped: the plain name is free
+RTL_DIRECTION_LOOKUP_PC,RTL_DIRECTION_LOOKUP,pc marker dropped: the plain name is free
+PAD_INPUT_PC,PAD_INPUT,pc marker dropped: the plain name is free
+DIRECTIONAL_TUBE_PC,DIRECTIONAL_TUBE,pc marker dropped: the plain name is free
+DIRECTIONAL_LEVER_PC,DIRECTIONAL_LEVER,pc marker dropped: the plain name is free
+DIRECTIONAL_HATMACHINE_PC,DIRECTIONAL_HATMACHINE,pc marker dropped: the plain name is free
+DIRECTIONAL_TECHNO_PC,DIRECTIONAL_TECHNO,pc marker dropped: the plain name is free
+DIRECTIONAL_ATTRACTO_PC,DIRECTIONAL_ATTRACTO,pc marker dropped: the plain name is free
+DIRECTIONAL_SECURITYDOOR_PC,DIRECTIONAL_SECURITYDOOR,pc marker dropped: the plain name is free
+DIRECTIONAL_SIGNAL_PC,DIRECTIONAL_SIGNAL,pc marker dropped: the plain name is free
+DIRECTIONAL_BUILDIT_PC,DIRECTIONAL_BUILDIT,pc marker dropped: the plain name is free
+NuKeyboardProfileLayout_PC,NuKeyboardProfileLayout,pc marker dropped: the plain name is free
+RADFMV_DEVICE_METHODS_PC,RADFMV_DEVICE_METHODS,pc marker dropped: the plain name is free
+RADFMV_FACTORY_METHODS_PC,RADFMV_FACTORY_METHODS,pc marker dropped: the plain name is free
+TEXT_INPUT_DEVICE_PC,TEXT_INPUT_DEVICE,pc marker dropped: the plain name is free
+GRAPHICS_DEVICE_METHODS_PC,GRAPHICS_DEVICE_METHODS,pc marker dropped: the plain name is free
+FMV_INPUT_CALLBACK_PC,FMV_INPUT_CALLBACK,pc marker dropped: the plain name is free
+FMV_DRAW_CALLBACK_PC,FMV_DRAW_CALLBACK,pc marker dropped: the plain name is free
+RADFMV_TEXTURE_METHODS_PC,RADFMV_TEXTURE_METHODS,pc marker dropped: the plain name is free
+FILE_DIRECTORY_FLAG_PC,FILE_DIRECTORY_FLAG,pc marker dropped: the plain name is free
+light_direction_w_pc,light_direction_w,pc marker dropped: the plain name is free

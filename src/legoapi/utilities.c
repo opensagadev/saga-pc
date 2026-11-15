@@ -59,13 +59,13 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 typedef struct shadow_platform_entry_pc_s {
     GAMEOBJECT *object;
     u8 unknown_04_14[0x10];
-} SHADOW_PLATFORM_ENTRY_PC;
+} SHADOW_PLATFORM_ENTRY;
 
 struct shadow_platform_list_pc_s {
     u8 unknown_00_04[4];
     i32 count;
     u8 unknown_08_18[0x10];
-    SHADOW_PLATFORM_ENTRY_PC entries[1];
+    SHADOW_PLATFORM_ENTRY entries[1];
 };
 
 typedef struct USEFUL_MATERIAL {

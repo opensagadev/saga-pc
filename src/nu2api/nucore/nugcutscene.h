@@ -92,14 +92,14 @@ extern "C" {
     extern struct NUHGOBJ_EVAL *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32);
     extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, struct cut_load_locator_instance_s *, CUT_LOAD_LOCATOR *, f32, NUMTX *,
                                        i32);
-    void NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY_PC *);
-    void NuSetCutSceneCharacterRenderFn(CUT_DRAW_RENDER_CALLBACK_PC);
-    void NuSetCutSceneCharacterEvalFn(CUT_DRAW_EVAL_CALLBACK_PC);
-    void NuSetCutSceneFindCharactersFn(void (*)(CUT_SCENE_LOAD_PC *));
+    void NuGCutSceneSysInit(CUT_LOCATOR_FUNCTION_ENTRY *);
+    void NuSetCutSceneCharacterRenderFn(CUT_DRAW_RENDER_CALLBACK);
+    void NuSetCutSceneCharacterEvalFn(CUT_DRAW_EVAL_CALLBACK);
+    void NuSetCutSceneFindCharactersFn(void (*)(CUT_SCENE_LOAD *));
     void NuSetCutSceneCharacterCreateDataFn(void (*)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *));
-    void NuSetCutSceneRigidPostRenderFn(CUT_DRAW_RIGID_CALLBACK_PC);
+    void NuSetCutSceneRigidPostRenderFn(CUT_DRAW_RIGID_CALLBACK);
     i32 FindMtlInHGObj(struct NUHGOBJ_EVAL *, i32);
-    extern void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *);
+    extern void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD *);
     extern void (*NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *);
     extern void (*NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *);
 #ifdef __cplusplus

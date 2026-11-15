@@ -47,12 +47,12 @@ typedef struct carry_plug_s { // size 0x34
     u8 plugged : 1;           // 0x23:2
     u8 unknown_23 : 5;        // 0x23:3
     u8 unknown_24[0x10];      // 0x24
-} CARRY_PLUG_PC;
+} CARRY_PLUG;
 
 typedef struct carry_plug_sys_s { // size 0x8
-    CARRY_PLUG_PC *plugs;         // 0x0
+    CARRY_PLUG *plugs;            // 0x0
     i32 count;                    // 0x4
-} CARRY_PLUG_SYS_PC;
+} CARRY_PLUG_SYS;
 
 typedef struct carry_blowup_s { // size 0xac
     NUMTX transform;            // 0x00
@@ -62,9 +62,9 @@ typedef struct carry_blowup_s { // size 0xac
     f32 target_scale;           // 0xa8
 } CARRY_BLOWUP;
 
-typedef struct carry_world_s {   // size 0x5170
-    u8 unknown_0000[0x516c];     // 0x0000
-    CARRY_PLUG_SYS_PC *plug_sys; // 0x516c
+typedef struct carry_world_s { // size 0x5170
+    u8 unknown_0000[0x516c];   // 0x0000
+    CARRY_PLUG_SYS *plug_sys;  // 0x516c
 } CARRY_WORLD;
 
 typedef struct carry_model_s { // size 0x10
@@ -105,7 +105,7 @@ extern u8 SuperCarryPlayerRgb[2][3];
 
 i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
     CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
-    CARRY_PLUG_PC *plug;
+    CARRY_PLUG *plug;
     f32 distance;
     blowup->status_flags |= 0x804000;
     GizBlowup_Respawn(blowup);
@@ -734,7 +734,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
         }
         player = object->player_index;
         if (player == 0 || player == 1) {
-            ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
+            ADD_GAME_MESSAGE message = AddGameMsg_Default;
             message.text = LEGOASCII_DOWN != NULL ? LEGOASCII_DOWN : txt_UNKNOWN;
             message.position = &nearest->mid_position;
             message.flags = 0x87;

@@ -30,25 +30,25 @@ struct PART_PC;
 struct gameobject_s;
 struct level_data_s;
 
-typedef struct GAMEPAD_PC {         // size 0x5c
-    struct FRAME_PAD_PC *bound_pad; // 0x00
-    u32 buttons_held;               // 0x04
-    u32 buttons_pressed;            // 0x08
-    u32 buttons_released;           // 0x0c
-    u32 left_directions;            // 0x10
-    u32 previous_left_directions;   // 0x14
-    u32 right_directions;           // 0x18
-    u32 previous_right_directions;  // 0x1c
-    u32 ai_input_state;             // 0x20
-    u8 input_state;                 // 0x24
-    u8 input_mode;                  // 0x25
-    u16 input_angle;                // 0x26
-    f32 input_magnitude;            // 0x28
-    f32 input_direction_z;          // 0x2c
-    f32 input_direction_x;          // 0x30
-    f32 animation_input_magnitude;  // 0x34
-    f32 previous_input_magnitude;   // 0x38
-    f32 waggle_magnitude;           // 0x3c
+typedef struct GAMEPAD {           // size 0x5c
+    struct FRAME_PAD *bound_pad;   // 0x00
+    u32 buttons_held;              // 0x04
+    u32 buttons_pressed;           // 0x08
+    u32 buttons_released;          // 0x0c
+    u32 left_directions;           // 0x10
+    u32 previous_left_directions;  // 0x14
+    u32 right_directions;          // 0x18
+    u32 previous_right_directions; // 0x1c
+    u32 ai_input_state;            // 0x20
+    u8 input_state;                // 0x24
+    u8 input_mode;                 // 0x25
+    u16 input_angle;               // 0x26
+    f32 input_magnitude;           // 0x28
+    f32 input_direction_z;         // 0x2c
+    f32 input_direction_x;         // 0x30
+    f32 animation_input_magnitude; // 0x34
+    f32 previous_input_magnitude;  // 0x38
+    f32 waggle_magnitude;          // 0x3c
 
     union { // size 0x14
         u8 unknown_40[0x14];
@@ -58,7 +58,7 @@ typedef struct GAMEPAD_PC {         // size 0x5c
     NUVEC *operator_data;     // 0x54
     u16 previous_input_angle; // 0x58
     u16 runtime_flags;        // 0x5a
-} GAMEPAD_PC;
+} GAMEPAD;
 
 typedef struct blowup_target_s { // size 0x58
     u8 unknown_00[0x4c];         // 0x00
@@ -70,7 +70,7 @@ typedef struct awkward_shape_sphere_s { // size 0xc
     i16 joint;                          // 0x4
     u16 flags;                          // 0x6
     f32 radius;                         // 0x8
-} AWKWARD_SHAPE_SPHERE_PC;
+} AWKWARD_SHAPE_SPHERE;
 
 #ifdef __cplusplus
 extern "C" {
@@ -113,7 +113,7 @@ extern "C" {
     extern f32 ComboOpponent_Range2;
     extern NUVEC PooPosition[2];
 
-    extern AWKWARD_SHAPE_SPHERE_PC AwkwardShapeSphere[14];
+    extern AWKWARD_SHAPE_SPHERE AwkwardShapeSphere[14];
     void ResetForceGlow(void *packet);
     i32 Dodge_UpdateHint(HINT *);
     extern i16 id_SNAKE;
@@ -448,7 +448,7 @@ extern "C" {
     void AwkwardShapeCode(struct gameobject_s *, i32);
     void TakeHitCode(struct gameobject_s *object);
     i32 TwistLevel(struct level_data_s *);
-    void LoopCode(struct gameobject_s *, i32, i32, GAMEPAD_PC *, i32);
+    void LoopCode(struct gameobject_s *, i32, i32, GAMEPAD *, i32);
     void EndForce(struct gameobject_s *object, i32 mode);
     void ReleaseForce(struct gameobject_s *object, i32 mode);
     void SetProtocolDroidDeactivatedAction(struct gameobject_s *);
@@ -463,7 +463,7 @@ extern "C" {
     f32 ForceTowardsMid(struct gameobject_s *);
     f32 GetVehicleSpeedMul(struct gameobject_s *, f32);
     void StartTurn(struct gameobject_s *);
-    void TurnCode(struct gameobject_s *, i32, GAMEPAD_PC *);
+    void TurnCode(struct gameobject_s *, i32, GAMEPAD *);
     i32 FaceOpponent(struct gameobject_s *, NUVEC *);
     i32 ForcePushed_SetTargetMom(struct gameobject_s *, f32 *);
     i32 ForcePushed_YRotation(struct gameobject_s *);

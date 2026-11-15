@@ -18,20 +18,20 @@ typedef struct episode_data_s { // size 0x1c
     u8 regular_areas;           // 0x19
     u8 index;                   // 0x1a
     u8 unknown_001b;            // 0x1b
-} EPISODEDATA_PC;
+} EPISODEDATA;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     GAMEOBJECT *BossKilled(i32);
-    extern EPISODEDATA_PC *EDataList;
-    EPISODEDATA_PC *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
+    extern EPISODEDATA *EDataList;
+    EPISODEDATA *Episodes_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
     extern const char LoadPermLevelsPath[18];
     extern const char LoadPermAreasPath[17];
     extern const char LoadPermEpisodesPath[20];
-    u32 Episode_FindAreaFromFlags(EPISODEDATA_PC *, u32, u32);
+    u32 Episode_FindAreaFromFlags(EPISODEDATA *, u32, u32);
     i32 Episode_ContainsArea(i32, i32 *);
-    i32 Episode_IsComplete(EPISODEDATA_PC *, i32 *);
+    i32 Episode_IsComplete(EPISODEDATA *, i32 *);
 #ifdef __cplusplus
 }
 #endif

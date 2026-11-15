@@ -94,9 +94,9 @@ typedef struct characterdata_s {               // size 0x4c
     i16 icon_model;                            // 0x42
     u8 unknown_44[0x4];                        // 0x44
     u32 field22_0x48;                          // 0x48
-} CHARACTERDATA_PC;
+} CHARACTERDATA;
 
-/* Character action ids (gameobject_s.unknown_7aa, the ANIMPACKET_PC animations, the index into a model's
+/* Character action ids (gameobject_s.unknown_7aa, the ANIMPACKET animations, the index into a model's
    action_animations): PlayerActionInfoList[1 + action] holds each one's name (ActionFromName). */
 #define ACTION_NONE (-1)
 #define ACTION_WALK 0
@@ -384,7 +384,7 @@ extern "C" {
     extern i16 id_C3PO;
     extern i16 id_TC14;
     extern i16 id_DROIDEKA;
-    extern CHARACTERDATA_PC *CDataList;
+    extern CHARACTERDATA *CDataList;
     extern i32 CHARCOUNT;
     i32 CharIDFromName(const char *name);
     extern i16 id_LANDSPEEDER;
@@ -407,8 +407,8 @@ extern "C" {
     extern i16 id_BANTHA;
     extern i16 id_LUKESKYWALKERDAGOBAH;
     extern i16 id_ATAT;
-    extern AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn;
-    extern AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn;
+    extern AI_LEVEL_CHARACTER_TYPE_ID LevelCharacterTypeIDFn;
+    extern AI_LEVEL_CHARACTER_GLOBAL_ID LevelCharacterGlobalIDFn;
     extern const char AICombatMinimumRangeName[10];
     extern i16 id_BASKETCANNON;
     extern u16 id_GONKDROID;
@@ -417,10 +417,10 @@ extern "C" {
     extern i16 id_BODYGUARD;
     extern i16 id_GEONOSIAN;
     extern i16 id_CHEWBACCA;
-    extern AI_CHARACTER_GOAL_SPEED_PC GetCharacterGoalSpeedFn;
-    void InitFn_GetCharacterGoalSpeedFn(AI_CHARACTER_GOAL_SPEED_PC);
+    extern AI_CHARACTER_GOAL_SPEED GetCharacterGoalSpeedFn;
+    void InitFn_GetCharacterGoalSpeedFn(AI_CHARACTER_GOAL_SPEED);
 
-    extern CHARACTER_CONTEXT_INFO_PC PCContextInfoTable[101];
+    extern CHARACTER_CONTEXT_INFO PCContextInfoTable[101];
     extern u16 GameObjectRotationAtstId;
     extern i16 id_SEBULBASPOD;
 
@@ -442,7 +442,7 @@ extern "C" {
     extern i16 id_R2Q5;
     extern i16 id_PRINCESSLEIABOUSHH;
 
-    CHARACTERDATA_PC *ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32, PLAYERCHARACTERCONFIG **);
+    CHARACTERDATA *ConfigureCharacterList(char *, VARIPTR *, VARIPTR *, i32, i32 *, i32, PLAYERCHARACTERCONFIG **);
     extern i16 id_SUPERBATTLEDROID;
     extern i16 id_SUPERBATTLEDROID;
     extern i16 id_BATTLEDROID;
@@ -455,7 +455,7 @@ extern "C" {
 typedef struct charfixup_s { // size 0x8
     char *name;              // 0x0
     i16 *id;                 // 0x4
-} CHARFIXUP_PC;
+} CHARFIXUP;
 
 #ifdef __cplusplus
 extern "C" {

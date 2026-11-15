@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 PlayerItem_GotAmmo(WEAPON_AMMO_PC *);
+    i32 PlayerItem_GotAmmo(WEAPON_AMMO *);
     i32 ReleaseHearts(void);
 #ifdef __cplusplus
 }

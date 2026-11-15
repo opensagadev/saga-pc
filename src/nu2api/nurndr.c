@@ -780,7 +780,7 @@ void NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
 
 #undef LOCATOR_PRIM_POSITION
 
-i32 NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix) {
+i32 NuRndrLine3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix) {
     NuPrim3DBegin(14, 7, material, matrix);
     {
         LOCATOR_PRIM_VERTEX *output;
@@ -830,7 +830,7 @@ i32 NuRndrLine3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix) {
     return 1;
 }
 
-i32 NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix, i32 count) {
+i32 NuRndrStrip3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix, i32 count) {
     i32 i;
     if (count == 0) {
         return 1;
@@ -862,11 +862,11 @@ i32 NuRndrStrip3d(NURND_VERTEX3D_PC *vertices, NUMTL *material, NUMTX *matrix, i
     return 1;
 }
 
-i32 NuRndrTriStrip3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
+i32 NuRndrTriStrip3dClip(NURND_VERTEX3D *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
     return NuRndrStrip3d(vertices, material, matrix, count);
 }
 
-i32 NuRndrTri3dClip(NURND_VERTEX3D_PC *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
+i32 NuRndrTri3dClip(NURND_VERTEX3D *vertices, i32 count, NUMTX *matrix, NUMTL *material) {
     i32 i;
     if (count == 0) {
         return 1;
@@ -1059,7 +1059,7 @@ void NuRndrGradRect2diZ(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 }
 
-i32 NuRndrLineStrip2d(NURND_VERTEX2D_PC *vertices, NUMTL *material, i32 count) {
+i32 NuRndrLineStrip2d(NURND_VERTEX2D *vertices, NUMTL *material, i32 count) {
     i32 i;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
@@ -1221,7 +1221,7 @@ void RenderPostClearScreen(void) {
         }                                                                                                                                  \
     } while (0)
 
-void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER_PC *parameters) {
+void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, RENDER_POST_BLOOM_READER *parameters) {
     f32 inv_col = 1.0f / (cols - 1);
     f32 inv_row = 1.0f / (rows - 1);
     f32 x0 = 0.0f * inv_row * 2.0f - 1.0f;
@@ -1236,7 +1236,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
     f32 far_angle = parameters->far_angle / 180.0f;
     f32 scale_delta = far_scale - near_scale;
     f32 angle_delta = far_angle - near_angle;
-    RENDER_POST_VIEWPORT_PREFIX_PC saved_prefix = RenderPostViewportPrefix;
+    RENDER_POST_VIEWPORT_PREFIX saved_prefix = RenderPostViewportPrefix;
     PC_SPECIAL_PROJECTION_ADJUST saved_adjust = PCSpecialProjectionAdjust;
     __declspec(align(16)) NUCAMERA camera;
     static f32 pixelOffsetX = 0;
@@ -1379,7 +1379,7 @@ __declspec(align(16)) CAMERA_CLIP_PLANES CameraClipPlanes = {0};
 u32 *RendererArenaOffsets = 0;
 VARIPTR fstack = {0};
 i32 *RendererArenaTypes = 0;
-NUTEXDIM_PC **NuTextureDimensions = 0;
+NUTEXDIM **NuTextureDimensions = 0;
 i32 RendererArenaCount = 0;
 i32 RendererArenaVertexCount = 0;
 i32 RendererArenaIndexCount = 0;
@@ -1390,7 +1390,7 @@ char *nudlist_field_18b0 = NULL;
 typedef struct pc_shadow_edge_s { // size 0x10
     NUVEC v;                      // 0x0
     i32 count;                    // 0xc
-} PC_SHADOW_EDGE_PC;
+} PC_SHADOW_EDGE;
 
 void NuRndrArenaInit(VARIPTR *buffer, VARIPTR end) {
     RendererArenaData = (RENDERER_ARENA_VERTEX *)((buffer->addr + 3) & ~3u);
@@ -1872,7 +1872,7 @@ void NuRndrArenaAddEllipsoidVolume(NUVEC *axes, PC_HG_SHADOW_PACKET *packet, NUV
     }
 }
 
-void NuRndrArenaAddEdgeVolumes(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *groups, PC_SHADOW_EDGE_PC *points, NUVEC *offset) {
+void NuRndrArenaAddEdgeVolumes(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE *groups, PC_SHADOW_EDGE *points, NUVEC *offset) {
     f32 buffer[256];
     NUMTX *matrix = (NUMTX *)(((u32)buffer + 15) & ~15u);
     VuVec *v;
@@ -1884,7 +1884,7 @@ void NuRndrArenaAddEdgeVolumes(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *g
         v[0].w = 1.0f;
         NuVec4MtxRotateVU0((NUVEC4 *)&v[0], (NUVEC4 *)&v[0], matrix);
         if (!(v[0].x * offset->x + v[0].y * offset->y + v[0].z * offset->z > 0.0)) {
-            PC_SHADOW_EDGE_PC *point = points;
+            PC_SHADOW_EDGE *point = points;
             i32 remaining;
             if ((u32)RendererArenaCount < 250) {
                 RendererArenaOffsets[RendererArenaCount] = RendererArenaVertexCount;
@@ -1939,8 +1939,8 @@ void NuRndrArenaAddEdgeVolumes(PC_HG_SHADOW_PACKET *packet, PC_SHADOW_EDGE_PC *g
 
 /* Third hierarchy shadow shape: an outline of edge groups and their points. */
 typedef struct PC_SHADOW_EDGE_SET {
-    PC_SHADOW_EDGE_PC *groups;
-    PC_SHADOW_EDGE_PC *points;
+    PC_SHADOW_EDGE *groups;
+    PC_SHADOW_EDGE *points;
 } PC_SHADOW_EDGE_SET;
 
 /* Builds the shadow-volume arena from the queued hierarchy shadow packets, one light setup per packet sequence. */

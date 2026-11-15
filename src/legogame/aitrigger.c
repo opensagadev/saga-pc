@@ -72,11 +72,11 @@ typedef struct trigger_system_s { // size 0x4304
     i8 assigned_set[64];          // 0x4280
     i8 assigned_trigger[64];      // 0x42c0
     i32 unknown_4300;             // 0x4300
-} TRIGGER_SYSTEM_PC;
+} TRIGGER_SYSTEM;
 
 typedef struct trigger_object_force_s { // size 0x10d0
     u8 unknown_000[0x10cc];             // 0x0000
-    GIZFORCE_PC *force;                 // 0x10cc
+    GIZFORCE *force;                    // 0x10cc
 } TRIGGER_OBJECT_FORCE;
 
 #define AITRIGGER_RELEASE(system, set, index)                                                                                              \
@@ -86,7 +86,7 @@ typedef struct trigger_object_force_s { // size 0x10d0
         (set)->trigger_indices[index] = -1;                                                                                                \
     }
 
-void AITriggerSetSysReset(TRIGGER_SYSTEM_PC *system) {
+void AITriggerSetSysReset(TRIGGER_SYSTEM *system) {
     i32 index;
     if (system == NULL) {
         return;
@@ -254,7 +254,7 @@ i32 GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
     return object->character_context == CHARACTER_CONTEXT_PULL_LEVER && object->grapple == lever;
 }
 
-void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
+void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
     u64 character_mask = 0;
     TRIGGER_SET *set;
     i32 set_index;
@@ -330,7 +330,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                         set->occupied &= ~(1 << index);
                     }
                 } else if (gizmo->type_id == force_gizmotype_id) {
-                    GIZFORCE_PC *force = gizmo->object;
+                    GIZFORCE *force = gizmo->object;
                     if (GizForce_GameObjUsingForce(player, force)) {
                         set->occupied |= 1 << index;
                     } else if (GizForce_GameObjUsingForce(player2, force)) {
@@ -492,7 +492,7 @@ void AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) {
 }
 
 void *AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
-    TRIGGER_SYSTEM_PC *system = AISysBufferAlloc(buffer, end, sizeof(*system));
+    TRIGGER_SYSTEM *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     AITriggerSetSysReset(system);
     return system;
 }

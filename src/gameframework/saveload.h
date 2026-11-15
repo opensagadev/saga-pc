@@ -35,7 +35,7 @@ extern "C" {
     extern i32 saveload_cardchanged;
     extern i32 saveload_savepresent;
     extern i32 saveload_slotused[];
-    void SaveSystemInitialise(i32, SAVE_HASH_FN_PC, void *, i32, i32, SAVE_VOID_FN_PC);
+    void SaveSystemInitialise(i32, SAVE_HASH_FN, void *, i32, i32, SAVE_VOID_FN);
     i32 ChecksumSaveData(void *, i32);
     extern i32 saveload_freespace;
     extern i32 SAVESIZE_ADDITIONAL;

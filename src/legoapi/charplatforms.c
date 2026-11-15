@@ -21,16 +21,16 @@ typedef struct terrain_player_platform_record_pc_s { // size 0x14
     u8 unknown_0[0xe];                               // 0x00
     i16 platform_id;                                 // 0x0e
     GAMEOBJECT *object;                              // 0x10
-} TERRAIN_PLAYER_PLATFORM_RECORD_PC;
+} TERRAIN_PLAYER_PLATFORM_RECORD;
 
 typedef struct terrain_player_platform_sys_pc_s { // size 0x1c
     u8 unknown_0[4];                              // 0x00
     i32 count;                                    // 0x04
-    TERRAIN_PLAYER_PLATFORM_RECORD_PC entries[1]; // 0x08
-} TERRAIN_PLAYER_PLATFORM_SYS_PC;
+    TERRAIN_PLAYER_PLATFORM_RECORD entries[1];    // 0x08
+} TERRAIN_PLAYER_PLATFORM_SYS;
 
 GAMEOBJECT *CharPlatform_FindObjFromPlatID(void *system, i32 id) {
-    TERRAIN_PLAYER_PLATFORM_SYS_PC *platforms = system;
+    TERRAIN_PLAYER_PLATFORM_SYS *platforms = system;
     i32 i;
     if (platforms == NULL) {
         return NULL;
@@ -55,28 +55,28 @@ typedef struct EQUIVALENT_WORLD_VIEW {   // size 0x46b8
     i32 equivalent_group_count;          // 0x46b4
 } EQUIVALENT_WORLD_VIEW;
 
-typedef struct CHAR_PLATFORM_PC { // size 0x14
-    nuhspecial_s special;         // 0x00
-    i16 object_id;                // 0x0c
-    i16 platform_id;              // 0x0e
-    GAMEOBJECT *object;           // 0x10
-} CHAR_PLATFORM_PC;
+typedef struct CHAR_PLATFORM { // size 0x14
+    nuhspecial_s special;      // 0x00
+    i16 object_id;             // 0x0c
+    i16 platform_id;           // 0x0e
+    GAMEOBJECT *object;        // 0x10
+} CHAR_PLATFORM;
 
-typedef struct CHAR_PLATFORM_SYSTEM_PC { // size 0x1c
-    NUGSCN *scene;                       // 0x00
-    i32 platform_count;                  // 0x04
-    CHAR_PLATFORM_PC platforms[1];       // 0x08
-} CHAR_PLATFORM_SYSTEM_PC;
+typedef struct CHAR_PLATFORM_SYSTEM { // size 0x1c
+    NUGSCN *scene;                    // 0x00
+    i32 platform_count;               // 0x04
+    CHAR_PLATFORM platforms[1];       // 0x08
+} CHAR_PLATFORM_SYSTEM;
 
-typedef struct CHAR_PLATFORM_WORLD_PC {         // size 0x2ae0
-    u8 unknown_0[0x2adc];                       // 0x0000
-    CHAR_PLATFORM_SYSTEM_PC *char_platform_sys; // 0x2adc
-} CHAR_PLATFORM_WORLD_PC;
+typedef struct CHAR_PLATFORM_WORLD {         // size 0x2ae0
+    u8 unknown_0[0x2adc];                    // 0x0000
+    CHAR_PLATFORM_SYSTEM *char_platform_sys; // 0x2adc
+} CHAR_PLATFORM_WORLD;
 
 void CharPlatforms_Configure(WORLDINFO *world, char *config) {
-    CHAR_PLATFORM_WORLD_PC *view = (CHAR_PLATFORM_WORLD_PC *)world;
-    CHAR_PLATFORM_SYSTEM_PC *system;
-    NUFPAR_PC *parser;
+    CHAR_PLATFORM_WORLD *view = (CHAR_PLATFORM_WORLD *)world;
+    CHAR_PLATFORM_SYSTEM *system;
+    NUFPAR *parser;
     view->char_platform_sys = NULL;
     if (world->current_gscn == NULL) {
         return;
@@ -86,11 +86,11 @@ void CharPlatforms_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    view->char_platform_sys = (CHAR_PLATFORM_SYSTEM_PC *)world->giz_buffer.addr;
+    view->char_platform_sys = (CHAR_PLATFORM_SYSTEM *)world->giz_buffer.addr;
     view->char_platform_sys->scene = world->current_gscn;
     view->char_platform_sys->platform_count = 0;
     while (NuFParGetLine(parser) != 0) {
-        CHAR_PLATFORM_PC *platform;
+        CHAR_PLATFORM *platform;
         if (NuFParGetWord(parser) == 0) {
             break;
         }
@@ -112,8 +112,8 @@ void CharPlatforms_Configure(WORLDINFO *world, char *config) {
     }
     NuFParDestroy(parser);
     if (view->char_platform_sys->platform_count > 0) {
-        world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(CHAR_PLATFORM_SYSTEM_PC) +
-                                  (view->char_platform_sys->platform_count - 1) * sizeof(CHAR_PLATFORM_PC) + 3U) &
+        world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(CHAR_PLATFORM_SYSTEM) +
+                                  (view->char_platform_sys->platform_count - 1) * sizeof(CHAR_PLATFORM) + 3U) &
                                  ~3U;
     } else {
         view->char_platform_sys = NULL;

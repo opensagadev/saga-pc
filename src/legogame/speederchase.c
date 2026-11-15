@@ -254,7 +254,7 @@ f32 zoom_ahead_extra = 3.0f;
 
 i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
                               i32 first_time, f32 elapsed) {
-    SOCK_PC *sock = &WORLD->sock_sys->socks[1];
+    SOCK *sock = &WORLD->sock_sys->socks[1];
     GAMEOBJECT *object;
     GAMEOBJECT *reference;
     f32 base_speed;

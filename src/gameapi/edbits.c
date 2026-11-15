@@ -108,7 +108,7 @@ void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z
         {{1, -1, 1},   {1, -1, -1},  {1, 1, -1},  {1, 1, 1},   {1, -1, 1}  }
     };
     NUVEC endpoints[2];
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     i32 face;
     i32 edge;
     for (face = 0; face < 4; ++face) {
@@ -147,7 +147,7 @@ void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32
         {{1, -1, 1},   {1, -1, -1},  {1, 1, -1},  {1, 1, 1},   {1, -1, 1}  }
     };
     NUVEC endpoints[2];
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     i32 face;
     i32 edge;
     for (face = 0; face < 4; ++face) {
@@ -301,7 +301,7 @@ i32 edbitsProcessCubemapDump(void) {
 
 void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     f32 axes[9] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     i32 i;
     for (i = 0; i < 9; i += 3) {
         vertices[0].colour = colour;
@@ -366,7 +366,7 @@ i32 fun_0065c150(void) {
 
 void edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
     f32 axes[12] = {1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f};
-    NURND_VERTEX3D_PC vertices[2];
+    NURND_VERTEX3D vertices[2];
     i32 i;
     for (i = 0; i < 12; i += 3) {
         vertices[0].colour = colour;

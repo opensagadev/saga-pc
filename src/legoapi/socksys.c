@@ -25,8 +25,8 @@
      : ((i32)(to) - (i32)(from) < -0x8000) ? (i32)(to) - (i32)(from) + 0x10000                                                             \
                                            : (i32)(to) - (i32)(from))
 
-void SetSockBit(SOCK_PC *sock, i32 index);
-i32 SockBitSet(SOCK_PC *sock, i32 index);
+void SetSockBit(SOCK *sock, i32 index);
+i32 SockBitSet(SOCK *sock, i32 index);
 
 // The SDK's NuFdiv: 0 when either operand is 0.
 static f32 SockFdiv(f32 a, f32 b) {
@@ -37,7 +37,7 @@ static f32 SockFdiv(f32 a, f32 b) {
 }
 
 NUGSCN *sockpar_scene = 0;
-SOCK_PC *sockpar_sock = 0;
+SOCK *sockpar_sock = 0;
 static VARIPTR *sockpar_buffer_ptr = 0;
 static VARIPTR *sockpar_buffer_end = 0;
 
@@ -51,19 +51,19 @@ i32 GetSockEdgeEnum(char *name) {
     return -1;
 }
 
-static void SockParCircuit(NUFPAR_PC *parser, void *context) {
+static void SockParCircuit(NUFPAR *parser, void *context) {
     sockpar_sock->looping = 1;
 }
 
-static void SockParCurSpeed(NUFPAR_PC *parser, void *context) {
+static void SockParCurSpeed(NUFPAR *parser, void *context) {
     sockpar_sock->current_speed = NuFParGetFloat(parser);
 }
 
-static void SockParMidRangeInner(NUFPAR_PC *parser, void *context) {
+static void SockParMidRangeInner(NUFPAR *parser, void *context) {
     sockpar_sock->mid_force_inner_radius = NuFParGetFloat(parser);
 }
 
-static void SockParMidRangeOuter(NUFPAR_PC *parser, void *context) {
+static void SockParMidRangeOuter(NUFPAR *parser, void *context) {
     f32 radius = NuFParGetFloat(parser);
     if (radius >= 0.0f && radius > sockpar_sock->mid_force_inner_radius) {
         sockpar_sock->mid_force_outer_radius = radius;
@@ -72,11 +72,11 @@ static void SockParMidRangeOuter(NUFPAR_PC *parser, void *context) {
     }
 }
 
-static void SockParMidforceYscale(NUFPAR_PC *parser, void *context) {
+static void SockParMidforceYscale(NUFPAR *parser, void *context) {
     sockpar_sock->unknown_7c = NuFParGetFloat(parser);
 }
 
-static void SockParMidforce(NUFPAR_PC *parser, void *context) {
+static void SockParMidforce(NUFPAR *parser, void *context) {
     if (NuFParGetWord(parser) == 0) {
         return;
     }
@@ -90,19 +90,19 @@ static void SockParMidforce(NUFPAR_PC *parser, void *context) {
     }
 }
 
-static void SockParMidForceDown(NUFPAR_PC *parser, void *context) {
+static void SockParMidForceDown(NUFPAR *parser, void *context) {
     sockpar_sock->flags |= SOCK_FLAG_MID_FORCE_DOWN;
 }
 
-static void SockParMidForceYScale(NUFPAR_PC *parser, void *context) {
+static void SockParMidForceYScale(NUFPAR *parser, void *context) {
     sockpar_sock->unknown_7c = NuFParGetFloat(parser);
 }
 
-static void SockParCamScaleLateral(NUFPAR_PC *parser, void *context) {
+static void SockParCamScaleLateral(NUFPAR *parser, void *context) {
     sockpar_sock->flags |= SOCK_FLAG_SCALE_LATERAL_OFFSET;
 }
 
-static void SockParCamLookRatio(NUFPAR_PC *parser, void *context) {
+static void SockParCamLookRatio(NUFPAR *parser, void *context) {
     f32 ratio = NuFParGetFloat(parser);
     if (ratio < 0.0f) {
         ratio = 0.0f;
@@ -113,7 +113,7 @@ static void SockParCamLookRatio(NUFPAR_PC *parser, void *context) {
     sockpar_sock->look_ratio_y = ratio;
 }
 
-static void SockParCamLockRatioY(NUFPAR_PC *parser, void *context) {
+static void SockParCamLockRatioY(NUFPAR *parser, void *context) {
     f32 ratio = NuFParGetFloat(parser);
     if (ratio < 0.0f) {
         ratio = 0.0f;
@@ -122,7 +122,7 @@ static void SockParCamLockRatioY(NUFPAR_PC *parser, void *context) {
     sockpar_sock->look_ratio_y = ratio;
 }
 
-static void SockParCamPosSeek(NUFPAR_PC *parser, void *context) {
+static void SockParCamPosSeek(NUFPAR *parser, void *context) {
     union {
         f32 value;
         u32 bits;
@@ -133,7 +133,7 @@ static void SockParCamPosSeek(NUFPAR_PC *parser, void *context) {
     sockpar_sock->camera_position_seek = absolute.value;
 }
 
-static void SockParCamAngSeek(NUFPAR_PC *parser, void *context) {
+static void SockParCamAngSeek(NUFPAR *parser, void *context) {
     union {
         f32 value;
         u32 bits;
@@ -144,103 +144,103 @@ static void SockParCamAngSeek(NUFPAR_PC *parser, void *context) {
     sockpar_sock->camera_angle_seek = absolute.value;
 }
 
-static void SockParCamSegAhead(NUFPAR_PC *parser, void *context) {
+static void SockParCamSegAhead(NUFPAR *parser, void *context) {
     sockpar_sock->look_ahead_segments = (u8)(NuFParGetInt(parser));
 }
 
-static void SockParCamLateralRatio(NUFPAR_PC *parser, void *context) {
+static void SockParCamLateralRatio(NUFPAR *parser, void *context) {
     const f32 ratio = NuFParGetFloat(parser);
     sockpar_sock->camera_local_x_ratio = ratio;
     sockpar_sock->camera_lateral_ratio = ratio;
 }
 
-static void SockParCamVerticalRatio(NUFPAR_PC *parser, void *context) {
+static void SockParCamVerticalRatio(NUFPAR *parser, void *context) {
     sockpar_sock->camera_vertical_ratio = NuFParGetFloat(parser);
 }
 
-static void SockParCamOffset(NUFPAR_PC *parser, void *context) {
+static void SockParCamOffset(NUFPAR *parser, void *context) {
     sockpar_sock->camera_arena_offset.x = NuFParGetFloat(parser);
     sockpar_sock->camera_arena_offset.y = NuFParGetFloat(parser);
     sockpar_sock->camera_arena_offset.z = NuFParGetFloat(parser);
 }
 
-static void SockParCamXOffset(NUFPAR_PC *parser, void *context) {
+static void SockParCamXOffset(NUFPAR *parser, void *context) {
     sockpar_sock->camera_arena_offset.x = NuFParGetFloat(parser);
 }
 
-static void SockParCamYOffset(NUFPAR_PC *parser, void *context) {
+static void SockParCamYOffset(NUFPAR *parser, void *context) {
     sockpar_sock->camera_arena_offset.y = NuFParGetFloat(parser);
 }
 
-static void SockParCamZOffset(NUFPAR_PC *parser, void *context) {
+static void SockParCamZOffset(NUFPAR *parser, void *context) {
     sockpar_sock->camera_arena_offset.z = NuFParGetFloat(parser);
 }
 
-static void SockParCamRailOffset(NUFPAR_PC *parser, void *context) {
+static void SockParCamRailOffset(NUFPAR *parser, void *context) {
     sockpar_sock->camera_rail_offset = NuFParGetFloat(parser);
 }
 
-static void SockParCamArenaOffset(NUFPAR_PC *parser, void *context) {
+static void SockParCamArenaOffset(NUFPAR *parser, void *context) {
     sockpar_sock->camera_rail_offset = NuFParGetFloat(parser);
 }
 
-static void SockParOffsetBlendRatio(NUFPAR_PC *parser, void *context) {
+static void SockParOffsetBlendRatio(NUFPAR *parser, void *context) {
     const f32 ratio = NuFParGetFloat(parser);
     sockpar_sock->camera_arena_blend.z = ratio;
     sockpar_sock->camera_arena_blend.y = ratio;
     sockpar_sock->camera_arena_blend.x = ratio;
 }
 
-static void SockParOffsetBlendXRatio(NUFPAR_PC *parser, void *context) {
+static void SockParOffsetBlendXRatio(NUFPAR *parser, void *context) {
     sockpar_sock->camera_arena_blend.x = NuFParGetFloat(parser);
 }
 
-static void SockParOffsetBlendYRatio(NUFPAR_PC *parser, void *context) {
+static void SockParOffsetBlendYRatio(NUFPAR *parser, void *context) {
     sockpar_sock->camera_arena_blend.y = NuFParGetFloat(parser);
 }
 
-static void SockParOffsetBlendZRatio(NUFPAR_PC *parser, void *context) {
+static void SockParOffsetBlendZRatio(NUFPAR *parser, void *context) {
     sockpar_sock->camera_arena_blend.z = NuFParGetFloat(parser);
 }
 
-static void SockParCamDistToTargetXZ(NUFPAR_PC *parser, void *context) {
+static void SockParCamDistToTargetXZ(NUFPAR *parser, void *context) {
     sockpar_sock->camera_distance_to_target = NuFParGetFloat(parser);
     sockpar_sock->flags |= SOCK_FLAG_CAMERA_DISTANCE_XZ;
 }
 
-static void SockParCamPullBackYRef(NUFPAR_PC *parser, void *context) {
+static void SockParCamPullBackYRef(NUFPAR *parser, void *context) {
     sockpar_sock->flags |= SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION;
 }
 
-static void SockParCamDistToTarget(NUFPAR_PC *parser, void *context) {
+static void SockParCamDistToTarget(NUFPAR *parser, void *context) {
     sockpar_sock->camera_distance_to_target = NuFParGetFloat(parser);
 }
 
-static void SockParCamDistRatio(NUFPAR_PC *parser, void *context) {
+static void SockParCamDistRatio(NUFPAR *parser, void *context) {
     sockpar_sock->camera_pullback_ratio = NuFParGetFloat(parser);
 }
 
-static void SockParIgnore(NUFPAR_PC *parser, void *context) {
+static void SockParIgnore(NUFPAR *parser, void *context) {
     while (NuFParGetWord(parser) != 0) {
         SetSockBit(sockpar_sock, NuAToI(parser->word_buffer_ptr));
     }
 }
 
-static void SockParYLimits(NUFPAR_PC *parser, void *context) {
+static void SockParYLimits(NUFPAR *parser, void *context) {
     sockpar_sock->flags |= SOCK_FLAG_CLAMP_TARGET_Y;
 }
 
-static void SockParTurnOff(NUFPAR_PC *parser, void *context) {
+static void SockParTurnOff(NUFPAR *parser, void *context) {
     sockpar_sock->flags |= SOCK_FLAG_TURN_OFF;
 }
 
-static void SockParName(NUFPAR_PC *parser, void *context) {
+static void SockParName(NUFPAR *parser, void *context) {
     if (NuFParGetWord(parser) != 0 && NuStrLen(parser->word_buffer_ptr) < 16) {
         NuStrCpy(sockpar_sock->name, parser->word_buffer_ptr);
     }
 }
 
-static void SockParMoveAngle(NUFPAR_PC *parser, void *context) {
+static void SockParMoveAngle(NUFPAR *parser, void *context) {
     i32 angle;
     sockpar_sock->flags |= SOCK_FLAG_MOVE_ANGLE;
     angle = NuFParGetInt(parser) % 360;
@@ -248,7 +248,7 @@ static void SockParMoveAngle(NUFPAR_PC *parser, void *context) {
     sockpar_sock->input_yaw = (u16)(angle / 360);
 }
 
-static void SockParCamBehind(NUFPAR_PC *parser, void *context) {
+static void SockParCamBehind(NUFPAR *parser, void *context) {
     const f32 ratio = NuFParGetFloat(parser);
     sockpar_sock->flags |= SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER;
     sockpar_sock->camera_local_x_ratio = ratio;
@@ -256,40 +256,40 @@ static void SockParCamBehind(NUFPAR_PC *parser, void *context) {
     sockpar_sock->camera_lateral_ratio = ratio;
 }
 
-static void SockParCamBlendTime(NUFPAR_PC *parser, void *context) {
+static void SockParCamBlendTime(NUFPAR *parser, void *context) {
     sockpar_sock->overlap_blend_ratio = NuFParGetFloat(parser);
 }
 
-static void SockParCam1Zoom(NUFPAR_PC *parser, void *context) {
+static void SockParCam1Zoom(NUFPAR *parser, void *context) {
     sockpar_sock->single_player_pullback = NuFParGetFloat(parser);
 }
 
-static void SockParPullbackRatio(NUFPAR_PC *parser, void *context) {
+static void SockParPullbackRatio(NUFPAR *parser, void *context) {
     sockpar_sock->two_player_pullback = NuFParGetFloat(parser);
 }
 
-static void SockParPullbackRatioXZ(NUFPAR_PC *parser, void *context) {
+static void SockParPullbackRatioXZ(NUFPAR *parser, void *context) {
     sockpar_sock->two_player_pullback = NuFParGetFloat(parser);
     sockpar_sock->flags |= SOCK_FLAG_TWO_PLAYER_PLANAR_PULLBACK;
 }
 
-static void SockParCamHeightAboveTerrain(NUFPAR_PC *parser, void *context) {
+static void SockParCamHeightAboveTerrain(NUFPAR *parser, void *context) {
     sockpar_sock->camera_height_above_ground = NuFParGetFloat(parser);
 }
 
-static void SockParCamShake(NUFPAR_PC *parser, void *context) {
+static void SockParCamShake(NUFPAR *parser, void *context) {
     sockpar_sock->camera_shake = NuFParGetFloat(parser);
 }
 
-static void SockParMisc1(NUFPAR_PC *parser, void *context) {
+static void SockParMisc1(NUFPAR *parser, void *context) {
     sockpar_sock->flags |= SOCK_FLAG_MISC_1;
 }
 
-static void SockParMisc2(NUFPAR_PC *parser, void *context) {
+static void SockParMisc2(NUFPAR *parser, void *context) {
     sockpar_sock->flags |= SOCK_FLAG_MISC_2;
 }
 
-static void SockParObj(NUFPAR_PC *parser, void *context) {
+static void SockParObj(NUFPAR *parser, void *context) {
     if (sockpar_buffer_ptr == NULL) {
         return;
     }
@@ -314,7 +314,7 @@ static void SockParObj(NUFPAR_PC *parser, void *context) {
     }
 }
 
-static void SockParBlend(NUFPAR_PC *parser, void *context) {
+static void SockParBlend(NUFPAR *parser, void *context) {
     i32 value = NuFParGetInt(parser);
     i32 edge;
     NuFParGetWord(parser);
@@ -323,43 +323,43 @@ static void SockParBlend(NUFPAR_PC *parser, void *context) {
     sockpar_sock->blend_entries[sockpar_sock->blend_count++].value = (u8)value;
 }
 
-static void SockCamATSTLIFT(NUFPAR_PC *parser, void *context) {
+static void SockCamATSTLIFT(NUFPAR *parser, void *context) {
     sockpar_sock->camera_character_close_lift = NuFParGetFloat(parser);
 }
 
-static void SockCamATSTDIST(NUFPAR_PC *parser, void *context) {
+static void SockCamATSTDIST(NUFPAR *parser, void *context) {
     sockpar_sock->camera_min_distance = NuFParGetFloat(parser);
 }
 
-static void SockCamATSTCAMRANGE(NUFPAR_PC *parser, void *context) {
+static void SockCamATSTCAMRANGE(NUFPAR *parser, void *context) {
     sockpar_sock->camera_range_of_effect = NuFParGetFloat(parser);
 }
 
-static void SockCamATSTTILT(NUFPAR_PC *parser, void *context) {
+static void SockCamATSTTILT(NUFPAR *parser, void *context) {
     sockpar_sock->camera_tilt_angle_change = NuFParGetFloat(parser);
 }
 
-static void SockCamATSTTILTRATE(NUFPAR_PC *parser, void *context) {
+static void SockCamATSTTILTRATE(NUFPAR *parser, void *context) {
     sockpar_sock->camera_tilt_angle_rate = NuFParGetFloat(parser);
 }
 
-static void SockCamCAMERARAYTILTDIST(NUFPAR_PC *parser, void *context) {
+static void SockCamCAMERARAYTILTDIST(NUFPAR *parser, void *context) {
     sockpar_sock->camera_tilt_distance = NuFParGetFloat(parser);
 }
 
-static void SockCamCAMERARAYTILTHEIGHT(NUFPAR_PC *parser, void *context) {
+static void SockCamCAMERARAYTILTHEIGHT(NUFPAR *parser, void *context) {
     sockpar_sock->camera_tilt_height = NuFParGetFloat(parser);
 }
 
-static void SockManCam_MAX_X(NUFPAR_PC *parser, void *context) {
+static void SockManCam_MAX_X(NUFPAR *parser, void *context) {
     sockpar_sock->manual_camera_max_x = NuFParGetFloat(parser);
 }
 
-static void SockManCam_MAX_Y(NUFPAR_PC *parser, void *context) {
+static void SockManCam_MAX_Y(NUFPAR *parser, void *context) {
     sockpar_sock->manual_camera_max_y = NuFParGetFloat(parser);
 }
 
-static void SockTerrainCamInActive(NUFPAR_PC *parser, void *context) {
+static void SockTerrainCamInActive(NUFPAR *parser, void *context) {
     sockpar_sock->terrain_camera_inactive = 1;
 }
 
@@ -427,14 +427,14 @@ NUFPCOMJMPCTX SockSys_ConfigKeywords[] = {
 typedef struct SOCKPAR_CONTEXT {
     u32 reserved[2];
     SOCKSYS_PC *sock_sys;
-    SOCK_PC *sock;
+    SOCK *sock;
 } SOCKPAR_CONTEXT;
 
 // Empty on PC, like SockSysMissingCameraDiagnostic: the warning for a
 // sock block without sock_end was compiled out.
 void SockSysMissingSockEndDiagnostic(char *file_name);
 
-void SockSysConfigureNuFPar(NUFPAR_PC *parser, void *data) {
+void SockSysConfigureNuFPar(NUFPAR *parser, void *data) {
     SOCKPAR_CONTEXT *context;
     i32 sock_index;
 
@@ -520,7 +520,7 @@ void SockSysMissingCameraDiagnostic(char *name);
 void SockSysFindInScene(SOCKSYS_PC *sock_sys, NUGSCN *gscn) {
     i32 i;
     i32 j;
-    SOCK_PC *sock;
+    SOCK *sock;
     i32 len;
     float extent_z;
 
@@ -643,16 +643,16 @@ SOCKSYS_PC *SockSysInit(VARIPTR *buf, VARIPTR buf_end, NUGSCN *gscn) {
     SOCKSYS_PC *sys;
 
     buf->addr = ((buf->addr + 3) & ~3u);
-    if (buf->addr + sizeof(SOCKSYS_PC) + 64 * sizeof(SOCK_PC) >= buf_end.addr) {
+    if (buf->addr + sizeof(SOCKSYS_PC) + 64 * sizeof(SOCK) >= buf_end.addr) {
         return NULL;
     }
 
     sys = buf->void_ptr;
     buf->void_ptr = (char *)buf->void_ptr + sizeof(SOCKSYS_PC);
     sys->socks = buf->void_ptr;
-    buf->void_ptr = (char *)buf->void_ptr + 64 * sizeof(SOCK_PC);
+    buf->void_ptr = (char *)buf->void_ptr + 64 * sizeof(SOCK);
     sys->count = 0;
-    memset(sys->socks, 0, 64 * sizeof(SOCK_PC));
+    memset(sys->socks, 0, 64 * sizeof(SOCK));
     SockSysFindInScene(sys, gscn);
     return sys;
 }
@@ -667,7 +667,7 @@ static void SockEdgeAnglesXY(NUVEC *from, NUVEC *to, u16 *x, u16 *y) {
     *y = (u16)NuAtan2D(dx, dz);
 }
 
-SOCKROT_PC *SockRailAngles(SOCK_PC *sock, NUGSPLINE *spline, SOCKROT_PC *rotations) {
+SOCKROT *SockRailAngles(SOCK *sock, NUGSPLINE *spline, SOCKROT *rotations) {
     i32 point;
     i32 length;
     for (point = 0; point < (length = sock->cam->length); ++point, ++rotations) {
@@ -787,7 +787,7 @@ f32 SockSplineLength(NUGSPLINE *spline, i32 closed) {
 }
 
 void SockSys_Configure(SOCKSYS_PC *sock_sys, char *config, i32 unused, VARIPTR *buf, VARIPTR *buf_end, NUGSCN *gscn) {
-    NUFPAR_PC *parser;
+    NUFPAR *parser;
     i32 inside_sock;
 
     if (sock_sys == NULL || config == NULL || gscn == NULL) {
@@ -831,7 +831,7 @@ void SockSys_Configure(SOCKSYS_PC *sock_sys, char *config, i32 unused, VARIPTR *
 }
 
 void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
-    SOCK_PC *sock;
+    SOCK *sock;
     i32 sock_index;
 
     if (sock_sys == NULL) {
@@ -848,13 +848,13 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
             continue;
         }
 
-        if (buf->addr + sock->cam->length * sizeof(SOCKROT_PC) >= buf_end.addr) {
+        if (buf->addr + sock->cam->length * sizeof(SOCKROT) >= buf_end.addr) {
             return;
         }
         sock->cam_rotations = buf->void_ptr;
         buf->void_ptr = SockRailAngles(sock, sock->cam, sock->cam_rotations);
 
-        if (buf->addr + sock->cam->length * sizeof(SOCKROT_PC) >= buf_end.addr) {
+        if (buf->addr + sock->cam->length * sizeof(SOCKROT) >= buf_end.addr) {
             return;
         }
         sock->mid_rotations = buf->void_ptr;
@@ -935,7 +935,7 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
     buf->addr = ((buf->addr + 15) & ~15u);
     sock = sock_sys->socks;
     for (sock_index = 0; sock_index < 0x40; ++sock_index, ++sock) {
-        SOCK_PC *other;
+        SOCK *other;
         i32 other_index;
 
         if (sock->valid == 0) {
@@ -984,8 +984,8 @@ void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
     }
 }
 
-SOCKPOSITION_PC TempSPosList[4] = {0};
-SOCKPOSITION_PC *TempBestSPos = 0;
+SOCKPOSITION TempSPosList[4] = {0};
+SOCKPOSITION *TempBestSPos = 0;
 i32 TempSPosCount = 0;
 NUVEC temp_pos = {0};
 u32 TempSLoc[2] = {0};
@@ -1050,7 +1050,7 @@ void SockSysPointAlongSpline(NUVEC *result, NUGSPLINE *spline, i32 segment, i32 
     result->z = from->z + (to->z - from->z) * ratio;
 }
 
-static void SockSysPointAlongMID(SOCK_PC *sock, SOCKPOSITION_PC *position, NUVEC *result) {
+static void SockSysPointAlongMID(SOCK *sock, SOCKPOSITION *position, NUVEC *result) {
     NUVEC *from;
     NUVEC *to;
 
@@ -1069,8 +1069,8 @@ static void SockSysPointAlongMID(SOCK_PC *sock, SOCKPOSITION_PC *position, NUVEC
     result->z = from->z + (to->z - from->z) * position->ratio;
 }
 
-static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION_PC *position) {
-    SOCK_PC *sock;
+static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION *position) {
+    SOCK *sock;
     i32 segment;
     i32 next;
     i32 delta;
@@ -1117,7 +1117,7 @@ static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION_PC *position) {
     position->normalized_distance = position->distance / (f32)(sock->unknown_33 != 0 ? sock->length + 1 : sock->length);
 }
 
-static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC *result, i32 sock_index, i32 prior_segment) {
+static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION *result, i32 sock_index, i32 prior_segment) {
     NUVEC *a0 = NULL;
     NUVEC *b0 = NULL;
     NUVEC *c0 = NULL;
@@ -1134,7 +1134,7 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC 
     i32 direction = 0;
     i32 exhausted_directions = 0;
     i32 segment_count = 0;
-    SOCK_PC *sock = NULL;
+    SOCK *sock = NULL;
     f32 distance_squared = 0.0f;
     SOCKSEGMENT *segment_data = NULL;
     i32 inside;
@@ -1246,9 +1246,9 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION_PC 
     }
 }
 
-void ComplexSockPosition(SOCKSYS_PC *sock_sys, NUVEC *position, i32 prior_sock, i32 prior_segment, SOCKPOSITION_PC *result) {
+void ComplexSockPosition(SOCKSYS_PC *sock_sys, NUVEC *position, i32 prior_sock, i32 prior_segment, SOCKPOSITION *result) {
     f32 best_distance;
-    SOCKPOSITION_PC *best;
+    SOCKPOSITION *best;
     i32 checked;
     i32 candidate_count;
     i32 sockets_to_check;
@@ -1257,7 +1257,7 @@ void ComplexSockPosition(SOCKSYS_PC *sock_sys, NUVEC *position, i32 prior_sock, 
     i32 fallback_search;
     i32 excluded_socket_seen;
     i32 original_prior_sock;
-    SOCKPOSITION_PC *positions;
+    SOCKPOSITION *positions;
     f32 distance;
 
     fallback_search = 0;
@@ -1345,8 +1345,8 @@ retry:
     memcpy(TempSLoc, result, sizeof(TempSLoc));
 }
 
-void ComplexSockAngles(SOCKROT_PC *angles) {
-    SOCKPOSITION_PC *positions;
+void ComplexSockAngles(SOCKROT *angles) {
+    SOCKPOSITION *positions;
     i32 count;
 
     positions = TempSPosList;
@@ -1417,18 +1417,18 @@ void ComplexSockAngles(SOCKROT_PC *angles) {
     }
 }
 
-void SetSockBit(SOCK_PC *sock, i32 index) {
+void SetSockBit(SOCK *sock, i32 index) {
     sock->overlap_exclusion_mask[index / 32] |= 1 << (index & 31);
 }
 
-i32 SockBitSet(SOCK_PC *sock, i32 index) {
+i32 SockBitSet(SOCK *sock, i32 index) {
     if (sock->overlap_exclusion_mask[index / 32] & (1 << (index & 31))) {
         return 1;
     }
     return 0;
 }
 
-f32 MidDistanceFromSockStart(SOCKSYS_PC *system, SOCKPOSITION_PC *position) {
+f32 MidDistanceFromSockStart(SOCKSYS_PC *system, SOCKPOSITION *position) {
     if (system != NULL && position->sock_index != -1) {
         SOCKSEGMENT *segment;
 
@@ -1438,12 +1438,12 @@ f32 MidDistanceFromSockStart(SOCKSYS_PC *system, SOCKPOSITION_PC *position) {
     return 0.0f;
 }
 
-void MoveSockPosition(SOCKSYS_PC *system, SOCKPOSITION_PC *source, f32 distance, SOCKPOSITION_PC *result) {
+void MoveSockPosition(SOCKSYS_PC *system, SOCKPOSITION *source, f32 distance, SOCKPOSITION *result) {
     i32 direction;
     i32 length;
     NUVEC *from;
     NUVEC *to;
-    SOCK_PC *sock;
+    SOCK *sock;
     NUVEC *point;
 
     *result = *source;
@@ -1537,7 +1537,7 @@ void MoveSockPosition(SOCKSYS_PC *system, SOCKPOSITION_PC *source, f32 distance,
     result->camera_position = temp_sockcampos;
 }
 
-i32 SockSysTrackInSplineInfo(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUVEC *point, f32 *distance) {
+i32 SockSysTrackInSplineInfo(SOCKSYS_PC *system, SOCKPOSITION *position, NUVEC *point, f32 *distance) {
     if (position != NULL && position->sock_index != -1 && system != NULL && system->socks[position->sock_index].valid != 0 &&
         system->socks[position->sock_index].trackin != NULL) {
         NUVEC temporary;
@@ -1555,11 +1555,11 @@ i32 SockSysTrackInSplineInfo(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUVE
     return 0;
 }
 
-void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *out, i32 stride, i32 mode) {
+void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION *position, NUMTX *out, i32 stride, i32 mode) {
     i32 first;
     i32 last;
     i32 i;
-    SOCK_PC *sock;
+    SOCK *sock;
     i32 segment;
     NUVEC *a;
     NUVEC *b;
@@ -1726,7 +1726,7 @@ void SockOff(SOCKSYS_PC *sys, i32 index) {
 
 void SockSysSetObjectVisibility(SOCKSYS_PC *system, i32 index, i32 visible) {
     if (system != NULL) {
-        SOCK_PC *sock = &system->socks[index];
+        SOCK *sock = &system->socks[index];
         if (sock->objects != NULL) {
             i32 i;
 
@@ -1737,8 +1737,8 @@ void SockSysSetObjectVisibility(SOCKSYS_PC *system, i32 index, i32 visible) {
     }
 }
 
-void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION_PC *position, i32 index, i32 segment, f32 fraction) {
-    SOCK_PC *sock;
+void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION *position, i32 index, i32 segment, f32 fraction) {
+    SOCK *sock;
     i32 length;
 
     position->sock_index = -1;
@@ -1795,7 +1795,7 @@ void PerspectMidPoint(NUVEC *result, NUVEC *first, NUVEC *second, NUVEC *camera_
     result->z = (second->z - first->z) * ratio + first->z;
 }
 
-i32 SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_segment) {
+i32 SockSegmentsAhead(SOCK *sock, i32 segment, i32 *from_segment, i32 *to_segment) {
     i32 advanced = 0;
     i32 segments_ahead;
     if (sock->look_ahead_segments > 0) {
@@ -1825,7 +1825,7 @@ i32 SockSegmentsAhead(SOCK_PC *sock, i32 segment, i32 *from_segment, i32 *to_seg
     return advanced;
 }
 
-f32 EnforceSockYLimits(f32 y, SOCKPOSITION_PC *position, SOCKSYS_PC *sock_sys) {
+f32 EnforceSockYLimits(f32 y, SOCKPOSITION *position, SOCKSYS_PC *sock_sys) {
     if (sock_sys != NULL) {
         if (y < position->camera_position.y) {
             y = position->camera_position.y;
@@ -1837,7 +1837,7 @@ f32 EnforceSockYLimits(f32 y, SOCKPOSITION_PC *position, SOCKSYS_PC *sock_sys) {
 }
 
 i32 SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed, NUVEC *player_camera_positions,
-                  NUVEC *player_positions, i32 player_count, SOCKPOSITION_PC *camera_socket_position, NUVEC *camera_position,
+                  NUVEC *player_positions, i32 player_count, SOCKPOSITION *camera_socket_position, NUVEC *camera_position,
                   NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake, f32 *separation_scale) {
     NUVEC average_camera_position;
     NUVEC average_player_position;
@@ -1859,8 +1859,8 @@ i32 SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 soc
     f32 single_player_pullback;
     f32 camera_height_above_ground;
     i32 contributing_sockets;
-    SOCKPOSITION_PC *candidate;
-    SOCK_PC *sock;
+    SOCKPOSITION *candidate;
+    SOCK *sock;
     f32 projection_x;
     f32 projection_y;
     f32 lateral_ratio;
@@ -2232,9 +2232,9 @@ i32 SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 soc
 
 f32 NuVecMagVU0(NUVEC *);
 
-f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
+f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS_PC *system) {
     NUVEC flat = *position;
-    SOCK_PC *sock = &system->socks[resolved->sock_index];
+    SOCK *sock = &system->socks[resolved->sock_index];
     f32 distance = 0.0f;
     NUVEC *first_a;
     NUVEC *first_b;
@@ -2331,7 +2331,7 @@ void RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
 }
 
 typedef struct SOCK_CAMERA_RESULT { // size 0x64
-    SOCKPOSITION_PC socket;         // 0x00
+    SOCKPOSITION socket;            // 0x00
     NUVEC position;                 // 0x38
     NUVEC target;                   // 0x44
     f32 blend;                      // 0x50
@@ -2343,8 +2343,8 @@ typedef struct SOCK_CAMERA_RESULT { // size 0x64
 
 i32 LastSingleSockWeWereIn = -1;
 
-f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
-    SOCK_PC *sock;
+f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS_PC *system) {
+    SOCK *sock;
     f32 distance;
     NUVEC *a0;
     NUVEC *a1;
@@ -2395,7 +2395,7 @@ f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION_PC *resolved, i
     return distance > 0.0f ? NuFsqrt(distance) : 0.0f;
 }
 
-f32 CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
+f32 CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS_PC *system) {
     switch (side) {
         case 0:
             return CalculateDistanceToNearestSide(position, resolved, unused, system);
@@ -2407,9 +2407,9 @@ f32 CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION
 }
 
 i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed, NUVEC *player_camera_positions,
-                                  NUVEC *player_positions, i32 player_count, SOCKPOSITION_PC *camera_socket_position,
-                                  NUVEC *camera_position, NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
-                                  f32 *camera_shake, f32 *separation_scale) {
+                                  NUVEC *player_positions, i32 player_count, SOCKPOSITION *camera_socket_position, NUVEC *camera_position,
+                                  NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake,
+                                  f32 *separation_scale) {
     f32 blend;
     SOCK_CAMERA_RESULT *from;
     SOCK_CAMERA_RESULT *to;
@@ -2420,8 +2420,8 @@ i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_p
     if (TempSPosCount > 1) {
         i32 first_index = TempSPosList[0].sock_index;
         i32 second_index = TempSPosList[1].sock_index;
-        SOCK_PC *first_sock = &sock_sys->socks[first_index];
-        SOCK_PC *second_sock = &sock_sys->socks[second_index];
+        SOCK *first_sock = &sock_sys->socks[first_index];
+        SOCK *second_sock = &sock_sys->socks[second_index];
         i32 reverse;
         f32 distances[2];
         SOCK_CAMERA_RESULT first;

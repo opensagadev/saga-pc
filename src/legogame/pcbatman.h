@@ -40,7 +40,7 @@ extern "C" {
     extern i32 InitOnceHostFs;
     extern i32 InitOnceEject;
 
-    extern LEVELFIXUP_PC LevelFixupStartup[2];
+    extern LEVELFIXUP LevelFixupStartup[2];
     extern char HubButtonStringBuffer[];
 #ifdef __cplusplus
 }
