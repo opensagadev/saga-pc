@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "gameapi/apitext.h"
+#include "gameapi/gui/apimenu.h"
+#include "globals.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/gizmos/object/gizpanel.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/menus/core/gamehint.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/render/core/render.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "legogame/game.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/nutrig.h"
 #include <stdio.h>
 
 void Text_ExpandAllButtonStrings(char *, char *);

@@ -1,4 +1,20 @@
-#include "saga.h"
+#include "batman.h"
+#include "gameapi/edtools/edfile.h"
+#include "globals.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmo/object/giztorpedo.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/light/shadow.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "legogame/game.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct torpedo_machine_query_s { // size 0x2c
     char name[16];                       // 0x00

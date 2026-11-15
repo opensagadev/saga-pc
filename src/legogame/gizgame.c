@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "legoapi/actions/combat/hits.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/gizmo/base/gizgame.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/object/gizobstacle.h"
+#include "legoapi/gizmos/object/gizobstacles.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/world/levels.h"
+#include "legoapi/world/world.h"
+#include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
 typedef struct bolt_gizmo_type_s {

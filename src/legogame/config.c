@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/core/charconfig.h"
+#include "legoapi/characters/motion/move.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
 
 typedef struct CHARCONFIG {
     CHARACTERDATA_PC *character;
