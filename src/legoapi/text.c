@@ -1359,8 +1359,8 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
                 episode_text = TTab[EDataList[episode_index].text_id];
             }
             if (area_index != -1) {
-                if (area->flags & 4) {
-                    if (area->flags & 1) {
+                if (area->flags & AREAFLAG_BONUS_AREA) {
+                    if (area->flags & AREAFLAG_VEHICLE_AREA) {
                         if (TextCrawlCurrent->vehicle_bonus_text != NULL) {
                             chapter_text = TTab[*TextCrawlCurrent->vehicle_bonus_text];
                         }

@@ -540,7 +540,7 @@ void CollideGameObjects(WORLDINFO *world) {
     u32 flags;
     u32 is_player;
     i8 context;
-    if (world->area_index != -1 && (world->area->flags & 0x80)) {
+    if (world->area_index != -1 && (world->area->flags & AREAFLAG_NO_CHARACTER_COLLISION)) {
         return;
     }
     for (index = 0, object = Obj; index < object_count; ++index, ++object) {
@@ -2380,7 +2380,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         GAMEOBJECT *player1 = Player[1];
         i32 show[2];
         show[1] = show[0] = 0;
-        if ((VehicleArea != 0 || (WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4) ||
+        if ((VehicleArea != 0 || (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS_AREA) == 4) ||
              (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0)) &&
             player0 != NULL && (player0->flags_1fc_word & 0x80) != 0 && player1 != NULL && (player1->flags_1fc_word & 0x80) != 0) {
             show[1] = show[0] = 1;
@@ -3514,7 +3514,7 @@ impact:
             AddPickups(coins, hearts, 0, 0, &target->collision_position, NULL, 2.0f, -1, 1.0f, 2000000.0f, attacker,
                        !BonusArea && coins < 2500, BonusArea ? 1 : 0);
         }
-        if (target->torpedo && WORLD->area != SPEEDERCHASE_ADATA && (!WORLD->area || !(WORLD->area->flags & 4))) {
+        if (target->torpedo && WORLD->area != SPEEDERCHASE_ADATA && (!WORLD->area || !(WORLD->area->flags & AREAFLAG_BONUS_AREA))) {
             DropTorpedoPickups(target->torpedo, target->torpedo->count);
         }
         if (!parts_angle) {

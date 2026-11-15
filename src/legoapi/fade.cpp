@@ -137,8 +137,8 @@ void FadeStillWipe::InitFade() {
     if ((info->stage & 1) != 0) {
         info->fade = 1.0f;
         info->rate = -1.3333334f;
-        if (CUTSTOPGAME == 0 && WORLD->current_level != NULL && (WORLD->current_level->flags & 0xe0) == 0 &&
-            WORLD->current_level != TITLES_LDATA) {
+        if (CUTSTOPGAME == 0 && WORLD->current_level != NULL &&
+            (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && WORLD->current_level != TITLES_LDATA) {
             PlaySfx("WipeScreen", NULL);
         }
     } else {

@@ -500,7 +500,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
         } else {
             object->fall_recovery_timer = 0.0f;
         }
-        if ((WORLD->current_level->flags & 0x40000) != 0) {
+        if ((WORLD->current_level->flags & LEVEL_IN_SPACE) != 0) {
             object->last_safe_position = object->position;
         }
     }

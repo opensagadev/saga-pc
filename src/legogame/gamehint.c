@@ -59,7 +59,7 @@ void DrawHint_LSW(HINT *hint, i32 max_lines) {
     if (!(alpha > 0.0f)) {
         return;
     }
-    text_y = (WORLD->current_level->flags & 0x400) != 0 ? 0.0f : -0.7f;
+    text_y = (WORLD->current_level->flags & LEVEL_STATUS) != 0 ? 0.0f : -0.7f;
     if ((hint->flags & 4) != 0) {
         alignment = 0;
         text_x = 0.0f;

@@ -1261,7 +1261,7 @@ extern "C" {
                 }
                 if (version >= 9) {
                     buildit->activation_radius = EdFileReadFloat();
-                } else if (world->area != NULL && (world->area->flags & 1)) {
+                } else if (world->area != NULL && (world->area->flags & AREAFLAG_VEHICLE_AREA)) {
                     buildit->activation_radius = 12.0f;
                 } else {
                     buildit->activation_radius = 1.75f;

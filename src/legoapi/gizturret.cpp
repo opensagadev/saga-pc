@@ -45,7 +45,7 @@ extern "C" {
         turret->muzzle_count = 1;
         turret->blowup_type = -1;
         turret->bolt_type_id = -1;
-        if (WORLD->area != NULL && (WORLD->area->flags & 1)) {
+        if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_VEHICLE_AREA)) {
             turret->pickup_radius = 12.0f;
         } else {
             turret->pickup_radius = 1.75f;
@@ -117,7 +117,7 @@ extern "C" {
             EdFileReadNuVec(&turret->pickup_offset);
             if (version >= 6) {
                 turret->pickup_radius = EdFileReadFloat();
-            } else if (world->area != NULL && (world->area->flags & 1)) {
+            } else if (world->area != NULL && (world->area->flags & AREAFLAG_VEHICLE_AREA)) {
                 turret->pickup_radius = 12.0f;
             } else {
                 turret->pickup_radius = 1.75f;
@@ -659,7 +659,7 @@ extern "C" {
                                     NuSpecialUpdate(&turret->secondary_anim_obj->special);
                                 }
                                 if (turret->rotate_sfx != -1 && player != NULL) {
-                                    bool nearby = WORLD->area != NULL && (WORLD->area->flags & 1);
+                                    bool nearby = WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_VEHICLE_AREA);
                                     if (!nearby) {
                                         NUVEC delta;
                                         delta.x = reference->m30 - player->collision_position.x;

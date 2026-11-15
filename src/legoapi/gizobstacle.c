@@ -388,7 +388,7 @@ i32 GizObstacles_Load(void *world_ptr, void *data) {
             }
             if (version >= 11) {
                 obstacle->pickup_scatter_height = EdFileReadFloat();
-            } else if (world->area && (world->area->flags & 1)) {
+            } else if (world->area && (world->area->flags & AREAFLAG_VEHICLE_AREA)) {
                 obstacle->pickup_scatter_height = 12.f;
             } else {
                 obstacle->pickup_scatter_height = 1.75f;

@@ -398,7 +398,7 @@ extern "C" void GameDisplaySettings(LEVEL_DISPLAY_PC *display, i32 *colours) {
     } else {
         pNuCam->far_clip = (f32)(u16)display->far_clip;
     }
-    if (WORLD->current_level != TITLES_LDATA && (WORLD->current_level->flags & 0x400) == 0 && WORLD->current_level != STATUS_LDATA &&
+    if (WORLD->current_level != TITLES_LDATA && (WORLD->current_level->flags & LEVEL_STATUS) == 0 && WORLD->current_level != STATUS_LDATA &&
         WORLD->current_level != CREDITS_LDATA && !(MainRenderTime < 1.0f)) {
         colours[0] = (((0xffff8000 | display->bg_blue_top) << 8 | display->bg_green_top) << 8) | display->bg_red_top;
         colours[1] = (((0xffff8000 | display->bg_blue_bottom) << 8 | display->bg_green_bottom) << 8) | display->bg_red_bottom;
@@ -698,11 +698,11 @@ extern "C" void HandleStillRender(void) {
         pause_rndr_on = 1;
     } else if (NewLData == CREDITS_LDATA && LastLData == STATUS_LDATA) {
         pause_rndr_on = 1;
-    } else if (NewLData == STATUS_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & 2) != 0) {
+    } else if (NewLData == STATUS_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & AREAFLAG_ENDING_AREA) != 0) {
         pause_rndr_on = 1;
     } else if ((NewLData == STATUS_LDATA && GAMEDEMO != 0) || NewLData == CREDITS_LDATA) {
         pause_rndr_on = 1;
-    } else if (NewLData == HUB_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & 2) != 0) {
+    } else if (NewLData == HUB_LDATA && WORLD->area_index != -1 && (WORLD->area[WORLD->area_index].flags & AREAFLAG_ENDING_AREA) != 0) {
         pause_rndr_on = 1;
     } else if (MainRenderTime > 0.0f && MainRenderTime < 1.0f) {
         pause_rndr_on = 1;

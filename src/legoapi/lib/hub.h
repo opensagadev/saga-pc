@@ -259,6 +259,25 @@ extern "C" {
 
 #if SAGA_LEGOAPI_LIB_HUB_H_PART == 2 && !defined(SAGA_LEGOAPI_LIB_HUB_H_STOP)
 
+/* area_data_s.flags: the keywords of an area's entry in levels\\areas.txt (Areas_ConfigureList). */
+enum AREA_FLAGS {
+    AREAFLAG_VEHICLE_AREA = 0x1,                                            /* vehicle_area */
+    AREAFLAG_ENDING_AREA = 0x2,                                             /* ending_area */
+    AREAFLAG_BONUS_AREA = 0x4,                                              /* bonus_area */
+    AREAFLAG_SINGLE_BUFFER = 0x8,                                           /* single_buffer */
+    AREAFLAG_MINIKIT = 0x10,                                                /* minikit */
+    AREAFLAG_TEST_AREA = 0x20,                                              /* test_area */
+    AREAFLAG_HUB_AREA = 0x40,                                               /* hub_area */
+    AREAFLAG_NO_CHARACTER_COLLISION = 0x80,                                 /* nocharactercollision(s), no_character_collision(s) */
+    AREAFLAG_SUPER_BONUS = 0x100,                                           /* the bit super_bonus_area adds to AREAFLAG_BONUS_AREA */
+    AREAFLAG_SUPER_BONUS_AREA = AREAFLAG_SUPER_BONUS | AREAFLAG_BONUS_AREA, /* super_bonus_area */
+    AREAFLAG_NOPICKUPGRAVITY = 0x200,                                       /* nopickupgravity */
+    AREAFLAG_OVERRIDE_THINGS_SCENE = 0x400,                                 /* override_things_scene */
+    AREAFLAG_NO_GOLD_BRICK = 0x800,                                         /* no_gold_brick */
+    AREAFLAG_NO_FREEPLAY = 0x1000,                                          /* no_freeplay */
+    AREAFLAG_NO_COMPLETION_POINTS = 0x2000                                  /* no_completion_points */
+};
+
 typedef struct area_data_s {                    // size 0x9c
     char dir[0x40];                             // 0x00
     char file[0x20];                            // 0x40

@@ -398,7 +398,7 @@ static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *positi
 
 i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
     GAMEOBJECT *other = NULL;
-    if ((WORLD->current_level->flags & 0x200000) == 0 && VehicleArea == 0) {
+    if ((WORLD->current_level->flags & LEVEL_NARROW_SOCKS) == 0 && VehicleArea == 0) {
         return 0;
     }
     if (disable_narrow_socks != 0) {

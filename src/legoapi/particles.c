@@ -35,7 +35,7 @@ void SetEffectVisibility(char *name, i32 visible) {
 
 void AddCameraRain(WORLDINFO *world, i32 mode) {
     NUVEC position;
-    if ((world->current_level->flags & 0x4000) != 0) {
+    if ((world->current_level->flags & LEVEL_CAMERA_RAIN) != 0) {
         position = GameCam->position;
         position.x += GameCam->dir.x * 2.0;
         position.y += GameCam->dir.y * 2.0;

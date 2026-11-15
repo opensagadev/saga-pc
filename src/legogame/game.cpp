@@ -588,7 +588,7 @@ static void GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
         return;
     }
     AddGameDebris(WORLD->game_debris_sys, 0x38, &message->position_a);
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0) {
+    if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS) != 0) {
         random = qrand();
         message->position.x = (f32)((f64)random * (f64)(1.0f / 65535.0f) * (f64)0.2f - (f64)0.1f + (f64)message->position.x);
         random = qrand();
@@ -1001,7 +1001,7 @@ static i32 CheckMusicOther(void) {
 
 static i32 GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT *input, GAMEOBJECT *object) {
     GAME_BUILDIT_READER *buildit = (GAME_BUILDIT_READER *)input;
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0) {
+    if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_HUB_AREA) != 0) {
         if (input == HubBuildIt) {
             if (Game.gold_bricks < 2 * buildit->anim_object_count) {
                 return 0;
@@ -1023,7 +1023,7 @@ static void BackDrop_Alpha(f32 *alpha) {
             *alpha *= CreditsAlpha;
             return;
         }
-        if ((WORLD->current_level->flags & 0x400) != 0 && StatusPacket.status_flags != 0 && StatusPacket.stage->type == 12 &&
+        if ((WORLD->current_level->flags & LEVEL_STATUS) != 0 && StatusPacket.status_flags != 0 && StatusPacket.stage->type == 12 &&
             (StatusPacket.flags_word & 0x1000) == 0) {
             if (StatusPacket.stage->unknown_18 < 0.5f) {
                 *alpha = 1.0f - StatusPacket.stage->unknown_18 * 2.0f;
@@ -1412,10 +1412,11 @@ extern "C" {
         area = ADataList;
         area_save = save->area_save;
         for (i = 0; i < AREACOUNT; ++i, ++area_save, ++area) {
-            if (area == HUB_ADATA || (area->flags & 0x22) != 0 || (area->flags & 0x2000) != 0) {
+            if (area == HUB_ADATA || (area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_TEST_AREA)) != 0 ||
+                (area->flags & AREAFLAG_NO_COMPLETION_POINTS) != 0) {
                 continue;
             }
-            if ((area->flags & 0x100) != 0) {
+            if ((area->flags & AREAFLAG_SUPER_BONUS) != 0) {
                 CompletionPointInfoRecalculate[1] += POINTS_PER_SUPERBONUSCOMPLETE;
                 if (area_save->area_complete != 0) {
                     AddToCompletionPoints(POINTS_PER_SUPERBONUSCOMPLETE);
@@ -1425,7 +1426,7 @@ extern "C" {
                 }
                 continue;
             }
-            if ((area->flags & 4) != 0) {
+            if ((area->flags & AREAFLAG_BONUS_AREA) != 0) {
                 CompletionPointInfoRecalculate[1] += POINTS_PER_TIMETRIAL;
                 if (area_save->challenge_trial_time < static_cast<f32>(area->challenge_trial_time)) {
                     AddToCompletionPoints(POINTS_PER_TIMETRIAL);
@@ -1436,11 +1437,11 @@ extern "C" {
             CompletionPointInfoRecalculate[1] += POINTS_PER_STORY;
             if (area_save->area_complete != 0) {
                 AddToCompletionPoints(POINTS_PER_STORY);
-                if ((area->flags & 0x800) == 0) {
+                if ((area->flags & AREAFLAG_NO_GOLD_BRICK) == 0) {
                     AddToGoldBricks();
                 }
             }
-            if ((area->flags & 0x10) == 0) {
+            if ((area->flags & AREAFLAG_MINIKIT) == 0) {
                 continue;
             }
             CompletionPointInfoRecalculate[1] += POINTS_PER_MINIKIT;
@@ -1595,7 +1596,7 @@ extern "C" void InitGameMode(void) {
     f32 speed;
     GAMEOBJECT *object;
     GAMEOBJECT **players = (GAMEOBJECT **)Player;
-    if ((WORLD->current_level->flags & 2) != 0) {
+    if ((WORLD->current_level->flags & LEVEL_GAMEPLAY) != 0) {
         MenuReset();
     }
     for (i = 0; i < 8; ++i) {
@@ -1904,7 +1905,7 @@ extern "C" void CheckResetBits(void) {
         WeaponInOut_NoAIJediSfx = 0;
     }
     bonusmodearcade = 0;
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0 && AreaGlobals.progress_flags < AreaGlobals.area_phase) {
+    if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 && AreaGlobals.progress_flags < AreaGlobals.area_phase) {
         AreaGlobals.progress_flags = AreaGlobals.area_phase;
         if (AreaGlobals.area_phase > 10) {
             AreaGlobals.progress_flags = 10;
@@ -2611,7 +2612,8 @@ extern "C" {
 }
 
 static void GizBuildIt_FinishFn_Game(GIZBUILDIT *input) {
-    if (WORLD->area != NULL && (WORLD->area->flags & 0x40) != 0 && input == HubBuildIt && (Game.hub_buildit_completed & 0x80) == 0) {
+    if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_HUB_AREA) != 0 && input == HubBuildIt &&
+        (Game.hub_buildit_completed & 0x80) == 0) {
         AddFancyMessageRGB(TTab[dat_00880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
         BuyAllShopExtras();
         ReCalculateCompletionPoints();
@@ -2670,16 +2672,16 @@ void InitGameAfterConfig(void) {
         i32 area_index;
         area->episode_index = (u8)Episode_ContainsArea(area_id, &area_index);
         area->area_index = (u8)area_index;
-        if (area == HUB_ADATA || (area->flags & 0x2022) != 0) {
+        if (area == HUB_ADATA || (area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_TEST_AREA | AREAFLAG_NO_COMPLETION_POINTS)) != 0) {
             continue;
         }
-        if ((area->flags & 0x100) != 0) {
+        if ((area->flags & AREAFLAG_SUPER_BONUS) != 0) {
             HubCompletionPoints += POINTS_PER_SUPERBONUSCOMPLETE;
             CompletionPointInfo[1] += POINTS_PER_SUPERBONUSCOMPLETE;
             if (EpisodeGoldBrickForSuperBonus != 0) {
                 ++GOLDBRICKPOINTS;
             }
-        } else if ((area->flags & 4) != 0) {
+        } else if ((area->flags & AREAFLAG_BONUS_AREA) != 0) {
             HubCompletionPoints += POINTS_PER_TIMETRIAL;
             CompletionPointInfo[1] += POINTS_PER_TIMETRIAL;
             ++GOLDBRICKPOINTS;
@@ -2688,10 +2690,10 @@ void InitGameAfterConfig(void) {
             i32 bucket = CompletionPointInfo[1] + POINTS_PER_STORY;
             HubCompletionPoints = total;
             CompletionPointInfo[1] = bucket;
-            if ((area->flags & 0x800) == 0) {
+            if ((area->flags & AREAFLAG_NO_GOLD_BRICK) == 0) {
                 ++GOLDBRICKPOINTS;
             }
-            if ((ADataList[area_id].flags & 0x10) != 0) {
+            if ((ADataList[area_id].flags & AREAFLAG_MINIKIT) != 0) {
                 GOLDBRICKPOINTS += 2;
                 total += POINTS_PER_MINIKIT + POINTS_PER_TRUEJEDI;
                 bucket += POINTS_PER_MINIKIT + POINTS_PER_TRUEJEDI;
@@ -2732,12 +2734,14 @@ void InitGameAfterConfig(void) {
         if (level->area_index != -1) {
             i32 area_id = level->area_index;
             level->episode = ADataList[area_id].episode_index;
-            if ((ADataList[area_id].flags & 1) != 0) {
+            if ((ADataList[area_id].flags & AREAFLAG_VEHICLE_AREA) != 0) {
                 level->reflection_range = 50;
                 level->raycast_step = 20;
             }
-            if (level->episode != 0xff && (ADataList[area_id].flags & 0x106) == 0 && (level->flags & 0x4e0) == 0) {
-                level->flags |= 0x2000;
+            if (level->episode != 0xff &&
+                (ADataList[area_id].flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_SUPER_BONUS)) == 0 &&
+                (level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO | LEVEL_STATUS)) == 0) {
+                level->flags |= LEVEL_SHOW_COIN_TOTAL;
             }
         }
     }

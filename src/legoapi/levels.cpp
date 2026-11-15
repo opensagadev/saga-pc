@@ -67,14 +67,14 @@ extern "C" {
             if (in_level_config) {
                 if (NuStrICmp(parser->word_buffer_ptr, "level_end") == 0) {
                     in_level_config = 0;
-                    if (current_level->dir[0] == '\0' || current_level->name[0] == '\0' || (current_level->flags & 0x200) != 0) {
+                    if (current_level->dir[0] == '\0' || current_level->name[0] == '\0' || (current_level->flags & LEVEL_TEST) != 0) {
                         continue;
                     }
 
-                    if ((current_level->flags & 0x10000) != 0) {
+                    if ((current_level->flags & LEVEL_NEWGAME) != 0) {
                         NEWGAME_LDATA = current_level;
                     }
-                    if ((current_level->flags & 0x20000) != 0) {
+                    if ((current_level->flags & LEVEL_LOADGAME) != 0) {
                         LOADGAME_LDATA = current_level;
                     }
 
@@ -94,25 +94,25 @@ extern "C" {
                 }
 
                 if (NuStrICmp(parser->word_buffer_ptr, "test_level") == 0) {
-                    current_level->flags |= 0x200;
+                    current_level->flags |= LEVEL_TEST;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "intro_level") == 0) {
-                    current_level->flags |= 0x20;
+                    current_level->flags |= LEVEL_INTRO;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "midtro_level") == 0 ||
                            NuStrICmp(parser->word_buffer_ptr, "cutscene_level") == 0) {
-                    current_level->flags |= 0x40;
+                    current_level->flags |= LEVEL_MIDTRO;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "outro_level") == 0) {
-                    current_level->flags |= 0x80;
+                    current_level->flags |= LEVEL_OUTRO;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "status_level") == 0) {
-                    current_level->flags &= ~0x2u;
-                    current_level->flags &= ~0x8u;
-                    current_level->flags |= 0x400;
+                    current_level->flags &= ~LEVEL_GAMEPLAY;
+                    current_level->flags &= ~LEVEL_TERRAIN;
+                    current_level->flags |= LEVEL_STATUS;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "newgame_level") == 0) {
                     if (NEWGAME_LDATA == NULL) {
-                        current_level->flags |= 0x10000;
+                        current_level->flags |= LEVEL_NEWGAME;
                     }
                 } else if (NuStrICmp(parser->word_buffer_ptr, "loadgame_level") == 0) {
                     if (LOADGAME_LDATA == NULL) {
-                        current_level->flags |= 0x20000;
+                        current_level->flags |= LEVEL_LOADGAME;
                     }
                 }
                 continue;
@@ -263,7 +263,7 @@ extern "C" {
 
     void LC_BL_fix_strobing_anims(NUFPAR_PC *parser) {
         (void)parser;
-        levelconfig_ldata->flags |= 0x100;
+        levelconfig_ldata->flags |= LEVEL_FIX_STROBING_ANIMS;
     }
 
     void LC_BL_max_ter_groups(NUFPAR_PC *parser) {
@@ -396,55 +396,55 @@ extern "C" {
     }
 
     void LC_AL_metal(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x1000);
+        LevelConfigSetFlag(parser, LEVEL_METAL);
     }
 
     void LC_AL_in_space(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x40000);
+        LevelConfigSetFlag(parser, LEVEL_IN_SPACE);
     }
 
     void LC_AL_override_nopickupgravity(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x400000);
+        LevelConfigSetFlag(parser, LEVEL_OVERRIDE_NO_PICKUP_GRAVITY);
     }
 
     void LC_AL_hidden_icons(NUFPAR_PC *parser) {
         if (NuFParGetWord(parser) != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, "on") == 0) {
-                levelconfig_ldata->flags &= ~0x800000u;
+                levelconfig_ldata->flags &= ~LEVEL_HIDE_ICONS;
                 return;
             }
             if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-                levelconfig_ldata->flags |= 0x800000;
+                levelconfig_ldata->flags |= LEVEL_HIDE_ICONS;
             }
         }
     }
 
     void LC_AL_pickups_to_panel(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x80000);
+        LevelConfigSetFlag(parser, LEVEL_PICKUPS_TO_PANEL);
     }
 
     void LC_AL_forget_takeovers(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x100000);
+        LevelConfigSetFlag(parser, LEVEL_FORGET_TAKEOVERS);
     }
 
     void LC_AL_narrow_socks(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x200000);
+        LevelConfigSetFlag(parser, LEVEL_NARROW_SOCKS);
     }
 
     void LC_AL_camera_rain(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x4000);
+        LevelConfigSetFlag(parser, LEVEL_CAMERA_RAIN);
     }
 
     void LC_AL_terrain_rain(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x8000);
+        LevelConfigSetFlag(parser, LEVEL_TERRAIN_RAIN);
     }
 
     void LC_AL_double_score(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x800);
+        LevelConfigSetFlag(parser, LEVEL_DOUBLE_SCORE);
     }
 
     void LC_AL_flat_terrain(NUFPAR_PC *parser) {
-        LevelConfigSetFlag(parser, 0x10);
+        LevelConfigSetFlag(parser, LEVEL_FLAT_TERRAIN);
     }
 
     void LC_AL_cam_tilt(NUFPAR_PC *parser) {
@@ -585,7 +585,7 @@ extern "C" {
         if (level->blob_shadow_fade_near > level->blob_shadow_fade_far) {
             level->blob_shadow_fade_near = level->blob_shadow_fade_far;
         }
-        level->flags |= 1;
+        level->flags |= LEVEL_CONFIG_LOADED;
     }
 
     void LevelSplines_InitForGame(LEVELSPLINE_PC *table) {
@@ -641,7 +641,8 @@ extern "C" {
                 name[0] = '\0';
                 if (Mission_Active(NULL) != NULL) {
                     NuStrCpy(name, "bounty_start");
-                } else if (world->area_index != -1 && (ADataList[world->area_index].flags & 0x40) && RenderHubFromCutscenePlayer != 0) {
+                } else if (world->area_index != -1 && (ADataList[world->area_index].flags & AREAFLAG_HUB_AREA) &&
+                           RenderHubFromCutscenePlayer != 0) {
                     NuStrCpy(name, "shop_start");
                 }
                 if (name[0] != '\0') {
@@ -784,7 +785,7 @@ extern "C" {
                     break;
                 default:
                     scene = area_scene;
-                    if (scene != NULL && world->area != NULL && (world->area->flags & 0x400) != 0) {
+                    if (scene != NULL && world->area != NULL && (world->area->flags & AREAFLAG_OVERRIDE_THINGS_SCENE) != 0) {
                         area_override = 1;
                     } else {
                         scene = things_scene;
@@ -927,7 +928,7 @@ void CompleteLevel(WORLDINFO *world) {
 
     level = NewLData;
     LevelCompletionFallbackFlagPC = 1u;
-    if (level == NULL || ((level->flags & 0xe0u) != 0 && FreePlay != 0)) {
+    if (level == NULL || ((level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0 && FreePlay != 0)) {
         level = Area_FindStatusLevel(world->area, NULL);
         NewLData = level;
     }

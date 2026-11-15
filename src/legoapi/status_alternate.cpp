@@ -228,7 +228,7 @@ extern "C" {
                         if ((buttons & GAMEPAD_MENUSELECT) != 0) {
                             selected = 1;
                         } else if (((packet->flags_word & 0x40u) == 0 && (packet->flags_word & 8u) != 0 &&
-                                    (packet->next_area == -1 || (packet->area->flags & 2u) != 0 ||
+                                    (packet->next_area == -1 || (packet->area->flags & AREAFLAG_ENDING_AREA) != 0 ||
                                      Game.area_save[packet->next_area].complete != 0)) ||
                                    (packet->flags_word & 0x100u) != 0 || packet->challenge_state != 0 || packet->mission_state != 0) {
                             if (status_prompt > 0) {
@@ -248,7 +248,7 @@ extern "C" {
                     ++pad;
                 } while (player < 2);
                 if (selected != 0) {
-                    if ((packet->flags_word & 8u) != 0 && packet->next_area != -1 && (packet->area->flags & 2u) == 0 &&
+                    if ((packet->flags_word & 8u) != 0 && packet->next_area != -1 && (packet->area->flags & AREAFLAG_ENDING_AREA) == 0 &&
                         Game.area_save[packet->next_area].complete == 0) {
                         packet->prompt_choice = 1;
                     } else {

@@ -11362,7 +11362,7 @@ i32 Action_CompleteLevel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET 
         }
     }
 
-    if (level != NULL && (level->flags & 0xe0u) != 0) {
+    if (level != NULL && (level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0) {
         level = Area_FindStatusLevel(WORLD->area, NULL);
     }
 

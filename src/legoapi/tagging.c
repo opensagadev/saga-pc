@@ -15,7 +15,7 @@ void RegisterTakeOverObject(GAMEOBJECT *object) {
     AISCRIPT *script;
     i32 level;
     if ((object->character_data->game_character->flags_090 & 0x80) != 0 || (object->flags_1f8 & 0x4000) == 0 ||
-        (WORLD->current_level->flags & 0x100000) != 0) {
+        (WORLD->current_level->flags & LEVEL_FORGET_TAKEOVERS) != 0) {
         return;
     }
     level = WORLD->current_level->area_level_index;

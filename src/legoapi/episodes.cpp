@@ -80,7 +80,7 @@ extern "C" {
                                 if (found == 0) {
                                     episode->area_ids[episode->area_count] = (i16)area_index;
                                     episode->area_count++;
-                                    if ((area->flags & 6) == 0) {
+                                    if ((area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA)) == 0) {
                                         episode->regular_areas++;
                                     }
                                 }
@@ -223,10 +223,10 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
         if (area_index != -1 && id != area_index) {
             continue;
         }
-        if (&ADataList[id] == HUB_ADATA || (ADataList[id].flags & 0x22) != 0) {
+        if (&ADataList[id] == HUB_ADATA || (ADataList[id].flags & (AREAFLAG_ENDING_AREA | AREAFLAG_TEST_AREA)) != 0) {
             continue;
         }
-        if ((ADataList[id].flags & 0x100) != 0) {
+        if ((ADataList[id].flags & AREAFLAG_SUPER_BONUS) != 0) {
             if (EpisodeGoldBrickForSuperBonus != 0) {
                 ++EpGoldBrickTotal;
                 if (saves[i].area_complete != 0) {
@@ -235,7 +235,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             }
             continue;
         }
-        if ((ADataList[id].flags & 4) != 0) {
+        if ((ADataList[id].flags & AREAFLAG_BONUS_AREA) != 0) {
             ++EpGoldBrickTotal;
             if ((f64)((EPISODE_AREA_SAVE_READER *)&saves[id])->challenge_time < (f64)ADataList[id].challenge_trial_time) {
                 ++EpGoldBrickCount;
@@ -253,7 +253,7 @@ i32 Episode_CountOpenAreas(i32 episode_index, i32 area_index, COLLECTION_AREA_SA
             ++EpCompleteCount;
             ++EpGoldBrickCount;
         }
-        if ((ADataList[id].flags & 0x10) == 0) {
+        if ((ADataList[id].flags & AREAFLAG_MINIKIT) == 0) {
             continue;
         }
         ++EpGoldBrickTotal;

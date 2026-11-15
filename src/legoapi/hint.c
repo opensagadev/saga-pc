@@ -325,7 +325,8 @@ void Hint_Process(f32 elapsed) {
     }
 
     if (LEGOHINT_PUNCH == 0 || CUTSTOPGAME != 0 || MiniCutCam == 1 || MiniCutCam == 2 || MiniCutCam == 3 || SuperStory != 0 ||
-        BonusArea != 0 || (world->current_level->flags & 0x200) != 0 || (world->area != NULL && (world->area->flags & 0x124) != 0) ||
+        BonusArea != 0 || (world->current_level->flags & LEVEL_TEST) != 0 ||
+        (world->area != NULL && (world->area->flags & (AREAFLAG_BONUS_AREA | AREAFLAG_TEST_AREA | AREAFLAG_SUPER_BONUS)) != 0) ||
         GetMenuID() != -1 || FadeSys.fade != 0.0f ||
         (world->area != NULL && world->area == HUB_ADATA && Hub_PanelBusyFn != NULL && Hub_PanelBusyFn() != 0)) {
         available = 0;

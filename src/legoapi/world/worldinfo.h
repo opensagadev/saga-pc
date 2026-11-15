@@ -74,5 +74,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-enum { AREAFLAG_SINGLE_BUFFER = 8 };

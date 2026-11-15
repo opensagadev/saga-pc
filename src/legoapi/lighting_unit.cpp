@@ -644,7 +644,8 @@ extern "C" void SetShadowLight(void) {
     target.x = center.x;
     target.y = ShadowLightFocusHeight + center.y;
     target.z = center.z;
-    i32 alternate = WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0 && (WORLD->current_level->flags & 0x400) == 0;
+    i32 alternate =
+        WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS) != 0 && (WORLD->current_level->flags & LEVEL_STATUS) == 0;
     if (CutStopInfo != NULL) {
         direction = WORLD->shadow_editor->direction;
         secondary_strength = WORLD->shadow_editor->unknown_0c;

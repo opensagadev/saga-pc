@@ -147,7 +147,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
         ADD_SFX("SwLever");
     }
 
-    if (world->area == NULL || (world->area->flags & 1) == 0) {
+    if (world->area == NULL || (world->area->flags & AREAFLAG_VEHICLE_AREA) == 0) {
         ADD_SFX("Char_Slide_Lp");
         if (view->push_block_count > 0) {
             ADD_SFX("Block_Shove");
@@ -170,7 +170,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
         if (level->sfx_ambient != -1) {
             sfx_ids[sfx_count++] = level->sfx_ambient;
         }
-        if (level == STATUS_LDATA || (level->flags & 0x400) != 0) {
+        if (level == STATUS_LDATA || (level->flags & LEVEL_STATUS) != 0) {
             ADD_SFX("StatusAward");
             ADD_SFX("Status_GoldBarDec");
             ADD_SFX("TrueJedi_100pc");
@@ -183,7 +183,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("Explode1");
             ADD_SFX("Jp_Ana_Jump");
             ADD_SFX("PickupCoin");
-        } else if (world->area != NULL && (world->area->flags & 4) != 0) {
+        } else if (world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0) {
             ADD_SFX("Victory");
             ADD_SFX("exp_debris");
         } else if (level == CREDITS_LDATA) {
@@ -442,7 +442,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
     }
 
     level = world->current_level;
-    if (apicharsys->loaded_model_count > 0 && (level->flags & 2) != 0 && VehicleArea == 0) {
+    if (apicharsys->loaded_model_count > 0 && (level->flags & LEVEL_GAMEPLAY) != 0 && VehicleArea == 0) {
         ADD_GAME_SFX(0x14);
         ADD_GAME_SFX(0x15);
     }
@@ -562,7 +562,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
     }
 
     level = world->current_level;
-    double_score_sfx = Arcade != 0 || ((level->flags & 0x800) != 0);
+    double_score_sfx = Arcade != 0 || ((level->flags & LEVEL_DOUBLE_SCORE) != 0);
     if (!double_score_sfx) {
         for (portal = 0x13; portal <= 0x17; ++portal) {
             if (world->camera_splines[portal] != NULL) {

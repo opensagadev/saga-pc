@@ -639,7 +639,7 @@ extern "C" {
             MenuUpdateButtonHistory();
         }
         menu_active = GetMenuID() != -1;
-        if (WORLD != NULL && (WORLD->current_level->flags & 0x400) != 0) {
+        if (WORLD != NULL && (WORLD->current_level->flags & LEVEL_STATUS) != 0) {
             menu_active = 1;
         }
         if (Hub_InMenu() != 0) {

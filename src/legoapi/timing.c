@@ -94,20 +94,20 @@ void GameTiming(WORLDINFO *world, f32 *game_time) {
         if (CUTSTOPGAME != 0) {
             DoubleScoreTime = 0.0f;
         } else {
-            if (world->current_level != NULL && (world->current_level->flags & 2) != 0 && pause_rndr_on == 0 &&
+            if (world->current_level != NULL && (world->current_level->flags & LEVEL_GAMEPLAY) != 0 && pause_rndr_on == 0 &&
                 (Player[0] != NULL || Player[1] != NULL)) {
                 UpdateTimer(&GamePlayTimer);
                 UpdateTimer(&OverallGamePlayTimer);
                 if (BonusWinner == -1) {
                     UpdateTimer(&BonusTimer);
                 }
-                if ((world->current_level->flags & 0x2000) != 0) {
+                if ((world->current_level->flags & LEVEL_SHOW_COIN_TOTAL) != 0) {
                     UpdateTimer(&SuperStoryTimer);
                     if (SuperStoryTimer.time_elapsed > 36000.0f) {
                         ResetTimer(&SuperStoryTimer, 36000.0f);
                     }
                 }
-                if (world->area != NULL && (world->area->flags & 0x10) != 0) {
+                if (world->area != NULL && (world->area->flags & AREAFLAG_MINIKIT) != 0) {
                     if (ChallengeMode == 1) {
                         UpdateTimer(&ChallengeTimer);
                         if (Game_AreaSave != NULL && ChallengeTimer.time_elapsed >=

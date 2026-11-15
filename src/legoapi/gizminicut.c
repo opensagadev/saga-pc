@@ -303,8 +303,8 @@ void fun_005b1030(i32 frames) {
 }
 
 void fun_005b1040(void) {
-    if (CUTSTOPGAME == 0 && WORLD->current_level != NULL && (WORLD->current_level->flags & 0xe0) == 0 &&
-        WORLD->current_level != TITLES_LDATA) {
+    if (CUTSTOPGAME == 0 && WORLD->current_level != NULL &&
+        (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && WORLD->current_level != TITLES_LDATA) {
         PlaySfx("WipeScreen", NULL);
     }
 }

@@ -41,7 +41,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
         i32 resident_count;
 
         area->hub_player_ids = NULL;
-        if ((area->flags & 0x0002) != 0) {
+        if ((area->flags & AREAFLAG_ENDING_AREA) != 0) {
             continue;
         }
 
@@ -105,7 +105,7 @@ LEVELDATA_PC *Area_FindStatusLevel(AREA_DATA_PC *area, i32 *index_out) {
     }
     if (area != NULL) {
         for (index = 0; index < area->level_count; ++index) {
-            if ((LDataList[area->levels[index]].flags & 0x400) != 0) {
+            if ((LDataList[area->levels[index]].flags & LEVEL_STATUS) != 0) {
                 if (index_out != NULL) {
                     *index_out = area->levels[index];
                 }
@@ -128,7 +128,7 @@ LEVELDATA_PC *Area_FindNextPlayLevel(i32 level_index) {
         for (; area_level_index < last; ++area_level_index) {
             const i32 next = ADataList[area_index].levels[area_level_index];
 
-            if ((LDataList[next].flags & 0xe0) == 0) {
+            if ((LDataList[next].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0) {
                 return &LDataList[next];
             }
         }
@@ -212,7 +212,7 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
         if (in_area != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, "area_end") == 0) {
                 in_area = 0;
-                if (area->dir[0] != '\0' && area->file[0] != '\0' && area->level_count > 0 && (area->flags & 0x20) == 0) {
+                if (area->dir[0] != '\0' && area->file[0] != '\0' && area->level_count > 0 && (area->flags & AREAFLAG_TEST_AREA) == 0) {
                     ++area_count;
                     ++area;
                 }
@@ -243,39 +243,39 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
                     }
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "single_buffer") == 0) {
-                area->flags |= 0x0008;
+                area->flags |= AREAFLAG_SINGLE_BUFFER;
             } else if (NuStrICmp(parser->word_buffer_ptr, "minikit") == 0) {
-                area->flags |= 0x0010;
+                area->flags |= AREAFLAG_MINIKIT;
                 if (NuFParGetWord(parser) != 0) {
                     area->minikit_id = (i16)CharIDFromName(parser->word_buffer_ptr);
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "test_area") == 0) {
-                area->flags |= 0x0020;
+                area->flags |= AREAFLAG_TEST_AREA;
             } else if (NuStrICmp(parser->word_buffer_ptr, "hub_area") == 0) {
-                area->flags |= 0x0040;
+                area->flags |= AREAFLAG_HUB_AREA;
             } else if (NuStrICmp(parser->word_buffer_ptr, "override_things_scene") == 0) {
-                area->flags |= 0x0400;
+                area->flags |= AREAFLAG_OVERRIDE_THINGS_SCENE;
             } else if (NuStrICmp(parser->word_buffer_ptr, "vehicle_area") == 0) {
-                area->flags |= 0x0001;
+                area->flags |= AREAFLAG_VEHICLE_AREA;
             } else if (NuStrICmp(parser->word_buffer_ptr, "ending_area") == 0) {
-                area->flags |= 0x0002;
+                area->flags |= AREAFLAG_ENDING_AREA;
             } else if (NuStrICmp(parser->word_buffer_ptr, "bonus_area") == 0) {
-                area->flags |= 0x0004;
+                area->flags |= AREAFLAG_BONUS_AREA;
             } else if (NuStrICmp(parser->word_buffer_ptr, "super_bonus_area") == 0) {
-                area->flags |= 0x0104;
+                area->flags |= AREAFLAG_SUPER_BONUS_AREA;
             } else if (NuStrICmp(parser->word_buffer_ptr, "nocharactercollision") == 0 ||
                        NuStrICmp(parser->word_buffer_ptr, "nocharactercollisions") == 0 ||
                        NuStrICmp(parser->word_buffer_ptr, "no_character_collision") == 0 ||
                        NuStrICmp(parser->word_buffer_ptr, "no_character_collisions") == 0) {
-                area->flags |= 0x0080;
+                area->flags |= AREAFLAG_NO_CHARACTER_COLLISION;
             } else if (NuStrICmp(parser->word_buffer_ptr, "nopickupgravity") == 0) {
-                area->flags |= 0x0200;
+                area->flags |= AREAFLAG_NOPICKUPGRAVITY;
             } else if (NuStrICmp(parser->word_buffer_ptr, "no_gold_brick") == 0) {
-                area->flags |= 0x0800;
+                area->flags |= AREAFLAG_NO_GOLD_BRICK;
             } else if (NuStrICmp(parser->word_buffer_ptr, "no_completion_points") == 0) {
-                area->flags |= 0x2000;
+                area->flags |= AREAFLAG_NO_COMPLETION_POINTS;
             } else if (NuStrICmp(parser->word_buffer_ptr, "no_freeplay") == 0) {
-                area->flags |= 0x1000;
+                area->flags |= AREAFLAG_NO_FREEPLAY;
             } else if (NuStrICmp(parser->word_buffer_ptr, "name_id") == 0) {
                 area->name_id = (i16)NuFParGetInt(parser);
             } else if (NuStrICmp(parser->word_buffer_ptr, "text_id") == 0) {
@@ -327,17 +327,17 @@ AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_e
         }
         for (index = 0; index < area_count; ++index) {
             if (area_base[index].challenge_trial_time == 0) {
-                if ((area_base[index].flags & 0x0104) == 0x0004) {
+                if ((area_base[index].flags & AREAFLAG_SUPER_BONUS_AREA) == 0x0004) {
                     area_base[index].challenge_trial_time = AREA_DEFAULTBONUSTIMETRIALTIME;
-                } else if ((area_base[index].flags & 0x0010) != 0) {
+                } else if ((area_base[index].flags & AREAFLAG_MINIKIT) != 0) {
                     area_base[index].challenge_trial_time = AREA_DEFAULTCHALLENGETIME;
                 }
             }
             if (area_base[index].cheat != -1) {
                 Cheat_SetArea(area_base[index].cheat, index);
             }
-            if (area_base[index].challenge_trial_time > 0 && (area_base[index].flags & 0x0104) == 0 &&
-                (area_base[index].flags & 0x0010) != 0) {
+            if (area_base[index].challenge_trial_time > 0 && (area_base[index].flags & AREAFLAG_SUPER_BONUS_AREA) == 0 &&
+                (area_base[index].flags & AREAFLAG_MINIKIT) != 0) {
                 area_base[index].challenge_trial_time = 1200;
             }
         }
@@ -659,7 +659,7 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
                 const i32 action = music_man.GetTrackHandle(2, fp->word_buffer_ptr);
                 const i32 silence = music_man.GetTrackHandle(32, fp->word_buffer_ptr);
                 for (index = 0; index < area_data->level_count; ++index) {
-                    if ((LDataList[area_data->levels[index]].flags & 0xe2) == 2) {
+                    if ((LDataList[area_data->levels[index]].flags & (LEVEL_GAMEPLAY | LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 2) {
                         LDataList[area_data->levels[index]].music_index = area_data->area_music;
                         LDataList[area_data->levels[index]].music_other_index = area_data->area_music;
                         LDataList[area_data->levels[index]].music_tracks[0] = quiet;

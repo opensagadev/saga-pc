@@ -1024,7 +1024,7 @@ extern "C" {
             NuStrCpy(config_path, path);
             NuStrCat(config_path, ".txt");
             CutScene_Configure(cut, config_path, buf, buf_end);
-            if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[level].flags & 0xe0) != 0) {
+            if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[level].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0) {
                 NuStrCpy(config_path, path);
                 NuStrCat(config_path, ".cu2");
                 cut->scene = NuGCutSceneLoad(config_path, buf, buf_end, 0);
@@ -1119,7 +1119,7 @@ extern "C" CUT_LOAD_SYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gsc
         NuStrCat(full_path, name);
         NuStrCat(full_path, ".txt");
 
-        if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[param3].flags & 0xe0) != 0) {
+        if ((cut->flags & 0x800) != 0 || InStory() != 0 || (LDataList[param3].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0) {
             buf->void_ptr = (char *)((buf->addr + 63) & ~63U);
             NuStrCpy(full_path, "cut\\");
             NuStrCat(full_path, name);
@@ -2065,7 +2065,7 @@ extern "C" {
             clips = (CUT_PLAYER_CLIP_CONFIG *)CutScenePlayer->clips;
             area_id = LDataList[clips[clip_id].level_id].area_index;
             if (area_id != -1) {
-                if ((ADataList[area_id].flags & 2) != 0) {
+                if ((ADataList[area_id].flags & AREAFLAG_ENDING_AREA) != 0) {
                     episode = ADataList[area_id].episode_index;
                     if (episode != -1 && Episode_IsComplete(&EDataList[episode], NULL) != 0) {
                         return 2;
@@ -2149,7 +2149,7 @@ extern "C" {
                 NuStrCpy(subtitle, "?");
                 return;
             }
-            if ((ADataList[area_id].flags & 2) != 0) {
+            if ((ADataList[area_id].flags & AREAFLAG_ENDING_AREA) != 0) {
                 episode = (i8)level->episode;
                 if (episode == -1) {
                     NuStrCpy(subtitle, "?");
@@ -2291,7 +2291,7 @@ extern "C" {
         CutSceneWaiting = 0;
         cutaudiopaused = 0;
         if (world->cutscene_sys != NULL && reset_restart != 0 &&
-            ((world->current_level->flags & 0xe0) != 0 || world->level_progress == NULL ||
+            ((world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0 || world->level_progress == NULL ||
              (reinterpret_cast<CUT_CONTROLLER_PROGRESS *>(world->level_progress)->scene_flags & 2) == 0)) {
             CUTINFO *cut = NULL;
             CUTSYS_PC *system = world->cutscene_sys;
@@ -2501,11 +2501,11 @@ extern "C" {
                 if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL) {
                     NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                     RenderHubFromCutscenePlayer = 1;
-                } else if (WORLD->area != NULL && (WORLD->area->flags & 2) != 0) {
+                } else if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_ENDING_AREA) != 0) {
                     NewLData = SuperStory != 0 ? STATUS_LDATA : CREDITS_LDATA;
                 }
             } else if (CutScenePlayer != NULL && reinterpret_cast<CUT_CONTROLLER_PLAYER *>(CutScenePlayer)->active != NULL &&
-                       (NewLData->flags & 0xe0) == 0 && (stop_cut->end_flags & 2) == 0) {
+                       (NewLData->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && (stop_cut->end_flags & 2) == 0) {
                 NewLevelFromMenu(HUB_LDATA, -1, -1, 1);
                 RenderHubFromCutscenePlayer = 1;
             }

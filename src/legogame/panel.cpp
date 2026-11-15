@@ -119,7 +119,7 @@ extern "C" {
         i32 freeplay;
         u32 maximum;
         i32 i;
-        if ((WORLD->current_level->flags & 2) == 0) {
+        if ((WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
             return;
         }
         if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 && newgamecam == 0 &&
@@ -192,7 +192,7 @@ extern "C" {
                 }
                 builduptime = SeekLinearF(builduptime, target, FRAMETIME);
                 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
-                if (WORLD->area != NULL && (WORLD->area->flags & 0x10) != 0) {
+                if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_MINIKIT) != 0) {
                     if (HubBothTrueJediGoldBricks != 0) {
                         if (Game.area_save[WORLD->area_index].true_hero_complete[freeplay] != 0) {
                             goto buildup_finished;
@@ -224,7 +224,7 @@ extern "C" {
             buildup_finished:;
             }
         }
-        if (SuperStory != 0 && (WORLD->current_level->flags & 0x2000) != 0) {
+        if (SuperStory != 0 && (WORLD->current_level->flags & LEVEL_SHOW_COIN_TOTAL) != 0) {
             DrawCoinTotalTime = 1.0f;
         }
         if (DrawCoinTotalTime > 0.0f) {
@@ -436,7 +436,7 @@ extern "C" {
         i32 total;
         char text[64];
         char auxiliary[64];
-        if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & 2) == 0) {
+        if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
             return;
         }
         time = source == 2 ? statstime : cointotaltime;
@@ -638,7 +638,7 @@ extern "C" {
 
     i32 InDoubleScoreZone(GAMEOBJECT *object) {
         i32 i;
-        if ((WORLD->current_level->flags & 0x800) != 0) {
+        if ((WORLD->current_level->flags & LEVEL_DOUBLE_SCORE) != 0) {
             return 1;
         }
         for (i = 19; i <= 23; ++i) {
@@ -671,13 +671,13 @@ extern "C" {
         i32 player;
         char text[256];
         char auxiliary[64];
-        if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & 2) == 0) {
+        if (FadeSys.fade != 0.0f || (WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
             return;
         }
         arcade_mode = Arcade_GetMode(&arcade_flags);
         status_y = (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y;
-        raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & 0x100) != 0)) || SuperStory != 0 ||
-                        ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
+        raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & AREAFLAG_SUPER_BONUS) != 0)) ||
+                        SuperStory != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
         GetMenuID();
         flash_alpha =
             (i32)((f64)NuTrigTable[((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1)] * 16.0 +
@@ -828,7 +828,7 @@ extern "C" {
             if (WORLD->area != NULL) {
                 i32 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
                 if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
-                    (WORLD->area->flags & 0x10) != 0 &&
+                    (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&
                     (HubBothTrueJediGoldBricks != 0 ? Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0
                                                     : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
                                                           Game.area_save[WORLD->area_index].true_hero_complete[1] == 0)) {
@@ -840,13 +840,13 @@ extern "C" {
                     }
                 }
                 if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
-                    ((WORLD->area->flags & 0x10) != 0 ||
-                     ((WORLD->current_level->flags & 0x200) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
+                    ((WORLD->area->flags & AREAFLAG_MINIKIT) != 0 ||
+                     ((WORLD->current_level->flags & LEVEL_TEST) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
                     DrawMiniKitCount(minikittime, MiniKitScale, ChallengeMode != 0 ? AreaGlobals.unknown_20 : AreaGlobals.progress_flags,
                                      10);
                 }
                 if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
-                    (WORLD->area->flags & 0x10) != 0 &&
+                    (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&
                     (AreaGlobals.unknown_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
                     redbrickslidetime > 0.0f) {
                     f32 factor = NuTrigTable[((i32)((f64)redbrickslidetime * 16384.0) >> 1) & 0x7fff];
@@ -862,7 +862,7 @@ extern "C" {
                 DrawInDoubleScoreZone(DoubleScoreTime);
             }
         }
-        if (BonusArea != 0 && WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4) {
+        if (BonusArea != 0 && WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS_AREA) == 4) {
             DrawBonusScore(status_y, Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0,
                            Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0, 1.0f, Arcade != 0 ? Arcade_Points : BonusScore);
         }
@@ -1182,7 +1182,7 @@ extern "C" {
             Customiser_TransformToPanel(CharacterCustomiser);
         }
         paused = screendump != 0 ? save_paused : Paused;
-        if (NuMainSkipCutBorders != 0 && paused == 0 && (WORLD->current_level->flags & 2) != 0) {
+        if (NuMainSkipCutBorders != 0 && paused == 0 && (WORLD->current_level->flags & LEVEL_GAMEPLAY) != 0) {
             return;
         }
         const i32 loading_level = waiting_for_level;
@@ -1223,7 +1223,7 @@ extern "C" {
                 NuPadMapPlayerToPort(1, PcInput_GetFirstKeyboardPort() + 3);
             }
         }
-        if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & 0x400) != 0) {
+        if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & LEVEL_STATUS) != 0) {
             if (WORLD->current_level->callbacks[6] != NULL) {
                 ((void (*)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
             }
@@ -1237,8 +1237,9 @@ extern "C" {
             if ((menu != 12 || customiser_quit != 0) && (menu != 13 || shop_quit != 0) && menu != 14 && menu != 8) {
                 DrawPlayerHud(paused);
             }
-            if (StartupGameFlag1 == 0 && LevelNameTime > 0.0f && (WORLD->current_level->flags & 0xe0) == 0 &&
-                WORLD->current_level != TITLES_LDATA && WORLD->current_level != CREDITS_LDATA) {
+            if (StartupGameFlag1 == 0 && LevelNameTime > 0.0f &&
+                (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 && WORLD->current_level != TITLES_LDATA &&
+                WORLD->current_level != CREDITS_LDATA) {
                 LEVELDATA_PC *level = WORLD->current_level;
                 char *name =
                     level->title_text_id != 0xffff && level->title_text_id != (u16)tUNKNOWN ? TTab[(i16)level->title_text_id] : level->name;
@@ -1255,13 +1256,13 @@ extern "C" {
             if (WORLD->area == HUB_ADATA) {
                 DrawCoinTotal(0, hide_super_story_target);
             } else if (SuperStory != 0) {
-                if ((WORLD->current_level->flags & 0x2000) != 0) {
+                if ((WORLD->current_level->flags & LEVEL_SHOW_COIN_TOTAL) != 0) {
                     DrawCoinTotal(1, hide_super_story_target);
                 }
             } else if (BonusArea != 0 && Arcade != 0) {
                 Arcade_DrawPanel(Paused != 0 || NetPaused != 0);
             } else if (BonusArea != 0) {
-                if ((WORLD->area->flags & 0x100) != 0) {
+                if ((WORLD->area->flags & AREAFLAG_SUPER_BONUS) != 0) {
                     DrawCoinTotal(2, hide_super_story_target);
                     if ((f64)DrawCoinTotalY != 2000000.0) {
                         Text_MakeScore(BonusCoinTarget, bonus_score);
@@ -1272,7 +1273,7 @@ extern "C" {
                                  255, 48);
                     }
                 }
-                if (FadeSys.fade == 0.0f && (WORLD->current_level->flags & 2) != 0) {
+                if (FadeSys.fade == 0.0f && (WORLD->current_level->flags & LEVEL_GAMEPLAY) != 0) {
                     DrawSuperStoryTime(
                         -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y),
                         BonusTimer.time_elapsed, Game.area_save[WORLD->area_index].challenge_trial_time, 0, 1);
@@ -1327,7 +1328,7 @@ extern "C" {
             CutScene_DrawSubtitles();
             goto draw_menu;
         }
-        if (WORLD->current_level->callbacks[6] == NULL && (WORLD->current_level->flags & 2) == 0) {
+        if (WORLD->current_level->callbacks[6] == NULL && (WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
             goto draw_menu;
         }
         for (player_index = 0; player_index < 8; ++player_index) {
@@ -1478,7 +1479,8 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
     i32 id;
-    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 || (WORLD->current_level->flags & 0x800000) != 0) {
+    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
+        (WORLD->current_level->flags & LEVEL_HIDE_ICONS) != 0) {
         return;
     }
     if (Tag_NoHiddenIconFn != NULL && Tag_NoHiddenIconFn(object) != 0) {

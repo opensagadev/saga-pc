@@ -352,7 +352,7 @@ i32 GizForces_Load(void *world_pointer, void *system_pointer) {
         }
         if (version >= 10) {
             force->activation_radius = EdFileReadFloat();
-        } else if (world->area != NULL && (world->area->flags & 1)) {
+        } else if (world->area != NULL && (world->area->flags & AREAFLAG_VEHICLE_AREA)) {
             force->activation_radius = 12.0f;
         } else {
             force->activation_radius = 1.75f;

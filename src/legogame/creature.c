@@ -1672,7 +1672,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 api->position.x += api->velocity.x * FRAMETIME;
                 api->position.y += api->velocity.y * FRAMETIME;
                 api->position.z += api->velocity.z * FRAMETIME;
-            } else if (shadow_grounding || retain_floor || (WORLD->current_level->flags & 0x10) != 0) {
+            } else if (shadow_grounding || retain_floor || (WORLD->current_level->flags & LEVEL_FLAT_TERRAIN) != 0) {
                 api->respawn_timer = 0.0f;
                 if ((api->flags_1fc_word & 4) == 0) {
                     f32 grounded_lower_bound;
@@ -2287,7 +2287,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
             }
 
             if ((object->portal_flags & 0x40000) == 0 && ((TERRAIN_PLAYER_SET *)(CurrentTerrain)) != NULL && api->dead == 0 &&
-                (WORLD->current_level->flags & 0xe0) == 0 &&
+                (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0 &&
                 (((((TERRAIN_PLAYER_SET *)(CurrentTerrain))->minimum_height))) - 5.0f > api->position.y) {
                 if (api->model_draw_result != 0) {
                     InstantKillParts(object, 0, 0.0f);
@@ -3678,7 +3678,7 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     if (parameter != 0) {
         object->flags_1f8 |= 0x4000;
     }
-    if ((WORLD->current_level->flags & 0x40000) == 0) {
+    if ((WORLD->current_level->flags & LEVEL_IN_SPACE) == 0) {
         object->flags_1f8 |= 0x40;
     }
     object->pad = GamePad_Allocate();
@@ -4675,7 +4675,7 @@ void Players_Init(void) {
         return;
     }
     PLAYERCOUNT = 0;
-    if ((WORLD->current_level->flags & 2) != 0) {
+    if ((WORLD->current_level->flags & LEVEL_GAMEPLAY) != 0) {
         if (FreePlay == 0 && (Hub_UsePlayerList == 0 || HUB_ADATA == NULL || WORLD->area != HUB_ADATA) &&
             (UsePlayerList != 1 || (PlayerList[0] != -1 && (apicharsys->playermodelids[PlayerList[0]] == -1 ||
                                                             (PlayerList[1] != -1 && apicharsys->playermodelids[PlayerList[1]] == -1))))) {
@@ -4684,8 +4684,9 @@ void Players_Init(void) {
             list = PlayerList;
         }
         if (LevelChangesInArea == 0 && UsePlayerList != 0 && progress[0].active == 0 && progress[1].active != 0 && FreePlay == 0 &&
-            (WORLD->area->flags & 5) == 1 && list[0] != -1 && list[0] == Area_StoryModelList[0].model_id && list[1] != -1 &&
-            list[1] == Area_StoryModelList[1].model_id && list[0] != list[1]) {
+            (WORLD->area->flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 1 && list[0] != -1 &&
+            list[0] == Area_StoryModelList[0].model_id && list[1] != -1 && list[1] == Area_StoryModelList[1].model_id &&
+            list[0] != list[1]) {
             i16 first = list[0];
             list[0] = list[1];
             list[1] = first;

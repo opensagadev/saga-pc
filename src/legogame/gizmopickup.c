@@ -167,7 +167,8 @@ static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
     if (effect == -1) {
         return;
     }
-    count = ParticlesPerSecond(WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4 ? PartExtraCoinRate * 0.5 : PartExtraCoinRate,
+    count = ParticlesPerSecond(WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS_AREA) == 4 ? PartExtraCoinRate * 0.5
+                                                                                                            : PartExtraCoinRate,
                                FRAMETIME);
     if (count > 0) {
         AddVariableShotDebrisEffect(effect, position, count, 0, 0);
@@ -216,7 +217,7 @@ void EndScoreMessage(GAME_MESSAGE_PC *message) {
             IncreaseScore(&SuperStoryScore, message->score, 0);
         } else {
             world = WorldInfo_CurrentlyActive();
-            if (world->area != NULL && (world->area->flags & 0x100)) {
+            if (world->area != NULL && (world->area->flags & AREAFLAG_SUPER_BONUS)) {
                 if ((u32)BonusCoinTotal < BonusCoinTarget) {
                     IncreaseScore((u32 *)&BonusCoinTotal, message->score, 0);
                     if ((u32)BonusCoinTotal >= BonusCoinTarget) {
@@ -305,7 +306,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
         case 2:
         case 3:
             if (object != NULL) {
-                if (world->area != NULL && (world->area->flags & 0x104) == 4) {
+                if (world->area != NULL && (world->area->flags & AREAFLAG_SUPER_BONUS_AREA) == 4) {
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
                 } else {
                     NewBuzz(object->pad->bound_pad, 0.1f, 0);
@@ -641,7 +642,7 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
     params.collision_fn = PartCollide_3D;
     params.update_fn = PartUpdate_Heart;
     params.flags = 0x256;
-    if ((world->current_level->flags & 0x80000) != 0) {
+    if ((world->current_level->flags & LEVEL_PICKUPS_TO_PANEL) != 0) {
         params.unknown_a4 = PartVehicleHeartLifetime;
         params.move_fn = PartMove_VehicleHeart;
         params.recipient = recipient;
@@ -760,7 +761,7 @@ u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *build
     if (turrets != NULL) {
         *turrets = value;
     }
-    if (world->area != NULL && (world->area->flags & 0x100) != 0) {
+    if (world->area != NULL && (world->area->flags & AREAFLAG_SUPER_BONUS) != 0) {
         value = GameAI_TotalScore();
     } else {
         value = 0;
@@ -950,7 +951,7 @@ void GizmoPickups_SetOnOff(void) {
                 off = 0;
             } else if (index == 4 && SuperStory != 0) {
                 off = 0;
-            } else if (index == 9 && WORLD->area != NULL && (WORLD->area->flags & 0x100) != 0) {
+            } else if (index == 9 && WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS) != 0) {
                 off = 0;
             } else if ((arcade_flags & 0x10) != 0 && index != 5 && index != 9) {
                 off = 0;
@@ -1216,10 +1217,10 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
     if (arcade_flags & 0x10) {
         coins = torpedoes = 0;
     }
-    if (world->area != NULL && (world->area->flags & 0x104) == 4) {
+    if (world->area != NULL && (world->area->flags & AREAFLAG_SUPER_BONUS_AREA) == 4) {
         random_types = 0;
     }
-    if (world->current_level->flags & 0x80000) {
+    if (world->current_level->flags & LEVEL_PICKUPS_TO_PANEL) {
         to_panel = 1;
         if (player_id == -1) {
             if (player2 != NULL) {
@@ -1230,7 +1231,7 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
                 player_id = 1;
             }
         }
-    } else if (world->area != NULL && (world->area->flags & 0x100)) {
+    } else if (world->area != NULL && (world->area->flags & AREAFLAG_SUPER_BONUS)) {
         player_id = qrand() / 32768;
         to_panel = 1;
     } else {
@@ -1330,7 +1331,7 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
         MakePartVector(&velocity, direction, speed);
         AddTorpedoAsPart(position, &velocity, scale, lifetime);
     }
-    if (!(world->current_level->flags & 0x80000)) {
+    if (!(world->current_level->flags & LEVEL_PICKUPS_TO_PANEL)) {
         for (i = 0; i < powerups; ++i) {
             MakePartVector(&velocity, direction, speed);
             PowerUp_AddPart(position, &velocity, scale, lifetime);

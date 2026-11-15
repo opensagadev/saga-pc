@@ -151,7 +151,8 @@ i32 Game_Exit(i32 last_area) {
 }
 
 extern "C" LEVELDATA_PC *CanSaveAndExit(WORLDINFO *world) {
-    if (GAMEDEMO == 0 && SuperStory == 0 && world->area != NULL && world->area != HUB_ADATA && (world->area->flags & 0x146) == 0 &&
+    if (GAMEDEMO == 0 && SuperStory == 0 && world->area != NULL && world->area != HUB_ADATA &&
+        (world->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_HUB_AREA | AREAFLAG_SUPER_BONUS)) == 0 &&
         Mission_Active(NULL) == NULL && ChallengeMode == 0 && Arcade == 0 && CutScenePlayer_Active() == NULL && Game_AreaSave != NULL &&
         reinterpret_cast<AREASAVE_s *>(Game_AreaSave)[world->area_index].area_complete != 0 && AreaGlobals.unknown_18 > 0) {
         return Area_FindStatusLevel(world->area, NULL);

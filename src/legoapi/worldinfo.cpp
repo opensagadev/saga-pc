@@ -438,7 +438,7 @@ extern "C" {
         LEVELDATA_PC *level = world->current_level;
 
         world->terrain = NULL;
-        if ((level->flags & 8) != 0) {
+        if ((level->flags & LEVEL_TERRAIN) != 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3U;
             world->terrain =
                 TerrainInitEx(world->level_idx, &world->giz_buffer, world->buffer_end.void_ptr, 0, world->config_file, world->current_gscn,
@@ -629,7 +629,7 @@ extern "C" {
             newlevelfrommenu_newmenuy = -1;
         }
         if (world->area != NULL) {
-            if ((world->area->flags & 4) != 0) {
+            if ((world->area->flags & AREAFLAG_BONUS_AREA) != 0) {
                 NextArea_FreePlay = 1;
                 FreePlay = 1;
             } else if (world->area == HUB_ADATA) {
@@ -643,7 +643,7 @@ extern "C" {
             NuSound3Update();
         }
         ResetTimer(&LevelTimer, 0.0f);
-        if ((world->current_level->flags & 0xe0) == 0) {
+        if ((world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0) {
             WorldInfo_LoadObjectAnimFile(world);
         }
         ((WORLD_INITIAL_RESET *)world)->initialized = 1;
@@ -682,7 +682,7 @@ extern "C" {
         (void)bg_info;
         LOG_INFO("Stream level begin: next_level=%d", next_level);
         PCDeviceResetState();
-        if (LWORLD == WORLD && (Area == -1 || (ADataList[Area].flags & 8) == 0)) {
+        if (LWORLD == WORLD && (Area == -1 || (ADataList[Area].flags & AREAFLAG_SINGLE_BUFFER) == 0)) {
             LWORLD = LWORLD == &WorldInfo[0] ? &WorldInfo[1] : &WorldInfo[0];
         }
         if (WorldInfo_Reset(LWORLD, next_level) != 0) {
@@ -705,7 +705,7 @@ extern "C" {
         f32 distance;
         AREA_LEVEL_LOAD *load;
         LEVELDATA_PC *status;
-        if (LOADEROFF != 0 || BGLOAD == 0 || world->area == NULL || (world->area->flags & 8) || NewLData != NULL ||
+        if (LOADEROFF != 0 || BGLOAD == 0 || world->area == NULL || (world->area->flags & AREAFLAG_SINGLE_BUFFER) || NewLData != NULL ||
             Mission_Active(NULL) != NULL) {
             return;
         }
@@ -716,7 +716,8 @@ extern "C" {
             } else if (CUTSTOPGAME != 0 && (cut = (CUTINFO *)CutStopInfo) != NULL && cut->skip_level != -1 &&
                        LDataList[cut->skip_level].area_index == LDataList[world->level_idx].area_index) {
                 other_level = cut->skip_level;
-            } else if (!(world->current_level->flags & 0xe0) && Players_AveragePos(&position, NULL) != 0) {
+            } else if (!(world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) &&
+                       Players_AveragePos(&position, NULL) != 0) {
                 best_distance = 1000000000.0f;
                 other_level = -1;
                 for (i = 0; i < world->door_count; ++i) {
@@ -749,16 +750,16 @@ extern "C" {
                         }
                     }
                 }
-                if (other_level != -1 && InStory() == 0 && (LDataList[other_level].flags & 0x80)) {
+                if (other_level != -1 && InStory() == 0 && (LDataList[other_level].flags & LEVEL_OUTRO)) {
                     status = Area_FindStatusLevel(world->area, NULL);
                     if (status != NULL) {
                         other_level = status->index;
                     }
                 }
-                if (other_level != -1 && InStory() == 0 && (LDataList[other_level].flags & 0xe0)) {
+                if (other_level != -1 && InStory() == 0 && (LDataList[other_level].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO))) {
                     other_level = -1;
                 }
-                if (other_level != -1 && CutScenePlayer_Active() != NULL && (LDataList[other_level].flags & 0x400)) {
+                if (other_level != -1 && CutScenePlayer_Active() != NULL && (LDataList[other_level].flags & LEVEL_STATUS)) {
                     other_level = -1;
                 }
             }

@@ -287,10 +287,10 @@ void PadOutPause(i32 index, WORLDINFO *world) {
     if (MiniCutCam) {
         return;
     }
-    if (world->area && (world->area->flags & 2)) {
+    if (world->area && (world->area->flags & AREAFLAG_ENDING_AREA)) {
         return;
     }
-    if (world->current_level->flags & 0xe0) {
+    if (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) {
         return;
     }
     if (GetMenuID() != -1) {
@@ -314,7 +314,7 @@ i32 ReadPad(i32 port) {
     if (GamePads_IgnoreInputFn != NULL && GamePads_IgnoreInputFn() != 0) {
         mode = 1;
     } else if (readpads_always != 0 || world == NULL || world->current_level == NULL || world->current_level == TITLES_LDATA ||
-               world->current_level == CREDITS_LDATA || (world->current_level->flags & 0x400) != 0) {
+               world->current_level == CREDITS_LDATA || (world->current_level->flags & LEVEL_STATUS) != 0) {
         mode = 2;
     } else {
         mode = 1;

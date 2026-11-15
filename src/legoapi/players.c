@@ -101,7 +101,7 @@ extern i32 complexsockposition_forcesock;
 extern i32 movegamecamera_forcesock;
 
 void Players_InitPositions(WORLDINFO *world) {
-    i32 bonus = world->area != NULL && (world->area->flags & 4) != 0;
+    i32 bonus = world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0;
     NUGSPLINE *spline;
     i32 first_pair;
     i32 index;
@@ -158,7 +158,7 @@ void Players_InitPositions(WORLDINFO *world) {
         } else if (last_area != -1) {
             i32 area = last_area;
             i32 episode;
-            if ((ADataList[area].flags & 4) != 0 && (episode = ADataList[area].episode_index) != -1) {
+            if ((ADataList[area].flags & AREAFLAG_BONUS_AREA) != 0 && (episode = ADataList[area].episode_index) != -1) {
                 area = Episode_FindAreaFromFlags(&EDataList[episode], 5, 5);
                 if (area == -1) {
                     area = last_area;
@@ -204,7 +204,8 @@ void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     if (VehicleArea != 0 || GAMEDEMO != 0) {
         return;
     }
-    if (force == 0 && (!(WORLD->current_level->flags & 2) || (WORLD->current_level->flags & 0x4e0))) {
+    if (force == 0 && (!(WORLD->current_level->flags & LEVEL_GAMEPLAY) ||
+                       (WORLD->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO | LEVEL_STATUS)))) {
         return;
     }
     ids[0] = first_id;

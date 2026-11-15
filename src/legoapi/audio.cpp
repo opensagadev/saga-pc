@@ -304,7 +304,7 @@ extern "C" {
             if (object->is_underwater != 0 || object->water_intersects != 0) {
                 return;
             }
-            alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
+            alternate = WorldInfo_CurrentlyActive()->current_level->flags & LEVEL_METAL;
             if ((object->character_data->model_flags & 0x10) != 0) {
                 if (alternate) {
                     sfx = GameAudio->sfx_ids[10];
@@ -350,7 +350,7 @@ extern "C" {
             i32 (*override_footstep)(GAMEOBJECT *, i32) = ((FOOTSTEP_AUDIO_CALLBACKS *)GameAudio)->override_footstep;
             if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
                 if (object->is_underwater == 0 && object->water_intersects == 0) {
-                    alternate = WorldInfo_CurrentlyActive()->current_level->flags & 0x1000;
+                    alternate = WorldInfo_CurrentlyActive()->current_level->flags & LEVEL_METAL;
                     if ((object->character_data->model_flags & 0x10) != 0) {
                         if (alternate) {
                             sound = GameAudio->sfx_ids[0x12];
@@ -785,7 +785,7 @@ extern "C" void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
     }
     if (CutStopInfo != NULL) {
         CUTINFO *cut = (CUTINFO *)CutStopInfo;
-        if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & 1) != 0) {
+        if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & LEVEL_CONFIG_LOADED) != 0) {
             level = &LDataList[cut->skip_level];
         }
     }

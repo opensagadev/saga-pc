@@ -467,7 +467,7 @@ static void AdjustPickupDrawDistance(i32 version, i32 area, f32 *distance) {
     if (version <= 5 && *distance < 10.0f) {
         *distance = 10.0f;
     }
-    if (area >= 0 && area < AREACOUNT && (ADataList[area].flags & 1) != 0 && (f64)*distance < 100.0) {
+    if (area >= 0 && area < AREACOUNT && (ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0 && (f64)*distance < 100.0) {
         *distance = 100.0f;
     }
 }
@@ -479,7 +479,7 @@ void SetAreaPickupGravity(i32 area, i32 level) {
         return;
     }
     flags = ADataList[area].flags;
-    if ((flags & 0x200) != 0 && (LDataList[level].flags & 0x400000) == 0) {
+    if ((flags & 0x200) != 0 && (LDataList[level].flags & LEVEL_OVERRIDE_NO_PICKUP_GRAVITY) == 0) {
         AreaPickupGravity = 0;
         return;
     }
@@ -1026,10 +1026,10 @@ i32 CoinsGoToMainTotal(void) {
     if (SuperStory != 0) {
         return 1;
     }
-    if (world->area != NULL && (world->area->flags & 0x100)) {
+    if (world->area != NULL && (world->area->flags & AREAFLAG_SUPER_BONUS)) {
         return 1;
     }
-    if (world->current_level != NULL && (world->current_level->flags & 0x400)) {
+    if (world->current_level != NULL && (world->current_level->flags & LEVEL_STATUS)) {
         return 1;
     }
     return 0;

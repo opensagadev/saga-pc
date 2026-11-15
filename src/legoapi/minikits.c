@@ -158,7 +158,7 @@ void CharacterMiniKits_Dump(WORLDINFO *world) {
     if (view->pieces_by_id == NULL) {
         return;
     }
-    if (world->area != NULL && (world->area->flags & 5) == 5) {
+    if (world->area != NULL && (world->area->flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 5) {
         if (Char_MiniKit == NULL) {
             return;
         }

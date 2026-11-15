@@ -119,7 +119,8 @@ i32 SetObjOnSurface(GAMEOBJECT *object, i32 mode) {
     i32 placed;
 
     placed = 0;
-    if (object->floor_height != GameObjectNearFloorNoFloorHeight && (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000u) == 0) {
+    if (object->floor_height != GameObjectNearFloorNoFloorHeight &&
+        (WorldInfo_CurrentlyActive()->current_level->flags & LEVEL_IN_SPACE) == 0) {
         if (mode == 2) {
             y = (f64)object->collision_min.y - (f64)object->character_bottom * object->origin_scale + 0.10000000149011612;
             object->position.y = y;

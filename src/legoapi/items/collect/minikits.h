@@ -34,5 +34,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-enum { AREAFLAG_MINIKIT = 16 };

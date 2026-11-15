@@ -227,7 +227,7 @@ void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     NUSPECIALHANDLE special;
     NUFPAR_PC *parser;
     u8 active;
-    if (VehicleArea != 0 || (world->current_level->flags & 0xe0) != 0 || world->grabber != NULL) {
+    if (VehicleArea != 0 || (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0 || world->grabber != NULL) {
         return;
     }
     if (NuSpecialFind(world->scene, &special, "grabber", 1) == 0) {

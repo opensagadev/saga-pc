@@ -114,6 +114,34 @@ typedef struct LEVEL_OBJECT_RUNTIME { // size 0x10
 
 #if SAGA_LEGOAPI_WORLD_LEVEL_H_PART == 3 && !defined(SAGA_LEGOAPI_WORLD_LEVEL_H_STOP)
 
+/* level_data_s.flags: levels\\levels.txt keywords (test_level, intro_level, ...) and the level config switches
+ * (LevelConfigSetFlag). 0x4 is set on every level by default; its meaning is not known yet. */
+enum LEVEL_FLAGS {
+    LEVEL_CONFIG_LOADED = 0x1,                   /* set once the level's config file has been read */
+    LEVEL_GAMEPLAY = 0x2,                        /* a playable level: AI and gizmos load (status_level clears it) */
+    LEVEL_TERRAIN = 0x8,                         /* the level has terrain (status_level clears it) */
+    LEVEL_FLAT_TERRAIN = 0x10,                   /* flat_terrain */
+    LEVEL_INTRO = 0x20,                          /* intro_level */
+    LEVEL_MIDTRO = 0x40,                         /* midtro_level, cutscene_level */
+    LEVEL_OUTRO = 0x80,                          /* outro_level */
+    LEVEL_FIX_STROBING_ANIMS = 0x100,            /* fix_strobing_anims */
+    LEVEL_TEST = 0x200,                          /* test_level */
+    LEVEL_STATUS = 0x400,                        /* status_level */
+    LEVEL_DOUBLE_SCORE = 0x800,                  /* double_score */
+    LEVEL_METAL = 0x1000,                        /* metal */
+    LEVEL_SHOW_COIN_TOTAL = 0x2000,              /* story levels of an episode: Super Story draws the coin total */
+    LEVEL_CAMERA_RAIN = 0x4000,                  /* camera_rain */
+    LEVEL_TERRAIN_RAIN = 0x8000,                 /* terrain_rain */
+    LEVEL_NEWGAME = 0x10000,                     /* newgame_level */
+    LEVEL_LOADGAME = 0x20000,                    /* loadgame_level */
+    LEVEL_IN_SPACE = 0x40000,                    /* in_space */
+    LEVEL_PICKUPS_TO_PANEL = 0x80000,            /* pickups_to_panel */
+    LEVEL_FORGET_TAKEOVERS = 0x100000,           /* forget_takeovers */
+    LEVEL_NARROW_SOCKS = 0x200000,               /* narrow_socks */
+    LEVEL_OVERRIDE_NO_PICKUP_GRAVITY = 0x400000, /* override_nopickupgravity */
+    LEVEL_HIDE_ICONS = 0x800000                  /* hidden_icons off */
+};
+
 typedef struct level_data_s { // size 0x130
     char dir[0x40];           // 0x000
     char name[0x20];          // 0x040

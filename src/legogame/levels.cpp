@@ -452,7 +452,7 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
         World_AppendFreePlayPrivate(dat_007f1ab4);
         World_AppendFreePlayPrivate(VehicleSpecialShooterId);
         World_AppendFreePlayPrivate(dat_007f1abc);
-    } else if ((ADataList[area].flags & 5) == 5) {
+    } else if ((ADataList[area].flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 5) {
         for (index = 0; index < 2; ++index) {
             if (models[index] != -1) {
                 World_AppendFreePlayPrivate(models[index]);
@@ -495,9 +495,9 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
     if (StartupGameFlag1 != 0 && lost_temple != NULL && area == lost_temple->index) {
         goto extras;
     }
-    if ((ADataList[area].flags & 1) != 0) {
+    if ((ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
         i16 second = PlayerList[1];
-        if ((ADataList[area].flags & 4) != 0) {
+        if ((ADataList[area].flags & AREAFLAG_BONUS_AREA) != 0) {
             if (second == -1 || (CDataList[second].model_flags & 0x4000000) == 0 || Collection_Got(second) == 0) {
                 PlayerList[1] = PlayerList[0];
             }
@@ -1109,7 +1109,7 @@ extern "C" {
                                  &((PERMANENT_CUSTOMISER_GAME *)&Game)->customiser, PermanentCustomiserActions);
         SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
         for (i32 index = 0; index < LEVELCOUNT; ++index) {
-            if ((LDataList[index].flags & 0x400) != 0) {
+            if ((LDataList[index].flags & LEVEL_STATUS) != 0) {
                 LDataList[index].music_index = (i16)GetMusicIndex("statusscreen", MusicInfo, -1);
                 i32 handle = music_man.GetTrackHandle(1, "statusscreen");
                 LDataList[index].music_tracks[1] = handle;
@@ -1167,7 +1167,7 @@ extern "C" {
                     area_scene->display_list->render_flags |= 0x10;
                 }
             }
-            if ((ADataList[area].flags & 5) != 0 && area != last_area) {
+            if ((ADataList[area].flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) != 0 && area != last_area) {
                 characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 3) & ~3u;
                 scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, "stuff\\vehicle_things.gsc");
                 vehicle_scene = scene;
@@ -1185,7 +1185,7 @@ extern "C" {
             }
         }
         if (makefreeplaymodellist != 0) {
-            if ((ADataList[area].flags & 1) != 0) {
+            if ((ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
                 MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level, 0);
             } else if (Area_PlayerModelCount >= 2 && BonusArea == 0) {
                 MakeFreePlayModelList(Area_PlayerModelList[0].model_id, Area_PlayerModelList[1].model_id, area, level, 0);
@@ -1211,7 +1211,7 @@ extern "C" {
         Customiser_SetAnimsToLoad(CharacterCustomiser, HUB_ADATA != NULL && area == HUB_ADATA->index);
         if (LOSTTEMPLE_ADATA != NULL && area == LOSTTEMPLE_ADATA->index) {
             Particles_LoadAreaPage("levels\\losttemple\\losttemple.ptl");
-        } else if (area != -1 && (ADataList[area].flags & 0x62) == 0 &&
+        } else if (area != -1 && (ADataList[area].flags & (AREAFLAG_ENDING_AREA | AREAFLAG_TEST_AREA | AREAFLAG_HUB_AREA)) == 0 &&
                    ((ADataList[area].episode_index >= 0 && ADataList[area].episode_index <= 2) ||
                     (ANEWHOPE_ADATA != NULL && area == ANEWHOPE_ADATA->index) ||
                     (PODSPRINT_ADATA != NULL && area == PODSPRINT_ADATA->index) ||
@@ -1299,21 +1299,21 @@ void LoadAreaCharacters(void) {
         Area_Configure(Area, Level, ExtraModelList, id_DEFAULTCHARACTER);
     }
     saved_override = AreaGetKeyboardOverridePc();
-    VehicleArea = Area != -1 && (ADataList[Area].flags & 1) != 0;
-    BonusArea = -1 != Area && (ADataList[Area].flags & 4) != 0;
+    VehicleArea = Area != -1 && (ADataList[Area].flags & AREAFLAG_VEHICLE_AREA) != 0;
+    BonusArea = -1 != Area && (ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0;
     AreaGlobals.unknown_04 = VehicleArea != 0 && BonusArea == 0;
     AreaDataLoaded = 0;
     loadareadata_loadlevel = 0;
     loadareacharacters_loadedlevel = 0;
     CharacterDataLoad = 0;
     ResetTimer(&GameTimer, 0.0f);
-    if (!(Area != -1 && Area != last_area && (ADataList[Area].flags & 2) == 0 && new_level_from_menu == 0 &&
+    if (!(Area != -1 && Area != last_area && (ADataList[Area].flags & AREAFLAG_ENDING_AREA) == 0 && new_level_from_menu == 0 &&
           ((HUB_ADATA != NULL && last_area == HUB_ADATA->index) || netnewgame != 0 ||
            (GAMEDEMO != 0 && (LastLData == TITLES_LDATA || LastLData == STATUS_LDATA))))) {
-        if (0 != SuperStory && (ADataList[Area].flags & 2) != 0) {
+        if (0 != SuperStory && (ADataList[Area].flags & AREAFLAG_ENDING_AREA) != 0) {
             load_type = 1;
-        } else if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 && ADataList[Area].flags != 2 &&
-                   HUB_ADATA != NULL && Area != HUB_ADATA->index) {
+        } else if (last_area != -1 && LastLData != NULL && (LastLData->flags & LEVEL_STATUS) != 0 &&
+                   ADataList[Area].flags != AREAFLAG_ENDING_AREA && HUB_ADATA != NULL && Area != HUB_ADATA->index) {
             load_type = 2;
         } else {
             load_type = 0;
@@ -1945,7 +1945,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         if (abort_load != 0) {
             goto abort;
         }
-    } else if ((world->current_level->flags & 0x400) != 0 && world->area != NULL && world->area->minikit_id != -1) {
+    } else if ((world->current_level->flags & LEVEL_STATUS) != 0 && world->area != NULL && world->area->minikit_id != -1) {
         MiniKit_Load((MINIKIT_PC *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
         if (resource->minikit.scene != NULL) {
             MiniKit_InitPieces((MINIKIT_PC *)&resource->minikit, 10, &world->giz_buffer, &world->buffer_end);
@@ -1954,11 +1954,11 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     }
-    if ((world->current_level == HUB_LDATA || (world->current_level->flags & 0x400) != 0) && big_icon_scene == NULL) {
+    if ((world->current_level == HUB_LDATA || (world->current_level->flags & LEVEL_STATUS) != 0) && big_icon_scene == NULL) {
         resource->icons_scene = NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
     }
     cutscene_scene = area_scene;
-    if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & 0x400) == 0) {
+    if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & AREAFLAG_OVERRIDE_THINGS_SCENE) == 0) {
         cutscene_scene = things_scene;
     }
     world->cutscene_sys = (CUTSYS_PC *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
@@ -1970,7 +1970,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     resource->character_scenes = world->giz_buffer.void_ptr;
     world->giz_buffer.addr += CHARCOUNT * 0x10;
     CharScenes_LevelLoad(world);
-    if ((world->current_level->flags & 2) != 0 && (world->current_level->flags & 0xe0) == 0) {
+    if ((world->current_level->flags & LEVEL_GAMEPLAY) != 0 &&
+        (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0) {
         world->sock_sys = SockSysInit(&world->giz_buffer, world->buffer_end, world->current_gscn);
     }
     LOG_INFO("WorldInfo_Load after SockSysInit: world=%p", (void *)world);
@@ -1999,7 +2000,8 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     }
-    if (world->area != NULL && (world->area->flags & 5) == 5 && (world->current_level->flags & 0x4e0) == 0) {
+    if (world->area != NULL && (world->area->flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 5 &&
+        (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO | LEVEL_STATUS)) == 0) {
         CharacterMiniKits_Load(&MiniKitCollection, world, &world->giz_buffer, &world->buffer_end);
         if (abort_load != 0) {
             goto abort;
@@ -2018,7 +2020,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (abort_load != 0) {
         goto abort;
     }
-    resource->ai_loaded = (world->current_level->flags & 2) == 0 || (world->current_level->flags & 0xe0) != 0;
+    resource->ai_loaded = (world->current_level->flags & LEVEL_GAMEPLAY) == 0 ||
+                          (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0;
     if (resource->ai_loaded == 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         sprintf(ai_name, "ai");
@@ -2214,7 +2217,7 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
         TITLES_LDATA->callbacks[1] = (void *)Titles_Init;
         TITLES_LDATA->callbacks[3] = (void *)Titles_Update;
         TITLES_LDATA->callbacks[5] = (void *)Titles_Draw;
-        TITLES_LDATA->flags &= ~0xau;
+        TITLES_LDATA->flags &= ~(LEVEL_GAMEPLAY | LEVEL_TERRAIN);
         TITLES_LDATA->music_index = GetMusicIndex("titles", MusicInfo, -1);
         TITLES_LDATA->music_tracks[0] = TITLES_LDATA->music_tracks[1] = music_man.GetTrackHandle(1, "titles");
         TITLES_LDATA->music_tracks[2] = TITLES_LDATA->music_tracks[3] = music_man.GetTrackHandle(2, "titles");
@@ -2225,8 +2228,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
     if (level != NULL) {
         STATUS_LDATA->callbacks[3] = (void *)UpdateStatusScreen;
         STATUS_LDATA->callbacks[6] = (void *)DrawStatusScreen;
-        STATUS_LDATA->flags |= 0x400;
-        STATUS_LDATA->flags &= ~0xau;
+        STATUS_LDATA->flags |= LEVEL_STATUS;
+        STATUS_LDATA->flags &= ~(LEVEL_GAMEPLAY | LEVEL_TERRAIN);
     }
     level = Level_FindByName("credits", NULL);
     CREDITS_LDATA = level;
@@ -3014,7 +3017,7 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
         }
     }
     for (index = 0, level = LDataList; index < LEVELCOUNT; ++index, ++level) {
-        if ((level->flags & 0x400) != 0 || level == STATUS_LDATA) {
+        if ((level->flags & LEVEL_STATUS) != 0 || level == STATUS_LDATA) {
             level->callbacks[3] = (void *)UpdateStatusScreen;
             level->callbacks[6] = (void *)DrawStatusScreen;
         }
@@ -3076,7 +3079,7 @@ extern "C" {
         if (StartupGameFlag1 != 0) {
             Areas_FixUp(AreaFixUpLSW);
             if (LOSTTEMPLE_ADATA != NULL) {
-                LOSTTEMPLE_ADATA->flags |= 0x2000;
+                LOSTTEMPLE_ADATA->flags |= AREAFLAG_NO_COMPLETION_POINTS;
             }
         } else if (StartupGameFlag0 != 0) {
             Areas_FixUp(AreaFixUpLostTemple);
@@ -3148,11 +3151,11 @@ extern "C" {
             index = world->area->level_count;
         } else {
             index = world->current_level->area_level_index;
-            if (world->area != NULL && (world->area->flags & 4) != 0) {
+            if (world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0) {
                 goto store_flags;
             }
         }
-        if (area_progress != 0 || world->area == NULL || (world->area->flags & 4) == 0) {
+        if (area_progress != 0 || world->area == NULL || (world->area->flags & AREAFLAG_BONUS_AREA) == 0) {
             StoreProgressAICharacter(progress);
             if (StartupGameFlag1 != 0) {
                 Grabber_StoreProgress(world, progress);

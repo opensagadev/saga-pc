@@ -646,7 +646,7 @@ f32 VehicleTurnOrLoopOffset(GAMEOBJECT *object) {
 f32 GetHoverPosY(GAMEOBJECT *object) {
     f32 offset;
     f32 height;
-    if ((object->character_data->model_flags & 0x2000) != 0 && (WorldInfo_CurrentlyActive()->current_level->flags & 0x40000) == 0) {
+    if ((object->character_data->model_flags & 0x2000) != 0 && (WorldInfo_CurrentlyActive()->current_level->flags & LEVEL_IN_SPACE) == 0) {
         offset = VehicleTurnOrLoopOffset(object);
         if (object->unknown_283 != 7 && object->unknown_283 != 0x10) {
             height = object->floor_height;
@@ -6894,7 +6894,7 @@ void AwkwardShapeCode(GAMEOBJECT *object, i32 forced) {
         return;
     }
     count = 0;
-    if (WORLD->area != NULL && (WORLD->area->flags & 1) != 0 && object->id == (u16)id_ATAT) {
+    if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_VEHICLE_AREA) != 0 && object->id == (u16)id_ATAT) {
         return;
     }
     if (forced) {
@@ -7268,7 +7268,7 @@ void TractorBeamCode(GAMEOBJECT *object) {
     f32 range;
     f32 range_squared;
     i32 index;
-    if (object == NULL || WORLD->area == NULL || (WORLD->area->flags & 1) == 0) {
+    if (object == NULL || WORLD->area == NULL || (WORLD->area->flags & AREAFLAG_VEHICLE_AREA) == 0) {
         return;
     }
     if ((object->flags_1fc & 0x80) == 0) {
@@ -8342,7 +8342,7 @@ void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_r
         object->velocity.y = 0.0f;
         return;
     }
-    if ((WORLD->current_level->flags & 0x40000) != 0 && gravity == NULL && !character->game_character->gravity) {
+    if ((WORLD->current_level->flags & LEVEL_IN_SPACE) != 0 && gravity == NULL && !character->game_character->gravity) {
         return;
     }
     if (object->flags_107a == 4) {
@@ -10877,7 +10877,7 @@ void Move_SPEEDERBIKE(GAMEOBJECT *object) {
         FireCode(object, pad->buttons_pressed & GAMEPAD_ACTION, pad->buttons_held & GAMEPAD_ACTION, 0.2f, 0);
     }
     VehicleThrust(object);
-    if (WORLD->area != NULL && (WORLD->area->flags & 1) != 0 && object->id == (u16)id_MINISTARDESTROYER &&
+    if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_VEHICLE_AREA) != 0 && object->id == (u16)id_MINISTARDESTROYER &&
         (object->flags_1fc & 0x80) != 0 && (TractorBeamEnabled != 0 || object->powerup_time > 0.0f)) {
         TractorBeamCode(object);
     }
@@ -11786,7 +11786,7 @@ gravity_done:
     if (object->character_data->game_character->flags_090 & 0x400) {
         CableCode(object, pad->buttons_pressed & GAMEPAD_SPECIAL, 0.5f);
     }
-    if (WORLD->area != NULL && (WORLD->area->flags & 1) && (object->flags_1fc & 0x80) &&
+    if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_VEHICLE_AREA) && (object->flags_1fc & 0x80) &&
         (TractorBeamEnabled || object->powerup_time > 0.0f)) {
         TractorBeamCode(object);
     }

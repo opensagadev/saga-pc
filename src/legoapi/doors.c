@@ -368,7 +368,7 @@ static void D_level_freeplay(NUFPAR_PC *parser) {
     i32 index;
     if (NuFParGetWord(parser) != 0) {
         Level_FindByName(parser->word_buffer_ptr, &index);
-        if (index != -1 && !(LDataList[index].flags & 0xe0)) {
+        if (index != -1 && !(LDataList[index].flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO))) {
             D_door->freeplay_level = (i16)index;
         }
     }
@@ -583,7 +583,7 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
         } else if ((InStory() != 0 && (destination = door->level) != world->level_idx) ||
                    (InStory() == 0 && (destination = door->freeplay_level) != world->level_idx)) {
             NewLData = &LDataList[destination];
-            if (FreePlay != 0 && (NewLData->flags & 0x80) != 0) {
+            if (FreePlay != 0 && (NewLData->flags & LEVEL_OUTRO) != 0) {
                 NewLData = Area_FindStatusLevel(WORLD->area, NULL);
                 if (NewLData != NULL) {
                     if (ChallengeMode != 0) {

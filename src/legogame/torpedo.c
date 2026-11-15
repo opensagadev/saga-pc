@@ -676,7 +676,7 @@ void Torpedo_Shoot(GAMEOBJECT *object) {
     u16 angle = BoltSys->shoot_direction(object, &direction);
     NUMTX matrix;
     TorpedoSetRotationY(&matrix, angle);
-    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0) {
+    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_BONUS_AREA) != 0) {
         Bolt_Add(object, &position, &matrix, 16, 0);
     } else {
         Bolt_Add(object, &position, &matrix, 15, 0);
@@ -722,7 +722,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     if (timers->fire_cooldown > 0.0f) {
         timers->fire_cooldown -= FRAMETIME;
     }
-    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 && Bolt_Find(16, NULL, object) != NULL) {
+    if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_BONUS_AREA) != 0 && Bolt_Find(16, NULL, object) != NULL) {
         TORPEDO_PACKET(object)->flags |= 2;
     } else if (Bolt_Find(15, NULL, object) != NULL) {
         TORPEDO_PACKET(object)->flags |= 2;
@@ -747,7 +747,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     maximum = getMaxTorpedos(object);
     while (TORPEDO_PACKET(object)->count > maximum) {
         /* Spawns the discarded torpedo's debris at pickup_positions[count]. */
-        if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0) {
+        if (WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_BONUS_AREA) != 0) {
             AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[72].effect,
                                         &TORPEDO_PACKET(object)->pickup_positions[TORPEDO_PACKET(object)->count], 30, 0, 0);
         } else {
@@ -792,8 +792,8 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     if (TORPEDO_PACKET(object)->count == 0) {
         return;
     }
-    type =
-        WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & 4) != 0 ? BoltType_FindByID(16, WORLD) : BoltType_FindByID(15, WORLD);
+    type = WORLD != NULL && WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_BONUS_AREA) != 0 ? BoltType_FindByID(16, WORLD)
+                                                                                                   : BoltType_FindByID(15, WORLD);
     range = type->unknown_14 * type->unknown_10;
     range *= range;
     if ((TORPEDO_PACKET(object)->flags & 2) != 0 && TORPEDO_PACKET(object)->target != NULL) {

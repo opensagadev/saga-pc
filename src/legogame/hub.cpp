@@ -493,7 +493,7 @@ extern "C" void WipeBackToHub(void) {
 
 static void HubInitSelectMode(void) {
     const i32 area = LDataList[HubDoorNewLevel].area_index;
-    if ((LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) || (ADataList[area].flags & 0x1000) != 0 ||
+    if ((LOSTTEMPLE_ADATA != NULL && LOSTTEMPLE_ADATA->index == area) || (ADataList[area].flags & AREAFLAG_NO_FREEPLAY) != 0 ||
         Game.area_save[area].area_complete == 0) {
         hub_selectmode = 0;
     } else {
@@ -518,11 +518,11 @@ static void HubDrawSelectModeMenu(i32 selected, f32 alpha) {
         ids[0] = complete != 0 ? dat_008808b8 : dat_008808a4;
         opacity[0] = 128;
         count = 1;
-        if ((ADataList[area].flags & 0x1000) == 0) {
+        if ((ADataList[area].flags & AREAFLAG_NO_FREEPLAY) == 0) {
             ids[1] = dat_008808a8;
             opacity[1] = complete != 0 ? 128 : 32;
             count = 2;
-            if ((ADataList[area].flags & 0x10) != 0) {
+            if ((ADataList[area].flags & AREAFLAG_MINIKIT) != 0) {
                 ids[2] = dat_0088076c;
                 opacity[2] = opacity[1];
                 count = 3;
@@ -1068,7 +1068,7 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
     const i32 area = LDataList[HubDoorNewLevel].area_index;
     fpcount = 0;
     MakeFreePlayModelList(first_model, second_model, area, -1, 1);
-    if ((ADataList[area].flags & 5) == 5) {
+    if ((ADataList[area].flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 5) {
         for (i32 index = 0; index < FreePlayModelCount; ++index) {
             const i32 model = FreePlayModelList[index].model_id;
             if ((CDataList[model].model_flags & 0x4000000) == 0 ||
@@ -1087,7 +1087,7 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
                 break;
             }
             if (area != -1) {
-                if ((ADataList[area].flags & 1) != 0) {
+                if ((ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
                     if ((CDataList[model].model_flags & 0x2000) == 0) {
                         continue;
                     }
@@ -1240,8 +1240,8 @@ static i32 hub_freeplay_area = 0;
 
 extern "C" void Hub_UpdateFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;
-    if ((ADataList[hub_freeplay_area].flags & 1) != 0) {
-        collection = (ADataList[hub_freeplay_area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollection;
+    if ((ADataList[hub_freeplay_area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
+        collection = (ADataList[hub_freeplay_area].flags & AREAFLAG_BONUS_AREA) != 0 ? &MiniKitCollection : &VehicleCollection;
     } else {
         collection = &CharacterCollection;
     }
@@ -1516,7 +1516,7 @@ extern "C" {
             i32 minikit_id;
             i32 piece_count;
             view->pieces_by_id[i] = NULL;
-            piece_count = (ADataList[i].flags & 0x10) != 0 ? 10 : 0;
+            piece_count = (ADataList[i].flags & AREAFLAG_MINIKIT) != 0 ? 10 : 0;
             minikit_id = ADataList[i].minikit_id;
             if (piece_count > 0 && minikit_id != -1) {
                 view->pieces_by_id[i] = (MINIKIT_PC *)buffer->void_ptr;
@@ -1777,7 +1777,7 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
     i32 count = 0;
     i32 selected = -1;
     for (i32 area = 0; area < AREACOUNT; ++area) {
-        if (ADataList[area].flags & 0x10) {
+        if (ADataList[area].flags & AREAFLAG_MINIKIT) {
             if (area == hub_minikitviewer_area) {
                 selected = count;
             }
@@ -1916,9 +1916,9 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
     }
     SmartTextEx(TTab[area->name_id], 0.0f, HubEpisodeSubtitleY, 1.0f, HubEpisodeSubtitleSize, HubEpisodeSubtitleSize,
                 HubEpisodeSubtitleSize, 0, HubEpisodeRed, HubEpisodeGreen, HubEpisodeBlue, 1.7f, 1, NULL, 0, alpha);
-    if ((area->flags & 0x10) == 0) {
+    if ((area->flags & AREAFLAG_MINIKIT) == 0) {
         if (Game.area_save[area_index].area_complete != 0) {
-            if ((area->flags & 0x800) != 0) {
+            if ((area->flags & AREAFLAG_NO_GOLD_BRICK) != 0) {
                 Hub_DrawImportantBrick(251, 0.0f, (f32)(HubEpisodeSubtitleY - .05000000074505806), phase, -1, -1);
             } else {
                 Hub_DrawImportantBrick(211, 0.0f, (f32)(HubEpisodeSubtitleY + .05000000074505806), phase, -1, -1);
@@ -1926,7 +1926,7 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
         }
         return;
     }
-    if (Game.area_save[area_index].area_complete != 0 && (area->flags & 4) == 0) {
+    if (Game.area_save[area_index].area_complete != 0 && (area->flags & AREAFLAG_BONUS_AREA) == 0) {
         Episode_CountOpenAreas(area->episode_index, area_index, (COLLECTION_AREA_SAVE_PC *)Game.area_save);
         char text[128];
         if (HubBothTrueJediGoldBricks != 0) {
@@ -1956,14 +1956,14 @@ void HubDrawAreaStats(f32 phase, i32 area_index, i32 mode) {
             Text3DEx(text, HubAreaPanelX[1], HubEpisodeTitleY, 1.0f, PANEL_MINIKITCOUNTSCALE, PANEL_MINIKITCOUNTSCALE,
                      PANEL_MINIKITCOUNTSCALE, 0, 255, 0, 127, (u8)(i32)(phase * 128.0));
         }
-        if ((area->flags & 0x10) != 0) {
+        if ((area->flags & AREAFLAG_MINIKIT) != 0) {
             Hub_DrawMiniKitCount(HubAreaPanelX[0], HubEpisodeTitleY, Game.area_save[area_index].minikit_count, 10, phase);
         }
         Hub_DrawImportantBrick(210, HubAreaPanelX[2], HubEpisodeTitleY, phase, Game.area_save[area_index].red_brick_collected, 1);
         Hub_DrawImportantBrick(211, HubAreaPanelX[3], HubEpisodeTitleY, phase, EpGoldBrickCount, EpGoldBrickTotal);
         HubDrawMiniKitCharacter = 1;
         Hub_DrawMiniKitCount(HubAreaPanelX[5], HubEpisodeTitleY, EpCharKitCount, EpCharKitTotal, phase);
-    } else if (area->area_index != -1 && (area->flags & 0x14) == 0x10) {
+    } else if (area->area_index != -1 && (area->flags & (AREAFLAG_BONUS_AREA | AREAFLAG_MINIKIT)) == 0x10) {
         char text[128];
         sprintf(text, "%s %i", TTab[TextCrawlChapterId], area->area_index + 1);
         SmartTextEx(text, 0.0f, HubEpisodeTitleY, 1.0f, HubEpisodeTitleSize, HubEpisodeTitleSize, HubEpisodeTitleSize, 0, HubEpisodeRed,
@@ -2038,7 +2038,7 @@ extern "C" void Hub_UpdateKit(void) {
             if (++attempts >= AREACOUNT) {
                 break;
             }
-        } while ((ADataList[index].flags & 0x10) == 0);
+        } while ((ADataList[index].flags & AREAFLAG_MINIKIT) == 0);
         hub_minikitviewer_area = index;
     } else if (right != 0 && left == 0) {
         hub_minikitviewer_move = 1.0f;
@@ -2052,7 +2052,7 @@ extern "C" void Hub_UpdateKit(void) {
             if (++attempts >= AREACOUNT) {
                 break;
             }
-        } while ((ADataList[index].flags & 0x10) == 0);
+        } while ((ADataList[index].flags & AREAFLAG_MINIKIT) == 0);
         hub_minikitviewer_area = index;
     }
     if (hub_minikitviewer_area != previous) {
@@ -2329,7 +2329,7 @@ extern "C" {
         MainRenderTargetTime = 0.0f;
         NeedScreenGrab(1);
         BackDrop_ResetColours();
-        menu = (ADataList[area].flags & 4) ? 16 : 15;
+        menu = (ADataList[area].flags & AREAFLAG_BONUS_AREA) ? 16 : 15;
         Hint_CancelCurrent();
         NewMenu(menu, -1, -1);
     }
@@ -2500,9 +2500,9 @@ static void HubDrawSelectMode(void) {
             return;
         }
     }
-    if ((ADataList[HubDoorArea].flags & 0x100) != 0) {
+    if ((ADataList[HubDoorArea].flags & AREAFLAG_SUPER_BONUS) != 0) {
         HubDrawSuperBonusStats(&ADataList[HubDoorArea], alpha);
-    } else if ((ADataList[HubDoorArea].flags & 4) != 0) {
+    } else if ((ADataList[HubDoorArea].flags & AREAFLAG_BONUS_AREA) != 0) {
         HubDrawBonusStats(alpha, -1, hub_bonusepisode, -1);
     } else {
         HubDrawAreaStats(alpha, HubDoorArea, hub_selectmode);
@@ -2670,8 +2670,8 @@ static f32 HubFreePlayNameY = 0.125f;
 
 static void Hub_DrawFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;
-    if ((ADataList[hub_freeplay_area].flags & 1) != 0) {
-        collection = (ADataList[hub_freeplay_area].flags & 4) != 0 ? &MiniKitCollection : &VehicleCollection;
+    if ((ADataList[hub_freeplay_area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
+        collection = (ADataList[hub_freeplay_area].flags & AREAFLAG_BONUS_AREA) != 0 ? &MiniKitCollection : &VehicleCollection;
     } else {
         collection = &CharacterCollection;
     }
@@ -2686,10 +2686,10 @@ static void Hub_DrawFreePlaySelect(void) {
         alpha = 1.0f - alpha;
         if (alpha > 0.0f) {
             AREA_DATA_PC *area = &ADataList[HubDoorArea];
-            if ((area->flags & 0x100) != 0) {
+            if ((area->flags & AREAFLAG_SUPER_BONUS) != 0) {
                 HubDrawSuperBonusStats(area, alpha);
                 HubDrawBonusModeMenu(0, alpha);
-            } else if ((area->flags & 4) != 0) {
+            } else if ((area->flags & AREAFLAG_BONUS_AREA) != 0) {
                 if (bonusmodearcade != 0) {
                     HubDrawArcadeStats(alpha);
                     HubDrawBonusModeMenu(0, alpha);
@@ -3446,22 +3446,23 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             AREA_SAVE_PICKUP *save = Game.area_save;
             if (count > 0) {
                 for (; count != 0; --count, ++area, ++save) {
-                    if (area == HUB_ADATA || (area->flags & 0x22) != 0 || area->episode_index != -1 || (area->flags & 0x10) != 0 ||
-                        (area->flags & 0x2000) != 0) {
+                    if (area == HUB_ADATA || (area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_TEST_AREA)) != 0 ||
+                        area->episode_index != -1 || (area->flags & AREAFLAG_MINIKIT) != 0 ||
+                        (area->flags & AREAFLAG_NO_COMPLETION_POINTS) != 0) {
                         continue;
                     }
-                    if ((area->flags & 0x100) != 0) {
+                    if ((area->flags & AREAFLAG_SUPER_BONUS) != 0) {
                         if (EpisodeGoldBrickForSuperBonus == 0) {
                             continue;
                         }
-                    } else if ((area->flags & 4) != 0) {
+                    } else if ((area->flags & AREAFLAG_BONUS_AREA) != 0) {
                         ++gold_total;
                         if (!(save->challenge_trial_time < area->challenge_trial_time)) {
                             continue;
                         }
                         ++gold_count;
                         continue;
-                    } else if ((area->flags & 0x800) != 0) {
+                    } else if ((area->flags & AREAFLAG_NO_GOLD_BRICK) != 0) {
                         continue;
                     }
                     ++gold_total;
@@ -3484,9 +3485,9 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
     }
     if (HubLastArea != -1 && HubEpisodeTime > 0.0f) {
         AREA_DATA_PC *area = &ADataList[HubLastArea];
-        if (area->flags & 0x100) {
+        if (area->flags & AREAFLAG_SUPER_BONUS) {
             HubDrawSuperBonusStats(area, HubEpisodeTime);
-        } else if (area->flags & 4) {
+        } else if (area->flags & AREAFLAG_BONUS_AREA) {
             if (SENATE_ADATA && SENATE_ADATA->index == HubLastArea) {
                 HubDrawArcadeStats(HubEpisodeTime);
             } else {
@@ -3559,9 +3560,9 @@ static void HubUpdateSelectMode(void) {
                 last_choice = 1;
             } else {
                 last_choice = 0;
-                if ((ADataList[area].flags & 0x1000) == 0) {
+                if ((ADataList[area].flags & AREAFLAG_NO_FREEPLAY) == 0) {
                     last_choice = 1;
-                    if ((ADataList[area].flags & 0x10) != 0) {
+                    if ((ADataList[area].flags & AREAFLAG_MINIKIT) != 0) {
                         last_choice = 2;
                     }
                 }
@@ -3592,7 +3593,7 @@ static void HubUpdateSelectMode(void) {
                             selectmodemode = 2;
                             break;
                         case 1:
-                            if ((ADataList[area].flags & 1) != 0) {
+                            if ((ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
                                 i32 first;
                                 i32 second;
                                 const i32 count = Collection_GetIDList(&VehicleCollection, 0x4002000, 0x2000, ids, &first, &second, 0);

@@ -163,7 +163,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     DoInput(WORLD);
     LOG_INFO_IF(GameTimer.update_count < 2, "NuMainUpdateFrame after DoInput: world=%p", (void *)WORLD);
     if (memcard_autosaveenabled != 0 && memcard_autosavedisabled != 0 &&
-        (world == NULL || world->area == NULL || (world->area->flags & 2) == 0) && NewMode == 0 && NewLData == NULL &&
+        (world == NULL || world->area == NULL || (world->area->flags & AREAFLAG_ENDING_AREA) == 0) && NewMode == 0 && NewLData == NULL &&
         FadeSys.fade == 0.0f && editor_active == 0 && (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
         if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo) != 0) && MiniCutCam == 0 && CutSceneWaiting == 0) {
             if (GameMenu[GameMenuLevel].menu != -1) {
@@ -245,7 +245,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         SAGA_SOUND_CHECK("after CutScenes_Update");
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after CutScenes_Update world=%p", (void *)WORLD);
         AdaptiveDifficultyUpdate(&adaptivedifficulty);
-        if ((world->current_level->flags & 8) != 0) {
+        if ((world->current_level->flags & LEVEL_TERRAIN) != 0) {
             TerrainPlatformOldUpdate();
         }
         LOG_INFO_IF(GameTimer.update_count < 2, "ProcessGizFlow before: world=%p", (void *)WORLD);
@@ -277,7 +277,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         GizmoSysEarlyUpdate(world->gizmo_sys, world, FRAMETIME);
         SAGA_SOUND_CHECK("after GizmoSysEarlyUpdate");
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after GizmoSysEarlyUpdate world=%p", (void *)WORLD);
-        if ((world->current_level->flags & 8) != 0) {
+        if ((world->current_level->flags & LEVEL_TERRAIN) != 0) {
             TerrainPlatformNewUpdate();
         }
         UpdateSpecialSfx(world);
@@ -365,7 +365,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             UpdateStreaks(FRAMETIME);
         }
         if ((world->area != NULL && world->area == HUB_ADATA) || world->current_level == TITLES_LDATA ||
-            world->current_level == STATUS_LDATA || (world->current_level->flags & 0x400) != 0 || world->current_level == CREDITS_LDATA) {
+            world->current_level == STATUS_LDATA || (world->current_level->flags & LEVEL_STATUS) != 0 ||
+            world->current_level == CREDITS_LDATA) {
             BackDrop_Update(FRAMETIME);
         }
     }
@@ -389,8 +390,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         return;
     }
     level = world->current_level;
-    if (level != NULL && (level->flags & 0x400) != 0 && HUB_LDATA != NULL && NewLData != HUB_LDATA && NewLData != NULL &&
-        NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 2) == 0) {
+    if (level != NULL && (level->flags & LEVEL_STATUS) != 0 && HUB_LDATA != NULL && NewLData != HUB_LDATA && NewLData != NULL &&
+        NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & AREAFLAG_ENDING_AREA) == 0) {
         FadeSys.fade = 1.0f;
         FinishLoop_On = 0;
         return;
@@ -406,7 +407,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                     NewLData == CREDITS_LDATA) {
                     goto fade_wipe;
                 }
-                if (SuperStory != 0 && (level->flags & 0x400) != 0 && (ADataList[NewLData->area_index].flags & 2) != 0) {
+                if (SuperStory != 0 && (level->flags & LEVEL_STATUS) != 0 &&
+                    (ADataList[NewLData->area_index].flags & AREAFLAG_ENDING_AREA) != 0) {
                     goto fade_wipe;
                 }
             }
@@ -414,7 +416,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         if (NewLData == NULL || NewLData->area_index == WORLD->area_index) {
             goto fade_still;
         }
-        if (SuperStory != 0 && (WORLD->area->flags & 2) == 0) {
+        if (SuperStory != 0 && (WORLD->area->flags & AREAFLAG_ENDING_AREA) == 0) {
             goto fade_still;
         }
     fade_wipe:
@@ -495,8 +497,8 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     CutScenes_Draw(world);
     NuRndrShadPolys(PermanentShadowMaterial);
     NuLgtLaserDraw(paused);
-    if (world->current_level == TITLES_LDATA || (world->current_level->flags & 0x400) != 0 || world->current_level == CREDITS_LDATA ||
-        (world->current_level == STATUS_LDATA && (StatusPacket.flags_word & 0x400) != 0)) {
+    if (world->current_level == TITLES_LDATA || (world->current_level->flags & LEVEL_STATUS) != 0 ||
+        world->current_level == CREDITS_LDATA || (world->current_level == STATUS_LDATA && (StatusPacket.flags_word & 0x400) != 0)) {
         BackDrop_Draw(1.0f, 0);
     }
     if (MainRenderTime != 1.0f) {
@@ -618,7 +620,7 @@ extern "C" int NuMain(int argc, char **argv) {
     Area = LDataList[Level].area_index;
     last_area = -1;
     LastAData = NULL;
-    if (Area != -1 && (ADataList[Area].flags & 4) != 0) {
+    if (Area != -1 && (ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0) {
         NextArea_FreePlay = 1;
         FreePlay = 1;
     } else if (GAMEDEMO > 1 || (GAMEDEMO != 0 && FreePlay != 0)) {
@@ -642,8 +644,8 @@ extern "C" int NuMain(int argc, char **argv) {
         if (StartupGameFlag1 != 0) {
             LSW_SetIndy(Area);
         }
-        if (last_area != -1 && LastLData != NULL && (LastLData->flags & 0x400) != 0 && ADataList[Area].flags != 2 && HUB_ADATA != NULL &&
-            Area != HUB_ADATA->index) {
+        if (last_area != -1 && LastLData != NULL && (LastLData->flags & LEVEL_STATUS) != 0 &&
+            ADataList[Area].flags != AREAFLAG_ENDING_AREA && HUB_ADATA != NULL && Area != HUB_ADATA->index) {
             FinishLoop(2);
         }
         GameAISysSetGame();
@@ -695,7 +697,8 @@ extern "C" int NuMain(int argc, char **argv) {
                 message->output_count = 2;
             }
         }
-        if (Area == -1 || ADataList[Area].episode_index == -1 || (ADataList[Area].flags & 0x10) == 0 || (ADataList[Area].flags & 4) != 0) {
+        if (Area == -1 || ADataList[Area].episode_index == -1 || (ADataList[Area].flags & AREAFLAG_MINIKIT) == 0 ||
+            (ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0) {
             ChallengeMode = 0;
             Mission_Clear(NULL);
         }
@@ -956,7 +959,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 Arcade = 0;
             }
         }
-        if (NewLData == STATUS_LDATA || (NewLData->flags & 0x400) != 0) {
+        if (NewLData == STATUS_LDATA || (NewLData->flags & LEVEL_STATUS) != 0) {
             InitStatusScreen(WORLD);
             if (NewLData != STATUS_LDATA && status->status_flags != 0) {
                 NuMainStatusHelper(&StatusPacket);
@@ -981,7 +984,7 @@ extern "C" int NuMain(int argc, char **argv) {
             NextArea_FreePlay = 0;
             FreePlay = 0;
         } else {
-            if ((ADataList[Area].flags & 4) != 0) {
+            if ((ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0) {
                 NextArea_FreePlay = 1;
                 FreePlay = 1;
             }
@@ -1001,7 +1004,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 }
             }
         }
-        if (status->status_flags != 0 && ((STATUS_LDATA != NULL && LastLData == STATUS_LDATA) || (LastLData->flags & 0x400) != 0 ||
+        if (status->status_flags != 0 && ((STATUS_LDATA != NULL && LastLData == STATUS_LDATA) || (LastLData->flags & LEVEL_STATUS) != 0 ||
                                           (CREDITS_LDATA != NULL && LastLData == CREDITS_LDATA))) {
             for (player_index = 0; player_index < 8; ++player_index) {
                 if (player_index < 2) {

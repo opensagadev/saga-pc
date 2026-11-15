@@ -467,13 +467,13 @@ extern "C" {
                 p->episode = &EDataList[p->area->episode_index];
             }
             p->chapter = p->area->area_index;
-            if ((p->area->flags & 1) != 0) {
+            if ((p->area->flags & AREAFLAG_VEHICLE_AREA) != 0) {
                 p->flags_word |= 0x80;
             }
-            if ((p->area->flags & 4) != 0) {
+            if ((p->area->flags & AREAFLAG_BONUS_AREA) != 0) {
                 p->flags_word |= 0x100;
             }
-            if ((p->area->flags & 0x100) != 0) {
+            if ((p->area->flags & AREAFLAG_SUPER_BONUS) != 0) {
                 p->flags_word |= 0x200;
             }
         } else {
@@ -548,7 +548,7 @@ extern "C" {
             NextStatusStage(p);
             if (episode != -1 && p->chapter < EDataList[episode].regular_areas) {
                 p->next_area = EDataList[episode].area_ids[p->chapter + 1];
-                if (p->next_area != -1 && (ADataList[p->next_area].flags & 2) != 0) {
+                if (p->next_area != -1 && (ADataList[p->next_area].flags & AREAFLAG_ENDING_AREA) != 0) {
                     hub_from_superstory = episode;
                 }
             }
@@ -690,7 +690,7 @@ extern "C" {
                 p->flags_word |= 4;
             }
             p->minikit_count = (u8)(Game.area_save[area].minikit_count + (u8)AreaGlobals.new_minikit_count);
-            p->minikit_max = (p->area->flags & 0x10) != 0 ? 10 : 0;
+            p->minikit_max = (p->area->flags & AREAFLAG_MINIKIT) != 0 ? 10 : 0;
             if (p->minikit_count > p->minikit_max) {
                 p->minikit_count = p->minikit_max;
             }
@@ -737,11 +737,12 @@ extern "C" {
         {
             i32 gold = 0;
             i32 completed_episode = 0;
-            if (area != -1 && (p->unknown_b0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 && (p->area->flags & 0x26) == 0) {
+            if (area != -1 && (p->unknown_b0 & 0x40) == 0 && Game.area_save[area].area_complete == 0 &&
+                (p->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_TEST_AREA)) == 0) {
                 p->newly_completed = 1;
                 Game.area_save[area].area_complete = 1;
                 AddToCompletionPoints(POINTS_PER_STORY);
-                if ((p->flags_word & 0x100) == 0 && (p->area->flags & 0x800) == 0) {
+                if ((p->flags_word & 0x100) == 0 && (p->area->flags & AREAFLAG_NO_GOLD_BRICK) == 0) {
                     gold = AddGoldBrickMessage(p, dat_00880728);
                 }
                 if (p->episode != NULL && Episode_IsComplete(p->episode, NULL) != 0) {
@@ -795,7 +796,8 @@ extern "C" {
             }
             RememberPlayerIDs(1, (i16)p->player0_model, (i16)p->player1_model);
         }
-        if (area != -1 && (p->area->flags & 0x136) == 0x10) {
+        if (area != -1 && (p->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_MINIKIT | AREAFLAG_TEST_AREA |
+                                             AREAFLAG_SUPER_BONUS)) == 0x10) {
             if (HubBothTrueJediGoldBricks != 0) {
                 u8 *complete = &Game.area_save[area].true_hero_complete[(p->flags_word >> 6) & 1];
                 if (*complete == 0) {
@@ -821,8 +823,9 @@ extern "C" {
         if (p->collected_score > 0.0f) {
             AddStatusStage(p, 3, 0);
         }
-        if (p->minikit_max > 0 && (p->area->flags & 0x36) == 0x10 && Game.area_save[area].minikit_complete == 0 &&
-            AreaGlobals.new_minikit_count > 0) {
+        if (p->minikit_max > 0 &&
+            (p->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_MINIKIT | AREAFLAG_TEST_AREA)) == 0x10 &&
+            Game.area_save[area].minikit_complete == 0 && AreaGlobals.new_minikit_count > 0) {
             i32 gold = 0;
             p->new_minikits = AreaGlobals.new_minikit_count;
             if (Game.area_save[area].minikit_count >= p->minikit_max) {
@@ -1095,12 +1098,12 @@ extern "C" {
             labels[0] = dat_008806f8;
         } else {
             u32 chapter = (packet->flags_word >> 3) & 1;
-            if (chapter != 0 && packet->next_area != -1 && (areas[packet->next_area].flags & 2u) == 0 &&
+            if (chapter != 0 && packet->next_area != -1 && (areas[packet->next_area].flags & AREAFLAG_ENDING_AREA) == 0 &&
                 Game.area_save[packet->next_area].complete == 0) {
                 labels[0] = dat_008806f8;
                 locked = 1;
             } else {
-                if (packet->next_area != -1 && (areas[packet->next_area].flags & 2u) != 0) {
+                if (packet->next_area != -1 && (areas[packet->next_area].flags & AREAFLAG_ENDING_AREA) != 0) {
                     labels[0] = dat_00880744;
                 } else {
                     labels[0] = dat_00880704;
@@ -1393,7 +1396,7 @@ extern "C" void FinishStatusPacket(i32 choice) {
         }
     } else if (choice == 0 && StatusPacket.next_area != -1) {
         NewLData = &LDataList[ADataList[StatusPacket.next_area].levels[0]];
-        if ((ADataList[StatusPacket.next_area].flags & 2) != 0) {
+        if ((ADataList[StatusPacket.next_area].flags & AREAFLAG_ENDING_AREA) != 0) {
             LevelCompletionFallbackFlagPC = 1;
         } else {
             loadareacharacters_no_backdrop_reset = 1;
@@ -1401,14 +1404,14 @@ extern "C" void FinishStatusPacket(i32 choice) {
                 finishloop_backdroponly = 1;
             }
         }
-    } else if (StartupGameFlag1 != 0 &&
-               ((StatusPacket.flags_word & 0x400) != 0 || ((StatusPacket.area->flags & 4) != 0 && StatusPacket.free_play == 0))) {
+    } else if (StartupGameFlag1 != 0 && ((StatusPacket.flags_word & 0x400) != 0 ||
+                                         ((StatusPacket.area->flags & AREAFLAG_BONUS_AREA) != 0 && StatusPacket.free_play == 0))) {
         NewLData = CREDITS_LDATA;
     }
     if ((StatusPacket.flags_word & 0x800) != 0) {
         NewLData = HUB_LDATA;
     }
-    if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & 0x40) != 0 && StatusPacket.mission_state != 0 &&
+    if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & AREAFLAG_HUB_AREA) != 0 && StatusPacket.mission_state != 0 &&
         MissionSys->active_mission != NULL) {
         hub_from_mission = (i8)MissionSys->active_mission->index;
     }

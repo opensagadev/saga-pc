@@ -94,7 +94,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     NUVEC focus;
     NUVEC look;
     NUVEC *target;
-    if ((object->dead != 0 || object->character_context == 0x2b) && (WORLD->current_level->flags & 0x40000) == 0) {
+    if ((object->dead != 0 || object->character_context == 0x2b) && (WORLD->current_level->flags & LEVEL_IN_SPACE) == 0) {
         if (object->dead != 0) {
             *position = object->position;
         } else {
