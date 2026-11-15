@@ -242,10 +242,28 @@ class Unit:
         text = self.texts[name][start.offset:end.offset].decode("latin-1")
         return name[len(self.root):], start.offset, text
 
+    def element_field(self, cursor):
+        """The field index of `a[i]` when `a` is an array field (each element holds the field's values), or None."""
+        K = self.ci.CursorKind
+        if cursor.kind != K.ARRAY_SUBSCRIPT_EXPR:
+            return None
+        children = [c for c in cursor.get_children() if c.kind.is_expression()]
+        if len(children) != 2:
+            return None
+        base = self.strip(children[0])
+        if base.kind not in (K.MEMBER_REF_EXPR, K.DECL_REF_EXPR) or base.referenced is None:
+            return None
+        if base.referenced.type.kind != self.ci.TypeKind.CONSTANTARRAY:
+            return None
+        return self.fields.match(base.referenced)
+
     def carrier(self, cursor):
         """(field index or None, keys, bits) of an expression that carries a field's value, or None."""
         K = self.ci.CursorKind
         cursor = self.strip(cursor)
+        element = self.element_field(cursor)
+        if element is not None:
+            return (element, frozenset(), False)
         if cursor.kind in (K.MEMBER_REF_EXPR, K.DECL_REF_EXPR):
             decl = cursor.referenced
             index = self.fields.match(decl)
@@ -436,7 +454,7 @@ class Unit:
         if op == ASSIGN:
             target = self.strip(left)
             index = self.fields.match(target.referenced) if target.kind in (K.MEMBER_REF_EXPR, K.DECL_REF_EXPR) \
-                else None
+                else self.element_field(target)
             if index is not None:
                 if not self.site(right, (index, frozenset(), False), True):
                     self.link(right, index)

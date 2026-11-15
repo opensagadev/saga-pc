@@ -21,6 +21,7 @@ typedef struct thing_s {
     u32 flags;
     i32 mode;
     i32 count;
+    u32 sides[2];
 } THING;
 #define IS_LOUD(t) (((t)->flags & 0x10) != 0)
 """
@@ -72,6 +73,10 @@ i32 Run(THING *thing) {
     }
     if (IS_LOUD(thing)) {
         thing->mode = -2;
+    }
+    thing->sides[1] |= 0x4;
+    if ((thing->sides[0] & 0x10) != 0) {
+        thing->sides[0] = 0x1;
     }
     return thing->count == 2 ? mode : Pick(3);
 }
@@ -144,6 +149,13 @@ class MagicNamesTests(unittest.TestCase):
         self.assertEqual(found["Run:mode"]["fields"], ["thing_s.mode"])
         self.assertEqual(found["SetFlag:flag"]["fields"], ["thing_s.flags"])
         self.assertEqual(found["Pick:state"]["fields"], [])
+
+    def test_elements_of_an_array_field(self):
+        text, unnamed = plan("thing_s.sides", "THING_", True)
+        self.assertIn("thing->sides[1] |= THING_SEEN;", text)
+        self.assertIn("(thing->sides[0] & THING_LOUD) != 0", text)
+        self.assertIn("thing->sides[0] = THING_ALIVE;", text)
+        self.assertIn("(flags & 0x4) != 0", text)  # another field
 
     def test_one_walk_serves_several_fields(self):
         alone = plan("THING.mode", "MODE_", False)
