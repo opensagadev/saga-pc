@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gameapi/apitext.h"
+#include "gameapi/gui/apimenu.h"
+#include "globals.h"
+#include "legoapi/lib/text.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels.h"
+#include "legoapi/world/levels/hub.h"
+#include "legoapi/world/world.h"
+#include "legogame/pcbatman.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nucore/nupad.h"
+#include "nu2api/nucore/nustring.h"
 
 #include <stdio.h>
 #include <string.h>

@@ -1,4 +1,10 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/fx/guidelines.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct guideline_record_s { // size 0x24
     char name[8];                   // 0x00

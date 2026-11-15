@@ -1,4 +1,8 @@
-#include "saga.h"
+#include "legoapi/characters/core/playeritems.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/items/collect/bolt.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
 #include <string.h>
 
 static PLAYER_ITEM_TYPE_RESET_PC *PlayerItemType = 0;

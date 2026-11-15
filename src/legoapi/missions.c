@@ -1,4 +1,15 @@
-#include "saga.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/base/collection.h"
+#include "legoapi/items/collect/bolts.h"
+#include "legoapi/items/objects/gameobjects.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/mission.h"
+#include "legoapi/world/missions.h"
+#include "legogame/game.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
 
 /* Original name unknown. Empty on PC; called when the file cannot be
    opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file

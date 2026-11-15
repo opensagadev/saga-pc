@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/door/plugs.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct carry_plug_s { // size 0x34
     char name[16];            // 0x00

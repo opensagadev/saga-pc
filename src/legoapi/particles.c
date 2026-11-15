@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/bolt.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/core/gameliball.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/render/fx/particles.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/world.h"
+#include "legoapi/world/world_shared.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
 i32 DEBPAGE_GENERAL = -1;

@@ -1,6 +1,11 @@
 #include <string.h>
 #include <stdio.h>
-#include "saga.h"
+#include "gameapi/gui/apimenu.h"
+#include "globals.h"
+#include "legoapi/menus/screens/gamemenuall.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nucore/nuapi.h"
+#include "nu2api/nuwin32/Stubs.h"
 
 extern "C" {
     MENU_PC_STRING_ENTRY dat_00827a80[40] = {

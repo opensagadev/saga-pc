@@ -1,4 +1,6 @@
-#include "saga.h"
+#include "gameapi/gui/apimenu.h"
+#include "gameframework/saveload.h"
+#include "legoapi/menus/screens/gamemenuall.h"
 
 /* Replace/move the two unused static menu.c bodies with these PC-authoritative external bodies. */
 

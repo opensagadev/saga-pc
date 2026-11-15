@@ -1,4 +1,21 @@
-#include "saga.h"
+#include "gameapi/apitext.h"
+#include "gameapi/gui/apimenu.h"
+#include "gameapi/gui/apimenu_internal.h"
+#include "gameframework/saveload.h"
+#include "globals.h"
+#include "legoapi/audio/sfx.h"
+#include "legoapi/menus/core/panel.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/menus/screens/gamemenuall.h"
+#include "legoapi/menus/screens/menu.h"
+#include "legoapi/render/core/gameliball.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/huffdecode.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nucore/nupad.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nutrig.h"
 
 #include <stdio.h>
 #include <string.h>

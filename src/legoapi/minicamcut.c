@@ -1,4 +1,17 @@
-#include "saga.h"
+#include "globals.h"
+#include "legoapi/characters/core/players.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/camera.h"
+#include "legoapi/cutscenes/minicamcut.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/render/fx/edsplines.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nu3d/nuspline.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 
 #include <string.h>
 

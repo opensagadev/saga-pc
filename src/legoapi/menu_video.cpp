@@ -1,4 +1,13 @@
-#include "saga.h"
+#include "gameapi/apitext.h"
+#include "gameapi/gui/apimenu.h"
+#include "globals.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/menus/screens/gamemenuall.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nuwin32/Stubs.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/nu2api_windows.h"
+#include "nu2api/nuwin32/pcapi.h"
 
 u8 MENU_VIDEO_OPTIONS::Changed() {
     if (aspect_mode != PcWindowOptions.aspect_mode) {

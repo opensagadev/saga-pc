@@ -1,4 +1,14 @@
-#include "saga.h"
+#include "MechInputTouch/MechInputTouch_types.h"
+#include "globals.h"
+#include "legoapi/actions/movement/dropinout.h"
+#include "legoapi/items/objects/things.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/menus/screens/movies.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/nufile/nufpar.h"
+#include "nu2api/nusound/nusound.h"
 
 extern "C" {
     extern i32 movie_skipped;

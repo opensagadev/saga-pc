@@ -1,4 +1,13 @@
-#include "saga.h"
+#include "legoapi/actions/combat/hits.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/characters/motion/action_info.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/objects/gameobjects.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/render/fx.h"
+#include "legoapi/world/levels/episode.h"
 #include <stdlib.h>
 #include <stdio.h>
 

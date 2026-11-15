@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "batman.h"
+#include "globals.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/lib/text.h"
+#include "legoapi/menus/core/hint.h"
+#include "legoapi/menus/core/text.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/world/area.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/levels/levels.h"
+#include "legoapi/world/mission.h"
+#include "legoapi/world/world.h"
+#include "legogame/game.h"
+#include "nu2api/nucore/nustring.h"
 
 typedef struct HINT_CANCEL { // size 0x1c
     u8 unknown_00[8];        // 0x00

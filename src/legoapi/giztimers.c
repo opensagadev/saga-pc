@@ -1,4 +1,14 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/trigger/giztimer.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/text_tables.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct GIZFLOW_TIMER { // size 0x1c
     f32 time_remaining;        // 0x00

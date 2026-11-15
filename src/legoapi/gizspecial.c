@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/characters/motion/gameanim.h"
+#include "legoapi/core/config/cheats.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/trigger/gizspecial.h"
+#include "legoapi/legoapi_types.h"
+#include "legoapi/text_tables.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nu3d/numtl.h"
+#include "nu2api/nu3d/nuqfnt.h"
+#include "nu2api/nu3d/nurndr.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nuvec.h"
 #include <string.h>
 
 typedef struct GIZFLOW_TIMER { // size 0x1c
