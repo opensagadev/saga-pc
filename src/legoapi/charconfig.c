@@ -47,58 +47,6 @@ typedef struct CHARCONFIG {            // size 0xfc8
 
 CHARCONFIG charconfig = {0};
 
-/* Bit views of PLAYERCHARACTERCONFIG.flags_094 and flags_098: the keyword handlers
-   store these as 1-bit fields of a 32-bit unit. They belong in saga.h as members of the
-   flags_094/flags_098 unions; until then the CC_FLAGS macros view the words through them. */
-typedef struct CHARCONFIG_FLAGS094 {        // size 0x4
-    u32 minikit_with_scene : 1;             // 0x0:0
-    u32 dont_turn : 1;                      // 0x0:1
-    u32 no_jump : 1;                        // 0x0:2
-    u32 no_shoot : 1;                       // 0x0:3
-    u32 fixed_layers : 1;                   // 0x0:4
-    u32 lift_hover : 1;                     // 0x0:5
-    u32 glide_anytime : 1;                  // 0x0:6
-    u32 can_communicate : 1;                // 0x0:7
-    u32 immune_to_magnets : 1;              // 0x0:8
-    u32 immune_to_forcepush : 1;            // 0x0:9
-    u32 minikit_noscenewhenplayable : 1;    // 0x0:10
-    u32 cannot_kill : 1;                    // 0x0:11
-    u32 wait_for_weapon_in_out : 1;         // 0x0:12
-    u32 double_jump_hover : 1;              // 0x0:13
-    u32 no_category : 1;                    // 0x0:14
-    u32 no_force : 1;                       // 0x0:15
-    u32 white_lightning : 1;                // 0x0:16
-    u32 buck_rider : 1;                     // 0x0:17
-    u32 die_usecurrentlayers : 1;           // 0x0:18
-    u32 combat_roll_can_get_up : 1;         // 0x0:19
-    u32 combat_roll_can_direct_land : 1;    // 0x0:20
-    u32 no_weapon_draw : 1;                 // 0x0:21
-    u32 no_jump_fire : 1;                   // 0x0:22
-    u32 hover_over_mud : 1;                 // 0x0:23
-    u32 toggle_if_not_in_collection : 1;    // 0x0:24
-    u32 toggle_if_in_minikit_bonus : 1;     // 0x0:25
-    u32 deflect_bolts_in_minikit_bonus : 1; // 0x0:26
-    u32 has_grapple : 1;                    // 0x0:27
-    u32 hover_wings : 1;                    // 0x0:28
-    u32 has_whip : 1;                       // 0x0:29
-    u32 atatheadmovement : 1;               // 0x0:30
-    u32 can_poo : 1;                        // 0x0:31
-} CHARCONFIG_FLAGS094;
-
-typedef struct CHARCONFIG_FLAGS098 {  // size 0x4
-    u32 can_zap : 1;                  // 0x0:0
-    u32 put_weapon_away_on_shoot : 1; // 0x0:1
-    u32 always_stop_to_shoot : 1;     // 0x0:2
-    u32 second_shot_only : 1;         // 0x0:3
-    u32 no_start_punch_sfx : 1;       // 0x0:4
-    u32 single_jump_slam : 1;         // 0x0:5
-    u32 dont_draw_rider : 1;          // 0x0:6
-    u32 unknown_7 : 1;                // 0x0:7
-} CHARCONFIG_FLAGS098;
-
-#define CC_FLAGS094 (*(CHARCONFIG_FLAGS094 *)&charconfig.runtime->flags_094)
-#define CC_FLAGS098 (*(CHARCONFIG_FLAGS098 *)charconfig.runtime->flags_098)
-
 /* Defined at the end of this file; called with and without a path. */
 void CharConfigPakDiagnostic(const char *format, ...);
 /* MATCH-EXCEPTION: it is also called with no arguments or with a number first; those calls go through a type
@@ -250,7 +198,7 @@ static void CC_layer(NUFPAR *parser) {
 }
 
 static void CC_fixed_layers(NUFPAR *parser) {
-    CC_FLAGS094.fixed_layers = CC_ReadOnOff(parser);
+    charconfig.runtime->fixed_layers = CC_ReadOnOff(parser);
 }
 
 static void CC_hair_layer_index(NUFPAR *parser) {
@@ -1228,35 +1176,35 @@ static void CC_can_fire(NUFPAR *parser) {
 }
 
 static void CC_can_poo(NUFPAR *parser) {
-    CC_FLAGS094.can_poo = CC_ReadOnOff(parser);
+    charconfig.runtime->can_poo = CC_ReadOnOff(parser);
 }
 
 static void CC_can_zap(NUFPAR *parser) {
-    CC_FLAGS098.can_zap = CC_ReadOnOff(parser);
+    charconfig.runtime->can_zap = CC_ReadOnOff(parser);
 }
 
 static void CC_put_weapon_away_on_shoot(NUFPAR *parser) {
-    CC_FLAGS098.put_weapon_away_on_shoot = CC_ReadOnOff(parser);
+    charconfig.runtime->put_weapon_away_on_shoot = CC_ReadOnOff(parser);
 }
 
 static void CC_always_stop_to_shoot(NUFPAR *parser) {
-    CC_FLAGS098.always_stop_to_shoot = CC_ReadOnOff(parser);
+    charconfig.runtime->always_stop_to_shoot = CC_ReadOnOff(parser);
 }
 
 static void CC_second_shot_only(NUFPAR *parser) {
-    CC_FLAGS098.second_shot_only = CC_ReadOnOff(parser);
+    charconfig.runtime->second_shot_only = CC_ReadOnOff(parser);
 }
 
 static void CC_no_start_punch_sfx(NUFPAR *parser) {
-    CC_FLAGS098.no_start_punch_sfx = CC_ReadOnOff(parser);
+    charconfig.runtime->no_start_punch_sfx = CC_ReadOnOff(parser);
 }
 
 static void CC_single_jump_slam(NUFPAR *parser) {
-    CC_FLAGS098.single_jump_slam = CC_ReadOnOff(parser);
+    charconfig.runtime->single_jump_slam = CC_ReadOnOff(parser);
 }
 
 static void CC_dont_draw_rider(NUFPAR *parser) {
-    CC_FLAGS098.dont_draw_rider = CC_ReadOnOff(parser);
+    charconfig.runtime->dont_draw_rider = CC_ReadOnOff(parser);
 }
 
 static void CC_minikit(NUFPAR *parser) {
@@ -1268,99 +1216,99 @@ static void CC_minikit_with_scene(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
         charconfig.character->model_flags &= ~CHARACTER_MODEL_MINIKIT;
     }
-    CC_FLAGS094.minikit_with_scene = charconfig.character->model_flags >> 26;
+    charconfig.runtime->minikit_with_scene = charconfig.character->model_flags >> 26;
 }
 
 static void CC_minikit_noscenewhenplayable(NUFPAR *parser) {
-    CC_FLAGS094.minikit_noscenewhenplayable = CC_ReadOnOff(parser);
+    charconfig.runtime->minikit_noscenewhenplayable = CC_ReadOnOff(parser);
 }
 
 static void CC_lift_hover(NUFPAR *parser) {
-    CC_FLAGS094.lift_hover = CC_ReadOnOff(parser);
+    charconfig.runtime->lift_hover = CC_ReadOnOff(parser);
 }
 
 static void CC_glide_anytime(NUFPAR *parser) {
-    CC_FLAGS094.glide_anytime = CC_ReadOnOff(parser);
+    charconfig.runtime->glide_anytime = CC_ReadOnOff(parser);
 }
 
 static void CC_can_communicate(NUFPAR *parser) {
-    CC_FLAGS094.can_communicate = CC_ReadOnOff(parser);
+    charconfig.runtime->can_communicate = CC_ReadOnOff(parser);
 }
 
 static void CC_immune_to_magnets(NUFPAR *parser) {
-    CC_FLAGS094.immune_to_magnets = CC_ReadOnOff(parser);
+    charconfig.runtime->immune_to_magnets = CC_ReadOnOff(parser);
 }
 
 static void CC_immune_to_forcepush(NUFPAR *parser) {
-    CC_FLAGS094.immune_to_forcepush = CC_ReadOnOff(parser);
+    charconfig.runtime->immune_to_forcepush = CC_ReadOnOff(parser);
 }
 
 static void CC_cannot_kill(NUFPAR *parser) {
-    CC_FLAGS094.cannot_kill = CC_ReadOnOff(parser);
+    charconfig.runtime->cannot_kill = CC_ReadOnOff(parser);
 }
 
 static void CC_wait_for_weapon_in_out(NUFPAR *parser) {
-    CC_FLAGS094.wait_for_weapon_in_out = CC_ReadOnOff(parser);
+    charconfig.runtime->wait_for_weapon_in_out = CC_ReadOnOff(parser);
 }
 
 static void CC_double_jump_hover(NUFPAR *parser) {
-    CC_FLAGS094.double_jump_hover = CC_ReadOnOff(parser);
+    charconfig.runtime->double_jump_hover = CC_ReadOnOff(parser);
 }
 
 static void CC_no_category(NUFPAR *parser) {
-    CC_FLAGS094.no_category = CC_ReadOnOff(parser);
+    charconfig.runtime->no_category = CC_ReadOnOff(parser);
 }
 
 static void CC_no_force(NUFPAR *parser) {
-    CC_FLAGS094.no_force = CC_ReadOnOff(parser);
+    charconfig.runtime->no_force = CC_ReadOnOff(parser);
 }
 
 static void CC_white_lightning(NUFPAR *parser) {
-    CC_FLAGS094.white_lightning = CC_ReadOnOff(parser);
+    charconfig.runtime->white_lightning = CC_ReadOnOff(parser);
 }
 
 static void CC_buck_rider(NUFPAR *parser) {
-    CC_FLAGS094.buck_rider = CC_ReadOnOff(parser);
+    charconfig.runtime->buck_rider = CC_ReadOnOff(parser);
 }
 
 static void CC_die_usecurrentlayers(NUFPAR *parser) {
-    CC_FLAGS094.die_usecurrentlayers = CC_ReadOnOff(parser);
+    charconfig.runtime->die_usecurrentlayers = CC_ReadOnOff(parser);
 }
 
 static void CC_no_weapon_draw(NUFPAR *parser) {
-    CC_FLAGS094.no_weapon_draw = CC_ReadOnOff(parser);
+    charconfig.runtime->no_weapon_draw = CC_ReadOnOff(parser);
 }
 
 static void CC_no_jump_fire(NUFPAR *parser) {
-    CC_FLAGS094.no_jump_fire = CC_ReadOnOff(parser);
+    charconfig.runtime->no_jump_fire = CC_ReadOnOff(parser);
 }
 
 static void CC_hover_over_mud(NUFPAR *parser) {
-    CC_FLAGS094.hover_over_mud = CC_ReadOnOff(parser);
+    charconfig.runtime->hover_over_mud = CC_ReadOnOff(parser);
 }
 
 static void CC_toggle_if_not_in_collection(NUFPAR *parser) {
-    CC_FLAGS094.toggle_if_not_in_collection = CC_ReadOnOff(parser);
+    charconfig.runtime->toggle_if_not_in_collection = CC_ReadOnOff(parser);
 }
 
 static void CC_toggle_if_in_minikit_bonus(NUFPAR *parser) {
-    CC_FLAGS094.toggle_if_in_minikit_bonus = CC_ReadOnOff(parser);
+    charconfig.runtime->toggle_if_in_minikit_bonus = CC_ReadOnOff(parser);
 }
 
 static void CC_deflect_bolts_in_minikit_bonus(NUFPAR *parser) {
-    CC_FLAGS094.deflect_bolts_in_minikit_bonus = CC_ReadOnOff(parser);
+    charconfig.runtime->deflect_bolts_in_minikit_bonus = CC_ReadOnOff(parser);
 }
 
 static void CC_has_grapple(NUFPAR *parser) {
-    CC_FLAGS094.has_grapple = CC_ReadOnOff(parser);
+    charconfig.runtime->has_grapple = CC_ReadOnOff(parser);
 }
 
 static void CC_hover_wings(NUFPAR *parser) {
-    CC_FLAGS094.hover_wings = CC_ReadOnOff(parser);
+    charconfig.runtime->hover_wings = CC_ReadOnOff(parser);
 }
 
 static void CC_has_whip(NUFPAR *parser) {
-    CC_FLAGS094.has_whip = CC_ReadOnOff(parser);
+    charconfig.runtime->has_whip = CC_ReadOnOff(parser);
 }
 
 static void CC_respawn(NUFPAR *parser) {
@@ -1404,7 +1352,7 @@ static void CC_oldheadmovement(NUFPAR *parser) {
 }
 
 static void CC_atatheadmovement(NUFPAR *parser) {
-    CC_FLAGS094.atatheadmovement = 1;
+    charconfig.runtime->atatheadmovement = 1;
 }
 
 static void CC_cannotbigjump(NUFPAR *parser) {
@@ -1453,15 +1401,15 @@ static void CC_tightrope_tilt(NUFPAR *parser) {
 
 static void CC_combat_roll(NUFPAR *parser) {
     charconfig.runtime->flags_090 |= CHARACTER_RUNTIME_COMBAT_ROLL;
-    CC_FLAGS094.combat_roll_can_get_up = 0;
-    CC_FLAGS094.combat_roll_can_direct_land = 0;
+    charconfig.runtime->combat_roll_can_get_up = 0;
+    charconfig.runtime->combat_roll_can_direct_land = 0;
     while (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
             charconfig.runtime->flags_090 &= ~CHARACTER_RUNTIME_COMBAT_ROLL;
         } else if (NuStrICmp(parser->word_buffer_ptr, "can_get_up") == 0) {
-            CC_FLAGS094.combat_roll_can_get_up = 1;
+            charconfig.runtime->combat_roll_can_get_up = 1;
         } else if (NuStrICmp(parser->word_buffer_ptr, "can_direct_land") == 0) {
-            CC_FLAGS094.combat_roll_can_direct_land = 1;
+            charconfig.runtime->combat_roll_can_direct_land = 1;
         }
     }
 }
@@ -1471,15 +1419,15 @@ static void CC_has_scene_element(NUFPAR *parser) {
 }
 
 static void CC_dont_turn(NUFPAR *parser) {
-    CC_FLAGS094.dont_turn = CC_ReadOnOff(parser);
+    charconfig.runtime->dont_turn = CC_ReadOnOff(parser);
 }
 
 static void CC_no_jump(NUFPAR *parser) {
-    CC_FLAGS094.no_jump = CC_ReadOnOff(parser);
+    charconfig.runtime->no_jump = CC_ReadOnOff(parser);
 }
 
 static void CC_no_shoot(NUFPAR *parser) {
-    CC_FLAGS094.no_shoot = CC_ReadOnOff(parser);
+    charconfig.runtime->no_shoot = CC_ReadOnOff(parser);
 }
 
 static void CC_blobshadow_size(NUFPAR *parser) {

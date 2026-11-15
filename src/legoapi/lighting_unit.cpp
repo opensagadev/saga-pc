@@ -450,7 +450,7 @@ extern "C" {
         } else if (Lighting_BlueFlickerFn != NULL && Lighting_BlueFlickerFn(owner) != 0) {
             f32 flicker = qrand() < 0x8000 ? 1.0f : 0.25f;
             character = owner->character_data->game_character;
-            if (character->flags_094_bytes[2] & 1) {
+            if (character->white_lightning) {
                 red = green = blue = flicker + flicker;
             } else {
                 red = Lighting_BlueFlickerRed * flicker;

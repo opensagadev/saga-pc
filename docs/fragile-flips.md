@@ -43,3 +43,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | episodeIII.c narrowed (87894ba9) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
 | game.cpp narrowed | InitGameAfterConfig | legogame/game.cpp | 82.2397 % | 82.2372 % |
 | nu3d_platform.cpp narrowed | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.06 % | 95.37 % |
+| character config bitfields in PLAYERCHARACTERCONFIG | BoulderSpawn | legogame/episodeIII.c | exact | different |
+| character config bitfields in PLAYERCHARACTERCONFIG | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |

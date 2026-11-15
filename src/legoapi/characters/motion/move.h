@@ -248,8 +248,8 @@ extern "C" {
 #define CHARACTER_RUNTIME_COMBAT_ROLL 0x40000000      /* combat_roll */
 #define CHARACTER_RUNTIME_EXTRA_TOGGLE 0x80000000     /* extra_toggle */
 
-/* PLAYERCHARACTERCONFIG.flags_094: the character config keywords whose handlers set them (the bit names of
- * charconfig.c's CHARCONFIG_FLAGS094 view). */
+/* PLAYERCHARACTERCONFIG.flags_094: the character config keywords whose handlers set them (the struct's bitfield
+ * names; charconfig.c sets flags_098's bitfields the same way). */
 #define CHARACTER_OPTION_MINIKIT_WITH_SCENE 0x1
 #define CHARACTER_OPTION_DONT_TURN 0x2
 #define CHARACTER_OPTION_NO_JUMP 0x4
@@ -342,10 +342,58 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
 
     union { // size 0x4
         u32 flags_094;
-        u8 flags_094_bytes[4];
+
+        struct {                                    // size 0x4
+            u32 minikit_with_scene : 1;             // 0x094:0
+            u32 dont_turn : 1;                      // 0x094:1
+            u32 no_jump : 1;                        // 0x094:2
+            u32 no_shoot : 1;                       // 0x094:3
+            u32 fixed_layers : 1;                   // 0x094:4
+            u32 lift_hover : 1;                     // 0x094:5
+            u32 glide_anytime : 1;                  // 0x094:6
+            u32 can_communicate : 1;                // 0x094:7
+            u32 immune_to_magnets : 1;              // 0x094:8
+            u32 immune_to_forcepush : 1;            // 0x094:9
+            u32 minikit_noscenewhenplayable : 1;    // 0x094:10
+            u32 cannot_kill : 1;                    // 0x094:11
+            u32 wait_for_weapon_in_out : 1;         // 0x094:12
+            u32 double_jump_hover : 1;              // 0x094:13
+            u32 no_category : 1;                    // 0x094:14
+            u32 no_force : 1;                       // 0x094:15
+            u32 white_lightning : 1;                // 0x094:16
+            u32 buck_rider : 1;                     // 0x094:17
+            u32 die_usecurrentlayers : 1;           // 0x094:18
+            u32 combat_roll_can_get_up : 1;         // 0x094:19
+            u32 combat_roll_can_direct_land : 1;    // 0x094:20
+            u32 no_weapon_draw : 1;                 // 0x094:21
+            u32 no_jump_fire : 1;                   // 0x094:22
+            u32 hover_over_mud : 1;                 // 0x094:23
+            u32 toggle_if_not_in_collection : 1;    // 0x094:24
+            u32 toggle_if_in_minikit_bonus : 1;     // 0x094:25
+            u32 deflect_bolts_in_minikit_bonus : 1; // 0x094:26
+            u32 has_grapple : 1;                    // 0x094:27
+            u32 hover_wings : 1;                    // 0x094:28
+            u32 has_whip : 1;                       // 0x094:29
+            u32 atatheadmovement : 1;               // 0x094:30
+            u32 can_poo : 1;                        // 0x094:31
+        };
     }; // 0x094
 
-    u8 flags_098[4];            // 0x098
+    union { // size 0x4
+        u8 flags_098[4];
+
+        struct {                              // size 0x4
+            u32 can_zap : 1;                  // 0x098:0
+            u32 put_weapon_away_on_shoot : 1; // 0x098:1
+            u32 always_stop_to_shoot : 1;     // 0x098:2
+            u32 second_shot_only : 1;         // 0x098:3
+            u32 no_start_punch_sfx : 1;       // 0x098:4
+            u32 single_jump_slam : 1;         // 0x098:5
+            u32 dont_draw_rider : 1;          // 0x098:6
+            u32 unknown_098_7 : 1;            // 0x098:7
+        };
+    }; // 0x098
+
     u32 layer_mask_special;     // 0x09c
     u32 layer_mask;             // 0x0a0
     u32 layer_mask_medium;      // 0x0a4

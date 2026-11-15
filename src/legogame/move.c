@@ -2880,7 +2880,7 @@ static void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
     object->portal_flags |= 0x800;
     object->quick_shoot_bolt_id = (i8)bolt_id;
     object->quick_shoot_flags = (u8)flags;
-    if ((object->character_data->game_character->flags_098[0] & 2) != 0) {
+    if (object->character_data->game_character->put_weapon_away_on_shoot) {
         SetWeaponIn(object);
     }
     if (state->weapon.type != NULL && state->weapon.type->type == 2 && state->weapon.ammo > 0) {
@@ -3662,7 +3662,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                                 object->context_timer += object->context_duration;
                                 object->combo_input_latched = 0;
                                 ResetAnimPacket(&object->anim_packet, -1);
-                                if ((object->character_data->game_character->flags_098[0] & 0x10) == 0) {
+                                if (!object->character_data->game_character->no_start_punch_sfx) {
                                     if ((AnimMiscFlags(object->character_model, object->unknown_7aa) & 4) != 0) {
                                         PlaySfx("WhipSwish", &object->collision_position);
                                     } else {
@@ -3845,7 +3845,7 @@ start_attack:
             object->context_timer = duration + extra;
         }
         ResetAnimPacket(&object->anim_packet, -1);
-        if ((object->character_data->game_character->flags_098[0] & 0x10) == 0) {
+        if (!object->character_data->game_character->no_start_punch_sfx) {
             if ((AnimMiscFlags(object->character_model, object->unknown_7aa) & 4) != 0) {
                 PlaySfx("WhipSwish", &object->collision_position);
             } else {
@@ -6568,7 +6568,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
         }
         return;
     }
-    if (pressed != 0 && (object->character_data->game_character->flags_098[0] & 1) != 0) {
+    if (pressed != 0 && object->character_data->game_character->can_zap) {
         i16 animation;
         if (object->jump_variant_state == 1) {
             if (object->character_context != CHARACTER_CONTEXT_NONE || object->character_model->model_data_b[0x3c] == NULL) {
@@ -12237,7 +12237,7 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
     }
     data = object->character_data->game_character;
     if (object->unknown_7aa != ACTION_SHOOTLEFT && object->unknown_7aa != ACTION_SHOOTRIGHT && object->unknown_7aa != ACTION_SHOOTBACK &&
-        (data->flags_098[0] & 4) == 0) {
+        !data->always_stop_to_shoot) {
         if (data->weapon_action == 4 && object->anim_packet.animation_index == ACTION_RUN) {
             goto immediate_shot;
         }
@@ -12276,7 +12276,7 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
                 GameCam_NewShake(GameCam, 0.5f, 0.5f, 1.0f);
             }
         }
-        if ((object->character_data->game_character->flags_098[0] & 8) == 0) {
+        if (!object->character_data->game_character->second_shot_only) {
             i32 flags;
             if (duration > 0.0f && AnimListFrame(object->character_model, object->unknown_7aa, 1) > 1.0f) {
                 flags = 1;
@@ -12288,7 +12288,7 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
     }
     goto cooldown;
 immediate_shot:
-    if ((object->character_data->game_character->flags_098[0] & 8) == 0) {
+    if (!object->character_data->game_character->second_shot_only) {
         ShootThisFrame(object, bolt_id, 3);
         object->velocity.x = object->velocity.x * 0.5;
         object->velocity.z = 0.5 * object->velocity.z;
@@ -12770,7 +12770,7 @@ void Move_WEIRDO(GAMEOBJECT *object) {
             Batarang_MoveCode(object);
         }
     }
-    if ((object->character_data->game_character->flags_094_bytes[0] & 0x80) != 0) {
+    if (object->character_data->game_character->can_communicate) {
         CommunicateCode(object, object->pad->buttons_pressed & GAMEPAD_SPECIAL, 0);
     }
     FireBountyHunterRocket(object);
@@ -12863,7 +12863,7 @@ void Move_DROIDGENERIC(GAMEOBJECT *object) {
                 goto zap;
             }
         } else if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) == 0 &&
-                   (object->character_data->game_character->flags_094_bytes[0] & 8) == 0) {
+                   !object->character_data->game_character->no_shoot) {
             ShootCode(object, object->pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 0, 0);
         }
         JumpCode(object, 0, 0, 0x80, 0, 0, -1);
@@ -13023,8 +13023,7 @@ void Move_GEONOSIAN(GAMEOBJECT *object) {
     }
     GizmoBlowupCheckProximity(WORLD, object);
     SpecialMove_VictimCode(object);
-    if ((object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0 &&
-        (object->character_data->game_character->flags_094_bytes[0] & 8) == 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0 && !object->character_data->game_character->no_shoot) {
         ShootCode(object, action_pressed, special_pressed, 0, 1, 0);
     } else if (object->id == (u16)id_WATTO) {
         ZapCode(object, action_pressed, 0);

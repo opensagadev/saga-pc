@@ -2770,8 +2770,7 @@ void GameAIProcess(void) {
                 object->pad->buttons_pressed |= GAMEPAD_SPECIAL;
             }
         }
-        if ((object->character_data->game_character->flags_094_bytes[3] & 0x10) != 0 &&
-            (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
+        if (object->character_data->game_character->hover_wings && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             threshold = (f32)((f64)object->character_data->game_character->walk_speed - (f64)0.01f);
             if (object->jump_variant_state == 1) {
                 if (threshold >= object->pad->input_magnitude) {

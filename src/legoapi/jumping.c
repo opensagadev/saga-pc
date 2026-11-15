@@ -725,8 +725,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 game_character = object->character_data->game_character;
                 if (DoubleJump_JediSlam != 0 && (animation_set & 0x10) != 0 && action_pressed != 0 && object->velocity.y > -1.25f &&
                     (object->context_variant_flags & 0x8000) == 0 &&
-                    ((movement_state == 0 && (object->jump_sequence == 2 || (game_character->flags_098[0] & 0x20) != 0)) ||
-                     movement_state == 1 || movement_state == 2) &&
+                    ((movement_state == 0 && (object->jump_sequence == 2 || game_character->single_jump_slam)) || movement_state == 1 ||
+                     movement_state == 2) &&
                     JumpSlamAction != -1 && object->character_model->model_data_b[JumpSlamAction] != NULL) {
                     if (Slam_Start(object, SLAMJUMPSPEED) != 0) {
                         PlaySabreSfx(NULL, object, NULL, 0);
@@ -748,7 +748,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                         return;
                     }
                     game_character = object->character_data->game_character;
-                    if ((game_character->flags_094_bytes[1] & 0x20) != 0) {
+                    if (game_character->double_jump_hover) {
                         object->jump_variant_timer = 0.0f;
                         object->character_context = CHARACTER_CONTEXT_NONE;
                         object->jump_variant_state = 1;

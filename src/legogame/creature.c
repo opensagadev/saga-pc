@@ -4605,7 +4605,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
 
     carried = object->takeover_source;
     if (carried != NULL && object->character_context != CHARACTER_CONTEXT_BEEN_TAKEN_OVER &&
-        (object->character_data->game_character->flags_098[0] & 0x40) == 0) {
+        !object->character_data->game_character->dont_draw_rider) {
         carried_extra = ((PARAPHERNALIA_EXTRA *)(carried));
         carried_extra->draw_reflection = extra->draw_reflection;
         carried->reflection_enabled = object->reflection_enabled;
