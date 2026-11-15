@@ -77,3 +77,13 @@ typedef struct bulk_ai_panel_s {
     u8 unknown_63;
     NUVEC floor_position;
 } BULK_AI_PANEL;
+
+typedef struct LIGHTING_LOAD_WORLD {
+    u8 unknown_000[0x104];
+    VARIPTR buffer;
+    VARIPTR end_buffer;
+    u8 unknown_10c[0x2aac - 0x10c];
+    BURN_SET *burnset;
+    u8 unknown_2ab0[4];
+    RTL_SET *rtl_set;
+} LIGHTING_LOAD_WORLD;

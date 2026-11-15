@@ -128,3 +128,13 @@ typedef struct object_coin_packet_s { // size 0x800
     u8 unknown_000[0x7fc];            // 0x000
     COIN_PACKET *coin_packet;         // 0x7fc
 } OBJECT_COIN_PACKET;
+
+typedef struct {                   // size 0x8
+    BOMB_PROGRESS_RECORD *records; // 0x0
+    u16 count;                     // 0x4
+} BOMB_PROGRESS_SYSTEM;
+
+typedef struct {                    // size 0x8
+    i32 count;                      // 0x0
+    PANEL_PROGRESS_RECORD *records; // 0x4
+} PANEL_PROGRESS_SYSTEM;

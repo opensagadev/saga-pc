@@ -38,32 +38,6 @@ typedef struct {       // size 0x100
     u32 completed[16]; // 0xc0
 } BLOWUP_PROGRESS;
 
-typedef struct {   // size 0xc
-    u32 triggered; // 0x0
-    u32 enabled;   // 0x4
-    u32 visible;   // 0x8
-} PANEL_PROGRESS;
-
-typedef struct { // size 0x8
-    u32 enabled; // 0x0
-    u32 visible; // 0x4
-} GRAPPLE_PROGRESS;
-
-typedef struct {                    // size 0x8
-    BUILD_PROGRESS_RECORD *records; // 0x0
-    u16 count;                      // 0x4
-} BUILD_PROGRESS_SYSTEM;
-
-typedef struct {                   // size 0x8
-    BOMB_PROGRESS_RECORD *records; // 0x0
-    u16 count;                     // 0x4
-} BOMB_PROGRESS_SYSTEM;
-
-typedef struct {                    // size 0x8
-    i32 count;                      // 0x0
-    PANEL_PROGRESS_RECORD *records; // 0x4
-} PANEL_PROGRESS_SYSTEM;
-
 void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *);
 
 typedef struct respawn_initial_s { // size 0x112

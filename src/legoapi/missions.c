@@ -1,26 +1,5 @@
 #include "saga.h"
 
-typedef struct MISSION_SYSTEM_READER { // size 0x30
-    MISSIONDATA_PC *missions;          // 0x00
-    MISSIONDATA_PC *active_mission;    // 0x04
-    TIMER timer;                       // 0x08
-    MISSION_SAVE_READER *save;         // 0x18
-    u8 count;                          // 0x1c
-    u8 state;                          // 0x1d
-
-    union { // size 0x1
-        u8 flags;
-
-        struct {                  // size 0x1
-            u8 pickups : 1;       // 0x1e:0
-            u8 unknown_flags : 7; // 0x1e:1
-        };
-    }; // 0x1e
-
-    u8 character_count;   // 0x1f
-    i16 character_ids[8]; // 0x20
-} MISSION_SYSTEM_READER;
-
 /* Original name unknown. Empty on PC; called when the file cannot be
    opened. VC8 drops calls to an empty body it can see, so the definition lives outside this file
    (see SpecialMovesConfigMissing). */

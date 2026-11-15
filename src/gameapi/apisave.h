@@ -95,3 +95,21 @@ typedef struct part_runtime_type_s { // size 0x178
     f32 scale;                       // 0x170
     u32 unknown_174;                 // 0x174
 } PART_RUNTIME_TYPE;
+
+typedef struct FILE_DIRECTORY_TIME_PC { // size 0x8
+    i8 second;                          // 0x0
+    i8 minute;                          // 0x1
+    i8 hour;                            // 0x2
+    i8 day;                             // 0x3
+    i8 month;                           // 0x4
+    i8 reserved;                        // 0x5
+    i16 year;                           // 0x6
+} FILE_DIRECTORY_TIME_PC;
+
+typedef struct FILE_DIRECTORY_ENTRY_PC { // size 0x118
+    u32 flags;                           // 0x000
+    u32 size;                            // 0x004
+    FILE_DIRECTORY_TIME_PC created;      // 0x008
+    FILE_DIRECTORY_TIME_PC modified;     // 0x010
+    char name[256];                      // 0x018
+} FILE_DIRECTORY_ENTRY_PC;

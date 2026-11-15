@@ -19,9 +19,10 @@ typedef struct GIZFLOW_RANDOM { // size 0x3c
     u8 unknown_039[3];          // 0x39
 } GIZFLOW_RANDOM;
 
-typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0x8
+typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0xc
     GIZFLOW_RANDOM *randoms;           // 0x0
     i32 count;                         // 0x4
+    i32 capacity;                      // 0x8
 } GIZFLOW_RANDOM_SYSTEM;
 
 typedef struct GIZFLOW_SPECIAL { // size 0x28

@@ -33,3 +33,8 @@ typedef struct area_gizmotypes_s { // size 0xc
     i32 unknown_0004;              // 0x4
     AREA_GIZMOTYPE *types;         // 0x8
 } AREA_GIZMOTYPES;
+
+typedef struct {
+    BUILD_PROGRESS_RECORD *records;
+    u16 count;
+} BUILD_PROGRESS_SYSTEM;

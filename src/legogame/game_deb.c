@@ -25,16 +25,6 @@ typedef struct BURN_SET {            // size 0x564
     i32 unknown_560;                 // 0x560
 } BURN_SET;
 
-typedef struct LIGHTING_LOAD_WORLD { // size 0x2ab8
-    u8 unknown_000[0x104];           // 0x0000
-    VARIPTR buffer;                  // 0x0104
-    VARIPTR end_buffer;              // 0x0108
-    u8 unknown_10c[0x2aac - 0x10c];  // 0x010c
-    BURN_SET *burnset;               // 0x2aac
-    u8 unknown_2ab0[4];              // 0x2ab0
-    RTL_SET *rtl_set;                // 0x2ab4
-} LIGHTING_LOAD_WORLD;
-
 /* Cut resource access prefix; the cut loader owns the resource. */
 typedef struct BURNOUT_CUT_PREFIX { // size 0x54
     u8 unknown_00[0x50];            // 0x00

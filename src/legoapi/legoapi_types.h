@@ -2893,6 +2893,19 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
     V2SessionManager *session_manager; // 0x110f0
 };
 #endif
+
+typedef struct minesys_s {        // size 0x748
+    NUSPECIALHANDLE mine_special; // 0x000
+    MINE_ENTRY_PC mines[64];      // 0x00c
+    f32 mine_radius;              // 0x70c
+    f32 spawn_timer;              // 0x710
+    AIAREA *nomine_areas[10];     // 0x714
+    i16 nomine_count;             // 0x73c
+    i16 mine_debris;              // 0x73e
+    i32 mine_part;                // 0x740
+    f32 update_timer;             // 0x744
+} MINESYS_PC;
+
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
 #define SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART 15
 #ifdef SAGA_SHIM

@@ -2,11 +2,6 @@
 
 extern i32 come_from_an_editor;
 
-typedef struct {
-    BOMB_PROGRESS_RECORD *records;
-    u16 count;
-} BOMB_PROGRESS_SYSTEM;
-
 typedef struct bombgen_activation_reader_s {
     u8 unknown_00[0x1c];
     GAMEANIMSET *anim_set;

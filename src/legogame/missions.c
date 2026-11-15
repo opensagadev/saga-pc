@@ -9,18 +9,6 @@ typedef struct MENU_INPUT_PAD_PC {
     u8 unknown_14[0x4c];
 } MENU_INPUT_PAD_PC;
 
-typedef struct MISSION_SYSTEM_READER {
-    MISSIONDATA_PC *missions;
-    MISSIONDATA_PC *active_mission;
-    TIMER timer;
-    MISSION_SAVE_READER *save;
-    u8 count;
-    u8 state;
-    u8 flags;
-    u8 character_count;
-    i16 character_ids[8];
-} MISSION_SYSTEM_READER;
-
 // noinline: the original calls EndMissionsMenu out of line from MenuUpdateMissions; VC8 would inline it there.
 __declspec(noinline) void EndMissionsMenu(void) {
     LevLock[3] = 1;

@@ -167,6 +167,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+typedef struct ai_control_system_s { // size 0x18
+    i32 capacity;                    // 0x00
+    AI_CONTROL_SLOT *controllers;    // 0x04
+    NULISTHDR available;             // 0x08
+    NULISTHDR active;                // 0x10
+} AI_CONTROL_SYSTEM_PC;
+
 #undef SAGA_LEGOAPI_AI_CORE_GAMEAI_H_PART
 #define SAGA_LEGOAPI_AI_CORE_GAMEAI_H_PART 5
 #ifdef SAGA_SHIM

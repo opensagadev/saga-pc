@@ -170,3 +170,6 @@ config/castscan-budget.json declaration-type 1925 NuGScnDestroyPS reads native_s
 config/castscan-budget.json scalar-pun 305 NuGScnDestroyPS releases the SCENE_FIXUP_NATIVE buffer arrays through PCDeviceReleaseTexture, as the other buffer releases of nu3d_platform.cpp do (the folded view typed them as textures)
 config/oddscan-budget.json dup-type 496 NuShaderObject: the C declaration (nushaderobject.h) and the C spelling next to the class (ShaderManager.h) replace PC_SHADER_OBJECT_FULL_VIEW of decomp.h, which dup-type did not scan
 config/oddscan-budget.json decomp-type 0 down from 5: the last views folded (TERRAIN_SET_PC, SCENE_FIXUP_NATIVE, NuShaderObject)
+config/castscan-budget.json declaration-type 1953 casts to types that moved from repeated unit copies into headers are no longer duplicate-type (that class went down by 108; the three classes here rose by 108)
+config/castscan-budget.json layout-compatible 304 same reclassification: repeated unit types moved into headers
+config/castscan-budget.json record-pun 815 same reclassification: repeated unit types moved into headers

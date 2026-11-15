@@ -39,18 +39,6 @@ typedef struct podrace_resource_s {        // size 0xb030
 
 /* Episode I level callbacks installed by FixUpLevels. */
 
-typedef struct minesys_s {        // size 0x748
-    NUSPECIALHANDLE mine_special; // 0x000
-    MINE_ENTRY_PC mines[64];      // 0x00c
-    f32 mine_radius;              // 0x70c
-    f32 spawn_timer;              // 0x710
-    AIAREA *nomine_areas[10];     // 0x714
-    i16 nomine_count;             // 0x73c
-    i16 mine_debris;              // 0x73e
-    i32 mine_part;                // 0x740
-    f32 update_timer;             // 0x744
-} MINESYS_PC;
-
 void RetakeG_Reset(WORLDINFO *world) {
 }
 

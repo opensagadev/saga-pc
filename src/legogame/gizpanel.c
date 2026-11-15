@@ -15,11 +15,6 @@ typedef struct {
     u32 visible[1];
 } PANEL_PROGRESS;
 
-typedef struct {
-    i32 count;
-    PANEL_PROGRESS_RECORD *records;
-} PANEL_PROGRESS_SYSTEM;
-
 typedef struct panel_movement_s {
     NUMTX matrix;
     char name[16];

@@ -53,18 +53,6 @@ static f32 PodSebulbaThrowGravity;
 
 /* Episode I level callbacks installed by FixUpLevels. */
 
-typedef struct minesys_s {
-    NUSPECIALHANDLE mine_special;
-    MINE_ENTRY_PC mines[64];
-    f32 mine_radius;
-    f32 spawn_timer;
-    AIAREA *nomine_areas[10];
-    i16 nomine_count;
-    i16 mine_debris;
-    i32 mine_part;
-    f32 update_timer;
-} MINESYS_PC;
-
 typedef struct retakeg_netpacket_s {
     i16 guard_a;
     i16 guard_b;

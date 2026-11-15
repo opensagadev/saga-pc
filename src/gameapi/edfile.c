@@ -4081,24 +4081,6 @@ i32 FS_FileNameFilter(char *name) {
     return 0;
 }
 
-typedef struct FILE_DIRECTORY_TIME_PC {
-    i8 second;
-    i8 minute;
-    i8 hour;
-    i8 day;
-    i8 month;
-    i8 reserved;
-    i16 year;
-} FILE_DIRECTORY_TIME_PC;
-
-typedef struct FILE_DIRECTORY_ENTRY_PC { // size 0x118
-    u32 flags;                           // 0x000
-    u32 size;                            // 0x004
-    FILE_DIRECTORY_TIME_PC created;      // 0x008
-    FILE_DIRECTORY_TIME_PC modified;     // 0x010
-    char name[256];                      // 0x018
-} FILE_DIRECTORY_ENTRY_PC;
-
 /* FILE_DIRECTORY_ENTRY_PC.flags: the entry is a directory (listed as <name>, opened on selection). */
 enum FILE_DIRECTORY_FLAG_PC { FILE_DIRECTORY_FLAG_DIRECTORY_PC = 8 };
 

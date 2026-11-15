@@ -146,11 +146,6 @@ typedef struct registry_buildit_system_pc_s {
     GAMEANIMOBJ **anim_objects;
 } REGISTRY_BUILDIT_SYSTEM_PC;
 
-typedef struct {
-    BUILD_PROGRESS_RECORD *records;
-    u16 count;
-} BUILD_PROGRESS_SYSTEM;
-
 extern "C" {
     extern i32 gizbuildit_gizmotype_id;
 }
