@@ -620,6 +620,7 @@ void SoundVoiceManagerPC::SetSampleName(const char *name, i32 sample_index) {
 
 extern "C" {
     i32 PCStereoChannel0B = 1;
+    i32 PCStereoChannel1A = 2;
     i32 PCStereoChannel1B = 3;
 }
 
@@ -698,6 +699,8 @@ extern "C" i32 fun_006986c0(void) {
 
 extern "C" {
     CRITICAL_SECTION PCSoundStorageLock = {0};
+    i32 NuSound3Initialized = 0;
+    f32 NuSound3VolumeTable[0x4000] = {0};
 }
 
 SoundVoiceManagerPC::SoundVoiceManagerPC() {

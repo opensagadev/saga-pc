@@ -24,6 +24,10 @@ i32 fun_00546fc0(void) {
     return 0;
 }
 
+i32 NuWindWave = 0;
+i32 NuWindDir = 0;
+i32 NuWindDir2 = 0;
+
 void NuWindInit(void) {
     i32 index;
     i32 count;

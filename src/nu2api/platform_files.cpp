@@ -76,6 +76,8 @@ extern "C" i32 fun_006dd690(const char *name, const char *prefix, i32 use_user_f
 
 char PcFileDirectory[128] = {};
 
+char PcFilePath[128] = {};
+
 extern "C" FILE *PcOpenPlatformFile(const char *name, const char *prefix, i32 use_user_folder, const char *mode) {
     if (use_user_folder == 1) {
         strcpy(PcFileDirectory, PcGetUserFolder(PcCompanyName, PcProductName));

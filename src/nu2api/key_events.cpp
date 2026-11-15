@@ -29,6 +29,10 @@ extern "C" i32 QueueKeyPress(i32 scan_code, i32 modifiers) {
 }
 
 extern "C" {
+    volatile u8 PcKeyQueueHead = 0;
+    volatile u8 PcKeyQueueTail = 0;
+    volatile u8 PcKeyQueueScanCodes[256] = {0};
+    volatile u8 PcKeyQueueModifiers[256] = {0};
     u8 PcPressedScanCodes[256] = {0};
 }
 

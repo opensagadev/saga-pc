@@ -86,6 +86,9 @@ void NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 count, i
     }
 }
 
+NUBRIDGE_PC Bridges[8] = {0};
+i32 NuBridgeProc = 0;
+
 void NuBridgeDraw(NUMTL *material) {
     i32 b;
     i32 i;

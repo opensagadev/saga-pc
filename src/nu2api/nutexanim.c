@@ -789,6 +789,7 @@ static void TextureAnimationExternalReferencePrivate(NUFPAR_PC *parser) {
     p->instructions[p->instruction_count++] = (i16)label;
 }
 
+u16 script_mask = 0xffff;
 static NUFPCOMJMP TextureAnimationCommandsPrivate[] = {
     {"scriptmask", TextureAnimationScriptMaskPrivate        },
     {"tex",        TextureAnimationTexPrivate               },

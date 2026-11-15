@@ -440,6 +440,11 @@ i32 SoundQueue::SetFormat(const WAVEFORMATEX *format) {
     return 0;
 }
 
+extern "C" {
+    i32 PCSoundDrainStart = 0;
+    i32 PCSoundDrainRemaining = 0;
+}
+
 i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
     if (stream_state != 1 && stream_state != 2) {
         return 0;
@@ -753,6 +758,10 @@ DWORD SoundQueue::Run(void) {
 
 extern "C" DWORD __stdcall PCSoundStreamWorker(void *context) {
     return ((SoundQueue *)context)->Run();
+}
+
+extern "C" {
+    i32 PCSoundStreamSerial = 0;
 }
 
 SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {

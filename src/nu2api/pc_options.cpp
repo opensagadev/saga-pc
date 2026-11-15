@@ -376,6 +376,9 @@ static NUFPCOMJMP PCOptionsCommands[28] = {
     {"ForceShaderModel",    PCOptionsReadForceShaderModel   },
     {NULL,                  NULL                            }
 };
+extern "C" {
+    i32 PCOptionsFileVersion = 2;
+}
 
 void PC_WINDOW_OPTIONS_PC::Load() {
     char fallback[260];

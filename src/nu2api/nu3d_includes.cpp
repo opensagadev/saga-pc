@@ -8755,6 +8755,7 @@ extern "C" {
     i32 NuPortalCameraSelect = 0;
     i32 VisibilityUsingOcclusion = 0;
     i32 dat_00973984 = 0;
+    NUFILE nudlist_field_988 = 0;
     i32 NuTimeBar_Initialised = 0;
     i32 NuTimeBar_EngineEnabled = 0;
     i32 NuTimeBar_GpuFrameOutEnabled = 0;
@@ -11934,6 +11935,10 @@ extern "C" {
 VirtualStackAllocator NuPostFilterAllocator(NuPostFilterMemory, sizeof(NuPostFilterMemory));
 NuCopyFilter *NuPostCopyFilter = NULL;
 u32 NuPostShaderEngineFlagsPc = 0;
+extern "C" {
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectAuxTexture = 0;
+    GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture = 0;
+}
 
 extern "C" void NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end) {
     i32 width = PS2_REZ_W;
@@ -12916,10 +12921,6 @@ void NuMainFilterGen::render() {
         PostPortDepthBuffer.manager->entries[PostPortDepthBuffer.index].data = depth;
     }
     D3DPERF_EndEvent();
-}
-
-extern "C" {
-    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectAuxTexture;
 }
 
 /* Drops this module's references to the shared post ports and frees the auxiliary and work targets. */
@@ -15262,6 +15263,7 @@ extern "C" {
     NUMTL *PCMaterialPool = 0;
     NUCAMERA *NuPortalCamera = 0;
     i32 NuTextureCapacityPC = 0;
+    char *PCDisplayCaptureCursorPc = NULL;
     u8 fstackmem[NU_PORTAL_STACK_SIZE] = {0};
     NUVEC NuRndrDebRangeInv = {0};
     i32 PCMaterialPoolCount = 0;
@@ -15276,6 +15278,7 @@ extern "C" {
     u8 NuAnimDataBitCount[256] = {0};
     NUPLANE NuPortalNearPlane = {0};
     f32 nextx;
+    NUVEC NuPortalWorldCamera = {0};
     NUMTL *numtl_defaultmtl3d = 0;
     i32 vport_inval = 0;
     NUMTX NuPortalLocalView = {0};
@@ -15288,12 +15291,15 @@ extern "C" {
     i32 PCDisplayClipGroupIndex = 0;
     void *dat_00971ad8 = 0;
     i16 NuPortalCameraRoom = 0;
+    NUMTX VisibilityPrimaryAbsoluteMatrix = {0};
+    NUCAMERA NuPortalRestoreCamera = {0};
     NUCAMERA global_camera = {0};
     NUCAMERA NuPortalDebugCamera = {0};
     i32 NuPostEffectsRan = 0;
     u8 NuPostLastFrameEffect = 0;
     u8 ForcePlayEndFrame = 0;
     u8 ForceEulerToQuat = 0;
+    u8 dat_009737ff = 0;
     NU_POST_MAIN_VIEW *mainFilter = NULL;
     NU_POST_DEFERRED_VIEW *deferredFilter = NULL;
     NU_POST_MOTION_VIEW *motionFilter = NULL;
@@ -15304,6 +15310,7 @@ extern "C" {
     i32 PCSpecialActiveShadowLights = 0;
     VARIPTR fstack_limit = {0};
     u8 OcclusionBitArray[0x320] = {0};
+    PC_HG_SHADOW_PACKET PCShadowPackets[280] = {0};
     u32 NuQFntModeStack[16] = {0};
     NUMTX VisibilityPrimaryPlaneMatrix = {0};
     NUMTL *numtl_defaultmtl2d = 0;

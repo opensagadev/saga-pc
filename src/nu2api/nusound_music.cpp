@@ -1491,6 +1491,10 @@ extern "C" f32 fun_00696a70(f32 value) {
     return (f32)log10((f64)value);
 }
 
+extern "C" {
+    NUVEC nusound_special_positions[5] = {0};
+}
+
 extern "C" i32 NuSound3InitV(VARIPTR *cursor, VARIPTR end, i32 device_parameter, i32 token, ...) {
     PC_SOUND_INIT_CONFIG config;
     va_list args;

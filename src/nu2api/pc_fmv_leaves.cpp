@@ -47,6 +47,10 @@ extern "C" void fun_006d6b60(void) {
 
 extern "C" f32 dat_02975608;
 
+extern "C" {
+    f32 dat_02975608 = 0.0f;
+}
+
 extern "C" i32 fun_006d6b70(i32 key) {
     if (nu_keyboard_key_index == 0 || key != nu_keyboard_key_index) {
         return 0;

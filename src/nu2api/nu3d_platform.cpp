@@ -550,6 +550,7 @@ extern "C" {
     u32 dat_0280d838 = 0;
     NUMTX PcGeometryProjectionMatrix = {0};
     NUMTX PcGeometryInverseViewProjectionMatrix = {0};
+    i32 dat_0097391c = 0;
     static NUMTX RndrStateScaledTransform = {0};
     i32 nurndr_tritot_this_frame = 0;
     VARIPTR nudlist_stream_cursor = {0};
@@ -607,6 +608,8 @@ extern "C" {
     i32 DwaBlockCount = 0;
     static u32 rndrstream_used = 0;
     u8 NuPortalVisibilityBits[625] = {0};
+    NU_CAMERA_STACK_ENTRY dat_0280a598[64] = {0};
+    NUMTX clip_test_mtx = {0};
     PC_SHADOW_QUEUE_RECORD NuRndrShadPolDat[128] = {0};
     static u32 rndrstream_max_used = 0;
     i32 NuQFntScanX = 0;
@@ -1021,6 +1024,66 @@ extern "C" {
             {0,   24, 1,  0, 5,  1},
             {255, 0,  17, 0, 0,  0},
         };
+        i32 PS2_VREZ_W = 640;
+        i32 PS2_VREZ_H = 224;
+        i32 dat_0080e6a4 = 1;
+        i32 NuLgtStateCapacity = 8;
+        i32 NuLgtStateActiveCount = -1;
+        i32 NuLgtStateFreeHead = -1;
+        i32 NuLgtSeed = 12345;
+        i32 SceneUploadBufferSizePC = 41943040;
+        PC_DISPLAY_ITEM_HANDLER_PC PCDisplayItemHandlerPrefix[49] = {
+            NuDisplayListMaterial,             /* item type 0x80 */
+            NULL,                              /* item type 0x81 */
+            NuDisplayListDrawGeometry,         /* item type 0x82 */
+            NuDisplayListTransform,            /* item type 0x83 */
+            NULL,                              /* item type 0x84 */
+            NULL,                              /* item type 0x85 */
+            NULL,                              /* item type 0x86 */
+            NULL,                              /* item type 0x87 */
+            NULL,                              /* item type 0x88 */
+            NULL,                              /* item type 0x89 */
+            NULL,                              /* item type 0x8a */
+            NuDisplayListDrawGeometry,         /* item type 0x8b */
+            NuDisplayListTransformTranspose,   /* item type 0x8c */
+            NULL,                              /* item type 0x8d */
+            NULL,                              /* item type 0x8e */
+            NuDisplayListDrawFaceOn,           /* item type 0x8f */
+            NuDisplayListFaceOnTransform,      /* item type 0x90 */
+            NULL,                              /* item type 0x91 */
+            NULL,                              /* item type 0x92 */
+            NuDisplayListDrawPrimitive2D,      /* item type 0x93 */
+            NuDisplayListLights,               /* item type 0x94 */
+            NULL,                              /* item type 0x95 */
+            NULL,                              /* item type 0x96 */
+            NULL,                              /* item type 0x97 */
+            NuDisplayListDrawGeometry,         /* item type 0x98 */
+            NuDisplayListSkinPalette,          /* item type 0x99 */
+            NuDisplayListCamera,               /* item type 0x9a */
+            NULL,                              /* item type 0x9b */
+            NULL,                              /* item type 0x9c */
+            NULL,                              /* item type 0x9d */
+            NULL,                              /* item type 0x9e */
+            NULL,                              /* item type 0x9f */
+            NULL,                              /* item type 0xa0 */
+            NULL,                              /* item type 0xa1 */
+            NULL,                              /* item type 0xa2 */
+            NULL,                              /* item type 0xa3 */
+            NULL,                              /* item type 0xa4 */
+            NuDisplayListTint,                 /* item type 0xa5 */
+            NuDisplayListFog,                  /* item type 0xa6 */
+            NuDisplayListDrawDebris,           /* item type 0xa7 */
+            NULL,                              /* item type 0xa8 */
+            NuDisplayListVertexGroups,         /* item type 0xa9 */
+            NuDisplayListVertexOffsets,        /* item type 0xaa */
+            NuDisplayListReflection,           /* item type 0xab */
+            NULL,                              /* item type 0xac */
+            NuDisplayListPacketAd,             /* item type 0xad */
+            NuDisplayListLegacyLightmap,       /* item type 0xae */
+            NuDisplayListLegacyLightmapOffset, /* item type 0xaf */
+            NuDisplayListLightmapPacket,       /* item type 0xb0 */
+        };
+        PC_DISPLAY_ITEM_HANDLER_PC *CurrentItemTable = PCDisplayItemHandlerPrefix;
         i32 PCClipExtentsEnabled = 1;
         NU_CAMERA_STACK_ENTRY *dat_0080e864 = dat_0280a598;
         __declspec(align(16)) f32 ClipFarLimits[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -1372,6 +1435,7 @@ extern "C" {
         void *NuDisplayMaterialLast = NULL;
         PC_LIGHT_STATE_SLOT NuLgtStateSlots[8] = {0};
         u8 PcSurfaceRegistryInitialized = 0;
+        u8 NuPrimNeedsOverbrightening = 0;
         PC_FRAMEBUFFER PcFramebufferPool[32];
         char NuTexBmpErrorText[0x80];
         NUTEXBMP_COLOUR_PC NuTexBmpPalette[0x100];
@@ -1387,6 +1451,8 @@ extern "C" {
         PC_FRAMEBUFFER *PcSecondaryFramebuffer = NULL;
         PC_TEXTURE_RESOURCE *NuTextureEnvironmentCube = NULL;
         PC_TEXTURE_RESOURCE *NuTexturePhongCube = NULL;
+        // NuWaterReset writes these standalone four-byte PC globals.
+        i32 nu_water_reset_state = 0;
         i32 nu_water_flow_state = 0;
         i32 nu_water_reset_status = 0;
         PC_BOOT_FRAMEBUFFER_VIEW PcBootFramebuffers = {NULL, NULL};
@@ -4948,6 +5014,7 @@ extern "C" {
         NuLgtStateEnabled = 0;
     }
 
+    NUMTL *PCStartupMaterial1 = NULL;
     i32 NuLgtArcLaserCnt = 0;
     NULGTLASER_PC NuLgtLaserData[64] = {0};
 

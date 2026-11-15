@@ -516,6 +516,9 @@ NUFILE_DEVICE *NuFileFindDevice(i32 id, i32 unit) {
     return NULL;
 }
 
+NUFILE_DEVICE enum_devices[16] = {0};
+i32 enum_numdevices = 0;
+
 i32 NuFileEnumerateDevices(NUFILE_DEVICE **result) {
     i32 count = 0;
     i32 index;
@@ -7203,6 +7206,8 @@ void NuStrSubstituteString(char *dst, char *src, char *search, char *replacement
 
 static u16 **BadWords;
 static i32 NumBadWords;
+u32 dat_0091ef20 = 0;
+void (*NuApiEndFrameCallback)(void) = 0;
 i32 ShowingError = 0;
 
 void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end) {
@@ -7749,6 +7754,8 @@ void NuErrorSleep(void) {
     }
 }
 
+f32 NuFrameAccumulatedTime = 0;
+
 f32 NuFrameEnd(void) {
     NuTime elapsed;
     NuTime now;
@@ -8199,6 +8206,8 @@ i32 fun_004f4780(void) {
 void NuPadSetMaxGamePads(i32 count) {
     MaxGamePads = count;
 }
+
+NUPADMAPPING g_nupadMapping[3] = {0};
 
 void fun_004f47a0(i32 pad, i32 port) {
     if (g_nupadMapping[pad].port >= 0) {
@@ -8737,6 +8746,8 @@ void NuVideoSetResolution(i32 width, i32 height) {
     nuapi.screen_width = width;
     nuapi.screen_height = height;
 }
+
+f32 NuVideoFrameRate = 0;
 
 i32 NuVideoSetSwapMode(i32 mode) {
     i32 previous_mode = nuapi.video_swap_mode;

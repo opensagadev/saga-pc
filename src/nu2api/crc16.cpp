@@ -1,6 +1,10 @@
 #include "gamelib/util/CRC16.h"
 #include "nu2api/ShaderManagerHLSL.h"
 
+extern "C" {
+    u32 CRC16TablePC[256] = {0};
+}
+
 CRC16::CRC16() {
     for (i32 i = 0; i < 256; ++i) {
         i32 value = 0;

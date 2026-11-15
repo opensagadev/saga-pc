@@ -30,6 +30,8 @@ NUMTX psmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 f32 NuCameraProjectionFarClipBias = 0.1f;
 NUMTX NuCameraScissorProjectionScratch = {0};
 static f32 NuCameraOrthoScale = 0.1f;
+i32 NuCameraScissorWidth = 0x1000;
+i32 NuCameraScissorHeight = 0x1000;
 
 NUCAMERA *NuCameraCreate(void) {
     NUCAMERA *camera = NuAlloc(sizeof(NUCAMERA), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nucamera_gen.c", 0x11e);

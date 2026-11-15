@@ -24,6 +24,7 @@ extern "C" void PcSetDefaultParameter(const char *parameter) {
 extern "C" void *NuHwParameter33;
 
 extern "C" {
+    i32 dat_02975c40 = 0;
     void *NuHwParameter33 = 0;
 }
 

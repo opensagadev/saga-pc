@@ -205,3 +205,6 @@ config/oddscan-budget.json data-file 6 src/nu2api/nurndr_swap.cpp lost its exter
 config/declscan-budget.json A 28 2674d959 kept the declarations of nuscratch.c, keyboard_read.c and hardware_dispatch.cpp, which no longer see the headers after the narrowing; the count was not raised with them
 config/declscan-budget.json C 452 as above (2674d959)
 config/declscan-budget.json D 1433 as above (2674d959)
+config/declscan-budget.json C 451 a unit's extern of a global moved into the same unit is now a forward declaration of it (moved data, same construct)
+config/oddscan-budget.json data-file 7 nushadermanager.cpp now holds its shader tables, moved out of data.cpp (same data, new place)
+config/oddscan-budget.json long-file 11 nushadermanager.cpp grows past the long-file limit with the tables moved out of data.cpp

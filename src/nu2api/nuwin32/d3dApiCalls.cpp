@@ -102,6 +102,12 @@ u32 PC_DEVICE_BACKEND_PC::fun_006df070() {
 }
 
 extern "C" {
+    u32 dat_02974ccc = 0;
+    u32 dat_02974cd0 = 0;
+    u32 dat_02974cd4 = 0;
+    u32 dat_02974cd8 = 0;
+    u32 dat_02974cec = 0;
+    u32 dat_02974cf0 = 0;
     i32 PCFrameCriticalSectionIndex = 0;
 }
 

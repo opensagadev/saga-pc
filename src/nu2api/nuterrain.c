@@ -1581,7 +1581,9 @@ void NuVecCheckForSNANs(NUVEC *v) {
         (normal).y = 1;                                                                                                                    \
     }
 
+i16 castnum = 0;
 i32 terraincnt = 0;
+NUVEC GetSurfaceInfoWaterNormal = {0};
 
 void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *path, void *gscn, i32 scene_id, u32 max_group_indices,
                     u32 max_groups, u32 max_platforms) {
@@ -3133,7 +3135,9 @@ i32 edpp_copy_source[8] = {0};
 struct eduimenu_s *effectlistmenu = 0;
 static u8 *TerrainSkinArenaEnd = 0;
 i32 PlatSkinCnt = 0;
+f32 TerrWallDeflectYScale = 0;
 i16 TerrainCastAuxIndex = 0;
+i32 TerrShapeAdjCnt = 0;
 struct TERRAIN_SKIN_INFO *PlatSkinInfo = 0;
 i32 PlatCodeCallback = 0;
 static i32 TerrainSkinOriginalGroupCount = -1;

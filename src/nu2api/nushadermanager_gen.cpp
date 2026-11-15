@@ -74,6 +74,7 @@ template <> void PC_SHADER_MANAGER_VIEW::BindShader(NuShaderObject *slot) {
 }
 
 extern "C" {
+    char g_shaderSaveFolder[256] = "shaders";
     f32 PCShaderShininessFactorStorage = 1.0f;
 }
 

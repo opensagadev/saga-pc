@@ -18,6 +18,7 @@
 #include <string.h>
 
 extern "C" {
+    u8 PcCapsConfigured = 0;
     const char *dat_02974d58[256] = {0};
     TEXT_INPUT_LABELS_PC *TextInputAlternateLabelsPc = 0;
     u8 PcMouseAxisModesPc[3] = {0};
@@ -30,6 +31,7 @@ static u32 PcMousePressedMaskPc = 0;
 extern "C" {
     u8 nu_keyboard_pages[0x200] = {0};
     char dat_029753c0[512] = {0};
+    u8 nu_keyboard_page_index = 0;
 }
 void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME_PC *) = NULL;
 extern "C" {

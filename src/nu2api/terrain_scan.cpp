@@ -130,6 +130,7 @@ extern "C" {
 extern "C" {
     i32 IgnoreWallSplines = 0;
     i32 WallSplinesOnly = 0;
+    TERRAIN_POLYGON_INFO *ScaleTerrainT1 = 0;
 }
 
 extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {

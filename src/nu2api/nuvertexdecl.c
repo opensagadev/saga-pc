@@ -23,6 +23,9 @@ PC_VERTEX_DECL_ENTRY *PCVertexDeclarationFindSlot(const PC_VERTEX_DECL_ENTRY *ke
     return first;
 }
 
+i32 PCVertexDeclarationCountPC = 0;
+PC_VERTEX_DECL_ENTRY PCVertexDeclarationCachePC[256] = {0};
+
 PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
     PC_VERTEX_DECL_ENTRY key;
     PC_VERTEX_DECL_ENTRY *record;

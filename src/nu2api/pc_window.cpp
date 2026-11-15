@@ -23,6 +23,9 @@ static i32 PcArgc = 1; // not address-exposed: kept in a register across the tok
 
 extern "C" {
     PC_WINDOW_CALLBACK_PC PcWindowCallbacks[1] = {NULL};
+    WNDCLASSEXA PcWindowClass = {0};
+    /* Command line: module slot 0 and scratch slot 1. */
+    char *PcArgv[2] = {NULL, NULL};
 }
 
 extern "C" void RegisterWindowCallbackPc(PC_WINDOW_CALLBACK_PC callback) {
@@ -210,6 +213,9 @@ char *ParseArgumentToken(char *cursor, char terminator, char **argument) {
 
 extern "C" {
     i32 PcRelaunchMce = 0;
+    NUMTL *PcCursorMaterialPc = 0;
+    i32 PcWindowCallbackCount = 0;
+    BOOL PcScreenSaverEnabled = 0;
     char PcModuleFilename[260] = {0};
 }
 
@@ -290,7 +296,6 @@ extern "C" void PcRelaunchMediaCenter(void) {
 }
 
 extern "C" {
-    extern NUMTL *PcCursorMaterialPc;
     void PcCreateCursorMaterialPc(void);
 }
 

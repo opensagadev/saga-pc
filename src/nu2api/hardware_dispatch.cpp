@@ -476,6 +476,8 @@ i32 PC_DEVICE_BACKEND_PC::fun_006dc750() {
 }
 
 extern "C" {
+    u32 NuHwParameter19 = 0;
+    u32 NuHwParameter4f = 0;
     u32 PcUseUserGeoRegion = 0;
 }
 

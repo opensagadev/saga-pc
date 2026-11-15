@@ -44,6 +44,11 @@ NUVEC NuFadeObjGetAngleTerrainValues(NUVEC *position) {
     return values;
 }
 
+i32 NuFadeObjWave = 0;
+i32 NuFadeObjDataIndex = 0;
+i32 NuFadeObjDir = 0;
+i32 NuFadeObjDir2 = 0;
+
 void NuFadeObjInit(void) {
     i32 group;
     i32 i;
@@ -188,6 +193,8 @@ void NuFadeObjAngleTerrain(NUMTX *matrix) {
     matrix->m31 = position.y;
     matrix->m32 = position.z;
 }
+
+i32 NuFadeObjEnabled = 1;
 
 void NuFadeObjUpdateArray(NUVEC **positions) {
     i32 i;

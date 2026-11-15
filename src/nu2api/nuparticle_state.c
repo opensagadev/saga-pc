@@ -10,6 +10,9 @@ void NuRndrSetParticleRotation(NUMTX *rotation) {
     NuRndr_DebrisRotMtxPtr = rotation;
 }
 
+i32 NuRndrStopUpdate = 0;
+NUMTX debris_box_camera_cache = {0};
+
 void NuRndrSetDebBox(NUVEC *range) {
     NUVEC size;
     NUVEC corners[8];
