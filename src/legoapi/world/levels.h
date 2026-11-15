@@ -25,6 +25,7 @@
 #include "legoapi/world/area.h"
 #include "legoapi/world/areas.h"
 #include "legoapi/world/level.h"
+#include "legoapi/world/sceneprogress.h"
 #include "legoapi/world/world.h"
 #include "legogame/game.h"
 #include "nu2api/nu3d/nu3d_includes.h"
@@ -41,28 +42,6 @@ struct AIAREA;
 
 #if SAGA_LEGOAPI_WORLD_LEVELS_H_PART == 1 && !defined(SAGA_LEGOAPI_WORLD_LEVELS_H_STOP)
 #define AREA_GLOBALS_PROGRESS_FLAGS (AreaGlobals.progress_flags)
-
-typedef struct scene_special_progress_s { // size 0x8
-
-    union { // size 0x4
-        u32 flags;
-
-        struct {               // size 0x4
-            u32 frame : 11;    // 0x0:0
-            u32 visible : 1;   // 0x0:11
-            u32 playing : 1;   // 0x0:12
-            u32 waiting : 1;   // 0x0:13
-            u32 repeating : 1; // 0x0:14
-            u32 unused : 17;   // 0x0:15
-        };
-    }; // 0x0
-
-    f32 tfactor; // 0x4
-} SCENESPECIALPROGRESS;
-
-typedef struct scene_progress_s {        // size 0x2800
-    SCENESPECIALPROGRESS specials[1280]; // 0x0000
-} SCENEPROGRESS;
 
 typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
     u8 kind;                         // 0x0

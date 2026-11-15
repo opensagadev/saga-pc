@@ -1627,7 +1627,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     f32 max_z;
     f32 radius_squared;
     TERRAIN_SHAPE_BATCH *batch;
-    TERRAIN_SHAPE *shape;
+    TERRAIN_POLYGON_INFO *shape;
     u8 legacy_material;
     f32 length_squared;
     f32 terrain_min_x;
@@ -1768,7 +1768,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 
         batch = ((TERRAIN_SHAPE_BATCH *)(group->data));
         while (batch->marker >= 0) {
-            shape = ((TERRAIN_SHAPE *)(batch + 1));
+            shape = ((TERRAIN_POLYGON_INFO *)(batch + 1));
             for (shape_index = 0; shape_index < batch->shape_count; ++shape_index, ++shape) {
                 TERRAIN_FIX_NORMAL(shape->normals[0]);
                 TERRAIN_FIX_NORMAL(shape->normals[1]);
@@ -1839,7 +1839,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
 #undef TERRAIN_INIT_RADIUS
             }
 
-            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_SHAPE *)(batch + 1)) + batch->shape_count));
+            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_POLYGON_INFO *)(batch + 1)) + batch->shape_count));
         }
 
         group->radius = NuFsqrt(radius_squared);
@@ -1887,7 +1887,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                 terrain_max_z = batch->max_z + group->origin.z;
             }
 
-            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_SHAPE *)(batch + 1)) + batch->shape_count));
+            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_POLYGON_INFO *)(batch + 1)) + batch->shape_count));
         }
     }
 
@@ -1917,7 +1917,7 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
                 group_max_z[group_index] = batch->max_z + group->origin.z;
             }
 
-            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_SHAPE *)(batch + 1)) + batch->shape_count));
+            batch = ((TERRAIN_SHAPE_BATCH *)(((TERRAIN_POLYGON_INFO *)(batch + 1)) + batch->shape_count));
         }
 
         x_distance = (i32)((group_max_x[group_index] + group_min_x[group_index]) * 0.5f - terrain_min_x);
@@ -2493,7 +2493,7 @@ void terrainpickupinit(char *path, void **buffer) {
         max_z = -200000000.0f;
         batch = (TERRAIN_SHAPE_BATCH *)group->data;
         while (batch->marker >= 0) {
-            TERRAIN_SHAPE *shape = (TERRAIN_SHAPE *)(batch + 1);
+            TERRAIN_POLYGON_INFO *shape = (TERRAIN_POLYGON_INFO *)(batch + 1);
             i32 j;
             for (j = batch->shape_count; j > 0; --j, ++shape) {
                 i32 k;

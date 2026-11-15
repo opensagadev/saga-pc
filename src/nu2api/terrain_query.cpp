@@ -49,7 +49,7 @@ typedef TERRAIN_AXIS_FREEDOM_SHAPE_PC TERRAIN_AXIS_FREEDOM_SHAPE;
 
 struct ShadowScanWriter {
     u8 *group_header;
-    TERRAIN_SHAPE **cursor;
+    TERRAIN_POLYGON_INFO **cursor;
     u8 *limit;
     i32 shape_count;
 };
@@ -103,7 +103,7 @@ struct ShadowScanWriter {
 #define TERRAIN_HANDLE_FILTER_SHAPES(writer_arg, shapes_arg, count_arg, bounds_arg, terrain_mask_arg, rotating_arg)                        \
     do {                                                                                                                                   \
         for (i32 i = 0; i < (count_arg); ++i) {                                                                                            \
-            TERRAIN_SHAPE *shape = (shapes_arg)[i];                                                                                        \
+            TERRAIN_POLYGON_INFO *shape = (shapes_arg)[i];                                                                                 \
             if (!(rotating_arg) && !TERRAIN_SHAPE_OVERLAPS((bounds_arg), *shape))                                                          \
                 continue;                                                                                                                  \
             if (reinterpret_cast<u8 *>((writer_arg)->cursor) >= (writer_arg)->limit)                                                       \
@@ -158,7 +158,7 @@ extern "C" {
             if (TERRAIN_NS_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) && group->chunk_type != -1) {                                  \
                 TERRAIN_NS_LOCAL_BOUNDS(group);                                                                                            \
                 for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {                                                        \
-                    TERRAIN_SHAPE *shape = shapes->shape;                                                                                  \
+                    TERRAIN_POLYGON_INFO *shape = shapes->shape;                                                                           \
                     if (TERRAIN_NS_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_NS_MATERIAL_OK(shape)) {                              \
                         (cursor++)->shape = shape;                                                                                         \
                         ++shape_count;                                                                                                     \
@@ -249,7 +249,7 @@ extern "C" {
                     TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                     while (batch->marker >= 0) {
                         const i16 count = batch->shape_count;
-                        TERRAIN_SHAPE *shape = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                        TERRAIN_POLYGON_INFO *shape = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                         if (TERRAIN_NS_BATCH_OVERLAP(batch)) {
                             i32 remaining = count;
                             while (remaining > 0) {
@@ -335,7 +335,7 @@ extern "C" {
                 }
                 TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                 while (batch->marker >= 0) {
-                    TERRAIN_SHAPE *shape = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *shape = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     const i32 count = batch->shape_count;
                     if (TERRAIN_NS_BATCH_OVERLAP(batch)) {
                         for (i32 remaining = count; remaining > 0; --remaining, ++shape) {
@@ -397,7 +397,7 @@ extern "C" {
 #define TERRAIN_STH_FILTER_SHAPES()                                                                                                        \
     do {                                                                                                                                   \
         for (i32 remaining = handle[0]; remaining > 0; --remaining, ++shapes) {                                                            \
-            TERRAIN_SHAPE *shape = shapes->shape;                                                                                          \
+            TERRAIN_POLYGON_INFO *shape = shapes->shape;                                                                                   \
             if (TERRAIN_STH_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_STH_MATERIAL_OK(shape)) {                                    \
                 (cursor++)->shape = shape;                                                                                                 \
                 ++shape_count;                                                                                                             \
@@ -529,7 +529,7 @@ extern "C" {
                     const f32 distance_sq = dx * dx + dy * dy + dz * dz;
                     if (distance_sq < (group->radius + scan_radius) * (group->radius + scan_radius)) {
                         for (i32 remaining = handle[0]; remaining > 0; --remaining, ++shapes) {
-                            TERRAIN_SHAPE *shape = shapes->shape;
+                            TERRAIN_POLYGON_INFO *shape = shapes->shape;
                             if (cursor < limit && TERRAIN_STH_MATERIAL_OK(shape) && TERRAIN_STH_VERTICES_OVERLAP(shape)) {
                                 (cursor++)->shape = shape;
                                 ++shape_count;
@@ -723,7 +723,7 @@ extern "C" {
                 TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                 while (batch->marker >= 0) {
                     const i32 count = batch->shape_count;
-                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     for (i32 remaining = count; remaining > 0; --remaining, ++source) {
                         platinrange = 1;
                         if (cursor >= limit || !TERRAIN_STH_MATERIAL_OK(source)) {
@@ -761,7 +761,7 @@ extern "C" {
                                vertices[3].z < local_max_z))) {
                             continue;
                         }
-                        TERRAIN_SHAPE *surface = &ScaleTerrain[scaled_count];
+                        TERRAIN_POLYGON_INFO *surface = &ScaleTerrain[scaled_count];
                         memcpy(surface->material, source->material, 4);
                         query = TerI;
                         surface->vertices[0].x = vertices[0].x;
@@ -831,7 +831,7 @@ extern "C" {
                 TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                 while (batch->marker >= 0) {
                     const i32 count = batch->shape_count;
-                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     if (local_max_x >= batch->min_x && batch->max_x > local_min_x && local_max_z >= batch->min_z &&
                         batch->max_z > local_min_z) {
                         for (i32 remaining = count; remaining > 0; --remaining, ++source) {
@@ -846,7 +846,7 @@ extern "C" {
                                 (cursor++)->shape = source;
                                 ++shape_count;
                             } else {
-                                TERRAIN_SHAPE *surface = &ScaleTerrain[scaled_count];
+                                TERRAIN_POLYGON_INFO *surface = &ScaleTerrain[scaled_count];
                                 memcpy(surface->material, source->material, 4);
                                 surface->vertices[0].x = source->vertices[0].x;
                                 surface->vertices[0].z = source->vertices[0].z;
@@ -919,7 +919,7 @@ extern "C" {
 #undef TERRAIN_STH_FILTER_SHAPES
 #undef TERRAIN_STP_CROSS
 
-    i32 HitTerrPoly(TERRAIN_SHAPE *surface, i32 group_index) {
+    i32 HitTerrPoly(TERRAIN_POLYGON_INFO *surface, i32 group_index) {
         f32 primary_start = 0.0f;
         f32 secondary_start = 0.0f;
         f32 secondary_end = 0.0f;
@@ -1070,7 +1070,7 @@ extern "C" f32 NewRayCastGetTOFI(void) {
 }
 
 extern "C" i32 NewRayCastGetImpactTerrainType(void) {
-    TERRAIN_SHAPE *surface = TerI->surface;
+    TERRAIN_POLYGON_INFO *surface = TerI->surface;
     return surface ? surface->material[0] : 0;
 }
 
@@ -1339,7 +1339,7 @@ extern "C" void NewScanInit(void) {
 #define TERRAIN_NSS_FILTER_SHAPES()                                                                                                        \
     do {                                                                                                                                   \
         for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {                                                                \
-            TERRAIN_SHAPE *shape = shapes->shape;                                                                                          \
+            TERRAIN_POLYGON_INFO *shape = shapes->shape;                                                                                   \
             if (TERRAIN_NSS_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_NSS_MATERIAL_OK(shape)) {                                    \
                 (cursor++)->shape = shape;                                                                                                 \
                 ++shape_count;                                                                                                             \
@@ -1457,7 +1457,7 @@ i16 *NewScanHandelSubset(i16 *subset, NUVEC *position, NUVEC *movement, f32 radi
                 const f32 distance_sq = dx * dx + dy * dy + dz * dz;
                 if (distance_sq < (group->radius + scan_radius) * (group->radius + scan_radius)) {
                     for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
-                        TERRAIN_SHAPE *shape = shapes->shape;
+                        TERRAIN_POLYGON_INFO *shape = shapes->shape;
                         if (cursor < limit && TERRAIN_NSS_MATERIAL_OK(shape) && TERRAIN_NSS_VERTICES_OVERLAP(shape)) {
                             (cursor++)->shape = shape;
                             ++shape_count;
@@ -1639,7 +1639,7 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                 TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                 while (batch->marker >= 0) {
                     i32 count = batch->shape_count;
-                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     if (local_max_x >= batch->min_x && batch->max_x > local_min_x && local_max_z >= batch->min_z &&
                         batch->max_z > local_min_z) {
                         while (count-- > 0) {
@@ -1721,7 +1721,7 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                         while (batch->marker >= 0) {
                             i32 count = batch->shape_count;
-                            TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                            TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                             if (local_max_x >= batch->min_x && batch->max_x > local_min_x && local_max_z >= batch->min_z &&
                                 batch->max_z > local_min_z) {
                                 while (count-- > 0) {
@@ -1750,7 +1750,7 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
                         while (batch->marker >= 0) {
                             const i32 count = batch->shape_count;
-                            TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                            TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                             for (i32 remaining = count; remaining > 0; --remaining, ++source) {
                                 platinrange = 1;
                                 if (cursor >= limit || !TERRAIN_NSF_MATERIAL_OK(source)) {
@@ -1788,7 +1788,7 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                                        vertices[3].z < local_max_z))) {
                                     continue;
                                 }
-                                TERRAIN_SHAPE *surface = &ScaleTerrain[scaled_count];
+                                TERRAIN_POLYGON_INFO *surface = &ScaleTerrain[scaled_count];
                                 memcpy(surface->material, source->material, 4);
                                 surface->vertices[0].x = vertices[0].x;
                                 surface->vertices[0].z = vertices[0].z;
@@ -2127,7 +2127,7 @@ extern "C" {
     extern u16 TerrainWaterCastIndex;
     extern u16 TerrainSurfaceClass;
     extern u16 NuTerrPlatsOff;
-    extern TERRAIN_SHAPE *TerrainCastAuxPolygon;
+    extern TERRAIN_POLYGON_INFO *TerrainCastAuxPolygon;
     f32 NewCast(NUVEC *, f32, f32);
 }
 
@@ -2240,7 +2240,7 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
     return TerI->hit_type;
 }
 
-extern "C" void RotateTerrain(TERRAIN_SHAPE *surface) {
+extern "C" void RotateTerrain(TERRAIN_POLYGON_INFO *surface) {
     TerrainQuery_s *query = TerI;
     const f32 sin_pitch = NuTrigTable[(static_cast<i32>(query->movement_pitch) >> 1) & (NUTRIGTABLE_COUNT - 1)];
     const f32 cos_pitch = NuTrigTable[(static_cast<i32>(query->movement_pitch + 16384.0) >> 1) & (NUTRIGTABLE_COUNT - 1)];

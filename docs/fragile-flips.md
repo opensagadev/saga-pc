@@ -24,3 +24,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | layout asserts deleted | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
 | area and level flag names | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
 | character context names | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | different | exact |
+| fold NUSPECIALHANDLE (641acdcb) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
+| fold NUSPECIALHANDLE (641acdcb) | BoltTypes_Configure | legoapi/bolts.cpp | 99.88 % | exact |

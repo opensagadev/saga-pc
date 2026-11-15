@@ -218,7 +218,7 @@ assert:-#141,assert,,607,607,1,legoapi/gizmo/base/gizactions.h,follow-type,GIZFL
 assert:-#142,assert,,608,608,1,legoapi/gizmo/base/gizactions.h,follow-type,GIZFLOW
 assert:-#143,assert,,609,609,1,legoapi/gizmo/base/gizactions.h,follow-type,GIZFLOW
 assert:-#144,assert,,610,610,1,legoapi/gizmo/base/gizactions.h,follow-type,GIZFLOW
-typedef:GIZACTIONFN,typedef,GIZACTIONFN,612,612,2,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); GIZACTIONFN -> GIZACTIONFN
+typedef:GIZACTIONFN,typedef,GIZACTIONFN,612,612,2,legoapi/gizmo/base/gizmo.h,android-stem,catch-all (needs a module owner); GIZACTIONFN -> GIZACTIONFN
 struct:GIZACTIONDEF,struct,GIZACTIONDEF,614,617,5,legoapi/gizmo/base/gizmo.h,rule,used most in legoapi/gizmo.c (3) android-path
 struct:FLOWBOXACTION,struct,FLOWBOXACTION,619,624,7,legoapi/gizmo/base/gizflow.h,users,FLOWBOXACTION: only legoapi/gizflow.c android-path
 struct:FLOWBOX_CALLBACKS,struct,FLOWBOX_CALLBACKS,626,630,6,legoapi/gizmo/base/gizflow.h,type-users,used by its saga.h users only there
@@ -250,13 +250,13 @@ assert:-#165,assert,,691,691,1,legoapi/render/core/gameliball.h,follow-type,TERR
 assert:-#166,assert,,692,692,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_POLYGON_INFO
 assert:-#167,assert,,693,693,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_POLYGON_INFO
 assert:-#168,assert,,694,694,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_POLYGON_INFO
-struct:TERRAIN_TRACK_SLOT,struct,TERRAIN_TRACK_SLOT,696,703,9,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_TRACK_SLOT -> TERRAIN_TRACK_SLOT
+struct:TERRAIN_TRACK_SLOT,struct,TERRAIN_TRACK_SLOT,696,703,9,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_TRACK_SLOT -> TERRAIN_TRACK_SLOT
 assert:-#169,assert,,705,705,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
 assert:-#170,assert,,706,706,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
-struct:TERRAIN_SPHERE_PC,struct,TERRAIN_SPHERE_PC,708,711,5,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_SPHERE_PC -> TERRAIN_SPHERE
+struct:TERRAIN_SPHERE_PC,struct,TERRAIN_SPHERE_PC,708,711,5,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_SPHERE_PC -> TERRAIN_SPHERE
 assert:-#171,assert,,713,713,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_SPHERE_PC
 assert:-#172,assert,,714,714,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_SPHERE_PC
-struct:TERRAIN_AXIS_FREEDOM_SHAPE_PC,struct,TERRAIN_AXIS_FREEDOM_SHAPE_PC,716,720,6,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_AXIS_FREEDOM_SHAPE_PC -> TERRAIN_AXIS_FREEDOM_SHAPE
+struct:TERRAIN_AXIS_FREEDOM_SHAPE_PC,struct,TERRAIN_AXIS_FREEDOM_SHAPE_PC,716,720,6,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_AXIS_FREEDOM_SHAPE_PC -> TERRAIN_AXIS_FREEDOM_SHAPE
 assert:-#173,assert,,722,722,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_AXIS_FREEDOM_SHAPE_PC
 struct:TERRAIN_LAST_IMPACT,struct,TERRAIN_LAST_IMPACT,724,727,5,legoapi/render/core/terrain_internal.h,type-users,used by its saga.h users only there
 assert:-#174,assert,,729,729,2,legoapi/render/core/terrain_internal.h,follow-type,TERRAIN_LAST_IMPACT
@@ -272,10 +272,10 @@ forward:TERRAIN_SPATIAL_NODE,forward,TERRAIN_SPATIAL_NODE,740,740,1,legoapi/lego
 forward:TERRAIN_SHAPE_BATCH,forward,TERRAIN_SHAPE_BATCH,741,741,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SHAPE_BATCH
 forward:TERRAIN_SKIN_STREAM,forward,TERRAIN_SKIN_STREAM,742,742,1,legoapi/render/core/gameliball.h,users,TERRAIN_SKIN_STREAM: only gameapi/gameliball.cpp android-path
 union:TERRAIN_SCAN_WORD,union,TERRAIN_SCAN_WORD,744,752,10,legoapi/render/core/gameliball.h,users,TERRAIN_SCAN_WORD: only gameapi/gameliball.cpp android-path
-struct:TERRAIN_INDEX_LEVEL,struct,TERRAIN_INDEX_LEVEL,754,760,8,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL -> TERRAIN_INDEX_LEVEL
-struct:TERRAIN_GROUP_PC,struct,TERRAIN_GROUP_PC,762,772,12,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_GROUP_PC -> TERRAIN_GROUP
+struct:TERRAIN_INDEX_LEVEL,struct,TERRAIN_INDEX_LEVEL,754,760,8,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL -> TERRAIN_INDEX_LEVEL
+struct:TERRAIN_GROUP_PC,struct,TERRAIN_GROUP_PC,762,772,12,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_GROUP_PC -> TERRAIN_GROUP
 struct:TERRAIN_PLATFORM_PC,struct,TERRAIN_PLATFORM_PC,774,797,25,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_PLATFORM_PC -> TERRAIN_PLATFORM
-struct:TERRAIN_CELL_PC,struct,TERRAIN_CELL_PC,799,806,9,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_CELL_PC -> TERRAIN_CELL
+struct:TERRAIN_CELL_PC,struct,TERRAIN_CELL_PC,799,806,9,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_CELL_PC -> TERRAIN_CELL
 struct:TERRAIN_SET_PC,struct,TERRAIN_SET_PC,808,837,31,legoapi/render/core/gameliball.h,rule,used most in gameapi/gameliball.cpp (118) android-path
 assert:-#176,assert,,839,839,2,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SCAN_WORD
 assert:-#177,assert,,840,840,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL
@@ -968,10 +968,10 @@ assert:-#697,assert,,3450,3450,1,legoapi/legoapi_types.h,follow-type,catch-all (
 assert:-#698,assert,,3451,3451,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); LEVELSPLINE_PC
 assert:-#699,assert,,3452,3452,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); LEVELSPLINE_PC
 forward:rtlset_s,forward,rtlset_s RTLSET_PC,3454,3454,2,legoapi/items/objects/objectsall.h,users,RTLSET_PC: only gameapi/objectsall.cpp android-path
-struct:scene_special_progress_s,struct,scene_special_progress_s SCENESPECIALPROGRESS,3456,3471,17,legoapi/world/levels.h,users,SCENESPECIALPROGRESS: only legogame/levels.cpp android-path
+struct:scene_special_progress_s,struct,scene_special_progress_s SCENESPECIALPROGRESS,3456,3471,17,legoapi/world/sceneprogress.h,users,SCENESPECIALPROGRESS: only legogame/levels.cpp android-path
 assert:-#700,assert,,3473,3473,2,legoapi/world/levels.h,follow-type,SCENESPECIALPROGRESS
 assert:-#701,assert,,3474,3474,1,legoapi/world/levels.h,follow-type,SCENESPECIALPROGRESS
-struct:scene_progress_s,struct,scene_progress_s SCENEPROGRESS,3476,3478,4,legoapi/world/levels.h,rule,used most in legogame/levels.cpp (6) android-path
+struct:scene_progress_s,struct,scene_progress_s SCENEPROGRESS,3476,3478,4,legoapi/world/sceneprogress.h,rule,used most in legogame/levels.cpp (6) android-path
 assert:-#702,assert,,3480,3480,2,legoapi/world/levels.h,follow-type,SCENEPROGRESS
 struct:level_progress_s,struct,level_progress_s LEVEL_PROGRESS,3482,3513,33,legoapi/world/level.h,android-stem,level_progress_s -> LEVEL_PROGRESS_s
 assert:-#703,assert,,3515,3515,2,legoapi/world/level.h,follow-type,LEVEL_PROGRESS
@@ -3892,7 +3892,7 @@ function:NoRender,function,NoRender,11587,11587,1,legoapi/render/core/screen.h,s
 function:CalcSplinePoint,function,CalcSplinePoint,11588,11588,1,legoapi/render/fx/edsplines.h,android,CalcSplinePoint
 function:CalcSplinePointFromDist,function,CalcSplinePointFromDist,11589,11589,1,legoapi/characters/motion/chris.h,android,CalcSplinePointFromDist
 function:Shadow_SetMode,function,Shadow_SetMode,11591,11591,2,legoapi/audio/sfx.h,symbol,legogame/sfx.c android-path
-struct:BATARANG_TARGET_s,struct,BATARANG_TARGET_s,11593,11603,12,legoapi/legoapi_types.h,android,catch-all (needs a module owner); BATARANG_TARGET_s
+struct:BATARANG_TARGET_s,struct,BATARANG_TARGET_s,11593,11603,12,legogame/batman_gameai.h,android,catch-all (needs a module owner); BATARANG_TARGET_s
 pack:BATARANG_FLIGHT_STATE,pack,BATARANG_FLIGHT_STATE BATARANG_RICOCHET_STATE,11605,11620,17,legogame/batman_gameai.h,rule,"used in saga.h only, most by legogame/batman_gameai.h (2)"
 struct:player_batarang_slot_s,struct,player_batarang_slot_s PLAYER_BATARANG_SLOT_PC,11622,11661,41,legogame/batman_gameai.h,rule,used most in legogame/batman_gameai.c (9) pc-path
 assert:-#2915,assert,,11663,11663,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BATARANG_TARGET_s

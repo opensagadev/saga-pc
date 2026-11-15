@@ -11355,7 +11355,7 @@ address,symbol,size,ctype
 0x66f8f0,_DerotateMovementVector,171,void __cdecl(void)
 0x66f9a0,_RotateVec,230,"void __cdecl(NUVEC *,NUVEC *)"
 0x66fa90,_RotateTerrain,480,void __cdecl(TERRAIN_POLYGON_INFO *)
-0x66fc70,_DeRotateTerrain,554,void __cdecl(TERRAIN_SHAPE *)
+0x66fc70,_DeRotateTerrain,554,void __cdecl(TERRAIN_POLYGON_INFO *)
 0x66fea0,_DeRotatePoint,254,void __cdecl(NUVEC *)
 0x66ffa0,_InsideLineF,68,"i16 __cdecl(f32,f32,f32,f32,f32,f32)"
 0x66fff0,_InsidePolLines,1320,"i16 __cdecl(f32,f32,f32,f32,f32,f32,f32,f32,f32,NUVEC *)"
@@ -11372,10 +11372,10 @@ address,symbol,size,ctype
 0x673850,_CheckCylinder,2145,"i32 __cdecl(i32,i32,i32 *,i32)"
 0x6740c0,_CheckSphere,558,i32 __cdecl(i32)
 0x6742f0,_CheckSphereTer,408,"i32 __cdecl(NUVEC *,f32)"
-0x674490,_HitPoly,1689,"i32 __cdecl(f32,f32,f32,f32,TERRAIN_SHAPE *)"
+0x674490,_HitPoly,1689,"i32 __cdecl(f32,f32,f32,f32,TERRAIN_POLYGON_INFO *)"
 0x674b30,_HitWallSpline,1803,i32 __cdecl(void)
 0x675240,_HitTerrain,963,i32 __cdecl(void)
-0x675610,_HitTerrPoly,553,"i32 __cdecl (TERRAIN_SHAPE *, i32)"
+0x675610,_HitTerrPoly,553,"i32 __cdecl (TERRAIN_POLYGON_INFO *, i32)"
 0x675840,_ScanWallSplineTerrain,1818,"void __cdecl(i32,i32,i32)"
 0x675f60,_ScanTerrain,7479,"void __cdecl(i32,i32,i32)"
 0x677ca0,_TerrainScanWallSpline,674,void __cdecl(struct TERRAIN_SPATIAL_NODE *)

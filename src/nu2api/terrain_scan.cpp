@@ -28,7 +28,7 @@ extern "C" {
             header[0] = static_cast<i16>(group_shape_count);                                                                               \
             header[1] = static_cast<i16>(group_index_arg);                                                                                 \
             group_header = reinterpret_cast<u8 *>(cursor);                                                                                 \
-            cursor = reinterpret_cast<TERRAIN_SHAPE **>(group_header + sizeof(TERRAIN_SHAPE *));                                           \
+            cursor = reinterpret_cast<TERRAIN_POLYGON_INFO **>(group_header + sizeof(TERRAIN_POLYGON_INFO *));                             \
             group_shape_count = 0;                                                                                                         \
         }                                                                                                                                  \
     } while (0)
@@ -38,8 +38,8 @@ extern "C" {
             *cursor++ = (candidate_arg);                                                                                                   \
             ++group_shape_count;                                                                                                           \
         } else {                                                                                                                           \
-            TERRAIN_SHAPE *source = (candidate_arg);                                                                                       \
-            TERRAIN_SHAPE *scaled = &ScaleTerrain[scaled_shape_count];                                                                     \
+            TERRAIN_POLYGON_INFO *source = (candidate_arg);                                                                                \
+            TERRAIN_POLYGON_INFO *scaled = &ScaleTerrain[scaled_shape_count];                                                              \
             scaled->material[0] = source->material[0];                                                                                     \
             scaled->material[1] = source->material[1];                                                                                     \
             scaled->flags = source->flags;                                                                                                 \
@@ -144,11 +144,11 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     TerI->scan_group_index = -1;
 
     u8 *group_header;
-    TERRAIN_SHAPE **cursor;
+    TERRAIN_POLYGON_INFO **cursor;
     u8 *limit;
     i32 group_shape_count;
     group_header = TerI->scan_list_storage;
-    cursor = reinterpret_cast<TERRAIN_SHAPE **>(group_header + sizeof(TERRAIN_SHAPE *));
+    cursor = reinterpret_cast<TERRAIN_POLYGON_INFO **>(group_header + sizeof(TERRAIN_POLYGON_INFO *));
     limit = TerI->scan_list_storage + sizeof(TerI->scan_list_storage) - 12;
     group_shape_count = 0;
 
@@ -197,11 +197,11 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
             TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
             while (batch->marker >= 0) {
-                TERRAIN_SHAPE *shapes = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                 const i32 shape_count = batch->shape_count;
                 if (group_max_x >= batch->min_x && group_min_x < batch->max_x && group_max_z >= batch->min_z &&
                     group_min_z < batch->max_z) {
-                    TERRAIN_SHAPE *candidate = shapes;
+                    TERRAIN_POLYGON_INFO *candidate = shapes;
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++candidate) {
                         if (!(group_max_x >= candidate->min_x && group_min_x < candidate->max_x && group_max_z >= candidate->min_z &&
                               group_min_z < candidate->max_z && group_max_y >= candidate->min_y && group_min_y < candidate->max_y) ||
@@ -215,7 +215,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             continue;
                         }
 
-                        TERRAIN_SHAPE *shape = candidate;
+                        TERRAIN_POLYGON_INFO *shape = candidate;
                         TERRAIN_STORE_SCAN_SHAPE(shape, group);
                     }
                 }
@@ -243,11 +243,11 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
             TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
             while (batch->marker >= 0) {
-                TERRAIN_SHAPE *shapes = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                 const i32 shape_count = batch->shape_count;
                 if (local_max_x >= batch->min_x && local_min_x < batch->max_x && local_max_z >= batch->min_z &&
                     local_min_z < batch->max_z) {
-                    TERRAIN_SHAPE *candidate = shapes;
+                    TERRAIN_POLYGON_INFO *candidate = shapes;
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++candidate) {
                         if (!(local_max_x >= candidate->min_x && local_min_x < candidate->max_x && local_max_z >= candidate->min_z &&
                               local_min_z < candidate->max_z && local_max_y >= candidate->min_y && local_min_y < candidate->max_y) ||
@@ -261,7 +261,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             continue;
                         }
 
-                        TERRAIN_SHAPE *shape = candidate;
+                        TERRAIN_POLYGON_INFO *shape = candidate;
                         TERRAIN_STORE_SCAN_SHAPE(shape, group);
                     }
                 }
@@ -359,9 +359,9 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 }
                 TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
                 while (batch->marker >= 0) {
-                    TERRAIN_SHAPE *shapes = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     const i32 shape_count = batch->shape_count;
-                    TERRAIN_SHAPE *shape = shapes;
+                    TERRAIN_POLYGON_INFO *shape = shapes;
                     for (i32 remaining = shape_count; remaining > 0; --remaining, ++shape) {
                         if (reinterpret_cast<u8 *>(cursor) >= limit) {
                             continue;
@@ -416,7 +416,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             query = TerI;
                             continue;
                         }
-                        TERRAIN_SHAPE *transformed = &ScaleTerrain[scaled_shape_count];
+                        TERRAIN_POLYGON_INFO *transformed = &ScaleTerrain[scaled_shape_count];
                         transformed->material[0] = shape->material[0];
                         transformed->material[1] = shape->material[1];
                         transformed->flags = shape->flags;
@@ -486,11 +486,11 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 }
                 TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group.data);
                 while (batch->marker >= 0) {
-                    TERRAIN_SHAPE *shapes = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *shapes = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     const i32 shape_count = batch->shape_count;
                     if (local_max_x >= batch->min_x && local_min_x < batch->max_x && local_max_z >= batch->min_z &&
                         local_min_z < batch->max_z) {
-                        TERRAIN_SHAPE *candidate = shapes;
+                        TERRAIN_POLYGON_INFO *candidate = shapes;
                         for (i32 remaining = shape_count; remaining > 0; --remaining, ++candidate) {
                             if (!(local_max_x >= candidate->min_x && local_min_x < candidate->max_x && local_max_z >= candidate->min_z &&
                                   local_min_z < candidate->max_z && local_max_y >= candidate->min_y && local_min_y < candidate->max_y) ||
@@ -505,7 +505,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             }
 
                             platinrange = 1;
-                            TERRAIN_SHAPE *shape = candidate;
+                            TERRAIN_POLYGON_INFO *shape = candidate;
                             TERRAIN_STORE_SCAN_SHAPE(shape, group);
                         }
                     }

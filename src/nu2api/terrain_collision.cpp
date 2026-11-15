@@ -85,7 +85,7 @@ extern "C" {
         query->transformed_vertices[index].z = (surface->vertices[index].y - query->local_start.y) * sin_pitch + rotated_z * cos_pitch;    \
     }
 
-    void DeRotateTerrain(TERRAIN_SHAPE *surface) {
+    void DeRotateTerrain(TERRAIN_POLYGON_INFO *surface) {
         TerrainQuery_s *query = TerI;
 
         const f32 pitch = -query->movement_pitch;
@@ -328,7 +328,7 @@ extern "C" {
                 query = TerI;
                 const f64 overlap_time = distance - query->collision_radius;
                 if (overlap_time < query->hit_time) {
-                    TERRAIN_SHAPE *surface = query->working_surface;
+                    TERRAIN_POLYGON_INFO *surface = query->working_surface;
                     const f32 primary_distance = (query->local_start.x - surface->vertices[vertex_index].x) * surface->normals[0].x +
                                                  (query->local_start.y - surface->vertices[vertex_index].y) * surface->normals[0].y +
                                                  (query->local_start.z - surface->vertices[vertex_index].z) * surface->normals[0].z;
@@ -459,7 +459,7 @@ extern "C" {
         }                                                                                                                                  \
     }
 
-    i32 HitPoly(f32 primary_start, f32 primary_end, f32 secondary_start, f32 secondary_end, TERRAIN_SHAPE *surface) {
+    i32 HitPoly(f32 primary_start, f32 primary_end, f32 secondary_start, f32 secondary_end, TERRAIN_POLYGON_INFO *surface) {
         TerrainQuery_s *query = TerI;
         i32 collision_found = 0;
         i32 test_face;
@@ -702,7 +702,7 @@ extern "C" {
         for (;;) {
             while (scan[0] > 0) {
                 TERRAIN_GROUP *groups = CurrentTerrain->groups;
-                TERRAIN_SHAPE **entry = reinterpret_cast<TERRAIN_SHAPE **>(scan + 2);
+                TERRAIN_POLYGON_INFO **entry = reinterpret_cast<TERRAIN_POLYGON_INFO **>(scan + 2);
                 query->local_start.x = query->position.x - groups[scan[1]].origin.x;
                 query->local_start.y = query->position.y - groups[scan[1]].origin.y;
                 query->local_start.z = query->position.z - groups[scan[1]].origin.z;
@@ -711,7 +711,7 @@ extern "C" {
                 query->local_end.z = query->movement.z + query->position.z - groups[scan[1]].origin.z;
 
                 for (i32 count = scan[0]; count > 0; --count, ++entry) {
-                    TERRAIN_SHAPE *surface = *entry;
+                    TERRAIN_POLYGON_INFO *surface = *entry;
                     i32 crosses_surface = 0;
                     const f32 primary_end_distance = TERRAIN_HT_DISTANCE(query->local_end, surface, 0, 0) - radius - query->compare_epsilon;
                     if (primary_end_distance < 0.0f) {
@@ -942,7 +942,7 @@ extern "C" {
     track->wall_contact_state = TERRAIN_TRACK_CONTACT_ACTIVE;                                                                              \
     track->impact_normal = query->impact_normal
         if (query->hit_type != TERRAIN_HIT_TYPE_NONE) {
-            TERRAIN_SHAPE *surface = query->surface;
+            TERRAIN_POLYGON_INFO *surface = query->surface;
             if (surface != NULL) {
                 walkable_normal_y = query->movement_normal.x * surface->normals[0].x + query->movement_normal.y * surface->normals[0].y +
                                     query->movement_normal.z * surface->normals[0].z;
@@ -1460,7 +1460,7 @@ extern "C" {
         }
         i32 saved_sphere = curSphereter;
         curSphereter = 0;
-        ScaleTerrain = static_cast<TERRAIN_SHAPE *>(ScaleTerrainT2);
+        ScaleTerrain = static_cast<TERRAIN_POLYGON_INFO *>(ScaleTerrainT2);
         TerrainQuery_s *new_query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
         TerI = new_query;
         NUVEC4 *vertices = reinterpret_cast<NUVEC4 *>((reinterpret_cast<u32>(NuScratchAlloc32(0xd0)) + 31) & ~15u);
@@ -1496,7 +1496,7 @@ extern "C" {
                 (old_query->position.y - (query->inverse_object_scale * tertempvec4.y + query->collision_radius)) * (f64)1.3f;
             query->movement.z = (old_query->position.z - tertempvec4.z) * (f64)1.3f;
         }
-        TERRAIN_SHAPE **cursor = reinterpret_cast<TERRAIN_SHAPE **>(query->scan_list_storage + 4);
+        TERRAIN_POLYGON_INFO **cursor = reinterpret_cast<TERRAIN_POLYGON_INFO **>(query->scan_list_storage + 4);
         i16 *header = reinterpret_cast<i16 *>(query->scan_list_storage);
         query->movement.x -= old_query->movement_normal.x * (f64)0.01f;
         query->movement.y -= old_query->movement_normal.y * (f64)0.01f;
@@ -1511,7 +1511,7 @@ extern "C" {
         if (1.0f == query->object_scale) {
             if (TERRAIN_TPE_PLATFORM.flags & 1) {
                 while (batch->marker >= 0) {
-                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
                         if (source->material[1] != 0) {
                             continue;
@@ -1526,7 +1526,7 @@ extern "C" {
                         } else {
                             vertices[3] = vertices[2];
                         }
-                        TERRAIN_SHAPE *surface = TERRAIN_TPE_SURFACE;
+                        TERRAIN_POLYGON_INFO *surface = TERRAIN_TPE_SURFACE;
                         surface->packed_metadata = source->packed_metadata;
                         TERRAIN_TPE_STORE_VERTEX(0);
                         TERRAIN_TPE_STORE_VERTEX(1);
@@ -1563,7 +1563,7 @@ extern "C" {
                 }
             } else {
                 while (batch->marker >= 0) {
-                    TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                    TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                     for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
                         if (source->material[1] != 0) {
                             continue;
@@ -1576,7 +1576,7 @@ extern "C" {
             }
         } else if (TERRAIN_TPE_PLATFORM.flags & 1) {
             while (batch->marker >= 0) {
-                TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                 for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
                     if (source->material[1] != 0) {
                         continue;
@@ -1591,7 +1591,7 @@ extern "C" {
                     } else {
                         vertices[3] = vertices[2];
                     }
-                    TERRAIN_SHAPE *surface = TERRAIN_TPE_SURFACE;
+                    TERRAIN_POLYGON_INFO *surface = TERRAIN_TPE_SURFACE;
                     surface->packed_metadata = source->packed_metadata;
                     TERRAIN_TPE_STORE_SCALED(surface->vertices[0], vertices[0]);
                     TERRAIN_TPE_STORE_SCALED(surface->vertices[1], vertices[1]);
@@ -1628,12 +1628,12 @@ extern "C" {
             }
         } else {
             while (batch->marker >= 0) {
-                TERRAIN_SHAPE *source = reinterpret_cast<TERRAIN_SHAPE *>(batch + 1);
+                TERRAIN_POLYGON_INFO *source = reinterpret_cast<TERRAIN_POLYGON_INFO *>(batch + 1);
                 for (i32 remaining = batch->shape_count; remaining > 0; --remaining, ++source) {
                     if (source->material[1] != 0) {
                         continue;
                     }
-                    TERRAIN_SHAPE *surface = TERRAIN_TPE_SURFACE;
+                    TERRAIN_POLYGON_INFO *surface = TERRAIN_TPE_SURFACE;
                     surface->packed_metadata = source->packed_metadata;
                     TERRAIN_TPE_STORE_SCALED(surface->vertices[0], source->vertices[0]);
                     TERRAIN_TPE_STORE_SCALED(surface->vertices[1], source->vertices[1]);
@@ -1701,7 +1701,7 @@ extern "C" {
         TerI->movement.y = -0.05f;
         TerI->movement.z = 0.0f;
         DerotateMovementVector();
-        TerrOverRideScan = reinterpret_cast<TERRAIN_SHAPE **>(old_query->scan_list_storage);
+        TerrOverRideScan = reinterpret_cast<TERRAIN_POLYGON_INFO **>(old_query->scan_list_storage);
         HitTerrain();
         const f32 start_y = new_query->start_position.y;
         TerI->position.y = start_y;
@@ -1764,7 +1764,7 @@ extern "C" {
         const i16 saved_group = query->terrain_group_index;
         const f32 saved_unclamped_time = query->unclamped_hit_time;
         const u16 saved_hit_type = query->hit_type;
-        TERRAIN_SHAPE *saved_surface = query->surface;
+        TERRAIN_POLYGON_INFO *saved_surface = query->surface;
         const i16 saved_scan_group = query->scan_group_index;
         const NUVEC saved_movement_normal = query->movement_normal;
         const NUVEC saved_impact_normal = query->impact_normal;
@@ -2293,7 +2293,7 @@ found_track:
         if (query->hit_type != TERRAIN_HIT_TYPE_NONE && query->terrain_group_index >= 0) {
             ShadNorm = query->impact_normal;
 
-            TERRAIN_SHAPE *surface = query->surface;
+            TERRAIN_POLYGON_INFO *surface = query->surface;
             f32 wall_limit;
             if (surface != NULL) {
                 wall_limit = surface->normals[0].y * query->movement_normal.y + surface->normals[0].x * query->movement_normal.x +

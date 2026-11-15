@@ -16,6 +16,7 @@
 #ifndef SAGA_SHIM
 #include "legoapi/render/core/screen.h"
 #include "legoapi/world/levels.h"
+#include "legoapi/world/sceneprogress.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/numath/nuvec.h"
 #endif

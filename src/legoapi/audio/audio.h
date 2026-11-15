@@ -11,6 +11,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct GAMEAUDIO;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct level_data_s;
@@ -92,8 +93,8 @@ extern "C" {
     extern i32 RepeatSfxQueueHead;
     void PlayRepeatSfx(char *, i32, f32, char, f32, NUVEC *);
     void UpdateRepeatSfx(void);
-    extern GAMEAUDIO GameAudioStorage;
-    extern GAMEAUDIO *GameAudio;
+    extern struct GAMEAUDIO GameAudioStorage;
+    extern struct GAMEAUDIO *GameAudio;
     void SfxSetFileTable(struct sfx_file_info_s *records);
     extern i16 *AmbientPairTab;
     void PlayFootStepSfx(struct gameobject_s *);
@@ -130,7 +131,7 @@ extern "C" {
     // Project diagnostics are selected at the end of this header; see debug/diagnostics.h.
     // Kept at the end so Matching line numbers and native declarations stay unchanged.
 
-    void GameAudio_Init(GAMEAUDIO *audio);
+    void GameAudio_Init(struct GAMEAUDIO *audio);
     extern i32 ticktock;
     void TickTockSfx(void);
 #ifdef __cplusplus

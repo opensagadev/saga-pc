@@ -240,6 +240,8 @@ extern "C" {
         f32 time_elapsed;               // 0x8
     } ADAPTIVEDIFFICULTY;
 
+    extern ADAPTIVEDIFFICULTY adaptivedifficulty;
+
     extern f32 AdaptiveDifficultyRecoveryTime;
     f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY *);
     f32 AdaptiveDifficultyChange(ADAPTIVEDIFFICULTY *difficulty, f32 amount);

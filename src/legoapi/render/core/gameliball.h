@@ -30,6 +30,7 @@
 struct APIDEBRISSYS;
 struct FRAME_PAD_PC;
 struct NUGSCN_s;
+struct SoundTable;
 struct PC_SCENE_MTL_VIEW;
 struct debris_collision_entry_s;
 struct debris_info_s;
@@ -41,6 +42,26 @@ struct eduiitem_s;
 struct eduimenu_s;
 struct nufpar_s;
 struct numtl_s;
+
+typedef struct TERRAIN_TRACK_SLOT { // size 0x18
+    void *id;                       // 0x00
+    i16 platform_index;             // 0x04
+    u16 flags;                      // 0x06
+    i16 platform_contact_state;     // 0x08
+    i16 wall_contact_state;         // 0x0a
+    NUVEC impact_normal;            // 0x0c
+} TERRAIN_TRACK_SLOT;
+
+typedef struct TERRAIN_AXIS_FREEDOM_SHAPE_PC { // size 0x14
+    NUVEC offset;                              // 0x00
+    f32 angle;                                 // 0x0c
+    f32 radius;                                // 0x10
+} TERRAIN_AXIS_FREEDOM_SHAPE_PC;
+
+typedef struct TERRAIN_SPHERE_PC { // size 0x10
+    NUVEC position;                // 0x0
+    f32 radius;                    // 0xc
+} TERRAIN_SPHERE_PC;
 
 typedef struct SFX_GROUP { // size 0x8
     i16 first_sample;      // 0x0
@@ -91,6 +112,35 @@ typedef union TERRAIN_SCAN_WORD { // size 0x4
     TERRAIN_POLYGON_INFO *shape;
     u32 opaque_bits;
 } TERRAIN_SCAN_WORD;
+
+typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
+    i16 cache_age;                     // 0x000
+    u8 unknown_02[2];                  // 0x002
+    f32 center_x;                      // 0x004
+    f32 center_z;                      // 0x008
+    TERRAIN_SCAN_WORD scan_words[512]; // 0x00c
+} TERRAIN_INDEX_LEVEL;
+
+typedef struct TERRAIN_GROUP_PC { // size 0x38
+    NUVEC origin;                 // 0x00
+    TERRAIN_SKIN_STREAM *data;    // 0x0c
+    NUVEC bounds_min;             // 0x10
+    NUVEC bounds_max;             // 0x1c
+    u32 platform_flags;           // 0x28
+    i32 chunk_type;               // 0x2c
+    i16 scene_index;              // 0x30
+    i16 group_info;               // 0x32
+    f32 radius;                   // 0x34
+} TERRAIN_GROUP_PC;
+
+typedef struct TERRAIN_CELL_PC { // size 0x14
+    i16 first_group;             // 0x00
+    i16 group_count;             // 0x02
+    f32 min_x;                   // 0x04
+    f32 min_z;                   // 0x08
+    f32 max_x;                   // 0x0c
+    f32 max_z;                   // 0x10
+} TERRAIN_CELL_PC;
 
 struct TERRAIN_FILE_CHUNK { // size 0x34
     i16 chunk_count;        // 0x00
@@ -551,7 +601,7 @@ extern "C" {
 
 struct TerrainScanWriter {
     u8 *group_header;
-    TERRAIN_SHAPE **cursor;
+    TERRAIN_POLYGON_INFO **cursor;
     u8 *limit;
     i32 group_shape_count;
     i32 scaled_shape_count;
@@ -559,14 +609,14 @@ struct TerrainScanWriter {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void SfxBitsStore(SoundTable *);
+    void SfxBitsStore(struct SoundTable *);
     void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
     extern TERRAIN_SPHERE_PC SphereData[16];
     extern TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape;
     extern TERRAIN_TRACK_SLOT *CurTrackInfo;
     void DebrisReserveTrashableSpace(VARIPTR *, VARIPTR, i32, i32);
     void DebrisTrashableSetup(VARIPTR *, VARIPTR *);
-    void SfxBitsRestore(SoundTable *table);
+    void SfxBitsRestore(struct SoundTable *table);
     void SfxBuildCRCTable(VARIPTR *buffer_cursor, VARIPTR end);
     void edgraSetup(VARIPTR *, VARIPTR, i32, i32, i32);
     void DebrisSetup2(VARIPTR *, VARIPTR, VARIPTR *, VARIPTR, char *, i32, i32, i32, i32);

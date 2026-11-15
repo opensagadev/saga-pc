@@ -83,6 +83,7 @@
 #include "nu2api/nushadermtldesc_gen.h"
 #include "nu2api/nu3d/numtl_platform.h"
 #include "legogame/gamestatus.h"
+#include "legoapi/world/sceneprogress.h"
 #include "legoapi/world/levels.h"
 #include "nu2api/numath/nuvec.h"
 #include "legoapi/render/core/terrain_internal.h"

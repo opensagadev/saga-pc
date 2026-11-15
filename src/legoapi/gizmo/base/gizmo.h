@@ -161,6 +161,11 @@ extern "C" {
 
 #if SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_PART == 2 && !defined(SAGA_LEGOAPI_GIZMO_BASE_GIZMO_H_STOP)
 
+struct FLOWBOX;
+struct GIZFLOW;
+
+typedef void (*GIZACTIONFN)(struct GIZFLOW *, struct FLOWBOX *, char **, i32);
+
 typedef struct GIZACTIONDEF { // size 0x8
     const char *name;         // 0x0
     GIZACTIONFN action_fn;    // 0x4

@@ -21,6 +21,18 @@ typedef i32 (*AI_PREPARING_SPECIAL_MOVE_PC)(struct AIPACKET *, struct APIOBJECT 
 extern "C" {
 #endif
 
+    typedef struct BATARANG_TARGET_s { // size 0x14
+        void *object;                  // 0x00
+        u8 type;                       // 0x04
+        u8 lost;                       // 0x05
+        u16 reserved_06_word;          // 0x06
+
+        union { // size 0xc
+            u8 reserved_08[12];
+            NUVEC fallback_position;
+        }; // 0x08
+    } BATARANG_TARGET_s;
+
 #pragma pack(push, 1)
 
     typedef struct BATARANG_FLIGHT_STATE { // size 0x7

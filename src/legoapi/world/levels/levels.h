@@ -7,6 +7,7 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
+#include "legoapi/world/sceneprogress.h"
 #include "legoapi/characters/core/characters.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"

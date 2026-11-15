@@ -55,109 +55,57 @@ struct gameobject_s;
 struct mission_data_s;
 struct numtl_s;
 
-typedef void (*GIZACTIONFN)(struct GIZFLOW *, struct FLOWBOX *, char **, i32);
-
-typedef struct TERRAIN_TRACK_SLOT { // size 0x18
-    void *id;                       // 0x00
-    i16 platform_index;             // 0x04
-    u16 flags;                      // 0x06
-    i16 platform_contact_state;     // 0x08
-    i16 wall_contact_state;         // 0x0a
-    NUVEC impact_normal;            // 0x0c
-} TERRAIN_TRACK_SLOT;
-
-typedef struct TERRAIN_SPHERE_PC { // size 0x10
-    NUVEC position;                // 0x0
-    f32 radius;                    // 0xc
-} TERRAIN_SPHERE_PC;
-
-typedef struct TERRAIN_AXIS_FREEDOM_SHAPE_PC { // size 0x14
-    NUVEC offset;                              // 0x00
-    f32 angle;                                 // 0x0c
-    f32 radius;                                // 0x10
-} TERRAIN_AXIS_FREEDOM_SHAPE_PC;
-
 typedef struct TERRAIN_WALL_POINT TERRAIN_WALL_POINT;
 typedef struct TERRAIN_SPATIAL_NODE TERRAIN_SPATIAL_NODE;
 typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 
-typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
-    i16 cache_age;                     // 0x000
-    u8 unknown_02[2];                  // 0x002
-    f32 center_x;                      // 0x004
-    f32 center_z;                      // 0x008
-    TERRAIN_SCAN_WORD scan_words[512]; // 0x00c
-} TERRAIN_INDEX_LEVEL;
-
-typedef struct TERRAIN_GROUP_PC { // size 0x38
-    NUVEC origin;                 // 0x00
-    TERRAIN_SKIN_STREAM *data;    // 0x0c
-    NUVEC bounds_min;             // 0x10
-    NUVEC bounds_max;             // 0x1c
-    u32 platform_flags;           // 0x28
-    i32 chunk_type;               // 0x2c
-    i16 scene_index;              // 0x30
-    i16 group_info;               // 0x32
-    f32 radius;                   // 0x34
-} TERRAIN_GROUP_PC;
-
-typedef struct TERRAIN_CELL_PC { // size 0x14
-    i16 first_group;             // 0x00
-    i16 group_count;             // 0x02
-    f32 min_x;                   // 0x04
-    f32 min_z;                   // 0x08
-    f32 max_x;                   // 0x0c
-    f32 max_z;                   // 0x10
-} TERRAIN_CELL_PC;
-
 typedef TERRAIN_GROUP_PC TERRAIN_GROUP;
 typedef TERRAIN_CELL_PC TERRAIN_CELL;
-typedef TERRAIN_POLYGON_INFO TERRAIN_SHAPE;
 
-typedef struct TerrainQuery_s {     // size 0x948
-    u32 flags;                      // 0x000
-    NUVEC start_position;           // 0x004
-    NUVEC start_movement;           // 0x010
-    NUVEC position;                 // 0x01c
-    NUVEC movement;                 // 0x028
-    u8 scan_result;                 // 0x034
-    u8 shape_adjusted;              // 0x035
-    i16 object_index;               // 0x036
-    f32 radius;                     // 0x038
-    f32 horizontal_movement_length; // 0x03c
-    u8 *hit_flags;                  // 0x040
-    f32 movement_pitch;             // 0x044
-    f32 movement_yaw;               // 0x048
-    f32 movement_length;            // 0x04c
-    f32 collision_radius;           // 0x050
-    f32 collision_radius_sq;        // 0x054
-    f32 inverse_collision_radius;   // 0x058
-    f32 object_scale;               // 0x05c
-    f32 object_scale_sq;            // 0x060
-    f32 inverse_object_scale;       // 0x064
-    f32 inverse_object_scale_sq;    // 0x068
-    i16 terrain_group_index;        // 0x06c
-    u8 pad_06e[2];                  // 0x06e
-    NUVEC local_start;              // 0x070
-    NUVEC local_end;                // 0x07c
-    u8 hit_type;                    // 0x088
-    u8 hit_edge;                    // 0x089
-    i16 scan_group_index;           // 0x08a
-    void *scan_list;                // 0x08c
-    TERRAIN_SHAPE *surface;         // 0x090
-    TERRAIN_SHAPE *working_surface; // 0x094
-    f32 hit_time;                   // 0x098
-    f32 unclamped_hit_time;         // 0x09c
-    f32 separation_epsilon;         // 0x0a0
-    f32 compare_epsilon;            // 0x0a4
-    NUVEC movement_normal;          // 0x0a8
-    NUVEC impact_normal;            // 0x0b4
-    NUVEC platform_position;        // 0x0c0
-    NUVEC platform_normal;          // 0x0cc
-    NUVEC previous_movement_normal; // 0x0d8
-    u8 pad_0e4[0x18];               // 0x0e4
-    NUVEC transformed_vertices[4];  // 0x0fc
-    u8 pad_12c[0x1c];               // 0x12c
+typedef struct TerrainQuery_s {            // size 0x948
+    u32 flags;                             // 0x000
+    NUVEC start_position;                  // 0x004
+    NUVEC start_movement;                  // 0x010
+    NUVEC position;                        // 0x01c
+    NUVEC movement;                        // 0x028
+    u8 scan_result;                        // 0x034
+    u8 shape_adjusted;                     // 0x035
+    i16 object_index;                      // 0x036
+    f32 radius;                            // 0x038
+    f32 horizontal_movement_length;        // 0x03c
+    u8 *hit_flags;                         // 0x040
+    f32 movement_pitch;                    // 0x044
+    f32 movement_yaw;                      // 0x048
+    f32 movement_length;                   // 0x04c
+    f32 collision_radius;                  // 0x050
+    f32 collision_radius_sq;               // 0x054
+    f32 inverse_collision_radius;          // 0x058
+    f32 object_scale;                      // 0x05c
+    f32 object_scale_sq;                   // 0x060
+    f32 inverse_object_scale;              // 0x064
+    f32 inverse_object_scale_sq;           // 0x068
+    i16 terrain_group_index;               // 0x06c
+    u8 pad_06e[2];                         // 0x06e
+    NUVEC local_start;                     // 0x070
+    NUVEC local_end;                       // 0x07c
+    u8 hit_type;                           // 0x088
+    u8 hit_edge;                           // 0x089
+    i16 scan_group_index;                  // 0x08a
+    void *scan_list;                       // 0x08c
+    TERRAIN_POLYGON_INFO *surface;         // 0x090
+    TERRAIN_POLYGON_INFO *working_surface; // 0x094
+    f32 hit_time;                          // 0x098
+    f32 unclamped_hit_time;                // 0x09c
+    f32 separation_epsilon;                // 0x0a0
+    f32 compare_epsilon;                   // 0x0a4
+    NUVEC movement_normal;                 // 0x0a8
+    NUVEC impact_normal;                   // 0x0b4
+    NUVEC platform_position;               // 0x0c0
+    NUVEC platform_normal;                 // 0x0cc
+    NUVEC previous_movement_normal;        // 0x0d8
+    u8 pad_0e4[0x18];                      // 0x0e4
+    NUVEC transformed_vertices[4];         // 0x0fc
+    u8 pad_12c[0x1c];                      // 0x12c
 
     union { // size 0x800
         u8 scan_list_storage[0x800];
@@ -364,18 +312,6 @@ typedef struct gizforce_s GIZFORCE_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-    typedef struct BATARANG_TARGET_s { // size 0x14
-        void *object;                  // 0x00
-        u8 type;                       // 0x04
-        u8 lost;                       // 0x05
-        u16 reserved_06_word;          // 0x06
-
-        union { // size 0xc
-            u8 reserved_08[12];
-            NUVEC fallback_position;
-        }; // 0x08
-    } BATARANG_TARGET_s;
 
     struct CHARPIVOT;
 

@@ -15,8 +15,6 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aiscript_types.h"
-#include "legoapi/world/world.h"
-#include "legogame/game.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
@@ -163,7 +161,6 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern ADAPTIVEDIFFICULTY adaptivedifficulty;
 #ifdef __cplusplus
 }
 #endif
