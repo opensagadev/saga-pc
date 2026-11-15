@@ -82,6 +82,9 @@ extern "C" {
     extern f32 sockstep;
     extern f32 test_factor;
     extern f32 test_seek_rate;
+    extern i16 dat_007f19ac;
+    extern i16 dat_007f19b0;
+    extern i16 dat_007f19b4;
 #ifdef __cplusplus
 }
 #endif

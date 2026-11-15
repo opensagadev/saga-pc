@@ -118,7 +118,6 @@ extern u8 SuperCarryPlayerRgb[2][3];
 extern i32 FalconDebKey[2];
 void DieRumble(GAMEOBJECT *);
 void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
-extern i16 dat_007f18c4;
 
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,
    physical calling convention and finite reader cohorts independently reviewed.

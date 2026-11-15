@@ -34,6 +34,7 @@ extern "C" {
     void Boulder_Move(PART_PC *, f32);
     void Boulder_Kill(PART_PC *, i32);
     extern VADERA vader_a;
+    extern i16 dat_007f1a0c;
 #ifdef __cplusplus
 }
 #endif

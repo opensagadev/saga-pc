@@ -72,6 +72,11 @@ extern "C" {
     void MenuUpdatePauseExit(MENU *);
     extern i16 dat_00880864;
     extern i16 dat_00880874;
+    void MenuDrawBonusComplete(MENU *);
+    void MenuDrawMiniKit(MENU *);
+    void MenuUpdateBonusComplete(MENU *);
+    void MenuUpdateBonusWin(MENU *);
+    void MenuUpdateMiniKit(MENU *);
 #ifdef __cplusplus
 }
 #endif

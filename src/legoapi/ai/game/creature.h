@@ -71,6 +71,8 @@ extern "C" {
     struct AILOCATOR *getSpawnLocator(f32 clip_radius, char *name);
     extern i32 CharacterLoadAreaModels;
     void InitAICreatures(AISYS_PC *);
+    extern i16 dat_007f1810;
+    extern i16 dat_007f1820;
 #ifdef __cplusplus
 }
 #endif

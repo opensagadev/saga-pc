@@ -21,6 +21,7 @@ extern "C" {
     extern i32 CruiserD_LiftChase;
     i32 GameAudio_OverrideFootStep_LSW(GAMEOBJECT *object, i32 on_platform);
     i32 GameAudio_CheckReverb_LSW(void);
+    extern AREA_DATA *DEATHSTARRESCUE_ADATA;
 #ifdef __cplusplus
 }
 #endif

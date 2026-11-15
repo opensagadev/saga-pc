@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "gameapi/ai/aisys/aisys.h"
 
 i32 MenuLanguages = 1;
 i32 MenusUsed = 31;
@@ -31,7 +32,6 @@ void (*drawslotinfofn)(f32, f32, i32, i32) = APIMenuDrawGameState;
 void (*drawslotsfn)(MENU *, f32) = APIMenuDrawMemCardSlots;
 i32 MenuFadeEnabled = 0;
 
-extern char dat_007516c0[1];
 char UiBackPromptLiteral[5] = "Back";
 char UiSelectPromptLiteral[7] = "Select";
 

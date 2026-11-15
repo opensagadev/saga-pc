@@ -29,8 +29,6 @@
 #include "nu2api/numath/nurand.h"
 #include "nu2api/numath/nuvec.h"
 
-extern i16 dat_007f1a3c;
-
 i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
     (void)hit_type;
     if (blowup != NULL) {

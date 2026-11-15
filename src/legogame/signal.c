@@ -35,8 +35,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
-extern char dat_007516c0[1];
-
 i32 Signals_Load(WORLDINFO *world, void *unused) {
     i32 version;
     i32 index;

@@ -233,7 +233,6 @@ extern f32 ShopPurchasePulseDuration;
     positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                                         \
     positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
 extern AREA_DATA *ANEWHOPE_ADATA;
-extern AREA_DATA *ANAKINSFLIGHT_ADATA;
 extern i32 ShopCodeCharacter;
 extern i32 ShopCodeValid;
 extern i32 ShopCodeMoveSfxLock;

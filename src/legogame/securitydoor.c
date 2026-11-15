@@ -59,7 +59,6 @@ typedef struct security_door_progress_s { // size 0xc
     u32 opened_mask[1];                   // 0x8
 } SECURITY_DOOR_PROGRESS;
 
-extern char dat_007516c0[1];
 extern char *SecurityDoor_OutputName;
 
 static void SecurityDoorUpdateMatrices(SECURITY_DOOR_RECORD *door, u16 angle) {

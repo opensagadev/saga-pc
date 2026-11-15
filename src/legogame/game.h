@@ -19,6 +19,7 @@ struct bolt_s;
 struct cutinfo_s;
 struct gameobject_s;
 struct level_data_s;
+struct menu_s;
 struct mission_data_s;
 
 struct EPISODESAVE_s {           // size 0xc
@@ -379,6 +380,12 @@ extern "C" {
     extern struct area_data_s *E4CHARACTER_ADATA;
     extern struct area_data_s *E5CHARACTER_ADATA;
     extern struct area_data_s *E6CHARACTER_ADATA;
+    extern struct area_data_s *MOSEISLEY_ADATA;
+    extern struct area_data_s *ROOFTOPS_ADATA;
+    extern struct area_data_s *TATOOINE_ADATA;
+    extern i16 dat_007f1828;
+    void MenuDrawEndChallenge(struct menu_s *);
+    void MenuUpdateEndChallenge(struct menu_s *);
 #ifdef __cplusplus
 }
 #endif

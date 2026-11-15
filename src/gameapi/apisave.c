@@ -22,10 +22,6 @@
 
 extern i32 saveload_slotused[];
 
-void fun_00509470(MENU *);
-void fun_00509480(MENU *);
-void fun_00509490(MENU *);
-void fun_005094a0(MENU *);
 i32 MenuSFX = -1;
 u8 MENUENTRYG = 127;
 u8 MENUENTRYB = 255;

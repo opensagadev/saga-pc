@@ -60,6 +60,7 @@ extern "C" {
     void CharScenes_Init(VARIPTR *, VARIPTR *);
     void CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
     extern struct KILLPARTS_CHARSCENE *CharScene_Area;
+    extern char AreaFixUpName_Jedi[8];
 #ifdef __cplusplus
 }
 #endif

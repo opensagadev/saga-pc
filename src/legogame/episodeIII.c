@@ -163,7 +163,6 @@ typedef struct vaderc_s {
     u8 reserved_96[2];
 } VADERC;
 
-extern i16 dat_007f1a0c;
 GIZFORCE *GizForces_FindForce(WORLDINFO *world, char *name);
 
 void CruiserAInit(WORLDINFO *world) {

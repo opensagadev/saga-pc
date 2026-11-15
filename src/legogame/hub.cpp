@@ -309,9 +309,6 @@ typedef struct hub_freeplay_pad_reader_pc_s {
 } HUB_FREEPLAY_PAD_READER;
 
 extern "C" {
-    extern i16 PCArcadeModeText0;
-    extern i16 PCArcadeModeText1;
-    extern i16 PCArcadeModeText2;
     extern char AreaFixUpName_Senate[8] = "senate";
     extern char AreaFixUpName_Losttemple[12] = "losttemple";
     extern char AreaFixUpName_Emperorfight[16] = "emperorfight";

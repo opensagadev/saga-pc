@@ -1084,7 +1084,6 @@ void fun_0064a430(void) {
 }
 
 extern struct eduimenu_s *edpart_sscale_menu;
-extern const char dat_0076b274[4];
 void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
 
 #define EDPART_REFRESH_EMITTER_SOUNDS()                                                                                                    \

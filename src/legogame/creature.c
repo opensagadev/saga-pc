@@ -384,8 +384,6 @@ typedef struct PLAYER_LAYER_FLAGS {
     u32 unknown_10 : 22;
 } PLAYER_LAYER_FLAGS;
 
-extern i16 dat_007f1810;
-
 typedef struct PARAPHERNALIA_EXTRA {
     u8 prefix[0xc68];
     NUVEC force_position;
@@ -483,7 +481,6 @@ typedef struct draw_process_flags_s {
     u32 previous_model_draw_result : 1;
 } DRAW_PROCESS_FLAGS;
 
-extern i16 dat_007f1820;
 void CustomiserDrawAccessories(CUSTOMISER_LAYERS *, GAMEOBJECT *, NUMTX *);
 void Grapple_DrawLine(GAMEOBJECT *);
 void SuperCarry_DrawObject(GAMEOBJECT *);

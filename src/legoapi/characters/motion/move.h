@@ -541,6 +541,11 @@ extern "C" {
     void ZapCode(struct gameobject_s *, i32, i32);
     void EatVictim(struct gameobject_s *object);
     void GrabVictim(struct gameobject_s *object, struct gameobject_s *victim);
+    extern AREA_DATA *ANAKINSFLIGHT_ADATA;
+    extern AREA_DATA *DEATHSTARBATTLE_ADATA;
+    extern AREA_DATA *EMPERORFIGHT_ADATA;
+    extern i16 dat_007f1a78;
+    extern i16 id_WATTO;
 #ifdef __cplusplus
 }
 #endif

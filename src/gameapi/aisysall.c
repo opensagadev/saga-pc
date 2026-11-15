@@ -91,7 +91,6 @@ extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 
 extern i32 ai_onlyusepackfile;
 
-extern char dat_007516c0[1];
 char dat_007516c0[1] = "";
 const char AIScriptFalse[6] = "false";
 const char GizObstacleActionNamePC[5] = "Name";
@@ -458,10 +457,6 @@ f32 AiEditorLowerHeightOverride = 0;
 
 f32 AiEditorNearClipOffset = 5.0f;
 i32 AIPathDefaultChecks = 1;
-
-extern const char dat_0075f2c0[3];
-
-extern const char dat_0075f2c4[4];
 
 extern f32 default_path_radius;
 

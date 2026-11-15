@@ -4,6 +4,7 @@
 
 #include "legoapi/core/input/timer.h"
 
+struct menu_s;
 struct mission_data_s;
 
 typedef struct MISSION_SAVE_READER { // size 0x64
@@ -57,6 +58,8 @@ extern "C" {
     extern f32 MissionBestTimeX;
     extern f32 MissionBestTimeY;
     extern f32 MissionBestTimeScale;
+    void MenuDrawEndMission(struct menu_s *);
+    void MenuUpdateEndMission(struct menu_s *);
 #ifdef __cplusplus
 }
 #endif

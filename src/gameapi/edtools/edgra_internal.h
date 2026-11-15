@@ -7,6 +7,8 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+struct FRAME_PAD;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -67,6 +69,9 @@ extern "C" {
     extern struct eduimenu_s *edgra_changeinstance_menu;
     extern struct PC_SCENE_MTL_VIEW *edgra_mtl;
     extern i32 edgra_pageid;
+    i32 edgraProc(f32 delta_time, struct FRAME_PAD *pad);
+    void edgraClose(void);
+    void edgraEnter(void);
 #ifdef __cplusplus
 }
 #endif

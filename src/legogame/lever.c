@@ -585,7 +585,6 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
 }
 
 i32 lever_gizmotype_id = -1;
-extern char dat_0075ac34[5];
 char *LeverOutputDownNamePtr = dat_0075ac34;
 char *LeverTypeNamePtr = "Lever";
 

@@ -151,6 +151,9 @@ extern "C" {
     void JediB_Init(WORLDINFO *);
     void JediB_Reset(WORLDINFO *);
     void JediB_Update(WORLDINFO *);
+    extern i16 dat_007f1a3c;
+    extern i16 dat_007f1a40;
+    void Credits_UpdateMenu(MENU *);
 #ifdef __cplusplus
 }
 #endif

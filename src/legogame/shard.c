@@ -22,7 +22,6 @@ typedef struct shard_progress_recovered_s { // size 0x30
     u32 visible[4];                         // 0x20
 } SHARD_PROGRESS;
 
-extern char dat_007516c0[1];
 extern char *Shard_OutputName;
 void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
 

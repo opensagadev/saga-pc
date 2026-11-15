@@ -215,19 +215,8 @@ extern "C" {
     DAT_HANDLES NuDatHandles = {0};
     char *Trailer[6] = {"demointro", (char *)&tINTRO, NULL, "indy", (char *)&dat_008810c0, NULL};
     i32 PlayTrailer = -1;
-    void Arcade_DrawEndMenu(MENU *);
-    void Arcade_UpdateEndMenu(MENU *);
-    void Credits_UpdateMenu(MENU *);
-    void MenuDrawBonusComplete(MENU *);
+    // menu.cpp defines these two with a MENU_s parameter; the table holds MENU callbacks.
     void MenuDrawBonusWin(MENU *);
-    void MenuDrawEndChallenge(MENU *);
-    void MenuDrawEndMission(MENU *);
-    void MenuDrawMiniKit(MENU *);
-    void MenuUpdateBonusComplete(MENU *);
-    void MenuUpdateBonusWin(MENU *);
-    void MenuUpdateEndChallenge(MENU *);
-    void MenuUpdateEndMission(MENU *);
-    void MenuUpdateMiniKit(MENU *);
     void MenuUpdatePauseRestart(MENU *);
     MENUFNINFO GameMenuInfo[23] = {
         {0,  MenuEnterTitles,         MenuDrawTitles,         MenuUpdateTitles,         NULL,                   -1, -1, 0, 0, 0, 0},

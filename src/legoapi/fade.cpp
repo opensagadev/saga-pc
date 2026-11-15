@@ -248,8 +248,6 @@ i32 FadeSystem::AddFade(FadeBase *fade_object) {
     return 1;
 }
 
-extern i32 fade_draw_suppressed;
-
 void FadeSystem::Init() {
     fades[0] = 0;
     fades[1] = 0;

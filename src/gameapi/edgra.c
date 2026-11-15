@@ -154,9 +154,6 @@ void edgracbCancelGlobalsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
 NUVEC edgra_cam_pos = {0};
 struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
-void edgraClose(void);
-void edgraEnter(void);
-i32 edgraProc(f32 delta_time, FRAME_PAD *pad);
 struct eduimenu_s *edgra_active_menu = 0;
 
 void edgraDrawCursor(void) {

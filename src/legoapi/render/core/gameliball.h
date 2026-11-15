@@ -943,6 +943,7 @@ extern "C" {
     f32 NewCast(NUVEC *, f32, f32);
     void InitSoundInfo(i32);
     void LoadSfx(const char *, VARIPTR *, VARIPTR);
+    i32 edbriProc(f32 delta_time, struct FRAME_PAD *pad);
 #ifdef __cplusplus
 }
 #endif

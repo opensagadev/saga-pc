@@ -3,10 +3,10 @@
 #include "gamelib/util/CRC16.h"
 #include "legoapi/items/collect/torpedo.h"
 #include "nu2api/huffdecode.h"
+#include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/gizmos/object/lever.h"
 
 extern "C" {
-    extern char dat_007516c0[];
-    extern char dat_0075ac34[5];
     char dat_00753370[2] = "]";
     char dat_00753374[2] = "[";
     char dat_0076fde8[7] = "Delete";

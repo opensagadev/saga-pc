@@ -79,7 +79,6 @@ typedef struct {         // size 0x3c
     NUVEC position;      // 0x30
 } FLOW_BLOWUP_POSITION;
 
-extern char dat_007516c0[1];
 extern char *BlowupOutputNames[3];
 extern char SpinnerOutputBuffer[14];
 

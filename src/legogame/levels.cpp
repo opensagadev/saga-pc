@@ -127,6 +127,7 @@
 #include "nu2api/nuwin32/pcapi.h"
 #include <string.h>
 #include <stdio.h>
+#include "legoapi/world/levels/hub.h"
 
 extern "C" void FmvPlatformUpdatePc(void);
 extern "C" void Particles_LoadAreaPage(char *);
@@ -485,23 +486,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern AREA_DATA *ANAKINSFLIGHT_ADATA;
-    extern char AreaFixUpName_Emperorfight[16];
-    extern char AreaFixUpName_Gunship[8];
-    extern char AreaFixUpName_Jedi[8];
-    extern char AreaFixUpName_Losttemple[12];
-    extern char AreaFixUpName_Moseisley[12];
-    extern char AreaFixUpName_Negotiations[16];
-    extern char AreaFixUpName_Podsprint[12];
-    extern char AreaFixUpName_Pursuit[8];
-    extern char AreaFixUpName_Senate[8];
-    extern char AreaFixUpName_Tatooine[12];
-    extern AREA_DATA *DEATHSTARBATTLE_ADATA;
-    extern AREA_DATA *DEATHSTARRESCUE_ADATA;
-    extern AREA_DATA *EMPERORFIGHT_ADATA;
-    extern AREA_DATA *MOSEISLEY_ADATA;
-    extern AREA_DATA *ROOFTOPS_ADATA;
-    extern AREA_DATA *TATOOINE_ADATA;
     extern char AreaFixUpName_Gungan[8] = "Gungan";
 }
 

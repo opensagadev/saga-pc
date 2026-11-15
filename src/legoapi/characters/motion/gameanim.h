@@ -95,6 +95,8 @@ extern "C" {
     void Animate_WEIRDO(GAMEOBJECT *);
     void Animate_POD(GAMEOBJECT *);
     i16 FindAnimIX(struct characterdata_s *character, char *name);
+    void edanimClose(void);
+    void edanimEnter(void);
 #ifdef __cplusplus
 }
 #endif

@@ -67,9 +67,6 @@ extern "C" {
     i16 PCArcadeModeText0 = 0;
     i16 PCArcadeModeText1 = 0;
     i16 PCArcadeModeText2 = 0;
-    extern i16 PCArcadeModeText0;
-    extern i16 PCArcadeModeText1;
-    extern i16 PCArcadeModeText2;
     i16 dat_008807b8 = 0;
     i16 dat_008807bc = 0;
     i16 dat_008807c0 = 0;

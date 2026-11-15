@@ -83,6 +83,8 @@
 #include "legoapi/world/levels/episodeII.h"
 #include "legoapi/world/levels/episodeV.h"
 #include "legogame/batman_gameai.h"
+#include "legoapi/world/levels/episodeIII.h"
+#include "legoapi/world/levels/episodeVI.h"
 
 extern "C" char *lsw_memcard_objname;
 extern "C" void TextInputGlyphNamePc(i32, char *);
@@ -324,21 +326,6 @@ extern "C" {
 
         i16 ID_DEFAULTCHARACTER_LSW_A = -1;
         i16 ID_DEFAULTCHARACTER_LSW_B = -1;
-        extern char AreaFixUpName_Gungan[8];
-        extern i16 dat_007f1810;
-        extern i16 dat_007f1820;
-        extern i16 dat_007f1828;
-        extern i16 dat_007f18c4;
-        extern i16 dat_007f19ac;
-        extern i16 dat_007f19b0;
-        extern i16 dat_007f19b4;
-        extern i16 dat_007f1a0c;
-        extern i16 dat_007f1a3c;
-        extern i16 dat_007f1a40;
-        extern i16 dat_007f1a78;
-        extern i16 dat_007f1a7c;
-        extern i16 dat_007f1a88;
-        extern i16 id_WATTO;
         i16 dat_007f1824 = -1;
         i16 dat_007f1844 = -1;
         i16 dat_007f1854 = -1;

@@ -20,8 +20,6 @@
 #include <stdio.h>
 #include <string.h>
 
-extern i16 dat_007f18c4;
-
 HUB_AI_MUSIC_VIEW HubAiMusicState = {0};
 
 i32 Hub_CurrentArea(void) {

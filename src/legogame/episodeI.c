@@ -120,9 +120,6 @@ typedef struct retakeg_netpacket_s {
     i16 guard_b;
 } RETAKEG_NETPACKET;
 
-extern i16 dat_007f19ac;
-extern i16 dat_007f19b0;
-extern i16 dat_007f19b4;
 void ChrisAllocLevelStuff(WORLDINFO *world);
 void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity);
 /* PodRace_A mine spawner and renderer. */

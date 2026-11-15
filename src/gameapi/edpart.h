@@ -107,6 +107,7 @@ extern "C" {
     void edpartEmitMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     void edpartInstanceMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     void edpartInstanceSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
+    extern const char dat_0076b274[4];
 #ifdef __cplusplus
 }
 #endif

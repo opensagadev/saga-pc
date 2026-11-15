@@ -333,6 +333,7 @@ extern "C" {
     void Credits_Init_Game(struct WORLDINFO_s *);
     void Credits_Update_Game(struct WORLDINFO_s *);
     void Credits_Draw_Game(struct WORLDINFO_s *);
+    extern char AreaFixUpName_Gungan[8];
 #ifdef __cplusplus
 }
 #endif

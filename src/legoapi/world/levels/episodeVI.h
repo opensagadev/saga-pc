@@ -72,6 +72,8 @@ extern "C" {
     extern SPLINEPOS fireSplinePos;
     extern f32 runningTotalPos;
     extern i32 fire_clip_dist;
+    extern i16 dat_007f1a7c;
+    extern i16 dat_007f1a88;
 #ifdef __cplusplus
 }
 #endif

@@ -312,7 +312,6 @@ typedef struct LEDGE_PROGRESS { // size 0x20
 } LEDGE_PROGRESS;
 
 extern "C" {
-    extern char dat_007516c0[1];
     extern char *LedgeOutputName;
 
     static void Ledge_Reset(LEDGE_MOTION *ledge) {

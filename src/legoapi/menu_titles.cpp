@@ -17,11 +17,9 @@
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
+#include "gameapi/edpart.h"
 
 extern "C" {
-    extern const char dat_0075f2c0[3];
-    extern const char dat_0075f2c4[4];
-    extern const char dat_0076b274[4];
     MENU_PC_STRING_ENTRY dat_00827800[40] = {
         {0,  "Quit"                                                       },
         {1,  "Quit to Windows"                                            },

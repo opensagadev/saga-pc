@@ -27,10 +27,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/numtx.h"
 
-extern "C" {
-    extern char AreaFixUpName_Jedi[8];
-}
-
 typedef struct CHARACTER_SCENE_WORLD {     // size 0x2984
     u8 unknown_0000[0x2980];               // 0x0000
     KILLPARTS_CHARSCENE *character_scenes; // 0x2980

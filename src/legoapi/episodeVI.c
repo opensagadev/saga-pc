@@ -167,8 +167,6 @@ typedef struct JABBA_ANTINODE_VIEW { // size 0x4c
     u8 type;                         // 0x4a
 } JABBA_ANTINODE_VIEW;
 
-extern i16 dat_007f1a7c;
-extern i16 dat_007f1a88;
 #define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET *)emperorfighta_netpacket)
 #define EMPEROR_FLOOR_AREA_MASK(world, area) (1 << ((area) - (world)->ai_sys->areas))
 

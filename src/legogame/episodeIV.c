@@ -168,8 +168,6 @@ i16 dat_007f1a40 = -1;
 i16 dat_007f1a44 = -1;
 /* Episode IV FixUpLevels callbacks (Mos Eisley, Blockade Runner, Death Star rescue and escape). */
 i32 test_tb = 1;
-extern i16 dat_007f1a3c;
-extern i16 dat_007f1a40;
 
 void MosEisleyB_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "land_speeder_terrain1", 1);

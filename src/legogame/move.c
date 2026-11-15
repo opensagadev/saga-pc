@@ -306,9 +306,6 @@ typedef struct COMBO_AI_VIEW {
     f32 nearest_opponent_metric;
 } COMBO_AI_VIEW;
 
-extern AREA_DATA *DEATHSTARBATTLE_ADATA;
-extern AREA_DATA *ANAKINSFLIGHT_ADATA;
-
 typedef struct vehicle_joint_modifier_s {
     NUVEC rotation;
     u8 unknown_00c[0x30 - 0xc];
@@ -438,8 +435,6 @@ typedef struct MOTION_SHOOT_PHASE_READER {
     u8 bolt_fire_phase;
 } MOTION_SHOOT_PHASE_READER;
 
-extern i16 dat_00881060;
-
 typedef struct lunge_target_slots_s {
     u8 unknown_000[0x790];
     GAMEOBJECT *character_target;
@@ -477,7 +472,6 @@ typedef struct jump_auxiliary_fields_s {
     u8 action_suppressed;
 } JUMP_AUXILIARY_FIELDS;
 
-extern i16 id_WATTO;
 extern u8 DroidCheat32Enabled;
 
 typedef struct critter_object_reader_s {
@@ -504,14 +498,11 @@ typedef struct COMBO_CONTEXT_INFO {
 
 extern f32 ForceDeflectSpeed;
 extern f32 ForceDeflectSeekRate;
-extern i16 dat_007f1a78;
 
 typedef struct weirdo_batarang_reader_s {
     u8 unknown_000[0xcc0];
     void *batarang;
 } WEIRDO_BATARANG_READER;
-
-extern AREA_DATA *EMPERORFIGHT_ADATA;
 
 typedef struct forcepush_feedback_view_s {
     u8 reserved[0xd18];

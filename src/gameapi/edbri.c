@@ -352,7 +352,6 @@ void edbriInit(void) {
     edbri_post_instance_type = -1;
 }
 
-i32 edbriProc(f32 delta_time, FRAME_PAD *pad);
 ed_module_s edbridesc = {NULL, NULL, "Bridge Editor", edbriInit, edbriClose,  edbriEnter, NULL, NULL,
                          NULL, NULL, 0x64697262,      edbriProc, edbriRender, NULL};
 

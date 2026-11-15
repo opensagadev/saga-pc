@@ -151,8 +151,6 @@ extern i16 dat_00880754;
 extern i16 dat_00880758;
 extern i16 dat_00880760;
 extern i16 dat_00880858;
-extern i16 dat_00880894;
-extern i16 dat_00880898;
 void Hub_ClearStats(void);
 void Text_FillInExtendedSaveInfo(void);
 i32 TriggerAutoSave(void);

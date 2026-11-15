@@ -62,17 +62,12 @@ typedef struct tightrope_progress_recovered_s {
     u32 visible_mask[1];
 } TIGHTROPE_PROGRESS;
 
-extern "C" {
-    extern char dat_007516c0[1];
-}
-
 typedef struct tightrope_movement_s {
     u8 unknown_00[0x40];
     f32 horizontal_length;
     u16 rotation;
 } TIGHTROPE_MOVEMENT;
 
-extern "C" {}
 extern "C" {
 
     i32 TightRopes_Load(WORLDINFO *world, void *unused) {

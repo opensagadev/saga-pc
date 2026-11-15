@@ -232,6 +232,10 @@ extern "C" {
     extern f32 uprepeattime[2];
     extern u8 uprepeatcount[2];
     extern u8 leftrepeatcount[2];
+    void fun_00509470(MENU *);
+    void fun_00509480(MENU *);
+    void fun_00509490(MENU *);
+    void fun_005094a0(MENU *);
 #ifdef __cplusplus
 }
 #endif

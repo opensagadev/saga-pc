@@ -268,16 +268,12 @@ extern "C" {
     extern f32 PodAvalancheShakeFrames;
     extern f32 PodAvalancheShakeRange;
     extern i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
-    extern i16 dat_007f18c4;
-    extern AREA_DATA *MOSEISLEY_ADATA;
-    extern AREA_DATA *TATOOINE_ADATA;
 }
 extern "C" TIMER ChallengeTimer;
 extern "C" {
     extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
     void Hub_LockUnlockDoors(WORLDINFO *world);
     extern void *game_cutscenes_droid_factory_conveyor;
-    extern AREA_DATA *ROOFTOPS_ADATA;
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
@@ -368,7 +364,6 @@ extern "C" {
     void SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options);
     void CutScene_StartAudio(void);
     void Tag_SetMode(i32 mode);
-    extern char AreaFixUpName_Jedi[8];
     extern i32 makebaddiesforgetinresetbits;
     extern i32 FalconDebKey[2];
     extern i32 come_from_an_editor;

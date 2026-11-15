@@ -24,6 +24,7 @@
 #include "nu2api/nugscn_gen.h"
 #include "nu2api/numath/nuvec.h"
 #include "gameapi/ai/aisys/aisys.h"
+#include "legoapi/characters/motion/gameanim.h"
 
 /* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
 #define EDANIM_SOUND_NAME(type) ((char *)0)
@@ -445,8 +446,6 @@ void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 }
 
 i32 edSfxAllCount = 0;
-void edanimClose(void);
-void edanimEnter(void);
 i32 edanim_next_param = 0;
 NUGSCN *edanim_page_scene[8] = {0};
 
