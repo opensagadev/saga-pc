@@ -339,6 +339,7 @@ class FileScan:
         self.var_types = collections.defaultdict(collections.Counter)  # identifier -> declared type names
         self.top_level_statements = []                   # (line, text) at file or extern "C" scope
         self.functions = []                              # (first line, last line) of function definitions
+        self.counters = set()                            # loop counters of the function being scanned
         self.first_code_line = None                      # first ; { } outside extern "C"/namespace braces
         if relative == "src/decomp.h":
             for match in DECOMP_TYPE.finditer(text):
@@ -435,6 +436,8 @@ class FileScan:
                     match = re.search(r'\b(?:struct|union|class|enum)\s+(\w+)\s*(?::[^{]*)?$', text_head)
                     if match and kind in ("struct", "union", "class", "enum"):
                         name = match.group(1)
+                    if kind == "function" and not any(e["kind"] == "function" for e in stack):
+                        self.counters = loop_counters(lines, number - 1, event.start())
                     stack.append({"kind": kind, "line": head_line, "body": [], "name": name,
                                   "typedef": bool(re.match(r'typedef\b', text_head)), "switch": pending_switch})
                     if kind == "block" and pending_switch is not None:
@@ -447,6 +450,7 @@ class FileScan:
                         entry = stack.pop()
                         if entry["kind"] == "function" and not any(e["kind"] == "function" for e in stack):
                             self.functions.append((entry["line"], number))
+                            self.counters = set()
                         if entry.get("is_switch") and switch_stack:
                             switch_stack.pop()
                         if entry["kind"] in ("struct", "union", "class", "enum"):
@@ -727,6 +731,8 @@ class FileScan:
             key, member = field_key(access)
             if key in KEYWORDS or re.fullmatch(r'[A-Z][A-Z0-9_]+', key):
                 return
+            if context not in ("bit", "bitassign") and access.strip() in self.counters:
+                return  # a loop counter's values are indexes, not states
             self.uses.append((re.sub(r'\s+', '', access), context, value, number))
             if isinstance(value, str):
                 return
@@ -837,6 +843,37 @@ def source_paths(root=ROOT):
     vendored = sorted(p for p in (root / "lib/ogg-vorbis").rglob("*") if p.is_file() and p.suffix in SUFFIXES) \
         if (root / "lib/ogg-vorbis").is_dir() else []
     return src, vendored
+
+
+FOR_HEAD = re.compile(r'\bfor\s*\(([^;()]*);[^;]*;((?:[^()]|\([^()]*\))*)\)')
+COUNTER_INIT = re.compile(r'(?:^|,)\s*(?:[A-Za-z_][\w\s*]*\s)?\**([A-Za-z_]\w*)\s*=(?!=)')
+COUNTER_STEP = re.compile(r'(?:\+\+|--)\s*([A-Za-z_]\w*)\b|\b([A-Za-z_]\w*)\s*(?:\+\+|--|[-+]=)')
+
+
+def loop_counters(lines, first, column):
+    """Names a `for` of the function body that opens at lines[first][column] sets in its head and steps in its
+    increment: loop counters, whose literals are indexes, not magic values."""
+    depth, body = 0, []
+    for number in range(first, len(lines)):
+        line = lines[number][column:] if number == first else lines[number]
+        for position, char in enumerate(line):
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    body.append(line[:position])
+                    break
+        else:
+            body.append(line)
+            continue
+        break
+    counters = set()
+    for head in FOR_HEAD.finditer(" ".join(body)):
+        initialised = {m.group(1) for m in COUNTER_INIT.finditer(head.group(1))}
+        stepped = {m.group(1) or m.group(2) for m in COUNTER_STEP.finditer(head.group(2))}
+        counters |= initialised & stepped
+    return counters
 
 
 def scan_files(paths, root=ROOT):

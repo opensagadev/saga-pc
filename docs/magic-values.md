@@ -25,7 +25,9 @@ by the counter, an offset past a record) and without `--dry-run` writes
 would make the comparison unsigned).
 tools/castscan.py counts the sites left as `size-literal` (budget 0);
 `--list-multiples` shows sizes that are a multiple of an element size, whose
-count still needs a name. Loop counters and sizes are not magic values.
+count still needs a name. Loop counters and sizes are not magic values:
+`oddscan --magic` leaves out the literals of a variable that a `for` of the
+same function initialises and steps (its values are indexes).
 
 ## Named
 
