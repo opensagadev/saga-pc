@@ -238,7 +238,7 @@ def plan(errors, index, texts, graph_cache):
         names = NAMED.findall(message)
         if not names:
             continue
-        name = names[0]
+        name = names[-1] if message.startswith("must use") else names[0]
         key = (file, line, name)
         if key in seen:
             continue

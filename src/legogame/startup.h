@@ -14,6 +14,8 @@
 #include "nu2api/nu3d/numtl.h"
 #endif
 
+struct PC_CONTROL_CONFIG;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -48,7 +50,7 @@ extern "C" {
     extern const char NuFileExt_hx2[5];
     extern const char NuFileExt_h4m[5];
 #ifdef __cplusplus
-    void PcControlRegister(PC_CONTROL_CONFIG *, VARIPTR *, VARIPTR *);
+    void PcControlRegister(struct PC_CONTROL_CONFIG *, VARIPTR *, VARIPTR *);
     void LoadPermProgressDraw(f32, f32, f32);
 #ifdef __cplusplus
 }

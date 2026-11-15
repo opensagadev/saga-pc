@@ -128,6 +128,325 @@ enum eHostVisibility { HOST_VISIBILITY_PUBLIC, HOST_VISIBILITY_PRIVATE };
 #if SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART == 2 && !defined(SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP)
 #ifdef __cplusplus
 
+template <typename T, u32 COUNT> struct TPool {
+    T items[COUNT];
+
+    ~TPool() {
+        for (T *entry = items; entry != items + COUNT; ++entry) {
+            if (entry->references > 0) {
+                entry->references = 0;
+            }
+        }
+    }
+
+    void fun_0060f370();
+};
+
+struct NETMESSAGE { // size 0x10
+
+    struct MessageData {
+        u32 fun_00617420() const;
+
+        u8 bytes[0x4b0];
+        u32 references;
+
+        MessageData() : references(0) {
+        }
+
+        void fun_0053d2e0();
+        void fun_0053d5c0();
+        void fun_0053d620();
+        MessageData *fun_0053d420();
+        i32 fun_0053d430() const;
+        MessageData *fun_0053d560();
+        MessageData *fun_0053d590();
+    };
+
+    static TPool<MessageData, 512> sm_poolMessageData;
+    i32 swap_endianness; // 0x0
+    MessageData *data;   // 0x4
+    u32 read_offset;     // 0x8
+    u32 write_offset;    // 0xc
+
+    NETMESSAGE(u32 offset) {
+        MessageData *entry;
+        for (entry = sm_poolMessageData.items; entry != sm_poolMessageData.items + 512; entry++) {
+            if (entry->references <= 0) {
+                break;
+            }
+        }
+        if (entry != sm_poolMessageData.items + 512) {
+            entry->references = 1;
+        } else {
+            entry = NULL;
+        }
+        data = entry;
+        read_offset = offset;
+        write_offset = offset;
+        swap_endianness = 1;
+    }
+
+    /* Leaves the message unset; FtpFile embeds one and its constructor does
+     * not touch it. */
+    NETMESSAGE() {
+    }
+
+    NETMESSAGE(const NETMESSAGE &other) {
+        data = other.data;
+        read_offset = other.read_offset;
+        write_offset = other.write_offset;
+        swap_endianness = other.swap_endianness;
+        if (data != NULL) {
+            data->references++;
+        } else {
+            NetMessagePoolError();
+        }
+    }
+
+    /* Drops this message's reference and shares other's buffer; the swap
+     * flag is kept. */
+    NETMESSAGE &operator=(const NETMESSAGE &other) {
+        Release();
+        data = other.data;
+        read_offset = other.read_offset;
+        write_offset = other.write_offset;
+        if (data != NULL) {
+            data->references++;
+        }
+        return *this;
+    }
+
+    /* Push messages come from theMemoryManager's pools. */
+    static void *operator new(size_t size) {
+        return theMemoryManager.AllocPool(size, 1);
+    }
+
+    static void operator delete(void *memory) {
+        theMemoryManager.FreePool(memory, sizeof(NETMESSAGE));
+    }
+
+    /* Standalone copy at 0x53d640 (likely the destructor in retail). */
+    void Release() {
+        if (data != NULL) {
+            u32 references = data->references;
+            if (references > 1) {
+                data->references = references - 1;
+            } else {
+                data->references = 0;
+            }
+        }
+    }
+
+    i32 GetSize() {
+        if (data == NULL) {
+            return 0;
+        }
+        return write_offset - read_offset;
+    }
+
+    void MakeUnique();
+    void fun_0060ea60(const u8 &value);
+    u32 fun_006174c0() const;
+    void fun_00611a00(u32 size);
+    void fun_00611a10(u32 size);
+    void fun_00613090(const u8 &value);
+
+    void Write8(const u8 &value) {
+        if (data != NULL) {
+            PCByteCopy(data->bytes + write_offset, &value, 1);
+            write_offset++;
+        }
+    }
+
+    void Write16(const i16 &value) {
+        if (data != NULL) {
+            PCByteCopy(data->bytes + write_offset, &value, 2);
+            if (swap_endianness) {
+                EdFileSwapEndianess16(data->bytes + write_offset);
+            }
+            write_offset += 2;
+        }
+    }
+
+    void Write16(const u16 &value) {
+        if (data != NULL) {
+            PCByteCopy(data->bytes + write_offset, &value, 2);
+            if (swap_endianness) {
+                EdFileSwapEndianess16(data->bytes + write_offset);
+            }
+            write_offset += 2;
+        }
+    }
+
+    void Write32(const i32 &value) {
+        if (data != NULL) {
+            PCByteCopy(data->bytes + write_offset, &value, 4);
+            if (swap_endianness) {
+                EdFileSwapEndianess32(data->bytes + write_offset);
+            }
+            write_offset += 4;
+        }
+    }
+
+    void Write(const void *value, u32 size) {
+        if (data != NULL) {
+            PCByteCopy(data->bytes + write_offset, value, size);
+            write_offset += size;
+        }
+    }
+
+    /* Writes count elements of size bytes, swapping each element's byte order. */
+    void Write(const void *values, i32 size, i32 count) {
+        if (data != NULL) {
+            i32 bytes = size * count;
+            PCByteCopy(data->bytes + write_offset, values, bytes);
+            if (swap_endianness && size > 1) {
+                u8 *element = data->bytes + write_offset;
+                for (i32 i = 0; i < count; i++) {
+                    switch (size) {
+                        case 2:
+                            EdFileSwapEndianess16(element);
+                            break;
+                        case 4:
+                            EdFileSwapEndianess32(element);
+                            break;
+                    }
+                    element += size;
+                }
+            }
+            write_offset += bytes;
+        }
+    }
+
+    void Read(void *values, i32 size, i32 count) {
+        if (data != NULL) {
+            i32 bytes = size * count;
+            PCByteCopy(values, data->bytes + read_offset, bytes);
+            if (swap_endianness && size > 1) {
+                u8 *element = (u8 *)values;
+                for (i32 i = 0; i < count; i++) {
+                    switch (size) {
+                        case 2:
+                            EdFileSwapEndianess16(element);
+                            break;
+                        case 4:
+                            EdFileSwapEndianess32(element);
+                            break;
+                    }
+                    element += size;
+                }
+            }
+            read_offset += bytes;
+        }
+    }
+
+    void Read(void *value, u32 size) {
+        if (data != NULL) {
+            PCByteCopy(value, data->bytes + read_offset, size);
+            read_offset += size;
+        }
+    }
+
+    /* Prepend writes go in front of the unread data (used to add headers). */
+    void Prepend8(u8 value) {
+        if (data != NULL) {
+            read_offset--;
+            PCByteCopy(data->bytes + read_offset, &value, 1);
+        }
+    }
+
+    void Prepend16(const i16 &value) {
+        if (data != NULL) {
+            read_offset -= 2;
+            PCByteCopy(data->bytes + read_offset, &value, 2);
+            if (swap_endianness) {
+                EdFileSwapEndianess16(data->bytes + read_offset);
+            }
+        }
+    }
+
+    void Read8(u8 &value) {
+        if (data != NULL) {
+            PCByteCopy(&value, data->bytes + read_offset, 1);
+            read_offset++;
+        }
+    }
+
+    void Read16(i16 &value) {
+        if (data != NULL) {
+            PCByteCopy(&value, data->bytes + read_offset, 2);
+            if (swap_endianness) {
+                EdFileSwapEndianess16(&value);
+            }
+            read_offset += 2;
+        }
+    }
+
+    void Read16(u16 &value) {
+        if (data != NULL) {
+            PCByteCopy(&value, data->bytes + read_offset, 2);
+            if (swap_endianness) {
+                EdFileSwapEndianess16(&value);
+            }
+            read_offset += 2;
+        }
+    }
+
+    void Read32(i32 &value) {
+        if (data != NULL) {
+            PCByteCopy(&value, data->bytes + read_offset, 4);
+            if (swap_endianness) {
+                EdFileSwapEndianess32(&value);
+            }
+            read_offset += 4;
+        }
+    }
+
+    void fun_0053d330(i8 &value);
+    void fun_0053d360(i16 &value);
+    void fun_0053d4a0(char *text);
+    void fun_0053d4e0(char *text, i32 size);
+    void fun_00613140(i16 &value);
+    void fun_00613180(i8 &value);
+    void fun_006131b0(u32 &value);
+    i32 fun_00613230();
+};
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void Bolt_Init(void *, NETMESSAGE &);
+    void Bolt_HitGameObjectRC(NETMESSAGE &);
+#ifdef __cplusplus
+}
+#endif
+#endif
+#ifdef __cplusplus
+
+class V2Peer { // size 0x2a0
+  public:
+    virtual ~V2Peer();
+    virtual void Disconnect();
+    virtual void Send(NETMESSAGE message);
+    virtual void SendEx(NETMESSAGE message, i32 arg0, i32 arg1);
+    virtual void unknown_slot_10();
+    virtual i32 GetAvailableMessages();
+
+    V2Peer *next;        // 0x004
+    V2Peer *prev;        // 0x008
+    u8 local;            // 0x00c
+    u8 unknown_0d[3];    // 0x00d
+    NetStats stats;      // 0x010
+    u32 unknown_230[27]; // 0x230
+    i32 time_offset;     // 0x29c
+
+    u8 fun_00611a20() const;
+    i32 fun_00611a60(i32 time) const;
+};
+#endif
+
+#ifdef __cplusplus
+
 class V2HostList {
   public:
     V2HostList();
@@ -542,6 +861,66 @@ extern NetworkObjectManager *theNos;
 #if SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART == 3 && !defined(SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_STOP)
 #ifdef __cplusplus
 
+class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
+  public:
+    TTNetwork();
+    ~TTNetwork();
+    virtual void ProcessEvenWhenPaused(struct ThingProcessData *data);
+    virtual void Display(ThingRenderData *data);
+    void Start();
+    void Update();
+    void Shutdown();
+    virtual void Send(NETMESSAGE message, u8 channel, V2Peer *peer);
+    virtual void SendEx(NETMESSAGE message, u8 channel, V2Peer *peer, i32 arg0, i32 arg1);
+    virtual void Broadcast(NETMESSAGE message, u8 channel);
+    virtual void BroadcastEx(NETMESSAGE message, u8 channel);
+    virtual char const *GetName();
+    i32 PeerRequest(const V2Peer &peer);
+    void PeerJoined(const V2Peer &peer);
+    void PeerLeft(const V2Peer &peer, i32 reason);
+    void PeerDead(const V2Peer &peer);
+    void FtpUpload(struct FtpFile *file);
+    void FtpDownload(struct FtpFile *file);
+    void FtpComplete(struct FtpFile *file, i32 result);
+    i32 NosAcquire(struct NetworkObject *object, const V2Peer &peer);
+    void NosAdopted(struct NetworkObject *object, const V2Peer &peer);
+    void UpdateClientStats();
+    void DeliverMessage(struct NETMESSAGE &message, u8 channel, const V2Peer &peer);
+    void RecordSent(NETMESSAGE message, u8 channel);
+    void RecordReceived(NETMESSAGE message, u8 channel);
+    void Resume();
+    i32 Suspend();
+    struct NetAddress *GetMyAddress();
+    struct NetAddress *GetMyHostAddress();
+    void SetMyHostAddress(struct NetAddress *address);
+    void ClearMyHostAddress();
+    i32 fun_00611dc0() const;
+
+    NetLogFile log;                    // 0x00020
+    u32 frame_count;                   // 0x02134
+    i32 unknown_2138;                  // 0x02138
+    i32 unknown_213c;                  // 0x0213c
+    i32 state;                         // 0x02140
+    i32 unknown_2144;                  // 0x02144
+    i32 unknown_2148;                  // 0x02148
+    i32 unknown_214c;                  // 0x0214c
+    i32 display_page;                  // 0x02150
+    f32 display_x;                     // 0x02154
+    f32 display_y;                     // 0x02158
+    f32 display_width;                 // 0x0215c
+    f32 display_height;                // 0x02160
+    u32 unknown_2164[2];               // 0x02164
+    NetAddress my_address;             // 0x0216c
+    NetAddress my_host_address;        // 0x02170
+    i32 has_my_host_address;           // 0x02174
+    NetFtpManager ftp;                 // 0x02178
+    NetworkObjectManager nos;          // 0x03780
+    V2SessionManager *session_manager; // 0x110f0
+};
+#endif
+
+#ifdef __cplusplus
+
 /* Session base class. Retail never constructs
  * it: the vtable is referenced only by the constructor. */
 class V2SessionManager { // size 0x2c0
@@ -646,6 +1025,22 @@ class V2SessionManager { // size 0x2c0
 
     static V2SessionManager *mpSessionManager;
 };
+#endif
+
+#ifdef __cplusplus
+
+extern TTNetwork theTTNetwork;
+
+/* Platform session layer behind theNetSessionManager. It adds the raw datagram
+ * slots 22/23 that nunetemu calls; retail links no implementation, so neither
+ * its vtable nor its RTTI is emitted. */
+class NetSessionManager : public V2SessionManager {
+  public:
+    virtual i32 SendTo(void *data, i32 size, u32 *address) = 0;
+    virtual i32 RecvFrom(void *data, i32 size, u32 *address) = 0;
+};
+
+extern NetSessionManager *theNetSessionManager;
 #endif
 #undef SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART
 #define SAGA_GAMELIB_UTIL_GAMELIB_UTIL_TYPES_H_PART 4

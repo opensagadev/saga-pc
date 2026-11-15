@@ -11,6 +11,9 @@
 #include "gamelib/util/gamelib_util_types.h"
 #endif
 
+struct PC_SHADER_FILTER_DESC_VIEW;
+struct PC_SHADER_MATERIAL_FILTER_VIEW;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -35,15 +38,15 @@ class ShaderBuilderGen { // size 0xbd0
     virtual void SetSaveDirectory(const char *);
     virtual void SetProfile(i32, i32, i32);
     virtual void SetForceMode(bool);
-    virtual void Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
-    virtual void Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
     bool LoadSource(const char *, i32);
     void *ParseSource(const char *, i32, ShaderCompilerBufferAllocatorPc *, i32, VirtualStackAllocator *);
     void SaveFile(const char *suffix, const char *name, const void *data, i32 size);
     void *ParseFile(const char *name, ShaderCompilerBufferAllocatorPc *buffer, i32 prefix, VirtualStackAllocator *memory);
     bool LoadFile(const char *name);
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
-    void Generate(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *, ShaderCompilerBufferAllocatorPc *);
+    void Generate(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocatorPc *, ShaderCompilerBufferAllocatorPc *);
     void fun_00745270(const char *name, i32 count);
     bool fun_00745290();
     i32 fun_007452a0();
@@ -58,8 +61,8 @@ class HLSLShaderBuilder : public ShaderBuilderGen { // size 0xbd0
     virtual ~HLSLShaderBuilder() {
     }
 
-    virtual void Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
-    virtual void Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Prepare(const struct PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionaryPc *);
+    virtual void Configure(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionaryPc *);
 };
 
 typedef HLSLShaderBuilder ShaderCompilerHLSLPc;

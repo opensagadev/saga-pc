@@ -4699,7 +4699,7 @@ variable:AddCoinDelay,variable,AddCoinDelay,12685,12685,1,legoapi/gizmo/object/g
 macro:PCArcadePointMessageY,macro,PCArcadePointMessageY,12686,12686,1,legoapi/lib/hub.h,users,PCArcadePointMessageY: only legogame/hub.cpp android-path
 macro:PCArcadeMessageTemplate,macro,PCArcadeMessageTemplate,12687,12687,1,legoapi/lib/hub.h,users,PCArcadeMessageTemplate: only legogame/hub.cpp android-path
 macro:ScoreBuildUpDone,macro,ScoreBuildUpDone,12688,12688,1,legoapi/lib/hub.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:GameMessage,variable,GameMessage,12690,12690,2,legoapi/menus/core/gamemessages.h,users,GameMessage: only legoapi/gamemessages.c android-path
+variable:GameMessage,variable,GameMessage,12690,12690,2,legoapi/gizmo/object/gizmopickup.h,users,GameMessage: only legoapi/gamemessages.c android-path
 variable:GameMessageIndex,variable,GameMessageIndex,12691,12691,1,legoapi/menus/core/gamemessages.h,users,GameMessageIndex: only legoapi/gamemessages.c android-path
 function:AddGameMsg,function,AddGameMsg,12692,12692,1,legoapi/menus/core/gamemessages.h,android,AddGameMsg
 function:ResetGameMessages,function,ResetGameMessages,12693,12693,1,legoapi/menus/core/gamemessages.h,android,ResetGameMessages
@@ -10097,15 +10097,15 @@ struct:PC_AUDIO_DECODER_METHODS,struct,PC_AUDIO_DECODER_METHODS,19449,19459,12,d
 struct:PC_AUDIO_DECODER_VIEW,struct,PC_AUDIO_DECODER_VIEW,19461,19463,4,decomp.h,decomp,view type
 class:SoundQueueVolumeSink,class,SoundQueueVolumeSink,19465,19483,20,nu2api/nusound/nusound.h,type-users,used by its saga.h users only there
 function:NetMessagePoolError,function,NetMessagePoolError,19485,19485,2,gamelib/net/NetMessagePc.h,rule,used most in gamelib/net/NetMessagePc.cpp (1) pc-path
-struct:NETMESSAGE,struct,NETMESSAGE,19487,19747,262,legoapi/items/collect/bolts.h,users,NETMESSAGE: only legoapi/bolts.cpp android-path
-assert:-#3855,assert,,19749,19749,2,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
-assert:-#3856,assert,,19750,19750,1,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
-assert:-#3857,assert,,19751,19751,1,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
-assert:-#3858,assert,,19752,19752,1,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
-assert:-#3859,assert,,19753,19753,1,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
-assert:-#3860,assert,,19754,19754,1,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
-assert:-#3861,assert,,19755,19755,1,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
-assert:-#3862,assert,,19756,19756,1,legoapi/items/collect/bolts.h,follow-type,NETMESSAGE
+struct:NETMESSAGE,struct,NETMESSAGE,19487,19747,262,gamelib/util/gamelib_util_types.h,users,NETMESSAGE: only legoapi/bolts.cpp android-path
+assert:-#3855,assert,,19749,19749,2,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
+assert:-#3856,assert,,19750,19750,1,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
+assert:-#3857,assert,,19751,19751,1,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
+assert:-#3858,assert,,19752,19752,1,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
+assert:-#3859,assert,,19753,19753,1,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
+assert:-#3860,assert,,19754,19754,1,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
+assert:-#3861,assert,,19755,19755,1,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
+assert:-#3862,assert,,19756,19756,1,gamelib/util/gamelib_util_types.h,follow-type,NETMESSAGE
 function:Bolt_Init,function,Bolt_Init,19758,19758,1,legoapi/items/collect/bolts.h,android,Bolt_Init
 function:Bolt_HitGameObjectRC,function,Bolt_HitGameObjectRC,19759,19759,1,legoapi/items/collect/bolts.h,android,Bolt_HitGameObjectRC
 struct:PC_WAVE_CHUNK,struct,PC_WAVE_CHUNK,19762,19766,6,nu2api/wavreader.h,users,PC_WAVE_CHUNK: only nu2api/wavreader.cpp pc-path
@@ -15925,7 +15925,7 @@ class:EdControl,class,EdControl,32349,32372,27,editor/edlevelall.h,rule,used mos
 class:EdEnumControl,class,EdEnumControl,32374,32397,25,editor/edlevelall.h,rule,used most in editor/edlevelall.cpp (30) android-path
 class:EdBitControl,class,EdBitControl,32399,32415,18,editor/edlevelall.h,rule,used most in editor/edlevelall.cpp (14) android-path
 struct:EdString,struct,EdString,32419,32429,14,editor/edlevelall.h,users,EdString: only editor/edlevelall.cpp android-path
-class:Placeable,class,Placeable,32432,32489,60,legoapi/legoapi_types.h,android,catch-all (needs a module owner); Placeable
+class:Placeable,class,Placeable,32432,32489,60,editor/edlevelall.h,android,catch-all (needs a module owner); Placeable
 function:EdTrace,function,EdTrace,32491,32491,2,editor/edlevelall.h,symbol,editor/edlevelall.cpp android-path
 class:EdStream,class,EdStream,32494,32535,44,editor/edlevelall.h,rule,used most in editor/edlevelall.cpp (39) android-path
 class:EdOutputStream,class,EdOutputStream,32538,32550,15,editor/edlevelall.h,rule,used most in editor/edlevelall.cpp (4) android-path
@@ -15948,17 +15948,17 @@ variable:EdType_NuMtx,variable,EdType_NuMtx,32695,32695,1,editor/edlevelall.h,de
 class:EdRef,class,EdRef,32699,32724,29,editor/edlevelall.h,rule,used most in editor/edlevelall.cpp (97) android-path
 struct:EdMember,struct,EdMember,32727,32733,9,editor/edlevelall.h,users,EdMember: only editor/edlevelall.cpp android-path
 struct:ClassObject,struct,ClassObject,32736,32755,22,editor/edlevelall.h,rule,used most in editor/edlevelall.cpp (71) android-path
-struct:ClassObjectListEntry,struct,ClassObjectListEntry,32757,32763,8,legoapi/legoapi_types.h,android,catch-all (needs a module owner); ClassObjectListEntry
-struct:ClassObjectList,struct,ClassObjectList,32765,32779,16,legoapi/legoapi_types.h,android,catch-all (needs a module owner); ClassObjectList
-class:EdTool,class,EdTool,32781,32798,19,legoapi/legoapi_types.h,android,catch-all (needs a module owner); EdTool
-class:BaseEditor,class,BaseEditor,32800,32851,53,legoapi/legoapi_types.h,android,catch-all (needs a module owner); BaseEditor
+struct:ClassObjectListEntry,struct,ClassObjectListEntry,32757,32763,8,editor/edlevelall.h,android,catch-all (needs a module owner); ClassObjectListEntry
+struct:ClassObjectList,struct,ClassObjectList,32765,32779,16,editor/edlevelall.h,android,catch-all (needs a module owner); ClassObjectList
+class:EdTool,class,EdTool,32781,32798,19,editor/edlevelall.h,android,catch-all (needs a module owner); EdTool
+class:BaseEditor,class,BaseEditor,32800,32851,53,editor/edlevelall.h,android,catch-all (needs a module owner); BaseEditor
 forward:EdManipulator,forward,EdManipulator,32853,32853,2,editor/edlevelall.h,users,EdManipulator: only editor/edlevelall.cpp android-path
-class:ClassEditor,class,ClassEditor,32856,32953,100,legoapi/legoapi_types.h,android,catch-all (needs a module owner); ClassEditor
+class:ClassEditor,class,ClassEditor,32856,32953,100,editor/edlevelall.h,android,catch-all (needs a module owner); ClassEditor
 variable:theClassEditor,variable,theClassEditor,32955,32955,2,editor/edlevelall.h,android,theClassEditor
 class:EditorSettings,class,EditorSettings,32957,32965,10,editor/edlevelall.h,users,EditorSettings: only editor/edlevelall.cpp android-path
 struct:EdInputContext,struct,EdInputContext,32970,32997,32,editor/edlevelall.h,rule,used most in editor/edlevelall.cpp (57) android-path
-class:LevelEditor,class,LevelEditor,33002,33111,114,legoapi/legoapi_types.h,android,catch-all (needs a module owner); LevelEditor
-variable:theLevelEditor,variable,theLevelEditor,33113,33113,2,legoapi/legoapi_types.h,android,catch-all (needs a module owner); theLevelEditor
+class:LevelEditor,class,LevelEditor,33002,33111,114,editor/edlevelall.h,android,catch-all (needs a module owner); LevelEditor
+variable:theLevelEditor,variable,theLevelEditor,33113,33113,2,editor/edlevelall.h,android,catch-all (needs a module owner); theLevelEditor
 struct:NetStatCounters,struct,NetStatCounters,33119,33126,10,gamelib/util/gamelib_util_types.h,type-users,used by its saga.h users only there
 class:NetSmallStats,class,NetSmallStats,33128,33138,12,gamelib/util/gamelib_util_types.h,android,NetSmallStats
 class:NetStats,class,NetStats,33140,33151,13,gamelib/util/gamelib_util_types.h,android,NetStats
@@ -15966,7 +15966,7 @@ function:UtilGetTime,function,UtilGetTime,33153,33153,2,gamelib/util/Utilities.h
 function:UtilGetFrameStartTime,function,UtilGetFrameStartTime,33154,33154,1,gamelib/util/Utilities.h,android,UtilGetFrameStartTime
 function:UtilFrameStart,function,UtilFrameStart,33155,33155,1,gamelib/util/Utilities.h,android,UtilFrameStart
 function:refpack_init,function,refpack_init,33156,33156,1,gamelib/util/Refpack.h,android,refpack_init
-class:V2Peer,class,V2Peer,33158,33177,21,legoapi/items/collect/bolts.h,users,V2Peer: only legoapi/bolts.cpp android-path
+class:V2Peer,class,V2Peer,33158,33177,21,gamelib/util/gamelib_util_types.h,users,V2Peer: only legoapi/bolts.cpp android-path
 class:V2HostList,class,V2HostList,33179,33187,10,gamelib/util/gamelib_util_types.h,type-users,used by its saga.h users only there
 class:V2PeerList,class,V2PeerList,33189,33198,11,gamelib/util/gamelib_util_types.h,type-users,used by its saga.h users only there
 class:V2PendingList,class,V2PendingList,33200,33207,9,gamelib/util/V2SessionManager.h,rule,used most in gamelib/net/V2SessionManager.cpp (2) android-dir
@@ -15992,12 +15992,12 @@ class:NetworkObjectManager,class,NetworkObjectManager,33490,33630,144,gamelib/ut
 variable:theNos,variable,theNos,33632,33632,2,gamelib/util/gamelib_util_types.h,android,theNos
 class:NetLogFile,class,NetLogFile,33635,33647,15,legoapi/legoapi_types.h,type-users,catch-all (needs a module owner); used by its saga.h users only there
 forward:V2SessionManager,forward,V2SessionManager,33649,33649,2,gamelib/util/gamelib_util_types.h,android,V2SessionManager
-class:TTNetwork,class,TTNetwork,33651,33706,57,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TTNetwork
-variable:theTTNetwork,variable,theTTNetwork,33708,33708,2,legoapi/items/collect/bolts.h,users,theTTNetwork: only legoapi/bolts.cpp android-path
+class:TTNetwork,class,TTNetwork,33651,33706,57,gamelib/util/gamelib_util_types.h,android,catch-all (needs a module owner); TTNetwork
+variable:theTTNetwork,variable,theTTNetwork,33708,33708,2,gamelib/util/gamelib_util_types.h,users,theTTNetwork: only legoapi/bolts.cpp android-path
 forward:NetHost,forward,NetHost,33710,33710,2,gamelib/util/gamelib_util_types.h,type-users,used by its saga.h users only there
 enum:eHostVisibility,enum,eHostVisibility HOST_VISIBILITY_PUBLIC HOST_VISIBILITY_PRIVATE,33712,33712,2,gamelib/util/gamelib_util_types.h,android,eHostVisibility
 class:V2SessionManager,class,V2SessionManager,33716,33817,105,gamelib/util/gamelib_util_types.h,android,V2SessionManager
-class:NetSessionManager,class,NetSessionManager,33822,33826,9,legoapi/items/collect/bolts.h,type-users,used by its saga.h users only there
-variable:theNetSessionManager,variable,theNetSessionManager,33828,33828,2,legoapi/items/collect/bolts.h,users,theNetSessionManager: only legoapi/bolts.cpp android-path
+class:NetSessionManager,class,NetSessionManager,33822,33826,9,gamelib/util/gamelib_util_types.h,type-users,used by its saga.h users only there
+variable:theNetSessionManager,variable,theNetSessionManager,33828,33828,2,gamelib/util/gamelib_util_types.h,users,theNetSessionManager: only legoapi/bolts.cpp android-path
 struct:NuNetEmu,struct,NuNetEmu,33832,33904,76,nu2api/nucore/NuNetEmu.h,android,NuNetEmu
 variable:theNuNetEmu,variable,theNuNetEmu,33906,33906,2,nu2api/nucore/NuNetEmu.h,android,theNuNetEmu

@@ -12,6 +12,11 @@ struct ThingProcessData;
 /* The per-frame object interface ThingManager dispatches.
  * flags holds the THING_FLAG_SKIP_* bits; profiling brackets the call with
  * the time bar. */
+struct ThingLevelData;
+struct ThingRemoveData;
+struct ThingRenderData;
+struct ThingResetData;
+
 class BaseThing {
   public:
     BaseThing();

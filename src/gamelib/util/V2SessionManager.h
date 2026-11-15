@@ -5,12 +5,9 @@
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "legoapi/items/collect/bolts.h"
-#endif
-
 #ifdef __cplusplus
+
+class V2Peer;
 
 class V2PendingList {
   public:

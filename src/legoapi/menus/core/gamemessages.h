@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "legoapi/gizmos/fx/gizmopickups.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
@@ -59,7 +58,6 @@ extern "C" {
     void EndScoreMessage(struct game_message_s *message);
     void GameMsg_DrawAdjustNewPos_CoinToTotal(struct game_message_s *message);
 
-    extern GAME_MESSAGE_PC GameMessage[128];
     struct game_message_s *AddGameMsg(struct add_game_message_s *message);
     extern struct nuhspecial_s *(*GameMsg_GetExtraObjFn)(struct game_message_s *message);
 #ifdef __cplusplus

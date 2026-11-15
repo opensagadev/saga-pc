@@ -107,6 +107,7 @@ struct game_message_s {              // size 0x114
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern GAME_MESSAGE_PC GameMessage[128];
     void Pup_CollectCoin(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
     void Pup_UpdateBlueCoin(struct WORLDINFO_s *, GIZMOPICKUP *);
     void Pup_UpdatePurpleCoin(struct WORLDINFO_s *, GIZMOPICKUP *);

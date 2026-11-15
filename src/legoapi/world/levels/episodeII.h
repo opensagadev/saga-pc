@@ -15,6 +15,7 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct bolt_s;
 struct gizaimessage_s;
 
 typedef struct kaminoeplate_s {
@@ -32,7 +33,7 @@ typedef struct KAMINO_DISCO_MUSIC_VIEW { // size 0x3e8
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 KaminoE_CheckPlatHit(BOLT *bolt);
+    i32 KaminoE_CheckPlatHit(struct bolt_s *bolt);
     extern NUVEC GunshipANorm;
     extern KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState;
     i32 KaminoInside(void);

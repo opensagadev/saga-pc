@@ -31,3 +31,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | editor declarations into headers | BoltTypes_Configure | legoapi/bolts.cpp | 99.88 % | exact |
 | editor declarations into headers | DebrisSetup2 | legoapi/parts.c | 99.95 % | exact |
 | raw offsets to fields, pad and display list names (e0d401e3, ed99ef3e) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
+| rendering types into d3dCore.h (a7157fd0) | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
