@@ -37,6 +37,7 @@ import multiprocessing
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 if __package__ in (None, ""):
@@ -600,18 +601,39 @@ def survey(tu, wanted, root=ROOT):
 
 
 def _work(job):
-    """One unit, parsed once (twice with the Debug flags), collected for every (field, flag set?)."""
+    """One unit, parsed once (twice with the Debug flags), collected for every spec: ([facts per parse] per spec,
+    project files read or None when not to be cached, start). A spec is a (field, flag set?) pair, or the
+    comma-separated names of a --locals survey."""
     unit, path, flags, debug, specs = job
-    from tools import declscan  # noqa: PLC0415
-    results = [] if isinstance(specs, str) else [[] for _ in specs]
+    from tools import declscan, unitcache  # noqa: PLC0415
+    started = time.time_ns()
+    fields = [spec for spec in specs if not isinstance(spec, str)]
+    results = {index: [] for index in range(len(specs))}
+    deps, fatal = {unit}, False
     for args in ([flags, declscan.debug_flags(flags)] if debug else [flags]):
         tu = declscan.parse(path, args)
-        if isinstance(specs, str):
-            results.append(survey(tu, set(specs.split(","))))
-            continue
-        for index, facts in enumerate(collect(tu, specs)):
-            results[index].append(facts)
-    return unit, results
+        deps |= unitcache.project_includes(tu)
+        fatal = fatal or unitcache.has_fatal(tu)
+        collected = iter(collect(tu, fields) if fields else ())
+        for index, spec in enumerate(specs):
+            results[index].append(survey(tu, set(spec.split(","))) if isinstance(spec, str) else next(collected))
+    return [results[index] for index in range(len(specs))], None if fatal else sorted(deps), started
+
+
+def parse_units(paths, specs, jobs_count):
+    """{unit: [[facts per parse] per spec]} for the units `paths`, from the shared per-unit cache
+    (tools/unitcache.py) where the unit, every project file its parse read and the specs are unchanged. The
+    key covers the whole spec list: the fields of one parse share their matches."""
+    from tools import castscan, declscan, unitcache  # noqa: PLC0415
+    base = declscan.base_flags()
+    cache = unitcache.UnitCache("magicnames", unitcache.source_version(__file__), [base, specs])
+    jobs = {}
+    for unit in paths:
+        flags = declscan.unit_flags(unit, base)
+        debug = castscan.needs_debug((ROOT / unit).read_bytes().decode("latin-1"))
+        jobs[unit] = (cache.key(unit, flags, debug), (unit, str(ROOT / unit), flags, debug, specs))
+    with ScanLock():
+        return unitcache.scan_units(cache, jobs, _work, max(1, clang_jobs(jobs_count)), "magicnames")
 
 
 # ---------------------------------------------------------------------------------- whole tree
@@ -783,19 +805,14 @@ def line_of(file, offset, root=ROOT):
 
 def print_locals(names, paths, jobs_count):
     """The --locals table: one row per Function:name, most literal sites first."""
-    from tools import castscan, declscan  # noqa: PLC0415
-    base = declscan.base_flags()
-    jobs = [(u, str(ROOT / u), declscan.unit_flags(u, base),
-             castscan.needs_debug((ROOT / u).read_bytes().decode("latin-1")), names) for u in paths]
     rows = {}
-    with ScanLock(), multiprocessing.Pool(max(1, clang_jobs(jobs_count))) as pool:
-        for unit, results in pool.imap_unordered(_work, jobs):
-            for result in results:
-                for label, entry in result.items():
-                    row = rows.setdefault(label, {"sites": {}, "bits": set(), "fields": set(), "unit": unit})
-                    row["sites"].update(entry["sites"])  # a header's sites and the Debug parse's count once
-                    row["bits"] |= set(entry["bits"])
-                    row["fields"] |= set(entry["fields"])
+    for unit, (results,) in parse_units(paths, [names], jobs_count).items():
+        for result in results:
+            for label, entry in result.items():
+                row = rows.setdefault(label, {"sites": {}, "bits": set(), "fields": set(), "unit": unit})
+                row["sites"].update(entry["sites"])  # a header's sites and the Debug parse's count once
+                row["bits"] |= set(entry["bits"])
+                row["fields"] |= set(entry["fields"])
     print("sites\tbits\tlocal\tvalues\tfields\tunit")
     for label, row in sorted(rows.items(), key=lambda item: (-len(item[1]["sites"]), item[0])):
         values = " ".join((hex(v) if row["bits"] else str(v)) + (f"x{n}" if n > 1 else "")
@@ -821,7 +838,6 @@ def main(argv=None):
     parser.add_argument("--jobs", type=int, default=None)
     parser.add_argument("--paths", nargs="*", default=[], help="limit the units parsed (prefixes under src/)")
     args = parser.parse_args(argv)
-    from tools import castscan, declscan  # noqa: PLC0415
     if args.locals:
         return print_locals(args.locals, units(args.paths), args.jobs)
     specs = []
@@ -840,17 +856,11 @@ def main(argv=None):
     for field, prefixes, mode in specs:
         names = name_table(prefixes, {})
         modes.append(mode == "flags" or (mode != "states" and bool(names) and all(is_single_bit(v) for v in names.values())))
-    base = declscan.base_flags()
     work = [(field, flags_mode) for (field, _, _), flags_mode in zip(specs, modes)]
-    jobs = [(u, str(ROOT / u), declscan.unit_flags(u, base),
-             castscan.needs_debug((ROOT / u).read_bytes().decode("latin-1")), work) for u in units(args.paths)]
     facts = [[] for _ in specs]
-    with ScanLock(), multiprocessing.Pool(max(1, clang_jobs(args.jobs))) as pool:
-        for done, (_, results) in enumerate(pool.imap_unordered(_work, jobs), 1):
-            for index, result in enumerate(results):
-                facts[index].extend(result)
-            if done % 50 == 0:
-                print(f"magicnames: {done}/{len(jobs)}", file=sys.stderr)
+    for results in parse_units(units(args.paths), work, args.jobs).values():
+        for index, result in enumerate(results):
+            facts[index].extend(result)
     enums = {}
     for fact in facts[0]:
         enums.update(fact["enums"])

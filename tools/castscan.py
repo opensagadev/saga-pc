@@ -38,18 +38,17 @@ matches no cast.
 The same walk collects the literals that equal the size or element count of the
 object they act on (tools/sizeofnames.py); `--check` budgets them as `size-literal`.
 
-The scan is cached per unit (build/castscan/cache.json) and runs two parses at a
-time (`--jobs`). docs/cast-audit.md explains the classes and the cleanup plan.
+The scan is cached per unit (tools/unitcache.py) and runs four parses at a
+time (`--jobs`, SAGA_CLANG_JOBS). docs/cast-audit.md explains the classes and the cleanup plan.
 """
 import argparse
 import csv
 import ctypes
-import hashlib
 import json
-import multiprocessing
 import os
 import re
 import sys
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -61,7 +60,6 @@ from tools.lib import ROOT, clang_jobs  # noqa: E402
 
 VERSION = 10
 OUTPUT = ROOT / "build/castscan"
-CACHE = OUTPUT / "cache.json"
 BUDGET = ROOT / "config/castscan-budget.json"
 # Casts that the C rules call redundant but that the exact build needs (docs/cast-audit.md, "Kept casts").
 KEEP = ROOT / "config/castscan-keep.csv"
@@ -798,100 +796,45 @@ def needs_debug(text):
     return DEBUG_MACROS.search(text) is not None
 
 
-def _project_includes(tu):
-    """The project files (src/, lib/) a translation unit read: its cache dependencies."""
-    deps = set()
-    for inclusion in tu.get_includes():
-        name = Path(str(inclusion.include.name)).resolve()
-        try:
-            deps.add(name.relative_to(ROOT).as_posix())
-        except ValueError:
-            continue
-    return deps
-
-
 def _work(job):
+    """(facts, project files read or None when not to be cached, start) of one unit."""
     unit, path, flags, debug = job
-    from tools import declscan  # noqa: PLC0415
+    from tools import declscan, unitcache  # noqa: PLC0415
     cpp = unit.endswith(".cpp")
+    started = time.time_ns()
     try:
         tu = declscan.parse(path, flags)
-        deps = _project_includes(tu)
+        deps = unitcache.project_includes(tu) | {unit}
+        fatal = unitcache.has_fatal(tu)
         facts = collect(tu, path, cpp)
         if debug:
             flags = declscan.debug_flags(flags)
             tu = declscan.parse(path, flags)
-            deps |= _project_includes(tu)
+            deps |= unitcache.project_includes(tu)
+            fatal = fatal or unitcache.has_fatal(tu)
             facts = merge_debug(facts, collect(tu, path, cpp))
-        return unit, facts, sorted(deps)
+        return facts, None if fatal else sorted(deps), started
     except Exception as error:  # noqa: BLE001 (reported per unit, the scan continues)
-        return unit, {"failed": f"{type(error).__name__}: {error}"}, []
+        return {"failed": f"{type(error).__name__}: {error}"}, None, started
 
 
 def units():
     return sorted(p.relative_to(ROOT).as_posix() for p in (ROOT / "src").rglob("*") if p.suffix in (".c", ".cpp"))
 
 
-def headers_hash():
-    digest = hashlib.sha256()
-    # The vendored Ogg/Vorbis headers are part of every unit that includes them (nustream.cpp, oggreader.cpp),
-    # like declscan's hash: without them a cached parse outlives a change to the pinned sources.
-    for path in sorted((ROOT / "src").rglob("*.h")) + sorted((ROOT / "lib").rglob("*.h")):
-        digest.update(path.as_posix().encode() + path.read_bytes())
-    return digest.hexdigest()
-
-
-def scan(jobs=2, cache_path=CACHE):
-    """Facts for every src/ unit, from the cache where the unit and every project file it includes are unchanged.
-
-    Each entry is keyed by the unit's own text and records the src/ and lib/ files the parse read with their
-    hashes, so a header change re-parses only the units that include it."""
-    from tools import declscan  # noqa: PLC0415
-    try:
-        cache = json.loads(cache_path.read_text())
-    except (OSError, ValueError):
-        cache = {}
-    if cache.get("format") != 2:
-        cache = {"format": 2, "units": {}}
-    file_hashes = {}
-
-    def file_hash(relative_path):
-        if relative_path not in file_hashes:
-            full = ROOT / relative_path
-            file_hashes[relative_path] = hashlib.sha256(full.read_bytes()).hexdigest() if full.is_file() else None
-        return file_hashes[relative_path]
-
-    clang = declscan.clang_version()
-    entries, todo, facts = {}, [], {}
-    flags = None
+def scan(jobs=2, cache_dir=None):
+    """Facts for every src/ unit, from the shared per-unit cache (tools/unitcache.py) where the unit and every
+    project file its parse read are unchanged; a header change re-parses only the units that include it."""
+    from tools import declscan, unitcache  # noqa: PLC0415
+    flags = declscan.base_flags()
+    cache = unitcache.UnitCache("castscan", VERSION, flags, directory=cache_dir)
+    work = {}
     for unit in units():
         text = (ROOT / unit).read_bytes()
-        key = hashlib.sha256(f"{VERSION}:{clang}:{unit}:".encode() + text).hexdigest()
-        entry = cache["units"].get(unit)
-        if entry and entry.get("key") == key and all(file_hash(d) == h for d, h in entry["deps"].items()):
-            facts[unit] = entry["facts"]
-            entries[unit] = entry
-            continue
-        if flags is None:
-            flags = declscan.base_flags()
-        todo.append((unit, str(ROOT / unit), declscan.unit_flags(unit, flags),
-                     needs_debug(text.decode("latin-1"))))
-        entries[unit] = {"key": key}
-    if todo:
-        print(f"castscan: parsing {len(todo)} units", file=sys.stderr)
-        with multiprocessing.Pool(max(1, jobs)) as pool:
-            for done, (unit, result, deps) in enumerate(pool.imap_unordered(_work, todo), 1):
-                facts[unit] = result
-                entries[unit]["facts"] = result
-                entries[unit]["deps"] = {d: file_hash(d) for d in deps}
-                if done % 25 == 0:
-                    print(f"castscan: {done}/{len(todo)}", file=sys.stderr)
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    kept = {u: e for u, e in entries.items() if "failed" not in e.get("facts", {"failed": 1})}
-    partial = cache_path.with_name(f"{cache_path.name}.{os.getpid()}")
-    partial.write_text(json.dumps({"format": 2, "units": kept}))
-    os.replace(partial, cache_path)
-    return facts
+        unit_flags = declscan.unit_flags(unit, flags)
+        debug = needs_debug(text.decode("latin-1"))
+        work[unit] = (cache.key(unit, unit_flags, debug), (unit, str(ROOT / unit), unit_flags, debug))
+    return unitcache.scan_units(cache, work, _work, max(1, jobs), "castscan")
 
 
 # --------------------------------------------------------------------------------------------- classification

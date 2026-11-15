@@ -57,12 +57,11 @@ build configuration. Asserts that disagree, do not parse or carry a trailing
 comment stay and are reported; the edited lines are run through clang-format.
 """
 import argparse
-import hashlib
 import json
-import multiprocessing
 import re
 import subprocess
 import sys
+import time
 from collections import defaultdict
 from pathlib import Path
 
@@ -520,8 +519,9 @@ class Analyzer:
         return out
 
 
-def analyze(path, args, root=ROOT, text=None):
-    """Facts about one file in one configuration (JSON-serialisable)."""
+def analyze(path, args, root=ROOT, text=None, inputs=None):
+    """Facts about one file in one configuration (JSON-serialisable). `inputs` (a dict), when given, receives
+    the project files the parse read ("deps") and whether it had a fatal diagnostic ("fatal")."""
     ci = cindex()
     path = Path(path).resolve()
     unsaved = [(str(path), text)] if text is not None else None
@@ -530,11 +530,19 @@ def analyze(path, args, root=ROOT, text=None):
     errors = [f"{d.location.file}:{d.location.line}: {d.spelling}" for d in tu.diagnostics if d.severity >= 3]
     source = text if text is not None else path.read_text(encoding="utf-8", errors="replace")
     analyzer = Analyzer(tu, path, root)
+    note_inputs(inputs, tu, root)
     return {"file": rel_name(path, root), "errors": errors[:5], "records": analyzer.collect_records(),
             "asserts": analyzer.evaluate_asserts(source.splitlines())}
 
 
-def analyze_in_all(path, args, root=ROOT):
+def note_inputs(inputs, tu, root):
+    if inputs is not None:
+        from tools import unitcache  # noqa: PLC0415
+        inputs["deps"] = unitcache.project_includes(tu, root)
+        inputs["fatal"] = unitcache.has_fatal(tu)
+
+
+def analyze_in_all(path, args, root=ROOT, inputs=None):
     """Facts about a header seen with every module header: a translation unit that includes them all, with the
     header's own records and asserts picked out (for a header that does not compile on its own)."""
     from tools import standalone
@@ -546,23 +554,32 @@ def analyze_in_all(path, args, root=ROOT):
                                  options=ci.TranslationUnit.PARSE_SKIP_FUNCTION_BODIES)
     errors = [f"{d.location.file}:{d.location.line}: {d.spelling}" for d in tu.diagnostics if d.severity >= 3]
     analyzer = Analyzer(tu, path, root)
+    note_inputs(inputs, tu, root)
+    if inputs is not None:
+        # The probe includes the module headers config/header-map.csv names.
+        inputs["deps"] |= {"config/header-map.csv", rel_name(path, root)}
     return {"file": rel_name(path, root), "errors": errors[:5], "records": analyzer.collect_records(),
             "asserts": analyzer.evaluate_asserts(path.read_text(encoding="utf-8", errors="replace").splitlines())}
 
 
 def _analyze_job(job):
+    """(facts, project files read or None when not to be cached, start) of one file and configuration."""
     rel, args = job
-    facts = analyze(ROOT / rel, args)
+    started = time.time_ns()
+    inputs = {}
+    facts = analyze(ROOT / rel, args, inputs=inputs)
     if facts["errors"] and rel.endswith(".h"):
         # A header that relies on others being included first.
-        retry = analyze_in_all(ROOT / rel, args)
+        retried = {}
+        retry = analyze_in_all(ROOT / rel, args, inputs=retried)
         if not retry["errors"] and retry["records"]:
-            facts = retry
-    return rel, args, facts
+            facts, inputs = retry, retried
+    return facts, None if inputs["fatal"] else sorted(inputs["deps"] | {rel}), started
 
 
 def analyze_files(files, jobs, all_configs=True):
     """{file: [facts per configuration]} for repository-relative files."""
+    from tools import unitcache  # noqa: PLC0415
     flags = base_flags()
     work = []
     for rel in files:
@@ -570,42 +587,14 @@ def analyze_files(files, jobs, all_configs=True):
         if not all_configs:
             configs = configs[:1] if not rel.endswith(".h") else [configs[0], configs[2]]
         work.extend((rel, [*flags, *config]) for config in configs)
+    # Facts of one file and configuration are reused while the file, every project file its parse read, the
+    # flags, this tool and libclang are unchanged (tools/unitcache.py), so a run after an edit takes seconds.
+    cache = unitcache.UnitCache("layoutcheck", unitcache.source_version(__file__), flags)
+    jobs_by_name = {(rel, json.dumps(args)): (cache.key(rel, args), (rel, args)) for rel, args in work}
+    found = unitcache.scan_units(cache, jobs_by_name, _analyze_job, jobs, "layoutcheck")
     result = defaultdict(list)
-    # Facts of one file and configuration are reused while the file, every project header, the flags,
-    # this tool and libclang are unchanged (build/layoutcheck/), so a run after a unit edit takes seconds.
-    shared = hashlib.sha256()
-    for path in [Path(__file__), *sorted((ROOT / "src").rglob("*.h"))]:
-        shared.update(path.relative_to(ROOT).as_posix().encode() + b"\0" + path.read_bytes())
-    shared.update(str(getattr(cindex(), "__file__", "")).encode())
-    cache = ROOT / "build/layoutcheck"
-    cache.mkdir(parents=True, exist_ok=True)
-
-    def key(job):
-        rel, args = job
-        h = shared.copy()
-        h.update(json.dumps(args).encode() + b"\0" + rel.encode() + b"\0" + (ROOT / rel).read_bytes())
-        return cache / (h.hexdigest() + ".json")
-
-    pending = []
-    for job in work:
-        stored = key(job)
-        if stored.is_file():
-            result[job[0]].append(json.loads(stored.read_text()))
-        else:
-            pending.append(job)
-
-    def keep(job, facts):
-        result[job[0]].append(facts)
-        key(job).write_text(json.dumps(facts))
-
-    if jobs > 1 and len(pending) > 1:
-        with multiprocessing.Pool(min(jobs, len(pending))) as pool:
-            for rel, args, facts in pool.imap_unordered(_analyze_job, pending):
-                keep((rel, args), facts)
-    else:
-        for job in pending:
-            rel, args, facts = _analyze_job(job)
-            keep((rel, args), facts)
+    for (rel, _), facts in found.items():
+        result[rel].append(facts)
     for rel, facts_list in list(result.items()):
         good = [facts for facts in facts_list if not facts["errors"]]
         # A header may be valid in one language only (C++ classes, C-only code); a unit must parse.

@@ -29,6 +29,7 @@ import argparse
 import collections
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import sys
@@ -614,7 +615,7 @@ class FileScan:
                 if not match:
                     continue
                 if match.group(2) is not None:
-                    value = eval_constant(match.group(2), {**self.enum_constants_known(), **known})
+                    value = eval_constant(match.group(2), Known(known, self.enum_constants_known()))
                 elif value is not None:
                     value += 1
                 known[match.group(1)] = value
@@ -642,10 +643,20 @@ class FileScan:
                         self.members.append((name, member.group(1), type_text,
                                              int(bitfield.group(1)) if bitfield else None))
 
+    # Object-like #define values of the files scanned so far (scan_files resets it). What a scan reads from it and
+    # adds to it is recorded (FileCache), so a cached scan is reused only while what it read is unchanged.
     _shared_constants = {}
+    _reads = None
+    _writes = None
 
     def enum_constants_known(self):
         return FileScan._shared_constants
+
+    @staticmethod
+    def share_constant(name, value):
+        if FileScan._writes is not None:
+            FileScan._writes.append((name, value))
+        FileScan._shared_constants.setdefault(name, value)
 
     @staticmethod
     def split_top(body):
@@ -692,7 +703,7 @@ class FileScan:
             if not match.group(2):
                 value = eval_constant(body, {})
                 if value is not None:
-                    FileScan._shared_constants.setdefault(name, value)
+                    FileScan.share_constant(name, value)
         match = UNDEF.match(text)
         if match and self.unit:
             self.add("undef-in-unit", number, raw_lines[number - 1])
@@ -879,12 +890,97 @@ def loop_counters(lines, first, column):
     return counters
 
 
-def scan_files(paths, root=ROOT):
+class Known:
+    """The constants an enum member's value may name: the enum's own members, then the shared #defines (each
+    shared lookup is recorded in FileScan._reads)."""
+
+    def __init__(self, local, shared):
+        self.local, self.shared = local, shared
+
+    def _shared(self, name):
+        value = self.shared.get(name, MISSING)
+        if FileScan._reads is not None:
+            FileScan._reads.setdefault(name, value)
+        return value
+
+    def __contains__(self, name):
+        return name in self.local or self._shared(name) != MISSING
+
+    def __getitem__(self, name):
+        if name in self.local:
+            return self.local[name]
+        value = self._shared(name)
+        if value == MISSING:
+            raise KeyError(name)
+        return value
+
+
+# Recorded for a shared name that was looked up and not defined (a string: it survives pickling).
+MISSING = "<missing>"
+
+
+class FileCache:
+    """Scans of single files in the shared scan cache (tools/unitcache.py), keyed by this tool's text and the
+    file's path and text; a scan is reused while the shared #defines it read have the same values. The shared
+    #defines it added are replayed in order."""
+
+    def __init__(self):
+        from tools import unitcache  # noqa: PLC0415
+        self.directory = unitcache.cache_root() / "oddscan"
+        self.version = unitcache.source_version(__file__)
+        self.stored = False
+
+    def path(self, relative, text):
+        key = hashlib.sha256(json.dumps([self.version, relative]).encode() + b"\0" + text.encode("latin-1")).hexdigest()
+        return self.directory / key[:2] / (key + ".pickle")
+
+    def scan(self, relative, text):
+        import pickle  # noqa: PLC0415
+        path = self.path(relative, text)
+        try:
+            reads, writes, state = pickle.loads(path.read_bytes())
+        except (OSError, ValueError, EOFError, pickle.UnpicklingError):
+            reads = None
+        shared = FileScan._shared_constants
+        if reads is not None and all(shared.get(name, MISSING) == value for name, value in reads.items()):
+            scan = FileScan.__new__(FileScan)
+            scan.__dict__.update(state)
+            for name, value in writes:
+                shared.setdefault(name, value)
+            try:
+                os.utime(path)
+            except OSError:
+                pass
+            return scan
+        FileScan._reads, FileScan._writes = {}, []
+        try:
+            scan = FileScan(relative, text)
+            reads, writes = FileScan._reads, FileScan._writes
+        finally:
+            FileScan._reads = FileScan._writes = None
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_name(f"{path.name}.{os.getpid()}.tmp")
+        temporary.write_bytes(pickle.dumps((reads, writes, scan.__dict__)))
+        os.replace(temporary, path)
+        self.stored = True
+        return scan
+
+    def finish(self):
+        if self.stored:
+            from tools import unitcache  # noqa: PLC0415
+            unitcache.evict()
+
+
+def scan_files(paths, root=ROOT, cache=None):
+    """FileScans of `paths` in order. `cache` (a FileCache) reuses the scans of unchanged files."""
     FileScan._shared_constants = {}
     scans = []
     for path in paths:
         relative = path.relative_to(root).as_posix()
-        scans.append(FileScan(relative, path.read_text(encoding="latin-1")))
+        text = path.read_text(encoding="latin-1")
+        scans.append(cache.scan(relative, text) if cache else FileScan(relative, text))
+    if cache:
+        cache.finish()
     return scans
 
 
@@ -1156,10 +1252,11 @@ def summarize(scans):
 
 def report(root=ROOT, magic_limit=40, hints=None):
     src_paths, vendored_paths = source_paths(root)
-    scans = scan_files(src_paths, root)
+    cache = FileCache() if root == ROOT and os.environ.get("SAGA_ODDSCAN_CACHE", "1") != "0" else None
+    scans = scan_files(src_paths, root, cache)
     cross_file(scans)
     constants = dict(FileScan._shared_constants)
-    vendored = scan_files(vendored_paths, root) if vendored_paths else []
+    vendored = scan_files(vendored_paths, root, cache) if vendored_paths else []
     totals, per_file = summarize(scans)
     vendored_totals, _ = summarize(vendored)
     # Map rows under a standard address name are bounded but unnamed: the class

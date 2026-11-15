@@ -16,7 +16,7 @@ as well as C++.
 The number of headers that are not standalone has a budget in
 config/standalone-budget.json, which only goes down (tools/budget.py --guard).
 
-Results are cached in build/lint/standalone-cache.json, keyed by the compiler,
+Results are cached per header in the shared scan cache (tools/unitcache.py), keyed by the compiler,
 the flags and the content of every project file a header can reach through
 quoted includes (read without evaluating conditions, so the set is a superset).
 
@@ -27,15 +27,16 @@ quoted includes (read without evaluating conditions, so the set is a superset).
     python3 tools/standalone.py --vc8 HEADER...  # compile with VC8 (tools/cc.py) instead, C and C++
 """
 import argparse
+import contextlib
 import hashlib
 import json
 import multiprocessing
-import os
 from pathlib import Path
 import re
 import subprocess
 import sys
 import tempfile
+import time
 
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -45,7 +46,6 @@ from tools.lib import clang_jobs  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 BUDGET = ROOT / "config/standalone-budget.json"
-CACHE = ROOT / "build/lint/standalone-cache.json"
 KEY = "non-standalone"
 # Bump when the cached result or its key changes meaning.
 FORMAT = 1
@@ -135,7 +135,10 @@ class Clang:
         from tools import declscan, layoutcheck
         self.flags = declscan.base_flags()
         ci = layoutcheck.cindex()
-        self.common = hashlib.sha256(json.dumps([clang_version(ci), self.flags, LANGUAGES]).encode()).hexdigest()
+        from tools import unitcache  # noqa: PLC0415
+        # The worktree's own path is no input: worktrees share the cache.
+        common = unitcache.portable([clang_version(ci), self.flags, LANGUAGES])
+        self.common = hashlib.sha256(common.encode()).hexdigest()
 
     def compile(self, header, language, error_limit=1):
         """(ok, diagnostics text) of a unit that includes `header` twice."""
@@ -180,46 +183,42 @@ def _check_job(job):
     return check_header(*job)
 
 
-def load_cache(path=CACHE):
-    try:
-        data = json.loads(Path(path).read_text())
-        return data if data.get("format") == FORMAT else {"format": FORMAT}
-    except (OSError, ValueError):
-        return {"format": FORMAT}
-
-
-def save_cache(results, path=CACHE):
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile("w", dir=path.parent, delete=False) as stream:
-        json.dump(results, stream, sort_keys=True)
-    os.replace(stream.name, path)
-
-
-def scan(headers, compiler, jobs=2, use_cache=True, root=ROOT, cache_path=CACHE):
+def scan(headers, compiler, jobs=2, use_cache=True, root=ROOT, cache_dir=None):
     """{header: (standalone, first error)}; cached by the content of every file a header can reach."""
-    stored = load_cache(cache_path) if use_cache else {"format": FORMAT}
-    includes = {}
-    keys = {header: cache_key(compiler.common, header, closure(root / "src" / header, root, includes), root)
-            for header in headers}
-    results, todo = {}, []
+    from tools import unitcache  # noqa: PLC0415
+    cache = unitcache.UnitCache("standalone", FORMAT, compiler.common, root=root, directory=cache_dir,
+                                clang=False) if use_cache else None
+    includes, keys, inputs = {}, {}, {}
     for header in headers:
-        if keys[header] in stored:
-            results[header] = tuple(stored[keys[header]])
+        files = closure(root / "src" / header, root, includes)
+        keys[header] = cache_key(compiler.common, header, files, root)
+        inputs[header] = [Path(path).relative_to(root.resolve()).as_posix() for path in files
+                          if Path(path).is_relative_to(root.resolve())]
+    results, todo = {}, []
+
+    def missing(header):
+        found = cache.lookup(keys[header]) if cache else None
+        if found is None:
+            return True
+        results[header] = tuple(found)
+        return False
+
+    todo = [header for header in headers if missing(header)]
+    with cache.lock() if cache and todo else contextlib.nullcontext():
+        todo = [header for header in todo if missing(header)]  # another worktree may have checked them meanwhile
+        started = time.time_ns()
+        if jobs > 1 and len(todo) > 1:
+            with multiprocessing.Pool(min(jobs, len(todo))) as pool:
+                for header, result in zip(todo, pool.map(_check_job, [(header, compiler.flags) for header in todo])):
+                    results[header] = tuple(result)
         else:
-            todo.append(header)
-    if jobs > 1 and len(todo) > 1:
-        with multiprocessing.Pool(min(jobs, len(todo))) as pool:
-            for header, result in zip(todo, pool.map(_check_job, [(header, compiler.flags) for header in todo])):
-                results[header] = tuple(result)
-    else:
-        for header in todo:
-            results[header] = compiler.check(header)
-    fresh = {"format": FORMAT}
-    fresh.update({keys[header]: list(results[header]) for header in headers})
-    if use_cache:
-        save_cache(fresh, cache_path)
-    return results
+            for header in todo:
+                results[header] = compiler.check(header)
+        if cache:
+            for header in todo:
+                cache.store(keys[header], inputs[header], list(results[header]), started)
+            cache.finish()
+    return {header: results[header] for header in headers}
 
 
 def vc8(headers):

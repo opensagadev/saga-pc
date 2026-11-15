@@ -35,12 +35,11 @@ nearby keep it), and drops `extern "C" {}` blocks left empty.
 """
 import argparse
 import difflib
-import hashlib
 import json
-import multiprocessing
 import os
 import re
 import sys
+import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -53,7 +52,6 @@ from tools.lib import ROOT, clang_jobs, dependency_files  # noqa: E402
 VERSION = 5
 DEBUG_DEFINE = "-DSAGA_DEBUG"
 CLASSES = "ABCDE"
-CACHE = ROOT / "build/declscan/cache.json"
 OUTPUT = ROOT / "build/declscan.json"
 BUDGET = ROOT / "config/declscan-budget.json"
 COMMENT_END = re.compile(r"(^\s*//.*|\*/\s*)$")
@@ -251,12 +249,22 @@ def collect(tu, main):
 
 
 def _work(job):
+    """(facts, project files read or None when not to be cached, start) of one unit."""
+    from tools import unitcache  # noqa: PLC0415
     unit, path, flags, debug = job
+    started = time.time_ns()
     try:
-        facts = collect(parse(path, flags), path)
-        return unit, collect_debug(facts, parse(path, debug_flags(flags)), path) if debug else facts
+        tu = parse(path, flags)
+        deps, fatal = unitcache.project_includes(tu) | {unit}, unitcache.has_fatal(tu)
+        facts = collect(tu, path)
+        if debug:
+            tu = parse(path, debug_flags(flags))
+            deps |= unitcache.project_includes(tu)
+            fatal = fatal or unitcache.has_fatal(tu)
+            facts = collect_debug(facts, tu, path)
+        return facts, None if fatal else sorted(deps), started
     except Exception as error:  # noqa: BLE001 (reported per unit, the scan continues)
-        return unit, {"failed": f"{type(error).__name__}: {error}"}
+        return {"failed": f"{type(error).__name__}: {error}"}, None, started
 
 
 def classify(unit, facts, exports, text):
@@ -399,48 +407,28 @@ def all_units():
     return units_under([]), vendored
 
 
-def headers_hash():
-    digest = hashlib.sha256()
-    for path in sorted((ROOT / "src").rglob("*.h")) + sorted((ROOT / "lib").rglob("*.h")):
-        digest.update(path.as_posix().encode() + path.read_bytes())
-    return digest.hexdigest()
-
-
-def scan(jobs=2, cache_path=CACHE, debug=True):
-    """Facts for every unit (src/ and vendored), from the cache where unchanged.
+def scan(jobs=2, cache_dir=None, debug=True):
+    """Facts for every unit (src/ and vendored), from the shared per-unit cache (tools/unitcache.py) where the
+    unit and every project file its parse read are unchanged.
 
     `debug=False` skips the second (Debug) parse, which only decides whether a
     declaration is used; the classes do not depend on it (`--check` needs only
     the classes). Facts with the Debug references are used when cached."""
+    from tools import unitcache  # noqa: PLC0415
     src, vendored = all_units()
-    common = headers_hash()
-    try:
-        cache = json.loads(cache_path.read_text())
-    except (OSError, ValueError):
-        cache = {}
-    keys, todo, facts = {}, [], {}
-    flags = None
+    flags = base_flags()
+    cache = unitcache.UnitCache("declscan", VERSION, flags, directory=cache_dir)
+    work, facts = {}, {}
     for unit in [*src, *vendored]:
-        text = (ROOT / unit).read_bytes()
-        full = hashlib.sha256(f"{VERSION}:{common}:{unit}:".encode() + text).hexdigest()
-        light = hashlib.sha256(f"{VERSION}:release-only:{common}:{unit}:".encode() + text).hexdigest()
-        for key in (full,) if debug else (full, light):
-            if key in cache:
-                keys[unit], facts[unit] = key, cache[key]
-                break
-        else:
-            keys[unit] = full if debug else light
-            if flags is None:
-                flags = base_flags()
-            todo.append((unit, str(ROOT / unit), unit_flags(unit, flags), debug))
-    if todo:
-        print(f"declscan: parsing {len(todo)} units", file=sys.stderr)
-        with multiprocessing.Pool(max(1, jobs)) as pool:
-            for unit, result in pool.imap_unordered(_work, todo):
-                facts[unit] = result
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    cache_path.write_text(json.dumps({keys[u]: facts[u] for u in keys if "failed" not in facts[u]}))
-    return src, facts
+        unit_args = unit_flags(unit, flags)
+        full = cache.key(unit, unit_args, "debug")
+        if not debug and (found := cache.lookup(full)) is not None:
+            facts[unit] = found
+            continue
+        work[unit] = (full if debug else cache.key(unit, unit_args, "release-only"),
+                      (unit, str(ROOT / unit), unit_args, debug))
+    facts.update(unitcache.scan_units(cache, work, _work, max(1, jobs), "declscan"))
+    return src, {unit: facts[unit] for unit in [*src, *vendored]}
 
 
 def records_for(units, src, facts):

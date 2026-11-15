@@ -67,28 +67,14 @@ jobs:
         run: python3 tools/dependencies.py
       - name: Download or verify pinned tools
         run: python3 tools/setup.py
-      - name: Cache declaration scan facts
-        # tools/declscan.py keys each unit by its text and all headers; a restored older
-        # cache still covers the units whose inputs did not change.
+      - name: Cache scan facts
+        # tools/unitcache.py: declscan, castscan, layoutcheck, standalone and oddscan keep each unit's facts
+        # with the files its parse read; a restored older cache still covers the units whose inputs did not change.
         uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          path: build/declscan
-          key: declscan-${{ hashFiles('tools/declscan.py', 'src/**', 'lib/ogg-vorbis/**/*.h') }}
-          restore-keys: declscan-
-      - name: Cache cast scan facts
-        # tools/castscan.py keys each unit by its text and the src/ headers, like declscan.
-        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
-        with:
-          path: build/castscan/cache.json
-          key: castscan-${{ hashFiles('tools/castscan.py', 'src/**') }}
-          restore-keys: castscan-
-      - name: Cache standalone header results
-        # tools/standalone.py keys each module header by the content of every file it can reach.
-        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
-        with:
-          path: build/lint/standalone-cache.json
-          key: standalone-${{ hashFiles('tools/standalone.py', 'src/**/*.h') }}
-          restore-keys: standalone-
+          path: build/cache
+          key: scans-${{ hashFiles('tools/*.py', 'src/**', 'lib/ogg-vorbis/**/*.h') }}
+          restore-keys: scans-
       - name: Fetch main history for the budget guard
         # Commits only (no trees or blobs); tools/budget.py --guard compares the budget files
         # with the merge base and reads the two files it needs on demand.

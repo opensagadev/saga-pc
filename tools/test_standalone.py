@@ -1,4 +1,4 @@
-import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -27,7 +27,13 @@ class StandaloneTest(unittest.TestCase):
         (self.root / "src/a/two.h").write_text('#ifdef X\n#include "three.h"\n#endif\n')
         (self.root / "src/a/three.h").write_text("int three;\n")
         (self.root / "src/four.h").write_text("FAIL\n")
-        self.cache = self.root / "build/cache.json"
+        self.settle()
+        self.cache = self.root / "build/cache"
+
+    def settle(self):
+        """Date the inputs back: the cache stores no result of a file written while it was being checked."""
+        for path in self.root.rglob("*.h"):
+            os.utime(path, (path.stat().st_atime, path.stat().st_mtime - 60))
 
     def tearDown(self):
         self.scratch.cleanup()
@@ -46,21 +52,15 @@ class StandaloneTest(unittest.TestCase):
     def test_scan_reuses_results_until_an_input_changes(self):
         headers = ["a/one.h", "four.h"]
         compiler = FakeCompiler(self.root)
-        results = standalone.scan(headers, compiler, jobs=1, root=self.root, cache_path=self.cache)
+        results = standalone.scan(headers, compiler, jobs=1, root=self.root, cache_dir=self.cache)
         self.assertEqual(results, {"a/one.h": (True, ""), "four.h": (False, "c: broken")})
         self.assertEqual(len(compiler.calls), 2)
-        standalone.scan(headers, compiler, jobs=1, root=self.root, cache_path=self.cache)
+        standalone.scan(headers, compiler, jobs=1, root=self.root, cache_dir=self.cache)
         self.assertEqual(len(compiler.calls), 2)
         (self.root / "src/a/three.h").write_text("FAIL\n")
-        results = standalone.scan(headers, compiler, jobs=1, root=self.root, cache_path=self.cache)
+        results = standalone.scan(headers, compiler, jobs=1, root=self.root, cache_dir=self.cache)
         self.assertEqual(compiler.calls[2:], ["a/one.h"])
         self.assertEqual(results["a/one.h"], (True, ""))
-        self.assertEqual(json.loads(self.cache.read_text())["format"], standalone.FORMAT)
-
-    def test_unreadable_cache_starts_empty(self):
-        self.cache.parent.mkdir(parents=True)
-        self.cache.write_text("{not json")
-        self.assertEqual(standalone.load_cache(self.cache), {"format": standalone.FORMAT})
 
 
 if __name__ == "__main__":

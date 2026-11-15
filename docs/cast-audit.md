@@ -26,9 +26,9 @@ comparison, arithmetic, ...) and the declaration the operand reads (variable,
 field, parameter, function result). A cast in the body of a `src/` macro counts
 once, at the `#define`; casts that `NULL` and SDK macros expand to are not ours
 and are skipped. `lib/` is not scanned. A full scan takes about five minutes with
-two parses at a time; `build/castscan/cache.json` keeps the facts per unit (the key
-is the unit text and all `src/` headers), so a rerun after editing a unit parses
-only that unit.
+four parses at a time; the scan cache (tools/unitcache.py: build/cache, or `SAGA_CACHE_DIR`
+shared by all worktrees) keeps the facts per unit with the files its parse read, so a rerun
+after editing a unit or a header parses only the units that read it.
 
 ## 1. Classes
 
