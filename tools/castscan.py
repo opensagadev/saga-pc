@@ -1123,7 +1123,9 @@ class Classifier:
         self.entities = {}
         self.refs = Counter()
         header_refs = {}
-        for unit_facts in facts.values():
+        # In unit order: units report the same record key with different facts (a header type seen as `local`
+        # from its own unit), and the last one wins; cache hits and parallel parses must not choose it.
+        for _, unit_facts in sorted(facts.items()):
             if "failed" in unit_facts:
                 continue
             self.records.update(unit_facts["records"])
