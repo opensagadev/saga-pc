@@ -13,6 +13,8 @@ void NuWindAnimate(NUWIND *wind, f32 frame_time) {
     }
 }
 
+i32 dat_009739d4 = 0;
+
 void fun_005ddcf0(i32 value) {
     dat_009739d4 = value;
 }

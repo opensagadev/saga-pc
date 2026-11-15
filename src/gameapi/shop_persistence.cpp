@@ -25,6 +25,10 @@ extern "C" {
 #else
     char SaveCreateFolderPathPc[256] = {0};
 #endif
+    u32 savetimer = 0;
+    char SaveSlotName[256] = {0};
+    i32 saveload_status = 0;
+    i32 SaveloadPending = 0;
     u8 PcSaveHeaderMetadata[16] = {0};
     i32 saveload_slotid = 0;
     extern i32 SaveloadPending;

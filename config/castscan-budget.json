@@ -3,7 +3,7 @@
   "redundant-implicit": 34,
   "codegen-steering": 58,
   "discard": 1278,
-  "null-pointer": 34,
+  "null-pointer": 31,
   "address-constant": 52,
   "raw-offset": 377,
   "embedded-base": 964,

@@ -959,6 +959,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
 
 extern "C" {
     static eduimenu_s *colourmenu = NULL;
+    struct eduimenu_s *edui_messagemenu = 0;
     static edui_colour_pick_s *cp_item = NULL;
     static eduiitem_s *cp_info = NULL;
     static eduiitem_s *cp_copy = NULL;
@@ -966,6 +967,7 @@ extern "C" {
     static i32 (*cp_process)(eduimenu_s *, eduiitem_s *, f32, FRAME_PAD_PC *) = NULL;
     static f32 *EduiColourTargetRed = NULL;
     static f32 *EduiColourTargetGreen = NULL;
+    struct numtx_s *ed_remap_mtx = 0;
     static f32 *EduiColourTargetBlue = NULL;
     static f32 *EduiColourTargetAlpha = NULL;
     static u32 *EduiColourTargetPacked = NULL;
@@ -1156,6 +1158,7 @@ extern "C" void CreateColourPicker(void) {
 extern "C" {
 #pragma section(".bss$EduiColourTempRedPc", read, write)
     __declspec(allocate(".bss$EduiColourTempRedPc")) f32 EduiColourTempRed = 0.0f;
+    struct edui_interact_s *eduiInteractLocked = 0;
 #pragma section(".bss$EduiColourTempGreenPc", read, write)
     __declspec(allocate(".bss$EduiColourTempGreenPc")) f32 EduiColourTempGreen = 0.0f;
 #pragma section(".bss$EduiColourTempBluePc", read, write)
@@ -1678,6 +1681,7 @@ extern "C" {
     i32 EduiGraphDrawCurve = 1;
     i32 EduiGraphDrawDebug = 0;
     i32 EduiGraphDrawDebugBound = 0;
+    i32 near_clip_at_cursor = 0;
     i32 EduiGraphDebugIterations = 3;
     i32 EduiGraphDebugBoundIterations = 10;
     f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations);
@@ -2026,6 +2030,7 @@ extern "C" {
 #pragma data_seg(".data$EduiTextCursorPeriod")
     i32 EduiTextCursorPeriodPc = 32;
 #pragma data_seg()
+    i32 edui_filepick_listsize = 8;
 #pragma section(".bss$EduiTextCursorCountdown", read, write)
     __declspec(allocate(".bss$EduiTextCursorCountdown")) i32 EduiTextCursorCountdownPc = 0;
 #pragma section(".bss$EduiTextCopyBuffer", read, write)

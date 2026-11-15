@@ -22743,13 +22743,13 @@ address,symbol,size,ctype
 0x76accc,??_C@_06FMKCAKLA@Z?5to?5A?$AA@,7,char []
 0x76acd4,??_C@_06JAENAJBO@A?5to?5Z?$AA@,7,char []
 0x76acdc,??_C@_0BH@PAKALCMN@Copy?5L2?$CLR2?5Paste?5L1?$CLR1?$AA@,23,char[23]
-0x76acf4,??_C@_0L@OBBJIBNL@zxcvbnm?$DM?$DO?$DP?$AA@HMDOKFMK@,11,char []
-0x76ad00,??_C@_0L@OGKKNDIJ@asdfghjkl_?$AA@HMDOKFMK@,11,char []
-0x76ad0c,??_C@_0L@GIGCIFCL@qwertyuiop?$AA@HMDOKFMK@,11,char []
-0x76ad18,??_C@_0L@FKIPPOIH@ZXCVBNM?$DM?$DO?$DP?$AA@HMDOKFMK@,11,char []
-0x76ad24,??_C@_0L@MFEDEFAL@ASDFGHJKL_?$AA@HMDOKFMK@,11,char []
-0x76ad30,??_C@_0L@NOAPDHAL@QWERTYUIOP?$AA@HMDOKFMK@,11,char []
-0x76ad3c,??_C@_0L@PNLLBLCL@1234567890?$AA@HMDOKFMK@,11,char []
+0x76acf4,??_C@_0L@OBBJIBNL@zxcvbnm?$DM?$DO?$DP?$AA@,11,char []
+0x76ad00,??_C@_0L@OGKKNDIJ@asdfghjkl_?$AA@,11,char []
+0x76ad0c,??_C@_0L@GIGCIFCL@qwertyuiop?$AA@,11,char []
+0x76ad18,??_C@_0L@FKIPPOIH@ZXCVBNM?$DM?$DO?$DP?$AA@,11,char []
+0x76ad24,??_C@_0L@MFEDEFAL@ASDFGHJKL_?$AA@,11,char []
+0x76ad30,??_C@_0L@NOAPDHAL@QWERTYUIOP?$AA@,11,char []
+0x76ad3c,??_C@_0L@PNLLBLCL@1234567890?$AA@,11,char []
 0x76ad48,__real@43b40000,4,const f32
 0x76ad50,__real@bf50624de0000000,8,const f64
 0x76ad58,__real@bf847ae140000000,8,const f64
@@ -36981,7 +36981,7 @@ address,symbol,size,ctype
 0x7f1990,_id_SNOWMOB,2,i16
 0x7f1994,_id_SNOWTROOPER,2,i16
 0x7f1998,_id_DEATHSTARTROOPER,2,i16
-0x7f199c,_dat_007f199c,2,i16
+0x7f199c,_dat_007f199c,4,i16
 0x007f19a0,_id_THEEMPEROR,2,i16
 0x7f19a4,_dat_007f19a4,2,i16
 0x7f19a8,_dat_007f19a8,2,i16
@@ -37025,7 +37025,7 @@ address,symbol,size,ctype
 0x7f1a40,_dat_007f1a40,2,i16
 0x7f1a44,_dat_007f1a44,2,i16
 0x7f1a48,_dat_007f1a48,2,i16
-0x7f1a4c,_dat_007f1a4c,2,i16
+0x7f1a4c,_dat_007f1a4c,4,i16
 0x7f1a50,_id_GONKDROID,2,u16
 0x7f1a54,_id_C3PO,2,i16
 0x7f1a58,_id_TC14,2,i16
@@ -38047,7 +38047,7 @@ address,symbol,size,ctype
 0x00801c58,_default_path_heighttol,4,f32
 0x801c5c,_AiLoadActivationDifficulty,1,u8
 0x801c5d,_default_ngroup,1,u8
-0x801c5e,_default_nacross,1,u8
+0x801c5e,_default_nacross,2,u8
 0x801c60,_default_xspacing,4,f32
 0x801c64,_default_zspacing,4,f32
 0x801c68,_ai_usepackfile,4,i32
@@ -40164,8 +40164,8 @@ address,symbol,size,ctype
 0x008806c8,_tFRENCH,2,i16
 0x008806cc,_tGERMAN,2,i16
 0x008806d0,_tITALIAN,2,i16
-0x008806d4,_tSPANISH,2,i16
-0x008806d8,_tDANISH,2,i16
+0x008806d4,_tSPANISH,4,i16
+0x008806d8,_tDANISH,4,i16
 0x008806dc,_dat_008806dc,2,i16
 0x008806e0,_dat_008806e0,2,i16
 0x008806e4,_dat_008806e4,2,i16
@@ -42703,7 +42703,7 @@ address,symbol,size,ctype
 0x2912f68,_edfile_readwrongendianess,4,i32
 0x2912f6c,_FS_ShowVolumes,1,u8
 0x2912f6d,_FS_Active,1,u8
-0x2912f6e,_FS_RefreshDir,1,u8
+0x2912f6e,_FS_RefreshDir,2,u8
 0x2912f70,_FS_Path,256,char[256]
 0x2913070,_FS_CursorLine,4,
 0x2913074,_FS_CurrentPosFileNum,4,i32
@@ -42736,7 +42736,7 @@ address,symbol,size,ctype
 0x2913120,_drawcharactermodel_restpose,4,i32
 0x2913124,_drawcharactermodel_keepmergeaction,4,i32
 0x2913128,_drawcharactermodel_locatorsupdated,4,i32
-0x291312c,_TempNumJoints,1,u8
+0x291312c,_TempNumJoints,4,u8
 0x2913130,_notransparentchardraw,4,i32
 0x2913134,_APIObjResetShadowMapRenderingFn,4,void (__cdecl *)(void)
 0x2913138,_APIObjEnableShadowMapRenderingFn,4,void (__cdecl *)(void)

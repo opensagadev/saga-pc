@@ -25,6 +25,8 @@ i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
     return -1;
 }
 
+i32 edqseed = 12345;
+
 /* The editors' 16-bit random sequence. */
 void edqrand(void) {
     edqseed = (edqseed * 0x24cd + 1) & 0xffff;
@@ -422,6 +424,8 @@ void edanimcbBouncyMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
+i32 edSfxAllCount = 0;
+
 static void edanimcbLocalSoundTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     i32 index;
     i32 selected;
@@ -564,6 +568,9 @@ void edanimRender() {
 void edcamMove(FRAME_PAD_PC *pad);
 void edcamGetPosAng(NUVEC *position, i32 *angle_x, i32 *angle_y);
 i32 edanimParamCreate(i32 instance);
+
+i32 edanim_emitrotz = 0;
+i32 edanim_emitroty = 0;
 
 void edanimRenderParticleEmitters(i32 parameter_index) {
     NUSPECIALHANDLE special;
@@ -829,6 +836,8 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
         }
     }
 }
+
+struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
 
 void edanimDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];

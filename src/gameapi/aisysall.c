@@ -7,6 +7,8 @@
 #include <string.h>
 
 static VARIPTR *aiscript_load_end_buffer = 0;
+AISCRIPT *aiscript_load_script = 0;
+AISTATE *aiscript_load_state = 0;
 
 extern NULISTLNK *NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
 
@@ -54,6 +56,8 @@ typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
 
 static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
+NUVEC edpath_addoffset = {0};
+void (*AiEditorMovePlayersCallback)(NUVEC *) = NULL;
 
 // Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
 // allocation memset. Size arithmetic is unsigned 32-bit.
@@ -154,6 +158,16 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
 static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode, NUVEC *difference, f32 radius);
 
 CHECK_ANTINODE_FN_PC checkantinodefns[3] = {AISysCheckAntinode_Circle, AISysCheckAntinode_Ellipse, AISysCheckAntinode_Rectangle};
+f32 AIPathConnectionMargin = 0.05f;
+f32 AIMovementInstructionPositiveThreshold = 0.5f;
+f32 AIMovementInstructionNegativeThreshold = -0.5f;
+i32 new_retreat = 1;
+i32 AiEditorPathsModeId = -1;
+i32 AiEditorRouteModeId = -1;
+i32 AiEditorCreaturesModeId = -1;
+i32 AiEditorAreasModeId = -1;
+i32 AiEditorLocatorsModeId = -1;
+i32 AiEditorAntinodeModeId = -1;
 
 typedef struct ai_area_load_s { // size 0x40
     char name[16];              // 0x00
@@ -327,6 +341,7 @@ typedef struct AIEDITORSETTINGS {                                     // size 0x
     AI_EDITOR_MODE_BANK modes;                                        // 0x07c
 } AIEDITORSETTINGS;
 
+NULISTHDR global_aiscripts = {0};
 #pragma section(".bss$aieditorsettings", read, write)
 __declspec(allocate(".bss$aieditorsettings")) AIEDITORSETTINGS aieditorsettings = {0};
 
@@ -337,6 +352,8 @@ i32 NuFileCopy(char *, char *);
 void creatureEditorSaveData(AIPATHSYS *);
 
 static eduiiattr_s AiEditorSaveMessageColours = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+f32 aiEditor_LocatorWidth = 0.25f;
+f32 aiEditor_DrawYOffset = 0.25f;
 
 #define REBUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                                           \
     do {                                                                                                                                   \
@@ -377,12 +394,16 @@ typedef struct AI_EDITOR_SPECIAL_TERRAIN {    // size 0x6c
 } AI_EDITOR_SPECIAL_TERRAIN;
 
 i16 disable_cylinder_check = 0;
+i32 AIPathConnectionTypeCount = 0;
+f32 AiEditorUpperHeightOverride = 0;
+f32 AiEditorLowerHeightOverride = 0;
 
 NUCAMERA *edmainGetCamera(void);
 
 extern i32 near_clip_at_cursor;
 
 f32 AiEditorNearClipOffset = 5.0f;
+i32 AIPathDefaultChecks = 1;
 
 extern const char dat_0075f2c0[3];
 
@@ -415,6 +436,7 @@ extern NUVEC edpath_addoffset;
 extern i32 AiEditorAntinodeModeId;
 
 static const char *AiEditorAntinodeTypeNames[3] = {"Circle", "Ellipse", "Rectangle"};
+i32 aisys_maxnumcreaturesets = 32;
 
 f32 AiEditorPickHeightTolerance = 0.1f;
 
@@ -539,8 +561,11 @@ static void *load_pakfile = 0;
 static char *load_path = 0;
 
 static AISCRIPT_CONST_RECORD_PC AIScriptConstantRecords[8] = {0};
+f32 AiRndrCullDistance = 0;
+VARIPTR *aiscript_load_buffer = 0;
 
 static i32 AIScriptConstCursorPc = 0;
+i32 AIActionDiagnosticMode = 0;
 
 static char *AIScriptCopyString(char *text, VARIPTR *buffer, VARIPTR *end);
 
@@ -550,6 +575,8 @@ static AISCRIPT *AIScriptLoadPakFile(void *pak, char *filename, char *path, VARI
 
 /* Set by AiSysOnlyUsePakFile; warns when a package lacks a script file. */
 i32 ai_onlyusepackfile = 0;
+AISCRIPTPROCESS *AiSysStateDebugee = 0;
+AI_LEVEL_CHARACTER_TYPE_ID_PC SpecialRouteCharacterTypeIDFn = 0;
 
 void xConst(NUFPAR_PC *parser);
 
@@ -561,6 +588,7 @@ void xDeriveFromScript(NUFPAR_PC *parser);
 
 void xInclude(NUFPAR_PC *parser);
 
+i32 aidata_version = 20;
 static NUFPCOMJMP AIScriptCommands[9] = {
     {"STATE",            xState           },
     {"PARAM",            xParam           },
@@ -606,6 +634,10 @@ void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
 
 #pragma bss_seg(".bss$game_aiactiondefs")
 AIACTIONDEF *game_aiactiondefs = 0;
+NULISTHDR *aiscript_load_refs = 0;
+NULISTHDR *aiscript_load_conditions = 0;
+NULISTHDR *aiscript_load_actions = 0;
+i32 condition_has_no_goto = 0;
 #pragma bss_seg(".bss$game_aiconditiondefs")
 AICONDITIONDEF *game_aiconditiondefs = 0;
 #pragma bss_seg()
@@ -619,6 +651,13 @@ static i32 ExpressionRequiredNameLookup = 0;
 static i32 ExpressionNameLookupFailed = 0;
 
 i32 AiParseExpressionFailed = 0;
+AIPACKET *current_packet = 0;
+AISCRIPTPROCESS *current_processor = 0;
+i8 AiLoadMinimumRespawnCount = 0;
+i8 AiLoadMaximumRespawnCount = 0;
+AIANTINODE dynamic_antinodes[64] = {0};
+f32 AiLoadMinimumRespawnTime = 0.0f;
+f32 AiLoadMaximumRespawnTime = 0.0f;
 
 enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
 
@@ -18398,6 +18437,17 @@ AIACTIONDEF api_aiactiondefs[55] = {
     {NULL,                         NULL,                              0, 0, 0},
 };
 #pragma data_seg()
+f32 default_path_radius = 0.25f;
+f32 default_path_heighttol = 0.2f;
+u8 AiLoadActivationDifficulty = 1;
+u8 default_ngroup = 1;
+u8 default_nacross = 2;
+f32 default_xspacing = 0.4f;
+f32 default_zspacing = 0.4f;
+i32 ai_usepackfile = 1;
+f32 ai_moveradius = 0.1f;
+f32 antinode_time = 1.0f;
+f32 antinode_reverse_time = 1.0f;
 
 #pragma data_seg(".data$api_aiconditiondefs")
 AICONDITIONDEF api_aiconditiondefs[50] = {

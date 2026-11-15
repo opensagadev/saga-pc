@@ -2,6 +2,30 @@
 #include <stdio.h>
 #pragma bss_seg(".bss$edptl_detail_menu")
 struct eduimenu_s *edptl_detail_menu = 0;
+struct eduimenu_s *edptl_testdetail_menu = 0;
+char *edpp_save_names[6] = {0};
+i32 edpp_emitrotz = 0;
+i32 edpp_emitroty = 0;
+i32 edpp_emitrotx = 0;
+i32 edpp_rotz = 0;
+i32 edpp_roty = 0;
+f32 edpp_offset = 0;
+i32 edpp_refrotz = 0;
+i32 edpp_refroty = 0;
+i32 edpp_copyrotz = 0;
+i32 edpp_copyroty = 0;
+i32 edpp_facrotx = 0;
+i32 edpp_facroty = 0;
+i32 edptl_count = 0;
+struct eduiitem_s *grad_item = 0;
+struct eduiitem_s *grad_alpha_item = 0;
+struct eduiitem_s *grad_size_w_item = 0;
+struct eduiitem_s *grad_size_h_item = 0;
+struct edui_slider_s *grad_size_min_item = 0;
+struct edui_slider_s *grad_size_max_item = 0;
+struct eduiitem_s *grad_rot_item = 0;
+struct edui_slider_s *grad_rot_min_item = 0;
+struct edui_slider_s *grad_rot_max_item = 0;
 #pragma bss_seg(".bss$grad_jib_x_amp_item")
 static struct edui_slider_s *grad_jib_x_amp_item = 0;
 #pragma bss_seg()
@@ -11,12 +35,39 @@ static struct edui_slider_s *grad_jib_x_freq_item = 0;
 #pragma bss_seg(".bss$grad_jib_y_amp_item")
 static struct edui_slider_s *grad_jib_y_amp_item = 0;
 #pragma bss_seg()
+struct eduiitem_s *coll_env_item = 0;
+struct eduiitem_s *torus_env1_item = 0;
+struct eduiitem_s *torus_env2_item = 0;
+struct eduiitem_s *torus_env3_item = 0;
 #pragma bss_seg(".bss$grad_jib_y_freq_item")
 static struct edui_slider_s *grad_jib_y_freq_item = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$ptljibmenu")
 struct eduimenu_s *ptljibmenu = 0;
 #pragma bss_seg()
+struct eduimenu_s *ptlemitmenu = 0;
+struct eduimenu_s *ptloptmenu = 0;
+struct eduimenu_s *ptlgcodemenu = 0;
+i32 edbits_override_backups = 0;
+i32 edpp_copy_mode = 0;
+i32 edpp_copy_enclosed = 0;
+i32 edpp_copy_source_count = 0;
+i32 edpp_showAllPlaced = 0;
+i32 edpp_dpad_mode = 0;
+i32 edpp_readout = 0;
+struct eduimenu_s *edptl_switch_menu = 0;
+struct eduimenu_s *edptl_switchtype_menu = 0;
+struct eduimenu_s *edptl_sounds_menu = 0;
+struct eduimenu_s *edptl_soundx_menu = 0;
+struct eduimenu_s *edptl_soundid_menu = 0;
+struct eduimenu_s *edptl_soundcontrol_menu = 0;
+struct eduimenu_s *edptl_bounce_menu = 0;
+struct eduimenu_s *edptl_group_menu = 0;
+struct eduimenu_s *edptl_ghost_menu = 0;
+struct eduimenu_s *edptl_star_menu = 0;
+struct eduimenu_s *edptl_page_menu = 0;
+struct eduimenu_s *edptl_drawflag_menu = 0;
+struct eduimenu_s *edptl_orphanlist_menu = 0;
 
 void edppPtlDestroy(i32 index) {
     if (edpp_ptls[index].instance_id != -1) {
@@ -34,6 +85,8 @@ void edppPtlShelve(i32 index) {
         edpp_ptls[index].instance_id = 99999;
     }
 }
+
+struct eduimenu_s *messagemenu = 0;
 
 void cbCancelMessageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(messagemenu);
@@ -222,6 +275,8 @@ void edppStartPage(i32 page) {
     edpp_page_on[(i8)page] = 1;
 }
 
+NUVEC edpp_cam_pos = {0};
+
 void edppDetermineNearest(f32 max_distance_squared) {
     NUVEC delta;
     i32 i;
@@ -291,6 +346,8 @@ void edptlcbSetDpadMode(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edpp_dpad_mode = item->data;
 }
 
+struct eduimenu_s *dpadmodemenu = 0;
+
 void edptlcbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(dpadmodemenu);
     dpadmodemenu = NULL;
@@ -300,6 +357,8 @@ void edptlcbCancelOrphanListMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_orphanlist_menu);
     edptl_orphanlist_menu = NULL;
 }
+
+struct eduimenu_s *ptltypemenu = 0;
 
 static void cbPtlCancelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptltypemenu);
@@ -561,11 +620,37 @@ void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     }
 }
 
+NUVEC edpp_copy_source_vec = {0};
 /* The repeat-box submenu, its X and Z sliders and the XZ lock that keeps the box square. */
 eduimenu_s *ptlrepeatboxmenu = NULL;
+SFX_RECORD_PC *SfxInfo = 0;
+NUGSCN *EdppPageScenes[8] = {0};
+struct PC_SCENE_MTL_VIEW *edpp_boxmtl = 0;
+struct eduimenu_s *edpp_active_menu = 0;
+struct PC_SCENE_MTL_VIEW *edpp_mtl = 0;
+struct eduimenu_s *edptl_damageflag_menu = 0;
+struct eduimenu_s *collmenu = 0;
+struct eduimenu_s *ptlgsortmenu = 0;
+i32 edpp_page_on[8] = {0};
+struct eduimenu_s *ptlclipmenu = 0;
+i32 edpp_curr = 0;
 static edui_slider_s *ptlrepeatbox_x_slider = NULL;
 static edui_slider_s *ptlrepeatbox_z_slider = NULL;
+DEBRISGENERATOR_PC gensorttab[13] = {GenDebIndex,          GenDebDummy,        GenDebDummy,         GenDebDummy,
+                                     GenDebDummy,          GenDebDummy,        GenDebIndexRadial,   GenDebIndexRadialRotor,
+                                     GenDebIndexSpheroid,  GenDebIndexBounceY, GenDebIndexBounceXZ, GenDebIndexImprovedRadial,
+                                     GenDebIndexRadialStar};
+DEBRISMOMENTUMADJUSTER_PC gencodetab[7] = {NULL,
+                                           GenDebMomAdjFromPos,
+                                           GenDebMomAdjFromPosRev,
+                                           GenDebMomAdjFromSplash,
+                                           GenDebMomAdjFromAshRock,
+                                           GenDebMomAdjFromPosRevTree,
+                                           GenDebMomAdjFromPosAll};
+f32 edpp_copy_size = 0.2f;
 i32 ptlrepeatbox_xz_lock = 1;
+i32 edptl_superscale = 1;
+i32 edptl_clipboard_entry = -1;
 
 static void cbPtlChangeRepeatXZLock(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     DEBRIS_INFO_PC *effect;
@@ -2513,6 +2598,8 @@ static void cbPtlCancelVarEmitMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     ptlvaremitmenu = NULL;
 }
 
+struct eduimenu_s *ptlvarstartmenu = 0;
+
 static void cbPtlCancelVarStartMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlvarstartmenu);
     ptlvarstartmenu = NULL;
@@ -2834,6 +2921,8 @@ void edptlcbCancelGroupMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_group_menu);
     edptl_group_menu = NULL;
 }
+
+struct eduimenu_s *edptl_torus_menu = 0;
 
 static void cbPtlCancelTorusMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edptl_torus_menu);
@@ -3649,6 +3738,8 @@ void edptlcbCancelPageMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edptl_page_menu = NULL;
 }
 
+NUVEC entry_position = {0};
+
 void edptlcbJumpToGameLocation(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     item->highlighted = 0;
     edcamSetPosAng(&entry_position, 0, 0);
@@ -3661,6 +3752,8 @@ void cbPtlSnapToggle(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
 void cbPtlCancel(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpp_active_menu = NULL;
 }
+
+i32 edpp_first_time_this_level = 0;
 
 void edppEnter(void) {
     NUVEC origin = {0.0f, 0.0f, 0.0f};

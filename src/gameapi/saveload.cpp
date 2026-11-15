@@ -23,6 +23,8 @@ extern "C" {
         return SaveFolderPathPc;
     }
 
+    char SaveFullSlotPath[256] = {0};
+
     char *fullslotname(i32 slot) {
 #ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
@@ -38,6 +40,8 @@ extern "C" {
         return SaveFullSlotPath;
     }
 
+    char SaveFullCodePath[256] = {0};
+
     /* the path of the slot's code file. */
     char *fullcodename(i32 slot) {
 #ifndef SAGA_DEBUG
@@ -52,6 +56,8 @@ extern "C" {
         strcat(SaveFullCodePath, "code.bin");
         return SaveFullCodePath;
     }
+
+    i32 saveload_savepresent = 0;
 
     i32 saveload_getinfo(void) {
         saveload_savepresent = 0;

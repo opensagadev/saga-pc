@@ -476,6 +476,9 @@ extern EdManipulator theDefaultManipulator;
 
 ClassEditor theClassEditor;
 CursorTool theCursorTool;
+extern "C" {
+    NUMTL *EdDrawMtl[2] = {0};
+}
 static i32 class_editor_create_pending = 0;
 i32 BaseEditor::blockStart[8];
 i32 BaseEditor::blockDepth;
@@ -1396,6 +1399,10 @@ i32 EdManipulator::AxisColour[8] = {(i32)0xffffffff, (i32)0xff0000ff, (i32)0xff0
 VuVec SpherePos1;
 VuVec SpherePos2;
 
+extern "C" {
+    i32 EdLevelFntScale = 24;
+    struct eduiiattr_s EdLevelAttr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+}
 static i32 rotation_axis = 1;
 
 static EdEnumControl *active_enum_control;
@@ -1404,6 +1411,23 @@ static edui_prop_s *edBitItem;
 static i32 edBitIndex;
 
 static EdColourControl *edColourControl;
+extern "C" {
+    i32 NewPrim = 0;
+    i32 NewMtl = 0;
+    NUMTX *NewMtx = 0;
+    NUMTL *edLevel2dMtl = 0;
+    NUMTL *edLevel3dMtl = 0;
+    NUMTL *edLevelTexMtl = 0;
+    i32 EdLevelFnt = 0;
+    struct eduimenu_s *edLevelActiveMenu = 0;
+    struct eduimenu_s *edLevelPinnedMenu = 0;
+    struct eduimenu_s *edLevelNextMenu = 0;
+    i32 edLevelDestroyActiveMenu = 0;
+    struct eduimenu_s *edLevelDestroyThisMenu = 0;
+    struct eduimenu_s *edLevelDestroyThisMenu2 = 0;
+    i32 pad_disabled = 0;
+    i32 edlevel_mouseandkeyboard = 0;
+}
 static EdSfxNameControl *sfxNameControl;
 static EdStringControl *edObjectNameControl;
 static EdClassObjectNameControl *edClassObjectNameControl;

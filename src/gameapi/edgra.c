@@ -131,6 +131,9 @@ void edgracbCancelGlobalsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_globals_menu = NULL;
 }
 
+struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
+struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
+
 void edgraDrawCursor(void) {
     NURND_VERTEX3D_PC line[2];
     NUVEC arrow;
@@ -285,6 +288,8 @@ static void edgracbChangeSScale(eduimenu_s *unused0, eduiitem_s *item, u32 unuse
     edgra_superscale = (i32)((edui_slider_s *)item)->value;
 }
 
+struct eduimenu_s *edgra_sscale_menu = 0;
+
 static void edgracbCancelSScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_sscale_menu);
     edgra_sscale_menu = NULL;
@@ -359,6 +364,8 @@ void edgraRender(void) {
 
 extern VARIPTR *gra_ptr;
 extern VARIPTR *gra_end;
+
+VARIPTR *gra_ptr = 0;
 
 void edgraSetMemoryBuffer(VARIPTR *start, VARIPTR *end) {
     gra_ptr = start;

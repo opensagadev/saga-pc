@@ -3,6 +3,10 @@
 static void EdsplinesNuError(const char *format, ...) {
 }
 
+const char *EDSPLINE_FILECHECK = "EDSPLINE v. ";
+NUGSPLINE *splineStore = 0;
+i32 numSplinesLoaded = 0;
+
 i32 LoadEditorSplines(char *path, VARIPTR *buffer, VARIPTR *end) {
     i32 count;
     i32 points;

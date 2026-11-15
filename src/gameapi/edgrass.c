@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include "saga.h"
 
+i32 EDGRA_MAX_INDIVIDUAL_CLUMPS = 0;
+i32 *IndGrassClumpsUsed = 0;
+i32 edgra_ind_clumps_used = 0;
+
 void edgraClumpsReset(void) {
     i32 i;
     for (i = 0; i < EDGRA_MAX_CLUMPS; ++i) {
@@ -86,6 +90,8 @@ void edgraSetup(VARIPTR *buffer, VARIPTR end, i32 clumps, i32 individual_clumps,
     NuWindSetup(buffer, end, 0x3000, clumps);
     NuFadeObjSetup(buffer, end, 0x3000, clumps);
 }
+
+i32 edgra_page_vectors_valid[8] = {0};
 
 void edgraStartPage(i8 page) {
     i32 i;
@@ -557,6 +563,8 @@ void edgraClearPage(i8 page) {
     edgra_page_calculate_done[page] = 0;
 }
 
+i32 edgra_last_clump_in_buffer = -1;
+
 void edgraSortVectorBuffer(i32 index) {
     NUVEC temporary[256];
     if (index != -1 && index != edgra_last_clump_in_buffer && GrassClumps[index].vector_buffer != NULL) {
@@ -880,6 +888,8 @@ void edgraInstancePlace(i32 index, NUVEC *position) {
     edgraInitAllClumps();
 }
 
+i32 edgra_pageid = 0;
+
 i32 edgraClumpCreate(NUVEC *position) {
     i32 index = 0;
     i32 individual = 0;
@@ -1043,6 +1053,8 @@ void edgraCreateOptionsMenu(void) {
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAddItem(edgra_options_menu, eduiItemSelCreate(1, edblack, 0, 0, edgracbGlobalsMenu, "Global Options..."));
 }
+
+i32 edgra_cam_ay = 0;
 
 void edgraDoInput(FRAME_PAD_PC *pad) {
     if ((pad->digital_buttons & 0x100) == 0) {

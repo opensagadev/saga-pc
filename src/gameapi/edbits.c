@@ -53,6 +53,8 @@ void edbitsRegisterBaseScene(NUGSCN *scene) {
     edbits_base_scene = scene;
 }
 
+struct NUGSCN_s *edbits_things_scene = 0;
+
 void edbitsRegisterThingsScene(NUGSCN *scene) {
     edbits_things_scene = scene;
 }
@@ -64,6 +66,8 @@ void edbitsRegisterBaseTerrain(void *terrain) {
 void edbitsRegisterEditMode(i32 mode) {
     edbits_editmode = mode;
 }
+
+i32 *edbits_editor_enabled = &edbits_editor_state;
 
 void edbitsRegisterEditorEnabledFlag(i32 *enabled) {
     edbits_editor_enabled = enabled;
@@ -207,6 +211,10 @@ extern f32 edbits_cubemap_aspect;
 void edcamSetAng(i32 pitch, i32 yaw);
 void edcamSetDist(f32 distance);
 
+f32 edbits_cubemap_fov = 1.5708f;
+f32 edbits_cubemap_aspect = 1.0f;
+NUCAMERA *cubemapcam = 0;
+
 i32 edbitsProcessCubemapDump(void) {
     if (edbits_cubecount != 0) {
         if (cubemapcam == NULL) {
@@ -286,6 +294,8 @@ void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCEN
     }
 }
 
+i32 edbits_numsounds = 0;
+
 void edbitsRegisterSoundEffect(char *name, i32 id) {
     strncpy(edbitsGameSound[edbits_numsounds].name, name, 16);
     edbitsGameSound[edbits_numsounds].name[15] = '\0';
@@ -293,9 +303,13 @@ void edbitsRegisterSoundEffect(char *name, i32 id) {
     edbits_numsounds++;
 }
 
+void (*edbitsPlaySound)(NUVEC *position, i32 id) = 0;
+
 void edbitsRegisterPlaySound(void (*callback)(NUVEC *position, i32 id)) {
     edbitsPlaySound = callback;
 }
+
+i32 (*edbitsRequestSound)(char *name) = 0;
 
 void edbitsRegisterRequestSound(i32 (*callback)(char *name)) {
     edbitsRequestSound = callback;
@@ -314,6 +328,8 @@ i32 edbitsLookupSound(char *name) {
 i32 edbitsLookupSoundFX(char *name) {
     return -1;
 }
+
+i32 edbitsSfxVol = 100;
 
 void edbitsSetSoundFxVolume(i32 volume) {
     edbitsSfxVol = volume;
@@ -654,6 +670,8 @@ void edgracbToggleClumpReactive(eduimenu_s *unused0, eduiitem_s *item, u32 unuse
     }
 }
 
+struct eduimenu_s *edgra_instance_menu = 0;
+
 void edgracbCancelInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_instance_menu);
     edgra_instance_menu = NULL;
@@ -704,6 +722,8 @@ void edgracbCancelClumpModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 void edgracbSetDpadMode(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edgra_dpadmode = item->data;
 }
+
+struct eduimenu_s *edgra_dpadmode_menu = 0;
 
 void edgracbCancelDpadModeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edgra_dpadmode_menu);

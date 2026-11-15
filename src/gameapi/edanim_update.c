@@ -25,6 +25,8 @@ static f32 EdAnimFabs(f32 value) {
     return result;
 }
 
+i32 EdAnimLocalFrameCount = 0;
+
 void edanimUpdateObjects(f32 elapsed) {
     NUINSTANIM *animation;
     NUSPECIALHANDLE special;

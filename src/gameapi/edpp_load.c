@@ -120,6 +120,9 @@ void cbPtlSetXZFacing(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     debtab[edpp_ptls[edpp_nearest].effect_index]->camera_facing = item->highlighted;
 }
 
+struct eduimenu_s *textureselectmenu = 0;
+struct eduimenu_s *texturemenu = 0;
+
 void cbPtlCancelTextureMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     if (textureselectmenu) {
         eduiMenuDestroy(textureselectmenu);
@@ -248,6 +251,8 @@ static void cbPtlChangeTextureSelect(eduimenu_s *menu, eduiitem_s *item, u32 unu
     }
     GenericDebinfoDmaTypeUpdate(effect);
 }
+
+NUMTL *DebMat[9] = {0};
 
 void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
@@ -597,10 +602,14 @@ extern struct eduimenu_s *changegenratemenu;
 extern struct eduimenu_s *etimemenu;
 extern struct eduimenu_s *emittimemenu;
 
+struct eduimenu_s *changegenratemenu = 0;
+
 static void cbCancelChangeGenRateMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(changegenratemenu);
     changegenratemenu = NULL;
 }
+
+struct eduimenu_s *etimemenu = 0;
 
 static void cbCancelChangeETimeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(etimemenu);
@@ -772,10 +781,27 @@ void cbPtlEmitTimeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
+i32 edbits_particle_char_page = 1;
+i32 edbits_particle_level_page = 2;
+u32 edblack[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
+u32 edgrey[4] = {0x80303030, 0x80303030, 0x80808080, 0x80808080};
+u32 eddarkred[4] = {0x80000050, 0x80ff0000, 0x80808080, 0x80404040};
+i32 edpp_create_type = -1;
 #pragma section(".data$EdPpScaleFactorPc", read, write)
 __declspec(allocate(".data$EdPpScaleFactorPc")) f32 edpp_scale_factor = 1.0f;
+i32 debinf_count = 0;
+DEBRIS_INFO_PC **debtab = 0;
+DEBRIS_INFO_PC *effecttypes = 0;
+DEBRISKEY_PC *debkeydata = 0;
+i32 edbits_particle_general_page = 0;
+i32 EdppTypesError = 0;
+i32 edpp_types_used = 0;
+i32 EdppUseMemcard = 0;
+i32 edpp_instances_used = 0;
+i32 edpp_num_orphans = 0;
 #pragma section(".bss$EdPtlScaleEffectMenuPc", read, write)
 __declspec(allocate(".bss$EdPtlScaleEffectMenuPc")) eduimenu_s *edptl_scaleeffect_menu = NULL;
+struct eduimenu_s *edptl_instancesettings_menu = 0;
 
 void edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent);
 void edptlcbSetScaleFactor(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
@@ -825,6 +851,8 @@ extern struct eduimenu_s *sscalemenu;
 void cbPtlChangeSScale(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     edptl_superscale = (i32)((edui_slider_s *)item)->value;
 }
+
+struct eduimenu_s *sscalemenu = 0;
 
 void cbPtlCancelSScaleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(sscalemenu);

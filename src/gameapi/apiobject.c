@@ -2,6 +2,20 @@
 #include <float.h>
 #include <string.h>
 
+APICHARSYS *apicharsys = 0;
+i32 append = 0;
+i32 nopakfile = 0;
+i32 (*RedirectAnimFn)(char *, void *, CHARACTERANIM_CONFIG *, char *) = 0;
+void *RedirectAnimList = 0;
+i32 drawcharactermodel_nobsa = 0;
+i32 drawcharactermodel_noani = 0;
+i32 drawcharactermodel_restpose = 0;
+i32 drawcharactermodel_keepmergeaction = 0;
+i32 drawcharactermodel_locatorsupdated = 0;
+u8 TempNumJoints = 0;
+i32 notransparentchardraw = 0;
+void (*APIObjResetShadowMapRenderingFn)(void) = 0;
+void (*APIObjEnableShadowMapRenderingFn)(void) = 0;
 static API_ACTION_INFO *APIActionInfo = 0;
 static API_EXTRA_ACTION *APIExtraActionData = 0;
 
@@ -182,6 +196,8 @@ void AnimList_RequestAnimGroupForCreatures(i32 group_id, ...) {
 }
 
 static i32 AnimBlendMode = 1;
+i32 (*MakeLayerList)(CHARACTER_MODEL_LAYERS *, i16 *, u32) = PCBuildModelLayerList;
+char RedirectAnimDir[64] = "chars\\commonanims\\";
 
 void SetAnimBlendMode(i32 mode) {
     AnimBlendMode = mode;
@@ -1570,7 +1586,10 @@ i16 FindAnimIX(CHARACTERDATA_PC *character, char *name) {
     return -1;
 }
 
+NUHGOBJ_EVAL *Temphgobj = 0;
 f32 animduration_blendouttime = 0;
+NUMTL *APITrans_Mtl[2] = {0};
+void (*APIObjPlaySfxByIdFn)(i32, NUVEC *) = 0;
 
 f32 AnimDuration(i32 character_id, i32 animation, f32 start_frame, f32 end_frame, i32 subtract_blend_out) {
     i16 model_id;

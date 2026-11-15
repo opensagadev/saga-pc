@@ -6,6 +6,8 @@ void saveloadASDelete(i32 slot);
 extern i32 saveload_slotused[];
 void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
 
+i32 SAVESLOTS = 6;
+
 void SaveSystemInitialise(i32 slots, SAVE_HASH_FN_PC hashfn, void *save, i32 save_size, i32 autosave, SAVE_VOID_FN_PC draw_save_icon) {
     SAVESLOTS = slots;
     if (slots >= 6) {
@@ -317,6 +319,8 @@ void fun_0050a7e0(MENU *menu) {
 
 void MenuDrawDoNotRemoveCard(MENU *menu) {
 }
+
+i32 SAVESIZE_ADDITIONAL = 3;
 
 void MenuUpdateSave(MENU *menu) {
     i32 slot;
@@ -712,9 +716,102 @@ i32 fun_0050b300(void) {
     return memcard_slot;
 }
 
+i32 menu_flash = 0;
+i32 header_g = 0;
+i32 header_b = 0;
+char MenuHeader[64] = {0};
+i32 header_r = 0;
+MENU GameMenu[10] = {0};
+i32 MenuStopDraw = 0;
+i32 MenuLoadOccurred = 0;
+i32 MenuLoadStarted = 0;
+i32 MenuSaveOccurred = 0;
+i32 Menu_Overwriteflag = 0;
+i32 MenuCardWarningState = 0;
+i32 MenuASCancelFinished = 0;
+i32 Menu_InSaveFlow = 0;
+i32 Menu_InLoadFlow = 0;
+i32 Menu_InWarningFlow = 0;
+i32 Menu_InHeaderSave = 0;
+i32 Menu_LastFlow = 0;
+f32 MenuAlpha = 0;
+i32 MenuA = 0;
+f32 menu_pulsate = 0.0f;
+i32 Menu_DisableCancel = 0;
 static i32 lastslot = 0;
 static i32 slideleft = 0;
 static i32 slideright = 0;
+NUMTL *MenuFadeMtl = 0;
+i32 CurrentMenuId = 0;
+i32 MenuSuppressUpHeld = 0;
+i32 MenuSuppressDownHeld = 0;
+i32 MenuSuppressLeftHeld = 0;
+i32 MenuSuppressRightHeld = 0;
+f32 sfx_wait = 0.0f;
+i32 dme_align = 0;
+i32 memcard_slot = 0;
+i32 memcard_loadneeded = 0;
+i32 memcard_loadstarted = 0;
+i32 memcard_loadfailed = 0;
+i32 memcard_loadcorrupt = 0;
+i32 memcard_saveneeded = 0;
+i32 memcard_savestarted = 0;
+i32 memcard_savefailed = 0;
+i32 memcard_autosaveneeded = 0;
+i32 memcard_autosavestarted = 0;
+f32 memcard_autosavepredelay = 0;
+f32 memcard_autosavepostdelay = 0;
+i32 memcard_autosaveinprogress = 0;
+i32 memcard_autosavedisabled = 0;
+i32 memcard_deleteneeded = 0;
+i32 memcard_deletestarted = 0;
+i32 memcard_deletefailed = 0;
+i32 memcard_formatme = 0;
+i32 memcard_formatting = 0;
+i32 memcard_formatfailed = 0;
+i32 memcard_justformatted = 0;
+f32 memcard_loadmessage_delay = 0.0f;
+f32 memcard_savemessage_delay = 0.0f;
+f32 memcard_formatmessage_delay = 0.0f;
+f32 memcard_createmessage_delay = 0.0f;
+f32 memcard_deletemessage_delay = 0.0f;
+f32 memcard_loadresult_delay = 0.0f;
+f32 memcard_saveresult_delay = 0.0f;
+f32 memcard_formatresult_delay = 0.0f;
+f32 memcard_createresult_delay = 0.0f;
+f32 memcard_deleteresult_delay = 0.0f;
+f32 memcard_message_delay = 0.0f;
+f32 memcard_result_delay = 0.0f;
+i32 memcard_autosaveenabled = 0;
+i32 memcard_cardchanged = 0;
+void *memcard_savedata = NULL;
+void *memcard_savedatabuffer = NULL;
+i32 memcard_savedatasize = 0;
+i32 memcard_autosave = 0;
+SAVE_HASH_FN_PC memcard_hashfn = NULL;
+void (*memcard_drawasiconfn)(void) = 0;
+void *memcard_headerdata = NULL;
+void *memcard_headerdatabuffer = NULL;
+i32 memcard_headerdatasize = 0;
+i32 memcard_slotsused = 0;
+SAVE_VOID_FN_PC savesuccessfn = NULL;
+VUFNT *QFont2D = 0;
+VUFNT *QFont2DLower = 0;
+VUFNT *QFont2DZ = NULL;
+VUFNT *QFont3D = NULL;
+VUFNT *QFont3DZ = 0;
+VUFNT *SmartTextFont = 0;
+VUFNT *QFont2DButtons = 0;
+i32 create_qfont2dlower = 0;
+i32 create_qfont2dz = 0;
+i32 create_qfont3d = 0;
+i32 create_qfont3dz = 0;
+f32 TextCrawlTime = 0.0f;
+i32 followon_line = 0;
+i32 TextPrintMode = 0;
+void (*buttonmapfn)(char *, char *) = 0;
+i32 smarttext_fwn = 0;
+i32 MessageMtlInit = 0;
 
 void MenuEnterLoad(MENU *menu) {
     i32 last_column = SAVESLOTS;
@@ -738,6 +835,8 @@ void MenuEnterLoad(MENU *menu) {
         NewMenu(1005, -1, -1);
     }
 }
+
+i32 SAVESIZE = 50;
 
 void MenuEnterSave(MENU *menu) {
     MenuSaveOccurred = 0;

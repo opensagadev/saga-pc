@@ -181,3 +181,5 @@ config/castscan-budget.json int-pointer 817 see record-pun 819 (same casts, new 
 config/oddscan-budget.json magic-flag 7685 the casts in front of Player[i]->, CurrentTerrain-> and owner-> accesses are gone, so the textual scan now sees their existing flag literals (no new literal); paid back by naming the flags
 config/oddscan-budget.json magic-state 8742 see magic-flag 7685
 config/oddscan-budget.json view-use 743 see magic-flag 7685 (existing view locals now visible to the textual scan)
+config/declscan-budget.json A 185 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now repeats the definition moved into the unit
+config/declscan-budget.json C 425 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit

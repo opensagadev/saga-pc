@@ -2,9 +2,12 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
+i32 rtl_dynamic_lights_enabled = 1;
 #pragma data_seg(".data$RtlFileVersionPc")
 static i32 curr_version = 5;
 #pragma data_seg()
+f32 rtl_shadow_blend_rate = 2.0f;
+NUVEC rtl_shadow_flicker = {0.1f, 0.1f, 0.1f};
 #pragma data_seg(".data$RtlUidCounterPc")
 static u16 rtl_uid = 1;
 #pragma data_seg()
@@ -1046,6 +1049,8 @@ struct BURN_SET {                    // size 0x564
 static NUVEC burn_editor_position = {0};
 // NOLINTNEXTLINE(readability-identifier-naming) -- the unit's public state name.
 BURN_SET *edrtl_edit_burnset = 0;
+NULSTHDR *rtl_dynamic_pool = 0;
+i32 rtl_dynamic_max = 0;
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 void edrtlInitBurnset(BURN_SET *set) {
@@ -1374,6 +1379,7 @@ void rtlSetSpecularLight(RTL_DATA *data) {
 }
 
 f32 edrtl_text_scale = 1.0f;
+f32 RtlModifierIndexZero = 1.0f;
 i32 rtl_debug = 0;
 RTL_SET *curr_set = NULL;
 
@@ -1387,6 +1393,7 @@ RTL_LIGHT *rtl_locked = NULL;
 NUMTL *mtls[3] = {0};
 i32 modifier_cnt = 1;
 static char *default_modifier_names[1] = {"default"};
+f32 *modifiers = &RtlModifierIndexZero;
 char **modifier_names = default_modifier_names;
 
 void rtlSetModifiers(f32 *values, char **names, i32 count) {
@@ -1405,6 +1412,7 @@ static i32 helpmode = 0;
 i32 help_line = 190;
 char *userid_names[16] = {"NO ID", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
                           "ID 8",  "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
+f32 rtltimer1adv = 2500.0f;
 
 void rtlSetUserIdName(i32 index, char *name) {
     if (index < 16 && index > 0) {
@@ -2304,6 +2312,7 @@ extern RTL_FOG_MIGRATION_PC *curr_fog;
 /* Fog editor mode and cursor size; the mode has its own section to keep the data layout. */
 #pragma section(".bss$RtlFogModePc", read, write)
 __declspec(allocate(".bss$RtlFogModePc")) i32 fogmode = 0;
+i32 rtl_error = 0;
 f32 cursor_size = 1.0f;
 
 // forceinline: the original inlines this into edrtlDrawLightEx, which VC8's own heuristics do not.
@@ -2990,6 +2999,7 @@ __declspec(allocate(".bss$RtlUI_fog_paste_item")) static eduiitem_s *fog_paste_i
 __declspec(allocate(".bss$RtlUI_fog_pasteinto_item")) static eduiitem_s *fog_pasteinto_item = NULL;
 #pragma section(".bss$RtlUI_modifier_adj_items", read, write)
 __declspec(allocate(".bss$RtlUI_modifier_adj_items")) static eduiitem_s *modifier_adj_items[32] = {0};
+i32 rtl_helper_radius_mode = 0;
 #pragma section(".bss$RtlUI_initialised", read, write)
 __declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0;
 /* Camera direction names, in their own section to keep the data layout. */
@@ -4121,8 +4131,12 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
 static i32 curFogLoc = -1;
+f32 rtlwob = 0.05f;
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
 i32 fog_editor_active = 0;
+f32 rtl_frametime = 0;
+i32 rtltimer1 = 0;
+RTL_INDEX *dbg_rtlindex = 0;
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
 i32 rtl_near_clip_at_cursor = 0;
 // NOLINTNEXTLINE(readability-identifier-naming) -- original public state name.
