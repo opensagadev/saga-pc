@@ -90,12 +90,12 @@ f32 DropInOutScale(GAMEOBJECT *object) {
 void DropInOutCode(GAMEOBJECT *object) {
     u8 context = (u8)object->character_context;
     GAMEOBJECT *other;
-    if (context != 0x23 && context != 0x24) {
+    if (context != CHARACTER_CONTEXT_DROP_IN && context != CHARACTER_CONTEXT_DROP_OUT) {
         return;
     }
     object->context_timer += FRAMETIME;
     if (object->context_timer >= object->context_duration) {
-        if (context == 0x24) {
+        if (context == CHARACTER_CONTEXT_DROP_OUT) {
             other = object == Player[0] ? Player[1] : Player[0];
             object->position = other->position;
         }

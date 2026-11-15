@@ -604,7 +604,8 @@ GAMEOBJECT *CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radiu
             continue;
         }
         context = candidate->character_context;
-        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == 0x3b || context == 0x17 || context == 0x41 || context == 0x3d) {
+        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
+            context == CHARACTER_CONTEXT_DEACTIVATED || context == CHARACTER_CONTEXT_ACTIVATE || context == CHARACTER_CONTEXT_FLATTEN) {
             continue;
         }
         if (candidate->id != id_DRAGBOMB && candidate->id != (u16)id_ATAT && candidate->id != GameObjectRotationAtstId &&

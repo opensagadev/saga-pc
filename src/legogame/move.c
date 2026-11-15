@@ -2274,8 +2274,10 @@ static i32 DeactivatedMindTrickFilter(GAMEOBJECT *target, GAMEOBJECT *owner) {
         return 0;
     }
     context = target->character_context;
-    if (context == 0x39 || context == 0x3c || context == 0x3b || context == 0x17 || context == 0x41 || context == 0xf || context == 0x47 ||
-        context == 0x46 || (target->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
+    if (context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN || context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
+        context == CHARACTER_CONTEXT_DEACTIVATED || context == CHARACTER_CONTEXT_ACTIVATE || context == CHARACTER_CONTEXT_TELEPORT ||
+        context == CHARACTER_CONTEXT_ZIP_UP || context == CHARACTER_CONTEXT_GRAPPLE ||
+        (target->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
         return 0;
     }
     data = target->character_data->game_character;
@@ -2498,7 +2500,7 @@ GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 all
                 break;
         }
         context = target->character_context;
-        if (context == 0x17) {
+        if (context == CHARACTER_CONTEXT_DEACTIVATED) {
             if (target->current_hp == 0) {
                 continue;
             }
@@ -2506,13 +2508,15 @@ GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 all
                 continue;
             }
         }
-        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || context == 0x3b || context == 0x39 || context == 0x3c) {
+        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
+            context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN) {
             continue;
         }
-        if (context == 0 && (target->action_movement_state == 4 || target->action_movement_state == 3)) {
+        if (context == CHARACTER_CONTEXT_JUMP && (target->action_movement_state == 4 || target->action_movement_state == 3)) {
             continue;
         }
-        if (context == 0xe || context == 0xd || context == 0x47 || context == 0x35 || context == 0x46) {
+        if (context == CHARACTER_CONTEXT_LAND_SLAM || context == CHARACTER_CONTEXT_LAND_LUNGE || context == CHARACTER_CONTEXT_ZIP_UP ||
+            context == CHARACTER_CONTEXT_ZIP_DOWN || context == CHARACTER_CONTEXT_GRAPPLE) {
             continue;
         }
         if ((target->character_data->game_character->flags_090 & 0x8000) != 0 || (object->rider != NULL && target == object->rider)) {
@@ -2523,9 +2527,9 @@ GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 all
             continue;
         }
         if (mode != 0) {
-            if (context == 0x5f || context == 0x60 ||
-                (context == 0x5a && (target->unknown_7b3 == 0 || (object->flags_1fc_word & 0x80) == 0)) ||
-                (context == 0x17 && target->unknown_107e == 0)) {
+            if (context == CHARACTER_CONTEXT_DIE_AIR || context == CHARACTER_CONTEXT_DIE_GROUND ||
+                (context == CHARACTER_CONTEXT_STUNNED && (target->unknown_7b3 == 0 || (object->flags_1fc_word & 0x80) == 0)) ||
+                (context == CHARACTER_CONTEXT_DEACTIVATED && target->unknown_107e == 0)) {
                 continue;
             }
             if (object->unknown_280 != 0xff) {
@@ -2960,14 +2964,15 @@ void StartJetPackFall(GAMEOBJECT *object, i32 fall) {
 
 void JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unused) {
     i8 context = object->character_context;
-    if (context == 2 || context == 0x19 || (object->character_data->game_character->hover_fall_mode == 2 && context == 1)) {
+    if (context == CHARACTER_CONTEXT_LAND_JUMP_2 || context == CHARACTER_CONTEXT_LAND_SPECIAL ||
+        (object->character_data->game_character->hover_fall_mode == 2 && context == CHARACTER_CONTEXT_LAND_JUMP)) {
         object->context_timer -= FRAMETIME;
         if (object->context_timer <= 0.0f) {
             object->character_context = CHARACTER_CONTEXT_NONE;
         }
         return;
     }
-    if (context == 0) {
+    if (context == CHARACTER_CONTEXT_JUMP) {
         if (object->unknown_281 == 0) {
             return;
         }
@@ -2994,12 +2999,12 @@ void JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unused) {
         return;
     }
     if (object->jump_variant_state == 1) {
-        if ((jump_pressed != 0 || fall != 0) && context == -1) {
+        if ((jump_pressed != 0 || fall != 0) && context == CHARACTER_CONTEXT_NONE) {
             StartJetPackFall(object, fall);
         }
         return;
     }
-    if (context == 0x13) {
+    if (context == CHARACTER_CONTEXT_HOVER_UP) {
         if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
             return;
         }
@@ -3843,8 +3848,10 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         return;
     }
     context = object->character_context;
-    if ((context == 0 && (object->action_movement_state == 4 || object->action_movement_state == 2)) || context == 4 || context == 16 ||
-        (context == 13 && object->id != id_THEEMPEROR) || context == 14 || (context == 31 && object->unknown_7b3 == 1) ||
+    if ((context == CHARACTER_CONTEXT_JUMP && (object->action_movement_state == 4 || object->action_movement_state == 2)) ||
+        context == CHARACTER_CONTEXT_LAND_COMBO_JUMP || context == CHARACTER_CONTEXT_SWIPE ||
+        (context == CHARACTER_CONTEXT_LAND_LUNGE && object->id != id_THEEMPEROR) || context == CHARACTER_CONTEXT_LAND_SLAM ||
+        (context == CHARACTER_CONTEXT_BIG_JUMP && object->unknown_7b3 == 1) ||
         ((object->flags_1fc_word & 0x80) != 0 && Cheat_PowerUpActive((i8)object->unknown_280))) {
         object->sabre_flags |= 2;
     }
@@ -4464,18 +4471,24 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
     {
         i8 context = object->character_context;
         i32 player_active;
-        if (action_pressed && context != 0x15 && context != 0x5a && context != 0x13 && context != 0x2e) {
+        if (action_pressed && context != CHARACTER_CONTEXT_TAKE_HIT && context != CHARACTER_CONTEXT_STUNNED &&
+            context != CHARACTER_CONTEXT_HOVER_UP && context != CHARACTER_CONTEXT_THROW_DETONATOR) {
             player_active = (object->flags_1fc_word & 0x80) != 0;
-            if (!(!player_active && (context == 6 || context == 7)) && context != 8 && context != 0x1b && context != 0x2d &&
-                context != 0xf && context != 0x27 && context != 0x28 && context != 0x59 && context != 0x30 && context != 0x3d &&
-                context != 0x43 && context != 0x4a && context != 0x61 && context != 0x4b) {
+            if (!(!player_active && (context == CHARACTER_CONTEXT_WEAPON_IN || context == CHARACTER_CONTEXT_WEAPON_OUT)) &&
+                context != CHARACTER_CONTEXT_FORCE && context != CHARACTER_CONTEXT_FORCE_PUSH && context != CHARACTER_CONTEXT_BUILD_IT &&
+                context != CHARACTER_CONTEXT_TELEPORT && context != CHARACTER_CONTEXT_PUSH && context != CHARACTER_CONTEXT_PUSH_SPINNER &&
+                context != CHARACTER_CONTEXT_PUSH_OBSTACLE && context != CHARACTER_CONTEXT_SPECIAL_MOVE_VICTIM &&
+                context != CHARACTER_CONTEXT_FLATTEN && context != CHARACTER_CONTEXT_CLIMB && context != CHARACTER_CONTEXT_PULL_LEVER &&
+                context != CHARACTER_CONTEXT_HAT_MACHINE && context != CHARACTER_CONTEXT_FLOAT) {
                 if ((object->flags_e20 & 0x10000) == 0) {
                     if (object->unknown_e33 == 0 && object->unknown_281 && object->pad->input_magnitude == 0.0f &&
                         object->character_model->model_data_b[object->character_data->game_character->hover_fall_mode == 0 &&
                                                                       (object->character_data->model_flags & CHARACTER_MODEL_BLASTER)
                                                                   ? 0x7f
                                                                   : 0x11] != NULL &&
-                        (context == -1 || context == 1 || context == 2 || context == 4 || context == 3)) {
+                        (context == CHARACTER_CONTEXT_NONE || context == CHARACTER_CONTEXT_LAND_JUMP ||
+                         context == CHARACTER_CONTEXT_LAND_JUMP_2 || context == CHARACTER_CONTEXT_LAND_COMBO_JUMP ||
+                         context == CHARACTER_CONTEXT_LAND_FLIP)) {
                         SlowWeaponOut(object);
                     } else {
                         FastWeaponOut(object, 1);
@@ -4483,7 +4496,10 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                     return;
                 }
                 if ((object->flags_e20 & 4) != 0 || (!player_active && object->unknown_e33 != 0) || !object->unknown_281 ||
-                    (context != -1 && context != 1 && context != 2 && context != 4 && context != 3 && context != 6 && context != 7)) {
+                    (context != CHARACTER_CONTEXT_NONE && context != CHARACTER_CONTEXT_LAND_JUMP &&
+                     context != CHARACTER_CONTEXT_LAND_JUMP_2 && context != CHARACTER_CONTEXT_LAND_COMBO_JUMP &&
+                     context != CHARACTER_CONTEXT_LAND_FLIP && context != CHARACTER_CONTEXT_WEAPON_IN &&
+                     context != CHARACTER_CONTEXT_WEAPON_OUT)) {
                     goto combo_finished;
                 }
                 SetWeaponOut(object);
@@ -4530,19 +4546,21 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
             }
         }
         if (((object->pad->runtime_flags & 4) != 0 || special_pressed) && (object->flags_e20 & 0x10000) != 0 && object->unknown_e33 == 0 &&
-            context != 6 && context != 7 && context != 0x12 && context != 0x1b && context != 0x1d &&
+            context != CHARACTER_CONTEXT_WEAPON_IN && context != CHARACTER_CONTEXT_WEAPON_OUT && context != CHARACTER_CONTEXT_FORCE_THROW &&
+            context != CHARACTER_CONTEXT_FORCE_PUSH && context != CHARACTER_CONTEXT_FORCE_DEFLECT &&
             !(object->character_context == CHARACTER_CONTEXT_JUMP &&
               (object->action_movement_state == 3 || object->action_movement_state == 4)) &&
-            context != 0xd && context != 0xe && context != 0x2e && (object->flags_e20 & 0x1000000) == 0 &&
+            context != CHARACTER_CONTEXT_LAND_LUNGE && context != CHARACTER_CONTEXT_LAND_SLAM &&
+            context != CHARACTER_CONTEXT_THROW_DETONATOR && (object->flags_e20 & 0x1000000) == 0 &&
             (((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 0x4000000) == 0 &&
             ((((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 0x8000000) == 0 || (object->context_variant_flags & 0x20000) == 0) &&
-            context != 8) {
+            context != CHARACTER_CONTEXT_FORCE) {
             if (object->unknown_281 && object->pad->input_magnitude == 0.0f &&
                 object->character_model->model_data_b[object->character_data->game_character->hover_fall_mode == 0 &&
                                                               (object->character_data->model_flags & CHARACTER_MODEL_BLASTER)
                                                           ? 0x7e
                                                           : 0x10] != NULL &&
-                (context == -1 || (((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 4) != 0)) {
+                (context == CHARACTER_CONTEXT_NONE || (((COMBO_CONTEXT_INFO *)CInfo)[context].flags & 4) != 0)) {
                 SlowWeaponIn(object);
             } else {
                 FastWeaponIn(object, 1);
@@ -6226,8 +6244,9 @@ i32 ZapTarget(GAMEOBJECT *object) {
     if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
         ((flags = object->character_data->model_flags) & 0x10) != 0 && (animations = object->character_model->model_data_b)[0x41] != NULL &&
         (U64_PAIR(&CInfo[context = object->character_context].flags) & 0x8000) == 0 &&
-        ((flags & 0x20) == 0 || (animations[0x42] != NULL && animations[0x43] != NULL && animations[0x44] != NULL)) && context != 0x15 &&
-        context != 0x17 && context != 0x41 && context != 0x33 && context != 0x3b && context != 0x39) {
+        ((flags & 0x20) == 0 || (animations[0x42] != NULL && animations[0x43] != NULL && animations[0x44] != NULL)) &&
+        context != CHARACTER_CONTEXT_TAKE_HIT && context != CHARACTER_CONTEXT_DEACTIVATED && context != CHARACTER_CONTEXT_ACTIVATE &&
+        context != CHARACTER_CONTEXT_SLIDE && context != CHARACTER_CONTEXT_BEEN_TAKEN_OVER && context != CHARACTER_CONTEXT_EATEN) {
         return 1;
     }
     return 0;
@@ -6505,10 +6524,12 @@ static void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay, 
         return;
     }
     context = object->character_context;
-    if ((context != -1 && context != 0x2a && context != 0x36 && context != 0x3a) || object->dead != 0) {
+    if ((context != CHARACTER_CONTEXT_NONE && context != CHARACTER_CONTEXT_TURN && context != CHARACTER_CONTEXT_LOOP &&
+         context != CHARACTER_CONTEXT_BARREL_ROLL) ||
+        object->dead != 0) {
         return;
     }
-    if (context == 0x36) {
+    if (context == CHARACTER_CONTEXT_LOOP) {
         progress = 1.0f - object->context_timer / object->context_duration;
         if (progress > (f64)0.2f && progress < 0.666f) {
             return;
@@ -10657,7 +10678,8 @@ static i32 DeactivatedZapFilter(GAMEOBJECT *owner, GAMEOBJECT *target) {
         return 0;
     }
     context = target->character_context;
-    if (context == 0x3c || context == 0xf || context == 0x47 || context == 0x46) {
+    if (context == CHARACTER_CONTEXT_GET_IN || context == CHARACTER_CONTEXT_TELEPORT || context == CHARACTER_CONTEXT_ZIP_UP ||
+        context == CHARACTER_CONTEXT_GRAPPLE) {
         return 0;
     }
     return (flags & 0x8000) == 0;
@@ -11820,7 +11842,7 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
         object->quick_shoot_timer -= FRAMETIME;
     }
     context = object->character_context;
-    if (context == 0x0a) {
+    if (context == CHARACTER_CONTEXT_SHOOT) {
         f32 timer;
         if (AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0) == NULL) {
             return 0;
@@ -11881,10 +11903,11 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
     if ((object->portal_flags & 8) == 0 || pressed == 0 || ((context_flags = U64_PAIR(&CInfo[context].flags)) & 0x20) != 0) {
         goto weapon_in;
     }
-    if (((object->flags_1fc_word >> 7) & 1) == 0 && (context == 6 || context == 7)) {
+    if (((object->flags_1fc_word >> 7) & 1) == 0 && (context == CHARACTER_CONTEXT_WEAPON_IN || context == CHARACTER_CONTEXT_WEAPON_OUT)) {
         goto weapon_in;
     }
-    if (((object->flags_1fc_word >> 7) & 1) == 0 && context == 1 && (object->unknown_7aa == 0x59 || object->unknown_7aa == 0xb3)) {
+    if (((object->flags_1fc_word >> 7) & 1) == 0 && context == CHARACTER_CONTEXT_LAND_JUMP &&
+        (object->unknown_7aa == 0x59 || object->unknown_7aa == 0xb3)) {
         goto weapon_in;
     }
     if ((object->character_context == CHARACTER_CONTEXT_WEAPON_IN || object->character_context == CHARACTER_CONTEXT_WEAPON_OUT) &&
@@ -11903,7 +11926,7 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
                 object->character_model->model_data_b
                         [data->weapon_action == 0 && (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 0x7f : 0x11] !=
                     NULL &&
-                (context == -1 || (context_flags & 4) != 0)) {
+                (context == CHARACTER_CONTEXT_NONE || (context_flags & 4) != 0)) {
                 SlowWeaponOut(object);
             } else {
                 FastWeaponOut(object, 1);
@@ -12089,9 +12112,11 @@ finish:
 
 weapon_in:
     if (weapon_mode == 0 || ((object->pad->runtime_flags & 4) == 0 && special_pressed == 0) || (object->unknown_e22 & 1) == 0 ||
-        object->unknown_e33 != 0 || context == 6 || context == 7 || context == 0x47 || context == 0x46 || context == 0x0b ||
-        context == 0x2e || (object->character_data->game_character->weapon_action == 2 && object->jump_variant_state == 1) ||
-        context == 8 || context == 0x1b || context == 0x1d) {
+        object->unknown_e33 != 0 || context == CHARACTER_CONTEXT_WEAPON_IN || context == CHARACTER_CONTEXT_WEAPON_OUT ||
+        context == CHARACTER_CONTEXT_ZIP_UP || context == CHARACTER_CONTEXT_GRAPPLE || context == CHARACTER_CONTEXT_INTERFACE ||
+        context == CHARACTER_CONTEXT_THROW_DETONATOR ||
+        (object->character_data->game_character->weapon_action == 2 && object->jump_variant_state == 1) ||
+        context == CHARACTER_CONTEXT_FORCE || context == CHARACTER_CONTEXT_FORCE_PUSH || context == CHARACTER_CONTEXT_FORCE_DEFLECT) {
         return 0;
     }
     if (weapon_mode == 2) {
@@ -12101,7 +12126,7 @@ weapon_in:
                                                              (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0
                                                          ? 0x7e
                                                          : 0x10] != NULL &&
-               (context == -1 || (U64_PAIR(&CInfo[context].flags) & 4) != 0)) {
+               (context == CHARACTER_CONTEXT_NONE || (U64_PAIR(&CInfo[context].flags) & 4) != 0)) {
         SlowWeaponIn(object);
     } else {
         FastWeaponIn(object, 1);

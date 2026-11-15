@@ -464,7 +464,8 @@ void Tag_Check(GAMEOBJECT *object) {
                     } else if (Arcade == 0) {
                         target = NULL;
                         if (Tag_Mode == 3) {
-                            if (context == -1 || context == 0x17 || (context_flags & 4) != 0 || (context_flags & 0x1000000000ull) != 0) {
+                            if (context == CHARACTER_CONTEXT_NONE || context == CHARACTER_CONTEXT_DEACTIVATED || (context_flags & 4) != 0 ||
+                                (context_flags & 0x1000000000ull) != 0) {
                                 target = Tag_FindGameObject_TRANSFER(object);
                                 if (target != NULL && InCollectList_Index((i16)target->id, NULL, 0) == -1) {
                                     GameAudio_PlaySfx(0x32, &object->collision_position, 0, 0);
@@ -478,8 +479,8 @@ void Tag_Check(GAMEOBJECT *object) {
                             }
                         } else {
                             if (Tag_Mode == 1) {
-                                if (context == -1 || context == 0x17 || (context_flags & 4) != 0 ||
-                                    (context_flags & 0x1000000000ull) != 0) {
+                                if (context == CHARACTER_CONTEXT_NONE || context == CHARACTER_CONTEXT_DEACTIVATED ||
+                                    (context_flags & 4) != 0 || (context_flags & 0x1000000000ull) != 0) {
                                     target = Tag_FindGameObject_TRANSFER(object);
                                     if (target != NULL && target->unknown_280 != 0xff) {
                                         object->tag_player_index = (i8)target->unknown_280;

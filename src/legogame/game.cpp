@@ -2012,7 +2012,7 @@ extern "C" {
             } else if ((part->flags & 0x8000) == 0 && part->owner == object) {
                 continue;
             }
-            if (context == 0x3b || context == 0x39 || context == 0x3c) {
+            if (context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN) {
                 continue;
             }
             if ((part->flags & 0x4000) != 0 && (i8)part->hostility_group == api->hostility_group) {

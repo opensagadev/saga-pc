@@ -1335,7 +1335,7 @@ i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
         u16 heading = object->sock_heading;
         forwards = abs(RotDiff(heading, object->unknown_276)) < 0x4000;
         context = object->character_context;
-        if (context == 0x2a && object->context_timer < object->context_duration * (f64)0.8f) {
+        if (context == CHARACTER_CONTEXT_TURN && object->context_timer < object->context_duration * (f64)0.8f) {
             forwards = 1 - forwards;
         }
         return forwards;

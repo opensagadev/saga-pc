@@ -3220,10 +3220,10 @@ void FixUpLayers(void) {
 
 i32 fun_0041aec0(GAMEOBJECT *object) {
     u8 context = (u8)object->character_context;
-    if (context == 0x4d && object->unknown_7b3 == 0) {
+    if (context == CHARACTER_CONTEXT_BATARANG && object->unknown_7b3 == 0) {
         return 2;
     }
-    return (context == 0x52) + 1;
+    return (context == CHARACTER_CONTEXT_ATTRACTO_TARGET) + 1;
 }
 
 i32 SuperWeirdo(GAMEOBJECT *object) {
@@ -3491,7 +3491,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     } else {
         ((PLAYER_RESET_FIELDS *)object)->ground_contact_grace_timer = 0.2f;
     }
-    if (context == 0x33 && StartSlide(object, 0)) {
+    if (context == CHARACTER_CONTEXT_SLIDE && StartSlide(object, 0)) {
         object->velocity.x = velocity.x;
         object->velocity.z = velocity.z;
     }

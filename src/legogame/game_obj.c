@@ -580,10 +580,11 @@ void CollideGameObjects(WORLDINFO *world) {
             continue;
         }
         context = object->character_context;
-        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == 0x3b || context == 0x3c || context == 0xf || context == 0x39) {
+        if ((U64_PAIR(&CInfo[context].flags) & 0x8000) || context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
+            context == CHARACTER_CONTEXT_GET_IN || context == CHARACTER_CONTEXT_TELEPORT || context == CHARACTER_CONTEXT_EATEN) {
             continue;
         }
-        if (context == 0x26 && object->special_move_pc != -1 && (object->context_variant_flags & 0x200)) {
+        if (context == CHARACTER_CONTEXT_PUNCH && object->special_move_pc != -1 && (object->context_variant_flags & 0x200)) {
             continue;
         }
         if (object->character_context == CHARACTER_CONTEXT_BIG_JUMP && object->unknown_7b3 == 1) {
@@ -591,7 +592,7 @@ void CollideGameObjects(WORLDINFO *world) {
         }
         data = object->character_data->game_character;
         if ((data->flags_090 & 0x8000) || (object->flags_e20 & 0x20) ||
-            (context == 0x47 && (((COLLISION_TECHNO_VIEW *)object->techno)->flags & 1))) {
+            (context == CHARACTER_CONTEXT_ZIP_UP && (((COLLISION_TECHNO_VIEW *)object->techno)->flags & 1))) {
             continue;
         }
         *minimum_cursor++ = object->collision_min;
@@ -1551,7 +1552,8 @@ GAMEOBJECT *TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *directi
             continue;
         }
         context = target->character_context;
-        if (context == 0x3b || context == 0x39 || context == 0x3c || (U64_PAIR(&CInfo[context].flags) & 0x8000) != 0) {
+        if (context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN ||
+            (U64_PAIR(&CInfo[context].flags) & 0x8000) != 0) {
             continue;
         }
         if (model_mask != 0) {
@@ -1561,7 +1563,7 @@ GAMEOBJECT *TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *directi
         } else if (arcade == 0 && ((target->flags_1f8 ^ object->flags_1f8) & 0x10001) == 0) {
             continue;
         }
-        if (context == 0x5f || context == 0x60) {
+        if (context == CHARACTER_CONTEXT_DIE_AIR || context == CHARACTER_CONTEXT_DIE_GROUND) {
             continue;
         }
         if (arcade == 0 && (object->flags_1fc & 0x80) != 0 && (target->flags_ef4 & 0x800000) == 0) {
