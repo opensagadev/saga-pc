@@ -64,15 +64,15 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
             } else if (NuStrICmp(parser->word_buffer_ptr, "distance_apart") == 0) {
                 move->distance_apart = NuFParGetFloat(parser);
             } else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_end") == 0) {
-                move->flags |= 2;
+                move->flags |= SPECIALMOVE_KILL_VICTIM_AT_END;
             } else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_release") == 0) {
-                move->flags |= 4;
+                move->flags |= SPECIALMOVE_KILL_VICTIM_AT_RELEASE;
             } else if (NuStrICmp(parser->word_buffer_ptr, "flash_victim_at_attack_end") == 0) {
-                move->flags |= 8;
+                move->flags |= SPECIALMOVE_FLASH_VICTIM_AT_ATTACK_END;
             } else if (NuStrICmp(parser->word_buffer_ptr, "throw_kill_parts_up") == 0) {
-                move->flags |= 0x10;
+                move->flags |= SPECIALMOVE_THROW_KILL_PARTS_UP;
             } else if (NuStrICmp(parser->word_buffer_ptr, "can_always_do") == 0) {
-                move->flags |= 1;
+                move->flags |= SPECIALMOVE_CAN_ALWAYS_DO;
             }
         }
     }

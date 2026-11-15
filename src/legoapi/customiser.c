@@ -72,7 +72,8 @@ typedef struct KILLPARTS_CUSTOMISER {
 
 static i32 CustomiserPieceAvailableDefaultPrivate(CUSTOMPIECE_LAYERS *input) {
     CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
-    if ((piece->availability_flags & 0x180) != 0 && Game_100PercentComplete() == 0) {
+    if ((piece->availability_flags & (CUSTOM_PIECE_100_PERCENT_SIDE_1 | CUSTOM_PIECE_100_PERCENT_SIDE_2)) != 0 &&
+        Game_100PercentComplete() == 0) {
         return 0;
     }
     return 1;
@@ -168,7 +169,9 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32
                     }
                 }
             }
-            if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 || Game_100PercentComplete() != 0) &&
+            if (((customiser->piece_sets[category][index].availability_flags &
+                  (CUSTOM_PIECE_100_PERCENT_SIDE_1 | CUSTOM_PIECE_100_PERCENT_SIDE_2)) == 0 ||
+                 Game_100PercentComplete() != 0) &&
                 customiser->piece_available((CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category][index]) != 0) {
                 break;
             }
@@ -205,7 +208,9 @@ i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i3
                 }
             }
         }
-        if (((customiser->piece_sets[category][index].availability_flags & 0x180) == 0 || Game_100PercentComplete() != 0) &&
+        if (((customiser->piece_sets[category][index].availability_flags &
+              (CUSTOM_PIECE_100_PERCENT_SIDE_1 | CUSTOM_PIECE_100_PERCENT_SIDE_2)) == 0 ||
+             Game_100PercentComplete() != 0) &&
             customiser->piece_available((CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category][index]) != 0) {
             break;
         }
@@ -307,8 +312,8 @@ void CustomiserDrawAccessories(CUSTOMISER_LAYERS *input, GAMEOBJECT *object, NUM
         }
         if (category == 0) {
             pieces = customiser->save->pieces + side * (offsetof(CUSTOM_SAVE_CONFIG, secondary_pieces) / sizeof(u16));
-            if ((customiser->piece_sets[0][pieces[0]].availability_flags & 0x20) != 0 ||
-                (customiser->piece_sets[1][pieces[1]].availability_flags & 1) != 0 || object->helmet != 0) {
+            if ((customiser->piece_sets[0][pieces[0]].availability_flags & CUSTOM_PIECE_HAT_OFF) != 0 ||
+                (customiser->piece_sets[1][pieces[1]].availability_flags & CUSTOM_PIECE_NO_HAT) != 0 || object->helmet != 0) {
                 continue;
             }
         }
@@ -604,10 +609,10 @@ void Customiser_Set100PercentPieces(CUSTOMISER_LAYERS *input) {
             continue;
         }
         for (index = 0; index < ((CUSTOMISER_CONFIG *)input)->piece_counts[category]; ++index) {
-            if ((((CUSTOMISER_CONFIG *)input)->piece_sets[category][index].availability_flags & 0x80) != 0) {
+            if ((((CUSTOMISER_CONFIG *)input)->piece_sets[category][index].availability_flags & CUSTOM_PIECE_100_PERCENT_SIDE_1) != 0) {
                 ((CUSTOMISER_CONFIG *)input)->save->pieces[category] = (u16)index;
             }
-            if ((((CUSTOMISER_CONFIG *)input)->piece_sets[category][index].availability_flags & 0x100) != 0) {
+            if ((((CUSTOMISER_CONFIG *)input)->piece_sets[category][index].availability_flags & CUSTOM_PIECE_100_PERCENT_SIDE_2) != 0) {
                 ((CUSTOMISER_CONFIG *)input)->save->secondary_pieces[category] = (u16)index;
             }
         }
@@ -671,9 +676,9 @@ i32 Customiser_GetIcon(CUSTOMISER_LAYERS *input, const void *save_input, i32 unu
     CUSTOM_PIECE_CONFIG *head;
     i32 character;
     (void)unused;
-    if ((hat->availability_flags & 0x20) == 0) {
+    if ((hat->availability_flags & CUSTOM_PIECE_HAT_OFF) == 0) {
         head = &customiser->piece_sets[1][save->pieces[1]];
-        if ((head->availability_flags & 1) == 0) {
+        if ((head->availability_flags & CUSTOM_PIECE_NO_HAT) == 0) {
             character = hat->icon_character_id;
             if (character != -1) {
                 goto found;
@@ -792,35 +797,35 @@ CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR
                         piece->collection_type = CharVariant_Find(parser->word_buffer_ptr);
                     }
                 } else if (NuStrICmp(parser->word_buffer_ptr, "no_hat") == 0) {
-                    piece->availability_flags |= 1;
+                    piece->availability_flags |= CUSTOM_PIECE_NO_HAT;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "hat_off") == 0) {
-                    piece->availability_flags |= 0x20;
+                    piece->availability_flags |= CUSTOM_PIECE_HAT_OFF;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "cape_off") == 0) {
-                    piece->availability_flags |= 0x40;
+                    piece->availability_flags |= CUSTOM_PIECE_CAPE_OFF;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "helmet") == 0) {
-                    piece->availability_flags |= 2;
+                    piece->availability_flags |= CUSTOM_PIECE_HELMET;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "big_head") == 0) {
-                    piece->availability_flags |= 4;
+                    piece->availability_flags |= CUSTOM_PIECE_BIG_HEAD;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "big_hat") == 0) {
-                    piece->availability_flags |= 8;
+                    piece->availability_flags |= CUSTOM_PIECE_BIG_HAT;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "not_demo") == 0) {
-                    piece->availability_flags |= 0x10;
+                    piece->availability_flags |= CUSTOM_PIECE_NOT_DEMO;
                 } else if (NuStrICmp(parser->word_buffer_ptr, "100_percent") == 0) {
                     if (NuFParGetWord(parser) != 0) {
                         i32 side = NuAToI(parser->word_buffer_ptr);
                         if (side == 1) {
-                            piece->availability_flags |= 0x80;
+                            piece->availability_flags |= CUSTOM_PIECE_100_PERCENT_SIDE_1;
                         } else if (side == 2) {
-                            piece->availability_flags |= 0x100;
+                            piece->availability_flags |= CUSTOM_PIECE_100_PERCENT_SIDE_2;
                         }
                     }
                 } else if (NuStrICmp(parser->word_buffer_ptr, "default") == 0) {
                     if (NuFParGetWord(parser) != 0) {
                         i32 side = NuAToI(parser->word_buffer_ptr);
                         if (side == 1) {
-                            piece->availability_flags |= 0x200;
+                            piece->availability_flags |= CUSTOM_PIECE_DEFAULT_SIDE_1;
                         } else if (side == 2) {
-                            piece->availability_flags |= 0x400;
+                            piece->availability_flags |= CUSTOM_PIECE_DEFAULT_SIDE_2;
                         }
                     }
                 } else if (configure_piece != NULL) {
@@ -901,11 +906,11 @@ CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR
                 if (first_found && second_found) {
                     break;
                 }
-                if ((customiser->piece_sets[category][index].availability_flags & 0x200) != 0) {
+                if ((customiser->piece_sets[category][index].availability_flags & CUSTOM_PIECE_DEFAULT_SIDE_1) != 0) {
                     customiser->default_pieces[0][category] = index;
                     first_found = 1;
                 }
-                if ((customiser->piece_sets[category][index].availability_flags & 0x400) != 0) {
+                if ((customiser->piece_sets[category][index].availability_flags & CUSTOM_PIECE_DEFAULT_SIDE_2) != 0) {
                     customiser->default_pieces[1][category] = index;
                     second_found = 1;
                 }

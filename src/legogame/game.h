@@ -430,6 +430,20 @@ typedef struct custom_category_config_s {
     char *scene_file;
 } CUSTOM_CATEGORY_CONFIG_PC;
 
+/* custom_piece_config_s.availability_flags: the piece keywords of the customiser config (Customiser_Configure);
+ * "100_percent N" and "default N" take a side, 1 or 2. */
+#define CUSTOM_PIECE_NO_HAT 0x1
+#define CUSTOM_PIECE_HELMET 0x2
+#define CUSTOM_PIECE_BIG_HEAD 0x4
+#define CUSTOM_PIECE_BIG_HAT 0x8
+#define CUSTOM_PIECE_NOT_DEMO 0x10
+#define CUSTOM_PIECE_HAT_OFF 0x20
+#define CUSTOM_PIECE_CAPE_OFF 0x40
+#define CUSTOM_PIECE_100_PERCENT_SIDE_1 0x80
+#define CUSTOM_PIECE_100_PERCENT_SIDE_2 0x100
+#define CUSTOM_PIECE_DEFAULT_SIDE_1 0x200
+#define CUSTOM_PIECE_DEFAULT_SIDE_2 0x400
+
 typedef struct custom_piece_config_s {
     char *name;
     i16 character_id;

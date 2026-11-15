@@ -309,11 +309,11 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
             if (customiser->piece_counts[category] <= 0) {
                 continue;
             }
-            if (category == 0 && (customiser->piece_sets[1][selection[1]].availability_flags & 1) != 0) {
+            if (category == 0 && (customiser->piece_sets[1][selection[1]].availability_flags & CUSTOM_PIECE_NO_HAT) != 0) {
                 continue;
             }
-            if (category == 1 && (customiser->piece_sets[0][selection[0]].availability_flags & 2) != 0 &&
-                (customiser->piece_sets[1][selection[1]].availability_flags & 1) == 0) {
+            if (category == 1 && (customiser->piece_sets[0][selection[0]].availability_flags & CUSTOM_PIECE_HELMET) != 0 &&
+                (customiser->piece_sets[1][selection[1]].availability_flags & CUSTOM_PIECE_NO_HAT) == 0) {
                 continue;
             }
             piece = &customiser->piece_sets[category][selection[category]];
@@ -341,12 +341,13 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
 i32 PermanentCustomPieceAvailable(CUSTOMPIECE_LAYERS *input) {
     CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
     if (GAMEDEMO != 0) {
-        if ((piece->availability_flags & 0x10) != 0) {
+        if ((piece->availability_flags & CUSTOM_PIECE_NOT_DEMO) != 0) {
             return 0;
         }
     } else {
         u32 required_flags;
-        if ((piece->availability_flags & 0x180) != 0 && Game_100PercentComplete() == 0) {
+        if ((piece->availability_flags & (CUSTOM_PIECE_100_PERCENT_SIDE_1 | CUSTOM_PIECE_100_PERCENT_SIDE_2)) != 0 &&
+            Game_100PercentComplete() == 0) {
             return 0;
         }
         if (piece->character_id != -1) {
@@ -490,7 +491,7 @@ static u32 CustomiserPreviewLayerMask(CUSTOMISER_CONFIG *customiser, const u16 *
     if (character->cape_layer != -1) {
         mask |= 1u << character->cape_layer;
         if ((selected == -1 || GetMenuID() != 12 || customiser_quit != 0 || selected != 5) &&
-            (customiser->piece_sets[5][selection[5]].availability_flags & 0x40) != 0) {
+            (customiser->piece_sets[5][selection[5]].availability_flags & CUSTOM_PIECE_CAPE_OFF) != 0) {
             mask &= ~(1u << character->cape_layer);
         }
     }
@@ -521,7 +522,7 @@ void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
         character->model_flags &= 3;
         for (category = 0; category < 9; ++category) {
             if (customiser->piece_counts[category] > 0) {
-                if (category != 0 || (customiser->piece_sets[1][selection[1]].availability_flags & 1) == 0) {
+                if (category != 0 || (customiser->piece_sets[1][selection[1]].availability_flags & CUSTOM_PIECE_NO_HAT) == 0) {
                     character->model_flags |= customiser->piece_sets[category][selection[category]].model_flags;
                 }
                 if ((character->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
@@ -530,7 +531,7 @@ void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
                 config->flags_090 |= customiser->piece_sets[category][selection[category]].gameplay_flags;
             }
         }
-        if ((customiser->piece_sets[1][selection[1]].availability_flags & 1) != 0) {
+        if ((customiser->piece_sets[1][selection[1]].availability_flags & CUSTOM_PIECE_NO_HAT) != 0) {
             config->flags_090 |= 0x10;
         }
         config->weapon_model = customiser->piece_sets[2][selection[2]].weapon_model;
@@ -1037,13 +1038,13 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
         torso_flags = customiser->piece_sets[1][Game.customiser_start[side].pieces[1]].availability_flags;
         if ((torso_flags & 1) != 0) {
             if ((torso_flags & 4) != 0) {
-                if ((customiser->piece_sets[0][Game.customiser_start[side].pieces[0]].availability_flags & 8) != 0) {
+                if ((customiser->piece_sets[0][Game.customiser_start[side].pieces[0]].availability_flags & CUSTOM_PIECE_BIG_HAT) != 0) {
                     no_hat = CustomiseHeadOffset;
                 } else {
                     no_hat = (f64)CustomiseHeadOffset * (f64)0.8f;
                 }
             } else {
-                if ((customiser->piece_sets[0][Game.customiser_start[side].pieces[0]].availability_flags & 8) != 0) {
+                if ((customiser->piece_sets[0][Game.customiser_start[side].pieces[0]].availability_flags & CUSTOM_PIECE_BIG_HAT) != 0) {
                     no_hat = (f64)CustomiseHeadOffset * (f64)0.8f;
                 } else {
                     no_hat = (f64)CustomiseHeadOffset * (f64)0.6f;
@@ -1197,7 +1198,7 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS *input) {
                 piece = &customiser->piece_sets[category][Game.customiser_start[side].pieces[category]];
                 if (GetMenuID() == 12 && customiser_quit == 0 && category == selected && (active_count == 2 || side == preview_side)) {
                     NuFmod(CustomiseMenuTime[side], 0.3f);
-                } else if (category == 0 && (piece->availability_flags & 0x20) != 0) {
+                } else if (category == 0 && (piece->availability_flags & CUSTOM_PIECE_HAT_OFF) != 0) {
                     continue;
                 }
                 matrix = runtime->joint_matrices[side][helmet];
