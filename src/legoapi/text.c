@@ -819,9 +819,9 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
         return;
     }
     if (TextPrintMode != 0) {
-        NuQFntPushPrintMode(3);
+        NuQFntPushPrintMode(NUQFNT_MODE_FIXED_DIGITS | NUQFNT_MODE_2D);
     } else {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
     }
 
     TextDecode(text, decoded);
@@ -1463,7 +1463,7 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     NuMtxMul(&matrix, &TextCrawlMatrix, NuCameraGetMtx());
     NuQFntSet(QFont3DZ);
     NuQFntSetMtx(QFont3DZ, &matrix);
-    NuQFntPushPrintMode(4);
+    NuQFntPushPrintMode(NUQFNT_MODE_3D);
     NuQFntSetCoordinateSystem(4);
     alpha_scale = 128.0f;
     red = TextCrawlRed;
@@ -1637,7 +1637,7 @@ void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_sca
     if (font == NULL) {
         return;
     }
-    NuQFntPushPrintMode(4);
+    NuQFntPushPrintMode(NUQFNT_MODE_3D);
     NuQFntPushCoordinateSystem(4);
     NuQFntSet(font);
     MatrixTextStringEncode(font, text, encoded);

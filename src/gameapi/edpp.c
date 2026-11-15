@@ -1214,7 +1214,7 @@ void edppDrawCursor(void) {
     NuRndrLine2di(0x1670, 0x9b0, 0x1670, 0xdc8, 0x80000000, (NUMTL *)edpp_boxmtl);
     NuRndrLine2di(0x2630, 0x9b0, 0x2630, 0xdc8, 0x80000000, (NUMTL *)edpp_boxmtl);
     NuRndrLine2di(0x1670, 0xdc8, 0x2630, 0xdc8, 0x80000000, (NUMTL *)edpp_boxmtl);
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
     NuQFntSet(system_qfont);
     if (edpp_readout == 0) {

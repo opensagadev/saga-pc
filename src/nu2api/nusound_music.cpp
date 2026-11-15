@@ -513,7 +513,7 @@ void NuMusic::Debug(i32 unused, i32 y) {
         f32 playback_position; // 0xc
     } stream_info;
 
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(1);
     NuQFntSet(system_qfont);
     NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);

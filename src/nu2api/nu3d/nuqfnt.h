@@ -57,6 +57,12 @@ extern "C" {
     extern f32 nuqfnt_space_width;
     extern f32 qfnt_len_scale;
     extern f32 qfnt_height_scale;
+/* NuQFntMode, the print mode NuQFntPushPrintMode sets: NuQFntPrint2d* and NuQFntSet*2d push NUQFNT_MODE_2D (no
+ * material stream), NuQFntPrint3D* push NUQFNT_MODE_3D (full y scale); with NUQFNT_MODE_FIXED_DIGITS every digit is as
+ * wide as '0'. */
+#define NUQFNT_MODE_FIXED_DIGITS 0x1
+#define NUQFNT_MODE_2D 0x2
+#define NUQFNT_MODE_3D 0x4
     extern u32 NuQFntMode;
     extern i32 NuQFntModeStackIndex;
     extern u32 NuQFntModeStack[16];

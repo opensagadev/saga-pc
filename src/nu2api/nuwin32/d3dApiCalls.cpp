@@ -299,7 +299,7 @@ extern "C" {
     void fun_006df670(f32 x, f32 y) {
         f32 line_height;
         f32 fps;
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntPushCoordinateSystem(1);
         NuQFntSet(system_qfont);
         NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);

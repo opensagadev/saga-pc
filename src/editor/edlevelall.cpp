@@ -3263,7 +3263,7 @@ void LevelEditor::DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 availa
     i32 text_offset;
     i32 i;
 
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(1);
     NuQFntSet(system_qfont);
     line_height = static_cast<i32>(NuQFntHeight(system_qfont) * 0.15625);
@@ -3287,7 +3287,7 @@ void LevelEditor::DrawInfoText(char **lines, i32 count, i32 x, i32 y, i32 availa
             y = 5;
         }
         NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, background, edLevel2dMtl);
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntPushCoordinateSystem(1);
         NuQFntSet(system_qfont);
         NuQFntSetColour(system_qfont, text_colour);

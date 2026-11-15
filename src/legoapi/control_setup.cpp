@@ -1398,7 +1398,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
         primary = 0.65f;
         secondary = -0.65f;
     }
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(3);
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);

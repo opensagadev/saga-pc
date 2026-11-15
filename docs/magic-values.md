@@ -90,6 +90,7 @@ same function initialises and steps (its values are indexes).
 | `AIEDITORSETTINGS.display_options` (8 bits) | `AIEDITOR_*` (aisysall.c) | the AI editor menu toggles and their labels (Draw All Paths, Snap Height, Stop Platforms, ...) |
 | `NuMusic::Voice.status` | `NUMUSIC_VOICE_*` (numusic.h) | the `NuMusicVoiceStatusText` names (IDLE_PENDING ... PLAYING) |
 | `gamecamera_s.mode`, `previous_mode`, `LEGOCAMMODE_DOORCUT`/`_OBSTACLE` | `GAMECAM_MODE_*` (legoapi_types.h) | the camera update's choice of camera for each condition (sock system, obstacle spline, door cut, ViewCam pad, shop, minikit viewer, the mission_cam, char_cam and point_cam level splines); the game sets `LEGOCAMMODE_DOORCUT` 4 and `LEGOCAMMODE_OBSTACLE` 2 |
+| `NuQFntMode`, the print mode stack | `NUQFNT_MODE_*` (nuqfnt.h) | NuQFntPrint2d*/Set*2d push 2 (no material stream), NuQFntPrint3D* push 4 (full y scale); with 1 every digit is as wide as '0' |
 
 ## Still literal (meaning not known yet)
 

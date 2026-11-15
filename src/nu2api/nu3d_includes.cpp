@@ -4689,25 +4689,25 @@ extern "C" {
     }
 
     void NuQFntSet2d(VUFNT *font) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntSet(font);
         NuQFntPopPrintMode();
     }
 
     void NuQFntSetScale2d(VUFNT *font, f32 x_scale, f32 y_scale) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntSetScale(font, x_scale, y_scale);
         NuQFntPopPrintMode();
     }
 
     void NuQFntSetColour2d(VUFNT *font, u32 colour) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntSetColour(font, colour);
         NuQFntPopPrintMode();
     }
 
     void NuQFntSetMtx2d(VUFNT *font, NUMTX *matrix) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntSetMtx(font, matrix);
         NuQFntPopPrintMode();
     }
@@ -4994,25 +4994,25 @@ extern "C" {
     }
 
     void NuQFntPrint2dW(VUFNT *font, u16 *text) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntPrintW(font, text);
         NuQFntPopPrintMode();
     }
 
     void NuQFntPrint2dU(VUFNT *font, char *text) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntPrintU(font, text);
         NuQFntPopPrintMode();
     }
 
     void NuQFntPrint3DW(VUFNT *font, u16 *text) {
-        NuQFntPushPrintMode(4);
+        NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntPrintW(font, text);
         NuQFntPopPrintMode();
     }
 
     void NuQFntPrint3DU(VUFNT *font, char *text) {
-        NuQFntPushPrintMode(4);
+        NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntPrintU(font, text);
         NuQFntPopPrintMode();
     }
@@ -5034,7 +5034,7 @@ extern "C" {
     }
 
     void NuQFntMove2d(VUFNT *font, f32 x, f32 y, f32 z) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntMove(font, x, y, z);
         NuQFntPopPrintMode();
     }
@@ -5941,7 +5941,7 @@ extern "C" {
         i32 width;
         i32 left;
 
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         va_start(arguments, format);
         vsprintf(text, format, arguments);
         va_end(arguments);
@@ -6469,7 +6469,7 @@ void OcclusionManager::RenderStats() const {
     if (!initialized || !enabled || NuRndrDoingScreenGrab != 0) {
         return;
     }
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(1);
     NuQFntSet(system_qfont);
     NuQFntSetScale(system_qfont, 0.7f, 0.7f);
@@ -9163,7 +9163,7 @@ extern "C" {
             return;
         }
 
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntPushCoordinateSystem(1);
         NuQFntSet(system_qfont);
         NuQFntSetColour(system_qfont, 0xe0e0e0e0);
@@ -9320,7 +9320,7 @@ extern "C" {
 
                     NuRndrRect2di((i32)(left * screen_width), (i32)(0.05f * screen_height), (i32)((right - left) * screen_width),
                                   (i32)((bottom - 0.05f) * screen_height), timebar->colours[slot], NULL);
-                    NuQFntPushPrintMode(2);
+                    NuQFntPushPrintMode(NUQFNT_MODE_2D);
                     NuQFntPushCoordinateSystem(1);
                     NuQFntSet(system_qfont);
                     NuQFntSetScale(system_qfont, 1.0f, 1.0f);

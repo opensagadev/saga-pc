@@ -2386,7 +2386,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         HubStatsTextMatrix(&matrix, angle);
         NuMtxTranslate(&matrix, const_cast<NUVEC *>(&HubPercentPosition));
         matrix.m31 += bob;
-        NuQFntPushPrintMode(4);
+        NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
         NuQFntSetCoordinateSystem(4);
@@ -2401,7 +2401,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         NuMtxTranslate(&matrix, const_cast<NUVEC *>(&HubPercentPosition));
         matrix.m31 += bob;
         matrix.m31 = (f32)(matrix.m31 + (f64)0.16f);
-        NuQFntPushPrintMode(4);
+        NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
         NuQFntSetCoordinateSystem(4);

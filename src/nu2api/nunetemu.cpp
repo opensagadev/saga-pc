@@ -125,7 +125,7 @@ void NuNetEmu::PackStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) 
     NetStats::Draw(x, y, width, height, info);
 
     NuQFntPushCoordinateSystem(3);
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     VUFNT *font = system_qfont;
     f32 font_height = NuQFntHeight(font);
     NuQFntSetColour(font, 0x80808080);

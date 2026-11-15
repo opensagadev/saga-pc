@@ -1355,7 +1355,7 @@ void edmainClose(void) {
 
 void edmainRender(void) {
     if (ed_main_menu != NULL) {
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         NuQFntPushCoordinateSystem(1);
         NuQFntSet(system_qfont);
         NuQFntSetScale(system_qfont, edmain_menu_scale, edmain_menu_scale);
@@ -2305,7 +2305,7 @@ static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip
         i32 width;
         i32 text_x;
         char *end;
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         va_start(args, format);
         NuVSPrintf(text, format, args);
         va_end(args);
@@ -4695,7 +4695,7 @@ void RenderFileSel3(i32 draw_title) {
     x = FS_X;
     y = FS_Y;
     width = FS_Width;
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(1);
     NuQFntSet(system_qfont);
     NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);

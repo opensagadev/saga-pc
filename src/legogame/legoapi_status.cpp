@@ -188,7 +188,7 @@ extern "C" {
         NuMtxMul(&RenderStatusMatrixPrivate, &RenderStatusMatrixPrivate, NuCameraGetMtx());
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &RenderStatusMatrixPrivate);
-        NuQFntPushPrintMode(4);
+        NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntSetCoordinateSystem(4);
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, scale, scale);
@@ -228,7 +228,7 @@ extern "C" {
         NuMtxMul(&matrix, &matrix, NuCameraGetMtx());
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
-        NuQFntPushPrintMode(4);
+        NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntSetCoordinateSystem(4);
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, scale, scale);

@@ -4339,7 +4339,7 @@ void edrtlDrawBurnouts(void) {
 
 static void edrtlRender(void) {
     NuQFntPushCoordinateSystem(1);
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     if (rtl_near_clip_at_cursor) {
         usr_cam->near_clip = NuVecDist(&burn_editor_position, (NUVEC *)&usr_cam->mtx.m30, NULL) - 1.0f;
     } else {

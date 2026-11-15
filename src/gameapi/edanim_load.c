@@ -925,7 +925,7 @@ void edanimDrawCursor(void) {
     NuRndrLine2di(0x1710, 0xa50, 0x1710, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
     NuRndrLine2di(0x24f0, 0xa50, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
     NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
     NuQFntSet(system_qfont);
     NuQFntSetColour(system_qfont, 0xe0e0e0e0);

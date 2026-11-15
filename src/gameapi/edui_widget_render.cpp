@@ -27,7 +27,7 @@ static void EduiPrintAlignedText(void *font, i32 x, i32 y, i32 alignment, char *
         va_list args;
         i32 width;
         i32 left;
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         va_start(args, format);
         NuVSPrintf(text, format, args);
         va_end(args);
@@ -806,7 +806,7 @@ static void EduiPrintClippedText(void *font, i32 x, i32 y, i32 alignment, i32 cl
     if (edui_donotdraw == 0) {
         char text[1024];
         va_list args;
-        NuQFntPushPrintMode(2);
+        NuQFntPushPrintMode(NUQFNT_MODE_2D);
         va_start(args, format);
         NuVSPrintf(text, format, args);
         va_end(args);
@@ -847,7 +847,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuQFntPushCoordinateSystem(1);
-    NuQFntPushPrintMode(2);
+    NuQFntPushPrintMode(NUQFNT_MODE_2D);
     if (edui_donotdraw == 0) {
         NuQFntSet(edui_font);
     }
