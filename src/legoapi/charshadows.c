@@ -83,6 +83,8 @@ void CharShadows_Update(void) {
     }
 }
 
+i32 CharacterBlobShadowsOn = 1;
+
 void CharShadows_Draw(void) {
     GAMEOBJECT *object;
     CHARACTER_SHADOW_PACKET *packet;

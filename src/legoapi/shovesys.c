@@ -1,4 +1,6 @@
 #include "saga.h"
+f32 ShoveMaximumSpeed = 2.0f;
+f32 ShoveMaximumPenetration = 0.1f;
 #pragma data_seg(".data$ShoveCollisionExpansionPc")
 static f32 ShoveCollisionExpansion = 0.1f;
 #pragma data_seg()

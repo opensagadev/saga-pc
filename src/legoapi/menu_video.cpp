@@ -50,6 +50,10 @@ extern "C" bool MenuCanChangeShadows(void) {
     return PCDeviceBackend.requested_multisample == 0 || PcWindowOptions.shadowmethod == 1;
 }
 
+extern "C" {
+    MENU_VIDEO_OPTIONS MenuVideoOptions = {0};
+}
+
 extern "C" void MenuEnterVideo(MENU *) {
     MenuVideoOptions.aspect_mode = PcWindowOptions.aspect_mode;
     MenuVideoOptions.shadows_enabled = PcWindowOptions.shadowsenabled != 0;
@@ -470,6 +474,11 @@ void PC_DEVICE_BACKEND_PC::RestoreSavedMode() {
     }
     MenuAppliedAspect = aspect;
     CreateOrResetDevice(1);
+}
+
+extern "C" {
+    f32 MenuVideoConfirmDuration = 0;
+    i32 MenuVideoConfirmWait = 0;
 }
 
 extern "C" void MenuEnterVideoConfirm(MENU *menu) {

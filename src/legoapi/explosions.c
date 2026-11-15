@@ -1,6 +1,9 @@
 #include "saga.h"
 #include <string.h>
 
+EXPLOSION_PC Explosions[8] = {0};
+i32 i_explosion = 0;
+
 EXPLOSION_PC *AddExplosion(NUVEC *position, f32 radius, f32 duration, GAMEOBJECT *owner, i32 effect, u32 flags) {
     EXPLOSION_PC *explosion = &Explosions[i_explosion];
     explosion->position = *position;
@@ -40,6 +43,8 @@ static void Explosion_Feedback(EXPLOSION_PC *explosion) {
         NewBuzz(explosion->owner->pad->bound_pad, 0.1f, 0);
     }
 }
+
+f32 ExplosionKnockbackScale = 2.0f;
 
 void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
     f32 progress;

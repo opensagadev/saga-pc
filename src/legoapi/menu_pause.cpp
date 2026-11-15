@@ -16,6 +16,8 @@ extern "C" {
         }
     }
 
+    u8 MenuAutoSaveCancelFirst = 1;
+
     void MenuUpdateAutoSaveCancel(MENU *menu) {
         if (MenuASCancelFinished) {
             MenuASCancelFinished = 0;

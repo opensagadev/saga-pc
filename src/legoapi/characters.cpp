@@ -212,9 +212,17 @@ extern "C" void CharScenes_AreaDump() {
 }
 
 extern "C" {
+    i32 CHARCATEGORYCOUNT = 0;
 #pragma bss_seg(".bss$IconScene")
     static NUGSCN **IconScene = 0;
 #pragma bss_seg()
+    CHARACTERDATA_PC *CDataList = 0;
+    i32 CHARCOUNT = 0;
+    KILLPARTS_CHARSCENE *KillPartsCharSceneArea = 0;
+    CHAR_CATEGORY_RECORD_PC *CharCategory = 0;
+    PLAYERCHARACTERCONFIG *GCDataList = 0;
+    u8 *Game_CharacterSave = 0;
+    i32 drawcharicon_find = 0;
 
     static char AreaIconPathPrivate[0x40] = "stuff\\icons\\";
 

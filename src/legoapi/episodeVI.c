@@ -30,17 +30,28 @@ f32 SarlaccDiscoBaseOffset = -0.12f;
 static SARLACC_DISCO sarlaccdisco = {0};
 nuhspecial_s SarlaccLevSpecial[7] = {0};
 void *SarlaccLevelBuildits[2] = {0};
+f32 runningTotalPos = 0;
 GIZMO_PC *SarlaccObstMirrorBall = NULL;
+u64 routemask_efloor_on = 0;
 GIZMO_PC *SarlaccForceMirrorBall = NULL;
 
 f32 DeathStarZapSizeWidth = 1.0f;
 f32 DeathStarZapSizeLength = 1.0f;
 f32 DeathStarZapWidthBias = 0.01f;
 f32 DeathStarZapEndWidth = 1.5f;
+i32 fire_clip_dist = 1000;
+f32 EmperorFloorRadius = 0.35f;
+f32 EmperorFloorJitter = 0.2f;
+f32 EmperorFloorPush = 0.2f;
+f32 EmperorFloorSafeXMinimum = 1.5f;
 i32 DeathStarZapLaserType = 0;
+nuhspecial_s *hspecial_efloor = 0;
+i32 EmperorFloorRouteOn = 0;
+f32 eFloor_timer = 0;
 
 /* Private owner of the two player timers. */
 static f32 slowDownTimer[2] = {0};
+SPLINEPOS fireBackPos = {0};
 f32 FireDeltaPosition = 0.0f;
 
 typedef struct emperor_fight_packet_s { // size 0x8
@@ -1307,6 +1318,8 @@ static GIZMOBLOWUP_PC *SarlaccBlowUpTargets[4] = {0};
 #pragma bss_seg(".bss$SarlaccTakenOverPc")
 static i32 SarlaccTakenOver = 0;
 #pragma bss_seg()
+i32 SarlaccPower = 0;
+i32 SarlaccRecharging = 0;
 
 void SarlaccPitC_Reset(WORLDINFO *world) {
     char name[32];
@@ -1427,6 +1440,12 @@ void SarlaccPitC_Update(WORLDINFO *world) {
 
 static u8 prevOnMoonCar = 0;
 static u8 prevOnTractor = 0;
+SPLINEPOS fireSplinePos = {0};
+void *emperorfighta_netpacket = 0;
+f32 fireSpeedScale = 0;
+i32 SarlaccTargetShield[2] = {0};
+u64 routemask_efloor_off = 0;
+SARLACC_NETPACKET *sarlaccb_netpacket = NULL;
 static u8 prevOnTaunTaun = 0;
 static u8 prevOnTownCar = 0;
 

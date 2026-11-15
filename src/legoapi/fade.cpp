@@ -53,6 +53,7 @@ extern "C" {
     FadeStill fadeStill;
     FADEINFO_s *pFadeInfo = 0;
     NUMTL *FadeMtl = 0;
+    NUMTL *FadeMtl2 = 0;
     NUMTL *ScreenFadeMtl = 0;
     i32 wait_till_next_frame = 0;
     i32 FRAMES_TO_WAIT = 1;

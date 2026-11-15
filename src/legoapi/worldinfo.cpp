@@ -446,6 +446,8 @@ extern "C" {
         }
     }
 
+    i32 Grass_Available = 0;
+
     void LoadGrassFile(WORLDINFO *world) {
         char path[256];
 
@@ -527,6 +529,10 @@ extern "C" {
         }
         return 1;
     }
+
+    u32 ResetBits = 0;
+    void (*WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *) = 0;
+    void (*WorldInfo_InitLastFn)(WORLDINFO *) = 0;
 
     void WorldInfo_Init(WORLDINFO *world) {
         void (*init_fn)(WORLDINFO *);
@@ -678,6 +684,8 @@ extern "C" {
         }
     }
 
+    i32 next_level = 0;
+
     void WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
         (void)bg_info;
         LOG_INFO("Stream level begin: next_level=%d", next_level);
@@ -695,6 +703,10 @@ extern "C" {
         }
         LOG_INFO("Stream level complete: next_level=%d world=%p loaded=%d", next_level, (void *)LWORLD, LWORLD->loaded);
     }
+
+    volatile i32 abort_load = 0;
+    f32 WaitingForLevelTime = 0;
+    i32 no_more_loads = 0;
 
     void LevelStreaming_Update(WORLDINFO *world) {
         CUTINFO *cut;

@@ -53,8 +53,20 @@ extern "C" {
     } BOLT_CONFIG;
 
     static BOLT_CONFIG *BT_bolttype = 0;
+    i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
+    i32 i_bolt = 0;
+    i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
     static WORLDINFO *BT_worldinfo = 0;
+    NUVEC BoltShootPositionScratch = {0};
+    BOLT Bolt[32] = {0};
+    i32 BoltNoSfx = 0;
+    i32 BoltNoObjectMomentum = 0;
+    i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
+    f32 BOLT_OVERRIDE_PLAYERBOLTSPEED = 0;
+    f32 BOLT_OVERRIDE_PLAYERBOLTDURATION = 0;
+    i32 (*BoltInitSfxFn)(GAMEOBJECT *) = 0;
     static NUGSCN *BT_scene = 0;
+    i32 BoltShootIdScratch = 0;
     static i32 BT_gdeb_moving_count = 0;
 
     /* 44 records; the configuration is published in InitGameAfterConfig. */
@@ -645,6 +657,8 @@ extern "C" {
         BT_bolttype->flags_60 |= 0x40000000;
     }
 
+    f32 BoltShootParameter = 0.1f;
+    BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
     static NUFPCOMJMP BoltType_ConfigKeywords[] = {
         {("name"),              BT_name             },
         {("speed"),             BT_speed            },

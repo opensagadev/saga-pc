@@ -1,6 +1,8 @@
 #include "saga.h"
 #include <stdio.h>
 
+char **PDebNameList = NULL;
+
 void LoadPartFile(WORLDINFO *world) {
     char path[256];
     world->page_part = -1;

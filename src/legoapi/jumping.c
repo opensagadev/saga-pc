@@ -173,6 +173,8 @@ i32 StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f
     return 1;
 }
 
+i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *) = 0;
+
 void FindSlamOrigin(GAMEOBJECT *object, NUVEC *start, NUVEC *end) {
     i32 joint;
     if (FindSlamOrigin_UseCPosFn != NULL && FindSlamOrigin_UseCPosFn(object)) {
@@ -220,6 +222,8 @@ i32 UseFallAnim(GAMEOBJECT *object) {
     }
     return 0;
 }
+
+i32 (*IsWearingBackPackFn)(GAMEOBJECT *) = 0;
 
 i32 StartFallLand(GAMEOBJECT *object, i32 action) {
     BEAST_FALL_LAND_VIEW *view = (BEAST_FALL_LAND_VIEW *)object;
@@ -314,6 +318,14 @@ i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
     }
     return 0;
 }
+
+f32 JumpFailedLandChainTime = 0.0f;
+i32 DoubleJump_AlwaysReachJump2Height = 0;
+i32 DoubleJump_JediSlam = 0;
+i32 (*Jump_PreventJumpFn)(GAMEOBJECT *) = NULL;
+void (*Jump_EndOfLandContextFn)(GAMEOBJECT *) = NULL;
+i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32) = NULL;
+i32 (*CanGlideFn)(GAMEOBJECT *) = NULL;
 
 void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation_set, i32 action_pressed, i32 action_held, i32 hit_effect) {
     JUMP_AUXILIARY_FIELDS *aux = (JUMP_AUXILIARY_FIELDS *)object;
@@ -887,6 +899,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
 #pragma data_seg(".data$BigJump_LandActionFn")
 i32 (*BigJump_LandActionFn)(GAMEOBJECT *) = BigJump_LandAction_Default;
 #pragma data_seg()
+
+void (*BigJump_EndOfLandFn)(GAMEOBJECT *) = 0;
 
 void BigJumpCode(GAMEOBJECT *object) {
     WORLDINFO *world;

@@ -37,6 +37,7 @@ extern "C" {
     extern const f64 GameObjectNearFloorNoFloorHeight;
     i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
     nuhspecial_s thingsSceneArm = {0};
+    nuhspecial_s thingsSceneBase = {0};
     static ADDGIZMOTYPE_PC GizmoRegistrySpinnerAddTypePc = {0};
 }
 
@@ -311,6 +312,11 @@ extern "C" void *GizSpinner_ReserveBufferSpace(void *pointer) {
     return world->spinners;
 }
 
+extern "C" {
+    i32 LEGOTHINGSSCENE_TER_SPINBASE = -1;
+    i32 LEGOTHINGSSCENE_TER_SPINARM = -1;
+}
+
 extern "C" void GizSpinners_InitTerrain(WORLDINFO *world) {
     i32 index;
     i32 use_default_terrain = 0;
@@ -539,6 +545,10 @@ extern "C" i32 GizSpinner_GetState(GIZSPINNER_s *spinner) {
         return 0;
     }
     return (spinner->anim_set->state == 2) + 1;
+}
+
+extern "C" {
+    i16 GizSpinnerGDeb_Fail[3] = {-1, -1, -1};
 }
 
 extern "C" void GizSpinner_PushFail(GAMEOBJECT *object, GIZSPINNER_s *) {

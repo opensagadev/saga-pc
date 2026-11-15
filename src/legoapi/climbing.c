@@ -217,6 +217,8 @@ i32 LedgeTerrain_SetTargetMom(GAMEOBJECT *object) {
     return 1;
 }
 
+i32 (*CanMagnetClimbFn)(GAMEOBJECT *) = 0;
+
 i32 CanClimbSurface(GAMEOBJECT *object, i32 surface) {
     if ((u32)surface > 31 || (TerSurface[surface].flags & 0x10000) == 0) {
         return 0;
@@ -243,6 +245,8 @@ void Climb_UpdateMagnetRotation(GAMEOBJECT *object) {
     object->pitch_angle = SeekRot(object->pitch_angle, (u16)(-0x4000 - object->unknown_7a4), 6.0f);
     object->roll_angle = SeekRot(object->roll_angle, 0, 10.0f);
 }
+
+f32 MAGNETOFFSET = 0;
 
 void Climb_SetMagnetDrawOffsetTarget(GAMEOBJECT *object, NUVEC *offset) {
     NuVecScale(offset, &object->external_force, MAGNETOFFSET);
@@ -490,6 +494,8 @@ void *CreateClimbObjectSys(VARIPTR *buffer, VARIPTR *end, i32 count) {
     return system;
 }
 
+i32 LedgeTerrain_CheckAnims = 1;
+f32 LEDGETERRAINLOOKAHEAD = 0.02f;
 i32 ClimbNormalProbeCount = 8;
 
 void ClimbObject_FindNormal(CLIMB_SLOT_PC *object) {

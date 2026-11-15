@@ -100,6 +100,10 @@ extern void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32);
 extern i32 complexsockposition_forcesock;
 extern i32 movegamecamera_forcesock;
 
+char PlayerArcadeStartDoor[16] = "door_to_network";
+char PlayerMissionStartDoor[13] = "mission_door";
+PLAYER_START_INITIALIZER_RECORD PlayerStart[8] = {0};
+
 void Players_InitPositions(WORLDINFO *world) {
     i32 bonus = world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0;
     NUGSPLINE *spline;
@@ -198,6 +202,8 @@ void Players_InitPositions(WORLDINFO *world) {
     }
 }
 
+i32 PlayerID[2] = {-1, -1};
+
 void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     i32 ids[2];
     i32 index;
@@ -223,6 +229,8 @@ void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
         PlayerID[1] = index;
     }
 }
+
+GAMEOBJECT *player = 0;
 
 GAMEOBJECT *fun_0055e2b0(i32 id) {
     i32 index;
@@ -273,6 +281,8 @@ i32 Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
     return 0;
 }
 
+GAMEOBJECT *player2 = 0;
+
 void SetPlayer(void) {
     if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80) != 0) {
         player = Player[0];
@@ -296,6 +306,8 @@ i32 CanPullLevers(i32 id) {
     }
     return (flags & 0x40088) != 0;
 }
+
+PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn = 0;
 
 void Player_ClearContext(GAMEOBJECT *object, i32 mode) {
     if (Player_ClearContextFn != NULL) {
@@ -479,6 +491,11 @@ u8 FindFurthestPlayerFromVec(NUVEC *position, GAMEOBJECT **furthest_player, f32 
     }
     return 0;
 }
+
+i32 FULLDEBUGTOGGLE = 0;
+i32 LIFTPLAYER = 0;
+i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32) = 0;
+void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32) = 0;
 
 void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     f32 hold_time = object->input_toggle_hold_time;

@@ -57,6 +57,8 @@ void Hint_ExpandButtons(char *input, char *output) {
     *output = '\0';
 }
 
+HINTSYS hintsys = {0};
+
 i32 Hint_CurrentId(void) {
     return hintsys.active_hint != NULL ? hintsys.active_hint->id : -1;
 }
@@ -313,6 +315,9 @@ void Hint_SetCompletePc(HINT *hint) {
         Hint_SaveGameState(hint);
     }
 }
+
+i32 LEGOHINT_PUNCH = 1;
+f32 (*Hint_AlphaTargetFn)(void) = NULL;
 
 void Hint_Process(f32 elapsed) {
     i32 available = 1;

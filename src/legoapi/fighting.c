@@ -69,6 +69,8 @@ void SetWeaponOut(GAMEOBJECT *object) {
     object->unknown_e33 = 0;
 }
 
+i32 WeaponInOut_NoAIJediSfx = 0;
+
 void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     i8 context = object->character_context;
     i32 animation;
@@ -91,6 +93,8 @@ void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
     ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
     object->unknown_e33 = 1;
 }
+
+i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *) = 0;
 
 void SlowWeaponOut(GAMEOBJECT *object) {
     i32 action;
@@ -210,6 +214,8 @@ void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
     ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
     object->unknown_e33 = 2;
 }
+
+i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *) = 0;
 
 void SlowWeaponIn(GAMEOBJECT *object) {
     i32 action = -1;
@@ -466,6 +472,8 @@ void ComboHitFrame(GAMEOBJECT *object, i32 damage) {
     BlockSfx(object);
 }
 
+i32 (*CanStartHoldFn)(GAMEOBJECT *) = 0;
+
 void StartHold(GAMEOBJECT *object) {
     if (CanStartHoldFn == NULL) {
         return;
@@ -503,6 +511,10 @@ void fun_0058e480(GAMEOBJECT *object) {
         }
     }
 }
+
+i32 (*Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
+void (*Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *) = 0;
+void (*Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
 
 void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     NUVEC *hit_position = NULL;

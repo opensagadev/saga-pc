@@ -115,6 +115,8 @@ typedef struct EQUIVALENT_GROUP { // size 0x10
     nuhspecial_s objects[1];      // 0x4
 } EQUIVALENT_GROUP;
 
+NUMTL *MessageMtl = 0;
+
 void MessageBoxInitMtl(void) {
     MessageMtl = NuMtlCreate(1);
     MessageMtl->attribs.z_mode = 3;

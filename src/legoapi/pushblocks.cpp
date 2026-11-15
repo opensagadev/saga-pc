@@ -105,6 +105,8 @@ extern "C" {
 }
 
 extern "C" {
+    u32 (*CanPushBlocksFn)(GAMEOBJECT *) = NULL;
+
     static __inline f32 PushblocksFabs(f32 value) {
         f32 result;
         *(i32 *)&result = *(i32 *)&value & 0x7fffffff;
@@ -121,6 +123,11 @@ extern "C" void KnockPushBlock(PUSH_BLOCK_PC *opaque_block, NUVEC *direction) {
         NuVecScale(&block->velocity, &block->velocity, 0.005f);
         block->packed_state_flags |= 0x80u;
     }
+}
+
+extern "C" {
+    NUVEC p000 = {0.0f, 0.0f, 0.0f};
+    i32 RunOutOfPosTabSpace = 0;
 }
 
 extern "C" void ResetSinglePushBlock(WORLDINFO *, struct pushblock_s *opaque, i32) {
@@ -375,6 +382,8 @@ extern "C" i32 PushBlock(GAMEOBJECT *object) {
 }
 
 extern "C" {
+
+    f32 PushBlockOverlapShrink = 0.0f;
 
     PUSH_BLOCK_PC *BlockInBlock(WORLDINFO *opaque_world, PUSH_BLOCK_PC *opaque_block, i32 excluded, PUSH_BLOCK_PC **support) {
         WORLDINFO *world = opaque_world;
@@ -1163,6 +1172,18 @@ static i32 GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
 }
 
 static char outputName[13] = "Any Complete";
+extern "C" {
+    u16 PushBlockFacingTolerance = 910;
+    f32 PushRumbleWindowPc = 0.1f;
+    f32 PushRumblePeriod = 0.25f;
+    f32 PushFallingSpeed = 10.0f;
+    f32 PushVelocitySeekRate = 1.0f;
+    f32 PushGroundOffset = -0.001f;
+    f32 PushCornerInset = -0.006f;
+    char *PushBlocksName = "PushBlocks";
+    f32 PushInitGroundOffset = -0.001f;
+    f32 PushInitCornerInset = -0.006f;
+}
 
 static char *GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
     PUSH_BLOCK_PC *block = static_cast<PUSH_BLOCK_PC *>(gizmo->object);
@@ -1414,6 +1435,10 @@ extern "C" void ResetSinglePushBlockHeight(WORLDINFO *world, struct pushblock_s 
         block->position->y -= height;
         block->ground_offset = 0.0f;
     }
+}
+
+extern "C" {
+    i32 pushposincrease = 0;
 }
 
 extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {

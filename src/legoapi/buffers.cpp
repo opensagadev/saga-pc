@@ -2,10 +2,24 @@
 
 extern "C" {
 
+    VARIPTR permbuffer_base = {0};
+    VARIPTR permbuffer_ptr = {0};
+    VARIPTR permbuffer_end = {0};
+    VARIPTR superbuffer_end = {0};
+
     void StartPerm(void) {
         permbuffer_ptr.addr = permbuffer_base.addr;
         permbuffer_end.addr = superbuffer_end.addr;
     }
+
+    i32 permbuffer_size = 0;
+    VARIPTR characterbuffer_base = {0};
+    VARIPTR characterbuffer_ptr = {0};
+    VARIPTR characterbuffer_end = {0};
+    VARIPTR superbuffer_base = {0};
+    VARIPTR superbuffer_ptr = {0};
+    VARIPTR editbuffer_end = {0};
+    i32 EDITBUFFERENDSIZE = 0;
 
     void EndPerm(void) {
         u32 aligned = (permbuffer_ptr.addr + 3U) & ~3U;

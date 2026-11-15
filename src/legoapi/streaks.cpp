@@ -1,6 +1,19 @@
 #include "saga.h"
+extern "C" {
+    STREAK_NODE StreakNodes[128] = {0};
+    NUMTL *streakmtl_ref = 0;
+    STREAK_NODE *StreakNodesUsed = 0;
+    STREAK_NODE *streaks_free = 0;
+}
 #pragma bss_seg(".bss$StreakHeadersUsedPc")
 static STREAK_HEADER *streakhdrs_used = 0;
+extern "C" {
+    NUMTL *streakmtl = 0;
+}
+
+extern "C" {
+    f32 StreakAlphaScale = 2.0f;
+}
 
 /* Moves a header from the free list to the front of the used list. */
 extern "C" STREAK_HEADER *fun_005a35c0(void) {

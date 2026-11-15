@@ -20,6 +20,9 @@ static void SpecialMove_ConfigParticipant(NUFPAR_PC *parser, i16 *character, i8 
     }
 }
 
+struct specialmove_s *SpecialMove = 0;
+i32 SpecialMoveCount = 0;
+
 void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR_PC *parser;
     SPECIALMOVE *move;

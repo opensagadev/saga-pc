@@ -7,6 +7,10 @@ extern "C" i32 LEGOOBJ_ICON_FRAME_NEUTRAL;
 extern "C" i32 LEGOOBJ_ICON_FRAME_GREEN;
 extern "C" i32 LEGOOBJ_ICON_FRAME_BLUE;
 
+extern "C" {
+    void (*Collection_GetSelectingPlayerIDsFn)(i16 *ids) = NULL;
+}
+
 extern "C" void Collection_Draw(COLLECTION_BUILD_PC *collection, f32 x, f32 y, f32 scale, APICHARACTERMODELLIST *models, f32 alpha,
                                 i32 hide_selected) {
     f32 dx = COLLECTION_DX * scale;

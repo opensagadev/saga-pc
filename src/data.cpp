@@ -30,19 +30,9 @@ extern "C" {
     i32 loadareacharacters_no_backdrop_reset = 0;
     i32 loadareadata_loadlevel = 0;
     i32 textcrawlactive = 0;
-    i16 tTOUCHTOSTART = 0;
     i32 AreaMusic = 0;
     AREA_LEVEL_LOAD LevelLoad[12] = {0};
-    i32 Area_PlayerModelCount = 0;
-    APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
-    i32 Area_FreePlayModelCount = 0;
-    APICHARACTERMODELLIST Area_PlayerModelList[9] = {0};
     i32 LevelLoadCount = 0;
-    i32 Area_MissionModelCount = 0;
-    i32 Area_StoryModelCount = 0;
-    APICHARACTERMODELLIST Area_MissionModelList[49] = {0};
-    APICHARACTERMODELLIST *CurrentCList = NULL;
-    APICHARACTERMODELLIST *CurrentStoryCList = NULL;
     i32 netnewgame = 0;
     i16 dat_007f17bc = -1;
     i16 dat_007f17c8 = -1;
@@ -68,7 +58,6 @@ extern "C" {
     struct text_crawl_view_s TextCrawlLsw = {
         &TextCrawlChapterId, &TextCrawlVehicleBonusId, &TextCrawlCharacterBonusId, 3, 0, {0, 0}
     };
-    i32 Customiser_AccessoriesLoaded = 0;
 }
 
 extern "C" {
@@ -178,7 +167,6 @@ extern "C" {
 }
 
 extern "C" {
-    RTL_DATA LevelLightingData = {0};
     NUVEC PanelLightingColours[3] = {
         {1.0f, 0.5f, 0.5f},
         {0.5f, 1.0f, 0.5f},
@@ -194,27 +182,13 @@ extern "C" {
     f32 Lighting_RedFlashRed = 2.0f;
     f32 Lighting_BlueFlickerGreen = 2.0f;
     f32 Lighting_BlueFlickerBlue = 2.0f;
-    i32 Lighting_FlashRedOnLastHeart = 0;
-    i32 Lighting_HighlightFlash = 0;
-    f32 Lighting_RedFlashGreen = 0.0f;
-    f32 Lighting_RedFlashBlue = 0.0f;
-    f32 Lighting_BlueFlickerRed = 0.0f;
-    i32 (*Lighting_BlueFlickerFn)(GAMEOBJECT *) = NULL;
 }
 
 extern "C" {
-    f32 RenderBackdropTopR = 0.0f;
-    f32 RenderBackdropTopG = 0.0f;
-    f32 RenderBackdropTopB = 0.0f;
-    f32 RenderBackdropBottomR = 0.0f;
-    f32 RenderBackdropBottomG = 0.0f;
-    f32 RenderBackdropBottomB = 24.0f;
-    i32 RenderBackdropBlack = 0;
     f32 hub_minikitviewer_movewait = 0.0f;
     f32 hub_minikitviewer_move = 0.0f;
     f32 HubMiniKitViewerReflectY = 0.09f;
     f32 HubHologramAlpha = 0.0f;
-    i32 HubCompletionPoints = 0;
     i32 HubBothTrueJediGoldBricks = 0;
     f32 HubAreaPanelOne[6] = {-0.15f, -0.45000002f, 0.75f, -0.75f, 0.45000002f, 0.15f};
     NUGSPLINE *HubMiniKitViewerSpline = NULL;
@@ -233,33 +207,12 @@ extern "C" {
     f32 HubJabbaAwake = 0.0f;
     i32 HubBuildItsReset = 0;
     f32 HubPreventDropOutTime = 0.0f;
-    i32 EpCompleteCount = 0;
-    i32 EpCompleteTotal = 0;
-    i32 EpMiniKitCount = 0;
-    i32 EpMiniKitTotal = 0;
-    i32 EpCharKitCount = 0;
-    i32 EpCharKitTotal = 0;
-    i32 EpBuildUpCount = 0;
-    i32 EpBuildUpTotal = 0;
-    i32 EpStoryBuildUpCount = 0;
-    i32 EpStoryBuildUpTotal = 0;
-    i32 EpFreePlayBuildUpCount = 0;
-    i32 EpFreePlayBuildUpTotal = 0;
-    i32 EpRedBrickCount = 0;
-    i32 EpRedBrickTotal = 0;
-    i32 EpGoldBrickCount = 0;
-    i32 EpGoldBrickTotal = 0;
     i32 EpisodeGoldBrickForSuperStory = 0;
-    struct EPISODESAVE_s *EpisodeSave = NULL;
     i32 EpisodeGoldBrickForSuperBonus = 0;
     i32 EpisodeGoldBrickForChallenge = 0;
     u16 TextCrawlRotateX = 13107;
     u16 TextCrawlRotateY = 0;
     u16 TextCrawlRotateZ = 0;
-    f32 TextCrawlScaleX = 0.01f;
-    f32 TextCrawlScaleY = 0.01f;
-    f32 TextCrawlLineWidth = 7.0f;
-    f32 TextCrawlLineSpacing = 1.3f;
     u32 TextCrawlRed = 0;
     u32 TextCrawlGreen = 111;
     u8 TextCrawlBlue = 255;
@@ -268,13 +221,9 @@ extern "C" {
 }
 
 extern "C" {
-    i32 MenuResult = 0;
-    i32 menu_pulsate_angle = 0;
-    f32 menu_pulsate_speed = 0.0f;
     i32 MENUSFX_MENUMOVE = -1;
     u8 MenuKeyboardOverrideActivePc = 0;
     i32 MenuKeyboardPendingPc = 0;
-    i32 pause_i_pad = -1;
     u32 GAMEPAD_MENUSELECT = 0x40;
     u32 GAMEPAD_MENUCANCEL = 0x10;
     u32 GAMEPAD_SELECT = 0x100;
@@ -322,24 +271,19 @@ extern "C" {
 
 extern "C" {
     char *apiGameName = "Game";
-    char *apiGameTitle = "Game";
     extern char dat_007516c0[];
     char *apiGameSubTitle = dat_007516c0;
     char *apitxt_YES = "Yes";
     char *apitxt_NO = "No";
-    char *apitxt_OK = "OK";
-    char *apitxt_CANCEL = "Cancel";
     char *apitxt_RETRY = "Retry";
     char *apitxt_SLOT = "Profile";
     char *apitxt_PRESENT = "Present";
     char *apitxt_EMPTY = "Empty";
     char *apitxt_NOSPACE = "No Space";
-    char *apitxt_CONTINUE = "Continue";
     char *apitxt_SAVEGAME = "Save Game";
     char *apitxt_LOADGAME = "Load Game";
     char *apitxt_DELETEGAME = "Delete Game";
     char *apitxt_GAMESAVED = "Save Successful";
-    char *apitxt_GAMEOVERWRITTEN = "Overwrite Successful";
     char *apitxt_GAMELOADED = "Game Loaded";
     char *apitxt_DELETING = "Deleting data.";
     char *apitxt_FORMATTING = "Formatting.";
@@ -347,22 +291,11 @@ extern "C" {
     char *apitxt_CONFIRMLOAD = "Confirm Load?";
     char *apitxt_CONFIRMSAVE = "Confirm Save?";
     char *apitxt_CONFIRMOVERWRITE = "Are you sure you wish to overwrite this save file?";
-    char *apitxt_DOYOUWANTTOSTART = "Do you want to start the game?";
     char *apitxt_DOYOUWANTTOABORT = "Do you want to cancel the Save?";
     char *apitxt_DOYOUWANTTOABORTLOAD = "Do you want to cancel the Load?";
     char *apitxt_DOYOUWANTTOABORTFORMAT = "Do you want to cancel the Format?";
-    char *apitxt_CONTINUEWITHOUTSAVING = "Continue without Saving";
-    char *apitxt_GAMEOVERWRITING = "Overwriting data.";
     char *apitxt_NEWSAVE = "New Save";
-    char *apitxt_CONTINUEWITHOUTLOADING = "Continue without loading";
-    char *apitxt_COMPLETED = "Completed";
-    char *apitxt_VIBRATION = "Vibration";
     char *apitxt_CONFIRMDELETE = "Are you sure you wish to delete this save file?";
-    char *apitxt_PROGRESS = "Progress: %.1f%%";
-    char *apitxt_TIMEPLAYED = "Time Played: %s";
-    char *apitxt_PCPRESSSTARTFE = "FE Start?";
-    char *apitxt_PCPRESSSTARTP1 = "P1 ?";
-    char *apitxt_PCPRESSSTARTP2 = "P2 ?";
     char *apitxt_GAMESAVING = "Saving game...";
     char *apitxt_GAMELOADING = "Loading game...";
     char *apitxt_FAILEDTOLOAD = "Failed to Load";
@@ -373,9 +306,6 @@ extern "C" {
     char *apitxt_FORMATTINGCOMPLETE = "Formatting complete";
     char *apitxt_DELETECOMPLETE = "Delete complete";
     char *apitxt_NOTENOUGHSPACE = "Insufficient drive space to save games.";
-    char *apitxt_CONTROLLERREMOVED =
-        "The controller in controller port %i has been removed. Please insert a controller into controller port %i to "
-        "continue with the game.";
 }
 
 extern "C" {
@@ -389,7 +319,6 @@ extern "C" {
 
 extern "C" {
     char *AiLevelPathName = dat_007516c0;
-    i32 (*GlobalCharacterTypeIDFn)(char *) = NULL;
     void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *) = NULL;
 }
 
@@ -440,7 +369,6 @@ extern "C" {
     i32 InitOnceEject = 0;
     i32 PcWindowQuit = 0;
     i32 NuHwShowCommand = 0;
-    CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSave = NULL;
     i32 PcIntelShaderFallback = 0;
     u8 PcCapsConfigured = 0;
     volatile u8 PcKeyQueueHead = 0;
@@ -1903,7 +1831,6 @@ PC_INPUT_CONFIG_PC PcStaticInputConfigs[24] = {
 PC_DI_CAPS PcKeyboardCapabilities = {};
 
 extern "C" {
-    i32 KNOBS = -1;
     NUGSCN *area_scene = NULL;
     NUGSCN *vehicle_scene = NULL;
     NUGSCN *big_icon_scene = NULL;
@@ -3872,32 +3799,8 @@ extern "C" {
     i32 shop_from_cutsceneplayer = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$DoorExitCameraSplineNamePc")
-    char DoorExitCameraSplineName[32] = {0};
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$DoorCutSplinePc")
-    NUGSPLINE *DoorCutSpline = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$DoorCutCameraPosition0Pc")
     NUVEC DoorCutCameraPosition0 = {0};
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$DoorCutCameraPosition1Pc")
-    NUVEC DoorCutCameraPosition1 = {0};
-#pragma bss_seg()
-
-#pragma data_seg(".data$PlayerMissionStartDoorPc")
-    char PlayerMissionStartDoor[13] = "mission_door";
-#pragma data_seg()
-
-#pragma data_seg(".data$PlayerArcadeStartDoorPc")
-    char PlayerArcadeStartDoor[16] = "door_to_network";
-#pragma data_seg()
-
-#pragma bss_seg(".bss$ResetBits")
-    u32 ResetBits = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$LevMusicAction")
@@ -3916,13 +3819,6 @@ extern "C" {
     i32 LevMusicOtherAmbient = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$WorldInfo_InitMenuFn")
-    void (*WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$WorldInfo_InitLastFn")
-    void (*WorldInfo_InitLastFn)(WORLDINFO *) = 0;
-#pragma bss_seg()
 }
 extern "C" {
 #pragma bss_seg(".bss$LevPathNodes")
@@ -3999,10 +3895,6 @@ extern "C" {
     i32 LevDeaths = 0;
 #pragma bss_seg()
 
-#pragma data_seg(".data$newlevelfrommenu_newmenuid")
-    i32 newlevelfrommenu_newmenuid = -1;
-#pragma data_seg()
-
 #pragma bss_seg(".bss$newlevelfrommenu_newmenuy")
     i32 newlevelfrommenu_newmenuy = 0;
 #pragma bss_seg()
@@ -4010,21 +3902,6 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$LevInstAnimResetPc")
     LEVEL_INST_ANIM_RESET_VIEW LevInstAnimReset = {0};
-#pragma bss_seg()
-}
-extern "C" {
-#pragma bss_seg(".bss$ActionPairTab")
-    PC_MUSIC_ACTION_PAIR *ActionPairTab = 0;
-#pragma bss_seg()
-}
-extern "C" {
-#pragma bss_seg(".bss$GizObstacleTriggerCountPc")
-    i32 ngizobstacletriggers = 0;
-#pragma bss_seg()
-}
-extern "C" {
-#pragma bss_seg(".bss$LastDoorPointerPc")
-    void *LastDoorPointer = 0;
 #pragma bss_seg()
 }
 extern "C" {
@@ -4068,10 +3945,6 @@ extern "C" {
     u8 PlayerTorpedoCount[8] = {0};
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$Game_CharacterSave")
-    u8 *Game_CharacterSave = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$BackUpPlayers")
     GAMEOBJECT BackUpPlayers[2] = {0};
 #pragma bss_seg()
@@ -4082,14 +3955,6 @@ extern "C" {
 
 #pragma bss_seg(".bss$Hub_UsePlayerList")
     i32 Hub_UsePlayerList = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Area_PlayerIDList")
-    i16 Area_PlayerIDList[9] = {0};
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Area_StoryModelListPc")
-    APICHARACTERMODELLIST Area_StoryModelList[49] = {0};
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$Game_AreaSave")
@@ -4201,48 +4066,12 @@ extern "C" {
     };
 #pragma data_seg()
 
-#pragma data_seg(".data$DebrisProcessingEnabledPc")
-    i32 DebrisProcessingEnabled = 1;
-#pragma data_seg()
-
-#pragma data_seg(".data$debris_sort_delay")
-    i32 debris_sort_delay = 6;
-#pragma data_seg()
-
-#pragma data_seg(".data$debris_update_delay")
-    i32 debris_update_delay = 3;
-#pragma data_seg()
-
-#pragma data_seg(".data$DebrisDmaCleanupIndexPc")
-    i32 DebrisDmaCleanupIndex = 1;
-#pragma data_seg()
-
 #pragma bss_seg(".bss$dat_0091ef20")
     u32 dat_0091ef20 = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$NuApiEndFrameCallbackPc")
     void (*NuApiEndFrameCallback)(void) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$numtoruscolldata")
-    i32 numtoruscolldata = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$numspherecolldata")
-    i32 numspherecolldata = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$spherecolldata")
-    DEBRIS_COLLISION_ENTRY_PC *spherecolldata = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$debris_collide_pt")
-    NUVEC debris_collide_pt = {0};
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$toruscolldata")
-    DEBRIS_COLLISION_ENTRY_PC *toruscolldata = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$globalframes")
@@ -4253,17 +4082,6 @@ extern "C" {
     i32 DebrisArenaInitialized = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$debris_sort_this_stack")
-    i32 debris_sort_this_stack = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$debris_update_this_stack")
-    i32 debris_update_this_stack = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$DebrisDmaCleanupDelayPc")
-    i32 DebrisDmaCleanupDelay = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -4310,51 +4128,36 @@ i32 last_area = 0;
 i32 NextArea_FreePlay = 0;
 i32 FreePlay = 0;
 i32 makefreeplaymodellist = 0;
-i32 SuperStory = 0;
 i32 reset_area = 0;
 i32 loadareacharacters_loadedlevel = 0;
 i32 level_already_loaded = -1;
-i32 next_level = 0;
-volatile i32 abort_load = 0;
-i32 dagobah_training = 0;
 #pragma bss_seg(".bss$party_cant_be_under_cover")
 i32 party_cant_be_under_cover = 0;
 #pragma bss_seg()
 i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
 i32 reset_restart = 0;
-#pragma bss_seg(".bss$NoMoreLoads")
-i32 no_more_loads = 0;
-#pragma bss_seg()
 i32 BonusWinner = -1;
 i32 BonusCoinTotal = 0;
 i32 NewMode = 0;
 i32 reset_load = 1;
-i32 newlevel_resumecutaudio = 1;
 i32 other_level = -1;
 volatile i32 waiting_for_level = 0;
 i32 gone_through_door_to_new_level = 0;
-i32 waiting_for_new_level = 0;
-i32 screendump = 0;
 i32 MiniCutCam = 0;
-i32 pause_rndr_on = 0;
-i32 clear_screen_onstill = 1;
 i32 CUTSTOPGAME = 0;
 i32 Paused = 0;
 #pragma bss_seg(".bss$NetPaused")
 i32 NetPaused = 0;
 #pragma bss_seg()
-i32 FinishLoop_On = 1;
 i32 LevelChange = 0;
 i32 LevelChangesInArea = 0;
 i32 do_multiframe_update = 0;
 #pragma bss_seg(".bss$MainFrameCounters")
 MAINFRAMECOUNTERS MainFrameCounters = {0};
 #pragma bss_seg()
-i32 Arcade = 0;
 i32 hub_from_arcade = -1;
 i32 UsePlayerList = 0;
-i32 Door_UseCutCam = 0;
 
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
@@ -4365,7 +4168,6 @@ extern "C" {
     BOLTSYS_PC GlobalBoltSystem_Default = {
         &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
     };
-    BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
     NUSTRINGBANK StringBank[3] = {0};
 #pragma data_seg(".data$BoltShootClassId0")
     u16 BoltShootClassId0 = 0xffff;
@@ -4376,15 +4178,10 @@ extern "C" {
 #pragma data_seg(".data$BoltShootClassId2")
     u16 BoltShootClassId2 = 0xffff;
 #pragma data_seg()
-#pragma data_seg(".data$BoltShootParameter")
-    f32 BoltShootParameter = 0.1f;
-#pragma data_seg()
 #pragma bss_seg(".bss$CurrentStringBank")
     i16 CurrentStringBank = 0;
 #pragma bss_seg()
     u32 nustring_format = 1;
-    BOLT Bolt[32] = {0};
-    i32 i_bolt = 0;
     f32 spline_seek_pos = 10.0f;
     f32 spline_seek_ang = 10.0f;
     f32 spline_xoffset_speed_seek = 4.0f;
@@ -4502,23 +4299,11 @@ extern "C" {
 #pragma bss_seg(".bss$NuBridgeProc")
     i32 NuBridgeProc = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$BoltShootIdScratch")
-    i32 BoltShootIdScratch = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BoltShootPositionScratch")
-    NUVEC BoltShootPositionScratch = {0};
-#pragma bss_seg()
 #pragma bss_seg(".bss$CurrentTerrain")
     TERRAIN_SET_PC *CurrentTerrain = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetNamedGameObjectCallback")
     GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RepeatSfxQueueHead")
-    i32 RepeatSfxQueueHead = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$RepeatSfxQueue")
-    REPEAT_SFX_ENTRY_PC RepeatSfxQueue[32] = {0};
 #pragma bss_seg()
 #pragma data_seg(".data$TerLayer")
     TERRAIN_LAYER_PC TerLayer[17] = {
@@ -4546,18 +4331,13 @@ extern "C" {
         {NULL,              ProcessConditionFlowBox, CheckOutputConditionFlowBox},
         {NULL,              ProcessActionFlowBox,    CheckOutputActionFlowBox   },
     };
-    u8 gizflow_loop_checksum = 0;
-    GAMEAUDIO GameAudioStorage = {0};
     GAMEAUDIO *GameAudio = &GameAudioStorage;
-    SoundTable CurrentSFXTAB = {0};
     NUVEC nusound_special_positions[5] = {0};
 #pragma const_seg(".rdata$AIScriptFalse")
     extern const char AIScriptFalse[6] = "false";
 #pragma const_seg()
     i32 nufile_blkcnt = 1;
     PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
-    NUDATHDR *StartupDatList[7] = {0};
-    i32 StartupDatCount = 0;
     GAMEANIMPROGRESS gameanimsysprogress = {0};
     VARIPTR original_permbuffer_base = {0};
     char InitOnceCurrentDirectory[1] = {0};
@@ -4572,8 +4352,6 @@ extern "C" {
     void *debris_cutoff_camera_vec = 0;
     i32 debris_render_group = 0;
     f32 FRAMETIME = 0;
-    f32 QFONTSCALEX = 1.0f;
-    f32 STCOORDSCALE = 1.0f;
 #pragma const_seg(".rdata$NuPrimPS2XScale")
     extern const f32 NuPrimPS2XScale = 0.003125f;
 #pragma const_seg(".rdata$NuPrimPS2YScale")
@@ -4611,26 +4389,11 @@ extern "C" {
     i32 readpads_always = 0;
     TIMER GlobalTimer = {0};
     NUGSCN *save_icon_scene = 0;
-    f32 TextScaleX = 1.0f;
-    f32 TextScaleY = 1.0f;
-    void *OldLevelHackData = 0;
-    i32 (*CutScene_StartFn)(CUTINFO *cut) = 0;
-    void (*CutScene_PreUpdateFn)(CUTINFO *cut) = 0;
-    void (*CutScene_PostUpdateFn)(void) = 0;
-    void (*CutScene_StoppedFn)(CUTINFO *cut) = 0;
-    i32 (*CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character) = 0;
-    i32 (*InitBolt_AddMomentumType)(BOLT *bolt, GAMEOBJECT *object, NUVEC *momentum) = 0;
-    i32 (*Bolt_HitPlatFn)(BOLT *bolt) = 0;
-    i32 (*Bolt_HitCustomFn)(void *bolt, void *points) = 0;
     void (*GameBlowUpBlownUpFn)(void *blowup) = 0;
-#pragma bss_seg(".bss$GizObstacle_SetDefaultSFXFn")
-    void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle) = 0;
-#pragma bss_seg()
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
     LEVEL_PROGRESS *LevelProgressData = 0;
-    LEVELSPLINE_PC *LevSplList = 0;
 #pragma data_seg(".data$LevelSplinesTable")
     LEVELSPLINE_PC LevelSplinesTable[26] = {
         {NULL, "start",           2, 0,    -1, -1},
@@ -4663,9 +4426,6 @@ extern "C" {
 #pragma data_seg()
     i32 nudlist_field_fc4 = 0;
     u32 nudlist_field_1598 = 0;
-    i32 LEVELSPLINECOUNT = 0;
-    i32 levspl_i_start = -1;
-    i32 levspl_i_startcam = -1;
     LEVELDATA_PC *KAMINOE_LDATA = 0;
     LEVELDATA_PC *DOGFIGHTA_LDATA = 0;
     void *game_cutscenes_cutscene = 0;
@@ -4695,7 +4455,6 @@ extern "C" {
     i16 id_NEW_REPUBLIC_GUNSHIP = -1;
     i16 id_NEW_REPUBLIC_GUNSHIP_GREEN = -1;
     i16 id_JEDISTARFIGHTERYELLOWEP3 = -1;
-    GAMEOBJECT *player = 0;
     GAMEOBJECT *CutDeadVehiclePlayer = 0;
     void *game_cutscenes_podrace_sebulba = 0;
     void *game_cutscenes_podsprint_out_of_time = 0;
@@ -4709,8 +4468,6 @@ extern "C" {
     u16 podrace_die_angle_c = 0;
     GAMEOBJECT *Player[8] = {0};
     f32 DEFAULTFPS = 0;
-    void *LevelHackData = 0;
-    i32 LevelHackDataSize = 0;
     i16 id_DEFAULTCHARACTER[2] = {-1, -1};
     i16 ID_DEFAULTCHARACTER_A = -1;
     i16 ID_DEFAULTCHARACTER_B = -1;
@@ -4720,7 +4477,6 @@ extern "C" {
     f32 DEFAULTFRAMETIME = 0;
     i32 PAL = 0;
     i32 FPSDISPLAY = 0;
-    i32 part_page_on[8] = {0};
     GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
     HANDLE pc_file_handles[32] = {
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
@@ -4779,15 +4535,11 @@ extern "C" {
     i32 nu_keyboard_device_flags = 0;
     i32 nu_keyboard_repeat_countdown = 0;
     f32 dat_02975608 = 0.0f;
-    i32 finishloop_backdroponly = 0;
 #pragma data_seg(".data$StartupDatNames")
     const char *StartupDatNames[7] = {
         "GAME.DAT", "Episode_I.DAT", "Episode_II.DAT", "Episode_III.DAT", "Episode_IV.DAT", "Episode_V.DAT", "Episode_VI.DAT",
     };
 #pragma data_seg()
-    f32 INTROTEXT_Y = 0.175f;
-    f32 INTROTEXT_SCALE = 0.79f;
-    void (*Text_GameSetLanguageFn)(i32) = 0;
 
 #pragma bss_seg(".bss$clip_test_mtx")
     NUMTX clip_test_mtx = {0};
@@ -4854,27 +4606,9 @@ extern "C" {
 #pragma bss_seg(".bss$AREACOUNT")
     i32 AREACOUNT = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$EDataList")
-    EPISODEDATA_PC *EDataList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$EPISODECOUNT")
-    i32 EPISODECOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LEVELCOUNT")
-    i32 LEVELCOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CDataList")
-    CHARACTERDATA_PC *CDataList = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CHARCOUNT")
-    i32 CHARCOUNT = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$CheatSystem")
     CHEATSYSTEM_PC CheatSystem = {0};
 #pragma bss_seg()
-#pragma data_seg(".data$CheatSystemPtr")
-    CHEATSYSTEM_PC *CheatSystemPtr = &CheatSystem;
-#pragma data_seg()
 #pragma data_seg(".data$AREA_DEFAULTBONUSTIMETRIALTIME")
     u16 AREA_DEFAULTBONUSTIMETRIALTIME = 300;
 #pragma data_seg(".data$AREA_DEFAULTCHALLENGETIME")
@@ -5392,13 +5126,6 @@ extern "C" {
     extern const f64 NuTimeBarLinesPerSecond = 15734.0;
 #pragma const_seg()
 
-#pragma bss_seg(".bss$tALONGTIMEAGO")
-    i16 tALONGTIMEAGO = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$gizmotypes")
-    GIZMOTYPES *gizmotypes = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PS2_VREZ_W")
     i32 PS2_VREZ_W = 640;
 #pragma data_seg()
@@ -5416,16 +5143,11 @@ extern "C" {
     i32 dat_0080e6a4 = 1;
 #pragma data_seg()
 
-    i32 PlayerID[2] = {-1, -1};
     i16 PlayerList[8] = {0};
     APICHARACTERMODELLIST Hub_ModelList[6] = {0};
     LEVELDATA_PC *LDataList = 0;
-    i32 MAXLDATA = 0x64;
-    LEVELDATA_PC *NEWGAME_LDATA = 0;
-    LEVELDATA_PC *LOADGAME_LDATA = 0;
     LEVELDATA_PC *LastLData = 0;
     LEVELDATA_PC *NewLData = 0;
-    LEVELDATA_PC *HUB_LDATA = 0;
     LEVELDATA_PC *STATUS_LDATA = 0;
     LEVELDATA_PC *CREDITS_LDATA = 0;
 #pragma data_seg(".data$ScreenStillXPc")
@@ -5440,9 +5162,6 @@ extern "C" {
 #pragma data_seg(".data$ScreenStillHeightPc")
     i32 ScreenStillHeight = 3592;
 #pragma data_seg()
-    f32 MainRenderTime = 0;
-    f32 MainRenderTargetTime = 0;
-    f32 WaitingForLevelTime = 0;
     f32 WaitingForCharacterTime = 0;
     f32 MAXFRAMETIME = 0;
     i32 save_paused = 0;
@@ -5454,7 +5173,6 @@ extern "C" {
 #pragma const_seg(".rdata$GizAIMessage_NameFormat")
     extern const char GizAIMessage_NameFormat[3] = "%s";
 #pragma const_seg()
-    GIZAIMESSAGESYS *gizaimessagesys = 0;
     f32 PanelProjectionX = 1222.0f;
     f32 PanelProjectionY = 1145.0f;
     f32 PanelWideWidth = 740.0f;
@@ -5484,12 +5202,6 @@ extern "C" {
         {-1, NULL          }
     };
 
-    LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
-    i32 LANGUAGECOUNT = 6;
-    i32 Text_Language = 1;
-    i32 INTROTEXT_ID = -1;
-    void *Text_AppFont = 0;
-    char **TTab = 0;
     char *txt_NULL = const_cast<char *>("?");
     char *txt_UNKNOWN = const_cast<char *>("?");
     char *Text_PathEnglish = const_cast<char *>("english");
@@ -5551,8 +5263,6 @@ extern "C" {
 #pragma const_seg(".rdata$NuTimeRefreshRate")
     extern const f64 NuTime_RefreshRate = 60.0;
 #pragma const_seg()
-    i32 DebrisCutSceneMode = 0;
-    RTLSET_PC *PartRTL = 0;
 #pragma bss_seg(".bss$edbits_base_scene")
     NUGSCN *edbits_base_scene = 0;
 #pragma bss_seg()
@@ -5565,20 +5275,8 @@ extern "C" {
 #pragma bss_seg(".bss$MusicInfo")
     struct nusound_filename_info_s *MusicInfo = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$AmbientPairTab")
-    i16 *AmbientPairTab = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$NuPrimNeedsOverbrightening")
     u8 NuPrimNeedsOverbrightening = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$levelconfig_ldata")
-    LEVELDATA_PC *levelconfig_ldata = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Level_ConfigBeforeLoad_GameKeywords")
-    NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Level_ConfigAfterLoad_GameKeywords")
-    NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords = 0;
 #pragma bss_seg()
     TERRAIN_SURFACE_PC TerSurface[32] = {
         {1.0f, 0,      0xffff},
@@ -5667,73 +5365,6 @@ extern "C" {
         {NULL,                                       NULL                      },
     };
 #pragma data_seg()
-#pragma data_seg(".data$LevelConfig_BeforeLoad_GenericKeywords")
-    NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5] = {
-        {const_cast<char *>("mipmapmode"),         LC_BL_mipmapmode        },
-        {const_cast<char *>("fix_strobing_anims"), LC_BL_fix_strobing_anims},
-        {const_cast<char *>("max_ter_groups"),     LC_BL_max_ter_groups    },
-        {const_cast<char *>("max_ter_platforms"),  LC_BL_max_ter_platforms },
-        {NULL,                                     NULL                    },
-    };
-#pragma data_seg()
-
-#pragma data_seg(".data$LevelConfig_AfterLoad_GenericKeywords")
-    NUFPCOMJMP LevelConfig_AfterLoad_GenericKeywords[53] = {
-        {const_cast<char *>("backr"),                    LC_AL_backr                   },
-        {const_cast<char *>("backg"),                    LC_AL_backg                   },
-        {const_cast<char *>("backb"),                    LC_AL_backb                   },
-        {const_cast<char *>("backr_top"),                LC_AL_backr_top               },
-        {const_cast<char *>("backg_top"),                LC_AL_backg_top               },
-        {const_cast<char *>("backb_top"),                LC_AL_backb_top               },
-        {const_cast<char *>("backr_bottom"),             LC_AL_backr_bottom            },
-        {const_cast<char *>("backg_bottom"),             LC_AL_backg_bottom            },
-        {const_cast<char *>("backb_bottom"),             LC_AL_backb_bottom            },
-        {const_cast<char *>("farclip_hack"),             LC_AL_farclip_hack            },
-        {const_cast<char *>("farclip"),                  LC_AL_farclip                 },
-        {const_cast<char *>("nearclip"),                 LC_AL_nearclip                },
-        {const_cast<char *>("farclip_pc"),               LC_AL_farclip                 },
-        {const_cast<char *>("nearclip_pc"),              LC_AL_nearclip                },
-        {const_cast<char *>("hover_height"),             LC_AL_hover_height            },
-        {const_cast<char *>("blobshadow_alpha"),         LC_AL_blobshadow_alpha        },
-        {const_cast<char *>("blobshadow_fadenear"),      LC_AL_blobshadow_fadenear     },
-        {const_cast<char *>("blobshadow_fadefar"),       LC_AL_blobshadow_fadefar      },
-        {const_cast<char *>("reflect_range"),            LC_AL_reflect_range           },
-        {const_cast<char *>("reflect_y"),                LC_AL_reflect_y               },
-        {const_cast<char *>("metal"),                    LC_AL_metal                   },
-        {const_cast<char *>("in_space"),                 LC_AL_in_space                },
-        {const_cast<char *>("override_nopickupgravity"), LC_AL_override_nopickupgravity},
-        {const_cast<char *>("hidden_icons"),             LC_AL_hidden_icons            },
-        {const_cast<char *>("pickups_to_panel"),         LC_AL_pickups_to_panel        },
-        {const_cast<char *>("forget_takeovers"),         LC_AL_forget_takeovers        },
-        {const_cast<char *>("narrow_socks"),             LC_AL_narrow_socks            },
-        {const_cast<char *>("camera_rain"),              LC_AL_camera_rain             },
-        {const_cast<char *>("terrain_rain"),             LC_AL_terrain_rain            },
-        {const_cast<char *>("double_score"),             LC_AL_double_score            },
-        {const_cast<char *>("flat_terrain"),             LC_AL_flat_terrain            },
-        {const_cast<char *>("cam_tilt"),                 LC_AL_cam_tilt                },
-        {const_cast<char *>("raycaststep"),              LC_AL_raycaststep             },
-        {const_cast<char *>("plat_scan_dist"),           LC_AL_plat_scan_dist          },
-        {const_cast<char *>("waterripple_startcol_r"),   LC_AL_waterripple_startcol_r  },
-        {const_cast<char *>("waterripple_startcol_g"),   LC_AL_waterripple_startcol_g  },
-        {const_cast<char *>("waterripple_startcol_b"),   LC_AL_waterripple_startcol_b  },
-        {const_cast<char *>("waterripple_startcol_a"),   LC_AL_waterripple_startcol_a  },
-        {const_cast<char *>("waterripple_endcol_r"),     LC_AL_waterripple_endcol_r    },
-        {const_cast<char *>("waterripple_endcol_g"),     LC_AL_waterripple_endcol_g    },
-        {const_cast<char *>("waterripple_endcol_b"),     LC_AL_waterripple_endcol_b    },
-        {const_cast<char *>("waterripple_endcol_a"),     LC_AL_waterripple_endcol_a    },
-        {const_cast<char *>("waterripple_life"),         LC_AL_waterripple_life        },
-        {const_cast<char *>("cam_pullback_dist"),        LC_AL_cam_pullback_dist       },
-        {const_cast<char *>("cam_lateral_dist"),         LC_AL_cam_lateral_dist        },
-        {const_cast<char *>("campos_seek"),              LC_AL_campos_seek             },
-        {const_cast<char *>("camang_seek"),              LC_AL_camang_seek             },
-        {const_cast<char *>("shadowtype"),               LC_AL_shadowtype              },
-        {const_cast<char *>("music"),                    LC_AL_music                   },
-        {const_cast<char *>("music_other"),              LC_AL_music_other             },
-        {const_cast<char *>("sfx_ambient"),              LC_AL_sfx_ambient             },
-        {const_cast<char *>("conveyor"),                 LC_AL_conveyor                },
-        {NULL,                                           NULL                          },
-    };
-#pragma data_seg()
 
 #pragma bss_seg(".bss$edanim_page_on")
     i32 edanim_page_on[8] = {0};
@@ -5804,12 +5435,8 @@ extern "C" {
         {1030, NULL,                     NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
     };
     i32 MenuSFX = -1;
-    i32 GameMenuLevel = -1;
-    i32 MenuLanguages = 1;
-    i32 MenusUsed = 31;
     void (*drawslotinfofn)(f32, f32, i32, i32) = APIMenuDrawGameState;
     void (*drawslotsfn)(MENU *, f32) = APIMenuDrawMemCardSlots;
-    i32 MenuFadeEnabled = 0;
     i32 MenuDrawDropShadows = 0;
 #pragma bss_seg(".bss$MENUHEADERR")
     u8 MENUHEADERR = 0;
@@ -5841,19 +5468,6 @@ extern "C" {
     i32 nsegments_drawn = 0;
 #pragma bss_seg(".bss$solid_cable")
     i32 solid_cable = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$tAUDIOVOLUME")
-    i16 tAUDIOVOLUME = 0;
-#pragma bss_seg(".bss$tMUSIC")
-    i16 tMUSIC = 0;
-#pragma bss_seg(".bss$tON")
-    i16 tON = 0;
-#pragma bss_seg(".bss$tOFF")
-    i16 tOFF = 0;
-#pragma bss_seg(".bss$tACCEPT")
-    i16 tACCEPT = 0;
-#pragma bss_seg(".bss$tBACK")
-    i16 tBACK = 0;
 #pragma bss_seg()
     f32 MenuTitlesPromptY = -0.5f;
     f32 MenuTitlesWidePromptY = -0.575f;
@@ -5903,18 +5517,6 @@ extern "C" {
         {22, MenuEnterSelectControls, MenuDrawControlSetup,   MenuUpdateSelectControls, MenuExitSelectControls, 0,  0,  0, 0, 0, 0},
     };
 
-#pragma bss_seg(".bss$DebrisGlassInitialized")
-    i32 DebrisGlassInitialized = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassCopyMaterial")
-    void *DebrisGlassCopyMaterial = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassU1")
-    f32 DebrisGlassU1 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DebrisGlassV1")
-    f32 DebrisGlassV1 = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$PS2_VCNTR_X")
     i32 PS2_VCNTR_X = 320;
 #pragma data_seg(".data$PS2_VCNTR_Y")
@@ -5927,8 +5529,6 @@ i32 app_tbaiset = 0;
 i32 app_tbdrawset = 0;
 NUAPI nuapi = {0};
 
-NURAND GAMERAND = {0x1f3ad27f};
-u32 partseed = 0x5c0999;
 u32 debrisseed = 0x5c0999;
 
 i32 argc = 0;
@@ -5936,23 +5536,9 @@ char **argv = 0;
 NUDATHDR *curr_dat = 0;
 MSG win_message = {0};
 
-i32 permbuffer_size = 0;
 #pragma data_seg(".data$CHARACTERBUFFERSIZE")
 i32 CHARACTERBUFFERSIZE = 0x02800000;
 #pragma data_seg()
-i32 EDITBUFFERENDSIZE = 0;
-VARIPTR permbuffer_base = {0};
-VARIPTR permbuffer_ptr = {0};
-VARIPTR permbuffer_end = {0};
-VARIPTR characterbuffer_base = {0};
-#pragma bss_seg(".bss$CharacterBufferPtr")
-VARIPTR characterbuffer_ptr = {0};
-#pragma bss_seg()
-VARIPTR characterbuffer_end = {0};
-VARIPTR superbuffer_base = {0};
-VARIPTR superbuffer_ptr = {0};
-VARIPTR superbuffer_end = {0};
-VARIPTR editbuffer_end = {0};
 
 WORLDINFO WorldInfo[2] = {0};
 #pragma data_seg(".data$WORLD")
@@ -5978,14 +5564,6 @@ u16 bad_equiv[8][2] = {
     {0,   0  }
 };
 
-// Both PC indices are masked to two bits.
-i32 TrooperStepFrames[4] = {1, 2, 1, 0};
-f32 trooperspeedtab[4] = {0.3f, 0.4f, 0.5f, 0.6f};
-
-// Four explicit PC scalar accesses establish each array's extent.
-f32 vehicle_timebase_dist[4] = {50.0f, 25.0f, 0.0f, 0.0f};
-i32 vehicle_timebase_nframes[4] = {4, 2, 0, 0};
-
 // PC checks each byte index is less than 16.
 const u8 CurveGroupMasks[4] = {2, 1, 8, 0};
 const u8 KeyStructSizes[16] = {3, 4, 4, 3, 4, 3, 4, 8, 4, 8, 4, 0, 0, 0, 0, 0};
@@ -5999,9 +5577,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$Obj")
     GAMEOBJECT *Obj = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$plr_lastpos")
-    NUVEC plr_lastpos = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$v000")
     NUVEC v000 = {0};
@@ -6164,9 +5739,6 @@ extern "C" {
 #pragma data_seg(".data$id_GONKDROID")
     u16 id_GONKDROID = 0xffff;
 #pragma data_seg()
-#pragma data_seg(".data$ONEPLAYERPOWERUPS")
-    i32 ONEPLAYERPOWERUPS = 1;
-#pragma data_seg()
 #pragma bss_seg(".bss$APIOBJECTFromObjIDFn")
     APIOBJECT_FROM_ID_PC APIOBJECTFromObjIDFn = 0;
 #pragma bss_seg()
@@ -6178,15 +5750,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$PCArcadeModeText2")
     i16 PCArcadeModeText2 = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadeLevelText")
-    i16 PCArcadeLevelText = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadeModeText")
-    i16 PCArcadeModeText = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCArcadePlayText")
-    i16 PCArcadePlayText = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$Arcade_Mode")
     ARCADE_MODE_PC Arcade_Mode[7] = {
@@ -6211,15 +5774,6 @@ extern "C" {
          {&dat_008808c0, 0, 1, 0}}
     };
 
-#pragma data_seg()
-#pragma data_seg(".data$gizmoerrorlogsize")
-    i32 gizmoerrorlogsize = 2048;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$v001")
-    NUVEC v001 = {0.0f, 0.0f, 1.0f};
 #pragma data_seg()
 }
 
@@ -6264,9 +5818,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$GCDataList")
-    PLAYERCHARACTERCONFIG *GCDataList = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$CharacterCustomiser")
     CUSTOMISER_LAYERS *CharacterCustomiser = 0;
 #pragma bss_seg()
@@ -6279,74 +5830,13 @@ extern "C" {
 #pragma data_seg(".data$id_CHEWBACCA")
     i16 id_CHEWBACCA = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$MAGNETOFFSET")
-    f32 MAGNETOFFSET = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$Default_ADDPART")
-    ADDPART Default_ADDPART = {
-        0, // matrix
-        0, // position
-        0, // velocity
-        0, // owner
-        0, // recipient
-        0.1f, // unknown_14
-        0.1f, // unknown_18
-        -5.0f, // gravity
-        0.75f, // unknown_20
-        0, // special
-        -1, // part_id
-        0x00000000u, // flags
-        0, // callback_30
-        0, // callback_34
-        0, // callback_38
-        0, // callback_3c
-        0, // callback_40
-        0, // callback_44
-        0, // callback_48
-        0, // callback_4c
-        0, // callback_50
-        0, // callback_54
-        -1, // effect_id_58
-        0, // debris_handle
-        -1, // effect_id_60
-        -1, // effect_id_64
-        60.0f, // unknown_68
-        60.0f, // unknown_6c
-        -1, // effect_id_70
-        -1, // effect_id_74
-        -1, // effect_id_78
-        1.0f, // effect_scale
-        0, // lighting_handle
-        -1, // lighting_id
-        2000000.0f, // unknown_88
-        0.016666668f, // time_step
-        0xffffffffu, // hostility_group
-        0, // lighting_data
-        1.0f, // lighting_scale_x
-        1.0f, // lighting_scale_y
-        1.0f, // lighting_scale_z
-        0.0f, // unknown_a4
-        {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // unknown_a8
-        1.0f, // unknown_c0
-        0, // unknown_c4
-    };
-#pragma data_seg()
 
-#pragma bss_seg(".bss$Part")
-    PART_PC *Part = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$part_scene_pageid")
     i32 part_scene_pageid[32] = {0};
 #pragma bss_seg()
-#pragma data_seg(".data$MAXPARTS")
-    i32 MAXPARTS = 32;
-#pragma data_seg()
-#pragma data_seg(".data$part_slot_cursor")
-    i32 part_slot_cursor = -1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -6440,9 +5930,6 @@ extern "C" {
 #pragma data_seg(".data$GameDeflectPartSpeed")
     f32 GameDeflectPartSpeed = 5.0f;
 #pragma data_seg()
-#pragma data_seg(".data$PARTSCALEUPTIME")
-    f32 PARTSCALEUPTIME = 0.5f;
-#pragma data_seg()
 
 #pragma bss_seg(".bss$podsprint")
     PODSPRINT_PC podsprint = {0};
@@ -6516,12 +6003,6 @@ extern "C" {
 #pragma bss_seg(".bss$LevGizmo")
     GIZMO_PC *LevGizmo[12] = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$Explosions")
-    EXPLOSION_PC Explosions[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$i_explosion")
-    i32 i_explosion = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$ShadowMode")
     i32 ShadowMode = 0;
 #pragma bss_seg()
@@ -6531,12 +6012,6 @@ extern "C" {
 // Includes the utility WORD at +0x10000.
 #pragma bss_seg(".bss$ConfigBuffer")
     CONFIG_BUFFER ConfigBuffer = {0};
-#pragma bss_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$SURFACEBITS_DUST")
-    u16 SURFACEBITS_DUST = 0;
 #pragma bss_seg()
 }
 
@@ -6572,9 +6047,6 @@ extern "C" {
 #pragma data_seg(".data$SpeederChaseATATExitLandPos")
     NUVEC SpeederChaseATATExitLandPos = {-159.0f, 6.87f, -17.6f};
 #pragma data_seg()
-#pragma bss_seg(".bss$LastSafePosExtraFn")
-    LAST_SAFE_POS_EXTRA_PC LastSafePosExtraFn = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$LEGOCONTEXT_DOOMED")
     i32 LEGOCONTEXT_DOOMED = -1;
 #pragma data_seg()
@@ -6599,12 +6071,6 @@ extern "C" {
 #pragma data_seg(".data$LEGOACT_JUMP")
     i16 LEGOACT_JUMP = -1;
 #pragma data_seg()
-#pragma data_seg(".data$BUCK_RIDERJUMPCLEARANCE")
-    f32 BUCK_RIDERJUMPCLEARANCE = 1.0f;
-#pragma data_seg()
-#pragma bss_seg(".bss$BuckStartExtraFn")
-    TAG_DRAW_ICON_PC BuckStartExtraFn = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -6661,9 +6127,6 @@ extern "C" {
 #pragma data_seg(".data$TOGGLEHOLDTIME")
     f32 TOGGLEHOLDTIME = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$CUTSKIPLOCK")
-    i32 CUTSKIPLOCK = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$players_cannot_exit_speeder")
     i32 players_cannot_exit_speeder = 0;
 #pragma bss_seg()
@@ -6733,9 +6196,6 @@ extern "C" {
 #pragma data_seg(".data$direction_scale")
     f32 direction_scale = 100.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$player2")
-    GAMEOBJECT *player2 = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -6827,9 +6287,6 @@ extern "C" {
 #pragma data_seg(".data$OFFSCREEN_CATCHUP_TIME")
     f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$LIFTPLAYER")
-    i32 LIFTPLAYER = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -6849,9 +6306,6 @@ extern "C" {
 #pragma bss_seg(".bss$MissionSys")
     MISSIONSYS_PC *MissionSys = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$GameObjectDimensionsExtraFn")
-    void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -6866,9 +6320,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$LevelCharacterTypeIDFn")
     AI_LEVEL_CHARACTER_TYPE_ID_PC LevelCharacterTypeIDFn = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$LevelCharacterGlobalIDFn")
-    AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn = 0;
 #pragma bss_seg()
 }
 
@@ -6891,33 +6342,6 @@ extern "C" {
 #pragma data_seg(".data$LEGOCONTEXT_PUSHOBSTACLE")
     i32 LEGOCONTEXT_PUSHOBSTACLE = -1;
 #pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_THROWSPEED_XZ")
-    f32 SUPERCARRY_THROWSPEED_XZ = 3.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_THROWSPEED_Y")
-    f32 SUPERCARRY_THROWSPEED_Y = 3.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_RELEASESPEED_XZ")
-    f32 SUPERCARRY_RELEASESPEED_XZ = 2.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_DROPSPEED_XZ")
-    f32 SUPERCARRY_DROPSPEED_XZ = 0.2f;
-#pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_DROPSPEED_Y")
-    f32 SUPERCARRY_DROPSPEED_Y = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SUPERCARRY_OBJGRAVITY")
-    f32 SUPERCARRY_OBJGRAVITY = -6.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SuperCarry_KeepObjectLevel")
-    i32 SuperCarry_KeepObjectLevel = 1;
-#pragma data_seg()
-#pragma data_seg(".data$SuperCarry_AlignObject")
-    i32 SuperCarry_AlignObject = 1;
-#pragma data_seg()
-#pragma bss_seg(".bss$Player_ClearContextFn")
-    PLAYER_CLEAR_CONTEXT_CALLBACK_PC Player_ClearContextFn = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$AIFireIntervalMul")
     f32 AIFireIntervalMul = 1.0f;
 #pragma data_seg()
@@ -7001,17 +6425,8 @@ extern "C" {
     NUVEC v010 = {0.0f, 1.0f, 0.0f};
 #pragma data_seg()
 // Eight queue slots are a source access view; the complete original extent is unknown.
-#pragma bss_seg(".bss$NewCutInfo")
-    CUTINFO *NewCutInfo[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$NewCutInfoCount")
-    i32 NewCutInfoCount = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$LevelCompletionFallbackFlagPC")
     u32 LevelCompletionFallbackFlagPC = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SurfaceInfo_ExtraReflectFn")
-    void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object) = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$TerrainShadowGroupIndexPc")
     i16 castnum = 0;
@@ -7064,9 +6479,6 @@ extern "C" {
 #pragma bss_seg(".bss$TerrainScaleWorkBasePc")
     TERRAIN_POLYGON_INFO *ScaleTerrainT1 = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$LAYER_HOVERIGNORE")
-    u32 LAYER_HOVERIGNORE = 0xffffffffu;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -7089,20 +6501,6 @@ extern "C" {
 #pragma const_seg(".rdata$AITransferLiteral757a7c")
     extern const char dat_00757a7c[8] = "looping";
 #pragma const_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$gizspecial_gizmotype_id")
-    i32 gizspecial_gizmotype_id = -1;
-#pragma data_seg(".data$gizbuildit_gizmotype_id")
-    i32 gizbuildit_gizmotype_id = -1;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$Grass_Available")
-    i32 Grass_Available = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -7132,12 +6530,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$num_extensions")
     i32 num_extensions = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$Game_Customiser")
-    void *Game_Customiser = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CUTCAM")
-    i32 CUTCAM = 0;
 #pragma bss_seg()
 }
 
@@ -7198,39 +6590,15 @@ extern "C" {
 #pragma bss_seg(".bss$BeenAttacked")
     i32 BeenAttacked = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$takeoverobjects")
-    TAKEOVEROBJECT takeoverobjects[8] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$num_takeoverobjects")
-    i32 num_takeoverobjects = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$DoorExitNamePc")
-    char DoorExitName[64] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$Door_Start")
-    i32 Door_Start = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$Door_NextSock")
     i32 Door_NextSock = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$minikitCounter_C")
-    u8 minikitCounter_C = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$minikitCounter_A")
-    u8 minikitCounter_A = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma const_seg(".rdata$GizmoSnapOptionNamePc")
     extern const char GizmoSnapOptionName[5] = "SNAP";
 #pragma const_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$Door_Last")
-    void *Door_Last = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -7256,18 +6624,12 @@ extern "C" {
     i32 bonus_gunship_store_progress_flag = 0;
 #pragma bss_seg()
 
-#pragma data_seg(".data$LEDGETERRAINLOOKAHEAD")
-    f32 LEDGETERRAINLOOKAHEAD = 0.02f;
-#pragma data_seg()
 #pragma data_seg(".data$LEGOACT_HANG_MOVE")
     i16 LEGOACT_HANG_MOVE = -1;
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$part_types")
-    PARTTYPE_LOOKUP_PC part_types[128] = {0};
-#pragma bss_seg()
 #pragma bss_seg(".bss$debug_condition")
     f32 debug_condition = 0;
 #pragma bss_seg()
@@ -7340,20 +6702,11 @@ extern "C" {
 #pragma data_seg(".data$edgra_elementthin")
     i32 edgra_elementthin = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$debris_suspended")
-    i32 debris_suspended = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$globaltime")
     f32 globaltime = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$panelglobaltime")
     f32 panelglobaltime = 0;
-#pragma bss_seg()
-#pragma data_seg(".data$update_debris_enabled")
-    i32 update_debris_enabled = 1;
-#pragma data_seg()
-#pragma bss_seg(".bss$debris_keystack")
-    DEBRISKEY_PC *debris_keystack = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$maxdebkeys")
     i32 maxdebkeys = 0;
@@ -7412,9 +6765,6 @@ extern "C" {
 #pragma bss_seg(".bss$DOOKUC_LDATA")
     LEVELDATA_PC *DOOKUC_LDATA = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$EDPP_MAX_DMADEBTYPES")
-    i32 EDPP_MAX_DMADEBTYPES = 64;
-#pragma data_seg()
 #pragma bss_seg(".bss$DmaDebTypes")
     DEBRIS_PART_HEADER_PC **DmaDebTypes = 0;
 #pragma bss_seg()
@@ -7427,21 +6777,12 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Char_MiniKit")
-    i32 *Char_MiniKit = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$minikits_savecharacterbufferptr")
-    VARIPTR minikits_savecharacterbufferptr = {0};
-#pragma bss_seg()
 #pragma bss_seg(".bss$forced_debris_thinning")
     i32 forced_debris_thinning = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$debris_thinning_level")
     f32 debris_thinning_level = 1.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$partglobaltime")
-    f32 partglobaltime = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$part_emits_used")
     i32 part_emits_used = 0;
 #pragma bss_seg()
@@ -7457,58 +6798,12 @@ extern "C" {
 }
 
 extern "C" {
-
-#pragma bss_seg(".bss$freedebchkptrg")
-    i32 freedebchkptrg = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_chunk_controls")
-    DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$freedebchkptr")
-    i32 freedebchkptr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_trash_space")
-    u32 debris_trash_space = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_trash_size")
-    u32 debris_trash_size = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_setup_called")
-    i32 debris_setup_called = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$ParticleChunkToRender")
-    DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ParticleChunkRenderStack")
-    DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5] = {0};
-#pragma bss_seg()
 #pragma bss_seg(".bss$PCShaderSlots")
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
 #pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$NuCutSceneDestroyCharacters")
-    void (*NuCutSceneDestroyCharacters)(void *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCutSceneCharacterDestroyData")
-    void (*NuCutSceneCharacterDestroyData)(void *, void *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCutSceneCharacterEval")
-    void (*NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuCutSceneCharacterRelease")
-    void (*NuCutSceneCharacterRelease)(void *, void *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ReleaseLocatorVfxFn")
-    void (*ReleaseLocatorVfxFn)(i32) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutSceneCameraCTRL")
-    u8 CutSceneCameraCTRL = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$part_types_used")
     i32 part_types_used = 0;
 #pragma bss_seg()
@@ -7587,18 +6882,12 @@ extern "C" {
 #pragma data_seg(".data$LEGOACT_MAGNET_WALK_METAL")
     i16 LEGOACT_MAGNET_WALK_METAL = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$LevelHackSendTimer")
-    f32 LevelHackSendTimer = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$debris_detail_level")
     i32 debris_detail_level = 4;
 #pragma data_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$emperorfighta_netpacket")
-    void *emperorfighta_netpacket = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$LevSfxFlag")
     i32 LevSfxFlag[4] = {0};
 #pragma bss_seg()
@@ -7629,15 +6918,6 @@ extern "C" {
 #pragma data_seg(".data$LEGOCONTEXT_PUSHSPINNER")
     i32 LEGOCONTEXT_PUSHSPINNER = -1;
 #pragma data_seg()
-#pragma data_seg(".data$PlayerPushSpinnerDegreesPc")
-    i32 PlayerPushSpinnerDegrees = 4;
-#pragma data_seg()
-#pragma bss_seg(".bss$CanMagnetClimbFn")
-    i32 (*CanMagnetClimbFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PlayerSpecialMoveDataPc")
-    struct specialmove_s *SpecialMove = 0;
-#pragma bss_seg()
 #pragma data_seg(".data$force_gizmotype_id")
     i32 force_gizmotype_id = -1;
 #pragma data_seg()
@@ -7647,36 +6927,9 @@ extern "C" {
 #pragma bss_seg(".bss$LevArea")
     AIAREA *LevArea[4] = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$routemask_efloor_on")
-    u64 routemask_efloor_on = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$routemask_efloor_off")
-    u64 routemask_efloor_off = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$eFloor_timer")
-    f32 eFloor_timer = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hspecial_efloor")
-    nuhspecial_s *hspecial_efloor = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccPowerPc")
-    i32 SarlaccPower = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccRechargingPc")
-    i32 SarlaccRecharging = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SarlaccTargetShieldPc")
-    i32 SarlaccTargetShield[2] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$gizpanel_gizmotype_id")
     i32 gizpanel_gizmotype_id = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$debris_render_global_time")
-    f32 debris_render_global_time = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$debris_render_panel_time")
-    f32 debris_render_panel_time = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -7967,12 +7220,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PlayerGrappleSwingModePc")
-    i32 PlayerGrappleSwingModePc = 1;
-#pragma data_seg()
-}
-
-extern "C" {
 #pragma bss_seg(".bss$GHGTextureProgramsPC")
     void *GHGTextureProgramsPC = 0;
 #pragma bss_seg()
@@ -8063,12 +7310,6 @@ extern "C" {
 #pragma data_seg(".data$debris_render_scale")
     f32 debris_render_scale = 1.0f;
 #pragma data_seg()
-#pragma data_seg(".data$code_test")
-    u8 code_test[16] = {1, 2, 3, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-#pragma data_seg()
-#pragma data_seg(".data$id_test")
-    char id_test[17] = "Travellers Tales";
-#pragma data_seg()
     void edanimInit(void);
     void edanimClose(void);
     void edanimEnter(void);
@@ -8081,23 +7322,11 @@ extern "C" {
 #pragma bss_seg(".bss$xzfacingmtx")
     NUMTX xzfacingmtx = {0};
 #pragma bss_seg()
-#pragma bss_seg(".bss$debris_rt")
-    i32 debris_rt = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$g_renderingDebris")
     i32 g_renderingDebris = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$edbits_editor_state")
     i32 edbits_editor_state = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$SuperCarryImpactSpeedPc")
-    f32 SuperCarryImpactSpeed = 4.0f;
-#pragma data_seg()
-#pragma bss_seg(".bss$ExtraDieSfxFn")
-    void (*ExtraDieSfxFn)(GAMEOBJECT *) = 0;
 #pragma bss_seg()
 }
 
@@ -8125,24 +7354,6 @@ extern "C" {
 #pragma data_seg()
 #pragma bss_seg(".bss$GizmoBlowUp_SfxFn")
     void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$AreaPickupGravity")
-    f32 AreaPickupGravity = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$AreaPickupScale")
-    f32 AreaPickupScale = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$GameMessage")
-    GAME_MESSAGE_PC GameMessage[128] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$GameMessageIndex")
-    i32 GameMessageIndex = 0;
 #pragma bss_seg()
 }
 
@@ -8232,9 +7443,6 @@ extern "C" {
 #pragma bss_seg(".bss$MenuValidated")
     i32 MenuValidated = 0;
 #pragma bss_seg()
-#pragma bss_seg(".bss$TerrainChatterWaitPc")
-    f32 TerrainChatterWait = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$DoubleScoreTime")
     f32 DoubleScoreTime = 0;
 #pragma bss_seg()
@@ -8243,15 +7451,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$PlayPlanesUseRenderMtxPc")
     i32 PlayPlanesUseRenderMtx = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$SuperStoryScore")
-    u32 SuperStoryScore = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BigJump_EndOfLandFn")
-    void (*BigJump_EndOfLandFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$FindSlamOrigin_UseCPosFn")
-    i32 (*FindSlamOrigin_UseCPosFn)(GAMEOBJECT *) = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$AddCoinDelay")
     f32 AddCoinDelay[2] = {0};
@@ -8339,48 +7538,14 @@ extern "C" {
 #pragma data_seg(".data$POWERUPYPOS2")
     f32 POWERUPYPOS2 = -0.2f;
 #pragma data_seg()
-#pragma data_seg(".data$CHEAT_POWERUPTIME")
-    f32 CHEAT_POWERUPTIME = 20.0f;
-#pragma data_seg()
 #pragma bss_seg(".bss$PowerUp_PanelPosMul")
     f32 PowerUp_PanelPosMul[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$POWERUP_TEXTID")
-    i32 POWERUP_TEXTID = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$hintsys")
-    HINTSYS hintsys = {0};
 #pragma bss_seg()
 }
 
 extern "C" {
-#pragma data_seg(".data$KITPOSX")
-    f32 KITPOSX = -0.725f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$KITPOSY")
-    f32 KITPOSY = -0.7f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$PANEL_MINIKITSCALE")
-    f32 PANEL_MINIKITSCALE = 0.25f;
-#pragma data_seg()
-}
-extern "C" {
-#pragma data_seg(".data$PANEL_MINIKITY")
-    f32 PANEL_MINIKITY = 0.03f;
-#pragma data_seg()
-}
-extern "C" {
 #pragma bss_seg(".bss$DrawMiniKitTime")
     f32 DrawMiniKitTime = 0;
-#pragma bss_seg()
-}
-extern "C" {
-#pragma bss_seg(".bss$MiniKitScale")
-    f32 MiniKitScale = 0;
 #pragma bss_seg()
 }
 extern "C" {
@@ -8523,16 +7688,6 @@ extern "C" {
 #pragma data_seg()
 }
 extern "C" {
-#pragma bss_seg(".bss$KillPartsCharSceneAreaPc")
-    KILLPARTS_CHARSCENE *KillPartsCharSceneArea = 0;
-#pragma bss_seg()
-}
-extern "C" {
-#pragma bss_seg(".bss$KillPartsAccessoriesPc")
-    KILLPARTS_ACCESSORY KillPartsAccessories[2][9] = {0};
-#pragma bss_seg()
-}
-extern "C" {
 #pragma bss_seg(".bss$KillPartsBikesPc")
     KILLPARTS_BIKE KillPartsBikes[4] = {0};
 #pragma bss_seg()
@@ -8557,39 +7712,13 @@ extern "C" {
     char KillPartsAtatExplodeText[9] = "EXPLODE1";
 #pragma data_seg()
 }
-extern "C" {
-#pragma bss_seg(".bss$ExtraHurtSfxFn")
-    void (*ExtraHurtSfxFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-}
 
 extern "C" {
-#pragma data_seg(".data$GizBuilditGDeb")
-    i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
-#pragma data_seg()
 #pragma bss_seg(".bss$DrawCoinTotalTime")
     f32 DrawCoinTotalTime = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$PANEL_COINSCALE_START")
     f32 PANEL_COINSCALE_START = 1.0f;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$SnakeSegmentSpacingPc")
-    f32 SnakeSegmentSpacing = 0.15f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeHeadHeightPc")
-    f32 SnakeHeadHeight = 0.15f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeYawSeekRatePc")
-    f32 SnakeYawSeekRate = 5.0f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeSegmentHeightPc")
-    f32 SnakeSegmentHeight = 0.02f;
-#pragma data_seg()
-#pragma data_seg(".data$SnakeDebrisUpwardSpeedPc")
-    f32 SnakeDebrisUpwardSpeed = 1.0f;
 #pragma data_seg()
 }
 
@@ -8669,10 +7798,6 @@ extern "C" {
     f32 builduptime = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$ObstacleCamHoldUntilPlayersMove")
-    i32 ObstacleCamHoldUntilPlayersMove = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$objhitobj_bolt")
     BOLT *objhitobj_bolt = 0;
 #pragma bss_seg()
@@ -8713,12 +7838,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$DynamicGrapplePc")
-    GRAPPLE_DYNAMIC DynamicGrapplePc[4] = {0};
-#pragma bss_seg()
-}
-
-extern "C" {
 #pragma data_seg(".data$LEGOCONTEXT_WEAPONIN")
     i32 LEGOCONTEXT_WEAPONIN = -1;
 #pragma data_seg()
@@ -8736,10 +7855,6 @@ extern "C" {
 #pragma data_seg(".data$DisorientAxisPc")
     u8 disorientAxis = 7;
 #pragma data_seg()
-
-#pragma bss_seg(".bss$WeaponInOut_NoAIJediSfx")
-    i32 WeaponInOut_NoAIJediSfx = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -8751,16 +7866,6 @@ extern "C" {
 extern "C" {
 #pragma bss_seg(".bss$GizmoBlowUp_NoTargetFn")
     i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$Fighting_WeaponInActionFn")
-    i32 (*Fighting_WeaponInActionFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Fighting_WeaponOutActionFn")
-    i32 (*Fighting_WeaponOutActionFn)(GAMEOBJECT *) = 0;
 #pragma bss_seg()
 }
 
@@ -8980,14 +8085,6 @@ extern "C" {
 #pragma bss_seg(".bss$VehicleGunshipAngleBPlayer2Pc")
     i32 VehicleGunshipAngleBPlayer2 = 0;
 #pragma bss_seg()
-
-#pragma bss_seg(".bss$BOLT_OVERRIDE_PLAYERBOLTSPEED")
-    f32 BOLT_OVERRIDE_PLAYERBOLTSPEED = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$BOLT_OVERRIDE_PLAYERBOLTDURATION")
-    f32 BOLT_OVERRIDE_PLAYERBOLTDURATION = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -9002,48 +8099,6 @@ extern "C" {
 
 #pragma bss_seg(".bss$dat_0097391c")
     i32 dat_0097391c = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_R")
-    u8 CUTSUBTITLEDEFAULT_R = 255;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_G")
-    u8 CUTSUBTITLEDEFAULT_G = 255;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_B")
-    u8 CUTSUBTITLEDEFAULT_B = 255;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_A")
-    u8 CUTSUBTITLEDEFAULT_A = 128;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_Y")
-    f32 CUTSUBTITLEDEFAULT_Y = -0.5f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_SCALEX")
-    f32 CUTSUBTITLEDEFAULT_SCALEX = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_SCALEY")
-    f32 CUTSUBTITLEDEFAULT_SCALEY = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CUTSUBTITLEDEFAULT_FITWIDTH")
-    f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7f;
-#pragma data_seg()
-
-#pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_ALIGN")
-    u8 CUTSUBTITLEDEFAULT_ALIGN = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CUTSUBTITLEDEFAULT_X")
-    f32 CUTSUBTITLEDEFAULT_X = 0;
 #pragma bss_seg()
 }
 
@@ -9624,30 +8679,6 @@ extern "C" {
     char dat_00774184[2] = "Y";
 #pragma data_seg()
 
-#pragma data_seg(".data$QFONTSCALEY")
-    f32 QFONTSCALEY = 1.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$text_preset_r")
-    u8 text_preset_r[10] = {128, 128, 0, 0, 0, 128, 128, 128, 0, 0};
-#pragma data_seg()
-
-#pragma data_seg(".data$text_preset_g")
-    u8 text_preset_g[10] = {128, 0, 128, 0, 128, 0, 128, 96, 0, 0};
-#pragma data_seg()
-
-#pragma data_seg(".data$text_preset_b")
-    u8 text_preset_b[10] = {128, 0, 0, 128, 128, 128, 0, 0, 0, 0};
-#pragma data_seg()
-
-#pragma data_seg(".data$current_rgba")
-    u32 current_rgba = 2155905152;
-#pragma data_seg()
-
-#pragma data_seg(".data$apitext_half_rgb")
-    i32 apitext_half_rgb = 1;
-#pragma data_seg()
-
 #pragma data_seg(".data$TextInputKeyNameTablePc")
     char *TextInputKeyNameTablePc[238] = {
         dat_00771d80, dat_00771d7c, "1",          dat_00771d78, dat_00771d74, dat_00771d70, dat_00771d6c, dat_00771d68, dat_00771d64,
@@ -9678,14 +8709,6 @@ extern "C" {
         dat_007516c0, dat_007516c0, dat_00771a20, dat_007516c0, dat_00771a14, dat_00771a04, dat_007719f8, dat_007719f0, dat_007719e4,
         dat_007719dc, dat_007719d0, dat_007719c8, dat_007719bc};
 #pragma data_seg()
-
-#pragma bss_seg(".bss$text3d_height")
-    f32 text3d_height = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$text3d_width")
-    f32 text3d_width = 0;
-#pragma bss_seg()
 
 #pragma bss_seg(".bss$g_nupadMapping")
     NUPADMAPPING g_nupadMapping[3] = {0};
@@ -9777,10 +8800,6 @@ extern "C" {
     i32 objopponent_ignoreaiopponent = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$IsWearingBackPackFn")
-    i32 (*IsWearingBackPackFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$GizmoBlowUpOpponent_Behind")
     i32 GizmoBlowUpOpponent_Behind = 0;
 #pragma bss_seg()
@@ -9789,28 +8808,8 @@ extern "C" {
     f32 GizmoBlowUpOpponent_Range2 = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$PlayerSpecialMoveCountPc")
-    i32 SpecialMoveCount = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$UsingExtraActionsFn")
     i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CanStartHoldFn")
-    i32 (*CanStartHoldFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Punch_GetDamageFn")
-    i32 (*Punch_GetDamageFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Punch_HitExtraCodeFn")
-    void (*Punch_HitExtraCodeFn)(GAMEOBJECT *, NUVEC *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Punch_HitHoldFn")
-    void (*Punch_HitHoldFn)(GAMEOBJECT *, GAMEOBJECT *) = 0;
 #pragma bss_seg()
 }
 
@@ -10016,30 +9015,6 @@ extern "C" {
 #pragma data_seg(".data$CutSceneSingleStreamBufferPc")
     i32 CutSceneSingleStreamBuffer = 2;
 #pragma data_seg()
-
-#pragma bss_seg(".bss$LookupLocatorVfxFn")
-    i32 (*LookupLocatorVfxFn)(char *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutSceneLookupAllDebrisPagesPc")
-    i32 CutSceneLookupAllDebrisPages = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneFindCharacters")
-    void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneCharacterCreateData")
-    void (*NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneRequestSFX")
-    i32 (*NuCutSceneRequestSFX)(char *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutSceneLocatorFunctionsPc")
-    CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctions = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10174,20 +9149,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$CutScene_OverrideConfigFileNameFn")
-    void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutList")
-    CUT_LOAD_LIST_ENTRY *CutList = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CUTCOUNT")
-    i32 CUTCOUNT = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
 
 #pragma data_seg(".data$DrawStatusScaleXPc")
     f32 DrawStatusScaleX = 350.0f;
@@ -10205,44 +9166,12 @@ extern "C" {
     i32 LegoObjectIconQuestion = -1;
 #pragma data_seg()
 
-#pragma data_seg(".data$DEBPAGE_GENERAL")
-    i32 DEBPAGE_GENERAL = -1;
-#pragma data_seg()
-
-#pragma data_seg(".data$DEBPAGE_CHARACTER")
-    i32 DEBPAGE_CHARACTER = -1;
-#pragma data_seg()
-
-#pragma data_seg(".data$DEBPAGE_AREA")
-    i32 DEBPAGE_AREA = -1;
-#pragma data_seg()
-
-#pragma bss_seg(".bss$CutSceneCameraFocalLengthPc")
-    f32 CutSceneCameraFocalLength = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$things_scene")
     NUGSCN *things_scene = 0;
 #pragma bss_seg()
 
-#pragma bss_seg(".bss$DrawCharIconFindPc")
-    i32 drawcharicon_find = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$RenderBackdropSpecialsPc")
-    nuhspecial_s RenderBackdropSpecials[4] = {0};
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$RenderBackdropScenePc")
     NUGSCN *backdrop_scene = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$RenderBackdropAlphaFnPc")
-    void (*RenderBackdropAlphaFn)(f32 *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$SURFACEBITS_NODUST")
-    u16 SURFACEBITS_NODUST = 0;
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$RenderHubFromCutscenePlayerPc")
@@ -10263,18 +9192,6 @@ extern "C" {
 #pragma data_seg(".data$RtlUnitDirectionZPc")
     NUVEC RtlUnitDirectionZPc = {0.0f, 0.0f, 1.0f};
 #pragma data_seg()
-
-#pragma data_seg(".data$rtl_helper_radius")
-    f32 rtl_helper_radius = 0.25f;
-#pragma data_seg()
-
-#pragma bss_seg(".bss$PCShadowCurrentLight")
-    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$PCShadowSecondaryLight")
-    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10285,48 +9202,11 @@ extern "C" {
 #pragma data_seg(".data$UiSelectPromptLiteralPc")
     char UiSelectPromptLiteral[7] = "Select";
 #pragma data_seg()
-
-#pragma data_seg(".data$MenuTextScalePc")
-    f32 MenuTextScale = 0.5f;
-#pragma data_seg()
-
-#pragma data_seg(".data$MENUDY")
-    f32 MENUDY = -0.10664f;
-#pragma data_seg()
-
-#pragma data_seg(".data$MenuAcceptPromptTextPc")
-    char *apitxt_SELECT = UiSelectPromptLiteral;
-#pragma data_seg()
-
-#pragma data_seg(".data$MenuCancelPromptTextPc")
-    char *apitxt_BACK = UiBackPromptLiteral;
-#pragma data_seg()
-
-#pragma data_seg(".data$MenuPromptPositionScalePc")
-    f32 MenuPromptPositionScale = 1.0f;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$ScreenGrabNeededPc")
-    u8 ScreenGrabNeeded = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ScreenPauseFadePc")
-    f32 pause_fade = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
 #pragma data_seg(".data$g_enableButtonPrompts")
     i32 g_enableButtonPrompts = 1;
-#pragma data_seg()
-
-#pragma data_seg(".data$headerdrawfn")
-    void (*headerdrawfn)(void) = DrawMenuHeader;
-#pragma data_seg()
-
-#pragma data_seg(".data$MenuTopYPc")
-    f32 MenuTopY = 0.8f;
 #pragma data_seg()
 
 #pragma data_seg(".data$MENUNORMALR")
@@ -10337,26 +9217,6 @@ extern "C" {
     u8 MENUNORMALG = 127;
 #pragma data_seg()
 
-#pragma data_seg(".data$SmartTextDefaultWidthPc")
-    f32 SmartTextDefaultWidth = 1.5f;
-#pragma data_seg()
-
-#pragma bss_seg(".bss$SmartTextLongestWidthPc")
-    f32 SmartTextLongestWidth = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$MessageMtl")
-    NUMTL *MessageMtl = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$MenuDisableHeaders")
-    i32 MenuDisableHeaders = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$predrawfn")
-    void (*predrawfn)(MENU *) = 0;
-#pragma bss_seg()
-
 #pragma bss_seg(".bss$MENUNORMALB")
     u8 MENUNORMALB = 0;
 #pragma bss_seg()
@@ -10366,53 +9226,6 @@ extern "C" {
 #pragma data_seg(".data$CutSceneDrawSettingsPc")
     CUT_DRAW_SETTINGS CutSceneDrawSettings = {-1, -1, -1, -1, 0};
 #pragma data_seg()
-#pragma data_seg(".data$dco_id")
-    i32 dco_id = -1;
-#pragma data_seg()
-
-#pragma data_seg(".data$dco_reflectcoord")
-    f32 dco_reflectcoord = 2000000.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$CutSceneSys")
-    CUT_DRAW_SETTINGS *CutSceneSys = &CutSceneDrawSettings;
-#pragma data_seg()
-
-#pragma bss_seg(".bss$UpdateLocatorVfxFn")
-    void (*UpdateLocatorVfxFn)(i32, NUMTX *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$TriggerLocatorVfxFn")
-    i32 (*TriggerLocatorVfxFn)(i32, NUMTX *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneGetHGObj")
-    NUHGOBJ_EVAL *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneCharacterRender")
-    void (*NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneResetCharacters")
-    void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneRigidPostRender")
-    void (*NuCutSceneRigidPostRender)(void *, nuhspecial_s *, NUMTX *) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$NuCutSceneSFXUpdate")
-    void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *, i32) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutSceneDebrisAxisSizePc")
-    f32 CutSceneDebrisAxisSize = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$CutSceneDebrisProcessModePc")
-    i32 CutSceneDebrisProcessMode = 0;
-#pragma bss_seg()
 
 #pragma bss_seg(".bss$MatrixReflection_CanOverrideFn")
     i32 (*MatrixReflection_CanOverrideFn)(void) = 0;
@@ -10445,27 +9258,6 @@ extern "C" {
 #pragma bss_seg(".bss$DisguiseAdjustFn")
     void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *) = 0;
 #pragma bss_seg()
-
-#pragma bss_seg(".bss$CutSceneWaiting")
-    i32 CutSceneWaiting = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
-
-#pragma bss_seg(".bss$debscale")
-    DEBRIS_SCALE_CACHE_PC *debscale = 0;
-#pragma bss_seg()
-
-#pragma data_seg(".data$EDPP_SCALE_TYPES")
-    i32 EDPP_SCALE_TYPES = 20;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma bss_seg(".bss$CutStopInfo")
-    void *CutStopInfo = 0;
-#pragma bss_seg()
 }
 
 extern "C" {
@@ -10473,81 +9265,41 @@ extern "C" {
     char dat_0075314c[7] = "batman";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tBATMANSUIT")
-    i16 tBATMANSUIT = 0;
-#pragma bss_seg()
-
 #pragma data_seg(".data$SuitMetadataName0075d280Pc")
     char dat_0075d280[14] = "batman_shadow";
 #pragma data_seg()
-
-#pragma bss_seg(".bss$tSHADOWSUIT")
-    i16 tSHADOWSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d270Pc")
     char dat_0075d270[13] = "batman_glide";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tGLIDESUIT")
-    i16 tGLIDESUIT = 0;
-#pragma bss_seg()
-
 #pragma data_seg(".data$SuitMetadataName0075d25cPc")
     char dat_0075d25c[18] = "batman_demolition";
 #pragma data_seg()
-
-#pragma bss_seg(".bss$tDEMOLITIONSUIT")
-    i16 tDEMOLITIONSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d24cPc")
     char dat_0075d24c[13] = "batman_sonar";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tSONARSUIT")
-    i16 tSONARSUIT = 0;
-#pragma bss_seg()
-
 #pragma data_seg(".data$SuitMetadataName00753144Pc")
     char dat_00753144[6] = "robin";
 #pragma data_seg()
-
-#pragma bss_seg(".bss$tROBINSUIT")
-    i16 tROBINSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d240Pc")
     char dat_0075d240[12] = "robin_water";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tWATERSUIT")
-    i16 tWATERSUIT = 0;
-#pragma bss_seg()
-
 #pragma data_seg(".data$SuitMetadataName0075d22cPc")
     char dat_0075d22c[17] = "robin_technology";
 #pragma data_seg()
-
-#pragma bss_seg(".bss$tTECHNOLOGYSUIT")
-    i16 tTECHNOLOGYSUIT = 0;
-#pragma bss_seg()
 
 #pragma data_seg(".data$SuitMetadataName0075d21cPc")
     char dat_0075d21c[13] = "robin_magnet";
 #pragma data_seg()
 
-#pragma bss_seg(".bss$tMAGNETSUIT")
-    i16 tMAGNETSUIT = 0;
-#pragma bss_seg()
-
 #pragma data_seg(".data$SuitMetadataName0075d20cPc")
     char dat_0075d20c[14] = "robin_attract";
 #pragma data_seg()
-
-#pragma bss_seg(".bss$tATTRACTSUIT")
-    i16 tATTRACTSUIT = 0;
-#pragma bss_seg()
 
 #pragma bss_seg(".bss$addcreature_override_id_check")
     i32 addcreature_override_id_check = 0;
@@ -10583,10 +9335,6 @@ extern "C" {
         {dat_00753144, dat_0075d20c, &tATTRACTSUIT,    384, 114, 'd', 0x0,      0, 0, 0}
     };
 #pragma data_seg()
-
-#pragma bss_seg(".bss$PlayerStartRecordInitPc")
-    PLAYER_START_INITIALIZER_RECORD PlayerStart[8] = {0};
-#pragma bss_seg()
 
 #pragma bss_seg(".bss$PodPacemakerPc")
     GAMEOBJECT *PodPacemaker = 0;
@@ -10626,20 +9374,8 @@ extern "C" {
 
 extern "C" {
 
-#pragma data_seg(".data$ShoveMaximumSpeedPc")
-    f32 ShoveMaximumSpeed = 2.0f;
-#pragma data_seg()
-
-#pragma data_seg(".data$ShoveMaximumPenetrationPc")
-    f32 ShoveMaximumPenetration = 0.1f;
-#pragma data_seg()
-
 #pragma bss_seg(".bss$ObstacleReturnLevelPc")
     LEVELDATA_PC *ObstacleReturnLevel = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$GizObstacleTriggersPc")
-    NUVEC *GizObstacleTriggers[16] = {0};
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$GizObstacleExcludeFnPc")
@@ -10667,18 +9403,6 @@ extern "C" {
 #pragma data_seg(".data$LEGOHINT_FREEPLAYTOGGLE")
     i32 LEGOHINT_FREEPLAYTOGGLE = -1;
 #pragma data_seg()
-
-#pragma bss_seg(".bss$FULLDEBUGTOGGLE")
-    i32 FULLDEBUGTOGGLE = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Player_ToggleSubCharacterFn")
-    i32 (*Player_ToggleSubCharacterFn)(GAMEOBJECT *, i32, i32) = 0;
-#pragma bss_seg()
-
-#pragma bss_seg(".bss$Player_ToggledCharacterFn")
-    void (*Player_ToggledCharacterFn)(GAMEOBJECT *, i32) = 0;
-#pragma bss_seg()
 
 #pragma bss_seg(".bss$implode_inbuffer")
     char *implode_inbuffer = 0;
@@ -10727,18 +9451,12 @@ extern "C" {
         0x00000000, 0x0000, 0x0000, {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
     };
 #pragma const_seg()
-#pragma data_seg(".data$GizmoBlowupHitMultiplierPc")
-    GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE GizmoBlowupHitMultiplier = {1};
-#pragma data_seg()
 #pragma bss_seg(".bss$PCSoundStreamSerialPc")
     i32 PCSoundStreamSerial = 0;
 #pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$GameAntinodeGridPc")
-    u64 GameAntinodeGrid[64] = {0};
-#pragma bss_seg()
 #pragma const_seg(".rdata$ZipUpHookOffsetPc")
     extern const NUVEC ZipUpHookOffset = {0.0f, -0.1143f, -0.0859f};
 #pragma const_seg()
@@ -10805,57 +9523,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$MiniCam")
-    MINICAM MiniCam = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutSpline")
-    NUGSPLINE ObstacleCamCutSpline = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamTargetGuid")
-    i32 ObstacleCamTargetGuid = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutPts")
-    NUVEC ObstacleCamCutPts[2] = {0};
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamSpl")
-    NUGSPLINE *ObstacleCamSpl = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamStart")
-    f32 ObstacleCamStart = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamEnd")
-    f32 ObstacleCamEnd = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamTime")
-    f32 ObstacleCamTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamRotZ")
-    i16 ObstacleCamRotZ = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamBlendInTime")
-    f32 ObstacleCamBlendInTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamBlendOutTime")
-    f32 ObstacleCamBlendOutTime = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutTgtPtr")
-    NUVEC *ObstacleCamCutTgtPtr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamCutCamPtr")
-    NUVEC *ObstacleCamCutCamPtr = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamBorders")
-    i32 ObstacleCamBorders = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ObstacleCamAlwaysSnapAnglesPc")
-    u8 ObstacleCamAlwaysSnapAngles = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CutBorderScale")
-    f32 CutBorderScale = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
 #pragma const_seg(".rdata$NuPortalBoundsOnePc")
     const NUVEC NuPortalBoundsOne = {1.0f, 1.0f, 1.0f};
 #pragma const_seg()
@@ -10871,15 +9538,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$BoltNoSfxPc")
-    i32 BoltNoSfx = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BoltNoObjectMomentumPc")
-    i32 BoltNoObjectMomentum = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$BoltInitSfxFn")
-    i32 (*BoltInitSfxFn)(GAMEOBJECT *) = 0;
-#pragma bss_seg()
 #pragma bss_seg(".bss$BlowupExFunc")
     i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
 #pragma bss_seg()
@@ -10898,18 +9556,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$grapple_attach_frames")
-    u8 grapple_attach_frames = 5;
-#pragma data_seg()
-#pragma bss_seg(".bss$CHARCATEGORYCOUNT")
-    i32 CHARCATEGORYCOUNT = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$CharCategory")
-    CHAR_CATEGORY_RECORD_PC *CharCategory = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
 #pragma data_seg(".data$GrabMachineIdPc")
     i16 GrabMachineId = -1;
 #pragma data_seg()
@@ -10922,12 +9568,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PartLoadParticlePagePc")
-    i32 edpart_load_particle_page = -1;
-#pragma data_seg()
-#pragma data_seg(".data$PartNullInstanceNamePc")
-    char PartNullInstanceName[14] = "NULL instance";
-#pragma data_seg()
 #pragma bss_seg(".bss$PartGeneralPagePc")
     i32 PartGeneralPage = 0;
 #pragma bss_seg()
@@ -10937,12 +9577,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PartCollisionIntervalPc")
-    f32 PartCollisionInterval = 0.1f;
-#pragma data_seg()
-#pragma data_seg(".data$PartStopSpeedSquaredPc")
-    f32 PartStopSpeedSquared = 0.1f;
-#pragma data_seg()
 #pragma data_seg(".data$id_UGNAUGHT")
     i16 id_UGNAUGHT = -1;
 #pragma data_seg()
@@ -10951,12 +9585,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$nbaddies_can_see_players")
     i32 nbaddies_can_see_players = 0;
-#pragma data_seg()
-}
-
-extern "C" {
-#pragma data_seg(".data$PartDebrisNameListPc")
-    char **PDebNameList = NULL;
 #pragma data_seg()
 }
 
@@ -10972,9 +9600,6 @@ extern "C" {
 extern "C" {
 #pragma data_seg(".data$lever_gizmotype_id")
     i32 lever_gizmotype_id = -1;
-#pragma data_seg()
-#pragma data_seg(".data$grapple_gizmotype_id")
-    i32 grapple_gizmotype_id = -1;
 #pragma data_seg()
 }
 
@@ -11048,15 +9673,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$giztimer_gizmotype_id")
-    i32 giztimer_gizmotype_id = -1;
-#pragma data_seg()
-#pragma data_seg(".data$gizrandom_gizmotype_id")
-    i32 gizrandom_gizmotype_id = -1;
-#pragma data_seg()
-}
-
-extern "C" {
 #pragma data_seg(".data$CollisionVehicleExcludedLevelPc")
     LEVELDATA_PC *CollisionVehicleExcludedLevel = NULL;
 #pragma data_seg()
@@ -11074,9 +9690,6 @@ extern "C" {
 #pragma data_seg()
 #pragma data_seg(".data$ForceFieldRippleRatePc")
     f32 ForceFieldRippleRate = 100.0f;
-#pragma data_seg()
-#pragma data_seg(".data$StreakAlphaScalePc")
-    f32 StreakAlphaScale = 2.0f;
 #pragma data_seg()
 #pragma data_seg(".data$PodDustLocatorIndicesPc")
     i32 PodDustLocatorIndices[2] = {1, 2};
@@ -11108,50 +9721,15 @@ extern "C" {
 #pragma data_seg(".data$GizmoPickupSys_Game")
     PICKUP_TYPE_SYSTEM GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
 #pragma data_seg()
-#pragma data_seg(".data$COINMAGNETSCALE")
-    f32 COINMAGNETSCALE = 3.0f;
-#pragma data_seg()
 #pragma data_seg(".data$GizmoPickups_Collide2DFn")
     f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
 #pragma data_seg()
 }
 
 extern "C" {
-    CUT_PLAYER_ACTIVE *CutScenePlayer = NULL;
-}
-
-extern "C" {
-    void (*NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *) = NULL;
-}
-
-extern "C" {
-    NUMTX CutSceneCameraMatrix = {0};
-    NUVEC CutSceneFocusLocation = {0};
-    u8 CutSceneCameraMatrixSet = 0;
-    u8 CutSceneUseFocusLocation = 0;
-    f32 CutSceneFocusDistance = 0.0f;
-    f32 CutSceneFStop = 0.0f;
-    i32 CutSceneCameraChanged = 0;
-    i32 CutSceneCameraDofMode = 0;
-    INSTNUGCUTSCENE *CutSceneLoadingInstance = NULL;
-    void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = NULL;
-    void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *) = NULL;
-}
-
-extern "C" {
-    i32 CutSceneStreamLoadGuard = 0;
-}
-
-extern "C" {
     f32 LevelNameMul = 0.0f;
     f32 LevelNameTime = 0.0f;
     u32 texanimbits = 0;
-    i32 CUTNOFOG = 0;
-    i32 CUTDRAWWORLD = 0;
-    i32 CUTCAMONLY = 0;
-    i32 ACTIVECUTCOUNT = 0;
-    i32 CutInstEndCount = 0;
-    i32 cut_waiting_for_new_level = 0;
 }
 
 extern "C" {
@@ -11165,10 +9743,6 @@ extern "C" {
     COLLECTION_BUILD_PC JediCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
     COLLECTION_BUILD_PC BlasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
     COLLECTION_BUILD_PC BountyHunterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    i16 PermanentAllTitleId = 0;
-    i16 PermanentJediTitleId = 0;
-    i16 PermanentBlasterTitleId = 0;
-    i16 PermanentBountyTitleId = 0;
     i16 PermanentWeirdo1Id = -1;
     i16 PermanentWeirdo2Id = -1;
     i16 PermanentCustomiserActions[5] = {97, 190, 98, 99, -1};
@@ -11219,7 +9793,6 @@ extern "C" {
     u8 dme_r = 0;
     u8 dme_g = 0;
     u8 dme_b = 0;
-    f32 MENUENTRYEXWIDTH = 1.25f;
     i32 LEGOCONTEXT_LAND_JUMP2 = -1;
     i32 LEGOCONTEXT_LAND_FLIP = -1;
     i32 LEGOCONTEXT_LAND_COMBOJUMP = -1;
@@ -11238,15 +9811,7 @@ extern "C" {
     i16 LEGOACT_EXTRA_JUMP = -1;
     i16 LEGOACT_EXTRA_JUMP2 = -1;
     i16 LEGOACT_EXTRA_LAND = -1;
-    f32 JumpFailedLandChainTime = 0.0f;
-    i32 DoubleJump_AlwaysReachJump2Height = 0;
-    i32 DoubleJump_JediSlam = 0;
-    i32 (*Jump_PreventJumpFn)(GAMEOBJECT *) = NULL;
-    void (*Jump_EndOfLandContextFn)(GAMEOBJECT *) = NULL;
-    i32 (*Slam_GetDebrisFn)(GAMEOBJECT *, i32) = NULL;
-    i32 (*CanGlideFn)(GAMEOBJECT *) = NULL;
     f32 SLAMJUMPSPEED = 3.0f;
-    f32 MENUBOTY = -0.75f;
     u8 MENUWARNR = 255;
     u8 MENUWARNG = 0;
     u8 MENUWARNB = 0;
@@ -11260,19 +9825,11 @@ extern "C" {
     i16 LEGOACT_HANG_IDLE = -1;
     i16 LEGOACT_CLIMB_IDLE = -1;
     i32 LEGOCONTEXT_LEDGETERRAIN = -1;
-    i32 LedgeTerrain_CheckAnims = 1;
     i16 LEGOACT_LEDGE_GRAB = -1;
     i16 LEGOACT_LEDGE_IDLE = -1;
     i16 LEGOACT_LEDGE_LEFT = -1;
     i16 LEGOACT_LEDGE_RIGHT = -1;
-    CREDIT_RECORD_PC *CreditList = NULL;
-    f32 CreditsTime = 0.0f;
-    f32 CreditsFinishedTime = 0.0f;
-    i32 CreditsFlag = 0;
-    f32 CreditsAlpha = 0.0f;
-    i32 Grapples_Available = 1;
     i32 Grapple_RopeSwingsAvailable = 0;
-    i16 Grapple_RopeSwingRotate = 21845;
     i32 LEGOHINT_GRAPPLE = -1;
     i16 LEGOACT_GRAPPLE_IDLE = -1;
     i16 LEGOACT_GRAPPLE_UP = -1;
@@ -11289,9 +9846,6 @@ extern "C" {
     i16 LEGOACT_SUPERPUSH_PUSH = -1;
     i16 LEGOACT_SUPERPUSH_PULL = -1;
     i16 LEGOACT_WALLJUMP_WAIT = -1;
-    i16 GizSpinnerGDeb_Fail[3] = {-1, -1, -1};
-    u32 (*CanPushObstaclesFn)(GAMEOBJECT *) = NULL;
-    u16 PushBlockFacingTolerance = 910;
     NUMTX LevMtx = {0};
     f32 LevAlpha = 0.0f;
     f32 TitlesAlpha = 0.0f;
@@ -11315,7 +9869,6 @@ extern "C" {
     TIMER JoinInTimer = {0};
     f32 MissionIconGap = 0.035f;
     f32 MissionIconStep = 0.12f;
-    i16 MissionMenuInstructionText = 0;
     f32 MissionIconBaseSize = 0.125f;
     f32 MissionIconSelectedSize = 0.2f;
     f32 MissionIconY = -0.725f;
@@ -11328,24 +9881,7 @@ extern "C" {
     f32 MissionPlayerIconSize = 0.16f;
     i16 id_PRINCESSLEIABOUSHH = -1;
     i32 hatmachine_gizmotype_id = -1;
-    f32 PushRumbleWindowPc = 0.1f;
-    f32 PushRumblePeriod = 0.25f;
-    f32 PushFallingSpeed = 10.0f;
-    f32 PushVelocitySeekRate = 1.0f;
-    f32 PushGroundOffset = -0.001f;
-    f32 PushCornerInset = -0.006f;
     i32 PushBlockHintId = -1;
-    f32 PushBlockOverlapShrink = 0.0f;
-    char *PushBlocksName = "PushBlocks";
-}
-
-extern "C" {
-    const char *GizObstacleRegistrationNamePtr = "GizObstacle";
-    const char *TubeGizmoName = "Tube";
-    const char *Tube_OutputName = "Active";
-    const char *PlugGizmoName = "Plug";
-    const char *PlugOutputName = "Plugged";
-    i32 plug_gizmotype_id = -1;
 }
 
 extern "C" {
@@ -11474,10 +10010,7 @@ extern "C" {
         {{0.0991f, 0.0f, 0.0762f}, {-0.0991f, 0.0f, 0.0762f}}
     };
     const char *PortalRegistrationPrefix = "portal_";
-    const char *ShadowGizmoName = "ShadowDirection";
-    const char *ShadowOutputName = "Dont Use Me!";
     i32 techno_gizmotype_id = -1;
-    i32 portal_gizmotype_id = 0;
 }
 
 extern "C" {
@@ -11491,9 +10024,6 @@ extern "C" {
 }
 
 extern "C" {
-    u32 (*CanSuperCarryFn)(GAMEOBJECT *) = NULL;
-    u32 (*CanPushBlocksFn)(GAMEOBJECT *) = NULL;
-    i32 (*CutScenePlayer_AcceptFn)(struct cut_player_clip_config_s *) = NULL;
     i16 id_SNOWTROOPER = -1;
     i16 id_DEATHSTARTROOPER = -1;
     i16 id_MOONCAR = -1;
@@ -11505,10 +10035,7 @@ extern "C" {
 }
 
 extern "C" {
-    i32 COLLECTION_COMPLETIONCOUNT = 0;
-    HUB_AI_MUSIC_VIEW HubAiMusicState = {0};
     KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState = {0};
-    SARLACC_NETPACKET *sarlaccb_netpacket = NULL;
 }
 
 extern "C" {
@@ -11518,8 +10045,6 @@ extern "C" {
     f32 selectmodetime = 0.0f;
     i32 CruiserD_LiftChase = 0;
     i32 (*CheckMusicOtherFn)(void) = NULL;
-    i32 (*GameAudio_ActionMusicFn)(void) = NULL;
-    i32 (*PauseRenderOffFn)(void) = NULL;
     f32 minikittime = 0.0f;
     i32 freeplaymode = 0;
     i32 freeplay_selected[2] = {0, 0};
@@ -11587,30 +10112,14 @@ extern "C" {
 }
 
 extern "C" {
-    i32 (*SetSoundFadeDistCallBackFn)(WORLDINFO *) = NULL;
     i32 (*AlternateGameCallback)(GAMEOBJECT *object) = NULL;
     i32 (*GamePads_IgnoreInputFn)(void) = NULL;
-    void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_s *door) = NULL;
     void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
-    i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle) = NULL;
-    void (*PauseGame_ExtraCodeFn)(void) = NULL;
     i32 (*Hub_PanelBusyFn)(void) = NULL;
-    i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT *input, GAMEOBJECT *object) = NULL;
-    void (*GizBuildIt_FinishFn)(struct GIZBUILDIT *input) = NULL;
-    void (*Game_100PercentFn)(void) = NULL;
-    void (*Game_AllGoldBricksFn)(void) = NULL;
-    f32 (*Hint_AlphaTargetFn)(void) = NULL;
-    void (*Collection_GetSelectingPlayerIDsFn)(i16 *ids) = NULL;
-    nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message) = NULL;
     const char *InitAsciiUp = "\xC2\xAC";
     const char *InitAsciiLeft = "<";
     const char *InitAsciiRight = ">";
     const char *InitAsciiBigArrow = "\xC2\xA4";
-    const char *LEGOASCII_UP = NULL;
-    const char *LEGOASCII_DOWN = NULL;
-    const char *LEGOASCII_LEFT = NULL;
-    const char *LEGOASCII_RIGHT = NULL;
-    const char *LEGOASCII_BIGARROW = NULL;
     i32 CompletionPointInfo[7] = {0};
 
     i16 LEGOACT_BUILD = -1;
@@ -11657,16 +10166,12 @@ extern "C" {
     i32 POINTS_PER_CHEAT = 0;
     i32 POINTS_PER_HINT = 0;
     i32 POINTS_PER_GOLDBRICK = 0;
-    i32 GOLDBRICKPOINTS = 0;
     i32 SHOPGOLDBRICKS = 0;
     i32 SHOPHINTCOUNT = 0;
     i16 ShopHintIds[24] = {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     i16 ShopHintTextIds[15] = {630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, -1};
-    f32 KITPOS2X = -1.27499998f;
     i32 PlayerHitPointsTwoHearts = 1;
     i32 ConvertOldPickups = 0;
-    i32 GrabScreenWhenFading = 0;
-    i32 TrooperGameDebris[4] = {-1, -1, -1, -1};
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 LEGOHINT_BUILD = -1;
     f32 REDBRICKPOS2X = 1.27499998f;
@@ -11675,27 +10180,15 @@ extern "C" {
        endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
     u8 AlternateHudColourBytes[8] = {255, 191, 191, 95, 128, 255, 31, 128};
     u8 AlternateHudRgb[3] = {0, 0, 0};
-    i32 LEGOTHINGSSCENE_TER_SPINBASE = -1;
-    i32 LEGOTHINGSSCENE_TER_SPINARM = -1;
     i32 LEGOOBJ_FLOORTARGET = -1;
     i32 LEGOOBJ_GRAPPLE_HOOK = -1;
-    i32 SuperCarryEnable = 0;
-    i32 CombatRollEnable = 0;
     i16 TechnoDefaultObject = 85;
-    i32 LEGOHINT_PUNCH = 1;
     i32 CutScenePlayCount = 0;
 }
 
 extern "C" {
     i16 id_SERVICECAR = -1;
-    i32 SuperCarry_UseActionButton = 0;
     i32 ForcePush_Waft = 0;
-    i16 tCLIPi = 0;
-    i16 tINTRO = 0;
-    i16 tMIDTRO = 0;
-    i16 tOUTRO = 0;
-    i16 tENDING = 0;
-    i16 tPOWERUP = 0;
 }
 
 // The HLSL uber-shader source compiled into every material variant, with its NUL.
@@ -19072,7 +17565,6 @@ extern "C" {
 }
 
 extern "C" {
-    void (*ResumeGame_ExtraCodeFn)(void) = NULL;
     f32 PlayerOpponent_Range2 = 0.0f;
 }
 
@@ -19095,14 +17587,6 @@ extern "C" {
 extern "C" {
     i16 id_WATTO = -1;
     u8 DroidCheat32Enabled = 0;
-}
-
-extern "C" {
-#pragma bss_seg(".bss$stream_cut_issued")
-    i32 stream_cut_issued = 0;
-
-#pragma bss_seg(".bss$cutscene_load_instance")
-    void *cutscene_load_instance = 0;
 }
 
 extern "C" {
@@ -19129,26 +17613,8 @@ extern "C" {
 
 extern "C" {
 
-#pragma bss_seg(".bss$GameFogOld")
-    GAMEFOG_STATE_PC GameFogOld = {{0}};
-
-#pragma bss_seg(".bss$GameFog")
-    GAMEFOG_STATE_PC GameFog = {{0}};
-}
-
-extern "C" {
-
-#pragma bss_seg(".bss$back_rgba")
-    i32 back_rgba[2] = {0};
-
-#pragma bss_seg(".bss$old_pause_state")
-    i32 old_pause_state = 0;
-
-#pragma bss_seg(".bss$FadeMtl2")
-    NUMTL *FadeMtl2 = 0;
 #pragma bss_seg()
 
-    f32 ScreenPauseFadeSpeed = 2.0f;
     u64 CharacterMaskAll = ~(u64)0;
     i32 FalconDebKey[2] = {-1, -1};
 
@@ -19164,73 +17630,35 @@ extern "C" {
 #pragma bss_seg(".bss$come_from_an_editor")
     i32 come_from_an_editor = 0;
 
-#pragma bss_seg(".bss$gone_through_door_to_new_mode")
-    i32 gone_through_door_to_new_mode = 0;
-
 #pragma bss_seg(".bss$newmode_cutinfo")
     void *newmode_cutinfo = 0;
 #pragma bss_seg()
 }
 
 extern "C" {
-#pragma bss_seg(".bss$sticky_attack_time")
-    f32 sticky_attack_time = 0;
-
-#pragma bss_seg(".bss$MusicSwapDelay")
-    f32 MusicSwapDelay = 0;
 
 #pragma bss_seg(".bss$MusicPlrsUnderAttack")
-    i32 MusicPlrsUnderAttack = 0;
 
 #pragma data_seg(".data$MusicActive")
     i32 MusicActive = -1;
 
-#pragma bss_seg(".bss$MusicActiveReset")
-    i32 MusicActiveReset = 0;
-#pragma bss_seg(".bss$MusicSeekIndex")
-    i32 MusicSeekIndex = 0;
-
-#pragma bss_seg(".bss$PlayersUnderAttack")
-    i32 PlayersUnderAttack = 0;
-
 #pragma bss_seg(".bss$MusicInside")
     i32 MusicInside = 0;
 
-#pragma bss_seg(".bss$MusicFindCut")
-    i32 MusicFindCut = 0;
-
 #pragma bss_seg(".bss$MusicRestoreTrack")
-    i32 MusicRestoreTrack = 0;
 
 #pragma data_seg(".data$MusicOnFlag")
     i32 MusicOnFlag = 1;
 
 #pragma bss_seg(".bss$MusicPlrsHoldAttack")
-    i32 MusicPlrsHoldAttack = 0;
 
 #pragma data_seg(".data$CurrentMusicPair_Quiet")
     i32 CurrentMusicPair_Quiet = -1;
 
-#pragma bss_seg(".bss$MoviePlayTime")
-    f32 MoviePlayTime = 0;
-
-#pragma bss_seg(".bss$movie_skipped")
-    i32 movie_skipped = 0;
-
-#pragma bss_seg(".bss$MovieInputFn")
-    i32 (*MovieInputFn)(void) = 0;
-
 #pragma bss_seg(".bss$MovieFrameTime")
-    f32 MovieFrameTime = 0;
 
 #pragma data_seg(".data$last_currentmusicpair_quiet")
     i32 last_currentmusicpair_quiet = -1;
-
-#pragma bss_seg(".bss$MusicOther")
-    i32 MusicOther = 0;
-
-#pragma bss_seg(".bss$sticky_attack")
-    i32 sticky_attack = 0;
 }
 
 extern "C" {
@@ -19267,38 +17695,12 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$gunship_bolts")
-    i16 gunship_bolts[2] = {0};
-
-#pragma bss_seg(".bss$gunship_flags")
-    u8 gunship_flags[10] = {0};
-}
-
-extern "C" {
-#pragma bss_seg(".bss$fireSplinePos")
-    SPLINEPOS fireSplinePos = {0};
-
-#pragma bss_seg(".bss$fireBackPos")
-    SPLINEPOS fireBackPos = {0};
-
-#pragma bss_seg(".bss$runningTotalPos")
-    f32 runningTotalPos = 0;
-
-#pragma bss_seg(".bss$fireSpeedScale")
-    f32 fireSpeedScale = 0;
-}
-
-extern "C" {
 #pragma bss_seg(".bss$FadeLoop_ObjScene")
     struct NUGSCN_s *FadeLoop_ObjScene = 0;
 }
 
 extern "C" {
 #pragma data_seg(".data$gizmopickup_typeid")
-    i32 gizmopickup_typeid = -1;
-
-#pragma bss_seg(".bss$hothtroopers")
-    void *hothtroopers = 0;
 }
 
 extern "C" {
@@ -19335,11 +17737,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$FadeLoop_ObjHSpecial")
-    nuhspecial_s FadeLoop_ObjHSpecial = {0};
-}
-
-extern "C" {
 #pragma bss_seg(".bss$HintItems")
     struct shopitem_s *HintItems = 0;
 
@@ -19356,7 +17753,6 @@ extern "C" {
     shopitem_s CutItems[128] = {0};
 
 #pragma bss_seg(".bss$troopercannons_beenReset")
-    u8 troopercannons_beenReset = 0;
 
 #pragma data_seg(".data$players_going_forward")
     i32 players_going_forward = 1;
@@ -19415,20 +17811,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$Door_CutCamWaitTime")
-    f32 Door_CutCamWaitTime = 0;
-
-#pragma bss_seg(".bss$Door_CutCamWait")
-    f32 Door_CutCamWait = 0;
-
-#pragma bss_seg(".bss$Door_CutCamBlendTime")
-    f32 Door_CutCamBlendTime = 0;
-
-#pragma bss_seg(".bss$Door_CutLookAtPlayers")
-    i32 Door_CutLookAtPlayers = 0;
-}
-
-extern "C" {
 #pragma bss_seg(".bss$AnakinC")
     struct anakin_door_s *AnakinC = 0;
 }
@@ -19468,11 +17850,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$melee")
-    HOTHBATTLE_MELEE_s melee = {0};
-}
-
-extern "C" {
 #pragma bss_seg(".bss$StatusStages")
     struct STATUS_STAGE_s *StatusStages = 0;
 
@@ -19505,11 +17882,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$HothBattleC_BombGenerator")
-    struct GIZBOMBGEN_s *HothBattleC_BombGenerator = 0;
-}
-
-extern "C" {
 
 #pragma bss_seg(".bss$edpart_emitroty")
 }
@@ -19533,20 +17905,12 @@ extern "C" {
     struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
 
 #pragma data_seg(".data$edpart_copy_size")
-    f32 edpart_copy_size = 0.2f;
 
 #pragma bss_seg(".bss$edpart_boxmtl")
     struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
-
-#pragma bss_seg(".bss$edpart_num_orphans")
-
-#pragma data_seg(".data$edpart_create_type")
-    i32 edpart_create_type = -1;
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_nearest_orphans")
-    i32 edpart_nearest_orphans = 0;
 #pragma bss_seg(".bss$edpart_emitrotx")
 }
 
@@ -19574,20 +17938,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$melee_wavePhase")
-    i8 melee_wavePhase = -1;
-
-#pragma bss_seg(".bss$escape")
-    nuhspecial_s escape[8] = {0};
-
-#pragma bss_seg(".bss$StarDestroyerTurrets")
-    struct GIZTURRET_s *StarDestroyerTurrets[16] = {0};
-
-#pragma bss_seg(".bss$turretAliveCount")
-    u8 turretAliveCount = 0;
 
 #pragma bss_seg(".bss$melee_waveDelay")
-    f32 melee_waveDelay = 0;
 }
 
 extern "C" {
@@ -19699,23 +18051,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edpart_scaletype_menu")
-
-#pragma data_seg(".data$edpart_scale_factor")
-    f32 edpart_scale_factor = 1.0f;
-
-#pragma bss_seg(".bss$edpart_type_menu")
-
-#pragma data_seg(".data$edpart_set_part")
-    i32 edpart_set_part = 5;
-
-#pragma bss_seg(".bss$edpart_cutoff_menu")
-
-#pragma data_seg(".data$edpart_superscale")
-    i32 edpart_superscale = 1;
-}
-
-extern "C" {
 #pragma bss_seg(".bss$edbri_plankcount_menu")
 
 #pragma data_seg(".data$edbri_post_interval")
@@ -19756,11 +18091,6 @@ extern "C" {
 
 #pragma bss_seg(".bss$TopShelf")
     shopitem_s TopShelf[6] = {0};
-}
-
-extern "C" {
-#pragma bss_seg(".bss$edanim_particletype_menu")
-    struct eduimenu_s *edanim_particletype_menu = 0;
 }
 
 extern "C" {
@@ -19814,15 +18144,6 @@ extern "C" {
 #pragma bss_seg(".bss$edanim_bouncy_menu")
     struct eduimenu_s *edanim_bouncy_menu = 0;
 
-#pragma bss_seg(".bss$edanim_switchtype_menu")
-    struct eduimenu_s *edanim_switchtype_menu = 0;
-
-#pragma bss_seg(".bss$edanim_mctb_menu")
-    struct eduimenu_s *edanim_mctb_menu = 0;
-
-#pragma bss_seg(".bss$edanim_switch_menu")
-    struct eduimenu_s *edanim_switch_menu = 0;
-
 #pragma bss_seg(".bss$edbits_cubecount")
     i32 edbits_cubecount = 0;
 
@@ -19856,17 +18177,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$edanim_localparticletype_menu")
-    struct eduimenu_s *edanim_localparticletype_menu = 0;
 
 #pragma bss_seg(".bss$edanim_nearest_particle")
     i32 edanim_nearest_particle = 0;
-
-#pragma bss_seg(".bss$edanim_localparticle_menu")
-    struct eduimenu_s *edanim_localparticle_menu = 0;
-
-#pragma bss_seg(".bss$edanim_particle_menu")
-    struct eduimenu_s *edanim_particle_menu = 0;
 
 #pragma bss_seg(".bss$edanim_sound_menu")
     struct eduimenu_s *edanim_sound_menu = 0;
@@ -19933,16 +18246,10 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$door_gizmotype_id")
-    char door_gizmotype_id = -1;
-}
-
-extern "C" {
 #pragma data_seg(".data$bombgen_gizmotype_id")
     i32 bombgen_gizmotype_id = -1;
 
 #pragma data_seg(".data$fire_clip_dist")
-    i32 fire_clip_dist = 1000;
 }
 
 extern "C" {
@@ -20003,11 +18310,6 @@ extern "C" {
 extern "C" {
 
 #pragma data_seg(".data$aiEditor_LocatorWidth")
-}
-
-extern "C" {
-#pragma bss_seg(".bss$thingsSceneBase")
-    nuhspecial_s thingsSceneBase = {0};
 }
 
 extern "C" {
@@ -20235,90 +18537,6 @@ extern "C" {
         {38, "Show Game Controls"                                         },
         {39, NULL                                                         },
     };
-    MENU_PC_STRING_ENTRY dat_00827a80[40] = {
-        {0,  "Quitter"                                                                     },
-        {1,  "Revenir sous Windows"                                                        },
-        {2,  "Quitter au menu D\303\251mo"                                                 },
-        {3,  "Reprendre la partie"                                                         },
-        {4,  "Faible"                                                                      },
-        {5,  "Moyenne"                                                                     },
-        {6,  "Elev\303\251e"                                                               },
-        {7,  "Reprendre"                                                                   },
-        {8,  "Accepter"                                                                    },
-        {9,  "Refuser"                                                                     },
-        {10, "Retour"                                                                      },
-        {11, "Oui"                                                                         },
-        {12, "Non"                                                                         },
-        {13, "OK"                                                                          },
-        {14, "Annuler"                                                                     },
-        {15, "Avec"                                                                        },
-        {16, "Sans"                                                                        },
-        {17, "Param\303\250tres par d\303\251faut"                                         },
-        {18, "Param\303\250tres vid\303\251o"                                              },
-        {19, "R\303\251solution"                                                           },
-        {20, "Taux de rafra\303\256chissement"                                             },
-        {21, "Synchronisation verticale"                                                   },
-        {22, "Format"                                                                      },
-        {23, "Graphismes am\303\251lior\303\251s"                                          },
-        {24, "R\303\251solution \303\251cran"                                              },
-        {25, "Utiliser les param\303\250tres actuels"                                      },
-        {26, "Qualit\303\251 Textures"                                                     },
-        {27, "Inverser"                                                                    },
-        {28, "Vous devez red\303\251marrer le jeu pour que ces changements prennent effet."},
-        {29, "Param\303\250tres d'effets"                                                  },
-        {30, "FSAA"                                                                        },
-        {31, "D\303\251fini en externe"                                                    },
-        {32, "Ombres"                                                                      },
-        {33, "Luminosit\303\251"                                                           },
-        {34, "Distance d'affichage"                                                        },
-        {35, "Flou (effet de vitesse)"                                                     },
-        {36, "Qualit\303\251 lumi\303\250re dynamique"                                     },
-        {37, "Lissage des ar\303\252tes"                                                   },
-        {38, "Show Game Controls"                                                          },
-        {39, NULL                                                                          },
-    };
-    MENU_PC_STRING_ENTRY dat_00827bc0[40] = {
-        {0,  "Ende"                                                                             },
-        {1,  "Zur\303\274ck zu Windows"                                                         },
-        {2,  "Schlie\303\237en und zum Demo-Men\303\274"                                        },
-        {3,  "Zur\303\274ck zum Spiel"                                                          },
-        {4,  "Gering"                                                                           },
-        {5,  "Mittel"                                                                           },
-        {6,  "Hoch"                                                                             },
-        {7,  "Fortsetzen"                                                                       },
-        {8,  "Annehmen"                                                                         },
-        {9,  "Ablehnen"                                                                         },
-        {10, "Zur\303\274ck"                                                                    },
-        {11, "Ja"                                                                               },
-        {12, "Nein"                                                                             },
-        {13, "OK"                                                                               },
-        {14, "Abbrechen"                                                                        },
-        {15, "Ein"                                                                              },
-        {16, "Aus"                                                                              },
-        {17, "Zur\303\274cksetzen auf Standardwerte"                                            },
-        {18, "Grafikeinstellungen"                                                              },
-        {19, "Bildschirmaufl\303\266sung"                                                       },
-        {20, "Bildwiederholfrequenz"                                                            },
-        {21, "Vertikales Synchr."                                                               },
-        {22, "Seitenverh\303\244ltnis"                                                          },
-        {23, "Erh\303\266hte Grafiken"                                                          },
-        {24, "Aufl\303\266sung"                                                                 },
-        {25, "Aktuelle Einstellungen verwenden"                                                 },
-        {26, "Qualit\303\244t der Texturen"                                                     },
-        {27, "Umkehren"                                                                         },
-        {28, "Du musst das Spiel erneut starten, damit diese \303\204nderungen in Kraft treten."},
-        {29, "Effekteinstellungen"                                                              },
-        {30, "FSAA"                                                                             },
-        {31, "Extern konfiguriert"                                                              },
-        {32, "Schatten"                                                                         },
-        {33, "Bloomeffekt"                                                                      },
-        {34, "Sch\303\244rfentiefe"                                                             },
-        {35, "Geschwindigkeitsunsch\303\244rfe"                                                 },
-        {36, "Qualit\303\244t der dynamischen Beleuchtungsverh\303\244ltnisse"                  },
-        {37, "Kantengl\303\244ttung"                                                            },
-        {38, "Show Game Controls"                                                               },
-        {39, NULL                                                                               },
-    };
     MENU_PC_STRING_ENTRY dat_00827d00[40] = {
         {0,  "Esci"                                                                 },
         {1,  "Torna a Windows"                                                      },
@@ -20403,50 +18621,6 @@ extern "C" {
         {38, "Show Game Controls"                                           },
         {39, NULL                                                           },
     };
-    MENU_PC_STRING_ENTRY dat_00827f80[40] = {
-        {0,  "Forlad"                                                                    },
-        {1,  "Forlad til Windows"                                                        },
-        {2,  "Slut og g\303\245 til Demo-menuen"                                         },
-        {3,  "Vend tilbage til spillet"                                                  },
-        {4,  "Lav"                                                                       },
-        {5,  "Mellem"                                                                    },
-        {6,  "H\303\270j"                                                                },
-        {7,  "Genoptag"                                                                  },
-        {8,  "Accepter"                                                                  },
-        {9,  "Afsl\303\245"                                                              },
-        {10, "Tilbage"                                                                   },
-        {11, "Ja"                                                                        },
-        {12, "Nej"                                                                       },
-        {13, "OK"                                                                        },
-        {14, "Annuller"                                                                  },
-        {15, "Til"                                                                       },
-        {16, "Fra"                                                                       },
-        {17, "Nulstil"                                                                   },
-        {18, "Grafikindstillinger"                                                       },
-        {19, "Sk\303\246rmopl\303\270sning"                                              },
-        {20, "Billedfrekvens"                                                            },
-        {21, "Sk\303\246rmopdatering"                                                    },
-        {22, "St\303\270rrelsesforhold"                                                  },
-        {23, "Forbedret grafik"                                                          },
-        {24, "Fra sk\303\246rmopl\303\270sning"                                          },
-        {25, "Brug nuv\303\246rende grafikindstillinger"                                 },
-        {26, "Teksturkvalitet"                                                           },
-        {27, "Vend tilbage"                                                              },
-        {28, "Du skal genstarte spillet for at \303\246ndringerne tr\303\246der i kraft."},
-        {29, "Effektindstilling"                                                         },
-        {30, "Anti-aliasing, fuld sk\303\246rm"                                          },
-        {31, "Ekstern"                                                                   },
-        {32, "Skygger"                                                                   },
-        {33, "Bloom"                                                                     },
-        {34, "Synsdybde"                                                                 },
-        {35, "Sl\303\270ring"                                                            },
-        {36, "Dynamisk lys-kvalitet"                                                     },
-        {37, "Kant-AA"                                                                   },
-        {38, "Show Game Controls"                                                        },
-        {39, NULL                                                                        },
-    };
-    const char *MenuPcStrings[39] = {0};
-    i32 MenuPcStringsInitialized = 0;
     f32 MenuNewGameY = -0.5f;
 #pragma const_seg()
 }
@@ -21187,12 +19361,7 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$BuilditHopSfxWaitPc")
-    f32 BuilditHopSfxWait = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$GIZBUILDITWOBBLEJUMPHEIGHT")
-    f32 GIZBUILDITWOBBLEJUMPHEIGHT = 0.05f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -21213,10 +19382,6 @@ extern "C" {
 extern "C" {
 #pragma data_seg(".data$RopeCurveSubdivisionsPc")
     i32 RopeCurveSubdivisions = 3;
-#pragma data_seg(".data$GrappleRopeColourPc")
-    u32 GRAPPLE_RGBA = 0xffffffffu;
-#pragma data_seg(".data$GrappleCurvedRopeEnabledPc")
-    i32 GrappleCurvedRopeEnabled = 1;
 #pragma data_seg()
 }
 
@@ -21236,12 +19401,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$door_cutscenesnap")
-    i32 door_cutscenesnap = 0;
-#pragma bss_seg()
-}
-
-extern "C" {
 #pragma bss_seg(".bss$HubDoorAreaPc")
     i32 HubDoorArea = 0;
 #pragma bss_seg(".bss$HubDoorNewLevelPc")
@@ -21254,9 +19413,6 @@ extern "C" {
 #pragma bss_seg(".bss$GameKeepMergeActionPc")
     i32 GameKeepMergeAction = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$CharacterBlobShadowsOnPc")
-    i32 CharacterBlobShadowsOn = 1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -21320,7 +19476,6 @@ extern "C" {
                                  &dat_00880f30, &dat_00880f34,    &dat_00880f38, &dat_00880f3c, &dat_00880f40, &dat_00880f48, &dat_00880f4c,
                                  &dat_00880f50, &dat_00880c80,    &dat_00880c7c, &dat_00880c74, &dat_00880c78, &dat_00880cb0, &dat_008811c0,
                                  &dat_008811bc, &PcControlTextId, &dat_008811b0};
-    char *PcControlText[45] = {0};
     PC_CONTROL_ITEM PcControlItems[25] = {
         {0,   0,   7,   1, 0.0f},
         {0,   1,   8,   2, 0.0f},
@@ -21348,55 +19503,8 @@ extern "C" {
         {4,   0,   1,   0, 0.0f},
         {255, 255, 255, 0, 0.0f},
     };
-    PC_CONTROL_ITEM *PcControlRows[2] = {PcControlItems, NULL};
 
     i16 PcControlTextId = 0;
-    u32 PcControlButtons = 0;
-    i32 PcControlPulseAngle = 0;
-    f32 PcControlRepeat[2] = {0};
-    u32 PcControlHeld[2] = {0};
-    u32 PcControlPressed[2] = {0};
-    PC_CONTROL_SCREEN PcControlScreen = {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0.0f,
-        0.0f,
-        0.0f,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0.9f,
-        0.8f,
-        0,
-        {0, 0, 0, 0},
-        {0, 0, 0, 0},
-        {-1, -1, -1, -1},
-        0,
-        0,
-        {0, 0, 0},
-        NULL,
-        {32.0f, 32.0f, 32.0f, 32.0f},
-        {0, 0, 0, 0},
-        5.0f,
-        0.0f,
-        NULL,
-        {{0}},
-        {0},
-        {{0}},
-        0.0f,
-        NULL,
-        NULL
-    };
-
-    // .data virtual tail (BSS); initial bits zero.
-    f32 PcControlBaselineAdjust = 0.0f;
 }
 
 extern "C" {
@@ -21633,15 +19741,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$MenuVideoOptionsPc")
-    MENU_VIDEO_OPTIONS MenuVideoOptions = {0};
 #pragma bss_seg(".bss$MenuAppliedAspectPc")
     i32 MenuAppliedAspect = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$MenuVideoConfirmDurationPc")
-    f32 MenuVideoConfirmDuration = 0;
-#pragma bss_seg(".bss$MenuVideoConfirmWaitPc")
-    i32 MenuVideoConfirmWait = 0;
 #pragma bss_seg()
     // {1027, MenuEnterVideoConfirm, MenuDrawVideoConfirm, MenuUpdateVideoConfirm, MenuExitVideoConfirm, -1, -1,
     // 0, 0, 0, 0}, {1028, MenuEnterHiresNotice, MenuDrawHiresNotice, MenuUpdateHiresNotice,
@@ -21650,10 +19751,6 @@ extern "C" {
 #pragma bss_seg(".bss$PauseSaveAndExitPc")
     i32 PauseSaveAndExit = 0;
 #pragma bss_seg()
-
-#pragma data_seg(".data$MenuAutoSaveCancelFirstPc")
-    u8 MenuAutoSaveCancelFirst = 1;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -21705,12 +19802,6 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$PANEL_MINIKITCOUNTSCALE")
-    f32 PANEL_MINIKITCOUNTSCALE = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$PANEL_MINIKITCOUNTY")
-    f32 PANEL_MINIKITCOUNTY = -0.1f;
-#pragma data_seg()
 #pragma data_seg(".data$stats_xscale")
     f32 stats_xscale = 1.0f;
 #pragma data_seg()
@@ -21804,9 +19895,6 @@ extern "C" {
 #pragma bss_seg(".bss$HubArcadeMenuYPc")
     f32 HubArcadeMenuY = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$HubButtonStringBufferPc")
-    char HubButtonStringBuffer[72] = "???";
-#pragma data_seg()
 }
 
 /* Append inside data.cpp; each original new owner gets its own section. */
@@ -22080,26 +20168,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$ShopTopBrickOffsetPc")
-    f32 ShopTopBrickOffset = -0.0325f;
-#pragma data_seg()
-}
-
-extern "C" {
 #pragma bss_seg(".bss$AIPathCnxHelperSysInitFn")
     void (*AIPathCnxHelperSysInitFn)(WORLDINFO *) = 0;
 #pragma bss_seg()
-}
-
-extern "C" {
-    const char *HubAreaNames[10] = {"MAINROOM", "EPISODE1", "EPISODE2", "EPISODE3", "EPISODE4",
-                                    "EPISODE5", "EPISODE6", "JUNKYARD", "BONUS",    "BOUNTY"};
-}
-
-extern "C" {
-#pragma data_seg(".data$KITPOS2YPc")
-    f32 KITPOS2YPc = -1.3f;
-#pragma data_seg()
 }
 
 extern "C" {
@@ -22391,9 +20462,6 @@ extern "C" {
 #pragma bss_seg(".bss$ShopItemChangedPc")
     i32 ShopItemChanged = 0;
 #pragma bss_seg()
-#pragma data_seg(".data$ShopUserCodePc")
-    char ShopUserCode[6] = {'A', 'A', 'A', 'A', 'A', 'A'};
-#pragma data_seg()
 }
 
 extern "C" {
@@ -22402,9 +20470,6 @@ extern "C" {
 #pragma bss_seg()
 #pragma bss_seg(".bss$ShopScrollKeyHitPc")
     i32 ShopScrollKeyHit = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ShopSubMoveSfxLockPc")
-    i32 ShopSubMoveSfxLock = 0;
 #pragma bss_seg()
 }
 
@@ -22462,8 +20527,6 @@ extern "C" {
 
 extern "C" {}
 
-extern "C" f32 ExplosionKnockbackScale = 2.0f;
-
 extern "C" {
 #pragma bss_seg(".bss$speeder_hitpoints_lost")
     i32 speeder_hitpoints_lost = 0;
@@ -22471,18 +20534,8 @@ extern "C" {
 }
 
 extern "C" {
-#pragma bss_seg(".bss$StreakNodesPc")
-    STREAK_NODE StreakNodes[128] = {0};
-#pragma bss_seg(".bss$StreakReflectionMaterialPc")
-    NUMTL *streakmtl_ref = 0;
-#pragma bss_seg(".bss$StreakNodesUsedPc")
-    STREAK_NODE *StreakNodesUsed = 0;
-#pragma bss_seg(".bss$StreakNodesFreePc")
-    STREAK_NODE *streaks_free = 0;
 #pragma bss_seg(".bss$StreakHeadersFreePc")
     STREAK_HEADER *streakhdrs_free = 0;
-#pragma bss_seg(".bss$StreakMaterialPc")
-    NUMTL *streakmtl = 0;
 #pragma bss_seg(".bss$StreakHeadersPc")
     STREAK_HEADER StreakHeaders[32] = {0};
 #pragma bss_seg()
@@ -22576,18 +20629,6 @@ extern "C" {
         {{{-1, 0, -1, 1000, 1.0f}},   1.0f,  {NULL},                    0, {0, 0, 0}, 0.0f},
     };
 
-#pragma bss_seg(".bss$PushBlockMissingSpecialPositionPc")
-    NUVEC p000 = {0.0f, 0.0f, 0.0f};
-#pragma bss_seg(".bss$RunOutOfPosTabSpacePc")
-    i32 RunOutOfPosTabSpace = 0;
-#pragma bss_seg(".bss$pushposincrease")
-    i32 pushposincrease = 0;
-#pragma bss_seg()
-#pragma data_seg(".data$PushInitGroundOffsetPc")
-    f32 PushInitGroundOffset = -0.001f;
-#pragma data_seg(".data$PushInitCornerInsetPc")
-    f32 PushInitCornerInset = -0.006f;
-
 #pragma data_seg()
 }
 
@@ -22675,19 +20716,10 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$HeadCloakHairTuningPc")
-    f32 HeadMovementThreshold = 0.0017453294f;
-    f32 CloakMovementRecoverRate = 2.0f;
-    f32 CloakMovementFallRate = 2.0f;
-#pragma data_seg()
 #pragma section(".bss$HeadCloakHairTuningPc", read, write)
-    __declspec(allocate(".bss$HeadCloakHairTuningPc")) f32 HairMovementRestAngle = 0.0f;
 }
 
 #pragma section(".bss$TagTransfersPc", read, write)
-extern "C" {
-    __declspec(allocate(".bss$TagTransfersPc")) TAG_TRANSFER_PC TagTransfers[2];
-}
 
 #pragma section(".data$InteractionArrowScalePc", read, write)
 extern "C" {
@@ -22765,31 +20797,6 @@ extern "C" {
 #pragma section(".bss$AiEditorLowerHeightOverridePc", read, write)
 
 #pragma section(".bss$EmperorFloorRouteOnPc", read, write)
-extern "C" {
-    __declspec(allocate(".bss$EmperorFloorRouteOnPc")) i32 EmperorFloorRouteOn = 0;
-}
-
-#pragma data_seg(".data$EmperorFloorRadiusPc")
-extern "C" {
-    f32 EmperorFloorRadius = 0.35f;
-}
-#pragma data_seg()
-#pragma data_seg(".data$EmperorFloorJitterPc")
-extern "C" {
-    f32 EmperorFloorJitter = 0.2f;
-}
-#pragma data_seg()
-#pragma data_seg(".data$EmperorFloorPushPc")
-extern "C" {
-    f32 EmperorFloorPush = 0.2f;
-}
-#pragma data_seg()
-
-#pragma data_seg(".data$EmperorFloorSafeXMinimumPc")
-extern "C" {
-    f32 EmperorFloorSafeXMinimum = 1.5f;
-}
-#pragma data_seg()
 
 extern "C" {
     /* DDS image used for textures that fail to resolve (128x128, 0x2080 bytes). */

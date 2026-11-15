@@ -265,6 +265,8 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     }
 }
 
+u32 (*CanSuperCarryFn)(GAMEOBJECT *) = NULL;
+
 i32 SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
     if (CanSuperCarryFn == NULL || CanSuperCarryFn(object) == 0) {
         return 0;
@@ -345,6 +347,10 @@ void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 i
     }
     object->context_hover_target_y = 0.5f;
 }
+
+i32 SuperCarry_UseActionButton = 0;
+i32 SuperCarryEnable = 0;
+i32 CombatRollEnable = 0;
 
 void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
     if (LEGOCONTEXT_SUPERCARRY == -1) {
@@ -780,7 +786,16 @@ void SuperCarry_Release(GAMEOBJECT *object) {
 
 i32 SuperCarry_PutDownDrop = 1;
 f32 SUPERCARRY_JUMPSPEED = 1.4f;
+f32 SuperCarryImpactSpeed = 4.0f;
 u8 SuperCarryPlayerRgb[2][3] = {
     {0, 127, 255},
     {0, 255, 0  }
 };
+f32 SUPERCARRY_THROWSPEED_XZ = 3.0f;
+f32 SUPERCARRY_THROWSPEED_Y = 3.0f;
+f32 SUPERCARRY_RELEASESPEED_XZ = 2.0f;
+f32 SUPERCARRY_DROPSPEED_XZ = 0.2f;
+f32 SUPERCARRY_DROPSPEED_Y = 1.0f;
+f32 SUPERCARRY_OBJGRAVITY = -6.0f;
+i32 SuperCarry_KeepObjectLevel = 1;
+i32 SuperCarry_AlignObject = 1;

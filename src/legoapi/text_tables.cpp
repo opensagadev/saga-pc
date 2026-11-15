@@ -50,6 +50,7 @@ extern "C" {
     i16 dat_0088079c = 0;
     i16 dat_008807a0 = 0;
     i16 dat_008807a4 = 0;
+    i16 PermanentBountyTitleId = 0;
     extern i16 PCArcadeModeText0;
     extern i16 PCArcadeModeText1;
     extern i16 PCArcadeModeText2;
@@ -61,13 +62,22 @@ extern "C" {
     i16 dat_008807cc = 0;
     i16 dat_008807d0 = 0;
     i16 dat_008807d4 = 0;
+    i16 PermanentAllTitleId = 0;
+    i16 PermanentBlasterTitleId = 0;
+    i16 PCArcadeModeText = 0;
     i16 dat_008807e4 = 0;
     i16 dat_008807e8 = 0;
     i16 dat_008807ec = 0;
     i16 dat_008807f0 = 0;
     i16 dat_008807f4 = 0;
+    i16 PCArcadePlayText = 0;
     i16 dat_008807fc = 0;
     i16 dat_00880800 = 0;
+    i16 tCLIPi = 0;
+    i16 tINTRO = 0;
+    i16 tMIDTRO = 0;
+    i16 tOUTRO = 0;
+    i16 tENDING = 0;
     i16 dat_00880818 = 0;
     i16 dat_0088081c = 0;
     i16 dat_00880820 = 0;
@@ -92,8 +102,12 @@ extern "C" {
     i16 dat_0088086c = 0;
     i16 dat_00880870 = 0;
     i16 dat_00880874 = 0;
+    i16 tON = 0;
+    i16 tOFF = 0;
     i16 dat_00880880 = 0;
+    i16 tACCEPT = 0;
     i16 dat_00880888 = 0;
+    i16 tBACK = 0;
     i16 dat_00880890 = 0;
     i16 dat_00880894 = 0;
     i16 dat_00880898 = 0;
@@ -113,6 +127,7 @@ extern "C" {
     i16 dat_008808d0 = 0;
     i16 dat_008808d4 = 0;
     i16 dat_008808d8 = 0;
+    i16 PCArcadeLevelText = 0;
     i16 dat_008808e0 = 0;
     i16 dat_008808e4 = 0;
     i16 dat_008808e8 = 0;
@@ -127,6 +142,7 @@ extern "C" {
     i16 dat_0088090c = 0;
     i16 dat_00880910 = 0;
     i16 dat_00880914 = 0;
+    i16 tAUDIOVOLUME = 0;
     i16 dat_0088091c = 0;
     i16 dat_00880920 = 0;
     i16 dat_00880924 = 0;
@@ -135,6 +151,7 @@ extern "C" {
     i16 dat_00880930 = 0;
     i16 dat_00880934 = 0;
     i16 dat_00880938 = 0;
+    i16 tMUSIC = 0;
     i16 dat_00880940 = 0;
     i16 dat_00880944 = 0;
     i16 dat_00880948 = 0;
@@ -144,6 +161,16 @@ extern "C" {
     i16 dat_00880958 = 0;
     i16 dat_0088095c = 0;
     i16 dat_00880960 = 0;
+    i16 tBATMANSUIT = 0;
+    i16 tSHADOWSUIT = 0;
+    i16 tGLIDESUIT = 0;
+    i16 tDEMOLITIONSUIT = 0;
+    i16 tSONARSUIT = 0;
+    i16 tROBINSUIT = 0;
+    i16 tWATERSUIT = 0;
+    i16 tTECHNOLOGYSUIT = 0;
+    i16 tMAGNETSUIT = 0;
+    i16 tATTRACTSUIT = 0;
     i16 dat_0088098c = 0;
     i16 dat_00880990 = 0;
     i16 dat_00880994 = 0;
@@ -332,6 +359,7 @@ extern "C" {
     i16 dat_00880c7c = 0;
     i16 dat_00880c80 = 0;
     i16 dat_00880c84 = 0;
+    i16 tTOUCHTOSTART = 0;
     i16 dat_00880c8c = 0;
     i16 dat_00880c90 = 0;
     i16 dat_00880c94 = 0;
@@ -521,6 +549,7 @@ extern "C" {
     i16 dat_00880f84 = 0;
     i16 dat_00880f88 = 0;
     i16 dat_00880f8c = 0;
+    i16 tALONGTIMEAGO = 0;
     i16 dat_00880f94 = 0;
     i16 dat_00880f98 = 0;
     i16 dat_00880f9c = 0;
@@ -552,6 +581,7 @@ extern "C" {
     i16 dat_00881004 = 0;
     i16 dat_00881008 = 0;
     i16 dat_0088100c = 0;
+    i16 MissionMenuInstructionText = 0;
     i16 dat_00881014 = 0;
     i16 dat_00881018 = 0;
     i16 dat_0088101c = 0;
@@ -594,6 +624,7 @@ extern "C" {
     i16 dat_008810b0 = 0;
     i16 dat_008810b4 = 0;
     i16 dat_008810b8 = 0;
+    i16 tPOWERUP = 0;
     i16 dat_008810c0 = 0;
     i16 dat_008810c4 = 0;
     i16 dat_008810c8 = 0;
@@ -630,6 +661,7 @@ extern "C" {
     i16 dat_00881144 = 0;
     i16 dat_00881148 = 0;
     i16 dat_0088114c = 0;
+    i16 PermanentJediTitleId = 0;
     i16 dat_00881154 = 0;
     i16 dat_00881158 = 0;
     i16 dat_0088115c = 0;

@@ -75,6 +75,8 @@ i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_diff
     return 0;
 }
 
+i32 PlayerPushSpinnerDegrees = 4;
+
 void SetPushAngle(GAMEOBJECT *object) {
     SPINNER_MOVEMENT *spinner;
     u16 angle;
@@ -92,6 +94,8 @@ void SetPushAngle(GAMEOBJECT *object) {
         object->movement_facing_angle = angle + ((adjustment + 180) * 65536) / 360;
     }
 }
+
+u32 (*CanPushObstaclesFn)(GAMEOBJECT *) = NULL;
 
 void PushCode(GAMEOBJECT *object, i32 allow_push) {
     i32 saved_context;

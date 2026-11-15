@@ -161,6 +161,7 @@ u32 flagremaptab[32][2] = {
     {0x40000000, 0x00002000},
     {0x80000000, 0x80000000}
 };
+GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE GizmoBlowupHitMultiplier = {1};
 
 u32 RemapTypeFlagToBlowupFlag(u32 flag) {
     i32 i;

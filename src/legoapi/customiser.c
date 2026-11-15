@@ -213,6 +213,9 @@ i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i3
     return index;
 }
 
+KILLPARTS_ACCESSORY KillPartsAccessories[2][9] = {0};
+i32 Customiser_AccessoriesLoaded = 0;
+
 void Customiser_LoadAccessories(CUSTOMISER_LAYERS *input, APICHARACTERMODELLIST *models) {
     CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
     i32 side;
@@ -705,6 +708,8 @@ static CUSTOM_CATEGORY_CONFIG_PC CustomiserSetDataPrivate[9] = {
     {"under_pants", 0, 6,  {1, 0}, NULL                                  },
     {"leg",         0, 5,  {2, 0}, NULL                                  }
 };
+
+void *Game_Customiser = 0;
 
 CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character, i32 second_character,
                                         i32 (*available)(CUSTOMPIECE_LAYERS *), void (*configure_piece)(CUSTOMPIECE_LAYERS *, NUFPAR_PC *),

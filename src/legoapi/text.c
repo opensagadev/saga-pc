@@ -3,9 +3,26 @@
 #include <string.h>
 
 static char **TTab_Original = 0;
+char **TTab = 0;
+const char *LEGOASCII_UP = NULL;
+const char *LEGOASCII_DOWN = NULL;
+const char *LEGOASCII_LEFT = NULL;
+const char *LEGOASCII_RIGHT = NULL;
+const char *LEGOASCII_BIGARROW = NULL;
 static char *Text_ErrorString = "Err...";
+i32 Text_Language = 1;
+LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
+i32 LANGUAGECOUNT = 6;
+i32 INTROTEXT_ID = -1;
+f32 INTROTEXT_SCALE = 0.79f;
+f32 INTROTEXT_Y = 0.175f;
+f32 TextCrawlScaleX = 0.01f;
+f32 TextCrawlScaleY = 0.01f;
+f32 TextCrawlLineWidth = 7.0f;
+f32 TextCrawlLineSpacing = 1.3f;
 static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
+void (*Text_GameSetLanguageFn)(i32) = 0;
 
 extern i32 NuFParGetLineW(NUFPAR_PC *parser);
 extern i32 NuFParGetWordW(NUFPAR_PC *parser);
@@ -287,6 +304,7 @@ const char *TextInputAxisGlyphsPc[4] = {
     "\xd4\xb9",
     "\xd4\xbb",
 };
+char HubButtonStringBuffer[72] = "???";
 
 void TextInputGlyphNamePc(i32 code, char *destination) {
     if ((u32)code <= 11U) {
@@ -1267,7 +1285,11 @@ typedef struct text_crawl_mission_view_s { // size 0x8
 } TEXT_CRAWL_MISSION_VIEW;
 
 static TEXT_CRAWL_VIEW_PC *TextCrawlCurrent = 0;
+f32 SmartTextLongestWidth = 0;
+f32 text3d_height = 0;
+f32 text3d_width = 0;
 static NUMTX TextCrawlMatrix = {0};
+void *Text_AppFont = 0;
 static NUVEC TextCrawlOffset = {0.0f, -1.0f, 10.0f};
 
 void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
@@ -1534,7 +1556,25 @@ void Text_LoadFont(char *path, VARIPTR *buffer, VARIPTR *end) {
     LoadButtonFont("stuff\\text\\Buttons", NULL, buffer, end, 0);
 }
 
+i32 GameMenuLevel = -1;
+f32 MENUBOTY = -0.75f;
+f32 MenuTextScale = 0.5f;
+f32 MENUDY = -0.10664f;
+char *apitxt_OK = "OK";
+char *apitxt_CANCEL = "Cancel";
+f32 TextScaleX = 1.0f;
+f32 TextScaleY = 1.0f;
+f32 QFONTSCALEX = 1.0f;
+f32 QFONTSCALEY = 1.0f;
+f32 SmartTextDefaultWidth = 1.5f;
 f32 MatrixTextScale = 0.004f;
+u8 text_preset_r[10] = {128, 128, 0, 0, 0, 128, 128, 128, 0, 0};
+u8 text_preset_g[10] = {128, 0, 128, 0, 128, 0, 128, 96, 0, 0};
+u8 text_preset_b[10] = {128, 0, 0, 128, 128, 128, 0, 0, 0, 0};
+u32 current_rgba = 2155905152;
+i32 apitext_half_rgb = 1;
+f32 STCOORDSCALE = 1.0f;
+f32 MenuPromptPositionScale = 1.0f;
 
 void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, u32 alignment, u32 colour, NUMTX *matrix,
                 i32 camera_relative) {

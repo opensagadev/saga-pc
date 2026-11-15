@@ -54,6 +54,7 @@ typedef struct GIZFLOW_LOAD_WORLD {   // size 0x510c
 } GIZFLOW_LOAD_WORLD;
 
 static char gizspecial_prefix[8] = "qaz_";
+i32 gizspecial_gizmotype_id = -1;
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
 GIZMO_PC *createGizSpecial(void *unused, char *name) {

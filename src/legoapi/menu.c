@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 
+i32 MenuLanguages = 1;
+i32 MenusUsed = 31;
+i32 MenuFadeEnabled = 0;
+
 void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count, void (*draw_save_slots_info_fn)(f32, f32, i32, i32),
                       i32 is_fade_enabled, i32 is_shadow_enabled) {
     char menus_used_str[64];
@@ -179,6 +183,9 @@ MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
 #undef NEWMENU_VIEW
 }
 
+char *apitxt_SELECT = UiSelectPromptLiteral;
+char *apitxt_BACK = UiBackPromptLiteral;
+
 void DrawMenuButtonPromptsEx(i32 confirm, i32 cancel, i32 flags, i32 enabled, u32 red, u32 green, u32 blue, u32 alpha) {
     char accept_text[128];
     char cancel_text[128];
@@ -274,6 +281,9 @@ extern void (*memcard_drawasiconfn)(void);
 extern void (*predrawfn)(MENU *);
 extern void (*headerdrawfn)(void);
 
+void (*headerdrawfn)(void) = DrawMenuHeader;
+void (*predrawfn)(MENU *) = 0;
+
 void DrawMenu(i32 paused) {
     MENU *menu;
     MENU_DRAW_STATE *view;
@@ -332,6 +342,9 @@ void DrawMenu(i32 paused) {
     }
 }
 
+f32 MenuTopY = 0.8f;
+i32 MenuDisableHeaders = 0;
+
 void DrawMenuHeader(void) {
     if (MenuDisableHeaders == 0) {
         MenuSmartTextEx(MenuHeader, 0, MenuTopY, 1, MenuTextScale, MenuTextScale, MenuTextScale, 0, (u8)header_r, (u8)header_g,
@@ -342,6 +355,24 @@ void DrawMenuHeader(void) {
 void fun_0050f620(char *text, u32 red, u32 green, u32 blue) {
     MenuSmartTextEx(text, 0.0f, MenuTopY, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 1, red, green, blue, 1.5f, 3, NULL, 0, MenuA);
 }
+
+char *apiGameTitle = "Game";
+char *apitxt_CONTINUE = "Continue";
+char *apitxt_GAMEOVERWRITTEN = "Overwrite Successful";
+char *apitxt_GAMEOVERWRITING = "Overwriting data.";
+char *apitxt_DOYOUWANTTOSTART = "Do you want to start the game?";
+char *apitxt_CONTINUEWITHOUTSAVING = "Continue without Saving";
+char *apitxt_CONTINUEWITHOUTLOADING = "Continue without loading";
+char *apitxt_COMPLETED = "Completed";
+char *apitxt_VIBRATION = "Vibration";
+char *apitxt_PROGRESS = "Progress: %.1f%%";
+char *apitxt_TIMEPLAYED = "Time Played: %s";
+char *apitxt_CONTROLLERREMOVED =
+    "The controller in controller port %i has been removed. Please insert a controller into controller port %i to "
+    "continue with the game.";
+char *apitxt_PCPRESSSTARTFE = "FE Start?";
+char *apitxt_PCPRESSSTARTP1 = "P1 ?";
+char *apitxt_PCPRESSSTARTP2 = "P2 ?";
 
 void MenuLoadTechnicalStrings(char *filepath, char *language, VARIPTR *buffer, VARIPTR buffer_end) {
     NuStringTableSetBank(2);
@@ -467,6 +498,10 @@ void MenuRepeat(i32 *held, i32 *repeat, f32 *repeat_time, u8 *repeat_count, f32 
         *repeat_count = 0;
     }
 }
+
+i32 MenuResult = 0;
+i32 menu_pulsate_angle = 0;
+f32 menu_pulsate_speed = 0.0f;
 
 i32 UpdateMenu(u32 primary_held, u32 primary_pressed, u32 alternate_held, u32 alternate_pressed, f32 elapsed, u32 confirm_mask,
                u32 cancel_mask, u32 start_mask, u32 select_mask) {
@@ -843,6 +878,8 @@ typedef struct MENU_DRAW_VIEW { // size 0xe0
     f32 item_spacing;           // 0xd4
     u8 unknown_d8[8];           // 0xd8
 } MENU_DRAW_VIEW;
+
+f32 MENUENTRYEXWIDTH = 1.25f;
 
 void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW *view = (MENU_DRAW_VIEW *)menu;

@@ -114,6 +114,11 @@ extern "C" {
     }
 }
 
+extern "C" {
+    EPISODEDATA_PC *EDataList = 0;
+    i32 EPISODECOUNT = 0;
+}
+
 i32 Episode_ContainsArea(i32 area_id, i32 *area_index) {
     i32 i;
     i32 j;
@@ -194,6 +199,26 @@ extern "C" i32 fun_0059b7e0(i32 area) {
         }
     }
     return -1;
+}
+
+extern "C" {
+    i32 EpMiniKitTotal = 0;
+    i32 EpCompleteTotal = 0;
+    i32 EpGoldBrickCount = 0;
+    i32 EpGoldBrickTotal = 0;
+    i32 EpFreePlayBuildUpTotal = 0;
+    i32 EpMiniKitCount = 0;
+    i32 EpBuildUpCount = 0;
+    i32 EpRedBrickCount = 0;
+    i32 EpStoryBuildUpTotal = 0;
+    i32 EpBuildUpTotal = 0;
+    i32 EpStoryBuildUpCount = 0;
+    i32 EpRedBrickTotal = 0;
+    i32 EpFreePlayBuildUpCount = 0;
+    i32 EpCharKitCount = 0;
+    i32 EpCharKitTotal = 0;
+    i32 EpCompleteCount = 0;
+    struct EPISODESAVE_s *EpisodeSave = NULL;
 }
 
 /* Resets every counter even on the -1 path, counts the superstory brick

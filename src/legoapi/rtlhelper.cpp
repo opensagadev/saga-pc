@@ -872,6 +872,9 @@ static EdEnumControl::Item rtl_helper_type_items[] = {
     {"JONFLICKER",   8},
     {NULL,           0},
 };
+extern "C" {
+    f32 rtl_helper_radius = 0.25f;
+}
 
 #define RTLHELPER_REF(ref_class, type, name, offset, size, attributes, control)                                                            \
     new (theMemoryManager.AllocPool(sizeof(ref_class), 1)) ref_class(type, name, offset, size, attributes, control)

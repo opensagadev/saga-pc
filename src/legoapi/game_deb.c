@@ -105,6 +105,8 @@ void DebrisSetTimeIncrement(f32 increment) {
     debris_time_increment = increment;
 }
 
+i32 DebrisCutSceneMode = 0;
+
 void DebrisSetCutSceneMode(i32 enabled) {
     DebrisCutSceneMode = enabled;
 }

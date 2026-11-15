@@ -1,6 +1,11 @@
 #include "saga.h"
 #include <string.h>
 
+void *LevelHackData = 0;
+i32 LevelHackDataSize = 0;
+void *OldLevelHackData = 0;
+f32 LevelHackSendTimer = 0;
+
 void *SetLevelHack(i32 size) {
     memset(OldLevelHackData, 0, 0x80);
     memset(LevelHackData, 0, 0x80);

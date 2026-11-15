@@ -6,6 +6,8 @@ extern f32 KITPOS2YPc;
 #ifdef __cplusplus
 #endif
 
+i32 *Char_MiniKit = 0;
+
 void MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
     (void)end;
     buffer->addr = (buffer->addr + 3) & ~3u;
@@ -34,6 +36,14 @@ void MiniKit_Load(MINIKIT_PC *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, vo
 }
 
 static const char *MiniKitDirectionNamesPc[6] = {"NegX", "PosX", "NegY", "PosY", "NegZ", "PosZ"};
+f32 KITPOSX = -0.725f;
+f32 KITPOSY = -0.7f;
+f32 KITPOS2X = -1.27499998f;
+f32 KITPOS2YPc = -1.3f;
+f32 PANEL_MINIKITSCALE = 0.25f;
+f32 PANEL_MINIKITY = 0.03f;
+f32 PANEL_MINIKITCOUNTSCALE = 0.5f;
+f32 PANEL_MINIKITCOUNTY = -0.1f;
 
 void MiniKit_InitPieces(MINIKIT_PC *minikit, i32 count, VARIPTR *buffer, VARIPTR *end) {
     i32 direction_counts[6];
@@ -98,6 +108,8 @@ void CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection
         }
     }
 }
+
+VARIPTR minikits_savecharacterbufferptr = {0};
 
 void CharacterMiniKits_Load(COLLECTION_BUILD_PC *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
     WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
@@ -234,6 +246,8 @@ void MiniKit_GameMsg_Update(GAME_MESSAGE_PC *message) {
     message->parameter_e2 = (u16)((f64)NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     message->parameter_e0 = (u16)(NU_SIN_LUT(message->parameter_e2 * 2) * 1820.0);
 }
+
+f32 MiniKitScale = 0;
 
 void MiniKit_GameMsg_End(GAME_MESSAGE_PC *message) {
     MiniKitScale = 2.0f;

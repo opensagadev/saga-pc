@@ -1,6 +1,9 @@
 #include "saga.h"
 
 static f32 Cheat_PowerUpTime = 0;
+i32 POWERUP_TEXTID = 0;
+
+CHEATSYSTEM_PC *CheatSystemPtr = &CheatSystem;
 
 void Cheats_Init(CHEAT_PC *cheats) {
     CHEATSYSTEM_PC *system;
@@ -27,6 +30,8 @@ i32 Cheat_FindByName(char *name) {
     }
     return -1;
 }
+
+i32 ONEPLAYERPOWERUPS = 1;
 
 void Cheats_SetFlags(void) {
     CHEATSYSTEM_PC *system = CheatSystemPtr;
@@ -131,6 +136,8 @@ void Cheats_TurnOff(i32 only_powerups) {
     }
     Cheats_SetFlags();
 }
+
+f32 CHEAT_POWERUPTIME = 20.0f;
 
 void Cheat_StartPowerUp(NUVEC *position, GAMEOBJECT *object) {
     GAME_MESSAGE_PC *display;

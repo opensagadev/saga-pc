@@ -190,6 +190,8 @@ static i32 Plug_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return plug->visible && plug->active && plug->plugged;
 }
 
+const char *PlugOutputName = "Plugged";
+
 static const char *Plug_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
@@ -256,6 +258,9 @@ static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
         }
     }
 }
+
+i32 plug_gizmotype_id = -1;
+const char *PlugGizmoName = "Plug";
 
 ADDGIZMOTYPE_PC *Plugs_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC PlugsAddType = {0};

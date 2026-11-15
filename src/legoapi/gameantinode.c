@@ -185,6 +185,8 @@ void GameAntinode_FindGridPosition(WORLDINFO *world, NUVEC *position, f32 radius
     }
 }
 
+u64 GameAntinodeGrid[64] = {0};
+
 void GameAntinode_Update(void *opaque_system) {
     ANTINODE_SYS *system = opaque_system;
     ANTINODE *node;

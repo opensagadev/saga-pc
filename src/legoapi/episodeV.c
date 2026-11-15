@@ -6,6 +6,7 @@
 /* Episode V FixUpLevels callbacks (Hoth escape, Dagobah, Cloud City trap). */
 GAMEOBJECT *Vader_obj = NULL;
 static GIZAIMESSAGE *Vader_ai_message = NULL;
+struct GIZBOMBGEN_s *HothBattleC_BombGenerator = 0;
 AILOCATOR *HothEscapeBLocator = NULL;
 GAMEOBJECT *HothEscapeBSnowmob = NULL;
 
@@ -324,6 +325,9 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
 
 ASTEROID asteroids[128] = {0};
 i32 nasteroids = 0;
+u8 minikitCounter_A = 0;
+u8 minikitCounter_C = 0;
+nuhspecial_s escape[8] = {0};
 i32 maxrotspd[3] = {0x1555, 0x38e, 0x16c};
 
 void Asteroids_Reset(WORLDINFO *world) {
@@ -435,6 +439,7 @@ f32 spotLightA_yrot[2] = {0};
 f32 spotLightA_zrot[2] = {0};
 f32 spotLightB_yrot[2] = {0.5f, 0.5f};
 f32 spotLightB_zrot[2] = {0.5f, 0.5f};
+i8 melee_wavePhase = -1;
 
 void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
@@ -482,6 +487,7 @@ void AsteroidChaseA_Update(WORLDINFO *world) {
 
 GIZMOBLOWUP_PC *classicBlowups[8] = {0};
 u8 drawLights = 0;
+u8 turretAliveCount = 0;
 
 void AsteroidChaseB_Init(WORLDINFO *world) {
     GIZMOBLOWUP_PC *blowup;
@@ -598,6 +604,8 @@ void AsteroidChaseC_Reset(WORLDINFO *world) {
 }
 
 NUMTX *mtxOrig = NULL;
+f32 melee_waveDelay = 0;
+i32 dagobah_training = 0;
 
 void AsteroidChaseC_Update(WORLDINFO *world) {
     NUMTX matrix;
@@ -644,6 +652,8 @@ void AsteroidChaseC_Update(WORLDINFO *world) {
 
 i32 lastPlaying = 0;
 nuhspecial_s specialIcon = {0};
+HOTHBATTLE_MELEE_s melee = {0};
+struct GIZTURRET_s *StarDestroyerTurrets[16] = {0};
 
 void AsteroidChaseD_Init(WORLDINFO *world) {
     i16 targets = -1;
@@ -1162,6 +1172,7 @@ void HothBattleE_Draw(WORLDINFO *world) {
 }
 
 f32 HothBattleEPanelAlpha[16] = {0};
+u8 troopercannons_beenReset = 0;
 HOTHBATTLEE_NETPACKET *HothBattleENetPacket = NULL;
 
 void HothBattleE_Panel(WORLDINFO *world) {
@@ -1393,7 +1404,7 @@ i32 SpawnMeleeCreatureType(i32 type) {
             return 0;
         }
         offset.y = offset.z = 0.0f;
-        offset.x = (f32)(((f64)NuFloatRand(&GAMERAND) + 1.0) * radius * 2.0);
+        offset.x = (f32)(((f64)NuFloatRand((NURAND *)&GAMERAND) + 1.0) * radius * 2.0);
         NuVecRotateY(&offset, &offset, qrand());
         NuVecAdd(&offset, &offset, &locator->position);
         if (melee.waves[type].character_id == id_ATAT) {

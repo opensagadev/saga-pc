@@ -24,7 +24,16 @@ typedef struct credit_type_s { // size 0x18
 
 static f32 Credits_Duration = 120.0f;
 static f32 CreditsSize = 0;
+extern "C" {
+    CREDIT_RECORD_PC *CreditList = NULL;
+    f32 CreditsFinishedTime = 0.0f;
+    i32 CreditsFlag = 0;
+    f32 CreditsAlpha = 0.0f;
+}
 static i32 CreditCount = 0;
+extern "C" {
+    f32 CreditsTime = 0.0f;
+}
 static CREDIT_TYPE_PC CreditType[5] = {
     {"heading", 0.4f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},
     {"company", 0.6f,  1.65f,  {255, 255, 255, 128}, {0, 0, 0, 0}, {0, 0, 0}, 0},

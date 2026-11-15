@@ -165,6 +165,8 @@ static NUMTX *PickupRotateY(NUMTX *matrix, i32 angle) {
     return matrix;
 }
 
+i32 gizmopickup_typeid = -1;
+f32 COINMAGNETSCALE = 3.0f;
 static PICKUP_TYPE_SYSTEM *GizmoPickupSys = &GizmoPickupSys_Game;
 
 void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM *system) {
@@ -1341,6 +1343,8 @@ void GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_ti
 }
 
 char *GizmoRegistryGizmoPickupsNamePtrPc = "GizmoPickup";
+f32 AreaPickupGravity = 0;
+f32 AreaPickupScale = 0;
 static ADDGIZMOTYPE_PC GizmoRegistryGizmoPickupsAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *GizmoPickups_RegisterGizmo(i32 type_id) {

@@ -12,6 +12,7 @@ typedef struct portal_callback_s { // size 0x20
 } PORTAL_CALLBACK;
 
 static char portal_output_name[64] = "Active";
+i32 portal_gizmotype_id = 0;
 static char portal_gizmo_name[16] = {0};
 
 static i32 Portal_GetMaxGizmos(void *world_ptr) {

@@ -21,6 +21,10 @@ void AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *control, DEBRIS_CHUNK_CONTR
     *stack = control;
 }
 
+i32 EDPP_MAX_DMADEBTYPES = 64;
+u32 debris_trash_space = 0;
+u32 debris_trash_size = 0;
+
 void DebrisReserveTrashableSpace(VARIPTR *buffer, VARIPTR end, i32 chunk_count, i32 glass_chunk_count) {
     if (debris_trash_space == 0) {
         u32 start = (buffer->addr + 0x7f) & ~0x7f;
@@ -32,6 +36,13 @@ void DebrisReserveTrashableSpace(VARIPTR *buffer, VARIPTR end, i32 chunk_count, 
         debris_trash_size = buffer->addr - start;
     }
 }
+
+DEBRIS_RENDER_CHUNK_PC *ParticleChunkRenderStack[5] = {0};
+i32 freedebchkptrg = 0;
+DEBRIS_CHUNK_CONTROL_PC *debris_chunk_controls = 0;
+i32 freedebchkptr = 0;
+DEBRIS_RENDER_CHUNK_PC *ParticleChunkToRender = 0;
+i32 debris_setup_called = 0;
 
 void DebrisTrashableSetup(VARIPTR *buffer, VARIPTR *end) {
     u32 cursor;
@@ -360,6 +371,8 @@ void DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
 }
 
 #define DEBRIS_ENGINE_KEYS_PC ((DEBRISKEY_PC *)debkeydata)
+
+DEBRISKEY_PC *debris_keystack = 0;
 
 void RemoveDebrisEffectFromStack(DEBRISKEY_PC *key) {
     if (key->next == NULL) {
@@ -1073,6 +1086,9 @@ void DebrisProcessTriggers(void) {
     }
 }
 
+f32 debris_render_global_time = 0;
+f32 debris_render_panel_time = 0;
+
 void DebrisTimeSlip(i32 group) {
     DEBRIS_CHUNK_CONTROL_PC *control;
     i32 i;
@@ -1175,6 +1191,9 @@ void DebFreeAllCreatedEffects(void) {
         }
     }
 }
+
+i32 EDPP_SCALE_TYPES = 20;
+DEBRIS_SCALE_CACHE_PC *debscale = 0;
 
 i32 CreateScaledEffect(i32 effect_index, f32 requested_scale) {
     i32 i;
@@ -1395,6 +1414,8 @@ typedef struct debris_collision_effect_s { // size 0x428
     u8 unknown_3d0[0x58];                  // 0x3d0
 } DEBRIS_COLLISION_EFFECT;
 
+NUVEC debris_collide_pt = {0};
+
 i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     DEBRIS_INFO_PC *effect;
     DEBRIS_COLLISION_EFFECT *collision;
@@ -1553,6 +1574,9 @@ i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f3
     return (dy * dy) + (dx * dx) + dz * dz < (radius + horizontal_radius) * (radius + horizontal_radius);
 }
 
+i32 numspherecolldata = 0;
+DEBRIS_COLLISION_ENTRY_PC *spherecolldata = 0;
+
 i32 DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     i32 i;
     for (i = 0; i < numspherecolldata; ++i) {
@@ -1563,6 +1587,9 @@ i32 DebrisCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 
     }
     return -1;
 }
+
+i32 numtoruscolldata = 0;
+DEBRIS_COLLISION_ENTRY_PC *toruscolldata = 0;
 
 i32 DebrisTorusCollisionCheckScaleYFlag(NUVEC *position, f32 radius, f32 y_scale, u8 flags) {
     i32 i;
@@ -1685,6 +1712,10 @@ i32 DebrisGlassParticlesActive(void) {
 extern i32 DebrisGlassInitialized;
 extern void *DebrisGlassCopyMaterial;
 
+i32 debris_rt = 0;
+void *DebrisGlassCopyMaterial = 0;
+i32 DebrisGlassInitialized = 0;
+
 void DebrisGlassClose(void) {
     if (DebrisGlassInitialized != 0) {
         if (DebrisGlassCopyMaterial != NULL) {
@@ -1709,6 +1740,9 @@ void DebrisRestoreResources(void) {
 extern f32 DebrisGlassU1;
 extern f32 DebrisGlassV1;
 i32 NuPower2(i32 value);
+
+f32 DebrisGlassV1 = 0;
+f32 DebrisGlassU1 = 0;
 
 void DebrisGlassInit(void) {
     NUMTL *material;
@@ -1778,6 +1812,9 @@ void DebrisDrawGlass(void) {
     NuTexUnReserve();
 }
 
+i32 debris_sort_delay = 6;
+i32 debris_sort_this_stack = 0;
+
 void SortDebrisRenderStack(void) {
     i32 stack_index;
     i32 start;
@@ -1819,6 +1856,9 @@ void SortDebrisRenderStack(void) {
         }
     }
 }
+
+i32 debris_update_delay = 3;
+i32 debris_update_this_stack = 0;
 
 void UpdateDebrisRenderStackPriority(void) {
     i32 stack_index;
@@ -1862,6 +1902,9 @@ void UpdateDebrisRenderStackPriority(void) {
 
 void DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z);
 void DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
+
+i32 update_debris_enabled = 1;
+i32 debris_suspended = 0;
 
 void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC *emitter_momentum, NUVEC *particle_momentum, i32 count) {
     i32 sound;
@@ -1940,6 +1983,9 @@ void fun_006904d0(i32 *handle, i32 effect, NUVEC *position, i32 count, void *use
     }
 }
 
+i32 DebrisDmaCleanupIndex = 1;
+i32 DebrisDmaCleanupDelay = 0;
+
 void DebrisCleanUpDmaDebTypeTables(void) {
     if (++DebrisDmaCleanupDelay > 5) {
         i32 index = DebrisDmaCleanupIndex;
@@ -1968,6 +2014,8 @@ void DebrisCleanUpDmaDebTypeTables(void) {
         }
     }
 }
+
+i32 DebrisProcessingEnabled = 1;
 
 void Debris(i32 update_panel_time) {
     if (update_debris_enabled == 0 || DebrisProcessingEnabled == 0 || debris_suspended != 0) {

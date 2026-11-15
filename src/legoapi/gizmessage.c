@@ -74,6 +74,8 @@ static i32 GizAIMessage_GetMaxGizmos(void *unused0) {
     return 0x40;
 }
 
+GIZAIMESSAGESYS *gizaimessagesys = 0;
+
 void GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
     GIZAIMESSAGE *message;
     (void)type;

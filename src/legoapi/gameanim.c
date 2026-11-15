@@ -994,6 +994,8 @@ void edanimRegisterBaseScene(NUGSCN *scene) {
     (void)scene;
 }
 
+struct eduimenu_s *edanim_switchtype_menu = 0;
+
 void edanimcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_switchtype_menu = NULL;
     AnimParams[edanim_nearest_param_id].control_mode = item->data;
@@ -1026,6 +1028,8 @@ static void edanimcbCancelSwitchTypeMenu(eduimenu_s *unused0, eduimenu_s *unused
     eduiMenuDestroy(edanim_switchtype_menu);
     edanim_switchtype_menu = NULL;
 }
+
+struct eduimenu_s *edanim_switch_menu = 0;
 
 void edanimcbCancelSwitchMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_switch_menu);
@@ -1165,12 +1169,16 @@ static void edanimcbToggleParticleSwitch(eduimenu_s *unused0, eduiitem_s *item, 
     AnimParams[edanim_nearest_param_id].effect_flags[edanim_nearest_particle] = item->highlighted & 1;
 }
 
+struct eduimenu_s *edanim_particletype_menu = 0;
+
 void edanimcbSetParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_particletype_menu = NULL;
     edanim_particle_type = item->data == 0 ? -1 : item->data;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
+
+struct eduimenu_s *edanim_localparticletype_menu = 0;
 
 void edanimcbSetLocalParticleType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_localparticletype_menu = NULL;
@@ -1217,6 +1225,8 @@ void edanimcbLocalParticleTypeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 
     edanim_localparticletype_menu->y = parent->y + 40;
 }
 
+struct eduimenu_s *edanim_localparticle_menu = 0;
+
 static void edanimcbCancelLocalParticleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_localparticle_menu);
     edanim_localparticle_menu = NULL;
@@ -1246,6 +1256,8 @@ void edanimcbLocalParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
         edanim_localparticle_menu->y = parent->y + 40;
     }
 }
+
+struct eduimenu_s *edanim_particle_menu = 0;
 
 void edanimcbCancelParticleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_particle_menu);
@@ -1453,6 +1465,9 @@ void edanimEnter() {
     edanim_sound_type = -1;
 }
 
+u8 code_test[16] = {1, 2, 3, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+char id_test[17] = "Travellers Tales";
+
 static void edanimcbMCTBCardWriteKeyCard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (saveloadWriteKeyCode(id_test, code_test)) {
         eduiCreateMessageMenu(menu, (char *)("KeyCard Write OK"), 1);
@@ -1470,6 +1485,8 @@ static void edanimcbMCTBCardCheckKeyCard(eduimenu_s *menu, eduiitem_s *unused1, 
         eduiCreateMessageMenu(menu, (char *)("KeyCard Check Fail"), 0);
     }
 }
+
+struct eduimenu_s *edanim_mctb_menu = 0;
 
 static void edanimcbCancelMCTBMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_mctb_menu);

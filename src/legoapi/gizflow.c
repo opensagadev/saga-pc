@@ -816,6 +816,7 @@ static GIZFLOW_REMAP *remap = 0;
 static i32 numRemaps = 0;
 static i32 load_nparents = 0;
 static i32 load_nchildren = 0;
+u8 gizflow_loop_checksum = 0;
 static i32 load_parents[16] = {0};
 static i32 load_children[32] = {0};
 static u8 load_parent_output_ix[16] = {0};

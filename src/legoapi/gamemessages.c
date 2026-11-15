@@ -18,12 +18,16 @@ static f32 GameMessagesFdiv(f32 a, f32 b) {
     return a / b;
 }
 
+GAME_MESSAGE_PC GameMessage[128] = {0};
+
 void ResetGameMessages(void) {
     i32 i;
     for (i = 0; i < 128; ++i) {
         GameMessage[i].active = 0;
     }
 }
+
+i32 GameMessageIndex = 0;
 
 GAME_MESSAGE_PC *AddGameMsg(ADD_GAME_MESSAGE_PC *message) {
     GAME_MESSAGE_PC *slot;
@@ -304,6 +308,8 @@ void TransformGameMessages(NUVEC *camera_position, NUVEC *camera_right, NUVEC *c
         message->start_position.z = 1.0f;
     }
 }
+
+nuhspecial_s *(*GameMsg_GetExtraObjFn)(GAME_MESSAGE_PC *message) = NULL;
 
 void DrawGameMessages(void) {
     GAME_MESSAGE_PC *message;

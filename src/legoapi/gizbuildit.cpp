@@ -1657,7 +1657,14 @@ extern "C" {
         }
     }
 
+    f32 GIZBUILDITWOBBLEJUMPHEIGHT = 0.05f;
+    i16 GizBuilditGDeb[6] = {-1, -1, -1, -1, -1, -1};
+    i32 gizbuildit_gizmotype_id = -1;
     char *GizmoRegistryGizBuildItsNamePtrPc = "GizBuildit";
+    f32 BuilditHopSfxWait = 0;
+    i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle) = NULL;
+    i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT *input, GAMEOBJECT *object) = NULL;
+    void (*GizBuildIt_FinishFn)(struct GIZBUILDIT *input) = NULL;
     static ADDGIZMOTYPE_PC GizmoRegistryGizBuildItsAddTypePc = {0};
 
     ADDGIZMOTYPE_PC *GizBuildIts_RegisterGizmo(i32 type_id) {

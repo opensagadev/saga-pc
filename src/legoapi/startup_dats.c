@@ -1,5 +1,8 @@
 #include "saga.h"
 
+NUDATHDR *StartupDatList[7] = {0};
+i32 StartupDatCount = 0;
+
 void StartupOpenDats(const char **names, i32 count, VARIPTR *arena) {
     i32 index;
 

@@ -60,7 +60,12 @@ static void ReflectionCopyMatrix(NUMTX *result, NUMTX *source) {
     result->m33 = source->m33;
 }
 
+NUVEC v001 = {0.0f, 0.0f, 1.0f};
+u32 LAYER_HOVERIGNORE = 0xffffffffu;
+NURAND GAMERAND = {0x1f3ad27f};
 i32 qseed = 0x3039;
+i32 dco_id = -1;
+f32 dco_reflectcoord = 2000000.0f;
 
 i32 qrand(void) {
     qseed = qseed * 0x24cd + 1 & 0xffff;

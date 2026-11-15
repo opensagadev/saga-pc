@@ -1,12 +1,14 @@
 #include "saga.h"
 #include <stdio.h>
 #include <float.h>
+NUMTX CutSceneCameraMatrix = {0};
 #pragma bss_seg(".bss$CutSceneBackgroundInstancesPc")
 static INSTNUGCUTSCENE *CutSceneBackgroundInstances = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$active_cutscene_instances")
 static INSTNUGCUTSCENE *active_cutscene_instances = 0;
 #pragma bss_seg()
+i32 CutSceneLookupAllDebrisPages = 0;
 
 struct state_anim_s;
 
@@ -2040,10 +2042,37 @@ static void CutSceneStreamSkip(CUT_INSTANCE_LOAD_PC *instance, f32 elapsed) {
 }
 
 static i32 cutscene_synchro_counter = 0;
+u8 CutSceneCameraMatrixSet = 0;
+u8 CutSceneCameraCTRL = 0;
+u8 CutSceneUseFocusLocation = 0;
+i32 CutSceneCameraDofMode = 0;
+f32 CutSceneCameraFocalLength = 0;
+f32 CutSceneFocusDistance = 0.0f;
+f32 CutSceneFStop = 0.0f;
+i32 CutSceneCameraChanged = 0;
 static i32 CutSceneQuitPrompt = 0;
 static i32 CutSceneHasQuit = 0;
+INSTNUGCUTSCENE *CutSceneLoadingInstance = NULL;
+void *cutscene_load_instance = 0;
 static i32 CutSceneLockPlayer = 0;
 static i32 CutSceneTerminateStream = 0;
+NUHGOBJ_EVAL *(*NuCutSceneGetHGObj)(INSTNUGCUTSCENE *, i32) = 0;
+void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = NULL;
+void (*NuCutSceneCharacterRender)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32) = 0;
+void (*NuCutSceneCharacterRelease)(void *, void *) = 0;
+void (*NuCutSceneCharacterEval)(INSTNUGCUTSCENE *, void *, void *, void *, f32) = 0;
+void (*NuCutSceneFindCharacters)(CUT_SCENE_LOAD_PC *) = 0;
+void (*NuCutSceneDestroyCharacters)(void *) = 0;
+void (*NuCutSceneResetCharacters)(INSTNUGCUTSCENE *) = 0;
+void (*NuCutSceneCharacterCreateData)(CUT_LOAD_CHARACTER *, CUT_LOAD_CHARACTER_INSTANCE *, VARIPTR *) = 0;
+void (*NuCutSceneCharacterDestroyData)(void *, void *) = 0;
+void (*NuCutSceneRigidCollisionCheck)(struct cut_load_rigid_s *, NUMTX *) = NULL;
+void (*NuCutSceneRigidPostRender)(void *, nuhspecial_s *, NUMTX *) = 0;
+i32 (*NuCutSceneRequestSFX)(char *) = 0;
+void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *, i32) = 0;
+void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *) = NULL;
+CUT_LOCATOR_FUNCTION_ENTRY_PC *CutSceneLocatorFunctions = 0;
+i32 CutSceneStreamLoadGuard = 0;
 extern void (*NuCutSceneSFXFixUp)(INSTNUGCUTSCENE *);
 extern void (*NuCutSceneCharacterProcess)(INSTNUGCUTSCENE *, void *, void *, void *, f32, i32);
 

@@ -100,6 +100,11 @@ i32 SnakeASin(f32 sin) {
 #undef POW4
 #undef POW5
 
+f32 SnakeSegmentSpacing = 0.15f;
+f32 SnakeHeadHeight = 0.15f;
+f32 SnakeYawSeekRate = 5.0f;
+f32 SnakeSegmentHeight = 0.02f;
+f32 SnakeDebrisUpwardSpeed = 1.0f;
 static f32 SnakeBodyDefaultScale = 1.0f;
 
 SNAKE_BODY *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {

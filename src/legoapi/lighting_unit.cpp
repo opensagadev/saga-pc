@@ -609,6 +609,15 @@ extern "C" {
     f32 ShadowLightEyeDistance = 20.0f;
     f32 ShadowLightFocusHeight = -2.0f;
 #pragma data_seg()
+    RTL_DATA LevelLightingData = {0};
+    i32 Lighting_FlashRedOnLastHeart = 0;
+    i32 Lighting_HighlightFlash = 0;
+    f32 Lighting_RedFlashGreen = 0.0f;
+    f32 Lighting_RedFlashBlue = 0.0f;
+    f32 Lighting_BlueFlickerRed = 0.0f;
+    i32 (*Lighting_BlueFlickerFn)(GAMEOBJECT *) = NULL;
+    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
+    struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
 #pragma bss_seg(".bss$ShadowLightSplitCountPc")
     i32 ShadowLightSplitCount = 0;
 #pragma bss_seg(".bss$EdMainCurrentCameraPc")

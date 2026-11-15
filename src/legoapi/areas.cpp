@@ -6,6 +6,10 @@ extern "C" {
     void AreasConfigDiagnostic(char *message);
 }
 
+extern "C" {
+    APICHARACTERMODELLIST Area_StoryModelList[49] = {0};
+}
+
 AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
     i32 index;
 
@@ -367,6 +371,11 @@ extern "C" void Areas_CompleteAllBuildUps(AREASAVE_s *save) {
     }
 }
 
+extern "C" {
+    APICHARACTERMODELLIST *CurrentCList = NULL;
+    APICHARACTERMODELLIST *CurrentStoryCList = NULL;
+}
+
 extern "C" i8 Area_CharIDInCurrentList(i32 character_id) {
     i32 index;
     if (CurrentCList != NULL) {
@@ -394,6 +403,10 @@ typedef struct AREA_MISSION_DATA_READER { // size 0x2
 
 #define AREA_STORY_MODELS Area_StoryModelList
 
+extern "C" {
+    APICHARACTERMODELLIST Area_PlayerModelList[9] = {0};
+}
+
 static void AreaAddModelListPrivate(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id, i32 load_model,
                                     AREA_EXTRA_MODEL *extras) {
     if (*count < capacity && InModelList(list, character_id, NULL) == 0) {
@@ -418,6 +431,16 @@ static void AreaAddModelListPrivate(APICHARACTERMODELLIST *list, i32 *count, i32
         }
         return;
     }
+}
+
+extern "C" {
+    i32 Area_PlayerModelCount = 0;
+    i16 Area_PlayerIDList[9] = {0};
+    APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
+    i32 Area_FreePlayModelCount = 0;
+    i32 Area_MissionModelCount = 0;
+    i32 Area_StoryModelCount = 0;
+    APICHARACTERMODELLIST Area_MissionModelList[49] = {0};
 }
 
 extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i16 *s) {

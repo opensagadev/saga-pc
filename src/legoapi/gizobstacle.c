@@ -309,6 +309,8 @@ void *GizObstacles_ReserveBufferSpace(void *world_ptr) {
     return system;
 }
 
+void (*GizObstacle_SetDefaultSFXFn)(void *world, GIZOBSTACLE *obstacle) = 0;
+
 i32 GizObstacles_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     GIZOBSTACLE_SYSTEM *system = data;
@@ -465,6 +467,8 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
     GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
 }
 
+i32 ngizobstacletriggers = 0;
+
 void GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     GIZOBSTACLE_SYSTEM *system = data;
@@ -550,6 +554,8 @@ static i32 GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT
     }
     return 1;
 }
+
+NUVEC *GizObstacleTriggers[16] = {0};
 
 static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
     i32 state;
@@ -695,6 +701,7 @@ static void GizObstacleUpdate_AutoStart(GIZOBSTACLE *obstacle) {
 static void (*GizObstacleUpdateFns[8])(GIZOBSTACLE *) = {
     GizObstacleUpdate_AutoStart,  GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_NoTrigger,
     GizObstacleUpdate_TechnoOnly, GizObstacleUpdate_Proximity, GizObstacleUpdate_Proximity, GizObstacleUpdate_PushOnly};
+const char *GizObstacleRegistrationNamePtr = "GizObstacle";
 
 void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
     WORLDINFO *world = world_ptr;

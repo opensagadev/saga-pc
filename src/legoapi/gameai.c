@@ -16,6 +16,8 @@ i32 StarWars_MidSpecialMove(AISYS_PC *, AIPACKET *, APIOBJECT *);
 
 AI_CHARACTER_NAME LevelCharacterNameFn = 0;
 AI_CHARACTER_NAME SpecialRouteCharacterNameFn = 0;
+AI_LEVEL_CHARACTER_GLOBAL_ID_PC LevelCharacterGlobalIDFn = 0;
+i32 (*GlobalCharacterTypeIDFn)(char *) = NULL;
 AI_GLOBAL_CHARACTER_NAME GlobalCharacterNameFn = 0;
 AI_GLOBAL_CHARACTER_HGOBJ GlobalCharacterHGobjFn = 0;
 AI_GLOBAL_CHARACTER_RENDER GlobalCharacterRenderFn = 0;

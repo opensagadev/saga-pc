@@ -49,6 +49,7 @@ typedef struct GIZMO_NAME_TYPE {     // size 0x9c
 static i32 DefaultGizmo_GetNumOutputs(GIZMO_PC *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode);
 static char *DefaultGizmo_GetOutputName(GIZMO_PC *gizmo, i32 output);
+i32 gizmoerrorlogsize = 2048;
 ADDGIZMOTYPE_PC Default_ADDGIZMOTYPE = {
     NULL,
     NULL,
@@ -92,6 +93,8 @@ void *GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
     }
     return allocation;
 }
+
+GIZMOTYPES *gizmotypes = 0;
 
 void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYPE_FN *register_functions, i32 max_levels) {
     GIZMOTYPE *type;

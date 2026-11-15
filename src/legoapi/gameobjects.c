@@ -103,6 +103,8 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     }
 }
 
+void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
+
 void GameObjectDimensions(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *config;
     if (object->use_model_origin > 0 && object->origin_scale_override == 1.0f) {
@@ -387,6 +389,8 @@ void PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room
     }
 }
 
+NUVEC plr_lastpos = {0};
+
 void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO *path_info, i32 set_on_surface) {
     object->position = *position;
     object->unknown_276 = (u16)angle;
@@ -411,6 +415,8 @@ void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO 
         AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, 1);
     }
 }
+
+LAST_SAFE_POS_EXTRA_PC LastSafePosExtraFn = 0;
 
 void UpdateLastSafePosition(GAMEOBJECT *object) {
     GAMEOBJECT *terrain_object;
@@ -517,6 +523,8 @@ safe_position_done:
     }
     object->flags_ef4 &= ~4;
 }
+
+u8 grapple_attach_frames = 5;
 
 void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
     object->can_use_object = target;

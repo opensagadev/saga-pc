@@ -8,6 +8,11 @@ extern "C" {
     extern void (*ResumeGame_ExtraCodeFn)(void);
 }
 
+extern "C" {
+    i32 pause_i_pad = -1;
+    void (*PauseGame_ExtraCodeFn)(void) = NULL;
+}
+
 extern "C" void PauseGame(i32 pad) {
     Paused = 1;
     NuPause(1);
@@ -65,6 +70,8 @@ extern "C" void NetworkSyncPause(void) {
 
 extern "C" {
 
+    void (*ResumeGame_ExtraCodeFn)(void) = NULL;
+
     void ResumeGame(i32 play_sound) {
         Paused = 0;
         NetPaused = 0;
@@ -102,6 +109,9 @@ extern "C" {
         }
     }
 
+    u32 SuperStoryScore = 0;
+    i32 SuperStory = 0;
+
     void InitSuperStory(i32 episode) {
         SuperStory = 1;
         SuperStoryEpisode = episode;
@@ -111,6 +121,10 @@ extern "C" {
         FreePlay = 0;
         Cheats_TurnOff(0);
     }
+}
+
+extern "C" {
+    i32 Arcade = 0;
 }
 
 extern "C" i32 InStory(void) {
@@ -160,6 +174,12 @@ extern "C" LEVELDATA_PC *CanSaveAndExit(WORLDINFO *world) {
     return NULL;
 }
 
+extern "C" {
+    CUSTOMISER_COMPLETION_READER_PC *CustomiserCompletionSave = NULL;
+    i32 HubCompletionPoints = 0;
+    void (*Game_100PercentFn)(void) = NULL;
+}
+
 extern "C" void AddToCompletionPoints(u32 points) {
     if (CustomiserCompletionSave != NULL && ((STATUSCOLLECT_s *)CustomiserCompletionSave)->completion_points < HubCompletionPoints) {
         ((STATUSCOLLECT_s *)CustomiserCompletionSave)->completion_points += points;
@@ -183,6 +203,11 @@ extern "C" {
         }
         return 0;
     }
+}
+
+extern "C" {
+    i32 GOLDBRICKPOINTS = 0;
+    void (*Game_AllGoldBricksFn)(void) = NULL;
 }
 
 extern "C" void AddToGoldBricks() {

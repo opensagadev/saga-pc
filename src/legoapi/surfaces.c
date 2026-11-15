@@ -18,6 +18,9 @@ void SurfaceMaskOff(u32 *surface_mask) {
     *surface_mask = 0;
 }
 
+u16 SURFACEBITS_DUST = 0;
+u16 SURFACEBITS_NODUST = 0;
+
 void Surfaces_Reset(void) {
     i32 i;
     LAYER_HOVERIGNORE = 0x10;
@@ -32,6 +35,8 @@ void Surfaces_Reset(void) {
         }
     }
 }
+
+void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object) = 0;
 
 void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
     i32 raw_surface;

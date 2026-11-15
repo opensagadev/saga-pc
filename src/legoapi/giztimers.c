@@ -129,6 +129,8 @@ void *GizTimer_ReserveBufferSpace(void *world_info) {
     return world->timers;
 }
 
+i32 giztimer_gizmotype_id = -1;
+
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 GIZMO_PC *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
     GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();

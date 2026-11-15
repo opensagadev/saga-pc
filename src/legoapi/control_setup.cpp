@@ -387,6 +387,47 @@ void PC_CONTROL_SCREEN::Initialize(i32 count, i32 player, i32 resolve_bank, u8 i
 
 extern "C" {
 
+    PC_CONTROL_ITEM *PcControlRows[2] = {PcControlItems, NULL};
+    PC_CONTROL_SCREEN PcControlScreen = {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.0f,
+        0.0f,
+        0.0f,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.9f,
+        0.8f,
+        0,
+        {0, 0, 0, 0},
+        {0, 0, 0, 0},
+        {-1, -1, -1, -1},
+        0,
+        0,
+        {0, 0, 0},
+        NULL,
+        {32.0f, 32.0f, 32.0f, 32.0f},
+        {0, 0, 0, 0},
+        5.0f,
+        0.0f,
+        NULL,
+        {{0}},
+        {0},
+        {{0}},
+        0.0f,
+        NULL,
+        NULL
+    };
+    char *PcControlText[45] = {0};
+
     void PcControlRegister(PC_CONTROL_CONFIG *config, VARIPTR *buffer, VARIPTR *end) {
         if (!config->rows) {
             config->rows = PcControlRows;
@@ -454,6 +495,14 @@ extern "C" {
     extern u32 PcControlPressed[2];
     extern i32 PcControlPulseAngle;
     extern f32 PcControlRepeat[2];
+}
+
+extern "C" {
+    u32 PcControlButtons = 0;
+    i32 PcControlPulseAngle = 0;
+    f32 PcControlRepeat[2] = {0};
+    u32 PcControlHeld[2] = {0};
+    u32 PcControlPressed[2] = {0};
 }
 
 i32 PC_CONTROL_SCREEN::Update(FRAME_PAD_PC *first, FRAME_PAD_PC *second, f32 dt) {
@@ -1052,6 +1101,11 @@ void PC_CONTROL_SCREEN::QueueText(char *string, f32 x, f32 y, f32 z, i32 alignme
     text[index].x_scale = sx;
     text[index].y_scale = sy;
     text[index].wrap_width = wrap;
+}
+
+extern "C" {
+    // .data virtual tail (BSS); initial bits zero.
+    f32 PcControlBaselineAdjust = 0.0f;
 }
 
 f32 PC_CONTROL_SCREEN::DrawText(char *string, f32 x, f32 y, f32 z, i32 alignment, f32 sx, f32 sy, u32 colour, i32 mode, f32 wrap) {

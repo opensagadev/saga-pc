@@ -1516,6 +1516,9 @@ static void CC_set_timebaseupdate4(NUFPAR_PC *parser) {
     CC_SetTimebase(parser, 0);
 }
 
+// Four explicit PC scalar accesses establish each array's extent.
+f32 vehicle_timebase_dist[4] = {50.0f, 25.0f, 0.0f, 0.0f};
+i32 vehicle_timebase_nframes[4] = {4, 2, 0, 0};
 static NUFPCOMJMP ConfigChar_Keywords[] = {
     {"name_id",                        CC_name_id                       },
     {"name",                           CC_name_id                       },

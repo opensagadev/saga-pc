@@ -6,6 +6,66 @@
 #pragma data_seg(".data$PartVectorSpreadDegrees_PC")
 static i32 PartVectorSpreadDegrees = 30;
 #pragma data_seg()
+i32 edpart_set_part = 5;
+i32 edpart_create_type = -1;
+f32 edpart_copy_size = 0.2f;
+f32 edpart_scale_factor = 1.0f;
+i32 edpart_load_particle_page = -1;
+i32 edpart_superscale = 1;
+char PartNullInstanceName[14] = "NULL instance";
+i32 MAXPARTS = 32;
+ADDPART Default_ADDPART = {
+    0, // matrix
+    0, // position
+    0, // velocity
+    0, // owner
+    0, // recipient
+    0.1f, // unknown_14
+    0.1f, // unknown_18
+    -5.0f, // gravity
+    0.75f, // unknown_20
+    0, // special
+    -1, // part_id
+    0x00000000u, // flags
+    0, // callback_30
+    0, // callback_34
+    0, // callback_38
+    0, // callback_3c
+    0, // callback_40
+    0, // callback_44
+    0, // callback_48
+    0, // callback_4c
+    0, // callback_50
+    0, // callback_54
+    -1, // effect_id_58
+    0, // debris_handle
+    -1, // effect_id_60
+    -1, // effect_id_64
+    60.0f, // unknown_68
+    60.0f, // unknown_6c
+    -1, // effect_id_70
+    -1, // effect_id_74
+    -1, // effect_id_78
+    1.0f, // effect_scale
+    0, // lighting_handle
+    -1, // lighting_id
+    2000000.0f, // unknown_88
+    0.016666668f, // time_step
+    0xffffffffu, // hostility_group
+    0, // lighting_data
+    1.0f, // lighting_scale_x
+    1.0f, // lighting_scale_y
+    1.0f, // lighting_scale_z
+    0.0f, // unknown_a4
+    {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // unknown_a8
+    1.0f, // unknown_c0
+    0, // unknown_c4
+};
+i32 part_slot_cursor = -1;
+f32 PartCollisionInterval = 0.1f;
+f32 PartStopSpeedSquared = 0.1f;
+f32 PARTSCALEUPTIME = 0.5f;
+u32 partseed = 0x5c0999;
 
 void InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     i32 i;
@@ -853,7 +913,13 @@ void edmainSetLocVec(NUVEC *location);
 
 static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;
+i32 part_page_on[8] = {0};
+PARTTYPE_LOOKUP_PC part_types[128] = {0};
+PART_PC *Part = 0;
+i32 edpart_nearest_orphans = 0;
 static NUVEC PartImpactNormalPrivate = {0};
+RTLSET_PC *PartRTL = 0;
+f32 partglobaltime = 0;
 static i32 PartRaycastsEnabledPrivate = 1;
 
 void InitPartTable(char **names) {

@@ -5,6 +5,9 @@ extern void *Door_Last;
 extern u64 CharacterMaskAll;
 i8 Area_CharIDInCurrentList(i32 character_id);
 
+TAKEOVEROBJECT takeoverobjects[8] = {0};
+i32 num_takeoverobjects = 0;
+
 void ClearTakeOverObjectSys(void) {
     memset(takeoverobjects, 0, sizeof(takeoverobjects));
     num_takeoverobjects = 0;
@@ -137,6 +140,8 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
     }
 }
 
+TAG_TRANSFER_PC TagTransfers[2];
+
 void Tag_ResetTransfers(void) {
     TagTransfers[0].elapsed = 0.5f;
     TagTransfers[1].elapsed = 0.5f;
@@ -235,6 +240,8 @@ void Tag_UpdateTransfers(i32 effect0, i32 effect1, i32 count) {
     }
 }
 
+f32 BUCK_RIDERJUMPCLEARANCE = 1.0f;
+
 void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
     u16 angle = (u16)qrand();
     f32 speed = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.09f + (f64)0.01f);
@@ -260,6 +267,8 @@ void Buck_StartRiderJump(GAMEOBJECT *rider, GAMEOBJECT *mount) {
         rider->velocity.y = NuFsqrt((f32)(-2.0 * (f64)character->gravity * clearance));
     }
 }
+
+TAG_DRAW_ICON_PC BuckStartExtraFn = 0;
 
 void Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
     CHARACTER_MODEL_LAYERS *model;

@@ -240,6 +240,8 @@ static i32 Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return tube->bits.visible && tube->bits.active;
 }
 
+const char *Tube_OutputName = "Active";
+
 static const char *Tube_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
@@ -407,6 +409,8 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
         memset(tube->occupied_object_masks, 0, sizeof(tube->occupied_object_masks));
     }
 }
+
+const char *TubeGizmoName = "Tube";
 
 ADDGIZMOTYPE_PC *Tubes_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE_PC TubesAddType = {0};

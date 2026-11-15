@@ -17,7 +17,11 @@ extern "C" {
 
 extern "C" {}
 extern "C" {
+    f32 MoviePlayTime = 0;
+    i32 movie_skipped = 0;
+    i32 (*MovieInputFn)(void) = 0;
     i32 MovieCount = 0;
+    f32 MovieFrameTime = 0;
     char (*MovieList)[32] = NULL;
 
     void Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {

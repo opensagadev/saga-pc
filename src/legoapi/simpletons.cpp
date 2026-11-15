@@ -7,9 +7,16 @@
 extern "C" {
     void NuSpecialBurstDrawAt(struct nuhspecial_s *, u32, NUMTX *, i32);
     i32 droid_hack = 0;
+    void *hothtroopers = 0;
+    i16 gunship_bolts[2] = {0};
     static i32 trooperteamcount = 0;
+    u8 gunship_flags[10] = {0};
     i8 trooper_side[10] = {0};
     f32 teamswitchtimer = 0.0f;
+    // Both PC indices are masked to two bits.
+    i32 TrooperStepFrames[4] = {1, 2, 1, 0};
+    f32 trooperspeedtab[4] = {0.3f, 0.4f, 0.5f, 0.6f};
+    i32 TrooperGameDebris[4] = {-1, -1, -1, -1};
     f32 MiniTrooperTurnRate = 3.0f;
     f32 MiniTrooperHopHeight = 0.04f;
     i32 MiniTrooperGroundRefreshMask = 15;

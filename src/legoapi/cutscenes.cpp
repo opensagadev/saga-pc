@@ -7,9 +7,15 @@ static i32 CS_area = 0;
 #pragma bss_seg(".bss$CS_fadefogcount")
 static i32 CS_fadefogcount = 0;
 #pragma bss_seg()
+extern "C" {
+    i32 CUTNOFOG = 0;
+}
 #pragma bss_seg(".bss$CS_texanimcount")
 static i32 CS_texanimcount = 0;
 #pragma bss_seg()
+extern "C" {
+    CUTINFO *NewCutInfo[8] = {0};
+}
 #pragma bss_seg(".bss$CS_buffptr")
 static VARIPTR *CS_buffptr = 0;
 #pragma bss_seg()
@@ -22,15 +28,40 @@ static WORLDINFO *CS_worldinfo = 0;
 #pragma bss_seg(".bss$CS_cutsys")
 static CUT_LOAD_SYS *CS_cutsys = 0;
 #pragma bss_seg()
+extern "C" {
+    i32 CUTDRAWWORLD = 0;
+}
 #pragma bss_seg(".bss$CS_buffend")
 static VARIPTR *CS_buffend = 0;
 #pragma bss_seg()
+extern "C" {
+    void *CutStopInfo = 0;
+}
 #pragma bss_seg(".bss$CutBlobShadowAlpha")
 static u8 CutBlobShadowAlpha = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$CutBlobShadowFadeFar")
 static f32 CutBlobShadowFadeFar = 0;
 #pragma bss_seg()
+extern "C" {
+    i32 cut_waiting_for_new_level = 0;
+    i32 ACTIVECUTCOUNT = 0;
+    i32 NewCutInfoCount = 0;
+    i32 CutInstEndCount = 0;
+    u8 CUTSUBTITLEDEFAULT_ALIGN = 0;
+    f32 CUTSUBTITLEDEFAULT_X = 0;
+    i32 (*CutScene_StartFn)(CUTINFO *cut) = 0;
+    void (*CutScene_PreUpdateFn)(CUTINFO *cut) = 0;
+    void (*CutScene_PostUpdateFn)(void) = 0;
+    void (*CutScene_StoppedFn)(CUTINFO *cut) = 0;
+    i32 (*CutScene_ReplaceCharacterModelFn)(CUTINFO *cut, CUTSCENECHARACTER *character) = 0;
+    void (*CutScene_OverrideConfigFileNameFn)(char *, i32, i32) = 0;
+    CUT_LOAD_LIST_ENTRY *CutList = 0;
+    i32 CUTCOUNT = 0;
+    i32 stream_cut_issued = 0;
+    CUT_PLAYER_ACTIVE *CutScenePlayer = NULL;
+    i32 (*CutScenePlayer_AcceptFn)(struct cut_player_clip_config_s *) = NULL;
+}
 #pragma bss_seg(".bss$CutBlobShadowFadeNear")
 static f32 CutBlobShadowFadeNear = 0;
 #pragma bss_seg()
@@ -824,6 +855,16 @@ extern "C" {
         ++CS_CutInfo->state_count;
     }
 
+    i32 newlevel_resumecutaudio = 1;
+    CUT_DRAW_SETTINGS *CutSceneSys = &CutSceneDrawSettings;
+    u8 CUTSUBTITLEDEFAULT_R = 255;
+    u8 CUTSUBTITLEDEFAULT_G = 255;
+    u8 CUTSUBTITLEDEFAULT_B = 255;
+    u8 CUTSUBTITLEDEFAULT_A = 128;
+    f32 CUTSUBTITLEDEFAULT_Y = -0.5f;
+    f32 CUTSUBTITLEDEFAULT_SCALEX = 1.0f;
+    f32 CUTSUBTITLEDEFAULT_SCALEY = 1.0f;
+    f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7f;
     NUFPCOMJMP CutScene_ConfigKeywords[] = {
         {const_cast<char *>("fpsec"),                        CS_fpsec                       },
         {const_cast<char *>("no_fog"),                       CS_no_fog                      },
@@ -2193,7 +2234,11 @@ extern "C" {
     }
 
     static i32 cutaudiopaused = 0;
+    i32 CUTCAMONLY = 0;
+    i32 CUTCAM = 0;
     static i32 CutFrame = 0;
+    i32 CutSceneWaiting = 0;
+    i32 CUTSKIPLOCK = 0;
     i32 CutSceneMusicStartFrame = -1;
 
     static i32 CutScene_Start(WORLDINFO *world, CUT_LOAD_RECORD *cut) {

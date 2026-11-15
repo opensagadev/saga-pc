@@ -4,6 +4,8 @@
 
 extern i16 dat_007f18c4;
 
+HUB_AI_MUSIC_VIEW HubAiMusicState = {0};
+
 i32 Hub_CurrentArea(void) {
     if (WORLD->current_level == HUB_LDATA) {
         return HubAiMusicState.area;
@@ -76,6 +78,9 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
 
 /* HubAI producer family. */
 extern const char *HubAreaNames[10];
+
+const char *HubAreaNames[10] = {"MAINROOM", "EPISODE1", "EPISODE2", "EPISODE3", "EPISODE4",
+                                "EPISODE5", "EPISODE6", "JUNKYARD", "BONUS",    "BOUNTY"};
 
 void LSW_Hub_InitAI(WORLDINFO *world) {
     i32 area;

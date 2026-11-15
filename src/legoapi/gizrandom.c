@@ -126,6 +126,8 @@ void *GizRandom_ReserveBufferSpace(void *world_ptr) {
     return world->randoms;
 }
 
+i32 gizrandom_gizmotype_id = -1;
+
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 GIZMO_PC *createGizRandom(void *unused, i32 output_count, i32 *weights, char *name) {
     GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();

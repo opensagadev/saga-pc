@@ -1,6 +1,10 @@
 #include "saga.h"
 #include <stdio.h>
 
+i32 DEBPAGE_GENERAL = -1;
+i32 DEBPAGE_CHARACTER = -1;
+i32 DEBPAGE_AREA = -1;
+
 void Particles_Stop(WORLDINFO *world) {
     if (world->page_anim != -1) {
         edanimStopPage(world->page_anim);

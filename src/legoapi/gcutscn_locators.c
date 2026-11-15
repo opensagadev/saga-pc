@@ -159,6 +159,9 @@ extern i32 (*TriggerLocatorVfxFn)(i32, NUMTX *);
 extern void (*UpdateLocatorVfxFn)(i32, NUMTX *);
 extern void (*NuCutSceneSFXUpdate)(CUT_LOAD_LOCATOR_SYSTEM *, CUT_LOAD_LOCATOR_INSTANCE *, CUT_LOAD_LOCATOR *, f32, NUMTX *, i32);
 
+f32 CutSceneDebrisAxisSize = 0;
+i32 CutSceneDebrisProcessMode = 0;
+
 static void CutSceneLocatorDebrisUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR_SYSTEM *system, CUT_LOAD_LOCATOR_INSTANCE *instance,
                                         f32 frame, NUMTX *parent) {
     u16 effect = system->types[locator->type_index].function_index;

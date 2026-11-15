@@ -9,12 +9,12 @@
 | --- | --- |
 | **Code** | |
 | &nbsp;&nbsp;↳ **Fuzzy match**: objdiff's fuzzy match over all original code, by size ([details](docs/mapping-status.md#what-the-readme-numbers-measure)). | <img src="docs/badges/fuzzy.svg" alt="96.051%" width="84" height="28"> |
-| &nbsp;&nbsp;↳ **Exact match**: byte-identical code, with the padding after it. | <img src="docs/badges/exact.svg" alt="62.586%" width="84" height="28"> |
+| &nbsp;&nbsp;↳ **Exact match**: byte-identical code, with the padding after it. | <img src="docs/badges/exact.svg" alt="62.575%" width="84" height="28"> |
 | &nbsp;&nbsp;↳ **Mapped**: known code, with the padding between functions (3.3%). | <img src="docs/badges/mapped-code.svg" alt="100.000%" width="92" height="28"> |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Named**: mapped functions with real names; 1.5% are `fun_XXXXXXXX`. | <img src="docs/badges/named-code.svg" alt="98.523%" width="84" height="28"> |
 | **Data** | |
-| &nbsp;&nbsp;↳ **Mapped file-backed**: known data in the executable, with its padding. | <img src="docs/badges/mapped-data.svg" alt="95.719%" width="84" height="28"> |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Reproduced**: file-backed data we define byte-exactly ([details](docs/mapping-status.md#reproduced-data)). | <img src="docs/badges/reproduced-data.svg" alt="91.387%" width="84" height="28"> |
+| &nbsp;&nbsp;↳ **Mapped file-backed**: known data in the executable, with its padding. | <img src="docs/badges/mapped-data.svg" alt="95.720%" width="84" height="28"> |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ **Reproduced**: file-backed data we define byte-exactly ([details](docs/mapping-status.md#reproduced-data)). | <img src="docs/badges/reproduced-data.svg" alt="91.391%" width="84" height="28"> |
 | &nbsp;&nbsp;↳ **Mapped zero-fill/BSS**: known zero-initialized storage. | <img src="docs/badges/mapped-bss.svg" alt="97.760%" width="84" height="28"> |
 
 <!-- /mapping-badge -->

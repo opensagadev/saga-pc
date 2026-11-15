@@ -2,6 +2,9 @@
 
 static f32 HairMovementFallAngle = -1.8325958f;
 static f32 HairMovementFallRate = 2.0f;
+f32 HeadMovementThreshold = 0.0017453294f;
+f32 CloakMovementRecoverRate = 2.0f;
+f32 CloakMovementFallRate = 2.0f;
 static f32 HairMovementRecoverRate = 2.0f;
 
 typedef struct character_joint_movement_s { // size 0x1080
@@ -472,6 +475,8 @@ void CloakMovement(GAMEOBJECT *object) {
     }
     joints->count++;
 }
+
+f32 HairMovementRestAngle = 0.0f;
 
 void HairMovement(GAMEOBJECT *object) {
     CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;

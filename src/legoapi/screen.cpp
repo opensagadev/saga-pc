@@ -5,6 +5,10 @@
 static NUMTL *pause_rndr_mtl = 0;
 #pragma bss_seg(".bss$pause_rt")
 static i32 pause_rt = 0;
+extern "C" {
+    f32 pause_fade = 0;
+    i32 (*PauseRenderOffFn)(void) = NULL;
+}
 
 typedef struct STILL_RENDER_MATERIAL {   // size 0x2bc
     u8 unknown_00[0x40];                 // 0x000
@@ -120,7 +124,14 @@ extern "C" {
     static f32 RenderBackdropTargetTopB = 0.0f;
     static f32 RenderBackdropTargetBottomR = 0.0f;
     static f32 RenderBackdropTargetBottomG = 0.0f;
+    i32 FinishLoop_On = 1;
+    f32 RenderBackdropTopR = 0.0f;
+    f32 RenderBackdropTopG = 0.0f;
+    f32 RenderBackdropTopB = 0.0f;
+    f32 RenderBackdropBottomR = 0.0f;
+    f32 RenderBackdropBottomG = 0.0f;
     static f32 RenderBackdropTargetBottomB = 24.0f;
+    f32 RenderBackdropBottomB = 24.0f;
 
     void BackDrop_ClearColourTargets(void) {
         RenderBackdropTargetTopR = 0.0f;
@@ -132,6 +143,15 @@ extern "C" {
     }
 
     static f32 RenderBackdropWait = 0.0f;
+    i32 RenderBackdropBlack = 0;
+    u8 ScreenGrabNeeded = 0;
+    i32 screendump = 0;
+    i32 pause_rndr_on = 0;
+    i32 GrabScreenWhenFading = 0;
+    i32 finishloop_backdroponly = 0;
+    void (*RenderBackdropAlphaFn)(f32 *) = 0;
+    f32 CutBorderScale = 0;
+    i32 old_pause_state = 0;
 
     void BackDrop_ResetColours(void) {
         RenderBackdropTopR = 0.0f;
@@ -260,8 +280,13 @@ extern "C" {
     }
 
     static f32 GameFogDuration = 0;
+    GAMEFOG_STATE_PC GameFogOld = {{0}};
     static void *GameFogSet = 0;
     static i32 GameFogSnap = 0;
+    nuhspecial_s RenderBackdropSpecials[4] = {0};
+    nuhspecial_s FadeLoop_ObjHSpecial = {0};
+    f32 MainRenderTime = 0;
+    f32 MainRenderTargetTime = 0;
     static f32 GameFogTime = 0;
 
     void GameFog_Reset() {
@@ -272,7 +297,11 @@ extern "C" {
     }
 
     static f32 GameFogDefaultFStop = 22.0f;
+    f32 ScreenPauseFadeSpeed = 2.0f;
+    i32 clear_screen_onstill = 1;
     static GAMEFOG_STATE_PC GameFogNew = {{0}};
+    GAMEFOG_STATE_PC GameFog = {{0}};
+    i32 back_rgba[2] = {0};
     static f32 dof_fstop = 0;
 
     void GameFog_Update(WORLDINFO *world) {
@@ -726,6 +755,7 @@ extern "C" void HandleStillRender(void) {
 
 extern "C" {
     NUMTL *SolidMtl = 0;
+    i32 waiting_for_new_level = 0;
 }
 
 extern "C" void DrawFadeScreenWipe(void) {

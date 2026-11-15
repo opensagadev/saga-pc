@@ -2,6 +2,7 @@
 
 static i32 CollectCount = 0;
 static COLLECTID_PC *CollectList = 0;
+i32 COLLECTION_COMPLETIONCOUNT = 0;
 COLLECTID_PC *TempCollectID = 0;
 
 i32 InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {

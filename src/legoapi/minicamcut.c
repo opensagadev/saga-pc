@@ -25,6 +25,8 @@ static f32 MinicamcutFdiv(f32 a, f32 b) {
     return a / b;
 }
 
+MINICAM MiniCam = {0};
+
 void Minicam_InitSystem(void) {
     memset(&MiniCam, 0, sizeof(MiniCam));
 }
@@ -275,6 +277,8 @@ void fun_005776f0(void) {
     memset(&MiniCam, 0, sizeof(MiniCam));
 }
 
+i16 ObstacleCamRotZ = 0;
+
 void Minicam_CalcCamPos(void) {
     if (MiniCam.mode == 0) {
         MiniCam.position.y = MiniCam.position.x = 0.0f;
@@ -285,6 +289,18 @@ void Minicam_CalcCamPos(void) {
         NuVecAdd(&MiniCam.position, &MiniCam.position, &MiniCam.target);
     }
 }
+
+f32 ObstacleCamBlendInTime = 0;
+u8 ObstacleCamAlwaysSnapAngles = 0;
+i32 ObstacleCamBorders = 0;
+NUGSPLINE *ObstacleCamSpl = 0;
+f32 ObstacleCamEnd = 0;
+f32 ObstacleCamBlendOutTime = 0;
+f32 ObstacleCamStart = 0;
+i32 ObstacleCamHoldUntilPlayersMove = 0;
+f32 ObstacleCamTime = 0;
+NUVEC *ObstacleCamCutTgtPtr = 0;
+NUVEC *ObstacleCamCutCamPtr = 0;
 
 void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, f32 blend_out, i32 borders, i32 hold_until_players_move) {
     if (spline == NULL) {
@@ -313,6 +329,10 @@ void GameCameraMakeMiniCut(NUGSPLINE *spline, f32 start, f32 end, f32 blend_in, 
     Hint_CancelCurrent();
     ObstacleCamAlwaysSnapAngles = 0;
 }
+
+NUGSPLINE ObstacleCamCutSpline = {0};
+i32 ObstacleCamTargetGuid = 0;
+NUVEC ObstacleCamCutPts[2] = {0};
 
 void GameCameraMakeMiniCut2(NUVEC *camera, NUVEC *target, i32 target_guid, float start, float end, float blend_in, float blend_out,
                             i32 follow_target, i32 follow_camera, i32 borders) {
