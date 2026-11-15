@@ -2,10 +2,10 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/render/fx/game_deb.h"
 #include "nu2api/nucore/nulst.h"
 #include "nu2api/numath/nuvec.h"
 
-struct BURN_PARAMETERS;
 struct numtx_s;
 
 typedef struct RTL_DATA {                    // size 0x144
@@ -178,14 +178,33 @@ extern "C" {
     RTL_SET *rtlLoadSet(char *, VARIPTR *, i32);
     i32 rtlInitDynamic(VARIPTR *, VARIPTR, i32);
 
-    typedef struct BURN_SET BURN_SET;
+    typedef struct BURN_SET {            // size 0x564
+        BURN_PARAMETERS parameters;      // 0x000
+        BURN_PARAMETERS parameters_copy; // 0x054
+        i32 unknown_a8;                  // 0x0a8
+        i32 field_ac;                    // 0x0ac
+        i32 unknown_b0;                  // 0x0b0
+        i32 unknown_b4;                  // 0x0b4
+        f32 unknown_b8;                  // 0x0b8
+        f32 field_bc;                    // 0x0bc
+        f32 unknown_c0;                  // 0x0c0
+        f32 unknown_c4;                  // 0x0c4
+        f32 unknown_c8;                  // 0x0c8
+        f32 field_cc;                    // 0x0cc
+        BURN_OUT burnouts[32];           // 0x0d0
+        i32 active_count;                // 0x550
+        i32 selected_index;              // 0x554
+        f32 unknown_558;                 // 0x558
+        f32 unknown_55c;                 // 0x55c
+        i32 unknown_560;                 // 0x560
+    } BURN_SET;
 
     void edrtlInitBurnset(BURN_SET *);
     void edrtlDetermineNearestBurn(f32, BURN_SET *);
     i32 edrtlBurnoutLoadSet(char *, BURN_SET *);
     BURN_SET *edrtlBurnoutLoad(char *, VARIPTR *, i32);
     void edrtlCalculateBurnout(BURN_SET *, f32 *, f32 *, f32 *, NUVEC *, f32);
-    void edrtlCalculateBurnoutEx(BURN_SET *, struct BURN_PARAMETERS *, NUVEC *, f32);
+    void edrtlCalculateBurnoutEx(BURN_SET *, BURN_PARAMETERS *, NUVEC *, f32);
     void edrtlDrawLightEx(i32 index, i32 style);
     i32 rtlGetDirection(RTL_SET *, i32, NUVEC **);
     f32 rtlSpecularValue(RTL_DATA *);

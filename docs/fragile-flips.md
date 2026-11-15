@@ -61,3 +61,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.06 % | 95.37 % |
 | PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | NuDeferredFilterGen::render | nu2api/nu3d_includes.cpp | 93.90 % | 93.89 % |
 | PANEL_MOVEMENT/PANEL_SYSTEM in gizpanel.h | InitGameAfterConfig | legogame/game.cpp | 82.2372 % | 82.2397 % |
+| BURN_SET in rtl.h | NuDeferredFilterGen::render | nu2api/nu3d_includes.cpp | 93.89 % | 93.90 % |
+| BURN_SET in rtl.h | do_maya_mouse_camera | editor/edlevelall.cpp | 98.15 % | 98.11 % (newly fragile) |

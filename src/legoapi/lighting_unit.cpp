@@ -42,27 +42,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct BURN_SET {
-    BURN_PARAMETERS parameters;
-    BURN_PARAMETERS parameters_copy;
-    i32 unknown_a8;
-    i32 field_ac;
-    i32 unknown_b0;
-    i32 unknown_b4;
-    f32 unknown_b8;
-    f32 field_bc;
-    f32 unknown_c0;
-    f32 unknown_c4;
-    f32 unknown_c8;
-    f32 field_cc;
-    BURN_OUT burnouts[32];
-    i32 active_count;
-    i32 selected_index;
-    f32 unknown_558;
-    f32 unknown_55c;
-    i32 unknown_560;
-} BURN_SET;
-
 extern "C" {
     extern f32 ShadowLightSplitScale;
     extern f32 ShadowLightWarp;

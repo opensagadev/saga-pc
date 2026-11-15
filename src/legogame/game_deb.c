@@ -38,27 +38,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct BURN_SET {            // size 0x564
-    BURN_PARAMETERS parameters;      // 0x000
-    BURN_PARAMETERS parameters_copy; // 0x054
-    i32 unknown_a8;                  // 0x0a8
-    i32 field_ac;                    // 0x0ac
-    i32 unknown_b0;                  // 0x0b0
-    i32 unknown_b4;                  // 0x0b4
-    f32 unknown_b8;                  // 0x0b8
-    f32 field_bc;                    // 0x0bc
-    f32 unknown_c0;                  // 0x0c0
-    f32 unknown_c4;                  // 0x0c4
-    f32 unknown_c8;                  // 0x0c8
-    f32 field_cc;                    // 0x0cc
-    BURN_OUT burnouts[32];           // 0x0d0
-    i32 active_count;                // 0x550
-    i32 selected_index;              // 0x554
-    f32 unknown_558;                 // 0x558
-    f32 unknown_55c;                 // 0x55c
-    i32 unknown_560;                 // 0x560
-} BURN_SET;
-
 /* Cut resource access prefix; the cut loader owns the resource. */
 typedef struct BURNOUT_CUT_PREFIX { // size 0x54
     u8 unknown_00[0x50];            // 0x00
