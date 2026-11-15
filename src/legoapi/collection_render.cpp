@@ -1,4 +1,14 @@
-#include "../saga.h"
+#include "batman.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/characters/core/characters.h"
+#include "legoapi/core/input/timer.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/base/collection.h"
+#include "legoapi/lib/hub.h"
+#include "legoapi/menus/screens/store.h"
+#include "legoapi/render/core/render.h"
+#include "legoapi/world/levels/levels.h"
+#include "nu2api/numath/nutrig.h"
 /* PC594c301198bytes,cdecl7args. Native rows=count/columns+1 always. */
 extern "C" f32 COLLECTION_DX;
 extern "C" f32 COLLECTION_DY;
