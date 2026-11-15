@@ -145,15 +145,6 @@ i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
 static i32 FramePadDirectMappingPc = 0;
 static i32 FramePadActivatedPc = 0;
 
-enum {
-    PAD_BUTTON_JUMP_SELECT = 1 << 0x6,
-    PAD_BUTTON_START = 1 << 0xb,
-    PAD_BUTTON_UP = 1 << 0xc,
-    PAD_BUTTON_RIGHT = 1 << 0xd,
-    PAD_BUTTON_DOWN = 1 << 0xe,
-    PAD_BUTTON_LEFT = 1 << 0xf,
-};
-
 u32 ImplodeDecodeC(void);
 u32 ImplodeDecodeOffset(void);
 void ImplodeMakeTable(i32, u8 *, i32, u16 *);
@@ -7740,7 +7731,7 @@ void NuErrorSleep(void) {
         NuQFntPopPrintMode();
         NuRndrEndScene();
         NuPadRead(&pad);
-        if ((pad.digital_buttons & 0x40) != 0 && milliseconds > 1000.0f) {
+        if ((pad.digital_buttons & PAD_BUTTON_CROSS) != 0 && milliseconds > 1000.0f) {
             waiting = 0;
         }
         NuFrameEnd();
@@ -8289,7 +8280,7 @@ void NuPadUpdatePads(void) {
                     g_nupadMapping[0].port = j;
                     g_nupadScannedPads[j].mapped_to_pad = 0;
 
-                    if ((g_nupadScannedPads[j].digital_buttons_pressed & 0x840) != 0) {
+                    if ((g_nupadScannedPads[j].digital_buttons_pressed & (PAD_BUTTON_CROSS | PAD_BUTTON_START)) != 0) {
                         return;
                     }
                 }
@@ -8301,7 +8292,7 @@ void NuPadUpdatePads(void) {
         for (i = 0; i < max_game_pads; i++) {
             if (g_nupadMapping[i].is_active == 1 && !g_nupadScannedPads[g_nupadMapping[i].port].is_valid) {
                 for (j = 0; j < max_interface_devices; j++) {
-                    if (g_nupadScannedPads[j].is_valid && (g_nupadScannedPads[j].digital_buttons_pressed & 0x800) != 0 &&
+                    if (g_nupadScannedPads[j].is_valid && (g_nupadScannedPads[j].digital_buttons_pressed & PAD_BUTTON_START) != 0 &&
                         (g_nupadScannedPads[j].mapped_to_pad == -1 || !g_nupadMapping[g_nupadScannedPads[j].mapped_to_pad].is_active)) {
                         g_nupadMapping[i].port = j;
                         g_nupadScannedPads[j].mapped_to_pad = i;
@@ -8351,7 +8342,7 @@ void NuPadUpdatePads(void) {
                             g_nupadScannedPads[j].analog_left_y != ANALOG_CENTER || g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
                             /* As on every platform, analog_right_x is tested twice. */
                             g_nupadScannedPads[j].analog_right_x != ANALOG_CENTER ||
-                            (g_nupadScannedPads[j].digital_buttons_pressed & 0x840) != 0) {
+                            (g_nupadScannedPads[j].digital_buttons_pressed & (PAD_BUTTON_CROSS | PAD_BUTTON_START)) != 0) {
                             break;
                         }
                     }

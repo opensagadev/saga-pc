@@ -1037,7 +1037,7 @@ void eduiCreate3LineMessageMenu(eduimenu_s *parent, char *first, char *second, c
 
 i32 eduiCheckForPadMenuCancel(eduimenu_s *menu, FRAME_PAD_PC *pad) {
     struct eduimenu_s *parent;
-    if (!pad || !(pad->digital_buttons_pressed & 0x10)) {
+    if (!pad || !(pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE)) {
         return 0;
     }
 
@@ -1097,14 +1097,14 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
         }
     }
     if (!menu->pinned && !menu->horizontal) {
-        if ((pad->digital_buttons & 0x8000) && !(menu->flags & 1)) {
+        if ((pad->digital_buttons & PAD_BUTTON_LEFT) && !(menu->flags & 1)) {
             i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1) {
                 distance = 1;
             }
             menu->x -= distance;
         }
-        if ((pad->digital_buttons & 0x2000) && !(menu->flags & 1)) {
+        if ((pad->digital_buttons & PAD_BUTTON_RIGHT) && !(menu->flags & 1)) {
             i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1) {
                 distance = 1;
@@ -1123,16 +1123,16 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD_PC *pad, i3
             down = 1;
         }
     }
-    if (up && (pad->digital_buttons & 1)) {
+    if (up && (pad->digital_buttons & PAD_BUTTON_L2)) {
         to_first = 1;
     }
-    if (down && (pad->digital_buttons & 1)) {
+    if (down && (pad->digital_buttons & PAD_BUTTON_L2)) {
         to_last = 1;
     }
-    if (up && (pad->digital_buttons & 2)) {
+    if (up && (pad->digital_buttons & PAD_BUTTON_R2)) {
         page_up = 1;
     }
-    if (down && (pad->digital_buttons & 2) && menu->unknown_10) {
+    if (down && (pad->digital_buttons & PAD_BUTTON_R2) && menu->unknown_10) {
         eduiitem_s *item;
         i32 count = 1;
         for (item = menu->unknown_0c; item && item != menu->unknown_10; item = item->next) {
@@ -1955,7 +1955,7 @@ struct FILE_DIRECTORY_ENTRY_PC *dir_list = 0;
 void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD_PC *pad) {
     u8 centred = 0;
     (void)delta_time;
-    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & 0x40)) {
+    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
         centred = 1;
         edui_cursor_x = 320.0f;
         edui_cursor_y = 112.0f;
@@ -1988,7 +1988,7 @@ void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD_PC *pad) {
 }
 
 void fun_00627540(f32 delta_time, FRAME_PAD_PC *pad) {
-    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & 0x40)) {
+    if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
         edui_cursor_x = 320.0f;
         edui_cursor_y = 112.0f;
     } else {
@@ -2101,7 +2101,7 @@ static i32 EduiExpanderOverButton(EDUI_EXPANDER *expander) {
 static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
     (void)delta_time;
-    if (pad->digital_buttons_pressed & 0x40) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
         if (expander->changed) {
             expander->changed(menu, item, 0);
         }
@@ -2506,7 +2506,7 @@ static i32 EduiPropKeyboardPc(edui_prop_s *property, eduimenu_s *menu) {
 /* Runs the button callback while it is held (or the item is activated). */
 static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD_PC *pad) {
     edui_camera_enabled = 1;
-    if (property->button_held || (property->base.type == 17 && (pad->digital_buttons & 0x40))) {
+    if (property->button_held || (property->base.type == 17 && (pad->digital_buttons & PAD_BUTTON_CROSS))) {
         if (property->button) {
             edui_camera_enabled = 0;
             property->button(menu, &property->base, edui_cursor_buttons);
@@ -2975,7 +2975,7 @@ eduiitem_s *eduiItemFilterCreate(u32 data, void *colours, char *text, char *valu
  * stick finely, while the cursor button (bit 6) is held. */
 f32 eduiGetAnalougePadValue(FRAME_PAD_PC *pad) {
     f32 value = 0.0f;
-    if (pad != NULL && (pad->digital_buttons & 0x40)) {
+    if (pad != NULL && (pad->digital_buttons & PAD_BUTTON_CROSS)) {
         if (pad->analog_left_x > 192) {
             value = (pad->analog_left_y - 128.0) * 0.01f;
         }
@@ -3143,14 +3143,14 @@ static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delt
         pick->zoom = EDUI_MIN(16.0f, right / 4192.0 + pick->zoom);
         return 1;
     }
-    if (pad->digital_buttons_pressed & 0x100) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
         pick->uv_x[pick->selected_corner] = (i32)(pick->uv_x[pick->selected_corner] * 256.0 + 0.5) * (1.0 / 256.0);
         pick->uv_y[pick->selected_corner] = (i32)(pick->uv_y[pick->selected_corner] * 256.0 + 0.5) * (1.0 / 256.0);
     }
-    if (pad->digital_buttons_pressed & 0x80) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
         pick->selected_corner = pick->selected_corner != 1;
     }
-    if ((pad->digital_buttons_pressed & 0x40) && pick->changed) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && pick->changed) {
         pick->changed(menu, item, pad->digital_buttons);
     }
     return 0;
@@ -3471,46 +3471,46 @@ void eduiAddPropTextPickEnt(eduimenu_s *menu, eduiitem_s *item) {
 
 static i32 EduiTextPickPadPc(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PAD_PC *pad) {
     if (picker == NULL || !picker->editing) {
-        if (pad->digital_buttons_pressed & 0x40) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             eduiAddTextPickEnt(menu, &picker->base);
         }
         return 0;
     }
-    if (pad->digital_buttons_pressed & 0x4000) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_DOWN) {
         EduiTextPickNextRow(picker);
     }
-    if (pad->digital_buttons_pressed & 0x1000) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_UP) {
         EduiTextPickPreviousRow(picker);
     }
-    if (pad->digital_buttons_pressed & 0x8000) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
         EduiTextPickPreviousColumn(picker);
     }
-    if (pad->digital_buttons_pressed & 0x2000) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) {
         EduiTextPickNextColumn(picker);
     }
-    if ((pad->digital_buttons_pressed & 0x10) && picker->callback) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) && picker->callback) {
         picker->callback(menu, &picker->base, pad->digital_buttons);
     }
-    if ((pad->digital_buttons & 0xc) == 0xc) {
+    if ((pad->digital_buttons & (PAD_BUTTON_L1 | PAD_BUTTON_R1)) == 0xc) {
         EduiTextPickPaste(picker);
     }
-    if ((pad->digital_buttons & 3) == 3 && (picker->keyboard_flag_bits & 2)) {
+    if ((pad->digital_buttons & (PAD_BUTTON_L2 | PAD_BUTTON_R2)) == 3 && (picker->keyboard_flag_bits & 2)) {
         NuStrNCpy(EduiTextCopyBufferPc, picker->value, sizeof(EduiTextCopyBufferPc));
         picker->value[sizeof(EduiTextCopyBufferPc) - 1] = '\0';
     }
-    if (pad->digital_buttons_pressed & 4) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_L1) {
         picker->cursor = EDUI_MAX(0, picker->cursor - 1);
     }
-    if (pad->digital_buttons_pressed & 8) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
         EduiTextPickCursorRightPc(picker);
     }
-    if (pad->digital_buttons_pressed & 0x40) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
         EduiTextPickInsert(picker, textrow[picker->keyboard_row][picker->keyboard_column]);
     }
-    if (pad->digital_buttons_pressed & 0x80) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
         EduiTextPickDelete(picker);
     }
-    if (pad->digital_buttons_pressed & 0x20) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) {
         EduiTextPickToggleCase();
     }
     return 1;
@@ -4342,7 +4342,7 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
 i32 eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD_PC *pad) {
     edui_file_pick_s *picker = (edui_file_pick_s *)item;
     (void)delta_time;
-    if ((pad->digital_buttons_pressed & 0x40) || picker->reopen_directory) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) || picker->reopen_directory) {
         eduiMenuHighlight(menu, item);
         eduicbAttachDirectoryList(menu, picker);
     }
@@ -4856,7 +4856,7 @@ i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time
     if (gradient->changed) {
         gradient->changed(menu, item, pad->digital_buttons);
     }
-    if (pad->digital_buttons_pressed & 0x40) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
         eduicbProcessGradPick(menu, item);
         return 0;
     }
@@ -4867,19 +4867,19 @@ i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time
     if (!stage) {
         return 0;
     }
-    if (pad->digital_buttons_pressed & 0x8000) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
         if (stage->previous) {
             gradient->selected_stage = stage->previous;
         }
         return 1;
     }
-    if (pad->digital_buttons_pressed & 0x2000) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) {
         if (stage->next != NULL) {
             gradient->selected_stage = gradient->selected_stage->next;
         }
         return 1;
     }
-    if (pad->digital_buttons & 0xa000) {
+    if (pad->digital_buttons & (PAD_BUTTON_RIGHT | PAD_BUTTON_LEFT)) {
         return 1;
     }
     lower = 0.0f;
@@ -5031,7 +5031,7 @@ void FileSelKill(void) {
 void ProcessFileSel(f32 elapsed, FRAME_PAD_PC *pad) {
     ProcessFileSel3(elapsed, pad);
     RenderFileSel();
-    if (pad->digital_buttons & 0x10) {
+    if (pad->digital_buttons & PAD_BUTTON_TRIANGLE) {
         FileSelKill();
     }
 }

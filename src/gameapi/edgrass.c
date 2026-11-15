@@ -1057,14 +1057,14 @@ void edgraCreateOptionsMenu(void) {
 i32 edgra_cam_ay = 0;
 
 void edgraDoInput(FRAME_PAD_PC *pad) {
-    if ((pad->digital_buttons & 0x100) == 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
         edcamMove(pad);
     }
-    if (pad->digital_buttons & 0x100) {
-        if ((pad->digital_buttons_pressed & 0x20) && edgra_nearest != -1) {
+    if (pad->digital_buttons & PAD_BUTTON_SELECT) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) && edgra_nearest != -1) {
             edgraClumpReseed(edgra_nearest);
         }
-        if ((pad->digital_buttons_pressed & 0x40) && edgra_nearest != -1) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && edgra_nearest != -1) {
             if (edgra_editormode == 1) {
                 edgra_editormode = 0;
             } else if (edgra_mode == 3) {
@@ -1073,13 +1073,13 @@ void edgraDoInput(FRAME_PAD_PC *pad) {
         }
         if (edgra_editormode == 1) {
             if (edgra_nearest_instance != -1) {
-                if (pad->digital_buttons_pressed & 8) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                     ++edgra_nearest_instance;
                     if (edgra_nearest_instance == GrassClumps[edgra_nearest].element_count) {
                         edgra_nearest_instance = 0;
                     }
                 }
-                if (pad->digital_buttons_pressed & 2) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                     --edgra_nearest_instance;
                     if (edgra_nearest_instance == -1) {
                         edgra_nearest_instance = GrassClumps[edgra_nearest].element_count - 1;
@@ -1089,7 +1089,7 @@ void edgraDoInput(FRAME_PAD_PC *pad) {
                 edgraDetermineNearestInstance(-1.0f);
             }
         } else if (edgra_nearest != -1) {
-            if (pad->digital_buttons_pressed & 8) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                 do {
                     ++edgra_nearest;
                     if (edgra_nearest == EDGRA_MAX_CLUMPS) {
@@ -1098,7 +1098,7 @@ void edgraDoInput(FRAME_PAD_PC *pad) {
                 } while (!GrassClumps[edgra_nearest].element_count);
                 edgraSortVectorBuffer(edgra_nearest);
             }
-            if (pad->digital_buttons_pressed & 2) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                 do {
                     --edgra_nearest;
                     if (edgra_nearest == -1) {
@@ -1134,19 +1134,19 @@ void edgraDoInput(FRAME_PAD_PC *pad) {
         }
     }
     edcamGetPosAng(&edgra_cam_pos, &edgra_cam_ax, &edgra_cam_ay);
-    if ((pad->digital_buttons & 0x100) == 0) {
-        if (pad->digital_buttons_pressed & 0x80) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
             edgraCreateOptionsMenu();
             edgra_active_menu = edgra_options_menu;
         }
-        if (pad->digital_buttons_pressed & 0x40) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             if (edgra_editormode == 1) {
                 edgraInstanceCreate(&edgra_cam_pos);
             } else if (edgra_instance_type != -1) {
                 edgraClumpCreate(&edgra_cam_pos);
             }
         }
-        if (pad->digital_buttons & 0x20) {
+        if (pad->digital_buttons & PAD_BUTTON_CIRCLE) {
             if (edgra_editormode == 1) {
                 if (edgra_nearest_instance != -1) {
                     edgraInstancePlace(edgra_nearest_instance, &edgra_cam_pos);
@@ -1155,7 +1155,7 @@ void edgraDoInput(FRAME_PAD_PC *pad) {
                 edgraClumpPlace(edgra_nearest, &edgra_cam_pos);
             }
         }
-        if (pad->digital_buttons_pressed & 0x10) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
             if (edgra_editormode == 1) {
                 if (edgra_nearest_instance != -1) {
                     edgraInstanceDestroy(edgra_nearest_instance);
@@ -1195,10 +1195,10 @@ void edgraDoInput(FRAME_PAD_PC *pad) {
             if (edgra_size > 10.0f) {
                 edgra_size = 10.0f;
             }
-            if (pad->analog_left_pad_left == 255 || (pad->digital_buttons_pressed & 0x8000)) {
+            if (pad->analog_left_pad_left == 255 || (pad->digital_buttons_pressed & PAD_BUTTON_LEFT)) {
                 --edgra_clump_size;
             }
-            if (pad->analog_left_pad_right == 255 || (pad->digital_buttons_pressed & 0x2000)) {
+            if (pad->analog_left_pad_right == 255 || (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT)) {
                 ++edgra_clump_size;
             }
             if (edgra_clump_size < 4) {

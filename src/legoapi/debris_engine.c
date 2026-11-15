@@ -214,7 +214,7 @@ void DebReAlloc2(DEBRISKEY_PC *key) {
         return;
     }
     if (extra > 0) {
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             if (freedebchkptrg + extra >= debrischunksglass) {
                 return;
             }
@@ -289,7 +289,7 @@ void DebReAlloc2(DEBRISKEY_PC *key) {
     DebrisGetControlStackLock();
     for (i = extra; i < 0; ++i) {
         freechunkcontrols[freechunkcontrolsptr]->particle_chunk = key->particle_chunks[key->allocated_chunk_count + i];
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             freechunkcontrols[freechunkcontrolsptr]->active = 7;
         } else {
             freechunkcontrols[freechunkcontrolsptr]->active = 0;
@@ -354,14 +354,14 @@ void DebReAlloc2(DEBRISKEY_PC *key) {
 void DebReAlloc(DEBRISKEY_PC *key, i32 particle_count) {
     DEBRIS_INFO_PC *effect = debtab[key->effect_index];
     key->previous_particle_count = (i16)particle_count;
-    if (effect->particle_type == 7) {
+    if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
         key->previous_allocated_chunk_count = (i16)((particle_count + 11) / 12);
     } else {
         key->previous_allocated_chunk_count = (i16)((particle_count + 31) / 32);
     }
     if (key->previous_allocated_chunk_count > 32) {
         key->previous_allocated_chunk_count = 32;
-        key->previous_particle_count = effect->particle_type == 7 ? 0x180 : 0x400;
+        key->previous_particle_count = effect->particle_type == DEBRIS_PARTICLE_GLASS ? 0x180 : 0x400;
     }
     if (key->previous_allocated_chunk_count == key->allocated_chunk_count) {
         key->particle_count = key->previous_particle_count;
@@ -405,7 +405,7 @@ void DebFreeChunksInstantly(i32 *handle) {
     for (i = 0; i < DEBRIS_ENGINE_KEYS_PC[*handle].allocated_chunk_count; ++i) {
         RemoveAnyChunkControls(DEBRIS_ENGINE_KEYS_PC[*handle].particle_chunks[i]);
         freechunkcontrols[freechunkcontrolsptr]->particle_chunk = DEBRIS_ENGINE_KEYS_PC[*handle].particle_chunks[i];
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             freechunkcontrols[freechunkcontrolsptr]->active = 9;
         } else {
             freechunkcontrols[freechunkcontrolsptr]->active = 2;
@@ -450,7 +450,7 @@ void DebFreeOrphansInstantly(DEBRIS_INFO_PC *effect) {
         if (ParticleChunkToRender[i].key == NULL && ParticleChunkToRender[i].effect == effect) {
             RemoveAnyChunkControls(ParticleChunkToRender[i].particle_chunk);
             freechunkcontrols[freechunkcontrolsptr]->particle_chunk = ParticleChunkToRender[i].particle_chunk;
-            if (effect->particle_type == 7) {
+            if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
                 freechunkcontrols[freechunkcontrolsptr]->active = 9;
             } else {
                 freechunkcontrols[freechunkcontrolsptr]->active = 2;
@@ -563,7 +563,7 @@ void DebFree(i32 *handle) {
         for (i = 0; i < DEBRIS_ENGINE_KEYS_PC[*handle].allocated_chunk_count; ++i) {
             RemoveAnyChunkControls(DEBRIS_ENGINE_KEYS_PC[*handle].particle_chunks[i]);
             freechunkcontrols[freechunkcontrolsptr]->particle_chunk = DEBRIS_ENGINE_KEYS_PC[*handle].particle_chunks[i];
-            if (effect->particle_type == 7) {
+            if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
                 freechunkcontrols[freechunkcontrolsptr]->active = 7;
             } else {
                 freechunkcontrols[freechunkcontrolsptr]->active = 0;
@@ -763,7 +763,7 @@ void DebrisProcessControlChunks(i32 panel_time) {
             --control->owner->controlled_chunk_count;
 
             if (control->owner->allocated_chunk_count > 0) {
-                if (effect->particle_type == 7) {
+                if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
                     control->owner->particle_count -= 12;
                     control->owner->previous_particle_count -= 12;
                     if (control->owner->particle_cursor > (chunk_index + 1) * 12) {
@@ -810,7 +810,7 @@ void DebrisProcessControlChunks(i32 panel_time) {
             }
 
             control->expiry_time += 0.1f;
-            control->active = effect->particle_type == 7 ? 9 : 2;
+            control->active = effect->particle_type == DEBRIS_PARTICLE_GLASS ? 9 : 2;
             AddChunkControlToStack(control, &debris_chunk_control_stack[panel_time]);
             continue;
         }
@@ -1109,7 +1109,7 @@ void DebrisTimeSlip(i32 group) {
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRIS_INFO_PC *effect = debtab[DEBRIS_ENGINE_KEYS_PC[i].effect_index];
         if ((effect->time_group == 4 && group == 1) || (effect->time_group != 4 && group == 0)) {
-            glass = effect->particle_type == 7;
+            glass = effect->particle_type == DEBRIS_PARTICLE_GLASS;
             DEBRIS_ENGINE_KEYS_PC[i].last_update_time -= 800.0;
             DEBRIS_ENGINE_KEYS_PC[i].emission_epoch -= 800.0;
             DEBRIS_ENGINE_KEYS_PC[i].emission_time -= 800.0;

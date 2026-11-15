@@ -664,11 +664,11 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
     NUVEC *origin;
     i32 index;
     i32 effect;
-    if ((pad->digital_buttons & 0x100) == 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
         edcamMove(pad);
     }
-    if (pad->digital_buttons & 0x100) {
-        if (edanim_sound_mode == 0 && (pad->digital_buttons_pressed & 0x80)) {
+    if (pad->digital_buttons & PAD_BUTTON_SELECT) {
+        if (edanim_sound_mode == 0 && (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE)) {
             if (edanim_particle_mode) {
                 edanim_particle_mode = 0;
             } else if (edanim_nearest != -1 && edanim_nearest_param_id != -1) {
@@ -680,12 +680,12 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
             if (edanim_nearest_particle == -1) {
                 edanimDetermineNearestParticle(-1.0f);
             } else {
-                if (pad->digital_buttons_pressed & 8) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                     if (++edanim_nearest_particle == AnimParams[edanim_nearest_param_id].effect_count) {
                         edanim_nearest_particle = 0;
                     }
                 }
-                if (pad->digital_buttons_pressed & 2) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                     if (--edanim_nearest_particle == -1) {
                         edanim_nearest_particle = AnimParams[edanim_nearest_param_id].effect_count - 1;
                     }
@@ -701,7 +701,7 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
                 edanim_particle_type = AnimParams[edanim_nearest_param_id].effect_ids[edanim_nearest_particle];
             }
         } else {
-            if (pad->digital_buttons_pressed & 0x10) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
                 if (edanim_sound_mode) {
                     edanim_sound_mode = 0;
                 } else if (edanim_nearest != -1 && edanim_nearest_param_id != -1) {
@@ -711,12 +711,12 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
             }
             if (edanim_sound_mode) {
                 if (edanim_nearest_sound != -1) {
-                    if (pad->digital_buttons_pressed & 8) {
+                    if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                         if (++edanim_nearest_sound == AnimParams[edanim_nearest_param_id].sound_count) {
                             edanim_nearest_sound = 0;
                         }
                     }
-                    if (pad->digital_buttons_pressed & 2) {
+                    if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                         if (--edanim_nearest_sound == -1) {
                             edanim_nearest_sound = AnimParams[edanim_nearest_param_id].sound_count - 1;
                         }
@@ -733,12 +733,12 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
                 }
             } else {
                 if (edanim_nearest != -1) {
-                    if (pad->digital_buttons_pressed & 8) {
+                    if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                         if (++edanim_nearest == NuGScnNumSpecials(edbits_base_scene)) {
                             edanim_nearest = 0;
                         }
                     }
-                    if (pad->digital_buttons_pressed & 2) {
+                    if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                         if (--edanim_nearest == -1) {
                             edanim_nearest = NuGScnNumSpecials(edbits_base_scene) - 1;
                         }
@@ -775,11 +775,11 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
         }
     }
     edcamGetPosAng(&edanim_cam_pos, &edanim_cam_ax, &edanim_cam_ay);
-    if ((pad->digital_buttons & 0x100) == 0) {
-        if (pad->digital_buttons_pressed & 0x80) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
             edanim_active_menu = edanim_options_menu;
         }
-        if (pad->digital_buttons_pressed & 0x40) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             if (edanim_particle_mode) {
                 edanimParticleCreate(&edanim_cam_pos);
             } else if (edanim_sound_mode) {
@@ -788,7 +788,7 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
                 edanim_nearest_param_id = edanimParamCreate(edanim_nearest);
             }
         }
-        if (pad->digital_buttons & 0x20) {
+        if (pad->digital_buttons & PAD_BUTTON_CIRCLE) {
             if (edanim_particle_mode) {
                 if (edanim_nearest_particle != -1) {
                     edanimParticlePlace(edanim_nearest_particle, &edanim_cam_pos);
@@ -797,7 +797,7 @@ void edanimDoInput(FRAME_PAD_PC *pad) {
                 edanimSoundPlace(edanim_nearest_sound, &edanim_cam_pos);
             }
         }
-        if (pad->digital_buttons_pressed & 0x10) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
             if (edanim_particle_mode) {
                 if (edanim_nearest_particle != -1) {
                     edanimParticleDestroy(edanim_nearest_param_id, edanim_nearest_particle);
@@ -1037,7 +1037,7 @@ i32 edanimProc(f32 delta_time, FRAME_PAD_PC *pad) {
     } else {
         edanimDetermineNearestAnim(1.0f);
     }
-    if (pad->digital_buttons_pressed & 0x800) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_START) {
         edanim_particle_mode = 0;
         return 1;
     }

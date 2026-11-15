@@ -418,16 +418,16 @@ void TTNetwork::ProcessEvenWhenPaused(ThingProcessData *data) {
     if (state != 0) {
         Update();
         if (display_page != 0) {
-            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & 4)) {
+            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & PAD_BUTTON_L1)) {
                 display_page++;
             }
-            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & 4)) {
+            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & PAD_BUTTON_L1)) {
                 display_page++;
             }
-            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & 8)) {
+            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & PAD_BUTTON_R1)) {
                 display_page--;
             }
-            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & 8)) {
+            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & PAD_BUTTON_R1)) {
                 display_page--;
             }
             if (display_page < 1) {

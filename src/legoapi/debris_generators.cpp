@@ -73,7 +73,7 @@ extern "C" {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
@@ -132,7 +132,7 @@ extern "C" {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
@@ -202,7 +202,7 @@ extern "C" {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
@@ -267,7 +267,7 @@ extern "C" {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
         DEBRISPARTICLE_PC *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
@@ -334,7 +334,7 @@ extern "C" {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
         DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[key->particle_cursor / 32];
@@ -404,7 +404,7 @@ extern "C" {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
         DEBRIS_PARTICLE_CHUNK_PC *chunk = key->particle_chunks[key->particle_cursor / 32];

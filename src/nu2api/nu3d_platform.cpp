@@ -5224,7 +5224,7 @@ extern "C" {
         }
         for (i = 0; i < scene->display_list->item_count; ++i) {
             NUDISPLAYLISTITEM *item = &scene->display_list->items[i];
-            if (item->type == 0xb0) {
+            if (item->type == NUDLIST_LIGHTMAP) {
                 SCENE_TEXTURE_PACKET_B0 *packet = (SCENE_TEXTURE_PACKET_B0 *)item->next;
                 if (packet->kind == 2) {
                     for (j = 0; j < 3; ++j) {
@@ -5251,7 +5251,7 @@ extern "C" {
         }
         for (i = 0; i < scene->display_list->item_count; ++i) {
             NUDISPLAYLISTITEM *item = &scene->display_list->items[i];
-            if (item->type == 0xb0) {
+            if (item->type == NUDLIST_LIGHTMAP) {
                 SCENE_TEXTURE_PACKET_B0 *packet = (SCENE_TEXTURE_PACKET_B0 *)item->next;
                 if (packet->kind == 2) {
                     for (j = 0; j < 3; ++j) {
@@ -5434,34 +5434,34 @@ extern "C" {
 
     void NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
         (void)texture_id;
-        item->type = 0x87;
+        item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = 0;
     }
 
     void NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
         (void)texture_id;
-        item->type = 0x87;
+        item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = 0;
     }
 
     void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
-        item->type = 0x80;
+        item->type = NUDLIST_MTL;
         item->next = material;
         item->id = 3;
     }
 
     void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
-        item->type = 0x87;
+        item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = 0;
     }
 
     void NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
-        item->type = 0x87;
+        item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = 0;
     }
@@ -5499,7 +5499,7 @@ extern "C" {
         ((NUDISPLAYLISTITEM *)list->material_last)->next = cursor->void_ptr;
         list->items = cursor->void_ptr;
         cursor->addr += count * sizeof(NUDISPLAYLISTITEM);
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = 0x8d;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = NUDLIST_NEXT;
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = 1;
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = (NUDISPLAYLISTITEM *)list->dynamic_geometry + 1;
         list->material_last = cursor->void_ptr;
@@ -5657,8 +5657,8 @@ extern "C" {
         i32 i;
         for (i = 0; i < scene->item_count; ++i) {
             NUDISPLAYLISTITEM *item = &scene->items[i];
-            if (item->type == 0x82) {
-                item->type = 0x82;
+            if (item->type == NUDLIST_GEOMCALL) {
+                item->type = NUDLIST_GEOMCALL;
             }
         }
     }
@@ -6029,7 +6029,7 @@ extern "C" {
             if (global->light_packet_cache == NULL) {
                 global->light_packet_cache = DisplayListBuildLightPacket(global);
             }
-            NuDisplayListLinkItem(list, 0x94, global->light_packet_cache);
+            NuDisplayListLinkItem(list, NUDLIST_LIGHTS, global->light_packet_cache);
             ((NUPRIM_RENDER_STATE_IDS *)list->render_state)->lights_id = global->lights_id;
         }
 
@@ -6063,7 +6063,7 @@ extern "C" {
                 *viewport++ = global->viewport_height;
                 cursor->void_ptr = viewport;
             }
-            NuDisplayListLinkItem(list, 0x9a, global->camera_packet_cache);
+            NuDisplayListLinkItem(list, NUDLIST_CAMERA, global->camera_packet_cache);
             ((NUPRIM_RENDER_STATE_IDS *)list->render_state)->camera_id = global->camera_id;
         }
 
@@ -6071,7 +6071,7 @@ extern "C" {
             if (global->fog_packet_cache == NULL) {
                 global->fog_packet_cache = DisplayListBuildFogPacket(global);
             }
-            NuDisplayListLinkItem(list, 0xa6, global->fog_packet_cache);
+            NuDisplayListLinkItem(list, NUDLIST_FOG, global->fog_packet_cache);
             ((NUPRIM_RENDER_STATE_IDS *)list->render_state)->fog_id = global->fog_id;
         }
 
@@ -6079,7 +6079,7 @@ extern "C" {
             if (global->konst_packet_cache == NULL) {
                 global->konst_packet_cache = DisplayListBuildKonstPacket(global);
             }
-            NuDisplayListLinkItem(list, 0xa5, global->konst_packet_cache);
+            NuDisplayListLinkItem(list, NUDLIST_KONST, global->konst_packet_cache);
             ((NUPRIM_RENDER_STATE_IDS *)list->render_state)->konst_id = global->counter_001e;
         }
 
@@ -6087,14 +6087,14 @@ extern "C" {
             if (global->reflection_packet_cache == NULL) {
                 global->reflection_packet_cache = DisplayListBuildReflectionPacket(global);
             }
-            NuDisplayListLinkItem(list, 0xab, global->reflection_packet_cache);
+            NuDisplayListLinkItem(list, NUDLIST_REFLECTION, global->reflection_packet_cache);
             ((NUPRIM_RENDER_STATE_IDS *)list->render_state)->reflection_id = global->reflection_id;
         }
 
         if ((u16)((NUPRIM_RENDER_STATE_IDS *)list->render_state)->vertex_groups_id != global->vertex_groups_id) {
             packet = DisplayListBuildVertexGroupPacket(global);
             if (packet != NULL) {
-                NuDisplayListLinkItem(list, 0xa9, packet);
+                NuDisplayListLinkItem(list, NUDLIST_VERTEX_GROUPS, packet);
             }
             ((NUPRIM_RENDER_STATE_IDS *)list->render_state)->vertex_groups_id = global->vertex_groups_id;
         }
@@ -6114,7 +6114,7 @@ extern "C" {
         if (previous->vertex_groups_id != state->vertex_groups_id) {
             void *packet = DisplayListBuildVertexGroupPacket(state);
             if (packet != NULL) {
-                NuDisplayListLinkItem(list, 0xa9, packet);
+                NuDisplayListLinkItem(list, NUDLIST_VERTEX_GROUPS, packet);
             }
             previous = (NUGLOBALRNDRSTATE_PC *)list->render_state;
             previous->vertex_groups_id = state->vertex_groups_id;
@@ -6232,7 +6232,7 @@ extern "C" {
         ((NUDISPLAYLISTITEM *)list->material_last)->next = buffer->void_ptr;
         list->items = buffer->void_ptr;
         buffer->addr += sizeof(NUDISPLAYLISTITEM);
-        ((NUDISPLAYLISTITEM *)buffer->void_ptr)->type = 0x8d;
+        ((NUDISPLAYLISTITEM *)buffer->void_ptr)->type = NUDLIST_NEXT;
         ((NUDISPLAYLISTITEM *)buffer->void_ptr)->id = 1;
         ((NUDISPLAYLISTITEM *)buffer->void_ptr)->next = (NUDISPLAYLISTITEM *)list->dynamic_geometry + 1;
         list->material_last = buffer->void_ptr;

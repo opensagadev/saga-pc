@@ -19,6 +19,13 @@ struct eduimenu_s;
 #define DEBRIS_GENERATOR_IMPROVED_RADIAL 11 /* GenDebIndexImprovedRadial */
 #define DEBRIS_GENERATOR_STAR_RADIAL 12     /* GenDebIndexRadialStar */
 
+/* debris_info_s.particle_type: the blend of the particle texture; the particle editor's texture type menu
+ * (cbPtlSelTextureType) names them. */
+#define DEBRIS_PARTICLE_ADDITIVE 0
+#define DEBRIS_PARTICLE_MODULATIVE 2
+#define DEBRIS_PARTICLE_SUBTRACTIVE 3
+#define DEBRIS_PARTICLE_GLASS 7
+
 #ifdef __cplusplus
 extern "C" {
 #endif

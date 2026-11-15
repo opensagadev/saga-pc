@@ -183,7 +183,7 @@ template <class T> void EdValueControl<T>::cbButton(eduimenu_s *menu, eduiitem_s
     T value = (T)NuAToF(property->property_text);
     f32 dx = 0.0f;
     f32 change = 0.0f;
-    if (pad != NULL && (pad->digital_buttons & 0x40)) {
+    if (pad != NULL && (pad->digital_buttons & PAD_BUTTON_CROSS)) {
         if (pad->analog_left_y > 128.0) {
             change = sensitivity * 10.0 * (pad->analog_left_y - 128.0);
         }

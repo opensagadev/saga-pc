@@ -1397,7 +1397,7 @@ extern "C" i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 d
     pick->hue = (f32)(pick->cursor_x * 360.0);
     pick->value = pick->cursor_y;
     eduiHSVToRGB(pick->hue, pick->saturation, pick->value, pick->red, pick->green, pick->blue);
-    if (((pad->digital_buttons_pressed & 0x40) || pick->confirm) && pick->changed) {
+    if (((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) || pick->confirm) && pick->changed) {
         pick->changed(menu, item, pad->digital_buttons);
     }
     return 0;
@@ -1626,21 +1626,21 @@ extern "C" i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_
         show_y_scale_help = 60;
         return 1;
     }
-    if ((pad->digital_buttons_pressed & 0x80) && picker->selected_point >= 0) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) && picker->selected_point >= 0) {
         nugraphDeletePoint(picker->graph, picker->selected_point);
         nugraphCalcCurve(picker->graph, 100);
         return 1;
     }
-    if (pad->digital_buttons_pressed & 0x20) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) {
         nugraphAddPoint(picker->graph, picker->cursor_x, picker->cursor_y);
         nugraphCalcCurve(picker->graph, 100);
         return 1;
     }
-    if ((pad->digital_buttons_pressed & 0x40) && picker->selected_point >= 0) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && picker->selected_point >= 0) {
         picker->cursor_x = picker->graph->x[picker->selected_point];
         picker->cursor_y = picker->graph->y[picker->selected_point];
     }
-    if ((pad->digital_buttons & 0x40) && picker->selected_point >= 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_CROSS) && picker->selected_point >= 0) {
         picker->graph->x[picker->selected_point] = picker->cursor_x;
         picker->graph->y[picker->selected_point] = picker->cursor_y;
         index = picker->selected_point;
@@ -1657,7 +1657,7 @@ extern "C" i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_
         nugraphCalcCurve(picker->graph, 100);
         return 1;
     }
-    if ((pad->digital_buttons_pressed & 0x10) && picker->changed) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) && picker->changed) {
         picker->changed(menu, item, pad->digital_buttons_pressed);
     }
     return 0;
@@ -1924,7 +1924,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
         } else {
             EduiSliderRepeatTimerPc = timer;
         }
-        if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & 4)) {
+        if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_L1)) {
             f64 step = (f64)slider->granularity * EduiSliderAccelerationPc;
             slider->value = MAX(slider->minimum, slider->value - step);
             if (slider->value > 0.0f) {
@@ -1948,7 +1948,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
         } else {
             EduiSliderRepeatTimerPc = timer;
         }
-        if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & 8)) {
+        if (!EduiSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
             f32 maximum = slider->minimum + slider->range;
             f64 step = (f64)slider->granularity * EduiSliderAccelerationPc;
             slider->value = MIN(maximum, slider->value + step);
@@ -2171,31 +2171,31 @@ static void EduiColourSliderRound(edui_slider_s *slider, eduimenu_s *menu, eduii
 
 extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32 unused_delta_time, FRAME_PAD_PC *pad) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    if ((pad->digital_buttons & 4) && (pad->digital_buttons & 8)) {
+    if ((pad->digital_buttons & PAD_BUTTON_L1) && (pad->digital_buttons & PAD_BUTTON_R1)) {
         if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 0.0) {
             EduiColourSliderSet(slider, menu, item, 0.0f, pad);
         }
         EduiColourSliderRepeatTimerPc = 30;
-    } else if ((pad->digital_buttons & 1) && (pad->digital_buttons & 2)) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_L2) && (pad->digital_buttons & PAD_BUTTON_R2)) {
         if (slider && slider->minimum <= 0.0f && slider->minimum + slider->range >= 255.0) {
             EduiColourSliderSet(slider, menu, item, 255.0f, pad);
         }
         EduiColourSliderRepeatTimerPc = 30;
-    } else if (pad->digital_buttons & 4) {
+    } else if (pad->digital_buttons & PAD_BUTTON_L1) {
         EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
         if (EduiColourSliderRepeatTimerPc < 0) {
             EduiColourSliderRepeatTimerPc = 0;
         }
-        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & 4)) {
+        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_L1)) {
             f32 value = MAX(slider->minimum, slider->value - slider->granularity);
             EduiColourSliderRound(slider, menu, item, pad, value);
         }
-    } else if (pad->digital_buttons & 8) {
+    } else if (pad->digital_buttons & PAD_BUTTON_R1) {
         EduiColourSliderRepeatTimerPc = (i32)((u32)EduiColourSliderRepeatTimerPc - 1u);
         if (EduiColourSliderRepeatTimerPc < 0) {
             EduiColourSliderRepeatTimerPc = 0;
         }
-        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & 8)) {
+        if (!EduiColourSliderRepeatTimerPc || (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
             f32 value = MIN(slider->minimum + slider->range, slider->value + slider->granularity);
             EduiColourSliderRound(slider, menu, item, pad, value);
         }
@@ -2283,7 +2283,7 @@ extern "C" i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 del
     }
     pick->saturation = 0.0f;
     pick->hue = 0.0f;
-    if ((pad->digital_buttons_pressed & 0x40) && pick->changed) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && pick->changed) {
         pick->changed(menu, item, pad->digital_buttons);
     }
     return 0;

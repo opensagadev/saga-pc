@@ -25,6 +25,25 @@
 struct edcam_s;
 struct numtl_s;
 
+/* FRAME_PAD_PC.digital_buttons and friends: PS2 pad bits. The level editor's pad help (LevelEditor::LevelEditor,
+ * SetPadText) labels each; it calls 0x400 "R1", which is R3. */
+#define PAD_BUTTON_L2 0x1
+#define PAD_BUTTON_R2 0x2
+#define PAD_BUTTON_L1 0x4
+#define PAD_BUTTON_R1 0x8
+#define PAD_BUTTON_TRIANGLE 0x10
+#define PAD_BUTTON_CIRCLE 0x20
+#define PAD_BUTTON_CROSS 0x40
+#define PAD_BUTTON_SQUARE 0x80
+#define PAD_BUTTON_SELECT 0x100
+#define PAD_BUTTON_L3 0x200
+#define PAD_BUTTON_R3 0x400
+#define PAD_BUTTON_START 0x800
+#define PAD_BUTTON_UP 0x1000
+#define PAD_BUTTON_RIGHT 0x2000
+#define PAD_BUTTON_DOWN 0x4000
+#define PAD_BUTTON_LEFT 0x8000
+
 typedef struct FRAME_PAD_PC {     // size 0xa4
     i32 device;                   // 0x00
     i32 slot;                     // 0x04

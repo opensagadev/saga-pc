@@ -3867,7 +3867,7 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
             return 0;
         }
         ed_just_entered = 0;
-        if (pad->digital_buttons_pressed & 0x800) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_START) {
             return 1;
         }
 
@@ -3909,7 +3909,7 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
             } else {
                 curr_rtl = FindNearestRTL(&burn_editor_position, 0);
             }
-            if (base_rtl && (pad->digital_buttons_pressed & 0x8000)) {
+            if (base_rtl && (pad->digital_buttons_pressed & PAD_BUTTON_LEFT)) {
                 edcamSetPos(&base_rtl->position);
                 base_rtl = NULL;
                 rtl_locked = NULL;
@@ -3978,14 +3978,14 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD_PC *pad) {
                     } else {
                         rtl_locked = curr_rtl;
                     }
-                } else if (pad->digital_buttons_pressed & 0x8000) {
+                } else if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
                     if (!base_rtl) {
                         base_rtl = curr_rtl;
                     }
                     rtl_locked = NULL;
                 }
             }
-            if (pad->digital_buttons_pressed & 0x4000) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_DOWN) {
                 curr_fog = NULL;
                 edrtl_mode = 2;
             }
@@ -4139,7 +4139,7 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
             return 0;
         }
         ed_just_entered = 0;
-        if (pad->digital_buttons_pressed & 0x800) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_START) {
             return 1;
         }
 
@@ -4181,10 +4181,10 @@ static i32 edrtlProcFog(f32 delta_time, FRAME_PAD_PC *pad) {
                     fogFree(curr_fog);
                 }
             }
-            if (pad->digital_buttons_pressed & 0x4000) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_DOWN) {
                 edrtl_mode = 1;
             }
-            if (pad->digital_buttons_pressed & 0x1000) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_UP) {
                 fogmode = 1 - fogmode;
             }
         }
@@ -4201,19 +4201,19 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
     if (edrtl_active_menu != NULL) {
         eduiMenuProcess(edrtl_active_menu, delta_time, pad);
     } else {
-        if (!(pad->digital_buttons & 0x100)) {
+        if (!(pad->digital_buttons & PAD_BUTTON_SELECT)) {
             edcamMoveEx(pad, delta_time);
         }
         edcamGetPosAng(&burn_editor_position, &peax, &peay);
 
-        if (pad->digital_buttons_pressed & 0x80) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
             edrtlBurnMainMenu();
             edrtl_active_menu = edrtl_burn_main_menu;
         }
 
-        if (pad->digital_buttons & 0x100) {
+        if (pad->digital_buttons & PAD_BUTTON_SELECT) {
             if (edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
-                if (pad->digital_buttons_pressed & 8) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                     do {
                         edrtl_edit_burnset->selected_index++;
                         if (edrtl_edit_burnset->selected_index == 32) {
@@ -4221,7 +4221,7 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
                         }
                     } while (!edrtl_edit_burnset->burnouts[edrtl_edit_burnset->selected_index].active);
                 }
-                if (pad->digital_buttons_pressed & 2) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                     do {
                         edrtl_edit_burnset->selected_index--;
                         if (edrtl_edit_burnset->selected_index == -1) {
@@ -4240,21 +4240,22 @@ static i32 edrtlProcBurn(f32 delta_time, FRAME_PAD_PC *pad) {
         }
 
         edcamGetPosAng(&burn_editor_position, &peax, &peay);
-        if (pad->digital_buttons_pressed & 0x4000) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_DOWN) {
             edrtl_mode = 0;
         }
-        if (pad->digital_buttons_pressed & 0x40) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             edrtlAddBurnout(&burn_editor_position);
         }
-        if ((pad->digital_buttons & 0x20) && edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
+        if ((pad->digital_buttons & PAD_BUTTON_CIRCLE) && edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
             edrtlPlaceBurnout(edrtl_edit_burnset->selected_index, &burn_editor_position);
         }
-        if ((pad->digital_buttons_pressed & 0x10) && edrtl_edit_burnset != NULL && edrtl_edit_burnset->selected_index != -1) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) && edrtl_edit_burnset != NULL &&
+            edrtl_edit_burnset->selected_index != -1) {
             edrtlRemoveBurnout(edrtl_edit_burnset->selected_index);
         }
     }
     edrtlDetermineNearestBurn(-1.0f, edrtl_edit_burnset);
-    return (pad->digital_buttons_pressed & 0x800) ? 1 : 0;
+    return (pad->digital_buttons_pressed & PAD_BUTTON_START) ? 1 : 0;
 }
 
 static i32 edrtlProc(f32 delta_time, FRAME_PAD_PC *pad) {

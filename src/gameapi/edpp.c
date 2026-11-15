@@ -1253,7 +1253,7 @@ void edppDrawCursor(void) {
                 NuQFntSet(system_qfont);
                 NuQFntPrintEx(system_qfont, 0x1720, 0xc30, 0x10, "Highlight: %s", effect->name);
                 NuQFntPrintEx(system_qfont, 0x1720, 0xcd0, 0x10, "Particles:");
-                group = (effect->particle_type != 7) ? 32 : 12;
+                group = (effect->particle_type != DEBRIS_PARTICLE_GLASS) ? 32 : 12;
                 if (effect->max_particles > group * 32) {
                     NuQFntSetColour(system_qfont, 0x80000080);
                 }
@@ -1388,13 +1388,13 @@ i32 edppPtlCreate(NUVEC *position, i32 effect_index) {
         edpp_ptls[index].switch_id = -1;
         edpp_ptls[index].detail_levels = 7;
         particle_type = debtab[effect_index]->particle_type;
-        if (particle_type == 2) {
+        if (particle_type == DEBRIS_PARTICLE_MODULATIVE) {
             edpp_ptls[index].render_priority = 40000;
-        } else if (particle_type == 3) {
+        } else if (particle_type == DEBRIS_PARTICLE_SUBTRACTIVE) {
             edpp_ptls[index].render_priority = 30000;
-        } else if (particle_type == 0) {
+        } else if (particle_type == DEBRIS_PARTICLE_ADDITIVE) {
             edpp_ptls[index].render_priority = 20000;
-        } else if (particle_type == 7) {
+        } else if (particle_type == DEBRIS_PARTICLE_GLASS) {
             edpp_ptls[index].render_priority = 10000;
         }
         edpp_ptls[index].dynamic_priority = 0;
@@ -1539,11 +1539,11 @@ void edppMultipleCopyPaste(void) {
 }
 
 void edppDoInput(FRAME_PAD_PC *pad) {
-    if ((pad->digital_buttons & 0x100) == 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
         edcamMove(pad);
     }
-    if (pad->digital_buttons & 0x100) {
-        if (pad->digital_buttons_pressed & 0x20) {
+    if (pad->digital_buttons & PAD_BUTTON_SELECT) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) {
             if (edpp_copy_mode) {
                 edpp_copy_mode = 0;
             } else {
@@ -1552,7 +1552,7 @@ void edppDoInput(FRAME_PAD_PC *pad) {
             }
         }
         if (edpp_nearest != -1) {
-            if (pad->digital_buttons_pressed & 8) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                 do {
                     ++edpp_nearest;
                     if (edpp_nearest == 512) {
@@ -1560,7 +1560,7 @@ void edppDoInput(FRAME_PAD_PC *pad) {
                     }
                 } while (edpp_ptls[edpp_nearest].instance_id == -1 || edpp_ptls[edpp_nearest].instance_id == 99999);
             }
-            if (pad->digital_buttons_pressed & 2) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                 do {
                     --edpp_nearest;
                     if (edpp_nearest == -1) {
@@ -1590,30 +1590,30 @@ void edppDoInput(FRAME_PAD_PC *pad) {
         edcamGetPosAng(&edpp_cam_pos, &edpp_cam_ax, &edpp_cam_ay);
     }
 
-    if ((pad->digital_buttons & 0x100) == 0) {
-        if (pad->digital_buttons_pressed & 0x80) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
             edpp_active_menu = ptloptmenu;
         }
-        if (pad->digital_buttons_pressed & 0x40) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             if (edpp_copy_mode != 0) {
                 edppMultipleCopyPaste();
             } else if (edpp_create_type != -1) {
                 edppPtlCreate(&edpp_cam_pos, edpp_create_type);
             }
         }
-        if (pad->digital_buttons & 0x20) {
+        if (pad->digital_buttons & PAD_BUTTON_CIRCLE) {
             if (edpp_copy_mode != 0) {
                 edppMultipleCopyCopy();
             } else if (edpp_nearest != -1) {
                 edppPtlPlace(edpp_nearest, &edpp_cam_pos);
             }
         }
-        if (pad->digital_buttons & 0x400) {
+        if (pad->digital_buttons & PAD_BUTTON_R3) {
             if (edpp_copy_mode == 0 && edpp_nearest != -1) {
                 edppPtlPlace(edpp_nearest, &edpp_cam_pos);
             }
         }
-        if (pad->digital_buttons_pressed & 0x10) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
             if (edpp_copy_mode != 0) {
                 edpp_copy_source_count = 0;
                 edpp_copyroty = 0;
@@ -1638,7 +1638,7 @@ void edppDoInput(FRAME_PAD_PC *pad) {
         edpp_copyroty -= pad->analog_left_pad_left;
     } else {
         if (edpp_dpad_mode == 1) {
-            if (pad->digital_buttons & 0x200) {
+            if (pad->digital_buttons & PAD_BUTTON_L3) {
                 edpp_roty = edpp_rotz = 0;
             }
             edpp_roty += pad->analog_left_pad_right;
@@ -1652,12 +1652,12 @@ void edppDoInput(FRAME_PAD_PC *pad) {
                 edpp_rotz = -0x8000;
             }
         } else if (edpp_dpad_mode == 0) {
-            if (pad->digital_buttons & 0x200) {
+            if (pad->digital_buttons & PAD_BUTTON_L3) {
                 edpp_emitrotz = 0;
                 edpp_emitroty = 0;
                 edpp_emitrotx = 0;
             }
-            if (pad->digital_buttons & 0x400) {
+            if (pad->digital_buttons & PAD_BUTTON_R3) {
                 edpp_emitrotx += pad->analog_left_pad_right;
                 edpp_emitrotx -= pad->analog_left_pad_left;
             } else {
@@ -1684,10 +1684,10 @@ void edppDoInput(FRAME_PAD_PC *pad) {
                 edpp_refrotz = -0x8000;
             }
         } else if (edpp_dpad_mode == 2) {
-            if (pad->analog_left_pad_up == 255 || (pad->digital_buttons_pressed & 0x1000)) {
+            if (pad->analog_left_pad_up == 255 || (pad->digital_buttons_pressed & PAD_BUTTON_UP)) {
                 edpp_offset += 0.01f;
             }
-            if (pad->analog_left_pad_down == 255 || (pad->digital_buttons_pressed & 0x4000)) {
+            if (pad->analog_left_pad_down == 255 || (pad->digital_buttons_pressed & PAD_BUTTON_DOWN)) {
                 edpp_offset -= 0.01f;
             }
             if (edpp_offset < 0.0f) {
@@ -3348,7 +3348,7 @@ void edptlcbGroupMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
     if (edpp_nearest != -1 && edpp_ptls[edpp_nearest].instance_id != -1) {
         effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             eduiMenuAddItem(edptl_group_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Draw Flag..."));
         } else {
             eduiMenuAddItem(edptl_group_menu, eduiItemSelCreate(1, edblack, 0, 0, edptlcbDrawflagMenu, "Draw Flag..."));
@@ -3401,7 +3401,7 @@ void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (ptlgsortmenu) {
         eduiMenuAddItem(ptlgsortmenu, eduiItemCheckCreate(DEBRIS_GENERATOR_NORMAL, colours,
                                                           effect->generator_type == DEBRIS_GENERATOR_NORMAL, 1, cbPtlSelGSort, "Normal"));
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_RADIAL, edgrey, 0, 0, NULL, "Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_RADIAL_ROTOR, edgrey, 0, 0, NULL, "Radial Rotor"));
         } else {
@@ -3415,7 +3415,7 @@ void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(ptlgsortmenu,
                         eduiItemCheckCreate(DEBRIS_GENERATOR_SPHEROID, colours, effect->generator_type == DEBRIS_GENERATOR_SPHEROID, 1,
                                             cbPtlSelGSort, "Spheroid"));
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_BOUNCE_Y, edgrey, 0, 0, NULL, "BounceY"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_BOUNCE_XZ, edgrey, 0, 0, NULL, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(DEBRIS_GENERATOR_IMPROVED_RADIAL, edgrey, 0, 0, NULL, "Improved Radial"));
@@ -3990,7 +3990,7 @@ void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             break;
         }
     }
-    if (effect->particle_type == 7) {
+    if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
         eduiMenuAddItem(ptlcolmenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyGrad, "Distortion Grad"));
     } else {
         eduiMenuAddItem(ptlcolmenu, eduiItemGreyGradPickCreate(0, colours, cbPtlApplyGrad, "Alpha Grad"));
@@ -4003,7 +4003,7 @@ void cbPtlColMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
             break;
         }
     }
-    if (effect->particle_type == 7) {
+    if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
         eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortX, 0.0f, 1.0f, effect->particle_parameter_a,
                                                          "X-axis Distortion"));
         eduiMenuAddItem(ptlcolmenu, eduiItemSliderCreate(0, colours, 0, edptlcbChangeDistortY, 0.0f, 1.0f, effect->particle_parameter_b,

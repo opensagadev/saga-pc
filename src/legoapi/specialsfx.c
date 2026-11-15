@@ -433,7 +433,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO_PC *destination, i32 version, i8 categ
     } else {
         effect->time_group = 0;
     }
-    if (effect->particle_type == 7) {
+    if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
         effect->time_group = 2;
     }
     if (version >= 31) {
@@ -587,7 +587,7 @@ static void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (ptlgsortmenu) {
         eduiMenuAddItem(ptlgsortmenu,
                         eduiItemCheckCreate(0, colours, effect->generator_type == DEBRIS_GENERATOR_NORMAL, 1, cbPtlSelGSort, "Normal"));
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(6, edgrey, 0, 0, NULL, "Radial"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Radial Rotor"));
         } else {
@@ -598,7 +598,7 @@ static void cbPtlGSortMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         }
         eduiMenuAddItem(ptlgsortmenu,
                         eduiItemCheckCreate(8, colours, effect->generator_type == DEBRIS_GENERATOR_SPHEROID, 1, cbPtlSelGSort, "Spheroid"));
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(9, edgrey, 0, 0, NULL, "BounceY"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(10, edgrey, 0, 0, NULL, "BounceXZ"));
             eduiMenuAddItem(ptlgsortmenu, eduiItemSelCreate(11, edgrey, 0, 0, NULL, "Improved Radial"));

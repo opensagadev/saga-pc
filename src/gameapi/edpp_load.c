@@ -170,13 +170,14 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
                 edpp_ptls[edpp_nearest].render_priority = 10000;
             }
         }
-        if (item->data != 7 && effect->particle_type == 7) {
+        if (item->data != 7 && effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             effect->time_group = 0;
         }
         if (item->data == 7) {
             effect->time_group = 2;
         }
-        if (item->data == 7 || debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == 7) {
+        if (item->data == 7 ||
+            debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == DEBRIS_PARTICLE_GLASS) {
             i32 index;
             for (index = 0; index < 512; ++index) {
                 if (edpp_ptls[index].effect_index == type && edpp_ptls[index].instance_id != -1 && edpp_ptls[index].instance_id != 99999) {
@@ -298,16 +299,19 @@ void cbPtlTextureMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         DEBRIS_INFO_PC *effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
         texturemenu = eduiMenuCreate(70, 70, 180, 300, ed_fnt, cbPtlCancelTextureMenu, "Texture");
         if (texturemenu) {
-            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(0, colours, effect->particle_type == 0, 1, cbPtlSelTextureType, "Addative"));
-            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(2, colours, effect->particle_type == 2, 1, cbPtlSelTextureType, "Modulative"));
-            eduiMenuAddItem(texturemenu,
-                            eduiItemCheckCreate(3, colours, effect->particle_type == 3, 1, cbPtlSelTextureType, "Subtractive"));
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(0, colours, effect->particle_type == DEBRIS_PARTICLE_ADDITIVE, 1,
+                                                             cbPtlSelTextureType, "Addative"));
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(2, colours, effect->particle_type == DEBRIS_PARTICLE_MODULATIVE, 1,
+                                                             cbPtlSelTextureType, "Modulative"));
+            eduiMenuAddItem(texturemenu, eduiItemCheckCreate(3, colours, effect->particle_type == DEBRIS_PARTICLE_SUBTRACTIVE, 1,
+                                                             cbPtlSelTextureType, "Subtractive"));
             if (!(effect->generator_type == DEBRIS_GENERATOR_NORMAL || effect->generator_type == DEBRIS_GENERATOR_SPHEROID)) {
                 eduiMenuAddItem(texturemenu, eduiItemSelCreate(7, edgrey, 0, 0, NULL, "Glass"));
             } else {
-                eduiMenuAddItem(texturemenu, eduiItemCheckCreate(7, colours, effect->particle_type == 7, 1, cbPtlSelTextureType, "Glass"));
+                eduiMenuAddItem(texturemenu, eduiItemCheckCreate(7, colours, effect->particle_type == DEBRIS_PARTICLE_GLASS, 1,
+                                                                 cbPtlSelTextureType, "Glass"));
             }
-            if (effect->particle_type == 7) {
+            if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
                 eduiMenuAddItem(texturemenu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Texture Selector..."));
             } else {
                 eduiMenuAddItem(texturemenu, eduiItemSelCreate(1, colours, 0, 0, cbPtlTextureSelectMenu, "Texture Selector..."));
@@ -515,13 +519,13 @@ i32 edppLoadPage(char *path, i8 flag, NUGSCN *scene) {
                 edpp_ptls[index].render_priority = 20000;
                 if (edpp_ptls[index].effect_index != -1) {
                     u8 particle_type = debtab[edpp_ptls[index].effect_index]->particle_type;
-                    if (particle_type == 2) {
+                    if (particle_type == DEBRIS_PARTICLE_MODULATIVE) {
                         edpp_ptls[index].render_priority = 40000;
-                    } else if (particle_type == 3) {
+                    } else if (particle_type == DEBRIS_PARTICLE_SUBTRACTIVE) {
                         edpp_ptls[index].render_priority = 30000;
-                    } else if (particle_type == 0) {
+                    } else if (particle_type == DEBRIS_PARTICLE_ADDITIVE) {
                         edpp_ptls[index].render_priority = 20000;
-                    } else if (particle_type == 7) {
+                    } else if (particle_type == DEBRIS_PARTICLE_GLASS) {
                         edpp_ptls[index].render_priority = 10000;
                     }
                 }

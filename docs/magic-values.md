@@ -23,6 +23,9 @@ where to look.
 | `custom_piece_config_s.availability_flags`, `specialmove_s.flags` | `CUSTOM_PIECE_*`, `SPECIALMOVE_*` | customiser and special move config keywords |
 | `gameobject_s.unknown_7aa`, the `ANIMPACKET_PC` animations, `AnimPlaying` and friends | `ACTION_*` (character.h) | `PlayerActionInfoList[1 + action]` names (`ActionFromName`) |
 | `RTL_LIGHT.type` | `RTL_LIGHT_*` (rtl.h) | light editor Light Type menu |
+| `nudisplaylistitem_s.type`, `NuDisplayListLinkItem` type | `NUDLIST_*` (nudlist.h) | `DisplayListPrintItem` text per type; the render state packets after the packet cache they link (0xa7, 0xae, 0xaf, 0x98, 0x99 still literal) |
+| `FRAME_PAD_PC.digital_buttons*`, `FRAME_SCANNED_PAD_PC`, `GAMEPAD_PC.buttons_*`, the `GAMEPAD_*` button globals | `PAD_BUTTON_*` (edui.h) | level editor pad help (`SetPadText` labels, PS2 bit order) |
+| `debris_info_s.particle_type` | `DEBRIS_PARTICLE_*` (edgra.h) | particle editor texture type menu (`cbPtlSelTextureType`) |
 
 ## Still literal (meaning not known yet)
 
@@ -33,9 +36,7 @@ where to look.
 | `gameobject_s.action_movement_state` | 72 | 2..9 | movement mode of AI packets; the sibling build calls it `AIPACKET_MOVEMENT_MODE`, not verified on PC |
 | `AIPACKET.path_connection_state` | 53 | 0..5 | path-following state; no strings |
 | `gameobject_s.unknown_7b3` | 57 | 0..7 | a per-context sub-state (batarang, techno); meaning differs per context |
-| `nudisplaylistitem_s.type` | 67 | 0x80..0x8d | display list command opcodes; no dump or name table on PC |
 | `music_playback_s.state` | 59 | 4..13 | two values named (`MUSIC_PLAYBACK_*`); the rest have no strings |
-| `debris_info_s.particle_type` | 48 | 0, 2, 3, 7 | the editor's Particle Type menu lists effect names, not the type |
 | `gameobject_s.flags_1fc_word`, `flags_e20`, `flags_ef0`, `flags_ef4`, `flags_1f8`, `portal_flags`, `context_variant_flags` | 100-540 each | bit sets | runtime state bits set in code, no keywords; the sibling build's names are guesses |
 | cheat indices (`Cheat_IsOn`) | 57 | 0..0x2c | come from the game's cheat config file, which is not among the retail files here |
 | AI script `action_data_1` | ~20 | bit sets | keyword-driven, but each action gives the bits its own meaning: needs a set per action |

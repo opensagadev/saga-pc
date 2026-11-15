@@ -176,9 +176,9 @@ extern "C" {
 extern "C" {
     i32 MENUSFX_MENUMOVE = -1;
     i32 MenuKeyboardPendingPc = 0;
-    u32 GAMEPAD_MENUSELECT = 0x40;
-    u32 GAMEPAD_MENUCANCEL = 0x10;
-    u32 GAMEPAD_SELECT = 0x100;
+    u32 GAMEPAD_MENUSELECT = PAD_BUTTON_CROSS;
+    u32 GAMEPAD_MENUCANCEL = PAD_BUTTON_TRIANGLE;
+    u32 GAMEPAD_SELECT = PAD_BUTTON_SELECT;
     COLLECTION_BUILD_PC MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
 }
 
@@ -5108,16 +5108,16 @@ extern "C" {
 extern "C" {
     TIMER GamePlayTimer = {0};
 #pragma data_seg(".data$GAMEPAD_JUMP")
-    u32 GAMEPAD_JUMP = 64;
+    u32 GAMEPAD_JUMP = PAD_BUTTON_CROSS;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_ACTION")
-    u32 GAMEPAD_ACTION = 128;
+    u32 GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_SPECIAL")
-    u32 GAMEPAD_SPECIAL = 32;
+    u32 GAMEPAD_SPECIAL = PAD_BUTTON_CIRCLE;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_TAG")
-    u32 GAMEPAD_TAG = 16;
+    u32 GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
 #pragma data_seg()
 #pragma data_seg(".data$id_DRAGBOMB")
     u16 id_DRAGBOMB = 0xffff;
@@ -5383,19 +5383,19 @@ extern "C" {
     i32 podrace_section = 0;
     i32 newgamecam = 0;
 #pragma data_seg(".data$GAMEPAD_DUP")
-    i32 GAMEPAD_DUP = 4096;
+    i32 GAMEPAD_DUP = PAD_BUTTON_UP;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_DDOWN")
-    i32 GAMEPAD_DDOWN = 16384;
+    i32 GAMEPAD_DDOWN = PAD_BUTTON_DOWN;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_DLEFT")
-    i32 GAMEPAD_DLEFT = 32768;
+    i32 GAMEPAD_DLEFT = PAD_BUTTON_LEFT;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_DRIGHT")
-    i32 GAMEPAD_DRIGHT = 8192;
+    i32 GAMEPAD_DRIGHT = PAD_BUTTON_RIGHT;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_LIFT")
-    i32 GAMEPAD_LIFT = 8;
+    i32 GAMEPAD_LIFT = PAD_BUTTON_R1;
 #pragma data_seg()
 #pragma data_seg(".data$OFFSCREEN_CATCHUP_TIME")
     f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
@@ -7385,11 +7385,11 @@ extern "C" {
 #pragma data_seg()
 
 #pragma data_seg(".data$GAMEPAD_TOGGLELEFT")
-    u32 GAMEPAD_TOGGLELEFT = 5;
+    u32 GAMEPAD_TOGGLELEFT = PAD_BUTTON_L2 | PAD_BUTTON_L1;
 #pragma data_seg()
 
 #pragma data_seg(".data$GAMEPAD_TOGGLERIGHT")
-    u32 GAMEPAD_TOGGLERIGHT = 10;
+    u32 GAMEPAD_TOGGLERIGHT = PAD_BUTTON_R2 | PAD_BUTTON_R1;
 #pragma data_seg()
 
 #pragma data_seg(".data$TOGGLEREPEATTIME")
@@ -7535,7 +7535,7 @@ extern "C" {
     f32 draw_attention_distance = 2.0f;
 #pragma data_seg()
 #pragma data_seg(".data$GAMEPAD_START")
-    u32 GAMEPAD_START = 2048;
+    u32 GAMEPAD_START = PAD_BUTTON_START;
 #pragma data_seg()
 #pragma data_seg(".data$active_neutral_count")
     i32 active_neutral_count = 0;
@@ -7897,7 +7897,7 @@ extern "C" {
 extern "C" {
     i32 Tag_DoneAny = 0;
     i32 Tag_DoneFirst = 0;
-    u32 GAMEPAD_SKIP = 0x850;
+    u32 GAMEPAD_SKIP = PAD_BUTTON_TRIANGLE | PAD_BUTTON_CROSS | PAD_BUTTON_START;
 }
 
 extern "C" {

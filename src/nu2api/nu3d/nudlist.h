@@ -42,6 +42,41 @@ typedef struct nudisplayscene_pc_s { // size 0x78
     }; // 0x74
 } NUDISPLAYSCENE_PC;
 
+/* NUDISPLAYLISTITEM.type, named after the text DisplayListPrintItem prints for each. */
+#define NUDLIST_MTL 0x80
+#define NUDLIST_TXTRLOAD 0x81
+#define NUDLIST_GEOMCALL 0x82
+#define NUDLIST_MTXLOAD 0x83
+#define NUDLIST_TERMINATE 0x84
+#define NUDLIST_MTL_CLIP 0x85
+#define NUDLIST_CLUT 0x86
+#define NUDLIST_DUMMY 0x87
+#define NUDLIST_DLIST 0x88
+#define NUDLIST_DYNAMIC_GEOMETRY 0x8b
+#define NUDLIST_TRANSFORM_REF 0x8c
+#define NUDLIST_NEXT 0x8d
+#define NUDLIST_END_ITEM 0x8e
+#define NUDLIST_FACEON 0x8f
+#define NUDLIST_FACEON_TRANSFORM 0x90
+#define NUDLIST_GEOMCALL2D 0x93
+#define NUDLIST_LIGHTS 0x94
+#define NUDLIST_DEBUG_GEOMCALL 0x95
+#define NUDLIST_LINECALL2D 0x97
+#define NUDLIST_CAMERA 0x9a
+#define NUDLIST_FX_SCREEN_COPY 0x9b
+#define NUDLIST_FX_SUN_FLARE 0x9c
+#define NUDLIST_FX_SCREEN_FILTER 0x9d
+#define NUDLIST_FX_SPEED_BLUR 0x9e
+#define NUDLIST_LINEBUFFER 0x9f
+#define NUDLIST_GEOM_CLIPPED 0xa0
+#define NUDLIST_INST_SURF_GEOM 0xad
+#define NUDLIST_LIGHTMAP 0xb0
+/* Render state packets DisplayListUpdateRenderState links, named after the packet cache each carries. */
+#define NUDLIST_KONST 0xa5
+#define NUDLIST_FOG 0xa6
+#define NUDLIST_VERTEX_GROUPS 0xa9
+#define NUDLIST_REFLECTION 0xab
+
 typedef struct nudisplaylistitem_s { // size 0x10
     u8 type;                         // 0x0
     u8 id;                           // 0x1

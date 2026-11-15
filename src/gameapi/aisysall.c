@@ -13685,7 +13685,7 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD_PC *pad, f32 frame_delta_time, 
         }
     }
     aieditorsettings.elapsed_time = NuFmod(aieditorsettings.elapsed_time + frame_delta_time, 1.0f);
-    if ((pad->digital_buttons & 0x100) == 0 && (aieditor->flags & 4) == 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0 && (aieditor->flags & 4) == 0) {
         edcamMoveEx(pad, frame_delta_time);
     }
     previous_position = aieditor->cursor_position;
@@ -16898,16 +16898,16 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
     i32 forward;
     f32 step;
     NUVEC *platform_position;
-    if (pad->digital_buttons_pressed & 0x80) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
         return antinodeEditor_MainMenu();
     }
-    if (pad->digital_buttons & 0x40) {
+    if (pad->digital_buttons & PAD_BUTTON_CROSS) {
         if (aieditor->nearest_antinode != NULL) {
-            if (pad->digital_buttons_pressed & 0x40) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
                 aieditor->selected_antinode = aieditor->nearest_antinode;
                 edcamSetPos(&aieditor->selected_antinode->position);
             } else if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
-                if ((pad->digital_buttons_pressed & 0x100) && NuSpecialExistsFn(&aieditor->selected_antinode->special)) {
+                if ((pad->digital_buttons_pressed & PAD_BUTTON_SELECT) && NuSpecialExistsFn(&aieditor->selected_antinode->special)) {
                     platform_position = NuSpecialGetDrawPos(&aieditor->cursor_platform);
                     if (platform_position != NULL) {
                         aieditor->selected_antinode->position.x = platform_position->x;
@@ -16919,16 +16919,16 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
                     aieditor->selected_antinode->position = aieditor->camera_position;
                     antinodeEditor_AntinodeMoved(aieditor->selected_antinode);
                     if (aieditor->selected_antinode->type != 0) {
-                        if (pad->digital_buttons & 0x8000) {
+                        if (pad->digital_buttons & PAD_BUTTON_LEFT) {
                             aieditor->selected_antinode->base_radius = aieditor->selected_antinode->base_radius * ((double)0.99f);
                             if (aieditor->selected_antinode->base_radius < ((double)0.05f)) {
                                 aieditor->selected_antinode->base_radius = 0.05f;
                             }
-                        } else if (pad->digital_buttons & 0x2000) {
+                        } else if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
                             aieditor->selected_antinode->base_radius = aieditor->selected_antinode->base_radius * ((double)1.01f);
-                        } else if (pad->digital_buttons & 0x1000) {
+                        } else if (pad->digital_buttons & PAD_BUTTON_UP) {
                             aieditor->selected_antinode->base_height = aieditor->selected_antinode->base_height * ((double)1.01f);
-                        } else if (pad->digital_buttons & 0x4000) {
+                        } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
                             aieditor->selected_antinode->base_height = aieditor->selected_antinode->base_height * ((double)0.99f);
                             if (aieditor->selected_antinode->base_height < ((double)0.05f)) {
                                 aieditor->selected_antinode->base_height = 0.05f;
@@ -16937,29 +16937,29 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
                     }
                 }
             }
-        } else if (pad->digital_buttons_pressed & 0x40) {
+        } else if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             aieditor->selected_antinode = CreateAntinode(&aieditor->camera_position);
             antinodeEditor_AntinodeMoved(aieditor->selected_antinode);
         }
-    } else if (pad->digital_buttons_pressed & 0x10) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
         if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
             return antinodeEditor_DeleteAntinodeMenu();
         }
-    } else if (pad->digital_buttons_pressed & 0x100) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
         aieditor->selected_antinode = antinodeEditor_GetNearestAntinode(0);
         if (aieditor->selected_antinode != NULL) {
             edcamSetPos(&aieditor->selected_antinode->position);
         }
-    } else if (pad->digital_buttons & 0x100) {
+    } else if (pad->digital_buttons & PAD_BUTTON_SELECT) {
         skip_platforms = 0;
-        if (pad->digital_buttons_pressed & 8) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
             forward = 1;
-        } else if (pad->digital_buttons_pressed & 2) {
+        } else if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
             forward = 0;
-        } else if (pad->digital_buttons_pressed & 4) {
+        } else if (pad->digital_buttons_pressed & PAD_BUTTON_L1) {
             forward = 1;
             skip_platforms = 1;
-        } else if (pad->digital_buttons_pressed & 1) {
+        } else if (pad->digital_buttons_pressed & PAD_BUTTON_L2) {
             forward = 0;
             skip_platforms = 1;
         } else {
@@ -17017,7 +17017,7 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
         if (aieditor->selected_antinode != NULL) {
             edcamSetPos(&aieditor->selected_antinode->position);
         }
-    } else if (pad->digital_buttons & 0x8000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_LEFT) {
         if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
             if (aieditor->selected_antinode->type == 0) {
                 aieditor->selected_antinode->radius = aieditor->selected_antinode->radius * ((double)0.99f);
@@ -17027,7 +17027,7 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
             } else {
                 aieditorsettings.locator_rotation = aieditor->selected_antinode->flags;
                 /* Crossed pressed bits are intentional. */
-                if (pad->digital_buttons_pressed & 0x2000) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) {
                     aieditor->rotation_repeat = 20;
                 } else {
                     aieditor->rotation_repeat += 20;
@@ -17042,13 +17042,13 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
                 antinodeEditor_AntinodeMoved(aieditor->selected_antinode);
             }
         }
-    } else if (pad->digital_buttons & 0x2000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
         if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
             if (aieditor->selected_antinode->type == 0) {
                 aieditor->selected_antinode->radius = aieditor->selected_antinode->radius * ((double)1.01f);
             } else {
                 aieditorsettings.locator_rotation = aieditor->selected_antinode->flags;
-                if (pad->digital_buttons_pressed & 0x8000) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
                     aieditor->rotation_repeat = 20;
                 } else {
                     aieditor->rotation_repeat += 20;
@@ -17063,28 +17063,28 @@ eduimenu_s *antinodeEditor_Process(FRAME_PAD_PC *pad) {
                 antinodeEditor_AntinodeMoved(aieditor->selected_antinode);
             }
         }
-    } else if (pad->digital_buttons & 0x1000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_UP) {
         if ((aieditorsettings.display_options & 0x100) && aieditor->selected_antinode != NULL &&
             aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) * ((double)0.05f);
-            if (pad->digital_buttons & 4) {
+            if (pad->digital_buttons & PAD_BUTTON_L1) {
                 aieditor->selected_antinode->upper_height = step + aieditor->selected_antinode->upper_height;
-            } else if (pad->digital_buttons & 1) {
+            } else if (pad->digital_buttons & PAD_BUTTON_L2) {
                 aieditor->selected_antinode->upper_height -= step;
             }
             if (aieditor->selected_antinode->upper_height < aieditor->selected_antinode->lower_height + ((double)0.01f)) {
                 aieditor->selected_antinode->upper_height = aieditor->selected_antinode->lower_height + ((double)0.01f);
             }
         }
-    } else if (pad->digital_buttons & 0x4000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
         if ((aieditorsettings.display_options & 0x100) && aieditor->selected_antinode != NULL &&
             aieditor->selected_antinode == aieditor->nearest_antinode) {
             aieditor->flags |= 4;
             step = (aieditor->selected_antinode->upper_height - aieditor->selected_antinode->lower_height) * ((double)0.05f);
-            if (pad->digital_buttons & 4) {
+            if (pad->digital_buttons & PAD_BUTTON_L1) {
                 aieditor->selected_antinode->lower_height += step;
-            } else if (pad->digital_buttons & 1) {
+            } else if (pad->digital_buttons & PAD_BUTTON_L2) {
                 aieditor->selected_antinode->lower_height -= step;
             }
             if (aieditor->selected_antinode->lower_height > aieditor->selected_antinode->upper_height - ((double)0.01f)) {
@@ -17153,12 +17153,12 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
     i32 quarter;
     i32 remainder;
     i32 i;
-    if (pad->digital_buttons_pressed & 0x80) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
         return creatureEditorOptionsMenu();
     }
-    if (pad->digital_buttons & 0x40) {
+    if (pad->digital_buttons & PAD_BUTTON_CROSS) {
         if (aieditor->nearest_creature != NULL) {
-            if (pad->digital_buttons_pressed & 0x40) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
                 aieditor->selected_creature = aieditor->nearest_creature;
                 aieditor->current_path = aieditor->selected_creature->check.path;
                 aieditorsettings.locator_rotation = aieditor->selected_creature->angle;
@@ -17173,7 +17173,7 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
                 }
                 edcamSetPos(&aieditor->selected_creature->position);
             }
-        } else if ((pad->digital_buttons_pressed & 0x40) && aieditor->cursor_check.on_path != 0) {
+        } else if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && aieditor->cursor_check.on_path != 0) {
             set = 0;
             if (aieditor->selected_creature != NULL) {
                 NuStrCpy(base, aieditor->selected_creature->name);
@@ -17216,7 +17216,7 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
                 goto updated;
             }
         }
-    } else if (pad->digital_buttons_pressed & 0x10) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
         if (aieditor->selected_creature != NULL && aieditor->selected_creature == aieditor->nearest_creature) {
             return creatureEditorDeleteMenu();
         }
@@ -17230,7 +17230,7 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
         } else {
             aieditor->selected_creature = NULL;
         }
-    } else if (pad->digital_buttons_pressed & 0x20) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) {
         if (aieditor->selected_creature != NULL && aieditor->nearest_locator != NULL) {
             if (aieditor->selected_creature->locator == aieditor->nearest_locator) {
                 aieditor->selected_creature->locator = NULL;
@@ -17238,7 +17238,8 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
                 aieditor->selected_creature->locator = aieditor->nearest_locator;
             }
         }
-    } else if ((pad->digital_buttons_pressed & 0x1000) || ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8))) {
+    } else if ((pad->digital_buttons_pressed & PAD_BUTTON_UP) ||
+               ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_R1))) {
         if (aieditor->selected_creature != NULL) {
             aieditor->selected_creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &aieditor->selected_creature->link);
             if (aieditor->selected_creature != NULL) {
@@ -17247,7 +17248,7 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
         }
         aieditor->selected_creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures);
         goto pick;
-    } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2)) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_R2)) {
         if (aieditor->selected_creature != NULL) {
             aieditor->selected_creature = (EDAICREATURE_s *)NuLinkedListGetPrev(&aieditor->creatures, &aieditor->selected_creature->link);
             if (aieditor->selected_creature != NULL) {
@@ -17256,7 +17257,7 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
         }
         aieditor->selected_creature = (EDAICREATURE_s *)NuLinkedListGetTail(&aieditor->creatures);
         goto pick;
-    } else if (pad->digital_buttons_pressed & 0x100) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
         aieditor->selected_creature = creatureEditor_GetNearest(0);
     pick:
         if (aieditor->selected_creature != NULL) {
@@ -17270,11 +17271,11 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
             aieditor_SetCurrentScript(aieditor->selected_creature->script_name, aieditor->selected_creature);
         }
     } else {
-        if (pad->digital_buttons & 0x2000) {
+        if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
             if (aieditor->selected_creature != NULL && aieditor->selected_creature == aieditor->nearest_creature) {
                 aieditorsettings.locator_rotation = aieditor->selected_creature->angle;
             }
-            if (pad->digital_buttons_pressed & 0x8000) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
                 aieditor->rotation_repeat = 20;
             } else {
                 aieditor->rotation_repeat += 20;
@@ -17283,11 +17284,11 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
             angle = NuAngAdd(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
-        } else if (pad->digital_buttons & 0x8000) {
+        } else if (pad->digital_buttons & PAD_BUTTON_LEFT) {
             if (aieditor->selected_creature != NULL && aieditor->selected_creature == aieditor->nearest_creature) {
                 aieditorsettings.locator_rotation = aieditor->selected_creature->angle;
             }
-            if (pad->digital_buttons_pressed & 0x2000) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) {
                 aieditor->rotation_repeat = 20;
             } else {
                 aieditor->rotation_repeat += 20;
@@ -17296,7 +17297,7 @@ eduimenu_s *creatureEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
             angle = NuAngSub(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
-        } else if (pad->digital_buttons & 0x4000) {
+        } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
             angle = NuAngSub(aieditorsettings.locator_rotation, aieditor->cursor_check.angle);
             quarter = angle / 0x4000;
             remainder = angle % 0x4000;
@@ -17357,13 +17358,13 @@ eduimenu_s *areaEditor_Process(FRAME_PAD_PC *pad) {
     i32 index = 0;
     i32 duplicate;
     f32 size;
-    if (pad->digital_buttons_pressed & 0x80) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
         return areaEditorOptionsMenu();
     }
     aieditor->hovered_area = areaEditorFindHover(1);
-    if (pad->digital_buttons & 0x40) {
+    if (pad->digital_buttons & PAD_BUTTON_CROSS) {
         if (aieditor->hovered_area != NULL) {
-            if (pad->digital_buttons_pressed & 0x40) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
                 aieditor->selected_area = aieditor->hovered_area;
                 aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
                 edcamSetPos(&aieditor->selected_area->position);
@@ -17377,25 +17378,25 @@ eduimenu_s *areaEditor_Process(FRAME_PAD_PC *pad) {
                 goto done;
             }
             if (aieditor->selected_area->flags & 1) {
-                if (pad->digital_buttons & 0x2000) {
+                if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
                     aieditor->selected_area->size.x *= (f64)1.01f;
-                } else if (pad->digital_buttons & 0x8000) {
+                } else if (pad->digital_buttons & PAD_BUTTON_LEFT) {
                     aieditor->selected_area->size.x *= (f64)0.99f;
                 }
                 aieditor->selected_area->size.z = aieditor->selected_area->size.x;
             } else {
-                if (pad->digital_buttons & 0x2000) {
+                if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
                     aieditor->selected_area->size.x *= (f64)1.01f;
-                } else if (pad->digital_buttons & 0x8000) {
+                } else if (pad->digital_buttons & PAD_BUTTON_LEFT) {
                     aieditor->selected_area->size.x *= (f64)0.99f;
                 }
-                if (pad->digital_buttons & 0x1000) {
+                if (pad->digital_buttons & PAD_BUTTON_UP) {
                     aieditor->selected_area->size.z *= (f64)1.01f;
-                } else if (pad->digital_buttons & 0x4000) {
+                } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
                     aieditor->selected_area->size.z *= (f64)0.99f;
                 }
             }
-        } else if (pad->digital_buttons_pressed & 0x40) {
+        } else if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
             previous = aieditor->selected_area;
             aieditor->selected_area = areaEditorCreateArea(&aieditor->camera_position, NULL, aieditorsettings.locator_rotation,
                                                            previous != NULL ? (i8)previous->flags : 0);
@@ -17422,20 +17423,20 @@ eduimenu_s *areaEditor_Process(FRAME_PAD_PC *pad) {
             } while (duplicate);
             strcpy(aieditor->selected_area->name, name);
         }
-    } else if (pad->digital_buttons_pressed & 0x10) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
             return areaEditorDeleteMenu();
         }
-    } else if (pad->digital_buttons_pressed & 0x100) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
         aieditor->selected_area = areaEditorFindHover(0);
         if (aieditor->selected_area != NULL) {
             edcamSetPos(&aieditor->selected_area->position);
         }
-    } else if (pad->digital_buttons & 0x2000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
             aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
         }
-        if (pad->digital_buttons_pressed & 0x8000) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
             aieditor->rotation_repeat = 20;
         } else {
             aieditor->rotation_repeat += 20;
@@ -17447,11 +17448,11 @@ eduimenu_s *areaEditor_Process(FRAME_PAD_PC *pad) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
             aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
         }
-    } else if (pad->digital_buttons & 0x8000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_LEFT) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
             aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
         }
-        if (pad->digital_buttons_pressed & 0x2000) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) {
             aieditor->rotation_repeat = 20;
         } else {
             aieditor->rotation_repeat += 20;
@@ -17463,15 +17464,15 @@ eduimenu_s *areaEditor_Process(FRAME_PAD_PC *pad) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
             aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
         }
-    } else if (pad->digital_buttons & 0x4000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
             aieditor->selected_area->size.y *= (f64)0.99f;
         }
-    } else if (pad->digital_buttons & 0x1000) {
+    } else if (pad->digital_buttons & PAD_BUTTON_UP) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
             aieditor->selected_area->size.y *= (f64)1.01f;
         }
-    } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8)) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
         if (aieditor->selected_area != NULL) {
             aieditor->selected_area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &aieditor->selected_area->link);
         }
@@ -17481,7 +17482,7 @@ eduimenu_s *areaEditor_Process(FRAME_PAD_PC *pad) {
         if (aieditor->selected_area != NULL) {
             edcamSetPos(&aieditor->selected_area->position);
         }
-    } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2)) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_R2)) {
         if (aieditor->selected_area != NULL) {
             aieditor->selected_area = (EDAIAREA_s *)NuLinkedListGetPrev(&aieditor->areas, &aieditor->selected_area->link);
         }
@@ -17544,7 +17545,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
     i32 angle;
     EDAICREATURE_s *hover_creature;
     EDLOCATOR_s *hover_locator;
-    if ((pad->digital_buttons_pressed & 0x80) != 0) {
+    if ((pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) != 0) {
         return locatorEditor_MainMenu();
     }
     if (NuStrLen(aieditor->pending_locator_name) != 0) {
@@ -17563,9 +17564,9 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
         }
         memset(aieditor->pending_locator_name, 0, sizeof(aieditor->pending_locator_name));
     }
-    if ((pad->digital_buttons & 0x40) != 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_CROSS) != 0) {
         if (aieditor->nearest_locator != NULL) {
-            if ((pad->digital_buttons_pressed & 0x40) != 0) {
+            if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) != 0) {
                 aieditor->current_locator = aieditor->nearest_locator;
                 aieditor->current_path = aieditor->current_locator->path_check.path;
                 aieditorsettings.locator_rotation = aieditor->current_locator->direction;
@@ -17580,7 +17581,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
                     edcamSetPos(&aieditor->current_locator->position);
                 }
             }
-        } else if ((pad->digital_buttons_pressed & 0x40) != 0 && aieditor->cursor_check.on_path != 0) {
+        } else if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) != 0 && aieditor->cursor_check.on_path != 0) {
             EDLOCATOR_s *previous;
             EDLOCATOR_s *created;
             char *suffix;
@@ -17630,14 +17631,14 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
         }
-    } else if ((pad->digital_buttons_pressed & 0x10) != 0) {
+    } else if ((pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) != 0) {
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
             return locatorEditor_DeleteLocatorMenu();
         }
-    } else if ((pad->digital_buttons & 0x100) != 0) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) != 0) {
         EDLOCATOR_s *next;
         i32 moved = 0;
-        if ((pad->digital_buttons_pressed & 8) != 0) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_R1) != 0) {
             if (aieditor->current_locator_set != NULL) {
                 next = AiEditorNextLocatorInSet(aieditor->current_locator_set, aieditor->current_locator);
                 aieditor->current_locator = next;
@@ -17652,7 +17653,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
             moved = 1;
-        } else if ((pad->digital_buttons_pressed & 2) != 0) {
+        } else if ((pad->digital_buttons_pressed & PAD_BUTTON_R2) != 0) {
             if (aieditor->current_locator_set != NULL) {
                 next = AiEditorPrevLocatorInSet(aieditor->current_locator_set, aieditor->current_locator);
                 aieditor->current_locator = next;
@@ -17667,7 +17668,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
             moved = 1;
-        } else if ((pad->digital_buttons_pressed & 0x100) != 0) {
+        } else if ((pad->digital_buttons_pressed & PAD_BUTTON_SELECT) != 0) {
             next = locatorEditor_GetNearest(0);
             aieditor->current_locator = next;
             moved = 1;
@@ -17678,11 +17679,11 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
                 edcamSetPos(&aieditor->current_locator->position);
             }
         }
-    } else if ((pad->digital_buttons & 0x2000) != 0) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_RIGHT) != 0) {
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
             aieditorsettings.locator_rotation = aieditor->current_locator->direction;
         }
-        if ((pad->digital_buttons_pressed & 0x8000) != 0) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_LEFT) != 0) {
             aieditor->rotation_repeat = 20;
         } else {
             aieditor->rotation_repeat += 20;
@@ -17696,11 +17697,11 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
             angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
             aieditor->current_locator->path_check.angle = angle;
         }
-    } else if ((pad->digital_buttons & 0x8000) != 0) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_LEFT) != 0) {
         if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
             aieditorsettings.locator_rotation = aieditor->current_locator->direction;
         }
-        if ((pad->digital_buttons_pressed & 0x2000) != 0) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) != 0) {
             aieditor->rotation_repeat = 20;
         } else {
             aieditor->rotation_repeat += 20;
@@ -17714,7 +17715,7 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
             angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
             aieditor->current_locator->path_check.angle = angle;
         }
-    } else if ((pad->digital_buttons & 0x4000) != 0) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_DOWN) != 0) {
         i32 difference = NuAngSub(aieditorsettings.locator_rotation, aieditor->cursor_check.angle);
         i32 quadrant = difference / 0x4000;
         i32 remainder = difference % 0x4000;
@@ -17729,8 +17730,8 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD_PC *pad) {
             angle = NuAngSub(aieditor->current_locator->direction, aieditor->cursor_check.angle);
             aieditor->current_locator->path_check.angle = angle;
         }
-    } else if ((pad->digital_buttons & 0x20) != 0 && aieditor->current_locator_set != NULL && (pad->digital_buttons_pressed & 0x20) != 0 &&
-               aieditor->nearest_locator != NULL) {
+    } else if ((pad->digital_buttons & PAD_BUTTON_CIRCLE) != 0 && aieditor->current_locator_set != NULL &&
+               (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) != 0 && aieditor->nearest_locator != NULL) {
         EDLOCATORSET_s *set = aieditor->current_locator_set;
         EDLOCATOR_s *nearest = aieditor->nearest_locator;
         i32 in_set = 0;
@@ -17873,7 +17874,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
     f32 step;
     i32 named;
     i32 forward;
-    if (pad->digital_buttons_pressed & 0x80) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
         return pathEditor_MainMenu();
     }
     if (aieditor->current_path != NULL) {
@@ -17883,13 +17884,13 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
         }
         if (aieditorsettings.display_options & 1) {
             aieditor->current_path->runtime_nearest = (i16)pathEditor_GetNearestRuntimeNode(aieditor->runtime_path);
-            if ((pad->digital_buttons_pressed & 0x40) && aieditor->current_path->runtime_nearest >= 0) {
+            if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && aieditor->current_path->runtime_nearest >= 0) {
                 aieditor->current_path->runtime_start = aieditor->current_path->runtime_nearest;
             }
-            if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->runtime_nearest >= 0) {
+            if ((pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) && aieditor->current_path->runtime_nearest >= 0) {
                 aieditor->current_path->runtime_end = aieditor->current_path->runtime_nearest;
             }
-            if (pad->digital_buttons_pressed & 0x100) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
                 if (aieditor->current_path->runtime_nearest >= 0) {
                     aieditor->current_path->runtime_start = aieditor->current_path->runtime_nearest;
                     edcamSetPos(&aieditor->runtime_path->nodes[aieditor->current_path->runtime_nearest].position);
@@ -17901,11 +17902,11 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
             }
             return NULL;
         }
-        if (pad->digital_buttons & 0x40) {
+        if (pad->digital_buttons & PAD_BUTTON_CROSS) {
             NUVEC position;
             nearest = aieditor->current_path->nearest_node;
             if (nearest != NULL) {
-                if (pad->digital_buttons_pressed & 0x40) {
+                if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
                     aieditor->current_path->current_node = nearest;
                     node = aieditor->current_path->current_node;
                     if (node != NULL) {
@@ -17922,7 +17923,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
                     if (AIPathNodeDeletedFn != NULL) {
                         AIPathNodeDeletedFn(aieditor->current_path->current_node);
                     }
-                    if (pad->digital_buttons & 0x200) {
+                    if (pad->digital_buttons & PAD_BUTTON_L3) {
                         path = aieditor->current_path;
                         start = path->current_node;
                         position.x = start->position.x - position.x;
@@ -17940,7 +17941,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
                         }
                     }
                 }
-            } else if (pad->digital_buttons_pressed & 0x40) {
+            } else if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
                 aieditor->current_path->current_node = pathEditor_CreateNode(aieditor->current_path);
                 if (previous != NULL) {
                     if (aieditor->current_path->current_node != NULL) {
@@ -17955,7 +17956,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
         }
-        if (pad->digital_buttons_pressed & 0x20) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) {
             node = aieditor->current_path->current_node;
             if (node != NULL) {
                 nearest = aieditor->current_path->nearest_node;
@@ -17973,11 +17974,11 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
         }
-        if ((pad->digital_buttons_pressed & 0x10) && aieditor->current_path->current_node != NULL &&
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) && aieditor->current_path->current_node != NULL &&
             aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
             return pathEditor_DeleteNodeMenu();
         }
-        if (pad->digital_buttons_pressed & 0x100) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
             if (aieditorsettings.display_options & 2) {
                 pathEditor_SelectNearestPath();
             } else {
@@ -17995,7 +17996,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
         }
         aieditor->flags &= ~1;
         if (aieditor->current_path->current_node != NULL && aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
-            if (pad->digital_buttons & 0x8000) {
+            if (pad->digital_buttons & PAD_BUTTON_LEFT) {
                 aieditor->current_path->current_node->radius = aieditor->current_path->current_node->radius * (f64)0.99f;
                 if (aieditor->current_path->current_node->radius < 0.01f) {
                     aieditor->current_path->current_node->radius = 0.01f;
@@ -18005,7 +18006,7 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
                 if (AIPathNodeDeletedFn != NULL) {
                     AIPathNodeDeletedFn(aieditor->current_path->current_node);
                 }
-            } else if (pad->digital_buttons & 0x2000) {
+            } else if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
                 aieditor->current_path->current_node->radius = aieditor->current_path->current_node->radius * (f64)1.01f;
                 if (aieditor->current_path->current_node->radius < 0.01f) {
                     aieditor->current_path->current_node->radius = 0.01f;
@@ -18017,23 +18018,23 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
                 }
             }
             if (aieditorsettings.display_options & 0x80) {
-                if (pad->digital_buttons & 0x1000) {
+                if (pad->digital_buttons & PAD_BUTTON_UP) {
                     aieditor->flags |= 4;
                     step = aieditor->current_path->current_node->upper_height * (f64)0.05f;
-                    if (pad->digital_buttons & 4) {
+                    if (pad->digital_buttons & PAD_BUTTON_L1) {
                         aieditor->current_path->current_node->upper_height += step;
-                    } else if (pad->digital_buttons & 1) {
+                    } else if (pad->digital_buttons & PAD_BUTTON_L2) {
                         aieditor->current_path->current_node->upper_height -= step;
                     }
                     if (aieditor->current_path->current_node->upper_height < 0.01f) {
                         aieditor->current_path->current_node->upper_height = 0.01f;
                     }
-                } else if (pad->digital_buttons & 0x4000) {
+                } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
                     aieditor->flags |= 4;
                     step = -aieditor->current_path->current_node->lower_height * (f64)0.05f;
-                    if (pad->digital_buttons & 4) {
+                    if (pad->digital_buttons & PAD_BUTTON_L1) {
                         aieditor->current_path->current_node->lower_height += step;
-                    } else if (pad->digital_buttons & 1) {
+                    } else if (pad->digital_buttons & PAD_BUTTON_L2) {
                         aieditor->current_path->current_node->lower_height -= step;
                     }
                     if (aieditor->current_path->current_node->lower_height > -0.01f) {
@@ -18044,21 +18045,21 @@ eduimenu_s *pathEditor_Process(FRAME_PAD_PC *pad) {
             aieditor->flags |= 1;
         }
         named = 0;
-        if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 8)) {
+        if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_R1)) {
             forward = 1;
-        } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 2)) {
+        } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_R2)) {
             forward = 0;
-        } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 4)) {
+        } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_L1)) {
             forward = 1;
             named = 1;
-        } else if ((pad->digital_buttons & 0x100) && (pad->digital_buttons_pressed & 1)) {
+        } else if ((pad->digital_buttons & PAD_BUTTON_SELECT) && (pad->digital_buttons_pressed & PAD_BUTTON_L2)) {
             forward = 0;
             named = 1;
         } else if (aieditorsettings.display_options & 0x80) {
             goto done;
-        } else if (pad->digital_buttons_pressed & 0x1000) {
+        } else if (pad->digital_buttons_pressed & PAD_BUTTON_UP) {
             forward = 1;
-        } else if (pad->digital_buttons_pressed & 0x4000) {
+        } else if (pad->digital_buttons_pressed & PAD_BUTTON_DOWN) {
             forward = 0;
         } else {
             goto done;
@@ -18147,13 +18148,13 @@ eduimenu_s *routeEditor_Process(FRAME_PAD_PC *pad) {
     i32 index;
     i32 i;
     i32 change;
-    if (pad->digital_buttons_pressed & 0x80) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
         return routeEditor_MainMenu();
     }
     if (aieditor->current_path == NULL) {
         return NULL;
     }
-    if (pad->digital_buttons_pressed & 0x1000) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_UP) {
         index = aieditor->current_path->current_route != NULL ? aieditor->current_path->current_route - aieditor->current_path->routes : 0;
         for (i = 0; i < 16; ++i) {
             if (++index >= 16) {
@@ -18165,7 +18166,7 @@ eduimenu_s *routeEditor_Process(FRAME_PAD_PC *pad) {
             }
             aieditor->current_path->current_route = NULL;
         }
-    } else if (pad->digital_buttons_pressed & 0x4000) {
+    } else if (pad->digital_buttons_pressed & PAD_BUTTON_DOWN) {
         index = aieditor->current_path->current_route != NULL ? aieditor->current_path->current_route - aieditor->current_path->routes : 0;
         for (i = 0; i < 16; ++i) {
             if (--index < 0) {
@@ -18181,8 +18182,8 @@ eduimenu_s *routeEditor_Process(FRAME_PAD_PC *pad) {
     if (aieditor->current_path->current_route == NULL) {
         return NULL;
     }
-    if ((pad->digital_buttons & 0x40) && (nearest = aieditor->current_path->nearest_node) != NULL &&
-        (pad->digital_buttons_pressed & 0x40)) {
+    if ((pad->digital_buttons & PAD_BUTTON_CROSS) && (nearest = aieditor->current_path->nearest_node) != NULL &&
+        (pad->digital_buttons_pressed & PAD_BUTTON_CROSS)) {
         aieditor->current_path->current_node = nearest;
         node = aieditor->current_path->current_node;
         if (node != NULL) {
@@ -18193,7 +18194,7 @@ eduimenu_s *routeEditor_Process(FRAME_PAD_PC *pad) {
             edcamSetPos(&position);
         }
     }
-    if (pad->digital_buttons_pressed & 0x20) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_CIRCLE) {
         NUVEC position;
         node = aieditor->current_path->current_node;
         if (node != NULL && (nearest = aieditor->current_path->nearest_node) != NULL && nearest != node) {
@@ -18216,7 +18217,7 @@ eduimenu_s *routeEditor_Process(FRAME_PAD_PC *pad) {
             }
         }
     }
-    if (pad->digital_buttons_pressed & 0x10) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
         node = aieditor->current_path->nearest_node;
         if (node != NULL) {
             index = aieditor->current_path->current_route - aieditor->current_path->routes;
@@ -18232,7 +18233,7 @@ eduimenu_s *routeEditor_Process(FRAME_PAD_PC *pad) {
             }
         }
     }
-    if (pad->digital_buttons_pressed & 0x100) {
+    if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
         aieditor->current_path->current_node = pathEditor_GetNearestNode(aieditor->current_path, 0);
         if (aieditor->current_path->current_node != NULL) {
             edcamSetPos(&aieditor->current_path->current_node->position);

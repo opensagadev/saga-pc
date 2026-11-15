@@ -5508,7 +5508,7 @@ void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed
         i32 shift = NuKeyboard(0x2a) | NuKeyboard(0x36) | NuKeyboard(0x1f);
         i32 alt = NuKeyboard(0x38) | NuKeyboard(0xb8) | NuKeyboard(0x39);
         i32 control = NuKeyboard(0x1d) | NuKeyboard(0x9d) | NuKeyboard(0x2e);
-        i32 left_click = NuMouseReadButtons() == 1 || (pad->digital_buttons & 0x800);
+        i32 left_click = NuMouseReadButtons() == 1 || (pad->digital_buttons & PAD_BUTTON_START);
         i32 square = 0;
         i32 left_select = left_click && !alt && !control;
         i32 right_click;
@@ -5522,7 +5522,7 @@ void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed
                 square = buttons & 0x80;
                 Set(38, static_cast<f32>(static_cast<i32>(buttons & 0x40)), elapsed);
             }
-            right_click = NuMouseReadButtons() == 2 || (pad->digital_buttons & 0x20);
+            right_click = NuMouseReadButtons() == 2 || (pad->digital_buttons & PAD_BUTTON_CIRCLE);
         } else {
             right_click = NuMouseReadButtons() == 2;
         }
@@ -5588,7 +5588,7 @@ void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD_PC *new_pad, f32 elapsed
         key = NuKeyboard(11);
         Set(35, key, elapsed);
         Set(37, static_cast<f32>(square), elapsed);
-        Set(39, static_cast<f32>(static_cast<i32>(pad->digital_buttons & 0x800)), elapsed);
+        Set(39, static_cast<f32>(static_cast<i32>(pad->digital_buttons & PAD_BUTTON_START)), elapsed);
     } else {
         for (i = 0; i < 40; i++) {
             Set(i, 0.0f, elapsed);
@@ -8437,22 +8437,22 @@ LevelEditor::LevelEditor() : first_editor(NULL), last_editor(NULL), editor_count
     pad_height = 448;
     pad_background = 0x80000000;
     pad_colour = 0x80808080;
-    SetPadText(0x1000, "D-Up");
-    SetPadText(0x4000, "D-Down");
-    SetPadText(0x8000, "D-Left");
-    SetPadText(0x2000, "D-Right");
-    SetPadText(0x10, "Triangle");
-    SetPadText(0x40, "Cross");
-    SetPadText(0x80, "Square");
-    SetPadText(0x20, "Circle");
-    SetPadText(4, "L1");
-    SetPadText(1, "L2");
-    SetPadText(8, "R1");
-    SetPadText(2, "R2");
-    SetPadText(0x200, "L3");
-    SetPadText(0x400, "R1");
-    SetPadText(0x800, "START");
-    SetPadText(0x100, "SELECT");
+    SetPadText(PAD_BUTTON_UP, "D-Up");
+    SetPadText(PAD_BUTTON_DOWN, "D-Down");
+    SetPadText(PAD_BUTTON_LEFT, "D-Left");
+    SetPadText(PAD_BUTTON_RIGHT, "D-Right");
+    SetPadText(PAD_BUTTON_TRIANGLE, "Triangle");
+    SetPadText(PAD_BUTTON_CROSS, "Cross");
+    SetPadText(PAD_BUTTON_SQUARE, "Square");
+    SetPadText(PAD_BUTTON_CIRCLE, "Circle");
+    SetPadText(PAD_BUTTON_L1, "L1");
+    SetPadText(PAD_BUTTON_L2, "L2");
+    SetPadText(PAD_BUTTON_R1, "R1");
+    SetPadText(PAD_BUTTON_R2, "R2");
+    SetPadText(PAD_BUTTON_L3, "L3");
+    SetPadText(PAD_BUTTON_R3, "R1");
+    SetPadText(PAD_BUTTON_START, "START");
+    SetPadText(PAD_BUTTON_SELECT, "SELECT");
 }
 
 /* Carves the editor's 128 KB work buffer from the front of the level buffer
@@ -8806,7 +8806,7 @@ i32 EdManRotate::Process(EdInputContext &input, ClassObjectList &objects) {
         return 0;
     }
     eduiSetCameraEnabled(1);
-    if (input.pad->digital_buttons_pressed & 0x10) {
+    if (input.pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
         if (++rotation_axis == 4) {
             rotation_axis = 1;
         }
@@ -10400,7 +10400,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
         }
         menu = next;
     }
-    if (input.pad->digital_buttons_pressed & 0x100) {
+    if (input.pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
         ToggleActiveMenu();
     }
     EdControl::Input = NULL;

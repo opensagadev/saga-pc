@@ -1432,13 +1432,13 @@ void DebrisSetPriority(i32 handle, i16 priority, u8 automatic) {
 u16 DebrisQueryPriority(i32 effect_index) {
     if (effect_index >= 0 && effect_index < debinf_count && debtab[effect_index] != NULL) {
         switch (debtab[effect_index]->particle_type) {
-            case 0:
+            case DEBRIS_PARTICLE_ADDITIVE:
                 return 20000;
-            case 2:
+            case DEBRIS_PARTICLE_MODULATIVE:
                 return 40000;
-            case 3:
+            case DEBRIS_PARTICLE_SUBTRACTIVE:
                 return 30000;
-            case 7:
+            case DEBRIS_PARTICLE_GLASS:
                 return 10000;
         }
     }
@@ -1523,13 +1523,13 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     debkeydata[key_index].emission_disabled = 0;
 
     switch (effect->particle_type) {
-        case 3:
+        case DEBRIS_PARTICLE_SUBTRACTIVE:
             debkeydata[key_index].render_priority = 40000;
             break;
-        case 7:
+        case DEBRIS_PARTICLE_GLASS:
             debkeydata[key_index].render_priority = 20000;
             break;
-        case 2:
+        case DEBRIS_PARTICLE_MODULATIVE:
             debkeydata[key_index].render_priority = 50000;
             break;
         default:
@@ -1573,7 +1573,7 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
     if (key->particle_cursor >= key->particle_count) {
         key->particle_cursor = 0;
     }
-    if (effect->particle_type == 7) {
+    if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
         particle = &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12];
     } else {
         particle = &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32];
@@ -1625,7 +1625,7 @@ DEBRISPARTICLE_PC *GenDebIndexSpheroid(DEBRISKEY_PC *key, DEBRIS_INFO_PC *effect
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             trail_particle = &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12];
         } else {
             trail_particle = &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32];
@@ -1754,7 +1754,7 @@ void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC 
     for (i = 0; i < 8; ++i) {
         if (effect->particle_keys[i] != -1) {
             key = &debkeydata[effect->particle_keys[i]];
-            if (effect->particle_type == 7) {
+            if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
                 if (key->particle_count + particle_count <= 0x180) {
                     particle_key_slot = i;
                     break;
@@ -1786,7 +1786,7 @@ void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC 
         return;
     }
     required_particles = particle_count + key->particle_count;
-    if (effect->particle_type == 7) {
+    if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
         if (required_particles > key->allocated_chunk_count * 12) {
             if (key->allocated_chunk_count < 0) {
                 key->allocated_chunk_count = 0;
@@ -1932,13 +1932,13 @@ void AddVariableShotDebrisEffectMtx3(i32 effect, NUVEC *position, NUVEC *momentu
         return;
     }
     switch (debtab[effect]->particle_type) {
-        case 2:
+        case DEBRIS_PARTICLE_MODULATIVE:
             priority = 40000;
             break;
-        case 3:
+        case DEBRIS_PARTICLE_SUBTRACTIVE:
             priority = 30000;
             break;
-        case 7:
+        case DEBRIS_PARTICLE_GLASS:
             priority = 10000;
             break;
         default:
@@ -2124,7 +2124,7 @@ void DebrisDraw(i32 unused, i32 pass) {
             NuRndrSetParticleRotation(NULL);
         }
         NuMtxPreScaleX(&matrix, debris_render_scale);
-        if (effect->particle_type == 7) {
+        if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             NuRndrParticleGroup(chunk->particle_chunk, chunk->effect->native_data, DebMat[chunk->effect->particle_type], render_time,
                                 &matrix, 4, effect->particle_parameter_a, effect->particle_parameter_b, effect->clip_extent,
                                 effect->unknown_044);
@@ -2152,13 +2152,13 @@ void AddVariableShotDebrisEffectTimed3(i32 effect, NUVEC *position, NUVEC *momen
         return;
     }
     switch (debtab[effect]->particle_type) {
-        case 2:
+        case DEBRIS_PARTICLE_MODULATIVE:
             priority = 40000;
             break;
-        case 3:
+        case DEBRIS_PARTICLE_SUBTRACTIVE:
             priority = 30000;
             break;
-        case 7:
+        case DEBRIS_PARTICLE_GLASS:
             priority = 10000;
             break;
         default:
@@ -3866,13 +3866,13 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
     i32 nearest;
     i32 variant;
     i32 previous;
-    if ((pad->digital_buttons & 0x100) == 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
         edcamMove(pad);
     }
-    if (pad->digital_buttons & 0x100) {
+    if (pad->digital_buttons & PAD_BUTTON_SELECT) {
         nearest = edpart_nearest;
         if (nearest != -1) {
-            if (pad->digital_buttons_pressed & 8) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                 do {
                     ++nearest;
                     if (nearest == 40) {
@@ -3881,7 +3881,7 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
                 } while (part_emits[nearest].effect_id == -1);
                 edpart_nearest = nearest;
             }
-            if (pad->digital_buttons_pressed & 2) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                 do {
                     --nearest;
                     if (nearest == -1) {
@@ -3911,25 +3911,25 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
     } else {
         edcamGetPosAng(&PartEditorCameraPos, &edpart_cam_ax, &edpart_cam_ay);
     }
-    if ((pad->digital_buttons & 0x100) == 0) {
-        if (pad->digital_buttons_pressed & 0x80) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
             edpartOptMenu();
             edpart_active_menu = edpart_opt_menu;
         }
-        if ((pad->digital_buttons_pressed & 0x40) && edpart_copy_mode == 0 && edpart_create_type != -1) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && edpart_copy_mode == 0 && edpart_create_type != -1) {
             AddPARTEffect(edpart_create_type, &PartEditorCameraPos);
         }
-        if (pad->digital_buttons & 0x20) {
+        if (pad->digital_buttons & PAD_BUTTON_CIRCLE) {
             if (edpart_copy_mode != 0) {
                 edpartMultipleCopyCopy();
             } else if (edpart_nearest != -1) {
                 edpartPlace(edpart_nearest, &PartEditorCameraPos);
             }
         }
-        if ((pad->digital_buttons & 0x400) && edpart_copy_mode == 0 && edpart_nearest != -1) {
+        if ((pad->digital_buttons & PAD_BUTTON_R3) && edpart_copy_mode == 0 && edpart_nearest != -1) {
             edpartPlace(edpart_nearest, &PartEditorCameraPos);
         }
-        if (pad->digital_buttons_pressed & 0x10) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
             if (edpart_copy_mode != 0) {
                 edpart_copy_source_count = 0;
                 edpart_copyroty = 0;
@@ -3953,7 +3953,7 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
         edpart_copyroty -= pad->analog_left_pad_left;
     } else {
         if (edpart_dpad_mode == 1) {
-            if (pad->digital_buttons & 0x200) {
+            if (pad->digital_buttons & PAD_BUTTON_L3) {
                 edpart_rotz = 0;
                 edpart_roty = 0;
             }
@@ -3968,12 +3968,12 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
                 edpart_rotz = -0x8000;
             }
         } else if (edpart_dpad_mode == 0) {
-            if (pad->digital_buttons & 0x200) {
+            if (pad->digital_buttons & PAD_BUTTON_L3) {
                 edpart_emitrotz = 0;
                 edpart_emitroty = 0;
                 edpart_emitrotx = 0;
             }
-            if (pad->digital_buttons & 0x400) {
+            if (pad->digital_buttons & PAD_BUTTON_R3) {
                 edpart_emitrotx += pad->analog_left_pad_right;
                 edpart_emitrotx -= pad->analog_left_pad_left;
             } else {
@@ -4000,10 +4000,10 @@ void edpartDoInput(FRAME_PAD_PC *pad) {
                 edpart_refrotz = -0x8000;
             }
         } else if (edpart_dpad_mode == 2) {
-            if (pad->analog_left_pad_up == 255 || (pad->digital_buttons_pressed & 0x1000)) {
+            if (pad->analog_left_pad_up == 255 || (pad->digital_buttons_pressed & PAD_BUTTON_UP)) {
                 edpart_offset += 0.01f;
             }
-            if (pad->analog_left_pad_down == 255 || (pad->digital_buttons_pressed & 0x4000)) {
+            if (pad->analog_left_pad_down == 255 || (pad->digital_buttons_pressed & PAD_BUTTON_DOWN)) {
                 edpart_offset -= 0.01f;
             }
             if (edpart_offset < 0.0f) {

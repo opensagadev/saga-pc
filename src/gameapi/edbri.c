@@ -636,13 +636,13 @@ void edbriCreateOptionsMenu(void) {
 
 void edbriDoInput(FRAME_PAD_PC *pad) {
     i32 index;
-    if ((pad->digital_buttons & 0x100) == 0) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
         edcamMove(pad);
     }
-    if (pad->digital_buttons & 0x100) {
+    if (pad->digital_buttons & PAD_BUTTON_SELECT) {
         if (edbri_nearest != -1) {
             index = edbri_nearest;
-            if (pad->digital_buttons_pressed & 8) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
                 do {
                     ++index;
                     if (index == 64) {
@@ -651,7 +651,7 @@ void edbriDoInput(FRAME_PAD_PC *pad) {
                 } while (edBridges[index].instance_id == -1);
                 edbri_nearest = index;
             }
-            if (pad->digital_buttons_pressed & 2) {
+            if (pad->digital_buttons_pressed & PAD_BUTTON_R2) {
                 do {
                     --index;
                     if (index == -1) {
@@ -676,18 +676,18 @@ void edbriDoInput(FRAME_PAD_PC *pad) {
         }
     }
     edcamGetPosAng(&edbri_cam_pos, &edbri_cam_ax, &edbri_cam_ay);
-    if ((pad->digital_buttons & 0x100) == 0) {
-        if (pad->digital_buttons_pressed & 0x80) {
+    if ((pad->digital_buttons & PAD_BUTTON_SELECT) == 0) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_SQUARE) {
             edbriCreateOptionsMenu();
             edbri_active_menu = edbri_options_menu;
         }
-        if ((pad->digital_buttons_pressed & 0x40) && edbri_plank_instance_type != -1) {
+        if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) && edbri_plank_instance_type != -1) {
             edbriBridgeCreate(&edbri_cam_pos);
         }
-        if ((pad->digital_buttons & 0x20) && edbri_nearest != -1) {
+        if ((pad->digital_buttons & PAD_BUTTON_CIRCLE) && edbri_nearest != -1) {
             edbriBridgePlace(edbri_nearest, &edbri_cam_pos);
         }
-        if (pad->digital_buttons_pressed & 0x10) {
+        if (pad->digital_buttons_pressed & PAD_BUTTON_TRIANGLE) {
             if (edbri_nearest != -1) {
                 edbriBridgeDestroy(edbri_nearest);
             }
