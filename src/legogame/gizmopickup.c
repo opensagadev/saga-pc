@@ -287,8 +287,8 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     if (object != NULL) {
         player_index = (i8)object->unknown_280;
     } else {
-        player0_active = Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0;
-        player1_active = Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0;
+        player0_active = Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
+        player1_active = Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
         if (player0_active && player1_active) {
             player_index = qrand() / 32768;
         } else if (player0_active) {
@@ -995,8 +995,8 @@ static void PartStolen_Coin(PART_PC *part) {
         return;
     }
     recipient = Player[0];
-    first_active = recipient != NULL && (recipient->flags_1fc & 0x80) != 0;
-    second_active = Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0;
+    first_active = recipient != NULL && (recipient->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
+    second_active = Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
     if (first_active) {
         if (second_active) {
             recipient = Player[qrand() / 32768];
@@ -1225,7 +1225,7 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
         if (player_id == -1) {
             if (player2 != NULL) {
                 player_id = qrand() / 32768;
-            } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80)) {
+            } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 player_id = 0;
             } else {
                 player_id = 1;
@@ -1295,8 +1295,8 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
             }
         }
     }
-    if (hearts > 0 && VehicleArea != 0 && Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80) && Player[1] != NULL &&
-        (Player[1]->flags_1fc_word & 0x80)) {
+    if (hearts > 0 && VehicleArea != 0 && Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) &&
+        Player[1] != NULL && (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
         hearts = 2;
         both_players = 1;
     } else {
@@ -1315,10 +1315,10 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
             recipient = owner;
         } else {
             count = 0;
-            if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80)) {
+            if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 eligible[count++] = Player[0];
             }
-            if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80)) {
+            if (Player[1] != NULL && (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 eligible[count++] = Player[1];
             }
             if (count > 0) {

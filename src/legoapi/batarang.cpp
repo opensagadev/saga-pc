@@ -157,11 +157,12 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     nearest_distance = 16.0f;
     candidate = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
-        if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
-            (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->model_draw_result == 0 ||
-            candidate == object || candidate->unknown_280 != 0xff || candidate->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER ||
-            candidate->character_context == CHARACTER_CONTEXT_EATEN || candidate->character_context == CHARACTER_CONTEXT_GET_IN ||
-            (object->flags_1f8 & 0x10004) != 0 || ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
+        if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            candidate->dead != 0 || (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
+            candidate->model_draw_result == 0 || candidate == object || candidate->unknown_280 != 0xff ||
+            candidate->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || candidate->character_context == CHARACTER_CONTEXT_EATEN ||
+            candidate->character_context == CHARACTER_CONTEXT_GET_IN || (object->flags_1f8 & 0x10004) != 0 ||
+            ((object->flags_1f8 ^ candidate->flags_1f8) & 1) == 0) {
             continue;
         }
         if (BatarangContainsTarget(batarang, candidate)) {
@@ -709,7 +710,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
     } else {
         PLAYERCHARACTERCONFIG *runtime = object->character_data->game_character;
         batarang = BATARANG_PACKET(object);
-        if (((object->flags_1fc & 0x80) == 0 || (runtime->flags_090 & 0x20000000) == 0 || batarang == NULL ||
+        if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (runtime->flags_090 & 0x20000000) == 0 || batarang == NULL ||
              batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 || (object->flags_e24 & 8) == 0 ||
              object->model_draw_result == 0 || !(object->camera_screen_position.z > 0.0f) || !(object->hold_timer >= 0.25f) ||
              object->unknown_281 == 0 || ObjLandReady(object) == 0)) {
@@ -1065,8 +1066,8 @@ extern "C" {
                     if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0) {
                         other = Obj;
                         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
-                            if ((other->flags_1fc_word & 1) == 0 || other == owner || (other->flags_1fc_word & 0x1000) == 0 ||
-                                other->dead != 0) {
+                            if ((other->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || other == owner ||
+                                (other->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || other->dead != 0) {
                                 continue;
                             }
                             if (other != player && other->ai_packet.path_info.connection == packet->path_info.connection &&

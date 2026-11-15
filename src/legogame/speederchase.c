@@ -87,7 +87,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
         object = Player[i];
         if (object != NULL) {
             if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && object->id == (u16)id_SPEEDERBIKE &&
-                object->rider != NULL && (object->rider->flags_1fc & 0x80) != 0) {
+                object->rider != NULL && (object->rider->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 object->flags_ef4 |= 0x1000000;
             } else {
                 object->flags_ef4 &= ~0x1000000;
@@ -97,7 +97,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
     players_going_forward = 1;
     for (i = 0; i < 2; ++i) {
         object = Player[i];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0 && (object->flags_1f8 & 0x40000) == 0) {
+        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (object->flags_1f8 & 0x40000) == 0) {
             if (GoingForwardsAlongNarrowSock(object) == 0 || Player[i]->character_context == CHARACTER_CONTEXT_TURN) {
                 players_going_forward = 0;
                 break;

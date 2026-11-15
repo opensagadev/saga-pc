@@ -607,7 +607,7 @@ void VaderA_Update(WORLDINFO *world) {
             vader_a.collapse_started = 0;
             for (i = 0; i < 8; i++) {
                 GAMEOBJECT *object = Player[i];
-                if (object != NULL && (object->flags_1fc & 1) != 0) {
+                if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0) {
                     SetObjOnSurface(object, 1);
                 }
             }
@@ -648,11 +648,11 @@ void VaderA_Update(WORLDINFO *world) {
             }
         } else if (netclient == 0 && vader_a.timer <= 0.0f) {
             GAMEOBJECT *object = Player[0];
-            if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+            if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 LoseCoins(object, 1);
             }
             object = Player[1];
-            if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+            if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 LoseCoins(object, 1);
             }
             KillGameObject(player, 2, 0);
@@ -788,10 +788,12 @@ void VaderC_Update(WORLDINFO *world) {
     if (vader_c.players_dead == 0) {
         first = Player[0];
         second = Player[1];
-        if (((first != NULL && (first->flags_1fc & 0x80) != 0 && first->dead != 0 && (first->flags_1f8 & 0x40000) == 0) ||
-             (second != NULL && (second->flags_1fc & 0x80) != 0 && second->dead != 0 && (second->flags_1f8 & 0x40000) == 0)) &&
-            (((u8 *)vaderc_netpacket)[0] == 0 || first == NULL || (first->flags_1fc & 0x80) == 0 || second == NULL ||
-             (second->flags_1fc & 0x80) == 0) &&
+        if (((first != NULL && (first->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && first->dead != 0 &&
+              (first->flags_1f8 & 0x40000) == 0) ||
+             (second != NULL && (second->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && second->dead != 0 &&
+              (second->flags_1f8 & 0x40000) == 0)) &&
+            (((u8 *)vaderc_netpacket)[0] == 0 || first == NULL || (first->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
+             second == NULL || (second->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) &&
             (ChallengeMode == 0 || AreaGlobals.unknown_1c < 10)) {
             vader_c.players_dead = 1;
             ResetLevel(NULL, NULL, 1);

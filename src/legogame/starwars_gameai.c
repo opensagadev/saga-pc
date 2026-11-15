@@ -735,8 +735,8 @@ check:
                 if ((connection->traversal_flags[packet->path_info.direction] & 0x200) == 0) {
                     other = Obj;
                     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
-                        if ((other->flags_1fc_word & 1) == 0 || other == owner || (other->flags_1fc_word & 0x1000) == 0 ||
-                            other->dead != 0) {
+                        if ((other->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || other == owner ||
+                            (other->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || other->dead != 0) {
                             continue;
                         }
                         if (other != player && other->ai_packet.path_info.connection == connection &&

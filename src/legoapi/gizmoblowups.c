@@ -775,8 +775,8 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *blowup, i32 effects, i32 hit_type, i32 dam
             radius_squared = blowup->proximity_radius * blowup->proximity_radius;
             for (player = 0; player < 8; ++player) {
                 target = Player[player];
-                if (target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0 && target->dead == 0 &&
-                    !(target->unknown_1010 > 0.0f)) {
+                if (target != NULL && (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                    (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && target->dead == 0 && !(target->unknown_1010 > 0.0f)) {
                     x = blowup->mid_position.x - target->collision_position.x;
                     y = blowup->mid_position.y - target->collision_position.y;
                     z = blowup->mid_position.z - target->collision_position.z;
@@ -1593,7 +1593,8 @@ GIZMOBLOWUP_PC *GizmoBlowUpOpponent(GAMEOBJECT *object, f32 range, f32 extra_rad
     for (i = 0; i < WORLD->gizmo_blowup_count; ++i, ++target) {
         if ((target->status_flags & 1) || !(target->status_flags & 0x4000) || !(target->status_flags & 0x800000) ||
             !(target->status_flags & 0x8000) ||
-            ((object->flags_1fc & 0x80) && target->platform_id != -1 && target->platform_id == object->supporting_platform_id)) {
+            ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && target->platform_id != -1 &&
+             target->platform_id == object->supporting_platform_id)) {
             continue;
         }
         flags = target->draw_flags;
@@ -1935,7 +1936,7 @@ i32 GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
     f32 x;
     f32 y;
     f32 z;
-    if (object == NULL || (object->flags_1fc & 0x80) == 0) {
+    if (object == NULL || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
         return 0;
     }
     if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 || object->takeover_source != NULL) {

@@ -236,9 +236,9 @@ GAMEOBJECT *APIObjectCreate(APIOBJECTSYS *system) {
     if (system != NULL && system->object_size != 0) {
         object = system->objects;
         for (index = 0; index < 64; ++index, object = (GAMEOBJECT *)((u8 *)object + system->object_size)) {
-            if ((object->flags_1fc_word & 1) == 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0) {
                 memset(object, 0, system->object_size);
-                object->flags_1fc_word |= 1;
+                object->flags_1fc_word |= APIOBJECT_FLAG_IN_USE;
                 object->hostility_group = (u8)index;
                 return object;
             }
@@ -262,7 +262,7 @@ void APIObjectDestroy(APIOBJECTSYS *system, GAMEOBJECT *object) {
         if (system->hostility_masks != NULL) {
             other = system->objects;
             for (index = 0; index < 64; ++index, other = (GAMEOBJECT *)((u8 *)other + system->object_size)) {
-                if ((other->flags_1fc & 1) != 0) {
+                if ((other->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0) {
                     APIObjectRemoveFromLOSTable(system, other, object);
                 }
             }

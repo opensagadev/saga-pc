@@ -447,8 +447,9 @@ extern "C" {
             if (bolt->active == 0) {
                 continue;
             }
-            if (check_owner != 0 && bolt->owner != NULL && (bolt->owner->flags_1fc_word & 1) != 0 &&
-                (bolt->owner->flags_1fc_word & 0x1000) != 0 && bolt->owner->dead == 0 && bolt->owner->unknown_280 != 0xff) {
+            if (check_owner != 0 && bolt->owner != NULL && (bolt->owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (bolt->owner->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && bolt->owner->dead == 0 &&
+                bolt->owner->unknown_280 != 0xff) {
                 continue;
             }
             half_speed = (f32)((f64)bolt->speed * 0.5);
@@ -809,7 +810,7 @@ extern "C" {
                 if (SphereSphereOverlapScaleY(&part->position, part->unknown_e4, part->unknown_e4, &points[point], radius, radius)) {
                     BoltSys->debris(bolt, points, point, &part->velocity, 0);
                     Bolt_PlayHitSfx(bolt);
-                    if (bolt->owner && (bolt->owner->flags_1fc & 1)) {
+                    if (bolt->owner && (bolt->owner->flags_1fc & APIOBJECT_FLAG_IN_USE)) {
                         NewRumble(bolt->owner->pad->bound_pad, .7f, 0);
                     }
                     bolt->active = 0;
@@ -905,7 +906,7 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *bolt, u8 *hit_flags) {
     if (bolt->unknown_104 != -1 && ((TerSurface[bolt->unknown_104].flags & 0x1800) != 0 || blowup_hit)) {
         GameAudio_PlaySfx(41, &bolt->position, 0, 0);
         Bolt_AddDeflectedBolt(bolt, &bolt->direction, &bolt->hit_normal, hit_flags);
-        if (bolt->owner != NULL && (bolt->owner->flags_1fc & 0x80) != 0) {
+        if (bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             NewRumble(bolt->owner->pad->bound_pad, 0.4f, 0);
             GameCam_HitJudder();
         }
@@ -952,17 +953,17 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
     BOLT_PC *bolt = &Bolt[bolt_index];
     GAMEOBJECT *object = &Obj[object_index];
     BOLTTYPE_PC *type = bolt->type;
-    if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (bolt->owner->flags_1fc & 0x80) != 0) {
+    if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         BoltSys->stop_targeting(bolt->owner, &bolt->position);
     }
     i32 deflect;
-    if ((object->flags_1fc & 0x80) != 0 && Player_HasDeflectBolts(object) != 0) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasDeflectBolts(object) != 0) {
         deflect = 1;
     } else {
         deflect = 0;
     }
     i32 cheat_deflect;
-    if (Cheats_CheckFlags(0x100000) != 0 && (object->flags_1fc & 0x80) != 0) {
+    if (Cheats_CheckFlags(0x100000) != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         cheat_deflect = 1;
     } else {
         cheat_deflect = 0;
@@ -985,17 +986,18 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         if ((BoltBlockContext == -1 || object->character_context != BoltBlockContext) && !deflect && !(bolt->time >= 0.1f)) {
             goto finish;
         }
-        if (bolt->owner != NULL && (bolt->owner->flags_1fc & 1) != 0) {
+        if (bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0) {
             CalculateInterceptVector(&points[hit], &bolt->owner->collision_position, &bolt->owner->velocity, bolt->speed, &direction, NULL);
         } else {
             NuVecSub(&direction, &bolt->previous_position, &points[hit]);
         }
         FindAnglesXY(&direction, NULL, NULL);
-        if (((bolt->flags & 0x40) == 0 || deflect) && (object->flags_1fc & 0x80) != 0 &&
+        if (((bolt->flags & 0x40) == 0 || deflect) && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
             ((BoltBlockContext != -1 && object->character_context == BoltBlockContext) || cheat_deflect) &&
             (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
-            if (bolt->owner == NULL || (bolt->owner->flags_1fc_word & 1) == 0 ||
-                ((bolt->owner->flags_1fc_word & 1) != 0 && (bolt->owner->flags_1fc_word & 0x1000) != 0 && bolt->owner->dead == 0)) {
+            if (bolt->owner == NULL || (bolt->owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+                ((bolt->owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                 (bolt->owner->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && bolt->owner->dead == 0)) {
                 goto reflected;
             }
         }
@@ -1059,7 +1061,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         }
         Bolt_PlayHitSfx(bolt);
         GAMEOBJECT *owner = bolt->owner;
-        if (owner != NULL && (owner->flags_1fc_word & 1) != 0 && (owner->flags_1fc_word & 0x80) == 0 && (owner->flags_1f8 & 1) != 0 &&
+        if (owner != NULL && (owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && (owner->flags_1f8 & 1) != 0 &&
             (owner->flags_1f8 & 1) == (object->flags_1f8 & 1)) {
             goto owner_feedback;
         }
@@ -1081,7 +1084,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         }
     }
 finish:
-    if (object->dead == 0 && (object->flags_1fc & 2) == 0) {
+    if (object->dead == 0 && (object->flags_1fc & APIOBJECT_FLAG_DONT_PUSH) == 0) {
         f32 amount = object->character_data->game_character->walk_speed;
         if (object->scaled_radius > 1.0f) {
             amount /= object->scaled_radius;
@@ -1089,7 +1092,7 @@ finish:
         object->velocity.x += bolt->direction.x * amount;
         object->velocity.z += bolt->direction.z * amount;
     }
-    if ((object->flags_1fc & 0x80) != 0) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         GameCam_HitJudder();
     }
     bolt->active = 0;
@@ -1239,7 +1242,8 @@ extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         GAMEOBJECT *owner;
         u32 flags;
-        if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead != 0) {
+        if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+            object->dead != 0) {
             continue;
         }
         owner = bolt->owner;
@@ -1338,7 +1342,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     bolt->hit_flags |= 0x80;
     u32 flags = type->flags_60;
     if (owner != NULL) {
-        if ((owner->flags_1fc & 0x80) != 0) {
+        if ((owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             flags |= 0x28;
             if (owner->unknown_280 == 0) {
                 flags |= 1;
@@ -1349,7 +1353,8 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
         bool add_speed = InitBolt_AddMomentumType != NULL && InitBolt_AddMomentumType(bolt, owner, &momentum) != 0;
         if (!add_speed) {
             u32 model_flags = owner->character_data->model_flags;
-            add_speed = (model_flags & 0x4000000) != 0 || ((owner->flags_1fc & 0x80) != 0 && (model_flags & 0x2000) != 0);
+            add_speed =
+                (model_flags & 0x4000000) != 0 || ((owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (model_flags & 0x2000) != 0);
         }
         if (add_speed && !no_momentum) {
             f32 speed = (owner->facing_direction.x * owner->velocity.x) + (owner->facing_direction.z * owner->velocity.z);
@@ -1490,7 +1495,8 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
                 if (!hit) {
                     Bolt_PlayHitSfx(bolt);
                 }
-                if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (bolt->owner->flags_1fc & 0x80) != 0) {
+                if (BoltSys->stop_targeting != NULL && bolt->owner != NULL &&
+                    (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     BoltSys->stop_targeting(bolt->owner, &bolt->position);
                 }
             }
@@ -1533,7 +1539,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
         }
         if (bolt->owner != NULL) {
             u32 owner_flags = bolt->owner->flags_1fc_word;
-            if ((owner_flags & 1) == 0 || (owner_flags & 0x1000) == 0) {
+            if ((owner_flags & APIOBJECT_FLAG_IN_USE) == 0 || (owner_flags & APIOBJECT_FLAG_CHARACTER) == 0) {
                 bolt->owner = NULL;
             }
         }
@@ -1656,7 +1662,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 Bolt_PlayHitSfx(bolt);
             }
         stop_targeting:
-            if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (bolt->owner->flags_1fc & 0x80) != 0) {
+            if (BoltSys->stop_targeting != NULL && bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 BoltSys->stop_targeting(bolt->owner, &bolt->position);
             }
         } else {
@@ -1674,7 +1680,8 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
             }
             GAMEOBJECT *object = Obj;
             for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-                if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead != 0) {
+                if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+                    object->dead != 0) {
                     continue;
                 }
                 GAMEOBJECT *owner = bolt->owner;
@@ -1751,7 +1758,7 @@ extern "C" {
         i32 index;
         u16 heading;
 
-        if ((object->flags_1fc & 0x80) != 0) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             flags |= 0x20;
             if (object->unknown_280 == 0) {
                 flags |= 1;
@@ -1856,7 +1863,8 @@ extern "C" {
             if ((flags & 0x600000) != 0) {
                 u16 pitch;
                 NUANGVEC angles;
-                if ((flags & 0x80000000) != 0 && (object->flags_1fc & 0x80) == 0 && object->field_ea0_target != NULL) {
+                if ((flags & 0x80000000) != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
+                    object->field_ea0_target != NULL) {
                     f32 distance = NuVecXZDist(&object->field_ea0_target->collision_position, &object->collision_position, NULL);
                     f32 degrees;
                     if (distance > 2.0f) {

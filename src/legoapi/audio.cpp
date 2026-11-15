@@ -221,7 +221,7 @@ extern "C" {
         }
         target = 0.0f;
         if (silent == 0) {
-            if (object->flags_1fc & 0x80) {
+            if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
                 target = AudioFabs(object->unknown_dc8);
             } else {
                 target = object->velocity_magnitude / character->run_speed;
@@ -232,7 +232,7 @@ extern "C" {
         }
         object->engine_level = SeekLinearF(object->engine_level, target, (f32)((f64)FRAMETIME * .5));
         volume = (f32)((f64)object->engine_level * .5 + .5);
-        if ((object->flags_1fc & 0x80) == 0) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             volume = (f32)((f64)volume * (f64).6f);
         }
         pitch = (f32)((f64)object->engine_level * (f64).4f + (f64).6f);
@@ -271,7 +271,7 @@ void PlayJumpSfx(GAMEOBJECT *object, i32 type) {
         sfx = GameAudio->sfx_ids[0];
     }
     if (sfx != -1) {
-        if ((object->flags_1fc & 0x80) == 0 && (object->portal_flags & 0x08000000) == 0) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && (object->portal_flags & 0x08000000) == 0) {
             PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
         } else {
             PlaySfxById(sfx, &object->lower_position);
@@ -319,7 +319,7 @@ extern "C" {
             }
         }
         if (sfx != -1) {
-            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->portal_flags & 0x8000000) != 0) {
                 PlaySfxById(sfx, &object->lower_position);
             } else {
                 PlaySfxByIdAndSetVolume(sfx, &object->lower_position, 0.5f);
@@ -366,7 +366,7 @@ extern "C" {
             }
         }
         if (sound != -1) {
-            if ((object->flags_1fc_word & 0x80) != 0 || (object->portal_flags & 0x8000000) != 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->portal_flags & 0x8000000) != 0) {
                 PlaySfxById(sound, &object->lower_position);
             } else {
                 PlaySfxByIdAndSetVolume(sound, &object->lower_position, 0.5f);
@@ -467,7 +467,7 @@ extern "C" void PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i3
     if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0) {
         return;
     }
-    if (object->flags_1fc & 0x80) {
+    if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
         bits = 1 << player;
     }
     if (name != NULL) {

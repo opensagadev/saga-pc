@@ -579,7 +579,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
             object->character_context != CHARACTER_CONTEXT_LAND_COMBO_JUMP && objInNetWaitContext(object, 15) == 0) {
             return;
         }
-        if (!(object->flags_1fc & 0x80) && object->unknown_f00 != 3) {
+        if (!(object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && object->unknown_f00 != 3) {
             return;
         }
         teleport = Teleport_Find(object, 0.0f);
@@ -594,7 +594,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
             }
         }
         if (start_immediately == 0 && (objInNetWaitContext(object, 15) == 0 || ((TELEPORT_NET_WAIT_VIEW *)object)->net_wait_info == NULL)) {
-            if ((object->flags_1fc & 0x80)) {
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 object->flags_e24 |= 0x20;
             }
             return;
@@ -604,7 +604,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         teleport->active = 1;
         ((TELEPORT_VARIANT_VIEW *)object)->forwards = FindTeleport_Direction == 0;
         PlayJumpSfx(object, 0);
-        if ((object->flags_1fc & 0x80)) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             Hint_SetComplete(0x268);
         }
         object->unknown_7aa = ACTION_CRAWL;

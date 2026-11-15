@@ -129,8 +129,9 @@ static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME *system, BOMB
         if (generator->anim_set != NULL) {
             GameAnimSet_EvaluateState(generator->anim_set);
         }
-        if (generator->generated_bomb != NULL && (system->flags & 2) != 0 && (generator->generated_bomb->flags_1fc_word & 1) != 0 &&
-            (generator->generated_bomb->flags_1fc_word & 0x1000) != 0) {
+        if (generator->generated_bomb != NULL && (system->flags & 2) != 0 &&
+            (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
             KillGameObject(generator->generated_bomb, 4, 0);
         }
         generator->generated_bomb = NULL;
@@ -156,7 +157,8 @@ static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME *system, BOMB
             Player[index]->cable = NULL;
         }
         player = Player[index];
-        if (player == NULL || (player->flags_1fc_word & 0x80) == 0 || BombGenerator_PlayerBomb[index] == NULL || player->cable != NULL) {
+        if (player == NULL || (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || BombGenerator_PlayerBomb[index] == NULL ||
+            player->cable != NULL) {
             continue;
         }
         if (index != 0 && shared_bomb != 0 && Player[0]->cable != NULL && ((CABLE_s *)Player[0]->cable)->target != NULL &&
@@ -205,7 +207,7 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
                 GAMEOBJECT *bomb;
                 GameAnimSet_SetVisibility(generator->anim_set, 0);
                 bomb = generator->generated_bomb;
-                if (bomb->dead != 0 || (bomb->flags_1fc_word & 0x1000) == 0) {
+                if (bomb->dead != 0 || (bomb->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
                     GAMEANIMSET *anim_set = generator->anim_set;
                     generator->generated_bomb = NULL;
                     GameAnimSet_Reset(anim_set);

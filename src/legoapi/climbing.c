@@ -173,7 +173,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
         !(LEGOCONTEXT_JUMP != -1 && object->character_context == LEGOCONTEXT_JUMP && object->context_timer >= (f64)0.1f)) {
         return;
     }
-    if ((object->flags_1fc & 0x80) == 0 && (object->flags_ef4 & 0x8000) == 0) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && (object->flags_ef4 & 0x8000) == 0) {
         return;
     }
     if (!(object->pad->input_magnitude > 0.0f)) {

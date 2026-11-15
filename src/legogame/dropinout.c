@@ -16,7 +16,7 @@ void CheckForPlayersTurnedOff(void) {
     i32 source_index;
     for (source_index = 0; source_index < 2; ++source_index) {
         GAMEOBJECT *source = Player[source_index];
-        if (source != NULL && !(source->flags_1fc_word & 0x1000)) {
+        if (source != NULL && !(source->flags_1fc_word & APIOBJECT_FLAG_CHARACTER)) {
             i32 target_index;
             for (target_index = 2; target_index < 8; ++target_index) {
                 GAMEOBJECT *target = Player[target_index];
@@ -36,10 +36,10 @@ void CheckForPlayersTurnedOff(void) {
 /* Players whose drop-in flag (0x80) is set. */
 i32 GetNumLocalPlayers(void) {
     i32 count = 0;
-    if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80)) {
+    if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
         count = 1;
     }
-    if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80)) {
+    if (Player[1] != NULL && (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
         count++;
     }
     return count < 0 ? 0 : count;
@@ -163,7 +163,7 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
         object->movement_lean_angle = movement;
         object->tertiary_lean_angle = tertiary;
     }
-    object->flags_1fc_word &= ~0x80u;
+    object->flags_1fc_word &= ~APIOBJECT_FLAG_PLAYER_ACTIVE;
     AICreatureResumeScript(object);
     if (VehicleArea) {
         StartDropOut(object);
@@ -218,7 +218,7 @@ i32 PlayersDropInOut(void) {
             drop_back_in_timer = 0.0f;
             for (index = 0; index < 8; ++index) {
                 object = Player[index];
-                if (object == NULL || (object->flags_1fc_word & 0x80)) {
+                if (object == NULL || (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                     continue;
                 }
                 if (object->flags_ef0 & 0x200000) {
@@ -307,7 +307,7 @@ i32 PlayersDropInOut(void) {
         if (input_join) {
             NuPadMapPlayerToPort(index, port);
         }
-        if (Paused != 0 || menu != -1 || (object->flags_1fc_word & 0x80)) {
+        if (Paused != 0 || menu != -1 || (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             continue;
         }
         object->model_draw_result = 1;
@@ -355,7 +355,7 @@ i32 PlayersDropInOut(void) {
                 continue;
             }
         }
-        object->flags_1fc_word |= 0x80;
+        object->flags_1fc_word |= APIOBJECT_FLAG_PLAYER_ACTIVE;
         object->hud_icon_timer = 2.0f;
         object->input_toggle_hold_time = TOGGLEHOLDTIME;
         NuSound3StopRumble();
@@ -408,7 +408,8 @@ i32 PlayersDropInOut(void) {
                 !(object->portal_flags & 0x4000000)) {
                 drop_back_in_timer = 0.000001f;
             }
-        } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80) && Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80)) {
+        } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&
+                   (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             if (object->unknown_da8 >= 2.0f || (object->model_draw_result == 0 && DROPIN_SCREEN_OUTSIDE(object))) {
                 drop_index = index;
             }

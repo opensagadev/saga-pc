@@ -94,7 +94,8 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
         target = Obj;
         for (i = 0; i < HIGHGAMEOBJECT; ++i, ++target) {
             object = target;
-            if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+                object->dead != 0) {
                 continue;
             }
             if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x8000) != 0 ||
@@ -169,7 +170,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 hit_character = 1;
                 continue;
             }
-            if ((object->flags_1fc & 0x80) != 0 && Player_HasInvincibility(target)) {
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasInvincibility(target)) {
                 damage = 0;
             } else if ((explosion->flags & 0x800) != 0 && (target->portal_flags & 0x8000000) == 0) {
                 damage = -1;
@@ -245,7 +246,7 @@ void UpdateExplosions(void) {
             if (explosion->time >= explosion->duration) {
                 explosion->time = explosion->duration;
             } else {
-                if (explosion->owner != NULL && (explosion->owner->flags_1fc & 1) == 0) {
+                if (explosion->owner != NULL && (explosion->owner->flags_1fc & APIOBJECT_FLAG_IN_USE) == 0) {
                     explosion->owner = NULL;
                 }
                 UpdateExplosion_Generic(explosion);

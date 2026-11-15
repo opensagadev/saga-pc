@@ -999,8 +999,8 @@ extern "C" void UpdatePushBlocks(void *world_ptr, void *, f32) {
             if ((p->packed_state_flags & 2u) == 0 && p->pushing_object != NULL) {
                 GameAudio_PlaySfx(71, &p->pushing_object->collision_position, GameAudio_GetPlrSfxBits(p->pushing_object), 0);
             }
-            if (PushBlockHintId != -1 && p->pushing_object != NULL && (p->pushing_object->flags_1fc_word & 1u) != 0 &&
-                (p->pushing_object->flags_1fc_word & 0x80u) != 0) {
+            if (PushBlockHintId != -1 && p->pushing_object != NULL && (p->pushing_object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (p->pushing_object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 Hint_SetComplete(PushBlockHintId);
             }
         }
@@ -1078,7 +1078,8 @@ extern "C" {
         }
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *object = Player[index];
-            if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
+            if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
                 NearestPushBlock(WORLD, &object->collision_position, 2.0f) != NULL) {
                 return 1;
             }

@@ -107,7 +107,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
         object->character_context = (i8)LEGOCONTEXT_TUBE;
         object->jump_variant_state = 0;
         cooldown = (TUBE_COOLDOWN_VIEW *)tube;
-        if ((object->flags_1fc & 0x80) != 0 && cooldown->audio_cooldown == 0.0f) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && cooldown->audio_cooldown == 0.0f) {
             cooldown->audio_cooldown = 4.0f;
             GameAudio_PlaySfx(6, &object->collision_position, 0, 0);
         }
@@ -378,8 +378,9 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 f32 tz;
                 f32 inverse;
                 u16 angle;
-                if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-                    !(object->character_data->model_flags & CHARACTER_MODEL_DROID) || (GCDataList[(i16)object->id].flags_094 & 0x100)) {
+                if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+                    object->dead != 0 || !(object->character_data->model_flags & CHARACTER_MODEL_DROID) ||
+                    (GCDataList[(i16)object->id].flags_094 & 0x100)) {
                     continue;
                 }
                 if (Tube_InCylinder(object, (TUBE *)tube, &distance, 0) == 0) {

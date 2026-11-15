@@ -390,7 +390,7 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             maximum_distance = (panel->flags & 0x10) != 0 ? 1.21f : 0.80999994f;
             for (player_index = 0; player_index < 8; ++player_index) {
                 GAMEOBJECT *player = Player[player_index];
-                if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0) {
+                if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player->dead == 0) {
                     NUVEC position;
                     NUVEC direction;
                     f32 distance;
@@ -818,7 +818,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                 } else {
                     NewRumble(object->pad->bound_pad, 0.5f, 0);
                 }
-                if ((object->flags_1fc & 0x80) != 0) {
+                if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     u8 variant = ((PANEL_MOVEMENT *)object->grapple)->model_variant;
                     if (variant == 0 || variant == 1) {
                         if (StartupGameFlag1 != 0 && Mission_Active(NULL) != NULL) {
@@ -906,8 +906,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             }
             object->unknown_db0 = 0.0f;
         }
-    } else if (use != 0 && (object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
-               object->unknown_db0 <= 0.0f) {
+    } else if (use != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+               (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->unknown_db0 <= 0.0f) {
         GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->unknown_280);
         object->unknown_db0 = 0.5f;
     }

@@ -690,8 +690,8 @@ static void HubDrawArcadeStats(f32 alpha) {
     i32 first;
     i32 second;
     if (menu == -1) {
-        first = Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0;
-        second = Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0;
+        first = Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
+        second = Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
     } else {
         first = MissionMenuPacket.active_player[0];
         second = MissionMenuPacket.active_player[1];
@@ -2200,7 +2200,7 @@ extern "C" {
             i32 index;
             for (index = 0; index < 2; ++index) {
                 GAMEOBJECT *object = Player[index];
-                if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+                if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     ++active;
                     if (NuVecXZDistSqr(&object->position, &PercentHint_TriggerPos, NULL) < 4.0f) {
                         ++nearby;
@@ -3296,11 +3296,13 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             continue;
         }
         GAMEOBJECT *player = Player[0];
-        if (player != NULL && (player->flags_1fc & 0x80) != 0 && NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
+        if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+            NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
         }
         player = Player[1];
-        if (player != NULL && (player->flags_1fc & 0x80) != 0 && NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
+        if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+            NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
         }
     }
@@ -3323,11 +3325,11 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         i32 selected = -1;
         if (!(HubArea != -1 && HubAreaTime > 0) && !(HubLastArea != -1 && HubEpisodeTime > 0) && candidate != -1) {
             GAMEOBJECT *player = Player[0];
-            if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
+            if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && player->pad->input_magnitude == 0) {
                 selected = hub_minikitviewer_area;
             } else {
                 player = Player[1];
-                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
+                if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && player->pad->input_magnitude == 0) {
                     selected = hub_minikitviewer_area;
                 }
             }
@@ -3370,7 +3372,8 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
             if (gizmo != NULL && GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
                 GAMEOBJECT *player = Player[0];
-                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != CHARACTER_CONTEXT_BUILD_IT) {
+                if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                    player->character_context != CHARACTER_CONTEXT_BUILD_IT) {
                     gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
                     GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
                     if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit)) {
@@ -3383,7 +3386,8 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             if (selected == -1 && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) == 0) {
                 GAMEOBJECT *player = Player[0];
                 GIZBUILDIT *buildit = (GIZBUILDIT *)HubBuildIt;
-                if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != CHARACTER_CONTEXT_BUILD_IT &&
+                if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                    player->character_context != CHARACTER_CONTEXT_BUILD_IT &&
                     ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit))) {
                     selected = 999;
                 }
@@ -4662,8 +4666,8 @@ extern "C" {
                     if ((connection->traversal_flags[packet->path_info.direction] & 0x20) == 0) {
                         other = Obj;
                         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++other) {
-                            if ((other->flags_1fc_word & 1) == 0 || other == owner || (other->flags_1fc_word & 0x1000) == 0 ||
-                                other->dead != 0) {
+                            if ((other->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || other == owner ||
+                                (other->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || other->dead != 0) {
                                 continue;
                             }
                             if (other != player && other->ai_packet.path_info.connection == packet->path_info.connection &&

@@ -173,14 +173,14 @@ void NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_inde
     }
     for (index = 0; index < 8; index++) {
         object = Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
+        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->pad->bound_pad != NULL) {
             NuSound3AddRumble(object->pad->bound_pad, duration, (i32)((f64)strength * 255.0), 0.0f, strength);
         }
     }
 }
 
 void DieRumble(GAMEOBJECT *object) {
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         NewRumble(object->pad->bound_pad, 1.0f, 0);
         NewBuzz(object->pad->bound_pad, 0.3f, 0);
     }
@@ -188,7 +188,7 @@ void DieRumble(GAMEOBJECT *object) {
 
 void KillRumble(GAMEOBJECT *object) {
     FRAME_PAD_PC *pad;
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         NewRumble(object->pad->bound_pad, 0.7f, 0);
         pad = object->pad->bound_pad;
         if (pad != NULL) {
@@ -199,7 +199,7 @@ void KillRumble(GAMEOBJECT *object) {
 
 void HitRumble(GAMEOBJECT *object) {
     FRAME_PAD_PC *pad;
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         pad = object->pad->bound_pad;
         if (pad != NULL) {
@@ -209,7 +209,7 @@ void HitRumble(GAMEOBJECT *object) {
 }
 
 void TakeHitRumble(GAMEOBJECT *object, f32 strength) {
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         NewRumble(object->pad->bound_pad, strength, 0);
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
     }
@@ -218,7 +218,7 @@ void TakeHitRumble(GAMEOBJECT *object, f32 strength) {
 void FloatRumble(GAMEOBJECT *object) {
     f32 strength;
     FRAME_PAD_PC *pad;
-    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         strength = HitsFabs(object->velocity.y);
         strength = (f32)((f64)strength / object->character_data->game_character->run_speed * (f64)0.15f + 0.25);
         if (strength > 1.0f) {
@@ -247,7 +247,7 @@ void ConstantRumble(GAMEOBJECT *object, f32 strength, f32 phase) {
     }
     strength = scale * strength;
     if (object != NULL) {
-        if (object->flags_1fc_word & 0x80) {
+        if (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) {
             NewRumble(object->pad->bound_pad, strength, 0);
         }
     } else {
@@ -320,7 +320,7 @@ i32 ReadPad(i32 port) {
         mode = 1;
         if (port < PLAYERCOUNT && Player[port] != NULL) {
             mode = 2;
-            if ((Player[port]->flags_1fc & 0x80) == 0) {
+            if ((Player[port]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 mode = 3;
             }
         }
@@ -419,7 +419,7 @@ void DoInput(WORLDINFO *world) {
             continue;
         }
         if (input[index] == 0 || input[index] == 1) {
-            if (player != NULL && (player->flags_1fc_word & 0x80) && MiniCutCam == 0) {
+            if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && MiniCutCam == 0) {
                 PadOutPause(index, world);
             }
             continue;
@@ -428,7 +428,7 @@ void DoInput(WORLDINFO *world) {
             continue;
         }
         if (player != NULL) {
-            if (!(player->flags_1fc_word & 0x80)) {
+            if (!(player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 continue;
             }
             if (LEGOCONTEXT_DROPIN != -1 && player->character_context == LEGOCONTEXT_DROPIN) {
@@ -453,7 +453,7 @@ void DoInput(WORLDINFO *world) {
                 if (!escape && !NuKeyboard_db(14) && !NuKeyboard_db(197)) {
                     continue;
                 }
-                if (Player[index] == NULL || !(Player[index]->flags_1fc_word & 0x80)) {
+                if (Player[index] == NULL || !(Player[index]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                     continue;
                 }
             }
@@ -487,7 +487,7 @@ void DoInput(WORLDINFO *world) {
 }
 
 u16 GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
-    if ((object->flags_1fc_word & 0x80) != 0 && object->sock_position.sock_index != -1) {
+    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->sock_position.sock_index != -1) {
         if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & SOCK_FLAG_MOVE_ANGLE) != 0) {
             return (u16)(pad->input_angle + object->sock_heading + WORLD->sock_sys->socks[object->sock_position.sock_index].input_yaw);
         }

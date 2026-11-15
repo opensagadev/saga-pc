@@ -248,14 +248,16 @@ void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 
         }
     } else if (active == 0 && name != NULL) {
         player = Player[0];
-        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 && player->ai_packet.creature_index != 0xff) {
+        if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player->dead == 0 &&
+            player->ai_packet.creature_index != 0xff) {
             creature = &world->ai_sys->creatures[player->ai_packet.creature_index];
             if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                 ReleaseTakeOver(Player[0], 0);
             }
         }
         player = Player[1];
-        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 && player->ai_packet.creature_index != 0xff) {
+        if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player->dead == 0 &&
+            player->ai_packet.creature_index != 0xff) {
             creature = &world->ai_sys->creatures[Player[0]->ai_packet.creature_index];
             if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                 ReleaseTakeOver(Player[1], 0);

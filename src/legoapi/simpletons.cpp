@@ -463,10 +463,10 @@ extern "C" {
             f32 first_distance;
             first_distance = 9999.0f;
             second_distance = 9999.0f;
-            if (Player[0]->flags_1fc_word & 0x80) {
+            if (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) {
                 first_distance = NuVecDist(&Player[0]->position, &shot_position, NULL);
             }
-            if (Player[1]->flags_1fc_word & 0x80) {
+            if (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) {
                 second_distance = NuVecDist(&Player[1]->position, &shot_position, NULL);
             }
 

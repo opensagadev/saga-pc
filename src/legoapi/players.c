@@ -226,7 +226,8 @@ GAMEOBJECT *fun_0055e2b0(i32 id) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *player = Player[index];
-        if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 && (i16)player->id == id) {
+        if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (i16)player->id == id) {
             return player;
         }
     }
@@ -252,7 +253,7 @@ i32 Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
     i32 i;
     for (i = 0; i < 2; ++i) {
         GAMEOBJECT *player = Player[i];
-        if (player != NULL && (player->flags_1fc_word & 0x80)) {
+        if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             NuVecAdd(&total, &total, &player->position);
             count += 1.0f;
         }
@@ -274,13 +275,13 @@ i32 Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
 GAMEOBJECT *player2 = 0;
 
 void SetPlayer(void) {
-    if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80) != 0) {
+    if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         player = Player[0];
-        if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80) != 0) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             player2 = Player[1];
             return;
         }
-    } else if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80) != 0) {
+    } else if (Player[1] != NULL && (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         player = Player[1];
     } else {
         player = NULL;
@@ -391,8 +392,8 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
         maximum = &bounds_max;
     }
     for (i = 0; i < count; ++i, ++object) {
-        if (object == excluded || !(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead ||
-            (object->flags_e20 & 0x20)) {
+        if (object == excluded || !(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) ||
+            !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead || (object->flags_e20 & 0x20)) {
             continue;
         }
         if ((flags & 2) && !object->unknown_281) {
@@ -442,7 +443,7 @@ u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *dis
     *distance_squared = 0.0f;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *candidate = Player[index];
-        if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
+        if (candidate != NULL && (candidate->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
             if (candidate_distance < *distance_squared || *nearest_player == NULL) {
                 if (require_character_flags == 0 || (Player[index]->character_data->game_character->flags_090 & character_flags) != 0) {
@@ -466,7 +467,7 @@ u8 FindFurthestPlayerFromVec(NUVEC *position, GAMEOBJECT **furthest_player, f32 
     *distance_squared = 0.0f;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *candidate = Player[index];
-        if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
+        if (candidate != NULL && (candidate->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
             if (candidate_distance > *distance_squared || *furthest_player == NULL) {
                 if (require_character_flags == 0 || (Player[index]->character_data->game_character->flags_090 & character_flags) != 0) {
@@ -614,11 +615,12 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
         }
         if (BonusArea == 0 || VehicleArea == 0) {
             if ((GCDataList[id].flags_090 & 0x80000000) != 0) {
-                if ((object->flags_1fc_word & 0x80) == 0 || Cheats_CheckFlags(0x100) == 0) {
+                if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || Cheats_CheckFlags(0x100) == 0) {
                     goto next_character;
                 }
             } else {
-                if ((object->flags_1fc_word & 0x80) == 0 && collected == -1 && ((GCDataList[id].flags_094 >> 24) & 1) == 0) {
+                if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && collected == -1 &&
+                    ((GCDataList[id].flags_094 >> 24) & 1) == 0) {
                     goto next_character;
                 }
                 if (((GCDataList[id].flags_094 >> 24) & 1) == 0 && (collected == -1 || Collection_Got(id) == 0)) {
@@ -640,7 +642,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
     if (attempts >= apicharsys->loaded_model_count || allowed == 0) {
         return;
     }
-    if ((object->flags_1fc_word & 0x80) != 0) {
+    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(LEGOHINT_FREEPLAYTOGGLE);
         if (VehicleArea == 0) {
             GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
@@ -662,7 +664,8 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
 }
 
 i32 Arcade_BothPlayersActive(void) {
-    return Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0;
+    return Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
+           (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
 }
 
 i32 Player_HasInvincibility(GAMEOBJECT *object) {
@@ -792,8 +795,8 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                 } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
                     if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 1) == 0) {
                         object->position = object->sock_position.midpoint;
-                        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
-                            (Player[1]->flags_1fc & 0x80) != 0) {
+                        if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
+                            (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                             NUVEC offset;
                             f32 side = object == Player[0] ? -1.0f : 1.0f;
                             NuVecNorm(&offset, &WORLD->sock_sys->socks[object->sock_position.sock_index]

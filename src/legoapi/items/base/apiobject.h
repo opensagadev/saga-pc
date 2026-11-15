@@ -152,9 +152,13 @@ extern "C" {
 }
 #endif
 
-enum { APIOBJECT_FLAG_CHARACTER = 4096 };
-
-enum { APIOBJECT_FLAG_IN_USE = 1 };
+/* gameobject_s.flags_1fc (and its _half/_word views): the bits whose setter or test says what they mean. */
+#define APIOBJECT_FLAG_IN_USE 0x1         /* the object slot is live */
+#define APIOBJECT_FLAG_DONT_PUSH 0x2      /* from CHARACTER_MODEL_DONT_PUSH and the GameDontPush AI action */
+#define APIOBJECT_FLAG_SHADOW_TERRAIN 0x8 /* the ShadowTerrain AI action */
+#define APIOBJECT_FLAG_PLAYER_ACTIVE 0x80 /* set when a player drops in, cleared when it drops out */
+#define APIOBJECT_FLAG_CAN_FIRE 0x200     /* copy of CHARACTER_MODEL_CAN_FIRE for an active player */
+#define APIOBJECT_FLAG_CHARACTER 0x1000
 
 /* gameobject_s.character_context: the index into CInfo (PCContextInfoTable[1 + context]), whose rows name them. */
 #define CHARACTER_CONTEXT_NONE (-1)

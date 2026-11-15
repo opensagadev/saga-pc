@@ -499,7 +499,7 @@ extern "C" {
         if (buffer == NULL || buffer->capacity == 0) {
             return;
         }
-        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
+        if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             valid0 = 1;
             player0.x = Player[0]->transform.m30;
             player0.y = Player[0]->transform.m31;
@@ -507,7 +507,7 @@ extern "C" {
         } else {
             valid0 = 0;
         }
-        if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             valid1 = 1;
             player1.x = Player[1]->transform.m30;
             player1.y = Player[1]->transform.m31;
@@ -1205,8 +1205,8 @@ extern "C" {
             return 1;
         }
         if (fighter->target_id == -2) {
-            if ((NuRandFloat() < 0.5f && (player = Player[0]) != NULL && (player->flags_1fc & 0x80) != 0) ||
-                ((player = Player[1]) != NULL && (player->flags_1fc & 0x80) != 0)) {
+            if ((NuRandFloat() < 0.5f && (player = Player[0]) != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) ||
+                ((player = Player[1]) != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0)) {
                 DogfightCachedPlayerPosition = player->collision_position;
                 DogfightCachedPlayerVelocity = player->velocity;
             }
@@ -1768,7 +1768,7 @@ extern "C" {
         i32 i;
 
         player = Player[0];
-        if (player != NULL && (player->flags_1fc_word & 0x80) != 0) {
+        if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             origin = player->position;
         } else {
             player = Player[1];

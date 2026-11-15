@@ -466,7 +466,7 @@ void ComboHitFrame(GAMEOBJECT *object, i32 damage) {
     object->context_variant_flags |= 0x40;
     object->sabre_flags |= 5;
     object->sabre_damage = (u8)damage;
-    if ((object->flags_1fc & 0x80) != 0 && Player_HasDoubleWeaponDamage(object)) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasDoubleWeaponDamage(object)) {
         object->sabre_damage = (u8)(object->sabre_damage + object->sabre_damage);
     }
     BlockSfx(object);
@@ -531,8 +531,9 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
         }
     }
     if (target != NULL) {
-        if (!(target->flags_1fc_word & 1) || !(target->flags_1fc_word & 0x1000) || target->dead != 0 ||
-            attacker->collision_max.y < target->collision_min.y || attacker->collision_min.y > target->collision_max.y) {
+        if (!(target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+            target->dead != 0 || attacker->collision_max.y < target->collision_min.y ||
+            attacker->collision_min.y > target->collision_max.y) {
             goto finish;
         }
         if (LEGOCONTEXT_HOLD != -1 && target->character_context == LEGOCONTEXT_HOLD) {
@@ -574,7 +575,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
                 }
                 hit_position = &target->collision_position;
             }
-            if (!(target->flags_1fc & 2)) {
+            if (!(target->flags_1fc & APIOBJECT_FLAG_DONT_PUSH)) {
                 impulse = target->character_data->game_character->run_speed;
                 if (attacker->scaled_radius > 1.0f) {
                     impulse /= attacker->scaled_radius;

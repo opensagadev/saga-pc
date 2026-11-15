@@ -121,7 +121,7 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     if (moves == NULL) {
         return -1;
     }
-    if ((attacker->flags_1fc & 0x80) && attacker->unknown_da8 > 0.0f) {
+    if ((attacker->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && attacker->unknown_da8 > 0.0f) {
         return -1;
     }
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || LEGOCONTEXT_SPECIALMOVE_VICTIM == -1) {
@@ -135,7 +135,8 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
             (victim->id == (u16)move->victim_id ||
              (move->victim_action_type != -1 && victim->character_data->game_character->weapon_action == move->victim_action_type)) &&
             victim->character_model->model_data_b[move->victim_animation] != NULL &&
-            (!(victim->flags_1fc & 0x80) || (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000)))) {
+            (!(victim->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) ||
+             (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000)))) {
             return i;
         }
     }
@@ -147,7 +148,9 @@ static void SpecialMove_KillVictim(GAMEOBJECT *victim) {
         objhitobj_throwkillpartsup = 1;
     }
     ObjHitObj(victim->force_target, victim,
-              (victim->force_target->flags_1fc_word & 0x80) && Player_HasInvincibility(victim->force_target) ? 1 : -1, 0x1000, 0, 1);
+              (victim->force_target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player_HasInvincibility(victim->force_target) ? 1
+                                                                                                                                     : -1,
+              0x1000, 0, 1);
 }
 
 i32 SpecialMove_ReleaseVictim(GAMEOBJECT *object) {

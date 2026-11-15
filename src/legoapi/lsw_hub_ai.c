@@ -180,7 +180,7 @@ void HubGoneThroughDoor(WORLDINFO *world) {
     if (path != NULL && AISysSetLevelPath(world->ai_sys, (char *)path) != 0) {
         for (index = 0; index < 8; ++index) {
             object = Player[index];
-            if (object != NULL && (object->flags_1fc_half & 1) != 0) {
+            if (object != NULL && (object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) != 0) {
                 AISysCharacterSetPath(&object->ai_packet, world->ai_sys->path_sys->active_path);
                 AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->unknown_281);
             }
@@ -189,7 +189,8 @@ void HubGoneThroughDoor(WORLDINFO *world) {
     Hub_MakeListCharactersAvailable(characters);
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_half & 1) == 0 || (i8)object->unknown_280 != -1 || object->ai_packet.creature_index != 0xff) {
+        if ((object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) == 0 || (i8)object->unknown_280 != -1 ||
+            object->ai_packet.creature_index != 0xff) {
             continue;
         }
         object->tag_object_callback = NULL;

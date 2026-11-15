@@ -157,8 +157,9 @@ i32 OpponentCanAcquire(APIOBJECT *observer, APIOBJECT *target, f32 distance, u64
 }
 
 void AlertSurroundingCreatures(GAMEOBJECT *object, NUVEC *position) {
-    if (object != NULL && ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || (object->flags_1f8 & 5) != 0 ||
-                           (object->character_data->game_character->flags_090 & 0x8000) != 0)) {
+    if (object != NULL &&
+        ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+         (object->flags_1f8 & 5) != 0 || (object->character_data->game_character->flags_090 & 0x8000) != 0)) {
         return;
     }
     alert_obj = object;
@@ -196,7 +197,7 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
     if (baddy_count == 0) {
         complete = 1;
     }
-    if (alert_obj != NULL && (alert_obj->flags_1fc_word & 0x1000) != 0 && (alert_obj->flags_1f8 & 5) == 0 &&
+    if (alert_obj != NULL && (alert_obj->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (alert_obj->flags_1f8 & 5) == 0 &&
         (alert_obj->character_data->game_character->flags_090 & 0x8000) == 0) {
         for (i = 0; i < baddy_count; ++i) {
             object = baddies[i];
@@ -476,7 +477,8 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
     i32 i;
     i32 j;
     for (i = 0; i < count; ++i, ++object) {
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            object->dead != 0) {
             continue;
         }
         if ((object->flags_1f8 & 1) != 0) {
@@ -505,7 +507,8 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
     }
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            object->dead != 0) {
             continue;
         }
         object->ai_packet.flags &= ~0x5800;
@@ -533,8 +536,8 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
         i32 all_under_cover = 1;
         for (i = 0; i < 8; ++i) {
             GAMEOBJECT *player = Player[i];
-            if (player == NULL || (player->flags_1fc_word & 1) == 0 || (player->flags_1fc_word & 0x1000) == 0 || player->dead != 0 ||
-                (player->flags_ef3 & 1) != 0) {
+            if (player == NULL || (player->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+                (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || player->dead != 0 || (player->flags_ef3 & 1) != 0) {
                 continue;
             }
             if (player->helmet == 5 || ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
@@ -814,7 +817,7 @@ static void GameAIUpdateArea(AIAREA *area) {
     i32 inside_low;
     area->runtime_flags &= ~7u;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
             continue;
         }
         if (object->dead != 0 && !(object->unknown_1010 > 0.0f) && (i8)object->flags_1fc_half >= 0) {
@@ -827,7 +830,7 @@ static void GameAIUpdateArea(AIAREA *area) {
             inside_low = (i32)(1u << (area_index & 31));
             object->ai_area_mask[0] |= (u32)inside_low;
             object->ai_area_mask[1] |= (u32)((i64)inside_low >> 32);
-            if ((object->flags_1fc_half & 0x80) != 0) {
+            if ((object->flags_1fc_half & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 area->runtime_flags |= 1;
             }
             if ((object->flags_1f8 & 1) != 0) {
@@ -1132,7 +1135,7 @@ APIOBJECT *GetNamedAPIObject(void *system_pointer, char *name) {
     object = NULL;
     if (system != NULL) {
         for (index = 0; index < HIGHGAMEOBJECT; index++) {
-            if ((Obj[index].flags_1fc & 1u) == 0) {
+            if ((Obj[index].flags_1fc & APIOBJECT_FLAG_IN_USE) == 0) {
                 continue;
             }
             if ((Obj[index].flags_1f8 & 0x400u) != 0 && Obj[index].ai_packet.creature_index != 0xff) {
@@ -1279,10 +1282,10 @@ APIOBJECT *GameAPIOBJECTFromObjID(u8 object_id) {
     if (object_id < HIGHGAMEOBJECT) {
         object = &Obj[object_id];
         flags = object->flags_1fc_word;
-        if ((flags & 1) == 0) {
+        if ((flags & APIOBJECT_FLAG_IN_USE) == 0) {
             return NULL;
         }
-        if ((flags & 0x1000) == 0 && object->ai_packet.reset_mode != 3) {
+        if ((flags & APIOBJECT_FLAG_CHARACTER) == 0 && object->ai_packet.reset_mode != 3) {
             return NULL;
         }
         if (object->dead != 0 && !(object->unknown_1010 > 0.0f)) {
@@ -1801,8 +1804,9 @@ void oneAtOnce_MaintainArray(void) {
 
     for (index = 0; index < HIGHGAMEOBJECT; ++index) {
         object = &Obj[index];
-        if (object == NULL || (object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 ||
-            object->ai_packet.opponent == NULL || (object->flags_ef4 & 0x2000) == 0) {
+        if (object == NULL || (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || object->ai_packet.opponent == NULL ||
+            (object->flags_ef4 & 0x2000) == 0) {
             continue;
         }
         old_player = object->one_at_once_player;
@@ -2183,7 +2187,8 @@ u32 GameAI_TotalScore(void) {
     u32 total = 0;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; i++, object++) {
-        if ((object->flags_1fc & 1) != 0 && (object->flags_1f8 & 0x400) != 0 && object->ai_packet.creature_index != 0xff) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1f8 & 0x400) != 0 &&
+            object->ai_packet.creature_index != 0xff) {
             config = object->character_data->game_character;
             if ((config->flags_090 & 0x40) == 0 && object->id != id_GONKDROID) {
                 total += (u16)config->coin_value;
@@ -2252,7 +2257,7 @@ void GameAIProcess(void) {
 
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++object, ++index) {
-        if (!((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0)) {
+        if (!((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0)) {
             continue;
         }
         object->flags_ef0 &= ~0x8000u;
@@ -2300,9 +2305,10 @@ void GameAIProcess(void) {
     all_under_cover = 1;
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-            (object->dead == 0 || object->unknown_1010 > 0.0f) && (object->flags_ef3 & 1) == 0 && StartupGameFlag1 != 0 &&
-            (NULL == VADER_ADATA || WORLD->area != VADER_ADATA) && party_cant_be_under_cover == 0) {
+        if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (object->dead == 0 || object->unknown_1010 > 0.0f) &&
+            (object->flags_ef3 & 1) == 0 && StartupGameFlag1 != 0 && (NULL == VADER_ADATA || WORLD->area != VADER_ADATA) &&
+            party_cant_be_under_cover == 0) {
             if (object->helmet == 5 || ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
                                         (object->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
                                         object->takeover_source == NULL)) {
@@ -2331,9 +2337,9 @@ void GameAIProcess(void) {
         } else {
             object = Player[index];
         }
-        if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-            (object->dead == 0 || object->unknown_1010 > 0.0f) && object->character_context != CHARACTER_CONTEXT_DEACTIVATED &&
-            object->character_context != CHARACTER_CONTEXT_STUNNED) {
+        if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (object->dead == 0 || object->unknown_1010 > 0.0f) &&
+            object->character_context != CHARACTER_CONTEXT_DEACTIVATED && object->character_context != CHARACTER_CONTEXT_STUNNED) {
             if (party_under_cover != 0 && (object->ai_packet.flags & 0x4000) != 0) {
                 party_under_cover = 0;
             }
@@ -2359,8 +2365,9 @@ void GameAIProcess(void) {
             }
         }
         object = Player[index];
-        if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-            (object->dead == 0 || object->unknown_1010 > 0.0f) && 0 == (object->flags_ef3 & 1) && (object->flags_1fc_word & 0x80) == 0) {
+        if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (object->dead == 0 || object->unknown_1010 > 0.0f) &&
+            0 == (object->flags_ef3 & 1) && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             party_follow_offsets[(i8)object->unknown_280] = follow_offset;
             follow_offset += GameAiPartyFollowSpacing;
         }
@@ -2368,8 +2375,8 @@ void GameAIProcess(void) {
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         object->active_trigger_set = NULL;
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-            object->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            object->dead != 0 || object->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
             goto interaction;
         }
 
@@ -2410,7 +2417,7 @@ void GameAIProcess(void) {
             }
         }
         if ((object->flags_1f8 & 0x40000) != 0) {
-            if ((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->context_target_position == NULL &&
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->context_target_position == NULL &&
                 (object->character_data->game_character->flags_090 & 0x8000) == 0) {
                 ++interactive_count;
                 *interactive_cursor++ = (APIOBJECT *)object;
@@ -2459,7 +2466,8 @@ void GameAIProcess(void) {
             }
             object->portal_flags &= ~0x30000u;
         }
-        if (StartupGameFlag0 != 0 && (object->flags_1fc_word & 0x80) != 0 && object->character_context != LEGOCONTEXT_GRAPPLE) {
+        if (StartupGameFlag0 != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+            object->character_context != LEGOCONTEXT_GRAPPLE) {
             saved_ai_flags = object->ai_packet.capabilities;
             object->ai_packet.capabilities = saved_ai_flags & ~8u;
             AISysProcessCharacter(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, ground_checks, object->ai_elapsed_time, 0,
@@ -2469,7 +2477,7 @@ void GameAIProcess(void) {
             AISysProcessCharacter(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, ground_checks, object->ai_elapsed_time, 0,
                                   (ai_update_flags >> 3) & 1);
         }
-        if (((object->flags_1fc_word & 0x80) == 0)) {
+        if (((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
             if (object->character_context == CHARACTER_CONTEXT_BALLOONING) {
                 SetBallooningHeight(object, object->ai_packet.movement_destination.y);
             }
@@ -2522,7 +2530,7 @@ void GameAIProcess(void) {
             }
         }
         if (FreePlay != 0 && (object->flags_1f8 & 0x400) == 0) {
-            if ((object->flags_1fc_word & 0x80) == 0 && object->character_context != CHARACTER_CONTEXT_INTERFACE) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->character_context != CHARACTER_CONTEXT_INTERFACE) {
                 if (drop_in_teleport == 1 && VehicleArea == 0 && (Arcade != 0 || teleport_all_freeplay_modes != 0) &&
                     object->model_draw_result == 0 && (object->tag_flags & 2) == 0 && drop_back_in_timer > 0.0f) {
                     position = player->last_safe_position;
@@ -2597,11 +2605,12 @@ void GameAIProcess(void) {
         } else if ((object->ai_packet.flags & AIPACKET_PATH_BLOCKED) != 0) {
             AISysFindRoute(&object->ai_packet);
         }
-        if ((object->flags_1fc_word & 0x180) == 0x80) {
+        if ((object->flags_1fc_word & 0x180) == APIOBJECT_FLAG_PLAYER_ACTIVE) {
             object->flags_ef0 &= ~4;
-            object->flags_1fc_word = (object->flags_1fc_word & ~0x200u) | ((object->character_data->model_flags >> 19) & 0x200u);
+            object->flags_1fc_word =
+                (object->flags_1fc_word & ~APIOBJECT_FLAG_CAN_FIRE) | ((object->character_data->model_flags >> 19) & 0x200u);
         } else {
-            object->flags_1fc_word &= ~0x200u;
+            object->flags_1fc_word &= ~APIOBJECT_FLAG_CAN_FIRE;
             defend = 0;
             if ((object->combat_flags & 0x80) != 0 && (APIOBJECT *)object->ai_packet.opponent != NULL) {
                 bolt = BoltType_FindByID(0, WORLD);
@@ -2644,9 +2653,10 @@ void GameAIProcess(void) {
                     object->combat_flags4 &= ~0x20;
                 }
             }
-            if (0 != (object->combat_flags & 8) && (defend || (object->combat_flags & 0x30) != 0 ||
-                                                    ((object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) &&
-                                                     (object->flags_1fc_word & 0x80) == 0 && object->unknown_280 != 0xff))) {
+            if (0 != (object->combat_flags & 8) &&
+                (defend || (object->combat_flags & 0x30) != 0 ||
+                 ((object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) &&
+                  (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_280 != 0xff))) {
                 if ((object->unknown_e22 & 1) == 0 && object->character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
                     object->unknown_e33 == 0) {
                     object->pad->buttons_pressed |= GAMEPAD_ACTION;
@@ -2656,7 +2666,8 @@ void GameAIProcess(void) {
                 object->pad->buttons_pressed |= GAMEPAD_SPECIAL;
             }
         }
-        if ((object->character_data->game_character->flags_094_bytes[3] & 0x10) != 0 && (object->flags_1fc_word & 0x80) == 0) {
+        if ((object->character_data->game_character->flags_094_bytes[3] & 0x10) != 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             threshold = (f32)((f64)object->character_data->game_character->walk_speed - (f64)0.01f);
             if (object->jump_variant_state == 1) {
                 if (threshold >= object->pad->input_magnitude) {
@@ -2682,15 +2693,15 @@ void GameAIProcess(void) {
             SetObjAsHeadTarget(object, ((APIOBJECT *)object->ai_packet.opponent)->owner, 2, 1.0f, 0.0f, 0.0f);
         }
     interaction:
-        if ((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->context_target_position == NULL &&
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->context_target_position == NULL &&
             (object->character_data->game_character->flags_090 & 0x8000) == 0) {
             ++interactive_count;
             *interactive_cursor++ = (APIOBJECT *)object;
             object->ai_collision_priority = HIGHGAMEOBJECT - object->hostility_group;
             object->ai_resolved_collision_priority = 0;
-            if ((object->flags_1fc_word & 2) != 0 || (object->flags_ef0 & 0x80000000u) != 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_DONT_PUSH) != 0 || (object->flags_ef0 & 0x80000000u) != 0) {
                 object->ai_collision_priority = 0x8000;
-            } else if ((object->flags_1fc_word & 0x80) == 0) {
+            } else if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 if ((object->ai_packet.flags & 0x80000000u) != 0) {
                     object->ai_collision_priority |= 0x4000;
                 }
@@ -2730,7 +2741,7 @@ void GameAIProcess(void) {
                     U64_PAIR(object->ai_opponent_exclusion_mask) |= (u64)1 << player2->hostility_group;
                 }
             }
-            if ((object->flags_1fc_word & 0x80) != 0 && object->unknown_281 != 0 &&
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->unknown_281 != 0 &&
                 object->pad->input_magnitude > (WALKSTEALTH != 0 ? object->character_data->game_character->walk_speed
                                                                  : object->character_data->game_character->tiptoe_speed)) {
                 object->portal_flags |= 0x800;

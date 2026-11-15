@@ -735,7 +735,7 @@ void JediB_Update(WORLDINFO *world) {
         object->ai_opponent_exclusion_mask[0] = 0;
         object->ai_opponent_exclusion_mask[1] = 0;
         object = Player[slot];
-        if ((object->flags_1fc & 0x80) == 0 && jedi_b.boss != NULL && jedi_b.phase == 7) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && jedi_b.boss != NULL && jedi_b.phase == 7) {
             mask = (u64)1 << jedi_b.boss->hostility_group;
             object->ai_opponent_exclusion_mask[0] |= (u32)mask;
             object->ai_opponent_exclusion_mask[1] |= (u32)(mask >> 32);
@@ -760,7 +760,7 @@ void JediB_Update(WORLDINFO *world) {
                 baddie->object->ai_packet.locator = NULL;
                 target = NULL;
                 if ((player->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
-                    ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & 0x80) != 0) &&
+                    ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
                     (player->character_data->game_character->weapon_action != 4 ||
                      baddie->object->character_data->game_character->weapon_action != 4)) {
                     target = player;
@@ -770,7 +770,7 @@ void JediB_Update(WORLDINFO *world) {
                     }
                     if (player2 != NULL) {
                         if ((player2->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
-                            ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & 0x80) != 0) &&
+                            ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
                             (player->character_data->game_character->weapon_action != 4 ||
                              baddie->object->character_data->game_character->weapon_action != 4)) {
                             target = player2;
@@ -1307,8 +1307,8 @@ void KaminoC_Update(WORLDINFO *world) {
                 position = NuSpecialGetPos(&kaminodisco.pending[kaminodisco.tile[k]]);
                 for (i = 0; i < 8; i++) {
                     GAMEOBJECT *object = Player[i];
-                    if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 &&
-                        object->unknown_281 != 0) {
+                    if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                        (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->unknown_281 != 0) {
                         f32 dx = position->x - object->position.x;
                         f32 dy = position->y - object->position.y;
                         f32 dz = position->z - object->position.z;
@@ -1672,7 +1672,7 @@ void KaminoE_Update(WORLDINFO *world) {
                         continue;
                     }
                     flags = object->flags_1fc_word;
-                    if ((flags & 1) == 0 || (flags & 0x1000) == 0 ||
+                    if ((flags & APIOBJECT_FLAG_IN_USE) == 0 || (flags & APIOBJECT_FLAG_CHARACTER) == 0 ||
                         (object->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) != 0) {
                         continue;
                     }
@@ -2035,10 +2035,10 @@ void BonusGunshipB_Update(WORLDINFO *world) {
             previous_time = MiscTime;
             MiscTime -= FRAMETIME;
             if (MiscTime <= 0.0f) {
-                if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
+                if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     LoseCoins(Player[0], 1);
                 }
-                if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
+                if (Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     LoseCoins(Player[1], 1);
                 }
                 if (GunshipPlayerDead == 0) {

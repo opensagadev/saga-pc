@@ -572,8 +572,8 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     i32 destination;
     i32 index;
     (void)player_triggered;
-    if ((door->flags & 0x10) != 0 &&
-        (Player[0] == NULL || (Player[0]->flags_1fc & 0x80) == 0 || Player[1] == NULL || (Player[1]->flags_1fc & 0x80) == 0)) {
+    if ((door->flags & 0x10) != 0 && (Player[0] == NULL || (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
+                                      Player[1] == NULL || (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
         return;
     }
     if (NewLData != NULL) {
@@ -666,7 +666,8 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
     if (door == NULL || (object->flags_1f8 & 0x40000) != 0) {
         return;
     }
-    two_players = Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0;
+    two_players = Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
+                  (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
     centre_height = (f32)(((f64)object->character_top + object->character_bottom) * object->origin_scale * 0.5);
     previous.x = object->start_position.x;
     previous.y = object->start_position.y + centre_height;
@@ -704,7 +705,7 @@ void Doors_Check(WORLDINFO *world, GAMEOBJECT *object) {
             NuPtInPoly(&intersection, &door->point1, &door->opposite_midpoint, &door->point3, &door->plane) == 0) {
             continue;
         }
-        if ((object->flags_1fc & 0x80) != 0 && ((door->flags & 0x10) == 0 || two_players)) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && ((door->flags & 0x10) == 0 || two_players)) {
             Door_GoThrough(world, door, 1);
             return;
         }

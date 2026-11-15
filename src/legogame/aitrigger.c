@@ -269,8 +269,8 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                     }
                     if (Lever_BeingPulled(lever) && set->trigger_indices[index] != -1) {
                         object = &Obj[set->trigger_indices[index]];
-                        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 ||
-                            !GameObjectUsingLever(object, lever)) {
+                        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+                            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || !GameObjectUsingLever(object, lever)) {
                             AITRIGGER_RELEASE(system, set, index);
                         }
                     }
@@ -367,8 +367,9 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM_PC *system) {
                         if (system->assigned_trigger[object_index] != -1) {
                             continue;
                         }
-                        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-                            (object->flags_1fc_word & 0x80) != 0 || (object->flags_ef3 & 1) != 0) {
+                        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+                            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || object->dead != 0 ||
+                            (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->flags_ef3 & 1) != 0) {
                             continue;
                         }
                         if (character_mask != 0 && (U64_PAIR(&object->ai_packet.route_mask_low) & character_mask) == 0) {

@@ -523,7 +523,8 @@ extern "C" {
         if (object->unknown_107e > 0) {
             hitpoints = object->unknown_107e;
             current_hp = object->current_hp;
-            if ((PlayerHitPointsTwoHearts != 0 && (object->flags_1fc & 0x80) != 0) || WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
+            if ((PlayerHitPointsTwoHearts != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) ||
+                WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
                 odd = (hitpoints & 1) != 0 && hitpoints == current_hp ? 0 : current_hp & 1;
                 current_hp = current_hp / 2 + odd;
                 hitpoints = (hitpoints & 1) != 0 ? hitpoints / 2 + 1 : hitpoints / 2;
@@ -696,7 +697,7 @@ extern "C" {
             if (object == NULL) {
                 continue;
             }
-            base_alpha = paused != 0 && player != pause_i_pad && (object->flags_1fc & 0x80) != 0 ? 0.5f : 1.0f;
+            base_alpha = paused != 0 && player != pause_i_pad && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 ? 0.5f : 1.0f;
             if (player == 0) {
                 alignment = 2;
                 icon_x = -ICONX;
@@ -706,7 +707,7 @@ extern "C" {
                 icon_x = ICONX;
                 frame_model = 165;
             }
-            alpha = ((object->flags_1fc & 0x80) != 0 ? 1.0f : MissionDropInAlpha) * base_alpha;
+            alpha = ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 ? 1.0f : MissionDropInAlpha) * base_alpha;
             icon_alpha = (i32)((f64)alpha * 128.0);
             drawcharicon_i_panel = player;
             if (WORLD->current_level == dat_0087b268 && object->takeover_source != NULL &&
@@ -722,7 +723,7 @@ extern "C" {
                              0.0f, MissionPlayerIconSize, frame_model, alpha, alpha, visible, NULL);
             }
             name_x = player == 0 ? -(ICONX + HudNameOffsetX) : ICONX + HudNameOffsetX;
-            if ((object->flags_1fc & 0x80) != 0 && object->character_data->name_id != -1 &&
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->character_data->name_id != -1 &&
                 (paused != 0 || (object->hud_icon_timer > 0.0f && object->hud_icon_timer < 2.0f &&
                                  (f64)NuFmod(object->hud_icon_timer, 0.4f) < (f64)0.2f))) {
                 f32 name_y = status_y + HudNameOffsetY;
@@ -737,7 +738,7 @@ extern "C" {
                             alignment | 1, (u8)HudPausePromptRed, (u8)HudPausePromptGreen, HudPausePromptBlue, width, 1, NULL, 0,
                             flash_alpha);
             }
-            if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & 0x80) != 0) {
+            if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
                     if (FindGameMsgsWithID(7, 0, (i8)object->unknown_280, NULL) == 0 &&
                         (object->powerup_time >= 3.0f || GameTimer.update_count % 6 < 3)) {
@@ -760,7 +761,7 @@ extern "C" {
                     }
                 }
             }
-            if ((object->flags_1fc & 0x80) != 0) {
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 f32 x = player == 0 ? -HudHeartX : HudHeartX;
                 f32 y = raised_hearts != 0 ? status_y : status_y + HudHeartY;
                 DrawHitPoints(object, x, y, HudHeartScale, 1.0f, alignment, alpha, 1);
@@ -861,8 +862,9 @@ extern "C" {
             }
         }
         if (BonusArea != 0 && WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_SUPER_BONUS_AREA) == 4) {
-            DrawBonusScore(status_y, Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0,
-                           Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0, 1.0f, Arcade != 0 ? Arcade_Points : BonusScore);
+            DrawBonusScore(status_y, Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0,
+                           Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0, 1.0f,
+                           Arcade != 0 ? Arcade_Points : BonusScore);
         }
         if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA && goldbricktime > 0.0f) {
             f32 y = (STATSPOS2Y - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] - STATSPOS2Y;
@@ -889,7 +891,7 @@ extern "C" {
     }
 
     static i32 DrawBossHitPointsPc(GAMEOBJECT *boss) {
-        if (boss != NULL && boss->dead == 0 && (boss->flags_1fc & 0x80) == 0) {
+        if (boss != NULL && boss->dead == 0 && (boss->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             if (FadeSys.fade == 0.0f) {
                 f32 alpha = statstime;
                 DrawCharIcon((i16)boss->id, 0.0f, HudBossIconY, 0.0f, HudBossIconScale, 167, alpha, alpha, 1, NULL);
@@ -1305,7 +1307,7 @@ extern "C" {
             if (pads[0].input_ready == 0 || (pads[0].bound_pad->flags & 4) == 0) {
                 NuPadMapPlayerToPort(0, PcInput_GetFirstKeyboardPort() + 1);
             }
-            if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0 &&
+            if (Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                 (pads[1].input_ready == 0 || (pads[1].bound_pad->flags & 4) == 0)) {
                 NuPadMapPlayerToPort(1, PcInput_GetFirstKeyboardPort() + 3);
             }
@@ -1419,7 +1421,8 @@ extern "C" {
             goto draw_menu;
         }
         for (player_index = 0; player_index < 8; ++player_index) {
-            if (Player[player_index] != NULL && (Player[player_index]->flags_1fc & 0x80) != 0 && ShowPlayerCoordinate != 0) {
+            if (Player[player_index] != NULL && (Player[player_index]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                ShowPlayerCoordinate != 0) {
                 sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", Player[player_index]->position.x, Player[player_index]->position.y,
                         Player[player_index]->position.z);
                 Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y, 1.0f, 0.4f, 0.5f,
@@ -1498,7 +1501,8 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     i32 first_green;
     i32 first_blue;
     i32 alpha;
-    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 || !(object->pause_context_state > 0.0f)) {
+    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
+        !(object->pause_context_state > 0.0f)) {
         return;
     }
     message = AddGameMsg_Default;
@@ -1570,7 +1574,7 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     ADD_GAME_MESSAGE_PC message;
     NUVEC position;
     i32 id;
-    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & 0x80) == 0 ||
+    if (VehicleArea != 0 || FadeSys.fade != 0.0f || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
         (WORLD->current_level->flags & LEVEL_HIDE_ICONS) != 0) {
         return;
     }

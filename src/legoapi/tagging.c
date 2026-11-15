@@ -128,8 +128,8 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                                 NULL, 1);
             } else {
                 takeoverobjects[index].object->dead = 0;
-                takeoverobjects[index].object->flags_1fc_word |= 0x1000;
-                takeoverobjects[index].object->flags_1fc_word |= 1;
+                takeoverobjects[index].object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
+                takeoverobjects[index].object->flags_1fc_word |= APIOBJECT_FLAG_IN_USE;
                 takeoverobjects[index].object->ai_packet.reset_mode = 2;
                 SnapCreaturePos(takeoverobjects[index].object, &controller->position, controller->unknown_276,
                                 &controller->ai_packet.path_info, 1);
@@ -165,7 +165,7 @@ void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
             previous->y = (f32)((f64)lower + ((f64)source->collision_max.y - lower) * height);
         }
     }
-    if ((target->flags_1fc_word & 0x80) != 0) {
+    if ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         if (Tag_DoneFirst == 0) {
             Tag_DoneFirst = 1;
         } else if (Tag_DoneFirst == 1) {

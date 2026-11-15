@@ -51,7 +51,7 @@ void fun_004bc2c0(WORLDINFO *world) {
 static void UpdateZamArrow(WORLDINFO *world) {
     NUVEC position;
     GAME_MESSAGE_PC *message;
-    if (zamarrow.object == NULL || (zamarrow.object->flags_1fc_word & 0x1000) == 0 || zamarrow.object->dead != 0) {
+    if (zamarrow.object == NULL || (zamarrow.object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || zamarrow.object->dead != 0) {
         return;
     }
     if (FadeSys.fade != 0.0f || pause_rndr_on != 0) {

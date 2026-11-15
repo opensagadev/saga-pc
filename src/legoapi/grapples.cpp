@@ -244,7 +244,8 @@ GAMEOBJECT *Grapple_Occupied(void *grapple, GAMEOBJECT *excluded, AIPATHCNX *con
     }
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && excluded != object) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
+            excluded != object) {
             if (object->character_context == LEGOCONTEXT_GRAPPLE && object->grapple == grapple) {
                 return object;
             }
@@ -271,10 +272,11 @@ static void Grapple_FindNearestInList(NUVEC *position, GRAPPLE_MOTION *grapple, 
                 if (Grapple_Occupied(grapple, NULL, NULL) != NULL) {
                     continue;
                 }
-                if ((object->flags_1fc & 0x80) != 0 && (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) ||
-                                                        (object->character_context != CHARACTER_CONTEXT_NONE &&
-                                                         (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
-                                                          !(object->context_timer >= (f64)0.1f))))) {
+                if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                    (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) ||
+                     (object->character_context != CHARACTER_CONTEXT_NONE &&
+                      (LEGOCONTEXT_JUMP == -1 || object->character_context != LEGOCONTEXT_JUMP ||
+                       !(object->context_timer >= (f64)0.1f))))) {
                     continue;
                 }
             }
@@ -746,7 +748,8 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
         if (attached == NULL || grapple->retain_attachment != 0) {
             continue;
         }
-        if ((attached->flags_1fc_word & 1) != 0 && (attached->flags_1fc_word & 0x1000) != 0 && attached->dead == 0) {
+        if ((attached->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (attached->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
+            attached->dead == 0) {
             linked = attached->takeover_source;
             if (linked != NULL && context != -1 && linked->character_context == context) {
                 grapple->position = attached->lower_position;
@@ -872,7 +875,7 @@ static void Grapple_Jump(GAMEOBJECT *object) {
     StartJump(object, 0);
     object->flags_e24 |= 0x1000;
     GameAudio_PlaySfx(0x45, &object->collision_position, 0, 0);
-    if ((object->flags_1fc & 0x80) != 0) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(LEGOHINT_GRAPPLE);
     }
     GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)object->grapple;
@@ -895,7 +898,8 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
     }
 
     if (object->character_context == LEGOCONTEXT_GRAPPLE) {
-        if ((object->flags_1fc & 0x80) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->grapple) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
+            ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != object->grapple) {
             GRAPPLE_CURRENT->activation_progress = 0.0f;
             object->character_context = CHARACTER_CONTEXT_NONE;
             return;
@@ -1125,7 +1129,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         if (Grapples_Available == 0) {
             return;
         }
-        if ((object->flags_1fc & 0x80) == 0 && object->unknown_f00 != 1) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 != 1) {
             return;
         }
         if (ObjLandReady(object) == 0 && (-1 == LEGOCONTEXT_JUMP || object->character_context != LEGOCONTEXT_JUMP)) {
@@ -1138,7 +1142,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         if (grapple == NULL) {
             return;
         }
-        if ((object->flags_1fc & 0x80) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != grapple) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && ((OBJECT_GRAPPLE_MOTION_VIEW *)object)->can_use_object != grapple) {
             return;
         }
         if (!((grapple->disabled && grapple->activation_progress <= 0.0f &&
@@ -1173,7 +1177,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         }
         object->unknown_7a8 = 0x2000;
         object->big_jump_animation = 0;
-        if (object->pad->input_magnitude > 0.0f && (object->flags_1fc & 0x80) != 0) {
+        if (object->pad->input_magnitude > 0.0f && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             object->big_jump_animation = static_cast<u8>(
                 static_cast<i32>((object->pad->input_magnitude / object->character_data->game_character->run_speed) * 30.0f));
             if (object->big_jump_animation > 0) {

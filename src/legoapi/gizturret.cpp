@@ -352,8 +352,8 @@ extern "C" {
         NuVecMtxRotate(&forward, &forward, matrix);
         GAMEOBJECT *object = Obj;
         for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-            if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 && (object->flags_1f8 & 1) &&
-                object->model_draw_result != 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
+                object->dead == 0 && (object->flags_1f8 & 1) && object->model_draw_result != 0) {
                 NUVEC direction;
                 f32 distance = NuVecDistSqr(&object->collision_position, reinterpret_cast<NUVEC *>(&matrix->m30), &direction);
                 if (distance < best_distance) {
@@ -476,7 +476,8 @@ extern "C" {
                                 i32 desired_yaw = static_cast<i16>(home_yaw);
                                 if (turret->controller != NULL) {
                                     GAMEOBJECT *controller = turret->controller;
-                                    if (controller->takeover_source != NULL && (controller->flags_1fc & 0x80) != 0) {
+                                    if (controller->takeover_source != NULL &&
+                                        (controller->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                                         GAMEPAD_PC *pad = controller->pad;
                                         f32 pitch_rate = -pad->input_direction_x * turret->pitch_turn_speed;
                                         if (pitch_rate < 0.0f) {
@@ -872,7 +873,7 @@ extern "C" {
                     goto select;
                 }
                 candidate_flag = (candidate->flags_1fc_word >> 7) & 1;
-                if (candidate_flag && !(selected->flags_1fc_word & 0x80)) {
+                if (candidate_flag && !(selected->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                     goto select;
                 }
                 if (candidate_flag != ((selected->flags_1fc_word >> 7) & 1)) {
@@ -1142,7 +1143,7 @@ extern "C" {
                 if ((turret->behavior_flags & 0x4010) == 0x4000 && LEGOHINT_SHOOTCAMERAS != -1) {
                     Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
                 }
-            } else if (player != -1 && (Player[player]->flags_1fc_word & 0x80) != 0) {
+            } else if (player != -1 && (Player[player]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
             }
             return 1;
@@ -1160,6 +1161,7 @@ extern "C" {
         i32 index;
         i32 damage;
         i32 player;
+
         if (system != NULL) {
             count = system->count;
             turret = system->turrets;
@@ -1174,7 +1176,8 @@ extern "C" {
                         owner = bolt->owner;
                         if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL) {
                             damage = 0;
-                        } else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 && (owner->flags_1fc_word & 0x80) == 0) {
+                        } else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 &&
+                                   (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                             damage = 0;
                         } else {
                             damage = type->unknown_3c;

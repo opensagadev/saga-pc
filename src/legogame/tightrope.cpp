@@ -245,8 +245,10 @@ extern "C" {
             count = 0;
             object = Obj;
             for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
-                if ((object->flags_1fc_word & 0x1001) != 0x1001 || object->character_context != CHARACTER_CONTEXT_TIGHTROPE ||
-                    object->unknown_7aa == ACTION_JUMP || object->unknown_7aa == ACTION_FALL || object->grapple != rope) {
+                if ((object->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) !=
+                        (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) ||
+                    object->character_context != CHARACTER_CONTEXT_TIGHTROPE || object->unknown_7aa == ACTION_JUMP ||
+                    object->unknown_7aa == ACTION_FALL || object->grapple != rope) {
                     continue;
                 }
                 positions[count] =
@@ -585,7 +587,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
             return;
         }
         if (jump_pressed != 0) {
-            if ((object->flags_1fc & 0x80) != 0) {
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 object->velocity.y = 2.0f;
                 object->unknown_7aa = ACTION_JUMP;
                 object->context_timer = 0.0f;
@@ -638,7 +640,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
             return;
         }
     }
-    if (!((object->flags_1fc & 0x80) != 0) && (object->flags_ef4 & 0x4000) == 0) {
+    if (!((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) && (object->flags_ef4 & 0x4000) == 0) {
         return;
     }
     TightRope_Attach(object, WORLD);

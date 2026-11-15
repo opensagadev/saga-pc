@@ -197,8 +197,8 @@ extern "C" {
         }
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *player = Player[index];
-            if (player != NULL && (player->flags_1fc_word & 0x80) != 0 && player->character_context == LEGOCONTEXT_BUILDIT &&
-                player->grapple == buildit) {
+            if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+                player->character_context == LEGOCONTEXT_BUILDIT && player->grapple == buildit) {
                 return player;
             }
         }
@@ -640,7 +640,7 @@ extern "C" {
         i32 amount;
         i32 completed;
         i32 total;
-        if ((player->flags_1fc_word & 0x80) != 0 && Player_HasFastBuild(player)) {
+        if ((player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasFastBuild(player)) {
             return 3.0f;
         }
         buildit = (BUILDIT_MOVEMENT *)player->grapple;
@@ -1770,7 +1770,7 @@ extern "C" {
                 player->panel_request_data = NULL;
             }
         }
-        if (buildit == NULL || (player->flags_1fc & 0x80) == 0) {
+        if (buildit == NULL || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             return;
         }
         if (player->unknown_281 != 0 && (buildit->state_flags & 4) != 0) {
@@ -1793,7 +1793,7 @@ extern "C" {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             Hint_SetComplete(LEGOHINT_BUILD);
         }
-        if ((player->flags_1fc & 0x80) != 0 && player->unknown_281 != 0) {
+        if ((player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && player->unknown_281 != 0) {
             GizBuildItPushAwayFromEnd(player);
         }
     }

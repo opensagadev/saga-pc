@@ -210,7 +210,7 @@ void GameAntinode_Update(void *opaque_system) {
     object_count = HIGHGAMEOBJECT;
     object = Obj;
     for (i = 0; i < object_count; ++i, ++object) {
-        if (!(object->flags_1fc_word & 0x1000) || object->dead) {
+        if (!(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead) {
             continue;
         }
         GameAntinode_FindGridPosition(system->world, &object->collision_position, object->collision_radius_unscaled,

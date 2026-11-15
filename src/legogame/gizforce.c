@@ -623,8 +623,8 @@ i32 GizForce_UpdateHint(HINT *hint) {
     }
     for (index = 0; index < 2; ++index) {
         GAMEOBJECT *object = Player[index];
-        if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->transform_alpha > 0.0f && object->transform_target != NULL &&
-            object->glow_kind == 0) {
+        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->transform_alpha > 0.0f &&
+            object->transform_target != NULL && object->glow_kind == 0) {
             return 1;
         }
     }
@@ -959,7 +959,7 @@ static i32 GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i32 playe
         force->runtime_flags = flags | 0x8000;
         if (player_index != -1) {
             player = Player[player_index];
-            if ((player->flags_1fc_word & 0x80) != 0) {
+            if ((player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 NewBuzz(player->pad->bound_pad, 0.1f, 0);
             }
         }
@@ -990,7 +990,7 @@ static i32 GizForces_BoltHitPlat(GIZFORCE_PC *force, WORLDINFO *world, i32 playe
     }
     if (player_index != -1) {
         player = Player[player_index];
-        if ((player->flags_1fc_word & 0x80) != 0) {
+        if ((player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             NewBuzz(player->pad->bound_pad, 0.1f, 0);
         }
     }
@@ -1675,7 +1675,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
     if (system == NULL || object == NULL) {
         return 0;
     }
-    super_force = SuperWeirdo(object) || ((object->flags_1fc & 0x80) && Cheat_IsOn(25));
+    super_force = SuperWeirdo(object) || ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && Cheat_IsOn(25));
     target->target = NULL;
     target->animation = NULL;
     facing.x = NuTrigTable[object->movement_facing_angle >> 1];

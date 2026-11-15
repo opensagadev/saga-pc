@@ -102,7 +102,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             *position = object->previous_position;
         }
         position->y += height;
-        if (VehicleArea != 0 && (object->flags_1fc & 0x80) != 0 && object->unknown_1010 > 0.0f) {
+        if (VehicleArea != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->unknown_1010 > 0.0f) {
             f32 blend = 1.0f - object->unknown_1010 * 0.5f;
             if (blend < 0.5f) {
                 blend = NU_SIN_LUT((blend * 2.0f) * 16384.0f);
@@ -230,7 +230,7 @@ static void PlayersCamLookPos(NUVEC *target, NUVEC *reference) {
     count = 0;
     for (i = 0; i < 2; i++) {
         GAMEOBJECT *object = Player[i];
-        if (object != NULL && ((object->flags_1fc & 0x80) != 0 || LookAtBoth != 0)) {
+        if (object != NULL && ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || LookAtBoth != 0)) {
             PlayerCamPos(object, &focus, reference);
             NuVecAdd(target, target, &focus);
             count++;
@@ -246,7 +246,7 @@ void UpdatePlayerCameraOcclusion(void) {
         i32 i;
         for (i = 0; i < 2; i++) {
             GAMEOBJECT *object = Player[i];
-            if (object == NULL || (object->flags_1fc & 0x80) == 0) {
+            if (object == NULL || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 continue;
             }
             if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED ||
@@ -405,7 +405,7 @@ void MoveGameCamera(GAMECAMERA *camera) {
                 camera->mode = 2;
                 for (i = 0; ObstacleCamHoldUntilPlayersMove && i < 2; i++) {
                     GAMEOBJECT *object = Player[i];
-                    if (object != NULL && (object->flags_1fc & 0x80) != 0 &&
+                    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                         (object->model_draw_result == 0 || object->pad->input_magnitude > 0.0f ||
                          (object->pad->buttons_held & (GAMEPAD_START | GAMEPAD_JUMP | GAMEPAD_ACTION | GAMEPAD_SPECIAL | GAMEPAD_TAG |
                                                        GAMEPAD_TOGGLELEFT | GAMEPAD_TOGGLERIGHT)) != 0)) {
@@ -533,7 +533,7 @@ mode_selected:
                 struct nuvec_s *source_position;
                 i32 counts_as_vehicle;
                 GAMEOBJECT *object = Player[i];
-                if (object == NULL || ((object->flags_1fc & 0x80) == 0 && !LookAtBoth) ||
+                if (object == NULL || ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && !LookAtBoth) ||
                     (netcamera && (object->flags_1f8 & 0x40000) != 0) || (BonusWinner != -1 && BonusWinner != i)) {
                     continue;
                 }
@@ -1217,7 +1217,7 @@ mode_selected:
         NUMTX orientation = {0};
         shared_count = 0;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && (Player[i]->flags_1fc & 0x80) != 0 && Player[i]->flags_107a == 4) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->flags_107a == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
                          NUMTX_GET_ROW_VEC(&(Player[i])->vehicle_orientation, 0));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 1), NUMTX_GET_ROW_VEC(&orientation, 1),
@@ -1291,7 +1291,7 @@ mode_selected:
                 i32 i;
                 for (i = 0; i < 2; i++) {
                     GAMEOBJECT *object = Player[i];
-                    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+                    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                         if (WORLD->current_level == DEATHSTARBATTLED_LDATA && ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx)) {
                             camera_shake = 0.6f;
                             break;

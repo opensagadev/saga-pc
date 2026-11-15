@@ -37,9 +37,10 @@ void DebrisKillPlayers(void) {
     DebrisPreCheckCollisions(&GameCam->position, 50.0f);
     for (i = 0; i < 8; i++) {
         player = Player[i];
-        if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 && player->vehicle_hit_timer <= 0.0f &&
-            !(player->spawn_protection_timer > 0.0f) && (player->flags_ef0 & 0x400000) == 0 && CannotKill(player) == 0 &&
-            Player_HasInvincibility(player) == 0 && (player->character_data->game_character->flags_090 & 0x4008000) == 0) {
+        if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player->dead == 0 &&
+            player->vehicle_hit_timer <= 0.0f && !(player->spawn_protection_timer > 0.0f) && (player->flags_ef0 & 0x400000) == 0 &&
+            CannotKill(player) == 0 && Player_HasInvincibility(player) == 0 &&
+            (player->character_data->game_character->flags_090 & 0x4008000) == 0) {
             if (DebrisCollisionCheckScaleY(&player->collision_position, player->collision_radius, player->collision_y_scale) != -1) {
                 ObjHitObj(NULL, player, 1, 0, 0, 1);
             }
@@ -167,7 +168,7 @@ void AddSlamDebris(GAMEOBJECT *object) {
     NUVEC position;
     FindSlamOrigin(object, &position, NULL);
     flags = 0x17;
-    if ((object->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x16)) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_IsOn(0x16)) {
         radius = 1.0f;
         flags = 0x37;
         damage = 2;

@@ -433,8 +433,8 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         return;
     }
-    if ((object->character_data->game_character->flags_090 & 0x2000000) == 0 || (object->flags_1fc_word & 0x80) == 0 ||
-        object->unknown_281 == 0 || ObjLandReady(object) == 0) {
+    if ((object->character_data->game_character->flags_090 & 0x2000000) == 0 ||
+        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
         return;
     }
     {

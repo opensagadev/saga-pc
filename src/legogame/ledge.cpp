@@ -264,7 +264,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             return;
         }
     }
-    if (!(object->flags_1fc & 0x80) && !(object->flags_ef4 & 0x8000)) {
+    if (!(object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && !(object->flags_ef4 & 0x8000)) {
         return;
     }
     f32 radius = object->bounds_radius * 3.0;

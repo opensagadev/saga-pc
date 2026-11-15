@@ -221,7 +221,7 @@ void EndMission(MISSIONSYS_PC *system, i32 state, i32 show_message) {
     if (netclient == 0 || show_message == 0) {
         system->state = (u8)state;
         SetBonusWinner(qrand() / 0x8000);
-        if (Player[BonusWinner] == NULL || ((Player[BonusWinner]->flags_1fc & 0x80) == 0)) {
+        if (Player[BonusWinner] == NULL || ((Player[BonusWinner]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
             BonusWinner = BonusWinner == 0;
         }
         BonusWinFlag = 0;
@@ -251,21 +251,22 @@ void CheckMissionEnd(MISSIONSYS_PC *system) {
         mask = 0;
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             candidate = &Obj[index];
-            if ((candidate->flags_1fc_word & 1) != 0 && (candidate->flags_1fc_word & 0x1000) != 0 && candidate->dead == 0 &&
-                candidate->unknown_280 == 0xff) {
+            if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
+                candidate->dead == 0 && candidate->unknown_280 == 0xff) {
                 mask |= U64_PAIR(candidate->collision_identity_mask);
             }
         }
     }
     for (index = 0; index < 8; ++index) {
         candidate = Player[index];
-        if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0 && (U64_PAIR(candidate->collision_contact_mask) & mask) != 0) {
+        if (candidate != NULL && (candidate->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+            (U64_PAIR(candidate->collision_contact_mask) & mask) != 0) {
             if (netclient != 0) {
                 return;
             }
             system->state = 2;
             SetBonusWinner(qrand() / 0x8000);
-            if (Player[BonusWinner] == NULL || ((Player[BonusWinner]->flags_1fc & 0x80) == 0)) {
+            if (Player[BonusWinner] == NULL || ((Player[BonusWinner]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
                 BonusWinner = BonusWinner == 0;
             }
             BonusWinFlag = 0;

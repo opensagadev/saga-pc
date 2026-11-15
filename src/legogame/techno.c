@@ -526,7 +526,8 @@ i32 Techno_isReady(TECHNO_s *techno) {
     switch (techno->target_mode) {
         case 1: {
             GAMEOBJECT *object = techno->controlled_object;
-            if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0) {
+            if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
                 return 1;
             }
             break;
@@ -598,7 +599,7 @@ void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     GIZOBSTACLE *obstacle;
     if (object == NULL) {
         speed = 0.0f;
-    } else if ((object->flags_1fc & 0x80) == 0 && object->unknown_f00 == 2) {
+    } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 == 2) {
         speed = 1.0f;
     } else if ((techno->enabled & 1) != 0) {
         speed = (object->pad->runtime_flags & 8) != 0 ? 1.0f : 0.0f;
@@ -651,7 +652,8 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             return;
         }
         object->context_timer += FRAMETIME;
-        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 || ((object->flags_1fc & 0x80) == 0 && object->unknown_f00 != 2)) {
+        if ((object->pad->buttons_pressed & GAMEPAD_TAG) != 0 ||
+            ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 != 2)) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             object->tag_flags |= 1;
             object->movement_facing_angle += 0x8000;
@@ -661,7 +663,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             Technos_MoveTarget(object->techno, object);
         }
     } else {
-        if (!((((object->flags_1fc & 0x80) != 0 || object->unknown_f00 == 2) && object->suit != NULL &&
+        if (!((((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || object->unknown_f00 == 2) && object->suit != NULL &&
                (object->suit->flags & 0x20) != 0) ||
               (StartupGameFlag1 != 0 && StartupGameFlag0 != 0))) {
             return;

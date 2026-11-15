@@ -644,10 +644,10 @@ extern "C" {
             if (MenuKeyboardOverrideActivePc == 0) {
                 active_players = 0;
                 device = NuPadGetPort(PcInput_GetCtrlStringPlayer());
-                if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
+                if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     active_players = 1;
                 }
-                if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
+                if (Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     ++active_players;
                 }
                 if (active_players < 2 || PcInput_PortIsKeyboard(device) != 0) {
@@ -672,7 +672,8 @@ extern "C" {
             both_pads = 0;
         } else if (menu_id == 0x12 && PlayerProgress[0].active != 0 && PlayerProgress[1].active != 0) {
             both_pads = 1;
-        } else if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
+        } else if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
+                   (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             both_pads = 1;
         } else if (pad == (GAMEPAD_PC *)&GamePadStorage[0]) {
             if (WORLD->current_level == CREDITS_LDATA) {

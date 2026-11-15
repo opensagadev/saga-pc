@@ -177,7 +177,7 @@ extern "C" void Detonators_Draw(void) {
 extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     if (object->character_context != CHARACTER_CONTEXT_PICK_UP_DETONATOR &&
         object->character_context != CHARACTER_CONTEXT_PLACE_DETONATOR) {
-        if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & 0x80) == 0 ||
+        if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
             (object->unknown_281 == 0 && object->jump_variant_state != 1) ||
             (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->character_context].flags & 0x2000) == 0)) {
             object->flags_e20 |= 0x8000;

@@ -802,8 +802,8 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
     }
     for (i32 i = 0; i < 8; ++i) {
         GAMEOBJECT *player = Player[i];
-        if (player == NULL || !(player->flags_1fc_word & 1) || !(player->flags_1fc_word & 0x1000) || player->dead != 0 ||
-            player->rider != NULL) {
+        if (player == NULL || !(player->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+            player->dead != 0 || player->rider != NULL) {
             continue;
         }
         NUVEC delta;
@@ -1045,7 +1045,8 @@ static i32 LastSafePosExtra(GAMEOBJECT *object) {
     if (level == dat_0087b1a8 && object->jump_animation_state == 0x0e) {
         return 1;
     }
-    if (level == dat_0087b264 && object->jump_animation_state == 0x18 && (object->flags_1fc & 0x80) != 0 && object->unknown_283 == -1) {
+    if (level == dat_0087b264 && object->jump_animation_state == 0x18 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+        object->unknown_283 == -1) {
         return 1;
     }
     if (level == DEATHSTARESCAPEC_LDATA && (i16)object->id == id_SERVICECAR) {
@@ -1611,7 +1612,7 @@ extern "C" void InitGameMode(void) {
     }
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
             object->flags_ef0 |= 0x80;
         }
     }
@@ -1781,7 +1782,7 @@ extern "C" void CheckResetBits(void) {
                                   NULL, 1, NULL, NULL);
             if (FreePlay == 0 && Mission_Active(NULL) == NULL && (*player_slot)->rider == NULL &&
                 AIScriptSetBaseScriptStateByName(&(*player_slot)->ai_packet.script_processor, "InActive") != 0) {
-                (*player_slot)->flags_1fc_word &= ~0x1000;
+                (*player_slot)->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
             }
         }
     } else {
@@ -1800,7 +1801,7 @@ extern "C" void CheckResetBits(void) {
     if ((ResetBits & 4) != 0) {
         for (i = 0; i < 8; ++i) {
             if (Player[i] != NULL) {
-                if ((Player[i]->flags_1fc & 0x80) != 0) {
+                if ((Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     Player[i]->spawn_protection_timer = 2.5f;
                 } else {
                     Player[i]->spawn_protection_timer = 0.0f;
@@ -1913,7 +1914,7 @@ extern "C" {
         PART_PC *deflected;
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
-            if ((object->flags_1fc & 0x80) != 0 && owner->unknown_280 == 0xff) {
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && owner->unknown_280 == 0xff) {
                 MakeThrowVector(&velocity, (NUVEC *)&matrix.m30, &owner->collision_position, &owner->velocity, speed, gravity);
             } else {
                 velocity.x = velocity.y = 0.0f;
@@ -1980,7 +1981,8 @@ extern "C" {
         api = Obj;
         slot = (i32)(((u8 *)part - (u8 *)Part) / sizeof(PART_PC));
         for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object, ++api) {
-            if ((api->flags_1fc_word & 1) == 0 || (api->flags_1fc_word & 0x1000) == 0 || api->dead != 0) {
+            if ((api->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (api->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+                api->dead != 0) {
                 continue;
             }
             context = object->character_context;
@@ -2004,7 +2006,7 @@ extern "C" {
             if ((part->flags & 0x4000) != 0 && (i8)part->hostility_group == api->hostility_group) {
                 continue;
             }
-            if ((part->flags & 4) != 0 && (api->flags_1fc_word & 0x80) == 0) {
+            if ((part->flags & 4) != 0 && (api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                 continue;
             }
             if (minimum.x > api->collision_max.x || maximum.x < api->collision_min.x || minimum.z > api->collision_max.z ||
@@ -2032,7 +2034,7 @@ extern "C" {
                     KillPart(part, 1);
                 }
                 if ((part->flags & 8) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
-                    ((api->flags_1fc_word & 0x80) != 0 || (part->flags & 0x800000) == 0)) {
+                    ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (part->flags & 0x800000) == 0)) {
                     flags = U64_PAIR(&CInfo[(object->character_context)].flags);
                     if ((flags & 0x4000000) != 0 || ((flags & 0x8000000) != 0 && (object->context_variant_flags & 0x20000) != 0)) {
                         if (object->id == (u16)id_BOB) {
@@ -2058,7 +2060,7 @@ extern "C" {
                         }
                     }
                 }
-                if (api->dead != 0 || (api->flags_1fc_word & 2) != 0) {
+                if (api->dead != 0 || (api->flags_1fc_word & APIOBJECT_FLAG_DONT_PUSH) != 0) {
                     continue;
                 }
                 if ((part->active & 1) == 0) {
@@ -3127,7 +3129,7 @@ extern "C" {
         if (netclient == 0 || show_message == 0) {
             ChallengeMode = state;
             SetBonusWinner(qrand() / 0x8000);
-            if (Player[BonusWinner] == NULL || !(Player[BonusWinner]->flags_1fc & 0x80)) {
+            if (Player[BonusWinner] == NULL || !(Player[BonusWinner]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 BonusWinner = BonusWinner == 0;
             }
             BonusWinFlag = 0;

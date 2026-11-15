@@ -271,7 +271,7 @@ i32 SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
     if (CanSuperCarryFn == NULL || CanSuperCarryFn(object) == 0) {
         return 0;
     }
-    if ((object->flags_1fc & 0x80) == 0) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
         return 0;
     }
     if (require_grounded != 0 && (object->unknown_281 == 0 || ObjLandReady(object) == 0)) {
@@ -654,7 +654,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
         if (CanSuperCarryFn == NULL || CanSuperCarryFn(object) == 0) {
             return;
         }
-        if ((object->flags_1fc & 0x80) == 0) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             return;
         }
         if (object->unknown_281 == 0 || ObjLandReady(object) == 0) {
@@ -705,7 +705,8 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             message.flags = 0x87;
             message.unknown_4f = 4;
             message.scale = 2.0f;
-            if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) && Player[1] != NULL && (Player[1]->flags_1fc & 0x80)) {
+            if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&
+                (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 message.unknown_4f = (player == 0 ? 8 : 2) | 4;
             }
             message.red = SuperCarryPlayerRgb[player][0];

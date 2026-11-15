@@ -186,7 +186,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             } else if (Paused == 0) {
                 for (i = 0; i < 2; ++i) {
                     object = Player[i];
-                    if (object != NULL && (object->flags_1fc & 0x80) != 0) {
+                    if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                         PauseGame((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage);
                         break;
                     }
@@ -212,10 +212,12 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuSound3Update();
         UpdateLevelSfx(world, Paused);
         NuSound3SetRumblePads(
-            Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 ? Player[0]->pad->bound_pad
-                                                                                                              : NULL,
-            Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0 ? Player[1]->pad->bound_pad
-                                                                                                              : NULL);
+            Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
+                ? Player[0]->pad->bound_pad
+                : NULL,
+            Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
+                ? Player[1]->pad->bound_pad
+                : NULL);
         NuSound3UpdateRumble(FRAMETIME);
         SoundUpdate(FRAMETIME);
         ProcessMusicChanges(world->current_level, &Game.options_save);
@@ -303,7 +305,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         } else {
             for (i = 0; i < 8; ++i) {
                 object = Player[i];
-                if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
+                if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->pad->bound_pad != NULL) {
                     UpdateRumble((RUMBLE_PACKET_RESOURCE *)object->pad->unknown_40);
                 }
             }

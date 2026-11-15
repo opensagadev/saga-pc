@@ -45,9 +45,9 @@ i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_diff
     } else {
         pushing_obstacle = 0;
     }
-    if (((object->flags_1fc & 0x80) || (object->flags_ef4 & 0x30000)) && (object->pad->input_magnitude > 0.0f || pushing_obstacle) &&
-        object->contact_count && CanClimbSurface(object, (i8)object->contact_material[0]) == 0 &&
-        PushingFabs(object->contact_normal.y) < NuTrigTable[0x3c71]) {
+    if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) || (object->flags_ef4 & 0x30000)) &&
+        (object->pad->input_magnitude > 0.0f || pushing_obstacle) && object->contact_count &&
+        CanClimbSurface(object, (i8)object->contact_material[0]) == 0 && PushingFabs(object->contact_normal.y) < NuTrigTable[0x3c71]) {
         input_angle = pushing_obstacle ? object->movement_facing_angle : GamePad_InputAngle(object, object->pad);
         angle = NuAtan2D(object->contact_normal.x, object->contact_normal.z);
         difference = RotDiff(input_angle, angle);
@@ -328,7 +328,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
             return;
         }
         if (GizSpinner_Push(object->grapple, (i8)object->context_variant) != 0) {
-            if ((object->flags_1fc & 0x80) != 0) {
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 NewRumble(object->pad->bound_pad, qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
             }
             GameAudio_PlaySfx(0x38, &object->collision_position, 0, 0);

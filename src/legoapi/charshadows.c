@@ -24,10 +24,11 @@ void CharShadows_Update(void) {
     i32 count;
     i32 layer;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-            (object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 || object->use_model_origin == 0 ||
-            object->character_data->game_character->shadow_locators == 0 || object->model_draw_result == 0 ||
-            (U64_PAIR(&CInfo[object->character_context].flags) & 0x20000) != 0 || object->shadow_opacity <= 0.0f) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            object->dead != 0 || (object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 ||
+            object->use_model_origin == 0 || object->character_data->game_character->shadow_locators == 0 ||
+            object->model_draw_result == 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x20000) != 0 ||
+            object->shadow_opacity <= 0.0f) {
             continue;
         }
         object->shadow_joint_mask = object->character_data->game_character->shadow_locators;
@@ -101,7 +102,8 @@ void CharShadows_Draw(void) {
     }
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            object->dead != 0) {
             continue;
         }
         if ((object->flags_e20 & 0x20) != 0 && (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000) == 0) {

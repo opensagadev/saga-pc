@@ -523,7 +523,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f || object->context_timer >= 5.0f) {
                 StartJump(object, 6);
                 PlaySfx(GrapDetach_text, &object->collision_position);
-                if ((object->flags_1fc & 0x80) != 0) {
+                if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     Hint_SetComplete(0x262);
                 }
                 object->movement_facing_angle = object->facing_angle = object->unknown_276 =
@@ -562,7 +562,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 object->velocity = v000;
                 object->velocity.y = -1.0f;
                 PlaySfx(GrapDetach_text, &object->collision_position);
-                if ((object->flags_1fc & 0x80) != 0) {
+                if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     Hint_SetComplete(0x262);
                 }
                 return;
@@ -619,7 +619,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     if (!ObjLandReady(object) && !objInNetWaitContext(object, 0x47)) {
         return;
     }
-    player_active = (object->flags_1fc_word & 0x80) != 0;
+    player_active = (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
     if (!player_active && object->unknown_f00 != 4) {
         return;
     }

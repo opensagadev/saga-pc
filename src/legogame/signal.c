@@ -157,8 +157,8 @@ void Signals_Update(WORLDINFO *world, void *unused, f32 unused_time) {
                 i32 player_index;
                 for (player_index = 0; player_index < 8; ++player_index) {
                     GAMEOBJECT *player = Player[player_index];
-                    if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0 &&
-                        player->id == (u16)signal->suit->character_id &&
+                    if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                        (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player->id == (u16)signal->suit->character_id &&
                         (f64)NuVecDistSqr(&player->collision_position, &signal->target_position, NULL) < 0.49000006914138794) {
                         NUVEC offset;
                         f32 along_normal;
@@ -456,7 +456,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     }
     if (object->unknown_281 != 0 || object->character_context == CHARACTER_CONTEXT_BIG_JUMP ||
         object->character_context == CHARACTER_CONTEXT_DOOMED || object->character_context == CHARACTER_CONTEXT_FLOAT ||
-        (object->flags_1fc_word & 0x80) == 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x800) != 0) {
+        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x800) != 0) {
         return;
     }
     {

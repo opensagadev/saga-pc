@@ -293,7 +293,7 @@ i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
         object->action_movement_state = 4;
         object->unknown_7aa = JumpSlamAction;
         object->context_timer = 0.0f;
-        if ((object->flags_1fc & 0x80) != 0) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             object->portal_flags |= 0x800;
         }
         object->velocity.y = speed;
@@ -376,7 +376,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             (ZipUpLandCombatRollContext == -1 || object->character_context != ZipUpLandCombatRollContext)) {
             goto jump_takeoff;
         }
-        if (((object->flags_1fc & 0x80) != 0 || object->character_context != LEGOCONTEXT_LAND_JUMP || object->unknown_7aa == ACTION_NONE ||
+        if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || object->character_context != LEGOCONTEXT_LAND_JUMP ||
+             object->unknown_7aa == ACTION_NONE ||
              (object->unknown_7aa != LEGOACT_FALLLAND && object->unknown_7aa != LEGOACT_BACKPACKFALLLAND)) &&
             (LEGOCONTEXT_LAND_LUNGE == -1 || object->character_context != LEGOCONTEXT_LAND_LUNGE) &&
             (LEGOCONTEXT_LAND_SLAM == -1 || object->character_context != LEGOCONTEXT_LAND_SLAM) &&
@@ -865,7 +866,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 object->delayed_turn_timer = 0.0f;
                 if ((animation_set & 4) != 0) {
                     object->jump_variant_timer = object->character_data->game_character->jump_hold_duration;
-                    if ((object->flags_1fc & 0x80) == 0) {
+                    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                         object->jump_variant_timer = object->jump_variant_timer * 1.5f;
                     }
                     object->jump_variant_state = 1;
@@ -941,7 +942,7 @@ void BigJumpCode(GAMEOBJECT *object) {
                     GameCam_Judder(GameCam, -0.3f, 0, &object->collision_position);
                     PlayLandSfx(object, 3, 0);
                     NewRumbleAllPlayers(0.6f, 0.0f, 0, 0);
-                } else if ((object->flags_1fc_word & 0x80) != 0) {
+                } else if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     GameCam_Judder(GameCam, -0.2f, 0, &object->collision_position);
                     PlayLandSfx(object, 3, 0);
                 } else {

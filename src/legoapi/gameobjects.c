@@ -38,7 +38,7 @@ static void RecomputeHighGameObject(void) {
     i32 index;
     HIGHGAMEOBJECT = 0;
     for (index = 0; index < 64; ++index) {
-        if ((Obj[index].flags_1fc_word & 1) != 0) {
+        if ((Obj[index].flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0) {
             HIGHGAMEOBJECT = index + 1;
         }
     }
@@ -48,7 +48,7 @@ GAMEOBJECT *AddGameObject(void) {
     GAMEOBJECT *object = APIObjectCreate(WORLD->object_sys);
     u64 identity;
     if (object != NULL) {
-        object->flags_1fc_word |= 0x1001;
+        object->flags_1fc_word |= APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER;
         object->origin_scale = 1.0f;
         object->collision_scale = 1.0f;
         object->reflection_height = 2000000.0f;
@@ -152,10 +152,10 @@ void SetToLastSafePos(GAMEOBJECT *object) {
 }
 
 i32 UnderPlayerControl(GAMEOBJECT *object) {
-    if ((object->flags_1fc_word & 0x80) != 0) {
+    if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         return 1;
     }
-    if (object->takeover_source != NULL && (object->takeover_source->flags_1fc_word & 0x80) != 0) {
+    if (object->takeover_source != NULL && (object->takeover_source->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         return 1;
     }
     return 0;
@@ -165,10 +165,10 @@ GAMEOBJECT *FindGameObject(i32 character_id, u32 required_flags, i32 alive_only,
     GAMEOBJECT *object = Obj;
     i32 i;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        if ((object->flags_1fc_word & 1) == 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0) {
             continue;
         }
-        if (vehicle_only != 0 && (object->flags_1fc_word & 0x1000) == 0) {
+        if (vehicle_only != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
             continue;
         }
         if (required_flags != 0 && (object->flags_1f8 & required_flags) != required_flags) {
@@ -201,8 +201,8 @@ GAMEOBJECT *FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 requ
         f32 y;
         f32 z;
         f32 distance;
-        if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-            (object->flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000)) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+            object->dead != 0 || (object->flags_e20 & 0x20) || (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000)) {
             continue;
         }
         if (character_id != -1 && (i16)object->id != character_id) {
@@ -497,8 +497,8 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             }
             goto safe_position_done;
         } while (0);
-        if ((object->flags_1fc & 0x80) != 0 && (layer = object->unknown_283) != -1 && (TerLayer[layer].flags & 1) != 0 &&
-            !NoLayerKill(object)) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (layer = object->unknown_283) != -1 &&
+            (TerLayer[layer].flags & 1) != 0 && !NoLayerKill(object)) {
             if (object->fall_recovery_timer <= 0.0f) {
                 object->fall_hover_height = object->position.y;
             }
@@ -511,7 +511,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
         }
     }
 safe_position_done:
-    if ((object->flags_ef4 & 0x1000000) == 0 && (object->flags_1fc_word & 0x80) == 0 &&
+    if ((object->flags_ef4 & 0x1000000) == 0 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
         (LEGOCONTEXT_EATEN == -1 || object->character_context != LEGOCONTEXT_EATEN) && (object->flags_1fc_word & 0x2000) != 0) {
         if ((object->ai_packet.path_info.flags & 1) != 0) {
             if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&

@@ -182,7 +182,7 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
         GameCam_NewShake(GameCam, 0.75f, 0.75f, 1.0f);
         NewRumbleAllPlayers(0.5f, 0.0f, 0, 0);
     }
-    if (no_explosion == 0 && bolt->owner != NULL && (bolt->owner->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x12) &&
+    if (no_explosion == 0 && bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_IsOn(0x12) &&
         (world->area == NULL || !(world->area->flags & AREAFLAG_VEHICLE_AREA))) {
         EXPLOSION_PC *explosion;
         AddGameDebris(WORLD->game_debris_sys, 0x49, &bolt->position);
@@ -192,8 +192,8 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
         explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1, 0xa067);
         if (explosion != NULL && Arcade != 0) {
             GAMEOBJECT *owner = bolt->owner;
-            if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & 1) != 0 &&
-                (owner->flags_1fc_word & 0x1000) != 0 && (owner->unknown_280 == 0 || owner->unknown_280 == 1)) {
+            if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (owner->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (owner->unknown_280 == 0 || owner->unknown_280 == 1)) {
                 explosion->flags |= 0x10000;
                 explosion->owner = bolt->owner;
             }

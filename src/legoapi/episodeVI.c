@@ -137,7 +137,7 @@ GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *nearest = NULL;
     f32 nearest_distance;
     i32 i;
-    if (object == NULL || !(object->flags_1fc_word & 0x80) || object->dead) {
+    if (object == NULL || !(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) || object->dead) {
         return NULL;
     }
     nearest_distance = 225.0f;
@@ -713,7 +713,8 @@ void EmperorFightA_Update(WORLDINFO *world) {
             for (i = 0; i < 2; ++i) {
                 GAMEOBJECT *player;
                 player = Player[i];
-                if (player != NULL && (player->flags_1fc_word & 0x1001) == 0x1001) {
+                if (player != NULL && (player->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) ==
+                                          (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) {
                     AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)player, &player->ai_packet, 0xff, 1);
                 }
             }
@@ -1165,8 +1166,8 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                     position = NuSpecialGetPos(&sarlaccdisco.flash[*selected]);
                     for (index = 0; index < 8; ++index) {
                         GAMEOBJECT *object = Player[index];
-                        if (object != NULL && (object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) &&
-                            object->unknown_281 != 0) {
+                        if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) &&
+                            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->unknown_281 != 0) {
                             f32 dx = position->x - object->position.x;
                             f32 dz = position->z - object->position.z;
                             f32 distance = dx * dx + dz * dz;
@@ -1487,7 +1488,7 @@ void LegoCity_Update(WORLDINFO *world) {
     changedTownCar = 0;
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (!(object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->rider != NULL &&
+        if (!(object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->rider != NULL &&
               object->rider->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
             continue;
         }
@@ -1608,7 +1609,7 @@ void NewTown_Update(WORLDINFO *world) {
     changedLifeBoat = 0;
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (!(object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->rider != NULL &&
+        if (!(object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->rider != NULL &&
               object->rider->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER)) {
             continue;
         }
@@ -1812,7 +1813,8 @@ void FairgroundbadA_Update(WORLDINFO *world) {
     }
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (object != NULL && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && (object->flags_1fc_word & 0x80) != 0) {
+        if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             position = &object->collision_position;
             if (!(position->x < -57.0 || position->x > -47.0f || position->z < -5.2f || position->z > -4.22f)) {
                 if (++count >= 2) {

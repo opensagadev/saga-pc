@@ -331,8 +331,8 @@ static i32 PartyMemberInWay(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     NuVecScale(&direction, &difference, inverse);
     for (index = 0; index < 8; index++) {
         member = Player[index];
-        if (member == NULL || (member->flags_1fc_word & 1) == 0 || (member->flags_1fc_word & 0x1000) == 0 || member == object ||
-            member == opponent) {
+        if (member == NULL || (member->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+            (member->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || member == object || member == opponent) {
             continue;
         }
         if (NuVecDistSqr(&object->collision_position, &member->collision_position, &difference) < target_distance) {
@@ -1148,13 +1148,14 @@ f32 Condition_IsAlive(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *pack
             count = group->member_count;
             for (index = 0; index < count; ++index) {
                 member = (GAMEOBJECT *)group->members[index];
-                if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0 && member->dead == 0) {
+                if (member != NULL && (member->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                    (member->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && member->dead == 0) {
                     return 1.0f;
                 }
             }
         } else {
             member = (GAMEOBJECT *)object;
-            if ((member->flags_1fc_word & 0x1000u) != 0 && member->dead == 0) {
+            if ((member->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && member->dead == 0) {
                 return 1.0f;
             }
         }
@@ -1647,7 +1648,8 @@ f32 Condition_NumBaddies(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *p
     i32 index;
     GAMEOBJECT *object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
-        if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && (object->flags_1f8 & 1)) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
+            (object->flags_1f8 & 1)) {
             count++;
         }
     }
@@ -2027,7 +2029,8 @@ f32 Condition_MaulShouldRunAway(AISYS_PC *system, AISCRIPTPROCESS *process, AIPA
         owner_angle = NuAtan2D(delta.x, delta.z);
         for (i = 0; i < 2; i++) {
             player = Player[i];
-            if (player != NULL && (player->flags_1fc_word & 1) != 0 && (player->flags_1fc_word & 0x1000) != 0) {
+            if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
                 delta.x = (f32)((f64)player->collision_position.x - 5.5);
                 delta.z = (f32)((f64)player->collision_position.z - (f64)3.65f);
                 if ((f64)delta.x * delta.x + (f64)delta.z * delta.z < 25.0) {
@@ -2079,7 +2082,8 @@ f32 Condition_PartyContainsDroids(AISYS_PC *system, AISCRIPTPROCESS *process, AI
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *object = Player[index];
-        if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && (object->flags_ef3 & 1) == 0 &&
+        if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (object->flags_ef3 & 1) == 0 &&
             (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
             return 1.0f;
         }
@@ -2302,7 +2306,7 @@ void *Condition_UnderPlayerControlInit(AISYS_PC *system, char *name, AISCRIPT *s
 
 f32 Condition_UnderPlayerControl(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     GAMEOBJECT *object = argument;
-    if (object != NULL && (object->flags_1fc_word & 0x80) != 0) {
+    if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -2377,7 +2381,7 @@ f32 Condition_LastAttackerIsActivePlayer(AISYS_PC *system, AISCRIPTPROCESS *proc
     }
     object = packet->owner->objptr;
     attacker = object->last_attacker;
-    if (attacker != NULL && (attacker->flags_1fc & 0x80) != 0) {
+    if (attacker != NULL && (attacker->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -2437,8 +2441,8 @@ f32 Condition_EmptyTakeOver(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET
         }
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             object = &Obj[index];
-            if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && (object->flags_1f8 & 0x400) != 0 &&
-                (i16)object->id == character) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
+                (object->flags_1f8 & 0x400) != 0 && (i16)object->id == character) {
                 if (object->takeover_target == NULL || object->takeover_source == NULL ||
                     object->takeover_source->character_context != CHARACTER_CONTEXT_BEEN_TAKEN_OVER) {
                     return 1.0f;
@@ -2542,7 +2546,8 @@ f32 Condition_NearestPartyRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPA
         i32 index;
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *member = Player[index];
-            if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0) {
+            if (member != NULL && (member->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (member->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
                 f32 distance = NuVecDistSqr(&member->position, &packet->owner->position, &difference);
                 if (distance < nearest) {
                     nearest = distance;
@@ -2563,7 +2568,8 @@ f32 Condition_NearestPartyXZRange(AISYS_PC *system, AISCRIPTPROCESS *process, AI
         i32 index;
         for (index = 0; index < 8; ++index) {
             GAMEOBJECT *member = Player[index];
-            if (member != NULL && (member->flags_1fc_word & 1u) != 0 && (member->flags_1fc_word & 0x1000u) != 0) {
+            if (member != NULL && (member->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (member->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
                 f32 distance = NuVecXZDistSqr(&member->position, &packet->owner->position, &difference);
                 if (distance < nearest) {
                     nearest = distance;
@@ -2851,7 +2857,8 @@ i32 Action_SetTakeOverTarget(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPAC
         }
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             candidate = &Obj[index];
-            if (!(candidate->flags_1fc_word & 1) || !(candidate->flags_1fc_word & 0x1000) || (i16)candidate->id != type) {
+            if (!(candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+                (i16)candidate->id != type) {
                 continue;
             }
             if (candidate->takeover_target != NULL && candidate->takeover_target != object) {
@@ -2935,9 +2942,9 @@ i32 Action_Activate(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
     if (creature_set != 0) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & 1) && candidate->ai_packet.creature_set == creature_set) {
+            if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && candidate->ai_packet.creature_set == creature_set) {
                 if (candidate->ai_packet.creature_index == 0xff) {
-                    candidate->flags_1fc_word |= 0x1000;
+                    candidate->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
                     AIScriptSetBaseScriptStateByName(&candidate->ai_packet.script_processor, "Base");
                 } else {
                     ResetAICreature(candidate, system);
@@ -2947,7 +2954,7 @@ i32 Action_Activate(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
         }
     } else if (object != NULL) {
         if (object->ai_packet.creature_index == 0xff) {
-            object->flags_1fc_word |= 0x1000;
+            object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
             AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "Base");
         } else {
             ResetAICreature(object, system);
@@ -2993,7 +3000,7 @@ i32 Action_DeActivate(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     if (creature_set != 0) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & 1) && (candidate->flags_1fc_word & 0x1000) &&
+            if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
                 candidate->ai_packet.creature_set == creature_set) {
                 DeactivateGameObject(candidate);
             }
@@ -3175,7 +3182,8 @@ i32 Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     type_count = 0;
     object = NULL;
     if (param_5 != 0) {
-        if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1fc & 1u) != 0 && packet->owner->objptr != NULL) {
+        if (packet != NULL && packet->owner != NULL && (packet->owner->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0 &&
+            packet->owner->objptr != NULL) {
             object = packet->owner->objptr;
         }
 
@@ -3253,8 +3261,8 @@ i32 Action_SetSide(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
             for (index = 0; index < HIGHGAMEOBJECT; ++index) {
                 candidate = &Obj[index];
                 type_matches = 0;
-                if ((candidate->flags_1fc_word & 1u) == 0 || (candidate->flags_1fc_word & 0x1000u) == 0 ||
-                    (candidate->flags_1f8 & 0x400u) == 0) {
+                if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+                    (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || (candidate->flags_1f8 & 0x400u) == 0) {
                     continue;
                 }
 
@@ -3371,7 +3379,8 @@ i32 Action_SetStateArea(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
 
     for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index) {
         object = &Obj[object_index];
-        if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || (object->flags_1f8 & 0x400) == 0) {
+        if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+            (object->flags_1f8 & 0x400) == 0) {
             continue;
         }
 
@@ -3473,8 +3482,9 @@ i32 Action_Kill(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     if (all_ai) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & 1) && (candidate->flags_1fc_word & 0x1000) && (candidate->flags_1f8 & 0x400) &&
-                candidate != excluded && (!check_dead || (candidate->dead == 0 && candidate->unknown_1010 <= 0.0f))) {
+            if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
+                (candidate->flags_1f8 & 0x400) && candidate != excluded &&
+                (!check_dead || (candidate->dead == 0 && candidate->unknown_1010 <= 0.0f))) {
                 candidate->portal_flags = (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
                 if (parts) {
                     KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
@@ -3489,7 +3499,7 @@ i32 Action_Kill(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     } else if (creature_set != 0) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc_word & 1) && (candidate->flags_1fc_word & 0x1000) &&
+            if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
                 candidate->ai_packet.creature_set == creature_set &&
                 (!check_dead || (candidate->dead == 0 && candidate->unknown_1010 <= 0.0f))) {
                 candidate->portal_flags = (candidate->portal_flags & ~0x00300000u) | ((u32)((respawn & 1) | ((origin & 1) << 1)) << 20);
@@ -4317,7 +4327,8 @@ i32 Action_SnapToSockPosition(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
             if (party != 0) {
                 object = Player[index];
             }
-            if (object != NULL && (object->flags_1fc_word & 1u) != 0 && (object->flags_1fc_word & 0x1000u) != 0) {
+            if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
                 dx = base_dx;
                 dy = base_dy;
                 if (index > 1) {
@@ -4384,7 +4395,8 @@ i32 Action_SetOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *p
             if (NuStrIStr(params[index], "opponent=droid") != NULL) {
                 for (player_index = 0; player_index < 8; player_index++) {
                     candidate = Player[player_index];
-                    if (candidate != NULL && (candidate->flags_1fc_word & 1) != 0 && (candidate->flags_1fc_word & 0x1000) != 0 &&
+                    if (candidate != NULL && (candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                        (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
                         (candidate->dead == 0 || candidate->unknown_1010 > 0.0f) && (candidate->flags_ef3 & 1) == 0 &&
                         (candidate->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
                         droids[droid_count++] = candidate;
@@ -4638,7 +4650,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
 
     if (processor->action_data_3 != NULL) {
         opponent = processor->action_data_3;
-        if (!(opponent->flags_1fc_word & 1) || !(opponent->flags_1fc_word & 0x1000) ||
+        if (!(opponent->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(opponent->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
             (opponent->dead != 0 && !(opponent->unknown_1010 > 0.0f))) {
             opponent = NULL;
         }
@@ -4653,9 +4665,9 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
         }
     }
     object->portal_flags |= 0x20;
-    if (!(opponent->flags_1fc_word & 1) || !(opponent->flags_1fc_word & 0x1000) || opponent->dead != 0 ||
-        opponent->character_context == CHARACTER_CONTEXT_DOOMED ||
-        ((opponent->flags_1fc_word & 0x80u) != 0 && opponent->spawn_protection_timer > 1.5f)) {
+    if (!(opponent->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(opponent->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+        opponent->dead != 0 || opponent->character_context == CHARACTER_CONTEXT_DOOMED ||
+        ((opponent->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && opponent->spawn_protection_timer > 1.5f)) {
         return 0;
     }
 
@@ -4670,7 +4682,7 @@ i32 Action_EngageOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
             processor->action_data_1 |= 2;
         }
     } else if (packet->movement_instruction_parameter != 0.0f &&
-               (((opponent->flags_1fc_word & 0x80u) != 0 && object->model_draw_result == 0) ||
+               (((opponent->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->model_draw_result == 0) ||
                 (((u64)1 << opponent->hostility_group) & WORLD->object_sys->hostility_masks[((APIOBJECT *)packet->owner)->object_id]) ==
                     0)) {
         goal_range = 0.1f;
@@ -4823,8 +4835,8 @@ i32 Action_ShootAtOpponent(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
         }
     }
     opponent = processor->action_data_3;
-    if (opponent == NULL || (opponent->flags_1fc_word & 1) == 0 || (opponent->flags_1fc_word & 0x1000) == 0 ||
-        (opponent->dead != 0 && !(opponent->unknown_1010 > 0.0f))) {
+    if (opponent == NULL || (opponent->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+        (opponent->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || (opponent->dead != 0 && !(opponent->unknown_1010 > 0.0f))) {
         if (packet->opponent == NULL || ((APIOBJECT *)packet->opponent)->ai == NULL ||
             (opponent = ((APIOBJECT *)packet->opponent)->owner) == NULL) {
             return 0;
@@ -5191,7 +5203,8 @@ i32 Action_SetInvulnerable(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
         candidate = Obj;
 
         for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
-            if (!(candidate->flags_1fc_word & 1) || !(candidate->flags_1fc_word & 0x1000) || (candidate->flags_1f8 & 0x400) == 0) {
+            if (!(candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) ||
+                (candidate->flags_1f8 & 0x400) == 0) {
                 continue;
             }
             for (type_index = 0; type_index < type_count; ++type_index) {
@@ -5303,17 +5316,18 @@ i32 Action_GameDontPush(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     if (type_count != 0) {
         candidate = Obj;
         for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++candidate) {
-            if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || (candidate->flags_1f8 & 0x400u) == 0) {
+            if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+                (candidate->flags_1f8 & 0x400u) == 0) {
                 continue;
             }
             for (type_index = 0; type_index < type_count; ++type_index) {
                 if ((i16)candidate->id == types[type_index]) {
-                    candidate->flags_1fc_word = (candidate->flags_1fc_word & ~2u) | ((dont_push & 1) << 1);
+                    candidate->flags_1fc_word = (candidate->flags_1fc_word & ~APIOBJECT_FLAG_DONT_PUSH) | ((dont_push & 1) << 1);
                 }
             }
         }
     } else if (object != NULL) {
-        object->flags_1fc_word = (object->flags_1fc_word & ~2u) | ((dont_push & 1) << 1);
+        object->flags_1fc_word = (object->flags_1fc_word & ~APIOBJECT_FLAG_DONT_PUSH) | ((dont_push & 1) << 1);
     }
     return 1;
 }
@@ -5589,8 +5603,8 @@ i32 Action_SelectRandomSpline(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKE
             if (unused) {
                 object = Obj;
                 for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-                    if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
-                        object->movement_spline_position.spline != NULL) {
+                    if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
+                        object->dead == 0 && object->movement_spline_position.spline != NULL) {
                         object->movement_spline_position.spline->length |= 0x8000;
                     }
                 }
@@ -5601,8 +5615,8 @@ i32 Action_SelectRandomSpline(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKE
                 }
                 object = Obj;
                 for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-                    if ((object->flags_1fc_word & 1) && (object->flags_1fc_word & 0x1000) && object->dead == 0 &&
-                        object->movement_spline_position.spline != NULL) {
+                    if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) &&
+                        object->dead == 0 && object->movement_spline_position.spline != NULL) {
                         object->movement_spline_position.spline->length &= 0x7fff;
                     }
                 }
@@ -6471,7 +6485,8 @@ i32 Action_SetMaxMovementRange(AISYS_PC *system, AISCRIPTPROCESS *processor, AIP
         if (all_non_party != 0) {
             object = Obj;
             for (index = 0; index < HIGHGAMEOBJECT; index++, object++) {
-                if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && (object->flags_1f8 & 0x400u) != 0) {
+                if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
+                    (object->flags_1f8 & 0x400u) != 0) {
                     object->ai_packet.movement_target_radius = range;
                     if (range > 0.0f) {
                         object->ai_packet.flags = (object->ai_packet.flags & ~0x08000000u) | 0x04000000u;
@@ -6957,7 +6972,8 @@ i32 Action_SetLevelPath(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
 
     for (index = 0; index < 8; ++index) {
         object = Player[index];
-        if (object != NULL && (object->flags_1fc_word & 1u) != 0 && (object->flags_1fc_word & 0x1000u) != 0) {
+        if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
             object_packet = &object->ai_packet;
             AISysCharacterSetPath(object_packet, sys->path_sys->active_path);
             AISysGetCharacterPathPos(WORLD->ai_sys, (APIOBJECT *)object, object_packet, 0xff, (i8)(object->unknown_281));
@@ -8312,7 +8328,7 @@ i32 Action_SetTaggable(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *p
             }
         }
         if (object != NULL) {
-            if (disabled && (object->flags_1fc_word & 0x80) != 0) {
+            if (disabled && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 if (object->takeover_source != NULL) {
                     ReleaseTakeOver(object, 0);
                 } else if (TagCharacter(object, target, 0) == 0) {
@@ -8466,7 +8482,7 @@ i32 Action_TakeDamage(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pa
     if (creature_set != 0) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
-            if ((candidate->flags_1fc & 1) != 0 && candidate->ai_packet.creature_set == creature_set) {
+            if ((candidate->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0 && candidate->ai_packet.creature_set == creature_set) {
                 ObjHitObj(hitter, candidate, damage, 0, 0, 1);
             }
         }

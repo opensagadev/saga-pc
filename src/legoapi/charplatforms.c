@@ -112,7 +112,7 @@ void CharPlatforms_Reset(CHARPLATFORMSYS_s *system) {
 
     object_cursor = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object_cursor) {
-        if ((object_cursor->flags_1fc_half & 1) != 0) {
+        if ((object_cursor->flags_1fc_half & APIOBJECT_FLAG_IN_USE) != 0) {
             object_cursor->level_object_index = -1;
         }
     }
@@ -146,8 +146,8 @@ void CharPlatforms_Update(CHARPLATFORMSYS_s *system) {
         visible = 0;
         object = Obj;
         for (j = 0; j < HIGHGAMEOBJECT; ++j, ++object) {
-            if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 &&
-                object->level_object_index == system->platforms[i].platform_id) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
+                object->dead == 0 && object->level_object_index == system->platforms[i].platform_id) {
                 nuhspecial_s *special = &system->platforms[i].special;
                 NUMTX *matrix = NuSpecialGetDrawMtx(special);
                 if (matrix != NULL) {

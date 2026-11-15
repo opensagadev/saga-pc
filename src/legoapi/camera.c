@@ -146,7 +146,7 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
     if (MiniCutCam == 0) {
         players = 0.0f;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && (Player[i]->flags_1fc & 0x80) != 0 && Player[i]->pad->bound_pad != NULL) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->pad->bound_pad != NULL) {
                 i32 look = 1;
                 f32 x;
                 f32 y;
@@ -405,13 +405,13 @@ i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
         return 0;
     }
     if (object->unknown_280 != 0xff) {
-        if ((object->flags_1fc_word & 0x80) != 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             if (object == Player[0]) {
                 other = Player[1];
             } else if (object == Player[1]) {
                 other = Player[0];
             }
-            if (other != NULL && (other->flags_1fc_word & 0x80) != 0 &&
+            if (other != NULL && (other->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                 !NarrowSockPositionAllowed(system, &other->sock_position, level_index)) {
                 return 0;
             }

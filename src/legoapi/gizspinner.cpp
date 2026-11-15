@@ -1152,8 +1152,9 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     if ((spinner->state_flags & 0x0c) == 0) {
         GAMEOBJECT *object = Obj;
         for (i32 index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-            if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-                (object->flags_e20 & 0x20) != 0 || (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) != 0 ||
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
+                object->dead != 0 || (object->flags_e20 & 0x20) != 0 ||
+                (U64_PAIR(&CInfo[object->character_context].flags) & 0x40000000) != 0 ||
                 (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) != 0 || minimum.x > object->collision_max.x ||
                 maximum.x < object->collision_min.x || minimum.z > object->collision_max.z || maximum.z < object->collision_min.z) {
                 continue;

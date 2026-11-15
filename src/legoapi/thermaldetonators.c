@@ -144,7 +144,7 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     }
 
     flags = 0x200;
-    if (part->owner != NULL && (part->owner->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x17) != 0) {
+    if (part->owner != NULL && (part->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_IsOn(0x17) != 0) {
         flags = 0x1200;
     }
 
@@ -168,7 +168,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     if (WORLD->level_objects[0xe9].active == 0) {
         return;
     }
-    if ((object->flags_1fc & 0x80) != 0) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(0x2b8);
     }
     locator = object->character_data->game_character->throw_locator;
@@ -327,7 +327,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         }
         return 0;
     }
-    if (WORLD->level_objects[0xe9].active == 0 || (object->flags_1fc & 0x80) == 0 ||
+    if (WORLD->level_objects[0xe9].active == 0 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
         (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
         return 0;
     }

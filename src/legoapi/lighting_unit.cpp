@@ -391,7 +391,7 @@ extern "C" {
             red = (f32)(((f64)Lighting_RedFlashRed - 1.0) * flash + 1.0);
             green = (f32)(((f64)Lighting_RedFlashGreen - 1.0) * flash + 1.0);
             blue = (f32)(((f64)Lighting_RedFlashBlue - 1.0) * flash + 1.0);
-        } else if (Lighting_HighlightFlash != 0 && (owner->flags_1fc_word & 0x80) && owner->hud_icon_timer > 0.0f &&
+        } else if (Lighting_HighlightFlash != 0 && (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && owner->hud_icon_timer > 0.0f &&
                    (owner->hud_icon_timer >= 2.0f || (f64)NuFmod(owner->hud_icon_timer, 0.4f) >= (f64)0.2f)) {
             if (owner->unknown_280 == 1) {
                 red = 1.7f;
@@ -402,7 +402,7 @@ extern "C" {
                 green = 1.85f;
                 blue = 2.0f;
             }
-        } else if ((owner->character_data->game_character->flags_090 & 0x8000) && !(owner->flags_1fc_word & 0x80)) {
+        } else if ((owner->character_data->game_character->flags_090 & 0x8000) && !(owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             red = 1.4f;
             green = 1.85f;
             blue = 2.0f;
@@ -419,7 +419,7 @@ extern "C" {
         } else if (owner->arrow_blend > 0.0f) {
             i32 angle = (i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
             red = green = blue = (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->arrow_blend * 0.5) + 1.0);
-        } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & 0x80) && owner->current_hp == 1 &&
+        } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && owner->current_hp == 1 &&
                    owner->unknown_107e > 1 && owner->vehicle_hit_timer < -0.5f) {
             // MATCH-EXCEPTION: the original negates the (negative) timer and subtracts it rather than adding.
             i32 angle = (i32)((1.0 - (-owner->vehicle_hit_timer)) * 2.0 * 65536.0 + 16384.0);
@@ -523,7 +523,7 @@ extern "C" {
         *radius = -1.0f;
         i32 count = 0;
         for (i32 i = 0; i < 2; ++i) {
-            if (Player[i] != NULL && (Player[i]->flags_1fc & 0x80) != 0) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 NuVecAdd(center, center, &reinterpret_cast<SHADOW_PLAYER_BOUNDS *>(Player[i])->center);
                 *radius = *radius > reinterpret_cast<SHADOW_PLAYER_BOUNDS *>(Player[i])->radius
                               ? *radius
@@ -589,7 +589,7 @@ extern "C" void fun_005969c0(void *set) {
     rtlProcessLights(set, FRAMETIME);
     object = Obj;
     for (i32 i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
             object->flags_ef0 |= 0x80;
             LightGameObject(object, set);
         }

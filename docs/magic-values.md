@@ -9,6 +9,12 @@ from the use where the use makes the meaning plain. Values whose meaning is
 not known keep their literal; they are listed here so the next pass knows
 where to look.
 
+`python3 tools/magicnames.py FIELD --names PREFIX` writes the names at every
+literal of a field once they are chosen: comparisons, assignments, `case`
+labels and masks, also through locals, parameters and function results that
+only carry the field (`--dry-run` lists the edits and the values left without
+a name). Prove the result like any change.
+
 ## Named
 
 | Field or value | Names | Evidence |
@@ -28,6 +34,7 @@ where to look.
 | `debris_info_s.particle_type` | `DEBRIS_PARTICLE_*` (edgra.h) | particle editor texture type menu (`cbPtlSelTextureType`) |
 | `music_playback_s.state` | `MUSIC_PLAYBACK_*` (nusound.h) | what `SoundUpdate`, `PlayMusic`, `SwapMusic` and `PlayCutMusic` do in each state (fade speed, which stream stops or pauses) |
 | `STATUS_STAGE_s.type`, `AddStatusStage`, `FindStatusStage` | `STATUS_STAGE_*` (legoapi_types.h) | the stage callbacks of `StatusStagesLsw`/`StatusStagesAlt` and the conditions each stage is added under |
+| `gameobject_s.flags_1fc` and its `_half`/`_word`/`_low` views (6 bits) | `APIOBJECT_FLAG_*` (apiobject.h) | `IN_USE` and `CHARACTER` from the object loops; `DONT_PUSH` from `CHARACTER_MODEL_DONT_PUSH` and the GameDontPush action, `SHADOW_TERRAIN` from the ShadowTerrain action, `PLAYER_ACTIVE` set on drop-in and cleared on drop-out, `CAN_FIRE` copied from `CHARACTER_MODEL_CAN_FIRE` |
 | `AIPACKET.flags` (5 of its bits) | `AIPACKET_*` (apiobject.h) | AI script actions and conditions that set or test them (`IgnoreWallSplines`, `CheckWallSplines`, `SetCircleDirection`, `PathBlocked`, `SetFormationCommander`) |
 
 ## Still literal (meaning not known yet)
@@ -39,7 +46,8 @@ where to look.
 | `gameobject_s.action_movement_state` | 72 | 2..9 | movement mode of AI packets; the sibling build calls it `AIPACKET_MOVEMENT_MODE`, not verified on PC |
 | `AIPACKET.path_connection_state` | 53 | 0..5 | path-following state; no strings |
 | `gameobject_s.unknown_7b3` | 57 | 0..7 | a per-context sub-state (batarang, techno); meaning differs per context |
-| `gameobject_s.flags_1fc_word`, `flags_e20`, `flags_ef0`, `flags_ef4`, `flags_1f8`, `portal_flags`, `context_variant_flags` | 100-540 each | bit sets | runtime state bits set in code, no keywords; the sibling build's names are guesses |
+| `gameobject_s.flags_1fc`, other bits | 45 | 0x4, 0x10, 0x20, 0x40, 0x100, 0x400, 0x2000, 0x10000, 0x40000 | 0x4 is set by the player movement update under many conditions, 0x20 when riding a bike (with 0x400 for a cheap zip), 0x2000 when a respawn position is saved off a path; not settled |
+| `gameobject_s.flags_e20`, `flags_ef0`, `flags_ef4`, `flags_1f8`, `portal_flags`, `context_variant_flags` | 100-540 each | bit sets | runtime state bits set in code, no keywords; the sibling build's names are guesses |
 | cheat indices (`Cheat_IsOn`) | 57 | 0..0x2c | come from the game's cheat config file, which is not among the retail files here |
 | AI script `action_data_1` | ~20 | bit sets | keyword-driven, but each action gives the bits its own meaning: needs a set per action |
 | `AIPACKET.flags`, other bits | ~100 | 0x1-0x80000000 | path following and movement state set in `AISysProcessCharacter`, `AIMoveToDestination`, `AISysCharacterMovement`; no keyword |

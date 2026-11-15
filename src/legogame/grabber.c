@@ -620,8 +620,8 @@ void Grabber_Update(WORLDINFO *world) {
     if (grabber == NULL) {
         return;
     }
-    if (grabber->victim != NULL &&
-        ((grabber->victim->flags_1fc_word & 1) == 0 || (grabber->victim->flags_1fc_word & 0x1000) == 0 || grabber->victim->dead != 0)) {
+    if (grabber->victim != NULL && ((grabber->victim->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
+                                    (grabber->victim->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || grabber->victim->dead != 0)) {
         grabber->victim = NULL;
     }
     if (grabber->platform_contact_timer > 0.0f) {
@@ -642,7 +642,8 @@ void Grabber_Update(WORLDINFO *world) {
     } else {
         pad = control->pad;
     }
-    if (control != NULL && (control->takeover_source != NULL || StartupGameFlag1 == 0) && (control->flags_1fc & 0x80) != 0) {
+    if (control != NULL && (control->takeover_source != NULL || StartupGameFlag1 == 0) &&
+        (control->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         if (pad->input_magnitude > 0.0f) {
             if (Grab_grabber->move_xy != 0) {
                 grabber->target_velocity.x = 0.0f;
@@ -852,7 +853,7 @@ void Grabber_Update(WORLDINFO *world) {
             Grabber_Drop(grabber, &previous);
             break;
         case 2:
-            if (moved == 0 && grabber->victim != NULL && (grabber->victim->flags_1fc & 0x80) != 0) {
+            if (moved == 0 && grabber->victim != NULL && (grabber->victim->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 grabber->stuck_timer += FRAMETIME;
                 if (!(grabber->stuck_timer >= 3.0f)) {
                     goto waiting;
@@ -972,7 +973,7 @@ void Grabber_Update(WORLDINFO *world) {
         found = 0;
         object = Obj;
         for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-            if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0) {
+            if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
                 continue;
             }
             if ((object->character_data->game_character->flags_090 & 0x8000) == 0) {

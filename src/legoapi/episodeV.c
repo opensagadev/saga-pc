@@ -956,7 +956,8 @@ void CloudCityEscapeC_Update(WORLDINFO *world) {
 
 i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *offset) {
     if ((object->flags_ef4 & 2) == 0 || dagobah_training == 0 || object->rider != NULL || luke == NULL ||
-        (luke->flags_1fc_word & 0x80) == 0 || !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
+        (luke->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
+        !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;
     }
     NuVecRotateY(offset, offset, -luke->unknown_276);
@@ -1313,7 +1314,7 @@ void HothBattle_ManageBackgroundCreatures(void) {
         if (object == NULL) {
             continue;
         }
-        if ((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0 && object->ai_packet.creature_set == 3) {
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0 && object->ai_packet.creature_set == 3) {
             if (last == -1) {
                 last = index;
             }
@@ -1380,7 +1381,7 @@ i32 SpawnMeleeCreatureType(i32 type) {
         if (melee.waves[type].character_id == id_ATAT && melee.waves[type].active_count == 0) {
             object = GetNamedGameObject(WORLD->ai_sys, "ATAT_EDIT");
             melee.waves[type].creatures[slot] = object;
-            if (object != NULL && object->dead == 0 && (object->flags_1fc_word & 0x1000) != 0) {
+            if (object != NULL && object->dead == 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
                 ++melee.waves[type].active_count;
                 continue;
             }
@@ -1554,7 +1555,8 @@ void HothBattleE_UpdateWave(void) {
                 if (melee.transition_phase == 1) {
                     object = Obj;
                     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-                        if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->id != (u16)id_ATAT &&
+                        if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
+                            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->id != (u16)id_ATAT &&
                             object->player_index == -1 && (object->character_data->model_flags & CHARACTER_MODEL_BADDIE) != 0) {
                             KillGameObject(object, 4, 0);
                         }
@@ -1588,7 +1590,7 @@ void HothBattleE_UpdateWave(void) {
         for (index = 0; index < 4; ++index) {
             object = melee.waves[wave_index].creatures[index];
             if (object != NULL) {
-                if ((object->flags_1fc_word & 0x1000) != 0 && object->dead == 0) {
+                if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->dead == 0) {
                     ++count;
                 } else {
                     --melee.waves[wave_index].active_count;

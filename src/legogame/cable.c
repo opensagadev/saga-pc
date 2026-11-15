@@ -124,7 +124,7 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     IncrementMinikitCounter(target);
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
-        if ((object->flags_1fc_word & 0x1000) && object->dead == 0 && object->cable != NULL &&
+        if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->dead == 0 && object->cable != NULL &&
             ((CABLE_RECORD *)object->cable)->target == target) {
             ReleaseCable(object->cable, 1);
         }
@@ -199,7 +199,7 @@ void UpdateCables(void) {
             release = 1;
         }
         source = cable->source;
-        if (source == NULL || !(source->flags_1fc_word & 0x1000) || source->dead != 0 || (source->unknown_e20 & 0x20) ||
+        if (source == NULL || !(source->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || source->dead != 0 || (source->unknown_e20 & 0x20) ||
             (target != NULL && target->character_context == CHARACTER_CONTEXT_DEACTIVATED) ||
             ((flags & 2) && source->pad->bound_pad != NULL && (source->pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
             release = 1;
@@ -208,7 +208,7 @@ void UpdateCables(void) {
             cable->flags = (u16)flags;
             path[0] = source->collision_position;
             count = 1;
-            if (target == NULL || !(target->flags_1fc_word & 0x1000) || target->dead != 0) {
+            if (target == NULL || !(target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || target->dead != 0) {
                 release = 1;
             } else {
                 if (target->id == (u16)id_ATAT) {
@@ -316,8 +316,9 @@ void UpdateCables(void) {
                                 GAMEOBJECT *object = &Obj[i];
                                 f32 line_distance;
                                 f32 squared;
-                                if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead != 0 ||
-                                    (object->unknown_e20 & 0x20) || (object->flags_1fc_word & 0x80)) {
+                                if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) ||
+                                    !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead != 0 ||
+                                    (object->unknown_e20 & 0x20) || (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                                     continue;
                                 }
                                 if (WORLD->area != NULL && WORLD->area == HOTHBATTLE_ADATA && object->id != (u16)id_ATAT &&
@@ -351,7 +352,7 @@ void UpdateCables(void) {
                                 snapped = 1;
                             } else {
                                 target = cable->target;
-                                if (target != NULL && (target->flags_1fc_word & 0x1000)) {
+                                if (target != NULL && (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER)) {
                                     if (target->id != (u16)id_ATAT) {
                                         target->flags_ef4 |= 0x200;
                                         AIScriptSetBaseScriptStateByName(&cable->target->ai_packet.script_processor, "BeingTowed");
@@ -599,7 +600,7 @@ GAMEOBJECT *CableTargetGameObject(GAMEOBJECT *source, NUVEC *position, f32 radiu
         i8 context;
         NUVEC delta;
         f32 distance;
-        if (candidate == source || !(candidate->flags_1fc_word & 0x1000) || candidate->dead || candidate == Player[0] ||
+        if (candidate == source || !(candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || candidate->dead || candidate == Player[0] ||
             candidate == Player[1]) {
             continue;
         }

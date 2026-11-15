@@ -347,8 +347,8 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
     }
     for (index = 0; index < 2; ++index) {
         player = Player[index];
-        if (player == NULL || (player->flags_1fc_word & 0x1000) == 0 || player->dead != 0 || (player->flags_1fc_word & 0x80) == 0 ||
-            (player->flags_e20 & 0x20) != 0) {
+        if (player == NULL || (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || player->dead != 0 ||
+            (player->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (player->flags_e20 & 0x20) != 0) {
             continue;
         }
         if (TORPEDO_PACKET(player)->count >= 5 || TORPEDO_PACKET(player)->steal_timer != 0.0f) {
@@ -678,7 +678,7 @@ void Torpedo_Shoot(GAMEOBJECT *object) {
     }
     --object->torpedo->count;
     object->torpedo->flags |= 2;
-    if ((object->flags_1fc & 0x80) != 0) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         Hint_SetComplete(0x289);
     }
 }
@@ -737,7 +737,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         object->portal_flags |= 0x800;
         timers->fire_cooldown = fire_cooldown;
         TORPEDO_PACKET(object)->fire_index = 0;
-        if (object->flags_1fc & 0x80) {
+        if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
             Hint_SetComplete(0x289);
         }
     }
@@ -759,13 +759,13 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
             TORPEDO_PACKET(object)->pickup_state = 0;
         }
     } else {
-        if (TorpedoFillEnabled != 0 && (object->flags_1fc & 0x80) != 0 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
-            (TORPEDO_PACKET(object)->flags & 2) == 0 && TORPEDO_PACKET(object)->count < maximum) {
+        if (TorpedoFillEnabled != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && timers->fire_cooldown <= 0.0f &&
+            object->dead == 0 && (TORPEDO_PACKET(object)->flags & 2) == 0 && TORPEDO_PACKET(object)->count < maximum) {
             TORPEDO_PACKET(object)->pickup_positions[TORPEDO_PACKET(object)->count] = object->position;
             ++TORPEDO_PACKET(object)->count;
             TORPEDO_PACKET(object)->pickup_timer = 0.0f;
-        } else if (Cheat_IsOn(42) != 0 && (object->flags_1fc & 0x80) != 0 && timers->fire_cooldown <= 0.0f && object->dead == 0 &&
-                   (TORPEDO_PACKET(object)->flags & 2) == 0 && TORPEDO_PACKET(object)->count < maximum) {
+        } else if (Cheat_IsOn(42) != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && timers->fire_cooldown <= 0.0f &&
+                   object->dead == 0 && (TORPEDO_PACKET(object)->flags & 2) == 0 && TORPEDO_PACKET(object)->count < maximum) {
             TORPEDO_PACKET(object)->pickup_positions[TORPEDO_PACKET(object)->count] = object->position;
             ++TORPEDO_PACKET(object)->count;
             TORPEDO_PACKET(object)->pickup_timer = 0.0f;
@@ -828,7 +828,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
             TORPEDO_PACKET(object)->target = NULL;
         }
     }
-    if ((object->flags_1fc & 0x80) != 0 && TORPEDO_PACKET(object)->target != NULL && timers->target_timer > 0.0f) {
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && TORPEDO_PACKET(object)->target != NULL && timers->target_timer > 0.0f) {
         target_position = NULL;
         switch (TORPEDO_PACKET(object)->target_type) {
             case 0:

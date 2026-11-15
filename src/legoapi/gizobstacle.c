@@ -587,7 +587,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         }
         for (i = 0, object = Obj; i < HIGHGAMEOBJECT; ++i, ++object) {
             i8 player;
-            if (!(object->flags_1fc_word & 1) || !(object->flags_1fc_word & 0x1000) || object->dead ||
+            if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) || !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead ||
                 (LEGOCONTEXT_DOOMED != -1 && object->character_context == LEGOCONTEXT_DOOMED) || !(object->flags_1044 & 1) ||
                 (object->flags_e20 & 0x20)) {
                 continue;
@@ -599,7 +599,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             if ((obstacle->config_flags & 4) && player == -1) {
                 continue;
             }
-            if (((obstacle->config_flags & 0x20) && !(object->flags_1fc_word & 0x80)) ||
+            if (((obstacle->config_flags & 0x20) && !(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) ||
                 (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) || ((obstacle->config_flags & 0x400) && !object->rider) ||
                 ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE)) ||
                 ((obstacle->config_flags & 8) && !(object->character_data->model_flags & CHARACTER_MODEL_VEHICLE)) ||
@@ -886,7 +886,7 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     }
     if (obstacle->config_flags & 0x800) {
         obstacle->runtime_flags |= 0x40;
-        if (player != -1 && (Player[player]->flags_1fc & 0x80)) {
+        if (player != -1 && (Player[player]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
         }
         return 1;
@@ -911,7 +911,7 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
     GameAnimSet_SetVisibility(obstacle->anim_set, 0);
     obstacle->runtime_flags |= 0x80;
-    if (player != -1 && (Player[player]->flags_1fc & 0x80)) {
+    if (player != -1 && (Player[player]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
         NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
     }
     return 1;
