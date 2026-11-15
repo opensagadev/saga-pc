@@ -73,6 +73,14 @@ def cindex():
     return _ci
 
 
+def clang_version():
+    """The libclang in use, as the real path of the loaded library: scan caches key on it, since a
+    different libclang reports different record locations and so different counts."""
+    import os  # noqa: PLC0415
+    ci = cindex()
+    return f"{os.path.realpath(ci.__file__)}:{getattr(ci.conf.lib, '_name', '')}"
+
+
 class MainFile:
     """Tells whether a cursor's expansion location is in the unit itself, not in a header.
 

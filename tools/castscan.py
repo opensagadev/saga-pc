@@ -861,11 +861,12 @@ def scan(jobs=2, cache_path=CACHE):
             file_hashes[relative_path] = hashlib.sha256(full.read_bytes()).hexdigest() if full.is_file() else None
         return file_hashes[relative_path]
 
+    clang = declscan.clang_version()
     entries, todo, facts = {}, [], {}
     flags = None
     for unit in units():
         text = (ROOT / unit).read_bytes()
-        key = hashlib.sha256(f"{VERSION}:{unit}:".encode() + text).hexdigest()
+        key = hashlib.sha256(f"{VERSION}:{clang}:{unit}:".encode() + text).hexdigest()
         entry = cache["units"].get(unit)
         if entry and entry.get("key") == key and all(file_hash(d) == h for d, h in entry["deps"].items()):
             facts[unit] = entry["facts"]
