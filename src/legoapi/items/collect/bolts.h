@@ -19,7 +19,6 @@
 #include "gamelib/util/gamelib_util_types.h"
 #include "globals.h"
 #include "legoapi/legoapi_types.h"
-#include "legoapi/world/world.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 

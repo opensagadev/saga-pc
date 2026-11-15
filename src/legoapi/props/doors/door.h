@@ -16,7 +16,6 @@
 #ifndef SAGA_SHIM
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/world/world.h"
-#include "legogame/game.h"
 #include "nu2api/numath/nuplane.h"
 #include "nu2api/numath/nuvec.h"
 #endif

@@ -14,7 +14,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "MechInputTouch/MechInputTouch_types.h"
 #include "editor/edlevelall.h"
 #include "gameapi/ai/aisys/aipath.h"
 #include "gamelib/util/gamelib_util_types.h"
@@ -23,7 +22,6 @@
 #include "legoapi/items/objects/basething.h"
 #include "legoapi/props/system/socksys.h"
 #include "legoapi/render/core/gameliball.h"
-#include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/nufile/nufile.h"
@@ -32,9 +30,19 @@
 #endif
 
 struct AIAREA;
+struct ClassObject;
+struct EdClass;
+struct EdInputContext;
+struct FtpFile;
+struct NETMESSAGE;
+struct NetAddress;
+struct NetworkObject;
+struct PC_OCCLUDER_RECORD;
 struct TERRAIN_PLATFORM_PC;
 struct TERRAIN_POLYGON_INFO;
 struct TERRAIN_SKIN_STREAM;
+struct ThingProcessData;
+struct VuVec;
 struct debris_particle_s;
 
 /* 14 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
@@ -724,14 +732,14 @@ struct OccluderSet { // size 0xa0
     static struct numtl_s *ms_pZOnlyMtl2D;
     static struct numtl_s *ms_pAlphaMtl2D;
     void Init(u32, VARIPTR *, VARIPTR);
-    PC_OCCLUDER_RECORD *occluders; // 0x00
-    u32 *indices;                  // 0x04
-    u32 capacity;                  // 0x08
-    u32 count;                     // 0x0c
-    bool queries_prepared;         // 0x10
-    u8 unknown_11[15];             // 0x11
-    NUMTX projection_matrix;       // 0x20
-    NUMTX query_matrix;            // 0x60
+    struct PC_OCCLUDER_RECORD *occluders; // 0x00
+    u32 *indices;                         // 0x04
+    u32 capacity;                         // 0x08
+    u32 count;                            // 0x0c
+    bool queries_prepared;                // 0x10
+    u8 unknown_11[15];                    // 0x11
+    NUMTX projection_matrix;              // 0x20
+    NUMTX query_matrix;                   // 0x60
     bool IsOccludedOBB(const NUVEC *, const NUVEC *, const NUMTX *);
     void AddOccluder(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void RenderOccluders(bool) const;
@@ -2101,7 +2109,7 @@ class ThingManager { // size 0x24
     virtual void ResetThings(ThingResetData *data);
     virtual void EnterLevelThings(ThingLevelData *data);
     virtual void ExitLevelThings(ThingLevelData *data);
-    virtual void ProcessThings(ThingProcessData *data);
+    virtual void ProcessThings(struct ThingProcessData *data);
     virtual void RenderThings(ThingRenderData *data);
     virtual void DisplayThings(ThingRenderData *data);
     virtual void EffectsThings(ThingRenderData *data);
@@ -2200,10 +2208,10 @@ class Placeable { // size 0x18
     virtual void SetCurrentTransform(const struct VuMtx *) {
     }
 
-    virtual const VuVec *GetInitialPosition() const;
-    virtual void SetInitialPosition(const VuVec *position);
-    virtual const VuVec *GetCurrentPosition() const;
-    virtual void SetCurrentPosition(const VuVec *position);
+    virtual const struct VuVec *GetInitialPosition() const;
+    virtual void SetInitialPosition(const struct VuVec *position);
+    virtual const struct VuVec *GetCurrentPosition() const;
+    virtual void SetCurrentPosition(const struct VuVec *position);
 
     virtual void Render(const struct VuMtx *) const {
     }
@@ -2223,9 +2231,9 @@ struct ClassObjectListEntry : public CSListLink<ClassObjectListEntry> { // size 
 
     ClassObjectListEntry();
 
-    EdClass *ed_class; // 0x08
-    void *object;      // 0x0c
-    EdRef *reference;  // 0x10
+    struct EdClass *ed_class; // 0x08
+    void *object;             // 0x0c
+    EdRef *reference;         // 0x10
 };
 
 struct ClassObjectList {         // size 0xc
@@ -2237,11 +2245,11 @@ struct ClassObjectList {         // size 0xc
     void fun_006c1450(ClassObjectListEntry *entry, ClassObjectListEntry *position);
     void Remove(ClassObjectListEntry *entry);
     i32 fun_006c14f0();
-    i32 GetAveragePosition(VuVec &average);
-    i32 GetAveragePosition(VuVec &average, f32 &radius);
+    i32 GetAveragePosition(struct VuVec &average);
+    i32 GetAveragePosition(struct VuVec &average, f32 &radius);
     i32 IsInList(ClassObject object);
     i32 IsInList(void *object, EdRef *reference);
-    i32 IsInList(EdClass *object_class);
+    i32 IsInList(struct EdClass *object_class);
 };
 
 class EdTool : public CSListLink<EdTool> { // size 0xc
@@ -2255,7 +2263,7 @@ class EdTool : public CSListLink<EdTool> { // size 0xc
         return "";
     }
 
-    virtual i32 Process(EdInputContext &) {
+    virtual i32 Process(struct EdInputContext &) {
         return 0;
     }
 
@@ -2297,7 +2305,7 @@ class BaseEditor : public CSListLink<BaseEditor> { // size 0x10
     virtual void Exit() {
     }
 
-    virtual void Process(EdInputContext &) {
+    virtual void Process(struct EdInputContext &) {
     }
 
     virtual void Render() {
@@ -2330,7 +2338,7 @@ class ClassEditor : public BaseEditor { // size 0x70
     virtual void Flush();
     virtual void Enter();
     virtual void Exit();
-    virtual void Process(EdInputContext &);
+    virtual void Process(struct EdInputContext &);
     virtual void Render();
     virtual void AddMenuItems(struct eduimenu_s *);
 
@@ -2350,42 +2358,42 @@ class ClassEditor : public BaseEditor { // size 0x70
     i32 mode;                         // 0x68
     i32 class_filter;                 // 0x6c
 
-    void DrawObjectSphere(ClassObject &selected, i32 colour);
+    void DrawObjectSphere(struct ClassObject &selected, i32 colour);
     static void cbEdFilterLED(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
     static void cbEdLevelSelectAll(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
     static void cbEdLevelDeselectAll(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
     void PreSaveInitialisation();
     void PostSaveInitialisation();
     void UpdateLists(MemoryBuffer *first, MemoryBuffer *second);
-    void UpdateSnapRay(VuVec &position);
+    void UpdateSnapRay(struct VuVec &position);
     void PreLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
     void PostLoadInitialisation(MemoryBuffer *first, MemoryBuffer *second);
-    i32 SelectObject(ClassObject &object, i32 mode);
+    i32 SelectObject(struct ClassObject &object, i32 mode);
     i32 IsUniqueName(char *name);
     void MakeUniqueName(char const *name, char *destination, i32 size);
-    i32 IsSelectedObject(ClassObject &object);
+    i32 IsSelectedObject(struct ClassObject &object);
     i32 IsSelectedObject(void *object, EdRef *reference);
-    i32 IsSelectedClass(EdClass *object_class);
-    void SnapPoint(VuVec &point);
-    i32 Editable(void *object, EdClass *object_class, i32 index);
+    i32 IsSelectedClass(struct EdClass *object_class);
+    void SnapPoint(struct VuVec &point);
+    i32 Editable(void *object, struct EdClass *object_class, i32 index);
     void SetMode(i32 new_mode);
-    void UpdateClassFilter(EdInputContext &input);
-    void UpdateSelectedObjects(EdInputContext &input);
+    void UpdateClassFilter(struct EdInputContext &input);
+    void UpdateSelectedObjects(struct EdInputContext &input);
     void DestroySelectedObjects();
     void DestroySelectedObjectsNow();
     void SelectLED(i32 class_id);
     void ViewSelected();
     void FocusSelected();
-    void InitialiseObject(ClassObject &object);
-    i32 CreateObject(ClassObject &object);
-    i32 CreateObject(EdClass *object_class);
+    void InitialiseObject(struct ClassObject &object);
+    i32 CreateObject(struct ClassObject &object);
+    i32 CreateObject(struct EdClass *object_class);
     i32 CreateObject(i32 class_id);
-    i32 FindNearestObject(VuVec &point, ClassObject &nearest, i32 filter);
-    i32 FindNearestObject(VuVec &point, ClassObject &nearest, ClassObject &after, i32 filter);
-    i32 FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, i32 filter);
-    i32 FindNearestObject(VuVec &origin, VuVec &direction, ClassObject &nearest, ClassObject &after, i32 filter);
+    i32 FindNearestObject(struct VuVec &point, struct ClassObject &nearest, i32 filter);
+    i32 FindNearestObject(struct VuVec &point, struct ClassObject &nearest, ClassObject &after, i32 filter);
+    i32 FindNearestObject(struct VuVec &origin, VuVec &direction, struct ClassObject &nearest, i32 filter);
+    i32 FindNearestObject(struct VuVec &origin, VuVec &direction, struct ClassObject &nearest, ClassObject &after, i32 filter);
     static i32 cbEdCreateClassNewObject(i32 class_id);
-    static i32 cbEdCopySelectedObject(EdInputContext &input);
+    static i32 cbEdCopySelectedObject(struct EdInputContext &input);
     static void SetViewMenuHilight(struct eduimenu_s *menu);
     static void cbDestroyMenu(struct eduimenu_s *menu, struct eduimenu_s *);
     static void cbDestroyObject(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
@@ -2410,12 +2418,12 @@ class ClassEditor : public BaseEditor { // size 0x70
     f32 &fun_006b8bf0();
     i32 fun_006b8c10();
     void fun_006b8c20(EdTool *tool);
-    void fun_006b8c30(ClassObject &object);
+    void fun_006b8c30(struct ClassObject &object);
     void fun_006b8c50(i32 value);
-    i32 fun_006b8c60(ClassObject &object);
+    i32 fun_006b8c60(struct ClassObject &object);
     ClassObjectList &fun_006b8c90();
     void RegisterTool(EdTool &tool);
-    ClassObject &fun_006b8ca0();
+    struct ClassObject &fun_006b8ca0();
 };
 #endif
 #undef SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART
@@ -2437,7 +2445,7 @@ class LevelEditor : public BaseThing { // size 0x10b0
         return "LevelEditor";
     }
 
-    virtual void ProcessEvenWhenPaused(ThingProcessData *);
+    virtual void ProcessEvenWhenPaused(struct ThingProcessData *);
     virtual void Display(ThingRenderData *);
 
     void SetPadText(i32 buttons, char *text);
@@ -2445,7 +2453,7 @@ class LevelEditor : public BaseThing { // size 0x10b0
     void ClearLevel(i32 index);
     void Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_front);
     void AddInfoText(char *text);
-    void SetCameraPosition(VuVec &position);
+    void SetCameraPosition(struct VuVec &position);
     void CreateMenu();
     void CreateEditorList(struct eduimenu_s *parent, struct eduiitem_s *item);
     void Enter();
@@ -2555,7 +2563,7 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
   public:
     TTNetwork();
     ~TTNetwork();
-    virtual void ProcessEvenWhenPaused(ThingProcessData *data);
+    virtual void ProcessEvenWhenPaused(struct ThingProcessData *data);
     virtual void Display(ThingRenderData *data);
     void Start();
     void Update();
@@ -2569,20 +2577,20 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
     void PeerJoined(const V2Peer &peer);
     void PeerLeft(const V2Peer &peer, i32 reason);
     void PeerDead(const V2Peer &peer);
-    void FtpUpload(FtpFile *file);
-    void FtpDownload(FtpFile *file);
-    void FtpComplete(FtpFile *file, i32 result);
-    i32 NosAcquire(NetworkObject *object, const V2Peer &peer);
-    void NosAdopted(NetworkObject *object, const V2Peer &peer);
+    void FtpUpload(struct FtpFile *file);
+    void FtpDownload(struct FtpFile *file);
+    void FtpComplete(struct FtpFile *file, i32 result);
+    i32 NosAcquire(struct NetworkObject *object, const V2Peer &peer);
+    void NosAdopted(struct NetworkObject *object, const V2Peer &peer);
     void UpdateClientStats();
-    void DeliverMessage(NETMESSAGE &message, u8 channel, const V2Peer &peer);
+    void DeliverMessage(struct NETMESSAGE &message, u8 channel, const V2Peer &peer);
     void RecordSent(NETMESSAGE message, u8 channel);
     void RecordReceived(NETMESSAGE message, u8 channel);
     void Resume();
     i32 Suspend();
-    NetAddress *GetMyAddress();
-    NetAddress *GetMyHostAddress();
-    void SetMyHostAddress(NetAddress *address);
+    struct NetAddress *GetMyAddress();
+    struct NetAddress *GetMyHostAddress();
+    void SetMyHostAddress(struct NetAddress *address);
     void ClearMyHostAddress();
     i32 fun_00611dc0() const;
 

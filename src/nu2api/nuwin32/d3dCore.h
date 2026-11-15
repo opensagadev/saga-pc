@@ -15,7 +15,6 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/PCInput.h"
-#include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/pcapi.h"
 #endif
 
@@ -31,6 +30,15 @@ struct GRAPHICS_RENDER_TEXTURE;
 struct PC_D3D9_DEVICE_PC;
 
 typedef struct PC_TEXTURE_RESOURCE PC_TEXTURE_RESOURCE;
+
+typedef struct PC_VIEWPORT { // size 0x18
+    u32 x;                   // 0x00
+    u32 y;                   // 0x04
+    u32 width;               // 0x08
+    u32 height;              // 0x0c
+    f32 min_z;               // 0x10
+    f32 max_z;               // 0x14
+} PC_VIEWPORT;
 
 typedef struct PC_LOCKED_RECT { // size 0x8
     i32 pitch;                  // 0x0
@@ -187,6 +195,35 @@ extern "C" {
 #endif
 
 #if SAGA_NU2API_NUWIN32_D3DCORE_H_PART == 2 && !defined(SAGA_NU2API_NUWIN32_D3DCORE_H_STOP)
+
+/* A render-target surface: the texture it wraps, or the device surface it owns. */
+typedef struct PC_EFFECT_SURFACE PC_EFFECT_SURFACE;
+
+struct PC_EFFECT_SURFACE {                                                                             // size 0x1c
+    struct GRAPHICS_RENDER_TEXTURE *texture;                                                           // 0x00
+    u8 owns_texture; /* 0x05..0x07 alignment padding; no char arrays, so locals carry no /GS cookie */ // 0x04
+    struct PC_TEXTURE_RESOURCE *surface;                                                               // 0x08
+    u16 level;                                                                                         // 0x0c
+    u16 unknown_0e;                                                                                    // 0x0e
+    u32 unknown_10;                                                                                    // 0x10
+    u16 width;                                                                                         // 0x14
+    u16 height;                                                                                        // 0x16
+    i16 registry_index; /* 0x1a..0x1b alignment padding */                                             // 0x18
+#ifdef __cplusplus
+    PC_EFFECT_SURFACE();
+    ~PC_EFFECT_SURFACE();
+    void Reset();
+    void Attach(struct GRAPHICS_RENDER_TEXTURE *, i32, bool);
+    static void ReleaseResources();
+    static void RestoreResources();
+    struct GRAPHICS_RENDER_TEXTURE *fun_005f7af0();
+    u16 fun_005f7b00();
+    u32 fun_005f7b10();
+    u16 fun_005f7b20();
+    u16 fun_005f7b30();
+    void fun_005fb920(PC_EFFECT_SURFACE *source);
+#endif
+};
 
 typedef struct PC_DEVICE_BACKEND_PC {       // size 0x700
     struct GRAPHICS_FACTORY *factory;       // 0x000

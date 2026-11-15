@@ -8,7 +8,6 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "legoapi/gizmos/fx/gizmopickups.h"
-#include "legoapi/items/base/apiobject.h"
 #include "legoapi/world/world.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"

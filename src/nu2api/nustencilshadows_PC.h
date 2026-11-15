@@ -83,8 +83,6 @@ struct PC_BUFFER_RESOURCE {                    // size 0x4
     const PC_BUFFER_RESOURCE_METHODS *methods; // 0x0
 };
 
-typedef struct PC_EFFECT_SURFACE PC_EFFECT_SURFACE;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -494,32 +492,6 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-    struct PC_EFFECT_SURFACE {                                                                             // size 0x1c
-        struct GRAPHICS_RENDER_TEXTURE *texture;                                                           // 0x00
-        u8 owns_texture; /* 0x05..0x07 alignment padding; no char arrays, so locals carry no /GS cookie */ // 0x04
-        struct PC_TEXTURE_RESOURCE *surface;                                                               // 0x08
-        u16 level;                                                                                         // 0x0c
-        u16 unknown_0e;                                                                                    // 0x0e
-        u32 unknown_10;                                                                                    // 0x10
-        u16 width;                                                                                         // 0x14
-        u16 height;                                                                                        // 0x16
-        i16 registry_index; /* 0x1a..0x1b alignment padding */                                             // 0x18
-#ifdef __cplusplus
-        PC_EFFECT_SURFACE();
-        ~PC_EFFECT_SURFACE();
-        void Reset();
-        void Attach(GRAPHICS_RENDER_TEXTURE *, i32, bool);
-        static void ReleaseResources();
-        static void RestoreResources();
-        GRAPHICS_RENDER_TEXTURE *fun_005f7af0();
-        u16 fun_005f7b00();
-        u32 fun_005f7b10();
-        u16 fun_005f7b20();
-        u16 fun_005f7b30();
-        void fun_005fb920(PC_EFFECT_SURFACE *source);
-#endif
-    };
 
     extern GRAPHICS_RENDER_TEXTURE PCGraphicsRenderTextures[32];
 

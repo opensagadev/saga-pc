@@ -5,10 +5,7 @@
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gamelib/util/CRC16.h"
-#endif
+struct ShaderConditionNodePc;
 
 #ifdef __cplusplus
 
@@ -38,8 +35,8 @@ struct ShaderParserUndefNodePc : ShaderParserNodePc { // size 0xc
 struct ShaderParserBranchNodePc : ShaderParserNodePc { // size 0x14
     ShaderParserNodePc *if_true;                       // 0x08
     ShaderParserNodePc *if_false;                      // 0x0c
-    ShaderConditionNodePc *condition;                  // 0x10
-    ShaderParserBranchNodePc(ShaderConditionNodePc *condition);
+    struct ShaderConditionNodePc *condition;           // 0x10
+    ShaderParserBranchNodePc(struct ShaderConditionNodePc *condition);
 };
 class ShaderCompilerParserPc;
 #ifdef SAGA_SHADER_PARSER_TYPES

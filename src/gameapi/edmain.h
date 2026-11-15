@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 

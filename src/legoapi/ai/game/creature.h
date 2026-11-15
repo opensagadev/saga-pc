@@ -12,7 +12,6 @@
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/lib/camera.h"
 #include "legoapi/world/level.h"
-#include "nu2api/numath/nuvec.h"
 #endif
 
 #ifdef __cplusplus

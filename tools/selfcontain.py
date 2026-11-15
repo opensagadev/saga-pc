@@ -280,6 +280,7 @@ def apply(fixes, texts):
         for item in items:
             if item[0] == "include":
                 new = add_include(new, item[1])
+                ADDED.add((file, item[1]))
         if new != text:
             (SRC / file).write_text(new, encoding="utf-8")
             texts[file] = new
@@ -535,11 +536,14 @@ def header_needs(flags):
             if cursor.kind == K.TYPE_REF and ref.kind in (K.STRUCT_DECL, K.UNION_DECL, K.CLASS_DECL):
                 text = lines.setdefault(header, (SRC / header).read_text(encoding="utf-8", errors="replace")
                                         .splitlines())
-                rest = text[cursor.location.line - 1][cursor.location.column - 1 + len(cursor.spelling):]
+                rest = text[cursor.location.line - 1][cursor.location.column - 1 + len(cursor.spelling.split()[-1]):]
                 if re.match(r"\s*(const\s*)?[*&]", rest):
                     continue
             needs[header].add(used)
     return needs
+
+
+ADDED = set()  # (header, include) pairs this run added because the header did not compile without them
 
 
 def prune_includes(needs):
@@ -555,7 +559,8 @@ def prune_includes(needs):
         end = text.index("#endif", found.end())
         lines = text[found.end():end].splitlines(True)
         keep = [line for line in lines if not (name := re.match(r'#include "([^"]+)"', line))
-                or name.group(1) not in module or name.group(1) in needs.get(header, ())]
+                or name.group(1) not in module or name.group(1) in needs.get(header, ())
+                or (header, name.group(1)) in ADDED]
         if keep == lines:
             continue
         new = text[:found.end()] + "".join(keep) + text[end:]

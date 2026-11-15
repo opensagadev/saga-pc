@@ -195,3 +195,4 @@ config/oddscan-budget.json dup-type 387 tools/selfcontain.py moved types out of 
 config/castscan-budget.json duplicate-type 1267 a record-pun cast now reads as duplicate-type: its record moved to another header by tools/selfcontain.py (same cast, same type)
 config/castscan-budget.json duplicate-type 1268 WORLDINFO.shards is now SHARD_s *: the attracto view of the same records reads it through an explicit cast (AttractoSelectShard) instead of a void * pun
 config/oddscan-budget.json dup-type 387 main counts 387 (the selfcontain.py raise above) but its budget file kept 381; this sets the file to that reviewed value, no new duplicate
+config/oddscan-budget.json pc-suffix 10695 tools/selfcontain.py respells a pointer to a struct with its tag and adds the tag's forward declaration; for a tag ending in _PC that is one more mention of the same name

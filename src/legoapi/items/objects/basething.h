@@ -5,11 +5,7 @@
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "MechInputTouch/MechInputTouch_types.h"
-#include "legoapi/legoapi_types.h"
-#endif
+struct ThingProcessData;
 
 #ifdef __cplusplus
 
@@ -35,12 +31,12 @@ class BaseThing {
     virtual void Reset(ThingResetData *) {
     }
 
-    virtual void Process(ThingProcessData *) {
+    virtual void Process(struct ThingProcessData *) {
     }
 
-    virtual void ProcessEvenWhenPaused(ThingProcessData *);
+    virtual void ProcessEvenWhenPaused(struct ThingProcessData *);
 
-    virtual void ProcessOnlyWhenPaused(ThingProcessData *) {
+    virtual void ProcessOnlyWhenPaused(struct ThingProcessData *) {
     }
 
     virtual void Render(ThingRenderData *) {

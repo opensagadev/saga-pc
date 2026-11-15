@@ -15,12 +15,14 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "editor/edpath.h"
-#include "editor/edpath_types.h"
 #include "gameapi/ai/aisys/aipath.h"
 #include "legoapi/ai/core/gameai.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/numath/nuvec.h"
 #endif
+
+struct nuhspecial_s;
 
 /* 9 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
@@ -334,7 +336,7 @@ extern "C" {
     void AIAntinodeDestroy(AIANTINODE *);
     void AIAntinodeMove(AIANTINODE *, NUVEC *, f32, f32, f32);
     f32 AIPathNodeDistanceToPathNode(AIPATH *, i32, i32, i32, u32);
-    typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, nuhspecial_s *);
+    typedef i32 (*AISYS_SPECIAL_NODE_CALLBACK_PC)(void *, struct nuhspecial_s *);
     extern AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback;
     i32 WithinConnection(void *, NUVEC *, AIPATH *, AIPATHCNX *, i32, AIPATHCNX *, i32, i32, AIPATHINFO *, f32, i32);
     void AIPathNodeUpdatePos(void *, AIPATH *, AIPATHNODE *);
@@ -475,7 +477,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, nuhspecial_s *special);
+typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s *special);
 #undef SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART
 #define SAGA_GAMEAPI_AI_AISYS_AISYS_H_PART 5
 #ifdef SAGA_SHIM

@@ -14,7 +14,7 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/ShaderManager.h"
+#include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/numath/nuvec4.h"
 #endif
 

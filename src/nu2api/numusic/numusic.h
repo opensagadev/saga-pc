@@ -8,8 +8,9 @@
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
 #include "nu2api/nufile/nufpar.h"
-#include "nu2api/nusound/nusound.h"
 #endif
+
+struct nusound_filename_info_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,42 +83,42 @@ class NuMusic { // size 0x1e4
         void Initialise(void);
     };
 
-    Album *albums;                     // 0x000
-    i32 album_count;                   // 0x004
-    Track *extra_tracks;               // 0x008
-    i32 extra_track_count;             // 0x00c
-    f32 *indexes;                      // 0x010
-    i32 index_count;                   // 0x014
-    i32 pitch_default;                 // 0x018
-    Album *current_album;              // 0x01c
-    Track *current_track;              // 0x020
-    char current_path[256];            // 0x024
-    u8 strict_mode;                    // 0x124
-    u8 unknown_125[3];                 // 0x125
-    char *string_pool_start;           // 0x128
-    char *string_pool_end;             // 0x12c
-    Voice voices[2];                   // 0x130
-    f32 master_volume;                 // 0x198
-    f32 fader_current;                 // 0x19c
-    f32 fader_target;                  // 0x1a0
-    f32 fader_rate;                    // 0x1a4
-    f32 duck_gain;                     // 0x1a8
-    f32 duck_current;                  // 0x1ac
-    f32 duck_rate;                     // 0x1b0
-    f32 class_volumes[6];              // 0x1b4
-    f32 global_attenuation;            // 0x1cc
-    i32 track_index;                   // 0x1d0
-    char *language;                    // 0x1d4
-    Album *album;                      // 0x1d8
-    nusound_filename_info_s *fileinfo; // 0x1dc
-    i32 file_count;                    // 0x1e0
+    Album *albums;                            // 0x000
+    i32 album_count;                          // 0x004
+    Track *extra_tracks;                      // 0x008
+    i32 extra_track_count;                    // 0x00c
+    f32 *indexes;                             // 0x010
+    i32 index_count;                          // 0x014
+    i32 pitch_default;                        // 0x018
+    Album *current_album;                     // 0x01c
+    Track *current_track;                     // 0x020
+    char current_path[256];                   // 0x024
+    u8 strict_mode;                           // 0x124
+    u8 unknown_125[3];                        // 0x125
+    char *string_pool_start;                  // 0x128
+    char *string_pool_end;                    // 0x12c
+    Voice voices[2];                          // 0x130
+    f32 master_volume;                        // 0x198
+    f32 fader_current;                        // 0x19c
+    f32 fader_target;                         // 0x1a0
+    f32 fader_rate;                           // 0x1a4
+    f32 duck_gain;                            // 0x1a8
+    f32 duck_current;                         // 0x1ac
+    f32 duck_rate;                            // 0x1b0
+    f32 class_volumes[6];                     // 0x1b4
+    f32 global_attenuation;                   // 0x1cc
+    i32 track_index;                          // 0x1d0
+    char *language;                           // 0x1d4
+    Album *album;                             // 0x1d8
+    struct nusound_filename_info_s *fileinfo; // 0x1dc
+    i32 file_count;                           // 0x1e0
 
     void InitVoiceManager(void);
     char *RemovePath(char *);
     char *FindString(const char *);
     char *AllocString(const char *);
     void SubstituteString(char *src, char *dst, char *find, char *subst);
-    i32 FindOrCreateSoundFile(nusound_filename_info_s *, i32 *, const char *, i32, i32);
+    i32 FindOrCreateSoundFile(struct nusound_filename_info_s *, i32 *, const char *, i32, i32);
     void BuildSoundTable(VARIPTR *, VARIPTR);
     void InitData(const char *, VARIPTR *, VARIPTR);
     i32 Initialise(const char *, char *, VARIPTR *, VARIPTR);
@@ -172,7 +173,7 @@ class NuMusic { // size 0x1e4
     const char *ClassToName(u32 class_mask);
     void SetClassVolume(u32 class_mask, f32 volume);
     void Debug(i32 unused, i32 y);
-    void GetSoundFiles(nusound_filename_info_s **files, i32 *count);
+    void GetSoundFiles(struct nusound_filename_info_s **files, i32 *count);
     i32 PauseTrack(u32 class_mask);
     i32 ResumeTrack(u32 class_mask);
     i32 SelectTrackByHandle(u32 class_mask, i32 handle);

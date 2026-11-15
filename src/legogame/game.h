@@ -10,7 +10,6 @@
 #include "legoapi/audio/audio.h"
 #include "legoapi/items/collect/shard.h"
 #include "legoapi/items/objects/game_obj.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/world/missions.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nufile/nufpar.h"

@@ -20,6 +20,8 @@
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct numtl_s;
+
 /* 3 parts: saga.h includes this header once per part, each where its declarations belong; included directly, it gives
  * all parts at once. */
 
@@ -39,9 +41,9 @@ extern "C" {
     void EdDrawEnd(void);
     void EdDrawPolyCylinder(struct numtx_s *matrix, f32 half_height, f32 radius, f32 top_radius, i32 segments, i32 colour, i32 cap_bottom,
                             i32 cap_top);
-    extern NUMTL *edLevel2dMtl;
-    extern NUMTL *edLevel3dMtl;
-    extern NUMTL *edLevelTexMtl;
+    extern struct numtl_s *edLevel2dMtl;
+    extern struct numtl_s *edLevel3dMtl;
+    extern struct numtl_s *edLevelTexMtl;
     extern NUMTX *NewMtx;
     extern eduimenu_s *edLevelActiveMenu;
     extern eduimenu_s *edLevelDestroyThisMenu2;

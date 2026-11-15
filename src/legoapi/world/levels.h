@@ -16,13 +16,9 @@
 #ifndef SAGA_SHIM
 #include "gameapi/ai/aisys/aisys.h"
 #include "gameapi/apitext.h"
-#include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/items/objects/objectsall.h"
-#include "legoapi/legoapi_types.h"
 #include "legoapi/world/area.h"
-#include "legoapi/world/level.h"
-#include "legoapi/world/world.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nuspline.h"
 #include "nu2api/nufile/nufpar.h"

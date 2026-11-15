@@ -9,7 +9,6 @@
 #ifndef SAGA_SHIM
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufile.h"
-#include "nu2api/nufile/nufpar.h"
 #endif
 
 struct nufpar_s;

@@ -7,7 +7,6 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "gameapi/apitext.h"
 #include "legoapi/legoapi_types.h"
 #include "nu2api/nu3d/nuqfnt.h"
 #endif

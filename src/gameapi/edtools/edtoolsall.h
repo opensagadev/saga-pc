@@ -5,11 +5,8 @@
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
-#include "legoapi/legoapi_types.h"
-#endif
+struct eduiitem_s;
+struct eduimenu_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,7 +27,7 @@ extern "C" {
     void FS_BuildFilterBlocks(char *arg0);
     void FS_BuildFilterOutBlocks(char *arg0);
     extern i32 ui_bgmtl;
-    void eduiAddPropTextPickEnt(eduimenu_s *menu, eduiitem_s *item);
+    void eduiAddPropTextPickEnt(struct eduimenu_s *menu, struct eduiitem_s *item);
     void eduiSetCameraEnabled(i32 enabled);
     void eduiSetCursorColour(u32 colour);
     void eduiSetFontScale(f32 x, f32 y);

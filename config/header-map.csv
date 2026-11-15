@@ -2545,7 +2545,7 @@ assert:-#2114,assert,,8373,8373,1,nu2api/nucore/nucore_plain_types.h,follow-type
 assert:-#2115,assert,,8374,8374,1,nu2api/nucore/nucore_plain_types.h,follow-type,NUKEYCHAR
 struct:NuTime_s,struct,NuTime_s NuTime,8376,8379,5,nu2api/nucore/nutime.h,android-stem,NuTime_s -> nutime_s
 assert:-#2116,assert,,8381,8381,2,nu2api/nucore/nutime.h,follow-type,NuTime
-struct:PC_VIEWPORT,struct,PC_VIEWPORT,8383,8390,9,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
+struct:PC_VIEWPORT,struct,PC_VIEWPORT,8383,8390,9,nu2api/nuwin32/d3dCore.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
 struct:nuvpcurrent_s,struct,nuvpcurrent_s NUVPCURRENT,8392,8416,26,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (8) android-path
 assert:-#2117,assert,,8418,8418,2,nu2api/nu3d/nu3d_includes.h,follow-type,NUVPCURRENT
 assert:-#2118,assert,,8419,8419,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVPCURRENT
@@ -2989,7 +2989,7 @@ variable:PCGraphicsGpuFallback,variable,PCGraphicsGpuFallback,9816,9816,1,nu2api
 variable:PCGraphicsQueriedGpu,variable,PCGraphicsQueriedGpu,9817,9817,1,nu2api/nuwin32/d3dCore.h,users,PCGraphicsQueriedGpu: only nu2api/nuwin32/d3dCore.cpp pc-path
 variable:PCGraphicsGpuSelectionEnabled,variable,PCGraphicsGpuSelectionEnabled,9818,9818,1,nu2api/nuwin32/d3dCore.h,users,PCGraphicsGpuSelectionEnabled: only nu2api/nuwin32/d3dCore.cpp pc-path
 variable:PCGraphicsSelectedGpuRecord,variable,PCGraphicsSelectedGpuRecord,9819,9819,1,nu2api/nuwin32/d3dCore.h,users,PCGraphicsSelectedGpuRecord: only nu2api/nuwin32/d3dCore.cpp pc-path
-forward:PC_EFFECT_SURFACE,forward,PC_EFFECT_SURFACE,9824,9824,2,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (21) pc-path
+forward:PC_EFFECT_SURFACE,forward,PC_EFFECT_SURFACE,9824,9824,2,nu2api/nuwin32/d3dCore.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (21) pc-path
 forward:PC_FRAMEBUFFER,forward,PC_FRAMEBUFFER,9825,9825,1,nu2api/nu3d/nu3d_includes.h,rule,used most in nu2api/nu3d_includes.cpp (34) android-path
 typedef:PC_DEVICE_TEXTURE_CACHE_PC,typedef,PC_DEVICE_TEXTURE_CACHE_PC,9826,9826,1,nu2api/nuwin32/d3dCore.h,type-users,used by its saga.h users only there
 typedef:PC_DEVICE_SAMPLER_CACHE_PC,typedef,PC_DEVICE_SAMPLER_CACHE_PC,9827,9827,1,nu2api/nuwin32/d3dCore.h,type-users,used by its saga.h users only there
@@ -3121,13 +3121,13 @@ assert:-#2612,assert,,10123,10123,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVI
 assert:-#2613,assert,,10124,10124,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_DEVICE_BACKEND_PC
 assert:-#2614,assert,,10125,10125,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,GRAPHICS_FACTORY
 assert:-#2615,assert,,10126,10126,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,GRAPHICS_FACTORY_METHODS
-assert:-#2616,assert,,10128,10128,2,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
-assert:-#2617,assert,,10129,10129,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
-assert:-#2618,assert,,10130,10130,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
-assert:-#2619,assert,,10131,10131,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
-assert:-#2620,assert,,10132,10132,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
-assert:-#2621,assert,,10133,10133,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
-assert:-#2622,assert,,10134,10134,1,nu2api/nu3d/nu3d_includes.h,follow-type,PC_VIEWPORT
+assert:-#2616,assert,,10128,10128,2,nu2api/nuwin32/d3dCore.h,follow-type,PC_VIEWPORT
+assert:-#2617,assert,,10129,10129,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_VIEWPORT
+assert:-#2618,assert,,10130,10130,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_VIEWPORT
+assert:-#2619,assert,,10131,10131,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_VIEWPORT
+assert:-#2620,assert,,10132,10132,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_VIEWPORT
+assert:-#2621,assert,,10133,10133,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_VIEWPORT
+assert:-#2622,assert,,10134,10134,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_VIEWPORT
 assert:-#2623,assert,,10135,10135,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,PC_D3D9_METHODS_PC
 assert:-#2624,assert,,10136,10136,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,PC_D3D9_METHODS_PC
 assert:-#2625,assert,,10137,10137,1,nu2api/nufmv/pc/Bink/dsplay_bink.h,follow-type,PC_D3D9_METHODS_PC
@@ -7071,16 +7071,16 @@ function:NuGScnNumSpecials,function,NuGScnNumSpecials,15514,15514,1,nu2api/nugsc
 function:NuGScnGetSpecial,function,NuGScnGetSpecial,15515,15515,1,nu2api/nugscn_gen.h,symbol,nu2api/nu3d_includes.cpp[nugscn_gen.cpp] pc-path
 variable:edgra_page_on,variable,edgra_page_on,15516,15516,1,gameapi/edtools/edgra_internal.h,android,edgra_page_on
 macro:PCGrassTerrainScene,macro,PCGrassTerrainScene,15517,15517,1,gameapi/edptl.h,users,PCGrassTerrainScene: only gameapi/gameliball.cpp[edptl.c] pc-path
-struct:PC_EFFECT_SURFACE,struct,PC_EFFECT_SURFACE,15519,15543,26,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (21) pc-path
-assert:-#3372,assert,,15545,15545,2,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3373,assert,,15546,15546,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3374,assert,,15547,15547,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3375,assert,,15548,15548,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3376,assert,,15549,15549,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3377,assert,,15550,15550,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3378,assert,,15551,15551,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3379,assert,,15552,15552,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
-assert:-#3380,assert,,15553,15553,1,nu2api/nustencilshadows_PC.h,follow-type,PC_EFFECT_SURFACE
+struct:PC_EFFECT_SURFACE,struct,PC_EFFECT_SURFACE,15519,15543,26,nu2api/nuwin32/d3dCore.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (21) pc-path
+assert:-#3372,assert,,15545,15545,2,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3373,assert,,15546,15546,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3374,assert,,15547,15547,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3375,assert,,15548,15548,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3376,assert,,15549,15549,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3377,assert,,15550,15550,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3378,assert,,15551,15551,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3379,assert,,15552,15552,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
+assert:-#3380,assert,,15553,15553,1,nu2api/nuwin32/d3dCore.h,follow-type,PC_EFFECT_SURFACE
 struct:PC_NUFADEGROUP,struct,PC_NUFADEGROUP,15555,15574,21,nu2api/nuobject.h,users,PC_NUFADEGROUP: only nu2api/nuobject.c pc-path
 assert:-#3381,assert,,15576,15576,2,nu2api/nuobject.h,follow-type,PC_NUFADEGROUP
 assert:-#3382,assert,,15577,15577,1,nu2api/nuobject.h,follow-type,PC_NUFADEGROUP

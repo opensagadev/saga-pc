@@ -32,7 +32,6 @@
 #include "nu2api/numath/nuquat.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-#include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #endif
 
@@ -575,15 +574,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-typedef struct PC_VIEWPORT { // size 0x18
-    u32 x;                   // 0x00
-    u32 y;                   // 0x04
-    u32 width;               // 0x08
-    u32 height;              // 0x0c
-    f32 min_z;               // 0x10
-    f32 max_z;               // 0x14
-} PC_VIEWPORT;
 
 typedef struct nuvpcurrent_s { // size 0x40
 

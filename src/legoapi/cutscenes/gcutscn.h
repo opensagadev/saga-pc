@@ -14,12 +14,13 @@
 
 /* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
 #ifndef SAGA_SHIM
-#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nucore/nuanimdata.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #endif
 
+struct NUGSCN_s;
 struct cut_load_character_animation_s;
 struct cut_load_locator_instance_system_s;
 
@@ -230,7 +231,7 @@ typedef struct cut_load_locator_system_s { // size 0xc
 typedef struct cut_load_rigid_s {   // size 0x5c
     NUMTX matrix;                   // 0x00
     char *name;                     // 0x40
-    NUGSCN *scene;                  // 0x44
+    struct NUGSCN_s *scene;         // 0x44
     void *special;                  // 0x48
     void *animation;                // 0x4c
     STATE_ANIM_PC *state_animation; // 0x50
@@ -324,7 +325,7 @@ struct cut_scene_load_s {                                        // size 0x5c
     u32 flags;                                                   // 0x38
     i32 stream_buffer_size;                                      // 0x3c
     u32 unknown_40;                                              // 0x40
-    NUGSCN *scene;                                               // 0x44
+    struct NUGSCN_s *scene;                                      // 0x44
     void *extra_scene;                                           // 0x48
     u32 stream_buffer_offset;                                    // 0x4c
     struct cut_load_character_animation_s *character_animations; // 0x50
@@ -479,7 +480,7 @@ typedef struct cut_instance_load_s {    // size 0xf8
         void *stream_buffers[2];
     }; // 0xbc
 
-    NUGSCN *scene_owner;                              // 0xc4
+    struct NUGSCN_s *scene_owner;                     // 0xc4
     CUT_LOAD_TRIGGER_OWNER *extra_scene_owner;        // 0xc8
     u8 unknown_cc[12];                                // 0xcc
     u16 skip_countdown;                               // 0xd8

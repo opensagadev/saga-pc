@@ -5,14 +5,9 @@
 
 #include "nu2api/nucore/common.h"
 
-/* The module headers this header uses. saga.h includes every header itself, so the shim skips these. */
-#ifndef SAGA_SHIM
-#include "gameapi/edtools/edui.h"
-#include "legoapi/legoapi_types.h"
-#include "nu2api/nu3d/nucamera.h"
-#include "nu2api/numath/numtx.h"
-#include "nu2api/numath/nuvec.h"
-#endif
+struct FRAME_PAD_PC;
+struct nucamera_s;
+struct nuvec_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,11 +20,11 @@ extern "C" {
     void edmainExtCamera(struct nucamera_s *camera);
     void edcamSet(void);
     void edcamMoveEx(struct FRAME_PAD_PC *pad, f32 delta_time);
-    NUCAMERA *edmainGetCamera(void);
+    struct nucamera_s *edmainGetCamera(void);
     f32 edcamGetDist(void);
     i32 edmainGetCursorEnabled(void);
-    void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
-    void edcamMove(FRAME_PAD_PC *pad);
+    void edcamGetPosAng(struct nuvec_s *position, i32 *pitch, i32 *yaw);
+    void edcamMove(struct FRAME_PAD_PC *pad);
     void edcamSetDist(f32 distance);
 #ifdef __cplusplus
 }

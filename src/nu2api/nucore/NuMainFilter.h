@@ -9,7 +9,6 @@
 #ifndef SAGA_SHIM
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nucore/NuMainFilterGen.h"
-#include "nu2api/nustencilshadows_PC.h"
 #endif
 
 struct PC_FRAMEBUFFER;
