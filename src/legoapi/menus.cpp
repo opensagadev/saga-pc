@@ -1,7 +1,6 @@
 #include "saga.h"
 
 #include <string.h>
-#pragma section(".bss$MenuButtonHistoryPc", read, write)
 extern "C" {
 
     void MenuRegisterSoundFX(i32 move, i32 select, i32 back, i32 no_entry) {

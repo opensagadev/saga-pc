@@ -193,12 +193,10 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     }
 }
 
-#pragma data_seg(".data$ViewCam")
 VIEWCAM ViewCam = {
     0, {1000000000.0f, 0.0f, 0.0f},
      -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL
 };
-#pragma data_seg()
 
 void ViewCamSetActive(i32 mode, GAMEPAD_PC *gamepad) {
     if (player != NULL) {

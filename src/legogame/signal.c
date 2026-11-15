@@ -354,12 +354,8 @@ void Signals_StoreProgress(WORLDINFO *world, void *unused, SIGNALPROGRESS_s *pro
     }
 }
 
-#pragma data_seg(".data$SignalRegistryNamePc")
 char *SignalRegistryNamePc = "Signal";
-#pragma data_seg()
-#pragma data_seg(".data$SignalAddTypePc")
 ADDGIZMOTYPE_PC SignalAddType = {0};
-#pragma data_seg()
 
 ADDGIZMOTYPE_PC *Signals_RegisterGizmo(i32 unused_type_id) {
     char *name = SignalRegistryNamePc;

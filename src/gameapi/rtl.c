@@ -3,14 +3,10 @@
 #include <string.h>
 #include <stdio.h>
 i32 rtl_dynamic_lights_enabled = 1;
-#pragma data_seg(".data$RtlFileVersionPc")
 static i32 curr_version = 5;
-#pragma data_seg()
 f32 rtl_shadow_blend_rate = 2.0f;
 NUVEC rtl_shadow_flicker = {0.1f, 0.1f, 0.1f};
-#pragma data_seg(".data$RtlUidCounterPc")
 static u16 rtl_uid = 1;
-#pragma data_seg()
 static i32 rtl_dynamic_cnt = 0;
 
 typedef union RTL_FRAME_TIMER_VIEW { // size 0x4
@@ -2308,8 +2304,7 @@ void SelectPrevRTL(void) {
 
 extern RTL_FOG_MIGRATION_PC *curr_fog;
 /* Fog editor mode and cursor size; the mode has its own section to keep the data layout. */
-#pragma section(".bss$RtlFogModePc", read, write)
-__declspec(allocate(".bss$RtlFogModePc")) i32 fogmode = 0;
+i32 fogmode = 0;
 i32 rtl_error = 0;
 f32 cursor_size = 1.0f;
 
@@ -2499,20 +2494,13 @@ void edrtlDrawBurnInfo(void) {
 }
 
 /* Editor state, each cell in its own section to keep the data layout. */
-#pragma section(".bss$RtledMenuActivePc", read, write)
-__declspec(allocate(".bss$RtledMenuActivePc")) i32 rtled_menu_active = 0;
-#pragma section(".bss$DeleteMenuActivePc", read, write)
-__declspec(allocate(".bss$DeleteMenuActivePc")) i32 delete_menu_active = 0;
-#pragma section(".bss$RtlZOffPc", read, write)
-__declspec(allocate(".bss$RtlZOffPc")) i32 rtl_zoff = 0;
-#pragma section(".bss$RtlHideTypesPc", read, write)
-__declspec(allocate(".bss$RtlHideTypesPc")) i32 hide_types[8] = {0};
-#pragma section(".bss$RtlClipboardLightPc", read, write)
-__declspec(allocate(".bss$RtlClipboardLightPc")) RTL_LIGHT clipboard_light = {0};
-#pragma section(".bss$RtlCurrentFogPc", read, write)
-__declspec(allocate(".bss$RtlCurrentFogPc")) RTL_FOG_MIGRATION_PC *curr_fog = NULL;
-#pragma section(".bss$RtlClipboardFogPc", read, write)
-__declspec(allocate(".bss$RtlClipboardFogPc")) RTL_FOG_MIGRATION_PC clipboard_fog = {0};
+i32 rtled_menu_active = 0;
+i32 delete_menu_active = 0;
+i32 rtl_zoff = 0;
+i32 hide_types[8] = {0};
+RTL_LIGHT clipboard_light = {0};
+RTL_FOG_MIGRATION_PC *curr_fog = NULL;
+RTL_FOG_MIGRATION_PC clipboard_fog = {0};
 
 void edrtlcbCancelMenu(eduimenu_s *menu, eduimenu_s *parent) {
     rtled_menu_active = 0;
@@ -2601,22 +2589,14 @@ void rtlCbRLowTime(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons
 }
 
 /* Editor pointer/index cells, each in its own section to keep the data layout. */
-#pragma section(".bss$RtlUndoIndexPc", read, write)
-__declspec(allocate(".bss$RtlUndoIndexPc")) static u32 rtl_undo_ix = 0;
-#pragma section(".bss$RtlUndoSnapshotsPc", read, write)
-__declspec(allocate(".bss$RtlUndoSnapshotsPc")) static RTL_LIGHT *rtl_undo = NULL;
-#pragma section(".bss$RtlUndoCameraPositionsPc", read, write)
-__declspec(allocate(".bss$RtlUndoCameraPositionsPc")) static NUVEC *curpos_undo = NULL;
-#pragma section(".bss$RtlUndoCurrentLightsPc", read, write)
-__declspec(allocate(".bss$RtlUndoCurrentLightsPc")) static RTL_LIGHT **curr_rtl_undo = NULL;
-#pragma section(".bss$RtlUndoLockedLightsPc", read, write)
-__declspec(allocate(".bss$RtlUndoLockedLightsPc")) static RTL_LIGHT **rtl_locked_undo = NULL;
-#pragma section(".bss$RtlUndoBaseLightsPc", read, write)
-__declspec(allocate(".bss$RtlUndoBaseLightsPc")) static RTL_LIGHT **base_rtl_undo = NULL;
-#pragma section(".bss$RtlUndoItemPc", read, write)
-__declspec(allocate(".bss$RtlUndoItemPc")) eduiitem_s *undo_item = NULL;
-#pragma section(".bss$RtlRedoItemPc", read, write)
-__declspec(allocate(".bss$RtlRedoItemPc")) eduiitem_s *redo_item = NULL;
+static u32 rtl_undo_ix = 0;
+static RTL_LIGHT *rtl_undo = NULL;
+static NUVEC *curpos_undo = NULL;
+static RTL_LIGHT **curr_rtl_undo = NULL;
+static RTL_LIGHT **rtl_locked_undo = NULL;
+static RTL_LIGHT **base_rtl_undo = NULL;
+eduiitem_s *undo_item = NULL;
+eduiitem_s *redo_item = NULL;
 
 void edcamGetPosAng(NUVEC *position, i32 *pitch, i32 *yaw);
 
@@ -2699,8 +2679,7 @@ void cbPasteLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     }
 }
 
-#pragma section(".bss$RtlMenuUndoPc", read, write)
-__declspec(allocate(".bss$RtlMenuUndoPc")) RTL_LIGHT menu_undo = {0};
+RTL_LIGHT menu_undo = {0};
 
 void cbDeleteYes(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     if (curr_rtl != NULL) {
@@ -2843,167 +2822,88 @@ void cbPasteFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbPasteIntoFog(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbCancelLightProperties(eduimenu_s *menu, eduimenu_s *parent);
 
-#pragma section(".bss$RtlUI_associd_menu", read, write)
-__declspec(allocate(".bss$RtlUI_associd_menu")) static eduimenu_s *associd_menu = NULL;
-#pragma section(".bss$RtlUI_associd_items", read, write)
-__declspec(allocate(".bss$RtlUI_associd_items")) static eduiitem_s *associd_items[16] = {0};
-#pragma section(".bss$RtlUI_excludeid_menu", read, write)
-__declspec(allocate(".bss$RtlUI_excludeid_menu")) static eduimenu_s *excludeid_menu = NULL;
-#pragma section(".bss$RtlUI_excludeid_items", read, write)
-__declspec(allocate(".bss$RtlUI_excludeid_items")) static eduiitem_s *excludeid_items[16] = {0};
-#pragma section(".bss$RtlUI_userid_menu", read, write)
-__declspec(allocate(".bss$RtlUI_userid_menu")) static eduimenu_s *userid_menu = NULL;
-#pragma section(".bss$RtlUI_userid_items", read, write)
-__declspec(allocate(".bss$RtlUI_userid_items")) static eduiitem_s *userid_items[16] = {0};
-#pragma section(".bss$RtlUI_type_menu", read, write)
-__declspec(allocate(".bss$RtlUI_type_menu")) static eduimenu_s *type_menu = NULL;
-#pragma section(".bss$RtlUI_point_item", read, write)
-__declspec(allocate(".bss$RtlUI_point_item")) static eduiitem_s *point_item = NULL;
-#pragma section(".bss$RtlUI_jonflicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_jonflicker_item")) static eduiitem_s *jonflicker_item = NULL;
-#pragma section(".bss$RtlUI_pointflicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_pointflicker_item")) static eduiitem_s *pointflicker_item = NULL;
-#pragma section(".bss$RtlUI_pointblend_item", read, write)
-__declspec(allocate(".bss$RtlUI_pointblend_item")) static eduiitem_s *pointblend_item = NULL;
-#pragma section(".bss$RtlUI_ambient_item", read, write)
-__declspec(allocate(".bss$RtlUI_ambient_item")) static eduiitem_s *ambient_item = NULL;
-#pragma section(".bss$RtlUI_directional_item", read, write)
-__declspec(allocate(".bss$RtlUI_directional_item")) static eduiitem_s *directional_item = NULL;
-#pragma section(".bss$RtlUI_antilight_item", read, write)
-__declspec(allocate(".bss$RtlUI_antilight_item")) static eduiitem_s *antilight_item = NULL;
-#pragma section(".bss$RtlUI_camdir_item", read, write)
-__declspec(allocate(".bss$RtlUI_camdir_item")) static eduiitem_s *camdir_item = NULL;
-#pragma section(".bss$RtlUI_modifier_menu", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_menu")) static eduimenu_s *modifier_menu = NULL;
-#pragma section(".bss$RtlUI_modifier_items", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_items")) static eduiitem_s *modifier_items[32] = {0};
-#pragma section(".bss$RtlUI_modifier_adj_menu", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_adj_menu")) static eduimenu_s *modifier_adj_menu = NULL;
-#pragma section(".bss$RtlUI_flicker_menu", read, write)
-__declspec(allocate(".bss$RtlUI_flicker_menu")) static eduimenu_s *flicker_menu = NULL;
-#pragma section(".bss$RtlUI_t_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_t_hi_item")) static eduiitem_s *t_hi_item = NULL;
-#pragma section(".bss$RtlUI_rt_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_rt_hi_item")) static eduiitem_s *rt_hi_item = NULL;
-#pragma section(".bss$RtlUI_t_low_item", read, write)
-__declspec(allocate(".bss$RtlUI_t_low_item")) static eduiitem_s *t_low_item = NULL;
-#pragma section(".bss$RtlUI_rt_low_item", read, write)
-__declspec(allocate(".bss$RtlUI_rt_low_item")) static eduiitem_s *rt_low_item = NULL;
-#pragma section(".bss$RtlUI_jonflicker_menu", read, write)
-__declspec(allocate(".bss$RtlUI_jonflicker_menu")) static eduimenu_s *jonflicker_menu = NULL;
-#pragma section(".bss$RtlUI_jon_t_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_jon_t_hi_item")) static eduiitem_s *jon_t_hi_item = NULL;
-#pragma section(".bss$RtlUI_jon_rt_hi_item", read, write)
-__declspec(allocate(".bss$RtlUI_jon_rt_hi_item")) static eduiitem_s *jon_rt_hi_item = NULL;
-#pragma section(".bss$RtlUI_jon_t_low_item", read, write)
-__declspec(allocate(".bss$RtlUI_jon_t_low_item")) static eduiitem_s *jon_t_low_item = NULL;
-#pragma section(".bss$RtlUI_prop_menu", read, write)
-__declspec(allocate(".bss$RtlUI_prop_menu")) static eduimenu_s *prop_menu = NULL;
-#pragma section(".bss$RtlUI_colour_item", read, write)
-__declspec(allocate(".bss$RtlUI_colour_item")) static eduiitem_s *colour_item = NULL;
-#pragma section(".bss$RtlUI_flicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_flicker_item")) static eduiitem_s *flicker_item = NULL;
-#pragma section(".bss$RtlUI_associd_item", read, write)
-__declspec(allocate(".bss$RtlUI_associd_item")) static eduiitem_s *associd_item = NULL;
-#pragma section(".bss$RtlUI_multiplier_item", read, write)
-__declspec(allocate(".bss$RtlUI_multiplier_item")) static eduiitem_s *multiplier_item = NULL;
-#pragma section(".bss$RtlUI_groupid_item", read, write)
-__declspec(allocate(".bss$RtlUI_groupid_item")) static eduiitem_s *groupid_item = NULL;
-#pragma section(".bss$RtlUI_modifierid_item", read, write)
-__declspec(allocate(".bss$RtlUI_modifierid_item")) static eduiitem_s *modifierid_item = NULL;
-#pragma section(".bss$RtlUI_castshadow_item", read, write)
-__declspec(allocate(".bss$RtlUI_castshadow_item")) static eduiitem_s *castshadow_item = NULL;
-#pragma section(".bss$RtlUI_hasspecular_item", read, write)
-__declspec(allocate(".bss$RtlUI_hasspecular_item")) static eduiitem_s *hasspecular_item = NULL;
-#pragma section(".bss$RtlUI_hide_menu", read, write)
-__declspec(allocate(".bss$RtlUI_hide_menu")) static eduimenu_s *hide_menu = NULL;
-#pragma section(".bss$RtlUI_hide_point_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_point_item")) static eduiitem_s *hide_point_item = NULL;
-#pragma section(".bss$RtlUI_hide_pointflicker_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_pointflicker_item")) static eduiitem_s *hide_pointflicker_item = NULL;
-#pragma section(".bss$RtlUI_hide_pointblend_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_pointblend_item")) static eduiitem_s *hide_pointblend_item = NULL;
-#pragma section(".bss$RtlUI_hide_ambient_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_ambient_item")) static eduiitem_s *hide_ambient_item = NULL;
-#pragma section(".bss$RtlUI_hide_directional_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_directional_item")) static eduiitem_s *hide_directional_item = NULL;
-#pragma section(".bss$RtlUI_hide_antilight_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_antilight_item")) static eduiitem_s *hide_antilight_item = NULL;
-#pragma section(".bss$RtlUI_hide_camdir_item", read, write)
-__declspec(allocate(".bss$RtlUI_hide_camdir_item")) static eduiitem_s *hide_camdir_item = NULL;
-#pragma section(".bss$RtlUI_delete_menu", read, write)
-__declspec(allocate(".bss$RtlUI_delete_menu")) static eduimenu_s *delete_menu = NULL;
-#pragma section(".bss$RtlUI_global_confirm_menu", read, write)
-__declspec(allocate(".bss$RtlUI_global_confirm_menu")) static eduimenu_s *global_confirm_menu = NULL;
-#pragma section(".bss$RtlUI_global_menu", read, write)
-__declspec(allocate(".bss$RtlUI_global_menu")) static eduimenu_s *global_menu = NULL;
-#pragma section(".bss$RtlUI_global_scale_item", read, write)
-__declspec(allocate(".bss$RtlUI_global_scale_item")) static eduiitem_s *global_scale_item = NULL;
-#pragma section(".bss$RtlUI_load_confirm_menu", read, write)
-__declspec(allocate(".bss$RtlUI_load_confirm_menu")) static eduimenu_s *load_confirm_menu = NULL;
-#pragma section(".bss$RtlUI_main_menu", read, write)
-__declspec(allocate(".bss$RtlUI_main_menu")) static eduimenu_s *main_menu = NULL;
-#pragma section(".bss$RtlUI_prop_item", read, write)
-__declspec(allocate(".bss$RtlUI_prop_item")) static eduiitem_s *prop_item = NULL;
-#pragma section(".bss$RtlUI_copy_item", read, write)
-__declspec(allocate(".bss$RtlUI_copy_item")) static eduiitem_s *copy_item = NULL;
-#pragma section(".bss$RtlUI_paste_item", read, write)
-__declspec(allocate(".bss$RtlUI_paste_item")) static eduiitem_s *paste_item = NULL;
-#pragma section(".bss$RtlUI_pasteinto_item", read, write)
-__declspec(allocate(".bss$RtlUI_pasteinto_item")) static eduiitem_s *pasteinto_item = NULL;
-#pragma section(".bss$RtlUI_copytogroup_item", read, write)
-__declspec(allocate(".bss$RtlUI_copytogroup_item")) static eduiitem_s *copytogroup_item = NULL;
-#pragma section(".bss$RtlUI_fog_menu", read, write)
-__declspec(allocate(".bss$RtlUI_fog_menu")) static eduimenu_s *fog_menu = NULL;
-#pragma section(".bss$RtlUI_fogcol_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogcol_item")) static eduiitem_s *fogcol_item = NULL;
-#pragma section(".bss$RtlUI_fogalpha_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogalpha_item")) static eduiitem_s *fogalpha_item = NULL;
-#pragma section(".bss$RtlUI_fogdensity_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogdensity_item")) static eduiitem_s *fogdensity_item = NULL;
-#pragma section(".bss$RtlUI_fogdensitywii_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogdensitywii_item")) static eduiitem_s *fogdensitywii_item = NULL;
-#pragma section(".bss$RtlUI_fogstart_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogstart_item")) static eduiitem_s *fogstart_item = NULL;
-#pragma section(".bss$RtlUI_fogend_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogend_item")) static eduiitem_s *fogend_item = NULL;
-#pragma section(".bss$RtlUI_fogstartpsp_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogstartpsp_item")) static eduiitem_s *fogstartpsp_item = NULL;
-#pragma section(".bss$RtlUI_fogendpsp_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogendpsp_item")) static eduiitem_s *fogendpsp_item = NULL;
-#pragma section(".bss$RtlUI_hazecol_item", read, write)
-__declspec(allocate(".bss$RtlUI_hazecol_item")) static eduiitem_s *hazecol_item = NULL;
-#pragma section(".bss$RtlUI_hazedensity_item", read, write)
-__declspec(allocate(".bss$RtlUI_hazedensity_item")) static eduiitem_s *hazedensity_item = NULL;
-#pragma section(".bss$RtlUI_blurdensity_item", read, write)
-__declspec(allocate(".bss$RtlUI_blurdensity_item")) static eduiitem_s *blurdensity_item = NULL;
-#pragma section(".bss$RtlUI_fogadjrng_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogadjrng_item")) static eduiitem_s *fogadjrng_item = NULL;
-#pragma section(".bss$RtlUI_fogadjnear_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogadjnear_item")) static eduiitem_s *fogadjnear_item = NULL;
-#pragma section(".bss$RtlUI_fogadjfar_item", read, write)
-__declspec(allocate(".bss$RtlUI_fogadjfar_item")) static eduiitem_s *fogadjfar_item = NULL;
-#pragma section(".bss$RtlUI_dof_fstop_item", read, write)
-__declspec(allocate(".bss$RtlUI_dof_fstop_item")) static eduiitem_s *dof_fstop_item = NULL;
-#pragma section(".bss$RtlUI_fog_main_menu", read, write)
-__declspec(allocate(".bss$RtlUI_fog_main_menu")) static eduimenu_s *fog_main_menu = NULL;
-#pragma section(".bss$RtlUI_fog_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_item")) static eduiitem_s *fog_item = NULL;
-#pragma section(".bss$RtlUI_fog_copy_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_copy_item")) static eduiitem_s *fog_copy_item = NULL;
-#pragma section(".bss$RtlUI_fog_paste_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_paste_item")) static eduiitem_s *fog_paste_item = NULL;
-#pragma section(".bss$RtlUI_fog_pasteinto_item", read, write)
-__declspec(allocate(".bss$RtlUI_fog_pasteinto_item")) static eduiitem_s *fog_pasteinto_item = NULL;
-#pragma section(".bss$RtlUI_modifier_adj_items", read, write)
-__declspec(allocate(".bss$RtlUI_modifier_adj_items")) static eduiitem_s *modifier_adj_items[32] = {0};
+static eduimenu_s *associd_menu = NULL;
+static eduiitem_s *associd_items[16] = {0};
+static eduimenu_s *excludeid_menu = NULL;
+static eduiitem_s *excludeid_items[16] = {0};
+static eduimenu_s *userid_menu = NULL;
+static eduiitem_s *userid_items[16] = {0};
+static eduimenu_s *type_menu = NULL;
+static eduiitem_s *point_item = NULL;
+static eduiitem_s *jonflicker_item = NULL;
+static eduiitem_s *pointflicker_item = NULL;
+static eduiitem_s *pointblend_item = NULL;
+static eduiitem_s *ambient_item = NULL;
+static eduiitem_s *directional_item = NULL;
+static eduiitem_s *antilight_item = NULL;
+static eduiitem_s *camdir_item = NULL;
+static eduimenu_s *modifier_menu = NULL;
+static eduiitem_s *modifier_items[32] = {0};
+static eduimenu_s *modifier_adj_menu = NULL;
+static eduimenu_s *flicker_menu = NULL;
+static eduiitem_s *t_hi_item = NULL;
+static eduiitem_s *rt_hi_item = NULL;
+static eduiitem_s *t_low_item = NULL;
+static eduiitem_s *rt_low_item = NULL;
+static eduimenu_s *jonflicker_menu = NULL;
+static eduiitem_s *jon_t_hi_item = NULL;
+static eduiitem_s *jon_rt_hi_item = NULL;
+static eduiitem_s *jon_t_low_item = NULL;
+static eduimenu_s *prop_menu = NULL;
+static eduiitem_s *colour_item = NULL;
+static eduiitem_s *flicker_item = NULL;
+static eduiitem_s *associd_item = NULL;
+static eduiitem_s *multiplier_item = NULL;
+static eduiitem_s *groupid_item = NULL;
+static eduiitem_s *modifierid_item = NULL;
+static eduiitem_s *castshadow_item = NULL;
+static eduiitem_s *hasspecular_item = NULL;
+static eduimenu_s *hide_menu = NULL;
+static eduiitem_s *hide_point_item = NULL;
+static eduiitem_s *hide_pointflicker_item = NULL;
+static eduiitem_s *hide_pointblend_item = NULL;
+static eduiitem_s *hide_ambient_item = NULL;
+static eduiitem_s *hide_directional_item = NULL;
+static eduiitem_s *hide_antilight_item = NULL;
+static eduiitem_s *hide_camdir_item = NULL;
+static eduimenu_s *delete_menu = NULL;
+static eduimenu_s *global_confirm_menu = NULL;
+static eduimenu_s *global_menu = NULL;
+static eduiitem_s *global_scale_item = NULL;
+static eduimenu_s *load_confirm_menu = NULL;
+static eduimenu_s *main_menu = NULL;
+static eduiitem_s *prop_item = NULL;
+static eduiitem_s *copy_item = NULL;
+static eduiitem_s *paste_item = NULL;
+static eduiitem_s *pasteinto_item = NULL;
+static eduiitem_s *copytogroup_item = NULL;
+static eduimenu_s *fog_menu = NULL;
+static eduiitem_s *fogcol_item = NULL;
+static eduiitem_s *fogalpha_item = NULL;
+static eduiitem_s *fogdensity_item = NULL;
+static eduiitem_s *fogdensitywii_item = NULL;
+static eduiitem_s *fogstart_item = NULL;
+static eduiitem_s *fogend_item = NULL;
+static eduiitem_s *fogstartpsp_item = NULL;
+static eduiitem_s *fogendpsp_item = NULL;
+static eduiitem_s *hazecol_item = NULL;
+static eduiitem_s *hazedensity_item = NULL;
+static eduiitem_s *blurdensity_item = NULL;
+static eduiitem_s *fogadjrng_item = NULL;
+static eduiitem_s *fogadjnear_item = NULL;
+static eduiitem_s *fogadjfar_item = NULL;
+static eduiitem_s *dof_fstop_item = NULL;
+static eduimenu_s *fog_main_menu = NULL;
+static eduiitem_s *fog_item = NULL;
+static eduiitem_s *fog_copy_item = NULL;
+static eduiitem_s *fog_paste_item = NULL;
+static eduiitem_s *fog_pasteinto_item = NULL;
+static eduiitem_s *modifier_adj_items[32] = {0};
 i32 rtl_helper_radius_mode = 0;
-#pragma section(".bss$RtlUI_initialised", read, write)
-__declspec(allocate(".bss$RtlUI_initialised")) static i32 rtl_ui_initialised = 0;
+static i32 rtl_ui_initialised = 0;
 /* Camera direction names, in their own section to keep the data layout. */
-#pragma section(".data$RtlUICamdirNamesPc", read, write)
-__declspec(allocate(".data$RtlUICamdirNamesPc")) static char *camdir_id_names[16] = {
-    "ID 0", "ID 1", "ID 2", "ID 3", "ID 4", "ID 5", "ID 6", "ID 7", "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
+static char *camdir_id_names[16] = {"ID 0", "ID 1", "ID 2",  "ID 3",  "ID 4",  "ID 5",  "ID 6",  "ID 7",
+                                    "ID 8", "ID 9", "ID 10", "ID 11", "ID 12", "ID 13", "ID 14", "ID 15"};
 
 void rtlSetAssocName(i32 index, char *name) {
     if (index < 16) {
@@ -3337,8 +3237,7 @@ void InitUI(void) {
 }
 
 /* Editor camera, in its own section to keep the data layout. */
-#pragma section(".bss$RtlUsrCamPc", read, write)
-__declspec(allocate(".bss$RtlUsrCamPc")) static NUCAMERA *usr_cam = 0;
+static NUCAMERA *usr_cam = 0;
 
 void edrtlInit(void) {
     usr_cam = NuCameraCreate();
@@ -3384,10 +3283,8 @@ void edrtlDrawLights(void) {
 }
 
 /* Editor-owned f32 cells, each in its own section to keep the data layout. */
-#pragma section(".bss$RtlEditorFarClip", read, write)
-__declspec(allocate(".bss$RtlEditorFarClip")) static f32 game_farclip = 0.0f;
-#pragma section(".bss$RtlEditorNearClip", read, write)
-__declspec(allocate(".bss$RtlEditorNearClip")) static f32 game_nearclip = 0.0f;
+static f32 game_farclip = 0.0f;
+static f32 game_nearclip = 0.0f;
 
 void eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
 
@@ -3748,8 +3645,7 @@ static i32 rtlCmp(RTL_LIGHT *first, RTL_LIGHT *second) {
     return different;
 }
 
-#pragma section(".data$RtlExtensionPointer", read, write)
-__declspec(allocate(".data$RtlExtensionPointer")) char *rtl_ext = ".rtl";
+char *rtl_ext = ".rtl";
 
 void edrtlUndo(void) {
     if (maxundo != 0 && curr_set != NULL && rtl_undo_cnt != 0) {
@@ -3868,39 +3764,24 @@ void cbRedoLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 /* RTL editor state, each cell in its own section to keep the data layout. */
-#pragma section(".bss$RtlProc_menu_cancelled", read, write)
-__declspec(allocate(".bss$RtlProc_menu_cancelled")) i32 menu_cancelled = 0;
-#pragma section(".bss$RtlProc_ed_just_entered", read, write)
-__declspec(allocate(".bss$RtlProc_ed_just_entered")) static i32 ed_just_entered = 0;
-#pragma section(".bss$RtlProc_peax", read, write)
-__declspec(allocate(".bss$RtlProc_peax")) i32 peax = 0;
-#pragma section(".bss$RtlProc_peay", read, write)
-__declspec(allocate(".bss$RtlProc_peay")) i32 peay = 0;
-#pragma section(".data$RtlProc_scale_rate", read, write)
-__declspec(allocate(".data$RtlProc_scale_rate")) f32 scale_rate = 0.1f;
-#pragma section(".data$RtlProc_camscale_factor", read, write)
-__declspec(allocate(".data$RtlProc_camscale_factor")) f32 camscale_factor = 0.1f;
-#pragma section(".data$RtlProc_min_r", read, write)
-__declspec(allocate(".data$RtlProc_min_r")) f32 min_r = 1.0f;
-#pragma section(".data$RtlProc_def_fr", read, write)
-__declspec(allocate(".data$RtlProc_def_fr")) f32 def_fr = 2.0f;
-#pragma section(".bss$RtlProc_edrtl_mode", read, write)
-__declspec(allocate(".bss$RtlProc_edrtl_mode")) static i32 edrtl_mode = 0;
-#pragma section(".data$RtlProc_ctl", read, write)
-__declspec(allocate(".data$RtlProc_ctl")) u32 ctl[2][8] = {
+i32 menu_cancelled = 0;
+static i32 ed_just_entered = 0;
+i32 peax = 0;
+i32 peay = 0;
+f32 scale_rate = 0.1f;
+f32 camscale_factor = 0.1f;
+f32 min_r = 1.0f;
+f32 def_fr = 2.0f;
+static i32 edrtl_mode = 0;
+u32 ctl[2][8] = {
     {0x80, 0x10, 0x40, 0x1000, 0x100, 0x20,  0x8000, 0x2000},
     {0x40, 0x10, 0x20, 0x1000, 0x80,  0x100, 0x4,    0x8   },
 };
-#pragma section(".bss$RtlProc_edrtl_dragging_pc", read, write)
-__declspec(allocate(".bss$RtlProc_edrtl_dragging_pc")) i32 edrtl_dragging = 0;
-#pragma section(".bss$RtlProc_edrtl_drag_rtl_pc", read, write)
-__declspec(allocate(".bss$RtlProc_edrtl_drag_rtl_pc")) RTL_LIGHT *edrtl_drag_rtl = NULL;
-#pragma section(".data$RtlProc_edrtl_dragundo_pc", read, write)
-__declspec(allocate(".data$RtlProc_edrtl_dragundo_pc")) i32 edrtl_dragundo = 1;
-#pragma section(".bss$RtlProc_edrtl_dragstart_pc", read, write)
-__declspec(allocate(".bss$RtlProc_edrtl_dragstart_pc")) NUVEC edrtl_dragstart = {0};
-#pragma section(".bss$RtlProc_edrtl_dragoff_pc", read, write)
-__declspec(allocate(".bss$RtlProc_edrtl_dragoff_pc")) NUVEC edrtl_dragoff = {0};
+i32 edrtl_dragging = 0;
+RTL_LIGHT *edrtl_drag_rtl = NULL;
+i32 edrtl_dragundo = 1;
+NUVEC edrtl_dragstart = {0};
+NUVEC edrtl_dragoff = {0};
 
 void edcamSetAng(i32 pitch, i32 yaw);
 f32 edcamGetDist(void);

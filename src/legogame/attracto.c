@@ -338,9 +338,7 @@ i32 Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return ((ATTRACTO_RECORD *)gizmo->object)->filled;
 }
 
-#pragma data_seg(".data$AttractoOutputNamePc")
 char *Attracto_OutputName = "Filled";
-#pragma data_seg()
 
 char *Attracto_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return Attracto_OutputName;
@@ -405,12 +403,8 @@ void Attracto_GetPos_Top(ATTRACTO_PC *attracto, NUVEC *position) {
     }
 }
 
-#pragma data_seg(".data$AttractoRegistryNamePc")
 char *AttractoRegistryNamePc = "Attracto";
-#pragma data_seg()
-#pragma data_seg(".data$AttractoAddTypePc")
 ADDGIZMOTYPE_PC AttractoAddType = {0};
-#pragma data_seg()
 
 ADDGIZMOTYPE_PC *Attractos_RegisterGizmo(i32 unused_type_id) {
     char *name = AttractoRegistryNamePc;
@@ -517,9 +511,7 @@ static void AttractoStartSuction(GAMEOBJECT *object) {
     object->launch_origin = v000;
 }
 
-#pragma data_seg(".data$AttractoBackPackCountPos")
 NUVEC AttractoBackPackCountPos = {0.0f, 0.45f, 0.15f};
-#pragma data_seg()
 
 void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     i32 available = 0;

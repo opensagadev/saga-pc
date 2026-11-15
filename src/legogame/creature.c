@@ -2974,7 +2974,6 @@ GAMEOBJECT *GetOtherActivePlayer(GAMEOBJECT *object) {
     return NULL;
 }
 
-#pragma data_seg(".data$SpecialLayer")
 static SPECIAL_LAYER_PC SpecialLayer[42] = {
     {&ID_DEFAULTCHARACTER_A, "bombbackpack",        0},
     {&ID_DEFAULTCHARACTER_A, "sonargun",            0},
@@ -3019,7 +3018,6 @@ static SPECIAL_LAYER_PC SpecialLayer[42] = {
     {&ID_DEFAULTCHARACTER_B, "hires_limbs_blue",    0},
     {&ID_DEFAULTCHARACTER_B, "lowres_limbs_blue",   0},
 };
-#pragma data_seg()
 
 u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *data = object->character_data->game_character;

@@ -16,14 +16,12 @@ extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r
 #include <string.h>
 #include <stdio.h>
 extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *);
-#pragma data_seg(".data$NarrowSockExceptionsLswPc")
 extern "C" NARROWSOCKEXCEPTION_PC NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d",  -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
     {"deathstar2battle_c", -1, 0, 30.0f, 999.0f},
     {NULL,                 0,  0, 0.0f,  0.0f  },
 };
-#pragma data_seg()
 extern "C" void SurfaceMaskOn(u32 *surface_mask);
 extern "C" void Grabber_Reset(WORLDINFO *world);
 extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *customiser);
@@ -330,9 +328,7 @@ extern "C" {
         return difficulty->accumulator;
     }
 
-#pragma data_seg(".data$AdaptiveDifficultyRecoveryThresholdPc")
     static f32 AdaptiveDifficultyRecoveryThreshold = 0.1f;
-#pragma data_seg()
 
     f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY *difficulty) {
         f32 threshold;

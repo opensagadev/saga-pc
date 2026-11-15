@@ -1224,28 +1224,20 @@ extern "C" {
     }
 
     i32 StatusDemoOption = 0;
-#pragma data_seg(".data$StatusCountdownLimitPc")
     extern "C" {
         f32 StatusCountdownLimit = 6.0f;
     }
-#pragma data_seg()
-#pragma data_seg(".data$StatusGoldBrickXPc")
     extern "C" {
         f32 StatusGoldBrickX = 0.715f;
     }
-#pragma data_seg()
-#pragma data_seg(".data$StatusGoldBrickYPc")
     extern "C" {
         f32 StatusGoldBrickY = -0.666f;
     }
-#pragma data_seg()
-#pragma data_seg(".data$StatusGoldBrickScalePc")
     extern "C" {
         f32 StatusGoldBrickScale = 0.6f;
         f32 DrawStatusScaleX = 350.0f;
         f32 DrawStatusScaleY = 300.0f;
     }
-#pragma data_seg()
 }
 
 extern "C" void DrawStatusScreen(WORLDINFO *) {

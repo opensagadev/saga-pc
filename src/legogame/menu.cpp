@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#pragma section(".bss$MenuButtonHistoryPc", read, write)
-
 extern "C" {
     void GameDrawMenuEntry(MENU *, char *);
     extern f32 ExtrasFadeStart;
@@ -154,7 +152,7 @@ extern "C" {
     f32 newgamewait = 0.0f;
     MISSION_MENU_PACKET MissionMenuPacket = {0};
     f32 newgamealpha = 0.0f;
-    __declspec(allocate(".bss$MenuButtonHistoryPc")) u32 MenuButtonHistory[15] = {0};
+    u32 MenuButtonHistory[15] = {0};
     u8 MenuKeyboardOverrideActivePc = 0;
 
     void MenuUpdateButtonHistory(void) {
@@ -1152,13 +1150,9 @@ extern "C" {
         Hub_UpdateKit();
     }
 
-#pragma data_seg(".data$MenuMiniKitUpperArrowYPc")
     f32 MenuMiniKitUpperArrowY = -0.175f;
-#pragma data_seg(".data$MenuMiniKitLowerArrowYPc")
     f32 MenuMiniKitLowerArrowY = -0.275f;
-#pragma data_seg(".data$MenuMiniKitInstructionYPc")
     f32 MenuMiniKitInstructionY = -0.375f;
-#pragma data_seg()
 
     void MenuDrawMiniKit(MENU *menu) {
         f32 alpha;

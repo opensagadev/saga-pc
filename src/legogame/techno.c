@@ -563,9 +563,7 @@ NUVEC *Technos_TgtPos(TECHNO_s *techno) {
     return NULL;
 }
 
-#pragma data_seg(".data$TechnoMoveSpeedPc")
 f32 TechnoMoveSpeed[2] = {0.0f, 0.0f};
-#pragma data_seg()
 
 TECHNO_PC *Techno_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     TECHNO_CALLBACK *nearest = NULL;

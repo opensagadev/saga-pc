@@ -27,9 +27,7 @@ extern "C" {
     void AddCameraRain(WORLDINFO *world, i32 mode);
     void DebrisDrawGlass(void);
     void SoundUpdate(f32 frame_time);
-#pragma data_seg(".data$BURNOUTON")
     i32 BURNOUTON = 1;
-#pragma data_seg()
 }
 
 typedef struct main_controller_world_view_s { // size 0x4674

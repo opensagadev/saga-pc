@@ -339,16 +339,10 @@ NUVEC *SecurityDoor_GetPos(GIZMO_PC *gizmo) {
     return &((SECURITY_DOOR_RECORD_PC *)gizmo->object)->position;
 }
 
-#pragma data_seg(".data$SecurityDoorOutputNamePc")
 char *SecurityDoor_OutputName = "Opened";
-#pragma data_seg()
 
-#pragma data_seg(".data$SecurityDoorRegistryNamePc")
 char *SecurityDoorRegistryNamePc = "SecurityDoor";
-#pragma data_seg()
-#pragma data_seg(".data$SecurityDoorAddTypePc")
 ADDGIZMOTYPE_PC SecurityDoorAddType = {0};
-#pragma data_seg()
 
 ADDGIZMOTYPE_PC *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     char *name = SecurityDoorRegistryNamePc;

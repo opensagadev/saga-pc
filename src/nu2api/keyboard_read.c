@@ -472,13 +472,10 @@ typedef union EdcamMayaAngleObserved { // size 0x4
     } parts;
 } EdcamMayaAngleObserved;
 
-#pragma section(".bss$EdcamMayaSmoothedAnglePc", read, write)
-#pragma section(".bss$EdcamMayaRawAnglePc", read, write)
-
 void do_maya_mouse_camera(edcam_s *camera) {
     /* The historical mapped name TargetAng denotes the smoothed PC slot. */
-    __declspec(allocate(".bss$EdcamMayaSmoothedAnglePc")) static EdcamMayaAngleObserved TargetAng = {0};
-    __declspec(allocate(".bss$EdcamMayaRawAnglePc")) static EdcamMayaAngleObserved RawTargetAng = {0};
+    static EdcamMayaAngleObserved TargetAng = {0};
+    static EdcamMayaAngleObserved RawTargetAng = {0};
     f32 zoom_scale =
         camera->auto_zoom_dist_scale != 0.0f ? EdcamFabs(camera->distance) * camera->auto_zoom_dist_scale + camera->auto_zoom_base : 1.0f;
     NUVEC movement;

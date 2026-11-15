@@ -1,8 +1,6 @@
 #include "saga.h"
 #include <string.h>
-#pragma data_seg(".data$g_texAnimCriticalSection")
 static i32 nutexanm_critical_section = -1;
-#pragma data_seg()
 static PC_TEXTURE_ANIM_LIST *ntal_free = 0;
 i32 NuTexAnimMissingPakDiagnostic = 0;
 

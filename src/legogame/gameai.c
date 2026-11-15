@@ -1721,15 +1721,9 @@ i32 oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
 }
 
 static AIONCEATTACKER AtOnce_attackingPlayer[8][17] = {0};
-#pragma data_seg(".data$AtOnce_attackersPerRow")
 static i32 AtOnce_attackersPerRow = 32;
-#pragma data_seg()
-#pragma data_seg(".data$AtOnce_RowDist")
 static f32 AtOnce_RowDist = 0.75f;
-#pragma data_seg()
-#pragma data_seg(".data$AtOnce_InitialRowDist")
 static f32 AtOnce_InitialRowDist = 0.75f;
-#pragma data_seg()
 
 f32 oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
     i32 unassigned = 0;
@@ -2129,9 +2123,7 @@ i32 AI_GetNumOutputs(void *gizmo) {
     return 1;
 }
 
-#pragma data_seg(".data$AIProcessingOutputTextPc")
 char AIProcessingOutputText[11] = "Processing";
-#pragma data_seg()
 
 char *AI_GetOutputName(void *gizmo, i32 output) {
     return AIProcessingOutputText;

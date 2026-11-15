@@ -1,5 +1,4 @@
 #include "saga.h"
-#pragma data_seg(".data$ed_attr")
 static eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 static struct eduimenu_s *ed_cfg_menu = 0;
 NUVEC *ed_loc = 0;
@@ -8,20 +7,13 @@ i32 edmain_render_interacts = 0;
 static struct ed_module_s *ed_curr = 0;
 static struct ed_module_s *ed_list = 0;
 static struct eduimenu_s *ed_main_menu = 0;
-#pragma data_seg(".data$ed_main_menu_h")
 static i32 ed_main_menu_h = 320;
-#pragma data_seg(".data$ed_main_menu_w")
 static i32 ed_main_menu_w = 180;
-#pragma data_seg(".data$ed_main_menu_x")
 static i32 ed_main_menu_x = 220;
-#pragma data_seg(".data$ed_main_menu_y")
 static i32 ed_main_menu_y = 50;
 static i32 ed_module_active = 0;
-#pragma data_seg(".data$edmain_auto_speed")
 static i32 edmain_auto_speed = 1;
-#pragma data_seg(".data$edmain_default_camera_speed")
 static f32 edmain_default_camera_speed = 1.0f;
-#pragma data_seg(".data$edmain_menu_scale")
 static f32 edmain_menu_scale = 1.0f;
 static struct eduimenu_s *processing_menu = 0;
 struct eduimenu_s *default_active_menu = 0;
@@ -4644,18 +4636,12 @@ f32 FS_GetDirTextWidth(void) {
 }
 
 /* PC file-selector rendering, each string in its own section. */
-#pragma section(".data$FS_Title", read, write)
-__declspec(allocate(".data$FS_Title")) char FS_Title[64] = "Title";
-#pragma section(".data$FS_X", read, write)
-__declspec(allocate(".data$FS_X")) f32 FS_X = 50.0f;
-#pragma section(".data$FS_Y", read, write)
-__declspec(allocate(".data$FS_Y")) f32 FS_Y = 40.0f;
-#pragma section(".data$FS_W", read, write)
-__declspec(allocate(".data$FS_W")) f32 FS_W = 0.0f;
-#pragma section(".data$FS_H", read, write)
-__declspec(allocate(".data$FS_H")) f32 FS_H = 0.0f;
-#pragma section(".data$SortStrings", read, write)
-__declspec(allocate(".data$SortStrings")) char *SortStrings[4] = {"A to Z", "Z to A", "Old to New", "New To Old"};
+char FS_Title[64] = "Title";
+f32 FS_X = 50.0f;
+f32 FS_Y = 40.0f;
+f32 FS_W = 0.0f;
+f32 FS_H = 0.0f;
+char *SortStrings[4] = {"A to Z", "Z to A", "Old to New", "New To Old"};
 i32 FS_SortMode = 3;
 extern void NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material);
 

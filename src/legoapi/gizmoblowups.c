@@ -108,12 +108,8 @@ typedef struct {         // size 0x48
     f32 first_frame;     // 0x44
 } BLOWUP_ANIM_FIRST_DRAW;
 
-#pragma data_seg(".data$SpinnerOutputBufferPc")
 char SpinnerOutputBuffer[14] = "100% Complete";
-#pragma data_seg()
-#pragma data_seg(".data$TurretOutputBufferPc")
 char TurretOutputBuffer[32] = {0};
-#pragma data_seg()
 char *GizmoRegistryGizTurretsNamePtrPc = "GizTurret";
 
 void SetLevelExBlowupFlags(u32 flags) {
@@ -268,9 +264,7 @@ i32 Blowup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 ignored) {
     return 0;
 }
 
-#pragma data_seg(".data$BlowupOutputNamesPc")
 char *BlowupOutputNames[3] = {"Blownup", "Punched", "Plugging"};
-#pragma data_seg()
 
 char *Blowup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     if ((u32)output <= 2) {

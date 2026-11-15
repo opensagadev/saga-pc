@@ -787,8 +787,7 @@ u32 edblack[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 u32 edgrey[4] = {0x80303030, 0x80303030, 0x80808080, 0x80808080};
 u32 eddarkred[4] = {0x80000050, 0x80ff0000, 0x80808080, 0x80404040};
 i32 edpp_create_type = -1;
-#pragma section(".data$EdPpScaleFactorPc", read, write)
-__declspec(allocate(".data$EdPpScaleFactorPc")) f32 edpp_scale_factor = 1.0f;
+f32 edpp_scale_factor = 1.0f;
 i32 debinf_count = 0;
 DEBRIS_INFO_PC **debtab = 0;
 DEBRIS_INFO_PC *effecttypes = 0;
@@ -799,8 +798,7 @@ i32 edpp_types_used = 0;
 i32 EdppUseMemcard = 0;
 i32 edpp_instances_used = 0;
 i32 edpp_num_orphans = 0;
-#pragma section(".bss$EdPtlScaleEffectMenuPc", read, write)
-__declspec(allocate(".bss$EdPtlScaleEffectMenuPc")) eduimenu_s *edptl_scaleeffect_menu = NULL;
+eduimenu_s *edptl_scaleeffect_menu = NULL;
 struct eduimenu_s *edptl_instancesettings_menu = 0;
 
 void edptlcbCancelScaleEffectMenu(eduimenu_s *menu, eduimenu_s *parent);

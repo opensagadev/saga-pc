@@ -1541,17 +1541,11 @@ void MovePlayer_ROLLING(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-#pragma data_seg(".data$PodFacingSeekRate")
 static f32 PodFacingSeekRate = 2.0f;
-#pragma data_seg()
 f32 TURNTIME = 1.0f;
 f32 VehicleLoopTime = 1.5f;
-#pragma data_seg(".data$PodRollInputRate")
 static f32 PodRollInputRate = 6.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PodRollReleaseRate")
 static f32 PodRollReleaseRate = 3.0f;
-#pragma data_seg()
 
 i32 MovePlayer_POD(GAMEOBJECT *object) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
@@ -5993,9 +5987,7 @@ static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32
 void fun_004a5690(void) {
 }
 
-#pragma data_seg(".data$rocket_lock_distance")
 static f32 rocket_lock_distance = 1.0f;
-#pragma data_seg()
 f32 PodCollisionThreshold = 0.999f;
 NUVEC PodSprintLiftPositions[3] = {
     {-395.26f, -5.48f, -165.08f},
@@ -8400,12 +8392,8 @@ i32 Shop_UpdateHint(HINT *hint) {
     return 0;
 }
 
-#pragma data_seg(".data$ApplyGravityContext22HoverHeight")
 static f32 ApplyGravityContext22HoverHeight = 0.2f;
-#pragma data_seg()
-#pragma data_seg(".data$ApplyGravityContext42HoverHeight")
 static f32 ApplyGravityContext42HoverHeight = 0.2f;
-#pragma data_seg()
 i32 TwistSockRotationModeA = 3;
 i32 TwistSockRotationModeB = 5;
 i32 TwistYawLeanDegrees = 15;
@@ -8414,9 +8402,7 @@ f32 TwistLateralSpeed = 8.0f;
 f32 CurrentSpeed = 10.0f;
 f32 BaseCurrentSpeed = 10.0f;
 i32 CircleLeanDegrees = 30;
-#pragma data_seg(".data$ApplyGravityContextHoverHeight")
 static f32 ApplyGravityContextHoverHeight = 0.2f;
-#pragma data_seg()
 API_EXTRA_ACTION PlayerExtraActionInfo[33] = {
     {"run1",                      3  },
     {"idle1",                     1  },
@@ -8457,12 +8443,8 @@ f32 lightning_sizel[2] = {0.1f, 0.1f};
 f32 lightning_sizewab[2] = {0.01f, 0.01f};
 f32 lightning_endw[2] = {0.1f, 0.1f};
 u32 lightning_col[2] = {0xff808040, 0xff808040};
-#pragma data_seg(".data$ApplyGravityWallRunAcceleration")
 static f32 ApplyGravityWallRunAcceleration = -0.25f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_GRAVITY")
 static f32 PODSPRINT_GRAVITY = -35.0f;
-#pragma data_seg()
 CHARACTER_CONTEXT_INFO_PC *CInfo = &PCContextInfoTable[1];
 BLADE BladeTab[4] = {
     {101, 223, 1, 59, 64, {255, 31, 0},  {0, 0, 0}},
@@ -8810,9 +8792,7 @@ API_ACTION_INFO PlayerActionInfoList[234] = {
     {"winch",               0U}
 };
 void *PlayerBlockActionInfo = &PlayerActionInfoList[1];
-#pragma data_seg(".data$SLAMGRAVITY")
 static f32 SLAMGRAVITY = -15.0f;
-#pragma data_seg()
 static f32 applygravity_extrahoveroffset = 0;
 i32 getvehiclehoverheight_hothbattlehack = 0;
 i32 TwistScaleLean = 0;
@@ -9123,22 +9103,14 @@ void ApplyGravity_Network(GAMEOBJECT *object) {
     }
 }
 
-#pragma data_seg(".data$PlayerBackwardMomentumScalePc")
 static f32 PlayerBackwardMomentumScale = 1.2f;
-#pragma data_seg()
 f32 testlaser_sizew = 0.02f;
 f32 testlaser_sizel = 0.1f;
 f32 testlaser_sizewab = 0.01f;
 f32 testlaser_endw = 0.1f;
-#pragma data_seg(".data$PlayerFloatHeightFractionPc")
 static f32 PlayerFloatHeightFraction = 0.625f;
-#pragma data_seg()
-#pragma data_seg(".data$PlayerSecondBackwardMomentumScalePc")
 static f32 PlayerSecondBackwardMomentumScale = 1.2f;
-#pragma data_seg()
-#pragma data_seg(".data$VEHICLE_WATER_SPEED_MUL")
 static f32 VEHICLE_WATER_SPEED_MUL = 0.7f;
-#pragma data_seg()
 
 void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     GAMEPAD_PC *pad;
@@ -10073,36 +10045,16 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     GizmoBlowupCheckProximity(WORLD, object);
 }
 
-#pragma data_seg(".data$PODSPRINT_ACCELTIME")
 static f32 PODSPRINT_ACCELTIME = 0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_CRUISESPEED")
 static f32 PODSPRINT_CRUISESPEED = 25.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_DECELTIME")
 static f32 PODSPRINT_DECELTIME = 0.25f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_HIGH_TURNRATE")
 static f32 PODSPRINT_HIGH_TURNRATE = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_RUNSPEED")
 static f32 PODSPRINT_RUNSPEED = 35.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_SLOWSPEED")
 static f32 PODSPRINT_SLOWSPEED = 15.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_TURNRATE")
 static f32 PODSPRINT_TURNRATE = 1.0f;
-#pragma data_seg()
-#pragma data_seg(".data$PODSPRINT_VELOCITYSEEK")
 static f32 PODSPRINT_VELOCITYSEEK = 8.0f;
-#pragma data_seg()
-#pragma data_seg(".data$VEHICLE_SUBMARINE_DEPTH")
 static f32 VEHICLE_SUBMARINE_DEPTH = 0.2f;
-#pragma data_seg()
-#pragma data_seg(".data$VEHICLE_TUBE_UPSPEED")
 static f32 VEHICLE_TUBE_UPSPEED = 5.0f;
-#pragma data_seg()
 
 void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
     NUVEC carwash_delta;

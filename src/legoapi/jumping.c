@@ -896,9 +896,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
     }
 }
 
-#pragma data_seg(".data$BigJump_LandActionFn")
 i32 (*BigJump_LandActionFn)(GAMEOBJECT *) = BigJump_LandAction_Default;
-#pragma data_seg()
 
 void (*BigJump_EndOfLandFn)(GAMEOBJECT *) = 0;
 

@@ -267,9 +267,7 @@ i32 Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return ((SHARD_s *)gizmo->object)->collected;
 }
 
-#pragma data_seg(".data$ShardOutputNamePc")
 char *Shard_OutputName = "Got";
-#pragma data_seg()
 
 char *Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return Shard_OutputName;
@@ -317,12 +315,8 @@ void Shards_StoreProgress(WORLDINFO *world, void *unused, SHARD_PROGRESS *progre
     }
 }
 
-#pragma data_seg(".data$ShardRegistryNamePc")
 char *ShardRegistryNamePc = "Shard";
-#pragma data_seg()
-#pragma data_seg(".data$ShardAddTypePc")
 ADDGIZMOTYPE_PC ShardAddType = {0};
-#pragma data_seg()
 
 ADDGIZMOTYPE_PC *Shards_RegisterGizmo(i32 unused_type_id) {
     char *name = ShardRegistryNamePc;

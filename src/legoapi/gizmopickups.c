@@ -331,9 +331,7 @@ i32 GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return (((GIZMOPICKUP *)gizmo->object)->flags >> 3) & 1;
 }
 
-#pragma data_seg(".data$PickupOutputNamePc")
 char *GizmoPickup_OutputName = "Collected";
-#pragma data_seg()
 
 char *GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return GizmoPickup_OutputName;

@@ -3,9 +3,7 @@
 #include <string.h>
 #include <float.h>
 
-#pragma data_seg(".data$PartVectorSpreadDegrees_PC")
 static i32 PartVectorSpreadDegrees = 30;
-#pragma data_seg()
 i32 edpart_set_part = 5;
 i32 edpart_create_type = -1;
 f32 edpart_copy_size = 0.2f;

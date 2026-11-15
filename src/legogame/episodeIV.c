@@ -427,19 +427,12 @@ void fun_004e5eb0(void) {
 /* Rotating rock at the end of AsteroidChase C. */
 
 /* Mutable tuning values. */
-#pragma data_seg(".data$TrenchLaneOffsetPc")
 f32 TrenchLaneOffset = 10.0f;
-#pragma data_seg(".data$TrenchSeekXPc")
 f32 TrenchSeekX = 4.0f;
-#pragma data_seg(".data$TrenchSeekYPc")
 f32 TrenchSeekY = 0.5f;
-#pragma data_seg(".data$TrenchSeekZPc")
 f32 TrenchSeekZ = 0.5f;
-#pragma data_seg(".data$TrenchRollScalePc")
 f32 TrenchRollScale = 5000.0f;
-#pragma data_seg(".data$TrenchMaxHeightMovePc")
 f32 TrenchMaxHeightMove = 5.0f;
-#pragma data_seg()
 
 void TrenchMove(GAMEOBJECT *object) {
     NUVEC target;
@@ -535,17 +528,11 @@ void TrenchMove(GAMEOBJECT *object) {
 }
 
 /* Mutable tuning values. */
-#pragma data_seg(".data$TrenchBaseHeightPc")
 f32 TrenchBaseHeight = -10.5f;
-#pragma data_seg(".data$TrenchVerticalOffsetPc")
 f32 TrenchVerticalOffset = 1.0f;
-#pragma data_seg(".data$TrenchLateralOffsetPc")
 f32 TrenchLateralOffset = 2.0f;
-#pragma data_seg(".data$TrenchSpawnDistancePc")
 f32 TrenchSpawnDistance = 20.0f;
-#pragma data_seg(".data$TrenchSpawnHeightPc")
 f32 TrenchSpawnHeight = 40.0f;
-#pragma data_seg()
 
 static void TrenchKilledCallback(GAMEOBJECT *object) {
     i32 index;

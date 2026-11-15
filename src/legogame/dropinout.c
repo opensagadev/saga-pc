@@ -193,19 +193,12 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
     }
 }
 
-#pragma data_seg(".data$DropInPendingPlayerPc")
 i8 DropInPendingPlayer = -1;
-#pragma data_seg(".data$DropInConfigurationPlayerPc")
 i8 DropInConfigurationPlayer = -1;
-#pragma data_seg(".data$DropInCaptureDelayPc")
 u8 DropInCaptureDelay[2] = {5, 5};
-#pragma data_seg(".data$DropInCapturePortPc")
 i16 DropInCapturePort[2] = {-1, -1};
-#pragma data_seg(".data$DropBackInDelayPc")
 f32 DropBackInDelay = 2.0f;
-#pragma data_seg(".data$PlayerDevicePortsPc")
 i32 PlayerDevicePortsPc[2] = {-1, -1};
-#pragma data_seg()
 
 i32 PlayersDropInOut(void) {
     i32 force_join = 0;

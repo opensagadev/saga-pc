@@ -178,12 +178,8 @@ void GuideLines_StoreProgress(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS
     }
 }
 
-#pragma data_seg(".data$GuideLineRegistryNamePc")
 char *GuideLineRegistryNamePc = "GuideLine";
-#pragma data_seg()
-#pragma data_seg(".data$GuideLineAddTypePc")
 ADDGIZMOTYPE_PC GuideLineAddType = {0};
-#pragma data_seg()
 
 ADDGIZMOTYPE_PC *GuideLines_RegisterGizmo(i32 unused_type_id) {
     char *name = GuideLineRegistryNamePc;

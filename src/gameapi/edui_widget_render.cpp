@@ -1156,15 +1156,11 @@ extern "C" void CreateColourPicker(void) {
 }
 
 extern "C" {
-#pragma section(".bss$EduiColourTempRedPc", read, write)
-    __declspec(allocate(".bss$EduiColourTempRedPc")) f32 EduiColourTempRed = 0.0f;
+    f32 EduiColourTempRed = 0.0f;
     struct edui_interact_s *eduiInteractLocked = 0;
-#pragma section(".bss$EduiColourTempGreenPc", read, write)
-    __declspec(allocate(".bss$EduiColourTempGreenPc")) f32 EduiColourTempGreen = 0.0f;
-#pragma section(".bss$EduiColourTempBluePc", read, write)
-    __declspec(allocate(".bss$EduiColourTempBluePc")) f32 EduiColourTempBlue = 0.0f;
-#pragma section(".bss$EduiColourTempAlphaPc", read, write)
-    __declspec(allocate(".bss$EduiColourTempAlphaPc")) f32 EduiColourTempAlpha = 0.0f;
+    f32 EduiColourTempGreen = 0.0f;
+    f32 EduiColourTempBlue = 0.0f;
+    f32 EduiColourTempAlpha = 0.0f;
     void eduiSetActiveMenu(eduimenu_s *menu);
 }
 
@@ -1450,18 +1446,11 @@ extern "C" i32 eduicbInteractColourPick(edui_interact_s *interact) {
 }
 
 extern "C" {
-#pragma data_seg(".data$EduiSliderAcceleration")
     f32 EduiSliderAccelerationPc = 1.0f;
-#pragma data_seg(".data$EduiSliderRepeatTimer")
     i32 EduiSliderRepeatTimerPc = 30;
-#pragma data_seg()
-#pragma section(".bss$EduiSliderDynamicScale", read, write)
-    __declspec(allocate(".bss$EduiSliderDynamicScale")) f32 EduiSliderDynamicScalePc = 0.0f;
-#pragma section(".bss$EduiSliderGlobalAcceleration", read, write)
-    __declspec(allocate(".bss$EduiSliderGlobalAcceleration")) f32 EduiSliderGlobalAccelerationPc = 0.0f;
-#pragma data_seg(".data$EduiNominalFrameTime")
+    f32 EduiSliderDynamicScalePc = 0.0f;
+    f32 EduiSliderGlobalAccelerationPc = 0.0f;
     f32 EduiNominalFrameTimePc = 1.0f / 60.0f;
-#pragma data_seg()
 }
 
 extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 unused_selected) {
@@ -2025,16 +2014,11 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
 extern "C" i32 EduiRenderWidth;
 
 extern "C" {
-#pragma data_seg(".data$EduiTextCopyHelp")
     char *EduiTextCopyHelpPc = "Copy L2+R2 Paste L1+R1";
-#pragma data_seg(".data$EduiTextCursorPeriod")
     i32 EduiTextCursorPeriodPc = 32;
-#pragma data_seg()
     i32 edui_filepick_listsize = 8;
-#pragma section(".bss$EduiTextCursorCountdown", read, write)
-    __declspec(allocate(".bss$EduiTextCursorCountdown")) i32 EduiTextCursorCountdownPc = 0;
-#pragma section(".bss$EduiTextCopyBuffer", read, write)
-    __declspec(allocate(".bss$EduiTextCopyBuffer")) char EduiTextCopyBufferPc[64] = {0};
+    i32 EduiTextCursorCountdownPc = 0;
+    char EduiTextCopyBufferPc[64] = {0};
 }
 
 static void EduiRenderTextCursorPc(char *value, i32 position, i32 x, i32 y, u32 colour) {
@@ -2157,11 +2141,8 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
 }
 
 extern "C" {
-#pragma data_seg(".data$EduiColourSliderRepeatTimer")
     i32 EduiColourSliderRepeatTimerPc = 30;
-#pragma data_seg()
-#pragma section(".bss$EduiColourSliderDynamicScale", read, write)
-    __declspec(allocate(".bss$EduiColourSliderDynamicScale")) f32 EduiColourSliderDynamicScalePc = 0.0f;
+    f32 EduiColourSliderDynamicScalePc = 0.0f;
 }
 
 static void EduiColourSliderSet(edui_slider_s *slider, eduimenu_s *menu, eduiitem_s *item, f32 value, FRAME_PAD_PC *pad) {

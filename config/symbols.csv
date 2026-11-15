@@ -20406,7 +20406,7 @@ address,symbol,size,ctype
 0x75d450,__real@411e0000,4,const f32
 0x75d458,__real@401d3d70a0000000,8,const f64
 0x75d460,__real@40e9eb85,4,const f32
-0x0075d464,_GrapSwing_text,10,char[10]
+0x0075d464,_GrapSwing_text,12,char[10]
 0x75d470,__real@3f3504f4,4,compiler literal
 0x75d474,__real@bf3504f4,4,compiler literal
 0x75d478,??_C@_09PALJCOLA@target_?$CFd?$AA@,10,const char[10]
@@ -37144,8 +37144,8 @@ address,symbol,size,ctype
 0x7f3964,_drop_in_teleport,4,i32
 0x7f3968,_teleport_all_freeplay_modes,4,i32
 0x007f396c,_DropInPendingPlayer,1,i8
-0x007f396d,_DropInConfigurationPlayer,1,i8
-0x007f39d0,_DropInCaptureDelay,2,u8[2]
+0x007f396d,_DropInConfigurationPlayer,3,i8
+0x007f39d0,_DropInCaptureDelay,4,u8[2]
 0x007f39d4,_DropInCapturePort,4,i16[2]
 0x007f39e4,_StartupGameFlag1,4,i32
 0x7f39e8,_CombatNpcKillDifficultyAmount,4,f32
@@ -38183,7 +38183,7 @@ address,symbol,size,ctype
 0x8025b4,_LEGOTHINGSSCENE_TER_SPINBASE,4,i32
 0x8025b8,_LEGOTHINGSSCENE_TER_SPINARM,4,i32
 0x8025bc,_GizSpinnerGDeb_Fail,6,i16[3]
-0x008025c4,_SpinnerOutputBuffer,14,char[14]
+0x008025c4,_SpinnerOutputBuffer,16,char[14]
 0x8025d4,_spinner_gizmotype_id,4,i32
 0x00802644,_obstacle_gizmotype_id,,i32
 0x802684,_GizObstacleUpdateFns,32,void (__cdecl *[8])(GIZOBSTACLE *)
@@ -38861,7 +38861,7 @@ address,symbol,size,ctype
 0x80fde8,_curr_version,4,i32
 0x80fdec,_rtl_shadow_blend_rate,4,f32
 0x80fdf0,_rtl_shadow_flicker,12,NUVEC
-0x80fdfc,_rtl_uid,2,u16
+0x80fdfc,_rtl_uid,4,u16
 0x0080fe00,_edrtl_text_scale,4,f32
 0x80fe04,_RtlModifierIndexZero,4,f32
 0x0080fe08,_default_modifier_names,4,char *[1]

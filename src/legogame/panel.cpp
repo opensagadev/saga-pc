@@ -1233,9 +1233,7 @@ extern "C" {
     f32 REDBRICKPOSY = -0.745f;
     f32 REDBRICKPOS2X = 1.27499998f;
     f32 REDBRICKPOS2Y = -1.255f;
-#pragma data_seg(".data$HudAutoSaveScalePc")
     f32 HudAutoSaveScale = 0.075f;
-#pragma data_seg()
     i32 HubPromptOffColour[3] = {255, 255, 255};
     i32 HubPromptOnColour[3] = {223, 223, 223};
     f32 HubPromptX = 0.67f;

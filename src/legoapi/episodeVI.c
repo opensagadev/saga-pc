@@ -106,7 +106,6 @@ typedef struct JABBA_ANTINODE_VIEW { // size 0x4c
 
 extern i16 dat_007f1a7c;
 extern i16 dat_007f1a88;
-#pragma section(".sarlrw", read, write)
 extern i32 EmperorFloorRouteOn;
 extern f32 EmperorFloorRadius;
 extern f32 EmperorFloorJitter;
@@ -1117,8 +1116,8 @@ f32 SarlaccDiscoSeek = 2.0f;
 f32 SarlaccDiscoTime = 40.0f;
 f32 SarlaccDiscoTimeout = 2.5f;
 f32 SarlaccDiscoRadius = 0.2f;
-__declspec(allocate(".sarlrw")) static NUVEC sarlacc_lump_position = {0};
-__declspec(allocate(".sarlrw")) static f32 sarlacc_engine_timer = 0.0f;
+static NUVEC sarlacc_lump_position = {0};
+static f32 sarlacc_engine_timer = 0.0f;
 
 void SarlaccPitB_Update(WORLDINFO *world) {
     i32 index;

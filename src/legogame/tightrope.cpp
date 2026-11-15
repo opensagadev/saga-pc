@@ -357,12 +357,8 @@ extern "C" {
         }
     }
 
-#pragma data_seg(".data$TightRopeRegistryNamePc")
     char *TightRopeRegistryNamePc = "TightRope";
-#pragma data_seg()
-#pragma data_seg(".data$TightRopeAddTypePc")
     ADDGIZMOTYPE_PC TightRopeAddType = {0};
-#pragma data_seg()
 
     ADDGIZMOTYPE_PC *TightRopes_RegisterGizmo(i32 unused_type_id) {
         char *name = TightRopeRegistryNamePc;

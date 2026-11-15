@@ -738,9 +738,7 @@ static void HubDrawArcadeStats(f32 alpha) {
 }
 
 extern "C" {
-#pragma data_seg(".data$Arcade_NeedTwoPlayers_Scale")
     static f32 Arcade_NeedTwoPlayers_Scale = 1.0f;
-#pragma data_seg()
     f32 PCArcadeIconMessageY = -0.55f;
     NUVEC HubForceBackPosition = {-20.275999069213867, 0.0, -49.327999114990234};
     f32 HubForceBackRadius = 2.299999952316284;
@@ -1231,9 +1229,7 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
 }
 
 static f32 BigIconAlpha[2] = {0};
-#pragma data_seg(".data$HubFreePlaySelectionWaitPc")
 static f32 HubFreePlaySelectionWait = 0.75f;
-#pragma data_seg()
 extern "C" {
     f32 HubAreaPanelOne[6] = {-0.15f, -0.45000002f, 0.75f, -0.75f, 0.45000002f, 0.15f};
 }
@@ -1486,9 +1482,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
     }
 }
 
-#pragma data_seg(".data$HubFreePlayCursorSizePc")
 static f32 HubFreePlayCursorSizePc = 0.16f;
-#pragma data_seg()
 extern "C" {
     f32 HubMiniKitOpenThreshold = 1.0;
 }
@@ -2744,22 +2738,12 @@ void HubInitFreePlaySelect(i32 area, i32 first_model, i32 second_model) {
     hub_freeplay_area = area;
 }
 
-#pragma data_seg(".data$COLLECTION_Y_HUB")
 static f32 COLLECTION_Y_HUB = -0.5f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayBigSizePc")
 static f32 HubFreePlayBigSize = 0.35f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayBigYPc")
 static f32 HubFreePlayBigY = 0.35f;
-#pragma data_seg()
 static APICHARACTERMODELLIST HubFreePlayDrawList[341] = {0};
-#pragma data_seg(".data$HubFreePlayFinalSizePc")
 static f32 HubFreePlayFinalSize = 0.35f;
-#pragma data_seg()
-#pragma data_seg(".data$HubFreePlayNameYPc")
 static f32 HubFreePlayNameY = 0.125f;
-#pragma data_seg()
 
 static void Hub_DrawFreePlaySelect(void) {
     COLLECTION_BUILD_PC *collection;

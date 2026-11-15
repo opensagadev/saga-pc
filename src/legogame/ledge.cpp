@@ -522,15 +522,9 @@ extern "C" {
 }
 
 extern "C" {
-#pragma data_seg(".data$LedgeOutputNamePc")
     char *LedgeOutputName = "CanUse";
-#pragma data_seg()
-#pragma data_seg(".data$LedgeRegistryNamePc")
     char *LedgeRegistryNamePc = "Ledge";
-#pragma data_seg()
-#pragma data_seg(".data$LedgeAddTypePc")
     ADDGIZMOTYPE_PC LedgeAddType = {0};
-#pragma data_seg()
 
     ADDGIZMOTYPE_PC *Ledges_RegisterGizmo(i32 unused_type_id) {
         char *name = LedgeRegistryNamePc;

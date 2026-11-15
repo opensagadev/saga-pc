@@ -1439,9 +1439,7 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
     object->helmet = 0;
 }
 
-#pragma data_seg(".data$SHIELDFLICKERTIME")
 static f32 SHIELDFLICKERTIME = 0.1f;
-#pragma data_seg()
 
 void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
     SHIELD_STATE *shield = (SHIELD_STATE *)target;

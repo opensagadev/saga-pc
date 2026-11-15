@@ -144,11 +144,8 @@ extern "C" {
         u8 unknown_64738[8];                      // 0x64738
     } DOGFIGHT_SPACE_PC;
 
-#pragma data_seg(".data$DogfightResetPc")
     NUVEC4 DogfightDrawScale = {0.0f, 0.0f, 0.0f, 0.0f};
-#pragma data_seg(".data$DogfightResetTimerPc")
     f32 DogfightResetTimer = 0.0f;
-#pragma data_seg(".data$DogfightResetPc")
     DOGFIGHT_ACTION DogfightAnakinActions[10] = {
         {0, 1.0f},
         {2, 7.5f},
@@ -170,7 +167,6 @@ extern "C" {
         {"door_to_c1", 508.679993f, 147.050003f},
         {"door_to_c2", 583.72998f,  167.5f     },
     };
-#pragma data_seg()
 
     extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE_PC *splines, i32 capacity);
 
@@ -179,10 +175,7 @@ extern "C" {
         f32 speed;                    // 0x4
     } DOGFIGHT_SPEEDUP;
 
-#pragma data_seg(".data$DogfightSpeedRatePc")
     f32 DogfightSpeedRate = 0.25f;
-#pragma data_seg()
-#pragma data_seg(".data$DogfightSpeedListPc")
     DOGFIGHT_SPEEDUP DogfightSpeedList[9] = {
         {58.0f,  0.5f},
         {72.0f,  1.0f},
@@ -194,23 +187,14 @@ extern "C" {
         {335.0f, 1.0f},
         {0.0f,   0.0f},
     };
-#pragma data_seg()
 
-#pragma data_seg(".data$DogfightWingSpeedPc")
     f32 DogfightWingSpeedPc = 35.0f;
-#pragma data_seg(".data$DogfightPassingSpeedPc")
     static f32 DogfightPassingSpeed = 200.0f;
-#pragma data_seg()
 
-#pragma data_seg(".data$DogfightRumbleSpeedScalePc")
     f32 SpeedDist = 5.0f;
-#pragma data_seg(".data$DogfightRumbleSpeedBiasPc")
     f32 SpeedAdd = 1.0f;
-#pragma data_seg(".data$DogfightRumbleStrengthScalePc")
     f32 MulDist = 0.5f;
-#pragma data_seg(".data$DogfightRumbleStrengthBiasPc")
     f32 MulAdd = 0.0f;
-#pragma data_seg()
 
     extern f32 FlightSplineDefaultIncrement;
 
@@ -236,30 +220,14 @@ extern "C" {
         u8 unknown_520[16];                 // 0x520
     } DOGFIGHT_TARGET_SPLINE;
 
-#pragma data_seg(push, ".data$DogfightDeathImpulseScalePc")
     f32 DogfightDeathImpulseScale = 10.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightAimResetPc")
     f32 DogfightAimReset = 2.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightAimDecayPc")
     f32 DogfightAimDecay = 2.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightFireNearPc")
     f32 DogfightFireNear = 5.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightFireFarPc")
     f32 DogfightFireFar = 100.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$MissileDist")
     f32 MissileDist = -3.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightCachedPlayerPositionPc")
     NUVEC DogfightCachedPlayerPosition = {0.0f, 0.0f, 0.0f};
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightCachedPlayerVelocityPc")
     NUVEC DogfightCachedPlayerVelocity = {0.0f, 0.0f, 0.0f};
-#pragma data_seg(pop)
 
     /* Recovered PC playback views; original private source names are unknown. */
     typedef struct DOGFIGHT_PLAYBACK_SPLINE { // size 0x530
@@ -297,37 +265,19 @@ extern "C" {
 
     extern void SpaceResetAudioPoint(void);
 
-/* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
-#pragma data_seg(push, ".data$DogfightSelectedSockPc")
+    /* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
     SOCKPOSITION_PC *DogfightSelectedSock = NULL;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightDrawSelectedSockPc")
     i32 DogfightDrawSelectedSock = 0;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightHideGeometryPc")
     i32 DogfightHideGeometry = 0;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightDrawSplinePc")
     i32 DogfightDrawSpline = 0;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightDrawFighterSplinePc")
     i32 DogfightDrawFighterSpline = 0;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightJetOffsetPc")
     NUVEC DogfightJetOffset = {0.15f, 0.08f, 0.32f};
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightBoltModelsFirstPc")
     i32 DogfightBoltModelsFirst[4] = {303, 305, 301, 301};
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$DogfightBoltModelsSecondPc")
     i32 DogfightBoltModelsSecond[4] = {304, 306, 302, 302};
-#pragma data_seg(pop)
     extern i32 DogfightDebrisKeys[4];
     extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET_PC *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
-#pragma data_seg(".data$DogfightCollisionRadiusSquaredPc")
     f32 DogfightCollisionRadiusSquared = 2.0f;
-#pragma data_seg()
 
     typedef __declspec(align(16)) struct DOGFIGHT_COLLISION_VECTOR { // size 0x10
         NUVEC xyz;                                                   // 0x0
@@ -370,18 +320,13 @@ extern "C" {
         u32 unknown_52c;                // 0x52c
     } FLIGHT_SPLINE_FILE;
 
-#pragma data_seg(".data$FlightSplineExtensionPc")
     char *FlightSplineExtension = ".FSP";
-#pragma data_seg(".data$FlightSplineDefaultIncrementPc")
     f32 FlightSplineDefaultIncrement = 0.01f;
-#pragma data_seg()
 
     void FlightSplineCapacityDiagnostic(char *filename);
 
     void SetPreSeekStartPoint(f32 offset);
-#pragma data_seg(".data$DogfightDebrisKeysPc")
     i32 DogfightDebrisKeys[4] = {-1, -1, -1, -1};
-#pragma data_seg()
 
     static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source);
     static void TransformFlightVector(NUVEC *output, NUVEC *input, NUMTX *matrix);
@@ -1032,21 +977,11 @@ extern "C" {
         memcpy(position, &((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->origin_end, sizeof(NUVEC));
     }
 
-#pragma data_seg(push, ".data$dat_007f15e4")
     f32 dat_007f15e4 = 120.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$dat_007f15e8")
     f32 dat_007f15e8 = 150.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$dat_007f15ec")
     f32 dat_007f15ec = 1.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$dat_007f15f0")
     f32 dat_007f15f0 = 1.0f;
-#pragma data_seg(pop)
-#pragma data_seg(push, ".data$dat_007f15f4")
     f32 dat_007f15f4 = 0.6f;
-#pragma data_seg(pop)
 
     void ChrisRadialCam(NUVEC *position, NUVEC *target) {
         __declspec(align(16)) NUVEC new_position = *position;

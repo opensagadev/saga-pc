@@ -139,9 +139,7 @@ extern "C" {
         i32 shader_texture_animation_enabled; // 0x158
     } FRAME_MTL_SCENE;
 
-#pragma data_seg(".data$NuMainRendererControlPc")
     i32 NuMainRendererControl = 1;
-#pragma data_seg()
 
     i32 NuRndrControlState = 0;
     void *NuDisplayHandlerMaterial = NULL;
@@ -538,15 +536,9 @@ extern "C" {
         0x00, 0x00, 0x41, 0xf8, 0xbe, 0xff, 0x55, 0x55, 0x00, 0x00, 0x41, 0xf8, 0xbe, 0xff, 0x55, 0x55, 0x00, 0x00, 0x21, 0xf8, 0x9d, 0xff,
         0x05, 0x05, 0x00, 0x00,
     };
-#pragma data_seg(".data$RendererStencilFuncPc")
     u32 RendererStencilFunc = 2;
-#pragma data_seg()
-#pragma data_seg(".data$RendererStencilPassPc")
     u32 RendererStencilPass = 1;
-#pragma data_seg()
-#pragma data_seg(".data$RendererStencilRefPc")
     u32 RendererStencilRef = 0x60;
-#pragma data_seg()
     u32 PCGraphicsPostEffectWidth = 512;
     u32 PCGraphicsPostEffectHeight = 512;
 

@@ -599,7 +599,6 @@ extern "C" void fun_005969c0(void *set) {
 }
 
 extern "C" {
-#pragma data_seg(".data$ShadowLightParametersPc")
     f32 ShadowLightSplitScale = 0.9f;
     f32 ShadowLightWarp = 5.0f;
     NUVEC ShadowLightUp = {0.0f, 1.0f, 0.0f};
@@ -608,7 +607,6 @@ extern "C" {
     f32 ShadowLightFallbackHeight = 5.0f;
     f32 ShadowLightEyeDistance = 20.0f;
     f32 ShadowLightFocusHeight = -2.0f;
-#pragma data_seg()
     RTL_DATA LevelLightingData = {0};
     i32 Lighting_FlashRedOnLastHeart = 0;
     i32 Lighting_HighlightFlash = 0;

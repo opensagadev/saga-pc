@@ -179,30 +179,20 @@ typedef struct cut_memory_vertex_s { // size 0x10
     u32 colour;                      // 0xc
 } CUT_MEMORY_VERTEX;
 
-#pragma section(".bss$DefragCutSceneEndMem", read, write)
-__declspec(allocate(".bss$DefragCutSceneEndMem")) void *DefragCutSceneEndMem = NULL;
+void *DefragCutSceneEndMem = NULL;
 void (*ReleaseLocatorVfxFn)(i32) = 0;
 NUVEC CutSceneFocusLocation = {0};
-#pragma section(".bss$DefragCutSceneListSize", read, write)
-__declspec(allocate(".bss$DefragCutSceneListSize")) i32 DefragCutSceneListSize = 0;
-#pragma section(".bss$DefragCutSceneBaseMem", read, write)
-__declspec(allocate(".bss$DefragCutSceneBaseMem")) void *DefragCutSceneBaseMem = NULL;
-#pragma section(".bss$DefragInstBaseMem", read, write)
-__declspec(allocate(".bss$DefragInstBaseMem")) void *DefragInstBaseMem = NULL;
-#pragma section(".bss$DefragInstEndMem", read, write)
-__declspec(allocate(".bss$DefragInstEndMem")) void *DefragInstEndMem = NULL;
-#pragma section(".bss$DefragCutSceneListBase", read, write)
-__declspec(allocate(".bss$DefragCutSceneListBase")) CUT_MEMORY_ENTRY_PC *DefragCutSceneListBase = NULL;
+i32 DefragCutSceneListSize = 0;
+void *DefragCutSceneBaseMem = NULL;
+void *DefragInstBaseMem = NULL;
+void *DefragInstEndMem = NULL;
+CUT_MEMORY_ENTRY_PC *DefragCutSceneListBase = NULL;
 i32 (*TriggerLocatorVfxFn)(i32, NUMTX *) = 0;
-#pragma section(".bss$DefragGetInstFn", read, write)
-__declspec(allocate(".bss$DefragGetInstFn")) CUT_MEMORY_INSTANCE_PC *(*DefragGetInstFn)(void *) = NULL;
-#pragma section(".bss$DefragCutSceneList", read, write)
-__declspec(allocate(".bss$DefragCutSceneList")) CUT_MEMORY_ENTRY_PC *DefragCutSceneList = NULL;
-#pragma section(".bss$DefragCreateInstFn", read, write)
-__declspec(allocate(".bss$DefragCreateInstFn")) CUT_MEMORY_INSTANCE_PC *(*DefragCreateInstFn)(void *, CUT_MEMORY_SCENE *, VARIPTR *) = NULL;
+CUT_MEMORY_INSTANCE_PC *(*DefragGetInstFn)(void *) = NULL;
+CUT_MEMORY_ENTRY_PC *DefragCutSceneList = NULL;
+CUT_MEMORY_INSTANCE_PC *(*DefragCreateInstFn)(void *, CUT_MEMORY_SCENE *, VARIPTR *) = NULL;
 void (*UpdateLocatorVfxFn)(i32, NUMTX *) = 0;
-#pragma section(".bss$DefragInstDestroyedFn", read, write)
-__declspec(allocate(".bss$DefragInstDestroyedFn")) void (*DefragInstDestroyedFn)(void *) = NULL;
+void (*DefragInstDestroyedFn)(void *) = NULL;
 
 void instNuGCutSceneResetCleanUp(void *list_storage, void *cut_base, void *cut_end, void *inst_base, void *inst_end,
                                  CUT_MEMORY_INSTANCE_PC *(*get_inst)(void *),
@@ -675,10 +665,8 @@ struct cut_trigger_set_s {     // size 0x3c
     u32 flags;                 // 0x38
 };
 
-#pragma section(".bss$CutTriggerSetListPc", read, write)
-__declspec(allocate(".bss$CutTriggerSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerSetList = NULL;
-#pragma section(".bss$CutTriggerPendingSetListPc", read, write)
-__declspec(allocate(".bss$CutTriggerPendingSetListPc")) CUT_TRIGGER_SET_PC *CutTriggerPendingSetList = NULL;
+CUT_TRIGGER_SET_PC *CutTriggerSetList = NULL;
+CUT_TRIGGER_SET_PC *CutTriggerPendingSetList = NULL;
 i32 (*LookupLocatorVfxFn)(char *) = 0;
 
 typedef struct cut_app_command_s { // size 0x8
@@ -686,8 +674,7 @@ typedef struct cut_app_command_s { // size 0x8
     void (*fn)(char *);            // 0x4
 } CUT_APP_COMMAND_PC;
 
-#pragma section(".bss$CutScriptAppCommandsPc", read, write)
-__declspec(allocate(".bss$CutScriptAppCommandsPc")) CUT_APP_COMMAND_PC *CutScriptAppCommands = NULL;
+CUT_APP_COMMAND_PC *CutScriptAppCommands = NULL;
 
 void CutScriptSetAppCommands(CUT_APP_COMMAND_PC *commands) {
     CutScriptAppCommands = commands;

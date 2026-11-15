@@ -12127,7 +12127,6 @@ i32 Action_Sebulba(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32,
 i32 Action_NewSebulba(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 i32 Action_BoulderSection(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 
-#pragma data_seg(".data$lego_aiactiondefs")
 AIACTIONDEF lego_aiactiondefs[208] = {
     {"Activate",                     Action_Activate,                     1, 0, 0},
     {"DeActivate",                   Action_DeActivate,                   1, 0, 0},
@@ -12338,9 +12337,7 @@ AIACTIONDEF lego_aiactiondefs[208] = {
     {"NewSebulba",                   Action_NewSebulba,                   0, 0, 0},
     {NULL,                           NULL,                                0, 0, 0},
 };
-#pragma data_seg()
 
-#pragma data_seg(".data$lego_aiconditiondefs")
 AICONDITIONDEF lego_aiconditiondefs[171] = {
     {"GlynTest",                         Condition_GlynTest,                         NULL                                     },
     {"Debug",                            Condition_Debug,                            NULL                                     },
@@ -12514,4 +12511,3 @@ AICONDITIONDEF lego_aiconditiondefs[171] = {
     {"InHubArea",                        Condition_InHubArea,                        Condition_InHubAreaInit                  },
     {NULL,                               NULL,                                       NULL                                     },
 };
-#pragma data_seg()
