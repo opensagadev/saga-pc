@@ -22,10 +22,10 @@ struct POST_SHADER_PROGRAM_POOL_PC {     // size 0x40c
 };
 
 extern "C" {
-#pragma bss_seg(".bss$PostShaderProgramPoolPc")
     POST_SHADER_PROGRAM_POOL_PC PostShaderProgramPoolPc = {0};
 #pragma bss_seg(".bss$PostVertexShaderCachePc")
     std::vector<POST_VERTEX_SHADER_CACHE_ENTRY_PC> PostVertexShaderCachePc;
+#pragma bss_seg()
 #pragma bss_seg(".bss$PostPixelShaderCachePc")
     std::vector<POST_PIXEL_SHADER_CACHE_ENTRY_PC> PostPixelShaderCachePc;
 #pragma bss_seg()
@@ -142,25 +142,17 @@ extern "C" {
     extern const DWORD dat_00765e40[];
     extern const DWORD dat_00765f30[];
     extern const DWORD dat_007660d0[];
-#pragma bss_seg(".bss$PostCopyTexProgramPc")
     POST_SHADER_PROGRAM_PC *PostCopyTexProgram = 0;
     POST_SHADER_PROGRAM_PC *dat_00973820 = 0;
-#pragma bss_seg(".bss$PostCopyTexLodProgramPc")
     POST_SHADER_PROGRAM_PC *PostCopyTexLodProgram = 0;
     POST_SHADER_PROGRAM_PC *dat_0097382c = 0;
-#pragma bss_seg(".bss$PostBlendTexProgramPc")
     POST_SHADER_PROGRAM_PC *PostBlendTexProgram = 0;
-#pragma bss_seg(".bss$PostBlur5x5ProgramPc")
     POST_SHADER_PROGRAM_PC *PostBlur5x5Program = 0;
-#pragma bss_seg(".bss$PostBlur7x7ProgramPc")
     POST_SHADER_PROGRAM_PC *PostBlur7x7Program = 0;
     PC_TEXTURE_RESOURCE *NuDisplayHandlerVertexShaderCachePc = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayHandlerPixelShaderCachePc = NULL;
-#pragma bss_seg(".bss$PostCopyAuxProgramPc")
     POST_SHADER_PROGRAM_PC *PostCopyAuxProgram = 0;
-#pragma bss_seg(".bss$PostBlurAuxProgramPc")
     POST_SHADER_PROGRAM_PC *PostBlurAuxProgram = 0;
-#pragma bss_seg()
 }
 
 extern "C" void PostFilterInitPrograms(i32 width, i32 height) {

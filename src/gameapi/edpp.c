@@ -1,6 +1,5 @@
 #include "saga.h"
 #include <stdio.h>
-#pragma bss_seg(".bss$edptl_detail_menu")
 struct eduimenu_s *edptl_detail_menu = 0;
 struct eduimenu_s *edptl_testdetail_menu = 0;
 char *edpp_save_names[6] = {0};
@@ -26,25 +25,15 @@ struct edui_slider_s *grad_size_max_item = 0;
 struct eduiitem_s *grad_rot_item = 0;
 struct edui_slider_s *grad_rot_min_item = 0;
 struct edui_slider_s *grad_rot_max_item = 0;
-#pragma bss_seg(".bss$grad_jib_x_amp_item")
 static struct edui_slider_s *grad_jib_x_amp_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_x_freq_item")
 static struct edui_slider_s *grad_jib_x_freq_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$grad_jib_y_amp_item")
 static struct edui_slider_s *grad_jib_y_amp_item = 0;
-#pragma bss_seg()
 struct eduiitem_s *coll_env_item = 0;
 struct eduiitem_s *torus_env1_item = 0;
 struct eduiitem_s *torus_env2_item = 0;
 struct eduiitem_s *torus_env3_item = 0;
-#pragma bss_seg(".bss$grad_jib_y_freq_item")
 static struct edui_slider_s *grad_jib_y_freq_item = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ptljibmenu")
 struct eduimenu_s *ptljibmenu = 0;
-#pragma bss_seg()
 struct eduimenu_s *ptlemitmenu = 0;
 struct eduimenu_s *ptloptmenu = 0;
 struct eduimenu_s *ptlgcodemenu = 0;

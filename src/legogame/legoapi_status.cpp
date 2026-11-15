@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "saga.h"
-#pragma bss_seg(".bss$goldbrickmsgcount")
 static i32 goldbrickmsgcount = 0;
 
 /* Walks the two adjacent 0x14-byte rumble records. */

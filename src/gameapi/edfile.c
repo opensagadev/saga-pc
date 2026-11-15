@@ -1,16 +1,12 @@
 #include "saga.h"
 #pragma data_seg(".data$ed_attr")
 static eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
-#pragma bss_seg(".bss$ed_cfg_menu")
 static struct eduimenu_s *ed_cfg_menu = 0;
 NUVEC *ed_loc = 0;
 void *ed_fnt = 0;
 i32 edmain_render_interacts = 0;
-#pragma bss_seg(".bss$ed_curr")
 static struct ed_module_s *ed_curr = 0;
-#pragma bss_seg(".bss$ed_list")
 static struct ed_module_s *ed_list = 0;
-#pragma bss_seg(".bss$ed_main_menu")
 static struct eduimenu_s *ed_main_menu = 0;
 #pragma data_seg(".data$ed_main_menu_h")
 static i32 ed_main_menu_h = 320;
@@ -20,7 +16,6 @@ static i32 ed_main_menu_w = 180;
 static i32 ed_main_menu_x = 220;
 #pragma data_seg(".data$ed_main_menu_y")
 static i32 ed_main_menu_y = 50;
-#pragma bss_seg(".bss$ed_module_active")
 static i32 ed_module_active = 0;
 #pragma data_seg(".data$edmain_auto_speed")
 static i32 edmain_auto_speed = 1;
@@ -28,13 +23,10 @@ static i32 edmain_auto_speed = 1;
 static f32 edmain_default_camera_speed = 1.0f;
 #pragma data_seg(".data$edmain_menu_scale")
 static f32 edmain_menu_scale = 1.0f;
-#pragma bss_seg(".bss$processing_menu")
 static struct eduimenu_s *processing_menu = 0;
 struct eduimenu_s *default_active_menu = 0;
 i32 edui_donotdraw = 0;
-#pragma bss_seg(".bss$submenu1")
 static struct eduimenu_s *submenu1 = 0;
-#pragma bss_seg(".bss$testmenu0")
 static struct eduimenu_s *testmenu0 = 0;
 
 #define EDUI_MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -1796,8 +1788,12 @@ void eduiShowCursor(i32 show) {
     bShowCursor = show;
 }
 
+#pragma bss_seg(".bss$testmenu0")
 f32 edui_cursor_dx;
+#pragma bss_seg()
+#pragma bss_seg(".bss$testmenu0")
 f32 edui_cursor_dy;
+#pragma bss_seg()
 u32 edui_cursor_buttons = 0;
 u32 edui_cursor_buttons_db = 0;
 u32 edui_cursor_colour = 0xff000000;
@@ -1958,8 +1954,12 @@ eduimenu_s *eduiGetActiveMenu(void) {
 
 void PcGetMousePositionPc(f32 *x, f32 *y);
 void PcSetMousePositionPc(f32 x, f32 y);
+#pragma bss_seg(".bss$testmenu0")
 u32 edui_cursor_buttons_old;
+#pragma bss_seg()
+#pragma bss_seg(".bss$testmenu0")
 i32 edui_cursor_locked;
+#pragma bss_seg()
 struct FILE_DIRECTORY_ENTRY_PC *dir_list = 0;
 
 /* A stick nudge recentres the cursor, otherwise it follows the mouse; holding

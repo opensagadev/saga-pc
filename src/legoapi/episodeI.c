@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "saga.h"
 #include <math.h>
-#pragma bss_seg(".bss$MaulA_ai_message")
 
 typedef struct racepod_resource_s {    // size 0xa0
     NUMTX matrix;                      // 0x00

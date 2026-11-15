@@ -3,14 +3,14 @@
 
 #include "saga.h"
 #include <stdio.h>
-#pragma bss_seg(".bss$MaxRadialCamY")
 static f32 MaxRadialCamY = 0;
-#pragma bss_seg(".bss$RadialMoveCentre")
 static NUVEC4 RadialMoveCentre = {0};
 #pragma bss_seg(".bss$RadialPlayerRadius")
 static f32 RadialPlayerRadius[2];
+#pragma bss_seg()
 #pragma bss_seg(".bss$dat_00855e40")
 static NUVEC4 dat_00855e40;
+#pragma bss_seg()
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 ChrisFabs(f32 f) {

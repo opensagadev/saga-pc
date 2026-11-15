@@ -1884,9 +1884,7 @@ char *GameObj_GetName(i32 model, GAMEOBJECT *object, char *buffer) {
     return TTab[CDataList[model].name_id];
 }
 
-#pragma bss_seg(".bss$player_tag_from")
 GAMEOBJECT *player_tag_from = 0;
-#pragma bss_seg()
 
 void UpdateGameObjects(WORLDINFO *world) {
     i32 i;

@@ -3,9 +3,7 @@
 #pragma data_seg(".data$g_texAnimCriticalSection")
 static i32 nutexanm_critical_section = -1;
 #pragma data_seg()
-#pragma bss_seg(".bss$ntal_free")
 static PC_TEXTURE_ANIM_LIST *ntal_free = 0;
-#pragma bss_seg()
 i32 NuTexAnimMissingPakDiagnostic = 0;
 
 void NuTexAnimAddList(void *animation) {

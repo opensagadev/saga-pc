@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "saga.h"
-#pragma bss_seg(".bss$edpart_instance_menu")
 struct eduimenu_s *edpart_instance_menu = 0;
 struct eduimenu_s *edpart_worldinstance_menu = 0;
 struct eduimenu_s *edpart_thingsinstance_menu = 0;
@@ -40,7 +39,6 @@ i32 edpart_refroty = 0;
 i32 edpart_copyrotz = 0;
 i32 edpart_copyroty = 0;
 i32 edpart_count = 0;
-#pragma bss_seg(".bss$edpart_nullobject_highlight")
 static struct eduiitem_s *edpart_nullobject_highlight = 0;
 
 void edpartScaleType(i32 index, f32 scale) {

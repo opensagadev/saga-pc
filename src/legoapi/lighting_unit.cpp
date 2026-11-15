@@ -618,11 +618,8 @@ extern "C" {
     i32 (*Lighting_BlueFlickerFn)(GAMEOBJECT *) = NULL;
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowCurrentLight = 0;
     struct PC_SPECIAL_SHADOW_LIGHT *PCShadowSecondaryLight = 0;
-#pragma bss_seg(".bss$ShadowLightSplitCountPc")
     i32 ShadowLightSplitCount = 0;
-#pragma bss_seg(".bss$EdMainCurrentCameraPc")
     NUCAMERA *EdMainCurrentCamera = 0;
-#pragma bss_seg()
 }
 
 extern "C" void SetShadowLight(void) {

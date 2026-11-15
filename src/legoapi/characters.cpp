@@ -213,9 +213,7 @@ extern "C" void CharScenes_AreaDump() {
 
 extern "C" {
     i32 CHARCATEGORYCOUNT = 0;
-#pragma bss_seg(".bss$IconScene")
     static NUGSCN **IconScene = 0;
-#pragma bss_seg()
     CHARACTERDATA_PC *CDataList = 0;
     i32 CHARCOUNT = 0;
     KILLPARTS_CHARSCENE *KillPartsCharSceneArea = 0;

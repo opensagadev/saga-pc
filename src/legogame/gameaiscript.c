@@ -85,9 +85,7 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale);
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 
-#pragma bss_seg(".bss$prev_droid_ix")
 static i32 prev_droid_ix = 0;
-#pragma bss_seg()
 
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
 

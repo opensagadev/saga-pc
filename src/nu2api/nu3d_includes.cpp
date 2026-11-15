@@ -13825,11 +13825,9 @@ extern "C" {
 #pragma data_seg()
 #pragma bss_seg(".bss$PostResourceManagerPc")
     PC_POST_DATA_PORT_MANAGER PostResourceManager;
-#pragma bss_seg(".bss$PostBlurFramebufferPc")
-    PC_FRAMEBUFFER *PostBlurFramebuffer = 0;
-#pragma bss_seg(".bss$PostCopyFramebufferPc")
-    PC_FRAMEBUFFER *PostCopyFramebuffer = 0;
 #pragma bss_seg()
+    PC_FRAMEBUFFER *PostBlurFramebuffer = 0;
+    PC_FRAMEBUFFER *PostCopyFramebuffer = 0;
     i32 dat_00973868 = 0;
     i32 PcGeometryRegistryCountPc = 0;
     struct PC_GEOMETRY_PUBLISH_RECORD *PcGeometryRegistryPc = NULL;
@@ -18957,7 +18955,6 @@ void NuDeferredFilterGen::render() {
     D3DPERF_EndEvent();
 }
 
-#pragma bss_seg(".bss$PostShadowViewPc")
 extern "C" NUMTX PostShadowView = {0};
 extern "C" {
     GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferCopy = NULL;
@@ -18965,9 +18962,7 @@ extern "C" {
     NUMTX NuPortalProjectionInverse = {0};
     NUMTX NuPortalProjectionScratch = {0};
 }
-#pragma bss_seg(".bss$PostShadowProjectionPc")
 extern "C" NUMTX PostShadowProjection = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$PostShadowWhitePc")
 extern "C" NUVEC4 PostShadowWhite = {1.0f, 1.0f, 1.0f, 1.0f};
 #pragma data_seg()

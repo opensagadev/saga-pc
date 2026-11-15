@@ -1,9 +1,7 @@
 #include "saga.h"
 
 #include <stdio.h>
-#pragma bss_seg(".bss$pause_rndr_mtl")
 static NUMTL *pause_rndr_mtl = 0;
-#pragma bss_seg(".bss$pause_rt")
 static i32 pause_rt = 0;
 extern "C" {
     f32 pause_fade = 0;

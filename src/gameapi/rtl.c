@@ -11,9 +11,7 @@ NUVEC rtl_shadow_flicker = {0.1f, 0.1f, 0.1f};
 #pragma data_seg(".data$RtlUidCounterPc")
 static u16 rtl_uid = 1;
 #pragma data_seg()
-#pragma bss_seg(".bss$rtl_dynamic_cnt")
 static i32 rtl_dynamic_cnt = 0;
-#pragma bss_seg()
 
 typedef union RTL_FRAME_TIMER_VIEW { // size 0x4
     i32 value;

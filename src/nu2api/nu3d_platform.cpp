@@ -10,9 +10,7 @@
 #include <float.h>
 #include <stdio.h>
 #include <string.h>
-#pragma bss_seg(".bss$NuDebrisCurrentPacket")
 static NATIVE_PARTICLE_PACKET *NuDebrisCurrentPacket = 0;
-#pragma bss_seg()
 extern "C" {
     DEBRIS_PART_HEADER_PC *NuDebrisLastHeader = 0;
     u32 NuDebrisFrameVertexCount = 0;
@@ -47,12 +45,8 @@ extern "C" {
     NUVEC4BLOCK ClipTransformedBlocks[2] = {0};
     FRAME_NATIVE_TEXTURE_POOL FrameNativeTexturePool = {0};
 }
-#pragma bss_seg(".bss$NuDebrisCurrentVertexCount")
 static u32 NuDebrisCurrentVertexCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$NuDebrisVertexBufferSize")
 static u32 NuDebrisVertexBufferSize = 0;
-#pragma bss_seg()
 extern "C" {
     u32 NuDebrisMaxVertexCount = 0;
     void *NuDebrisVertexData = 0;
@@ -149,9 +143,7 @@ extern "C" {
     i32 NuMainRendererControl = 1;
 #pragma data_seg()
 
-#pragma bss_seg(".bss$NuRndrControlStatePc")
     i32 NuRndrControlState = 0;
-#pragma bss_seg()
     void *NuDisplayHandlerMaterial = NULL;
     GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectBackBufferTexture = 0;
 

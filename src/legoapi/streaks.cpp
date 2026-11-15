@@ -5,7 +5,6 @@ extern "C" {
     STREAK_NODE *StreakNodesUsed = 0;
     STREAK_NODE *streaks_free = 0;
 }
-#pragma bss_seg(".bss$StreakHeadersUsedPc")
 static STREAK_HEADER *streakhdrs_used = 0;
 extern "C" {
     NUMTL *streakmtl = 0;
@@ -306,10 +305,14 @@ extern "C" void ResetStreaks(void) {
     streakhdrs_used = NULL;
 }
 
+#pragma bss_seg(".bss$StreakHeadersUsedPc")
+
 struct STREAK_MATERIAL_SCALE { // size 0x68
     u8 unknown_00[0x64];       // 0x00
     f32 effect_scale;          // 0x64
 };
+
+#pragma bss_seg()
 
 extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     i32 i;

@@ -608,15 +608,12 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
 
 void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
 
-#pragma bss_seg(".bss$game_aiactiondefs")
 AIACTIONDEF *game_aiactiondefs = 0;
 NULISTHDR *aiscript_load_refs = 0;
 NULISTHDR *aiscript_load_conditions = 0;
 NULISTHDR *aiscript_load_actions = 0;
 i32 condition_has_no_goto = 0;
-#pragma bss_seg(".bss$game_aiconditiondefs")
 AICONDITIONDEF *game_aiconditiondefs = 0;
-#pragma bss_seg()
 
 extern AIACTIONDEF api_aiactiondefs[];
 

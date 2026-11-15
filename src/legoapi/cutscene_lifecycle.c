@@ -2,12 +2,8 @@
 #include <stdio.h>
 #include <float.h>
 NUMTX CutSceneCameraMatrix = {0};
-#pragma bss_seg(".bss$CutSceneBackgroundInstancesPc")
 static INSTNUGCUTSCENE *CutSceneBackgroundInstances = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$active_cutscene_instances")
 static INSTNUGCUTSCENE *active_cutscene_instances = 0;
-#pragma bss_seg()
 i32 CutSceneLookupAllDebrisPages = 0;
 
 struct state_anim_s;

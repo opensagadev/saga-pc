@@ -671,14 +671,10 @@ extern "C" void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *source, i32 source_
 }
 
 extern "C" {
-#pragma bss_seg(".bss$PostBlurInputBiasPc")
     f32 PostBlurInputBiasPc = 0;
     f32 RenderFrameShaderTimePc = 0.0f;
-#pragma bss_seg(".bss$PostBlurDirectOutputBiasPc")
     f32 PostBlurDirectOutputBiasPc = 0;
-#pragma bss_seg(".bss$PostBlurDirectInputBiasPc")
     f32 PostBlurDirectInputBiasPc = 0;
-#pragma bss_seg()
 }
 
 extern "C" {

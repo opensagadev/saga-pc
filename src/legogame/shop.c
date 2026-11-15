@@ -377,18 +377,14 @@ static void Shop_GetInput(SHOP_INPUT_PC *input) {
     }
 }
 
-#pragma bss_seg(".bss$CodePos")
 static NUVEC CodePos[6] = {0};
 i32 SHOPHINTCOUNT = 0;
 i32 ShopDrawLevel = 0;
-#pragma bss_seg(".bss$ShelfPos")
 static NUVEC ShelfPos[6] = {0};
 nuhspecial_s arrow4 = {0};
 i32 picked = 0;
 nuhspecial_s arrow1 = {0};
-#pragma bss_seg(".bss$splcharshelf")
 static struct nugspline_s *splcharshelf = NULL;
-#pragma bss_seg()
 void (*ShopDrawPanelFn)(void) = 0;
 f32 ShopSlideTimer = 0;
 nuhspecial_s toolblank = {0};

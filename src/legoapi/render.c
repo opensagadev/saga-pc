@@ -1,11 +1,5 @@
 #include <stdio.h>
 #include "saga.h"
-#pragma bss_seg(".bss$GameFogDuration")
-#pragma bss_seg(".bss$GameFogNew")
-#pragma bss_seg(".bss$GameFogSet")
-#pragma bss_seg(".bss$GameFogSnap")
-#pragma bss_seg(".bss$GameFogTime")
-#pragma bss_seg(".bss$dof_fstop")
 #undef DrawStatusText
 
 /* Source-first scratch candidate; unclosed real leaf declarations only. */

@@ -1150,9 +1150,7 @@ static i32 HubCopyNetworkFreePlayList(void) {
     return 1;
 }
 
-#pragma bss_seg(".bss$HubIconWibbleAnglePc")
 static u16 HubIconWibbleAngle[4] = {0};
-#pragma bss_seg()
 extern "C" {
     f32 HubIconWibbleTime[4] = {0};
     i32 HubDrawMiniKitCharacter = 0;
@@ -1232,18 +1230,14 @@ static i32 HubMoveFreePlayCursorPc(COLLECTION_BUILD_PC *collection, i32 player, 
     return index;
 }
 
-#pragma bss_seg(".bss$BigIconAlpha")
 static f32 BigIconAlpha[2] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$HubFreePlaySelectionWaitPc")
 static f32 HubFreePlaySelectionWait = 0.75f;
 #pragma data_seg()
 extern "C" {
     f32 HubAreaPanelOne[6] = {-0.15f, -0.45000002f, 0.75f, -0.75f, 0.45000002f, 0.15f};
 }
-#pragma bss_seg(".bss$freeplay_time")
 static f32 freeplay_time[2] = {0};
-#pragma bss_seg()
 extern "C" {
     u16 Hub_PadAngle[2] = {0};
     i32 hub_bonusepisode = 0;
@@ -1257,9 +1251,7 @@ extern "C" {
     i32 HubForceShopSave = 0;
     f32 HubPreventDropOutTime = 0.0f;
 }
-#pragma bss_seg(".bss$freeplayduration")
 static f32 freeplayduration = 0;
-#pragma bss_seg()
 extern "C" {
     f32 HubEpisodeTime = 0.0f;
     i32 bonusmodearcade = 0;
@@ -1269,9 +1261,7 @@ extern "C" {
     i32 hub_selectmode = 0;
     APICHARACTERMODELLIST Hub_ModelList[6] = {0};
 }
-#pragma bss_seg(".bss$freeplaytime")
 static f32 freeplaytime = 0;
-#pragma bss_seg()
 extern "C" {
     i32 Arcade_Points[2] = {0};
     i32 HubMiniKitArea = 0;
@@ -1284,9 +1274,7 @@ extern "C" {
     i32 Arcade_Score[2] = {0};
     f32 HubAreaTime = 0.0f;
 }
-#pragma bss_seg(".bss$hub_freeplay_area")
 static i32 hub_freeplay_area = 0;
-#pragma bss_seg()
 extern "C" {
     i32 HubLastArea = 0;
     f32 Hub_PadSpeed[2] = {0};
@@ -2765,9 +2753,7 @@ static f32 HubFreePlayBigSize = 0.35f;
 #pragma data_seg(".data$HubFreePlayBigYPc")
 static f32 HubFreePlayBigY = 0.35f;
 #pragma data_seg()
-#pragma bss_seg(".bss$HubFreePlayDrawListPc")
 static APICHARACTERMODELLIST HubFreePlayDrawList[341] = {0};
-#pragma bss_seg()
 #pragma data_seg(".data$HubFreePlayFinalSizePc")
 static f32 HubFreePlayFinalSize = 0.35f;
 #pragma data_seg()

@@ -785,9 +785,7 @@ void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
 i32 edbri_nearest = 0;
 struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff = 0;
-#pragma bss_seg(".bss$edbri_mtl")
 NUMTL *edbri_mtl = NULL;
-#pragma bss_seg()
 i32 edbri_page_on[8] = {0};
 
 void edbriDrawCursor(void) {

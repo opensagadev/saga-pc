@@ -5628,12 +5628,8 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     }
 }
 
-#pragma bss_seg(".bss$ForceBackObj")
 static GAMEOBJECT *ForceBackObj = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$ForceBackPosPc")
 static NUVEC *ForceBackPos = 0;
-#pragma bss_seg()
 
 void ResetForceBack(void) {
     ForceBackObj = NULL;
@@ -5645,9 +5641,7 @@ AREA_DATA_PC *DOGFIGHT_ADATA = 0;
 AREA_DATA_PC *BATTLEOVERCORUSCANT_ADATA = 0;
 f32 avg_currentspeed_mul = 0;
 f32 PlayerOpponent_Range2 = 0.0f;
-#pragma bss_seg(".bss$ForceBackRadiusPc")
 static f32 ForceBackRadiusPc = 0;
-#pragma bss_seg()
 f32 ForceBackRadius2 = 0;
 i32 ComboOpponent_Behind = 0;
 f32 ComboOpponent_Range2 = 0;
@@ -5656,9 +5650,7 @@ f32 VehicleAreaRememberSpeed = 0;
 i32 IDLESPEEDINNARROWSOCKSONLY = 0;
 f32 SaberSparksTimer = 0;
 i32 testlaser_type = 0;
-#pragma bss_seg(".bss$ForceBackType")
 static i32 ForceBackType = 0;
-#pragma bss_seg()
 void (*VehicleSlowdownCallback)(GAMEOBJECT *) = 0;
 i32 lightning_type = 0;
 
@@ -8800,9 +8792,7 @@ void *PlayerBlockActionInfo = &PlayerActionInfoList[1];
 #pragma data_seg(".data$SLAMGRAVITY")
 static f32 SLAMGRAVITY = -15.0f;
 #pragma data_seg()
-#pragma bss_seg(".bss$applygravity_extrahoveroffset")
 static f32 applygravity_extrahoveroffset = 0;
-#pragma bss_seg()
 i32 getvehiclehoverheight_hothbattlehack = 0;
 i32 TwistScaleLean = 0;
 f32 CurrentSpeedOverride = 0;

@@ -3,9 +3,7 @@ TERRAIN_POLYGON_INFO *TerrainCastAuxPolygon = 0;
 f32 EShadY = 0;
 u16 TerrainCastAuxValid = 0;
 i32 cntrots = 0;
-#pragma bss_seg(".bss$TerrainCrashDataPc")
 static u8 *TerrainCrashData = 0;
-#pragma bss_seg()
 i32 edanim_cam_ax = 0;
 i32 platinrange = 0;
 struct eduimenu_s *ptlrotmenu = 0;
@@ -38,9 +36,7 @@ void *edgra_page_terrain[8] = {0};
 f32 GetSurfaceInfoRoofHeight = 0;
 i32 edbri_cam_ax = 0;
 TerrainQuery_s *TerI = 0;
-#pragma bss_seg(".bss$debug_index")
 static i16 debug_index = 0;
-#pragma bss_seg()
 TERRAIN_POLYGON_INFO *EShadPoly = 0;
 i32 TerrPolyObj = 0;
 u16 TerrainWaterCastIndex = 0;

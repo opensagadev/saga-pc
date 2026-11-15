@@ -1,6 +1,4 @@
 #include "saga.h"
-#pragma bss_seg(".bss$splcodes")
-#pragma bss_seg(".bss$splshelf")
 
 /* The shop code clamps through nested min/max macros: the inner min is evaluated twice. */
 

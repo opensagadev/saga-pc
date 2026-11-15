@@ -4,12 +4,8 @@
 #include <float.h>
 #include <stdarg.h>
 #include <string.h>
-#pragma bss_seg(".bss$PCSoundLoopVoiceCount")
 static i32 PCSoundLoopVoiceCount = 0;
-#pragma bss_seg()
-#pragma bss_seg(".bss$PCSoundOneShotVoiceCount")
 static i32 PCSoundOneShotVoiceCount = 0;
-#pragma bss_seg()
 extern "C" {
     HANDLE PCSoundMixEvent = 0;
     HANDLE PCSoundSampleWorkerHandle = 0;
@@ -19,15 +15,11 @@ extern "C" {
     NUMTX *NuSound3Listener = 0;
     i32 NuSound3LoadingSfxPc = 0;
 }
-#pragma bss_seg(".bss$PCSoundUpdateClock")
 static i32 PCSoundUpdateClock = 0;
-#pragma bss_seg()
 extern "C" {
     CRITICAL_SECTION SoundSampleCriticalSection = {0};
 }
-#pragma bss_seg(".bss$PCStereoSampleMetadata")
 static SFX_FILE_INFO_PC *PCStereoSampleMetadata = 0;
-#pragma bss_seg()
 extern "C" {
     CRITICAL_SECTION SoundVoiceCriticalSection = {0};
 }
