@@ -395,7 +395,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     object->character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
     if (object->jump_variant_state == 1) {
         object->unknown_7aa = ACTION_THROW3;
-    } else if ((object->flags_e20 & 0x10000) != 0) {
+    } else if ((object->flags_e20 & APIOBJECT_WEAPON_OUT) != 0) {
         object->unknown_7aa = ACTION_THROW2;
     } else {
         object->unknown_7aa = ACTION_THROW;

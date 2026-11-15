@@ -168,6 +168,18 @@ extern "C" {
 #define APIOBJECT_NO_SHADOWS 0x2000
 #define APIOBJECT_SIDE_GOODIE_BADDIE 0x10000
 
+/* gameobject_s.flags_e20: the bits whose setter or test says what they mean. The force bits are set by
+ * FindForcePushTarget from the character's CHARACTER_RUNTIME_CHOKE and _LIGHTNING and the target's take-over
+ * animation (the mind trick sound plays for it); highlight-only is the UseForce AI action's forcepush_highlight_only
+ * keyword. */
+#define APIOBJECT_FORCE_CHOKE 0x80           /* ForceChokeCrunch, the target plays ACTION_CHOKED */
+#define APIOBJECT_FORCE_LIGHTNING 0x100      /* the target plays ACTION_ZAPPED */
+#define APIOBJECT_FORCE_TAKE_OVER 0x200      /* ForceMindTrick */
+#define APIOBJECT_FORCE_HIGHLIGHT_ONLY 0x400 /* UseForce forcepush_highlight_only */
+#define APIOBJECT_ATTACK_TARGET_SET 0x800    /* SetObjTarget, SetGizmoBlowUpTarget, SetPartTarget: aim at attack_target_position */
+#define APIOBJECT_BOLT_ON_COURSE 0x2000      /* the incoming bolt's line passes through the object (dodge it) */
+#define APIOBJECT_WEAPON_OUT 0x10000         /* SetWeaponOut/KeepWeaponOut set it, SetWeaponIn clears it */
+
 /* gameobject_s.character_context: the index into CInfo (PCContextInfoTable[1 + context]), whose rows name them. */
 #define CHARACTER_CONTEXT_NONE (-1)
 #define CHARACTER_CONTEXT_JUMP 0

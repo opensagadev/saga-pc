@@ -4853,7 +4853,7 @@ void DrawGameObjectsDraw(i32 pass) {
         ((DRAW_OBJECTS_FLAGS *)object)->locators_updated = drawcharactermodel_locatorsupdated;
         if (drawn != 0) {
             DrawParaphernalia(object);
-        } else if (((object->flags_e20 & 0x400) != 0 || object->character_context == CHARACTER_CONTEXT_FORCE) &&
+        } else if (((object->flags_e20 & APIOBJECT_FORCE_HIGHLIGHT_ONLY) != 0 || object->character_context == CHARACTER_CONTEXT_FORCE) &&
                    object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
                    WORLD->level_objects[object->unknown_e1e].active != 0 &&
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS) == 0) {
@@ -4997,7 +4997,7 @@ void Players_Init(void) {
                 i32 slot = object->player_index;
                 object->player_controlled = PlayerProgress[slot].active;
                 if (Area != last_area) {
-                    object->flags_e20 &= ~0x10000u;
+                    object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
                     extra->previous_state = 0;
                 } else if (UsePlayerList == 1) {
                     ((PLAYER_INIT_FLAGS *)object)->stored_flag = PlayerProgress[slot].unknown_7;

@@ -518,7 +518,7 @@ extern "C" {
             radius = (f32)((f64)object->bounds_radius * 0.75);
             radius = radius * radius;
             if (LineIntersectCircle(&result->position, &result->direction, &object->collision_position, radius)) {
-                object->flags_e20 |= 0x2000;
+                object->flags_e20 |= APIOBJECT_BOLT_ON_COURSE;
             }
         }
         return result;
@@ -1837,7 +1837,7 @@ extern "C" {
                 heading = (u16)(heading + 0x8000);
             }
         }
-        if ((object->flags_e20 & 0x800) != 0) {
+        if ((object->flags_e20 & APIOBJECT_ATTACK_TARGET_SET) != 0) {
             if ((object->portal_flags & 0x8000) == 0 && object->field_ea0_target == NULL && object->player_index != -1 &&
                 (object->unknown_c8c != 0.0f || object->unknown_c90 != 0.0f || object->unknown_c94 != 0.0f)) {
                 target_distance = duration * speed;
@@ -1872,7 +1872,7 @@ extern "C" {
             } else {
                 target_position = &target->collision_position;
             }
-        } else if ((object->flags_e20 & 0x800) != 0) {
+        } else if ((object->flags_e20 & APIOBJECT_ATTACK_TARGET_SET) != 0) {
             target_position = intercept_position = &aimed_position;
         }
         for (index = 0; index < 5; ++index) {
@@ -1976,7 +1976,7 @@ extern "C" {
             i32 sound = sound_count > 1 ? qrand() / (0xffff / sound_count + 1) : 0;
             GameAudio_PlaySfxById(sounds[sound], &sound_positions[sound], 0, 0);
         }
-        if ((object->flags_e20 & 0x800) != 0 && bolt_count > 1) {
+        if ((object->flags_e20 & APIOBJECT_ATTACK_TARGET_SET) != 0 && bolt_count > 1) {
             for (index = 0; index < bolt_count; ++index) {
                 BOLT_PC *bolt = &Bolt[bolts[index]];
                 f32 distance = bolt->speed * bolt->lifetime;

@@ -8073,14 +8073,14 @@ i32 Action_SnapWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
 
         if (object != NULL) {
             if (enabled != 0) {
-                object->flags_e20 |= 0x10000u;
+                object->flags_e20 |= APIOBJECT_WEAPON_OUT;
                 object->weapon_scale = 1.0f;
                 if (keep_out != -1) {
                     object->portal_flags = (object->portal_flags & ~0x10u) | ((keep_out << 4) & 0x10u);
                 }
             } else {
                 object->weapon_scale = 0.0f;
-                object->flags_e20 &= ~0x10000u;
+                object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
                 object->portal_flags &= ~0x10u;
             }
         }
@@ -8788,7 +8788,7 @@ i32 Action_ForcePush(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
             processor->action_data_3 == NULL) {
             object->pad->runtime_flags |= 0x10;
             object->unknown_d20 = (u32)object->force_target;
-            object->flags_e20 = (object->flags_e20 & ~0x400u) | ((processor->action_data_1 << 10) & 0x400u);
+            object->flags_e20 = (object->flags_e20 & ~APIOBJECT_FORCE_HIGHLIGHT_ONLY) | ((processor->action_data_1 << 10) & 0x400u);
             object->character_context = CHARACTER_CONTEXT_NONE;
             object->flags_e20 &= ~0x20000u;
             FindForcePushTarget(object, 0, 0);
@@ -8806,7 +8806,7 @@ i32 Action_ForcePush(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
     } else {
         object->pad->runtime_flags |= 0x10;
         object->unknown_d20 = (u32)processor->action_data_3;
-        object->flags_e20 = (object->flags_e20 & ~0x400u) | ((processor->action_data_1 << 10) & 0x400u);
+        object->flags_e20 = (object->flags_e20 & ~APIOBJECT_FORCE_HIGHLIGHT_ONLY) | ((processor->action_data_1 << 10) & 0x400u);
         memcpy(&action_object, &processor->action_data_4, sizeof(action_object));
         if (action_object != NULL) {
             if (action_object != object->force_target) {
@@ -12194,7 +12194,7 @@ i32 Action_CreateCreatures(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
                         object->unknown_7aa = ACTION_UP;
                         object->movement_facing_angle = NuAtan2D(attached_zipup->upper_position.x - attached_zipup->lower_position.x,
                                                                  attached_zipup->upper_position.z - attached_zipup->lower_position.z);
-                        object->flags_e20 |= 0x10000;
+                        object->flags_e20 |= APIOBJECT_WEAPON_OUT;
                         object->velocity.y = 0.0f;
                         if (object->weapon_scale < 1.0f) {
                             object->unknown_e33 = 1;

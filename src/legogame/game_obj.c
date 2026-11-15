@@ -2751,9 +2751,9 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     object->dead = (u8)reason;
     object->current_hp = 0;
     if (object->character_context == CHARACTER_CONTEXT_WEAPON_OUT || object->unknown_e33 == 1) {
-        object->flags_e20 |= 0x10000;
+        object->flags_e20 |= APIOBJECT_WEAPON_OUT;
     } else if (object->character_context == CHARACTER_CONTEXT_WEAPON_IN || object->unknown_e33 == 2) {
-        object->flags_e20 = object->flags_e20 & (~0x10000);
+        object->flags_e20 = object->flags_e20 & (~APIOBJECT_WEAPON_OUT);
     }
     if (object->helmet != 0) {
         LoseHelmet(object, 1, 0);

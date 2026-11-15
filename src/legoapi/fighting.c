@@ -92,7 +92,7 @@ void SetWeaponOut(GAMEOBJECT *object) {
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     object->weapon_scale = 1.0f;
-    object->flags_e20 |= 0x10000;
+    object->flags_e20 |= APIOBJECT_WEAPON_OUT;
     object->unknown_e33 = 0;
 }
 
@@ -204,7 +204,7 @@ void WeaponOutCode(GAMEOBJECT *object) {
 
 void KeepWeaponOut(GAMEOBJECT *object) {
     object->weapon_scale = 1.0f;
-    object->flags_e20 |= 0x10000;
+    object->flags_e20 |= APIOBJECT_WEAPON_OUT;
     object->portal_flags |= 0x10;
     object->unknown_e33 = 0;
 }
@@ -215,7 +215,7 @@ void SetWeaponIn(GAMEOBJECT *object) {
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     object->weapon_scale = 0.0f;
-    object->flags_e20 &= ~0x10000u;
+    object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
     object->unknown_e33 = 0;
 }
 
@@ -327,7 +327,7 @@ void WeaponInCode(GAMEOBJECT *object) {
 }
 
 void KeepWeaponIn(GAMEOBJECT *object) {
-    object->flags_e20 &= ~0x10000u;
+    object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
     object->weapon_scale = 0.0f;
     object->portal_flags &= ~0x10u;
     object->unknown_e33 = 0;
@@ -376,14 +376,14 @@ void WeaponScalingCode(GAMEOBJECT *object) {
             object->weapon_scale = SeekLinearF(object->weapon_scale, 1.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
             if (object->weapon_scale >= 1.0f) {
                 object->unknown_e33 = 0;
-                object->flags_e20 |= 0x10000;
+                object->flags_e20 |= APIOBJECT_WEAPON_OUT;
             }
             break;
         case 2:
             object->weapon_scale = SeekLinearF(object->weapon_scale, 0.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
             if (object->weapon_scale <= 0.0f) {
                 object->unknown_e33 = 0;
-                object->flags_e20 &= ~0x10000;
+                object->flags_e20 &= ~APIOBJECT_WEAPON_OUT;
             }
             break;
     }
