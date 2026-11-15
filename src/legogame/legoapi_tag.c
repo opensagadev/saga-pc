@@ -138,7 +138,13 @@ static void SetRiderPos(GAMEOBJECT *object, NUVEC *position) {
     GameObjectOrigin(object);
 }
 
+i16 id_GYROCOPTER = -1;
+i16 id_BANTHA = -1;
 i16 id_BOMARRMONK = -1;
+i16 id_DEWBACK = -1;
+i16 id_LANDSPEEDER = -1;
+i16 id_TAUNTAUN = -1;
+i16 id_SPEEDERBIKE = -1;
 i16 id_HEAVYREPEATINGCANNON = -1;
 i16 id_BIGGUN = -1;
 i16 id_TROOPERCANNON = -1;

@@ -196,7 +196,9 @@ void DrawPaintLights(void) {
 }
 
 i32 PAINTPUZZLESTAGE = 0;
+i32 JediBActiveCount = 0;
 i32 painttry = 0;
+AREA_DATA *KAMINO_ADATA = 0;
 struct gizmo_s *paintobst[6] = {0};
 
 void ResetPaintPuzzle(WORLDINFO *world) {
@@ -214,6 +216,7 @@ i32 painttarget = 0;
 i32 paintsused[2] = {0};
 i32 played_sound = 0;
 struct gizmo_s *paintpanel[3] = {0};
+KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState = {0};
 
 void UpdatePaintPuzzle(WORLDINFO *world) {
     i32 i;
@@ -357,11 +360,19 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
 }
 
 static f32 jedib_create_step_Normal = 2.0f;
+NUVEC jedib_offsets[3] = {
+    {0.1f,  -0.1f, -0.1f},
+    {-0.1f, -0.1f, -0.1f},
+    {-0.1f, -0.1f, 0.1f }
+};
+i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
+i16 *JediB_playerids[3] = {&dat_007f19c8, &id_ANAKINPADAWAN, &dat_007f19d0};
 static f32 jedib_inner = 3.0f;
 static i32 jedib_max_baddies_per_goody = 3;
 static i32 jedib_min_baddies_per_goody = 1;
 static f32 jedib_offset = 0.5f;
 static f32 jedib_outer_r = 8.0f;
+f32 jedib_safe_r = 9.0f;
 static f32 jedib_proximity = 0.5f;
 static i32 jedib_seed = 17;
 
@@ -1017,6 +1028,7 @@ void FactoryB_Reset(WORLDINFO *world) {
 f32 FactoryBConveyorStopFrame = 28.0f;
 static f32 FactoryBConveyorXSpeed = 0.0f;
 static f32 FactoryBConveyorZSpeed = 0.0f;
+i32 bonus_gunship_store_progress_flag = 0;
 
 void FactoryB_Update(WORLDINFO *world) {
     GIZAIMESSAGE *message;
@@ -1099,6 +1111,8 @@ void FactoryG_Init(WORLDINFO *world) {
 }
 
 GAMEOBJECT *ObiWan = NULL;
+i32 LevForce = 0;
+struct gizmo_s *forcetube = 0;
 
 void FactoryG_Update(WORLDINFO *world) {
     i32 complete = 0;
@@ -1142,9 +1156,15 @@ KAMINOC_PACKET *kaminoc_netpacket = NULL;
 nuhspecial_s disco_on_spin[3] = {0};
 GIZMO_PC *disco_off_spina[3] = {0};
 nuhspecial_s walllights[2] = {0};
+void *factoryb_netpacket = 0;
 nuhspecial_s walllights_disco[2] = {0};
+nuhspecial_s green_light = {0};
 nuhspecial_s striplights[2] = {0};
+JEDIB_STATE jedi_b = {0};
+void *kaminoe_netpacket = 0;
+struct GIZFORCE_s *force_array[4] = {0};
 nuhspecial_s discolights[2] = {0};
+JEDIB_NETPACKET *jedib_netpacket = NULL;
 nuhspecial_s discorm_wall_on = {0};
 nuhspecial_s discorm_wall_off = {0};
 GIZMO_PC *gizTurrets[2] = {0};
@@ -1971,6 +1991,7 @@ void GunshipB_Reset(WORLDINFO *world) {
 f32 gunshipb_seekrange = 4.0f;
 f32 gunshipb_seekmom = 5.0f;
 f32 gunshipb_seekmomseek = 5.0f;
+i32 GUNSHIPAHACK = 2;
 
 void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     GIZMOBLOWUP_PC *nearest = NULL;
@@ -2125,10 +2146,48 @@ void BonusGunshipB_Panel(WORLDINFO *world) {
     }
 }
 
+i16 dat_007f19c4 = -1;
+i16 dat_007f19c8 = -1;
+i16 id_ANAKINPADAWAN = -1;
+i16 dat_007f19d0 = -1;
+i16 dat_007f19d4 = -1;
+i16 dat_007f19d8 = -1;
+i16 id_BOB = -1;
+i16 id_JANGOFETT = -1;
 char *paint_name[6] = {"red_juice", "yellow_juice", "blue_juice", "orange_juice", "green_juice", "purple_juice"};
 char *paint_panel_name[3] = {"redp", "yellp", "bluep"};
 char *paint_target_colour[3] = {"but_orange", "but_green", "but_purple"};
 char *paint_light_name[3] = {"off_purple", "off_green", "off_orange"};
+JEDIB_PHASE jedi_b_phase1[8] = {
+    {&id_DROIDEKA,            "phase_droids"},
+    {&id_DROIDEKA,            "phase_droids"},
+    {&id_BATTLEDROIDSECURITY, "phase_droids"},
+    {&id_BATTLEDROIDSECURITY, "phase_droids"},
+    {&id_BATTLEDROIDSECURITY, "phase_droids"},
+    {&id_BATTLEDROIDSECURITY, "phase_droids"},
+    {&id_BATTLEDROIDSECURITY, "phase_droids"},
+    {NULL,                    NULL          }
+};
+JEDIB_PHASE jedi_b_phase2[8] = {
+    {&id_DROIDEKA,         "phase_droids"},
+    {&id_DROIDEKA,         "phase_droids"},
+    {&id_SUPERBATTLEDROID, "phase_droids"},
+    {&id_SUPERBATTLEDROID, "phase_droids"},
+    {&id_SUPERBATTLEDROID, "phase_droids"},
+    {&id_SUPERBATTLEDROID, "phase_droids"},
+    {&id_SUPERBATTLEDROID, "phase_droids"},
+    {NULL,                 NULL          }
+};
+JEDIB_PHASE jedi_b_phase3[8] = {
+    {&id_SUPERBATTLEDROID, "phase_droids"},
+    {&id_SUPERBATTLEDROID, "phase_droids"},
+    {&id_DROIDEKA,         "phase_droids"},
+    {&id_DROIDEKA,         "phase_droids"},
+    {&id_DROIDEKA,         "phase_droids"},
+    {&id_DROIDEKA,         "phase_droids"},
+    {&id_DROIDEKA,         "phase_droids"},
+    {NULL,                 NULL          }
+};
 
 void InitPaintPuzzle(WORLDINFO *world) {
     i32 i;

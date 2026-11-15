@@ -38185,7 +38185,7 @@ address,symbol,size,ctype
 0x8025bc,_GizSpinnerGDeb_Fail,6,i16[3]
 0x008025c4,_SpinnerOutputBuffer,14,char[14]
 0x8025d4,_spinner_gizmotype_id,4,i32
-0x00802644,_obstacle_gizmotype_id,,i32
+0x00802644,_obstacle_gizmotype_id,4,i32
 0x802684,_GizObstacleUpdateFns,32,void (__cdecl *[8])(GIZOBSTACLE *)
 0x802710,_GizObstacleRegistrationNamePtr,4,const char *
 0x00802724,_gizmoerrorlogsize,4,i32

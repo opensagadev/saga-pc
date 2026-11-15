@@ -26,6 +26,7 @@ struct RADIO_ENTRY {        // size 0x14
 f32 RadioLifetime = 20.0f;
 
 extern "C" {
+    i32 radios_playing = 0;
     u8 RadioEntries[0xa0] = {0};
 }
 

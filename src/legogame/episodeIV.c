@@ -122,6 +122,7 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
     }
 }
 
+i16 dat_007f1a44 = -1;
 /* Episode IV FixUpLevels callbacks (Mos Eisley, Blockade Runner, Death Star rescue and escape). */
 i32 test_tb = 1;
 extern i16 dat_007f1a3c;
@@ -408,6 +409,7 @@ typedef struct trenchrun_s { // size 0x20
 
 /* Death Star trench run state. */
 static TRENCHRUN trenchrun;
+i8 *DeathStarEscapeBNetPacket = 0;
 
 void DeathStarBattleDInit(WORLDINFO *world) {
 }

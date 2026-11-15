@@ -175,6 +175,8 @@ void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 
+f32 debug_condition = 0;
+NUGSPLINE *script_spline_selected = 0;
 static i32 prev_droid_ix = 0;
 
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
@@ -183,6 +185,15 @@ GIZMOPICKUP *GizmoPickup_FindByName(WORLDINFO *, char *);
 
 void GizmoPickup_TurnOnPickup(GIZMOPICKUP *);
 
+i16 id_BATTLEDROIDCOMMANDER = -1;
+i16 id_BATTLEDROIDGEONOSIAN = -1;
+i16 id_BATTLEDROIDSECURITY = -1;
+i16 id_CLONEEP3 = -1;
+i16 id_CLONEEP3SAND = -1;
+f32 idealgoalrange = 1.5f;
+f32 engagefiretime = 1.5f;
+f32 aitol = 0.5f;
+f32 direction_scale = 100.0f;
 f32 guided_speed = 30.0f;
 
 f32 guided_life = 8.0f;
@@ -190,6 +201,7 @@ f32 guided_life = 8.0f;
 f32 guided_start_time = 0.5f;
 
 i32 guided_rotate_speed = 240000;
+f32 test_missile_scale = 8.0f;
 
 extern i32 GizmoGetTypeIDByName(void *, char *);
 
@@ -212,8 +224,6 @@ struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP *);
 
 extern i32 gizbuildit_gizmotype_id;
-
-extern f32 debug_condition;
 
 typedef struct AI_CONDITION_TURRET { // size 0x13c
     u8 unknown_000[0x13a];           // 0x000
@@ -316,9 +326,13 @@ f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, 
 void SockOn(SOCKSYS_PC *sys, i32 index);
 void SockOff(SOCKSYS_PC *sys, i32 index);
 u32 LEGO_AIPATHCNX_BIGJUMP;
+u32 LEGO_AIPATHCNX_REQUIRESPERMISSION = 0;
 u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
+u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0;
 u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+u32 LEGO_AIPATHCNX_JUMP_NOW = 0;
 u32 LEGO_AIPATHCNX_JUMP_NOW;
+u32 LEGO_AIPATHCNX_DONT_JUMP_NOW = 0;
 u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
 typedef struct bulk_ai_lever_s { // size 0x98
@@ -374,6 +388,7 @@ const char dat_00757e24[13];
 const char dat_00757df0[10];
 i32 turret_gizmotype_id;
 i32 obstacle_gizmotype_id;
+i32 turret_gizmotype_id = -1;
 const char GizmoSnapOptionName[5];
 const char dat_00758274[];
 const char dat_0075827c[];
@@ -12445,6 +12460,8 @@ AIACTIONDEF lego_aiactiondefs[208] = {
     {"NewSebulba",                   Action_NewSebulba,                   0, 0, 0},
     {NULL,                           NULL,                                0, 0, 0},
 };
+i32 spinner_gizmotype_id = -1;
+i32 obstacle_gizmotype_id = -1;
 
 AICONDITIONDEF lego_aiconditiondefs[171] = {
     {"GlynTest",                         Condition_GlynTest,                         NULL                                     },

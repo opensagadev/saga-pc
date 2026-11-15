@@ -113,6 +113,7 @@ void (*ShopOldDrawPanelFn)(void) = 0;
 NUVEC SubShelfPos[7] = {0};
 i32 SHOPACTIVE = 0;
 shopitem_s *CharItems = NULL;
+struct shopitem_s *HintItems = 0;
 shopitem_s *ExtraItems = NULL;
 shopitem_s *CodeItems = NULL;
 shopitem_s *BrickItems = NULL;

@@ -176,35 +176,9 @@ struct text_crawl_view_s {     // size 0x10
 };
 
 extern "C" {
-    AREA_EXTRA_MODEL ExtraModelList[6] = {
-        {&ID_DEFAULTCHARACTER_A, &dat_007f17bc         },
-        {&PunchRangeUnitId,      &PunchRangeCompanionId},
-        {&dat_007f17c8,          &dat_007f17cc         },
-        {&dat_007f17d0,          &PunchRangeCompanionId},
-        {&dat_007f17d4,          &PunchRangeCompanionId},
-        {NULL,                   NULL                  }
-    };
-    f32 PermCollectionScale = 0.600000024f;
-    APICHARACTERMODELLIST FreePlayModelList[49] = {0};
-    i32 netnewgame = 0;
-    i16 dat_007f17bc = -1;
-    i16 dat_007f17c8 = -1;
-    i16 dat_007f17cc = -1;
 
-    i16 dat_007f199c = -1;
     i16 dat_007f1a4c = -1;
     i16 dat_007f1a48 = -1;
-    i16 dat_007f1a44 = -1;
-    i16 dat_007f1ab0 = -1;
-    i16 dat_007f1ab4 = -1;
-    i16 dat_007f1abc = -1;
-    i16 dat_007f1b44 = -1;
-    i16 dat_007f1b40 = -1;
-    i16 dat_007f1a98 = -1;
-    i32 FreePlayResidentCount = 0;
-    i16 TextCrawlChapterId = 0;
-    i16 TextCrawlVehicleBonusId = 0;
-    i16 TextCrawlCharacterBonusId = 0;
     struct text_crawl_view_s TextCrawlLsw = {
         &TextCrawlChapterId, &TextCrawlVehicleBonusId, &TextCrawlCharacterBonusId, 3, 0, {0, 0}
     };
@@ -215,21 +189,13 @@ extern "C" {
 }
 
 extern "C" {
-    i32 MenuKeyboardPendingPc = 0;
     u32 GAMEPAD_MENUCANCEL = PAD_BUTTON_TRIANGLE;
     u32 GAMEPAD_SELECT = PAD_BUTTON_SELECT;
-    COLLECTION_BUILD MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
 }
 
 extern "C" {
-    LEVELDATA *dat_0087b0b4 = NULL;
-    LEVELDATA *dat_0087b0b8 = NULL;
-    LEVELDATA *dat_0087b0bc = NULL;
     LEVELDATA *dat_0087b1c0 = NULL;
     LEVELDATA *dat_0087b1d0 = NULL;
-    LEVELDATA *dat_0087b200 = NULL;
-    LEVELDATA *dat_0087b204 = NULL;
-    LEVELDATA *dat_0087b208 = NULL;
 }
 
 extern "C" {
@@ -250,38 +216,8 @@ extern "C" {
 }
 
 extern "C" {
-    LEVELDATA *WorldArchiveOneLevels[11] = {NULL};
-}
-
-extern "C" {
     char *AiLevelPathName = dat_007516c0;
     void (*GameAILoadFn)(AISYS_PC *, i32, NUGSCN *, VARIPTR *, VARIPTR *) = NULL;
-}
-
-extern "C" {
-    char *debris_name[147] = {
-        "BULLET_SPARK",   "SABER_RED",     "SABER_GREEN",   "SABER_BLUE",    "SABER_PURPLE", "EXPLD_1A",   "JS_THRUST",     "S1_THRUST",
-        "COIN_BLUE",      "COIN_GOLD",     "COIN_SILVER",   "R2D2THRUSTER",  "R2Q5THRUSTER", "SPLASH",     "RIPPLE",        "HEART",
-        "HEART_BIG",      "EXPLOSION",     "MINI_01",       "MINI_02",       "MINI_03",      "TER_SPARK",  "TER_SPARK2",    "EXPOL_02",
-        "SPEEDERDUST",    "POD_DUST",      "CAVE_DUST",     "JANGOTHRUSTER", "EXPLO_DROID",  "EXPLO_NAB",  "NAB_SMOKE",     "NAB_BOOST",
-        "MIKESMOKE",      "EXPLO_05",      "EXPLO_06",      "EXPLO_07",      "EXPLO_11",     "MIKESTALL",  "TRAINING_01",   "TAG_BLUE",
-        "TAG_GREEN",      "ZIP_TARGET",    "DOOKU_BALL",    "WALKER_01",     "WALKER_02",    "ENG_BLOW",   "DogImpact",     "DogEngine",
-        "DogSmoke",       "DogTrail",      "YODA_HOVER_01", "K_Bolt",        "DUK_P2",       "PodHaze",    "PodDust10",     "rock_pop1",
-        "BlueTrail",      "PurpleTrail",   "LavaDie",       "ComboRed",      "ComboGreen",   "ComboBlue",  "ComboPurple",   "REPAIR",
-        "SABER_RED1",     "SABER_GREEN1",  "SABER_BLUE1",   "SABER_PURPLE1", "XWING_1",      "MOUSE_POP",  "PHOTON",        "PHOTON_EXPLO",
-        "PHOTON_EXPLO_S", "EXPLO_ORAN_2A", "EXPLO_ORAN_2B", "EXPLO_ORAN_2C", "BUILD_IT1",    "BUILD_IT2",  "BUILD_IT3",     "BUILD_IT4",
-        "BUILD_IT5",      "BUILD_IT6",     "DRAG_POP_1",    "DRAG_POP_2",    "DRAG_POP_4",   "GenoGun",    "SNOW_SPEEDER1", "LEVER_SPARK",
-        "ZAPPER_1",       "V_BOLT_RED",    "V_BOLT_GREEN",  "CHAR_SMOKE1",   "CHAR_SMOKE2",  "POWER_P_1",  "POWER_P_2",     "POWER_P_3",
-        "TIE_HIT1",       "BRICK_01",      "BRICK_02",      "BRICK_03",      "BUMP_01",      "BUMP_02",    "LAND_S_DUST1",  "LAND_S_DUST2",
-        "LAND_S_THRUST",  "LAND_S_HAZE",   "EXPLO_06",      "EXPLO_06b",     "BUMP_03",      "FORCE_BLUE", "FORCE_RED",     "SCAN3",
-        "REPULSOR",       "WEE_POP",       "EXIT_FIRE_1",   "EXIT_FIRE_2",   "EWOK_POP1",    "EXPLO_02",   "ATAT_POP_1",    "ATAT_POP_2",
-        "ATAT_POP_3",     "FIRE_1",        "RAIN_1",        "CHAR_BUBBLE",   "CHAR_GHOST",   "DEATH_1",    "DEATH_2",       "BOULDER_2",
-        "DISH_1",         "DISH_2",        "SNOW_POP_1",    "SNOW_POP_2",    "TREE_POP_1",   "TREE_POP_4", "SPEEDER_HIT",   "FALCONGLOW",
-        "FALCONTHRUSTER", "SPEED_SPARK",   "PUNCH_1",       "PUNCH_2",       "GUNSHIP_01",   "GUNSHIP_02", "SandBlast",     "BULLET1",
-        "BULLET2",        "BULLET_HIT",    "POD_SPARK"};
-    NUMTL *PermanentShadowMaterial = NULL;
-    void *things_scene_terrain = NULL;
-    i32 PARTPAGE_GENERAL = -1;
 }
 
 extern "C" {
@@ -297,10 +233,6 @@ extern "C" {
     extern const CPU_VENDOR_WORDS CpuVendorCyrix = {0x69727943u, 0x736e4978u, 0x64616574u, {0}};
     extern const CPU_VENDOR_WORDS CpuVendorNoCpuid = {0x6f4e5f5fu, 0x5550435fu, 0x5f5f4449u, {0}};
     extern const CPU_VENDOR_WORDS CpuVendorIntel = {0x756e6547u, 0x49656e69u, 0x6c65746eu, {0}};
-    i32 InitOnceSelector34 = 0;
-    i32 InitOnceDvd = 0;
-    i32 InitOnceHostFs = 0;
-    i32 InitOnceEject = 0;
     i32 PcWindowQuit = 0;
     i32 NuHwShowCommand = 0;
     i32 PcNoFocusPolicy = 0;
@@ -3407,31 +3339,13 @@ char *dat_00824be0[238] = {
 extern "C" {
 
     i32 hub_startoutsidebonusdoor_area = -1;
-    char *TexAnimScriptNamesTitle[3] = {"coin", "coin_pause", 0};
-    char *TexAnimScriptNamesGame[32] = {
-        "arrow",          "blink_01",      "blink_02",  "blink_03",    "coin",        "coin_pause", "control",     "ds_esc_intro_1",
-        "ds_esc_intro_2", "ds_1",          "helpmeobi", "lightening1", "plasma",      "screen",     "Dso_screen",  "anakinbows",
-        "anakinkilling",  "anakinspod",    "boost1",    "boost2",      "boost3",      "boost4",     "gasganospod", "helpobi",
-        "hologram1",      "hologramnoise", "play8",     "quidie",      "sebulbaspod", "sidius",     "crowd",       0};
 
 }
 extern "C" {
 
-    i32 LevPlatID[2] = {0};
-
-    u8 LevLock[5] = {0};
-
     i32 hub_from_superstory = -1;
 
     i32 hub_from_mission = -1;
-
-    char PodRaceMaxLapTimeKeyword[12] = "maxlaptime=";
-
-    char PodRaceLapTimeKeyword[9] = "laptime=";
-
-    char PodRaceAttemptsKeyword[25] = "nattempts_per_increment=";
-
-    char PodRaceIncrementKeyword[11] = "increment=";
 
     i32 newlevelfrommenu_newmenuy = 0;
 }
@@ -3445,18 +3359,6 @@ extern "C" {
 
     PLAYER_BATARANG_SLOT BatarangPackets[8] = {0};
 
-    SUIT_LAYERS *PlayerSuit[8] = {0};
-
-    PLAYER_COIN_PACKET_PC CoinPacket[2] = {0};
-
-    PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2] = {0};
-
-    u8 PlayerTorpedoCount[8] = {0};
-
-    GAMEOBJECT BackUpPlayers[2] = {0};
-
-    SOCKPOSITION OldPlrSPos[8] = {0};
-
     i32 Hub_UsePlayerList = 0;
 
 }
@@ -3469,16 +3371,11 @@ i32 ChallengeMode = 0;
 i32 fade_draw_suppressed = 0;
 i32 PLAYERCOUNT = 0;
 i32 Area = -1;
-i32 party_cant_be_under_cover = 0;
 i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
-i32 reset_restart = 0;
-i32 BonusWinner = -1;
-i32 BonusCoinTotal = 0;
 i32 NewMode = 0;
 i32 reset_load = 1;
 volatile i32 waiting_for_level = 0;
-i32 MiniCutCam = 0;
 i32 CUTSTOPGAME = 0;
 MAINFRAMECOUNTERS MainFrameCounters = {0};
 i32 hub_from_arcade = -1;
@@ -3490,15 +3387,8 @@ extern "C" {
         &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
     };
     NUSTRINGBANK StringBank[3] = {0};
-    u16 BoltShootClassId0 = 0xffff;
-    u16 BoltShootClassId1 = 0xffff;
-    u16 BoltShootClassId2 = 0xffff;
     i16 CurrentStringBank = 0;
     u32 nustring_format = 1;
-    f32 spline_seek_pos = 10.0f;
-    f32 spline_seek_ang = 10.0f;
-    f32 spline_xoffset_speed_seek = 4.0f;
-    f32 spline_xoffset_speed_roll = 16384.0f;
     extern const u16 bad_fluff[26] = {
         '!', '$', '%', '^', '&', '*', '(', ')', '_', '+', '-', '=', '{', '}', '[', ']', '@', '~', '#', '?', '<', '>', ',', '.', ' ', 0,
     };
@@ -3507,10 +3397,6 @@ extern "C" {
     extern const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
     extern const f64 BoltTargetRandomDenominator = 65535.0;
     extern const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
-    u16 GameObjectRotationBuggyId = 0xffff;
-    u16 GameObjectRotationRadioCarId = 0xffff;
-    u16 GameObjectRotationPoliceCarId = 0xffff;
-    u16 GameObjectRotationMowerId = 0xffff;
     u16 GameObjectRotationAtstId = 0xffff;
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
@@ -3551,8 +3437,6 @@ extern "C" {
         {0.2f,  0.0f, -0.2f},
         {-0.2f, 0.0f, -0.2f},
     };
-    i32 StartupGameFlag0 = 0;
-    i32 StartupGameFlag1 = 1;
 
     AISYS_SPECIAL_NODE_CALLBACK AISysSpecialNodeCallback = 0;
     extern const __declspec(align(16)) NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
@@ -3587,10 +3471,6 @@ extern "C" {
     extern const char AIScriptFalse[6] = "false";
     i32 nufile_blkcnt = 1;
     PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
-    VARIPTR original_permbuffer_base = {0};
-    char InitOnceCurrentDirectory[1] = {0};
-    void *Game_NuPad_Store[2] = {0};
-    void **Game_NuPad = 0;
 
     void *debris_cutoff_camera_vec = 0;
     f32 FRAMETIME = 0;
@@ -3605,91 +3485,23 @@ extern "C" {
     extern const char PCKeyboardMouse2Name[16] = "KeyboardMouse2";
     extern const f64 NuQFntHalfScale = 0.5;
     GAMESAVE Game = {0};
-    OPTIONSSAVE TempOptions = {0};
-    i32 startnewgame_initiated = 0;
-    i32 startnewgame = 0;
     i32 saveload_autosave = -1;
     extern const f32 PermLegalScale = 2.2f;
-    TIMER GlobalTimer = {0};
     NUGSCN *save_icon_scene = 0;
-    f32 PodAvalancheShakeFrames = 111.0f;
-    NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
-    f32 PodAvalancheShakeRange = 750.0f;
-    LEVELSPLINE LevelSplinesTable[26] = {
-        {NULL, "start",           2, 0,    -1, -1},
-        {NULL, "start_cam",       2, 0,    -1, -1},
-        {NULL, "point_cam",       2, 2,    -1, -1},
-        {NULL, "finish_line",     2, 2,    -1, -1},
-        {NULL, "cam_start",       2, 2,    -1, -1},
-        {NULL, "split",           2, 2,    -1, -1},
-        {NULL, "map_cam",         2, 0,    -1, -1},
-        {NULL, "map_look",        2, 0,    -1, -1},
-        {NULL, "e1_entrance",     2, 2,    -1, -1},
-        {NULL, "e2_entrance",     2, 2,    -1, -1},
-        {NULL, "e3_entrance",     2, 2,    -1, -1},
-        {NULL, "e4_entrance",     2, 2,    -1, -1},
-        {NULL, "e5_entrance",     2, 2,    -1, -1},
-        {NULL, "e6_entrance",     2, 2,    -1, -1},
-        {NULL, "jabba_entrance1", 2, 2,    -1, -1},
-        {NULL, "char_cam",        2, 2,    -1, -1},
-        {NULL, "Turn_Around_1",   2, 1024, -1, -1},
-        {NULL, "Turn_Around_2",   2, 1024, -1, -1},
-        {NULL, "custard",         4, 4,    -1, -1},
-        {NULL, "bonus_zone_1",    3, 0,    -1, -1},
-        {NULL, "bonus_zone_2",    3, 0,    -1, -1},
-        {NULL, "bonus_zone_3",    3, 0,    -1, -1},
-        {NULL, "bonus_zone_4",    3, 0,    -1, -1},
-        {NULL, "bonus_zone_5",    3, 0,    -1, -1},
-        {NULL, "mission_cam",     2, 2,    -1, -1},
-        {NULL, NULL,              0, 0,    0,  0 },
-    };
     i32 nudlist_field_fc4 = 0;
     u32 nudlist_field_1598 = 0;
-    void *game_cutscenes_cutscene = 0;
-    void *game_cutscenes_podrace_pod_explode = 0;
-    void *game_cutscenes_podrace_out_of_time = 0;
-    void *game_cutscenes_bonus_gunship_cavalry_explode = 0;
-    void *game_cutscenes_droid_factory_conveyor = 0;
-    void *game_cutscenes_podrace_avalanche = 0;
-    NUVEC PodRaceADiePos = {350.0f, 0.25f, -15.0f};
-    NUVEC PodRaceBDiePos = {138.0f, 0.15f, 178.0f};
-    u16 PodRaceBDieAngle = 90;
-    NUVEC PodRaceCDiePos = {140.0f, -7.2f, 52.0f};
-    u16 PodRaceCDieAngle = 90;
-    NUVEC GunshipADiePos = {10.0f, -1.0f, -20.0f};
-    NUVEC GunshipBDiePos = {0.0f, -1.0f, -150.0f};
-    LEVELDATA *PODRACEA_LDATA = 0;
-    i32 LSW1 = 0;
     LEVELDATA *DEATHSTARBATTLED_LDATA = 0;
-    i16 id_SPEEDERBIKE = -1;
     i16 id_ANAKINSPOD = -1;
     i16 id_ANAKINSPODGREEN = -1;
-    i16 id_ANAKINSNEWPOD = -1;
     i16 id_ANAKINSNEWPODGREEN = -1;
     i16 id_REPUBLICGUNSHIP_GREEN = -1;
     i16 id_NEW_REPUBLIC_GUNSHIP = -1;
     i16 id_NEW_REPUBLIC_GUNSHIP_GREEN = -1;
-    i16 id_JEDISTARFIGHTERYELLOWEP3 = -1;
-    GAMEOBJECT *CutDeadVehiclePlayer = 0;
-    void *game_cutscenes_podrace_sebulba = 0;
-    void *game_cutscenes_podsprint_out_of_time = 0;
-    void *game_cutscenes_podsprint_sebulba = 0;
-    void *game_cutscenes_dogfight_die = 0;
-    LEVELDATA *PODSPRINTA_LDATA = 0;
-    LEVELDATA *PODRACEB_LDATA = 0;
-    u16 podrace_die_angle_a = 0;
-    u16 podrace_die_angle_b = 0;
-    u16 podrace_die_angle_c = 0;
     GAMEOBJECT *Player[8] = {0};
-    f32 DEFAULTFPS = 0;
-    i16 id_DEFAULTCHARACTER[2] = {-1, -1};
     i16 ID_DEFAULTCHARACTER_A = -1;
     i16 ID_DEFAULTCHARACTER_B = -1;
-    i16 ID_DEFAULTCHARACTER_LSW_A = -1;
-    i16 ID_DEFAULTCHARACTER_LSW_B = -1;
     MEMORYMANAGER theMemoryManager = {0};
     f32 DEFAULTFRAMETIME = 0;
-    i32 PAL = 0;
     GAMEPAD_INIT_RECORD GamePadStorage[64] = {0};
     HANDLE pc_file_handles[32] = {
         INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE,
@@ -3835,19 +3647,13 @@ extern "C" {
     extern char AreaFixUpName_Palacerescue[16] = "PalaceRescue";
     extern char AreaFixUpName_Map[4] = "map";
 
-    AREA_DATA *GOTHAMSTREETS_ADATA = 0;
     AREA_DATA *ROOFTOPS_ADATA = 0;
     AREA_DATA *FAIRGROUND_ADATA = 0;
-    AREA_DATA *NEGOTIATIONS_ADATA = 0;
     AREA_DATA *GUNGAN_ADATA = 0;
     AREA_DATA *RESCUE_ADATA = 0;
-    AREA_DATA *PODSPRINT_ADATA = 0;
     AREA_DATA *RETAKE_ADATA = 0;
     AREA_DATA *MAUL_ADATA = 0;
-    AREA_DATA *KAMINO_ADATA = 0;
     AREA_DATA *FACTORY_ADATA = 0;
-    AREA_DATA *JEDI_ADATA = 0;
-    AREA_DATA *DOOKU_ADATA = 0;
     AREA_DATA *CRUISER_ADATA = 0;
     AREA_DATA *GRIEVOUS_ADATA = 0;
     AREA_DATA *KASHYYYK_ADATA = 0;
@@ -3856,24 +3662,13 @@ extern "C" {
     AREA_DATA *TATOOINE_ADATA = 0;
     AREA_DATA *MOSEISLEY_ADATA = 0;
     AREA_DATA *DEATHSTARRESCUE_ADATA = 0;
-    AREA_DATA *DEATHSTARESCAPE_ADATA = 0;
     AREA_DATA *DEATHSTARBATTLE_ADATA = 0;
     AREA_DATA *HOTHBATTLE_ADATA = 0;
-    LEVELDATA *HOTHBATTLEA_LDATA = 0;
-    AREA_DATA *HOTHESCAPE_ADATA = 0;
-    AREA_DATA *ASTEROIDCHASE_ADATA = 0;
-    AREA_DATA *DAGOBAH_ADATA = 0;
     AREA_DATA *CLOUDCITYTRAP_ADATA = 0;
     AREA_DATA *CLOUDCITYESCAPE_ADATA = 0;
-    AREA_DATA *JABBASPALACE_ADATA = 0;
     AREA_DATA *SARLACCPIT_ADATA = 0;
-    AREA_DATA *SPEEDERCHASE_ADATA = 0;
     AREA_DATA *ENDORBATTLE_ADATA = 0;
-    AREA_DATA *DEATHSTARBATTLE2_ADATA = 0;
     AREA_DATA *EMPERORFIGHT_ADATA = 0;
-    AREA_DATA *E1CHARACTER_ADATA = 0;
-    AREA_DATA *E2CHARACTER_ADATA = 0;
-    AREA_DATA *E3CHARACTER_ADATA = 0;
     AREA_DATA *E4CHARACTER_ADATA = 0;
     AREA_DATA *E5CHARACTER_ADATA = 0;
     AREA_DATA *E6CHARACTER_ADATA = 0;
@@ -3888,15 +3683,6 @@ extern "C" {
     AREA_DATA *BONUS_GUNSHIP_ADATA = 0;
     AREA_DATA *ANEWHOPE_ADATA = 0;
     AREA_DATA *LEGOCITY_ADATA = 0;
-    AREA_DATA *NEWTOWN_ADATA = 0;
-    AREA_DATA *LOSTTEMPLE_ADATA = 0;
-    AREA_DATA *SENATE_ADATA = 0;
-    AREA_DATA *UTAPAU_ADATA = 0;
-    AREA_DATA *HOTH_ADATA = 0;
-    AREA_DATA *BONUSDAGOBAH_ADATA = 0;
-    AREA_DATA *BONUSKAMINO_ADATA = 0;
-    AREA_DATA *BONUSKASHYYYK_ADATA = 0;
-    AREA_DATA *JIMTEST_ADATA = 0;
 
     AREAFIXUP AreaFixUpLSW[65] = {
         {AreaFixUpName_Map,              &HUB_ADATA                },
@@ -3992,8 +3778,6 @@ extern "C" {
     extern const f64 NuTimeBarLinesPerSecond = 15734.0;
 
     i16 PlayerList[8] = {0};
-    f32 WaitingForCharacterTime = 0;
-    f32 MAXFRAMETIME = 0;
     i32 netclient = 0;
     extern const char GizAIMessage_NameFormat[3] = "%s";
     LANGUAGEDATA Game_LanguageList[7] = {
@@ -4014,25 +3798,6 @@ extern "C" {
         {8,  apitxt_DANISH },
         {-1, NULL          }
     };
-
-    char *txt_NULL = const_cast<char *>("?");
-    char *txt_UNKNOWN = const_cast<char *>("?");
-    char *apitxt_ENGLISH = const_cast<char *>("English");
-    char *apitxt_FRENCH = const_cast<char *>("Fran\xc3\xa7"
-                                             "ais");
-    char *apitxt_GERMAN = const_cast<char *>("Deutsch");
-    char *apitxt_ITALIAN = const_cast<char *>("Italiano");
-    char *apitxt_SPANISH = const_cast<char *>("Espa\xc3\xb1"
-                                              "ol");
-    char *apitxt_DANISH = const_cast<char *>("Dansk");
-    i16 tNULL = 0;
-    i16 tUNKNOWN = 0;
-    i16 tENGLISH = 0;
-    i16 tFRENCH = 0;
-    i16 tGERMAN = 0;
-    i16 tITALIAN = 0;
-    i16 tSPANISH = 0;
-    i16 tDANISH = 0;
 
     i64 NuTime_TickBase = 0;
     i64 NuTime_PerformanceFrequency = 0;
@@ -4138,23 +3903,8 @@ extern "C" {
     extern const f64 nu_wind_phase_scale = 1.0 / 256.0;
     extern const f32 PCKeyboardDefaultValue = 0.1f;
     f32 dme_sy = 1.0f;
-    f32 default_targetmomf = 4.0f;
-    f32 default_ownermomf = 5.0f;
-    f32 default_max_cable_length = 15.0f;
-    f32 default_tow_length = 6.0f;
-    f32 targetmomf = 4.0f;
-    f32 ownermomf = 5.0f;
-    f32 max_cable_length = 15.0f;
-    f32 tow_length = 6.0f;
     AREA_DATA *GUNSHIP_ADATA = 0;
-    u8 cables[0xf60] = {0};
-    i32 nsegments_drawn = 0;
-    i32 solid_cable = 0;
-    f32 MenuTitlesPromptY = -0.5f;
-    f32 MenuTitlesWidePromptY = -0.575f;
     OPTIONSSAVE *Game_OptionsSave = 0;
-    f32 opts_sfx_wait = 1.5f;
-    i32 opts_sfx_i = 0;
 
     // The 23-record PC table: IDs, callbacks, remembered cursors, and prompt flags.
     void MenuUpdatePauseRestart(MENU *);
@@ -4200,10 +3950,6 @@ extern "C" {
     i32 PS2_VCNTR_X = 320;
     i32 PS2_VCNTR_Y = 240;
 }
-i32 app_tbgameset = 0;
-i32 app_tbplayerset = 0;
-i32 app_tbaiset = 0;
-i32 app_tbdrawset = 0;
 NUAPI nuapi = {0};
 
 u32 debrisseed = 0x5c0999;
@@ -4213,11 +3959,7 @@ char **argv = 0;
 NUDATHDR *curr_dat = 0;
 MSG win_message = {0};
 
-i32 CHARACTERBUFFERSIZE = 0x02800000;
-
 WORLDINFO *WORLD = &WorldInfo[0];
-
-i32 waiting_for_character = -1;
 
 // PC reads pairs of 16-bit code points, ending with a zero pair.
 u16 bad_equiv[8][2] = {
@@ -4242,21 +3984,14 @@ extern "C" {
     i32 HIGHGAMEOBJECT = 0;
     GAMEOBJECT *Obj = 0;
     NUVEC v000 = {0};
-    TIMER GameTimer = {0};
-    i32 party_under_cover = 0;
-    GAMEOBJECT *alert_obj = 0;
-    f32 alert_timer = 0;
-    f32 ForcePush_Speed = 2.5f;
 }
 
 // Additional PC movement, targeting, arcade and callback state.
 extern "C" {
     f32 TargetDist_Near2 = 0;
 
-    LEVELDATA *DEATHSTARRESCUEA_LDATA = 0;
     extern const f32 ForcePushApproachInnerSquare = 0.010000001f;
     extern const f32 ForcePushApproachOuterSquare = 0.040000003f;
-    u16 id_GONKDROID = 0xffff;
     APIOBJECT_FROM_ID APIOBJECTFromObjIDFn = 0;
     i16 PCArcadeModeText0 = 0;
     i16 PCArcadeModeText1 = 0;
@@ -4280,7 +4015,6 @@ extern "C" {
     u32 GAMEPAD_ACTION = PAD_BUTTON_SQUARE;
     u32 GAMEPAD_SPECIAL = PAD_BUTTON_CIRCLE;
     u32 GAMEPAD_TAG = PAD_BUTTON_TRIANGLE;
-    u16 id_DRAGBOMB = 0xffff;
     extern const f64 ApplyGravityVelocityFactor = 0.3330000042915344;
     extern const f64 ApplyGravityFrameScale = 180.0;
     extern const f32 ApplyGravityMinimumFrameTime = 0.016666668f;
@@ -4292,8 +4026,6 @@ extern "C" {
 }
 
 extern "C" {
-    CUSTOMISER_LAYERS *CharacterCustomiser = 0;
-    i16 id_BODYGUARD = -1;
     i16 id_GEONOSIAN = -1;
     i16 id_CHEWBACCA = -1;
 }
@@ -4310,23 +4042,11 @@ extern "C" {
 
 extern "C" {
     GAMEOBJECT *CarWashHack = 0;
-    LEVELDATA *MOSEISLEYB_LDATA = 0;
-    i16 id_LANDSPEEDER = -1;
-    i16 id_WOOKIEFLYER = -1;
-    i16 id_IMPERIALGUARD = -1;
     i16 id_GRIEVOUS = -1;
-    i16 id_THEEMPEROR = -1;
-    i16 id_BOB = -1;
-    i16 id_DOOKU = -1;
-    i16 id_DARTHMAUL = -1;
-    i16 id_ANAKINPADAWAN = -1;
 }
 
 extern "C" {
-    f32 GameDeflectPartGravity = -2.5f;
-    f32 GameDeflectPartSpeed = 5.0f;
 
-    PODSPRINT_PC podsprint = {0};
     AI_SCRIPT_FIRST_ACTION ScriptProcessFirstTimeActionFn = 0;
 }
 
@@ -4338,7 +4058,6 @@ extern "C" {
 extern "C" {
     i16 id_TIEFIGHTER = -1;
     i16 id_XWING = -1;
-    i16 id_STAP2 = -1;
     AI_PARSE_SPEED AIActionParseSpeedFn = 0;
     AI_CHARACTER_DISTANCE GetViewRangeFn = 0;
     AI_CHARACTER_DISTANCE GetHearDistanceFn = 0;
@@ -4355,26 +4074,11 @@ extern "C" {
 
 extern "C" {
 
-    GAMEOBJECT *player_tag_to = 0;
     f32 player_tag_timer = 0;
     i32 do_player_tag = 0;
-    i32 LEGOCONTEXT_DOOMED = -1;
-    i32 LEGOCONTEXT_BEENTAKENOVER = -1;
-    i32 LEGOCONTEXT_GETIN = -1;
-    i32 LEGOCONTEXT_EATEN = -1;
-    i32 LEGOCONTEXT_BUCK = -1;
-    i32 LEGOCONTEXT_JUMP = -1;
-    i16 LEGOACT_BUCK = -1;
-    i16 LEGOACT_JUMP = -1;
 }
 
 extern "C" {
-    i16 id_CLONEWALKER = -1;
-    i16 id_TAUNTAUN = -1;
-    i16 id_FLASHSPEEDER = -1;
-    i16 id_DEWBACK = -1;
-    i16 id_BANTHA = -1;
-    i16 id_GYROCOPTER = -1;
     i16 id_LUKESKYWALKERDAGOBAH = -1;
     i16 id_ATAT = -1;
 }
@@ -4384,33 +4088,11 @@ extern "C" {
 }
 
 extern "C" {
-    i32 LEGOCONTEXT_BIGJUMP = -1;
-    i16 LEGOACT_FALL = -1;
-    i16 LEGOACT_COMBOJUMP = -1;
-    i16 LEGOACT_JUMP2 = -1;
-}
-
-extern "C" {
     u8 aicreature_sets_alive[16] = {0};
 }
 
 extern "C" {
-    i32 LEGOCONTEXT_TUBE = -1;
-    i32 LEGOCONTEXT_GLIDE = -1;
-}
-
-extern "C" {
-    f32 party_follow_offsets[8] = {0};
-    i32 ai_fighting = 0;
-    f32 drop_back_in_timer = 0;
-    f32 aitol = 0.5f;
-    f32 direction_scale = 100.0f;
-}
-
-extern "C" {
     i32 nethost = 0;
-    i16 id_PKDROID = -1;
-    LEVELDATA *NEGOTIATIONSC_LDATA = 0;
 }
 
 extern "C" {
@@ -4420,39 +4102,15 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    i32 GUNSHIPAHACK = 2;
-    i32 podrace_section = 0;
-    i32 newgamecam = 0;
     i32 GAMEPAD_LIFT = PAD_BUTTON_R1;
-    f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
 }
 
 extern "C" {
-// Hub arrays are two-entry source views; full original capacities remain unknown.
-    MISSIONSYS *MissionSys = 0;
-}
-
-extern "C" {
-    f32 idealgoalrange = 1.5f;
-    f32 engagefiretime = 1.5f;
     f32 DEFAULT_MOVE_RANGE = 0;
     AI_LEVEL_CHARACTER_TYPE_ID LevelCharacterTypeIDFn = 0;
 }
 
 extern "C" {
-    i32 LEGOCONTEXT_WHIP = -1;
-    i32 LEGOCONTEXT_SUPERCARRY = -1;
-    i32 LEGOCONTEXT_SPECIALMOVE_ATTACKER = -1;
-    i32 LEGOCONTEXT_SPECIALMOVE_VICTIM = -1;
-    i32 LEGOCONTEXT_BUILDIT = -1;
-    i32 LEGOCONTEXT_PUSHOBSTACLE = -1;
-    f32 AIFireIntervalMul = 1.0f;
-    f32 GhostLightMul = 1.0f;
-    f32 GhostLightTargetMul = 1.0f;
-    i32 timebase_updates = 1;
-    f32 tieonsfxwait = 0;
-    f32 tieoffsfxwait = 0;
-    i16 id_SEBULBASPOD = -1;
     i8 adtabentries[9][4] = {
         {-1, -1, -1, -1},
         {-1, -1, -1, 0 },
@@ -4464,14 +4122,9 @@ extern "C" {
         {1,  1,  1,  0 },
         {1,  1,  1,  1 }
     };
-    i8 (*adtab)[4] = &adtabentries[4];
     ADAPTIVEDIFFICULTY adaptivedifficulty = {0};
-    f32 AdaptiveDifficultyRecoveryTime = 30.0f;
     i16 id_YWING = -1;
-    i16 id_MINIYWING = -1;
     i16 id_TIEBOMBER = -1;
-    i16 id_MINITIEBOMBER = -1;
-    i16 id_MINISTARDESTROYER = -1;
     u32 LEGO_AIPATHCNX_FORGOODIES = 0;
     u32 LEGO_AIPATHCNX_FORBADDIES = 0;
     NUVEC ShadNorm = {0};
@@ -4522,19 +4175,10 @@ extern "C" {
     i32 num_extensions = 0;
 }
 
-extern "C" {
-    i32 turret_gizmotype_id = -1;
-    i32 obstacle_gizmotype_id = -1;
-}
-
 extern "C" {}
 
 extern "C" {
     TIMER AreaTimer = {0};
-    i32 OldBonusScore[2] = {0};
-    i32 BonusScore[2] = {0};
-    GAMEOBJECT *BombGenerator_PlayerBomb[2] = {0};
-    i32 Lap = 0;
 }
 
 extern "C" {
@@ -4548,14 +4192,7 @@ extern "C" {
     extern const char GizObstacleActionForwardPC[8] = "FORWARD";
     extern const char GizObstacleActionStayOpenPC[9] = "STAYOPEN";
     extern const char GizObstacleActionStayShutPC[9] = "STAYSHUT";
-    i32 bonus_gunship_store_progress_flag = 0;
 
-    i16 LEGOACT_HANG_MOVE = -1;
-}
-
-extern "C" {
-    f32 debug_condition = 0;
-    NUGSPLINE *script_spline_selected = 0;
 }
 
 extern "C" {
@@ -4623,28 +4260,15 @@ extern "C" {
     extern const f32 TerrainUnusedSpatialBlock = 2147483648.0f;
     extern const f32 TerrainBoundsMinimum = -200000000.0f;
     extern const f32 TerrainBoundsMaximum = 200000000.0f;
-    i16 LEGOACT_CLIMB_UP = -1;
-    i16 LEGOACT_CLIMB_DOWN = -1;
-    i16 LEGOACT_CLIMB_LEFT = -1;
-    i16 LEGOACT_CLIMB_RIGHT = -1;
-    i16 LEGOACT_WALLSHUFFLE_IDLE = -1;
-    i16 LEGOACT_WALLSHUFFLE_LEFT = -1;
-    i16 LEGOACT_WALLSHUFFLE_RIGHT = -1;
-    i16 LEGOACT_MAGNET_WALK_METAL = -1;
     i32 debris_detail_level = 4;
 }
 
 extern "C" {
-    i16 LEGOACT_SUPERCARRY_WALK = -1;
     extern const f64 PlayerSlideSpeed = 1.2000000476837158;
     extern const f64 PlayerRandomScale = 1.5259021893143654e-05;
-    i32 LEGOCONTEXT_COMBO = -1;
     extern const f64 PlayerStepInnerAction = 1.75;
     extern const f64 PlayerStepOuterAction = 2.25;
     extern const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
-    i32 LEGOCONTEXT_PUSHSPINNER = -1;
-    i32 force_gizmotype_id = -1;
-    i32 gizpanel_gizmotype_id = -1;
 }
 
 extern "C" {
@@ -4672,15 +4296,7 @@ extern "C" {
         "Your Scene version is %d, whereas the Engine only accepts Scene versions from %d to %d";
     i16 id_GRABCONTROL = -1;
     i16 id_GRABR2CONTROL = -1;
-    i16 id_MINIATST = -1;
     i16 id_ATST_LOWRES = -1;
-    i16 id_MINIATAT = -1;
-    i16 id_MINIATTE = -1;
-    i16 id_MINISLAVE1 = -1;
-    i16 id_YODA = -1;
-    i16 id_YODAGHOST = -1;
-    i16 id_C3PO = -1;
-    i16 id_TC14 = -1;
     i16 id_DROIDEKA = -1;
 }
 
@@ -4706,22 +4322,9 @@ extern "C" {
 }
 
 extern "C" {
-    f32 TerrainPlayerOtherMovementScale = 2.5f;
-    f32 TerrainPlayerBikeMovementScale = 15.0f;
-    f32 TerrainPlayerPlatConnectTolerance = 0.01f;
-    i32 TerrainPlayerShadowFix = 1;
-}
-
-extern "C" {
     char ScorePanelName[9] = "MK-Panel";
-    char ScoreCounterName[8] = "Counter";
-    char PickupCoinsLandName[10] = "CoinsLand";
-    u8 CoinTab[4] = {0, 1, 2, 3};
     ADD_GAME_MESSAGE AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
                                               NULL, 0,     0.0f,  0.0f, NULL, NULL, NULL, NULL, NULL, -1, 0,    255,  0};
-    i16 BigJumpLandFallback = -1;
-    i16 BigJumpLandSecondary = -1;
-    i16 BigJumpLandPreferred = -1;
     u32 BonusCoinTarget = 0;
     i32 BonusWinFlag = 0;
     i32 MenuValidated = 0;
@@ -4731,75 +4334,10 @@ extern "C" {
 }
 
 extern "C" {
-    f32 alert_time = 10.0f;
-    NUVEC alert_pos = {0};
-}
-
-extern "C" {
     char dat_00758c00[9] = "Power Up";
     char dat_00758c0c[8] = "Torpedo";
-    char dat_00758c14[10] = "MK-Pickup";
-    char dat_00758c20[8] = "Charkit";
-    char dat_00758c28[10] = "Red Brick";
-    char dat_00758c34[6] = "Heart";
-    char dat_00758c3c[10] = "MK-Appear";
-    char dat_00758c48[8] = "Minikit";
-    char dat_00758c50[12] = "Purple Coin";
-    char dat_00758c5c[12] = "PickupCoinB";
-    char dat_00758c68[10] = "Blue Coin";
-    char dat_00758c74[10] = "Gold Coin";
-    char dat_00758c80[12] = "Silver Coin";
-    // clang-format off: aligned table wider than the column limit
-    GIZMO_PICKUP_TYPE GizmoPickupType[10] = {
-        {dat_00758c80, NULL,                    NULL,                    115, 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f,
-         0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-        {dat_00758c74, NULL,                    NULL,                    103, 4, 64, 0, 191, 100,   0.045f, 0.045f, 10.0f,
-         0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-        {dat_00758c68, dat_00758c5c, NULL,                    98,  4, 64, 0, 199, 1000,  0.045f, 0.045f, 6.0f,
-         0.0f,  Pup_UpdateBlueCoin,   Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
-        {dat_00758c50, dat_00758c5c, NULL,                    112, 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f,
-         0.0f,  Pup_UpdatePurpleCoin, Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
-        {dat_00758c48, dat_00758c3c, NULL,                    109, 0, 69, 0, 206, 0,     0.125f, 0.15f,  2.0f,
-         0.05f, NULL,                 Pup_CollectMinikit,  20, -1,  0.0f, 0.0f},
-        {dat_00758c34, NULL,                    NULL,                    104, 0, 2,  0, 203, 0,     0.1f,   0.08f,  4.0f,
-         0.0f,  NULL,                 Pup_CollectHeart,    -1, -1,  0.0f, 0.0f},
-        {dat_00758c28, dat_00758c3c, NULL,                    114, 0, 73, 0, 210, 0,     0.12f,  0.06f,  2.0f,
-         0.1f,  NULL,                 Pup_CollectRedBrick, 99, -1,  0.0f, 0.0f},
-        {dat_00758c20, dat_00758c3c, dat_00758c14, 99,  0, 33, 0, 207, 0,     0.125f, 0.15f,  2.0f,
-         0.05f, NULL,                 Pup_CollectCharKit,  20, -1,  0.0f, 0.0f},
-        {dat_00758c0c, NULL,                    NULL,                    116, 0, 2,  0, 121, 0,     0.1f,   0.1f,   5.0f,
-         0.0f,  NULL,                 NULL,                -1, -1,  0.0f, 0.0f},
-        {dat_00758c00, dat_00758c3c, NULL,                    117, 0, 1,  0, 208, 0,     0.125f, 0.125f, 2.0f,
-         0.05f, Pup_UpdatePowerUp,    Pup_CollectPowerUp,  -1, 209, 0.0f, 0.0f},
-    };
-    // clang-format on
-    f32 PowerUp_PanelPosMul[2] = {0};
 }
 
-extern "C" {
-    u16 PowerUp_PanelYRot[2] = {0};
-}
-extern "C" {
-    f32 PartExtraCoinRate = 5.0f;
-}
-extern "C" {
-    f32 PartVehicleHeartLifetime = 1.0f;
-}
-extern "C" {
-    f32 PartVehicleHeartPodraceHeight = 2.0f;
-}
-extern "C" {
-    f32 PartVehicleHeartHeight = 3.0f;
-}
-extern "C" {
-    f32 PartVehicleHeartPodraceScale = 4.0f;
-}
-extern "C" {
-    f32 PartVehicleHeartGunshipScale = 7.5f;
-}
-extern "C" {
-    f32 PartVehicleHeartScale = 5.0f;
-}
 extern "C" {
     f32 coinimpactwait = 0;
 }
@@ -4814,100 +4352,25 @@ extern "C" {
     i16 id_BOBAFETT = -1;
 }
 extern "C" {
-    i16 id_MINIDROIDEKA = -1;
-}
-extern "C" {
-    i32 KillPartsPreviousVariant = 0;
-}
-extern "C" {
     RTL_DATA KillPartsZeroLighting = {0};
 }
 extern "C" {
     f32 brickimpactwait = 0;
-}
-extern "C" {
-    KILLPARTS_BIKE KillPartsBikes[4] = {0};
-}
-extern "C" {
-    char KillPartsTieSpinsText[10] = "Tie_Spins";
-}
-extern "C" {
-    f32 KillPartsTieTrailScale = 0.1f;
-}
-extern "C" {
-    NUVEC KillPartsTieSpinTranslation = {0.0f, 0.0f, -0.05f};
-}
-extern "C" {
-    char KillPartsAtatExplodeText[9] = "EXPLODE1";
-}
-
-extern "C" {
-    f32 PANEL_COINSCALE_START = 1.0f;
 }
 
 extern "C" {}
 
 extern "C" {
 
-    i16 id_GAMORREANGUARD = -1;
-
     i16 id_SNAKE = -1;
 
     i16 id_WOOKIEE = -1;
 
-    i16 id_OBIWANKENOBIEP3 = -1;
-
-    i16 id_ANAKINJEDI = -1;
-
     i16 id_ROYALGUARD = -1;
 
-    f32 CombatNpcKillDifficultyAmount = 0.01f;
-
-    f32 CombatPlayerDeathDifficultyAmount = -0.025f;
-
-    i32 CombatHitReactionInterval = 3;
-
-    f32 CombatReactionDuration = 3.0f;
-
-    u8 objhit_damage_joints[3] = {6, 8, 7};
-
-    i32 LEGOCONTEXT_HOLD = -1;
-
-    i32 LEGOCONTEXT_LAND_LUNGE = -1;
-
-    i32 LEGOCONTEXT_LAND_SLAM = -1;
-
-    BOLT *objhitobj_bolt = 0;
-
-    i32 objhitobj_nohurtsfx = 0;
-
-    i32 objhitobj_noimpactsfx = 0;
-
-    i32 objhitobj_noattackerrumble = 0;
-
-    i32 objhitobj_throwkillpartsup = 0;
-
-    i16 *objhitobj_killparts_yrot = 0;
 }
 
 extern "C" {
-    i32 LEGOCONTEXT_WEAPONIN = -1;
-
-    i32 LEGOCONTEXT_WEAPONOUT = -1;
-}
-
-extern "C" {
-    u8 TractorBeamEnabled = 0;
-}
-
-extern "C" {
-
-    i16 id_CATAPULT = -1;
-}
-
-extern "C" {
-    // Selected input view: cumulative eligible writes <=384; actual PC capacity unknown.
-    GIZFORCE_TARGET_RECORD PossibleForceTargets[384] = {0};
 
     TIMER LevelTimer = {0};
 }
@@ -4916,13 +4379,7 @@ extern "C" {
 
     i16 dat_007f17d0 = -1;
 
-    i16 dat_007f17d4 = -1;
-
     i16 dat_007f18b4 = -1;
-
-    i16 dat_007f190c = -1;
-
-    i16 dat_007f1910 = -1;
 
     i16 dat_007f195c = -1;
 
@@ -4936,41 +4393,9 @@ extern "C" {
 
     i16 id_REPUBLICGUNSHIP = -1;
 
-    i16 dat_007f1a24 = -1;
-
-    i16 dat_007f1a28 = -1;
-
-    i16 dat_007f1a2c = -1;
-
     i16 id_SENTRYDROID = -1;
 
-    i16 dat_007f1a38 = -1;
-
-    i16 dat_007f1a9c = -1;
-
-    i16 dat_007f1aa0 = -1;
-
-    i16 dat_007f1aac = -1;
-
-    i16 VehicleSpecialShooterId = -1;
-
-    i16 dat_007f1ad8 = -1;
-
-    i16 dat_007f1aec = -1;
-
-    i16 dat_007f1af0 = -1;
-
-    i16 dat_007f1b00 = -1;
-
-    i16 dat_007f1b04 = -1;
-
-    i16 dat_007f1b08 = -1;
-
-    i16 dat_007f1b0c = -1;
-
     i16 dat_007f1b34 = -1;
-
-    i16 dat_007f1b38 = -1;
 
     i16 id_ZAMSSPEEDER = -1;
 
@@ -5295,29 +4720,6 @@ extern "C" {
 }
 
 extern "C" {
-    i16 PunchRangeUnitId = -1;
-
-    i16 PunchRangeCompanionId = -1;
-
-    i16 id_CAPTAINTARPALS = -1;
-
-    u8 CheatPooPartsEnabled = 0;
-
-    u8 CheatPooCoinsEnabled = 0;
-
-    i32 LEGOCONTEXT_PUNCH = -1;
-
-    i32 LEGOCONTEXT_LAND_JUMP = -1;
-
-    i32 LegoContextNetWait = -1;
-
-    i16 LEGOACT_FALLLAND = -1;
-
-    i16 LEGOACT_BACKPACKFALLLAND = -1;
-
-    i16 LegoActPunchBehind = -1;
-
-    i16 LEGOACT_EXTRA_LAND2 = -1;
 
     f32 PUNCHGAP = 0.3f;
 
@@ -5325,60 +4727,20 @@ extern "C" {
 
     i32 CanPunchGirls = 1;
 
-    LEVELDATA *MOSEISLEYC_LDATA = 0;
-
     i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
 }
 
 extern "C" {
-    LEVELDATA *NEGOTIATIONSA_LDATA = 0;
-
-    LEVELDATA *NEGOTIATIONSB_LDATA = 0;
-
-    LEVELDATA *GUNGAN_A_LDATA = 0;
-
-    LEVELDATA *RESCUEC_LDATA = 0;
-
-    LEVELDATA *RETAKEB_LDATA = 0;
-
-    LEVELDATA *RETAKED_LDATA = 0;
-
-    LEVELDATA *RETAKEE_LDATA = 0;
-
-    LEVELDATA *TATOOINEA_LDATA = 0;
-
-    LEVELDATA *TATOOINEB_LDATA = 0;
-
-    LEVELDATA *MOSEISLEYA_LDATA = 0;
-
-    LEVELDATA *DEATHSTARRESCUEB_LDATA = 0;
-
-    LEVELDATA *DEATHSTARRESCUEC_LDATA = 0;
 
     LEVELDATA *DEATHSTARRESCUEE_LDATA = 0;
 
     LEVELDATA *DEATHSTARESCAPEA_LDATA = 0;
 
-    LEVELDATA *DEATHSTARESCAPEB_LDATA = 0;
-
     LEVELDATA *DEATHSTARESCAPEC_LDATA = 0;
 
-    LEVELDATA *DEATHSTARESCAPED_LDATA = 0;
-
-    LEVELDATA *DEATHSTARBATTLEA_LDATA = 0;
-
-    LEVELDATA *DEATHSTARBATTLEB_LDATA = 0;
-
-    LEVELDATA *DEATHSTARBATTLEC_LDATA = 0;
-
-    f32 TorpedoGrabRangeSquared = 36.0f;
 }
 
 extern "C" {
-
-    i16 id_DODGEM = -1;
-
-    i16 id_SNOWMOB = -1;
 
     u32 LswForceUsedHintFlags = 0;
 
@@ -5388,8 +4750,6 @@ extern "C" {
 }
 
 extern "C" {
-
-    NUGSCN *things_scene = 0;
 
     i32 RenderHubFromCutscenePlayer = 0;
 }
@@ -5433,32 +4793,6 @@ extern "C" {
 
     char dat_0075d20c[14] = "robin_attract";
 
-    i32 addcreature_override_id_check = 0;
-
-    f32 default_mover_extra = 0.05f;
-
-    i16 id_MOSEISLEYCITIZEN = -1;
-
-    i16 id_CANTINAALIEN = -1;
-
-    i16 id_CLOUDCITYCITIZEN = -1;
-
-    GAMEOBJECT *PodPacemaker = 0;
-
-    f32 PodRaceSplineIncrement = 0.001f;
-
-    char PodCreateSplineKeyword[11] = "spline_id=";
-
-    char PodCreateStartKeyword[14] = "spline_start=";
-
-    char PodCreateEndKeyword[12] = "spline_end=";
-
-    char PodCreateTimeKeyword[13] = "time_factor=";
-
-    char PodCreatePacemakerKeyword[10] = "pacemaker";
-
-    char PodCreateDamagedKeyword[8] = "damaged";
-
     /* PodRacePc is defined as a private static in legoapi/episodeI.c. */
     /* (was: void *PodRacePc) */
 }
@@ -5499,13 +4833,7 @@ extern "C" {
 
 extern "C" {
     extern const NUVEC ZipUpHookOffset = {0.0f, -0.1143f, -0.0859f};
-    u16 ZipUpSwingStartAnimationPc = 0xffff;
-    u16 ZipUpSwingSwingAnimationPc = 0xffff;
-    u16 ZipUpSwingJumpAnimationPc = 0xffff;
-    i16 ZipUpLineCharacterId = -1;
     NUMTL *ZipUpLineMaterial = 0;
-    i32 ZipUpLandCombatRollContext = -1;
-    i32 ZipUpWallShuffleContext = -1;
 }
 
 extern "C" {
@@ -5514,57 +4842,8 @@ extern "C" {
 }
 
 extern "C" {
-    i32 BoltBlockContext = -1;
-    i16 BoltDeactivatedAction = -1;
-}
-
-extern "C" {
-    i16 GrabMachineId = -1;
-    i16 GrabMagnetId = -1;
-    i16 RobotBaseId = -1;
-}
-
-extern "C" {
-    i16 id_UGNAUGHT = -1;
-    f32 OpponentSelectionHysteresis = 0.5f;
-    i32 nbaddies_can_see_players = 0;
-}
-
-extern "C" {
-    i32 spinner_gizmotype_id = -1;
-    i32 LEGOCONTEXT_GRAPPLE = -1;
-}
-
-extern "C" {
-    f32 draw_attention_distance = 2.0f;
     u32 GAMEPAD_START = PAD_BUTTON_START;
-    i32 active_neutral_count = 0;
-    f32 GameAiPartyFollowSpacing = 0.2f;
-    i16 id_JANGOFETT = -1;
     i32 LEGO_AIPATHCNX_R2D2GLIDE = 0;
-    f32 jump_stuck_time = 0.1f;
-    i32 LEGO_AIPATHCNX_JUMP = 0;
-    i32 drop_in_teleport = 3;
-    i32 teleport_all_freeplay_modes = 1;
-    f32 DEFENDTIME = 4.0f;
-    i32 debug_ignore_players = 0;
-    i32 WALKSTEALTH = 0;
-    i32 active_goody_count = 0;
-    i32 active_baddy_count = 0;
-    i32 GameAiLosDivisor = 2;
-    f32 timetogetlos = 0.0f;
-    i32 test_new_interaction = 0;
-}
-
-extern "C" {
-    RIPPLE_SET *RippleSet = NULL;
-    f32 RipplePerturbation = 0.15f;
-    f32 RippleSfxCooldown = 0.5f;
-    f32 ForceFieldRippleRate = 100.0f;
-    i32 PodDustLocatorIndices[2] = {1, 2};
-    f32 PodDustEmissionRate = 100.0f;
-    f32 PodDustHeightScale = 2.0f;
-    f32 GunshipDustEmissionRate = 75.0f;
 }
 
 extern "C" {
@@ -5574,46 +4853,24 @@ extern "C" {
 }
 
 extern "C" {
-    PICKUP_TYPE_SYSTEM GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
     f32 (*GizmoPickups_Collide2DFn)(GAMEOBJECT *) = NULL;
 }
 
 extern "C" {
-    f32 LevelNameMul = 0.0f;
     f32 LevelNameTime = 0.0f;
 }
 
 extern "C" {
-    APICHARACTERMODELLIST PermModelList[1] = {
-        {-1, 0}
-    };
-    COLLECTION_BUILD MasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD CharacterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD VehicleCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD ShopCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD JediCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD BlasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
-    COLLECTION_BUILD BountyHunterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
     i16 PermanentWeirdo1Id = -1;
     i16 PermanentWeirdo2Id = -1;
-    i16 PermanentCustomiserActions[5] = {97, 190, 98, 99, -1};
-    char CustomiseLetter[39] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ- 0123456789";
 }
 
 extern "C" {
-    i16 DefaultMotionSkeletonId = -1;
-    i16 DefaultMotionIndySnakeId = -1;
     i32 DefaultMotionLedgeTerrainEnabled = 0;
 }
 
 extern "C" {
     i16 DefaultAnimationJabbaId = -1;
-    i16 DefaultAnimationLeiaSlaveId = -1;
-    i16 DefaultAnimationLamaSuId = -1;
-    i16 DefaultAnimationTaunWeId = -1;
-    i32 JumpBackFlipContext = -1;
-    i16 JumpBackFlipAction = -1;
-    i16 JumpSlamAction = -1;
     f32 memcard_autosavecanceldelay = 1.5f;
     i32 saveload_cardtype = 2;
     i32 saveload_cardformatted = 1;
@@ -5637,57 +4894,9 @@ extern "C" {
     u8 dme_r = 0;
     u8 dme_g = 0;
     u8 dme_b = 0;
-    i32 LEGOCONTEXT_LAND_JUMP2 = -1;
-    i32 LEGOCONTEXT_LAND_FLIP = -1;
-    i32 LEGOCONTEXT_LAND_COMBOJUMP = -1;
-    i16 LEGOACT_JUMP3 = -1;
-    i16 LEGOACT_LAND3 = -1;
-    i16 LEGOACT_FLIP = -1;
-    i16 LEGOACT_FLIPLAND = -1;
-    i16 LEGOACT_MAGNET_JUMP = -1;
-    i16 LEGOACT_LUNGE = 1;
-    i16 LEGOACT_LUNGELAND = -1;
-    i16 LEGOACT_SLAMLAND = -1;
-    i16 LEGOACT_COMBATROLL_JUMP = -1;
-    i16 LEGOACT_COMBATROLL_FALL = -1;
-    i16 LEGOACT_COMBATROLL_LAND = -1;
-    i16 LEGOACT_COMBATROLL_FIRE = -1;
-    i16 LEGOACT_EXTRA_JUMP = -1;
-    i16 LEGOACT_EXTRA_JUMP2 = -1;
-    i16 LEGOACT_EXTRA_LAND = -1;
     f32 SLAMJUMPSPEED = 3.0f;
     u8 MENUWARNG = 0;
     u8 MENUWARNB = 0;
-}
-
-extern "C" {
-    i32 LEGOCONTEXT_CLIMB = -1;
-    i32 LEGOCONTEXT_HANG = -1;
-    i16 LEGOACT_IDLE = -1;
-    i16 LEGOACT_WALK = -1;
-    i16 LEGOACT_HANG_IDLE = -1;
-    i16 LEGOACT_CLIMB_IDLE = -1;
-    i32 LEGOCONTEXT_LEDGETERRAIN = -1;
-    i16 LEGOACT_LEDGE_GRAB = -1;
-    i16 LEGOACT_LEDGE_IDLE = -1;
-    i16 LEGOACT_LEDGE_LEFT = -1;
-    i16 LEGOACT_LEDGE_RIGHT = -1;
-    i16 LEGOACT_GRAPPLE_IDLE = -1;
-    i16 LEGOACT_GRAPPLE_UP = -1;
-    i16 LEGOACT_GRAPPLE_DOWN = -1;
-    i16 LEGOACT_GRAPPLE_HANG = -1;
-    i16 LEGOACT_GLIDE = -1;
-}
-
-extern "C" {
-    i32 LEGOCONTEXT_PUSH = -1;
-    i32 LEGOCONTEXT_WALLJUMPWAIT = -1;
-    i16 LEGOACT_PUSH = -1;
-    i16 LEGOACT_SUPERPUSH_IDLE = -1;
-    i16 LEGOACT_SUPERPUSH_PUSH = -1;
-    i16 LEGOACT_SUPERPUSH_PULL = -1;
-    i16 LEGOACT_WALLJUMP_WAIT = -1;
-    i32 newgame_menudrawoff = 0;
 }
 
 struct PC_GEOMETRY_BASIS;
@@ -5697,121 +4906,12 @@ struct PC_GEOMETRY_PUBLISH_RECORD;
 
 extern "C" {
     char *LeverOutputDownNamePtr = dat_0075ac34;
-    TIMER JoinInTimer = {0};
-    i16 id_PRINCESSLEIABOUSHH = -1;
     i32 PushBlockHintId = -1;
 }
 
 extern "C" {
-    i16 id_BAT = -1;
-    i16 id_NAFFDROID1 = -1;
-    i16 id_NAFFDROID2 = -1;
-    i16 id_NAFFDROID4 = -1;
     i16 id_MOUSEDROID = -1;
-    i16 id_BUZZDROID = -1;
-    i16 id_SUPERBATTLEDROID = -1;
     i16 id_BATTLEDROID = -1;
-    i16 id_BATTLEDROIDCOMMANDER = -1;
-    i16 id_BATTLEDROIDGEONOSIAN = -1;
-    i16 id_BATTLEDROIDSECURITY = -1;
-    i16 id_CLONEEP3 = -1;
-    i16 id_CLONEEP3SAND = -1;
-}
-
-extern "C" {
-    PLAYERCHARACTERCONFIG GCDATA_DEFAULT = {
-        PCBuildModelLayerList, /* 0x0 make_layer_list */
-        NULL, /* 0x4 layers */
-        NULL, /* 0x8 layer_lookup */
-        0.1f, /* 0xc stop_speed */
-        0.0f, /* 0x10 idle_speed */
-        1.0f, /* 0x14 tiptoe_speed */
-        2.0f, /* 0x18 walk_speed */
-        3.0f, /* 0x1c run_speed */
-        0.75f, /* 0x20 backwards_factor */
-        -5.0f, /* 0x24 gravity */
-        0.0f, /* 0x28 unknown_028 */
-        2.0f, /* 0x2c jump_speed */
-        1.0f, /* 0x30 jump_duration */
-        1.0f, /* 0x34 jump_height */
-        2.0f, /* 0x38 second_jump_speed */
-        1.0f, /* 0x3c second_jump_duration */
-        1.0f, /* 0x40 second_jump_height */
-        {5.0f}, /* 0x44 velocity_seek_rate */
-        0.0f, /* 0x48 jump_hold_duration */
-        0.3375f, /* 0x4c collision_origin_radius */
-        1.0471976f, /* 0x50 unknown_050 */
-        0.34906587f, /* 0x54 unknown_054 */
-        10.0f, /* 0x58 unknown_058 */
-        -1.8325958f, /* 0x5c unknown_05c */
-        0.0f, /* 0x60 unknown_060 */
-        6.0f, /* 0x64 viewdistance */
-        3.0f, /* 0x68 heardistance */
-        0.5f, /* 0x6c maxviewheight */
-        -0.5f, /* 0x70 minviewheight */
-        1.0f, /* 0x74 turn_rate */
-        {1.0f}, /* 0x78 high_speed_turn_rate */
-        {1.0f}, /* 0x7c vehicle_acceleration_time */
-        {1.0f}, /* 0x80 vehicle_deceleration_time */
-        1.0f, /* 0x84 jump_move_speed_scale */
-        0.0f, /* 0x88 unknown_088 */
-        99.0f, /* 0x8c unknown_08c */
-        0x0u, /* 0x90 flags_090 */
-        {0x0u}, /* 0x94 flags_094 */
-        {0, 0, 0, 0}, /* 0x98 flags_098 */
-        0x1u, /* 0x9c layer_mask_special */
-        0x1u, /* 0xa0 layer_mask */
-        0x1u, /* 0xa4 layer_mask_medium */
-        0x1u, /* 0xa8 layer_mask_low */
-        0x1u, /* 0xac layer_mask_dead */
-        0x0u, /* 0xb0 ride_layers_off */
-        2.75f, /* 0xb4 layer_distance_medium */
-        5.5f, /* 0xb8 layer_distance_low */
-        {10.0f, 5.0f, 0.0f, 0.0f}, /* 0xbc ai_update_distances */
-        {4, 2, 0, 0}, /* 0xcc ai_update_intervals */
-        {-1, -1, -1, -1, -1, -1}, /* 0xd0 sfx_misc */
-        -1, /* 0xdc sfx_die */
-        -1, /* 0xde sfx_hurt */
-        -1, /* 0xe0 sfx_grunt */
-        -1, /* 0xe2 sfx_engine */
-        {-1}, /* 0xe4 sfx_shoot */
-        -1, /* 0xe6 sfx_footstep */
-        -1, /* 0xe8 sfx_chatter */
-        -1, /* 0xea sfx_sabre */
-        -1, /* 0xec weapon_model */
-        1110, /* 0xee coin_value */
-        0, /* 0xf0 shadow_locators */
-        0, /* 0xf2 thrust_locators */
-        1, /* 0xf4 hitpoints */
-        0, /* 0xf5 shield_hitpoints */
-        255, /* 0xf6 blob_shadow_alpha */
-        0, /* 0xf7 unknown_0f7 */
-        {-1, -1, -1, -1}, /* 0xf8 weapon_joints */
-        {{-1, -1, -1, -1}}, /* 0xfc weapon_shoot_joints */
-        {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, /* 0x100 streak_joints */
-        {-1, -1}, /* 0x108 hand_locators */
-        {-1, -1}, /* 0x10a grapple_locators */
-        {-1}, /* 0x10c rocket_locator */
-        {-1}, /* 0x10d shield_locator */
-        {-1}, /* 0x10e head_locator */
-        {-1}, /* 0x10f collision_locator */
-        -1, /* 0x110 thingy_locator */
-        -1, /* 0x111 helmet_locator */
-        -1, /* 0x112 throw_locator */
-        -1, /* 0x113 ride_locator */
-        -1, /* 0x114 poo_locator */
-        -1, /* 0x115 hair_layer */
-        {255}, /* 0x116 hover_fall_mode */
-        {255}, /* 0x117 streak_color */
-        -1, /* 0x118 head_joint */
-        -1, /* 0x119 cloak_joint */
-        -1, /* 0x11a cloak_joint_2 */
-        -1, /* 0x11b place_locator */
-        -1, /* 0x11c cape_layer */
-        -1, /* 0x11d extra_character_locator */
-        0, /* 0x11e flags_11e */
-        0, /* 0x11f layer_count */
-    };
 }
 
 extern "C" {
@@ -5820,29 +4920,10 @@ extern "C" {
 
 extern "C" {
     i32 Tag_DoneAny = 0;
-    i32 Tag_DoneFirst = 0;
     u32 GAMEPAD_SKIP = PAD_BUTTON_TRIANGLE | PAD_BUTTON_CROSS | PAD_BUTTON_START;
 }
 
 extern "C" {
-    i16 id_SNOWTROOPER = -1;
-    i16 id_DEATHSTARTROOPER = -1;
-    i16 id_MOONCAR = -1;
-    i16 id_MAPCAR = -1;
-    i16 id_IMPERIALSPY = -1;
-    i16 id_GREEDO = -1;
-    i16 id_BOSSK = -1;
-    i16 id_CANTINABAND = -1;
-}
-
-extern "C" {
-    KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState = {0};
-}
-
-extern "C" {
-    u8 CheatC3poBitsEnabled = 0;
-    i32 deathstar_hold_count = 0;
-    i32 CruiserD_LiftChase = 0;
     i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
     TIMER ChallengeTimer = {0};
 }
@@ -5852,117 +4933,16 @@ extern "C" {
 }
 
 extern "C" {
-    ANIM_REDIRECT_VIEW AnimRedirectList_LSW[41] = {
-        {"ride_bantha_new_blasterchar",      112, {0, 0}},
-        {"ride_bantha_new_jedichar",         112, {0, 0}},
-        {"ride_bantha_old_blasterchar",      112, {0, 0}},
-        {"ride_bantha_old_jedichar",         112, {0, 0}},
-        {"ride_dewback_new_blasterchar",     131, {0, 0}},
-        {"ride_dewback_new_jedichar",        131, {0, 0}},
-        {"ride_dewback_old_blasterchar",     131, {0, 0}},
-        {"ride_dewback_old_jedichar",        131, {0, 0}},
-        {"ride_landspeeder_new_blasterchar", 132, {0, 0}},
-        {"ride_landspeeder_new_jedichar",    132, {0, 0}},
-        {"ride_landspeeder_old_blasterchar", 132, {0, 0}},
-        {"ride_landspeeder_old_jedichar",    132, {0, 0}},
-        {"ride_tauntaun_new_blasterchar",    134, {0, 0}},
-        {"ride_tauntaun_new_jedichar",       134, {0, 0}},
-        {"ride_tauntaun_old_blasterchar",    134, {0, 0}},
-        {"ride_tauntaun_old_jedichar",       134, {0, 0}},
-        {"ride_speederbike_new_blasterchar", 192, {0, 0}},
-        {"ride_speederbike_new_jedichar",    192, {0, 0}},
-        {"ride_speederbike_old_blasterchar", 192, {0, 0}},
-        {"ride_speederbike_old_jedichar",    192, {0, 0}},
-        {"ride_hrc_new_blasterchar",         193, {0, 0}},
-        {"ride_hrc_new_jedichar",            193, {0, 0}},
-        {"ride_hrc_old_blasterchar",         193, {0, 0}},
-        {"ride_hrc_old_jedichar",            193, {0, 0}},
-        {"throw_new_blasterchar",            101, {0, 0}},
-        {"throw_new_jedichar",               101, {0, 0}},
-        {"throw_old_blasterchar",            101, {0, 0}},
-        {"throw_old_jedichar",               101, {0, 0}},
-        {"ride_generic_new_blasterchar",     108, {0, 0}},
-        {"ride_generic_new_jedichar",        108, {0, 0}},
-        {"ride_generic_old_blasterchar",     108, {0, 0}},
-        {"ride_generic_old_jedichar",        108, {0, 0}},
-        {"splat_new_blasterchar",            133, {0, 0}},
-        {"splat_new_jedichar",               133, {0, 0}},
-        {"splat_old_blasterchar",            133, {0, 0}},
-        {"splat_old_jedichar",               133, {0, 0}},
-        {"ride_tcannon_new_blasterchar",     194, {0, 0}},
-        {"ride_tcannon_new_jedichar",        194, {0, 0}},
-        {"ride_tcannon_old_blasterchar",     194, {0, 0}},
-        {"ride_tcannon_old_jedichar",        194, {0, 0}},
-        {NULL,                               0,   {0, 0}},
-    };
-    ANIM_REDIRECT_VIEW AnimRedirectList_Batman[1] = {
-        {NULL, 0, {0, 0}},
-    };
-}
-
-extern "C" {
     i32 (*AlternateGameCallback)(GAMEOBJECT *object) = NULL;
     i32 (*Hub_PanelBusyFn)(void) = NULL;
-    const char *InitAsciiUp = "\xC2\xAC";
-    const char *InitAsciiLeft = "<";
-    const char *InitAsciiRight = ">";
-    const char *InitAsciiBigArrow = "\xC2\xA4";
-    i32 CompletionPointInfo[7] = {0};
 
-    i16 LEGOACT_BUILD = -1;
-    i16 LEGOACT_SUPERCARRY_PICKUP = -1;
-    i16 LEGOACT_SUPERCARRY_IDLE = -1;
-    i16 LEGOACT_SUPERCARRY_THROW = -1;
-    i16 LEGOACT_SUPERCARRY_PUTDOWN = -1;
-    i16 LEGOACT_SUPERCARRY_BASH = -1;
-    i16 LEGOACT_SUPERCARRY_JUMP = -1;
-    i16 LEGOACT_SUPERCARRY_LAND = -1;
-    i16 LEGOACT_SUPERCARRY_FALLLAND = -1;
-    i16 LEGOACT_MAGNET_TIPTOE = -1;
-    i16 LEGOACT_MAGNET_WALK = -1;
-    i16 LEGOACT_MAGNET_RUN = -1;
-    i16 LEGOACT_MAGNET_LAND = -1;
-    i16 LEGOACT_WHIP_CRACK = -1;
-    i16 LEGOACT_WHIP_GRAB = -1;
-    i16 LEGOACT_WHIP_BREAK = -1;
-    i16 LEGOACT_TEETER = -1;
-    i16 LEGOACT_WHIP_START = -1;
-    i32 LEGOCONTEXT_DROPIN = -1;
-    i32 LEGOCONTEXT_LAND_SPECIAL = -1;
-    i32 LEGOMENU_TITLES = -1;
-    i32 LEGOMENU_NEWGAME = -1;
     i32 LEGOMENU_PAUSEMAIN = -1;
     i32 LEGOMENU_CREDITS = -1;
     i32 LEGOCAMMODE_DOORCUT = -1;
     i32 LEGOCAMMODE_OBSTACLE = -1;
-    i32 LegoGameDebrisSplash = -1;
-    i32 POINTS_PER_CHARACTER = 0;
-    i32 POINTS_PER_SUPERSTORY = 0;
-    i32 POINTS_PER_SUPERBONUSCOMPLETE = 0;
-    i32 POINTS_PER_TIMETRIAL = 0;
-    i32 POINTS_PER_STORY = 0;
-    i32 POINTS_PER_CHALLENGE = 0;
-    i32 POINTS_PER_MINIKIT = 0;
-    i32 POINTS_PER_TRUEJEDI = 0;
-    i32 POINTS_PER_REDBRICK = 0;
-    i32 POINTS_PER_MISSION = 0;
-    i32 POINTS_PER_CHEAT = 0;
-    i32 POINTS_PER_HINT = 0;
-    i32 POINTS_PER_GOLDBRICK = 0;
-    i16 ShopHintTextIds[15] = {630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, -1};
     i32 PlayerHitPointsTwoHearts = 1;
-    i32 ConvertOldPickups = 0;
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 LEGOHINT_BUILD = -1;
-    /* These bytes are MENUEXITR, MENUEXITG and the MENULOST* blend
-       endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
-    u8 AlternateHudColourBytes[8] = {255, 191, 191, 95, 128, 255, 31, 128};
-    u8 AlternateHudRgb[3] = {0, 0, 0};
-    i16 TechnoDefaultObject = 85;
-}
-
-extern "C" {
-    i16 id_SERVICECAR = -1;
 }
 
 extern "C" {
@@ -5992,10 +4972,6 @@ extern "C" {
 
 extern "C" {
     char SaveProductCode[12] = {0};
-    const char *SaveIconName = "lego.ico";
-    char SaveUnicodeName[20] = "LEGO Star Wars Saga";
-    /* Special the save icon is drawn from (LoadPermLoadSaveIconScene). */
-    char *lsw_memcard_objname = "mem_card";
 }
 
 extern "C" {
@@ -6031,59 +5007,21 @@ extern "C" {
 
 extern "C" {
     u32 LEGO_AIPATHCNX_BIGJUMP = 0;
-    u32 LEGO_AIPATHCNX_REQUIRESPERMISSION = 0;
-    u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK = 0;
-    u32 LEGO_AIPATHCNX_JUMP_NOW = 0;
-    u32 LEGO_AIPATHCNX_DONT_JUMP_NOW = 0;
 }
 
 extern "C" {
     i16 id_WATTO = -1;
-    u8 DroidCheat32Enabled = 0;
 }
 
 extern "C" {
-
-    i32 FalconDebKey[2] = {-1, -1};
 
     TIMER PauseTimer = {0};
 
-    i32 makebaddiesforgetinresetbits = 0;
-
-    i32 reset_reimport = 0;
-
-    i32 come_from_an_editor = 0;
-}
-
-extern "C" {
-    i32 radios_playing = 0;
 }
 
 extern "C" {}
 
 extern "C" {}
-
-extern "C" {
-    i32 CustomiseMode[2] = {0};
-
-    i32 makeplayerlist_freeplay = 0;
-}
-
-extern "C" {
-    struct gameobject_s *Grievous_obj = 0;
-
-    struct gizaimessage_s *KashyyykA_msg_TotalWookies = 0;
-
-    struct gizaimessage_s *KashyyykA_msg_WookiesToRescue = 0;
-
-    struct gizaimessage_s *vader_b_complete_msg = 0;
-
-    u8 vader_b_playersDead = 0;
-}
-
-extern "C" {
-    struct shopitem_s *HintItems = 0;
-}
 
 extern "C" {
     i32 g_lowEndLevelBehaviour = 1;
@@ -6118,54 +5056,17 @@ extern "C" {
 }
 
 extern "C" {
-    struct anakin_door_s *AnakinC = 0;
-}
-
-extern "C" {
-    struct PODSPRINTNETPACKET_s *podsprint_netpacket = 0;
-
-    struct gameobject_s *Maul_obj = 0;
-
-    void *kaminoe_netpacket = 0;
-
-    i32 LevForce = 0;
-
-    i32 mushroom_collapse = 0;
-
-    f32 mushroom0_along = 65.0f;
-
-    f32 mushroom2_along = 85.0f;
-
-    f32 mushroom_time_increment = 1.0f;
-
-    i32 mushroom_nattempts_per_increment = 0;
-}
-
-extern "C" {
     TIMER SuperStoryTimer = {0};
 }
 
 extern "C" {
-    struct STATUS_STAGE_s *StatusStages = 0;
 
     STATUSPACKET_s StatusPacket = {0};
 
     i32 status_prompt = 0;
 }
 
-extern "C" {
-    i32 PodRace_nsnipers = 0;
-
-    f32 PodRace_sniper_fire_time = 0.25f;
-}
-
 extern "C" {}
-
-extern "C" {
-    i16 id_MINIXWING = -1;
-
-    i16 id_MINIROYALSTARSHIP = -1;
-}
 
 extern "C" {}
 
@@ -6178,36 +5079,7 @@ extern "C" {
 
 extern "C" {}
 
-extern "C" {
-    f32 cable_damping = 2.0f;
-
-    f32 cable_gravity = 3.0f;
-
-    f32 cable_ground_damping = 20.0f;
-    f32 nsegments_per_unit = 6.0f;
-    f32 cable_slack = 1.0f;
-    f32 slack_factor = 1.0f;
-
-    i32 atat_locators[4] = {0, 1, 2, 3};
-
-    f32 cable_speed = 20.0f;
-}
-
 extern "C" {}
-
-extern "C" {
-    f32 test_missile_scale = 8.0f;
-}
-
-extern "C" {
-    f32 PodRace_sniper_start_fire_radius = 90.0f;
-
-    f32 PodRace_sniper_fire_radius = 2.5f;
-
-    f32 PodRace_sniper_fire_range_time = 2.0f;
-
-    SNIPER_s PodRace_snipers[10] = {0};
-}
 
 extern "C" {
 
@@ -6343,36 +5215,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct GIZFORCE_s *force_array[4] = {0};
-
-    f32 sockstep = 10.0f;
-
-    f32 test_factor = 10.0f;
-
-    f32 test_seek_rate = 0.01f;
-
-    f32 max_speed_mul = 1.3f;
-
-    f32 min_speed_mul = 0.5f;
-
-    f32 sebulba_goal_ahead = 10.0f;
-    f32 sebulba_catchup_dist = -3.0f;
-    f32 sebulba_catchup_speed_mul = 1.5f;
-    f32 sebulba_catchup_lerpf = 5.0f;
-    f32 sebulba_fallback_dist = 150.0f;
-    f32 sebulba_fallback_lerpf = 5.0f;
-    f32 sebulba_goal_ahead_vals[4] = {100.0f, 75.0f, 50.0f, 25.0f};
-    f32 sebulba_fallback_speed_mul = 0;
-    f32 sebulba_lerpf = 0.5f;
-
-    i32 do_mine = 0;
-}
-
-extern "C" {
-    i32 bombgen_gizmotype_id = -1;
-}
-
-extern "C" {
     char edbits_level_filename[256] = {0};
 
     char edbits_general_save_directory[256] = {0};
@@ -6421,75 +5263,10 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    void *factoryb_netpacket = 0;
-
-    struct gizmo_s *forcetube = 0;
-
-    nuhspecial_s green_light = {0};
-}
-
-extern "C" {
-    i32 hub_character_ready = -1;
-    i32 CharacterLoadAreaModels = 1;
-}
-
-extern "C" {
     DETONATOR_s Detonator[10] = {0};
 }
 
 extern "C" {
-    i32 netcamera = 0;
-
-    i32 movegamecamera_forcesock = -1;
-
-    f32 PodCamDist = 0;
-
-    NUVEC CustomisePos[2] = {0};
-
-    f32 CamStopBlend = 1.0f;
-}
-
-extern "C" {
-    __declspec(align(16)) NUMTX CutCamMtx = {0};
-
-    f32 newgamecamtime = 0;
-}
-
-extern "C" {
-
-    NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
-
-    f32 testmovef = 0.005f;
-}
-
-extern "C" {
-    f32 CamTitlesSplineEnd = 0.95f;
-
-    f32 CamTitlesBonusTime = 51.0f;
-
-    f32 CamShopBlendTime = 1.0f;
-
-    f32 CamNewGameDuration = 10.0f;
-
-    f32 CamPodSprintStartDist = 12.0f;
-
-    f32 CamPodSprintEndDist = 2.0f;
-
-    f32 CamPodSprintHeight = 0.65f;
-
-    f32 CamPodSprintRollScale = 0.6f;
-
-    f32 CamPodSprintAngleSeek = 7.0f;
-
-    f32 CamPodShakeScale = 2.0f;
-
-    f32 CamWalkerRadius = 5.0f;
-
-    f32 CamWalkerLift = 4.0f;
-
-    f32 CamDewbackRadius = 5.0f;
-
-    f32 CamDewbackLift = 1.5f;
 
     // Frontend strings: language-selected index/string tables.
 
@@ -6664,434 +5441,11 @@ extern "C" {
         {38, "Show Game Controls"                                           },
         {39, NULL                                                           },
     };
-    f32 MenuNewGameY = -0.5f;
 }
 
 extern "C" {}
 
 extern "C" {}
-
-extern "C" {
-    GAMEAUDIO GameAudioLsw = {
-        GameAudio_OverrideFootStep_LSW,
-        GameAudio_CheckReverb_LSW,
-        {"Jp_Ami_Jump",
-          NULL,             "Jp_OQ_Jump",
-          "Jp_OQ_DJump",                     "JumpLunge",
-          "JumpSlam",                                        "Jp_OQ_BackF",
-          "FS_JLandS",                                                         "FS_JLandM",
-          "FS_DLandS",                                                                         "FS_DLandM",
-          "JediLunge",                                                                                         "JediSlam",
-          "Grv_GrievAngryJump",                                                                                               NULL,
-          "FS_JWalkS",                                                                                                                 "FS_JWalkM",
-          "FS_DWalkS",                                                                                                                                 "FS_DWalkM",
-          "FS_WaterWade",                                                                                                                                              "Leia_grunt",
-          "Rebel_grunt",                                                                                                                                                                "Leia_Hurt",
-          "Luke_Hurt",                                                                                                                                                                                  "Explode1",
-          "exp_thermalDet",                                                                                                                                                                                            "DroidDie01",
-          "Leia_Death",                                                                                                                                                                                                                 "Luke_Death",
-          "CountdownTimerTick",                                                                                                                                                                                                                          "CountdownTimerTock",
-          "SwChar",                                                                                                                                                                                                                                                               NULL,
-          "SwChar",                                                                                                                                                                                                                                                                        "SwChar",
-          "ToggleChar",                                                                                                                                                                                                                                                                                 "ToggleChar",
-          "MK-Loop",                                                                                                                                                                                                                                                                                                     ScorePanelName,
-          "PickupHeart",                                                                                                                                                                                                                                                                                                                    "BlastHit",
-          "BlastRic",                                                                                                                                                                                                                                                                                                                                      "SabDefBlas",
-          "StatusAward",                                                                                                                                                                                                                                                                                                                                                    "TrueJedi_100pc",
-          "WipeScreen",                                                                                                                                                                                                                                                                                                                                                                          "NegC_MagnetCoil",
-          "MenuMove",                                                                                                                                                                                                                                                                                                                                                                                                  "MenuSelect",
-          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                                                                   "MenuNoEntry",
-          "Explode1",                                                                                                                                                                                                                                                                                                                                                                                                                                     "imp_punch",
-          "ui_DoubleScoreText",                                                                                                                                                                                                                                                                                                                                                                                                                                           "MenuSelect",
-          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                                                                                                                      "fly_paddle_rotate_lp",
-          "fly_paddle_stuck",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         dat_00758c14,
-          "LegoForm",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  KillPartsLegoSingleText,
-          "SaberOff",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "SaberOn",
-          "SaberSaber01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "SaberMove01",
-          "SaberSmack01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          "BlasterHolster",
-          "BlasterDraw",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                NULL,
-          NULL,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  "FS_WaterOut",
-          "Block_Shove",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "Block_Push_Lp",
-          "Blaster",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "wpn_punch",
-          "Honk",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      "WhipSwish",
-          "WhipHit",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "WhipNowt",
-          "FallApart01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "PowerUp_On",
-          "PowerUp_Loop",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "PowerUp_Off",
-          "env_padLight_on"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            },
-        {-1,            0, 0,            0, 0,           0, 0,             0, 0,           0, 0,           0, 0,          0, 0,    0, 0,           0, 0,           0, 0,            0, 0,           0, 0,          0, 0,            0, 0,            0, 0,                    0, 0,    0, 0,        0, 0,            0, 0,              0, 0,          0,
-          0,                                                                                                                                                                                                                                                                                                                                                             0, 0,                0, 0,                 0, 0,            0, 0,             0, 0,           0, 0,            0, 0,                      0, 0,            0, 0,                       0, 0,         0, 0,             0, 0,                0, 0,    0, 0,             0, 0,               0, 0,           0, 0,           0, 0,          0, 0,            0, 0,             0}
-    };
-    GAMEAUDIO GameAudioAlternate = {
-        NULL,
-        NULL,
-        {"Jump",
-          NULL,      NULL,
-          NULL,               NULL,
-          NULL,                        NULL,
-          "Land",                               "Land",
-          "Land",                                          "Land",
-          "Land",                                                     "Land",
-          "Land",                                                                "Land",
-          "FS_JWalkS",                                                                      "FS_JWalkM",
-          "FS_DWalkS",                                                                                      "FS_DWalkM",
-          "FS_WaterWade",                                                                                                   "Girl_Grunt",
-          "Boy_Grunt",                                                                                                                       "Girl_Hurt",
-          "Boy_Hurt",                                                                                                                                        "Explode1",
-          "exp_thermalDet",                                                                                                                                                 "DroidDie01",
-          "Girl_Death",                                                                                                                                                                      "Boy_Death",
-          NULL,                                                                                                                                                                                              NULL,
-          "SwChar",                                                                                                                                                                                                   "MenuNoEntry",
-          "SwChar",                                                                                                                                                                                                                     "SwChar",
-          "ToggleChar",                                                                                                                                                                                                                              "ToggleChar",
-          "MK-Loop",                                                                                                                                                                                                                                                  ScorePanelName,
-          "PickupHeart",                                                                                                                                                                                                                                                                 "BlastHit",
-          "ricochet",                                                                                                                                                                                                                                                                                   "SabDefBlas",
-          "StatusAward",                                                                                                                                                                                                                                                                                                 "TrueJedi_100pc",
-          "WipeScreen",                                                                                                                                                                                                                                                                                                                       "NegC_MagnetCoil",
-          "MenuMove",                                                                                                                                                                                                                                                                                                                                               "MenuSelect",
-          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                "MenuNoEntry",
-          "Explode1",                                                                                                                                                                                                                                                                                                                                                                                  "imp_punch",
-          "ui_DoubleScoreText",                                                                                                                                                                                                                                                                                                                                                                                        "MenuSelect",
-          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                                                                   "fly_paddle_rotate_lp",
-          "fly_paddle_stuck",                                                                                                                                                                                                                                                                                                                                                                                                                                      dat_00758c14,
-          "LegoForm",                                                                                                                                                                                                                                                                                                                                                                                                                                                               "SaberOff",
-          "SaberOn",                                                                                                                                                                                                                                                                                                                                                                                                                                                                               "SaberSaber01",
-          "SaberMove01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "SaberSmack01",
-          "BlasterHolster",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "BlasterDraw",
-          GrapAttach_text,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 GrapDetach_text,
-          "FS_WaterOut",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "Block_Shove",
-          "Block_Push_Lp",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "Blaster",
-          "Punch",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "Honk",
-          "WhipSwish",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "WhipHit",
-          "WhipNowt",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "FallApart01",
-          "PowerUp_On",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "PowerUp_Loop",
-          "PowerUp_Off",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     "env_padLight_on",
-          NULL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   },
-        {-1,     0, 0,    0, 0,    0, 0,    0, 0,      0, 0,      0, 0,      0, 0,      0, 0,           0, 0,           0, 0,            0, 0,           0, 0,          0, 0,            0, 0,           0, 0,    0, 0,             0, 0,        0, 0,            0, 0,              0, 0,          0,
-          0,                                                                                                                                                                                                                                                                                                          0, 0,                0, 0,                 0, 0,            0, 0,             0, 0,           0, 0,            0, 0,                      0, 0,            0, 0,          0, 0,              0, 0,              0, 0,             0, 0,               0, 0,             0, 0,         0, 0,      0, 0,         0, 0,             0, 0,              0, 0,                 0}
-    };
-}
-
-extern "C" {
-    LEVEL_OBJECT_CONFIG ObjTab[750] = {
-        {4,   0, 0, const_cast<char *>("save_icon")                           },
-        {1,   0, 0, const_cast<char *>("parallax")                            },
-        {1,   0, 0, const_cast<char *>("legal")                               },
-        {1,   0, 0, const_cast<char *>("status_01")                           },
-        {1,   0, 0, const_cast<char *>("status_02")                           },
-        {1,   0, 0, const_cast<char *>("status_03")                           },
-        {1,   0, 0, const_cast<char *>("status_04")                           },
-        {1,   0, 0, const_cast<char *>("status_05")                           },
-        {1,   0, 0, const_cast<char *>("status_06")                           },
-        {1,   0, 0, const_cast<char *>("rod")                                 },
-        {1,   0, 0, const_cast<char *>("phone")                               },
-        {1,   0, 0, const_cast<char *>("slave1_level")                        },
-        {0,   0, 0, const_cast<char *>("machinegun")                          },
-        {0,   0, 0, "blaster"                                                 },
-        {0,   0, 0, const_cast<char *>("walkie_talkie")                       },
-        {0,   0, 0, const_cast<char *>("pistolgrey")                          },
-        {0,   0, 0, const_cast<char *>("pistolchrome")                        },
-        {0,   0, 0, const_cast<char *>("lightsabrehandle")                    },
-        {0,   0, 0, const_cast<char *>("doublelightsabrehandle")              },
-        {0,   0, 0, const_cast<char *>("bentlightsabre")                      },
-        {0,   0, 0, "gun"                                                     },
-        {0,   0, 0, const_cast<char *>("bowcaster")                           },
-        {0,   0, 0, const_cast<char *>("blaster_blue")                        },
-        {0,   0, 0, const_cast<char *>("submachinegun")                       },
-        {0,   0, 0, const_cast<char *>("poop")                                },
-        {0,   0, 0, const_cast<char *>("peri")                                },
-        {0,   0, 0, const_cast<char *>("spear")                               },
-        {0,   0, 0, const_cast<char *>("spearblack")                          },
-        {0,   0, 0, const_cast<char *>("storm_target")                        },
-        {0,   0, 0, const_cast<char *>("bounty_target")                       },
-        {0,   0, 0, const_cast<char *>("lever")                               },
-        {0,   0, 0, const_cast<char *>("lever_base")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob1")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob2")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob3")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob4")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob5")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob6")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob7")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob8")                          },
-        {0,   0, 0, const_cast<char *>("lever_nob9")                          },
-        {0,   0, 0, const_cast<char *>("lever_glow")                          },
-        {0,   0, 0, const_cast<char *>("lever_on")                            },
-        {0,   0, 0, const_cast<char *>("lever_off")                           },
-        {0,   0, 0, const_cast<char *>("hack_control")                        },
-        {0,   0, 0, const_cast<char *>("hack_door1")                          },
-        {0,   0, 0, const_cast<char *>("hack_door2")                          },
-        {0,   0, 0, const_cast<char *>("winch_base")                          },
-        {0,   0, 0, const_cast<char *>("winch_bracket")                       },
-        {0,   0, 0, const_cast<char *>("winch")                               },
-        {0,   0, 0, const_cast<char *>("batarang")                            },
-        {0,   0, 0, const_cast<char *>("robinarang")                          },
-        {0,   0, 0, const_cast<char *>("bullet")                              },
-        {0,   1, 0, const_cast<char *>("pistolflash")                         },
-        {0,   0, 0, const_cast<char *>("signal_base")                         },
-        {0,   0, 0, const_cast<char *>("bat_signal_off")                      },
-        {0,   0, 0, const_cast<char *>("bat_signal_on")                       },
-        {0,   0, 0, const_cast<char *>("bat_signal_light")                    },
-        {0,   0, 0, const_cast<char *>("robin_signal_off")                    },
-        {0,   0, 0, const_cast<char *>("robin_signal_on")                     },
-        {0,   0, 0, const_cast<char *>("robin_signal_light")                  },
-        {0,   0, 0, const_cast<char *>("grapple_point")                       },
-        {0,   0, 0, const_cast<char *>("grapple_point1")                      },
-        {0,   0, 0, const_cast<char *>("tightrope_base1")                     },
-        {0,   0, 0, const_cast<char *>("tightrope_base2")                     },
-        {0,   0, 0, const_cast<char *>("metal_bit1")                          },
-        {0,   0, 0, const_cast<char *>("metal_bit2")                          },
-        {0,   0, 0, const_cast<char *>("metal_bit3")                          },
-        {0,   0, 0, const_cast<char *>("metal_bit4")                          },
-        {0,   0, 0, const_cast<char *>("metal_bit5")                          },
-        {0,   0, 0, const_cast<char *>("metal_bit6")                          },
-        {0,   0, 0, const_cast<char *>("metal_bit7")                          },
-        {0,   0, 0, const_cast<char *>("attract_o_matic")                     },
-        {0,   0, 0, const_cast<char *>("transform1a")                         },
-        {0,   0, 0, const_cast<char *>("transform1b")                         },
-        {0,   0, 0, const_cast<char *>("ledge_1")                             },
-        {0,   0, 0, const_cast<char *>("ledge_2")                             },
-        {0,   0, 0, const_cast<char *>("ledge_3")                             },
-        {0,   0, 0, const_cast<char *>("ledge_4")                             },
-        {0,   0, 0, const_cast<char *>("ledge_5")                             },
-        {0,   0, 0, const_cast<char *>("ledge_6")                             },
-        {0,   0, 0, const_cast<char *>("door_1_l")                            },
-        {0,   0, 0, const_cast<char *>("door_1_r")                            },
-        {0,   0, 0, const_cast<char *>("zipup_hook")                          },
-        {0,   0, 0, const_cast<char *>("zipup_hook1")                         },
-        {0,   0, 0, const_cast<char *>("zipup_target")                        },
-        {0,   0, 0, const_cast<char *>("target")                              },
-        {0,   0, 0, const_cast<char *>("Spinner_default_Base")                },
-        {0,   0, 0, const_cast<char *>("Spinner_default_Arm")                 },
-        {0,   0, 0, const_cast<char *>("carrot")                              },
-        {1,   0, 0, const_cast<char *>("basketball")                          },
-        {0,   0, 1, const_cast<char *>("blasterbolt")                         },
-        {0,   0, 1, const_cast<char *>("blasterboltglow")                     },
-        {0,   0, 1, const_cast<char *>("blasterbolt_red")                     },
-        {0,   0, 1, const_cast<char *>("blasterboltglow_red")                 },
-        {0,   0, 1, const_cast<char *>("blasterbolt_green")                   },
-        {0,   0, 1, const_cast<char *>("blasterboltglow_green")               },
-        {0,   0, 1, const_cast<char *>("blasterbolt_blue")                    },
-        {0,   0, 1, const_cast<char *>("blasterboltglow_blue")                },
-        {0,   0, 1, const_cast<char *>("double_blasterBolt")                  },
-        {0,   0, 1, const_cast<char *>("double_blasterBoltglow")              },
-        {0,   0, 1, const_cast<char *>("lightsabrered")                       },
-        {0,   0, 1, const_cast<char *>("lightsabreglowred")                   },
-        {0,   0, 1, const_cast<char *>("lightsabregreen")                     },
-        {0,   0, 1, const_cast<char *>("lightsabreglowgreen")                 },
-        {0,   0, 1, const_cast<char *>("lightsabreblue")                      },
-        {0,   0, 1, const_cast<char *>("lightsabreglow")                      },
-        {0,   0, 1, const_cast<char *>("lightsabrepurple")                    },
-        {0,   0, 1, const_cast<char *>("lightsabreglowpurple")                },
-        {0,   0, 1, const_cast<char *>("doublelightsabrered")                 },
-        {0,   0, 1, const_cast<char *>("doublelightsabreglow")                },
-        {3,   0, 1, const_cast<char *>("destroyershield")                     },
-        {3,   0, 1, const_cast<char *>("destroyershield_red")                 },
-        {5,   0, 1, const_cast<char *>("xwingbolt")                           },
-        {5,   0, 1, const_cast<char *>("xwingboltglow")                       },
-        {5,   0, 1, const_cast<char *>("laser_green")                         },
-        {5,   0, 1, const_cast<char *>("laser_green_glow")                    },
-        {0,   0, 1, const_cast<char *>("green_blob")                          },
-        {0,   0, 1, const_cast<char *>("green_blob_glow")                     },
-        {5,   0, 1, const_cast<char *>("xwing_thruster")                      },
-        {5,   0, 1, const_cast<char *>("xwing_thruster_glow")                 },
-        {5,   0, 1, const_cast<char *>("photontorpedo")                       },
-        {5,   0, 1, const_cast<char *>("photontorpedoglow")                   },
-        {5,   0, 1, const_cast<char *>("photontorpedoglow1")                  },
-        {5,   0, 1, const_cast<char *>("jedi_starfighter_blasterBolt")        },
-        {5,   0, 1, const_cast<char *>("jedi_starfighter_blasterBoltglow")    },
-        {0,   0, 2, const_cast<char *>("blasterbolt_ref")                     },
-        {0,   0, 2, const_cast<char *>("blasterboltglow_ref")                 },
-        {0,   0, 2, const_cast<char *>("blasterbolt_red_ref")                 },
-        {0,   0, 2, const_cast<char *>("blasterboltglow_red_ref")             },
-        {0,   0, 2, const_cast<char *>("blasterbolt_green_ref")               },
-        {0,   0, 2, const_cast<char *>("blasterboltglow_green_ref")           },
-        {0,   0, 2, const_cast<char *>("blasterbolt_blue_ref")                },
-        {0,   0, 2, const_cast<char *>("blasterboltglow_blue_ref")            },
-        {0,   0, 2, const_cast<char *>("double_blasterbolt_ref")              },
-        {0,   0, 2, const_cast<char *>("double_blasterboltGlow_ref")          },
-        {0,   0, 2, const_cast<char *>("lightsabrered_ref")                   },
-        {0,   0, 2, const_cast<char *>("lightsabreglowred_ref")               },
-        {0,   0, 2, const_cast<char *>("lightsabregreen_ref")                 },
-        {0,   0, 2, const_cast<char *>("lightsabreglowgreen_ref")             },
-        {0,   0, 2, const_cast<char *>("lightsabreblue_ref")                  },
-        {0,   0, 2, const_cast<char *>("lightsabreglow_ref")                  },
-        {0,   0, 2, const_cast<char *>("lightsabrepurple_ref")                },
-        {0,   0, 2, const_cast<char *>("lightsabreglowpurple_ref")            },
-        {0,   0, 2, const_cast<char *>("doublelightsabrered_ref")             },
-        {0,   0, 2, const_cast<char *>("doublelightsabreglow_ref")            },
-        {3,   0, 2, const_cast<char *>("destroyershield_ref")                 },
-        {3,   0, 2, const_cast<char *>("destroyershield_red_ref")             },
-        {0,   0, 2, const_cast<char *>("xwingbolt_ref")                       },
-        {0,   0, 2, const_cast<char *>("xwingboltglow_ref")                   },
-        {0,   0, 2, const_cast<char *>("laser_green_ref")                     },
-        {0,   0, 2, const_cast<char *>("laserglow_green_ref")                 },
-        {0,   0, 2, const_cast<char *>("green_blob_ref")                      },
-        {0,   0, 2, const_cast<char *>("green_blob_glow_ref")                 },
-        {0,   0, 2, const_cast<char *>("xwing_thruster_ref")                  },
-        {0,   0, 2, const_cast<char *>("xwing_thruster_glow_ref")             },
-        {0,   0, 2, const_cast<char *>("photontorpedo_ref")                   },
-        {0,   0, 2, const_cast<char *>("photontorpedo_glow_ref")              },
-        {0,   0, 2, const_cast<char *>("photontorpedo_glow1_ref")             },
-        {5,   0, 2, const_cast<char *>("jedi_starfighter_blasterBolt_ref")    },
-        {5,   0, 2, const_cast<char *>("jedi_starfighter_blasterBoltglow_ref")},
-        {3,   0, 0, const_cast<char *>("question_icon")                       },
-        {3,   0, 0, const_cast<char *>("mouse_glow")                          },
-        {3,   0, 0, const_cast<char *>("silhouette_icon")                     },
-        {3,   0, 0, const_cast<char *>("silhouette_icon1")                    },
-        {0,   0, 0, const_cast<char *>("icon_back_green")                     },
-        {0,   0, 0, const_cast<char *>("icon_back_blue")                      },
-        {0,   0, 0, const_cast<char *>("icon_back_neutral")                   },
-        {0,   0, 0, const_cast<char *>("icon_back_gold")                      },
-        {0,   0, 0, const_cast<char *>("coin_side1")                          },
-        {0,   0, 0, const_cast<char *>("coin_side2")                          },
-        {0,   0, 0, const_cast<char *>("coin_side3")                          },
-        {0,   0, 0, const_cast<char *>("coin_side4")                          },
-        {0,   0, 0, const_cast<char *>("coin_side5")                          },
-        {0,   0, 0, const_cast<char *>("coin_side6")                          },
-        {0,   0, 0, const_cast<char *>("coin_side7")                          },
-        {0,   0, 0, const_cast<char *>("coin_side8")                          },
-        {0,   0, 0, const_cast<char *>("coin_side9")                          },
-        {0,   0, 0, const_cast<char *>("coin_side10")                         },
-        {0,   0, 0, const_cast<char *>("silver_pan_coin1")                    },
-        {0,   0, 0, const_cast<char *>("silver_pan_coin2")                    },
-        {0,   0, 0, const_cast<char *>("silver_pan_coin3")                    },
-        {0,   0, 0, const_cast<char *>("silver_pan_coin4")                    },
-        {0,   0, 0, const_cast<char *>("silver_coin1")                        },
-        {0,   0, 0, const_cast<char *>("silver_coin2")                        },
-        {0,   0, 0, const_cast<char *>("silver_coin3")                        },
-        {0,   0, 0, const_cast<char *>("silver_coin4")                        },
-        {0,   0, 0, const_cast<char *>("gold_pan_coin1")                      },
-        {0,   0, 0, const_cast<char *>("gold_pan_coin2")                      },
-        {0,   0, 0, const_cast<char *>("gold_pan_coin3")                      },
-        {0,   0, 0, const_cast<char *>("gold_pan_coin4")                      },
-        {0,   0, 0, const_cast<char *>("gold_coin1")                          },
-        {0,   0, 0, const_cast<char *>("gold_coin2")                          },
-        {0,   0, 0, const_cast<char *>("gold_coin3")                          },
-        {0,   0, 0, const_cast<char *>("gold_coin4")                          },
-        {0,   0, 0, const_cast<char *>("blue_pan_coin1")                      },
-        {0,   0, 0, const_cast<char *>("blue_pan_coin2")                      },
-        {0,   0, 0, const_cast<char *>("blue_pan_coin3")                      },
-        {0,   0, 0, const_cast<char *>("blue_pan_coin4")                      },
-        {0,   0, 0, const_cast<char *>("blue_coin1")                          },
-        {0,   0, 0, const_cast<char *>("blue_coin2")                          },
-        {0,   0, 0, const_cast<char *>("blue_coin3")                          },
-        {0,   0, 0, const_cast<char *>("blue_coin4")                          },
-        {0,   0, 0, const_cast<char *>("heart")                               },
-        {0,   0, 0, const_cast<char *>("flat_heart")                          },
-        {0,   0, 0, const_cast<char *>("silver_heart")                        },
-        {0,   0, 0, const_cast<char *>("mini_kit_pickup")                     },
-        {0,   0, 0, const_cast<char *>("char_pickup")                         },
-        {0,   0, 0, const_cast<char *>("plop")                                },
-        {0,   0, 0, const_cast<char *>("power_up_glow")                       },
-        {0,   0, 0, const_cast<char *>("red_brick")                           },
-        {0,   0, 0, const_cast<char *>("gold_brick")                          },
-        {0,   0, 0, const_cast<char *>("info")                                },
-        {0,   0, 0, const_cast<char *>("purple_coin1")                        },
-        {0,   0, 0, const_cast<char *>("purple_coin2")                        },
-        {0,   0, 0, const_cast<char *>("purple_coin3")                        },
-        {0,   0, 0, const_cast<char *>("purple_coin4")                        },
-        {0,   0, 0, const_cast<char *>("purple_pan_coin1")                    },
-        {0,   0, 0, const_cast<char *>("purple_pan_coin2")                    },
-        {0,   0, 0, const_cast<char *>("purple_pan_coin3")                    },
-        {0,   0, 0, const_cast<char *>("purple_pan_coin4")                    },
-        {0,   0, 0, const_cast<char *>("ripple_green")                        },
-        {0,   0, 0, const_cast<char *>("ripple_green1")                       },
-        {0,   0, 0, const_cast<char *>("ripple_red")                          },
-        {0,   0, 0, const_cast<char *>("ripple_red1")                         },
-        {0,   0, 0, const_cast<char *>("ripple_blue")                         },
-        {0,   0, 0, const_cast<char *>("ripple_blue1")                        },
-        {0,   0, 0, const_cast<char *>("ripple_purple")                       },
-        {0,   0, 0, const_cast<char *>("ripple_purple1")                      },
-        {0,   0, 0, const_cast<char *>("zip_ring")                            },
-        {0,   0, 0, const_cast<char *>("crate")                               },
-        {0,   0, 0, const_cast<char *>("moustache")                           },
-        {0,   0, 0, const_cast<char *>("jango_rocket")                        },
-        {0,   0, 0, const_cast<char *>("thermal")                             },
-        {0,   0, 0, const_cast<char *>("thermal_red_off")                     },
-        {0,   0, 0, const_cast<char *>("thermal_red_on")                      },
-        {0,   0, 0, const_cast<char *>("bomb_main")                           },
-        {0,   0, 0, const_cast<char *>("bomb_off")                            },
-        {0,   0, 0, const_cast<char *>("bomb_red_off")                        },
-        {0,   0, 0, const_cast<char *>("bomb_red_on")                         },
-        {3,   0, 0, const_cast<char *>("part_boulder")                        },
-        {3,   0, 0, const_cast<char *>("pebble_ewok")                         },
-        {3,   0, 0, const_cast<char *>("photontorpedo_ewok")                  },
-        {3,   0, 0, const_cast<char *>("photontorpedoglow_ewok")              },
-        {3,   0, 0, const_cast<char *>("pebble_wicket")                       },
-        {3,   0, 0, const_cast<char *>("photontorpedo_wicket")                },
-        {3,   0, 0, const_cast<char *>("photontorpedoglow_wicket")            },
-        {3,   0, 0, const_cast<char *>("umbrella1")                           },
-        {3,   0, 0, const_cast<char *>("umbrella2")                           },
-        {3,   0, 0, const_cast<char *>("twoface_coin")                        },
-        {0,   0, 0, const_cast<char *>("hat_1")                               },
-        {0,   0, 0, const_cast<char *>("hat_3")                               },
-        {0,   0, 0, const_cast<char *>("hat_4")                               },
-        {0,   0, 0, const_cast<char *>("hat_5")                               },
-        {0,   0, 0, const_cast<char *>("stormTrooperHelmet")                  },
-        {0,   0, 0, const_cast<char *>("bountyHelmet")                        },
-        {0,   0, 0, const_cast<char *>("C3PO_base")                           },
-        {0,   0, 0, const_cast<char *>("C3PO_pic")                            },
-        {0,   0, 0, const_cast<char *>("TC14_pic")                            },
-        {0,   0, 0, const_cast<char *>("C3PO_static")                         },
-        {0,   0, 0, const_cast<char *>("C3PO_light_on")                       },
-        {0,   0, 0, const_cast<char *>("C3PO_light_off")                      },
-        {0,   0, 0, const_cast<char *>("R2_base")                             },
-        {0,   0, 0, const_cast<char *>("R2_base1")                            },
-        {0,   0, 0, const_cast<char *>("R2_pic")                              },
-        {0,   0, 0, const_cast<char *>("R4_pic")                              },
-        {0,   0, 0, const_cast<char *>("R2_static")                           },
-        {0,   0, 0, const_cast<char *>("R2_light_on")                         },
-        {0,   0, 0, const_cast<char *>("R2_light_off")                        },
-        {0,   0, 0, const_cast<char *>("Bounty_base")                         },
-        {0,   0, 0, const_cast<char *>("Bounty_pic")                          },
-        {0,   0, 0, const_cast<char *>("Bounty_static")                       },
-        {0,   0, 0, const_cast<char *>("Bounty_light_on")                     },
-        {0,   0, 0, const_cast<char *>("Bounty_light_off")                    },
-        {0,   0, 0, const_cast<char *>("Bounty_cam")                          },
-        {0,   0, 0, const_cast<char *>("Bounty_Target")                       },
-        {0,   0, 0, const_cast<char *>("Storm_base")                          },
-        {0,   0, 0, const_cast<char *>("Storm_pic")                           },
-        {0,   0, 0, const_cast<char *>("Storm_static")                        },
-        {0,   0, 0, const_cast<char *>("Storm_light_on")                      },
-        {0,   0, 0, const_cast<char *>("Storm_light_off")                     },
-        {0,   0, 0, const_cast<char *>("Storm_cam")                           },
-        {0,   0, 0, const_cast<char *>("Storm_Target")                        },
-        {0,   0, 0, const_cast<char *>("Hat_machine_base")                    },
-        {0,   0, 0, const_cast<char *>("Hat_machine_down")                    },
-        {0,   0, 0, const_cast<char *>("Hat_machine_out")                     },
-        {0,   0, 0, const_cast<char *>("Hat_machine_on")                      },
-        {0,   0, 0, const_cast<char *>("Hat_machine_off")                     },
-        {0,   0, 0, const_cast<char *>("lever_helmet")                        },
-        {0,   0, 0, const_cast<char *>("Hat_machine_down1")                   },
-        {0,   0, 0, const_cast<char *>("photon2")                             },
-        {0,   0, 0, const_cast<char *>("photon1")                             },
-        {0,   0, 0, const_cast<char *>("zip_flower1")                         },
-        {0,   0, 0, const_cast<char *>("zip_flower2")                         },
-        {0,   0, 0, const_cast<char *>("zip_flower3")                         },
-        {5,   0, 0, const_cast<char *>("FalconGlow")                          },
-        {5,   0, 0, const_cast<char *>("ATAT_PART_1")                         },
-        {1,   0, 0, const_cast<char *>("vd")                                  },
-        {1,   0, 0, const_cast<char *>("bvd")                                 },
-        {1,   0, 0, const_cast<char *>("dtf")                                 },
-        {1,   0, 0, const_cast<char *>("ca")                                  },
-        {1,   0, 0, const_cast<char *>("blasterbolt")                         },
-        {1,   0, 0, const_cast<char *>("blasterglow")                         },
-        {1,   0, 0, const_cast<char *>("blasterbolt_red")                     },
-        {1,   0, 0, const_cast<char *>("blasterglow_red")                     },
-        {1,   0, 0, const_cast<char *>("blasterbolt_blue")                    },
-        {1,   0, 0, const_cast<char *>("blasterglow_blue")                    },
-        {1,   0, 0, const_cast<char *>("missile")                             },
-        {5,   0, 0, const_cast<char *>("arrow")                               },
-        {5,   0, 0, const_cast<char *>("death_star")                          },
-        {5,   0, 0, const_cast<char *>("lap1")                                },
-        {5,   0, 0, const_cast<char *>("lap2")                                },
-        {5,   0, 0, const_cast<char *>("lap3")                                },
-        {0,   0, 0, const_cast<char *>("Network_Icon")                        },
-        {0,   0, 0, const_cast<char *>("Network_Icon_Glow")                   },
-        {255, 0, 0, NULL                                                      },
-    };
-}
 
 extern "C" {
     i16 dat_007f1810 = -1;
@@ -7108,11 +5462,6 @@ extern "C" {
     i16 dat_007f19ac = -1;
     i16 dat_007f19b0 = -1;
     i16 dat_007f19b4 = -1;
-    i16 dat_007f19c4 = -1;
-    i16 dat_007f19c8 = -1;
-    i16 dat_007f19d0 = -1;
-    i16 dat_007f19d4 = -1;
-    i16 dat_007f19d8 = -1;
     i16 dat_007f1a0c = -1;
     i16 dat_007f1a10 = -1;
     i16 dat_007f1a14 = -1;
@@ -7350,16 +5699,6 @@ extern "C" {
     };
 }
 
-extern "C" {
-    f32 ComplexShadowBase = 25.0f;
-}
-
-extern "C" {
-    i32 MenuOptionsPlayerFlag = 0;
-    f32 MenuSaveSlotsWidth = 0.5f;
-    f32 MenuSaveSlotsStepY = 0;
-}
-
 extern "C" {}
 
 extern "C" {
@@ -7367,19 +5706,6 @@ extern "C" {
     extern const f64 PanelVariantTwoTargetY = 0.245f;
     extern const f64 PanelVariantThreeTargetZ = 0.17f;
     extern const f64 PanelVariantThreeTargetY = 0.34f;
-}
-
-extern "C" {
-    char AIGizmoNameBuffer[16] = {0};
-}
-
-extern "C" {
-    /* Place actual owners in canonical data.cpp extern-C cohort. */
-    i32 GameKeepMergeAction = 0;
-}
-
-extern "C" {
-    i32 DrawParaphernaliaEnabled = 1;
 }
 
 extern "C" {}
@@ -7670,8 +5996,6 @@ extern "C" {
         {dat_00754908, &dat_008809cc, 0, {0, 0}, -1, 0, dat_00754900, 0, dat_00754f48, 0x0},
         {0},
     };
-    f32 ExtrasFadeStart = 0.15f;
-    f32 ExtrasFadeEnd = 0.6f;
 }
 
 extern "C" {
@@ -7680,45 +6004,23 @@ extern "C" {
     // 0, 0, 0, 0}, {1028, MenuEnterHiresNotice, MenuDrawHiresNotice, MenuUpdateHiresNotice,
     // MenuExitHiresNotice, -1, -1, 0, 0, 0, 0},
 
-    i32 PauseSaveAndExit = 0;
 }
 
 extern "C" {
-    i32 shop_quit = 0;
-    i32 shop_save_done = 0;
-    i32 customiser_save_done = 0;
-    i32 customiser_changed = 0;
     GAMESAVE TempGame = {0};
-    GAMESAVE OldCustomiseGame = {0};
 }
 
 extern "C" {
     f32 COLLECTION_DX = 0.15f;
     f32 COLLECTION_DY = -0.2f;
-    f32 COLLECTION_ICONSIZE = 0.16f;
 }
 
 /* Append inside data.cpp; each original new owner gets its own section. */
 extern "C" {
-    f32 BlipL[2] = {0};
-    f32 BlipR[2] = {0};
-    f32 BlipU[2] = {0};
-    f32 BlipD[2] = {0};
     f32 uprepeattime[2] = {0};
     f32 downrepeattime[2] = {0};
-    f32 leftrepeattime[2] = {0};
     f32 rightrepeattime[2] = {0};
-    u8 uprepeatcount[2] = {0};
-    u8 downrepeatcount[2] = {0};
-    u8 leftrepeatcount[2] = {0};
     u8 rightrepeatcount[2] = {0};
-    APICHARACTERMODELLIST NetFreePlayModelList[49] = {0};
-    u8 net_recievedFreePlayList = 0;
-    i8 net_FreePlayModelCount = 0;
-}
-
-extern "C" {
-    i32 ShowPlayerCoordinate = 0;
 }
 
 extern "C" {
@@ -7748,30 +6050,11 @@ extern "C" {
     extern const char dat_00757d90[7] = "zipup=";
     extern const char dat_00757e24[13] = "CheckVisible";
     extern const char dat_00757df0[10] = "cutscene=";
-    f32 fakeanimendframe[1] = {0};
 }
 
 extern "C" {}
 
-extern "C" {
-    u8 PanelStormActive = 0;
-    u8 PanelDroidActive = 0;
-    u8 PanelBountyHunterActive = 0;
-}
-
 extern "C" {}
-
-extern "C" {
-    f32 fakeanimframe[1] = {0};
-    NUVEC boulder_old_pos[2] = {0};
-    f32 boulder_wait = 0.0f;
-    PART_PC *boulder_part[2] = {NULL, NULL};
-    i32 i_boulder = 0;
-    i32 JediBActiveCount = 0;
-    JEDIB_NETPACKET *jedib_netpacket = NULL;
-    JEDIB_STATE jedi_b = {0};
-    i8 *DeathStarEscapeBNetPacket = 0;
-}
 
 extern "C" {
     HINT Hints_LSW[65] = {
@@ -7843,79 +6126,7 @@ extern "C" {
     };
 }
 
-extern "C" {
-    f32 boulder_radius = 0.3f;
-    i32 boulder_blowup_type = -1;
-}
-
-extern "C" {
-    f32 jedib_safe_r = 9.0f;
-    NUVEC jedib_offsets[3] = {
-        {0.1f,  -0.1f, -0.1f},
-        {-0.1f, -0.1f, -0.1f},
-        {-0.1f, -0.1f, 0.1f }
-    };
-    i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
-    i16 *JediB_playerids[3] = {&dat_007f19c8, &id_ANAKINPADAWAN, &dat_007f19d0};
-    JEDIB_PHASE jedi_b_phase1[8] = {
-        {&id_DROIDEKA,            "phase_droids"},
-        {&id_DROIDEKA,            "phase_droids"},
-        {&id_BATTLEDROIDSECURITY, "phase_droids"},
-        {&id_BATTLEDROIDSECURITY, "phase_droids"},
-        {&id_BATTLEDROIDSECURITY, "phase_droids"},
-        {&id_BATTLEDROIDSECURITY, "phase_droids"},
-        {&id_BATTLEDROIDSECURITY, "phase_droids"},
-        {NULL,                    NULL          }
-    };
-    JEDIB_PHASE jedi_b_phase2[8] = {
-        {&id_DROIDEKA,         "phase_droids"},
-        {&id_DROIDEKA,         "phase_droids"},
-        {&id_SUPERBATTLEDROID, "phase_droids"},
-        {&id_SUPERBATTLEDROID, "phase_droids"},
-        {&id_SUPERBATTLEDROID, "phase_droids"},
-        {&id_SUPERBATTLEDROID, "phase_droids"},
-        {&id_SUPERBATTLEDROID, "phase_droids"},
-        {NULL,                 NULL          }
-    };
-    JEDIB_PHASE jedi_b_phase3[8] = {
-        {&id_SUPERBATTLEDROID, "phase_droids"},
-        {&id_SUPERBATTLEDROID, "phase_droids"},
-        {&id_DROIDEKA,         "phase_droids"},
-        {&id_DROIDEKA,         "phase_droids"},
-        {&id_DROIDEKA,         "phase_droids"},
-        {&id_DROIDEKA,         "phase_droids"},
-        {&id_DROIDEKA,         "phase_droids"},
-        {NULL,                 NULL          }
-    };
-}
-
-extern "C" {
-    f32 MaulF_ForceThrowGravity = -0.5f;
-    f32 MaulF_ForceThrowSpeed = 1.0f;
-    f32 DookuC_ForceThrowGravity = -2.5f;
-    f32 DookuC_ForceThrowSpeed = 2.5f;
-    NUVEC ForceThrowMaulPosition = {19.05f, 4.0f, -105.23f};
-}
-
 extern "C" {}
-
-extern "C" {
-    f32 InteractionArrowScale = 0.7f;
-}
-
-extern "C" {
-    f32 DrawGameObjectsFarClip = 20.0f;
-    f32 DrawGameObjectsVehicleFarClip = 50.0f;
-}
-
-extern "C" {
-    nuhspecial_s SebulbaMineSpecial = {0};
-}
-
-extern "C" {
-    f32 SebulbaThrowIntervalPc = 1.0f;
-    f32 SebulbaDistanceBias = 25.0f;
-}
 
 extern "C" {
     void (*GameAISaveFn)(AIPATHSYS *) = NULL;

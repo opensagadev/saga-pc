@@ -4983,6 +4983,7 @@ extern "C" {
         {0x400,      Indy_PrepareWhipSwingPc},
         {0,          NULL                   },
     };
+    f32 COLLECTION_ICONSIZE = 0.16f;
 
     i32 Indy_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32 checks) {
         GAMEOBJECT *owner = apiobject->owner;
@@ -5084,6 +5085,10 @@ extern "C" {
 
     i32 LEGO_AIPATHCNX_VARIANT_FLAG0 = 0;
     i32 LEGO_AIPATHCNX_VARIANT_FLAG1 = 0;
+    i32 LEGO_AIPATHCNX_JUMP = 0;
+    APICHARACTERMODELLIST NetFreePlayModelList[49] = {0};
+    u8 net_recievedFreePlayList = 0;
+    i8 net_FreePlayModelCount = 0;
 
     void Indy_GameAISysInit(void) {
         LEGO_AIPATHCNX_JUMP = 0x1;
@@ -5168,6 +5173,12 @@ extern "C" {
 
     SOCKPOSITION LostTempleExitSockPosition = {0};
     void *HubBuildIt = NULL;
+    APICHARACTERMODELLIST FreePlayModelList[49] = {0};
+    i32 FreePlayResidentCount = 0;
+    u8 LevLock[5] = {0};
+    i16 TextCrawlChapterId = 0;
+    i16 TextCrawlVehicleBonusId = 0;
+    i16 TextCrawlCharacterBonusId = 0;
 }
 
 extern "C" void LostTempleC_Reset(WORLDINFO *world) {

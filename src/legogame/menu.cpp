@@ -195,10 +195,26 @@ extern "C" {
     }
 
     i32 newgamefade = 0;
+    u8 leftrepeatcount[2] = {0};
+    u8 uprepeatcount[2] = {0};
+    f32 leftrepeattime[2] = {0};
     f32 newgamewait = 0.0f;
     MISSION_MENU_PACKET MissionMenuPacket = {0};
+    u8 downrepeatcount[2] = {0};
     f32 newgamealpha = 0.0f;
     u32 MenuButtonHistory[15] = {0};
+    i32 MenuKeyboardPendingPc = 0;
+    i32 PauseSaveAndExit = 0;
+    u8 AlternateHudRgb[3] = {0, 0, 0};
+    f32 MenuSaveSlotsStepY = 0;
+    i32 opts_sfx_i = 0;
+    i32 newgame_menudrawoff = 0;
+    i32 newgamecam = 0;
+    f32 newgamecamtime = 0;
+    i32 startnewgame_initiated = 0;
+    i32 startnewgame = 0;
+    i32 shop_quit = 0;
+    i32 shop_save_done = 0;
     u8 MenuKeyboardOverrideActivePc = 0;
 
     void MenuUpdateButtonHistory(void) {
@@ -291,6 +307,10 @@ extern "C" {
             TempOptions = Game.options_save;
         }
     }
+}
+
+extern "C" {
+    i32 MenuOptionsPlayerFlag = 0;
 }
 
 extern "C" void MenuUpdateOptions(MENU *menu) {
@@ -1197,6 +1217,16 @@ extern "C" {
         Hub_UpdateKit();
     }
 
+    f32 MenuNewGameY = -0.5f;
+    /* These bytes are MENUEXITR, MENUEXITG and the MENULOST* blend
+       endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
+    u8 AlternateHudColourBytes[8] = {255, 191, 191, 95, 128, 255, 31, 128};
+    f32 MenuSaveSlotsWidth = 0.5f;
+    f32 opts_sfx_wait = 1.5f;
+    f32 ExtrasFadeStart = 0.15f;
+    f32 ExtrasFadeEnd = 0.6f;
+    f32 MenuTitlesPromptY = -0.5f;
+    f32 MenuTitlesWidePromptY = -0.575f;
     f32 MenuMiniKitUpperArrowY = -0.175f;
     f32 MenuMiniKitLowerArrowY = -0.275f;
     f32 MenuMiniKitInstructionY = -0.375f;

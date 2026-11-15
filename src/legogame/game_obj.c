@@ -1240,6 +1240,8 @@ static void TiePart_MoveCorePC(PART_PC *part, f32 time) {
     AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[100].effect, &position, 10, FRAMETIME, 0, 0, NULL);
 }
 
+char KillPartsAtatExplodeText[9] = "EXPLODE1";
+
 void AtatPart_Stop(PART_PC *part) {
     PlaySfx(KillPartsAtatExplodeText, &part->position);
     PartStop_Flickerer(part);
@@ -1290,7 +1292,25 @@ void AtatPart_Update(PART_PC *part) {
     }
 }
 
+u16 GameObjectRotationBuggyId = 0xffff;
+u16 GameObjectRotationRadioCarId = 0xffff;
+u16 GameObjectRotationPoliceCarId = 0xffff;
+u16 GameObjectRotationMowerId = 0xffff;
+i16 id_OBIWANKENOBIEP3 = -1;
+i16 id_ANAKINJEDI = -1;
+i32 StartupGameFlag1 = 1;
+f32 CombatNpcKillDifficultyAmount = 0.01f;
+f32 CombatPlayerDeathDifficultyAmount = -0.025f;
+i8 (*adtab)[4] = &adtabentries[4];
+i32 timebase_updates = 1;
+f32 InteractionArrowScale = 0.7f;
 static i32 KillPartsTieSpinRate = 200000;
+i32 CombatHitReactionInterval = 3;
+f32 CombatReactionDuration = 3.0f;
+f32 KillPartsTieTrailScale = 0.1f;
+NUVEC KillPartsTieSpinTranslation = {0.0f, 0.0f, -0.05f};
+u8 objhit_damage_joints[3] = {6, 8, 7};
+f32 AIFireIntervalMul = 1.0f;
 
 void TieSpinZPart_Move(PART_PC *part, f32 time) {
     NUVEC trail;
@@ -1309,6 +1329,8 @@ void TiePart_Move(PART_PC *part, f32 time) {
     part->rotation_z = ((u16)(((i32)(-32768.0 * FRAMETIME))));
     TiePart_MoveCorePC(part, time);
 }
+
+char KillPartsTieSpinsText[10] = "Tie_Spins";
 
 void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode, u16 xrot, u16 yrot, NUVEC *velocity) {
     if (variant != 0) {
@@ -1543,6 +1565,8 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
 }
 
 static f32 SHIELDFLICKERTIME = 0.1f;
+f32 GhostLightMul = 1.0f;
+f32 GhostLightTargetMul = 1.0f;
 
 void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *unused_bolt) {
     SHIELD_STATE *shield = (SHIELD_STATE *)target;
@@ -1992,6 +2016,12 @@ char *GameObj_GetName(i32 model, GAMEOBJECT *object, char *buffer) {
     return TTab[CDataList[model].name_id];
 }
 
+KILLPARTS_BIKE KillPartsBikes[4] = {0};
+f32 tieonsfxwait = 0;
+f32 tieoffsfxwait = 0;
+i32 KillPartsPreviousVariant = 0;
+i32 Tag_DoneFirst = 0;
+GAMEOBJECT *player_tag_to = 0;
 GAMEOBJECT *player_tag_from = 0;
 
 void UpdateGameObjects(WORLDINFO *world) {
@@ -3275,6 +3305,13 @@ void InstantKillParts(GAMEOBJECT *object, i32 mode, f32 vertical_scale) {
     excluded_layer = object->id == (u16)id_BODYGUARD && object->current_hp <= 1 ? 4 : -1;
     KillParts(object, -1, excluded_layer, mode, vertical_scale, 0, NULL);
 }
+
+BOLT *objhitobj_bolt = 0;
+i32 objhitobj_nohurtsfx = 0;
+i32 objhitobj_noimpactsfx = 0;
+i32 objhitobj_noattackerrumble = 0;
+i32 objhitobj_throwkillpartsup = 0;
+i16 *objhitobj_killparts_yrot = 0;
 
 i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i32 probe, i32 ignored) {
     i32 reaction_trigger;

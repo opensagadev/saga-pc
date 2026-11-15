@@ -78,6 +78,17 @@ u32 GizObstacles_TotalScore(WORLDINFO *world);
 u32 GizTurrets_TotalScore(WORLDINFO *world);
 u32 GameAI_TotalScore(void);
 
+char dat_00758c20[8] = "Charkit";
+char dat_00758c28[10] = "Red Brick";
+char dat_00758c34[6] = "Heart";
+char dat_00758c3c[10] = "MK-Appear";
+char dat_00758c48[8] = "Minikit";
+char dat_00758c50[12] = "Purple Coin";
+char dat_00758c68[10] = "Blue Coin";
+char dat_00758c74[10] = "Gold Coin";
+char dat_00758c80[12] = "Silver Coin";
+PICKUP_TYPE_SYSTEM GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
+
 void PowerUp_Particles(WORLDINFO *world, NUVEC *position) {
     if (VehicleArea == 0 && ParticlesPerSecond(10.0f, FRAMETIME) > 0) {
         AddGameDebris(world->game_debris_sys, GizBuilditGDeb[qrand() / 10923], position);
@@ -219,6 +230,8 @@ void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
     }
 }
 
+f32 PartExtraCoinRate = 5.0f;
+
 static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
     i32 effect = WORLD->game_debris_sys->entries[index].effect;
     i32 count;
@@ -250,6 +263,8 @@ void Pup_UpdatePurpleCoin(WORLDINFO *world, GIZMOPICKUP *pickup) {
 void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE *message) {
     message->target_position.x = cointotal_x[message->player_index];
 }
+
+char ScoreCounterName[8] = "Counter";
 
 void EndScoreMessage(GAME_MESSAGE *message) {
     i32 icon;
@@ -329,6 +344,31 @@ counter_sound:
     }
 }
 
+char dat_00758c5c[12] = "PickupCoinB";
+// clang-format off: aligned table wider than the column limit
+    GIZMO_PICKUP_TYPE GizmoPickupType[10] = {
+        {dat_00758c80, NULL,                    NULL,                    115, 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f,
+         0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
+        {dat_00758c74, NULL,                    NULL,                    103, 4, 64, 0, 191, 100,   0.045f, 0.045f, 10.0f,
+         0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
+        {dat_00758c68, dat_00758c5c, NULL,                    98,  4, 64, 0, 199, 1000,  0.045f, 0.045f, 6.0f,
+         0.0f,  Pup_UpdateBlueCoin,   Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
+        {dat_00758c50, dat_00758c5c, NULL,                    112, 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f,
+         0.0f,  Pup_UpdatePurpleCoin, Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
+        {dat_00758c48, dat_00758c3c, NULL,                    109, 0, 69, 0, 206, 0,     0.125f, 0.15f,  2.0f,
+         0.05f, NULL,                 Pup_CollectMinikit,  20, -1,  0.0f, 0.0f},
+        {dat_00758c34, NULL,                    NULL,                    104, 0, 2,  0, 203, 0,     0.1f,   0.08f,  4.0f,
+         0.0f,  NULL,                 Pup_CollectHeart,    -1, -1,  0.0f, 0.0f},
+        {dat_00758c28, dat_00758c3c, NULL,                    114, 0, 73, 0, 210, 0,     0.12f,  0.06f,  2.0f,
+         0.1f,  NULL,                 Pup_CollectRedBrick, 99, -1,  0.0f, 0.0f},
+        {dat_00758c20, dat_00758c3c, dat_00758c14, 99,  0, 33, 0, 207, 0,     0.125f, 0.15f,  2.0f,
+         0.05f, NULL,                 Pup_CollectCharKit,  20, -1,  0.0f, 0.0f},
+        {dat_00758c0c, NULL,                    NULL,                    116, 0, 2,  0, 121, 0,     0.1f,   0.1f,   5.0f,
+         0.0f,  NULL,                 NULL,                -1, -1,  0.0f, 0.0f},
+        {dat_00758c00, dat_00758c3c, NULL,                    117, 0, 1,  0, 208, 0,     0.125f, 0.125f, 2.0f,
+         0.05f, Pup_UpdatePowerUp,    Pup_CollectPowerUp,  -1, 209, 0.0f, 0.0f},
+    };
+    f32 PANEL_COINSCALE_START = 1.0f;
 void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant, GAMEOBJECT *object, i32 ignored) {
     i32 player_index;
     i32 player0_active;
@@ -458,6 +498,7 @@ static void EndRedBrickMessage(GAME_MESSAGE *message) {
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 
+    char dat_00758c14[10] = "MK-Pickup";
 void CollectRedBrick(NUVEC *position) {
     ADD_GAME_MESSAGE message;
     NUVEC target;
@@ -606,6 +647,9 @@ static void PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
     part->position.z += part->velocity.z * gain * FRAMETIME;
 }
 
+    f32 PartVehicleHeartLifetime = 1.0f;
+    f32 PartVehicleHeartPodraceHeight = 2.0f;
+    f32 PartVehicleHeartHeight = 3.0f;
 static void PartMove_VehicleHeart(PART_PC *part, f32 timestep) {
     GAMEOBJECT *recipient = part->recipient;
     f32 progress = 1.0f - part->time_remaining / PartVehicleHeartLifetime;
@@ -625,6 +669,9 @@ static void PartMove_VehicleHeart(PART_PC *part, f32 timestep) {
     part->position.z = start.z + (recipient->collision_position.z - start.z) * progress;
 }
 
+    f32 PartVehicleHeartPodraceScale = 4.0f;
+    f32 PartVehicleHeartGunshipScale = 7.5f;
+    f32 PartVehicleHeartScale = 5.0f;
 static i32 PartDraw_VehicleHeart(PART_PC *part) {
     NUVEC scaling;
     NUMTX matrix;
@@ -932,6 +979,7 @@ void SetCoinType(i32 model, GIZMOPICKUP *pickup) {
     }
 }
 
+    u8 CoinTab[4] = {0, 1, 2, 3};
 i32 GetRandomCoinType() {
     return CoinTab[qrand() / 16384];
 }
@@ -1146,6 +1194,7 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     }
 }
 
+    char PickupCoinsLandName[10] = "CoinsLand";
 void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJECT *owner, i32 random_types) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 remainder;

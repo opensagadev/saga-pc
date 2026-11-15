@@ -49,6 +49,25 @@ void Text_SetLanguage_Game(i32 language) {
     }
 }
 
+char *apitxt_ENGLISH = (char *)"English";
+char *apitxt_FRENCH = (char *)("Fran\xc3\xa7"
+                               "ais");
+char *apitxt_GERMAN = (char *)"Deutsch";
+char *apitxt_ITALIAN = (char *)"Italiano";
+char *apitxt_SPANISH = (char *)("Espa\xc3\xb1"
+                                "ol");
+char *apitxt_DANISH = (char *)"Dansk";
+char *txt_NULL = (char *)"?";
+char *txt_UNKNOWN = (char *)"?";
+i16 tNULL = 0;
+i16 tUNKNOWN = 0;
+i16 tENGLISH = 0;
+i16 tFRENCH = 0;
+i16 tGERMAN = 0;
+i16 tITALIAN = 0;
+i16 tSPANISH = 0;
+i16 tDANISH = 0;
+
 void Text_InitDefaultStrings(void) {
     TTab[tNULL] = txt_NULL;
     TTab[tUNKNOWN] = txt_UNKNOWN;

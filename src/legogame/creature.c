@@ -304,7 +304,34 @@ typedef struct CHARACTER_IDLE_POLICY {
 
 f32 animduration_blendouttime;
 i32 CharacterLoadAreaModels;
+f32 DrawGameObjectsFarClip = 20.0f;
+f32 DrawGameObjectsVehicleFarClip = 50.0f;
+f32 TerrainPlayerOtherMovementScale = 2.5f;
+f32 TerrainPlayerBikeMovementScale = 15.0f;
+i16 dat_007f17bc = -1;
+i16 PunchRangeUnitId = -1;
+i16 PunchRangeCompanionId = -1;
+i16 dat_007f17c8 = -1;
+i16 dat_007f17cc = -1;
+i16 dat_007f17d4 = -1;
+i32 waiting_for_character = -1;
+i32 hub_character_ready = -1;
 i16 dat_007f18c4;
+i16 id_YODA = -1;
+i16 id_YODAGHOST = -1;
+i16 id_MOSEISLEYCITIZEN = -1;
+i16 id_CANTINAALIEN = -1;
+i16 id_CLOUDCITYCITIZEN = -1;
+f32 default_mover_extra = 0.05f;
+f32 TerrainPlayerPlatConnectTolerance = 0.01f;
+f32 spline_seek_pos = 10.0f;
+f32 spline_seek_ang = 10.0f;
+f32 spline_xoffset_speed_seek = 4.0f;
+f32 spline_xoffset_speed_roll = 16384.0f;
+i32 TerrainPlayerShadowFix = 1;
+i32 DrawParaphernaliaEnabled = 1;
+f32 ComplexShadowBase = 25.0f;
+i32 CharacterLoadAreaModels = 1;
 i32 AnimPacketModelsCompatible(ANIMPACKET *packet, i32 source_id, i32 target_id);
 
 typedef struct SPECIAL_LAYER_PC_s {
@@ -369,9 +396,6 @@ typedef struct draw_objects_flags_s {
     u32 flags_e24_bits_0_2 : 3;
     u32 locators_updated : 1;
 } DRAW_OBJECTS_FLAGS;
-
-extern f32 DrawGameObjectsFarClip;
-extern f32 DrawGameObjectsVehicleFarClip;
 
 typedef struct new_player_flags_s {
     u8 unknown_000[0xef0];
@@ -450,7 +474,6 @@ typedef struct draw_process_flags_s {
     u32 previous_model_draw_result : 1;
 } DRAW_PROCESS_FLAGS;
 
-extern i32 DrawParaphernaliaEnabled;
 extern i16 dat_007f1820;
 void CustomiserDrawAccessories(CUSTOMISER_LAYERS *, GAMEOBJECT *, NUMTX *);
 void Grapple_DrawLine(GAMEOBJECT *);
@@ -558,6 +581,100 @@ static void GameDrawMtxRotateZ(NUMTX *matrix, NUANG angle) {
     matrix->m30 = (m30 * cosine) - (matrix->m31 * sine);
     matrix->m31 = (m30 * sine) + (matrix->m31 * cosine);
 }
+
+PLAYERCHARACTERCONFIG GCDATA_DEFAULT = {
+    PCBuildModelLayerList, /* 0x0 make_layer_list */
+    NULL, /* 0x4 layers */
+    NULL, /* 0x8 layer_lookup */
+    0.1f, /* 0xc stop_speed */
+    0.0f, /* 0x10 idle_speed */
+    1.0f, /* 0x14 tiptoe_speed */
+    2.0f, /* 0x18 walk_speed */
+    3.0f, /* 0x1c run_speed */
+    0.75f, /* 0x20 backwards_factor */
+    -5.0f, /* 0x24 gravity */
+    0.0f, /* 0x28 unknown_028 */
+    2.0f, /* 0x2c jump_speed */
+    1.0f, /* 0x30 jump_duration */
+    1.0f, /* 0x34 jump_height */
+    2.0f, /* 0x38 second_jump_speed */
+    1.0f, /* 0x3c second_jump_duration */
+    1.0f, /* 0x40 second_jump_height */
+    {5.0f}, /* 0x44 velocity_seek_rate */
+    0.0f, /* 0x48 jump_hold_duration */
+    0.3375f, /* 0x4c collision_origin_radius */
+    1.0471976f, /* 0x50 unknown_050 */
+    0.34906587f, /* 0x54 unknown_054 */
+    10.0f, /* 0x58 unknown_058 */
+    -1.8325958f, /* 0x5c unknown_05c */
+    0.0f, /* 0x60 unknown_060 */
+    6.0f, /* 0x64 viewdistance */
+    3.0f, /* 0x68 heardistance */
+    0.5f, /* 0x6c maxviewheight */
+    -0.5f, /* 0x70 minviewheight */
+    1.0f, /* 0x74 turn_rate */
+    {1.0f}, /* 0x78 high_speed_turn_rate */
+    {1.0f}, /* 0x7c vehicle_acceleration_time */
+    {1.0f}, /* 0x80 vehicle_deceleration_time */
+    1.0f, /* 0x84 jump_move_speed_scale */
+    0.0f, /* 0x88 unknown_088 */
+    99.0f, /* 0x8c unknown_08c */
+    0x0u, /* 0x90 flags_090 */
+    {0x0u}, /* 0x94 flags_094 */
+    {0, 0, 0, 0}, /* 0x98 flags_098 */
+    0x1u, /* 0x9c layer_mask_special */
+    0x1u, /* 0xa0 layer_mask */
+    0x1u, /* 0xa4 layer_mask_medium */
+    0x1u, /* 0xa8 layer_mask_low */
+    0x1u, /* 0xac layer_mask_dead */
+    0x0u, /* 0xb0 ride_layers_off */
+    2.75f, /* 0xb4 layer_distance_medium */
+    5.5f, /* 0xb8 layer_distance_low */
+    {10.0f, 5.0f, 0.0f, 0.0f}, /* 0xbc ai_update_distances */
+    {4, 2, 0, 0}, /* 0xcc ai_update_intervals */
+    {-1, -1, -1, -1, -1, -1}, /* 0xd0 sfx_misc */
+    -1, /* 0xdc sfx_die */
+    -1, /* 0xde sfx_hurt */
+    -1, /* 0xe0 sfx_grunt */
+    -1, /* 0xe2 sfx_engine */
+    {-1}, /* 0xe4 sfx_shoot */
+    -1, /* 0xe6 sfx_footstep */
+    -1, /* 0xe8 sfx_chatter */
+    -1, /* 0xea sfx_sabre */
+    -1, /* 0xec weapon_model */
+    1110, /* 0xee coin_value */
+    0, /* 0xf0 shadow_locators */
+    0, /* 0xf2 thrust_locators */
+    1, /* 0xf4 hitpoints */
+    0, /* 0xf5 shield_hitpoints */
+    255, /* 0xf6 blob_shadow_alpha */
+    0, /* 0xf7 unknown_0f7 */
+    {-1, -1, -1, -1}, /* 0xf8 weapon_joints */
+    {{-1, -1, -1, -1}}, /* 0xfc weapon_shoot_joints */
+    {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}}, /* 0x100 streak_joints */
+    {-1, -1}, /* 0x108 hand_locators */
+    {-1, -1}, /* 0x10a grapple_locators */
+    {-1}, /* 0x10c rocket_locator */
+    {-1}, /* 0x10d shield_locator */
+    {-1}, /* 0x10e head_locator */
+    {-1}, /* 0x10f collision_locator */
+    -1, /* 0x110 thingy_locator */
+    -1, /* 0x111 helmet_locator */
+    -1, /* 0x112 throw_locator */
+    -1, /* 0x113 ride_locator */
+    -1, /* 0x114 poo_locator */
+    -1, /* 0x115 hair_layer */
+    {255}, /* 0x116 hover_fall_mode */
+    {255}, /* 0x117 streak_color */
+    -1, /* 0x118 head_joint */
+    -1, /* 0x119 cloak_joint */
+    -1, /* 0x11a cloak_joint_2 */
+    -1, /* 0x11b place_locator */
+    -1, /* 0x11c cape_layer */
+    -1, /* 0x11d extra_character_locator */
+    0, /* 0x11e flags_11e */
+    0, /* 0x11f layer_count */
+};
 
 void FixUpCharacters(CHARFIXUP *fixup) {
     i32 i;
@@ -805,6 +922,10 @@ void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints) {
         object->current_hp = object->unknown_107e;
     }
 }
+
+SUIT_LAYERS *PlayerSuit[8] = {0};
+i32 makeplayerlist_freeplay = 0;
+u8 PlayerTorpedoCount[8] = {0};
 
 i32 MakePlayerList(i32 count) {
     i32 player_count = 0;
@@ -2574,6 +2695,9 @@ static void DrawWeapon_SetSabreObjects(GAMEOBJECT *object, i32 red, i32 green, i
     }
 }
 
+AREA_DATA *JEDI_ADATA = 0;
+AREA_DATA *DOOKU_ADATA = 0;
+
 i32 AnakinGreenSabre(GAMEOBJECT *object) {
     if (FreePlay == 0 && object->id == (u16)id_ANAKINPADAWAN && WORLD->area != NULL &&
         (WORLD->area == JEDI_ADATA || WORLD->area == DOOKU_ADATA)) {
@@ -3789,6 +3913,8 @@ void ResetAICreatures(AISYS_PC *system) {
     }
 }
 
+i32 addcreature_override_id_check = 0;
+
 i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     NUVEC start;
     void **animations;
@@ -3872,6 +3998,9 @@ i32 InitCreature(GAMEOBJECT *object, i32 id, i32 parameter) {
     InitCreatureModelFlags(object);
     return 1;
 }
+
+/* Place actual owners in canonical data.cpp extern-C cohort. */
+i32 GameKeepMergeAction = 0;
 
 i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *animation, NUMTX *matrix, NUMTX *secondary_matrix,
                            NUMTX *reflection_matrix, NUMTX *auxiliary_matrix, GAMEOBJECT *object, u32 flags) {
@@ -4804,6 +4933,11 @@ GAMEOBJECT *AddCreature(i32 id, i32 parameter) {
     InitCreature(object, id, parameter);
     return object;
 }
+
+PLAYER_COIN_PACKET_PC CoinPacket[2] = {0};
+PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2] = {0};
+GAMEOBJECT BackUpPlayers[2] = {0};
+SOCKPOSITION OldPlrSPos[8] = {0};
 
 void Players_Init(void) {
     GAMEOBJECT **players = (GAMEOBJECT **)Player;

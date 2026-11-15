@@ -214,3 +214,6 @@ config/oddscan-budget.json declspec-align 172 clip_test_mtx and clip_outcode_wor
 config/oddscan-budget.json declspec-align 190 18 matrix, plane and vec4 globals that retail keeps 16-aligned (numtx_identity, CutCamMtx, CameraClipPlanes, PostShadowView, ...) declare it now that data placement is not pinned
 config/oddscan-budget.json pc-suffix 5014 thermaldetonators.c and game_deb.c name the real EXPLOSION_PC that Detonate and AddExplosion return instead of the unrelated struct EXPLOSION (newer libclang could not parse them); the suffix goes when the two explosion types are resolved
 config/oddscan-budget.json placeholder-field 8621 PC_FRAME_STATS (PcFrameStatsReset port) keeps two runs of four counters no code we have reads (unknown_10, unknown_38); retail clears them with the rest
+config/declscan-budget.json C 520 a unit's extern of a global moved into the same unit is now a forward declaration of it (legogame data move, same construct)
+config/castscan-budget.json int-pointer 832 initializer casts of globals moved from data.cpp (C++) into C units are classified as int-pointer there (legogame data move)
+config/oddscan-budget.json long-file 12 a legogame unit passes the long-file limit with its globals moved out of data.cpp

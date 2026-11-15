@@ -171,6 +171,8 @@ extern "C" {
     }
 
     static NUMTX RenderStatusMatrixPrivate = {0};
+    AREA_DATA *GOTHAMSTREETS_ADATA = 0;
+    AREA_DATA *NEGOTIATIONS_ADATA = 0;
 
     void DrawStatusText(char *text, u16 angle, f32 x, f32 y, f32 scale, u32 colour, i32 alignment) {
         NUVEC origin = {0.0f, 0.0f, 800.0f};
@@ -977,6 +979,7 @@ i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
 extern "C" {
     f32 StatusMiniKitDirectionOffsetPc = 0.035f;
     STATUS_MINIKIT_DRAW_CACHE StatusMiniKitDrawCache[10] = {0};
+    struct STATUS_STAGE_s *StatusStages = 0;
 }
 
 void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet, f32 phase) {

@@ -317,6 +317,7 @@ extern "C" {
     SOCKPOSITION *DogfightSelectedSock = NULL;
     i32 DogfightDrawSelectedSock = 0;
     i32 DogfightHideGeometry = 0;
+    struct anakin_door_s *AnakinC = 0;
     i32 DogfightDrawSpline = 0;
     i32 DogfightDrawFighterSpline = 0;
     NUVEC DogfightJetOffset = {0.15f, 0.08f, 0.32f};
@@ -370,6 +371,7 @@ extern "C" {
 
     char *FlightSplineExtension = ".FSP";
     f32 FlightSplineDefaultIncrement = 0.01f;
+    f32 PodRaceSplineIncrement = 0.001f;
 
     void FlightSplineCapacityDiagnostic(char *filename);
 

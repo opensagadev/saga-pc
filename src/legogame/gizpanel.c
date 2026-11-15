@@ -500,6 +500,7 @@ f32 GizPanelPictureZ = -0.123f;
 f32 GizPanelPictureY = 0.0775f;
 /* Lift of the panel target above the floor it was dropped onto. */
 f32 GizPanelFloorLift = 0.001f;
+i32 gizpanel_gizmotype_id = -1;
 
 void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     WORLDINFO *world = world_pointer;
@@ -1130,6 +1131,9 @@ void GizPanel_Activate(void *input, i32 active) {
     }
 }
 
+u8 PanelStormActive = 0;
+u8 PanelDroidActive = 0;
+u8 PanelBountyHunterActive = 0;
 static ADDGIZMOTYPE GizmoRegistryGizPanelAddTypePc = {0};
 
 ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32 type_id) {

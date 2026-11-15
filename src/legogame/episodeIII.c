@@ -254,6 +254,7 @@ void CruiserDInit(WORLDINFO *world) {
     cruiserd_netpacket = SetLevelHack(12);
 }
 
+i16 id_DOOKU = -1;
 static f32 CruiserD_LiftSpeed = 0.1f;
 static f32 CruiserD_frame = 1.0f;
 static i32 CruiserD_direction = 1;
@@ -284,6 +285,8 @@ void CruiserDReset(WORLDINFO *world) {
 }
 
 static f32 CruiserD_ResetTime = 1.0f;
+f32 boulder_radius = 0.3f;
+i32 boulder_blowup_type = -1;
 
 void CruiserDUpdate(WORLDINFO *world) {
     CruiserD_LiftChase = 0;
@@ -596,6 +599,13 @@ void TempleC_AlwaysUpdate(WORLDINFO *unused0) {
 
 static f32 VaderA_TimeLimits[3] = {30.0f, 15.0f, 0.0f};
 VADERA vader_a = {0};
+i32 CruiserD_LiftChase = 0;
+struct gameobject_s *Grievous_obj = 0;
+struct gizaimessage_s *KashyyykA_msg_TotalWookies = 0;
+struct gizaimessage_s *KashyyykA_msg_WookiesToRescue = 0;
+i32 i_boulder = 0;
+struct gizaimessage_s *vader_b_complete_msg = 0;
+u8 vader_b_playersDead = 0;
 
 static void VaderA_StartCollapseStage(WORLDINFO *world) {
     i32 path_index;
@@ -621,6 +631,7 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
 }
 
 VADERA_NETPACKET *vadera_netpacket = NULL;
+PART_PC *boulder_part[2] = {NULL, NULL};
 
 void VaderA_Init(WORLDINFO *world) {
     memset(&vader_a, 0, sizeof(vader_a));
@@ -758,7 +769,9 @@ void VaderB_Update(WORLDINFO *world) {
 
 VADERC vader_c = {0};
 void *vaderc_netpacket = NULL;
+NUVEC boulder_old_pos[2] = {0};
 i32 Vader_ObiWanKilledAnakin = 0;
+f32 boulder_wait = 0.0f;
 
 void VaderC_Init(WORLDINFO *world) {
     char *names[10] = {"rock1", "rock2", "rock3", "rock4", "rock5", "rock6", "rock7", "rock8", "rock10", "rock11"};

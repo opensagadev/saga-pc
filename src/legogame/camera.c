@@ -247,10 +247,28 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     }
 }
 
+f32 CamStopBlend = 1.0f;
+f32 CamTitlesSplineEnd = 0.95f;
+NUVEC GunshipAOffset = {12.0f, 22.5f, -12.0f};
+f32 CamTitlesBonusTime = 51.0f;
+f32 CamShopBlendTime = 1.0f;
+f32 CamNewGameDuration = 10.0f;
+i32 movegamecamera_forcesock = -1;
+f32 testmovef = 0.005f;
+f32 CamPodSprintStartDist = 12.0f;
+f32 CamPodSprintEndDist = 2.0f;
+f32 CamPodSprintHeight = 0.65f;
+f32 CamPodSprintRollScale = 0.6f;
+f32 CamPodSprintAngleSeek = 7.0f;
+f32 CamPodShakeScale = 2.0f;
 VIEWCAM ViewCam = {
     0, {1000000000.0f, 0.0f, 0.0f},
      -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL
 };
+f32 CamWalkerRadius = 5.0f;
+f32 CamWalkerLift = 4.0f;
+f32 CamDewbackRadius = 5.0f;
+f32 CamDewbackLift = 1.5f;
 
 void ViewCamSetActive(i32 mode, GAMEPAD *gamepad) {
     if (player != NULL) {
@@ -344,6 +362,11 @@ void UpdatePlayerCameraOcclusion(void) {
         }
     }
 }
+
+__declspec(align(16)) NUMTX CutCamMtx = {0};
+i32 MiniCutCam = 0;
+f32 PodCamDist = 0;
+i32 netcamera = 0;
 
 void MoveGameCamera(GAMECAMERA *camera) {
     i32 menu_id;

@@ -480,6 +480,10 @@ extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void GizSpinners_InitTerrain(WORLDINFO *world);
 extern "C" void Signals_InitTerrain(WORLDINFO *);
 
+extern "C" {
+    f32 WaitingForCharacterTime = 0;
+}
+
 static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
     if (list == NULL) {
         return 0;
@@ -547,6 +551,10 @@ static i32 World_AppendFreePlayPrivate(i32 model) {
     ++FreePlayModelCount;
     FreePlayModelList[FreePlayModelCount].model_id = -1;
     return 1;
+}
+
+extern "C" {
+    COLLECTION_BUILD MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
 }
 
 void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 param5) {
@@ -1173,6 +1181,12 @@ extern "C" {
     }
 }
 
+extern "C" {
+    NUMTL *PermanentShadowMaterial = NULL;
+    NUGSCN *things_scene = 0;
+    void *things_scene_terrain = NULL;
+}
+
 void LoadPerm1(void) {
     char path[256];
     u8 shadow_random[0x800];
@@ -1279,6 +1293,14 @@ void LoadPerm1(void) {
 }
 
 extern "C" {
+
+    COLLECTION_BUILD CharacterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD BountyHunterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD VehicleCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD JediCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD ShopCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD MasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
+    COLLECTION_BUILD BlasterCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
 
     void LoadPerm2(void) {
         CharConfig_ConfigureAll(1, ConfigChar_GameKeywords);
@@ -1477,8 +1499,14 @@ extern "C" void ClearUpAreaData() {
 
 extern "C" {
     static f32 LoadTime = 0;
+    i32 BonusCoinTotal = 0;
+    i32 BonusScore[2] = {0};
     GAMESAVE BackupGame = {0};
+    OPTIONSSAVE TempOptions = {0};
+    i32 StartupGameFlag0 = 0;
+    i32 LSW1 = 0;
     i32 LSW2 = 0;
+    i32 LevPlatID[2] = {0};
     u64 LevHSpecialExists = 0ui64;
     PART_PC *LevGamePart[8] = {0};
     i32 makefreeplaymodellist = 0;
@@ -1501,6 +1529,10 @@ extern "C" {
     void *LevelLocator = 0;
     nuhspecial_s LevHSpecial[88] = {0};
     NUMTX LevMtx = {0};
+}
+
+extern "C" {
+    i32 netnewgame = 0;
 }
 
 void LoadAreaCharacters(void) {
@@ -2319,6 +2351,8 @@ extern "C" {
     f32 CreditsPictureBaseZ = 1.0f;
     i32 WorldLightUserId = 1;
     i32 BGLOAD = 1;
+    i32 PARTPAGE_GENERAL = -1;
+    f32 PermCollectionScale = 0.600000024f;
 }
 static const char *const CreditsEpisodeMusic[6] = {"Ep1_EndCredits", "Ep2_EndCredits", "Ep3_EndCredits",
                                                    "Ep4_EndCredits", "Ep5_EndCredits", "Ep6_EndCredits"};
@@ -2356,7 +2390,56 @@ extern "C" void Credits_Update_Game(WORLDINFO *world) {
 }
 
 extern "C" {
+    AREA_EXTRA_MODEL ExtraModelList[6] = {
+        {&ID_DEFAULTCHARACTER_A, &dat_007f17bc         },
+        {&PunchRangeUnitId,      &PunchRangeCompanionId},
+        {&dat_007f17c8,          &dat_007f17cc         },
+        {&dat_007f17d0,          &PunchRangeCompanionId},
+        {&dat_007f17d4,          &PunchRangeCompanionId},
+        {NULL,                   NULL                  }
+    };
+    i16 id_DEFAULTCHARACTER[2] = {-1, -1};
+    i16 id_JEDISTARFIGHTERYELLOWEP3 = -1;
     i16 dat_007f19e8 = -1;
+    i16 dat_007f1aac = -1;
+    i16 dat_007f1ab0 = -1;
+    i16 dat_007f1ab4 = -1;
+    i16 VehicleSpecialShooterId = -1;
+    i16 dat_007f1abc = -1;
+    i16 id_SEBULBASPOD = -1;
+    i16 id_ANAKINSNEWPOD = -1;
+    i16 dat_007f1b40 = -1;
+    i16 dat_007f1b44 = -1;
+    APICHARACTERMODELLIST PermModelList[1] = {
+        {-1, 0}
+    };
+    i16 PermanentCustomiserActions[5] = {97, 190, 98, 99, -1};
+    char *TexAnimScriptNamesTitle[3] = {"coin", "coin_pause", 0};
+    char *TexAnimScriptNamesGame[32] = {
+        "arrow",          "blink_01",      "blink_02",  "blink_03",    "coin",        "coin_pause", "control",     "ds_esc_intro_1",
+        "ds_esc_intro_2", "ds_1",          "helpmeobi", "lightening1", "plasma",      "screen",     "Dso_screen",  "anakinbows",
+        "anakinkilling",  "anakinspod",    "boost1",    "boost2",      "boost3",      "boost4",     "gasganospod", "helpobi",
+        "hologram1",      "hologramnoise", "play8",     "quidie",      "sebulbaspod", "sidius",     "crowd",       0};
+    char *debris_name[147] = {
+        "BULLET_SPARK",   "SABER_RED",     "SABER_GREEN",   "SABER_BLUE",    "SABER_PURPLE", "EXPLD_1A",   "JS_THRUST",     "S1_THRUST",
+        "COIN_BLUE",      "COIN_GOLD",     "COIN_SILVER",   "R2D2THRUSTER",  "R2Q5THRUSTER", "SPLASH",     "RIPPLE",        "HEART",
+        "HEART_BIG",      "EXPLOSION",     "MINI_01",       "MINI_02",       "MINI_03",      "TER_SPARK",  "TER_SPARK2",    "EXPOL_02",
+        "SPEEDERDUST",    "POD_DUST",      "CAVE_DUST",     "JANGOTHRUSTER", "EXPLO_DROID",  "EXPLO_NAB",  "NAB_SMOKE",     "NAB_BOOST",
+        "MIKESMOKE",      "EXPLO_05",      "EXPLO_06",      "EXPLO_07",      "EXPLO_11",     "MIKESTALL",  "TRAINING_01",   "TAG_BLUE",
+        "TAG_GREEN",      "ZIP_TARGET",    "DOOKU_BALL",    "WALKER_01",     "WALKER_02",    "ENG_BLOW",   "DogImpact",     "DogEngine",
+        "DogSmoke",       "DogTrail",      "YODA_HOVER_01", "K_Bolt",        "DUK_P2",       "PodHaze",    "PodDust10",     "rock_pop1",
+        "BlueTrail",      "PurpleTrail",   "LavaDie",       "ComboRed",      "ComboGreen",   "ComboBlue",  "ComboPurple",   "REPAIR",
+        "SABER_RED1",     "SABER_GREEN1",  "SABER_BLUE1",   "SABER_PURPLE1", "XWING_1",      "MOUSE_POP",  "PHOTON",        "PHOTON_EXPLO",
+        "PHOTON_EXPLO_S", "EXPLO_ORAN_2A", "EXPLO_ORAN_2B", "EXPLO_ORAN_2C", "BUILD_IT1",    "BUILD_IT2",  "BUILD_IT3",     "BUILD_IT4",
+        "BUILD_IT5",      "BUILD_IT6",     "DRAG_POP_1",    "DRAG_POP_2",    "DRAG_POP_4",   "GenoGun",    "SNOW_SPEEDER1", "LEVER_SPARK",
+        "ZAPPER_1",       "V_BOLT_RED",    "V_BOLT_GREEN",  "CHAR_SMOKE1",   "CHAR_SMOKE2",  "POWER_P_1",  "POWER_P_2",     "POWER_P_3",
+        "TIE_HIT1",       "BRICK_01",      "BRICK_02",      "BRICK_03",      "BUMP_01",      "BUMP_02",    "LAND_S_DUST1",  "LAND_S_DUST2",
+        "LAND_S_THRUST",  "LAND_S_HAZE",   "EXPLO_06",      "EXPLO_06b",     "BUMP_03",      "FORCE_BLUE", "FORCE_RED",     "SCAN3",
+        "REPULSOR",       "WEE_POP",       "EXIT_FIRE_1",   "EXIT_FIRE_2",   "EWOK_POP1",    "EXPLO_02",   "ATAT_POP_1",    "ATAT_POP_2",
+        "ATAT_POP_3",     "FIRE_1",        "RAIN_1",        "CHAR_BUBBLE",   "CHAR_GHOST",   "DEATH_1",    "DEATH_2",       "BOULDER_2",
+        "DISH_1",         "DISH_2",        "SNOW_POP_1",    "SNOW_POP_2",    "TREE_POP_1",   "TREE_POP_4", "SPEEDER_HIT",   "FALCONGLOW",
+        "FALCONTHRUSTER", "SPEED_SPARK",   "PUNCH_1",       "PUNCH_2",       "GUNSHIP_01",   "GUNSHIP_02", "SandBlast",     "BULLET1",
+        "BULLET2",        "BULLET_HIT",    "POD_SPARK"};
     f32 CreditsPictureAlpha = 0.5f;
 }
 
@@ -2459,9 +2542,26 @@ extern "C" {
     LEVELDATA *dat_0087b194 = NULL;
     LEVELDATA *ObstacleReturnLevel = 0;
     static LEVELDATA *dat_0087b19c = NULL;
+    LEVELDATA *TATOOINEA_LDATA = 0;
+    LEVELDATA *TATOOINEB_LDATA = 0;
     LEVELDATA *dat_0087b1a8 = NULL;
     LEVELDATA *TATOOINEE_LDATA = NULL;
+    LEVELDATA *MOSEISLEYA_LDATA = 0;
+    LEVELDATA *MOSEISLEYB_LDATA = 0;
+    LEVELDATA *MOSEISLEYC_LDATA = 0;
     LEVELDATA *dat_0087b1bc = NULL;
+    LEVELDATA *DEATHSTARRESCUEA_LDATA = 0;
+    LEVELDATA *DEATHSTARRESCUEB_LDATA = 0;
+    LEVELDATA *DEATHSTARRESCUEC_LDATA = 0;
+    LEVELDATA *DEATHSTARESCAPEB_LDATA = 0;
+    LEVELDATA *DEATHSTARESCAPED_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLEA_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLEB_LDATA = 0;
+    LEVELDATA *DEATHSTARBATTLEC_LDATA = 0;
+    LEVELDATA *HOTHBATTLEA_LDATA = 0;
+    LEVELDATA *dat_0087b200 = NULL;
+    LEVELDATA *dat_0087b204 = NULL;
+    LEVELDATA *dat_0087b208 = NULL;
     static LEVELDATA *dat_0087b20c = NULL;
     LEVELDATA *dat_0087b210 = NULL;
     LEVELDATA *HOTHESCAPEA_LDATA = 0;
@@ -2514,6 +2614,21 @@ extern "C" {
     static LEVELDATA *dat_0087af5c = NULL;
     static LEVELDATA *dat_0087af60 = NULL;
     AREA_DATA *VADER_ADATA = 0;
+    LEVELDATA *NEGOTIATIONSA_LDATA = 0;
+    LEVELDATA *NEGOTIATIONSB_LDATA = 0;
+    LEVELDATA *NEGOTIATIONSC_LDATA = 0;
+    LEVELDATA *GUNGAN_A_LDATA = 0;
+    LEVELDATA *RESCUEC_LDATA = 0;
+    LEVELDATA *WorldArchiveOneLevels[11] = {NULL};
+    LEVELDATA *PODRACEA_LDATA = 0;
+    LEVELDATA *PODRACEB_LDATA = 0;
+    LEVELDATA *dat_0087b0b4 = NULL;
+    LEVELDATA *dat_0087b0b8 = NULL;
+    LEVELDATA *dat_0087b0bc = NULL;
+    LEVELDATA *PODSPRINTA_LDATA = 0;
+    LEVELDATA *RETAKEB_LDATA = 0;
+    LEVELDATA *RETAKED_LDATA = 0;
+    LEVELDATA *RETAKEE_LDATA = 0;
 }
 
 extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
@@ -3493,6 +3608,10 @@ extern "C" {
             StoreLevelProgressFn(world, world->level_progress, 0);
         }
     }
+}
+
+extern "C" {
+    i32 OldBonusScore[2] = {0};
 }
 
 void NewArea(void) {

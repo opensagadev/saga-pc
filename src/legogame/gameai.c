@@ -1000,6 +1000,7 @@ u8 LevelCharacterTypeID(char *name) {
 }
 
 const char *GameAISkipCharacters[4] = {"Batman", "Robin", "Glide_Pack", NULL};
+f32 OpponentSelectionHysteresis = 0.5f;
 
 static i32 IsSpecialRouteCharacterSkipped(char *name) {
     i32 index;
@@ -1797,10 +1798,34 @@ i32 oneAtOnce_CanAttack(GAMEOBJECT *object, GAMEOBJECT *opponent) {
     return Player[object->one_at_once_player] == opponent;
 }
 
+i32 nbaddies_can_see_players = 0;
+f32 fakeanimendframe[1] = {0};
 static AIONCEATTACKER AtOnce_attackingPlayer[8][17] = {0};
+f32 party_follow_offsets[8] = {0};
+NUVEC alert_pos = {0};
+f32 fakeanimframe[1] = {0};
+i32 party_under_cover = 0;
+i32 party_cant_be_under_cover = 0;
+i32 ai_fighting = 0;
+i32 WALKSTEALTH = 0;
+GAMEOBJECT *alert_obj = 0;
+f32 alert_timer = 0;
+f32 timetogetlos = 0.0f;
+f32 drop_back_in_timer = 0;
+i32 active_neutral_count = 0;
+i32 test_new_interaction = 0;
+i32 debug_ignore_players = 0;
+char AIGizmoNameBuffer[16] = {0};
 static i32 AtOnce_attackersPerRow = 32;
 static f32 AtOnce_RowDist = 0.75f;
 static f32 AtOnce_InitialRowDist = 0.75f;
+f32 alert_time = 10.0f;
+i32 GameAiLosDivisor = 2;
+f32 DEFENDTIME = 4.0f;
+f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
+f32 jump_stuck_time = 0.1f;
+f32 draw_attention_distance = 2.0f;
+f32 GameAiPartyFollowSpacing = 0.2f;
 
 f32 oneAtOnce_GetHoldRange(GAMEOBJECT *object) {
     i32 unassigned = 0;
@@ -2272,6 +2297,9 @@ u32 GameAI_TotalScore(void) {
     }
     return total;
 }
+
+i32 active_goody_count = 0;
+i32 active_baddy_count = 0;
 
 void GameAIProcess(void) {
     i32 index;

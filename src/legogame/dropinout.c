@@ -233,6 +233,8 @@ u8 DropInCaptureDelay[2] = {5, 5};
 i16 DropInCapturePort[2] = {-1, -1};
 f32 DropBackInDelay = 2.0f;
 i32 PlayerDevicePortsPc[2] = {-1, -1};
+i32 drop_in_teleport = 3;
+i32 teleport_all_freeplay_modes = 1;
 
 i32 PlayersDropInOut(void) {
     i32 force_join = 0;

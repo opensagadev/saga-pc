@@ -22,6 +22,68 @@ extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {"deathstar2battle_c", -1, 0, 30.0f, 999.0f},
     {NULL,                 0,  0, 0.0f,  0.0f  },
 };
+extern "C" {
+    i16 id_SERVICECAR = -1;
+    i16 id_SNOWMOB = -1;
+    i16 id_SNOWTROOPER = -1;
+    i16 id_DEATHSTARTROOPER = -1;
+    i16 dat_007f199c = -1;
+    i16 id_THEEMPEROR = -1;
+    i16 id_MOONCAR = -1;
+    i16 id_MAPCAR = -1;
+    i16 id_WOOKIEFLYER = -1;
+    i16 id_IMPERIALSPY = -1;
+    i16 id_GREEDO = -1;
+    i16 id_BOSSK = -1;
+    i16 id_CANTINABAND = -1;
+    ANIM_REDIRECT_VIEW AnimRedirectList_LSW[41] = {
+        {"ride_bantha_new_blasterchar",      112, {0, 0}},
+        {"ride_bantha_new_jedichar",         112, {0, 0}},
+        {"ride_bantha_old_blasterchar",      112, {0, 0}},
+        {"ride_bantha_old_jedichar",         112, {0, 0}},
+        {"ride_dewback_new_blasterchar",     131, {0, 0}},
+        {"ride_dewback_new_jedichar",        131, {0, 0}},
+        {"ride_dewback_old_blasterchar",     131, {0, 0}},
+        {"ride_dewback_old_jedichar",        131, {0, 0}},
+        {"ride_landspeeder_new_blasterchar", 132, {0, 0}},
+        {"ride_landspeeder_new_jedichar",    132, {0, 0}},
+        {"ride_landspeeder_old_blasterchar", 132, {0, 0}},
+        {"ride_landspeeder_old_jedichar",    132, {0, 0}},
+        {"ride_tauntaun_new_blasterchar",    134, {0, 0}},
+        {"ride_tauntaun_new_jedichar",       134, {0, 0}},
+        {"ride_tauntaun_old_blasterchar",    134, {0, 0}},
+        {"ride_tauntaun_old_jedichar",       134, {0, 0}},
+        {"ride_speederbike_new_blasterchar", 192, {0, 0}},
+        {"ride_speederbike_new_jedichar",    192, {0, 0}},
+        {"ride_speederbike_old_blasterchar", 192, {0, 0}},
+        {"ride_speederbike_old_jedichar",    192, {0, 0}},
+        {"ride_hrc_new_blasterchar",         193, {0, 0}},
+        {"ride_hrc_new_jedichar",            193, {0, 0}},
+        {"ride_hrc_old_blasterchar",         193, {0, 0}},
+        {"ride_hrc_old_jedichar",            193, {0, 0}},
+        {"throw_new_blasterchar",            101, {0, 0}},
+        {"throw_new_jedichar",               101, {0, 0}},
+        {"throw_old_blasterchar",            101, {0, 0}},
+        {"throw_old_jedichar",               101, {0, 0}},
+        {"ride_generic_new_blasterchar",     108, {0, 0}},
+        {"ride_generic_new_jedichar",        108, {0, 0}},
+        {"ride_generic_old_blasterchar",     108, {0, 0}},
+        {"ride_generic_old_jedichar",        108, {0, 0}},
+        {"splat_new_blasterchar",            133, {0, 0}},
+        {"splat_new_jedichar",               133, {0, 0}},
+        {"splat_old_blasterchar",            133, {0, 0}},
+        {"splat_old_jedichar",               133, {0, 0}},
+        {"ride_tcannon_new_blasterchar",     194, {0, 0}},
+        {"ride_tcannon_new_jedichar",        194, {0, 0}},
+        {"ride_tcannon_old_blasterchar",     194, {0, 0}},
+        {"ride_tcannon_old_jedichar",        194, {0, 0}},
+        {NULL,                               0,   {0, 0}},
+    };
+    const char *InitAsciiUp = "\xC2\xAC";
+    const char *InitAsciiLeft = "<";
+    const char *InitAsciiRight = ">";
+    const char *InitAsciiBigArrow = "\xC2\xA4";
+}
 extern "C" void SurfaceMaskOn(u32 *surface_mask);
 extern "C" void Grabber_Reset(WORLDINFO *world);
 extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *customiser);
@@ -317,6 +379,7 @@ extern "C" {
     }
 
     static f32 AdaptiveDifficultyRecoveryThreshold = 0.1f;
+    i32 FalconDebKey[2] = {-1, -1};
 
     f32 AdaptiveDifficultyUpdate(ADAPTIVEDIFFICULTY *difficulty) {
         f32 threshold;
@@ -375,13 +438,249 @@ static i32 MakeSaveHash(void) {
 }
 
 extern "C" {
+    i32 ConvertOldPickups = 0;
     u8 *Game_LevelSave = 0;
+    GAMEOBJECT *CutDeadVehiclePlayer = 0;
+    // Hub arrays are two-entry source views; full original capacities remain unknown.
+    MISSIONSYS *MissionSys = 0;
     MISSION_SAVE_READER *Game_MissionSave = 0;
+    f32 DEFAULTFPS = 0;
+    TIMER GlobalTimer = {0};
+    TIMER JoinInTimer = {0};
+    f32 MAXFRAMETIME = 0;
+    f32 LevelNameMul = 0.0f;
+    TIMER GameTimer = {0};
     TIMER OverallGamePlayTimer = {0};
+    i32 PAL = 0;
     i32 GameDrawCharacterModelFlag = 1;
+    i32 LegoGameDebrisSplash = -1;
     char *partdebris_name[] = {"TRAINING_P",   "PART_MOUSE", "PART_BLACK_3", "DRAG_PART_1", "SMALL_PART_2", "RAT_PART",
                                "BOULDER_PART", "POPCORN",    "PART_THROW",   "ENG_POP",     "DOOKU_PART",   "MAUL_P_1",
                                "MAUL_P_2",     "MAUL_P_3",   "SPEAR_HIT",    "RED_BRICK",   "POD_ROCK",     NULL};
+    i16 TechnoDefaultObject = 85;
+    GAMEAUDIO GameAudioLsw = {
+        GameAudio_OverrideFootStep_LSW,
+        GameAudio_CheckReverb_LSW,
+        {"Jp_Ami_Jump",
+          NULL,             "Jp_OQ_Jump",
+          "Jp_OQ_DJump",                     "JumpLunge",
+          "JumpSlam",                                        "Jp_OQ_BackF",
+          "FS_JLandS",                                                         "FS_JLandM",
+          "FS_DLandS",                                                                         "FS_DLandM",
+          "JediLunge",                                                                                         "JediSlam",
+          "Grv_GrievAngryJump",                                                                                               NULL,
+          "FS_JWalkS",                                                                                                                 "FS_JWalkM",
+          "FS_DWalkS",                                                                                                                                 "FS_DWalkM",
+          "FS_WaterWade",                                                                                                                                              "Leia_grunt",
+          "Rebel_grunt",                                                                                                                                                                "Leia_Hurt",
+          "Luke_Hurt",                                                                                                                                                                                  "Explode1",
+          "exp_thermalDet",                                                                                                                                                                                            "DroidDie01",
+          "Leia_Death",                                                                                                                                                                                                                 "Luke_Death",
+          "CountdownTimerTick",                                                                                                                                                                                                                          "CountdownTimerTock",
+          "SwChar",                                                                                                                                                                                                                                                               NULL,
+          "SwChar",                                                                                                                                                                                                                                                                        "SwChar",
+          "ToggleChar",                                                                                                                                                                                                                                                                                 "ToggleChar",
+          "MK-Loop",                                                                                                                                                                                                                                                                                                     ScorePanelName,
+          "PickupHeart",                                                                                                                                                                                                                                                                                                                    "BlastHit",
+          "BlastRic",                                                                                                                                                                                                                                                                                                                                      "SabDefBlas",
+          "StatusAward",                                                                                                                                                                                                                                                                                                                                                    "TrueJedi_100pc",
+          "WipeScreen",                                                                                                                                                                                                                                                                                                                                                                          "NegC_MagnetCoil",
+          "MenuMove",                                                                                                                                                                                                                                                                                                                                                                                                  "MenuSelect",
+          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                                                                   "MenuNoEntry",
+          "Explode1",                                                                                                                                                                                                                                                                                                                                                                                                                                     "imp_punch",
+          "ui_DoubleScoreText",                                                                                                                                                                                                                                                                                                                                                                                                                                           "MenuSelect",
+          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                                                                                                                      "fly_paddle_rotate_lp",
+          "fly_paddle_stuck",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         dat_00758c14,
+          "LegoForm",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  KillPartsLegoSingleText,
+          "SaberOff",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "SaberOn",
+          "SaberSaber01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        "SaberMove01",
+          "SaberSmack01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          "BlasterHolster",
+          "BlasterDraw",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                NULL,
+          NULL,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  "FS_WaterOut",
+          "Block_Shove",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           "Block_Push_Lp",
+          "Blaster",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "wpn_punch",
+          "Honk",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      "WhipSwish",
+          "WhipHit",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "WhipNowt",
+          "FallApart01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "PowerUp_On",
+          "PowerUp_Loop",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "PowerUp_Off",
+          "env_padLight_on"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            },
+        {-1,            0, 0,            0, 0,           0, 0,             0, 0,           0, 0,           0, 0,          0, 0,    0, 0,           0, 0,           0, 0,            0, 0,           0, 0,          0, 0,            0, 0,            0, 0,                    0, 0,    0, 0,        0, 0,            0, 0,              0, 0,          0,
+          0,                                                                                                                                                                                                                                                                                                                                                             0, 0,                0, 0,                 0, 0,            0, 0,             0, 0,           0, 0,            0, 0,                      0, 0,            0, 0,                       0, 0,         0, 0,             0, 0,                0, 0,    0, 0,             0, 0,               0, 0,           0, 0,           0, 0,          0, 0,            0, 0,             0}
+    };
+    GAMEAUDIO GameAudioAlternate = {
+        NULL,
+        NULL,
+        {"Jump",
+          NULL,      NULL,
+          NULL,               NULL,
+          NULL,                        NULL,
+          "Land",                               "Land",
+          "Land",                                          "Land",
+          "Land",                                                     "Land",
+          "Land",                                                                "Land",
+          "FS_JWalkS",                                                                      "FS_JWalkM",
+          "FS_DWalkS",                                                                                      "FS_DWalkM",
+          "FS_WaterWade",                                                                                                   "Girl_Grunt",
+          "Boy_Grunt",                                                                                                                       "Girl_Hurt",
+          "Boy_Hurt",                                                                                                                                        "Explode1",
+          "exp_thermalDet",                                                                                                                                                 "DroidDie01",
+          "Girl_Death",                                                                                                                                                                      "Boy_Death",
+          NULL,                                                                                                                                                                                              NULL,
+          "SwChar",                                                                                                                                                                                                   "MenuNoEntry",
+          "SwChar",                                                                                                                                                                                                                     "SwChar",
+          "ToggleChar",                                                                                                                                                                                                                              "ToggleChar",
+          "MK-Loop",                                                                                                                                                                                                                                                  ScorePanelName,
+          "PickupHeart",                                                                                                                                                                                                                                                                 "BlastHit",
+          "ricochet",                                                                                                                                                                                                                                                                                   "SabDefBlas",
+          "StatusAward",                                                                                                                                                                                                                                                                                                 "TrueJedi_100pc",
+          "WipeScreen",                                                                                                                                                                                                                                                                                                                       "NegC_MagnetCoil",
+          "MenuMove",                                                                                                                                                                                                                                                                                                                                               "MenuSelect",
+          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                "MenuNoEntry",
+          "Explode1",                                                                                                                                                                                                                                                                                                                                                                                  "imp_punch",
+          "ui_DoubleScoreText",                                                                                                                                                                                                                                                                                                                                                                                        "MenuSelect",
+          "MenuBack",                                                                                                                                                                                                                                                                                                                                                                                                                   "fly_paddle_rotate_lp",
+          "fly_paddle_stuck",                                                                                                                                                                                                                                                                                                                                                                                                                                      dat_00758c14,
+          "LegoForm",                                                                                                                                                                                                                                                                                                                                                                                                                                                               "SaberOff",
+          "SaberOn",                                                                                                                                                                                                                                                                                                                                                                                                                                                                               "SaberSaber01",
+          "SaberMove01",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "SaberSmack01",
+          "BlasterHolster",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "BlasterDraw",
+          GrapAttach_text,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 GrapDetach_text,
+          "FS_WaterOut",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "Block_Shove",
+          "Block_Push_Lp",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       "Blaster",
+          "Punch",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             "Honk",
+          "WhipSwish",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "WhipHit",
+          "WhipNowt",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "FallApart01",
+          "PowerUp_On",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "PowerUp_Loop",
+          "PowerUp_Off",                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     "env_padLight_on",
+          NULL                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   },
+        {-1,     0, 0,    0, 0,    0, 0,    0, 0,      0, 0,      0, 0,      0, 0,      0, 0,           0, 0,           0, 0,            0, 0,           0, 0,          0, 0,            0, 0,           0, 0,    0, 0,             0, 0,        0, 0,            0, 0,              0, 0,          0,
+          0,                                                                                                                                                                                                                                                                                                          0, 0,                0, 0,                 0, 0,            0, 0,             0, 0,           0, 0,            0, 0,                      0, 0,            0, 0,          0, 0,              0, 0,              0, 0,             0, 0,               0, 0,             0, 0,         0, 0,      0, 0,         0, 0,             0, 0,              0, 0,                 0}
+    };
+    i16 ShopHintTextIds[15] = {630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, -1};
+    i32 LEGOCONTEXT_TUBE = -1;
+    i32 LEGOCONTEXT_GLIDE = -1;
+    i32 BoltBlockContext = -1;
+    i32 LEGOCONTEXT_HOLD = -1;
+    i32 LEGOCONTEXT_DROPIN = -1;
+    i32 LEGOCONTEXT_DOOMED = -1;
+    i32 LEGOCONTEXT_LEDGETERRAIN = -1;
+    i32 LEGOCONTEXT_CLIMB = -1;
+    i32 LEGOCONTEXT_HANG = -1;
+    i32 LEGOCONTEXT_JUMP = -1;
+    i32 LEGOCONTEXT_BIGJUMP = -1;
+    i32 ZipUpWallShuffleContext = -1;
+    i32 LEGOCONTEXT_COMBO = -1;
+    i32 LEGOCONTEXT_PUNCH = -1;
+    i32 LEGOCONTEXT_PUSH = -1;
+    i32 LEGOCONTEXT_PUSHSPINNER = -1;
+    i32 LEGOCONTEXT_PUSHOBSTACLE = -1;
+    i32 LEGOCONTEXT_BEENTAKENOVER = -1;
+    i32 LEGOCONTEXT_GETIN = -1;
+    i32 LEGOCONTEXT_BUILDIT = -1;
+    i32 LEGOCONTEXT_WEAPONIN = -1;
+    i32 LEGOCONTEXT_WEAPONOUT = -1;
+    i32 JumpBackFlipContext = -1;
+    i32 LEGOCONTEXT_WALLJUMPWAIT = -1;
+    i32 LEGOCONTEXT_GRAPPLE = -1;
+    i32 LEGOCONTEXT_SUPERCARRY = -1;
+    i32 LEGOCONTEXT_LAND_JUMP = -1;
+    i32 LEGOCONTEXT_LAND_JUMP2 = -1;
+    i32 LEGOCONTEXT_LAND_FLIP = -1;
+    i32 LEGOCONTEXT_LAND_COMBOJUMP = -1;
+    i32 LEGOCONTEXT_LAND_LUNGE = -1;
+    i32 LEGOCONTEXT_LAND_SLAM = -1;
+    i32 LEGOCONTEXT_LAND_SPECIAL = -1;
+    i32 ZipUpLandCombatRollContext = -1;
+    i32 LEGOCONTEXT_EATEN = -1;
+    i32 LEGOCONTEXT_SPECIALMOVE_ATTACKER = -1;
+    i32 LEGOCONTEXT_SPECIALMOVE_VICTIM = -1;
+    i32 LEGOCONTEXT_BUCK = -1;
+    i32 LEGOCONTEXT_WHIP = -1;
+    i32 LegoContextNetWait = -1;
+    i32 LEGOMENU_TITLES = -1;
+    i32 LEGOMENU_NEWGAME = -1;
+    i16 LEGOACT_IDLE = -1;
+    i16 LEGOACT_WALK = -1;
+    i16 LEGOACT_JUMP = -1;
+    i16 BigJumpLandFallback = -1;
+    i16 LEGOACT_JUMP2 = -1;
+    i16 LEGOACT_JUMP3 = -1;
+    i16 BigJumpLandSecondary = -1;
+    i16 LEGOACT_LAND3 = -1;
+    i16 LEGOACT_COMBOJUMP = -1;
+    i16 BigJumpLandPreferred = -1;
+    i16 LEGOACT_FALL = -1;
+    i16 LEGOACT_FALLLAND = -1;
+    i16 LEGOACT_BACKPACKFALLLAND = -1;
+    i16 BoltDeactivatedAction = -1;
+    i16 LegoActPunchBehind = -1;
+    u16 BoltShootClassId0 = 0xffff;
+    u16 BoltShootClassId1 = 0xffff;
+    u16 BoltShootClassId2 = 0xffff;
+    i16 LEGOACT_LEDGE_GRAB = -1;
+    i16 LEGOACT_LEDGE_IDLE = -1;
+    i16 LEGOACT_LEDGE_LEFT = -1;
+    i16 LEGOACT_LEDGE_RIGHT = -1;
+    i16 LEGOACT_HANG_IDLE = -1;
+    i16 LEGOACT_HANG_MOVE = -1;
+    i16 LEGOACT_CLIMB_IDLE = -1;
+    i16 LEGOACT_CLIMB_UP = -1;
+    i16 LEGOACT_CLIMB_DOWN = -1;
+    i16 LEGOACT_CLIMB_LEFT = -1;
+    i16 LEGOACT_CLIMB_RIGHT = -1;
+    i16 LEGOACT_WALLSHUFFLE_IDLE = -1;
+    i16 LEGOACT_WALLSHUFFLE_LEFT = -1;
+    i16 LEGOACT_WALLSHUFFLE_RIGHT = -1;
+    i16 LEGOACT_PUSH = -1;
+    i16 LEGOACT_SUPERPUSH_IDLE = -1;
+    i16 LEGOACT_SUPERPUSH_PUSH = -1;
+    i16 LEGOACT_SUPERPUSH_PULL = -1;
+    i16 LEGOACT_BUILD = -1;
+    i16 LEGOACT_FLIP = -1;
+    i16 LEGOACT_FLIPLAND = -1;
+    i16 JumpBackFlipAction = -1;
+    i16 LEGOACT_WALLJUMP_WAIT = -1;
+    i16 LEGOACT_GRAPPLE_IDLE = -1;
+    i16 LEGOACT_GRAPPLE_UP = -1;
+    i16 LEGOACT_GRAPPLE_DOWN = -1;
+    i16 LEGOACT_GRAPPLE_HANG = -1;
+    i16 LEGOACT_GLIDE = -1;
+    i16 LEGOACT_SUPERCARRY_PICKUP = -1;
+    i16 LEGOACT_SUPERCARRY_IDLE = -1;
+    i16 LEGOACT_SUPERCARRY_WALK = -1;
+    i16 LEGOACT_SUPERCARRY_THROW = -1;
+    i16 LEGOACT_SUPERCARRY_PUTDOWN = -1;
+    i16 LEGOACT_SUPERCARRY_BASH = -1;
+    i16 LEGOACT_SUPERCARRY_JUMP = -1;
+    i16 LEGOACT_SUPERCARRY_LAND = -1;
+    i16 LEGOACT_SUPERCARRY_FALLLAND = -1;
+    i16 LEGOACT_MAGNET_WALK_METAL = -1;
+    i16 LEGOACT_MAGNET_TIPTOE = -1;
+    i16 LEGOACT_MAGNET_WALK = -1;
+    i16 LEGOACT_MAGNET_RUN = -1;
+    i16 LEGOACT_MAGNET_JUMP = -1;
+    i16 LEGOACT_MAGNET_LAND = -1;
+    i16 LEGOACT_LUNGE = 1;
+    i16 LEGOACT_LUNGELAND = -1;
+    i16 JumpSlamAction = -1;
+    i16 LEGOACT_SLAMLAND = -1;
+    i16 LEGOACT_COMBATROLL_JUMP = -1;
+    i16 LEGOACT_COMBATROLL_FALL = -1;
+    i16 LEGOACT_COMBATROLL_LAND = -1;
+    i16 LEGOACT_COMBATROLL_FIRE = -1;
+    i16 LEGOACT_EXTRA_JUMP = -1;
+    i16 LEGOACT_EXTRA_JUMP2 = -1;
+    i16 LEGOACT_EXTRA_LAND = -1;
+    i16 LEGOACT_EXTRA_LAND2 = -1;
+    i16 LEGOACT_BUCK = -1;
+    i16 LEGOACT_TEETER = -1;
+    i16 LEGOACT_WHIP_START = -1;
+    i16 LEGOACT_WHIP_CRACK = -1;
+    i16 LEGOACT_WHIP_GRAB = -1;
+    i16 LEGOACT_WHIP_BREAK = -1;
+    u16 ZipUpSwingStartAnimationPc = 0xffff;
+    u16 ZipUpSwingSwingAnimationPc = 0xffff;
+    u16 ZipUpSwingJumpAnimationPc = 0xffff;
 }
 
 extern "C" void InitGameBeforeConfig(void) {
@@ -1375,6 +1674,55 @@ void NewGame(void) {
 
 extern "C" {
     i32 CompletionPointInfoRecalculate[7] = {0};
+    i32 makebaddiesforgetinresetbits = 0;
+    i32 reset_restart = 0;
+    i32 reset_reimport = 0;
+    i32 come_from_an_editor = 0;
+    void *game_cutscenes_podrace_pod_explode = 0;
+    void *game_cutscenes_podrace_out_of_time = 0;
+    void *game_cutscenes_bonus_gunship_cavalry_explode = 0;
+    void *game_cutscenes_droid_factory_conveyor = 0;
+    void *game_cutscenes_podrace_avalanche = 0;
+    void *game_cutscenes_dogfight_die = 0;
+    void *game_cutscenes_podrace_sebulba = 0;
+    void *game_cutscenes_cutscene = 0;
+    void *game_cutscenes_podsprint_out_of_time = 0;
+    void *game_cutscenes_podsprint_sebulba = 0;
+    u16 podrace_die_angle_a = 0;
+    u16 podrace_die_angle_b = 0;
+    u16 podrace_die_angle_c = 0;
+    i32 deathstar_hold_count = 0;
+    RIPPLE_SET *RippleSet = NULL;
+    AREA_DATA *ASTEROIDCHASE_ADATA = 0;
+    AREA_DATA *DAGOBAH_ADATA = 0;
+    AREA_DATA *JABBASPALACE_ADATA = 0;
+    AREA_DATA *SPEEDERCHASE_ADATA = 0;
+    AREA_DATA *DEATHSTARBATTLE2_ADATA = 0;
+    AREA_DATA *E1CHARACTER_ADATA = 0;
+    AREA_DATA *E2CHARACTER_ADATA = 0;
+    AREA_DATA *E3CHARACTER_ADATA = 0;
+    AREA_DATA *LOSTTEMPLE_ADATA = 0;
+    AREA_DATA *SENATE_ADATA = 0;
+    AREA_DATA *UTAPAU_ADATA = 0;
+    AREA_DATA *HOTH_ADATA = 0;
+    AREA_DATA *BONUSDAGOBAH_ADATA = 0;
+    AREA_DATA *BONUSKAMINO_ADATA = 0;
+    AREA_DATA *BONUSKASHYYYK_ADATA = 0;
+    AREA_DATA *JIMTEST_ADATA = 0;
+
+    i32 POINTS_PER_CHARACTER = 0;
+    i32 POINTS_PER_SUPERSTORY = 0;
+    i32 POINTS_PER_SUPERBONUSCOMPLETE = 0;
+    i32 POINTS_PER_TIMETRIAL = 0;
+    i32 POINTS_PER_STORY = 0;
+    i32 POINTS_PER_CHALLENGE = 0;
+    i32 POINTS_PER_MINIKIT = 0;
+    i32 POINTS_PER_TRUEJEDI = 0;
+    i32 POINTS_PER_REDBRICK = 0;
+    i32 POINTS_PER_MISSION = 0;
+    i32 POINTS_PER_CHEAT = 0;
+    i32 POINTS_PER_HINT = 0;
+    i32 POINTS_PER_GOLDBRICK = 0;
 
     void ReCalculateCompletionPoints(void) {
         SHOP_COMPLETION_GAME *save = reinterpret_cast<SHOP_COMPLETION_GAME *>(&Game);
@@ -2573,6 +2921,7 @@ extern "C" {
     }
 
     f32 SpeedBlurScale = 0.5f;
+    f32 AdaptiveDifficultyRecoveryTime = 30.0f;
 
     void SpeedBlur_Apply(WORLDINFO *world) {
         struct level_data_s *level;
@@ -2615,6 +2964,27 @@ static PLAYER_ITEM_TYPE_RESET InitPlayerItemTypes[2] = {
     {15, {6, 0}, "blue", 2, 0, {0, 0}},
     {-1, {0, 0}, NULL,   0, 0, {0, 0}}
 };
+extern "C" {
+    i32 BonusWinner = -1;
+    u8 CheatC3poBitsEnabled = 0;
+    f32 PodAvalancheShakeFrames = 111.0f;
+    NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
+    f32 PodAvalancheShakeRange = 750.0f;
+    NUVEC PodRaceADiePos = {350.0f, 0.25f, -15.0f};
+    NUVEC PodRaceBDiePos = {138.0f, 0.15f, 178.0f};
+    u16 PodRaceBDieAngle = 90;
+    NUVEC PodRaceCDiePos = {140.0f, -7.2f, 52.0f};
+    u16 PodRaceCDieAngle = 90;
+    NUVEC GunshipADiePos = {10.0f, -1.0f, -20.0f};
+    NUVEC GunshipBDiePos = {0.0f, -1.0f, -150.0f};
+}
+
+extern "C" {
+    ANIM_REDIRECT_VIEW AnimRedirectList_Batman[1] = {
+        {NULL, 0, {0, 0}},
+    };
+    i32 CompletionPointInfo[7] = {0};
+}
 
 void InitGameAfterConfig(void) {
     POINTS_PER_STORY = 6;

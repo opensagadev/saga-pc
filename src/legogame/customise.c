@@ -420,15 +420,23 @@ i32 PermanentCustomPieceAvailable(CUSTOMPIECE_LAYERS *input) {
     return 1;
 }
 
+f32 BlipD[2] = {0};
 static CUSTOM_PIECE_ANIM CustomiseArmsAnim[2] = {0};
 static CUSTOM_PIECE_ANIM CustomiseLegsAnim[2] = {0};
+i32 CustomiseMode[2] = {0};
 static CUSTOM_PIECE_ANIM CustomiseHeadAnim[2] = {0};
 static u16 CustomiseTiltX[2] = {0};
 static u16 CustomiseBob[2] = {0};
+i32 customiser_changed = 0;
+NUVEC CustomisePos[2] = {0};
+f32 BlipR[2] = {0};
+f32 BlipL[2] = {0};
 static u16 CustomiseTiltZ[2] = {0};
 static u16 CustomiseRotY[2] = {0};
 static u16 CustomiseYRot[2] = {0};
+CUSTOMISER_LAYERS *CharacterCustomiser = 0;
 static f32 CustomiseNameAlpha = 0;
+i32 customiser_save_done = 0;
 static f32 CustomiseNameBoardTMul[2] = {0};
 static f32 CustomiseNameBoardMul[2] = {0};
 static f32 CustomiseNameLetterBlipScale[2] = {0};
@@ -500,6 +508,7 @@ void Customiser_Init(CUSTOMISER_LAYERS *input) {
 }
 
 static f32 CustomiseMenuTime[2] = {0};
+f32 BlipU[2] = {0};
 
 void Customiser_Reset(CUSTOMISER_LAYERS *customiser) {
     CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
@@ -636,6 +645,7 @@ i32 Customise_GetToggleString(i32 index) {
 
 static i32 CustomiseMenuY[2] = {0};
 static i32 CustomiseNameX[2] = {0};
+GAMESAVE OldCustomiseGame = {0};
 static i32 CustomiseNameY[2] = {0};
 
 /* 00424810..004252bc: PC control returns its quit decision to the wrapper. */
@@ -1040,6 +1050,7 @@ static void CustomiserDrawNameEditor(CUSTOMISER_LAYERS *input) {
 
 static NUVEC CustomiseNoHatPos[2] = {0};
 static f32 CustomiseHeadOffset = 0.21f;
+char CustomiseLetter[39] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ- 0123456789";
 
 void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
     CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;

@@ -21,6 +21,11 @@ extern "C" void InitGameBeforeConfig(void);
 
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
+    i32 CHARACTERBUFFERSIZE = 0x02800000;
+}
+
+extern "C" {
+    VARIPTR original_permbuffer_base = {0};
 }
 
 /* Allocates the permanent arena (InitOnce does the same inline). */
@@ -47,6 +52,24 @@ extern "C" {
     const char *StartupDatNames[7] = {
         "GAME.DAT", "Episode_I.DAT", "Episode_II.DAT", "Episode_III.DAT", "Episode_IV.DAT", "Episode_V.DAT", "Episode_VI.DAT",
     };
+    const char *SaveIconName = "lego.ico";
+    char SaveUnicodeName[20] = "LEGO Star Wars Saga";
+}
+
+extern "C" {
+    i32 InitOnceSelector34 = 0;
+    char InitOnceCurrentDirectory[1] = {0};
+    i32 InitOnceDvd = 0;
+    i32 InitOnceHostFs = 0;
+    i32 InitOnceEject = 0;
+}
+i32 app_tbplayerset = 0;
+i32 app_tbaiset = 0;
+i32 app_tbdrawset = 0;
+i32 app_tbgameset = 0;
+extern "C" {
+    void **Game_NuPad = 0;
+    void *Game_NuPad_Store[2] = {0};
 }
 
 extern "C" void InitOnce(i32 argc, char **argv) {

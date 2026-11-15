@@ -39,6 +39,25 @@ typedef struct VEHICLE_FIRE_STATE { // size 0xe3c
     u8 bolt_fire_phase;             // 0xe3a
 } VEHICLE_FIRE_STATE;
 
+i16 dat_007f190c = -1;
+i16 dat_007f1910 = -1;
+i16 dat_007f1a24 = -1;
+i16 dat_007f1a28 = -1;
+i16 dat_007f1a2c = -1;
+i16 dat_007f1a38 = -1;
+i16 id_MINIDROIDEKA = -1;
+i16 dat_007f1ad8 = -1;
+i16 id_MINITIEBOMBER = -1;
+i16 id_MINISTARDESTROYER = -1;
+i16 id_MINIATAT = -1;
+i16 dat_007f1aec = -1;
+i16 dat_007f1af0 = -1;
+i16 dat_007f1b00 = -1;
+i16 dat_007f1b04 = -1;
+i16 dat_007f1b08 = -1;
+i16 dat_007f1b0c = -1;
+i16 dat_007f1b38 = -1;
+
 i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     VEHICLE_FIRE_STATE *state = (VEHICLE_FIRE_STATE *)object;
@@ -241,6 +260,9 @@ i32 Bolt_HitPart_LSW(BOLT_PC *bolt, PART_PC *part) {
     }
     return 0;
 }
+
+i16 id_MINIXWING = -1;
+i16 id_MINIROYALSTARSHIP = -1;
 
 i32 Bolt_AlternateFire_LSW(GAMEOBJECT *object, i32 index) {
     i16 id = object->id;

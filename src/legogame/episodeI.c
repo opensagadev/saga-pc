@@ -237,7 +237,12 @@ void GunganA_Init(WORLDINFO *world) {
     }
 }
 
+f32 sockstep = 10.0f;
 f32 gungan_a_time = 0.5f;
+f32 PodRace_sniper_fire_time = 0.25f;
+f32 PodRace_sniper_fire_range_time = 2.0f;
+f32 PodRace_sniper_fire_radius = 2.5f;
+f32 PodRace_sniper_start_fire_radius = 90.0f;
 
 void GunganA_Update(WORLDINFO *world) {
     GAMEOBJECT *object;
@@ -369,6 +374,9 @@ void PodRaceSnipersUpdate(void) {
 }
 
 MINESYS minesys = {0};
+i32 podrace_section = 0;
+i32 PodRace_nsnipers = 0;
+PODSPRINT_PC podsprint = {0};
 CLIENT_MINES client_mines = {0};
 
 void fun_004d8970(NUVEC **positions, u32 **present_words, u32 **exploded_words) {
@@ -396,6 +404,7 @@ static void InitPodRaceMines(void) {
 
 i32 pod_mines_bitfield[2] = {0};
 i32 clients_mines_bitfield[2] = {0};
+GAMEOBJECT *PodPacemaker = 0;
 i32 mine_count = 0;
 
 static void PodRaceResetMines(void) {
@@ -638,6 +647,7 @@ void PodRaceAUpdate(void) {
 
 /* Private owner of the active PodRace block. */
 static PODRACE_RESOURCE *PodRacePc = NULL;
+i32 Lap = 0;
 
 static RACEPOD_RESOURCE *RacePodAllocatePrivate(void) {
     PODRACE_RESOURCE *race = PodRacePc;
@@ -714,6 +724,8 @@ static f32 PodSebulbaThrowGravity = -10.0f;
 static f32 PodSebulbaFarThrow = 10.0f;
 static f32 PodSebulbaThrowSpread = 3.0f;
 static f32 PodSebulbaThrowAhead = 3.0f;
+f32 SebulbaThrowIntervalPc = 1.0f;
+f32 SebulbaDistanceBias = 25.0f;
 
 static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
     __declspec(align(16)) NUVEC4 direction;
@@ -977,6 +989,7 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
 
 static f32 podhurryalpha = 0.0f;
 static f32 podstartracealpha = 0.0f;
+struct PODSPRINTNETPACKET_s *podsprint_netpacket = 0;
 static f32 podlapalpha = 0.0f;
 /* Pod sprint HUD and boulder tuning. */
 static f32 PodSprintLapIconScale = 0.16f;
@@ -1069,6 +1082,8 @@ void UpdatePodRaceLapDisplay(f32 dt) {
 
 static f32 pod_pacemaker_alpha = 0.0f;
 static f32 PodPacemakerTextScale = 0.08f;
+f32 mushroom0_along = 65.0f;
+f32 mushroom2_along = 85.0f;
 
 void UpdatePacemakerDisplay(WORLDINFO *world) {
     NUVEC position;
@@ -1197,8 +1212,22 @@ i32 PodSeekTuskanCutSound(void) {
 }
 
 static i32 mushroom_n_attempts = 0;
+i32 mushroom_nattempts_per_increment = 0;
+SNIPER_s PodRace_snipers[10] = {0};
 static CUTINFO *mushroom0_cut = NULL;
+i32 mushroom_collapse = 0;
+i32 do_mine = 0;
+f32 sebulba_fallback_speed_mul = 0;
 static f32 mushroom_countdown = 15.0f;
+f32 mushroom_time_increment = 1.0f;
+f32 sebulba_lerpf = 0.5f;
+f32 test_factor = 10.0f;
+f32 test_seek_rate = 0.01f;
+f32 max_speed_mul = 1.3f;
+f32 min_speed_mul = 0.5f;
+i32 PodDustLocatorIndices[2] = {1, 2};
+f32 PodDustEmissionRate = 100.0f;
+f32 PodDustHeightScale = 2.0f;
 
 void PodRaceBUpdate(WORLDINFO *world) {
     if (Lap == 2 && PodRacePc->mushroom_timer > 1.0f && mushroom_collapse != 0) {
@@ -1271,6 +1300,11 @@ void PodRaceCUpdate(WORLDINFO *world) {
         ((PODRACE_LEVFLAG *)LevFlag)->podrace_state = 2;
     }
 }
+
+char PodRaceIncrementKeyword[11] = "increment=";
+char PodRaceAttemptsKeyword[25] = "nattempts_per_increment=";
+char PodRaceLapTimeKeyword[9] = "laptime=";
+char PodRaceMaxLapTimeKeyword[12] = "maxlaptime=";
 
 i32 Action_SetLapTime(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                       f32 ignored) {
@@ -1794,6 +1828,13 @@ static void PodSprint_UpdateAlpha(void) {
 
 static f32 boulder_offset_y = 1.0f;
 static f32 boulder_offset_y_seek = 1.0f;
+f32 sebulba_goal_ahead = 10.0f;
+f32 sebulba_catchup_dist = -3.0f;
+f32 sebulba_catchup_speed_mul = 1.5f;
+f32 sebulba_catchup_lerpf = 5.0f;
+f32 sebulba_fallback_dist = 150.0f;
+f32 sebulba_fallback_lerpf = 5.0f;
+f32 sebulba_goal_ahead_vals[4] = {100.0f, 75.0f, 50.0f, 25.0f};
 
 void PodSprintA_Update(WORLDINFO *world) {
     i32 i;
@@ -1988,6 +2029,7 @@ i32 Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS *process, AIPACKET *packet,
 RETAKEG_NETPACKET *retakeg_netpacket = NULL;
 static GIZAIMESSAGE *RetakeG_TotalGuards_msg = NULL;
 static GIZAIMESSAGE *RetakeG_GuardsToRescue_msg = NULL;
+struct gameobject_s *Maul_obj = 0;
 
 void RetakeG_Init(WORLDINFO *world) {
     retakeg_netpacket = SetLevelHack(4);
@@ -2028,6 +2070,7 @@ void RetakeG_Panel(WORLDINFO *world) {
 }
 static struct gizaimessage_s *MaulA_ai_message = 0;
 static GIZAIMESSAGE *MaulA_hits_message = NULL;
+nuhspecial_s SebulbaMineSpecial = {0};
 
 void MaulA_Init(WORLDINFO *world) {
     MaulA_ai_message = CheckGizAIMessage(gizaimessagesys, "MaulOnTheRun", NULL);
@@ -2254,6 +2297,13 @@ void PodRaceCReset(WORLDINFO *world) {
         }
     }
 }
+
+char PodCreateDamagedKeyword[8] = "damaged";
+char PodCreatePacemakerKeyword[10] = "pacemaker";
+char PodCreateTimeKeyword[13] = "time_factor=";
+char PodCreateEndKeyword[12] = "spline_end=";
+char PodCreateStartKeyword[14] = "spline_start=";
+char PodCreateSplineKeyword[11] = "spline_id=";
 
 i32 Action_CreatePod(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                      f32 ignored) {

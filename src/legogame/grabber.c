@@ -265,6 +265,9 @@ static void Grab_shadow(NUFPAR *parser) {
     }
 }
 
+i16 GrabMachineId = -1;
+i16 GrabMagnetId = -1;
+i16 RobotBaseId = -1;
 static GRAB_CONFIG_DATA GrabConfigData = {
     -0.3f,
     {{"radius", Grab_radius},

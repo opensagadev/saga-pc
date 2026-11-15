@@ -69,6 +69,16 @@ static f32 CableFdiv(f32 a, f32 b) {
     return a / b;
 }
 
+f32 default_targetmomf = 4.0f;
+f32 default_ownermomf = 5.0f;
+f32 default_max_cable_length = 15.0f;
+f32 default_tow_length = 6.0f;
+f32 targetmomf = 4.0f;
+f32 ownermomf = 5.0f;
+f32 max_cable_length = 15.0f;
+f32 tow_length = 6.0f;
+u8 cables[0xf60] = {0};
+
 void InitCables(WORLDINFO *world) {
     memset(cables, 0, sizeof(cables));
 
@@ -161,6 +171,12 @@ static void CableAtstToppled(GAMEOBJECT *target) {
         }
     }
 }
+
+i32 atat_locators[4] = {0, 1, 2, 3};
+f32 cable_speed = 20.0f;
+f32 cable_gravity = 3.0f;
+f32 cable_damping = 2.0f;
+f32 cable_ground_damping = 20.0f;
 
 void UpdateCables(void) {
     CABLE_RECORD *cable = (CABLE_RECORD *)cables;
@@ -489,6 +505,12 @@ void UpdateCables(void) {
         }
     }
 }
+
+f32 nsegments_per_unit = 6.0f;
+f32 cable_slack = 1.0f;
+f32 slack_factor = 1.0f;
+i32 nsegments_drawn = 0;
+i32 solid_cable = 0;
 
 void DrawCables(void) {
     CABLE_RECORD *cable = (CABLE_RECORD *)cables;

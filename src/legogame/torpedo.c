@@ -326,6 +326,8 @@ static void TorpedoHitDispatch(void *target, NUVEC *position, i32 player, u8 tar
     }
 }
 
+i16 id_MINIYWING = -1;
+f32 TorpedoGrabRangeSquared = 36.0f;
 f32 TorpedoStealTimer = 2.0f;
 f32 TorpedoStealRange = 2.0f;
 

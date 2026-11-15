@@ -629,6 +629,7 @@ extern "C" ADDGIZMOTYPE *HatMachine_RegisterGizmo(i32 type_id) {
 }
 
 extern "C" {
+    i16 id_PRINCESSLEIABOUSHH = -1;
     i32 hatmachine_gizmotype_id = -1;
 }
 static const NUVEC HatMachine_HatOffset = {0.0f, 0.3f, 0.0f};

@@ -1061,6 +1061,10 @@ extern "C" {
         }
     }
 
+    // clang-format on
+    f32 PowerUp_PanelPosMul[2] = {0};
+    u16 PowerUp_PanelYRot[2] = {0};
+    i32 ShowPlayerCoordinate = 0;
     i32 DoubleScore = 0;
     f32 statstime = 0;
     f32 BuildUpScale = 0;

@@ -527,14 +527,52 @@ static f32 MoveFabs(f32 value) {
     return *(f32 *)&bits;
 }
 
+i16 id_DODGEM = -1;
+i16 DefaultAnimationLeiaSlaveId = -1;
+i16 id_CAPTAINTARPALS = -1;
+i16 id_IMPERIALGUARD = -1;
+i16 id_BODYGUARD = -1;
+i16 id_DARTHMAUL = -1;
+i16 id_GAMORREANGUARD = -1;
+i16 id_NAFFDROID1 = -1;
+i16 id_NAFFDROID2 = -1;
+i16 id_NAFFDROID4 = -1;
+i16 id_PKDROID = -1;
+i16 id_BAT = -1;
+i16 id_SUPERBATTLEDROID = -1;
+u16 id_DRAGBOMB = 0xffff;
+i16 id_CLONEWALKER = -1;
 i16 dat_007f1924 = -1;
 i16 dat_007f1928 = -1;
+i16 id_CATAPULT = -1;
 i16 id_BASKETCANNON = -1;
 i16 id_STAP = -1;
+i16 id_STAP2 = -1;
 i16 id_JUMBOHOMINGDROID = -1;
 i16 id_RANCOR = -1;
 i16 id_R2Q5 = -1;
 i16 id_R2Q5;
+i16 id_UGNAUGHT = -1;
+u16 id_GONKDROID = 0xffff;
+i16 id_C3PO = -1;
+i16 id_TC14 = -1;
+i16 DefaultAnimationLamaSuId = -1;
+i16 DefaultAnimationTaunWeId = -1;
+i16 id_BUZZDROID = -1;
+i16 dat_007f1a98 = -1;
+i16 dat_007f1a9c = -1;
+i16 dat_007f1aa0 = -1;
+i16 id_FLASHSPEEDER = -1;
+i16 DefaultMotionSkeletonId = -1;
+i16 ZipUpLineCharacterId = -1;
+i16 DefaultMotionIndySnakeId = -1;
+i16 id_MINIATST = -1;
+i16 id_MINIATTE = -1;
+i16 id_MINISLAVE1 = -1;
+u8 CheatPooPartsEnabled = 0;
+u8 CheatPooCoinsEnabled = 0;
+u8 TractorBeamEnabled = 0;
+u8 DroidCheat32Enabled = 0;
 
 typedef struct CHARACTER_COMMUNICATE_READER {
     u8 unknown_000[0xd38];
@@ -5778,6 +5816,7 @@ void ResetForceBack(void) {
     ForceBackPos = NULL;
 }
 
+AREA_DATA *PODSPRINT_ADATA = 0;
 AREA_DATA *BOUNTYHUNTERPURSUIT_ADATA = 0;
 AREA_DATA *DOGFIGHT_ADATA = 0;
 AREA_DATA *BATTLEOVERCORUSCANT_ADATA = 0;
@@ -9257,6 +9296,13 @@ f32 testlaser_endw = 0.1f;
 static f32 PlayerFloatHeightFraction = 0.625f;
 static f32 PlayerSecondBackwardMomentumScale = 1.2f;
 static f32 VEHICLE_WATER_SPEED_MUL = 0.7f;
+f32 GameDeflectPartGravity = -2.5f;
+f32 GameDeflectPartSpeed = 5.0f;
+f32 MaulF_ForceThrowGravity = -0.5f;
+f32 MaulF_ForceThrowSpeed = 1.0f;
+f32 DookuC_ForceThrowGravity = -2.5f;
+f32 DookuC_ForceThrowSpeed = 2.5f;
+f32 ForcePush_Speed = 2.5f;
 
 void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     GAMEPAD *pad;

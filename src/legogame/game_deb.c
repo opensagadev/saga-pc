@@ -273,7 +273,11 @@ void BurnoutApply(i32 view) {
     }
 }
 
+f32 GunshipDustEmissionRate = 75.0f;
 static f32 RippleRandomRadius = 0.15f;
+f32 RipplePerturbation = 0.15f;
+f32 RippleSfxCooldown = 0.5f;
+f32 ForceFieldRippleRate = 100.0f;
 
 void AddSurfaceRipples(GAMEOBJECT *object) {
     RIPPLE_CONTACT_TIMER_VIEW *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW *)object;

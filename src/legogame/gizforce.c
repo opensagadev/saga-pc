@@ -212,6 +212,8 @@ static FORCE_SFX_CONFIG *FindForceForSfx(WORLD_FORCE_SFX *world, char *name) {
 
 static FORCE_SFX_CONFIG *GizForceSFX_force = 0;
 static WORLD_FORCE_SFX *GizForceSFX_worldinfo = 0;
+// Selected input view: cumulative eligible writes <=384; actual PC capacity unknown.
+GIZFORCE_TARGET_RECORD PossibleForceTargets[384] = {0};
 
 static void GizForceSFX_forcename(NUFPAR *parser) {
     GizForceSFX_force = NULL;
@@ -238,6 +240,7 @@ static void GizForceSFX_returnsfx(NUFPAR *parser) {
     }
 }
 
+i32 force_gizmotype_id = -1;
 static i32 GizForceSFX_load_version = 99999;
 static NUFPCOMJMP GizForceSFX_ConfigKeywords[] = {
     {"forcename",   GizForceSFX_forcename  },
@@ -572,6 +575,7 @@ static void ForceResetSingle(WORLDINFO *world, GIZFORCE *force) {
 }
 
 f32 ForceAnimationSeekRate = 5.0f;
+NUVEC ForceThrowMaulPosition = {19.05f, 4.0f, -105.23f};
 
 static f32 ForceUpdateSpeed(GIZFORCE *force, GAMEOBJECT *object) {
     f32 target = 1.0f;
