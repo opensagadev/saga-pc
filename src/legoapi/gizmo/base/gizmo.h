@@ -174,9 +174,6 @@ typedef struct GIZACTIONDEF { // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
-    GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message);
-    GIZAIMESSAGE *SetGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, f32 value, GIZAIMESSAGE *message);
-    char *GizAIMessage_GetName(GIZAIMESSAGE *message);
 
     void *GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
 #ifdef __cplusplus

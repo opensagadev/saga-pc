@@ -25,6 +25,19 @@ struct eduimenu_s;
 #define DEBRIS_GENERATOR_IMPROVED_RADIAL 11 /* GenDebIndexImprovedRadial */
 #define DEBRIS_GENERATOR_STAR_RADIAL 12     /* GenDebIndexRadialStar */
 
+typedef struct debris_colour_key_s { // size 0x8
+    f32 time;                        // 0x0
+    u8 red;                          // 0x4
+    u8 green;                        // 0x5
+    u8 blue;                         // 0x6
+    u8 unknown_7;                    // 0x7
+} DEBRIS_COLOUR_KEY_PC;
+
+typedef struct debris_float_key_s { // size 0x8
+    f32 time;                       // 0x0
+    f32 value;                      // 0x4
+} DEBRIS_FLOAT_KEY_PC;
+
 typedef struct debris_info_s {   // size 0x428
     char name[16];               // 0x000
     u8 category;                 // 0x010

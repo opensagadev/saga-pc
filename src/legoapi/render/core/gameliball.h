@@ -632,6 +632,33 @@ extern "C" {
 
 #if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 3 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
 
+typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
+    NUMTX previous_matrix;           // 0x00
+    struct numtx_s *scene_object;    // 0x40
+    u32 unknown_44;                  // 0x44
+    i16 terrain_group_index;         // 0x48
+    i16 scene_object_index;          // 0x4a
+
+    union { // size 0x4
+        u32 flags;
+
+        struct {              // size 0x4
+            u32 rotating : 1; // 0x4c:0
+            u32 : 31;         // 0x4c:1
+        };
+    }; // 0x4c
+
+    u8 unknown_50[4];    // 0x50
+    f32 bounce_54;       // 0x54
+    f32 bounce_58;       // 0x58
+    f32 bounce_5c;       // 0x5c
+    f32 bounce_60;       // 0x60
+    f32 bounce_64;       // 0x64
+    u32 *instance_flags; // 0x68
+} TERRAIN_PLATFORM_PC;
+
+typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM;
+
 typedef struct TERRAIN_SET_PC {                 // size 0xa490
     TERRAIN_GROUP_PC *groups;                   // 0x0000
     u8 unknown_004[0x60];                       // 0x0004
@@ -695,6 +722,14 @@ extern "C" {
 #endif
 
 #if SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_PART == 4 && !defined(SAGA_LEGOAPI_RENDER_CORE_GAMELIBALL_H_STOP)
+
+typedef struct TERRAIN_SPATIAL_NODE TERRAIN_SPATIAL_NODE;
+
+struct TERRAIN_SPATIAL_NODE { // size 0x10
+    u16 point_count;          // 0x0
+    u16 unknown_02;           // 0x2
+    NUVEC points[1];          // 0x4
+};
 
 struct TERRAIN_SPATIAL_CHUNK {      // size 0x14
     TERRAIN_SPATIAL_NODE *previous; // 0x00
@@ -913,6 +948,22 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
+    typedef struct debris_chunk_control_s {             // size 0x2c
+        struct debris_particle_chunk_s *particle_chunk; // 0x00
+        f32 expiry_time;                                // 0x04
+        i32 active;                                     // 0x08
+        struct debris_key_s *owner;                     // 0x0c
+        struct debris_chunk_control_s *next;            // 0x10
+        i32 particle_index;                             // 0x14
+        f32 collision_time;                             // 0x18
+        i16 effect_index;                               // 0x1c
+        i16 unknown_01e;                                // 0x1e
+        i16 rotation_y;                                 // 0x20
+        i16 unknown_022;                                // 0x22
+        f32 collision_plane;                            // 0x24
+        f32 restitution;                                // 0x28
+    } DEBRIS_CHUNK_CONTROL_PC;
+
     extern DEBRIS_CHUNK_CONTROL_PC **freechunkcontrols;
     extern DEBRIS_CHUNK_CONTROL_PC *debris_chunk_control_stack[2];
     void AddChunkControlToStack(DEBRIS_CHUNK_CONTROL_PC *, DEBRIS_CHUNK_CONTROL_PC **);

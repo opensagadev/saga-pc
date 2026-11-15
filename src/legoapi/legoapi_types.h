@@ -56,7 +56,6 @@ struct mission_data_s;
 struct numtl_s;
 
 typedef struct TERRAIN_WALL_POINT TERRAIN_WALL_POINT;
-typedef struct TERRAIN_SPATIAL_NODE TERRAIN_SPATIAL_NODE;
 typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 
 typedef TERRAIN_GROUP_PC TERRAIN_GROUP;
@@ -146,23 +145,6 @@ enum {
     TERRAIN_SHAPE_NORMAL_FLAG_SECOND_STEEP = 2
 };
 
-typedef struct gizaimessage_s { // size 0x38
-    NULISTLNK links;            // 0x00
-    char name[32];              // 0x08
-    f32 value;                  // 0x28
-    i8 output_values[8];        // 0x2c
-    i8 output_count;            // 0x34
-    u8 unknown_35;              // 0x35
-    u16 flags;                  // 0x36
-} GIZAIMESSAGE;
-
-typedef struct gizaimessagesys_s { // size 0x18
-    i32 count;                     // 0x00
-    GIZAIMESSAGE *messages;        // 0x04
-    NULISTHDR free_list;           // 0x08
-    NULISTHDR active_list;         // 0x10
-} GIZAIMESSAGESYS;
-
 typedef struct part_emit_s {     // size 0x6c
     NUVEC position;              // 0x00
     i32 effect_id;               // 0x0c
@@ -215,19 +197,6 @@ typedef struct narrowsockexception_s { // size 0x10
 
 typedef struct cutsys_s CUTSYS_PC;
 typedef struct gameanimsys_s GAMEANIMSYS;
-
-typedef struct debris_float_key_s { // size 0x8
-    f32 time;                       // 0x0
-    f32 value;                      // 0x4
-} DEBRIS_FLOAT_KEY_PC;
-
-typedef struct debris_colour_key_s { // size 0x8
-    f32 time;                        // 0x0
-    u8 red;                          // 0x4
-    u8 green;                        // 0x5
-    u8 blue;                         // 0x6
-    u8 unknown_7;                    // 0x7
-} DEBRIS_COLOUR_KEY_PC;
 
 typedef struct debris_particle_frame_s { // size 0x28
     NUVEC position;                      // 0x00
@@ -389,8 +358,6 @@ typedef struct GIZPANEL_s GIZPANEL_s;
 typedef struct GIZSPECIAL_s GIZSPECIAL_s;
 typedef struct GIZSPINNERARM_s GIZSPINNERARM_s;
 typedef struct GIZTURRET_s GIZTURRET_s;
-typedef struct HOTHBATTLE_MELEE_WAVE_s HOTHBATTLE_MELEE_WAVE_s;
-typedef struct HOTHBATTLE_MELEE_s HOTHBATTLE_MELEE_s;
 typedef struct LevelEditorScene LevelEditorScene;
 typedef struct PODSPRINTNETPACKET_s PODSPRINTNETPACKET_s;
 typedef struct SNIPER_s SNIPER_s;
@@ -584,33 +551,6 @@ class NetLogFile { // size 0x2114
 
 #if SAGA_LEGOAPI_LEGOAPI_TYPES_H_PART == 2 && !defined(SAGA_LEGOAPI_LEGOAPI_TYPES_H_STOP)
 
-typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
-    NUMTX previous_matrix;           // 0x00
-    struct numtx_s *scene_object;    // 0x40
-    u32 unknown_44;                  // 0x44
-    i16 terrain_group_index;         // 0x48
-    i16 scene_object_index;          // 0x4a
-
-    union { // size 0x4
-        u32 flags;
-
-        struct {              // size 0x4
-            u32 rotating : 1; // 0x4c:0
-            u32 : 31;         // 0x4c:1
-        };
-    }; // 0x4c
-
-    u8 unknown_50[4];    // 0x50
-    f32 bounce_54;       // 0x54
-    f32 bounce_58;       // 0x58
-    f32 bounce_5c;       // 0x5c
-    f32 bounce_60;       // 0x60
-    f32 bounce_64;       // 0x64
-    u32 *instance_flags; // 0x68
-} TERRAIN_PLATFORM_PC;
-
-typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM;
-
 typedef struct gamecamera_s { // size 0x230
 
     union { // size 0x38
@@ -769,11 +709,6 @@ struct GIZBUILDITANIMDATA_s { // size 0xc8
 
 typedef TERRAIN_SET_PC TERRSET;
 
-struct TERRAIN_SPATIAL_NODE { // size 0x10
-    u16 point_count;          // 0x0
-    u16 unknown_02;           // 0x2
-    NUVEC points[1];          // 0x4
-};
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1955,62 +1890,6 @@ struct GIZFORCESYS_s {                   // size 0x158
     struct GIZFORCEGROUP_s groups[8];    // 0x018
 };
 
-struct HOTHBATTLE_MELEE_WAVE_s {       // size 0x28
-    i16 character_id;                  // 0x00
-    u8 reserved_02[2];                 // 0x02
-    struct gameobject_s *creatures[4]; // 0x04
-
-    union { // size 0x1
-        u8 remaining_count;
-        u8 unknown_18;
-    }; // 0x14
-
-    union { // size 0x1
-        u8 initial_count;
-        u8 unknown_19;
-    }; // 0x15
-
-    union { // size 0x1
-        u8 active_count;
-        u8 reserved_1a;
-    }; // 0x16
-
-    char name[13];     // 0x17
-    u8 reserved_24[4]; // 0x24
-};
-
-struct HOTHBATTLE_MELEE_s { // size 0xc8
-
-    union { // size 0x1
-        u8 current_wave;
-        u8 unknown_0;
-    }; // 0x00
-
-    union { // size 0x1
-        u8 next_wave;
-        u8 unknown_1;
-    }; // 0x01
-
-    union { // size 0x1
-        u8 initialize_wave;
-        u8 unknown_2;
-    }; // 0x02
-
-    u8 unknown_3; // 0x03
-
-    union { // size 0x1
-        i8 transition_phase;
-        i8 unknown_4;
-    }; // 0x04
-
-    u8 unknown_5[3];                              // 0x05
-    f32 wave_delay;                               // 0x08
-    struct HOTHBATTLE_MELEE_WAVE_s waves[4];      // 0x0c
-    struct gameobject_s *background_creatures[6]; // 0xac
-    u8 creature_count;                            // 0xc4
-    u8 reserved_0xc5[3];                          // 0xc5
-};
-
 struct GIZSPECIAL_s {               // size 0x28
     char name[32];                  // 0x00
     struct gameanimset_s *anim_set; // 0x20
@@ -2270,22 +2149,6 @@ struct nugraph_s {    // size 0x5c
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-    typedef struct debris_chunk_control_s {             // size 0x2c
-        struct debris_particle_chunk_s *particle_chunk; // 0x00
-        f32 expiry_time;                                // 0x04
-        i32 active;                                     // 0x08
-        struct debris_key_s *owner;                     // 0x0c
-        struct debris_chunk_control_s *next;            // 0x10
-        i32 particle_index;                             // 0x14
-        f32 collision_time;                             // 0x18
-        i16 effect_index;                               // 0x1c
-        i16 unknown_01e;                                // 0x1e
-        i16 rotation_y;                                 // 0x20
-        i16 unknown_022;                                // 0x22
-        f32 collision_plane;                            // 0x24
-        f32 restitution;                                // 0x28
-    } DEBRIS_CHUNK_CONTROL_PC;
 
 #ifdef __cplusplus
 }

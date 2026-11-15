@@ -35,6 +35,16 @@ typedef struct PC_LOCKED_RECT { // size 0x8
     void *bits;                 // 0x4
 } PC_LOCKED_RECT;
 
+typedef struct PC_TEXTURE_LEVEL_DESC { // size 0x20
+    u32 format;                        // 0x00
+    u32 type;                          // 0x04
+    u32 usage;                         // 0x08
+    u32 pool;                          // 0x0c
+    u32 unknown_10[2];                 // 0x10
+    u32 width;                         // 0x18
+    u32 height;                        // 0x1c
+} PC_TEXTURE_LEVEL_DESC;
+
 typedef struct PC_TEXTURE_RESOURCE_METHODS {                                                        // size 0x54
     void *unknown_0000[2];                                                                          // 0x00
     ULONG(__stdcall *release)(PC_TEXTURE_RESOURCE *);                                               // 0x08

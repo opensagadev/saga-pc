@@ -268,13 +268,13 @@ forward:TERRAIN_SCENE_OBJECT,forward,TERRAIN_SCENE_OBJECT,736,736,1,legoapi/rend
 forward:TERRAIN_FILE_CHUNK,forward,TERRAIN_FILE_CHUNK,737,737,1,legoapi/render/core/gameliball.h,users,TERRAIN_FILE_CHUNK: only gameapi/gameliball.cpp android-path
 forward:TERRAIN_WALL_POINT,forward,TERRAIN_WALL_POINT,738,738,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_WALL_POINT
 forward:TERRAIN_SPATIAL_CHUNK,forward,TERRAIN_SPATIAL_CHUNK,739,739,1,legoapi/render/core/gameliball.h,users,TERRAIN_SPATIAL_CHUNK: only gameapi/gameliball.cpp android-path
-forward:TERRAIN_SPATIAL_NODE,forward,TERRAIN_SPATIAL_NODE,740,740,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SPATIAL_NODE
+forward:TERRAIN_SPATIAL_NODE,forward,TERRAIN_SPATIAL_NODE,740,740,1,legoapi/render/core/gameliball.h,android,catch-all (needs a module owner); TERRAIN_SPATIAL_NODE
 forward:TERRAIN_SHAPE_BATCH,forward,TERRAIN_SHAPE_BATCH,741,741,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SHAPE_BATCH
 forward:TERRAIN_SKIN_STREAM,forward,TERRAIN_SKIN_STREAM,742,742,1,legoapi/render/core/gameliball.h,users,TERRAIN_SKIN_STREAM: only gameapi/gameliball.cpp android-path
 union:TERRAIN_SCAN_WORD,union,TERRAIN_SCAN_WORD,744,752,10,legoapi/render/core/gameliball.h,users,TERRAIN_SCAN_WORD: only gameapi/gameliball.cpp android-path
 struct:TERRAIN_INDEX_LEVEL,struct,TERRAIN_INDEX_LEVEL,754,760,8,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL -> TERRAIN_INDEX_LEVEL
 struct:TERRAIN_GROUP_PC,struct,TERRAIN_GROUP_PC,762,772,12,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_GROUP_PC -> TERRAIN_GROUP
-struct:TERRAIN_PLATFORM_PC,struct,TERRAIN_PLATFORM_PC,774,797,25,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_PLATFORM_PC -> TERRAIN_PLATFORM
+struct:TERRAIN_PLATFORM_PC,struct,TERRAIN_PLATFORM_PC,774,797,25,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_PLATFORM_PC -> TERRAIN_PLATFORM
 struct:TERRAIN_CELL_PC,struct,TERRAIN_CELL_PC,799,806,9,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_CELL_PC -> TERRAIN_CELL
 struct:TERRAIN_SET_PC,struct,TERRAIN_SET_PC,808,837,31,legoapi/render/core/gameliball.h,rule,used most in gameapi/gameliball.cpp (118) android-path
 assert:-#176,assert,,839,839,2,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SCAN_WORD
@@ -327,7 +327,7 @@ assert:-#222,assert,,885,885,1,legoapi/render/core/gameliball.h,follow-type,TERR
 assert:-#223,assert,,886,886,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SET_PC
 typedef:TERRSET,typedef,TERRSET,888,888,2,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRSET
 typedef:TERRAIN_GROUP,typedef,TERRAIN_GROUP,889,889,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_GROUP
-typedef:TERRAIN_PLATFORM,typedef,TERRAIN_PLATFORM,890,890,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_PLATFORM
+typedef:TERRAIN_PLATFORM,typedef,TERRAIN_PLATFORM,890,890,1,legoapi/render/core/gameliball.h,android,catch-all (needs a module owner); TERRAIN_PLATFORM
 typedef:TERRAIN_CELL,typedef,TERRAIN_CELL,891,891,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_CELL
 typedef:TERRAIN_SHAPE,typedef,TERRAIN_SHAPE,892,892,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SHAPE (also legoapi/render/core/terrain.h)
 struct:TerrainQuery_s,struct,TerrainQuery_s,894,943,51,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TerrainQuery_s
@@ -345,7 +345,7 @@ assert:-#234,assert,,955,955,1,legoapi/legoapi_types.h,follow-type,catch-all (ne
 assert:-#235,assert,,956,956,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TerrainQuery_s
 assert:-#236,assert,,957,957,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TerrainQuery_s
 struct:TERRAIN_SHAPE_BATCH,struct,TERRAIN_SHAPE_BATCH,959,966,9,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SHAPE_BATCH
-struct:TERRAIN_SPATIAL_NODE,struct,TERRAIN_SPATIAL_NODE,968,972,6,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_SPATIAL_NODE
+struct:TERRAIN_SPATIAL_NODE,struct,TERRAIN_SPATIAL_NODE,968,972,6,legoapi/render/core/gameliball.h,android,catch-all (needs a module owner); TERRAIN_SPATIAL_NODE
 struct:TERRAIN_SPATIAL_CHUNK,struct,TERRAIN_SPATIAL_CHUNK,974,977,5,legoapi/render/core/gameliball.h,users,TERRAIN_SPATIAL_CHUNK: only gameapi/gameliball.cpp android-path
 struct:TERRAIN_WALL_POINT,struct,TERRAIN_WALL_POINT,979,982,5,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_WALL_POINT
 struct:TERRAIN_FILE_CHUNK,struct,TERRAIN_FILE_CHUNK,984,995,13,legoapi/render/core/gameliball.h,users,TERRAIN_FILE_CHUNK: only gameapi/gameliball.cpp android-path
@@ -452,8 +452,8 @@ struct:AICREATURE,struct,AICREATURE,1750,1782,34,gameapi/ai/aisys/aisys.h,androi
 union:variptr_u,union,variptr_u VARIPTR,1784,1788,6,nu2api/nucore/common.h,android,variptr_u
 struct:AISYS_PC,struct,AISYS_PC,1790,1824,36,gameapi/ai/aisys/aisys.h,android-stem,AISYS_PC -> AISYS
 struct:AISCRIPT,struct,AISCRIPT,1826,1837,13,gameapi/ai/aisys/aiscript_types.h,android-stem,AISCRIPT -> AISCRIPT
-struct:gizaimessage_s,struct,gizaimessage_s GIZAIMESSAGE,1839,1847,10,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); gizaimessage_s -> GIZAIMESSAGE_s
-struct:gizaimessagesys_s,struct,gizaimessagesys_s GIZAIMESSAGESYS,1849,1854,7,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); gizaimessagesys_s -> GIZAIMESSAGESYS_s
+struct:gizaimessage_s,struct,gizaimessage_s GIZAIMESSAGE,1839,1847,10,legoapi/gizmo/base/gizmessage.h,android-stem,catch-all (needs a module owner); gizaimessage_s -> GIZAIMESSAGE_s
+struct:gizaimessagesys_s,struct,gizaimessagesys_s GIZAIMESSAGESYS,1849,1854,7,legoapi/gizmo/base/gizmessage.h,android-stem,catch-all (needs a module owner); gizaimessagesys_s -> GIZAIMESSAGESYS_s
 forward:nudathdr_s,forward,nudathdr_s NUDATHDR,1856,1856,2,nu2api/nufile/nufile.h,android,nudathdr_s
 forward:vufnt_s,forward,vufnt_s VUFNT,1857,1857,1,nu2api/nu3d/nuqfnt.h,android,vufnt_s
 struct:vucharidx_s,struct,vucharidx_s VUCHARIDX,1859,1862,5,nu2api/nu3d/nuqfnt.h,android,vucharidx_s
@@ -588,7 +588,7 @@ assert:-#388,assert,,2335,2335,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST
 assert:-#389,assert,,2336,2336,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
 assert:-#390,assert,,2337,2337,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
 assert:-#391,assert,,2338,2338,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
-struct:PC_TEXTURE_LEVEL_DESC,struct,PC_TEXTURE_LEVEL_DESC,2340,2348,10,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
+struct:PC_TEXTURE_LEVEL_DESC,struct,PC_TEXTURE_LEVEL_DESC,2340,2348,10,nu2api/nuwin32/d3dCore.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
 assert:-#392,assert,,2350,2350,2,nu2api/nustencilshadows_PC.h,follow-type,PC_TEXTURE_LEVEL_DESC
 assert:-#393,assert,,2351,2351,1,nu2api/nustencilshadows_PC.h,follow-type,PC_TEXTURE_LEVEL_DESC
 assert:-#394,assert,,2352,2352,1,nu2api/nustencilshadows_PC.h,follow-type,PC_TEXTURE_LEVEL_DESC
@@ -1308,8 +1308,8 @@ assert:-#995,assert,,4639,4639,1,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#996,assert,,4640,4640,1,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#997,assert,,4641,4641,1,legoapi/world/world.h,follow-type,WORLDINFO
 forward:area_supercounter_s,forward,area_supercounter_s AREA_SUPERCOUNTER_PC,4643,4643,2,legoapi/world/areas.h,follow-definition,area_supercounter_s
-struct:debris_float_key_s,struct,debris_float_key_s DEBRIS_FLOAT_KEY_PC,4645,4648,5,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); debris_float_key_s -> debris_float_key_s
-struct:debris_colour_key_s,struct,debris_colour_key_s DEBRIS_COLOUR_KEY_PC,4650,4656,8,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); debris_colour_key_s -> debris_colour_key_s
+struct:debris_float_key_s,struct,debris_float_key_s DEBRIS_FLOAT_KEY_PC,4645,4648,5,gameapi/edtools/edgra.h,android-stem,catch-all (needs a module owner); debris_float_key_s -> debris_float_key_s
+struct:debris_colour_key_s,struct,debris_colour_key_s DEBRIS_COLOUR_KEY_PC,4650,4656,8,gameapi/edtools/edgra.h,android-stem,catch-all (needs a module owner); debris_colour_key_s -> debris_colour_key_s
 struct:debris_particle_frame_s,struct,debris_particle_frame_s DEBRIS_PARTICLE_FRAME,4658,4663,7,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); debris_particle_frame_s -> debris_particle_frame_s
 struct:debris_part_header_s,struct,debris_part_header_s DEBRIS_PART_HEADER_PC,4665,4676,13,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (7) pc-path
 assert:-#998,assert,,4678,4678,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DEBRIS_FLOAT_KEY_PC
@@ -7162,7 +7162,7 @@ assert:-#3423,assert,,15687,15687,1,nu2api/nustencilshadows_PC.h,follow-type,DEB
 assert:-#3424,assert,,15688,15688,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PARTICLE_CHUNK_PC
 assert:-#3425,assert,,15689,15689,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PARTICLE_CHUNK_PC
 assert:-#3426,assert,,15690,15690,1,nu2api/nustencilshadows_PC.h,follow-type,DEBRIS_PARTICLE_CHUNK_PC
-struct:debris_chunk_control_s,struct,debris_chunk_control_s DEBRIS_CHUNK_CONTROL_PC,15692,15706,16,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); debris_chunk_control_s -> debris_chunk_control_s
+struct:debris_chunk_control_s,struct,debris_chunk_control_s DEBRIS_CHUNK_CONTROL_PC,15692,15706,16,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); debris_chunk_control_s -> debris_chunk_control_s
 assert:-#3427,assert,,15708,15708,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DEBRIS_CHUNK_CONTROL_PC
 assert:-#3428,assert,,15709,15709,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DEBRIS_CHUNK_CONTROL_PC
 assert:-#3429,assert,,15710,15710,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); DEBRIS_CHUNK_CONTROL_PC
@@ -13179,8 +13179,8 @@ forward:GIZTORPMACHINE_s,forward,GIZTORPMACHINE_s,25812,25812,1,legoapi/gizmo/ob
 forward:GIZTURRETSYS_s#2,forward,GIZTURRETSYS_s,25813,25813,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); GIZTURRETSYS_s
 forward:GIZTURRET_s#2,forward,GIZTURRET_s,25814,25814,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); GIZTURRET_s
 forward:HINT_s,forward,HINT_s,25815,25815,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/legoapi_types.h (android)
-forward:HOTHBATTLE_MELEE_WAVE_s,forward,HOTHBATTLE_MELEE_WAVE_s,25816,25816,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
-forward:HOTHBATTLE_MELEE_s,forward,HOTHBATTLE_MELEE_s,25817,25817,1,legoapi/legoapi_types.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+forward:HOTHBATTLE_MELEE_WAVE_s,forward,HOTHBATTLE_MELEE_WAVE_s,25816,25816,1,legoapi/world/levels/episodeV.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
+forward:HOTHBATTLE_MELEE_s,forward,HOTHBATTLE_MELEE_s,25817,25817,1,legoapi/world/levels/episodeV.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
 forward:HUBMINIKIT_s,forward,HUBMINIKIT_s,25818,25818,1,legoapi/world/world.h,android,HUBMINIKIT_s
 forward:LEDGE_s,forward,LEDGE_s,25819,25819,1,legoapi/gizmos/transport/ledges.h,android,LEDGE_s
 forward:LEVELSAVE_s,forward,LEVELSAVE_s,25820,25820,1,legoapi/core/save_values.h,android,LEVELSAVE_s
@@ -13543,7 +13543,7 @@ assert:-#4905,assert,,28221,28221,1,legoapi/world/levels/episodeV.h,follow-type,
 assert:-#4906,assert,,28222,28222,1,legoapi/world/levels/episodeV.h,follow-type,HOTHBATTLEE_NETPACKET
 assert:-#4907,assert,,28223,28223,1,legoapi/world/levels/episodeV.h,follow-type,HOTHBATTLEE_NETPACKET
 assert:-#4908,assert,,28224,28224,1,legoapi/world/levels/episodeV.h,follow-type,HOTHBATTLEE_NETPACKET
-struct:HOTHBATTLE_MELEE_WAVE_s,struct,HOTHBATTLE_MELEE_WAVE_s,28226,28248,24,legoapi/legoapi_types.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
+struct:HOTHBATTLE_MELEE_WAVE_s,struct,HOTHBATTLE_MELEE_WAVE_s,28226,28248,24,legoapi/world/levels/episodeV.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
 assert:-#4909,assert,,28250,28250,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
 assert:-#4910,assert,,28251,28251,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
 assert:-#4911,assert,,28252,28252,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
@@ -13551,16 +13551,16 @@ assert:-#4912,assert,,28253,28253,1,legoapi/legoapi_types.h,follow-type,catch-al
 assert:-#4913,assert,,28254,28254,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
 assert:-#4914,assert,,28255,28255,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
 assert:-#4915,assert,,28256,28256,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_WAVE_s
-struct:HOTHBATTLE_MELEE_s,struct,HOTHBATTLE_MELEE_s,28258,28287,31,legoapi/legoapi_types.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4916,assert,,28289,28289,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4917,assert,,28290,28290,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4918,assert,,28291,28291,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4919,assert,,28292,28292,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4920,assert,,28293,28293,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4921,assert,,28294,28294,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4922,assert,,28295,28295,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4923,assert,,28296,28296,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
-assert:-#4924,assert,,28297,28297,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+struct:HOTHBATTLE_MELEE_s,struct,HOTHBATTLE_MELEE_s,28258,28287,31,legoapi/world/levels/episodeV.h,android,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4916,assert,,28289,28289,2,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4917,assert,,28290,28290,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4918,assert,,28291,28291,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4919,assert,,28292,28292,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4920,assert,,28293,28293,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4921,assert,,28294,28294,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4922,assert,,28295,28295,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4923,assert,,28296,28296,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
+assert:-#4924,assert,,28297,28297,1,legoapi/world/levels/episodeV.h,follow-type,catch-all (needs a module owner); HOTHBATTLE_MELEE_s
 struct:GIZSPECIAL_s,struct,GIZSPECIAL_s,28299,28314,17,legoapi/legoapi_types.h,android,catch-all (needs a module owner); GIZSPECIAL_s
 assert:-#4925,assert,,28316,28316,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); GIZSPECIAL_s
 struct:instNUGCUTRIGID_s,struct,instNUGCUTRIGID_s,28318,28325,9,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nucore/nugcutscene.h (android)

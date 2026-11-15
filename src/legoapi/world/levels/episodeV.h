@@ -40,6 +40,66 @@ typedef struct HOTHBATTLEE_NETPACKET { // size 0x58
     i32 count;                         // 0x54
 } HOTHBATTLEE_NETPACKET;
 
+typedef struct HOTHBATTLE_MELEE_s HOTHBATTLE_MELEE_s;
+
+typedef struct HOTHBATTLE_MELEE_WAVE_s HOTHBATTLE_MELEE_WAVE_s;
+
+struct HOTHBATTLE_MELEE_WAVE_s {       // size 0x28
+    i16 character_id;                  // 0x00
+    u8 reserved_02[2];                 // 0x02
+    struct gameobject_s *creatures[4]; // 0x04
+
+    union { // size 0x1
+        u8 remaining_count;
+        u8 unknown_18;
+    }; // 0x14
+
+    union { // size 0x1
+        u8 initial_count;
+        u8 unknown_19;
+    }; // 0x15
+
+    union { // size 0x1
+        u8 active_count;
+        u8 reserved_1a;
+    }; // 0x16
+
+    char name[13];     // 0x17
+    u8 reserved_24[4]; // 0x24
+};
+
+struct HOTHBATTLE_MELEE_s { // size 0xc8
+
+    union { // size 0x1
+        u8 current_wave;
+        u8 unknown_0;
+    }; // 0x00
+
+    union { // size 0x1
+        u8 next_wave;
+        u8 unknown_1;
+    }; // 0x01
+
+    union { // size 0x1
+        u8 initialize_wave;
+        u8 unknown_2;
+    }; // 0x02
+
+    u8 unknown_3; // 0x03
+
+    union { // size 0x1
+        i8 transition_phase;
+        i8 unknown_4;
+    }; // 0x04
+
+    u8 unknown_5[3];                              // 0x05
+    f32 wave_delay;                               // 0x08
+    struct HOTHBATTLE_MELEE_WAVE_s waves[4];      // 0x0c
+    struct gameobject_s *background_creatures[6]; // 0xac
+    u8 creature_count;                            // 0xc4
+    u8 reserved_0xc5[3];                          // 0xc5
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif
