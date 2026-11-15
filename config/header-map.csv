@@ -6310,9 +6310,9 @@ variable:Explosions,variable,Explosions,14499,14499,1,legoapi/legoapi_types.h,ru
 variable:i_explosion,variable,i_explosion,14500,14500,1,legoapi/items/fx/explosions.h,users,i_explosion: only legoapi/explosions.c android-path
 variable:ShadowMode,variable,ShadowMode,14501,14501,1,globals.h,android-weak,catch-all (needs a module owner); ShadowMode
 variable:CheckLostDataFn,variable,CheckLostDataFn,14502,14502,1,globals.h,android-weak,catch-all (needs a module owner); CheckLostDataFn
-struct:COLLECTID_PC,struct,COLLECTID_PC,14504,14526,24,legoapi/menus/screens/store.h,android-stem,COLLECTID_PC -> COLLECTID
-assert:-#3121,assert,,14528,14528,2,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
-assert:-#3122,assert,,14529,14529,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
+struct:COLLECTID,struct,COLLECTID,14504,14526,24,legoapi/menus/screens/store.h,android-stem,COLLECTID -> COLLECTID
+assert:-#3121,assert,,14528,14528,2,legoapi/menus/screens/store.h,follow-type,COLLECTID
+assert:-#3122,assert,,14529,14529,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
 typedef:TAG_DRAW_ICON,typedef,TAG_DRAW_ICON,14530,14530,1,legoapi/actions/character/legoapi_tag.h,rule,"used in saga.h only, most by legoapi/actions/character/legoapi_tag.h (1)"
 typedef:LAST_SAFE_POS_EXTRA,typedef,LAST_SAFE_POS_EXTRA,14531,14531,1,legoapi/characters/core/players.h,rule,"used in saga.h only, most by legoapi/characters/core/players.h (1)"
 variable:Tag_Mode,variable,Tag_Mode,14532,14532,1,legoapi/actions/character/legoapi_tag.h,users,Tag_Mode: only legogame/legoapi_tag.c android-path
@@ -12474,12 +12474,12 @@ assert:-#4549,assert,,24514,24514,1,legoapi/legoapi_types.h,follow-type,catch-al
 assert:-#4550,assert,,24515,24515,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CHARPIVOT
 assert:-#4551,assert,,24516,24516,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CHARPIVOT
 forward:CHARPIVOT#2,forward,CHARPIVOT,24518,24518,2,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); CHARPIVOT -> CHARPIVOT
-assert:-#4552,assert,,24519,24519,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
-assert:-#4553,assert,,24520,24520,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
-assert:-#4554,assert,,24521,24521,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
-assert:-#4555,assert,,24522,24522,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
-assert:-#4556,assert,,24523,24523,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
-assert:-#4557,assert,,24524,24524,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
+assert:-#4552,assert,,24519,24519,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
+assert:-#4553,assert,,24520,24520,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
+assert:-#4554,assert,,24521,24521,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
+assert:-#4555,assert,,24522,24522,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
+assert:-#4556,assert,,24523,24523,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
+assert:-#4557,assert,,24524,24524,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
 assert:-#4558,assert,,24525,24525,1,legoapi/world/missions.h,follow-type,MISSIONSYS
 assert:-#4559,assert,,24526,24526,1,legoapi/world/missions.h,follow-type,MISSIONSYS
 assert:-#4560,assert,,24527,24527,1,legoapi/world/missions.h,follow-type,MISSIONSYS
@@ -13343,8 +13343,8 @@ struct:COLLECTID,struct,COLLECTID,26953,26971,20,legoapi/menus/screens/store.h,a
 assert:-#4766,assert,,26973,26973,2,legoapi/menus/screens/store.h,follow-type,COLLECTID
 assert:-#4767,assert,,26974,26974,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
 assert:-#4768,assert,,26975,26975,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
-assert:-#4769,assert,,26976,26976,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
-assert:-#4770,assert,,26977,26977,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
+assert:-#4769,assert,,26976,26976,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
+assert:-#4770,assert,,26977,26977,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
 struct:HINT_s,struct,HINT_s,26979,26995,18,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to legoapi/legoapi_types.h (android)
 assert:-#4771,assert,,26997,26997,2,transitional/unused.h,follow-type,HINT_s
 struct:shopitem_s,struct,shopitem_s,26999,27007,10,legoapi/legoapi_types.h,android,catch-all (needs a module owner); shopitem_s
@@ -13423,7 +13423,7 @@ assert:-#4834,assert,,27362,27362,1,legoapi/legoapi_types.h,follow-type,catch-al
 assert:-#4835,assert,,27363,27363,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); STATUSPACKET_s
 assert:-#4836,assert,,27364,27364,1,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#4837,assert,,27365,27365,1,legogame/game.h,follow-type,GAMESAVE
-assert:-#4838,assert,,27366,27366,1,legoapi/menus/screens/store.h,follow-type,COLLECTID_PC
+assert:-#4838,assert,,27366,27366,1,legoapi/menus/screens/store.h,follow-type,COLLECTID
 assert:-#4839,assert,,27367,27367,1,legoapi/menus/screens/gamestatus_lsw.h,follow-type,NEW_MINI_PIECE
 assert:-#4840,assert,,27368,27368,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); STATUSPACKET_s
 assert:-#4841,assert,,27369,27369,1,decomp.h,decomp,data model check

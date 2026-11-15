@@ -77,7 +77,7 @@ extern "C" void Collection_Draw(COLLECTION_BUILD *collection, f32 x, f32 y, f32 
         for (i32 col = 0; col < columns; ++col, px += dx) {
             const i32 index = row * columns + col;
             if (index < count) {
-                COLLECTID_PC *list = collection->list;
+                COLLECTID *list = collection->list;
                 i32 id = list[index].id;
                 list[index].grid_x = px;
                 list[index].grid_y = py;

@@ -1890,7 +1890,7 @@ extern "C" {
             AddToCollection(dat_007f195c);
         }
         for (i = 0; i < MasterCollection.count; ++i) {
-            COLLECTID *entry = reinterpret_cast<COLLECTID *>(&MasterCollection.list[i]);
+            COLLECTID *entry = &MasterCollection.list[i];
             if (entry->field5_0x9 != 0) {
                 CompletionPointInfoRecalculate[2] += POINTS_PER_CHARACTER;
                 if (Collection_Got(entry->id) != 0) {
@@ -3264,8 +3264,8 @@ void InitGameAfterConfig(void) {
     Suits_Init();
     Collection_Configure("chars\\collection.txt", &permbuffer_ptr, &permbuffer_end);
     if ((u16)dat_007f17d4 != 0xffff && InCollectList_Index(dat_007f17d4, NULL, 0) != -1 && TempCollectID != NULL) {
-        TempCollectID->selection_type = 0;
-        TempCollectID->shop_enabled = 1;
+        TempCollectID->type = 0;
+        TempCollectID->can_buy = 1;
         TempCollectID->price = 50000;
     }
     i32 character_points = COLLECTION_COMPLETIONCOUNT * POINTS_PER_CHARACTER;

@@ -10,8 +10,8 @@
 extern "C" {
 #endif
     i32 Collection_Got(i32);
-    extern COLLECTID_PC *TempCollectID;
-    i32 InCollectList_Index(i32, COLLECTID_PC *, i32);
+    extern COLLECTID *TempCollectID;
+    i32 InCollectList_Index(i32, COLLECTID *, i32);
     i32 Collection_GotAnyOfType(i32, u32);
 
     void Collection_CreateMaster(char *, i16 *, COLLECTION_BUILD *, i32, f32);

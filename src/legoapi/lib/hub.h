@@ -77,7 +77,7 @@ extern "C" {
 
 /* Native constructor reader/writer minimum; no full allocation claim. */
 typedef struct collection_build_s { // size 0x14
-    COLLECTID_PC *list;             // 0x00
+    COLLECTID *list;                // 0x00
     u16 columns;                    // 0x04
     u16 count;                      // 0x06
     i16 *title_id;                  // 0x08

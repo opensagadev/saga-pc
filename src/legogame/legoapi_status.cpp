@@ -415,10 +415,10 @@ extern "C" {
                 if (previous == count && (Game_CharacterSave == NULL || (Game_CharacterSave[id] & 1) == 0)) {
                     i32 found = InCollectList_Index(id, MasterCollection.list, MasterCollection.count);
                     if (found != -1) {
-                        COLLECTID_PC *entry = &MasterCollection.list[found];
-                        if (entry->shop_enabled == 0) {
+                        COLLECTID *entry = &MasterCollection.list[found];
+                        if (entry->can_buy == 0) {
                             StatusNewCharacterIds[count++] = (i16)id;
-                            if (entry->unknown_price_tail[0] != 0) {
+                            if (entry->field5_0x9 != 0) {
                                 AddToCompletionPoints(POINTS_PER_CHARACTER);
                             }
                         }

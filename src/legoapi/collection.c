@@ -14,11 +14,11 @@
 #include "nu2api/nufile/nufpar.h"
 
 static i32 CollectCount = 0;
-static COLLECTID_PC *CollectList = 0;
+static COLLECTID *CollectList = 0;
 i32 COLLECTION_COMPLETIONCOUNT = 0;
-COLLECTID_PC *TempCollectID = 0;
+COLLECTID *TempCollectID = 0;
 
-i32 InCollectList_Index(i32 id, COLLECTID_PC *list, i32 count) {
+i32 InCollectList_Index(i32 id, COLLECTID *list, i32 count) {
     i32 index;
     TempCollectID = NULL;
     if (list == NULL) {
@@ -102,7 +102,7 @@ void CollectAllCharacters(i32 only_story) {
     i32 i;
 
     for (i = 0; i < CollectCount; i++) {
-        if (only_story == 0 || CollectList[i].selection_type == 1) {
+        if (only_story == 0 || CollectList[i].type == 1) {
             AddToCollection(CollectList[i].id);
         }
     }
@@ -129,7 +129,7 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD *collec
                              i32 use_all_characters, f32 scale) {
     i32 index;
     (void)buffer_end;
-    collection->list = (COLLECTID_PC *)((buffer->addr + 3) & ~3u);
+    collection->list = (COLLECTID *)((buffer->addr + 3) & ~3u);
     collection->columns = (u16)columns;
     collection->count = 0;
     collection->name = name;
@@ -137,7 +137,7 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD *collec
     collection->scale = scale;
     if (use_all_characters == 0) {
         for (index = 0; index < CollectCount; ++index) {
-            COLLECTID_PC *source = &CollectList[index];
+            COLLECTID *source = &CollectList[index];
             i32 id = source->id;
             if (excluded_model_flags != 0 && (apicharsys->char_data[id].model_flags & excluded_model_flags) != 0) {
                 continue;
@@ -164,7 +164,7 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD *collec
             if (required_model_flags != 0 && (CDataList[index].model_flags & required_model_flags) != required_model_flags) {
                 continue;
             }
-            memset(&collection->list[collection->count], 0, sizeof(COLLECTID_PC));
+            memset(&collection->list[collection->count], 0, sizeof(COLLECTID));
             collection->list[collection->count].id = (i16)index;
             collection->count++;
         }
@@ -251,7 +251,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
 
     entry = (COLLECTION_CONFIG_ENTRY *)((buffer->addr + 3) & ~3u);
     buffer->void_ptr = entry;
-    CollectList = (COLLECTID_PC *)entry;
+    CollectList = (COLLECTID *)entry;
     CollectCount = 0;
     COLLECTION_COMPLETIONCOUNT = 0;
 
@@ -338,7 +338,7 @@ i32 AllMiniKitsDone(AREASAVE_s *);
 
 COLLECTID *CollectIDUnlocked(i32 id) {
     COLLECTID *entry;
-    COLLECTID_PC *list = CollectList;
+    COLLECTID *list = CollectList;
     i32 index = InCollectList_Index(id, list, CollectCount);
     i32 unlocked = 0;
     i32 area;
@@ -346,7 +346,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
         if (Game_CharacterSave != NULL && (Game_CharacterSave[id] & 2) != 0) {
             unlocked = 1;
         } else {
-            entry = (COLLECTID *)&list[index];
+            entry = &list[index];
             switch (entry->type) {
                 case 0:
                     unlocked = 1;
@@ -377,7 +377,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
             }
         }
         if (unlocked != 0) {
-            return (COLLECTID *)&CollectList[index];
+            return &CollectList[index];
         }
     }
     return NULL;

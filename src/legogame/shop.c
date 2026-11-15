@@ -491,8 +491,8 @@ void InitAlphaList(void) {
 void UpdateCharacterIDs(void) {
     i32 i;
     for (i = 0; i < ShopCollection.count; ++i) {
-        COLLECTID *collect = (COLLECTID *)&ShopCollection.list[i];
-        i32 price = collect->field3_0x4;
+        COLLECTID *collect = &ShopCollection.list[i];
+        i32 price = collect->price;
         CharItems[i].item_id = collect->id;
         CharItems[i].price = price;
     }
@@ -549,7 +549,7 @@ void InitShop(WORLDINFO *world) {
     SHOPCHARCOUNT = 0;
     code_count = 0;
     for (i = 0; i < ShopCollection.count && i < 100; ++i) {
-        COLLECTID *collect = (COLLECTID *)&ShopCollection.list[i];
+        COLLECTID *collect = &ShopCollection.list[i];
         if (collect != NULL) {
             i32 character_id = collect->id;
             shopitem_s *item;
