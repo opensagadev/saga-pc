@@ -22,12 +22,7 @@ typedef struct PC_SAVE_HEADER {   // size 0x2028
 } PC_SAVE_HEADER;
 
 extern "C" {
-    /* User-approved Debug save-location exception; the game requires the res cwd. */
-#ifdef SAGA_DEBUG
-    char SaveCreateFolderPathPc[256] = "SavedGames";
-#else
     char SaveCreateFolderPathPc[256] = {0};
-#endif
     u32 savetimer = 0;
     char SaveSlotName[256] = {0};
     i32 saveload_status = 0;
@@ -45,14 +40,12 @@ extern "C" {
     i32 SaveCreateDirectoryPc(char *path);
 
     void createslotfolder(i32) {
-#ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
         strcat(SaveFolderPathPc, "SavedGames");
         i32 i = 0;
         do {
             SaveCreateFolderPathPc[i] = SaveFolderPathPc[i];
         } while (SaveFolderPathPc[i++] != 0);
-#endif
         SaveCreateDirectoryPc(SaveCreateFolderPathPc);
     }
 

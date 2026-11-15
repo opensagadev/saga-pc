@@ -21,10 +21,8 @@ extern "C" {
     char SaveFullSlotPath[256] = {0};
 
     char *fullslotname(i32 slot) {
-#ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
         strcat(SaveFolderPathPc, "SavedGames");
-#endif
         i32 i = 0;
         do {
             SaveFullSlotPath[i] = SaveFolderPathPc[i];
@@ -39,10 +37,8 @@ extern "C" {
 
     /* the path of the slot's code file. */
     char *fullcodename(i32 slot) {
-#ifndef SAGA_DEBUG
         PCOptionsBuildFolder(SaveFolderPathPc);
         strcat(SaveFolderPathPc, "SavedGames");
-#endif
         i32 i = 0;
         do {
             SaveFullCodePath[i] = SaveFolderPathPc[i];

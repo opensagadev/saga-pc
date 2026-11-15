@@ -114,6 +114,11 @@ void PC_WINDOW_OPTIONS_PC::SetSpeedBlurSupported(u8 value) {
 }
 
 extern "C" void PCOptionsBuildFolder(char *destination) {
+#ifdef SAGA_DEBUG
+    // The Debug build keeps its user files (saves, pcconfig.txt) next to the game data in the working directory.
+    destination[0] = 0;
+    return;
+#endif
     i32 folder = CSIDL_LOCAL_APPDATA;
     if (PcUsePersonalFolder != 0) {
         folder = CSIDL_PERSONAL;

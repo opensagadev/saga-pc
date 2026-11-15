@@ -255,55 +255,18 @@ def split_headers():
 
 
 def check_diagnostic_boundaries():
-    """Allow diagnostics and the exact user-authorized Debug save-location blocks."""
+    """Allow diagnostics and the exact user-authorized Debug save-location block."""
     selector = re.compile(r"^\s*#\s*(?:if|ifdef|ifndef|elif|define|undef)\b[^\n]*\b(?:SAGA_DEBUG|SAGA_RUNTIME)\b",
                           re.MULTILINE)
-    # Exact user-authorized save-location blocks; other behavior forks stay forbidden.
+    # The exact user-authorized save-location block; other behavior forks stay forbidden.
     save_exceptions = {
-        'src/data.cpp': (
+        'src/nu2api/pc_options.cpp': (
             (
-                '    /* User-approved Debug save-location exception; the game requires the res cwd. */\n'
+                'extern "C" void PCOptionsBuildFolder(char *destination) {\n'
                 '#ifdef SAGA_DEBUG\n'
-                '    char SaveFolderPathPc[256] = "SavedGames";\n'
-                '#else\n'
-                '    char SaveFolderPathPc[256] = {0};\n'
-                '#endif\n'
-            ),
-        ),
-        'src/gameapi/saveload.cpp': (
-            (
-                '    char *fullslotname(i32 slot) {\n'
-                '#ifndef SAGA_DEBUG\n'
-                '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
-                '        strcat(SaveFolderPathPc, "SavedGames");\n'
-                '#endif\n'
-            ),
-            (
-                '    char *fullcodename(i32 slot) {\n'
-                '#ifndef SAGA_DEBUG\n'
-                '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
-                '        strcat(SaveFolderPathPc, "SavedGames");\n'
-                '#endif\n'
-            ),
-        ),
-        'src/gameapi/shop_persistence.cpp': (
-            (
-                '    /* User-approved Debug save-location exception; the game requires the res cwd. */\n'
-                '#ifdef SAGA_DEBUG\n'
-                '    char SaveCreateFolderPathPc[256] = "SavedGames";\n'
-                '#else\n'
-                '    char SaveCreateFolderPathPc[256] = {0};\n'
-                '#endif\n'
-            ),
-            (
-                '    void createslotfolder(i32) {\n'
-                '#ifndef SAGA_DEBUG\n'
-                '        PCOptionsBuildFolder(SaveFolderPathPc);\n'
-                '        strcat(SaveFolderPathPc, "SavedGames");\n'
-                '        i32 i = 0;\n'
-                '        do {\n'
-                '            SaveCreateFolderPathPc[i] = SaveFolderPathPc[i];\n'
-                '        } while (SaveFolderPathPc[i++] != 0);\n'
+                '    // The Debug build keeps its user files (saves, pcconfig.txt) next to the game data in the working directory.\n'
+                '    destination[0] = 0;\n'
+                '    return;\n'
                 '#endif\n'
             ),
         ),

@@ -5822,12 +5822,7 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    /* User-approved Debug save-location exception; the game requires the res cwd. */
-#ifdef SAGA_DEBUG
-    char SaveFolderPathPc[256] = "SavedGames";
-#else
     char SaveFolderPathPc[256] = {0};
-#endif
     i32 saveload_slotcode[6] = {0};
 }
 
