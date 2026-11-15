@@ -2118,7 +2118,7 @@ void DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
     DebrisMtxCopyPrivate(&key->clip_matrix, &matrix);
 }
 
-NUMTX xzfacingmtx = {0};
+__declspec(align(16)) NUMTX xzfacingmtx = {0};
 i32 g_renderingDebris = 0;
 i32 edbits_editmode = 0;
 

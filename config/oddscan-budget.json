@@ -68,7 +68,7 @@
   "multi-declaration": 14,
   "cdecl": 0,
   "stdcall": 288,
-  "declspec-align": 172,
+  "declspec-align": 190,
   "declspec-other": 17,
   "other-platform": 0,
   "decomp-type": 0

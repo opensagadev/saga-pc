@@ -1375,7 +1375,7 @@ typedef struct RENDERER_ARENA_VERTEX { // size 0x10
 
 RENDERER_ARENA_VERTEX *RendererArenaData = 0;
 i32 *NuPortalFrustumCount = 0;
-CAMERA_CLIP_PLANES CameraClipPlanes = {0};
+__declspec(align(16)) CAMERA_CLIP_PLANES CameraClipPlanes = {0};
 u32 *RendererArenaOffsets = 0;
 VARIPTR fstack = {0};
 i32 *RendererArenaTypes = 0;
@@ -1383,7 +1383,7 @@ NUTEXDIM_PC **NuTextureDimensions = 0;
 i32 RendererArenaCount = 0;
 i32 RendererArenaVertexCount = 0;
 i32 RendererArenaIndexCount = 0;
-NUPLANE VisibilityDepthPlane = {0};
+__declspec(align(16)) NUPLANE VisibilityDepthPlane = {0};
 char *nudlist_field_18b0 = NULL;
 
 /* Shadow outline records: a direction or point with a count (or a -1 marker in the arena) in the fourth word. */

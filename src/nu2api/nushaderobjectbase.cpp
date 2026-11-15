@@ -50,7 +50,7 @@ extern "C" {
     f32 PCShaderWaterAmplitudeScale = 4.0f;
     f32 PCShaderWaterTheta = 0.7f;
     i32 PCShaderWaterLastFrame = -1;
-    NUVEC4 PCShaderWaterTable[32] = {0};
+    __declspec(align(16)) NUVEC4 PCShaderWaterTable[32] = {0};
     struct PC_SHADER_WATER_MATERIAL_VIEW *PCShaderWaterPreviousMaterial = NULL;
     u32 PCShaderWaterInitializationBits = 0;
 }

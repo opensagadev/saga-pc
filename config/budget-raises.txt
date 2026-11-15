@@ -211,3 +211,4 @@ config/oddscan-budget.json long-file 11 nushadermanager.cpp grows past the long-
 config/declscan-budget.json C 457 a unit's extern of a global moved into the same unit is now a forward declaration of it (legoapi data move, same construct)
 config/castscan-budget.json int-pointer 824 initializer casts of globals moved from data.cpp (C++) into C units are classified as int-pointer there (same casts, new unit language)
 config/oddscan-budget.json declspec-align 172 clip_test_mtx and clip_outcode_workspace_prefix are movaps operands of PCVecMtxTransformClipBlocks and need declared 16-byte alignment now that data placement is not pinned (they were 16-aligned only by their old place in data.cpp)
+config/oddscan-budget.json declspec-align 190 18 matrix, plane and vec4 globals that retail keeps 16-aligned (numtx_identity, CutCamMtx, CameraClipPlanes, PostShadowView, ...) declare it now that data placement is not pinned

@@ -3555,7 +3555,7 @@ extern "C" {
     i32 StartupGameFlag1 = 1;
 
     AISYS_SPECIAL_NODE_CALLBACK_PC AISysSpecialNodeCallback = 0;
-    extern const NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
+    extern const __declspec(align(16)) NUMTX ANI3_EVAL_IDENTITY_MATRIX = {
         1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
     TERRAIN_SET_PC *CurrentTerrain = 0;
@@ -5568,7 +5568,7 @@ extern "C" {
 }
 
 extern "C" {
-    KEEP_SCREEN_PLANE PlayPlane[6] = {};
+    __declspec(align(16)) KEEP_SCREEN_PLANE PlayPlane[6] = {};
     i32 KEEPONSCREEN_SIDESONLY = 0;
     NUVEC GunshipANorm = {};
 }
@@ -6452,7 +6452,7 @@ extern "C" {
 }
 
 extern "C" {
-    NUMTX CutCamMtx = {0};
+    __declspec(align(16)) NUMTX CutCamMtx = {0};
 
     f32 newgamecamtime = 0;
 }

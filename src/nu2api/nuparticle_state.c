@@ -11,7 +11,7 @@ void NuRndrSetParticleRotation(NUMTX *rotation) {
 }
 
 i32 NuRndrStopUpdate = 0;
-NUMTX debris_box_camera_cache = {0};
+__declspec(align(16)) NUMTX debris_box_camera_cache = {0};
 
 void NuRndrSetDebBox(NUVEC *range) {
     NUVEC size;

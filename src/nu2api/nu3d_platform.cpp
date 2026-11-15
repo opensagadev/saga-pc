@@ -556,7 +556,7 @@ extern "C" {
     VARIPTR nudlist_stream_cursor = {0};
     __declspec(align(16)) u32 clip_outcode_workspace_prefix[8] = {0};
     DWA_WEIGHT_BLOCK *DwaPointerPool[2048] = {0};
-    NUMTX PcGeometryViewProjectionMatrix = {0};
+    __declspec(align(16)) NUMTX PcGeometryViewProjectionMatrix = {0};
     f32 dat_0097f990 = 0;
     i32 NuLgtLaserOldCnt = 0;
     NUMTX NuRndr_DebrisMtx = {0};
@@ -583,7 +583,8 @@ extern "C" {
     PC_SPECIAL_PROJECTION_ADJUST PCSpecialProjectionAdjust = {1.0f, 1.0f, 0.0f, 0.0f};
     u32 NuDebrisIdealDynamicVBSize = 262144u;
     i32 NuPrimCurrentPrimitiveType = 10000;
-    NUMTX numtx_identity = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+    __declspec(align(16)) NUMTX numtx_identity = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                                                  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     f32 NuPrimXScale = 1.0f;
     f32 NuPrimYScale = 1.0f;
 
@@ -1430,7 +1431,7 @@ extern "C" {
         NUMTX PcGeometryViewMatrix = {0};
         i32 NuLgtLaserCnt = 0;
         GRAPHICS_RENDER_TEXTURE PCGraphicsRenderTextures[32] = {};
-        NUVEC4 NuRndr_DebrisPlane = {0};
+        __declspec(align(16)) NUVEC4 NuRndr_DebrisPlane = {0};
         i32 NuQFntScanY = 0;
         void *NuDisplayMaterialLast = NULL;
         PC_LIGHT_STATE_SLOT NuLgtStateSlots[8] = {0};

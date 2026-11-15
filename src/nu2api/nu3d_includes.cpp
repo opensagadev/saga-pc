@@ -15258,7 +15258,7 @@ extern "C" {
     }
 
     f32 curx;
-    NUPLANE VisibilityAbsoluteDepthPlane = {0};
+    __declspec(align(16)) NUPLANE VisibilityAbsoluteDepthPlane = {0};
     u32 PCSpecialShadowClipResults[4] = {0};
     NUMTL *PCMaterialPool = 0;
     NUCAMERA *NuPortalCamera = 0;
@@ -15272,11 +15272,11 @@ extern "C" {
     i32 PCSpecialShadowClipResultsPresent = 0;
     NUVEC NuRndrDebRange = {0};
     NUMTX NuCameraScalingTemplate = {0};
-    NUMTX VisibilityAlternateAbsoluteMatrix = {0};
+    __declspec(align(16)) NUMTX VisibilityAlternateAbsoluteMatrix = {0};
     void *NuTimeBar_SetList[16] = {0};
     i32 *NuTextureLoadOrderPC = 0;
     u8 NuAnimDataBitCount[256] = {0};
-    NUPLANE NuPortalNearPlane = {0};
+    __declspec(align(16)) NUPLANE NuPortalNearPlane = {0};
     f32 nextx;
     NUVEC NuPortalWorldCamera = {0};
     NUMTL *numtl_defaultmtl3d = 0;
@@ -15316,7 +15316,7 @@ extern "C" {
     NUMTL *numtl_defaultmtl2d = 0;
     f32 zys = 0;
     i32 size;
-    NUMTX VisibilityPrimaryWorldMatrix = {0};
+    __declspec(align(16)) NUMTX VisibilityPrimaryWorldMatrix = {0};
 
     static void setpoint(f32 x) {
         curx = x;
@@ -18933,7 +18933,7 @@ void NuDeferredFilterGen::render() {
     D3DPERF_EndEvent();
 }
 
-extern "C" NUMTX PostShadowView = {0};
+extern "C" __declspec(align(16)) NUMTX PostShadowView = {0};
 extern "C" {
     GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferCopy = NULL;
     GRAPHICS_RENDER_TEXTURE *dat_0097ace4 = NULL;
@@ -18941,7 +18941,7 @@ extern "C" {
     NUMTX NuPortalProjectionScratch = {0};
 }
 extern "C" NUMTX PostShadowProjection = {0};
-extern "C" NUVEC4 PostShadowWhite = {1.0f, 1.0f, 1.0f, 1.0f};
+extern "C" __declspec(align(16)) NUVEC4 PostShadowWhite = {1.0f, 1.0f, 1.0f, 1.0f};
 extern "C" {
     extern const WCHAR PostDeferredLabel[17] = L"Deferred shading";
     extern const WCHAR PostShadowRenderLabel[14] = L"Shadow render";
