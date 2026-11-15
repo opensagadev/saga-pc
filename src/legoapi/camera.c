@@ -379,7 +379,7 @@ static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *positi
     if (system == NULL || position->sock_index == -1) {
         return 0;
     }
-    if ((system->socks[position->sock_index].flags & 0x800) == 0) {
+    if ((system->socks[position->sock_index].flags & SOCK_FLAG_MISC_1) == 0) {
         return 0;
     }
     list = NarrowSockException;

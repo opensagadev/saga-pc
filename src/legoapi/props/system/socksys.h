@@ -85,6 +85,21 @@ extern "C" {
 
 #if SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_PART == 2 && !defined(SAGA_LEGOAPI_PROPS_SYSTEM_SOCKSYS_H_STOP)
 
+/* sock_s.flags: set by the sock config keywords (the SockPar* handlers of socksys.c). */
+#define SOCK_FLAG_MID_FORCE_Y 0x2                       /* mid_force y */
+#define SOCK_FLAG_MID_FORCE_XZ 0x4                      /* mid_force xz (xyz sets and clears it) */
+#define SOCK_FLAG_MID_FORCE_DOWN 0x8                    /* mid_force_down */
+#define SOCK_FLAG_CLAMP_TARGET_Y 0x20                   /* y_limits */
+#define SOCK_FLAG_MOVE_ANGLE 0x40                       /* move_angle */
+#define SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER 0x80       /* cam_behind_setting */
+#define SOCK_FLAG_TURN_OFF 0x100                        /* turn_off */
+#define SOCK_FLAG_SCALE_LATERAL_OFFSET 0x200            /* cam_scale_lateral */
+#define SOCK_FLAG_TWO_PLAYER_PLANAR_PULLBACK 0x400      /* cam_pullback_ratio_xz */
+#define SOCK_FLAG_MISC_1 0x800                          /* set_misc_1 */
+#define SOCK_FLAG_MISC_2 0x1000                         /* set_misc_2 */
+#define SOCK_FLAG_CAMERA_DISTANCE_XZ 0x2000             /* cam_dist_to_target_xz */
+#define SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION 0x4000 /* cam_pullback_yref */
+
 typedef struct sock_s {          // size 0x13c
     struct nugspline_s *cam;     // 0x000
     struct nugspline_s *a;       // 0x004

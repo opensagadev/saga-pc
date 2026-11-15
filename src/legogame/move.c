@@ -875,7 +875,7 @@ f32 ForceTowardsMid(GAMEOBJECT *object) {
     inner = sock->mid_force_inner_radius;
     outer = sock->mid_force_outer_radius;
     amount = 0.0f;
-    if (sock->flags & 2) {
+    if (sock->flags & SOCK_FLAG_MID_FORCE_Y) {
         f32 dy;
         if (object->movement_mode != 4 && inner > 0.0f && outer > 0.0f) {
             dy = object->sock_position.midpoint.y - object->position.y;
@@ -886,7 +886,7 @@ f32 ForceTowardsMid(GAMEOBJECT *object) {
             }
         }
     } else {
-        planar = sock->flags & 4;
+        planar = sock->flags & SOCK_FLAG_MID_FORCE_XZ;
         if (inner > 0.0f && outer > 0.0f) {
             NUVEC delta;
             f32 distance_squared;
@@ -943,7 +943,7 @@ f32 ForceTowardsMid(GAMEOBJECT *object) {
                            // epilogue
             }
         }
-        if ((sock->flags & 8) != 0 && object->position.y >= object->sock_position.midpoint.y) {
+        if ((sock->flags & SOCK_FLAG_MID_FORCE_DOWN) != 0 && object->position.y >= object->sock_position.midpoint.y) {
             CHARACTERDATA_PC *data = object->character_data;
             f32 ceiling = (f32)((f64)data->model_scale * data->collision_radius * 3.0 + object->sock_position.midpoint.y);
             f32 vertical;

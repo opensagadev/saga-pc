@@ -11,7 +11,6 @@
     (((i32)(to) - (i32)(from) > 0x8000)    ? (i32)(to) - (i32)(from) - 0x10000                                                             \
      : ((i32)(to) - (i32)(from) < -0x8000) ? (i32)(to) - (i32)(from) + 0x10000                                                             \
                                            : (i32)(to) - (i32)(from))
-#define SOCK_FLAG_SCALE_LATERAL_OFFSET 0x200
 
 void SetSockBit(SOCK_PC *sock, i32 index);
 i32 SockBitSet(SOCK_PC *sock, i32 index);
@@ -24,11 +23,6 @@ static f32 SockFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-#define SOCK_FLAG_CLAMP_TARGET_Y 0x20
-#define SOCK_FLAG_PROJECT_CAMERA_FROM_PLAYER 0x80
-#define SOCK_FLAG_TWO_PLAYER_PLANAR_PULLBACK 0x400
-#define SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION 0x4000
-#define SOCK_FLAG_CAMERA_DISTANCE_XZ 0x2000
 NUGSCN *sockpar_scene = 0;
 SOCK_PC *sockpar_sock = 0;
 static VARIPTR *sockpar_buffer_ptr = 0;
@@ -74,17 +68,17 @@ static void SockParMidforce(NUFPAR_PC *parser, void *context) {
         return;
     }
     if (NuStrICmp(parser->word_buffer_ptr, (char *)("y")) == 0) {
-        sockpar_sock->flags |= 0x02;
+        sockpar_sock->flags |= SOCK_FLAG_MID_FORCE_Y;
     } else if (NuStrICmp(parser->word_buffer_ptr, (char *)("xz")) == 0) {
-        sockpar_sock->flags |= 0x04;
+        sockpar_sock->flags |= SOCK_FLAG_MID_FORCE_XZ;
     } else if (NuStrICmp(parser->word_buffer_ptr, (char *)("xyz")) == 0) {
-        sockpar_sock->flags |= 0x04;
-        sockpar_sock->flags ^= 0x04;
+        sockpar_sock->flags |= SOCK_FLAG_MID_FORCE_XZ;
+        sockpar_sock->flags ^= SOCK_FLAG_MID_FORCE_XZ;
     }
 }
 
 static void SockParMidForceDown(NUFPAR_PC *parser, void *context) {
-    sockpar_sock->flags |= 0x08;
+    sockpar_sock->flags |= SOCK_FLAG_MID_FORCE_DOWN;
 }
 
 static void SockParMidForceYScale(NUFPAR_PC *parser, void *context) {
@@ -224,7 +218,7 @@ static void SockParYLimits(NUFPAR_PC *parser, void *context) {
 }
 
 static void SockParTurnOff(NUFPAR_PC *parser, void *context) {
-    sockpar_sock->flags |= 0x100;
+    sockpar_sock->flags |= SOCK_FLAG_TURN_OFF;
 }
 
 static void SockParName(NUFPAR_PC *parser, void *context) {
@@ -235,7 +229,7 @@ static void SockParName(NUFPAR_PC *parser, void *context) {
 
 static void SockParMoveAngle(NUFPAR_PC *parser, void *context) {
     i32 angle;
-    sockpar_sock->flags |= 0x40;
+    sockpar_sock->flags |= SOCK_FLAG_MOVE_ANGLE;
     angle = NuFParGetInt(parser) % 360;
     angle <<= 16;
     sockpar_sock->input_yaw = (u16)(angle / 360);
@@ -275,11 +269,11 @@ static void SockParCamShake(NUFPAR_PC *parser, void *context) {
 }
 
 static void SockParMisc1(NUFPAR_PC *parser, void *context) {
-    sockpar_sock->flags |= 0x0800;
+    sockpar_sock->flags |= SOCK_FLAG_MISC_1;
 }
 
 static void SockParMisc2(NUFPAR_PC *parser, void *context) {
-    sockpar_sock->flags |= 0x1000;
+    sockpar_sock->flags |= SOCK_FLAG_MISC_2;
 }
 
 static void SockParObj(NUFPAR_PC *parser, void *context) {
@@ -1287,7 +1281,7 @@ retry:
     excluded_socket_seen = 0;
 
     for (checked = 0; checked < sockets_to_check; ++checked) {
-        if ((sock_sys->socks[prior_sock].flags & 0x100) == 0) {
+        if ((sock_sys->socks[prior_sock].flags & SOCK_FLAG_TURN_OFF) == 0) {
             if (forced_sock == -1 && !fallback_search && original_prior_sock != -1 && prior_sock != original_prior_sock &&
                 SockBitSet(&sock_sys->socks[original_prior_sock], prior_sock)) {
                 excluded_socket_seen = 1;
@@ -1648,7 +1642,7 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
     ratio = position->ratio;
     ratio += (f32)(segment % stride);
     ratio /= (f32)stride;
-    if (sock->flags & 0x200) {
+    if (sock->flags & SOCK_FLAG_SCALE_LATERAL_OFFSET) {
         first_width = widths[1] / base_width;
         second_width = widths[2] / base_width;
         width = (1.0f - ratio) * first_width + second_width * ratio;
@@ -1706,14 +1700,14 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION_PC *position, NUMTX *ou
 }
 
 void SockOn(SOCKSYS_PC *sys, i32 index) {
-    if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & 0x100) != 0) {
-        sys->socks[index].flags &= ~0x100;
+    if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & SOCK_FLAG_TURN_OFF) != 0) {
+        sys->socks[index].flags &= ~SOCK_FLAG_TURN_OFF;
     }
 }
 
 void SockOff(SOCKSYS_PC *sys, i32 index) {
-    if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & 0x100) == 0) {
-        sys->socks[index].flags |= 0x100;
+    if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & SOCK_FLAG_TURN_OFF) == 0) {
+        sys->socks[index].flags |= SOCK_FLAG_TURN_OFF;
     }
 }
 
@@ -2223,8 +2217,6 @@ i32 SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 soc
     return 1;
 }
 
-#undef SOCK_CAMERA_CLAMP_Y
-
 f32 NuVecMagVU0(NUVEC *);
 
 f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION_PC *resolved, i32 unused, SOCKSYS_PC *system) {
@@ -2308,19 +2300,19 @@ void TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
         SocksOnPreviousStatus[word] = 0;
     }
     for (index = 0; index < 64; ++index) {
-        if ((system->socks[index].flags & 0x100) == 0) {
+        if ((system->socks[index].flags & SOCK_FLAG_TURN_OFF) == 0) {
             SocksOnPreviousStatus[index / 32] |= 1 << (index & 31);
         }
-        system->socks[index].flags |= 0x100;
+        system->socks[index].flags |= SOCK_FLAG_TURN_OFF;
     }
-    system->socks[exception].flags &= ~0x100;
+    system->socks[exception].flags &= ~SOCK_FLAG_TURN_OFF;
 }
 
 void RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
     i32 index;
     for (index = 0; index < 64; ++index) {
         if (SocksOnPreviousStatus[index / 32] & (1 << (index & 31))) {
-            system->socks[index].flags &= ~0x100;
+            system->socks[index].flags &= ~SOCK_FLAG_TURN_OFF;
         }
     }
 }

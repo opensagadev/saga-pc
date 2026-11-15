@@ -623,7 +623,7 @@ mode_selected:
                         }
                         index = RotDiff(angle, heading);
                         if ((camera->sock_position.sock_index == -1 ||
-                             (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & 0x1000) == 0) &&
+                             (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & SOCK_FLAG_MISC_2) == 0) &&
                             abs(index) > 0x4000) {
                             pullback = (abs(index) - 0x4000) * (1.0f / 16384.0f);
                         }
@@ -635,7 +635,7 @@ mode_selected:
                     NuVecAdd(&target, &target, &(*pullback_offset));
                     lateral = 0.0f;
                     if (vehicle_count && (camera->sock_position.sock_index == -1 ||
-                                          (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & 0x1000) == 0)) {
+                                          (WORLD->sock_sys->socks[camera->sock_position.sock_index].flags & SOCK_FLAG_MISC_2) == 0)) {
                         lateral = 1.0f - abs(0x4000 - abs(index)) * (1.0f / 16384.0f);
                         if (index < 0) {
                             lateral = -lateral;

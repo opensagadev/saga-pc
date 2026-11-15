@@ -662,9 +662,6 @@ i32 rtlDynamicAllocTemplate(RTL_SET *set, i32 user_id) {
     return -1;
 }
 
-#define RTL_MIN(a, b) ((a) < (b) ? (a) : (b))
-#define RTL_MAX(a, b) ((a) > (b) ? (a) : (b))
-
 static void RtlApplyModifiersToChainPrivate(RTL_LIGHT *light) {
     const NUVEC zero = {0.0f, 0.0f, 0.0f};
     RTL_LIGHT *source;
@@ -737,7 +734,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
             }
             if (light->unknown_64 > 0.0f) {
                 light->parameter_54 += elapsed;
-                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->unknown_64));
+                blend = MIN(1.0f, MAX(0.0f, light->parameter_54 / light->unknown_64));
                 light->ambient.x = light->colour.x * blend + light->secondary_colour.x * (1.0f - blend);
                 light->ambient.y = light->colour.y * blend + light->secondary_colour.y * (1.0f - blend);
                 light->ambient.z = light->colour.z * blend + light->secondary_colour.z * (1.0f - blend);
@@ -747,7 +744,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
                 }
             } else {
                 light->parameter_54 -= elapsed;
-                blend = RTL_MIN(1.0f, RTL_MAX(0.0f, light->parameter_54 / light->unknown_64));
+                blend = MIN(1.0f, MAX(0.0f, light->parameter_54 / light->unknown_64));
                 light->ambient.x = light->secondary_colour.x * blend + light->colour.x * (1.0f - blend);
                 light->ambient.y = light->secondary_colour.y * blend + light->colour.y * (1.0f - blend);
                 light->ambient.z = light->secondary_colour.z * blend + light->colour.z * (1.0f - blend);
@@ -762,7 +759,7 @@ static void RtlProcessLightPrivate(RTL_LIGHT *light, f32 elapsed) {
             light->ambient.y = light->secondary_colour.y * light->blend + light->colour.y * (1.0f - light->blend);
             light->ambient.z = light->secondary_colour.z * light->blend + light->colour.z * (1.0f - light->blend);
             light->blend += light->blend_rate * elapsed;
-            light->blend = RTL_MAX(0.0f, RTL_MIN(1.0f, light->blend));
+            light->blend = MAX(0.0f, MIN(1.0f, light->blend));
             light->parameter_54 -= elapsed;
             if (light->parameter_54 <= 0.0f) {
                 light->parameter_54 = light->parameters[2];
@@ -833,10 +830,10 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
     minimum_z = FLT_MAX;
     maximum_z = -FLT_MAX;
     for (light = set->lights; light->type != 0; ++light) {
-        minimum_x = RTL_MIN(minimum_x, light->position.x - light->outer_radius);
-        maximum_x = RTL_MAX(maximum_x, light->position.x + light->outer_radius);
-        minimum_z = RTL_MIN(minimum_z, light->position.z - light->outer_radius);
-        maximum_z = RTL_MAX(maximum_z, light->position.z + light->outer_radius);
+        minimum_x = MIN(minimum_x, light->position.x - light->outer_radius);
+        maximum_x = MAX(maximum_x, light->position.x + light->outer_radius);
+        minimum_z = MIN(minimum_z, light->position.z - light->outer_radius);
+        maximum_z = MAX(maximum_z, light->position.z + light->outer_radius);
     }
 
     if (minimum_x > maximum_x || minimum_z > maximum_z) {
@@ -889,9 +886,6 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
     (void)buffer_end;
     grid->enabled = 1;
 }
-
-#undef RTL_MIN
-#undef RTL_MAX
 
 i32 rtlDynamicSetRadii(i32 id, f32 inner, f32 outer) {
     RTL_LIGHT *light;

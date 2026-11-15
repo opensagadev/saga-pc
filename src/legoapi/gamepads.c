@@ -488,7 +488,7 @@ void DoInput(WORLDINFO *world) {
 
 u16 GamePad_InputAngle(GAMEOBJECT *object, GAMEPAD_PC *pad) {
     if ((object->flags_1fc_word & 0x80) != 0 && object->sock_position.sock_index != -1) {
-        if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 0x40) != 0) {
+        if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & SOCK_FLAG_MOVE_ANGLE) != 0) {
             return (u16)(pad->input_angle + object->sock_heading + WORLD->sock_sys->socks[object->sock_position.sock_index].input_yaw);
         }
     }
