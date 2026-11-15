@@ -224,3 +224,4 @@ config/declscan-budget.json A 23 gameapi data move: two globals data.cpp defined
 config/declscan-budget.json C 533 gameapi data move: a unit's extern of a global that moved into the same unit is now a forward declaration of it (same construct, new place)
 config/declscan-budget.json D 1360 gameapi data move: the menu and parser tables carry the prototypes and string externs data.cpp declared for them into their units (same declarations, new place; the declaration pass moves them into headers)
 config/oddscan-budget.json address-name 16289 gameapi data move: the carried prototypes of the unported menu callbacks (fun_00509470 ...) and string externs name the same addresses a second time, in the units their tables moved to
+config/oddscan-budget.json long-file 13 parts.c passes 5000 lines (5012) only by the 65 module-header includes that replace #include "saga.h" (narrowing); no code was added
