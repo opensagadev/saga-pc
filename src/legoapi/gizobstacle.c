@@ -592,7 +592,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 (object->flags_e20 & 0x20)) {
                 continue;
             }
-            player = (i8)object->unknown_280;
+            player = object->player_index;
             if (player != -1) {
                 players |= 1 << player;
             }
@@ -627,15 +627,15 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                     closest = distance;
                     closest_position = &object->lower_position;
                     closest_object = object;
-                    if ((i8)object->unknown_280 != -1) {
-                        players &= ~(1 << (i8)object->unknown_280);
+                    if (object->player_index != -1) {
+                        players &= ~(1 << object->player_index);
                     }
                 }
-            } else if ((obstacle->config_flags & 0x2000) && (i8)object->unknown_280 != -1 &&
+            } else if ((obstacle->config_flags & 0x2000) && object->player_index != -1 &&
                        distance < obstacle->trigger_radius * obstacle->trigger_radius &&
                        GizObstacle_PosWithinBox(obstacle, &object->collision_position) &&
                        GizObstacle_SatisfyingTerrainChecks(obstacle, object)) {
-                players &= ~(1 << (i8)object->unknown_280);
+                players &= ~(1 << object->player_index);
             }
         }
         if (obstacle->config_flags & 1) {
@@ -1101,7 +1101,7 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT_PC *bolt, u8 *
                 if (object_data->platform == bolt->hit_platform) {
                     BOLTTYPE_PC *type = BoltType_FindByID(bolt->type_id, world);
                     GAMEOBJECT *owner = bolt->owner;
-                    i32 player = owner ? (i8)owner->unknown_280 : -1;
+                    i32 player = owner ? owner->player_index : -1;
                     GizObstacles_Hit(world, obstacle, &bolt->position, player, type->unknown_3c);
                     return 1;
                 }
@@ -1162,7 +1162,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUV
             }
             type = BoltType_FindByID(bolt->type_id, world);
             owner = bolt->owner;
-            player = owner ? (i8)owner->unknown_280 : -1;
+            player = owner ? owner->player_index : -1;
             if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->unknown_3c)) {
                 if (attacker) {
                     NewRumble(attacker->pad->bound_pad, 0.4f, 0);

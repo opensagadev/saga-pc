@@ -2387,7 +2387,7 @@ void GameAIProcess(void) {
             if (object->helmet == 5 || ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
                                         (object->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
                                         object->takeover_source == NULL)) {
-                if (alert_obj == NULL || alert_obj->unknown_280 == 0xff || (alert_obj->flags_ef3 & 1) != 0) {
+                if (alert_obj == NULL || alert_obj->player_index == -1 || (alert_obj->flags_ef3 & 1) != 0) {
                     party_under_cover = 1;
                 }
             }
@@ -2443,7 +2443,7 @@ void GameAIProcess(void) {
         if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
             (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (object->dead == 0 || object->unknown_1010 > 0.0f) &&
             0 == (object->flags_ef3 & 1) && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
-            party_follow_offsets[(i8)object->unknown_280] = follow_offset;
+            party_follow_offsets[object->player_index] = follow_offset;
             follow_offset += GameAiPartyFollowSpacing;
         }
     }
@@ -2560,7 +2560,7 @@ void GameAIProcess(void) {
                 object->hover_height_override != 1.0e9f && object->jump_variant_state == 0) {
                 object->jump_variant_state = 1;
             }
-            if (object->unknown_280 != 0xff && object->jump_variant_state != 0 &&
+            if (object->player_index != -1 && object->jump_variant_state != 0 &&
                 (object->ai_packet.capabilities & LEGO_AIPATHCNX_R2D2GLIDE) == 0) {
                 object->jump_variant_state = 0;
             }
@@ -2731,7 +2731,7 @@ void GameAIProcess(void) {
             if (0 != (object->combat_flags & 8) &&
                 (defend || (object->combat_flags & 0x30) != 0 ||
                  ((object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) &&
-                  (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_280 != 0xff))) {
+                  (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->player_index != -1))) {
                 if ((object->unknown_e22 & 1) == 0 && object->character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
                     object->unknown_e33 == 0) {
                     object->pad->buttons_pressed |= GAMEPAD_ACTION;

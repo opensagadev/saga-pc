@@ -34,7 +34,7 @@ i32 CannotKill(GAMEOBJECT *object) {
     if ((U64_PAIR(&CInfo[object->character_context].flags) & 0x02000000) != 0) {
         return 1;
     }
-    return (object->character_data->game_character->flags_094 & 0x800) != 0 && object->unknown_280 == 0xff;
+    return (object->character_data->game_character->flags_094 & 0x800) != 0 && object->player_index == -1;
 }
 
 i32 NoLayerKill(GAMEOBJECT *object) {

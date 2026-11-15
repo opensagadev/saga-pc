@@ -838,7 +838,7 @@ f32 Condition_PlayerCategoryIs(AISYS_PC *unused0, AISCRIPTPROCESS *unused1, AIPA
 }
 
 f32 Condition_IAmAPartyCharacter(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->owner != NULL && packet->owner->unknown_280 != 0xff) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->player_index != -1) {
         return 1.0f;
     }
     return 0.0f;
@@ -2234,7 +2234,7 @@ f32 Condition_CharacterRange(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKE
 
 f32 Condition_BeenSpawned(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     // MATCH-EXCEPTION: unknown_280 is a signed char in the original (compared with -1); saga.h declares u8
-    if (packet != NULL && packet->owner != NULL && (i8)packet->owner->unknown_280 == -1 && packet->creature_index == 0xff) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->player_index == -1 && packet->creature_index == 0xff) {
         return 1.0f;
     }
     return 0.0f;
@@ -4007,8 +4007,8 @@ i32 Action_SnapToLocator(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
     if (object != NULL) {
         locator = object->ai_packet.locator;
         if (name != NULL) {
-            if (indexed && (i8)object->unknown_280 != -1) {
-                sprintf(locator_name, "%s_%d", name, (i8)object->unknown_280);
+            if (indexed && object->player_index != -1) {
+                sprintf(locator_name, "%s_%d", name, object->player_index);
             } else if (personal && object->character_data != NULL) {
                 sprintf(locator_name, "%s_%s", name, object->character_data->name);
             } else if (random_count != 0) {
@@ -7153,7 +7153,7 @@ i32 Action_CycleCharacter(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *p
         return 1;
     }
     object = packet->owner->objptr;
-    if (FreePlay == 0 || (i8)object->unknown_280 == -1) {
+    if (FreePlay == 0 || object->player_index == -1) {
         return 1;
     }
 

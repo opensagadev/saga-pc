@@ -445,7 +445,7 @@ ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *
                 if ((object->character_data->game_character->flags_094 & 0x20000000) != 0) {
                     continue;
                 }
-                if ((flags & 2) == 0 && object->unknown_280 != 0xff) {
+                if ((flags & 2) == 0 && object->player_index != -1) {
                     continue;
                 }
             }

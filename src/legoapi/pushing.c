@@ -103,7 +103,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
     i32 surface;
     i32 angle_difference;
     f32 distance;
-    if (VehicleArea != 0 || object->unknown_280 == 0xff) {
+    if (VehicleArea != 0 || object->player_index == -1) {
         return;
     }
     saved_context = object->character_context;

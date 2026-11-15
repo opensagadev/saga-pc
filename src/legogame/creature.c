@@ -1619,7 +1619,7 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
     if ((flags & 1) == 0 &&
         ((flags & 0x4000) == 0 || (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0 ||
          (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) &&
-        ((flags & 0x8000) == 0 || ((i8)object->unknown_280 != -1 && !(normal->y > 0.0f)))) {
+        ((flags & 0x8000) == 0 || (object->player_index != -1 && !(normal->y > 0.0f)))) {
         return 0;
     }
     InstantKillParts(object, 1, 0.0f);
@@ -3489,7 +3489,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->collision_link = NULL;
     object->collision_exclusion_mask[0] = 0;
     object->collision_exclusion_mask[1] = 0;
-    if ((character->model_flags & CHARACTER_MODEL_DONT_PUSH) != 0 && (object->unknown_280 == 0xff || object->rider != NULL)) {
+    if ((character->model_flags & CHARACTER_MODEL_DONT_PUSH) != 0 && (object->player_index == -1 || object->rider != NULL)) {
         object->flags_1fc_word |= APIOBJECT_FLAG_DONT_PUSH;
     } else {
         object->flags_1fc_word &= ~APIOBJECT_FLAG_DONT_PUSH;
@@ -4204,9 +4204,9 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                 if (object->id == (u16)id_JANGOFETT) {
                     rotation = 0xd1c8;
                 } else if (models[0] == 0x65 || models[0] == 0x67 || models[0] == 0x69 || models[0] == 0x6b) {
-                    if (object->unknown_280 != 0xff && Cheat_IsOn(25)) {
+                    if (object->player_index != -1 && Cheat_IsOn(25)) {
                         red = 1;
-                    } else if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
+                    } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
                         purple = 1;
                     } else if (models[0] == 0x65) {
                         red = 1;
@@ -4248,11 +4248,11 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                     } else if (data->streak_color == 3) {
                         purple = 1;
                     }
-                    if (object->unknown_280 != 0xff && Cheat_IsOn(25)) {
+                    if (object->player_index != -1 && Cheat_IsOn(25)) {
                         red = 1;
                         green = blue = purple = 0;
                     } else if (red || green || blue || purple) {
-                        if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
+                        if (object->player_index != -1 && Player_HasPurpleForce(object)) {
                             purple = 1;
                             red = green = blue = 0;
                         } else if (green && object->id == (u16)id_GRIEVOUS && (hand == 0 || hand == 3)) {
@@ -4327,8 +4327,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                         }
                     }
                     if (!side && object->id == (u16)id_DARTHMAUL &&
-                        ((object->unknown_280 != 0xff && Cheat_IsOn(25)) ||
-                         (object->unknown_280 != 0xff && Player_HasPurpleForce(object)))) {
+                        ((object->player_index != -1 && Cheat_IsOn(25)) || (object->player_index != -1 && Player_HasPurpleForce(object)))) {
                         scale.z = scale.x = 1.0f;
                         scale.y = -1.0f;
                         blade_matrix = saved_matrix;
@@ -4861,7 +4860,7 @@ void Players_Init(void) {
             object->unknown_107e = (u8)DEFAULT_PLAYERHITPOINTS;
             object->helmet = 0;
             if (UsePlayerList != 0) {
-                i32 slot = (i8)object->unknown_280;
+                i32 slot = object->player_index;
                 object->player_controlled = PlayerProgress[slot].active;
                 if (Area != last_area) {
                     object->flags_e20 &= ~0x10000u;

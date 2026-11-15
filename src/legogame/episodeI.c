@@ -543,7 +543,7 @@ void UpdatePodRaceMines(void) {
                 reach = object->bounds_radius + radius;
                 distance = delta.x * delta.x + delta.z * delta.z;
                 if (distance < reach * reach) {
-                    if (object->unknown_280 == 0xff) {
+                    if (object->player_index == -1) {
                         KillPlayer(object, 2, 1, NULL);
                         objects[j] = NULL;
                     } else {
@@ -1831,7 +1831,7 @@ void PodSprintA_Update(WORLDINFO *world) {
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; i++, object++) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
-            object->unknown_280 == 0xff) {
+            object->player_index == -1) {
             seek = 0.0f;
             if (PODSPRINT->boulders != NULL && WORLD->ai_sys != NULL && PODSPRINT->ai_state > 1 &&
                 (*(u64 *)object->ai_area_mask & (u64)(i64)(1 << (PODSPRINT->boulders - WORLD->ai_sys->areas))) != 0) {

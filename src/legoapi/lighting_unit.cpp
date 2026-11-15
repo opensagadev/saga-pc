@@ -428,7 +428,7 @@ extern "C" {
             red = (f32)(((f64)Lighting_RedFlashRed - 1.0) * flash + 1.0);
             green = (f32)(((f64)Lighting_RedFlashGreen - 1.0) * flash + 1.0);
             blue = (f32)(((f64)Lighting_RedFlashBlue - 1.0) * flash + 1.0);
-        } else if (owner->spawn_protection_timer > 0.0f && owner->unknown_280 != 0xff) {
+        } else if (owner->spawn_protection_timer > 0.0f && owner->player_index != -1) {
             u16 angle = (u16)(i32)((f64)NuFmod((f32)(2.5 - owner->spawn_protection_timer), 0.5f) * 2.0 * 65536.0);
             red = green = blue = NuTrigTable[angle >> 1] + 1.0f;
         }

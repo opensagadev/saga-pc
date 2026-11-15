@@ -167,7 +167,7 @@ void HubGoneThroughDoor(WORLDINFO *world) {
     }
     new_area = -1;
     for (index = 0; index < 10; ++index) {
-        if (CheckPosAIArea(HubAiMusicState.areas[index], PlayerStart[(i8)player->unknown_280].position, 0.0f) != 0) {
+        if (CheckPosAIArea(HubAiMusicState.areas[index], PlayerStart[player->player_index].position, 0.0f) != 0) {
             new_area = index;
             break;
         }
@@ -189,7 +189,7 @@ void HubGoneThroughDoor(WORLDINFO *world) {
     Hub_MakeListCharactersAvailable(characters);
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
-        if ((object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) == 0 || (i8)object->unknown_280 != -1 ||
+        if ((object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) == 0 || object->player_index != -1 ||
             object->ai_packet.creature_index != 0xff) {
             continue;
         }

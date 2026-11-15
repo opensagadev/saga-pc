@@ -210,15 +210,15 @@ GAMEOBJECT *FindNearestGameObject(NUVEC *position, GAMEOBJECT *exclude, u32 requ
         }
         if (player_index >= 0) {
             if (player_index < 2) {
-                if (((i8)object->unknown_280) != player_index) {
+                if ((object->player_index) != player_index) {
                     continue;
                 }
             } else if (player_index == 99) {
-                if (((i8)object->unknown_280) == -1) {
+                if ((object->player_index) == -1) {
                     continue;
                 }
             } else if (player_index == 100) {
-                if (((i8)object->unknown_280) != -1) {
+                if ((object->player_index) != -1) {
                     continue;
                 }
             }

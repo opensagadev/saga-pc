@@ -504,11 +504,11 @@ static i32 CanStartHold_Game(GAMEOBJECT *object) {
 }
 
 static i32 Slam_GetDebris_Game(GAMEOBJECT *object, i32 effect) {
-    if (object->unknown_280 != 0xff) {
+    if (object->player_index != -1) {
         if (Cheat_IsOn(0x19)) {
             return 1;
         }
-        if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
+        if (object->player_index != -1 && Player_HasPurpleForce(object)) {
             return 4;
         }
     }
@@ -1914,7 +1914,7 @@ extern "C" {
         PART_PC *deflected;
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
-            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && owner->unknown_280 == 0xff) {
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && owner->player_index == -1) {
                 MakeThrowVector(&velocity, (NUVEC *)&matrix.m30, &owner->collision_position, &owner->velocity, speed, gravity);
             } else {
                 velocity.x = velocity.y = 0.0f;
@@ -1994,7 +1994,7 @@ extern "C" {
                     if (part->scale_time < 0.5f) {
                         continue;
                     }
-                } else if (api->unknown_280 != 0xff && part->scale_time < 0.25f) {
+                } else if (api->player_index != -1 && part->scale_time < 0.25f) {
                     continue;
                 }
             } else if ((part->flags & 0x8000) == 0 && part->owner == object) {

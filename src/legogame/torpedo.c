@@ -385,7 +385,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
                                               (i16)(TORPEDO_PACKET(object)->pickup_data[0] - 0x4000), NULL);
         }
     }
-    if ((TORPEDO_PACKET(object)->flags & 0x20) == 0 || TORPEDO_PACKET(object)->count == 0 || object->unknown_280 != 0xff) {
+    if ((TORPEDO_PACKET(object)->flags & 0x20) == 0 || TORPEDO_PACKET(object)->count == 0 || object->player_index != -1) {
         return;
     }
     for (index = 0; index < 2; ++index) {
@@ -626,7 +626,7 @@ void TorpedoHitTarget(BOLT_PC *bolt) {
         if (target_position != NULL) {
             NuVecSub(&delta, target_position, &bolt->position);
             if (NuVecMagSqr(&delta) < radius * radius) {
-                player = bolt->owner != NULL ? (i8)bolt->owner->unknown_280 : -1;
+                player = bolt->owner != NULL ? bolt->owner->player_index : -1;
                 TorpedoHitDispatch(bolt->owner->torpedo->target, &bolt->position, player, bolt->owner->torpedo->target_type);
             }
         }

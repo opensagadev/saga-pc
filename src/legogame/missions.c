@@ -285,7 +285,7 @@ void CheckMissionEnd(MISSIONSYS_PC *system) {
         for (index = 0; index < HIGHGAMEOBJECT; ++index) {
             candidate = &Obj[index];
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 && (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 &&
-                candidate->dead == 0 && candidate->unknown_280 == 0xff) {
+                candidate->dead == 0 && candidate->player_index == -1) {
                 mask |= U64_PAIR(candidate->collision_identity_mask);
             }
         }

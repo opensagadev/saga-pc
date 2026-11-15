@@ -2190,7 +2190,7 @@ extern "C" {
             } else {
                 coins = 0;
             }
-            player_index = bolt->owner != NULL ? (i8)bolt->owner->unknown_280 : -1;
+            player_index = bolt->owner != NULL ? bolt->owner->player_index : -1;
             AddPickups(coins, ReleaseHearts(), 0, 0, ship_position, NULL, 2.0f, player_index, 1.0f, 2000000.0f, NULL, 1, 1);
             AddFiniteShotPART(PARTLookupType("DogBits"), ship_position, 1);
             dy = (f64)fighter->matrix.m31 - global_camera.mtx.m31;

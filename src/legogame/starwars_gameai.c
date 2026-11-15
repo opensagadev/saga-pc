@@ -545,7 +545,7 @@ void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
         (character->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
         object->ai_packet.capabilities |= 0x8000;
     }
-    if (object->unknown_280 != 0xff) {
+    if (object->player_index != -1) {
         object->ai_packet.capabilities |= 0x20000;
     }
     if (object->id == (u16)id_SNAKE) {

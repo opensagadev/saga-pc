@@ -70,10 +70,10 @@ i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
         --remaining;
         candidate = &Obj[index];
         if (candidate != NULL && candidate != object && (candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-            (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 && candidate->unknown_280 != 0xff &&
+            (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 && candidate->player_index != -1 &&
             (candidate->tag_flags & 2) == 0 && (candidate->flags_ef4 & 2) == 0 &&
             (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x800) == 0) {
-            return (i8)candidate->unknown_280;
+            return candidate->player_index;
         }
     }
     return -1;
@@ -302,7 +302,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
         pointer = source->coin_packet;
         source->coin_packet = destination->coin_packet;
         destination->coin_packet = pointer;
-        player_index = (i8)source->unknown_280;
+        player_index = source->player_index;
         source->unknown_280 = destination->unknown_280;
         destination->unknown_280 = player_index;
         timer = source->powerup_time;
@@ -327,11 +327,11 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
         destination->spawn_protection_timer = timer;
         AICreatureResumeScript(source);
         if (takeover != 0) {
-            if (source->unknown_280 != 0xff) {
-                Player[(i8)source->unknown_280] = source;
+            if (source->player_index != -1) {
+                Player[source->player_index] = source;
             }
-            if (destination->unknown_280 != 0xff) {
-                Player[(i8)destination->unknown_280] = destination;
+            if (destination->player_index != -1) {
+                Player[destination->player_index] = destination;
             }
         } else {
             source->hud_icon_timer = 0.0f;
@@ -343,8 +343,8 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             destination->input_toggle_hold_time = TOGGLEHOLDTIME;
             destination->flags_ef0 |= 0x80;
             NewBuzzFrames(destination->pad->bound_pad, 2, 0);
-            if (source->unknown_280 != 0xff) {
-                Player[(i8)source->unknown_280] = source;
+            if (source->player_index != -1) {
+                Player[source->player_index] = source;
                 if (source->rider == NULL) {
                     if (WORLD->current_level != VADERC_LDATA) {
                         source->unknown_107e = DEFAULT_PLAYERHITPOINTS;
@@ -355,8 +355,8 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             } else {
                 source->unknown_107e = source->character_data->game_character->hitpoints;
             }
-            if (destination->unknown_280 != 0xff) {
-                Player[(i8)destination->unknown_280] = destination;
+            if (destination->player_index != -1) {
+                Player[destination->player_index] = destination;
                 if (destination->rider == NULL) {
                     if (WORLD->current_level != VADERC_LDATA) {
                         destination->unknown_107e = DEFAULT_PLAYERHITPOINTS;
@@ -480,7 +480,7 @@ void Tag_Check(GAMEOBJECT *object) {
             return;
         }
     }
-    if (object->unknown_280 == 0xff) {
+    if (object->player_index == -1) {
         return;
     }
     if ((object->tag_flags & 4) == 0) {
@@ -520,8 +520,8 @@ void Tag_Check(GAMEOBJECT *object) {
                                 if (context == CHARACTER_CONTEXT_NONE || context == CHARACTER_CONTEXT_DEACTIVATED ||
                                     (context_flags & 4) != 0 || (context_flags & 0x1000000000ull) != 0) {
                                     target = Tag_FindGameObject_TRANSFER(object);
-                                    if (target != NULL && target->unknown_280 != 0xff) {
-                                        object->tag_player_index = (i8)target->unknown_280;
+                                    if (target != NULL && target->player_index != -1) {
+                                        object->tag_player_index = target->player_index;
                                     }
                                 }
                             } else {
@@ -676,7 +676,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     object->flags_e20 &= 0x7fffffff;
     rider->ai_packet.path_info.flags_word &= ~1u;
     object->ai_update_position = object->position;
-    if ((i8)rider->unknown_280 != -1 || (i8)object->unknown_280 != -1) {
+    if (rider->player_index != -1 || object->player_index != -1) {
         GameCam_Blend(GameCam, 0.3f, 0.0f, 1);
     }
     if (AIScriptSetBaseScriptStateByName(&rider->ai_packet.script_processor, "ReleasedTakeOver") != 0) {
@@ -855,7 +855,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         candidate = Obj;
         for (index = 0; index < HIGHGAMEOBJECT; ++index, ++candidate) {
             if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
-                candidate->dead != 0 || candidate->unknown_280 != 0xff ||
+                candidate->dead != 0 || candidate->player_index != -1 ||
                 (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 || candidate->rider != NULL ||
                 (candidate->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) == 0 ||
                 ((candidate->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0 &&

@@ -303,7 +303,7 @@ void DeathStar2BattleFire_SetSlowDownMul(GAMEOBJECT *object) {
     if (WORLD->current_level == DEATHSTAR2BATTLEE_LDATA || WORLD->current_level == DEATHSTAR2BATTLEF_LDATA ||
         WORLD->current_level == DEATHSTAR2BATTLEG_LDATA) {
         if (object != NULL) {
-            index = (i8)object->unknown_280;
+            index = object->player_index;
             if (index == 0 || index == 1) {
                 object->velocity = v000;
                 slowDownTimer[index] = 3.0f;
@@ -326,10 +326,10 @@ f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
     if (object == NULL || (object->unknown_280 != 0 && object->unknown_280 != 1)) {
         return 1.0f;
     }
-    if (slowDownTimer[(i8)object->unknown_280] < 0.0f) {
-        slowDownTimer[(i8)object->unknown_280] = 0.0f;
+    if (slowDownTimer[object->player_index] < 0.0f) {
+        slowDownTimer[object->player_index] = 0.0f;
     }
-    return (f32)((3.0 - (f64)slowDownTimer[(i8)object->unknown_280]) / 3.0);
+    return (f32)((3.0 - (f64)slowDownTimer[object->player_index]) / 3.0);
 }
 
 void EmperorFightA_Init(WORLDINFO *world) {

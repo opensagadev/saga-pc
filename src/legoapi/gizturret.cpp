@@ -1182,7 +1182,7 @@ extern "C" {
                         } else {
                             damage = type->unknown_3c;
                         }
-                        player = owner != NULL ? (i8)owner->unknown_280 : -1;
+                        player = owner != NULL ? owner->player_index : -1;
                         GizTurrets_Hit(world, turret, &bolt->position, player, damage);
                         return 1;
                     }
@@ -1366,7 +1366,7 @@ extern "C" {
             }
             type = BoltType_FindByID(bolt->type_id, world);
             owner = bolt->owner;
-            player = owner != NULL ? (i8)owner->unknown_280 : -1;
+            player = owner != NULL ? owner->player_index : -1;
             if (GizTurrets_Hit(world, best, &bolt->position, player, type->unknown_3c) != 0) {
                 if (object != NULL) {
                     NewRumble(object->pad->bound_pad, 0.4f, 0);

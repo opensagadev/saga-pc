@@ -37,3 +37,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | nu2api declarations into headers | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
 | nu2api declarations into headers (2674d959) | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
 | flag names through carriers (93a2b335) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
+| editor pseudo ids and door flags (f87fb539) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |

@@ -697,7 +697,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
         if (nearest == NULL) {
             return;
         }
-        player = (i8)object->unknown_280;
+        player = object->player_index;
         if (player == 0 || player == 1) {
             ADD_GAME_MESSAGE_PC message = AddGameMsg_Default;
             message.text = LEGOASCII_DOWN != NULL ? LEGOASCII_DOWN : txt_UNKNOWN;

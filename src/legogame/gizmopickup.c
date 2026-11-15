@@ -126,16 +126,16 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
     GAME_MESSAGE_PC *queued;
     u16 panel_rotation;
     (void)flags;
-    if (object == NULL || ((i8)object->unknown_280 != 0 && (i8)object->unknown_280 != 1)) {
+    if (object == NULL || (object->player_index != 0 && object->player_index != 1)) {
         return;
     }
     if (ONEPLAYERPOWERUPS != 0) {
         panel_rotation = (u16)(rotation - RotDiff(0, GameCam_GetAdjustedYRot(NULL)));
-        target.x = (i8)object->unknown_280 == 0 ? -ICONX : ICONX;
-        target.y = PowerUp_GetPanelY((i8)object->unknown_280) + STATSPOSY;
+        target.x = object->player_index == 0 ? -ICONX : ICONX;
+        target.y = PowerUp_GetPanelY(object->player_index) + STATSPOSY;
         target.z = 1.0f;
         if (object->powerup_time > 0.0f) {
-            PowerUp_ExistingIconPrivate((i8)object->unknown_280);
+            PowerUp_ExistingIconPrivate(object->player_index);
         }
         message = AddGameMsg_Default;
         message.icon = 0xd0;
@@ -149,12 +149,12 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
         message.end_fn = PowerUp_EndMsg;
         message.allow_temporary = 1;
         message.flags = 0x2112d;
-        message.player_index = (i8)object->unknown_280;
+        message.player_index = object->player_index;
         message.target_is_coin_total = 7;
         queued = AddGameMsg(&message);
         if (queued != NULL) {
             queued->parameter_e2 = panel_rotation;
-            PowerUp_PanelYRot[(i8)object->unknown_280] = panel_rotation;
+            PowerUp_PanelYRot[object->player_index] = panel_rotation;
         }
     }
     Cheat_StartPowerUp(position, object);
@@ -343,7 +343,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     char text[8];
     (void)ignored;
     if (object != NULL) {
-        player_index = (i8)object->unknown_280;
+        player_index = object->player_index;
     } else {
         player0_active = Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
         player1_active = Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;

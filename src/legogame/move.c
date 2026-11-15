@@ -797,7 +797,7 @@ f32 GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
     }
 
     if (WORLD->current_level == SPEEDERCHASEA_LDATA
-            ? disable_narrow_socks == 0 && object->unknown_280 != 0xff && object->movement_spline_position.spline == NULL &&
+            ? disable_narrow_socks == 0 && object->player_index != -1 && object->movement_spline_position.spline == NULL &&
                   Player[0] != NULL && Player[0]->takeover_source != NULL && Player[0]->id == (u16)id_SPEEDERBIKE && Player[1] != NULL &&
                   Player[1]->takeover_source != NULL && Player[1]->id == (u16)id_SPEEDERBIKE
             : (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[0] != NULL &&
@@ -938,9 +938,9 @@ void PreResetCode(GAMEOBJECT *object) {
     reset->pre_reset_hover_height = GetHoverPosY(object);
     character = object->character_data->game_character;
     if (character->blade_colour != -1) {
-        if (object->unknown_280 != 0xff && Cheat_IsOn(0x19)) {
+        if (object->player_index != -1 && Cheat_IsOn(0x19)) {
             object->blade_index = 0;
-        } else if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
+        } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
             object->blade_index = 3;
         } else {
             object->blade_index = object->character_data->game_character->blade_colour;
@@ -1202,7 +1202,7 @@ void VehicleCollisionCode(GAMEOBJECT *object) {
         return;
     }
     speeder_level = WORLD->current_level == SPEEDERCHASEA_LDATA;
-    if (object->unknown_280 == 0xff || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || !object->contact_count) {
+    if (object->player_index == -1 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || !object->contact_count) {
         return;
     }
 
@@ -1421,7 +1421,7 @@ i32 MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
     u16 heading;
     i32 flicker;
     i32 lean;
-    if (object->unknown_280 == 0xff) {
+    if (object->player_index == -1) {
         return 0;
     }
     if (BONUS_GUNSHIPA_LDATA == NULL || world->current_level != BONUS_GUNSHIPA_LDATA || world->sock_sys == NULL ||
@@ -2593,12 +2593,12 @@ GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 all
         }
         switch (player_filter) {
             case 1:
-                if (target->unknown_280 != 0xff) {
+                if (target->player_index != -1) {
                     continue;
                 }
                 break;
             case 2:
-                if (target->unknown_280 == 0xff) {
+                if (target->player_index == -1) {
                     continue;
                 }
                 break;
@@ -2638,11 +2638,11 @@ GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 all
                 (context == CHARACTER_CONTEXT_DEACTIVATED && target->unknown_107e == 0)) {
                 continue;
             }
-            if (object->unknown_280 != 0xff) {
-                if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && target->unknown_280 != 0xff) {
+            if (object->player_index != -1) {
+                if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && target->player_index != -1) {
                     continue;
                 }
-                if (target->unknown_280 != 0xff) {
+                if (target->player_index != -1) {
                     if (((object->flags_1f8 ^ target->flags_1f8) & 1) == 0 &&
                         (object->ai_packet.opponent != NULL || target->ai_packet.opponent != NULL)) {
                         continue;
@@ -3963,7 +3963,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         context == CHARACTER_CONTEXT_LAND_COMBO_JUMP || context == CHARACTER_CONTEXT_SWIPE ||
         (context == CHARACTER_CONTEXT_LAND_LUNGE && object->id != id_THEEMPEROR) || context == CHARACTER_CONTEXT_LAND_SLAM ||
         (context == CHARACTER_CONTEXT_BIG_JUMP && object->unknown_7b3 == 1) ||
-        ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_PowerUpActive((i8)object->unknown_280))) {
+        ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_PowerUpActive(object->player_index))) {
         object->sabre_flags |= 2;
     }
     if (object->id == id_IMPERIALGUARD) {
@@ -3986,9 +3986,9 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     points[1].z = object->locator_matrices[joint_b].m32;
     if ((object->sabre_flags & 2) != 0) {
         i32 colour;
-        if (object->unknown_280 != 0xff && Cheat_IsOn(25)) {
+        if (object->player_index != -1 && Cheat_IsOn(25)) {
             colour = 0;
-        } else if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
+        } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
             colour = 3;
         } else if (object->id == id_GRIEVOUS && (blade == 3 || blade == 0)) {
             colour = 2;
@@ -4019,9 +4019,9 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     if ((object->sabre_flags & 7) == 0) {
         return;
     }
-    if (object->unknown_280 != 0xff && Cheat_IsOn(25)) {
+    if (object->player_index != -1 && Cheat_IsOn(25)) {
         effect = 1;
-    } else if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
+    } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
         effect = 4;
     } else if (object->id == id_GRIEVOUS) {
         effect = (blade == 3 || blade == 0) ? 3 : 2;
@@ -4074,9 +4074,9 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     if ((object->sabre_flags & 5) == 0) {
         goto particle_contact;
     }
-    if (object->unknown_280 != 0xff && Cheat_IsOn(25)) {
+    if (object->player_index != -1 && Cheat_IsOn(25)) {
         effect = 1;
-    } else if (object->unknown_280 != 0xff && Player_HasPurpleForce(object)) {
+    } else if (object->player_index != -1 && Player_HasPurpleForce(object)) {
         effect = 4;
     } else if (object->id == id_GRIEVOUS) {
         effect = (blade == 3 || blade == 0) ? 3 : 2;
@@ -7538,7 +7538,7 @@ void TractorBeamCode(GAMEOBJECT *object) {
         if (candidate == NULL || (candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
             (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
             (candidate->character_data->model_flags & CHARACTER_MODEL_BADDIE) == 0 || (candidate->flags_ef8_word & 4) != 0 ||
-            (candidate->portal_flags & 0x08000000) != 0 || candidate->unknown_280 != 0xff || candidate->unknown_281 != 0) {
+            (candidate->portal_flags & 0x08000000) != 0 || candidate->player_index != -1 || candidate->unknown_281 != 0) {
             continue;
         }
         distance = NuVecDistSqr(&candidate->collision_position, &object->collision_position, &direction);
@@ -8302,7 +8302,7 @@ void CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode) {
     GAMEOBJECT *other;
     f32 distance;
     f32 catchup;
-    if (object->unknown_280 == 0xff) {
+    if (object->player_index == -1) {
         return;
     }
     socket_index = (i8)object->sock_index;
@@ -8491,7 +8491,7 @@ void Animate_POD(GAMEOBJECT *object) {
     f32 time;
     object->anim_packet.requested_animation = ACTION_IDLE;
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-        index = (i8)object->unknown_280;
+        index = object->player_index;
         if (index != -1 && (object->id == (u16)id_ANAKINSPOD || object->id == (u16)id_ANAKINSPODGREEN)) {
             delta = (f32)((f64)FRAMETIME * 30.0);
             object->anim_packet.requested_animation = ACTION_IDLE;
@@ -11364,8 +11364,8 @@ void GameObjectStuffAfterAnimation(void) {
                                 position->y = (f32)((f64)first->y + ((f64)second->y - first->y) * fraction);
                                 position->z = (f32)((f64)first->z + ((f64)second->z - first->z) * fraction);
                                 if (object->id == (u16)id_GRIEVOUS && (blade == 1 || blade == 2) &&
-                                    (object->unknown_280 == 0xff ||
-                                     (!Cheat_IsOn(25) && (object->unknown_280 == 0xff || !Player_HasPurpleForce(object))))) {
+                                    (object->player_index == -1 ||
+                                     (!Cheat_IsOn(25) && (object->player_index == -1 || !Player_HasPurpleForce(object))))) {
                                     effect = 65;
                                 } else {
                                     effect = object->blade_index == -1 ? -1 : BladeTab[object->blade_index].effect_8;

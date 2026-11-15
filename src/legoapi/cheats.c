@@ -171,7 +171,7 @@ i32 Cheat_PowerUpActive(i32 index) {
         }
         for (player = 0; player < 2; ++player) {
             GAMEOBJECT *object = Player[player];
-            if (object != NULL && object->powerup_time > 0.0f && (index == -1 || (i8)object->unknown_280 == index)) {
+            if (object != NULL && object->powerup_time > 0.0f && (index == -1 || object->player_index == index)) {
                 return 1;
             }
         }

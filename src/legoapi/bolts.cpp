@@ -449,7 +449,7 @@ extern "C" {
             }
             if (check_owner != 0 && bolt->owner != NULL && (bolt->owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
                 (bolt->owner->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && bolt->owner->dead == 0 &&
-                bolt->owner->unknown_280 != 0xff) {
+                bolt->owner->player_index != -1) {
                 continue;
             }
             half_speed = (f32)((f64)bolt->speed * 0.5);
@@ -1254,14 +1254,14 @@ extern "C" i32 Bolt_HitGameObjects(BOLT_PC *bolt, NUVEC *points, NUVEC *minimum,
             continue;
         }
         flags = bolt->flags;
-        if ((flags & 0x80) != 0 && object->unknown_280 == 0xff && (object->rider == NULL || object->rider->unknown_280 == 0xff)) {
+        if ((flags & 0x80) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
             continue;
         }
         if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
             (object->flags_e24 & 0x8000) != 0) {
             continue;
         }
-        if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->unknown_280 != 0xff && object->unknown_280 != 0xff) {
+        if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->player_index != -1 && object->player_index != -1) {
             continue;
         }
         if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
@@ -1692,14 +1692,14 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     continue;
                 }
                 u32 flags = bolt->flags;
-                if ((flags & 0x80) != 0 && object->unknown_280 == 0xff && (object->rider == NULL || object->rider->unknown_280 == 0xff)) {
+                if ((flags & 0x80) != 0 && object->player_index == -1 && (object->rider == NULL || object->rider->player_index == -1)) {
                     continue;
                 }
                 if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8080) != 0 ||
                     (object->flags_e24 & 0x8000) != 0) {
                     continue;
                 }
-                if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->unknown_280 != 0xff && object->unknown_280 != 0xff) {
+                if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->player_index != -1 && object->player_index != -1) {
                     continue;
                 }
                 if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
@@ -1782,7 +1782,7 @@ extern "C" {
             }
         }
         if ((object->flags_e20 & 0x800) != 0) {
-            if ((object->portal_flags & 0x8000) == 0 && object->field_ea0_target == NULL && object->unknown_280 != 0xff &&
+            if ((object->portal_flags & 0x8000) == 0 && object->field_ea0_target == NULL && object->player_index != -1 &&
                 (object->unknown_c8c != 0.0f || object->unknown_c90 != 0.0f || object->unknown_c94 != 0.0f)) {
                 target_distance = duration * speed;
                 NuVecSub(&adjusted_position, &aimed_position, &origin);

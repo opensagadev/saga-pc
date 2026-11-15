@@ -237,10 +237,10 @@ GAMEOBJECT *fun_0055e2b0(i32 id) {
 NUVEC *Player_StartPos(GAMEOBJECT *object) {
     i32 index;
     NUVEC *position;
-    if ((i8)object->unknown_280 < 0 || (i8)object->unknown_280 >= 8) {
+    if (object->player_index < 0 || object->player_index >= 8) {
         index = object->hostility_group;
     } else {
-        index = (i8)object->unknown_280;
+        index = object->player_index;
     }
     index %= 8;
     position = PlayerStart[index].position;
@@ -749,7 +749,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     if (object == NULL) {
         return;
     }
-    restore_hitpoints = object->unknown_280 != 0xff && object->character_context == CHARACTER_CONTEXT_DOOMED;
+    restore_hitpoints = object->player_index != -1 && object->character_context == CHARACTER_CONTEXT_DOOMED;
     if (reset_moves != 0) {
         if (position == NULL) {
             position = Player_StartPos(object);
@@ -757,7 +757,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         if (position != NULL) {
             object->position = *position;
         }
-        if (object->unknown_280 != 0xff) {
+        if (object->player_index != -1) {
             object->flags_ef4 |= 0x40;
         }
         ResetPlayerMoves(object);
@@ -786,7 +786,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
             ComplexSockPosition(WORLD->sock_sys, &object->position, object->sock_position.sock_index, object->sock_position.segment,
                                 &object->sock_position);
             ComplexSockAngles(&object->sock_angles);
-            if ((i8)object->unknown_280 < 2 && object->sock_position.sock_index != -1) {
+            if (object->player_index < 2 && object->sock_position.sock_index != -1) {
                 if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
                     object->position = object->sock_position.midpoint;
                     surface_y = FindGunshipHoverHeight(object);
@@ -816,8 +816,8 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                 }
             }
         }
-        if ((i8)object->unknown_280 >= 0 && (i8)object->unknown_280 < 8) {
-            player_index = (i8)object->unknown_280;
+        if (object->player_index >= 0 && object->player_index < 8) {
+            player_index = object->player_index;
         } else {
             player_index = object->hostility_group;
         }
@@ -860,7 +860,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
             object->vehicle_secondary_hp = 4;
         }
         if ((ResetBits & 8) != 0) {
-            player_index = (i8)object->unknown_280;
+            player_index = object->player_index;
             if (PlayerProgress[player_index].field_b != 0) {
                 object->jump_variant_state = 1;
             }

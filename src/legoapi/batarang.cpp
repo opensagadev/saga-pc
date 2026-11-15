@@ -158,7 +158,7 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++candidate) {
         if ((candidate->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
             candidate->dead != 0 || (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
-            candidate->model_draw_result == 0 || candidate == object || candidate->unknown_280 != 0xff ||
+            candidate->model_draw_result == 0 || candidate == object || candidate->player_index != -1 ||
             candidate->character_context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || candidate->character_context == CHARACTER_CONTEXT_EATEN ||
             candidate->character_context == CHARACTER_CONTEXT_GET_IN ||
             (object->flags_1f8 & (APIOBJECT_SIDE_NEUTRAL | APIOBJECT_SIDE_GOODIE_BADDIE)) != 0 ||
@@ -826,7 +826,7 @@ extern "C" void Batarangs_Update(void) {
         batarang->flight_state.flight_time = 0;
         if (target.type == 0) {
             GAMEOBJECT *victim = static_cast<GAMEOBJECT *>(target.object);
-            if (victim->id == (u16)PunchRangeUnitId && victim->unknown_280 == 0xff) {
+            if (victim->id == (u16)PunchRangeUnitId && victim->player_index == -1) {
                 victim->portal_flags |= 1;
                 PlayerTakeHitReaction(victim, batarang->owner, BatarangCatwomanStunTime, 0);
             } else if (!(victim->portal_flags & 0x8000000)) {
@@ -1722,7 +1722,7 @@ extern "C" {
             (character->game_character->flags_090 & CHARACTER_RUNTIME_CAN_TAKE_OVER) != 0) {
             object->ai_packet.capabilities |= 0x8000;
         }
-        if (object->unknown_280 != 0xff) {
+        if (object->player_index != -1) {
             object->ai_packet.capabilities |= 0x20000;
         }
         if ((character->game_character->flags_090 & CHARACTER_RUNTIME_HAZARD_PROTECTION) != 0) {

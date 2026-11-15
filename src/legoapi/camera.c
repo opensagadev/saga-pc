@@ -404,7 +404,7 @@ i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
     if (disable_narrow_socks != 0) {
         return 0;
     }
-    if (object->unknown_280 != 0xff) {
+    if (object->player_index != -1) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
             if (object == Player[0]) {
                 other = Player[1];

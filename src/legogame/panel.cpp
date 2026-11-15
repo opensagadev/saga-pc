@@ -803,7 +803,7 @@ extern "C" {
             }
             if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {
-                    if (FindGameMsgsWithID(7, 0, (i8)object->unknown_280, NULL) == 0 &&
+                    if (FindGameMsgsWithID(7, 0, object->player_index, NULL) == 0 &&
                         (object->powerup_time >= 3.0f || GameTimer.update_count % 6 < 3)) {
                         DrawPanel3DObject(player == 0 ? -ICONX : ICONX, PowerUp_GetPanelY(player) + status_y, 1.0f, POWERUPOBJSIZE,
                                           POWERUPOBJSIZE, POWERUPOBJSIZE, 0, PowerUp_PanelYRot[player], 0,

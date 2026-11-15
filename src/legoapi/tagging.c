@@ -59,7 +59,7 @@ void StoreStatusTakeOverObjectSys(void) {
         takeoverobjects[index].last_safe_position = object->last_safe_position;
         takeoverobjects[index].heading = object->unknown_276;
         if (object->rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 && object->rider->character_context == LEGOCONTEXT_BEENTAKENOVER &&
-            object->unknown_280 != 0xff && Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
+            object->player_index != -1 && Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
             (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAll ||
              ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
               (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
@@ -153,12 +153,12 @@ void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     f32 lower;
     NUVEC *previous;
     if (target->unknown_280 == 0 || target->unknown_280 == 1) {
-        TagTransfers[(i8)target->unknown_280].source = source;
-        TagTransfers[(i8)target->unknown_280].elapsed = 0.0f;
+        TagTransfers[target->player_index].source = source;
+        TagTransfers[target->player_index].elapsed = 0.0f;
         for (particle = 0; particle < 3; ++particle) {
-            height = TagTransfers[(i8)target->unknown_280].height_fraction[particle] =
+            height = TagTransfers[target->player_index].height_fraction[particle] =
                 (f32)((f64)qrand() * PlayerRandomScale * (f64)0.4f + (f64)0.4f);
-            previous = &TagTransfers[(i8)target->unknown_280].previous[particle];
+            previous = &TagTransfers[target->player_index].previous[particle];
             previous->x = source->collision_position.x;
             previous->z = source->collision_position.z;
             lower = source->collision_min.y;

@@ -667,8 +667,8 @@ void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
     obstacle = techno->controlled_object->object;
     if ((techno->enabled & 2) != 0 && object != NULL && (object->unknown_280 == 0 || object->unknown_280 == 1)) {
         rate = object->pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
-        TechnoMoveSpeed[(i8)object->unknown_280] = SeekLinearF(TechnoMoveSpeed[(i8)object->unknown_280], speed, rate);
-        GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeed[(i8)object->unknown_280]);
+        TechnoMoveSpeed[object->player_index] = SeekLinearF(TechnoMoveSpeed[object->player_index], speed, rate);
+        GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeed[object->player_index]);
     } else {
         GizObstacle_SetTechnoControlled(obstacle, speed);
     }
@@ -723,7 +723,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             if (object->unknown_280 == 0 || object->unknown_280 == 1) {
-                TechnoMoveSpeed[(i8)object->unknown_280] = 0.0f;
+                TechnoMoveSpeed[object->player_index] = 0.0f;
             }
         } else {
             GameAudio_PlaySfx(0x32, &techno->position, 0, 0);

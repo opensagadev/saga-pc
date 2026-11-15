@@ -108,7 +108,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             if ((explosion->flags & 0x80) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
                 continue;
             }
-            if ((explosion->flags & 0x4000) != 0 && object->unknown_280 != 0xff) {
+            if ((explosion->flags & 0x4000) != 0 && object->player_index != -1) {
                 continue;
             }
             if ((explosion->flags & 8) == 0 &&
@@ -144,15 +144,15 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 target->spawn_protection_timer > 0.0f || (target->flags_ef0 & 0x400000) != 0) {
                 continue;
             }
-            if (object->unknown_280 != 0xff && !(target->vehicle_hit_timer <= 0.0f) && (explosion->flags & 0x2000) == 0) {
+            if (object->player_index != -1 && !(target->vehicle_hit_timer <= 0.0f) && (explosion->flags & 0x2000) == 0) {
                 continue;
             }
             if (explosion->owner != NULL && !(Arcade_GetMode(NULL) == 0 && (explosion->flags & 0x10010) != 0)) {
-                if (object->unknown_280 == 0xff) {
-                    if (explosion->owner->unknown_280 == 0xff && ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
+                if (object->player_index == -1) {
+                    if (explosion->owner->player_index == -1 && ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                         continue;
                     }
-                } else if (explosion->owner->unknown_280 != 0xff && target->origin_scale_override != 1.0f &&
+                } else if (explosion->owner->player_index != -1 && target->origin_scale_override != 1.0f &&
                            ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                     continue;
                 }
@@ -196,7 +196,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 if ((explosion->flags & 0x200) != 0 && (explosion->unknown_33 == 0 || explosion->unknown_33 == 1) && Arcade != 0) {
                     if (object->unknown_280 <= 1) {
                         Arcade_PlayerKilled((object->unknown_280 ^ 1) & 1, 0);
-                    } else if (object->unknown_280 == 0xff) {
+                    } else if (object->player_index == -1) {
                         Arcade_AIKilled(explosion->unknown_33);
                     }
                 }
