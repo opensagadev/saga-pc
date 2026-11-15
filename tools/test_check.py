@@ -476,6 +476,11 @@ class ClangFixture(unittest.TestCase):
         root_patch = patch.object(check_module, "ROOT", self.root)
         root_patch.start()
         self.addCleanup(root_patch.stop)
+        # The caches stay under this tree, not in a cache the worktrees share.
+        environment = patch.dict(os.environ)
+        environment.start()
+        self.addCleanup(environment.stop)
+        os.environ.pop("SAGA_CACHE_DIR", None)
         (self.root / "src").mkdir()
         for name in ("a.c", "b.cpp", "saga.h", "notes.txt"):
             (self.root / "src" / name).write_text("// fixture\n")
@@ -802,17 +807,24 @@ class LintCacheTests(ClangFixture):
     def test_tidy_key_covers_policy_flags_tool_and_new_headers(self):
         self.tidy(debug=False)
         changes = {
-            "policy": lambda: (self.root / ".clang-tidy").write_text("Checks: -*,google-runtime-int\n"),
-            "tool": lambda: setattr(self.fingerprint, "return_value", "tool-2"),
-            "new header": lambda: (self.root / "src/extra.h").write_text("// may shadow an include\n"),
-            "unit": lambda: (self.root / "src/a.c").write_text('#include "saga.h"\nint x;\n'),
+            "policy": (lambda: (self.root / ".clang-tidy").write_text("Checks: -*,google-runtime-int\n"),
+                       ["src/a.c", "src/b.cpp"]),
+            "tool": (lambda: setattr(self.fingerprint, "return_value", "tool-2"), ["src/a.c", "src/b.cpp"]),
+            "unrelated header": (lambda: (self.root / "src/extra.h").write_text("// no unit reads this name\n"), []),
+            "header named like one read": (lambda: (self.root / "src/sub").mkdir() or
+                                           (self.root / "src/sub/saga.h").write_text("// may be found instead\n"),
+                                           ["src/a.c", "src/b.cpp"]),
+            # Includes find files whatever the case of their names (the SDK overlay, the compiler under wine).
+            "header named like an SDK one": (lambda: (self.root / "src/windows.h").write_text("// shadows\n"),
+                                             ["src/a.c", "src/b.cpp"]),
+            "unit": (lambda: (self.root / "src/a.c").write_text('#include "saga.h"\nint x;\n'), ["src/a.c"]),
         }
-        for name, change in changes.items():
+        for name, (change, expected) in changes.items():
             with self.subTest(name):
                 change()
                 self.settle()
                 self.tidy(debug=False)
-                self.assertEqual(sorted(self.calls), ["src/a.c"] if name == "unit" else ["src/a.c", "src/b.cpp"])
+                self.assertEqual(sorted(self.calls), expected)
         language = check_module.analysis_language
         with patch.object(check_module, "analysis_language", side_effect=lambda source: [*language(source), "-DX"]):
             self.tidy(debug=False)

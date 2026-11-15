@@ -509,27 +509,42 @@ def tidy_jobs(files, debug=True):
 TIDY_CACHE = "build/lint/tidy-cache"
 
 
+def tidy_cache_directory():
+    """build/lint/tidy-cache, or the tidy part of the cache all worktrees share (SAGA_CACHE_DIR, tools/unitcache.py):
+    keys hold no worktree path, so one worktree's passes serve the others."""
+    shared = os.environ.get("SAGA_CACHE_DIR")
+    return Path(shared) / "tidy" if shared else ROOT / TIDY_CACHE
+
+
+def includable_names():
+    """{lower-case base name: the project files of that name a unit could include}: a new file of a name a
+    unit read may be found by its #include instead, so each pass records the names of the files it read
+    (tools/lintcache.py)."""
+    names = {}
+    for top in ("src", "lib/ogg-vorbis"):
+        for path in sorted((ROOT / top).rglob("*")):
+            if path.suffix not in {".c", ".cpp"} and not path.is_dir():
+                names.setdefault(path.name.lower(), []).append(path.relative_to(ROOT).as_posix())
+    return names
+
+
 def tidy_job_name(job):
     """Stable name of a (source, extra flags) job, which --shard splits by."""
     return " ".join([job[0], *job[1]])
 
 
 def tidy_cache_common(tool, overlay, include_dirs, env):
-    """Key parts shared by every unit: tool binaries, policy, SDK pin and overlay, the environment
-    Clang reads, and the names of every file a unit could include. A new or removed header can change
-    which file an #include finds without changing any file a unit read before, so the names are part
-    of the key; translation units (.c/.cpp) are not (lintcache refuses a unit that includes one)."""
+    """Key parts shared by every unit: tool binaries, policy, SDK pin and overlay, and the environment
+    Clang reads, with the worktree's own path left out. (A new header that an #include could find
+    instead is caught per pass: includable_names.)"""
+    from tools import unitcache  # noqa: PLC0415
     fingerprint = lintcache.tool_fingerprint(tool)
     if fingerprint is None:
         return None
-    includable = sorted(path.relative_to(ROOT).as_posix()
-                        for top in ("src", "lib/ogg-vorbis") for path in (ROOT / top).rglob("*")
-                        if path.suffix not in {".c", ".cpp"} and not path.is_dir())
-    return lintcache.text_digest(
+    return lintcache.text_digest(unitcache.portable([
         fingerprint, lintcache.Digests().get(ROOT / ".clang-tidy"), overlay.read_text(),
         load_json(ROOT / "config/toolchain.json")["trees"], [str(path) for path in include_dirs],
-        sorted((name, value) for name, value in env.items() if name.startswith(("CCC_", "CLANG", "LLVM"))),
-        includable)
+        sorted((name, value) for name, value in env.items() if name.startswith(("CCC_", "CLANG", "LLVM")))], ROOT))
 
 
 def check_tidy(jobs=8, debug=True, shard=None, cache=True):
@@ -556,7 +571,8 @@ def check_tidy(jobs=8, debug=True, shard=None, cache=True):
     common = tidy_cache_common(tool, overlay, include_dirs, env) if cache else None
     store = digests = None
     if common is not None:
-        store, digests = lintcache.TidyCache(ROOT / TIDY_CACHE, ROOT, common), lintcache.Digests()
+        store = lintcache.TidyCache(tidy_cache_directory(), ROOT, common, includable_names())
+        digests = lintcache.Digests()
     workers = min(jobs, os.cpu_count() or 1, max(1, len(files)))
 
     def command_for(job):
@@ -566,7 +582,8 @@ def check_tidy(jobs=8, debug=True, shard=None, cache=True):
             command.append("--checks=" + ",".join("-" + check for check in VENDORED_TIDY_EXCLUDED))
         return command + [source, "--", *flags, *analysis_language(source), *extra]
 
-    keys = [store.key(command_for(job)) if store else None for job in files]
+    from tools import unitcache  # noqa: PLC0415
+    keys = [store.key(json.loads(unitcache.portable(command_for(job), ROOT))) if store else None for job in files]
     cached = [store.lookup(key, digests) if store else None for key in keys]
     (ROOT / "build/lint").mkdir(parents=True, exist_ok=True)
     scratch = tempfile.TemporaryDirectory(dir=ROOT / "build/lint", prefix="tidy-")
@@ -621,7 +638,10 @@ def check_tidy(jobs=8, debug=True, shard=None, cache=True):
         sys.stderr.write(result.stderr)
         if result.returncode:
             failures.append(source)
-    if store is not None and debug:
+    if store is not None and os.environ.get("SAGA_CACHE_DIR"):
+        # Other worktrees' passes live beside this run's: the shared cache drops the least recently used.
+        unitcache.evict()
+    elif store is not None and debug:
         store.prune(None if shard is None else
                     lambda name: lintcache.shard_of(name, shard[1]) == shard[0] - 1)
     if errors:
@@ -638,7 +658,7 @@ def check_tidy(jobs=8, debug=True, shard=None, cache=True):
         summary = (f"Clang-tidy checked {len(files) - debug_units} units, {debug_units} of them again as the Debug "
                    "build compiles them")
     print(summary + ", with the Windows x86 SDK and project policy"
-          + (f"; {reused} unchanged since they passed (build/lint/tidy-cache)." if reused else "."))
+          + (f"; {reused} unchanged since they passed ({tidy_cache_directory()})." if reused else "."))
 
 
 def check_unit_table():

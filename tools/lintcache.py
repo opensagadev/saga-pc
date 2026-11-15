@@ -1,8 +1,9 @@
 """Result caches for `make lint` (tools/check.py --tidy and --format).
 
 Only passes are stored; a failure is always analysed again. A clang-tidy pass is reused when its
-key (tool binaries, policy, SDK pin, the full command and the names of every includable project
-file) and the content of every file the unit read are unchanged. The files read come from Clang's
+key (tool binaries, policy, SDK pin, the full command) and the content of every file the unit read
+are unchanged, and when the project files named like any file the unit read are still the same ones
+(a new header of such a name could be found by an #include instead). The files read come from Clang's
 own header list of that run, so a header edit invalidates exactly the units that include it.
 """
 import hashlib
@@ -12,7 +13,7 @@ from pathlib import Path
 import shutil
 
 # Bump when the stored data or the key changes meaning.
-FORMAT = 1
+FORMAT = 2
 # Dependency variants kept per unit and configuration (e.g. two branches that differ in a header).
 VARIANTS = 8
 # A file written this close to (or after) a job's start may have changed while it ran: never cached.
@@ -85,9 +86,14 @@ class Digests:
 class TidyCache:
     """One manifest per job key; each holds up to VARIANTS passes with the digests of the files they read."""
 
-    def __init__(self, directory, root, common):
+    def __init__(self, directory, root, common, names=None):
+        """`names`: {lower-case base name: sorted project files of that name} (the includable files)."""
         self.directory, self.root, self.common = Path(directory), Path(root), common
+        self.names = names or {}
         self.used = set()
+
+    def shadow(self, names):
+        return text_digest(sorted((name, self.names.get(name, [])) for name in set(names)))
 
     def key(self, command):
         key = text_digest(FORMAT, self.common, command)
@@ -106,7 +112,8 @@ class TidyCache:
     def lookup(self, key, digests):
         """The stored pass whose files all still have the recorded content, or None."""
         for entry in self._manifest(key):
-            if all(digests.get(self.root / name) == value for name, value in entry["deps"].items()):
+            if all(digests.get(self.root / name) == value for name, value in entry["deps"].items()) \
+                    and entry.get("shadow") == self.shadow(entry.get("names", ())):
                 return entry
         return None
 
@@ -118,10 +125,11 @@ class TidyCache:
         for prune (default: the unit)."""
         if headers is None:
             return False
-        deps = {}
+        deps, names = {}, set()
         for name in [unit, *headers]:
             path = Path(name) if Path(name).is_absolute() else self.root / name
             path = Path(os.path.normpath(path))
+            names.add(path.name.lower())
             if any(path.is_relative_to(directory) for directory in exempt):
                 continue
             if not path.is_relative_to(self.root):
@@ -133,8 +141,10 @@ class TidyCache:
             if value is None:
                 return False
             deps[relative] = value
-        entry = {"pass": True, "deps": dict(sorted(deps.items())), "stdout": stdout, "stderr": stderr}
-        entries = [entry] + [old for old in self._manifest(key) if old["deps"] != entry["deps"]]
+        entry = {"pass": True, "deps": dict(sorted(deps.items())), "names": sorted(names),
+                 "shadow": self.shadow(names), "stdout": stdout, "stderr": stderr}
+        entries = [entry] + [old for old in self._manifest(key)
+                             if (old["deps"], old.get("names")) != (entry["deps"], entry["names"])]
         self.directory.mkdir(parents=True, exist_ok=True)
         target = self.directory / (key + ".json")
         temporary = target.with_suffix(f".{os.getpid()}.tmp")
