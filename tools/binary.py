@@ -753,15 +753,28 @@ def relocate_data(obj, symbol, va, bindings=None):
 
 
 def compare_data(pe, obj, symbol, va, size, bindings=None):
-    """Compare a relocated initializer to retail; return hashes, never its bytes."""
+    """Compare a relocated initializer to retail at the symbol's own size; return hashes, never its bytes.
+
+    Only the symbol's bytes count. When our object's extent runs past the mapped size (the next symbol of
+    the section starts later), the bytes after it are a gap between symbols and are not compared, provided
+    they hold nothing: zero bytes without relocations. A common allocation has its exact size.
+    """
     pe = pe if isinstance(pe, PE) else PE(pe)
+    obj = obj if isinstance(obj, COFF) else COFF(obj)
     va, size = _extent(va, size)
-    data, _ = relocate_data(obj, symbol, va, bindings)
+    region = obj.extract_data(symbol)
+    data, _ = _relocate(obj, region, va, bindings)
     target = pe.read_data(va, size)
-    result = {"exact_match": data == target, "target_size": size, "base_size": len(data),
+    compared = data
+    if (len(data) > size and region["size_source"] != "COFF common Value" and not any(data[size:])
+            and not any(r["offset"] + 4 > size for r in region["relocations"])):
+        compared = data[:size]
+    result = {"exact_match": compared == target, "target_size": size, "base_size": len(data),
               "target_sha256": hashlib.sha256(target).hexdigest(),
-              "base_sha256": hashlib.sha256(data).hexdigest()}
-    if len(data) != size:
+              "base_sha256": hashlib.sha256(compared).hexdigest()}
+    if len(compared) != len(data):
+        result["gap_bytes"] = len(data) - len(compared)
+    if len(compared) != size:
         result["reason"] = "Data extents differ; refusing partial/truncated comparison"
     return result
 

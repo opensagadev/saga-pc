@@ -20063,8 +20063,8 @@ address,symbol,size,ctype
 0x75c1bc,__real@be888ce7,4,const f32
 0x75c1c0,__real@3e888ce7,4,const f32
 0x75c1c4,??_C@_0N@JICDDBHI@SecurityDoor?$AA@,13,char[13]
-0x0075c1d4,_GrapDetach_text,12,char[11]
-0x0075c1e0,_GrapAttach_text,12,char[11]
+0x0075c1d4,_GrapDetach_text,11,char[11]
+0x0075c1e0,_GrapAttach_text,11,char[11]
 0x75c1ec,??_C@_08GOLEDHCN@ricochet?$AA@,9,char[9]
 0x75c1f8,??_C@_09NLDPBMIG@Boy_Death?$AA@,10,char[10]
 0x75c204,??_C@_0L@HCCIKLDO@Girl_Death?$AA@,11,char[11]
@@ -20406,7 +20406,7 @@ address,symbol,size,ctype
 0x75d450,__real@411e0000,4,const f32
 0x75d458,__real@401d3d70a0000000,8,const f64
 0x75d460,__real@40e9eb85,4,const f32
-0x0075d464,_GrapSwing_text,12,char[10]
+0x0075d464,_GrapSwing_text,10,char[10]
 0x75d470,__real@3f3504f4,4,compiler literal
 0x75d474,__real@bf3504f4,4,compiler literal
 0x75d478,??_C@_09PALJCOLA@target_?$CFd?$AA@,10,const char[10]
@@ -21644,7 +21644,7 @@ address,symbol,size,ctype
 0x0076186c,??_C@_06DIHGHGNJ@?$CFs?4giz?$AA@,7,char[7]
 0x761874,??_C@_0BA@NGPHLHCH@chars?2?$CFs?2?$CFs?4gsc?$AA@,16,const char[16]
 0x761884,_PlayerArcadeStartDoor,16,char[16]
-0x761894,_PlayerMissionStartDoor,16,char[13]
+0x761894,_PlayerMissionStartDoor,13,char[13]
 0x007618a4,??_C@_06BNNBLLBG@?$CFs?4anm?$AA@,7,char[7]
 0x7618ac,??_C@_0P@COMCDIJM@trigger_at_end?$AA@,15,
 0x7618bc,??_C@_0L@LPHLBOOF@portaldoor?$AA@,11,
@@ -36954,18 +36954,18 @@ address,symbol,size,ctype
 0x7f191c,_id_DRAGBOMB,2,u16
 0x007f1920,_id_CLONEWALKER,2,i16
 0x7f1924,_dat_007f1924,2,i16
-0x7f1928,_dat_007f1928,4,i16
+0x7f1928,_dat_007f1928,2,i16
 0x7f192c,_id_CATAPULT,2,i16
-0x007f1930,_id_BASKETCANNON,4,i16
+0x007f1930,_id_BASKETCANNON,2,i16
 0x007f1934,_id_BANTHA,2,i16
-0x007f1938,_id_BOMARRMONK,4,i16
+0x007f1938,_id_BOMARRMONK,2,i16
 0x007f193c,_id_DEWBACK,2,i16
 0x007f1940,_id_LANDSPEEDER,2,i16
 0x007f1944,_id_TAUNTAUN,2,i16
 0x007f1948,_id_SPEEDERBIKE,2,i16
-0x007f194c,_id_HEAVYREPEATINGCANNON,4,i16
-0x007f1950,_id_BIGGUN,4,i16
-0x007f1954,_id_TROOPERCANNON,4,i16
+0x007f194c,_id_HEAVYREPEATINGCANNON,2,i16
+0x007f1950,_id_BIGGUN,2,i16
+0x007f1954,_id_TROOPERCANNON,2,i16
 0x7f1958,_DefaultAnimationJabbaId,2,i16
 0x7f195c,_dat_007f195c,2,i16
 0x007f1960,_id_YWING,2,i16
@@ -36983,14 +36983,14 @@ address,symbol,size,ctype
 0x7f1990,_id_SNOWMOB,2,i16
 0x7f1994,_id_SNOWTROOPER,2,i16
 0x7f1998,_id_DEATHSTARTROOPER,2,i16
-0x7f199c,_dat_007f199c,4,i16
+0x7f199c,_dat_007f199c,2,i16
 0x007f19a0,_id_THEEMPEROR,2,i16
 0x7f19a4,_dat_007f19a4,2,i16
 0x7f19a8,_dat_007f19a8,2,i16
 0x7f19ac,_dat_007f19ac,2,i16
 0x7f19b0,_dat_007f19b0,2,i16
 0x7f19b4,_dat_007f19b4,2,i16
-0x007f19b8,_id_STAP,4,i16
+0x007f19b8,_id_STAP,2,i16
 0x007f19bc,_id_STAP2,2,i16
 0x7f19c0,_id_JUMBOHOMINGDROID,2,i16
 0x7f19c4,_dat_007f19c4,2,i16
@@ -37002,8 +37002,8 @@ address,symbol,size,ctype
 0x007f19dc,_id_BOB,2,i16
 0x7f19e0,_id_JANGOFETT,2,i16
 0x007f19e4,_id_JEDISTARFIGHTERYELLOWEP3,2,i16
-0x7f19e8,_dat_007f19e8,4,i16
-0x7f19ec,_id_RANCOR,4,i16
+0x7f19e8,_dat_007f19e8,2,i16
+0x7f19ec,_id_RANCOR,2,i16
 0x7f19f0,_id_OBIWANKENOBIEP3,2,i16
 0x7f19f4,_id_ANAKINJEDI,2,i16
 0x7f19f8,_id_REPUBLICGUNSHIP,2,i16
@@ -37027,7 +37027,7 @@ address,symbol,size,ctype
 0x7f1a40,_dat_007f1a40,2,i16
 0x7f1a44,_dat_007f1a44,2,i16
 0x7f1a48,_dat_007f1a48,2,i16
-0x7f1a4c,_dat_007f1a4c,4,i16
+0x7f1a4c,_dat_007f1a4c,2,i16
 0x7f1a50,_id_GONKDROID,2,u16
 0x7f1a54,_id_C3PO,2,i16
 0x7f1a58,_id_TC14,2,i16
@@ -37144,8 +37144,8 @@ address,symbol,size,ctype
 0x7f3964,_drop_in_teleport,4,i32
 0x7f3968,_teleport_all_freeplay_modes,4,i32
 0x007f396c,_DropInPendingPlayer,1,i8
-0x007f396d,_DropInConfigurationPlayer,3,i8
-0x007f39d0,_DropInCaptureDelay,4,u8[2]
+0x007f396d,_DropInConfigurationPlayer,1,i8
+0x007f39d0,_DropInCaptureDelay,2,u8[2]
 0x007f39d4,_DropInCapturePort,4,i16[2]
 0x007f39e4,_StartupGameFlag1,4,i32
 0x7f39e8,_CombatNpcKillDifficultyAmount,4,f32
@@ -37343,7 +37343,7 @@ address,symbol,size,ctype
 0x007f9318,_HubTrueJediLabelWidth,4,f32
 0x007f931c,_HubTrueJediLabelRed,1,u8
 0x007f9320,_HubTrueJediLabelGreen,1,u8
-0x007f9324,_HubTrueJediLabelBlue,4,u8
+0x007f9324,_HubTrueJediLabelBlue,1,u8
 0x7f9328,_HubTrueJediTypeAlpha,4,i32
 0x007f932c,_HubSelectMenuY,4,f32
 0x007f9330,_HubBonusMenuY,4,f32
@@ -37542,7 +37542,7 @@ address,symbol,size,ctype
 0x7fc090,_CableTargetScale,4,f32
 0x7fc094,_JumpAnimHoldTime,4,f32
 0x7fc098,_AwkwardShapeSphere,168,AWKWARD_SHAPE_SPHERE_PC[]
-0x7fc140,_disorientAxis,2,u8
+0x7fc140,_disorientAxis,1,u8
 007fc144,_DefaultMotionSpiderFarSpeed,4,f32
 007fc148,_DefaultMotionSpiderNearSpeed,4,f32
 007fc14c,_DefaultMotionSpiderRange,4,f32
@@ -37684,7 +37684,7 @@ address,symbol,size,ctype
 0x7fcbc0,_ShopNativeSubInitB,4,f32
 0x7fcbc4,_ShopNativeSubNormCharPush,4,f32
 0x7fcbc8,_ShopCodeExitPush,4,f32
-0x7fcbcc,_ShopCodeCharacters,40,char[37]
+0x7fcbcc,_ShopCodeCharacters,37,char[37]
 0x7fcbf4,_ShopUserCode,6,char[6]
 0x7fcc60,_ShopCodeRepeatInterval,4,f32
 0x7fcc64,_ShopTopBrickOffset,4,f32
@@ -37869,7 +37869,7 @@ address,symbol,size,ctype
 0x8001ec,_BlockadeRunnerDEjectVec,24,NUVEC[2]
 0x800214,_spotLightB_yrot,8,f32[2]
 0x80021c,_spotLightB_zrot,8,f32[2]
-0x800224,_melee_wavePhase,4,i8
+0x800224,_melee_wavePhase,1,i8
 0x800290,_maxrotspd,12,i32[3]
 0x80029c,?pos@?1??CloudCityTrapA_Update@@9@9,12,
 0x8002b4,_DeathStarZapSizeWidth,4,f32
@@ -38029,9 +38029,9 @@ address,symbol,size,ctype
 0x8015b8,_QFONTSCALEY,4,f32
 0x8015bc,_SmartTextDefaultWidth,4,f32
 0x8015c0,_MatrixTextScale,4,f32
-0x8015c4,_text_preset_r,12,u8[10]
-0x8015d0,_text_preset_g,12,u8[10]
-0x8015dc,_text_preset_b,12,u8[10]
+0x8015c4,_text_preset_r,10,u8[10]
+0x8015d0,_text_preset_g,10,u8[10]
+0x8015dc,_text_preset_b,10,u8[10]
 0x8015e8,_current_rgba,4,u32
 0x8015ec,_apitext_half_rgb,4,i32
 0x008015f0,_STCOORDSCALE,4,f32
@@ -38049,7 +38049,7 @@ address,symbol,size,ctype
 0x00801c58,_default_path_heighttol,4,f32
 0x801c5c,_AiLoadActivationDifficulty,1,u8
 0x801c5d,_default_ngroup,1,u8
-0x801c5e,_default_nacross,2,u8
+0x801c5e,_default_nacross,1,u8
 0x801c60,_default_xspacing,4,f32
 0x801c64,_default_zspacing,4,f32
 0x801c68,_ai_usepackfile,4,i32
@@ -38183,7 +38183,7 @@ address,symbol,size,ctype
 0x8025b4,_LEGOTHINGSSCENE_TER_SPINBASE,4,i32
 0x8025b8,_LEGOTHINGSSCENE_TER_SPINARM,4,i32
 0x8025bc,_GizSpinnerGDeb_Fail,6,i16[3]
-0x008025c4,_SpinnerOutputBuffer,16,char[14]
+0x008025c4,_SpinnerOutputBuffer,14,char[14]
 0x8025d4,_spinner_gizmotype_id,4,i32
 0x00802644,_obstacle_gizmotype_id,,i32
 0x802684,_GizObstacleUpdateFns,32,void (__cdecl *[8])(GIZOBSTACLE *)
@@ -38239,7 +38239,7 @@ address,symbol,size,ctype
 0x802b64,_grapple_attach_frames,1,u8
 0x00802bd4,_DEFAULT_PLAYERHITPOINTS,4,i32
 0x00802bd8,_PlayerID,8,i32[2]
-0x802be0,_SuperCarryPlayerRgb,8,u8[2][3]
+0x802be0,_SuperCarryPlayerRgb,6,u8[2][3]
 0x00802be8,_TOGGLEHOLDTIME,4,f32
 0x802bec,_TOGGLEREPEATTIME,4,f32
 0x00802c54,_WORLD,4,WORLDINFO *
@@ -38535,7 +38535,7 @@ address,symbol,size,ctype
 0x8059fc,_hub_startoutsidebonusdoor_area,4,i32
 0x00805a00,_hub_from_arcade,4,i32
 0x805a74,_PushBlockGapEpsilon,4,f32
-0x805a88,_outputName,16,
+0x805a88,_outputName,13,
 0x805b00,_PushBlockFacingTolerance,2,u16
 0x805b04,_PushRumbleWindowPc,4,f32
 0x805b08,_PushRumblePeriod,4,f32
@@ -38861,7 +38861,7 @@ address,symbol,size,ctype
 0x80fde8,_curr_version,4,i32
 0x80fdec,_rtl_shadow_blend_rate,4,f32
 0x80fdf0,_rtl_shadow_flicker,12,NUVEC
-0x80fdfc,_rtl_uid,4,u16
+0x80fdfc,_rtl_uid,2,u16
 0x0080fe00,_edrtl_text_scale,4,f32
 0x80fe04,_RtlModifierIndexZero,4,f32
 0x0080fe08,_default_modifier_names,4,char *[1]
@@ -38913,7 +38913,7 @@ address,symbol,size,ctype
 0x8101a8,_edpart_filter_string,16,char[16]
 0x8101b8,_edpart_load_particle_page,4,i32
 0x8101bc,_edpart_superscale,4,i32
-0x8101c4,_PartNullInstanceName,16,char[14]
+0x8101c4,_PartNullInstanceName,14,char[14]
 0x0081020c,_MAXPARTS,4,i32
 0x00810210,_Default_ADDPART,200,ADDPART
 0x008102d8,_part_slot_cursor,4,i32
@@ -39470,7 +39470,7 @@ address,symbol,size,ctype
 0x00876614,_game_cutscenes_podsprint_sebulba,4,void *
 0x00876618,_podrace_die_angle_a,2,u16
 0x0087661c,_podrace_die_angle_b,2,u16
-0x00876620,_podrace_die_angle_c,4,u16
+0x00876620,_podrace_die_angle_c,2,u16
 0x876624,_deathstar_hold_count,4,i32
 0x00876628,?cameraMtxs@?1??SpeedBlur_Update@@9@4PAUnumtx_s@@A,128,NUMTX[2]
 0x8766a8,_RippleSet,4,RIPPLE_SET_PC *
@@ -39946,7 +39946,7 @@ address,symbol,size,ctype
 0x87b768,_shop_quit,4,i32
 0x87b76c,_shop_save_done,4,i32
 0x87b770,_dat_0087b770,60,u32[15]
-0x87b7ac,_MenuKeyboardOverrideActivePc,2,u8
+0x87b7ac,_MenuKeyboardOverrideActivePc,1,u8
 0x87b7b0,_MissionIconScale,80,f32[20]
 0x87b800,_MissionIconX,80,f32[20]
 0x87b850,_MissionIconTargetX,80,f32[20]
@@ -40006,7 +40006,7 @@ address,symbol,size,ctype
 0x0087b9b8,_PANEL3DMULY,4,f32
 0x87b9bc,_minikittime,4,f32
 0x87b9c0,_goldbricktime,4,f32
-0x87b9c4,_HudPausePromptBlue,4,u8
+0x87b9c4,_HudPausePromptBlue,1,u8
 0x87b9c8,_drawautosaveicon,4,i32
 0x87b9cc,_cointotal_x,8,f32[2]
 0x87b9d4,_DrawBossHitPointsTwoRows,4,i32
@@ -40160,14 +40160,14 @@ address,symbol,size,ctype
 0x8806b0,_TextCrawlChapterId,2,i16
 0x8806b4,_TextCrawlVehicleBonusId,2,i16
 0x8806b8,_TextCrawlCharacterBonusId,2,i16
-0x008806bc,_tNULL,4,i16
-0x008806c0,_tUNKNOWN,4,i16
-0x008806c4,_tENGLISH,4,i16
-0x008806c8,_tFRENCH,4,i16
-0x008806cc,_tGERMAN,4,i16
-0x008806d0,_tITALIAN,4,i16
-0x008806d4,_tSPANISH,4,i16
-0x008806d8,_tDANISH,4,i16
+0x008806bc,_tNULL,2,i16
+0x008806c0,_tUNKNOWN,2,i16
+0x008806c4,_tENGLISH,2,i16
+0x008806c8,_tFRENCH,2,i16
+0x008806cc,_tGERMAN,2,i16
+0x008806d0,_tITALIAN,2,i16
+0x008806d4,_tSPANISH,2,i16
+0x008806d8,_tDANISH,2,i16
 0x008806dc,_dat_008806dc,2,i16
 0x008806e0,_dat_008806e0,2,i16
 0x008806e4,_dat_008806e4,2,i16
@@ -40527,7 +40527,7 @@ address,symbol,size,ctype
 0x00880c7c,_dat_00880c7c,2,i16
 0x00880c80,_dat_00880c80,2,i16
 0x00880c84,_dat_00880c84,2,i16
-0x880c88,_tTOUCHTOSTART,4,i16
+0x880c88,_tTOUCHTOSTART,2,i16
 0x00880c8c,_dat_00880c8c,2,i16
 0x00880c90,_dat_00880c90,2,i16
 0x00880c94,_dat_00880c94,2,i16
@@ -40717,7 +40717,7 @@ address,symbol,size,ctype
 0x00880f84,_dat_00880f84,2,i16
 0x00880f88,_dat_00880f88,2,i16
 0x00880f8c,_dat_00880f8c,2,i16
-0x00880f90,_tALONGTIMEAGO,4,i16
+0x00880f90,_tALONGTIMEAGO,2,i16
 0x00880f94,_dat_00880f94,2,i16
 0x00880f98,_dat_00880f98,2,i16
 0x00880f9c,_dat_00880f9c,2,i16
@@ -41202,7 +41202,7 @@ address,symbol,size,ctype
 0x921370,_cutscene_synchro_counter,4,i32
 0x921378,_CutSceneCameraMatrixSet,1,u8
 0x921379,_CutSceneCameraCTRL,1,u8
-0x92137a,_CutSceneUseFocusLocation,2,u8
+0x92137a,_CutSceneUseFocusLocation,1,u8
 0x92137c,_CutSceneCameraDofMode,4,i32
 0x921380,_CutSceneCameraFocalLength,4,f32
 0x921384,_CutSceneFocusDistance,4,f32
@@ -41742,7 +41742,7 @@ address,symbol,size,ctype
 0x950754,_RenderBackdropBottomG,4,f32
 0x950758,_RenderBackdropWait,4,f32
 0x95075c,_RenderBackdropBlack,4,i32
-0x950760,_ScreenGrabNeeded,4,u8
+0x950760,_ScreenGrabNeeded,1,u8
 0x00950764,_screendump,4,i32
 0x00950768,_pause_rndr_on,4,i32
 0x95076c,_GrabScreenWhenFading,4,i32
@@ -41808,7 +41808,7 @@ address,symbol,size,ctype
 0x00951030,_SurfaceInfo_ExtraReflectFn,4,
 0x951038,_LevelLoad,96,AREA_LEVEL_LOAD[12]
 0x951098,_Area_PlayerModelCount,4,i32
-0x95109c,_Area_PlayerIDList,20,i16[9]
+0x95109c,_Area_PlayerIDList,18,i16[9]
 0x9510b0,_Area_StoryModelList,196,APICHARACTERMODELLIST[49]
 0x00951174,_BonusArea,4,i32
 0x951178,_Area_FreePlayModelList,196,APICHARACTERMODELLIST[49]
@@ -41855,7 +41855,7 @@ address,symbol,size,ctype
 0x9514f0,_Hint_AlphaTargetFn,4,f32 (__cdecl *)(void)
 0x9514f8,_ObstacleCamBlendInTime,4,f32
 0x9514fc,_ObstacleCamRotZ,2,i16
-0x9514fe,_ObstacleCamAlwaysSnapAngles,2,u8
+0x9514fe,_ObstacleCamAlwaysSnapAngles,1,u8
 0x951500,_ObstacleCamBorders,4,i32
 0x951504,_ObstacleCamSpl,4,NUGSPLINE *
 0x951508,_ObstacleCamEnd,4,f32
@@ -41938,7 +41938,7 @@ address,symbol,size,ctype
 0x951c98,_ACTIVECUTCOUNT,4,i32
 0x00951c9c,_NewCutInfoCount,4,i32
 0x951ca0,_CutInstEndCount,4,i32
-0x951ca4,_CUTSUBTITLEDEFAULT_ALIGN,3,u8
+0x951ca4,_CUTSUBTITLEDEFAULT_ALIGN,1,u8
 0x951ca8,_CUTSUBTITLEDEFAULT_X,4,f32
 0x00951cac,_CutScene_StartFn,4,i32 (__cdecl *)(void *)
 0x00951cb0,_CutScene_PreUpdateFn,4,void (__cdecl *)(void *)
@@ -42078,7 +42078,7 @@ address,symbol,size,ctype
 0x00956448,_load_flowbox,4,
 0x0095644c,_load_nparents,4,
 0x00956450,_load_nchildren,4,
-0x00956454,_gizflow_loop_checksum,2,u8
+0x00956454,_gizflow_loop_checksum,1,u8
 0x956458,_takeoverobjects,352,TAKEOVEROBJECT[8]
 0x9565b8,_TagTransfers,112,TAG_TRANSFER_PC[2]
 0x956628,_num_takeoverobjects,4,i32
@@ -42124,7 +42124,7 @@ address,symbol,size,ctype
 0x95e018,_GizmoRegistryGizTurretsAddTypePc,120,ADDGIZMOTYPE_PC
 0x95e090,?addtype@?1??GizSpecial_RegisterGizmo@@9@9,120,
 0x95e108,_portal_gizmotype_id,4,i32
-0x95e10c,_portal_gizmo_name,20,
+0x95e10c,_portal_gizmo_name,16,
 0x95e120,?addtype@?1??Portal_RegisterGizmo@@9@9,120,
 0x95e1d0,_edGizShadow_gizmotype_id,4,
 0x95e1d8,?addtype@?1??EdGizShadowMachine_RegisterGizmo@@9@9,120,
@@ -42705,7 +42705,7 @@ address,symbol,size,ctype
 0x2912f68,_edfile_readwrongendianess,4,i32
 0x2912f6c,_FS_ShowVolumes,1,u8
 0x2912f6d,_FS_Active,1,u8
-0x2912f6e,_FS_RefreshDir,2,u8
+0x2912f6e,_FS_RefreshDir,1,u8
 0x2912f70,_FS_Path,256,char[256]
 0x2913070,_FS_CursorLine,4,
 0x2913074,_FS_CurrentPosFileNum,4,i32
@@ -42738,7 +42738,7 @@ address,symbol,size,ctype
 0x2913120,_drawcharactermodel_restpose,4,i32
 0x2913124,_drawcharactermodel_keepmergeaction,4,i32
 0x2913128,_drawcharactermodel_locatorsupdated,4,i32
-0x291312c,_TempNumJoints,4,u8
+0x291312c,_TempNumJoints,1,u8
 0x2913130,_notransparentchardraw,4,i32
 0x2913134,_APIObjResetShadowMapRenderingFn,4,void (__cdecl *)(void)
 0x2913138,_APIObjEnableShadowMapRenderingFn,4,void (__cdecl *)(void)
@@ -43040,7 +43040,7 @@ address,symbol,size,ctype
 0x2921238,_PlatCallback,64,TERRAIN_CALLBACK_LIFECYCLE[8]
 0x2921278,_terrhitflags,4,i32
 0x292127c,_TerrImpact,2,i16
-0x292127e,_TerrWallInfo,2,u8
+0x292127e,_TerrWallInfo,1,u8
 0x02921280,_NuSound3GroupSampleIds,1024,i16[512]
 0x2921680,_SphereData,256,TERRAIN_SPHERE_PC[16]
 0x02921780,_SfxBits,200,u16[100]
@@ -43415,7 +43415,7 @@ address,symbol,size,ctype
 0x2962b6c,_DebrisDmaCleanupDelay,4,i32
 0x02962b70,_nusound_special_positions,60,NUVEC[5]
 0x02962bac,?the_music_player@@3PAVNuMusic@@A,4,NuMusic *
-0x2962bb0,_PCSoundStorageLock,28,CRITICAL_SECTION
+0x2962bb0,_PCSoundStorageLock,24,CRITICAL_SECTION
 0x02962bcc,_NuSound3Initialized,4,i32
 0x02962bd0,_NuSound3VolumeTable,65536,f32[0x4000]
 0x2972bd0,_SoundSampleCriticalSection,24,CRITICAL_SECTION
@@ -43437,7 +43437,7 @@ address,symbol,size,ctype
 0x2972c40,_PCSoundOneShotVoiceCount,4,i32
 0x2972c44,_PCSoundMixEvent,4,HANDLE
 0x2972c48,_PCSoundSampleWorkerHandle,4,HANDLE
-0x2972c4c,_PCSoundSampleWorkerStop,4,volatile u8
+0x2972c4c,_PCSoundSampleWorkerStop,1,volatile u8
 0x02972c50,_NuSoundDat,4,NUDATHDR *
 0x2972c54,_PCSoundCommitTarget,4,PC_SOUND_COMMIT *
 0x02972c58,_NuSound3Listener,4,NUMTX *
@@ -43575,7 +43575,7 @@ address,symbol,size,ctype
 0x2975c7c,_PcWindowCallbackCount,4,i32
 0x2975c80,_PcScreenSaverEnabled,4,BOOL
 0x2975c88,_PcModuleFilename,260,char[260]
-0x2975d90,?PcUserFolder@@3PADA,264,char[260]
+0x2975d90,?PcUserFolder@@3PADA,260,char[260]
 0x2975e98,?PcFilePath@@3PADA,128,char[128]
 0x2975f98,?PcFileDirectory@@3PADA,128,char[128]
 0x2976098,_PCNativeWarningDebugState,1288,PC_NATIVE_DEBUG_STATE
@@ -43618,7 +43618,7 @@ address,symbol,size,ctype
 0x297c110,_CpuFamily,4,u32
 0x297c114,_CpuModel,4,u32
 0x297c118,_CpuStepping,4,u32
-0x297c11c,_CpuBrandIndex,4,u8
+0x297c11c,_CpuBrandIndex,1,u8
 0x297c120,_CpuUnsetValue1,4,u32
 0x297c124,_CpuHasFpu,4,u32
 0x297c128,_CpuHasVme,4,u32

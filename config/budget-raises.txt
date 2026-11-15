@@ -202,3 +202,6 @@ config/castscan-budget.json redundant-identity 26 main counts 26 (identity casts
 config/oddscan-budget.json data-file 5 src/nu2api/nuvertexdecl.c includes the module headers it uses instead of saga.h and passes 200 lines with two blank ones (a table); the count drops by one again when saga.h goes
 config/oddscan-budget.json pc-suffix 10653 2674d959 counted 10650 before its rebase onto c55b33d4; main counts 10653 after both, 10 fewer than before 2674d959 (no new suffix)
 config/oddscan-budget.json data-file 6 src/nu2api/nurndr_swap.cpp lost its extern "C" declaration block to nurndr headers (2674d959) and now passes the 200-line, few-blank-lines rule; no new data
+config/declscan-budget.json A 28 2674d959 kept the declarations of nuscratch.c, keyboard_read.c and hardware_dispatch.cpp, which no longer see the headers after the narrowing; the count was not raised with them
+config/declscan-budget.json C 452 as above (2674d959)
+config/declscan-budget.json D 1433 as above (2674d959)

@@ -165,7 +165,7 @@ REPRODUCED_CLASSES = (
     ("different_padding", "defined by our objects; differs only by zero padding (datadiff class p)"),
     ("different", "defined by our objects with real differences (datadiff classes a-f, u)"),
     ("undefined", "identified (mapped) but defined by no object or member"),
-    ("padding", "proven alignment padding between known extents"),
+    ("padding", "zero gap between known extents (not scored: left out of the total)"),
     ("unidentified", "not mapped"),
 )
 
@@ -201,10 +201,13 @@ def reproduced_data(storage, classes):
         counts["unidentified"] = total - sum(counts.values())
         for name, count in counts.items():
             result[f"reproduced_{kind}_{name}_bytes"] = count
+        # Gaps between known symbols are not scored: neither reproduced nor part of the total.
+        scored = total - counts["padding"]
         reproduced = counts["exact"] + counts["library"]
         result[f"reproduced_{kind}_bytes"] = reproduced
-        result[f"reproduced_{kind}_total_bytes"] = total
-        result[f"reproduced_{kind}_percent"] = 100 * reproduced / total if total else 0.0
+        result[f"reproduced_{kind}_total_bytes"] = scored
+        result[f"reproduced_{kind}_gap_bytes"] = counts["padding"]
+        result[f"reproduced_{kind}_percent"] = 100 * reproduced / scored if scored else 0.0
     result["reproduced_classes"] = dict(REPRODUCED_CLASSES)
     return result
 

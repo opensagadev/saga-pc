@@ -58,8 +58,10 @@ class ClassifyTests(unittest.TestCase):
         findings = datadiff.classify(words(1, 2), words(1, 3), {}, retail_ref)
         self.assertEqual(findings, [("d", 4, 1, "ours 02, retail 03")])
 
-    def test_padding_only(self):
+    def test_zero_gap_after_the_symbol_is_not_a_finding(self):
         findings = datadiff.classify(b"abc\0", b"abc", {}, retail_ref)
+        self.assertEqual(datadiff.rank(findings), None)
+        findings = datadiff.classify(b"abc", b"abc\0", {}, retail_ref)
         self.assertEqual(datadiff.rank(findings), "p")
 
     def test_truncated_table(self):

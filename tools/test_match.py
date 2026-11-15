@@ -455,7 +455,10 @@ class ReproducedDataTests(unittest.TestCase):
         self.assertEqual([result[f"reproduced_file_backed_data_{name}_bytes"] for name, _ in match.REPRODUCED_CLASSES],
                          [8, 8, 4, 4, 8, 2, 30])
         self.assertEqual(result["reproduced_file_backed_data_bytes"], 16)
-        self.assertEqual(result["reproduced_file_backed_data_percent"], 25.0)
+        # The 2 gap bytes are left out of the total: 16 of 62 scored bytes.
+        self.assertEqual(result["reproduced_file_backed_data_gap_bytes"], 2)
+        self.assertEqual(result["reproduced_file_backed_data_total_bytes"], 62)
+        self.assertAlmostEqual(result["reproduced_file_backed_data_percent"], 100 * 16 / 62)
         self.assertEqual(result["reproduced_zero_fill_data_undefined_bytes"], 16)
         self.assertEqual(result["reproduced_zero_fill_data_unidentified_bytes"], 48)
 

@@ -515,12 +515,22 @@ class DataMatchTests(unittest.TestCase):
         result = self.compare(8)
         self.assertFalse(result["exact_match"])
         self.assertEqual((result["base_size"], result["target_size"]), (4, 8))
-        self.prepare(bytes(8), bytes(8))
+        self.prepare(b"\x01" + bytes(7), b"\x01" + bytes(3) + b"\x02" + bytes(3))
         self.assertFalse(self.compare(4)["exact_match"])
+
+    def test_zero_gap_after_the_symbol_is_not_compared(self):
+        # Only the symbol's own bytes count: a zero gap up to the next symbol is not part of it.
+        self.prepare(b"\x01\0\0\0\xff\xff\xff\xff", b"\x01\0\0\0" + bytes(4))
+        result = self.compare(4)
+        self.assertTrue(result["exact_match"])
+        self.assertEqual((result["base_size"], result["gap_bytes"]), (8, 4))
 
     def test_next_named_symbol_sets_whole_extent(self):
         self.prepare(bytes(8), bytes(8), next_symbol=4)
         self.assertTrue(self.compare(4)["exact_match"])
+        # Mapped smaller than the extent: the zero byte after it is a gap, not compared.
+        self.assertEqual(self.compare(3).get("gap_bytes"), 1)
+        self.prepare(bytes(8), b"\0\0\0\x01" + bytes(4), next_symbol=4)
         self.assertFalse(self.compare(3)["exact_match"])
 
     def test_invalid_next_symbol_is_an_error(self):

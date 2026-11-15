@@ -159,8 +159,7 @@ def classify(ours, retail_bytes, slots, retail_ref, ours_bss=False, retail_bss=F
         tail = ours[len(retail_bytes):]
         if any(tail):
             findings.append(("e", len(retail_bytes), len(tail), f"ours has {len(tail)} more non-zero bytes"))
-        else:
-            findings.append(("p", len(retail_bytes), len(tail), "ours padded by zero bytes"))
+        # A zero tail after the symbol's own size is the gap to the next symbol: not part of the symbol.
     return findings
 
 

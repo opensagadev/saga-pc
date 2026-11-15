@@ -39,6 +39,9 @@ object nor a linked library defines (the build links with `/FORCE:UNRESOLVED`,
 so such a reference reads or calls address 0), and initialised data our
 objects define that `config/symbols.csv` does not map (never compared).
 
+Rule: a data symbol is compared by its own bytes at its mapped size; a zero gap between two symbols is
+part of neither and is not scored (not reproduced and not in the total), only reported as gap bytes.
+
 ### What `matching.json` covers
 
 `tools/match.py` compares each mapped data symbol with a known size as one
