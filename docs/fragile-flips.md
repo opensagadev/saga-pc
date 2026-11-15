@@ -42,3 +42,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | frame stats struct (PcFrameStatsReset) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
 | episodeIII.c narrowed (87894ba9) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
 | game.cpp narrowed | InitGameAfterConfig | legogame/game.cpp | 82.2397 % | 82.2372 % |
+| nu3d_platform.cpp narrowed | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.06 % | 95.37 % |
