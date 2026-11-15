@@ -1,4 +1,18 @@
-#include "saga.h"
+#include "editor/edlevelall.h"
+#include "gameapi/edtools/edui.h"
+#include "gamelib/util/Refpack.h"
+#include "globals.h"
+#include "legoapi/render/core/render.h"
+#include "legoapi/render/core/rtl.h"
+#include "legoapi/render/light/lighting.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nucore/NuDynamicLight.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numath_includes.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 #include <new>
 #include <stdio.h>
 

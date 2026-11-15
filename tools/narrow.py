@@ -67,16 +67,19 @@ def rel(path):
         return None
 
 
-def language(unit):
+def language(unit, delayed=True):
+    """Lint-flag language options of `unit`; without `delayed`, template bodies are parsed where they stand (so
+    their references count)."""
     from tools import standalone
-    return standalone.LANGUAGES["c++" if Path(unit).suffix in (".cpp", ".h") else "c"]
+    options = standalone.LANGUAGES["c++" if Path(unit).suffix in (".cpp", ".h") else "c"]
+    return options if delayed else [o for o in options if o != "-fdelayed-template-parsing"]
 
 
-def parse(unit, text):
+def parse(unit, text, delayed=True):
     """(translation unit, first error or None) of `text` read as `unit`."""
     from tools import declscan, layoutcheck
     ci = layoutcheck.cindex()
-    tu = ci.Index.create().parse(str(unit), args=[*declscan.base_flags(), *language(unit)],
+    tu = ci.Index.create().parse(str(unit), args=[*declscan.base_flags(), *language(unit, delayed)],
                                  unsaved_files=[(str(unit), text)],
                                  options=ci.TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD)
     for diagnostic in tu.diagnostics:
@@ -98,6 +101,23 @@ def carriers(module):
             if target and target not in module:
                 found.setdefault(target, header)
     return found
+
+
+def overloaded_decls(cursor):
+    """The declarations an OVERLOADED_DECL_REF cursor names (not wrapped by the Python bindings)."""
+    import ctypes
+    from tools import layoutcheck
+    ci = layoutcheck.cindex()
+    count = ci.conf.lib.clang_getNumOverloadedDecls
+    count.argtypes, count.restype = [ci.Cursor], ctypes.c_uint
+    get = ci.conf.lib.clang_getOverloadedDecl
+    get.argtypes, get.restype = [ci.Cursor, ctypes.c_uint], ci.Cursor
+    decls = []
+    for i in range(count(cursor)):
+        decl = get(cursor, i)
+        decl._tu = cursor._tu
+        decls.append(decl)
+    return decls
 
 
 def used_headers(tu, unit, module, via=None):
@@ -133,6 +153,9 @@ def used_headers(tu, unit, module, via=None):
                 add_decl(first)
         if cursor.kind in (kind.CXX_METHOD, kind.CONSTRUCTOR, kind.DESTRUCTOR):
             add_decl(cursor.semantic_parent)
+        if cursor.kind == kind.OVERLOADED_DECL_REF:  # a dependent call in a template body
+            for decl in overloaded_decls(cursor):
+                add_decl(decl)
         referenced = cursor.referenced
         if referenced is not None and referenced != cursor:
             add_decl(referenced)
@@ -156,7 +179,9 @@ def narrow_one(unit):
     text = unit.read_text(encoding="utf-8")
     if SHIM not in text:
         return {"status": "unchanged", "headers": []}
-    tu, error = parse(unit, text)
+    tu, error = parse(unit, text, delayed=False)
+    if error:  # MSVC template code that only parses delayed
+        tu, error = parse(unit, text)
     if error:
         return {"status": f"does not compile as is: {error}", "headers": []}
     module = set(standalone.module_headers())

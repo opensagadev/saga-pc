@@ -28,6 +28,8 @@ class NarrowTest(unittest.TestCase):
         self.assertIn("c++", narrow.language(Path("a.cpp")))
         self.assertIn("c++", narrow.language(Path("a.h")))
         self.assertIn("c", narrow.language(Path("a.c")))
+        self.assertIn("-fdelayed-template-parsing", narrow.language(Path("a.cpp")))
+        self.assertNotIn("-fdelayed-template-parsing", narrow.language(Path("a.cpp"), delayed=False))
 
     def test_carriers_name_the_module_header_that_includes_a_plain_header(self):
         with tempfile.TemporaryDirectory() as scratch:
