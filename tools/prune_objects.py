@@ -4,7 +4,7 @@
     python3 tools/prune_objects.py OBJ_DIR OBJECT...
 
 The Makefile passes its live object list, so objects of renamed or removed units go and nobody deletes
-objects by hand. Each object's compiler-warning record (.obj.warnings) goes with it."""
+objects by hand. Each object's compiler-warning record (.obj.warnings) and header list (.d) go with it."""
 import sys
 from pathlib import Path
 
@@ -14,7 +14,7 @@ def prune(directory, live):
     removed = []
     for path in sorted(Path(directory).rglob("*.obj")):
         if path.resolve() not in live:
-            for stale in (path, path.with_name(path.name + ".warnings")):
+            for stale in (path, path.with_name(path.name + ".warnings"), path.with_suffix(".d")):
                 stale.unlink(missing_ok=True)
             removed.append(path)
     return removed

@@ -2,6 +2,7 @@
 import os
 import hashlib
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -24,12 +25,17 @@ class BuildKindTests(unittest.TestCase):
     def test_build_managed_vorbis_inputs_and_flags(self):
         result = self.make("build")
         self.assertEqual(result.returncode, 0, result.stderr)
-        commands = [line.replace("--toolchain rtm ", "") for line in result.stdout.splitlines()
+        # Every object also writes the headers it read (--depfile OBJECT.d) for make.
+        lines = result.stdout.splitlines()
+        self.assertTrue(all(re.match(r"python3 tools/cc.py --depfile (\S+)\.d .* \1\.obj ", line)
+                            for line in lines if line.startswith("python3 tools/cc.py") and ".obj " in line
+                            and "--link" not in line and "build/Debug/" not in line))
+        lines = [re.sub(r"--depfile \S+ ", "", line) for line in lines]
+        commands = [line.replace("--toolchain rtm ", "") for line in lines
                     if line.startswith(("python3 tools/cc.py lib/ogg-vorbis/",
                                         "python3 tools/cc.py --toolchain rtm lib/ogg-vorbis/"))]
         self.assertEqual(len(commands), 22)
-        rtm = {line.split()[4] for line in result.stdout.splitlines()
-               if line.startswith("python3 tools/cc.py --toolchain rtm ")}
+        rtm = {line.split()[4] for line in lines if line.startswith("python3 tools/cc.py --toolchain rtm ")}
         for command in commands:
             source = command.split()[2]
             is_vorbis = "/vorbis/" in source or "vorbis_smallft.c" in command

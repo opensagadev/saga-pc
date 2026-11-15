@@ -234,5 +234,28 @@ class LinkerResponseTests(unittest.TestCase):
                         cc.run_linker(command, {})
                 self.assertEqual(list((Path(temp) / 'build').iterdir()), [])
 
+
+class DepfileTests(unittest.TestCase):
+    def test_depfile_lists_project_headers_and_drops_the_notes(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(cc, 'ROOT', Path(temp)):
+            root = Path(temp)
+            (root / 'src/sub').mkdir(parents=True)
+            (root / 'src/Sub').mkdir()
+            (root / 'src/sub/Thing.h').write_text('')
+            (root / 'src/saga.h').write_text('')
+            (root / 'build/tools/include').mkdir(parents=True)
+            log = ('unit.c\r\n'
+                   'Note: including file: Z:' + str(root / 'src/saga.h').replace('/', '\\') + '\r\n'
+                   'Note: including file:  src\\sub\\thing.h\r\n'
+                   'Note: including file: Z:' + str(root / 'build/tools/include/stdio.h').replace('/', '\\') + '\r\n'
+                   'Note: including file: Z:\\usr\\include\\other.h\r\n'
+                   'unit.c(3) : warning C4101: unused\r\n')
+            depfile = root / 'build/obj/unit.d'
+            rest = cc.write_depfile(depfile, root / 'build/obj/unit.obj', log)
+            self.assertEqual(rest, 'unit.c\r\nunit.c(3) : warning C4101: unused\r\n')
+            self.assertEqual(depfile.read_text(), 'build/obj/unit.obj: \\\n src/saga.h \\\n src/sub/Thing.h \\\n\n'
+                                                  'src/saga.h:\nsrc/sub/Thing.h:\n')
+
+
 if __name__ == '__main__':
     unittest.main()

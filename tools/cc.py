@@ -31,6 +31,44 @@ def linker_output_path(flag):
     return flag
 
 
+INCLUDE_NOTE = re.compile(r"^Note: including file: *(.+?)\s*$", re.MULTILINE)
+
+
+def unix_path(name):
+    """The worktree path a compiler-reported Windows path names (Z:\\... or relative to the worktree)."""
+    name = name.replace("\\", "/")
+    if re.match(r"^[A-Za-z]:/", name):
+        name = name[2:]
+    path = Path(os.path.normpath(name if name.startswith("/") else ROOT / name))
+    if not path.exists():
+        # The compiler opens files case-insensitively: find the file as it is spelled on disk.
+        candidates = [Path("/")]
+        for part in path.relative_to("/").parts:
+            candidates = [entry for parent in candidates if parent.is_dir() for entry in parent.iterdir()
+                          if entry.name.lower() == part.lower()]
+        found = sorted(candidate for candidate in candidates if candidate.is_file())
+        return found[0] if found else path
+    return path
+
+
+def write_depfile(depfile, output, log):
+    """A make rule naming the project files (outside build/) the compilation read, each also as an empty
+    rule so a deleted header rebuilds instead of failing; returns the log without the include notes."""
+    headers = set()
+    for name in INCLUDE_NOTE.findall(log):
+        path = unix_path(name)
+        if path.is_relative_to(ROOT) and not path.is_relative_to(ROOT / "build"):
+            headers.add(path.relative_to(ROOT).as_posix())
+    target = Path(os.path.relpath(output, ROOT)).as_posix()
+    names = sorted(headers)
+    lines = [f"{target}: \\", *(f" {name} \\" for name in names), "", *(f"{name}:" for name in names)]
+    depfile.parent.mkdir(parents=True, exist_ok=True)
+    partial = depfile.with_name(depfile.name + ".tmp")
+    partial.write_text("\n".join(lines) + "\n")
+    os.replace(partial, depfile)
+    return "".join(line for line in log.splitlines(keepends=True) if not INCLUDE_NOTE.match(line))
+
+
 def unresolved_symbols(log):
     """Collect full linker names, excluding LNK2019's referring function."""
     names = re.findall(r"\bLNK(?:2001|2019)\b[^\r\n]*?unresolved external symbol ([^\r\n]+)", log)
@@ -116,6 +154,8 @@ def main():
     mode.add_argument("--implib", action="store_true", help="Build an import library from a module definition")
     parser.add_argument("--decorated-exports", action="store_true",
                         help="With --implib: preserve the DLL export decorations in the .def")
+    parser.add_argument("--depfile", type=Path,
+                        help="When compiling: write a make rule of the headers the unit read here (/showIncludes)")
     parser.add_argument("--toolchain", metavar="NAME",
                         help="Compile with this secondary compiler from config/toolchain.json (default: the primary)")
     parser.add_argument("first", type=Path, help="Source when compiling; output for --link/--implib")
@@ -123,6 +163,8 @@ def main():
     args = parser.parse_args()
     if args.decorated_exports and not args.implib:
         parser.error("--decorated-exports requires --implib")
+    if args.depfile and (args.link or args.implib):
+        parser.error("--depfile applies to compilation")
     if args.toolchain and (args.link or args.implib):
         parser.error("--toolchain selects a compiler; linking always uses the primary toolchain")
     if args.implib:
@@ -186,11 +228,15 @@ def main():
             if source == ROOT / "src/debug/log.c":
                 from tools.debug_identity import build_identity
                 flags = [*flags, '/DSAGA_BUILD_ID="' + build_identity(ROOT) + '"']
-            command = [wine, str(compiler / "cl.exe"), *flags,
+            command = [wine, str(compiler / "cl.exe"), *flags, *(["/showIncludes"] if args.depfile else []),
                        "/Fo" + windows(output), windows(source)]
         output.parent.mkdir(parents=True, exist_ok=True)
         output.unlink(missing_ok=True)
+        if args.depfile:
+            args.depfile.unlink(missing_ok=True)
         result, log = (run_linker if args.link else run_tool)(command, env)
+        if args.depfile and not result.returncode:
+            log = write_depfile(args.depfile.resolve(), output, log)
         if args.link and args.optional_pdb and re.search(r"\bLNK1101\b", log):
             # Symbols are a convenience for the Matching executable; the code does not depend on them.
             print("warning: this installation cannot write a PDB (LNK1101); linking without /DEBUG", flush=True)
@@ -221,6 +267,8 @@ def main():
             output.unlink(missing_ok=True)
             if not args.link and not args.implib:
                 warning_record(output).unlink(missing_ok=True)
+                if args.depfile:
+                    args.depfile.unlink(missing_ok=True)
     return 0
 
 
