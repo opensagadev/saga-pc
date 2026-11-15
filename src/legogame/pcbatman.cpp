@@ -1,4 +1,19 @@
-#include "saga.h"
+#include "gameapi/edtools/edui.h"
+#include "gameframework/saveload.h"
+#include "globals.h"
+#include "legoapi/audio/audio.h"
+#include "legoapi/menus/core/panel.h"
+#include "legoapi/misc/buffers.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/world/levels.h"
+#include "legogame/game.h"
+#include "legogame/pcbatman.h"
+#include "nu2api/PCInput.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nu3d/nutimebar_plain.h"
+#include "nu2api/nufile/nufile.h"
+#include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/nuwin32/pcapi.h"
 
 extern "C" void NuRndrConfigureLeaf(f32, f32, i32);
 

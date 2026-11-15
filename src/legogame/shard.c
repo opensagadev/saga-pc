@@ -1,4 +1,20 @@
-#include "saga.h"
+#include "gameapi/edtools/edfile.h"
+#include "legoapi/characters/motion.h"
+#include "legoapi/characters/motion/move.h"
+#include "legoapi/core/input/gamepads.h"
+#include "legoapi/core/input/qrand.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/traps/shards.h"
+#include "legoapi/items/base/apiobject.h"
+#include "legoapi/items/collect/shard.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/world/level.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nucamera.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nuvec.h"
 
 typedef struct shard_progress_recovered_s { // size 0x30
     u32 collected[4];                       // 0x00

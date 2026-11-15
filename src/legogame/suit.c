@@ -1,4 +1,11 @@
-#include "saga.h"
+#include "legoapi/actions/character/suit.h"
+#include "legoapi/actions/movement/carrying.h"
+#include "legoapi/characters/core/character.h"
+#include "legoapi/lib/text.h"
+#include "legoapi/menus/screens/menu.h"
+#include "legoapi/props/objects/legoapi_signal.h"
+#include "legoapi/world/levels.h"
+#include "legogame/game.h"
 
 SUIT_INITIALIZER_RECORD SuitRecordInit[10] = {
     {dat_0075314c, dat_0075314c, &tBATMANSUIT,     0,   98,  'b', 0x0,      0, 0, 0},

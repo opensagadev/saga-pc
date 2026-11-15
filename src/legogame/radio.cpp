@@ -1,4 +1,20 @@
-#include "saga.h"
+#include "gameapi/edptl.h"
+#include "globals.h"
+#include "legoapi/audio/radio.h"
+#include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmo/object/gizmoblowups.h"
+#include "legoapi/gizmos/object/newblowup.h"
+#include "legoapi/misc/gamemain.h"
+#include "legoapi/world/world.h"
+#include "nu2api/nu3d/nu3d_includes.h"
+#include "nu2api/nu3d/nugscn.h"
+#include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/nuanimation_gen.h"
+#include "nu2api/nucore/nustring.h"
+#include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numtx.h"
+#include "nu2api/numath/nutrig.h"
+#include "nu2api/numath/nuvec.h"
 #include <string.h>
 
 struct RADIO_ENTRY {        // size 0x14
