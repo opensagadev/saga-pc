@@ -148,6 +148,7 @@ static i32 BigJump_LandAction_Default(GAMEOBJECT *object) {
     return BigJumpLandFallback;
 }
 
+f32 HIGHJUMPHEIGHT = 1.14f;
 i32 (*BigJump_JumpActionFn)(GAMEOBJECT *) = BigJump_JumpAction_Default;
 
 i32 StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f32 duration_scale, i32 animation) {

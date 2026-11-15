@@ -915,7 +915,103 @@ i32 edpart_nearest_orphans = 0;
 static NUVEC PartImpactNormalPrivate = {0};
 RTLSET_PC *PartRTL = 0;
 f32 partglobaltime = 0;
+i32 part_types_used = 0;
+i32 part_emits_used = 0;
 static i32 PartRaycastsEnabledPrivate = 1;
+DEBRIS_INFO_PC DebrisNullEffect = {
+    "null",
+    0,
+    0,
+    0,
+    0,
+    100,
+    60,
+    0.0f,
+    1.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0,
+    0,
+    0,
+    0,
+    40000.0f,
+    0.0f,
+    25.0f,
+    0.0f,
+    0.0f,
+    0.5f,
+    1.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    {0.0f, 0.0f, 0.0f},
+    {0.0f, 0.0f, 0.0f},
+    {0},
+    0.0f,
+    1.0f,
+    0,
+    0,
+    0,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    0.0f,
+    {{0.0f, 64, 64, 64, 0},
+      {1.0f, 0, 0, 0, 0},
+      {0.0f, 0, 0, 0, 0},
+      {0.0f, 0, 0, 0, 0},
+      {0.0f, 0, 0, 0, 0},
+      {0.0f, 0, 0, 0, 0},
+      {0.0f, 0, 0, 0, 0},
+      {0.0f, 0, 0, 0, 0}},
+    {{0.0f, 64.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    0.125f,
+    0.125f,
+    0.0f,
+    500.0f,
+    {{0.0f, 500.0f}, {1.0f, 500.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    {{0.0f, 500.0f}, {1.0f, 500.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    -360.0f,
+    360.0f,
+    {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    0.0f,
+    0.0f,
+    256.0f,
+    256.0f,
+    NULL,
+    0.0f,
+    {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    0,
+    0,
+    3,
+    0,
+    4.0f,
+    {1.0f, 1.0f, 1.0f},
+    1.0f,
+    0.1f,
+    0.0f,
+    {{0.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    {{0.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    {{0.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+    {-1, -1, -1, -1, -1, -1, -1, -1},
+    {-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0},
+    0,
+    0,
+    0,
+    0,
+    0.0f,
+    0.0f,
+    0.5f,
+    1.0f,
+    0
+};
+i32 DebrisSuspendDrawObjectSwitch = -1;
+f32 debris_render_scale = 1.0f;
+i32 PartLevelPage = 1;
 
 void InitPartTable(char **names) {
     i32 count = 0;
@@ -1005,6 +1101,8 @@ void AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
     }
     AddFiniteShotPART(effect, position, 1);
 }
+
+char KillPartsLegoSingleText[11] = "LegoSingle";
 
 void PartImpact_Brick(PART_PC *part) {
     if (brickimpactwait <= 0.0f) {
@@ -1356,6 +1454,8 @@ static void DebrisMtxRotateZPrivate(NUMTX *m, i32 a) {
     m->m30 = (m30 * cosx) - (m->m31 * sinx);
     m->m31 = (m30 * sinx) + (m->m31 * cosx);
 }
+
+i32 maxdebkeys = 0;
 
 void DebFreeAllPanelEffects(void) {
     i32 j;
@@ -2018,6 +2118,10 @@ void DebrisDrawCalculateClipBoxes(DEBRIS_INFO_PC *effect, DEBRISKEY_PC *key) {
     DebrisMtxCopyPrivate(&key->clip_matrix, &matrix);
 }
 
+NUMTX xzfacingmtx = {0};
+i32 g_renderingDebris = 0;
+i32 edbits_editmode = 0;
+
 void DebrisDraw(i32 unused, i32 pass) {
     DEBRIS_RENDER_CHUNK_PC *chunk;
     i32 drawn = 0;
@@ -2447,6 +2551,10 @@ NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 dept
     NuMtlUpdate((NUMTL *)material);
     return (NUMTL *)material;
 }
+
+i32 DebrisArenaInitialized = 0;
+i16 *freedebkeys = 0;
+DEBRIS_PART_HEADER_PC **DmaDebTypes = 0;
 
 void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VARIPTR trash_end, char *texture_name, i32 chunk_count,
                   i32 glass_chunk_count, i32 key_count, i32 effect_count) {
@@ -3324,6 +3432,8 @@ void edpartCancelChangeNameMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edpart_name_menu);
     edpart_name_menu = NULL;
 }
+
+i32 PartGeneralPage = 0;
 
 i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
     i32 page;

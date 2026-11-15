@@ -1,6 +1,13 @@
 #include "gameapi/ai/aisys/gameaiscript.h"
 #include "legoapi/characters/core/players.h"
 
+i16 id_PENGUIN_GOON = -1;
+i16 id_PENGUIN_GOON_GUN = -1;
+i16 id_JOKER_GOON = -1;
+i16 id_JOKER_GOON_GUN = -1;
+i16 id_RIDDLER_GOON = -1;
+i16 id_RIDDLER_GOON_GUN = -1;
+
 i16 GetGenericGoon(i32 armed) {
     if (armed) {
         if (id_PENGUIN_GOON_GUN != -1 && APICharacterLoaded(id_PENGUIN_GOON_GUN)) {

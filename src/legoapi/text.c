@@ -43,6 +43,13 @@ const char *LEGOASCII_LEFT = NULL;
 const char *LEGOASCII_RIGHT = NULL;
 const char *LEGOASCII_BIGARROW = NULL;
 static char *Text_ErrorString = "Err...";
+char *Text_PathEnglish = (char *)"english";
+char *Text_PathFrench = (char *)"french";
+char *Text_PathGerman = (char *)"german";
+char *Text_PathItalian = (char *)"italian";
+char *Text_PathSpanish = (char *)"spanish";
+char *Text_PathDanish = (char *)"danish";
+char *Text_PathJapanese = (char *)"japanese";
 i32 Text_Language = 1;
 LANGUAGEDATA *Text_LanguageList = Text_LanguageList_Default;
 i32 LANGUAGECOUNT = 6;
@@ -337,6 +344,7 @@ const char *TextInputAxisGlyphsPc[4] = {
     "\xd4\xbb",
 };
 char HubButtonStringBuffer[72] = "???";
+u32 GAMEPAD_MENUSELECT = PAD_BUTTON_CROSS;
 
 void TextInputGlyphNamePc(i32 code, char *destination) {
     if ((u32)code <= 11U) {
@@ -1317,12 +1325,18 @@ typedef struct text_crawl_mission_view_s { // size 0x8
 } TEXT_CRAWL_MISSION_VIEW;
 
 static TEXT_CRAWL_VIEW_PC *TextCrawlCurrent = 0;
+u16 TextCrawlRotateY = 0;
+u16 TextCrawlRotateZ = 0;
+u32 TextCrawlRed = 0;
 f32 SmartTextLongestWidth = 0;
 f32 text3d_height = 0;
 f32 text3d_width = 0;
 static NUMTX TextCrawlMatrix = {0};
 void *Text_AppFont = 0;
 static NUVEC TextCrawlOffset = {0.0f, -1.0f, 10.0f};
+u8 TextCrawlBlue = 255;
+u32 TextCrawlGreen = 111;
+u16 TextCrawlRotateX = 13107;
 
 void TextCrawl_Init(TEXT_CRAWL_VIEW_PC *crawl, i32 id, i32 reset) {
     if (crawl == NULL || QFont3DZ == NULL) {

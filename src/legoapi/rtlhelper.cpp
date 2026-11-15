@@ -428,6 +428,9 @@ VuVec &VuMtx::fun_006341d0(i32 row) {
     return rows[row];
 }
 
+extern "C" {
+    NUVEC RtlUnitDirectionZPc = {0.0f, 0.0f, 1.0f};
+}
 /* Screen-space distance below which a radius ring can be grabbed. */
 static f32 rtl_helper_grab_distance = 0.5f;
 

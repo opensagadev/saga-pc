@@ -61,6 +61,7 @@ extern "C" {
         "walker_2legs", "walker_4legs", "hoverdroid", "critter",   "naboostarfighter",
         "henchman",     NULL,           NULL,
     };
+    i32 drawcharicon_i_panel = -1;
 }
 
 i32 CharIDFromName(const char *name) {

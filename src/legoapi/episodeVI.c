@@ -93,6 +93,8 @@ GIZMO_PC *SarlaccObstMirrorBall = NULL;
 u64 routemask_efloor_on = 0;
 GIZMO_PC *SarlaccForceMirrorBall = NULL;
 
+i16 id_TRACTOR = -1;
+i16 id_FIRETRUCK = -1;
 f32 DeathStarZapSizeWidth = 1.0f;
 f32 DeathStarZapSizeLength = 1.0f;
 f32 DeathStarZapWidthBias = 0.01f;

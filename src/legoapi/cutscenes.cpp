@@ -25,6 +25,7 @@ static u8 CutBlobShadowAlpha = 0;
 static f32 CutBlobShadowFadeFar = 0;
 extern "C" {
     i32 cut_waiting_for_new_level = 0;
+    void *newmode_cutinfo = 0;
     i32 ACTIVECUTCOUNT = 0;
     i32 NewCutInfoCount = 0;
     i32 CutInstEndCount = 0;
@@ -815,6 +816,7 @@ extern "C" {
     }
 
     i32 newlevel_resumecutaudio = 1;
+    CUT_DRAW_SETTINGS CutSceneDrawSettings = {-1, -1, -1, -1, 0};
     CUT_DRAW_SETTINGS *CutSceneSys = &CutSceneDrawSettings;
     u8 CUTSUBTITLEDEFAULT_R = 255;
     u8 CUTSUBTITLEDEFAULT_G = 255;

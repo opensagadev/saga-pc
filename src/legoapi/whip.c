@@ -168,6 +168,9 @@ void Whip_MoveCode(GAMEOBJECT *object) {
     }
 }
 
+NUVEC v100 = {1.0f, 0.0f, 0.0f};
+NUVEC v010 = {0.0f, 1.0f, 0.0f};
+
 void Whip_Release(GAMEOBJECT *object) {
     WHIP_BASIS *view = (WHIP_BASIS *)object;
     if (LEGOCONTEXT_WHIP != -1 && object->character_context == LEGOCONTEXT_WHIP && object->grapple != NULL) {

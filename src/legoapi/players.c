@@ -136,6 +136,7 @@ extern i32 movegamecamera_forcesock;
 
 char PlayerArcadeStartDoor[16] = "door_to_network";
 char PlayerMissionStartDoor[13] = "mission_door";
+PLAYERPROGRESS PlayerProgress[8] = {0};
 PLAYER_START_INITIALIZER_RECORD PlayerStart[8] = {0};
 
 void Players_InitPositions(WORLDINFO *world) {
@@ -236,7 +237,10 @@ void Players_InitPositions(WORLDINFO *world) {
     }
 }
 
+i32 DEFAULT_PLAYERHITPOINTS = 8;
 i32 PlayerID[2] = {-1, -1};
+f32 TOGGLEHOLDTIME = 1.0f;
+f32 TOGGLEREPEATTIME = 0.25f;
 
 void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     i32 ids[2];

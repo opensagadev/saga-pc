@@ -15,6 +15,7 @@ typedef struct portal_callback_s { // size 0x20
     u8 reserved_1d[3];             // 0x1d
 } PORTAL_CALLBACK;
 
+const char *PortalRegistrationPrefix = "portal_";
 static char portal_output_name[64] = "Active";
 i32 portal_gizmotype_id = 0;
 static char portal_gizmo_name[16] = {0};

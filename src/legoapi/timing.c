@@ -26,6 +26,8 @@ void ResetFrameCounters(void) {
     MainFrameCounters.fourth_frame = -1;
 }
 
+i32 do_multiframe_update = 0;
+
 void UpdateFrameCounters(void) {
     if (do_multiframe_update != 0) {
         if (MainFrameCounters.warmup_frame > 0) {
@@ -79,6 +81,8 @@ typedef struct GAME_TIMING_AREA_SAVE { // size 0xc
     u8 unknown_00[8];                  // 0x0
     f32 challenge_trial_time;          // 0x8
 } GAME_TIMING_AREA_SAVE;
+
+f32 global_pulse = 0.0f;
 
 void GameTiming(WORLDINFO *world, f32 *game_time) {
     f32 target;

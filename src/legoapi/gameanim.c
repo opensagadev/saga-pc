@@ -30,6 +30,8 @@
 
 void GameAnimMissingAnimDiagnostic(char *name);
 
+GAMEANIMPROGRESS gameanimsysprogress = {0};
+
 void GameAnimSys_AllocateLevelProgressData(VARIPTR *buf, VARIPTR *end, i32 capacity, i32 level_count) {
     i32 i;
 
@@ -1022,6 +1024,11 @@ void edanimRegisterBaseScene(NUGSCN *scene) {
 }
 
 struct eduimenu_s *edanim_switchtype_menu = 0;
+struct eduimenu_s *edanim_sound_menu = 0;
+struct eduimenu_s *edanim_soundtype_menu = 0;
+struct eduimenu_s *edanim_localsoundtype_menu = 0;
+struct eduimenu_s *edanim_localsound_menu = 0;
+struct eduimenu_s *edanim_bouncy_menu = 0;
 
 void edanimcbSetSwitchType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edanim_switchtype_menu = NULL;
@@ -1284,6 +1291,8 @@ void edanimcbLocalParticleMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unus
     }
 }
 
+struct eduimenu_s *edanim_active_menu = 0;
+struct eduimenu_s *edanim_options_menu = 0;
 struct eduimenu_s *edanim_particle_menu = 0;
 
 void edanimcbCancelParticleMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -1295,8 +1304,6 @@ void edanimcbCancelSoundTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_soundtype_menu);
     edanim_soundtype_menu = NULL;
 }
-
-extern struct eduimenu_s *edanim_localsound_menu;
 
 void edanimcbCancelLocalSoundMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(edanim_localsound_menu);

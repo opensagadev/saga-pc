@@ -219,6 +219,7 @@ static NUMTX *PickupRotateY(NUMTX *matrix, i32 angle) {
 }
 
 i32 gizmopickup_typeid = -1;
+f32 COINMSGTIME = 1.0f;
 f32 COINMAGNETSCALE = 3.0f;
 static PICKUP_TYPE_SYSTEM *GizmoPickupSys = &GizmoPickupSys_Game;
 

@@ -1820,6 +1820,7 @@ void instNuGCutSceneReset(INSTNUGCUTSCENE *owner) {
 i32 CutSceneRenderRigids = 1;
 i32 CutSceneRenderCharacters = 1;
 i32 CutSceneRenderLocators = 1;
+i32 CutSceneSingleStreamBuffer = 2;
 i32 CutSceneUpdateCameras = 1;
 
 static void copyAnims(CUT_SCENE_LOAD_PC *target, CUT_SCENE_LOAD_PC *source) {

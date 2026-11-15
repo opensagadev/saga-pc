@@ -8,6 +8,7 @@ extern "C" {
 
 extern "C" {
     APICHARACTERMODELLIST Area_StoryModelList[49] = {0};
+    i32 BonusArea = 0;
 }
 
 AREA_DATA_PC *Area_FindByName(char *name, i32 *index_out) {
@@ -182,6 +183,11 @@ void SuperCounters_ResetProcessed(WORLDINFO *world) {
             world->area->super_counters[index].processed_flags &= (u8)~2;
         }
     }
+}
+
+extern "C" {
+    u16 AREA_DEFAULTBONUSTIMETRIALTIME = 300;
+    u16 AREA_DEFAULTCHALLENGETIME = 600;
 }
 
 AREA_DATA_PC *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out) {
@@ -405,6 +411,7 @@ typedef struct AREA_MISSION_DATA_READER { // size 0x2
 
 extern "C" {
     APICHARACTERMODELLIST Area_PlayerModelList[9] = {0};
+    i32 LevelLoadCount = 0;
 }
 
 static void AreaAddModelListPrivate(APICHARACTERMODELLIST *list, i32 *count, i32 capacity, i32 character_id, i32 load_model,
@@ -434,13 +441,28 @@ static void AreaAddModelListPrivate(APICHARACTERMODELLIST *list, i32 *count, i32
 }
 
 extern "C" {
+    AREA_LEVEL_LOAD LevelLoad[12] = {0};
     i32 Area_PlayerModelCount = 0;
     i16 Area_PlayerIDList[9] = {0};
     APICHARACTERMODELLIST Area_FreePlayModelList[49] = {0};
+    i32 last_area = 0;
     i32 Area_FreePlayModelCount = 0;
+    AREA_GLOBALS_PC AreaGlobals = {0};
     i32 Area_MissionModelCount = 0;
     i32 Area_StoryModelCount = 0;
+    i32 VehicleArea = 0;
     APICHARACTERMODELLIST Area_MissionModelList[49] = {0};
+    AREA_DATA_PC *ADataList = 0;
+    AREA_DATA_PC *LastAData = 0;
+    i32 AREACOUNT = 0;
+    AREA_DATA_PC *HUB_ADATA = 0;
+    i32 reset_area = 0;
+    COLLECTION_AREA_SAVE_PC *Game_AreaSave = 0;
+}
+
+extern "C" {
+    struct nusound_filename_info_s *MusicInfo = 0;
+    i32 AreaMusic = 0;
 }
 
 extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i16 *s) {

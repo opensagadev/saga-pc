@@ -16,6 +16,9 @@ extern "C" {
     VARIPTR characterbuffer_base = {0};
     VARIPTR characterbuffer_ptr = {0};
     VARIPTR characterbuffer_end = {0};
+    NUGSCN *vehicle_scene = NULL;
+    NUGSCN *area_scene = NULL;
+    NUGSCN *big_icon_scene = NULL;
     VARIPTR superbuffer_base = {0};
     VARIPTR superbuffer_ptr = {0};
     VARIPTR editbuffer_end = {0};

@@ -21,6 +21,7 @@
 
 extern u8 snakebodies[0x440];
 static nuhspecial_s snake_hspecials[3] = {0};
+u8 snakebodies[0x440] = {0};
 
 void InitSnakes(WORLDINFO *world) {
     memset(snakebodies, 0, sizeof(snakebodies));

@@ -65,6 +65,8 @@ extern "C" {
     extern i32 turret_gizmotype_id;
     extern char TurretOutputBuffer[32];
     i32 GizTurretAnimDataVersion = 7;
+    i32 gizturret_test_ang = 3640;
+    f32 gizturret_rapid_fire_rate = 0.2f;
     ADDGIZMOTYPE_PC GizmoRegistryGizTurretsAddTypePc = {0};
 
     static void GizTurretClear(GIZTURRET_s *turret) {

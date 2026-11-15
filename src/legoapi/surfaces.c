@@ -38,6 +38,7 @@ void SurfaceMaskOff(u32 *surface_mask) {
 
 u16 SURFACEBITS_DUST = 0;
 u16 SURFACEBITS_NODUST = 0;
+PC_SURFACE_MASK GetSurfaceInfoRuntimeMask = {0};
 
 void Surfaces_Reset(void) {
     i32 i;

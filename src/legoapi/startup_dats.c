@@ -6,6 +6,8 @@
 #include "nu2api/nuwin32/pcapi.h"
 
 NUDATHDR *StartupDatList[7] = {0};
+i32 PCDeviceHardwareVertexProcessingPC = 0;
+i32 PcIntelShaderFallback = 0;
 i32 StartupDatCount = 0;
 
 void StartupOpenDats(const char **names, i32 count, VARIPTR *arena) {

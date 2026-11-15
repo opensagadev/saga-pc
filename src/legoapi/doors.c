@@ -330,6 +330,8 @@ typedef struct world_door_config_s { // size 0x46a0
 static WORLD_DOOR_CONFIG *D_worldinfo = 0;
 f32 Door_CutCamWaitTime = 0;
 i32 door_cutscenesnap = 0;
+i32 gone_through_door_to_new_level = 0;
+NUVEC DoorCutCameraPosition0 = {0};
 char DoorExitName[64] = {0};
 char DoorExitCameraSplineName[32] = {0};
 i32 Door_Start = 0;
@@ -456,6 +458,7 @@ static void D_cut_scene(NUFPAR_PC *parser) {
     }
 }
 
+i32 Door_NextSock = -1;
 static NUFPCOMJMP Door_ConfigKeywords[] = {
     {"spline",            D_spline           },
     {"level",             D_level            },

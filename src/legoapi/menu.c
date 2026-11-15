@@ -22,6 +22,13 @@
 
 i32 MenuLanguages = 1;
 i32 MenusUsed = 31;
+i32 MENUSFX_MENUMOVE = -1;
+i32 MENUSFX_MENUSELECT = -1;
+i32 MENUSFX_MENUBACK = -1;
+i32 MENUSFX_MENUNOENTRY = -1;
+i32 g_enableButtonPrompts = 1;
+void (*drawslotinfofn)(f32, f32, i32, i32) = APIMenuDrawGameState;
+void (*drawslotsfn)(MENU *, f32) = APIMenuDrawMemCardSlots;
 i32 MenuFadeEnabled = 0;
 
 void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_count, void (*draw_save_slots_info_fn)(f32, f32, i32, i32),
@@ -296,6 +303,7 @@ typedef struct menu_draw_state_s { // size 0xb0
 
 void (*headerdrawfn)(void) = DrawMenuHeader;
 void (*predrawfn)(MENU *) = 0;
+i32 MenuDrawDropShadows = 0;
 
 void DrawMenu(i32 paused) {
     MENU *menu;
@@ -356,6 +364,7 @@ void DrawMenu(i32 paused) {
 }
 
 f32 MenuTopY = 0.8f;
+char *apiGameName = "Game";
 i32 MenuDisableHeaders = 0;
 
 void DrawMenuHeader(void) {
@@ -370,14 +379,35 @@ void fun_0050f620(char *text, u32 red, u32 green, u32 blue) {
 }
 
 char *apiGameTitle = "Game";
+u8 MENUNORMALR = 255;
+u8 MENUNORMALG = 127;
+u8 MENUHEADERG = 0x7f;
+u8 MENUHEADERB = 0xff;
+u8 MENUWARNR = 255;
 char *apitxt_CONTINUE = "Continue";
+char *apitxt_SAVEGAME = "Save Game";
+char *apitxt_LOADGAME = "Load Game";
+char *apitxt_DELETEGAME = "Delete Game";
+char *apitxt_GAMESAVED = "Save Successful";
 char *apitxt_GAMEOVERWRITTEN = "Overwrite Successful";
+char *apitxt_GAMELOADED = "Game Loaded";
+char *apitxt_DELETING = "Deleting data.";
+char *apitxt_FORMATTING = "Formatting.";
 char *apitxt_GAMEOVERWRITING = "Overwriting data.";
+char *apitxt_CORRUPTLOAD = "Load Corrupted";
+char *apitxt_CONFIRMLOAD = "Confirm Load?";
+char *apitxt_CONFIRMSAVE = "Confirm Save?";
+char *apitxt_CONFIRMOVERWRITE = "Are you sure you wish to overwrite this save file?";
 char *apitxt_DOYOUWANTTOSTART = "Do you want to start the game?";
+char *apitxt_DOYOUWANTTOABORT = "Do you want to cancel the Save?";
+char *apitxt_DOYOUWANTTOABORTLOAD = "Do you want to cancel the Load?";
+char *apitxt_DOYOUWANTTOABORTFORMAT = "Do you want to cancel the Format?";
 char *apitxt_CONTINUEWITHOUTSAVING = "Continue without Saving";
+char *apitxt_NEWSAVE = "New Save";
 char *apitxt_CONTINUEWITHOUTLOADING = "Continue without loading";
 char *apitxt_COMPLETED = "Completed";
 char *apitxt_VIBRATION = "Vibration";
+char *apitxt_CONFIRMDELETE = "Are you sure you wish to delete this save file?";
 char *apitxt_PROGRESS = "Progress: %.1f%%";
 char *apitxt_TIMEPLAYED = "Time Played: %s";
 char *apitxt_CONTROLLERREMOVED =
@@ -893,6 +923,11 @@ typedef struct MENU_DRAW_VIEW { // size 0xe0
 } MENU_DRAW_VIEW;
 
 f32 MENUENTRYEXWIDTH = 1.25f;
+char *apitxt_RETRY = "Retry";
+char *apitxt_SLOT = "Profile";
+char *apitxt_PRESENT = "Present";
+char *apitxt_EMPTY = "Empty";
+char *apitxt_NOSPACE = "No Space";
 
 void DrawMenuEntryEx(MENU *menu, char *text, u8 alpha) {
     MENU_DRAW_VIEW *view = (MENU_DRAW_VIEW *)menu;

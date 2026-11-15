@@ -93,6 +93,8 @@ void GameCam_HitRoll(void) {
     GameCam_Judder(GameCam, amount, 2, NULL);
 }
 
+NARROWSOCKEXCEPTION_PC *NarrowSockException = 0;
+
 void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION_PC *exceptions) {
     i32 level_index;
     if (exceptions == NULL) {
@@ -115,12 +117,21 @@ void GameCam_HitJudder(void) {
 
 static i32 GameCamLookRotX = 10;
 static i32 GameCamLookRotY = 15;
-extern NUVEC PlayPlaneCorners[4];
-extern f32 PP_dist;
-extern f32 GameCamShakeRadius;
-extern f32 GameCamShakeRetarget;
-extern f32 GameCamShakeDirSeek;
-extern f32 GameCamShakeOffsetSeek;
+NUVEC PlayPlaneCorners[4] = {
+    {-0.85f, 0.85f,  1.0f},
+    {0.85f,  0.85f,  1.0f},
+    {-0.85f, -0.85f, 1.0f},
+    {0.85f,  -0.85f, 1.0f}
+};
+f32 PP_dist = 5.0f;
+f32 GameCamShakeRadius = 0.1f;
+f32 GameCamShakeRetarget = 0.025f;
+f32 GameCamShakeDirSeek = 10.0f;
+f32 GameCamShakeOffsetSeek = 2.0f;
+i32 GAMEPAD_DUP = PAD_BUTTON_UP;
+i32 GAMEPAD_DDOWN = PAD_BUTTON_DOWN;
+i32 GAMEPAD_DLEFT = PAD_BUTTON_LEFT;
+i32 GAMEPAD_DRIGHT = PAD_BUTTON_RIGHT;
 extern i32 PlayPlanesUseRenderMtx;
 
 void GameCam_ResetLookRot(GAMECAMERA *camera) {
@@ -223,6 +234,8 @@ static void MakePlayPlane(KEEP_SCREEN_PLANE *plane, NUVEC *a, NUVEC *b, NUVEC *c
     NuVecCross(&plane->normal, &first_edge, &second_edge);
     NuVecNorm(&plane->normal, &plane->normal);
 }
+
+i32 PlayPlanesUseRenderMtx = 0;
 
 void MakePlayPlanes(GAMECAMERA *camera) {
     NUVEC ray;
@@ -395,6 +408,8 @@ static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION_PC *positi
     }
     return 1;
 }
+
+i32 disable_narrow_socks = 0;
 
 i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
     GAMEOBJECT *other = NULL;

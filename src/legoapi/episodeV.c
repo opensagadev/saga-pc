@@ -928,6 +928,8 @@ void CloudCityTrapC_Panel(WORLDINFO *world) {
         }
     }
 }
+
+GAMEOBJECT *LevGameObject[8] = {0};
 struct panel_movement_s *LevGizPanel = NULL;
 static const char CloudCityEscapePanelName[8] = "panel5";
 static const char CloudCityEscapeGas3[8] = "gas_3";

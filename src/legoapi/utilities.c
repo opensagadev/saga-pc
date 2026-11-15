@@ -105,7 +105,9 @@ static void ReflectionCopyMatrix(NUMTX *result, NUMTX *source) {
 }
 
 NUVEC v001 = {0.0f, 0.0f, 1.0f};
+NUVEC GizmoBlowupUnitScale = {1.0f, 1.0f, 1.0f};
 u32 LAYER_HOVERIGNORE = 0xffffffffu;
+u64 CharacterMaskAll = ~(u64)0;
 NURAND GAMERAND = {0x1f3ad27f};
 i32 qseed = 0x3039;
 i32 dco_id = -1;
@@ -231,6 +233,9 @@ i32 OnOrOutsidePlane(NUVEC *point, NUVEC *plane_point, NUVEC *normal) {
            0.0;
 }
 
+u16 temp_xrot = 0;
+u16 temp_zrot = 0;
+
 void FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
     u16 x_angle = (u16)NuAtan2D(normal->z, normal->y);
     NUVEC rotated;
@@ -247,6 +252,9 @@ void FindAnglesZX(NUVEC *normal, u16 *x_rotation, u16 *z_rotation) {
     }
     temp_xrot = (u16)-z_angle;
 }
+
+i32 i_temp_xrot = 0;
+u16 temp_yrot = 0;
 
 void FindAnglesXY(NUVEC *direction, u16 *x_rotation, u16 *y_rotation) {
     f32 horizontal_squared;
@@ -410,6 +418,8 @@ void RotateGameMatrix(NUMTX *matrix, i32 order, u16 x, u16 y, u16 z) {
             break;
     }
 }
+
+i32 (*MatrixReflection_CanOverrideFn)(void) = 0;
 
 i32 MatrixReflection(NUMTX *matrix, i32 axis, f32 plane, f32 override_plane, NUMTX *result) {
     switch (axis) {
@@ -1394,6 +1404,8 @@ void DrawRectRGBA(f32 x, f32 y, f32 width, f32 height, i32 colour, NUMTL *materi
     NuRndrRect2di(((x + 1.0) * 0.5 * 10240.0), ((2.0 - (y + 1.0)) * 0.5 * 3584.0), rect_width, rect_height, colour, material);
 }
 
+char **TexAnimScriptTable = 0;
+
 void InitTexAnimScripts(char **table) {
     char path[0x40];
     char **entry;
@@ -1412,6 +1424,8 @@ void InitTexAnimScripts(char **table) {
     }
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 15) & ~15u;
 }
+
+u32 texanimbits = 0;
 
 void SetTexAnimSignals() {
     NuTexAnimSetSignals(texanimbits);
@@ -1502,6 +1516,14 @@ i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *special, NUMTX *matrix) {
     NuMtxMulVU0(matrix, matrix, NuCameraGetMtx());
     return NuSpecialDrawAt(special, matrix);
 }
+
+PLAYERCHARACTERCONFIG *dco_gcdata = 0;
+CHARACTER_MODEL_LAYERS *dco_cmodel = 0;
+i32 dco_wearinghat = 0;
+i32 dco_reflectaxis = 0;
+u16 dco_prerotatez = 0;
+i32 dco_locatorposonly = 0;
+void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *) = 0;
 
 void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, nuhspecial_s *special, i32 locator, i32 second_locator,
                            NUMTX *joints, i32 reflect, u32 layers, NUMTX *rotation, NUVEC *translation, f32 alpha, f32 scale) {

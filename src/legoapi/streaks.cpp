@@ -11,10 +11,12 @@ extern "C" {
     NUMTL *streakmtl_ref = 0;
     STREAK_NODE *StreakNodesUsed = 0;
     STREAK_NODE *streaks_free = 0;
+    STREAK_HEADER *streakhdrs_free = 0;
 }
 static STREAK_HEADER *streakhdrs_used = 0;
 extern "C" {
     NUMTL *streakmtl = 0;
+    STREAK_HEADER StreakHeaders[32] = {0};
 }
 
 extern "C" {

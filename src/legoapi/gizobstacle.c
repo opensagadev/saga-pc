@@ -508,6 +508,7 @@ static void GizObstacle_ResetOnePrivate(WORLDINFO *world, GIZOBSTACLE *obstacle)
 }
 
 i32 ngizobstacletriggers = 0;
+i32 (*GizObstacleExcludeFn)(GIZOBSTACLE *, GAMEOBJECT *) = 0;
 
 void GizObstacles_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;

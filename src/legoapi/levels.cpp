@@ -698,10 +698,18 @@ extern "C" {
     }
 
     LEVELDATA_PC *levelconfig_ldata = 0;
+    LEVELDATA_PC *LDataList = 0;
+    LEVELDATA_PC *LastLData = 0;
+    LEVELDATA_PC *NewLData = 0;
     i32 LEVELCOUNT = 0;
+    LEVELDATA_PC *TITLES_LDATA = 0;
     LEVELDATA_PC *NEWGAME_LDATA = 0;
     LEVELDATA_PC *LOADGAME_LDATA = 0;
     LEVELDATA_PC *HUB_LDATA = 0;
+    LEVELDATA_PC *STATUS_LDATA = 0;
+    LEVELDATA_PC *CREDITS_LDATA = 0;
+    i32 Level = 0;
+    i32 LevelChange = 0;
     NUFPCOMJMP *Level_ConfigBeforeLoad_GameKeywords = 0;
     NUFPCOMJMP *Level_ConfigAfterLoad_GameKeywords = 0;
     LEVELSPLINE_PC *LevSplList = 0;
@@ -714,10 +722,25 @@ extern "C" {
     i32 MAXLDATA = 0x64;
     i32 levspl_i_start = -1;
     i32 levspl_i_startcam = -1;
+    i32 LEGOSPL_SPLIT = -1;
+    i32 PlayerStartSplineIndex = -1;
     i32 LEVOBJREF_FIRSTOBJ = -1;
     i32 LEVOBJREF_LASTOBJ = -1;
     i32 LEVOBJREF_FIRSTREFOBJ = -1;
     i32 LEVOBJREF_LASTREFOBJ = -1;
+    i32 LEGOOBJ_ICON_FRAME_NEUTRAL = -1;
+    i32 LEGOOBJ_ICON_FRAME_GREEN = -1;
+    i32 LEGOOBJ_ICON_FRAME_BLUE = -1;
+    i32 LegoObjectIconQuestion = -1;
+    i32 PCArcadeUnpairedIconModel = -1;
+    i32 CharKitModelId = -1;
+    i32 MiniKitModelId = -1;
+    i32 LEGOOBJ_FLOORTARGET = -1;
+    i32 LEGOOBJ_GRAPPLE_HOOK = -1;
+    LEGOOBJ_DEFAULT_LAST_COIN_STORAGE LEGOOBJ_DEFAULTLASTCOIN = {0xffffffffu};
+    // Two-entry reconstruction access view; the original full array extent is unknown.
+    // PC readers and reset producers access these two i32 entries; no original sizeof credit.
+    i32 LevSafePlatID[2] = {-1, -1};
     NUFPCOMJMP LevelConfig_BeforeLoad_GenericKeywords[5] = {
         {const_cast<char *>("mipmapmode"),         LC_BL_mipmapmode        },
         {const_cast<char *>("fix_strobing_anims"), LC_BL_fix_strobing_anims},

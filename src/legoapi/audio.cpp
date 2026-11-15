@@ -31,6 +31,8 @@ extern "C" {
         return 0;
     }
 
+    GAMEAUDIO *GameAudio = &GameAudioStorage;
+
     void GameAudio_Reset(void) {
         i32 i;
 
@@ -98,6 +100,8 @@ extern "C" {
         ids[*count] = id;
         ++*count;
     }
+
+    f32 ActionMusicStickyTimeout[2] = {1.0f, 6.0f};
 
     void GameAudio_SetActionMusicTimes(f32 initial_delay, f32 hold_time) {
         ActionMusicStickyTimeout[0] = initial_delay;
@@ -188,6 +192,8 @@ extern "C" {
         world->level_sfx[world->level_sfx_count].references = 1;
         world->level_sfx_count++;
     }
+
+    i32 TerrainLastChatterSfx = -1;
 
     void ChatterSfx(GAMEOBJECT *object, i32 sound, f32 interval) {
         if (TerrainChatterWait <= 0.0f && ParticlesPerSecond(2.0f, FRAMETIME) > 0 && object->dead == 0 &&
@@ -559,6 +565,12 @@ extern "C" {
     void (*ExtraDieSfxFn)(GAMEOBJECT *) = 0;
 }
 i32 ticktock = 0;
+extern "C" {
+    i32 BeenAttacked = 0;
+    i32 MusicInside = 0;
+    i32 (*CheckMusicOtherFn)(void) = NULL;
+}
+NuMusic music_man;
 
 void TickTockSfx(void) {
     if (ticktock != 0) {
@@ -718,6 +730,11 @@ extern "C" nusound_filename_info_s *ConfigureMusic(char *ignored_file, VARIPTR *
     return files;
 }
 
+extern "C" {
+    i32 CurrentMusicPair_Quiet = -1;
+    i32 last_currentmusicpair_quiet = -1;
+}
+
 extern "C" void GamePlayMusic(LEVELDATA_PC *level, i32 check, OPTIONSSAVE *options) {
     i32 other = MusicOther;
     i32 music_other;
@@ -834,6 +851,11 @@ extern "C" void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
         }
     }
     music_man.Process(FRAMETIME);
+}
+
+extern "C" {
+    i32 MusicActive = -1;
+    i32 MusicOnFlag = 1;
 }
 
 extern "C" void MusicClearAll() {

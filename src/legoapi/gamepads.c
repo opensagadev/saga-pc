@@ -114,6 +114,12 @@ void fun_0054a670(void) {
 void fun_0054a680(void) {
 }
 
+f32 PlayerPadPreviousSpeed[2] = {0};
+u16 PlayerPadPreviousAngle[2] = {0};
+// Two-entry reconstruction access views; all observed PC readers/producers select 0 or 1.
+// Original complete array capacities remain unknown; CSV sizes intentionally stay blank.
+f32 PlayerPadCurrentSpeed[2] = {0};
+
 f32 GamePad_Rotate(GAMEOBJECT *object) {
     GAMEPAD_PC *pad;
     i32 index;
@@ -300,6 +306,8 @@ i32 fun_0054ace0(i32 index, i32 require_ready) {
     return 1;
 }
 
+i32 (*GamePads_IgnoreInputFn)(void) = NULL;
+
 void PadOutPause(i32 index, WORLDINFO *world) {
     i32 menu;
     if (Paused) {
@@ -338,6 +346,9 @@ void PadOutPause(i32 index, WORLDINFO *world) {
         PauseGame(index);
     }
 }
+
+FRAME_PAD_PC *pActivePad = 0;
+i32 readpads_always = 0;
 
 i32 ReadPad(i32 port) {
     GAMEPAD_RUNTIME_INPUT_PC *gamepad = (GAMEPAD_RUNTIME_INPUT_PC *)&GamePadStorage[port];

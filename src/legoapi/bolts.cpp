@@ -655,6 +655,9 @@ extern "C" {
     }
 
     f32 BoltShootParameter = 0.1f;
+    BOLTTYPE_PC GlobalBoltType_Default = {
+        "null", 4.0f,   2.0f,   0.0f, 0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}}, -1, 0, 1, -1, 0, 0, NULL, NULL, NULL, NULL,
+        NULL,   {NULL}, {NULL}, 0,    {-1},   {-1}, {0}};
     BOLTSYS_PC *BoltSys = &GlobalBoltSystem_Default;
     static NUFPCOMJMP BoltType_ConfigKeywords[] = {
         {("name"),              BT_name             },

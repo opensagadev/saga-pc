@@ -36,7 +36,9 @@ extern "C" void DumpAreaData(i32 mode, i32 last_area);
 extern "C" void BackDrop_Dump(void);
 
 extern "C" {
+    i32 SuperStoryEpisode = -1;
     i32 pause_i_pad = -1;
+    i32 LEGOMENU_PAUSESYNC = -1;
     void (*PauseGame_ExtraCodeFn)(void) = NULL;
 }
 
@@ -98,6 +100,7 @@ extern "C" void NetworkSyncPause(void) {
 extern "C" {
 
     void (*ResumeGame_ExtraCodeFn)(void) = NULL;
+    i32 GAMEDEMO = 0;
 
     void ResumeGame(i32 play_sound) {
         Paused = 0;
@@ -137,6 +140,9 @@ extern "C" {
     }
 
     u32 SuperStoryScore = 0;
+    i32 NextArea_FreePlay = 0;
+    i32 save_paused = 0;
+    i32 FreePlay = 0;
     i32 SuperStory = 0;
 
     void InitSuperStory(i32 episode) {
@@ -152,6 +158,8 @@ extern "C" {
 
 extern "C" {
     i32 Arcade = 0;
+    i32 Paused = 0;
+    i32 NetPaused = 0;
 }
 
 extern "C" i32 InStory(void) {
@@ -234,6 +242,11 @@ extern "C" {
 
 extern "C" {
     i32 GOLDBRICKPOINTS = 0;
+    i32 SHOPGOLDBRICKS = 0;
+    i32 HubBothTrueJediGoldBricks = 0;
+    i32 EpisodeGoldBrickForSuperBonus = 0;
+    i32 EpisodeGoldBrickForSuperStory = 0;
+    i32 EpisodeGoldBrickForChallenge = 0;
     void (*Game_AllGoldBricksFn)(void) = NULL;
 }
 

@@ -20,9 +20,6 @@ extern "C" {
     };
     f32 PermCollectionScale = 0.600000024f;
     APICHARACTERMODELLIST FreePlayModelList[49] = {0};
-    i32 AreaMusic = 0;
-    AREA_LEVEL_LOAD LevelLoad[12] = {0};
-    i32 LevelLoadCount = 0;
     i32 netnewgame = 0;
     i16 dat_007f17bc = -1;
     i16 dat_007f17c8 = -1;
@@ -49,28 +46,10 @@ extern "C" {
 
 extern "C" {
     extern const f64 LightingSurfaceFadeSlope = -0.33399999141693115;
-    f32 Lighting_RedFlashRed = 2.0f;
-    f32 Lighting_BlueFlickerGreen = 2.0f;
-    f32 Lighting_BlueFlickerBlue = 2.0f;
 }
 
 extern "C" {
-    i32 HubBothTrueJediGoldBricks = 0;
-    i32 EpisodeGoldBrickForSuperStory = 0;
-    i32 EpisodeGoldBrickForSuperBonus = 0;
-    i32 EpisodeGoldBrickForChallenge = 0;
-    u16 TextCrawlRotateX = 13107;
-    u16 TextCrawlRotateY = 0;
-    u16 TextCrawlRotateZ = 0;
-    u32 TextCrawlRed = 0;
-    u32 TextCrawlGreen = 111;
-    u8 TextCrawlBlue = 255;
-}
-
-extern "C" {
-    i32 MENUSFX_MENUMOVE = -1;
     i32 MenuKeyboardPendingPc = 0;
-    u32 GAMEPAD_MENUSELECT = PAD_BUTTON_CROSS;
     u32 GAMEPAD_MENUCANCEL = PAD_BUTTON_TRIANGLE;
     u32 GAMEPAD_SELECT = PAD_BUTTON_SELECT;
     COLLECTION_BUILD_PC MiniKitCollection = {NULL, 0, 0, NULL, NULL, 0.0f};
@@ -88,32 +67,10 @@ extern "C" {
 }
 
 extern "C" {
-    char *apiGameName = "Game";
     extern char dat_007516c0[];
     char *apiGameSubTitle = dat_007516c0;
     char *apitxt_YES = "Yes";
     char *apitxt_NO = "No";
-    char *apitxt_RETRY = "Retry";
-    char *apitxt_SLOT = "Profile";
-    char *apitxt_PRESENT = "Present";
-    char *apitxt_EMPTY = "Empty";
-    char *apitxt_NOSPACE = "No Space";
-    char *apitxt_SAVEGAME = "Save Game";
-    char *apitxt_LOADGAME = "Load Game";
-    char *apitxt_DELETEGAME = "Delete Game";
-    char *apitxt_GAMESAVED = "Save Successful";
-    char *apitxt_GAMELOADED = "Game Loaded";
-    char *apitxt_DELETING = "Deleting data.";
-    char *apitxt_FORMATTING = "Formatting.";
-    char *apitxt_CORRUPTLOAD = "Load Corrupted";
-    char *apitxt_CONFIRMLOAD = "Confirm Load?";
-    char *apitxt_CONFIRMSAVE = "Confirm Save?";
-    char *apitxt_CONFIRMOVERWRITE = "Are you sure you wish to overwrite this save file?";
-    char *apitxt_DOYOUWANTTOABORT = "Do you want to cancel the Save?";
-    char *apitxt_DOYOUWANTTOABORTLOAD = "Do you want to cancel the Load?";
-    char *apitxt_DOYOUWANTTOABORTFORMAT = "Do you want to cancel the Format?";
-    char *apitxt_NEWSAVE = "New Save";
-    char *apitxt_CONFIRMDELETE = "Are you sure you wish to delete this save file?";
     char *apitxt_GAMESAVING = "Saving game...";
     char *apitxt_GAMELOADING = "Loading game...";
     char *apitxt_FAILEDTOLOAD = "Failed to Load";
@@ -180,7 +137,6 @@ extern "C" {
     i32 InitOnceEject = 0;
     i32 PcWindowQuit = 0;
     i32 NuHwShowCommand = 0;
-    i32 PcIntelShaderFallback = 0;
     i32 PcNoFocusPolicy = 0;
     char PcExecutableFilename[260] = {0};
 }
@@ -1342,12 +1298,6 @@ PC_INPUT_CONFIG_PC PcStaticInputConfigs[24] = {
       {0x01, 0x82},
       {0x01, 0x83}}}};
 PC_DI_CAPS PcKeyboardCapabilities = {};
-
-extern "C" {
-    NUGSCN *area_scene = NULL;
-    NUGSCN *vehicle_scene = NULL;
-    NUGSCN *big_icon_scene = NULL;
-}
 
 extern "C" char dat_007516c0[];
 extern "C" char dat_00753370[];
@@ -3289,7 +3239,6 @@ char *dat_00824be0[238] = {
     dat_007719dc, dat_007719d0, dat_007719c8, dat_007719bc};
 
 extern "C" {
-    i32 PlayerStartSplineIndex = -1;
 
     i32 hub_startoutsidebonusdoor_area = -1;
     char *TexAnimScriptNamesTitle[3] = {"coin", "coin_pause", 0};
@@ -3299,24 +3248,12 @@ extern "C" {
         "anakinkilling",  "anakinspod",    "boost1",    "boost2",      "boost3",      "boost4",     "gasganospod", "helpobi",
         "hologram1",      "hologramnoise", "play8",     "quidie",      "sebulbaspod", "sidius",     "crowd",       0};
 
-    NUVEC DoorCutCameraPosition0 = {0};
-
-    i32 LevMusicAction = 0;
-
-    i32 LevMusicAmbient = 0;
-
-    i32 LevMusicOtherAction = 0;
-
-    i32 LevMusicOtherAmbient = 0;
-
 }
 extern "C" {
 
     i32 LevPlatID[2] = {0};
 
     u8 LevLock[5] = {0};
-
-    i32 SuperStoryEpisode = -1;
 
     i32 hub_from_superstory = -1;
 
@@ -3336,17 +3273,9 @@ extern "C" {
     LEVEL_INST_ANIM_RESET_VIEW LevInstAnimReset = {0};
 }
 extern "C" {
-
-    i32 GizmoBlowupNameCount = 0;
-
-    char GizmoBlowupNameTable[32][32] = {0};
-}
-extern "C" {
     extern const IID PCSoundBuffer8IID = {
         0x6825a449, 0x7524, 0x4d82, {0x92, 0xf, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e}
     };
-
-    LEGOOBJ_DEFAULT_LAST_COIN_STORAGE LEGOOBJ_DEFAULTLASTCOIN = {0xffffffffu};
 
     PLAYER_BATARANG_SLOT_PC BatarangPackets[8] = {0};
 
@@ -3364,126 +3293,16 @@ extern "C" {
 
     i32 Hub_UsePlayerList = 0;
 
-    COLLECTION_AREA_SAVE_PC *Game_AreaSave = 0;
-
-}
-
-extern "C" {
-
-    DEBRIS_INFO_PC DebrisNullEffect = {
-        "null",
-        0,
-        0,
-        0,
-        0,
-        100,
-        60,
-        0.0f,
-        1.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0,
-        0,
-        0,
-        0,
-        40000.0f,
-        0.0f,
-        25.0f,
-        0.0f,
-        0.0f,
-        0.5f,
-        1.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        {0.0f, 0.0f, 0.0f},
-        {0.0f, 0.0f, 0.0f},
-        {0},
-        0.0f,
-        1.0f,
-        0,
-        0,
-        0,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f,
-        {{0.0f, 64, 64, 64, 0},
-          {1.0f, 0, 0, 0, 0},
-          {0.0f, 0, 0, 0, 0},
-          {0.0f, 0, 0, 0, 0},
-          {0.0f, 0, 0, 0, 0},
-          {0.0f, 0, 0, 0, 0},
-          {0.0f, 0, 0, 0, 0},
-          {0.0f, 0, 0, 0, 0}},
-        {{0.0f, 64.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        0.125f,
-        0.125f,
-        0.0f,
-        500.0f,
-        {{0.0f, 500.0f}, {1.0f, 500.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.0f, 500.0f}, {1.0f, 500.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        -360.0f,
-        360.0f,
-        {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        0.0f,
-        0.0f,
-        256.0f,
-        256.0f,
-        NULL,
-        0.0f,
-        {{0.0f, 0.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        0,
-        0,
-        3,
-        0,
-        4.0f,
-        {1.0f, 1.0f, 1.0f},
-        1.0f,
-        0.1f,
-        0.0f,
-        {{0.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
-        {-1, -1, -1, -1, -1, -1, -1, -1},
-        {-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0},
-        0,
-        0,
-        0,
-        0,
-        0.0f,
-        0.0f,
-        0.5f,
-        1.0f,
-        0
-    };
-
-    i32 globalframes = 0;
-
-    i32 DebrisArenaInitialized = 0;
-
 }
 
 struct SoundQueue;
 struct PC_SOUND_COMMIT;
-NuMusic music_man;
 
 // Startup and main-loop state; defaults follow the PC executable.
 i32 ChallengeMode = 0;
 i32 fade_draw_suppressed = 0;
-i32 GAMEDEMO = 0;
 i32 PLAYERCOUNT = 0;
-i32 Level = 0;
 i32 Area = -1;
-i32 last_area = 0;
-i32 NextArea_FreePlay = 0;
-i32 FreePlay = 0;
-i32 reset_area = 0;
-i32 level_already_loaded = -1;
 i32 party_cant_be_under_cover = 0;
 i32 ResetOldFStop = 0;
 i32 new_level_from_menu = 0;
@@ -3492,24 +3311,15 @@ i32 BonusWinner = -1;
 i32 BonusCoinTotal = 0;
 i32 NewMode = 0;
 i32 reset_load = 1;
-i32 other_level = -1;
 volatile i32 waiting_for_level = 0;
-i32 gone_through_door_to_new_level = 0;
 i32 MiniCutCam = 0;
 i32 CUTSTOPGAME = 0;
-i32 Paused = 0;
-i32 NetPaused = 0;
-i32 LevelChange = 0;
-i32 do_multiframe_update = 0;
 MAINFRAMECOUNTERS MainFrameCounters = {0};
 i32 hub_from_arcade = -1;
 i32 UsePlayerList = 0;
 
 extern "C" {
     u32 PCImplodeWordMask = 0xffffffff;
-    BOLTTYPE_PC GlobalBoltType_Default = {
-        "null", 4.0f,   2.0f,   0.0f, 0.125f, 1.0f, 0.1f, {{-1, -1, -1, 0}}, -1, 0, 1, -1, 0, 0, NULL, NULL, NULL, NULL,
-        NULL,   {NULL}, {NULL}, 0,    {-1},   {-1}, {0}};
     BOLTSYS_PC GlobalBoltSystem_Default = {
         &GlobalBoltType_Default, 1, NULL, Bolt_Debris_Default, Bolt_GetShootOrigin_Default, Bolt_GetShootDirection_Default, NULL, NULL,
     };
@@ -3536,9 +3346,6 @@ extern "C" {
     u16 GameObjectRotationPoliceCarId = 0xffff;
     u16 GameObjectRotationMowerId = 0xffff;
     u16 GameObjectRotationAtstId = 0xffff;
-    u16 temp_xrot = 0;
-    u16 temp_zrot = 0;
-    i32 VehicleArea = 0;
     char *NuBlankString = (char *)NuBlankStringValue;
     extern const f64 GameObjectNearFloorNoFloorHeight = 2000000.0;
     extern const f64 AIPathAngularScale = 10430.3779296875;
@@ -3611,21 +3418,15 @@ extern "C" {
         {NULL,              ProcessConditionFlowBox, CheckOutputConditionFlowBox},
         {NULL,              ProcessActionFlowBox,    CheckOutputActionFlowBox   },
     };
-    GAMEAUDIO *GameAudio = &GameAudioStorage;
     extern const char AIScriptFalse[6] = "false";
     i32 nufile_blkcnt = 1;
     PC_NUFILE_READBLOCK nufile_blkinfo[1024] = {0};
-    GAMEANIMPROGRESS gameanimsysprogress = {0};
     VARIPTR original_permbuffer_base = {0};
     char InitOnceCurrentDirectory[1] = {0};
     void *Game_NuPad_Store[2] = {0};
     void **Game_NuPad = 0;
-    char **TexAnimScriptTable = 0;
 
-    // PC debris timing uses a single-precision 1/60-second step.
-    f32 debris_time_increment = 1.0f / 60.0f;
     void *debris_cutoff_camera_vec = 0;
-    i32 debris_render_group = 0;
     f32 FRAMETIME = 0;
     extern const f32 NuPrimPS2XScale = 0.003125f;
     extern const f32 NuPrimPS2YScale = -1.0f / 112.0f;
@@ -3639,15 +3440,12 @@ extern "C" {
     extern const f64 NuQFntHalfScale = 0.5;
     GAMESAVE Game = {0};
     OPTIONSSAVE TempOptions = {0};
-    PLAYERPROGRESS PlayerProgress[8] = {0};
     i32 startnewgame_initiated = 0;
     i32 startnewgame = 0;
     i32 saveload_autosave = -1;
     extern const f32 PermLegalScale = 2.2f;
-    i32 readpads_always = 0;
     TIMER GlobalTimer = {0};
     NUGSCN *save_icon_scene = 0;
-    void (*GameBlowUpBlownUpFn)(void *blowup) = 0;
     f32 PodAvalancheShakeFrames = 111.0f;
     NUVEC PodAvalanchePeakPos = {-110.0f, -10.0f, -455.0f};
     f32 PodAvalancheShakeRange = 750.0f;
@@ -3806,13 +3604,7 @@ extern "C" {
     };
     PC_NUDATFILEINFO pc_dat_file_infos[20] = {0};
     PC_NUMEMFILE pc_memfiles[20] = {0};
-    AREA_DATA_PC *ADataList = 0;
-    i32 AREACOUNT = 0;
     CHEATSYSTEM_PC CheatSystem = {0};
-    u16 AREA_DEFAULTBONUSTIMETRIALTIME = 300;
-    u16 AREA_DEFAULTCHALLENGETIME = 600;
-    AREA_DATA_PC *LastAData = 0;
-    AREA_DATA_PC *HUB_ADATA = 0;
 
     extern char AreaFixUpName_Jedi[8] = "Jedi";
     extern char AreaFixUpName_Gungan[8] = "Gungan";
@@ -3902,7 +3694,6 @@ extern "C" {
     AREA_DATA_PC *DEATHSTARBATTLE_ADATA = 0;
     AREA_DATA_PC *HOTHBATTLE_ADATA = 0;
     LEVELDATA_PC *HOTHBATTLEA_LDATA = 0;
-    i32 disable_narrow_socks = 0;
     AREA_DATA_PC *HOTHESCAPE_ADATA = 0;
     AREA_DATA_PC *ASTEROIDCHASE_ADATA = 0;
     AREA_DATA_PC *DAGOBAH_ADATA = 0;
@@ -4035,21 +3826,9 @@ extern "C" {
     extern const f64 NuTimeBarLinesPerSecond = 15734.0;
 
     i16 PlayerList[8] = {0};
-    LEVELDATA_PC *LDataList = 0;
-    LEVELDATA_PC *LastLData = 0;
-    LEVELDATA_PC *NewLData = 0;
-    LEVELDATA_PC *STATUS_LDATA = 0;
-    LEVELDATA_PC *CREDITS_LDATA = 0;
-    i32 ScreenStillX = -32;
-    i32 ScreenStillY = -12;
-    i32 ScreenStillWidth = 10260;
-    i32 ScreenStillHeight = 3592;
     f32 WaitingForCharacterTime = 0;
     f32 MAXFRAMETIME = 0;
-    i32 save_paused = 0;
     i32 netclient = 0;
-    u8 snakebodies[0x440] = {0};
-    char gizaimessage_prefix[5] = "msg_";
     extern const char GizAIMessage_NameFormat[3] = "%s";
     LANGUAGEDATA Game_LanguageList[7] = {
         {1,  apitxt_ENGLISH},
@@ -4072,13 +3851,6 @@ extern "C" {
 
     char *txt_NULL = const_cast<char *>("?");
     char *txt_UNKNOWN = const_cast<char *>("?");
-    char *Text_PathEnglish = const_cast<char *>("english");
-    char *Text_PathFrench = const_cast<char *>("french");
-    char *Text_PathGerman = const_cast<char *>("german");
-    char *Text_PathItalian = const_cast<char *>("italian");
-    char *Text_PathSpanish = const_cast<char *>("spanish");
-    char *Text_PathDanish = const_cast<char *>("danish");
-    char *Text_PathJapanese = const_cast<char *>("japanese");
     char *apitxt_ENGLISH = const_cast<char *>("English");
     char *apitxt_FRENCH = const_cast<char *>("Fran\xc3\xa7"
                                              "ais");
@@ -4103,7 +3875,6 @@ extern "C" {
     extern const f64 NuTime_RefreshRate = 60.0;
     NUGSCN *edbits_base_scene = 0;
     void *edbits_base_terrain = 0;
-    struct nusound_filename_info_s *MusicInfo = 0;
     TERRAIN_SURFACE_PC TerSurface[32] = {
         {1.0f, 0,      0xffff},
         {1.0f, 65,     0xffff},
@@ -4197,12 +3968,7 @@ extern "C" {
         {1030, NULL,                     NULL,                    NULL,                      NULL,                 -1, -1, 0, 0, 0, 0},
     };
     i32 MenuSFX = -1;
-    void (*drawslotinfofn)(f32, f32, i32, i32) = APIMenuDrawGameState;
-    void (*drawslotsfn)(MENU *, f32) = APIMenuDrawMemCardSlots;
-    i32 MenuDrawDropShadows = 0;
     u8 MENUHEADERR = 0;
-    u8 MENUHEADERG = 0x7f;
-    u8 MENUHEADERB = 0xff;
     extern const f64 nu_wind_phase_scale = 1.0 / 256.0;
     extern const f32 PCKeyboardDefaultValue = 0.1f;
     f32 dme_sy = 1.0f;
@@ -4223,7 +3989,6 @@ extern "C" {
     OPTIONSSAVE *Game_OptionsSave = 0;
     f32 opts_sfx_wait = 1.5f;
     i32 opts_sfx_i = 0;
-    LEVELDATA_PC *TITLES_LDATA = 0;
 
     // The 23-record PC table: IDs, callbacks, remembered cursors, and prompt flags.
     void MenuUpdatePauseRestart(MENU *);
@@ -4284,9 +4049,7 @@ MSG win_message = {0};
 
 i32 CHARACTERBUFFERSIZE = 0x02800000;
 
-WORLDINFO WorldInfo[2] = {0};
 WORLDINFO *WORLD = &WorldInfo[0];
-WORLDINFO *LWORLD = &WorldInfo[0];
 
 i32 waiting_for_character = -1;
 
@@ -4398,7 +4161,6 @@ extern "C" {
     f32 GameDeflectPartSpeed = 5.0f;
 
     PODSPRINT_PC podsprint = {0};
-    NARROWSOCKEXCEPTION_PC *NarrowSockException = 0;
     AI_SCRIPT_FIRST_ACTION_PC ScriptProcessFirstTimeActionFn = 0;
 }
 
@@ -4417,7 +4179,6 @@ extern "C" {
     AI_CHARACTER_DISTANCE_PC GetMaxViewHeightFn = 0;
     AI_CHARACTER_DISTANCE_PC GetMinViewHeightFn = 0;
     AI_ORIGIN_POSITION_PC GetOriginPositionFn = 0;
-    i32 CHARPAK = 0;
 }
 
 extern "C" {
@@ -4442,12 +4203,6 @@ extern "C" {
 }
 
 extern "C" {
-// Two-entry reconstruction access view; the original full array extent is unknown.
-// PC readers and reset producers access these two i32 entries; no original sizeof credit.
-    i32 LevSafePlatID[2] = {-1, -1};
-}
-
-extern "C" {
     i16 id_CLONEWALKER = -1;
     i16 id_TAUNTAUN = -1;
     i16 id_FLASHSPEEDER = -1;
@@ -4456,16 +4211,10 @@ extern "C" {
     i16 id_GYROCOPTER = -1;
     i16 id_LUKESKYWALKERDAGOBAH = -1;
     i16 id_ATAT = -1;
-    i32 DEFAULT_PLAYERHITPOINTS = 8;
-    f32 TOGGLEHOLDTIME = 1.0f;
 }
 
 extern "C" {
     AI_BIG_JUMP_TO_DESTINATION_PC AIBigJumpToDestinationFn = 0;
-}
-
-extern "C" {
-    i32 BonusArea = 0;
 }
 
 extern "C" {
@@ -4477,7 +4226,6 @@ extern "C" {
 
 extern "C" {
     u8 aicreature_sets_alive[16] = {0};
-    GAMEOBJECT *LevGameObject[8] = {0};
 }
 
 extern "C" {
@@ -4500,12 +4248,7 @@ extern "C" {
 }
 
 extern "C" {
-// Two-entry reconstruction access views; all observed PC readers/producers select 0 or 1.
-// Original complete array capacities remain unknown; CSV sizes intentionally stay blank.
-    f32 PlayerPadCurrentSpeed[2] = {0};
-    f32 PlayerPadPreviousSpeed[2] = {0};
     u16 PlayerPadCurrentAngle[2] = {0};
-    u16 PlayerPadPreviousAngle[2] = {0};
 }
 
 extern "C" {}
@@ -4514,10 +4257,6 @@ extern "C" {
     i32 GUNSHIPAHACK = 2;
     i32 podrace_section = 0;
     i32 newgamecam = 0;
-    i32 GAMEPAD_DUP = PAD_BUTTON_UP;
-    i32 GAMEPAD_DDOWN = PAD_BUTTON_DOWN;
-    i32 GAMEPAD_DLEFT = PAD_BUTTON_LEFT;
-    i32 GAMEPAD_DRIGHT = PAD_BUTTON_RIGHT;
     i32 GAMEPAD_LIFT = PAD_BUTTON_R1;
     f32 OFFSCREEN_CATCHUP_TIME = 1.0f;
 }
@@ -4569,12 +4308,7 @@ extern "C" {
     i16 id_MINISTARDESTROYER = -1;
     u32 LEGO_AIPATHCNX_FORGOODIES = 0;
     u32 LEGO_AIPATHCNX_FORBADDIES = 0;
-    NUVEC v100 = {1.0f, 0.0f, 0.0f};
-    NUVEC v010 = {0.0f, 1.0f, 0.0f};
-// Eight queue slots are a source access view; the complete original extent is unknown.
-    u32 LevelCompletionFallbackFlagPC = 0;
     NUVEC ShadNorm = {0};
-    PC_SURFACE_MASK GetSurfaceInfoRuntimeMask = {0};
     PC_SURFACE_MASK GetSurfaceInfoDefaultMask = {0x20};
 }
 
@@ -4624,25 +4358,17 @@ extern "C" {
 
 extern "C" {
     i32 turret_gizmotype_id = -1;
-    i32 blowup_gizmotype_id = -1;
     i32 obstacle_gizmotype_id = -1;
 }
 
 extern "C" {}
 
 extern "C" {
-    f32 HIGHJUMPHEIGHT = 1.14f;
     TIMER AreaTimer = {0};
     i32 OldBonusScore[2] = {0};
     i32 BonusScore[2] = {0};
     GAMEOBJECT *BombGenerator_PlayerBomb[2] = {0};
     i32 Lap = 0;
-    AREA_GLOBALS_PC AreaGlobals = {0};
-}
-
-extern "C" {
-    i32 BeenAttacked = 0;
-    i32 Door_NextSock = -1;
 }
 
 extern "C" {
@@ -4672,7 +4398,6 @@ extern "C" {
     NUGSCN *edgra_page_scene[8] = {0};
     NUMTX *edgra_page_matrix_stack[8] = {0};
     NUVEC edgra_cam_pos = {0};
-    i32 edbits_editmode = 0;
     NUMTX *edgra_mtxbuffer = 0;
     NUVEC *edgra_vecbuffer = 0;
     void *edgra_free_vecbuffer = 0;
@@ -4692,19 +4417,11 @@ extern "C" {
                              NULL, NULL, NULL,           0x73617267, edgraProc,  edgraRender, NULL};
     i32 edgra_clumpthin = 1;
     i32 edgra_elementthin = 1;
-    f32 globaltime = 0;
-    f32 panelglobaltime = 0;
-    i32 maxdebkeys = 0;
-    i16 *freedebkeys = 0;
 }
 
 extern "C" {
     i32 edgra_units_used = 0;
-    i32 debrischunks = 256;
-    i32 debrischunksglass = 32;
     i32 freechunkcontrolsptr = 0;
-    volatile i32 debris_control_stack_lock = 0;
-    DEBRIS_PART_HEADER_PC **DmaDebTypes = 0;
 }
 
 extern "C" {
@@ -4712,19 +4429,12 @@ extern "C" {
 }
 
 extern "C" {
-    i32 forced_debris_thinning = 0;
     f32 debris_thinning_level = 1.0f;
-    i32 part_emits_used = 0;
-    i32 PCDeviceHardwareVertexProcessingPC = 0;
     u8 PCFrameLoadingYieldEnabledPC = 0;
 }
 
 extern "C" {
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
-}
-
-extern "C" {
-    i32 part_types_used = 0;
 }
 
 extern "C" {
@@ -4819,8 +4529,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 DebrisSuspendDrawObjectSwitch = -1;
-    f32 debris_render_scale = 1.0f;
     void edanimInit(void);
     void edanimClose(void);
     void edanimEnter(void);
@@ -4828,8 +4536,6 @@ extern "C" {
     void edanimRender(void);
     ed_module_s edanimdesc = {NULL, NULL, "Anim Editor", edanimInit, edanimClose, edanimEnter,  NULL,
                               NULL, NULL, NULL,          0x6d696e61, edanimProc,  edanimRender, NULL};
-    NUMTX xzfacingmtx = {0};
-    i32 g_renderingDebris = 0;
     i32 edbits_editor_state = 0;
 }
 
@@ -4838,8 +4544,6 @@ extern "C" {
     f32 TerrainPlayerBikeMovementScale = 15.0f;
     f32 TerrainPlayerPlatConnectTolerance = 0.01f;
     i32 TerrainPlayerShadowFix = 1;
-    i32 MAXBLOWUPRANDSPANG = 60;
-    void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
 }
 
 extern "C" {
@@ -4847,11 +4551,8 @@ extern "C" {
     char ScoreCounterName[8] = "Counter";
     char PickupCoinsLandName[10] = "CoinsLand";
     u8 CoinTab[4] = {0, 1, 2, 3};
-    i32 TerrainLastChatterSfx = -1;
     ADD_GAME_MESSAGE_PC AddGameMsg_Default = {NULL, &v000, &v000, 1.0f, 1.0f, 255,  255,  255,  128,  0,  1.0f, 0.0f, 0, -1,
                                               NULL, 0,     0.0f,  0.0f, NULL, NULL, NULL, NULL, NULL, -1, 0,    255,  0};
-    f32 COINMSGTIME = 1.0f;
-    i32 PCArcadeUnpairedIconModel = -1;
     i16 BigJumpLandFallback = -1;
     i16 BigJumpLandSecondary = -1;
     i16 BigJumpLandPreferred = -1;
@@ -4860,7 +4561,6 @@ extern "C" {
     i32 MenuValidated = 0;
     f32 DoubleScoreTime = 0;
     i32 LookAtBoth = 0;
-    i32 PlayPlanesUseRenderMtx = 0;
     f32 AddCoinDelay[2] = {0};
 }
 
@@ -4911,15 +4611,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 MiniKitModelId = -1;
-}
-extern "C" {
-    i32 CharKitModelId = -1;
-}
-extern "C" {
-    NEW_MINI_PIECE NewMiniPiece[10] = {0};
-}
-extern "C" {
     u16 PowerUp_PanelYRot[2] = {0};
 }
 extern "C" {
@@ -4967,9 +4658,6 @@ extern "C" {
 }
 extern "C" {
     f32 brickimpactwait = 0;
-}
-extern "C" {
-    char KillPartsLegoSingleText[11] = "LegoSingle";
 }
 extern "C" {
     KILLPARTS_BIKE KillPartsBikes[4] = {0};
@@ -5047,14 +4735,8 @@ extern "C" {
 }
 
 extern "C" {
-    i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
-}
-
-extern "C" {
 
     i16 id_CATAPULT = -1;
-
-    i16 id_FIRETRUCK = -1;
 }
 
 extern "C" {
@@ -5479,10 +5161,6 @@ extern "C" {
 
     LEVELDATA_PC *MOSEISLEYC_LDATA = 0;
 
-    i32 GizmoBlowUpOpponent_Behind = 0;
-
-    f32 GizmoBlowUpOpponent_Range2 = 0;
-
     i32 (*UsingExtraActionsFn)(GAMEOBJECT *) = 0;
 }
 
@@ -5531,16 +5209,10 @@ extern "C" {
 }
 
 extern "C" {
-    i32 CutSceneSingleStreamBuffer = 2;
-}
-
-extern "C" {
 
     i16 id_DODGEM = -1;
 
     i16 id_SNOWMOB = -1;
-
-    i16 id_TRACTOR = -1;
 
     u32 LswForceUsedHintFlags = 0;
 
@@ -5551,13 +5223,7 @@ extern "C" {
 
 extern "C" {
 
-    i32 drawcharicon_i_panel = -1;
-
-    i32 LegoObjectIconQuestion = -1;
-
     NUGSCN *things_scene = 0;
-
-    NUGSCN *backdrop_scene = 0;
 
     i32 RenderHubFromCutscenePlayer = 0;
 }
@@ -5567,8 +5233,6 @@ extern "C" {
     NUVEC LightingUnitDirectionPc = {1.0f, 0.0f, 0.0f};
 
     NUVEC RtlUnitDirectionYPc = {0.0f, 1.0f, 0.0f};
-
-    NUVEC RtlUnitDirectionZPc = {0.0f, 0.0f, 1.0f};
 }
 
 extern "C" {
@@ -5578,33 +5242,8 @@ extern "C" {
 }
 
 extern "C" {
-    i32 g_enableButtonPrompts = 1;
-
-    u8 MENUNORMALR = 255;
-
-    u8 MENUNORMALG = 127;
 
     u8 MENUNORMALB = 0;
-}
-
-extern "C" {
-    CUT_DRAW_SETTINGS CutSceneDrawSettings = {-1, -1, -1, -1, 0};
-
-    i32 (*MatrixReflection_CanOverrideFn)(void) = 0;
-
-    PLAYERCHARACTERCONFIG *dco_gcdata = 0;
-
-    CHARACTER_MODEL_LAYERS *dco_cmodel = 0;
-
-    i32 dco_wearinghat = 0;
-
-    i32 dco_reflectaxis = 0;
-
-    u16 dco_prerotatez = 0;
-
-    i32 dco_locatorposonly = 0;
-
-    void (*DisguiseAdjustFn)(i32, i32, NUVEC *, NUVEC *) = 0;
 }
 
 extern "C" {
@@ -5659,18 +5298,11 @@ extern "C" {
 }
 
 extern "C" {
-
-    i32 (*GizObstacleExcludeFn)(GIZOBSTACLE *, GAMEOBJECT *) = 0;
-}
-
-extern "C" {
     i32 gExplodeInitialised = 1;
 
     u32 GAMEPAD_TOGGLELEFT = PAD_BUTTON_L2 | PAD_BUTTON_L1;
 
     u32 GAMEPAD_TOGGLERIGHT = PAD_BUTTON_R2 | PAD_BUTTON_R1;
-
-    f32 TOGGLEREPEATTIME = 0.25f;
 
     i32 LEGOHINT_FREEPLAYTOGGLE = -1;
 
@@ -5687,10 +5319,6 @@ extern "C" {
     u16 implode_right[0x3fb] = {0};
 
     u32 implode_origsize = 0;
-}
-
-extern "C" {
-    NUVEC GizmoBlowupUnitScale = {1.0f, 1.0f, 1.0f};
 }
 
 struct PC_OGG_CACHE_RECORD;
@@ -5715,16 +5343,11 @@ extern "C" {
 }
 
 extern "C" {
-    i32 i_temp_xrot = 0;
-}
-
-extern "C" {
     const NUVEC NuPortalBoundsOne = {1.0f, 1.0f, 1.0f};
     const NUVEC NuPortalBoundsMinusOne = {-1.0f, -1.0f, -1.0f};
 }
 
 extern "C" {
-    i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
     i32 BoltBlockContext = -1;
     i16 BoltDeactivatedAction = -1;
 }
@@ -5733,11 +5356,6 @@ extern "C" {
     i16 GrabMachineId = -1;
     i16 GrabMagnetId = -1;
     i16 RobotBaseId = -1;
-}
-
-extern "C" {
-    i32 PartGeneralPage = 0;
-    i32 PartLevelPage = 1;
 }
 
 extern "C" {
@@ -5797,7 +5415,6 @@ extern "C" {
 extern "C" {
     f32 LevelNameMul = 0.0f;
     f32 LevelNameTime = 0.0f;
-    u32 texanimbits = 0;
 }
 
 extern "C" {
@@ -5838,10 +5455,7 @@ extern "C" {
     i32 saveload_cardchanged = 0;
     i32 saveload_autosavedisabled = 0;
     i32 saveload_slotused[6] = {0};
-    i32 MENUSFX_MENUBACK = -1;
     i32 saveload_freespace = 2048;
-    i32 MENUSFX_MENUSELECT = -1;
-    i32 MENUSFX_MENUNOENTRY = -1;
     i32 saveload_filecorrupt = 0;
     u8 MENUENTRYR = 0;
     u8 MENUENTRYG = 127;
@@ -5876,7 +5490,6 @@ extern "C" {
     i16 LEGOACT_EXTRA_JUMP2 = -1;
     i16 LEGOACT_EXTRA_LAND = -1;
     f32 SLAMJUMPSPEED = 3.0f;
-    u8 MENUWARNR = 255;
     u8 MENUWARNG = 0;
     u8 MENUWARNB = 0;
 }
@@ -5893,8 +5506,6 @@ extern "C" {
     i16 LEGOACT_LEDGE_IDLE = -1;
     i16 LEGOACT_LEDGE_LEFT = -1;
     i16 LEGOACT_LEDGE_RIGHT = -1;
-    i32 Grapple_RopeSwingsAvailable = 0;
-    i32 LEGOHINT_GRAPPLE = -1;
     i16 LEGOACT_GRAPPLE_IDLE = -1;
     i16 LEGOACT_GRAPPLE_UP = -1;
     i16 LEGOACT_GRAPPLE_DOWN = -1;
@@ -5919,8 +5530,6 @@ struct PC_GEOMETRY_OUTPUT;
 struct PC_GEOMETRY_PUBLISH_RECORD;
 
 extern "C" {
-    i32 LEGOSPL_SPLIT = -1;
-    i32 other_level_override = -1;
     char *LeverOutputDownNamePtr = dat_0075ac34;
     TIMER JoinInTimer = {0};
     i16 id_PRINCESSLEIABOUSHH = -1;
@@ -6040,10 +5649,6 @@ extern "C" {
 }
 
 extern "C" {
-    const char *PortalRegistrationPrefix = "portal_";
-}
-
-extern "C" {
     i16 id_BARMAN = -1;
 }
 
@@ -6072,9 +5677,7 @@ extern "C" {
     u8 CheatC3poBitsEnabled = 0;
     i32 deathstar_hold_count = 0;
     i32 CruiserD_LiftChase = 0;
-    i32 (*CheckMusicOtherFn)(void) = NULL;
     i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *) = NULL;
-    f32 global_pulse = 0.0f;
     TIMER ChallengeTimer = {0};
 }
 
@@ -6133,8 +5736,6 @@ extern "C" {
 
 extern "C" {
     i32 (*AlternateGameCallback)(GAMEOBJECT *object) = NULL;
-    i32 (*GamePads_IgnoreInputFn)(void) = NULL;
-    void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
     i32 (*Hub_PanelBusyFn)(void) = NULL;
     const char *InitAsciiUp = "\xC2\xAC";
     const char *InitAsciiLeft = "<";
@@ -6165,13 +5766,9 @@ extern "C" {
     i32 LEGOMENU_TITLES = -1;
     i32 LEGOMENU_NEWGAME = -1;
     i32 LEGOMENU_PAUSEMAIN = -1;
-    i32 LEGOMENU_PAUSESYNC = -1;
     i32 LEGOMENU_CREDITS = -1;
     i32 LEGOCAMMODE_DOORCUT = -1;
     i32 LEGOCAMMODE_OBSTACLE = -1;
-    i32 LEGOOBJ_ICON_FRAME_NEUTRAL = -1;
-    i32 LEGOOBJ_ICON_FRAME_GREEN = -1;
-    i32 LEGOOBJ_ICON_FRAME_BLUE = -1;
     i32 LegoGameDebrisSplash = -1;
     i32 POINTS_PER_CHARACTER = 0;
     i32 POINTS_PER_SUPERSTORY = 0;
@@ -6186,7 +5783,6 @@ extern "C" {
     i32 POINTS_PER_CHEAT = 0;
     i32 POINTS_PER_HINT = 0;
     i32 POINTS_PER_GOLDBRICK = 0;
-    i32 SHOPGOLDBRICKS = 0;
     i16 ShopHintTextIds[15] = {630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 640, 641, 642, 643, -1};
     i32 PlayerHitPointsTwoHearts = 1;
     i32 ConvertOldPickups = 0;
@@ -6196,8 +5792,6 @@ extern "C" {
        endpoints; MenuDrawPauseRestart/Exit and InitGameAfterConfig address all eight. */
     u8 AlternateHudColourBytes[8] = {255, 191, 191, 95, 128, 255, 31, 128};
     u8 AlternateHudRgb[3] = {0, 0, 0};
-    i32 LEGOOBJ_FLOORTARGET = -1;
-    i32 LEGOOBJ_GRAPPLE_HOOK = -1;
     i16 TechnoDefaultObject = 85;
 }
 
@@ -6216,14 +5810,6 @@ extern "C" {
 }
 
 /* Verified DWORD working inputs; original owning extents remain unknown. */
-
-extern "C" {
-    f32 ActionMusicStickyTimeout[2] = {1.0f, 6.0f};
-}
-
-extern "C" {
-    FRAME_PAD_PC *pActivePad = 0;
-}
 
 extern "C" {
     i32 NuFile_SwapEndianOnWrite = 0;
@@ -6298,12 +5884,7 @@ extern "C" {
 }
 
 extern "C" {
-    u32 EXBLOWUPFLAGS = 0;
-}
 
-extern "C" {
-
-    u64 CharacterMaskAll = ~(u64)0;
     i32 FalconDebKey[2] = {-1, -1};
 
     TIMER PauseTimer = {0};
@@ -6313,46 +5894,13 @@ extern "C" {
     i32 reset_reimport = 0;
 
     i32 come_from_an_editor = 0;
-
-    void *newmode_cutinfo = 0;
-}
-
-extern "C" {
-
-    i32 MusicActive = -1;
-
-    i32 MusicInside = 0;
-
-    i32 MusicOnFlag = 1;
-
-    i32 CurrentMusicPair_Quiet = -1;
-
-    i32 last_currentmusicpair_quiet = -1;
 }
 
 extern "C" {
     i32 radios_playing = 0;
 }
 
-extern "C" {
-    i16 id_PENGUIN_GOON_GUN = -1;
-
-    i16 id_JOKER_GOON_GUN = -1;
-
-    i16 id_RIDDLER_GOON_GUN = -1;
-
-    i16 id_PENGUIN_GOON = -1;
-
-    i16 id_JOKER_GOON = -1;
-
-    i16 id_RIDDLER_GOON = -1;
-}
-
 extern "C" {}
-
-extern "C" {
-    struct NUGSCN_s *FadeLoop_ObjScene = 0;
-}
 
 extern "C" {}
 
@@ -6463,16 +6011,6 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    i32 gizturret_test_ang = 3640;
-
-    f32 gizturret_rapid_fire_rate = 0.2f;
-}
-
-extern "C" {
-    u16 temp_yrot = 0;
-}
-
-extern "C" {
 
     struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
 
@@ -6514,15 +6052,11 @@ extern "C" {
 
 extern "C" {
 
-    struct eduimenu_s *edanim_soundtype_menu = 0;
-
     char edbits_level_save_directory[256] = {0};
 
     char edbits_level_save_name[256] = {0};
 
     char edbits_level_save_extension[256] = {0};
-
-    struct eduimenu_s *edanim_active_menu = 0;
 }
 
 extern "C" {
@@ -6628,7 +6162,6 @@ extern "C" {
 }
 
 extern "C" {
-    struct eduimenu_s *edanim_bouncy_menu = 0;
 
     i32 edbits_cubecount = 0;
 
@@ -6636,15 +6169,7 @@ extern "C" {
 
     i32 edmain_cursor_enabled = 0;
 
-    struct eduimenu_s *edanim_localsound_menu = 0;
-
-    struct eduimenu_s *edanim_localsoundtype_menu = 0;
-
     i32 edanim_nearest_sound = 0;
-}
-
-extern "C" {
-    struct eduimenu_s *edanim_options_menu = 0;
 }
 
 extern "C" {
@@ -6656,8 +6181,6 @@ extern "C" {
 extern "C" {
 
     i32 edanim_nearest_particle = 0;
-
-    struct eduimenu_s *edanim_sound_menu = 0;
 }
 
 extern "C" {
@@ -6684,10 +6207,6 @@ extern "C" {
     f32 sebulba_lerpf = 0.5f;
 
     i32 do_mine = 0;
-}
-
-extern "C" {
-    i32 gizaimessage_gizmotype_id = -1;
 }
 
 extern "C" {
@@ -6813,22 +6332,6 @@ extern "C" {
 
     f32 CamDewbackLift = 1.5f;
 
-    NUVEC PlayPlaneCorners[4] = {
-        {-0.85f, 0.85f,  1.0f},
-        {0.85f,  0.85f,  1.0f},
-        {-0.85f, -0.85f, 1.0f},
-        {0.85f,  -0.85f, 1.0f}
-    };
-
-    f32 PP_dist = 5.0f;
-
-    f32 GameCamShakeRadius = 0.1f;
-
-    f32 GameCamShakeRetarget = 0.025f;
-
-    f32 GameCamShakeDirSeek = 10.0f;
-
-    f32 GameCamShakeOffsetSeek = 2.0f;
     // Frontend strings: language-selected index/string tables.
 
     extern const char dat_0075f2c0[3] = "No";
@@ -7708,10 +7211,6 @@ extern "C" {
 }
 
 extern "C" {
-    i32 RopeCurveSubdivisions = 3;
-}
-
-extern "C" {
     char AIGizmoNameBuffer[16] = {0};
 }
 
@@ -7779,33 +7278,6 @@ extern "C" {
                                  &dat_00880f30, &dat_00880f34,    &dat_00880f38, &dat_00880f3c, &dat_00880f40, &dat_00880f48, &dat_00880f4c,
                                  &dat_00880f50, &dat_00880c80,    &dat_00880c7c, &dat_00880c74, &dat_00880c78, &dat_00880cb0, &dat_008811c0,
                                  &dat_008811bc, &PcControlTextId, &dat_008811b0};
-    PC_CONTROL_ITEM PcControlItems[25] = {
-        {0,   0,   7,   1, 0.0f},
-        {0,   1,   8,   2, 0.0f},
-        {0,   2,   9,   3, 0.0f},
-        {0,   3,   10,  4, 0.0f},
-        {0,   12,  11,  0, 0.0f},
-        {0,   13,  12,  0, 0.0f},
-        {0,   14,  13,  0, 0.0f},
-        {0,   15,  14,  0, 0.0f},
-        {0,   16,  16,  0, 0.0f},
-        {0,   18,  15,  0, 0.0f},
-        {0,   23,  17,  0, 0.0f},
-        {0,   4,   18,  8, 0.0f},
-        {0,   5,   19,  8, 0.0f},
-        {0,   6,   20,  8, 0.0f},
-        {0,   7,   21,  8, 0.0f},
-        {0,   8,   36,  8, 0.0f},
-        {0,   10,  37,  8, 0.0f},
-        {0,   11,  38,  8, 0.0f},
-        {0,   9,   39,  8, 0.0f},
-        {2,   0,   22,  0, 0.0f},
-        {4,   0,   3,   0, 0.0f},
-        {4,   0,   40,  0, 0.0f},
-        {4,   0,   0,   0, 0.0f},
-        {4,   0,   1,   0, 0.0f},
-        {255, 255, 255, 0, 0.0f},
-    };
 
     i16 PcControlTextId = 0;
 }
@@ -8131,11 +7603,6 @@ extern "C" {
 extern "C" {}
 
 extern "C" {
-    STREAK_HEADER *streakhdrs_free = 0;
-    STREAK_HEADER StreakHeaders[32] = {0};
-}
-
-extern "C" {
     f32 fakeanimframe[1] = {0};
     NUVEC boulder_old_pos[2] = {0};
     f32 boulder_wait = 0.0f;
@@ -8321,4 +7788,8 @@ extern "C" {
 
 extern "C" {
     /* DDS image used for textures that fail to resolve (128x128, 0x2080 bytes). */
+}
+
+extern "C" {
+    NEW_MINI_PIECE NewMiniPiece[10] = {0};
 }

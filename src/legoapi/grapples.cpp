@@ -211,6 +211,9 @@ static void Grapple_ResetPosition(GRAPPLE_MOTION *grapple, NUVEC *offset, NUVEC 
     }
 }
 
+extern "C" {
+    i32 RopeCurveSubdivisions = 3;
+}
 static NUVEC GrapplePointOffset = {0.0f, -0.023f, 0.169f};
 extern "C" {
     i32 PlayerGrappleSwingModePc = 1;
@@ -811,7 +814,9 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
 
 extern "C" {
     char *GizmoRegistryGrapplesNamePtrPc = "Grapple";
+    i32 LEGOHINT_GRAPPLE = -1;
     GRAPPLE_DYNAMIC DynamicGrapplePc[4] = {0};
+    i32 Grapple_RopeSwingsAvailable = 0;
     static ADDGIZMOTYPE_PC GizmoRegistryGrapplesAddTypePc = {0};
 
     ADDGIZMOTYPE_PC *Grapples_RegisterGizmo(i32 type_id) {

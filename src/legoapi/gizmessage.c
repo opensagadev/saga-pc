@@ -31,6 +31,8 @@ void ClearGizAIMessageSys(GIZAIMESSAGESYS *sys) {
     }
 }
 
+char gizaimessage_prefix[5] = "msg_";
+
 GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMESSAGE *message) {
     char local[32];
     NULISTLNK *node = NULL;
@@ -80,6 +82,8 @@ static i32 GizAIMessage_GetMaxGizmos(void *unused0) {
 }
 
 GIZAIMESSAGESYS *gizaimessagesys = 0;
+
+i32 gizaimessage_gizmotype_id = -1;
 
 void GizAIMessage_AddGizmos(GIZMOSYS_PC *giz, i32 type, void *world, void *data) {
     GIZAIMESSAGE *message;

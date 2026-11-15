@@ -158,6 +158,8 @@ typedef struct {         // size 0x48
 } BLOWUP_ANIM_FIRST_DRAW;
 
 char SpinnerOutputBuffer[14] = "100% Complete";
+i32 blowup_gizmotype_id = -1;
+i32 MAXBLOWUPRANDSPANG = 60;
 char TurretOutputBuffer[32] = {0};
 char *GizmoRegistryGizTurretsNamePtrPc = "GizTurret";
 
@@ -2372,6 +2374,16 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
 }
 
 char *GizmoRegistryNewBlowupNamePtrPc = "blowup";
+i32 GizmoBlowupNameCount = 0;
+u32 EXBLOWUPFLAGS = 0;
+char GizmoBlowupNameTable[32][32] = {0};
+i32 GizmoBlowUpOpponent_Behind = 0;
+f32 GizmoBlowUpOpponent_Range2 = 0;
+void (*GameBlowUpBlownUpFn)(void *blowup) = 0;
+i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32) = 0;
+void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target) = NULL;
+void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *) = 0;
+i32 (*GizmoBlowUp_NoTargetFn)(WORLDINFO *, GAMEOBJECT *) = 0;
 static ADDGIZMOTYPE_PC GizmoRegistryNewBlowupAddTypePc = {0};
 
 ADDGIZMOTYPE_PC *NewBlowup_RegisterGizmo(i32 type_id) {

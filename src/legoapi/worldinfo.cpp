@@ -125,6 +125,8 @@ extern "C" {
         return WORLD;
     }
 
+    WORLDINFO *LWORLD = &WorldInfo[0];
+
     WORLDINFO *WorldInfo_CurrentlyLoading(void) {
         return LWORLD;
     }
@@ -286,6 +288,8 @@ extern "C" {
             world->secondary_gscn = NULL;
         }
     }
+
+    i32 other_level = -1;
 
     static i32 LevelStreamingChooseSplit(WORLDINFO *world, NUVEC *position, i32 first, i32 second) {
         NUGSPLINE *split;
@@ -589,6 +593,11 @@ extern "C" {
     void (*WorldInfo_InitMenuFn)(WORLDINFO *, i32 *, i32 *) = 0;
     void (*WorldInfo_InitLastFn)(WORLDINFO *) = 0;
 
+    i32 LevMusicOtherAmbient = 0;
+    i32 LevMusicAmbient = 0;
+    i32 LevMusicOtherAction = 0;
+    i32 LevMusicAction = 0;
+
     void WorldInfo_Init(WORLDINFO *world) {
         void (*init_fn)(WORLDINFO *);
         i32 menu_id = -1;
@@ -729,6 +738,8 @@ extern "C" {
         }
     }
 
+    i32 level_already_loaded = -1;
+
     void WorldInfo_ClearAllIfScreenFaded(void) {
         if (LastLData == TITLES_LDATA || new_level_from_menu != 0 || Area != last_area || BGLOAD == 0) {
             WorldInfo_Reset(&WorldInfo[0], -1);
@@ -762,6 +773,9 @@ extern "C" {
     volatile i32 abort_load = 0;
     f32 WaitingForLevelTime = 0;
     i32 no_more_loads = 0;
+    WORLDINFO WorldInfo[2] = {0};
+
+    i32 other_level_override = -1;
 
     void LevelStreaming_Update(WORLDINFO *world) {
         CUTINFO *cut;

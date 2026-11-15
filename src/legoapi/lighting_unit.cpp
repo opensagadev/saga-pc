@@ -638,6 +638,9 @@ extern "C" void fun_005969c0(void *set) {
 }
 
 extern "C" {
+    f32 Lighting_RedFlashRed = 2.0f;
+    f32 Lighting_BlueFlickerGreen = 2.0f;
+    f32 Lighting_BlueFlickerBlue = 2.0f;
     f32 ShadowLightSplitScale = 0.9f;
     f32 ShadowLightWarp = 5.0f;
     NUVEC ShadowLightUp = {0.0f, 1.0f, 0.0f};

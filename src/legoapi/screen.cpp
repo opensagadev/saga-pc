@@ -47,6 +47,10 @@
 static NUMTL *pause_rndr_mtl = 0;
 static i32 pause_rt = 0;
 extern "C" {
+    // Eight queue slots are a source access view; the complete original extent is unknown.
+    u32 LevelCompletionFallbackFlagPC = 0;
+}
+extern "C" {
     f32 pause_fade = 0;
     i32 (*PauseRenderOffFn)(void) = NULL;
 }
@@ -333,9 +337,15 @@ extern "C" {
     static f32 GameFogDefaultFStop = 22.0f;
     f32 ScreenPauseFadeSpeed = 2.0f;
     i32 clear_screen_onstill = 1;
+    i32 ScreenStillX = -32;
+    i32 ScreenStillY = -12;
+    i32 ScreenStillWidth = 10260;
+    i32 ScreenStillHeight = 3592;
     static GAMEFOG_STATE_PC GameFogNew = {{0}};
     GAMEFOG_STATE_PC GameFog = {{0}};
     i32 back_rgba[2] = {0};
+    struct NUGSCN_s *FadeLoop_ObjScene = 0;
+    NUGSCN *backdrop_scene = 0;
     static f32 dof_fstop = 0;
 
     void GameFog_Update(WORLDINFO *world) {

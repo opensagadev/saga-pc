@@ -1088,6 +1088,7 @@ void DebrisProcessTriggers(void) {
 
 f32 debris_render_global_time = 0;
 f32 debris_render_panel_time = 0;
+i32 globalframes = 0;
 
 void DebrisTimeSlip(i32 group) {
     DEBRIS_CHUNK_CONTROL_PC *control;
@@ -1715,6 +1716,8 @@ extern i32 DebrisGlassInitialized;
 extern void *DebrisGlassCopyMaterial;
 
 i32 debris_rt = 0;
+i32 debris_render_group = 0;
+i32 forced_debris_thinning = 0;
 void *DebrisGlassCopyMaterial = 0;
 i32 DebrisGlassInitialized = 0;
 
@@ -1906,6 +1909,9 @@ void DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
 
 i32 update_debris_enabled = 1;
 i32 debris_suspended = 0;
+volatile i32 debris_control_stack_lock = 0;
+f32 globaltime = 0;
+f32 panelglobaltime = 0;
 
 void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC *emitter_momentum, NUVEC *particle_momentum, i32 count) {
     i32 sound;
@@ -2017,6 +2023,10 @@ void DebrisCleanUpDmaDebTypeTables(void) {
 }
 
 i32 DebrisProcessingEnabled = 1;
+// PC debris timing uses a single-precision 1/60-second step.
+f32 debris_time_increment = 1.0f / 60.0f;
+i32 debrischunks = 256;
+i32 debrischunksglass = 32;
 
 void Debris(i32 update_panel_time) {
     if (update_debris_enabled == 0 || DebrisProcessingEnabled == 0 || debris_suspended != 0) {
