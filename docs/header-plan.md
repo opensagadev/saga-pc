@@ -918,7 +918,12 @@ header a narrowed unit reaches compiles on its own, in one part, without an
 include cycle.
 
 For each unit, replace `#include "saga.h"` with the module headers it uses.
-At the median, a unit sees about 16 headers directly and 86 with their
+`tools/narrow.py UNIT...` (test `tools/test_narrow.py`) does this: it reads the
+headers from a libclang parse of the unit, drops the prelude headers when another
+header brings them, and writes the unit (`--apply`) only when the narrowed text
+parses without an error (function bodies included, so a header's inline bodies
+must find their declarations too). Each unit parses in a process of its own;
+waves of `--jobs` hold `SAGA_SCAN_LOCK`. At the median, a unit sees about 16 headers directly and 86 with their
 dependencies; data.cpp sees 283. Outside the shim every header gives all its
 parts at once and includes its dependencies, so the unit sees fewer
 declarations, in another order.
