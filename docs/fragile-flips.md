@@ -64,3 +64,6 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | BURN_SET in rtl.h | NuDeferredFilterGen::render | nu2api/nu3d_includes.cpp | 93.89 % | 93.90 % |
 | BURN_SET in rtl.h | do_maya_mouse_camera | editor/edlevelall.cpp | 98.15 % | 98.11 % (newly fragile) |
 | PC_HG_SHADOW types in nustencilshadows_PC.h | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.37 % | 95.92 % |
+| EQUIVALENT_GROUP in world.h | BoltTypes_Configure | legoapi/bolts.cpp | 99.88 % | exact |
+| EQUIVALENT_GROUP in world.h | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.92 % | 95.37 % |
+| EQUIVALENT_GROUP in world.h | InitGameAfterConfig | legogame/game.cpp | 82.2397 % | 82.2372 % |

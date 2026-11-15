@@ -43,12 +43,6 @@ GAMEOBJECT *CharPlatform_FindObjFromPlatID(void *system, i32 id) {
     return NULL;
 }
 
-typedef struct EQUIVALENT_GROUP { // size 0x10
-    i16 object_count;             // 0x0
-    i16 byte_size;                // 0x2
-    nuhspecial_s objects[1];      // 0x4
-} EQUIVALENT_GROUP;
-
 typedef struct EQUIVALENT_WORLD_VIEW {   // size 0x46b8
     u8 unknown_0[0x46b0];                // 0x0000
     EQUIVALENT_GROUP *equivalent_groups; // 0x46b0

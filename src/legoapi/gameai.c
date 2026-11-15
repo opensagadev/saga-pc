@@ -31,12 +31,6 @@ AI_GLOBAL_CHARACTER_HGOBJ GlobalCharacterHGobjFn = 0;
 AI_GLOBAL_CHARACTER_RENDER GlobalCharacterRenderFn = 0;
 AI_CLEAR_CREATURES ClearAICreaturesFn = 0;
 
-typedef struct EQUIVALENTOBJECTGROUP { // size 0x10
-    i16 object_count;                  // 0x0
-    i16 byte_size;                     // 0x2
-    nuhspecial_s objects[1];           // 0x4
-} EQUIVALENTOBJECTGROUP;
-
 i32 NuHGobjRndr(NUHGOBJ_EVAL *object, NUMTX *matrix, i32 count, i16 *layers) {
     __declspec(align(16)) NUMTX matrices[256];
     NuHGobjEval(object, 0, NULL, matrices);

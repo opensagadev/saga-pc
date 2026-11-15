@@ -315,18 +315,6 @@ extern "C" {
         return 0;
     }
 
-    typedef struct EQUIVALENTOBJECTGROUP {
-        i16 object_count;
-        i16 byte_size;
-        nuhspecial_s objects[1];
-    } EQUIVALENTOBJECTGROUP;
-
-    typedef struct EQUIVALENT_GROUP {
-        i16 object_count;
-        i16 byte_size;
-        nuhspecial_s objects[1];
-    } EQUIVALENT_GROUP;
-
     typedef struct PORTAL_DOOR { // size 0x10
         nuhspecial_s special;    // 0x0
         u16 flags;               // 0xc
@@ -467,12 +455,12 @@ extern "C" {
     }
 
     i32 EquivalentObject_Find(WORLDINFO *world, nuhspecial_s *special) {
-        EQUIVALENTOBJECTGROUP *group;
+        EQUIVALENT_GROUP *group;
         i32 group_index;
         i32 index;
         i32 candidate;
         if (special != NULL && NuSpecialExistsFn(special)) {
-            group = (EQUIVALENTOBJECTGROUP *)world->equivalent_groups;
+            group = world->equivalent_groups;
             if (group != NULL) {
                 for (group_index = 0; group_index < world->equivalent_group_count; ++group_index) {
                     for (index = 0; index < group->object_count; ++index) {
@@ -486,7 +474,7 @@ extern "C" {
                             return 0;
                         }
                     }
-                    group = (EQUIVALENTOBJECTGROUP *)((u8 *)group + group->byte_size);
+                    group = (EQUIVALENT_GROUP *)((u8 *)group + group->byte_size);
                 }
             }
         }

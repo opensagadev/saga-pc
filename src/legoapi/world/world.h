@@ -112,6 +112,14 @@ extern "C" {
 }
 #endif
 
+/* One group of interchangeable objects of a level (a variable-length record: byte_size leads to the next group
+ * in WORLDINFO.equivalent_groups). */
+typedef struct EQUIVALENT_GROUP { // size 0x10
+    i16 object_count;             // 0x0
+    i16 byte_size;                // 0x2
+    nuhspecial_s objects[1];      // 0x4
+} EQUIVALENT_GROUP;
+
 typedef struct WORLDINFO_s { // size 0x51ac
     char name[0x80];         // 0x0000
     char config_file[0x80];  // 0x0080
