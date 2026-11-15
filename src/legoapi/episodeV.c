@@ -1544,7 +1544,7 @@ void HothBattleE_UpdateWave(void) {
                     object = Obj;
                     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
                         if ((object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && object->id != (u16)id_ATAT &&
-                            object->player_index == -1 && (object->character_data->model_flags & 4) != 0) {
+                            object->player_index == -1 && (object->character_data->model_flags & CHARACTER_MODEL_BADDIE) != 0) {
                             KillGameObject(object, 4, 0);
                         }
                     }

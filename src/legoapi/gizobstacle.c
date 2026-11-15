@@ -597,8 +597,8 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
             }
             if (((obstacle->config_flags & 0x20) && !(object->flags_1fc_word & 0x80)) ||
                 (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) || ((obstacle->config_flags & 0x400) && !object->rider) ||
-                ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & 4)) ||
-                ((obstacle->config_flags & 8) && !(object->character_data->model_flags & 0x2000)) ||
+                ((obstacle->config_flags & 0x4000) && !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE)) ||
+                ((obstacle->config_flags & 8) && !(object->character_data->model_flags & CHARACTER_MODEL_VEHICLE)) ||
                 (GizObstacleExcludeFn && GizObstacleExcludeFn(obstacle, object))) {
                 continue;
             }

@@ -1131,23 +1131,23 @@ static void CC_SetModelFlag(NUFPAR_PC *parser, u32 flag) {
 }
 
 static void CC_baddie(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x4);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BADDIE);
 }
 
 static void CC_jedi(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x8);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_JEDI);
 }
 
 static void CC_droid(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x10);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DROID);
 }
 
 static void CC_protocol(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x30);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DROID | CHARACTER_MODEL_PROTOCOL);
 }
 
 static void CC_astromech(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x50);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DROID | CHARACTER_MODEL_ASTROMECH);
 }
 
 static void CC_cannon(NUFPAR_PC *parser) {
@@ -1155,35 +1155,35 @@ static void CC_cannon(NUFPAR_PC *parser) {
 }
 
 static void CC_bounty_hunter(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x1000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BOUNTY_HUNTER);
 }
 
 static void CC_blaster(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x10000080);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BLASTER | CHARACTER_MODEL_CAN_FIRE);
 }
 
 static void CC_teleport(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x40000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_TELEPORT);
 }
 
 static void CC_zipup(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x100000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_ZIPUP);
 }
 
 static void CC_untargetable(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x80000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_UNTARGETABLE);
 }
 
 static void CC_orientate(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x100);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_ORIENTATE);
 }
 
 static void CC_neutral(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x200);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NEUTRAL);
 }
 
 static void CC_complex_shadow(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x10000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_COMPLEX_SHADOW);
 }
 
 static void CC_shadow_orientation(NUFPAR_PC *parser) {
@@ -1191,19 +1191,19 @@ static void CC_shadow_orientation(NUFPAR_PC *parser) {
 }
 
 static void CC_can_open_doors(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x400);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_OPEN_DOORS);
 }
 
 static void CC_non_stick(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x800);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NON_STICK);
 }
 
 static void CC_can_shoot_offscreen(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x1000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_SHOOT_OFFSCREEN);
 }
 
 static void CC_can_fire(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x10000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CAN_FIRE);
 }
 
 static void CC_can_poo(NUFPAR_PC *parser) {
@@ -1239,13 +1239,13 @@ static void CC_dont_draw_rider(NUFPAR_PC *parser) {
 }
 
 static void CC_minikit(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x4000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_MINIKIT);
 }
 
 static void CC_minikit_with_scene(NUFPAR_PC *parser) {
-    charconfig.character->model_flags |= 0x4000000;
+    charconfig.character->model_flags |= CHARACTER_MODEL_MINIKIT;
     if (NuFParGetWord(parser) != 0 && NuStrICmp(parser->word_buffer_ptr, "off") == 0) {
-        charconfig.character->model_flags &= ~0x4000000u;
+        charconfig.character->model_flags &= ~CHARACTER_MODEL_MINIKIT;
     }
     CC_FLAGS094.minikit_with_scene = charconfig.character->model_flags >> 26;
 }
@@ -1343,27 +1343,27 @@ static void CC_has_whip(NUFPAR_PC *parser) {
 }
 
 static void CC_respawn(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x8000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_RESPAWN);
 }
 
 static void CC_vehicle(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x2000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_VEHICLE);
 }
 
 static void CC_only_active_when_taken_over(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x20000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER);
 }
 
 static void CC_beast(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x40000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_BEAST);
 }
 
 static void CC_prefers_brawling(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x80000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_PREFERS_BRAWLING);
 }
 
 static void CC_dontpush(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x4000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_DONT_PUSH);
 }
 
 static void CC_dont_move_out_of_way(NUFPAR_PC *parser) {
@@ -1375,11 +1375,11 @@ static void CC_dontmove(NUFPAR_PC *parser) {
 }
 
 static void CC_jetpack(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x8000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_JETPACK);
 }
 
 static void CC_oldheadmovement(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x20000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_OLD_HEAD_MOVEMENT);
 }
 
 static void CC_atatheadmovement(NUFPAR_PC *parser) {
@@ -1387,15 +1387,15 @@ static void CC_atatheadmovement(NUFPAR_PC *parser) {
 }
 
 static void CC_cannotbigjump(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x200000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_CANNOT_BIG_JUMP);
 }
 
 static void CC_no_offpath_teleport(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x400000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NO_OFFPATH_TELEPORT);
 }
 
 static void CC_no_kill_parts(NUFPAR_PC *parser) {
-    CC_SetModelFlag(parser, 0x2000000);
+    CC_SetModelFlag(parser, CHARACTER_MODEL_NO_KILL_PARTS);
 }
 
 static void CC_high_jump(NUFPAR_PC *parser) {
@@ -1844,7 +1844,7 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
     charconfig.layer_scratch = layers;
     memset(effects, 0, sizeof(effects));
     data = charconfig.runtime;
-    if (data->layers == NULL && (character->model_flags & 1) == 0 && arena != NULL && arena_end != NULL) {
+    if (data->layers == NULL && (character->model_flags & CHARACTER_MODEL_CONFIGURED) == 0 && arena != NULL && arena_end != NULL) {
         data->layers = layers;
         charconfig.runtime->layer_count = 0;
         charconfig.flags |= 2;
@@ -1866,11 +1866,11 @@ static i32 CharConfig(i32 character_id, char *directory, char *filename, VARIPTR
         }
         NuFParDestroy(parser);
     }
-    charconfig.character->model_flags |= 1;
+    charconfig.character->model_flags |= CHARACTER_MODEL_CONFIGURED;
     if ((charconfig.flags & 4) != 0 && (charconfig.flags & 8) == 0) {
         charconfig.runtime->turn_rate_2 = charconfig.runtime->turn_rate;
     }
-    if ((charconfig.flags & 0x10) == 0 && (charconfig.character->model_flags & 0x2000) != 0) {
+    if ((charconfig.flags & 0x10) == 0 && (charconfig.character->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
         for (i = 0; i < 4; ++i) {
             charconfig.runtime->ai_update_distances[i] = vehicle_timebase_dist[i];
             charconfig.runtime->ai_update_intervals[i] = (u8)vehicle_timebase_nframes[i];

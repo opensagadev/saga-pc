@@ -842,7 +842,7 @@ extern "C" {
         for (index = 0; index < count; ++index) {
             candidate = candidates[index]->owner;
             flags = turret->behavior_flags;
-            if (!(flags & 0x4000) && (candidate->character_data->model_flags & 0x80000)) {
+            if (!(flags & 0x4000) && (candidate->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE)) {
                 continue;
             }
             if ((flags & 0x20) && candidate->rider == NULL) {
@@ -860,11 +860,11 @@ extern "C" {
                 if (selected == NULL) {
                     goto select;
                 }
-                candidate_flag = candidate->character_data->model_flags & 0x10;
-                if (candidate_flag && !(selected->character_data->model_flags & 0x10)) {
+                candidate_flag = candidate->character_data->model_flags & CHARACTER_MODEL_DROID;
+                if (candidate_flag && !(selected->character_data->model_flags & CHARACTER_MODEL_DROID)) {
                     goto select;
                 }
-                if (candidate_flag != (selected->character_data->model_flags & 0x10)) {
+                if (candidate_flag != (selected->character_data->model_flags & CHARACTER_MODEL_DROID)) {
                     continue;
                 }
             } else if (flags & 8) {

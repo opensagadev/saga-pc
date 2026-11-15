@@ -377,7 +377,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 f32 inverse;
                 u16 angle;
                 if ((object->flags_1fc_word & 1) == 0 || (object->flags_1fc_word & 0x1000) == 0 || object->dead != 0 ||
-                    !(object->character_data->model_flags & 0x10) || (GCDataList[(i16)object->id].flags_094 & 0x100)) {
+                    !(object->character_data->model_flags & CHARACTER_MODEL_DROID) || (GCDataList[(i16)object->id].flags_094 & 0x100)) {
                     continue;
                 }
                 if (Tube_InCylinder(object, (TUBE *)tube, &distance, 0) == 0) {

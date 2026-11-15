@@ -636,13 +636,13 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     if (!player_active && object->unknown_f00 != 4) {
         return;
     }
-    if ((object->character_data->model_flags & 0x100000) == 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) == 0) {
         if (!player_active) {
             return;
         }
         if (!SuperWeirdo(object)) {
-            if ((object->character_data->model_flags & 8) == 0 || (object->character_data->game_character->flags_094 & 0x8000) != 0 ||
-                !Cheat_IsOn(13)) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0 ||
+                (object->character_data->game_character->flags_094 & 0x8000) != 0 || !Cheat_IsOn(13)) {
                 return;
             }
         }
@@ -658,7 +658,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         return;
     }
     if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) && ((zipup->flags_word & 1) == 0 || (zipup->flags_word & 0x100) == 0)) {
-        if ((object->character_data->model_flags & 0x100000) == 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) == 0) {
             destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
             if (StartBigJump(object, destination, 0, 0.5f, 1.0f, 0)) {
                 object->context_variant_flags |= 0x100;

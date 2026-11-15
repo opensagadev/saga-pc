@@ -572,7 +572,7 @@ f32 Condition_GotGun(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packe
 
 f32 Condition_PrefersBrawling(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL) {
-        if ((packet->owner->character_data->model_flags & 0x80000000u) != 0) {
+        if ((packet->owner->character_data->model_flags & CHARACTER_MODEL_PREFERS_BRAWLING) != 0) {
             return 1.0f;
         }
         return 0.0f;
@@ -2092,7 +2092,7 @@ f32 Condition_PartyContainsDroids(AISYS_PC *system, AISCRIPTPROCESS *process, AI
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *object = Player[index];
         if (object != NULL && (object->flags_1fc_word & 1) != 0 && (object->flags_1fc_word & 0x1000) != 0 && (object->flags_ef3 & 1) == 0 &&
-            (object->character_data->model_flags & 0x10) != 0) {
+            (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
             return 1.0f;
         }
     }
@@ -2887,7 +2887,7 @@ i32 Action_SetTakeOverTarget(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPAC
             return 1;
         }
         if (check_takeover && (target->takeover_source != NULL || !(target->character_data->game_character->flags_090 & 0x40) ||
-                               (object->character_data->model_flags & 0x10))) {
+                               (object->character_data->model_flags & CHARACTER_MODEL_DROID))) {
             return 1;
         }
         previous = object->takeover_target;
@@ -4398,7 +4398,7 @@ i32 Action_SetOpponent(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *p
                     candidate = Player[player_index];
                     if (candidate != NULL && (candidate->flags_1fc_word & 1) != 0 && (candidate->flags_1fc_word & 0x1000) != 0 &&
                         (candidate->dead == 0 || candidate->unknown_1010 > 0.0f) && (candidate->flags_ef3 & 1) == 0 &&
-                        (candidate->character_data->model_flags & 0x10u) != 0) {
+                        (candidate->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
                         droids[droid_count++] = candidate;
                     }
                 }
@@ -10501,13 +10501,13 @@ i32 Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
         return 1;
     }
     if (target != NULL && release == 0) {
-        if ((target->character_data->model_flags & 0x40000000) != 0 &&
+        if ((target->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0 &&
             (target->character_context == CHARACTER_CONTEXT_DEACTIVATED || target->character_context == CHARACTER_CONTEXT_BUCK)) {
             return 0;
         }
         target_config = target->character_data->game_character;
         if (target->takeover_source == NULL && (target_config->flags_090 & 0x40) != 0 &&
-            (object->character_data->model_flags & 0x10) == 0) {
+            (object->character_data->model_flags & CHARACTER_MODEL_DROID) == 0) {
             TakeOverGameObject(object, target, 1, 0);
         }
     } else if (release != 0) {

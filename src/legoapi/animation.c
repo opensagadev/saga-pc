@@ -421,7 +421,7 @@ void HeadMovement(GAMEOBJECT *object) {
     }
     if ((object->character_data->game_character->flags_094 & 0x40000000) != 0) {
         HeadMovementAlternate(object);
-    } else if ((object->character_data->model_flags & 0x20000) != 0) {
+    } else if ((object->character_data->model_flags & CHARACTER_MODEL_OLD_HEAD_MOVEMENT) != 0) {
         HeadMovementLegacy(object);
     } else {
         HeadMovementOrdinary(object);

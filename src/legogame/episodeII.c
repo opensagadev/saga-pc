@@ -759,7 +759,7 @@ void JediB_Update(WORLDINFO *world) {
             if ((baddie->flags & 0x10) != 0) {
                 baddie->object->ai_packet.locator = NULL;
                 target = NULL;
-                if ((player->character_data->model_flags & 0x80000) == 0 &&
+                if ((player->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
                     ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & 0x80) != 0) &&
                     (player->character_data->game_character->weapon_action != 4 ||
                      baddie->object->character_data->game_character->weapon_action != 4)) {
@@ -769,7 +769,7 @@ void JediB_Update(WORLDINFO *world) {
                         baddie->object->ai_packet.opponent = NULL;
                     }
                     if (player2 != NULL) {
-                        if ((player2->character_data->model_flags & 0x80000) == 0 &&
+                        if ((player2->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
                             ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & 0x80) != 0) &&
                             (player->character_data->game_character->weapon_action != 4 ||
                              baddie->object->character_data->game_character->weapon_action != 4)) {
@@ -1672,7 +1672,8 @@ void KaminoE_Update(WORLDINFO *world) {
                         continue;
                     }
                     flags = object->flags_1fc_word;
-                    if ((flags & 1) == 0 || (flags & 0x1000) == 0 || (object->character_data->model_flags & 0x80000) != 0) {
+                    if ((flags & 1) == 0 || (flags & 0x1000) == 0 ||
+                        (object->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) != 0) {
                         continue;
                     }
                     distance = NuVecDistSqr(&object->collision_position, (NUVEC *)&matrix->m30, &delta);

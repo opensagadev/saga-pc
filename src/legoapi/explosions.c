@@ -99,7 +99,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             if ((object->character_data->game_character->flags_090 & 0x8000) != 0) {
                 continue;
             }
-            if ((explosion->flags & 0x80) != 0 && (object->character_data->model_flags & 0x10) != 0) {
+            if ((explosion->flags & 0x80) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
                 continue;
             }
             if ((explosion->flags & 0x4000) != 0 && object->unknown_280 != 0xff) {

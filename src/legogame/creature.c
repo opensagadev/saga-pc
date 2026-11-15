@@ -810,7 +810,7 @@ i32 GetDefaultIdle(GAMEOBJECT *object) {
     void *idle;
     void *standard;
     if (((PLAYER_IDLE_CHARACTER *)object->character_data->game_character)->use_standard_idle == 0 &&
-        (object->character_data->model_flags & 0x80) != 0) {
+        (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
         animation = 0x76;
     } else {
         animation = 0x19;
@@ -869,8 +869,10 @@ void ResetCharacterIdle(GAMEOBJECT *object, i32 mode, i32 animation) {
 static void NewCharacterIdle(GAMEOBJECT *object, i32 default_idle) {
     CHARACTER_IDLE_STATE *state = (CHARACTER_IDLE_STATE *)object;
     CHARACTERDATA_PC *character = object->character_data;
-    i32 alternate =
-        ((CHARACTER_IDLE_POLICY *)character->game_character)->use_standard_idle == 0 && (character->model_flags & 0x80) != 0 ? 118 : 25;
+    i32 alternate = ((CHARACTER_IDLE_POLICY *)character->game_character)->use_standard_idle == 0 &&
+                            (character->model_flags & CHARACTER_MODEL_BLASTER) != 0
+                        ? 118
+                        : 25;
     i32 candidates[233];
     i32 count = 0;
     i32 animation;
@@ -931,8 +933,10 @@ void UpdateCharacterIdle(GAMEOBJECT *object) {
         return;
     }
     character = object->character_data;
-    alternate =
-        ((CHARACTER_IDLE_POLICY *)character->game_character)->use_standard_idle == 0 && (character->model_flags & 0x80) != 0 ? 118 : 25;
+    alternate = ((CHARACTER_IDLE_POLICY *)character->game_character)->use_standard_idle == 0 &&
+                        (character->model_flags & CHARACTER_MODEL_BLASTER) != 0
+                    ? 118
+                    : 25;
     requested = object->anim_packet.requested_animation;
     if (requested != 1 && requested != alternate) {
         default_idle = GetDefaultIdle(object);
@@ -1334,7 +1338,7 @@ void MovePlayer(GAMEOBJECT *object) {
                     if ((f64)0.2f > magnitude) {
                         pad->input_magnitude = 0.0f;
                     } else {
-                        if ((object->character_data->model_flags & 0x20) != 0 &&
+                        if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
                             ((object->player_index != -1 && object->vehicle_secondary_hp < 3) ||
                              (object->player_index == -1 && object->current_hp < 3))) {
                             pad->input_magnitude = object->character_data->game_character->walk_speed;
@@ -1442,7 +1446,7 @@ void MovePlayer(GAMEOBJECT *object) {
                 MovePlayer_ROLLING(object);
             } else if (!MovePlayer_TWIST(object) && !MovePlayer_CIRCLE(object) && !MovePlayer_GUNSHIPIN(object) &&
                        !MovePlayer_POD(object)) {
-                if ((object->character_data->model_flags & 0x2000) != 0) {
+                if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
                     MovePlayer_VEHICLEDIRECTIONAL(object);
                 } else {
                     MovePlayer_DIRECTIONAL(object);
@@ -1499,7 +1503,7 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
 
     flags = TerSurface[surface].flags;
     if ((flags & 1) == 0 &&
-        ((flags & 0x4000) == 0 || (object->character_data->model_flags & 0x10) != 0 ||
+        ((flags & 0x4000) == 0 || (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0 ||
          (object->character_data->game_character->flags_090 & 0x8000) != 0) &&
         ((flags & 0x8000) == 0 || ((i8)object->unknown_280 != -1 && !(normal->y > 0.0f)))) {
         return 0;
@@ -1556,7 +1560,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
             api = object;
             terrain_mask = GetSurfaceInfoDefaultMask.word;
-            if ((api->character_data->model_flags & 0x10) == 0 && (api->character_data->game_character->flags_090 & 0x8000) == 0) {
+            if ((api->character_data->model_flags & CHARACTER_MODEL_DROID) == 0 &&
+                (api->character_data->game_character->flags_090 & 0x8000) == 0) {
                 terrain_mask |= GetSurfaceInfoRuntimeMask.word;
             }
             ai_controlled = api->flags_1f8 & 0x400;
@@ -1645,7 +1650,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 !(api->unknown_281 != 0 && (i8)api->jump_animation_state >= 0 && (i8)api->jump_animation_state < 32 &&
                   TerSurface[(i8)api->jump_animation_state].movement_scale < 1.0f) &&
                 AnimSpeed(api->character_model, CurrentAnim(&api->anim_packet)) == 0.0f &&
-                (api->character_data->model_flags & 0x800) == 0) {
+                (api->character_data->model_flags & CHARACTER_MODEL_NON_STICK) == 0) {
                 movement_threshold = api->character_data->game_character->stop_speed * api->origin_scale;
             } else {
                 movement_threshold = 0.0f;
@@ -1775,7 +1780,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         i32 deflection_mode;
 
                         deflection_mode = 0;
-                        if (VehicleArea != 0 && (api->character_data->model_flags & 0x2000) != 0 &&
+                        if (VehicleArea != 0 && (api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 &&
                             api->character_data->game_character->unknown_028 != 0.0f) {
                             deflection_mode = 2;
                         } else if (object->character_context == CHARACTER_CONTEXT_NONE && object->pad->input_magnitude > 0.0f) {
@@ -1793,7 +1798,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                             }
                         }
                     }
-                    TerrainSetPlatConnectTol((api->character_data->model_flags & 0x800) != 0 ? 0.0f : TerrainPlayerPlatConnectTolerance);
+                    TerrainSetPlatConnectTol(
+                        (api->character_data->model_flags & CHARACTER_MODEL_NON_STICK) != 0 ? 0.0f : TerrainPlayerPlatConnectTolerance);
                     if ((object->ai_packet.flags & 0x80) != 0) {
                         IgnoreWallSplines = 1;
                     }
@@ -2117,7 +2123,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                         KillPlayer(object, 2, 1, NULL);
                                         break;
                                     }
-                                } else if (((api->character_data->model_flags & 0x2000) != 0 ||
+                                } else if (((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 ||
                                             (api->character_data->game_character->flags_090 & 0x04000000) != 0) &&
                                            api->unknown_283 == 6) {
                                     break;
@@ -2155,7 +2161,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         if ((layer == 3 ||
                              (layer == 9 && object->id == (u16)id_TRACTOR && WORLD->area != NULL && WORLD->area == DAGOBAH_ADATA) ||
                              (TerLayer[layer].flags & 0x20) != 0 ||
-                             ((api->character_data->model_flags & 0x2000) == 0 &&
+                             ((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
                               (api->character_data->game_character->flags_090 & 0x04000000) == 0)) &&
                             NoLayerKill(object) == 0 && object->character_context != CHARACTER_CONTEXT_BALLOONING) {
                             u32 layer_flags;
@@ -2237,7 +2243,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     }
                                 rescue_done:;
                                 }
-                            } else if ((api->character_data->model_flags & 0x40) == 0 && object->id != (u16)id_SNAKE &&
+                            } else if ((api->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) == 0 && object->id != (u16)id_SNAKE &&
                                        api->unknown_283 == 9 && api->collision_max.y < api->water_height) {
                                 if (BonusWinner == -1) {
                                     i32 coins;
@@ -2292,7 +2298,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 PreResetCode(object);
                 ((TERRAIN_PLAYER_CHARACTER *)(api->character_data))->move_callback(object);
                 PostResetCode(object);
-                if ((api->character_data->model_flags & 0x00200000) == 0) {
+                if ((api->character_data->model_flags & CHARACTER_MODEL_CANNOT_BIG_JUMP) == 0) {
                     BigJumpCode(object);
                 }
                 object->pad->buttons_held = held_buttons;
@@ -2569,7 +2575,7 @@ void ParaphernaliaCommunicate(GAMEOBJECT *object, i32 reflection) {
         return;
     }
     model = -1;
-    if ((object->character_data->model_flags & 0x40) != 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0) {
         scaling.z = object->communicate_blend * object->origin_scale;
         scaling.x = scaling.y = scaling.z;
         NuMtxSetScale(&matrix, &scaling);
@@ -2846,7 +2852,8 @@ void UpdateCharacterLoad(void) {
         candidates[count++] = dat_007f18c4;
     } else {
         for (id = 0; id < CHARCOUNT; ++id) {
-            if (id == id_DROIDEKA || (CDataList[id].model_flags & 0x04002000) != 0 || APICharacterLoaded(id) != NULL) {
+            if (id == id_DROIDEKA || (CDataList[id].model_flags & (CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT)) != 0 ||
+                APICharacterLoaded(id) != NULL) {
                 continue;
             }
             if (CDataList[id].animation_count + apicharsys->loaded_animation_count > apicharsys->animation_capacity) {
@@ -3304,7 +3311,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     character = object->character_data;
     object->ai_packet.creature_set = 0;
     object->portal_flags |= 2;
-    if ((character->model_flags & 0x80) != 0) {
+    if ((character->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
         object->portal_flags |= 4;
     } else {
         object->portal_flags &= ~4u;
@@ -3332,7 +3339,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->movement_speed_scale = 1.0f;
     object->flags_ef4 &= 0xfe5fffff;
     object->portal_flags &= 0xfff3ffff;
-    if ((character->model_flags & 0x8000000) != 0) {
+    if ((character->model_flags & CHARACTER_MODEL_RESPAWN) != 0) {
         object->portal_flags |= 0x100000;
     } else {
         object->portal_flags &= ~0x100000u;
@@ -3367,7 +3374,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->collision_link = NULL;
     object->collision_exclusion_mask[0] = 0;
     object->collision_exclusion_mask[1] = 0;
-    if ((character->model_flags & 0x4000) != 0 && (object->unknown_280 == 0xff || object->rider != NULL)) {
+    if ((character->model_flags & CHARACTER_MODEL_DONT_PUSH) != 0 && (object->unknown_280 == 0xff || object->rider != NULL)) {
         object->flags_1fc_word |= 2;
     } else {
         object->flags_1fc_word &= ~2u;
@@ -3426,7 +3433,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     }
     context = object->character_context;
     lean = object->movement_lean_angle;
-    lean_enabled = object->character_data->model_flags & 0x2000;
+    lean_enabled = object->character_data->model_flags & CHARACTER_MODEL_VEHICLE;
     LoseHelmet(object, 0, 1);
     DestroySnakeBody(object);
     object->id = (u16)id;
@@ -3491,7 +3498,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     if (object->velocity.y == 0.0f) {
         object->velocity.y = -0.1f;
     }
-    if (lean_enabled != 0 && (object->character_data->model_flags & 0x2000) != 0) {
+    if (lean_enabled != 0 && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
         object->movement_lean_angle = (u16)lean;
     }
     object->view_distance = apicharsys->char_data[(i16)object->id].game_character->viewdistance;
@@ -3615,7 +3622,8 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     }
     object->last_safe_position = object->position;
     object->ai_update_position = object->position;
-    if ((object->character_data->model_flags & 0x20000000) != 0 && object->character_model->action_animations[0x41] != NULL) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) != 0 &&
+        object->character_model->action_animations[0x41] != NULL) {
         object->context_timer = 1000000000.0f;
         object->character_context = CHARACTER_CONTEXT_DEACTIVATED;
         object->unknown_7aa = 0x41;
@@ -3785,7 +3793,7 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *animati
         }
     }
     complex_shadow = 0;
-    if (object != NULL && (object->character_data->model_flags & 0x10000) != 0 &&
+    if (object != NULL && (object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 &&
         (WORLD->area == NULL || WORLD->area != BATTLEOVERCORUSCANT_ADATA)) {
         ((CHARACTER_DRAW_HIERARCHY *)model->hierarchy)->suppress_shadow_surface_points = 0;
         if (reflection_matrix != NULL) {
@@ -3815,8 +3823,8 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *model, ANIMPACKET_PC *animati
             }
         }
     }
-    draw_shadow =
-        result != 0 && (object == NULL || ((object->flags_ef0 & 0x4000000) == 0 && (object->character_data->model_flags & 0x10000) == 0));
+    draw_shadow = result != 0 && (object == NULL || ((object->flags_ef0 & 0x4000000) == 0 &&
+                                                     (object->character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) == 0));
     if (PcWindowOptions.shadowmethod == 1 && draw_shadow && secondary_matrix != NULL && object != NULL) {
         u8 level_alpha = WORLD->current_level->blob_shadow_alpha;
         if (level_alpha > 0 && object->shadow_opacity > 0.0f && object->surface_normal.y > 0.0f &&
@@ -4105,7 +4113,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                     continue;
                 }
             } else if (StartupGameFlag1 != 0) {
-                if ((object->character_data->model_flags & 0x90) == 0x80) {
+                if ((object->character_data->model_flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BLASTER)) == 0x80) {
                     models[0] = 0xd;
                 } else {
                     if (object->id == (u16)id_BOB) {
@@ -4142,7 +4150,7 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
                         sabre = 1;
                     }
                 }
-            } else if (object->id == (u16)dat_007f1810 || (object->character_data->model_flags & 0x80) != 0) {
+            } else if (object->id == (u16)dat_007f1810 || (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
                 models[0] = 0xc;
             }
             count = 0;
@@ -4844,7 +4852,7 @@ void InitAICreatures(AISYS_PC *system) {
                 object->flags_1f8 |= 1;
             }
             object->flags_1044 |= 1;
-            if ((apicharsys->char_data[creature->type].model_flags & 0x1000) != 0) {
+            if ((apicharsys->char_data[creature->type].model_flags & CHARACTER_MODEL_CAN_SHOOT_OFFSCREEN) != 0) {
                 object->flags_1044 |= 4;
             }
             object->ai_packet.creature_index = (u8)creature_index;

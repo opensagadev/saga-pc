@@ -1071,7 +1071,7 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
     if ((ADataList[area].flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 5) {
         for (i32 index = 0; index < FreePlayModelCount; ++index) {
             const i32 model = FreePlayModelList[index].model_id;
-            if ((CDataList[model].model_flags & 0x4000000) == 0 ||
+            if ((CDataList[model].model_flags & CHARACTER_MODEL_MINIKIT) == 0 ||
                 InCollectList_Index(model, MiniKitCollection.list, MiniKitCollection.count) == -1 || PlayerList[0] == model ||
                 PlayerList[1] == model || Collection_Got(model) == 0) {
                 continue;
@@ -1088,10 +1088,10 @@ static void Hub_MakeFreePlayList(i32 first_model, i32 second_model) {
             }
             if (area != -1) {
                 if ((ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
-                    if ((CDataList[model].model_flags & 0x2000) == 0) {
+                    if ((CDataList[model].model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
                         continue;
                     }
-                } else if ((CDataList[model].model_flags & 0x2000) != 0) {
+                } else if ((CDataList[model].model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
                     continue;
                 }
             }
@@ -4936,10 +4936,10 @@ extern "C" {
         if (object->character_model->action_animations[6] != NULL) {
             object->ai_packet.capabilities |= 3;
         }
-        if ((object->character_data->model_flags & 0x200000) == 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_CANNOT_BIG_JUMP) == 0) {
             object->ai_packet.capabilities |= 4;
         }
-        if ((object->character_data->model_flags & 0x100000) != 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) != 0) {
             object->ai_packet.capabilities |= 8;
         }
         if (object->id == (u16)dat_007f17d0) {

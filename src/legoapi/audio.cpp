@@ -291,7 +291,7 @@ extern "C" {
         i32 alternate;
         (void)ignored;
         if (type == 1) {
-            if ((object->character_data->model_flags & 8) == 0) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0) {
                 return;
             }
             sfx = GameAudio->sfx_ids[11];
@@ -306,7 +306,7 @@ extern "C" {
                 return;
             }
             alternate = WorldInfo_CurrentlyActive()->current_level->flags & LEVEL_METAL;
-            if ((object->character_data->model_flags & 0x10) != 0) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
                 if (alternate) {
                     sfx = GameAudio->sfx_ids[10];
                 } else {
@@ -352,7 +352,7 @@ extern "C" {
             if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
                 if (object->is_underwater == 0 && object->water_intersects == 0) {
                     alternate = WorldInfo_CurrentlyActive()->current_level->flags & LEVEL_METAL;
-                    if ((object->character_data->model_flags & 0x10) != 0) {
+                    if ((object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
                         if (alternate) {
                             sound = GameAudio->sfx_ids[0x12];
                         } else {
@@ -397,7 +397,8 @@ extern "C" {
         if (character->game_character->sfx_grunt != -1) {
             sfx = character->game_character->sfx_grunt;
         } else {
-            if (character->model_flags & 0x44002010) {
+            if (character->model_flags &
+                (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) {
                 return;
             }
             if (object->flags_ef4 & 0x800) {
@@ -417,7 +418,8 @@ extern "C" {
         if (character->game_character->sfx_hurt != -1) {
             sfx = character->game_character->sfx_hurt;
         } else {
-            if (character->model_flags & 0x44002010) {
+            if (character->model_flags &
+                (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) {
                 goto extra;
             }
             if (object->flags_ef4 & 0x800) {
@@ -442,13 +444,13 @@ extern "C" void PlayDieSfx(GAMEOBJECT *object) {
         sfx = object->character_data->game_character->sfx_die;
     } else if ((object->character_data->game_character->flags_090 & 0x800) != 0) {
         sfx = GameAudio->sfx_ids[0x18];
-    } else if ((object->character_data->model_flags & 0x2000) != 0) {
+    } else if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
         sfx = GameAudio->sfx_ids[0x18];
-    } else if ((object->character_data->model_flags & 0x04000000) != 0) {
+    } else if ((object->character_data->model_flags & CHARACTER_MODEL_MINIKIT) != 0) {
         sfx = GameAudio->sfx_ids[0x19];
-    } else if ((object->character_data->model_flags & 0x10) != 0) {
+    } else if ((object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
         sfx = GameAudio->sfx_ids[0x1a];
-    } else if ((object->character_data->model_flags & 0x40000000) != 0) {
+    } else if ((object->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0) {
         sfx = -1;
     } else if ((object->flags_ef4 & 0x800) != 0) {
         sfx = GameAudio->sfx_ids[0x1b];

@@ -764,8 +764,10 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     magnet = (flags & 0x10000000) != 0 && object->character_context == CHARACTER_CONTEXT_TIGHTROPE;
     grapple = object->character_context == CHARACTER_CONTEXT_GRAPPLE && object->unknown_7b3 == 0;
 
-    if (object->flags_107a == 2 && ((object->character_data->model_flags & 0x100) != 0 || (flags & 0x200000) != 0 || sliding)) {
-        f32 hover = (object->character_data->model_flags & 0x2000) != 0 ? GetVehicleHoverHeight(object, NULL) : game->unknown_028;
+    if (object->flags_107a == 2 &&
+        ((object->character_data->model_flags & CHARACTER_MODEL_ORIENTATE) != 0 || (flags & 0x200000) != 0 || sliding)) {
+        f32 hover =
+            (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 ? GetVehicleHoverHeight(object, NULL) : game->unknown_028;
         if (hover > 0.0f) {
             if (GameObjectNearFloorNoFloorHeight != object->floor_height) {
                 f32 limit = 2.5 * hover;
@@ -787,7 +789,8 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
             alignment = 2;
         } else if (object->unknown_281 != 0 || (object->character_data->game_character->flags_090 & 0x200000) != 0 || sliding) {
             alignment = 1;
-        } else if ((object->character_data->model_flags & 0x100) != 0 && 0.0f == object->character_data->game_character->unknown_028 &&
+        } else if ((object->character_data->model_flags & CHARACTER_MODEL_ORIENTATE) != 0 &&
+                   0.0f == object->character_data->game_character->unknown_028 &&
                    (object->character_data->game_character->flags_090 & 0x100) != 0 &&
                    GameObjectNearFloorNoFloorHeight != object->floor_height) {
             f32 vertical_gap = object->collision_min.y - object->floor_height;
@@ -802,8 +805,9 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
         }
     }
 
-    reflection = 0 != (0x2000 & object->character_data->model_flags) && object->character_data->game_character->unknown_028 > 0.0f &&
-                 (object->unknown_283 == 7 || object->unknown_283 == 0x10) && object->unknown_280 == 0xff;
+    reflection = 0 != (CHARACTER_MODEL_VEHICLE & object->character_data->model_flags) &&
+                 object->character_data->game_character->unknown_028 > 0.0f && (object->unknown_283 == 7 || object->unknown_283 == 0x10) &&
+                 object->unknown_280 == 0xff;
 
     if (mode == 1) {
         object->unknown_1052 = x;
@@ -1013,7 +1017,7 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
             if (AIScriptSetBaseScriptStateByName((AISCRIPTPROCESS *)&object->ai_packet, "BeenDeactivated")) {
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, (AISCRIPTPROCESS *)&object->ai_packet, FRAMETIME);
             }
-            if (source != NULL && (source->character_data->model_flags & 0x40) &&
+            if (source != NULL && (source->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) &&
                 object->character_data->game_character->weapon_action == 1 && object->character_model->model_data_b[0x62] != NULL) {
                 duration = 4.0f;
                 object->unknown_7aa = 0x62;
@@ -1023,7 +1027,7 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
             } else {
                 object->unknown_7aa = object->character_model->model_data_b[0x41] != NULL ? 0x41 : 1;
             }
-            if (object->character_data->model_flags & 0x20) {
+            if (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) {
                 SetProtocolDroidDeactivatedAction(object);
             }
             object->action_movement_state = 0;
@@ -2191,7 +2195,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             continue;
         }
 
-        if (VehicleArea != 0 || (object->character_data->model_flags & 0x2000) != 0) {
+        if (VehicleArea != 0 || (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
             object->reset_velocity = object->velocity;
             object->pre_terrain_speed =
                 NuFsqrt(object->reset_velocity.x * object->reset_velocity.x + object->reset_velocity.y * object->reset_velocity.y +
@@ -2209,7 +2213,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         object->ai_vertical_velocity = vertical_velocity;
         AnimatePlayer(object);
         object->context_target_position = NULL;
-        if (VehicleArea != 0 || (object->character_data->model_flags & 0x2000) != 0) {
+        if (VehicleArea != 0 || (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
             object->post_terrain_speed = NuFsqrt(object->velocity.x * object->velocity.x + object->velocity.y * object->velocity.y +
                                                  object->velocity.z * object->velocity.z);
         }
@@ -2271,7 +2275,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             ResetCoinPacket(object->coin_packet);
         }
         AddSurfaceRipples(object);
-        if ((object->character_data->model_flags & 0x2000) != 0 && object->dead == 0 && object->model_draw_result != 0 &&
+        if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 && object->dead == 0 && object->model_draw_result != 0 &&
             (object->flags_e20 & 0x20) == 0) {
             AddSurfaceDebris(object);
         }
@@ -2478,7 +2482,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     debris[2] = -1;
     debris[3] = -1;
     if (reason != 4) {
-        if ((object->character_data->model_flags & 0x4000000) != 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_MINIKIT) != 0) {
             debris[0] = 73;
             debris[1] = 74;
             debris[2] = 75;
@@ -2536,7 +2540,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         if ((object->flags_1fc_word & 0x80) != 0) {
             DieRumble(object);
         }
-        if ((object->character_data->model_flags & 0x2000) != 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
             momentum.x = (f32)((f64)object->velocity.x * 0.5);
             momentum.y = (f32)((f64)object->velocity.y * 0.5);
             momentum.z = (f32)((f64)object->velocity.z * 0.5);
@@ -2545,7 +2549,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         }
         for (i = 0; i < 4; ++i) {
             if (debris[i] != -1) {
-                if ((object->character_data->model_flags & 0x2000) != 0) {
+                if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
                     AddGameDebrisMomentum(WORLD->game_debris_sys, debris[i], &object->collision_position, &momentum, &momentum);
                 } else {
                     AddGameDebris(WORLD->game_debris_sys, debris[i], &object->collision_position);
@@ -2575,7 +2579,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         }
         ++speeder_hitpoints_lost;
     }
-    if ((object->character_data->model_flags & 0x2000) == 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
         object->velocity.x = 0.0f;
         object->velocity.z = 0.0f;
     } else {
@@ -2611,7 +2615,8 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
                 --object->torpedo->count;
             }
         }
-        if (object->dead == 0 || (object->flags_1fc_word & 0x80) == 0 || (object->character_data->model_flags & 0x2000) == 0 ||
+        if (object->dead == 0 || (object->flags_1fc_word & 0x80) == 0 ||
+            (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 ||
             (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0)) {
             GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
         }
@@ -2937,7 +2942,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
     i32 render_index;
     i32 part_index = 0;
     i32 retry = 0;
-    if ((object->character_data->model_flags & 0x02000000) != 0 || (object->character_data->game_character->flags_090 & 0x8000) != 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_NO_KILL_PARTS) != 0 ||
+        (object->character_data->game_character->flags_090 & 0x8000) != 0) {
         return;
     }
     if (((i16)object->id) == id_BOBAFETT && WORLD->current_level == SARLACCPITA_LDATA && FreePlay == 0 && object->unknown_280 == 0xff) {
@@ -2946,7 +2952,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
 
     GameAudio_PlaySfx(0x4f, &object->collision_position, 0, 0);
 
-    if ((object->character_data->model_flags & 0x04000000) != 0 && ((i16)object->id) != id_MINIDROIDEKA) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_MINIKIT) != 0 && ((i16)object->id) != id_MINIDROIDEKA) {
         i32 i;
         KILLPARTS_MINIKIT_PIECES *pieces = ((KILLPARTS_MINIKIT_PIECES **)Char_MiniKit)[((i16)object->id)];
         if (pieces == NULL) {
@@ -3029,7 +3035,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             if (render->rigid_specials[joint] == NULL) {
                 continue;
             }
-            if (VehicleArea != 0 && (object->character_data->model_flags & 0x2000) != 0 &&
+            if (VehicleArea != 0 && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 &&
                 object->character_data->game_character->unknown_028 > 0.0f) {
                 NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
                 SetKillPartMom(&momentum);
@@ -3048,7 +3054,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
                 if (animation != -1) {
                     momentum.y += 1.0f;
                 }
-                if ((object->character_data->model_flags & 0x2000) != 0) {
+                if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
                     momentum.x += object->velocity.x * 0.75f;
                     momentum.y += object->velocity.y * 0.75f;
                     momentum.z += object->velocity.z * 0.75f;
@@ -3093,7 +3099,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
         }
     }
 
-    if ((object->character_data->flags & 1) != 0 && VehicleArea != 0 && (object->character_data->model_flags & 0x2000) != 0 &&
+    if ((object->character_data->flags & 1) != 0 && VehicleArea != 0 &&
+        (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 &&
         object->character_data->game_character->unknown_028 > 0.0f) {
         NUSPECIALHANDLE *special = CharScene_FindHSpecial(WORLD, ((i16)object->id));
         if (special != NULL) {
@@ -3271,7 +3278,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
             goto attributed_hit;
         }
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && target->id == (u16)id_SPEEDERBIKE && !(0x80 & target->flags_1fc_word)) {
-            if (attacker && !(attacker->character_data->model_flags & 0x2000)) {
+            if (attacker && !(attacker->character_data->model_flags & CHARACTER_MODEL_VEHICLE)) {
                 damage = 0;
             } else if (target->ai_packet.creature_set != 2) {
                 damage = 0;
@@ -3320,7 +3327,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
             damage = 0;
         } else if (target->pad == ViewCamGetGamePad()) {
             damage = 0;
-        } else if ((target->character_data->model_flags & 0x20000000) && target->rider == NULL) {
+        } else if ((target->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) && target->rider == NULL) {
             damage = 0;
         } else if ((flags & 4) && !(target->flags_1fc_word & 0x80) && !(target->portal_flags & 0x08000000) && !StartupGameFlag1 &&
                    CombatHitReactionInterval != 0 && attacker != NULL && !(2 & target->flags_1fc_word)) {
@@ -3367,7 +3374,7 @@ impact:
                 GameAudio_PlaySfx(74, &target->collision_position, bits, 0);
             }
         } else if (attacker) {
-            if (attacker->character_data->model_flags & 8) {
+            if (attacker->character_data->model_flags & CHARACTER_MODEL_JEDI) {
                 GameAudio_PlaySfx(65, &target->collision_position, GameAudio_GetPlrSfxBits(attacker), 0);
             } else {
                 GameAudio_PlaySfx(74, &target->collision_position, 0, 0);
@@ -3384,7 +3391,7 @@ impact:
         target->spawn_protection_timer = 2.5f;
         goto finish;
     }
-    if ((target->character_data->model_flags & 0x10) && !target->current_hp && (flags & 0x40) && random_unit > 0.75f) {
+    if ((target->character_data->model_flags & CHARACTER_MODEL_DROID) && !target->current_hp && (flags & 0x40) && random_unit > 0.75f) {
         DeactivatePlayer(target, 5.0f, NULL);
         goto finish;
     }
@@ -3417,7 +3424,8 @@ impact:
     no_impact = 0;
     if (health <= 0) {
         no_impact = players_cannot_exit_speeder && target->id == (u16)id_SPEEDERBIKE && target->rider && target->unknown_280 != 0xff;
-        if ((target->character_data->model_flags & 0x20000000) && !ObjIsTargetSpeeder(target) && !no_impact) {
+        if ((target->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) && !ObjIsTargetSpeeder(target) &&
+            !no_impact) {
             coins = 0;
             if (((target->flags_1fc_word & 0x80)) && target->coin_packet && ((COMBAT_COINPACKET *)target->coin_packet)->coins &&
                 BonusWinner == -1) {
@@ -3431,7 +3439,8 @@ impact:
             goto hurt;
         }
     }
-    if ((target->character_data->model_flags & 0x40000000) && (health <= 0 || target->character_context == CHARACTER_CONTEXT_DEACTIVATED)) {
+    if ((target->character_data->model_flags & CHARACTER_MODEL_BEAST) &&
+        (health <= 0 || target->character_context == CHARACTER_CONTEXT_DEACTIVATED)) {
         goto refill;
     }
     if (health <= 0 && !((target->portal_flags & 0x08000000) && (!FreePlay || WORLD->current_level != CRUISERC_LDATA))) {
@@ -3565,7 +3574,7 @@ impact:
             GameCam_Judder(GameCam, 0.2f, 0, NULL);
         }
         if (attacker != NULL && (attacker->flags_1fc_word & 0x80) && (target->flags_1f8 & 1) &&
-            !(target->character_data->model_flags & 0x80000) && (flags & 4)) {
+            !(target->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) && (flags & 4)) {
             AdaptiveDifficultyChange(&adaptivedifficulty, CombatNpcKillDifficultyAmount);
         } else if ((target->flags_1fc_word & 0x80) && (flags & 2)) {
             AdaptiveDifficultyChange(&adaptivedifficulty, CombatPlayerDeathDifficultyAmount);
@@ -3593,7 +3602,7 @@ impact:
         if (target->saved_hitpoints < 1) {
             target->saved_hitpoints = 1;
         }
-        if ((target->character_data->model_flags & 0x20) && target->origin_joint_ready) {
+        if ((target->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) && target->origin_joint_ready) {
             i32 index = target->saved_hitpoints - 1;
             if (index > 2) {
                 index = 2;

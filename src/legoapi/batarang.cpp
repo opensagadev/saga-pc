@@ -1724,16 +1724,17 @@ extern "C" {
             object->ai_packet.capabilities |= 0x80;
         }
         object->ai_packet.capabilities |= 0x1000;
-        if ((character->model_flags & 0x40000) != 0) {
+        if ((character->model_flags & CHARACTER_MODEL_TELEPORT) != 0) {
             object->ai_packet.capabilities |= 0x10;
         }
-        if ((character->model_flags & 0x100000) != 0) {
+        if ((character->model_flags & CHARACTER_MODEL_ZIPUP) != 0) {
             object->ai_packet.capabilities |= 8;
         }
-        if ((character->model_flags & 0x2000) != 0) {
+        if ((character->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
             object->ai_packet.capabilities |= 0x10000;
         }
-        if ((character->model_flags & 0x88) != 0 || (character->game_character->flags_090 & 0x40) != 0) {
+        if ((character->model_flags & (CHARACTER_MODEL_JEDI | CHARACTER_MODEL_BLASTER)) != 0 ||
+            (character->game_character->flags_090 & 0x40) != 0) {
             object->ai_packet.capabilities |= 0x8000;
         }
         if (object->unknown_280 != 0xff) {

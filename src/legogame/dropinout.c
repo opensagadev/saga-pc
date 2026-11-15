@@ -100,7 +100,7 @@ void DropInOutCode(GAMEOBJECT *object) {
             object->position = other->position;
         }
         object->character_context = CHARACTER_CONTEXT_NONE;
-        if ((object->character_data->model_flags & 0x2000) == 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
             object->unknown_281 = 0;
             object->velocity.y = -0.1f;
         }
@@ -117,7 +117,7 @@ void StartDropIn(GAMEOBJECT *object) {
     }
 
     object->character_context = CHARACTER_CONTEXT_DROP_IN;
-    animation = (object->character_data->model_flags & 0x2000) == 0 ? 5 : 1;
+    animation = (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 ? 5 : 1;
     object->context_timer = 0.0f;
     object->context_duration = 0.5f;
     object->unknown_7aa = animation;

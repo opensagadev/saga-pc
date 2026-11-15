@@ -1765,7 +1765,8 @@ extern "C" {
             FindAndSetLights(reinterpret_cast<NUVEC *>(&world_matrix.m30), 1.0f, world->rtl_set);
         }
 
-        if ((character->flags & 0x20) == 0 && (character_data->model_flags & 0x10000) != 0 && (character->flags & 0x10) != 0) {
+        if ((character->flags & 0x20) == 0 && (character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 &&
+            (character->flags & 0x10) != 0) {
             reinterpret_cast<CUT_DRAW_HIERARCHY *>(hierarchy)->suppress_shadow_surface_points = 0;
         } else {
             reinterpret_cast<CUT_DRAW_HIERARCHY *>(hierarchy)->suppress_shadow_surface_points = 1;
@@ -1792,8 +1793,9 @@ extern "C" {
         i32 surface = -1;
         i32 platform = -1;
         i32 shadow_sampled = 0;
-        if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha > 0 && (character_data->model_flags & 0x10000) == 0 &&
-            PcWindowOptions.shadowmethod == 1 && PcWindowOptions.shadowsenabled != 0) {
+        if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha > 0 &&
+            (character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) == 0 && PcWindowOptions.shadowmethod == 1 &&
+            PcWindowOptions.shadowsenabled != 0) {
             i32 shadow_alpha;
             if (game_data->blob_shadow_alpha < 0xff) {
                 shadow_alpha = game_data->blob_shadow_alpha;

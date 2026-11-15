@@ -176,7 +176,8 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             object->unknown_db0 = 0.0f;
             return;
         }
-        if ((object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 && object->unknown_db0 <= 0.0f) {
+        if ((object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
+            object->unknown_db0 <= 0.0f) {
             PlaySfx("TC14_VLN", &object->collision_position);
             object->unknown_db0 = 0.5f;
         }

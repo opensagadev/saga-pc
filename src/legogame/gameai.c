@@ -308,7 +308,7 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
                         if (!ZapTarget(goody->owner)) {
                             OPPONENT_GAME((baddy->owner))->exclusion |= (u64)1 << goody->object_id;
                         }
-                    } else if ((goody->character_data->model_flags & 0x80000) ||
+                    } else if ((goody->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) ||
                                ((((u8 *)&baddy_object->portal_flags)[3] & 1) && goody->owner != player && goody->owner != player2) ||
                                (goody->owner->id == id_DRAGBOMB && baddy_id != (u16)id_ATAT)) {
                         OPPONENT_GAME(baddy_object)->exclusion |= (u64)1 << goody->object_id;
@@ -343,7 +343,7 @@ void GameCreatureOpponentSelection(AISYS_PC *system, i32 count, APIOBJECT **obje
                         }
                     }
                     if (baddy->owner->id == (u16)id_JAWA || baddy->owner->id == (u16)id_UGNAUGHT ||
-                        (baddy->character_data->model_flags & 0x80000)) {
+                        (baddy->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE)) {
                         OPPONENT_GAME((goody->owner))->exclusion |= (u64)1 << baddy->object_id;
                     }
                     if (!(OPPONENT_GAME((goody->owner))->exclusion & ((u64)1 << baddy->object_id))) {
@@ -539,10 +539,11 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
                 continue;
             }
             if (player->helmet == 5 || ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
-                                        (player->character_data->model_flags & 0x204) != 0 && player->takeover_source == NULL)) {
+                                        (player->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
+                                        player->takeover_source == NULL)) {
                 party_under_cover = 1;
             }
-            if ((player->character_data->model_flags & 0x80000) == 0) {
+            if ((player->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0) {
                 all_under_cover = 0;
             }
         }
@@ -1231,9 +1232,10 @@ void GameAILoad(AISYS_PC *system, i32 version, NUGSCN *unused2, VARIPTR *buffer,
 i32 AIRespawnOnPath(APIOBJECT *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     if (object->dead == 0 && (apiobject->ai->path_info.flags & 1) == 0 && (object->flags_1fc_word & 0x2000) != 0 &&
-        (object->character_data->model_flags & 0x400000) == 0 && object->objptr->character_context != CHARACTER_CONTEXT_DOOMED &&
-        object->objptr->takeover_source == NULL && object->respawn_timer > 2.0f) {
-        if ((object->character_data->model_flags & 0x200000) == 0) {
+        (object->character_data->model_flags & CHARACTER_MODEL_NO_OFFPATH_TELEPORT) == 0 &&
+        object->objptr->character_context != CHARACTER_CONTEXT_DOOMED && object->objptr->takeover_source == NULL &&
+        object->respawn_timer > 2.0f) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_CANNOT_BIG_JUMP) == 0) {
             StartBigJump(object->objptr, &object->respawn_position, 0, 0.5f, 1.0f, 0);
         } else {
             object->start_position = object->respawn_position;
@@ -1254,7 +1256,7 @@ i32 AIBigJumpToDestination(APIOBJECT *apiobject, NUVEC *destination) {
         owner = object->objptr;
         if (owner->takeover_source != NULL) {
             SnapCreaturePos(owner, destination, 0, NULL, 0);
-        } else if ((object->character_data->model_flags & 0x200000) == 0) {
+        } else if ((object->character_data->model_flags & CHARACTER_MODEL_CANNOT_BIG_JUMP) == 0) {
             StartBigJump(owner, destination, 0, 0.5f, 1.0f, 0);
         } else {
             object->start_position = *destination;
@@ -1894,7 +1896,7 @@ GAMEOBJECT *AddDynamicCreature(i32 model, NUVEC *position, i32 angle, char *scri
             object->flags_1f8 |= 1;
         }
         object->flags_1044 |= 1;
-        if ((apicharsys->char_data[model].model_flags & 0x1000) != 0) {
+        if ((apicharsys->char_data[model].model_flags & CHARACTER_MODEL_CAN_SHOOT_OFFSCREEN) != 0) {
             object->flags_1044 |= 4;
         }
         api->view_distance = apicharsys->char_data[model].game_character->viewdistance;
@@ -2313,12 +2315,13 @@ void GameAIProcess(void) {
             (object->dead == 0 || object->unknown_1010 > 0.0f) && (object->flags_ef3 & 1) == 0 && StartupGameFlag1 != 0 &&
             (NULL == VADER_ADATA || WORLD->area != VADER_ADATA) && party_cant_be_under_cover == 0) {
             if (object->helmet == 5 || ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
-                                        (object->character_data->model_flags & 0x204) != 0 && object->takeover_source == NULL)) {
+                                        (object->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
+                                        object->takeover_source == NULL)) {
                 if (alert_obj == NULL || alert_obj->unknown_280 == 0xff || (alert_obj->flags_ef3 & 1) != 0) {
                     party_under_cover = 1;
                 }
             }
-            if ((object->character_data->model_flags & 0x80000) == 0) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0) {
                 all_under_cover = 0;
             }
         }
@@ -2382,12 +2385,12 @@ void GameAIProcess(void) {
         }
 
         if (StartupGameFlag0 != 0) {
-            ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & 0x2000) != 0 ||
+            ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 ||
                             object->character_context == CHARACTER_CONTEXT_FLOAT;
         } else if (StartupGameFlag1 != 0) {
-            ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & 0x2000) != 0;
+            ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0;
         } else {
-            ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & 0x2000) != 0 ||
+            ground_checks = object->unknown_281 != 0 || (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 ||
                             object->character_context == CHARACTER_CONTEXT_TIGHTROPE ||
                             object->character_context == CHARACTER_CONTEXT_FLOAT;
             if (object->character_context == CHARACTER_CONTEXT_DEACTIVATED) {
@@ -2501,7 +2504,7 @@ void GameAIProcess(void) {
                        object->respawn_timer > jump_stuck_time) {
                 if (object->supporting_platform_id != -1 && connection != NULL &&
                     (connection->original_traversal_flags[0] & LEGO_AIPATHCNX_BLOCKAGE) != 0) {
-                    if ((object->character_data->model_flags & 0x88) != 0) {
+                    if ((object->character_data->model_flags & (CHARACTER_MODEL_JEDI | CHARACTER_MODEL_BLASTER)) != 0) {
                         object->pad->buttons_pressed |= GAMEPAD_ACTION;
                         object->respawn_timer = 0.0f;
                         GameObjectSetCanUse(object, NULL, 5, 0, 1.0f);

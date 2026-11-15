@@ -780,7 +780,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
     if (pickups == NULL) {
         return NULL;
     }
-    collide_2d = (object->character_data->model_flags & 0x2000) != 0 && VehicleArea != 0;
+    collide_2d = (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 && VehicleArea != 0;
     collide_scale = 0.0f;
     if (GizmoPickups_Collide2DFn != NULL) {
         collide_scale = GizmoPickups_Collide2DFn(object);

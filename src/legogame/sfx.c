@@ -458,17 +458,20 @@ void SetLevelSfxBits(WORLDINFO *world) {
 
         if (game_character->sfx_die != -1) {
             sfx_ids[sfx_count++] = game_character->sfx_die;
-        } else if ((character->model_flags & 0x44002010) == 0) {
+        } else if ((character->model_flags &
+                    (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) == 0) {
             ADD_GAME_SFX(((i32)(game_character->flags_090 << 14) >> 31) + 0x1c);
         }
         if (game_character->sfx_hurt != -1) {
             sfx_ids[sfx_count++] = game_character->sfx_hurt;
-        } else if ((character->model_flags & 0x44002010) == 0) {
+        } else if ((character->model_flags &
+                    (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) == 0) {
             ADD_GAME_SFX(((i32)(game_character->flags_090 << 14) >> 31) + 0x17);
         }
         if (game_character->sfx_grunt != -1) {
             sfx_ids[sfx_count++] = game_character->sfx_grunt;
-        } else if ((character->model_flags & 0x44002010) == 0) {
+        } else if ((character->model_flags &
+                    (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) == 0) {
             ADD_GAME_SFX(((i32)(game_character->flags_090 << 14) >> 31) + 0x15);
         }
 
@@ -491,7 +494,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             sfx_ids[sfx_count++] = game_character->sfx_misc[i];
         }
 
-        if ((character->model_flags & 0x40) != 0) {
+        if ((character->model_flags & CHARACTER_MODEL_ASTROMECH) != 0) {
             ADD_SFX("drd_r2_scope_up");
             ADD_SFX("drd_r2_scope_down");
             ADD_SFX("drd_r2_mvt_water_lp");
@@ -502,10 +505,10 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("TowCable_Detach");
             ADD_SFX("TowCable_Snap");
         }
-        if ((character->model_flags & 0x2000) != 0) {
+        if ((character->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
             ADD_SFX("XWing_Torpedo");
             ADD_SFX("env_tractorbeam_lp");
-            if ((character->model_flags & 0x04000000) == 0) {
+            if ((character->model_flags & CHARACTER_MODEL_MINIKIT) == 0) {
                 ADD_SFX("Explode1");
             }
         }
@@ -530,10 +533,10 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("ForceLightningLp");
         } else if ((game_character->flags_090 & 2) != 0) {
             ADD_SFX("ForceChokeCrunch");
-        } else if ((character->model_flags & 8) != 0) {
+        } else if ((character->model_flags & CHARACTER_MODEL_JEDI) != 0) {
             ADD_SFX("ForceMindTrick");
         }
-        if (game_character->weapon_action == 12 && (character->model_flags & 8) != 0 && id_GAMORREANGUARD != -1 &&
+        if (game_character->weapon_action == 12 && (character->model_flags & CHARACTER_MODEL_JEDI) != 0 && id_GAMORREANGUARD != -1 &&
             apicharsys->playermodelids[id_GAMORREANGUARD] != -1) {
             ADD_SFX("ForceChokeCrunch");
         }
@@ -552,11 +555,11 @@ void SetLevelSfxBits(WORLDINFO *world) {
                 ++effect;
             }
         }
-        if ((character->model_flags & 0x20) != 0) {
+        if ((character->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
             ADD_SFX("TC14_VLA");
             ADD_SFX("TC14_VLN");
         }
-        if ((character->model_flags & 0x40) != 0) {
+        if ((character->model_flags & CHARACTER_MODEL_ASTROMECH) != 0) {
             ADD_SFX("R2D2_VLA");
         }
     }

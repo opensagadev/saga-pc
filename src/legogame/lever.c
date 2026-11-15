@@ -139,9 +139,9 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 return;
             }
         }
-        if ((object->character_data->model_flags & 4) != 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_BADDIE) != 0) {
             ((GIZMO_LEVER *)object->grapple)->flags |= 8;
-        } else if ((object->character_data->model_flags & 0x200) == 0) {
+        } else if ((object->character_data->model_flags & CHARACTER_MODEL_NEUTRAL) == 0) {
             ((GIZMO_LEVER *)object->grapple)->flags |= 4;
         }
         ((GIZMO_LEVER *)object->grapple)->flags |= 0x800;

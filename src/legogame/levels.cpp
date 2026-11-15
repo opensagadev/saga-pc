@@ -498,11 +498,11 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
     if ((ADataList[area].flags & AREAFLAG_VEHICLE_AREA) != 0) {
         i16 second = PlayerList[1];
         if ((ADataList[area].flags & AREAFLAG_BONUS_AREA) != 0) {
-            if (second == -1 || (CDataList[second].model_flags & 0x4000000) == 0 || Collection_Got(second) == 0) {
+            if (second == -1 || (CDataList[second].model_flags & CHARACTER_MODEL_MINIKIT) == 0 || Collection_Got(second) == 0) {
                 PlayerList[1] = PlayerList[0];
             }
         } else {
-            if (second == -1 || (CDataList[second].model_flags & 0x2000) == 0 || Collection_Got(second) == 0) {
+            if (second == -1 || (CDataList[second].model_flags & CHARACTER_MODEL_VEHICLE) == 0 || Collection_Got(second) == 0) {
                 PlayerList[1] = PlayerList[0];
             }
             index = 0;
@@ -554,7 +554,7 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
                 if (InModelListDataFlags(FreePlayModelList, CharCategory[index].model_flags, CharCategory[index].game_flags, 0, 1) != 0) {
                     continue;
                 }
-                if (hats == 0 || (StartupGameFlag1 != 0 && (CharCategory[index].model_flags & 0x80) != 0)) {
+                if (hats == 0 || (StartupGameFlag1 != 0 && (CharCategory[index].model_flags & CHARACTER_MODEL_BLASTER) != 0)) {
                     model = RandomIDFromFlags(CharCategory[index].model_flags, CharCategory[index].game_flags, 1, NULL, 1);
                     if (model != -1) {
                         hats = 1;

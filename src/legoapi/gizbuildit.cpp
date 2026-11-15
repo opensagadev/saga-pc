@@ -1704,7 +1704,7 @@ extern "C" {
         if (LEGOCONTEXT_BUILDIT == -1) {
             return;
         }
-        if ((player->character_data->model_flags & 0x2010) != 0) {
+        if ((player->character_data->model_flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE)) != 0) {
             return;
         }
         if (player->character_context == LEGOCONTEXT_BUILDIT) {

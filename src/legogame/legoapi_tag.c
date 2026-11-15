@@ -331,7 +331,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             }
             if (WORLD->current_level == VADERC_LDATA || (source->flags_1fc_word & 0x80) != 0) {
                 source->current_hp = destination_hp;
-            } else if ((source->character_data->model_flags & 0x20) != 0) {
+            } else if ((source->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                 source->current_hp = (i8)source->saved_hitpoints;
             } else {
                 source->current_hp = (i8)source->unknown_107e;
@@ -801,7 +801,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
             if ((candidate->flags_1fc_word & 1) == 0 || (candidate->flags_1fc_word & 0x1000) == 0 || candidate->dead != 0 ||
                 candidate->unknown_280 != 0xff || (U64_PAIR(&CInfo[candidate->character_context].flags) & 0x8000) != 0 ||
                 candidate->rider != NULL || (candidate->character_data->game_character->flags_090 & 0x40) == 0 ||
-                ((candidate->character_data->model_flags & 0x40000000) != 0 &&
+                ((candidate->character_data->model_flags & CHARACTER_MODEL_BEAST) != 0 &&
                  (candidate->character_context == CHARACTER_CONTEXT_DEACTIVATED ||
                   candidate->character_context == CHARACTER_CONTEXT_BUCK)) ||
                 (candidate->tag_flags & 2) != 0) {

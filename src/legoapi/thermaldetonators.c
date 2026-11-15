@@ -331,7 +331,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
         (object->pad->buttons_pressed & GAMEPAD_SPECIAL) == 0) {
         return 0;
     }
-    if (((object->character_data->model_flags & 0x1000000) == 0 && object->helmet != 6 && !SuperWeirdo(object)) ||
+    if (((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) == 0 && object->helmet != 6 && !SuperWeirdo(object)) ||
         (object->unknown_281 == 0 && object->jump_variant_state != 1)) {
         return 0;
     }

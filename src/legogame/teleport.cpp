@@ -449,7 +449,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
     TELEPORT_MOTION *teleport;
     i32 start_index;
     i32 end_index;
-    if ((object->character_data->model_flags & 0x40000) == 0 && SuperWeirdo(object) == 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_TELEPORT) == 0 && SuperWeirdo(object) == 0) {
         return;
     }
     if (object->character_context == CHARACTER_CONTEXT_TELEPORT) {

@@ -37,6 +37,39 @@ struct animpacket_s;
 struct apicharactermodellist_s;
 struct numtx_s;
 
+/* characterdata_s.model_flags: the keywords of a character's config file (CC_* handlers of charconfig.c).
+   0x2 and 0x800000 are set elsewhere; their meaning is not known yet. */
+#define CHARACTER_MODEL_CONFIGURED 0x1                         /* set once the character config has been read */
+#define CHARACTER_MODEL_BADDIE 0x4                             /* baddie */
+#define CHARACTER_MODEL_JEDI 0x8                               /* jedi */
+#define CHARACTER_MODEL_DROID 0x10                             /* droid */
+#define CHARACTER_MODEL_PROTOCOL 0x20                          /* protocol (with CHARACTER_MODEL_DROID) */
+#define CHARACTER_MODEL_ASTROMECH 0x40                         /* astromech (with CHARACTER_MODEL_DROID) */
+#define CHARACTER_MODEL_BLASTER 0x80                           /* blaster (with CHARACTER_MODEL_CAN_FIRE) */
+#define CHARACTER_MODEL_ORIENTATE 0x100                        /* orientate */
+#define CHARACTER_MODEL_NEUTRAL 0x200                          /* neutral */
+#define CHARACTER_MODEL_CAN_OPEN_DOORS 0x400                   /* can_open_doors */
+#define CHARACTER_MODEL_NON_STICK 0x800                        /* non_stick */
+#define CHARACTER_MODEL_CAN_SHOOT_OFFSCREEN 0x1000             /* can_shoot_offscreen */
+#define CHARACTER_MODEL_VEHICLE 0x2000                         /* vehicle */
+#define CHARACTER_MODEL_DONT_PUSH 0x4000                       /* dontpush */
+#define CHARACTER_MODEL_JETPACK 0x8000                         /* jetpack */
+#define CHARACTER_MODEL_COMPLEX_SHADOW 0x10000                 /* complex_shadow */
+#define CHARACTER_MODEL_OLD_HEAD_MOVEMENT 0x20000              /* oldheadmovement */
+#define CHARACTER_MODEL_TELEPORT 0x40000                       /* teleport */
+#define CHARACTER_MODEL_UNTARGETABLE 0x80000                   /* untargetable */
+#define CHARACTER_MODEL_ZIPUP 0x100000                         /* zipup */
+#define CHARACTER_MODEL_CANNOT_BIG_JUMP 0x200000               /* cannotbigjump */
+#define CHARACTER_MODEL_NO_OFFPATH_TELEPORT 0x400000           /* no_offpath_teleport */
+#define CHARACTER_MODEL_BOUNTY_HUNTER 0x1000000                /* bounty_hunter */
+#define CHARACTER_MODEL_NO_KILL_PARTS 0x2000000                /* no_kill_parts */
+#define CHARACTER_MODEL_MINIKIT 0x4000000                      /* minikit, minikit_with_scene */
+#define CHARACTER_MODEL_RESPAWN 0x8000000                      /* respawn */
+#define CHARACTER_MODEL_CAN_FIRE 0x10000000                    /* can_fire */
+#define CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER 0x20000000 /* only_active_when_taken_over */
+#define CHARACTER_MODEL_BEAST 0x40000000                       /* beast */
+#define CHARACTER_MODEL_PREFERS_BRAWLING 0x80000000            /* prefers_brawling */
+
 typedef struct characterdata_s {               // size 0x4c
     i32 name_id;                               // 0x00
     u32 model_flags;                           // 0x04

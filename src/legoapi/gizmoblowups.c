@@ -1946,7 +1946,7 @@ i32 GizmoBlowupCheckProximity(WORLDINFO *world, GAMEOBJECT *object) {
     if (object == NULL || (object->flags_1fc & 0x80) == 0) {
         return 0;
     }
-    if ((object->character_data->model_flags & 0x2000) != 0 || object->takeover_source != NULL) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 || object->takeover_source != NULL) {
         special = 1;
     } else {
         normal = 1;

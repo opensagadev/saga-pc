@@ -567,12 +567,12 @@ static i32 GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *r
 
 static i32 Fighting_WeaponInAction_Game(GAMEOBJECT *object) {
     CHARACTERDATA_PC *data = object->character_data;
-    return data->game_character->weapon_action == 0 && (data->model_flags & 0x80) != 0 ? 126 : 16;
+    return data->game_character->weapon_action == 0 && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 126 : 16;
 }
 
 static i32 Fighting_WeaponOutAction_Game(GAMEOBJECT *object) {
     CHARACTERDATA_PC *data = object->character_data;
-    return data->game_character->weapon_action == 0 && (data->model_flags & 0x80) != 0 ? 127 : 17;
+    return data->game_character->weapon_action == 0 && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 127 : 17;
 }
 
 static void GameMsg_EndDelay_Game(GAME_MESSAGE_PC *message) {
@@ -1776,9 +1776,9 @@ extern "C" void CheckResetBits(void) {
             } else if (AIScriptFind(WORLD->ai_sys, (*player_slot)->character_data->name, 0, 1, 0) != NULL) {
                 sprintf(script_name, (*player_slot)->character_data->name);
             } else {
-                if (((*player_slot)->character_data->model_flags & 8) != 0) {
+                if (((*player_slot)->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
                     sprintf(script_name, AreaFixUpName_Jedi);
-                } else if (((*player_slot)->character_data->model_flags & 0x80) != 0) {
+                } else if (((*player_slot)->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
                     sprintf(script_name, "Blaster");
                 } else {
                     sprintf(script_name, "NoWeapon");
@@ -2026,7 +2026,7 @@ extern "C" {
                 continue;
             }
             if (three_dimensional != 0) {
-                if ((api->character_data->model_flags & 0x2000) != 0 && (part->flags & 0x40) != 0) {
+                if ((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 && (part->flags & 0x40) != 0) {
                     goto collect_pickup;
                 }
                 if (minimum.y > api->collision_max.y || maximum.y < api->collision_min.y) {
@@ -2114,7 +2114,7 @@ extern "C" {
                     CollectPowerUp(object, &part->position, part->rotation_y, 1);
                     KillPart(part, 2);
                 } else if (part->unknown_206 == 3) {
-                    if ((api->character_data->model_flags & 0x2000) == 0) {
+                    if ((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
                         continue;
                     }
                     if (object->torpedo == NULL) {

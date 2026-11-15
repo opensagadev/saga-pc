@@ -254,7 +254,7 @@ void UpdatePlayerCameraOcclusion(void) {
             if (FadeSys.fade != 0.0f || object->dead != 0 || object->character_context == CHARACTER_CONTEXT_DOOMED ||
                 object->hud_icon_timer > 0.0f || GetMenuID() != -1 || object->character_context == CHARACTER_CONTEXT_TELEPORT ||
                 object->rider != NULL || (object->unknown_e24 & 8) == 0 ||
-                ((object->character_data->model_flags & 0x40) != 0 && object->communicate_blend > 0.0f)) {
+                ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 && object->communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
                 object->flags_ef0 &= ~0x180000u;
@@ -539,7 +539,7 @@ mode_selected:
                     (netcamera && (object->flags_1f8 & 0x40000) != 0) || (BonusWinner != -1 && BonusWinner != i)) {
                     continue;
                 }
-                vehicle_player[i] = object->character_data->model_flags & 0x2000;
+                vehicle_player[i] = object->character_data->model_flags & CHARACTER_MODEL_VEHICLE;
                 counts_as_vehicle = !(SPEEDERCHASEA_LDATA != NULL && WORLD->current_level == SPEEDERCHASEA_LDATA &&
                                       (i16)object->id == id_SPEEDERBIKE && disable_narrow_socks);
                 if (vehicle_player[i] && counts_as_vehicle) {
@@ -578,7 +578,7 @@ mode_selected:
                     }
                 }
                 memcpy(&player_positions[player_count], source_position, sizeof(NUVEC));
-                if ((object->character_data->model_flags & 0x2000) != 0) {
+                if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
                     if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
                         player_roll[player_count] = ((i32)(getPodRoll(i) * 8192.0f));
                     } else {

@@ -23,5 +23,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | layout asserts deleted | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % (newly fragile: two asserts fewer in the unit) |
 | layout asserts deleted | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
 | area and level flag names | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
-| character context names | BoulderSpawn | legogame/episodeIII.c | different | exact |
 | character context names | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | different | exact |

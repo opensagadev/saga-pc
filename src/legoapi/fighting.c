@@ -79,11 +79,11 @@ void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
             (object->character_model->animation_configs[animation]->flags & 0x400) == 0) {
-            if (object->character_data->model_flags & 8) {
+            if (object->character_data->model_flags & CHARACTER_MODEL_JEDI) {
                 if (object->unknown_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
                     GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
                 }
-            } else if (object->character_data->model_flags & 0x80) {
+            } else if (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) {
                 GameAudio_PlaySfx(0x43, &object->collision_position, 0, 1);
             }
         }
@@ -161,7 +161,7 @@ void WeaponOutCode(GAMEOBJECT *object) {
     end = AnimListFrame(object->character_model, object->unknown_7aa, 1);
     object->unknown_e33 = 1;
     ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->unknown_7aa, start, end, 0);
-    if ((object->character_data->model_flags & 8) != 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         if (object->unknown_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
         }
@@ -198,11 +198,11 @@ void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
         animation = CurrentAnim(&object->anim_packet);
         if (animation == -1 || object->character_model->animation_configs[animation] == NULL ||
             (object->character_model->animation_configs[animation]->flags & 0x800) == 0) {
-            if (object->character_data->model_flags & 8) {
+            if (object->character_data->model_flags & CHARACTER_MODEL_JEDI) {
                 if (object->unknown_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
                     GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
                 }
-            } else if (object->character_data->model_flags & 0x80) {
+            } else if (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) {
                 GameAudio_PlaySfx(0x42, &object->collision_position, 0, 1);
             }
         }
@@ -283,7 +283,7 @@ void WeaponInCode(GAMEOBJECT *object) {
     end = AnimListFrame(object->character_model, object->unknown_7aa, 1);
     object->unknown_e33 = 2;
     ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->unknown_7aa, start, end, 0);
-    if ((object->character_data->model_flags & 8) != 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         if (object->unknown_280 != 0xff || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
         }

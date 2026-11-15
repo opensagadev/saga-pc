@@ -212,7 +212,7 @@ void RememberPlayerIDs(i32 force, i32 first_id, i32 second_id) {
     ids[1] = second_id;
     for (index = 0; index < 2; ++index) {
         i32 id = ids[index];
-        if (id != -1 && (CDataList[id].model_flags & 0x2000) == 0 && id != PlayerID[index] && Collection_Got(id) == 1 &&
+        if (id != -1 && (CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) == 0 && id != PlayerID[index] && Collection_Got(id) == 1 &&
             GCDataList[id].hover_fall_mode != 0 && id != PlayerID[(index - 1) & 1]) {
             PlayerID[index] = id;
         }
@@ -581,7 +581,8 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
             goto next_character;
         }
         if (VehicleArea != 0) {
-            if ((CDataList[id].model_flags & 0x2000) == 0 && !(BonusArea != 0 && (CDataList[id].model_flags & 0x4000000) != 0) &&
+            if ((CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
+                !(BonusArea != 0 && (CDataList[id].model_flags & CHARACTER_MODEL_MINIKIT) != 0) &&
                 (GCDataList[id].flags_090 & 0x80000000) == 0 &&
                 !(BonusArea != 0 && Cheats_CheckFlags(0x100) != 0 && (GCDataList[id].flags_094 & 0x2000000) != 0)) {
                 goto next_character;
@@ -601,7 +602,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                     goto next_character;
                 }
             }
-        } else if ((CDataList[id].model_flags & 0x2000) != 0 || (GCDataList[id].flags_090 & 0x40) != 0) {
+        } else if ((CDataList[id].model_flags & CHARACTER_MODEL_VEHICLE) != 0 || (GCDataList[id].flags_090 & 0x40) != 0) {
             goto next_character;
         }
         if (BonusArea == 0 || VehicleArea == 0) {
@@ -828,7 +829,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         if ((f64)surface_y == 2000000.0) {
             surface_y = GetHoverPosY(object);
         }
-        if (snap_to_surface != 0 && (object->character_data->model_flags & 0x2000) == 0) {
+        if (snap_to_surface != 0 && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
             SetObjOnSurface(object, 0);
         } else if ((f64)surface_y != 2000000.0) {
             object->position.y = surface_y;
@@ -856,7 +857,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         ResetPlayerAI(object);
         object->last_safe_position = object->position;
         object->ai_update_position = object->position;
-        if ((object->character_data->model_flags & 0x2000) != 0) {
+        if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
             object->in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
             object->unknown_dc8 = GetVehicleSpeedMul(object, 0.0f);
         } else {

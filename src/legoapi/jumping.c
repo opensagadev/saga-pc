@@ -138,7 +138,7 @@ i32 StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f
     if (LEGOCONTEXT_BIGJUMP == -1) {
         return 0;
     }
-    if ((object->character_data->model_flags & 0x200000) != 0) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_CANNOT_BIG_JUMP) != 0) {
         return 0;
     }
     Player_ClearContext(object, 0);
@@ -353,7 +353,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
             if (frame > 0.0f) {
                 f32 *time = AnimPlaying(&object->anim_packet, object->unknown_7aa, 1, 0);
                 if (time != NULL && *time >= frame) {
-                    if ((object->character_data->model_flags & 8) != 0) {
+                    if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
                         ComboHitFrame(object, 1);
                     } else {
                         Punch_Hit(object, object->force_target, PUNCHCHARGAP, PUNCHCHARGAP);
@@ -416,7 +416,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 return;
             }
             if (LEGOCONTEXT_LAND_LUNGE != -1 && object->character_context == LEGOCONTEXT_LAND_LUNGE &&
-                (object->context_variant_flags & 0x40) == 0 && (object->character_data->model_flags & 8) != 0) {
+                (object->context_variant_flags & 0x40) == 0 && (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
                 ComboHitFrame(object, 1);
             }
             if ((object->character_context == LEGOCONTEXT_LAND_LUNGE || object->character_context == LEGOCONTEXT_LAND_SLAM) &&
@@ -504,7 +504,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                     if (state == 3) {
                         if (!(LEGOCONTEXT_LAND_LUNGE != -1 && LEGOACT_LUNGELAND != -1 &&
                               object->character_model->model_data_b[LEGOACT_LUNGELAND] != NULL)) {
-                            if ((object->character_data->model_flags & 8) == 0) {
+                            if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0) {
                                 Punch_Hit(object, object->force_target, PUNCHCHARGAP, PUNCHCHARGAP);
                                 object->character_context = CHARACTER_CONTEXT_NONE;
                                 aux->jump_reentry_timer = 0.2f;
@@ -525,7 +525,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                             if (!restart_jump) {
                                 ResetAnimPacket(&object->anim_packet, -1);
                             }
-                            if ((object->character_data->model_flags & 8) == 0 &&
+                            if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0 &&
                                 AnimListFrame(object->character_model, object->unknown_7aa, 0) == 0.0f) {
                                 Punch_Hit(object, object->force_target, PUNCHCHARGAP, PUNCHCHARGAP);
                             }
@@ -682,7 +682,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 PLAYERCHARACTERCONFIG *game_character;
                 i32 can_start_second_jump;
                 if (action_pressed != 0 && object->velocity.y > -1.25f &&
-                    (object->character_data->game_character->hover_fall_mode != 0 || (object->character_data->model_flags & 8) != 0) &&
+                    (object->character_data->game_character->hover_fall_mode != 0 ||
+                     (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) &&
                     movement_state == 0 && (object->context_variant_flags & 0x8000) == 0 && object->jump_sequence < 2 &&
                     LEGOACT_LUNGE != -1 && object->character_model->model_data_b[LEGOACT_LUNGE] != NULL) {
                     object->force_target = NULL;

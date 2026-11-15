@@ -785,7 +785,7 @@ void CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
     if (object->saved_hitpoints < 4) {
         ++object->saved_hitpoints;
     }
-    if (object->character_data->model_flags & 0x2000) {
+    if (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) {
         NuVecScale(&momentum, &object->velocity, 0.5f);
         AddGameDebrisMom(WORLD->game_debris_sys, 0x10, position, 15, &momentum);
     } else {

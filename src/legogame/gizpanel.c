@@ -282,14 +282,19 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL *panel) {
     if (SuperWeirdo(object) != 0) {
         return 1;
     }
+
     switch (panel->model_variant) {
         case 0:
-            if ((object->character_data->model_flags & 0x40) != 0 || (object->character_data->model_flags & 0x1000010) == 0x1000010) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 ||
+                (object->character_data->model_flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) ==
+                    (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) {
                 return 1;
             }
             break;
         case 1:
-            if ((object->character_data->model_flags & 0x20) != 0 || (object->character_data->model_flags & 0x1000010) == 0x1000010) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 ||
+                (object->character_data->model_flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) ==
+                    (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) {
                 return 1;
             }
             break;
@@ -306,7 +311,7 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL *panel) {
             }
             break;
         case 2:
-            if ((object->character_data->model_flags & 0x1000000) != 0 || object->helmet == 6) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) != 0 || object->helmet == 6) {
                 return 1;
             }
             break;
@@ -832,7 +837,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                 ((PANEL_MOVEMENT *)object->grapple)->flags &= (u8)~1;
                 ((PANEL_MOVEMENT *)object->grapple)->flags |= 2;
                 object->grapple = NULL;
-            } else if ((object->character_data->model_flags & 0x20) != 0) {
+            } else if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                 SetProtocolDroidInterfaceAction(object);
             }
         }
@@ -882,7 +887,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                 if (!InStory() || (((PANEL_MOVEMENT *)object->grapple)->draw_flags & 4) == 0) {
                     GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
-                if ((object->character_data->model_flags & 0x20) != 0) {
+                if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                     SetProtocolDroidInterfaceAction(object);
                 }
             } else {
@@ -901,7 +906,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             }
             object->unknown_db0 = 0.0f;
         }
-    } else if (use != 0 && (object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & 0x20) != 0 &&
+    } else if (use != 0 && (object->flags_1fc & 0x80) != 0 && (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 &&
                object->unknown_db0 <= 0.0f) {
         GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->unknown_280);
         object->unknown_db0 = 0.5f;

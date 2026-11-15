@@ -983,7 +983,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         FindAnglesXY(&direction, NULL, NULL);
         if (((bolt->flags & 0x40) == 0 || deflect) && (object->flags_1fc & 0x80) != 0 &&
             ((BoltBlockContext != -1 && object->character_context == BoltBlockContext) || cheat_deflect) &&
-            (object->character_data->model_flags & 8) != 0) {
+            (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
             if (bolt->owner == NULL || (bolt->owner->flags_1fc_word & 1) == 0 ||
                 ((bolt->owner->flags_1fc_word & 1) != 0 && (bolt->owner->flags_1fc_word & 0x1000) != 0 && bolt->owner->dead == 0)) {
                 goto reflected;
@@ -1010,8 +1010,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         }
     } else if (object->origin_scale_override == 1.0f ||
                ((object->character_data->game_character->flags_094 & 0x4000000) != 0 && VehicleArea != 0 && BonusArea != 0) ||
-               (object->current_hp == 0 && (object->character_data->model_flags & 0x2000) != 0) ||
-               ((object->character_data->model_flags & 0x20000000) != 0 && object->rider == NULL)) {
+               (object->current_hp == 0 && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) ||
+               ((object->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) != 0 && object->rider == NULL)) {
         if ((bolt->flags & 0x4000000) != 0) {
             BoltSys->debris(bolt, points, hit, &object->velocity, 0);
             ObjHitShield(bolt->owner, object, type->unknown_3c, bolt);
@@ -1058,7 +1058,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         if ((bolt->flags & 0x800000) != 0 &&
             (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x10000000) == 0 &&
             (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->character_context].flags & 0x8000) == 0 &&
-            (object->character_data->model_flags & 0x10) != 0 && BoltDeactivatedAction != -1 &&
+            (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0 && BoltDeactivatedAction != -1 &&
             object->character_model->model_data_b[BoltDeactivatedAction] != NULL) {
             DeactivatePlayer(object, DEACTIVATEDTIME, NULL);
             if (bolt->owner != NULL) {
@@ -1434,7 +1434,8 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     }
     f32 back_distance;
     if (owner != NULL) {
-        if ((owner->character_data->model_flags & 0x2000) == 0 && (owner->character_data->game_character->flags_090 & 0x80) == 0) {
+        if ((owner->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 &&
+            (owner->character_data->game_character->flags_090 & 0x80) == 0) {
             back_distance = owner->collision_radius * 3.0f;
         } else {
             back_distance = owner->collision_radius;
@@ -1795,7 +1796,7 @@ extern "C" {
             GAMEOBJECT *target = object->field_ea0_target;
             intercept_position = &target->collision_position;
             velocity = &target->velocity;
-            if ((object->character_data->model_flags & 0x2000) == 0 && (object->flags_1f8 & 1) != 0) {
+            if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 && (object->flags_1f8 & 1) != 0) {
                 adjusted_position = target->collision_position;
                 adjusted_position.y += Bolt_ObjTargetPosYAdjust(target);
                 target_position = &adjusted_position;

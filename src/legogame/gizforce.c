@@ -1689,7 +1689,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
         if (fields->using_object != NULL || fields->unavailable_flags != 0) {
             continue;
         }
-        if ((fields->config_flags & 0x10) && !(object->character_data->model_flags & 4) && !super_force) {
+        if ((fields->config_flags & 0x10) && !(object->character_data->model_flags & CHARACTER_MODEL_BADDIE) && !super_force) {
             continue;
         }
         group = fields->group;

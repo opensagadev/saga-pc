@@ -179,7 +179,7 @@ i32 ObjIsTargetSpeeder(GAMEOBJECT *object) {
 }
 
 i32 fun_004c9210(GAMEOBJECT *object) {
-    if (object != NULL && (object->character_data->model_flags & 0x2000) != 0) {
+    if (object != NULL && (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
         return 0;
     }
     return 1;

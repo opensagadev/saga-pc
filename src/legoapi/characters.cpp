@@ -416,7 +416,7 @@ extern "C" {
         }
         category = &CharCategory[index];
         if (category->model_flags != 0) {
-            if ((category->model_flags & 8) != 0 && (object->character_data->game_character->flags_094 & 0x8000) != 0) {
+            if ((category->model_flags & CHARACTER_MODEL_JEDI) != 0 && (object->character_data->game_character->flags_094 & 0x8000) != 0) {
                 return 0;
             }
             if ((object->character_data->model_flags & category->model_flags) != category->model_flags) {

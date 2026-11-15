@@ -524,8 +524,8 @@ void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
                 if (category != 0 || (customiser->piece_sets[1][selection[1]].availability_flags & 1) == 0) {
                     character->model_flags |= customiser->piece_sets[category][selection[category]].model_flags;
                 }
-                if ((character->model_flags & 0x80) != 0) {
-                    character->model_flags |= 0x10000000;
+                if ((character->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
+                    character->model_flags |= CHARACTER_MODEL_CAN_FIRE;
                 }
                 config->flags_090 |= customiser->piece_sets[category][selection[category]].gameplay_flags;
             }
