@@ -291,9 +291,9 @@ static NUVEC *GetTorpTargetPositionAndRadius(void *target, u8 target_type, f32 *
         switch (target_type) {
             case 0:
                 if (radius != NULL) {
-                    *radius = ((GIZMOBLOWUP_PC *)target)->target_scale;
+                    *radius = ((GIZMOBLOWUP *)target)->target_scale;
                 }
-                return &((GIZMOBLOWUP_PC *)target)->mid_position;
+                return &((GIZMOBLOWUP *)target)->mid_position;
             case 1:
                 if (radius != NULL) {
                     *radius = NuSpecialGetOriginRadius(&((TORPEDO_TURRET_QUERY *)target)->primary_anim_obj->special);
@@ -432,7 +432,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     nearest = NULL;
     type = 0;
     for (index = 0; index < world->gizmo_blowup_count; ++index) {
-        GIZMOBLOWUP_PC *blowup = &world->gizmo_blowups[index];
+        GIZMOBLOWUP *blowup = &world->gizmo_blowups[index];
         f32 distance;
         if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 || (blowup->status_flags & 0x8000) == 0 ||
             (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 || (blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 ||
@@ -485,7 +485,7 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     return NULL;
 }
 
-void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET *packet) {
+void HomeNearestTorpTarget(BOLT *bolt, TORPEDOPACKET *packet) {
     BOLTTYPE *type = BoltType_FindByID(15, WORLD);
     void *target;
     u8 target_type;
@@ -515,7 +515,7 @@ void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET *packet) {
     if (target != NULL) {
         switch (target_type) {
             case 0:
-                target_position = &((GIZMOBLOWUP_PC *)target)->mid_position;
+                target_position = &((GIZMOBLOWUP *)target)->mid_position;
                 break;
             case 1:
                 target_position = NuSpecialGetDrawPos(&((TORPEDO_TURRET_QUERY *)target)->primary_anim_obj->special);
@@ -561,7 +561,7 @@ void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET *packet) {
     }
 }
 
-void Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
+void Torpedo_InitRicochet(BOLT *bolt, NUVEC *position) {
     if (bolt != NULL && bolt->owner != NULL && bolt->owner->torpedo != NULL) {
         TORPEDOPACKET *packet = bolt->owner->torpedo;
         if (packet->target != NULL) {
@@ -577,7 +577,7 @@ void Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
     }
 }
 
-void Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET *packet) {
+void Torpedo_Ricochet(BOLT *bolt, TORPEDOPACKET *packet) {
     NUVEC axis;
     NUMTX matrix;
     f32 lengths;
@@ -615,7 +615,7 @@ void Torpedo_Ricochet(BOLT_PC *bolt, TORPEDOPACKET *packet) {
     bolt->lifetime = (f32)(bolt->time + (f64)0.0001f);
 }
 
-void TorpedoHitTarget(BOLT_PC *bolt) {
+void TorpedoHitTarget(BOLT *bolt) {
     TORPEDOPACKET *packet;
     NUVEC *target_position;
     NUVEC delta;
@@ -659,14 +659,14 @@ void DrawGameMessage_Targets(GAME_MESSAGE *message, NUVEC *position, f32 scale) 
 void fun_004d3450(void) {
 }
 
-void Torpedo_InitBolt(BOLT_PC *bolt) {
+void Torpedo_InitBolt(BOLT *bolt) {
     if (bolt->owner != NULL && bolt->owner->torpedo != NULL) {
         HomeNearestTorpTarget(bolt, bolt->owner->torpedo);
         bolt->flags &= ~4U;
     }
 }
 
-void Torpedo_UpdateBolt(BOLT_PC *bolt) {
+void Torpedo_UpdateBolt(BOLT *bolt) {
     if (bolt->owner == NULL || bolt->owner->torpedo == NULL) {
         return;
     }
@@ -696,7 +696,7 @@ void Torpedo_UpdateBolt(BOLT_PC *bolt) {
     }
 }
 
-f32 Torpedo_Scale(BOLT_PC *bolt) {
+f32 Torpedo_Scale(BOLT *bolt) {
     if (bolt != NULL && bolt->owner != NULL) {
         f32 scale = 2.0f * bolt->owner->bounds_radius;
         return scale;
@@ -704,7 +704,7 @@ f32 Torpedo_Scale(BOLT_PC *bolt) {
     return 3.0f;
 }
 
-void Torpedo_EndBolt(BOLT_PC *bolt) {
+void Torpedo_EndBolt(BOLT *bolt) {
     f32 judder;
     TorpedoHitTarget(bolt);
     judder = qrand() < 0x8000 ? 0.4f : -0.4f;
@@ -730,7 +730,7 @@ void Torpedo_Shoot(GAMEOBJECT *object) {
     }
 }
 
-i32 PartDraw_Torp(PART_PC *part) {
+i32 PartDraw_Torp(PART *part) {
     i32 draw = PartDraw_Flickerer(part);
     if (draw != 0 && WORLD->level_objects[0x7b].active != 0) {
         NUMTX matrix = part->transform;

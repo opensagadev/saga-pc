@@ -759,7 +759,7 @@ extern "C" {
         }
     }
 
-    void GizmoBuildit_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    void GizmoBuildit_SetVisibility(GIZMO *gizmo, i32 visible) {
         BUILDIT_RESET *buildit;
         if (gizmo == NULL) {
             return;
@@ -772,7 +772,7 @@ extern "C" {
         buildit->availability.visible = visible != 0;
     }
 
-    NUVEC *GizmoBuildit_GetPos(GIZMO_PC *gizmo) {
+    NUVEC *GizmoBuildit_GetPos(GIZMO *gizmo) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
@@ -959,7 +959,7 @@ extern "C" {
         }
         object = buildit->anim_set->objects;
         while (object != NULL) {
-            struct PART_PC *part;
+            struct PART *part;
             ADDPART params = Default_ADDPART;
             NUMTX matrix;
             GIZBUILDITANIMDATA_s *data = (GIZBUILDITANIMDATA_s *)object->object_data;
@@ -1058,11 +1058,11 @@ extern "C" {
         }
     }
 
-    char *GizmoBuildit_GetGizmoName(GIZMO_PC *gizmo) {
+    char *GizmoBuildit_GetGizmoName(GIZMO *gizmo) {
         return gizmo != NULL ? (char *)gizmo->object : NULL;
     }
 
-    i32 GizmoBuildit_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 force_read) {
+    i32 GizmoBuildit_GetOutput(GIZMO *gizmo, i32 output_index, i32 force_read) {
         BUILDIT_RESET *buildit = (BUILDIT_RESET *)gizmo->object;
         if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) && buildit->build_state == 2) {
             return 1;
@@ -1070,11 +1070,11 @@ extern "C" {
         return 0;
     }
 
-    char *GizmoBuildit_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    char *GizmoBuildit_GetOutputName(GIZMO *gizmo, i32 output) {
         return "Finished";
     }
 
-    i32 GizmoBuildit_GetNumOutputs(GIZMO_PC *gizmo) {
+    i32 GizmoBuildit_GetNumOutputs(GIZMO *gizmo) {
         return 1;
     }
 
@@ -1354,7 +1354,7 @@ extern "C" {
         return 1;
     }
 
-    void GizmoBuildit_Activate(GIZMO_PC *gizmo, i32 active) {
+    void GizmoBuildit_Activate(GIZMO *gizmo, i32 active) {
         BUILDIT_RESET *buildit;
         NUVEC scatter_position;
         i32 reward_released;
@@ -1734,12 +1734,12 @@ extern "C" {
         addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizBuildIts_EarlyUpdate;
         addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizBuildIts_LateUpdate;
         addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizBuildIts_Draw;
-        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoBuildit_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoBuildit_GetOutput;
-        addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoBuildit_GetOutputName;
+        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))GizmoBuildit_GetGizmoName;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))GizmoBuildit_GetOutput;
+        addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))GizmoBuildit_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)GizmoBuildit_GetNumOutputs;
-        addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoBuildit_Activate;
-        addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizmoBuildit_SetVisibility;
+        addtype->fns.activate_fn = (void (*)(GIZMO *, i32))GizmoBuildit_Activate;
+        addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizmoBuildit_SetVisibility;
         addtype->fns.get_pos_fn = (void *)GizmoBuildit_GetPos;
         addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizBuildIts_AllocateProgressData;
         addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizBuildIts_ClearProgress;

@@ -4,7 +4,7 @@
 
 #include "legoapi/items/base/apiobject.h"
 
-/* ObjHitObj flags (ObjHitObj_Flags, BOLT_PC.hit_flags): who the hit comes from. */
+/* ObjHitObj flags (ObjHitObj_Flags, BOLT.hit_flags): who the hit comes from. */
 #define OBJHIT_FROM_AI 0x2 /* the attacker is not an active player */
 #define OBJHIT_FROM_PLAYER 0x4
 #define OBJHIT_FROM_GOODIE 0x8

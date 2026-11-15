@@ -10,9 +10,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    GIZMOBLOWUP_PC *GizmoBlowUp_Target(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
-    GIZMOBLOWUP_PC *GizmoBlowUp_FindFromPlatID(WORLDINFO *, i32);
-    GIZMOBLOWUP_PC *GizmoBlowUp_FindByName(WORLDINFO *, char *);
+    GIZMOBLOWUP *GizmoBlowUp_Target(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    GIZMOBLOWUP *GizmoBlowUp_FindFromPlatID(WORLDINFO *, i32);
+    GIZMOBLOWUP *GizmoBlowUp_FindByName(WORLDINFO *, char *);
 #ifdef __cplusplus
 }
 #endif

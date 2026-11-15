@@ -93,11 +93,11 @@ void GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
     }
 }
 
-char *GizTimer_GetGizmoName(GIZMO_PC *gizmo) {
+char *GizTimer_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((GIZFLOW_TIMER *)gizmo->object)->name : NULL;
 }
 
-i32 GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+i32 GizTimer_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {
     GIZFLOW_TIMER *timer = gizmo->object;
     if (timer->flags & 1) {
         return timer->time_remaining <= 0.0f;
@@ -105,15 +105,15 @@ i32 GizTimer_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
     return 0;
 }
 
-char *GizTimer_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
+char *GizTimer_GetOutputName(GIZMO *gizmo, i32 output_index) {
     return "Ping";
 }
 
-i32 GizTimer_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 GizTimer_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
-void GizTimer_Activate(GIZMO_PC *gizmo, i32 active) {
+void GizTimer_Activate(GIZMO *gizmo, i32 active) {
     GIZFLOW_TIMER *timer = gizmo->object;
     if (timer->flags & 2) {
         timer->time_remaining = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)timer->start_time);
@@ -142,7 +142,7 @@ void *GizTimer_ReserveBufferSpace(void *world_info) {
 i32 giztimer_gizmotype_id = -1;
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
-GIZMO_PC *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
+GIZMO *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
     GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
     GIZFLOW_TIMER *timer;
     if (world == NULL || world->timers == NULL || world->timer_count == world->level->max_timers) {

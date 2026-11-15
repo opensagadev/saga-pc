@@ -18,9 +18,9 @@
 
 typedef struct bolt_gizmo_type_s {
     u8 unknown_00[0x6c];
-    i32 (*hit_platform)(WORLDINFO *, void *, BOLT_PC *, u8 *);
+    i32 (*hit_platform)(WORLDINFO *, void *, BOLT *, u8 *);
     u8 unknown_70[4];
-    i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *);
+    i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT *, i32, u8 *);
     u8 unknown_78[0x24];
 } BOLT_GIZMO_TYPE;
 
@@ -84,8 +84,7 @@ i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *objec
     return 0;
 }
 
-i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT_PC *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius,
-                     u8 *hit_flags) {
+i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT *bolt, NUVEC *points, NUVEC *minimum, NUVEC *maximum, f32 radius, u8 *hit_flags) {
     NUVEC *hit_points;
     i32 mode;
     i32 i;

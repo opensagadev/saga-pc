@@ -97,7 +97,7 @@ static void Signals_Draw(void *world_info, void *unused1, float unused2) {
     }
 }
 
-static void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Signal_SetGizmoVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         Signal_SetVisibility(gizmo->object, visible);
     }

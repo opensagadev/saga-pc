@@ -222,8 +222,8 @@ void BountyHunterPursuitD_Update(WORLDINFO *world) {
     f32 nearest_distance_sq;
     f32 distance_sq;
     f32 distance;
-    GIZMOBLOWUP_PC *nearest;
-    GIZMOBLOWUP_PC *generator;
+    GIZMOBLOWUP *nearest;
+    GIZMOBLOWUP *generator;
     i32 i;
     NUVEC delta;
     if (LevGameObject[0] == NULL || LevGameObject[0]->shield_hitpoints == 0) {

@@ -37,11 +37,11 @@ extern "C" {
     extern const char GizAIMessage_PrefixedNameFormat[5];
     GIZAIMESSAGESYS *CreateGizAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count);
     void GizAIMessage_AddGizmos(struct gizmosys_s *gizmo_sys, i32 arg1, void *arg2, void *arg3);
-    char *GizAIMessage_GetGizmoName(GIZMO_PC *gizmo);
+    char *GizAIMessage_GetGizmoName(GIZMO *gizmo);
     i32 GizAIMessage_GetMaxGizmos(void *arg0);
-    i32 GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo);
-    i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 arg2);
-    char *GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index);
+    i32 GizAIMessage_GetNumOutputs(GIZMO *gizmo);
+    i32 GizAIMessage_GetOutput(GIZMO *gizmo, i32 output_index, i32 arg2);
+    char *GizAIMessage_GetOutputName(GIZMO *gizmo, i32 output_index);
     extern i32 gizaimessage_gizmotype_id;
 #ifdef __cplusplus
 }

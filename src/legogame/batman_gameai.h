@@ -5,7 +5,7 @@
 #include "nu2api/numath/nuvec.h"
 
 struct AIPACKET;
-struct AISYS_PC;
+struct AISYS;
 struct APIOBJECT;
 struct gameobject_s;
 
@@ -90,7 +90,7 @@ extern "C" {
 
     extern PLAYER_BATARANG_SLOT BatarangPackets[8];
     extern i16 PunchRangeUnitId;
-    typedef i32 (*AI_MID_SPECIAL_MOVE)(struct AISYS_PC *, struct AIPACKET *, struct APIOBJECT *);
+    typedef i32 (*AI_MID_SPECIAL_MOVE)(struct AISYS *, struct AIPACKET *, struct APIOBJECT *);
 
     extern AI_MID_SPECIAL_MOVE MidSpecialMoveFn;
     extern const f64 PCPathArcSineCoefficient3;

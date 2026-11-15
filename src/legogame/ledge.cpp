@@ -401,14 +401,14 @@ extern "C" {
         return world->ledges;
     }
 
-    void Ledge_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    void Ledge_SetVisibility(GIZMO *gizmo, i32 visible) {
         if (gizmo != NULL) {
             LEDGE_MOTION *ledge = (LEDGE_MOTION *)gizmo->object;
             ledge->state_bits.visible = visible != 0;
         }
     }
 
-    void Ledge_Activate(GIZMO_PC *gizmo, i32 active) {
+    void Ledge_Activate(GIZMO *gizmo, i32 active) {
         if (gizmo != NULL) {
             LEDGE_MOTION *ledge = (LEDGE_MOTION *)gizmo->object;
             ledge->state_bits.active = active != 0;
@@ -486,20 +486,20 @@ extern "C" {
         }
     }
 
-    char *Ledge_GetGizmoName(GIZMO_PC *gizmo) {
+    char *Ledge_GetGizmoName(GIZMO *gizmo) {
         return gizmo != NULL ? (char *)gizmo->object : NULL;
     }
 
-    i32 Ledge_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+    i32 Ledge_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {
         LEDGE_MOTION *ledge = (LEDGE_MOTION *)gizmo->object;
         return (ledge->state_flags & 2) != 0 && (ledge->state_flags & 1) != 0;
     }
 
-    char *Ledge_GetOutputName(GIZMO_PC *gizmo, i32 unused) {
+    char *Ledge_GetOutputName(GIZMO *gizmo, i32 unused) {
         return LedgeOutputName;
     }
 
-    i32 Ledge_GetNumOutputs(GIZMO_PC *gizmo) {
+    i32 Ledge_GetNumOutputs(GIZMO *gizmo) {
         return 1;
     }
 

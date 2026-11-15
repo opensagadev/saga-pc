@@ -9,7 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 GizmoSys_BoltHit(void *, WORLDINFO *, BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    i32 GizmoSys_BoltHit(void *, WORLDINFO *, BOLT *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
 #ifdef __cplusplus
 }
 #endif

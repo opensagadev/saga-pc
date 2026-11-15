@@ -513,7 +513,7 @@ extern "C" {
         MiniTrooperPitchMatrix(&matrix, pitch);
         MiniTrooperRotateYaw(&matrix, *shot_angle);
 
-        BOLT_PC *bolt = Bolt_Add(NULL, &shot_position, &matrix, team->bolt_type, 0);
+        BOLT *bolt = Bolt_Add(NULL, &shot_position, &matrix, team->bolt_type, 0);
         if (bolt != NULL) {
             Bolt[bolt->index].flags &= ~4;
         }

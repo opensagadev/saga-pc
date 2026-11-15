@@ -5,7 +5,7 @@
 #include "legoapi/menus/core/hint.h"
 #include "nu2api/numath/nuvec.h"
 
-struct PART_PC;
+struct PART;
 struct addgizmotype_s;
 struct gameanimobj_s;
 struct gameobject_s;
@@ -70,7 +70,7 @@ extern "C" {
     u16 GizForces_AngleToForce(NUVEC *, struct gizforce_s *);
     i32 GizForce_Complete(struct gizforce_s *);
     void ForceLightning_Origin(struct gameobject_s *, NUVEC *, NUVEC *);
-    struct PART_PC *GizForce_Throw(struct gameobject_s *, struct gizforce_s *, f32, f32, i32);
+    struct PART *GizForce_Throw(struct gameobject_s *, struct gizforce_s *, f32, f32, i32);
     void GizForce_ResetLOS(struct gameobject_s *);
     i32 GizForce_GameObjUsingForce(struct gameobject_s *, struct gizforce_s *);
 #ifdef __cplusplus

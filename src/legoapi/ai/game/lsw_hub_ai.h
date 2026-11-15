@@ -38,8 +38,8 @@ extern "C" {
     void LSW_Hub_InitAI(WORLDINFO *);
     void LSW_Hub_ResetAI(WORLDINFO *);
     void LSW_Hub_UpdateAI(WORLDINFO *);
-    void *Condition_InHubAreaInit(AISYS_PC *, char *, AISCRIPT *);
-    f32 Condition_InHubArea(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *);
+    void *Condition_InHubAreaInit(AISYS *, char *, AISCRIPT *);
+    f32 Condition_InHubArea(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *);
     extern i16 dat_007f18c4;
 #ifdef __cplusplus
 }

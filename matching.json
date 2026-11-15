@@ -12704,8 +12704,8 @@
       "objdiff_percent": 100.0
     },
     {
-      "name": "?GizmoBlowUp_Sfx@@YAXPAUGIZMOBLOWUP_PC@@PAUnuvec_s@@@Z",
-      "symbol": "?GizmoBlowUp_Sfx@@YAXPAUGIZMOBLOWUP_PC@@PAUnuvec_s@@@Z",
+      "name": "?GizmoBlowUp_Sfx@@YAXPAUGIZMOBLOWUP@@PAUnuvec_s@@@Z",
+      "symbol": "?GizmoBlowUp_Sfx@@YAXPAUGIZMOBLOWUP@@PAUnuvec_s@@@Z",
       "address": "0x0042a880",
       "units": [
         "src/legogame/game.cpp"

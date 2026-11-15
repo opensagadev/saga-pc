@@ -81,7 +81,7 @@ typedef struct carry_basis_s {     // size 0x76c
 
 typedef struct carry_part_s { // size 0x21c
     u8 unknown_000[0x218];    // 0x000
-    GIZMOBLOWUP_PC *blowup;   // 0x218
+    GIZMOBLOWUP *blowup;      // 0x218
 } CARRY_PART;
 
 typedef struct carry_drop_s { // size 0x778
@@ -103,7 +103,7 @@ extern u8 SuperCarryPlayerRgb[2][3];
         }                                                                                                                                  \
     } while (0)
 
-i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
+i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
     CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
     CARRY_PLUG *plug;
     f32 distance;
@@ -128,7 +128,7 @@ i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 ang
     return 0;
 }
 
-void SuperCarry_PartImpact(PART_PC *part) {
+void SuperCarry_PartImpact(PART *part) {
     f32 amount = NuVecMag(&part->velocity);
     if (amount >= SuperCarryImpactSpeed) {
         amount = 1.0f;
@@ -140,8 +140,8 @@ void SuperCarry_PartImpact(PART_PC *part) {
     }
 }
 
-static void SuperCarry_PartKill(PART_PC *part, i32 unused) {
-    GIZMOBLOWUP_PC *blowup = ((CARRY_PART *)part)->blowup;
+static void SuperCarry_PartKill(PART *part, i32 unused) {
+    GIZMOBLOWUP *blowup = ((CARRY_PART *)part)->blowup;
     CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
     (void)unused;
     if (view->secondary_flags & 4) {
@@ -156,7 +156,7 @@ void SuperCarry_DrawObject(struct gameobject_s *object) {
     NUVEC offset;
     struct nuvec_s *translation;
     PLAYERCHARACTERCONFIG *config;
-    struct GIZMOBLOWUP_PC *blowup;
+    struct GIZMOBLOWUP *blowup;
     if ((object->flags_e20 & 0x800000) != 0 ||
         (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
          ((object->unknown_7b3 == 0 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) ||
@@ -220,7 +220,7 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     NUVEC offset;
     NUVEC velocity;
     ADDPART params;
-    PART_PC *part;
+    PART *part;
     i32 first = config->hand_locators[0];
     i32 second;
     f32 speed;
@@ -279,7 +279,7 @@ void SuperCarry_Throw(GAMEOBJECT *object, i32 mode) {
     velocity.y = mode == 2 ? SUPERCARRY_DROPSPEED_Y : SUPERCARRY_THROWSPEED_Y;
     params.velocity = &velocity;
     blowup = object->grapple;
-    params.special = &((GIZMOBLOWUP_PC *)blowup)->type->animated_special;
+    params.special = &((GIZMOBLOWUP *)blowup)->type->animated_special;
     params.unknown_14 = params.unknown_18 = (f32)(0.5 * blowup->target_scale);
     params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_THROWN;
     if (!(blowup->secondary_flags & 4)) {
@@ -315,7 +315,7 @@ i32 SuperCarry_Possible(GAMEOBJECT *object, i32 require_grounded) {
     return 1;
 }
 
-void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 immediate) {
+void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP *blowup, i32 immediate) {
     object->character_context = ((i8)(LEGOCONTEXT_SUPERCARRY));
     object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
     object->action_movement_state = 0;
@@ -343,7 +343,7 @@ void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 i
         i32 magnitude;
         NUVEC minimum;
         NUVEC maximum;
-        NuSpecialGetBounds(&((GIZMOBLOWUP_PC *)object->grapple)->type->animated_special, &minimum, &maximum);
+        NuSpecialGetBounds(&((GIZMOBLOWUP *)object->grapple)->type->animated_special, &minimum, &maximum);
         blowup = object->grapple;
         angle = NuAtan2D(blowup->transform.m20, blowup->transform.m22);
         difference = RotDiff(object->movement_facing_angle, angle);
@@ -374,7 +374,7 @@ void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 i
         ((CARRY_BASIS *)object)->basis[1].z = ((CARRY_BASIS *)object)->basis[0].z;
         object->movement_facing_angle = angle - object->takeover_start_angle;
     } else {
-        NUMTX matrix = ((GIZMOBLOWUP_PC *)object->grapple)->transform;
+        NUMTX matrix = ((GIZMOBLOWUP *)object->grapple)->transform;
         NuMtxRotateY(&matrix, 0x8000 - object->movement_facing_angle);
         ((CARRY_BASIS *)object)->basis[0] = *NUMTX_GET_ROW_VEC(&matrix, 0);
         ((CARRY_BASIS *)object)->basis[1] = *NUMTX_GET_ROW_VEC(&matrix, 1);
@@ -403,7 +403,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             case 0: {
                 i32 event = 0;
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
-                    GIZMOBLOWUP_PC *blowup = object->grapple;
+                    GIZMOBLOWUP *blowup = object->grapple;
                     object->movement_facing_angle = NuAtan2D(blowup->mid_position.x - object->collision_position.x,
                                                              blowup->mid_position.z - object->collision_position.z);
                     if (frame != NULL) {
@@ -448,7 +448,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     }
                 }
                 if (event) {
-                    struct GIZMOBLOWUP_PC *blowup;
+                    struct GIZMOBLOWUP *blowup;
                     NUVEC *drop;
                     object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
@@ -484,7 +484,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                         }
                     }
                     if (throw_object || put_down) {
-                        struct GIZMOBLOWUP_PC *blowup;
+                        struct GIZMOBLOWUP *blowup;
                         if ((throw_object || SuperCarry_UseActionButton == 0) && SuperCarryEnable != 0 && LEGOACT_SUPERCARRY_BASH != -1 &&
                             ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_BASH] != NULL) {
                             objopponent_ignoreaiopponent = 1;
@@ -624,7 +624,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                 }
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
-                    struct GIZMOBLOWUP_PC *blowup;
+                    struct GIZMOBLOWUP *blowup;
                     NUVEC position;
                     i32 effect;
                     SuperCarry_GetObjectPos(object, &position, NULL);
@@ -681,9 +681,9 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
         }
     } else {
         NUVEC forward;
-        struct GIZMOBLOWUP_PC *nearest;
+        struct GIZMOBLOWUP *nearest;
         f32 best;
-        struct GIZMOBLOWUP_PC *blowup;
+        struct GIZMOBLOWUP *blowup;
         i32 i;
         i8 player;
         if (CanSuperCarryFn == NULL || CanSuperCarryFn(object) == 0) {

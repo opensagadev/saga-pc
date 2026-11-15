@@ -160,7 +160,7 @@ extern "C" {
         u8 unknown_08[8];                 // 0x8
     } DOGFIGHT_COIN_RECORD;
 
-    typedef struct DOGFIGHT_SPACE_PC {            // size 0x64740
+    typedef struct DOGFIGHT_SPACE {               // size 0x64740
         DOGFIGHT_CROSS crosses[2];                // 0x00000
         DOGFIGHT_GROUP groups[8];                 // 0x000a0
         NUVEC4 draw_scale;                        // 0x034a0
@@ -169,7 +169,7 @@ extern "C" {
         i32 unknown_34b8;                         // 0x034b8
         i32 unknown_34bc;                         // 0x034bc
         u8 unknown_34c0[12];                      // 0x034c0
-        struct DOGFIGHT_SPACE_PC *owner;          // 0x034cc
+        struct DOGFIGHT_SPACE *owner;             // 0x034cc
         DOGFIGHT_SPLINE_HISTORY splines[256];     // 0x034d0
         DOGFIGHT_FIGHTER queued_fighters[96];     // 0x564d0
         DOGFIGHT_RESET_RECORD reset_records[256]; // 0x5d6d0
@@ -190,7 +190,7 @@ extern "C" {
         i32 coin_history_count;                   // 0x63734
         DOGFIGHT_COIN_RECORD coin_history[256];   // 0x63738
         u8 unknown_64738[8];                      // 0x64738
-    } DOGFIGHT_SPACE_PC;
+    } DOGFIGHT_SPACE;
 
     NUVEC4 DogfightDrawScale = {0.0f, 0.0f, 0.0f, 0.0f};
     f32 DogfightResetTimer = 0.0f;
@@ -303,7 +303,7 @@ extern "C" {
         u32 unknown_20;                    // 0x20
         f32 timer;                         // 0x24
         u32 unknown_28;                    // 0x28
-        DOGFIGHT_SPACE_PC *owner;          // 0x2c
+        DOGFIGHT_SPACE *owner;             // 0x2c
     } DOGFIGHT_ACTION_STATE;
 
     typedef struct DOGFIGHT_LEVEL_FLAGS { // size 0x10
@@ -392,9 +392,9 @@ extern "C" {
     static void FlightSplineLoadRecord(FLIGHT_SPLINE_FILE *spline, i32 version, i32 index);
     static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE *spline, i32 mode);
     static void DogfightResetCrosses(DOGFIGHT_CROSS *crosses, i32 count);
-    static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE_PC *space);
+    static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE *space);
     static void DogfightResetSplineHistory(DOGFIGHT_SPLINE_HISTORY *records, i32 count);
-    static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
+    static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE *space);
     static __declspec(noinline) void DogfightResetGroup(DOGFIGHT_GROUP *group);
     static void StarFighterAlign(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode);
     static i32 StarFighterFire(starfighter_s *fighter, NUVEC4 *velocity, NUMTX *aim_matrix, f32 shot_speed);
@@ -405,9 +405,9 @@ extern "C" {
     static void ProcessFlightGroup(DOGFIGHT_GROUP *group, DOGFIGHT_QUICK_BUFFER *buffer);
     void NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
     void SpaceAudioPoint(void);
-    static void DogfightResetSpace(WORLDINFO *world, DOGFIGHT_SPACE_PC *space);
+    static void DogfightResetSpace(WORLDINFO *world, DOGFIGHT_SPACE *space);
     void SpaceRumbleProcess(void);
-    static void DrawSpaceLevel(DOGFIGHT_SPACE_PC *space);
+    static void DrawSpaceLevel(DOGFIGHT_SPACE *space);
     void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP *entry);
     void ResetSpaceFromWorld(WORLDINFO *world);
     void ChrisAnakinBInit();
@@ -415,19 +415,19 @@ extern "C" {
     void ChrisAllocLevelStuff(WORLDINFO *world);
     static i32 CollideBoltStarFighter(BOLT *bolt, starfighter_s *fighter, NUVEC *position, NUVEC *velocity);
     i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
-    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count);
+    static void DrawSelectedSock(SOCKSYS *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count);
     void ChrisAnakinCInit();
     static void SpawnFlightFighter(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_FIGHTER *record);
-    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE_PC *space);
+    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE *space);
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode);
     static void ProcessFormationActions(DOGFIGHT_ACTION_STATE *state);
-    static void ProcessSpaceLevel(DOGFIGHT_SPACE_PC *space);
+    static void ProcessSpaceLevel(DOGFIGHT_SPACE *space);
     void ChrisDogFightAInit(WORLDINFO *world);
     void ChrisDogFightAUpdate(WORLDINFO *world);
     void ChrisDogFightADraw(WORLDINFO *world);
 
     static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source) {
-#define DOGFIGHT_SPACE ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)
+#define WORLD_DOGFIGHT_SPACE ((DOGFIGHT_SPACE *)WORLD->level_specific_data)
 #define COPY_ELEMENT(field) destination->field = source->field
         COPY_ELEMENT(m00);
         COPY_ELEMENT(m01);
@@ -1024,7 +1024,7 @@ extern "C" {
     }
 
     void fun_0040fd50(void *unused, NUVEC *position) {
-        memcpy(position, &((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->origin_end, sizeof(NUVEC));
+        memcpy(position, &((DOGFIGHT_SPACE *)WORLD->level_specific_data)->origin_end, sizeof(NUVEC));
     }
 
     f32 dat_007f15e4 = 120.0f;
@@ -1111,7 +1111,7 @@ extern "C" {
         }
     }
 
-    static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE_PC *space) {
+    static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE *space) {
         i32 i;
         for (i = 0; i < 96; ++i) {
             if (space->queued_fighters[i].fields.active == 0) {
@@ -1129,7 +1129,7 @@ extern "C" {
         }
     }
 
-    static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
+    static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE *space) {
         DOGFIGHT_RESET_BUFFER *buffer;
         DogfightDrawScale.x = 4.0f;
         DogfightDrawScale.y = 4.0f;
@@ -1347,7 +1347,7 @@ extern "C" {
     }
 
     static void StarFighterTarget(starfighter_s *fighter) {
-        DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
+        DOGFIGHT_SPACE *space = (DOGFIGHT_SPACE *)WORLD->level_specific_data;
         DOGFIGHT_TARGET_SPLINE *spline = (DOGFIGHT_TARGET_SPLINE *)fighter->spline;
         DOGFIGHT_FIGHTER *record;
         i32 target_id;
@@ -1601,7 +1601,7 @@ extern "C" {
                 return 1;
             }
             if (fighter->missile_count != 0 && fighter->spline->id != 85 && fighter->spline->id != 84 && NuRandFloat() < (f64)0.2f) {
-                missile = QueuedFighterSelector((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+                missile = QueuedFighterSelector((DOGFIGHT_SPACE *)WORLD->level_specific_data);
                 if (missile != NULL) {
                     --fighter->missile_count;
                     *missile = *record;
@@ -1661,8 +1661,8 @@ extern "C" {
         i32 i;
         if (WORLD->level_specific_data != NULL) {
             for (i = 0; i < 8; ++i) {
-                if (DOGFIGHT_SPACE->groups[i].active == 0) {
-                    return &DOGFIGHT_SPACE->groups[i];
+                if (WORLD_DOGFIGHT_SPACE->groups[i].active == 0) {
+                    return &WORLD_DOGFIGHT_SPACE->groups[i];
                 }
             }
         }
@@ -1724,8 +1724,8 @@ extern "C" {
     }
 
     void SpaceAudioPoint(void) {
-        music_man.SetTrackEntryTimeByClass(2, ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->door_time);
-        music_man.SetTrackEntryTimeByClass(0x20, ((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->door_time);
+        music_man.SetTrackEntryTimeByClass(2, ((DOGFIGHT_SPACE *)WORLD->level_specific_data)->door_time);
+        music_man.SetTrackEntryTimeByClass(0x20, ((DOGFIGHT_SPACE *)WORLD->level_specific_data)->door_time);
     }
 
     void SpaceResetAudioPoint(void) {
@@ -1745,7 +1745,7 @@ extern "C" {
         }
     }
 
-    static void DogfightResetSpace(WORLDINFO *world, DOGFIGHT_SPACE_PC *space) {
+    static void DogfightResetSpace(WORLDINFO *world, DOGFIGHT_SPACE *space) {
         NUVEC4 *direction;
         f32 value;
         i32 i = 6;
@@ -1904,7 +1904,7 @@ extern "C" {
         DogfightDebrisKeys[3] = -1;
     }
 
-    static void DrawSpaceLevel(DOGFIGHT_SPACE_PC *space) {
+    static void DrawSpaceLevel(DOGFIGHT_SPACE *space) {
         GAMEOBJECT *player;
         NUMTX matrix;
         i32 i;
@@ -1983,7 +1983,7 @@ extern "C" {
     }
 
     void ProcessCurrentSpeed(WORLDINFO *world, DOGFIGHT_SPEEDUP *entry) {
-        DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
+        DOGFIGHT_SPACE *space = (DOGFIGHT_SPACE *)world->level_specific_data;
         while (entry->distance != 0.0f) {
             if (space->door_elapsed < entry->distance && space->door_countdown >= entry->distance) {
                 space->value_one_a = entry->speed;
@@ -2009,15 +2009,15 @@ extern "C" {
 
     /* One of four identical WORLD adapters. */
     void ResetSpaceFromWorld(WORLDINFO *world) {
-        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE *)world->level_specific_data);
     }
 
     void fun_00412370() {
-        DrawSpaceLevel((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+        DrawSpaceLevel((DOGFIGHT_SPACE *)WORLD->level_specific_data);
     }
 
     void fun_00412390(WORLDINFO *world) {
-        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE *)world->level_specific_data);
     }
 
     void ChrisAnakinBInit() {
@@ -2045,15 +2045,15 @@ extern "C" {
     }
 
     void fun_00412480() {
-        DrawSpaceLevel((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+        DrawSpaceLevel((DOGFIGHT_SPACE *)WORLD->level_specific_data);
     }
 
     void fun_004124a0(WORLDINFO *world) {
-        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE *)world->level_specific_data);
     }
 
     void fun_004124c0(WORLDINFO *world) {
-        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE *)world->level_specific_data);
     }
 
     void fun_004124e0() {
@@ -2081,17 +2081,17 @@ extern "C" {
     void ChrisAllocLevelStuff(WORLDINFO *world) {
         world->has_level_specific_data = 1;
         if (world->current_level == DOGFIGHTA_LDATA) {
-            DOGFIGHT_SPACE_PC *space;
-            world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(DOGFIGHT_SPACE_PC));
-            space = (DOGFIGHT_SPACE_PC *)world->level_specific_data;
+            DOGFIGHT_SPACE *space;
+            world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, sizeof(DOGFIGHT_SPACE));
+            space = (DOGFIGHT_SPACE *)world->level_specific_data;
             space->reset_buffer.records = space->reset_records;
             space->reset_buffer.capacity = 256;
-            ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->normalized_speed = 1.0f;
+            ((DOGFIGHT_SPACE *)world->level_specific_data)->normalized_speed = 1.0f;
             if (world->current_level == DOGFIGHTA_LDATA && world->sock_sys->socks[0].current_speed != 0.0f) {
-                ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->normalized_speed =
+                ((DOGFIGHT_SPACE *)world->level_specific_data)->normalized_speed =
                     (f32)((f64)world->sock_sys->socks[0].current_speed / 11.0);
             }
-            ((DOGFIGHT_SPACE_PC *)world->level_specific_data)->coin_history_count = 0;
+            ((DOGFIGHT_SPACE *)world->level_specific_data)->coin_history_count = 0;
         } else if (world->current_level == PODRACEA_LDATA || world->current_level == PODRACEB_LDATA ||
                    world->current_level == dat_0087b0b4) {
             world->level_specific_data = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 0xb030);
@@ -2109,7 +2109,7 @@ extern "C" {
     }
 
     i32 ShipDropCoins(starfighter_s *fighter) {
-        DOGFIGHT_SPACE_PC *space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
+        DOGFIGHT_SPACE *space = (DOGFIGHT_SPACE *)WORLD->level_specific_data;
         i32 index;
         for (index = 0; index < space->coin_history_count; ++index) {
             if (space->coin_history[index].spline_id == fighter->spline->id &&
@@ -2121,8 +2121,8 @@ extern "C" {
             return 0;
         }
         space->coin_history[index].spline_id = fighter->spline->id;
-        DOGFIGHT_SPACE->coin_history[index].spawn_time = fighter->spawn_time;
-        ++DOGFIGHT_SPACE->coin_history_count;
+        WORLD_DOGFIGHT_SPACE->coin_history[index].spawn_time = fighter->spawn_time;
+        ++WORLD_DOGFIGHT_SPACE->coin_history_count;
         return 1;
     }
 
@@ -2219,7 +2219,7 @@ extern "C" {
     }
 
     i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points) {
-        DOGFIGHT_SPACE_PC *space;
+        DOGFIGHT_SPACE *space;
         DOGFIGHT_COLLISION_VECTOR position;
         DOGFIGHT_COLLISION_VECTOR velocity;
         i32 group;
@@ -2227,7 +2227,7 @@ extern "C" {
         if (WORLD->has_level_specific_data == 0) {
             return 0;
         }
-        space = (DOGFIGHT_SPACE_PC *)WORLD->level_specific_data;
+        space = (DOGFIGHT_SPACE *)WORLD->level_specific_data;
         if (space == NULL || (bolt->flags & 3) == 0) {
             return 0;
         }
@@ -2252,7 +2252,7 @@ extern "C" {
         return 0;
     }
 
-    static void DrawSelectedSock(SOCKSYS_PC *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count) {
+    static void DrawSelectedSock(SOCKSYS *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count) {
         SOCK *sock;
         __declspec(align(16)) NUVEC a;
         __declspec(align(16)) NUVEC b;
@@ -2443,7 +2443,7 @@ extern "C" {
         }
     }
 
-    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE_PC *space) {
+    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE *space) {
         DOGFIGHT_FIGHTER *fighter;
         if (spline->point_count == 0) {
             return;
@@ -2578,7 +2578,7 @@ extern "C" {
         }
     }
 
-    static void ProcessSpaceLevel(DOGFIGHT_SPACE_PC *space) {
+    static void ProcessSpaceLevel(DOGFIGHT_SPACE *space) {
         DOGFIGHT_QUICK_BUFFER *buffer;
         GAMEOBJECT *player0;
         GAMEOBJECT *player1;
@@ -2623,28 +2623,28 @@ extern "C" {
     }
 
     void fun_00413a10() {
-        ProcessSpaceLevel((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data);
+        ProcessSpaceLevel((DOGFIGHT_SPACE *)WORLD->level_specific_data);
     }
 
     /* This entry is implemented without installing its original level callback. */
     void ChrisDogFightAInit(WORLDINFO *world) {
         i32 i;
         ChrisAllocLevelStuff(world);
-        DogfightResetSpace(world, (DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DogfightResetSpace(world, (DOGFIGHT_SPACE *)world->level_specific_data);
         for (i = 0; i < 256; ++i) {
-            ((FLIGHT_SPLINE_RESOURCE *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines)[i].point_count = 0;
+            ((FLIGHT_SPLINE_RESOURCE *)((DOGFIGHT_SPACE *)world->level_specific_data)->splines)[i].point_count = 0;
         }
         if (world->current_level == DOGFIGHTA_LDATA) {
-            FlightSpline_Init(world, (FLIGHT_SPLINE_RESOURCE *)((DOGFIGHT_SPACE_PC *)world->level_specific_data)->splines, 256);
+            FlightSpline_Init(world, (FLIGHT_SPLINE_RESOURCE *)((DOGFIGHT_SPACE *)world->level_specific_data)->splines, 256);
         }
-        DogfightResetSplineHistory(((DOGFIGHT_SPACE_PC *)WORLD->level_specific_data)->splines, 256);
+        DogfightResetSplineHistory(((DOGFIGHT_SPACE *)WORLD->level_specific_data)->splines, 256);
     }
 
     void ChrisDogFightAUpdate(WORLDINFO *world) {
         DOGFIGHT_LEVEL_FLAGS *flags = (DOGFIGHT_LEVEL_FLAGS *)&LevFlag;
         SpaceResetAudioPoint();
         ProcessCurrentSpeed(world, DogfightSpeedList);
-        ProcessSpaceLevel((DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        ProcessSpaceLevel((DOGFIGHT_SPACE *)world->level_specific_data);
         if (AreaGlobals.unknown_00 != 0 || flags->first != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
             return;
         }
@@ -2657,7 +2657,7 @@ extern "C" {
     }
 
     void ChrisDogFightADraw(WORLDINFO *world) {
-        DrawSpaceLevel((DOGFIGHT_SPACE_PC *)world->level_specific_data);
+        DrawSpaceLevel((DOGFIGHT_SPACE *)world->level_specific_data);
         if (DogfightDrawSelectedSock != 0 && DogfightSelectedSock != NULL) {
             DrawSelectedSock(world->sock_sys, 4, DogfightSelectedSock, 5, 8);
         }

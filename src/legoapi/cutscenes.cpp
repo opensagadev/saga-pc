@@ -1237,7 +1237,7 @@ extern "C" CUT_LOAD_SYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gsc
 
 extern "C" {
 
-    void *CutScene_FindInst(CUTSYS_PC *system, char *name) {
+    void *CutScene_FindInst(CUTSYS *system, char *name) {
         if (system == NULL) {
             return NULL;
         }
@@ -1250,7 +1250,7 @@ extern "C" {
     }
 }
 
-CUTINFO *CutScene_Find(CUTSYS_PC *system, char *name) {
+CUTINFO *CutScene_Find(CUTSYS *system, char *name) {
     i32 index;
 
     if (system != NULL && name != NULL) {
@@ -1265,7 +1265,7 @@ CUTINFO *CutScene_Find(CUTSYS_PC *system, char *name) {
 
 extern "C" {
 
-    static void CutSceneRebindPlayerCharactersPrivate(CUTSYS_PC *system) {
+    static void CutSceneRebindPlayerCharactersPrivate(CUTSYS *system) {
         if (system == NULL) {
             return;
         }
@@ -1342,7 +1342,7 @@ extern "C" {
     }
 
     static i32 CutScenePlayOncePrivate(WORLDINFO *world, CUT_LOAD_RECORD *cut) {
-        CUTSYS_PC *system = world->cutscene_sys;
+        CUTSYS *system = world->cutscene_sys;
         i16 index = -1;
         if (system != NULL) {
             for (i32 i = 0; i < system->count; ++i) {
@@ -1362,7 +1362,7 @@ extern "C" {
     }
 }
 
-CUTINFO *NewCutScene(CUTINFO *cutscene, CUTSYS_PC *system, char *name, i32 unused_4) {
+CUTINFO *NewCutScene(CUTINFO *cutscene, CUTSYS *system, char *name, i32 unused_4) {
     i32 count;
 
     if (cutscene == NULL) {
@@ -1402,7 +1402,7 @@ extern "C" i32 CutScene_PlayingOrRequested(CUTINFO *cut) {
 extern "C" {
 
     i32 CutScene_HasPlayed(CUTINFO *cutscene) {
-        CUTSYS_PC *system = WorldInfo_CurrentlyActive()->cutscene_sys;
+        CUTSYS *system = WorldInfo_CurrentlyActive()->cutscene_sys;
         i32 found;
         i32 index;
         if (system != NULL && cutscene != NULL) {
@@ -1439,7 +1439,7 @@ void CutScene_SnapToEnd(void *cut) {
 
 extern "C" {
 
-    void CutScenes_Stop(CUTSYS_PC *system) {
+    void CutScenes_Stop(CUTSYS *system) {
         if (system == NULL) {
             return;
         }
@@ -1452,7 +1452,7 @@ extern "C" {
     }
 }
 
-void CutScenes_Destroy(CUTSYS_PC *system) {
+void CutScenes_Destroy(CUTSYS *system) {
     i32 i;
     if (system == NULL) {
         return;
@@ -1621,7 +1621,7 @@ extern "C" {
         i32 layer_mask = -1;
         GAMEOBJECT *scene_object = NULL;
         WORLDINFO *world = WorldInfo_CurrentlyActive();
-        CUTSYS_PC *cutscene_system = world->cutscene_sys;
+        CUTSYS *cutscene_system = world->cutscene_sys;
         if (cutscene_system == NULL) {
             return;
         }
@@ -2368,7 +2368,7 @@ extern "C" {
             ((world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0 || world->level_progress == NULL ||
              (reinterpret_cast<CUT_CONTROLLER_PROGRESS *>(world->level_progress)->scene_flags & 2) == 0)) {
             CUTINFO *cut = NULL;
-            CUTSYS_PC *system = world->cutscene_sys;
+            CUTSYS *system = world->cutscene_sys;
             if (CutScenePlayer != NULL) {
                 CUT_PLAYER_CLIP_CONFIG *clip = CutScenePlayer->active;
                 if (clip != NULL && system->count > 0) {

@@ -959,7 +959,7 @@ i32 MakePlayerList(i32 count) {
             progress->unknown_7 = 0;
         }
         if (player->coin_packet != NULL) {
-            progress->coins = ((PLAYER_COIN_PACKET_PC *)player->coin_packet)->coins;
+            progress->coins = ((PLAYER_COIN_PACKET *)player->coin_packet)->coins;
         } else {
             progress->coins = 0;
         }
@@ -3770,7 +3770,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     return 1;
 }
 
-void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
+void ResetAICreature(GAMEOBJECT *object, AISYS *system) {
     AICREATURE *creature;
     AIPATHINFO *path_info;
     AIROW *row;
@@ -3879,7 +3879,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS_PC *system) {
     }
 }
 
-void ResetAICreatures(AISYS_PC *system) {
+void ResetAICreatures(AISYS *system) {
     GAMEOBJECT *object;
     AICREATURE *creature;
     i32 index;
@@ -4944,7 +4944,7 @@ GAMEOBJECT *AddCreature(i32 id, i32 parameter) {
     return object;
 }
 
-PLAYER_COIN_PACKET_PC CoinPacket[2] = {0};
+PLAYER_COIN_PACKET CoinPacket[2] = {0};
 PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2] = {0};
 GAMEOBJECT BackUpPlayers[2] = {0};
 SOCKPOSITION OldPlrSPos[8] = {0};
@@ -5064,11 +5064,11 @@ void Players_Init(void) {
     for (index = 0; index < 2; ++index) {
         if (players[index] != NULL) {
             players[index]->coin_packet = &CoinPacket[index];
-            ((PLAYER_COIN_PACKET_PC *)players[index]->coin_packet)->last_coin = LEGOOBJ_DEFAULTLASTCOIN.low_word;
+            ((PLAYER_COIN_PACKET *)players[index]->coin_packet)->last_coin = LEGOOBJ_DEFAULTLASTCOIN.low_word;
             if (Area == last_area) {
-                ((PLAYER_COIN_PACKET_PC *)players[index]->coin_packet)->coins = progress[index].coins;
+                ((PLAYER_COIN_PACKET *)players[index]->coin_packet)->coins = progress[index].coins;
             } else {
-                ((PLAYER_COIN_PACKET_PC *)players[index]->coin_packet)->coins = 0;
+                ((PLAYER_COIN_PACKET *)players[index]->coin_packet)->coins = 0;
             }
             players[index]->gizforce_los_info = &GizForceLOSInfo[index];
             memcpy(&BackUpPlayers[index], players[index], sizeof(BackUpPlayers[index]));
@@ -5077,7 +5077,7 @@ void Players_Init(void) {
     RememberPlayerIDs(0, players[0] != NULL ? (i16)players[0]->id : -1, players[1] != NULL ? (i16)players[1]->id : -1);
 }
 
-void InitAICreatures(AISYS_PC *system) {
+void InitAICreatures(AISYS *system) {
     i32 creature_index;
     i32 member;
     i32 type;

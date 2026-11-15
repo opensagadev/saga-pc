@@ -41,7 +41,7 @@ static void Portal_AddGizmos(void *system, i32 type_id, void *world_ptr, void *d
     }
 }
 
-static char *Portal_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Portal_GetGizmoName(GIZMO *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
@@ -49,28 +49,28 @@ static char *Portal_GetGizmoName(GIZMO_PC *gizmo) {
     return portal_gizmo_name;
 }
 
-static i32 Portal_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 Portal_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
     if (gizmo != NULL && gizmo->object != NULL && (((PORTAL_CALLBACK *)gizmo->object)->flags & 1) != 0) {
         return 1;
     }
     return 0;
 }
 
-static char *Portal_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *Portal_GetOutputName(GIZMO *gizmo, i32 output) {
     return portal_output_name;
 }
 
-static i32 Portal_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Portal_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
-static void Portal_Activate(GIZMO_PC *gizmo, i32 active) {
+static void Portal_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL && gizmo->object != NULL) {
         NuPortalSetActiveDirect(gizmo->object, active);
     }
 }
 
-static i32 Portal_ActivateRev(GIZMO_PC *gizmo, i32 inactive, i32 check) {
+static i32 Portal_ActivateRev(GIZMO *gizmo, i32 inactive, i32 check) {
     PORTAL_CALLBACK *portal;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;

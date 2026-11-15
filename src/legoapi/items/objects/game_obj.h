@@ -9,15 +9,15 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
-struct PART_PC;
+struct PART;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct numtx_s;
 struct nuhspecial_s;
 
 typedef struct PART_LIGHTING_DATA PART_LIGHTING_DATA;
-typedef void (*PART_MOVE)(struct PART_PC *, f32);
-typedef i32 (*PART_DRAW)(struct PART_PC *);
+typedef void (*PART_MOVE)(struct PART *, f32);
+typedef i32 (*PART_DRAW)(struct PART *);
 
 struct PART_LIGHTING_DATA { // size 0xcc
     u8 unknown_0[0x78];     // 0x00
@@ -80,13 +80,13 @@ extern "C" {
 }
 #endif
 
-typedef void (*PART_KILL)(struct PART_PC *, i32);
+typedef void (*PART_KILL)(struct PART *, i32);
 
-/* PART_PC.active: AddPart takes a slot without it and sets it, KillPart clears it; the part loops skip slots
+/* PART.active: AddPart takes a slot without it and sets it, KillPart clears it; the part loops skip slots
  * without it. */
 #define PART_IN_USE 0x1
 
-/* PART_PC.flags, ADDPART.flags and the part type's flags: the part editor's "Instance Flags" and "Debris Settings"
+/* PART.flags, ADDPART.flags and the part type's flags: the part editor's "Instance Flags" and "Debris Settings"
  * toggles (parts.c), labels in the comments. */
 #define PART_FLAG_DIE_WHEN_STOPPED 0x1             /* "Die when stopped" */
 #define PART_FLAG_COLLIDE_WITH_CHARACTERS 0x2      /* "Collide with Characters" */
@@ -108,7 +108,7 @@ typedef void (*PART_KILL)(struct PART_PC *, i32);
 #define PART_FLAG_DEBRIS_STOPS_WITH_PART 0x200000  /* "Debris stops when Part stops" */
 #define PART_FLAG_TRIGGER_INSIDE_CUTOFF 0x400000   /* "Trigger effect inside cutoff" */
 
-struct PART_PC { // size 0x220
+struct PART { // size 0x220
 
     union { // size 0x40
         NUMTX transform;
@@ -282,16 +282,16 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void TiePart_Kill(struct PART_PC *, i32);
-    void TiePart_KillExplode(struct PART_PC *, i32);
-    void TiePart_Impact(struct PART_PC *);
-    void TiePart_Move(struct PART_PC *, f32);
-    void TieSpinZPart_Move(struct PART_PC *, f32);
-    void AtatPart_Stop(struct PART_PC *);
-    void AtatPart_Update(struct PART_PC *);
-    void SpeederPart_Kill(struct PART_PC *, i32);
-    void SpeederPart_Update(struct PART_PC *);
-    i32 SpeederPart_Draw(struct PART_PC *);
+    void TiePart_Kill(struct PART *, i32);
+    void TiePart_KillExplode(struct PART *, i32);
+    void TiePart_Impact(struct PART *);
+    void TiePart_Move(struct PART *, f32);
+    void TieSpinZPart_Move(struct PART *, f32);
+    void AtatPart_Stop(struct PART *);
+    void AtatPart_Update(struct PART *);
+    void SpeederPart_Kill(struct PART *, i32);
+    void SpeederPart_Update(struct PART *);
+    i32 SpeederPart_Draw(struct PART *);
 #ifdef __cplusplus
 }
 #endif

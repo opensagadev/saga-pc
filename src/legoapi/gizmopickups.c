@@ -67,8 +67,8 @@ typedef struct SPECIAL_MINIKIT {    // size 0x3c
     f32 end_frame;                  // 0x14
     char special_name[16];          // 0x18
     char pickup_name[8];            // 0x28
-    GIZMO_PC *at_gizmo;             // 0x30
-    GIZMO_PC *pickup;               // 0x34
+    GIZMO *at_gizmo;                // 0x30
+    GIZMO *pickup;                  // 0x34
     u32 flags;                      // 0x38
 } SPECIAL_MINIKIT;
 
@@ -142,7 +142,7 @@ typedef struct pickup_counter_buildit_s { // size 0x6e
     u8 build_state;                       // 0x6d
 } PICKUP_COUNTER_BUILDIT;
 
-void SuperCounter_ActivateGizmoPickup(GIZMO_PC *, GIZMOPICKUP *);
+void SuperCounter_ActivateGizmoPickup(GIZMO *, GIZMOPICKUP *);
 
 typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
     u8 unknown_00[0x17];                // 0x00
@@ -375,11 +375,11 @@ void GizmoPickups_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data
     }
 }
 
-char *GizmoPickup_GetGizmoName(GIZMO_PC *gizmo) {
+char *GizmoPickup_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? (char *)gizmo->object : NULL;
 }
 
-i32 GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 GizmoPickup_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     (void)output;
     (void)mode;
     return (((GIZMOPICKUP *)gizmo->object)->flags >> 3) & 1;
@@ -387,16 +387,16 @@ i32 GizmoPickup_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 
 char *GizmoPickup_OutputName = "Collected";
 
-char *GizmoPickup_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *GizmoPickup_GetOutputName(GIZMO *gizmo, i32 output) {
     return GizmoPickup_OutputName;
 }
 
-i32 GizmoPickup_GetNumOutputs(GIZMO_PC *unused) {
+i32 GizmoPickup_GetNumOutputs(GIZMO *unused) {
     (void)unused;
     return 1;
 }
 
-void GizmoPickup_Activate(GIZMO_PC *gizmo, i32 active) {
+void GizmoPickup_Activate(GIZMO *gizmo, i32 active) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GIZMOPICKUP *pickup;
     GIZMOPICKUP *group_pickup;
@@ -563,7 +563,7 @@ void *GizmoPickups_ReserveBufferSpace(void *world_ptr) {
     return world->pickup_runtime_sys;
 }
 
-void GizmoPickup_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void GizmoPickup_SetVisibility(GIZMO *gizmo, i32 visible) {
     PICKUP_VISIBILITY_VIEW *pickup;
     if (gizmo != NULL) {
         pickup = gizmo->object;
@@ -655,7 +655,7 @@ void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
     }
 }
 
-NUVEC *GizmoPickup_GetPos(GIZMO_PC *gizmo) {
+NUVEC *GizmoPickup_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
@@ -1032,7 +1032,7 @@ void ResetCoinPacket(void *packet) {
     }
 }
 
-void UpdateCoinPacket(PLAYER_COIN_PACKET_PC *packet, i32 active, i32 player_index) {
+void UpdateCoinPacket(PLAYER_COIN_PACKET *packet, i32 active, i32 player_index) {
     u32 decrement;
     if (packet == NULL) {
         return;
@@ -1090,7 +1090,7 @@ i32 CoinsGoToMainTotal(void) {
     return 0;
 }
 
-void PartUpdate_Heart(PART_PC *part) {
+void PartUpdate_Heart(PART *part) {
     NUVEC position = part->position;
     part->rotation_y = (u16)(i32)((f64)part->rotation_y + (f64)FRAMETIME * 16384.0);
     NuMtxSetRotationY(&part->transform, part->rotation_y);
@@ -1280,7 +1280,7 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
     GIZMO_PICKUP_TYPE *type;
     AREA_SUPERCOUNTER *counter;
     AREA_SUPERCOUNTER_PICKUP *counter_pickup;
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     i32 effect_flags;
     NUVEC position;
     f32 distance;
@@ -1423,12 +1423,12 @@ ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32 type_id) {
     addtype->fns.add_gizmos_fn = (void *)GizmoPickups_AddGizmos;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizmoPickups_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizmoPickups_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoPickup_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoPickup_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoPickup_GetOutputName;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))GizmoPickup_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))GizmoPickup_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))GizmoPickup_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizmoPickup_GetNumOutputs;
-    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoPickup_Activate;
-    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizmoPickup_SetVisibility;
+    addtype->fns.activate_fn = (void (*)(GIZMO *, i32))GizmoPickup_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizmoPickup_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizmoPickup_GetPos;
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizmoPickups_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizmoPickups_ClearProgress;

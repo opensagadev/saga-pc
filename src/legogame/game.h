@@ -11,8 +11,8 @@
 #include "nu2api/numath/nuvec.h"
 
 struct AISCRIPT;
-struct GIZMOBLOWUP_PC;
-struct PART_PC;
+struct GIZMOBLOWUP;
+struct PART;
 struct WORLDINFO_s;
 struct area_data_s;
 struct bolt_s;
@@ -164,8 +164,8 @@ extern "C" {
 #endif
     extern f32 CombatReactionHorizontalScale;
     /* New public declarations only; private PartCollidePC stays original parts.c-local. */
-    void PartCollide_2D(struct PART_PC *);
-    void DeflectPart(struct PART_PC *, struct gameobject_s *, f32, f32, i32, i32);
+    void PartCollide_2D(struct PART *);
+    void DeflectPart(struct PART *, struct gameobject_s *, f32, f32, i32, i32);
     void InitGameMode(void);
 
     typedef union GIZMO_BLOWUP_HIT_MULTIPLIER_STORAGE { // size 0x4
@@ -358,7 +358,7 @@ extern "C" {
     void LSW_SetIndy(i32 area_index);
 
     extern MISSION_SAVE_READER *Game_MissionSave;
-    void Game_KillPart(struct PART_PC *part, i32 reason);
+    void Game_KillPart(struct PART *part, i32 reason);
 
     typedef struct GAMEAUDIO {                                   // size 0x200
         i32 (*override_footstep_fn)(struct gameobject_s *, i32); // 0x000
@@ -402,7 +402,7 @@ typedef struct {          // size 0xfc
 
 typedef struct ASTEROID {
     nuhspecial_s special;
-    struct GIZMOBLOWUP_PC *blowup;
+    struct GIZMOBLOWUP *blowup;
     i16 rotation_speed_x;
     i16 rotation_speed_y;
     i16 rotation_speed_z;
@@ -411,7 +411,7 @@ typedef struct ASTEROID {
 
 typedef struct FINAL_ASTEROID {
     nuhspecial_s special;
-    struct GIZMOBLOWUP_PC *blowups[8];
+    struct GIZMOBLOWUP *blowups[8];
     i16 blowup_count;
     i16 rotation_speed_x;
     i16 rotation_speed_y;

@@ -1,0 +1,31 @@
+old,new,evidence
+AISYS_PC,AISYS,the only AI system record; the plain name was only in comments and a symbols.csv signature
+GIZMO_PC,GIZMO,the only gizmo record; the plain name was only a string literal
+PART_PC,PART,the only part record; the plain name was only a string literal
+GIZMOBLOWUP_PC,GIZMOBLOWUP,the only blowup record; the plain name was only in a symbols.csv signature
+SOCKSYS_PC,SOCKSYS,the only socket system record
+ZIPUP_PC,ZIPUP,the only zip-up record; the plain name was only a string literal
+CUT_TRIGGER_SET_PC,CUT_TRIGGER_SET,the only cut trigger set record; the plain name was only in symbols.csv signatures
+PLAYER_COIN_PACKET_PC,PLAYER_COIN_PACKET,the only coin packet record; the plain name was only in symbols.csv signatures
+CUTSYS_PC,CUTSYS,the only cutscene system record
+BOLT_PC,BOLT,typedef BOLT BOLT_PC: one record, the alias goes
+TERRAIN_GROUP_PC,TERRAIN_GROUP,typedef TERRAIN_GROUP_PC TERRAIN_GROUP: one record, the alias goes
+TERRAIN_PLATFORM_PC,TERRAIN_PLATFORM,typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM: one record, the alias goes
+TERRAIN_CELL_PC,TERRAIN_CELL,typedef TERRAIN_CELL_PC TERRAIN_CELL: one record, the alias goes
+TERRAIN_AXIS_FREEDOM_SHAPE_PC,TERRAIN_AXIS_FREEDOM_SHAPE,two unit aliases of the one record go
+TERRAIN_SPHERE_PC,TERRAIN_SPHERE,two unit aliases of the one record go
+TERRAIN_FINISH_SCAN_GROUP_PC,TERRAIN_FINISH_LOCAL_SCAN_GROUP,the scan-function form on its locals; TERRAIN_FINISH_SCAN_GROUP is the writer-record form in terrain_query.cpp
+DOGFIGHT_SPACE,WORLD_DOGFIGHT_SPACE,the macro: the current world's level data seen as the dogfight record
+DOGFIGHT_SPACE_PC,DOGFIGHT_SPACE,the only dogfight level record
+PODSPRINT,PODSPRINT_STATE,the macro: podsprint seen through its named view
+PODSPRINT_PC,PODSPRINT,the type of podsprint
+OPPONENT_PACKET,OPPONENT_PACKET_OF,the cast macro
+OPPONENT_GAME,OPPONENT_GAME_OF,the cast macro
+OPPONENT_LOS,OPPONENT_LOS_OF,the cast macro
+OPPONENT_OBJECT,OPPONENT_OBJECT_OF,the cast macro
+OPPONENT_SYS,OPPONENT_SYS_OF,the cast macro
+OPPONENT_PACKET_PC,OPPONENT_PACKET,the opponent packet record
+OPPONENT_GAME_PC,OPPONENT_GAME,the opponent game record
+OPPONENT_LOS_PC,OPPONENT_LOS,the opponent line-of-sight record
+OPPONENT_OBJECT_PC,OPPONENT_OBJECT,the opponent object record
+OPPONENT_SYS_PC,OPPONENT_SYS,the opponent system record

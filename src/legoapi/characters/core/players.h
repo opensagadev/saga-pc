@@ -69,7 +69,7 @@ extern "C" {
     extern SOCKPOSITION OldPlrSPos[8];
     extern struct SUIT_LAYERS *PlayerSuit[8];
     extern u8 PlayerTorpedoCount[8];
-    extern PLAYER_COIN_PACKET_PC CoinPacket[2];
+    extern PLAYER_COIN_PACKET CoinPacket[2];
     extern PLAYER_FORCE_LOS_SLOT GizForceLOSInfo[2];
     extern GAMEOBJECT BackUpPlayers[2];
 

@@ -22,10 +22,10 @@ typedef struct whip_basis_s { // size 0x76c
 } WHIP_BASIS;
 
 i32 SuperCarry_Possible(GAMEOBJECT *, i32);
-void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32);
+void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP *, i32);
 
 void Whip_MoveCode(GAMEOBJECT *object) {
-    GIZMOBLOWUP_PC *target;
+    GIZMOBLOWUP *target;
     f32 *frame;
     f32 action_frame;
     i32 activate;
@@ -85,7 +85,7 @@ void Whip_MoveCode(GAMEOBJECT *object) {
         if (object->context_variant_flags & 0x100) {
             NUVEC *target_position = NULL;
             if (object->grapple != NULL) {
-                target_position = &((GIZMOBLOWUP_PC *)object->grapple)->position;
+                target_position = &((GIZMOBLOWUP *)object->grapple)->position;
             } else if (object->force_target != NULL) {
                 target_position = &object->force_target->collision_position;
             }

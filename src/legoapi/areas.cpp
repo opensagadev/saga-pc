@@ -918,7 +918,7 @@ extern "C" AREA_SUPERCOUNTER *SuperCounters_FindPickup(WORLDINFO *world, void *g
     return NULL;
 }
 
-extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO_PC *gizmo, GIZMOPICKUP *gizmo_pickup) {
+extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO *gizmo, GIZMOPICKUP *gizmo_pickup) {
     NUVEC position;
     if (Players_AveragePos(&position, NULL) == 0) {
         position = GameCam->position;

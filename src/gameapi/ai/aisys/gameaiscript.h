@@ -7,7 +7,7 @@
 
 struct AIPACKET;
 struct AISCRIPTPROCESS;
-struct AISYS_PC;
+struct AISYS;
 struct climb_slot_s;
 struct gameobject_s;
 
@@ -141,70 +141,70 @@ typedef struct climb_system_s {   // size 0x8
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Action_CompleteLevel(struct AISYS_PC *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params, i32 count,
+    i32 Action_CompleteLevel(struct AISYS *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params, i32 count,
                              i32 first_time, f32 elapsed);
-    i32 Action_RaceOpponent(struct AISYS_PC *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params, i32 count,
+    i32 Action_RaceOpponent(struct AISYS *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params, i32 count,
                             i32 first_time, f32 elapsed);
-    i32 Action_SetAnimSpeedMul(struct AISYS_PC *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
+    i32 Action_SetAnimSpeedMul(struct AISYS *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
                                i32 num_params, i32 first_time, f32 elapsed);
-    i32 Action_SnapToPosition(struct AISYS_PC *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params, i32 count,
+    i32 Action_SnapToPosition(struct AISYS *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params, i32 count,
                               i32 first_time, f32 elapsed);
-    i32 Action_SnapToSockPosition(struct AISYS_PC *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
+    i32 Action_SnapToSockPosition(struct AISYS *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
                                   i32 count, i32 first_time, f32 elapsed);
-    i32 Action_UseCurrentSpeed(struct AISYS_PC *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
+    i32 Action_UseCurrentSpeed(struct AISYS *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
                                i32 num_params, i32 first_time, f32 elapsed);
-    i32 Action_SetScaleOverride(struct AISYS_PC *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
+    i32 Action_SetScaleOverride(struct AISYS *system, struct AISCRIPTPROCESS *processor, struct AIPACKET *packet, char **params,
                                 i32 num_params, i32 first_time, f32 elapsed);
-    i32 Action_SetScriptState(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_AttackOpponent(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_FollowDirection(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_FollowCharacter(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_GameFollowPlayer(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_MoveForward(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetScriptState(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_AttackOpponent(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_FollowDirection(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_FollowCharacter(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_GameFollowPlayer(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_MoveForward(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
     AILOCATOR *LocalGetRandomLocator(AILOCATOR **locators, i32 count, f32 clip_radius, NUVEC *position, f32 max_distance,
                                      i32 outside_camera, f32 max_delta_y, f32 min_delta_y);
-    i32 Action_DynamicCameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_BigJump(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetCurrentSpeed(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetGravityHeight(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SnapWeaponOut(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_DontAvoidCharacter(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_MoveAwayFromLastAttacker(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_CannotDropIn(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetSpline(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_CameraShake(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetZeroAcceleration(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_FaceCharacter(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetPath(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetInvulnerable(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetSide(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetTakeOverTarget(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetStateArea(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SnapToOrigin(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_GameDontPush(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetAIOverrideControl(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_PlayGizSpecial(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetLastAttacker(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetUseOneAtOnce(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_SetTaggable(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_TagCharacter(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_RegisterTakeOverObject(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_CircleLocator(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_GoToOriginalPath(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_PlaySfx(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_DynamicCameraCut(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_BigJump(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetCurrentSpeed(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetGravityHeight(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SnapWeaponOut(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_DontAvoidCharacter(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_MoveAwayFromLastAttacker(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_CannotDropIn(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetSpline(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_CameraShake(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetZeroAcceleration(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_FaceCharacter(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetPath(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetInvulnerable(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetSide(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetTakeOverTarget(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetStateArea(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SnapToOrigin(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_GameDontPush(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetAIOverrideControl(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_PlayGizSpecial(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetLastAttacker(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetUseOneAtOnce(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetTaggable(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_TagCharacter(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_RegisterTakeOverObject(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_CircleLocator(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_GoToOriginalPath(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_PlaySfx(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
 
-    i32 Action_Kill(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_ResetContext(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_TakeDamage(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_CanBeCarried(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_Activate(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_RemoveThrownForceObjects(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_AnimTimeRandom(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_PlayGizObstacle(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_UseForce(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_ProbeDroid(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_AlertCreatures(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_EngageOpponent(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_Kill(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_ResetContext(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_TakeDamage(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_CanBeCarried(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_Activate(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_RemoveThrownForceObjects(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_AnimTimeRandom(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_PlayGizObstacle(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_UseForce(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_ProbeDroid(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_AlertCreatures(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_EngageOpponent(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
     struct AILOCATOR *LocalGetNearestLocator(void *arg0, i32 arg1, f32 arg2, struct nuvec_s *arg3, f32 arg4, i32 arg5, f32 arg6, f32 arg7);
 #ifdef __cplusplus
 }

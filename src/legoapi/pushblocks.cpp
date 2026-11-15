@@ -1152,7 +1152,7 @@ static void Push_Reset(void *world, void *, void *progress) {
     ResetPushProgress(static_cast<WORLDINFO *>(world), progress);
 }
 
-static void Push_Activate(GIZMO_PC *gizmo, i32 active) {
+static void Push_Activate(GIZMO *gizmo, i32 active) {
     PUSH_BLOCK *block;
     WORLDINFO *world;
     i32 index;
@@ -1174,7 +1174,7 @@ static void Push_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-static void Push_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Push_SetVisibility(GIZMO *gizmo, i32 visible) {
     PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
     block->push_visible = visible != 0;
     NuSpecialSetVisibility(&block->special, visible);
@@ -1197,14 +1197,14 @@ static void Push_AddGizmos(void *system, i32 type_id, void *world_ptr, void *) {
     }
 }
 
-static char *GizPush_GetGizmoName(GIZMO_PC *gizmo) {
+static char *GizPush_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
         return static_cast<PUSH_BLOCK *>(gizmo->object)->name;
     }
     return NULL;
 }
 
-static i32 GizPush_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32) {
+static i32 GizPush_GetOutput(GIZMO *gizmo, i32 output_index, i32) {
     PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
     if (block != NULL) {
         if (output_index == 0) {
@@ -1233,7 +1233,7 @@ extern "C" {
     f32 PushInitCornerInset = -0.006f;
 }
 
-static char *GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
+static char *GizPush_GetOutputName(GIZMO *gizmo, i32 output_index) {
     PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
     if (output_index < 0 || output_index > block->output_count) {
         return NULL;
@@ -1246,7 +1246,7 @@ static char *GizPush_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
     return outputName;
 }
 
-static i32 GizPush_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 GizPush_GetNumOutputs(GIZMO *gizmo) {
     return static_cast<PUSH_BLOCK *>(gizmo->object)->output_count;
 }
 
@@ -1391,7 +1391,7 @@ static i32 edpush_Load(void *world_ptr, void *) {
     return 0;
 }
 
-static i32 Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT_PC *bolt, u8 *) {
+static i32 Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT *bolt, u8 *) {
     WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
     PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(blocks_ptr);
     if (block != NULL) {

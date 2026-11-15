@@ -70,7 +70,7 @@ extern "C" {
     extern const char AICombatOpponentTypeName[13];
     extern AREA_DATA *JEDI_ADATA;
     extern AREA_DATA *DOOKU_ADATA;
-    extern PODSPRINT_PC podsprint;
+    extern PODSPRINT podsprint;
     extern u16 temp_xrot;
     extern u16 temp_zrot;
     extern AREA_DATA *GUNSHIP_ADATA;
@@ -135,7 +135,7 @@ extern "C" {
     extern f32 PodRace_sniper_fire_range_time;
     extern f32 PodRace_sniper_start_fire_radius;
     extern struct GIZFORCE_s *force_array[4];
-    struct GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(struct gameobject_s *object);
+    struct GIZMOBLOWUP *DeathStar2BattleD_InZapRange(struct gameobject_s *object);
     extern void *factoryb_netpacket;
     void Hub_UpdateMiniKits(WORLDINFO *world);
     void Hub_UpdateMiniKits(WORLDINFO *);

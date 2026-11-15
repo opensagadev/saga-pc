@@ -98,7 +98,7 @@ typedef struct AIPATHNODELINK { // size 0x4
     u8 unknown_1;               // 0x1
     i16 special_route_index;    // 0x2
 } AIPATHNODELINK;
-typedef struct AISYS_PC AISYS_PC;
+typedef struct AISYS AISYS;
 
 typedef struct AIAREA { // size 0x40
     char name[0x10];    // 0x00
@@ -110,7 +110,7 @@ typedef struct AIAREA { // size 0x40
     u8 runtime_flags;   // 0x2a
     u8 game_flags;      // 0x2b
     u8 unknown_2c[12];  // 0x2c
-    AISYS_PC *system;   // 0x38
+    AISYS *system;      // 0x38
     u8 unknown_3c[4];   // 0x3c
 } AIAREA;
 
@@ -218,8 +218,8 @@ extern "C" {
 }
 #endif
 
-typedef f32 (*AICONDITION_EVAL)(AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char *, void *);
-typedef void *(*AICONDITION_INIT)(AISYS_PC *, char *, struct AISCRIPT *);
+typedef f32 (*AICONDITION_EVAL)(AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char *, void *);
+typedef void *(*AICONDITION_INIT)(AISYS *, char *, struct AISCRIPT *);
 
 typedef struct AICONDITIONDEF { // size 0xc
     const char *name;           // 0x0
@@ -227,7 +227,7 @@ typedef struct AICONDITIONDEF { // size 0xc
     AICONDITION_INIT init_fn;   // 0x8
 } AICONDITIONDEF;
 
-typedef i32 (*AIACTION_EVAL)(AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+typedef i32 (*AIACTION_EVAL)(AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
 
 typedef struct AIACTIONDEF {      // size 0xc
     const char *name;             // 0x0
@@ -394,7 +394,7 @@ typedef struct AIGROUP {           // size 0x134
     f32 max_speed; // 0x130
 } AIGROUP;
 
-struct AISYS_PC {           // size 0x1394
+struct AISYS {              // size 0x1394
     void *storage;          // 0x0000
     VARIPTR storage_end;    // 0x0004
     VARIPTR storage_cursor; // 0x0008
@@ -430,69 +430,69 @@ struct AISYS_PC {           // size 0x1394
     struct APIOBJECT *player_2; // 0x1390
 };
 
-typedef void (*AI_SCRIPT_FIRST_ACTION)(AISYS_PC *, struct AIPACKET *, struct AISCRIPTPROCESS *);
+typedef void (*AI_SCRIPT_FIRST_ACTION)(AISYS *, struct AIPACKET *, struct AISCRIPTPROCESS *);
 
 typedef i32 (*AI_GAME_PARAM_TO_FLOAT)(struct AIPACKET *, struct AISCRIPTPROCESS *, char *, f32 *);
 #ifdef __cplusplus
 extern "C" {
 #endif
     void DestroyAIGroup(AIGROUP *);
-    void AIScriptLoadAllPakFile(void *, char *, VARIPTR *, VARIPTR *, AISYS_PC *);
-    typedef NUVEC *(*AI_ORIGIN_POSITION)(AISYS_PC *, struct AIPACKET *);
+    void AIScriptLoadAllPakFile(void *, char *, VARIPTR *, VARIPTR *, AISYS *);
+    typedef NUVEC *(*AI_ORIGIN_POSITION)(AISYS *, struct AIPACKET *);
     extern AI_ORIGIN_POSITION GetOriginPositionFn;
     f32 AIParamToFloatEx(struct AIPACKET *, struct AISCRIPTPROCESS *, char *);
-    void AIScriptProcess(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, struct AISCRIPTPROCESS *, f32);
-    void AISysProcessCharacter(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, i32, f32, i32, i32);
+    void AIScriptProcess(AISYS *, struct APIOBJECT *, struct AIPACKET *, struct AISCRIPTPROCESS *, f32);
+    void AISysProcessCharacter(AISYS *, struct APIOBJECT *, struct AIPACKET *, i32, f32, i32, i32);
     void InitFn_GameParamToFloat(AI_GAME_PARAM_TO_FLOAT);
     extern AI_SCRIPT_FIRST_ACTION ScriptProcessFirstTimeActionFn;
     extern struct AIPACKET *current_packet;
     extern AI_GAME_PARAM_TO_FLOAT GameParamToFloatFn;
     extern APIOBJECT_FROM_ID APIOBJECTFromObjIDFn;
-    void AISysProcess(AISYS_PC *, struct APIOBJECT *, struct APIOBJECT *);
+    void AISysProcess(AISYS *, struct APIOBJECT *, struct APIOBJECT *);
     typedef f32 (*AI_CHARACTER_GOAL_SPEED)(struct APIOBJECT *);
-    void AISysGetCharacterPathPos(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, i32, i32);
+    void AISysGetCharacterPathPos(AISYS *, struct APIOBJECT *, struct AIPACKET *, i32, i32);
     void AIMoveInstruction(struct AIPACKET *, NUVEC *, f32, AIPATHINFO *, i32, f32);
     void AIFormationFollow(struct AIPACKET *);
-    void AISysUpdateCharacterPathPos(AISYS_PC *, struct APIOBJECT *, struct AIPACKET *, i32, f32);
+    void AISysUpdateCharacterPathPos(AISYS *, struct APIOBJECT *, struct AIPACKET *, i32, f32);
     void InitFn_APIOBJECTFromObjIDFn(APIOBJECT_FROM_ID);
-    void AILocatorSet_CheckLocatorsStillAssigned(AISYS_PC *, AILOCATORSET *);
-    void AILocatorSet_AssignNearestLocator(AISYS_PC *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32);
-    void AILocatorSet_AssignFurthestLocator(AISYS_PC *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32);
-    void AILocatorSet_AssignRandomLocator(AISYS_PC *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, f32, i32);
-    void AISysGetPathPosEx(AISYS_PC *, NUVEC *, AIPATHINFO *, AIPATH *, i32, i32, f32 *);
-    void AISysGetPathPos(AISYS_PC *, NUVEC *, AIPATHINFO *, AIPATH *, i32);
-    i32 AISysSetLevelPath(AISYS_PC *, char *);
-    AILOCATOR *AIPathFindLocator(AISYS_PC *, char *);
-    AILOCATORSET *AIPathFindLocatorSet(AISYS_PC *, char *);
-    AIAREA *AISysFindArea(AISYS_PC *, char *);
-    AIPATH *AISysFindPath(AISYS_PC *, char *);
-    AIPATHNODE *AIPathFindNode(AISYS_PC *, AIPATH *, char *);
-    void *AIPAthFindPathCnx(AISYS_PC *, AIPATH *, char *, char *, i32 *);
-    void AIScriptInitConditions(AISYS_PC *sys);
+    void AILocatorSet_CheckLocatorsStillAssigned(AISYS *, AILOCATORSET *);
+    void AILocatorSet_AssignNearestLocator(AISYS *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32);
+    void AILocatorSet_AssignFurthestLocator(AISYS *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32);
+    void AILocatorSet_AssignRandomLocator(AISYS *, AILOCATORSET *, struct APIOBJECT *, f32, NUVEC *, f32, i32);
+    void AISysGetPathPosEx(AISYS *, NUVEC *, AIPATHINFO *, AIPATH *, i32, i32, f32 *);
+    void AISysGetPathPos(AISYS *, NUVEC *, AIPATHINFO *, AIPATH *, i32);
+    i32 AISysSetLevelPath(AISYS *, char *);
+    AILOCATOR *AIPathFindLocator(AISYS *, char *);
+    AILOCATORSET *AIPathFindLocatorSet(AISYS *, char *);
+    AIAREA *AISysFindArea(AISYS *, char *);
+    AIPATH *AISysFindPath(AISYS *, char *);
+    AIPATHNODE *AIPathFindNode(AISYS *, AIPATH *, char *);
+    void *AIPAthFindPathCnx(AISYS *, AIPATH *, char *, char *, i32 *);
+    void AIScriptInitConditions(AISYS *sys);
     typedef struct APIOBJECT *(*GAMEOBJECT_LOOKUP_CALLBACK)(void *, char *);
     extern GAMEOBJECT_LOOKUP_CALLBACK GetNamedGameObjectCallback;
     void AISysCharacterSetPath(struct AIPACKET *, AIPATH *);
     void AISysFindRoute(struct AIPACKET *);
     void AISysCharacterSetPathCnx(struct AIPACKET *, NUVEC *, AIPATHCNX *, i32);
-    void LEGO_AISysCreatureInteraction2D(AISYS_PC *, i32, struct APIOBJECT **, i32 *, f32);
-    void AISysCreatureAntinodeInteraction(AISYS_PC *, i32, struct APIOBJECT **, i32 *);
-    void AIScriptLoadAll(char *, VARIPTR *, VARIPTR *, AISYS_PC *);
+    void LEGO_AISysCreatureInteraction2D(AISYS *, i32, struct APIOBJECT **, i32 *, f32);
+    void AISysCreatureAntinodeInteraction(AISYS *, i32, struct APIOBJECT **, i32 *);
+    void AIScriptLoadAll(char *, VARIPTR *, VARIPTR *, AISYS *);
 #ifdef __cplusplus
 }
 #endif
-typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS_PC *system, struct nuhspecial_s *special);
+typedef i32 AIFINDALTERNATIVESPECIALOBJECT(AISYS *system, struct nuhspecial_s *special);
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    struct AISCRIPT *AIScriptFind(AISYS_PC *, const char *, i32, i32, i32);
+    struct AISCRIPT *AIScriptFind(AISYS *, const char *, i32, i32, i32);
     struct AISTATE *AIStateFind(const char *, struct AISCRIPT *);
     void AIScriptSetState(struct AISCRIPTPROCESS *, struct AISTATE *);
-    void AIScriptProcessorInit(AISYS_PC *, struct AIPACKET *, struct AISCRIPTPROCESS *, AICREATURE *, char *, char *, i32,
-                               struct AISCRIPT *, struct AISTATE *);
+    void AIScriptProcessorInit(AISYS *, struct AIPACKET *, struct AISCRIPTPROCESS *, AICREATURE *, char *, char *, i32, struct AISCRIPT *,
+                               struct AISTATE *);
     extern struct AISCRIPT *aiscript_load_script;
     extern struct AISTATE *aiscript_load_state;
-    extern void (*GameAILoadFn)(AISYS_PC *, i32, struct NUGSCN_s *, VARIPTR *, VARIPTR *);
+    extern void (*GameAILoadFn)(AISYS *, i32, struct NUGSCN_s *, VARIPTR *, VARIPTR *);
     void AIScriptOpenPakFileParse(struct AISCRIPT **, void *, char *, char *, VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }

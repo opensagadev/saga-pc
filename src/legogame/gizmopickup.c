@@ -61,7 +61,7 @@
 #include <string.h>
 #include <float.h>
 
-void PartUpdate_Heart(PART_PC *part);
+void PartUpdate_Heart(PART *part);
 
 typedef struct coinpacket_pickup_s {
     u8 unknown_0[0xa];
@@ -578,7 +578,7 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
 }
 
     f32 coinimpactwait = 0;
-static void PartImpact_Coin(PART_PC *part) {
+static void PartImpact_Coin(PART *part) {
     f32 speed;
     f32 volume;
     i32 angle;
@@ -604,13 +604,13 @@ static void PartImpact_Coin(PART_PC *part) {
     }
 }
 
-static void PartExtra_BlueCoin(PART_PC *part) {
+static void PartExtra_BlueCoin(PART *part) {
     if ((part->active & 0x200) != 0) {
         PartExtraCoinsPrivate(&part->position, 56);
     }
 }
 
-void PartExtra_PurpleCoin(PART_PC *part) {
+void PartExtra_PurpleCoin(PART *part) {
     if ((part->active & 0x200) != 0) {
         PartExtraCoinsPrivate(&part->position, 57);
     }
@@ -623,7 +623,7 @@ static f32 GizmopickupFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-static void PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
+static void PartMove_VehiclePickup(PART *part, f32 timestep) {
     f32 gain;
     f32 target;
     GAMEOBJECT *object;
@@ -653,7 +653,7 @@ static void PartMove_VehiclePickup(PART_PC *part, f32 timestep) {
     f32 PartVehicleHeartLifetime = 1.0f;
     f32 PartVehicleHeartPodraceHeight = 2.0f;
     f32 PartVehicleHeartHeight = 3.0f;
-static void PartMove_VehicleHeart(PART_PC *part, f32 timestep) {
+static void PartMove_VehicleHeart(PART *part, f32 timestep) {
     GAMEOBJECT *recipient = part->recipient;
     f32 progress = 1.0f - part->time_remaining / PartVehicleHeartLifetime;
     NUVEC start;
@@ -675,7 +675,7 @@ static void PartMove_VehicleHeart(PART_PC *part, f32 timestep) {
     f32 PartVehicleHeartPodraceScale = 4.0f;
     f32 PartVehicleHeartGunshipScale = 7.5f;
     f32 PartVehicleHeartScale = 5.0f;
-static i32 PartDraw_VehicleHeart(PART_PC *part) {
+static i32 PartDraw_VehicleHeart(PART *part) {
     NUVEC scaling;
     NUMTX matrix;
     if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
@@ -701,7 +701,7 @@ static i32 PartDraw_VehicleHeart(PART_PC *part) {
 void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     ADDPART params = Default_ADDPART;
-    PART_PC *part;
+    PART *part;
     params.position = position;
     params.velocity = velocity;
     params.unknown_14 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_radius_x);
@@ -735,7 +735,7 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
 void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     ADDPART params;
-    PART_PC *part;
+    PART *part;
     if (recipient == NULL) {
         return;
     }
@@ -771,7 +771,7 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
     }
 }
 
-static void PowerUp_ImpactPart(PART_PC *part) {
+static void PowerUp_ImpactPart(PART *part) {
     f32 minimum = (f32)((f64)AreaPickupScale * (f64)0.1f);
     f32 maximum = (f32)((f64)AreaPickupScale * 2.5);
     f32 speed = NuVecMag(&part->velocity);
@@ -789,7 +789,7 @@ static void PowerUp_ImpactPart(PART_PC *part) {
     }
 }
 
-static void PowerUp_UpdatePart(PART_PC *part) {
+static void PowerUp_UpdatePart(PART *part) {
     NUVEC position = part->position;
     part->rotation_y = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     NuMtxSetRotationY(&part->transform, part->rotation_y);
@@ -798,7 +798,7 @@ static void PowerUp_UpdatePart(PART_PC *part) {
     PlaySfx("Grv_GuardWeaponLp", &position);
 }
 
-static i32 PowerUp_DrawPart(PART_PC *part) {
+static i32 PowerUp_DrawPart(PART *part) {
     i32 draw = PartDraw_Flickerer(part);
     if (draw && WORLD->level_objects[0xd1].active != 0) {
         NUMTX matrix = part->transform;
@@ -810,7 +810,7 @@ static i32 PowerUp_DrawPart(PART_PC *part) {
 void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     ADDPART params = Default_ADDPART;
-    PART_PC *part;
+    PART *part;
     params.unknown_18 = params.unknown_14 = scale * GizmoPickupType[9].shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.position = position;
@@ -1095,7 +1095,7 @@ void Pup_CollectHeart(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJEC
     CollectHitPoint(object, &pickup->position, flags);
 }
 
-static void PartStolen_Coin(PART_PC *part) {
+static void PartStolen_Coin(PART *part) {
     GAMEOBJECT *recipient;
     i32 first_active;
     i32 second_active;
@@ -1121,7 +1121,7 @@ static void PartStolen_Coin(PART_PC *part) {
     }
 }
 
-static void PartStop_Coin(PART_PC *part) {
+static void PartStop_Coin(PART *part) {
     GIZMOPICKUPRUNTIMESYS_s *system;
     GIZMOPICKUP *pickup;
     if (netclient != 0) {
@@ -1155,7 +1155,7 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     GIZMO_PICKUP_TYPE *type = &GizmoPickupType[type_id];
     i32 model = type->first_model_id;
     ADDPART params;
-    PART_PC *part;
+    PART *part;
     if (type->random_model_count > 0) {
         model += qrand() / (65535 / type->random_model_count + 1);
     }

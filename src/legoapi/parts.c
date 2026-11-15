@@ -135,9 +135,9 @@ void InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
     MAXPARTS = count;
     buffer->addr = (buffer->addr + 15) & ~(u32)15;
     Part = buffer->void_ptr;
-    buffer->addr += MAXPARTS * sizeof(PART_PC);
+    buffer->addr += MAXPARTS * sizeof(PART);
     if (Part != NULL) {
-        memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+        memset(Part, 0, MAXPARTS * sizeof(PART));
     }
     part_slot_cursor = 0;
     memset(part_types, 0, sizeof(part_types));
@@ -167,7 +167,7 @@ void InitParts(i32 count, VARIPTR *buffer, VARIPTR end) {
 }
 
 void KillPartsByScene(NUGSCN *scene) {
-    PART_PC *part = Part;
+    PART *part = Part;
     i32 index;
     for (index = 0; index < MAXPARTS; ++index, ++part) {
         if ((part->active & PART_IN_USE) != 0 && part->source_special != NULL && part->special.scene == scene) {
@@ -299,7 +299,7 @@ f32 PARTGetTotalOffTime(i32 type) {
     return 0.0f;
 }
 
-void KillPart(PART_PC *part, i32 reason) {
+void KillPart(PART *part, i32 reason) {
     if ((part->active & PART_IN_USE) == 0) {
         return;
     }
@@ -320,7 +320,7 @@ void KillPart(PART_PC *part, i32 reason) {
     }
 }
 
-void NewPartRotation(PART_PC *part) {
+void NewPartRotation(PART *part) {
     i32 index;
     for (index = 0; index < 2; ++index) {
         do {
@@ -330,7 +330,7 @@ void NewPartRotation(PART_PC *part) {
     }
 }
 
-void NewPartOrderedRotation(PART_PC *part) {
+void NewPartOrderedRotation(PART *part) {
     part->unknown_124[0] =
         part->rotation_parameters[0] + (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[3]);
     part->unknown_124[1] =
@@ -339,9 +339,9 @@ void NewPartOrderedRotation(PART_PC *part) {
         part->rotation_parameters[2] + (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[5]);
 }
 
-PART_PC *AddPart(ADDPART *parameters) {
+PART *AddPart(ADDPART *parameters) {
     NUVEC forward = {0.0f, 0.0f, -1.0f};
-    PART_PC *part;
+    PART *part;
     i32 scanned;
     i32 index;
     u8 hostility_group;
@@ -499,8 +499,8 @@ PART_PC *AddPart(ADDPART *parameters) {
     return part;
 }
 
-PART_PC *HitParts(GAMEOBJECT *excluded_owner, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum, NUVEC *maximum, u32 flags) {
-    PART_PC *part = Part;
+PART *HitParts(GAMEOBJECT *excluded_owner, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum, NUVEC *maximum, u32 flags) {
+    PART *part = Part;
     i32 index;
 
     for (index = 0; index < MAXPARTS; ++index, ++part) {
@@ -996,7 +996,7 @@ static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;
 i32 part_page_on[8] = {0};
 PARTTYPE_LOOKUP part_types[128] = {0};
-PART_PC *Part = 0;
+PART *Part = 0;
 i32 edpart_nearest_orphans = 0;
 static NUVEC PartImpactNormalPrivate = {0};
 RTLSET *PartRTL = 0;
@@ -1192,7 +1192,7 @@ char KillPartsLegoSingleText[11] = "LegoSingle";
 
 f32 brickimpactwait = 0;
 
-void PartImpact_Brick(PART_PC *part) {
+void PartImpact_Brick(PART *part) {
     if (brickimpactwait <= 0.0f) {
         f32 speed = NuVecMag(&part->velocity);
         if (speed > 0.0f) {
@@ -1211,14 +1211,14 @@ void PartImpact_Brick(PART_PC *part) {
     }
 }
 
-void PartStop_Flickerer(PART_PC *part) {
+void PartStop_Flickerer(PART *part) {
     part->time_remaining = 5.0f;
     if ((part->flicker_flags & 1) != 0) {
         part->time_remaining = 2.5f;
     }
 }
 
-i32 PartDraw_Flickerer(PART_PC *part) {
+i32 PartDraw_Flickerer(PART *part) {
     i32 draw = 1;
     if (part->time_remaining > 0.0f && GameTimer.update_count % 6 >= 3) {
         f32 threshold = 2.0f;
@@ -1232,10 +1232,10 @@ i32 PartDraw_Flickerer(PART_PC *part) {
     return draw;
 }
 
-PART_PC *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range) {
+PART *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range) {
     f32 radius_squared = radius * radius;
-    PART_PC *nearest = NULL;
-    PART_PC *part = Part;
+    PART *nearest = NULL;
+    PART *part = Part;
     f32 nearest_distance = range > 0.0f ? range : 100.0f;
     f32 distance;
     i32 i;
@@ -1293,15 +1293,15 @@ void MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale) {
     }
 }
 
-PART_PC *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32 bolt_id) {
+PART *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32 bolt_id) {
     NUVEC aim = *direction;
     NUVEC delta;
     NUVEC minimum;
     NUVEC maximum;
-    PART_PC *best = NULL;
+    PART *best = NULL;
     BOLTTYPE *bolt = BoltType_FindByID(bolt_id, WORLD);
-    PART_PC *part = Part;
-    PART_PC *previous = NULL;
+    PART *part = Part;
+    PART *previous = NULL;
     f32 nearest_distance = range_squared;
     f32 distance;
     f32 dot;
@@ -1365,8 +1365,8 @@ PART_PC *TargetPart(GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 r
     return NULL;
 }
 
-PART_PC *Part_FindFromHSpecial(nuhspecial_s *special) {
-    PART_PC *part;
+PART *Part_FindFromHSpecial(nuhspecial_s *special) {
+    PART *part;
     i32 index;
     if (special == NULL) {
         return NULL;
@@ -1397,7 +1397,7 @@ void NuPartResetGlobalTime(void) {
 }
 
 void KillAllParts(void) {
-    PART_PC *part = Part;
+    PART *part = Part;
     i32 i;
     if (part != NULL) {
         for (i = 0; i < MAXPARTS; ++i, ++part) {
@@ -1410,7 +1410,7 @@ void KillAllParts(void) {
 
 void ResetParts(void) {
     if (Part != NULL) {
-        memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+        memset(Part, 0, MAXPARTS * sizeof(PART));
     }
     part_slot_cursor = 0;
 }
@@ -2496,10 +2496,10 @@ void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 
     }
 }
 
-PART_PC *FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
-    PART_PC *part;
+PART *FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
+    PART *part;
     f32 nearest;
-    PART_PC *result;
+    PART *result;
     i32 i;
     if (Part == NULL) {
         return NULL;
@@ -3922,7 +3922,7 @@ i32 PartPlatId(void) {
     return TerrainPlatId();
 }
 
-void CastPart(PART_PC *part, f32 time) {
+void CastPart(PART *part, f32 time) {
     PART_TERRAIN_STATE *state = (PART_TERRAIN_STATE *)part;
     i32 hit;
     f32 distance;
@@ -4700,7 +4700,7 @@ static void PartRuntimeDirectionalLightsPrivate(NUVEC *direction0, NUVEC *colour
 }
 
 void DrawParts(i32 keep_offscreen) {
-    PART_PC *part = Part;
+    PART *part = Part;
     i32 i;
     NUMTX scaled;
     NUMTX *matrix;
@@ -4775,7 +4775,7 @@ void UpdateParts(f32 time) {
     i32 i;
     i32 axis;
     i32 angle;
-    PART_PC *part;
+    PART *part;
     PART_TERRAIN_STATE *state;
     NUVEC velocity;
     NUVEC direction;
@@ -5003,7 +5003,7 @@ void UpdateParts(f32 time) {
         part->unknown_208 = 0;
         if ((part->active & PART_IN_USE) == 0) {
             KillPart(part, 0);
-            memset(part, 0, sizeof(PART_PC));
+            memset(part, 0, sizeof(PART));
         }
     }
 }

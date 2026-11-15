@@ -27,7 +27,7 @@ class AINet : NetListenerInterface { // size 0x4
     virtual ~AINet();
     static void operator delete(void *memory);
     virtual void Receive(NETMESSAGE message, u8 channel, const V2Peer &peer);
-    virtual AISYS_PC *GetSystem() = 0;
+    virtual AISYS *GetSystem() = 0;
     virtual u16 GetPacketId(AIPACKET *packet) = 0;
     virtual AIPACKET *GetPacket(i32 id) = 0;
     void Register();
@@ -180,7 +180,7 @@ void AINet::Receive(NETMESSAGE message, u8 channel, const V2Peer &peer) {
     u8 param_count;
     i16 index;
     u16 id;
-    AISYS_PC *system;
+    AISYS *system;
     AIPACKET *packet;
     AIACTIONDEF *definitions;
 

@@ -47,8 +47,8 @@ extern "C" {
     void ResetPlayerMoves(GAMEOBJECT *);
     void ResetPlayerAI(GAMEOBJECT *);
 
-    void ResetAICreature(GAMEOBJECT *, AISYS_PC *);
-    void ResetAICreatures(AISYS_PC *);
+    void ResetAICreature(GAMEOBJECT *, AISYS *);
+    void ResetAICreatures(AISYS *);
     void KeepOnScreen(GAMEOBJECT *);
 
     extern KEEP_SCREEN_PLANE PlayPlane[6];
@@ -70,7 +70,7 @@ extern "C" {
     void DrawWeapon_SetSabreObjects(struct gameobject_s *object, i32 red, i32 green, i32 blue, i32 purple, i32 *models, i32 *hilt);
     struct AILOCATOR *getSpawnLocator(f32 clip_radius, char *name);
     extern i32 CharacterLoadAreaModels;
-    void InitAICreatures(AISYS_PC *);
+    void InitAICreatures(AISYS *);
     extern i16 dat_007f1810;
     extern i16 dat_007f1820;
 #ifdef __cplusplus

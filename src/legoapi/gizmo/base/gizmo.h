@@ -15,7 +15,7 @@ typedef struct gizmo_s { // size 0x8
     i16 unknown_04;      // 0x4
     u8 type_id;          // 0x6
     u8 unknown_07;       // 0x7
-} GIZMO_PC;
+} GIZMO;
 
 struct gizmoset_s;
 
@@ -69,7 +69,7 @@ typedef struct gizmoset_s { // size 0x14
     GIZMOTYPE *type;        // 0x00
     i32 count;              // 0x04
     i32 max_count;          // 0x08
-    GIZMO_PC *gizmos;       // 0x0c
+    GIZMO *gizmos;          // 0x0c
     void *data;             // 0x10
 } GIZMOSET;
 
@@ -111,7 +111,7 @@ extern "C" {
     void GizmoActivate(void *system, void *gizmo, i32 active, i32 mode);
     void GizmoTypeStoreProgress(GIZMOSYS *system, void *world, i32 progress_index, i32 type_id, char *name);
     struct addgizmotype_s;
-    GIZMO_PC *AddGizmo(void *system, i32 type_id, char *name, void *object);
+    GIZMO *AddGizmo(void *system, i32 type_id, char *name, void *object);
     /* Original gizmo.c private error caller group; existing local CONFIG_SYSTEM view retained. */
     i32 GizmoFileReadName(char *);
     i32 GizmoGetUniqueName(GIZMOSYS_PREFIX *, char *, char *, char *, i32);

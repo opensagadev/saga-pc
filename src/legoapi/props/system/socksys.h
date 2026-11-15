@@ -207,18 +207,18 @@ typedef struct sock_s {          // size 0x13c
 typedef struct socksys_s { // size 0x8
     SOCK *socks;           // 0x0
     i32 count;             // 0x4
-} SOCKSYS_PC;
+} SOCKSYS;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION *position, i32 index, i32 segment, f32 fraction);
-    void SockSys_GenerateData(SOCKSYS_PC *, VARIPTR *, VARIPTR);
-    void SockRotationMatrix(SOCKSYS_PC *, SOCKPOSITION *, struct numtx_s *, i32, i32);
-    void ComplexSockPosition(SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION *);
-    f32 MidDistanceFromSockStart(SOCKSYS_PC *, SOCKPOSITION *);
-    void MoveSockPosition(SOCKSYS_PC *, SOCKPOSITION *, f32, SOCKPOSITION *);
-    i32 SockSysTrackInSplineInfo(SOCKSYS_PC *, SOCKPOSITION *, NUVEC *, f32 *);
+    void SetSockPostion(SOCKSYS *system, SOCKPOSITION *position, i32 index, i32 segment, f32 fraction);
+    void SockSys_GenerateData(SOCKSYS *, VARIPTR *, VARIPTR);
+    void SockRotationMatrix(SOCKSYS *, SOCKPOSITION *, struct numtx_s *, i32, i32);
+    void ComplexSockPosition(SOCKSYS *, NUVEC *, i32, i32, SOCKPOSITION *);
+    f32 MidDistanceFromSockStart(SOCKSYS *, SOCKPOSITION *);
+    void MoveSockPosition(SOCKSYS *, SOCKPOSITION *, f32, SOCKPOSITION *);
+    i32 SockSysTrackInSplineInfo(SOCKSYS *, SOCKPOSITION *, NUVEC *, f32 *);
 #ifdef __cplusplus
 }
 #endif
@@ -227,8 +227,8 @@ extern "C" {
 extern "C" {
 #endif
 
-    void SockSysFindInScene(SOCKSYS_PC *, struct NUGSCN_s *);
-    SOCKSYS_PC *SockSysInit(VARIPTR *, VARIPTR, struct NUGSCN_s *);
+    void SockSysFindInScene(SOCKSYS *, struct NUGSCN_s *);
+    SOCKSYS *SockSysInit(VARIPTR *, VARIPTR, struct NUGSCN_s *);
 #ifdef __cplusplus
 }
 #endif

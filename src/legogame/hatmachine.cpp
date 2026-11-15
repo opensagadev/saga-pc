@@ -345,22 +345,22 @@ extern "C" {
         return world != NULL ? world->current_level->max_hatmachines : 0;
     }
 
-    static char *HatMachine_GetGizmoName(GIZMO_PC *gizmo) {
+    static char *HatMachine_GetGizmoName(GIZMO *gizmo) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
         return ((HATMACHINE *)gizmo->object)->name;
     }
 
-    static i32 HatMachine_GetOutput(GIZMO_PC *gizmo, i32, i32) {
+    static i32 HatMachine_GetOutput(GIZMO *gizmo, i32, i32) {
         return (((HATMACHINE *)gizmo->object)->flags >> 1) & 1;
     }
 
-    static char *HatMachine_GetOutputName(GIZMO_PC *, i32 output_index) {
+    static char *HatMachine_GetOutputName(GIZMO *, i32 output_index) {
         return output_index == 0 ? (char *)"Finished" : NULL;
     }
 
-    static i32 HatMachine_GetNumOutputs(GIZMO_PC *) {
+    static i32 HatMachine_GetNumOutputs(GIZMO *) {
         return 1;
     }
 
@@ -431,7 +431,7 @@ extern "C" {
         return GizmoBufferAlloc(buffer, end, sizeof(HATMACHINE_PROGRESS));
     }
 
-    static void HatMachine_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    static void HatMachine_SetVisibility(GIZMO *gizmo, i32 visible) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return;
         }
@@ -540,7 +540,7 @@ extern "C" {
         }
     }
 
-    static void HatMachine_Activate(GIZMO_PC *gizmo, i32 enabled) {
+    static void HatMachine_Activate(GIZMO *gizmo, i32 enabled) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return;
         }

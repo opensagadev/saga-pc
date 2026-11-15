@@ -24,20 +24,20 @@ extern "C" {
     extern i32 ngizobstacletriggers;
 
     void GizObstacles_AddLevelSfx(void *, void *, i32 *, i32 *, i32);
-    void GizmoObstacle_Activate(GIZMO_PC *, i32);
-    void GizmoObstacle_SetVisibility(GIZMO_PC *, i32);
-    NUVEC *GizmoObstacle_GetPos(GIZMO_PC *);
-    char *GizmoObstacle_GetGizmoName(GIZMO_PC *);
-    i32 GizmoObstacle_GetOutput(GIZMO_PC *, i32, i32);
-    i32 GizmoObstacle_GetNumOutputs(GIZMO_PC *);
+    void GizmoObstacle_Activate(GIZMO *, i32);
+    void GizmoObstacle_SetVisibility(GIZMO *, i32);
+    NUVEC *GizmoObstacle_GetPos(GIZMO *);
+    char *GizmoObstacle_GetGizmoName(GIZMO *);
+    i32 GizmoObstacle_GetOutput(GIZMO *, i32, i32);
+    i32 GizmoObstacle_GetNumOutputs(GIZMO *);
     void *GizObstacles_AllocateProgressData(VARIPTR *, VARIPTR *);
     void GizObstacles_ClearProgress(void *, void *);
     void GizObstacles_StoreProgress(void *, void *, void *);
-    i32 GizmoObstacle_ActivateRev(GIZMO_PC *, i32, i32);
+    i32 GizmoObstacle_ActivateRev(GIZMO *, i32, i32);
     void GizObstacles_Update(void *, void *, f32);
     extern NUVEC *GizObstacleTriggers[16];
     extern i32 (*GizObstacleExcludeFn)(GIZOBSTACLE *, GAMEOBJECT *);
-    GIZMO_PC *GizObstacles_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
+    GIZMO *GizObstacles_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
     void GizObstacles_Draw(void *, void *, f32);
     extern const char *GizObstacleRegistrationNamePtr;
 #ifdef __cplusplus

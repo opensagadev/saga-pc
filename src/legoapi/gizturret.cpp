@@ -265,7 +265,7 @@ extern "C" {
         return system;
     }
 
-    void GizmoTurret_Activate(GIZMO_PC *gizmo, i32 active) {
+    void GizmoTurret_Activate(GIZMO *gizmo, i32 active) {
         GIZTURRET_s *turret;
         if (gizmo != NULL) {
             turret = (GIZTURRET_s *)gizmo->object;
@@ -277,7 +277,7 @@ extern "C" {
         }
     }
 
-    i32 GizmoTurret_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
+    i32 GizmoTurret_ActivateRev(GIZMO *gizmo, i32 reverse, i32 mode) {
         GIZTURRET_s *turret;
         if (gizmo == NULL || gizmo->object == NULL) {
             return 0;
@@ -294,7 +294,7 @@ extern "C" {
         return 1;
     }
 
-    void GizmoTurret_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+    void GizmoTurret_SetVisibility(GIZMO *gizmo, i32 visible) {
         GIZTURRET_s *turret;
         if (gizmo != NULL && gizmo->object != NULL) {
             turret = (GIZTURRET_s *)gizmo->object;
@@ -303,7 +303,7 @@ extern "C" {
         }
     }
 
-    NUVEC *GizmoTurret_GetPos(GIZMO_PC *gizmo) {
+    NUVEC *GizmoTurret_GetPos(GIZMO *gizmo) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
@@ -1008,14 +1008,14 @@ extern "C" {
         }
     }
 
-    char *GizmoTurret_GetGizmoName(GIZMO_PC *gizmo) {
+    char *GizmoTurret_GetGizmoName(GIZMO *gizmo) {
         if (gizmo != NULL) {
             return ((GIZTURRET_s *)gizmo->object)->name;
         }
         return NULL;
     }
 
-    i32 GizmoTurret_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    i32 GizmoTurret_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
         GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
         (void)mode;
         switch (output) {
@@ -1038,7 +1038,7 @@ extern "C" {
         return 0;
     }
 
-    char *GizmoTurret_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    char *GizmoTurret_GetOutputName(GIZMO *gizmo, i32 output) {
         switch (output) {
             case 0:
                 return "destroyed";
@@ -1055,7 +1055,7 @@ extern "C" {
         return NULL;
     }
 
-    i32 GizmoTurret_GetNumOutputs(GIZMO_PC *gizmo) {
+    i32 GizmoTurret_GetNumOutputs(GIZMO *gizmo) {
         return 3;
     }
 
@@ -1197,7 +1197,7 @@ extern "C" {
         return 0;
     }
 
-    i32 GizTurrets_BoltHitPlat(WORLDINFO *world, void *system_pointer, BOLT_PC *bolt, u8 *hit_flags) {
+    i32 GizTurrets_BoltHitPlat(WORLDINFO *world, void *system_pointer, BOLT *bolt, u8 *hit_flags) {
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)system_pointer;
         GIZTURRET_s *turret;
         GAMEANIMOBJ *animation;
@@ -1239,9 +1239,9 @@ extern "C" {
         return 0;
     }
 
-    GIZMO_PC *GizTurrets_GetBestBoltTarget(GIZMOSET *set, f32 *output_distance, NUVEC *output_position, NUVEC *output_velocity,
-                                           void *object_pointer, NUVEC *origin, NUVEC *direction, f32 radius, f32 range_squared,
-                                           i32 directional, i32 planar, i32 bolt_id) {
+    GIZMO *GizTurrets_GetBestBoltTarget(GIZMOSET *set, f32 *output_distance, NUVEC *output_position, NUVEC *output_velocity,
+                                        void *object_pointer, NUVEC *origin, NUVEC *direction, f32 radius, f32 range_squared,
+                                        i32 directional, i32 planar, i32 bolt_id) {
         BOLTTYPE *type = BoltType_FindByID(bolt_id, WORLD);
         u16 near_angle = TargetDeg_Near;
         u16 mid_angle = TargetDeg_Mid;
@@ -1249,11 +1249,11 @@ extern "C" {
         f32 near_distance = TargetDist_Near2;
         f32 mid_distance = TargetDist_Mid2;
         GAMEOBJECT *object = (GAMEOBJECT *)object_pointer;
-        GIZMO_PC *gizmo;
+        GIZMO *gizmo;
         GIZTURRET_s *turret;
         NUVEC *position;
-        GIZMO_PC *best;
-        GIZMO_PC *previous = NULL;
+        GIZMO *best;
+        GIZMO *previous = NULL;
         NUVEC *best_position;
         NUVEC *previous_position = NULL;
         f32 best_distance;
@@ -1350,7 +1350,7 @@ extern "C" {
     }
 
     i32 GizTurrets_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object, NUVEC *points, i32 point_count, f32 radius,
-                           NUVEC *minimum, NUVEC *maximum, BOLT_PC *bolt, i32 hit_type, u8 *hit_flags) {
+                           NUVEC *minimum, NUVEC *maximum, BOLT *bolt, i32 hit_type, u8 *hit_flags) {
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)system_pointer;
         GIZTURRET_s *turret;
         GIZTURRET_s *best = NULL;
@@ -1462,17 +1462,17 @@ extern "C" {
         addtype->fns.add_gizmos_fn = (void *)GizTurrets_AddGizmos;
         addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizTurrets_Update;
         addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizTurrets_Draw;
-        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizmoTurret_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoTurret_GetOutput;
-        addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizmoTurret_GetOutputName;
+        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))GizmoTurret_GetGizmoName;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))GizmoTurret_GetOutput;
+        addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))GizmoTurret_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)GizmoTurret_GetNumOutputs;
-        addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizmoTurret_Activate;
-        addtype->fns.activate_rev_fn = (i32(*)(GIZMO_PC *, i32, i32))GizmoTurret_ActivateRev;
-        addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizmoTurret_SetVisibility;
+        addtype->fns.activate_fn = (void (*)(GIZMO *, i32))GizmoTurret_Activate;
+        addtype->fns.activate_rev_fn = (i32(*)(GIZMO *, i32, i32))GizmoTurret_ActivateRev;
+        addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizmoTurret_SetVisibility;
         addtype->fns.get_pos_fn = (void *)GizmoTurret_GetPos;
         addtype->fns.bolt_hit_plat_fn = (void *)GizTurrets_BoltHitPlat;
         addtype->fns.get_best_bolt_target_fn =
-            (GIZMO_PC * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
+            (GIZMO * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
                 GizTurrets_GetBestBoltTarget;
         addtype->fns.bolt_hit_fn = (void *)GizTurrets_BoltHit;
         addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizTurrets_AllocateProgressData;

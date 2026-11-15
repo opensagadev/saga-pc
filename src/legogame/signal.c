@@ -77,14 +77,14 @@ void *Signals_ReserveBufferSpace(WORLDINFO *world) {
     return world->signals;
 }
 
-void Signal_Activate(GIZMO_PC *gizmo, i32 active) {
+void Signal_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         SIGNAL_s *signal = gizmo->object;
         signal->active = active != 0;
     }
 }
 
-i32 Signal_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 reverse) {
+i32 Signal_ActivateRev(GIZMO *gizmo, i32 active, i32 reverse) {
     if (gizmo != NULL) {
         SIGNAL_s *signal = gizmo->object;
         if (signal != NULL) {
@@ -108,13 +108,13 @@ static void SignalSetVisible(SIGNAL_s *signal, i32 visible) {
     }
 }
 
-void Signal_SetGizmoVisibility(GIZMO_PC *gizmo, i32 visible) {
+void Signal_SetGizmoVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SignalSetVisible(gizmo->object, visible);
     }
 }
 
-NUVEC *Signal_GetPos(GIZMO_PC *gizmo) {
+NUVEC *Signal_GetPos(GIZMO *gizmo) {
     SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
     return signal != NULL ? &signal->position : NULL;
 }
@@ -333,12 +333,12 @@ void Signals_AddGizmos(void *system, i32 type_id, WORLDINFO *world, void *unused
     }
 }
 
-char *Signal_GetGizmoName(GIZMO_PC *gizmo) {
+char *Signal_GetGizmoName(GIZMO *gizmo) {
     SIGNAL_s *signal = gizmo != NULL ? (SIGNAL_s *)gizmo->object : NULL;
     return signal != NULL ? signal->name : NULL;
 }
 
-i32 Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
+i32 Signal_GetOutput(GIZMO *gizmo, i32 unused_index, i32 unused_mode) {
     SIGNAL_s *signal = gizmo->object;
     if ((signal->flags & 1) != 0 && (signal->flags & 2) != 0) {
         return 1;
@@ -346,11 +346,11 @@ i32 Signal_GetOutput(GIZMO_PC *gizmo, i32 unused_index, i32 unused_mode) {
     return 0;
 }
 
-char *Signal_GetOutputName(GIZMO_PC *unused, i32 unused_index) {
+char *Signal_GetOutputName(GIZMO *unused, i32 unused_index) {
     return "Active";
 }
 
-i32 Signal_GetNumOutputs(GIZMO_PC *unused) {
+i32 Signal_GetNumOutputs(GIZMO *unused) {
     return 1;
 }
 
@@ -510,8 +510,8 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
 }
 
 void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
-    GIZMOBLOWUP_PC *candidates[256];
-    GIZMOBLOWUP_PC *blowup;
+    GIZMOBLOWUP *candidates[256];
+    GIZMOBLOWUP *blowup;
     NUVEC minimum;
     NUVEC maximum;
     i32 count;

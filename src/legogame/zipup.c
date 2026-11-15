@@ -299,8 +299,8 @@ static void RopeMtxRotateZ(NUMTX *m, NUANG a) {
     m->m31 = (m30 * sinx) + (m->m31 * cosx);
 }
 
-static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
-    ZIPUP_PC *zipup;
+static i32 ZipUp_ActivateRev(GIZMO *gizmo, i32 active, i32 query) {
+    ZIPUP *zipup;
 
     if (gizmo == NULL) {
         return 0;
@@ -365,13 +365,13 @@ extern void *ZipUps_ReserveBufferSpace(WORLDINFO *world) {
     world->zipup_count = 0;
     if (world->current_level->max_zipups > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->zipups = (ZIPUP_PC *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->current_level->max_zipups * sizeof(ZIPUP_PC);
+        world->zipups = (ZIPUP *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_zipups * sizeof(ZIPUP);
     }
     return world->zipups;
 }
 
-static void ZipUpResetSingle(ZIPUP_PC *zipup) {
+static void ZipUpResetSingle(ZIPUP *zipup) {
     NuVecRotateX(&zipup->hook_position, (NUVEC *)&ZipUpHookOffset, zipup->hook_x_rotation);
     NuVecRotateY(&zipup->hook_position, &zipup->hook_position, zipup->hook_y_rotation);
     NuVecAdd(&zipup->hook_position, &zipup->hook_origin, &zipup->hook_position);
@@ -393,7 +393,7 @@ static void ZipUpResetSingle(ZIPUP_PC *zipup) {
 }
 
 extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS *progress) {
-    ZIPUP_PC *zipup;
+    ZIPUP *zipup;
 
     (void)unused;
     if (world == NULL) {
@@ -416,14 +416,14 @@ extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS *progres
     }
 }
 
-ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint, GAMEOBJECT *object) {
-    ZIPUP_PC *nearest;
+ZIPUP *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *distance, i32 *endpoint, GAMEOBJECT *object) {
+    ZIPUP *nearest;
     i32 index;
     i32 end;
     f32 square_distance;
     f32 best_distance;
 
-    ZIPUP_PC *zipup = world->zipups;
+    ZIPUP *zipup = world->zipups;
 
     if (zipup == NULL) {
         return NULL;
@@ -473,7 +473,7 @@ ZIPUP_PC *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *
 
 void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     ZIPUP_TRANSPORT_VIEW *transport;
-    ZIPUP_PC *zipup;
+    ZIPUP *zipup;
     NUVEC *hook;
     NUVEC *destination;
     i32 endpoint;
@@ -578,7 +578,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 object->velocity.x = NU_SIN_LUT(object->movement_facing_angle) * object->airborne_action_timer;
                 object->velocity.z = NU_COS_LUT(object->movement_facing_angle) * object->airborne_action_timer;
                 object->context_variant_flags &= ~0x20u;
-                ((ZIPUP_PC *)object->grapple)->flags_word &= ~0x100u;
+                ((ZIPUP *)object->grapple)->flags_word &= ~0x100u;
                 object->grapple = NULL;
                 return;
             }
@@ -596,9 +596,9 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             if (object->context_timer >= ZipUpSwingDuration) {
                 object->context_timer = 0.0f;
                 object->character_context = CHARACTER_CONTEXT_NONE;
-                ((ZIPUP_PC *)object->grapple)->occupant = NULL;
+                ((ZIPUP *)object->grapple)->occupant = NULL;
                 object->context_variant_flags &= ~0x20u;
-                ((ZIPUP_PC *)object->grapple)->flags_word &= ~0x100u;
+                ((ZIPUP *)object->grapple)->flags_word &= ~0x100u;
                 transport->detach_fall_delay = 0.2f;
                 object->grapple = NULL;
                 object->unknown_7a4 = 0;
@@ -702,11 +702,11 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         object->character_context = CHARACTER_CONTEXT_ZIP_UP;
         zipup->occupant = object;
         object->context_variant_flags |= 0x20;
-        ((ZIPUP_PC *)object->grapple)->flags_word |= 0x100;
+        ((ZIPUP *)object->grapple)->flags_word |= 0x100;
         if ((object->character_data->game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {
             NUVEC offset;
             f32 duration;
-            ZIPUP_PC *current;
+            ZIPUP *current;
 
             object->action_movement_state = 1;
             SetWeaponIn(object);
@@ -782,21 +782,21 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             rider_height = ZipUpRiderHeight;
             scale = ZipUpRiderOffsetScale;
             end_offset.y += rider_height;
-            ((ZIPUP_PC *)object->grapple)->rider_start_offset.x *= scale;
-            ((ZIPUP_PC *)object->grapple)->rider_start_offset.y *= scale;
-            ((ZIPUP_PC *)object->grapple)->rider_start_offset.y =
-                rider_height * object->scaled_height + ((ZIPUP_PC *)object->grapple)->rider_start_offset.y;
-            ((ZIPUP_PC *)object->grapple)->rider_start_offset.z *= scale;
-            yaw = -(u16)NuAtan2D(((ZIPUP_PC *)object->grapple)->rider_start_offset.x, ((ZIPUP_PC *)object->grapple)->rider_start_offset.z);
-            start_offset = ((ZIPUP_PC *)object->grapple)->rider_start_offset;
+            ((ZIPUP *)object->grapple)->rider_start_offset.x *= scale;
+            ((ZIPUP *)object->grapple)->rider_start_offset.y *= scale;
+            ((ZIPUP *)object->grapple)->rider_start_offset.y =
+                rider_height * object->scaled_height + ((ZIPUP *)object->grapple)->rider_start_offset.y;
+            ((ZIPUP *)object->grapple)->rider_start_offset.z *= scale;
+            yaw = -(u16)NuAtan2D(((ZIPUP *)object->grapple)->rider_start_offset.x, ((ZIPUP *)object->grapple)->rider_start_offset.z);
+            start_offset = ((ZIPUP *)object->grapple)->rider_start_offset;
             NuVecRotateY(&start_offset, &start_offset, yaw);
             NuVecRotateY(&end_offset, &end_offset, yaw);
             NuVecNorm(&start_offset, &start_offset);
             NuVecNorm(&end_offset, &end_offset);
-            ((ZIPUP_PC *)object->grapple)->pitch_adjustment =
+            ((ZIPUP *)object->grapple)->pitch_adjustment =
                 (u16)(0x4000 - ZipUpArcSine(start_offset.z * end_offset.z + start_offset.y * end_offset.y));
-            ((ZIPUP_PC *)object->grapple)->rider_target_position = ((ZIPUP_PC *)object->grapple)->rider_start_offset;
-            NuVecAdd(&((ZIPUP_PC *)object->grapple)->rider_target_position, hook, &((ZIPUP_PC *)object->grapple)->rider_target_position);
+            ((ZIPUP *)object->grapple)->rider_target_position = ((ZIPUP *)object->grapple)->rider_start_offset;
+            NuVecAdd(&((ZIPUP *)object->grapple)->rider_target_position, hook, &((ZIPUP *)object->grapple)->rider_target_position);
         }
     } else {
         SetHeadTarget(object, &zipup->hook_origin, 4, 2.0f, 1.0f, 2.0f);
@@ -824,7 +824,7 @@ static void ZipUp_GetStartPoint(GAMEOBJECT *object, NUVEC *position) {
 }
 
 extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
-    ZIPUP_PC *zipup;
+    ZIPUP *zipup;
     i32 index;
 
     (void)unused;
@@ -869,7 +869,7 @@ i32 ZipUps_UpdateHint(HINT *hint) {
     return 0;
 }
 
-static void ZipUp_DrawFloorTarget(ZIPUP_PC *zipup, i32 endpoint, WORLDINFO *world, u16 angle, i32 special, f32 alpha) {
+static void ZipUp_DrawFloorTarget(ZIPUP *zipup, i32 endpoint, WORLDINFO *world, u16 angle, i32 special, f32 alpha) {
     NUMTX matrix;
     NUVEC position;
     i32 upper;
@@ -897,7 +897,7 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
         ZIPUP_SPECIAL_ENDPOINT_SWIRL = 229,
     };
 
-    ZIPUP_PC *zipup;
+    ZIPUP *zipup;
 
     if (world != NULL && (zipup = world->zipups) != NULL) {
         u16 spin_angle;
@@ -977,8 +977,8 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
     }
 }
 
-static void ZipUp_Activate(GIZMO_PC *gizmo, i32 active) {
-    ZIPUP_PC *zipup;
+static void ZipUp_Activate(GIZMO *gizmo, i32 active) {
+    ZIPUP *zipup;
 
     zipup = gizmo->object;
     if (active) {
@@ -989,9 +989,9 @@ static void ZipUp_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-static void ZipUp_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void ZipUp_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo) {
-        ZIPUP_PC *zipup;
+        ZIPUP *zipup;
 
         zipup = gizmo->object;
         zipup->state.visible = visible != 0;
@@ -1015,8 +1015,8 @@ static void ZipUps_AddGizmos(void *system, i32 type_id, WORLDINFO *world) {
     }
 }
 
-static char *ZipUp_GetGizmoName(GIZMO_PC *gizmo) {
-    return gizmo ? ((ZIPUP_PC *)(gizmo->object))->name : NULL;
+static char *ZipUp_GetGizmoName(GIZMO *gizmo) {
+    return gizmo ? ((ZIPUP *)(gizmo->object))->name : NULL;
 }
 
 static void *ZipUps_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -1031,7 +1031,7 @@ static void ZipUps_ClearProgress(void *unused, ZIPUP_PROGRESS *progress) {
 }
 
 static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS *progress) {
-    ZIPUP_PC *zipup;
+    ZIPUP *zipup;
     i32 i;
     i32 word;
     u32 mask;
@@ -1058,20 +1058,20 @@ static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS 
     }
 }
 
-static i32 ZipUp_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+static i32 ZipUp_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     if (gizmo != NULL) {
-        return ((ZIPUP_PC *)(gizmo->object))->state.active;
+        return ((ZIPUP *)(gizmo->object))->state.active;
     }
     return 0;
 }
 
 static char ZipUpOutputName[] = "Active";
 
-static char *ZipUp_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *ZipUp_GetOutputName(GIZMO *gizmo, i32 output) {
     return ZipUpOutputName;
 }
 
-static i32 ZipUp_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 ZipUp_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
@@ -1331,7 +1331,7 @@ void ZipUps_DrawLines() {
             if (object->action_movement_state == 0) {
                 ZipUp_GetStartPoint(object, &start->position);
                 start->colour = 0xffffffff;
-                end->position = ((ZIPUP_PC *)(object->grapple))->hook_position;
+                end->position = ((ZIPUP *)(object->grapple))->hook_position;
                 if (object->context_timer < (f64)0.2f) {
                     f32 fraction;
 

@@ -47,8 +47,6 @@ enum {
     TERRAIN_PLATFORM_FLAG_COLLIDED = 2
 };
 
-typedef TERRAIN_SPHERE_PC TERRAIN_SPHERE;
-typedef TERRAIN_AXIS_FREEDOM_SHAPE_PC TERRAIN_AXIS_FREEDOM_SHAPE;
 extern "C" {
     void DerotateMovementVector() {
         TerrainQuery_s *query = TerI;

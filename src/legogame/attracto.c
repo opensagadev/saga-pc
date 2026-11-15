@@ -178,14 +178,14 @@ void *Attractos_ReserveBufferSpace(WORLDINFO *world) {
     return world->attractos;
 }
 
-void Attracto_Activate(GIZMO_PC *gizmo, i32 active) {
+void Attracto_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         ATTRACTO_RECORD *attracto = gizmo->object;
         attracto->active = active != 0;
     }
 }
 
-void Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void Attracto_SetVisibility(GIZMO *gizmo, i32 visible) {
     ATTRACTO_RECORD *attracto;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
@@ -361,21 +361,21 @@ void Attractos_AddGizmos(GIZMOSYS *system, i32 type, WORLDINFO *world, void *unu
     }
 }
 
-char *Attracto_GetGizmoName(GIZMO_PC *gizmo) {
+char *Attracto_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((ATTRACTO_RECORD *)gizmo->object)->name : NULL;
 }
 
-i32 Attracto_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 Attracto_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     return ((ATTRACTO_RECORD *)gizmo->object)->filled;
 }
 
 char *Attracto_OutputName = "Filled";
 
-char *Attracto_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *Attracto_GetOutputName(GIZMO *gizmo, i32 output) {
     return Attracto_OutputName;
 }
 
-i32 Attracto_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 Attracto_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
@@ -420,7 +420,7 @@ void Attractos_StoreProgress(WORLDINFO *world, void *unused, ATTRACTO_PROGRESS *
     }
 }
 
-NUVEC *Attracto_GetPos(GIZMO_PC *gizmo) {
+NUVEC *Attracto_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }

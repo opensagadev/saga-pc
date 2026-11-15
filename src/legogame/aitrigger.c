@@ -57,7 +57,7 @@ typedef struct trigger_force_s { // size 0xa4
 
 typedef struct trigger_set_s { // size 0x214
     FLOWBOX *flowbox;          // 0x000
-    GIZMO_PC *gizmos[8];       // 0x004
+    GIZMO *gizmos[8];          // 0x004
     AILOCATOR locators[8];     // 0x024
     i8 trigger_indices[8];     // 0x204
     u8 trigger_count;          // 0x20c
@@ -115,7 +115,7 @@ AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX *box) {
     return NULL;
 }
 
-i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizmo) {
+i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
     char *name;
     struct AILOCATOR *locator = NULL;
     if (system == NULL || set == NULL || !(set->flags & 1) || set->trigger_count >= 8 || gizmo == NULL) {
@@ -221,7 +221,7 @@ i32 AITriggerSetAddTrigger(AISYS_PC *system, AITRIGGERSET_s *set, GIZMO_PC *gizm
     return 0;
 }
 
-static i32 TriggerGizmoAvailable(GIZMO_PC *gizmo) {
+static i32 TriggerGizmoAvailable(GIZMO *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {
         TRIGGER_LEVER *lever = gizmo->object;
         if ((lever->flags & 0x80) && !(lever->flags & 2)) {
@@ -264,7 +264,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
     i32 player_count;
     i32 count;
     i8 assigned;
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     GAMEOBJECT *object;
     if (system == NULL || player == NULL) {
         return;
@@ -524,7 +524,7 @@ static i32 Attractos_Load(void *context, void *unused1) {
     return 1;
 }
 
-static void Attracto_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Attracto_SetVisibility(GIZMO *gizmo, i32 visible) {
     struct ATTRACTO_s *attracto;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;

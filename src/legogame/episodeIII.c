@@ -428,7 +428,7 @@ void KashyyykD_Reset(WORLDINFO *world) {
     }
 }
 
-void Boulder_Move(PART_PC *part, f32 unused) {
+void Boulder_Move(PART *part, f32 unused) {
     i32 index;
     f32 reciprocal;
     if (netclient != 0) {
@@ -458,7 +458,7 @@ void Boulder_Move(PART_PC *part, f32 unused) {
     }
 }
 
-void Boulder_Kill(PART_PC *part, i32 unused) {
+void Boulder_Kill(PART *part, i32 unused) {
     i32 index;
     if (part == boulder_part[0]) {
         index = 0;
@@ -481,7 +481,7 @@ void Boulder_Kill(PART_PC *part, i32 unused) {
 
 static void BoulderSpawn(i32 index) {
     ADDPART params;
-    PART_PC *part;
+    PART *part;
     NUINSTANIM **animation = &LevInstAnimReset.animations[index];
     if (*animation != NULL && LevHSpecial[index].display_special != NULL) {
         params = Default_ADDPART;
@@ -527,10 +527,10 @@ void KashyyykD_Update(WORLDINFO *world) {
     }
 }
 
-i32 Action_BoulderSection(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+i32 Action_BoulderSection(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                           f32 unused6) {
     GAMEOBJECT *object;
-    PART_PC *nearest = NULL;
+    PART *nearest = NULL;
     i32 can_attack = 1;
     i32 index;
     f32 nearest_distance;
@@ -631,7 +631,7 @@ static void VaderA_StartCollapseStage(WORLDINFO *world) {
 }
 
 VADERA_NETPACKET *vadera_netpacket = NULL;
-PART_PC *boulder_part[2] = {NULL, NULL};
+PART *boulder_part[2] = {NULL, NULL};
 
 void VaderA_Init(WORLDINFO *world) {
     memset(&vader_a, 0, sizeof(vader_a));

@@ -30,7 +30,7 @@ extern "C" {
     extern i32 GUNSHIPAHACK;
 
     extern NARROWSOCKEXCEPTION *NarrowSockException;
-    i32 ObjInNarrowSock(GAMEOBJECT *, SOCKSYS_PC *, i32);
+    i32 ObjInNarrowSock(GAMEOBJECT *, SOCKSYS *, i32);
     void SetCameraMatrices(void);
 
     typedef struct KEEP_SCREEN_PLANE { // size 0x18

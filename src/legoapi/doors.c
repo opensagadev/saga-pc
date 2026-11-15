@@ -245,7 +245,7 @@ static void Door_AddGizmos(GIZMOSYS *gizmo_sys, i32 type_id, void *world_ptr, vo
     }
 }
 
-static char *Door_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Door_GetGizmoName(GIZMO *gizmo) {
     struct DOOR_s *door;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
@@ -254,7 +254,7 @@ static char *Door_GetGizmoName(GIZMO_PC *gizmo) {
     return door->gizmo_name;
 }
 
-static i32 Door_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
+static i32 Door_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {
     struct DOOR_s *door;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
@@ -263,15 +263,15 @@ static i32 Door_GetOutput(GIZMO_PC *gizmo, i32 unused1, i32 unused2) {
     return door->active == 0;
 }
 
-static i32 Door_GetNumOutputs(GIZMO_PC *unused0) {
+static i32 Door_GetNumOutputs(GIZMO *unused0) {
     return 1;
 }
 
-char *Door_GetOutputName(GIZMO_PC *unused0, i32 unused1) {
+char *Door_GetOutputName(GIZMO *unused0, i32 unused1) {
     return ((char *)("Active"));
 }
 
-void Door_Activate(GIZMO_PC *gizmo, i32 value) {
+void Door_Activate(GIZMO *gizmo, i32 value) {
     struct DOOR_s *door;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;

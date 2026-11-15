@@ -4,7 +4,7 @@
 
 #include "nu2api/numath/nuvec.h"
 
-struct PART_PC;
+struct PART;
 struct bolt_s;
 struct gameobject_s;
 
@@ -51,7 +51,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    i32 Bolt_HitPart_LSW(struct bolt_s *, struct PART_PC *);
+    i32 Bolt_HitPart_LSW(struct bolt_s *, struct PART *);
     void Bolt_Debris_LSW(struct bolt_s *, NUVEC *, i32, NUVEC *, i32);
     void UpdateBolt_Geonosian(struct bolt_s *);
     i32 Bolt_AlternateFire_LSW(struct gameobject_s *, i32);

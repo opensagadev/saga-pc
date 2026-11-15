@@ -114,14 +114,14 @@ void *SecurityDoors_ReserveBufferSpace(WORLDINFO *world) {
     return world->security_doors;
 }
 
-void SecurityDoor_Activate(GIZMO_PC *gizmo, i32 active) {
+void SecurityDoor_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         SECURITY_DOOR_RECORD *door = gizmo->object;
         door->bits.active = active != 0;
     }
 }
 
-void SecurityDoor_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void SecurityDoor_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SECURITY_DOOR_RECORD *door = gizmo->object;
         door->bits.visible = visible != 0;
@@ -296,19 +296,19 @@ void SecurityDoors_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, vo
     }
 }
 
-char *SecurityDoor_GetGizmoName(GIZMO_PC *gizmo) {
+char *SecurityDoor_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((SECURITY_DOOR_RECORD *)gizmo->object)->name : NULL;
 }
 
-i32 SecurityDoor_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 SecurityDoor_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     return (((SECURITY_DOOR_RECORD *)gizmo->object)->flags >> 2) & 1;
 }
 
-char *SecurityDoor_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *SecurityDoor_GetOutputName(GIZMO *gizmo, i32 output) {
     return SecurityDoor_OutputName;
 }
 
-i32 SecurityDoor_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 SecurityDoor_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
@@ -357,7 +357,7 @@ void SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURITY_DOOR_P
     }
 }
 
-NUVEC *SecurityDoor_GetPos(GIZMO_PC *gizmo) {
+NUVEC *SecurityDoor_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }

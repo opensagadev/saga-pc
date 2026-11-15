@@ -16,7 +16,7 @@
 extern "C" i32 special_debug;
 extern "C" void PCSpecialEmptyHandler(...);
 extern "C" {
-    SOCK *FindSock(SOCKSYS_PC *sys, char *name) {
+    SOCK *FindSock(SOCKSYS *sys, char *name) {
         if (sys != NULL) {
             SOCK *sock = sys->socks;
             for (i32 index = 0; index < 64; ++index, ++sock) {
@@ -28,8 +28,8 @@ extern "C" {
         return NULL;
     }
 
-    void SockOn(SOCKSYS_PC *sys, i32 index);
-    void SockOff(SOCKSYS_PC *sys, i32 index);
+    void SockOn(SOCKSYS *sys, i32 index);
+    void SockOff(SOCKSYS *sys, i32 index);
 }
 
 static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, nuhspecial_s *dest, char *name, i32 capacity, i32 flags) {
@@ -113,5 +113,5 @@ extern "C" {
 }
 extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
-extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS_PC *, AIPATH *, char *, char *, i32, char *,
-                                                                   i32, i32);
+extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS *, AIPATH *, char *, char *, i32, char *, i32,
+                                                                   i32);

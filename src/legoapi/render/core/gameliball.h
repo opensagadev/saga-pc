@@ -9,7 +9,7 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 
-struct TERRAIN_GROUP_PC;
+struct TERRAIN_GROUP;
 struct nucamera_s;
 
 struct APIDEBRISSYS;
@@ -37,16 +37,16 @@ typedef struct TERRAIN_TRACK_SLOT { // size 0x18
     NUVEC impact_normal;            // 0x0c
 } TERRAIN_TRACK_SLOT;
 
-typedef struct TERRAIN_AXIS_FREEDOM_SHAPE_PC { // size 0x14
-    NUVEC offset;                              // 0x00
-    f32 angle;                                 // 0x0c
-    f32 radius;                                // 0x10
-} TERRAIN_AXIS_FREEDOM_SHAPE_PC;
+typedef struct TERRAIN_AXIS_FREEDOM_SHAPE { // size 0x14
+    NUVEC offset;                           // 0x00
+    f32 angle;                              // 0x0c
+    f32 radius;                             // 0x10
+} TERRAIN_AXIS_FREEDOM_SHAPE;
 
-typedef struct TERRAIN_SPHERE_PC { // size 0x10
-    NUVEC position;                // 0x0
-    f32 radius;                    // 0xc
-} TERRAIN_SPHERE_PC;
+typedef struct TERRAIN_SPHERE { // size 0x10
+    NUVEC position;             // 0x0
+    f32 radius;                 // 0xc
+} TERRAIN_SPHERE;
 
 typedef struct SFX_GROUP { // size 0x8
     i16 first_sample;      // 0x0
@@ -616,9 +616,9 @@ struct TerrainScanWriter {
 extern "C" {
 #endif
     void SfxBitsStore(struct SoundTable *);
-    void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *, NUVEC *);
-    extern TERRAIN_SPHERE_PC SphereData[16];
-    extern TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape;
+    void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE *, NUVEC *);
+    extern TERRAIN_SPHERE SphereData[16];
+    extern TERRAIN_AXIS_FREEDOM_SHAPE *TerrShape;
     extern TERRAIN_TRACK_SLOT *CurTrackInfo;
     void DebrisReserveTrashableSpace(VARIPTR *, VARIPTR, i32, i32);
     void DebrisTrashableSetup(VARIPTR *, VARIPTR *);
@@ -630,12 +630,12 @@ extern "C" {
 }
 #endif
 
-typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
-    NUMTX previous_matrix;           // 0x00
-    struct numtx_s *scene_object;    // 0x40
-    u32 unknown_44;                  // 0x44
-    i16 terrain_group_index;         // 0x48
-    i16 scene_object_index;          // 0x4a
+typedef struct TERRAIN_PLATFORM { // size 0x6c
+    NUMTX previous_matrix;        // 0x00
+    struct numtx_s *scene_object; // 0x40
+    u32 unknown_44;               // 0x44
+    i16 terrain_group_index;      // 0x48
+    i16 scene_object_index;       // 0x4a
 
     union { // size 0x4
         u32 flags;
@@ -653,15 +653,13 @@ typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
     f32 bounce_60;       // 0x60
     f32 bounce_64;       // 0x64
     u32 *instance_flags; // 0x68
-} TERRAIN_PLATFORM_PC;
+} TERRAIN_PLATFORM;
 
 /* The platform a terrain group belongs to, its scene matrix, and whether a shape's material passes a scan's terrain
  * mask (material[1] 0 matches every mask). */
 #define TERRAIN_GROUP_PLATFORM(group) (CurrentTerrain->platforms[(group)->scene_index])
 #define TERRAIN_GROUP_MATRIX(group) (TERRAIN_GROUP_PLATFORM(group).scene_object)
 #define TERRAIN_SHAPE_MATERIAL_OK(shape, mask) ((shape)->material[1] == 0 || ((shape)->material[1] & (mask)) != 0)
-
-typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM;
 
 #ifdef __cplusplus
 extern "C" {

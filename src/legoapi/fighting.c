@@ -630,7 +630,7 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
             goto finish;
         }
         hit_position = &blowup->mid_position;
-        if (GizmoBlowupBlowup((GIZMOBLOWUP_PC *)blowup, 1, BLOWUP_HIT_PUNCH, 1, NULL, 1)) {
+        if (GizmoBlowupBlowup((GIZMOBLOWUP *)blowup, 1, BLOWUP_HIT_PUNCH, 1, NULL, 1)) {
             NewBuzz(attacker->pad->bound_pad, 0.1f, 0);
         }
         NewRumble(attacker->pad->bound_pad, 0.5f, 0);

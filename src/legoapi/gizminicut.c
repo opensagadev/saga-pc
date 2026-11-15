@@ -70,11 +70,11 @@ static void GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_ptr, voi
     }
 }
 
-static char *GizMiniCut_GetGizmoName(GIZMO_PC *gizmo) {
+static char *GizMiniCut_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((MINICUT *)gizmo->object)->name : NULL;
 }
 
-static i32 GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+static i32 GizMiniCut_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     MINICUT *cut;
     (void)mode;
     if (gizmo == NULL || gizmo->object == NULL) {
@@ -93,7 +93,7 @@ static i32 GizMiniCut_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return 0;
 }
 
-static const char *GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static const char *GizMiniCut_GetOutputName(GIZMO *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
         case 0:
@@ -104,7 +104,7 @@ static const char *GizMiniCut_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return "Unknown!";
 }
 
-static i32 GizMiniCut_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 GizMiniCut_GetNumOutputs(GIZMO *gizmo) {
     (void)gizmo;
     return 2;
 }
@@ -143,13 +143,13 @@ static void GizMiniCut_Play(MINICUT *cut) {
     }
 }
 
-void GizMiniCut_Activate(GIZMO_PC *gizmo, i32 active) {
+void GizMiniCut_Activate(GIZMO *gizmo, i32 active) {
     if (active != 0) {
         GizMiniCut_Play(gizmo->object);
     }
 }
 
-static NUVEC *GizMiniCut_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *GizMiniCut_GetPos(GIZMO *gizmo) {
     MINICUT *cut;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
@@ -158,7 +158,7 @@ static NUVEC *GizMiniCut_GetPos(GIZMO_PC *gizmo) {
     return cut->part_count != 0 ? cut->parts[0].resolved_position : NULL;
 }
 
-static i32 GizMiniCut_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, char *name) {
+static i32 GizMiniCut_UsingSpecial(GIZMO **results, void *world_ptr, i32 capacity, char *name) {
     MINICUT_WORLD *world = world_ptr;
     i32 i;
     i32 j;

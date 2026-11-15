@@ -390,7 +390,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         for (i = 0; i < 2; ++i) {
             object = Player[i];
             if (object != NULL) {
-                UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc_word >> 7) & 1, object->player_index);
+                UpdateCoinPacket((PLAYER_COIN_PACKET *)object->coin_packet, (object->flags_1fc_word >> 7) & 1, object->player_index);
             }
         }
         Debris(1);

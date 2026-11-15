@@ -45,7 +45,7 @@ struct AIEDITOR_RENDER_STATE { // size 0xc3940
     i32 camera_yaw;                                      // 0x00038
     struct nuhspecial_s cursor_platform;                 // 0x0003c
     struct EDAIPATHCHECK_s cursor_check;                 // 0x00048
-    struct AISYS_PC *ai_system;                          // 0x00064
+    struct AISYS *ai_system;                             // 0x00064
     struct EDAIPATH_s path_storage[32];                  // 0x00068
     struct EDAIPATH_s *current_path;                     // 0x04868
     NULISTHDR free_paths;                                // 0x0486c

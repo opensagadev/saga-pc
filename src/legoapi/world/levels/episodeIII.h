@@ -30,9 +30,9 @@ extern "C" {
     extern struct gizaimessage_s *vader_b_complete_msg;
     extern u8 vader_b_playersDead;
     extern NUVEC TempleC_StreamStatusPos;
-    extern struct PART_PC *boulder_part[2];
-    void Boulder_Move(PART_PC *, f32);
-    void Boulder_Kill(PART_PC *, i32);
+    extern struct PART *boulder_part[2];
+    void Boulder_Move(PART *, f32);
+    void Boulder_Kill(PART *, i32);
     extern VADERA vader_a;
     extern i16 dat_007f1a0c;
 #ifdef __cplusplus

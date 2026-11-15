@@ -17,7 +17,7 @@ extern "C" {
         u8 active;                        // 0xa
         u8 unknown_0b;                    // 0xb
         f32 multiplier_time;              // 0xc
-    } PLAYER_COIN_PACKET_PC;
+    } PLAYER_COIN_PACKET;
 
     void DrawPanel(void);
     extern f32 PANEL_REDBRICKSCALE;

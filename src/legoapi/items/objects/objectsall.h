@@ -77,14 +77,14 @@ typedef struct partdebrissys_s { // size 0xc
 } PARTDEBRISSYS;
 
 typedef struct rtlset_s RTLSET;
-struct PART_PC;
+struct PART;
 
 typedef struct debris_collision_entry_s { // size 0x8
     i32 key_index;                        // 0x0
     u32 flags;                            // 0x4
 } DEBRIS_COLLISION_ENTRY;
 
-typedef struct PART_PC PART_PC;
+typedef struct PART PART;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -219,10 +219,10 @@ extern "C" {
 #endif
     void Buck_Start(struct gameobject_s *, struct gameobject_s *);
     void Buck_StartRiderJump(struct gameobject_s *, struct gameobject_s *);
-    void NewPartRotation(PART_PC *);
-    void NewPartOrderedRotation(PART_PC *);
-    extern PART_PC *Part;
-    void CastPart(PART_PC *part, f32 time);
+    void NewPartRotation(PART *);
+    void NewPartOrderedRotation(PART *);
+    extern PART *Part;
+    void CastPart(PART *part, f32 time);
 #ifdef __cplusplus
 }
 #endif

@@ -179,7 +179,7 @@ The 20 most-used resolved fields (the pilot batch, section 8):
 | 8 | `gameobject_s.context_variant_flags` | u32 | flags | 206 | 18 | - |
 | 9 | `gameobject_s.flags_1f8` | u32 | flags | 175 | 15 | - |
 | 10 | `gameobject_s.portal_flags` | u32 | flags | 154 | 31 | - |
-| 11 | `GIZMOBLOWUP_PC.status_flags` | u32 | flags | 153 | 26 | - |
+| 11 | `GIZMOBLOWUP.status_flags` | u32 | flags | 153 | 26 | - |
 | 12 | `FRAME_PAD.digital_buttons_pressed` | u32 | flags | 151 | 14 | `PAD_BUTTON_*` |
 | 13 | `PLAYERCHARACTERCONFIG.flags_090` | u32 | flags | 147 | 30 | - |
 | 14 | `gameobject_s.flags_ef0` | u32 | flags | 143 | 32 | - |
@@ -285,12 +285,12 @@ calls; `STATIC_ASSERT` names its typedefs with `__COUNTER__`. Before and after:
 } HINT_ZIPUP;
 typedef struct zipup_transport_view_s {
     ...
-static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
-    ZIPUP_PC *zipup;
+static i32 ZipUp_ActivateRev(GIZMO *gizmo, i32 active, i32 query) {
+    ZIPUP *zipup;
 
     if (gizmo == NULL)
         return 0;
-    zipup = (ZIPUP_PC *)gizmo->object;
+    zipup = (ZIPUP *)gizmo->object;
     if (query & 1)
         return active != zipup->direction;
 
@@ -299,13 +299,13 @@ static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
 
 typedef struct zipup_transport_view_s {
     ...
-static i32 ZipUp_ActivateRev(GIZMO_PC *gizmo, i32 active, i32 query) {
-    ZIPUP_PC *zipup;
+static i32 ZipUp_ActivateRev(GIZMO *gizmo, i32 active, i32 query) {
+    ZIPUP *zipup;
 
     if (gizmo == NULL) {
         return 0;
     }
-    zipup = (ZIPUP_PC *)gizmo->object;
+    zipup = (ZIPUP *)gizmo->object;
     if (query & 1) {
         return active != zipup->direction;
     }

@@ -114,14 +114,14 @@ static i32 Plugs_Load(void *world_ptr, void *data) {
     return 1;
 }
 
-static void Plug_Activate(GIZMO_PC *gizmo, i32 active) {
+static void Plug_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         CARRY_PLUG *plug = gizmo->object;
         plug->active = active != 0;
     }
 }
 
-static void Plug_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Plug_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         CARRY_PLUG *plug = gizmo->object;
         plug->visible = visible != 0;
@@ -186,11 +186,11 @@ static void Plugs_AddGizmos(void *system, i32 type_id, void *world_ptr, void *da
     }
 }
 
-static char *Plug_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Plug_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((CARRY_PLUG *)gizmo->object)->name : NULL;
 }
 
-static i32 Plug_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+static i32 Plug_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     CARRY_PLUG *plug = gizmo->object;
     (void)output;
     (void)mode;
@@ -199,18 +199,18 @@ static i32 Plug_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 
 const char *PlugOutputName = "Plugged";
 
-static const char *Plug_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static const char *Plug_GetOutputName(GIZMO *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
     return PlugOutputName;
 }
 
-static i32 Plug_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Plug_GetNumOutputs(GIZMO *gizmo) {
     (void)gizmo;
     return 1;
 }
 
-static NUVEC *Plug_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *Plug_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }

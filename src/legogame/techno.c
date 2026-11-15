@@ -169,7 +169,7 @@ typedef struct techno_callback_s { // size 0x70
 
     char target_name[16];        // 0x3d
     char target_object_name[31]; // 0x4d
-    GIZMO_PC *controlled_object; // 0x6c
+    GIZMO *controlled_object;    // 0x6c
 } TECHNO_CALLBACK;
 
 typedef struct techno_level_view_s { // size 0xed
@@ -219,7 +219,7 @@ static void Techno_ResetFields(TECHNO_CALLBACK *techno) {
     NuStrCpy(techno->target_name, techno->target_object_name);
 }
 
-static void Techno_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Techno_SetVisibility(GIZMO *gizmo, i32 visible) {
     TECHNO_CALLBACK *techno;
     if (gizmo == NULL) {
         return;
@@ -228,7 +228,7 @@ static void Techno_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
     techno->bits.visible = visible != 0;
 }
 
-static void Techno_Activate(GIZMO_PC *gizmo, i32 active) {
+static void Techno_Activate(GIZMO *gizmo, i32 active) {
     TECHNO_CALLBACK *techno;
     if (gizmo == NULL) {
         return;
@@ -369,13 +369,13 @@ static void Technos_AddGizmos(void *system, i32 type_id, void *world_ptr, void *
     }
 }
 
-static char *Techno_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Techno_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((TECHNO_CALLBACK *)gizmo->object)->name : NULL;
 }
 
-static i32 Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 Techno_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
     TECHNO_CALLBACK *techno;
-    GIZMO_PC *target;
+    GIZMO *target;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
@@ -399,15 +399,15 @@ static i32 Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
     return 0;
 }
 
-static char *Techno_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *Techno_GetOutputName(GIZMO *gizmo, i32 output) {
     return "Active";
 }
 
-static i32 Techno_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Techno_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
-static NUVEC *Techno_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *Techno_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }

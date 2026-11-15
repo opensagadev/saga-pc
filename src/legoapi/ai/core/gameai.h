@@ -7,7 +7,7 @@
 
 struct AIAREA;
 struct AIPACKET;
-struct AISYS_PC;
+struct AISYS;
 struct APIOBJECT;
 struct gameobject_s;
 struct gizmosys_s;
@@ -85,14 +85,14 @@ extern "C" {
     f32 GetCharacterGoalSpeed(struct APIOBJECT *);
     typedef i32 (*AI_RESPAWN_ON_PATH)(struct APIOBJECT *);
     struct APIOBJECT *GetNamedAPIObject(void *, char *);
-    NUVEC *GetAICreatureOrigin(struct AISYS_PC *, struct AIPACKET *);
+    NUVEC *GetAICreatureOrigin(struct AISYS *, struct AIPACKET *);
 
-    void GameCreatureInteraction2D(struct AISYS_PC *, i32, struct APIOBJECT **, i32 *, f32);
+    void GameCreatureInteraction2D(struct AISYS *, i32, struct APIOBJECT **, i32 *, f32);
 
-    void GameCreatureOpponentSelection(struct AISYS_PC *, i32, struct APIOBJECT **, i32, struct APIOBJECT **, i32, struct APIOBJECT **, u64,
+    void GameCreatureOpponentSelection(struct AISYS *, i32, struct APIOBJECT **, i32, struct APIOBJECT **, i32, struct APIOBJECT **, u64,
                                        f32);
-    void GameAISysReset(struct AISYS_PC *);
-    void GameAISysStartFrame(struct AISYS_PC *);
+    void GameAISysReset(struct AISYS *);
+    void GameAISysStartFrame(struct AISYS *);
 #ifdef __cplusplus
 }
 #endif

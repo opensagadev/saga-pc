@@ -94,7 +94,7 @@ typedef struct grabber_s {                   // size 0x568
     GAMEOBJECT *victim;                      // 0x514
     GIZOBSTACLE *action_switch;              // 0x518
     GIZOBSTACLE *direction_switches[4];      // 0x51c
-    GIZMOBLOWUP_PC *carried_blowup;          // 0x52c
+    GIZMOBLOWUP *carried_blowup;             // 0x52c
     f32 scale;                               // 0x530
     f32 speed;                               // 0x534
     f32 radius;                              // 0x538
@@ -400,8 +400,8 @@ NUVEC *Grabber_GetGrabPos(void *context, NUMTX *matrix) {
     return &grabber->grab_position;
 }
 
-void PartKill_Grabber(PART_PC *part, i32 unused1) {
-    GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)part->unknown_210;
+void PartKill_Grabber(PART *part, i32 unused1) {
+    GIZMOBLOWUP *blowup = (GIZMOBLOWUP *)part->unknown_210;
     NUVEC *position = &part->position;
     i32 i;
     PlaySfx("Explode2", position);
@@ -613,7 +613,7 @@ void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
     NUMTX matrix;
     NUVEC velocity;
     NUVEC centre;
-    PART_PC *part;
+    PART *part;
 
     grabber->flags |= GRABBER_LIFTED;
     if (grabber->victim != NULL) {

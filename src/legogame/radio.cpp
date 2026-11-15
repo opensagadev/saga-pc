@@ -17,10 +17,10 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-struct RADIO_ENTRY {        // size 0x14
-    GIZMOBLOWUP_PC *blowup; // 0x00
-    nuhspecial_s special;   // 0x04
-    f32 time;               // 0x10
+struct RADIO_ENTRY {      // size 0x14
+    GIZMOBLOWUP *blowup;  // 0x00
+    nuhspecial_s special; // 0x04
+    f32 time;             // 0x10
 };
 
 f32 RadioLifetime = 20.0f;
@@ -94,11 +94,11 @@ void PlayRadio(char *special_name, char *blowup_name, i32 play) {
             for (i = 0, radio = pool; i < 8; ++i, ++radio) {
                 if (radio->time <= 0.0f) {
                     if (blowup_name != NULL) {
-                        GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, blowup_name);
+                        GIZMO *gizmo = (GIZMO *)GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, blowup_name);
                         if (gizmo == NULL) {
                             return;
                         }
-                        radio->blowup = (GIZMOBLOWUP_PC *)gizmo->object;
+                        radio->blowup = (GIZMOBLOWUP *)gizmo->object;
                     } else if (special_name == NULL || NuSpecialFind(WORLD->current_gscn, &radio->special, special_name, 1) == 0) {
                         return;
                     }

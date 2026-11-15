@@ -9,11 +9,11 @@
 #include "nu2api/nucore/bgproc.h"
 #include "nu2api/numath/nuvec.h"
 
-struct AISYS_PC;
+struct AISYS;
 struct APIDEBRISSYS;
 struct APIOBJECTSYS;
 struct GIZMOBLOWUPTYPE;
-struct GIZMOBLOWUP_PC;
+struct GIZMOBLOWUP;
 struct LEVEL_OBJECT_RUNTIME;
 struct NUGSCN_s;
 struct TUBE;
@@ -178,7 +178,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct shadow_platform_list_s *shadow_platform_list; // 0x2adc
     struct HUBMINIKIT_s *hub_minikits;                   // 0x2ae0
     i32 ai_loaded;                                       // 0x2ae4
-    struct AISYS_PC *ai_sys;                             // 0x2ae8
+    struct AISYS *ai_sys;                                // 0x2ae8
     i32 script_processor_count;                          // 0x2aec
     LEVEL_SCRIPT_PROCESS script_processors[32];          // 0x2af0
     struct ai_control_system_s *ai_path_cnx_control_sys; // 0x4670
@@ -257,9 +257,9 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 gizmo_blowup_type_count;                         // 0x50bc
     i32 gizmo_blowup_count;                              // 0x50c0
     struct GIZMOBLOWUPTYPE *gizmo_blowup_types;          // 0x50c4
-    struct GIZMOBLOWUP_PC *gizmo_blowups;                // 0x50c8
+    struct GIZMOBLOWUP *gizmo_blowups;                   // 0x50c8
     i32 blowup_target_candidate_count;                   // 0x50cc
-    struct GIZMOBLOWUP_PC **blowup_target_candidates;    // 0x50d0
+    struct GIZMOBLOWUP **blowup_target_candidates;       // 0x50d0
     char pad_12a[20];                                    // 0x50d4
     struct numtx_s *gizmo_blowup_mtx_buffer;             // 0x50e8
     void *minicuts;                                      // 0x50ec

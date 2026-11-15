@@ -247,7 +247,7 @@ extern "C" {
     extern nuhspecial_s LevHSpecial[88];
     void LevelObjects_InitForGame(LEVEL_OBJECT_CONFIG *, VARIPTR *, VARIPTR *, i32, i32);
     extern struct gizmo_s *LevGizmo[12];
-    extern GIZMOBLOWUP_PC *LevBlowUp[2];
+    extern GIZMOBLOWUP *LevBlowUp[2];
     extern NUMTL *PermanentEffectsMaterial;
     extern NUMTL *PermanentShadowMaterial;
 
@@ -294,7 +294,7 @@ extern "C" {
     extern struct level_data_s *GUNSHIPA_LDATA;
     extern struct level_data_s *UpdateSockets_LDATA;
     extern struct level_data_s *ObstacleReturnLevel;
-    extern PART_PC *LevGamePart[8];
+    extern PART *LevGamePart[8];
     extern NUGSPLINE *LevelCodeSpline[8];
     void NewLevelFromMenu(struct level_data_s *, i32, i32, i32);
     extern struct level_data_s *JEDI_B_LDATA;

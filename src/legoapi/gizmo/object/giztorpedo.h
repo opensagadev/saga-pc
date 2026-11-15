@@ -11,7 +11,7 @@
 extern "C" {
 #endif
     void *GizTorpMachine_FindNearest(WORLDINFO *, NUVEC *, f32 *);
-    i32 PartDraw_Torp(PART_PC *);
+    i32 PartDraw_Torp(PART *);
 #ifdef __cplusplus
 }
 #endif
@@ -53,7 +53,7 @@ extern "C" {
     i32 GizTorp_GetMaxGizmos(void *world_ptr);
     i32 GizTorp_GetNumOutputs(void *arg0);
     i32 GizTorp_GetOutput(void *arg0, i32 arg1, i32 arg2);
-    char *GizTorp_GetOutputName(GIZMO_PC *arg0, i32 output_index);
+    char *GizTorp_GetOutputName(GIZMO *arg0, i32 output_index);
     void GizTorp_SetVisibility(void *gizmo, i32 visible);
     void GizTorp_Update(void *world_ptr, void *arg1, f32 arg2);
     void *GizTorps_ReserveBufferSpace(void *world_ptr);

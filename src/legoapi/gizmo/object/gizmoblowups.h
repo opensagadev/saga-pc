@@ -88,7 +88,7 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
 #define BLOWUP_HIT_TORPEDO 11          /* torpedo.c */
 #define BLOWUP_HIT_SABRE 13            /* GizmoBlowUp_Hit for the lightsabre */
 
-/* GIZMOBLOWUP_PC.status_flags: the outputs (Blownup, Punched, Plugging), the bitfield names below and one bit
+/* GIZMOBLOWUP.status_flags: the outputs (Blownup, Punched, Plugging), the bitfield names below and one bit
  * per hit type that GizmoBlowupBlowup sets. */
 #define BLOWUP_STATUS_BLOWN_UP 0x1
 #define BLOWUP_STATUS_HIT_PUNCH 0x2
@@ -106,7 +106,7 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
 #define BLOWUP_STATUS_ACTIVE 0x800000
 #define BLOWUP_STATUS_PLUGGING 0x10000000
 
-typedef struct GIZMOBLOWUP_PC { // size 0x114
+typedef struct GIZMOBLOWUP { // size 0x114
 
     union { // size 0x40
         NUMTX transform;
@@ -193,28 +193,28 @@ typedef struct GIZMOBLOWUP_PC { // size 0x114
     u8 remaining_health;   // 0x110
     u8 initial_health;     // 0x111
     u8 unknown_112[2];     // 0x112
-} GIZMOBLOWUP_PC;
+} GIZMOBLOWUP;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP_PC *, NUVEC *);
-    void GizBlowup_Respawn(GIZMOBLOWUP_PC *);
-    void UpdateMidPos(GIZMOBLOWUP_PC *);
+    extern void (*GizmoBlowUp_SfxFn)(GIZMOBLOWUP *, NUVEC *);
+    void GizBlowup_Respawn(GIZMOBLOWUP *);
+    void UpdateMidPos(GIZMOBLOWUP *);
 
-    i32 GizBlowup_InitSingleTerrain(GIZMOBLOWUP_PC *);
-    void GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP_PC *);
-    void GizmoSwapBlowups(GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *);
+    i32 GizBlowup_InitSingleTerrain(GIZMOBLOWUP *);
+    void GizBlowup_DeleteSingleTerrain(GIZMOBLOWUP *);
+    void GizmoSwapBlowups(GIZMOBLOWUP *, GIZMOBLOWUP *);
 
-    void GizmoBlowupUpdateMatrix(GIZMOBLOWUP_PC *);
-    void GizmoBlowupGenDecalMatrix(GIZMOBLOWUP_PC *, NUMTX *, i32);
-    void GizmoBlowupGenShadowMatrix(GIZMOBLOWUP_PC *, NUMTX *);
-    extern i32 (*BlowupExFunc)(GIZMOBLOWUP_PC *, i32);
-    extern void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP_PC *target);
+    void GizmoBlowupUpdateMatrix(GIZMOBLOWUP *);
+    void GizmoBlowupGenDecalMatrix(GIZMOBLOWUP *, NUMTX *, i32);
+    void GizmoBlowupGenShadowMatrix(GIZMOBLOWUP *, NUMTX *);
+    extern i32 (*BlowupExFunc)(GIZMOBLOWUP *, i32);
+    extern void (*GizmoBlowup_TransformDrawFn)(GIZMOBLOWUP *target);
 #ifdef __cplusplus
 }
 #endif
-typedef i32 (*LEVEL_BLOWUP_CALLBACK)(GIZMOBLOWUP_PC *, i32);
+typedef i32 (*LEVEL_BLOWUP_CALLBACK)(GIZMOBLOWUP *, i32);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -227,15 +227,15 @@ extern "C" {
 extern "C" {
 #endif
     extern i32 (*GizmoBlowUp_NoTargetFn)(struct WORLDINFO_s *, struct gameobject_s *);
-    void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP_PC *blowup, i32 add_offset, i32 flags, struct gameobject_s *object);
+    void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 add_offset, i32 flags, struct gameobject_s *object);
     i32 GizmoBlowupCheckProximity(struct WORLDINFO_s *, struct gameobject_s *);
-    i32 GizmoBlowupBlowup(GIZMOBLOWUP_PC *, i32, i32, i32, struct gameobject_s *, i32);
+    i32 GizmoBlowupBlowup(GIZMOBLOWUP *, i32, i32, i32, struct gameobject_s *, i32);
     GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(struct WORLDINFO_s *, struct nuhspecial_s *, i32, i32 *);
     void GizmoBlowupTypeRemove(GIZMOBLOWUPTYPE *, struct WORLDINFO_s *);
     void *gizmoblowup_reservebuffers(struct WORLDINFO_s *);
     void GizmoBlowupsFinalSetup(struct WORLDINFO_s *);
     void GizmoBlowupVisibilityOverrides(struct WORLDINFO_s *);
-    GIZMOBLOWUP_PC *FindNearestGizmoBlowUp(struct WORLDINFO_s *, NUVEC *, f32);
+    GIZMOBLOWUP *FindNearestGizmoBlowUp(struct WORLDINFO_s *, NUVEC *, f32);
     void GizmoSortBlowups(struct WORLDINFO_s *);
     i32 GizmoBlowupGetTypeFromNameTableId(struct WORLDINFO_s *, i32);
     GIZMOBLOWUPTYPE *GizmoBlowup_FindType(char *, struct WORLDINFO_s *);
@@ -243,7 +243,7 @@ extern "C" {
     i32 InitGizmoBlowupTypes(struct WORLDINFO_s *);
     i32 InitGizmoBlowups(struct WORLDINFO_s *);
     i32 InitGizmoBlowupsMtxBuffer(struct WORLDINFO_s *);
-    GIZMOBLOWUP_PC *GizmoBlowUp_Hit(struct gameobject_s *, NUVEC *, i32, f32, NUVEC *, NUVEC *, struct bolt_s *, u32, u8 *);
+    GIZMOBLOWUP *GizmoBlowUp_Hit(struct gameobject_s *, NUVEC *, i32, f32, NUVEC *, NUVEC *, struct bolt_s *, u32, u8 *);
 #ifdef __cplusplus
 }
 #endif

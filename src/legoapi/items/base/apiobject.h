@@ -1013,7 +1013,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0x4
         void *grapple;
-        struct PART_PC *force_throw_part;
+        struct PART *force_throw_part;
         struct techno_s *techno;
         struct ZIPUP_s *attached_zipup;
         struct TUBE *attached_tube;
@@ -1148,9 +1148,9 @@ typedef struct gameobject_s { // size 0x10d8
     struct GAMEPAD *pad;                  // 0x0ca4
     SOCKPOSITION *previous_sock_position; // 0x0ca8
     u32 directional_input_state;          // 0x0cac
-    struct PART_PC *incoming_part;        // 0x0cb0
-    struct PART_PC *blocked_part;         // 0x0cb4
-    struct PART_PC *force_part;           // 0x0cb8
+    struct PART *incoming_part;           // 0x0cb0
+    struct PART *blocked_part;            // 0x0cb4
+    struct PART *force_part;              // 0x0cb8
     struct SUIT_LAYERS *suit;             // 0x0cbc
 
     union { // size 0x4

@@ -228,7 +228,7 @@ void *GizPanels_ReserveBufferSpace(void *pointer) {
     return world->giz_panel_sys;
 }
 
-void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void GizPanel_SetVisibility(GIZMO *gizmo, i32 visible) {
     typedef union PanelVisibleFlags { // size 0x1
         u8 value;
 
@@ -680,7 +680,7 @@ void GizPanel_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
 }
 
 char *GizPanel_GetGizmoName(void *input) {
-    GIZMO_PC *gizmo = input;
+    GIZMO *gizmo = input;
     if (gizmo != NULL && gizmo->object != NULL) {
         return ((PANEL_MOVEMENT *)gizmo->object)->name;
     }
@@ -692,7 +692,7 @@ i32 fun_0046eb50(PANEL_MOVEMENT *panel) {
 }
 
 i32 GizPanel_GetOutput(void *input, i32 output, i32 mode) {
-    GIZMO_PC *gizmo = input;
+    GIZMO *gizmo = input;
     PANEL_MOVEMENT *panel = gizmo->object;
     (void)output;
     (void)mode;
@@ -1086,7 +1086,7 @@ void GizPanel_Activate(void *input, i32 active) {
         PanelActiveFlags flags; // 0x62
     } PanelActiveState;
 
-    GIZMO_PC *gizmo = input;
+    GIZMO *gizmo = input;
     PANEL_MOVEMENT *panel;
     if (gizmo != NULL && gizmo->object != NULL) {
         panel = gizmo->object;
@@ -1124,12 +1124,12 @@ ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32 type_id) {
     addtype->fns.add_gizmos_fn = (void *)GizPanel_AddGizmos;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizPanel_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizPanel_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizPanel_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizPanel_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizPanel_GetOutputName;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))GizPanel_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))GizPanel_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))GizPanel_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizPanel_GetNumOutputs;
-    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizPanel_Activate;
-    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizPanel_SetVisibility;
+    addtype->fns.activate_fn = (void (*)(GIZMO *, i32))GizPanel_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizPanel_SetVisibility;
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizPanels_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizPanels_ClearProgress;
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizPanels_StoreProgress;

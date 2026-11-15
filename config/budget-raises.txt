@@ -191,7 +191,7 @@ config/declscan-budget.json C 483 moved data definitions: a unit's own extern of
 config/oddscan-budget.json dup-type 381 the GIZACTIONFN function-pointer typedef moved from legoapi_types.h to gizmo.h; dup-type reads such a typedef as a type named void (same declaration, new file)
 config/declscan-budget.json A 258 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now repeats the definition moved into the unit
 config/declscan-budget.json C 571 moved data definitions: a unit's own extern of a global that data.cpp defined (class D) now forward-declares the definition moved into the unit
-config/oddscan-budget.json dup-type 387 tools/selfcontain.py moved types out of include cycles (EPISODESAVE_s, FadeBase, PART_PC, PC_HG_SHADOW_PACKET, function-pointer typedefs read as void): the same declarations, now in their users' headers
+config/oddscan-budget.json dup-type 387 tools/selfcontain.py moved types out of include cycles (EPISODESAVE_s, FadeBase, PART, PC_HG_SHADOW_PACKET, function-pointer typedefs read as void): the same declarations, now in their users' headers
 config/castscan-budget.json duplicate-type 1267 a record-pun cast now reads as duplicate-type: its record moved to another header by tools/selfcontain.py (same cast, same type)
 config/castscan-budget.json duplicate-type 1268 WORLDINFO.shards is now SHARD_s *: the attracto view of the same records reads it through an explicit cast (AttractoSelectShard) instead of a void * pun
 config/oddscan-budget.json dup-type 387 main counts 387 (the selfcontain.py raise above) but its budget file kept 381; this sets the file to that reviewed value, no new duplicate

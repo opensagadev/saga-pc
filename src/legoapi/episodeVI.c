@@ -90,9 +90,9 @@ nuhspecial_s SarlaccLevSpecial[7] = {0};
 GIZOBSTACLE *LevGizObst[8] = {0};
 void *SarlaccLevelBuildits[2] = {0};
 f32 runningTotalPos = 0;
-GIZMO_PC *SarlaccObstMirrorBall = NULL;
+GIZMO *SarlaccObstMirrorBall = NULL;
 u64 routemask_efloor_on = 0;
-GIZMO_PC *SarlaccForceMirrorBall = NULL;
+GIZMO *SarlaccForceMirrorBall = NULL;
 
 i16 dat_007f1a7c = -1;
 i16 id_TRACTOR = -1;
@@ -132,10 +132,10 @@ typedef struct level_script_flags_s { // size 0x10
     u8 remaining[7];                  // 0x9
 } LEVEL_SCRIPT_FLAGS;
 
-typedef struct sarlacc_world_s {     // size 0x50d4
-    u8 unknown_0000[0x50cc];         // 0x0000
-    i32 blowup_target_count;         // 0x50cc
-    GIZMOBLOWUP_PC **blowup_targets; // 0x50d0
+typedef struct sarlacc_world_s {  // size 0x50d4
+    u8 unknown_0000[0x50cc];      // 0x0000
+    i32 blowup_target_count;      // 0x50cc
+    GIZMOBLOWUP **blowup_targets; // 0x50d0
 } SARLACC_WORLD;
 
 typedef struct sarlacc_panel_s { // size 0x63
@@ -179,7 +179,7 @@ void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *world) {
 void DeathStar2BattleD_Init(WORLDINFO *world) {
     char name[256];
     i32 i;
-    GIZMO_PC *obstacle;
+    GIZMO *obstacle;
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "reactor1");
     for (i = 1; i < 7; i++) {
         sprintf(name, "lecnode_%i1", i);
@@ -194,8 +194,8 @@ void DeathStar2BattleD_Init(WORLDINFO *world) {
     ((u8 *)LevFlag)[5] = 0;
 }
 
-GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
-    GIZMOBLOWUP_PC *nearest = NULL;
+GIZMOBLOWUP *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
+    GIZMOBLOWUP *nearest = NULL;
     f32 nearest_distance;
     i32 i;
     if (object == NULL || !(object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) || object->dead) {
@@ -203,8 +203,8 @@ GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
     }
     nearest_distance = 225.0f;
     for (i = 1; i < 7; ++i) {
-        GIZMO_PC *gizmo = LevGizmo[i];
-        GIZMOBLOWUP_PC *blowup;
+        GIZMO *gizmo = LevGizmo[i];
+        GIZMOBLOWUP *blowup;
         f32 distance;
         if (gizmo == NULL || gizmo->object == NULL) {
             continue;
@@ -225,9 +225,9 @@ GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
 TIMER AreaTimer = {0};
 
 void DeathStar2BattleD_Update(WORLDINFO *world) {
-    GIZMO_PC *shield_gizmo;
-    GIZMOBLOWUP_PC *shield;
-    GIZMOBLOWUP_PC *blowup;
+    GIZMO *shield_gizmo;
+    GIZMOBLOWUP *shield;
+    GIZMOBLOWUP *blowup;
     GAMEOBJECT *player;
     NUVEC shield_position;
     NUVEC position;
@@ -431,7 +431,7 @@ void EmperorFightA_Init(WORLDINFO *world) {
 }
 
 void EmperorFightA_Reset(WORLDINFO *world) {
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     i32 i;
     char name[32];
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "ShowHearts", NULL);
@@ -871,7 +871,7 @@ void JabbasPalaceE_Reset(WORLDINFO *world) {
 void JabbasPalaceE_Update(WORLDINFO *world) {
     i32 i;
     GAMEOBJECT *player;
-    GIZMOBLOWUP_PC *blowup;
+    GIZMOBLOWUP *blowup;
     u8 *flags = (u8 *)LevFlag;
     if (!netclient) {
         if (FreePlay) {
@@ -901,7 +901,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
             }
         }
     }
-    blowup = LevGizmo[0] != NULL ? (GIZMOBLOWUP_PC *)LevGizmo[0]->object : NULL;
+    blowup = LevGizmo[0] != NULL ? (GIZMOBLOWUP *)LevGizmo[0]->object : NULL;
     if (blowup != NULL && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         if (!flags[6]) {
             PlaySfx("exp_minecart", &blowup->position);
@@ -910,7 +910,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
     } else {
         flags[6] = 0;
     }
-    blowup = LevGizmo[1] != NULL ? (GIZMOBLOWUP_PC *)LevGizmo[1]->object : NULL;
+    blowup = LevGizmo[1] != NULL ? (GIZMOBLOWUP *)LevGizmo[1]->object : NULL;
     if (blowup != NULL && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         if (!flags[7]) {
             PlaySfx("exp_minecart", &blowup->position);
@@ -1181,7 +1181,7 @@ static f32 sarlacc_engine_timer = 0.0f;
 void SarlaccPitB_Update(WORLDINFO *world) {
     i32 index;
     if (netclient == 0) {
-        GIZMO_PC *panel;
+        GIZMO *panel;
         i32 ready;
         sarlaccb_netpacket->sound_mask = 0;
         SetGizAIMessage(gizaimessagesys, "HelpWithDisco", 0.0f, sarlaccdisco.help_message);
@@ -1368,14 +1368,14 @@ void SarlaccPitC_Init(WORLDINFO *world) {
 }
 
 static i32 SarlaccBlowUpTargetCount = 0;
-static GIZMOBLOWUP_PC *SarlaccBlowUpTargets[4] = {0};
+static GIZMOBLOWUP *SarlaccBlowUpTargets[4] = {0};
 static i32 SarlaccTakenOver = 0;
 i32 SarlaccPower = 0;
 i32 SarlaccRecharging = 0;
 
 void SarlaccPitC_Reset(WORLDINFO *world) {
     char name[32];
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     i32 i;
     SarlaccTakenOver = 0;
     SarlaccBlowUpTargetCount = 0;
@@ -1469,7 +1469,7 @@ void SarlaccPitC_Update(WORLDINFO *world) {
         }
     }
     if (!SarlaccTargetShield[0]) {
-        GIZMOBLOWUP_PC *target = SarlaccBlowUpTargets[0];
+        GIZMOBLOWUP *target = SarlaccBlowUpTargets[0];
         if (target != NULL && !(target->status_flags & BLOWUP_STATUS_VISIBLE)) {
             PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[16]));
             SarlaccTargetShield[0] = 1;
@@ -1478,7 +1478,7 @@ void SarlaccPitC_Update(WORLDINFO *world) {
         }
     }
     if (!SarlaccTargetShield[1]) {
-        GIZMOBLOWUP_PC *target = SarlaccBlowUpTargets[1];
+        GIZMOBLOWUP *target = SarlaccBlowUpTargets[1];
         if (target != NULL && !(target->status_flags & BLOWUP_STATUS_VISIBLE)) {
             PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[17]));
             SarlaccTargetShield[1] = 1;

@@ -552,7 +552,7 @@ extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
     }
 }
 
-extern "C" void Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
+extern "C" void Grapple_Activate(GIZMO *gizmo, i32 active) {
     GRAPPLE_MOTION *grapple;
     if (gizmo != NULL) {
         grapple = (GRAPPLE_MOTION *)gizmo->object;
@@ -563,7 +563,7 @@ extern "C" void Grapple_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-extern "C" void Grapple_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+extern "C" void Grapple_SetVisibility(GIZMO *gizmo, i32 visible) {
     GRAPPLE_MOTION *grapple;
     if (gizmo != NULL) {
         grapple = (GRAPPLE_MOTION *)gizmo->object;
@@ -593,14 +593,14 @@ extern "C" {
     }
 }
 
-extern "C" char *Grapple_GetGizmoName(GIZMO_PC *gizmo) {
+extern "C" char *Grapple_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
         return ((GRAPPLE_MOTION *)gizmo->object)->name;
     }
     return NULL;
 }
 
-extern "C" i32 Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+extern "C" i32 Grapple_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)gizmo->object;
     (void)mode;
     if (!grapple->visible || !grapple->active) {
@@ -625,7 +625,7 @@ extern "C" i32 Grapple_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 
 extern "C" {
 
-    char *Grapple_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    char *Grapple_GetOutputName(GIZMO *gizmo, i32 output) {
         switch (output) {
             case 1:
                 return "Occupied";
@@ -636,7 +636,7 @@ extern "C" {
     }
 }
 
-extern "C" i32 Grapple_GetNumOutputs(GIZMO_PC *unused) {
+extern "C" i32 Grapple_GetNumOutputs(GIZMO *unused) {
     (void)unused;
     return 3;
 }
@@ -843,12 +843,12 @@ extern "C" {
         addtype->fns.add_gizmos_fn = (void *)Grapples_AddGizmos;
         addtype->fns.late_update_fn = (void (*)(void *, void *, f32))Grapples_Update;
         addtype->fns.draw_fn = (void (*)(void *, void *, f32))Grapples_Draw;
-        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Grapple_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Grapple_GetOutput;
-        addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Grapple_GetOutputName;
+        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))Grapple_GetGizmoName;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))Grapple_GetOutput;
+        addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))Grapple_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)Grapple_GetNumOutputs;
-        addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Grapple_Activate;
-        addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))Grapple_SetVisibility;
+        addtype->fns.activate_fn = (void (*)(GIZMO *, i32))Grapple_Activate;
+        addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))Grapple_SetVisibility;
         addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))Grapples_AllocateProgressData;
         addtype->fns.clear_progress_fn = (void (*)(void *, void *))Grapples_ClearProgress;
         addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))Grapples_StoreProgress;

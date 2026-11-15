@@ -266,7 +266,7 @@ void LSW_Hub_UpdateAI(WORLDINFO *world) {
     }
 }
 
-void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
+void *Condition_InHubAreaInit(AISYS *system, char *name, AISCRIPT *script) {
     i32 index;
     if (name != NULL) {
         for (index = 0; index < 10; ++index) {
@@ -278,7 +278,7 @@ void *Condition_InHubAreaInit(AISYS_PC *system, char *name, AISCRIPT *script) {
     return (void *)-1;
 }
 
-f32 Condition_InHubArea(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *area) {
+f32 Condition_InHubArea(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *area) {
     if (HubAiMusicState.area == (i32)area) {
         return 1.0f;
     }

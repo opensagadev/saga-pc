@@ -17,10 +17,10 @@ typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ)(i32);
 typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
 typedef void (*AI_CLEAR_CREATURES)(void);
 typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS_PC *, AIPACKET *);
+typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS *, AIPACKET *);
 
 i32 StarWars_PreparingForSpecialMove(AIPACKET *, APIOBJECT *, i32);
-i32 StarWars_MidSpecialMove(AISYS_PC *, AIPACKET *, APIOBJECT *);
+i32 StarWars_MidSpecialMove(AISYS *, AIPACKET *, APIOBJECT *);
 
 AI_CHARACTER_NAME LevelCharacterNameFn = 0;
 AI_CHARACTER_NAME SpecialRouteCharacterNameFn = 0;

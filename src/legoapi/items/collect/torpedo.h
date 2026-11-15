@@ -12,10 +12,10 @@ extern "C" {
 #endif
     void DropTorpedoPickups(TORPEDOPACKET *, i32);
     void Torpedo_Shoot(GAMEOBJECT *);
-    void HomeNearestTorpTarget(BOLT_PC *, TORPEDOPACKET *);
-    void Torpedo_Ricochet(BOLT_PC *, TORPEDOPACKET *);
-    void Torpedo_InitBolt(BOLT_PC *);
-    void Torpedo_UpdateBolt(BOLT_PC *);
+    void HomeNearestTorpTarget(BOLT *, TORPEDOPACKET *);
+    void Torpedo_Ricochet(BOLT *, TORPEDOPACKET *);
+    void Torpedo_InitBolt(BOLT *);
+    void Torpedo_UpdateBolt(BOLT *);
     i32 getMaxTorpedos(GAMEOBJECT *);
     void FreeTorpedoPacket(TORPEDOPACKET **);
     void *FindNearestTorpTarget(WORLDINFO *, NUVEC *, f32, u8 *);
@@ -27,11 +27,11 @@ extern "C" {
     extern f32 TorpedoStealRange;
     extern char dat_00759770[2];
     TORPEDOPACKET *GetTorpedoPacket(void);
-    void Torpedo_InitRicochet(BOLT_PC *, NUVEC *);
-    void Torpedo_EndBolt(BOLT_PC *);
-    f32 Torpedo_Scale(BOLT_PC *);
-    void TorpedoHitTarget(BOLT_PC *);
-    void Torpedo_EndBolt(BOLT_PC *);
+    void Torpedo_InitRicochet(BOLT *, NUVEC *);
+    void Torpedo_EndBolt(BOLT *);
+    f32 Torpedo_Scale(BOLT *);
+    void TorpedoHitTarget(BOLT *);
+    void Torpedo_EndBolt(BOLT *);
 #ifdef __cplusplus
 }
 #endif

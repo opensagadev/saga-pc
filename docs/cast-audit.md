@@ -285,7 +285,7 @@ Fourteen globals and fields that every use cast to one type got that type
 `edui_font`, `gizmotypes`, `edanim_mtl`, `pause_rndr_mtl`, `LevPathCnx`,
 `APIOBJECT.owner`, `bolt_s.owner`, `nuspecial_handle_s.scene`,
 `nudisplay_list_s.items`, `WORLDINFO.mini_trooper_teams`,
-`TERRAIN_PLATFORM_PC.scene_object`; then `GAMERAND` is the `NURAND` it always
+`TERRAIN_PLATFORM.scene_object`; then `GAMERAND` is the `NURAND` it always
 was. `castscan.py --fix redundant-identity,redundant-implicit` removed the casts
 that became redundant; the terrain alias macros (`TERRAIN_*_SET`,
 `TERRAIN_*_MATRIX`) and `PLAYER_OBJ`, which only hid such a cast, are inlined.

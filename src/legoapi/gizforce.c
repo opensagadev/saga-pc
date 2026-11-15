@@ -152,7 +152,7 @@ static void *GizForces_ReserveBufferSpace(void *world_ptr) {
 
     force_sys->capacity = world->current_level->max_force;
     force_sys->forces = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s));
-    force_sys->hit_test_gizmos = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZMO_PC *));
+    force_sys->hit_test_gizmos = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZMO *));
     force_sys->visible_forces = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, force_sys->capacity * sizeof(GIZFORCE_s *));
     force_sys->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 8, world->current_level->max_force_objects);
 

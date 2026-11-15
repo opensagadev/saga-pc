@@ -26,7 +26,7 @@ extern "C" {
     i32 StartSlide(GAMEOBJECT *, i32);
     void Move_BEAST(GAMEOBJECT *);
     i32 objInNetWaitContext(GAMEOBJECT *, i32);
-    GIZMOBLOWUP_PC *GizmoBlowUpOpponent(GAMEOBJECT *, f32, f32, f32, i32, u32, u32, u32);
+    GIZMOBLOWUP *GizmoBlowUpOpponent(GAMEOBJECT *, f32, f32, f32, i32, u32, u32, u32);
     GAMEOBJECT *ObjOpponent(GAMEOBJECT *, f32, f32, i32, i32, i32);
 
     void Move_VEHICLE(GAMEOBJECT *);
@@ -37,9 +37,9 @@ extern "C" {
     extern f32 GizmoBlowUpOpponent_Range2;
     void SetHeadTarget(GAMEOBJECT *, NUVEC *, i8, f32, f32, f32);
     i32 SetObjTarget(GAMEOBJECT *, GAMEOBJECT *);
-    i32 SetGizmoBlowUpTarget(GAMEOBJECT *, GIZMOBLOWUP_PC *);
-    i32 SetPartTarget(GAMEOBJECT *, PART_PC *);
-    PART_PC *TargetPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32);
+    i32 SetGizmoBlowUpTarget(GAMEOBJECT *, GIZMOBLOWUP *);
+    i32 SetPartTarget(GAMEOBJECT *, PART *);
+    PART *TargetPart(GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32, i32, i32);
     extern i32 (*BigJump_LandActionFn)(GAMEOBJECT *);
     extern void (*BigJump_EndOfLandFn)(GAMEOBJECT *);
     i32 Glide_SetTargetMom(GAMEOBJECT *);

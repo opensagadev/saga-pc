@@ -502,7 +502,7 @@ void ResetGizFlowPointers(GIZFLOW *system) {
         for (j = 0; j < data->gizmo_count; ++j) {
             if (data->gizmos[j]->gizmo != NULL) {
                 data->gizmos[j]->gizmo =
-                    GizmoFindByName(system->gizmo_sys, ((GIZMO_PC *)data->gizmos[j]->gizmo)->type_id, data->gizmos[j]->name);
+                    GizmoFindByName(system->gizmo_sys, ((GIZMO *)data->gizmos[j]->gizmo)->type_id, data->gizmos[j]->name);
             } else {
                 void *found = GizmoFindByName(system->gizmo_sys, -1, data->gizmos[j]->name);
                 data->gizmos[j]->gizmo = found;
@@ -1280,7 +1280,7 @@ void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPT
     return flow;
 }
 
-void DynamicAddGizmoToFlow(GIZFLOW *system, GIZMO_PC *gizmo) {
+void DynamicAddGizmoToFlow(GIZFLOW *system, GIZMO *gizmo) {
     FLOWBOX *box;
     i32 i;
     if (system == NULL || gizmo == NULL || gizmotypes == NULL || gizmo->type_id >= gizmotypes->count ||

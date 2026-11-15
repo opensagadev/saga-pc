@@ -88,14 +88,14 @@ extern "C" {
 }
 
 extern "C" {
-    i32 Batman_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_ClimbDown(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_ClimbUp(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_Glide(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_Grapple(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_SpecialUse(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
-    i32 Batman_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_BigJump(AISYS *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_ClimbDown(AISYS *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_ClimbUp(AISYS *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_Glide(AISYS *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_Grapple(AISYS *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_SpecialUse(AISYS *system, AIPACKET *packet, APIOBJECT *object);
+    i32 Batman_MidSpecialMove_StartJump(AISYS *system, AIPACKET *packet, APIOBJECT *object);
     i32 Batman_PrepareBigJump(AIPACKET *packet, APIOBJECT *apiobject, i32 checks_unused);
     i32 Batman_PrepareClimb(AIPACKET *packet, APIOBJECT *object, i32 checks);
     i32 Batman_PrepareGlide(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
@@ -286,9 +286,9 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
             }
         }
     }
-    GIZMOBLOWUP_PC *blowup = NULL;
-    GIZMOBLOWUP_PC *nearest_blowup = NULL;
-    GIZMOBLOWUP_PC *candidate_blowup = world->gizmo_blowups;
+    GIZMOBLOWUP *blowup = NULL;
+    GIZMOBLOWUP *nearest_blowup = NULL;
+    GIZMOBLOWUP *candidate_blowup = world->gizmo_blowups;
     nearest_distance = 16.0f;
     for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate_blowup) {
         if ((candidate_blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 ||
@@ -405,7 +405,7 @@ extern "C" {
         } else if (target->type == 1) {
             *position = static_cast<DETONATOR_s *>(target->object)->unknown_0c;
         } else if (target->type == 2) {
-            *position = static_cast<GIZMOBLOWUP_PC *>(target->object)->mid_position;
+            *position = static_cast<GIZMOBLOWUP *>(target->object)->mid_position;
         } else if (target->type == 3) {
             *position = *static_cast<NUVEC *>(target->object);
         } else {
@@ -503,7 +503,7 @@ static i32 Batarang_ShouldRicochet(BATARANG_NATIVE *batarang) {
             return 1;
         }
         if (current->type == 2) {
-            return static_cast<GIZMOBLOWUP_PC *>(current->object)->platform_id != platform;
+            return static_cast<GIZMOBLOWUP *>(current->object)->platform_id != platform;
         }
         if (current->type == 3) {
             return 1;
@@ -903,14 +903,14 @@ extern "C" void Batarangs_Update(void) {
         } else if (target.type == 1) {
             Detonator_Detonate(static_cast<DETONATOR_s *>(target.object));
         } else if (target.type == 2) {
-            GizmoBlowupBlowup(static_cast<GIZMOBLOWUP_PC *>(target.object), 1, BLOWUP_HIT_BATARANG, 2, NULL, 1);
+            GizmoBlowupBlowup(static_cast<GIZMOBLOWUP *>(target.object), 1, BLOWUP_HIT_BATARANG, 2, NULL, 1);
         }
     }
 }
 
 extern "C" {
 
-    i32 Batman_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         u32 capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         AIPATHNODE *destination =
@@ -1221,7 +1221,7 @@ extern "C" {
         }
     }
 
-    i32 Batman_MidSpecialMove_SpecialUse(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_SpecialUse(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         switch ((i8)owner->unknown_1087) {
             case 0:
@@ -1266,7 +1266,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Batman_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_BigJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         if (owner->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
@@ -1292,7 +1292,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Batman_MidSpecialMove_Glide(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_Glide(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
         owner->ai_packet.movement_stopping_distance = 0.0f;
@@ -1340,7 +1340,7 @@ extern "C" {
         return 1;
     }
 
-    i32 Batman_MidSpecialMove_ClimbUp(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_ClimbUp(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE *guide;
         i32 endpoint;
@@ -1393,7 +1393,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Batman_MidSpecialMove_ClimbDown(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_ClimbDown(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE *guide;
         i32 endpoint;
@@ -1472,7 +1472,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Batman_MidSpecialMove_Grapple(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_Grapple(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         if (owner->character_context == CHARACTER_CONTEXT_GRAPPLE) {
             GameObjectSetCanUse(owner, owner->grapple, 1, 0x32, 0.0f);
@@ -1504,7 +1504,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Batman_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Batman_MidSpecialMove_StartJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
@@ -1716,7 +1716,7 @@ extern "C" {
         Batman_MidSpecialMove_Glide,   Batman_MidSpecialMove_ClimbUp,   Batman_MidSpecialMove_ClimbDown,  Batman_MidSpecialMove_Grapple,
     };
 
-    i32 Batman_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
+    i32 Batman_MidSpecialMove(AISYS *system, AIPACKET *packet, APIOBJECT *apiobject) {
         GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
         GAMEOBJECT *owner = object->objptr;
         AI_MID_SPECIAL_MOVE function;

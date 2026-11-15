@@ -36,8 +36,8 @@ address,symbol,size,ctype
 0x402910,_Attractos_Load,203,"i32 __cdecl(WORLDINFO *,void *)"
 0x4029e0,_Attractos_InitTerrain,69,void __cdecl(WORLDINFO *)
 0x402a30,_Attractos_ReserveBufferSpace,77,void * __cdecl(WORLDINFO *)
-0x402a80,_Attracto_Activate,28,"void __cdecl(GIZMO_PC *,i32)"
-0x402aa0,_Attracto_SetVisibility,220,"void __cdecl(GIZMO_PC *,i32)"
+0x402a80,_Attracto_Activate,28,"void __cdecl(GIZMO *,i32)"
+0x402aa0,_Attracto_SetVisibility,220,"void __cdecl(GIZMO *,i32)"
 0x402b80,_AttractoInitRecord,173,
 0x402c30,_Attractos_Reset,173,"void __cdecl(WORLDINFO *,void *,void *)"
 0x402ce0,_Attractos_Update,279,"void __cdecl(WORLDINFO *,void *,f32)"
@@ -45,14 +45,14 @@ address,symbol,size,ctype
 0x402eb0,_Attractos_Draw,581,"void __cdecl(WORLDINFO *,void *,f32)"
 0x403100,_Attractos_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x403120,_Attractos_AddGizmos,97,"void __cdecl(GIZMOSYS *,i32,WORLDINFO *,void *)"
-0x403190,_Attracto_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x4031a0,_Attracto_GetOutput,17,"i32 __cdecl(GIZMO_PC *,i32,i32)"
-0x4031c0,_Attracto_GetOutputName,6,"char * __cdecl(GIZMO_PC *,i32)"
-0x4031d0,_Attracto_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x403190,_Attracto_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x4031a0,_Attracto_GetOutput,17,"i32 __cdecl(GIZMO *,i32,i32)"
+0x4031c0,_Attracto_GetOutputName,6,"char * __cdecl(GIZMO *,i32)"
+0x4031d0,_Attracto_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x4031e0,_Attractos_AllocateProgressData,21,"void * __cdecl(VARIPTR *,VARIPTR *)"
 0x403200,_Attractos_ClearProgress,50,"void __cdecl(void *,void *)"
 0x403240,_Attractos_StoreProgress,172,"void __cdecl(WORLDINFO *,void *,void *)"
-0x4032f0,_Attracto_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
+0x4032f0,_Attracto_GetPos,15,NUVEC * __cdecl(GIZMO *)
 0x00403300,_Attracto_GetPos_Top,46,"void __cdecl(ATTRACTO *,NUVEC *)"
 0x403330,_Attractos_RegisterGizmo,278,ADDGIZMOTYPE * __cdecl(i32)
 0x403450,_AttractoSelectShard,471,
@@ -109,10 +109,10 @@ address,symbol,size,ctype
 0x407e20,_BoltVuVecMake,28,
 0x00407e40,_BoltType_FindIDByCreature,1317,"i32 __cdecl(GAMEOBJECT*,i32)"
 0x408370,_Bolt_Debris_LSW,650,
-0x408600,_Bolt_HitPart_LSW,63,"i32 __cdecl(BOLT_PC *, PART_PC *)"
+0x408600,_Bolt_HitPart_LSW,63,"i32 __cdecl(BOLT *, PART *)"
 0x408640,_Bolt_AlternateFire_LSW,185,
-0x00408700,_EndBolt_EwokTorpedo,21,void __cdecl (BOLT_PC *)
-0x408720,_UpdateBolt_Geonosian,64,void __cdecl(BOLT_PC *)
+0x00408700,_EndBolt_EwokTorpedo,21,void __cdecl (BOLT *)
+0x408720,_UpdateBolt_Geonosian,64,void __cdecl(BOLT *)
 0x408760,_fun_00408760,27,
 0x408780,_fun_00408780,27,
 0x4087a0,_CableFdiv,54,"f32 __cdecl(f32, f32)"
@@ -186,10 +186,10 @@ address,symbol,size,ctype
 0x40fd50,_fun_0040fd50,41,
 0x40fd80,_ChrisRadialCam,534,
 0x40ffa0,_DogfightResetCrosses,175,"static void (DOGFIGHT_CROSS *, i32)"
-0x410050,_QueuedFighterSelector,44,static DOGFIGHT_FIGHTER *(DOGFIGHT_SPACE_PC *)
+0x410050,_QueuedFighterSelector,44,static DOGFIGHT_FIGHTER *(DOGFIGHT_SPACE *)
 0x410080,_fun_00410080,35,
 0x4100b0,_DogfightResetSplineHistory,189,"static void (DOGFIGHT_SPLINE_HISTORY *, i32)"
-0x410170,_DogfightResetWorldRecords,196,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
+0x410170,_DogfightResetWorldRecords,196,"static void (WORLDINFO *, DOGFIGHT_SPACE *)"
 0x410240,_DogfightResetGroup,115,static void (DOGFIGHT_GROUP *)
 0x4102c0,_StarFighterAlign,548,"static void(starfighter_s *, NUVEC4 *, f32, i32)"
 0x4104f0,_StarFighterFire,1101,"static i32(starfighter_s *, NUVEC4 *, NUMTX *, f32)"
@@ -201,10 +201,10 @@ address,symbol,size,ctype
 0x411840,_fun_00411840,51,
 0x411880,_SpaceAudioPoint,68,
 0x4118d0,_SpaceResetAudioPoint,171,void __cdecl (void)
-0x411980,_DogfightResetSpace,639,"static void (WORLDINFO *, DOGFIGHT_SPACE_PC *)"
+0x411980,_DogfightResetSpace,639,"static void (WORLDINFO *, DOGFIGHT_SPACE *)"
 0x411c00,_SpaceRumbleProcess,756,void __cdecl (void)
 0x411f00,_fun_00411f00,24,
-0x411f20,_DrawSpaceLevel,724,static void (DOGFIGHT_SPACE_PC *)
+0x411f20,_DrawSpaceLevel,724,static void (DOGFIGHT_SPACE *)
 0x412200,_fun_00412200,1,
 0x412210,_ProcessCurrentSpeed,320,"void __cdecl (WORLDINFO *, DOGFIGHT_SPEEDUP *)"
 0x412350,_ResetSpaceFromWorld,19,void __cdecl (WORLDINFO *)
@@ -226,7 +226,7 @@ address,symbol,size,ctype
 0x4126b0,_ShipDropCoins,170,i32 __cdecl (starfighter_s *)
 0x412760,_CollideBoltStarFighter,826,"static i32 (BOLT *, starfighter_s *, NUVEC *, NUVEC *)"
 0x412aa0,_ChrisExtraBoltCollision,294,"i32 __cdecl (BOLT *, NUVEC *)"
-0x412bd0,_DrawSelectedSock,960,"static void (SOCKSYS_PC *, i32, SOCKPOSITION *, i32, i32)"
+0x412bd0,_DrawSelectedSock,960,"static void (SOCKSYS *, i32, SOCKPOSITION *, i32, i32)"
 0x412f90,_fun_00412f90,3,
 0x412fa0,_fun_00412fa0,1,
 0x412fb0,_fun_00412fb0,10,
@@ -234,10 +234,10 @@ address,symbol,size,ctype
 0x413210,_ChrisAnakinCInit,25,
 0x413230,_fun_00413230,52,
 0x413270,_SpawnFlightFighter,509,"static void (DOGFIGHT_PLAYBACK_SPLINE *, DOGFIGHT_FIGHTER *)"
-0x413470,_ProcessFlightSpline,153,"static void (DOGFIGHT_PLAYBACK_SPLINE *, DOGFIGHT_SPACE_PC *)"
+0x413470,_ProcessFlightSpline,153,"static void (DOGFIGHT_PLAYBACK_SPLINE *, DOGFIGHT_SPACE *)"
 0x413510,_MakeWingFormation,425,"void __cdecl (NUVEC4 *, NUVEC4 *, f32, i32)"
 0x4136c0,_ProcessFormationActions,455,static void (DOGFIGHT_ACTION_STATE *)
-0x413890,_ProcessSpaceLevel,381,static void (DOGFIGHT_SPACE_PC *)
+0x413890,_ProcessSpaceLevel,381,static void (DOGFIGHT_SPACE *)
 0x413a10,_fun_00413a10,16,
 0x413a20,_ChrisDogFightAInit,126,void __cdecl (WORLDINFO *)
 0x413aa0,_ChrisDogFightAUpdate,107,void __cdecl (WORLDINFO *)
@@ -312,8 +312,8 @@ address,symbol,size,ctype
 0x41b420,_ResetPlayer,1900,
 0x41bb90,_SetPlayerGroupPosition,135,
 0x41bc20,_NewPlayerCharacter,1273,"i32 __cdecl(GAMEOBJECT *,i32,i32,i32)"
-0x41c120,_ResetAICreature,1276,"void __cdecl(GAMEOBJECT *,AISYS_PC *)"
-0x41c620,_ResetAICreatures,416,void __cdecl(AISYS_PC *)
+0x41c120,_ResetAICreature,1276,"void __cdecl(GAMEOBJECT *,AISYS *)"
+0x41c620,_ResetAICreatures,416,void __cdecl(AISYS *)
 0x41c7c0,_InitCreature,911,"i32 __cdecl (GAMEOBJECT *, i32, i32)"
 0x41cb50,_GameDrawCharacterModel,2038,i32 __cdecl(CHARACTER_MODEL_LAYERS*;ANIMPACKET*;NUMTX*;NUMTX*;NUMTX*;NUMTX*;GAMEOBJECT*;u32)
 0x41d350,_DrawGameObjectsProcess,1916,i32 __cdecl(void)
@@ -326,7 +326,7 @@ address,symbol,size,ctype
 0x41f6d0,_ActivateCharacter,529,"GAMEOBJECT * __cdecl(char *, NUVEC *, i32)"
 0x41f8f0,_AddCreature,67,"GAMEOBJECT * __cdecl(i32,i32)"
 0x41f940,_Players_Init,1355,void __cdecl(void)
-0x41fe90,_InitAICreatures,526,void __cdecl(AISYS_PC *)
+0x41fe90,_InitAICreatures,526,void __cdecl(AISYS *)
 0x4200a0,_fun_004200a0,28,
 0x4200c0,?PcControlPrimColour@@YAXI@Z,108,
 0x420130,_fun_00420130,15,
@@ -474,7 +474,7 @@ address,symbol,size,ctype
 0x0042a7a0,?Tag_NoHiddenIcon@@YAHPAUgameobject_s@@@Z,40,
 0x0042a7d0,?Collection_GetSelectingPlayerIDs@@YAXPAF@Z,124,
 0x0042a850,?GizmoBlowUp_NoTarget@@YAHPAUWORLDINFO_s@@PAUgameobject_s@@@Z,39,
-0x0042a880,?GizmoBlowUp_Sfx@@YAXPAUGIZMOBLOWUP_PC@@PAUnuvec_s@@@Z,146,
+0x0042a880,?GizmoBlowUp_Sfx@@YAXPAUGIZMOBLOWUP@@PAUnuvec_s@@@Z,146,
 0x0042a920,?GameMsg_GetExtraObj@@YAPAUnuhspecial_s@@PAUgame_message_s@@@Z,36,
 0x0042a950,?Jump_EndOfLandContext@@YAXPAUgameobject_s@@@Z,90,
 0x0042a9b0,?BigJump_EndOfLand@@YAXPAUgameobject_s@@@Z,75,
@@ -489,12 +489,12 @@ address,symbol,size,ctype
 0x42b7c0,_InitGameMode,393,
 0x0042b950,?Game_IgnoreInput@@YAHXZ,12,
 0x0042b960,_CheckResetBits,2966,void __cdecl (void)
-0x42c500,_DeflectPart,569,"void __cdecl(PART_PC*,GAMEOBJECT*,f32,f32,i32,i32)"
-0x42c740,_PartCollidePC,1973,void private (PART_PC * EDI; i32 stack)
-0x42cf00,_PartCollide_2D,17,void __cdecl(PART_PC*)
-0x0042cf20,_PartCollide_3D,17,void __cdecl (PART_PC *)
+0x42c500,_DeflectPart,569,"void __cdecl(PART*,GAMEOBJECT*,f32,f32,i32,i32)"
+0x42c740,_PartCollidePC,1973,void private (PART * EDI; i32 stack)
+0x42cf00,_PartCollide_2D,17,void __cdecl(PART*)
+0x0042cf20,_PartCollide_3D,17,void __cdecl (PART *)
 0x42cf40,_Game_KillPart,191,
-0x0042d000,_PartKill_ForceThrow,371,"void __cdecl (PART_PC *, i32)"
+0x0042d000,_PartKill_ForceThrow,371,"void __cdecl (PART *, i32)"
 0x0042d180,_Areas_OpenAll,148,void __cdecl (i32)
 0x42d220,_Episodes_CompleteAllSuperStories,117,
 0x42d2a0,_GizmoBlowupCreateStuff,848,
@@ -543,19 +543,19 @@ address,symbol,size,ctype
 0x432800,_FindPlayerAndSetWeapon,87,
 0x00432860,_GameObjectToCameraCode,341,void __cdecl (GAMEOBJECT *)
 0x4329c0,_SetKillPartMom,48,void __cdecl(NUVEC *)
-0x4329f0,_TiePart_Kill,32,"void __cdecl(PART_PC *, i32)"
-0x432a10,_TiePart_KillExplode,54,"void __cdecl(PART_PC *, i32)"
-0x432a50,_TiePart_Impact,32,void __cdecl(PART_PC *)
+0x4329f0,_TiePart_Kill,32,"void __cdecl(PART *, i32)"
+0x432a10,_TiePart_KillExplode,54,"void __cdecl(PART *, i32)"
+0x432a50,_TiePart_Impact,32,void __cdecl(PART *)
 0x432a70,_TiePart_MoveCorePC,148,
-0x432b10,_AtatPart_Stop,30,void __cdecl(PART_PC *)
-0x432b30,_AtatPart_Update,751,void __cdecl(PART_PC *)
-0x432e20,_TieSpinZPart_Move,199,"void __cdecl(PART_PC *, f32)"
-0x432ef0,_TiePart_Move,89,"void __cdecl(PART_PC *, f32)"
+0x432b10,_AtatPart_Stop,30,void __cdecl(PART *)
+0x432b30,_AtatPart_Update,751,void __cdecl(PART *)
+0x432e20,_TieSpinZPart_Move,199,"void __cdecl(PART *, f32)"
+0x432ef0,_TiePart_Move,89,"void __cdecl(PART *, f32)"
 0x432f50,_KillParts_TIEFIGHTER,454,"void __cdecl(ADDPART *, i32, i32, GAMEOBJECT *, i32, u16, u16, NUVEC *)"
 0x433120,_InitBikeParts,21,
 0x433140,_FindFreeBikePart,30,i32 (void)
-0x433160,_SpeederPart_Update,2248,void __cdecl(PART_PC *)
-0x433a30,_SpeederPart_Draw,6,i32 __cdecl(PART_PC *)
+0x433160,_SpeederPart_Update,2248,void __cdecl(PART *)
+0x433a30,_SpeederPart_Draw,6,i32 __cdecl(PART *)
 0x433a40,_KillParts_ATAT,93,"void __cdecl(ADDPART *, i32, i32, GAMEOBJECT *)"
 0x433aa0,_LoseHelmet,306,"void __cdecl(GAMEOBJECT*,i32,i32)"
 0x433be0,_ObjHitShield,520,"void __cdecl(GAMEOBJECT*,GAMEOBJECT*,i32,void*)"
@@ -566,7 +566,7 @@ address,symbol,size,ctype
 0x00434a20,_UpdateGameObjects,6847,void __cdecl (WORLDINFO *)
 0x004364e0,_KillGameObject,3750,"i32 __cdecl (GAMEOBJECT *, i32, i32)"
 0x437390,_KillPlayer,136,"i32 __cdecl (GAMEOBJECT *, i32, i32, NUVEC *)"
-0x437420,_SpeederPart_Kill,238,"void __cdecl(PART_PC *, i32)"
+0x437420,_SpeederPart_Kill,238,"void __cdecl(PART *, i32)"
 0x437510,_KillParts_SpeederBike,600,"void __cdecl(ADDPART *, i32, i32, GAMEOBJECT *)"
 0x437770,_KillParts,2666,"void __cdecl(GAMEOBJECT *, i32, i32, i32, f32, i32, u16 *)"
 0x4381e0,_InstantKillParts,69,"void __cdecl (GAMEOBJECT *, i32, f32)"
@@ -575,14 +575,14 @@ address,symbol,size,ctype
 0x4398d0,_GameaiVuVecMake,28,
 0x004398f0,_OpponentCanAcquire,225,
 0x4399e0,_AlertSurroundingCreatures,101,"void __cdecl(GAMEOBJECT*,NUVEC*)"
-0x00439a50,_GameCreatureOpponentSelection,3763,"void __cdecl(AISYS_PC *,i32,APIOBJECT **,i32,APIOBJECT **,i32,APIOBJECT **,u64,f32)"
+0x00439a50,_GameCreatureOpponentSelection,3763,"void __cdecl(AISYS *,i32,APIOBJECT **,i32,APIOBJECT **,i32,APIOBJECT **,u64,f32)"
 0x0043a910,_MakeBaddiesForgetAboutParty,1155,void __cdecl (i32)
 0x43ada0,_fun_0043ada0,1,
 0x43adb0,_CanFightLikeAJedi,68,
 0x43ae00,_CreatureInteractionOrbit,311,
-0x43af40,_GameCreatureInteraction2D,1217,"void __cdecl(AISYS_PC *, i32, APIOBJECT **, i32 *, f32)"
+0x43af40,_GameCreatureInteraction2D,1217,"void __cdecl(AISYS *, i32, APIOBJECT **, i32 *, f32)"
 0x0043b410,_GameAIWallShuffle,790,
-0x43b730,_GameAIResetPathConnections,137,void __cdecl(AISYS_PC *)
+0x43b730,_GameAIResetPathConnections,137,void __cdecl(AISYS *)
 0x43b7c0,_GameAIUpdateArea,376,
 0x0043b940,_GameAISysStartFrame,467,void __cdecl (AISYS *)
 0x43bb20,_CheckPosAIArea,223,
@@ -603,7 +603,7 @@ address,symbol,size,ctype
 0x43c1e0,_GetMaxViewHeight,32,
 0x43c200,_GetMinViewHeight,32,
 0x0043c220,_GetNamedAPIObject,375,"APIOBJECT *__cdecl (void *, char *)"
-0x0043c3a0,_GetAICreatureOrigin,214,"NUVEC *__cdecl (AISYS_PC *, AIPACKET *)"
+0x0043c3a0,_GetAICreatureOrigin,214,"NUVEC *__cdecl (AISYS *, AIPACKET *)"
 0x43c480,_GameAILoad,225,
 0x43c570,_AIRespawnOnPath,279,
 0x43c690,_AIBigJumpToDestination,237,
@@ -631,10 +631,10 @@ address,symbol,size,ctype
 0x43e190,_AI_GetMaxGizmos,6,i32 __cdecl(void *)
 0x43e1a0,_AI_AddGizmos,80,
 0x43e1f0,_AI_GetGizmoName,349,char * __cdecl(void *)
-0x43e350,_AI_GetOutput,28,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x43e370,_AI_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
-0x43e380,_AI_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
-0x43e390,_AI_Activate,35,"void __cdecl(GIZMO_PC *, i32)"
+0x43e350,_AI_GetOutput,28,"i32 __cdecl(GIZMO *, i32, i32)"
+0x43e370,_AI_GetNumOutputs,6,i32 __cdecl(GIZMO *)
+0x43e380,_AI_GetOutputName,6,"char * __cdecl(GIZMO *, i32)"
+0x43e390,_AI_Activate,35,"void __cdecl(GIZMO *, i32)"
 0x43e3c0,_AI_RegisterGizmo,225,
 0x43e4b0,_GameAI_TotalScore,113,u32 __cdecl (void)
 0x0043e530,_GameAIProcess,6245,void __cdecl(void)
@@ -654,37 +654,37 @@ address,symbol,size,ctype
 0x440810,_Condition_GlynTest,3,
 0x440820,_Condition_Debug,7,
 0x440830,_Condition_Active,23,
-0x440850,_Condition_GotGun,35,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x440880,_Condition_PrefersBrawling,36,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x4408b0,_Condition_ObstacleAtEndInit,39,"void *__cdecl(AISYS_PC *,char *,AISCRIPT *)"
+0x440850,_Condition_GotGun,35,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x440880,_Condition_PrefersBrawling,36,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x4408b0,_Condition_ObstacleAtEndInit,39,"void *__cdecl(AISYS *,char *,AISCRIPT *)"
 0x4408e0,_Condition_SpecialAtStartInit,39,
 0x440910,_Condition_ObstacleAtStart,43,
-0x440940,_Condition_ObstacleAtEnd,43,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x440940,_Condition_ObstacleAtEnd,43,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x440970,_Condition_ObstacleLockedShut,19,
 0x440990,_Condition_ObstacleLockedOpen,19,
 0x4409b0,_Condition_ObstacleOpenedByPlayerInit,43,
 0x4409e0,_Condition_ObstacleOpenedByPlayer,28,
 0x440a00,_Condition_ObstacleOpenedByEitherPlayer,42,
-0x440a30,_Condition_ForceInit,39,"void * __cdecl(AISYS_PC *, char *, AISCRIPT *)"
-0x440a60,_Condition_ForceAtStart,43,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x440a90,_Condition_ForceAtEnd,43,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x440a30,_Condition_ForceInit,39,"void * __cdecl(AISYS *, char *, AISCRIPT *)"
+0x440a60,_Condition_ForceAtStart,43,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x440a90,_Condition_ForceAtEnd,43,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x440ac0,_Condition_IsVisibleInit,5,
-0x440ad0,_Condition_IsVisible,95,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x440ad0,_Condition_IsVisible,95,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x440b30,_Condition_MySet,20,
 0x440b50,_Condition_ForcePushingInit,32,
 0x440b70,_Condition_ForcePushing,52,
 0x440bb0,_Condition_TurretAliveInit,46,
 0x440be0,_Condition_TurretAlive,25,
-0x440c00,_Condition_CategoryIsInit,38,"void *__cdecl(AISYS_PC *,char *,AISCRIPT *)"
-0x440c30,_Condition_CategoryIs,49,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x440c00,_Condition_CategoryIsInit,38,"void *__cdecl(AISYS *,char *,AISCRIPT *)"
+0x440c30,_Condition_CategoryIs,49,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x440c70,_Condition_PlayerCategoryIs,38,
-0x440ca0,_Condition_IAmAPartyCharacter,33,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x440ca0,_Condition_IAmAPartyCharacter,33,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x440cd0,_Condition_IAmAInit,82,
-0x440d30,_Condition_IAmA,44,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x440d30,_Condition_IAmA,44,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x440d60,_Condition_OpponentIsAInit,82,
 0x440dc0,_Condition_OpponentIsA,44,
-0x440df0,_Condition_GameOpponentIsAThreat,42,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x440e20,_Condition_CanFightLikeAJedi,42,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x440df0,_Condition_GameOpponentIsAThreat,42,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x440e20,_Condition_CanFightLikeAJedi,42,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x440e50,_Condition_IAmAGoody,33,
 0x440e80,_Condition_IAmABaddy,36,
 0x440eb0,_Condition_IAmANeutral,33,
@@ -694,15 +694,15 @@ address,symbol,size,ctype
 0x440f60,_Condition_Player1Is,30,
 0x440f80,_Condition_Player2Is,30,
 0x440fa0,_Condition_IAmPlayer2,65,
-0x440ff0,_Condition_UsingForceInit,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT *)"
-0x441020,_Condition_UsingForce,36,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x441050,_Condition_PlayerUsingForce,30,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x441070,_Condition_EitherPlayerUsingForce,52,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x4410b0,_Condition_OnForcePlatformInit,58,"void *__cdecl (AISYS_PC *, char *, AISCRIPT *)"
-0x4410f0,_Condition_OnForcePlatform,133,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x441180,_Condition_PlayerOnForcePlatform,117,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x441200,_Condition_EitherPlayerOnForcePlatform,253,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x441300,_Condition_ForceBeingUsed,32,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x440ff0,_Condition_UsingForceInit,43,"void * __cdecl(AISYS *, char *, AISCRIPT *)"
+0x441020,_Condition_UsingForce,36,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441050,_Condition_PlayerUsingForce,30,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441070,_Condition_EitherPlayerUsingForce,52,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x4410b0,_Condition_OnForcePlatformInit,58,"void *__cdecl (AISYS *, char *, AISCRIPT *)"
+0x4410f0,_Condition_OnForcePlatform,133,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441180,_Condition_PlayerOnForcePlatform,117,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441200,_Condition_EitherPlayerOnForcePlatform,253,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441300,_Condition_ForceBeingUsed,32,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x441320,_Condition_PlayerDeflectingPart,24,
 0x441340,_fun_00441340,53,
 0x441380,_fun_00441380,53,
@@ -718,8 +718,8 @@ address,symbol,size,ctype
 0x441610,_Condition_BuildItComplete,26,
 0x441630,_Condition_BlowupBlownupInit,39,
 0x441660,_Condition_BlowupBlownup,43,
-0x441690,_Condition_IsAliveInit,32,"void * __cdecl(AISYS_PC *,char *,AISCRIPT *)"
-0x4416b0,_Condition_IsAlive,115,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x441690,_Condition_IsAliveInit,32,"void * __cdecl(AISYS *,char *,AISCRIPT *)"
+0x4416b0,_Condition_IsAlive,115,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x441730,_Condition_AIOverrideControlInit,32,
 0x441750,_Condition_AIOverrideControl,44,
 0x441780,_Condition_IsOnScreenInit,32,
@@ -727,34 +727,34 @@ address,symbol,size,ctype
 0x4417d0,_Condition_OffScreenTimerInit,38,
 0x441800,_Condition_OffScreenTimer,42,
 0x441830,_Condition_PlayerOnGround,33,
-0x441860,_Condition_OnGround,48,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x441890,_Condition_BeenAlerted,35,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441860,_Condition_OnGround,48,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441890,_Condition_BeenAlerted,35,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x4418c0,_Condition_OnObjectInit,78,
 0x441910,_Condition_PlayerOnObject,85,
 0x441970,_Condition_EitherPlayerOnObject,157,
 0x441a10,_Condition_EitherPlayerLocatorRangeXZInit,26,
-0x441a30,_Condition_EitherPlayerLocatorRangeXZ,195,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x441a30,_Condition_EitherPlayerLocatorRangeXZ,195,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x441b00,_Condition_OnObject,98,
 0x441b70,_Condition_OnSameObjectAsPlayer,94,
 0x441bd0,_Condition_SpawnCount,36,
 0x441c00,_Condition_BehindCamera,122,
 0x441c80,_Condition_LocatorOnScreenInit,19,
 0x441ca0,_Condition_LocatorOnScreen,55,
-0x441ce0,_Condition_Blocking,105,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x441ce0,_Condition_Blocking,105,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x441d50,_Condition_BeenHitInit,38,
 0x441d80,_Condition_BeenHit,61,
 0x441dc0,_Condition_HoverPhase,39,
-0x441df0,_Condition_HitPointsInit,44,"void * __cdecl(AISYS_PC *,char *,AISCRIPT *)"
-0x441e20,_Condition_HitPoints,51,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x441df0,_Condition_HitPointsInit,44,"void * __cdecl(AISYS *,char *,AISCRIPT *)"
+0x441e20,_Condition_HitPoints,51,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x441e60,_Condition_CollidingWithOpponent,62,
 0x441ea0,_Condition_Colliding,38,
 0x441ed0,_Condition_XPosInit,44,
 0x441f00,_Condition_XPos,42,
 0x441f30,_Condition_YPos,42,
 0x441f60,_Condition_ZPos,42,
-0x441f90,_Condition_IsSetAliveInit,53,"void *__cdecl (AISYS_PC *, char *, AISCRIPT *)"
+0x441f90,_Condition_IsSetAliveInit,53,"void *__cdecl (AISYS *, char *, AISCRIPT *)"
 0x441fd0,_Condition_IsSetAlive,39,
-0x442000,_Condition_NumInSetAlive,43,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x442000,_Condition_NumInSetAlive,43,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x442030,_Condition_Context,48,
 0x442060,_Condition_InContextInit,281,
 0x442180,_Condition_InContext,44,
@@ -764,18 +764,18 @@ address,symbol,size,ctype
 0x442250,_Condition_Player2Active,15,
 0x442260,_Condition_NumBaddiesInit,3,
 0x442270,_Condition_NumBaddies,74,
-0x4422c0,_Condition_NumForceObjectsInit,67,"void *__cdecl (AISYS_PC *, char *, AISCRIPT *)"
+0x4422c0,_Condition_NumForceObjectsInit,67,"void *__cdecl (AISYS *, char *, AISCRIPT *)"
 0x442310,_Condition_NumForceObjects,7,
 0x442320,_Condition_BeenToLevelInit,136,
 0x4423b0,_Condition_BeenToLevel,53,
-0x4423f0,_Condition_LastLevelInit,102,"void *__cdecl (AISYS_PC *, char *, AISCRIPT *)"
+0x4423f0,_Condition_LastLevelInit,102,"void *__cdecl (AISYS *, char *, AISCRIPT *)"
 0x442460,_Condition_LastLevel,25,
 0x442480,_Condition_MessageInit,44,
 0x4424b0,_Condition_Message,15,
 0x4424c0,_Condition_ScriptParamInit,71,
 0x442510,_Condition_ScriptParam,20,
-0x442530,_Condition_AnimationFinishedInit,72,"void *__cdecl (AISYS_PC *, char *, AISCRIPT *)"
-0x442580,_Condition_AnimationFinished,82,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x442530,_Condition_AnimationFinishedInit,72,"void *__cdecl (AISYS *, char *, AISCRIPT *)"
+0x442580,_Condition_AnimationFinished,82,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x4425e0,_Condition_RigidAnimFrameInit,72,
 0x442630,_Condition_RigidAnimFrame,15,
 0x442640,_Condition_CutSceneStartedInit,27,
@@ -788,9 +788,9 @@ address,symbol,size,ctype
 0x442720,_Condition_CutScenePlaying,3,
 0x442730,_Condition_PlayerInSockInit,27,
 0x442750,_Condition_PlayerInSock,59,
-0x442790,_Condition_SockDistanceToPlayer,132,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x442820,_Condition_SockDistanceToOpponent,134,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x4428b0,_Condition_SockXDistanceToPlayer,189,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x442790,_Condition_SockDistanceToPlayer,132,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x442820,_Condition_SockDistanceToOpponent,134,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x4428b0,_Condition_SockXDistanceToPlayer,189,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x442970,_Condition_PlayerDistanceAlongSock,19,
 0x442990,_Condition_FurthestPlayerDistanceAlongSock,58,
 0x4429d0,_Condition_FinishedSpline,56,
@@ -826,7 +826,7 @@ address,symbol,size,ctype
 0x442f10,_Condition_TakeOverTargetInTriggerArea,124,
 0x442f90,_Condition_EitherPlayerInMyTriggerArea,142,
 0x443020,_Condition_TakenOverInit,44,
-0x443050,_Condition_TakenOver,156,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443050,_Condition_TakenOver,156,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x4430f0,_Condition_PlayerTakenOver,33,
 0x443120,_Condition_EitherPlayerTakenOver,60,
 0x443160,_Condition_BeenTakenOverInit,44,
@@ -839,8 +839,8 @@ address,symbol,size,ctype
 0x4432d0,_Condition_CharacterExists,13,
 0x4432e0,_Condition_CharacterTypeExistsInit,82,
 0x443340,_Condition_CharacterTypeExists,68,
-0x443390,_Condition_LastAttackerRange,67,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x4433e0,_Condition_LastAttackerIsActivePlayer,45,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x443390,_Condition_LastAttackerRange,67,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x4433e0,_Condition_LastAttackerIsActivePlayer,45,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x443410,_Condition_GotLocatorInSetInit,19,
 0x443430,_Condition_GotLocatorInSet,84,
 0x443490,_Condition_GotOpponentLOS,111,
@@ -850,242 +850,242 @@ address,symbol,size,ctype
 0x443650,_Condition_GotVictim,33,
 0x443680,_Condition_ScreenWipe,20,
 0x4436a0,_Condition_HeadTurnRestricted,47,
-0x4436d0,_Condition_ShopActive,16,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x4436e0,_Condition_SideInit,140,"void *__cdecl(AISYS_PC *,char *,AISCRIPT *)"
-0x443770,_Condition_Side,92,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x4436d0,_Condition_ShopActive,16,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x4436e0,_Condition_SideInit,140,"void *__cdecl(AISYS *,char *,AISCRIPT *)"
+0x443770,_Condition_Side,92,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x4437d0,_Condition_NearestPartyRange,191,
 0x443890,_Condition_NearestPartyXZRange,191,
 0x443950,_Condition_OpponentToPlayerRange,82,
 0x4439b0,_Condition_OpponentPathPosRange,74,
-0x443a00,_Condition_GizmoOutput0Init,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT *)"
-0x443a30,_Condition_GizmoOutput0,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x443a70,_Condition_GizmoOutput1,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x443ab0,_Condition_GizmoOutput2,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x443af0,_Condition_GizmoOutput3,55,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
-0x443b30,_Condition_GizmoVisibilityInit,43,"void * __cdecl(AISYS_PC *, char *, AISCRIPT *)"
-0x443b60,_Condition_GizmoVisibility,41,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443a00,_Condition_GizmoOutput0Init,43,"void * __cdecl(AISYS *, char *, AISCRIPT *)"
+0x443a30,_Condition_GizmoOutput0,55,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443a70,_Condition_GizmoOutput1,55,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443ab0,_Condition_GizmoOutput2,55,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443af0,_Condition_GizmoOutput3,55,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443b30,_Condition_GizmoVisibilityInit,43,"void * __cdecl(AISYS *, char *, AISCRIPT *)"
+0x443b60,_Condition_GizmoVisibility,41,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x443b90,_Condition_FlowBoxCompleteInit,33,
 0x443bc0,_Condition_FlowBoxComplete,39,
 0x443bf0,_Condition_AngleAboutMyLocatorToPlayerInit,36,
-0x443c20,_Condition_AngleAboutMyLocatorToPlayer,219,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443c20,_Condition_AngleAboutMyLocatorToPlayer,219,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x443d00,_Condition_AnimSpeedMul,35,
 0x443d30,_Condition_PickupBeenTurnedOnInit,27,
 0x443d50,_Condition_PickupBeenTurnedOn,29,
 0x443d70,_Condition_CanHearRadio,15,
 0x443d80,_Condition_BeingTowed,34,
 0x443db0,_Condition_RaceLap,7,
-0x443dc0,_Condition_MusicOn,15,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x443dd0,_Condition_CharacterLoadedInit,21,"void *__cdecl(AISYS_PC *,char *,AISCRIPT *)"
-0x443df0,_Condition_CharacterLoaded,27,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x443dc0,_Condition_MusicOn,15,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x443dd0,_Condition_CharacterLoadedInit,21,"void *__cdecl(AISYS *,char *,AISCRIPT *)"
+0x443df0,_Condition_CharacterLoaded,27,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x443e10,_Condition_AreaCompleteInit,23,
 0x443e30,_Condition_AreaComplete,31,
 0x443e50,_Condition_ShouldAttackOpponent,99,
 0x443ec0,_Condition_InSwamp,40,
-0x443ef0,_Condition_InSameTriggerAreaAsNearestPlayer,180,"f32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x443ef0,_Condition_InSameTriggerAreaAsNearestPlayer,180,"f32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x443fb0,_Condition_NetworkGameOnGoing,3,
-0x443fc0,_Action_SetTakeOverTarget,739,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4442b0,_Action_ClearTakeOverTarget,52,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4442f0,_Action_Activate,412,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x444490,_Action_DeActivate,295,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4445c0,_Action_CanDefend,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x444630,_Action_DontAimAt,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4446a0,_Action_ImmuneToKillTerrain,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x444720,_Action_ImmuneToBolts,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4447a0,_Action_Respawnable,165,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x444850,_Action_CanUseWeapon,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4448c0,_Action_SetBoss,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x444940,_Action_SetSide,1496,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x444f20,_Action_SetStateArea,651,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4451b0,_Action_UpdateSockPos,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00445230,_Action_Kill,1236,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00445710,_Action_Explode,38,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x445740,_Action_SetScriptState,460,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x445910,_Action_SetAIOverrideControl,403,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x445ab0,_Action_SetLastSafePathPos,179,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x445b70,_Action_SetDontMove,180,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x445c30,_Action_DontSetStoppedFlag,180,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x445cf0,_Action_GameSetLocator,745,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x445fe0,_Action_SetLocatorSet,115,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00446060,_Action_SnapToLocator,1001,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00446450,_Action_BigJumpToLocator,698,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00446710,_Action_BigJump,1047,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x446b30,_Action_SetDoomedEscapeLocator,608,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00446d90,_Action_SnapToPosition,663,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00447030,_Action_SnapToOrigin,504,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00447230,_Action_SnapToSockPosition,1413,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4477c0,_Action_SetOpponent,759,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x447ac0,_Action_AttackOpponent,1077,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x447f00,_Action_EngageOpponent,2337,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x448830,_Action_ShootAtOpponent,959,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00448bf0,_Action_EngageObject,735,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x448ed0,_Action_GrabVictim,168,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x448f80,_Action_EatVictim,40,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x448fb0,_Action_ReleaseVictim,40,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x448fe0,_Action_FollowDirection,756,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4492e0,_Action_PressSpecialButton,163,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449390,_Action_PressTagButton,50,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4493d0,_Action_PressActionButton,60,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449410,_Action_UseWeapon,45,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449440,_Action_SetInvulnerable,565,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449680,_Action_DontAvoidCharacter,291,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4497b0,_Action_GameDontPush,435,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449970,_Action_PressJumpButton,50,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4499b0,_Action_AddToSet,151,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449a50,_Action_SetControlSystem,109,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00449ac0,_Action_SetSpline,236,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449bb0,_Action_SetZeroAcceleration,215,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449c90,_Action_BreakFormation,33,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449cc0,_Action_FormationMove,33,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00449cf0,_Action_SetFormationCommander,282,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00449e10,_Action_RemoveThrownForceObjects,75,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x443fc0,_Action_SetTakeOverTarget,739,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4442b0,_Action_ClearTakeOverTarget,52,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4442f0,_Action_Activate,412,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x444490,_Action_DeActivate,295,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4445c0,_Action_CanDefend,110,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x444630,_Action_DontAimAt,110,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4446a0,_Action_ImmuneToKillTerrain,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x444720,_Action_ImmuneToBolts,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4447a0,_Action_Respawnable,165,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x444850,_Action_CanUseWeapon,110,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4448c0,_Action_SetBoss,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x444940,_Action_SetSide,1496,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x444f20,_Action_SetStateArea,651,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4451b0,_Action_UpdateSockPos,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00445230,_Action_Kill,1236,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00445710,_Action_Explode,38,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x445740,_Action_SetScriptState,460,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x445910,_Action_SetAIOverrideControl,403,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x445ab0,_Action_SetLastSafePathPos,179,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x445b70,_Action_SetDontMove,180,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x445c30,_Action_DontSetStoppedFlag,180,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x445cf0,_Action_GameSetLocator,745,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x445fe0,_Action_SetLocatorSet,115,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00446060,_Action_SnapToLocator,1001,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00446450,_Action_BigJumpToLocator,698,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00446710,_Action_BigJump,1047,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x446b30,_Action_SetDoomedEscapeLocator,608,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00446d90,_Action_SnapToPosition,663,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00447030,_Action_SnapToOrigin,504,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00447230,_Action_SnapToSockPosition,1413,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4477c0,_Action_SetOpponent,759,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x447ac0,_Action_AttackOpponent,1077,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x447f00,_Action_EngageOpponent,2337,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x448830,_Action_ShootAtOpponent,959,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00448bf0,_Action_EngageObject,735,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x448ed0,_Action_GrabVictim,168,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x448f80,_Action_EatVictim,40,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x448fb0,_Action_ReleaseVictim,40,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x448fe0,_Action_FollowDirection,756,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4492e0,_Action_PressSpecialButton,163,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449390,_Action_PressTagButton,50,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4493d0,_Action_PressActionButton,60,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449410,_Action_UseWeapon,45,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449440,_Action_SetInvulnerable,565,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449680,_Action_DontAvoidCharacter,291,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4497b0,_Action_GameDontPush,435,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449970,_Action_PressJumpButton,50,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4499b0,_Action_AddToSet,151,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449a50,_Action_SetControlSystem,109,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00449ac0,_Action_SetSpline,236,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449bb0,_Action_SetZeroAcceleration,215,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449c90,_Action_BreakFormation,33,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449cc0,_Action_FormationMove,33,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00449cf0,_Action_SetFormationCommander,282,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00449e10,_Action_RemoveThrownForceObjects,75,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x449e60,_LocalGetRandomSpawnZipUp,119,
 0x449ee0,_FindSpawnZipUp,90,ZIPUP_s *__cdecl(char *)
-0x449f40,_Action_Launch,47,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x449f70,_Action_SelectRandomSpline,538,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449f40,_Action_Launch,47,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x449f70,_Action_SelectRandomSpline,538,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x44a190,_Action_CreateSplineCreatures,2346,
-0x44aac0,_Action_SetCurrentSpeed,382,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44ac40,_Action_SetRunSpeed,1180,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44b0e0,_Action_SetWalkSpeed,107,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44b150,_Action_SetHitPoints,316,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44b290,_Action_SetShieldHitPoints,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44b360,_Action_SetMessage,328,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44b4b0,_Action_SetScriptParam,459,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44b680,_Action_CopyMessage,183,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44aac0,_Action_SetCurrentSpeed,382,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ac40,_Action_SetRunSpeed,1180,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44b0e0,_Action_SetWalkSpeed,107,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44b150,_Action_SetHitPoints,316,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44b290,_Action_SetShieldHitPoints,201,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44b360,_Action_SetMessage,328,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44b4b0,_Action_SetScriptParam,459,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44b680,_Action_CopyMessage,183,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x44b740,_Action_AddPart,516,
-0x0044b950,_Action_AddPartDebris,495,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044b950,_Action_AddPartDebris,495,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x44bb40,_GuidedMissile_Move,717,
 0x44be10,_GuidedMissile_Kill,130,
-0x44bea0,_GuidedMissile_Deflect,37,void __cdecl(PART_PC *)
-0x0044bed0,_Action_LaunchGuidedMissile,759,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44c1d0,_Action_SetHoverPhase,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44bea0,_GuidedMissile_Deflect,37,void __cdecl(PART *)
+0x0044bed0,_Action_LaunchGuidedMissile,759,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44c1d0,_Action_SetHoverPhase,201,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x0044c2a0,_Action_UseCurrentSpeed,336,
-0x44c3f0,_Action_SetMaxMovementRange,404,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44c590,_Action_SetDefaultMovementRange,82,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44c5f0,_Action_SetGravityHeight,342,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44c3f0,_Action_SetMaxMovementRange,404,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44c590,_Action_SetDefaultMovementRange,82,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44c5f0,_Action_SetGravityHeight,342,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x0044c750,_Action_SetScaleOverride,687,
-0x44ca00,_Action_ApplyGravity,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44ca80,_Action_IgnoreShoveSystem,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44caf0,_Action_CannotBeForcedBack,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44cb70,_Action_CanTurn,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44cbf0,_Action_NoIdleSpeed,211,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44ccd0,_Action_CannotBeSeen,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44cd40,_Action_SetVisibility,187,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44ce00,_Action_EnableSock,288,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44cf20,_Action_AddDebris,495,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d110,_Action_JudderGameCamera,246,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d210,_Action_CameraShake,227,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d300,_Action_ResetGameCamera,27,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d320,_Action_PlayCutScene,103,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d390,_Action_SetLevelPath,212,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d470,_Action_SetHint,142,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d500,_Action_SetHintComplete,103,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d570,_Action_CancelHint,11,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44d580,_Action_DisableNarrowSocks,61,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044d5c0,_Action_CycleCharacter,674,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ca00,_Action_ApplyGravity,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ca80,_Action_IgnoreShoveSystem,110,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44caf0,_Action_CannotBeForcedBack,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44cb70,_Action_CanTurn,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44cbf0,_Action_NoIdleSpeed,211,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ccd0,_Action_CannotBeSeen,110,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44cd40,_Action_SetVisibility,187,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ce00,_Action_EnableSock,288,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44cf20,_Action_AddDebris,495,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d110,_Action_JudderGameCamera,246,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d210,_Action_CameraShake,227,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d300,_Action_ResetGameCamera,27,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d320,_Action_PlayCutScene,103,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d390,_Action_SetLevelPath,212,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d470,_Action_SetHint,142,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d500,_Action_SetHintComplete,103,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d570,_Action_CancelHint,11,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44d580,_Action_DisableNarrowSocks,61,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044d5c0,_Action_CycleCharacter,674,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x44d870,_ParseAIPathCnxFlag,144,
-0x0044d900,_Action_CnxController,1581,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044df30,_Action_CnxHelper,445,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044d900,_Action_CnxController,1581,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044df30,_Action_CnxHelper,445,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x44e0f0,_fun_0044e0f0,99,
-0x44e160,_Action_SetPath,388,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44e2f0,_Action_GoToLevelPath,381,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044e470,_Action_MoveAwayFromLastAttacker,258,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44e580,_Action_GoToOriginalPath,724,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44e860,_Action_SetAnimation,91,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44e8c0,_Action_AnimTimeRandom,47,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044e8f0,_Action_AlwaysTriggerObstacle,186,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044e9b0,_Action_CanTriggerObstacle,186,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044ea70,_Action_PlayGizObstacle,362,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044ebe0,_Action_PlayGizSpecial,398,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044ed70,_Action_SetObstacleToEnd,110,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44ede0,_Action_CanOpenDoors,139,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44ee70,_Action_CanShootOffScreen,139,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44ef00,_Action_KeepWeaponOut,190,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44efc0,_Action_SnapWeaponOut,319,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f100,_Action_ResetContext,161,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f1b0,_Action_PrefersPlayers,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f230,_Action_SetBoltsDontGetDeflectedBack,100,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f2a0,_Action_CanShootObstructions,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f320,_Action_UseBigJumpToJump,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f3a0,_Action_IgnoreTurnAroundSpline,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f420,_Action_CanMoveWhenDeactivated,100,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f490,_Action_DontAttack,100,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f500,_Action_CanPullLevers,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f580,_Action_CanHitForceObjects,100,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f5f0,_Action_AlwaysBackFlip,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f670,_Action_PlayerSpeederHack,100,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44e160,_Action_SetPath,388,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44e2f0,_Action_GoToLevelPath,381,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044e470,_Action_MoveAwayFromLastAttacker,258,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44e580,_Action_GoToOriginalPath,724,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44e860,_Action_SetAnimation,91,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44e8c0,_Action_AnimTimeRandom,47,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044e8f0,_Action_AlwaysTriggerObstacle,186,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044e9b0,_Action_CanTriggerObstacle,186,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044ea70,_Action_PlayGizObstacle,362,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044ebe0,_Action_PlayGizSpecial,398,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044ed70,_Action_SetObstacleToEnd,110,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ede0,_Action_CanOpenDoors,139,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ee70,_Action_CanShootOffScreen,139,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44ef00,_Action_KeepWeaponOut,190,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44efc0,_Action_SnapWeaponOut,319,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f100,_Action_ResetContext,161,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f1b0,_Action_PrefersPlayers,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f230,_Action_SetBoltsDontGetDeflectedBack,100,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f2a0,_Action_CanShootObstructions,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f320,_Action_UseBigJumpToJump,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f3a0,_Action_IgnoreTurnAroundSpline,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f420,_Action_CanMoveWhenDeactivated,100,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f490,_Action_DontAttack,100,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f500,_Action_CanPullLevers,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f580,_Action_CanHitForceObjects,100,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f5f0,_Action_AlwaysBackFlip,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f670,_Action_PlayerSpeederHack,100,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x0044f6e0,_Action_SetAnimSpeedMul,370,
-0x44f860,_Action_CatchUpForbidden,193,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44f930,_Action_SetTaggable,342,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44fa90,_Action_CannotDropIn,249,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44fb90,_Action_NotWithParty,184,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44fc50,_Action_CanAttack,184,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x44fd10,_Action_TakeDamage,549,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x0044ff40,_Action_TagCharacter,239,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00450030,_Action_UseForce,627,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4502b0,_Action_TriggerBlowUp,140,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00450340,_Action_ForcePush,521,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00450550,_Action_DeflectPlayersPart,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x004505d0,_Action_SetPathCnxFlag,480,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f860,_Action_CatchUpForbidden,193,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44f930,_Action_SetTaggable,342,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44fa90,_Action_CannotDropIn,249,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44fb90,_Action_NotWithParty,184,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44fc50,_Action_CanAttack,184,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x44fd10,_Action_TakeDamage,549,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x0044ff40,_Action_TagCharacter,239,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00450030,_Action_UseForce,627,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4502b0,_Action_TriggerBlowUp,140,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00450340,_Action_ForcePush,521,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00450550,_Action_DeflectPlayersPart,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x004505d0,_Action_SetPathCnxFlag,480,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x004507b0,_Action_PlaySfx,539,"i32 __cdecl (void *, void *, AIPACKET *, char **, i32, i32, f32)"
-0x4509d0,_Action_CameraCut,1890,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
-0x451140,_Action_DynamicCameraCut,2780,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
-0x451c20,_Action_EndCameraCut,176,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
-0x451cd0,_Action_DontRaycastLOS,121,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00451d50,_Action_SetForceBack,455,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00451f20,_Action_FaceCamera,456,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x004520f0,_Action_FaceCharacter,213,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x004521d0,_Action_SpinOnSpot,552,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x452400,_Action_FollowCharacter,353,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x452570,_Action_GameFollowPlayer,619,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4527e0,_Action_MoveForward,634,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00452a60,_Action_HelpWithTriggers,1545,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00453070,_Action_UseTriggerSet,268,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00453180,_Action_PullLever,568,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x004533c0,_Action_UsePanel,530,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x004535e0,_Action_UseTechno,546,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00453810,_Action_ReleaseLocator,143,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x004538a0,_Action_AssignLocator,502,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x00453aa0,_Action_GetLocatorFromSet,1159,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x453f30,_Action_ProbeDroid,538,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454150,_Action_AlertCreatures,142,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4541e0,_Action_SetLastAttacker,296,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454310,_Action_LinkTurretToController,206,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4543e0,_Action_TakeOver,493,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4545d0,_Action_ReleaseTakeOver,158,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454670,_Action_RegisterTakeOverObject,135,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454700,_Action_AddGameMsgCount,606,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454960,_Action_SetCanTakeOver,135,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4549f0,_Action_CanBeCarried,221,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4509d0,_Action_CameraCut,1890,"i32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
+0x451140,_Action_DynamicCameraCut,2780,"i32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
+0x451c20,_Action_EndCameraCut,176,"i32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
+0x451cd0,_Action_DontRaycastLOS,121,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00451d50,_Action_SetForceBack,455,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00451f20,_Action_FaceCamera,456,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x004520f0,_Action_FaceCharacter,213,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x004521d0,_Action_SpinOnSpot,552,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x452400,_Action_FollowCharacter,353,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x452570,_Action_GameFollowPlayer,619,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4527e0,_Action_MoveForward,634,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00452a60,_Action_HelpWithTriggers,1545,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00453070,_Action_UseTriggerSet,268,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00453180,_Action_PullLever,568,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x004533c0,_Action_UsePanel,530,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x004535e0,_Action_UseTechno,546,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00453810,_Action_ReleaseLocator,143,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x004538a0,_Action_AssignLocator,502,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00453aa0,_Action_GetLocatorFromSet,1159,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x453f30,_Action_ProbeDroid,538,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454150,_Action_AlertCreatures,142,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4541e0,_Action_SetLastAttacker,296,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454310,_Action_LinkTurretToController,206,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4543e0,_Action_TakeOver,493,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4545d0,_Action_ReleaseTakeOver,158,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454670,_Action_RegisterTakeOverObject,135,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454700,_Action_AddGameMsgCount,606,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454960,_Action_SetCanTakeOver,135,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4549f0,_Action_CanBeCarried,221,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x454ad0,_Action_IgnoreLastSafePathPos,222,
-0x454bb0,_Action_AwkwardShapeOverride,222,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454c90,_Action_IgnoreSlideTerrain,193,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454d60,_Action_SplineFollowTerrain,193,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454e30,_Action_AddMiscPickups,294,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x454f60,_Action_SetLayer,318,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
-0x4550a0,_Action_CreateRider,275,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4551c0,_Action_ThrowDetonator,198,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
-0x455290,_Action_UseTimeBasedUpdate,141,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x455320,_Action_WalkBackwards,201,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454bb0,_Action_AwkwardShapeOverride,222,"i32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454c90,_Action_IgnoreSlideTerrain,193,"i32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454d60,_Action_SplineFollowTerrain,193,"i32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454e30,_Action_AddMiscPickups,294,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x454f60,_Action_SetLayer,318,"i32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
+0x4550a0,_Action_CreateRider,275,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4551c0,_Action_ThrowDetonator,198,"i32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
+0x455290,_Action_UseTimeBasedUpdate,141,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x455320,_Action_WalkBackwards,201,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x4553f0,_Action_AddScriptProcessor,1005,
-0x4557e0,_Action_ForceLightning,510,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4559e0,_Action_SetUseOneAtOnce,250,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x455ae0,_Action_SetAO_MaxAttackers,116,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x455b60,_Action_SetAO_AttackersPerRow,116,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x455be0,_Action_SetAO_RowDist,109,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x455c50,_Action_SetAO_InitRowDist,109,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4557e0,_Action_ForceLightning,510,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4559e0,_Action_SetUseOneAtOnce,250,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x455ae0,_Action_SetAO_MaxAttackers,116,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x455b60,_Action_SetAO_AttackersPerRow,116,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x455be0,_Action_SetAO_RowDist,109,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x455c50,_Action_SetAO_InitRowDist,109,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x455cc0,_Action_SetTechnoComplete,366,
 0x455e30,_Action_LetGoOfBalloon,35,
 0x455e60,_Action_DrawBossHitPoints,35,
 0x00455e90,_Action_CompleteLevel,280,
 0x455fb0,_Action_GoToNewLevel,208,
-0x00456080,_Action_CircleLocator,517,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x456290,_Action_GizmoActivate,189,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x456350,_Action_GizmoSetVisibility,189,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x00456080,_Action_CircleLocator,517,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x456290,_Action_GizmoActivate,189,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x456350,_Action_GizmoSetVisibility,189,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x456410,_Action_TurnOnPickup,117,
-0x456490,_Action_CanHelpWithTriggers,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x456510,_Action_CanCollideWithObjects,113,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x456590,_Action_AddTorpedoPacket,575,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x4567d0,_Action_SetShootOpponents,113,"i32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x456490,_Action_CanHelpWithTriggers,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x456510,_Action_CanCollideWithObjects,113,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x456590,_Action_AddTorpedoPacket,575,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4567d0,_Action_SetShootOpponents,113,"i32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x00456850,_Action_PartyCanBeUnderCover,94,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x004568b0,_GameAIScriptAddLevelSfx,255,"void __cdecl (WORLDINFO *, NULISTHDR *)"
 0x004569b0,_Action_RaceOpponent,606,
@@ -1227,20 +1227,20 @@ address,symbol,size,ctype
 0x465de0,_GizbombgenVuVecMake,28,
 0x465e00,_GizBombGens_Load,147,
 0x465ea0,_GizBombGens_ReserveBufferSpace,183,void * __cdecl(void *)
-0x465f60,_GizmoBombGen_Activate,30,"void __cdecl(GIZMO_PC *, i32)"
+0x465f60,_GizmoBombGen_Activate,30,"void __cdecl(GIZMO *, i32)"
 0x465f80,_fun_00465f80,37,
-0x465fb0,_GizmoBombGen_SetVisibility,55,"void __cdecl(GIZMO_PC *, i32)"
-0x465ff0,_GizmoBombGen_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
+0x465fb0,_GizmoBombGen_SetVisibility,55,"void __cdecl(GIZMO *, i32)"
+0x465ff0,_GizmoBombGen_GetPos,21,NUVEC * __cdecl(GIZMO *)
 0x466010,_fun_00466010,77,
 0x466060,_GizBombGens_SetResetFlag,69,"void __cdecl(void *, void *, void *)"
 0x4660b0,_BombGeneratorsApplyReset,629,
 0x466330,_GizBombGens_Update,449,"void __cdecl(void *, void *, f32)"
 0x466500,_GizBombGens_GetMaxGizmos,25,i32 __cdecl(void *)
 0x466520,_GizBombGens_AddGizmos,89,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x466580,_GizmoBombGen_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x466590,_GizmoBombGen_GetOutput,14,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4665a0,_GizmoBombGen_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
-0x4665b0,_GizmoBombGen_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x466580,_GizmoBombGen_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x466590,_GizmoBombGen_GetOutput,14,"i32 __cdecl(GIZMO *, i32, i32)"
+0x4665a0,_GizmoBombGen_GetOutputName,6,"char * __cdecl(GIZMO *, i32)"
+0x4665b0,_GizmoBombGen_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x4665c0,_GizBombGens_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x4665e0,_GizBombGens_ClearProgress,31,"void __cdecl(void *, void *)"
 0x466600,_GizBombGen_FindByName,67,
@@ -1263,8 +1263,8 @@ address,symbol,size,ctype
 0x466f90,_GizForces_AddLevelSfx,161,"void __cdecl(void *, void *, i32 *, i32 *, i32)"
 0x467040,_GizForces_ReserveBufferSpace,234,
 0x467130,_GizForce_SetVisibility,54,
-0x467170,_GizmoForce_SetVisibility,60,"void __cdecl(GIZMO_PC *, i32)"
-0x4671b0,_GizmoForce_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
+0x467170,_GizmoForce_SetVisibility,60,"void __cdecl(GIZMO *, i32)"
+0x4671b0,_GizmoForce_GetPos,21,NUVEC * __cdecl(GIZMO *)
 0x4671d0,_ForceUpdateCentre,48,
 0x467200,_ForceResetSingle,268,
 0x467310,_ForceUpdateSpeed,98,
@@ -1282,24 +1282,24 @@ address,symbol,size,ctype
 0x467860,_ForceAnimationDone,48,
 0x467890,_GizForce_Complete,93,i32 __cdecl(GIZFORCE *)
 0x4678f0,_GizForce_GameObjUsingForce,42,"i32 __cdecl(GAMEOBJECT *, GIZFORCE *)"
-0x467920,_GizForce_Throw,386,"PART_PC *__cdecl(GAMEOBJECT *, GIZFORCE *, f32, f32, i32)"
+0x467920,_GizForce_Throw,386,"PART *__cdecl(GAMEOBJECT *, GIZFORCE *, f32, f32, i32)"
 0x467ab0,_GizForces_GetMaxGizmos,25,i32 __cdecl(void *)
 0x467ad0,_GizForces_AddGizmos,92,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x467b30,_GizmoForce_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x467b40,_GizmoForce_GetOutput,228,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x467b30,_GizmoForce_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x467b40,_GizmoForce_GetOutput,228,"i32 __cdecl(GIZMO *, i32, i32)"
 0x467c30,_GizmoForce_GetOutputName,100,
-0x467ca0,_GizmoForce_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x467ca0,_GizmoForce_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x467cb0,_GizForces_AllocateProgressData,24,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x467cd0,_GizForces_ClearProgress,115,"void __cdecl(void *, void *)"
 0x467d50,_GizForces_StoreProgress,294,"void __cdecl(void *, void *, void *)"
 0x467e80,_GizForces_BoltHitPlat,352,"i32 __cdecl (GIZFORCE *, WORLDINFO *, i32)"
-0x467fe0,GizForces_BoltHitPlatAll,199,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
-0x4680b0,_GizForces_GetBestBoltTarget,943,"GIZMO_PC * __cdecl(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
-0x468460,_GizForces_BoltHit,684,"i32 __cdecl (WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
+0x467fe0,GizForces_BoltHitPlatAll,199,"i32 __cdecl(WORLDINFO *, void *, BOLT *, u8 *)"
+0x4680b0,_GizForces_GetBestBoltTarget,943,"GIZMO * __cdecl(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
+0x468460,_GizForces_BoltHit,684,"i32 __cdecl (WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT *, i32, u8 *)"
 0x468710,_GizForces_FindForce,41,
 0x468740,_GizForce_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x468780,_GizmoForce_Activate,183,
-0x468840,_GizmoForce_ActivateRev,126,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x468840,_GizmoForce_ActivateRev,126,"i32 __cdecl(GIZMO *, i32, i32)"
 0x4688c0,_GizForces_Reset,646,"void __cdecl(void *, void *, void *)"
 0x468b50,_GizForces_Update,3265,
 0x00469820,_GizForce_FindBestForceTarget,1988,"i32 __cdecl(void*,GAMEOBJECT*)"
@@ -1309,7 +1309,7 @@ address,symbol,size,ctype
 0x0046a230,_RegisterAlternateGizmoTypes,267,"void __cdecl(VARIPTR *, VARIPTR *)"
 0x0046a340,_RegisterLswGizmoTypes,267,"void __cdecl(VARIPTR *, VARIPTR *)"
 0x46a450,_GizmoSys_SetBestBoltTarget,630,"i32 __cdecl(void*,WORLDINFO*,GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
-0x46a6d0,_GizmoSys_BoltHit,287,"i32 __cdecl(void*,WORLDINFO*,BOLT_PC*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
+0x46a6d0,_GizmoSys_BoltHit,287,"i32 __cdecl(void*,WORLDINFO*,BOLT*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
 0x46a7f0,_GizObstacle_CheckExcludeFlagsFn_LSW,69,"i32 __cdecl(GIZOBSTACLE*,GAMEOBJECT*)"
 0x46a840,_GizmoSysSetGame,40,
 0x46a870,_GizmopickupFdiv,54,
@@ -1332,17 +1332,17 @@ address,symbol,size,ctype
 0x46b5c0,_EndRedBrickMessage,106,void __cdecl (GAME_MESSAGE *)
 0x46b630,_CollectRedBrick,281,void __cdecl (NUVEC *)
 0x46b750,_CollectMinikit,436,"void __cdecl (NUVEC *, char *, i32)"
-0x46b910,_PartImpact_Coin,268,void __cdecl (PART_PC *)
-0x46ba20,_PartExtra_BlueCoin,34,void __cdecl (PART_PC *)
-0x46ba50,_PartExtra_PurpleCoin,34,void __cdecl (PART_PC *)
-0x46ba80,_PartMove_VehiclePickup,324,"void __cdecl (PART_PC *, f32)"
-0x46bbd0,_PartMove_VehicleHeart,247,"void __cdecl (PART_PC *, f32)"
-0x46bcd0,_PartDraw_VehicleHeart,221,i32 __cdecl (PART_PC *)
+0x46b910,_PartImpact_Coin,268,void __cdecl (PART *)
+0x46ba20,_PartExtra_BlueCoin,34,void __cdecl (PART *)
+0x46ba50,_PartExtra_PurpleCoin,34,void __cdecl (PART *)
+0x46ba80,_PartMove_VehiclePickup,324,"void __cdecl (PART *, f32)"
+0x46bbd0,_PartMove_VehicleHeart,247,"void __cdecl (PART *, f32)"
+0x46bcd0,_PartDraw_VehicleHeart,221,i32 __cdecl (PART *)
 0x46bdb0,_AddTorpedoAsPart,340,"void __cdecl (NUVEC *, NUVEC *, f32, f32)"
 0x46bf10,_AddHeartAsPart,307,"void __cdecl (GAMEOBJECT *, NUVEC *, NUVEC *, f32, f32)"
-0x46c050,_PowerUp_ImpactPart,163,void __cdecl (PART_PC *)
-0x46c100,_PowerUp_UpdatePart,173,void __cdecl (PART_PC *)
-0x46c1b0,_PowerUp_DrawPart,90,i32 __cdecl (PART_PC *)
+0x46c050,_PowerUp_ImpactPart,163,void __cdecl (PART *)
+0x46c100,_PowerUp_UpdatePart,173,void __cdecl (PART *)
+0x46c1b0,_PowerUp_DrawPart,90,i32 __cdecl (PART *)
 0x46c210,_PowerUp_AddPart,317,"void __cdecl (NUVEC *, NUVEC *, f32, f32)"
 0x46c350,_TotalLevelCoinTally,176,"u32 __cdecl (WORLDINFO *, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *, u32 *)"
 0x46c400,_CollectHitPoint,227,"void __cdecl (GAMEOBJECT *, NUVEC *, i32)"
@@ -1356,8 +1356,8 @@ address,symbol,size,ctype
 0x46cab0,_Pup_CollectMinikit,56,"void __cdecl (WORLDINFO *, GIZMOPICKUP *, i32, GAMEOBJECT *, i32)"
 0x46caf0,_Pup_CollectRedBrick,50,"void __cdecl (WORLDINFO *, GIZMOPICKUP *, i32, GAMEOBJECT *, i32)"
 0x46cb30,_Pup_CollectHeart,27,"void __cdecl (WORLDINFO *, GIZMOPICKUP *, i32, GAMEOBJECT *, i32)"
-0x46cb50,_PartStolen_Coin,218,void __cdecl (PART_PC *)
-0x46cc30,_PartStop_Coin,261,void __cdecl (PART_PC *)
+0x46cb50,_PartStolen_Coin,218,void __cdecl (PART *)
+0x46cc30,_PartStop_Coin,261,void __cdecl (PART *)
 0x46cd40,_AddCoinsAsParts,464,"void __cdecl (i32, NUVEC *, NUVEC *, f32, f32)"
 0x46cf10,_AddCoinsToPanel,854,"void __cdecl (i32, NUVEC *, i32, f32, GAMEOBJECT *, i32)"
 0x46d270,_AddPickups,1284,"void __cdecl (i32, i32, i32, i32, NUVEC *, NUVEC *, f32, i32, f32, f32, GAMEOBJECT *, i32, i32)"
@@ -1378,10 +1378,10 @@ address,symbol,size,ctype
 0x46e290,_GizPanel_Draw,2052,
 0x46eaa0,_GizPanel_GetMaxGizmos,25,i32 __cdecl(void *)
 0x46eac0,_GizPanel_AddGizmos,106,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x46eb30,_GizPanel_GetGizmoName,21,char * __cdecl(GIZMO_PC *)
+0x46eb30,_GizPanel_GetGizmoName,21,char * __cdecl(GIZMO *)
 0x46eb50,_fun_0046eb50,12,
-0x46eb60,_GizPanel_GetOutput,27,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x46eb80,_GizPanel_GetOutputName,16,"char * __cdecl(GIZMO_PC *, i32)"
+0x46eb60,_GizPanel_GetOutput,27,"i32 __cdecl(GIZMO *, i32, i32)"
+0x46eb80,_GizPanel_GetOutputName,16,"char * __cdecl(GIZMO *, i32)"
 0x46eb90,_GizPanel_GetNumOutputs,6,i32 __cdecl(void *)
 0x46eba0,_GizPanels_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x46ebc0,_GizPanels_ClearProgress,24,"void __cdecl(void *, void *)"
@@ -1392,14 +1392,14 @@ address,symbol,size,ctype
 0x46f4d0,_GizPanel_Reset,326,
 0x46f620,_GizPanels_Reset,197,"void __cdecl(void *, void *, void *)"
 0x46f6f0,_fun_0046f6f0,60,
-0x46f730,_GizPanel_Activate,50,"void __cdecl(GIZMO_PC *, i32)"
+0x46f730,_GizPanel_Activate,50,"void __cdecl(GIZMO *, i32)"
 0x46f770,_GizPanel_RegisterGizmo,282,
 0x46f890,_GiztorpedoNuError,1,
 0x46f8a0,_GiztorpedoVuVecMake,28,
 0x46f8c0,_GizTorp_Load,195,
 0x46f990,_GizTorps_ReserveBufferSpace,174,void * __cdecl(void *)
-0x46fa40,_GizTorp_SetVisibility,30,"void __cdecl(GIZMO_PC *, i32)"
-0x46fa60,_GizTorp_Activate,28,"void __cdecl(GIZMO_PC *, i32)"
+0x46fa40,_GizTorp_SetVisibility,30,"void __cdecl(GIZMO *, i32)"
+0x46fa60,_GizTorp_Activate,28,"void __cdecl(GIZMO *, i32)"
 0x46fa80,_fun_0046fa80,5,
 0x46fa90,_GizTorps_Reset,55,"void __cdecl(void *, void *, void *)"
 0x46fad0,_GizTorpMachine_FindNearest,171,"void *__cdecl(WORLDINFO*,NUVEC*,f32*)"
@@ -1407,10 +1407,10 @@ address,symbol,size,ctype
 0x46fbe0,_GizTorp_Draw,580,
 0x46fe30,_GizTorp_GetMaxGizmos,25,i32 __cdecl(void *)
 0x46fe50,_GizTorp_AddGizmos,101,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x46fec0,_GizTorp_GetGizmoName,17,char * __cdecl(GIZMO_PC *)
-0x46fee0,_GizTorp_GetOutput,3,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x46fec0,_GizTorp_GetGizmoName,17,char * __cdecl(GIZMO *)
+0x46fee0,_GizTorp_GetOutput,3,"i32 __cdecl(GIZMO *, i32, i32)"
 0x46fef0,_GizTorp_GetOutputName,16,
-0x46ff00,_GizTorp_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x46ff00,_GizTorp_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x46ff10,_GizTorpMachine_RegisterGizmo,254,
 0x470010,_GrabberVuVecCopy,23,
 0x470030,_GrabberVuVecMake,28,
@@ -1558,25 +1558,25 @@ address,symbol,size,ctype
 0x47f5f0,_MenuUpdateBonusMode,5,
 0x47f600,_fun_0047f600,28,
 0x47f620,_IndyConnectionHelperIsType,58,"i32 __cdecl(GAMEOBJECT *, u8)"
-0x47f660,_Indy_MidSpecialMove_Default,647,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
+0x47f660,_Indy_MidSpecialMove_Default,647,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
 0x47f8f0,_Indy_PrepareClimb,238,"i32 __cdecl(AIPACKET *, APIOBJECT *, i32)"
-0x47f9e0,_Indy_MidSpecialMove_ClimbUp,589,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
-0x47fc30,_Indy_MidSpecialMove_ClimbDown,609,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
+0x47f9e0,_Indy_MidSpecialMove_ClimbUp,589,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
+0x47fc30,_Indy_MidSpecialMove_ClimbDown,609,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
 0x47fea0,_IndyGrappleHelperOccupied,35,"i32 __cdecl(AI_HELPER_SLOT *, GAMEOBJECT *, AIPATHCNX *, u8, u8)"
 0x47fed0,_Indy_PrepareGrapple,753,"i32 __cdecl(AIPACKET *, APIOBJECT *, i32)"
-0x4801d0,_Indy_MidSpecialMove_GrappleStart,263,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
-0x4802e0,_Indy_MidSpecialMove_GrappleClimb,414,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
-0x480480,_Indy_MidSpecialMove_GrappleEnd,290,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
-0x4805b0,_Indy_MidSpecialMove_Swing,304,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
-0x4806e0,_Indy_MidSpecialMove_StartJump,118,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
+0x4801d0,_Indy_MidSpecialMove_GrappleStart,263,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
+0x4802e0,_Indy_MidSpecialMove_GrappleClimb,414,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
+0x480480,_Indy_MidSpecialMove_GrappleEnd,290,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
+0x4805b0,_Indy_MidSpecialMove_Swing,304,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
+0x4806e0,_Indy_MidSpecialMove_StartJump,118,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
 0x480760,_Indy_PrepareJump,1804,"i32 __cdecl(AIPACKET *, APIOBJECT *, i32)"
 0x480e70,_Indy_PrepareBigJump,213,"i32 __cdecl(AIPACKET *, APIOBJECT *, i32)"
-0x480f50,_Indy_MidSpecialMove_BigJump,75,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
+0x480f50,_Indy_MidSpecialMove_BigJump,75,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
 0x480fa0,_Indy_PrepareObstacle,477,"i32 __cdecl(AIPACKET *, APIOBJECT *, i32)"
 0x481180,_Indy_PrepareWhipSwing,347,"i32 __cdecl(AIPACKET *, APIOBJECT *, i32)"
-0x4812e0,_Indy_MidSpecialMove_WhipSwing,240,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
+0x4812e0,_Indy_MidSpecialMove_WhipSwing,240,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
 0x4813d0,_Indy_PreparingForSpecialMove,302,"i32 __cdecl(AIPACKET *, APIOBJECT *, i32)"
-0x481500,_Indy_MidSpecialMove,103,"i32 __cdecl(AISYS_PC *, AIPACKET *, APIOBJECT *)"
+0x481500,_Indy_MidSpecialMove,103,"i32 __cdecl(AISYS *, AIPACKET *, APIOBJECT *)"
 0x481570,_Indy_AIPathCnxHelperSysInit,318,void __cdecl(WORLDINFO *)
 0x4816b0,_Indy_GameAISysInit,144,
 0x481740,_PlayerInitCapabilitiesVariant0,152,void __cdecl(GAMEOBJECT *)
@@ -1589,17 +1589,17 @@ address,symbol,size,ctype
 0x481ac0,_Ledges_Load,235,"i32 __cdecl(WORLDINFO *,void *)"
 0x481bb0,_Ledges_ReserveBufferSpace,93,void * __cdecl(WORLDINFO *)
 0x481c10,_Ledge_Reset,347,void __cdecl(LEDGE_MOTION *)
-0x481d70,_Ledge_SetVisibility,30,"void __cdecl(GIZMO_PC *,i32)"
-0x481d90,_Ledge_Activate,28,"void __cdecl(GIZMO_PC *,i32)"
+0x481d70,_Ledge_SetVisibility,30,"void __cdecl(GIZMO *,i32)"
+0x481d90,_Ledge_Activate,28,"void __cdecl(GIZMO *,i32)"
 0x481db0,_Ledges_Reset,133,"void __cdecl(WORLDINFO *,void *,LEDGE_PROGRESS *)"
 0x481e40,_Ledge_FindNearest,179,
 0x481f00,_Ledges_Draw,162,"void __cdecl(WORLDINFO *,void *,f32)"
 0x481fb0,_Ledges_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x481fd0,_Ledges_AddGizmos,97,"void __cdecl(GIZMOSYS *,i32,WORLDINFO *,void *)"
-0x482040,_Ledge_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x482050,_Ledge_GetOutput,26,"i32 __cdecl(GIZMO_PC *,i32,i32)"
-0x482070,_Ledge_GetOutputName,6,"char * __cdecl(GIZMO_PC *,i32)"
-0x482080,_Ledge_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x482040,_Ledge_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x482050,_Ledge_GetOutput,26,"i32 __cdecl(GIZMO *,i32,i32)"
+0x482070,_Ledge_GetOutputName,6,"char * __cdecl(GIZMO *,i32)"
+0x482080,_Ledge_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x482090,_Ledges_AllocateProgressData,21,"void * __cdecl(VARIPTR *,VARIPTR *)"
 0x4820b0,_Ledges_ClearProgress,37,"void __cdecl(void *,LEDGE_PROGRESS *)"
 0x4820e0,_Ledges_StoreProgress,153,"void __cdecl(WORLDINFO *,void *,LEDGE_PROGRESS *)"
@@ -1792,8 +1792,8 @@ address,symbol,size,ctype
 0x491800,_Hub_GetRandomCharType,56,i32 __cdecl(void)
 0x491840,_HubGoneThroughDoor,595,
 0x491aa0,_LSW_Hub_UpdateAI,130,
-0x491b30,_Condition_InHubAreaInit,56,"void *__cdecl(AISYS_PC *,char *,AISCRIPT *)"
-0x491b70,_Condition_InHubArea,19,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x491b30,_Condition_InHubAreaInit,56,"void *__cdecl(AISYS *,char *,AISCRIPT *)"
+0x491b70,_Condition_InHubArea,19,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x491b90,_fun_00491b90,1,
 0x491ba0,_fun_00491ba0,1,
 0x491bb0,_fun_00491bb0,28,
@@ -1938,7 +1938,7 @@ address,symbol,size,ctype
 0x49e0e0,_fun_0049e0e0,41,
 0x49e110,_BlockFindAttack,114,static GAMEOBJECT *(GAMEOBJECT *)
 0x49e190,_BlockFindSpecialAttack,172,static GAMEOBJECT *(GAMEOBJECT *)
-0x49e240,_BlockFindIncomingPart,110,static PART_PC *(GAMEOBJECT *)
+0x49e240,_BlockFindIncomingPart,110,static PART *(GAMEOBJECT *)
 0x0049e2b0,_StartComboJump,192,
 0x0049e370,_StartBlock,213,
 0x49e450,_BlockCode,927,"static void(GAMEOBJECT *, i32, i32, i32, i32)"
@@ -1979,16 +1979,16 @@ address,symbol,size,ctype
 0x4a4ff0,_ForceGlowCode,1204,
 0x4a54b0,_MoveAnim_Manage,475,
 0x4a5690,_fun_004a5690,1,
-0x004a56a0,_BobaRocket_Move,1001,"void __cdecl (PART_PC *, f32)"
-0x004a5a90,_BobaRocket_Kill,104,"void __cdecl (PART_PC *, i32)"
-0x004a5b00,_BobaRocket_Deflect,37,void __cdecl (PART_PC *)
-0x004a5b30,_PartUpdate_Basketball,113,void __cdecl (PART_PC *)
-0x004a5bb0,_PartImpact_Basketball,128,void __cdecl (PART_PC *)
+0x004a56a0,_BobaRocket_Move,1001,"void __cdecl (PART *, f32)"
+0x004a5a90,_BobaRocket_Kill,104,"void __cdecl (PART *, i32)"
+0x004a5b00,_BobaRocket_Deflect,37,void __cdecl (PART *)
+0x004a5b30,_PartUpdate_Basketball,113,void __cdecl (PART *)
+0x004a5bb0,_PartImpact_Basketball,128,void __cdecl (PART *)
 0x4a5c30,_GetShootDirection_LSW,411,"u16 __cdecl(GAMEOBJECT *, NUVEC *)"
 0x4a5dd0,_GetShootDirection_Batman,238,"u16 __cdecl(GAMEOBJECT *, NUVEC *)"
 0x4a5ec0,_SetObjTarget,161,"i32 __cdecl(GAMEOBJECT*,GAMEOBJECT*)"
-0x4a5f70,_SetGizmoBlowUpTarget,107,"i32 __cdecl(GAMEOBJECT*,GIZMOBLOWUP_PC*)"
-0x4a5fe0,_SetPartTarget,107,"i32 __cdecl(GAMEOBJECT*,PART_PC*)"
+0x4a5f70,_SetGizmoBlowUpTarget,107,"i32 __cdecl(GAMEOBJECT*,GIZMOBLOWUP*)"
+0x4a5fe0,_SetPartTarget,107,"i32 __cdecl(GAMEOBJECT*,PART*)"
 0x4a6050,_GetZapOrigin,83,NUVEC *__cdecl(GAMEOBJECT*)
 0x4a60b0,_ZapTarget,173,i32 __cdecl(GAMEOBJECT*)
 0x4a6160,_ZapCode,2162,
@@ -2150,8 +2150,8 @@ address,symbol,size,ctype
 0x4bcf00,_SecurityDoors_Load,109,"i32 __cdecl(WORLDINFO *, void *)"
 0x4bcf70,_SecurityDoors_InitTerrain,105,void __cdecl(WORLDINFO *)
 0x4bcfe0,_SecurityDoors_ReserveBufferSpace,80,void *__cdecl(WORLDINFO *)
-0x4bd030,_SecurityDoor_Activate,34,"void __cdecl(GIZMO_PC *, i32)"
-0x4bd060,_SecurityDoor_SetVisibility,36,"void __cdecl(GIZMO_PC *, i32)"
+0x4bd030,_SecurityDoor_Activate,34,"void __cdecl(GIZMO *, i32)"
+0x4bd060,_SecurityDoor_SetVisibility,36,"void __cdecl(GIZMO *, i32)"
 0x4bd090,_SecurityDoorInitRecord,244,static void(SECURITY_DOOR_RECORD *)
 0x4bd190,_SecurityDoors_Reset,230,"void __cdecl(WORLDINFO *, void *, SECURITY_DOOR_PROGRESS *)"
 0x4bd280,_SecurityDoors_Update,321,"void __cdecl(WORLDINFO *, void *, f32)"
@@ -2159,14 +2159,14 @@ address,symbol,size,ctype
 0x4bd4a0,_SecurityDoors_Draw,660,"void __cdecl(WORLDINFO *, void *, f32)"
 0x4bd740,_SecurityDoors_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x4bd760,_SecurityDoors_AddGizmos,105,"void __cdecl(GIZMOSYS *, i32, WORLDINFO *, void *)"
-0x4bd7d0,_SecurityDoor_GetGizmoName,19,char *__cdecl(GIZMO_PC *)
-0x4bd7f0,_SecurityDoor_GetOutput,20,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4bd810,_SecurityDoor_GetOutputName,6,"char *__cdecl(GIZMO_PC *, i32)"
-0x4bd820,_SecurityDoor_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x4bd7d0,_SecurityDoor_GetGizmoName,19,char *__cdecl(GIZMO *)
+0x4bd7f0,_SecurityDoor_GetOutput,20,"i32 __cdecl(GIZMO *, i32, i32)"
+0x4bd810,_SecurityDoor_GetOutputName,6,"char *__cdecl(GIZMO *, i32)"
+0x4bd820,_SecurityDoor_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x4bd830,_SecurityDoors_AllocateProgressData,21,"void *__cdecl(VARIPTR *, VARIPTR *)"
 0x4bd850,_SecurityDoors_ClearProgress,29,"void __cdecl(void *, SECURITY_DOOR_PROGRESS *)"
 0x4bd870,_SecurityDoors_StoreProgress,150,"void __cdecl(WORLDINFO *, void *, SECURITY_DOOR_PROGRESS *)"
-0x4bd910,_SecurityDoor_GetPos,17,NUVEC *__cdecl(GIZMO_PC *)
+0x4bd910,_SecurityDoor_GetPos,17,NUVEC *__cdecl(GIZMO *)
 0x4bd930,_SecurityDoors_RegisterGizmo,278,ADDGIZMOTYPE *__cdecl(i32)
 0x4bda50,_SecurityDoorStart,160,"static void(GAMEOBJECT *, SECURITY_DOOR_RECORD *, i32)"
 0x4bdaf0,_SecurityDoor_MoveCode,436,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
@@ -2182,18 +2182,18 @@ address,symbol,size,ctype
 0x4c01e0,_Shards_ReserveBufferSpace,77,void * __cdecl(WORLDINFO *)
 0x4c0230,_ShardInitRecord,151,
 0x4c02d0,_Shards_Reset,218,"void __cdecl(WORLDINFO *,void *,void *)"
-0x4c03b0,_Shard_Activate,28,"void __cdecl(GIZMO_PC *,i32)"
-0x4c03d0,_Shard_SetVisibility,30,"void __cdecl(GIZMO_PC *,i32)"
+0x4c03b0,_Shard_Activate,28,"void __cdecl(GIZMO *,i32)"
+0x4c03d0,_Shard_SetVisibility,30,"void __cdecl(GIZMO *,i32)"
 0x4c03f0,_Shards_UpdateBeforeCharacters,48,"void __cdecl(WORLDINFO *,void *,f32)"
 0x4c0420,_Shards_UpdateAfterCharacters,633,"void __cdecl(WORLDINFO *,void *,f32)"
 0x4c06a0,_Shard_FindNearest,145,
 0x4c0740,_Shards_Draw,404,"void __cdecl(WORLDINFO *,void *,f32)"
 0x4c08e0,_Shards_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x4c0900,_Shards_AddGizmos,97,"void __cdecl(GIZMOSYS *,i32,WORLDINFO *,void *)"
-0x4c0970,_Shard_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x4c0980,_Shard_GetOutput,17,"i32 __cdecl(GIZMO_PC *,i32,i32)"
-0x4c09a0,_Shard_GetOutputName,6,"char * __cdecl(GIZMO_PC *,i32)"
-0x4c09b0,_Shard_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x4c0970,_Shard_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x4c0980,_Shard_GetOutput,17,"i32 __cdecl(GIZMO *,i32,i32)"
+0x4c09a0,_Shard_GetOutputName,6,"char * __cdecl(GIZMO *,i32)"
+0x4c09b0,_Shard_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x4c09c0,_Shards_AllocateProgressData,21,"void * __cdecl(VARIPTR *,VARIPTR *)"
 0x4c09e0,_Shards_ClearProgress,51,"void __cdecl(void *,void *)"
 0x4c0a20,_Shards_StoreProgress,178,"void __cdecl(WORLDINFO *,void *,void *)"
@@ -2251,11 +2251,11 @@ address,symbol,size,ctype
 0x4c78b0,_Signals_Load,198,"i32 __cdecl(WORLDINFO *, void *)"
 0x4c7980,_Signals_InitTerrain,75,void __cdecl(WORLDINFO *)
 0x4c79d0,_Signals_ReserveBufferSpace,80,void *__cdecl(WORLDINFO *)
-0x4c7a20,_Signal_Activate,30,"void __cdecl(GIZMO_PC *, i32)"
-0x4c7a40,_Signal_ActivateRev,70,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x4c7a20,_Signal_Activate,30,"void __cdecl(GIZMO *, i32)"
+0x4c7a40,_Signal_ActivateRev,70,"i32 __cdecl(GIZMO *, i32, i32)"
 0x4c7a90,_SignalSetVisible,79,"static void(SIGNAL_s *, i32)"
-0x004c7ae0,_Signal_SetGizmoVisibility,26,"void __cdecl(GIZMO_PC *, i32)"
-0x4c7b00,_Signal_GetPos,21,NUVEC *__cdecl(GIZMO_PC *)
+0x004c7ae0,_Signal_SetGizmoVisibility,26,"void __cdecl(GIZMO *, i32)"
+0x4c7b00,_Signal_GetPos,21,NUVEC *__cdecl(GIZMO *)
 0x4c7b20,_SignalResetRecord,319,static void(SIGNAL_s *)
 0x004c7c60,_Signals_Reset,194,"void __cdecl(WORLDINFO *, void *, SIGNALPROGRESS_s *)"
 0x004c7d30,_Signals_Update,551,"void __cdecl(WORLDINFO *, void *, f32)"
@@ -2263,10 +2263,10 @@ address,symbol,size,ctype
 0x4c8030,_Signals_Draw,653,"void __cdecl(WORLDINFO *, void *, f32)"
 0x4c82c0,_Signals_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x4c82e0,_Signals_AddGizmos,100,"void __cdecl(void *, i32, WORLDINFO *, void *)"
-0x4c8350,_Signal_GetGizmoName,14,char *__cdecl(GIZMO_PC *)
-0x4c8360,_Signal_GetOutput,26,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4c8380,_Signal_GetOutputName,6,"char *__cdecl(GIZMO_PC *, i32)"
-0x4c8390,_Signal_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x4c8350,_Signal_GetGizmoName,14,char *__cdecl(GIZMO *)
+0x4c8360,_Signal_GetOutput,26,"i32 __cdecl(GIZMO *, i32, i32)"
+0x4c8380,_Signal_GetOutputName,6,"char *__cdecl(GIZMO *, i32)"
+0x4c8390,_Signal_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x4c83a0,_Signals_AllocateProgressData,21,"void *__cdecl(VARIPTR *, VARIPTR *)"
 0x4c83c0,_Signals_ClearProgress,43,"void __cdecl(void *, SIGNALPROGRESS_s *)"
 0x4c83f0,_Signals_StoreProgress,197,"void __cdecl(WORLDINFO *, void *, SIGNALPROGRESS_s *)"
@@ -2275,7 +2275,7 @@ address,symbol,size,ctype
 0x4c88a0,_fun_004c88a0,28,
 0x004c88c0,_SuitBlowupCode,749,"void __cdecl (WORLDINFO *, GAMEOBJECT *)"
 0x4c8bb0,_SpeederchaseVuVecMake,28,
-0x4c8bd0,_SpeederBlowupHack,98,"i32 __cdecl (GIZMOBLOWUP_PC *, i32)"
+0x4c8bd0,_SpeederBlowupHack,98,"i32 __cdecl (GIZMOBLOWUP *, i32)"
 0x4c8c40,_SpeederChaseA_Init,323,void __cdecl (WORLDINFO *)
 0x4c8d90,_SpeederChaseA_Reset,168,void __cdecl (WORLDINFO *)
 0x4c8e40,_SpeederChaseA_Update,568,void __cdecl (WORLDINFO *)
@@ -2284,7 +2284,7 @@ address,symbol,size,ctype
 0x4c9210,_fun_004c9210,29,
 0x4c9230,_fun_004c9230,46,
 0x4c9260,_SpeederChase_SetMode,33,"static void (AISCRIPTPROCESS *, i32)"
-0x4c9290,_Action_SpeederBeingChased,1812,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x4c9290,_Action_SpeederBeingChased,1812,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x004c99b0,_SpeederChaseATATInOutMul,85,f32 __cdecl (GAMEOBJECT *)
 0x4c9a10,?StartupVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
 0x4c9a30,_fun_004c9a30,1,
@@ -2386,14 +2386,14 @@ address,symbol,size,ctype
 0x4ce740,_Teleport_NetMoveCode,238,void __cdecl(GAMEOBJECT *)
 0x4ce830,_Teleport_MoveCode,1947,"void __cdecl(GAMEOBJECT *, i32)"
 0x4cefd0,_Teleport_UpdateHints,147,i32 __cdecl(HINT*)
-0x4cf070,_Teleport_ActivateRev,61,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4cf0b0,_Teleport_Activate,26,"void __cdecl(GIZMO_PC *, i32)"
+0x4cf070,_Teleport_ActivateRev,61,"i32 __cdecl(GIZMO *, i32, i32)"
+0x4cf0b0,_Teleport_Activate,26,"void __cdecl(GIZMO *, i32)"
 0x4cf0d0,_Teleport_GetMaxGizmos,25,i32 __cdecl(void *)
 0x4cf0f0,_Teleport_AddGizmos,95,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x4cf150,_Teleport_GetGizmoName,17,char * __cdecl(GIZMO_PC *)
-0x4cf170,_Teleport_GetOutput,22,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x4cf190,_Teleport_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
-0x4cf1a0,_Teleport_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x4cf150,_Teleport_GetGizmoName,17,char * __cdecl(GIZMO *)
+0x4cf170,_Teleport_GetOutput,22,"i32 __cdecl(GIZMO *, i32, i32)"
+0x4cf190,_Teleport_GetOutputName,6,"char * __cdecl(GIZMO *, i32)"
+0x4cf1a0,_Teleport_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x4cf1b0,_Teleport_RegisterGizmo,225,ADDGIZMOTYPE * __cdecl(i32)
 0x4cf2a0,_TextNuError,1,
 0x4cf2b0,_TextVuVecMake,28,
@@ -2403,10 +2403,10 @@ address,symbol,size,ctype
 0x4cf4b0,_Text_FillInExtendedSaveInfo,1,void __cdecl(void)
 0x004cf4c0,_Text_LoadStrings,403,"void __cdecl (VARIPTR *, VARIPTR *)"
 0x4cf660,_ThermaldetonatorsVuVecMake,28,
-0x4cf680,_PartImpact_ThermalDetonator,413,void __cdecl(PART_PC *)
-0x4cf820,_PartUpdate_ThermalDetonator,451,void __cdecl(PART_PC *)
-0x4cf9f0,_PartDraw_ThermalDetonator,313,i32 __cdecl(PART_PC *)
-0x4cfb30,_PartKill_ThermalDetonator,124,"void __cdecl(PART_PC *, i32)"
+0x4cf680,_PartImpact_ThermalDetonator,413,void __cdecl(PART *)
+0x4cf820,_PartUpdate_ThermalDetonator,451,void __cdecl(PART *)
+0x4cf9f0,_PartDraw_ThermalDetonator,313,i32 __cdecl(PART *)
+0x4cfb30,_PartKill_ThermalDetonator,124,"void __cdecl(PART *, i32)"
 0x4cfbb0,_ThermalDetonator_Throw,993,void __cdecl(GAMEOBJECT *)
 0x4cffa0,_ThermalDetonator_ThrowMom,744,"void __cdecl(GAMEOBJECT *, NUVEC *)"
 0x4d0290,_ThermalDetonator_MoveCode,727,i32 __cdecl(GAMEOBJECT *)
@@ -2421,14 +2421,14 @@ address,symbol,size,ctype
 0x4d08e0,_TightRope_FindNearest,179,
 0x4d09a0,_TightRope_InRange,477,"TIGHTROPE_MOTION * __cdecl(GAMEOBJECT *, WORLDINFO *, NUVEC *)"
 0x4d0b80,_TightRopes_Draw,1069,"void __cdecl(WORLDINFO *, void *, f32)"
-0x004d0fb0,_TightRope_Activate,22,"void __cdecl(GIZMO_PC *, i32)"
-0x004d0fd0,_TightRope_SetVisibility,22,"void __cdecl(GIZMO_PC *, i32)"
+0x004d0fb0,_TightRope_Activate,22,"void __cdecl(GIZMO *, i32)"
+0x004d0fd0,_TightRope_SetVisibility,22,"void __cdecl(GIZMO *, i32)"
 0x004d0ff0,_TightRopes_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x004d1010,_TightRopes_AddGizmos,97,"void __cdecl(GIZMOSYS *, i32, WORLDINFO *, void *)"
-0x004d1080,_TightRope_GetGizmoName,14,char *__cdecl(GIZMO_PC *)
-0x004d1090,_TightRope_GetOutput,27,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x004d10b0,_TightRope_GetOutputName,6,"char *__cdecl(GIZMO_PC *, i32)"
-0x004d10c0,_TightRope_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x004d1080,_TightRope_GetGizmoName,14,char *__cdecl(GIZMO *)
+0x004d1090,_TightRope_GetOutput,27,"i32 __cdecl(GIZMO *, i32, i32)"
+0x004d10b0,_TightRope_GetOutputName,6,"char *__cdecl(GIZMO *, i32)"
+0x004d10c0,_TightRope_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x004d10d0,_TightRopes_AllocateProgressData,21,"void *__cdecl(VARIPTR *, VARIPTR *)"
 0x004d10f0,_TightRopes_ClearProgress,22,"void __cdecl(void *, TIGHTROPE_PROGRESS *)"
 0x004d1110,_TightRopes_StoreProgress,127,"void __cdecl(WORLDINFO *, void *, TIGHTROPE_PROGRESS *)"
@@ -2459,18 +2459,18 @@ address,symbol,size,ctype
 0x4d2490,_TorpedoHitDispatch,85,
 0x4d24f0,_Torpedo_UpdateJobbies,1274,void __cdecl(GAMEOBJECT*)
 0x4d29f0,_FindNearestTorpTarget,582,"void *__cdecl(WORLDINFO*,NUVEC*,f32,u8*)"
-0x4d2c40,_HomeNearestTorpTarget,746,"void __cdecl(BOLT_PC *, TORPEDOPACKET *)"
-0x4d2f30,_Torpedo_InitRicochet,89,"void __cdecl(BOLT_PC *, NUVEC *)"
-0x4d2f90,_Torpedo_Ricochet,438,"void __cdecl(BOLT_PC *, TORPEDOPACKET *)"
-0x4d3150,_TorpedoHitTarget,204,void __cdecl(BOLT_PC*)
+0x4d2c40,_HomeNearestTorpTarget,746,"void __cdecl(BOLT *, TORPEDOPACKET *)"
+0x4d2f30,_Torpedo_InitRicochet,89,"void __cdecl(BOLT *, NUVEC *)"
+0x4d2f90,_Torpedo_Ricochet,438,"void __cdecl(BOLT *, TORPEDOPACKET *)"
+0x4d3150,_TorpedoHitTarget,204,void __cdecl(BOLT*)
 0x4d3220,_DrawGameMessage_Targets,546,"void __cdecl(GAME_MESSAGE*,NUVEC*,f32)"
 0x4d3450,_fun_004d3450,1,
-0x4d3460,_Torpedo_InitBolt,41,void __cdecl(BOLT_PC *)
-0x4d3490,_Torpedo_UpdateBolt,340,void __cdecl(BOLT_PC *)
-0x4d35f0,_Torpedo_Scale,39,f32 __cdecl(BOLT_PC *)
-0x4d3620,_Torpedo_EndBolt,102,void __cdecl(BOLT_PC*)
+0x4d3460,_Torpedo_InitBolt,41,void __cdecl(BOLT *)
+0x4d3490,_Torpedo_UpdateBolt,340,void __cdecl(BOLT *)
+0x4d35f0,_Torpedo_Scale,39,f32 __cdecl(BOLT *)
+0x4d3620,_Torpedo_EndBolt,102,void __cdecl(BOLT*)
 0x4d3690,_Torpedo_Shoot,196,void __cdecl(GAMEOBJECT *)
-0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART_PC *)
+0x4d3760,_PartDraw_Torp,133,i32 __cdecl (PART *)
 0x4d37f0,_fun_004d37f0,10,
 0x4d3800,_TorpedoCode,1820,"void __cdecl(GAMEOBJECT*,i32,f32)"
 0x4d3f20,_DrawTorpedos,663,void __cdecl (GAMEOBJECT *)
@@ -2510,7 +2510,7 @@ address,symbol,size,ctype
 0x4d5cd0,_ZipUps_ReserveBufferSpace,77,void *__cdecl(WORLDINFO *)
 0x4d5d20,_ZipUpResetSingle,303,
 0x4d5e50,_ZipUps_Reset,167,"void __cdecl(WORLDINFO *,void *,struct zipup_progress_s *)"
-0x004d5f00,_ZipUp_FindNearest,311,"ZIPUP_PC *__cdecl(WORLDINFO *,NUVEC *,f32,f32 *,i32 *,GAMEOBJECT *)"
+0x004d5f00,_ZipUp_FindNearest,311,"ZIPUP *__cdecl(WORLDINFO *,NUVEC *,f32,f32 *,i32 *,GAMEOBJECT *)"
 0x4d6040,_fun_004d6040,28,
 0x4d6060,_ZipUp_MoveCode,3774,"void __cdecl(GAMEOBJECT *,i32)"
 0x4d6f20,_ZipUp_GetStartPoint,165,
@@ -2559,7 +2559,7 @@ address,symbol,size,ctype
 0x4d9390,_PodRaceAUpdate,282,void __cdecl(void)
 0x4d94b0,_RacePodAllocatePrivate,52,
 0x4d94f0,_RacePodAlignPrivate,539,
-0x4d9710,_PodRaceMineKill,72,"private same-TU void __cdecl(PART_PC *, i32)"
+0x4d9710,_PodRaceMineKill,72,"private same-TU void __cdecl(PART *, i32)"
 0x4d9760,_PodRaceUpdatePod,1897,"private same-TU i32(RACEPOD_RESOURCE *, WORLDINFO *)"
 0x4d9ed0,_ResetPodStuff,181,void __cdecl(void)
 0x4d9f90,_PodRace_IncreaseLap,8,void __cdecl(void)
@@ -2594,7 +2594,7 @@ address,symbol,size,ctype
 0x004dc640,_PodSprintA_Update,460,void __cdecl(WORLDINFO *)
 0x004dc810,_PodSprintA_Panel,484,void __cdecl(WORLDINFO *)
 0x4dca00,_PodSprint_GetIAlongVals,122,
-0x4dca80,_Action_NewSebulba,1065,"i32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
+0x4dca80,_Action_NewSebulba,1065,"i32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char **,i32,i32,f32)"
 0x004dceb0,_RetakeG_Init,63,void __cdecl(WORLDINFO *)
 0x004dcef0,_RetakeG_Reset,1,void __cdecl(WORLDINFO *)
 0x004dcf00,_RetakeG_Update,109,void __cdecl(WORLDINFO *)
@@ -2703,8 +2703,8 @@ address,symbol,size,ctype
 0x004e3580,_KashyyykC_Update,1,void __cdecl(WORLDINFO *)
 0x4e3590,_KashyyykD_Init,49,void __cdecl(WORLDINFO *)
 0x4e35d0,_KashyyykD_Reset,241,void __cdecl(WORLDINFO *)
-0x4e36d0,_Boulder_Move,313,"void __cdecl(PART_PC *, f32)"
-0x4e3810,_Boulder_Kill,121,"void __cdecl(PART_PC *, i32)"
+0x4e36d0,_Boulder_Move,313,"void __cdecl(PART *, f32)"
+0x4e3810,_Boulder_Kill,121,"void __cdecl(PART *, i32)"
 0x4e3890,_BoulderSpawn,250,private same-TU void __cdecl(i32)
 0x4e3990,_KashyyykD_Update,108,void __cdecl(WORLDINFO *)
 0x4e3a00,_Action_BoulderSection,546,
@@ -2733,8 +2733,8 @@ address,symbol,size,ctype
 0x004e4b40,_BlockadeRunnerB_Init,24,void __cdecl(WORLDINFO *)
 0x004e4b60,_BlockadeRunnerB_Update,34,void __cdecl(WORLDINFO *)
 0x004e4b90,_BlockadeRunnerC_Init,30,void __cdecl(WORLDINFO *)
-0x4e4bb0,_BlockadeRunnerDKillEjectedCreature,70,"private same-TU void __cdecl(PART_PC *, i32)"
-0x4e4c00,_BlockadeRunnerDDrawCreature,3,private same-TU i32 __cdecl(PART_PC *)
+0x4e4bb0,_BlockadeRunnerDKillEjectedCreature,70,"private same-TU void __cdecl(PART *, i32)"
+0x4e4c00,_BlockadeRunnerDDrawCreature,3,private same-TU i32 __cdecl(PART *)
 0x4e4c10,_BlockadeRunnerDEjectCreature,465,private same-TU void(i32)
 0x004e4df0,_BlockadeRunnerD_Reset,79,void __cdecl(WORLDINFO *)
 0x004e4e40,_BlockadeRunnerD_Update,315,void __cdecl(WORLDINFO *)
@@ -2843,7 +2843,7 @@ address,symbol,size,ctype
 0x4e9f10,_EpisodeVIVuVecMake,28,
 0x004e9f30,_DeathStar2BattleA_AlwaysUpdate,28,void __cdecl(WORLDINFO *)
 0x004e9f50,_DeathStar2BattleD_Init,242,void __cdecl(WORLDINFO *)
-0x4ea050,_DeathStar2BattleD_InZapRange,191,GIZMOBLOWUP_PC *__cdecl(GAMEOBJECT *)
+0x4ea050,_DeathStar2BattleD_InZapRange,191,GIZMOBLOWUP *__cdecl(GAMEOBJECT *)
 0x4ea110,_DeathStar2BattleD_Update,910,
 0x4ea4a0,_DeathStar2BattleFire_Draw,893,
 0x4ea820,_DeathStar2BattleFire_SetSlowDownMul,102,
@@ -3879,7 +3879,7 @@ address,symbol,size,ctype
 0x512f60,_RegisterAIScriptActions,71,
 0x512fb0,_RegisterAIScriptConditions,10,
 0x00512fc0,_AIStateFind,78,"AISTATE *__cdecl (const char *, AISCRIPT *)"
-0x00513010,_AIScriptFind,229,"AISCRIPT *__cdecl (AISYS_PC *, const char *, i32, i32, i32)"
+0x00513010,_AIScriptFind,229,"AISCRIPT *__cdecl (AISYS *, const char *, i32, i32, i32)"
 0x513100,_AIScriptCopyString,93,
 0x513160,_AIScriptNameFromIx,199,
 0x00513230,_AiParseExpressionNameLoopup,103,
@@ -3895,14 +3895,14 @@ address,symbol,size,ctype
 0x00513990,_AIScriptCopyConditions,401,"void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
 0x00513b30,_AIScriptCopyActions,388,"void __cdecl (NULISTHDR *, NULISTHDR *, VARIPTR *, VARIPTR *)"
 0x00513cc0,_AIScriptCopyState,599,
-0x00513f20,_AIScriptBuildDerivedScript,536,"i32 __cdecl (AISCRIPT *, VARIPTR *, VARIPTR *, AISYS_PC *)"
+0x00513f20,_AIScriptBuildDerivedScript,536,"i32 __cdecl (AISCRIPT *, VARIPTR *, VARIPTR *, AISYS *)"
 0x514140,_AIScriptFindRefScripts,601,
 0x5143a0,_AIScriptInitConditions,423,
 0x00514550,_AIScriptNextAction,77,
 0x005145a0,_AIScriptSetState,59,"void __cdecl (AISCRIPTPROCESS *, AISTATE *)"
 0x005145e0,_AIScriptForceParamReEval,28,void __cdecl (AISCRIPTPROCESS *)
 0x514600,_AIScriptSetStateByName,59,
-0x00514640,_AIScriptProcessorInit,384,"void __cdecl (AISYS_PC *, AIPACKET *, AISCRIPTPROCESS *, AICREATURE *, char *, char *, i32, AISCRIPT *, AISTATE *)"
+0x00514640,_AIScriptProcessorInit,384,"void __cdecl (AISYS *, AIPACKET *, AISCRIPTPROCESS *, AICREATURE *, char *, char *, i32, AISCRIPT *, AISTATE *)"
 0x005147c0,_AIParamToFloat,142,"f32 __cdecl (AISCRIPTPROCESS *, char *)"
 0x00514850,_AiEvalExpressionNameLoopup,206,"i32 __cdecl (char *, f32 *, i32 *)"
 0x00514920,_AIParamToFloatEx,100,"f32 __cdecl (AIPACKET *, AISCRIPTPROCESS *, char *)"
@@ -3910,38 +3910,38 @@ address,symbol,size,ctype
 0x005149a0,_Condition_Random,5,"f32 __cdecl (void *, void *, void *, char *, void *)"
 0x5149b0,_Condition_AlwaysTrueInit,49,
 0x005149f0,_Condition_AlwaysTrue,13,"f32 __cdecl (void *, void *, void *, char *, void *)"
-0x514a00,_Condition_LocatorRange,79,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x514a50,_Condition_LocatorRangeXZ,79,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x514a00,_Condition_LocatorRange,79,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x514a50,_Condition_LocatorRangeXZ,79,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x514aa0,_Condition_LocatorRangeY,58,
-0x514ae0,_Condition_GotLocator,19,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x514ae0,_Condition_GotLocator,19,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x514b00,_Condition_GotLocatorSet,19,
 0x514b20,_Condition_OnPath,23,
 0x514b40,_Condition_PlayerOnPath,32,
-0x514b60,_Condition_OpponentOnPath,36,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x514b60,_Condition_OpponentOnPath,36,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x514b90,_Condition_TimeOffPath,18,
 0x514bb0,_Condition_CurrentLocatorIs,26,
 0x514bd0,_Condition_InTriggerArea,86,
-0x514c30,_Condition_PlayerRange,73,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x514c30,_Condition_PlayerRange,73,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x514c80,_Condition_NearestPlayerRange,208,
 0x514d50,_Condition_NearestPlayerXZRange,208,
 0x514e20,_Condition_InLevelNode,74,
 0x514e70,_Condition_PlayerInLevelNode,79,
 0x514ec0,_Condition_EitherPlayerInLevelNode,137,
 0x514f50,_Condition_NodeRange,63,
-0x514f90,_Condition_GotTriggerArea,19,"f32 __cdecl(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
+0x514f90,_Condition_GotTriggerArea,19,"f32 __cdecl(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *)"
 0x514fb0,_Condition_PlayerInTriggerArea,92,
 0x515010,_Condition_Player2InTriggerArea,86,
 0x515070,_Condition_EitherPlayerInTriggerArea,143,
 0x515100,_Condition_BaddyInTriggerArea,34,
 0x515130,_Condition_GoodyInTriggerArea,34,
 0x515160,_Condition_OpponentInTriggerArea,95,
-0x5151c0,_Condition_GotOpponent,23,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x5151e0,_Condition_OpponentIsAThreat,35,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x515210,_Condition_OpponentOnSamePath,49,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x515250,_Condition_OpponentRange,31,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
-0x515270,_Condition_NearestOpponentRange,31,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x5151c0,_Condition_GotOpponent,23,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x5151e0,_Condition_OpponentIsAThreat,35,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x515210,_Condition_OpponentOnSamePath,49,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x515250,_Condition_OpponentRange,31,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x515270,_Condition_NearestOpponentRange,31,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x515290,_Condition_YawToOpponent,135,
-0x515320,_Condition_OpponentBelow,51,"f32 __cdecl(AISYS_PC *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
+0x515320,_Condition_OpponentBelow,51,"f32 __cdecl(AISYS *,AISCRIPTPROCESS *,AIPACKET *,char *,void *)"
 0x515360,_Condition_OriginRange,91,
 0x5153c0,_Condition_OpponentToOrigin,129,
 0x515450,_Condition_PlayerToOrigin,129,
@@ -3956,36 +3956,36 @@ address,symbol,size,ctype
 0x515750,_Condition_IAm,62,
 0x515790,_Condition_StuckTime,28,
 0x5157b0,_Condition_Param,24,
-0x5157d0,_Action_SetState,177,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x515890,_Action_ResetTimer,269,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x5159a0,_Action_Idle,499,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x515ba0,_Action_SetCircleDirection,246,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x515ca0,_Action_FacePlayer,332,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x5157d0,_Action_SetState,177,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x515890,_Action_ResetTimer,269,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x5159a0,_Action_Idle,499,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x515ba0,_Action_SetCircleDirection,246,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x515ca0,_Action_FacePlayer,332,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x515df0,_AIPointWithinFacingAngle,116,"i32 __cdecl (NUVEC *, NUVEC *, i32, i32)"
-0x515e70,_Action_FaceOpponent,565,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x5160b0,_Action_IgnoreWallSplines,97,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x516120,_Action_CheckWallSplines,121,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x515e70,_Action_FaceOpponent,565,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x5160b0,_Action_IgnoreWallSplines,97,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516120,_Action_CheckWallSplines,121,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x005161a0,_Action_NoTerrain,116,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x00516220,_Action_NoLosCheck,119,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x005162a0,_Action_FlatTerrain,116,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
-0x516320,_Action_ShadowTerrain,116,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516320,_Action_ShadowTerrain,116,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x005163a0,_Action_DontUseShadowTerrain,116,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x00516420,_Action_DontPush,116,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x005164a0,_Action_CanSeeBehind,119,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x00516520,_Action_RequiresLOS,97,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
 0x00516590,_Action_SetFullPathSearch,119,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
-0x516610,_Action_SetViewDistance,190,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x5166d0,_Action_SetMinViewHeight,190,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x516790,_Action_SetMaxViewHeight,190,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x516850,_Action_SetHearDistance,190,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x516910,_Action_SetMoveRadius,103,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516610,_Action_SetViewDistance,190,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x5166d0,_Action_SetMinViewHeight,190,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516790,_Action_SetMaxViewHeight,190,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516850,_Action_SetHearDistance,190,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516910,_Action_SetMoveRadius,103,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x516980,_Action_OverrideAnimation,310,
-0x516ac0,_Action_ResetToOrigin,121,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x516b40,_Action_SetIgnoreAntinodes,171,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516ac0,_Action_ResetToOrigin,121,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516b40,_Action_SetIgnoreAntinodes,171,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x00516bf0,_Action_NoShadows,119,"i32 __cdecl (void *, void *, void *, char **, i32, i32, f32)"
-0x516c70,_Action_SetParam,436,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x516e30,_Action_SetReturnToState,174,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x516ee0,_Action_ReturnToState,37,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516c70,_Action_SetParam,436,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516e30,_Action_SetReturnToState,174,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x516ee0,_Action_ReturnToState,37,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x00516f10,_AiSysUsePackFile,10,void __cdecl (i32)
 0x00516f20,_AiSysOnlyUsePakFile,10,void __cdecl (i32)
 0x00516f30,_AiSysSetStateDebugee,10,void __cdecl (AISCRIPTPROCESS *)
@@ -4016,15 +4016,15 @@ address,symbol,size,ctype
 0x5170c0,_AIScriptSetInterrupt,84,"i32 __cdecl (AISCRIPTPROCESS *, u8, u8, char *, f32)"
 0x00517120,_AIScriptClearInterrupt,64,"void __cdecl (AISCRIPTPROCESS *, char *)"
 0x00517160,_AISysBufferAlloc,74,"void *__cdecl (VARIPTR *, VARIPTR *, u32)"
-0x005171b0,_AISysSetLevelPath,106,"i32 __cdecl (AISYS_PC *, char *)"
+0x005171b0,_AISysSetLevelPath,106,"i32 __cdecl (AISYS *, char *)"
 0x517220,_AIPathCalcExtents,393,void __cdecl(AIPATH *)
 0x005173b0,_AIPathCheckExtents,123,"i32 __cdecl (AIPATH *, NUVEC *)"
 0x517430,_AISysLoadPaths,2967,
-0x517fd0,_CreateAIGroup,105,"AIGROUP * __cdecl(AISYS_PC *, i32, f32, f32, f32)"
+0x517fd0,_CreateAIGroup,105,"AIGROUP * __cdecl(AISYS *, i32, f32, f32, f32)"
 0x00518040,_AddToAIGroup,401,"void __cdecl (AIGROUP *, APIOBJECT *)"
 0x5181e0,_DestroyAIGroup,25,void __cdecl(AIGROUP *)
 0x00518200,_AIScriptSetLevelPath,10,void __cdecl (char *)
-0x00518210,_AISysProcess,854,"void __cdecl (AISYS_PC *, APIOBJECT *, APIOBJECT *)"
+0x00518210,_AISysProcess,854,"void __cdecl (AISYS *, APIOBJECT *, APIOBJECT *)"
 0x00518570,_AIAntinodeCreate,103,"AIANTINODE *__cdecl (NUVEC *, f32)"
 0x005185e0,_AIAntinodeCreateSingleFrame,103,"AIANTINODE *__cdecl (NUVEC *, f32)"
 0x00518650,_AIAntinodeDestroy,24,void __cdecl (AIANTINODE *)
@@ -4035,28 +4035,28 @@ address,symbol,size,ctype
 0x518d30,_AISysCheckAntinode_Rectangle,1203,
 0x005191f0,_AISysDrawBox,1163,
 0x00519680,_AISysDrawAntinode_Rectangle,110,"void __cdecl (AIANTINODE *, u32)"
-0x5196f0,_AISysCreatureAntinodeInteraction,608,"void __cdecl(AISYS_PC *, i32, APIOBJECT **, i32 *)"
-0x519950,_AISysCreatureInteraction2D,1189,"void __cdecl(AISYS_PC *, i32, APIOBJECT **, i32 *, f32)"
-0x519e00,_LEGO_AISysCreatureInteraction2D,1408,"void __cdecl(AISYS_PC *, i32, APIOBJECT **, i32 *, f32)"
-0x51a380,_AISysCreatureInteraction3D,992,"void __cdecl(AISYS_PC *, i32, APIOBJECT **, i32 *, f32)"
+0x5196f0,_AISysCreatureAntinodeInteraction,608,"void __cdecl(AISYS *, i32, APIOBJECT **, i32 *)"
+0x519950,_AISysCreatureInteraction2D,1189,"void __cdecl(AISYS *, i32, APIOBJECT **, i32 *, f32)"
+0x519e00,_LEGO_AISysCreatureInteraction2D,1408,"void __cdecl(AISYS *, i32, APIOBJECT **, i32 *, f32)"
+0x51a380,_AISysCreatureInteraction3D,992,"void __cdecl(AISYS *, i32, APIOBJECT **, i32 *, f32)"
 0x0051a760,_AISysResetPathSearchConnectionChecks,86,
 0x0051a7c0,_AISysCharacterSetPath,198,"void __cdecl (AIPACKET *, AIPATH *)"
 0x0051a890,_AIPathNodeDistanceToPathNode,883,"f32 __cdecl (AIPATH *, i32, i32, i32, u32)"
-0x0051ac10,_AIPathFindLocator,87,"AILOCATOR *__cdecl (AISYS_PC *, char *)"
-0x0051ac70,_AIPathFindLocatorSet,89,"AILOCATORSET *__cdecl (AISYS_PC *, char *)"
-0x0051acd0,_AISysFindArea,69,"AIAREA *__cdecl (AISYS_PC *, char *)"
-0x0051ad20,_AISysFindPath,81,"AIPATH *__cdecl (AISYS_PC *, char *)"
-0x0051ad80,_AIPathFindNode,111,"AIPATHNODE *__cdecl (AISYS_PC *, AIPATH *, char *)"
-0x0051adf0,_AIPAthFindPathCnx,194,"void *__cdecl (AISYS_PC *, AIPATH *, char *, char *, i32 *)"
-0x0051aec0,_AIPathFindPathCnxFromIX,115,"AIPATHCNX *__cdecl (AISYS_PC *, AIPATH *, u8, u8)"
+0x0051ac10,_AIPathFindLocator,87,"AILOCATOR *__cdecl (AISYS *, char *)"
+0x0051ac70,_AIPathFindLocatorSet,89,"AILOCATORSET *__cdecl (AISYS *, char *)"
+0x0051acd0,_AISysFindArea,69,"AIAREA *__cdecl (AISYS *, char *)"
+0x0051ad20,_AISysFindPath,81,"AIPATH *__cdecl (AISYS *, char *)"
+0x0051ad80,_AIPathFindNode,111,"AIPATHNODE *__cdecl (AISYS *, AIPATH *, char *)"
+0x0051adf0,_AIPAthFindPathCnx,194,"void *__cdecl (AISYS *, AIPATH *, char *, char *, i32 *)"
+0x0051aec0,_AIPathFindPathCnxFromIX,115,"AIPATHCNX *__cdecl (AISYS *, AIPATH *, u8, u8)"
 0x0051af40,_AIPathNodeUpdatePos,683,"void __cdecl (void *, AIPATH *, AIPATHNODE *)"
 0x0051b1f0,_WithinConnection,1532,"i32 __cdecl (void *, NUVEC *, AIPATH *, AIPATHCNX *, i32, AIPATHCNX *, i32, i32, AIPATHINFO *, f32, i32)"
 0x0051b7f0,_AISysFindRoute,151,void __cdecl (AIPACKET *)
 0x0051b890,_AISysCharacterSetPathCnx,381,"void __cdecl (AIPACKET *, NUVEC *, AIPATHCNX *, i32)"
-0x0051ba10,_AISysGetPathPosEx,1145,"void __cdecl (AISYS_PC *, NUVEC *, AIPATHINFO *, AIPATH *, i32, i32, f32 *)"
+0x0051ba10,_AISysGetPathPosEx,1145,"void __cdecl (AISYS *, NUVEC *, AIPATHINFO *, AIPATH *, i32, i32, f32 *)"
 0x0051be90,_GetNextConnection,703,
 0x0051c150,_CalculateRightIntersection,736,
-0x0051c430,_CalculateIntersection,618,"u32 __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, AIPATHCNX *, AIPATHCNX *)"
+0x0051c430,_CalculateIntersection,618,"u32 __cdecl (AISYS *, AIPACKET *, APIOBJECT *, AIPATHCNX *, AIPATHCNX *)"
 0x0051c6a0,_RowMoveWander,1309,"i32 __cdecl (AIGROUP *, AIROW *, AIROW *, APIOBJECT *)"
 0x0051cbc0,_RowMoveTowards,1388,"i32 __cdecl (AIGROUP *, AIROW *, AIROW *, APIOBJECT *)"
 0x0051d130,_FormationMove,192,
@@ -4064,14 +4064,14 @@ address,symbol,size,ctype
 0x51d290,_fun_0051d290,125,
 0x0051d310,_AIMoveFindDivertNode,492,
 0x0051d500,_AIMoveApplyDivertNode,218,
-0x0051d5e0,_AIMoveChooseExitNodePath,367,"i32 __cdecl (AISYS_PC *, AIPACKET *)"
+0x0051d5e0,_AIMoveChooseExitNodePath,367,"i32 __cdecl (AISYS *, AIPACKET *)"
 0x0051d750,_AIMoveAdjustDestinationPath,89,
-0x0051d7b0,_AIMoveToDestination,4355,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
-0x0051e8c0,_AIMoveToDestinationAvoidingCamera,73,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
+0x0051d7b0,_AIMoveToDestination,4355,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
+0x0051e8c0,_AIMoveToDestinationAvoidingCamera,73,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
 0x0051e910,_AIRetreatFromDestinationPath,1925,
-0x0051f0a0,_AICircle,263,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
-0x0051f1b0,_AIWander,1104,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
-0x0051f600,_AIMoveDirectlyToDestination,169,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
+0x0051f0a0,_AICircle,263,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
+0x0051f1b0,_AIWander,1104,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
+0x0051f600,_AIMoveDirectlyToDestination,169,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
 0x0051f6b0,_AISysGetCharacterWaypoint,103,"i32 __cdecl (AIPACKET *, NUVEC *)"
 0x51f720,_LocaledbitsDrawSolidCircleXY,409,
 0x51f8c0,_LocaledbitsDrawSolidEllipseXY,484,
@@ -4084,13 +4084,13 @@ address,symbol,size,ctype
 0x0051fdc0,_FindLocalAIMessage,54,"AILOCALMESSAGE *__cdecl (AISCRIPTPROCESS *, char *)"
 0x0051fe00,_AddLocalAIMessage,60,"void __cdecl (AISCRIPTPROCESS *, AILOCALMESSAGE *, char *)"
 0x0051fe40,_QueryLocalAIMessage,23,"AILOCALMESSAGE *__cdecl (AISCRIPTPROCESS *, AILOCALMESSAGE *)"
-0x0051fe60,_AILocatorSet_CheckLocatorsStillAssigned,137,"void __cdecl (AISYS_PC *, AILOCATORSET *)"
-0x0051fef0,_AILocatorSet_AssignNearestLocator,400,"void __cdecl (AISYS_PC *, AILOCATORSET *, APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32)"
-0x00520080,_AILocatorSet_AssignFurthestLocator,408,"void __cdecl (AISYS_PC *, AILOCATORSET *, APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32)"
-0x00520220,_AILocatorSet_AssignRandomLocator,428,"void __cdecl (AISYS_PC *, AILOCATORSET *, APIOBJECT *, f32, NUVEC *, f32, i32)"
+0x0051fe60,_AILocatorSet_CheckLocatorsStillAssigned,137,"void __cdecl (AISYS *, AILOCATORSET *)"
+0x0051fef0,_AILocatorSet_AssignNearestLocator,400,"void __cdecl (AISYS *, AILOCATORSET *, APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32)"
+0x00520080,_AILocatorSet_AssignFurthestLocator,408,"void __cdecl (AISYS *, AILOCATORSET *, APIOBJECT *, f32, NUVEC *, NUVEC *, f32, i32)"
+0x00520220,_AILocatorSet_AssignRandomLocator,428,"void __cdecl (AISYS *, AILOCATORSET *, APIOBJECT *, f32, NUVEC *, f32, i32)"
 0x005203d0,_AISysGetPathColour,12,u32 __cdecl (i32)
 0x005203e0,_AISysGetPathColourCount,6,i32 __cdecl (void)
-0x005203f0,_InitFn_GameAISYSRebuildFromEditorData,10,"void __cdecl (void (__cdecl *)(AISYS_PC *, VARIPTR *, VARIPTR *))"
+0x005203f0,_InitFn_GameAISYSRebuildFromEditorData,10,"void __cdecl (void (__cdecl *)(AISYS *, VARIPTR *, VARIPTR *))"
 0x00520400,_InitFn_GameAISave,10,void __cdecl (void (__cdecl *)(AIPATHSYS *))
 0x00520410,_InitFn_AIPathNodeDeleted,10,void __cdecl (void (__cdecl *)(EDAIPATHNODE_s *))
 0x00520420,_InitFn_AIPathNodeMoved,10,void __cdecl (void (__cdecl *)(EDAIPATHNODE_s *))
@@ -4101,7 +4101,7 @@ address,symbol,size,ctype
 0x520470,_InitFn_GetAICreatureOrigin,10,
 0x520480,_aieditor_Register,96,
 0x5204e0,_AiEditorChangeMode,102,
-0x00520550,_aieditor_Enter,167,"void __cdecl (AISYS_PC *, NUVEC *, void *, void *, char *, char *, char *)"
+0x00520550,_aieditor_Enter,167,"void __cdecl (AISYS *, NUVEC *, void *, void *, char *, char *, char *)"
 0x520600,_NuSpecialFindByPlatformID,163,
 0x005206b0,_AISysSetPathCylinderCheck,16,void __cdecl (i32)
 0x005206c0,_aieditor_Render,787,"void __cdecl (f32, f32)"
@@ -4285,14 +4285,14 @@ address,symbol,size,ctype
 0x0052bf80,_xInclude,114,void __cdecl (NUFPAR *)
 0x0052c000,_xRefScript,794,void __cdecl (NUFPAR *)
 0x52c320,_AIScriptLoadPakFile,328,
-0x0052c470,_AIScriptLoadAllPakFile,607,"void __cdecl (void *, char *, VARIPTR *, VARIPTR *, AISYS_PC *)"
-0x52c6d0,_AIScriptLoadAll,190,"void __cdecl(char *, VARIPTR *, VARIPTR *, AISYS_PC *)"
+0x0052c470,_AIScriptLoadAllPakFile,607,"void __cdecl (void *, char *, VARIPTR *, VARIPTR *, AISYS *)"
+0x52c6d0,_AIScriptLoadAll,190,"void __cdecl(char *, VARIPTR *, VARIPTR *, AISYS *)"
 0x0052c790,_AIScriptSetBaseScriptStateByName,103,"i32 __cdecl (AISCRIPTPROCESS *, char *)"
 0x0052c800,_AIScriptFillRemainingComplexOperands,114,
 0x0052c880,_AIScriptProcessStateConditions,612,
 0x0052caf0,_AIScriptProcessReferences,401,
-0x0052cc90,_AIScriptProcess,989,"void __cdecl (AISYS_PC *, APIOBJECT *, AIPACKET *, AISCRIPTPROCESS *, f32)"
-0x52d070,_Condition_LocatorRangeInit,26,"void *__cdecl(AISYS_PC *,char *,AISCRIPT *)"
+0x0052cc90,_AIScriptProcess,989,"void __cdecl (AISYS *, APIOBJECT *, AIPACKET *, AISCRIPTPROCESS *, f32)"
+0x52d070,_Condition_LocatorRangeInit,26,"void *__cdecl(AISYS *,char *,AISCRIPT *)"
 0x52d090,_Condition_CurrentLocatorIsInit,26,
 0x52d0b0,_Condition_InTriggerAreaInit,26,
 0x52d0d0,_Condition_InLevelNodeInit,47,
@@ -4304,29 +4304,29 @@ address,symbol,size,ctype
 0x52d1c0,_Condition_OpponentInTriggerAreaInit,26,
 0x52d1e0,_Condition_OpponentToLocatorInit,26,
 0x52d200,_Condition_PlayerToLocatorInit,26,
-0x52d220,_Action_FaceLocator,240,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x52d310,_Action_SetLocator,506,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x52d510,_Action_SetRespawnLocator,224,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52d220,_Action_FaceLocator,240,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52d310,_Action_SetLocator,506,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52d510,_Action_SetRespawnLocator,224,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x52d5f0,_AIPathCnxSetTemporaryBlock,192,"void __cdecl (AIPATH *, char *, char *, i32)"
-0x52d6b0,_Action_BlockPath,269,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x52d7c0,_Action_PathConnectionMaxLength,298,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x52d8f0,_Action_PathConnectionObstacle,199,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x52d9c0,_Action_SetInterrupt,353,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x52db30,_Action_ClearInterrupt,189,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x52dbf0,_Action_NotifyStateChange,106,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52d6b0,_Action_BlockPath,269,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52d7c0,_Action_PathConnectionMaxLength,298,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52d8f0,_Action_PathConnectionObstacle,199,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52d9c0,_Action_SetInterrupt,353,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52db30,_Action_ClearInterrupt,189,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x52dbf0,_Action_NotifyStateChange,106,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
 0x52dc60,_AISysLoadPrivate,3001,
-0x52e820,_AISysLoadEx,250,"AISYS_PC*__cdecl(VARIPTR*,VARIPTR*,i32,NUGSCN*,char*,char*,char*,char*)"
-0x52e920,_AISysLoad,45,"AISYS_PC*__cdecl(VARIPTR*,VARIPTR*,i32,NUGSCN*,char*,char*,char*)"
+0x52e820,_AISysLoadEx,250,"AISYS*__cdecl(VARIPTR*,VARIPTR*,i32,NUGSCN*,char*,char*,char*,char*)"
+0x52e920,_AISysLoad,45,"AISYS*__cdecl(VARIPTR*,VARIPTR*,i32,NUGSCN*,char*,char*,char*)"
 0x0052e950,_AISysDrawAntinode_Circle,46,"void __cdecl (AIANTINODE *, u32)"
 0x0052e980,_AISysDrawAntinode_Ellipse,59,"void __cdecl (AIANTINODE *, u32)"
 0x0052e9c0,_CharacterTestPathCnx,3645,
-0x0052f800,_AISysGetCharacterPathPos,1147,"void __cdecl (AISYS_PC *, APIOBJECT *, AIPACKET *, i32, i32)"
-0x0052fc80,_AISysGetPathPos,38,"void __cdecl (AISYS_PC *, NUVEC *, AIPATHINFO *, AIPATH *, i32)"
+0x0052f800,_AISysGetCharacterPathPos,1147,"void __cdecl (AISYS *, APIOBJECT *, AIPACKET *, i32, i32)"
+0x0052fc80,_AISysGetPathPos,38,"void __cdecl (AISYS *, NUVEC *, AIPATHINFO *, AIPATH *, i32)"
 0x0052fcb0,_AIMoveInstruction,239,"void __cdecl (AIPACKET *, NUVEC *, f32, AIPATHINFO *, i32, f32)"
 0x0052fda0,_AIFormationFollow,401,void __cdecl (AIPACKET *)
-0x0052ff40,_AIRetreatFromDestination2,517,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
-0x00530150,_AIRetreatFromDestination,237,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
-0x00530240,_AISysCharacterMovement,464,"void __cdecl (AISYS_PC *, AIPACKET *, APIOBJECT *, i32)"
+0x0052ff40,_AIRetreatFromDestination2,517,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
+0x00530150,_AIRetreatFromDestination,237,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
+0x00530240,_AISysCharacterMovement,464,"void __cdecl (AISYS *, AIPACKET *, APIOBJECT *, i32)"
 0x00530410,_CreateAIMessageSys,142,"AIMESSAGESYS *__cdecl (VARIPTR *, VARIPTR *, i32)"
 0x005304a0,_SetAIMessage,35,"void __cdecl (AIMESSAGESYS *, char *, f32, AIMESSAGE *)"
 0x005304d0,_GetAIMessage,34,"f32 __cdecl (AIMESSAGESYS *, char *, AIMESSAGE *)"
@@ -4382,24 +4382,24 @@ address,symbol,size,ctype
 0x534bc0,_creatureEditor_cbGroupMenu,417,"void __cdecl (eduimenu_s *, eduiitem_s *, u32)"
 0x534d70,_creatureEditorDeleteMenu,153,
 0x534e10,_FollowAPIObject,266,"void __cdecl (APIOBJECT *, APIOBJECT *, i32, f32)"
-0x534f20,_Action_FollowOpponent,214,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535000,_Action_FollowPlayer,218,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x5350e0,_Action_Circle,821,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535420,_Action_CirclePlayer,648,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x5356b0,_Action_CircleOpponent,652,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535940,_Action_MoveAwayFromOpponent,352,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535aa0,_Action_MoveAwayFromPlayer,347,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535c00,_Action_MoveAwayFromPlayer2,347,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535d60,_Action_RetreatFromOpponent,299,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535e90,_Action_RetreatFromNearestOpponent,289,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x535fc0,_Action_GoToNode,463,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x536190,_Action_GoToNodeRandom,415,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x536330,_Action_GoToOrigin,975,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x536700,_Action_GoToLocator,1715,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x536dc0,_Action_FollowPath,501,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x536fc0,_Action_MoveAwayFromNode,478,"i32 __cdecl (AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
-0x005371a0,_AISysUpdateCharacterPathPos,458,"void __cdecl (AISYS_PC *, APIOBJECT *, AIPACKET *, i32, f32)"
-0x00537370,_AISysProcessCharacter,1424,"void __cdecl (AISYS_PC *, APIOBJECT *, AIPACKET *, i32, f32, i32, i32)"
+0x534f20,_Action_FollowOpponent,214,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535000,_Action_FollowPlayer,218,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x5350e0,_Action_Circle,821,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535420,_Action_CirclePlayer,648,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x5356b0,_Action_CircleOpponent,652,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535940,_Action_MoveAwayFromOpponent,352,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535aa0,_Action_MoveAwayFromPlayer,347,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535c00,_Action_MoveAwayFromPlayer2,347,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535d60,_Action_RetreatFromOpponent,299,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535e90,_Action_RetreatFromNearestOpponent,289,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x535fc0,_Action_GoToNode,463,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x536190,_Action_GoToNodeRandom,415,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x536330,_Action_GoToOrigin,975,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x536700,_Action_GoToLocator,1715,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x536dc0,_Action_FollowPath,501,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x536fc0,_Action_MoveAwayFromNode,478,"i32 __cdecl (AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32)"
+0x005371a0,_AISysUpdateCharacterPathPos,458,"void __cdecl (AISYS *, APIOBJECT *, AIPACKET *, i32, f32)"
+0x00537370,_AISysProcessCharacter,1424,"void __cdecl (AISYS *, APIOBJECT *, AIPACKET *, i32, f32, i32, i32)"
 0x537900,_AISYSRebuildFromEditorData,3327,
 0x538600,_aieditor_Save,539,
 0x538820,_aieditor_Leave,216,
@@ -4487,25 +4487,25 @@ address,symbol,size,ctype
 0x53ddd0,_RatioBetweenPlanes,105,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x53de40,_SockDistanceToLineXZ,135,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *)"
 0x53ded0,_SockRatioBetweenEdgesXZ,74,"f32 __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
-0x53df20,_SockSysFindInScene,1157,"void __cdecl (SOCKSYS_PC *, NUGSCN *)"
-0x53e3b0,_SockSysInit,84,"SOCKSYS_PC *__cdecl (VARIPTR *, VARIPTR, NUGSCN *)"
+0x53df20,_SockSysFindInScene,1157,"void __cdecl (SOCKSYS *, NUGSCN *)"
+0x53e3b0,_SockSysInit,84,"SOCKSYS *__cdecl (VARIPTR *, VARIPTR, NUGSCN *)"
 0x53e410,_SockEdgeAnglesXY,120,"void __cdecl (NUVEC *, NUVEC *, u16 *, u16 *)"
 0x53e490,_SockRailAngles,877,"SOCKROT *__cdecl (SOCK *, NUGSPLINE *, SOCKROT *)"
 0x53e800,_fun_0053e800,1,
 0x53e810,_SockSysPointAlongSpline,81,"void __cdecl (NUVEC *, NUGSPLINE *, i32, i32, f32)"
-0x53e870,_SockSysTrackInSplineInfo,140,"i32 __cdecl (SOCKSYS_PC *, SOCKPOSITION *, NUVEC *, f32 *)"
-0x53e900,_FillSockPosition,634,"void __cdecl (SOCKSYS_PC *, SOCKPOSITION *)"
+0x53e870,_SockSysTrackInSplineInfo,140,"i32 __cdecl (SOCKSYS *, SOCKPOSITION *, NUVEC *, f32 *)"
+0x53e900,_FillSockPosition,634,"void __cdecl (SOCKSYS *, SOCKPOSITION *)"
 0x53eb80,_SockSysPointAlongMID,111,"void __cdecl (SOCK *, SOCKPOSITION *, NUVEC *)"
-0x53ebf0,_BestSockPosition,1261,"f32 __cdecl (SOCKSYS_PC *, NUVEC *, SOCKPOSITION *, i32, i32)"
-0x53f0e0,_MoveSockPosition,669,"void __cdecl (SOCKSYS_PC *, SOCKPOSITION *, f32, SOCKPOSITION *)"
+0x53ebf0,_BestSockPosition,1261,"f32 __cdecl (SOCKSYS *, NUVEC *, SOCKPOSITION *, i32, i32)"
+0x53f0e0,_MoveSockPosition,669,"void __cdecl (SOCKSYS *, SOCKPOSITION *, f32, SOCKPOSITION *)"
 0x53f380,_ComplexSockAngles,696,void __cdecl (SOCKROT *)
 0x0053f640,_SetSockPostion,241,
 0x53f740,_SetSockBit,39,"void __cdecl (SOCK *, i32)"
 0x53f770,_SockBitSet,47,"i32 __cdecl (SOCK *, i32)"
-0x53f7a0,_MidDistanceFromSockStart,64,"f32 __cdecl (SOCKSYS_PC *, SOCKPOSITION *)"
+0x53f7a0,_MidDistanceFromSockStart,64,"f32 __cdecl (SOCKSYS *, SOCKPOSITION *)"
 0x53f7e0,_FindSock,71,
 0x53f830,_SockSegmentsAhead,168,"i32 __cdecl(SOCK*,i32,i32*,i32*)"
-0x53f8e0,_EnforceSockYLimits,87,"f32 __cdecl (f32, SOCKPOSITION *, SOCKSYS_PC *)"
+0x53f8e0,_EnforceSockYLimits,87,"f32 __cdecl (f32, SOCKPOSITION *, SOCKSYS *)"
 0x53f940,_SockParCircuit,10,"void __cdecl (NUFPAR *, void *)"
 0x53f950,_SockParCurSpeed,23,"void __cdecl (NUFPAR *, void *)"
 0x53f970,_SockParMidRangeInner,23,"void __cdecl (NUFPAR *, void *)"
@@ -4564,19 +4564,19 @@ address,symbol,size,ctype
 0x540360,_SockManCam_MAX_Y,26,"void __cdecl (NUFPAR *, void *)"
 0x540380,_SockTerrainCamInActive,16,"void __cdecl (NUFPAR *, void *)"
 0x540390,_SockSysConfigureNuFPar,345,"void __cdecl (NUFPAR *, void *)"
-0x5404f0,_SockSys_Configure,254,"void __cdecl (SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *)"
+0x5404f0,_SockSys_Configure,254,"void __cdecl (SOCKSYS *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *)"
 0x5405f0,_PerspectMidPoint,122,"void __cdecl(NUVEC*,NUVEC*,NUVEC*,NUVEC*)"
-0x540670,_CalculateDistanceToNearestSide,351,"f32 __cdecl(NUVEC *, SOCKPOSITION *, i32, SOCKSYS_PC *)"
+0x540670,_CalculateDistanceToNearestSide,351,"f32 __cdecl(NUVEC *, SOCKPOSITION *, i32, SOCKSYS *)"
 0x5407d0,_CalculateDistanceToNearestEnd,743,
-0x540ac0,_CalculateDistanceToSpecificSideOrEnd,75,"f32 __cdecl(i32, NUVEC *, SOCKPOSITION *, i32, SOCKSYS_PC *)"
-0x540b10,_TurnOffAllSocksExcept,297,"void __cdecl(SOCKSYS_PC *, i32)"
-0x540c40,_RestoreLastSocksTurnoff,220,void __cdecl(SOCKSYS_PC *)
-0x00540d20,_SockRotationMatrix,1804,"void __cdecl (SOCKSYS_PC *, SOCKPOSITION *, NUMTX *, i32, i32)"
+0x540ac0,_CalculateDistanceToSpecificSideOrEnd,75,"f32 __cdecl(i32, NUVEC *, SOCKPOSITION *, i32, SOCKSYS *)"
+0x540b10,_TurnOffAllSocksExcept,297,"void __cdecl(SOCKSYS *, i32)"
+0x540c40,_RestoreLastSocksTurnoff,220,void __cdecl(SOCKSYS *)
+0x00540d20,_SockRotationMatrix,1804,"void __cdecl (SOCKSYS *, SOCKPOSITION *, NUMTX *, i32, i32)"
 0x541430,_SockOn,44,
 0x541460,_SockOff,44,
-0x541490,_SockSysSetObjectVisibility,90,"void __cdecl (SOCKSYS_PC *, i32, i32)"
-0x5414f0,_SockSys_GenerateData,1742,"void __cdecl (SOCKSYS_PC *, VARIPTR *, VARIPTR)"
-0x541bc0,_ComplexSockPosition,663,"void __cdecl (SOCKSYS_PC *, NUVEC *, i32, i32, SOCKPOSITION *)"
+0x541490,_SockSysSetObjectVisibility,90,"void __cdecl (SOCKSYS *, i32, i32)"
+0x5414f0,_SockSys_GenerateData,1742,"void __cdecl (SOCKSYS *, VARIPTR *, VARIPTR)"
+0x541bc0,_ComplexSockPosition,663,"void __cdecl (SOCKSYS *, NUVEC *, i32, i32, SOCKPOSITION *)"
 0x541e60,_SockSysCamera,4858,
 0x543160,_SockSysCameraWithOverlapBlend,1167,
 0x5435f0,_slotname,35,
@@ -4739,7 +4739,7 @@ address,symbol,size,ctype
 0x54a100,_CentreTwoPlayerCamera,122,"void __cdecl (NUVEC *, NUVEC *, NUVEC *, NUVEC *)"
 0x54a180,_NarrowSockExceptions_Init,55,
 0x0054a1c0,_NarrowSockPositionAllowed,123,
-0x54a240,_ObjInNarrowSock,163,"i32 __cdecl (GAMEOBJECT *, SOCKSYS_PC *, i32)"
+0x54a240,_ObjInNarrowSock,163,"i32 __cdecl (GAMEOBJECT *, SOCKSYS *, i32)"
 0x54a2f0,_GameCam_Reset,232,void __cdecl(GAMECAMERA *)
 0x54a3e0,_GameCam_Blend,298,"void __cdecl (GAMECAMERA *, f32, f32, i32)"
 0x54a510,_GameCam_GetAdjustedYRot,60,u16 __cdecl (GAMECAMERA *)
@@ -4812,14 +4812,14 @@ address,symbol,size,ctype
 0x54db40,_Grapples_Draw,231,
 0x0054dc30,?GrappleAttachmentPositions@@YAHPAUgameobject_s@@PAPAUnuvec_s@@@Z,126,
 0x54dcb0,_Grapple_DrawLine,461,
-0x54de80,_Grapple_Activate,39,"void __cdecl(GIZMO_PC *, i32)"
-0x54deb0,_Grapple_SetVisibility,30,"void __cdecl(GIZMO_PC *, i32)"
+0x54de80,_Grapple_Activate,39,"void __cdecl(GIZMO *, i32)"
+0x54deb0,_Grapple_SetVisibility,30,"void __cdecl(GIZMO *, i32)"
 0x54ded0,_Grapples_GetMaxGizmos,25,i32 __cdecl(void *)
 0x54def0,_Grapples_AddGizmos,100,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x54df60,_Grapple_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x54df70,_Grapple_GetOutput,72,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x54dfc0,_Grapple_GetOutputName,32,"char *__cdecl(GIZMO_PC *, i32)"
-0x54dfe0,_Grapple_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x54df60,_Grapple_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x54df70,_Grapple_GetOutput,72,"i32 __cdecl(GIZMO *, i32, i32)"
+0x54dfc0,_Grapple_GetOutputName,32,"char *__cdecl(GIZMO *, i32)"
+0x54dfe0,_Grapple_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x54dff0,_Grapples_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x54e010,_Grapples_ClearProgress,22,"void __cdecl(void *, void *)"
 0x54e030,_Grapples_StoreProgress,129,"void __cdecl(void *, void *, void *)"
@@ -4928,9 +4928,9 @@ address,symbol,size,ctype
 0x554840,_GizSpinner_PanelDraw,1,"void __cdecl(void *, void *, f32)"
 0x554850,_GizSpinner_GetMaxGizmos,18,i32 __cdecl(void *)
 0x554870,_GizSpinner_AddGizmos,139,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x554900,_GizSpinner_GetGizmoName,17,char * __cdecl(GIZMO_PC *)
+0x554900,_GizSpinner_GetGizmoName,17,char * __cdecl(GIZMO *)
 0x554920,_GizSpinner_GetOutputName,173,"char *__cdecl(void *, i32)"
-0x5549d0,_GizSpinner_GetNumOutputs,14,i32 __cdecl(GIZMO_PC *)
+0x5549d0,_GizSpinner_GetNumOutputs,14,i32 __cdecl(GIZMO *)
 0x005549e0,?GizSpinner_WithinOutput@@YAHPAUGIZSPINNER_s@@@Z,216,
 0x00554ac0,?SpinnerSeekOutput@@YAXPAUGIZSPINNER_s@@H@Z,640,
 0x554d40,_GizSpinner_GetState,42,i32 __cdecl(GIZSPINNER_s *)
@@ -4942,22 +4942,22 @@ address,symbol,size,ctype
 0x5553a0,_GizSpinner_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x5553c0,_GizSpinner_ClearProgress,22,"void __cdecl(void *, void *)"
 0x5553e0,?SpinnerResetEntry@@YAXPAUGIZSPINNER_s@@PAUSpinnerProgressEntry@@@Z,366,
-0x555550,_GizSpinner_Activate,40,"void __cdecl(GIZMO_PC *, i32)"
-0x555580,_GizSpinner_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
+0x555550,_GizSpinner_Activate,40,"void __cdecl(GIZMO *, i32)"
+0x555580,_GizSpinner_GetPos,21,NUVEC * __cdecl(GIZMO *)
 0x5555a0,_GizSpinner_SetVisibility,524,
 0x5557b0,_GizSpinner_GetSpinnerPos,34,"void __cdecl(GIZSPINNER_s *, NUVEC *)"
 0x5557e0,_GizSpinner_UsingSpecial,336,"i32 __cdecl(void *, void *, i32, char *)"
 0x555930,_GizSpinner_BoltHitPlat,138,void private ABI: EAX spinner; ESI bolt; stack flags pointer
-0x5559c0,GizSpinner_BoltHitPlatAll,174,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
+0x5559c0,GizSpinner_BoltHitPlatAll,174,"i32 __cdecl(WORLDINFO *, void *, BOLT *, u8 *)"
 0x555a70,_GizSpinner_GetBestBoltTarget,1332,
 0x555fb0,_GizSpinner_Find,215,"GIZSPINNER_s * __cdecl(WORLDINFO *, NUVEC *, i32)"
 0x556090,_GizSpinner_FindNearest,213,"GIZSPINNER_s *__cdecl(NUVEC *, WORLDINFO *, f32 *)"
-0x556170,_GizSpinner_GetOutput,30,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x556170,_GizSpinner_GetOutput,30,"i32 __cdecl(GIZMO *, i32, i32)"
 0x556190,_GizSpinner_Update,1865,void __cdecl(GIZSPINNER_s *)
 0x5568e0,_GizSpinners_Update,998,
 0x556cd0,_GizSpinner_GetNearestTargetPoint,454,
 0x556ea0,_GizSpinner_ResetAll,151,"void __cdecl(void *, void *, void *)"
-0x556f40,_GizSpinner_HasBoltHit,3,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
+0x556f40,_GizSpinner_HasBoltHit,3,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT *, i32, u8 *)"
 0x556f50,_Spinner_RegisterGizmo,312,
 0x557090,_GizobstacleNuError,1,
 0x5570a0,_GizobstacleVuVecMake,28,
@@ -4969,7 +4969,7 @@ address,symbol,size,ctype
 0x00557580,_GizmoObstacle_Activate,119,"void __cdecl (void *, i32)"
 0x557600,_fun_00557600,42,
 0x00557630,_GizmoObstacle_SetVisibility,60,"void __cdecl (void *, i32)"
-0x557670,_GizmoObstacle_GetPos,21,NUVEC * __cdecl (GIZMO_PC *)
+0x557670,_GizmoObstacle_GetPos,21,NUVEC * __cdecl (GIZMO *)
 0x557690,_GizObstacle_EvalAveragePosAndRadius,48,
 0x5576c0,_GizObstacle_ResetOnePrivate,288,
 0x5577e0,_GizObstacles_Reset,349,"void __cdecl (void *, void *, void *)"
@@ -4990,10 +4990,10 @@ address,symbol,size,ctype
 0x558670,_GizObstacles_Draw,119,"void __cdecl (void *, void *, f32)"
 0x005586f0,_GizObstacles_GetMaxGizmos,25,i32 __cdecl (void *)
 0x558710,_GizObstacles_AddGizmos,92,"void __cdecl (void *, i32, void *, void *)"
-0x00558770,_GizmoObstacle_GetGizmoName,14,char * __cdecl (GIZMO_PC *)
-0x00558780,_GizmoObstacle_GetOutput,168,"i32 __cdecl (GIZMO_PC *, i32, i32)"
-0x00558830,_GizmoObstacle_GetOutputName,72,"char * __cdecl (GIZMO_PC *, i32)"
-0x558880,_GizmoObstacle_GetNumOutputs,6,i32 __cdecl (GIZMO_PC *)
+0x00558770,_GizmoObstacle_GetGizmoName,14,char * __cdecl (GIZMO *)
+0x00558780,_GizmoObstacle_GetOutput,168,"i32 __cdecl (GIZMO *, i32, i32)"
+0x00558830,_GizmoObstacle_GetOutputName,72,"char * __cdecl (GIZMO *, i32)"
+0x558880,_GizmoObstacle_GetNumOutputs,6,i32 __cdecl (GIZMO *)
 0x00558890,_GizObstacles_AllocateProgressData,21,"void * __cdecl (VARIPTR *, VARIPTR *)"
 0x005588b0,_GizObstacles_ClearProgress,99,"void __cdecl (void *, void *)"
 0x558920,_GizObstacle_FindByName,70,
@@ -5002,7 +5002,7 @@ address,symbol,size,ctype
 0x005589b0,_GizObstacles_StoreProgress,179,"void __cdecl (void *, void *, void *)"
 0x558a70,_GizObstacles_Hit,295,"i32 __cdecl (void *, GIZOBSTACLE *, NUVEC *, i32, i32)"
 0x558ba0,_GizObstacles_BoltHitPlat,191,
-0x558c60,_GizObstacles_GetBestBoltTarget,943,"GIZMO_PC * __cdecl (GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
+0x558c60,_GizObstacles_GetBestBoltTarget,943,"GIZMO * __cdecl (GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
 0x559010,_GizObstacles_BoltHit,679,
 0x5592c0,_GizObstacles_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x00559300,_GizmoObstacle_ActivateRev,229,"i32 __cdecl (void *, i32, i32)"
@@ -5030,7 +5030,7 @@ address,symbol,size,ctype
 0x559db0,_GizmoSysPanelDraw,97,"void __cdecl (void *, void *, f32)"
 0x559e20,_GizmoGetTypeIDByName,85,"i32 __cdecl (void *, char *)"
 0x559e80,_ResetGizmoType,88,
-0x559ee0,_AddGizmo,112,"GIZMO_PC *__cdecl(void *,i32,char *,void *)"
+0x559ee0,_AddGizmo,112,"GIZMO *__cdecl(void *,i32,char *,void *)"
 0x559f50,_GizmoFindByData,205,
 0x0055a020,_GizmoFindByName,244,"void * __cdecl (void *, i32, char *)"
 0x55a120,_GizmoGetName,52,
@@ -5047,7 +5047,7 @@ address,symbol,size,ctype
 0x55a970,_GizmoIsNameUnique,144,"i32 __cdecl(GIZMOSYS_PREFIX *,char *)"
 0x55aa00,_GizmoNameUsesPrefix,89,"i32 __cdecl(char *,char *)"
 0x55aa60,_GizmoGetUniqueName,354,"i32 __cdecl(GIZMOSYS_PREFIX *,char *,char *,char *,i32)"
-0x55abd0,_GizmoSys_BoltHitPlat,118,"i32 __cdecl(void*,WORLDINFO*,BOLT_PC*,u8*)"
+0x55abd0,_GizmoSys_BoltHitPlat,118,"i32 __cdecl(void*,WORLDINFO*,BOLT*,u8*)"
 0x55ac50,_fun_0055ac50,36,
 0x55ac80,_GizmoAppendSpecialErrorPrivate,74,
 0x55acd0,_Gizmo_FindNuSpecial,151,"i32 __cdecl (NUGSCN *, nuhspecial_s *, char *, i32, void *, char *, char *)"
@@ -5141,7 +5141,7 @@ address,symbol,size,ctype
 0x55f210,_Player_HasFastBuild,49,i32 __cdecl(GAMEOBJECT*)
 0x55f250,_Player_HasDeflectBolts,49,i32 __cdecl(GAMEOBJECT*)
 0x55f290,_fun_0055f290,46,
-0x55f2c0,_Player_HasDoubleBoltDamage_FromBolt,82,i32 __cdecl(BOLT_PC*)
+0x55f2c0,_Player_HasDoubleBoltDamage_FromBolt,82,i32 __cdecl(BOLT*)
 0x0055f320,_Player_HasDoubleWeaponDamage,49,i32 __cdecl (GAMEOBJECT *)
 0x55f360,_CanWearHatsInFreePlay,71,i32 __cdecl(i32)
 0x55f3b0,_WorldinfoNuError,1,
@@ -5275,49 +5275,49 @@ address,symbol,size,ctype
 0x5667f0,_gizmoblowup_reservebuffers,82,void *__cdecl (WORLDINFO *)
 0x566850,_Blowup_GetMaxGizmos,25,i32 __cdecl(void *)
 0x566870,_Blowup_AddGizmos,105,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x5668e0,_Blowup_GetGizmoName,19,char * __cdecl(GIZMO_PC *)
-0x566900,_Blowup_GetOutput,76,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x566950,_Blowup_GetOutputName,20,"char * __cdecl(GIZMO_PC *, i32)"
-0x566970,_Blowup_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x5668e0,_Blowup_GetGizmoName,19,char * __cdecl(GIZMO *)
+0x566900,_Blowup_GetOutput,76,"i32 __cdecl(GIZMO *, i32, i32)"
+0x566950,_Blowup_GetOutputName,20,"char * __cdecl(GIZMO *, i32)"
+0x566970,_Blowup_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x566980,_Blowup_SetVisibility,159,
-0x566a20,_Blowup_GetVisibility,31,i32 __cdecl(GIZMO_PC *)
-0x566a40,_GizmoBlowup_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
+0x566a20,_Blowup_GetVisibility,31,i32 __cdecl(GIZMO *)
+0x566a40,_GizmoBlowup_GetPos,15,NUVEC * __cdecl(GIZMO *)
 0x566a50,_Blowup_AllocateProgressData,24,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x566a70,_Blowup_ClearProgress,69,"void __cdecl(void *, void *)"
 0x566ac0,_Blowup_StoreProgress,223,"void __cdecl(void *, void *, void *)"
-0x566ba0,_Blowup_Reset,119,void(GIZMOBLOWUP_PC *)
-0x566c20,_GizBlowup_Respawn,379,void __cdecl(GIZMOBLOWUP_PC *)
+0x566ba0,_Blowup_Reset,119,void(GIZMOBLOWUP *)
+0x566c20,_GizBlowup_Respawn,379,void __cdecl(GIZMOBLOWUP *)
 0x566da0,_GizmoBlowups_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x566de0,_GizmoBlowupTypeAdd,395,"GIZMOBLOWUPTYPE *__cdecl (WORLDINFO *, nuhspecial_s *, i32, i32 *)"
 0x566f70,_GizmoBlowupTypeRemove,290,"void __cdecl (GIZMOBLOWUPTYPE *, WORLDINFO *)"
 0x5670a0,_GizmoBlowup_SetAutoSetReflectY,131,
-0x567130,_GizmoSwapBlowups,91,"void __cdecl (GIZMOBLOWUP_PC *, GIZMOBLOWUP_PC *)"
+0x567130,_GizmoSwapBlowups,91,"void __cdecl (GIZMOBLOWUP *, GIZMOBLOWUP *)"
 0x567190,_GizmoSortBlowups,302,void __cdecl (WORLDINFO *)
-0x5672c0,_BlowupObjEmit_Stop,1,void __cdecl (PART_PC *)
-0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP_PC *, i32, i32, GAMEOBJECT *)"
-0x00567800,_GizmoBlowupBlowup,1440,"i32 __cdecl (GIZMOBLOWUP_PC *, i32, i32, i32, GAMEOBJECT *, i32)"
-0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP_PC*)
+0x5672c0,_BlowupObjEmit_Stop,1,void __cdecl (PART *)
+0x5672d0,_GizmoBlowUp_AddEffects,1322,"void __cdecl (NUVEC *, GIZMOBLOWUP *, i32, i32, GAMEOBJECT *)"
+0x00567800,_GizmoBlowupBlowup,1440,"i32 __cdecl (GIZMOBLOWUP *, i32, i32, i32, GAMEOBJECT *, i32)"
+0x567da0,_UpdateMidPos,616,void __cdecl(GIZMOBLOWUP*)
 0x568010,_GizmoBlowupEarlyUpdate,1122,"void __cdecl (void *, void *, f32)"
 0x568480,_PlayAnim,106,"void __cdecl (NUINSTANIM *, f32 *, f32, i32)"
 0x5684f0,_GizmoBlowupLateUpdate,98,"void __cdecl (void *, void *, f32)"
 0x568560,_GizmoBlowupTypeNameBlank,29,i32 __cdecl (char *)
-0x568580,_GizBlowup_InitSingleTerrain,286,i32 __cdecl (GIZMOBLOWUP_PC *)
+0x568580,_GizBlowup_InitSingleTerrain,286,i32 __cdecl (GIZMOBLOWUP *)
 0x5686a0,_GizBlowup_InitTerrain,106,void __cdecl (void)
-0x568710,_GizBlowup_DeleteSingleTerrain,79,void __cdecl (GIZMOBLOWUP_PC *)
+0x568710,_GizBlowup_DeleteSingleTerrain,79,void __cdecl (GIZMOBLOWUP *)
 0x568760,_GizBlowup_DeleteTerrain,141,void __cdecl (void)
-0x5687f0,_GizmoBlowupUpdateMatrix,154,void __cdecl (GIZMOBLOWUP_PC *)
-0x568890,_GizmoBlowupGenDecalMatrix,191,"void __cdecl (GIZMOBLOWUP_PC *, NUMTX *, i32)"
-0x568950,_GizmoBlowupGenShadowMatrix,150,"void __cdecl (GIZMOBLOWUP_PC *, NUMTX *)"
+0x5687f0,_GizmoBlowupUpdateMatrix,154,void __cdecl (GIZMOBLOWUP *)
+0x568890,_GizmoBlowupGenDecalMatrix,191,"void __cdecl (GIZMOBLOWUP *, NUMTX *, i32)"
+0x568950,_GizmoBlowupGenShadowMatrix,150,"void __cdecl (GIZMOBLOWUP *, NUMTX *)"
 0x5689f0,_GizmoBlowup_FindType,131,"GIZMOBLOWUPTYPE * __cdecl (char *, WORLDINFO *)"
 0x568a80,_gizmoblowup_Load,3213,"i32 __cdecl (void *, void *)"
 0x569710,_GizmoBlowupsFinalSetup,615,void __cdecl (WORLDINFO *)
-0x569980,_GizmoBlowUpOpponent,724,"GIZMOBLOWUP_PC *__cdecl(GAMEOBJECT *,f32,f32,f32,i32,u32,u32,u32)"
+0x569980,_GizmoBlowUpOpponent,724,"GIZMOBLOWUP *__cdecl(GAMEOBJECT *,f32,f32,f32,i32,u32,u32,u32)"
 0x569c60,_GetLevelExBlowupFlags,6,u32 __cdecl (void)
-0x569c70,_GizmoBlowUp_Hit,1046,"GIZMOBLOWUP_PC *__cdecl (GAMEOBJECT *,NUVEC *,i32,f32,NUVEC *,NUVEC *,BOLT_PC *,u32,u8 *)"
+0x569c70,_GizmoBlowUp_Hit,1046,"GIZMOBLOWUP *__cdecl (GAMEOBJECT *,NUVEC *,i32,f32,NUVEC *,NUVEC *,BOLT *,u32,u8 *)"
 0x56a090,_GizmoBlowup_HitBlowup,263,
-0x56a1a0,_GizmoBlowUp_FindFromPlatID,60,"GIZMOBLOWUP_PC *__cdecl (WORLDINFO *, i32)"
-0x56a1e0,_GizmoBlowUp_FindByName,83,"GIZMOBLOWUP_PC *__cdecl (WORLDINFO *, char *)"
-0x56a240,_GizmoBlowUp_Target,878,"GIZMOBLOWUP_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
+0x56a1a0,_GizmoBlowUp_FindFromPlatID,60,"GIZMOBLOWUP *__cdecl (WORLDINFO *, i32)"
+0x56a1e0,_GizmoBlowUp_FindByName,83,"GIZMOBLOWUP *__cdecl (WORLDINFO *, char *)"
+0x56a240,_GizmoBlowUp_Target,878,"GIZMOBLOWUP* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32,i32)"
 0x0056a5b0,_GizmoBlowupCheckProximity,522,"i32 __cdecl (WORLDINFO *, GAMEOBJECT *)"
 0x56a7c0,_GizmoBlowupVisibilityOverrides,153,void __cdecl (WORLDINFO *)
 0x56a860,_GizmoBlowupTypeGetCount,19,i32 __cdecl (WORLDINFO *)
@@ -5326,8 +5326,8 @@ address,symbol,size,ctype
 0x0056a9b0,_GizmoBlowupResetNameTable,31,void __cdecl (void)
 0x56a9d0,_GizmoBlowupGetNameTableId,110,i32 __cdecl (char *)
 0x56aa40,_GizmoBlowupGetTypeFromNameTableId,110,"i32 __cdecl (WORLDINFO *, i32)"
-0x56aab0,_FindNearestGizmoBlowUp,843,"GIZMOBLOWUP_PC *__cdecl (WORLDINFO *, NUVEC *, f32)"
-0x56ae00,_Blowup_Activate,104,"void __cdecl(GIZMO_PC *, i32)"
+0x56aab0,_FindNearestGizmoBlowUp,843,"GIZMOBLOWUP *__cdecl (WORLDINFO *, NUVEC *, f32)"
+0x56ae00,_Blowup_Activate,104,"void __cdecl(GIZMO *, i32)"
 0x56ae70,_Blowups_Reset,354,
 0x56afe0,_GizmoBlowupDraw,378,
 0x56b160,_GizmoBlowupBurstDraw,1120,
@@ -5357,14 +5357,14 @@ address,symbol,size,ctype
 0x0056cea0,_GuideLines_Reset,136,"void __cdecl(WORLDINFO *, void *, GUIDELINE_PROGRESS *)"
 0x56cf30,_GuideLine_FindNearest,179,"INDY_GUIDELINE *__cdecl(NUVEC *, WORLDINFO *, i32 *, f32 *)"
 0x0056cff0,_GuideLines_Draw,1,"void __cdecl(void *, void *, f32)"
-0x0056d000,_GuideLine_Activate,28,"void __cdecl(GIZMO_PC *, i32)"
-0x0056d020,_GuideLine_SetVisibility,30,"void __cdecl(GIZMO_PC *, i32)"
+0x0056d000,_GuideLine_Activate,28,"void __cdecl(GIZMO *, i32)"
+0x0056d020,_GuideLine_SetVisibility,30,"void __cdecl(GIZMO *, i32)"
 0x0056d040,_GuideLines_GetMaxGizmos,25,i32 __cdecl(WORLDINFO *)
 0x0056d060,_GuideLines_AddGizmos,97,"void __cdecl(GIZMOSYS *, i32, WORLDINFO *, void *)"
-0x0056d0d0,_GuideLine_GetGizmoName,14,char *__cdecl(GIZMO_PC *)
-0x0056d0e0,_GuideLine_GetOutput,26,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x0056d100,_GuideLine_GetOutputName,6,"char *__cdecl(GIZMO_PC *, i32)"
-0x0056d110,_GuideLine_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x0056d0d0,_GuideLine_GetGizmoName,14,char *__cdecl(GIZMO *)
+0x0056d0e0,_GuideLine_GetOutput,26,"i32 __cdecl(GIZMO *, i32, i32)"
+0x0056d100,_GuideLine_GetOutputName,6,"char *__cdecl(GIZMO *, i32)"
+0x0056d110,_GuideLine_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x0056d120,_GuideLines_AllocateProgressData,21,"void *__cdecl(VARIPTR *, VARIPTR *)"
 0x0056d140,_GuideLines_ClearProgress,22,"void __cdecl(void *, GUIDELINE_PROGRESS *)"
 0x0056d160,_GuideLines_StoreProgress,126,"void __cdecl(WORLDINFO *, void *, GUIDELINE_PROGRESS *)"
@@ -5437,10 +5437,10 @@ address,symbol,size,ctype
 0x56f590,_GizmoPickups_Draw,64,"void __cdecl(void *, void *, f32)"
 0x56f5d0,_GizmoPickups_GetMaxGizmos,25,i32 __cdecl(void *)
 0x56f5f0,_GizmoPickups_AddGizmos,81,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x56f650,_GizmoPickup_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x56f660,_GizmoPickup_GetOutput,17,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x56f680,_GizmoPickup_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
-0x56f690,_GizmoPickup_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x56f650,_GizmoPickup_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x56f660,_GizmoPickup_GetOutput,17,"i32 __cdecl(GIZMO *, i32, i32)"
+0x56f680,_GizmoPickup_GetOutputName,6,"char * __cdecl(GIZMO *, i32)"
+0x56f690,_GizmoPickup_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x56f6a0,_GizmoPickup_Activate,335,
 0x56f7f0,_GizmoPickups_AllocateProgressData,24,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x56f810,_GizmoPickups_ClearProgress,69,"void __cdecl(void *, void *)"
@@ -5449,10 +5449,10 @@ address,symbol,size,ctype
 0x56f990,_AdjustPickupDrawDistance,89,void (i32 area; f32 *distance; i32 version) optimizer-internal ECX/EDX/stack
 0x56f9f0,_SetAreaPickupGravity,104,"void __cdecl(i32, i32)"
 0x56fa60,_GizmoPickups_ReserveBufferSpace,232,void * __cdecl(void *)
-0x56fb50,_GizmoPickup_SetVisibility,32,"void __cdecl(GIZMO_PC *, i32)"
+0x56fb50,_GizmoPickup_SetVisibility,32,"void __cdecl(GIZMO *, i32)"
 0x56fb70,_GizmoPickups_Reset,319,
 0x56fcb0,GizmoPickups_ResetAll,477,"void __cdecl(void *, void *, void *)"
-0x56fe90,_GizmoPickup_GetPos,15,NUVEC * __cdecl(GIZMO_PC *)
+0x56fe90,_GizmoPickup_GetPos,15,NUVEC * __cdecl(GIZMO *)
 0x56fea0,_GizmoPickups_Load,309,
 0x56ffe0,_GizmoPickups_TotalScore,79,u32 __cdecl (WORLDINFO *)
 0x570030,_GizmoPickup_NumberOfType,82,"i32 __cdecl (WORLDINFO *,i32,u8)"
@@ -5468,7 +5468,7 @@ address,symbol,size,ctype
 0x570a60,_ResetCoinPacket,23,void __cdecl(void *)
 0x570a80,_UpdateCoinPacket,298,"void __cdecl(PLAYER_COIN_PACKET*,i32,i32)"
 0x570bb0,_CoinsGoToMainTotal,78,i32 __cdecl (void)
-0x570c00,_PartUpdate_Heart,129,void __cdecl (PART_PC *)
+0x570c00,_PartUpdate_Heart,129,void __cdecl (PART *)
 0x570c90,_SpecialMiniKits_Configure,786,"void __cdecl(WORLDINFO *, char *)"
 0x570fb0,_SpecialMiniKits_Reset,126,void __cdecl(WORLDINFO *)
 0x571030,_SpecialMiniKits_Draw,760,void __cdecl(WORLDINFO *)
@@ -5483,13 +5483,13 @@ address,symbol,size,ctype
 0x00571b20,_Parts_Start,30,void __cdecl (WORLDINFO *)
 0x00571b40,_Parts_Stop,30,void __cdecl (WORLDINFO *)
 0x00571b60,_AddPartDebris,55,"void __cdecl (PARTDEBRISSYS *, i32, NUVEC *)"
-0x571ba0,_PartImpact_Brick,173,void __cdecl(PART_PC *)
-0x00571c50,_PartStop_Flickerer,38,void __cdecl (PART_PC *)
-0x00571c80,_PartDraw_Flickerer,108,i32 __cdecl (PART_PC *)
-0x571cf0,_FindIncomingPart,418,"PART_PC *__cdecl(void *, NUVEC *, f32, u32, f32)"
+0x571ba0,_PartImpact_Brick,173,void __cdecl(PART *)
+0x00571c50,_PartStop_Flickerer,38,void __cdecl (PART *)
+0x00571c80,_PartDraw_Flickerer,108,i32 __cdecl (PART *)
+0x571cf0,_FindIncomingPart,418,"PART *__cdecl(void *, NUVEC *, f32, u32, f32)"
 0x571ea0,_MakePartVector,380,"void __cdecl (NUVEC *, NUVEC *, f32)"
-0x572020,_TargetPart,692,"PART_PC* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32)"
-0x5722e0,_Part_FindFromHSpecial,90,PART_PC *__cdecl(nuhspecial_s *)
+0x572020,_TargetPart,692,"PART* __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*,f32,f32,i32,i32)"
+0x5722e0,_Part_FindFromHSpecial,90,PART *__cdecl(nuhspecial_s *)
 0x572340,_SurfacesVuVecMake,28,
 0x00572360,_SurfaceMaskOn,11,void __cdecl (u32 *)
 0x00572370,_SurfaceMaskOff,11,void __cdecl (u32 *)
@@ -5757,8 +5757,8 @@ address,symbol,size,ctype
 0x57ce40,_SetStopCutFlags,77,
 0x57ce90,_CutScene_SnapToEnd,21,
 0x57ceb0,_CutScene_StartAudio,1,void __cdecl (void)
-0x57cec0,_CutScenes_Stop,49,void __cdecl (CUTSYS_PC *)
-0x57cf00,_CutScenes_Destroy,108,void __cdecl(CUTSYS_PC *)
+0x57cec0,_CutScenes_Stop,49,void __cdecl (CUTSYS *)
+0x57cf00,_CutScenes_Destroy,108,void __cdecl(CUTSYS *)
 0x0057cf70,_CutScene_IsSkippable,22,i32 __cdecl (CUTINFO *)
 0x57cf90,_LocatorFunction_Blaster,189,
 0x57d050,_CutScene_ResetCharacters,65,
@@ -5795,14 +5795,14 @@ address,symbol,size,ctype
 0x57f9a0,?Bolt_RayCastPrivate@@YAHPAUbolt_s@@PAUnuvec_s@@1@Z,260,
 0x57fab0,?Bolt_GeneratePointsPrivate@@YAXPAUbolt_s@@PAUnuvec_s@@@Z,117,
 0x57fb30,?Bolt_OrientationPrivate@@YAXPAUbolt_s@@@Z,97,
-0x0057fba0,_Bolt_Alloc,123,BOLT_PC *__cdecl (void)
+0x0057fba0,_Bolt_Alloc,123,BOLT *__cdecl (void)
 0x57fc20,_fun_0057fc20,12,
 0x57fc30,_Bolt_Reflect,79,"void __cdecl(NUVEC *,NUVEC *,NUVEC *)"
-0x57fc80,_Bolt_AddDeflectedBolt,512,"void __cdecl(BOLT_PC*,NUVEC*,NUVEC*,u8*)"
-0x57fe80,_Bolt_PlayHitSfx,50,void __cdecl (BOLT_PC *)
-0x57fec0,_FindIncomingBolt,428,"BOLT_PC *__cdecl(GAMEOBJECT *, i32, i32)"
-0x580070,_Bolt_Find,165,"BOLT_PC *__cdecl(i32,NUVEC*,GAMEOBJECT*)"
-0x580120,_Bolt_End,36,"void __cdecl(BOLT_PC*,i32)"
+0x57fc80,_Bolt_AddDeflectedBolt,512,"void __cdecl(BOLT*,NUVEC*,NUVEC*,u8*)"
+0x57fe80,_Bolt_PlayHitSfx,50,void __cdecl (BOLT *)
+0x57fec0,_FindIncomingBolt,428,"BOLT *__cdecl(GAMEOBJECT *, i32, i32)"
+0x580070,_Bolt_Find,165,"BOLT *__cdecl(i32,NUVEC*,GAMEOBJECT*)"
+0x580120,_Bolt_End,36,"void __cdecl(BOLT*,i32)"
 0x580150,_BoltTypeStoreConfigPrivate,79,
 0x5801a0,_BT_name,62,void __cdecl(NUFPAR *)
 0x5801e0,_BT_speed,23,void __cdecl(NUFPAR *)
@@ -5836,8 +5836,8 @@ address,symbol,size,ctype
 0x00580920,_Bolt_GetShootOrigin_Default,35,"void __cdecl (GAMEOBJECT *, NUVEC *)"
 0x00580950,_Bolt_GetShootDirection_Default,74,"u16 __cdecl (GAMEOBJECT *, NUVEC *)"
 0x005809a0,_Bolt_ObjTargetPosYAdjust,54,f32 __cdecl (GAMEOBJECT *)
-0x5809e0,_Bolt_HitPartMode,42,i32 __cdecl (BOLT_PC *)
-0x580a10,_Bolt_HitParts,492,"PART_PC *__cdecl (BOLT_PC *,NUVEC *,NUVEC *,NUVEC *,f32,i32)"
+0x5809e0,_Bolt_HitPartMode,42,i32 __cdecl (BOLT *)
+0x580a10,_Bolt_HitParts,492,"PART *__cdecl (BOLT *,NUVEC *,NUVEC *,NUVEC *,f32,i32)"
 0x00580c00,_Bolt_Debris_Default,149,"void __cdecl (BOLT *, NUVEC *, i32, NUVEC *, i32)"
 0x580ca0,_BoltSys_Init,161,void __cdecl(BOLTSYS*)
 0x580d50,?Write32@NETMESSAGE@@QAEXABH@Z,59,void __thiscall NETMESSAGE::Write32(const i32 &)
@@ -5851,10 +5851,10 @@ address,symbol,size,ctype
 0x5811f0,_Bolt_HitGameObjectRC,2495,void __cdecl(NETMESSAGE&)
 0x581bb0,_Bolts_Draw,650,void __cdecl(WORLDINFO *)
 0x00581e40,_BoltTypes_Configure,362,"void __cdecl (WORLDINFO *, char *)"
-0x581fb0,_Bolt_HitGameObject,691,"i32 __cdecl(BOLT_PC*,GAMEOBJECT*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
-0x582270,_Bolt_HitGameObjects,499,"i32 __cdecl(BOLT_PC*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
+0x581fb0,_Bolt_HitGameObject,691,"i32 __cdecl(BOLT*,GAMEOBJECT*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
+0x582270,_Bolt_HitGameObjects,499,"i32 __cdecl(BOLT*,NUVEC*,NUVEC*,NUVEC*,f32,u8*)"
 0x582470,_Bolt_Init,2551,"void __cdecl (void *,NETMESSAGE &)"
-0x582e70,_Bolt_Add,433,"BOLT_PC *__cdecl(GAMEOBJECT*,NUVEC*,NUMTX*,i32,i32)"
+0x582e70,_Bolt_Add,433,"BOLT *__cdecl(GAMEOBJECT*,NUVEC*,NUMTX*,i32,i32)"
 0x583030,_Bolts_Update,2738,void __cdecl(WORLDINFO *)
 0x00583af0,_Bolt_Shoot,2722,"void __cdecl (GAMEOBJECT *, i32, i32)"
 0x5845a0,_fun_005845a0,1,
@@ -6183,8 +6183,8 @@ address,symbol,size,ctype
 0x58ff70,_GizBuildIts_PostLoad,79,"void __cdecl(void *, void *)"
 0x58ffc0,_GizBuildIts_ReserveBufferSpace,215,void * __cdecl(void *)
 0x5900a0,_GizBuildit_SetVisibility,49,"void __cdecl(GIZBUILDIT_s *, i32)"
-0x5900e0,_GizmoBuildit_SetVisibility,55,"void __cdecl(GIZMO_PC *, i32)"
-0x590120,_GizmoBuildit_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
+0x5900e0,_GizmoBuildit_SetVisibility,55,"void __cdecl(GIZMO *, i32)"
+0x590120,_GizmoBuildit_GetPos,21,NUVEC * __cdecl(GIZMO *)
 0x590140,_GizBuildit_Reset,996,
 0x590530,_GizBuildIts_Reset,217,"void __cdecl(void *, void *, void *)"
 0x590610,_GizBuildIts_EarlyUpdate,57,"void __cdecl(void *, void *, f32)"
@@ -6193,10 +6193,10 @@ address,symbol,size,ctype
 0x5907b0,_GizBuildIts_Draw,424,"void __cdecl(void *, void *, f32)"
 0x590960,_GizBuildIts_GetMaxGizmos,25,i32 __cdecl(void *)
 0x590980,_GizBuildIts_AddGizmos,89,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x5909e0,_GizmoBuildit_GetGizmoName,14,char * __cdecl(GIZMO_PC *)
-0x5909f0,_GizmoBuildit_GetOutput,40,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x590a20,_GizmoBuildit_GetOutputName,6,"char * __cdecl(GIZMO_PC *, i32)"
-0x590a30,_GizmoBuildit_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x5909e0,_GizmoBuildit_GetGizmoName,14,char * __cdecl(GIZMO *)
+0x5909f0,_GizmoBuildit_GetOutput,40,"i32 __cdecl(GIZMO *, i32, i32)"
+0x590a20,_GizmoBuildit_GetOutputName,6,"char * __cdecl(GIZMO *, i32)"
+0x590a30,_GizmoBuildit_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x590a40,_GizBuildIts_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x590a60,_GizBuildIts_ClearProgress,56,"void __cdecl(void *, void *)"
 0x590aa0,_GizBuildIts_StoreProgress,183,"void __cdecl(void *, void *, void *)"
@@ -6302,14 +6302,14 @@ address,symbol,size,ctype
 0x597780,_BlowUpSnakeBody,583,void __cdecl (GAMEOBJECT *)
 0x5979d0,_SnakeBeenHit,549,void __cdecl(GAMEOBJECT*)
 0x597c00,_CarryingVuVecMake,28,
-0x597c20,_SuperCarry_TurnBlowupBackOn,213,"i32 __cdecl(GIZMOBLOWUP_PC *, NUVEC *, u16, i32)"
-0x597d00,_SuperCarry_PartImpact,134,void __cdecl(PART_PC *)
-0x597d90,_SuperCarry_PartKill,61,"void __cdecl(PART_PC *, i32)"
+0x597c20,_SuperCarry_TurnBlowupBackOn,213,"i32 __cdecl(GIZMOBLOWUP *, NUVEC *, u16, i32)"
+0x597d00,_SuperCarry_PartImpact,134,void __cdecl(PART *)
+0x597d90,_SuperCarry_PartKill,61,"void __cdecl(PART *, i32)"
 0x597dd0,_SuperCarry_DrawObject,444,void __cdecl(GAMEOBJECT *)
 0x597f90,_SuperCarry_GetObjectPos,295,"void __cdecl(GAMEOBJECT*,NUVEC*,NUVEC*)"
 0x5980c0,_SuperCarry_Throw,1171,"void __cdecl(GAMEOBJECT *, i32)"
 0x598560,_SuperCarry_Possible,73,"i32 __cdecl(GAMEOBJECT *, i32)"
-0x5985b0,_SuperCarry_Start,717,"void __cdecl(GAMEOBJECT *, GIZMOBLOWUP_PC *, i32)"
+0x5985b0,_SuperCarry_Start,717,"void __cdecl(GAMEOBJECT *, GIZMOBLOWUP *, i32)"
 0x598880,_SuperCarry_MoveCode,3768,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x599740,_SuperCarry_SetTargetMom,228,"i32 __cdecl(GAMEOBJECT *,float)"
 0x599830,_SuperCarry_YRotation,290,"i32 __cdecl(GAMEOBJECT *,u16)"
@@ -6637,11 +6637,11 @@ address,symbol,size,ctype
 0x5ab730,_GizTurrets_PostLoad,84,"void __cdecl(void *, void *)"
 0x5ab790,_GizTurrets_AddLevelSfx,161,"void __cdecl(void *, void *, i32 *, i32 *, i32)"
 0x5ab840,_GizTurrets_ReserveBufferSpace,186,void * __cdecl(void *)
-0x5ab900,_GizmoTurret_Activate,70,"void __cdecl(GIZMO_PC *, i32)"
-0x5ab950,_GizmoTurret_ActivateRev,97,"i32 __cdecl(GIZMO_PC *, i32, i32)"
+0x5ab900,_GizmoTurret_Activate,70,"void __cdecl(GIZMO *, i32)"
+0x5ab950,_GizmoTurret_ActivateRev,97,"i32 __cdecl(GIZMO *, i32, i32)"
 0x5ab9c0,_fun_005ab9c0,45,
-0x5ab9f0,_GizmoTurret_SetVisibility,63,"void __cdecl(GIZMO_PC *, i32)"
-0x5aba30,_GizmoTurret_GetPos,21,NUVEC * __cdecl(GIZMO_PC *)
+0x5ab9f0,_GizmoTurret_SetVisibility,63,"void __cdecl(GIZMO *, i32)"
+0x5aba30,_GizmoTurret_GetPos,21,NUVEC * __cdecl(GIZMO *)
 0x5aba50,_GizTurrets_Reset,423,
 0x5abc00,GizTurrets_ResetAll,376,"void __cdecl(void *, void *, void *)"
 0x5abd80,_GizTurret_GetTgt,384,
@@ -6654,25 +6654,25 @@ address,symbol,size,ctype
 0x5ad1d0,_GizTurrets_Draw,119,"void __cdecl(void *, void *, f32)"
 0x5ad250,_GizTurrets_GetMaxGizmos,25,i32 __cdecl(void *)
 0x5ad270,_GizTurrets_AddGizmos,94,"void __cdecl(GIZMOSYS *, i32, void *, void *)"
-0x5ad2d0,_GizmoTurret_GetGizmoName,17,char * __cdecl(GIZMO_PC *)
-0x5ad2f0,_GizmoTurret_GetOutput,74,"i32 __cdecl(GIZMO_PC *, i32, i32)"
-0x5ad340,_GizmoTurret_GetOutputName,76,"char * __cdecl(GIZMO_PC *, i32)"
-0x5ad390,_GizmoTurret_GetNumOutputs,6,i32 __cdecl(GIZMO_PC *)
+0x5ad2d0,_GizmoTurret_GetGizmoName,17,char * __cdecl(GIZMO *)
+0x5ad2f0,_GizmoTurret_GetOutput,74,"i32 __cdecl(GIZMO *, i32, i32)"
+0x5ad340,_GizmoTurret_GetOutputName,76,"char * __cdecl(GIZMO *, i32)"
+0x5ad390,_GizmoTurret_GetNumOutputs,6,i32 __cdecl(GIZMO *)
 0x5ad3a0,_GizTurrets_AllocateProgressData,21,"void * __cdecl(VARIPTR *, VARIPTR *)"
 0x5ad3c0,_GizTurrets_ClearProgress,70,"void __cdecl(void *, void *)"
 0x5ad410,_GizTurret_FindByName,73,
 0x5ad460,_GizTurrets_StoreProgress,224,"void __cdecl(void *, void *, void *)"
 0x5ad540,_GizTurrets_Hit,672,"i32 __cdecl(WORLDINFO*,struct AI_TURRET_RECORD_PC*,NUVEC*,i32,i32)"
-0x5ad7e0,_GizTurrets_BoltHitPlat,246,"i32 __cdecl(WORLDINFO *, void *, BOLT_PC *, u8 *)"
-0x5ad8e0,_GizTurrets_GetBestBoltTarget,932,"GIZMO_PC * __cdecl(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
-0x5adc90,_GizTurrets_BoltHit,737,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, i32, u8 *)"
+0x5ad7e0,_GizTurrets_BoltHitPlat,246,"i32 __cdecl(WORLDINFO *, void *, BOLT *, u8 *)"
+0x5ad8e0,_GizTurrets_GetBestBoltTarget,932,"GIZMO * __cdecl(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)"
+0x5adc90,_GizTurrets_BoltHit,737,"i32 __cdecl(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT *, i32, u8 *)"
 0x5adf80,_GizTurrets_TotalScore,55,u32 __cdecl (WORLDINFO *)
 0x5adfc0,_GizTurrets_RegisterGizmo,318,ADDGIZMOTYPE * __cdecl(i32)
 0x5ae100,_GizspecialNuError,1,
 0x5ae110,_GizspecialVuVecMake,28,
 0x5ae130,_GizSpecial_GetMaxGizmos,18,
 0x5ae150,_GizSpecial_AddGizmos,98,
-0x005ae1c0,_createGizSpecial,344,"GIZMO_PC *__cdecl (void *, char *)"
+0x005ae1c0,_createGizSpecial,344,"GIZMO *__cdecl (void *, char *)"
 0x5ae320,_GizSpecial_GetName,5,char * __cdecl(GIZFLOW_SPECIAL *)
 0x5ae330,_GizSpecial_FindByName,93,"GIZFLOW_SPECIAL * __cdecl(char *, GIZFLOW_LOAD_WORLD *)"
 0x5ae390,_GizSpecial_GetGizmoName,14,
@@ -6755,7 +6755,7 @@ address,symbol,size,ctype
 0x5b00a0,_GizRandom_GetNumOutputs,10,
 0x5b00b0,_GizRandom_Activate,123,
 0x5b0130,_GizRandom_ReserveBufferSpace,122,
-0x005b01b0,_createGizRandom,148,"GIZMO_PC *__cdecl (void *, i32, i32 *, char *)"
+0x005b01b0,_createGizRandom,148,"GIZMO *__cdecl (void *, i32, i32 *, char *)"
 0x5b0250,_GizRandom_RegisterGizmo,229,
 0x5b0340,_GiztimersNuError,1,
 0x5b0350,_GiztimersVuVecMake,28,
@@ -6768,7 +6768,7 @@ address,symbol,size,ctype
 0x5b04a0,_GizTimer_GetNumOutputs,6,
 0x5b04b0,_GizTimer_Activate,61,
 0x5b04f0,_GizTimer_ReserveBufferSpace,93,
-0x005b0550,_createGizTimer,134,"GIZMO_PC *__cdecl (void *, f32, i32, char *)"
+0x005b0550,_createGizTimer,134,"GIZMO *__cdecl (void *, f32, i32, char *)"
 0x5b05e0,_GizTimer_Load,132,
 0x5b0670,_GizTimer_RegisterGizmo,249,
 0x5b0770,_GizminicutNuError,1,
@@ -10561,7 +10561,7 @@ address,symbol,size,ctype
 0x642520,_fun_00642520,1,
 0x642530,_PartRayCast,48,"i32 __cdecl PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags)"
 0x642560,_PartPlatId,5,"i32 __cdecl (void)"
-0x642570,_CastPart,1315,"void __cdecl CastPart(PART_PC *part, f32 time)"
+0x642570,_CastPart,1315,"void __cdecl CastPart(PART *part, f32 time)"
 0x642aa0,_edpartRegisterPointerToGameCharLocation,5,"void __cdecl (NUVEC *)"
 0x642ab0,_edpartPtlShelve,49,"void __cdecl (i32)"
 0x642af0,_edpartPlace,84,
@@ -10726,13 +10726,13 @@ address,symbol,size,ctype
 0x64a470,_NuPartResetGlobalTime,9,"void __cdecl (void)"
 0x64a480,_ResetParts,44,void __cdecl (void)
 0x64a4b0,_InitParts,643,"void __cdecl (i32, VARIPTR *, VARIPTR)"
-0x0064a740,_NewPartRotation,127,void __cdecl (PART_PC *)
-0x0064a7c0,_NewPartOrderedRotation,133,void __cdecl (PART_PC *)
+0x0064a740,_NewPartRotation,127,void __cdecl (PART *)
+0x0064a7c0,_NewPartOrderedRotation,133,void __cdecl (PART *)
 0x64a850,_PartTimeSlip,696,void __cdecl(void)
-0x0064ab10,_HitParts,371,"PART_PC *__cdecl (GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32)"
-0x0064ac90,_KillPart,175,"void __cdecl (PART_PC *, i32)"
+0x0064ab10,_HitParts,371,"PART *__cdecl (GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32)"
+0x0064ac90,_KillPart,175,"void __cdecl (PART *, i32)"
 0x64ad40,_KillAllParts,62,
-0x64ad80,_FindPart,182,"PART_PC * __cdecl(NUVEC *,i32,GAMEOBJECT *)"
+0x64ad80,_FindPart,182,"PART * __cdecl(NUVEC *,i32,GAMEOBJECT *)"
 0x0064ae40,_SetPartRTLSet,10,void __cdecl (RTLSET *)
 0x64ae50,_PARTStartOffset,373,"void __cdecl (i32, f32)"
 0x64afd0,_PARTLookupType,74,i32 __cdecl (char *)
@@ -10764,7 +10764,7 @@ address,symbol,size,ctype
 0x64c7b0,_edpartFileLoadEffects,1275,
 0x64ccb0,_edpartDataMenu,622,
 0x64cf20,_edpartOptMenu,847,
-0x0064d270,_AddPart,1884,PART_PC *__cdecl (ADDPART *)
+0x0064d270,_AddPart,1884,PART *__cdecl (ADDPART *)
 0x64d9d0,_PartCleanupTypes,201,void __cdecl(void)
 0x64daa0,_UpdatePartEmits,2728,void __cdecl UpdatePartEmits(f32 time)
 0x0064e550,_AddVariableShotPARTEffect,1441,"void __cdecl (i32, NUVEC *, f32, f32, NUMTX *)"
@@ -11431,7 +11431,7 @@ address,symbol,size,ctype
 0x67b9b0,_NewRayCastMask,394,"i32 __cdecl(NUVEC *,NUVEC *,f32,i32,i32)"
 0x67bb40,_NewRayCastSet,389,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,f32,i32,i32)"
 0x67bcd0,_NewRayCastSetMask,393,"i32 __cdecl(NUVEC *,NUVEC *,f32,f32,f32,i32,i32,i32)"
-0x67be60,_NewTerrAxisFreedom,113,"void __cdecl(TERRAIN_AXIS_FREEDOM_SHAPE_PC *,NUVEC *)"
+0x67be60,_NewTerrAxisFreedom,113,"void __cdecl(TERRAIN_AXIS_FREEDOM_SHAPE *,NUVEC *)"
 0x67bee0,_fun_0067bee0,15,
 0x67bef0,_fun_0067bef0,6,
 0x67bf00,_fun_0067bf00,78,
@@ -39648,17 +39648,17 @@ address,symbol,size,ctype
 0x87a974,_FreePlayBonusCount,4,i32
 0x87a978,_TargetDeg_Near,2,u16
 0x87a97c,_LevArea,16,AIAREA *[4]
-0x0087a98c,_LevGizmo,48,GIZMO_PC * [12]
+0x0087a98c,_LevGizmo,48,GIZMO * [12]
 0x87a9bc,_LoadTime,4,f32
 0x87a9c0,_LevHSpecialExists,8,u64
-0x87a9c8,_LevGamePart,32,PART_PC *[8]
+0x87a9c8,_LevGamePart,32,PART *[8]
 0x0087a9e8,_makefreeplaymodellist,4,i32
 0x87a9ec,_LevTime,20,f32 [5]
 0x87aa00,_LevPathCnx,64,void *[16]
 0x0087aa40,_LevFlag,16,i32[4]
 0x87aa50,_CharacterDataLoad,4,i32
 0x87aa58,_LevSfxFlag,16,i32[4]
-0x87aa68,_LevBlowUp,8,GIZMOBLOWUP_PC *[2]
+0x87aa68,_LevBlowUp,8,GIZMOBLOWUP *[2]
 0x87aa70,_LevAlpha,4,f32
 0x87aa74,_TargetDist_Mid2,4,f32
 0x87aa78,_TitlesAlpha,4,f32
@@ -40890,7 +40890,7 @@ address,symbol,size,ctype
 0x881ce8,_minesys,1864,MINESYS
 0x00882430,_podrace_section,4,i32
 0x882434,_PodRace_nsnipers,4,i32
-0x00882438,_podsprint,148,PODSPRINT_PC
+0x00882438,_podsprint,148,PODSPRINT
 0x8824cc,_pod_old_pos,24,NUVEC[2]
 0x8824e4,_pod_pacemaker_alpha,4,f32
 0x8824e8,_client_mines,792,CLIENT_MINES
@@ -40921,7 +40921,7 @@ address,symbol,size,ctype
 0x882ab4,_MaulA_hits_message,4,GIZAIMESSAGE *
 0x882ab8,?player_ix@?1??PodRaceSnipersUpdate@@9@9,4,
 0x882abc,_SebulbaMineSpecial,12,nuhspecial_s
-0x882ac8,_paintobst,24,GIZMO_PC *[6]
+0x882ac8,_paintobst,24,GIZMO *[6]
 0x882ae4,_ObiWan,4,GAMEOBJECT *
 0x882ae8,_LevForce,4,i32
 0x882aec,_forcetube,4,struct gizmo_s *
@@ -40935,7 +40935,7 @@ address,symbol,size,ctype
 0x882b64,_factoryb_conveyor_stopped_msg,4,GIZAIMESSAGE *
 0x882b68,_walllights_disco,24,nuhspecial_s[2]
 0x882b80,_green_light,12,nuhspecial_s
-0x882b8c,_gizTurrets,8,GIZMO_PC *[2]
+0x882b8c,_gizTurrets,8,GIZMO *[2]
 0x882b94,_kaminoc_netpacket,4,KAMINOC_PACKET *
 0x882b98,_disco_on_spin,36,nuhspecial_s[3]
 0x882bbc,_discorm_wall_off,12,nuhspecial_s
@@ -40963,9 +40963,9 @@ address,symbol,size,ctype
 0x00889078,_kamino_plate_4_active,4,i32
 0x008890a6,_kamino_plate_id,2,u16
 0x8890a8,_BonusGunshipBNetPacket,4,BONUS_GUNSHIP_B_NETPACKET *
-0x8890ac,_disco_off_spina,12,GIZMO_PC *[3]
+0x8890ac,_disco_off_spina,12,GIZMO *[3]
 0x8890b8,_GunshipPlayerDead,4,i32
-0x8890bc,_paintpanel,12,GIZMO_PC *[3]
+0x8890bc,_paintpanel,12,GIZMO *[3]
 0x8890c8,_KaminoDiscoMusicState,1000,KAMINO_DISCO_MUSIC_VIEW
 0x8890c8,_kaminodisco,1000,KAMINODISCO
 0x8894b0,_randpaints,12,i32[3]
@@ -40992,7 +40992,7 @@ address,symbol,size,ctype
 0x8895cc,_boulder_wait,4,f32
 0x8895d0,_CruiserD_Lift,12,nuhspecial_s
 0x8895dc,_vadera_netpacket,4,void *
-0x8895e0,_boulder_part,8,PART_PC *[2]
+0x8895e0,_boulder_part,8,PART *[2]
 0x8895e8,_vader_a,48,VADERA
 0x889618,_CruiserD_LiftChase,4,i32
 0x88961c,_Grievous_obj,4,struct gameobject_s *
@@ -41019,7 +41019,7 @@ address,symbol,size,ctype
 0x88a428,_HothEscapeBLocator,4,AILOCATOR *
 0x88a42c,_HothEscapeBSnowmob,4,GAMEOBJECT *
 0x88a430,_troopercannons,192,TROOPERCANNON[4]
-0x88a4f0,_classicBlowups,32,GIZMOBLOWUP_PC *[8]
+0x88a4f0,_classicBlowups,32,GIZMOBLOWUP *[8]
 0x88a510,_HothBattleEPanelAlpha,64,f32[16]
 0x88a550,_troopercannons_beenReset,1,u8
 0x88a551,_drawLights,1,u8
@@ -41044,12 +41044,12 @@ address,symbol,size,ctype
 0x88a5b8,_SarlaccTargetShield,8,i32[2]
 0x88a5c0,_routemask_efloor_off,8,u64
 0x88a648,_sarlaccb_netpacket,4,SARLACC_BATTLE_MUSIC_VIEW_PC *
-0x88a64c,_SarlaccObstMirrorBall,4,GIZMO_PC *
+0x88a64c,_SarlaccObstMirrorBall,4,GIZMO *
 0x88a650,_routemask_efloor_on,8,u64
-0x88a658,_SarlaccBlowUpTargets,16,GIZMOBLOWUP_PC *[4]
+0x88a658,_SarlaccBlowUpTargets,16,GIZMOBLOWUP *[4]
 0x0088a668,_slowDownTimer,8,f32 [2]
 0x88a670,_fireBackPos,32,SPLINEPOS
-0x88a690,_SarlaccForceMirrorBall,4,GIZMO_PC *
+0x88a690,_SarlaccForceMirrorBall,4,GIZMO *
 0x0088a694,_FireDeltaPosition,4,f32
 0x88a698,_SarlaccLevSpecial,84,nuhspecial_s[7]
 0x88a6ec,_prevOnTaunTaun,1,u8
@@ -41408,7 +41408,7 @@ address,symbol,size,ctype
 0x009238d0,_AIActionParseSpeedFn,4,AI_PARSE_SPEED
 0x009238d4,_AIRespawnOnPathFn,4,AI_RESPAWN_ON_PATH
 0x009238d8,_AIBigJumpToDestinationFn,4,AI_BIG_JUMP_TO_DESTINATION
-0x9238dc,_GameAILoadFn,4,"void(__cdecl *)(AISYS_PC *,i32,NUGSCN *,VARIPTR *,VARIPTR *)"
+0x9238dc,_GameAILoadFn,4,"void(__cdecl *)(AISYS *,i32,NUGSCN *,VARIPTR *,VARIPTR *)"
 0x009238e0,_GameParamToFloatFn,4,AI_GAME_PARAM_TO_FLOAT
 0x009238e4,_GetCharacterGoalSpeedFn,4,AI_CHARACTER_GOAL_SPEED
 0x009238e8,_GetViewRangeFn,4,AI_CHARACTER_DISTANCE
@@ -41418,7 +41418,7 @@ address,symbol,size,ctype
 0x009238f8,_AISysSpecialNodeCallback,4,AISYS_SPECIAL_NODE_CALLBACK
 0x009238fc,_APIOBJECTFromObjIDFn,4,APIOBJECT_FROM_ID
 0x923904,_aieditor,4,struct AIEDITOR_RENDER_STATE *
-0x923908,_GameAISYSRebuildFromEditorDataFn,4,"void (__cdecl *)(AISYS_PC *, VARIPTR *, VARIPTR *)"
+0x923908,_GameAISYSRebuildFromEditorDataFn,4,"void (__cdecl *)(AISYS *, VARIPTR *, VARIPTR *)"
 0x92390c,_GameAISaveFn,4,void (__cdecl *)(struct AIPATHSYS *)
 0x923910,_AIPathNodeDeletedFn,4,void (__cdecl *)(struct EDAIPATHNODE_s *)
 0x923914,_AIPathNodeMovedFn,4,void (__cdecl *)(struct EDAIPATHNODE_s *)
@@ -41763,9 +41763,9 @@ address,symbol,size,ctype
 0x950bd0,_GizmoBlowUpOpponent_Behind,4,i32
 0x950bd4,_GizmoBlowUpOpponent_Range2,4,f32
 0x00950bd8,_GameBlowUpBlownUpFn,4,void (__cdecl *)(void *)
-0x950bdc,_BlowupExFunc,4,"i32(__cdecl *)(GIZMOBLOWUP_PC *,i32)"
-0x950be0,_GizmoBlowup_TransformDrawFn,4,void (__cdecl *)(GIZMOBLOWUP_PC *target)
-0x00950be4,_GizmoBlowUp_SfxFn,4,"void (__cdecl *)(GIZMOBLOWUP_PC *, NUVEC *)"
+0x950bdc,_BlowupExFunc,4,"i32(__cdecl *)(GIZMOBLOWUP *,i32)"
+0x950be0,_GizmoBlowup_TransformDrawFn,4,void (__cdecl *)(GIZMOBLOWUP *target)
+0x00950be4,_GizmoBlowUp_SfxFn,4,"void (__cdecl *)(GIZMOBLOWUP *, NUVEC *)"
 0x950be8,_GizmoBlowUp_NoTargetFn,4,"i32(__cdecl*)(WORLDINFO*,GAMEOBJECT*)"
 0x950bf0,_GizmoRegistryNewBlowupAddType,120,ADDGIZMOTYPE
 00950c68,_DefaultMotionLedgeTerrainEnabled,4,i32
@@ -42909,7 +42909,7 @@ address,symbol,size,ctype
 0x2913a74,_edpart_mtl,4,struct PC_SCENE_MTL_VIEW *
 0x02913a78,_part_types,48128,PARTTYPE_LOOKUP[128]
 0x291f678,_edpart_entry_position,12,NUVEC
-0x0291f684,_Part,4,PART_PC *
+0x0291f684,_Part,4,PART *
 0x291f688,_edpart_curr,4,i32
 0x291f68c,_edpart_nearest_orphans,4,i32
 0x291f698,_edpart_emittime_menu,4,struct eduimenu_s *
@@ -43042,12 +43042,12 @@ address,symbol,size,ctype
 0x292127c,_TerrImpact,2,i16
 0x292127e,_TerrWallInfo,1,u8
 0x02921280,_NuSound3GroupSampleIds,1024,i16[512]
-0x2921680,_SphereData,256,TERRAIN_SPHERE_PC[16]
+0x2921680,_SphereData,256,TERRAIN_SPHERE[16]
 0x02921780,_SfxBits,200,u16[100]
 0x0292184c,_ShadRoofPoly,4,
 0x2921850,_ptldatamenu,4,struct eduimenu_s *
 0x2921854,_PlatCrush,4,i32
-0x2921858,_TerrShape,4,TERRAIN_AXIS_FREEDOM_SHAPE_PC *
+0x2921858,_TerrShape,4,TERRAIN_AXIS_FREEDOM_SHAPE *
 0x0292185c,_ptlsizemenu,4,struct eduimenu_s *
 0x2921860,_ptlcolmenu,4,struct eduimenu_s *
 0x2921864,_edgra_page_terrain,32,void*[8]

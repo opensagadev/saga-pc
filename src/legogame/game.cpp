@@ -471,8 +471,8 @@ GAME_PUBLISHER_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) == 0x
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m30) == 0x30);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m31) == 0x34);
 GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
-GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, mid_position) == 0x4c);
-GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP_PC, target_scale) == 0xa8);
+GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, mid_position) == 0x4c);
+GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, target_scale) == 0xa8);
 
 typedef struct ATTRACTO_READER {
     u8 opaque_00[0x5c];
@@ -491,7 +491,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x
 extern "C" i32 fun_0041aec0(GAMEOBJECT *object);
 void Tag_DrawIcon_LSW(GAMEOBJECT *object);
 void Tag_DrawIcon_Batman(GAMEOBJECT *object);
-extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target);
+extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP *target);
 static void LEGO_AllGoldBricksFn(void);
 extern "C" {
 
@@ -1643,7 +1643,7 @@ static i32 GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
     return 0;
 }
 
-void GizmoBlowUp_Sfx(GIZMOBLOWUP_PC *unused, NUVEC *position) {
+void GizmoBlowUp_Sfx(GIZMOBLOWUP *unused, NUVEC *position) {
     LEVELDATA *level = WORLD->current_level;
     GAME_GIZMO_SFX_CAMERA_READER *camera = (GAME_GIZMO_SFX_CAMERA_READER *)GameCam;
     (void)unused;
@@ -2106,9 +2106,9 @@ extern "C" void InitGameMode(void) {
     for (i = 0; i < 2; ++i) {
         if (players[i] != NULL && players[i]->coin_packet != NULL) {
             type = &GizmoPickupType[GetRandomCoinType()];
-            ((PLAYER_COIN_PACKET_PC *)players[i]->coin_packet)->last_coin = type->first_model_id;
+            ((PLAYER_COIN_PACKET *)players[i]->coin_packet)->last_coin = type->first_model_id;
             if (type->random_model_count > 0) {
-                ((PLAYER_COIN_PACKET_PC *)players[i]->coin_packet)->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
+                ((PLAYER_COIN_PACKET *)players[i]->coin_packet)->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
             }
         }
     }
@@ -2404,7 +2404,7 @@ extern "C" void CheckResetBits(void) {
 
 extern "C" {
 
-    void DeflectPart(PART_PC *part, GAMEOBJECT *object, f32 speed, f32 gravity, i32 deflect, i32 debris) {
+    void DeflectPart(PART *part, GAMEOBJECT *object, f32 speed, f32 gravity, i32 deflect, i32 debris) {
         NUMTX matrix = part->transform;
         u32 flags = part->flags;
         i32 type = part->part_id;
@@ -2413,7 +2413,7 @@ extern "C" {
         f32 radius = part->unknown_e4;
         NUVEC velocity;
         ADDPART params;
-        PART_PC *deflected;
+        PART *deflected;
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && owner->player_index == -1) {
@@ -2456,7 +2456,7 @@ extern "C" {
         }
     }
 
-    static void PartCollidePC(PART_PC *part, i32 three_dimensional) {
+    static void PartCollidePC(PART *part, i32 three_dimensional) {
         i32 i;
         i32 slot;
         i32 count;
@@ -2481,7 +2481,7 @@ extern "C" {
         maximum.z = part->unknown_e4 + part->position.z;
         object = Obj;
         api = Obj;
-        slot = (i32)(((u8 *)part - (u8 *)Part) / sizeof(PART_PC));
+        slot = (i32)(((u8 *)part - (u8 *)Part) / sizeof(PART));
         for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object, ++api) {
             if ((api->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (api->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
                 api->dead != 0) {
@@ -2631,15 +2631,15 @@ extern "C" {
         }
     }
 
-    void PartCollide_2D(PART_PC *part) {
+    void PartCollide_2D(PART *part) {
         PartCollidePC(part, 0);
     }
 
-    void PartCollide_3D(PART_PC *part) {
+    void PartCollide_3D(PART *part) {
         PartCollidePC(part, 1);
     }
 
-    void Game_KillPart(PART_PC *part, i32 reason) {
+    void Game_KillPart(PART *part, i32 reason) {
         if (reason == 1 && part->unknown_206 != -1) {
             if ((part->unknown_206 & 1) != 0 && Player[0] != NULL) {
                 NewBuzz(Player[0]->pad->bound_pad, 0.2f, 0);
@@ -2652,7 +2652,7 @@ extern "C" {
         }
     }
 
-    void PartKill_ForceThrow(PART_PC *part, i32 reason) {
+    void PartKill_ForceThrow(PART *part, i32 reason) {
         LEVELDATA *level;
         i32 debris = -1;
         i32 part_debris = -1;
@@ -2726,7 +2726,7 @@ extern "C" {
         }
     }
 
-    void GizmoBlowupCreateStuff(GIZMOBLOWUP_PC *blowup) {
+    void GizmoBlowupCreateStuff(GIZMOBLOWUP *blowup) {
         i32 coins;
         NUVEC direction;
         char script[32] = "GoonBox";
@@ -3024,7 +3024,7 @@ extern "C" {
     }
 
     void GameBlowUpBlownUpFn_LSW(void *blowup_pointer) {
-        GIZMOBLOWUP_PC *blowup = (GIZMOBLOWUP_PC *)blowup_pointer;
+        GIZMOBLOWUP *blowup = (GIZMOBLOWUP *)blowup_pointer;
         char *name;
         if (blowup == NULL || blowup->type == NULL || WORLD->area == NULL || netclient != 0) {
             return;

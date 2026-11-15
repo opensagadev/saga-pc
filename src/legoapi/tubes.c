@@ -176,14 +176,14 @@ static void *Tubes_ReserveBufferSpace(void *world_ptr) {
     return world->tubes;
 }
 
-static void Tube_Activate(GIZMO_PC *gizmo, i32 active) {
+static void Tube_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         TUBE_CALLBACKS *tube = gizmo->object;
         tube->bits.active = active != 0;
     }
 }
 
-static i32 Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only) {
+static i32 Tube_ActivateRev(GIZMO *gizmo, i32 reverse, i32 check_only) {
     TUBE_CALLBACKS *tube;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
@@ -200,7 +200,7 @@ static i32 Tube_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check_only) {
     return 1;
 }
 
-static void Tube_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Tube_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         TUBE_CALLBACKS *tube = gizmo->object;
         tube->bits.visible = visible != 0;
@@ -246,11 +246,11 @@ static i32 Tubes_GetMaxGizmos(void *world_ptr) {
     return world != NULL ? world->current_level->max_tubes : 0;
 }
 
-static char *Tube_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Tube_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((TUBE_CALLBACKS *)gizmo->object)->name : NULL;
 }
 
-static i32 Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+static i32 Tube_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     TUBE_CALLBACKS *tube = gizmo->object;
     (void)output;
     (void)mode;
@@ -259,18 +259,18 @@ static i32 Tube_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
 
 const char *Tube_OutputName = "Active";
 
-static const char *Tube_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static const char *Tube_GetOutputName(GIZMO *gizmo, i32 output) {
     (void)gizmo;
     (void)output;
     return Tube_OutputName;
 }
 
-static i32 Tube_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Tube_GetNumOutputs(GIZMO *gizmo) {
     (void)gizmo;
     return 1;
 }
 
-static NUVEC *Tube_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *Tube_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }

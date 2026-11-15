@@ -293,14 +293,14 @@ static i32 Levers_GetMaxGizmos(void *world_ptr) {
     return 0;
 }
 
-static char *Lever_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Lever_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
         return ((GIZMO_LEVER *)gizmo->object)->name;
     }
     return NULL;
 }
 
-static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     GIZMO_LEVER *lever;
     (void)mode;
     lever = gizmo->object;
@@ -326,7 +326,7 @@ static i32 Lever_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
     return 0;
 }
 
-static char *Lever_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *Lever_GetOutputName(GIZMO *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
         case 0:
@@ -339,12 +339,12 @@ static char *Lever_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return NULL;
 }
 
-static i32 Lever_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Lever_GetNumOutputs(GIZMO *gizmo) {
     (void)gizmo;
     return 3;
 }
 
-static void Lever_Activate(GIZMO_PC *gizmo, i32 enabled) {
+static void Lever_Activate(GIZMO *gizmo, i32 enabled) {
     GIZMO_LEVER *lever;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
@@ -356,7 +356,7 @@ static void Lever_Activate(GIZMO_PC *gizmo, i32 enabled) {
     }
 }
 
-static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
+static i32 Lever_ActivateRev(GIZMO *gizmo, i32 value, i32 query) {
     GIZMO_LEVER *lever;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 1;
@@ -369,7 +369,7 @@ static i32 Lever_ActivateRev(GIZMO_PC *gizmo, i32 value, i32 query) {
     return 1;
 }
 
-static void Lever_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void Lever_SetVisibility(GIZMO *gizmo, i32 visible) {
     GIZMO_LEVER *lever;
     i32 was_visible;
     if (gizmo == NULL || gizmo->object == NULL) {

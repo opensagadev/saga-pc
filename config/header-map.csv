@@ -149,9 +149,9 @@ assert:-#95,assert,,384,384,1,nu2api/nucore/nulist.h,follow-type,NULISTLNK
 assert:-#96,assert,,385,385,1,nu2api/nucore/nulist.h,follow-type,NULISTHDR
 assert:-#97,assert,,386,386,1,nu2api/nucore/nulist.h,follow-type,NULISTHDR
 assert:-#98,assert,,387,387,1,nu2api/nucore/nulist.h,follow-type,NULISTHDR
-struct:gizmo_s,struct,gizmo_s GIZMO_PC,389,394,7,legoapi/gizmo/base/gizmo.h,android-stem,gizmo_s -> GIZMO_s
-assert:-#99,assert,,396,396,2,legoapi/gizmo/base/gizmo.h,follow-type,GIZMO_PC
-assert:-#100,assert,,397,397,1,legoapi/gizmo/base/gizmo.h,follow-type,GIZMO_PC
+struct:gizmo_s,struct,gizmo_s GIZMO,389,394,7,legoapi/gizmo/base/gizmo.h,android-stem,gizmo_s -> GIZMO_s
+assert:-#99,assert,,396,396,2,legoapi/gizmo/base/gizmo.h,follow-type,GIZMO
+assert:-#100,assert,,397,397,1,legoapi/gizmo/base/gizmo.h,follow-type,GIZMO
 forward:gizmoset_s,forward,gizmoset_s,399,399,2,legoapi/gizmo/base/gizmo.h,android-stem,gizmoset_s -> GIZMOSET_s
 forward:gameobject_s,forward,gameobject_s,400,400,1,legoapi/items/base/apiobject.h,android-stem,gameobject_s -> GameObject_s
 forward:variptr_u,forward,variptr_u,401,401,1,nu2api/nucore/common.h,android,variptr_u
@@ -253,11 +253,11 @@ assert:-#168,assert,,694,694,1,legoapi/render/core/gameliball.h,follow-type,TERR
 struct:TERRAIN_TRACK_SLOT,struct,TERRAIN_TRACK_SLOT,696,703,9,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_TRACK_SLOT -> TERRAIN_TRACK_SLOT
 assert:-#169,assert,,705,705,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
 assert:-#170,assert,,706,706,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
-struct:TERRAIN_SPHERE_PC,struct,TERRAIN_SPHERE_PC,708,711,5,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_SPHERE_PC -> TERRAIN_SPHERE
-assert:-#171,assert,,713,713,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_SPHERE_PC
-assert:-#172,assert,,714,714,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_SPHERE_PC
-struct:TERRAIN_AXIS_FREEDOM_SHAPE_PC,struct,TERRAIN_AXIS_FREEDOM_SHAPE_PC,716,720,6,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_AXIS_FREEDOM_SHAPE_PC -> TERRAIN_AXIS_FREEDOM_SHAPE
-assert:-#173,assert,,722,722,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_AXIS_FREEDOM_SHAPE_PC
+struct:TERRAIN_SPHERE,struct,TERRAIN_SPHERE,708,711,5,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_SPHERE -> TERRAIN_SPHERE
+assert:-#171,assert,,713,713,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_SPHERE
+assert:-#172,assert,,714,714,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_SPHERE
+struct:TERRAIN_AXIS_FREEDOM_SHAPE,struct,TERRAIN_AXIS_FREEDOM_SHAPE,716,720,6,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_AXIS_FREEDOM_SHAPE -> TERRAIN_AXIS_FREEDOM_SHAPE
+assert:-#173,assert,,722,722,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_AXIS_FREEDOM_SHAPE
 struct:TERRAIN_LAST_IMPACT,struct,TERRAIN_LAST_IMPACT,724,727,5,legoapi/render/core/terrain_internal.h,type-users,used by its saga.h users only there
 assert:-#174,assert,,729,729,2,legoapi/render/core/terrain_internal.h,follow-type,TERRAIN_LAST_IMPACT
 assert:-#175,assert,,730,730,1,legoapi/render/core/terrain_internal.h,follow-type,TERRAIN_LAST_IMPACT
@@ -273,9 +273,9 @@ forward:TERRAIN_SHAPE_BATCH,forward,TERRAIN_SHAPE_BATCH,741,741,1,legoapi/legoap
 forward:TERRAIN_SKIN_STREAM,forward,TERRAIN_SKIN_STREAM,742,742,1,legoapi/render/core/gameliball.h,users,TERRAIN_SKIN_STREAM: only gameapi/gameliball.cpp android-path
 union:TERRAIN_SCAN_WORD,union,TERRAIN_SCAN_WORD,744,752,10,legoapi/render/core/gameliball.h,users,TERRAIN_SCAN_WORD: only gameapi/gameliball.cpp android-path
 struct:TERRAIN_INDEX_LEVEL,struct,TERRAIN_INDEX_LEVEL,754,760,8,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL -> TERRAIN_INDEX_LEVEL
-struct:TERRAIN_GROUP_PC,struct,TERRAIN_GROUP_PC,762,772,12,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_GROUP_PC -> TERRAIN_GROUP
-struct:TERRAIN_PLATFORM_PC,struct,TERRAIN_PLATFORM_PC,774,797,25,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_PLATFORM_PC -> TERRAIN_PLATFORM
-struct:TERRAIN_CELL_PC,struct,TERRAIN_CELL_PC,799,806,9,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_CELL_PC -> TERRAIN_CELL
+struct:TERRAIN_GROUP,struct,TERRAIN_GROUP,762,772,12,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_GROUP -> TERRAIN_GROUP
+struct:TERRAIN_PLATFORM,struct,TERRAIN_PLATFORM,774,797,25,legoapi/render/core/gameliball.h,android-stem,catch-all (needs a module owner); TERRAIN_PLATFORM -> TERRAIN_PLATFORM
+struct:TERRAIN_CELL,struct,TERRAIN_CELL,799,806,9,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); TERRAIN_CELL -> TERRAIN_CELL
 struct:TERRAIN_SET,struct,TERRAIN_SET,808,837,31,legoapi/legoapi_types.h,rule,used most in gameapi/gameliball.cpp (118) android-path
 assert:-#176,assert,,839,839,2,legoapi/render/core/gameliball.h,follow-type,TERRAIN_SCAN_WORD
 assert:-#177,assert,,840,840,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL
@@ -283,11 +283,11 @@ assert:-#178,assert,,841,841,1,legoapi/legoapi_types.h,follow-type,catch-all (ne
 assert:-#179,assert,,842,842,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL
 assert:-#180,assert,,843,843,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL
 assert:-#181,assert,,844,844,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_INDEX_LEVEL
-assert:-#182,assert,,845,845,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
-assert:-#183,assert,,846,846,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
-assert:-#184,assert,,847,847,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
-assert:-#185,assert,,848,848,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
-assert:-#186,assert,,849,849,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
+assert:-#182,assert,,845,845,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
+assert:-#183,assert,,846,846,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL
+assert:-#184,assert,,847,847,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL
+assert:-#185,assert,,848,848,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL
+assert:-#186,assert,,849,849,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL
 assert:-#187,assert,,850,850,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#188,assert,,851,851,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#189,assert,,852,852,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
@@ -297,23 +297,23 @@ assert:-#192,assert,,855,855,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#193,assert,,856,856,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#194,assert,,857,857,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#195,assert,,858,858,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
-assert:-#196,assert,,859,859,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#197,assert,,860,860,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#198,assert,,861,861,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#199,assert,,862,862,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#200,assert,,863,863,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#201,assert,,864,864,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#202,assert,,865,865,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#203,assert,,866,866,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
-assert:-#204,assert,,867,867,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
-assert:-#205,assert,,868,868,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
-assert:-#206,assert,,869,869,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
-assert:-#207,assert,,870,870,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
-assert:-#208,assert,,871,871,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
-assert:-#209,assert,,872,872,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM_PC
+assert:-#196,assert,,859,859,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#197,assert,,860,860,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#198,assert,,861,861,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#199,assert,,862,862,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#200,assert,,863,863,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#201,assert,,864,864,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#202,assert,,865,865,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#203,assert,,866,866,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
+assert:-#204,assert,,867,867,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
+assert:-#205,assert,,868,868,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
+assert:-#206,assert,,869,869,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
+assert:-#207,assert,,870,870,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
+assert:-#208,assert,,871,871,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
+assert:-#209,assert,,872,872,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_PLATFORM
 assert:-#210,assert,,873,873,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
 assert:-#211,assert,,874,874,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
-assert:-#212,assert,,875,875,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL_PC
+assert:-#212,assert,,875,875,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_CELL
 assert:-#213,assert,,876,876,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#214,assert,,877,877,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#215,assert,,878,878,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
@@ -359,8 +359,8 @@ assert:-#243,assert,,1003,1003,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#244,assert,,1004,1004,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#245,assert,,1005,1005,1,legoapi/legoapi_types.h,follow-type,TERRAIN_SET
 assert:-#246,assert,,1006,1006,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_TRACK_SLOT
-assert:-#247,assert,,1007,1007,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
-assert:-#248,assert,,1008,1008,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP_PC
+assert:-#247,assert,,1007,1007,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
+assert:-#248,assert,,1008,1008,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); TERRAIN_GROUP
 assert:-#249,assert,,1009,1009,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_POLYGON_INFO
 assert:-#250,assert,,1010,1010,1,legoapi/render/core/gameliball.h,follow-type,TERRAIN_POLYGON_INFO
 enum:TERRAIN_CHUNK_GROUP_PRIMARY,enum,TERRAIN_CHUNK_GROUP_PRIMARY TERRAIN_CHUNK_GROUP_SECONDARY TERRAIN_CHUNK_SPATIAL_INDEX TERRAIN_CHUNK_CRASH_DATA TERRAIN_INDEX_LEVEL_COUNT TERRAIN_CELL_RECORD_COUNT,1012,1029,19,legoapi/legoapi_types.h,android,catch-all (needs a module owner); TERRAIN_CHUNK_GROUP_PRIMARY
@@ -416,7 +416,7 @@ forward:AISTATE,forward,AISTATE,1251,1251,1,gameapi/ai/aisys/aiscript_types.h,an
 forward:AIACTION,forward,AIACTION,1252,1252,1,gameapi/ai/aisys/aiscript_types.h,android-stem,AIACTION -> AIACTION
 forward:AICONDITION,forward,AICONDITION,1253,1253,1,gameapi/ai/aisys/aiscript_types.h,android-stem,AICONDITION -> AICONDITION
 forward:AIREFSCRIPT,forward,AIREFSCRIPT,1254,1254,1,gameapi/ai/aisys/aiscript_types.h,android-stem,AIREFSCRIPT -> AIREFSCRIPT
-forward:AISYS_PC,forward,AISYS_PC,1255,1255,1,gameapi/ai/aisys/aisys.h,android-stem,AISYS_PC -> AISYS
+forward:AISYS,forward,AISYS,1255,1255,1,gameapi/ai/aisys/aisys.h,android-stem,AISYS -> AISYS
 forward:AIPACKET,forward,AIPACKET,1256,1256,1,legoapi/items/base/apiobject.h,android-stem,AIPACKET -> AIPACKET
 forward:AISCRIPTPROCESS,forward,AISCRIPTPROCESS,1257,1257,1,gameapi/ai/aisys/aiscript_types.h,android-stem,AISCRIPTPROCESS -> AISCRIPTPROCESS
 struct:AISCRIPTPROCESSSTACK,struct,AISCRIPTPROCESSSTACK,1259,1264,7,gameapi/ai/aisys/aiscript_types.h,android-stem,AISCRIPTPROCESSSTACK -> AISCRIPTPROCESSSTACK
@@ -450,7 +450,7 @@ struct:AIROW,struct,AIROW,1701,1719,20,gameapi/ai/aisys/aisys.h,android-stem,AIR
 struct:AIGROUP,struct,AIGROUP,1721,1748,29,gameapi/ai/aisys/aisys.h,android-stem,AIGROUP -> AIGROUP
 struct:AICREATURE,struct,AICREATURE,1750,1782,34,gameapi/ai/aisys/aisys.h,android-stem,AICREATURE -> AICREATURE
 union:variptr_u,union,variptr_u VARIPTR,1784,1788,6,nu2api/nucore/common.h,android,variptr_u
-struct:AISYS_PC,struct,AISYS_PC,1790,1824,36,gameapi/ai/aisys/aisys.h,android-stem,AISYS_PC -> AISYS
+struct:AISYS,struct,AISYS,1790,1824,36,gameapi/ai/aisys/aisys.h,android-stem,AISYS -> AISYS
 struct:AISCRIPT,struct,AISCRIPT,1826,1837,13,gameapi/ai/aisys/aiscript_types.h,android-stem,AISCRIPT -> AISCRIPT
 struct:gizaimessage_s,struct,gizaimessage_s GIZAIMESSAGE,1839,1847,10,legoapi/gizmo/base/gizmessage.h,android-stem,catch-all (needs a module owner); gizaimessage_s -> GIZAIMESSAGE_s
 struct:gizaimessagesys_s,struct,gizaimessagesys_s GIZAIMESSAGESYS,1849,1854,7,legoapi/gizmo/base/gizmessage.h,android-stem,catch-all (needs a module owner); gizaimessagesys_s -> GIZAIMESSAGESYS_s
@@ -1035,7 +1035,7 @@ assert:-#756,assert,,3662,3662,1,legoapi/world/world.h,follow-type,BOLTTYPE
 assert:-#757,assert,,3663,3663,1,legoapi/world/world.h,follow-type,BOLTTYPE
 forward:gameobject_s#3,forward,gameobject_s,3665,3665,2,legoapi/items/base/apiobject.h,android-stem,gameobject_s -> GameObject_s
 forward:bolt_s#2,forward,bolt_s,3666,3666,1,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); bolt_s -> BOLT_s
-forward:PART_PC,forward,PART_PC,3667,3667,1,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (54) android-path
+forward:PART,forward,PART,3667,3667,1,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (54) android-path
 struct:BOLTSYS_PC_s,struct,BOLTSYS_PC_s BOLTSYS,3669,3678,11,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); BOLTSYS -> BOLTSYS
 assert:-#758,assert,,3680,3680,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS
 assert:-#759,assert,,3681,3681,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS
@@ -1045,18 +1045,18 @@ assert:-#762,assert,,3684,3684,1,legoapi/legoapi_types.h,follow-type,catch-all (
 assert:-#763,assert,,3685,3685,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS
 assert:-#764,assert,,3686,3686,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); BOLTSYS
 struct:bolt_s,struct,bolt_s BOLT,3688,3732,46,legoapi/items/collect/bolts.h,android-stem,catch-all (needs a module owner); bolt_s -> BOLT_s
-typedef:BOLT_PC,typedef,BOLT_PC,3734,3734,2,legoapi/items/collect/bolts.h,rule,used most in legoapi/bolts.cpp (49) android-path
-assert:-#765,assert,,3735,3735,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#766,assert,,3736,3736,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#767,assert,,3737,3737,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#768,assert,,3738,3738,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#769,assert,,3739,3739,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#770,assert,,3740,3740,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#771,assert,,3741,3741,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#772,assert,,3742,3742,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#773,assert,,3743,3743,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#774,assert,,3744,3744,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
-assert:-#775,assert,,3745,3745,1,legoapi/items/collect/bolts.h,follow-type,BOLT_PC
+typedef:BOLT,typedef,BOLT,3734,3734,2,legoapi/items/collect/bolts.h,rule,used most in legoapi/bolts.cpp (49) android-path
+assert:-#765,assert,,3735,3735,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#766,assert,,3736,3736,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#767,assert,,3737,3737,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#768,assert,,3738,3738,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#769,assert,,3739,3739,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#770,assert,,3740,3740,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#771,assert,,3741,3741,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#772,assert,,3742,3742,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#773,assert,,3743,3743,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#774,assert,,3744,3744,1,legoapi/items/collect/bolts.h,follow-type,BOLT
+assert:-#775,assert,,3745,3745,1,legoapi/items/collect/bolts.h,follow-type,BOLT
 struct:APIOBJECTSYS,struct,APIOBJECTSYS,3748,3767,22,legoapi/items/base/apiobject.h,rule,used most in gameapi/apiobject.c (10) android-path
 assert:-#776,assert,,3769,3769,2,legoapi/items/base/apiobject.h,follow-type,APIOBJECTSYS
 assert:-#777,assert,,3770,3770,1,legoapi/items/base/apiobject.h,follow-type,APIOBJECTSYS
@@ -1175,10 +1175,10 @@ assert:-#883,assert,,4078,4078,1,legoapi/props/system/socksys.h,follow-type,SOCK
 assert:-#884,assert,,4079,4079,1,legoapi/props/system/socksys.h,follow-type,SOCK
 assert:-#885,assert,,4080,4080,1,legoapi/props/system/socksys.h,follow-type,SOCK
 assert:-#886,assert,,4081,4081,1,legoapi/props/system/socksys.h,follow-type,SOCK
-struct:socksys_s,struct,socksys_s SOCKSYS_PC,4083,4086,5,legoapi/props/system/socksys.h,android-stem,SOCKSYS_PC -> SOCKSYS
-assert:-#887,assert,,4088,4088,2,legoapi/props/system/socksys.h,follow-type,SOCKSYS_PC
-assert:-#888,assert,,4089,4089,1,legoapi/props/system/socksys.h,follow-type,SOCKSYS_PC
-assert:-#889,assert,,4090,4090,1,legoapi/props/system/socksys.h,follow-type,SOCKSYS_PC
+struct:socksys_s,struct,socksys_s SOCKSYS,4083,4086,5,legoapi/props/system/socksys.h,android-stem,SOCKSYS -> SOCKSYS
+assert:-#887,assert,,4088,4088,2,legoapi/props/system/socksys.h,follow-type,SOCKSYS
+assert:-#888,assert,,4089,4089,1,legoapi/props/system/socksys.h,follow-type,SOCKSYS
+assert:-#889,assert,,4090,4090,1,legoapi/props/system/socksys.h,follow-type,SOCKSYS
 struct:sockposition_s,struct,sockposition_s SOCKPOSITION,4092,4116,26,legoapi/props/system/socksys.h,android-stem,sockposition_s -> SOCKPOSITION_s
 assert:-#890,assert,,4118,4118,2,legoapi/props/system/socksys.h,follow-type,SOCKPOSITION
 assert:-#891,assert,,4119,4119,1,legoapi/props/system/socksys.h,follow-type,SOCKPOSITION
@@ -1210,22 +1210,22 @@ assert:-#914,assert,,4159,4159,1,legoapi/world/level.h,follow-type,LEVEL_OBJECT_
 struct:game_antinode_data_s,struct,game_antinode_data_s GAMEANTINODEDATA,4161,4171,12,legoapi/gizmo/object/gizmoblowups.h,rule,"used in saga.h only, most by legoapi/gizmo/object/gizmoblowups.h (1)"
 struct:GIZMOBLOWUPTYPE,struct,GIZMOBLOWUPTYPE,4173,4200,29,legoapi/gizmo/object/gizmoblowups.h,rule,used most in legoapi/gizmoblowups.c (44) android-path
 assert:-#915,assert,,4202,4202,2,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
-struct:GIZMOBLOWUP_PC,struct,GIZMOBLOWUP_PC,4204,4290,88,legoapi/gizmo/object/gizmoblowups.h,rule,used most in legoapi/gizmoblowups.c (100) android-path
-assert:-#916,assert,,4292,4292,2,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#917,assert,,4293,4293,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#918,assert,,4294,4294,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#919,assert,,4295,4295,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#920,assert,,4296,4296,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#921,assert,,4297,4297,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#922,assert,,4298,4298,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#923,assert,,4299,4299,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#924,assert,,4300,4300,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#925,assert,,4301,4301,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
+struct:GIZMOBLOWUP,struct,GIZMOBLOWUP,4204,4290,88,legoapi/gizmo/object/gizmoblowups.h,rule,used most in legoapi/gizmoblowups.c (100) android-path
+assert:-#916,assert,,4292,4292,2,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#917,assert,,4293,4293,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#918,assert,,4294,4294,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#919,assert,,4295,4295,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#920,assert,,4296,4296,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#921,assert,,4297,4297,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#922,assert,,4298,4298,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#923,assert,,4299,4299,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#924,assert,,4300,4300,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#925,assert,,4301,4301,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
 struct:techno_s,struct,techno_s TECHNO,4303,4313,12,legoapi/props/objects/techno.h,android-stem,techno_s -> TECHNO_s
 assert:-#926,assert,,4315,4315,2,legoapi/props/objects/techno.h,follow-type,TECHNO
 assert:-#927,assert,,4316,4316,1,legoapi/props/objects/techno.h,follow-type,TECHNO
 assert:-#928,assert,,4317,4317,1,legoapi/props/objects/techno.h,follow-type,TECHNO
-forward:cutsys_s,forward,cutsys_s CUTSYS_PC,4318,4318,1,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); CUTSYS_PC -> CUTSYS
+forward:cutsys_s,forward,cutsys_s CUTSYS,4318,4318,1,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); CUTSYS -> CUTSYS
 forward:gameanimsys_s,forward,gameanimsys_s GAMEANIMSYS,4319,4319,1,legoapi/legoapi_types.h,android-stem,catch-all (needs a module owner); gameanimsys_s -> GAMEANIMSYS_s
 struct:area_globals_s,struct,area_globals_s AREA_GLOBALS,4322,4334,15,legoapi/world/areas.h,rule,used most in legogame/game.c (1) android-path
 assert:-#929,assert,,4336,4336,2,legoapi/world/areas.h,follow-type,AREA_GLOBALS
@@ -1234,7 +1234,7 @@ assert:-#931,assert,,4338,4338,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS
 assert:-#932,assert,,4339,4339,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS
 assert:-#933,assert,,4340,4340,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS
 assert:-#934,assert,,4341,4341,1,legoapi/world/areas.h,follow-type,AREA_GLOBALS
-forward:zipup_s,forward,zipup_s ZIPUP_PC,4343,4343,2,legoapi/gizmos/door/zipups.h,android-stem,zipup_s -> ZIPUP_s
+forward:zipup_s,forward,zipup_s ZIPUP,4343,4343,2,legoapi/gizmos/door/zipups.h,android-stem,zipup_s -> ZIPUP_s
 struct:edgizshadow_s,struct,edgizshadow_s EDGIZSHADOW,4345,4358,15,legoapi/gizmos/fx/edgizshadowmachine.h,android-stem,edgizshadow_s -> EDGIZSHADOW_s
 assert:-#935,assert,,4360,4360,2,legoapi/gizmos/fx/edgizshadowmachine.h,follow-type,EDGIZSHADOW
 struct:ai_helper_slot_s,struct,ai_helper_slot_s AI_HELPER_SLOT,4362,4369,9,legoapi/ai/game/aipathcnxhelper.h,rule,used most in legoapi/aipathcnxhelper.c (8) android-path
@@ -1846,9 +1846,9 @@ struct:cutinfo_s,struct,cutinfo_s CUTINFO,5983,5991,10,legoapi/legoapi_types.h,a
 assert:-#1491,assert,,5993,5993,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CUTINFO
 assert:-#1492,assert,,5994,5994,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CUTINFO
 assert:-#1493,assert,,5995,5995,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CUTINFO
-struct:cutsys_s,struct,cutsys_s,5998,6001,6,legoapi/legoapi_types.h,rule,catch-all (needs a module owner); with its typedef CUTSYS_PC (android-stem)
-assert:-#1494,assert,,6003,6003,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CUTSYS_PC
-assert:-#1495,assert,,6004,6004,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CUTSYS_PC
+struct:cutsys_s,struct,cutsys_s,5998,6001,6,legoapi/legoapi_types.h,rule,catch-all (needs a module owner); with its typedef CUTSYS (android-stem)
+assert:-#1494,assert,,6003,6003,2,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CUTSYS
+assert:-#1495,assert,,6004,6004,1,legoapi/legoapi_types.h,follow-type,catch-all (needs a module owner); CUTSYS
 struct:apicharacterdata_s,struct,apicharacterdata_s APICHARACTERDATA,6006,6025,21,legoapi/items/base/apiobject.h,rule,used most in gameapi/apiobject.c (6) android-path
 assert:-#1496,assert,,6027,6027,2,legoapi/items/base/apiobject.h,follow-type,APICHARACTERDATA
 assert:-#1497,assert,,6028,6028,1,legoapi/items/base/apiobject.h,follow-type,APICHARACTERDATA
@@ -2123,7 +2123,7 @@ assert:-#1754,assert,,7247,7247,1,legoapi/items/base/apiobject.h,follow-type,GAM
 assert:-#1755,assert,,7248,7248,1,legoapi/items/base/apiobject.h,follow-type,GAMEOBJECT
 assert:-#1756,assert,,7249,7249,1,legoapi/items/base/apiobject.h,follow-type,GAMEOBJECT
 assert:-#1757,assert,,7250,7250,1,legoapi/items/base/apiobject.h,follow-type,GAMEOBJECT
-forward:PART_PC#2,forward,PART_PC,7252,7252,2,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (54) android-path
+forward:PART#2,forward,PART,7252,7252,2,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (54) android-path
 forward:PART_LIGHTING_DATA,forward,PART_LIGHTING_DATA,7253,7253,1,legoapi/items/objects/game_obj.h,rule,used most in legogame/game_obj.c (4) android-path
 typedef:PART_ACTION,typedef,PART_ACTION,7254,7254,1,legoapi/items/collect/thermaldetonators.h,rule,used most in legogame/thermaldetonators.c (1) android-path
 typedef:PART_MOVE,typedef,PART_MOVE,7255,7255,1,legoapi/items/objects/game_obj.h,rule,"used in saga.h only, most by legoapi/items/objects/game_obj.h (1)"
@@ -2169,37 +2169,37 @@ assert:-#1792,assert,,7347,7347,1,legoapi/items/objects/game_obj.h,follow-type,A
 assert:-#1793,assert,,7348,7348,1,legoapi/items/objects/game_obj.h,follow-type,ADDPART
 assert:-#1794,assert,,7349,7349,1,legoapi/items/objects/game_obj.h,follow-type,ADDPART
 assert:-#1795,assert,,7350,7350,1,legoapi/items/objects/game_obj.h,follow-type,ADDPART
-struct:PART_PC,struct,PART_PC,7352,7440,90,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (54) android-path
-assert:-#1796,assert,,7442,7442,2,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1797,assert,,7443,7443,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1798,assert,,7444,7444,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1799,assert,,7445,7445,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1800,assert,,7446,7446,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1801,assert,,7447,7447,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1802,assert,,7448,7448,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1803,assert,,7449,7449,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1804,assert,,7450,7450,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1805,assert,,7451,7451,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1806,assert,,7452,7452,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1807,assert,,7453,7453,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1808,assert,,7454,7454,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1809,assert,,7455,7455,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1810,assert,,7456,7456,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1811,assert,,7457,7457,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1812,assert,,7458,7458,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1813,assert,,7459,7459,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1814,assert,,7460,7460,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1815,assert,,7461,7461,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1816,assert,,7462,7462,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1817,assert,,7463,7463,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1818,assert,,7464,7464,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1819,assert,,7465,7465,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1820,assert,,7466,7466,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1821,assert,,7467,7467,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1822,assert,,7468,7468,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1823,assert,,7469,7469,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1824,assert,,7470,7470,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
-assert:-#1825,assert,,7471,7471,1,legoapi/items/objects/objectsall.h,follow-type,PART_PC
+struct:PART,struct,PART,7352,7440,90,legoapi/items/objects/objectsall.h,rule,used most in gameapi/objectsall.cpp (54) android-path
+assert:-#1796,assert,,7442,7442,2,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1797,assert,,7443,7443,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1798,assert,,7444,7444,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1799,assert,,7445,7445,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1800,assert,,7446,7446,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1801,assert,,7447,7447,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1802,assert,,7448,7448,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1803,assert,,7449,7449,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1804,assert,,7450,7450,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1805,assert,,7451,7451,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1806,assert,,7452,7452,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1807,assert,,7453,7453,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1808,assert,,7454,7454,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1809,assert,,7455,7455,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1810,assert,,7456,7456,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1811,assert,,7457,7457,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1812,assert,,7458,7458,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1813,assert,,7459,7459,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1814,assert,,7460,7460,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1815,assert,,7461,7461,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1816,assert,,7462,7462,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1817,assert,,7463,7463,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1818,assert,,7464,7464,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1819,assert,,7465,7465,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1820,assert,,7466,7466,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1821,assert,,7467,7467,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1822,assert,,7468,7468,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1823,assert,,7469,7469,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1824,assert,,7470,7470,1,legoapi/items/objects/objectsall.h,follow-type,PART
+assert:-#1825,assert,,7471,7471,1,legoapi/items/objects/objectsall.h,follow-type,PART
 struct:BLADE,struct,BLADE,7473,7481,10,legoapi/characters/core/players.h,users,BLADE: only legoapi/players.c android-path
 assert:-#1826,assert,,7483,7483,2,legoapi/characters/core/players.h,follow-type,BLADE
 assert:-#1827,assert,,7484,7484,1,legoapi/characters/core/players.h,follow-type,BLADE
@@ -2207,11 +2207,11 @@ assert:-#1828,assert,,7485,7485,1,legoapi/characters/core/players.h,follow-type,
 assert:-#1829,assert,,7486,7486,1,legoapi/characters/core/players.h,follow-type,BLADE
 struct:PODSPRINT_AI,struct,PODSPRINT_AI,7488,7491,5,legoapi/world/levels/episodeI.h,users,PODSPRINT_AI: only legogame/episodeI.c android-path
 assert:-#1830,assert,,7493,7493,2,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT_AI
-struct:PODSPRINT_PC,struct,PODSPRINT_PC,7495,7513,20,legoapi/world/levels/episodeI.h,users,PODSPRINT_PC: only legogame/episodeI.c android-path
-assert:-#1831,assert,,7515,7515,2,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT_PC
-assert:-#1832,assert,,7516,7516,1,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT_PC
-assert:-#1833,assert,,7517,7517,1,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT_PC
-assert:-#1834,assert,,7518,7518,1,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT_PC
+struct:PODSPRINT,struct,PODSPRINT,7495,7513,20,legoapi/world/levels/episodeI.h,users,PODSPRINT: only legogame/episodeI.c android-path
+assert:-#1831,assert,,7515,7515,2,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT
+assert:-#1832,assert,,7516,7516,1,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT
+assert:-#1833,assert,,7517,7517,1,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT
+assert:-#1834,assert,,7518,7518,1,legoapi/world/levels/episodeI.h,follow-type,PODSPRINT
 typedef:AI_SCRIPT_FIRST_ACTION,typedef,AI_SCRIPT_FIRST_ACTION,7519,7519,1,gameapi/ai/aisys/aisys.h,users,AI_SCRIPT_FIRST_ACTION: only gameapi/aisysall.cpp[aisys.c] android-path
 typedef:AI_GAME_PARAM_TO_FLOAT,typedef,AI_GAME_PARAM_TO_FLOAT,7521,7521,2,gameapi/ai/aisys/aisys.h,users,AI_GAME_PARAM_TO_FLOAT: only gameapi/aisysall.cpp[aisys.c] android-path
 struct:kaminoeplate_s,struct,kaminoeplate_s KAMINOEPLATE,7523,7527,6,legoapi/world/levels/episodeII.h,users,KAMINOEPLATE: only legogame/episodeII.c android-path
@@ -6490,7 +6490,7 @@ assert:-#3167,assert,,14712,14712,1,legoapi/items/base/animpacket.h,follow-type,
 assert:-#3168,assert,,14713,14713,1,legoapi/items/base/animpacket.h,follow-type,ANIMPACKET
 assert:-#3169,assert,,14714,14714,1,legoapi/items/base/animpacket.h,follow-type,ANIMPACKET
 assert:-#3170,assert,,14715,14715,1,legoapi/items/base/animpacket.h,follow-type,ANIMPACKET
-assert:-#3171,assert,,14716,14716,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
+assert:-#3171,assert,,14716,14716,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
 assert:-#3172,assert,,14717,14717,1,legoapi/world/world.h,follow-type,WORLDINFO
 assert:-#3173,assert,,14718,14718,1,legoapi/items/base/apiobject.h,follow-type,GAMEOBJECT
 assert:-#3174,assert,,14719,14719,1,legoapi/items/base/apiobject.h,follow-type,GAMEOBJECT
@@ -6544,14 +6544,14 @@ assert:-#3206,assert,,14767,14767,1,legoapi/gizmo/object/gizmoblowups.h,follow-t
 assert:-#3207,assert,,14768,14768,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
 assert:-#3208,assert,,14769,14769,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
 assert:-#3209,assert,,14770,14770,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
-assert:-#3210,assert,,14771,14771,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3211,assert,,14772,14772,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3212,assert,,14773,14773,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3213,assert,,14774,14774,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3214,assert,,14775,14775,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3215,assert,,14776,14776,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3216,assert,,14777,14777,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3217,assert,,14778,14778,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
+assert:-#3210,assert,,14771,14771,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3211,assert,,14772,14772,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3212,assert,,14773,14773,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3213,assert,,14774,14774,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3214,assert,,14775,14775,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3215,assert,,14776,14776,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3216,assert,,14777,14777,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3217,assert,,14778,14778,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
 variable:party_follow_offsets,variable,party_follow_offsets,14779,14779,1,gameapi/ai/aisys/gameaiscript.h,android,party_follow_offsets
 variable:ai_fighting,variable,ai_fighting,14780,14780,1,legoapi/ai/core/gameai.h,data-order,retail 0x876cf0 between 0x876cd8 and 0x876cf4
 variable:drop_back_in_timer,variable,drop_back_in_timer,14781,14781,1,globals.h,android-weak,catch-all (needs a module owner); drop_back_in_timer
@@ -8346,9 +8346,9 @@ function:GizmoSwapBlowups,function,GizmoSwapBlowups,16993,16993,1,legoapi/gizmo/
 function:GizmoSortBlowups,function,GizmoSortBlowups,16994,16994,1,legoapi/gizmo/object/gizmoblowups.h,symbol,legoapi/gizmoblowups.c android-path
 function:PlatInstRotate,function,PlatInstRotate,16995,16995,1,legoapi/render/core/terrain.h,android,PlatInstRotate
 variable:GizmoBlowupHitMultiplier,variable,GizmoBlowupHitMultiplier,16996,16996,1,legogame/game.h,rule,used most in legogame/game.c (1) android-path
-assert:-#3484,assert,,16997,16997,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3485,assert,,16998,16998,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3486,assert,,16999,16999,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
+assert:-#3484,assert,,16997,16997,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3485,assert,,16998,16998,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3486,assert,,16999,16999,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
 forward:PC_OGG_CACHE_RECORD,forward,PC_OGG_CACHE_RECORD,17000,17000,1,nu2api/oggreader.h,rule,used most in nu2api/oggreader.cpp (5) pc-path
 variable:PCSoundListenerIID,variable,PCSoundListenerIID,17001,17001,1,nu2api/nusound/nusound.h,users,PCSoundListenerIID: only nu2api/nusound3/pc/nusound.cpp android-path
 variable:PCSampleBufferAlgorithm,variable,PCSampleBufferAlgorithm,17002,17002,1,nu2api/nusound/nusound.h,users,PCSampleBufferAlgorithm: only nu2api/nusound3/pc/nusound.cpp android-path
@@ -9599,21 +9599,21 @@ function:drft_forward,function,drft_forward,18631,18631,1,transitional/libvorbis
 function:drft_backward,function,drft_backward,18632,18632,1,transitional/libvorbis/smallft.h,library,libvorbis 1.2.0 lib/smallft.h (same declarations); replaces lib stub smallft.h
 function:drft_init,function,drft_init,18633,18633,1,transitional/libvorbis/smallft.h,library,libvorbis 1.2.0 lib/smallft.h (same declarations); replaces lib stub smallft.h
 function:drft_clear,function,drft_clear,18634,18634,1,transitional/libvorbis/smallft.h,library,libvorbis 1.2.0 lib/smallft.h (same declarations); replaces lib stub smallft.h
-assert:-#3679,assert,,18639,18639,2,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3680,assert,,18640,18640,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3681,assert,,18641,18641,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3682,assert,,18642,18642,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3683,assert,,18643,18643,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3684,assert,,18644,18644,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3685,assert,,18645,18645,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3686,assert,,18646,18646,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3687,assert,,18647,18647,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3688,assert,,18648,18648,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3689,assert,,18649,18649,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3690,assert,,18650,18650,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3691,assert,,18651,18651,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3692,assert,,18652,18652,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3693,assert,,18653,18653,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
+assert:-#3679,assert,,18639,18639,2,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3680,assert,,18640,18640,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3681,assert,,18641,18641,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3682,assert,,18642,18642,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3683,assert,,18643,18643,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3684,assert,,18644,18644,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3685,assert,,18645,18645,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3686,assert,,18646,18646,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3687,assert,,18647,18647,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3688,assert,,18648,18648,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3689,assert,,18649,18649,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3690,assert,,18650,18650,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3691,assert,,18651,18651,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3692,assert,,18652,18652,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3693,assert,,18653,18653,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
 assert:-#3694,assert,,18654,18654,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
 assert:-#3695,assert,,18655,18655,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
 assert:-#3696,assert,,18656,18656,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
@@ -9649,20 +9649,20 @@ assert:-#3709,assert,,18689,18689,1,legoapi/gizmo/object/gizmoblowups.h,follow-t
 assert:-#3710,assert,,18690,18690,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
 assert:-#3711,assert,,18691,18691,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
 assert:-#3712,assert,,18692,18692,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUPTYPE
-assert:-#3713,assert,,18693,18693,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3714,assert,,18694,18694,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3715,assert,,18695,18695,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3716,assert,,18696,18696,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3717,assert,,18697,18697,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3718,assert,,18698,18698,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3719,assert,,18699,18699,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3720,assert,,18700,18700,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3721,assert,,18701,18701,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3722,assert,,18702,18702,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3723,assert,,18703,18703,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3724,assert,,18704,18704,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3725,assert,,18705,18705,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
-assert:-#3726,assert,,18706,18706,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP_PC
+assert:-#3713,assert,,18693,18693,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3714,assert,,18694,18694,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3715,assert,,18695,18695,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3716,assert,,18696,18696,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3717,assert,,18697,18697,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3718,assert,,18698,18698,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3719,assert,,18699,18699,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3720,assert,,18700,18700,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3721,assert,,18701,18701,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3722,assert,,18702,18702,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3723,assert,,18703,18703,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3724,assert,,18704,18704,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3725,assert,,18705,18705,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
+assert:-#3726,assert,,18706,18706,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GIZMOBLOWUP
 assert:-#3727,assert,,18707,18707,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GAMEANTINODEDATA
 assert:-#3728,assert,,18708,18708,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GAMEANTINODEDATA
 assert:-#3729,assert,,18709,18709,1,legoapi/gizmo/object/gizmoblowups.h,follow-type,GAMEANTINODEDATA

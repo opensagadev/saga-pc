@@ -409,7 +409,7 @@ void SetCameraMatrices(void) {
 
 #undef GAME_CAMERA_ABSOLUTE
 
-static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION *position, i32 level_index) {
+static i32 NarrowSockPositionAllowed(SOCKSYS *system, SOCKPOSITION *position, i32 level_index) {
     NARROWSOCKEXCEPTION *exception;
     NARROWSOCKEXCEPTION *list;
     if (system == NULL || position->sock_index == -1) {
@@ -434,7 +434,7 @@ static i32 NarrowSockPositionAllowed(SOCKSYS_PC *system, SOCKPOSITION *position,
 
 i32 disable_narrow_socks = 0;
 
-i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS_PC *system, i32 level_index) {
+i32 ObjInNarrowSock(GAMEOBJECT *object, SOCKSYS *system, i32 level_index) {
     GAMEOBJECT *other = NULL;
     if ((WORLD->current_level->flags & LEVEL_NARROW_SOCKS) == 0 && VehicleArea == 0) {
         return 0;

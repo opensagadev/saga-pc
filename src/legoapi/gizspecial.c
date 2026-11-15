@@ -72,11 +72,11 @@ static char gizspecial_prefix[8] = "qaz_";
 i32 gizspecial_gizmotype_id = -1;
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- retained genuine subsystem public name.
-GIZMO_PC *createGizSpecial(void *unused, char *name) {
+GIZMO *createGizSpecial(void *unused, char *name) {
     GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
     nuhspecial_s scene_special;
     char gizmo_name[32];
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     GIZFLOW_SPECIAL *special;
     if (world == NULL || name == NULL) {
         return NULL;
@@ -162,11 +162,11 @@ static void GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, 
     }
 }
 
-static char *GizSpecial_GetGizmoName(GIZMO_PC *gizmo) {
+static char *GizSpecial_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((GIZSPECIAL_CALLBACK *)gizmo->object)->name : NULL;
 }
 
-static i32 GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 GizSpecial_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
     GIZSPECIAL_CALLBACK *special;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
@@ -188,7 +188,7 @@ static i32 GizSpecial_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactiv
     return 0;
 }
 
-static char *GizSpecial_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *GizSpecial_GetOutputName(GIZMO *gizmo, i32 output) {
     switch (output) {
         case 0:
             return "AtEnd";
@@ -198,11 +198,11 @@ static char *GizSpecial_GetOutputName(GIZMO_PC *gizmo, i32 output) {
     return NULL;
 }
 
-static i32 GizSpecial_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 GizSpecial_GetNumOutputs(GIZMO *gizmo) {
     return 2;
 }
 
-static void GizSpecial_Activate(GIZMO_PC *gizmo, i32 active) {
+static void GizSpecial_Activate(GIZMO *gizmo, i32 active) {
     GIZSPECIAL_CALLBACK *special;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
@@ -218,7 +218,7 @@ static void GizSpecial_Activate(GIZMO_PC *gizmo, i32 active) {
     }
 }
 
-static i32 GizSpecial_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check) {
+static i32 GizSpecial_ActivateRev(GIZMO *gizmo, i32 reverse, i32 check) {
     GIZSPECIAL_CALLBACK *special;
     if (gizmo == NULL) {
         return 0;
@@ -240,13 +240,13 @@ static i32 GizSpecial_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 check) {
     return 1;
 }
 
-static void GizSpecial_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+static void GizSpecial_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL && gizmo->object != NULL) {
         GameAnimSet_SetVisibility(((GIZSPECIAL_CALLBACK *)gizmo->object)->anim_set, visible);
     }
 }
 
-static NUVEC *GizSpecial_GetPos(GIZMO_PC *gizmo) {
+static NUVEC *GizSpecial_GetPos(GIZMO *gizmo) {
     GIZSPECIAL_CALLBACK *special;
     if (gizmo != NULL) {
         special = gizmo->object;
@@ -258,7 +258,7 @@ static NUVEC *GizSpecial_GetPos(GIZMO_PC *gizmo) {
     return NULL;
 }
 
-static i32 GizSpecial_UsingSpecial(GIZMO_PC **results, void *world_ptr, i32 capacity, const char *name) {
+static i32 GizSpecial_UsingSpecial(GIZMO **results, void *world_ptr, i32 capacity, const char *name) {
     GIZFLOW_LOAD_WORLD *world = world_ptr;
     i32 index;
     i32 count = 0;

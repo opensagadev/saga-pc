@@ -12,7 +12,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    PART_PC *FindPart(NUVEC *, i32, GAMEOBJECT *);
+    PART *FindPart(NUVEC *, i32, GAMEOBJECT *);
     extern char **PDebNameList;
     void AddVariableShotPARTEffect(i32, NUVEC *, f32, f32, NUMTX *);
     void CollectHitPoint(GAMEOBJECT *, NUVEC *, i32);
@@ -20,19 +20,19 @@ extern "C" {
     void PowerUp_Particles(WORLDINFO *, NUVEC *);
     void KillParts(GAMEOBJECT *, i32, i32, i32, f32, i32, u16 *);
     void SetKillPartMom(NUVEC *);
-    void PartImpact_Brick(PART_PC *);
+    void PartImpact_Brick(PART *);
     void MakePartVector(NUVEC *velocity, NUVEC *direction, f32 scale);
     void Parts_Start(WORLDINFO *world);
     void Parts_Stop(WORLDINFO *world);
-    void PartStop_Flickerer(PART_PC *);
-    i32 PartDraw_Flickerer(PART_PC *);
-    void PartCollide_3D(PART_PC *);
-    PART_PC *Part_FindFromHSpecial(nuhspecial_s *);
-    void PartKill_ForceThrow(PART_PC *, i32);
-    PART_PC *AddPart(ADDPART *);
-    PART_PC *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range);
+    void PartStop_Flickerer(PART *);
+    i32 PartDraw_Flickerer(PART *);
+    void PartCollide_3D(PART *);
+    PART *Part_FindFromHSpecial(nuhspecial_s *);
+    void PartKill_ForceThrow(PART *, i32);
+    PART *AddPart(ADDPART *);
+    PART *FindIncomingPart(void *owner, NUVEC *position, f32 radius, u32 flags, f32 range);
     extern ADDPART Default_ADDPART;
-    PART_PC *HitParts(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32);
+    PART *HitParts(GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, u32);
     void AddVariableShotDebrisEffectTimed5(i32, NUVEC *, NUVEC *, NUVEC *, i32, f32, NUMTX *, NUMTX *, u16, i8);
     void SetPartRTLSet(RTLSET *rtl_set);
     void LoadPartFile(WORLDINFO *);

@@ -107,14 +107,14 @@ char *GizAIMessage_GetName(GIZAIMESSAGE *message) {
     return message != NULL ? message->name : NULL;
 }
 
-static char *GizAIMessage_GetGizmoName(GIZMO_PC *gizmo) {
+static char *GizAIMessage_GetGizmoName(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
     return GizAIMessage_GetName(gizmo->object);
 }
 
-static i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused2) {
+static i32 GizAIMessage_GetOutput(GIZMO *gizmo, i32 output_index, i32 unused2) {
     struct gizaimessage_s *message;
     if ((gizmo == NULL) || (gizmo->object == NULL) || ((u32)output_index > 7)) {
         return 0;
@@ -124,7 +124,7 @@ static i32 GizAIMessage_GetOutput(GIZMO_PC *gizmo, i32 output_index, i32 unused2
     return message->value == (f32)message->output_values[output_index];
 }
 
-static char *GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
+static char *GizAIMessage_GetOutputName(GIZMO *gizmo, i32 output_index) {
     struct gizaimessage_s *message;
     static char returnstr[4] = {0};
 
@@ -137,7 +137,7 @@ static char *GizAIMessage_GetOutputName(GIZMO_PC *gizmo, i32 output_index) {
     return returnstr;
 }
 
-static i32 GizAIMessage_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 GizAIMessage_GetNumOutputs(GIZMO *gizmo) {
     if ((gizmo == NULL) || (gizmo->object == NULL)) {
         return 0;
     }

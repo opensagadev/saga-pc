@@ -21,7 +21,7 @@ extern "C" {
         cross.z = (a_arg).x * (b_arg).y - (b_arg).x * (a_arg).y;                                                                           \
         (result_arg) = cross;                                                                                                              \
     } while (0)
-#define TERRAIN_FINISH_SCAN_GROUP_PC(group_index_arg)                                                                                      \
+#define TERRAIN_FINISH_LOCAL_SCAN_GROUP(group_index_arg)                                                                                   \
     do {                                                                                                                                   \
         if (group_shape_count != 0) {                                                                                                      \
             i16 *header = reinterpret_cast<i16 *>(group_header);                                                                           \
@@ -222,7 +222,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(group_index);
+            TERRAIN_FINISH_LOCAL_SCAN_GROUP(group_index);
         }
     }
 
@@ -268,7 +268,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(CurrentTerrain->max_groups + pick_index);
+            TERRAIN_FINISH_LOCAL_SCAN_GROUP(CurrentTerrain->max_groups + pick_index);
         }
     }
     TerI->scan_list = group_header;
@@ -513,7 +513,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
                 }
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(platform_group_index);
+            TERRAIN_FINISH_LOCAL_SCAN_GROUP(platform_group_index);
         }
     }
 

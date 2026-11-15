@@ -8,7 +8,7 @@ struct WORLDINFO_s;
 struct gameobject_s;
 struct numtl_s;
 
-typedef struct zipup_s ZIPUP_PC;
+typedef struct zipup_s ZIPUP;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,7 +31,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    ZIPUP_PC *ZipUp_FindNearest(struct WORLDINFO_s *, NUVEC *, f32, f32 *, i32 *, struct gameobject_s *);
+    ZIPUP *ZipUp_FindNearest(struct WORLDINFO_s *, NUVEC *, f32, f32 *, i32 *, struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif

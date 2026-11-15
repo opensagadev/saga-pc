@@ -23,21 +23,21 @@ static void Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *d
 
 const char *ShadowGizmoName = "ShadowDirection";
 
-static char *Shadow_GetGizmoName(GIZMO_PC *gizmo) {
+static char *Shadow_GetGizmoName(GIZMO *gizmo) {
     return ShadowGizmoName;
 }
 
-static i32 Shadow_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
+static i32 Shadow_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
     return 0;
 }
 
 const char *ShadowOutputName = "Dont Use Me!";
 
-static char *Shadow_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+static char *Shadow_GetOutputName(GIZMO *gizmo, i32 output) {
     return ShadowOutputName;
 }
 
-static i32 Shadow_GetNumOutputs(GIZMO_PC *gizmo) {
+static i32 Shadow_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 

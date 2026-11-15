@@ -9,7 +9,7 @@ struct BOLTSYS_PC_s;
 struct WORLDINFO_s;
 struct bolt_s;
 
-struct PART_PC;
+struct PART;
 struct gameobject_s;
 
 #ifdef __cplusplus
@@ -77,7 +77,6 @@ typedef struct bolt_s {         // size 0x138
     NUVEC dogfight_hit_position; // 0x12c
 } BOLT;
 
-typedef BOLT BOLT_PC;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -89,12 +88,12 @@ extern "C" {
     extern BOLT Bolt[32];
     void Bolts_Update(struct WORLDINFO_s *);
     void Bolts_Draw(struct WORLDINFO_s *);
-    BOLT_PC *Bolt_Alloc(void);
-    void Bolt_PlayHitSfx(BOLT_PC *);
-    i32 Bolt_HitPartMode(BOLT_PC *);
-    void Bolt_End(BOLT_PC *, i32);
-    void Bolt_AddDeflectedBolt(BOLT_PC *, NUVEC *, NUVEC *, u8 *);
-    i32 Bolt_HitGameObjects(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    BOLT *Bolt_Alloc(void);
+    void Bolt_PlayHitSfx(BOLT *);
+    i32 Bolt_HitPartMode(BOLT *);
+    void Bolt_End(BOLT *, i32);
+    void Bolt_AddDeflectedBolt(BOLT *, NUVEC *, NUVEC *, u8 *);
+    i32 Bolt_HitGameObjects(BOLT *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
 #ifdef __cplusplus
 }
 #endif
@@ -102,18 +101,18 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    BOLT_PC *Bolt_Find(i32, NUVEC *, struct gameobject_s *);
+    BOLT *Bolt_Find(i32, NUVEC *, struct gameobject_s *);
     extern i32 (*InitBolt_AddMomentumType)(struct bolt_s *bolt, struct gameobject_s *object, NUVEC *momentum);
     void Bolt_GetShootOrigin_Default(struct gameobject_s *, NUVEC *);
     u16 Bolt_GetShootDirection_Default(struct gameobject_s *, NUVEC *);
-    BOLT_PC *FindIncomingBolt(struct gameobject_s *, i32, i32);
+    BOLT *FindIncomingBolt(struct gameobject_s *, i32, i32);
     void Bolt_Shoot(struct gameobject_s *, i32, i32);
-    struct PART_PC *Bolt_HitParts(BOLT_PC *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
-    i32 Bolt_HitGameObject(BOLT_PC *, struct gameobject_s *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    struct PART *Bolt_HitParts(BOLT *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
+    i32 Bolt_HitGameObject(BOLT *, struct gameobject_s *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
     extern i32 (*BoltInitSfxFn)(struct gameobject_s *);
-    void GuidedMissile_Deflect(struct PART_PC *part);
-    void GuidedMissile_Kill(struct PART_PC *part, i32 reason);
-    void GuidedMissile_Move(struct PART_PC *part, f32 time);
+    void GuidedMissile_Deflect(struct PART *part);
+    void GuidedMissile_Kill(struct PART *part, i32 reason);
+    void GuidedMissile_Move(struct PART *part, f32 time);
 #ifdef __cplusplus
 }
 #endif

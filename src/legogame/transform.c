@@ -42,7 +42,7 @@ static void RotateTargetMatrix(NUMTX *matrix, i32 angle) {
 }
 
 void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
-    GIZMOBLOWUP_PC *target;
+    GIZMOBLOWUP *target;
     ResetForceGlow(object->ai_player_packet);
     if (object->character_context == CHARACTER_CONTEXT_TRANSFORM) {
         i32 trigger;
@@ -75,8 +75,8 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             GizmoBlowupBlowup(object->grapple, 1, BLOWUP_HIT_TRANSFORM, 1, NULL, 1);
         }
     } else {
-        GIZMOBLOWUP_PC *candidate;
-        GIZMOBLOWUP_PC *nearest;
+        GIZMOBLOWUP *candidate;
+        GIZMOBLOWUP *nearest;
         NUVEC forward;
         NUVEC delta;
         NUVEC min;
@@ -200,7 +200,7 @@ GAMEOBJECT *Transform_TargettedByObj(void *target) {
     return NULL;
 }
 
-void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP_PC *target) {
+void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP *target) {
     if (Transform_TargettedByObj(target) == NULL) {
         TransformDrawTarget(&target->mid_position, target->target_scale * 1.4f, 0.4f);
     }

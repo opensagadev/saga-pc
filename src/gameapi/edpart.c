@@ -1787,7 +1787,7 @@ void edpartFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     i8 page;
     NUGSCN *scene;
     if (Part != NULL) {
-        memset(Part, 0, MAXPARTS * sizeof(PART_PC));
+        memset(Part, 0, MAXPARTS * sizeof(PART));
     }
     part_slot_cursor = 0;
     memset(part_types, 0, sizeof(part_types));

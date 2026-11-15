@@ -90,10 +90,10 @@ extern f32 CamDewbackRadius;
 extern f32 CamDewbackLift;
 void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 void GetShopCamLookPos(struct nuvec_s *position);
-i32 SockSysCamera(SOCKSYS_PC *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed,
-                  struct nuvec_s *player_camera_positions, struct nuvec_s *player_positions, i32 player_count,
-                  struct sockposition_s *camera_socket_position, struct nuvec_s *camera_position, struct nuvec_s *camera_target,
-                  f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake, f32 *separation_scale);
+i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed, struct nuvec_s *player_camera_positions,
+                  struct nuvec_s *player_positions, i32 player_count, struct sockposition_s *camera_socket_position,
+                  struct nuvec_s *camera_position, struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
+                  f32 *camera_shake, f32 *separation_scale);
 struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
 f32 getPodRoll(i32 arg0);
 
@@ -1359,11 +1359,11 @@ mode_selected:
             }
         }
         {
-            GIZMO_PC *window = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "window_frame1");
+            GIZMO *window = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "window_frame1");
             if (Cheat_PowerUpActive(-1) ||
                 (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks && camera->sock_position.sock_index == 1) ||
                 (WORLD->current_level == CLOUDCITYTRAPB_LDATA && window != NULL && window->object != NULL &&
-                 (((GIZMOBLOWUP_PC *)(window->object))->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 &&
+                 (((GIZMOBLOWUP *)(window->object))->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 &&
                  ((u8)(camera->sock_position.sock_index)) <= 1)) {
                 camera_shake = 0.5f;
             } else if (WORLD->current_level == DEATHSTAR2BATTLED_LDATA && ((u8 *)(LevFlag))[0] > 0) {

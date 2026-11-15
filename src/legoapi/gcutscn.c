@@ -667,11 +667,11 @@ typedef struct cut_trigger_scene_instance_s { // size 0x50
     u32 unknown_4c;                           // 0x4c
 } CUT_TRIGGER_SCENE_INSTANCE;
 
-typedef struct cut_trigger_set_s CUT_TRIGGER_SET_PC;
+typedef struct cut_trigger_set_s CUT_TRIGGER_SET;
 
 struct cut_trigger_set_s {     // size 0x3c
-    CUT_TRIGGER_SET_PC *next;  // 0x00
-    CUT_TRIGGER_SET_PC *prev;  // 0x04
+    CUT_TRIGGER_SET *next;     // 0x00
+    CUT_TRIGGER_SET *prev;     // 0x04
     CUT_TRIGGER_FILE *file;    // 0x08
     CUT_TRIGGER_STATE *states; // 0x0c
     NUGSCN *scene;             // 0x10
@@ -680,8 +680,8 @@ struct cut_trigger_set_s {     // size 0x3c
     u32 flags;                 // 0x38
 };
 
-CUT_TRIGGER_SET_PC *CutTriggerSetList = NULL;
-CUT_TRIGGER_SET_PC *CutTriggerPendingSetList = NULL;
+CUT_TRIGGER_SET *CutTriggerSetList = NULL;
+CUT_TRIGGER_SET *CutTriggerPendingSetList = NULL;
 i32 (*LookupLocatorVfxFn)(char *) = 0;
 
 typedef struct cut_app_command_s { // size 0x8
@@ -705,9 +705,9 @@ void CutTriggerClearLists(void) {
 }
 
 void CutTriggerActivatePending(void) {
-    CUT_TRIGGER_SET_PC *set = CutTriggerPendingSetList;
-    CUT_TRIGGER_SET_PC *list;
-    CUT_TRIGGER_SET_PC *current;
+    CUT_TRIGGER_SET *set = CutTriggerPendingSetList;
+    CUT_TRIGGER_SET *list;
+    CUT_TRIGGER_SET *current;
     if (set != NULL) {
         list = CutTriggerSetList;
         do {
@@ -725,17 +725,17 @@ void CutTriggerActivatePending(void) {
     }
 }
 
-CUT_TRIGGER_SET_PC *CutTriggerSetCreate(CUT_TRIGGER_FILE *file, NUGSCN *scene, CUT_SCRIPT *scripts, VARIPTR *buffer, VARIPTR *end,
-                                        i32 pending) {
-    CUT_TRIGGER_SET_PC *set = NULL;
-    CUT_TRIGGER_SET_PC *list;
+CUT_TRIGGER_SET *CutTriggerSetCreate(CUT_TRIGGER_FILE *file, NUGSCN *scene, CUT_SCRIPT *scripts, VARIPTR *buffer, VARIPTR *end,
+                                     i32 pending) {
+    CUT_TRIGGER_SET *set = NULL;
+    CUT_TRIGGER_SET *list;
     i32 i;
     (void)end;
     if (file != NULL && scene != NULL && scripts != NULL) {
         buffer->addr = (buffer->addr + 0xf) & ~0xfU;
         set = buffer->void_ptr;
-        buffer->addr += sizeof(CUT_TRIGGER_SET_PC);
-        memset(set, 0, sizeof(CUT_TRIGGER_SET_PC));
+        buffer->addr += sizeof(CUT_TRIGGER_SET);
+        memset(set, 0, sizeof(CUT_TRIGGER_SET));
         set->prev = NULL;
         if (pending != 0) {
             list = CutTriggerPendingSetList;
@@ -765,7 +765,7 @@ CUT_TRIGGER_SET_PC *CutTriggerSetCreate(CUT_TRIGGER_FILE *file, NUGSCN *scene, C
     return set;
 }
 
-void CutTriggerSetUnlink(CUT_TRIGGER_SET_PC *set) {
+void CutTriggerSetUnlink(CUT_TRIGGER_SET *set) {
     if (set->next != NULL) {
         set->next->prev = set->prev;
     }
@@ -776,11 +776,11 @@ void CutTriggerSetUnlink(CUT_TRIGGER_SET_PC *set) {
     }
 }
 
-void CutTriggerSetEnable(CUT_TRIGGER_SET_PC *set) {
+void CutTriggerSetEnable(CUT_TRIGGER_SET *set) {
     set->flags &= ~1U;
 }
 
-void CutTriggerSetDisable(CUT_TRIGGER_SET_PC *set) {
+void CutTriggerSetDisable(CUT_TRIGGER_SET *set) {
     set->flags |= 1;
 }
 
@@ -822,7 +822,7 @@ CUT_TRIGGER_FILE *CutTriggerFileLoad(char *path, VARIPTR *buffer, VARIPTR *end) 
 void CutTriggerSysNull(void) {
 }
 
-void CutTriggerSetFlag(CUT_TRIGGER_SET_PC *set, char *name, i32 flag, i32 on) {
+void CutTriggerSetFlag(CUT_TRIGGER_SET *set, char *name, i32 flag, i32 on) {
     CUT_TRIGGER_FILE *file = set->file;
     i32 i;
     u8 mask;
@@ -839,7 +839,7 @@ void CutTriggerSetFlag(CUT_TRIGGER_SET_PC *set, char *name, i32 flag, i32 on) {
     }
 }
 
-void CutTriggerEnable(CUT_TRIGGER_SET_PC *set, char *name) {
+void CutTriggerEnable(CUT_TRIGGER_SET *set, char *name) {
     CUT_TRIGGER_FILE *file = set->file;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -850,7 +850,7 @@ void CutTriggerEnable(CUT_TRIGGER_SET_PC *set, char *name) {
     }
 }
 
-i32 CutTriggerIsPulled(CUT_TRIGGER_SET_PC *set, char *name) {
+i32 CutTriggerIsPulled(CUT_TRIGGER_SET *set, char *name) {
     CUT_TRIGGER_FILE *file = set->file;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -861,7 +861,7 @@ i32 CutTriggerIsPulled(CUT_TRIGGER_SET_PC *set, char *name) {
     return 0;
 }
 
-void CutTriggerPull(CUT_TRIGGER_SET_PC *set, char *name) {
+void CutTriggerPull(CUT_TRIGGER_SET *set, char *name) {
     CUT_TRIGGER_FILE *file = set->file;
     i32 i;
     for (i = 0; i < file->count; ++i) {
@@ -872,7 +872,7 @@ void CutTriggerPull(CUT_TRIGGER_SET_PC *set, char *name) {
     }
 }
 
-void CutTriggerReset(CUT_TRIGGER_SET_PC *set, char *name) {
+void CutTriggerReset(CUT_TRIGGER_SET *set, char *name) {
     CUT_TRIGGER_FILE *file;
     i32 i;
     if (set == NULL) {
@@ -1035,7 +1035,7 @@ i32 CutTriggerEntryTestMtx(CUT_TRIGGER_ENTRY *entry, NUMTX *mtx, NUVEC *pos, f32
     return 0;
 }
 
-i32 CutTriggerSetTest(CUT_TRIGGER_SET_PC *set, char *name, NUVEC *pos, f32 radius, i32 include_hidden) {
+i32 CutTriggerSetTest(CUT_TRIGGER_SET *set, char *name, NUVEC *pos, f32 radius, i32 include_hidden) {
     CUT_TRIGGER_FILE *file = set->file;
     NUGSCN *gscene;
     CUT_TRIGGER_ENTRY *entry;
@@ -1086,7 +1086,7 @@ void CutSceneMissingObjectDiagnostic(char *format, ...) {
 #define CUT_SCRIPT_DIAG0() ((void (*)(void))CutSceneMissingObjectDiagnostic)()
 #define CUT_SCRIPT_DIAG2(a, b) CutSceneMissingObjectDiagnostic((char *)(a), (b))
 
-void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
+void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set) {
     INSTNUGCUTSCENE *instance;
     INSTNUGCUTSCENE *chain;
     nuhspecial_s special;
@@ -1248,7 +1248,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET_PC *
     }
 }
 
-i32 CutScriptRun(CUT_SCRIPT *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET_PC *set) {
+i32 CutScriptRun(CUT_SCRIPT *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET *set) {
     CUT_APP_COMMAND *command = CutScriptAppCommands;
     if (NuStrNICmp(name, "Fn", 2) == 0) {
         for (; command != NULL && command->name != NULL; ++command) {
@@ -1273,7 +1273,7 @@ i32 CutScriptRun(CUT_SCRIPT *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET
     return 0;
 }
 
-void CutTriggerFire(CUT_TRIGGER_SET_PC *set, CUT_TRIGGER_ENTRY *entry, CUT_TRIGGER_STATE *state, i32 on) {
+void CutTriggerFire(CUT_TRIGGER_SET *set, CUT_TRIGGER_ENTRY *entry, CUT_TRIGGER_STATE *state, i32 on) {
     char name[32];
     if (on != 0) {
         CUT_SCRIPT_DIAG2(entry->name, entry->name);
@@ -1288,7 +1288,7 @@ void CutTriggerFire(CUT_TRIGGER_SET_PC *set, CUT_TRIGGER_ENTRY *entry, CUT_TRIGG
 }
 
 void CutTriggerUpdate(NUVEC *pos, f32 radius, i32 include_hidden) {
-    CUT_TRIGGER_SET_PC *set;
+    CUT_TRIGGER_SET *set;
     CUT_TRIGGER_FILE *file;
     NUGSCN *gscene;
     CUT_TRIGGER_ENTRY *entry;
@@ -1351,7 +1351,7 @@ void CutTriggerUpdate(NUVEC *pos, f32 radius, i32 include_hidden) {
     }
 
 i32 CutTriggerHit(NUVEC *pos, f32 radius, i16 amount) {
-    CUT_TRIGGER_SET_PC *set;
+    CUT_TRIGGER_SET *set;
     CUT_TRIGGER_FILE *file;
     NUGSCN *gscene;
     CUT_TRIGGER_ENTRY *entry;

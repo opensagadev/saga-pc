@@ -96,7 +96,7 @@ void *GizTorps_ReserveBufferSpace(void *pointer) {
 }
 
 void GizTorp_SetVisibility(void *input, i32 visible) {
-    GIZMO_PC *gizmo = input;
+    GIZMO *gizmo = input;
     TORPEDO_MACHINE_QUERY *machine;
     if (gizmo != NULL) {
         machine = gizmo->object;
@@ -105,7 +105,7 @@ void GizTorp_SetVisibility(void *input, i32 visible) {
 }
 
 void GizTorp_Activate(void *input, i32 active) {
-    GIZMO_PC *gizmo = input;
+    GIZMO *gizmo = input;
     TORPEDO_MACHINE_QUERY *machine;
     if (gizmo != NULL) {
         machine = gizmo->object;
@@ -247,7 +247,7 @@ void GizTorp_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
 }
 
 char *GizTorp_GetGizmoName(void *input) {
-    GIZMO_PC *gizmo = input;
+    GIZMO *gizmo = input;
     if (gizmo != NULL && gizmo->object != NULL) {
         return ((TORPEDO_MACHINE_QUERY *)gizmo->object)->name;
     }
@@ -261,7 +261,7 @@ i32 GizTorp_GetOutput(void *input, i32 output, i32 mode) {
     return 0;
 }
 
-char *GizTorp_GetOutputName(GIZMO_PC *unused0, i32 output_index) {
+char *GizTorp_GetOutputName(GIZMO *unused0, i32 output_index) {
     return output_index == 0 ? ((char *)("Ready")) : NULL;
 }
 
@@ -295,12 +295,12 @@ ADDGIZMOTYPE *GizTorpMachine_RegisterGizmo(i32 type_id) {
     addtype->fns.add_gizmos_fn = (void *)GizTorp_AddGizmos;
     addtype->fns.late_update_fn = (void (*)(void *, void *, f32))GizTorp_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizTorp_Draw;
-    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizTorp_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizTorp_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizTorp_GetOutputName;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))GizTorp_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))GizTorp_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))GizTorp_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizTorp_GetNumOutputs;
-    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizTorp_Activate;
-    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizTorp_SetVisibility;
+    addtype->fns.activate_fn = (void (*)(GIZMO *, i32))GizTorp_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizTorp_SetVisibility;
     addtype->fns.reset_fn = (void (*)(void *, void *, void *))GizTorps_Reset;
     addtype->fns.reserve_buffer_space_fn = (void *(*)(void *))GizTorps_ReserveBufferSpace;
     addtype->fns.load_fn = (i32(*)(void *, void *))GizTorp_Load;

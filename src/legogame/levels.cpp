@@ -858,7 +858,7 @@ extern "C" {
     i32 FreePlayBonusCount = 0;
     u16 TargetDeg_Near = 0;
     AIAREA *LevArea[4] = {0};
-    GIZMO_PC *LevGizmo[12] = {0};
+    GIZMO *LevGizmo[12] = {0};
 }
 
 extern "C" void Titles_Init(WORLDINFO *world) {
@@ -1513,14 +1513,14 @@ extern "C" {
     i32 LSW2 = 0;
     i32 LevPlatID[2] = {0};
     u64 LevHSpecialExists = 0ui64;
-    PART_PC *LevGamePart[8] = {0};
+    PART *LevGamePart[8] = {0};
     i32 makefreeplaymodellist = 0;
     f32 LevTime[5] = {0};
     AIPATHCNX *LevPathCnx[16] = {0};
     i32 LevFlag[4] = {0};
     i32 CharacterDataLoad = 0;
     i32 LevSfxFlag[4] = {0};
-    GIZMOBLOWUP_PC *LevBlowUp[2] = {0};
+    GIZMOBLOWUP *LevBlowUp[2] = {0};
     f32 LevAlpha = 0.0f;
     f32 TargetDist_Mid2 = 0;
     f32 TitlesAlpha = 0.0f;
@@ -2231,8 +2231,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & AREAFLAG_OVERRIDE_THINGS_SCENE) == 0) {
         cutscene_scene = things_scene;
     }
-    world->cutscene_sys = (CUTSYS_PC *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
-                                                      &world->giz_buffer, &world->buffer_end, world->area_index, world->level_idx, world);
+    world->cutscene_sys = (CUTSYS *)CutScenes_Load(ConfigBuffer.bytes, world->current_gscn, cutscene_scene, world->page_pp,
+                                                   &world->giz_buffer, &world->buffer_end, world->area_index, world->level_idx, world);
     if (abort_load != 0) {
         goto abort;
     }

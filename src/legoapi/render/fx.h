@@ -17,7 +17,7 @@ extern "C" {
     void DebrisTypeStatusAlwaysOff(i32 type);
     void DebrisTypeStatusAlwaysOn(i32 type);
     i32 ParticlesPerFrame(f32, f32);
-    void KillPart(PART_PC *, i32);
+    void KillPart(PART *, i32);
     i32 ParticlesPerSecond(f32, f32);
     i32 FindGameDebris(APIDEBRISSYS *, char *);
     void AddDebrisEffect(i32 *, i32, f32, f32, f32);

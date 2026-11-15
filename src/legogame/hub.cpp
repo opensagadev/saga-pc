@@ -494,7 +494,7 @@ extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT *buildit) {
     if (HubAreaInfo[0].area_name != NULL) {
         HUB_AREA_INFO *info = HubAreaInfo;
         do {
-            if (info->bonus_gizmo != NULL && ((GIZMO_PC *)info->bonus_gizmo)->object == buildit) {
+            if (info->bonus_gizmo != NULL && ((GIZMO *)info->bonus_gizmo)->object == buildit) {
                 return 1;
             }
             ++info;
@@ -506,7 +506,7 @@ extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT *buildit) {
 static void HubRestoreBuildIts(void) {
     i32 bit = 0;
     for (i32 i = 0; HubAreaInfo[i].area_name != NULL; ++i) {
-        GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
+        GIZMO *gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
         if (gizmo != NULL) {
             if (((1U << bit) & Game.hub_buildit_completed) != 0) {
                 GizBuildIt_SetToEnd((GIZBUILDIT *)gizmo->object);
@@ -539,12 +539,12 @@ static void HubUpdateBonusBuildIts(WORLDINFO *world) {
     i32 bit = 0;
     const i32 gold_bricks = Game.gold_bricks;
     for (; HubAreaInfo[i].area_name != NULL; ++i) {
-        GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
+        GIZMO *gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
         if (gizmo == NULL) {
             continue;
         }
         if (GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
-            gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
+            gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
             GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
             if (buildit->anim_object_count <= gold_bricks) {
                 if ((buildit->availability_flags & 1) == 0) {
@@ -3195,7 +3195,7 @@ extern "C" void Hub_Init(WORLDINFO *world) {
     hub_startoutsidebonusdoor_area = -1;
     CutScenePlayer_Reset();
     HubBuildIt = GizBuildIt_Find(world, "fountain");
-    LevGizmo[0] = (GIZMO_PC *)GizmoFindByName(w->gizmo_system, -1, "fountain");
+    LevGizmo[0] = (GIZMO *)GizmoFindByName(w->gizmo_system, -1, "fountain");
     if (HubBuildIt == NULL || LevGizmo[0] == NULL) {
         HubBuildIt = NULL;
         LevGizmo[0] = NULL;
@@ -3484,12 +3484,12 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     } else {
         i32 selected = -1;
         for (i32 i = 0; HubAreaInfo[i].area_name != NULL && selected == -1; ++i) {
-            GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
+            GIZMO *gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
             if (gizmo != NULL && GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
                 GAMEOBJECT *player = Player[0];
                 if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                     player->character_context != CHARACTER_CONTEXT_BUILD_IT) {
-                    gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
+                    gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
                     GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
                     if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit)) {
                         selected = i;
@@ -3702,7 +3702,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 total = ((GIZBUILDIT *)HubBuildIt)->anim_object_count * 2;
                 Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleY, alpha, Game.gold_bricks > total ? total : Game.gold_bricks, total);
             } else {
-                GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfo[HubEpisode].bonus_gizmo;
+                GIZMO *gizmo = (GIZMO *)HubAreaInfo[HubEpisode].bonus_gizmo;
                 if (gizmo != NULL) {
                     i32 count = Game.gold_bricks;
                     total = ((GIZBUILDIT *)gizmo->object)->anim_object_count;
@@ -4211,7 +4211,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Indy_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
@@ -4298,7 +4298,7 @@ extern "C" {
         return 1;
     }
 
-    i32 Indy_MidSpecialMove_ClimbUp(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_ClimbUp(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE *guide;
         i32 endpoint;
@@ -4353,7 +4353,7 @@ extern "C" {
         return 1;
     }
 
-    i32 Indy_MidSpecialMove_ClimbDown(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_ClimbDown(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE *guide;
         i32 endpoint;
@@ -4486,7 +4486,7 @@ extern "C" {
 
     f32 IndyGrappleTimeout = -2.0f;
 
-    i32 Indy_MidSpecialMove_GrappleStart(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_GrappleStart(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
@@ -4514,7 +4514,7 @@ extern "C" {
 
     f32 IndyGrappleHeightTolerance = 0.1f;
 
-    i32 Indy_MidSpecialMove_GrappleClimb(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_GrappleClimb(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
         f32 difference;
@@ -4564,7 +4564,7 @@ extern "C" {
 
     f32 IndyGrappleReleaseRadius = 1.0f;
 
-    i32 Indy_MidSpecialMove_GrappleEnd(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_GrappleEnd(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
         f32 distance;
@@ -4593,7 +4593,7 @@ extern "C" {
         return 1;
     }
 
-    i32 Indy_MidSpecialMove_Swing(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_Swing(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         if (owner->character_context == CHARACTER_CONTEXT_GRAPPLE) {
             if (owner->ai_packet.special_move_node->position.y > owner->special_move_source->position.y) {
@@ -4624,7 +4624,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Indy_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_StartJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
@@ -4854,7 +4854,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Indy_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_BigJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         if (owner->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
@@ -4972,7 +4972,7 @@ extern "C" {
         }
     }
 
-    i32 Indy_MidSpecialMove_WhipSwing(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+    i32 Indy_MidSpecialMove_WhipSwing(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
         switch ((i8)owner->unknown_1087) {
             case 0:
@@ -5051,7 +5051,7 @@ extern "C" {
         Indy_MidSpecialMove_ClimbDown,  Indy_MidSpecialMove_Swing,     Indy_MidSpecialMove_GrappleStart, Indy_MidSpecialMove_GrappleClimb,
         Indy_MidSpecialMove_GrappleEnd, Indy_MidSpecialMove_WhipSwing};
 
-    i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
+    i32 Indy_MidSpecialMove(AISYS *system, AIPACKET *packet, APIOBJECT *apiobject) {
         GAMEOBJECT *owner = apiobject->owner;
         AI_MID_SPECIAL_MOVE callback;
         owner->special_move_timer -= FRAMETIME;

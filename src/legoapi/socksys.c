@@ -426,7 +426,7 @@ NUFPCOMJMPCTX SockSys_ConfigKeywords[] = {
 // The context a sock block is parsed with: the system and the sock being configured.
 typedef struct SOCKPAR_CONTEXT {
     u32 reserved[2];
-    SOCKSYS_PC *sock_sys;
+    SOCKSYS *sock_sys;
     SOCK *sock;
 } SOCKPAR_CONTEXT;
 
@@ -517,7 +517,7 @@ static void AdjustMinMaxBox(NUVEC *pnt, NUVEC *min, NUVEC *max) {
 
 void SockSysMissingCameraDiagnostic(char *name);
 
-void SockSysFindInScene(SOCKSYS_PC *sock_sys, NUGSCN *gscn) {
+void SockSysFindInScene(SOCKSYS *sock_sys, NUGSCN *gscn) {
     i32 i;
     i32 j;
     SOCK *sock;
@@ -639,16 +639,16 @@ void SockSysFindInScene(SOCKSYS_PC *sock_sys, NUGSCN *gscn) {
     }
 }
 
-SOCKSYS_PC *SockSysInit(VARIPTR *buf, VARIPTR buf_end, NUGSCN *gscn) {
-    SOCKSYS_PC *sys;
+SOCKSYS *SockSysInit(VARIPTR *buf, VARIPTR buf_end, NUGSCN *gscn) {
+    SOCKSYS *sys;
 
     buf->addr = ((buf->addr + 3) & ~3u);
-    if (buf->addr + sizeof(SOCKSYS_PC) + 64 * sizeof(SOCK) >= buf_end.addr) {
+    if (buf->addr + sizeof(SOCKSYS) + 64 * sizeof(SOCK) >= buf_end.addr) {
         return NULL;
     }
 
     sys = buf->void_ptr;
-    buf->void_ptr = (char *)buf->void_ptr + sizeof(SOCKSYS_PC);
+    buf->void_ptr = (char *)buf->void_ptr + sizeof(SOCKSYS);
     sys->socks = buf->void_ptr;
     buf->void_ptr = (char *)buf->void_ptr + 64 * sizeof(SOCK);
     sys->count = 0;
@@ -786,7 +786,7 @@ f32 SockSplineLength(NUGSPLINE *spline, i32 closed) {
     return length;
 }
 
-void SockSys_Configure(SOCKSYS_PC *sock_sys, char *config, i32 unused, VARIPTR *buf, VARIPTR *buf_end, NUGSCN *gscn) {
+void SockSys_Configure(SOCKSYS *sock_sys, char *config, i32 unused, VARIPTR *buf, VARIPTR *buf_end, NUGSCN *gscn) {
     NUFPAR *parser;
     i32 inside_sock;
 
@@ -830,7 +830,7 @@ void SockSys_Configure(SOCKSYS_PC *sock_sys, char *config, i32 unused, VARIPTR *
     NuFParDestroy(parser);
 }
 
-void SockSys_GenerateData(SOCKSYS_PC *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
+void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
     SOCK *sock;
     i32 sock_index;
 
@@ -1069,7 +1069,7 @@ static void SockSysPointAlongMID(SOCK *sock, SOCKPOSITION *position, NUVEC *resu
     result->z = from->z + (to->z - from->z) * position->ratio;
 }
 
-static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION *position) {
+static void FillSockPosition(SOCKSYS *sock_sys, SOCKPOSITION *position) {
     SOCK *sock;
     i32 segment;
     i32 next;
@@ -1117,7 +1117,7 @@ static void FillSockPosition(SOCKSYS_PC *sock_sys, SOCKPOSITION *position) {
     position->normalized_distance = position->distance / (f32)(sock->unknown_33 != 0 ? sock->length + 1 : sock->length);
 }
 
-static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION *result, i32 sock_index, i32 prior_segment) {
+static f32 BestSockPosition(SOCKSYS *sock_sys, NUVEC *point, SOCKPOSITION *result, i32 sock_index, i32 prior_segment) {
     NUVEC *a0 = NULL;
     NUVEC *b0 = NULL;
     NUVEC *c0 = NULL;
@@ -1246,7 +1246,7 @@ static f32 BestSockPosition(SOCKSYS_PC *sock_sys, NUVEC *point, SOCKPOSITION *re
     }
 }
 
-void ComplexSockPosition(SOCKSYS_PC *sock_sys, NUVEC *position, i32 prior_sock, i32 prior_segment, SOCKPOSITION *result) {
+void ComplexSockPosition(SOCKSYS *sock_sys, NUVEC *position, i32 prior_sock, i32 prior_segment, SOCKPOSITION *result) {
     f32 best_distance;
     SOCKPOSITION *best;
     i32 checked;
@@ -1428,7 +1428,7 @@ i32 SockBitSet(SOCK *sock, i32 index) {
     return 0;
 }
 
-f32 MidDistanceFromSockStart(SOCKSYS_PC *system, SOCKPOSITION *position) {
+f32 MidDistanceFromSockStart(SOCKSYS *system, SOCKPOSITION *position) {
     if (system != NULL && position->sock_index != -1) {
         SOCKSEGMENT *segment;
 
@@ -1438,7 +1438,7 @@ f32 MidDistanceFromSockStart(SOCKSYS_PC *system, SOCKPOSITION *position) {
     return 0.0f;
 }
 
-void MoveSockPosition(SOCKSYS_PC *system, SOCKPOSITION *source, f32 distance, SOCKPOSITION *result) {
+void MoveSockPosition(SOCKSYS *system, SOCKPOSITION *source, f32 distance, SOCKPOSITION *result) {
     i32 direction;
     i32 length;
     NUVEC *from;
@@ -1537,7 +1537,7 @@ void MoveSockPosition(SOCKSYS_PC *system, SOCKPOSITION *source, f32 distance, SO
     result->camera_position = temp_sockcampos;
 }
 
-i32 SockSysTrackInSplineInfo(SOCKSYS_PC *system, SOCKPOSITION *position, NUVEC *point, f32 *distance) {
+i32 SockSysTrackInSplineInfo(SOCKSYS *system, SOCKPOSITION *position, NUVEC *point, f32 *distance) {
     if (position != NULL && position->sock_index != -1 && system != NULL && system->socks[position->sock_index].valid != 0 &&
         system->socks[position->sock_index].trackin != NULL) {
         NUVEC temporary;
@@ -1555,7 +1555,7 @@ i32 SockSysTrackInSplineInfo(SOCKSYS_PC *system, SOCKPOSITION *position, NUVEC *
     return 0;
 }
 
-void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION *position, NUMTX *out, i32 stride, i32 mode) {
+void SockRotationMatrix(SOCKSYS *system, SOCKPOSITION *position, NUMTX *out, i32 stride, i32 mode) {
     i32 first;
     i32 last;
     i32 i;
@@ -1712,19 +1712,19 @@ void SockRotationMatrix(SOCKSYS_PC *system, SOCKPOSITION *position, NUMTX *out, 
     }
 }
 
-void SockOn(SOCKSYS_PC *sys, i32 index) {
+void SockOn(SOCKSYS *sys, i32 index) {
     if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & SOCK_FLAG_TURN_OFF) != 0) {
         sys->socks[index].flags &= ~SOCK_FLAG_TURN_OFF;
     }
 }
 
-void SockOff(SOCKSYS_PC *sys, i32 index) {
+void SockOff(SOCKSYS *sys, i32 index) {
     if (sys != NULL && (u32)index <= 63 && (sys->socks[index].flags & SOCK_FLAG_TURN_OFF) == 0) {
         sys->socks[index].flags |= SOCK_FLAG_TURN_OFF;
     }
 }
 
-void SockSysSetObjectVisibility(SOCKSYS_PC *system, i32 index, i32 visible) {
+void SockSysSetObjectVisibility(SOCKSYS *system, i32 index, i32 visible) {
     if (system != NULL) {
         SOCK *sock = &system->socks[index];
         if (sock->objects != NULL) {
@@ -1737,7 +1737,7 @@ void SockSysSetObjectVisibility(SOCKSYS_PC *system, i32 index, i32 visible) {
     }
 }
 
-void SetSockPostion(SOCKSYS_PC *system, SOCKPOSITION *position, i32 index, i32 segment, f32 fraction) {
+void SetSockPostion(SOCKSYS *system, SOCKPOSITION *position, i32 index, i32 segment, f32 fraction) {
     SOCK *sock;
     i32 length;
 
@@ -1825,7 +1825,7 @@ i32 SockSegmentsAhead(SOCK *sock, i32 segment, i32 *from_segment, i32 *to_segmen
     return advanced;
 }
 
-f32 EnforceSockYLimits(f32 y, SOCKPOSITION *position, SOCKSYS_PC *sock_sys) {
+f32 EnforceSockYLimits(f32 y, SOCKPOSITION *position, SOCKSYS *sock_sys) {
     if (sock_sys != NULL) {
         if (y < position->camera_position.y) {
             y = position->camera_position.y;
@@ -1836,7 +1836,7 @@ f32 EnforceSockYLimits(f32 y, SOCKPOSITION *position, SOCKSYS_PC *sock_sys) {
     return y;
 }
 
-i32 SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed, NUVEC *player_camera_positions,
+i32 SockSysCamera(SOCKSYS *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed, NUVEC *player_camera_positions,
                   NUVEC *player_positions, i32 player_count, SOCKPOSITION *camera_socket_position, NUVEC *camera_position,
                   NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake, f32 *separation_scale) {
     NUVEC average_camera_position;
@@ -2232,7 +2232,7 @@ i32 SockSysCamera(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 soc
 
 f32 NuVecMagVU0(NUVEC *);
 
-f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS_PC *system) {
+f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS *system) {
     NUVEC flat = *position;
     SOCK *sock = &system->socks[resolved->sock_index];
     f32 distance = 0.0f;
@@ -2306,7 +2306,7 @@ f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION *resolved, i32 u
 
 u32 SocksOnPreviousStatus[2] = {0};
 
-void TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
+void TurnOffAllSocksExcept(SOCKSYS *system, i32 exception) {
     i32 word;
     i32 index;
     for (word = 0; word < 2; ++word) {
@@ -2321,7 +2321,7 @@ void TurnOffAllSocksExcept(SOCKSYS_PC *system, i32 exception) {
     system->socks[exception].flags &= ~SOCK_FLAG_TURN_OFF;
 }
 
-void RestoreLastSocksTurnoff(SOCKSYS_PC *system) {
+void RestoreLastSocksTurnoff(SOCKSYS *system) {
     i32 index;
     for (index = 0; index < 64; ++index) {
         if (SocksOnPreviousStatus[index / 32] & (1 << (index & 31))) {
@@ -2343,7 +2343,7 @@ typedef struct SOCK_CAMERA_RESULT { // size 0x64
 
 i32 LastSingleSockWeWereIn = -1;
 
-f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS_PC *system) {
+f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS *system) {
     SOCK *sock;
     f32 distance;
     NUVEC *a0;
@@ -2395,7 +2395,7 @@ f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION *resolved, i32 
     return distance > 0.0f ? NuFsqrt(distance) : 0.0f;
 }
 
-f32 CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS_PC *system) {
+f32 CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS *system) {
     switch (side) {
         case 0:
             return CalculateDistanceToNearestSide(position, resolved, unused, system);
@@ -2406,7 +2406,7 @@ f32 CalculateDistanceToSpecificSideOrEnd(i32 side, NUVEC *position, SOCKPOSITION
     }
 }
 
-i32 SockSysCameraWithOverlapBlend(SOCKSYS_PC *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed, NUVEC *player_camera_positions,
+i32 SockSysCameraWithOverlapBlend(SOCKSYS *sock_sys, NUVEC *fallback_camera_position, i32 socket_changed, NUVEC *player_camera_positions,
                                   NUVEC *player_positions, i32 player_count, SOCKPOSITION *camera_socket_position, NUVEC *camera_position,
                                   NUVEC *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek, f32 *camera_shake,
                                   f32 *separation_scale) {

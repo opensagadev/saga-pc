@@ -45,7 +45,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-void PartImpact_ThermalDetonator(PART_PC *part) {
+void PartImpact_ThermalDetonator(PART *part) {
     i32 stuck = 0;
     i8 surface;
     u32 shadow;
@@ -103,7 +103,7 @@ void PartImpact_ThermalDetonator(PART_PC *part) {
     }
 }
 
-void PartUpdate_ThermalDetonator(PART_PC *part) {
+void PartUpdate_ThermalDetonator(PART *part) {
     f32 height;
     f32 water;
     i32 surface;
@@ -147,7 +147,7 @@ void PartUpdate_ThermalDetonator(PART_PC *part) {
     }
 }
 
-i32 PartDraw_ThermalDetonator(PART_PC *part) {
+i32 PartDraw_ThermalDetonator(PART *part) {
     NUMTX matrix;
     i32 draw = PartDraw_Flickerer(part);
     NUMTX reflection;
@@ -177,7 +177,7 @@ i32 PartDraw_ThermalDetonator(PART_PC *part) {
     return 1;
 }
 
-void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
+void PartKill_ThermalDetonator(PART *part, i32 unused1) {
     u16 flags;
     EXPLOSION *explosion;
     if (part == NULL) {
@@ -211,7 +211,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     i32 blocked;
     i32 locator;
     u16 angle;
-    PART_PC *part;
+    PART *part;
     if (WORLD->level_objects[0xe9].active == 0) {
         return;
     }
@@ -288,7 +288,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     ADDPART params = Default_ADDPART;
     NUMTX matrix;
     i32 locator;
-    PART_PC *part;
+    PART *part;
     if (WORLD->level_objects[0xe9].active == 0) {
         return;
     }
@@ -344,7 +344,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
 
 i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     f32 *frame = NULL;
-    PART_PC *part;
+    PART *part;
     f32 release_frame;
     if (object->character_context == CHARACTER_CONTEXT_THROW_DETONATOR) {
         if (object->character_model->action_animations[object->unknown_7aa] != NULL) {

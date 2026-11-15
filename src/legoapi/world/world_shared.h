@@ -38,7 +38,7 @@ extern "C" {
     GAMEANIMSYS *GameAnimSys_Create(VARIPTR *buf, VARIPTR *end);
     extern NUVEC ShadNorm;
     void ResetLevSfx(WORLDINFO *world);
-    void SockSys_Configure(SOCKSYS_PC *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *);
+    void SockSys_Configure(SOCKSYS *, char *, i32, VARIPTR *, VARIPTR *, NUGSCN *);
     void LoadGizmoSys(void *system, void *world, char *config_file);
     void ClearGameObjects(APIOBJECTSYS *system);
     i32 rtlResetDynamic(void);
@@ -73,7 +73,7 @@ extern "C" {
 
     extern char *debris_name[147];
     extern void *things_scene_terrain;
-    AISYS_PC *AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
+    AISYS *AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
     void *AIPathCnxControlSysCreate(VARIPTR *, VARIPTR *, i32);
     void *AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
     void *AITriggerSetSysCreate(VARIPTR *, VARIPTR *);

@@ -44,7 +44,7 @@ void ClearSpecialMove(GAMEOBJECT *);
 void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE);
 void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE);
 
-i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     u32 capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
     AIPATHNODE *nodes = packet->path_info.path->nodes;
@@ -108,7 +108,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJEC
     return 0;
 }
 
-i32 StarWars_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+i32 StarWars_MidSpecialMove_StartJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     if (owner->character_context == CHARACTER_CONTEXT_JUMP) {
         SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
@@ -217,7 +217,7 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
     }
 }
 
-i32 StarWars_MidSpecialMove_UseHatch(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+i32 StarWars_MidSpecialMove_UseHatch(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     switch ((i8)owner->unknown_1087) {
         case 0:
@@ -327,7 +327,7 @@ i32 StarWars_PrepareBigJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unus
     return 0;
 }
 
-i32 StarWars_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
+i32 StarWars_MidSpecialMove_BigJump(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
     if (owner->character_context == CHARACTER_CONTEXT_BIG_JUMP) {
         owner->launch_origin = owner->ai_packet.special_move_node->position;
@@ -470,7 +470,7 @@ i32 StarWars_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32
     return 0;
 }
 
-i32 StarWars_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
+i32 StarWars_MidSpecialMove(AISYS *system, AIPACKET *packet, APIOBJECT *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
     GAMEOBJECT *owner = object->objptr;
     AI_MID_SPECIAL_MOVE function;

@@ -590,7 +590,7 @@ void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
 typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 extern CHECK_ANTINODE_FN checkantinodefns[3];
 
-typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
+typedef struct OPPONENT_PACKET {         // size 0x1ec
     u8 unknown_000[0xd4];                // 0x000
     APIOBJECT *nearest_opponent_object;  // 0x0d4
     f32 nearest_opponent_metric;         // 0x0d8
@@ -602,21 +602,21 @@ typedef struct OPPONENT_PACKET_PC {      // size 0x1ec
     f32 pending_opponent_metric;         // 0x0f0
     u8 unknown_0f4[0xf4];                // 0x0f4
     u32 flags;                           // 0x1e8
-} OPPONENT_PACKET_PC;
+} OPPONENT_PACKET;
 
-typedef struct OPPONENT_GAME_PC { // size 0xec8
-    u8 unknown_000[0xeb0];        // 0x000
-    u64 seen;                     // 0xeb0
-    u64 exclusion;                // 0xeb8
-    APIOBJECT *alert_target;      // 0xec0
-    f32 alert_timer;              // 0xec4
-} OPPONENT_GAME_PC;
+typedef struct OPPONENT_GAME { // size 0xec8
+    u8 unknown_000[0xeb0];     // 0x000
+    u64 seen;                  // 0xeb0
+    u64 exclusion;             // 0xeb8
+    APIOBJECT *alert_target;   // 0xec0
+    f32 alert_timer;           // 0xec4
+} OPPONENT_GAME;
 
-typedef struct OPPONENT_LOS_PC { // size 0x208
-    u32 object_size;             // 0x000
-    GAMEOBJECT *objects;         // 0x004
-    u64 line_of_sight[64];       // 0x008
-} OPPONENT_LOS_PC;
+typedef struct OPPONENT_LOS { // size 0x208
+    u32 object_size;          // 0x000
+    GAMEOBJECT *objects;      // 0x004
+    u64 line_of_sight[64];    // 0x008
+} OPPONENT_LOS;
 
 typedef struct ai_frame_world_s {        // size 0x4670
     u8 unknown_0000[0x2aec];             // 0x0000

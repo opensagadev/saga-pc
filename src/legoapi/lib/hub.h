@@ -12,7 +12,7 @@
 
 struct AIPACKET;
 struct AIPATHCNX;
-struct AISYS_PC;
+struct AISYS;
 struct APIOBJECT;
 struct GIZBUILDIT;
 struct WORLDINFO_s;
@@ -217,22 +217,22 @@ extern "C" {
     extern f32 IndyGrappleReleaseRadius;
     extern f32 IndyGrappleTimeout;
     extern f32 IndyJumpDistance[2];
-    i32 Indy_MidSpecialMove_Default(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_StartJump(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_BigJump(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_Default(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_StartJump(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_BigJump(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_PrepareObstacle(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks_unused);
     i32 Indy_PrepareWhipSwing(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks_unused);
-    i32 Indy_MidSpecialMove_WhipSwing(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_WhipSwing(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_PrepareBigJump(struct AIPACKET *packet, struct APIOBJECT *apiobject, i32 checks_unused);
     i32 Indy_PreparingForSpecialMove(struct AIPACKET *packet, struct APIOBJECT *apiobject, i32 checks);
-    i32 Indy_MidSpecialMove(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *apiobject);
+    i32 Indy_MidSpecialMove(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *apiobject);
     i32 Indy_PrepareClimb(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
-    i32 Indy_MidSpecialMove_ClimbUp(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_ClimbDown(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_GrappleStart(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_GrappleClimb(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_GrappleEnd(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
-    i32 Indy_MidSpecialMove_Swing(struct AISYS_PC *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_ClimbUp(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_ClimbDown(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_GrappleStart(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_GrappleClimb(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_GrappleEnd(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
+    i32 Indy_MidSpecialMove_Swing(struct AISYS *system, struct AIPACKET *packet, struct APIOBJECT *object);
     i32 Indy_PrepareJump(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
     i32 Indy_PrepareGrapple(struct AIPACKET *packet, struct APIOBJECT *object, i32 checks);
 #ifdef __cplusplus

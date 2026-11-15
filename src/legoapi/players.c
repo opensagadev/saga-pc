@@ -763,7 +763,7 @@ i32 fun_0055f290(GAMEOBJECT *object) {
     return 0;
 }
 
-i32 Player_HasDoubleBoltDamage_FromBolt(BOLT_PC *bolt) {
+i32 Player_HasDoubleBoltDamage_FromBolt(BOLT *bolt) {
     GAMEOBJECT *object;
     i32 player;
     if (bolt->flags & 1) {

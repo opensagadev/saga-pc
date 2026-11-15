@@ -21,7 +21,7 @@ struct NETMESSAGE;
 struct NetAddress;
 struct NetworkObject;
 struct PC_OCCLUDER_RECORD;
-struct TERRAIN_PLATFORM_PC;
+struct TERRAIN_PLATFORM;
 struct TERRAIN_POLYGON_INFO;
 struct TERRAIN_SKIN_STREAM;
 struct ThingProcessData;
@@ -35,7 +35,7 @@ struct FRAME_PAD;
 struct GIZFLOW;
 struct GIZMOPICKUP;
 struct NUGSCN_s;
-struct PART_PC;
+struct PART;
 struct VuMtx;
 struct WORLDINFO_s;
 struct debris_info_s;
@@ -50,7 +50,7 @@ struct numtl_s;
 typedef struct TERRAIN_WALL_POINT TERRAIN_WALL_POINT;
 typedef struct TERRAIN_SHAPE_BATCH TERRAIN_SHAPE_BATCH;
 
-typedef struct TERRAIN_GROUP_PC {     // size 0x38
+typedef struct TERRAIN_GROUP {        // size 0x38
     NUVEC origin;                     // 0x00
     struct TERRAIN_SKIN_STREAM *data; // 0x0c
     NUVEC bounds_min;                 // 0x10
@@ -60,20 +60,16 @@ typedef struct TERRAIN_GROUP_PC {     // size 0x38
     i16 scene_index;                  // 0x30
     i16 group_info;                   // 0x32
     f32 radius;                       // 0x34
-} TERRAIN_GROUP_PC;
+} TERRAIN_GROUP;
 
-typedef TERRAIN_GROUP_PC TERRAIN_GROUP;
-
-typedef struct TERRAIN_CELL_PC { // size 0x14
-    i16 first_group;             // 0x00
-    i16 group_count;             // 0x02
-    f32 min_x;                   // 0x04
-    f32 min_z;                   // 0x08
-    f32 max_x;                   // 0x0c
-    f32 max_z;                   // 0x10
-} TERRAIN_CELL_PC;
-
-typedef TERRAIN_CELL_PC TERRAIN_CELL;
+typedef struct TERRAIN_CELL { // size 0x14
+    i16 first_group;          // 0x00
+    i16 group_count;          // 0x02
+    f32 min_x;                // 0x04
+    f32 min_z;                // 0x08
+    f32 max_x;                // 0x0c
+    f32 max_z;                // 0x10
+} TERRAIN_CELL;
 
 struct TERRAIN_SHAPE_BATCH { // size 0x14
     i16 marker;              // 0x00
@@ -133,7 +129,7 @@ typedef struct narrowsockexception_s { // size 0x10
     f32 end_distance;                  // 0xc
 } NARROWSOCKEXCEPTION;
 
-typedef struct cutsys_s CUTSYS_PC;
+typedef struct cutsys_s CUTSYS;
 typedef struct gameanimsys_s GAMEANIMSYS;
 
 typedef struct SoundTable { // size 0xc8
@@ -628,10 +624,10 @@ typedef struct TERRAIN_INDEX_LEVEL {   // size 0x80c
 } TERRAIN_INDEX_LEVEL;
 
 typedef struct TERRAIN_SET {                    // size 0xa490
-    struct TERRAIN_GROUP_PC *groups;            // 0x0000
+    struct TERRAIN_GROUP *groups;               // 0x0000
     u8 unknown_004[0x60];                       // 0x0004
     void *unknown_064;                          // 0x0064
-    struct TERRAIN_PLATFORM_PC *platforms;      // 0x0068
+    struct TERRAIN_PLATFORM *platforms;         // 0x0068
     i16 active_platform_groups[96];             // 0x006c
     i32 active_platform_count;                  // 0x012c
     f32 platform_query_min_x;                   // 0x0130
@@ -647,8 +643,8 @@ typedef struct TERRAIN_SET {                    // size 0xa490
     i32 removed_platform_count;                 // 0x0154
     i16 removed_platforms[32];                  // 0x0158
     TERRAIN_TRACK_SLOT track_slots[64];         // 0x0198
-    TERRAIN_CELL_PC cells[256];                 // 0x0798
-    TERRAIN_CELL_PC platform_cell;              // 0x1b98
+    TERRAIN_CELL cells[256];                    // 0x0798
+    TERRAIN_CELL platform_cell;                 // 0x1b98
     i32 minimum_height;                         // 0x1bac
     i32 used_cell_count;                        // 0x1bb0
     i16 *group_indices;                         // 0x1bb4
@@ -945,7 +941,7 @@ typedef struct BOLTSYS_PC_s {                                    // size 0x20
     void (*debris)(struct bolt_s *, NUVEC *, i32, NUVEC *, i32); // 0x0c
     void (*shoot_origin)(struct gameobject_s *, NUVEC *);        // 0x10
     u16 (*shoot_direction)(struct gameobject_s *, NUVEC *);      // 0x14
-    i32 (*hit_part)(struct bolt_s *, struct PART_PC *);          // 0x18
+    i32 (*hit_part)(struct bolt_s *, struct PART *);             // 0x18
     i32 (*alternate_fire)(struct gameobject_s *, i32);           // 0x1c
 } BOLTSYS;
 

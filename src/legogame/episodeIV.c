@@ -73,7 +73,7 @@ typedef struct TORPEDO_MUSIC_FLAGS_VIEW { // size 0x2
 // BlockadeRunnerDEjectCreature (docs/cleanup-audit.md, section 6).
 
 i32 DeathStarShieldDown(void) {
-    GIZMOBLOWUP_PC *blowup;
+    GIZMOBLOWUP *blowup;
     GAMEOBJECT *player;
     TORPEDO_MUSIC_FLAGS_VIEW *packet;
     if (LevGizmo[0] == NULL) {
@@ -196,7 +196,7 @@ void BlockadeRunnerC_Init(WORLDINFO *world) {
     LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle8");
 }
 
-static void BlockadeRunnerDKillEjectedCreature(PART_PC *part, i32 reason) {
+static void BlockadeRunnerDKillEjectedCreature(PART *part, i32 reason) {
     i32 i;
     for (i = 0; i < 8; i++) {
         if (LevGamePart[i] == part) {
@@ -215,7 +215,7 @@ static NUVEC BlockadeRunnerDEjectVec[2] = {
 };
 static NUVEC BlockadeRunnerDEjectMom = {-0.5f, 0.0f, 0.0f};
 
-static i32 BlockadeRunnerDDrawCreature(PART_PC *part) {
+static i32 BlockadeRunnerDDrawCreature(PART *part) {
     return 0;
 }
 

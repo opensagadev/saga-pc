@@ -56,7 +56,7 @@ extern "C" {
     char *GizPanel_GetOutputName(void *arg0, i32 output_index);
     i32 GizPanel_Load(void *world_ptr, void *arg1);
     void GizPanel_InitTerrain(WORLDINFO *world);
-    void GizPanel_SetVisibility(GIZMO_PC *gizmo, i32 visible);
+    void GizPanel_SetVisibility(GIZMO *gizmo, i32 visible);
     void GizPanel_Update(void *world_ptr, void *arg1, f32 delta_time);
     void *GizPanels_AllocateProgressData(void *buffer, void *buffer_end);
     void GizPanels_ClearProgress(void *arg0, void *progress_data);

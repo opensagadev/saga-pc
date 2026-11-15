@@ -14,7 +14,7 @@ typedef struct PODSPRINT_AI { // size 0x10
     i16 vals[6];              // 0x4
 } PODSPRINT_AI;
 
-typedef struct PODSPRINT_PC {              // size 0x94
+typedef struct PODSPRINT {                 // size 0x94
     u8 unknown_0[8];                       // 0x00
     PODSPRINT_AI ai[6];                    // 0x08
     struct gizaimessage_s *lap_msg;        // 0x68
@@ -32,7 +32,7 @@ typedef struct PODSPRINT_PC {              // size 0x94
     u8 unknown_90_b[0x2];                  // 0x90
     u8 flags;                              // 0x92
     u8 unknown_93[0x1];                    // 0x93
-} PODSPRINT_PC;
+} PODSPRINT;
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,7 +40,7 @@ extern "C" {
 
     f32 PodSprint_InStartCountdown(WORLDINFO *);
     extern i32 Lap;
-    i32 Action_CreatePod(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
+    i32 Action_CreatePod(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
     /* ActivePodRace is a private static of episodeI.c. */
     extern GAMEOBJECT *PodPacemaker;
     extern f32 PodRaceSplineIncrement;
@@ -56,7 +56,7 @@ extern "C" {
     extern char PodRaceLapTimeKeyword[9];
     extern char PodRaceAttemptsKeyword[25];
     extern char PodRaceIncrementKeyword[11];
-    i32 Action_SetLapTime(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
+    i32 Action_SetLapTime(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
     void PodDust(WORLDINFO *, GAMEOBJECT *);
     extern i32 PodDustLocatorIndices[2];
     extern f32 PodDustEmissionRate;

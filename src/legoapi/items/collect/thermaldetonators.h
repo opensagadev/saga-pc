@@ -4,10 +4,10 @@
 
 #include "legoapi/menus/core/hint.h"
 
-struct PART_PC;
+struct PART;
 struct gameobject_s;
 
-typedef void (*PART_ACTION)(struct PART_PC *);
+typedef void (*PART_ACTION)(struct PART *);
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20,10 +20,10 @@ extern "C" {
 extern "C" {
 #endif
     i32 ThermalDetonator_MoveCode(struct gameobject_s *);
-    void PartImpact_ThermalDetonator(struct PART_PC *part);
-    void PartUpdate_ThermalDetonator(struct PART_PC *part);
-    i32 PartDraw_ThermalDetonator(struct PART_PC *part);
-    void PartKill_ThermalDetonator(struct PART_PC *part, i32 unused);
+    void PartImpact_ThermalDetonator(struct PART *part);
+    void PartUpdate_ThermalDetonator(struct PART *part);
+    i32 PartDraw_ThermalDetonator(struct PART *part);
+    void PartKill_ThermalDetonator(struct PART *part, i32 unused);
     void ThermalDetonator_Throw(struct gameobject_s *object);
 #ifdef __cplusplus
 }

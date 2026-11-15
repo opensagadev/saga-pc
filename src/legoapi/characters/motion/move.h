@@ -8,7 +8,7 @@
 
 struct CHARACTER_MODEL_LAYERS;
 struct GAMECHARACTERLAYER;
-struct PART_PC;
+struct PART;
 struct gameobject_s;
 struct level_data_s;
 
@@ -513,11 +513,11 @@ extern "C" {
     void CurrentStart(struct gameobject_s *object, i32 allow_any_level, i32 use_socket_rotation);
     u16 GetShootDirection_Batman(struct gameobject_s *, NUVEC *);
     f32 VehicleTurnOrLoopOffset(struct gameobject_s *);
-    void BobaRocket_Move(struct PART_PC *, f32);
-    void PartImpact_Basketball(struct PART_PC *);
-    void BobaRocket_Deflect(struct PART_PC *);
-    void BobaRocket_Kill(struct PART_PC *, i32);
-    void PartUpdate_Basketball(struct PART_PC *);
+    void BobaRocket_Move(struct PART *, f32);
+    void PartImpact_Basketball(struct PART *);
+    void BobaRocket_Deflect(struct PART *);
+    void BobaRocket_Kill(struct PART *, i32);
+    void PartUpdate_Basketball(struct PART *);
     f32 ForceTowardsMid(struct gameobject_s *);
     f32 GetVehicleSpeedMul(struct gameobject_s *, f32);
     void StartTurn(struct gameobject_s *);

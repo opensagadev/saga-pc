@@ -91,7 +91,7 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
     GAMEOBJECT *target;
     GAMEOBJECT *object;
     GAMEOBJECT *source;
-    BOLT_PC bolt;
+    BOLT bolt;
     f32 x;
     f32 z;
     progress = explosion->time / explosion->duration;

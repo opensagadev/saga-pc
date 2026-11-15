@@ -52,12 +52,12 @@ i32 terrhitflags = 0;
 i16 TerrImpact = 0;
 u8 TerrWallInfo = 0;
 i16 NuSound3GroupSampleIds[512] = {0};
-TERRAIN_SPHERE_PC SphereData[16] = {0};
+TERRAIN_SPHERE SphereData[16] = {0};
 u16 SfxBits[100] = {0};
 TERRAIN_POLYGON_INFO *ShadRoofPoly = 0;
 struct eduimenu_s *ptldatamenu = 0;
 i32 PlatCrush = 0;
-TERRAIN_AXIS_FREEDOM_SHAPE_PC *TerrShape = 0;
+TERRAIN_AXIS_FREEDOM_SHAPE *TerrShape = 0;
 struct eduimenu_s *ptlsizemenu = 0;
 struct eduimenu_s *ptlcolmenu = 0;
 void *edgra_page_terrain[8] = {0};
@@ -346,7 +346,7 @@ i32 ShadowRoofInfo(void) {
 
 i32 NewShadowOnPlatform(void) {
     TERRAIN_SET *terrain = CurrentTerrain;
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *group;
     if (terrain == NULL || castnum == -1) {
         return -1;
     }
@@ -524,7 +524,7 @@ NUVEC *TerrainSkin(NUVEC *result, const TERRAIN_SKIN_INFO *info, const NUVEC *po
 
 /* Valid initialized variable records, vertex_order 0 or 1, and enough output
  * storage for each complete 20-byte header and 100-byte polygon. */
-void SkinPlatform(TERRAIN_GROUP_PC *group, TERRAIN_SKIN_STREAM *output, const TERRAIN_SKIN_INFO *info) {
+void SkinPlatform(TERRAIN_GROUP *group, TERRAIN_SKIN_STREAM *output, const TERRAIN_SKIN_INFO *info) {
     TERRAIN_SKIN_STREAM *input;
     TERRAIN_SKIN_STREAM *cursor;
     TERRAIN_POLYGON_INFO *source;
@@ -647,7 +647,7 @@ extern TERRAIN_SKIN_USE_RECORD *SkinMemInfo;
  * PLATFORM.instance_flags points at the owning instance's flags word.
  */
 
-void TerrainSkinAllocate(TERRAIN_GROUP_PC *group) {
+void TerrainSkinAllocate(TERRAIN_GROUP *group) {
     i32 selected;
     i32 candidate;
     i32 oldest;
@@ -764,7 +764,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
     i32 transformed_count = 0;
     NUVEC4 *vertices;
     NUVEC saved_position;
-    TERRAIN_GROUP_PC *groups;
+    TERRAIN_GROUP *groups;
     i32 hit_index;
     i32 oldest_index;
     i32 oldest_age;
@@ -821,7 +821,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             const i16 count = entry->header.shape_count;
             const i32 group_index = entry->header.terrain_group;
             TERRAIN_SCAN_WORD *shapes = entry + 1;
-            TERRAIN_GROUP_PC *group = &groups[group_index];
+            TERRAIN_GROUP *group = &groups[group_index];
             f32 local_min_x;
             f32 local_max_x;
             f32 local_min_z;
@@ -865,7 +865,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
         limit = cursor + 508;
         shape_count = 0;
         for (cell_index = 0; cell_index < CurrentTerrain->used_cell_count; ++cell_index) {
-            const TERRAIN_CELL_PC *cell = &CurrentTerrain->cells[cell_index];
+            const TERRAIN_CELL *cell = &CurrentTerrain->cells[cell_index];
             const i16 *group_indices;
             i32 cell_group;
 
@@ -874,7 +874,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             }
             group_indices = CurrentTerrain->group_indices + cell->first_group;
             for (cell_group = 0; cell_group < CurrentTerrain->cells[cell_index].group_count; ++cell_group) {
-                TERRAIN_GROUP_PC *group = &groups[group_indices[cell_group]];
+                TERRAIN_GROUP *group = &groups[group_indices[cell_group]];
                 f32 local_min_x;
                 f32 local_max_x;
                 f32 local_min_z;
@@ -933,7 +933,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 const i16 count = entry->header.shape_count;
                 const i32 group_index = entry->header.terrain_group;
                 TERRAIN_SCAN_WORD *shapes = entry + 1;
-                TERRAIN_GROUP_PC *group = &groups[group_index];
+                TERRAIN_GROUP *group = &groups[group_index];
                 f32 local_min_x;
                 f32 local_max_x;
                 f32 local_min_z;
@@ -975,8 +975,8 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
             platform_count = CurrentTerrain->platform_cell.group_count;
         }
         for (; platform_count > 0; --platform_count, ++platform_groups) {
-            TERRAIN_GROUP_PC *group = &groups[*platform_groups];
-            TERRAIN_PLATFORM_PC *platform;
+            TERRAIN_GROUP *group = &groups[*platform_groups];
+            TERRAIN_PLATFORM *platform;
             f32 local_min_x;
             f32 local_max_x;
             f32 local_min_z;
@@ -1212,7 +1212,7 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
     NUVEC efloor_normal;
     NUVEC roof_normal;
     NUVEC eroof_normal;
-    TERRAIN_GROUP_PC *groups;
+    TERRAIN_GROUP *groups;
 
     castnum = -1;
     TerrainShadowFloorIndex = -1;
@@ -2250,7 +2250,7 @@ void TerrainPlatformNewUpdate(void) {
     CurrentTerrain->active_platform_count = 0;
     group_index = &CurrentTerrain->group_indices[CurrentTerrain->platform_cell.first_group];
     for (i = 0; i < CurrentTerrain->platform_cell.group_count; ++i, ++group_index) {
-        TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[*group_index];
+        TERRAIN_GROUP *group = &CurrentTerrain->groups[*group_index];
         i32 index = group->scene_index;
         TERRAIN_PLATFORM_LIFECYCLE *platform = &TERRAIN_TPNU_PLATFORM(index);
         if (platform->instance_flags != NULL) {
@@ -2354,11 +2354,11 @@ void PlatInstRotate(i32 platform_index, i32 enabled) {
 }
 
 typedef struct TERRAIN_PICKUP_SET {      // size 0xa490
-    TERRAIN_GROUP_PC *groups;            // 0x0000
+    TERRAIN_GROUP *groups;               // 0x0000
     void *shape_data;                    // 0x0004
     i32 group_count;                     // 0x0008
     i16 group_for_type[128];             // 0x000c
-    TERRAIN_PLATFORM_PC platforms[32];   // 0x010c
+    TERRAIN_PLATFORM platforms[32];      // 0x010c
     TERRAIN_SPATIAL_NODE *spatial_nodes; // 0x0e8c
     u8 unknown_e90[0xa490 - 0xe90];      // 0x0e90
 } TERRAIN_PICKUP_SET;
@@ -2445,14 +2445,14 @@ i32 ReadTerrainPickup(unsigned char *base_path, i16 **buffer, TERRAIN_PICKUP_SET
 
 void terrainpickupinit(char *path, void **buffer) {
     TERRAIN_PICKUP_SET *terrain = *buffer;
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *group;
     i32 i;
     *buffer = (u8 *)*buffer + sizeof(TERRAIN_PICKUP_SET);
     terrain->groups = *buffer;
-    *buffer = (u8 *)*buffer + 32 * sizeof(TERRAIN_GROUP_PC);
+    *buffer = (u8 *)*buffer + 32 * sizeof(TERRAIN_GROUP);
     terrain->shape_data = *buffer;
     *buffer = (u8 *)*buffer + 0x1c00;
-    memset(terrain->groups, 0, 32 * sizeof(TERRAIN_GROUP_PC));
+    memset(terrain->groups, 0, 32 * sizeof(TERRAIN_GROUP));
     group = terrain->groups;
     for (i = 0; i < 32; ++i) {
         group[i].chunk_type = -1;
@@ -2578,7 +2578,7 @@ void AddPickupTerr(i32 type, NUVEC *position) {
 /* The real original caller expands the platform installer; no source-only helper is emitted. */
 
 i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *group;
     i16 source;
     i32 index;
     i32 found;
@@ -2660,7 +2660,7 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
 }
 
 i32 NewPlatPickupInst(void *object, i32 type) {
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *group;
     i16 source;
     i32 index;
     i32 i;
@@ -2717,8 +2717,8 @@ i32 NewPlatPickupInst(void *object, i32 type) {
 
 void ReassignPickupInst(i32 index, i32 type) {
     TERRAIN_SET *terrain = CurrentTerrain;
-    TERRAIN_GROUP_PC *source;
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *source;
+    TERRAIN_GROUP *group;
     i16 source_index;
     if (terrain == NULL || index == -1) {
         return;
@@ -2832,7 +2832,7 @@ void TerrDrawSitu(TERRAIN_POLYGON_INFO *terrain, NUVEC *situation) {
 }
 
 void TerrDrawPlat(TERRAIN_POLYGON_INFO *terrain, i16 index) {
-    TERRAIN_PLATFORM_PC *platform;
+    TERRAIN_PLATFORM *platform;
     i32 i;
     NUVEC4 points[5];
     NUVEC4 *normal;
@@ -2912,7 +2912,7 @@ void TerrDrawPlat(TERRAIN_POLYGON_INFO *terrain, i16 index) {
 }
 
 void TerrDrawPlatCol(TERRAIN_POLYGON_INFO *terrain, i16 index, i32 colour) {
-    TERRAIN_PLATFORM_PC *platform;
+    TERRAIN_PLATFORM *platform;
     NUVEC4 points[4];
     NUVEC4 normals[2];
     const NUVEC *origin;
@@ -3019,7 +3019,7 @@ void TerrDrawImpactPol(void) {
 }
 
 void DrawMPlat(i32 index) {
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *group;
     TERRAIN_SHAPE_BATCH *batch;
     TERRAIN_POLYGON_INFO *shape;
     i32 remaining;
@@ -3041,7 +3041,7 @@ void DrawMPlat(i32 index) {
 }
 
 void DrawMSitu(i32 index) {
-    TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[index];
+    TERRAIN_GROUP *group = &CurrentTerrain->groups[index];
     TERRAIN_SHAPE_BATCH *batch;
     TERRAIN_POLYGON_INFO *shape;
     i32 remaining;
@@ -3187,7 +3187,7 @@ i32 SkinFlipTab[8] = {0, 1, 2, 3, 0, 2, 1, 3};
     } while (0)
 
 void TerrainSkinPrepareGroup(i32 group_index, TERRAIN_SKIN_STREAM *output, const TERRAIN_SKIN_INFO *info) {
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *group;
     TERRAIN_SKIN_STREAM *input;
     TERRAIN_POLYGON_INFO *source;
     TERRAIN_POLYGON_INFO *polygon;
@@ -3381,7 +3381,7 @@ void TerrainSkinResetArena(void) {
  * supplied end. */
 u8 *TerrainSkinRebuildIndex(i32 pool_slots) {
     TERRAIN_SET *terrain = CurrentTerrain;
-    TERRAIN_GROUP_PC *group;
+    TERRAIN_GROUP *group;
     TERRAIN_SKIN_USE_RECORD *use;
     i16 *selectors;
     f32 *min_x;
@@ -3540,7 +3540,7 @@ u8 *TerrainSkinRebuildIndex(i32 pool_slots) {
     return (u8 *)(use + pool_slots);
 }
 
-TERRAIN_GROUP_PC *fun_00681cc0(i32 instance) {
+TERRAIN_GROUP *fun_00681cc0(i32 instance) {
     TERRAIN_SET *terrain = CurrentTerrain;
     i32 index = -1;
     i32 i;

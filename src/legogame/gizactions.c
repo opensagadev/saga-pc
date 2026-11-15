@@ -37,11 +37,11 @@
 #include "nu2api/numath/nuvec.h"
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
-extern i32 Action_HelpWithTriggers(AISYS_PC *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
+extern i32 Action_HelpWithTriggers(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 i32 GizmoGetTypeIDByName(void *system, char *name);
-SOCK *FindSock(SOCKSYS_PC *system, char *name);
-void SockOn(SOCKSYS_PC *system, i32 index);
-void SockOff(SOCKSYS_PC *system, i32 index);
+SOCK *FindSock(SOCKSYS *system, char *name);
+void SockOn(SOCKSYS *system, i32 index);
+void SockOff(SOCKSYS *system, i32 index);
 void GizForce_PlayForwards(GIZFORCE *force);
 void GizForce_PlayBackwards(GIZFORCE *force);
 i32 turret_gizmotype_id;
@@ -280,7 +280,7 @@ void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 
         } else if (NuStrICmp(params[index], "FALSE") == 0) {
             active = 0;
         } else if ((value = NuStrIStr(params[index], "buildit=")) != NULL) {
-            GIZMO_PC *gizmo = GizmoFindByName(flow->gizmo_sys, gizbuildit_gizmotype_id, value + 8);
+            GIZMO *gizmo = GizmoFindByName(flow->gizmo_sys, gizbuildit_gizmotype_id, value + 8);
             if (gizmo != NULL && gizmo->object != NULL) {
                 buildit = gizmo->object;
             }
@@ -358,7 +358,7 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
     void *old_controlled;
     i32 old_complete;
     i32 index;
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     TECHNO_s *techno;
     GAMEOBJECT *operator_object;
     char *target_name = NULL;
@@ -609,7 +609,7 @@ void GizActions_PlayObstacle(GIZFLOW *flow, FLOWBOX *box, char **params, i32 cou
     i32 stay_shut = 0;
     i32 i;
     char *name = NULL;
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     GIZOBSTACLE *obstacle;
     u32 flags;
     for (i = 0; i < count; ++i) {
@@ -672,7 +672,7 @@ void GizActions_PlaySpecial(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 c
         }
     }
     if (name != NULL) {
-        GIZMO_PC *gizmo = GizmoFindByName(flow->gizmo_sys, gizspecial_gizmotype_id, name);
+        GIZMO *gizmo = GizmoFindByName(flow->gizmo_sys, gizspecial_gizmotype_id, name);
         if (gizmo != NULL) {
             GIZSPECIAL_s *special = gizmo->object;
             if (special != NULL) {
@@ -710,7 +710,7 @@ void GizActions_PlayForce(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 cou
         }
     }
     if (name != NULL) {
-        GIZMO_PC *gizmo = GizmoFindByName(flow->gizmo_sys, force_gizmotype_id, name);
+        GIZMO *gizmo = GizmoFindByName(flow->gizmo_sys, force_gizmotype_id, name);
         if (gizmo != NULL) {
             GIZACTION_FORCE_ANIMATION *force;
             force = gizmo->object;
@@ -795,14 +795,14 @@ void GizActions_HitBlowup(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32
     }
     switch (gizmo_type) {
         case 0: {
-            GIZMO_PC *gizmo = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, name);
+            GIZMO *gizmo = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, name);
             if (gizmo != NULL && gizmo->object != NULL) {
                 GizmoBlowupBlowup(gizmo->object, 1, -1, damage, NULL, 1);
             }
             break;
         }
         case 1: {
-            GIZMO_PC *gizmo = GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, name);
+            GIZMO *gizmo = GizmoFindByName(WORLD->gizmo_sys, turret_gizmotype_id, name);
             if (gizmo != NULL && gizmo->object != NULL) {
                 GizTurrets_Hit(WORLD, gizmo->object, NULL, -1, damage);
             }

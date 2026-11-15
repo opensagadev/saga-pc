@@ -68,12 +68,12 @@ typedef struct TELEPORT_KEYWORDS { // size 0x64
 extern "C" {
     i32 Teleport_GetMaxGizmos(void *);
     void Teleport_AddGizmos(GIZMOSYS *, i32, void *, void *);
-    char *Teleport_GetGizmoName(GIZMO_PC *);
-    i32 Teleport_GetOutput(GIZMO_PC *, i32, i32);
-    char *Teleport_GetOutputName(GIZMO_PC *, i32);
-    i32 Teleport_GetNumOutputs(GIZMO_PC *);
-    void Teleport_Activate(GIZMO_PC *, i32);
-    i32 Teleport_ActivateRev(GIZMO_PC *, i32, i32);
+    char *Teleport_GetGizmoName(GIZMO *);
+    i32 Teleport_GetOutput(GIZMO *, i32, i32);
+    char *Teleport_GetOutputName(GIZMO *, i32);
+    i32 Teleport_GetNumOutputs(GIZMO *);
+    void Teleport_Activate(GIZMO *, i32);
+    i32 Teleport_ActivateRev(GIZMO *, i32, i32);
 }
 
 typedef struct TELEPORT_MOTION {   // size 0xfc
@@ -671,7 +671,7 @@ extern "C" {
         return 0;
     }
 
-    i32 Teleport_ActivateRev(GIZMO_PC *gizmo, i32 reverse, i32 mode) {
+    i32 Teleport_ActivateRev(GIZMO *gizmo, i32 reverse, i32 mode) {
         TELEPORT_CONFIG *teleport;
         if (gizmo == NULL) {
             return 0;
@@ -691,7 +691,7 @@ extern "C" {
         return 1;
     }
 
-    void Teleport_Activate(GIZMO_PC *gizmo, i32 active) {
+    void Teleport_Activate(GIZMO *gizmo, i32 active) {
         TELEPORT_CONFIG *teleport = (TELEPORT_CONFIG *)gizmo->object;
         if (active != 0) {
             teleport->enabled = 1;
@@ -721,14 +721,14 @@ extern "C" {
         }
     }
 
-    char *Teleport_GetGizmoName(GIZMO_PC *gizmo) {
+    char *Teleport_GetGizmoName(GIZMO *gizmo) {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
         return (char *)gizmo->object;
     }
 
-    i32 Teleport_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+    i32 Teleport_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
         (void)output;
         (void)mode;
         if (gizmo != NULL && gizmo->object != NULL) {
@@ -737,11 +737,11 @@ extern "C" {
         return 0;
     }
 
-    char *Teleport_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+    char *Teleport_GetOutputName(GIZMO *gizmo, i32 output) {
         return "Occupied";
     }
 
-    i32 Teleport_GetNumOutputs(GIZMO_PC *gizmo) {
+    i32 Teleport_GetNumOutputs(GIZMO *gizmo) {
         return 1;
     }
 
@@ -772,12 +772,12 @@ extern "C" {
         addtype->name = "Teleport";
         addtype->fns.get_max_gizmos_fn = (i32(*)(void *))Teleport_GetMaxGizmos;
         addtype->fns.add_gizmos_fn = (void *)Teleport_AddGizmos;
-        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))Teleport_GetGizmoName;
-        addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))Teleport_GetOutput;
-        addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))Teleport_GetOutputName;
+        addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))Teleport_GetGizmoName;
+        addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))Teleport_GetOutput;
+        addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))Teleport_GetOutputName;
         addtype->fns.get_num_outputs_fn = (void *)Teleport_GetNumOutputs;
-        addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))Teleport_Activate;
-        addtype->fns.activate_rev_fn = (i32(*)(GIZMO_PC *, i32, i32))Teleport_ActivateRev;
+        addtype->fns.activate_fn = (void (*)(GIZMO *, i32))Teleport_Activate;
+        addtype->fns.activate_rev_fn = (i32(*)(GIZMO *, i32, i32))Teleport_ActivateRev;
         teleport_gizmotype_id = type_id;
         return addtype;
     }

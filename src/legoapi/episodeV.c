@@ -72,7 +72,7 @@ AILOCATOR *HothEscapeBLocator = NULL;
 GAMEOBJECT *HothEscapeBSnowmob = NULL;
 
 extern i32 gizbuildit_gizmotype_id;
-GIZMO_PC *GizmoFindByData(void *, i32, void *);
+GIZMO *GizmoFindByData(void *, i32, void *);
 i32 GizBuildIt_AtEnd(void *);
 void GizBuildIt_KillParts(GIZBUILDIT_s *);
 void GizBuildit_SetVisibility(GIZBUILDIT_s *, i32);
@@ -91,7 +91,7 @@ void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA *level, f32 radius,
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
     do {                                                                                                                                   \
-        GIZMO_PC *gizmo = LevGizmo[gizmo_index];                                                                                           \
+        GIZMO *gizmo = LevGizmo[gizmo_index];                                                                                              \
         if (gizmo != NULL && gizmo->object != NULL) {                                                                                      \
             GIZMOPICKUP *pickup = (GIZMOPICKUP *)gizmo->object;                                                                            \
             if ((pickup->flags & 0x48) == 0 && *(counter) < 10) {                                                                          \
@@ -318,7 +318,7 @@ static void AsteroidChase_FindPopBits(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], "small_pop_bit4", 1);
 }
 
-void Asteroid_PartKill(PART_PC *part, i32 reason) {
+void Asteroid_PartKill(PART *part, i32 reason) {
     AddGameDebris(WORLD->game_debris_sys, 0x5d, &part->position);
     AddGameDebris(WORLD->game_debris_sys, 0x5e, &part->position);
     AddGameDebris(WORLD->game_debris_sys, 0x5f, &part->position);
@@ -338,7 +338,7 @@ void Asteroid_PartKill(PART_PC *part, i32 reason) {
     }
 }
 
-void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
+void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
     i32 special_indices[4] = {0, -1, -1, -1};
     i32 index;
     i32 part_count;
@@ -348,7 +348,7 @@ void Asteroid_AddParts(GIZMOBLOWUP_PC *blowup) {
     NUVEC velocity;
     NUVEC centre;
     ADDPART params;
-    PART_PC *part;
+    PART *part;
     part_count = qrand() / 0x4000 + 1;
     for (index = 1; index < part_count; index++) {
         special_indices[index] = qrand() / (0xffff / 3 + 1) + 1;
@@ -397,7 +397,7 @@ WORLDINFO *WORLD = &WorldInfo[0];
 void Asteroids_Reset(WORLDINFO *world) {
     nuhspecial_s specials[128];
     ASTEROID *asteroid;
-    GIZMOBLOWUP_PC *blowup;
+    GIZMOBLOWUP *blowup;
     char *name;
     i32 count;
     i32 i;
@@ -556,12 +556,12 @@ void AsteroidChaseA_Update(WORLDINFO *world) {
     Asteroids_Update();
 }
 
-GIZMOBLOWUP_PC *classicBlowups[8] = {0};
+GIZMOBLOWUP *classicBlowups[8] = {0};
 u8 drawLights = 0;
 u8 turretAliveCount = 0;
 
 void AsteroidChaseB_Init(WORLDINFO *world) {
-    GIZMOBLOWUP_PC *blowup;
+    GIZMOBLOWUP *blowup;
     i32 count;
     i32 i;
     AsteroidChase_FindPopBits(world);
@@ -643,7 +643,7 @@ FINAL_ASTEROID finalAsteroid = {0};
 ASTEROIDC_NETPACKET *asteroidc_netpacket = NULL;
 
 void AsteroidChaseC_Init(WORLDINFO *world) {
-    GIZMOBLOWUP_PC *blowup;
+    GIZMOBLOWUP *blowup;
     i32 i;
     asteroidc_netpacket = SetLevelHack(8);
     memset(&finalAsteroid, 0, sizeof(finalAsteroid));
@@ -733,7 +733,7 @@ struct GIZTURRET_s *StarDestroyerTurrets[16] = {0};
 void AsteroidChaseD_Init(WORLDINFO *world) {
     i16 targets = -1;
     char name[16];
-    GIZMO_PC *gizmo;
+    GIZMO *gizmo;
     i32 index;
     NuSpecialFind(vehicle_scene, &specialIcon, "Gun_Turret_icon", 1);
     turretAliveCount = 0;
@@ -1148,7 +1148,7 @@ void HothBattleA_Init(WORLDINFO *world) {
 }
 
 void HothBattleA_Reset(WORLDINFO *world) {
-    GIZMO_PC *gizmo = LevGizmo[0];
+    GIZMO *gizmo = LevGizmo[0];
     GIZMOPICKUP *pickup;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
@@ -1209,7 +1209,7 @@ void HothBattleC_Init(WORLDINFO *world) {
 void HothBattleC_Reset(WORLDINFO *world) {
     struct gizmo_s *gizmo;
     struct GIZMOPICKUP *pickup;
-    GIZMO_PC *bomb_generator = GizmoFindByName(world->gizmo_sys, bombgen_gizmotype_id, "bomb_generator1");
+    GIZMO *bomb_generator = GizmoFindByName(world->gizmo_sys, bombgen_gizmotype_id, "bomb_generator1");
     if (bomb_generator != NULL && bomb_generator->object != NULL) {
         HothBattleC_BombGenerator = bomb_generator->object;
     }

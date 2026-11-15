@@ -297,7 +297,7 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
 static i32 JediBInitLocator(WORLDINFO *world, NUVEC *position, i32 angle, AILOCATOR *locator, f32 radius) {
     f32 floor_y;
     if (netclient == 0) {
-        AISYS_PC *ai = world->ai_sys;
+        AISYS *ai = world->ai_sys;
         if (ai != NULL) {
             i32 index;
             i32 count = ai->antinode_count;
@@ -1154,7 +1154,7 @@ void KaminoA_AlwaysUpdate(WORLDINFO *world) {
 KAMINODISCO kaminodisco = {0};
 KAMINOC_PACKET *kaminoc_netpacket = NULL;
 nuhspecial_s disco_on_spin[3] = {0};
-GIZMO_PC *disco_off_spina[3] = {0};
+GIZMO *disco_off_spina[3] = {0};
 nuhspecial_s walllights[2] = {0};
 void *factoryb_netpacket = 0;
 nuhspecial_s walllights_disco[2] = {0};
@@ -1167,7 +1167,7 @@ nuhspecial_s discolights[2] = {0};
 JEDIB_NETPACKET *jedib_netpacket = NULL;
 nuhspecial_s discorm_wall_on = {0};
 nuhspecial_s discorm_wall_off = {0};
-GIZMO_PC *gizTurrets[2] = {0};
+GIZMO *gizTurrets[2] = {0};
 i32 last = 0;
 
 void KaminoC_Init(WORLDINFO *world) {
@@ -1514,7 +1514,7 @@ void KaminoE_Reset(WORLDINFO *world) {
         kamino_e.platform = (i16)FindPlatInst(NuSpecialGetInstanceix(&kamino_e.slave1));
     }
     for (i = 0; i < 4; i++) {
-        GIZMO_PC *gizmo;
+        GIZMO *gizmo;
         sprintf(name, "turret%d", i + 1);
         gizmo = GizmoFindByName(world->gizmo_sys, turret_gizmotype_id, name);
         if (gizmo != NULL) {
@@ -1794,7 +1794,7 @@ void KaminoE_UpdateSlave1(WORLDINFO *world) {
                     i32 i;
                     kamino_e.departure_timer = 0.0f;
                     for (i = 0; i < 2; ++i) {
-                        BOLT_PC *bolt;
+                        BOLT *bolt;
                         i32 adjustment;
                         bolt_matrix = *matrix;
                         NuVecMtxTransform(&origin, &KaminoShipGunOffset[kamino_e.fire_index], matrix);
@@ -1840,7 +1840,7 @@ void KaminoE_Update(WORLDINFO *world) {
     u32 *connection;
     AIAREA *fight_area;
     AILOCATOR *wait;
-    AISYS_PC *ai;
+    AISYS *ai;
     if (kamino_e.reset_turrets != NULL && kamino_e.reset_turrets->value == 1.0f) {
         KaminoEResetTurrets();
         kamino_e.reset_turrets->value = 0.0f;
@@ -1994,7 +1994,7 @@ f32 gunshipb_seekmomseek = 5.0f;
 i32 GUNSHIPAHACK = 2;
 
 void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
-    GIZMOBLOWUP_PC *nearest = NULL;
+    GIZMOBLOWUP *nearest = NULL;
     f32 nearest_distance;
     NUVEC offset;
     NUVEC nearest_offset;
@@ -2007,7 +2007,7 @@ void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
     }
     nearest_distance = gunshipb_seekrange * gunshipb_seekrange;
     for (index = 0; index < 8; ++index) {
-        GIZMOBLOWUP_PC *blowup;
+        GIZMOBLOWUP *blowup;
         if (LevGizmo[index] == NULL || LevGizmo[index]->object == NULL) {
             continue;
         }

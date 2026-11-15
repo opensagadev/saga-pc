@@ -72,7 +72,7 @@ extern "C" {
     extern i32 SpeederChaseState1;
     extern f32 SpeederChaseTime0;
     extern f32 SpeederChaseTime1;
-    i32 SpeederBlowupHack(GIZMOBLOWUP_PC *, i32);
+    i32 SpeederBlowupHack(GIZMOBLOWUP *, i32);
 #ifdef __cplusplus
 }
 #endif

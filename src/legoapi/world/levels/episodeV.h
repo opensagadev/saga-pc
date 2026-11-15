@@ -6,7 +6,7 @@
 #include "nu2api/numath/nuvec.h"
 
 struct GIZBUILDIT_s;
-struct PART_PC;
+struct PART;
 struct WORLDINFO_s;
 struct gameobject_s;
 struct gizmo_s;

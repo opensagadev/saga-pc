@@ -497,12 +497,12 @@ extern "C" void GizSpinner_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, v
 }
 
 extern "C" char *GizSpinner_GetGizmoName(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
+    GIZMO *gizmo = (GIZMO *)gizmo_pointer;
     return gizmo != NULL ? ((GIZSPINNER_s *)gizmo->object)->name : NULL;
 }
 
 extern "C" char *GizSpinner_GetOutputName(void *gizmo, i32 output) {
-    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo)->object;
+    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO *)gizmo)->object;
     if (output < 0 || output > spinner->output_count) {
         return NULL;
     }
@@ -522,7 +522,7 @@ extern "C" char *GizSpinner_GetOutputName(void *gizmo, i32 output) {
 }
 
 extern "C" i32 GizSpinner_GetNumOutputs(void *gizmo) {
-    return ((GIZSPINNER_s *)((GIZMO_PC *)gizmo)->object)->output_count;
+    return ((GIZSPINNER_s *)((GIZMO *)gizmo)->object)->output_count;
 }
 
 static i32 GizSpinner_WithinOutput(GIZSPINNER_s *spinner) {
@@ -874,7 +874,7 @@ static void SpinnerResetEntry(GIZSPINNER_s *spinner, SpinnerProgressEntry *progr
 
 extern "C" void GizSpinner_Activate(void *gizmo_pointer, i32 active) {
     if (gizmo_pointer != NULL) {
-        GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
+        GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO *)gizmo_pointer)->object;
         if (active != 0) {
             spinner->flags &= (u8)~0x22;
             spinner->state_flags &= ~0x20u;
@@ -885,7 +885,7 @@ extern "C" void GizSpinner_Activate(void *gizmo_pointer, i32 active) {
 }
 
 extern "C" NUVEC *GizSpinner_GetPos(void *gizmo_pointer) {
-    GIZMO_PC *gizmo = (GIZMO_PC *)gizmo_pointer;
+    GIZMO *gizmo = (GIZMO *)gizmo_pointer;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
@@ -897,7 +897,7 @@ extern "C" void GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {
     if (gizmo_pointer == NULL) {
         return;
     }
-    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
+    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO *)gizmo_pointer)->object;
     if (visible != 0) {
         spinner->flags &= (u8)~4;
         if (spinner->platform_id == -1) {
@@ -954,7 +954,7 @@ extern "C" void GizSpinner_GetSpinnerPos(GIZSPINNER_s *spinner, NUVEC *position)
 }
 
 extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 capacity, char *name) {
-    GIZMO_PC **results = (GIZMO_PC **)results_ptr;
+    GIZMO **results = (GIZMO **)results_ptr;
     WORLDINFO *world = (WORLDINFO *)world_ptr;
     i32 count = 0;
     i32 type_id = -1;
@@ -982,7 +982,7 @@ extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 c
         searching = 1;
         for (; object != NULL && searching != 0; object = object->next) {
             if (NuSpecialCompare(&special, &object->special) != 0) {
-                GIZMO_PC *gizmo = (GIZMO_PC *)GizmoFindByName(world->gizmo_sys, type_id, name);
+                GIZMO *gizmo = (GIZMO *)GizmoFindByName(world->gizmo_sys, type_id, name);
                 if (gizmo != NULL) {
                     type_id = gizmo->type_id;
                     results[count++] = gizmo;
@@ -995,7 +995,7 @@ extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 c
 }
 
 extern "C" {
-    static void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT_PC *bolt, SPINNER_HIT_FLAGS_STACK argument) {
+    static void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT *bolt, SPINNER_HIT_FLAGS_STACK argument) {
         u8 *hit_flags = argument.value;
         GAMEOBJECT *owner = bolt->owner;
         if (spinner == NULL || (spinner->state_flags & 8) != 0) {
@@ -1011,7 +1011,7 @@ extern "C" {
     }
 }
 
-extern "C" i32 GizSpinner_BoltHitPlatAll(WORLDINFO *, void *spinner_ptr, BOLT_PC *bolt, u8 *hit_flags) {
+extern "C" i32 GizSpinner_BoltHitPlatAll(WORLDINFO *, void *spinner_ptr, BOLT *bolt, u8 *hit_flags) {
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)spinner_ptr;
     if (spinner == NULL || (spinner->flags & 1) == 0 || (spinner->flags & 4) != 0) {
         return 0;
@@ -1036,7 +1036,7 @@ extern "C" i32 GizSpinner_BoltHitPlatAll(WORLDINFO *, void *spinner_ptr, BOLT_PC
 extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *result_position, NUVEC *result_velocity, void *, NUVEC *position,
                                              NUVEC *direction, f32 radius, f32 range_squared, i32 directional, i32, i32) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    GIZMO_PC *result = NULL;
+    GIZMO *result = NULL;
     NUVEC target_position = v000;
     NUVEC aim = *direction;
     if (world->spinners == NULL) {
@@ -1051,7 +1051,7 @@ extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *result_po
     maximum.z = position->z + radius;
     GIZMOSET *set = &((GIZMOSYS_PREFIX *)world->gizmo_sys)->sets[spinner_gizmotype_id];
     for (i32 index = 0; index < set->count; ++index, set = &((GIZMOSYS_PREFIX *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
-        GIZMO_PC *gizmo = &set->gizmos[index];
+        GIZMO *gizmo = &set->gizmos[index];
         GIZSPINNER_s *spinner = &world->spinners[index];
         if (spinner->flags == 0 || (spinner->flags & 0x26) != 0 || (spinner->state_flags & 8) != 0 || spinner->position.x < minimum.x ||
             spinner->position.x > maximum.x || spinner->position.z < minimum.z || spinner->position.z > maximum.z) {
@@ -1166,7 +1166,7 @@ extern "C" GIZSPINNER_s *GizSpinner_FindNearest(NUVEC *position, WORLDINFO *worl
 }
 
 extern "C" i32 GizSpinner_GetOutput(void *gizmo_pointer, i32 output_index, i32 unused) {
-    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO_PC *)gizmo_pointer)->object;
+    GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO *)gizmo_pointer)->object;
     (void)unused;
     if (spinner != NULL) {
         return GizSpinner_WithinOutput(spinner) == output_index;
@@ -1463,7 +1463,7 @@ extern "C" void GizSpinner_ResetAll(WORLDINFO *world, void *unused, SpinnerProgr
     GizSpinners_Update(world, NULL, FRAMETIME);
 }
 
-extern "C" i32 GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT_PC *, u32, u8 *) {
+extern "C" i32 GizSpinner_HasBoltHit(void *, void *, void *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT *, u32, u8 *) {
     return 0;
 }
 
@@ -1484,18 +1484,17 @@ extern "C" ADDGIZMOTYPE *Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.early_update_fn = (void (*)(void *, void *, f32))GizSpinners_Update;
     addtype->fns.draw_fn = (void (*)(void *, void *, f32))GizSpinner_Draw;
     addtype->fns.panel_draw_fn = (void (*)(void *, void *, f32))GizSpinner_PanelDraw;
-    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO_PC *))GizSpinner_GetGizmoName;
-    addtype->fns.get_output_fn = (i32(*)(GIZMO_PC *, i32, i32))GizSpinner_GetOutput;
-    addtype->fns.get_output_name_fn = (char *(*)(GIZMO_PC *, i32))GizSpinner_GetOutputName;
+    addtype->fns.get_gizmo_name_fn = (char *(*)(GIZMO *))GizSpinner_GetGizmoName;
+    addtype->fns.get_output_fn = (i32(*)(GIZMO *, i32, i32))GizSpinner_GetOutput;
+    addtype->fns.get_output_name_fn = (char *(*)(GIZMO *, i32))GizSpinner_GetOutputName;
     addtype->fns.get_num_outputs_fn = (void *)GizSpinner_GetNumOutputs;
-    addtype->fns.activate_fn = (void (*)(GIZMO_PC *, i32))GizSpinner_Activate;
-    addtype->fns.set_visibility_fn = (void (*)(GIZMO_PC *, i32))GizSpinner_SetVisibility;
+    addtype->fns.activate_fn = (void (*)(GIZMO *, i32))GizSpinner_Activate;
+    addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizSpinner_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizSpinner_GetPos;
     addtype->fns.using_special_fn = (void *)GizSpinner_UsingSpecial;
     addtype->fns.bolt_hit_plat_fn = (void *)GizSpinner_BoltHitPlatAll;
     addtype->fns.get_best_bolt_target_fn =
-        (GIZMO_PC * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
-            GizSpinner_GetBestBoltTarget;
+        (GIZMO * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)) GizSpinner_GetBestBoltTarget;
     addtype->fns.bolt_hit_fn = (void *)GizSpinner_HasBoltHit;
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizSpinner_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizSpinner_ClearProgress;

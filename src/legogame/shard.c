@@ -114,14 +114,14 @@ void Shards_Reset(WORLDINFO *world, void *unused, SHARD_PROGRESS *progress) {
     }
 }
 
-void Shard_Activate(GIZMO_PC *gizmo, i32 active) {
+void Shard_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         SHARD_s *shard = gizmo->object;
         shard->active = active != 0;
     }
 }
 
-void Shard_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void Shard_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SHARD_s *shard = gizmo->object;
         shard->visible = visible != 0;
@@ -274,21 +274,21 @@ void Shards_AddGizmos(GIZMOSYS *system, i32 type, WORLDINFO *world, void *unused
     }
 }
 
-char *Shard_GetGizmoName(GIZMO_PC *gizmo) {
+char *Shard_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? ((SHARD_s *)gizmo->object)->name : NULL;
 }
 
-i32 Shard_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 Shard_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     return ((SHARD_s *)gizmo->object)->collected;
 }
 
 char *Shard_OutputName = "Got";
 
-char *Shard_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *Shard_GetOutputName(GIZMO *gizmo, i32 output) {
     return Shard_OutputName;
 }
 
-i32 Shard_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 Shard_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 

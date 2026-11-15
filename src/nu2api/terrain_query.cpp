@@ -49,9 +49,6 @@ enum {
     TERRAIN_PLATFORM_FLAG_COLLIDED = 2
 };
 
-typedef TERRAIN_SPHERE_PC TERRAIN_SPHERE;
-typedef TERRAIN_AXIS_FREEDOM_SHAPE_PC TERRAIN_AXIS_FREEDOM_SHAPE;
-
 struct ShadowScanWriter {
     u8 *group_header;
     TERRAIN_POLYGON_INFO **cursor;
@@ -156,7 +153,7 @@ extern "C" {
                 break;                                                                                                                     \
             const i32 group_index = (entry_var)->header.terrain_group;                                                                     \
             TERRAIN_SCAN_WORD *shapes = (entry_var) + 1;                                                                                   \
-            TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[group_index];                                                                \
+            TERRAIN_GROUP *group = &CurrentTerrain->groups[group_index];                                                                   \
             if (TERRAIN_NS_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) && group->chunk_type != -1) {                                  \
                 TERRAIN_NS_LOCAL_BOUNDS(group);                                                                                            \
                 for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {                                                        \
@@ -240,7 +237,7 @@ extern "C" {
                 }
                 i16 *group_indices = CurrentTerrain->group_indices + CurrentTerrain->cells[cell_index].first_group;
                 for (i32 cell_group = 0; cell_group < CurrentTerrain->cells[cell_index].group_count; ++cell_group, ++group_indices) {
-                    TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[*group_indices];
+                    TERRAIN_GROUP *group = &CurrentTerrain->groups[*group_indices];
                     if (!TERRAIN_NS_GROUP_OVERLAP(min_x, min_z, max_x, max_z, group) || group->chunk_type == -1) {
                         continue;
                     }
@@ -294,8 +291,8 @@ extern "C" {
         if (scan_platforms != 0) {
             i16 *platform_groups = CurrentTerrain->group_indices + CurrentTerrain->platform_cell.first_group;
             for (i32 platform_index = 0; platform_index < CurrentTerrain->platform_cell.group_count; ++platform_index, ++platform_groups) {
-                TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[*platform_groups];
-                TERRAIN_PLATFORM_PC *platform = &TERRAIN_GROUP_PLATFORM(group);
+                TERRAIN_GROUP *group = &CurrentTerrain->groups[*platform_groups];
+                TERRAIN_PLATFORM *platform = &TERRAIN_GROUP_PLATFORM(group);
                 if (platform->instance_flags != NULL) {
                     u32 *scene_state = platform->instance_flags;
                     if ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0) {
@@ -472,14 +469,14 @@ extern "C" {
         while (handle[0] > 0) {
             const i32 group_index = handle[1];
             TERRAIN_SCAN_WORD *shapes = reinterpret_cast<TERRAIN_SCAN_WORD *>(handle) + 1;
-            TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[group_index];
+            TERRAIN_GROUP *group = &CurrentTerrain->groups[group_index];
             f32 local_min_x;
             f32 local_max_x;
             f32 local_min_z;
             f32 local_max_z;
             f32 local_min_y;
             f32 local_max_y;
-            TERRAIN_PLATFORM_PC *platform;
+            TERRAIN_PLATFORM *platform;
             if (group->chunk_type == 1 && (platform = &TERRAIN_GROUP_PLATFORM(group))->scene_object != NULL) {
                 if (TERRAIN_GROUP_MATRIX(group)->m30 > TERRAIN_GROUP_PLATFORM(group).previous_matrix.m30) {
                     local_min_x = min_x - group->origin.x;
@@ -600,8 +597,8 @@ extern "C" {
         f32 scan_radius_sq;
         f32 scan_radius;
         NUVEC4 *vertices;
-        TERRAIN_GROUP_PC *group;
-        TERRAIN_PLATFORM_PC *platform;
+        TERRAIN_GROUP *group;
+        TERRAIN_PLATFORM *platform;
         f32 local_min_x;
         f32 local_max_x;
         f32 local_min_z;
@@ -1399,14 +1396,14 @@ i16 *NewScanHandelSubset(i16 *subset, NUVEC *position, NUVEC *movement, f32 radi
         const i32 count = subset[0];
         const i32 group_index = subset[1];
         TERRAIN_SCAN_WORD *shapes = reinterpret_cast<TERRAIN_SCAN_WORD *>(subset) + 1;
-        TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[group_index];
+        TERRAIN_GROUP *group = &CurrentTerrain->groups[group_index];
         f32 local_min_x;
         f32 local_max_x;
         f32 local_min_z;
         f32 local_max_z;
         f32 local_min_y;
         f32 local_max_y;
-        TERRAIN_PLATFORM_PC *platform;
+        TERRAIN_PLATFORM *platform;
         if (group->chunk_type == 1 && (platform = &TERRAIN_GROUP_PLATFORM(group))->scene_object != NULL) {
             if (TERRAIN_GROUP_MATRIX(group)->m30 > TERRAIN_GROUP_PLATFORM(group).previous_matrix.m30) {
                 local_min_x = min_x - group->origin.x;
@@ -1603,13 +1600,13 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                 (scan->min_z - scan->max_z) * (scan->min_z - scan->max_z);
     scan_radius = NuFsqrt((f32)(extent_sq + 0.05f));
     for (i32 cell_index = 0; cell_index < CurrentTerrain->used_cell_count; ++cell_index) {
-        TERRAIN_CELL_PC *cell = &CurrentTerrain->cells[cell_index];
+        TERRAIN_CELL *cell = &CurrentTerrain->cells[cell_index];
         if (!(scan->max_x >= cell->min_x && scan->max_z >= cell->min_z && cell->max_x >= scan->min_x && cell->max_z >= scan->min_z)) {
             continue;
         }
         i16 *indices = CurrentTerrain->group_indices + cell->first_group;
         for (i32 i = 0; i < CurrentTerrain->cells[cell_index].group_count; ++i, ++indices) {
-            TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[*indices];
+            TERRAIN_GROUP *group = &CurrentTerrain->groups[*indices];
             if (scan->max_x >= group->bounds_min.x && scan->max_y >= group->bounds_min.y && scan->max_z >= group->bounds_min.z &&
                 scan->min_x <= group->bounds_max.x && scan->min_y < group->bounds_max.y && scan->min_z < group->bounds_max.z &&
                 group->chunk_type != -1) {
@@ -1654,8 +1651,8 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
     if (scan_type != 0) {
         i16 *indices = CurrentTerrain->group_indices + CurrentTerrain->platform_cell.first_group;
         for (i32 i = 0; i < CurrentTerrain->platform_cell.group_count; ++i, ++indices) {
-            TERRAIN_GROUP_PC *group = &CurrentTerrain->groups[*indices];
-            TERRAIN_PLATFORM_PC *platform = &TERRAIN_GROUP_PLATFORM(group);
+            TERRAIN_GROUP *group = &CurrentTerrain->groups[*indices];
+            TERRAIN_PLATFORM *platform = &TERRAIN_GROUP_PLATFORM(group);
             u32 *scene_state = platform->instance_flags;
             if (scene_state == NULL || ((platform->flags & 4) != 0 ? (*scene_state & 2) : (*scene_state & 1))) {
                 f32 local_min_x;
@@ -2381,7 +2378,7 @@ extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
 
 #undef TERRAIN_TPE_EDGE
 
-extern "C" void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE_PC *shape, NUVEC *position) {
+extern "C" void NewTerrAxisFreedom(TERRAIN_AXIS_FREEDOM_SHAPE *shape, NUVEC *position) {
     f64 angle = shape->angle;
     TerrShape = shape;
     TerrShapeAdjCnt = 2;

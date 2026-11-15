@@ -397,9 +397,9 @@ The 50 largest `rule` rows:
 | `PC_DEVICE_BACKEND` | struct | 125 | `nu2api/nuwin32/d3dCore.h` | used most in nu2api/nuwin32/d3dCore.cpp (44) |
 | `gamesave_s` | struct | 90 | `legogame/game.h` | used most in legogame/game.c (2) |
 | `debris_info_s` | struct | 90 | `gameapi/edtools/edgra.h` | used most in gameapi/gameliball.cpp[edgra.c] (65) |
-| `PART_PC` | struct | 90 | `legoapi/items/objects/objectsall.h` | used most in gameapi/objectsall.cpp (56) |
+| `PART` | struct | 90 | `legoapi/items/objects/objectsall.h` | used most in gameapi/objectsall.cpp (56) |
 | `EdClassInterface` | class | 89 | `editor/edlevelall.h` | used most in editor/edlevelall.cpp (16) |
-| `GIZMOBLOWUP_PC` | struct | 88 | `legoapi/gizmo/object/gizmoblowups.h` | used most in legoapi/gizmoblowups.c (104) |
+| `GIZMOBLOWUP` | struct | 88 | `legoapi/gizmo/object/gizmoblowups.h` | used most in legoapi/gizmoblowups.c (104) |
 | `PC_WINDOW_OPTIONS` | struct | 73 | `nu2api/pc_options.h` | used most in nu2api/pc_options.cpp (33) |
 | `debris_key_s` | struct | 71 | `gameapi/edptl.h` | with its typedef DEBRISKEY (rule) |
 | `FRAME_PAD` | struct | 59 | `gameapi/edtools/edui.h` | used most in gameapi/edtoolsall.cpp[edui.cpp] (52) |
@@ -874,7 +874,7 @@ rules in 2.1:
 - a typedef named after `void` by the segmenter (`typedef void (__cdecl
   bgprocdofn)(...)`);
 - uses through a forward typedef that need the struct complete
-  (`DEBRIS_PARTICLE_CHUNK`, `CUTSYS_PC`);
+  (`DEBRIS_PARTICLE_CHUNK`, `CUTSYS`);
 - `-std=c89` turning comments into tokens;
 - for the dependency analysis, parameter names that matched CRT names.
 

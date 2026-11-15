@@ -438,7 +438,7 @@ typedef struct MOTION_SHOOT_PHASE_READER {
 typedef struct lunge_target_slots_s {
     u8 unknown_000[0x790];
     GAMEOBJECT *character_target;
-    GIZMOBLOWUP_PC *gizmo_target;
+    GIZMOBLOWUP *gizmo_target;
 } LUNGE_TARGET_SLOTS;
 
 struct minianimpacket_s {       // size 0x24
@@ -1000,7 +1000,7 @@ void PreResetCode(GAMEOBJECT *object) {
 }
 
 f32 ForceTowardsMid(GAMEOBJECT *object) {
-    SOCKSYS_PC *system = WorldInfo_CurrentlyActive()->sock_sys;
+    SOCKSYS *system = WorldInfo_CurrentlyActive()->sock_sys;
     SOCK *sock;
     f32 inner;
     f32 outer;
@@ -2898,7 +2898,7 @@ void LetGoOfBalloon(GAMEOBJECT *object) {
     NUVEC velocity;
     NUVEC centre;
     ADDPART params;
-    PART_PC *part;
+    PART *part;
     if (object->character_context != CHARACTER_CONTEXT_BALLOONING) {
         return;
     }
@@ -3252,7 +3252,7 @@ static GAMEOBJECT *BlockFindSpecialAttack(GAMEOBJECT *object) {
     return NULL;
 }
 
-static PART_PC *BlockFindIncomingPart(GAMEOBJECT *object) {
+static PART *BlockFindIncomingPart(GAMEOBJECT *object) {
     void **animations;
     f32 radius;
     if (object->player_index == -1) {
@@ -3445,7 +3445,7 @@ static void BlockCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 jump_presse
 
 static void StartDodge(GAMEOBJECT *object) {
     i32 previous_animation = object->unknown_7aa;
-    BOLT_PC *bolt = object->incoming_bolt;
+    BOLT *bolt = object->incoming_bolt;
     NUVEC perpendicular = bolt->direction;
     f32 side;
     f32 duration;
@@ -4222,7 +4222,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->model_draw_result == 0) {
             if (object->blowup_target != NULL) {
                 /* Prefix view of the GizmoBlowUpOpponent result. */
-                GizmoBlowupBlowup((GIZMOBLOWUP_PC *)object->blowup_target, 1, -1, 1, NULL, 1);
+                GizmoBlowupBlowup((GIZMOBLOWUP *)object->blowup_target, 1, -1, 1, NULL, 1);
                 AlertSurroundingCreatures(object, &points[0]);
             }
             return;
@@ -4237,7 +4237,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     }
 particle_contact:
     if ((object->sabre_flags & 6) != 0) {
-        PART_PC *part = HitParts(object, points, 3, object->sabre_collision_radius, &minimum, &maximum, 0x08000008);
+        PART *part = HitParts(object, points, 3, object->sabre_collision_radius, &minimum, &maximum, 0x08000008);
         if (part != NULL) {
             if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) == 0) {
                 KillPart(part, 0);
@@ -5709,7 +5709,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     f32 distance = 1.0e9f;
     FORCE_TARGET *target = (FORCE_TARGET *)object;
     FORCE_GLOW *glow = (FORCE_GLOW *)object;
-    PART_PC *part;
+    PART *part;
     if (object->character_context == CHARACTER_CONTEXT_FORCE_THROW) {
         f32 previous;
         f32 remaining;
@@ -6113,7 +6113,7 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
             break;
         }
         case 3: {
-            PART_PC *part = glow->object;
+            PART *part = glow->object;
             if ((part->active & PART_IN_USE) == 0) {
                 ResetForceGlow(glow->player_packet);
                 return;
@@ -6194,7 +6194,7 @@ f32 DirectionalGrappleSeekScale = 0.5f;
 f32 DirectionalZipUpSeekRate = 8.0f;
 i32 LandspeederExhaustJoints[3] = {2, 3, 4};
 
-void BobaRocket_Move(PART_PC *part, f32 elapsed) {
+void BobaRocket_Move(PART *part, f32 elapsed) {
     NUVEC delta;
     NUVEC next;
     NUVEC scale;
@@ -6261,7 +6261,7 @@ void BobaRocket_Move(PART_PC *part, f32 elapsed) {
     }
 }
 
-void BobaRocket_Kill(PART_PC *part, i32 reason) {
+void BobaRocket_Kill(PART *part, i32 reason) {
     EXPLOSION *explosion = Detonate(&part->position, 0);
     GAMEOBJECT *owner;
     (void)reason;
@@ -6276,13 +6276,13 @@ void BobaRocket_Kill(PART_PC *part, i32 reason) {
     }
 }
 
-void BobaRocket_Deflect(PART_PC *part) {
+void BobaRocket_Deflect(PART *part) {
     part->flags = (part->flags & ~PART_FLAG_IGNORE_CREATURE) | PART_FLAG_ROTATE_RANDOMLY;
     NewPartRotation(part);
 }
 
-void PartUpdate_Basketball(PART_PC *part) {
-    GIZMOBLOWUP_PC *blowup;
+void PartUpdate_Basketball(PART *part) {
+    GIZMOBLOWUP *blowup;
     if (LevGizmo[0] == NULL) {
         return;
     }
@@ -6294,7 +6294,7 @@ void PartUpdate_Basketball(PART_PC *part) {
     }
 }
 
-void PartImpact_Basketball(PART_PC *part) {
+void PartImpact_Basketball(PART *part) {
     f32 volume = NuVecMag(&part->velocity);
     if (volume >= 2.5f) {
         volume = 1.0f;
@@ -6394,7 +6394,7 @@ i32 SetObjTarget(GAMEOBJECT *object, GAMEOBJECT *target) {
     return 1;
 }
 
-i32 SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP_PC *target) {
+i32 SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP *target) {
     object->attack_target_position = target->mid_position;
     *(NUVEC *)&object->unknown_c8c = v000;
     object->flags_e20 |= APIOBJECT_ATTACK_TARGET_SET;
@@ -6402,7 +6402,7 @@ i32 SetGizmoBlowUpTarget(GAMEOBJECT *object, GIZMOBLOWUP_PC *target) {
     return 1;
 }
 
-i32 SetPartTarget(GAMEOBJECT *object, PART_PC *target) {
+i32 SetPartTarget(GAMEOBJECT *object, PART *target) {
     object->attack_target_position = target->position;
     *(NUVEC *)&object->unknown_c8c = target->velocity;
     object->flags_e20 |= APIOBJECT_ATTACK_TARGET_SET;
@@ -6689,8 +6689,8 @@ void GetShootOrigin_LSW(GAMEOBJECT *object, NUVEC *position) {
 static void FireCode(GAMEOBJECT *object, i32 pressed, i32 held, f32 fire_delay, i32 delay_pressed) {
     BOLTTYPE *bolt;
     GAMEOBJECT *target;
-    GIZMOBLOWUP_PC *blowup;
-    PART_PC *part;
+    GIZMOBLOWUP *blowup;
+    PART *part;
     VEHICLE_SHOOT_STATE *state = (VEHICLE_SHOOT_STATE *)object;
     NUVEC origin;
     NUVEC direction;
@@ -7137,7 +7137,7 @@ void PooCode(GAMEOBJECT *object) {
                     ADDPART params = Default_ADDPART;
                     NUMTX matrix;
                     NUVEC radius_position;
-                    PART_PC *part;
+                    PART *part;
                     MovementMtxSetRotationX(&matrix, qrand());
                     MovementMtxRotateY(&matrix, qrand());
                     MovementMtxRotateZ(&matrix, qrand());
@@ -7176,7 +7176,7 @@ void PooCode(GAMEOBJECT *object) {
     if ((object->flags_ef4 & APIOBJECT_AI_EVERY_FRAME) == 0 || (object->unknown_280 != 0 && object->unknown_280 != 1)) {
         volume_view->force_use_volume = 0.0f;
     } else {
-        PART_PC *part = FindPart(NULL, -1, object);
+        PART *part = FindPart(NULL, -1, object);
         volume_view->force_use_volume = SeekLinearF(volume_view->force_use_volume, part != NULL ? 1.0f : 0.0f, FRAMETIME);
         if (volume_view->force_use_volume > 0.0f) {
             PooPosition[object->player_index] = position;
@@ -11038,11 +11038,11 @@ void StartQuickShoot(GAMEOBJECT *object, i32 action) {
     } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                GizmoSys_SetBestBoltTarget(WORLD->gizmo_sys, WORLD, object, &object->collision_position, &direction, range, range_squared, 1,
                                           0, bolt_id) == 0) {
-        GIZMOBLOWUP_PC *blowup = GizmoBlowUp_Target(object, &object->collision_position, &direction, range, range_squared, 1, 0, bolt_id);
+        GIZMOBLOWUP *blowup = GizmoBlowUp_Target(object, &object->collision_position, &direction, range, range_squared, 1, 0, bolt_id);
         if (blowup != NULL) {
             SetGizmoBlowUpTarget(object, blowup);
         } else {
-            PART_PC *part = TargetPart(object, &object->collision_position, &direction, range, range_squared, 1, bolt_id);
+            PART *part = TargetPart(object, &object->collision_position, &direction, range, range_squared, 1, bolt_id);
             if (part != NULL) {
                 SetPartTarget(object, part);
             } else {
@@ -11124,9 +11124,9 @@ static void DodgeCode(GAMEOBJECT *object, i32 action_pressed, i32 jump_pressed) 
 }
 
 static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
-    PART_PC *assist = NULL;
+    PART *assist = NULL;
     i32 waiting = objInNetWaitContext(object, 0x1d);
-    PART_PC *part;
+    PART *part;
     FORCE_GLOW *glow = (FORCE_GLOW *)object;
     if (object->character_context == CHARACTER_CONTEXT_FORCE_DEFLECT) {
         object->flags_e20 |= 0x20000;
@@ -11365,7 +11365,7 @@ void GameObjectStuffAfterAnimation(void) {
                 i32 player = (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0;
                 NUVEC direction;
                 f32 range;
-                PART_PC *created;
+                PART *created;
                 part = Default_ADDPART;
                 part.matrix = &matrix;
                 part.velocity = &scratch.motion.velocity;
@@ -12208,11 +12208,11 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
         if (target != NULL) {
             SetObjTarget(object, target);
         } else if (!GizmoSys_SetBestBoltTarget(WORLD->gizmo_sys, WORLD, object, &position, &forward, range, range_squared, 1, 0, bolt_id)) {
-            GIZMOBLOWUP_PC *blowup = GizmoBlowUp_Target(object, &position, &forward, range, range_squared, 1, 0, bolt_id);
+            GIZMOBLOWUP *blowup = GizmoBlowUp_Target(object, &position, &forward, range, range_squared, 1, 0, bolt_id);
             if (blowup != NULL) {
                 SetGizmoBlowUpTarget(object, blowup);
             } else {
-                PART_PC *part = TargetPart(object, &position, &forward, range, range_squared, 1, bolt_id);
+                PART *part = TargetPart(object, &position, &forward, range, range_squared, 1, bolt_id);
                 if (part != NULL) {
                     SetPartTarget(object, part);
                 } else {

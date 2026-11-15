@@ -29,7 +29,7 @@
 #include "nu2api/numath/nurand.h"
 #include "nu2api/numath/nuvec.h"
 
-i32 SpeederBlowupHack(GIZMOBLOWUP_PC *blowup, i32 hit_type) {
+i32 SpeederBlowupHack(GIZMOBLOWUP *blowup, i32 hit_type) {
     (void)hit_type;
     if (blowup != NULL) {
         if (NuStrCmp(blowup->name, "thermocrate_011") == 0) {
@@ -250,8 +250,8 @@ f32 speeder_level_height_lerpf = 5.0f;
 f32 zoom_ahead_extra_time = 5.0f;
 f32 zoom_ahead_extra = 3.0f;
 
-i32 Action_SpeederBeingChased(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count,
-                              i32 first_time, f32 elapsed) {
+i32 Action_SpeederBeingChased(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
+                              f32 elapsed) {
     SOCK *sock = &WORLD->sock_sys->socks[1];
     GAMEOBJECT *object;
     GAMEOBJECT *reference;

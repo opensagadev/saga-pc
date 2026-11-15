@@ -209,7 +209,7 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
     NUVEC discarded_position;
     nuhspecial_s special;
     TERRAIN_SET *terrain;
-    TERRAIN_PLATFORM_PC *platform;
+    TERRAIN_PLATFORM *platform;
     page = -1;
     for (index = 0; index < 8; ++index) {
         if (!edanim_page_used[index]) {

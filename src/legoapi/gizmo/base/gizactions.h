@@ -6,7 +6,7 @@
 
 struct AIPACKET;
 struct AISCRIPTPROCESS;
-struct AISYS_PC;
+struct AISYS;
 struct API_ACTION_INFO;
 struct API_EXTRA_ACTION;
 struct FLOWBOX;
@@ -61,8 +61,8 @@ extern "C" {
 extern "C" {
 #endif
 
-    i32 Action_CameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
-    i32 Action_EndCameraCut(struct AISYS_PC *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_CameraCut(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    i32 Action_EndCameraCut(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
     void RegisterGizActions(GIZACTIONDEF *definitions);
     extern GIZACTIONDEF game_gizactiondefs[24];
 #ifdef __cplusplus

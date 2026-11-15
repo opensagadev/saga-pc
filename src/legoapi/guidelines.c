@@ -105,14 +105,14 @@ INDY_GUIDELINE *GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *en
     return nearest;
 }
 
-void GuideLine_Activate(GIZMO_PC *gizmo, i32 active) {
+void GuideLine_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         GUIDELINE_RECORD *guide = gizmo->object;
         guide->active = active != 0;
     }
 }
 
-void GuideLine_SetVisibility(GIZMO_PC *gizmo, i32 visible) {
+void GuideLine_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         GUIDELINE_RECORD *guide = gizmo->object;
         guide->visible = visible != 0;
@@ -132,20 +132,20 @@ void GuideLines_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, void 
     }
 }
 
-char *GuideLine_GetGizmoName(GIZMO_PC *gizmo) {
+char *GuideLine_GetGizmoName(GIZMO *gizmo) {
     return gizmo != NULL ? (char *)gizmo->object : NULL;
 }
 
-i32 GuideLine_GetOutput(GIZMO_PC *gizmo, i32 output, i32 mode) {
+i32 GuideLine_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     GUIDELINE_RECORD *guide = gizmo->object;
     return guide->visible && guide->active;
 }
 
-char *GuideLine_GetOutputName(GIZMO_PC *gizmo, i32 output) {
+char *GuideLine_GetOutputName(GIZMO *gizmo, i32 output) {
     return "Active";
 }
 
-i32 GuideLine_GetNumOutputs(GIZMO_PC *gizmo) {
+i32 GuideLine_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 

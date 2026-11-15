@@ -177,7 +177,7 @@ static f32 GameObjFdiv(f32 a, f32 b) {
     return a / b;
 }
 
-static void CreatureCrate_Stop(PART_PC *part) {
+static void CreatureCrate_Stop(PART *part) {
     GAMEOBJECT *object = part->owner;
     u16 debris;
     i32 type;
@@ -199,7 +199,7 @@ static void CreatureCrate_Stop(PART_PC *part) {
     NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
 }
 
-static void CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
+static void CreatureCrate_MoveFn(PART *part, f32 elapsed) {
     CREATURE_CRATE_PART_VIEW *crate = (CREATURE_CRATE_PART_VIEW *)part;
     crate->spawn_delay -= elapsed;
     if (crate->spawn_delay <= 0.0f) {
@@ -208,7 +208,7 @@ static void CreatureCrate_MoveFn(PART_PC *part, f32 elapsed) {
     }
 }
 
-static i32 CreatureCrate_DrawFn(PART_PC *part) {
+static i32 CreatureCrate_DrawFn(PART *part) {
     if (((CREATURE_CRATE_PART_VIEW *)part)->spawn_delay > 0.0f) {
         return 0;
     }
@@ -219,7 +219,7 @@ void SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     NUVEC velocity = {0.0f, 0.0f, 0.0f};
     NUMTX matrix;
     ADDPART parameters;
-    PART_PC *part;
+    PART *part;
     if (NuSpecialExistsFn(&WORLD->level_objects[0xe6].special) == 0) {
         return;
     }
@@ -265,7 +265,7 @@ void ManageGameObjects(void) {
     GAMEOBJECT *vehicle;
     GAMEOBJECT *target;
     AICREATURE *creature;
-    AISYS_PC *system;
+    AISYS *system;
     AIGROUP *group;
     AILOCATOR *locator;
     AILOCATOR *respawn_locator;
@@ -1215,22 +1215,22 @@ void SetKillPartMom(NUVEC *momentum) {
     NuVecRotateX(momentum, momentum, qrand());
 }
 
-void TiePart_Kill(PART_PC *part, i32 unused) {
+void TiePart_Kill(PART *part, i32 unused) {
     AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
 }
 
-void TiePart_KillExplode(PART_PC *part, i32 unused) {
+void TiePart_KillExplode(PART *part, i32 unused) {
     AddGameDebris(WORLD->game_debris_sys, 0x6b, &part->position);
     AddPartDebris(WORLD->part_debris_sys, 3, &part->position);
 }
 
-void TiePart_Impact(PART_PC *part) {
+void TiePart_Impact(PART *part) {
     AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
 }
 
 /* Native local helper takes the particle in ESI and time on the stack. This
  * logical signature is private to the coherent compiler-generated caller group. */
-static void TiePart_MoveCorePC(PART_PC *part, f32 time) {
+static void TiePart_MoveCorePC(PART *part, f32 time) {
     NUVEC position;
     position.x = part->position.x + part->velocity.x * time;
     position.y = part->position.y + part->velocity.y * time;
@@ -1244,12 +1244,12 @@ static void TiePart_MoveCorePC(PART_PC *part, f32 time) {
 
 char KillPartsAtatExplodeText[9] = "EXPLODE1";
 
-void AtatPart_Stop(PART_PC *part) {
+void AtatPart_Stop(PART *part) {
     PlaySfx(KillPartsAtatExplodeText, &part->position);
     PartStop_Flickerer(part);
 }
 
-void AtatPart_Update(PART_PC *part) {
+void AtatPart_Update(PART *part) {
     f32 choice = NuFloatRand(&GAMERAND) * 100.0f + 1.0f;
     if (part->scale_time < 1.0f) {
         AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[118].effect, &part->position, ((i32)(part->scale_time * 20.0f)),
@@ -1356,7 +1356,7 @@ NUVEC KillPartsTieSpinTranslation = {0.0f, 0.0f, -0.05f};
 u8 objhit_damage_joints[3] = {6, 8, 7};
 f32 AIFireIntervalMul = 1.0f;
 
-void TieSpinZPart_Move(PART_PC *part, f32 time) {
+void TieSpinZPart_Move(PART *part, f32 time) {
     NUVEC trail;
     part->unknown_124[3] = KillPartsTieSpinRate;
     part->rotation_z = ((u16)(((i32)(((f64)KillPartsTieSpinRate) * FRAMETIME))));
@@ -1368,7 +1368,7 @@ void TieSpinZPart_Move(PART_PC *part, f32 time) {
     AddVariableShotDebrisEffectTimed3(WORLD->game_debris_sys->entries[96].effect, &part->position, &trail, 10, FRAMETIME, NULL, NULL);
 }
 
-void TiePart_Move(PART_PC *part, f32 time) {
+void TiePart_Move(PART *part, f32 time) {
     part->unknown_124[3] = -32768;
     part->rotation_z = ((u16)(((i32)(-32768.0 * FRAMETIME))));
     TiePart_MoveCorePC(part, time);
@@ -1449,7 +1449,7 @@ static i32 FindFreeBikePart(void) {
     return -1;
 }
 
-void SpeederPart_Update(PART_PC *part) {
+void SpeederPart_Update(PART *part) {
     f32 distance = Player[0]->horizontal_velocity_magnitude * FRAMETIME * ((f64)(1.1f));
     f32 time = part->time_remaining / part->initial_time;
     KILLPARTS_BIKE *bike = &KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))];
@@ -1556,12 +1556,12 @@ void SpeederPart_Update(PART_PC *part) {
     }
 }
 
-i32 SpeederPart_Draw(PART_PC *part) {
+i32 SpeederPart_Draw(PART *part) {
     return 1;
 }
 
 void KillParts_ATAT(ADDPART *params, i32 unused, i32 variant, GAMEOBJECT *object) {
-    PART_PC *part;
+    PART *part;
     params->flags = variant == 0 ? 0x500 : 0x110;
     params->velocity->z = 0.0f;
     params->velocity->y = 0.0f;
@@ -2663,7 +2663,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     GAMEOBJECT *rider;
     AIGROUP *group;
     GAMEOBJECT *candidate;
-    PART_PC *part;
+    PART *part;
     BOLT *bolt;
     i32 i;
     terminal_kill = 0;
@@ -3071,7 +3071,7 @@ i32 KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVE
     return KillGameObject(object, reason, 0);
 }
 
-void SpeederPart_Kill(PART_PC *part, i32 unused) {
+void SpeederPart_Kill(PART *part, i32 unused) {
     AddGameDebris(WORLD->game_debris_sys, 0x6a, &part->position);
     if (((KILLPARTS_PART *)part)->speeder_index != -1.0f) {
         GAMEOBJECT *rider = KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider;
@@ -3086,7 +3086,7 @@ void SpeederPart_Kill(PART_PC *part, i32 unused) {
 }
 
 void KillParts_SpeederBike(ADDPART *params, i32 unused1, i32 unused2, GAMEOBJECT *object) {
-    PART_PC *part;
+    PART *part;
     KILLPARTS_PART *bike_part;
     f32 distance;
     NUVEC position;
@@ -3167,7 +3167,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
         }
         for (i = 0; i < pieces->piece_count; ++i) {
             ADDPART params;
-            PART_PC *part;
+            PART *part;
             NUMTX matrix;
             NUVEC momentum;
             if (!NuSpecialExistsFn(&pieces->pieces[i].special)) {
@@ -3291,7 +3291,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             } else if (((i16)object->id) == id_SPEEDERBIKE) {
                 KillParts_SpeederBike(&params, part_index, mode, object);
             } else {
-                PART_PC *part;
+                PART *part;
                 params.flags = mode == 0 ? 0x480 : 0x90;
                 params.impact_fn = PartImpact_Brick;
                 params.stop_fn = PartStop_Flickerer;
@@ -3312,7 +3312,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
         nuhspecial_s *special = CharScene_FindHSpecial(WORLD, ((i16)object->id));
         if (special != NULL) {
             ADDPART params;
-            PART_PC *part;
+            PART *part;
             NUMTX matrix = object->transform;
             NUVEC momentum;
             SetKillPartMom(&momentum);
