@@ -657,6 +657,12 @@ typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
     u32 *instance_flags; // 0x68
 } TERRAIN_PLATFORM_PC;
 
+/* The platform a terrain group belongs to, its scene matrix, and whether a shape's material passes a scan's terrain
+ * mask (material[1] 0 matches every mask). */
+#define TERRAIN_GROUP_PLATFORM(group) (CurrentTerrain->platforms[(group)->scene_index])
+#define TERRAIN_GROUP_MATRIX(group) (TERRAIN_GROUP_PLATFORM(group).scene_object)
+#define TERRAIN_SHAPE_MATERIAL_OK(shape, mask) ((shape)->material[1] == 0 || ((shape)->material[1] & (mask)) != 0)
+
 typedef TERRAIN_PLATFORM_PC TERRAIN_PLATFORM;
 
 typedef struct TERRAIN_SET_PC {                 // size 0xa490

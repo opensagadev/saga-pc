@@ -237,8 +237,6 @@ i32 NewMSituTerrEx(NUVEC *position, TERRAIN_SKIN_STREAM *data, NUVEC *minimum, N
     return CurrentTerrain->group_count - 1;
 }
 
-#undef CurrentTerrain
-
 i32 DeletePlatinst(i32 platform_index) {
     i32 i;
     i32 cell_group_index;
@@ -283,8 +281,6 @@ void fun_0067cab0(void) {
 i32 PlatformCrush(void) {
     return PlatCrush;
 }
-
-#undef CurrentTerrain
 
 i32 ShadowInfo(void) {
     return ShadPoly != NULL ? ShadPoly->material[0] : -1;
@@ -716,15 +712,12 @@ typedef struct TERRAIN_SCAN_WRITER {
     } while (0)
 #define SHADOW_BOUNDS_OVERLAP(ax, az, bx, bz, lo, hi) ((bx) >= (lo).x && (hi).x > (ax) && (bz) >= (lo).z && (hi).z > (az))
 
-#define TERRAIN_ROT_PLATFORM(group_ptr) (CurrentTerrain->platforms[(group_ptr)->scene_index])
-#define TERRAIN_ROT_MATRIX(group_ptr) (TERRAIN_ROT_PLATFORM(group_ptr).scene_object)
 #define TERRAIN_ROT_GROUP_OVERLAP(lo_x, lo_z, hi_x, hi_z, group_ptr)                                                                       \
     ((hi_x) >= (group_ptr)->bounds_min.x && (hi_z) >= (group_ptr)->bounds_min.z && (group_ptr)->bounds_max.x >= (lo_x) &&                  \
      (group_ptr)->bounds_max.z > (lo_z))
 #define TERRAIN_ROT_SHAPE_OVERLAP(shape_ptr)                                                                                               \
     (local_max_x >= (shape_ptr)->min_x && (shape_ptr)->max_x > local_min_x && local_max_z >= (shape_ptr)->min_z &&                         \
      (shape_ptr)->max_z > local_min_z)
-#define TERRAIN_ROT_MATERIAL_OK(shape_ptr) ((shape_ptr)->material[1] == 0 || ((shape_ptr)->material[1] & terrain_mask) != 0)
 #define TERRAIN_ROT_FINISH_GROUP(group_index_arg)                                                                                          \
     do {                                                                                                                                   \
         if (shape_count != 0) {                                                                                                            \
@@ -828,7 +821,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 TERRAIN_ROT_LOCAL_BOUNDS(group);
                 for (remaining = count; remaining > 0; --remaining, ++shapes) {
                     TERRAIN_POLYGON_INFO *shape = shapes->shape;
-                    if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_ROT_MATERIAL_OK(shape)) {
+                    if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask)) {
                         (cursor++)->shape = shape;
                         ++shape_count;
                     }
@@ -894,7 +887,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         i16 remaining;
 
                         for (remaining = count; remaining > 0; --remaining, ++shape) {
-                            if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_ROT_MATERIAL_OK(shape)) {
+                            if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask)) {
                                 (cursor++)->shape = shape;
                                 ++shape_count;
                             }
@@ -940,7 +933,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                     TERRAIN_ROT_LOCAL_BOUNDS(group);
                     for (remaining = count; remaining > 0; --remaining, ++shapes) {
                         TERRAIN_POLYGON_INFO *shape = shapes->shape;
-                        if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && TERRAIN_ROT_MATERIAL_OK(shape) && cursor < limit) {
+                        if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask) && cursor < limit) {
                             (cursor++)->shape = shape;
                             ++shape_count;
                         }
@@ -983,25 +976,25 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                 group->origin.z - group->radius > max_z || group->origin.z + group->radius < min_z) {
                 continue;
             }
-            platform = &TERRAIN_ROT_PLATFORM(group);
+            platform = &TERRAIN_GROUP_PLATFORM(group);
             if (platform->scene_object != NULL) {
-                if (TERRAIN_ROT_MATRIX(group)->m30 > TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) {
+                if (TERRAIN_GROUP_MATRIX(group)->m30 > TERRAIN_GROUP_PLATFORM(group).previous_matrix.m30) {
                     local_min_x = min_x - group->origin.x;
-                    local_max_x =
-                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 + max_x - group->origin.x;
+                    local_max_x = (TERRAIN_GROUP_MATRIX(group)->m30 - TERRAIN_GROUP_PLATFORM(group).previous_matrix.m30) * 1.5 + max_x -
+                                  group->origin.x;
                 } else {
                     local_max_x = max_x - group->origin.x;
-                    local_min_x =
-                        (TERRAIN_ROT_MATRIX(group)->m30 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m30) * 1.5 + min_x - group->origin.x;
+                    local_min_x = (TERRAIN_GROUP_MATRIX(group)->m30 - TERRAIN_GROUP_PLATFORM(group).previous_matrix.m30) * 1.5 + min_x -
+                                  group->origin.x;
                 }
-                if (TERRAIN_ROT_MATRIX(group)->m32 > TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) {
+                if (TERRAIN_GROUP_MATRIX(group)->m32 > TERRAIN_GROUP_PLATFORM(group).previous_matrix.m32) {
                     local_min_z = min_z - group->origin.z;
-                    local_max_z =
-                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 + max_z - group->origin.z;
+                    local_max_z = (TERRAIN_GROUP_MATRIX(group)->m32 - TERRAIN_GROUP_PLATFORM(group).previous_matrix.m32) * 1.5 + max_z -
+                                  group->origin.z;
                 } else {
                     local_max_z = max_z - group->origin.z;
-                    local_min_z =
-                        (TERRAIN_ROT_MATRIX(group)->m32 - TERRAIN_ROT_PLATFORM(group).previous_matrix.m32) * 1.5 + min_z - group->origin.z;
+                    local_min_z = (TERRAIN_GROUP_MATRIX(group)->m32 - TERRAIN_GROUP_PLATFORM(group).previous_matrix.m32) * 1.5 + min_z -
+                                  group->origin.z;
                 }
             } else {
                 local_max_x = max_x - group->origin.x;
@@ -1065,13 +1058,13 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         vertices[2].y = shape->vertices[2].y;
                         vertices[2].z = shape->vertices[2].z;
                         vertices[2].w = 0.0f;
-                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_ROT_MATRIX(group));
+                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_GROUP_MATRIX(group));
                         if (shape->normals[1].y < BoltTargetRandomDenominator) {
                             vertices[3].x = shape->vertices[3].x;
                             vertices[3].y = shape->vertices[3].y;
                             vertices[3].z = shape->vertices[3].z;
                             vertices[3].w = 0.0f;
-                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_ROT_MATRIX(group));
+                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_GROUP_MATRIX(group));
                         } else {
                             vertices[3] = vertices[2];
                         }
@@ -1173,7 +1166,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         i16 remaining;
 
                         for (remaining = count; remaining > 0; --remaining, ++shape) {
-                            if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_ROT_MATERIAL_OK(shape)) {
+                            if (TERRAIN_ROT_SHAPE_OVERLAP(shape) && cursor < limit && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask)) {
                                 (cursor++)->shape = shape;
                                 ++shape_count;
                             }
@@ -2315,7 +2308,6 @@ NUVEC TerCrossProduct(NUVEC *a, NUVEC *b) {
 }
 
 #undef TERRAIN_TPNU_PLATFORM
-#undef CurrentTerrain
 
 i32 FindPlatInst(i32 instance) {
     TERRAIN_SET_PC *terrain;
@@ -2649,8 +2641,6 @@ i32 AddPickupTerrRot(i32 type, NUMTX *matrix, NUMTX *previous, i32 rotating) {
     return found;
 }
 
-#undef CurrentTerrain
-
 i32 NewPlatPickupInst(void *object, i32 type) {
     TERRAIN_GROUP_PC *group;
     i16 source;
@@ -2706,8 +2696,6 @@ i32 NewPlatPickupInst(void *object, i32 type) {
     CurrentTerrain->platform_cell.group_count++;
     return index;
 }
-
-#undef CurrentTerrain
 
 void ReassignPickupInst(i32 index, i32 type) {
     TERRAIN_SET_PC *terrain = CurrentTerrain;
@@ -3342,8 +3330,6 @@ i32 TerrainSkinCreateInfo(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const 
 i32 fun_006816a0(NUMTX *matrix, const TERRAIN_SKIN_BLEND *blend, const NUVEC4 *sample_rows, f32 scale, i32 source_scene_index, i16 mode) {
     return TerrainSkinCreateInfo(matrix, blend, sample_rows, scale, source_scene_index, mode, CurrentTerrain);
 }
-
-#undef CurrentTerrain
 
 /* Caller-owned arena start/end and explicit record capacity. This
  * partitions an existing arena. */

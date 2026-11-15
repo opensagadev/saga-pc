@@ -1404,7 +1404,6 @@ extern "C" {
 #define TERRAIN_TPE_PLATFORM (CurrentTerrain->platforms[platform_index])
 #define TERRAIN_TPE_PREVIOUS (&TERRAIN_TPE_PLATFORM.previous_matrix)
 #define TERRAIN_TPE_MATRIX (TERRAIN_TPE_PLATFORM.scene_object)
-#define TERRAIN_TPE_GROUP_MATRIX (CurrentTerrain->platforms[group->scene_index].scene_object)
 #define TERRAIN_TPE_SURFACE (&ScaleTerrain[transformed_count])
 #define TERRAIN_TPE_LOAD_VERTEX(index)                                                                                                     \
     vertices[index].x = source->vertices[index].x;                                                                                         \
@@ -1516,10 +1515,10 @@ extern "C" {
                         TERRAIN_TPE_LOAD_VERTEX(0);
                         TERRAIN_TPE_LOAD_VERTEX(1);
                         TERRAIN_TPE_LOAD_VERTEX(2);
-                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_TPE_GROUP_MATRIX);
+                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_GROUP_MATRIX(group));
                         if (source->normals[1].y < 65535.0) {
                             TERRAIN_TPE_LOAD_VERTEX(3);
-                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_TPE_GROUP_MATRIX);
+                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_GROUP_MATRIX(group));
                         } else {
                             vertices[3] = vertices[2];
                         }
@@ -1581,10 +1580,10 @@ extern "C" {
                     TERRAIN_TPE_LOAD_VERTEX(0);
                     TERRAIN_TPE_LOAD_VERTEX(1);
                     TERRAIN_TPE_LOAD_VERTEX(2);
-                    NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_TPE_GROUP_MATRIX);
+                    NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_GROUP_MATRIX(group));
                     if (source->normals[1].y < 65535.0) {
                         TERRAIN_TPE_LOAD_VERTEX(3);
-                        NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_TPE_GROUP_MATRIX);
+                        NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_GROUP_MATRIX(group));
                     } else {
                         vertices[3] = vertices[2];
                     }
@@ -1669,7 +1668,6 @@ extern "C" {
 #undef TERRAIN_TPE_STORE_VERTEX
 #undef TERRAIN_TPE_LOAD_VERTEX
 #undef TERRAIN_TPE_SURFACE
-#undef TERRAIN_TPE_GROUP_MATRIX
 #undef TERRAIN_TPE_MATRIX
 #undef TERRAIN_TPE_PREVIOUS
 #undef TERRAIN_TPE_PLATFORM
@@ -2151,8 +2149,6 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
     CurrentTerrain->removed_platform_count++;
     return index;
 }
-
-#undef CurrentTerrain
 
 extern "C" {
     NUVEC TerrImpactPos = {0};
