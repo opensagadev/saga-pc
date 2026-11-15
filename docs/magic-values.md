@@ -110,6 +110,8 @@ same function initialises and steps (its values are indexes).
 | `TEXTURE_ANIM_PROGRAM.instructions`, the btex/untiltex comparisons | `TEXANIM_OP_*`, `TEXANIM_CMP_*` (nutexanm.h) | the opcode each script keyword handler writes (tex, texr, wait, goto, gosub, btex, repeat, untiltex, end, xref, ...) and `TextureAnimationReadComparisonPrivate` |
 | `ShaderSourceNodePc.semantic` | `SHADER_SEMANTIC_*` (CRC16.h) | the semantic_* keywords of `ShaderDeclarationSemanticPc` and the names `SemanticName` prints |
 | `NuInitHardware` tags | `NUHW_*` (pcapi.h) | what the tag's case reads (hostfs, file mode, dat names, pads, audio, config name, save folder, window, icon, ...) |
+| `gameobject_s.context_variant_flags` in the jump, punch and sabre combo contexts | `APIOBJECT_JUMP_*`, `APIOBJECT_PUNCH_*`, `APIOBJECT_COMBO_ENDED`/`_WAITING` (apiobject.h) | the starts that set them: StartJump in movement states 3/4, Slam_Start and StartLunge (attack), StartEndOfJump and the combat roll and super carry timers (falling), the second jump (double), StartComboJump's ACTION_FLIP (flip); PunchCode's ACTION_PUNCH_BEHIND, SpecialMove_Check and combo style; LightSabreComboCode's input window and end. Written only in jumping.c, carrying.c and those move.c functions, since the bits mean other things in other contexts |
+| UI button sets: `CombineUiButtons:buttons`, `edui_cursor_buttons*`, `ProcessFileSel3:buttons` | `PAD_BUTTON_*` (edui.h) | the keys merged into pad buttons (Return and the left mouse button as CROSS, Escape as CIRCLE, the arrow keys and wheel as the d-pad) and the file selector's `FS_GetPadWithRepeat`, which returns `digital_buttons` |
 
 ## Still literal (meaning not known yet)
 
@@ -123,7 +125,7 @@ same function initialises and steps (its values are indexes).
 | `gameobject_s.flags_1fc`, other bits | 45 | 0x4, 0x10, 0x20, 0x40, 0x100, 0x400, 0x2000, 0x10000, 0x40000 | 0x4 is set by the player movement update under many conditions, 0x20 when riding a bike (with 0x400 for a cheap zip), 0x2000 when a respawn position is saved off a path; not settled |
 | `gameobject_s.flags_1f8`, other bits | ~70 | 0x2, 0x40, 0x80, 0x100, 0x200, 0x800, 0x1000, 0x4000, 0x20000, 0x40000 | 0x40000 is tested by the pause menu, the network camera and the game update; the sibling build's `APIOBJECT_STATE_FLAG_IGNORE_DOORS` (transitional/unused.h) is unverified |
 | `gameobject_s.flags_e20`, other bits | ~130 | 0x20 (tested to skip an object almost everywhere, cleared by `UpdateGameObjects`; its setter is not in the source yet), 0x1000 (`GizPanel_MoveCode`), 0x1-0x8, 0x4000, 0x20000, 0x80000-0x80000000 | runtime state bits set in code; read each setter |
-| `gameobject_s.context_variant_flags`, other bits | ~100 | 0x1-0x10000 | the bits mean something else in each character context: 0x8000 is set when the jump animation's hold time runs out (jump) and when the carry throw's timer ends (carrying), 0x100 in grapple, whip and zip-up, 0x80 and 0x1-0x10 in the sabre combo; name them per context |
+| `gameobject_s.context_variant_flags`, other bits | ~60 | 0x8-0x1000 | the jump, punch and combo bits are named; left: 0x100 (grapple facing, whip, the zip-up big jump), 0x400 (teleport direction, no setter in the source), 0x20 (security door, zip-up), 0x1000 (jump, sets flags_e24 0x8000), 0x8 and 0x10 (the combo's second event frame) |
 | `gameobject_s.flags_ef0`, `flags_ef4`, `portal_flags`, other bits | 30-50 each | bit sets | runtime state bits set in code (`AttackOpponent` sets portal 0x20 and 0x400), no keywords; the sibling build's names are guesses |
 | `GIZMOBLOWUP_PC.status_flags`, other bits | ~60 | 0x400, 0x1000, 0x8000, 0x10000-0x400000, 0x1000000, 0x2000000 | 0x400 and 0x1000 are hit types 10 and 12; 0x8000 is tested with `BLOWUP_STATUS_VISIBLE` by torpedo and transform targeting; 0x80000 waits for the animation's end frame |
 | cheat indices (`Cheat_IsOn`) | 57 | 0..0x2c | come from the game's cheat config file, which is not among the retail files here |
@@ -139,8 +141,8 @@ same function initialises and steps (its values are indexes).
 Counted like the magic-state and magic-flag classes of `oddscan.py --magic` (a
 comparison, assignment or `case` with a value other than 0, 1 and -1, or a
 one-bit mask), per field. On 15 November 2026 the named constants stood at
-23388 sites and the literals at 10192 (69.6 % named); the 96 fields below hold
-4443 of the literals, and 1696 more fields have fewer than 20 sites each (5749
+23471 sites and the literals at 10109 (69.9 % named); the 95 fields below hold
+4352 of the literals, and 1697 more fields have fewer than 20 sites each (5757
 in all; `oddscan.py --magic` lists them by use).
 
 | Field | Sites | Values | Where | What is known |
@@ -152,7 +154,6 @@ in all; `oddscan.py --magic` lists them by use).
 | `state` | 130 | 0 1 2 3 4 5 6 7 ... | nu2api/shader_parser.cpp, nu2api/pc_device.cpp | bare `state` locals; ShaderCompilerParserPc::ParseDeclaration and ProcessDirective are token-driven parser states (one per expected token) |
 | `type` | 126 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, nu2api/shader_parser.cpp | bare `type` locals and parameters; per function in `--locals type` (CutScriptNodeAlloc, TEXT_INPUT_MANAGER::ButtonName, ShaderCompilerParserPc::ParseDeclaration) |
 | `mode` | 123 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
-| `gameobject_s.context_variant_flags` | 95 | 0x1 0x2 0x4 0x8 0x10 0x20 0x80 0x100 ... | legogame/move.c, legoapi/jumping.c | per character context: 0x8000 the jump hold time ran out / the carry throw timer ended, 0x100 grapple, whip and zip-up, 0x80 and 0x1-0x10 sabre combo |
 | `gameobject_s.flags_ef0` | 93 | 0x4 0x40 0x80 0x200 0x400 0x1000 0x2000 0x4000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code, no keyword |
 | `gameobject_s.flags_e24` | 79 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 ... | legogame/move.c, legoapi/jumping.c | movement runtime bits: 0x1000 set by ledge, climbing, grapple, batarang, pushing and tightrope starts; 0x4000 the detonator release; 0x400 tightrope |
 | `AIPACKET.flags` | 78 | 0x8 0x20 0x40 0x400 0x800 0x1000 0x2000 0x4000 ... | gameapi/aisysall.c, legogame/gameai.c | path following and movement state (AISysProcessCharacter, AIMoveToDestination) |
@@ -171,8 +172,8 @@ in all; `oddscan.py --magic` lists them by use).
 | `count` | 51 | -2 1 2 3 4 5 6 8 ... | legogame/hub.cpp, nu2api/shader_dictionary.cpp | no name table, keyword or label found yet |
 | `parameter` | 49 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, legoapi/lighting_unit.cpp | no name table, keyword or label found yet |
 | `pushblock_s.packed_state_flags` | 49 | 0x1 0x2 0x4 0x8 0x20 0x40 0x80 0x100 ... | legoapi/pushblocks.cpp | push and snap state in UpdatePushBlocks; 0x4000000, 0x8000000, 0x20000000, 0x40000000 are unlabelled editor booleans |
+| `gameobject_s.context_variant_flags` | 48 | 0x8 0x10 0x20 0x100 0x400 0x800 0x1000 0x2000 ... | legogame/move.c, legoapi/grapples.cpp | per character context: 0x8000 the jump hold time ran out / the carry throw timer ended, 0x100 grapple, whip and zip-up, 0x80 and 0x1-0x10 sabre combo |
 | `cut_instance_load_s.flags_88` | 47 | 0x1 0x4 0x8 0x10 0x20 0x40 0x800 0x40000 ... | legoapi/cutscene_lifecycle.c | 0x8 cutscene control, 0x10000000/0x20000000 stream setup, 0x40000000 skip countdown |
-| `buttons` | 44 | 0x1 0x2 0x3 0x4 0x5 0x8 0x10 0x20 ... | nu2api/input_runtime.cpp, gameapi/edfile.c | no name table, keyword or label found yet |
 | `result` | 44 | 1 2 3 4 5 6 7 8 ... | nu2api/nushadermanager.cpp, legogame/game_obj.c | no name table, keyword or label found yet |
 | `gameobject_s.flags_ef4` | 42 | 0x4 0x40 0x100 0x200 0x4000 0x8000 0x10000 0x100000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code |
 | `colours` | 40 | 8421504 2147483648 2147483776 2147532800 2155839359 2155872256 2155905152 2164260863 | legoapi/objectsall.c, legoapi/screen.cpp | no name table, keyword or label found yet |
