@@ -464,7 +464,8 @@ void Asteroids_Update(void) {
     asteroid = asteroids;
     for (i = 0; i < nasteroids; i++, asteroid++) {
         if (asteroid->blowup != NULL) {
-            if ((asteroid->blowup->status_flags & 0x4000) != 0 && (asteroid->blowup->status_flags & 1) == 0) {
+            if ((asteroid->blowup->status_flags & BLOWUP_STATUS_VISIBLE) != 0 &&
+                (asteroid->blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0) {
                 asteroid->activated = 0;
                 asteroid->blowup->model_rotation_x += (u16)(asteroid->rotation_speed_x * FRAMETIME);
                 asteroid->blowup->model_rotation_y += (u16)(asteroid->rotation_speed_y * FRAMETIME);
@@ -584,10 +585,12 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
     i32 i;
     Asteroids_Update();
     for (i = 0; i < 4; i++) {
-        if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) != 0 && (((u8 *)LevFlag)[0] & (1 << i)) == 0) {
+        if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 &&
+            (((u8 *)LevFlag)[0] & (1 << i)) == 0) {
             ((u8 *)LevFlag)[0] |= (u8)(1 << i);
             AddMiscPickups(&classicBlowups[i]->position, -1, -1, 1);
-        } else if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & 1) == 0 && (((u8 *)LevFlag)[0] & (1 << i)) != 0) {
+        } else if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0 &&
+                   (((u8 *)LevFlag)[0] & (1 << i)) != 0) {
             ((u8 *)LevFlag)[0] &= ~(u8)(1 << i);
         }
     }

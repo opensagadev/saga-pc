@@ -283,9 +283,10 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
     GIZMOBLOWUP_PC *candidate_blowup = world->gizmo_blowups;
     nearest_distance = 16.0f;
     for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate_blowup) {
-        if ((candidate_blowup->status_flags & 1) != 0 || (candidate_blowup->status_flags & 0x800000) == 0 ||
-            (candidate_blowup->status_flags & 0x4000) == 0 || (candidate_blowup->status_flags & 0x8000) == 0 ||
-            (candidate_blowup->draw_flags & 1) == 0 || ((candidate_blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
+        if ((candidate_blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 ||
+            (candidate_blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 || (candidate_blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 ||
+            (candidate_blowup->status_flags & 0x8000) == 0 || (candidate_blowup->draw_flags & 1) == 0 ||
+            ((candidate_blowup->draw_flags & 0x20) != 0 && ShadowMode == 0)) {
             continue;
         }
         i32 target;
@@ -883,7 +884,7 @@ extern "C" void Batarangs_Update(void) {
         } else if (target.type == 1) {
             Detonator_Detonate(static_cast<DETONATOR_s *>(target.object));
         } else if (target.type == 2) {
-            GizmoBlowupBlowup(static_cast<GIZMOBLOWUP_PC *>(target.object), 1, 2, 2, NULL, 1);
+            GizmoBlowupBlowup(static_cast<GIZMOBLOWUP_PC *>(target.object), 1, BLOWUP_HIT_BATARANG, 2, NULL, 1);
         }
     }
 }

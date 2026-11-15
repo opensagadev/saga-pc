@@ -952,7 +952,7 @@ static i32 Bolt_HitPlatPrivate(BOLT_PC *bolt, u8 *hit_flags) {
             if (bolt->owner != NULL && (blowup->draw_flags & 0x80000) != 0 && bolt->owner->rider == NULL) {
                 return 0;
             }
-            if (GizmoBlowupBlowup(blowup, 1, 3, bolt->type->unknown_3c, NULL, 1) != 0 && bolt->owner != NULL) {
+            if (GizmoBlowupBlowup(blowup, 1, BLOWUP_HIT_BOLT, bolt->type->unknown_3c, NULL, 1) != 0 && bolt->owner != NULL) {
                 NewRumble(bolt->owner->pad->bound_pad, 0.4f, 0);
             }
             return 1;

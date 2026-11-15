@@ -42,10 +42,10 @@ i32 DeathStarShieldDown(void) {
         return 0;
     }
     blowup = LevGizmo[0]->object;
-    if ((blowup->status_flags & 1) != 0) {
+    if ((blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         return 1;
     }
-    if ((blowup->status_flags & 0x800000) == 0) {
+    if ((blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0) {
         return 0;
     }
     player = Player[0];
@@ -147,7 +147,7 @@ void BlockadeRunnerB_Init(WORLDINFO *world) {
 
 void BlockadeRunnerB_Update(WORLDINFO *world) {
     if (LevBlowUp[0] != NULL && InStory() != 0) {
-        LevBlowUp[0]->status_flags &= ~0x800000;
+        LevBlowUp[0]->status_flags &= ~BLOWUP_STATUS_ACTIVE;
     }
 }
 

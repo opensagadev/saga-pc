@@ -1360,7 +1360,8 @@ mode_selected:
             if (Cheat_PowerUpActive(-1) ||
                 (WORLD->current_level == SPEEDERCHASEA_LDATA && !disable_narrow_socks && camera->sock_position.sock_index == 1) ||
                 (WORLD->current_level == CLOUDCITYTRAPB_LDATA && window != NULL && window->object != NULL &&
-                 (((GIZMOBLOWUP_PC *)(window->object))->status_flags & 1) != 0 && ((u8)(camera->sock_position.sock_index)) <= 1)) {
+                 (((GIZMOBLOWUP_PC *)(window->object))->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 &&
+                 ((u8)(camera->sock_position.sock_index)) <= 1)) {
                 camera_shake = 0.5f;
             } else if (WORLD->current_level == DEATHSTAR2BATTLED_LDATA && ((u8 *)(LevFlag))[0] > 0) {
                 camera_shake = 1.5f;

@@ -42,7 +42,8 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                 switch (object->whip_action) {
                     case 3:
                         target = object->grapple;
-                        if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
+                        if (target != NULL && (target->status_flags & BLOWUP_STATUS_VISIBLE) &&
+                            (target->status_flags & BLOWUP_STATUS_ACTIVE)) {
                             object->unknown_7aa = LEGOACT_WHIP_GRAB;
                             object->context_timer = 0.0f;
                             object->unknown_7b3 = 3;
@@ -56,7 +57,8 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                         break;
                     case 2:
                         target = object->grapple;
-                        if (target != NULL && (target->status_flags & 0x4000) && (target->status_flags & 0x800000)) {
+                        if (target != NULL && (target->status_flags & BLOWUP_STATUS_VISIBLE) &&
+                            (target->status_flags & BLOWUP_STATUS_ACTIVE)) {
                             object->unknown_7aa = LEGOACT_WHIP_BREAK;
                             object->context_timer = 0.0f;
                             object->unknown_7b3 = 2;
@@ -111,11 +113,11 @@ void Whip_MoveCode(GAMEOBJECT *object) {
             if (activate) {
                 switch (object->unknown_7b3) {
                     case 3:
-                        GizmoBlowupBlowup(object->grapple, 0, 7, -1, NULL, 1);
+                        GizmoBlowupBlowup(object->grapple, 0, BLOWUP_HIT_CARRIED, -1, NULL, 1);
                         activate = 2;
                         break;
                     case 2:
-                        if (GizmoBlowupBlowup(object->grapple, 1, 1, 1, NULL, 1)) {
+                        if (GizmoBlowupBlowup(object->grapple, 1, BLOWUP_HIT_PUNCH, 1, NULL, 1)) {
                             NewBuzz(object->pad->bound_pad, 0.1f, 0);
                         }
                         NewRumble(object->pad->bound_pad, 0.5f, 0);

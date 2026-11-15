@@ -107,14 +107,14 @@ i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP_PC *blowup, NUVEC *position, u16 ang
     CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
     CARRY_PLUG *plug;
     f32 distance;
-    blowup->status_flags |= 0x804000;
+    blowup->status_flags |= BLOWUP_STATUS_VISIBLE | BLOWUP_STATUS_ACTIVE;
     GizBlowup_Respawn(blowup);
     blowup->status_flags |= 0x10000;
     plug = Plug_FindNearest(((CARRY_WORLD *)WORLD)->plug_sys, position, &distance, 1);
     if (plug != NULL && distance < 0.5625f) {
         Plug_MakeDrawMtx(plug, &view->transform);
         plug->plugged = 1;
-        blowup->status_flags = (blowup->status_flags & ~0x800000) | 0x10000000;
+        blowup->status_flags = (blowup->status_flags & ~BLOWUP_STATUS_ACTIVE) | BLOWUP_STATUS_PLUGGING;
         return 1;
     }
     if (!keep_matrix) {
@@ -334,7 +334,7 @@ void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP_PC *blowup, i32 i
         object->unknown_7aa = LEGOACT_SUPERCARRY_IDLE;
         object->context_timer = 0.0f;
         if (immediate == 0) {
-            GizmoBlowupBlowup(blowup, 0, 7, -1, NULL, 1);
+            GizmoBlowupBlowup(blowup, 0, BLOWUP_HIT_CARRIED, -1, NULL, 1);
         }
     }
     if (SuperCarry_AlignObject != 0) {
@@ -423,7 +423,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 if (event) {
                     object->context_variant_flags |= 0x40;
-                    GizmoBlowupBlowup(object->grapple, 0, 7, -1, NULL, 1);
+                    GizmoBlowupBlowup(object->grapple, 0, BLOWUP_HIT_CARRIED, -1, NULL, 1);
                     NewBuzzFrames(object->pad->bound_pad, 1, 0);
                 }
                 return;
@@ -703,8 +703,9 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             return;
         }
         for (i = 0; i < world->gizmo_blowup_count; ++i, ++blowup) {
-            if ((blowup->status_flags & 1) == 0 && (blowup->status_flags & 0x800000) != 0 && (blowup->status_flags & 0x4000) != 0 &&
-                (blowup->status_flags & 0x8000) != 0 && (blowup->secondary_flags & 1) != 0) {
+            if ((blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0 && (blowup->status_flags & BLOWUP_STATUS_ACTIVE) != 0 &&
+                (blowup->status_flags & BLOWUP_STATUS_VISIBLE) != 0 && (blowup->status_flags & 0x8000) != 0 &&
+                (blowup->secondary_flags & 1) != 0) {
                 NUVEC delta;
                 f32 distance;
                 f32 radius;

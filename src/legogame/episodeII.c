@@ -2012,7 +2012,7 @@ void GunShip_DragBombSeekBlowUp(GAMEOBJECT *object) {
             continue;
         }
         blowup = LevGizmo[index]->object;
-        if ((blowup->status_flags & 0x800000) == 0 || (blowup->status_flags & 1) != 0) {
+        if ((blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 || (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
             continue;
         }
         distance = NuVecDistSqr(&blowup->mid_position, &object->collision_position, &offset);

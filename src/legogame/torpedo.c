@@ -315,7 +315,7 @@ static void TorpedoHitDispatch(void *target, NUVEC *position, i32 player, u8 tar
     }
     switch (target_type) {
         case 0:
-            GizmoBlowupBlowup(target, 1, 11, 1, NULL, 1);
+            GizmoBlowupBlowup(target, 1, BLOWUP_HIT_TORPEDO, 1, NULL, 1);
             break;
         case 1:
             GizTurrets_Hit(WORLD, target, position, player, -1);
@@ -434,8 +434,9 @@ void *FindNearestTorpTarget(WORLDINFO *world, NUVEC *position, f32 distance_squa
     for (index = 0; index < world->gizmo_blowup_count; ++index) {
         GIZMOBLOWUP_PC *blowup = &world->gizmo_blowups[index];
         f32 distance;
-        if ((blowup->status_flags & 0x4000) == 0 || (blowup->status_flags & 0x8000) == 0 || (blowup->status_flags & 1) != 0 ||
-            (blowup->status_flags & 0x800000) == 0 || (blowup->draw_flags & 0x1000000) == 0) {
+        if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) == 0 || (blowup->status_flags & 0x8000) == 0 ||
+            (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 || (blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 ||
+            (blowup->draw_flags & 0x1000000) == 0) {
             continue;
         }
         distance = NuVecDistSqr(&blowup->mid_position, position, &delta);

@@ -8751,7 +8751,7 @@ i32 Action_TriggerBlowUp(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
                 }
             }
         }
-        if (blowup != NULL && (blowup->status_flags & 1) == 0) {
+        if (blowup != NULL && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0) {
             GizmoBlowupBlowup(blowup, 1, -1, 1, NULL, 1);
         }
     }

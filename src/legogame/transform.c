@@ -72,7 +72,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if (trigger) {
             object->context_variant_flags |= 0x40;
-            GizmoBlowupBlowup(object->grapple, 1, 8, 1, NULL, 1);
+            GizmoBlowupBlowup(object->grapple, 1, BLOWUP_HIT_TRANSFORM, 1, NULL, 1);
         }
     } else {
         GIZMOBLOWUP_PC *candidate;
@@ -102,8 +102,9 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         max.y = object->collision_position.y + 2.0;
         max.z = object->collision_position.z + 2.0;
         for (i = 0; i < world->gizmo_blowup_count; ++i, ++candidate) {
-            if ((candidate->status_flags & 1) || !(candidate->status_flags & 0x800000) || !(candidate->status_flags & 0x4000) ||
-                !(candidate->status_flags & 0x8000) || !(candidate->draw_flags & 0x10)) {
+            if ((candidate->status_flags & BLOWUP_STATUS_BLOWN_UP) || !(candidate->status_flags & BLOWUP_STATUS_ACTIVE) ||
+                !(candidate->status_flags & BLOWUP_STATUS_VISIBLE) || !(candidate->status_flags & 0x8000) ||
+                !(candidate->draw_flags & 0x10)) {
                 continue;
             }
             if ((candidate->draw_flags & 0x20) && ShadowMode == 0) {

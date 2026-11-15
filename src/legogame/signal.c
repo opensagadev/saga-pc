@@ -551,7 +551,7 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
         for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
             const u32 status = blowup->status_flags;
             u32 draw;
-            if ((status & 1) != 0 || (status & 0x800000) == 0 || (status & 0x4000) == 0) {
+            if ((status & BLOWUP_STATUS_BLOWN_UP) != 0 || (status & BLOWUP_STATUS_ACTIVE) == 0 || (status & BLOWUP_STATUS_VISIBLE) == 0) {
                 continue;
             }
             draw = blowup->draw_flags;
@@ -567,7 +567,7 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if (count > 0 && ParticlesPerSecond(5.0f, FRAMETIME) > 0) {
-            GizmoBlowupBlowup(candidates[qrand() / (65535 / count + 1)], 1, 6, 1, NULL, 1);
+            GizmoBlowupBlowup(candidates[qrand() / (65535 / count + 1)], 1, BLOWUP_HIT_SIGNAL, 1, NULL, 1);
         }
     } else {
         if (object->unknown_281 != 0 && ObjLandReady(object) != 0 && (object->pad->buttons_held & GAMEPAD_SPECIAL) != 0) {

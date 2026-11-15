@@ -6273,7 +6273,7 @@ void PartUpdate_Basketball(PART_PC *part) {
         return;
     }
     blowup = LevGizmo[0]->object;
-    if ((blowup->status_flags & 0x800000) == 0 && (blowup->status_flags & 1) == 0 &&
+    if ((blowup->status_flags & BLOWUP_STATUS_ACTIVE) == 0 && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0 &&
         NuVecDistSqr(&blowup->position, &part->position, NULL) < 0.1f * 0.1f) {
         GizmoActivate(WORLD->gizmo_sys, LevGizmo[0], 1, 0);
         GizmoBlowupBlowup(blowup, 1, -1, -1, NULL, 1);

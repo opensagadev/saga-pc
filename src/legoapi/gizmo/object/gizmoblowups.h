@@ -100,6 +100,38 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
     u8 unknown_fd[3];                   // 0xfd
 } GIZMOBLOWUPTYPE;
 
+/* GizmoBlowupBlowup hit_type: what hit the blowup, by caller. 10 (GizmoBlowUp_Hit for an explosion with flag
+ * 0x10) and 12 have no name yet. */
+#define BLOWUP_HIT_PUNCH 1             /* fighting punches, the whip lash: the Punched output */
+#define BLOWUP_HIT_BATARANG 2          /* Batarang */
+#define BLOWUP_HIT_BOLT 3              /* bolts, directly and through GizmoBlowUp_Hit */
+#define BLOWUP_HIT_PROXIMITY 4         /* a character walks into the proximity radius */
+#define BLOWUP_HIT_PROXIMITY_VEHICLE 5 /* the same for a vehicle or a taken-over character */
+#define BLOWUP_HIT_SIGNAL 6            /* signal.c */
+#define BLOWUP_HIT_CARRIED 7           /* carrying, the whip pull */
+#define BLOWUP_HIT_TRANSFORM 8         /* transform.c */
+#define BLOWUP_HIT_EXPLOSION 9         /* GizmoBlowUp_Hit for an explosion */
+#define BLOWUP_HIT_TORPEDO 11          /* torpedo.c */
+#define BLOWUP_HIT_SABRE 13            /* GizmoBlowUp_Hit for the lightsabre */
+
+/* GIZMOBLOWUP_PC.status_flags: the outputs (Blownup, Punched, Plugging), the bitfield names below and one bit
+ * per hit type that GizmoBlowupBlowup sets. */
+#define BLOWUP_STATUS_BLOWN_UP 0x1
+#define BLOWUP_STATUS_HIT_PUNCH 0x2
+#define BLOWUP_STATUS_HIT_BATARANG 0x4
+#define BLOWUP_STATUS_HIT_BOLT 0x8
+#define BLOWUP_STATUS_HIT_PROXIMITY_VEHICLE 0x10
+#define BLOWUP_STATUS_HIT_PROXIMITY 0x20
+#define BLOWUP_STATUS_HIT_SIGNAL 0x40
+#define BLOWUP_STATUS_HIT_CARRIED 0x80
+#define BLOWUP_STATUS_HIT_TRANSFORM 0x100
+#define BLOWUP_STATUS_HIT_EXPLOSION 0x200
+#define BLOWUP_STATUS_HIT_TORPEDO 0x800
+#define BLOWUP_STATUS_HIT_SABRE 0x2000
+#define BLOWUP_STATUS_VISIBLE 0x4000
+#define BLOWUP_STATUS_ACTIVE 0x800000
+#define BLOWUP_STATUS_PLUGGING 0x10000000
+
 typedef struct GIZMOBLOWUP_PC { // size 0x114
 
     union { // size 0x40

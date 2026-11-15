@@ -422,7 +422,7 @@ i32 ShinyMetal_UpdateHint(HINT *hint) {
     if (LevGizObst[0] != NULL && LevGizObst[0]->anim_set->state == 0) {
         return 0;
     }
-    if (LevBlowUp[0] == NULL || (LevBlowUp[0]->status_flags & 1) != 0) {
+    if (LevBlowUp[0] == NULL || (LevBlowUp[0]->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         return 0;
     }
     if ((player != NULL && (f64)NuVecDistSqr(&player->collision_position, &LevBlowUp[0]->mid_position, NULL) < 25.0) ||

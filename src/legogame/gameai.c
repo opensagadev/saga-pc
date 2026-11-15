@@ -1720,7 +1720,7 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 }
                 break;
             case 4:
-                if ((((GIZMOBLOWUP_PC *)controller->target)->status_flags & 1) != 0) {
+                if ((((GIZMOBLOWUP_PC *)controller->target)->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
                     active = 0;
                 }
                 break;

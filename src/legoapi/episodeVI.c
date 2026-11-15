@@ -209,7 +209,7 @@ GIZMOBLOWUP_PC *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
             continue;
         }
         blowup = LevGizmo[i]->object;
-        if ((blowup->status_flags & 0x800000) && !(blowup->status_flags & 1) && LevGizObst[i] != NULL &&
+        if ((blowup->status_flags & BLOWUP_STATUS_ACTIVE) && !(blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) && LevGizObst[i] != NULL &&
             LevGizObst[i]->anim_set->state != 0) {
             distance = NuVecDistSqr(&object->collision_position, &blowup->mid_position, NULL);
             if (distance < nearest_distance) {
@@ -244,7 +244,7 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
     shield_gizmo = LevGizmo[7];
     if (shield_gizmo != NULL) {
         shield = shield_gizmo->object;
-        if (shield != NULL && (shield->status_flags & 1)) {
+        if (shield != NULL && (shield->status_flags & BLOWUP_STATUS_BLOWN_UP)) {
             if ((i32)AreaTimer.time_elapsed % 3 == 0 && (i32)AreaTimer.last_time_elapsed % 3 != 0 && NuFloatRand(&GAMERAND) < 0.5f) {
                 angle = qrand();
                 shield_position = shield->mid_position;
@@ -899,7 +899,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
         }
     }
     blowup = LevGizmo[0] != NULL ? (GIZMOBLOWUP_PC *)LevGizmo[0]->object : NULL;
-    if (blowup != NULL && (blowup->status_flags & 1) != 0) {
+    if (blowup != NULL && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         if (!flags[6]) {
             PlaySfx("exp_minecart", &blowup->position);
             flags[6] = 1;
@@ -908,7 +908,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
         flags[6] = 0;
     }
     blowup = LevGizmo[1] != NULL ? (GIZMOBLOWUP_PC *)LevGizmo[1]->object : NULL;
-    if (blowup != NULL && (blowup->status_flags & 1) != 0) {
+    if (blowup != NULL && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         if (!flags[7]) {
             PlaySfx("exp_minecart", &blowup->position);
             flags[7] = 1;
@@ -1467,7 +1467,7 @@ void SarlaccPitC_Update(WORLDINFO *world) {
     }
     if (!SarlaccTargetShield[0]) {
         GIZMOBLOWUP_PC *target = SarlaccBlowUpTargets[0];
-        if (target != NULL && !(target->status_flags & 0x4000)) {
+        if (target != NULL && !(target->status_flags & BLOWUP_STATUS_VISIBLE)) {
             PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[16]));
             SarlaccTargetShield[0] = 1;
         } else {
@@ -1476,7 +1476,7 @@ void SarlaccPitC_Update(WORLDINFO *world) {
     }
     if (!SarlaccTargetShield[1]) {
         GIZMOBLOWUP_PC *target = SarlaccBlowUpTargets[1];
-        if (target != NULL && !(target->status_flags & 0x4000)) {
+        if (target != NULL && !(target->status_flags & BLOWUP_STATUS_VISIBLE)) {
             PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[17]));
             SarlaccTargetShield[1] = 1;
         } else {
