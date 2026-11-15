@@ -82,6 +82,23 @@ their values; masks, colours and values with the top bit set are written in
 hex, and a matrix, vec4, plane or SSE operand that retail keeps 16-aligned
 declares `__declspec(align(16))`.
 
+### What data.cpp still holds
+
+Every other global is defined in its owning unit. `src/data.cpp` keeps nine
+definitions, each because its owning unit cannot define it yet without
+changing code; each was moved and its proof failed:
+
+| global | owner by the rule | why it stays |
+|---|---|---|
+| `bad_fluff`, `bad_equiv` | nu2api/nucore_includes.c | NuStringIsFluff and NuStringBadSubString compile differently with the tables in their unit |
+| `PCDeviceBackend`, `PCDeviceStateCachePc` | nu2api/pc_device.cpp | C++ objects with constructor and destructor: their initialiser and atexit functions come out differently in that unit |
+| `nu_keyboard_owner` | nu2api/pc_input.cpp | the same |
+| `Text_LanguageList_Default` | legoapi/text.c | its initialiser copies string pointers at startup, which is C++; the owner is a C unit |
+| `debris_box_corners` | nu2api/nuparticle_state.c | NuRndrSetDebBox compiles differently |
+| `id_GRABCONTROL`, `id_GRABR2CONTROL` | legogame/game_obj.c | Tag_UpdateHint compiles differently with either one in its unit |
+
+They belong to the tuning pass at the end of the cleanup (docs/fragile-flips.md).
+
 ### What `matching.json` covers
 
 `tools/match.py` compares each mapped data symbol with a known size as one

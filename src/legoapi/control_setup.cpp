@@ -18,6 +18,8 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/nustencilshadows_PC.h"
+#include "legoapi/menus/screens/customise.h"
+#include "legoapi/text_tables.h"
 
 i32 PC_CONTROL_SCREEN::ItemAllowsBinding(PC_CONTROL_ROW *row, i32 index, i32 player) {
     PC_CONTROL_ITEM *item = &row->items[index];
@@ -469,6 +471,56 @@ extern "C" {
         NULL
     };
     char *PcControlText[45] = {0};
+    extern i16 dat_00880894;
+    extern i16 dat_00880898;
+    extern i16 dat_00880c34;
+    extern i16 dat_00880c38;
+    extern i16 dat_00880c3c;
+    extern i16 dat_00880c40;
+    extern i16 dat_00880c44;
+    extern i16 dat_00880c48;
+    extern i16 dat_00880c4c;
+    extern i16 dat_00880c50;
+    extern i16 dat_00880c54;
+    extern i16 dat_00880c58;
+    extern i16 dat_00880c5c;
+    extern i16 dat_00880c74;
+    extern i16 dat_00880c78;
+    extern i16 dat_00880c7c;
+    extern i16 dat_00880c80;
+    extern i16 dat_00880cb0;
+    extern i16 dat_00880f00;
+    extern i16 dat_00880f04;
+    extern i16 dat_00880f08;
+    extern i16 dat_00880f0c;
+    extern i16 dat_00880f10;
+    extern i16 dat_00880f14;
+    extern i16 dat_00880f18;
+    extern i16 dat_00880f1c;
+    extern i16 dat_00880f20;
+    extern i16 dat_00880f24;
+    extern i16 dat_00880f28;
+    extern i16 dat_00880f2c;
+    extern i16 dat_00880f30;
+    extern i16 dat_00880f34;
+    extern i16 dat_00880f38;
+    extern i16 dat_00880f3c;
+    extern i16 dat_00880f40;
+    extern i16 dat_00880f44;
+    extern i16 dat_00880f48;
+    extern i16 dat_00880f4c;
+    extern i16 dat_00880f50;
+    extern i16 dat_008811b0;
+    extern i16 dat_008811bc;
+    extern i16 dat_008811c0;
+    i16 PcControlTextId = 0;
+    i16 *PcControlTextIds[45] = {&tACCEPT,      &dat_00880890,    &dat_00880f00, &dat_00880f04, &dat_00880f0c, &dat_00880f10, &dat_00880f08,
+                                 &dat_00880c34, &dat_00880c38,    &dat_00880c3c, &dat_00880c40, &dat_00880c44, &dat_00880c48, &dat_00880c4c,
+                                 &dat_00880c50, &dat_00880c54,    &dat_00880c58, &dat_00880c5c, &dat_00880f14, &dat_00880f18, &dat_00880f1c,
+                                 &dat_00880f20, &dat_00880f44,    &dat_00880894, &dat_00880898, &dat_00880f24, &dat_00880f28, &dat_00880f2c,
+                                 &dat_00880f30, &dat_00880f34,    &dat_00880f38, &dat_00880f3c, &dat_00880f40, &dat_00880f48, &dat_00880f4c,
+                                 &dat_00880f50, &dat_00880c80,    &dat_00880c7c, &dat_00880c74, &dat_00880c78, &dat_00880cb0, &dat_008811c0,
+                                 &dat_008811bc, &PcControlTextId, &dat_008811b0};
 
     void PcControlRegister(PC_CONTROL_CONFIG *config, VARIPTR *buffer, VARIPTR *end) {
         if (!config->rows) {

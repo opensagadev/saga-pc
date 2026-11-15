@@ -1297,14 +1297,56 @@ u16 GameObjectRotationBuggyId = 0xffff;
 u16 GameObjectRotationRadioCarId = 0xffff;
 u16 GameObjectRotationPoliceCarId = 0xffff;
 u16 GameObjectRotationMowerId = 0xffff;
+i16 id_TIEFIGHTER = -1;
 i16 id_OBIWANKENOBIEP3 = -1;
 i16 id_ANAKINJEDI = -1;
 i32 StartupGameFlag1 = 1;
 f32 CombatNpcKillDifficultyAmount = 0.01f;
 f32 CombatPlayerDeathDifficultyAmount = -0.025f;
+i8 adtabentries[9][4] = {
+    {-1, -1, -1, -1},
+    {-1, -1, -1, 0 },
+    {-1, -1, 0,  0 },
+    {-1, 0,  0,  0 },
+    {0,  0,  0,  0 },
+    {1,  0,  0,  0 },
+    {1,  1,  0,  0 },
+    {1,  1,  1,  0 },
+    {1,  1,  1,  1 }
+};
 i8 (*adtab)[4] = &adtabentries[4];
 i32 timebase_updates = 1;
 f32 InteractionArrowScale = 0.7f;
+const NUVEC GAMEOBJECT_ROTATION_BUGGY_OFFSETS[4] = {
+    {-0.1175f, 0.0f, 0.1575f },
+    {0.1175f,  0.0f, 0.1575f },
+    {0.1175f,  0.0f, -0.1575f},
+    {-0.1175f, 0.0f, -0.1575f},
+};
+const NUVEC GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS[4] = {
+    {-0.12f, 0.0f, 0.08f },
+    {0.12f,  0.0f, 0.08f },
+    {0.12f,  0.0f, -0.08f},
+    {-0.12f, 0.0f, -0.08f},
+};
+const NUVEC GAMEOBJECT_ROTATION_POLICECAR_OFFSETS[4] = {
+    {-0.19f, 0.0f, 0.31f },
+    {0.19f,  0.0f, 0.31f },
+    {0.19f,  0.0f, -0.31f},
+    {-0.19f, 0.0f, -0.31f},
+};
+const NUVEC GAMEOBJECT_ROTATION_MOWER_OFFSETS[4] = {
+    {-0.1175f, 0.0f, 0.155f },
+    {0.1175f,  0.0f, 0.155f },
+    {0.1175f,  0.0f, -0.155f},
+    {-0.1175f, 0.0f, -0.155f},
+};
+const NUVEC GAMEOBJECT_ROTATION_DEFAULT_OFFSETS[4] = {
+    {-0.2f, 0.0f, 0.2f },
+    {0.2f,  0.0f, 0.2f },
+    {0.2f,  0.0f, -0.2f},
+    {-0.2f, 0.0f, -0.2f},
+};
 static i32 KillPartsTieSpinRate = 200000;
 i32 CombatHitReactionInterval = 3;
 f32 CombatReactionDuration = 3.0f;
@@ -2021,9 +2063,12 @@ KILLPARTS_BIKE KillPartsBikes[4] = {0};
 f32 tieonsfxwait = 0;
 f32 tieoffsfxwait = 0;
 i32 KillPartsPreviousVariant = 0;
+u32 LswForceUsedHintFlags = 0;
 i32 Tag_DoneFirst = 0;
 GAMEOBJECT *player_tag_to = 0;
 GAMEOBJECT *player_tag_from = 0;
+f32 player_tag_timer = 0;
+i32 do_player_tag = 0;
 
 void UpdateGameObjects(WORLDINFO *world) {
     i32 i;

@@ -83,9 +83,35 @@ def write_fixtures(directory):
         (directory / name).write_bytes(image)
 
 
+GLOBAL_DEFINITION = re.compile(
+    r"^(?!extern\b|typedef\b|static\b|return\b)(?:const\s+)?[A-Za-z_][\w ]*?[\s*]+([A-Za-z_]\w*)"
+    r"(?:\[[^\]\n]*\])*\s*(?:=[^;]*)?;", re.MULTILINE)
+
+
+def production_globals(sources):
+    """File-scope globals the linked production units define (column-0 definitions, no prototypes)."""
+    names = set()
+    for source in sources:
+        for match in GLOBAL_DEFINITION.finditer(source.read_text(encoding="latin-1")):
+            if "(" not in match.group(0).split("=")[0]:
+                names.add(match.group(1))
+    return names
+
+
+def without_definitions(text, names):
+    """Drop the single-line fixture definitions of globals a linked production unit defines."""
+    kept = []
+    for line in text.splitlines(keepends=True):
+        match = GLOBAL_DEFINITION.match(line)
+        if match and match.group(1) in names and "(" not in line.split("=")[0]:
+            continue
+        kept.append(line)
+    return "".join(kept)
+
+
 def write_file_constants(directory):
     """Reuse production writer state in the isolated fixture (the file sources write their literals inline)."""
-    production = (ROOT / "src/data.cpp").read_text()
+    production = (ROOT / "src/nu2api/nucore_includes.c").read_text(encoding="latin-1")
     writer_state = re.findall(r"^\s*i32 NuFile_SwapEndianOnWrite\s*=\s*0;\s*$",
                               production, re.MULTILINE)
     if len(writer_state) != 1:
@@ -113,9 +139,9 @@ def write_clock_provider(directory):
     bodies = production[start:end]
     if len(re.findall(r"^.*void NuTime\w+\(", bodies, re.MULTILINE)) != 1:
         raise ValueError("DAT clock provider no longer contains exactly the production tick routine")
-    data = (ROOT / "src/data.cpp").read_text()
     definitions = []
-    for name in ("NuTime_TickBase", "NuTime_PerformanceFrequency"):
+    for name, unit in (("NuTime_TickBase", "nutimebar.c"), ("NuTime_PerformanceFrequency", "nuthread.c")):
+        data = (ROOT / "src/nu2api" / unit).read_text(encoding="latin-1")
         definition = re.search(rf"^\s*i64 {name}\s*=\s*0;\s*$", data, re.MULTILINE)
         if definition is None:
             raise ValueError(f"DAT clock provider is missing the production {name} definition")
@@ -127,7 +153,7 @@ def write_clock_provider(directory):
 
 def write_implode_state(directory):
     """Reuse the decoder's eight production backing definitions in isolation."""
-    production = (ROOT / "src/data.cpp").read_text()
+    production = (ROOT / "src/nu2api/nucore_includes.c").read_text(encoding="latin-1")
     definitions = []
     for name in ("gExplodeInitialised", "implode_inbuffer", "implode_outbuffer",
                  "implode_bitbuf", "implode_compsize", "implode_origsize",
@@ -186,11 +212,14 @@ class DatParserTests(unittest.TestCase):
             sources = [ROOT / f"src/nu2api/{name}.c" for name in
                        ("nucore_includes", "nualloc", "nudebug", "nufile_pc", "nupsfile", "nufile_mc", "nuthread")]
             fixture = directory / "test_dat_fixture.c"
-            fixture.write_text(all_headers_source() + (ROOT / "tools/test_dat_fixture.c").read_text())
+            defined = production_globals(sources)
+            fixture.write_text(all_headers_source() +
+                               without_definitions((ROOT / "tools/test_dat_fixture.c").read_text(), defined))
             sources.append(fixture)
-            sources.append(write_file_constants(directory))
-            sources.append(write_clock_provider(directory))
-            sources.append(write_implode_state(directory))
+            for generated in (write_file_constants(directory), write_clock_provider(directory),
+                              write_implode_state(directory)):
+                generated.write_text(without_definitions(generated.read_text(), defined))
+                sources.append(generated)
             for source in sources:
                 output = directory / (source.stem + ".obj")
                 self.run_command([
