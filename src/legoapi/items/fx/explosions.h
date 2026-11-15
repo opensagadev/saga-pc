@@ -11,11 +11,11 @@ extern "C" {
 #endif
     extern i32 i_explosion;
 
-    EXPLOSION_PC *AddExplosion(NUVEC *, f32, f32, GAMEOBJECT *, i32, u32);
+    EXPLOSION *AddExplosion(NUVEC *, f32, f32, GAMEOBJECT *, i32, u32);
     void ResetExplosions(void);
     void DrawExplosions(void);
     void UpdateExplosions(void);
-    void UpdateExplosion_Generic(EXPLOSION_PC *);
+    void UpdateExplosion_Generic(EXPLOSION *);
     extern f32 ExplosionKnockbackScale;
 #ifdef __cplusplus
 }

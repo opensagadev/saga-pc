@@ -6266,7 +6266,7 @@ void BobaRocket_Move(PART_PC *part, f32 elapsed) {
 }
 
 void BobaRocket_Kill(PART_PC *part, i32 reason) {
-    EXPLOSION_PC *explosion = Detonate(&part->position, 0);
+    EXPLOSION *explosion = Detonate(&part->position, 0);
     GAMEOBJECT *owner;
     (void)reason;
     if (explosion == NULL || Arcade == 0) {
@@ -7276,7 +7276,7 @@ static void MoveAnim_Check(GAMEOBJECT *object) {
 }
 
 static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
-    EXPLOSION_PC *explosion;
+    EXPLOSION *explosion;
     if ((object->character_data->model_flags & CHARACTER_MODEL_DROID) == 0 || (object->flags_e24 & 0x200) != 0) {
         return;
     }

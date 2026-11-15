@@ -179,7 +179,7 @@ i32 PartDraw_ThermalDetonator(PART_PC *part) {
 
 void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     u16 flags;
-    EXPLOSION_PC *explosion;
+    EXPLOSION *explosion;
     if (part == NULL) {
         return;
     }
@@ -195,7 +195,7 @@ void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
 
     explosion = Detonate(&part->position, flags);
     if (explosion != NULL && part->owner != NULL && (part->owner->unknown_280 == 0 || part->owner->unknown_280 == 1)) {
-        explosion->unknown_33 = part->owner->unknown_280;
+        explosion->player_index = part->owner->unknown_280;
     }
 }
 

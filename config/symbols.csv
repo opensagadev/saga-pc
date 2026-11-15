@@ -402,7 +402,7 @@ address,symbol,size,ctype
 0x426b50,_DetonatorPlacementSlot,81,static DETONATOR_s *(GAMEOBJECT *)
 0x426bb0,_Detonator_FindNearest,146,"DETONATOR_s *__cdecl(NUVEC *, f32, GAMEOBJECT *)"
 0x426c50,_Detonator_FindOldest,397,static DETONATOR_s *(void)
-0x00426de0,_Detonate,374,"EXPLOSION_PC *__cdecl (NUVEC *, u16)"
+0x00426de0,_Detonate,374,"EXPLOSION *__cdecl (NUVEC *, u16)"
 0x426f60,_Detonator_Detonate,54,
 0x426fa0,_Detonators_Update,202,void __cdecl(void)
 0x427070,_Detonators_Draw,318,void __cdecl(void)
@@ -5419,10 +5419,10 @@ address,symbol,size,ctype
 0x0056e580,_Cheat_SetArea,45,"void __cdecl (i32, i32)"
 0x56e5b0,_ExplosionsVuVecMake,28,
 0x0056e5d0,_ResetExplosions,31,void __cdecl (void)
-0x0056e5f0,_AddExplosion,168,"EXPLOSION_PC *__cdecl (NUVEC *, f32, f32, GAMEOBJECT *, i32, u32)"
+0x0056e5f0,_AddExplosion,168,"EXPLOSION *__cdecl (NUVEC *, f32, f32, GAMEOBJECT *, i32, u32)"
 0x56e6a0,_DrawExplosions,1,void __cdecl (void)
-0x56e6b0,_Explosion_Feedback,82,private native EAX argument EXPLOSION_PC *; writer must review emitted ABI
-0x56e710,_UpdateExplosion_Generic,1904,void __cdecl (EXPLOSION_PC *)
+0x56e6b0,_Explosion_Feedback,82,private native EAX argument EXPLOSION *; writer must review emitted ABI
+0x56e710,_UpdateExplosion_Generic,1904,void __cdecl (EXPLOSION *)
 0x56ee80,_UpdateExplosions,114,void __cdecl (void)
 0x56ef00,_GizmopickupsNuError,1,
 0x56ef10,_GizmopickupsVuVecCopy,23,
@@ -41791,7 +41791,7 @@ address,symbol,size,ctype
 0x00950da4,_CheatSystem,12,CHEATSYSTEM [12-byte reviewed prefix; full extent unknown]
 0x00950db0,_Cheat_PowerUpTime,4,f32
 0x950db4,_POWERUP_TEXTID,4,i32
-0x00950db8,_Explosions,448,EXPLOSION_PC [8]
+0x00950db8,_Explosions,448,EXPLOSION [8]
 0x00950f78,_i_explosion,4,i32
 0x950f7c,_AreaPickupGravity,4,f32
 0x950f80,_AreaPickupScale,4,f32

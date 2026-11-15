@@ -110,7 +110,7 @@ extern "C" {
         return oldest;
     }
 
-    EXPLOSION_PC *Detonate(NUVEC *position, u16 flags) {
+    EXPLOSION *Detonate(NUVEC *position, u16 flags) {
         f32 radius;
         f32 duration;
         f32 amount;

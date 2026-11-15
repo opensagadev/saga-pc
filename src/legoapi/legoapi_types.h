@@ -268,7 +268,6 @@ typedef struct AREASAVE_s AREASAVE_s;
 typedef struct CABLE_s CABLE_s;
 typedef struct CHARPLATFORMSYS_s CHARPLATFORMSYS_s;
 typedef struct CHARPLATFORM_s CHARPLATFORM_s;
-typedef struct EXPLOSION EXPLOSION;
 typedef struct GAMEANTINODE_s GAMEANTINODE_s;
 typedef struct GIZBUILDITANIMDATA_s GIZBUILDITANIMDATA_s;
 typedef struct GIZBUILDIT_s GIZBUILDIT_s;
@@ -1283,9 +1282,9 @@ struct gizforce_s {                    // size 0xa4
 extern "C" {
 #endif
 
-    typedef struct EXPLOSION_PC {   // size 0x38
-        i32 unknown_00;             // 0x00
-        i32 unknown_04;             // 0x04
+    /* One of the eight explosions that run at a time (Explosions, a ring that AddExplosion advances). */
+    typedef struct EXPLOSION {      // size 0x38
+        i32 hit_identity_mask[2];   // 0x00 collision identities of the objects already hit
         struct gameobject_s *owner; // 0x08
         NUVEC position;             // 0x0c
         f32 radius;                 // 0x18
@@ -1296,13 +1295,13 @@ extern "C" {
         u16 random_angle;           // 0x2a
         i16 effect_id;              // 0x2c
         u16 hit_flags;              // 0x2e
-        u16 unknown_30;             // 0x30
-        u8 unknown_32;              // 0x32
-        i8 unknown_33;              // 0x33
+        u16 kill_count;             // 0x30 hits that killed
+        u8 damage;                  // 0x32
+        i8 player_index;            // 0x33 credited player without an owner (0, 1), -1 none
         u8 unknown_34[4];           // 0x34
-    } EXPLOSION_PC;
+    } EXPLOSION;
 
-    extern EXPLOSION_PC Explosions[8];
+    extern EXPLOSION Explosions[8];
 
 #ifdef __cplusplus
 }
@@ -1430,24 +1429,6 @@ struct GIZFORCE_s {                    // size 0xac
 
         u32 packed_state;
     }; // 0xa8
-};
-
-struct EXPLOSION {               // size 0x34
-    i32 unknown_00;              // 0x00
-    i32 unknown_04;              // 0x04
-    struct gameobject_s *object; // 0x08
-    NUVEC position;              // 0x0c
-    f32 unknown_18;              // 0x18
-    f32 unknown_1c;              // 0x1c
-    f32 unknown_20;              // 0x20
-    i32 unknown_24;              // 0x24
-    u16 unknown_28;              // 0x28
-    u16 unknown_2a;              // 0x2a
-    u16 unknown_2c;              // 0x2c
-    u16 unknown_2e;              // 0x2e
-    u16 unknown_30;              // 0x30
-    u8 unknown_32;               // 0x32
-    u8 unknown_33;               // 0x33
 };
 
 struct CABLE_s {                 // size 0x1ec

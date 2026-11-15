@@ -12,7 +12,7 @@
 extern "C" {
 #endif
     i32 ZipUps_UpdateHint(HINT *);
-    EXPLOSION_PC *Detonate(NUVEC *, u16);
+    EXPLOSION *Detonate(NUVEC *, u16);
     struct zipup_progress_s;
     i32 ZipUps_Load(WORLDINFO *world);
     void *ZipUps_ReserveBufferSpace(WORLDINFO *world);

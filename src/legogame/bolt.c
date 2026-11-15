@@ -239,7 +239,7 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
     }
     if (no_explosion == 0 && bolt->owner != NULL && (bolt->owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_IsOn(0x12) &&
         (world->area == NULL || !(world->area->flags & AREAFLAG_VEHICLE_AREA))) {
-        EXPLOSION_PC *explosion;
+        EXPLOSION *explosion;
         AddGameDebris(WORLD->game_debris_sys, 0x49, &bolt->position);
         NewRumble(bolt->owner->pad->bound_pad, 0.3f, 0);
         PlaySfx("exp_thermalDet", points);

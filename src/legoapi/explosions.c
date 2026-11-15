@@ -25,25 +25,25 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-EXPLOSION_PC Explosions[8] = {0};
+EXPLOSION Explosions[8] = {0};
 i32 i_explosion = 0;
 
-EXPLOSION_PC *AddExplosion(NUVEC *position, f32 radius, f32 duration, GAMEOBJECT *owner, i32 effect, u32 flags) {
-    EXPLOSION_PC *explosion = &Explosions[i_explosion];
+EXPLOSION *AddExplosion(NUVEC *position, f32 radius, f32 duration, GAMEOBJECT *owner, i32 effect, u32 flags) {
+    EXPLOSION *explosion = &Explosions[i_explosion];
     explosion->position = *position;
     explosion->radius = radius;
     explosion->time = 0.0f;
     explosion->duration = duration;
     explosion->owner = owner;
-    explosion->unknown_00 = 0;
-    explosion->unknown_04 = 0;
+    explosion->hit_identity_mask[0] = 0;
+    explosion->hit_identity_mask[1] = 0;
     explosion->random_angle = (u16)qrand();
     explosion->effect_id = (i16)effect;
     explosion->flags = flags;
     explosion->hit_flags = ObjHitObj_Flags(owner);
-    explosion->unknown_30 = 0;
-    explosion->unknown_32 = 1;
-    explosion->unknown_33 = -1;
+    explosion->kill_count = 0;
+    explosion->damage = 1;
+    explosion->player_index = -1;
     if (++i_explosion == 8) {
         i_explosion = 0;
     }
@@ -59,7 +59,7 @@ void ResetExplosions(void) {
 void DrawExplosions(void) {
 }
 
-static void Explosion_Feedback(EXPLOSION_PC *explosion) {
+static void Explosion_Feedback(EXPLOSION *explosion) {
     if ((explosion->flags & 0x40) != 0) {
         NewRumbleAllPlayers(0.5f, 0.1f, 0, 0);
         GameCam_HitJudder();
@@ -70,7 +70,7 @@ static void Explosion_Feedback(EXPLOSION_PC *explosion) {
 
 f32 ExplosionKnockbackScale = 2.0f;
 
-void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
+void UpdateExplosion_Generic(EXPLOSION *explosion) {
     f32 progress;
     f32 radius;
     f32 inverse;
@@ -136,7 +136,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 continue;
             }
             if ((explosion->flags & 8) == 0 &&
-                ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->unknown_00)) != 0 || explosion->owner == target)) {
+                ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(explosion->hit_identity_mask)) != 0 || explosion->owner == target)) {
                 continue;
             }
             if (object->collision_min.x > maximum.x || object->collision_max.x < minimum.x || object->collision_min.y > maximum.y ||
@@ -164,7 +164,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             if (hit_character || (explosion->flags & 1) == 0) {
                 continue;
             }
-            if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(&explosion->unknown_00)) != 0 || target == explosion->owner ||
+            if ((U64_PAIR(object->collision_identity_mask) & U64_PAIR(explosion->hit_identity_mask)) != 0 || target == explosion->owner ||
                 target->spawn_protection_timer > 0.0f || (target->flags_ef0 & 0x400000) != 0) {
                 continue;
             }
@@ -181,8 +181,8 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                     continue;
                 }
             }
-            explosion->unknown_00 |= object->collision_identity_mask[0];
-            explosion->unknown_04 |= object->collision_identity_mask[1];
+            explosion->hit_identity_mask[0] |= object->collision_identity_mask[0];
+            explosion->hit_identity_mask[1] |= object->collision_identity_mask[1];
             if ((f64)target->origin_scale_override >= (f64)0.99f) {
                 ObjHitShield(explosion->owner, target, target->shield_hitpoints, NULL);
                 if ((explosion->flags & 0x20) == 0) {
@@ -201,13 +201,13 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
             } else if ((explosion->flags & 0x20) != 0 && (target->portal_flags & APIOBJECT_BOSS) == 0 && target->current_hp > 0) {
                 damage = -1;
             } else {
-                damage = explosion->unknown_32;
+                damage = explosion->damage;
             }
             source = explosion->owner;
             if (source == NULL) {
-                if (explosion->unknown_33 == 0) {
+                if (explosion->player_index == 0) {
                     source = Player[0];
-                } else if (explosion->unknown_33 == 1) {
+                } else if (explosion->player_index == 1) {
                     source = Player[1];
                 }
             }
@@ -216,12 +216,12 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
                 if (source != NULL) {
                     NewRumble(source->pad->bound_pad, 0.5f, 0);
                 }
-                ++explosion->unknown_30;
-                if ((explosion->flags & 0x200) != 0 && (explosion->unknown_33 == 0 || explosion->unknown_33 == 1) && Arcade != 0) {
+                ++explosion->kill_count;
+                if ((explosion->flags & 0x200) != 0 && (explosion->player_index == 0 || explosion->player_index == 1) && Arcade != 0) {
                     if (object->unknown_280 <= 1) {
                         Arcade_PlayerKilled((object->unknown_280 ^ 1) & 1, 0);
                     } else if (object->player_index == -1) {
-                        Arcade_AIKilled(explosion->unknown_33);
+                        Arcade_AIKilled(explosion->player_index);
                     }
                 }
             }
@@ -261,7 +261,7 @@ void UpdateExplosion_Generic(EXPLOSION_PC *explosion) {
 
 void UpdateExplosions(void) {
     i32 i;
-    EXPLOSION_PC *explosion = Explosions;
+    EXPLOSION *explosion = Explosions;
     f32 time;
     for (i = 0; i < 8; ++i, ++explosion) {
         if (explosion->time < explosion->duration) {

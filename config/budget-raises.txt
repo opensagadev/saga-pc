@@ -212,7 +212,6 @@ config/declscan-budget.json C 457 a unit's extern of a global moved into the sam
 config/castscan-budget.json int-pointer 824 initializer casts of globals moved from data.cpp (C++) into C units are classified as int-pointer there (same casts, new unit language)
 config/oddscan-budget.json declspec-align 172 clip_test_mtx and clip_outcode_workspace_prefix are movaps operands of PCVecMtxTransformClipBlocks and need declared 16-byte alignment now that data placement is not pinned (they were 16-aligned only by their old place in data.cpp)
 config/oddscan-budget.json declspec-align 190 18 matrix, plane and vec4 globals that retail keeps 16-aligned (numtx_identity, CutCamMtx, CameraClipPlanes, PostShadowView, ...) declare it now that data placement is not pinned
-config/oddscan-budget.json pc-suffix 5014 thermaldetonators.c and game_deb.c name the real EXPLOSION_PC that Detonate and AddExplosion return instead of the unrelated struct EXPLOSION (newer libclang could not parse them); the suffix goes when the two explosion types are resolved
 config/oddscan-budget.json placeholder-field 8621 PC_FRAME_STATS (PcFrameStatsReset port) keeps two runs of four counters no code we have reads (unknown_10, unknown_38); retail clears them with the rest
 config/declscan-budget.json C 520 a unit's extern of a global moved into the same unit is now a forward declaration of it (legogame data move, same construct)
 config/castscan-budget.json int-pointer 832 initializer casts of globals moved from data.cpp (C++) into C units are classified as int-pointer there (legogame data move)
@@ -230,3 +229,4 @@ config/oddscan-budget.json data-file 8 legoapi/legogame data move: menu_titles.c
 config/declscan-budget.json A 34 legoapi/legogame data move: globals data.cpp defined now sit in units that also kept their own extern of them (same construct, new place)
 config/declscan-budget.json C 555 legoapi/legogame data move: a unit's extern of a global that moved into it is now a forward declaration (same construct, new place)
 config/declscan-budget.json D 1412 legoapi/legogame data move: the prototypes and externs data.cpp declared for the moved tables go with them into their units until the declaration pass moves them into headers
+config/castscan-budget.json scalar-pun 301 the U64_PAIR test of an explosion's hit identities reads the hit_identity_mask array instead of the address of the unknown_00 field: the same casts, classed scalar-pun instead of field-address (which goes down by 2)

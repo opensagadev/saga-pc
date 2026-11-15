@@ -200,7 +200,7 @@ void AddSlamDebris(GAMEOBJECT *object) {
     f32 strength;
     i32 damage;
     i32 flags;
-    EXPLOSION_PC *explosion;
+    EXPLOSION *explosion;
     NUVEC position;
     FindSlamOrigin(object, &position, NULL);
     flags = 0x17;
@@ -216,7 +216,7 @@ void AddSlamDebris(GAMEOBJECT *object) {
     }
     explosion = AddExplosion(&position, radius, strength, object, object->slam_effect, flags);
     if (explosion != NULL) {
-        explosion->unknown_32 = damage;
+        explosion->damage = damage;
     }
 }
 
