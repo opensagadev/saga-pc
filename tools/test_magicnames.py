@@ -42,6 +42,14 @@ static void SetMode(THING *thing, i32 mode) {
     thing->mode = mode;
 }
 
+static i32 Pick(i32 kind) {
+    i32 state = 2;
+    if (kind == 3) {
+        state = 7;
+    }
+    return state;
+}
+
 i32 Run(THING *thing) {
     u32 flags = thing->flags;
     i32 mode = thing->mode;
@@ -65,19 +73,23 @@ i32 Run(THING *thing) {
     if (IS_LOUD(thing)) {
         thing->mode = -2;
     }
-    return thing->count == 2 ? mode : 0;
+    return thing->count == 2 ? mode : Pick(3);
 }
 """
+
+
+def parse(root):
+    (root / "src").mkdir()
+    (root / "src/thing.h").write_text(HEADER)
+    (root / "src/unit.c").write_text(UNIT)
+    args = ["--target=i686-pc-windows-msvc", "-x", "c", "-std=c89", f"-I{root / 'src'}"]
+    return magicnames.cindex().Index.create().parse(str(root / "src/unit.c"), args=args)
 
 
 def plan(field, prefix, flags_mode, other=None):
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory).resolve()
-        (root / "src").mkdir()
-        (root / "src/thing.h").write_text(HEADER)
-        (root / "src/unit.c").write_text(UNIT)
-        args = ["--target=i686-pc-windows-msvc", "-x", "c", "-std=c89", f"-I{root / 'src'}"]
-        tu = magicnames.cindex().Index.create().parse(str(root / "src/unit.c"), args=args)
+        tu = parse(root)
         specs = [(field, flags_mode)] + ([other] if other else [])
         facts = magicnames.collect(tu, specs, root)[:1]
         names = magicnames.name_table([prefix], facts[0]["enums"], root)
@@ -111,6 +123,27 @@ class MagicNamesTests(unittest.TestCase):
         self.assertIn("i < 3", text)
         self.assertIn("case 7:", text)
         self.assertEqual(unnamed, {7: 1})
+
+    def test_a_local_or_parameter_of_one_function(self):
+        text, unnamed = plan("Pick:kind", "MODE_", False)
+        self.assertIn("if (kind == MODE_RUN)", text)
+        self.assertIn("Pick(MODE_RUN)", text)  # the call argument is the parameter's value
+        self.assertIn("i32 state = 2;", text)
+        text, unnamed = plan("Pick:state", "MODE_", False)
+        self.assertIn("i32 state = MODE_WALK;", text)
+        self.assertIn("state = 7;", text)
+        self.assertIn("kind == 3", text)
+        self.assertEqual(unnamed, {7: 1})
+
+    def test_survey_keys_bare_names_per_function(self):
+        with tempfile.TemporaryDirectory() as directory:
+            found = magicnames.survey(parse(Path(directory).resolve()), {"kind", "state", "mode", "flag"},
+                                      Path(directory).resolve())
+        self.assertEqual(sorted(found["Pick:state"]["sites"].values()), [2, 7])
+        self.assertEqual(sorted(found["Pick:kind"]["sites"].values()), [3, 3])  # the comparison and the call
+        self.assertEqual(found["Run:mode"]["fields"], ["thing_s.mode"])
+        self.assertEqual(found["SetFlag:flag"]["fields"], ["thing_s.flags"])
+        self.assertEqual(found["Pick:state"]["fields"], [])
 
     def test_one_walk_serves_several_fields(self):
         alone = plan("THING.mode", "MODE_", False)

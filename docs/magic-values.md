@@ -15,6 +15,18 @@ labels and masks, also through locals, parameters and function results that
 only carry the field (`--dry-run` lists the edits and the values left without
 a name). Prove the result like any change.
 
+Bare `type`, `state`, `mode` and `flags` locals and parameters of unrelated
+functions share a name, so a ranking by name pools them. `python3
+tools/magicnames.py --locals type,state,mode,flags` lists their literals per
+`Function:name` (the declaration keys of the carrier analysis: a local by its
+declaration, a parameter by its function and position), with the fields each
+one is stored from, into or compared with, also through other locals. A local
+that only carries a named field is named with it already; for the others the
+same `Function:name` is a field argument: `magicnames.py
+GizmoBlowupBlowup:hit_type --names BLOWUP_HIT_` names the literals of that
+parameter, the arguments passed for it and the locals and parameters that
+carry it.
+
 Before a number is named, check whether it is a size or a count:
 `python3 tools/sizeofnames.py --dry-run` lists the literals that equal the size
 or element count of the object they act on (the length of `memset`, `memcpy`,

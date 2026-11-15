@@ -93,7 +93,12 @@ class Fields:
         self.specs = []
         for index, field in enumerate(fields):
             for one in field.split(","):
-                record, _, member = one.strip().rpartition(".")
+                one = one.strip()
+                function, colon, name = one.rpartition(":")
+                if colon and function and not function.endswith(":"):
+                    self.specs.append((index, LOCAL + function, name))
+                    continue
+                record, _, member = one.rpartition(".")
                 self.specs.append((index, record, member))
         self.members = {member for _, _, member in self.specs}
         self.cache = {}
@@ -110,6 +115,9 @@ class Fields:
         ci = cindex()
         if decl.spelling != member:
             return False
+        if record.startswith(LOCAL):
+            return decl.kind in (ci.CursorKind.PARM_DECL, ci.CursorKind.VAR_DECL) and \
+                record[len(LOCAL):] in function_names(decl.semantic_parent)
         if not record:
             return decl.kind == ci.CursorKind.VAR_DECL and decl.semantic_parent.kind == ci.CursorKind.TRANSLATION_UNIT
         if decl.kind != ci.CursorKind.FIELD_DECL:
@@ -129,6 +137,28 @@ class Fields:
 
 _typedefs = {}
 NOT_FIELD = None
+LOCAL = "local "
+
+
+def function_names(function):
+    """The names a `Function:name` spec may give a function: its own and, for a member, `Class::Method`."""
+    if function is None or function.kind not in FUNCTIONS:
+        return set()
+    names = {function.spelling}
+    parent = function.semantic_parent
+    if parent is not None and parent.kind in (cindex().CursorKind.STRUCT_DECL, cindex().CursorKind.CLASS_DECL):
+        names.add(f"{parent.spelling}::{function.spelling}")
+    return names
+
+
+def record_member(decl):
+    """`Record.member` of a field declaration (the tag, else a typedef name), or None."""
+    parent = decl.semantic_parent
+    if parent is None:
+        return None
+    name = parent.spelling if parent.spelling and not parent.is_anonymous() else None
+    name = name or min(_typedefs.get(parent.hash, ()), default=None)
+    return f"{name}.{decl.spelling}" if name else None
 
 
 class Unit:
@@ -154,6 +184,9 @@ class Unit:
         self.enums = {}
         self.texts = {}
         self.callees = set()
+        self.labels = {}         # key of a local or parameter -> `Function:name`
+        self.origins = set()     # (key, `Record.member`): stored from, into or compared with a field
+        self.anchors = set()     # (key, field): a parameter that is a `Function:name` field (calls write its key)
 
     def binop(self, cursor):
         return self.ci.conf.lib.clang_getCursorBinaryOperatorKind(cursor)
@@ -181,9 +214,16 @@ class Unit:
             names = [a.spelling for a in function.get_arguments()]
             if decl.spelling not in names:
                 return None
-            return f"P:{function.get_usr()}#{names.index(decl.spelling)}"
+            key = f"P:{function.get_usr()}#{names.index(decl.spelling)}"
+            index = self.fields.match(decl)
+            if index is not None:
+                self.anchors.add((key, index))
+            self.labels.setdefault(key, f"{max(function_names(function), key=len)}:{decl.spelling}")
+            return key
         if decl.kind == K.VAR_DECL and decl.semantic_parent is not None and decl.semantic_parent.kind in FUNCTIONS:
-            return f"V:{decl.get_usr()}"
+            key = f"V:{decl.get_usr()}"
+            self.labels.setdefault(key, f"{max(function_names(decl.semantic_parent), key=len)}:{decl.spelling}")
+            return key
         if decl.kind in FUNCTIONS:
             return f"F:{decl.get_usr()}"
         return None
@@ -292,6 +332,8 @@ class Unit:
         elif kind == K.ENUM_CONSTANT_DECL:
             self.enums[cursor.spelling] = cursor.enum_value
         elif kind in FUNCTIONS and cursor.is_definition():
+            for argument in cursor.get_arguments():
+                self.key(argument)
             key = self.key(cursor)
             self.defined[key] = len(list(cursor.get_arguments()))
             function = key
@@ -311,7 +353,11 @@ class Unit:
         elif kind == K.VAR_DECL and function is not None:
             key = self.key(cursor)
             values = [c for c in cursor.get_children() if c.kind.is_expression()]
-            if key and values:
+            index = self.fields.match(cursor)
+            if index is not None and values:
+                if not self.site(values[-1], (index, frozenset(), False), True):
+                    self.link(values[-1], index)
+            elif key and values:
                 self.write(key, values[-1])
         elif kind == K.RETURN_STMT and function is not None:
             values = [c for c in cursor.get_children() if c.kind.is_expression()]
@@ -339,7 +385,16 @@ class Unit:
         for child in cursor.get_children():
             self.walk(child, function, switch)
 
+    def origin(self, key, cursor):
+        """Note the field a local or parameter `key` is stored from, into or compared with."""
+        cursor = self.strip(cursor)
+        if key and cursor.kind == self.ci.CursorKind.MEMBER_REF_EXPR and cursor.referenced is not None:
+            member = record_member(cursor.referenced)
+            if member:
+                self.origins.add((key, member))
+
     def write(self, key, value):
+        self.origin(key, value)
         found = self.carrier(value)
         if found is not None:
             self.writes.append((key, found))
@@ -368,6 +423,9 @@ class Unit:
         left, right = children
         if op in (EQ, NE) or op in BIT_OPS:
             for one, other in ((left, right), (right, left)):
+                one_ref = self.strip(one)
+                if one_ref.kind == K.DECL_REF_EXPR:
+                    self.origin(self.key(one_ref.referenced), other)
                 found = self.carrier(one)
                 if found is None:
                     continue
@@ -383,6 +441,9 @@ class Unit:
                 if not self.site(right, (index, frozenset(), False), True):
                     self.link(right, index)
                 return
+            source = self.strip(right)
+            if target.kind == K.MEMBER_REF_EXPR and source.kind == K.DECL_REF_EXPR:
+                self.origin(self.key(source.referenced), target)
             if target.kind == K.DECL_REF_EXPR:
                 key = self.key(target.referenced)
                 if key:
@@ -403,6 +464,9 @@ class Unit:
             return
         if key:
             self.bit_assigned.add(key)
+        source = self.strip(right)
+        if target.kind == K.MEMBER_REF_EXPR and source.kind == K.DECL_REF_EXPR:
+            self.origin(self.key(source.referenced), target)
         found = self.carrier(left)
         if found is not None:
             if not self.site(right, found, True, True) and found[0] is not None and not found[1]:
@@ -422,7 +486,17 @@ class Unit:
         if decl is None or decl.kind not in FUNCTIONS:
             return
         self.calls.add(self.key(decl))
+        definition = decl.get_definition() or decl
+        parameters = list(definition.get_arguments())
         for index, argument in enumerate(cursor.get_arguments()):
+            field = self.fields.match(parameters[index]) if index < len(parameters) else None
+            if index < len(parameters) and parameters[index].spelling and definition.kind in FUNCTIONS:
+                self.labels.setdefault(f"P:{decl.get_usr()}#{index}",
+                                       f"{max(function_names(definition), key=len)}:{parameters[index].spelling}")
+            if field is not None:
+                if not self.site(argument, (field, frozenset(), False), True):
+                    self.link(argument, field)
+                continue
             self.write(f"P:{decl.get_usr()}#{index}", argument)
 
     def facts(self, index, flags_mode):
@@ -442,6 +516,7 @@ class Unit:
                 writes.append((key, sorted(found[1]) if own(found) else None))
         bad = self.bad if flags_mode else self.bad | self.bit_assigned
         return {"sites": sites, "writes": writes, "links": sorted(k for k, i in self.links if i == index),
+                "anchors": sorted(k for k, i in self.anchors if i == index),
                 "bad": sorted(bad), "calls": sorted(k for k in self.calls if k),
                 "referenced": sorted(k for k in self.referenced if k), "defined": self.defined, "enums": self.enums}
 
@@ -466,13 +541,56 @@ def collect(tu, specs, root=ROOT):
     return [unit.facts(index, flags_mode) for index, (_, flags_mode) in enumerate(specs)]
 
 
+def survey(tu, wanted, root=ROOT):
+    """The literals of the locals and parameters named in `wanted`, by `Function:name`: {label: {"sites":
+    {"file:offset": value}, "bits": [sites in bit operations], "fields": [`Record.member` they are stored from,
+    into or compared with, also through other locals]}}."""
+    init_kinds()
+    _typedefs.clear()
+    unit = Unit(tu, Fields([]), root).run()
+    sources = collections.defaultdict(set)
+    for key, found in unit.writes:
+        if found not in ("literal", None):
+            sources[key] |= found[1]
+    fields = collections.defaultdict(set)
+    for key, member in unit.origins:
+        fields[key].add(member)
+    changed = True
+    while changed:
+        changed = False
+        for key, others in sources.items():
+            for other in others:
+                if not fields[other] <= fields[key]:
+                    fields[key] |= fields[other]
+                    changed = True
+    found = {}
+    for (file, offset), (text, value, _, founds) in unit.sites.items():
+        for index, keys, bits in founds:
+            if index is not None or len(keys) != 1:
+                continue
+            key = next(iter(keys))
+            label = unit.labels.get(key)
+            if label is None or label.rpartition(":")[2] not in wanted:
+                continue
+            entry = found.setdefault(label, {"sites": {}, "bits": set(), "fields": set()})
+            entry["sites"][f"{file}:{offset}"] = value
+            if bits:
+                entry["bits"].add(f"{file}:{offset}")
+            entry["fields"] |= fields[key]
+    return {label: {"sites": e["sites"], "bits": sorted(e["bits"]), "fields": sorted(e["fields"])}
+            for label, e in found.items()}
+
+
 def _work(job):
     """One unit, parsed once (twice with the Debug flags), collected for every (field, flag set?)."""
     unit, path, flags, debug, specs = job
     from tools import declscan  # noqa: PLC0415
-    results = [[] for _ in specs]
+    results = [] if isinstance(specs, str) else [[] for _ in specs]
     for args in ([flags, declscan.debug_flags(flags)] if debug else [flags]):
         tu = declscan.parse(path, args)
+        if isinstance(specs, str):
+            results.append(survey(tu, set(specs.split(","))))
+            continue
         for index, facts in enumerate(collect(tu, specs)):
             results[index].append(facts)
     return unit, results
@@ -483,8 +601,9 @@ def _work(job):
 def carriers(facts):
     """Keys that carry only the field's value (fixpoint over all units)."""
     writes = collections.defaultdict(list)
-    links, bad, referenced, defined, called = set(), set(), set(), set(), set()
+    links, bad, referenced, defined, called, anchors = set(), set(), set(), set(), set(), set()
     for fact in facts:
+        anchors.update(fact.get("anchors", ()))
         for key, deps in fact["writes"]:
             writes[key].append(deps)
         links.update(fact["links"])
@@ -503,11 +622,12 @@ def carriers(facts):
             return False
         return True
 
-    keys = {k for k in set(writes) | links if eligible(k)}
+    # A `Function:name` parameter is the field itself: what is passed for it is its value.
+    keys = {k for k in set(writes) | links if eligible(k)} | anchors
     while True:
-        consistent = {k for k in keys if all(d == "literal" or (d is not None and set(d) <= keys)
-                                             for d in writes.get(k, []))}
-        anchored, changed = set(), True
+        consistent = anchors | {k for k in keys if all(d == "literal" or (d is not None and set(d) <= keys)
+                                                       for d in writes.get(k, []))}
+        anchored, changed = set(anchors), True
         while changed:
             changed = False
             for k in consistent - anchored:
@@ -635,10 +755,37 @@ def line_of(file, offset, root=ROOT):
     return (root / file).read_bytes()[:offset].count(b"\n") + 1
 
 
+def print_locals(names, paths, jobs_count):
+    """The --locals table: one row per Function:name, most literal sites first."""
+    from tools import castscan, declscan  # noqa: PLC0415
+    base = declscan.base_flags()
+    jobs = [(u, str(ROOT / u), declscan.unit_flags(u, base),
+             castscan.needs_debug((ROOT / u).read_bytes().decode("latin-1")), names) for u in paths]
+    rows = {}
+    with ScanLock(), multiprocessing.Pool(max(1, clang_jobs(jobs_count))) as pool:
+        for unit, results in pool.imap_unordered(_work, jobs):
+            for result in results:
+                for label, entry in result.items():
+                    row = rows.setdefault(label, {"sites": {}, "bits": set(), "fields": set(), "unit": unit})
+                    row["sites"].update(entry["sites"])  # a header's sites and the Debug parse's count once
+                    row["bits"] |= set(entry["bits"])
+                    row["fields"] |= set(entry["fields"])
+    print("sites\tbits\tlocal\tvalues\tfields\tunit")
+    for label, row in sorted(rows.items(), key=lambda item: (-len(item[1]["sites"]), item[0])):
+        values = " ".join((hex(v) if row["bits"] else str(v)) + (f"x{n}" if n > 1 else "")
+                          for v, n in sorted(collections.Counter(row["sites"].values()).items()))
+        print(f"{len(row['sites'])}\t{len(row['bits'])}\t{label}\t{values}\t{','.join(sorted(row['fields']))}"
+              f"\t{row['unit']}")
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("field", nargs="?", help="struct.member (tag or typedef name) or a global's name; several "
-                        "views of one value separated by commas (gameobject_s.flags_1fc,gameobject_s.flags_1fc_word)")
+    parser.add_argument("field", nargs="?", help="struct.member (tag or typedef name), a global's name or "
+                        "Function:name (a local or parameter of a function, Class::Method:name for a member); "
+                        "several views of one value separated by commas (gameobject_s.flags_1fc,gameobject_s.flags_1fc_word)")
+    parser.add_argument("--locals", metavar="NAMES", help="list the literals of the locals and parameters with these "
+                        "comma-separated names per Function:name, with the fields they carry (no edits)")
     parser.add_argument("--names", help="comma-separated name prefixes of the values")
     parser.add_argument("--flags", action="store_true", help="a flag set (default: when every name is one bit)")
     parser.add_argument("--states", action="store_true", help="an enumeration")
@@ -649,6 +796,8 @@ def main(argv=None):
     parser.add_argument("--paths", nargs="*", default=[], help="limit the units parsed (prefixes under src/)")
     args = parser.parse_args(argv)
     from tools import castscan, declscan  # noqa: PLC0415
+    if args.locals:
+        return print_locals(args.locals, units(args.paths), args.jobs)
     specs = []
     if args.batch:
         for line in Path(args.batch).read_text().splitlines():
