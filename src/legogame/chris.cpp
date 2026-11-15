@@ -564,19 +564,19 @@ extern "C" {
         if (buffer == NULL || buffer->capacity == 0) {
             return;
         }
-        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
+        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
             valid0 = 1;
-            player0.x = ((GAMEOBJECT *)Player[0])->transform.m30;
-            player0.y = ((GAMEOBJECT *)Player[0])->transform.m31;
-            player0.z = ((GAMEOBJECT *)Player[0])->transform.m32;
+            player0.x = Player[0]->transform.m30;
+            player0.y = Player[0]->transform.m31;
+            player0.z = Player[0]->transform.m32;
         } else {
             valid0 = 0;
         }
-        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
             valid1 = 1;
-            player1.x = ((GAMEOBJECT *)Player[1])->transform.m30;
-            player1.y = ((GAMEOBJECT *)Player[1])->transform.m31;
-            player1.z = ((GAMEOBJECT *)Player[1])->transform.m32;
+            player1.x = Player[1]->transform.m30;
+            player1.y = Player[1]->transform.m31;
+            player1.z = Player[1]->transform.m32;
         } else {
             valid1 = 0;
         }
@@ -600,7 +600,7 @@ extern "C" {
                 dz = bolt->matrix.m32 - player0.z;
                 if (dy * dy + dx * dx + dz * dz < 1.0) {
                     bolt->duration = 0.0f;
-                    ObjHitObj(NULL, (GAMEOBJECT *)Player[0], 1, 0, 0, 1);
+                    ObjHitObj(NULL, Player[0], 1, 0, 0, 1);
                 }
             }
             if (valid1 != 0 && Player[1] != NULL) {
@@ -609,7 +609,7 @@ extern "C" {
                 dz = bolt->matrix.m32 - player1.z;
                 if (dy * dy + dx * dx + dz * dz < 1.0) {
                     bolt->duration = 0.0f;
-                    ObjHitObj(NULL, (GAMEOBJECT *)Player[1], 1, 0, 0, 1);
+                    ObjHitObj(NULL, Player[1], 1, 0, 0, 1);
                 }
             }
             bolt->duration -= FRAMETIME;
@@ -1280,8 +1280,8 @@ extern "C" {
             return 1;
         }
         if (fighter->target_id == -2) {
-            if ((NuRandFloat() < 0.5f && (player = (GAMEOBJECT *)Player[0]) != NULL && (player->flags_1fc & 0x80) != 0) ||
-                ((player = (GAMEOBJECT *)Player[1]) != NULL && (player->flags_1fc & 0x80) != 0)) {
+            if ((NuRandFloat() < 0.5f && (player = Player[0]) != NULL && (player->flags_1fc & 0x80) != 0) ||
+                ((player = Player[1]) != NULL && (player->flags_1fc & 0x80) != 0)) {
                 DogfightCachedPlayerPosition = player->collision_position;
                 DogfightCachedPlayerVelocity = player->velocity;
             }
@@ -1431,7 +1431,7 @@ extern "C" {
         f64 dz;
         i32 finished;
         i32 fire_result;
-        if (Player[0] != NULL && ((GAMEOBJECT *)Player[0])->sock_position.distance > 435.0) {
+        if (Player[0] != NULL && Player[0]->sock_position.distance > 435.0) {
             MissileDist = 2.0f;
         }
         if (fighter->hit_count != 0) {
@@ -1754,8 +1754,8 @@ extern "C" {
     }
 
     void SpaceResetAudioPoint(void) {
-        GAMEOBJECT *second = (GAMEOBJECT *)Player[1];
-        GAMEOBJECT *first = (GAMEOBJECT *)Player[0];
+        GAMEOBJECT *second = Player[1];
+        GAMEOBJECT *first = Player[0];
         i32 i;
         for (i = 6; i != -1; --i) {
             if ((first != NULL && first->sock_position.distance > DogfightDoors[i].distance) ||
@@ -1799,8 +1799,8 @@ extern "C" {
         value = NuFsqrt(value);
         space->direction_length = value;
         space->inverse_direction_length = (f32)(1.0 / value);
-        second = (GAMEOBJECT *)Player[1];
-        first = (GAMEOBJECT *)Player[0];
+        second = Player[1];
+        first = Player[0];
         for (; i != -1; --i) {
             if (first != NULL && first->sock_position.distance > DogfightDoors[i].distance) {
                 break;
@@ -1842,11 +1842,11 @@ extern "C" {
         f32 nearest = 35.0f;
         i32 i;
 
-        player = (GAMEOBJECT *)Player[0];
+        player = Player[0];
         if (player != NULL && (player->flags_1fc_word & 0x80) != 0) {
             origin = player->position;
         } else {
-            player = (GAMEOBJECT *)Player[1];
+            player = Player[1];
             if (player != NULL) {
                 origin = player->position;
             }
@@ -1957,7 +1957,7 @@ extern "C" {
             DrawQuickBolts((DOGFIGHT_QUICK_BUFFER *)&space->reset_buffer);
         }
         for (i = 0; i < 4; ++i) {
-            player = (GAMEOBJECT *)Player[i >> 1];
+            player = Player[i >> 1];
             if (player == NULL) {
                 continue;
             }
@@ -2217,7 +2217,7 @@ extern "C" {
             } else {
                 coins = 0;
             }
-            player_index = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->unknown_280 : -1;
+            player_index = bolt->owner != NULL ? (i8)bolt->owner->unknown_280 : -1;
             AddPickups(coins, ReleaseHearts(), 0, 0, ship_position, NULL, 2.0f, player_index, 1.0f, 2000000.0f, NULL, 1, 1);
             AddFiniteShotPART(PARTLookupType("DogBits"), ship_position, 1);
             dy = (f64)fighter->matrix.m31 - global_camera.mtx.m31;
@@ -2628,8 +2628,8 @@ extern "C" {
                 ProcessStarFighter(&space->queued_fighters[i], buffer);
             }
         }
-        player1 = (GAMEOBJECT *)Player[1];
-        player0 = (GAMEOBJECT *)Player[0];
+        player1 = Player[1];
+        player0 = Player[0];
         for (i = 6; i != -1; --i) {
             if ((player0 != NULL && player0->sock_position.distance > DogfightDoors[i].distance) ||
                 (player1 != NULL && player1->sock_position.distance > DogfightDoors[i].distance)) {

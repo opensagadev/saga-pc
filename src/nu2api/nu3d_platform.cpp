@@ -4740,7 +4740,7 @@ extern "C" {
             return;
         }
         for (i = 0; i < scene->display_list->item_count; ++i) {
-            NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->display_list->items)[i];
+            NUDISPLAYLISTITEM *item = &scene->display_list->items[i];
             if (item->type == 0xb0) {
                 SCENE_TEXTURE_PACKET_B0 *packet = (SCENE_TEXTURE_PACKET_B0 *)item->next;
                 if (packet->kind == 2) {
@@ -4767,7 +4767,7 @@ extern "C" {
             return;
         }
         for (i = 0; i < scene->display_list->item_count; ++i) {
-            NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->display_list->items)[i];
+            NUDISPLAYLISTITEM *item = &scene->display_list->items[i];
             if (item->type == 0xb0) {
                 SCENE_TEXTURE_PACKET_B0 *packet = (SCENE_TEXTURE_PACKET_B0 *)item->next;
                 if (packet->kind == 2) {
@@ -5173,7 +5173,7 @@ extern "C" {
     void NuDisplaySceneAddPS(NUDISPLAY_LIST_PC *scene) {
         i32 i;
         for (i = 0; i < scene->item_count; ++i) {
-            NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->items)[i];
+            NUDISPLAYLISTITEM *item = &scene->items[i];
             if (item->type == 0x82) {
                 item->type = 0x82;
             }

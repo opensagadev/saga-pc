@@ -85,7 +85,7 @@ void GizAction_ActivatePartEffect(GIZFLOW *unused0, FLOWBOX *unused1, char **par
     }
     if (name != NULL) {
         i32 type_id = PARTLookupType(name);
-        AddFiniteShotPART(type_id, &((GAMEOBJECT *)Player[0])->collision_position, 50);
+        AddFiniteShotPART(type_id, &Player[0]->collision_position, 50);
     }
 }
 
@@ -260,7 +260,7 @@ void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 
         }
         player = Player[1];
         if (player != NULL && (player->flags_1fc_word & 0x1000) != 0 && player->dead == 0 && player->ai_packet.creature_index != 0xff) {
-            creature = &world->ai_sys->creatures[((GAMEOBJECT *)Player[0])->ai_packet.creature_index];
+            creature = &world->ai_sys->creatures[Player[0]->ai_packet.creature_index];
             if (creature != NULL && NuStrICmp(creature->name, name) == 0) {
                 ReleaseTakeOver(Player[1], 0);
             }

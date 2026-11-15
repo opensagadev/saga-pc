@@ -414,7 +414,7 @@ extern "C" {
         if (netclient == 0) {
             StatusPlayerModelPair *models = (StatusPlayerModelPair *)&p->player0_model;
             for (i = 0; i < 2; ++i) {
-                GAMEOBJECT *object = (GAMEOBJECT *)Player[i];
+                GAMEOBJECT *object = Player[i];
                 if (object != NULL) {
                     models->model[i] = object->id;
                     p->player_active[i] = (u8)((object->flags_1fc_word >> 7) & 1);

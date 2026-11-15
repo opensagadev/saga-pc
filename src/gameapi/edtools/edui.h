@@ -205,7 +205,7 @@ extern "C" {
     extern struct eduiitem_s *edui_last_item;
     struct eduiitem_s *eduiItemGreyPickCreate(u32 data, void *colours, void *callback, char *text);
     extern i32 edui_donotdraw;
-    extern void *edui_font;
+    extern struct vufnt_s *edui_font;
     extern u32 eduimenu_outline_colour;
     extern u32 eduimenu_selected_outline_colour;
     struct eduiitem_s *eduiItemColourPickCreate(u32 arg0, void *arg1, void *arg2, char *arg3);

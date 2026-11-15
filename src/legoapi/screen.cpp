@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #pragma bss_seg(".bss$pause_rndr_mtl")
-static void *pause_rndr_mtl = 0;
+static NUMTL *pause_rndr_mtl = 0;
 #pragma bss_seg(".bss$pause_rt")
 static i32 pause_rt = 0;
 
@@ -527,7 +527,7 @@ extern "C" void InitStillRender(VARIPTR *buffer, VARIPTR end) {
     material->opacity = 1.0f;
     u32 attributes = (material->attributes & 0xfffee5d1u) | 0x6e511u;
     u32 vertex_format = (material->shader.vertex_format & 0xffffcfff) | 0x40800;
-    pause_rndr_mtl = material;
+    pause_rndr_mtl = (NUMTL *)material;
     material->sort_priority = 0x7fff;
     material->attributes = attributes;
     material->shader.flags = 0x1000;
@@ -577,7 +577,7 @@ extern "C" void DrawPauseScreenWipe(void) {
                 x = (i32)((1.0f - FadeSys.fade) * 10260.0f);
                 u0 = 1.0f - FadeSys.fade;
                 width -= x;
-                NuRndrGradRectUV2di(x - 0x402, y, 0x402, height, u0 - 0.1f, 0.0f, u0, 1.0f, colours_left, (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(x - 0x402, y, 0x402, height, u0 - 0.1f, 0.0f, u0, 1.0f, colours_left, pause_rndr_mtl);
             } else {
                 colours_right[0] = 0x80808080;
                 colours_right[1] = 0x808080;
@@ -585,7 +585,7 @@ extern "C" void DrawPauseScreenWipe(void) {
                 colours_right[3] = 0x808080;
                 width = (i32)(FadeSys.fade * 10260.0f);
                 u1 = FadeSys.fade;
-                NuRndrGradRectUV2di(width - 0x20, -0xc, 0x402, 0xe08, u1, 0.0f, u1 + 0.1f, 1.0f, colours_right, (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(width - 0x20, -0xc, 0x402, 0xe08, u1, 0.0f, u1 + 0.1f, 1.0f, colours_right, pause_rndr_mtl);
             }
         } else if ((FadeSys.direction & 0xc) != 0) {
             if ((FadeSys.direction & 4) != 0) {
@@ -596,7 +596,7 @@ extern "C" void DrawPauseScreenWipe(void) {
                 y = (i32)((1.0f - FadeSys.fade) * 3592.0f);
                 v0 = 1.0f - FadeSys.fade;
                 height -= y;
-                NuRndrGradRectUV2di(-0x20, y - 0x167, 0x2814, 0x167, 0.0f, v0 - 0.1f, 1.0f, v0, colours_top, (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(-0x20, y - 0x167, 0x2814, 0x167, 0.0f, v0 - 0.1f, 1.0f, v0, colours_top, pause_rndr_mtl);
             } else {
                 colours_bottom[0] = 0x80808080;
                 colours_bottom[1] = 0x80808080;
@@ -604,11 +604,11 @@ extern "C" void DrawPauseScreenWipe(void) {
                 colours_bottom[3] = 0x808080;
                 height = (i32)(FadeSys.fade * 3592.0f);
                 v1 = FadeSys.fade;
-                NuRndrGradRectUV2di(-0x20, height - 0xc, 0x2814, 0x167, 0.0f, v1, 1.0f, v1 + 0.1f, colours_bottom, (NUMTL *)pause_rndr_mtl);
+                NuRndrGradRectUV2di(-0x20, height - 0xc, 0x2814, 0x167, 0.0f, v1, 1.0f, v1 + 0.1f, colours_bottom, pause_rndr_mtl);
             }
         }
     }
-    NuRndrRectUV2di(x, y, width, height, u0, v0, u1, v1, (i32)0x80808080, (NUMTL *)pause_rndr_mtl);
+    NuRndrRectUV2di(x, y, width, height, u0, v0, u1, v1, (i32)0x80808080, pause_rndr_mtl);
     NuRndrEndScene();
 }
 
@@ -643,10 +643,10 @@ extern "C" void DrawStillScreen(i32 clear) {
         const i32 colour = (((i32)(MainRenderTime * 128.0f)) << 24) | 0x00808080;
         u32 colours[4] = {colour, colour, colour, colour};
         NuRndrGradRectUV2di(ScreenStillX, ScreenStillY, ScreenStillWidth, ScreenStillHeight, 0.0f, 0.0f, 1.0f, 1.0f, colours,
-                            (NUMTL *)pause_rndr_mtl);
+                            pause_rndr_mtl);
     } else {
         NuRndrRectUV2di(ScreenStillX, ScreenStillY, ScreenStillWidth, ScreenStillHeight, 0.0f, 0.0f, 1.0f, 1.0f, 0x80808080u,
-                        (NUMTL *)pause_rndr_mtl);
+                        pause_rndr_mtl);
     }
     NuRndrEndScene();
 }

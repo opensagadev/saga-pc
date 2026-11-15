@@ -544,8 +544,7 @@ tagged_result:
         } else {
             GameCam_Reset(GameCam);
         }
-        RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
-                          Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
+        RememberPlayerIDs(0, Player[0] != NULL ? (i16)Player[0]->id : -1, Player[1] != NULL ? (i16)Player[1]->id : -1);
         if (Tag_Mode == 1 || Tag_Mode == 3) {
             Tag_NewTransfer(object, target);
         }

@@ -273,13 +273,13 @@ i32 Players_AveragePos(NUVEC *position, SOCKPOSITION_PC *socket_position) {
 }
 
 void SetPlayer(void) {
-    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
+    if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80) != 0) {
         player = Player[0];
-        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80) != 0) {
             player2 = Player[1];
             return;
         }
-    } else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
+    } else if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80) != 0) {
         player = Player[1];
     } else {
         player = NULL;
@@ -442,8 +442,7 @@ u8 FindNearestPlayerToVec(NUVEC *position, GAMEOBJECT **nearest_player, f32 *dis
         if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
             f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
             if (candidate_distance < *distance_squared || *nearest_player == NULL) {
-                if (require_character_flags == 0 ||
-                    (((GAMEOBJECT *)Player[index])->character_data->game_character->flags_090 & character_flags) != 0) {
+                if (require_character_flags == 0 || (Player[index]->character_data->game_character->flags_090 & character_flags) != 0) {
                     *distance_squared = candidate_distance;
                     *nearest_player = Player[index];
                 }
@@ -467,8 +466,7 @@ u8 FindFurthestPlayerFromVec(NUVEC *position, GAMEOBJECT **furthest_player, f32 
         if (candidate != NULL && (candidate->flags_1fc & 0x80) != 0) {
             f32 candidate_distance = NuVecDistSqr(&candidate->position, position, NULL);
             if (candidate_distance > *distance_squared || *furthest_player == NULL) {
-                if (require_character_flags == 0 ||
-                    (((GAMEOBJECT *)Player[index])->character_data->game_character->flags_090 & character_flags) != 0) {
+                if (require_character_flags == 0 || (Player[index]->character_data->game_character->flags_090 & character_flags) != 0) {
                     *distance_squared = candidate_distance;
                     *furthest_player = Player[index];
                 }
@@ -640,8 +638,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
         }
     }
     NewPlayerCharacter(object, id, old_id, 1);
-    RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
-                      Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
+    RememberPlayerIDs(0, Player[0] != NULL ? (i16)Player[0]->id : -1, Player[1] != NULL ? (i16)Player[1]->id : -1);
     if (Player_ToggledCharacterFn != NULL) {
         Player_ToggledCharacterFn(object, left);
     }
@@ -656,8 +653,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
 }
 
 i32 Arcade_BothPlayersActive(void) {
-    return Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
-           (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
+    return Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0;
 }
 
 i32 Player_HasInvincibility(GAMEOBJECT *object) {
@@ -787,8 +783,8 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                 } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
                     if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 1) == 0) {
                         object->position = object->sock_position.midpoint;
-                        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
-                            (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+                        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[1] != NULL &&
+                            (Player[1]->flags_1fc & 0x80) != 0) {
                             NUVEC offset;
                             f32 side = object == Player[0] ? -1.0f : 1.0f;
                             NuVecNorm(&offset, &WORLD->sock_sys->socks[object->sock_position.sock_index]

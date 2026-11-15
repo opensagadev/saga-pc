@@ -173,3 +173,11 @@ config/oddscan-budget.json decomp-type 0 down from 5: the last views folded (TER
 config/castscan-budget.json declaration-type 1953 casts to types that moved from repeated unit copies into headers are no longer duplicate-type (that class went down by 108; the three classes here rose by 108)
 config/castscan-budget.json layout-compatible 304 same reclassification: repeated unit types moved into headers
 config/castscan-budget.json record-pun 815 same reclassification: repeated unit types moved into headers
+config/castscan-budget.json record-pun 819 typing void * globals and fields (Player, CurrentTerrain, gizmotypes, edanim_mtl, ...) turns the puns their uses made through void * into explicit casts between the real and the other record (same casts, new class); byte-pointer 1046 -> 683, void-pointer-cpp 1275 -> 984, declaration-type 1953 -> 1658
+config/castscan-budget.json duplicate-type 1266 see record-pun 819 (same casts, new class)
+config/castscan-budget.json layout-compatible 306 see record-pun 819 (same casts, new class)
+config/castscan-budget.json view-type 532 see record-pun 819 (same casts, new class)
+config/castscan-budget.json int-pointer 817 see record-pun 819 (same casts, new class)
+config/oddscan-budget.json magic-flag 7685 the casts in front of Player[i]->, CurrentTerrain-> and owner-> accesses are gone, so the textual scan now sees their existing flag literals (no new literal); paid back by naming the flags
+config/oddscan-budget.json magic-state 8742 see magic-flag 7685
+config/oddscan-budget.json view-use 743 see magic-flag 7685 (existing view locals now visible to the textual scan)

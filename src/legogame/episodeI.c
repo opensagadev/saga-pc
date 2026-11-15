@@ -844,11 +844,11 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
         old = PodRacePc->lap_countdown;
         PodRacePc->lap_display = PodRacePc->previous_lap_display;
         avg_currentspeed_mul = 0.0f;
-        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
-            ((GAMEOBJECT *)Player[0])->current_speed_mul = 0.0f;
+        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
+            Player[0]->current_speed_mul = 0.0f;
         }
-        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
-            ((GAMEOBJECT *)Player[1])->current_speed_mul = 0.0f;
+        if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
+            Player[1]->current_speed_mul = 0.0f;
         }
         if (netclient == 0 && FadeSys.fade == 0.0f) {
             PodRacePc->lap_countdown -= dt;
@@ -870,10 +870,10 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
             PodRacePc->lap_display = PodRacePc->previous_lap_display - PodRacePc->mushroom_timer;
             if (PodRacePc->lap_display < 0.0f && FadeSys.fade == 0.0f) {
                 PodRacePc->lap_display = 0.0f;
-                if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
+                if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
                     LoseCoins(Player[0], 1);
                 }
-                if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+                if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
                     LoseCoins(Player[1], 1);
                 }
                 PodRacePc->flags |= 2;
@@ -894,8 +894,7 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
             PodRaceUpdatePod(&PodRacePc->lap_entries[i], world);
         }
     }
-    if ((PodRacePc->flags & 1) == 0 &&
-        ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) || (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
+    if ((PodRacePc->flags & 1) == 0 && ((Player[0] != NULL && Player[0]->dead != 0) || (Player[1] != NULL && Player[1]->dead != 0))) {
         PodRacePc->flags |= 1;
         if ((PodRacePc->flags & 2) != 0) {
             NuStrCpy(reason, "Ep1_PodRace_OutOfTime");
@@ -1396,10 +1395,10 @@ void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
         if (!(object->flags_1fc_word & 0x80)) {
             continue;
         }
-        if (object != (GAMEOBJECT *)Player[0] && object != (GAMEOBJECT *)Player[1]) {
+        if (object != Player[0] && object != Player[1]) {
             continue;
         }
-        key = object == (GAMEOBJECT *)Player[0] ? i : i + 4;
+        key = object == Player[0] ? i : i + 4;
         matrix.m00 = object->locator_matrices[locator].m00;
         matrix.m01 = object->locator_matrices[locator].m01;
         matrix.m02 = object->locator_matrices[locator].m02;
@@ -1620,22 +1619,22 @@ static i32 PodSprint_UpdateCountdown(void) {
         }
         if (Player[0] != NULL) {
             if (PODSPRINT->countdown > 0.0f) {
-                ((GAMEOBJECT *)Player[0])->unknown_dc8 = 0.0f;
-                ((GAMEOBJECT *)Player[0])->velocity.z = 0.0f;
-                ((GAMEOBJECT *)Player[0])->velocity.x = 0.0f;
-                ((GAMEOBJECT *)Player[0])->run_speed_override = 0.0f;
+                Player[0]->unknown_dc8 = 0.0f;
+                Player[0]->velocity.z = 0.0f;
+                Player[0]->velocity.x = 0.0f;
+                Player[0]->run_speed_override = 0.0f;
             } else {
-                ((GAMEOBJECT *)Player[0])->run_speed_override = 1000000000.0f;
+                Player[0]->run_speed_override = 1000000000.0f;
             }
         }
         if (Player[1] != NULL) {
             if (PODSPRINT->countdown > 0.0f) {
-                ((GAMEOBJECT *)Player[1])->unknown_dc8 = 0.0f;
-                ((GAMEOBJECT *)Player[1])->velocity.z = 0.0f;
-                ((GAMEOBJECT *)Player[1])->velocity.x = 0.0f;
-                ((GAMEOBJECT *)Player[1])->run_speed_override = 0.0f;
+                Player[1]->unknown_dc8 = 0.0f;
+                Player[1]->velocity.z = 0.0f;
+                Player[1]->velocity.x = 0.0f;
+                Player[1]->run_speed_override = 0.0f;
             } else {
-                ((GAMEOBJECT *)Player[1])->run_speed_override = 1000000000.0f;
+                Player[1]->run_speed_override = 1000000000.0f;
             }
         }
         if (PODSPRINT->countdown < 2.9f && previous >= 2.9f) {
@@ -1668,7 +1667,7 @@ static void PodSprint_UpdateLaps(WORLDINFO *world) {
             line_end = &line[1];
             for (i = 0, old = pod_old_pos; i < 2; i++, old++) {
                 if (Player[i] != NULL && old->x != -1.0f && old->y != -1.0f && old->z != -1.0f &&
-                    XZLinesIntersect(line, line_end, &((GAMEOBJECT *)Player[i])->position, old, NULL, NULL) != 0) {
+                    XZLinesIntersect(line, line_end, &Player[i]->position, old, NULL, NULL) != 0) {
                     PODSPRINT->bits.halfway = 0;
                     PODSPRINT->lap_time = 0.0f;
                     PODSPRINT->ai_index++;
@@ -1692,7 +1691,7 @@ static void PodSprint_UpdateLaps(WORLDINFO *world) {
             line = PODSPRINT->halfway->pts;
             line_end = &line[1];
             for (i = 0, old = pod_old_pos; i < 2; i++, old++) {
-                if (Player[i] != NULL && XZLinesIntersect(line, line_end, &((GAMEOBJECT *)Player[i])->position, old, NULL, NULL) != 0) {
+                if (Player[i] != NULL && XZLinesIntersect(line, line_end, &Player[i]->position, old, NULL, NULL) != 0) {
                     PODSPRINT->flags |= 1;
                     PODSPRINT->ai_index++;
                     break;
@@ -1701,10 +1700,10 @@ static void PodSprint_UpdateLaps(WORLDINFO *world) {
         }
     }
     if (Player[0] != NULL) {
-        pod_old_pos[0] = ((GAMEOBJECT *)Player[0])->position;
+        pod_old_pos[0] = Player[0]->position;
     }
     if (Player[1] != NULL) {
-        pod_old_pos[1] = ((GAMEOBJECT *)Player[1])->position;
+        pod_old_pos[1] = Player[1]->position;
     }
     PODSPRINT->lap_msg->value = (f32)PODSPRINT->ai_state;
 }
@@ -1908,10 +1907,10 @@ i32 Action_NewSebulba(AISYS_PC *sys, AISCRIPTPROCESS *process, AIPACKET *packet,
         object->run_speed_override = SeekValF(object->run_speed_override, base_speed, 5.0f);
     }
     if (object->movement_spline_position.reached_end != 0 && (podsprint.flags & 4) == 0) {
-        if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
+        if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
             LoseCoins(Player[0], 1);
         }
-        if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+        if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
             LoseCoins(Player[1], 1);
         }
         *(u16 *)&podsprint.flags |= 4;

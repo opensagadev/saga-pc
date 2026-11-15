@@ -362,17 +362,17 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
         distance = NuVecXZDistSqr(&TORPEDO_PACKET(object)->pickup_positions[TORPEDO_PACKET(object)->count - 1], &player->collision_position,
                                   &direction);
         if (distance < TorpedoStealRange * TorpedoStealRange) {
-            TORPEDO_PACKET((GAMEOBJECT *)Player[index])->pickup_positions[TORPEDO_PACKET((GAMEOBJECT *)Player[index])->count] =
+            TORPEDO_PACKET(Player[index])->pickup_positions[TORPEDO_PACKET(Player[index])->count] =
                 TORPEDO_PACKET(object)->pickup_positions[TORPEDO_PACKET(object)->count - 1];
-            TORPEDO_PACKET((GAMEOBJECT *)Player[index])->pickup_data[TORPEDO_PACKET((GAMEOBJECT *)Player[index])->count] =
+            TORPEDO_PACKET(Player[index])->pickup_data[TORPEDO_PACKET(Player[index])->count] =
                 TORPEDO_PACKET(object)->pickup_data[TORPEDO_PACKET(object)->count - 1];
-            TORPEDO_PACKET((GAMEOBJECT *)Player[index])->pickup_flags[TORPEDO_PACKET((GAMEOBJECT *)Player[index])->count] =
+            TORPEDO_PACKET(Player[index])->pickup_flags[TORPEDO_PACKET(Player[index])->count] =
                 TORPEDO_PACKET(object)->pickup_flags[TORPEDO_PACKET(object)->count - 1];
-            ++TORPEDO_PACKET((GAMEOBJECT *)Player[index])->count;
-            TORPEDO_PACKET((GAMEOBJECT *)Player[index])->pickup_timer = 0.0f;
-            TORPEDO_PACKET((GAMEOBJECT *)Player[index])->pickup_state = 1;
+            ++TORPEDO_PACKET(Player[index])->count;
+            TORPEDO_PACKET(Player[index])->pickup_timer = 0.0f;
+            TORPEDO_PACKET(Player[index])->pickup_state = 1;
             --TORPEDO_PACKET(object)->count;
-            TORPEDO_PACKET((GAMEOBJECT *)Player[index])->steal_timer = TorpedoStealTimer;
+            TORPEDO_PACKET(Player[index])->steal_timer = TorpedoStealTimer;
             return;
         }
     }
@@ -520,8 +520,8 @@ void HomeNearestTorpTarget(BOLT_PC *bolt, TORPEDOPACKET *packet) {
 }
 
 void Torpedo_InitRicochet(BOLT_PC *bolt, NUVEC *position) {
-    if (bolt != NULL && bolt->owner != NULL && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL) {
-        TORPEDOPACKET *packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
+    if (bolt != NULL && bolt->owner != NULL && bolt->owner->torpedo != NULL) {
+        TORPEDOPACKET *packet = bolt->owner->torpedo;
         if (packet->target != NULL) {
             if (packet->ricochet_count > 4) {
                 packet->flags |= 0x10;
@@ -579,19 +579,17 @@ void TorpedoHitTarget(BOLT_PC *bolt) {
     NUVEC delta;
     f32 radius;
     i32 player;
-    if (bolt == NULL || bolt->owner == NULL || ((GAMEOBJECT *)bolt->owner)->torpedo == NULL) {
+    if (bolt == NULL || bolt->owner == NULL || bolt->owner->torpedo == NULL) {
         return;
     }
-    packet = ((GAMEOBJECT *)bolt->owner)->torpedo;
+    packet = bolt->owner->torpedo;
     if (packet->target != NULL) {
-        target_position = GetTorpTargetPositionAndRadius(((GAMEOBJECT *)bolt->owner)->torpedo->target,
-                                                         ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &radius);
+        target_position = GetTorpTargetPositionAndRadius(bolt->owner->torpedo->target, bolt->owner->torpedo->target_type, &radius);
         if (target_position != NULL) {
             NuVecSub(&delta, target_position, &bolt->position);
             if (NuVecMagSqr(&delta) < radius * radius) {
-                player = bolt->owner != NULL ? (i8)((GAMEOBJECT *)bolt->owner)->unknown_280 : -1;
-                TorpedoHitDispatch(((GAMEOBJECT *)bolt->owner)->torpedo->target, &bolt->position, player,
-                                   ((GAMEOBJECT *)bolt->owner)->torpedo->target_type);
+                player = bolt->owner != NULL ? (i8)bolt->owner->unknown_280 : -1;
+                TorpedoHitDispatch(bolt->owner->torpedo->target, &bolt->position, player, bolt->owner->torpedo->target_type);
             }
         }
     }
@@ -620,22 +618,21 @@ void fun_004d3450(void) {
 }
 
 void Torpedo_InitBolt(BOLT_PC *bolt) {
-    if (bolt->owner != NULL && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL) {
-        HomeNearestTorpTarget(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
+    if (bolt->owner != NULL && bolt->owner->torpedo != NULL) {
+        HomeNearestTorpTarget(bolt, bolt->owner->torpedo);
         bolt->flags &= ~4U;
     }
 }
 
 void Torpedo_UpdateBolt(BOLT_PC *bolt) {
-    if (bolt->owner == NULL || ((GAMEOBJECT *)bolt->owner)->torpedo == NULL) {
+    if (bolt->owner == NULL || bolt->owner->torpedo == NULL) {
         return;
     }
-    HomeNearestTorpTarget(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
-    if (((GAMEOBJECT *)bolt->owner)->torpedo->target != NULL) {
+    HomeNearestTorpTarget(bolt, bolt->owner->torpedo);
+    if (bolt->owner->torpedo->target != NULL) {
         NUVEC *target_position;
         f32 target_radius;
-        target_position = GetTorpTargetPositionAndRadius(((GAMEOBJECT *)bolt->owner)->torpedo->target,
-                                                         ((GAMEOBJECT *)bolt->owner)->torpedo->target_type, &target_radius);
+        target_position = GetTorpTargetPositionAndRadius(bolt->owner->torpedo->target, bolt->owner->torpedo->target_type, &target_radius);
         if (target_position != NULL) {
             NUVEC direction;
             NuVecSub(&direction, target_position, &bolt->position);
@@ -644,8 +641,7 @@ void Torpedo_UpdateBolt(BOLT_PC *bolt) {
             }
         }
     }
-    if (bolt->time >= bolt->lifetime && ((GAMEOBJECT *)bolt->owner)->torpedo != NULL &&
-        (((GAMEOBJECT *)bolt->owner)->torpedo->flags & 8) != 0) {
+    if (bolt->time >= bolt->lifetime && bolt->owner->torpedo != NULL && (bolt->owner->torpedo->flags & 8) != 0) {
         NUVEC offset;
         NUVEC points;
         offset.x = offset.y = 0.0f;
@@ -653,14 +649,14 @@ void Torpedo_UpdateBolt(BOLT_PC *bolt) {
         NuVecMtxRotate(&offset, &offset, &bolt->orientation);
         NuVecSub(&points, &bolt->position, &offset);
         if (Bolt_HitGameObjects(bolt, &points, &bolt->bounds_min, &bolt->bounds_max, bolt->collision_radius, NULL) == 0) {
-            Torpedo_Ricochet(bolt, ((GAMEOBJECT *)bolt->owner)->torpedo);
+            Torpedo_Ricochet(bolt, bolt->owner->torpedo);
         }
     }
 }
 
 f32 Torpedo_Scale(BOLT_PC *bolt) {
     if (bolt != NULL && bolt->owner != NULL) {
-        f32 scale = 2.0f * ((GAMEOBJECT *)bolt->owner)->bounds_radius;
+        f32 scale = 2.0f * bolt->owner->bounds_radius;
         return scale;
     }
     return 3.0f;

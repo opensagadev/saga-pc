@@ -69,7 +69,7 @@ extern "C" {
     extern struct eduimenu_s *edanim_active_menu;
     extern struct eduimenu_s *edanim_bouncy_menu;
     extern struct eduimenu_s *edanim_localsoundtype_menu;
-    extern void *edanim_mtl;
+    extern struct numtl_s *edanim_mtl;
     extern i32 edanim_nearest_sound;
     extern struct eduimenu_s *edanim_sound_menu;
     extern i32 edanim_sound_mode;

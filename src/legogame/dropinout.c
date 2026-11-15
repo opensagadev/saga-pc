@@ -36,10 +36,10 @@ void CheckForPlayersTurnedOff(void) {
 /* Players whose drop-in flag (0x80) is set. */
 i32 GetNumLocalPlayers(void) {
     i32 count = 0;
-    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80)) {
+    if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80)) {
         count = 1;
     }
-    if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
+    if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80)) {
         count++;
     }
     return count < 0 ? 0 : count;
@@ -229,7 +229,7 @@ i32 PlayersDropInOut(void) {
                     continue;
                 }
                 if (object->flags_ef0 & 0x200000) {
-                    if (FreePlay_DropInToPlayerPos(object) || ((GAMEOBJECT *)Player[index])->camera_screen_position.z < 1.0f) {
+                    if (FreePlay_DropInToPlayerPos(object) || Player[index]->camera_screen_position.z < 1.0f) {
                         force_join = 1;
                     }
                     break;
@@ -402,7 +402,7 @@ i32 PlayersDropInOut(void) {
                 i32 clear_index;
                 for (clear_index = 0; clear_index < 8; ++clear_index) {
                     if (Player[clear_index] != NULL) {
-                        ((GAMEOBJECT *)Player[clear_index])->flags_ef0 &= ~0x200000;
+                        Player[clear_index]->flags_ef0 &= ~0x200000;
                     }
                 }
                 continue;
@@ -414,8 +414,7 @@ i32 PlayersDropInOut(void) {
                 !(object->portal_flags & 0x4000000)) {
                 drop_back_in_timer = 0.000001f;
             }
-        } else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) && Player[1] != NULL &&
-                   (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80)) {
+        } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80) && Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80)) {
             if (object->unknown_da8 >= 2.0f || (object->model_draw_result == 0 && DROPIN_SCREEN_OUTSIDE(object))) {
                 drop_index = index;
             }

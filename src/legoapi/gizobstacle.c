@@ -884,8 +884,8 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     }
     if (obstacle->config_flags & 0x800) {
         obstacle->runtime_flags |= 0x40;
-        if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc & 0x80)) {
-            NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
+        if (player != -1 && (Player[player]->flags_1fc & 0x80)) {
+            NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
         }
         return 1;
     }
@@ -909,8 +909,8 @@ i32 GizObstacles_Hit(void *world, GIZOBSTACLE *obstacle, NUVEC *position, i32 pl
     GizObstacle_EvalAveragePosAndRadius(obstacle, 2);
     GameAnimSet_SetVisibility(obstacle->anim_set, 0);
     obstacle->runtime_flags |= 0x80;
-    if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc & 0x80)) {
-        NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
+    if (player != -1 && (Player[player]->flags_1fc & 0x80)) {
+        NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
     }
     return 1;
 }

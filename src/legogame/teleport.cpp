@@ -631,10 +631,8 @@ extern "C" {
         if (((HINT_WORLD_TELEPORT *)WORLD)->teleport_count <= 0 || AvailableToPlayer(0x40000, -1, -1, 0) == 0) {
             return 0;
         }
-        if ((Player[0] != NULL &&
-             ((((GAMEOBJECT *)Player[0])->flags_e24 & 0x20) != 0 || Teleport_Find((GAMEOBJECT *)Player[0], 1.5625f) != NULL)) ||
-            (Player[1] != NULL &&
-             ((((GAMEOBJECT *)Player[1])->flags_e24 & 0x20) != 0 || Teleport_Find((GAMEOBJECT *)Player[1], 1.5625f) != NULL))) {
+        if ((Player[0] != NULL && ((Player[0]->flags_e24 & 0x20) != 0 || Teleport_Find(Player[0], 1.5625f) != NULL)) ||
+            (Player[1] != NULL && ((Player[1]->flags_e24 & 0x20) != 0 || Teleport_Find(Player[1], 1.5625f) != NULL))) {
             return 1;
         }
         return 0;

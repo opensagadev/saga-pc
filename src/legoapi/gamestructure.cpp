@@ -27,9 +27,9 @@ extern "C" void PauseGame(i32 pad) {
     PcInput_SetCtrlStringPlayer(pad);
     for (i32 i = 0; i < 8; ++i) {
         if (Player[i]) {
-            ((GAMEOBJECT *)Player[i])->hud_icon_timer = 0.0f;
-            ((GAMEOBJECT *)Player[i])->input_toggle_hold_time = TOGGLEHOLDTIME;
-            ((GAMEOBJECT *)Player[i])->pause_context_state = 0.0f;
+            Player[i]->hud_icon_timer = 0.0f;
+            Player[i]->input_toggle_hold_time = TOGGLEHOLDTIME;
+            Player[i]->pause_context_state = 0.0f;
         }
     }
     if (PauseGame_ExtraCodeFn) {
@@ -53,9 +53,9 @@ extern "C" void NetworkSyncPause(void) {
     ResetTimer(&JoinInTimer, 0.0f);
     for (i32 i = 0; i < 8; ++i) {
         if (Player[i]) {
-            ((GAMEOBJECT *)Player[i])->hud_icon_timer = 0.0f;
-            ((GAMEOBJECT *)Player[i])->input_toggle_hold_time = TOGGLEHOLDTIME;
-            ((GAMEOBJECT *)Player[i])->pause_context_state = 0.0f;
+            Player[i]->hud_icon_timer = 0.0f;
+            Player[i]->input_toggle_hold_time = TOGGLEHOLDTIME;
+            Player[i]->pause_context_state = 0.0f;
         }
     }
     if (PauseGame_ExtraCodeFn) {

@@ -840,7 +840,7 @@ extern "C" {
         }
         selected = NULL;
         for (index = 0; index < count; ++index) {
-            candidate = (GAMEOBJECT *)candidates[index]->owner;
+            candidate = candidates[index]->owner;
             flags = turret->behavior_flags;
             if (!(flags & 0x4000) && (candidate->character_data->model_flags & 0x80000)) {
                 continue;
@@ -1142,8 +1142,8 @@ extern "C" {
                 if ((turret->behavior_flags & 0x4010) == 0x4000 && LEGOHINT_SHOOTCAMERAS != -1) {
                     Hint_SetComplete(LEGOHINT_SHOOTCAMERAS);
                 }
-            } else if (player != -1 && (((GAMEOBJECT *)Player[player])->flags_1fc_word & 0x80) != 0) {
-                NewBuzz(((GAMEOBJECT *)Player[player])->pad->bound_pad, 0.1f, 0);
+            } else if (player != -1 && (Player[player]->flags_1fc_word & 0x80) != 0) {
+                NewBuzz(Player[player]->pad->bound_pad, 0.1f, 0);
             }
             return 1;
         }
@@ -1171,7 +1171,7 @@ extern "C" {
                 while (animation != NULL) {
                     if (((TURRET_ANIM_DATA *)animation->object_data)->platform_id == bolt->hit_platform) {
                         type = BoltType_FindByID(bolt->type_id, world);
-                        owner = (GAMEOBJECT *)bolt->owner;
+                        owner = bolt->owner;
                         if (owner != NULL && (turret->behavior_flags & 0x10000) != 0 && owner->rider == NULL) {
                             damage = 0;
                         } else if (owner != NULL && (turret->behavior_flags & 0x20000) != 0 && (owner->flags_1fc_word & 0x80) == 0) {
@@ -1362,7 +1362,7 @@ extern "C" {
                 (void)Cheats_CheckFlags(2);
             }
             type = BoltType_FindByID(bolt->type_id, world);
-            owner = (GAMEOBJECT *)bolt->owner;
+            owner = bolt->owner;
             player = owner != NULL ? (i8)owner->unknown_280 : -1;
             if (GizTurrets_Hit(world, best, &bolt->position, player, type->unknown_3c) != 0) {
                 if (object != NULL) {

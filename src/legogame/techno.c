@@ -4,13 +4,12 @@ i32 Techno_FindOperator(void *target, GAMEPAD_PC **pad, GAMEOBJECT **operator_ob
     i32 index;
     TECHNO_PC *techno;
     for (index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && ((GAMEOBJECT *)Player[index])->character_context == 0x51 &&
-            ((GAMEOBJECT *)Player[index])->techno != NULL) {
-            techno = ((GAMEOBJECT *)Player[index])->techno;
+        if (Player[index] != NULL && Player[index]->character_context == 0x51 && Player[index]->techno != NULL) {
+            techno = Player[index]->techno;
             if ((techno->target_mode == 2 && NuSpecialCompare(target, techno->controlled_object) != 0) ||
-                ((GAMEOBJECT *)Player[index])->techno->controlled_object == target) {
+                Player[index]->techno->controlled_object == target) {
                 if (pad != NULL) {
-                    *pad = ((GAMEOBJECT *)Player[index])->pad;
+                    *pad = Player[index]->pad;
                 }
                 if (operator_object != NULL) {
                     *operator_object = Player[index];
@@ -350,8 +349,7 @@ static i32 Techno_GetOutput(GIZMO_PC *gizmo, i32 output, i32 include_inactive) {
         case 1:
             return (techno->flags >> 3) & 1;
         case 3:
-            if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME *)((GIZMOTYPES *)gizmotypes)->types)[techno->controlled_object->type_id].name,
-                          "GIZOBSTACLE") == 0) {
+            if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME *)gizmotypes->types)[techno->controlled_object->type_id].name, "GIZOBSTACLE") == 0) {
                 target = techno->controlled_object;
                 return ((TECHNO_OBSTACLE_VIEW *)target->object)->anim_set->state == 2;
             }
@@ -619,7 +617,7 @@ void Technos_MoveTarget(TECHNO_PC *techno_pointer, GAMEOBJECT *object) {
         default:
             return;
     }
-    if (NuStrICmp(((GIZMOTYPES *)gizmotypes)->types[techno->controlled_object->type_id].name, "GIZOBSTACLE") != 0) {
+    if (NuStrICmp(gizmotypes->types[techno->controlled_object->type_id].name, "GIZOBSTACLE") != 0) {
         return;
     }
     obstacle = techno->controlled_object->object;

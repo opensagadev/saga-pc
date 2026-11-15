@@ -320,7 +320,7 @@ i32 ReadPad(i32 port) {
         mode = 1;
         if (port < PLAYERCOUNT && Player[port] != NULL) {
             mode = 2;
-            if ((((GAMEOBJECT *)Player[port])->flags_1fc & 0x80) == 0) {
+            if ((Player[port]->flags_1fc & 0x80) == 0) {
                 mode = 3;
             }
         }
@@ -453,7 +453,7 @@ void DoInput(WORLDINFO *world) {
                 if (!escape && !NuKeyboard_db(14) && !NuKeyboard_db(197)) {
                     continue;
                 }
-                if (Player[index] == NULL || !(((GAMEOBJECT *)Player[index])->flags_1fc_word & 0x80)) {
+                if (Player[index] == NULL || !(Player[index]->flags_1fc_word & 0x80)) {
                     continue;
                 }
             }

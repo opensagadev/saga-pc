@@ -11,9 +11,8 @@ extern "C" {
 
     enum { TERRAIN_PLATFORM_FLAG_ROTATING = 1 };
 }
-#define TERRAIN_SET_CURRENT (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
-#define TERRAIN_PLATFORM_OF_PC(group_arg) (TERRAIN_SET_CURRENT->platforms[(group_arg).scene_index])
-#define TERRAIN_PLATFORM_MATRIX_PC(group_arg) (static_cast<NUMTX *>(TERRAIN_PLATFORM_OF_PC(group_arg).scene_object))
+#define TERRAIN_PLATFORM_OF_PC(group_arg) (CurrentTerrain->platforms[(group_arg).scene_index])
+#define TERRAIN_PLATFORM_MATRIX_PC(group_arg) (TERRAIN_PLATFORM_OF_PC(group_arg).scene_object)
 #define TERRAIN_CROSS_PRODUCT(result_arg, a_arg, b_arg)                                                                                    \
     do {                                                                                                                                   \
         NUVEC cross;                                                                                                                       \
@@ -148,7 +147,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     limit = TerI->scan_list_storage + sizeof(TerI->scan_list_storage) - 12;
     group_shape_count = 0;
 
-    TERRAIN_GROUP *terrain_groups = TERRAIN_SET_CURRENT->groups;
+    TERRAIN_GROUP *terrain_groups = CurrentTerrain->groups;
     f32 min_x;
     f32 min_y;
     f32 min_z;
@@ -163,13 +162,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
         scan_radius += (query->object_scale - 1.0) * query->collision_radius;
     }
 
-    for (i32 cell_index = 0; cell_index < TERRAIN_SET_CURRENT->used_cell_count; ++cell_index) {
-        const TERRAIN_CELL &cell = TERRAIN_SET_CURRENT->cells[cell_index];
+    for (i32 cell_index = 0; cell_index < CurrentTerrain->used_cell_count; ++cell_index) {
+        const TERRAIN_CELL &cell = CurrentTerrain->cells[cell_index];
         if (!(max_x >= cell.min_x && max_z >= cell.min_z && min_x <= cell.max_x && min_z <= cell.max_z)) {
             continue;
         }
 
-        const i16 *group_indices = TERRAIN_SET_CURRENT->group_indices + cell.first_group;
+        const i16 *group_indices = CurrentTerrain->group_indices + cell.first_group;
         for (i32 cell_group = 0; cell_group < cell.group_count; ++cell_group, ++group_indices) {
             const i32 group_index = *group_indices;
             TERRAIN_GROUP &group = terrain_groups[group_index];
@@ -223,7 +222,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
     if (curPickInst != 0) {
         for (i32 pick_index = 0; pick_index < curPickInst; ++pick_index) {
-            const i32 group_index = TERRAIN_SET_CURRENT->max_groups + pick_index;
+            const i32 group_index = CurrentTerrain->max_groups + pick_index;
             TERRAIN_GROUP &group = terrain_groups[group_index];
             const f32 local_max_x = max_x - group.origin.x;
             const f32 local_max_y = max_y - group.origin.y;
@@ -263,7 +262,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_SCAN_GROUP_PC(TERRAIN_SET_CURRENT->max_groups + pick_index);
+            TERRAIN_FINISH_SCAN_GROUP_PC(CurrentTerrain->max_groups + pick_index);
         }
     }
     TerI->scan_list = group_header;
@@ -276,13 +275,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     if (scan_type != 0) {
         const i16 *groups;
         i32 count;
-        if (min_x > TERRAIN_SET_CURRENT->platform_query_min_x && TERRAIN_SET_CURRENT->platform_query_max_x > max_x &&
-            min_z > TERRAIN_SET_CURRENT->platform_query_min_z && TERRAIN_SET_CURRENT->platform_query_max_z > max_z) {
-            groups = TERRAIN_SET_CURRENT->active_platform_groups;
-            count = TERRAIN_SET_CURRENT->active_platform_count;
+        if (min_x > CurrentTerrain->platform_query_min_x && CurrentTerrain->platform_query_max_x > max_x &&
+            min_z > CurrentTerrain->platform_query_min_z && CurrentTerrain->platform_query_max_z > max_z) {
+            groups = CurrentTerrain->active_platform_groups;
+            count = CurrentTerrain->active_platform_count;
         } else {
-            const TERRAIN_CELL &cell = TERRAIN_SET_CURRENT->platform_cell;
-            groups = TERRAIN_SET_CURRENT->group_indices + cell.first_group;
+            const TERRAIN_CELL &cell = CurrentTerrain->platform_cell;
+            groups = CurrentTerrain->group_indices + cell.first_group;
             count = cell.group_count;
         }
         for (i32 i = 0; i < count; ++i, ++groups) {
@@ -292,7 +291,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 group.origin.z + group.radius < min_z) {
                 continue;
             }
-            TERRAIN_PLATFORM &platform = TERRAIN_SET_CURRENT->platforms[group.scene_index];
+            TERRAIN_PLATFORM &platform = CurrentTerrain->platforms[group.scene_index];
             if (platform.instance_flags != NULL) {
                 const u32 visible_mask = (platform.flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0 ? 2 : 1;
                 if ((*platform.instance_flags & visible_mask) == 0) {
@@ -518,7 +517,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     i32 wall_count = 0;
     min_x -= 0.02f;
     min_z -= 0.02f;
-    TERRAIN_SPATIAL_NODE *node = TERRAIN_SET_CURRENT->spatial_nodes;
+    TERRAIN_SPATIAL_NODE *node = CurrentTerrain->spatial_nodes;
     WallSplCount = wall_count;
     max_x += 0.02f;
     max_z += 0.02f;
@@ -549,7 +548,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                 } else {
                     end = node->point_count;
                 }
-                TERRAIN_WALL_POINT *entry = static_cast<TERRAIN_WALL_POINT *>(WallSplList) + wall_count;
+                TERRAIN_WALL_POINT *entry = WallSplList + wall_count;
                 i32 i = first;
                 while (i < end) {
                     NUVEC &a = node->points[i];
@@ -608,7 +607,7 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
     max_z += 0.02f;
     WallSplCount = 0;
     i32 wall_count = 0;
-    for (TERRAIN_SPATIAL_NODE *node = TERRAIN_SET_CURRENT->spatial_nodes; node != NULL;
+    for (TERRAIN_SPATIAL_NODE *node = CurrentTerrain->spatial_nodes; node != NULL;
          node = reinterpret_cast<TERRAIN_SPATIAL_CHUNK *>(reinterpret_cast<u8 *>(node) - offsetof(TERRAIN_SPATIAL_CHUNK, node))->previous) {
         const u8 *material_bytes = reinterpret_cast<const u8 *>(&node->unknown_02);
         if (material_bytes[1] != 0 && (material_bytes[1] & terrain_mask) == 0) {
@@ -631,7 +630,7 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
             } else {
                 end = node->point_count;
             }
-            TERRAIN_WALL_POINT *entry = static_cast<TERRAIN_WALL_POINT *>(WallSplList) + wall_count;
+            TERRAIN_WALL_POINT *entry = WallSplList + wall_count;
             for (i32 i = first; i < end; ++i) {
                 NUVEC *a = &node->points[i];
                 NUVEC *b = &node->points[i + 1];

@@ -213,7 +213,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct FADER_s *faders;                                    // 0x5034
     i32 fader_count;                                           // 0x5038
     void *mini_trooper_packets;                                // 0x503c
-    void *mini_trooper_teams;                                  // 0x5040
+    struct minitrooperteam_s *mini_trooper_teams;              // 0x5040
     void *mini_trooper_storage;                                // 0x5044
     struct PORTALDOOR_s *portal_doors;                         // 0x5048
     i32 portal_door_count;                                     // 0x504c

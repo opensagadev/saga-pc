@@ -4037,7 +4037,7 @@ extern "C" {
 #pragma bss_seg(".bss$LevTime")
     f32 LevTime[5] = {0};
 #pragma bss_seg(".bss$LevPathCnx")
-    void *LevPathCnx[16] = {0};
+    AIPATHCNX *LevPathCnx[16] = {0};
 #pragma bss_seg()
 
 #pragma bss_seg(".bss$LevGamePart")
@@ -4716,7 +4716,7 @@ extern "C" {
     NUVEC BoltShootPositionScratch = {0};
 #pragma bss_seg()
 #pragma bss_seg(".bss$CurrentTerrain")
-    void *CurrentTerrain = 0;
+    TERRAIN_SET_PC *CurrentTerrain = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$GetNamedGameObjectCallback")
     GAMEOBJECT_LOOKUP_CALLBACK_PC GetNamedGameObjectCallback = 0;
@@ -4979,7 +4979,7 @@ extern "C" {
     u16 podrace_die_angle_a = 0;
     u16 podrace_die_angle_b = 0;
     u16 podrace_die_angle_c = 0;
-    void *Player[8] = {0};
+    GAMEOBJECT *Player[8] = {0};
     f32 DEFAULTFPS = 0;
     void *LevelHackData = 0;
     i32 LevelHackDataSize = 0;
@@ -5797,7 +5797,7 @@ extern "C" {
     i32 NuQFntCSModeStackIndex = 0;
 
 #pragma bss_seg(".bss$gizmotypes")
-    void *gizmotypes = 0;
+    GIZMOTYPES *gizmotypes = 0;
 #pragma bss_seg()
 #pragma data_seg(".data$PS2_VREZ_W")
     i32 PS2_VREZ_W = 640;
@@ -8684,7 +8684,7 @@ extern "C" {
     void *TempScanStack = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$WallSplList")
-    void *WallSplList = 0;
+    TERRAIN_WALL_POINT *WallSplList = 0;
 #pragma bss_seg()
 #pragma bss_seg(".bss$terraincnt")
     i32 terraincnt = 0;
@@ -22204,7 +22204,7 @@ extern "C" {
     char edbits_level_save_extension[256] = {0};
 
 #pragma bss_seg(".bss$edanim_mtl")
-    void *edanim_mtl = 0;
+    NUMTL *edanim_mtl = 0;
 
 #pragma bss_seg(".bss$edanim_active_menu")
     struct eduimenu_s *edanim_active_menu = 0;
@@ -22526,7 +22526,7 @@ extern "C" {
     i32 edui_donotdraw = 0;
 
 #pragma bss_seg(".bss$edui_font")
-    void *edui_font = 0;
+    VUFNT *edui_font = 0;
 
 #pragma data_seg(".data$edui_font_scale_y")
     f32 edui_font_scale_y = 0.9f;

@@ -410,7 +410,7 @@ void JediB_Reset(WORLDINFO *world) {
         jedi_b.heroes[hero] = NULL;
         if (FreePlay == 0) {
             for (slot = 0; slot < 8; slot++) {
-                if (Player[slot] != NULL && (i16)((GAMEOBJECT *)Player[slot])->id == *JediB_playerids[hero]) {
+                if (Player[slot] != NULL && (i16)Player[slot]->id == *JediB_playerids[hero]) {
                     jedi_b.heroes[hero] = Player[slot];
                     break;
                 }
@@ -2007,8 +2007,7 @@ void BonusGunshipB_Reset(WORLDINFO *world) {
 
 void BonusGunshipB_Update(WORLDINFO *world) {
     if (netclient == 0) {
-        if (GunshipPlayerDead == 0 &&
-            ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0) || (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0))) {
+        if (GunshipPlayerDead == 0 && ((Player[0] != NULL && Player[0]->dead != 0) || (Player[1] != NULL && Player[1]->dead != 0))) {
             GunshipPlayerDead = 1;
             ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
         }
@@ -2035,10 +2034,10 @@ void BonusGunshipB_Update(WORLDINFO *world) {
             previous_time = MiscTime;
             MiscTime -= FRAMETIME;
             if (MiscTime <= 0.0f) {
-                if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
+                if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0) {
                     LoseCoins(Player[0], 1);
                 }
-                if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0) {
+                if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0) {
                     LoseCoins(Player[1], 1);
                 }
                 if (GunshipPlayerDead == 0) {

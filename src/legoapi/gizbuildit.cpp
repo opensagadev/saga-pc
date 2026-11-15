@@ -197,7 +197,7 @@ extern "C" {
             return NULL;
         }
         for (index = 0; index < 8; ++index) {
-            GAMEOBJECT *player = (GAMEOBJECT *)Player[index];
+            GAMEOBJECT *player = Player[index];
             if (player != NULL && (player->flags_1fc_word & 0x80) != 0 && player->character_context == LEGOCONTEXT_BUILDIT &&
                 player->grapple == buildit) {
                 return player;
@@ -247,7 +247,7 @@ extern "C" GIZBUILDIT *GizBuildIt_FindNearest(WORLDINFO *world, GAMEOBJECT *play
                 }
                 i32 p;
                 for (p = 0; p < 8; p++) {
-                    GAMEOBJECT *object = (GAMEOBJECT *)Player[p];
+                    GAMEOBJECT *object = Player[p];
                     if (object != NULL && object->character_context == LEGOCONTEXT_BUILDIT && object->grapple == (void *)buildit) {
                         break;
                     }

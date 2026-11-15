@@ -1068,7 +1068,7 @@ extern "C" {
             return 0;
         }
         for (index = 0; index < 8; ++index) {
-            GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+            GAMEOBJECT *object = Player[index];
             if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->character_model->model_data_b[LEGOACT_PUSH] != NULL &&
                 NearestPushBlock(WORLD, &object->collision_position, 2.0f) != NULL) {
                 return 1;
@@ -1337,7 +1337,7 @@ static i32 Pushblocks_BoltHitPlat(void *world_ptr, void *blocks_ptr, BOLT_PC *bo
             }
             if (bolt->owner != NULL) {
                 NUVEC direction;
-                NuVecSub(&direction, &static_cast<GAMEOBJECT *>(bolt->owner)->collision_position, block->position);
+                NuVecSub(&direction, &bolt->owner->collision_position, block->position);
                 if (direction.x == direction.z) {
                     if (direction.x < 0.0f) {
                         direction.x = -(static_cast<f64>(qrand()) * 0.000015259021893143654);
@@ -1432,8 +1432,7 @@ extern "C" void GizmoPushBlockInitAndReset(WORLDINFO *opaque, void *progress) {
         block->animation_positions = 0;
         NUINSTANIM *animation = static_cast<NUINSTANIM *>(NuSpecialGetInstAnim(&block->special));
         if (animation != NULL) {
-            i32 end_frame = static_cast<i32>(
-                NuAnimEndFrameOld(static_cast<NUGSCN *>(block->special.scene)->instance_animation_data[animation->animation_index]));
+            i32 end_frame = static_cast<i32>(NuAnimEndFrameOld(block->special.scene->instance_animation_data[animation->animation_index]));
             block->animation_positions = end_frame;
             block->output_count = static_cast<u8>(block->animation_positions);
             i32 required = world->push_block_position_count + block->animation_positions;

@@ -204,10 +204,10 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
         if (blowup == NULL) {
             continue;
         }
-        rtlDynamicEnable(((GAMEOBJECT *)Player[i])->dynamic_light_id, 1);
+        rtlDynamicEnable(Player[i]->dynamic_light_id, 1);
         mid = &blowup->mid_position;
-        radius = (f64)NuVecDist(mid, &((GAMEOBJECT *)Player[i])->collision_position, &delta) * 0.5;
-        rtlDynamicSetRadii(((GAMEOBJECT *)Player[i])->dynamic_light_id, radius, (f32)((f64)radius + 5.0));
+        radius = (f64)NuVecDist(mid, &Player[i]->collision_position, &delta) * 0.5;
+        rtlDynamicSetRadii(Player[i]->dynamic_light_id, radius, (f32)((f64)radius + 5.0));
         qrand();
         colour.x = 0.0f;
         if (qrand() < 0x8000) {
@@ -216,20 +216,20 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
             colour.y = 0.25f;
         }
         colour.z = colour.y;
-        rtlDynamicSetColours(((GAMEOBJECT *)Player[i])->dynamic_light_id, &colour, NULL);
+        rtlDynamicSetColours(Player[i]->dynamic_light_id, &colour, NULL);
         player = Player[i];
         position.x = player->collision_position.x + (f64)delta.x * 0.5;
         position.y = player->collision_position.y + (f64)delta.y * 0.5;
         position.z = player->collision_position.z + (f64)delta.z * 0.5;
         rtlDynamicSetPos(player->dynamic_light_id, &position);
-        length = NuVecDist(&((GAMEOBJECT *)Player[i])->collision_position, mid, &delta);
+        length = NuVecDist(&Player[i]->collision_position, mid, &delta);
         NuLgtLaser(DeathStarZapLaserType, DeathStarZapSizeWidth, DeathStarZapSizeLength, DeathStarZapWidthBias, mid, &delta, 0xff808040,
                    DeathStarZapEndWidth, length);
-        NewRumble(((GAMEOBJECT *)Player[i])->pad->bound_pad, (f32)((f64)qrand() * (f64)0.000015259022f * (f64)0.3f), 0);
+        NewRumble(Player[i]->pad->bound_pad, (f32)((f64)qrand() * (f64)0.000015259022f * (f64)0.3f), 0);
         if (qrand() < 0x1000) {
-            NewBuzzFrames(((GAMEOBJECT *)Player[i])->pad->bound_pad, 1, 0);
+            NewBuzzFrames(Player[i]->pad->bound_pad, 1, 0);
         }
-        PlaySfx("ForceLightningLp", &((GAMEOBJECT *)Player[i])->collision_position);
+        PlaySfx("ForceLightningLp", &Player[i]->collision_position);
         DisorientateCode(Player[i], mid, 225.0f);
     }
 }
@@ -651,7 +651,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 distance = NuVecDist(&player_end, &floor_end, &floor_delta);
                 NuLgtLaser(testlaser_type, testlaser_sizew, testlaser_sizel, testlaser_sizewab, &floor_end, &floor_delta, 0xff808040,
                            testlaser_endw, distance);
-                sound_position = &((GAMEOBJECT *)Player[i])->collision_position;
+                sound_position = &Player[i]->collision_position;
                 sound = GetSfxId("ForceLightningLp");
                 GameAudio_PlaySfxById(sound, sound_position, 0, 1);
                 break;
@@ -665,15 +665,15 @@ void EmperorFightA_Update(WORLDINFO *world) {
             if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
                 (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
-                ((GAMEOBJECT *)Player[0])->last_safe_position.x = (f32)minimum;
-                ((GAMEOBJECT *)Player[0])->respawn_position.x = (f32)minimum;
+                Player[0]->last_safe_position.x = (f32)minimum;
+                Player[0]->respawn_position.x = (f32)minimum;
             }
             player = Player[1];
             if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
                 (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
-                ((GAMEOBJECT *)Player[1])->last_safe_position.x = (f32)minimum;
-                ((GAMEOBJECT *)Player[1])->respawn_position.x = (f32)minimum;
+                Player[1]->last_safe_position.x = (f32)minimum;
+                Player[1]->respawn_position.x = (f32)minimum;
             }
         }
     }
@@ -1700,7 +1700,7 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
 
     DeathStar2BattleFire_UpdateSlowDownMul(FRAMETIME);
     if (Player[0] != NULL) {
-        FireDeltaPosition = (f32)((f64)((GAMEOBJECT *)Player[0])->character_data->game_character->run_speed * 1.25);
+        FireDeltaPosition = (f32)((f64)Player[0]->character_data->game_character->run_speed * 1.25);
     } else {
         FireDeltaPosition = 30.0f;
     }
@@ -1733,8 +1733,8 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     }
 
     for (index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && (((GAMEOBJECT *)Player[index])->unknown_e20 & 0x20) == 0) {
-            NuVecSub(&difference, &((GAMEOBJECT *)Player[index])->position, &fireSplinePos.position);
+        if (Player[index] != NULL && (Player[index]->unknown_e20 & 0x20) == 0) {
+            NuVecSub(&difference, &Player[index]->position, &fireSplinePos.position);
             NuVecRotateY(&difference, &difference, -yaw);
             if (difference.z < nearest_distance) {
                 nearest_distance = difference.z;
@@ -1744,12 +1744,12 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
             }
             if (difference.z < 0.0f) {
                 i32 no_hurt = objhitobj_nohurtsfx;
-                if (((GAMEOBJECT *)Player[index])->dead != 0) {
+                if (Player[index]->dead != 0) {
                     fireSpeedScale = 0.2f;
                 }
                 AddVariableShotDebrisEffectTimed3(world->game_debris_sys->entries[115].effect, &nearest->position, &nearest->velocity, 40,
                                                   FRAMETIME, NULL, NULL);
-                if ((((GAMEOBJECT *)Player[index])->flags_1f8 & 0x40000) == 0) {
+                if ((Player[index]->flags_1f8 & 0x40000) == 0) {
                     objhitobj_nohurtsfx = 1;
                     objhitobj_noimpactsfx = 1;
                     ObjHitObj(NULL, Player[index], 1, 0, 0, 1);

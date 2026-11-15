@@ -699,8 +699,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             message.flags = 0x87;
             message.unknown_4f = 4;
             message.scale = 2.0f;
-            if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) && Player[1] != NULL &&
-                (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80)) {
+            if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) && Player[1] != NULL && (Player[1]->flags_1fc & 0x80)) {
                 message.unknown_4f = (player == 0 ? 8 : 2) | 4;
             }
             message.red = SuperCarryPlayerRgb[player][0];

@@ -555,13 +555,12 @@ mode_selected:
                 }
                 if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
                     NUVEC *pod_offset;
-                    player_focus[player_count] = ((GAMEOBJECT *)Player[i])->collision_position;
+                    player_focus[player_count] = Player[i]->collision_position;
                     pod_offset = &(mode_scratch);
                     (*pod_offset).x = 0.0f;
                     (*pod_offset).y = 0.0f;
                     (*pod_offset).z = 2.0f;
-                    NuVecRotateY(&(*pod_offset), &(*pod_offset),
-                                 ((i32)(((GAMEOBJECT *)Player[i])->facing_angle + getPodRoll(i) * 5461.0f)));
+                    NuVecRotateY(&(*pod_offset), &(*pod_offset), ((i32)(Player[i]->facing_angle + getPodRoll(i) * 5461.0f)));
                     NuVecAdd(&player_focus[player_count], &player_focus[player_count], &(*pod_offset));
                 } else {
                     PlayerCamPos(object, &player_focus[player_count], &camera->position);
@@ -1048,8 +1047,8 @@ mode_selected:
                     NUVEC delta;
                     f32 projection;
                     ++shared_count;
-                    delta.x = ((GAMEOBJECT *)Player[index])->collision_position.x - target.x;
-                    delta.z = ((GAMEOBJECT *)Player[index])->collision_position.z - target.z;
+                    delta.x = Player[index]->collision_position.x - target.x;
+                    delta.z = Player[index]->collision_position.z - target.z;
                     projection = delta.z * lateral.z + delta.x * lateral.x;
                     (*offset).x = lateral.x * projection + (*offset).x;
                     (*offset).z = projection * lateral.z + (*offset).z;
@@ -1217,13 +1216,13 @@ mode_selected:
         NUMTX orientation = {0};
         shared_count = 0;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && (((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0 && ((GAMEOBJECT *)Player[i])->flags_107a == 4) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & 0x80) != 0 && Player[i]->flags_107a == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
-                         NUMTX_GET_ROW_VEC(&((GAMEOBJECT *)Player[i])->vehicle_orientation, 0));
+                         NUMTX_GET_ROW_VEC(&(Player[i])->vehicle_orientation, 0));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 1), NUMTX_GET_ROW_VEC(&orientation, 1),
-                         NUMTX_GET_ROW_VEC(&((GAMEOBJECT *)Player[i])->vehicle_orientation, 1));
+                         NUMTX_GET_ROW_VEC(&(Player[i])->vehicle_orientation, 1));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 2), NUMTX_GET_ROW_VEC(&orientation, 2),
-                         NUMTX_GET_ROW_VEC(&((GAMEOBJECT *)Player[i])->vehicle_orientation, 2));
+                         NUMTX_GET_ROW_VEC(&(Player[i])->vehicle_orientation, 2));
                 shared_count++;
             }
         }

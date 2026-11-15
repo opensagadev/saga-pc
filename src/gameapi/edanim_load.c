@@ -322,14 +322,14 @@ i32 edanimLoadPage(char *path, NUGSCN *scene) {
             impulse = AnimParams[slot].bounce_impulse;
             spring = AnimParams[slot].bounce_spring;
             damping = AnimParams[slot].bounce_damping;
-            if (item >= 0 && item < ((TERRAIN_SET_PC *)CurrentTerrain)->max_platforms) {
-                if (((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_54 == 0.0f) {
-                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_58 = 0.0f;
-                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_5c = 0.0f;
+            if (item >= 0 && item < CurrentTerrain->max_platforms) {
+                if (CurrentTerrain->platforms[item].bounce_54 == 0.0f) {
+                    CurrentTerrain->platforms[item].bounce_58 = 0.0f;
+                    CurrentTerrain->platforms[item].bounce_5c = 0.0f;
                 }
-                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_54 = impulse;
-                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_60 = spring;
-                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[item].bounce_64 = damping;
+                CurrentTerrain->platforms[item].bounce_54 = impulse;
+                CurrentTerrain->platforms[item].bounce_60 = spring;
+                CurrentTerrain->platforms[item].bounce_64 = damping;
             }
         }
         AnimParams[slot].page = (i8)page;
@@ -591,7 +591,8 @@ void edanimRenderParticleEmitters(i32 parameter_index) {
         }
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
                                 base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
-                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f, colour, edanim_mtl);
+                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f, colour,
+                                (PC_SCENE_MTL_VIEW *)edanim_mtl);
     }
 }
 
@@ -609,7 +610,8 @@ void edanimRenderSoundEmitters(i32 parameter_index) {
         colour = edanim_sound_mode && edanim_nearest_sound == sound ? 0xffff0000 : 0xffffffff;
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound][0],
                                 base_position->y + AnimParams[parameter_index].sound_positions[sound][1],
-                                base_position->z + AnimParams[parameter_index].sound_positions[sound][2], 0.25f, colour, edanim_mtl);
+                                base_position->z + AnimParams[parameter_index].sound_positions[sound][2], 0.25f, colour,
+                                (PC_SCENE_MTL_VIEW *)edanim_mtl);
     }
 }
 
@@ -984,13 +986,13 @@ void edanimInit(void) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edanimParamReset();
     edanim_mtl = NuMtlCreate3D(1);
-    ((NUMTL *)edanim_mtl)->diffuse_r = 0.5f;
-    ((NUMTL *)edanim_mtl)->diffuse_g = 0.5f;
-    ((NUMTL *)edanim_mtl)->diffuse_b = 0.5f;
-    ((NUMTL *)edanim_mtl)->attribs.cull_mode = 2;
-    ((NUMTL *)edanim_mtl)->attribs.z_mode = 0;
-    ((NUMTL *)edanim_mtl)->opacity = 1.0f;
-    ((NUMTL *)edanim_mtl)->attribs.alpha_mode = 0;
+    edanim_mtl->diffuse_r = 0.5f;
+    edanim_mtl->diffuse_g = 0.5f;
+    edanim_mtl->diffuse_b = 0.5f;
+    edanim_mtl->attribs.cull_mode = 2;
+    edanim_mtl->attribs.z_mode = 0;
+    edanim_mtl->opacity = 1.0f;
+    edanim_mtl->attribs.alpha_mode = 0;
     NuMtlUpdate(edanim_mtl);
     edanim_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)edanim_mtl_zoff)->diffuse_r = 0.5f;

@@ -922,7 +922,7 @@ i32 GizPanel_UpdateHint(HINT *hint) {
             f32 distance;
             HINT_PANEL *panel = (HINT_PANEL *)GizPanel_FindNearest(WORLD, &object->position, object, &distance, 0);
             if (panel != NULL && (panel->flags & 8) != 0 && (panel->flags & 3) == 0) {
-                f32 radius = (f32)(((f64)((GAMEOBJECT *)Player[index])->bounds_radius + 1.0) * panel->target_scale);
+                f32 radius = (f32)(((f64)Player[index]->bounds_radius + 1.0) * panel->target_scale);
                 radius *= radius;
                 if (distance < radius) {
                     switch (panel->model_variant) {

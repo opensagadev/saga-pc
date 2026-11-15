@@ -653,7 +653,7 @@ struct POST_SHADER_PROGRAM_PC {         // size 0x10
 #if SAGA_NU2API_NU3D_NU3D_INCLUDES_H_PART == 3 && !defined(SAGA_NU2API_NU3D_NU3D_INCLUDES_H_STOP)
 
 typedef struct nuspecial_handle_s { // size 0xc
-    void *scene;                    // 0x0
+    struct NUGSCN_s *scene;         // 0x0
     NUMTX *special;                 // 0x4
     NUMTX *display_special;         // 0x8
 } NUSPECIALHANDLE;
@@ -941,7 +941,7 @@ extern "C" {
 typedef struct nudisplay_list_s {            // size 0x90
     void *allocation;                        // 0x00
     i32 item_count;                          // 0x04
-    void *items;                             // 0x08
+    struct nudisplaylistitem_s *items;       // 0x08
     f32 *fade_ranges;                        // 0x0c
     i32 clip_count;                          // 0x10
     PC_DISPLAY_CLIP_OBJECT *clip_objects;    // 0x14

@@ -153,29 +153,28 @@ static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME *system, BOMB
         if (player != NULL && BombGenerator_PlayerBomb[index] != NULL && player->cable != NULL &&
             ((CABLE_s *)player->cable)->target != NULL && ((CABLE_s *)player->cable)->target->id == id_DRAGBOMB) {
             KillGameObject(((CABLE_s *)player->cable)->target, 4, 0);
-            ((GAMEOBJECT *)Player[index])->cable = NULL;
+            Player[index]->cable = NULL;
         }
         player = Player[index];
         if (player == NULL || (player->flags_1fc_word & 0x80) == 0 || BombGenerator_PlayerBomb[index] == NULL || player->cable != NULL) {
             continue;
         }
-        if (index != 0 && shared_bomb != 0 && ((GAMEOBJECT *)Player[0])->cable != NULL &&
-            ((CABLE_s *)((GAMEOBJECT *)Player[0])->cable)->target != NULL &&
-            ((CABLE_s *)((GAMEOBJECT *)Player[0])->cable)->target->id == id_DRAGBOMB) {
-            bomb = ((CABLE_s *)((GAMEOBJECT *)Player[0])->cable)->target;
+        if (index != 0 && shared_bomb != 0 && Player[0]->cable != NULL && ((CABLE_s *)Player[0]->cable)->target != NULL &&
+            ((CABLE_s *)Player[0]->cable)->target->id == id_DRAGBOMB) {
+            bomb = ((CABLE_s *)Player[0]->cable)->target;
         } else {
             NUVEC position;
             position.x = 0.0f;
             position.y = 0.0f;
             position.z = -2.0f;
-            NuVecRotateY(&position, &position, ((GAMEOBJECT *)Player[index])->unknown_276);
-            NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[index])->collision_position);
+            NuVecRotateY(&position, &position, Player[index]->unknown_276);
+            NuVecAdd(&position, &position, &Player[index]->collision_position);
             bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 0, NULL, NULL, 0, 0);
         }
         if (bomb != NULL) {
             CABLE_RECORD *created = CreateCable(Player[index], bomb, 0);
-            ((GAMEOBJECT *)Player[index])->cable = created;
-            cable = ((GAMEOBJECT *)Player[index])->cable;
+            Player[index]->cable = created;
+            cable = Player[index]->cable;
             if (cable != NULL) {
                 cable->max_length = 1000000000.0f;
             }

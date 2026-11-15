@@ -1056,17 +1056,14 @@ void KeepOnScreen(GAMEOBJECT *object) {
         return;
     }
     if (VehicleArea == 0) {
-        if (object == Player[0] && Player[1] != NULL &&
-            (!(((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) || ((GAMEOBJECT *)Player[1])->character_context == 0x2b)) {
+        if (object == Player[0] && Player[1] != NULL && (!(Player[1]->flags_1fc & 0x80) || Player[1]->character_context == 0x2b)) {
             return;
         }
-        if (object == Player[1] && Player[0] != NULL &&
-            (!(((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) || ((GAMEOBJECT *)Player[0])->character_context == 0x2b)) {
+        if (object == Player[1] && Player[0] != NULL && (!(Player[0]->flags_1fc & 0x80) || Player[0]->character_context == 0x2b)) {
             return;
         }
     }
-    two_players = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) && Player[1] != NULL &&
-                  (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80);
+    two_players = Player[0] != NULL && (Player[0]->flags_1fc & 0x80) && Player[1] != NULL && (Player[1]->flags_1fc & 0x80);
     character = object->character_data->game_character;
     push_distance = VehicleArea != 0 ? character->walk_speed : character->run_speed;
     movement = object->velocity;

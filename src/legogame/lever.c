@@ -609,7 +609,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
         animated_special = &world->level_objects[30].special;
         animation = NuSpecialGetInstAnim(animated_special);
         if (animated_special != NULL && animation != NULL) {
-            NuAnimEndFrameOld(((NUGSCN *)animated_special->scene)->instance_animation_data[animation->animation_index]);
+            NuAnimEndFrameOld(animated_special->scene->instance_animation_data[animation->animation_index]);
         }
     } else {
         animated_special = NULL;

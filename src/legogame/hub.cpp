@@ -702,8 +702,8 @@ static void HubDrawArcadeStats(f32 alpha) {
     i32 first;
     i32 second;
     if (menu == -1) {
-        first = Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0;
-        second = Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0;
+        first = Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0;
+        second = Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0;
     } else {
         first = MissionMenuPacket.active_player[0];
         second = MissionMenuPacket.active_player[1];
@@ -838,7 +838,7 @@ extern "C" {
             Arcade_NeedTwoPlayers_Scale = 1.5f;
             return;
         }
-        character_id = (i16)((GAMEOBJECT *)Player[player_index])->id;
+        character_id = (i16)Player[player_index]->id;
         icon = CDataList[character_id].icon_model;
         if (icon == -1) {
             return;
@@ -884,7 +884,7 @@ extern "C" {
         if (Arcade_BothPlayersActive()) {
             ++AreaGlobals.arcade_ai_kills[player_index];
             PlaySfx("env_padLight_on", NULL);
-            object = (GAMEOBJECT *)Player[player_index];
+            object = Player[player_index];
             if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
             }
@@ -892,14 +892,14 @@ extern "C" {
                 Arcade_AwardPoint(player_index, 0, 0);
                 AreaGlobals.arcade_ai_kills[0] = 0;
                 AreaGlobals.arcade_ai_kills[1] = 0;
-                object = (GAMEOBJECT *)Player[player_index == 0 ? 1 : 0];
+                object = Player[player_index == 0 ? 1 : 0];
                 if (object != NULL && object->coin_packet != NULL) {
                     ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
                 }
             }
         } else {
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
-            object = (GAMEOBJECT *)Player[player_index];
+            object = Player[player_index];
             if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
             }
@@ -914,7 +914,7 @@ extern "C" {
             return;
         }
         if (Arcade_BothPlayersActive()) {
-            object = (GAMEOBJECT *)Player[player_index];
+            object = Player[player_index];
             if (object == NULL || object->coin_packet == NULL) {
                 return;
             }
@@ -923,15 +923,15 @@ extern "C" {
                 return;
             }
             Arcade_AwardPoint(player_index, 0, 0);
-            object = (GAMEOBJECT *)Player[0];
+            object = Player[0];
             if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET *)object->coin_packet)->coins = 0;
             }
-            object = (GAMEOBJECT *)Player[1];
+            object = Player[1];
             if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET *)object->coin_packet)->coins = 0;
             }
-            object = (GAMEOBJECT *)Player[player_index == 0 ? 1 : 0];
+            object = Player[player_index == 0 ? 1 : 0];
             if (object != NULL && object->coin_packet != NULL) {
                 ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
             }
@@ -2145,7 +2145,7 @@ extern "C" {
             i32 active = 0;
             i32 index;
             for (index = 0; index < 2; ++index) {
-                GAMEOBJECT *object = (GAMEOBJECT *)Player[index];
+                GAMEOBJECT *object = Player[index];
                 if (object != NULL && (object->flags_1fc & 0x80) != 0) {
                     ++active;
                     if (NuVecXZDistSqr(&object->position, &PercentHint_TriggerPos, NULL) < 4.0f) {
@@ -2626,8 +2626,8 @@ void HubInitFreePlaySelect(i32 area, i32 first_model, i32 second_model) {
         MissionMenuPacket.player_model[0] = (i16)first;
         MissionMenuPacket.player_model[1] = (i16)second;
     } else {
-        MissionMenuPacket.player_model[0] = Player[0] != NULL ? ((GAMEOBJECT *)Player[0])->id : -1;
-        MissionMenuPacket.player_model[1] = Player[1] != NULL ? ((GAMEOBJECT *)Player[1])->id : -1;
+        MissionMenuPacket.player_model[0] = Player[0] != NULL ? Player[0]->id : -1;
+        MissionMenuPacket.player_model[1] = Player[1] != NULL ? Player[1]->id : -1;
     }
     freeplaymode = 0;
     freeplaytime = 0;
@@ -3052,10 +3052,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     if (SHOPACTIVE != 0) {
         DrawCoinTotalTime = 1;
     } else if (GetMenuID() != 12) {
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 14)) {
+        if (HUB_PC_MENU_PLAYER(Player[0], 14)) {
             available = 1;
         }
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 14)) {
+        if (HUB_PC_MENU_PLAYER(Player[1], 14)) {
             available = 1;
         }
     }
@@ -3080,10 +3080,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     }
     available = 0;
     if (Customiser_MenuAvailable(CharacterCustomiser) != 0) {
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 15)) {
+        if (HUB_PC_MENU_PLAYER(Player[0], 15)) {
             available = 1;
         }
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 15)) {
+        if (HUB_PC_MENU_PLAYER(Player[1], 15)) {
             available = 1;
         }
     }
@@ -3107,10 +3107,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     Customiser_Update(CharacterCustomiser, world);
     available = 0;
     if (Missions_PartyAvailable(NULL) != 0) {
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[0], 20)) {
+        if (HUB_PC_MENU_PLAYER(Player[0], 20)) {
             available = 1;
         }
-        if (HUB_PC_MENU_PLAYER((GAMEOBJECT *)Player[1], 20)) {
+        if (HUB_PC_MENU_PLAYER(Player[1], 20)) {
             available = 1;
         }
     }
@@ -3221,11 +3221,11 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         if (position == NULL) {
             continue;
         }
-        GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
+        GAMEOBJECT *player = Player[0];
         if (player != NULL && (player->flags_1fc & 0x80) != 0 && NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
         }
-        player = (GAMEOBJECT *)Player[1];
+        player = Player[1];
         if (player != NULL && (player->flags_1fc & 0x80) != 0 && NuVecDistSqr(&player->position, position, NULL) < 0.25f) {
             break;
         }
@@ -3248,11 +3248,11 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     } else if (LevLock[4] == 0) {
         i32 selected = -1;
         if (!(HubArea != -1 && HubAreaTime > 0) && !(HubLastArea != -1 && HubEpisodeTime > 0) && candidate != -1) {
-            GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
+            GAMEOBJECT *player = Player[0];
             if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
                 selected = hub_minikitviewer_area;
             } else {
-                player = (GAMEOBJECT *)Player[1];
+                player = Player[1];
                 if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->pad->input_magnitude == 0) {
                     selected = hub_minikitviewer_area;
                 }
@@ -3286,7 +3286,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         }
     }
     Hub_UpdateMiniKits(world);
-    GIZBUILDIT *nearest = GizBuildIt_FindNearest(WORLD, (GAMEOBJECT *)Player[0], 2, ShadowMode);
+    GIZBUILDIT *nearest = GizBuildIt_FindNearest(WORLD, Player[0], 2, ShadowMode);
     if (FadeSys.fade != 0) {
         HubEpisode = -1;
         HubStatsTime = 0;
@@ -3295,7 +3295,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         for (i32 i = 0; HubAreaInfo[i].area_name != NULL && selected == -1; ++i) {
             GIZMO_PC *gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
             if (gizmo != NULL && GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
-                GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
+                GAMEOBJECT *player = Player[0];
                 if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d) {
                     gizmo = (GIZMO_PC *)HubAreaInfo[i].bonus_gizmo;
                     GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
@@ -3307,7 +3307,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         }
         if (LevGizmo[0] != NULL) {
             if (selected == -1 && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) == 0) {
-                GAMEOBJECT *player = (GAMEOBJECT *)Player[0];
+                GAMEOBJECT *player = Player[0];
                 GIZBUILDIT *buildit = (GIZBUILDIT *)HubBuildIt;
                 if (player != NULL && (player->flags_1fc & 0x80) != 0 && player->character_context != 0x2d &&
                     ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit))) {
@@ -4014,7 +4014,7 @@ extern "C" {
     }
 
     i32 Indy_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         AIPATHNODE *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
@@ -4044,7 +4044,7 @@ extern "C" {
             }
             if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
                 instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
-                if (instance == ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
+                if (instance == CurrentTerrain->platforms[owner->supporting_platform_id].scene_object_index) {
                     skip_inside = 0;
                 }
             }
@@ -4075,7 +4075,7 @@ extern "C" {
     }
 
     i32 Indy_PrepareClimb(AIPACKET *packet, APIOBJECT *object, i32 checks) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         AIPATHNODE *source;
         AIPATHNODE *destination;
         if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection) {
@@ -4100,7 +4100,7 @@ extern "C" {
     }
 
     i32 Indy_MidSpecialMove_ClimbUp(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
         f32 distance;
@@ -4155,7 +4155,7 @@ extern "C" {
     }
 
     i32 Indy_MidSpecialMove_ClimbDown(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
         f32 distance;
@@ -4218,7 +4218,7 @@ extern "C" {
     }
 
     i32 Indy_PrepareGrapple(AIPACKET *packet, APIOBJECT *object, i32 checks) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         AIPATHNODE *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
@@ -4288,7 +4288,7 @@ extern "C" {
     f32 IndyGrappleTimeout = -2.0f;
 
     i32 Indy_MidSpecialMove_GrappleStart(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
         if (owner->character_context == LEGOCONTEXT_GRAPPLE && owner->grapple == grapple) {
@@ -4316,7 +4316,7 @@ extern "C" {
     f32 IndyGrappleHeightTolerance = 0.1f;
 
     i32 Indy_MidSpecialMove_GrappleClimb(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
         f32 difference;
         if (owner->character_context != LEGOCONTEXT_GRAPPLE || owner->grapple != grapple) {
@@ -4366,7 +4366,7 @@ extern "C" {
     f32 IndyGrappleReleaseRadius = 1.0f;
 
     i32 Indy_MidSpecialMove_GrappleEnd(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         GRAPPLE_DYNAMIC *grapple = (GRAPPLE_DYNAMIC *)owner->indy_connection_helper->target;
         f32 distance;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
@@ -4395,7 +4395,7 @@ extern "C" {
     }
 
     i32 Indy_MidSpecialMove_SwingPc(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         if (owner->character_context == 0x46) {
             if (owner->ai_packet.special_move_node->position.y > owner->special_move_source->position.y) {
                 if (IndyGrappleCanJump(owner)) {
@@ -4426,7 +4426,7 @@ extern "C" {
     }
 
     i32 Indy_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         if (owner->character_context == 0) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -4457,7 +4457,7 @@ extern "C" {
         GAMEOBJECT *other;
         f32 clearance;
 
-        owner = (GAMEOBJECT *)object->owner;
+        owner = object->owner;
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         if ((packet->path_info.flags & 1) != 0) {
             source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
@@ -4633,7 +4633,7 @@ extern "C" {
     }
 
     i32 Indy_PrepareBigJump(AIPACKET *packet, APIOBJECT *apiobject, i32 checks_unused) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
+        GAMEOBJECT *owner = apiobject->owner;
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
         if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x80) != 0) {
@@ -4653,7 +4653,7 @@ extern "C" {
     }
 
     i32 Indy_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         if (owner->character_context == 0x1f) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
@@ -4722,7 +4722,7 @@ extern "C" {
                     break;
                 case 1:
                     if (packet->path_info.connection->open != 0) {
-                        SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+                        SetSpecialMove(object->owner, far_node, NULL, 0);
                     }
                     break;
             }
@@ -4740,7 +4740,7 @@ extern "C" {
         AIPATHCNX *connection;
         AIPATHNODE *source;
 
-        owner = (GAMEOBJECT *)object->owner;
+        owner = object->owner;
         if (owner->special_move_timer <= 0.0f) {
             destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
             if (owner->character_context == 0x47) {
@@ -4771,7 +4771,7 @@ extern "C" {
     }
 
     i32 Indy_MidSpecialMove_WhipSwingPc(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         switch ((i8)owner->unknown_1087) {
             case 0:
                 if (owner->character_context == 0x47) {
@@ -4807,7 +4807,7 @@ extern "C" {
     };
 
     i32 Indy_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32 checks) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
+        GAMEOBJECT *owner = apiobject->owner;
         INDY_PREPARE_SPECIAL_MOVE *entry;
         u32 flags;
         u32 capabilities;
@@ -4848,7 +4848,7 @@ extern "C" {
         Indy_MidSpecialMove_GrappleEnd, Indy_MidSpecialMove_WhipSwingPc};
 
     i32 Indy_MidSpecialMove(AISYS_PC *system, AIPACKET *packet, APIOBJECT *apiobject) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
+        GAMEOBJECT *owner = apiobject->owner;
         AI_MID_SPECIAL_MOVE_PC callback;
         owner->special_move_timer -= FRAMETIME;
         if (owner->ai_packet.special_move_node != NULL) {
@@ -5007,11 +5007,11 @@ extern "C" void LostTempleC_Update(WORLDINFO *world) {
     f32 exit_distance = MidDistanceFromSockStart(world->sock_sys, &LostTempleExitSockPosition);
     for (i32 i = 0; i < 2; ++i) {
         if (Player[i] != NULL) {
-            f32 distance = NuVecDistSqr(&((GAMEOBJECT *)Player[i])->collision_position, &LevGizObst[0]->evaluated_position, NULL);
+            f32 distance = NuVecDistSqr(&Player[i]->collision_position, &LevGizObst[0]->evaluated_position, NULL);
             if ((f64)distance < (f64)LevGizObst[0]->evaluated_radius * LevGizObst[0]->evaluated_radius) {
                 inside = 1;
-            } else if (((GAMEOBJECT *)Player[i])->sock_position.segment == 1 &&
-                       MidDistanceFromSockStart(world->sock_sys, &((GAMEOBJECT *)Player[i])->sock_position) < exit_distance) {
+            } else if (Player[i]->sock_position.segment == 1 &&
+                       MidDistanceFromSockStart(world->sock_sys, &Player[i]->sock_position) < exit_distance) {
                 goto complete;
             }
         }

@@ -222,7 +222,7 @@ void CruiserDReset(WORLDINFO *world) {
             CruiserD_frame = 1.0f;
             CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeed;
         } else if (CruiserD_direction >= 0) {
-            f32 *end_frame = ((NUGSCN *)CruiserD_Lift.scene)->instance_animation_data[CruiserD_LiftAnim->animation_index];
+            f32 *end_frame = CruiserD_Lift.scene->instance_animation_data[CruiserD_LiftAnim->animation_index];
             CruiserD_LiftAnim->ltime = *end_frame;
             CruiserD_LiftAnim->playing = 0;
             CruiserD_LiftAnim->tfactor = CruiserD_LiftSpeed;
@@ -660,9 +660,8 @@ void VaderA_Update(WORLDINFO *world) {
             KillGameObject(player, 2, 0);
         }
     }
-    if (vader_a.reset_flag == 0 &&
-        ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0 && (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) == 0) ||
-         (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0 && (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) == 0))) {
+    if (vader_a.reset_flag == 0 && ((Player[0] != NULL && Player[0]->dead != 0 && (Player[0]->flags_1f8 & 0x40000) == 0) ||
+                                    (Player[1] != NULL && Player[1]->dead != 0 && (Player[1]->flags_1f8 & 0x40000) == 0))) {
         vader_a.reset_flag = 1;
         ResetLevel(NULL, NULL, 1);
     }
@@ -702,9 +701,8 @@ void VaderB_Update(WORLDINFO *world) {
     if (netclient == 0 && vader_b_complete_msg != NULL && vader_b_complete_msg->value == 1.0f && dat_0087b17c != NULL) {
         GoToNewLevel(VADERC_LDATA->index);
     }
-    if (vader_b_playersDead == 0 &&
-        ((Player[0] != NULL && ((GAMEOBJECT *)Player[0])->dead != 0 && (((GAMEOBJECT *)Player[0])->flags_1f8 & 0x40000) == 0) ||
-         (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->dead != 0 && (((GAMEOBJECT *)Player[1])->flags_1f8 & 0x40000) == 0))) {
+    if (vader_b_playersDead == 0 && ((Player[0] != NULL && Player[0]->dead != 0 && (Player[0]->flags_1f8 & 0x40000) == 0) ||
+                                     (Player[1] != NULL && Player[1]->dead != 0 && (Player[1]->flags_1f8 & 0x40000) == 0))) {
         vader_b_playersDead = 1;
         ResetLevel(NULL, NULL, 1);
     }
@@ -748,18 +746,16 @@ void VaderC_Update(WORLDINFO *world) {
             player->supporting_platform_id != -1) {
             vader_c.big_jump_locator->position = player->lower_position;
             for (i = 0; i < 10; i++) {
-                if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[0])->unknown_281 != 0 &&
-                    ((GAMEOBJECT *)Player[0])->supporting_platform_id == vader_c.platform_ids[i] &&
-                    ((GAMEOBJECT *)Player[0])->position.y >= ((TERRAIN_SET_READER *)CurTerr)
-                                                                 ->platforms[((GAMEOBJECT *)Player[0])->supporting_platform_id]
-                                                                 .scene_object->translation.y) {
+                if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && Player[0]->unknown_281 != 0 &&
+                    Player[0]->supporting_platform_id == vader_c.platform_ids[i] &&
+                    Player[0]->position.y >=
+                        ((TERRAIN_SET_READER *)CurTerr)->platforms[Player[0]->supporting_platform_id].scene_object->translation.y) {
                     vader_c.progress_mask |= 1;
                 }
-                if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && ((GAMEOBJECT *)Player[1])->unknown_281 != 0 &&
-                    ((GAMEOBJECT *)Player[1])->supporting_platform_id == vader_c.platform_ids[i] &&
-                    ((GAMEOBJECT *)Player[1])->position.y >= ((TERRAIN_SET_READER *)CurTerr)
-                                                                 ->platforms[((GAMEOBJECT *)Player[1])->supporting_platform_id]
-                                                                 .scene_object->translation.y) {
+                if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && Player[1]->unknown_281 != 0 &&
+                    Player[1]->supporting_platform_id == vader_c.platform_ids[i] &&
+                    Player[1]->position.y >=
+                        ((TERRAIN_SET_READER *)CurTerr)->platforms[Player[1]->supporting_platform_id].scene_object->translation.y) {
                     vader_c.progress_mask |= 2;
                 }
             }

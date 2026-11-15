@@ -339,7 +339,7 @@ struct AIPACKET { // size 0x20c
 };
 
 typedef struct APIOBJECT {                          // size 0x29c
-    void *owner;                                    // 0x000
+    struct gameobject_s *owner;                     // 0x000
     AIPACKET *ai;                                   // 0x004
     u8 unknown_008[0x48];                           // 0x008
     struct CHARACTER_MODEL_LAYERS *character_model; // 0x050

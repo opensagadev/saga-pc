@@ -1106,8 +1106,7 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         if (NuSpecialExistsFn(&cursor->special) != 0) {
             cursor->instance_animation = NuSpecialGetInstAnim(&cursor->special);
             if (cursor->instance_animation != NULL) {
-                cursor->animation_data =
-                    ((NUGSCN *)cursor->special.scene)->instance_animation_data[cursor->instance_animation->animation_index];
+                cursor->animation_data = cursor->special.scene->instance_animation_data[cursor->instance_animation->animation_index];
                 cursor->end_frame = NuAnimEndFrameOld(cursor->animation_data);
             }
         }

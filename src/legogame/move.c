@@ -690,21 +690,18 @@ f32 GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
 
     if (WORLD->current_level == SPEEDERCHASEA_LDATA
             ? disable_narrow_socks == 0 && object->unknown_280 != 0xff && object->movement_spline_position.spline == NULL &&
-                  Player[0] != NULL && ((GAMEOBJECT *)Player[0])->takeover_source != NULL &&
-                  ((GAMEOBJECT *)Player[0])->id == (u16)id_SPEEDERBIKE && Player[1] != NULL &&
-                  ((GAMEOBJECT *)Player[1])->takeover_source != NULL && ((GAMEOBJECT *)Player[1])->id == (u16)id_SPEEDERBIKE
-            : (object->flags_1fc & 0x80) != 0 && Player[0] != NULL &&
-                  (((GAMEOBJECT *)Player[0])->character_data->model_flags & 0x2000) != 0 &&
-                  ((((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0 || ((GAMEOBJECT *)Player[0])->character_context == 0x24) &&
-                  Player[1] != NULL && (((GAMEOBJECT *)Player[1])->character_data->model_flags & 0x2000) != 0 &&
-                  ((((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0 || ((GAMEOBJECT *)Player[1])->character_context == 0x24)) {
-        combined_height =
-            (f32)((((GAMEOBJECT *)Player[1])->bounds_half_height + ((GAMEOBJECT *)Player[0])->bounds_half_height) * 0.6000000238418579);
-        combined_radius = ((GAMEOBJECT *)Player[1])->bounds_radius + ((GAMEOBJECT *)Player[0])->bounds_radius;
+                  Player[0] != NULL && Player[0]->takeover_source != NULL && Player[0]->id == (u16)id_SPEEDERBIKE && Player[1] != NULL &&
+                  Player[1]->takeover_source != NULL && Player[1]->id == (u16)id_SPEEDERBIKE
+            : (object->flags_1fc & 0x80) != 0 && Player[0] != NULL && (Player[0]->character_data->model_flags & 0x2000) != 0 &&
+                  ((Player[0]->flags_1fc & 0x80) != 0 || Player[0]->character_context == 0x24) && Player[1] != NULL &&
+                  (Player[1]->character_data->model_flags & 0x2000) != 0 &&
+                  ((Player[1]->flags_1fc & 0x80) != 0 || Player[1]->character_context == 0x24)) {
+        combined_height = (f32)((Player[1]->bounds_half_height + Player[0]->bounds_half_height) * 0.6000000238418579);
+        combined_radius = Player[1]->bounds_radius + Player[0]->bounds_radius;
         outer_distance = (f32)(NuTimeBarColumnStep * combined_radius);
         combined_radius = combined_radius * combined_radius;
         outer_distance = outer_distance * outer_distance;
-        distance = NuVecXZDistSqr(&((GAMEOBJECT *)Player[0])->position, &((GAMEOBJECT *)Player[1])->position, NULL);
+        distance = NuVecXZDistSqr(&Player[0]->position, &Player[1]->position, NULL);
         if (distance < combined_radius) {
             blend = 1.0f;
         } else if (distance < outer_distance) {
@@ -719,7 +716,7 @@ f32 GetVehicleHoverHeight(GAMEOBJECT *object, f32 *separation_offset) {
         } else {
             correction = 0.0f;
         }
-        if (object == (GAMEOBJECT *)Player[0]) {
+        if (object == Player[0]) {
             adjusted_height = height + offset;
             if (separation_offset != NULL) {
                 *separation_offset = offset;
@@ -965,21 +962,21 @@ void MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **followed_obj
 
     (void)mode;
     object->target_velocity.x = object->target_velocity.y = object->target_velocity.z = 0.0f;
-    if (object == (GAMEOBJECT *)Player[0]) {
+    if (object == Player[0]) {
         other = Player[1];
         position = other->position;
-    } else if (object == (GAMEOBJECT *)Player[1]) {
+    } else if (object == Player[1]) {
         other = Player[0];
         position = other->position;
     } else {
         position = v000;
         count = 0.0f;
         if (Player[0] != NULL) {
-            NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[0])->position);
+            NuVecAdd(&position, &position, &Player[0]->position);
             count += 1.0f;
         }
         if (Player[1] != NULL) {
-            NuVecAdd(&position, &position, &((GAMEOBJECT *)Player[1])->position);
+            NuVecAdd(&position, &position, &Player[1]->position);
             count += 1.0f;
         }
         if (count > 0.0f) {
@@ -1208,12 +1205,12 @@ i32 TwistLevel(LEVELDATA_PC *level) {
 void AveragePlayerCurrentSpeedMul(void) {
     i32 count = 0;
     avg_currentspeed_mul = 0.0f;
-    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) != 0) {
-        avg_currentspeed_mul = (f32)((f64)((GAMEOBJECT *)Player[0])->current_speed_mul + 0.0);
+    if (Player[0] != NULL && (Player[0]->flags_1fc_word & 0x80) != 0) {
+        avg_currentspeed_mul = (f32)((f64)Player[0]->current_speed_mul + 0.0);
         count = 1;
     }
-    if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) != 0) {
-        avg_currentspeed_mul = (f32)((f64)((GAMEOBJECT *)Player[1])->current_speed_mul + (f64)avg_currentspeed_mul);
+    if (Player[1] != NULL && (Player[1]->flags_1fc_word & 0x80) != 0) {
+        avg_currentspeed_mul = (f32)((f64)Player[1]->current_speed_mul + (f64)avg_currentspeed_mul);
         ++count;
     }
     if (count > 1) {
@@ -1774,7 +1771,7 @@ void TurnCodeCamSafe(GAMEOBJECT *object, NUMTX *matrix) {
 }
 
 static void IsTurnRequested(GAMEOBJECT *object, u16 input_angle, i32 *turn, i32 finish_turn) {
-    if (object == (GAMEOBJECT *)Player[0] || object == (GAMEOBJECT *)Player[1]) {
+    if (object == Player[0] || object == Player[1]) {
         f32 waggle = object->pad->waggle_magnitude;
         f32 magnitude;
         *(u32 *)&magnitude = *(u32 *)&waggle & 0x7fffffff;
@@ -7736,8 +7733,7 @@ f32 FindGunshipHoverHeight(GAMEOBJECT *object) {
     if (WORLD->current_level != BONUS_GUNSHIPA_LDATA) {
         height = VehicleGunshipHoverOther;
     }
-    if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) && Player[1] != NULL &&
-        (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80)) {
+    if (Player[0] != NULL && (Player[0]->flags_1fc & 0x80) && Player[1] != NULL && (Player[1]->flags_1fc & 0x80)) {
         if (object == Player[0]) {
             return VehicleGunshipHoverSeparation + height;
         }
@@ -8178,8 +8174,8 @@ void PodCollisionCode(GAMEOBJECT *object) {
 
 f32 FindPodHoverHeight(GAMEOBJECT *object) {
     f32 height = 0.15f;
-    if (object == Player[1] && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0) {
-        f32 distance_squared = NuVecDistSqr(&((GAMEOBJECT *)Player[0])->position, &((GAMEOBJECT *)Player[1])->position, NULL);
+    if (object == Player[1] && (Player[0]->flags_1fc & 0x80) != 0) {
+        f32 distance_squared = NuVecDistSqr(&Player[0]->position, &Player[1]->position, NULL);
         if (distance_squared < 4.0f) {
             f32 distance = NuFsqrt(distance_squared);
             i32 angle = (i32)((1.0 - (f64)distance * 0.5) * 16384.0);

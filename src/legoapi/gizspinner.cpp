@@ -87,9 +87,8 @@ static GAMEOBJECT *SpinnerOwner(GIZSPINNER_s *spinner) {
         return NULL;
     }
     for (i32 index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && ((GAMEOBJECT *)Player[index])->character_context == LEGOCONTEXT_PUSHSPINNER &&
-            ((GAMEOBJECT *)Player[index])->grapple == spinner) {
-            return (GAMEOBJECT *)Player[index];
+        if (Player[index] != NULL && Player[index]->character_context == LEGOCONTEXT_PUSHSPINNER && Player[index]->grapple == spinner) {
+            return Player[index];
         }
     }
     return NULL;
@@ -947,7 +946,7 @@ extern "C" i32 GizSpinner_UsingSpecial(void *results_ptr, void *world_ptr, i32 c
 extern "C" {
     static void GizSpinner_BoltHitPlat(GIZSPINNER_s *spinner, BOLT_PC *bolt, SPINNER_HIT_FLAGS_STACK argument) {
         u8 *hit_flags = argument.value;
-        GAMEOBJECT *owner = (GAMEOBJECT *)bolt->owner;
+        GAMEOBJECT *owner = bolt->owner;
         if (spinner == NULL || (spinner->state_flags & 8) != 0) {
             return;
         }
@@ -1320,8 +1319,8 @@ extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused
         if ((spinner->flags & 8) != 0 && ShadowMode == 0) {
             spinner->state_flags = (spinner->state_flags & ~0x40u) | 0x20;
             if (SpinnerOwner(spinner) != NULL) {
-                ((GAMEOBJECT *)Player[index])->character_context = -1;
-                ((GAMEOBJECT *)Player[index])->grapple = NULL;
+                Player[index]->character_context = -1;
+                Player[index]->grapple = NULL;
             }
         }
         if (spinner->output_pause_time > 0.0f) {

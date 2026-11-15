@@ -186,11 +186,11 @@ void Bolt_Debris_LSW(BOLT_PC *bolt, NUVEC *points, i32 point, NUVEC *unused, i32
         GameCam_NewShake(GameCam, 0.75f, 0.75f, 1.0f);
         NewRumbleAllPlayers(0.5f, 0.0f, 0, 0);
     }
-    if (no_explosion == 0 && bolt->owner != NULL && (((GAMEOBJECT *)bolt->owner)->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x12) &&
+    if (no_explosion == 0 && bolt->owner != NULL && (bolt->owner->flags_1fc & 0x80) != 0 && Cheat_IsOn(0x12) &&
         (world->area == NULL || !(world->area->flags & 1))) {
         EXPLOSION_PC *explosion;
         AddGameDebris(WORLD->game_debris_sys, 0x49, &bolt->position);
-        NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, 0.3f, 0);
+        NewRumble(bolt->owner->pad->bound_pad, 0.3f, 0);
         PlaySfx("exp_thermalDet", points);
         GameCam_HitJudder();
         explosion = AddExplosion(&bolt->position, (f32)(AreaPickupScale * 0.5), 0.25f, NULL, -1, 0xa067);

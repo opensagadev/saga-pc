@@ -552,7 +552,7 @@ GAMEANIMOBJ *GameAnimSet_AddObject(GAMEANIMSET *set, NUSPECIALHANDLE *special, f
         object->special = *special;
         object->instance_animation = NuSpecialGetInstAnim(&object->special);
         if (object->instance_animation != NULL) {
-            object->animation = ((NUGSCN *)object->special.scene)->instance_animation_data[object->instance_animation->animation_index];
+            object->animation = object->special.scene->instance_animation_data[object->instance_animation->animation_index];
             last_frame = NuSpecialGetAnimEndFrame(&object->special);
             if (last_frame > 0.0f) {
                 if (end_frame > last_frame) {

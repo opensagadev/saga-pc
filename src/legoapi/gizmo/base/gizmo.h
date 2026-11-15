@@ -120,7 +120,7 @@ extern "C" {
 #endif
     i32 GizmoGetVisibility(void *, void *);
     void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name);
-    extern void *gizmotypes;
+    extern GIZMOTYPES *gizmotypes;
     void GizmoSysClearLevelProgress(void *owner, i32 index);
     extern i32 gizmoerrorlogsize;
     i32 GizmoGetOutput(void *system, void *gizmo, i32 output, i32 mode);

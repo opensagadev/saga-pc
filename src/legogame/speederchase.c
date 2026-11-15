@@ -96,7 +96,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
     for (i = 0; i < 2; ++i) {
         object = Player[i];
         if (object != NULL && (object->flags_1fc & 0x80) != 0 && (object->flags_1f8 & 0x40000) == 0) {
-            if (GoingForwardsAlongNarrowSock(object) == 0 || ((GAMEOBJECT *)Player[i])->character_context == 0x2a) {
+            if (GoingForwardsAlongNarrowSock(object) == 0 || Player[i]->character_context == 0x2a) {
                 players_going_forward = 0;
                 break;
             }

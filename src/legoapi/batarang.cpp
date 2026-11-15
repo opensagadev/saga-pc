@@ -855,7 +855,7 @@ extern "C" void Batarangs_Update(void) {
 extern "C" {
 
     i32 Batman_MidSpecialMove_Default(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         u32 capabilities = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
@@ -885,7 +885,7 @@ extern "C" {
             }
             if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
                 NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle) ==
-                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[owner->supporting_platform_id].scene_object_index) {
+                    CurrentTerrain->platforms[owner->supporting_platform_id].scene_object_index) {
                 skip_inside = 0;
             }
         } else {
@@ -942,7 +942,7 @@ extern "C" {
         f64 tolerance;
         f32 clearance;
 
-        owner = (GAMEOBJECT *)object->owner;
+        owner = object->owner;
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
         if ((packet->path_info.flags & 1) != 0) {
             source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
@@ -1131,7 +1131,7 @@ extern "C" {
         AIPATHCNX *connection;
         AIPATHNODE *source;
 
-        owner = (GAMEOBJECT *)object->owner;
+        owner = object->owner;
         if (owner->special_move_timer <= 0.0f) {
             destination = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
             if (owner->character_context == 0x0f) {
@@ -1162,7 +1162,7 @@ extern "C" {
     }
 
     i32 Batman_MidSpecialMove_SpecialUse(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         switch ((i8)owner->unknown_1087) {
             case 0:
                 if (owner->character_context == 0x0f) {
@@ -1188,7 +1188,7 @@ extern "C" {
     }
 
     i32 Batman_PrepareBigJump(AIPACKET *packet, APIOBJECT *apiobject, i32 checks_unused) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
+        GAMEOBJECT *owner = apiobject->owner;
         AIPATHCNX *connection = packet->path_info.connection;
         AIPATHNODE *destination = &packet->path_info.path->nodes[connection->node_indices[packet->path_info.direction == 0]];
         if ((connection->traversal_flags[packet->path_info.direction] & 0x800) != 0) {
@@ -1207,7 +1207,7 @@ extern "C" {
     }
 
     i32 Batman_MidSpecialMove_BigJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         if (owner->character_context == 0x1f) {
             owner->launch_origin = owner->ai_packet.special_move_node->position;
             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
@@ -1220,7 +1220,7 @@ extern "C" {
     i32 Batman_PrepareGlide(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         if (TryToTeleportToNextNode(owner, destination, 1) != 0) {
             return 1;
         }
@@ -1233,7 +1233,7 @@ extern "C" {
     }
 
     i32 Batman_MidSpecialMove_Glide(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
         owner->ai_packet.movement_stopping_distance = 0.0f;
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
@@ -1256,7 +1256,7 @@ extern "C" {
     }
 
     i32 Batman_PrepareClimb(AIPACKET *packet, APIOBJECT *object, i32 checks) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         AIPATHNODE *source;
         AIPATHNODE *destination;
         if (owner->indy_climb == NULL || owner->indy_climb->connection != packet->path_info.connection) {
@@ -1281,7 +1281,7 @@ extern "C" {
     }
 
     i32 Batman_MidSpecialMove_ClimbUp(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
         f32 distance;
@@ -1334,7 +1334,7 @@ extern "C" {
     }
 
     i32 Batman_MidSpecialMove_ClimbDown(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         INDY_GUIDELINE_PC *guide;
         i32 endpoint;
         f32 distance;
@@ -1389,7 +1389,7 @@ extern "C" {
     }
 
     i32 Batman_PrepareGrapple(AIPACKET *packet, APIOBJECT *object, i32 checks_unused) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         AIPATHNODE *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
@@ -1413,7 +1413,7 @@ extern "C" {
     }
 
     i32 Batman_MidSpecialMove_Grapple(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         if (owner->character_context == 0x46) {
             GameObjectSetCanUse(owner, owner->grapple, 1, 0x32, 0.0f);
             if (owner->ai_packet.special_move_node->position.y > owner->special_move_source->position.y) {
@@ -1445,7 +1445,7 @@ extern "C" {
     }
 
     i32 Batman_MidSpecialMove_StartJump(AISYS_PC *system, AIPACKET *packet, APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         if (owner->character_context == 0) {
             SetSpecialMove(owner, owner->ai_packet.special_move_node, NULL, 0);
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -1512,7 +1512,7 @@ extern "C" {
                     break;
                 case 1:
                     if (current->open != 0) {
-                        SetSpecialMove((GAMEOBJECT *)object->owner, far_node, NULL, 0);
+                        SetSpecialMove(object->owner, far_node, NULL, 0);
                     }
                     break;
             }
@@ -1531,7 +1531,7 @@ extern "C" {
         i32 to;
         AIPATHNODE *target;
 
-        object = (GAMEOBJECT *)apiobject->owner;
+        object = apiobject->owner;
         connection = packet->path_info.connection;
         from = connection->node_indices[packet->path_info.direction];
         to = connection->node_indices[packet->path_info.direction == 0];
@@ -1578,7 +1578,7 @@ extern "C" {
         GAMEOBJECT *participant;
         AIPATHNODE *destination;
 
-        owner = (GAMEOBJECT *)object->owner;
+        owner = object->owner;
         if ((owner->character_data->game_character->flags_090 & 0x40) != 0) {
             participant = owner->takeover_source;
             if (participant != NULL) {
@@ -1609,7 +1609,7 @@ extern "C" {
 #pragma data_seg()
 
     i32 Batman_PreparingForSpecialMove(AIPACKET *packet, APIOBJECT *apiobject, i32 checks) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)apiobject->owner;
+        GAMEOBJECT *owner = apiobject->owner;
         u32 capabilities;
         BATMAN_PREPARE_PC *entry;
         if (owner->character_context == 0x5b) {

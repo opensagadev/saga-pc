@@ -1273,7 +1273,7 @@ static i32 FindFreeBikePart(void) {
 }
 
 void SpeederPart_Update(PART_PC *part) {
-    f32 distance = ((GAMEOBJECT *)(Player[0]))->horizontal_velocity_magnitude * FRAMETIME * ((f64)(1.1f));
+    f32 distance = Player[0]->horizontal_velocity_magnitude * FRAMETIME * ((f64)(1.1f));
     f32 time = part->time_remaining / part->initial_time;
     KILLPARTS_BIKE *bike = &KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))];
     NUVEC *camera = ((NUVEC *)(&GameCam->mtx.m30));
@@ -1332,13 +1332,13 @@ void SpeederPart_Update(PART_PC *part) {
         tilt.bits &= 0x7fffffff;
         spin = ((u16)(((i32)((NU_SIN_LUT(((i32)(time * 16384.0f + 32768.0f + 16384.0f))) + 1.0f) * 196608.0f))));
         part->rotation_x = SeekRot(part->rotation_x, 0xd556, 10.0f);
-        part->rotation_y = SeekRot(part->rotation_y, ((GAMEOBJECT *)(Player[0]))->unknown_276 + 0x4000, 10.0f);
+        part->rotation_y = SeekRot(part->rotation_y, Player[0]->unknown_276 + 0x4000, 10.0f);
         part->rotation_z = SeekRot(part->rotation_z, spin, 10.0f);
         GameShadow(NULL, &previous_position, 3.0f, 0);
         velocity = v001;
         turn = ((u16)(((i32)(2730.0f - (1.0f - tilt.value) * 5461.0f))));
         NuVecRotateY(&velocity, &velocity, turn);
-        NuVecScale(&velocity, &velocity, ((GAMEOBJECT *)(Player[0]))->horizontal_velocity_magnitude / FRAMETIME);
+        NuVecScale(&velocity, &velocity, Player[0]->horizontal_velocity_magnitude / FRAMETIME);
         velocity.y = 1.0f / NU_COS_LUT(part->rotation_x);
         position.x = SeekLinearF(previous_position.x, camera->x, FRAMETIME * ((f64)(1.8f)));
         position.y = SeekLinearF(previous_position.y, camera->y, FRAMETIME * ((f64)(1.8f)));
@@ -2353,8 +2353,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             if (result == 1) {
                 GameAudio_PlaySfx(0x22, &player_tag_to->collision_position, 0, 0);
                 GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-                RememberPlayerIDs(0, Player[0] != NULL ? (i16)((GAMEOBJECT *)Player[0])->id : -1,
-                                  Player[1] != NULL ? (i16)((GAMEOBJECT *)Player[1])->id : -1);
+                RememberPlayerIDs(0, Player[0] != NULL ? (i16)Player[0]->id : -1, Player[1] != NULL ? (i16)Player[1]->id : -1);
                 player_tag_to->hud_icon_timer = 2.0f;
                 player_tag_from->hud_icon_timer = 2.0f;
             }
@@ -2850,7 +2849,7 @@ i32 KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVE
             other = 0;
         }
         if (other != -1) {
-            if (Player[other] != NULL && (((GAMEOBJECT *)Player[other])->flags_1f8 & 0x40000) != 0) {
+            if (Player[other] != NULL && (Player[other]->flags_1f8 & 0x40000) != 0) {
                 active = 1;
             }
             Arcade_PlayerKilled(other, active);

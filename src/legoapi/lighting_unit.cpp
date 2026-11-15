@@ -360,7 +360,7 @@ extern "C" {
     }
 
     void SetCreatureLights(APIOBJECT *object) {
-        GAMEOBJECT *owner = (GAMEOBJECT *)object->owner;
+        GAMEOBJECT *owner = object->owner;
         GAME_LIGHT_VIEW *view = (GAME_LIGHT_VIEW *)owner;
         NUVEC ambient;
         NUVEC intensity[3];
@@ -525,7 +525,7 @@ extern "C" {
         *radius = -1.0f;
         i32 count = 0;
         for (i32 i = 0; i < 2; ++i) {
-            if (Player[i] != NULL && (static_cast<GAMEOBJECT *>(Player[i])->flags_1fc & 0x80) != 0) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & 0x80) != 0) {
                 NuVecAdd(center, center, &reinterpret_cast<SHADOW_PLAYER_BOUNDS *>(Player[i])->center);
                 *radius = *radius > reinterpret_cast<SHADOW_PLAYER_BOUNDS *>(Player[i])->radius
                               ? *radius

@@ -472,8 +472,7 @@ GIZMOBLOWUPTYPE *GizmoBlowupTypeAdd(WORLDINFO *world, NUSPECIALHANDLE *special, 
     type->animation_start_frame = 1.0f;
     animation = NuSpecialGetInstAnim(&type->animated_special);
     if (animation) {
-        type->animation_end_frame =
-            NuAnimEndFrameOld(((NUGSCN *)type->animated_special.scene)->instance_animation_data[animation->animation_index]);
+        type->animation_end_frame = NuAnimEndFrameOld(type->animated_special.scene->instance_animation_data[animation->animation_index]);
     } else {
         type->animation_end_frame = 1.0f;
     }
@@ -953,8 +952,7 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
                 UpdateMidPos(blowup);
             }
             if (animation) {
-                end_frame = NuAnimEndFrameOld(
-                    ((NUGSCN *)blowup->type->animated_special.scene)->instance_animation_data[animation->animation_index]);
+                end_frame = NuAnimEndFrameOld(blowup->type->animated_special.scene->instance_animation_data[animation->animation_index]);
                 if (blowup->status_flags & 0x80000) {
                     if (!(blowup->type->animation_runtime_flags & 1) &&
                         ((blowup->type->animation_flags & 0x2000) || (blowup->status_flags & 0x400000))) {
@@ -1327,9 +1325,8 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
                 type.animation_start_frame = 1.0f;
                 animation = NuSpecialGetInstAnim(&type.animated_special);
                 type.animation_end_frame =
-                    animation != NULL
-                        ? NuAnimEndFrameOld(((NUGSCN *)type.animated_special.scene)->instance_animation_data[animation->animation_index])
-                        : 1.0f;
+                    animation != NULL ? NuAnimEndFrameOld(type.animated_special.scene->instance_animation_data[animation->animation_index])
+                                      : 1.0f;
             }
             if (version >= 15) {
                 type.unknown_0f8 = (u8)EdFileReadChar();
@@ -1803,7 +1800,7 @@ void GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP_PC *blowup, i32 hit_t
         case 1:
             BoltSys->debris(bolt, position, -1, NULL, 0);
             if (bolt->owner != NULL) {
-                NewRumble(((GAMEOBJECT *)bolt->owner)->pad->bound_pad, 0.6f, 0);
+                NewRumble(bolt->owner->pad->bound_pad, 0.6f, 0);
             }
             Bolt_End(bolt, 1);
             Bolt_PlayHitSfx(bolt);
@@ -2259,8 +2256,8 @@ void GizmoBlowupBurstDraw(void *world_pointer, void *data, f32 frame_time) {
                 special = &type->animated_special;
                 animation = NuSpecialGetInstAnim(special);
                 if (animation != NULL && (blowup->status_flags & 0x80000)) {
-                    end_frame = NuAnimEndFrameOld(
-                        ((NUGSCN *)blowup->type->animated_special.scene)->instance_animation_data[animation->animation_index]);
+                    end_frame =
+                        NuAnimEndFrameOld(blowup->type->animated_special.scene->instance_animation_data[animation->animation_index]);
                     frame = blowup->type->animation_base_frame;
                     if (blowup->animation_offset + frame > end_frame) {
                         end_frame = blowup->animation_offset + frame - end_frame;

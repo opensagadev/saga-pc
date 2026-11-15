@@ -521,8 +521,8 @@ extern "C" {
 #undef TERRAIN_HP_EDGE
 #undef TERRAIN_HP_VERTEX
 // Re-reads the wall list after every call.
-#define TERRAIN_HWS_A (((TERRAIN_WALL_POINT *)WallSplList)[i].position)
-#define TERRAIN_HWS_B (((TERRAIN_WALL_POINT *)WallSplList)[i + 1].position)
+#define TERRAIN_HWS_A (WallSplList[i].position)
+#define TERRAIN_HWS_B (WallSplList[i + 1].position)
 // NuFabs: the masked bits are copied into a second float (I16).
 #define TERRAIN_FABS(value, temp, out) ((temp) = (value), *(i32 *)&(out) = *(i32 *)&(temp) & 0x7fffffff, (out))
 
@@ -582,8 +582,8 @@ extern "C" {
                         query->terrain_group_index = -1;
                         query->shape_adjusted = 4;
                         query->surface = NULL;
-                        TerrWallTab[0] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[0];
-                        TerrWallTab[1] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[1];
+                        TerrWallTab[0] = WallSplList[i].material[0];
+                        TerrWallTab[1] = WallSplList[i].material[1];
                         hit = 1.0f;
                     }
                 }
@@ -656,8 +656,8 @@ extern "C" {
             query->shape_adjusted = 4;
             query->terrain_group_index = -1;
             query->surface = NULL;
-            TerrWallTab[0] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[0];
-            TerrWallTab[1] = ((TERRAIN_WALL_POINT *)WallSplList)[i].material[1];
+            TerrWallTab[0] = WallSplList[i].material[0];
+            TerrWallTab[1] = WallSplList[i].material[1];
             hit = 1.0f;
         }
         TerI->unclamped_hit_time = TerI->hit_time;
@@ -701,7 +701,7 @@ extern "C" {
 
         for (;;) {
             while (scan[0] > 0) {
-                TERRAIN_GROUP *groups = ((TERRAIN_SET_PC *)CurrentTerrain)->groups;
+                TERRAIN_GROUP *groups = CurrentTerrain->groups;
                 TERRAIN_SHAPE **entry = reinterpret_cast<TERRAIN_SHAPE **>(scan + 2);
                 query->local_start.x = query->position.x - groups[scan[1]].origin.x;
                 query->local_start.y = query->position.y - groups[scan[1]].origin.y;
@@ -764,7 +764,7 @@ extern "C" {
         }
 
         if (query->hit_type != TERRAIN_HIT_TYPE_NONE && query->terrain_group_index != -1) {
-            TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
+            TERRAIN_GROUP *group = &CurrentTerrain->groups[query->terrain_group_index];
             if (group->chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
                 plathitid = group->scene_index;
             }
@@ -873,7 +873,7 @@ extern "C" {
             return;
         }
 
-        TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
+        TERRAIN_GROUP *group = &CurrentTerrain->groups[query->terrain_group_index];
         if (group->chunk_type != TERRAIN_CHUNK_GROUP_SECONDARY) {
             return;
         }
@@ -907,7 +907,7 @@ extern "C" {
                     impact_normal.z *= inverse_normal_length;
                 }
 
-                PlatImpactId = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index].scene_index;
+                PlatImpactId = CurrentTerrain->groups[query->terrain_group_index].scene_index;
                 PlatImpactTer = *query->surface;
                 PlatImpactNorm = impact_normal;
                 break;
@@ -920,7 +920,7 @@ extern "C" {
         TerrainMoveImpactData();
 
         TerrainQuery_s *query = TerI;
-#define TERRAIN_TI_GROUP (((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index])
+#define TERRAIN_TI_GROUP (CurrentTerrain->groups[query->terrain_group_index])
 #define TERRAIN_TI_PLATFORM_GROUP (query->terrain_group_index != -1 && TERRAIN_TI_GROUP.chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY)
 #define TERRAIN_TI_WALL_OVERRIDE                                                                                                           \
     (query->terrain_group_index >= 0 && (query->surface->normal_flags & TERRAIN_SURFACE_CLASS_MASK) == TERRAIN_SURFACE_CLASS_WALL_OVERRIDE)
@@ -1028,7 +1028,7 @@ extern "C" {
                     query->position.y += query->movement_normal.y * (f64)0.0003f;
 
                     if (TERRAIN_TI_PLATFORM_GROUP) {
-                        ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[TERRAIN_TI_GROUP.scene_index].flags |= TERRAIN_PLATFORM_FLAG_COLLIDED;
+                        CurrentTerrain->platforms[TERRAIN_TI_GROUP.scene_index].flags |= TERRAIN_PLATFORM_FLAG_COLLIDED;
                     }
                 }
                 query->flags &= ~TERRAIN_QUERY_FLAG_PREVIOUS_NORMAL;
@@ -1214,7 +1214,7 @@ extern "C" {
             }
         }
 
-        castnum = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index].terrain_group_index;
+        castnum = CurrentTerrain->platforms[platform_index].terrain_group_index;
     }
 
     i32 PlatformChecks(i32 count, NUVEC *movement) {
@@ -1223,8 +1223,8 @@ extern "C" {
             CurTrackInfo->platform_contact_state == 0 || TerConTol == 0.0f) {
             return count;
         }
-#define TERRAIN_PC_TRACK_PLATFORM (((TERRAIN_SET_PC *)CurrentTerrain)->platforms[track->platform_index])
-#define TERRAIN_PC_TRACK_MATRIX (static_cast<NUMTX *>(TERRAIN_PC_TRACK_PLATFORM.scene_object))
+#define TERRAIN_PC_TRACK_PLATFORM (CurrentTerrain->platforms[track->platform_index])
+#define TERRAIN_PC_TRACK_MATRIX (TERRAIN_PC_TRACK_PLATFORM.scene_object)
         TerrainQuery_s *query = static_cast<TerrainQuery_s *>(NuScratchAlloc32(sizeof(TerrainQuery_s)));
         i16 *input = static_cast<i16 *>(old_query->scan_list);
         TerI = query;
@@ -1309,17 +1309,17 @@ extern "C" {
         }
         {
             {
-                TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
+                TERRAIN_GROUP *group = &CurrentTerrain->groups[query->terrain_group_index];
                 i32 platform_index = group->scene_index;
                 if (movement->y > TerConTol * 0.5) {
-                    TERRAIN_PLATFORM *platform = &((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index];
-                    if (movement->y > TerConTol * 0.5 + static_cast<NUMTX *>(platform->scene_object)->m31 - platform->previous_matrix.m31) {
+                    TERRAIN_PLATFORM *platform = &CurrentTerrain->platforms[platform_index];
+                    if (movement->y > TerConTol * 0.5 + platform->scene_object->m31 - platform->previous_matrix.m31) {
                         NuScratchRelease();
                         return count;
                     }
                 }
                 if (query->movement_normal.y >= 0.707f && query->terrain_group_index >= 0 && group->chunk_type == 1) {
-                    ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index].flags |= 2;
+                    CurrentTerrain->platforms[group->scene_index].flags |= 2;
                 }
                 old_query->platform_position.x = query->platform_position.x;
                 track = CurTrackInfo;
@@ -1342,7 +1342,7 @@ extern "C" {
                 i32 clear = TerrainPlatformMoveCheck(&TerI->platform_position, &TerI->platform_normal, platform_index, 1, 0);
                 current = TerI;
                 if (current->hit_type != 0 && current->terrain_group_index >= 0) {
-                    TERRAIN_GROUP *hit_group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[current->terrain_group_index];
+                    TERRAIN_GROUP *hit_group = &CurrentTerrain->groups[current->terrain_group_index];
                     if (hit_group->chunk_type == 1) {
                         CurTrackInfo->platform_index = hit_group->scene_index;
                     }
@@ -1382,7 +1382,7 @@ extern "C" {
                     }
                     current->hit_flags[1] = 1;
                     PlatformConnect(reinterpret_cast<char *>(old_query->hit_flags), &old_query->movement, movement,
-                                    ((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index].scene_index);
+                                    CurrentTerrain->groups[query->terrain_group_index].scene_index);
                 }
                 NuScratchRelease();
                 TerI = old_query;
@@ -1396,11 +1396,11 @@ extern "C" {
     i32 TerrainPlatformEmbedded(NUVEC *movement_delta) {
         i32 transformed_count = 0;
         TerrainQuery_s *old_query = TerI;
-        i32 platform_index = ((TERRAIN_SET_PC *)CurrentTerrain)->groups[old_query->terrain_group_index].scene_index;
-#define TERRAIN_TPE_PLATFORM (((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index])
-#define TERRAIN_TPE_PREVIOUS (reinterpret_cast<NUMTX *>(&TERRAIN_TPE_PLATFORM.previous_matrix))
-#define TERRAIN_TPE_MATRIX (static_cast<NUMTX *>(TERRAIN_TPE_PLATFORM.scene_object))
-#define TERRAIN_TPE_GROUP_MATRIX (static_cast<NUMTX *>(((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index].scene_object))
+        i32 platform_index = CurrentTerrain->groups[old_query->terrain_group_index].scene_index;
+#define TERRAIN_TPE_PLATFORM (CurrentTerrain->platforms[platform_index])
+#define TERRAIN_TPE_PREVIOUS (&TERRAIN_TPE_PLATFORM.previous_matrix)
+#define TERRAIN_TPE_MATRIX (TERRAIN_TPE_PLATFORM.scene_object)
+#define TERRAIN_TPE_GROUP_MATRIX (CurrentTerrain->platforms[group->scene_index].scene_object)
 #define TERRAIN_TPE_SURFACE (&ScaleTerrain[transformed_count])
 #define TERRAIN_TPE_LOAD_VERTEX(index)                                                                                                     \
     vertices[index].x = source->vertices[index].x;                                                                                         \
@@ -1499,7 +1499,7 @@ extern "C" {
         query->position.z = old_query->position.z - query->movement.z * (f64)0.91f;
 
         i32 count = 0;
-        TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[old_query->terrain_group_index];
+        TERRAIN_GROUP *group = &CurrentTerrain->groups[old_query->terrain_group_index];
         TERRAIN_SHAPE_BATCH *batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(group->data);
         if (1.0f == query->object_scale) {
             if (TERRAIN_TPE_PLATFORM.flags & 1) {
@@ -1724,10 +1724,10 @@ extern "C" {
             flags[0] = 0;
         }
         TerI->position = new_query->position;
-        if (flags[0] != 0 && ((TERRAIN_SET_PC *)CurrentTerrain)->groups[castnum].chunk_type == 1) {
+        if (flags[0] != 0 && CurrentTerrain->groups[castnum].chunk_type == 1) {
             TerI->hit_flags[1] = 1;
             PlatformConnect(reinterpret_cast<char *>(old_query->hit_flags), &old_query->movement, movement_delta,
-                            ((TERRAIN_SET_PC *)CurrentTerrain)->groups[castnum].scene_index);
+                            CurrentTerrain->groups[castnum].scene_index);
         } else if (CurTrackInfo != NULL) {
             CurTrackInfo->flags &= ~TERRAIN_TRACK_FLAG_CONNECTED;
         }
@@ -1740,7 +1740,7 @@ extern "C" {
     }
 
     i32 TerrainPlatformMoveCheck(NUVEC *position, NUVEC *normal, i32 platform_index, i32 resolve_impact, i32 keep_embedded_disabled) {
-        const i32 group_index = ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[platform_index].terrain_group_index;
+        const i32 group_index = CurrentTerrain->platforms[platform_index].terrain_group_index;
         TerrainQuery_s *query = TerI;
         i16 *entry = static_cast<i16 *>(query->scan_list);
         while (entry[0] > 0) {
@@ -1984,7 +1984,7 @@ extern "C" {
     }
 
     TERRAIN_TRACK_SLOT *AllocTerrId() {
-        TERRSET *terrain = ((TERRAIN_SET_PC *)CurrentTerrain);
+        TERRSET *terrain = CurrentTerrain;
         if (terrain == NULL) {
             return NULL;
         }
@@ -2011,7 +2011,7 @@ extern "C" {
 }
 
 extern "C" i32 TerrainFreeId(void *id) {
-    TERRAIN_SET_PC *terrain = (TERRAIN_SET_PC *)CurrentTerrain;
+    TERRAIN_SET_PC *terrain = CurrentTerrain;
     i32 i = 0;
     if (terrain == NULL) {
         return 0;
@@ -2031,7 +2031,7 @@ extern "C" void TerrainTrackFlush(void) {
         return;
     }
     for (slot_index = 0; slot_index < 64; ++slot_index) {
-        ((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index].id = NULL;
+        CurrentTerrain->track_slots[slot_index].id = NULL;
     }
 }
 
@@ -2065,8 +2065,6 @@ extern "C" i32 TerrainInfoExtra(void) {
     return -1;
 }
 
-#define TERRAIN_AMS_SET (static_cast<TERRAIN_SET_PC *>(CurrentTerrain))
-
 extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *previous, i32 rotating, TERRAIN_SET_PC *source) {
     TERRAIN_SET_PC *terrain;
     TERRAIN_GROUP *group;
@@ -2078,13 +2076,13 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
     }
     if (CurrentTerrain == NULL) {
         CurrentTerrain = source;
-        for (i = 0; i < TERRAIN_AMS_SET->removed_platform_count; ++i) {
-            DeletePlatinst(TERRAIN_AMS_SET->removed_platforms[i]);
+        for (i = 0; i < CurrentTerrain->removed_platform_count; ++i) {
+            DeletePlatinst(CurrentTerrain->removed_platforms[i]);
         }
-        TERRAIN_AMS_SET->removed_platform_count = 0;
+        CurrentTerrain->removed_platform_count = 0;
         curSphereter = 0;
     }
-    terrain = TERRAIN_AMS_SET;
+    terrain = CurrentTerrain;
     if (terrain->group_index_count >= terrain->max_group_indices) {
         return -1;
     }
@@ -2109,48 +2107,48 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
     *group = source->groups[source_index];
     group->scene_index = index;
     group->chunk_type = 1;
-    TERRAIN_AMS_SET->platforms[index].scene_object = matrix;
+    CurrentTerrain->platforms[index].scene_object = matrix;
     if (rotating) {
-        TERRAIN_AMS_SET->platforms[index].previous_matrix = *previous;
-        TERRAIN_AMS_SET->platforms[index].flags |= 1;
+        CurrentTerrain->platforms[index].previous_matrix = *previous;
+        CurrentTerrain->platforms[index].flags |= 1;
     } else {
         if (previous != NULL) {
-            TERRAIN_AMS_SET->platforms[index].previous_matrix.m30 = previous->m30;
-            TERRAIN_AMS_SET->platforms[index].previous_matrix.m31 = previous->m31;
-            TERRAIN_AMS_SET->platforms[index].previous_matrix.m32 = previous->m32;
+            CurrentTerrain->platforms[index].previous_matrix.m30 = previous->m30;
+            CurrentTerrain->platforms[index].previous_matrix.m31 = previous->m31;
+            CurrentTerrain->platforms[index].previous_matrix.m32 = previous->m32;
         } else {
-            TERRAIN_AMS_SET->platforms[index].previous_matrix.m30 = matrix->m30;
-            TERRAIN_AMS_SET->platforms[index].previous_matrix.m31 = matrix->m31;
-            TERRAIN_AMS_SET->platforms[index].previous_matrix.m32 = matrix->m32;
+            CurrentTerrain->platforms[index].previous_matrix.m30 = matrix->m30;
+            CurrentTerrain->platforms[index].previous_matrix.m31 = matrix->m31;
+            CurrentTerrain->platforms[index].previous_matrix.m32 = matrix->m32;
         }
-        TERRAIN_AMS_SET->platforms[index].flags &= ~1;
+        CurrentTerrain->platforms[index].flags &= ~1;
     }
     group->origin.x = matrix->m30;
     group->origin.y = matrix->m31;
     group->origin.z = matrix->m32;
-    TERRAIN_AMS_SET->platforms[index].terrain_group_index = TERRAIN_AMS_SET->group_count;
-    TERRAIN_AMS_SET->platforms[index].scene_object_index = 0;
-    TERRAIN_AMS_SET->platforms[index].instance_flags = NULL;
-    TERRAIN_AMS_SET->group_indices[TERRAIN_AMS_SET->group_index_count] = TERRAIN_AMS_SET->group_count;
-    TERRAIN_AMS_SET->group_index_count++;
-    TERRAIN_AMS_SET->platforms[index].bounce_54 = 0.0f;
-    TERRAIN_AMS_SET->platforms[index].bounce_58 = 0.0f;
-    TERRAIN_AMS_SET->platforms[index].bounce_5c = 0.0f;
-    TERRAIN_AMS_SET->platforms[index].bounce_64 = 0.0f;
-    TERRAIN_AMS_SET->platforms[index].bounce_60 = 0.0f;
-    TERRAIN_AMS_SET->platforms[index].flags &= ~2;
-    if (TERRAIN_AMS_SET->active_platform_count < 96) {
-        TERRAIN_AMS_SET->active_platform_groups[TERRAIN_AMS_SET->active_platform_count] = TERRAIN_AMS_SET->group_count;
-        TERRAIN_AMS_SET->active_platform_count++;
+    CurrentTerrain->platforms[index].terrain_group_index = CurrentTerrain->group_count;
+    CurrentTerrain->platforms[index].scene_object_index = 0;
+    CurrentTerrain->platforms[index].instance_flags = NULL;
+    CurrentTerrain->group_indices[CurrentTerrain->group_index_count] = CurrentTerrain->group_count;
+    CurrentTerrain->group_index_count++;
+    CurrentTerrain->platforms[index].bounce_54 = 0.0f;
+    CurrentTerrain->platforms[index].bounce_58 = 0.0f;
+    CurrentTerrain->platforms[index].bounce_5c = 0.0f;
+    CurrentTerrain->platforms[index].bounce_64 = 0.0f;
+    CurrentTerrain->platforms[index].bounce_60 = 0.0f;
+    CurrentTerrain->platforms[index].flags &= ~2;
+    if (CurrentTerrain->active_platform_count < 96) {
+        CurrentTerrain->active_platform_groups[CurrentTerrain->active_platform_count] = CurrentTerrain->group_count;
+        CurrentTerrain->active_platform_count++;
     }
-    TERRAIN_AMS_SET->group_count++;
-    TERRAIN_AMS_SET->platform_cell.group_count++;
-    TERRAIN_AMS_SET->removed_platforms[TERRAIN_AMS_SET->removed_platform_count] = index;
-    TERRAIN_AMS_SET->removed_platform_count++;
+    CurrentTerrain->group_count++;
+    CurrentTerrain->platform_cell.group_count++;
+    CurrentTerrain->removed_platforms[CurrentTerrain->removed_platform_count] = index;
+    CurrentTerrain->removed_platform_count++;
     return index;
 }
 
-#undef TERRAIN_AMS_SET
+#undef CurrentTerrain
 
 extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius, f32 collision_radius,
                                      f32 object_scale, i32 embedded_retry, i32 scan_flags, i32 terrain_mask) {
@@ -2167,7 +2165,7 @@ extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_f
     terrhitflags = 0;
     castnum = -1;
 
-    if (((TERRAIN_SET_PC *)CurrentTerrain) == NULL) {
+    if (CurrentTerrain == NULL) {
         TerImpactData = 0;
         return;
     }
@@ -2175,8 +2173,8 @@ extern "C" void NewTerrainScaleYMask(NUVEC *position, NUVEC *movement, u8 *hit_f
     TerrLastImpact.hit_type = 0.0f;
     TERRAIN_TRACK_SLOT *track;
     for (i32 slot_index = 0; slot_index < 64; ++slot_index) {
-        if (((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index].id == hit_flags) {
-            track = &((TERRAIN_SET_PC *)CurrentTerrain)->track_slots[slot_index];
+        if (CurrentTerrain->track_slots[slot_index].id == hit_flags) {
+            track = &CurrentTerrain->track_slots[slot_index];
             goto found_track;
         }
     }
@@ -2267,7 +2265,7 @@ found_track:
 
         query = TerI;
         if (query->hit_type > TERRAIN_HIT_TYPE_SECOND_NORMAL && query->terrain_group_index != -1 &&
-            ((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index].chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
+            CurrentTerrain->groups[query->terrain_group_index].chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
             --scan_count;
             NewTerrStoreAnyInfo();
             NUVEC before = query->position;
@@ -2291,7 +2289,7 @@ found_track:
                 wall_limit = 0.707f;
             }
 
-            TERRAIN_GROUP *group = &((TERRAIN_SET_PC *)CurrentTerrain)->groups[query->terrain_group_index];
+            TERRAIN_GROUP *group = &CurrentTerrain->groups[query->terrain_group_index];
             if (group->chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
                 wall_limit =
                     (query->hit_type & TERRAIN_HIT_TYPE_CLASS_MASK) > TERRAIN_HIT_TYPE_FACE && (f64)0.95f > wall_limit ? 0.98f : 0.707f;
@@ -2313,7 +2311,7 @@ found_track:
             }
 
             if (query->impact_normal.y >= wall_limit && group->chunk_type == TERRAIN_CHUNK_GROUP_SECONDARY) {
-                ((TERRAIN_SET_PC *)CurrentTerrain)->platforms[group->scene_index].flags |= TERRAIN_PLATFORM_FLAG_COLLIDED;
+                CurrentTerrain->platforms[group->scene_index].flags |= TERRAIN_PLATFORM_FLAG_COLLIDED;
             }
         }
 

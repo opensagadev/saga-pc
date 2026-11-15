@@ -296,7 +296,7 @@ extern "C" {
     extern const f32 TerrainSteepNormalY;
     extern void *ScaleTerrainT2;
     extern void *TempScanStack;
-    extern void *WallSplList;
+    extern struct TERRAIN_WALL_POINT *WallSplList;
     extern TERRAIN_POLYGON_INFO *ScaleTerrainT1;
     extern i32 terraincnt;
     extern i32 curSphereter;
@@ -405,7 +405,7 @@ extern "C" {
     void PlaySfxById(i32, NUVEC *);
     void PlaySfxByIdAndSetVolume(i32, NUVEC *, f32);
     extern const f64 BoltTargetRandomDenominator;
-    extern void *CurrentTerrain;
+    extern struct TERRAIN_SET_PC *CurrentTerrain;
     i32 PlatInstGetHit(i32);
     void ScanTerrIDRemovePlat(i32);
     extern NUVEC PCSoundListenerLoopPosition;

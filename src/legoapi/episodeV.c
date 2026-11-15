@@ -25,7 +25,6 @@ void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, NUSPE
 
 /* Rotating rock at the end of AsteroidChase C. */
 
-#define PLAYER_OBJ(i) ((GAMEOBJECT *)Player[i])
 void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA_PC *level, f32 radius, f32 *distance);
 extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
@@ -528,21 +527,21 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
         }
     }
     for (i = 0; i < 2; i++) {
-        if (PLAYER_OBJ(i) != NULL && (i16)PLAYER_OBJ(i)->id == dat_007f19a4 && LevArea[0] != NULL &&
-            (*(u64 *)PLAYER_OBJ(i)->ai_area_mask & (u64)(i64)(1 << (LevArea[0] - world->ai_sys->areas))) != 0) {
+        if (Player[i] != NULL && (i16)Player[i]->id == dat_007f19a4 && LevArea[0] != NULL &&
+            (*(u64 *)Player[i]->ai_area_mask & (u64)(i64)(1 << (LevArea[0] - world->ai_sys->areas))) != 0) {
             if (LevTime[i] >= 2.0f) {
                 LevTime[i] = 2.0f;
-                PLAYER_OBJ(i)->layer_mask |= 8;
+                Player[i]->layer_mask |= 8;
                 DrawFalconSpotLights(Player[i]);
                 drawLights = 1;
             } else {
                 LevTime[i] = FRAMETIME + LevTime[i];
             }
-        } else if (PLAYER_OBJ(i) != NULL && (i16)PLAYER_OBJ(i)->id == dat_007f19a4) {
+        } else if (Player[i] != NULL && (i16)Player[i]->id == dat_007f19a4) {
             if (LevTime[i] > 0.0f) {
                 LevTime[i] -= FRAMETIME;
             } else {
-                PLAYER_OBJ(i)->layer_mask &= ~8;
+                Player[i]->layer_mask &= ~8;
                 drawLights = 0;
                 LevTime[i] = 0.0f;
             }
@@ -837,7 +836,7 @@ void CloudCityTrapC_Update(WORLDINFO *world) {
     if (netclient != 0 || LevPathCnx[0] == NULL) {
         return;
     }
-    ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] &= ~(LEGO_AIPATHCNX_BIGJUMP | LEGO_AIPATHCNX_R2D2GLIDE | 0x80000000);
+    LevPathCnx[0]->traversal_flags[LevPathCnxDir] &= ~(LEGO_AIPATHCNX_BIGJUMP | LEGO_AIPATHCNX_R2D2GLIDE | 0x80000000);
     if ((LevGizObst[1] != NULL && LevGizObst[1]->anim_set->state != 0 && player->collision_position.z < -20.0f) ||
         player->collision_position.z < -21.0f) {
         active = LEGO_AIPATHCNX_BIGJUMP;
@@ -848,7 +847,7 @@ void CloudCityTrapC_Update(WORLDINFO *world) {
     if (active == 0) {
         active = 0x80000000;
     }
-    ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[LevPathCnxDir] |= active;
+    LevPathCnx[0]->traversal_flags[LevPathCnxDir] |= active;
 }
 
 void CloudCityTrapC_Panel(WORLDINFO *world) {

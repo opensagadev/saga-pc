@@ -142,10 +142,10 @@ void UpdateSpecialSfx(WORLDINFO *world_info) {
         if (animation == NULL) {
             continue;
         }
-        if (((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index] == NULL) {
+        if (entry->special.scene->instance_animation_data[animation->animation_index] == NULL) {
             continue;
         }
-        end_frame = NuAnimEndFrameOld(((NUGSCN *)entry->special.scene)->instance_animation_data[animation->animation_index]);
+        end_frame = NuAnimEndFrameOld(entry->special.scene->instance_animation_data[animation->animation_index]);
         frame = animation->ltime;
         if ((animation->flags & 1) == 0 && entry->animation_playing == 0) {
             for (j = 0; j < entry->event_count; ++j) {

@@ -135,7 +135,7 @@ extern "C" {
     extern const char GizObstacleTriggerLimitMessage[59];
 
     extern i32 LevPathNodes[8];
-    extern void *LevPathCnx[16];
+    extern struct AIPATHCNX *LevPathCnx[16];
     extern i32 LevSfxId[4];
     extern i32 LevPathCnxDir;
     extern void *LevelLocator;

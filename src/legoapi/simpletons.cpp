@@ -88,7 +88,7 @@ extern "C" {
         i32 count = trooperteamcount;
         for (i32 i = 0; i < count; ++i) {
             if (i != team_index) {
-                minitrooperteam_s *candidate = &((minitrooperteam_s *)world->mini_trooper_teams)[i];
+                minitrooperteam_s *candidate = &world->mini_trooper_teams[i];
                 if ((candidate->state_flags & 1) != 0 && (team->team_side != 0 || candidate->team_side != 0) &&
                     (team->team_side != 1 || candidate->team_side == 0)) {
                     NUVEC delta;
@@ -312,7 +312,7 @@ extern "C" {
 
             if (world->mini_trooper_teams == NULL) {
                 u32 teams = ALIGN(world->giz_buffer.addr, 4);
-                world->mini_trooper_teams = reinterpret_cast<void *>(teams);
+                world->mini_trooper_teams = reinterpret_cast<minitrooperteam_s *>(teams);
                 world->giz_buffer.addr = ALIGN(teams + team_count * sizeof(minitrooperteam_s), 4);
             }
 
@@ -320,8 +320,7 @@ extern "C" {
                 world->giz_buffer.addr = ALIGN(world->giz_buffer.addr, 4);
                 for (i32 i = 0; i < team_count; ++i) {
                     world->mini_trooper_packets = world->giz_buffer.void_ptr;
-                    static_cast<minitrooperteam_s *>(world->mini_trooper_teams)[i].troopers =
-                        static_cast<minisnowtrooper_s *>(world->giz_buffer.void_ptr);
+                    world->mini_trooper_teams[i].troopers = static_cast<minisnowtrooper_s *>(world->giz_buffer.void_ptr);
                     world->giz_buffer.addr += trooper_count * sizeof(minisnowtrooper_s);
                 }
                 world->giz_buffer.addr = ALIGN(world->giz_buffer.addr, 4);
@@ -334,12 +333,12 @@ extern "C" {
             }
 
             for (i32 i = 0; i < team_count; ++i) {
-                minitrooperteam_s *team = &static_cast<minitrooperteam_s *>(world->mini_trooper_teams)[i];
+                minitrooperteam_s *team = &world->mini_trooper_teams[i];
                 team->waypoint_count = 0;
             }
 
             for (i32 team_index = 0; team_index < trooperteamcount; ++team_index) {
-                minitrooperteam_s *team = &static_cast<minitrooperteam_s *>(world->mini_trooper_teams)[team_index];
+                minitrooperteam_s *team = &world->mini_trooper_teams[team_index];
                 team->reserved_02c = 2000000.0f;
                 team->trooper_count = static_cast<u8>(trooper_count);
 
@@ -457,17 +456,17 @@ extern "C" {
             f32 first_distance;
             first_distance = 9999.0f;
             second_distance = 9999.0f;
-            if (((GAMEOBJECT *)Player[0])->flags_1fc_word & 0x80) {
-                first_distance = NuVecDist(&((GAMEOBJECT *)Player[0])->position, &shot_position, NULL);
+            if (Player[0]->flags_1fc_word & 0x80) {
+                first_distance = NuVecDist(&Player[0]->position, &shot_position, NULL);
             }
-            if (((GAMEOBJECT *)Player[1])->flags_1fc_word & 0x80) {
-                second_distance = NuVecDist(&((GAMEOBJECT *)Player[1])->position, &shot_position, NULL);
+            if (Player[1]->flags_1fc_word & 0x80) {
+                second_distance = NuVecDist(&Player[1]->position, &shot_position, NULL);
             }
 
             if (first_distance < second_distance && first_distance < 60.0) {
-                NuVecSub(&direction, &((GAMEOBJECT *)Player[0])->position, &shot_position);
+                NuVecSub(&direction, &Player[0]->position, &shot_position);
             } else if (60.0 > second_distance) {
-                NuVecSub(&direction, &((GAMEOBJECT *)Player[1])->position, &shot_position);
+                NuVecSub(&direction, &Player[1]->position, &shot_position);
             } else {
                 goto fail;
             }
@@ -498,7 +497,7 @@ extern "C" {
         NUVEC camera_dir = GameCam->dir;
         NUVEC camera_position = GameCam->position;
         for (i32 team_index = 0; team_index < trooperteamcount; ++team_index) {
-            minitrooperteam_s *teams = static_cast<minitrooperteam_s *>(world->mini_trooper_teams);
+            minitrooperteam_s *teams = world->mini_trooper_teams;
             minitrooperteam_s *team = &teams[team_index];
             u32 flags = team->state_flags;
             if ((flags & 4) == 0) {
@@ -766,7 +765,7 @@ extern "C" {
             return;
         }
 
-        minitrooperteam_s *teams = static_cast<minitrooperteam_s *>(world->mini_trooper_teams);
+        minitrooperteam_s *teams = world->mini_trooper_teams;
         NUMTX *matrices[3];
         matrices[0] = static_cast<NUMTX *>(world->mini_trooper_storage);
         const i32 matrix_count = teams[0].trooper_count * trooperteamcount;
@@ -778,7 +777,7 @@ extern "C" {
         i32 first_side_counts[3] = {0, 0, 0};
 
         for (i32 team_index = 0; team_index < trooperteamcount; ++team_index) {
-            minitrooperteam_s *team = &static_cast<minitrooperteam_s *>(world->mini_trooper_teams)[team_index];
+            minitrooperteam_s *team = &world->mini_trooper_teams[team_index];
             if ((team->state_flags & 4) == 0) {
                 continue;
             }

@@ -898,10 +898,10 @@ f32 Condition_IAmPlayer2(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACKET *p
         GAMEOBJECT *current = player;
         GAMEOBJECT *first = Player[0];
         if (current == first) {
-            if (packet->owner->objptr == (GAMEOBJECT *)Player[1]) {
+            if (packet->owner->objptr == Player[1]) {
                 return 1.0f;
             }
-        } else if (current == (GAMEOBJECT *)Player[1] && packet->owner->objptr == first) {
+        } else if (current == Player[1] && packet->owner->objptr == first) {
             return 1.0f;
         }
     }
@@ -967,7 +967,7 @@ f32 Condition_OnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, AIPACK
     if (platform_id == -1) {
         return 0.0f;
     }
-    terrain = CurrentTerrain;
+    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
     if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)) {
         return 0.0f;
     }
@@ -998,7 +998,7 @@ f32 Condition_PlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *process, 
     if (platform_id == -1) {
         return 0.0f;
     }
-    terrain = CurrentTerrain;
+    terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
     if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)) {
         return 0.0f;
     }
@@ -1023,7 +1023,7 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS_PC *system, AISCRIPTPROCESS *pro
     if (force != NULL) {
         first = player;
         if (first != NULL) {
-            terrain = CurrentTerrain;
+            terrain = (AI_FORCE_PLATFORM_TERRAIN_PC *)CurrentTerrain;
             eligible = 0;
             if (first->unknown_281 != 0 || first->unknown_282 != 0) {
                 platform_id = first->supporting_platform_id;
@@ -3020,7 +3020,7 @@ i32 Action_DeActivate(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
         value = NuStrIStr(params[index], "character=");
         if (value != NULL) {
             lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-            object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+            object = lookup != NULL ? lookup->owner : NULL;
         } else if ((value = NuStrIStr(params[index], "set=")) != NULL) {
             creature_set = (i32)AIParamToFloat(processor, value + 4);
             if (creature_set < 0 || creature_set > 16) {
@@ -3732,7 +3732,7 @@ i32 Action_SetDontMove(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
             name = NuStrIStr(params[index], "character");
             if (name != NULL) {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, name + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             } else if (NuStrICmp("FALSE", params[0]) == 0) {
                 // This action's FALSE toggle uses the first parameter, not the current one.
                 enabled = 0;
@@ -3761,7 +3761,7 @@ i32 Action_DontSetStoppedFlag(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
             value = NuStrIStr(params[index], "character");
             if (value != NULL) {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             } else if (NuStrICmp("FALSE", params[0]) == 0) {
                 enabled = 0;
             }
@@ -4143,7 +4143,7 @@ i32 Action_SetDoomedEscapeLocator(AISYS_PC *system, AISCRIPTPROCESS *processor, 
         value = NuStrIStr(params[index], "character=");
         if (value != NULL) {
             lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 10) : NULL;
-            object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+            object = lookup != NULL ? lookup->owner : NULL;
         } else if ((value = NuStrIStr(params[index], "name")) != NULL) {
             name = value + 5;
         } else if (NuStrIStr(params[index], "personal") != NULL) {
@@ -4917,7 +4917,7 @@ i32 Action_EngageObject(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     i32 nearest = 0;
     char *name = NULL;
     (void)sys;
-    if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
 
@@ -5833,7 +5833,7 @@ i32 Action_SetCurrentSpeed(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
         value = NuStrIStr(params[i], "character=");
         if (value != NULL) {
             named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-            object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
+            object = named != NULL ? named->owner : NULL;
         } else if (NuStrICmp("speed=TIPTOE", params[i]) == 0) {
             speed_mode = 2;
         } else if (NuStrICmp("speed=WALK", params[i]) == 0) {
@@ -6011,7 +6011,7 @@ i32 Action_SetHitPoints(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         value = NuStrIStr(params[i], "character=");
         if (value != NULL) {
             lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-            object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+            object = lookup != NULL ? lookup->owner : NULL;
         } else if ((value = NuStrIStr(params[i], "messageval=")) != NULL) {
             message = CheckGizAIMessage(gizaimessagesys, value + 11, NULL);
             if (message != NULL) {
@@ -6055,7 +6055,7 @@ i32 Action_SetShieldHitPoints(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPA
         value = NuStrIStr(params[index], "character=");
         if (value != NULL) {
             lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 10) : NULL;
-            object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+            object = lookup != NULL ? lookup->owner : NULL;
         } else {
             hit_points = (i32)(AIParamToFloat(processor, params[index]));
         }
@@ -6746,7 +6746,7 @@ i32 Action_NoIdleSpeed(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
             if (name != NULL) {
                 {
                     lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, name + 10) : NULL;
-                    object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                    object = lookup != NULL ? lookup->owner : NULL;
                 }
             } else if (NuStrICmp(params[index], "FALSE") == 0) {
                 enabled = 0;
@@ -6860,7 +6860,7 @@ i32 Action_AddDebris(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
             value = NuStrIStr(params[index], "character=");
             if (value != NULL) {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             } else if ((value = NuStrIStr(params[index], "x=")) != NULL) {
                 position.x = AIParamToFloat(processor, value + 2);
             } else if ((value = NuStrIStr(params[index], "y=")) != NULL) {
@@ -7475,7 +7475,7 @@ i32 Action_SetPath(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
             value = NuStrIStr(params[index], "character=");
             if (value != NULL) {
                 named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
+                object = named != NULL ? named->owner : NULL;
             } else if (NuStrIStr(params[index], "path=LevelPath") != NULL) {
                 path = sys->path_sys->active_path;
             } else if ((value = NuStrIStr(params[index], "path")) != NULL) {
@@ -7934,7 +7934,7 @@ i32 Action_KeepWeaponOut(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
                     value = NuStrIStr(params[index], "character=");
                     if (value != NULL) {
                         lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                        object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                        object = lookup != NULL ? lookup->owner : NULL;
                     }
                 }
             }
@@ -8308,7 +8308,7 @@ i32 Action_CatchUpForbidden(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET 
                 if (parameter != NULL) {
                     {
                         lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, parameter + 10) : NULL;
-                        object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                        object = lookup != NULL ? lookup->owner : NULL;
                     }
                 } else if (NuStrICmp(params[index], "FALSE") == 0) {
                     forbidden = 0;
@@ -8411,7 +8411,7 @@ i32 Action_NotWithParty(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
             name = NuStrIStr(params[index], "character=");
             if (name != NULL) {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, name + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             } else if (NuStrICmp(params[index], "FALSE") == 0) {
                 enabled = 0;
             }
@@ -8440,7 +8440,7 @@ i32 Action_CanAttack(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
             name = NuStrIStr(params[index], "character=");
             if (name != NULL) {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, name + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             } else if (NuStrICmp(params[index], "FALSE") == 0) {
                 enabled = 0;
             }
@@ -9246,7 +9246,7 @@ i32 Action_DynamicCameraCut(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACK
                 object = packet->owner->objptr;
             } else {
                 APIOBJECT *named = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, target_character) : NULL;
-                object = named != NULL ? (GAMEOBJECT *)named->owner : NULL;
+                object = named != NULL ? named->owner : NULL;
             }
             if (object != NULL) {
                 target = &object->collision_position;
@@ -9376,7 +9376,7 @@ i32 Action_SetForceBack(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         if (value != NULL) {
             {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             }
         } else if ((value = NuStrIStr(params[index], "locator=")) != NULL) {
             locator = AIPathFindLocator(sys, value + 8);
@@ -9412,7 +9412,7 @@ i32 Action_FaceCamera(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     f32 minimum_time = 0.0f;
     f32 maximum_time = 0.0f;
     (void)sys;
-    if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
 
@@ -9918,7 +9918,7 @@ i32 Action_PullLever(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
         lever->pull_progress = 1.0f;
         return 1;
     }
-    if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
     object = ((APIOBJECT *)packet->owner)->owner;
@@ -9945,7 +9945,7 @@ i32 Action_UsePanel(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pack
                     f32 elapsed) {
     GAMEOBJECT *object;
     BULK_AI_PANEL *panel;
-    if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
     object = ((APIOBJECT *)packet->owner)->owner;
@@ -10003,7 +10003,7 @@ i32 Action_UseTechno(AISYS_PC *system, AISCRIPTPROCESS *processor, AIPACKET *pac
                      f32 elapsed) {
     GAMEOBJECT *object;
     BULK_AI_TECHNO *techno;
-    if (packet == NULL || packet->owner == NULL || (GAMEOBJECT *)((APIOBJECT *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
     object = ((APIOBJECT *)packet->owner)->owner;
@@ -10184,9 +10184,8 @@ i32 Action_GetLocatorFromSet(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET
     for (index = 0; index < param_count; ++index) {
         char *value = NuStrIStr(params[index], "character=");
         if (value != NULL) {
-            object = (GetNamedGameObjectCallback != NULL && (named = GetNamedGameObjectCallback(sys, value + 10)) != NULL
-                          ? (GAMEOBJECT *)named->owner
-                          : NULL);
+            object =
+                (GetNamedGameObjectCallback != NULL && (named = GetNamedGameObjectCallback(sys, value + 10)) != NULL ? named->owner : NULL);
             continue;
         }
         value = NuStrIStr(params[index], (char *)dat_00758374);
@@ -10457,7 +10456,7 @@ i32 Action_LinkTurretToController(AISYS_PC *system, AISCRIPTPROCESS *processor, 
         } else if ((value = NuStrIStr(params[index], "controller=")) != NULL) {
             {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(system, value + 11) : NULL;
-                controller = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                controller = lookup != NULL ? lookup->owner : NULL;
             }
         }
     }
@@ -10496,7 +10495,7 @@ i32 Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
         if (value != NULL) {
             {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             }
         } else {
             value = NuStrIStr(params[index], "player=");
@@ -10510,7 +10509,7 @@ i32 Action_TakeOver(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
                 if (value != NULL) {
                     {
                         lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 7) : NULL;
-                        target = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                        target = lookup != NULL ? lookup->owner : NULL;
                     }
                 } else if (NuStrIStr(params[index], "Opponent") != NULL) {
                     if (packet->opponent != NULL) {
@@ -10561,7 +10560,7 @@ i32 Action_ReleaseTakeOver(AISYS_PC *sys, AISCRIPTPROCESS *processor, AIPACKET *
         if (value != NULL) {
             {
                 lookup = GetNamedGameObjectCallback != NULL ? GetNamedGameObjectCallback(sys, value + 10) : NULL;
-                object = lookup != NULL ? (GAMEOBJECT *)lookup->owner : NULL;
+                object = lookup != NULL ? lookup->owner : NULL;
             }
         }
     }

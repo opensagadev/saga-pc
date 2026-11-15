@@ -176,7 +176,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 }
             } else if (Paused == 0) {
                 for (i = 0; i < 2; ++i) {
-                    object = (GAMEOBJECT *)Player[i];
+                    object = Player[i];
                     if (object != NULL && (object->flags_1fc & 0x80) != 0) {
                         PauseGame((GAMEPAD_INIT_RECORD *)object->pad - GamePadStorage);
                         break;
@@ -203,12 +203,10 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuSound3Update();
         UpdateLevelSfx(world, Paused);
         NuSound3SetRumblePads(
-            Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0
-                ? ((GAMEOBJECT *)Player[0])->pad->bound_pad
-                : NULL,
-            Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0
-                ? ((GAMEOBJECT *)Player[1])->pad->bound_pad
-                : NULL);
+            Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0 ? Player[0]->pad->bound_pad
+                                                                                                              : NULL,
+            Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0 ? Player[1]->pad->bound_pad
+                                                                                                              : NULL);
         NuSound3UpdateRumble(FRAMETIME);
         SoundUpdate(FRAMETIME);
         ProcessMusicChanges(world->current_level, &Game.options_save);
@@ -217,7 +215,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after sound world=%p", (void *)WORLD);
     for (i = 0; i < 8; ++i) {
         if (Player[i] != NULL) {
-            wind_objects[i] = &((GAMEOBJECT *)Player[i])->lower_position;
+            wind_objects[i] = &Player[i]->lower_position;
         } else {
             wind_objects[i] = NULL;
         }
@@ -230,7 +228,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         NuCameraSet(pNuCam);
         UpdateGameMenu((GAMEPAD_PC *)GamePadStorage, 1);
         for (i = 0; i < 2; ++i) {
-            object = (GAMEOBJECT *)Player[i];
+            object = Player[i];
             if (object != NULL) {
                 UpdateCoinPacket((PLAYER_COIN_PACKET_PC *)object->coin_packet, (object->flags_1fc_word >> 7) & 1, (i8)object->unknown_280);
             }
@@ -295,7 +293,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after UpdateGameObjects world=%p", (void *)WORLD);
         } else {
             for (i = 0; i < 8; ++i) {
-                object = (GAMEOBJECT *)Player[i];
+                object = Player[i];
                 if (object != NULL && (object->flags_1fc & 0x80) != 0 && object->pad->bound_pad != NULL) {
                     UpdateRumble((RUMBLE_PACKET_RESOURCE *)object->pad->unknown_40);
                 }
@@ -994,10 +992,10 @@ extern "C" int NuMain(int argc, char **argv) {
                 FreePlay = NextArea_FreePlay;
                 if (FreePlay != 0) {
                     if (Player[0] != NULL) {
-                        ((GAMEOBJECT *)Player[0])->id = -1;
+                        Player[0]->id = -1;
                     }
                     if (Player[1] != NULL) {
-                        ((GAMEOBJECT *)Player[1])->id = -1;
+                        Player[1]->id = -1;
                     }
                     makefreeplaymodellist = 1;
                 }

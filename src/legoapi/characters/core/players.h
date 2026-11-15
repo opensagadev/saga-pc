@@ -120,7 +120,7 @@ extern "C" {
     i32 AvailableToPlayer(u32, i32, i32, i32);
     void DrawOffsetCode(GAMEOBJECT *, i32);
     extern i32 VehicleArea;
-    extern void *Player[8];
+    extern struct gameobject_s *Player[8];
     extern i32 GAMEDEMO;
     extern i32 PLAYERCOUNT;
     extern i32 LevelChangesInArea;

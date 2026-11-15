@@ -3471,7 +3471,7 @@ extern "C" {
         if (special->scene == NULL) {
             return 0;
         }
-        NUDISPLAY_LIST_PC *list = ((NUGSCN *)special->scene)->display_list;
+        NUDISPLAY_LIST_PC *list = special->scene->display_list;
         NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
         PC_DISPLAY_CLIP_OBJECT *clip = (PC_DISPLAY_CLIP_OBJECT *)display->clip_objects;
         for (i32 i = 0; i < clip->material_count; ++i) {
@@ -3498,8 +3498,7 @@ extern "C" {
         runtime = ((NuSpecialLegacyRuntimeLayout *)(handle->special));
         if (runtime != NULL && runtime->instance != NULL) {
             /* Legacy specials draw their scene object once per matrix. */
-            void *object =
-                ((NUGSCN *)handle->scene)->objects[((struct NuSpecialLegacyInstanceBoundsLayout *)runtime->instance)->object_index];
+            void *object = handle->scene->objects[((struct NuSpecialLegacyInstanceBoundsLayout *)runtime->instance)->object_index];
             i32 i;
             for (i = 0; i < (i32)count; ++i) {
                 NuRndrGobj(object, &matrices[i]);
@@ -9548,19 +9547,19 @@ extern "C" {
                     code = (bits >> shift) & 3;
                     if (code == 0) {
                         for (index = 0; index < counts[object]; index++) {
-                            item = &((NUDISPLAYLISTITEM *)scene->items)[indices[index]];
+                            item = &scene->items[indices[index]];
                             item->id = 0;
                             item[-1].id = 0;
                         }
                     } else if (code == 1) {
                         for (index = 0; index < counts[object]; index++) {
-                            item = &((NUDISPLAYLISTITEM *)scene->items)[indices[index]];
+                            item = &scene->items[indices[index]];
                             item->id = 3;
                             item[-1].id = 3;
                         }
                     } else {
                         for (index = 0; index < counts[object]; index++) {
-                            item = &((NUDISPLAYLISTITEM *)scene->items)[indices[index]];
+                            item = &scene->items[indices[index]];
                             item->id = 3;
                             item[-1].id = 3;
                         }
@@ -9583,7 +9582,7 @@ extern "C" {
         for (object = 0; object < scene->clip_count; ++object, ++counts) {
             i32 *indices = scene->clip_objects[object].item_indices;
             for (item_index = 0; item_index < *counts; ++item_index) {
-                NUDISPLAYLISTITEM *item = &((NUDISPLAYLISTITEM *)scene->items)[indices[item_index]];
+                NUDISPLAYLISTITEM *item = &scene->items[indices[item_index]];
                 if (item->id != 0 && item->type == 0x82) {
                     DisplayListSetAlphaPS(item - 1, item, scene->alpha_values[object]);
                 }
@@ -10119,7 +10118,7 @@ typedef struct PC_CLONE_SORT_SELF_VIEW { // size 0x24
 } PC_CLONE_SORT_SELF_VIEW;
 
 #define CLONE_ALIGN(buffer, alignment) (((buffer)->addr + (alignment) - 1) & ~((alignment) - 1u))
-#define CLONE_ITEMS(scene) static_cast<NUDISPLAYLISTITEM *>((scene)->items)
+#define CLONE_ITEMS(scene) (scene)->items
 #define CLONE_LIST(scene, index) reinterpret_cast<PC_CLONE_LIST_VIEW *>((scene)->material_lists[index])
 #define CLONE_MATERIAL(scene, index) reinterpret_cast<PC_CLONE_MATERIAL_VIEW *>((scene)->display_materials[index])
 
@@ -10137,7 +10136,7 @@ extern "C" NUDISPLAY_LIST_PC *NuDisplaySceneClone(NUDISPLAY_LIST_PC *source, VAR
     scene = reinterpret_cast<NUDISPLAY_LIST_PC *>(CLONE_ALIGN(buffer, 4));
     buffer->addr = CLONE_ALIGN(buffer, 4) + sizeof(*scene);
     *scene = *source;
-    scene->items = reinterpret_cast<void *>(CLONE_ALIGN(buffer, 4));
+    scene->items = reinterpret_cast<NUDISPLAYLISTITEM *>(CLONE_ALIGN(buffer, 4));
     buffer->addr = CLONE_ALIGN(buffer, 4);
     buffer->addr += source->item_count * sizeof(NUDISPLAYLISTITEM);
     memcpy(scene->items, source->items, source->item_count * sizeof(NUDISPLAYLISTITEM));
@@ -10499,7 +10498,7 @@ extern "C" {
         } else {
             clip = PCSpecialClipState;
         }
-        NUDISPLAY_LIST_PC *scene = static_cast<NUGSCN *>(handle->scene)->display_list;
+        NUDISPLAY_LIST_PC *scene = handle->scene->display_list;
         i32 previous_shadow;
         i32 shadow_clip;
         if ((scene->visibility_flags[special->common.instance_ix] & 0x20) != 0 && PCSpecialActiveShadowLights > 0) {
@@ -10584,7 +10583,7 @@ extern "C" {
                     DisplayListUpdateRenderState(list, &render_state);
                     i32 shadow_caster = (scene->visibility_flags[special->common.instance_ix] & 0x20) != 0 && PCSpecialReflectionPass == 0;
                     i32 index = object->item_indices[i];
-                    NUDISPLAYLISTITEM *geometry = static_cast<NUDISPLAYLISTITEM *>(scene->items) + index;
+                    NUDISPLAYLISTITEM *geometry = scene->items + index;
                     DisplayListProcessSpecialItemPC(material, list, geometry, index, first_and_last, matrix, &transform_packet,
                                                     skin_matrices, blend_values, alpha, shadow_caster);
                 }
@@ -10609,7 +10608,7 @@ extern "C" {
                             list->items = item + 1;
                             DisplayListUpdateRenderStateShadow(list, &render_state);
                             i32 index = object->item_indices[i];
-                            NUDISPLAYLISTITEM *geometry = static_cast<NUDISPLAYLISTITEM *>(scene->items) + index;
+                            NUDISPLAYLISTITEM *geometry = scene->items + index;
                             DisplayListProcessSpecialItemPC(material, list, geometry, index, first_and_last, matrix, &transform_packet,
                                                             skin_matrices, blend_values, alpha, 1);
                         }
@@ -10661,7 +10660,7 @@ extern "C" {
             return NuDisplayListRndrSpecial(special, &combined, 0, NULL, NULL);
         }
         NuMtxMul(&combined, special->special, matrix);
-        return NuRndrGobj(((NUGSCN *)special->scene)->objects[((NUSPECIAL_LEGACY *)special->special)->instance->object_index], &combined);
+        return NuRndrGobj(special->scene->objects[((NUSPECIAL_LEGACY *)special->special)->instance->object_index], &combined);
     }
 
     void fun_005f34c0(void *, VUFNT *font, u16 *text, u32 flags) {
@@ -10694,7 +10693,7 @@ extern "C" void NuDisplayListCreate(NUDISPLAY_LIST_PC *scene, VARIPTR *buffer, V
     buffer->addr = DLIST_ALIGN(buffer->addr) + (size)
     buffer->addr = DLIST_ALIGN(buffer->addr);
     scene->item_count = item_count;
-    DLIST_ALLOC(scene->items, void *, item_count * sizeof(NUDISPLAYLISTITEM));
+    DLIST_ALLOC(scene->items, NUDISPLAYLISTITEM *, item_count * sizeof(NUDISPLAYLISTITEM));
     scene->material_count = material_count;
     buffer->addr = DLIST_ALIGN(buffer->addr);
     DLIST_ALLOC(scene->display_materials, NUMTL **, material_count * sizeof(NUMTL *));
@@ -10758,33 +10757,28 @@ extern "C" void NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer, VARIPTR
     PCDynamicDisplayScene.sort_count = 0;
     ((DISPLAY_SCENE_NAME *)&PCDynamicDisplayScene)->name = PCDynamicDisplaySceneNamePointer;
     for (i = 0; i < 600; i += 6) {
-        PCDynamicDisplayScene.material_lists[i]->mtl_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + i * block;
-        PCDynamicDisplayScene.material_lists[i]->dynamic_geometry = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + i * block + geometry;
+        PCDynamicDisplayScene.material_lists[i]->mtl_item = PCDynamicDisplayScene.items + i * block;
+        PCDynamicDisplayScene.material_lists[i]->dynamic_geometry = PCDynamicDisplayScene.items + i * block + geometry;
         PCDynamicDisplayScene.material_lists[i]->scene = &PCDynamicDisplayScene;
         PCDynamicDisplayScene.material_lists[i]->material_id = i;
-        PCDynamicDisplayScene.material_lists[i + 1]->mtl_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 1) * block;
-        PCDynamicDisplayScene.material_lists[i + 1]->dynamic_geometry =
-            (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 1) * block + geometry;
+        PCDynamicDisplayScene.material_lists[i + 1]->mtl_item = PCDynamicDisplayScene.items + (i + 1) * block;
+        PCDynamicDisplayScene.material_lists[i + 1]->dynamic_geometry = PCDynamicDisplayScene.items + (i + 1) * block + geometry;
         PCDynamicDisplayScene.material_lists[i + 1]->scene = &PCDynamicDisplayScene;
         PCDynamicDisplayScene.material_lists[i + 1]->material_id = i + 1;
-        PCDynamicDisplayScene.material_lists[i + 2]->mtl_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 2) * block;
-        PCDynamicDisplayScene.material_lists[i + 2]->dynamic_geometry =
-            (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 2) * block + geometry;
+        PCDynamicDisplayScene.material_lists[i + 2]->mtl_item = PCDynamicDisplayScene.items + (i + 2) * block;
+        PCDynamicDisplayScene.material_lists[i + 2]->dynamic_geometry = PCDynamicDisplayScene.items + (i + 2) * block + geometry;
         PCDynamicDisplayScene.material_lists[i + 2]->scene = &PCDynamicDisplayScene;
         PCDynamicDisplayScene.material_lists[i + 2]->material_id = i + 2;
-        PCDynamicDisplayScene.material_lists[i + 3]->mtl_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 3) * block;
-        PCDynamicDisplayScene.material_lists[i + 3]->dynamic_geometry =
-            (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 3) * block + geometry;
+        PCDynamicDisplayScene.material_lists[i + 3]->mtl_item = PCDynamicDisplayScene.items + (i + 3) * block;
+        PCDynamicDisplayScene.material_lists[i + 3]->dynamic_geometry = PCDynamicDisplayScene.items + (i + 3) * block + geometry;
         PCDynamicDisplayScene.material_lists[i + 3]->scene = &PCDynamicDisplayScene;
         PCDynamicDisplayScene.material_lists[i + 3]->material_id = i + 3;
-        PCDynamicDisplayScene.material_lists[i + 4]->mtl_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 4) * block;
-        PCDynamicDisplayScene.material_lists[i + 4]->dynamic_geometry =
-            (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 4) * block + geometry;
+        PCDynamicDisplayScene.material_lists[i + 4]->mtl_item = PCDynamicDisplayScene.items + (i + 4) * block;
+        PCDynamicDisplayScene.material_lists[i + 4]->dynamic_geometry = PCDynamicDisplayScene.items + (i + 4) * block + geometry;
         PCDynamicDisplayScene.material_lists[i + 4]->scene = &PCDynamicDisplayScene;
         PCDynamicDisplayScene.material_lists[i + 4]->material_id = i + 4;
-        PCDynamicDisplayScene.material_lists[i + 5]->mtl_item = (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 5) * block;
-        PCDynamicDisplayScene.material_lists[i + 5]->dynamic_geometry =
-            (NUDISPLAYLISTITEM *)PCDynamicDisplayScene.items + (i + 5) * block + geometry;
+        PCDynamicDisplayScene.material_lists[i + 5]->mtl_item = PCDynamicDisplayScene.items + (i + 5) * block;
+        PCDynamicDisplayScene.material_lists[i + 5]->dynamic_geometry = PCDynamicDisplayScene.items + (i + 5) * block + geometry;
         PCDynamicDisplayScene.material_lists[i + 5]->scene = &PCDynamicDisplayScene;
         PCDynamicDisplayScene.material_lists[i + 5]->material_id = i + 5;
     }
@@ -11267,8 +11261,8 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] |= 1 << (list->material_id % 8);
         DisplayListUpdateRenderState(reinterpret_cast<NUDISPLAYLIST_PC *>(list), &render_state);
         VARIPTR *buffer = NuDisplayListLinkItems(reinterpret_cast<NUDISPLAYLIST_PC *>(list), visible_count * 2);
-        if (static_cast<NUDISPLAYLISTITEM *>(scene->items)[object->item_indices[material]].type != 0x8f) {
-            void *geometry_data = static_cast<NUDISPLAYLISTITEM *>(scene->items)[object->item_indices[material]].next;
+        if (scene->items[object->item_indices[material]].type != 0x8f) {
+            void *geometry_data = scene->items[object->item_indices[material]].next;
             for (u32 i = 0; i < visible_count; ++i) {
                 NUMTX *matrix = clip != 0 ? &matrices[static_cast<u8>(visible[i])] : &matrices[i];
                 void *transform =
@@ -11286,11 +11280,9 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
         } else {
             for (u32 i = 0; i < visible_count; ++i) {
                 NUMTX *matrix = clip != 0 ? &matrices[static_cast<u8>(visible[i])] : &matrices[i];
-                void *transform =
-                    DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id],
-                                                       static_cast<NUDISPLAYLISTITEM *>(scene->items)[object->item_indices[material]].next);
-                void *faceon = NuDisplayListPrepareFaceonPS(
-                    buffer, static_cast<NUDISPLAYLISTITEM *>(scene->items)[object->item_indices[material]].next, matrix);
+                void *transform = DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id],
+                                                                     scene->items[object->item_indices[material]].next);
+                void *faceon = NuDisplayListPrepareFaceonPS(buffer, scene->items[object->item_indices[material]].next, matrix);
                 list->items->type = 0x90;
                 list->items->id = 3;
                 list->items->next = transform;
@@ -13451,7 +13443,7 @@ extern "C" {
                 DisplayListPrintItems(scene->sort_pris[i].items, flags | 2, type_count, types, 0);
             }
         } else {
-            DisplayListPrintItems((NUDISPLAYLISTITEM *)scene->items, flags, type_count, types, 0);
+            DisplayListPrintItems(scene->items, flags, type_count, types, 0);
         }
     }
 
@@ -14071,8 +14063,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                             item->next = material;
                             item->type = 0x80;
                             item->id = 3;
-                            NUDISPLAYLISTITEM *geometry =
-                                static_cast<NUDISPLAYLISTITEM *>(display->items) + object->item_indices[material_index];
+                            NUDISPLAYLISTITEM *geometry = display->items + object->item_indices[material_index];
                             item[1] = geometry[-1];
                             item[2] = geometry[0];
                             item[1].id = 3;
@@ -15744,7 +15735,7 @@ extern "C" {
 
 #define SPECIAL_LEGACY(handle) ((NUSPECIAL_LEGACY *)(handle)->special)
 #define SPECIAL_DISPLAY(handle) ((NUDISPLAY_SPECIAL *)(handle)->display_special)
-#define SPECIAL_GOBJ(handle) (((NUGSCN *)(handle)->scene)->objects[SPECIAL_LEGACY(handle)->instance->object_index])
+#define SPECIAL_GOBJ(handle) ((handle)->scene->objects[SPECIAL_LEGACY(handle)->instance->object_index])
 
     enum {
         NUSPECIAL_COLLISION_FLAG = 1 << 9,
@@ -15782,7 +15773,7 @@ extern "C" {
         }
 
         animation_instance = (NUINSTANIM *)animation;
-        animation_data = ((NUGSCN *)special->scene)->instance_animation_data[animation_instance->animation_index];
+        animation_data = special->scene->instance_animation_data[animation_instance->animation_index];
         if (animation_data != NULL) {
             return NuAnimEndFrameOld(animation_data);
         }
@@ -15791,7 +15782,7 @@ extern "C" {
         if (animation_index == 0) {
             return 0.0f;
         }
-        fallback_table = (NUGSCN *)special->scene;
+        fallback_table = special->scene;
         if (fallback_table->end_frame_lookup == NULL) {
             return 0.0f;
         }
@@ -16286,14 +16277,14 @@ extern "C" {
         }
         if (visible != 0) {
             display->flags |= 0x202;
-            display_list = ((NUGSCN *)handle->scene)->display_list;
+            display_list = handle->scene->display_list;
             if ((display_list->instance_visibility_enabled & 1) != 0) {
                 display_list->visibility_flags[display->instance_ix] |= 1;
             }
         } else {
             display->flags &= ~0x2;
             SPECIAL_DISPLAY(handle)->flags &= ~0x200;
-            display_list = ((NUGSCN *)handle->scene)->display_list;
+            display_list = handle->scene->display_list;
             if ((display_list->instance_visibility_enabled & 1) != 0) {
                 display_list->visibility_flags[display->instance_ix] &= ~1;
             }
@@ -16322,7 +16313,7 @@ extern "C" {
 
     void NuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
         NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
-        NUDISPLAY_LIST_PC *display_scene = ((NUGSCN *)special->scene)->display_list;
+        NUDISPLAY_LIST_PC *display_scene = special->scene->display_list;
         NUMTX draw_matrix = *NuSpecialGetDrawMtx(special);
         NUVEC4 extent;
         __declspec(align(16)) NUVEC4 center;
@@ -16381,7 +16372,7 @@ extern "C" {
     }
 
     void xxxNuDisplayListUpdateSpecial(NUSPECIALHANDLE *special) {
-        NUDISPLAY_LIST_PC *scene = ((NUGSCN *)special->scene)->display_list;
+        NUDISPLAY_LIST_PC *scene = special->scene->display_list;
         NUDISPLAY_SPECIAL *display = (NUDISPLAY_SPECIAL *)special->display_special;
         NUMTX matrix = *NuSpecialGetDrawMtx(special);
         NUVEC4 corners[8];
@@ -16463,8 +16454,7 @@ extern "C" {
         if (special == NULL || special->display_special == NULL || special->scene == NULL) {
             return;
         }
-        if (((NUGSCN *)special->scene)->display_list == NULL ||
-            (((NUGSCN *)special->scene)->display_list->instance_visibility_enabled & 1) == 0) {
+        if (special->scene->display_list == NULL || (special->scene->display_list->instance_visibility_enabled & 1) == 0) {
             return;
         }
         SPECIAL_DISPLAY(special)->flags |= 0x400;
@@ -16474,8 +16464,8 @@ extern "C" {
     i32 NuSpecialGetInstanceix(NUSPECIALHANDLE *handle) {
         i32 i;
         if (handle->special != NULL) {
-            for (i = 0; i < ((NUGSCN *)handle->scene)->num_instances; ++i) {
-                if (&((NUGSCN *)handle->scene)->instances[i] == ((NUSPECIAL_LEGACY *)handle->special)->instance) {
+            for (i = 0; i < handle->scene->num_instances; ++i) {
+                if (&handle->scene->instances[i] == ((NUSPECIAL_LEGACY *)handle->special)->instance) {
                     return i;
                 }
             }
@@ -16491,7 +16481,7 @@ extern "C" {
         NUSPECIAL_LEGACY *legacy = (NUSPECIAL_LEGACY *)special->special;
         i32 count = 0;
         if (legacy != NULL) {
-            NUGOBJ *object = ((NUGSCN *)special->scene)->objects[legacy->instance->object_index];
+            NUGOBJ *object = special->scene->objects[legacy->instance->object_index];
             NUGEOM *geom;
             while (object->next != NULL) {
                 object = object->next;
@@ -16515,7 +16505,7 @@ extern "C" {
     NUMTL *NuSpecialGetMtl(NUSPECIALHANDLE *special, i32 index) {
         NUSPECIAL_LEGACY *legacy = (NUSPECIAL_LEGACY *)special->special;
         if (legacy != NULL) {
-            NUGOBJ *object = ((NUGSCN *)special->scene)->objects[legacy->instance->object_index];
+            NUGOBJ *object = special->scene->objects[legacy->instance->object_index];
             NUGEOM *geom;
             while (object->next != NULL) {
                 object = object->next;
@@ -16536,8 +16526,8 @@ extern "C" {
             while (display->clip_range[level] != 0.0f) {
                 ++level;
             }
-            return ((NUGSCN *)special->scene)
-                ->display_list->display_materials[((PC_DISPLAY_CLIP_OBJECT *)display->clip_objects)[level].material_ids[index]];
+            return special->scene->display_list
+                ->display_materials[((PC_DISPLAY_CLIP_OBJECT *)display->clip_objects)[level].material_ids[index]];
         }
         return NULL;
     }
@@ -16722,7 +16712,7 @@ extern "C" {
     }
 
     void NuSpecialSetInstAnimTime(NUSPECIALHANDLE *special, f32 frame) {
-        NUGSCN *scene = static_cast<NUGSCN *>(special->scene);
+        NUGSCN *scene = special->scene;
         if (scene == NULL) {
             return;
         }
@@ -16758,7 +16748,7 @@ extern "C" {
         }
         display = (NUDISPLAY_SPECIAL *)special->display_special;
         display->draw_matrix = *matrix;
-        display_list = ((NUGSCN *)special->scene)->display_list;
+        display_list = special->scene->display_list;
         if ((display_list->instance_visibility_enabled & 1) != 0) {
             NuDisplayListUpdateSpecial(special);
             ((NUDISPLAY_SPECIAL *)special->display_special)->flags |= 0x400;
@@ -16807,7 +16797,7 @@ extern "C" {
             ((NUDISPLAY_SPECIAL *)special->display_special)->draw_matrix.m30 = position->x;
             ((NUDISPLAY_SPECIAL *)special->display_special)->draw_matrix.m31 = position->y;
             ((NUDISPLAY_SPECIAL *)special->display_special)->draw_matrix.m32 = position->z;
-            display_list = ((NUGSCN *)special->scene)->display_list;
+            display_list = special->scene->display_list;
             if ((display_list->instance_visibility_enabled & 1) != 0) {
                 NuDisplayListUpdateSpecial(special);
                 ((NUDISPLAY_SPECIAL *)special->display_special)->flags |= 0x400;

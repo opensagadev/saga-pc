@@ -146,8 +146,7 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
     if (MiniCutCam == 0) {
         players = 0.0f;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && (((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0 &&
-                ((GAMEOBJECT *)Player[i])->pad->bound_pad != NULL) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & 0x80) != 0 && Player[i]->pad->bound_pad != NULL) {
                 i32 look = 1;
                 f32 x;
                 f32 y;
@@ -155,7 +154,7 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                     look = AlternateGameCallback(Player[i]);
                 }
                 if (look == 2) {
-                    GAMEPAD_PC *pad = ((GAMEOBJECT *)Player[i])->pad;
+                    GAMEPAD_PC *pad = Player[i]->pad;
                     if (pad->input_mode == 1) {
                         u32 buttons = pad->buttons_held;
                         u32 horizontal = buttons & (GAMEPAD_DLEFT | GAMEPAD_DRIGHT);
@@ -176,16 +175,16 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                             y = 0.0f;
                         }
                     } else {
-                        x = (f32)((GAMEOBJECT *)Player[i])->pad->bound_pad->analog_left_x - 127.5f;
+                        x = (f32)Player[i]->pad->bound_pad->analog_left_x - 127.5f;
                         x *= 1.0f / 127.5f;
-                        y = (f32)((GAMEOBJECT *)Player[i])->pad->bound_pad->analog_left_y - 127.5f;
+                        y = (f32)Player[i]->pad->bound_pad->analog_left_y - 127.5f;
                         y *= 1.0f / 127.5f;
                     }
                     camera->unknown_204 += (f32)((GameCamLookRotX << 16) / 360) * y;
                     camera->unknown_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 } else if (look == 1) {
-                    FRAME_PAD_PC *bound_pad = ((GAMEOBJECT *)Player[i])->pad->bound_pad;
+                    FRAME_PAD_PC *bound_pad = Player[i]->pad->bound_pad;
                     x = (f32)bound_pad->analog_right_x - 127.5f;
                     x *= 1.0f / 127.5f;
                     y = (f32)bound_pad->analog_right_y - 127.5f;

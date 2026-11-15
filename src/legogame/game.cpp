@@ -820,7 +820,7 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
         return;
     }
     for (i32 i = 0; i < 8; ++i) {
-        GAMEOBJECT *player = (GAMEOBJECT *)Player[i];
+        GAMEOBJECT *player = Player[i];
         if (player == NULL || !(player->flags_1fc_word & 1) || !(player->flags_1fc_word & 0x1000) || player->dead != 0 ||
             player->rider != NULL) {
             continue;
@@ -833,12 +833,12 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
             if (distance < radius * radius) {
                 NUVEC destination;
                 NuVecRotateY(&destination, &BuckSnowmobForward, ((BUCK_ROTATION_READER *)object)->rotation);
-                NuVecAdd(&destination, &destination, &((GAMEOBJECT *)Player[i])->collision_position);
+                NuVecAdd(&destination, &destination, &Player[i]->collision_position);
                 f32 height = GameShadow(NULL, &destination, 5.0f, -1);
                 if (height != 2000000.0f) {
                     destination.y = height;
                 }
-                StartBigJump((GAMEOBJECT *)Player[i], &destination, 0, BuckSnowmobJumpHeight, BuckSnowmobJumpDuration, 1);
+                StartBigJump(Player[i], &destination, 0, BuckSnowmobJumpHeight, BuckSnowmobJumpDuration, 1);
             }
         }
     }
@@ -1115,10 +1115,10 @@ static i32 ActionMusicFn(void) {
         if (WORLD->current_level == HUB_LDATA) {
             return ai_fighting != 0;
         }
-        if (ACTION_MUSIC_PLAYER_FIGHTING((GAMEOBJECT *)Player[0])) {
+        if (ACTION_MUSIC_PLAYER_FIGHTING(Player[0])) {
             return 1;
         }
-        if (ACTION_MUSIC_PLAYER_FIGHTING((GAMEOBJECT *)Player[1])) {
+        if (ACTION_MUSIC_PLAYER_FIGHTING(Player[1])) {
             return 1;
         }
     }
@@ -1755,7 +1755,7 @@ extern "C" void CheckResetBits(void) {
         ReStoreStatusTakeOverObjectSys(1);
         AIScriptInitConditions(WORLD->ai_sys);
         for (i = 0; i < 8; ++i) {
-            player_slot = (GAMEOBJECT **)&Player[i];
+            player_slot = &Player[i];
             if (*player_slot == NULL) {
                 continue;
             }
@@ -1810,17 +1810,17 @@ extern "C" void CheckResetBits(void) {
     if ((ResetBits & 2) != 0) {
         for (i = 0; i < 8; ++i) {
             if (Player[i] != NULL) {
-                ((GAMEOBJECT *)Player[i])->saved_hitpoints = 4;
+                Player[i]->saved_hitpoints = 4;
             }
         }
     }
     if ((ResetBits & 4) != 0) {
         for (i = 0; i < 8; ++i) {
             if (Player[i] != NULL) {
-                if ((((GAMEOBJECT *)Player[i])->flags_1fc & 0x80) != 0) {
-                    ((GAMEOBJECT *)Player[i])->spawn_protection_timer = 2.5f;
+                if ((Player[i]->flags_1fc & 0x80) != 0) {
+                    Player[i]->spawn_protection_timer = 2.5f;
                 } else {
-                    ((GAMEOBJECT *)Player[i])->spawn_protection_timer = 0.0f;
+                    Player[i]->spawn_protection_timer = 0.0f;
                 }
             }
         }
@@ -1833,7 +1833,7 @@ extern "C" void CheckResetBits(void) {
     if ((ResetBits & 0x10) != 0) {
         for (i = 0; i < 8; ++i) {
             if (Player[i] != NULL) {
-                ResetPlayer((GAMEOBJECT *)Player[i], 1, NULL, 0);
+                ResetPlayer(Player[i], 1, NULL, 0);
             }
         }
         VehicleAreaRememberSpeed = GetVehicleAreaRememberSpeed();
@@ -2154,12 +2154,12 @@ extern "C" {
     void Game_KillPart(PART_PC *part, i32 reason) {
         if (reason == 1 && part->unknown_206 != -1) {
             if ((part->unknown_206 & 1) != 0 && Player[0] != NULL) {
-                NewBuzz(((GAMEOBJECT *)Player[0])->pad->bound_pad, 0.2f, 0);
-                NewRumble(((GAMEOBJECT *)Player[0])->pad->bound_pad, 0.8f, 0);
+                NewBuzz(Player[0]->pad->bound_pad, 0.2f, 0);
+                NewRumble(Player[0]->pad->bound_pad, 0.8f, 0);
             }
             if ((part->unknown_206 & 2) != 0 && Player[1] != NULL) {
-                NewBuzz(((GAMEOBJECT *)Player[1])->pad->bound_pad, 0.2f, 0);
-                NewRumble(((GAMEOBJECT *)Player[1])->pad->bound_pad, 0.8f, 0);
+                NewBuzz(Player[1]->pad->bound_pad, 0.2f, 0);
+                NewRumble(Player[1]->pad->bound_pad, 0.8f, 0);
             }
         }
     }
@@ -3141,7 +3141,7 @@ extern "C" {
         if (netclient == 0 || show_message == 0) {
             ChallengeMode = state;
             SetBonusWinner(qrand() / 0x8000);
-            if (Player[BonusWinner] == NULL || !(((GAMEOBJECT *)Player[BonusWinner])->flags_1fc & 0x80)) {
+            if (Player[BonusWinner] == NULL || !(Player[BonusWinner]->flags_1fc & 0x80)) {
                 BonusWinner = BonusWinner == 0;
             }
             BonusWinFlag = 0;

@@ -206,11 +206,11 @@ extern "C" {
                         /* The BuildUp counter names are swapped relative to their use. */
                         if (BuildUpTotal == 0) {
                             BuildUpDone = 0;
-                            if (Player[0] != NULL && ((GAMEOBJECT *)Player[0])->coin_packet != NULL) {
-                                BuildUpDone = ((PLAYER_COIN_PACKET_PC *)((GAMEOBJECT *)Player[0])->coin_packet)->coins;
+                            if (Player[0] != NULL && Player[0]->coin_packet != NULL) {
+                                BuildUpDone = ((PLAYER_COIN_PACKET_PC *)Player[0]->coin_packet)->coins;
                             }
-                            if (Player[1] != NULL && ((GAMEOBJECT *)Player[1])->coin_packet != NULL) {
-                                BuildUpDone += ((PLAYER_COIN_PACKET_PC *)((GAMEOBJECT *)Player[1])->coin_packet)->coins;
+                            if (Player[1] != NULL && Player[1]->coin_packet != NULL) {
+                                BuildUpDone += ((PLAYER_COIN_PACKET_PC *)Player[1]->coin_packet)->coins;
                             }
                             if ((u32)BuildUpDone >= maximum) {
                                 BuildUpScale = 2.5f;
@@ -250,7 +250,7 @@ extern "C" {
         }
         for (i = 0; i < 2; ++i) {
             target = 0.0f;
-            if (Paused == 0 && Player[i] != NULL && ((GAMEOBJECT *)Player[i])->hud_icon_timer <= 0.0f) {
+            if (Paused == 0 && Player[i] != NULL && Player[i]->hud_icon_timer <= 0.0f) {
                 target = 1.0f;
             }
             PowerUp_PanelPosMul[i] = SeekLinearF(PowerUp_PanelPosMul[i], target, FRAMETIME + FRAMETIME);
@@ -694,7 +694,7 @@ extern "C" {
             i32 visible;
             i32 icon_alpha;
             PcInput_SetCtrlStringPlayer(player);
-            object = (GAMEOBJECT *)Player[player];
+            object = Player[player];
             if (object == NULL) {
                 continue;
             }
@@ -863,9 +863,8 @@ extern "C" {
             }
         }
         if (BonusArea != 0 && WORLD->area != NULL && (WORLD->area->flags & 0x104) == 4) {
-            DrawBonusScore(status_y, Player[0] != NULL && (((GAMEOBJECT *)Player[0])->flags_1fc & 0x80) != 0,
-                           Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0, 1.0f,
-                           Arcade != 0 ? Arcade_Points : BonusScore);
+            DrawBonusScore(status_y, Player[0] != NULL && (Player[0]->flags_1fc & 0x80) != 0,
+                           Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0, 1.0f, Arcade != 0 ? Arcade_Points : BonusScore);
         }
         if (HUB_ADATA != NULL && WORLD->area == HUB_ADATA && goldbricktime > 0.0f) {
             f32 y = (STATSPOS2Y - STATSPOSY) * NuTrigTable[((i32)((f64)goldbricktime * 16384.0) >> 1) & 0x7fff] - STATSPOS2Y;
@@ -1219,7 +1218,7 @@ extern "C" {
             if (pads[0].input_ready == 0 || (pads[0].bound_pad->flags & 4) == 0) {
                 NuPadMapPlayerToPort(0, PcInput_GetFirstKeyboardPort() + 1);
             }
-            if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->flags_1fc & 0x80) != 0 &&
+            if (Player[1] != NULL && (Player[1]->flags_1fc & 0x80) != 0 &&
                 (pads[1].input_ready == 0 || (pads[1].bound_pad->flags & 4) == 0)) {
                 NuPadMapPlayerToPort(1, PcInput_GetFirstKeyboardPort() + 3);
             }
@@ -1332,10 +1331,9 @@ extern "C" {
             goto draw_menu;
         }
         for (player_index = 0; player_index < 8; ++player_index) {
-            if (Player[player_index] != NULL && (((GAMEOBJECT *)Player[player_index])->flags_1fc & 0x80) != 0 &&
-                ShowPlayerCoordinate != 0) {
-                sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", ((GAMEOBJECT *)Player[player_index])->position.x,
-                        ((GAMEOBJECT *)Player[player_index])->position.y, ((GAMEOBJECT *)Player[player_index])->position.z);
+            if (Player[player_index] != NULL && (Player[player_index]->flags_1fc & 0x80) != 0 && ShowPlayerCoordinate != 0) {
+                sprintf(coordinate_text, "X:%.2f Y:%.2f Z:%.2f", Player[player_index]->position.x, Player[player_index]->position.y,
+                        Player[player_index]->position.z);
                 Text3DEx(coordinate_text, coordinate_positions[player_index].x, coordinate_positions[player_index].y, 1.0f, 0.4f, 0.5f,
                          0.5f, 0, 255, 191, 0, 48);
             }

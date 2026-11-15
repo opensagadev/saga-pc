@@ -82,7 +82,7 @@ void DeathStarEscapeB_Init(WORLDINFO *world) {
     for (index = 0; index < 2; ++index) {
         animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
-            data[index] = ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
+            data[index] = LevHSpecial[index].scene->instance_animation_data[animation[index]->animation_index];
             if (data[index] != NULL) {
                 fakeanimendframe[0] = (f32)((f64)NuAnimEndFrameOld(data[index]) + (f64)fakeanimendframe[0]);
             }
@@ -106,7 +106,7 @@ void DeathStarEscapeB_Update(WORLDINFO *world) {
     for (index = 0; index < 2; ++index) {
         animation[index] = NuSpecialGetInstAnim(&LevHSpecial[index]);
         if (animation[index] != NULL) {
-            data[index] = ((NUGSCN *)LevHSpecial[index].scene)->instance_animation_data[animation[index]->animation_index];
+            data[index] = LevHSpecial[index].scene->instance_animation_data[animation[index]->animation_index];
         }
     }
     if (data[0] != NULL && data[1] != NULL) {
@@ -339,14 +339,14 @@ void DeathStarEscapeC_Update(WORLDINFO *world) {
     }
     if (NuSpecialGetVisibilityFn(&LevHSpecial[2]) != 0 && (position = NuSpecialGetDrawPos(&LevHSpecial[2])) != NULL &&
         position->x < 77.25f) {
-        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[0] &= ~0x80000000;
-        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[1] &= ~0x80000000;
+        LevPathCnx[0]->traversal_flags[0] &= ~0x80000000;
+        LevPathCnx[0]->traversal_flags[1] &= ~0x80000000;
         if (LevAIMessage[0] != NULL) {
             LevAIMessage[0]->value = 1.0f;
         }
     } else {
-        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[0] |= 0x80000000;
-        ((AIPATHCNX *)LevPathCnx[0])->traversal_flags[1] |= 0x80000000;
+        LevPathCnx[0]->traversal_flags[0] |= 0x80000000;
+        LevPathCnx[0]->traversal_flags[1] |= 0x80000000;
     }
 }
 

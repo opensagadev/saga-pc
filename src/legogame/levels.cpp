@@ -476,7 +476,7 @@ void MakeFreePlayModelList(i32 model1, i32 model2, i32 area, i32 level, i32 para
             if (models[index] != -1) {
                 World_AppendFreePlayPrivate(models[index]);
             } else if (Player[index] != NULL) {
-                World_AppendFreePlayPrivate((i16)((GAMEOBJECT *)Player[index])->id);
+                World_AppendFreePlayPrivate((i16)Player[index]->id);
             }
         }
         if (FreePlayModelCount == 1) {
@@ -3207,7 +3207,7 @@ void NewArea(void) {
     for (i = 0; i < 8; ++i) {
         ((PLAYER_PROGRESS_HP *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
         if (Player[i] != NULL) {
-            ((GAMEOBJECT *)Player[i])->current_hp = (i8)((GAMEOBJECT *)Player[i])->unknown_107e;
+            Player[i]->current_hp = (i8)Player[i]->unknown_107e;
         }
     }
     ResetTimer(&AreaTimer, 0.0f);

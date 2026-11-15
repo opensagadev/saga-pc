@@ -759,15 +759,13 @@ extern "C" void ProcessMusicChanges(LEVELDATA_PC *level, OPTIONSSAVE *options) {
             MusicActiveReset = 1;
         } else if (Cheat_PowerUpActive(-1) != 0) {
             MusicActiveReset = 1;
-        } else if (Player[0] != NULL && (((GAMEOBJECT *)Player[0])->ai_packet.opponent != NULL ||
-                                         (((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent != NULL &&
-                                          ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent->dead == 0 &&
-                                          ((GAMEOBJECT *)Player[0])->ai_packet.nearest_opponent_metric < 3.0f))) {
+        } else if (Player[0] != NULL && (Player[0]->ai_packet.opponent != NULL || (Player[0]->ai_packet.nearest_opponent != NULL &&
+                                                                                   Player[0]->ai_packet.nearest_opponent->dead == 0 &&
+                                                                                   Player[0]->ai_packet.nearest_opponent_metric < 3.0f))) {
             MusicActiveReset = 1;
-        } else if (Player[1] != NULL && (((GAMEOBJECT *)Player[1])->ai_packet.opponent != NULL ||
-                                         (((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent != NULL &&
-                                          ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent->dead == 0 &&
-                                          ((GAMEOBJECT *)Player[1])->ai_packet.nearest_opponent_metric < 3.0f))) {
+        } else if (Player[1] != NULL && (Player[1]->ai_packet.opponent != NULL || (Player[1]->ai_packet.nearest_opponent != NULL &&
+                                                                                   Player[1]->ai_packet.nearest_opponent->dead == 0 &&
+                                                                                   Player[1]->ai_packet.nearest_opponent_metric < 3.0f))) {
             MusicActiveReset = 1;
         } else {
             MusicActiveReset = 0;

@@ -650,7 +650,7 @@ class NetLogFile { // size 0x2114
 
 typedef struct TERRAIN_PLATFORM_PC { // size 0x6c
     NUMTX previous_matrix;           // 0x00
-    void *scene_object;              // 0x40
+    struct numtx_s *scene_object;    // 0x40
     u32 unknown_44;                  // 0x44
     i16 terrain_group_index;         // 0x48
     i16 scene_object_index;          // 0x4a
@@ -1149,7 +1149,7 @@ typedef struct BOLTSYS_PC_s {                                    // size 0x20
 
 typedef struct bolt_s {         // size 0x138
     struct BOLTTYPE_PC_s *type; // 0x000
-    void *owner;                // 0x004
+    struct gameobject_s *owner; // 0x004
     NUMTX orientation;          // 0x008
     NUMTX effect_orientation;   // 0x048
     NUVEC position;             // 0x088

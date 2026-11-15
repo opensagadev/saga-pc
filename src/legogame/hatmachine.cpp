@@ -622,7 +622,7 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
             animations[effect] = (NUINSTANIM *)NuSpecialGetInstAnim(specials[effect]);
             if (specials[effect] != NULL && animations[effect] != NULL) {
                 end_frames[effect] =
-                    NuAnimEndFrameOld(((NUGSCN *)specials[effect]->scene)->instance_animation_data[animations[effect]->animation_index]);
+                    NuAnimEndFrameOld(specials[effect]->scene->instance_animation_data[animations[effect]->animation_index]);
             }
         }
     }

@@ -959,7 +959,7 @@ extern "C" {
             }
         } else {
             for (i32 i = 0; i < 8; ++i) {
-                GAMEOBJECT *object = static_cast<GAMEOBJECT *>(Player[i]);
+                GAMEOBJECT *object = Player[i];
                 if (object != NULL && (object->flags_1fc & 1) != 0 && NuStrICmp(object->character_data->name, name) == 0) {
                     return object;
                 }
