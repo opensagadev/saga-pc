@@ -179,7 +179,7 @@ i32 PartDraw_ThermalDetonator(PART_PC *part) {
 
 void PartKill_ThermalDetonator(PART_PC *part, i32 unused1) {
     u16 flags;
-    struct EXPLOSION *explosion;
+    EXPLOSION_PC *explosion;
     if (part == NULL) {
         return;
     }

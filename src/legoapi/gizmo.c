@@ -851,7 +851,7 @@ i32 GizmoIsNameUnique(GIZMOSYS_PREFIX *system, char *name) {
     GIZMOSET *set;
     i32 type_index;
     if (system != NULL && name != NULL) {
-        type = (GIZMO_NAME_TYPE *)gizmotypes->types;
+        type = gizmotypes->types;
         set = system->sets;
         for (type_index = 0; type_index < gizmotypes->count; ++type_index, ++type, ++set) {
             GIZMO_PC *gizmo;

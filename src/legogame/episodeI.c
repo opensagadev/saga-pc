@@ -731,7 +731,7 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
     f32 ratio;
     f32 speed;
     f32 distance_sq;
-    NUVEC *point;
+    NUVEC4 *point;
     if (pod->spline == NULL) {
         return 0;
     }

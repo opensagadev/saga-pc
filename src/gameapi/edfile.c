@@ -925,7 +925,7 @@ edui_textpicker_s *eduiAddTextPickEntEx(eduimenu_s *menu, eduiitem_s *source, Ed
     tpent = eduiMenuCreate(source->x + 10, source->y + 10, 180, 50, menu->font, NULL, ((char *)("Enter Text")));
     tpent->flags |= 2;
     picker = ((edui_textpicker_s *)(eduiItemTextPickCreate(((size_t)(source)), &ed_attr, callback, ((char *)("")))));
-    eduiMenuAddItem(tpent, picker);
+    eduiMenuAddItem(tpent, &picker->base);
     eduiMenuAttach(menu, tpent);
     picker->editing = 1;
     eduiMenuFitWidth(tpent, 8);

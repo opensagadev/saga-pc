@@ -168,7 +168,7 @@ extern "C" {
     void ViewCamSetActive(i32 camera, i32 mode);
     void StoreStatusTakeOverObjectSys(void);
     void ReleaseAllTakeOvers(void);
-    void Mission_Clear(MISSIONSYS_s *mission_sys);
+    void Mission_Clear(MISSIONSYS *mission_sys);
     void RestoreGameCut(void);
     TIMER BonusTimer = {0};
 

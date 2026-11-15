@@ -95,6 +95,20 @@ def cache_key(common, header, files, root=ROOT):
     return hashlib.sha256(json.dumps(parts).encode()).hexdigest()
 
 
+def clang_version(ci):
+    """libclang's version string; _CXString.from_result takes (result, function, arguments) in the bindings of
+    libclang 18 and (result) in later ones."""
+    version = ci.conf.lib.clang_getClangVersion
+    version.restype = ci._CXString
+    if hasattr(version, "errcheck"):
+        del version.errcheck
+    result = version()
+    try:
+        return ci._CXString.from_result(result)
+    except TypeError:
+        return ci._CXString.from_result(result, None, None)
+
+
 class Clang:
     """libclang (the pip bindings tools/layoutcheck.py uses) with the lint flags of tools/check.py:
     clang -fsyntax-only, function bodies skipped."""
@@ -103,10 +117,7 @@ class Clang:
         from tools import declscan, layoutcheck
         self.flags = declscan.base_flags()
         ci = layoutcheck.cindex()
-        version = ci.conf.lib.clang_getClangVersion
-        version.restype = ci._CXString
-        version.errcheck = ci._CXString.from_result
-        self.common = hashlib.sha256(json.dumps([version(), self.flags, LANGUAGES]).encode()).hexdigest()
+        self.common = hashlib.sha256(json.dumps([clang_version(ci), self.flags, LANGUAGES]).encode()).hexdigest()
 
     def compile(self, header, language, error_limit=1):
         """(ok, diagnostics text) of a unit that includes `header` twice."""

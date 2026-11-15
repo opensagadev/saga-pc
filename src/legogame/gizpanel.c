@@ -318,7 +318,7 @@ void GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position)
     *target = offset;
 }
 
-i32 GizPanel_CanUsePanel(GAMEOBJECT *object, BULK_AI_PANEL *panel) {
+i32 GizPanel_CanUsePanel(GAMEOBJECT *object, PANEL_MOVEMENT *panel) {
     if (panel == NULL || object == NULL) {
         return 0;
     }

@@ -200,7 +200,7 @@ void AddSlamDebris(GAMEOBJECT *object) {
     f32 strength;
     i32 damage;
     i32 flags;
-    struct EXPLOSION *explosion;
+    EXPLOSION_PC *explosion;
     NUVEC position;
     FindSlamOrigin(object, &position, NULL);
     flags = 0x17;

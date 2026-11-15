@@ -101,15 +101,15 @@ MISSIONSYS *Missions_Configure(char *file, VARIPTR *buffer_start, VARIPTR *buffe
     return (MISSIONSYS *)destination;
 }
 
-void Mission_Clear(MISSIONSYS_s *ms) {
+void Mission_Clear(MISSIONSYS *ms) {
     if (ms == NULL) {
         ms = MissionSys;
         if (ms == NULL) {
             return;
         }
     }
-    ms->mission = NULL;
-    ms->field8_0x1d = 0;
+    ms->active_mission = NULL;
+    ms->state = 0;
     ResetTimer(&ms->timer, 0.0f);
 }
 

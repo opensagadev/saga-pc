@@ -892,7 +892,7 @@ extern i32 edpart_copy_source[8];
 extern NUVEC edpart_copy_source_vec;
 extern i32 edpart_copy_source_count;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
-                    i32 outer_y, i32 colour, struct PC_SCENE_MTL_VIEW *material);
+                    i32 outer_y, i32 colour, NUMTL *material);
 
 typedef struct PART_TERRAIN_STATE { // size 0x20c
     u8 unknown_000[0x200];          // 0x000
@@ -3402,7 +3402,7 @@ void edpartHighlightNearest(void) {
         }
     } else if (edpart_nearest != -1) {
         edbitsDrawCube(part_emits[edpart_nearest].position.x, part_emits[edpart_nearest].position.y, part_emits[edpart_nearest].position.z,
-                       0.5f, 0.5f, 0.5f, 0, 0, 0, 0, 0, -1, (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
+                       0.5f, 0.5f, 0.5f, 0, 0, 0, 0, 0, -1, edpart_mtl);
     }
 }
 
