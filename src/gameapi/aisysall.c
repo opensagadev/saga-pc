@@ -2487,14 +2487,14 @@ i32 Action_SetViewDistance(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->view_distance = system->creatures[packet->creature_index].view_distance;
+        packet->owner->view_distance = system->creatures[packet->creature_index].view_distance;
     } else if (GetViewRangeFn != NULL) {
-        ((APIOBJECT *)packet->owner)->view_distance = GetViewRangeFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->view_distance = GetViewRangeFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->view_distance = 1.0f;
+        packet->owner->view_distance = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->view_distance = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->view_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2505,14 +2505,14 @@ i32 Action_SetMinViewHeight(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->min_view_height = system->creatures[packet->creature_index].min_view_height;
+        packet->owner->min_view_height = system->creatures[packet->creature_index].min_view_height;
     } else if (GetMinViewHeightFn != NULL) {
-        ((APIOBJECT *)packet->owner)->min_view_height = GetMinViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->min_view_height = GetMinViewHeightFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->min_view_height = 1.0f;
+        packet->owner->min_view_height = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2523,14 +2523,14 @@ i32 Action_SetMaxViewHeight(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->max_view_height = system->creatures[packet->creature_index].max_view_height;
+        packet->owner->max_view_height = system->creatures[packet->creature_index].max_view_height;
     } else if (GetMaxViewHeightFn != NULL) {
-        ((APIOBJECT *)packet->owner)->max_view_height = GetMaxViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->max_view_height = GetMaxViewHeightFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->max_view_height = 1.0f;
+        packet->owner->max_view_height = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2541,14 +2541,14 @@ i32 Action_SetHearDistance(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->hear_distance = system->creatures[packet->creature_index].hear_distance;
+        packet->owner->hear_distance = system->creatures[packet->creature_index].hear_distance;
     } else if (GetHearDistanceFn != NULL) {
-        ((APIOBJECT *)packet->owner)->hear_distance = GetHearDistanceFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->hear_distance = GetHearDistanceFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->hear_distance = 1.0f;
+        packet->owner->hear_distance = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2557,7 +2557,7 @@ i32 Action_SetMoveRadius(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     if (packet == NULL || packet->owner == NULL || param_5 == 0) {
         return 1;
     }
-    packet->mover_height = ((APIOBJECT *)packet->owner)->collision_radius + ((APIOBJECT *)packet->owner)->collision_radius;
+    packet->mover_height = packet->owner->collision_radius + packet->owner->collision_radius;
     if (param_4 != 0 && NuStrICmp(params[0], "default") != 0) {
         packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
     }
@@ -3821,8 +3821,8 @@ void AISysCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT **obj
             if (difference.z > radius || difference.z < -radius) {
                 continue;
             }
-            if (((GAMEOBJECT *)first)->collision_min.y > ((GAMEOBJECT *)second)->collision_max.y ||
-                ((GAMEOBJECT *)second)->collision_min.y > ((GAMEOBJECT *)first)->collision_max.y) {
+            if (first->collision_min.y > second->collision_max.y ||
+                second->collision_min.y > first->collision_max.y) {
                 continue;
             }
             distance = NuFsqrt(difference.x * difference.x + difference.z * difference.z);
@@ -3898,8 +3898,8 @@ void LEGO_AISysCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT 
             if (difference.z > radius || difference.z < -radius) {
                 continue;
             }
-            if (((GAMEOBJECT *)first)->collision_min.y > ((GAMEOBJECT *)second)->collision_max.y ||
-                ((GAMEOBJECT *)second)->collision_min.y > ((GAMEOBJECT *)first)->collision_max.y) {
+            if (first->collision_min.y > second->collision_max.y ||
+                second->collision_min.y > first->collision_max.y) {
                 continue;
             }
             if (first->collision_link == second || second->collision_link == first) {
@@ -11979,7 +11979,7 @@ i32 Action_FaceLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
     char *value;
     AILOCATOR *locator;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL) {
         return 1;
     }
@@ -12013,7 +12013,7 @@ i32 Action_SetLocator(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
     i32 random_count = 0;
     char *name = NULL;
     i32 index;
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL || first_time == 0) {
         return 1;
     }
@@ -12036,8 +12036,8 @@ i32 Action_SetLocator(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
     if (name != NULL) {
         if (indexed != 0 && ((APIOBJECT *)packet->owner)->locator_name_index != -1) {
             sprintf(buffer, "%s_%d", name, ((APIOBJECT *)packet->owner)->locator_name_index);
-        } else if (personal != 0 && ((APIOBJECT *)packet->owner)->character_data != NULL) {
-            sprintf(buffer, "%s_%s", name, ((APIOBJECT *)packet->owner)->character_data->name);
+        } else if (personal != 0 && packet->owner->character_data != NULL) {
+            sprintf(buffer, "%s_%s", name, packet->owner->character_data->name);
         } else if (random_count != 0) {
             sprintf(buffer, "%s_%d", name, NuRand(NULL) % random_count);
         } else {
@@ -12055,7 +12055,7 @@ i32 Action_SetRespawnLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *p
     i32 i;
     char *value;
 
-    if (packet != NULL && packet->owner != NULL && ((APIOBJECT *)packet->owner)->owner != NULL && first_time != 0) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL && first_time != 0) {
         packet->respawn_locator = processor->locator;
         count = 0;
         for (i = 0; i < param_count; i++) {
@@ -15542,7 +15542,7 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
     char *value;
     AILOCATOR *locator_3;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL) {
         return 1;
     }
@@ -15562,8 +15562,8 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
                     if (index < param_count) {
                         if (use_indexed_name != 0 && ((APIOBJECT *)packet->owner)->locator_name_index != -1) {
                             sprintf(locator_name, "%s_%d", params[index], ((APIOBJECT *)packet->owner)->locator_name_index);
-                        } else if (use_personal_name != 0 && ((APIOBJECT *)packet->owner)->character_data != NULL) {
-                            sprintf(locator_name, "%s_%s", params[index], ((APIOBJECT *)packet->owner)->character_data->name);
+                        } else if (use_personal_name != 0 && packet->owner->character_data != NULL) {
+                            sprintf(locator_name, "%s_%s", params[index], packet->owner->character_data->name);
                         } else if (random_locator_count != 0) {
                             sprintf(locator_name, "%s_%d", params[index], NuRand(NULL) % random_locator_count);
                         } else {
@@ -15716,7 +15716,7 @@ i32 Action_FollowPath(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     f64 first_term;
     f32 random;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
     }
     if (packet->path_info.path == NULL || packet->path_info.connection == NULL) {
