@@ -120,3 +120,51 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/* MATCH-EXCEPTION: the original also calls the variadic script diagnostics with no arguments at all; C allows that
+ * call only through a function type without a prototype. */
+#define AI_SCRIPT_DIAGNOSTIC_BARE(diagnostic) ((void (*)())(diagnostic))()
+
+// Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
+// allocation memset. Size arithmetic is unsigned 32-bit.
+#define AISYS_BUFFER_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                                      \
+    do {                                                                                                                                   \
+        u32 allocation_size = (input_size);                                                                                                \
+        VARIPTR *allocation_cursor = (input_cursor);                                                                                       \
+        VARIPTR *allocation_end = (input_end);                                                                                             \
+        void *allocation_result = NULL;                                                                                                    \
+        if (allocation_cursor != NULL && allocation_end != NULL) {                                                                         \
+            if (allocation_cursor->addr + allocation_size < allocation_end->addr) {                                                        \
+                allocation_result = (void *)((allocation_cursor->addr + 15) & ~15u);                                                       \
+                allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                                       \
+                memset(allocation_result, 0, allocation_size);                                                                             \
+            } else {                                                                                                                       \
+                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                 \
+            }                                                                                                                              \
+        } else {                                                                                                                           \
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                     \
+        }                                                                                                                                  \
+        destination = (type)allocation_result;                                                                                             \
+    } while (0)
+
+/* Early-out guards return 1 through one shared epilogue. */
+#define AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, field, mask, initially_set, set_on_false)                               \
+    do {                                                                                                                                   \
+        i32 i;                                                                                                                             \
+        if ((packet) == NULL || (packet)->owner == NULL || (first_time) == 0)                                                              \
+            return 1;                                                                                                                      \
+        if (initially_set) {                                                                                                               \
+            (packet)->owner->field |= (mask);                                                                                              \
+        } else {                                                                                                                           \
+            (packet)->owner->field &= ~(mask);                                                                                             \
+        }                                                                                                                                  \
+        for (i = 0; i < (count); i++) {                                                                                                    \
+            if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                                              \
+                if (set_on_false) {                                                                                                        \
+                    (packet)->owner->field |= (mask);                                                                                      \
+                } else {                                                                                                                   \
+                    (packet)->owner->field &= ~(mask);                                                                                     \
+                }                                                                                                                          \
+            }                                                                                                                              \
+        }                                                                                                                                  \
+    } while (0)

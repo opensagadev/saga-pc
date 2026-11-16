@@ -73,9 +73,6 @@ AISTATE *aiscript_load_state = 0;
 void AIScriptMissingStateDiagnostic(const char *format, ...);
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
 void AIScriptMissingConditionDiagnostic(const char *format, ...);
-/* MATCH-EXCEPTION: the original also calls the variadic script diagnostics with no arguments at all; C allows that
- * call only through a function type without a prototype. */
-#define AI_SCRIPT_DIAGNOSTIC_BARE(diagnostic) ((void (*)())(diagnostic))()
 
 enum { AIPATHINFO_FLAG_ON_PATH_LOCAL = 0x01, AIPATHINFO_FLAG_ROUTE_CHECKED_LOCAL = 0x04 };
 
@@ -107,28 +104,6 @@ static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
 NUVEC edpath_addoffset = {0};
 void (*AiEditorMovePlayersCallback)(NUVEC *) = NULL;
-
-// Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
-// allocation memset. Size arithmetic is unsigned 32-bit.
-#define PATH_BUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                                        \
-    do {                                                                                                                                   \
-        u32 allocation_size = (input_size);                                                                                                \
-        VARIPTR *allocation_cursor = (input_cursor);                                                                                       \
-        VARIPTR *allocation_end = (input_end);                                                                                             \
-        void *allocation_result = NULL;                                                                                                    \
-        if (allocation_cursor != NULL && allocation_end != NULL) {                                                                         \
-            if (allocation_cursor->addr + allocation_size < allocation_end->addr) {                                                        \
-                allocation_result = (void *)((allocation_cursor->addr + 15) & ~15u);                                                       \
-                allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                                       \
-                memset(allocation_result, 0, allocation_size);                                                                             \
-            } else {                                                                                                                       \
-                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                 \
-            }                                                                                                                              \
-        } else {                                                                                                                           \
-            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                     \
-        }                                                                                                                                  \
-        destination = (type)allocation_result;                                                                                             \
-    } while (0)
 
 static f32 NuFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -190,10 +165,6 @@ typedef struct INTERACTION_ANTINODE_SHAPE_VIEW { // size 0x48
 } INTERACTION_ANTINODE_SHAPE_VIEW;
 
 #define INTERACTION_ANTINODE_SHAPE(a) ((INTERACTION_ANTINODE_SHAPE_VIEW *)(a))
-
-#define INTERACTION_SIN(a) NuTrigTable[((a) >> 1) & 0x7fff]
-
-#define INTERACTION_COS(a) NuTrigTable[(((a) + 0x4000) >> 1) & 0x7fff]
 
 /* Forward declarations for functions used before their definition. */
 
@@ -319,25 +290,6 @@ typedef struct ai_path_system_load_s {  // size 0x10
 
 // Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
 // allocation memset. Size arithmetic is unsigned 32-bit.
-#define PATH_LOAD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                                         \
-    do {                                                                                                                                   \
-        u32 allocation_size = (input_size);                                                                                                \
-        VARIPTR *allocation_cursor = (input_cursor);                                                                                       \
-        VARIPTR *allocation_end = (input_end);                                                                                             \
-        void *allocation_result = NULL;                                                                                                    \
-        if (allocation_cursor != NULL && allocation_end != NULL) {                                                                         \
-            if (allocation_cursor->addr + allocation_size < allocation_end->addr) {                                                        \
-                allocation_result = (void *)((allocation_cursor->addr + 15) & ~15u);                                                       \
-                allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                                       \
-                memset(allocation_result, 0, allocation_size);                                                                             \
-            } else {                                                                                                                       \
-                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                 \
-            }                                                                                                                              \
-        } else {                                                                                                                           \
-            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                     \
-        }                                                                                                                                  \
-        destination = (type)allocation_result;                                                                                             \
-    } while (0)
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
@@ -405,26 +357,6 @@ static eduiiattr_s AiEditorSaveMessageColours = {0x80000000, 0x80ff0000, 0x80808
 f32 aiEditor_LocatorWidth = 0.25f;
 f32 aiEditor_DrawYOffset = 0.25f;
 
-#define REBUILD_ALLOCATE(type, destination, input_cursor, input_end, input_size)                                                           \
-    do {                                                                                                                                   \
-        u32 allocation_size = (input_size);                                                                                                \
-        VARIPTR *allocation_end = (input_end);                                                                                             \
-        VARIPTR *allocation_cursor = (input_cursor);                                                                                       \
-        void *allocation_result = NULL;                                                                                                    \
-        if (allocation_cursor != NULL && allocation_end != NULL) {                                                                         \
-            if (allocation_cursor->addr + allocation_size < allocation_end->addr) {                                                        \
-                allocation_result = (void *)((allocation_cursor->addr + 15) & ~15u);                                                       \
-                allocation_cursor->addr = ((allocation_cursor->addr + 15) & ~15u) + allocation_size;                                       \
-                memset(allocation_result, 0, allocation_size);                                                                             \
-            } else {                                                                                                                       \
-                AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                 \
-            }                                                                                                                              \
-        } else {                                                                                                                           \
-            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                     \
-        }                                                                                                                                  \
-        destination = (type)allocation_result;                                                                                             \
-    } while (0)
-
 /* The record has a four-byte mask, a five-word drawing callback,
  * a bounded 64-byte name and a final four-byte options word. */
 
@@ -456,20 +388,6 @@ extern f32 default_path_radius;
 
 extern void pathEditor_OnPathCheck(NUVEC *, EDAIPATHCHECK_s *, EDAIPATH_s *, f32);
 
-#define PATH_EDITOR_FIND_CONNECTION(result, from, to)                                                                                      \
-    do {                                                                                                                                   \
-        i32 find_index_;                                                                                                                   \
-        (result) = NULL;                                                                                                                   \
-        if ((from) != NULL && (to) != NULL) {                                                                                              \
-            for (find_index_ = 0; find_index_ < 8; ++find_index_) {                                                                        \
-                if ((from)->connections[find_index_].node == (to)) {                                                                       \
-                    (result) = &(from)->connections[find_index_];                                                                          \
-                    break;                                                                                                                 \
-                }                                                                                                                          \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-    } while (0)
-
 static const char *AiEditorAntinodeTypeNames[3] = {"Circle", "Ellipse", "Rectangle"};
 i32 aisys_maxnumcreaturesets = 32;
 
@@ -500,24 +418,6 @@ f32 AiEditorCursorRayScale = 1e-17f;
 /* NUL-terminated instruction strings, each in its own section to keep the data layout. */
 
 f32 AiEditorRouteYOffset = 0.1f;
-
-#define AIEDITOR_REGISTER(id, mode_name, enter_fn, process_fn, draw_fn)                                                                    \
-    do {                                                                                                                                   \
-        AI_EDITOR_MODE_ENTRY *entry_;                                                                                                      \
-        i32 index_ = -1;                                                                                                                   \
-        if (aieditorsettings.modes.count < 8) {                                                                                            \
-            index_ = aieditorsettings.modes.count++;                                                                                       \
-            entry_ = &aieditorsettings.modes.entries[index_];                                                                              \
-            NuStrCpy(entry_->name, mode_name);                                                                                             \
-            entry_->enter = enter_fn;                                                                                                      \
-            entry_->process = process_fn;                                                                                                  \
-            entry_->draw = draw_fn;                                                                                                        \
-            entry_->leave = NULL;                                                                                                          \
-        } else {                                                                                                                           \
-            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                     \
-        }                                                                                                                                  \
-        (id) = index_;                                                                                                                     \
-    } while (0)
 
 extern NUFPCOMJMP AIScriptStateCommands[5];
 
@@ -598,22 +498,6 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
     return ret;
 }
 
-#define AISCRIPT_COPY_NATIVE_STRING(source, destination, buffer, end)                                                                      \
-    do {                                                                                                                                   \
-        char *text = (source);                                                                                                             \
-        VARIPTR *text_buffer = (buffer);                                                                                                   \
-        VARIPTR *text_end = (end);                                                                                                         \
-        u32 length;                                                                                                                        \
-        (destination) = NULL;                                                                                                              \
-        if (text != NULL) {                                                                                                                \
-            length = NuStrLen(text);                                                                                                       \
-            if (length != 0) {                                                                                                             \
-                (destination) = (char *)AIScriptBufferAllocOrWarn(text_buffer, text_end, length + 1);                                      \
-                NuStrCpy((destination), text);                                                                                             \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-    } while (0)
-
 AIACTIONDEF *game_aiactiondefs = 0;
 NULISTHDR *aiscript_load_refs = 0;
 NULISTHDR *aiscript_load_conditions = 0;
@@ -637,41 +521,6 @@ f32 AiLoadMinimumRespawnTime = 0.0f;
 f32 AiLoadMaximumRespawnTime = 0.0f;
 
 enum { EQ = 0, LT = 1, GT = 2, LT_EQ = 3, GT_EQ = 4, NEQ = 5 };
-
-/* Early-out guards return 1 through one shared epilogue. */
-#define AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, field, mask, initially_set, set_on_false)                               \
-    do {                                                                                                                                   \
-        i32 i;                                                                                                                             \
-        if ((packet) == NULL || (packet)->owner == NULL || (first_time) == 0)                                                              \
-            return 1;                                                                                                                      \
-        if (initially_set) {                                                                                                               \
-            (packet)->owner->field |= (mask);                                                                                              \
-        } else {                                                                                                                           \
-            (packet)->owner->field &= ~(mask);                                                                                             \
-        }                                                                                                                                  \
-        for (i = 0; i < (count); i++) {                                                                                                    \
-            if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                                              \
-                if (set_on_false) {                                                                                                        \
-                    (packet)->owner->field |= (mask);                                                                                      \
-                } else {                                                                                                                   \
-                    (packet)->owner->field &= ~(mask);                                                                                     \
-                }                                                                                                                          \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-    } while (0)
-
-#define AISCRIPT_SET_PACKET_FLAG(packet, params, count, first_time, mask)                                                                  \
-    do {                                                                                                                                   \
-        i32 i;                                                                                                                             \
-        if ((packet) == NULL || (first_time) == 0)                                                                                         \
-            return 1;                                                                                                                      \
-        (packet)->flags |= (mask);                                                                                                         \
-        for (i = 0; i < (count); i++) {                                                                                                    \
-            if (NuStrICmp((params)[i], AIScriptFalse) == 0) {                                                                              \
-                (packet)->flags &= ~(mask);                                                                                                \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-    } while (0)
 
 extern IMAGE_DOS_HEADER __ImageBase;
 
@@ -2683,7 +2532,18 @@ i32 Action_RequiresLOS(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
     (void)sys;
     (void)processor;
     (void)delta_time;
-    AISCRIPT_SET_PACKET_FLAG(packet, params, count, first_time, 0x20000u);
+    {
+        i32 i;
+        if (packet == NULL || first_time == 0) {
+            return 1;
+        }
+        packet->flags |= 0x20000u;
+        for (i = 0; i < count; i++) {
+            if (NuStrICmp(params[i], AIScriptFalse) == 0) {
+                packet->flags &= ~0x20000u;
+            }
+        }
+    }
     return 1;
 }
 
@@ -3202,13 +3062,13 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
     i32 character_count;
     char special_name[256];
     if (count != 0) {
-        PATH_LOAD_ALLOCATE(AI_PATH_SYSTEM_LOAD *, system, cursor, end, sizeof(*system));
+        AISYS_BUFFER_ALLOCATE(AI_PATH_SYSTEM_LOAD *, system, cursor, end, sizeof(*system));
         if (system != NULL) {
             system->path_count = (u8)count;
             system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH *));
             for (path_index = 0; path_index < system->path_count; ++path_index) {
                 AIPATH *path;
-                PATH_LOAD_ALLOCATE(AIPATH *, system->paths[path_index], cursor, end, sizeof(AIPATH));
+                AISYS_BUFFER_ALLOCATE(AIPATH *, system->paths[path_index], cursor, end, sizeof(AIPATH));
                 path = system->paths[path_index];
                 EdFileRead(path->name, 16);
                 path->node_count = (u8)EdFileReadChar();
@@ -3220,7 +3080,7 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
                     path->connection_count = EdFileReadShort();
                 }
                 if (path->connection_count != 0) {
-                    PATH_LOAD_ALLOCATE(AIPATHCNX *, path->connections, cursor, end, path->connection_count * sizeof(AIPATHCNX));
+                    AISYS_BUFFER_ALLOCATE(AIPATHCNX *, path->connections, cursor, end, path->connection_count * sizeof(AIPATHCNX));
                     for (index = 0; index < path->connection_count; ++index) {
                         AIPATHCNX *connection = &path->connections[index];
                         connection->node_indices[0] = (u8)EdFileReadChar();
@@ -3250,12 +3110,12 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
                     EdFileReadChar();
                 }
                 if (path->node_count != 0) {
-                    PATH_LOAD_ALLOCATE(AIPATHNODE *, path->nodes, cursor, end, path->node_count * sizeof(AIPATHNODE));
+                    AISYS_BUFFER_ALLOCATE(AIPATHNODE *, path->nodes, cursor, end, path->node_count * sizeof(AIPATHNODE));
                     for (index = 0; index < path->node_count; ++index) {
                         AIPATHNODE *node = &path->nodes[index];
                         length = EdFileReadInt();
                         if (length != 0) {
-                            PATH_LOAD_ALLOCATE(char *, node->name, cursor, end, length + 1);
+                            AISYS_BUFFER_ALLOCATE(char *, node->name, cursor, end, length + 1);
                             EdFileRead(node->name, length);
                         }
                         node->position.x = EdFileReadFloat();
@@ -3292,7 +3152,8 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
                             node->special_position.z = EdFileReadFloat();
                         }
                         if (path->connections != NULL && node->connection_count != 0) {
-                            PATH_LOAD_ALLOCATE(AIPATHCNX **, node->connections, cursor, end, node->connection_count * sizeof(AIPATHCNX *));
+                            AISYS_BUFFER_ALLOCATE(AIPATHCNX **, node->connections, cursor, end,
+                                                  node->connection_count * sizeof(AIPATHCNX *));
                             for (row = 0; row < node->connection_count; ++row) {
                                 node->connections[row] = &path->connections[EdFileReadShort()];
                             }
@@ -3309,37 +3170,37 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
                     }
                     AIPathCalcExtents(path);
                 }
-                PATH_LOAD_ALLOCATE(u8 **, path->route_matrix, cursor, end, path->node_count * sizeof(u8 *));
+                AISYS_BUFFER_ALLOCATE(u8 **, path->route_matrix, cursor, end, path->node_count * sizeof(u8 *));
                 for (index = 0; index < path->node_count; ++index) {
-                    PATH_LOAD_ALLOCATE(u8 *, path->route_matrix[index], cursor, end, path->node_count);
+                    AISYS_BUFFER_ALLOCATE(u8 *, path->route_matrix[index], cursor, end, path->node_count);
                     EdFileRead(path->route_matrix[index], path->node_count);
                 }
                 if (version >= 5) {
                     path->route_count = (u8)EdFileReadChar();
                     if (path->route_count != 0) {
-                        PATH_LOAD_ALLOCATE(AIPATHROUTE *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE));
+                        AISYS_BUFFER_ALLOCATE(AIPATHROUTE *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE));
                         for (route_index = 0; route_index < path->route_count; ++route_index) {
                             AIPATHROUTE *route = &path->routes[route_index];
                             length = EdFileReadChar();
                             if (length != 0) {
-                                PATH_LOAD_ALLOCATE(char *, route->name, cursor, end, length);
+                                AISYS_BUFFER_ALLOCATE(char *, route->name, cursor, end, length);
                                 EdFileRead(route->name, length);
                                 route->route_count = (u8)EdFileReadChar();
                                 route->exit_node_count = (u8)EdFileReadChar();
                                 EdFileReadChar();
                                 EdFileReadChar();
                                 if (path->node_count != 0 && route->route_count != 0) {
-                                    PATH_LOAD_ALLOCATE(u8 *, route->node_routes, cursor, end, path->node_count);
+                                    AISYS_BUFFER_ALLOCATE(u8 *, route->node_routes, cursor, end, path->node_count);
                                     EdFileRead(route->node_routes, path->node_count);
-                                    PATH_LOAD_ALLOCATE(u8 *, route->node_directions, cursor, end, route->route_count);
+                                    AISYS_BUFFER_ALLOCATE(u8 *, route->node_directions, cursor, end, route->route_count);
                                     EdFileRead(route->node_directions, route->route_count);
-                                    PATH_LOAD_ALLOCATE(u8 **, route->route_nodes, cursor, end, route->route_count * sizeof(u8 *));
+                                    AISYS_BUFFER_ALLOCATE(u8 **, route->route_nodes, cursor, end, route->route_count * sizeof(u8 *));
                                     for (row = 0; row < route->route_count; ++row) {
-                                        PATH_LOAD_ALLOCATE(u8 *, route->route_nodes[row], cursor, end, route->route_count);
+                                        AISYS_BUFFER_ALLOCATE(u8 *, route->route_nodes[row], cursor, end, route->route_count);
                                         EdFileRead(route->route_nodes[row], route->route_count);
                                     }
                                     if (route->exit_node_count != 0) {
-                                        PATH_LOAD_ALLOCATE(u8 *, route->exit_nodes, cursor, end, route->exit_node_count);
+                                        AISYS_BUFFER_ALLOCATE(u8 *, route->exit_nodes, cursor, end, route->exit_node_count);
                                         EdFileRead(route->exit_nodes, route->exit_node_count);
                                     }
                                 }
@@ -3368,8 +3229,8 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
                     path->special_route_count = (u8)EdFileReadChar();
                     if (path->special_route_count != 0) {
                         AIPATHNODELINK *link;
-                        PATH_LOAD_ALLOCATE(AIPATHNODELINK *, path->special_routes, cursor, end,
-                                           path->special_route_count * sizeof(AIPATHNODELINK));
+                        AISYS_BUFFER_ALLOCATE(AIPATHNODELINK *, path->special_routes, cursor, end,
+                                              path->special_route_count * sizeof(AIPATHNODELINK));
                         link = path->special_routes;
                         for (index = 0; index < path->special_route_count; ++index, ++link) {
                             link->node_index = EdFileReadUnsignedChar();
@@ -3387,7 +3248,7 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
                     for (index = 0; index < system->special_route_count; ++index, ++route) {
                         route->path_count = (u8)EdFileReadChar();
                         if (route->path_count != 0) {
-                            PATH_LOAD_ALLOCATE(AIPATH **, route->paths, cursor, end, route->path_count * sizeof(AIPATH *));
+                            AISYS_BUFFER_ALLOCATE(AIPATH **, route->paths, cursor, end, route->path_count * sizeof(AIPATH *));
                             for (row = 0; row < route->path_count; ++row) {
                                 i32 path_index = EdFileReadChar();
                                 route->paths[row] = system->paths[path_index];
@@ -3685,9 +3546,9 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
         difference->y = 0.0f;
         NuVecRotateY(&local_position, difference, -antinode->rotation);
         angle = NuAtan2D(aspect * local_position.x, local_position.z);
-        boundary.x = INTERACTION_SIN(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+        boundary.x = NU_SIN_LUT(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
         boundary.y = 0.0f;
-        boundary.z = INTERACTION_COS(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+        boundary.z = NU_COS_LUT(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
         NuVecNorm(difference, &boundary);
         NuVecScale(difference, difference, object->ai->mover_height);
         NuVecAdd(&boundary, &boundary, difference);
@@ -3698,9 +3559,9 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             difference->z = object->position.z - antinode->position.z;
             NuVecRotateY(&local_object, difference, -antinode->rotation);
             object_angle = NuAtan2D(aspect * local_object.x, local_object.z);
-            object_boundary.x = INTERACTION_SIN(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+            object_boundary.x = NU_SIN_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
             object_boundary.y = 0.0f;
-            object_boundary.z = INTERACTION_COS(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            object_boundary.z = NU_COS_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
             NuVecNorm(difference, &object_boundary);
             NuVecScale(difference, difference, object->ai->mover_height);
             NuVecAdd(&object_boundary, &object_boundary, difference);
@@ -3732,8 +3593,8 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_timer = antinode_time;
             }
-            gradient.x = INTERACTION_COS(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
-            gradient.z = -INTERACTION_SIN(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            gradient.x = NU_COS_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+            gradient.z = -NU_SIN_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
             if (turn < 0) {
                 gradient.x = -gradient.x;
                 gradient.z = -gradient.z;
@@ -3817,31 +3678,31 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
             gradient.x = -1.0f;
             gradient.z = 0.0f;
             object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * INTERACTION_SIN(angle);
+                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
             object->ai->movement_position.z = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
         } else if (angle > corner_angle) {
             gradient.x = 0.0f;
             gradient.z = -1.0f;
             object->ai->movement_position.x = object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
             object->ai->movement_position.z =
-                INTERACTION_COS(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+                NU_COS_LUT(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
         } else if (angle > -corner_angle) {
             gradient.x = 1.0f;
             gradient.z = 0.0f;
             object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * INTERACTION_SIN(angle);
+                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
             object->ai->movement_position.z = object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
         } else if (angle > corner_angle - 0x8000) {
             gradient.x = 0.0f;
             gradient.z = 1.0f;
             object->ai->movement_position.x = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius);
             object->ai->movement_position.z =
-                INTERACTION_COS(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+                NU_COS_LUT(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
         } else {
             gradient.x = -1.0f;
             gradient.z = 0.0f;
             object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * INTERACTION_SIN(angle);
+                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
             object->ai->movement_position.z = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
         }
         if (turn + turn_offset < 0) {
@@ -3896,22 +3757,30 @@ static void AISysDrawBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, u32 colo
     for (i = 0; i < 8; ++i) {
         corners[i].colour = colour;
     }
-#define DRAW_BOX_EDGE(a, b)                                                                                                                \
-    AiRndrLine3dDbg(corners[a].position.x, corners[a].position.y, corners[a].position.z, corners[b].position.x, corners[b].position.y,     \
-                    corners[b].position.z, colour)
-    DRAW_BOX_EDGE(0, 1);
-    DRAW_BOX_EDGE(1, 2);
-    DRAW_BOX_EDGE(2, 3);
-    DRAW_BOX_EDGE(3, 0);
-    DRAW_BOX_EDGE(4, 5);
-    DRAW_BOX_EDGE(5, 6);
-    DRAW_BOX_EDGE(6, 7);
-    DRAW_BOX_EDGE(7, 4);
-    DRAW_BOX_EDGE(0, 4);
-    DRAW_BOX_EDGE(1, 5);
-    DRAW_BOX_EDGE(2, 6);
-    DRAW_BOX_EDGE(3, 7);
-#undef DRAW_BOX_EDGE
+    AiRndrLine3dDbg(corners[0].position.x, corners[0].position.y, corners[0].position.z, corners[1].position.x, corners[1].position.y,
+                    corners[1].position.z, colour);
+    AiRndrLine3dDbg(corners[1].position.x, corners[1].position.y, corners[1].position.z, corners[2].position.x, corners[2].position.y,
+                    corners[2].position.z, colour);
+    AiRndrLine3dDbg(corners[2].position.x, corners[2].position.y, corners[2].position.z, corners[3].position.x, corners[3].position.y,
+                    corners[3].position.z, colour);
+    AiRndrLine3dDbg(corners[3].position.x, corners[3].position.y, corners[3].position.z, corners[0].position.x, corners[0].position.y,
+                    corners[0].position.z, colour);
+    AiRndrLine3dDbg(corners[4].position.x, corners[4].position.y, corners[4].position.z, corners[5].position.x, corners[5].position.y,
+                    corners[5].position.z, colour);
+    AiRndrLine3dDbg(corners[5].position.x, corners[5].position.y, corners[5].position.z, corners[6].position.x, corners[6].position.y,
+                    corners[6].position.z, colour);
+    AiRndrLine3dDbg(corners[6].position.x, corners[6].position.y, corners[6].position.z, corners[7].position.x, corners[7].position.y,
+                    corners[7].position.z, colour);
+    AiRndrLine3dDbg(corners[7].position.x, corners[7].position.y, corners[7].position.z, corners[4].position.x, corners[4].position.y,
+                    corners[4].position.z, colour);
+    AiRndrLine3dDbg(corners[0].position.x, corners[0].position.y, corners[0].position.z, corners[4].position.x, corners[4].position.y,
+                    corners[4].position.z, colour);
+    AiRndrLine3dDbg(corners[1].position.x, corners[1].position.y, corners[1].position.z, corners[5].position.x, corners[5].position.y,
+                    corners[5].position.z, colour);
+    AiRndrLine3dDbg(corners[2].position.x, corners[2].position.y, corners[2].position.z, corners[6].position.x, corners[6].position.y,
+                    corners[6].position.z, colour);
+    AiRndrLine3dDbg(corners[3].position.x, corners[3].position.y, corners[3].position.z, corners[7].position.x, corners[7].position.y,
+                    corners[7].position.z, colour);
 }
 
 void AISysDrawAntinode_Rectangle(AIANTINODE *node, u32 colour) {
@@ -5949,79 +5818,71 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                     }
                 }
                 if ((connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_PERMANENT_BLOCK) == 0) {
-                    {
-                        if (destination_distance_0 != FLT_MAX && endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
-                            candidate = AIPathNodeDistanceToPathNode(packet->path_info.path,
-                                                                     connection->node_indices[packet->path_info.direction == 0],
-                                                                     destination_connection->node_indices[0], packet->current_route, 0);
-                            if (candidate != FLT_MAX) {
-                                candidate += endpoint_distances[packet->path_info.direction == 0] + destination_distance_0;
-                            }
-                        } else {
-                            candidate = FLT_MAX;
+                    if (destination_distance_0 != FLT_MAX && endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
+                        candidate =
+                            AIPathNodeDistanceToPathNode(packet->path_info.path, connection->node_indices[packet->path_info.direction == 0],
+                                                         destination_connection->node_indices[0], packet->current_route, 0);
+                        if (candidate != FLT_MAX) {
+                            candidate += endpoint_distances[packet->path_info.direction == 0] + destination_distance_0;
                         }
-                        if (candidate < best_distance) {
-                            best_distance = candidate;
-                            goal_index = destination_connection->node_indices[0];
-                            direction = packet->path_info.direction;
-                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
-                        }
+                    } else {
+                        candidate = FLT_MAX;
                     }
-                    {
-                        if (destination_distance_1 != FLT_MAX && endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
-                            candidate = AIPathNodeDistanceToPathNode(packet->path_info.path,
-                                                                     connection->node_indices[packet->path_info.direction == 0],
-                                                                     destination_connection->node_indices[1], packet->current_route, 0);
-                            if (candidate != FLT_MAX) {
-                                candidate += endpoint_distances[packet->path_info.direction == 0] + destination_distance_1;
-                            }
-                        } else {
-                            candidate = FLT_MAX;
+                    if (candidate < best_distance) {
+                        best_distance = candidate;
+                        goal_index = destination_connection->node_indices[0];
+                        direction = packet->path_info.direction;
+                        packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
+                    }
+                    if (destination_distance_1 != FLT_MAX && endpoint_distances[packet->path_info.direction == 0] != FLT_MAX) {
+                        candidate =
+                            AIPathNodeDistanceToPathNode(packet->path_info.path, connection->node_indices[packet->path_info.direction == 0],
+                                                         destination_connection->node_indices[1], packet->current_route, 0);
+                        if (candidate != FLT_MAX) {
+                            candidate += endpoint_distances[packet->path_info.direction == 0] + destination_distance_1;
                         }
-                        if (candidate < best_distance) {
-                            best_distance = candidate;
-                            goal_index = destination_connection->node_indices[1];
-                            direction = packet->path_info.direction;
-                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
-                        }
+                    } else {
+                        candidate = FLT_MAX;
+                    }
+                    if (candidate < best_distance) {
+                        best_distance = candidate;
+                        goal_index = destination_connection->node_indices[1];
+                        direction = packet->path_info.direction;
+                        packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
                     }
                 }
                 if ((connection->traversal_flags[0 == packet->path_info.direction] & AIPATHCNX_PERMANENT_BLOCK) == 0) {
-                    {
-                        if (destination_distance_0 != FLT_MAX && endpoint_distances[packet->path_info.direction] != FLT_MAX) {
-                            candidate =
-                                AIPathNodeDistanceToPathNode(packet->path_info.path, connection->node_indices[packet->path_info.direction],
-                                                             destination_connection->node_indices[0], packet->current_route, 0);
-                            if (candidate != FLT_MAX) {
-                                candidate += destination_distance_0 + endpoint_distances[packet->path_info.direction];
-                            }
-                        } else {
-                            candidate = FLT_MAX;
+                    if (destination_distance_0 != FLT_MAX && endpoint_distances[packet->path_info.direction] != FLT_MAX) {
+                        candidate =
+                            AIPathNodeDistanceToPathNode(packet->path_info.path, connection->node_indices[packet->path_info.direction],
+                                                         destination_connection->node_indices[0], packet->current_route, 0);
+                        if (candidate != FLT_MAX) {
+                            candidate += destination_distance_0 + endpoint_distances[packet->path_info.direction];
                         }
-                        if (candidate < best_distance) {
-                            best_distance = candidate;
-                            goal_index = destination_connection->node_indices[0];
-                            direction = packet->path_info.direction == 0;
-                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
-                        }
+                    } else {
+                        candidate = FLT_MAX;
                     }
-                    {
-                        if (destination_distance_1 != FLT_MAX && endpoint_distances[packet->path_info.direction] != FLT_MAX) {
-                            candidate =
-                                AIPathNodeDistanceToPathNode(packet->path_info.path, connection->node_indices[packet->path_info.direction],
-                                                             destination_connection->node_indices[1], packet->current_route, 0);
-                            if (candidate != FLT_MAX) {
-                                candidate = candidate + (destination_distance_1 + endpoint_distances[packet->path_info.direction]);
-                            }
-                        } else {
-                            candidate = FLT_MAX;
+                    if (candidate < best_distance) {
+                        best_distance = candidate;
+                        goal_index = destination_connection->node_indices[0];
+                        direction = packet->path_info.direction == 0;
+                        packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
+                    }
+                    if (destination_distance_1 != FLT_MAX && endpoint_distances[packet->path_info.direction] != FLT_MAX) {
+                        candidate =
+                            AIPathNodeDistanceToPathNode(packet->path_info.path, connection->node_indices[packet->path_info.direction],
+                                                         destination_connection->node_indices[1], packet->current_route, 0);
+                        if (candidate != FLT_MAX) {
+                            candidate = candidate + (destination_distance_1 + endpoint_distances[packet->path_info.direction]);
                         }
-                        if (candidate < best_distance) {
-                            best_distance = candidate;
-                            goal_index = destination_connection->node_indices[1];
-                            direction = packet->path_info.direction == 0;
-                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
-                        }
+                    } else {
+                        candidate = FLT_MAX;
+                    }
+                    if (candidate < best_distance) {
+                        best_distance = candidate;
+                        goal_index = destination_connection->node_indices[1];
+                        direction = packet->path_info.direction == 0;
+                        packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
                     }
                 }
                 if ((packet->flags & AIPACKET_NO_ROUTE_PATH) == 0) {
@@ -6561,8 +6422,8 @@ i32 AISysGetCharacterWaypoint(AIPACKET *packet, NUVEC *position) {
 void LocaledbitsDrawSolidCircleXY(NUVEC *centre, f32 radius, f32 lower_y, f32 upper_y, u32 colour, i32 unused5, i32 segments) {
     i32 i;
     NURND_VERTEX3D vertices[2];
-    NURND_VERTEX3D *first = &(vertices[0]);
-    NURND_VERTEX3D *second = &(vertices[1]);
+    NURND_VERTEX3D *first = &vertices[0];
+    NURND_VERTEX3D *second = &vertices[1];
     (*second).position.x = centre->x;
     (*second).position.y = centre->y;
     (*second).position.z = centre->z + radius;
@@ -6593,8 +6454,8 @@ void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i3
                                    i32 unused7, i32 segments) {
     i32 i;
     NURND_VERTEX3D vertices[2];
-    NURND_VERTEX3D *first = &(vertices[0]);
-    NURND_VERTEX3D *second = &(vertices[1]);
+    NURND_VERTEX3D *first = &vertices[0];
+    NURND_VERTEX3D *second = &vertices[1];
     (*second).position.x = 0.0f;
     (*second).position.y = 0.0f;
     (*second).position.z = radius_z;
@@ -6632,8 +6493,8 @@ void LocaledbitsDrawSolidEllipseXY(NUVEC *centre, f32 radius_x, f32 radius_z, i3
 void LocaledbitsDrawCircleXY(NUVEC *centre, f32 radius, u32 colour, i32 unused3, i32 segments) {
     i32 i;
     NURND_VERTEX3D vertices[2];
-    NURND_VERTEX3D *first = &(vertices[0]);
-    NURND_VERTEX3D *second = &(vertices[1]);
+    NURND_VERTEX3D *first = &vertices[0];
+    NURND_VERTEX3D *second = &vertices[1];
     (*second).position.x = centre->x;
     (*second).position.y = centre->y;
     (*second).position.z = centre->z + radius;
@@ -7315,22 +7176,30 @@ void DrawAreaBox(NUVEC *position, NUVEC *size, i32 rotation, i32 colour) {
         rotated_x[i] = NU_COS_LUT(rotation) * local_x[i] + NU_SIN_LUT(rotation) * local_z[i];
         rotated_z[i] = NU_COS_LUT(rotation) * local_z[i] - NU_SIN_LUT(rotation) * local_x[i];
     }
-#define DRAW_AREA_BOX_EDGE(a, b, y0, y1)                                                                                                   \
-    AiRndrLine3dDbg(position->x + rotated_x[a], y0, position->z + rotated_z[a], position->x + rotated_x[b], y1,                            \
-                    position->z + rotated_z[b], colour)
-    DRAW_AREA_BOX_EDGE(0, 1, position->y, position->y);
-    DRAW_AREA_BOX_EDGE(1, 2, position->y, position->y);
-    DRAW_AREA_BOX_EDGE(2, 3, position->y, position->y);
-    DRAW_AREA_BOX_EDGE(3, 0, position->y, position->y);
-    DRAW_AREA_BOX_EDGE(0, 0, position->y, position->y + size->y);
-    DRAW_AREA_BOX_EDGE(1, 1, position->y, position->y + size->y);
-    DRAW_AREA_BOX_EDGE(2, 2, position->y, position->y + size->y);
-    DRAW_AREA_BOX_EDGE(3, 3, position->y, position->y + size->y);
-    DRAW_AREA_BOX_EDGE(0, 1, position->y + size->y, position->y + size->y);
-    DRAW_AREA_BOX_EDGE(1, 2, position->y + size->y, position->y + size->y);
-    DRAW_AREA_BOX_EDGE(2, 3, position->y + size->y, position->y + size->y);
-    DRAW_AREA_BOX_EDGE(3, 0, position->y + size->y, position->y + size->y);
-#undef DRAW_AREA_BOX_EDGE
+    AiRndrLine3dDbg(position->x + rotated_x[0], position->y, position->z + rotated_z[0], position->x + rotated_x[1], position->y,
+                    position->z + rotated_z[1], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[1], position->y, position->z + rotated_z[1], position->x + rotated_x[2], position->y,
+                    position->z + rotated_z[2], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[2], position->y, position->z + rotated_z[2], position->x + rotated_x[3], position->y,
+                    position->z + rotated_z[3], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[3], position->y, position->z + rotated_z[3], position->x + rotated_x[0], position->y,
+                    position->z + rotated_z[0], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[0], position->y, position->z + rotated_z[0], position->x + rotated_x[0], position->y + size->y,
+                    position->z + rotated_z[0], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[1], position->y, position->z + rotated_z[1], position->x + rotated_x[1], position->y + size->y,
+                    position->z + rotated_z[1], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[2], position->y, position->z + rotated_z[2], position->x + rotated_x[2], position->y + size->y,
+                    position->z + rotated_z[2], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[3], position->y, position->z + rotated_z[3], position->x + rotated_x[3], position->y + size->y,
+                    position->z + rotated_z[3], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[0], position->y + size->y, position->z + rotated_z[0], position->x + rotated_x[1],
+                    position->y + size->y, position->z + rotated_z[1], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[1], position->y + size->y, position->z + rotated_z[1], position->x + rotated_x[2],
+                    position->y + size->y, position->z + rotated_z[2], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[2], position->y + size->y, position->z + rotated_z[2], position->x + rotated_x[3],
+                    position->y + size->y, position->z + rotated_z[3], colour);
+    AiRndrLine3dDbg(position->x + rotated_x[3], position->y + size->y, position->z + rotated_z[3], position->x + rotated_x[0],
+                    position->y + size->y, position->z + rotated_z[0], colour);
 }
 
 void DrawAreaCylinder(NUVEC *centre, NUVEC *size, i32 colour) {
@@ -9246,10 +9115,32 @@ void pathEditor_Enter(void) {
                                 cnx = source->connections[connection];
                                 direction = cnx->node_indices[0] != index;
                                 other = &aieditor->node_storage[node_base + cnx->node_indices[direction == 0]];
-                                PATH_EDITOR_FIND_CONNECTION(found, node, other);
+                                {
+                                    i32 connection_slot;
+                                    found = NULL;
+                                    if (node != NULL && other != NULL) {
+                                        for (connection_slot = 0; connection_slot < 8; ++connection_slot) {
+                                            if (node->connections[connection_slot].node == other) {
+                                                found = &node->connections[connection_slot];
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
                                 if (found == NULL) {
                                     pathEditor_ConnectNodes(node, other);
-                                    PATH_EDITOR_FIND_CONNECTION(found, node, other);
+                                    {
+                                        i32 connection_slot;
+                                        found = NULL;
+                                        if (node != NULL && other != NULL) {
+                                            for (connection_slot = 0; connection_slot < 8; ++connection_slot) {
+                                                if (node->connections[connection_slot].node == other) {
+                                                    found = &node->connections[connection_slot];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
                                     if (found == NULL) {
                                         continue;
                                     }
@@ -9452,7 +9343,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH *path, EDAIPATH_s *editor_pa
     } else {
         EDAIPATHNODE_s *editor_node;
         i32 route_index;
-        PATH_BUILD_ALLOCATE(AIPATHROUTE *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE));
+        AISYS_BUFFER_ALLOCATE(AIPATHROUTE *, path->routes, cursor, end, path->route_count * sizeof(AIPATHROUTE));
         memset(path->routes, 0, path->route_count * sizeof(AIPATHROUTE));
         for (slot = 0; slot < 16; ++slot) {
             AIPATHROUTE *route;
@@ -9464,7 +9355,7 @@ static void pathEditorCreateSpecialRouteData(AIPATH *path, EDAIPATH_s *editor_pa
             route = &path->routes[route_indices[slot]];
             name_length = strlen(editor_path->routes[slot].name);
             if ((name_length != 0)) {
-                PATH_BUILD_ALLOCATE(char *, route->name, cursor, end, name_length + 1);
+                AISYS_BUFFER_ALLOCATE(char *, route->name, cursor, end, name_length + 1);
                 strcpy(route->name, editor_path->routes[slot].name);
             }
             user_mask = (u32 *)&editor_path->routes[slot].user_mask;
@@ -9535,15 +9426,15 @@ static void pathEditorCreateSpecialRouteData(AIPATH *path, EDAIPATH_s *editor_pa
                 }
             }
             if (path->node_count != 0) {
-                PATH_BUILD_ALLOCATE(u8 *, route->node_routes, cursor, end, path->node_count);
+                AISYS_BUFFER_ALLOCATE(u8 *, route->node_routes, cursor, end, path->node_count);
                 memset(route->node_routes, 0, path->node_count);
             }
             if (route->route_count != 0) {
-                PATH_BUILD_ALLOCATE(u8 *, route->node_directions, cursor, end, route->route_count);
+                AISYS_BUFFER_ALLOCATE(u8 *, route->node_directions, cursor, end, route->route_count);
                 memset(route->node_directions, 0, route->route_count);
             }
             if (route->exit_node_count != 0) {
-                PATH_BUILD_ALLOCATE(u8 *, route->exit_nodes, cursor, end, route->exit_node_count);
+                AISYS_BUFFER_ALLOCATE(u8 *, route->exit_nodes, cursor, end, route->exit_node_count);
                 memset(route->exit_nodes, 0, route->exit_node_count);
             }
             member_index = 0;
@@ -9564,10 +9455,10 @@ static void pathEditorCreateSpecialRouteData(AIPATH *path, EDAIPATH_s *editor_pa
             if (route->route_count == 0) {
                 continue;
             }
-            PATH_BUILD_ALLOCATE(u8 **, route->route_nodes, cursor, end, route->route_count * sizeof(u8 *));
+            AISYS_BUFFER_ALLOCATE(u8 **, route->route_nodes, cursor, end, route->route_count * sizeof(u8 *));
             memset(route->route_nodes, 0, route->route_count * sizeof(u8 *));
             for (source = 0; source < route->route_count; ++source) {
-                PATH_BUILD_ALLOCATE(u8 *, route->route_nodes[source], cursor, end, route->route_count);
+                AISYS_BUFFER_ALLOCATE(u8 *, route->route_nodes[source], cursor, end, route->route_count);
                 memset(route->route_nodes[source], 0, route->route_count);
             }
             // The distance and full-node next-hop tables are temporary. Keep their
@@ -9577,10 +9468,10 @@ static void pathEditorCreateSpecialRouteData(AIPATH *path, EDAIPATH_s *editor_pa
             if (distances == NULL) {
                 continue;
             }
-            PATH_BUILD_ALLOCATE(u8 **, next_hops, &scratch, end, path->node_count * sizeof(u8 *));
+            AISYS_BUFFER_ALLOCATE(u8 **, next_hops, &scratch, end, path->node_count * sizeof(u8 *));
             memset(next_hops, 0, path->node_count * sizeof(u8 *));
             for (next_source = 0; next_source < path->node_count; ++next_source) {
-                PATH_BUILD_ALLOCATE(u8 *, next_hops[next_source], &scratch, end, path->node_count);
+                AISYS_BUFFER_ALLOCATE(u8 *, next_hops[next_source], &scratch, end, path->node_count);
                 memset(next_hops[next_source], 0, path->node_count);
             }
             pathEditorPopulateRouteMatrix(path, (i32)(((u64)1) << route_index), distances, next_hops);
@@ -11666,7 +11557,7 @@ void AIScriptOpenPakFileParse(AISCRIPT **script_ref, void *pak, char *filename, 
     AISCRIPT *script;
     if (parser != NULL) {
         if (*script_ref == NULL) {
-            PATH_LOAD_ALLOCATE(AISCRIPT *, script, buffer, end, sizeof(AISCRIPT));
+            AISYS_BUFFER_ALLOCATE(AISCRIPT *, script, buffer, end, sizeof(AISCRIPT));
             *script_ref = script;
             if (script != NULL) {
                 memset(script, 0, sizeof(AISCRIPT));
@@ -12662,7 +12553,7 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
     i32 search;
     u16 connection_index;
     sprintf(ai2_path, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, load_directory, parameter, name);
-    PATH_LOAD_ALLOCATE(AI_SYSTEM_LOAD *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD));
+    AISYS_BUFFER_ALLOCATE(AI_SYSTEM_LOAD *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
         system->storage_size = storage_size;
@@ -12748,7 +12639,8 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                                 for (search = 0; search < set->locator_count; ++search) {
                                     set->locator_entries[search] = (u8)EdFileReadChar();
                                 }
-                                PATH_LOAD_ALLOCATE(u8 *, set->assigned, &system->storage_cursor, &system->storage_end, set->locator_count);
+                                AISYS_BUFFER_ALLOCATE(u8 *, set->assigned, &system->storage_cursor, &system->storage_end,
+                                                      set->locator_count);
                                 memset(set->assigned, 0, set->locator_count);
                             }
                         }
@@ -12902,8 +12794,8 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                 if (version > 12) {
                     system->antinode_count = EdFileReadInt();
                     if (system->antinode_count != 0) {
-                        PATH_LOAD_ALLOCATE(AI_ANTINODE_LOAD *, system->antinodes, &system->storage_cursor, &system->storage_end,
-                                           system->antinode_count * sizeof(AI_ANTINODE_LOAD));
+                        AISYS_BUFFER_ALLOCATE(AI_ANTINODE_LOAD *, system->antinodes, &system->storage_cursor, &system->storage_end,
+                                              system->antinode_count * sizeof(AI_ANTINODE_LOAD));
                         for (index = 0; index < system->antinode_count; ++index) {
                             AI_ANTINODE_LOAD *antinode = &system->antinodes[index];
                             i32 length;
@@ -13647,7 +13539,7 @@ void AISysCharacterMovement(AISYS *system, AIPACKET *packet, APIOBJECT *object, 
 
 AIMESSAGESYS *CreateAIMessageSys(VARIPTR *cursor, VARIPTR *end, i32 count) {
     AIMESSAGESYS *sys;
-    PATH_LOAD_ALLOCATE(AIMESSAGESYS *, sys, cursor, end, sizeof(AIMESSAGESYS));
+    AISYS_BUFFER_ALLOCATE(AIMESSAGESYS *, sys, cursor, end, sizeof(AIMESSAGESYS));
     if (sys != NULL) {
         memset(sys, 0, sizeof(*sys));
         sys->messages = AISysBufferAlloc(cursor, end, count * sizeof(AIMESSAGE));
@@ -14431,7 +14323,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
                     for (shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetHead(&aieditor->shared_path_nodes); shared != NULL;
                          shared = (EDAISHAREDPATHNODE_s *)NuLinkedListGetNext(&aieditor->shared_path_nodes, &shared->link)) {
                         AIPATHSPECIALROUTE *route = &system->special_routes[shared->runtime_index];
-                        PATH_BUILD_ALLOCATE(AIPATH **, route->paths, &scratch, scratch_limit, shared->reference_count * sizeof(AIPATH));
+                        AISYS_BUFFER_ALLOCATE(AIPATH **, route->paths, &scratch, scratch_limit, shared->reference_count * sizeof(AIPATH));
                         memset(route->paths, 0, shared->reference_count * sizeof(AIPATH));
                     }
                 }
@@ -14515,8 +14407,8 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
                                     if ((path->connections != NULL)) {
                                         if (runtime->connection_count != 0) {
                                             i32 next;
-                                            PATH_BUILD_ALLOCATE(AIPATHCNX **, runtime->connections, cursor, end,
-                                                                runtime->connection_count * sizeof(AIPATHCNX *));
+                                            AISYS_BUFFER_ALLOCATE(AIPATHCNX **, runtime->connections, cursor, end,
+                                                                  runtime->connection_count * sizeof(AIPATHCNX *));
                                             if (runtime->connections != NULL) {
                                                 memset(runtime->connections, 0, runtime->connection_count * sizeof(AIPATHCNX *));
                                             }
@@ -14583,10 +14475,10 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
                             u8 **route_matrix;
                             f32 **distances;
                             i32 source;
-                            PATH_BUILD_ALLOCATE(u8 **, path->route_matrix, cursor, end, path->node_count * sizeof(u8 *));
+                            AISYS_BUFFER_ALLOCATE(u8 **, path->route_matrix, cursor, end, path->node_count * sizeof(u8 *));
                             memset(path->route_matrix, 0, path->node_count * sizeof(u8 *));
                             for (source = 0; source < path->node_count; ++source) {
-                                PATH_BUILD_ALLOCATE(u8 *, path->route_matrix[source], cursor, end, path->node_count);
+                                AISYS_BUFFER_ALLOCATE(u8 *, path->route_matrix[source], cursor, end, path->node_count);
                                 memset(path->route_matrix[source], 0, path->node_count);
                             }
                             route_matrix = path->route_matrix;
@@ -16524,15 +16416,15 @@ void AISYSRebuildFromEditorData(void) {
                         }
                     }
                     if (runtime->locator_count != 0) {
-                        REBUILD_ALLOCATE(u8 *, runtime->locator_entries, &aieditor->ai_system->storage_cursor,
-                                         &aieditor->ai_system->storage_end, runtime->locator_count);
+                        AISYS_BUFFER_ALLOCATE(u8 *, runtime->locator_entries, &aieditor->ai_system->storage_cursor,
+                                              &aieditor->ai_system->storage_end, runtime->locator_count);
                         for (member = 0; member < runtime->locator_count; ++member) {
                             if (set->locators[member]->runtime_index != 0xff) {
                                 runtime->locator_entries[member] = set->locators[member]->runtime_index;
                             }
                         }
-                        REBUILD_ALLOCATE(u8 *, runtime->assigned, &aieditor->ai_system->storage_cursor, &aieditor->ai_system->storage_end,
-                                         runtime->locator_count);
+                        AISYS_BUFFER_ALLOCATE(u8 *, runtime->assigned, &aieditor->ai_system->storage_cursor,
+                                              &aieditor->ai_system->storage_end, runtime->locator_count);
                         memset(runtime->assigned, 0, runtime->locator_count);
                     }
                 }
@@ -16544,8 +16436,8 @@ void AISYSRebuildFromEditorData(void) {
             ++aieditor->ai_system->creature_count;
         }
         if (aieditor->ai_system->creature_count != 0) {
-            REBUILD_ALLOCATE(AICREATURE *, aieditor->ai_system->creatures, &aieditor->ai_system->storage_cursor,
-                             &aieditor->ai_system->storage_end, aieditor->ai_system->creature_count * sizeof(AICREATURE));
+            AISYS_BUFFER_ALLOCATE(AICREATURE *, aieditor->ai_system->creatures, &aieditor->ai_system->storage_cursor,
+                                  &aieditor->ai_system->storage_end, aieditor->ai_system->creature_count * sizeof(AICREATURE));
             index = 0;
             for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
                  creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
@@ -16655,8 +16547,8 @@ void AISYSRebuildFromEditorData(void) {
         ++aieditor->ai_system->antinode_count;
     }
     if (aieditor->ai_system->antinode_count != 0) {
-        REBUILD_ALLOCATE(AIANTINODE *, aieditor->ai_system->antinodes, &aieditor->ai_system->storage_cursor,
-                         &aieditor->ai_system->storage_end, aieditor->ai_system->antinode_count * sizeof(AIANTINODE));
+        AISYS_BUFFER_ALLOCATE(AIANTINODE *, aieditor->ai_system->antinodes, &aieditor->ai_system->storage_cursor,
+                              &aieditor->ai_system->storage_end, aieditor->ai_system->antinode_count * sizeof(AIANTINODE));
         index = 0;
         for (node = (EDANTINODE_s *)NuLinkedListGetHead(&aieditor->antinodes); node != NULL;
              node = (EDANTINODE_s *)NuLinkedListGetNext(&aieditor->antinodes, &node->link)) {
@@ -17853,18 +17745,15 @@ eduimenu_s *pathEditor_MainMenu(void) {
                         break;
                     }
                 }
-                {
-                    if (connection != NULL && AIPathConnectionTypeCount != 0) {
-                        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
-                        for (index = 0; index < AIPathConnectionTypeCount; ++index) {
-                            eduiMenuAddItem(menu,
-                                            eduiItemToggleCreate(index, &AiEditorSaveMessageColours,
-                                                                 (AIPathConnectionTypes[index].connection_flag & connection->flags) != 0,
-                                                                 row, pathEditor_cbCnxFlagsToggle, AIPathConnectionTypes[index].name));
-                            ++row;
-                        }
-                        eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
+                if (connection != NULL && AIPathConnectionTypeCount != 0) {
+                    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
+                    for (index = 0; index < AIPathConnectionTypeCount; ++index) {
+                        eduiMenuAddItem(menu, eduiItemToggleCreate(index, &AiEditorSaveMessageColours,
+                                                                   (AIPathConnectionTypes[index].connection_flag & connection->flags) != 0,
+                                                                   row, pathEditor_cbCnxFlagsToggle, AIPathConnectionTypes[index].name));
+                        ++row;
                     }
+                    eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, NULL, "================="));
                 }
             }
             if (aieditor->current_path->current_node != NULL) {
@@ -18333,7 +18222,7 @@ void aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, void **s
 void fun_0053d130(void) {
 }
 
-/* Empty trace hook called from AINet::Receive (message.cpp). */
+/* Empty trace hook called from AINet::Receive message.cpp. */
 void AINetTrace(const char *format, ...) {
 }
 

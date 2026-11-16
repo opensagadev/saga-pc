@@ -106,3 +106,21 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#define AIEDITOR_REGISTER(id, mode_name, enter_fn, process_fn, draw_fn)                                                                    \
+    do {                                                                                                                                   \
+        AI_EDITOR_MODE_ENTRY *entry_;                                                                                                      \
+        i32 index_ = -1;                                                                                                                   \
+        if (aieditorsettings.modes.count < 8) {                                                                                            \
+            index_ = aieditorsettings.modes.count++;                                                                                       \
+            entry_ = &aieditorsettings.modes.entries[index_];                                                                              \
+            NuStrCpy(entry_->name, mode_name);                                                                                             \
+            entry_->enter = enter_fn;                                                                                                      \
+            entry_->process = process_fn;                                                                                                  \
+            entry_->draw = draw_fn;                                                                                                        \
+            entry_->leave = NULL;                                                                                                          \
+        } else {                                                                                                                           \
+            AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);                                                                     \
+        }                                                                                                                                  \
+        (id) = index_;                                                                                                                     \
+    } while (0)
