@@ -180,7 +180,6 @@ static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
 i32 min_delay = 20;
 f32 FrameStartupDelay = 6.0f;
 
-extern void FmvPlatformUpdate(void);
 
 static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);
