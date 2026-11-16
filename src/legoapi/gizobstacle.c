@@ -754,7 +754,7 @@ const char *GizObstacleRegistrationNamePtr = "GizObstacle";
 void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
     WORLDINFO *world = world_ptr;
     GIZOBSTACLE_SYSTEM *system = data;
-    GIZMOSYS_PREFIX *gizmo_sys;
+    GIZMOSYS *gizmo_sys;
     GIZMOSET *set;
     GIZMO *gizmo;
     i32 i;

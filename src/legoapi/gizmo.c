@@ -173,7 +173,7 @@ void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYP
     }
 }
 
-void *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
+GIZMOSYS *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     GIZMOSYS *system = NULL;
     GIZMOSET *set;
     GIZMOTYPE *type;
@@ -227,7 +227,7 @@ static void GizmoSysPostLoad(GIZMOSYS *system, void *world) {
     }
 }
 
-void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
+void AddLevelSfxGizmoSys(GIZMOSYS *system, WORLDINFO *world, i32 *ids, i32 *count, i32 capacity) {
     LEVEL_SFX_GIZMOTYPE *type;
     GIZMOSET *set;
     i32 i;
@@ -822,7 +822,7 @@ i32 GizmoSysWriteInfo(GIZMOSYS *gizmo_sys, char *path, NUGSCN *scene) {
     return 0;
 }
 
-i32 GizmoIsNameUnique(GIZMOSYS_PREFIX *system, char *name) {
+i32 GizmoIsNameUnique(GIZMOSYS *system, char *name) {
     GIZMOTYPE *type;
     GIZMOSET *set;
     i32 type_index;
@@ -860,7 +860,7 @@ i32 GizmoNameUsesPrefix(char *name, char *prefix) {
     return 1;
 }
 
-i32 GizmoGetUniqueName(GIZMOSYS_PREFIX *system, char *prefix, char *name, char *result, i32 result_size) {
+i32 GizmoGetUniqueName(GIZMOSYS *system, char *prefix, char *name, char *result, i32 result_size) {
     char suffix[16];
     char shortened_name[64];
     i32 type_index;
@@ -901,7 +901,7 @@ i32 GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT *bolt, u8 *hit_fla
     i32 i;
     if (gizmotypes != NULL && system != NULL && bolt != NULL) {
         type = gizmotypes->types;
-        set = ((GIZMOSYS_PREFIX *)system)->sets;
+        set = ((GIZMOSYS *)system)->sets;
         for (i = 0; i < gizmotypes->count; ++i, ++set, ++type) {
             if (type->fns.bolt_hit_plat_fn != NULL && type->fns.bolt_hit_plat_fn(world, set->data, bolt, hit_flags) != 0) {
                 return 1;

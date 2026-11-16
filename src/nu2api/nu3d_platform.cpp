@@ -5308,7 +5308,7 @@ extern "C" {
     }
 
     void NuGScnFixupPS(NUGSCN *scene) {
-        SCENE_FIXUP_NATIVE *native = (SCENE_FIXUP_NATIVE *)scene->native_scene;
+        SCENE_FIXUP_NATIVE *native = scene->native_scene;
         SCENE_FIXUP_GEOMETRY *geometry;
         SCENE_FIXUP_VERTEX_STREAM *stream;
         u32 i;
@@ -5351,7 +5351,7 @@ extern "C" {
     }
 
     void NuGScnDestroyPS(NUGSCN *scene) {
-        SCENE_FIXUP_NATIVE *native = (SCENE_FIXUP_NATIVE *)scene->native_scene;
+        SCENE_FIXUP_NATIVE *native = scene->native_scene;
         NUMTL *material;
         i32 i;
         i32 j;
@@ -5425,7 +5425,7 @@ extern "C" {
         for (i = 0; i != 100; ++i) {
             NUGSCN *scene = PCRegisteredNativeScenes[i];
             if (scene != NULL) {
-                SCENE_FIXUP_NATIVE *native = (SCENE_FIXUP_NATIVE *)scene->native_scene;
+                SCENE_FIXUP_NATIVE *native = scene->native_scene;
                 for (j = 0; j != native->geometry_count; ++j) {
                     SCENE_FIXUP_GEOMETRY *geometry = native->geometries[j];
                     if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {
@@ -5445,7 +5445,7 @@ extern "C" {
         for (i = 0; i != 100; ++i) {
             NUGSCN *scene = PCRegisteredNativeScenes[i];
             if (scene != NULL) {
-                SCENE_FIXUP_NATIVE *native = (SCENE_FIXUP_NATIVE *)scene->native_scene;
+                SCENE_FIXUP_NATIVE *native = scene->native_scene;
                 for (j = 0; j != native->geometry_count; ++j) {
                     SCENE_FIXUP_GEOMETRY *geometry = native->geometries[j];
                     if (geometry->vertex_format != 0 && (geometry->vertex_format & 0xf000) == 0) {

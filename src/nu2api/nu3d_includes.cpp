@@ -3538,7 +3538,7 @@ extern "C" {
         }
         NUDISPLAY_LIST *list = special->scene->display_list;
         NUDISPLAY_SPECIAL *display = special->display_special;
-        PC_DISPLAY_CLIP_OBJECT *clip = (PC_DISPLAY_CLIP_OBJECT *)display->clip_objects;
+        PC_DISPLAY_CLIP_OBJECT *clip = display->clip_objects;
         for (i32 i = 0; i < clip->material_count; ++i) {
             NUMTL *material = list->display_materials[clip->material_ids[i]];
             if (material == NULL) {
@@ -8025,7 +8025,7 @@ extern "C" {
     i32 NuMtlSpecialSetUV(nuhspecial_s *special, f32 u, f32 v) {
         if (special->scene != NULL) {
             NUDISPLAY_LIST *scene = special->scene->display_list;
-            PC_DISPLAY_CLIP_OBJECT *object = (PC_DISPLAY_CLIP_OBJECT *)special->display_special->clip_objects;
+            PC_DISPLAY_CLIP_OBJECT *object = special->display_special->clip_objects;
             for (i32 i = 0; i < object->material_count; ++i) {
                 NUMTL *material = scene->display_materials[object->material_ids[i]];
                 if (material == NULL) {
@@ -11013,7 +11013,7 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
     if (visible_count == 0) {
         return;
     }
-    PC_DISPLAY_CLIP_OBJECT *object = static_cast<PC_DISPLAY_CLIP_OBJECT *>(special->clip_objects);
+    PC_DISPLAY_CLIP_OBJECT *object = special->clip_objects;
     f32 *range = special->clip_range;
     while (*range > 0.0f && static_cast<u32>(object->material_count) <= 0) {
         ++range;
@@ -14200,7 +14200,7 @@ extern "C" {
             }
         }
         NuGScnFixupTIDs(scene);
-        animations = (SCENE_INGEST_TEXTURE_ANIMATION *)scene->texture_animations;
+        animations = scene->texture_animations;
         texture_count = 0;
         for (i = 0; i < scene->num_texture_anims; ++i) {
             end = (u32)animations[i].texture_ids + animations[i].texture_count;
@@ -14213,7 +14213,7 @@ extern "C" {
             scene->texture_anim_ids[end] = (u16)scene->texture_ids[index];
         }
         for (i = 0; i < scene->num_texture_anims; ++i) {
-            SCENE_INGEST_TEXTURE_ANIMATION *animation = &((SCENE_INGEST_TEXTURE_ANIMATION *)scene->texture_animations)[i];
+            SCENE_INGEST_TEXTURE_ANIMATION *animation = &scene->texture_animations[i];
             animation->next = NULL;
             animation->previous = NULL;
             animation->texture_ids = scene->texture_anim_ids + (u32)animation->texture_ids;
@@ -14229,7 +14229,7 @@ extern "C" {
             animation->environment = NuTexAnimEnvCreate(buffer, animation->material, animation->texture_ids, program);
         }
         for (i = 0; i < scene->num_texture_anims - 1; ++i) {
-            animations = (SCENE_INGEST_TEXTURE_ANIMATION *)scene->texture_animations;
+            animations = scene->texture_animations;
             animations[i].next = &animations[i + 1];
             animations[i + 1].previous = &animations[i];
         }
@@ -14517,7 +14517,7 @@ extern "C" {
     }
 
     void NuVisiOcclusion(NUVISIBILITYRESULT *result) {
-        VISIBILITY_OCCLUSION_GRID *grid = (VISIBILITY_OCCLUSION_GRID *)result->occlusion_data;
+        VISIBILITY_OCCLUSION_GRID *grid = result->occlusion_data;
         f32 grid_x;
         f32 grid_z;
         i32 column;
@@ -15412,9 +15412,9 @@ extern "C" {
             VisibilityTreeInitialise();
         }
         VisibilityTreePrepare();
-        tree = (VISIBILITY_TREE_READER *)result->instance_tree;
+        tree = result->instance_tree;
         for (root = tree->root_count - 1; root >= 0; --root) {
-            VisibilityTreeWalk(root, (VISIBILITY_TREE_READER *)result->instance_tree);
+            VisibilityTreeWalk(root, result->instance_tree);
         }
     }
 
@@ -16187,7 +16187,7 @@ extern "C" {
             while (display->clip_range[level] != 0.0f) {
                 ++level;
             }
-            return ((PC_DISPLAY_CLIP_OBJECT *)display->clip_objects)[level].material_count;
+            return display->clip_objects[level].material_count;
         }
         return 0;
     }
@@ -16216,8 +16216,7 @@ extern "C" {
             while (display->clip_range[level] != 0.0f) {
                 ++level;
             }
-            return special->scene->display_list
-                ->display_materials[((PC_DISPLAY_CLIP_OBJECT *)display->clip_objects)[level].material_ids[index]];
+            return special->scene->display_list->display_materials[display->clip_objects[level].material_ids[index]];
         }
         return NULL;
     }

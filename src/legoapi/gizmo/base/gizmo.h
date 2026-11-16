@@ -98,15 +98,12 @@ extern "C" ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 extern ADDGIZMOTYPE Default_ADDGIZMOTYPE;
 #endif
 
-typedef struct gizmosys_prefix_s { // size 0x4
-    GIZMOSET *sets;                // 0x0
-} GIZMOSYS_PREFIX;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
     i32 GizmoGetVisibility(void *, void *);
     void *GizmoFindByName(void *gizmo_sys, i32 type_id, char *name);
+    GIZMOSYS *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end);
     extern GIZMOTYPES *gizmotypes;
     void GizmoSysClearLevelProgress(void *owner, i32 index);
     extern i32 gizmoerrorlogsize;
@@ -120,7 +117,7 @@ extern "C" {
     GIZMO *AddGizmo(void *system, i32 type_id, char *name, void *object);
     /* Original gizmo.c private error caller group; existing local CONFIG_SYSTEM view retained. */
     i32 GizmoFileReadName(char *);
-    i32 GizmoGetUniqueName(GIZMOSYS_PREFIX *, char *, char *, char *, i32);
+    i32 GizmoGetUniqueName(GIZMOSYS *, char *, char *, char *, i32);
 
     struct addgizmotype_s;
 
@@ -170,7 +167,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AddLevelSfxGizmoSys(GIZMOSYS_PREFIX *, struct WORLDINFO_s *, i32 *, i32 *, i32);
+    void AddLevelSfxGizmoSys(GIZMOSYS *, struct WORLDINFO_s *, i32 *, i32 *, i32);
 
     i32 GizmoSys_SetBestBoltTarget(void *, struct WORLDINFO_s *, struct gameobject_s *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
     i32 GizmoSys_BoltHitPlat(void *, struct WORLDINFO_s *, struct bolt_s *, u8 *);

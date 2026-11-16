@@ -288,7 +288,6 @@ typedef struct world_load_reader_s {
     void *climb_object_system;
 } WORLD_LOAD_READER;
 
-extern "C" void *CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
 extern "C" void Attractos_InitTerrain(WORLDINFO *);
 extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void GizSpinners_InitTerrain(WORLDINFO *world);

@@ -95,3 +95,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | teleport and panel bit names (stream C) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
 | allocator sizes, animation magics, gameapi header declarations (stream B, dc4618c5) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
 | allocator sizes, animation magics, gameapi header declarations (stream B, dc4618c5) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | different | exact |
+| WORLDINFO gizmo_sys, display clip objects, visibility and scene fields typed (stream B) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |

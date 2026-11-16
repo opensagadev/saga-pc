@@ -892,7 +892,7 @@ extern "C" AREA_SUPERCOUNTER *SuperCounters_FindPickup(WORLDINFO *world, void *g
                         }
                         return counter;
                     }
-                    NUVEC *draw_position = GizmoGetPos((GIZMOSYS *)world->gizmo_sys, pickup->position_gizmo);
+                    NUVEC *draw_position = GizmoGetPos(world->gizmo_sys, pickup->position_gizmo);
                     if (draw_position != NULL) {
                         f32 distance = NuVecDistSqr(position, draw_position, NULL);
                         if (distance < closest) {
@@ -931,7 +931,7 @@ extern "C" void SuperCounter_ActivateGizmoPickup(GIZMO *gizmo, GIZMOPICKUP *gizm
             }
             NUVEC *message_position;
             if (pickup->position_gizmo != NULL) {
-                message_position = GizmoGetPos((GIZMOSYS *)WORLD->gizmo_sys, pickup->position_gizmo);
+                message_position = GizmoGetPos(WORLD->gizmo_sys, pickup->position_gizmo);
             } else if (NuSpecialExistsFn((nuhspecial_s *)&pickup->position_special) != 0) {
                 message_position = NuSpecialGetDrawPos((nuhspecial_s *)&pickup->position_special);
             } else {

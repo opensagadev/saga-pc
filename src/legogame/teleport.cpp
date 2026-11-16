@@ -54,7 +54,7 @@ typedef struct WORLD_TELEPORT_CONFIG { // size 0x4688
     u8 unknown_108[0x34];              // 0x0108
     NUGSCN *scene;                     // 0x013c
     u8 unknown_140[0x2988];            // 0x0140
-    GIZMOSYS_PREFIX *gizmo_system;     // 0x2ac8
+    GIZMOSYS *gizmo_system;            // 0x2ac8
     u8 unknown_2acc[0x1bb4];           // 0x2acc
     TELEPORT_CONFIG *teleports;        // 0x4680
     i32 teleport_count;                // 0x4684

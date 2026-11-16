@@ -37,7 +37,7 @@ i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *objec
     if (registry != NULL && system != NULL && object != NULL && (ObjHitObj_Flags(object) & OBJHIT_HITS_GIZMOS) != 0) {
         registry = gizmotypes;
         type = registry->types;
-        set = ((GIZMOSYS_PREFIX *)system)->sets;
+        set = ((GIZMOSYS *)system)->sets;
         for (i = 0; i < gizmotypes->count; ++i, ++type, ++set) {
             if (type->fns.get_best_bolt_target_fn == NULL) {
                 continue;
@@ -91,7 +91,7 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT *bolt, NUVEC *points, 
     }
     if (gizmotypes != NULL && system != NULL && (bolt->hit_flags & OBJHIT_HITS_GIZMOS) != 0) {
         type = gizmotypes->types;
-        set = ((GIZMOSYS_PREFIX *)system)->sets;
+        set = ((GIZMOSYS *)system)->sets;
         for (i = 0; i < gizmotypes->count; ++i, ++set, ++type) {
             if (type->fns.bolt_hit_fn != NULL &&
                 type->fns.bolt_hit_fn(world, set->data, bolt->owner, hit_points, mode, radius, minimum, maximum, bolt, 1, hit_flags) != 0) {

@@ -3385,7 +3385,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             GizmoGetOutput(world->gizmo_sys, HubAreaInfo[i].second_bonus_gizmo, 1, 0) == 0) {
             continue;
         }
-        NUVEC *position = GizmoGetPos((gizmosys_s *)world->gizmo_sys, HubAreaInfo[i].second_bonus_gizmo);
+        NUVEC *position = GizmoGetPos(world->gizmo_sys, HubAreaInfo[i].second_bonus_gizmo);
         if (position == NULL) {
             continue;
         }

@@ -1094,7 +1094,7 @@ extern "C" {
             ResetBits |= 0x17;
             reset_restart = 1;
             LevelCompletionFallbackFlagPC = 1;
-            GizmoTypeStoreProgress((GIZMOSYS *)WORLD->gizmo_sys, WORLD, WORLD->current_level->area_level_index, gizmopickup_typeid, NULL);
+            GizmoTypeStoreProgress(WORLD->gizmo_sys, WORLD, WORLD->current_level->area_level_index, gizmopickup_typeid, NULL);
         }
     }
 

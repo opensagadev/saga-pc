@@ -173,7 +173,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     void *light_dir;                                     // 0x2abc
     struct LEVEL_OBJECT_RUNTIME *level_objects;          // 0x2ac0
     struct nugspline_s **camera_splines;                 // 0x2ac4
-    void *gizmo_sys;                                     // 0x2ac8
+    struct gizmosys_s *gizmo_sys;                        // 0x2ac8
     struct GIZFLOW *giz_flow;                            // 0x2acc
     char filler4[12];                                    // 0x2ad0
     struct shadow_platform_list_s *shadow_platform_list; // 0x2adc
@@ -226,7 +226,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 fader_count;                                     // 0x5038
     void *mini_trooper_packets;                          // 0x503c
     struct minitrooperteam_s *mini_trooper_teams;        // 0x5040
-    void *mini_trooper_storage;                          // 0x5044
+    struct numtx_s *mini_trooper_storage;                // 0x5044
     struct PORTALDOOR_s *portal_doors;                   // 0x5048
     i32 portal_door_count;                               // 0x504c
     void *pulses_sys;                                    // 0x5050

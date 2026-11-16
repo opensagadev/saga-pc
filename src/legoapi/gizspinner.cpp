@@ -1054,8 +1054,8 @@ extern "C" i32 *GizSpinner_GetBestBoltTarget(GIZMOSET *, f32 *, NUVEC *result_po
     minimum.z = position->z - radius;
     maximum.x = position->x + radius;
     maximum.z = position->z + radius;
-    GIZMOSET *set = &((GIZMOSYS_PREFIX *)world->gizmo_sys)->sets[spinner_gizmotype_id];
-    for (i32 index = 0; index < set->count; ++index, set = &((GIZMOSYS_PREFIX *)world->gizmo_sys)->sets[spinner_gizmotype_id]) {
+    GIZMOSET *set = &world->gizmo_sys->sets[spinner_gizmotype_id];
+    for (i32 index = 0; index < set->count; ++index, set = &world->gizmo_sys->sets[spinner_gizmotype_id]) {
         GIZMO *gizmo = &set->gizmos[index];
         GIZSPINNER_s *spinner = &world->spinners[index];
         if (spinner->flags == 0 ||

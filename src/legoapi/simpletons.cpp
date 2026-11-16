@@ -360,7 +360,7 @@ extern "C" {
 
             if (world->mini_trooper_storage == NULL) {
                 u32 storage = ((world->giz_buffer.addr + 0x40 - 1) & ~(0x40 - 1));
-                world->mini_trooper_storage = reinterpret_cast<void *>(storage);
+                world->mini_trooper_storage = reinterpret_cast<NUMTX *>(storage);
                 world->giz_buffer.addr = (((storage + team_count * trooper_count * 0xc0) + 0x40 - 1) & ~(0x40 - 1));
             }
 
@@ -797,7 +797,7 @@ extern "C" {
 
         minitrooperteam_s *teams = world->mini_trooper_teams;
         NUMTX *matrices[3];
-        matrices[0] = static_cast<NUMTX *>(world->mini_trooper_storage);
+        matrices[0] = world->mini_trooper_storage;
         const i32 matrix_count = teams[0].trooper_count * trooperteamcount;
         matrices[1] = matrices[0] + matrix_count;
         matrices[2] = matrices[1] + matrix_count;

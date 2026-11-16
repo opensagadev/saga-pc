@@ -677,7 +677,7 @@ typedef struct nudisplay_special_s {         // size 0xd0
     NUVEC4 bounds_max;                       // 0x90
     NUVEC center;                            // 0xa0
     f32 radius;                              // 0xac
-    void *clip_objects;                      // 0xb0
+    PC_DISPLAY_CLIP_OBJECT *clip_objects;    // 0xb0
     char *name;                              // 0xb4
     u32 flags;                               // 0xb8
     f32 *clip_range;                         // 0xbc
@@ -1199,18 +1199,18 @@ extern "C" {
 
     /* A scene's visibility result: NuVisiEvaluate fills it, the walkers write two bits per instance into
      * clip_results (1 inside, 2 partial) and set their bit in flags (1 instance tree, 4 octree). */
-    typedef struct nuvisibilityresult_s { // size 0x2c
-        i32 instance_count;               // 0x00
-        struct nuvisioctree_s *octree;    // 0x04
-        NUGSCN *source_scene;             // 0x08
-        void *occlusion_data;             // 0x0c
-        u8 unknown_10[4];                 // 0x10
-        void *instance_tree;              // 0x14
-        void *portal_marker;              // 0x18
-        u8 *portal_bits;                  // 0x1c
-        u8 *clip_results;                 // 0x20
-        u8 *instance_tree_bits;           // 0x24
-        u32 flags;                        // 0x28
+    typedef struct nuvisibilityresult_s {                   // size 0x2c
+        i32 instance_count;                                 // 0x00
+        struct nuvisioctree_s *octree;                      // 0x04
+        NUGSCN *source_scene;                               // 0x08
+        struct visibility_occlusion_grid_s *occlusion_data; // 0x0c
+        u8 unknown_10[4];                                   // 0x10
+        struct visibility_tree_reader_s *instance_tree;     // 0x14
+        void *portal_marker;                                // 0x18
+        u8 *portal_bits;                                    // 0x1c
+        u8 *clip_results;                                   // 0x20
+        u8 *instance_tree_bits;                             // 0x24
+        u32 flags;                                          // 0x28
     } NUVISIBILITYRESULT;
 
     extern NUVISIBILITYRESULT *myvisi;
