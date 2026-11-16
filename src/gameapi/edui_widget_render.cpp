@@ -773,7 +773,7 @@ extern "C" {
 }
 
 static void EduiAddInteraction(f32 x, f32 y, f32 width, f32 height, eduimenu_s *menu, eduiitem_s *item, i32 (*callback)(edui_interact_s *),
-                               u32 buttons, i32 unknown_20) {
+                               u32 buttons, i32 needs_debounce) {
     if (numInteracts < 64 && eduiInteractLocked == NULL) {
         eduiInteracts[numInteracts].x = x;
         eduiInteracts[numInteracts].y = (f32)(y * 0.5);
@@ -783,7 +783,7 @@ static void EduiAddInteraction(f32 x, f32 y, f32 width, f32 height, eduimenu_s *
         eduiInteracts[numInteracts].item = item;
         eduiInteracts[numInteracts].callback = callback;
         eduiInteracts[numInteracts].buttons = buttons;
-        eduiInteracts[numInteracts].needs_debounce = unknown_20;
+        eduiInteracts[numInteracts].needs_debounce = needs_debounce;
         ++numInteracts;
     }
 }

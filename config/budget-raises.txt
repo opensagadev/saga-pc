@@ -329,3 +329,4 @@ config/castscan-budget.json redundant-identity 20 quick run, settled in the refi
 config/declscan-budget.json A 42 quick run, settled in the refix
 config/castscan-budget.json truncation 2186 quick run, settled in the refix
 config/oddscan-budget.json magic-mask 1048 quick run, settled in the refix
+config/castscan-budget.json raw-offset 359 quick run, settled in the refix
