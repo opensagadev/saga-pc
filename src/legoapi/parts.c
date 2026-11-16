@@ -3464,15 +3464,14 @@ void edpartHighlightNearest(void) {
             }
             ++edpart_copy_enclosed;
             edbitsDrawDiagonalCross(part_emits[index].position.x, part_emits[index].position.y, part_emits[index].position.z, 0.05f, -1,
-                                    (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
+                                    edpart_mtl);
         }
         if (edpart_copy_source_count > 0) {
             for (index = 0; index < edpart_copy_source_count; ++index) {
                 NuVecSub(&offset, &part_emits[edpart_copy_source[index]].position, &edpart_copy_source_vec);
                 NuVecRotateY(&offset, &offset, edpart_copyroty);
                 NuVecAdd(&destination, &PartEditorCameraPos, &offset);
-                edbitsDrawDiagonalCross(destination.x, destination.y, destination.z, 0.05f, 0xff808080,
-                                        (struct PC_SCENE_MTL_VIEW *)edpart_mtl);
+                edbitsDrawDiagonalCross(destination.x, destination.y, destination.z, 0.05f, 0xff808080, edpart_mtl);
             }
         }
     } else if (edpart_nearest != -1) {

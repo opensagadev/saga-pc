@@ -300,7 +300,7 @@ i32 edbitsProcessCubemapDump(void) {
     return edbits_cubecount;
 }
 
-void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, NUMTL *material) {
     f32 axes[9] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     NURND_VERTEX3D vertices[2];
     i32 i;
@@ -313,7 +313,7 @@ void edbitsDrawCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCEN
         vertices[1].position.x = x - radius * axes[i];
         vertices[1].position.y = y - radius * axes[i + 1];
         vertices[1].position.z = z - radius * axes[i + 2];
-        NuRndrLine3d(vertices, (NUMTL *)material, NULL);
+        NuRndrLine3d(vertices, material, NULL);
     }
 }
 
@@ -365,7 +365,7 @@ i32 fun_0065c150(void) {
     return 0;
 }
 
-void edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, NUMTL *material) {
     f32 axes[12] = {1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f};
     NURND_VERTEX3D vertices[2];
     i32 i;
@@ -378,12 +378,11 @@ void edbitsDrawDiagonalCross(f32 x, f32 y, f32 z, f32 radius, i32 colour, struct
         vertices[1].position.x = x - radius * axes[i];
         vertices[1].position.y = y - radius * axes[i + 1];
         vertices[1].position.z = z - radius * axes[i + 2];
-        NuRndrLine3d(vertices, (NUMTL *)material, NULL);
+        NuRndrLine3d(vertices, material, NULL);
     }
 }
 
-void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z,
-                          i32 rotation_y) {
+void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, NUMTL *material, i32 rotation_z, i32 rotation_y) {
     NUVEC vertices[2];
     i32 i;
     i32 angle;
@@ -418,15 +417,15 @@ void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour,
     }
 }
 
-void edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z, i32 rotation_y) {
+void edbitsDrawCircleTilted(NUVEC *centre, f32 radius, i32 colour, NUMTL *material, i32 rotation_z, i32 rotation_y) {
     edbitsDrawOvalTilted(centre, radius, radius, colour, material, rotation_z, rotation_y);
 }
 
-void edbitsDrawOvalXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawOvalXY(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, NUMTL *material) {
     edbitsDrawOvalTilted(centre, radius_x, radius_z, colour, material, 0, 0);
 }
 
-void edbitsDrawCircleXY(NUVEC *centre, f32 radius, i32 colour, struct PC_SCENE_MTL_VIEW *material) {
+void edbitsDrawCircleXY(NUVEC *centre, f32 radius, i32 colour, NUMTL *material) {
     edbitsDrawOvalXY(centre, radius, radius, colour, material);
 }
 
@@ -435,14 +434,14 @@ void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_
     NUVEC point;
     i32 i;
     i32 angle;
-    edbitsDrawCircleXY(centre, radius - radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material);
-    edbitsDrawCircleXY(centre, radius + radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material);
+    edbitsDrawCircleXY(centre, radius - radial_extent, colour, material);
+    edbitsDrawCircleXY(centre, radius + radial_extent, colour, material);
     offset = *centre;
     offset.y -= vertical_extent;
-    edbitsDrawCircleXY(&offset, radius, colour, (struct PC_SCENE_MTL_VIEW *)material);
+    edbitsDrawCircleXY(&offset, radius, colour, material);
     offset = *centre;
     offset.y += vertical_extent;
-    edbitsDrawCircleXY(&offset, radius, colour, (struct PC_SCENE_MTL_VIEW *)material);
+    edbitsDrawCircleXY(&offset, radius, colour, material);
     for (i = 0; i <= 10; ++i) {
         point.x = centre->x;
         point.y = centre->y;
@@ -450,19 +449,18 @@ void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_
         angle = (i << 16) / 10;
         point.x += radius * NU_SIN_LUT(angle);
         point.z += radius * NU_COS_LUT(angle);
-        edbitsDrawOvalTilted(&point, vertical_extent, radial_extent, colour, (struct PC_SCENE_MTL_VIEW *)material, 0x4000, angle);
+        edbitsDrawOvalTilted(&point, vertical_extent, radial_extent, colour, material, 0x4000, angle);
     }
 }
 
 void edbitsDrawSphere(NUVEC *centre, f32 radius, i32 colour, NUMTL *material) {
-    struct PC_SCENE_MTL_VIEW *view = (struct PC_SCENE_MTL_VIEW *)material;
-    edbitsDrawCircleXY(centre, radius, colour, view);
-    edbitsDrawCircleTilted(centre, radius, colour, view, 0x2000, 0);
-    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0);
-    edbitsDrawCircleTilted(centre, radius, colour, view, 0x6000, 0);
-    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0x2000);
-    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0x4000);
-    edbitsDrawCircleTilted(centre, radius, colour, view, 0x4000, 0x6000);
+    edbitsDrawCircleXY(centre, radius, colour, material);
+    edbitsDrawCircleTilted(centre, radius, colour, material, 0x2000, 0);
+    edbitsDrawCircleTilted(centre, radius, colour, material, 0x4000, 0);
+    edbitsDrawCircleTilted(centre, radius, colour, material, 0x6000, 0);
+    edbitsDrawCircleTilted(centre, radius, colour, material, 0x4000, 0x2000);
+    edbitsDrawCircleTilted(centre, radius, colour, material, 0x4000, 0x4000);
+    edbitsDrawCircleTilted(centre, radius, colour, material, 0x4000, 0x6000);
 }
 
 void edgraCalculatePage(i8 page, i32 calculate_vectors) {

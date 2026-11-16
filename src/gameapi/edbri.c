@@ -337,15 +337,15 @@ void edbriInit(void) {
     edbri_mtl->opacity = 1.0f;
     edbri_mtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate(edbri_mtl);
-    edbri_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)edbri_mtl_zoff)->diffuse_r = 0.5f;
-    ((NUMTL *)edbri_mtl_zoff)->diffuse_g = 0.5f;
-    ((NUMTL *)edbri_mtl_zoff)->diffuse_b = 0.5f;
-    ((NUMTL *)edbri_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edbri_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)edbri_mtl_zoff)->opacity = 1.0f;
-    ((NUMTL *)edbri_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edbri_mtl_zoff);
+    edbri_mtl_zoff = NuMtlCreate(1);
+    (edbri_mtl_zoff)->diffuse_r = 0.5f;
+    (edbri_mtl_zoff)->diffuse_g = 0.5f;
+    (edbri_mtl_zoff)->diffuse_b = 0.5f;
+    (edbri_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edbri_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (edbri_mtl_zoff)->opacity = 1.0f;
+    (edbri_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edbri_mtl_zoff);
     edbri_plank_instance_type = -1;
     edbri_post_instance_type = -1;
 }
@@ -806,7 +806,7 @@ void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 i32 edbri_nearest = 0;
-struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff = 0;
+NUMTL *edbri_mtl_zoff = 0;
 NUMTL *edbri_mtl = NULL;
 PC_EDBRIDGE edBridges[64] = {0};
 i32 edbri_page_on[8] = {0};
@@ -871,11 +871,11 @@ void edbriDrawCursor(void) {
     line[1].colour = 0xff0000ff;
     NuRndrLine3d(line, edbri_mtl, NULL);
 
-    NuRndrRect2di(0x1720, 0x9b0, 0xdc0, 0x410, 0x80808080, (NUMTL *)edbri_mtl_zoff);
-    NuRndrRect2di(0x1710, 0x8f0, 0xde0, 0xc0, 0x80000000, (NUMTL *)edbri_mtl_zoff);
-    NuRndrLine2di(0x1710, 0x9b0, 0x1710, 0xdc8, 0x80000000, (NUMTL *)edbri_mtl_zoff);
-    NuRndrLine2di(0x24f0, 0x9b0, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edbri_mtl_zoff);
-    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edbri_mtl_zoff);
+    NuRndrRect2di(0x1720, 0x9b0, 0xdc0, 0x410, 0x80808080, edbri_mtl_zoff);
+    NuRndrRect2di(0x1710, 0x8f0, 0xde0, 0xc0, 0x80000000, edbri_mtl_zoff);
+    NuRndrLine2di(0x1710, 0x9b0, 0x1710, 0xdc8, 0x80000000, edbri_mtl_zoff);
+    NuRndrLine2di(0x24f0, 0x9b0, 0x24f0, 0xdc8, 0x80000000, edbri_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, edbri_mtl_zoff);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
     NuQFntSet(system_qfont);

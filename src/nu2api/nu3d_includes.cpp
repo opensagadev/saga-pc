@@ -5218,60 +5218,6 @@ extern "C" {
         return NuQFntPrintLenU(font, text);
     }
 
-    struct PC_MATERIAL_CREATE_SHADER { // size 0x208
-        u32 flags;                     // 0x000
-        i32 diffuse_map_id;            // 0x004
-        u8 unknown_08[0xc];            // 0x008
-        u32 packed_diffuse_colour;     // 0x014
-        u8 unknown_18[0xc];            // 0x018
-        f32 default_scale;             // 0x024
-        u8 unknown_28[0x80];           // 0x028
-        u8 texture_unit_count;         // 0x0a8
-        u8 unknown_a9[0x63];           // 0x0a9
-        i32 animation_ids[4];          // 0x10c
-        u8 unknown_11c[0x20];          // 0x11c
-        u32 vertex_format;             // 0x13c
-        i16 shader_handle;             // 0x140
-        i16 shader_variant_handle;     // 0x142
-        u8 unknown_144[0x74];          // 0x144
-        u32 material_flags;            // 0x1b8
-        u8 unknown_1bc[0x4c];          // 0x1bc
-    };
-
-    typedef struct PC_MATERIAL_CREATE_VIEW PC_MATERIAL_CREATE_VIEW;
-
-    struct PC_MATERIAL_CREATE_VIEW { // size 0x2c4
-
-        union { // size 0x2
-            u16 flags;
-
-            struct {             // size 0x2
-                i16 : 2;         // 0x000:0
-                i16 flag_04 : 1; // 0x000:2
-            };
-        }; // 0x000
-
-        u8 unknown_002[0x26];                    // 0x002
-        u32 retained_28;                         // 0x028
-        u32 retained_2c;                         // 0x02c
-        NUMTL *next;                             // 0x030
-        u8 unknown_034[8];                       // 0x034
-        NUDISPLAYLIST *display_list;             // 0x03c
-        u32 attributes;                          // 0x040
-        u32 attributes_high;                     // 0x044
-        u8 unknown_048[0xc];                     // 0x048
-        NUVEC diffuse;                           // 0x054
-        u8 unknown_060[0x10];                    // 0x060
-        f32 opacity;                             // 0x070
-        i16 texture_id;                          // 0x074
-        i16 sort_priority;                       // 0x076
-        u8 unknown_078[0x3c];                    // 0x078
-        PC_MATERIAL_CREATE_SHADER shader;        // 0x0b4
-        PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
-        u16 version;                             // 0x2c0
-        u8 unknown_2c2[2];                       // 0x2c2
-    };
-
     typedef struct FONT_LOAD_READER {      // size 0x4c
         u8 unknown_00[6];                  // 0x00
         u16 flags;                         // 0x06
@@ -5487,8 +5433,8 @@ extern "C" {
     VUFNT *NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end) {
         FONT_LOAD_READER *reader = (FONT_LOAD_READER *)font;
         FONT_LOAD_READER *duplicate;
-        PC_MATERIAL_CREATE_VIEW *material;
-        PC_MATERIAL_CREATE_VIEW *original;
+        NUMTL *material;
+        NUMTL *original;
         i32 previous_plane;
         if (font == NULL) {
             AnimationDiagnosticNoOp();
@@ -5504,19 +5450,18 @@ extern "C" {
         }
         previous_plane = NuMtlSetCurrentRenderPlane(plane);
         duplicate->material = (flags & NUQFNT_3D) ? NuMtlCreate3D(1) : NuMtlCreate(1);
-        material = (PC_MATERIAL_CREATE_VIEW *)duplicate->material;
-        original = (PC_MATERIAL_CREATE_VIEW *)font->material;
-        material->attributes = original->attributes;
-        material->attributes_high = original->attributes_high;
-        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->texture_id = ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id;
-        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->sort_priority = ((PC_MATERIAL_CREATE_VIEW *)font->material)->sort_priority;
-        ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes =
-            (((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes & ~0x10000U) | 0x20000U;
+        material = duplicate->material;
+        original = font->material;
+        material->attribs.word = original->attribs.word;
+        material->attribs2 = original->attribs2;
+        duplicate->material->texture_id = font->material->texture_id;
+        duplicate->material->sort_priority = font->material->sort_priority;
+        duplicate->material->attribs.word = (duplicate->material->attribs.word & ~0x10000U) | 0x20000U;
         if (flags & NUQFNT_3D) {
-            ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes_high &= ~0x800000U;
+            duplicate->material->attribs2 &= ~0x800000U;
         }
         if (flags & NUQFNT_Z_BUFFERED) {
-            ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes &= ~0xc000U;
+            duplicate->material->attribs.word &= ~0xc000U;
         }
         NuMtlUpdate(duplicate->material);
         NuMtlSetCurrentRenderPlane(previous_plane);
@@ -5560,17 +5505,15 @@ extern "C" {
             if (texture_id != 0) {
                 font->material = NuMtlCreate(1);
                 if (font->material != NULL) {
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.x = 1.0f;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.y = 1.0f;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.z = 1.0f;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
-                        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x1000U) | 0x2000U;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0xc000U;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->opacity = 1.0f;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
-                        (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~14U) | 1U;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0x40000U;
-                    ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id = (i16)texture_id;
+                    font->material->diffuse_r = 1.0f;
+                    font->material->diffuse_g = 1.0f;
+                    font->material->diffuse_b = 1.0f;
+                    font->material->attribs.word = (font->material->attribs.word & ~0x1000U) | 0x2000U;
+                    font->material->attribs.word |= 0xc000U;
+                    font->material->opacity = 1.0f;
+                    font->material->attribs.word = (font->material->attribs.word & ~14U) | 1U;
+                    font->material->attribs.word |= 0x40000U;
+                    font->material->texture_id = (i16)texture_id;
                     NuMtlUpdate(font->material);
                     return font;
                 }
@@ -5642,40 +5585,35 @@ extern "C" {
             *buffer->char_ptr++ = (char)(i == 32 ? font->glyph_count : index);
         }
         result->material = (NUMTL *)((buffer->addr + 15) & ~15U);
-        buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(PC_MATERIAL_CREATE_VIEW);
-        memcpy(result->material, font->material, sizeof(PC_MATERIAL_CREATE_VIEW));
+        buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(NUMTL);
+        memcpy(result->material, font->material, sizeof(NUMTL));
         NuMtlSetRenderPlane(result->material, options);
         if (flags & NUQFNT_3D) {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes_high &= ~4U;
+            result->material->attribs2 &= ~4U;
         } else {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes_high |= 4U;
+            result->material->attribs2 |= 4U;
         }
-        ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
-            (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x10000U) | 0x20000U;
+        result->material->attribs.word = (result->material->attribs.word & ~0x10000U) | 0x20000U;
         if (flags & NUQFNT_OPAQUE) {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~15U;
+            result->material->attribs.word &= ~15U;
         } else {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
-                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~14U) | 1U;
+            result->material->attribs.word = (result->material->attribs.word & ~14U) | 1U;
         }
         if (flags & NUQFNT_Z_BUFFERED) {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~0xc000U;
+            result->material->attribs.word &= ~0xc000U;
         } else if (flags & NUQFNT_Z_READ_ONLY) {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
-                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x8000U) | 0x4000U;
+            result->material->attribs.word = (result->material->attribs.word & ~0x8000U) | 0x4000U;
         } else {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes |= 0xc000U;
+            result->material->attribs.word |= 0xc000U;
         }
         if (flags & 4) {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
-                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x20U) | 0x10U;
+            result->material->attribs.word = (result->material->attribs.word & ~0x20U) | 0x10U;
         } else if (flags & 0x10) {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
-                (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x10U) | 0x20U;
+            result->material->attribs.word = (result->material->attribs.word & ~0x10U) | 0x20U;
         } else {
-            ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~0x30U;
+            result->material->attribs.word &= ~0x30U;
         }
-        ((PC_MATERIAL_CREATE_VIEW *)result->material)->sort_priority = (i16)sort_priority;
+        result->material->sort_priority = (i16)sort_priority;
         NuMtlUpdate(result->material);
         result->platform_data->x = result->platform_data->y = result->platform_data->z = 0.0f;
         return (VUFNT *)result;
@@ -6258,10 +6196,10 @@ void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
         ms_pZOnlyMtl3D = NuMtlCreate3D(1);
         ms_pZOnlyMtl2D = NuMtlCreate(1);
         ms_pAlphaMtl2D = NuMtlCreate(1);
-        PC_MATERIAL_SHADER_DESC_VIEW desc2d;
+        NUSHADERMTLDESC desc2d;
         memset(&desc2d, 0, sizeof(desc2d));
         desc2d.flags = 0x1000;
-        desc2d.diffuse_map_id = 0;
+        desc2d.diffuse_map_ids[0] = 0;
         desc2d.vertex_format |= 0x40001;
         NuMtlSetShaderDescPS(ms_pZOnlyMtl2D, &desc2d);
         ms_pZOnlyMtl2D->attribs.z_mode = NUMTL_ZMODE_NORMAL;
@@ -6269,10 +6207,10 @@ void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
         ms_pZOnlyMtl2D->attribs.unknown_2_8 = 0;
         ms_pZOnlyMtl2D->attribs.cull_mode = NUMTL_CULL_NONE;
         NuMtlUpdate(ms_pZOnlyMtl2D);
-        PC_MATERIAL_SHADER_DESC_VIEW desc3d;
+        NUSHADERMTLDESC desc3d;
         memset(&desc3d, 0, sizeof(desc3d));
         desc3d.flags = 0x1000;
-        desc3d.diffuse_map_id = 0;
+        desc3d.diffuse_map_ids[0] = 0;
         desc3d.vertex_format |= 1;
         NuMtlSetShaderDescPS(ms_pZOnlyMtl3D, &desc3d);
         ms_pZOnlyMtl3D->attribs.z_mode = NUMTL_ZMODE_NORMAL;
@@ -8061,7 +7999,7 @@ extern "C" {
 
     void NuMtlUpdate(NUMTL *material) {
         NuMtlUpdatePS(material);
-        ++((PC_SCENE_MTL_VIEW *)material)->version;
+        ++material->version;
     }
 
     typedef struct PC_MATERIAL_VARIANT_RECORD PC_MATERIAL_VARIANT_RECORD;
@@ -8072,15 +8010,15 @@ extern "C" {
         u32 vertex_descriptor;          // 0x8
     };
 
-    void NuShaderMtlDescInit(PC_MATERIAL_CREATE_SHADER *desc) {
+    void NuShaderMtlDescInit(NUSHADERMTLDESC *desc) {
         if (desc == NULL) {
             return;
         }
         memset(desc, 0, sizeof(*desc));
         desc->default_scale = 1.0f;
-        desc->material_flags |= 0x1000;
+        desc->layer_flags |= 0x1000;
         desc->flags = 0x1000;
-        desc->packed_diffuse_colour = 0xff8080ff;
+        desc->diffuse_colours[0] = 0xff8080ff;
         desc->animation_ids[0] = -1;
         desc->animation_ids[1] = -1;
         desc->animation_ids[2] = -1;
@@ -8090,14 +8028,14 @@ extern "C" {
 
     static NUMTL *NuMtlCreatePoolPC(i32 count, u32 render_plane, i32 is_3d) {
         NUMTL *next = NULL;
-        PC_MATERIAL_CREATE_VIEW *mtl;
+        NUMTL *mtl;
         i32 i;
         render_plane &= 0xff;
         for (i = 0; i < count; ++i) {
-            PC_MATERIAL_CREATE_VIEW *pool;
+            NUMTL *pool;
             i32 j;
             mtl = NULL;
-            pool = ((PC_MATERIAL_CREATE_VIEW *)(PCMaterialPool));
+            pool = PCMaterialPool;
             for (j = 0; j < PCMaterialPoolCount; ++j) {
                 if ((pool[j].flags & 1) == 0 && pool[j].display_list == NULL) {
                     mtl = &pool[j];
@@ -8108,12 +8046,12 @@ extern "C" {
                 AnimationDiagnosticNoOp();
             }
             memset(mtl, 0, sizeof(*mtl));
-            mtl->diffuse.x = 1.0f;
-            mtl->diffuse.y = 1.0f;
-            mtl->diffuse.z = 1.0f;
+            mtl->diffuse_r = 1.0f;
+            mtl->diffuse_g = 1.0f;
+            mtl->diffuse_b = 1.0f;
             mtl->opacity = 1.0f;
-            mtl->attributes = (mtl->attributes & 0xbf9e2fd0) | 0x3f962010;
-            mtl->attributes_high |= 0x10;
+            mtl->attribs.word = (mtl->attribs.word & 0xbf9e2fd0) | 0x3f962010;
+            mtl->attribs2 |= 0x10;
             mtl->flags = (mtl->flags & 0xf00f) | (render_plane << 4) | 5;
             if (is_3d != 0) {
                 NuThreadCriticalSectionBegin(nudlist_field_fc4);
@@ -8121,37 +8059,37 @@ extern "C" {
                     NuThreadCriticalSectionEnd(nudlist_field_fc4);
                     AnimationDiagnosticNoOp();
                 } else {
-                    PCDisplayMaterialAddQueue[PCDisplayMaterialAddCount++] = ((NUMTL *)(mtl));
+                    PCDisplayMaterialAddQueue[PCDisplayMaterialAddCount++] = mtl;
                     NuThreadCriticalSectionEnd(nudlist_field_fc4);
                 }
             } else {
-                mtl->attributes_high |= 0x800000;
+                mtl->attribs2 |= 0x800000;
             }
             mtl->next = next;
-            next = ((NUMTL *)(mtl));
+            next = mtl;
         }
-        NuMtlCreatePS(((NUMTL *)(mtl)), is_3d);
-        return ((NUMTL *)(mtl));
+        NuMtlCreatePS(mtl, is_3d);
+        return mtl;
     }
 
     static NUMTL *NuMtlAllocateBuffPC(VARIPTR *buffer, VARIPTR buffer_end, i32 is_3d) {
-        PC_MATERIAL_CREATE_VIEW *mtl = (PC_MATERIAL_CREATE_VIEW *)((buffer->addr + 15) & ~15u);
-        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(PC_MATERIAL_CREATE_VIEW);
+        NUMTL *mtl = (NUMTL *)((buffer->addr + 15) & ~15u);
+        buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(NUMTL);
         memset(mtl, 0, sizeof(*mtl));
-        mtl->diffuse.x = 1.0f;
-        mtl->diffuse.y = 1.0f;
-        mtl->diffuse.z = 1.0f;
+        mtl->diffuse_r = 1.0f;
+        mtl->diffuse_g = 1.0f;
+        mtl->diffuse_b = 1.0f;
         mtl->opacity = 1.0f;
-        mtl->attributes = (mtl->attributes & 0xbf9e2fd0) | 0x3f962010;
-        mtl->attributes_high |= 0x10;
+        mtl->attribs.word = (mtl->attribs.word & 0xbf9e2fd0) | 0x3f962010;
+        mtl->attribs2 |= 0x10;
         mtl->flag_04 = 0;
         if (is_3d != 0) {
-            fun_005de1c0((NUMTL *)mtl);
+            fun_005de1c0(mtl);
         } else {
-            mtl->attributes_high |= 0x800000;
+            mtl->attribs2 |= 0x800000;
         }
-        NuMtlCreatePS((NUMTL *)mtl, is_3d);
-        return (NUMTL *)mtl;
+        NuMtlCreatePS(mtl, is_3d);
+        return mtl;
     }
 
     NUMTL *NuMtlCreate(i32 count) {
@@ -8220,7 +8158,7 @@ extern "C" {
         NULNKHDR *node;
         for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {
             PC_MATERIAL_VARIANT_RECORD *entry = ((PC_MATERIAL_VARIANT_RECORD *)(node));
-            if (entry->original == original && ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.vertex_format == descriptor) {
+            if (entry->original == original && entry->material->shader.vertex_format == descriptor) {
                 return entry->material;
             }
         }
@@ -8237,17 +8175,15 @@ extern "C" {
                 entry->material = NuMtlCreatePoolPC(1, numtl_renderplane, 1);
                 entry->original = original;
                 entry->vertex_descriptor = *descriptors;
-                retained_2c = ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_2c;
-                retained_28 = ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_28;
-                *((PC_MATERIAL_CREATE_VIEW *)(entry->material)) = *((PC_MATERIAL_CREATE_VIEW *)(original));
-                ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.shader_handle =
-                    ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.shader_variant_handle = 0;
-                ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_2c = retained_2c;
-                ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->retained_28 = retained_28;
-                ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->flags |= 1;
-                ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.vertex_format = *descriptors;
-                ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->vertex_declaration =
-                    NuGetVertexDeclaration(((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.vertex_format);
+                retained_2c = entry->material->retained_2c;
+                retained_28 = entry->material->retained_28;
+                *entry->material = *original;
+                entry->material->shader.shader_handles[0] = entry->material->shader.shader_handles[1] = 0;
+                entry->material->retained_2c = retained_2c;
+                entry->material->retained_28 = retained_28;
+                entry->material->flags |= 1;
+                entry->material->shader.vertex_format = *descriptors;
+                entry->material->vertex_declaration = NuGetVertexDeclaration(entry->material->shader.vertex_format);
                 NuMtlUpdate(entry->material);
             }
         }
@@ -8257,20 +8193,19 @@ extern "C" {
         NULNKHDR *node;
         for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {
             PC_MATERIAL_VARIANT_RECORD *entry = ((PC_MATERIAL_VARIANT_RECORD *)(node));
-            if (entry->original == original && ((PC_MATERIAL_CREATE_VIEW *)(entry->material))->shader.vertex_format ==
-                                                   ((PC_MATERIAL_CREATE_VIEW *)(source))->shader.vertex_format) {
+            if (entry->original == original && entry->material->shader.vertex_format == source->shader.vertex_format) {
                 return entry->material;
             }
         }
-        NuMtlRegisterForOverride(original, &((PC_MATERIAL_CREATE_VIEW *)(source))->shader.vertex_format, 1);
-        return NuMtlLookupVariantPC(original, ((PC_MATERIAL_CREATE_VIEW *)(source))->shader.vertex_format);
+        NuMtlRegisterForOverride(original, &source->shader.vertex_format, 1);
+        return NuMtlLookupVariantPC(original, source->shader.vertex_format);
     }
 
     NUMTL *fun_005e5090(NUMTL *original, u32 descriptor) {
         NULNKHDR *node;
         for (node = NuLstGetNext(g_overrideList, NULL); node != NULL; node = NuLstGetNext(g_overrideList, node)) {
             PC_MATERIAL_VARIANT_RECORD *entry = (PC_MATERIAL_VARIANT_RECORD *)node;
-            if (entry->original == original && ((PC_MATERIAL_CREATE_VIEW *)entry->material)->shader.vertex_format == descriptor) {
+            if (entry->original == original && entry->material->shader.vertex_format == descriptor) {
                 return entry->material;
             }
         }
@@ -8285,18 +8220,18 @@ extern "C" {
         i32 saved_plane = (i32)numtl_renderplane;
         numtl_renderplane = 22;
         if (RendererZClearMaterial == NULL) {
-            PC_MATERIAL_CREATE_VIEW *material;
+            NUMTL *material;
             RendererZClearMaterial = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
-            material = (PC_MATERIAL_CREATE_VIEW *)RendererZClearMaterial;
-            material->attributes = (material->attributes & 0xff9fbff2u) | 0x00108002;
+            material = RendererZClearMaterial;
+            material->attribs.word = (material->attribs.word & 0xff9fbff2u) | 0x00108002;
             NuMtlUpdate(RendererZClearMaterial);
         }
         if (RendererAlphaMaskMaterial == NULL) {
-            PC_MATERIAL_CREATE_VIEW *material;
+            NUMTL *material;
             RendererAlphaMaskMaterial = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
-            material = (PC_MATERIAL_CREATE_VIEW *)RendererAlphaMaskMaterial;
-            material->attributes_high &= ~3u;
-            material->attributes = (material->attributes & 0x806fbff2u) | 0x00608002;
+            material = RendererAlphaMaskMaterial;
+            material->attribs2 &= ~3u;
+            material->attribs.word = (material->attribs.word & 0x806fbff2u) | 0x00608002;
         }
         if (saved_plane >= 24 || saved_plane < 0) {
             AnimationDiagnosticNoOp();
@@ -8510,38 +8445,38 @@ extern "C" {
     }
 
     void NuMtlInitEx(VARIPTR *buffer, i32 material_count) {
-        PC_MATERIAL_CREATE_SHADER desc2d;
-        PC_MATERIAL_CREATE_SHADER desc3d;
-        PC_MATERIAL_CREATE_VIEW *material;
+        NUSHADERMTLDESC desc2d;
+        NUSHADERMTLDESC desc3d;
+        NUMTL *material;
         NUMTL *pool;
         NuMtlInitExPS(buffer);
         PCMaterialPoolCount = material_count;
         pool = (NUMTL *)((buffer->addr + 15u) & ~15u);
-        buffer->addr = ((buffer->addr + 15u) & ~15u) + material_count * sizeof(PC_MATERIAL_CREATE_VIEW);
+        buffer->addr = ((buffer->addr + 15u) & ~15u) + material_count * sizeof(NUMTL);
         PCMaterialPool = pool;
-        memset(pool, 0, material_count * sizeof(PC_MATERIAL_CREATE_VIEW));
+        memset(pool, 0, material_count * sizeof(NUMTL));
         numtl_defaultmtl3d = NuMtlCreatePoolPC(1, numtl_renderplane, 1);
         numtl_defaultmtl2d = NuMtlCreatePoolPC(1, numtl_renderplane, 0);
         memset(&desc2d, 0, sizeof(desc2d));
         desc2d.default_scale = 1.0f;
         desc2d.vertex_format |= 0x40101;
-        desc2d.material_flags |= 0x1000;
+        desc2d.layer_flags |= 0x1000;
         desc2d.flags = 0x1000;
-        desc2d.diffuse_map_id = 0;
-        desc2d.packed_diffuse_colour = 0xffffffff;
+        desc2d.diffuse_map_ids[0] = 0;
+        desc2d.diffuse_colours[0] = 0xffffffff;
         memset(&desc3d, 0, sizeof(desc3d));
-        desc3d.material_flags |= 0x1000;
+        desc3d.layer_flags |= 0x1000;
         desc3d.default_scale = 1.0f;
         desc3d.vertex_format |= 0x101;
         desc3d.flags = 0x1000;
-        desc3d.diffuse_map_id = 0;
-        desc3d.packed_diffuse_colour = 0xffffffff;
-        NuMtlSetShaderDescPS(numtl_defaultmtl2d, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&desc2d);
-        NuMtlSetShaderDescPS(numtl_defaultmtl3d, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&desc3d);
-        material = (PC_MATERIAL_CREATE_VIEW *)numtl_defaultmtl2d;
+        desc3d.diffuse_map_ids[0] = 0;
+        desc3d.diffuse_colours[0] = 0xffffffff;
+        NuMtlSetShaderDescPS(numtl_defaultmtl2d, &desc2d);
+        NuMtlSetShaderDescPS(numtl_defaultmtl3d, &desc3d);
+        material = numtl_defaultmtl2d;
         NuMtlUpdatePS(numtl_defaultmtl2d);
         ++material->version;
-        material = (PC_MATERIAL_CREATE_VIEW *)numtl_defaultmtl3d;
+        material = numtl_defaultmtl3d;
         NuMtlUpdatePS(numtl_defaultmtl3d);
         ++material->version;
     }
@@ -8570,32 +8505,29 @@ extern "C" {
     }
 
     i32 NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
-        PC_MATERIAL_CREATE_SHADER description;
+        NUSHADERMTLDESC description;
         FONT_LOAD_READER *reader = (FONT_LOAD_READER *)font;
         NUQFNT_RENDER_DATA *platform;
         font->material = NuMtlCreate(1);
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.x = 1.0f;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.y = 1.0f;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->diffuse.z = 1.0f;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
-            (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x1000U) | 0x2000U;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0xc000U;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->opacity = 1.0f;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes = (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~14U) | 1U;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes |= 0x40000U;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->texture_id = (i16)texture_id;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
-            (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x200U) | 0x100U;
-        ((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes =
-            (((PC_MATERIAL_CREATE_VIEW *)font->material)->attributes & ~0x800U) | 0x400U;
+        font->material->diffuse_r = 1.0f;
+        font->material->diffuse_g = 1.0f;
+        font->material->diffuse_b = 1.0f;
+        font->material->attribs.word = (font->material->attribs.word & ~0x1000U) | 0x2000U;
+        font->material->attribs.word |= 0xc000U;
+        font->material->opacity = 1.0f;
+        font->material->attribs.word = (font->material->attribs.word & ~14U) | 1U;
+        font->material->attribs.word |= 0x40000U;
+        font->material->texture_id = (i16)texture_id;
+        font->material->attribs.word = (font->material->attribs.word & ~0x200U) | 0x100U;
+        font->material->attribs.word = (font->material->attribs.word & ~0x800U) | 0x400U;
         memset(&description, 0, sizeof(description));
         description.default_scale = 1.0f;
-        description.material_flags |= 0x1000;
+        description.layer_flags |= 0x1000;
         description.flags = 0x1000;
-        description.diffuse_map_id = texture_id;
-        description.packed_diffuse_colour = 0xffffffff;
+        description.diffuse_map_ids[0] = texture_id;
+        description.diffuse_colours[0] = 0xffffffff;
         description.vertex_format = (description.vertex_format & ~0x3000U) | 0x40901U;
-        NuMtlSetShaderDescPS(font->material, (const struct PC_MATERIAL_SHADER_DESC_VIEW *)&description);
+        NuMtlSetShaderDescPS(font->material, &description);
         NuMtlUpdate(font->material);
         platform = (NUQFNT_RENDER_DATA *)((buffer->addr + 15) & ~15U);
         reader->platform_data = platform;
@@ -8629,7 +8561,7 @@ extern "C" {
         f32 clear_bottom;
         f32 mask_right;
         f32 mask_bottom;
-        ((PC_SCENE_MTL_VIEW *)RendererAlphaMaskMaterial)->texture_id = (i16)texture;
+        RendererAlphaMaskMaterial->texture_id = (i16)texture;
         NuMtlUpdate(RendererAlphaMaskMaterial);
         NuRndrBeginScene(1);
         ++NuPrimCSPos;
@@ -9084,7 +9016,7 @@ extern "C" {
         material->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
         NuTimeBar_FrameOutMtl = material;
         NuMtlUpdatePS(material);
-        ((PC_SCENE_MTL_VIEW *)material)->version += 1;
+        material->version += 1;
         NuTimeBar_Initialised = 1;
     }
 
@@ -10150,14 +10082,6 @@ extern "C" {
 #undef CLIP_MARK_MATERIALS
 }
 
-typedef struct PC_CLONE_MATERIAL_VIEW { // size 0x2c4
-    u8 unknown_0000[0x3c];              // 0x000
-    NUDISPLAYLIST *display_list;        // 0x03c
-    u8 unknown_0040[0x280];             // 0x040
-    u16 version;                        // 0x2c0
-    u8 unknown_02c2[2];                 // 0x2c2
-} PC_CLONE_MATERIAL_VIEW;
-
 typedef struct PC_CLONE_ANIMATION_VIEW { // size 0x10
     NUDISPLAY_LIST *scene;               // 0x0
     u8 unknown_0004[8];                  // 0x4
@@ -10172,14 +10096,14 @@ typedef struct PC_CLONE_SORT_SELF_VIEW { // size 0x24
 
 #define CLONE_ALIGN(buffer, alignment) (((buffer)->addr + (alignment) - 1) & ~((alignment) - 1u))
 #define CLONE_ITEMS(scene) (scene)->items
-#define CLONE_MATERIAL(scene, index) reinterpret_cast<PC_CLONE_MATERIAL_VIEW *>((scene)->display_materials[index])
+#define CLONE_MATERIAL(scene, index) (scene)->display_materials[index]
 
 extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *buffer) {
     NUDISPLAY_LIST *scene;
     NUDISPLAYLIST *first_list;
     NURNDRLIBSTATE *states;
     NUDISPLAYLISTITEM *heads;
-    PC_CLONE_MATERIAL_VIEW *materials;
+    NUMTL *materials;
     i32 i;
     i32 j;
     i32 clip_bytes;
@@ -10243,20 +10167,20 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
             head->id = NUDLISTITEM_JUMP;
         }
     }
-    materials = reinterpret_cast<PC_CLONE_MATERIAL_VIEW *>(CLONE_ALIGN(buffer, 4));
+    materials = reinterpret_cast<NUMTL *>(CLONE_ALIGN(buffer, 4));
     buffer->addr = CLONE_ALIGN(buffer, 4);
     buffer->addr += source->material_count * sizeof(*materials);
     scene->display_materials = reinterpret_cast<NUMTL **>(CLONE_ALIGN(buffer, 4));
     buffer->addr = CLONE_ALIGN(buffer, 4);
     buffer->addr += source->material_count * sizeof(*scene->display_materials);
     for (i = 0; i < static_cast<i32>(source->material_count); ++i) {
-        scene->display_materials[i] = reinterpret_cast<NUMTL *>(&materials[i]);
+        scene->display_materials[i] = &materials[i];
         *CLONE_MATERIAL(scene, i) = *CLONE_MATERIAL(source, i);
         CLONE_MATERIAL(scene, i)->display_list = &first_list[CLONE_MATERIAL(source, i)->display_list - source->material_lists[0]];
         {
             NUMTL *material = scene->display_materials[i];
             NuMtlUpdatePS(material);
-            ++reinterpret_cast<PC_CLONE_MATERIAL_VIEW *>(material)->version;
+            ++material->version;
         }
     }
     scene->sort_pris = reinterpret_cast<NUSORTPRI *>(CLONE_ALIGN(buffer, 4));
@@ -10316,24 +10240,6 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
     NuThreadCriticalSectionEnd(nudlist_field_fc4);
     return scene;
 }
-
-typedef struct PC_SPECIAL_RENDER_MATERIAL {  // size 0x26c
-    u8 unknown_0000[0x30];                   // 0x000
-    struct PC_SPECIAL_RENDER_MATERIAL *next; // 0x030
-    u8 unknown_0034[8];                      // 0x034
-    NUDISPLAYLIST *display_list;             // 0x03c
-    u32 attributes;                          // 0x040
-    u8 unknown_0044[0x56];                   // 0x044
-    u8 override_slot;                        // 0x09a
-    u8 unknown_009b[0x19];                   // 0x09b
-    u32 shader_flags;                        // 0x0b4
-    u8 unknown_00b8[0x40];                   // 0x0b8
-    u8 colour[3];                            // 0x0f8
-    u8 unknown_00fb[0xf5];                   // 0x0fb
-    u32 vertex_format;                       // 0x1f0
-    u8 unknown_01f4[0x74];                   // 0x1f4
-    u8 shadow_set;                           // 0x268
-} PC_SPECIAL_RENDER_MATERIAL;
 
 typedef union PC_SPECIAL_RENDER_SPECIAL { // size 0xd0
     NUDISPLAY_SPECIAL common;
@@ -10457,12 +10363,12 @@ extern "C" {
         DisplayListSetAlphaPS(output[0], output[1], alpha);
     }
 
-    static void DisplayListProcessSpecialItemPC(PC_SPECIAL_RENDER_MATERIAL *material, NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry,
-                                                i32 index, NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet, NUMTX *skin,
-                                                void *weights, f32 alpha, i32 shadow) {
+    static void DisplayListProcessSpecialItemPC(NUMTL *material, NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry, i32 index,
+                                                NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet, NUMTX *skin, void *weights,
+                                                f32 alpha, i32 shadow) {
         if (geometry->type != NUDLIST_FACEON) {
             if (skin == NULL) {
-                if ((material->shader_flags & 0x80000000u) != 0 && index > 1 &&
+                if ((material->shader.flags & 0x80000000u) != 0 && index > 1 &&
                     (geometry[-2].type == NUDLIST_LIGHTMAP || geometry[-2].type == 0xae || geometry[-2].type == 0xaf)) {
                     DisplayListProcessLightmappedPC(list, geometry, output, matrix, packet, alpha);
                 } else {
@@ -10570,8 +10476,7 @@ extern "C" {
         }
         transform_packet = NULL;
         for (u32 i = 0; i < static_cast<u32>(object->material_count); ++i) {
-            PC_SPECIAL_RENDER_MATERIAL *material =
-                reinterpret_cast<PC_SPECIAL_RENDER_MATERIAL *>(scene->display_materials[object->material_ids[i]]);
+            NUMTL *material = scene->display_materials[object->material_ids[i]];
             NUMTL *replacement;
             if (PCSpecialForcedMaterialTable != NULL && material->override_slot != 0) {
                 replacement = PCSpecialForcedMaterialTable[material->override_slot];
@@ -10579,20 +10484,20 @@ extern "C" {
                 replacement = PCSpecialForcedMaterial;
             }
             if (replacement != NULL) {
-                PC_SPECIAL_RENDER_MATERIAL *replacement_view = reinterpret_cast<PC_SPECIAL_RENDER_MATERIAL *>(replacement);
-                if (material->vertex_format != replacement_view->vertex_format) {
-                    material = reinterpret_cast<PC_SPECIAL_RENDER_MATERIAL *>(
-                        NuMtlFindVariantMtl(reinterpret_cast<NUMTL *>(material), replacement));
+                NUMTL *replacement_view = replacement;
+                if (material->shader.vertex_format != replacement_view->shader.vertex_format) {
+                    material = NuMtlFindVariantMtl(material, replacement);
                 } else {
                     material = replacement_view;
                 }
             }
             for (; material != NULL; material = material->next) {
                 if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_1_1) {
-                    if (material->colour[0] != 255 && material->colour[0] + material->colour[1] + material->colour[2] != 0) {
+                    if (material->shader.colour[0] != 255 &&
+                        material->shader.colour[0] + material->shader.colour[1] + material->shader.colour[2] != 0) {
                         continue;
                     }
-                } else if (material->colour[0] == 255) {
+                } else if (material->shader.colour[0] == 255) {
                     continue;
                 }
                 if (clip != 0) {
@@ -10601,7 +10506,7 @@ extern "C" {
                     u8 *used = (list->scene->render_flags & 0x8000) != 0 ? list->scene->material_used[1] : list->scene->material_used[0];
                     used[list->material_id / 8] |= static_cast<u8>(1u << (list->material_id % 8));
                     RndrStateSetConstAlphaTint(nuspecial_const_alpha_enabled, nuspecial_const_tint_enabled, nuspecial_const_alpha,
-                                               &nuspecial_const_tint, reinterpret_cast<NUMTL *>(material));
+                                               &nuspecial_const_tint, material);
                     DisplayListUpdateRenderState(list, &render_state);
                     i32 shadow_caster = (scene->visibility_flags[special->common.instance_ix] & 0x20) != 0 && PCSpecialReflectionPass == 0;
                     i32 index = object->item_indices[i];
@@ -10609,7 +10514,7 @@ extern "C" {
                     DisplayListProcessSpecialItemPC(material, list, geometry, index, first_and_last, matrix, &transform_packet,
                                                     skin_matrices, blend_values, alpha, shadow_caster);
                 }
-                u32 alpha_mode = (material->attributes >> 14) & 3;
+                u32 alpha_mode = (material->attribs.word >> 14) & 3;
                 if (shadow_clip != 0 && PCSpecialReflectionPass == 0 && alpha_mode != 1 && alpha_mode != 3) {
                     for (i32 light_index = 0; light_index < PCSpecialActiveShadowLights; ++light_index) {
                         PC_SPECIAL_SHADOW_LIGHT *light = PCSpecialShadowLights[light_index];
@@ -10618,8 +10523,8 @@ extern "C" {
                             if (((visible >> (set & 31)) & 1) == 0) {
                                 continue;
                             }
-                            NUDISPLAYLIST *list = material->shadow_set > 0 ? &light->render_sets[set].shadow_lists[1]
-                                                                           : &light->render_sets[set].shadow_lists[0];
+                            NUDISPLAYLIST *list = material->shader.shadow_set > 0 ? &light->render_sets[set].shadow_lists[1]
+                                                                                  : &light->render_sets[set].shadow_lists[0];
                             list->scene = scene;
                             NuDisplayListLinkItems(list, 1);
                             NUDISPLAYLISTITEM *item = list->items;
@@ -10689,11 +10594,6 @@ extern "C" {
     }
 }
 
-typedef struct display_material_allocation_s { // size 0x2c4
-    NUMTL base;                                // 0x000
-    u8 unknown_tail[0x2c4 - sizeof(NUMTL)];    // 0x09c
-} DISPLAY_MATERIAL_ALLOCATION;
-
 extern "C" void NuDisplayListCreate(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARIPTR end, i32 item_count, i32 material_count, i32 unused5,
                                     i32 unused6, i32 sort_count, i32 unused8, i32 allocate_materials) {
     i32 i;
@@ -10717,10 +10617,10 @@ extern "C" void NuDisplayListCreate(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARI
     memset(scene->display_materials, 0, material_count * sizeof(NUMTL *));
     memset(scene->material_lists, 0, material_count * sizeof(NUDISPLAYLIST *));
     if (allocate_materials != 0) {
-        DISPLAY_MATERIAL_ALLOCATION *materials;
-        DLIST_ALLOC(materials, DISPLAY_MATERIAL_ALLOCATION *, material_count * sizeof(*materials));
+        NUMTL *materials;
+        DLIST_ALLOC(materials, NUMTL *, material_count * sizeof(*materials));
         for (i = 0; i < material_count; ++i) {
-            scene->display_materials[i] = &materials[i].base;
+            scene->display_materials[i] = &materials[i];
         }
     }
     DLIST_ALLOC(lists, NUDISPLAYLIST *, material_count * sizeof(*lists));
@@ -11034,27 +10934,6 @@ extern "C" void fun_005f5a00(void) {
     dat_00974020 = 1;
 }
 
-typedef struct FRAME_MTL_ANIM_DESC { // size 0x14
-    u8 u_mode;                       // 0x00
-    u8 v_mode;                       // 0x01
-    u8 reserved02[2];                // 0x02
-    f32 u_amplitude;                 // 0x04
-    f32 v_amplitude;                 // 0x08
-    f32 u_frequency;                 // 0x0c
-    f32 v_frequency;                 // 0x10
-} FRAME_MTL_ANIM_DESC;
-
-typedef struct FRAME_MTL_ANIM {          // size 0x248
-    u8 reserved00[0x7b];                 // 0x000
-    u8 disable_u_animation;              // 0x07b
-    u8 disable_v_animation;              // 0x07c
-    u8 reserved7d[0x143];                // 0x07d
-    i32 texture_animation_data[4];       // 0x1c0
-    f32 texture_animation_offsets[4][2]; // 0x1d0
-    u8 reserved1f0[8];                   // 0x1f0
-    FRAME_MTL_ANIM_DESC animation[4];    // 0x1f8
-} FRAME_MTL_ANIM;
-
 typedef struct FRAME_MTL_ANIM_SET {  // size 0x10
     NUDISPLAY_LIST *scene;           // 0x0
     i32 material_count;              // 0x4
@@ -11081,25 +10960,25 @@ void NuDisplayListAnimateMtls(f32 frame_time) {
         i32 index;
         NUDISPLAY_LIST *scene = set->scene;
         for (index = 0; index < set->material_count; ++index) {
-            FRAME_MTL_ANIM *material = (FRAME_MTL_ANIM *)scene->display_materials[set->material_indices[index]];
+            NUMTL *material = scene->display_materials[set->material_indices[index]];
             i32 layer;
             if (material->disable_u_animation == 1 || material->disable_v_animation == 1) {
                 continue;
             }
             for (layer = 0; layer < 4; ++layer) {
-                FRAME_MTL_ANIM_DESC *animation;
+                NUMTLUVANIM *animation;
                 f32 u;
                 f32 v;
-                if (material->texture_animation_data[layer] == -1) {
+                if (material->shader.animation_ids[layer] == -1) {
                     continue;
                 }
-                animation = &material->animation[layer];
+                animation = &material->shader.uv_animations[layer];
                 u = 0.0f;
                 switch (animation->u_mode) {
                     case 2:
-                        material->texture_animation_offsets[layer][0] += frame_time * animation->u_frequency;
-                        material->texture_animation_offsets[layer][0] -= NuFloor(material->texture_animation_offsets[layer][0]);
-                        u = material->texture_animation_offsets[layer][0];
+                        material->shader.animation_offsets[layer][0] += frame_time * animation->u_frequency;
+                        material->shader.animation_offsets[layer][0] -= NuFloor(material->shader.animation_offsets[layer][0]);
+                        u = material->shader.animation_offsets[layer][0];
                         break;
                     case 3:
                         u = NuTrigTable[((i32)(animation->u_frequency * FrameMaterialAnimationTime * 65536.0) >> 1) & 0x7fff] *
@@ -11113,9 +10992,9 @@ void NuDisplayListAnimateMtls(f32 frame_time) {
                 v = 0.0f;
                 switch (animation->v_mode) {
                     case 2:
-                        material->texture_animation_offsets[layer][1] += frame_time * animation->v_frequency;
-                        material->texture_animation_offsets[layer][1] -= NuFloor(material->texture_animation_offsets[layer][1]);
-                        v = material->texture_animation_offsets[layer][1];
+                        material->shader.animation_offsets[layer][1] += frame_time * animation->v_frequency;
+                        material->shader.animation_offsets[layer][1] -= NuFloor(material->shader.animation_offsets[layer][1]);
+                        v = material->shader.animation_offsets[layer][1];
                         break;
                     case 3:
                         v = NuTrigTable[((i32)(animation->v_frequency * FrameMaterialAnimationTime * 65536.0) >> 1) & 0x7fff] *
@@ -11126,7 +11005,7 @@ void NuDisplayListAnimateMtls(f32 frame_time) {
                             animation->v_amplitude;
                         break;
                 }
-                NuMtlSetUVOffsetPS((NUMTL *)material, layer, u, v);
+                NuMtlSetUVOffsetPS(material, layer, u, v);
             }
         }
     }
@@ -11269,8 +11148,7 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
     NUDISPLAY_LIST *scene = handle->scene->display_list;
     scene->render_flags |= 2;
     for (u32 material = 0; material < static_cast<u32>(object->material_count); ++material) {
-        PC_SPECIAL_RENDER_MATERIAL *material_view =
-            reinterpret_cast<PC_SPECIAL_RENDER_MATERIAL *>(scene->display_materials[object->material_ids[material]]);
+        NUMTL *material_view = scene->display_materials[object->material_ids[material]];
         NUDISPLAYLIST *list = material_view->display_list;
         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] |= 1 << (list->material_id % 8);
         DisplayListUpdateRenderState(list, &render_state);
@@ -13847,8 +13725,8 @@ extern "C" void NuDynamicLightLookAt(PC_SPECIAL_SHADOW_LIGHT *light, NUVEC *eye,
     light->LookAt(eye, target, up);
 }
 
-extern "C" NUDISPLAYLIST *NuDynamicLightGetDList(PC_SPECIAL_SHADOW_LIGHT *light, i32 render_set, PC_SPECIAL_RENDER_MATERIAL *material) {
-    if (material->shadow_set > 0) {
+extern "C" NUDISPLAYLIST *NuDynamicLightGetDList(PC_SPECIAL_SHADOW_LIGHT *light, i32 render_set, NUMTL *material) {
+    if (material->shader.shadow_set > 0) {
         return &light->render_sets[render_set].shadow_lists[1];
     }
     return &light->render_sets[render_set].shadow_lists[0];
@@ -13911,11 +13789,6 @@ struct SHADOW_PRODUCER_BOUNDS { // size 0x20
     NUVEC4 extent;              // 0x10
 };
 
-struct SHADOW_PRODUCER_MATERIAL { // size 0x269
-    u8 unknown_000[0x268];        // 0x000
-    u8 alternate;                 // 0x268
-};
-
 /* The local helper's compiler ABI uses ECX, EDX and three caller-clean stack words. */
 static i32 ShadowSegmentClip(const NUVEC *point, const NUVEC *end, const NUVEC *start, f32 radius0, f32 radius1) {
     __declspec(align(16)) NUVEC segment = {end->x - start->x, end->y - start->y, end->z - start->z};
@@ -13939,7 +13812,7 @@ static i32 ShadowSegmentClip(const NUVEC *point, const NUVEC *end, const NUVEC *
 }
 
 NUDISPLAYLIST *PC_SPECIAL_SHADOW_LIGHT::fun_005c2ee0(i32 set, NUMTL *material) {
-    if (reinterpret_cast<SHADOW_PRODUCER_MATERIAL *>(material)->alternate > 0) {
+    if (material->shader.shadow_set > 0) {
         return &render_sets[set].shadow_lists[1];
     }
     return &render_sets[set].shadow_lists[0];
@@ -13981,9 +13854,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                         for (i32 material_index = 0; material_index < object->material_count; ++material_index) {
                             NUMTL *material = scene->materials[object->material_ids[material_index]];
                             NURNDRLIGHTRECORD &record = render_sets[set];
-                            NUDISPLAYLIST *list = reinterpret_cast<SHADOW_PRODUCER_MATERIAL *>(material)->alternate > 0
-                                                      ? &record.shadow_lists[1]
-                                                      : &record.shadow_lists[0];
+                            NUDISPLAYLIST *list = material->shader.shadow_set > 0 ? &record.shadow_lists[1] : &record.shadow_lists[0];
                             i32 variant = list - record.shadow_lists;
                             if (record.producer_cursor[variant] >= record.producer_last[variant]) {
                                 if (record.producer_cursor[variant] > record.producer_last[variant]) {
@@ -14595,26 +14466,26 @@ extern "C" {
     void NuGScnFixupTIDs(NUGSCN *scene) {
         i32 i;
         for (i = 0; i < scene->material_count; ++i) {
-            PC_SCENE_MTL_VIEW *material = (PC_SCENE_MTL_VIEW *)scene->materials[i];
-            ((PC_SCENE_MTL_VIEW *)scene->materials[i])->texture_id = (i16)NuGScnFixupTID(scene, material->texture_id);
-            material->specular_map_tid = NuGScnFixupTID(scene, material->specular_map_tid);
-            material->lightmap_tex_id[0] = NuGScnFixupTID(scene, material->lightmap_tex_id[0]);
-            material->normal_map_tid = NuGScnFixupTID(scene, material->normal_map_tid);
-            material->lightmap_tex_id[1] = NuGScnFixupTID(scene, material->lightmap_tex_id[1]);
-            material->envmap_cubic_tid = NuGScnFixupTID(scene, material->envmap_cubic_tid);
-            material->unknown_texture_24c = NuGScnFixupTID(scene, material->unknown_texture_24c);
-            material->shine_map_tid = NuGScnFixupTID(scene, material->shine_map_tid);
-            material->diffuse_map_tex_id[0] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[0]);
-            material->diffuse_map_tex_id[1] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[1]);
-            material->diffuse_map_tex_id[2] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[2]);
-            material->diffuse_map_tex_id[3] = NuGScnFixupTID(scene, material->diffuse_map_tex_id[3]);
-            material->vtf_height_map_tid = NuGScnFixupTID(scene, material->vtf_height_map_tid);
-            material->vtf_normal_map_tid = NuGScnFixupTID(scene, material->vtf_normal_map_tid);
-            material->unknown_texture_298 = NuGScnFixupTID(scene, material->unknown_texture_298);
-            material->unknown_texture_29c = NuGScnFixupTID(scene, material->unknown_texture_29c);
+            NUMTL *material = scene->materials[i];
+            scene->materials[i]->texture_id = (i16)NuGScnFixupTID(scene, material->texture_id);
+            material->shader.specular_map_tid = NuGScnFixupTID(scene, material->shader.specular_map_tid);
+            material->shader.lightmap_tids[0] = NuGScnFixupTID(scene, material->shader.lightmap_tids[0]);
+            material->shader.normal_map_tid = NuGScnFixupTID(scene, material->shader.normal_map_tid);
+            material->shader.lightmap_tids[1] = NuGScnFixupTID(scene, material->shader.lightmap_tids[1]);
+            material->shader.envmap_cubic_tid = NuGScnFixupTID(scene, material->shader.envmap_cubic_tid);
+            material->shader.unknown_tid_198 = NuGScnFixupTID(scene, material->shader.unknown_tid_198);
+            material->shader.shine_map_tid = NuGScnFixupTID(scene, material->shader.shine_map_tid);
+            material->shader.diffuse_map_ids[0] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[0]);
+            material->shader.diffuse_map_ids[1] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[1]);
+            material->shader.diffuse_map_ids[2] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[2]);
+            material->shader.diffuse_map_ids[3] = NuGScnFixupTID(scene, material->shader.diffuse_map_ids[3]);
+            material->shader.vtf_height_map_tid = NuGScnFixupTID(scene, material->shader.vtf_height_map_tid);
+            material->shader.vtf_normal_map_tid = NuGScnFixupTID(scene, material->shader.vtf_normal_map_tid);
+            material->shader.extra_texture = NuGScnFixupTID(scene, material->shader.extra_texture);
+            material->shader.environment_texture = NuGScnFixupTID(scene, material->shader.environment_texture);
             ((SCENE_MATERIAL_FLAGS *)scene->materials[i])->flags &= ~0x400000u;
-            material = (PC_SCENE_MTL_VIEW *)scene->materials[i];
-            NuMtlUpdatePS((NUMTL *)material);
+            material = scene->materials[i];
+            NuMtlUpdatePS(material);
             ++material->version;
         }
         NuGScnFixupTIDsPS(scene);
@@ -14669,27 +14540,27 @@ extern "C" {
     void NuGScnRestoreTIDs(NUGSCN *scene) {
         i32 i;
         for (i = 0; i < scene->material_count; ++i) {
-            PC_SCENE_MTL_VIEW *material;
+            NUMTL *material;
             if (scene->texture_count == 0) {
                 continue;
             }
-            material = (PC_SCENE_MTL_VIEW *)scene->materials[i];
-            ((PC_SCENE_MTL_VIEW *)scene->materials[i])->texture_id = (i16)NuGScnRestoreTID(scene, material->texture_id);
-            material->specular_map_tid = NuGScnRestoreTID(scene, material->specular_map_tid);
-            material->lightmap_tex_id[0] = NuGScnRestoreTID(scene, material->lightmap_tex_id[0]);
-            material->normal_map_tid = NuGScnRestoreTID(scene, material->normal_map_tid);
-            material->lightmap_tex_id[1] = NuGScnRestoreTID(scene, material->lightmap_tex_id[1]);
-            material->envmap_cubic_tid = NuGScnRestoreTID(scene, material->envmap_cubic_tid);
-            material->unknown_texture_24c = NuGScnRestoreTID(scene, material->unknown_texture_24c);
-            material->shine_map_tid = NuGScnRestoreTID(scene, material->shine_map_tid);
-            material->diffuse_map_tex_id[0] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[0]);
-            material->diffuse_map_tex_id[1] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[1]);
-            material->diffuse_map_tex_id[2] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[2]);
-            material->diffuse_map_tex_id[3] = NuGScnRestoreTID(scene, material->diffuse_map_tex_id[3]);
-            material->vtf_height_map_tid = NuGScnRestoreTID(scene, material->vtf_height_map_tid);
-            material->vtf_normal_map_tid = NuGScnRestoreTID(scene, material->vtf_normal_map_tid);
-            material->unknown_texture_298 = NuGScnRestoreTID(scene, material->unknown_texture_298);
-            material->unknown_texture_29c = NuGScnRestoreTID(scene, material->unknown_texture_29c);
+            material = scene->materials[i];
+            scene->materials[i]->texture_id = (i16)NuGScnRestoreTID(scene, material->texture_id);
+            material->shader.specular_map_tid = NuGScnRestoreTID(scene, material->shader.specular_map_tid);
+            material->shader.lightmap_tids[0] = NuGScnRestoreTID(scene, material->shader.lightmap_tids[0]);
+            material->shader.normal_map_tid = NuGScnRestoreTID(scene, material->shader.normal_map_tid);
+            material->shader.lightmap_tids[1] = NuGScnRestoreTID(scene, material->shader.lightmap_tids[1]);
+            material->shader.envmap_cubic_tid = NuGScnRestoreTID(scene, material->shader.envmap_cubic_tid);
+            material->shader.unknown_tid_198 = NuGScnRestoreTID(scene, material->shader.unknown_tid_198);
+            material->shader.shine_map_tid = NuGScnRestoreTID(scene, material->shader.shine_map_tid);
+            material->shader.diffuse_map_ids[0] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[0]);
+            material->shader.diffuse_map_ids[1] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[1]);
+            material->shader.diffuse_map_ids[2] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[2]);
+            material->shader.diffuse_map_ids[3] = NuGScnRestoreTID(scene, material->shader.diffuse_map_ids[3]);
+            material->shader.vtf_height_map_tid = NuGScnRestoreTID(scene, material->shader.vtf_height_map_tid);
+            material->shader.vtf_normal_map_tid = NuGScnRestoreTID(scene, material->shader.vtf_normal_map_tid);
+            material->shader.extra_texture = NuGScnRestoreTID(scene, material->shader.extra_texture);
+            material->shader.environment_texture = NuGScnRestoreTID(scene, material->shader.environment_texture);
         }
         NuGScnRestoreTIDsPS(scene);
     }

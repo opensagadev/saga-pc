@@ -19,7 +19,7 @@
 #include "nu2api/numath/nuvec.h"
 
 i32 ui_bgmtl = 0;
-extern "C" struct PC_SCENE_MTL_VIEW *uimtls[5];
+extern "C" NUMTL *uimtls[5];
 
 static void EduiPrintAlignedText(void *font, i32 x, i32 y, i32 alignment, char *format, ...) {
     if (edui_donotdraw == 0) {
@@ -67,7 +67,7 @@ i32 eduicbRenderSel(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32
     item->x = x;
     item->y = y;
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -96,7 +96,7 @@ i32 eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i
     item->x = x;
     item->y = y;
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -122,7 +122,7 @@ i32 eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i
         points[6] = right;
         points[7] = top;
         if (edui_donotdraw == 0) {
-            NuRndrTriStrip2di(points, NULL, 4, item->colours[0], (NUMTL *)uimtls[0]);
+            NuRndrTriStrip2di(points, NULL, 4, item->colours[0], uimtls[0]);
         }
     } else {
         i32 quarter_x = (left + ((left + right) >> 1)) >> 1;
@@ -138,7 +138,7 @@ i32 eduicbRenderCheck(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i
         points[8] = left;
         points[9] = middle_y;
         if (edui_donotdraw == 0) {
-            NuRndrLineStrip2di(points, NULL, 5, item->colours[0], (NUMTL *)uimtls[0]);
+            NuRndrLineStrip2di(points, NULL, 5, item->colours[0], uimtls[0]);
         }
     }
     return height;
@@ -154,7 +154,7 @@ i32 eduicbRenderSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, 
     item->x = x;
     item->y = y;
     if (skip_draw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -171,13 +171,13 @@ i32 eduicbRenderSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, 
             i32 bottom = (y + height - 1) << 3;
             i32 marker = (i32)(slider->normalized_value * (width - 2) + (x + 1)) << 4;
             i32 top = y << 3;
-            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
             if (edui_donotdraw == 0) {
                 marker = (i32)(slider->normalized_value * (width - 2) + x) << 4;
-                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
                 if (edui_donotdraw == 0) {
                     marker = (i32)(slider->normalized_value * (width - 2) + (x - 1)) << 4;
-                    NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                    NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
                 }
             }
         }
@@ -195,7 +195,7 @@ i32 eduicbRenderSliderInt(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 
     item->x = x;
     item->y = y;
     if (skip_draw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], (NUMTL *)uimtls[0]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[0]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -213,13 +213,13 @@ i32 eduicbRenderSliderInt(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 
             f32 span = (f32)(width);
             i32 marker = (i32)(span * slider->normalized_value + (x + 1)) << 4;
             i32 top = y << 3;
-            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
             if (edui_donotdraw == 0) {
                 marker = (i32)(span * slider->normalized_value + x) << 4;
-                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
                 if (edui_donotdraw == 0) {
                     marker = (i32)(span * slider->normalized_value + (x - 1)) << 4;
-                    NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                    NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
                 }
             }
         }
@@ -235,7 +235,7 @@ i32 eduicbRenderFilePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y
     if (picker->reserved_54 != 0) {
         i32 centre;
         if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
             if (edui_donotdraw == 0) {
                 NuQFntSet(edui_font);
                 if (edui_donotdraw == 0) {
@@ -250,7 +250,7 @@ i32 eduicbRenderFilePick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y
     } else {
         char formatted[256];
         if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+            NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         }
         NuSPrintf(formatted, picker->format, picker->name);
         if (edui_donotdraw == 0) {
@@ -285,7 +285,7 @@ i32 eduicbRenderColourSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i
     item->x = x;
     item->y = y;
     if (skip_draw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], (NUMTL *)uimtls[0]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[0]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -302,13 +302,13 @@ i32 eduicbRenderColourSlider(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i
         i32 bottom = (y + height - 1) << 3;
         i32 marker = (i32)(slider->base.normalized_value * width + (x + 1)) << 4;
         i32 top = y << 3;
-        NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+        NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
         if (edui_donotdraw == 0) {
             marker = (i32)(slider->base.normalized_value * width + x) << 4;
-            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+            NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
             if (edui_donotdraw == 0) {
                 marker = (i32)(slider->base.normalized_value * width + (x - 1)) << 4;
-                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], (NUMTL *)uimtls[0]);
+                NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
             }
         }
     }
@@ -365,7 +365,7 @@ i32 eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y
     item->x = x;
     item->y = y;
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -397,18 +397,17 @@ i32 eduicbRenderGradPick(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y
         do {
             i32 left = x + (i32)(stage->time * span);
             if (edui_donotdraw == 0) {
-                NuRndrRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, stage->colour,
-                              (NUMTL *)uimtls[0]);
+                NuRndrRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, stage->colour, uimtls[0]);
             }
             if (stage == gradient->selected_stage) {
                 if (edui_donotdraw == 0) {
                     NuRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, 0x80ffffff,
-                                      (NUMTL *)uimtls[EduiSelectionMaterial]);
+                                      uimtls[EduiSelectionMaterial]);
                 }
             } else {
                 if (edui_donotdraw == 0) {
                     NuRndrLineRect2di((left - 2) << 4, ((y + (height >> 1)) << 3) - 16, 80, ((height >> 1) << 3) + 16, 0x80000000,
-                                      (NUMTL *)uimtls[EduiSelectionMaterial]);
+                                      uimtls[EduiSelectionMaterial]);
                 }
             }
             stage = stage->next;
@@ -426,24 +425,24 @@ extern "C" i32 eduicbRenderGreyPick(eduimenu_s *unused_menu, eduiitem_s *item, i
     if (edui_donotdraw == 0) {
         f32 plus_x = (f32)(x + 1);
         i32 marker = (i32)(pick->value * (width - 2) + plus_x) << 4;
-        NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
+        NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, uimtls[0]);
         if (edui_donotdraw == 0) {
             f32 middle_x = (f32)x;
             marker = (i32)(pick->value * (width - 2) + middle_x) << 4;
-            NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
+            NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, uimtls[0]);
             if (edui_donotdraw == 0) {
                 f32 minus_x = (f32)(x - 1);
                 marker = (i32)(pick->value * (width - 2) + minus_x) << 4;
-                NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
+                NuRndrLine2di(marker, y << 3, marker, (y + (height >> 1) - 1) << 3, 0x80ffffff, uimtls[0]);
                 if (edui_donotdraw == 0) {
                     marker = (i32)(pick->value * (width - 2) + plus_x) << 4;
-                    NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000, (NUMTL *)uimtls[0]);
+                    NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000, uimtls[0]);
                     if (edui_donotdraw == 0) {
                         marker = (i32)(pick->value * (width - 2) + middle_x) << 4;
-                        NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000, (NUMTL *)uimtls[0]);
+                        NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000, uimtls[0]);
                         if (edui_donotdraw == 0) {
                             marker = (i32)(pick->value * (width - 2) + minus_x) << 4;
-                            NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000, (NUMTL *)uimtls[0]);
+                            NuRndrLine2di(marker, (y + (height >> 1)) << 3, marker, (y + height - 1) << 3, 0x80000000, uimtls[0]);
                         }
                     }
                 }
@@ -462,7 +461,7 @@ static void EduiDrawGradientSpan(i32 x, i32 y, i32 width, i32 height, u32 first_
     i32 left = (i32)(width * start) + x;
     if (edui_donotdraw == 0) {
         i32 right = (i32)(width * end) + x;
-        NuRndrGradRect2di(left, y << 3, right - left, height << 3, colours, (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrGradRect2di(left, y << 3, right - left, height << 3, colours, uimtls[ui_bgmtl]);
     }
 }
 
@@ -538,7 +537,7 @@ extern "C" i32 eduicbRenderNumber(eduimenu_s *unused_menu, eduiitem_s *item, i32
     item->x = x;
     item->y = y;
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -575,7 +574,7 @@ extern "C" i32 eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *ite
     item->x = x;
     item->y = y;
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -640,9 +639,9 @@ extern "C" i32 eduicbRenderSeparator(eduimenu_s *unused_menu, eduiitem_s *item, 
     item->x = x;
     item->y = y;
     if (skip_draw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, 64, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, 64, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
-            NuRndrLine2di((x + 4) << 4, (y << 3) + 32, ((x + width) << 4) - 64, (y << 3) + 32, (i32)0xff000000, (NUMTL *)uimtls[ui_bgmtl]);
+            NuRndrLine2di((x + 4) << 4, (y << 3) + 32, ((x + width) << 4) - 64, (y << 3) + 32, (i32)0xff000000, uimtls[ui_bgmtl]);
         }
     }
     return 8;
@@ -849,7 +848,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
             EduiAddInteraction((f32)x, (f32)y, (f32)menu->width, (f32)title_height, menu, NULL, cbInteractMenuTitle, 0x40, 0);
         }
         if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, menu->width << 4, title_height << 3, 0x80000000, (NUMTL *)uimtls[ui_bgmtl]);
+            NuRndrRect2di(x << 4, y << 3, menu->width << 4, title_height << 3, 0x80000000, uimtls[ui_bgmtl]);
             if (edui_donotdraw == 0) {
                 NuQFntSet(edui_font);
                 if (edui_donotdraw == 0) {
@@ -869,15 +868,15 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
                 EduiAddInteraction((f32)x, (f32)y, (f32)menu->width, (f32)scroll_height, menu, NULL, cbInteractMenuScrollUp, 0x40, 0);
             }
             if (edui_donotdraw == 0) {
-                NuRndrRect2di(x << 4, y << 3, menu->width << 4, scroll_height << 3, 0x80000000, (NUMTL *)uimtls[ui_bgmtl]);
+                NuRndrRect2di(x << 4, y << 3, menu->width << 4, scroll_height << 3, 0x80000000, uimtls[ui_bgmtl]);
                 if (edui_donotdraw == 0) {
                     i32 centre = (x * 2 + menu->width) << 3;
                     i32 top = (y << 3) + 8;
                     i32 bottom = ((y + scroll_height) << 3) - 16;
-                    NuRndrLine2di(centre, top, centre - ((scroll_height - 2) << 4), bottom, 0x80ffffff, (NUMTL *)uimtls[0]);
+                    NuRndrLine2di(centre, top, centre - ((scroll_height - 2) << 4), bottom, 0x80ffffff, uimtls[0]);
                     if (edui_donotdraw == 0) {
                         centre = (x * 2 + menu->width) << 3;
-                        NuRndrLine2di(centre, top, centre + ((scroll_height - 2) << 4), bottom, 0x80ffffff, (NUMTL *)uimtls[0]);
+                        NuRndrLine2di(centre, top, centre + ((scroll_height - 2) << 4), bottom, 0x80ffffff, uimtls[0]);
                     }
                 }
             }
@@ -912,15 +911,15 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
                 EduiAddInteraction((f32)x, (f32)y, (f32)menu->width, (f32)scroll_height, menu, NULL, cbInteractMenuScrollDown, 0x40, 0);
             }
             if (edui_donotdraw == 0) {
-                NuRndrRect2di(x << 4, y << 3, menu->width << 4, scroll_height << 3, 0x80000000, (NUMTL *)uimtls[ui_bgmtl]);
+                NuRndrRect2di(x << 4, y << 3, menu->width << 4, scroll_height << 3, 0x80000000, uimtls[ui_bgmtl]);
                 if (edui_donotdraw == 0) {
                     i32 bottom = (y + scroll_height - 2) << 3;
                     i32 top = (y << 3) + 8;
                     i32 centre = (x * 2 + menu->width) << 3;
-                    NuRndrLine2di(centre, bottom, centre - ((scroll_height - 2) << 4), top, 0x80ffffff, (NUMTL *)uimtls[0]);
+                    NuRndrLine2di(centre, bottom, centre - ((scroll_height - 2) << 4), top, 0x80ffffff, uimtls[0]);
                     if (edui_donotdraw == 0) {
                         centre = (x * 2 + menu->width) << 3;
-                        NuRndrLine2di(centre, bottom, centre + ((scroll_height - 2) << 4), top, 0x80ffffff, (NUMTL *)uimtls[0]);
+                        NuRndrLine2di(centre, bottom, centre + ((scroll_height - 2) << 4), top, 0x80ffffff, uimtls[0]);
                     }
                 }
             }
@@ -940,12 +939,12 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     if (active_menu == menu) {
         if (edui_donotdraw == 0) {
             NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->unknown_24 + 2) << 4, (menu->unknown_28 << 3) + 16,
-                              eduimenu_selected_outline_colour, (NUMTL *)uimtls[EduiSelectionMaterial]);
+                              eduimenu_selected_outline_colour, uimtls[EduiSelectionMaterial]);
         }
     } else {
         if (edui_donotdraw == 0) {
             NuRndrLineRect2di((menu->x - 1) << 4, (menu->y << 3) - 8, (menu->unknown_24 + 2) << 4, (menu->unknown_28 << 3) + 16,
-                              eduimenu_outline_colour, (NUMTL *)uimtls[EduiSelectionMaterial]);
+                              eduimenu_outline_colour, uimtls[EduiSelectionMaterial]);
         }
     }
     if (menu->child != NULL) {
@@ -1254,7 +1253,7 @@ static void EduiDrawGradientGrid(i32 x, i32 y, i32 width, i32 height, f32 start,
         colours[3].channel[2] = second.channel[2] + (last_second.channel[2] - second.channel[2]) * strip / steps;
         colours[3].channel[3] = second.channel[3] + (last_second.channel[3] - second.channel[3]) * strip / steps;
         if (edui_donotdraw == 0) {
-            NuRndrGradRect2di(left, y + strip * height / steps, right - left, height / steps, &colours[0].word, (NUMTL *)uimtls[ui_bgmtl]);
+            NuRndrGradRect2di(left, y + strip * height / steps, right - left, height / steps, &colours[0].word, uimtls[ui_bgmtl]);
         }
         colours[0] = colours[2];
         colours[1] = colours[3];
@@ -1276,10 +1275,10 @@ extern "C" i32 eduicbRenderColourPick(eduimenu_s *unused_menu, eduiitem_s *item,
         f32 line_height = (f32)main_height;
         f32 line_y = (f32)y;
         NuRndrLine2di(x << 4, (i32)(line_y + (i32)line_height * picker->cursor_y) << 3, ((x + width) << 4) - 16,
-                      (i32)(line_y + line_height * picker->cursor_y) << 3, 0x80ffffff, (NUMTL *)uimtls[0]);
+                      (i32)(line_y + line_height * picker->cursor_y) << 3, 0x80ffffff, uimtls[0]);
         if (edui_donotdraw == 0) {
             i32 hue_x = (i32)(x + width * picker->cursor_x) << 4;
-            NuRndrLine2di(hue_x, y << 3, hue_x, ((y + main_height) << 3) - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+            NuRndrLine2di(hue_x, y << 3, hue_x, ((y + main_height) << 3) - 8, 0x80ffffff, uimtls[0]);
         }
     }
     i32 bar_height = width / 8;
@@ -1296,22 +1295,22 @@ extern "C" i32 eduicbRenderColourPick(eduimenu_s *unused_menu, eduiitem_s *item,
         i32 middle = (y * 2 + (bar_height & ~1)) << 2;
         f32 span = (f32)(width - 2);
         i32 marker = (i32)((f32)(x + 1) + picker->saturation * span) << 4;
-        NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+        NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, uimtls[0]);
         if (edui_donotdraw == 0) {
             marker = (i32)((f32)x + picker->saturation * span) << 4;
-            NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+            NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, uimtls[0]);
             if (edui_donotdraw == 0) {
                 marker = (i32)((f32)(x - 1) + picker->saturation * span) << 4;
-                NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, (NUMTL *)uimtls[0]);
+                NuRndrLine2di(marker, y << 3, marker, middle - 8, 0x80ffffff, uimtls[0]);
                 if (edui_donotdraw == 0) {
                     marker = (i32)((f32)(x + 1) + picker->saturation * span) << 4;
-                    NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000, (NUMTL *)uimtls[0]);
+                    NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000, uimtls[0]);
                     if (edui_donotdraw == 0) {
                         marker = (i32)((f32)x + picker->saturation * span) << 4;
-                        NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000, (NUMTL *)uimtls[0]);
+                        NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000, uimtls[0]);
                         if (edui_donotdraw == 0) {
                             marker = (i32)((f32)(x - 1) + picker->saturation * span) << 4;
-                            NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000, (NUMTL *)uimtls[0]);
+                            NuRndrLine2di(marker, middle, marker, ((y + bar_height) << 3) - 8, 0x80000000, uimtls[0]);
                         }
                     }
                 }
@@ -1488,10 +1487,10 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
             f32 line_width = (f32)width;
             f32 line_y = (f32)y;
             NuRndrLine2di(x << 4, (i32)(line_y + (i32)line_width * point_v[corner]) << 3, ((x + width) << 4) - 16,
-                          (i32)(line_y + line_width * point_v[corner]) << 3, colour, (NUMTL *)uimtls[0]);
+                          (i32)(line_y + line_width * point_v[corner]) << 3, colour, uimtls[0]);
             if (edui_donotdraw == 0) {
                 i32 marker_x = (i32)(x + line_width * point_u[corner]) << 4;
-                NuRndrLine2di(marker_x, y << 3, marker_x, ((y + width) << 3) - 8, colour, (NUMTL *)uimtls[0]);
+                NuRndrLine2di(marker_x, y << 3, marker_x, ((y + width) << 3) - 8, colour, uimtls[0]);
             }
         }
     }
@@ -1500,7 +1499,7 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
     f64 font_height = NuQFntHeight(edui_font) * 0.125;
     i32 baseline = (i32)(font_height + NuQFntBaseline(edui_font));
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -1684,7 +1683,7 @@ extern "C" {
                 i32 current_y = height - (i32)(nugraphGetYatX(graph, fraction * graph->x_extent * graph->x_scale, 2) * fheight);
                 if (edui_donotdraw == 0) {
                     NuRndrLine2di((previous_x + x) << 4, (previous_y + y) << 3, (current_x + x) << 4, (current_y + y) << 3, colour,
-                                  (NUMTL *)uimtls[0]);
+                                  uimtls[0]);
                 }
                 previous_x = current_x;
                 previous_y = current_y;
@@ -1710,7 +1709,7 @@ extern "C" {
                 top = y - (i32)(nugraphGetYatX(graph, t, EduiGraphDebugIterations) * fheight) + height;
                 bottom = y - (i32)(fheight * bound) + height;
                 if (edui_donotdraw == 0) {
-                    NuRndrLine2di(px << 4, top << 3, px << 4, bottom << 3, 0x80000080, (NUMTL *)uimtls[0]);
+                    NuRndrLine2di(px << 4, top << 3, px << 4, bottom << 3, 0x80000080, uimtls[0]);
                 }
             }
         }
@@ -1736,9 +1735,9 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     i32 plot_y = y + 30;
     i32 graph_height = total_height - 60;
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, total_width << 4, total_height << 3, 0x80000000, (NUMTL *)uimtls[0]);
+        NuRndrRect2di(x << 4, y << 3, total_width << 4, total_height << 3, 0x80000000, uimtls[0]);
         if (edui_donotdraw == 0) {
-            NuRndrRect2di(plot_x << 4, plot_y << 3, graph_width << 4, graph_height << 3, 0x80100000, (NUMTL *)uimtls[0]);
+            NuRndrRect2di(plot_x << 4, plot_y << 3, graph_width << 4, graph_height << 3, 0x80100000, uimtls[0]);
         }
     }
     if (picker->graph == NULL) {
@@ -1776,7 +1775,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
             }
             if (edui_donotdraw == 0) {
                 i32 line_x = (i32)(plot_x + tick_offset) << 4;
-                NuRndrLine2di(line_x, plot_y << 3, line_x, ((plot_y + graph_height) << 3) - 8, colour, (NUMTL *)uimtls[0]);
+                NuRndrLine2di(line_x, plot_y << 3, line_x, ((plot_y + graph_height) << 3) - 8, colour, uimtls[0]);
             }
         }
     }
@@ -1799,7 +1798,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
             }
             if (edui_donotdraw == 0) {
                 i32 line_y = (i32)((plot_y + graph_height) - tick_offset) << 3;
-                NuRndrLine2di(plot_x << 4, line_y, (plot_x + graph_width - 1) << 4, line_y, colour, (NUMTL *)uimtls[0]);
+                NuRndrLine2di(plot_x << 4, line_y, (plot_x + graph_width - 1) << 4, line_y, colour, uimtls[0]);
             }
         }
     }
@@ -1817,10 +1816,10 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     }
     if (edui_donotdraw == 0) {
         i32 cursor_line_y = (i32)(plot_y + cursor_y * graph_height) << 3;
-        NuRndrLine2di(plot_x << 4, cursor_line_y, (plot_x + graph_width - 1) << 4, cursor_line_y, cursor_colour, (NUMTL *)uimtls[0]);
+        NuRndrLine2di(plot_x << 4, cursor_line_y, (plot_x + graph_width - 1) << 4, cursor_line_y, cursor_colour, uimtls[0]);
         if (edui_donotdraw == 0) {
             i32 cursor_line_x = (i32)(plot_x + cursor_x * graph_width) << 4;
-            NuRndrLine2di(cursor_line_x, plot_y << 3, cursor_line_x, ((plot_y + graph_height) << 3) - 8, cursor_colour, (NUMTL *)uimtls[0]);
+            NuRndrLine2di(cursor_line_x, plot_y << 3, cursor_line_x, ((plot_y + graph_height) << 3) - 8, cursor_colour, uimtls[0]);
         }
     }
     picker->selected_point = -1;
@@ -1829,9 +1828,9 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
         i32 px = plot_x + (i32)(picker->graph->x[point] * (f32)graph_width);
         i32 py = plot_y - (i32)(picker->graph->y[point] * (f32)graph_height) + graph_height;
         if (edui_donotdraw == 0) {
-            NuRndrLine2di((px - 10) << 4, py << 3, (px + 10) << 4, py << 3, 0x80505050, (NUMTL *)uimtls[0]);
+            NuRndrLine2di((px - 10) << 4, py << 3, (px + 10) << 4, py << 3, 0x80505050, uimtls[0]);
             if (edui_donotdraw == 0) {
-                NuRndrLine2di(px << 4, (py << 3) - 80, px << 4, (py << 3) + 80, 0x80505050, (NUMTL *)uimtls[0]);
+                NuRndrLine2di(px << 4, (py << 3) - 80, px << 4, (py << 3) + 80, 0x80505050, uimtls[0]);
             }
         }
         f32 dx = picker->cursor_x - picker->graph->x[point];
@@ -1852,7 +1851,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
         i32 point = picker->selected_point;
         NuRndrLineRect2di((plot_x + (i32)(picker->graph->x[point] * graph_width) - 6) << 4,
                           (((plot_y + graph_height) - (i32)(picker->graph->y[point] * graph_height)) << 3) - 48, 192, 96, 0x80ffffff,
-                          (NUMTL *)uimtls[EduiSelectionMaterial]);
+                          uimtls[EduiSelectionMaterial]);
     }
     if (show_x_scale_help || show_y_scale_help) {
         if (edui_donotdraw == 0) {
@@ -1874,8 +1873,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
     i32 label_row = y + total_height;
     i32 label_baseline = (((label_height << 3) - (i32)NuQFntHeight(edui_font)) >> 1) + (i32)NuQFntBaseline(edui_font);
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, label_row << 3, total_width << 4, label_height << 3, item->colours[2 + item->highlighted],
-                      (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, label_row << 3, total_width << 4, label_height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {
@@ -2055,11 +2053,11 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
         EduiRenderWidth = MAX(height * 10, width);
         if (picker->keyboard_flags & 2) {
             if (edui_donotdraw == 0) {
-                NuRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 6) << 3, item->colours[2], (NUMTL *)uimtls[ui_bgmtl]);
+                NuRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 6) << 3, item->colours[2], uimtls[ui_bgmtl]);
             }
         } else {
             if (edui_donotdraw == 0) {
-                NuRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 5) << 3, item->colours[2], (NUMTL *)uimtls[ui_bgmtl]);
+                NuRndrRect2di(x << 4, y << 3, EduiRenderWidth << 4, (height * 5) << 3, item->colours[2], uimtls[ui_bgmtl]);
             }
         }
         i32 row;
@@ -2109,7 +2107,7 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
     }
     if (picker->keyboard_flags & 1) {
         if (edui_donotdraw == 0) {
-            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+            NuRndrRect2di(x << 4, y << 3, width << 4, height << 4, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
             if (edui_donotdraw == 0) {
                 NuQFntSet(edui_font);
                 if (edui_donotdraw == 0) {
@@ -2123,7 +2121,7 @@ extern "C" i32 eduicbRenderTextPick(eduimenu_s *unused_menu, eduiitem_s *item, i
         return height * 2;
     }
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
     }
     char formatted[64];
     NuSPrintf(formatted, picker->format, picker->value);
@@ -2294,7 +2292,7 @@ extern "C" i32 eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item,
     item->x = x;
     item->y = y;
     if (edui_donotdraw == 0) {
-        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        NuRndrRect2di(x << 4, y << 3, width << 4, height << 3, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         if (edui_donotdraw == 0) {
             NuQFntSet(edui_font);
             if (edui_donotdraw == 0) {

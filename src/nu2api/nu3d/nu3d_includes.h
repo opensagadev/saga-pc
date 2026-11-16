@@ -230,7 +230,6 @@ extern "C" {
 
     i32 NuSpecialClipTestShadowLights(NUVEC *, NUVEC *, i32);
     /* Forward view remains local to the original material group. */
-    typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
     extern i32 PCMaterialPoolCount;
     extern i32 PCShadowSurfaceSamplingEnabled;
     extern i32 PCSpecialForceMaterialCount;
@@ -1397,8 +1396,8 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct PC_SCENE_MTL_VIEW *pAlphaMask;
-    extern struct PC_SCENE_MTL_VIEW *pZClearMaterial;
+    extern struct numtl_s *pAlphaMask;
+    extern struct numtl_s *pZClearMaterial;
 #ifdef __cplusplus
 }
 #endif

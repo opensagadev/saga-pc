@@ -646,9 +646,9 @@ eduimenu_s *ptlrepeatboxmenu = NULL;
 SFX_RECORD *SfxInfo = 0;
 TERRAIN_POLYGON_INFO TerrPolyInfo = {0};
 NUGSCN *EdppPageScenes[8] = {0};
-struct PC_SCENE_MTL_VIEW *edpp_boxmtl = 0;
+NUMTL *edpp_boxmtl = 0;
 struct eduimenu_s *edpp_active_menu = 0;
-struct PC_SCENE_MTL_VIEW *edpp_mtl = 0;
+NUMTL *edpp_mtl = 0;
 struct eduimenu_s *edptl_damageflag_menu = 0;
 struct eduimenu_s *collmenu = 0;
 struct eduimenu_s *ptlgsortmenu = 0;
@@ -998,7 +998,7 @@ void edppDrawSpheres(DEBRIS_INFO *effect, i32 key_index) {
             range = effect->collision_keys[first + 1].time - effect->collision_keys[first].time;
             radius = delta / range * (effect->collision_keys[first + 1].value - effect->collision_keys[first].value) +
                      effect->collision_keys[first].value;
-            edbitsDrawSphere(&position, radius, 0xffff0000, (NUMTL *)edpp_mtl);
+            edbitsDrawSphere(&position, radius, 0xffff0000, edpp_mtl);
         }
     }
 }
@@ -1058,7 +1058,7 @@ void edppDrawTorus(DEBRIS_INFO *effect, i32 key_index) {
     position.y = debkeydata[key_index].position.y;
     position.z = debkeydata[key_index].position.z;
     edbitsDrawTorus(&position, radius * effect->torus_radius1, radial_extent * effect->torus_radius2,
-                    vertical_extent * effect->torus_radius2, 0xffff0000, (NUMTL *)edpp_mtl);
+                    vertical_extent * effect->torus_radius2, 0xffff0000, edpp_mtl);
 }
 
 #define EDPP_ROTATE()                                                                                                                      \
@@ -1073,7 +1073,7 @@ void edppDrawTorus(DEBRIS_INFO *effect, i32 key_index) {
     line[1].position.z = edpp_cam_pos.z + vector.z;                                                                                        \
     line[0].colour = colour_value;                                                                                                         \
     line[1].colour = colour_value;                                                                                                         \
-    NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
+    NuRndrLine3d(line, edpp_mtl, NULL)
 #define EDPP_DRAW_AXIS()                                                                                                                   \
     EDPP_ROTATE();                                                                                                                         \
     line[0].position.x = edpp_cam_pos.x - vector.x;                                                                                        \
@@ -1084,7 +1084,7 @@ void edppDrawTorus(DEBRIS_INFO *effect, i32 key_index) {
     line[1].position.y = edpp_cam_pos.y;                                                                                                   \
     line[1].position.z = edpp_cam_pos.z;                                                                                                   \
     line[1].colour = 0xffffffff;                                                                                                           \
-    NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL);                                                                                           \
+    NuRndrLine3d(line, edpp_mtl, NULL);                                                                                                    \
     line[0].position.x = edpp_cam_pos.x;                                                                                                   \
     line[0].position.y = edpp_cam_pos.y;                                                                                                   \
     line[0].position.z = edpp_cam_pos.z;                                                                                                   \
@@ -1093,7 +1093,7 @@ void edppDrawTorus(DEBRIS_INFO *effect, i32 key_index) {
     line[1].position.y = edpp_cam_pos.y + vector.y;                                                                                        \
     line[1].position.z = edpp_cam_pos.z + vector.z;                                                                                        \
     line[1].colour = 0xff00ff00;                                                                                                           \
-    NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
+    NuRndrLine3d(line, edpp_mtl, NULL)
 #define EDPP_DRAW_MARK(sx, sy, sz, ex, ey, ez)                                                                                             \
     vector.x = sx;                                                                                                                         \
     vector.y = sy;                                                                                                                         \
@@ -1111,7 +1111,7 @@ void edppDrawTorus(DEBRIS_INFO *effect, i32 key_index) {
     line[1].position.y = edpp_cam_pos.y + vector.y;                                                                                        \
     line[1].position.z = edpp_cam_pos.z + vector.z;                                                                                        \
     line[1].colour = 0xff00ff00;                                                                                                           \
-    NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL)
+    NuRndrLine3d(line, edpp_mtl, NULL)
 
 void edppDrawCursor(void) {
     i32 rotation_z;
@@ -1152,7 +1152,7 @@ void edppDrawCursor(void) {
 
     if (edpp_copy_mode != 0) {
         edbitsDrawCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, edpp_copy_size, edpp_copy_size, edpp_copy_size, 0, 0, 0, 0, 0,
-                       0xffffffff, (NUMTL *)edpp_mtl);
+                       0xffffffff, edpp_mtl);
     } else {
         vector.x = 0.0f;
         vector.y = 0.375f;
@@ -1173,7 +1173,7 @@ void edppDrawCursor(void) {
         line[0].position.y = edpp_cam_pos.y + vector.y;
         line[0].position.z = edpp_cam_pos.z + vector.z;
         line[0].colour = 0xff0000ff;
-        NuRndrLine3d(line, (NUMTL *)edpp_mtl, NULL);
+        NuRndrLine3d(line, edpp_mtl, NULL);
         if (edpp_dpad_mode == 3) {
             vector.x = 0.0f;
             vector.y = 0.25f;
@@ -1190,7 +1190,7 @@ void edppDrawCursor(void) {
                 NuVecRotateY(&vector, &vector, edpp_refroty);
                 EDPP_ROTATE();
                 edbitsDrawCube(edpp_cam_pos.x + vector.x, edpp_cam_pos.y + vector.y, edpp_cam_pos.z + vector.z, 0.25f, 0.0f, 0.25f,
-                               edpp_refrotz, edpp_refroty, 0, rotation_z, rotation_y, 0xffff0000, (NUMTL *)edpp_mtl);
+                               edpp_refrotz, edpp_refroty, 0, rotation_z, rotation_y, 0xffff0000, edpp_mtl);
             }
         }
         if (edpp_dpad_mode == 4) {
@@ -1201,15 +1201,15 @@ void edppDrawCursor(void) {
             NuVecRotateY(&vector, &vector, edpp_facroty);
             EDPP_LINE_FROM_CAM(0xffff0000);
             edbitsDrawBasicCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, 0.25f, 0.25f, 0.0f, edpp_facrotx, edpp_facroty, 0,
-                                0xffff0000, (NUMTL *)edpp_mtl);
+                                0xffff0000, edpp_mtl);
         }
     }
 
-    NuRndrRect2di(0x1680, 0x9b0, 4000, 0x410, 0x80808080, (NUMTL *)edpp_boxmtl);
-    NuRndrRect2di(0x1670, 0x8f0, 0xfc0, 0xc0, 0x80000000, (NUMTL *)edpp_boxmtl);
-    NuRndrLine2di(0x1670, 0x9b0, 0x1670, 0xdc8, 0x80000000, (NUMTL *)edpp_boxmtl);
-    NuRndrLine2di(0x2630, 0x9b0, 0x2630, 0xdc8, 0x80000000, (NUMTL *)edpp_boxmtl);
-    NuRndrLine2di(0x1670, 0xdc8, 0x2630, 0xdc8, 0x80000000, (NUMTL *)edpp_boxmtl);
+    NuRndrRect2di(0x1680, 0x9b0, 4000, 0x410, 0x80808080, edpp_boxmtl);
+    NuRndrRect2di(0x1670, 0x8f0, 0xfc0, 0xc0, 0x80000000, edpp_boxmtl);
+    NuRndrLine2di(0x1670, 0x9b0, 0x1670, 0xdc8, 0x80000000, edpp_boxmtl);
+    NuRndrLine2di(0x2630, 0x9b0, 0x2630, 0xdc8, 0x80000000, edpp_boxmtl);
+    NuRndrLine2di(0x1670, 0xdc8, 0x2630, 0xdc8, 0x80000000, edpp_boxmtl);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
     NuQFntSet(system_qfont);
@@ -1273,7 +1273,7 @@ void edppDrawCursor(void) {
                 if (effect->generator_type == DEBRIS_GENERATOR_NORMAL) {
                     edbitsDrawCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, effect->emitter_random_extent.x,
                                    effect->emitter_random_extent.y, effect->emitter_random_extent.z, edpp_emitrotz, edpp_emitroty,
-                                   edpp_emitrotx, rotation_z, rotation_y, 0xff0000ff, (NUMTL *)edpp_mtl);
+                                   edpp_emitrotx, rotation_z, rotation_y, 0xff0000ff, edpp_mtl);
                     edppDrawSpheres(effect, edpp_ptls[edpp_nearest].instance_id);
                 }
                 edppDrawTorus(effect, edpp_ptls[edpp_nearest].instance_id);
@@ -1762,13 +1762,13 @@ void edppHighlightNearest(void) {
     } else {
         if (edpp_nearest != -1) {
             edbitsDrawCube(edpp_ptls[edpp_nearest].position.x, edpp_ptls[edpp_nearest].position.y, edpp_ptls[edpp_nearest].position.z, 0.5f,
-                           0.5f, 0.5f, 0, 0, 0, 0, 0, 0xffffffff, (NUMTL *)edpp_mtl);
+                           0.5f, 0.5f, 0, 0, 0, 0, 0, 0xffffffff, edpp_mtl);
         }
         if (edpp_showAllPlaced != 0) {
             for (index = 0; index < 512; ++index) {
                 if (edpp_ptls[index].effect_index > 0 && index != edpp_nearest) {
                     edbitsDrawCube(edpp_ptls[index].position.x, edpp_ptls[index].position.y, edpp_ptls[index].position.z, 0.5f, 0.5f, 0.5f,
-                                   0, 0, 0, 0, 0, 0xff000000, (NUMTL *)edpp_mtl);
+                                   0, 0, 0, 0, 0, 0xff000000, edpp_mtl);
                 }
             }
         }
@@ -4217,24 +4217,24 @@ void edptlcbSoundsMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 void edppInit(void) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     edpp_first_time_this_level = 1;
-    edpp_mtl = (PC_SCENE_MTL_VIEW *)NuMtlCreate3D(1);
-    ((NUMTL *)edpp_mtl)->diffuse_r = 0.5f;
-    ((NUMTL *)edpp_mtl)->diffuse_g = 0.5f;
-    ((NUMTL *)edpp_mtl)->diffuse_b = 0.5f;
-    ((NUMTL *)edpp_mtl)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edpp_mtl)->attribs.z_mode = NUMTL_ZMODE_NORMAL;
-    ((NUMTL *)edpp_mtl)->opacity = 1.0f;
-    ((NUMTL *)edpp_mtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edpp_mtl);
-    edpp_boxmtl = (PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)edpp_boxmtl)->diffuse_r = 0.5f;
-    ((NUMTL *)edpp_boxmtl)->diffuse_g = 0.5f;
-    ((NUMTL *)edpp_boxmtl)->diffuse_b = 0.5f;
-    ((NUMTL *)edpp_boxmtl)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edpp_boxmtl)->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)edpp_boxmtl)->opacity = 1.0f;
-    ((NUMTL *)edpp_boxmtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edpp_boxmtl);
+    edpp_mtl = NuMtlCreate3D(1);
+    (edpp_mtl)->diffuse_r = 0.5f;
+    (edpp_mtl)->diffuse_g = 0.5f;
+    (edpp_mtl)->diffuse_b = 0.5f;
+    (edpp_mtl)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edpp_mtl)->attribs.z_mode = NUMTL_ZMODE_NORMAL;
+    (edpp_mtl)->opacity = 1.0f;
+    (edpp_mtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edpp_mtl);
+    edpp_boxmtl = NuMtlCreate(1);
+    (edpp_boxmtl)->diffuse_r = 0.5f;
+    (edpp_boxmtl)->diffuse_g = 0.5f;
+    (edpp_boxmtl)->diffuse_b = 0.5f;
+    (edpp_boxmtl)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edpp_boxmtl)->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (edpp_boxmtl)->opacity = 1.0f;
+    (edpp_boxmtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edpp_boxmtl);
     edpp_nearest = -1;
     edpp_curr = -1;
     edpp_create_type = -1;

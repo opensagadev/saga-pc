@@ -2,37 +2,75 @@
 
 #include "nu2api/nucore/common.h"
 
-struct PC_MATERIAL_CREATE_SHADER;
-
-typedef struct PC_MATERIAL_SHADER_DESC_VIEW { // size 0x208
-    u32 flags;                                // 0x000
-    i32 diffuse_map_id;                       // 0x004
-    u8 unknown_08[0xc];                       // 0x008
-    u32 packed_diffuse_colour;                // 0x014
-    u8 unknown_18[0x90];                      // 0x018
-    u8 texture_unit_count;                    // 0x0a8
-    u8 unknown_a9[0x93];                      // 0x0a9
-    u32 vertex_format;                        // 0x13c
-    i16 shader_handle;                        // 0x140
-    i16 shader_variant_handle;                // 0x142
-    u8 unknown_144[0xc4];                     // 0x144
-} PC_MATERIAL_SHADER_DESC_VIEW;
-
-struct PC_MATERIAL_SHADER_DESC_VIEW;
 struct nudisplaylist_s;
+struct PC_TEXTURE_RESOURCE;
 
-typedef struct numtlattrib_s { // size 0x4
-    u32 alpha_mode : 4;        // 0x0:0
-    u32 filter_mode : 2;       // 0x0:4
-    u32 unknown_0_64_128 : 2;  // 0x0:6
-    u32 unknown_1_1_2 : 2;     // 0x0:8
-    u32 unknown_1_4_8 : 2;     // 0x0:10
-    u32 cull_mode : 2;         // 0x0:12
-    u32 z_mode : 2;            // 0x0:14
-    u32 unknown_2_1_2 : 2;     // 0x0:16
-    u32 unknown_2_4 : 1;       // 0x0:18
-    u32 unknown_2_8 : 1;       // 0x0:19
-    u32 unknown_20_31 : 12;    // 0x0:20
+/* Texture coordinate animation of one layer of a material, run each frame by NuDisplayListAnimateMtls. */
+typedef struct numtluvanim_s { // size 0x14
+    u8 u_mode;                 // 0x00
+    u8 v_mode;                 // 0x01
+    u8 reserved02[2];          // 0x02
+    f32 u_amplitude;           // 0x04
+    f32 v_amplitude;           // 0x08
+    f32 u_frequency;           // 0x0c
+    f32 v_frequency;           // 0x10
+} NUMTLUVANIM;
+
+/* Shader description of a material: filled by NuShaderMtlDescInit and NuMtlSetShaderDescPS, read by the shader
+   selection in NuMtlUpdatePS. Embedded in NUMTL at 0xb4. */
+typedef struct nushadermtldesc_s { // size 0x208
+    u32 flags;                     // 0x000
+    i32 diffuse_map_ids[4];        // 0x004
+    u32 diffuse_colours[4];        // 0x014
+    f32 default_scale;             // 0x024
+    u8 unknown_028[0xc];           // 0x028
+    i32 lightmap_tids[2];          // 0x034
+    u8 unknown_03c[0x8];           // 0x03c
+    u8 colour[3];                  // 0x044
+    u8 unknown_047;                // 0x047
+    i32 specular_map_tid;          // 0x048
+    i32 normal_map_tid;            // 0x04c
+    i32 envmap_cubic_tid;          // 0x050
+    i32 shine_map_tid;             // 0x054
+    i32 vtf_height_map_tid;        // 0x058
+    i32 vtf_normal_map_tid;        // 0x05c
+    u8 unknown_060[0x48];          // 0x060
+    u8 texture_unit_count;         // 0x0a8
+    u8 unknown_0a9[0x63];          // 0x0a9
+    i32 animation_ids[4];          // 0x10c -1: layer not animated
+    f32 animation_offsets[4][2];   // 0x11c
+    u32 vertex_format;             // 0x13c
+    i16 shader_handles[2];         // 0x140 base shader, shadow/variant shader
+    NUMTLUVANIM uv_animations[4];  // 0x144
+    u8 unknown_194[4];             // 0x194
+    i32 unknown_tid_198;           // 0x198
+    u8 unknown_19c[0x18];          // 0x19c
+    u8 shadow_set;                 // 0x1b4
+    u8 unknown_1b5[3];             // 0x1b5
+    u32 layer_flags;               // 0x1b8 PC_SHADER_LAYER_*
+    u8 unknown_1bc[0x28];          // 0x1bc
+    i32 extra_texture;             // 0x1e4
+    i32 environment_texture;       // 0x1e8
+    u8 unknown_1ec[0x1c];          // 0x1ec
+} NUSHADERMTLDESC;
+
+typedef union numtlattrib_u { // size 0x4
+
+    struct {                      // size 0x4
+        u32 alpha_mode : 4;       // 0x0:0
+        u32 filter_mode : 2;      // 0x0:4
+        u32 unknown_0_64_128 : 2; // 0x0:6
+        u32 unknown_1_1_2 : 2;    // 0x0:8
+        u32 unknown_1_4_8 : 2;    // 0x0:10
+        u32 cull_mode : 2;        // 0x0:12
+        u32 z_mode : 2;           // 0x0:14
+        u32 unknown_2_1_2 : 2;    // 0x0:16
+        u32 unknown_2_4 : 1;      // 0x0:18
+        u32 unknown_2_8 : 1;      // 0x0:19
+        u32 unknown_20_31 : 12;   // 0x0:20
+    };
+
+    u32 word;
 } NUMTLATTRIB;
 
 /* NUMTLATTRIB modes, from the render states NuMtlSetRenderStatesPS and PCDisplayHandlerSetZMode set for each. */
@@ -50,34 +88,68 @@ typedef struct numtlattrib_s { // size 0x4
 #define NUMTL_ZMODE_ALWAYS 2      /* z write without a z test */
 #define NUMTL_ZMODE_OFF 3         /* no z buffer */
 
-typedef struct numtl_s {                  // size 0x9c
-    u16 flags;                            // 0x00
-    u8 unknown_0002[0x2e];                // 0x02
-    struct numtl_s *next;                 // 0x30
-    u8 unknown_0034[0x8];                 // 0x34
-    struct nudisplaylist_s *display_list; // 0x3c
-    NUMTLATTRIB attribs;                  // 0x40
-    u32 unknown_0044_0_4 : 5;             // 0x44:0
-    u32 unknown_0044_5 : 1;               // 0x44:5
-    u32 unknown_0044_6 : 1;               // 0x44:6
-    u32 unknown_0044_7_31 : 25;           // 0x44:7
-    u8 unknown_0048[0xc];                 // 0x48
-    f32 diffuse_r;                        // 0x54
-    f32 diffuse_g;                        // 0x58
-    f32 diffuse_b;                        // 0x5c
-    u8 unknown_0060[0x10];                // 0x60
-    f32 opacity;                          // 0x70
-    i16 texture_id;                       // 0x74
-    i16 unknown_076;                      // 0x76
-    u8 unknown_078[0x21];                 // 0x78
-    i8 particle_type_tag;                 // 0x99
+typedef struct numtl_s { // size 0x2c4
+
+    union { // size 0x2
+        u16 flags;
+
+        struct {             // size 0x2
+            i16 : 2;         // 0x000:0
+            i16 flag_04 : 1; // 0x000:2
+        };
+    }; // 0x000
+
+    u8 unknown_002[0x26];                 // 0x002
+    u32 retained_28;                      // 0x028
+    u32 retained_2c;                      // 0x02c
+    struct numtl_s *next;                 // 0x030
+    u8 unknown_034[0x8];                  // 0x034
+    struct nudisplaylist_s *display_list; // 0x03c
+    NUMTLATTRIB attribs;                  // 0x040
+
+    union { // size 0x4
+
+        struct {                        // size 0x4
+            u32 unknown_0044_0_4 : 5;   // 0x044:0
+            u32 unknown_0044_5 : 1;     // 0x044:5
+            u32 unknown_0044_6 : 1;     // 0x044:6
+            u32 unknown_0044_7_31 : 25; // 0x044:7
+        };
+
+        u32 attribs2;
+    }; // 0x044
+
+    u8 unknown_048[0xc];                            // 0x048
+    f32 diffuse_r;                                  // 0x054
+    f32 diffuse_g;                                  // 0x058
+    f32 diffuse_b;                                  // 0x05c
+    u8 unknown_060[0x4];                            // 0x060
+    f32 effect_scale;                               // 0x064
+    u8 unknown_068[0x8];                            // 0x068
+    f32 opacity;                                    // 0x070
+    i16 texture_id;                                 // 0x074
+    i16 sort_priority;                              // 0x076
+    u8 unknown_078[0x3];                            // 0x078
+    u8 disable_u_animation;                         // 0x07b
+    u8 disable_v_animation;                         // 0x07c
+    u8 unknown_07d[0x3];                            // 0x07d
+    f32 delta_u;                                    // 0x080
+    f32 delta_v;                                    // 0x084
+    u8 unknown_088[0x11];                           // 0x088
+    i8 particle_type_tag;                           // 0x099
+    u8 override_slot;                               // 0x09a
+    u8 unknown_09b[0x19];                           // 0x09b
+    NUSHADERMTLDESC shader;                         // 0x0b4
+    struct PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
+    u16 version;                                    // 0x2c0
+    u8 unknown_2c2[0x2];                            // 0x2c2
 } NUMTL;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     /* Add inside existing C declarations. Native register helpers stay local. */
-    void NuShaderMtlDescInit(struct PC_MATERIAL_CREATE_SHADER *);
+    void NuShaderMtlDescInit(NUSHADERMTLDESC *description);
     void NuMtlCreatePS(NUMTL *, i32);
     NUMTL *NuMtlCreate(i32);
     NUMTL *NuMtlCreate3D(i32);
@@ -95,7 +167,7 @@ extern "C" {
     extern NUMTL *numtl_defaultmtl2d;
     extern NUMTL *numtl_defaultmtl3d;
     void NuDisplayListDestroyMtl(NUMTL *);
-    void NuMtlSetShaderDescPS(NUMTL *material, const struct PC_MATERIAL_SHADER_DESC_VIEW *description);
+    void NuMtlSetShaderDescPS(NUMTL *material, const NUSHADERMTLDESC *description);
     void NuMtlInitOverride(i32, VARIPTR *, VARIPTR *);
     void NuMtlSetUVOffsetPS(NUMTL *material, u32 layer, f32 u, f32 v);
     void NuMtlAnimateShaderMtlTextures(f32 frame_time);

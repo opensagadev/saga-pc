@@ -7053,12 +7053,12 @@ void aieditor_Render(f32 x_scale, f32 y_scale) {
     edcamSet();
     if (aieditorsettings.display_options & AIEDITOR_SNAP_HEIGHT) {
         edbitsDrawCross(aieditor->cursor_position.x, aieditor->cursor_position.y, aieditor->cursor_position.z, 0.5f, -1,
-                        (struct PC_SCENE_MTL_VIEW *)aieditorsettings.path_material);
+                        aieditorsettings.path_material);
         edbitsDrawCross(aieditor->camera_position.x, aieditor->camera_position.y, aieditor->camera_position.z, 0.25f, 0xff00ff00,
-                        (struct PC_SCENE_MTL_VIEW *)aieditorsettings.path_material);
+                        aieditorsettings.path_material);
     } else {
         edbitsDrawCross(aieditor->camera_position.x, aieditor->camera_position.y, aieditor->camera_position.z, 0.5f, -1,
-                        (struct PC_SCENE_MTL_VIEW *)aieditorsettings.path_material);
+                        aieditorsettings.path_material);
     }
     NuRndrRect2di(0x1680, 0x9b0, 0x1180, 0x488, 0x80808080, aieditorsettings.overlay_material);
     NuRndrRect2di(0x1670, 0x8f0, 0x11a0, 0xc0, 0x80000000, aieditorsettings.overlay_material);

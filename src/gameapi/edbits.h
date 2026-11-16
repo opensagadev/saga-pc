@@ -63,7 +63,7 @@ extern "C" {
     extern i32 edbri_roty;
     extern i32 edbri_rotz;
     extern f32 edbri_width;
-    extern struct PC_SCENE_MTL_VIEW *edbri_mtl_zoff;
+    extern struct numtl_s *edbri_mtl_zoff;
     extern struct eduimenu_s *edbri_ropecolour_menu;
     void edbricbCancelRopeColourMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     extern i32 edbri_cam_ax;

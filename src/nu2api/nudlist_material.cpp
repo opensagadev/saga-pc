@@ -33,11 +33,6 @@
 #include "nu2api/nuwin32/pcapi.h"
 #include <math.h>
 
-typedef struct PC_DL_MATERIAL_READER { // size 0x44
-    u8 unknown_0000[0x40];             // 0x00
-    u32 reflection_flags;              // 0x40
-} PC_DL_MATERIAL_READER;
-
 /* Private helper; takes mode in EAX. */
 static void PCDisplayHandlerSetZMode(i32 mode) {
     NuDisplayHandlerZMode = mode;
@@ -85,8 +80,8 @@ extern "C" void NuDisplayListTransform(void *arg) {
             PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
         } else {
-            PC_DL_MATERIAL_READER *material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterial;
-            PCDisplayHandlerSetZMode((material->reflection_flags >> 14) & 3);
+            NUMTL *material = NuDisplayHandlerMaterial;
+            PCDisplayHandlerSetZMode((material->attribs.word >> 14) & 3);
             NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
         }
         if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_3_0) {
@@ -119,9 +114,9 @@ extern "C" void NuDisplayListTransformTranspose(void *arg) {
             PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
         } else {
-            PC_DL_MATERIAL_READER *material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterial;
+            NUMTL *material = NuDisplayHandlerMaterial;
             if (material != NULL) {
-                PCDisplayHandlerSetZMode((material->reflection_flags >> 14) & 3);
+                PCDisplayHandlerSetZMode((material->attribs.word >> 14) & 3);
                 NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
             }
         }
@@ -179,25 +174,13 @@ extern "C" void NuDisplayListFaceOnTransform(void *arg) {
         /* The count is 4 registers despite only four initialized tint floats. */
         PCDeviceSetVertexShaderConstantsF(0x28, &tint.x, 4);
     } else {
-        PC_DL_MATERIAL_READER *material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterial;
-        PCDisplayHandlerSetZMode((material->reflection_flags >> 14) & 3);
+        NUMTL *material = NuDisplayHandlerMaterial;
+        PCDisplayHandlerSetZMode((material->attribs.word >> 14) & 3);
         PCDeviceSetVertexShaderConstantsF(0x28, &tint.x, 4);
     }
 }
 
 /* Minimum reader only; no material allocation, pointee or full extent claim. */
-typedef struct PC_DL_E_MATERIAL_READER {     // size 0x2c0
-    NUMTL common;                            // 0x000
-    u8 unknown_009c[0x1c];                   // 0x09c
-    i32 texture_id;                          // 0x0b8
-    u8 unknown_00bc[0x134];                  // 0x0bc
-    u32 variant_flags;                       // 0x1f0
-    i16 shader_id;                           // 0x1f4
-    u8 unknown_01f6[0x72];                   // 0x1f6
-    u8 face_on_variant;                      // 0x268
-    u8 unknown_0269[0x53];                   // 0x269
-    PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
-} PC_DL_E_MATERIAL_READER;
 
 struct PC_DL_SHADER_PROGRAM_PAIR {      // size 0x8
     PC_TEXTURE_RESOURCE *vertex_shader; // 0x0
@@ -261,22 +244,22 @@ extern "C" void fun_005fa620(i32 mode) {
 }
 
 extern "C" void NuDisplayListMaterial(void *arg) {
-    PC_DL_E_MATERIAL_READER *material = (PC_DL_E_MATERIAL_READER *)arg;
-    NuShaderObject *shader = (NuShaderObject *)PCShaderRecordFromHandle((u32)(i32)material->shader_id);
+    NUMTL *material = (NUMTL *)arg;
+    NuShaderObject *shader = (NuShaderObject *)PCShaderRecordFromHandle((u32)(i32)material->shader.shader_handles[0]);
     NUMTX transposed;
     NuDisplayMaterialLast = material;
     NuDisplayHandlerMaterial = material;
     PCGraphicsBoundShader = -1;
     PCGraphicsFrameState = -1;
-    if ((material->variant_flags & 0x100000) != 0) {
+    if ((material->shader.vertex_format & 0x100000) != 0) {
         PCDeviceSetVertexShader(NULL);
         PCDeviceSetPixelShader(NULL);
         NuDisplayHandlerVertexShaderCache = NULL;
         NuDisplayHandlerPixelShaderCache = NULL;
         NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexDeclaration(NuDisplayMaterialDebrisDeclaration);
-        PCDisplayHandlerBindPrograms((u8)material->common.particle_type_tag == 0x97 ? NuDisplayMaterialGlassPrograms
-                                                                                    : NuDisplayMaterialDebrisPrograms);
+        PCDisplayHandlerBindPrograms((u8)material->particle_type_tag == 0x97 ? NuDisplayMaterialGlassPrograms
+                                                                             : NuDisplayMaterialDebrisPrograms);
         if (PcWindowOptions.usehires == 0 || PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             NuMtxTranspose(&transposed, &PcGeometryViewProjectionMatrix);
             PCDeviceSetVertexShaderConstantsF(0, &transposed.m00, 4);
@@ -285,7 +268,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             PCDeviceSetVertexShaderConstantsF(0x30, ShaderUniformRecords[69].values, 1);
         }
         PCDeviceSetPixelShaderConstantsF(0, ShaderUniformRecords[68].values, 1);
-        if ((u8)material->common.particle_type_tag == 0x97) {
+        if ((u8)material->particle_type_tag == 0x97) {
             GRAPHICS_RENDER_TEXTURE *target = NuPostEffectGetBackBuffer(-1);
             if (target != NULL) {
                 PCDeviceSetTexture(0, target->resource);
@@ -296,18 +279,18 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             PCDeviceSetSamplerState(0, D3DSAMP_ADDRESSV, 3);
             PCDeviceSetSamplerState(0, D3DSAMP_MIPFILTER, 0);
             PCDeviceSetTexture(1, NuTextureGetDimensions(NuDisplayMaterialDistortTexture)->resource);
-        } else if (material->texture_id != 0) {
-            PCDeviceSetTexture(0, NuTextureGetDimensions(material->texture_id)->resource);
+        } else if (material->shader.diffuse_map_ids[0] != 0) {
+            PCDeviceSetTexture(0, NuTextureGetDimensions(material->shader.diffuse_map_ids[0])->resource);
         }
-    } else if ((material->variant_flags & 0x200000) != 0) {
-        PCShaderSetMaterialParameters(shader, &material->common);
+    } else if ((material->shader.vertex_format & 0x200000) != 0) {
+        PCShaderSetMaterialParameters(shader, material);
         NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexShader(NULL);
         PCDeviceSetPixelShader(NULL);
         NuDisplayHandlerVertexShaderCache = NULL;
         NuDisplayHandlerPixelShaderCache = NULL;
         PCDeviceSetVertexDeclaration(NuDisplayMaterialFaceOnDeclaration);
-        PCDisplayHandlerBindPrograms(PCDeviceBackend.textures[1] != NULL && (material->face_on_variant & 0xf) != 0
+        PCDisplayHandlerBindPrograms(PCDeviceBackend.textures[1] != NULL && (material->shader.shadow_set & 0xf) != 0
                                          ? NuDisplayMaterialFaceOnDecalPrograms
                                          : NuDisplayMaterialFaceOnPrograms);
         if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
@@ -318,12 +301,12 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             PCDeviceSetVertexShaderConstantsF(0x30, ShaderUniformRecords[69].values, 1);
         }
         PCDeviceSetPixelShaderConstantsF(0, ShaderUniformRecords[68].values, 1);
-        if (material->texture_id != 0) {
-            PCDeviceSetTexture(0, NuTextureGetDimensions(material->texture_id)->resource);
+        if (material->shader.diffuse_map_ids[0] != 0) {
+            PCDeviceSetTexture(0, NuTextureGetDimensions(material->shader.diffuse_map_ids[0])->resource);
         }
-    } else if (material->common.display_list != NULL) {
+    } else if (material->display_list != NULL) {
         if (shader != NULL) {
-            PCShaderSetMaterialParameters(shader, &material->common);
+            PCShaderSetMaterialParameters(shader, material);
             NuShaderManagerBindShader(shader);
             PCDeviceSetVertexDeclaration(material->vertex_declaration);
             if (RenderFrameSceneFlags != 0) {
@@ -334,7 +317,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             NuShaderManagerBindShader(NULL);
         }
     } else if (shader != NULL) {
-        PCShaderSetMaterialParameters(shader, &material->common);
+        PCShaderSetMaterialParameters(shader, material);
         NuShaderManagerBindShader(shader);
         PCDeviceSetVertexDeclaration(material->vertex_declaration);
     } else {
@@ -343,7 +326,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
         PCDisplayHandlerBindPrograms(NuDisplayMaterialDefaultPrograms);
     }
     NuDisplayHandlerReflection = 0;
-    NuMtlSetRenderStatesPS(&material->common);
+    NuMtlSetRenderStatesPS(material);
     if ((shader->stage_flags & 6) == 0) {
         PCDeviceBackend.SetColorWriteMask(1, 1, 1);
     } else {
@@ -374,26 +357,18 @@ extern "C" void NuDisplayListMaterial(void *arg) {
     }
 }
 
-typedef struct PC_DL_MATERIAL_STATES_READER { // size 0x1f4
-    u8 unknown_0000[0x40];                    // 0x000
-    u32 attributes;                           // 0x040
-    u8 unknown_0044[0x1ac];                   // 0x044
-    u32 variant_flags;                        // 0x1f0
-} PC_DL_MATERIAL_STATES_READER;
-
 /* PCDisplayHandlerSetZMode is the real private helper already in the BC cohort. */
-extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
-    PC_DL_MATERIAL_STATES_READER *material = (PC_DL_MATERIAL_STATES_READER *)arg;
+extern "C" void NuMtlSetRenderStatesPS(NUMTL *material) {
     i32 write_colour = 1;
     i32 write_alpha = 1;
     u32 alpha;
-    PCDisplayHandlerSetZMode((material->attributes >> 14) & 3);
-    if (material->variant_flags & 0x100000) {
+    PCDisplayHandlerSetZMode((material->attribs.word >> 14) & 3);
+    if (material->shader.vertex_format & 0x100000) {
         PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
         PCDeviceSetRenderState(D3DRS_ALPHAREF, 2);
         PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 5);
     } else {
-        alpha = (material->attributes >> 20) & 7;
+        alpha = (material->attribs.word >> 20) & 7;
         switch (alpha) {
             case 0:
             case 1:
@@ -401,7 +376,7 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
                 break;
             case 5:
                 PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
-                PCDeviceSetRenderState(D3DRS_ALPHAREF, (material->attributes >> 23) & 0xff);
+                PCDeviceSetRenderState(D3DRS_ALPHAREF, (material->attribs.word >> 23) & 0xff);
                 PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 5);
                 break;
             default:
@@ -411,7 +386,7 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
                 break;
         }
     }
-    switch (material->attributes & 15) {
+    switch (material->attribs.word & 15) {
         case NUMTL_ALPHA_OPAQUE:
             PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
             break;
@@ -436,14 +411,14 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
         case NUMTL_ALPHA_TEST:
             PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
             PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
-            PCDeviceSetRenderState(D3DRS_ALPHAREF, (material->attributes >> 23) & 0xff);
+            PCDeviceSetRenderState(D3DRS_ALPHAREF, (material->attribs.word >> 23) & 0xff);
             PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 7);
             break;
         case NUMTL_ALPHA_NO_COLOUR:
             write_colour = 0;
             break;
     }
-    switch ((material->attributes >> 12) & 3) {
+    switch ((material->attribs.word >> 12) & 3) {
         case NUMTL_CULL_BACK:
             if (NuDisplayHandlerReflection != 0) {
                 PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
@@ -462,7 +437,7 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
             PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
             break;
     }
-    if (!(material->attributes & 0x80000)) {
+    if (!(material->attribs.word & 0x80000)) {
         write_alpha = 0;
     }
     if (RenderFrameSceneFlags != 0) {

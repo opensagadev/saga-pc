@@ -67,7 +67,7 @@ extern "C" {
     extern f32 edgra_size;
     extern struct eduimenu_s *edgra_clumpsizes_menu;
     extern struct eduimenu_s *edgra_changeinstance_menu;
-    extern struct PC_SCENE_MTL_VIEW *edgra_mtl;
+    extern struct numtl_s *edgra_mtl;
     extern i32 edgra_pageid;
     i32 edgraProc(f32 delta_time, struct FRAME_PAD *pad);
     void edgraClose(void);

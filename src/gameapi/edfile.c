@@ -1725,7 +1725,7 @@ void eduiFlushInteracts(void) {
     numInteracts = 0;
 }
 
-extern struct PC_SCENE_MTL_VIEW *uimtls[5];
+extern NUMTL *uimtls[5];
 
 void eduiRenderInteracts(void) {
     edui_interact_s *hovered;
@@ -1742,7 +1742,7 @@ void eduiRenderInteracts(void) {
     hovered = NULL;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
-    NuPrim2DBegin(14, 5, (NUMTL *)uimtls[0]);
+    NuPrim2DBegin(14, 5, uimtls[0]);
     interact = eduiInteractLocked;
     if (interact != NULL) {
         count = 1;
@@ -1780,7 +1780,7 @@ void eduiRenderInteracts(void) {
     }
     NuPrim2DEnd();
     if (hovered != NULL) {
-        NuPrim2DBegin(16, 5, (NUMTL *)uimtls[3]);
+        NuPrim2DBegin(16, 5, uimtls[3]);
         colour = (NuRandInt() & 0x00ffffff) | 0x40000000;
         EduiPrimSetColour(colour);
         NuPrim2DAddXYZ(hovered->x, hovered->y, 0.0f);
@@ -2297,25 +2297,25 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
     row_height = NuQFntHeight(edui_font) * 1.25 * (1.0f / EduiScaleY);
     baseline = (NuQFntHeight(edui_font) * 0.125 + NuQFntBaseline(edui_font)) * (1.0f / EduiScaleY);
     if (menu != NULL && EduiMenuChainActive(menu)) {
-        EduiDrawRect(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+        EduiDrawRect(item_x, item_y, item_width, row_height, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
     }
     for (depth = 0; depth < expander->depth; depth++) {
         f32 guide_x = item_x + ((f32)depth + 0.5) * (row_height - 2.0);
-        EDUI_DRAW_LINE(guide_x, item_y, guide_x, item_y + row_height, 0xff000000, (NUMTL *)uimtls[0]);
+        EDUI_DRAW_LINE(guide_x, item_y, guide_x, item_y + row_height, 0xff000000, uimtls[0]);
     }
     expander->button_size = row_height - 2.0f;
     expander->button_x = item_x + expander->depth * expander->button_size + 1.0f;
     expander->button_y = item_y + 1.0f;
     if (expander->first_child) {
         EDUI_DRAW_LINE_RECT(expander->button_x, expander->button_y, expander->button_size, expander->button_size, 0xff000000,
-                            (NUMTL *)uimtls[EduiSelectionMaterial]);
+                            uimtls[EduiSelectionMaterial]);
         EDUI_DRAW_LINE(expander->button_x + 2.0f, expander->button_y + expander->button_size * 0.5,
                        expander->button_x + expander->button_size - 2.0f, expander->button_y + expander->button_size * 0.5,
-                       button_colours[expander->hover], (NUMTL *)uimtls[0]);
+                       button_colours[expander->hover], uimtls[0]);
         if (!expander->open) {
             EDUI_DRAW_LINE(expander->button_x + expander->button_size * 0.5, expander->button_y + 2.0f,
                            expander->button_x + expander->button_size * 0.5, expander->button_y + expander->button_size - 2.0f,
-                           button_colours[expander->hover], (NUMTL *)uimtls[0]);
+                           button_colours[expander->hover], uimtls[0]);
         }
     }
     text_x = expander->button_x + expander->button_size + 2.0f;
@@ -2348,7 +2348,7 @@ eduiitem_s *eduiItemExpanderCreate(u32 data, const void *colours, void *callback
  * and an optional button (1 arrow, 2 up/down arrows, 3 colour swatch). */
 static char eduiPropTextStore[256] = {0};
 static char eduiPropTextEdit[256] = {0};
-struct PC_SCENE_MTL_VIEW *uimtls[5] = {0};
+NUMTL *uimtls[5] = {0};
 struct eduiitem_s *edui_last_item = 0;
 char FS_FileList[65536] = {0};
 f32 EduiPropLabelWidth = 50.0f;
@@ -2654,22 +2654,22 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         f32 edit_width = draw_width - property->label_width - 4.0;
         f32 caret_x;
         text_width = EDUI_MAX(text_width, edit_width);
-        EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[0]);
+        EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], uimtls[0]);
         if (edui_donotdraw == 0) {
             NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleX), (i32)((draw_y + 2.0) * EduiScaleY),
-                          (i32)(text_width * EduiScaleX), (i32)((row_height - 4.0) * EduiScaleY), 0xffffffff, (NUMTL *)uimtls[0]);
+                          (i32)(text_width * EduiScaleX), (i32)((row_height - 4.0) * EduiScaleY), 0xffffffff, uimtls[0]);
         }
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
             if (edui_donotdraw == 0) {
                 NuRndrLine2di((i32)(guide_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(guide_x * EduiScaleX),
-                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, (NUMTL *)uimtls[0]);
+                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, uimtls[0]);
             }
         }
         if (edui_donotdraw == 0) {
             NuRndrLine2di((i32)((draw_x + property->label_width) * EduiScaleX), (i32)(draw_y * EduiScaleY),
                           (i32)((draw_x + property->label_width) * EduiScaleX), (i32)((draw_y + row_height) * EduiScaleY),
-                          divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
+                          divider_colours[property->divider_active], uimtls[0]);
         }
         eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
         EduiFntPrintScaled(edui_font, draw_x + property->label_width + 2.0f, draw_y + baseline, EDUI_ALIGN_LEFT, eduiPropTextEdit);
@@ -2678,22 +2678,22 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         caret_x = draw_x + property->label_width + 2.0f + NuQFntPrintLenU(edui_font, prefix) * (1.0f / EduiScaleX);
         if (edui_donotdraw == 0) {
             NuRndrLine2di((i32)(caret_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(caret_x * EduiScaleX),
-                          (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, (NUMTL *)uimtls[0]);
+                          (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, uimtls[0]);
         }
     } else {
         property->button_size = indent_width;
         property->button_x = draw_x + draw_width - (property->button_size + 1.0f);
         property->button_y = draw_y + 1.0f;
         if (menu != NULL && EduiMenuChainActive(menu)) {
-            EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], (NUMTL *)uimtls[ui_bgmtl]);
+            EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], uimtls[ui_bgmtl]);
         }
         EduiDrawLine(draw_x + property->label_width, draw_y, draw_x + property->label_width, draw_y + row_height,
-                     divider_colours[property->divider_active], (NUMTL *)uimtls[0]);
+                     divider_colours[property->divider_active], uimtls[0]);
         for (depth = 0; depth < property->depth; depth++) {
             f32 guide_x = draw_x + (depth + 0.5) * indent_width;
             if (edui_donotdraw == 0) {
                 NuRndrLine2di((i32)(guide_x * EduiScaleX), (i32)(draw_y * EduiScaleY), (i32)(guide_x * EduiScaleX),
-                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, (NUMTL *)uimtls[0]);
+                              (i32)((draw_y + row_height) * EduiScaleY), 0xff000000, uimtls[0]);
             }
         }
         eduiFntPrintClipEx(edui_font, draw_x + indentation, draw_y + baseline, 16, draw_x - indentation, property->label_width, item->text);
@@ -2703,12 +2703,12 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         if (property->button_type == 3 && edui_donotdraw == 0) {
             NuRndrRect2di((i32)(property->button_x * EduiScaleX), (i32)(property->button_y * EduiScaleY),
                           (i32)(property->button_size * EduiScaleX), (i32)(property->button_size * EduiScaleY), property->button_colour,
-                          (NUMTL *)uimtls[0]);
+                          uimtls[0]);
         }
         if (edui_donotdraw == 0) {
             NuRndrLineRect2di((i32)(property->button_x * EduiScaleX), (i32)(property->button_y * EduiScaleY),
                               (i32)(property->button_size * EduiScaleX), (i32)(property->button_size * EduiScaleY), 0xff000000,
-                              (NUMTL *)uimtls[EduiSelectionMaterial]);
+                              uimtls[EduiSelectionMaterial]);
         }
         if (property->button_type == 1) {
             points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleX);
@@ -2718,7 +2718,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
             points[4] = points[0];
             points[5] = (i32)((property->button_y + property->button_size * 0.9f) * EduiScaleY);
             if (edui_donotdraw == 0) {
-                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
+                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], uimtls[0]);
             }
         }
         if (property->button_type == 2) {
@@ -2729,7 +2729,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
             points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleX);
             points[5] = points[1];
             if (edui_donotdraw == 0) {
-                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
+                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], uimtls[0]);
             }
             points[0] = (i32)((property->button_x + property->button_size * 0.1f) * EduiScaleX);
             points[1] = (i32)((property->button_y + property->button_size * 0.55f) * EduiScaleY);
@@ -2738,7 +2738,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
             points[4] = (i32)((property->button_x + property->button_size * 0.9f) * EduiScaleX);
             points[5] = points[1];
             if (edui_donotdraw == 0) {
-                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], (NUMTL *)uimtls[0]);
+                NuRndrTriStrip2di(points, NULL, 3, button_colours[property->button_hover], uimtls[0]);
             }
         }
     }
@@ -3638,42 +3638,42 @@ u32 EdFileReadUnsignedInt(void) {
 }
 
 void eduiInitMaterials(void) {
-    uimtls[0] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)uimtls[0])->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)uimtls[0])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)uimtls[0])->opacity = 1.0f;
-    ((NUMTL *)uimtls[0])->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate(((NUMTL *)uimtls[0]));
-    uimtls[1] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)uimtls[1])->diffuse_r = 0.2f;
-    ((NUMTL *)uimtls[1])->diffuse_g = 0.2f;
-    ((NUMTL *)uimtls[1])->diffuse_b = 0.2f;
-    ((NUMTL *)uimtls[1])->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)uimtls[1])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)uimtls[1])->opacity = 0.999f;
-    ((NUMTL *)uimtls[1])->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
-    NuMtlUpdate(((NUMTL *)uimtls[1]));
-    uimtls[2] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)uimtls[2])->diffuse_r = 0.2f;
-    ((NUMTL *)uimtls[2])->diffuse_g = 0.2f;
-    ((NUMTL *)uimtls[2])->diffuse_b = 0.2f;
-    ((NUMTL *)uimtls[2])->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)uimtls[2])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)uimtls[2])->opacity = 0.999f;
-    ((NUMTL *)uimtls[2])->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
-    NuMtlUpdate(((NUMTL *)uimtls[2]));
-    uimtls[3] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)uimtls[3])->diffuse_r = 0.2f;
-    ((NUMTL *)uimtls[3])->diffuse_g = 0.2f;
-    ((NUMTL *)uimtls[3])->diffuse_b = 0.2f;
-    ((NUMTL *)uimtls[3])->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)uimtls[3])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)uimtls[3])->opacity = 0.999f;
-    ((NUMTL *)uimtls[3])->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
-    NuMtlUpdate(((NUMTL *)uimtls[3]));
+    uimtls[0] = NuMtlCreate(1);
+    (uimtls[0])->attribs.cull_mode = NUMTL_CULL_NONE;
+    (uimtls[0])->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (uimtls[0])->opacity = 1.0f;
+    (uimtls[0])->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate((uimtls[0]));
+    uimtls[1] = NuMtlCreate(1);
+    (uimtls[1])->diffuse_r = 0.2f;
+    (uimtls[1])->diffuse_g = 0.2f;
+    (uimtls[1])->diffuse_b = 0.2f;
+    (uimtls[1])->attribs.cull_mode = NUMTL_CULL_NONE;
+    (uimtls[1])->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (uimtls[1])->opacity = 0.999f;
+    (uimtls[1])->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
+    NuMtlUpdate((uimtls[1]));
+    uimtls[2] = NuMtlCreate(1);
+    (uimtls[2])->diffuse_r = 0.2f;
+    (uimtls[2])->diffuse_g = 0.2f;
+    (uimtls[2])->diffuse_b = 0.2f;
+    (uimtls[2])->attribs.cull_mode = NUMTL_CULL_NONE;
+    (uimtls[2])->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (uimtls[2])->opacity = 0.999f;
+    (uimtls[2])->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
+    NuMtlUpdate((uimtls[2]));
+    uimtls[3] = NuMtlCreate(1);
+    (uimtls[3])->diffuse_r = 0.2f;
+    (uimtls[3])->diffuse_g = 0.2f;
+    (uimtls[3])->diffuse_b = 0.2f;
+    (uimtls[3])->attribs.cull_mode = NUMTL_CULL_NONE;
+    (uimtls[3])->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (uimtls[3])->opacity = 0.999f;
+    (uimtls[3])->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
+    NuMtlUpdate((uimtls[3]));
 }
 
-void fun_006017a0(struct PC_SCENE_MTL_VIEW *material, i32 plane);
+void fun_006017a0(NUMTL *material, i32 plane);
 
 void eduiSetRenderPlane(i32 plane) {
     i32 i;
@@ -3796,8 +3796,7 @@ i32 EduiRenderItem(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width, 
             colour = EduiItemOutlineColour;
         }
         if (!edui_donotdraw) {
-            NuRndrLineRect2di(x << 4, (y << 3) + 8, EduiRenderWidth << 4, (height << 3) - 16, colour,
-                              (NUMTL *)uimtls[EduiSelectionMaterial]);
+            NuRndrLineRect2di(x << 4, (y << 3) + 8, EduiRenderWidth << 4, (height << 3) - 16, colour, uimtls[EduiSelectionMaterial]);
         }
     }
     EduiDrawDisabledItem(item, x, y, width, height);
@@ -3816,10 +3815,10 @@ static void EduiDrawDisabledItem(eduiitem_s *item, i32 x, i32 y, i32 width, i32 
         i32 top = y << 3;
         i32 span = width << 4;
         i32 bottom = top + (height << 3);
-        EDUI_DRAW_LINE_I(left, top, left + span / 4, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
-        EDUI_DRAW_LINE_I(left + span / 4, top, left + span / 2, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
-        EDUI_DRAW_LINE_I(left + span / 2, top, left + span * 3 / 4, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
-        EDUI_DRAW_LINE_I(left + span * 3 / 4, top, left + span, bottom, item->colours[0], (NUMTL *)uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left, top, left + span / 4, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left + span / 4, top, left + span / 2, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left + span / 2, top, left + span * 3 / 4, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        EDUI_DRAW_LINE_I(left + span * 3 / 4, top, left + span, bottom, item->colours[0], uimtls[ui_bgmtl]);
     }
 }
 

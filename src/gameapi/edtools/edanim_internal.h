@@ -97,7 +97,7 @@ extern "C" {
     extern struct eduimenu_s *edanim_switchtype_menu;
     extern i32 edanim_emitroty;
     extern i32 edanim_emitrotz;
-    extern struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff;
+    extern struct numtl_s *edanim_mtl_zoff;
     extern char edbits_general_save_directory[256];
     extern char edbits_general_save_extension[256];
     extern char edbits_general_save_name[256];

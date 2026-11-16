@@ -27,9 +27,8 @@ extern struct eduimenu_s *edgra_sscale_menu;
 void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
-extern struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff;
-void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z,
-                          i32 rotation_y);
+extern NUMTL *edgra_mtl_zoff;
+void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, NUMTL *material, i32 rotation_z, i32 rotation_y);
 
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 
@@ -90,7 +89,7 @@ i32 edgraFileSave(char *path) {
                 }
             }
             for (j = 0; j < GrassClumps[i].element_count; ++j) {
-                EdFileWriteNuVec(&((NUVEC *)GrassClumps[i].vector_buffer)[j]);
+                EdFileWriteNuVec(&GrassClumps[i].vector_buffer[j]);
             }
         }
         EdFileSetReadWrongEndianess(0);
@@ -148,9 +147,9 @@ void edgracbCancelGlobalsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edgra_globals_menu = NULL;
 }
 
-struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff = 0;
+NUMTL *edgra_mtl_zoff = 0;
 NUVEC edgra_cam_pos = {0};
-struct PC_SCENE_MTL_VIEW *edgra_mtl = 0;
+NUMTL *edgra_mtl = 0;
 struct eduimenu_s *edgra_active_menu = 0;
 
 void edgraDrawCursor(void) {
@@ -165,7 +164,7 @@ void edgraDrawCursor(void) {
     line[1].position.x = edgra_cam_pos.x + 0.5f;
     line[1].position.y = edgra_cam_pos.y;
     line[1].position.z = edgra_cam_pos.z;
-    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    NuRndrLine3d(line, edgra_mtl, NULL);
     line[0].colour = 0xffffffff;
     line[1].colour = 0xffffffff;
     line[0].position.x = edgra_cam_pos.x;
@@ -174,7 +173,7 @@ void edgraDrawCursor(void) {
     line[1].position.x = edgra_cam_pos.x;
     line[1].position.y = edgra_cam_pos.y + 0.5f;
     line[1].position.z = edgra_cam_pos.z;
-    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    NuRndrLine3d(line, edgra_mtl, NULL);
     line[0].colour = 0xffffffff;
     line[1].colour = 0xffffffff;
     line[0].position.x = edgra_cam_pos.x;
@@ -183,7 +182,7 @@ void edgraDrawCursor(void) {
     line[1].position.x = edgra_cam_pos.x;
     line[1].position.y = edgra_cam_pos.y;
     line[1].position.z = edgra_cam_pos.z + 0.5f;
-    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    NuRndrLine3d(line, edgra_mtl, NULL);
     arrow.x = 0.0f;
     arrow.y = 0.5f;
     arrow.z = 0.0f;
@@ -197,22 +196,22 @@ void edgraDrawCursor(void) {
     line[1].position.x = edgra_cam_pos.x + arrow.x;
     line[1].position.y = edgra_cam_pos.y + arrow.y;
     line[1].position.z = edgra_cam_pos.z + arrow.z;
-    NuRndrLine3d(line, (NUMTL *)edgra_mtl, NULL);
+    NuRndrLine3d(line, edgra_mtl, NULL);
     if (edgra_nearest == -1) {
         edbitsDrawOvalTilted(&edgra_cam_pos, edgra_size, edgra_size, 0xff0000ff, edgra_mtl, edgra_rotz, edgra_roty);
     } else if (GrassClumps[edgra_nearest].kind == 3) {
         edbitsDrawOvalTilted(&edgra_cam_pos, 0.5f, 0.5f, 0xff0000ff, edgra_mtl, edgra_rotz, edgra_roty);
     } else if (GrassClumps[edgra_nearest].unknown_25 == 3 || GrassClumps[edgra_nearest].unknown_25 == 4) {
         edbitsDrawCube(edgra_cam_pos.x, edgra_cam_pos.y, edgra_cam_pos.z, edgra_size, 0.0f, edgra_size, 0, 0, 0, edgra_rotz, edgra_roty,
-                       0xff0000ff, (NUMTL *)edgra_mtl);
+                       0xff0000ff, edgra_mtl);
     } else {
         edbitsDrawCircleTilted(&edgra_cam_pos, edgra_size, 0xff0000ff, edgra_mtl, edgra_rotz, edgra_roty);
     }
-    NuRndrRect2di(0x1720, 0x9b0, 0xdc0, 0x410, 0x80808080, (NUMTL *)edgra_mtl_zoff);
-    NuRndrRect2di(0x1710, 0x8f0, 0xde0, 0xc0, 0x80000000, (NUMTL *)edgra_mtl_zoff);
-    NuRndrLine2di(0x1710, 0x9b0, 0x1710, 0xdc8, 0x80000000, (NUMTL *)edgra_mtl_zoff);
-    NuRndrLine2di(0x24f0, 0x9b0, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edgra_mtl_zoff);
-    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edgra_mtl_zoff);
+    NuRndrRect2di(0x1720, 0x9b0, 0xdc0, 0x410, 0x80808080, edgra_mtl_zoff);
+    NuRndrRect2di(0x1710, 0x8f0, 0xde0, 0xc0, 0x80000000, edgra_mtl_zoff);
+    NuRndrLine2di(0x1710, 0x9b0, 0x1710, 0xdc8, 0x80000000, edgra_mtl_zoff);
+    NuRndrLine2di(0x24f0, 0x9b0, 0x24f0, 0xdc8, 0x80000000, edgra_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, edgra_mtl_zoff);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
     NuQFntSet(system_qfont);
@@ -374,7 +373,7 @@ void edgraRender(void) {
                 edbitsDrawCube(GrassClumps[edgra_nearest].position.x, GrassClumps[edgra_nearest].position.y,
                                GrassClumps[edgra_nearest].position.z, GrassClumps[edgra_nearest].size, 0.0f,
                                GrassClumps[edgra_nearest].size, 0, 0, 0, GrassClumps[edgra_nearest].rotation_z,
-                               GrassClumps[edgra_nearest].rotation_y, 0xff80ffff, (NUMTL *)edgra_mtl);
+                               GrassClumps[edgra_nearest].rotation_y, 0xff80ffff, edgra_mtl);
             } else {
                 edbitsDrawCircleTilted(&GrassClumps[edgra_nearest].position, GrassClumps[edgra_nearest].size, 0xff80ffff, edgra_mtl,
                                        GrassClumps[edgra_nearest].rotation_z, GrassClumps[edgra_nearest].rotation_y);
@@ -402,24 +401,24 @@ void edgraInit(void) {
     VARIPTR *buffer;
     i32 index;
     edgraClumpsReset();
-    edgra_mtl = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate3D(1);
-    ((NUMTL *)edgra_mtl)->diffuse_r = 0.5f;
-    ((NUMTL *)edgra_mtl)->diffuse_g = 0.5f;
-    ((NUMTL *)edgra_mtl)->diffuse_b = 0.5f;
-    ((NUMTL *)edgra_mtl)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edgra_mtl)->attribs.z_mode = NUMTL_ZMODE_NORMAL;
-    ((NUMTL *)edgra_mtl)->opacity = 1.0f;
-    ((NUMTL *)edgra_mtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edgra_mtl);
-    edgra_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)edgra_mtl_zoff)->diffuse_r = 0.5f;
-    ((NUMTL *)edgra_mtl_zoff)->diffuse_g = 0.5f;
-    ((NUMTL *)edgra_mtl_zoff)->diffuse_b = 0.5f;
-    ((NUMTL *)edgra_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edgra_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)edgra_mtl_zoff)->opacity = 1.0f;
-    ((NUMTL *)edgra_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edgra_mtl_zoff);
+    edgra_mtl = NuMtlCreate3D(1);
+    (edgra_mtl)->diffuse_r = 0.5f;
+    (edgra_mtl)->diffuse_g = 0.5f;
+    (edgra_mtl)->diffuse_b = 0.5f;
+    (edgra_mtl)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edgra_mtl)->attribs.z_mode = NUMTL_ZMODE_NORMAL;
+    (edgra_mtl)->opacity = 1.0f;
+    (edgra_mtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edgra_mtl);
+    edgra_mtl_zoff = NuMtlCreate(1);
+    (edgra_mtl_zoff)->diffuse_r = 0.5f;
+    (edgra_mtl_zoff)->diffuse_g = 0.5f;
+    (edgra_mtl_zoff)->diffuse_b = 0.5f;
+    (edgra_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edgra_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (edgra_mtl_zoff)->opacity = 1.0f;
+    (edgra_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edgra_mtl_zoff);
     buffer = gra_ptr;
     if (buffer == NULL) {
         edgra_mtxbuffer = NuAlloc(0xc0080, "d:\\projects\\game_saga\\gameapi.saga\\gamelib\\edgra.c", 0xb0a);

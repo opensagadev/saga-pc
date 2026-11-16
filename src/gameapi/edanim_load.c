@@ -622,8 +622,7 @@ void edanimRenderParticleEmitters(i32 parameter_index) {
         }
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].effect_positions[particle][0],
                                 base_position->y + AnimParams[parameter_index].effect_positions[particle][1],
-                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f, colour,
-                                (PC_SCENE_MTL_VIEW *)edanim_mtl);
+                                base_position->z + AnimParams[parameter_index].effect_positions[particle][2], 0.25f, colour, edanim_mtl);
     }
 }
 
@@ -641,8 +640,7 @@ void edanimRenderSoundEmitters(i32 parameter_index) {
         colour = edanim_sound_mode && edanim_nearest_sound == sound ? 0xffff0000 : 0xffffffff;
         edbitsDrawDiagonalCross(base_position->x + AnimParams[parameter_index].sound_positions[sound].x,
                                 base_position->y + AnimParams[parameter_index].sound_positions[sound].y,
-                                base_position->z + AnimParams[parameter_index].sound_positions[sound].z, 0.25f, colour,
-                                (PC_SCENE_MTL_VIEW *)edanim_mtl);
+                                base_position->z + AnimParams[parameter_index].sound_positions[sound].z, 0.25f, colour, edanim_mtl);
     }
 }
 
@@ -863,7 +861,7 @@ void edanimDoInput(FRAME_PAD *pad) {
 
 i32 edanim_nearest_sound = 0;
 i8 edbits_what_game = 0;
-struct PC_SCENE_MTL_VIEW *edanim_mtl_zoff = 0;
+NUMTL *edanim_mtl_zoff = 0;
 i32 edanim_nearest_particle = 0;
 NUVEC edanim_cam_pos = {0};
 EDANIM_PARAM AnimParams[64] = {0};
@@ -915,11 +913,11 @@ void edanimDrawCursor(void) {
         line[1].position.z = edanim_cam_pos.z + direction.z;
         NuRndrLine3d(line, edanim_mtl, NULL);
     }
-    NuRndrRect2di(0x1720, 0xa50, 0xdc0, 0x370, 0x80808080, (NUMTL *)edanim_mtl_zoff);
-    NuRndrRect2di(0x1710, 0x990, 0xde0, 0xc0, 0x80000000, (NUMTL *)edanim_mtl_zoff);
-    NuRndrLine2di(0x1710, 0xa50, 0x1710, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
-    NuRndrLine2di(0x24f0, 0xa50, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
-    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, (NUMTL *)edanim_mtl_zoff);
+    NuRndrRect2di(0x1720, 0xa50, 0xdc0, 0x370, 0x80808080, edanim_mtl_zoff);
+    NuRndrRect2di(0x1710, 0x990, 0xde0, 0xc0, 0x80000000, edanim_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xa50, 0x1710, 0xdc8, 0x80000000, edanim_mtl_zoff);
+    NuRndrLine2di(0x24f0, 0xa50, 0x24f0, 0xdc8, 0x80000000, edanim_mtl_zoff);
+    NuRndrLine2di(0x1710, 0xdc8, 0x24f0, 0xdc8, 0x80000000, edanim_mtl_zoff);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     NuQFntPushCoordinateSystem(NUQFNT_CSMODE_PS2);
     NuQFntSet(system_qfont);
@@ -1020,15 +1018,15 @@ void edanimInit(void) {
     edanim_mtl->opacity = 1.0f;
     edanim_mtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate(edanim_mtl);
-    edanim_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)edanim_mtl_zoff)->diffuse_r = 0.5f;
-    ((NUMTL *)edanim_mtl_zoff)->diffuse_g = 0.5f;
-    ((NUMTL *)edanim_mtl_zoff)->diffuse_b = 0.5f;
-    ((NUMTL *)edanim_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edanim_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)edanim_mtl_zoff)->opacity = 1.0f;
-    ((NUMTL *)edanim_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edanim_mtl_zoff);
+    edanim_mtl_zoff = NuMtlCreate(1);
+    (edanim_mtl_zoff)->diffuse_r = 0.5f;
+    (edanim_mtl_zoff)->diffuse_g = 0.5f;
+    (edanim_mtl_zoff)->diffuse_b = 0.5f;
+    (edanim_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edanim_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (edanim_mtl_zoff)->opacity = 1.0f;
+    (edanim_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edanim_mtl_zoff);
     edanim_options_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edanimcbCancelOptMenu, (char *)("Options"));
     if (!edanim_options_menu) {
         return;

@@ -1015,31 +1015,31 @@ void edpartDataMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern struct PC_SCENE_MTL_VIEW *edpart_mtl;
-extern struct PC_SCENE_MTL_VIEW *edpart_boxmtl;
+extern NUMTL *edpart_mtl;
+extern NUMTL *edpart_boxmtl;
 extern i32 edpart_first_time_this_level;
 extern i32 edpart_curr;
 
 void edpartInit(void) {
     edpart_first_time_this_level = 1;
-    edpart_mtl = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate3D(1);
-    ((NUMTL *)edpart_mtl)->diffuse_r = 0.5f;
-    ((NUMTL *)edpart_mtl)->diffuse_g = 0.5f;
-    ((NUMTL *)edpart_mtl)->diffuse_b = 0.5f;
-    ((NUMTL *)edpart_mtl)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edpart_mtl)->attribs.z_mode = NUMTL_ZMODE_NORMAL;
-    ((NUMTL *)edpart_mtl)->opacity = 1.0f;
-    ((NUMTL *)edpart_mtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edpart_mtl);
-    edpart_boxmtl = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)edpart_boxmtl)->diffuse_r = 0.5f;
-    ((NUMTL *)edpart_boxmtl)->diffuse_g = 0.5f;
-    ((NUMTL *)edpart_boxmtl)->diffuse_b = 0.5f;
-    ((NUMTL *)edpart_boxmtl)->attribs.cull_mode = NUMTL_CULL_NONE;
-    ((NUMTL *)edpart_boxmtl)->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ((NUMTL *)edpart_boxmtl)->opacity = 1.0f;
-    ((NUMTL *)edpart_boxmtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    NuMtlUpdate((NUMTL *)edpart_boxmtl);
+    edpart_mtl = NuMtlCreate3D(1);
+    (edpart_mtl)->diffuse_r = 0.5f;
+    (edpart_mtl)->diffuse_g = 0.5f;
+    (edpart_mtl)->diffuse_b = 0.5f;
+    (edpart_mtl)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edpart_mtl)->attribs.z_mode = NUMTL_ZMODE_NORMAL;
+    (edpart_mtl)->opacity = 1.0f;
+    (edpart_mtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edpart_mtl);
+    edpart_boxmtl = NuMtlCreate(1);
+    (edpart_boxmtl)->diffuse_r = 0.5f;
+    (edpart_boxmtl)->diffuse_g = 0.5f;
+    (edpart_boxmtl)->diffuse_b = 0.5f;
+    (edpart_boxmtl)->attribs.cull_mode = NUMTL_CULL_NONE;
+    (edpart_boxmtl)->attribs.z_mode = NUMTL_ZMODE_OFF;
+    (edpart_boxmtl)->opacity = 1.0f;
+    (edpart_boxmtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    NuMtlUpdate(edpart_boxmtl);
     edpart_nearest = -1;
     edpart_curr = -1;
     edpart_create_type = -1;
@@ -1504,8 +1504,8 @@ i32 edpartSaveEffects(char *filename, u8 page) {
 }
 
 struct eduimenu_s *edpart_varstart_menu = 0;
-struct PC_SCENE_MTL_VIEW *edpart_boxmtl = 0;
-struct PC_SCENE_MTL_VIEW *edpart_mtl = 0;
+NUMTL *edpart_boxmtl = 0;
+NUMTL *edpart_mtl = 0;
 NUVEC edpart_entry_position = {0};
 i32 edpart_curr = 0;
 struct eduimenu_s *edpart_emittime_menu = 0;

@@ -187,27 +187,6 @@ extern "C" {
 
     /* numtl PS half. */
 
-    typedef struct FRAME_MTL_ANIM_DESC { // size 0x14
-        u8 u_mode;                       // 0x00
-        u8 v_mode;                       // 0x01
-        u8 reserved02[2];                // 0x02
-        f32 u_amplitude;                 // 0x04
-        f32 v_amplitude;                 // 0x08
-        f32 u_frequency;                 // 0x0c
-        f32 v_frequency;                 // 0x10
-    } FRAME_MTL_ANIM_DESC;
-
-    typedef struct FRAME_MTL_ANIM {          // size 0x248
-        u8 reserved00[0x7b];                 // 0x000
-        u8 disable_u_animation;              // 0x07b
-        u8 disable_v_animation;              // 0x07c
-        u8 reserved7d[0x143];                // 0x07d
-        i32 texture_animation_data[4];       // 0x1c0
-        f32 texture_animation_offsets[4][2]; // 0x1d0
-        u8 reserved1f0[8];                   // 0x1f0
-        FRAME_MTL_ANIM_DESC animation[4];    // 0x1f8
-    } FRAME_MTL_ANIM;
-
     typedef struct FRAME_MTL_ANIM_SET {  // size 0x10
         NUDISPLAY_LIST *scene;           // 0x0
         i32 material_count;              // 0x4
@@ -223,7 +202,7 @@ extern "C" {
     i32 NuMainRendererControl = 1;
 
     i32 NuRndrControlState = 0;
-    void *NuDisplayHandlerMaterial = NULL;
+    NUMTL *NuDisplayHandlerMaterial = NULL;
     GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectBackBufferTexture = 0;
 
     /* The shadow-volume pass reads the arena globals that nurndr.c defines as pointers through array
@@ -915,21 +894,6 @@ extern "C" {
     extern "C" PC_GEOMETRY_BASIS *PcGeometryTransforms;
     extern "C" PC_GEOMETRY_OUTPUT *PcGeometryOutput;
 
-    typedef struct PC_MATERIAL_UPDATE_VIEW {     // size 0x2c4
-        u8 unknown_00[0x3c];                     // 0x000
-        void *display;                           // 0x03c
-        u8 unknown_40[4];                        // 0x040
-        u32 attribs;                             // 0x044
-        u8 unknown_48[0xc];                      // 0x048
-        NUVEC diffuse;                           // 0x054
-        u8 unknown_60[0x14];                     // 0x060
-        i16 texture_id;                          // 0x074
-        u8 unknown_76[0x3e];                     // 0x076
-        PC_MATERIAL_SHADER_DESC_VIEW shader;     // 0x0b4
-        PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
-        u16 version;                             // 0x2c0
-    } PC_MATERIAL_UPDATE_VIEW;
-
     typedef struct PC_SHADER_HANDLE_VIEW { // size 0x2
         i16 handle;                        // 0x0
     } PC_SHADER_HANDLE_VIEW;
@@ -940,8 +904,6 @@ extern "C" {
         i32 ShaderVariant16();
         i32 ShaderVariant1();
     };
-
-    typedef struct PC_MATERIAL_CREATE_SHADER PC_MATERIAL_CREATE_SHADER;
 
     extern "C" {
         extern const DWORD dat_00769710[76] = {
@@ -1322,11 +1284,6 @@ extern "C" {
         f32 viewport[4];                 // 0x84
     } PC_DL_CAMERA_READER;
 
-    typedef struct PC_DL_MATERIAL_READER { // size 0x44
-        u8 unknown_0000[0x40];             // 0x00
-        u32 reflection_flags;              // 0x40
-    } PC_DL_MATERIAL_READER;
-
     typedef struct PC_DL_CAMERA_PROJECTION_READER { // size 0x50
         NUMTX projection;                           // 0x00
         f32 viewport[4];                            // 0x40
@@ -1397,11 +1354,6 @@ extern "C" {
         PC_BUFFER_RESOURCE *dynamic_buffer; // 0x30
         void *dynamic_vertices;             // 0x34
     } PC_DL_GEOMETRY_READER;
-
-    typedef struct PC_DL_GEOMETRY_MATERIAL_READER { // size 0x270
-        u8 unknown_0000[0x26c];                     // 0x000
-        u32 lightmap_flags;                         // 0x26c
-    } PC_DL_GEOMETRY_MATERIAL_READER;
 
     typedef struct PC_DL_FACEON_DRAW_READER { // size 0x10
         u32 unknown_0000;                     // 0x0
@@ -1477,18 +1429,6 @@ extern "C" {
         }
         return 0;
     }
-
-    /* The material fields the atlas font set-up writes. */
-    typedef struct nuqfnt_atlas_material_s { // size 0x78
-        u8 unknown_000[0x40];                // 0x00
-        u32 attributes;                      // 0x40
-        u32 attributes_high;                 // 0x44
-        u8 unknown_048[0xc];                 // 0x48
-        NUVEC diffuse;                       // 0x54
-        u8 unknown_060[0x10];                // 0x60
-        f32 opacity;                         // 0x70
-        i16 texture_id;                      // 0x74
-    } NUQFNT_ATLAS_MATERIAL;
 
 #define NUQFNT_ATLAS_MAP_SIZE 808
 #define NUQFNT_ATLAS_GLYPH_SIZE 750
@@ -2883,7 +2823,7 @@ extern "C" {
     /* Font material set-up used by the atlas builder; mirrors NuQFntReadPS. */
     static i32 NuQFntAtlasReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
         NUQFNT_RENDER_DATA *platform;
-        NUQFNT_ATLAS_MATERIAL *material;
+        NUMTL *material;
 
         (void)end;
         NuTexGetWidth(texture_id);
@@ -2897,45 +2837,40 @@ extern "C" {
         font->y_scale = &platform->y_scale;
         font->material = NuMtlCreateEx(1, plane);
         if (font->material != NULL) {
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->diffuse.x = 1.0f;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->diffuse.y = 1.0f;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->diffuse.z = 1.0f;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes =
-                (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~0x1000U) | 0x2000U;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes |= 0xc000U;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->opacity = 1.0f;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes = (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~14U) | 1U;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes |= 0x40000U;
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->texture_id = (i16)texture_id;
-            material = (NUQFNT_ATLAS_MATERIAL *)font->material;
+            font->material->diffuse_r = 1.0f;
+            font->material->diffuse_g = 1.0f;
+            font->material->diffuse_b = 1.0f;
+            font->material->attribs.word = (font->material->attribs.word & ~0x1000U) | 0x2000U;
+            font->material->attribs.word |= 0xc000U;
+            font->material->opacity = 1.0f;
+            font->material->attribs.word = (font->material->attribs.word & ~14U) | 1U;
+            font->material->attribs.word |= 0x40000U;
+            font->material->texture_id = (i16)texture_id;
+            material = font->material;
             if (flags & NUQFNT_3D) {
-                material->attributes_high &= ~4U;
+                material->attribs2 &= ~4U;
             } else {
-                material->attributes_high |= 4U;
+                material->attribs2 |= 4U;
             }
-            ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes =
-                (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~0x10000U) | 0x20000U;
+            font->material->attribs.word = (font->material->attribs.word & ~0x10000U) | 0x20000U;
             if (flags & NUQFNT_OPAQUE) {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes &= ~15U;
+                font->material->attribs.word &= ~15U;
             } else {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes = (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~14U) | 1U;
+                font->material->attribs.word = (font->material->attribs.word & ~14U) | 1U;
             }
             if (flags & NUQFNT_Z_BUFFERED) {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes &= ~0xc000U;
+                font->material->attribs.word &= ~0xc000U;
             } else if (flags & NUQFNT_Z_READ_ONLY) {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes =
-                    (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~0x8000U) | 0x4000U;
+                font->material->attribs.word = (font->material->attribs.word & ~0x8000U) | 0x4000U;
             } else {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes |= 0xc000U;
+                font->material->attribs.word |= 0xc000U;
             }
             if (flags & 4) {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes =
-                    (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~0x20U) | 0x10U;
+                font->material->attribs.word = (font->material->attribs.word & ~0x20U) | 0x10U;
             } else if (flags & 0x10) {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes =
-                    (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~0x10U) | 0x20U;
+                font->material->attribs.word = (font->material->attribs.word & ~0x10U) | 0x20U;
             } else {
-                ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes &= ~0x30U;
+                font->material->attribs.word &= ~0x30U;
             }
             NuMtlUpdate(font->material);
             return 1;
@@ -4889,11 +4824,10 @@ extern "C" {
         }
     }
 
-    void NuMtlCreatePS(NUMTL *material, i32 is_3d) {
-        PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
-        NuShaderMtlDescInit(reinterpret_cast<PC_MATERIAL_CREATE_SHADER *>(&mtl->shader));
+    void NuMtlCreatePS(NUMTL *mtl, i32 is_3d) {
+        NuShaderMtlDescInit(&mtl->shader);
         if (mtl->texture_id > 0) {
-            mtl->shader.diffuse_map_id = mtl->texture_id;
+            mtl->shader.diffuse_map_ids[0] = mtl->texture_id;
             if (mtl->shader.texture_unit_count <= 0) {
                 mtl->shader.texture_unit_count = 1;
             }
@@ -4901,24 +4835,23 @@ extern "C" {
                 mtl->shader.vertex_format = (mtl->shader.vertex_format & 0xffffcfff) | 0x800;
             }
         } else {
-            u32 colour = static_cast<u8>(mtl->diffuse.z * 255.0) | 0xffffff00;
-            colour = (colour << 8) | static_cast<u8>(mtl->diffuse.y * 255.0);
-            colour = (colour << 8) | static_cast<u8>(mtl->diffuse.x * 255.0);
-            mtl->shader.packed_diffuse_colour = colour;
+            u32 colour = static_cast<u8>(mtl->diffuse_b * 255.0) | 0xffffff00;
+            colour = (colour << 8) | static_cast<u8>(mtl->diffuse_g * 255.0);
+            colour = (colour << 8) | static_cast<u8>(mtl->diffuse_r * 255.0);
+            mtl->shader.diffuse_colours[0] = colour;
         }
         if (is_3d == 0) {
             mtl->shader.vertex_format |= 0x40000;
         }
     }
 
-    void NuMtlUpdatePS(NUMTL *material) {
-        PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
+    void NuMtlUpdatePS(NUMTL *mtl) {
         PC_MATERIAL_DEVICE_CAPS_VIEW *device = reinterpret_cast<PC_MATERIAL_DEVICE_CAPS_VIEW *>(&PCDeviceBackend);
         PC_SHADER_HANDLE_VIEW *shader;
         PC_SHADER_HANDLE_VIEW *variant;
         NudxFw_D3DBeginCriticalSection();
         if (mtl->texture_id > 0) {
-            mtl->shader.diffuse_map_id = mtl->texture_id;
+            mtl->shader.diffuse_map_ids[0] = mtl->texture_id;
             if (mtl->shader.texture_unit_count <= 0) {
                 mtl->shader.texture_unit_count = 1;
             }
@@ -4926,65 +4859,63 @@ extern "C" {
                 mtl->shader.vertex_format = (mtl->shader.vertex_format & 0xffffcfff) | 0x800;
             }
         }
-        if ((mtl->attribs & 0x800000) != 0 && mtl->display == NULL) {
+        if ((mtl->attribs2 & 0x800000) != 0 && mtl->display_list == NULL) {
             mtl->shader.vertex_format |= 0x40000;
         }
-        if (mtl->shader.shader_handle > 0) {
-            NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handle));
+        if (mtl->shader.shader_handles[0] > 0) {
+            NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handles[0]));
         }
-        if (mtl->shader.shader_variant_handle > 0) {
-            NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_variant_handle));
+        if (mtl->shader.shader_handles[1] > 0) {
+            NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handles[1]));
         }
-        if ((mtl->attribs & 0x800000) != 0 && mtl->display == NULL) {
+        if ((mtl->attribs2 & 0x800000) != 0 && mtl->display_list == NULL) {
             shader = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(
                 NuShaderManagerRetrieveShader(reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                                              reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(material)));
-            mtl->shader.shader_handle = shader->handle;
+                                              reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl)));
+            mtl->shader.shader_handles[0] = shader->handle;
         } else {
             shader = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(NuShaderManagerRetrieveShaderVariant(
                 reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(material), device->ShaderVariant16()));
+                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant16()));
             variant = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(NuShaderManagerRetrieveShaderVariant(
                 reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(material), device->ShaderVariant1()));
-            mtl->shader.shader_handle = shader->handle;
-            mtl->shader.shader_variant_handle = variant->handle;
+                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant1()));
+            mtl->shader.shader_handles[0] = shader->handle;
+            mtl->shader.shader_handles[1] = variant->handle;
         }
         mtl->vertex_declaration = NuGetVertexDeclaration(mtl->shader.vertex_format);
         if (mtl->texture_id == 0) {
-            u32 colour = static_cast<u8>(mtl->diffuse.z * 255.0) | 0xffffff00;
+            u32 colour = static_cast<u8>(mtl->diffuse_b * 255.0) | 0xffffff00;
             colour <<= 8;
-            colour |= static_cast<u8>(mtl->diffuse.y * 255.0);
+            colour |= static_cast<u8>(mtl->diffuse_g * 255.0);
             colour <<= 8;
-            colour |= static_cast<u8>(mtl->diffuse.x * 255.0);
-            mtl->shader.packed_diffuse_colour = colour;
+            colour |= static_cast<u8>(mtl->diffuse_r * 255.0);
+            mtl->shader.diffuse_colours[0] = colour;
         }
         NudxFw_D3DEndCriticalSection();
     }
 
     void NuMtlSetUVOffsetPS(NUMTL *mtl, u32 layer, f32 u, f32 v) {
-        FRAME_MTL_ANIM *view = (FRAME_MTL_ANIM *)mtl;
-        view->texture_animation_offsets[layer][0] = u;
-        view->texture_animation_offsets[layer][1] = v;
+        mtl->shader.animation_offsets[layer][0] = u;
+        mtl->shader.animation_offsets[layer][1] = v;
     }
 
-    void NuMtlSetShaderDescPS(NUMTL *material, const PC_MATERIAL_SHADER_DESC_VIEW *description) {
-        PC_MATERIAL_UPDATE_VIEW *mtl = reinterpret_cast<PC_MATERIAL_UPDATE_VIEW *>(material);
+    void NuMtlSetShaderDescPS(NUMTL *mtl, const NUSHADERMTLDESC *description) {
         i32 colour;
         mtl->shader = *description;
-        colour = mtl->shader.packed_diffuse_colour;
-        mtl->diffuse.x = (colour & 0xff) / 255.0;
-        mtl->diffuse.y = ((colour >> 8) & 0xff) / 255.0;
-        mtl->diffuse.z = ((colour >> 16) & 0xff) / 255.0;
+        colour = mtl->shader.diffuse_colours[0];
+        mtl->diffuse_r = (colour & 0xff) / 255.0;
+        mtl->diffuse_g = ((colour >> 8) & 0xff) / 255.0;
+        mtl->diffuse_b = ((colour >> 16) & 0xff) / 255.0;
     }
 
     void NuDisplayListReflection(void *arg) {
         i32 reflection = *(i32 *)arg;
-        PC_DL_MATERIAL_READER *material;
+        NUMTL *material;
         NuDisplayHandlerReflection = reflection;
-        material = (PC_DL_MATERIAL_READER *)NuDisplayHandlerMaterial;
+        material = NuDisplayHandlerMaterial;
         if (material != NULL) {
-            switch ((material->reflection_flags >> 12) & 3) {
+            switch ((material->attribs.word >> 12) & 3) {
                 case 0:
                     if (reflection != 0) {
                         PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
@@ -5405,7 +5336,7 @@ extern "C" {
 
     void NuGScnDestroyPS(NUGSCN *scene) {
         SCENE_FIXUP_NATIVE *native = (SCENE_FIXUP_NATIVE *)scene->native_scene;
-        PC_SCENE_MTL_VIEW *material;
+        NUMTL *material;
         i32 i;
         i32 j;
         u8 released;
@@ -5444,11 +5375,11 @@ extern "C" {
                 }
             }
         }
-        material = (PC_SCENE_MTL_VIEW *)scene->materials[0];
+        material = scene->materials[0];
         for (i = 0; i < scene->material_count; ++i, ++material) {
             for (j = 0; j < 2; ++j) {
-                if (material->shader_handles[j] > 0) {
-                    PC_SHADER_RECORD_VIEW *record = PCShaderRecordFromHandle(material->shader_handles[j]);
+                if (material->shader.shader_handles[j] > 0) {
+                    PC_SHADER_RECORD_VIEW *record = PCShaderRecordFromHandle(material->shader.shader_handles[j]);
                     record->ref_count--;
                 }
             }
@@ -6211,14 +6142,14 @@ extern "C" {
 
     void NuDisplayListDrawGeometry(void *arg) {
         PC_DL_GEOMETRY_READER *packet = (PC_DL_GEOMETRY_READER *)arg;
-        PC_DL_GEOMETRY_MATERIAL_READER *material = (PC_DL_GEOMETRY_MATERIAL_READER *)NuDisplayHandlerMaterial;
+        NUMTL *material = NuDisplayHandlerMaterial;
         u32 primitive_count;
         const void *vertices;
         if (packet == NULL || PCShaderCurrentObject() == NULL || packet->vertex_count == 0) {
             return;
         }
         primitive_count = packet->primitive_count;
-        if (material->lightmap_flags & 0x4000000) {
+        if (material->shader.layer_flags & 0x4000000) {
             NuDisplayListUpdateLightmap();
         }
         vertices = packet + 1;
@@ -7522,41 +7453,22 @@ extern "C" void NuDisplayListShadowTransformTranspose(void *data) {
     matrix->m32 = saved32;
 }
 
-typedef struct PC_SHADOW_MATERIAL_READER { // size 0x2c0
-
-    union { // size 0x9c
-        NUMTL common;
-
-        struct {                  // size 0x44
-            u8 unknown_000[0x40]; // 0x000
-            u32 attributes_word;  // 0x040
-        };
-    }; // 0x000
-
-    u8 unknown_09c[0x154];                   // 0x09c
-    u32 vertex_format;                       // 0x1f0
-    i16 shader_id;                           // 0x1f4
-    i16 shadow_shader_id;                    // 0x1f6
-    u8 unknown_1f8[0xc4];                    // 0x1f8
-    PC_TEXTURE_RESOURCE *vertex_declaration; // 0x2bc
-} PC_SHADOW_MATERIAL_READER;
-
 extern "C" void NuDisplayListShadowMaterial(void *data) {
-    PC_SHADOW_MATERIAL_READER *material = (PC_SHADOW_MATERIAL_READER *)data;
-    NuShaderObject *shader = (NuShaderObject *)PCShaderRecordFromHandle((u32)(i32)material->shadow_shader_id);
+    NUMTL *material = (NUMTL *)data;
+    NuShaderObject *shader = (NuShaderObject *)PCShaderRecordFromHandle((u32)(i32)material->shader.shader_handles[1]);
     if (shader != NULL) {
         NuDisplayHandlerMaterial = material;
-        if (!(material->vertex_format & 0x300000) && material->common.display_list != NULL) {
-            PCShaderSetMaterialParameters(shader, &material->common);
+        if (!(material->shader.vertex_format & 0x300000) && material->display_list != NULL) {
+            PCShaderSetMaterialParameters(shader, material);
             NuShaderManagerBindShader(shader);
             PCDeviceSetVertexDeclaration(material->vertex_declaration);
         }
-        u32 flags = material->attributes_word;
+        u32 flags = material->attribs.word;
         u32 z_mode = flags & 0xc000;
         if (z_mode == 0x4000) {
-            material->attributes_word = (flags & 0xffff7fff) | z_mode;
+            material->attribs.word = (flags & 0xffff7fff) | z_mode;
         }
-        NuMtlSetRenderStatesPS(&material->common);
+        NuMtlSetRenderStatesPS(material);
         PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
     }
 }
@@ -8252,11 +8164,11 @@ extern "C" {
                 if (((FRAME_MTL_SCENE *)scene->gscene)->shader_texture_animation_enabled != 0) {
                     i32 j;
                     for (j = 0; j < (i32)scene->material_count; ++j) {
-                        FRAME_MTL_ANIM *material = (FRAME_MTL_ANIM *)scene->display_materials[j];
+                        NUMTL *material = scene->display_materials[j];
                         i32 layer;
                         for (layer = 0; layer < 4; ++layer) {
-                            material->texture_animation_offsets[layer][0] = 0.0f;
-                            material->texture_animation_offsets[layer][1] = 0.0f;
+                            material->shader.animation_offsets[layer][0] = 0.0f;
+                            material->shader.animation_offsets[layer][1] = 0.0f;
                         }
                     }
                 }
@@ -8513,53 +8425,35 @@ extern "C" {
         NuRndrInitGeneric();
     }
 
-    typedef struct PC_STARTUP_MATERIAL_READER { // size 0x78
-        u8 unknown_00[0x40];                    // 0x00
-        u32 render_flags;                       // 0x40
-        u32 secondary_flags;                    // 0x44
-        u8 unknown_48[0xc];                     // 0x48
-        NUVEC diffuse;                          // 0x54
-        u8 unknown_60[0x10];                    // 0x60
-        f32 opacity;                            // 0x70
-        i16 texture_id;                         // 0x74
-        i16 sort_priority;                      // 0x76
-    } PC_STARTUP_MATERIAL_READER;
-
-#define STARTUP_MATERIAL(material) ((PC_STARTUP_MATERIAL_READER *)(material))
-
     void NuRndrInitStartupMaterials(void) {
         PCStartupMaterial1 = NuMtlCreate(1);
-        STARTUP_MATERIAL(PCStartupMaterial1)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial1)->diffuse.y =
-            STARTUP_MATERIAL(PCStartupMaterial1)->diffuse.x = 1.0f;
-        STARTUP_MATERIAL(PCStartupMaterial1)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial1)->render_flags & ~0x1000u) | 0x2000u;
-        STARTUP_MATERIAL(PCStartupMaterial1)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial1)->render_flags & ~0x8000u) | 0x4000u;
-        STARTUP_MATERIAL(PCStartupMaterial1)->opacity = 0.999f;
-        STARTUP_MATERIAL(PCStartupMaterial1)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial1)->render_flags & 0xfffffff1u) | 1u;
-        STARTUP_MATERIAL(PCStartupMaterial1)->secondary_flags = (STARTUP_MATERIAL(PCStartupMaterial1)->secondary_flags & ~2u) | 1u;
-        STARTUP_MATERIAL(PCStartupMaterial1)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial1)->render_flags & ~0x200u) | 0x100u;
-        STARTUP_MATERIAL(PCStartupMaterial1)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial1)->render_flags & ~0x800u) | 0x400u;
-        STARTUP_MATERIAL(PCStartupMaterial1)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial1)->render_flags & ~0x10000u) | 0x20000u;
-        STARTUP_MATERIAL(PCStartupMaterial1)->texture_id = 0;
-        STARTUP_MATERIAL(PCStartupMaterial1)->sort_priority = 0x100;
+        PCStartupMaterial1->diffuse_b = PCStartupMaterial1->diffuse_g = PCStartupMaterial1->diffuse_r = 1.0f;
+        PCStartupMaterial1->attribs.word = (PCStartupMaterial1->attribs.word & ~0x1000u) | 0x2000u;
+        PCStartupMaterial1->attribs.word = (PCStartupMaterial1->attribs.word & ~0x8000u) | 0x4000u;
+        PCStartupMaterial1->opacity = 0.999f;
+        PCStartupMaterial1->attribs.word = (PCStartupMaterial1->attribs.word & 0xfffffff1u) | 1u;
+        PCStartupMaterial1->attribs2 = (PCStartupMaterial1->attribs2 & ~2u) | 1u;
+        PCStartupMaterial1->attribs.word = (PCStartupMaterial1->attribs.word & ~0x200u) | 0x100u;
+        PCStartupMaterial1->attribs.word = (PCStartupMaterial1->attribs.word & ~0x800u) | 0x400u;
+        PCStartupMaterial1->attribs.word = (PCStartupMaterial1->attribs.word & ~0x10000u) | 0x20000u;
+        PCStartupMaterial1->texture_id = 0;
+        PCStartupMaterial1->sort_priority = 0x100;
         NuMtlUpdate(PCStartupMaterial1);
 
         PCStartupMaterial2 = NuMtlCreate(1);
-        STARTUP_MATERIAL(PCStartupMaterial2)->diffuse.z = STARTUP_MATERIAL(PCStartupMaterial2)->diffuse.y =
-            STARTUP_MATERIAL(PCStartupMaterial2)->diffuse.x = 1.0f;
-        STARTUP_MATERIAL(PCStartupMaterial2)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial2)->render_flags & ~0x1000u) | 0x2000u;
-        STARTUP_MATERIAL(PCStartupMaterial2)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial2)->render_flags & ~0x8000u) | 0x4000u;
-        STARTUP_MATERIAL(PCStartupMaterial2)->opacity = 0.999f;
-        STARTUP_MATERIAL(PCStartupMaterial2)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial2)->render_flags & 0xfffffff2u) | 2u;
-        STARTUP_MATERIAL(PCStartupMaterial2)->secondary_flags = (STARTUP_MATERIAL(PCStartupMaterial2)->secondary_flags & ~2u) | 1u;
-        STARTUP_MATERIAL(PCStartupMaterial2)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial2)->render_flags & ~0x200u) | 0x100u;
-        STARTUP_MATERIAL(PCStartupMaterial2)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial2)->render_flags & ~0x800u) | 0x400u;
-        STARTUP_MATERIAL(PCStartupMaterial2)->render_flags = (STARTUP_MATERIAL(PCStartupMaterial2)->render_flags & ~0x10000u) | 0x20000u;
-        STARTUP_MATERIAL(PCStartupMaterial2)->texture_id = 0;
-        STARTUP_MATERIAL(PCStartupMaterial2)->sort_priority = 0x100;
+        PCStartupMaterial2->diffuse_b = PCStartupMaterial2->diffuse_g = PCStartupMaterial2->diffuse_r = 1.0f;
+        PCStartupMaterial2->attribs.word = (PCStartupMaterial2->attribs.word & ~0x1000u) | 0x2000u;
+        PCStartupMaterial2->attribs.word = (PCStartupMaterial2->attribs.word & ~0x8000u) | 0x4000u;
+        PCStartupMaterial2->opacity = 0.999f;
+        PCStartupMaterial2->attribs.word = (PCStartupMaterial2->attribs.word & 0xfffffff2u) | 2u;
+        PCStartupMaterial2->attribs2 = (PCStartupMaterial2->attribs2 & ~2u) | 1u;
+        PCStartupMaterial2->attribs.word = (PCStartupMaterial2->attribs.word & ~0x200u) | 0x100u;
+        PCStartupMaterial2->attribs.word = (PCStartupMaterial2->attribs.word & ~0x800u) | 0x400u;
+        PCStartupMaterial2->attribs.word = (PCStartupMaterial2->attribs.word & ~0x10000u) | 0x20000u;
+        PCStartupMaterial2->texture_id = 0;
+        PCStartupMaterial2->sort_priority = 0x100;
         NuMtlUpdate(PCStartupMaterial2);
     }
-
-#undef STARTUP_MATERIAL
 
     void NuRndrFx(i32 paused, void *context) {
         (void)context;

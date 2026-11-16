@@ -16,7 +16,6 @@ struct APIDEBRISSYS;
 struct FRAME_PAD;
 struct NUGSCN_s;
 struct SoundTable;
-struct PC_SCENE_MTL_VIEW;
 struct debris_collision_entry_s;
 struct debris_info_s;
 struct debris_key_s;
@@ -735,7 +734,7 @@ extern "C" {
 #endif
     extern struct debris_key_s *debkeydata;
     void AudioGroup_Parse(struct nufpar_s *);
-    void edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct PC_SCENE_MTL_VIEW *arg3, i32 arg4, i32 arg5);
+    void edbitsDrawCircleTilted(struct nuvec_s *arg0, f32 arg1, i32 arg2, struct numtl_s *arg3, i32 arg4, i32 arg5);
 #ifdef __cplusplus
 }
 #endif

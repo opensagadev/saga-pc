@@ -314,11 +314,6 @@ extern "C" void ResetStreaks(void) {
     streakhdrs_used = NULL;
 }
 
-struct STREAK_MATERIAL_SCALE { // size 0x68
-    u8 unknown_00[0x64];       // 0x00
-    f32 effect_scale;          // 0x64
-};
-
 extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     i32 i;
     for (i = 0; i < 32; ++i) {
@@ -345,12 +340,12 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakmtl->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
     streakmtl->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     streakmtl->attribs.filter_mode = 1;
-    reinterpret_cast<PC_SCENE_MTL_VIEW *>(streakmtl)->sort_pri = 500;
+    streakmtl->sort_priority = 500;
     streakmtl->attribs.unknown_2_1_2 = 2;
     streakmtl->attribs.unknown_2_4 = 1;
     buffer->addr = (buffer->addr + 15) & ~15u;
     streakmtl->particle_type_tag = -112;
-    reinterpret_cast<STREAK_MATERIAL_SCALE *>(streakmtl)->effect_scale = 5.0f;
+    streakmtl->effect_scale = 5.0f;
     streakmtl->texture_id = static_cast<i16>(NuTexRead(name, buffer, end));
     NuMtlUpdate(streakmtl);
     streakmtl_ref = NuMtlCreate3D(1);
@@ -363,8 +358,8 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakmtl_ref->attribs.unknown_2_1_2 = 2;
     streakmtl_ref->attribs.unknown_2_4 = 1;
     streakmtl_ref->particle_type_tag = -112;
-    reinterpret_cast<STREAK_MATERIAL_SCALE *>(streakmtl_ref)->effect_scale = 5.0f;
-    reinterpret_cast<PC_SCENE_MTL_VIEW *>(streakmtl_ref)->sort_pri = 1;
+    streakmtl_ref->effect_scale = 5.0f;
+    streakmtl_ref->sort_priority = 1;
     streakmtl_ref->texture_id = streakmtl->texture_id;
     NuMtlUpdate(streakmtl_ref);
 }

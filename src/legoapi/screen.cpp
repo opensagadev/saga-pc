@@ -55,17 +55,6 @@ extern "C" {
     i32 (*PauseRenderOffFn)(void) = NULL;
 }
 
-typedef struct STILL_RENDER_MATERIAL {   // size 0x2bc
-    u8 unknown_00[0x40];                 // 0x000
-    u32 attributes;                      // 0x040
-    u8 unknown_44[0x2c];                 // 0x044
-    f32 opacity;                         // 0x070
-    i16 texture_id;                      // 0x074
-    i16 sort_priority;                   // 0x076
-    u8 unknown_78[0x3c];                 // 0x078
-    PC_MATERIAL_SHADER_DESC_VIEW shader; // 0x0b4
-} STILL_RENDER_MATERIAL;
-
 extern "C" NUMTL *FadeMtl;
 extern "C" NUMTL *FadeMtl2;
 extern "C" NUMTL *ScreenFadeMtl;
@@ -598,19 +587,19 @@ extern "C" void DrawCutBorders(i32 widescreen) {
 
 extern "C" void InitStillRender(VARIPTR *buffer, VARIPTR end) {
     pause_rt = NuTexCreateFramebufferCopy(buffer, end);
-    STILL_RENDER_MATERIAL *material = (STILL_RENDER_MATERIAL *)NuMtlCreate3D(1);
+    NUMTL *material = NuMtlCreate3D(1);
     material->texture_id = (i16)pause_rt;
     material->opacity = 1.0f;
-    u32 attributes = (material->attributes & 0xfffee5d1u) | 0x6e511u;
+    u32 attributes = (material->attribs.word & 0xfffee5d1u) | 0x6e511u;
     u32 vertex_format = (material->shader.vertex_format & 0xffffcfff) | 0x40800;
-    pause_rndr_mtl = (NUMTL *)material;
+    pause_rndr_mtl = material;
     material->sort_priority = 0x7fff;
-    material->attributes = attributes;
+    material->attribs.word = attributes;
     material->shader.flags = 0x1000;
-    material->shader.packed_diffuse_colour = 0xffffffff;
+    material->shader.diffuse_colours[0] = 0xffffffff;
     material->shader.texture_unit_count = 1;
     material->shader.vertex_format = vertex_format;
-    NuMtlUpdate((NUMTL *)material);
+    NuMtlUpdate(material);
     pause_rndr_on = 0;
 }
 

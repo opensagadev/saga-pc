@@ -206,7 +206,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void *NuDisplayHandlerMaterial;
+    extern struct numtl_s *NuDisplayHandlerMaterial;
     extern i32 NuDisplayHandlerCameraId;
     extern f32 NuDisplayHandlerShadow;
     extern i32 PCGraphicsBoundShader;

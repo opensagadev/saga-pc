@@ -2384,7 +2384,7 @@ void APITransparentInit(void) {
     APITrans_Mtl[0]->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     APITrans_Mtl[0]->attribs.z_mode = NUMTL_ZMODE_NORMAL;
     APITrans_Mtl[0]->attribs.unknown_20_31 &= 0x807;
-    APITrans_Mtl[0]->unknown_076 = 0;
+    APITrans_Mtl[0]->sort_priority = 0;
     NuMtlUpdate(APITrans_Mtl[0]);
 
     APITrans_Mtl[1] = NuMtlCreate3D(1);
@@ -2397,7 +2397,7 @@ void APITransparentInit(void) {
     APITrans_Mtl[1]->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     APITrans_Mtl[1]->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
     APITrans_Mtl[1]->attribs.unknown_20_31 &= 0x807;
-    APITrans_Mtl[1]->unknown_076 = 0;
+    APITrans_Mtl[1]->sort_priority = 0;
     NuMtlUpdate(APITrans_Mtl[1]);
 }
 
