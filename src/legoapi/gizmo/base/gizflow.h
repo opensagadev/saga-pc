@@ -126,6 +126,7 @@ extern "C" {
     void ResetGizFlowPointers(struct GIZFLOW *system);
     void ProcessGizFlow(struct GIZFLOW *system, f32 delta_time);
     i32 ProcessGizmoFlowBox(struct GIZFLOW *system, FLOWBOX *box, u8 output);
+    extern struct GIZACTIONDEF *gizactiondefs;
 #ifdef __cplusplus
 }
 #endif

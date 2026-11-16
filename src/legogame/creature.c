@@ -445,9 +445,6 @@ typedef union DRAW_ATTACHMENTS_PACKET {
     u32 words[18];
 } DRAW_ATTACHMENTS_PACKET;
 
-/* Both calculated return paths end in an f32 store/reload. */
-f32 DropInOutScale(GAMEOBJECT *object);
-
 typedef struct CHARACTER_DRAW_HIERARCHY {
     u8 unknown_000[0x1a0];
     u8 suppress_shadow_surface_points;

@@ -9,6 +9,8 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+struct debris_key_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -39,6 +41,7 @@ extern "C" {
     i32 FindPartDebris(PARTDEBRISSYS *, char *);
     void AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
     i32 edpartPlace(i32 index, NUVEC *position);
+    void AddDebrisEffectToStack(struct debris_key_s *key);
 #ifdef __cplusplus
 }
 #endif

@@ -118,6 +118,7 @@ extern "C" {
     extern i32 stream_cut_issued;
     void CutScene_SnapToEnd(void *cut);
     i32 CutScene_IsSkippable(struct cutinfo_s *cut);
+    i32 CutScene_HasPlayed(struct cutinfo_s *cutscene);
 #ifdef __cplusplus
 }
 #endif

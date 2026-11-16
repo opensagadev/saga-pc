@@ -997,8 +997,6 @@ struct PC_CONTROL_VERTEX { // size 0x18
     f32 v;                 // 0x14
 };
 
-extern "C" void PcControlFontScale(VUFNT *, f32, f32, f32 *, f32 *);
-
 static void PcControlPrimColour(u32 colour) {
     u32 converted;
     if (NuPrimNeedsOverbrightening) {

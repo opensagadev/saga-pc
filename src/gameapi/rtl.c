@@ -2782,7 +2782,6 @@ void cbExcludeID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbUserID(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbLightType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbModifierType(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-void cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbLowColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbHighColour(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
 void cbMultiplier(eduimenu_s *menu, eduiitem_s *item, u32 buttons);

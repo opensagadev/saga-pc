@@ -2,6 +2,8 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "nu2api/numath/nuvec.h"
+
 struct eduiitem_s;
 struct eduimenu_s;
 
@@ -113,6 +115,9 @@ extern "C" {
     extern i32 edpart_part_list;
     extern i32 edpart_particle_list;
     void edpartOptMenu(void);
+    extern NUVEC edpart_copy_source_vec;
+    void edpartChangeMaxLifeMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    void edpartInstanceOrientMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
 #ifdef __cplusplus
 }
 #endif

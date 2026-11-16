@@ -2,6 +2,9 @@
 
 #include "nu2api/nucore/common.h"
 
+struct GIZMOPICKUP;
+struct area_data_s;
+struct gizmo_s;
 struct nuvec_s;
 
 struct WORLDINFO_s;
@@ -138,6 +141,9 @@ extern "C" {
     extern AREA_GLOBALS AreaGlobals;
     extern u8 *Game_LevelSave;
     void DumpAreaData(i32 mode, i32 last_area);
+    struct area_data_s *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
+    i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *, struct WORLDINFO_s *);
+    void SuperCounter_ActivateGizmoPickup(struct gizmo_s *, struct GIZMOPICKUP *);
 #ifdef __cplusplus
 }
 #endif

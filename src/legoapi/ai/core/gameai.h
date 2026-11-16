@@ -122,6 +122,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
+    void ClearSpecialMove(struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif

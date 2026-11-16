@@ -117,7 +117,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
-i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *, WORLDINFO *);
 
 typedef struct pickup_counter_turret_s { // size 0x13c
     u8 unknown_000[0x13a];               // 0x000
@@ -133,8 +132,6 @@ typedef struct pickup_counter_buildit_s { // size 0x6e
     u8 unknown_00[0x6d];                  // 0x00
     u8 build_state;                       // 0x6d
 } PICKUP_COUNTER_BUILDIT;
-
-void SuperCounter_ActivateGizmoPickup(GIZMO *, GIZMOPICKUP *);
 
 typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
     u8 unknown_00[0x17];                // 0x00

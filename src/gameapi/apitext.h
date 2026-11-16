@@ -234,6 +234,7 @@ extern "C" {
     extern u32 PcControlHeld[2];
     extern u32 PcControlPressed[2];
     i32 PcControlWrapText(char *, f32);
+    void PcControlFontScale(struct vufnt_s *, f32, f32, f32 *, f32 *);
 #ifdef __cplusplus
 }
 #endif

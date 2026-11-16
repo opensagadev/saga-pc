@@ -53,10 +53,6 @@ extern "C" {
     const char *TagAsciiDown = "\xC2\xA3";
 }
 
-extern "C" {
-    void ClearSpecialMove(GAMEOBJECT *);
-}
-
 typedef struct batman_prepare_s {      // size 0x8
     u32 capabilities;                  // 0x0
     AI_PREPARING_SPECIAL_MOVE prepare; // 0x4

@@ -955,8 +955,6 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     }
 }
 
-void AddDebrisEffectToStack(DEBRISKEY *key);
-
 typedef struct debris_animation_effect_s { // size 0xb0
     u8 unknown_000[0xa8];                  // 0x00
     i16 texture_frames;                    // 0xa8
@@ -969,10 +967,7 @@ typedef struct debris_animation_effect_s { // size 0xb0
     } animation_rate; // 0xac
 } DEBRIS_ANIMATION_EFFECT;
 
-void edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
-void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 extern NUMTL *edpart_mtl;
-extern NUVEC edpart_copy_source_vec;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
                     i32 outer_y, i32 colour, NUMTL *material);
 

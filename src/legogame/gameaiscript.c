@@ -290,7 +290,6 @@ typedef struct ai_trigger_object_s { // size 0x1073
     u8 grapple_direction;            // 0x1072
 } AI_TRIGGER_OBJECT;
 
-void ClearSpecialMove(GAMEOBJECT *object);
 f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
 
 u32 LEGO_AIPATHCNX_BIGJUMP;

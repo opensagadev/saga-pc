@@ -111,6 +111,7 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
     return 0;
 }
 
+/* Both calculated return paths end in an f32 store/reload. */
 f32 DropInOutScale(GAMEOBJECT *object) {
     const u8 context = (u8)(object->character_context);
     if (context == CHARACTER_CONTEXT_DROP_IN) {

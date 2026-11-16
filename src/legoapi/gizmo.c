@@ -52,7 +52,6 @@ typedef struct bolt_gizmo_type_s {                          // size 0x9c
 typedef NUVEC *(*GIZMO_GET_POS_FN)(GIZMO *gizmo);
 void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
-extern GIZACTIONDEF *gizactiondefs;
 
 typedef struct GIZMO_NAME_TYPE {     // size 0x9c
     u8 unknown_00[0x20];             // 0x00

@@ -164,9 +164,6 @@ extern "C" char AreaFixUpName_Gunship[];
 extern "C" char AreaFixUpName_Pursuit[];
 extern "C" char AreaFixUpName_Podsprint[];
 extern "C" char AreaFixUpName_Negotiations[];
-extern "C" {
-    void ClearSpecialMove(GAMEOBJECT *);
-}
 
 typedef struct ARCADE_COIN_PACKET {
     u32 coins;

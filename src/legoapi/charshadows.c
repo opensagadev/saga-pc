@@ -18,8 +18,6 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
 
-f32 DropInOutScale(GAMEOBJECT *object);
-
 void CharShadows_Reset(CHARACTER_SHADOW_PACKET *packet) {
     packet->shadows[0].position.y = 2000000.0f;
     packet->shadows[1].position.y = 2000000.0f;

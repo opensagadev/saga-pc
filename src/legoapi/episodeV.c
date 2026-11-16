@@ -81,7 +81,6 @@ struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
 
 /* Rotating rock at the end of AsteroidChase C. */
 
-void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA *level, f32 radius, f32 *distance);
 #define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
     do {                                                                                                                                   \
         GIZMO *gizmo = LevGizmo[gizmo_index];                                                                                              \

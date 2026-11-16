@@ -34,6 +34,7 @@ extern "C" {
     void DropInOutCode(struct gameobject_s *);
     void DropOut(i32, i32, i32, i32);
     extern i32 PlayerDevicePorts[2];
+    f32 DropInOutScale(struct gameobject_s *object);
 #ifdef __cplusplus
 }
 #endif

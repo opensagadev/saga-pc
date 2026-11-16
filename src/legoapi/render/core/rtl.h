@@ -6,6 +6,8 @@
 #include "nu2api/nucore/nulst.h"
 #include "nu2api/numath/nuvec.h"
 
+struct eduiitem_s;
+struct eduimenu_s;
 struct numtx_s;
 
 typedef struct RTL_DATA {                    // size 0x144
@@ -219,6 +221,7 @@ extern "C" {
     extern i32 rtl_helper_radius_mode;
     void fogFree(RTL_FOG_MIGRATION *fog);
     void rtlFree(RTL_LIGHT *light);
+    void cbModifierAdjust(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons);
 #ifdef __cplusplus
 }
 #endif

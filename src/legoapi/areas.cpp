@@ -38,7 +38,6 @@
 #include <string.h>
 
 extern "C" {
-    AREA_DATA *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
     void AreasConfigDiagnostic(char *message);
 }
 

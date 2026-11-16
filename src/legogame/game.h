@@ -387,6 +387,7 @@ extern "C" {
     void MenuDrawEndChallenge(struct menu_s *);
     void MenuUpdateEndChallenge(struct menu_s *);
     extern TIMER OverallGamePlayTimer;
+    void GizmoBlowupCreateStuff(struct GIZMOBLOWUP *);
 #ifdef __cplusplus
 }
 #endif

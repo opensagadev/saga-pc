@@ -21,11 +21,6 @@
  * EdClassInterface implementation for the light set (RTLHelper) that sits
  * beside the C rtl.c code. Editor-only and unreachable. */
 
-extern "C" {
-    void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32 data);
-    void cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-}
-
 /* The engine's VuVec helpers (the same header edlevelall.cpp uses). VC8 inlines them here and keeps
  * out-of-line copies; the Rtl names keep them apart from edlevelall's. */
 static inline void RtlVuVecCopy(VuVec &destination, const VuVec &source) {
@@ -151,8 +146,6 @@ template <class T> void EdValueControl<T>::AddMenuItem(eduimenu_s *menu, EdRef *
         eduiMenuAddItem(menu, control->item);
     }
 }
-
-void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 
 class RTLHelper : public EdClassInterface { // size 0xc
   public:

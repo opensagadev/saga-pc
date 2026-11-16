@@ -57,6 +57,7 @@ extern "C" {
     void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments);
     void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
     extern f32 rtl_helper_radius;
+    void cbRtlHelperModifiers(struct eduimenu_s *parent, struct eduiitem_s *item, u32 data);
 #ifdef __cplusplus
 }
 #endif
@@ -1060,4 +1061,8 @@ extern EdManipulator theDefaultManipulator;
 
 #ifdef __cplusplus
 i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
+#endif
+
+#ifdef __cplusplus
+void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 #endif

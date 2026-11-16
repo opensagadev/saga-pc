@@ -86,8 +86,6 @@ typedef struct {       // size 0x100
     u32 completed[16]; // 0xc0
 } BLOWUP_PROGRESS;
 
-void GizmoBlowupCreateStuff(GIZMOBLOWUP *);
-
 typedef struct respawn_initial_s { // size 0x112
     u8 unknown_000[0x10f];         // 0x000
     u8 initial_damage;             // 0x10f

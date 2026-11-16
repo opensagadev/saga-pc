@@ -401,8 +401,6 @@ void DeathStarEscapeD_Update(WORLDINFO *world) {
     LevChatterSfx("Dianoga_Groan", &position);
 }
 
-void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA *level, f32 radius, f32 *distance);
-
 void MosEisleyD_AlwaysUpdate(WORLDINFO *world) {
     LevelStreaming_DoorOverride(world, dat_0087b1c0, 7.5f, NULL);
 }
