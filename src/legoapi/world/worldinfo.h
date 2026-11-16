@@ -68,6 +68,8 @@ typedef struct AREA_LEVEL_LOAD { // size 0x8
 extern "C" {
 #endif
     void LevelStreaming_Update(struct WORLDINFO_s *);
+    void WorldInfo_Activate(void);
+    void WorldInfo_ClearAllIfScreenFaded(void);
 #ifdef __cplusplus
 }
 #endif

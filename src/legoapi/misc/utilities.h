@@ -55,6 +55,7 @@ extern "C" {
     void CreateUsefulMaterials(void);
     void InitTexAnimScripts(char **table);
     void SaveSceneObjectAnimTFactors(NUGSCN *scene);
+    void SetTexAnimSignals(void);
 #ifdef __cplusplus
 }
 #endif

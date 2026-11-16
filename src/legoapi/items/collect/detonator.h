@@ -11,6 +11,8 @@ extern "C" {
     extern f32 BatarangDetonatorHitDelay;
     void Detonator_MoveCode(GAMEOBJECT *);
     void Detonators_Reset(void);
+    void Detonators_Draw(void);
+    void Detonators_Update(void);
 #ifdef __cplusplus
 }
 #endif

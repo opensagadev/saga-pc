@@ -71,6 +71,8 @@ extern "C" {
     extern i16 RobotBaseId;
     void Grabber_Configure(WORLDINFO *, char *);
     void Grabber_Reset(WORLDINFO *world);
+    void Grabber_Draw(WORLDINFO *world);
+    void Grabber_Update(WORLDINFO *world);
 #ifdef __cplusplus
 }
 #endif
