@@ -76,7 +76,10 @@ typedef struct FRAME_PAD {        // size 0xa4
     u8 analog_left_pad_left;  // 0x95
     u8 analog_left_pad_up;    // 0x96
     u8 analog_left_pad_down;  // 0x97
-    u8 reserved98[4];         // 0x98
+    u8 analog_triangle;       // 0x98
+    u8 analog_circle;         // 0x99
+    u8 analog_cross;          // 0x9a
+    u8 analog_square;         // 0x9b
     u8 analog_l1;             // 0x9c
     u8 analog_r1;             // 0x9d
     u8 analog_l2;             // 0x9e

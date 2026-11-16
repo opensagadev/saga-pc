@@ -821,7 +821,6 @@ void xState(NUFPAR *parser) {
     VARIPTR *buffer;
     VARIPTR *end_buffer;
     AISTATE *state;
-    u32 state_address;
     char *name;
 
     if (aiscript_load_script == NULL || NuFParGetWord(parser) == 0) {
@@ -839,7 +838,7 @@ void xState(NUFPAR *parser) {
         AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
     }
     aiscript_load_state = state;
-    aiscript_load_refs = (NULISTHDR *)((u32)state + offsetof(AISTATE, reference_scripts));
+    aiscript_load_refs = &state->reference_scripts;
     if (state == NULL) {
         return;
     }
@@ -847,17 +846,16 @@ void xState(NUFPAR *parser) {
     name = AIScriptCopyString(parser->word_buffer_ptr, buffer, end_buffer);
     aiscript_load_state->name = name;
     if (NuStrICmp(name, "Base") == 0) {
-        NuLinkedListInsert((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT, states)), (NULISTLNK *)aiscript_load_state);
+        NuLinkedListInsert(&aiscript_load_script->states, (NULISTLNK *)aiscript_load_state);
     } else {
-        NuLinkedListAppend((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT, states)), (NULISTLNK *)aiscript_load_state);
+        NuLinkedListAppend(&aiscript_load_script->states, (NULISTLNK *)aiscript_load_state);
     }
 
     NuFParPushCom(parser, AIScriptStateCommands);
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
-        state_address = (u32)aiscript_load_state;
-        aiscript_load_conditions = (NULISTHDR *)(state_address + offsetof(AISTATE, conditions));
-        aiscript_load_actions = (NULISTHDR *)(state_address + offsetof(AISTATE, actions));
+        aiscript_load_conditions = &aiscript_load_state->conditions;
+        aiscript_load_actions = &aiscript_load_state->actions;
         NuFParInterpretWord(parser);
     }
     NuFParPopCom(parser);

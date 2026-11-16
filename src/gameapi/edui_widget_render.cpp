@@ -559,13 +559,13 @@ extern "C" eduiitem_s *eduiItemNumberCreate(u32 data, void *colours, i32 group, 
     return item;
 }
 
-struct EduiTextSelectorView { // size 0x70
+struct edui_text_selector_s { // size 0x70
     edui_slider_s slider;     // 0x00
     char **options;           // 0x6c
 };
 
 extern "C" i32 eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 y, i32 width, i32 unused_selected) {
-    EduiTextSelectorView *selector = (EduiTextSelectorView *)item;
+    edui_text_selector_s *selector = (edui_text_selector_s *)item;
     i32 height = (i32)(NuQFntHeight(edui_font) * 1.25) >> 3;
     f64 scaled_height = NuQFntHeight(edui_font) * 0.125;
     i32 baseline = (i32)(scaled_height + NuQFntBaseline(edui_font));
@@ -589,10 +589,10 @@ extern "C" i32 eduicbRenderTextSelector(eduimenu_s *unused_menu, eduiitem_s *ite
 
 extern "C" eduiitem_s *eduiItemTextSelectorCreate(u32 data, void *colours, i32 group, void *callback, i32 count, i32 value, char *text,
                                                   char **options) {
-    EduiTextSelectorView *item =
-        (EduiTextSelectorView *)NuAlloc(sizeof(EduiTextSelectorView), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x10e4);
+    edui_text_selector_s *item =
+        (edui_text_selector_s *)NuAlloc(sizeof(edui_text_selector_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x10e4);
     if (item) {
-        memset(item, 0, sizeof(EduiTextSelectorView));
+        memset(item, 0, sizeof(edui_text_selector_s));
         item->slider.base.data = data;
         item->slider.base.type = EDUIITEM_SLIDER;
         memcpy(item->slider.base.colours, colours, sizeof(item->slider.base.colours));
@@ -621,7 +621,7 @@ extern "C" eduiitem_s *eduiItemTextSelectorCreate(u32 data, void *colours, i32 g
     return NULL;
 }
 
-struct EduiSeparatorView {              // size 0x4c
+struct edui_separator_s {               // size 0x4c
     eduiitem_s base;                    // 0x00
     i32 (*interact)(edui_interact_s *); // 0x48
 };
@@ -646,8 +646,8 @@ extern "C" i32 eduicbRenderSeparator(eduimenu_s *unused_menu, eduiitem_s *item, 
 }
 
 extern "C" eduiitem_s *eduiItemSeparatorCreate(u32 data, const void *colours) {
-    EduiSeparatorView *item =
-        (EduiSeparatorView *)NuAlloc(sizeof(EduiSeparatorView), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1362);
+    edui_separator_s *item =
+        (edui_separator_s *)NuAlloc(sizeof(edui_separator_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x1362);
     if (item != NULL) {
         memset(item, 0, sizeof(*item));
         item->base.data = data;
@@ -2194,7 +2194,7 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
     } else {
         EduiColourSliderRepeatTimer = 30;
         if (pad->analog_l2) {
-            if (pad->reserved98[1]) {
+            if (pad->analog_circle) {
                 EduiColourSliderDynamicScale *= (f64)1.05f;
                 slider->normalized_value = MAX(0.0f, slider->normalized_value - (u32)pad->analog_l2 * EduiColourSliderDynamicScale);
             } else {
@@ -2207,7 +2207,7 @@ extern "C" i32 eduicbProcessColourSlider(eduimenu_s *menu, eduiitem_s *item, f32
                 slider->changed(menu, item, pad->digital_buttons);
             }
         } else if (pad->analog_r2) {
-            if (pad->reserved98[1]) {
+            if (pad->analog_circle) {
                 EduiColourSliderDynamicScale *= (f64)1.05f;
                 slider->normalized_value = MIN(1.0f, slider->normalized_value + (u32)pad->analog_r2 * EduiColourSliderDynamicScale);
             } else {

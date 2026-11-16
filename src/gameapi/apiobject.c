@@ -1760,7 +1760,7 @@ f32 GetAnimTimeRandom(CHARACTER_MODEL_LAYERS *model, i32 animation) {
 }
 
 static f32 UpdateAnimTimer(CHARACTER_MODEL_LAYERS *model, ANIMPACKET *packet, i16 animation, f32 time, f32 frame_step, f32 movement_speed,
-                           i32 report_events, char *reversed, i32 backwards, f32 backwards_multiplier) {
+                           i32 report_events, u8 *reversed, i32 backwards, f32 backwards_multiplier) {
     i32 looped = 0;
     f32 rate = model->animation_configs[animation]->playback_rate;
     f32 reference_speed = model->animation_configs[animation]->movement_speed;
@@ -1996,25 +1996,25 @@ update_timers:
     if (packet->overlay_animation != ACTION_NONE) {
         if (model->model_data_b[packet->requested_animation] != NULL && model->model_data_b[packet->overlay_animation] != NULL) {
             packet->blend_source_time = UpdateAnimTimer(model, packet, packet->requested_animation, packet->blend_source_time, frame_step,
-                                                        movement_speed, 0, (char *)&packet->reversed_3c, backwards, backwards_multiplier);
+                                                        movement_speed, 0, &packet->reversed_3c, backwards, backwards_multiplier);
             packet->blend_target_time = UpdateAnimTimer(model, packet, packet->overlay_animation, packet->blend_target_time, frame_step,
-                                                        movement_speed, 1, (char *)&packet->reversed_3d, backwards, backwards_multiplier);
+                                                        movement_speed, 1, &packet->reversed_3d, backwards, backwards_multiplier);
         }
     } else if (packet->blending != 0) {
         if (model->model_data_b[packet->blend_source_animation] != NULL && model->model_data_b[packet->blend_target_animation] != NULL) {
             packet->blend_source_time =
                 UpdateAnimTimer(model, packet, packet->blend_source_animation, packet->blend_source_time, frame_step, movement_speed, 0,
-                                (char *)&packet->reversed_3c, backwards, backwards_multiplier);
+                                &packet->reversed_3c, backwards, backwards_multiplier);
             packet->blend_target_time =
                 UpdateAnimTimer(model, packet, packet->blend_target_animation, packet->blend_target_time, frame_step, movement_speed, 1,
-                                (char *)&packet->reversed_3d, backwards, backwards_multiplier);
+                                &packet->reversed_3d, backwards, backwards_multiplier);
         }
     } else if (packet->animation_index != ACTION_NONE && model->model_data_b[packet->animation_index] != NULL) {
         if (paused != 0) {
             frame_step = 0.0f;
         }
         packet->current_time = UpdateAnimTimer(model, packet, packet->animation_index, packet->current_time, frame_step, movement_speed, 1,
-                                               (char *)&packet->reversed_3e, backwards, backwards_multiplier);
+                                               &packet->reversed_3e, backwards, backwards_multiplier);
     } else {
         i32 requested_animation;
 
