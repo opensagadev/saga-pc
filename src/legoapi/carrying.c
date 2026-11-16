@@ -121,7 +121,6 @@ void SuperCarry_PartImpact(PART *part) {
 static void SuperCarry_PartKill(PART *part, i32 unused) {
     GIZMOBLOWUP *blowup = ((CARRY_PART *)part)->blowup;
     CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
-    (void)unused;
     if (view->secondary_flags & 4) {
         SuperCarry_TurnBlowupBackOn(blowup, &part->position, part->rotation_y, 0);
     } else {

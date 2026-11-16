@@ -61,20 +61,14 @@ i32 GizmoFileReadName(char *name) {
 }
 
 static i32 DefaultGizmo_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-    (void)gizmo;
-    (void)output;
-    (void)mode;
     return 0;
 }
 
 static char *DefaultGizmo_GetOutputName(GIZMO *gizmo, i32 output) {
-    (void)gizmo;
-    (void)output;
     return "default";
 }
 
 static i32 DefaultGizmo_GetNumOutputs(GIZMO *gizmo) {
-    (void)gizmo;
     return 1;
 }
 
@@ -608,7 +602,6 @@ void GizmoActivate(void *system, void *gizmo_ptr, i32 active, i32 mode) {
     }
 
     type->fns.activate_fn(gizmo, active);
-    (void)mode;
 }
 
 void GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
@@ -635,7 +628,6 @@ void GizmoSetVisibility(void *system, void *gizmo_ptr, i32 visible, i32 mode) {
     }
 
     gizmotypes->types[gizmo->type_id].fns.set_visibility_fn(gizmo, visible);
-    (void)mode;
 }
 
 i32 GizmoGetVisibility(void *system, void *pointer) {
@@ -1089,7 +1081,6 @@ void GizmoActivateReverse(void *system, void *gizmo_ptr, i32 reverse, i32 visibi
     if (visibility != 0) {
         GizmoSetVisibility(system, gizmo, reverse == 0, 1);
     }
-    (void)mode;
 }
 
 #ifdef __cplusplus
@@ -1101,5 +1092,4 @@ extern "C" {
 
 /* Empty. */
 void GizmoDiagnostic(char *format, ...) {
-    (void)format;
 }

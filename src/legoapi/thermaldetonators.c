@@ -419,7 +419,6 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
 }
 
 i32 ShinyMetal_UpdateHint(HINT *hint) {
-    (void)hint;
     if (JABBASPALACE_ADATA == NULL || WORLD->current_level != JABBASPALACEB_LDATA ||
         Game.area_save[JABBASPALACE_ADATA->index].area_complete != 0 || Mission_Active(NULL) != NULL) {
         return 0;

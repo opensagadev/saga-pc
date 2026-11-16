@@ -206,7 +206,6 @@ i32 ProcessConditionFlowBox(GIZFLOW *flow, FLOWBOX *box, u8 frame) {
                 ResetForLoopEx(flow, box, box->children[i], gizflow_loop_checksum);
             }
         }
-        (void)frame;
         return 1;
     }
     if (box->parent_count != 0) {
@@ -234,7 +233,6 @@ i32 CheckOutputConditionFlowBox(GIZFLOW *system, FLOWBOX *box, u8 output) {
     } FlowCheckBox;
 
     FlowCheckBox *state = (FlowCheckBox *)box;
-    (void)output;
     if ((box->state_flags & 0x200) != 0) {
         u32 saved = state->flags.output_state;
         box->state_flags |= 0x400;
@@ -314,8 +312,6 @@ void PerformActionFlowBox(GIZFLOW *system, FLOWBOX *box) {
 }
 
 i32 CheckOutputActionFlowBox(GIZFLOW *system, FLOWBOX *box, u8 output) {
-    (void)system;
-    (void)output;
     return (box->state_flags_low >> 1) & 1;
 }
 
@@ -343,7 +339,6 @@ i32 ProcessGizmoFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
     for (i = 0; i < data->gizmo_count; ++i) {
         GizmoActivate(system->gizmo_sys, data->gizmos[i]->gizmo, 1, 1);
     }
-    (void)frame;
     return 1;
 }
 
@@ -360,7 +355,6 @@ i32 ProcessActionFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
         }
     }
     PerformActionFlowBox(system, box);
-    (void)frame;
     return 1;
 }
 
@@ -458,7 +452,6 @@ void ProcessFlowBox(GIZFLOW *system, FLOWBOX *box, u8 frame) {
 void ProcessGizFlow(GIZFLOW *system, f32 delta_time) {
     FLOWBOX *box;
     i32 i;
-    (void)delta_time;
     if (system == NULL) {
         return;
     }

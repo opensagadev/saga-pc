@@ -215,7 +215,6 @@ i32 Blowup_GetMaxGizmos(void *world_ptr) {
 void Blowup_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
-    (void)data;
     for (i = 0; i < w->gizmo_blowup_count; ++i) {
         if (NuStrLen(w->gizmo_blowups[i].name) != 0) {
             AddGizmo(giz, type, NULL, &w->gizmo_blowups[i]);
@@ -229,7 +228,6 @@ char *Blowup_GetGizmoName(GIZMO *gizmo) {
 
 i32 Blowup_GetOutput(GIZMO *gizmo, i32 output, i32 ignored) {
     GIZMOBLOWUP *blowup = gizmo->object;
-    (void)ignored;
     switch (output) {
         case BLOWUP_OUTPUT_BLOWN_UP:
             if ((blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
@@ -260,7 +258,6 @@ char *Blowup_GetOutputName(GIZMO *gizmo, i32 output) {
 }
 
 i32 Blowup_GetNumOutputs(GIZMO *unused) {
-    (void)unused;
     return 3;
 }
 
@@ -998,8 +995,6 @@ void GizmoBlowupEarlyUpdate(void *world_ptr, void *data, f32 delta_time) {
             animation->flags &= ~NUINSTANIM_FLAG_PLAYING;
         }
     }
-    (void)data;
-    (void)delta_time;
 }
 
 void PlayAnim(NUINSTANIM *animation, f32 *playback, f32 speed, i32 backwards) {
@@ -1024,8 +1019,6 @@ void GizmoBlowupLateUpdate(void *world_ptr, void *data, f32 delta_time) {
             type->animation_runtime_flags &= ~1;
         }
     }
-    (void)data;
-    (void)delta_time;
 }
 
 i32 GizmoBlowupTypeNameBlank(char *name) {
@@ -1205,7 +1198,6 @@ i32 gizmoblowup_Load(void *world_ptr, void *data) {
     NUINSTANIM *animation;
     NUVEC position;
     GIZMOBLOWUPTYPE *found_type;
-    (void)data;
     if (world->gizmo_blowup_types == NULL || world->gizmo_blowups == NULL) {
         return 0;
     }
@@ -1769,7 +1761,6 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
 
 void GizmoBlowup_HitBlowup(GAMEOBJECT *object, GIZMOBLOWUP *blowup, i32 hit_type, BOLT *bolt, NUVEC *position, u8 *hit_data, u32 mode,
                            i32 unused) {
-    (void)unused;
     if (GizmoBlowupBlowup(blowup, 1, hit_type, 1, NULL, 1)) {
         if (object != NULL) {
             NewRumble(object->player.pad->bound_pad, 0.4f, 0);
@@ -2139,7 +2130,6 @@ void Blowups_Reset(void *world_ptr, void *unused, void *progress_ptr) {
     i32 word;
     i32 old_visible;
     u32 bit;
-    (void)unused;
     if (world == NULL) {
         return;
     }
@@ -2177,8 +2167,6 @@ void GizmoBlowupDraw(void *world_ptr, void *data, f32 delta_time) {
     GIZMOBLOWUP *blowup = world->gizmo_blowups;
     NUMTX matrix;
     i32 index;
-    (void)data;
-    (void)delta_time;
     for (index = 0; index < world->gizmo_blowup_count; ++index, ++blowup) {
         if ((blowup->status_flags & BLOWUP_STATUS_VISIBLE) != 0) {
             i32 drawn = NuSpecialDrawAt(&blowup->type->animated_special, &blowup->transform);

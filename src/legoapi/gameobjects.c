@@ -92,7 +92,6 @@ GAMEOBJECT *AddGameObject(void) {
 void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     GAMEOBJECT *other;
     i32 i;
-    (void)unused;
     if (object == NULL) {
         return;
     }

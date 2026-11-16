@@ -564,7 +564,6 @@ void Punch_Hit(GAMEOBJECT *attacker, GAMEOBJECT *target, f32 unused, f32 gap) {
     u16 angle;
     i32 damage;
     PUNCH_BLOWUP_VIEW *blowup;
-    (void)unused;
     attacker->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
     if (LEGOCONTEXT_PUNCH != -1 && attacker->player.character_context == LEGOCONTEXT_PUNCH) {
         if (attacker->character_model->animations[attacker->player.unknown_7aa] != NULL) {

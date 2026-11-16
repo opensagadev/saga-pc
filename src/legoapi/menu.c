@@ -117,7 +117,6 @@ MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
     i32 index;
     i32 selected = -1;
     i32 previous_index;
-    (void)unused;
     MenuSetPlatformState(1);
     CurrentMenuId = menu_id;
     for (index = 0; index < MenusUsed; index++) {

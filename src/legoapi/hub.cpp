@@ -38,7 +38,6 @@ extern "C" {
 }
 
 extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {
-    (void)world;
 }
 
 extern "C" void Hub_DrawStarField(void) {

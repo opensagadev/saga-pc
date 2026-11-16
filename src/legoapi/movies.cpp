@@ -37,7 +37,6 @@ extern "C" {
     void Movies_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end) {
         NUFPAR *parser;
         char *destination;
-        (void)buffer_end;
         parser = NuFParCreate(path);
         if (parser == NULL) {
             MoviesListNoOp(path);

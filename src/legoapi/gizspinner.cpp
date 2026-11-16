@@ -84,7 +84,6 @@ extern "C" {
 }
 
 extern "C" void SpinnerMissingSpecial(char *format, ...) {
-    (void)format;
 }
 
 static void SpinnerMatrixSetRotationY(NUMTX *matrix, i32 angle) {
@@ -198,7 +197,6 @@ extern "C" i32 GizSpinner_Load(void *world_pointer, void *unused) {
     f32 end_frame;
     f32 frame_duration;
     f32 rounded_point;
-    (void)unused;
     if (world->spinners != NULL) {
         NuSpecialFind(things_scene, &thingsSceneBase, "Spinner_default_Base", 0);
         NuSpecialFind(things_scene, &thingsSceneArm, "Spinner_default_Arm", 0);
@@ -472,9 +470,6 @@ extern "C" void GizSpinner_Draw(void *world_pointer, void *data, f32 frame_time)
 }
 
 extern "C" void GizSpinner_PanelDraw(void *world, void *system, f32 frame_time) {
-    (void)world;
-    (void)system;
-    (void)frame_time;
 }
 
 extern "C" i32 GizSpinner_GetMaxGizmos(void *world_ptr) {
@@ -485,7 +480,6 @@ extern "C" i32 GizSpinner_GetMaxGizmos(void *world_ptr) {
 extern "C" void GizSpinner_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = (WORLDINFO *)world_ptr;
     i32 i;
-    (void)data;
     if (w->spinners == NULL) {
         return;
     }
@@ -1176,7 +1170,6 @@ extern "C" GIZSPINNER_s *GizSpinner_FindNearest(NUVEC *position, WORLDINFO *worl
 
 extern "C" i32 GizSpinner_GetOutput(void *gizmo_pointer, i32 output_index, i32 unused) {
     GIZSPINNER_s *spinner = (GIZSPINNER_s *)((GIZMO *)gizmo_pointer)->object;
-    (void)unused;
     if (spinner != NULL) {
         return GizSpinner_WithinOutput(spinner) == output_index;
     }
@@ -1336,8 +1329,6 @@ animation_updated:
 
 extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused_time) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;
-    (void)unused;
-    (void)unused_time;
     if (world == NULL || world->spinners == NULL) {
         return;
     }

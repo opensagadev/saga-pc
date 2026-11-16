@@ -750,7 +750,6 @@ extern "C" {
     volatile i32 waiting_for_level = 0;
 
     void WorldInfo_StreamLevel(BGPROCINFO *bg_info) {
-        (void)bg_info;
         LOG_INFO("Stream level begin: next_level=%d", next_level);
         PCDeviceResetState();
         if (LWORLD == WORLD && (Area == -1 || (ADataList[Area].flags & AREAFLAG_SINGLE_BUFFER) == 0)) {

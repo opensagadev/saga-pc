@@ -1016,7 +1016,6 @@ i32 edanimFileSave(char *path) {
 }
 
 void edanimRegisterBaseScene(NUGSCN *scene) {
-    (void)scene;
 }
 
 struct eduimenu_s *edanim_switchtype_menu = 0;

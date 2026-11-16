@@ -183,7 +183,6 @@ void UpdateRumble(RUMBLE_PACKET_RESOURCE *packet) {
 
 void NewRumble(void *pad, f32 strength, i32 ignored) {
     i32 amount;
-    (void)ignored;
     if (pad != NULL) {
         amount = (i32)(strength * 255.0);
         if (amount > 255) {
@@ -194,14 +193,12 @@ void NewRumble(void *pad, f32 strength, i32 ignored) {
 }
 
 void NewBuzz(void *pad, f32 duration, i32 ignored) {
-    (void)ignored;
     if (pad != NULL) {
         NuSound3AddRumble(pad, duration, 0, 0.0f, 0.0f);
     }
 }
 
 void NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
-    (void)ignored;
     if (pad != NULL) {
         NuSound3AddRumble(pad, (f32)frames / DEFAULTFPS, 0, 0.0f, 0.0f);
     }
@@ -210,7 +207,6 @@ void NewBuzzFrames(void *pad, i32 frames, i32 ignored) {
 void NewRumbleAllPlayers(f32 strength, f32 duration, i32 frames, i32 player_index) {
     i32 index;
     GAMEOBJECT *object;
-    (void)player_index;
 
     if (frames > 0) {
         f32 rounded_duration = (f64)frames / DEFAULTFPS;

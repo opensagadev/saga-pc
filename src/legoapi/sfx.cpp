@@ -16,7 +16,6 @@ f32 GetAudioFadeLevel(void) {
 }
 
 void SfxCheckMusicOnOff(OPTIONSSAVE *options) {
-    (void)options;
 }
 
 extern "C" void PlaySfxByIdAndSetVolumeAndPitch(i32 sfx_id, NUVEC *position, f32 volume, f32 pitch) {

@@ -1116,7 +1116,6 @@ extern "C" {
 
     i32 Push_UpdateHints(HINT *hint) {
         i32 index;
-        (void)hint;
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
             return 0;
         }

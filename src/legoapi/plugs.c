@@ -73,7 +73,6 @@ static i32 Plugs_Load(void *world_ptr, void *data) {
     CARRY_PLUG *plug;
     i32 i;
     i32 version;
-    (void)data;
     if (world == NULL || world->plug_system == NULL || world->plug_system->count != 0) {
         return 0;
     }
@@ -114,7 +113,6 @@ static void Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
     PLUG_PROGRESS *progress = progress_ptr;
     CARRY_PLUG *plug;
     i32 i;
-    (void)data;
     if (world == NULL || world->plug_system == NULL) {
         return;
     }
@@ -137,15 +135,9 @@ static void Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
 }
 
 static void Plugs_Update(void *world, void *data, f32 dt) {
-    (void)world;
-    (void)data;
-    (void)dt;
 }
 
 static void Plugs_Draw(void *world, void *data, f32 dt) {
-    (void)world;
-    (void)data;
-    (void)dt;
 }
 
 static i32 Plugs_GetMaxGizmos(void *world_ptr) {
@@ -156,7 +148,6 @@ static i32 Plugs_GetMaxGizmos(void *world_ptr) {
 static void Plugs_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     PLUG_WORLD_CALLBACKS *world = world_ptr;
     i32 i;
-    (void)data;
     if (world == NULL || world->plug_system == NULL) {
         return;
     }
@@ -173,21 +164,16 @@ static char *Plug_GetGizmoName(GIZMO *gizmo) {
 
 static i32 Plug_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     CARRY_PLUG *plug = gizmo->object;
-    (void)output;
-    (void)mode;
     return plug->visible && plug->active && plug->plugged;
 }
 
 const char *PlugOutputName = "Plugged";
 
 static const char *Plug_GetOutputName(GIZMO *gizmo, i32 output) {
-    (void)gizmo;
-    (void)output;
     return PlugOutputName;
 }
 
 static i32 Plug_GetNumOutputs(GIZMO *gizmo) {
-    (void)gizmo;
     return 1;
 }
 
@@ -204,7 +190,6 @@ static void *Plugs_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 static void Plugs_ClearProgress(void *world, void *progress_ptr) {
     PLUG_PROGRESS *progress = progress_ptr;
-    (void)world;
     if (progress != NULL) {
         progress->visible_mask[0] = 0xffffffff;
         progress->active_mask[0] = 0xffffffff;
@@ -217,7 +202,6 @@ static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
     PLUG_PROGRESS *progress = progress_ptr;
     CARRY_PLUG *plug;
     i32 i;
-    (void)data;
     if (progress == NULL) {
         return;
     }

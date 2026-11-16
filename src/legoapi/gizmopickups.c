@@ -331,8 +331,6 @@ static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 cou
 void GizmoPickups_Draw(void *world_pointer, void *unused_system, f32 unused_time) {
     WORLDINFO *world = world_pointer;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
-    (void)unused_system;
-    (void)unused_time;
     if (world == NULL) {
         return;
     }
@@ -355,7 +353,6 @@ i32 GizmoPickups_GetMaxGizmos(void *world_ptr) {
 void GizmoPickups_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
-    (void)data;
     for (i = 0; i < w->pickup_runtime_sys->pickup_count; ++i) {
         struct GIZMOPICKUP *pickup = &w->pickup_runtime_sys->pickups[i];
         if (pickup->unknown_14[1] & 2) {
@@ -369,8 +366,6 @@ char *GizmoPickup_GetGizmoName(GIZMO *gizmo) {
 }
 
 i32 GizmoPickup_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-    (void)output;
-    (void)mode;
     return (gizmo->pickup->flags >> 3) & 1;
 }
 
@@ -381,7 +376,6 @@ char *GizmoPickup_GetOutputName(GIZMO *gizmo, i32 output) {
 }
 
 i32 GizmoPickup_GetNumOutputs(GIZMO *unused) {
-    (void)unused;
     return 1;
 }
 
@@ -592,7 +586,6 @@ void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
     struct GIZMOPICKUPRUNTIMESYS_s *system;
     PICKUP_RESET_RECORD *pickup;
     i32 index;
-    (void)unused;
     for (index = 0; index < GizmoPickupSys->type_count; ++index) {
         GizmoPickupSys->types[index].shadow_extent_x =
             GizmoPickupSys->types[index].draw_distance * GizmoPickupSys->types[index].shadow_radius_x;
@@ -656,7 +649,6 @@ i32 GizmoPickups_Load(void *world_ptr, void *unused) {
     GIZMOPICKUP *pickup;
     i32 version;
     i32 index;
-    (void)unused;
     if (world->pickup_runtime_sys->pickup_count == 0) {
         version = EdFileReadInt();
         world->pickup_runtime_sys->pickup_count = EdFileReadInt();
@@ -897,7 +889,6 @@ GIZMOPICKUP *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unus
     GIZMOPICKUP *pickup;
     i32 temporary;
     i32 type_index;
-    (void)unused;
     if (world == NULL || (object->flags_1f8 & 0x40000) != 0) {
         return NULL;
     }
@@ -1377,8 +1368,6 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
 void GizmoPickups_Update(void *world_pointer, void *unused_system, f32 unused_time) {
     WORLDINFO *world = world_pointer;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
-    (void)unused_system;
-    (void)unused_time;
     if (world == NULL) {
         return;
     }

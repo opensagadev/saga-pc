@@ -87,9 +87,6 @@ i32 gizaimessage_gizmotype_id = -1;
 
 void GizAIMessage_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
     GIZAIMESSAGE *message;
-    (void)type;
-    (void)world;
-    (void)data;
     if (gizaimessagesys == NULL) {
         return;
     }

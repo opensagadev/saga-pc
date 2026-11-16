@@ -409,7 +409,6 @@ extern "C" {
         i32 level;
         i32 i;
         i32 done;
-        (void)end;
         CutList = NULL;
         CUTCOUNT = 0;
         fp = NuFParCreate(filename);

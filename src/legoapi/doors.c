@@ -592,7 +592,6 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     void *cutscene;
     i32 destination;
     i32 index;
-    (void)player_triggered;
     if ((door->flags & DOOR_FLAG_TWO_PLAYERS_ONLY) != 0 &&
         (Player[0] == NULL || (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || Player[1] == NULL ||
          (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {

@@ -144,7 +144,6 @@ static void KilledTrooperCannon(GAMEOBJECT *object) {
 }
 
 void InitTrooperCannons(WORLDINFO *unused) {
-    (void)unused;
     memset(troopercannons, 0, sizeof(troopercannons));
 }
 
@@ -204,7 +203,6 @@ void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
 
 void UpdateTrooperCannons(WORLDINFO *unused) {
     i32 index;
-    (void)unused;
     for (index = 0; index < 4; ++index) {
         TROOPERCANNON *cannon = &troopercannons[index];
         if (cannon->buildit != NULL && netclient == 0) {

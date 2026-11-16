@@ -2198,7 +2198,6 @@ i32 edbits_editmode = 0;
 void DebrisDraw(i32 unused, i32 pass) {
     DEBRIS_RENDER_CHUNK *chunk;
     i32 drawn = 0;
-    (void)unused;
     if (debris_suspended != 0) {
         return;
     }

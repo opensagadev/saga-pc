@@ -300,7 +300,6 @@ extern "C" {
     }
 
     void LC_BL_fix_strobing_anims(NUFPAR *parser) {
-        (void)parser;
         levelconfig_ldata->flags |= LEVEL_FIX_STROBING_ANIMS;
     }
 
@@ -1100,7 +1099,6 @@ extern "C" {
 
     void NewLevelFromMenu(LEVELDATA *level, i32 menu_id, i32 menu_y, i32 ignored) {
         MISSIONDATA *mission;
-        (void)ignored;
         LOG_INFO("Menu level request: level=%p menu=%d row=%d", (void *)level, menu_id, menu_y);
         if (no_more_loads == 0) {
             abort_load = 1;

@@ -219,7 +219,6 @@ static void Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
     TUBE_PROGRESS *progress = progress_ptr;
     TUBE_CALLBACKS *tube;
     i32 i;
-    (void)data;
     if (world == NULL || world->tubes == NULL) {
         return;
     }
@@ -236,9 +235,6 @@ static void Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
 }
 
 static void Tubes_Draw(void *world, void *data, f32 delta_time) {
-    (void)world;
-    (void)data;
-    (void)delta_time;
 }
 
 static i32 Tubes_GetMaxGizmos(void *world_ptr) {
@@ -252,21 +248,16 @@ static char *Tube_GetGizmoName(GIZMO *gizmo) {
 
 static i32 Tube_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     TUBE_CALLBACKS *tube = gizmo->object;
-    (void)output;
-    (void)mode;
     return tube->bits.visible && tube->bits.active;
 }
 
 const char *Tube_OutputName = "Active";
 
 static const char *Tube_GetOutputName(GIZMO *gizmo, i32 output) {
-    (void)gizmo;
-    (void)output;
     return Tube_OutputName;
 }
 
 static i32 Tube_GetNumOutputs(GIZMO *gizmo) {
-    (void)gizmo;
     return 1;
 }
 
@@ -283,7 +274,6 @@ static void *Tubes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 static void Tubes_ClearProgress(void *world, void *progress_ptr) {
     TUBE_PROGRESS *progress = progress_ptr;
-    (void)world;
     if (progress != NULL) {
         progress->visible_mask[0] = 0xffffffff;
         progress->active_mask[0] = 0xffffffff;
@@ -295,7 +285,6 @@ static void Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
     TUBE_PROGRESS *progress = progress_ptr;
     TUBE_CALLBACKS *tube;
     i32 i;
-    (void)data;
     if (progress == NULL) {
         return;
     }
@@ -325,7 +314,6 @@ static void Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
 static void Tubes_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 i;
-    (void)data;
     for (i = 0; i < world->tube_count; ++i) {
         if (NuStrLen(((TUBE_CALLBACKS *)world->tubes)[i].name) != 0) {
             AddGizmo(system, type_id, NULL, &((TUBE_CALLBACKS *)world->tubes)[i]);
@@ -338,7 +326,6 @@ static i32 Tubes_Load(void *world_ptr, void *data) {
     TUBE_CALLBACKS *tube;
     i32 version;
     i32 i;
-    (void)data;
     if (world->tube_count == 0) {
         version = EdFileReadInt();
         world->tube_count = EdFileReadInt();
@@ -373,7 +360,6 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
     TUBE_CALLBACKS *tube;
     i32 i;
     i32 j;
-    (void)data;
     if (world == NULL || world->tubes == NULL) {
         return;
     }
@@ -463,6 +449,5 @@ ADDGIZMOTYPE *Tubes_RegisterGizmo(i32 type_id) {
     TubesAddType.fns.load_fn = Tubes_Load;
     TubesAddType.fns.post_load_fn = NULL;
     TubesAddType.fns.add_level_sfx_fn = NULL;
-    (void)type_id;
     return &TubesAddType;
 }

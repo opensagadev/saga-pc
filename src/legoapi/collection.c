@@ -128,7 +128,6 @@ void Collection_CreateCustom(char *name, i16 *title_id, COLLECTION_BUILD *collec
                              u32 required_game_flags, i32 require_buyable, i32 columns, VARIPTR *buffer, VARIPTR *buffer_end,
                              i32 use_all_characters, f32 scale) {
     i32 index;
-    (void)buffer_end;
     collection->list = (COLLECTID *)((buffer->addr + 3) & ~3u);
     collection->columns = (u16)columns;
     collection->count = 0;
@@ -236,14 +235,12 @@ typedef struct collection_config_entry_s { // size 0x1c
 
 /* Native 594220 is an actual RET with no argument reads. */
 void CollectionConfigDiagnostic(char *file, ...) {
-    (void)file;
 }
 
 void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
     NUFPAR *parser = NuFParCreate(file);
     COLLECTION_CONFIG_ENTRY *entry;
     i32 area;
-    (void)end;
     if (parser == NULL) {
         CollectionConfigDiagnostic(file);
         return;

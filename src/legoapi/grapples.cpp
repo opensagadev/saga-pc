@@ -103,7 +103,6 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
     i32 index;
     i32 length;
     char name[256];
-    (void)unused;
     if (world->grapple_count == 0) {
         version = EdFileReadInt();
         world->grapple_count = EdFileReadInt();
@@ -249,7 +248,6 @@ extern "C" void Grapples_Reset(void *world_pointer, void *unused, void *progress
     i32 index;
     i32 word;
     u32 bit;
-    (void)unused;
     if (world == NULL) {
         return;
     }
@@ -481,8 +479,6 @@ extern "C" void Grapples_Draw(void *world_pointer, void *unused, f32 unused_delt
     u16 rotation = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     f64 pulse = (f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0;
     f32 target_alpha = (f64)NU_SIN_LUT(pulse) * (f64)0.2f + (f64)0.8f;
-    (void)unused;
-    (void)unused_delta;
     EnableShadowMapRendering(0);
     GrapplesDrawList(world, (GRAPPLE_MOTION *)world->grapples, world->grapple_count, rotation, target_alpha);
     GrapplesDrawList(world, (GRAPPLE_MOTION *)DynamicGrapple, 4, rotation, target_alpha);
@@ -578,7 +574,6 @@ extern "C" {
     void Grapples_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
         WORLDINFO *w = (WORLDINFO *)world_ptr;
         i32 i;
-        (void)data;
         for (i = 0; i < w->grapple_count; ++i) {
             if (NuStrLen(((ADD_GRAPPLE *)w->grapples)[i].name) != 0) {
                 AddGizmo(giz, type, NULL, &((ADD_GRAPPLE *)w->grapples)[i]);
@@ -596,7 +591,6 @@ extern "C" char *Grapple_GetGizmoName(GIZMO *gizmo) {
 
 extern "C" i32 Grapple_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     GRAPPLE_MOTION *grapple = gizmo->grapple;
-    (void)mode;
     if (!grapple->visible || !grapple->active) {
         return 0;
     }
@@ -631,7 +625,6 @@ extern "C" {
 }
 
 extern "C" i32 Grapple_GetNumOutputs(GIZMO *unused) {
-    (void)unused;
     return 3;
 }
 
@@ -709,8 +702,6 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
     i32 point;
     i32 count;
     i32 context;
-    (void)unused_system;
-    (void)unused_time;
     for (index = 0; index < view->grapple_count; ++index, ++grapple) {
         if (!grapple->active || !grapple->visible) {
             continue;
@@ -1310,8 +1301,6 @@ extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unuse
     NUVEC previous;
     NUVEC middle;
     i32 index;
-    (void)unused_flags;
-    (void)unused_material;
     if (count < 3) {
         return;
     }

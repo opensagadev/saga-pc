@@ -631,7 +631,6 @@ CUT_TRIGGER_SET *CutTriggerSetCreate(CUT_TRIGGER_FILE *file, NUGSCN *scene, CUT_
     CUT_TRIGGER_SET *set = NULL;
     CUT_TRIGGER_SET *list;
     i32 i;
-    (void)end;
     if (file != NULL && scene != NULL && scripts != NULL) {
         buffer->addr = (buffer->addr + 0xf) & ~0xfU;
         set = buffer->void_ptr;

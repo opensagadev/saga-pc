@@ -1855,9 +1855,6 @@ extern "C" {
         WORLDINFO *world = WorldInfo_CurrentlyActive();
         i32 index;
 
-        (void)velocity;
-        (void)flags;
-
         for (index = 0; index < 3; ++index) {
             if ((bolt->flags & 0x40000200) != 0 && point == -1) {
                 if (index != 1) {

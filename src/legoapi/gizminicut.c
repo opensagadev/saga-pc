@@ -59,7 +59,6 @@ static i32 GizMiniCut_GetMaxGizmos(void *world) {
 static void GizMiniCut_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     MINICUT_WORLD *world = world_ptr;
     i32 i;
-    (void)data;
     if (world->minicuts == NULL) {
         return;
     }
@@ -74,7 +73,6 @@ static char *GizMiniCut_GetGizmoName(GIZMO *gizmo) {
 
 static i32 GizMiniCut_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     MINICUT *cut;
-    (void)mode;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
@@ -92,7 +90,6 @@ static i32 GizMiniCut_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
 }
 
 static const char *GizMiniCut_GetOutputName(GIZMO *gizmo, i32 output) {
-    (void)gizmo;
     switch (output) {
         case MINICUT_OUTPUT_PLAYED:
             return "Played";
@@ -103,7 +100,6 @@ static const char *GizMiniCut_GetOutputName(GIZMO *gizmo, i32 output) {
 }
 
 static i32 GizMiniCut_GetNumOutputs(GIZMO *gizmo) {
-    (void)gizmo;
     return 2;
 }
 
@@ -183,8 +179,6 @@ void GizMiniCut_Reset(void *world_ptr, void *data, void *progress) {
     MINICUT_WORLD *view = (MINICUT_WORLD *)world;
     i32 i;
     i32 j;
-    (void)data;
-    (void)progress;
     for (i = 0; i < view->count; ++i) {
         MINICUT *cut = &view->minicuts[i];
         for (j = 0; j < cut->part_count; ++j) {
@@ -245,7 +239,6 @@ i32 GizMiniCut_Load(void *world_ptr, void *data) {
     MINICUT_WORLD *view = (MINICUT_WORLD *)world;
     i32 i;
     i32 j;
-    (void)data;
     EdFileReadInt();
     view->count = EdFileReadInt();
     if (view->count > world->current_level->max_minicuts) {
@@ -279,7 +272,6 @@ i32 GizMiniCut_Load(void *world_ptr, void *data) {
 
 ADDGIZMOTYPE *MiniCut_RegisterGizmo(i32 type_id) {
     static ADDGIZMOTYPE MiniCutAddType = {0};
-    (void)type_id;
     MiniCutAddType = Default_ADDGIZMOTYPE;
     MiniCutAddType.name = "MiniCut";
     MiniCutAddType.prefix = "";

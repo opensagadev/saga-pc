@@ -69,7 +69,6 @@ extern "C" {
     }
 
     void GameAudio_PlaySfxById(i32 sfx_id, NUVEC *position, i32 flags, i32 volume) {
-        (void)volume;
         if (flags != 0) {
             if (flags == 1 || flags == 3) {
                 nusound_special_positions[1] = *position;
@@ -314,7 +313,6 @@ extern "C" {
     void PlayLandSfx(GAMEOBJECT *object, i32 type, i32 ignored) {
         i32 sfx;
         i32 alternate;
-        (void)ignored;
         if (type == 1) {
             if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0) {
                 return;
@@ -493,7 +491,6 @@ extern "C" void PlayDieSfx(GAMEOBJECT *object) {
 extern "C" void PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
     u8 player = object->unknown_280;
     i32 bits = 0;
-    (void)unused;
     if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0) {
         return;
     }
@@ -728,9 +725,6 @@ extern "C" {
     }
 
     i32 GetMusicIndex(char *name, struct nusound_filename_info_s *table, i32 fallback) {
-        (void)name;
-        (void)table;
-        (void)fallback;
         return -1;
     }
 }

@@ -228,7 +228,6 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
     i32 angle;
     i32 i;
     u8 *flags = LevFlag.bytes;
-    (void)world;
     if (flags[0] > 0 && qrand() < 0x800) {
         NewRumbleAllPlayers((f32)((f64)qrand() * (f64)0.000015259022f), 0.0f, 0, 0);
     }
@@ -949,7 +948,6 @@ void SarlaccPitB_SpecialUpdate(WORLDINFO *world) {
     u32 bit;
     NUVEC *position;
     NUINSTANIM *animation;
-    (void)world;
     for (index = 0; index < sarlaccdisco.count; ++index) {
         NuSpecialSetVisibility(&sarlaccdisco.off[index], 0);
         NuSpecialSetVisibility(&sarlaccdisco.flash[index], 0);
@@ -1043,7 +1041,6 @@ void SarlaccPitB_Init(WORLDINFO *world) {
     char name[32];
     i8 *index;
     NUVEC *position;
-    (void)world;
     memset(&sarlaccdisco, 0, sizeof(sarlaccdisco));
     sarlaccb_netpacket = SetLevelHack(20);
     index = &sarlaccdisco.count;

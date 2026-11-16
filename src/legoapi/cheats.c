@@ -85,7 +85,6 @@ u32 Cheat_CheckFlags(i32 index, u32 flags) {
 }
 
 void Cheat_SetOn(i32 cheat, i32 on, i32 update_save) {
-    (void)update_save;
     if (cheat < 0 || cheat >= CheatSystemPtr->count) {
         return;
     }

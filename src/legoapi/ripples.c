@@ -281,7 +281,6 @@ void InitRipples(RIPPLE_SET **result, VARIPTR *buffer, VARIPTR *unused_end, i32 
     RIPPLE_NODE *nodes;
     RIPPLE_NODE **erase_list;
     i32 node_count;
-    (void)unused_end;
     set = (RIPPLE_SET *)((buffer->addr + 3) & ~3u);
     buffer->addr = (u32)(set + 1);
     *result = set;

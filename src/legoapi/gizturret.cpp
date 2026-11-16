@@ -228,7 +228,6 @@ extern "C" {
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)system_pointer;
         GIZTURRET_s *turret;
         i32 index;
-        (void)world;
         if (system == NULL) {
             return;
         }
@@ -804,7 +803,6 @@ extern "C" {
         struct GIZTURRETSYS_s *system = world->giz_turret_sys;
         GIZTURRET_s *turret;
         i32 index;
-        (void)hint;
         if (world->area != NULL && world->area == HUB_ADATA) {
             return 0;
         }
@@ -974,7 +972,6 @@ extern "C" {
         GIZTURRETSYS_s *system = (GIZTURRETSYS_s *)system_pointer;
         GIZTURRET_s *turret;
         i32 index;
-        (void)unused;
         if (system == NULL) {
             return;
         }
@@ -1000,7 +997,6 @@ extern "C" {
     void GizTurrets_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
         GIZTURRETSYS_s *s = (GIZTURRETSYS_s *)data;
         i32 i;
-        (void)world;
         if (s == NULL) {
             return;
         }
@@ -1020,7 +1016,6 @@ extern "C" {
 
     i32 GizmoTurret_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
         GIZTURRET_s *turret = gizmo->turret;
-        (void)mode;
         switch (output) {
             case TURRET_OUTPUT_DESTROYED:
                 if (turret->aim_at_fixed_angles || turret->update_disabled) {
@@ -1147,7 +1142,6 @@ extern "C" {
         NUVEC centre;
         NUVEC position;
         NUVEC direction;
-        (void)hit_position;
         if ((i8)turret->state > 0) {
             if (damage == -1) {
                 turret->state = 0;

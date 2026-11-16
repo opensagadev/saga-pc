@@ -41,7 +41,6 @@
 i32 *Char_MiniKit = 0;
 
 void MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
-    (void)end;
     buffer->addr = (buffer->addr + 3) & ~3u;
     Char_MiniKit = buffer->void_ptr;
     buffer->addr += (u32)CHARCOUNT * 4u;
@@ -49,7 +48,6 @@ void MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
 
 void MiniKit_Load(MINIKIT *minikit, i32 id, VARIPTR *buffer, VARIPTR *end, void *unused) {
     char path[256];
-    (void)unused;
     minikit->scene = NULL;
     minikit->pieces = NULL;
     minikit->piece_count = 0;
@@ -82,7 +80,6 @@ void MiniKit_InitPieces(MINIKIT *minikit, i32 count, VARIPTR *buffer, VARIPTR *e
     i32 index;
     i32 direction;
     char name[64];
-    (void)end;
     if (minikit->scene != NULL) {
         for (direction = 0; direction < 6; ++direction) {
             direction_counts[direction] = 0;

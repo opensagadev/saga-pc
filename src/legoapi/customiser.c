@@ -137,7 +137,6 @@ void Customiser_SetAnimsToLoad(CUSTOMISER_CONFIG *customiser, i32 enabled) {
 /* Includes a separate NULL return. */
 i32 Customiser_NextPieceLeft(CUSTOMISER_CONFIG *customiser, i32 index, i32 count, i32 unused, i32 category) {
     i32 attempts;
-    (void)unused;
     if (customiser != NULL) {
         attempts = 0;
         while (attempts++ < count) {
@@ -174,7 +173,6 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_CONFIG *customiser, i32 index, i32 count
 
 i32 Customiser_NextPieceRight(CUSTOMISER_CONFIG *customiser, i32 index, i32 count, i32 unused, i32 category) {
     i32 attempts;
-    (void)unused;
     if (customiser == NULL) {
         return index;
     }
@@ -657,7 +655,6 @@ i32 Customiser_GetIcon(CUSTOMISER_CONFIG *customiser, const void *save_input, i3
     CUSTOM_PIECE_CONFIG *hat = &customiser->piece_sets[0][save->pieces[0]];
     CUSTOM_PIECE_CONFIG *head;
     i32 character;
-    (void)unused;
     if ((hat->availability_flags & CUSTOM_PIECE_HAT_OFF) == 0) {
         head = &customiser->piece_sets[1][save->pieces[1]];
         if ((head->availability_flags & CUSTOM_PIECE_NO_HAT) == 0) {
@@ -712,7 +709,6 @@ CUSTOMISER_CONFIG *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR
     CUSTOM_PIECE_CONFIG pieces[440];
     char *names;
     i32 count;
-    (void)buffer_end;
     if (first_character == -1 && second_character == -1) {
         return NULL;
     }

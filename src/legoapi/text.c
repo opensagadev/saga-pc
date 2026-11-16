@@ -103,7 +103,6 @@ void *Text_IsFontLoaded(void) {
 void Text_InitStringTable(i32 count, VARIPTR *buf, VARIPTR *buf_end) {
     char **table = buf->void_ptr;
     u32 table_size = (count + 1) * sizeof(char *);
-    (void)buf_end;
 
     TTab_Original = table;
     buf->addr = (buf->addr + table_size + 3) & ~3U;
@@ -566,7 +565,6 @@ void Text_ExpandAllButtonStrings(char *input, char *output) {
 }
 
 void Text_SetLanguage(i32 language) {
-    (void)language;
     Text_Language = NuLanguageGet();
     if (Text_GameSetLanguageFn != NULL) {
         Text_GameSetLanguageFn(Text_Language);

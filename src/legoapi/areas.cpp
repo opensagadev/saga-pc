@@ -68,7 +68,6 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
     AREA_DATA *area;
     i32 area_index;
 
-    (void)buffer_end;
     if (ADataList == NULL) {
         return;
     }

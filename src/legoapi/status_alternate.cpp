@@ -236,7 +236,6 @@ extern "C" {
 
     /* Stage types 1 and 2. */
     void TrueHero_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        (void)stage;
         NextStatusStage(packet);
     }
 
@@ -254,7 +253,6 @@ extern "C" {
 
     /* Stage type 17. */
     void AllMiniKits_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        (void)stage;
         AddToCollection(dat_007f195c);
         NextStatusStage(packet);
     }
@@ -284,7 +282,6 @@ extern "C" {
 
     /* Stage type 18. */
     void RedBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        (void)stage;
         NextStatusStage(packet);
     }
 
@@ -292,7 +289,6 @@ extern "C" {
 
     /* Stage type 19. */
     void GoldBrick_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        (void)stage;
         if (Game.gold_bricks <= 60) {
             NextStatusStage(packet);
         }
@@ -366,7 +362,6 @@ extern "C" {
 
     /* Stage type 5. */
     void Stage5_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        (void)stage;
         NextStatusStage(packet);
     }
 
@@ -383,7 +378,6 @@ extern "C" {
 
     /* Stage type 22. */
     void BonusComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        (void)stage;
         NextStatusStage(packet);
     }
 
@@ -414,15 +408,9 @@ extern "C" {
     }
 
     void Stage6_Alt_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed) {
-        (void)stage;
-        (void)packet;
-        (void)elapsed;
     }
 
     void Stage6_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 player) {
-        (void)stage;
-        (void)packet;
-        (void)player;
     }
 
     /* Stage type 11. Unlike the LSW save stage, a plain level exit finishes the status
@@ -475,7 +463,6 @@ extern "C" {
     /* Stage type 3. */
     void Coins_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
         u32 remaining;
-        (void)stage;
         remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
         IncreaseScore(packet->score, remaining, 0);
         packet->coins_remaining[0] = 0;
@@ -508,9 +495,6 @@ extern "C" {
     }
 
     i32 FinishStatusPacket_Alt(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
-        (void)world;
-        (void)packet;
-        (void)result;
         return 0;
     }
 
@@ -563,7 +547,6 @@ extern "C" {
     }
 
     i32 InitStatusScreen_Alt(WORLDINFO *world, STATUSPACKET_s *packet) {
-        (void)world;
         /* Sets bit 24 of the packet word with a byte OR on its top byte. */
         ((u8 *)&packet->lsw_packet->unknown_00)[3] |= 1;
         StatusAltBgPos.x = -StatusAltGridStepX;
@@ -1816,7 +1799,6 @@ extern "C" {
         f32 title_alpha;
         f64 angle;
         i32 i;
-        (void)packet;
         if (current == 0) {
             return;
         }
@@ -2193,7 +2175,6 @@ extern "C" {
         f32 icon_alpha = 0.0f;
         f32 title_alpha;
         i32 sliding;
-        (void)packet;
         if (current == 0 || stage->step <= STATUS_STEP_START) {
             return;
         }

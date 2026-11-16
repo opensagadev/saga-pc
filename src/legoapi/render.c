@@ -146,8 +146,6 @@ void DrawAlphaGrid(i32 rows, i32 cols, RENDER_POST_BLOOM_READER *parameters) {
 #undef ALPHA_GRID_CLAMP_COLOUR
 
 void CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
-    (void)packet;
 }
 
 /* Native walks the two adjacent 0x14-byte rumble records. */
@@ -162,30 +160,22 @@ void CollectCharactersOff_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
 #undef STATUS_APPEND_STAGE_INLINE
 
 void BonusTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
-    (void)packet;
 }
 
 void BonusWin_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
-    (void)packet;
 }
 
 /* Original source name unknown. The native entry is exactly RET; ReleaseTakeOver passes it the rider and
  * vehicle character names. */
 void TakeOverReleaseDiagnostic(char *rider_name, char *object_name) {
-    (void)rider_name;
-    (void)object_name;
 }
 
 /* Original source name unknown. The native entry is exactly RET; GameAnimSet_AddObject passes it the name of a
  * special whose animation has no frames. */
 void GameAnimMissingAnimDiagnostic(char *name) {
-    (void)name;
 }
 
 /* Original source name unknown. The native entry is exactly RET; LoadGizmoSys passes it each gizmo type name it
  * reads, loads or skips. */
 void GizmoNameDiagnostic(char *name) {
-    (void)name;
 }

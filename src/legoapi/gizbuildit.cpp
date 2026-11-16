@@ -927,8 +927,6 @@ extern "C" {
             buildit->availability_flags &= ~4;
             buildit->builders_active = 0;
         }
-        (void)world;
-        (void)delta_time;
     }
 
     i32 GizBuildIts_UpdateHint(HINT *hint) {
@@ -987,7 +985,6 @@ extern "C" {
         NUMTX matrix;
         f32 reflection_height;
         i32 index;
-        (void)unused;
         if (system == NULL) {
             return;
         }
@@ -1041,7 +1038,6 @@ extern "C" {
     void GizBuildIts_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
         GIZBUILDITSYS_s *s = (GIZBUILDITSYS_s *)data;
         i32 i;
-        (void)world;
         if (s == NULL) {
             return;
         }
@@ -1407,7 +1403,6 @@ extern "C" {
         NUVEC target;
         NUMTX matrix;
         i32 index;
-        (void)unused;
         if (system == NULL) {
             return;
         }
