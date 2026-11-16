@@ -10,13 +10,6 @@ struct FRAME_PAD;
 struct WORLDINFO_s;
 struct nufpar_s;
 
-typedef struct CUSTOMISER_LAYERS {     // size 0x70
-    u8 unknown_00[0x38];               // 0x00
-    struct CUSTOMPIECE_LAYERS *pieces; // 0x38
-    u8 unknown_3c[0x30];               // 0x3c
-    i16 character_ids[2];              // 0x6c
-} CUSTOMISER_LAYERS;
-
 typedef struct GAMEPAD_RUNTIME_INPUT { // size 0x60
     struct FRAME_PAD *bound_pad;       // 0x00
     u32 held;                          // 0x04
@@ -43,22 +36,22 @@ extern "C" {
     extern const char *InitAsciiLeft;
     extern i32 CustomiseMode[2];
     extern char CustomiseLetter[39];
-    void Customiser_Update(CUSTOMISER_LAYERS *, struct WORLDINFO_s *);
-    i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS *);
-    void Customiser_Update(CUSTOMISER_LAYERS *, struct WORLDINFO_s *);
+    void Customiser_Update(struct customiser_config_s *, struct WORLDINFO_s *);
+    i32 Customiser_MenuAvailable(struct customiser_config_s *);
+    void Customiser_Update(struct customiser_config_s *, struct WORLDINFO_s *);
     extern i32 customiser_save_done;
     extern i32 customiser_changed;
     extern GAMESAVE OldCustomiseGame; /* 85ea98, native0x7e4c owner. */
-    void Customiser_Init(CUSTOMISER_LAYERS *);
-    void Customiser_Reset(CUSTOMISER_LAYERS *);
-    void Customiser_Draw3D(CUSTOMISER_LAYERS *);
+    void Customiser_Init(struct customiser_config_s *);
+    void Customiser_Reset(struct customiser_config_s *);
+    void Customiser_Draw3D(struct customiser_config_s *);
     void MenuDrawCustomiser(MENU *);
     void MenuUpdateCustomiser(MENU *);
     i32 CustomiserMenu_Update(void);
     extern i16 dat_00880890;
     extern u8 downrepeatcount[2];
     extern u8 rightrepeatcount[2];
-    void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *customiser);
+    void Customiser_SetUpCharacterData(struct customiser_config_s *customiser);
 #ifdef __cplusplus
 }
 #endif

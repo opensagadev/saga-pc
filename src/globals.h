@@ -16,7 +16,7 @@ struct customiser_completion_reader_s;
 struct gizobstacle_s;
 
 struct CHARACTER_MODEL_LAYERS;
-struct CUSTOMISER_LAYERS;
+struct customiser_config_s;
 struct WORLDINFO_s;
 struct area_data_s;
 struct collection_area_save_s;
@@ -124,7 +124,7 @@ extern "C" {
     extern VARIPTR permbuffer_ptr;
     extern VARIPTR permbuffer_end;
     extern struct nusound_filename_info_s *MusicInfo;
-    extern void *Game_Customiser;
+    extern struct customiser_config_s *Game_Customiser;
     extern f32 HIGHJUMPHEIGHT;
     extern TIMER AreaTimer;
     extern i32 OldBonusScore[2];
@@ -357,7 +357,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern struct CUSTOMISER_LAYERS *CharacterCustomiser;
+    extern struct customiser_config_s *CharacterCustomiser;
     extern struct customiser_completion_reader_s *CustomiserCompletionSave;
 #ifdef __cplusplus
 }

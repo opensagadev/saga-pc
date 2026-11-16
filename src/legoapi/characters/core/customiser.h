@@ -5,7 +5,7 @@
 #include "nu2api/nu3d/nuhspecial.h"
 
 struct CHARACTER_MODEL_LAYERS;
-struct CUSTOMISER_LAYERS;
+struct customiser_config_s;
 struct NUGSCN_s;
 struct WORLDINFO_s;
 struct apicharactermodellist_s;
@@ -82,25 +82,25 @@ extern "C" {
 extern "C" {
 #endif
 
-    void Customiser_SetAnimsToLoad(struct CUSTOMISER_LAYERS *, i32);
-    void Customiser_ResetModelTextureIDs(struct CUSTOMISER_LAYERS *);
+    void Customiser_SetAnimsToLoad(struct customiser_config_s *, i32);
+    void Customiser_ResetModelTextureIDs(struct customiser_config_s *);
 
-    void Customiser_InitNames(struct CUSTOMISER_LAYERS *);
-    void Customiser_AddPartAccessories(struct CUSTOMISER_LAYERS *, struct gameobject_s *, i32, i32, f32);
+    void Customiser_InitNames(struct customiser_config_s *);
+    void Customiser_AddPartAccessories(struct customiser_config_s *, struct gameobject_s *, i32, i32, f32);
 
-    struct CUSTOMISER_LAYERS *Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32, i32 (*)(CUSTOMPIECE_LAYERS *),
-                                                   void (*)(CUSTOMPIECE_LAYERS *, struct nufpar_s *), i32 (*)(char *), void *, i16 *);
-    void Customiser_CopyDefaultPiecesToSave(struct CUSTOMISER_LAYERS *, void *);
-    void Customiser_LoadAccessories(struct CUSTOMISER_LAYERS *, struct apicharactermodellist_s *);
-    void Customiser_Set100PercentPieces(struct CUSTOMISER_LAYERS *);
-    CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(struct CUSTOMISER_LAYERS *, char *, i32 *, i32 *);
-    void Customiser_LoadAll(struct CUSTOMISER_LAYERS *, struct WORLDINFO_s *);
-    void Customiser_TransformToPanel(struct CUSTOMISER_LAYERS *);
-    i32 Customiser_NextPieceLeft(struct CUSTOMISER_LAYERS *, i32, i32, i32, i32);
+    struct customiser_config_s *Customiser_Configure(char *, VARIPTR *, VARIPTR *, i32, i32, i32 (*)(CUSTOMPIECE_LAYERS *),
+                                                     void (*)(CUSTOMPIECE_LAYERS *, struct nufpar_s *), i32 (*)(char *), void *, i16 *);
+    void Customiser_CopyDefaultPiecesToSave(struct customiser_config_s *, void *);
+    void Customiser_LoadAccessories(struct customiser_config_s *, struct apicharactermodellist_s *);
+    void Customiser_Set100PercentPieces(struct customiser_config_s *);
+    CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(struct customiser_config_s *, char *, i32 *, i32 *);
+    void Customiser_LoadAll(struct customiser_config_s *, struct WORLDINFO_s *);
+    void Customiser_TransformToPanel(struct customiser_config_s *);
+    i32 Customiser_NextPieceLeft(struct customiser_config_s *, i32, i32, i32, i32);
     void CustomiserLoadTrace(char *path);
-    i32 Customiser_GetIcon(struct CUSTOMISER_LAYERS *input, const void *save_input, i32 unused);
-    i32 Customiser_NextPieceRight(struct CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category);
-    void CustomiserDrawAccessories(struct CUSTOMISER_LAYERS *, struct gameobject_s *, NUMTX *);
+    i32 Customiser_GetIcon(CUSTOMISER_CONFIG *customiser, const void *save_input, i32 unused);
+    i32 Customiser_NextPieceRight(CUSTOMISER_CONFIG *customiser, i32 index, i32 count, i32 unused, i32 category);
+    void CustomiserDrawAccessories(CUSTOMISER_CONFIG *, struct gameobject_s *, NUMTX *);
 #ifdef __cplusplus
 }
 #endif

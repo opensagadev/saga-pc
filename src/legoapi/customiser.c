@@ -113,7 +113,7 @@ static i32 CustomiserFindSetFromNamePrivate(char *name) {
     return -1;
 }
 
-void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS *input, i32 enabled) {
+void Customiser_SetAnimsToLoad(CUSTOMISER_CONFIG *input, i32 enabled) {
     CUSTOMISER_ANIMS_LOAD *customiser = (CUSTOMISER_ANIMS_LOAD *)input;
     i32 character;
     if (customiser == NULL) {
@@ -145,8 +145,7 @@ void Customiser_SetAnimsToLoad(CUSTOMISER_LAYERS *input, i32 enabled) {
 }
 
 /* Includes a separate NULL return. */
-i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+i32 Customiser_NextPieceLeft(CUSTOMISER_CONFIG *customiser, i32 index, i32 count, i32 unused, i32 category) {
     i32 attempts;
     (void)unused;
     if (customiser != NULL) {
@@ -183,8 +182,7 @@ i32 Customiser_NextPieceLeft(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32
     return index;
 }
 
-i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+i32 Customiser_NextPieceRight(CUSTOMISER_CONFIG *customiser, i32 index, i32 count, i32 unused, i32 category) {
     i32 attempts;
     (void)unused;
     if (customiser == NULL) {
@@ -225,8 +223,7 @@ KILLPARTS_ACCESSORY KillPartsAccessories[2][9] = {0};
 i32 Customiser_AccessoriesLoaded = 0;
 RTL_DATA KillPartsZeroLighting = {0};
 
-void Customiser_LoadAccessories(CUSTOMISER_LAYERS *input, APICHARACTERMODELLIST *models) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+void Customiser_LoadAccessories(CUSTOMISER_CONFIG *customiser, APICHARACTERMODELLIST *models) {
     i32 side;
     i32 category;
     i32 material_index;
@@ -296,8 +293,7 @@ void Customiser_LoadAccessories(CUSTOMISER_LAYERS *input, APICHARACTERMODELLIST 
     }
 }
 
-void CustomiserDrawAccessories(CUSTOMISER_LAYERS *input, GAMEOBJECT *object, NUMTX *matrices) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+void CustomiserDrawAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *object, NUMTX *matrices) {
     i32 joint = object->character_data->game_character->helmet_locator;
     i32 side;
     i32 category;
@@ -339,7 +335,7 @@ void CustomiserDrawAccessories(CUSTOMISER_LAYERS *input, GAMEOBJECT *object, NUM
     }
 }
 
-void Customiser_AddPartAccessories(CUSTOMISER_LAYERS *customiser, GAMEOBJECT *object, i32 animation, i32 mode, f32 scale) {
+void Customiser_AddPartAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *object, i32 animation, i32 mode, f32 scale) {
     KILLPARTS_CUSTOMISER *accessories;
     i32 side;
     KILLPARTS_ACCESSORY *resource;
@@ -426,8 +422,7 @@ void Customiser_DumpAccessories(void *input) {
 static i32 CustomiserUseBigScenes = 1;
 
 /* Ignored extra arguments remain explicit calls. */
-void Customiser_LoadAll(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+void Customiser_LoadAll(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
     char converted_path[0x80];
     char piece_name[0x80];
     char path[0x80];
@@ -533,7 +528,7 @@ void Customiser_DumpAll(void *input, WORLDINFO *world) {
     }
 }
 
-void Customiser_ResetModelTextureIDs(CUSTOMISER_LAYERS *input) {
+void Customiser_ResetModelTextureIDs(CUSTOMISER_CONFIG *input) {
     CUSTOMISER_ANIMS_LOAD *customiser = (CUSTOMISER_ANIMS_LOAD *)input;
     i32 side;
     i32 category;
@@ -601,30 +596,29 @@ void Customiser_RestoreModelTextureIDs(void *input) {
     }
 }
 
-void Customiser_Set100PercentPieces(CUSTOMISER_LAYERS *input) {
+void Customiser_Set100PercentPieces(CUSTOMISER_CONFIG *input) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local changes register choice (U3)
     i32 category;
     i32 index;
-    if (input == NULL || ((CUSTOMISER_CONFIG *)input)->save == NULL) {
+    if (input == NULL || input->save == NULL) {
         return;
     }
     for (category = 0; category < 9; ++category) {
-        if (((CUSTOMISER_CONFIG *)input)->piece_counts[category] <= 0) {
+        if (input->piece_counts[category] <= 0) {
             continue;
         }
-        for (index = 0; index < ((CUSTOMISER_CONFIG *)input)->piece_counts[category]; ++index) {
-            if ((((CUSTOMISER_CONFIG *)input)->piece_sets[category][index].availability_flags & CUSTOM_PIECE_100_PERCENT_SIDE_1) != 0) {
-                ((CUSTOMISER_CONFIG *)input)->save->pieces[category] = (u16)index;
+        for (index = 0; index < input->piece_counts[category]; ++index) {
+            if ((input->piece_sets[category][index].availability_flags & CUSTOM_PIECE_100_PERCENT_SIDE_1) != 0) {
+                input->save->pieces[category] = (u16)index;
             }
-            if ((((CUSTOMISER_CONFIG *)input)->piece_sets[category][index].availability_flags & CUSTOM_PIECE_100_PERCENT_SIDE_2) != 0) {
-                ((CUSTOMISER_CONFIG *)input)->save->secondary_pieces[category] = (u16)index;
+            if ((input->piece_sets[category][index].availability_flags & CUSTOM_PIECE_100_PERCENT_SIDE_2) != 0) {
+                input->save->secondary_pieces[category] = (u16)index;
             }
         }
     }
 }
 
-void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS *input, void *save_input) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_CONFIG *customiser, void *save_input) {
     CUSTOM_SAVE_CONFIG *save;
     if (customiser == NULL) {
         return;
@@ -648,8 +642,8 @@ void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_LAYERS *input, void *save_inp
     }
 }
 
-CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(CUSTOMISER_LAYERS *input, char *name, i32 *category, i32 *index) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(CUSTOMISER_CONFIG *input, char *name, i32 *category, i32 *index) {
+    CUSTOMISER_CONFIG *customiser = input; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice
     i32 category_index;
     i32 piece_index;
     i32 *index_local = index; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice
@@ -673,8 +667,7 @@ CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(CUSTOMISER_LAYERS *input, char *n
 }
 
 /* Does not check the customiser/save arguments. */
-i32 Customiser_GetIcon(CUSTOMISER_LAYERS *input, const void *save_input, i32 unused) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+i32 Customiser_GetIcon(CUSTOMISER_CONFIG *customiser, const void *save_input, i32 unused) {
     const CUSTOM_SAVE_CONFIG *save = save_input;
     CUSTOM_PIECE_CONFIG *hat = &customiser->piece_sets[0][save->pieces[0]];
     CUSTOM_PIECE_CONFIG *head;
@@ -718,9 +711,9 @@ static CUSTOM_CATEGORY_CONFIG CustomiserSetDataPrivate[9] = {
     {"leg",         0, 5,  {2, 0}, NULL                                  }
 };
 
-void *Game_Customiser = 0;
+CUSTOMISER_CONFIG *Game_Customiser = 0;
 
-CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character, i32 second_character,
+CUSTOMISER_CONFIG *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR *buffer_end, i32 first_character, i32 second_character,
                                         i32 (*available)(CUSTOMPIECE_LAYERS *), void (*configure_piece)(CUSTOMPIECE_LAYERS *, NUFPAR *),
                                         i32 (*weapon_from_name)(char *), void *save_input, i16 *animations) {
     NUFPAR *parser;
@@ -920,9 +913,9 @@ CUSTOMISER_LAYERS *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR
                 }
             }
         }
-        Customiser_CopyDefaultPiecesToSave((CUSTOMISER_LAYERS *)customiser, NULL);
+        Customiser_CopyDefaultPiecesToSave(customiser, NULL);
         Game_Customiser = customiser;
-        return (CUSTOMISER_LAYERS *)customiser;
+        return customiser;
     }
     return NULL;
 }

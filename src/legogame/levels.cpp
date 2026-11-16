@@ -332,8 +332,7 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
         if (excluded != NULL && InModelList(excluded, id, NULL) != 0) {
             continue;
         }
-        if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[0] ||
-                                        id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[1])) {
+        if (Game_Customiser != NULL && (id == (Game_Customiser)->character_ids[0] || id == (Game_Customiser)->character_ids[1])) {
             continue;
         }
         if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0) {

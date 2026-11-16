@@ -4,6 +4,7 @@
 #include "legoapi/characters/core/character.h"
 #include "legoapi/characters/core/characters.h"
 #include "legoapi/characters/core/charconfig.h"
+#include "legoapi/characters/core/customiser.h"
 #include "legoapi/characters/core/players.h"
 #include "legoapi/characters/motion.h"
 #include "legoapi/characters/motion/move.h"
@@ -521,8 +522,7 @@ extern "C" {
             if (excluded != NULL && InModelList(excluded, id, NULL) != 0) {
                 continue;
             }
-            if (Game_Customiser != NULL && (id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[0] ||
-                                            id == ((CUSTOMISER_LAYERS *)Game_Customiser)->character_ids[1])) {
+            if (Game_Customiser != NULL && (id == (Game_Customiser)->character_ids[0] || id == (Game_Customiser)->character_ids[1])) {
                 continue;
             }
             runtime = character->game_character;

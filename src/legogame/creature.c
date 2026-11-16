@@ -3334,11 +3334,12 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
                 mask |= 0x40;
             }
         } else if (CharacterCustomiser != NULL && object->id == (u16)CharacterCustomiser->character_ids[0]) {
-            if ((CharacterCustomiser->pieces[Game.customizer_cape_piece].layer_flags & 0x40) == 0) {
+            if ((CharacterCustomiser->piece_sets[5][Game.customizer_cape_piece].availability_flags & CUSTOM_PIECE_CAPE_OFF) == 0) {
                 mask |= cape;
             }
         } else if (CharacterCustomiser != NULL && object->id == (u16)CharacterCustomiser->character_ids[1]) {
-            if ((CharacterCustomiser->pieces[Game.customizer_secondary_cape_piece].layer_flags & 0x40) == 0) {
+            if ((CharacterCustomiser->piece_sets[5][Game.customizer_secondary_cape_piece].availability_flags & CUSTOM_PIECE_CAPE_OFF) ==
+                0) {
                 mask |= cape;
             }
         } else if (object->id == (u16)id_CHEWBACCA) {

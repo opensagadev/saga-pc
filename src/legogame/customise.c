@@ -266,7 +266,7 @@ void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR *parser) {
     }
 }
 
-void Customiser_InitNames(CUSTOMISER_LAYERS *customiser) {
+void Customiser_InitNames(CUSTOMISER_CONFIG *customiser) {
     CUSTOMISER_NAMES *view = (CUSTOMISER_NAMES *)customiser;
     i32 index;
     if (customiser == NULL) {
@@ -285,9 +285,8 @@ void Customiser_InitNames(CUSTOMISER_LAYERS *customiser) {
 
 /* 00423c30 / 874. Native contains class/name-part accumulation even though
  * the final displayed name is the generic stranger label. */
-void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
-    CUSTOMISER_NAMES *names = (CUSTOMISER_NAMES *)input;
+void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
+    CUSTOMISER_NAMES *names = (CUSTOMISER_NAMES *)customiser;
     i32 best = -1;
     i32 side;
     i32 category;
@@ -346,7 +345,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_LAYERS *input, i32 index) {
             }
         }
         sprintf(names->display_names[side], "%s %i", TTab[dat_00880fa0], side + 1);
-        CDataList[customiser->character_ids[side]].icon_model = (i16)Customiser_GetIcon(input, &Game.customiser_start[side], side);
+        CDataList[customiser->character_ids[side]].icon_model = (i16)Customiser_GetIcon(customiser, &Game.customiser_start[side], side);
     }
 }
 
@@ -395,7 +394,7 @@ f32 BlipL[2] = {0};
 static u16 CustomiseTiltZ[2] = {0};
 static u16 CustomiseRotY[2] = {0};
 static u16 CustomiseYRot[2] = {0};
-CUSTOMISER_LAYERS *CharacterCustomiser = 0;
+CUSTOMISER_CONFIG *CharacterCustomiser = 0;
 static f32 CustomiseNameAlpha = 0;
 i32 customiser_save_done = 0;
 static f32 CustomiseNameBoardTMul[2] = {0};
@@ -403,9 +402,8 @@ static f32 CustomiseNameBoardMul[2] = {0};
 static f32 CustomiseNameLetterBlipScale[2] = {0};
 
 /* 00424040 / 775 */
-void Customiser_Init(CUSTOMISER_LAYERS *input) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
-    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)input;
+void Customiser_Init(CUSTOMISER_CONFIG *customiser) {
+    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
     i32 side;
     i32 category;
     if (customiser == NULL) {
@@ -452,13 +450,13 @@ void Customiser_Init(CUSTOMISER_LAYERS *input) {
         CustomiseBob[0] = qrand();
         CustomiseBob[1] = CustomiseBob[0] + 0x8000;
     }
-    Customiser_SetNameAndIcon(input, -1);
+    Customiser_SetNameAndIcon(customiser, -1);
     CustomiseNameAlpha = 0.0f;
     for (side = 0; side < 2; ++side) {
         for (category = 0; category < 9; ++category) {
             if (customiser->piece_counts[category] > 0) {
                 Game.customiser_start[side].pieces[category] = (u16)Customiser_NextPieceRight(
-                    input, Game.customiser_start[side].pieces[category] - 1, customiser->piece_counts[category], side, category);
+                    customiser, Game.customiser_start[side].pieces[category] - 1, customiser->piece_counts[category], side, category);
             }
         }
     }
@@ -471,7 +469,7 @@ void Customiser_Init(CUSTOMISER_LAYERS *input) {
 static f32 CustomiseMenuTime[2] = {0};
 f32 BlipU[2] = {0};
 
-void Customiser_Reset(CUSTOMISER_LAYERS *customiser) {
+void Customiser_Reset(CUSTOMISER_CONFIG *customiser) {
     CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
     i32 side;
     if (customiser == NULL) {
@@ -489,7 +487,7 @@ void Customiser_Reset(CUSTOMISER_LAYERS *customiser) {
 static NUVEC CustomiseScreenPos[2] = {0};
 
 /* 004243b0 / 42 */
-void Customiser_TransformToPanel(CUSTOMISER_LAYERS *unused) {
+void Customiser_TransformToPanel(CUSTOMISER_CONFIG *unused) {
     (void)unused;
     NuCameraTransformScreenClip(&CustomiseScreenPos[0], &CustomisePos[0], 1, NULL);
     NuCameraTransformScreenClip(&CustomiseScreenPos[1], &CustomisePos[1], 1, NULL);
@@ -521,8 +519,7 @@ static u32 CustomiserPreviewLayerMask(CUSTOMISER_CONFIG *customiser, const u16 *
 
 /* 00424500 / 491: applies both saved customisations to their characters'
  * layer masks, model and gameplay flags, weapon and blade colour. */
-void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+void Customiser_SetUpCharacterData(CUSTOMISER_CONFIG *customiser) {
     u32 side;
     i32 category;
     if (customiser == NULL) {
@@ -558,7 +555,7 @@ void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *input) {
         config->weapon_model = customiser->piece_sets[2][selection[2]].weapon_model;
         config->blade_colour = (i8)LightSabre_ColourFromObj(config->weapon_model, NULL);
     }
-    Customiser_SetNameAndIcon(input, -1);
+    Customiser_SetNameAndIcon(customiser, -1);
 }
 
 void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
@@ -577,7 +574,7 @@ void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
     *count = 2;
 }
 
-i32 Customiser_MenuAvailable(CUSTOMISER_LAYERS *customiser) {
+i32 Customiser_MenuAvailable(CUSTOMISER_CONFIG *customiser) {
     HUB_CUSTOMISER_MENU_READER *c = (HUB_CUSTOMISER_MENU_READER *)customiser;
     if (c == NULL || APICharacterLoaded(c->character_ids[0]) == NULL) {
         return 0;
@@ -616,7 +613,7 @@ i32 CustomiserMenu_Update(void) {
     i32 quit = 0;
     i32 cancel_name = 0;
     i32 toggle = 0;
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)CharacterCustomiser;
+    CUSTOMISER_CONFIG *customiser = CharacterCustomiser;
     i32 active_index;
     i32 active_count;
     i32 select[2];
@@ -792,9 +789,9 @@ i32 CustomiserMenu_Update(void) {
                             ++category;
                         }
                     } else if (left != 0) {
-                        next_piece = Customiser_NextPieceLeft((CUSTOMISER_LAYERS *)customiser, old_piece, piece_count, side, category);
+                        next_piece = Customiser_NextPieceLeft(customiser, old_piece, piece_count, side, category);
                     } else if (right != 0) {
-                        next_piece = Customiser_NextPieceRight((CUSTOMISER_LAYERS *)customiser, old_piece, piece_count, side, category);
+                        next_piece = Customiser_NextPieceRight(customiser, old_piece, piece_count, side, category);
                     }
                     *slot = (u16)next_piece;
                     CustomiseMenuY[side] = category;
@@ -803,7 +800,7 @@ i32 CustomiserMenu_Update(void) {
                         CustomiseMenuTime[side] = 0.0f;
                     }
                     if (next_piece != old_piece) {
-                        Customiser_SetNameAndIcon((CUSTOMISER_LAYERS *)customiser, side);
+                        Customiser_SetNameAndIcon(customiser, side);
                     }
                 }
             }
@@ -861,7 +858,7 @@ i32 CustomiserMenu_Update(void) {
                         Game.customiser_start[side].pieces[category] = (u16)piece;
                     }
                 }
-                Customiser_SetNameAndIcon((CUSTOMISER_LAYERS *)customiser, side);
+                Customiser_SetNameAndIcon(customiser, side);
                 debris_position.x = 0.0f;
                 debris_position.y = 0.21f;
                 debris_position.z = 0.0f;
@@ -917,8 +914,7 @@ static f32 CustomiseNameArrowOffset = 0.1f;
 static f32 CustomiseNameBracketOffsetX = 0.01f;
 static f32 CustomiseNameBracketOffsetY = 0.0075f;
 
-static void CustomiserDrawNameEditor(CUSTOMISER_LAYERS *input) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+static void CustomiserDrawNameEditor(CUSTOMISER_CONFIG *customiser) {
     i32 side;
     i32 active_count;
     i32 index;
@@ -1000,7 +996,7 @@ static void CustomiserDrawNameEditor(CUSTOMISER_LAYERS *input) {
         alpha = (1.0f - CustomiseNameBoardMul[side]) * CustomiseNameAlpha;
         DrawPanel3DObject(x, -0.48f, 1.0f, MissionPlayerIconSize, MissionPlayerIconSize, MissionPlayerIconSize, 0, 0, 0,
                           &WORLD->level_objects[167].special, 0, alpha);
-        icon = Customiser_GetIcon(input, &Game.customiser_start[side], index);
+        icon = Customiser_GetIcon(customiser, &Game.customiser_start[side], index);
         if (icon != -1) {
             if (icon != PCArcadeUnpairedIconModel) {
                 ++icon;
@@ -1015,9 +1011,8 @@ static NUVEC CustomiseNoHatPos[2] = {0};
 static f32 CustomiseHeadOffset = 0.21f;
 char CustomiseLetter[39] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ- 0123456789";
 
-void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
-    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)input;
+void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
+    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
     /* Native conversions must all happen before the NULL test. */
     const i32 rotation_step = (i32)(10922.0 * FRAMETIME);
     const i32 tilt_x_step = (i32)(12379.0 * FRAMETIME);
@@ -1162,9 +1157,9 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
 }
 
 /* 00425fa0 / 1087 */
-void Customiser_Draw3D(CUSTOMISER_LAYERS *input) {
+void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    CUSTOMISER_CONFIG *customiser = (CUSTOMISER_CONFIG *)input;
+    CUSTOMISER_CONFIG *customiser = input;
     CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)input;
     i32 active_side;
     i32 active_count;
