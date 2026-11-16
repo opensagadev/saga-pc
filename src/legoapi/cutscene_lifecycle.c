@@ -378,7 +378,7 @@ void instNuGCutSceneEnd(INSTNUGCUTSCENE *owner) {
     instNuGCutSceneEndButNotSystems(owner);
     instance->current_frame = scene->duration;
     instance->flags_88 = (instance->flags_88 & ~NUGCUTSCENE_INST_PLAYING) | NUGCUTSCENE_INST_ENDED;
-    instance->flags_8c &= ~0x40U;
+    instance->flags_8c &= ~NUGCUTSCENE_PLAY_HOLD_LAST_FRAME;
     ForcePlayEndFrame = 1;
     if ((instance->flags_88 & 0x40000) != 0) {
         if (scene->rigid_system != NULL) {
@@ -1120,13 +1120,13 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
             instance->stream_buffer_0 = scene->stream_buffer_0;
             instance->stream_buffer_1 = scene->stream_buffer_1;
             instance->pending_stream = scene->stream_buffer_1;
-            instance->flags_88 &= ~0x10000000;
+            instance->flags_88 &= ~NUGCUTSCENE_INST_STREAM_BUFFER_1;
             instance->stream_index = 0;
         }
         if (scene->version >= 2 && (scene->flags & (CUTSCENE_STREAMED | CUTSCENE_STREAM_PENDING)) != 0) {
-            instance->flags_88 |= 0x20000000;
+            instance->flags_88 |= NUGCUTSCENE_INST_STREAMED;
         } else {
-            instance->flags_88 &= ~0x20000000;
+            instance->flags_88 &= ~NUGCUTSCENE_INST_STREAMED;
         }
         CutSceneCreateContents(buffer, name, instance, scene, gscene, extra_scene, NULL);
         NuThreadDisableThreadSwap();
@@ -1244,7 +1244,7 @@ void instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
     instance->current_frame = 1.0f;
     instance->render_frame = 1.0f;
     instance->flags_88 &= ~(NUGCUTSCENE_INST_PLAYING | NUGCUTSCENE_INST_ENDED);
-    instance->flags_8c &= ~0x40U;
+    instance->flags_8c &= ~NUGCUTSCENE_PLAY_HOLD_LAST_FRAME;
     if ((instance->flags_88 & 0x40000) != 0) {
         if (scene->rigid_system != NULL) {
             CutSceneEndRigidsPC(owner, scene->duration - 1.0f);
@@ -1271,11 +1271,11 @@ void instNuGCutSceneEndFirstFrame(INSTNUGCUTSCENE *owner) {
 /* Jumps an instance to its last frame and settles the rigid and locator systems there. */
 static void CutSceneJumpToEnd(CUT_INSTANCE_LIFECYCLE *instance, u16 flag) {
     CUT_SCENE_LIFECYCLE *scene;
-    u32 flags = (instance->flags_88 & ~NUGCUTSCENE_INST_PLAYING) | ((flag & 1) << 1) | 0x1001;
+    u32 flags = (instance->flags_88 & ~NUGCUTSCENE_INST_PLAYING) | ((flag & 1) << 1) | NUGCUTSCENE_INST_ENDED | NUGCUTSCENE_INST_ADVANCING;
     scene = instance->scene;
     instance->current_frame = scene->duration;
     instance->flags_88 = flags;
-    instance->flags_8c = (instance->flags_8c & ~0x40U) | ((flag & 1) << 6);
+    instance->flags_8c = (instance->flags_8c & ~NUGCUTSCENE_PLAY_HOLD_LAST_FRAME) | ((flag & 1) << 6);
     ForcePlayEndFrame = 1;
     if ((instance->flags_88 & 0x40000) != 0) {
         if (scene->rigid_system != NULL) {
@@ -1418,7 +1418,7 @@ static void CutSceneCharacterSysRender(INSTNUGCUTSCENE *owner, f32 frame, i32 pa
 static void CutSceneInstanceRender(CUT_INSTANCE_LOAD *instance, i32 paused) {
     INSTNUGCUTSCENE *owner = (INSTNUGCUTSCENE *)instance;
 
-    if ((instance->flags_88 & 0x800) != 0 || (instance->flags_88 & NUGCUTSCENE_INST_PLAYING) == 0 ||
+    if ((instance->flags_88 & NUGCUTSCENE_INST_SUSPENDED) != 0 || (instance->flags_88 & NUGCUTSCENE_INST_PLAYING) == 0 ||
         (instance->flags_88 & NUGCUTSCENE_INST_VISIBLE) == 0) {
         return;
     }
@@ -1429,10 +1429,10 @@ static void CutSceneInstanceRender(CUT_INSTANCE_LOAD *instance, i32 paused) {
         if (CutSceneRenderCharacters != 0 && instance->character_instance != NULL) {
             CutSceneCharacterSysRender(owner, instance->scene->duration - instance->render_frame, paused);
         }
-        if ((instance->flags_8c & 0x40) != 0 && instance->current_frame == instance->scene->duration - 1.0f) {
+        if ((instance->flags_8c & NUGCUTSCENE_PLAY_HOLD_LAST_FRAME) != 0 && instance->current_frame == instance->scene->duration - 1.0f) {
             return;
         }
-        if ((instance->flags_88 & 0x40000000) != 0) {
+        if ((instance->flags_88 & NUGCUTSCENE_INST_SKIPPING) != 0) {
             return;
         }
         if (CutSceneRenderLocators != 0 && instance->locator_instance != NULL) {
@@ -1445,10 +1445,10 @@ static void CutSceneInstanceRender(CUT_INSTANCE_LOAD *instance, i32 paused) {
         if (CutSceneRenderCharacters != 0 && instance->character_instance != NULL) {
             CutSceneCharacterSysRender(owner, instance->render_frame, paused);
         }
-        if ((instance->flags_8c & 0x40) != 0 && instance->current_frame == instance->scene->duration - 1.0f) {
+        if ((instance->flags_8c & NUGCUTSCENE_PLAY_HOLD_LAST_FRAME) != 0 && instance->current_frame == instance->scene->duration - 1.0f) {
             return;
         }
-        if ((instance->flags_88 & 0x40000000) != 0) {
+        if ((instance->flags_88 & NUGCUTSCENE_INST_SKIPPING) != 0) {
             return;
         }
         if (CutSceneRenderLocators != 0 && instance->locator_instance != NULL) {
@@ -1501,7 +1501,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *owner, f32 frame) {
     if (system->state_animation != NULL) {
         if (StateAnimEvaluate(system->state_animation, &state->state_index, &value, frame) != 0) {
             state->camera_index = (i8)value;
-            instance->flags_8c |= 0x1000;
+            instance->flags_8c |= NUGCUTSCENE_PLAY_CAMERA_CHANGED;
             CutSceneCameraChanged = 1;
         }
         if (state->state_index < system->state_animation->count) {
@@ -1721,8 +1721,8 @@ void instNuGCutSceneStart(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_LOAD *instance = (CUT_INSTANCE_LOAD *)owner;
     instance->current_frame = 1.0f;
     instance->render_frame = 1.0f;
-    instance->flags_8c &= ~0x1000U;
-    instance->flags_88 = (instance->flags_88 & ~0x1001U) | NUGCUTSCENE_INST_PLAYING;
+    instance->flags_8c &= ~NUGCUTSCENE_PLAY_CAMERA_CHANGED;
+    instance->flags_88 = (instance->flags_88 & ~(NUGCUTSCENE_INST_ADVANCING | NUGCUTSCENE_INST_ENDED)) | NUGCUTSCENE_INST_PLAYING;
     if (instance->rate < 0.0f) {
         instance->rate = -instance->rate;
     }
@@ -1739,7 +1739,7 @@ void instNuGCutSceneStart(INSTNUGCUTSCENE *owner) {
         CutTriggerSysStart(instance);
     }
     if (instance->skip_countdown != 0 && instance->stream_index == 0) {
-        instance->flags_88 |= 0x40000000;
+        instance->flags_88 |= NUGCUTSCENE_INST_SKIPPING;
         instance->flags_8c = (instance->flags_8c & ~5U) | 0xa;
     }
 }
@@ -2038,17 +2038,17 @@ static void CutSceneStreamSkip(CUT_INSTANCE_LOAD *instance, f32 elapsed) {
         return;
     }
     if (instance->stream_index == (u8)instance->saved_scene->unknown_40 - 1) {
-        if ((instance->flags_8c & 0x80) != 0) {
+        if ((instance->flags_8c & NUGCUTSCENE_PLAY_STREAM_LOADING) != 0) {
             CutSceneStreamDiagnostic(instance->scene->filename);
         } else if (instance->pending_stream != NULL) {
             CutSceneStreamDiagnostic(instance->scene->filename);
         } else {
-            if ((instance->flags_88 & 0x10000000) != 0) {
+            if ((instance->flags_88 & NUGCUTSCENE_INST_STREAM_BUFFER_1) != 0) {
                 instance->pending_stream = instance->stream_buffer_1;
-                instance->flags_88 &= ~0x10000000U;
+                instance->flags_88 &= ~NUGCUTSCENE_INST_STREAM_BUFFER_1;
             } else {
                 instance->pending_stream = instance->stream_buffer_0;
-                instance->flags_88 |= 0x10000000;
+                instance->flags_88 |= NUGCUTSCENE_INST_STREAM_BUFFER_1;
             }
             CutSceneStreamDiagnostic(instance->scene->filename);
         }
@@ -2062,7 +2062,8 @@ static void CutSceneStreamSkip(CUT_INSTANCE_LOAD *instance, f32 elapsed) {
         instance->current_frame = instance->scene->duration - 1.0f;
     } else {
         instance->stream_index = (u8)(instance->scene->unknown_40 - 1);
-        instance->pending_stream = (instance->flags_88 & 0x10000000) != 0 ? instance->stream_buffer_0 : instance->stream_buffer_1;
+        instance->pending_stream =
+            (instance->flags_88 & NUGCUTSCENE_INST_STREAM_BUFFER_1) != 0 ? instance->stream_buffer_0 : instance->stream_buffer_1;
         CutSceneLoadingInstance = (INSTNUGCUTSCENE *)instance;
     }
 }
@@ -2125,13 +2126,13 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
     CUT_SCENE_LOAD *scene = instance->scene;
     f32 overflow;
     i32 repeat_count;
-    instance->flags_8c &= ~0x1000U;
+    instance->flags_8c &= ~NUGCUTSCENE_PLAY_CAMERA_CHANGED;
     instance->synchro = cutscene_synchro_counter;
-    if ((instance->flags_88 & 0x800) != 0 || (scene->flags & CUTSCENE_STREAM_PENDING) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_SUSPENDED) != 0 || (scene->flags & CUTSCENE_STREAM_PENDING) != 0) {
         return;
     }
     instance->elapsed = elapsed;
-    if (NuCutSceneSFXFixUp != NULL && (scene->flags & CUTSCENE_HAS_SFX) != 0 && (instance->flags_8c & 0x20) != 0) {
+    if (NuCutSceneSFXFixUp != NULL && (scene->flags & CUTSCENE_HAS_SFX) != 0 && (instance->flags_8c & NUGCUTSCENE_PLAY_SFX_FIXUP) != 0) {
         NUMTX *camera = NuCameraGetMtx();
         if (camera != NULL && camera->m30 < instance->bounds_max.x && camera->m30 > instance->bounds_min.x &&
             camera->m31 < instance->bounds_max.y && camera->m31 > instance->bounds_min.y && camera->m32 < instance->bounds_max.z &&
@@ -2139,23 +2140,24 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
             NuCutSceneSFXFixUp((INSTNUGCUTSCENE *)instance);
         }
     }
-    instance->flags_88 &= ~0x40000000U;
-    if (instance->skip_countdown != 0 && (instance->flags_88 & 1) == 0 && instance->skip_frames != 0) {
+    instance->flags_88 &= ~NUGCUTSCENE_INST_SKIPPING;
+    if (instance->skip_countdown != 0 && (instance->flags_88 & NUGCUTSCENE_INST_ADVANCING) == 0 && instance->skip_frames != 0) {
         instance->skip_frames--;
-        instance->flags_88 |= 0x40000000;
+        instance->flags_88 |= NUGCUTSCENE_INST_SKIPPING;
         paused = 1;
     }
     if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) == 0) {
-        if ((instance->flags_88 & 1) != 0 || (instance->flags_88 & 0x40) == 0) {
+        if ((instance->flags_88 & NUGCUTSCENE_INST_ADVANCING) != 0 || (instance->flags_88 & NUGCUTSCENE_INST_AUTO_START) == 0) {
             return;
         }
         instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
     }
-    if ((scene->flags & CUTSCENE_STREAM_PENDING) != 0 && (instance->flags_88 & 0x8000000) == 0) {
+    if ((scene->flags & CUTSCENE_STREAM_PENDING) != 0 && (instance->flags_88 & NUGCUTSCENE_INST_NEXT_STREAM_READY) == 0) {
         return;
     }
     if (instance->scene->version >= 2) {
-        if ((instance->flags_88 & 0x20000000) != 0 && CutSceneLoadingInstance == NULL && (instance->flags_88 & 0x8000000) == 0 &&
+        if ((instance->flags_88 & NUGCUTSCENE_INST_STREAMED) != 0 && CutSceneLoadingInstance == NULL &&
+            (instance->flags_88 & NUGCUTSCENE_INST_NEXT_STREAM_READY) == 0 &&
             instance->stream_index != (u8)instance->saved_scene->unknown_40) {
             CutSceneLoadingInstance = (INSTNUGCUTSCENE *)instance;
         } else if (instance->queued_stream_instance != NULL && CutSceneLoadingInstance == NULL &&
@@ -2168,17 +2170,17 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
     if ((instance->flags_88 & NUGCUTSCENE_INST_VISIBLE) == 0) {
         return;
     }
-    if ((instance->flags_88 & 4) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_PAUSED) != 0) {
         paused = 1;
     }
-    if (CutSceneTerminateStream != 0 || (instance->flags_8c & 0x10) != 0) {
+    if (CutSceneTerminateStream != 0 || (instance->flags_8c & NUGCUTSCENE_PLAY_SKIPPABLE) != 0) {
         if (scene->version >= 2 && (scene->flags & CUTSCENE_STREAMED) != 0) {
             if (skip != 0) {
-                instance->flags_8c |= 0x400;
+                instance->flags_8c |= NUGCUTSCENE_PLAY_STREAM_SKIP;
             } else {
                 CutSceneQuitPrompt = 1;
             }
-        } else if ((instance->flags_8c & 0x10) != 0) {
+        } else if ((instance->flags_8c & NUGCUTSCENE_PLAY_SKIPPABLE) != 0) {
             if (skip != 0) {
                 instance->current_frame = scene->duration - 1.0f - instance->rate * elapsed;
                 CutSceneHasQuit = 1;
@@ -2187,18 +2189,18 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
             }
         }
     }
-    if ((instance->flags_8c & 0x200) != 0) {
+    if ((instance->flags_8c & NUGCUTSCENE_PLAY_LOCK_PLAYER) != 0) {
         CutSceneLockPlayer = 1;
     }
-    if ((instance->flags_88 & 1) != 0) {
+    if ((instance->flags_88 & NUGCUTSCENE_INST_ADVANCING) != 0) {
         if (paused == 0) {
             instance->current_frame += instance->rate * elapsed;
-            if ((instance->flags_8c & 0x400) != 0) {
+            if ((instance->flags_8c & NUGCUTSCENE_PLAY_STREAM_SKIP) != 0) {
                 CutSceneStreamSkip(instance, elapsed);
             }
             if (instance->current_frame < 1.0f) {
-                if ((instance->flags_88 & 0x10) != 0) {
-                    if ((instance->flags_88 & 8) != 0) {
+                if ((instance->flags_88 & NUGCUTSCENE_INST_PING_PONG) != 0) {
+                    if ((instance->flags_88 & NUGCUTSCENE_INST_LOOP) != 0) {
                         if (instance->rate < 0.0f) {
                             instance->rate = -instance->rate;
                         }
@@ -2209,7 +2211,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
                             overflow = 1.0f - instance->current_frame;
                             instance->repeat_count = repeat_count - 1;
                             instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
-                            instance->flags_88 |= 1;
+                            instance->flags_88 |= NUGCUTSCENE_INST_ADVANCING;
                             instance->current_frame += overflow;
                         } else if (instance->chained_instance != NULL) {
                             CUT_INSTANCE_LOAD *next;
@@ -2227,7 +2229,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
                             return;
                         }
                     }
-                } else if ((instance->flags_88 & 0x20) != 0) {
+                } else if ((instance->flags_88 & NUGCUTSCENE_INST_HOLD_FIRST_FRAME) != 0) {
                     instance->current_frame = 1.0f;
                 } else {
                     instNuGCutSceneEndFirstFrame((INSTNUGCUTSCENE *)instance);
@@ -2236,14 +2238,14 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
                 CUT_SCENE_LOAD *current = instance->scene;
                 if (current->version >= 2 && (current->flags & CUTSCENE_STREAMED) != 0) {
                     if (instance->stream_index >= (u8)instance->saved_scene->unknown_40) {
-                        if ((instance->flags_8c & 0x40) != 0) {
+                        if ((instance->flags_8c & NUGCUTSCENE_PLAY_HOLD_LAST_FRAME) != 0) {
                             instance->flags_88 |= NUGCUTSCENE_INST_ENDED;
                             instance->current_frame = ((f64)scene->duration - 1.0);
                         } else {
                             instNuGCutSceneEnd((INSTNUGCUTSCENE *)instance);
                             instance->accumulated_duration = 0.0f;
                         }
-                    } else if ((instance->flags_88 & 0x8000000) == 0) {
+                    } else if ((instance->flags_88 & NUGCUTSCENE_INST_NEXT_STREAM_READY) == 0) {
                         CutSceneStreamHoldFrame(instance);
                     } else {
                         overflow = instance->current_frame - ((f64)current->duration - 1.0);
@@ -2252,38 +2254,39 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
                         }
                         ++instance->stream_index;
                         instance->accumulated_duration += current->duration;
-                        if ((instance->flags_8c & 0x80) != 0 || instance->pending_stream != NULL) {
+                        if ((instance->flags_8c & NUGCUTSCENE_PLAY_STREAM_LOADING) != 0 || instance->pending_stream != NULL) {
                             CutSceneStreamDiagnostic(instance->scene->filename);
                             CutSceneStreamHoldFrame(instance);
                             --instance->stream_index;
                         } else {
-                            if ((instance->flags_88 & 0x10000000) != 0) {
-                                instance->flags_88 &= ~0x10000000U;
+                            if ((instance->flags_88 & NUGCUTSCENE_INST_STREAM_BUFFER_1) != 0) {
+                                instance->flags_88 &= ~NUGCUTSCENE_INST_STREAM_BUFFER_1;
                                 instance->pending_stream = instance->stream_buffer_1;
                             } else {
-                                instance->flags_88 |= 0x10000000;
+                                instance->flags_88 |= NUGCUTSCENE_INST_STREAM_BUFFER_1;
                                 instance->pending_stream = instance->stream_buffer_0;
                             }
                             CutSceneStreamDiagnostic(instance->scene->filename);
                             if (CutSceneSingleStreamBuffer < 2) {
-                                copyAnims(instance->scene,
-                                          (instance->flags_88 & 0x10000000) != 0 ? instance->stream_buffer_1 : instance->stream_buffer_0);
+                                copyAnims(instance->scene, (instance->flags_88 & NUGCUTSCENE_INST_STREAM_BUFFER_1) != 0
+                                                               ? instance->stream_buffer_1
+                                                               : instance->stream_buffer_0);
                             } else {
                                 CutSceneSwapStreamAsset(instance);
                             }
-                            instance->flags_88 &= ~0x8000000U;
+                            instance->flags_88 &= ~NUGCUTSCENE_INST_NEXT_STREAM_READY;
                             instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
-                            instance->flags_88 |= 1;
+                            instance->flags_88 |= NUGCUTSCENE_INST_ADVANCING;
                             instance->current_frame += overflow;
                         }
                     }
-                } else if ((instance->flags_88 & 0x10) != 0) {
+                } else if ((instance->flags_88 & NUGCUTSCENE_INST_PING_PONG) != 0) {
                     overflow = instance->current_frame - ((f64)scene->duration - 1.0);
                     instance->current_frame = ((f64)scene->duration - 1.0) - overflow;
                     if (instance->rate > 0.0f) {
                         instance->rate = -instance->rate;
                     }
-                } else if ((instance->flags_8c & 0x40) != 0) {
+                } else if ((instance->flags_8c & NUGCUTSCENE_PLAY_HOLD_LAST_FRAME) != 0) {
                     instance->flags_88 |= NUGCUTSCENE_INST_ENDED;
                     instance->current_frame = ((f64)scene->duration - 1.0);
                 } else {
@@ -2300,7 +2303,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
                             overflow = 0.0f;
                         }
                         instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
-                        instance->flags_88 |= 1;
+                        instance->flags_88 |= NUGCUTSCENE_INST_ADVANCING;
                         instance->current_frame += overflow;
                     } else if (instance->chained_instance != NULL) {
                         CUT_INSTANCE_LOAD *next;
@@ -2316,13 +2319,13 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
                         instNuGCutSceneUpdate((CUT_INSTANCE_LOAD *)instance->chained_instance, 0, skip, elapsed);
                         instance->chained_instance = NULL;
                         return;
-                    } else if ((instance->flags_88 & 8) != 0) {
+                    } else if ((instance->flags_88 & NUGCUTSCENE_INST_LOOP) != 0) {
                         overflow = instance->current_frame - ((f64)scene->duration - 1.0);
                         if (overflow > scene->duration) {
                             overflow = 0.0f;
                         }
                         instNuGCutSceneStart((INSTNUGCUTSCENE *)instance);
-                        instance->flags_88 |= 1;
+                        instance->flags_88 |= NUGCUTSCENE_INST_ADVANCING;
                         instance->current_frame += overflow;
                     } else {
                         instNuGCutSceneEnd((INSTNUGCUTSCENE *)instance);
@@ -2331,7 +2334,7 @@ static void instNuGCutSceneUpdate(CUT_INSTANCE_LOAD *instance, i32 paused, i32 s
             }
         }
     } else if (paused == 0) {
-        instance->flags_88 |= 1;
+        instance->flags_88 |= NUGCUTSCENE_INST_ADVANCING;
     }
     if ((instance->flags_88 & NUGCUTSCENE_INST_PLAYING) == 0) {
         return;
@@ -2524,15 +2527,15 @@ void fun_00500a60(i32 value) {
 
 i32 instNuGCutSceneSwapBuffers(INSTNUGCUTSCENE *owner, i32 force) {
     CUT_INSTANCE_LOAD *instance = (CUT_INSTANCE_LOAD *)owner;
-    if (((instance->flags_8c & 0x80) != 0 && force == 0) || instance->pending_stream != NULL) {
+    if (((instance->flags_8c & NUGCUTSCENE_PLAY_STREAM_LOADING) != 0 && force == 0) || instance->pending_stream != NULL) {
         CutSceneStreamDiagnostic(instance->scene->filename);
         return 0;
     }
-    if ((instance->flags_88 & 0x10000000) != 0) {
-        instance->flags_88 &= ~0x10000000U;
+    if ((instance->flags_88 & NUGCUTSCENE_INST_STREAM_BUFFER_1) != 0) {
+        instance->flags_88 &= ~NUGCUTSCENE_INST_STREAM_BUFFER_1;
         instance->pending_stream = instance->stream_buffer_1;
     } else {
-        instance->flags_88 |= 0x10000000;
+        instance->flags_88 |= NUGCUTSCENE_INST_STREAM_BUFFER_1;
         instance->pending_stream = instance->stream_buffer_0;
     }
     CutSceneStreamDiagnostic(instance->scene->filename);
@@ -2567,13 +2570,15 @@ void instNuGCutSceneServiceLoad(void) {
     if (buffer.void_ptr == NULL) {
         return;
     }
-    ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c = ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c | 0x80;
+    ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c =
+        ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c | NUGCUTSCENE_PLAY_STREAM_LOADING;
     buffer_end.addr = buffer.addr + ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->scene->stream_buffer_size;
     CutSceneMissingObjectDiagnostic(path, buffer.void_ptr);
     CutSceneStreamDiagnostic(path);
     NuGCutSceneLoad(path, &buffer, &buffer_end, 1);
     CutSceneStreamDiagnostic(path);
-    ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 = ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 | 0x08000000;
+    ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 =
+        ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 | NUGCUTSCENE_INST_NEXT_STREAM_READY;
     if (((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->stream_index == 0 &&
         (((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->scene->flags & CUTSCENE_STREAM_PENDING) != 0) {
         instNuGCutSceneSwapBuffers(CutSceneLoadingInstance, 1);
@@ -2582,14 +2587,16 @@ void instNuGCutSceneServiceLoad(void) {
                       ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->scene->stream_buffer_1);
         } else {
             ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 =
-                ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 | 0x10000000;
+                ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 | NUGCUTSCENE_INST_STREAM_BUFFER_1;
             CutSceneSwapStreamAsset((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance);
         }
         ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->scene->flags &= ~CUTSCENE_STREAM_PENDING;
-        ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 = ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 & ~0x08000000U;
+        ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 =
+            ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_88 & ~NUGCUTSCENE_INST_NEXT_STREAM_READY;
         ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->stream_index = 1;
     }
-    ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c = ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c & ~0x80U;
+    ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c =
+        ((CUT_INSTANCE_LOAD *)CutSceneLoadingInstance)->flags_8c & ~NUGCUTSCENE_PLAY_STREAM_LOADING;
     CutSceneLoadingInstance = NULL;
 }
 

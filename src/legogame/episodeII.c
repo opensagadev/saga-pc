@@ -1020,7 +1020,7 @@ void FactoryB_Reset(WORLDINFO *world) {
     factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
     if (factoryb_cut != NULL && factoryb_cut->instance != NULL) {
         ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
-        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= 8;
+        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= NUGCUTSCENE_INST_LOOP;
     }
     factoryb_conveyor_stopped_msg = CheckGizAIMessage(gizaimessagesys, "conveyor_stop", NULL);
 }

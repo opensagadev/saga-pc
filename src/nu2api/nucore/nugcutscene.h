@@ -12,12 +12,31 @@ struct nuhspecial_s;
 
 /* instnugcutscene_s.flags_88 (and the cut scene instance views): what instNuGCutSceneStart, End, the
  * instNuGCutSceneSet* transforms and instNuGCutSceneClipTest set and test. */
-#define NUGCUTSCENE_INST_PLAYING 0x2       /* set by Start, cleared by End */
-#define NUGCUTSCENE_INST_OWN_MATRIX 0x80   /* set by every SetTranslation/Rotate call: draw and clip with the instance matrix */
-#define NUGCUTSCENE_INST_CLIP_BOUNDS 0x100 /* ClipTest tests the scene bounds */
-#define NUGCUTSCENE_INST_CLIP_RADIUS 0x200 /* ClipTest tests the camera distance */
-#define NUGCUTSCENE_INST_VISIBLE 0x400     /* ClipTest's result */
-#define NUGCUTSCENE_INST_ENDED 0x1000      /* set by End, cleared by Start and Reset */
+#define NUGCUTSCENE_INST_PLAYING 0x2           /* set by Start, cleared by End */
+#define NUGCUTSCENE_INST_OWN_MATRIX 0x80       /* set by every SetTranslation/Rotate call: draw and clip with the instance matrix */
+#define NUGCUTSCENE_INST_CLIP_BOUNDS 0x100     /* ClipTest tests the scene bounds */
+#define NUGCUTSCENE_INST_CLIP_RADIUS 0x200     /* ClipTest tests the camera distance */
+#define NUGCUTSCENE_INST_VISIBLE 0x400         /* ClipTest's result */
+#define NUGCUTSCENE_INST_ENDED 0x1000          /* set by End, cleared by Start and Reset */
+#define NUGCUTSCENE_INST_ADVANCING 0x1         /* cleared by Start; the first update after it sets it, the frame advances from the next */
+#define NUGCUTSCENE_INST_PAUSED 0x4            /* the cut script's pause command: the frame does not advance */
+#define NUGCUTSCENE_INST_LOOP 0x8              /* CUTINFO_LOOPING: Start again at the end */
+#define NUGCUTSCENE_INST_PING_PONG 0x10        /* the rate turns round at either end */
+#define NUGCUTSCENE_INST_HOLD_FIRST_FRAME 0x20 /* played backwards, it stops on the first frame */
+#define NUGCUTSCENE_INST_AUTO_START 0x40       /* the update starts it while it is not playing */
+#define NUGCUTSCENE_INST_SUSPENDED 0x800       /* the update leaves it alone */
+#define NUGCUTSCENE_INST_NEXT_STREAM_READY 0x8000000 /* a streamed scene's next part is loaded; without it the last frame is held */
+#define NUGCUTSCENE_INST_STREAM_BUFFER_1 0x10000000  /* active_stream_buffer: the part plays from stream buffer 1 */
+#define NUGCUTSCENE_INST_STREAMED 0x20000000         /* set at creation for a streamed scene: the update queues its loading */
+#define NUGCUTSCENE_INST_SKIPPING 0x40000000         /* a frame of the skip countdown, played as paused */
+/* The cut scene instance flags_8c; its low four bits are skip_frames. */
+#define NUGCUTSCENE_PLAY_SKIPPABLE 0x10        /* skip ends it (or skips the stream); otherwise the quit prompt */
+#define NUGCUTSCENE_PLAY_SFX_FIXUP 0x20        /* NuCutSceneSFXFixUp runs while the camera is inside the bounds */
+#define NUGCUTSCENE_PLAY_HOLD_LAST_FRAME 0x40  /* at the end it holds the last frame (ENDED) instead of ending */
+#define NUGCUTSCENE_PLAY_STREAM_LOADING 0x80   /* its next stream part is loading */
+#define NUGCUTSCENE_PLAY_LOCK_PLAYER 0x200     /* sets CutSceneLockPlayer while it plays */
+#define NUGCUTSCENE_PLAY_STREAM_SKIP 0x400     /* skipping a streamed scene: CutSceneStreamSkip runs */
+#define NUGCUTSCENE_PLAY_CAMERA_CHANGED 0x1000 /* the camera state animation switched camera this update */
 
 typedef struct instnugcutscene_s {              // size 0xf8
     struct instnugcutscene_s *next;             // 0x00

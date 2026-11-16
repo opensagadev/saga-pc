@@ -2283,9 +2283,9 @@ extern "C" {
         reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = rate;
         instNuGCutSceneStart(cut->instance);
         if ((cut->flags & CUTINFO_LOOPING) != 0) {
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 |= 8;
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 |= NUGCUTSCENE_INST_LOOP;
         } else {
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 &= ~8U;
+            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 &= ~NUGCUTSCENE_INST_LOOP;
         }
         cut->unknown_58 = 0.0f;
         if (cut->music_handle != -1) {

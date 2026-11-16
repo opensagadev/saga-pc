@@ -45,7 +45,7 @@ void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
     CUT_INSTANCE_PRE_END *instance = (CUT_INSTANCE_PRE_END *)owner;
     instance->current_frame = instance->scene->duration;
     instance->render_frame = instance->scene->duration;
-    instance->flags_8c &= ~0x40U;
+    instance->flags_8c &= ~NUGCUTSCENE_PLAY_HOLD_LAST_FRAME;
     instance->flags_88 = (instance->flags_88 & ~NUGCUTSCENE_INST_PLAYING) | NUGCUTSCENE_INST_ENDED;
     if (instance->camera_instance != NULL && instance->camera_instance->camera_index >= 0) {
         CutSceneCameraCTRL = 0;
@@ -53,11 +53,11 @@ void instNuGCutSceneEndButNotSystems(INSTNUGCUTSCENE *owner) {
 }
 
 void fun_00500400(INSTNUGCUTSCENE *instance) {
-    instance->flags_88 &= ~0x800;
+    instance->flags_88 &= ~NUGCUTSCENE_INST_SUSPENDED;
 }
 
 void fun_00500410(INSTNUGCUTSCENE *instance) {
-    instance->flags_88 |= 0x800;
+    instance->flags_88 |= NUGCUTSCENE_INST_SUSPENDED;
 }
 
 void fun_00500420(INSTNUGCUTSCENE *instance, i32 value) {
@@ -68,7 +68,7 @@ void fun_00500420(INSTNUGCUTSCENE *instance, i32 value) {
 }
 
 void fun_00500450(INSTNUGCUTSCENE *instance, i32 value) {
-    instance->flags_8c = (instance->flags_8c & ~0x40U) | ((value << 6) & 0x40);
+    instance->flags_8c = (instance->flags_8c & ~NUGCUTSCENE_PLAY_HOLD_LAST_FRAME) | ((value << 6) & 0x40);
 }
 
 void fun_00500470(INSTNUGCUTSCENE *instance, INSTNUGCUTSCENE *chained) {
@@ -1212,7 +1212,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
             case CUTSCRIPT_PAUSE:
                 instance = instNuGCutSceneFindActive(node->a.name);
                 if (instance != NULL) {
-                    instance->flags_88 |= 4;
+                    instance->flags_88 |= NUGCUTSCENE_INST_PAUSED;
                     done = 1;
                 }
                 CutSceneMissingObjectDiagnostic(node->a.name);
@@ -1220,7 +1220,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
             case CUTSCRIPT_UNPAUSE:
                 instance = instNuGCutSceneFindActive(node->a.name);
                 if (instance != NULL) {
-                    instance->flags_88 &= ~4;
+                    instance->flags_88 &= ~NUGCUTSCENE_INST_PAUSED;
                     done = 1;
                 }
                 CutSceneMissingObjectDiagnostic(node->a.name);
