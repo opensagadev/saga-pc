@@ -218,7 +218,10 @@ relocations and symbols with the last proven build (COFF timestamps and
 `.debug$*` sections left out, so comments and file names do not count), runs
 `tools/match.py --update` only when an object differs (otherwise it refreshes
 the report's input hashes), runs the budget guard, the scans and the tool tests
-side by side, and prints one line:
+side by side, checks with `tools/sse_align.py` that every global an aligned SSE
+instruction reads or writes is 16-aligned in the link and declared
+`__declspec(align(16))` (on the variable or its type; also under `--no-checks`),
+and prints one line:
 
 ```text
 proof: PASS; functions 13513->13513 (+0 -0); data 15111->15111 (+0 -0); file data 972838->972838 bytes; bss ...; 47 s

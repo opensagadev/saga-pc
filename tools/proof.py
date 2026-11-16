@@ -11,6 +11,8 @@ Steps, each timed:
             object and member-proof hashes are refreshed (match.refresh)
   checks    the budget guard, the scans and the tool tests side by side with the match, then
             tools/check.py (it reads the report)
+  sse_align tools/sse_align.py: globals of aligned SSE instructions are 16-aligned and declared so (also
+            with --no-checks)
 
 The verdict compares matching.json with the committed one (HEAD): exact functions and data
 gained and lost by address, losses of functions listed in docs/fragile-flips.md counted apart, and
@@ -325,6 +327,11 @@ def main(argv=None):
                stderr=subprocess.STDOUT):
             failures.append("check")
             print("check failed: see build/proof/check.log")
+        # Runs with --no-checks too: the push gate proves with that flag, and an unaligned SSE global faults at run time.
+        if run("sse_align", [sys.executable, "tools/sse_align.py"], timings, stdout=open(logs / "sse_align.log", "w"),
+               stderr=subprocess.STDOUT):
+            failures.append("sse_align")
+            print("sse_align failed: see build/proof/sse_align.log")
         for watcher in watchers:
             watcher.join()
         for name, seconds, code in results:
