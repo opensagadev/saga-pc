@@ -15502,7 +15502,7 @@ address,symbol,size,ctype
 0x740fa0,?fun_00740fa0@VirtualStackAllocator@@QAEXAAU1@I@Z,61,
 0x740fe0,??0VirtualStackAllocator@@QAE@PAXI@Z,27,
 0x741000,??0VirtualStackAllocator@@QAE@AAU0@I@Z,87,
-0x741060,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z,36,
+0x741060,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@PBUnushadermtldesc_s@@PBUnumtl_s@@HH@Z,36,
 0x741090,_fun_00741090,7,
 0x7410a0,_fun_007410a0,10,
 0x7410b0,??0ShaderObjectKey@@QAE@ABUPC_SHADER_MATERIAL_FILTER_VIEW@@_N@Z,39,
@@ -15565,9 +15565,9 @@ address,symbol,size,ctype
 0x7416f0,_NuShaderManagerBindShader,61,void __cdecl(PC_SHADER_OBJECT_FULL_VIEW*)
 0x00741730,_NuShaderManagerSetShininessFactor,11,
 0x00741740,_NuShaderManagerGetShininessFactor,7,f32 __cdecl(void)
-0x741750,?Retrieve@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH_N@Z,208,"PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::Retrieve(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32,bool)"
-0x741820,_NuShaderManagerRetrieveShader,28,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*)"
-0x741840,_NuShaderManagerRetrieveShaderVariant,31,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32)"
+0x741750,?Retrieve@?$ShaderManagerTemplate@VNuShaderObject@@@@QAEPAVNuShaderObject@@PBUnushadermtldesc_s@@PBUnumtl_s@@HH_N@Z,208,"PC_SHADER_OBJECT_FULL_VIEW* __thiscall ShaderManagerTemplate<NuShaderObject>::Retrieve(const NUSHADERMTLDESC*,const NUMTL*,i32,i32,bool)"
+0x741820,_NuShaderManagerRetrieveShader,28,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const NUSHADERMTLDESC*,const NUMTL*)"
+0x741840,_NuShaderManagerRetrieveShaderVariant,31,"PC_SHADER_OBJECT_FULL_VIEW* __cdecl(const NUSHADERMTLDESC*,const NUMTL*,i32)"
 0x741860,_fun_00741860,6,
 0x741870,_fun_00741870,41,
 0x7418a0,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@XZ,3,
@@ -15648,7 +15648,7 @@ address,symbol,size,ctype
 0x744380,?fun_00744380@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,15,
 0x744390,?fun_00744390@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,21,
 0x7443b0,?fun_007443b0@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,22,
-0x7443d0,?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@HH@Z,272,"void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW*,const PC_SHADER_FILTER_MATERIAL_VIEW*,i32,i32)"
+0x7443d0,?Initialize@PC_SHADER_MATERIAL_FILTER_VIEW@@QAEXPBUnushadermtldesc_s@@PBUnumtl_s@@HH@Z,272,"void __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const NUSHADERMTLDESC*,const NUMTL*,i32,i32)"
 0x7444e0,?UnfilteredHasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,128,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32) const
 0x744560,?HasDiffuse@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,120,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32) const
 0x7445e0,?ShaderObjectKeyVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
@@ -15656,8 +15656,8 @@ address,symbol,size,ctype
 0x744630,?HasLayerVertexFlag8@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,45,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerVertexFlag8(i32) const
 0x744660,?HasLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NH@Z,75,bool __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32) const
 0x7446b0,?GetVertexFlags@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEIXZ,292,u32 __thiscall PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags(void) const
-0x7447e0,?GetDescriptor@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEPBUPC_SHADER_FILTER_DESC_VIEW@@XZ,3,
-0x7447f0,?GetMaterial@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEPBUPC_SHADER_FILTER_MATERIAL_VIEW@@XZ,4,
+0x7447e0,?GetDescriptor@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEPBUnushadermtldesc_s@@XZ,3,
+0x7447f0,?GetMaterial@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEPBUnumtl_s@@XZ,4,
 0x744800,?HasBaseLayer@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,3,
 0x744810,?HasSpecular@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEHXZ,23,
 0x744830,?HasBaseLighting@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ,3,
@@ -15695,7 +15695,7 @@ address,symbol,size,ctype
 0x745130,?GetForceMode@ShaderCompilerDictionary@@QBE_NXZ,7,
 0x745140,?GetProfile@ShaderCompilerDictionary@@QBEHXZ,7,
 0x745150,_fun_00745150,53,
-0x745190,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@PBUPC_SHADER_FILTER_DESC_VIEW@@HH@Z,33,
+0x745190,??0PC_SHADER_MATERIAL_FILTER_VIEW@@QAE@PBUnushadermtldesc_s@@HH@Z,33,
 0x7451c0,?fun_007451c0@ShaderCompilerDictionary@@QAEX_N@Z,13,
 0x7451d0,??_EShaderBuilderGen@@UAEPAXI@Z,,COFF weak alias to same scalar deleting destructor; zero new byte credit
 0x7451d0,??_GShaderBuilderGen@@UAEPAXI@Z,74,
@@ -15706,7 +15706,7 @@ address,symbol,size,ctype
 0x745280,?SetForceMode@ShaderBuilderGen@@UAEX_N@Z,13,void __thiscall ShaderBuilderGen::SetForceMode(bool)
 0x745290,?fun_00745290@ShaderBuilderGen@@QAE_NXZ,7,
 0x7452a0,?fun_007452a0@ShaderBuilderGen@@QAEHXZ,7,
-0x7452b0,?Prepare@ShaderBuilderGen@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionary@@@Z,52,"void __thiscall ShaderBuilderGen::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionary *)"
+0x7452b0,?Prepare@ShaderBuilderGen@@UAEXPBUnushadermtldesc_s@@PAUShaderCompilerDictionary@@@Z,52,"void __thiscall ShaderBuilderGen::Prepare(const NUSHADERMTLDESC *, ShaderCompilerDictionary *)"
 0x7452f0,??0HLSLShaderBuilder@@QAE@AAUVirtualStackAllocator@@@Z,27,
 0x745310,??1HLSLShaderBuilder@@UAE@XZ,53,
 0x745310,??1ShaderBuilderGen@@UAE@XZ,53,
@@ -15731,7 +15731,7 @@ address,symbol,size,ctype
 0x745470,?fun_00745470@NuShaderObject@@QAEXPBIHPBDH1HH@Z,47,
 0x7454a0,?fun_007454a0@NuShaderObject@@QAEHXZ,3,
 0x7454b0,_fun_007454b0,6,
-0x7454c0,?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,835,"void __thiscall ShaderManagerHLSL::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *)"
+0x7454c0,?AdaptDescriptor@ShaderManagerHLSL@@UAEXPBUnushadermtldesc_s@@PBUnumtl_s@@@Z,835,"void __thiscall ShaderManagerHLSL::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *)"
 0x745810,?CreateShader@ShaderManagerHLSL@@UAE_NPBUPC_SHADER_MATERIAL_FILTER_VIEW@@_NPAVNuShaderObject@@H@Z,265,
 0x745920,_ShaderManagerHLSLNuErrorPc,1,
 0x745930,?ShaderManagerHLSLVuVecMake@@YA?AUVuVec@@MMMM@Z,28,
@@ -15744,7 +15744,7 @@ address,symbol,size,ctype
 0x745e90,?setElementsfv_transpose@ShaderManagerHLSL@@QAEXHHHPBM@Z,323,"void __thiscall ShaderManagerHLSL::setElementsfv_transpose(i32,i32,i32,const f32*)"
 0x745fe0,??0?$ShaderManagerTemplate@VNuShaderObject@@@@QAE@XZ,73,
 0x746030,?CreateShader@?$ShaderManagerTemplate@VNuShaderObject@@@@UAE_NPBUPC_SHADER_MATERIAL_FILTER_VIEW@@_NPAVNuShaderObject@@H@Z,5,
-0x746040,?AdaptDescriptor@?$ShaderManagerTemplate@VNuShaderObject@@@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PBUPC_SHADER_FILTER_MATERIAL_VIEW@@@Z,3,
+0x746040,?AdaptDescriptor@?$ShaderManagerTemplate@VNuShaderObject@@@@UAEXPBUnushadermtldesc_s@@PBUnumtl_s@@@Z,3,
 0x746050,??1?$ShaderManagerTemplate@VNuShaderObject@@@@UAE@XZ,42,
 0x746080,??_E?$ShaderManagerTemplate@VNuShaderObject@@@@UAEPAXI@Z,,COFF weak reference alias of ??_G?$ShaderManagerTemplate@VNuShaderObject@@@@UAEPAXI@Z
 0x746080,??_G?$ShaderManagerTemplate@VNuShaderObject@@@@UAEPAXI@Z,76,
@@ -15860,7 +15860,7 @@ address,symbol,size,ctype
 0x749620,?Configure@ShaderBuilderGen@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionary@@@Z,4642,"void __thiscall ShaderBuilderGen::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *)"
 0x0074a850,?LoadFile@ShaderBuilderGen@@QAE_NPBD@Z,53,
 0x0074a890,?CompileEffect@ShaderBuilderGen@@QAEHPBDHPAXH@Z,149,
-0x74a930,?Prepare@HLSLShaderBuilder@@UAEXPBUPC_SHADER_FILTER_DESC_VIEW@@PAUShaderCompilerDictionary@@@Z,52,"void __thiscall HLSLShaderBuilder::Prepare(const PC_SHADER_FILTER_DESC_VIEW *, ShaderCompilerDictionary *)"
+0x74a930,?Prepare@HLSLShaderBuilder@@UAEXPBUnushadermtldesc_s@@PAUShaderCompilerDictionary@@@Z,52,"void __thiscall HLSLShaderBuilder::Prepare(const NUSHADERMTLDESC *, ShaderCompilerDictionary *)"
 0x74a970,?Configure@HLSLShaderBuilder@@UAEXPAUPC_SHADER_MATERIAL_FILTER_VIEW@@PAUShaderCompilerDictionary@@@Z,87,"void __thiscall HLSLShaderBuilder::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerDictionary *)"
 0x74a9d0,_fun_0074a9d0,28,
 0x0074a9f0,?IsWordChar@ShaderLexicalReader@@QAEHE@Z,18,

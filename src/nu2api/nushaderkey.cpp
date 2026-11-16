@@ -21,7 +21,7 @@ extern "C" {
 }
 
 extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FILTER_VIEW *filter, i32 pixel_stage) {
-    const PC_SHADER_FILTER_DESC_VIEW *desc = filter->descriptor;
+    const NUSHADERMTLDESC *desc = filter->descriptor;
     PC_SHADER_KEY_BLOCK block;
     u64 layer_word;
     u32 layer_low;
@@ -60,7 +60,7 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
     block.bytes[0x22] = filter->deferred_path != 0;
     block.bytes[0x15] = filter->LayerBit(0) || filter->LayerBit(1) ? desc->sampler_indices[0] : 0;
     block.bytes[0x16] =
-        (u8)(filter->variant == 0 ? filter->descriptor->specular_threshold > filter->parameter : 0) ? desc->sampler_indices[1] : 0;
+        (u8)(filter->variant == 0 ? filter->descriptor->specular_map_tid > filter->parameter : 0) ? desc->sampler_indices[1] : 0;
     block.bytes[0x17] = filter->HasDiffuse(0) != 0;
     block.bytes[0x18] = filter->HasDiffuse(1) ? desc->sampler_indices[2] : 0;
     block.bytes[0x19] = filter->HasDiffuse(2) ? desc->sampler_indices[3] : 0;
@@ -71,15 +71,15 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
     block.bytes[0x1e] = filter->HasLayer(3) ? desc->blend_ops[2] : 0;
     block.bytes[0x20] = 1;
     block.bytes[0x1f] = 1;
-    if (filter->LayerBit(0) && filter->descriptor->normal_threshold > filter->parameter) {
+    if (filter->LayerBit(0) && filter->descriptor->lightmap_tids[1] > filter->parameter) {
         block.bytes[0x24] = 2;
     } else {
-        block.bytes[0x24] = (filter->LayerBit(1) && filter->descriptor->normal_threshold > filter->parameter) != 0;
+        block.bytes[0x24] = (filter->LayerBit(1) && filter->descriptor->lightmap_tids[1] > filter->parameter) != 0;
     }
-    if (filter->LayerBit(20) && filter->descriptor->surface_threshold > filter->parameter) {
+    if (filter->LayerBit(20) && filter->descriptor->lightmap_tids[0] > filter->parameter) {
         block.bytes[0x25] = 2;
     } else {
-        block.bytes[0x25] = (filter->LayerBit(20) && filter->descriptor->surface_threshold <= filter->parameter) != 0;
+        block.bytes[0x25] = (filter->LayerBit(20) && filter->descriptor->lightmap_tids[0] <= filter->parameter) != 0;
     }
     block.bytes[0x26] = filter->descriptor->extra_texture > 0;
     block.bytes[0x27] = filter->descriptor->environment_texture > 0;
@@ -88,15 +88,15 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
     if (desc->vertex_format & 0xc) {
         block.bytes[0x29] = 1;
     }
-    block.bytes[0x2a] = desc->texture_units;
+    block.bytes[0x2a] = desc->texture_unit_count;
     if (filter->IsPlainType()) {
         block.bytes[0x2b] = 1;
     } else {
         block.bytes[0x2b] = filter->IsAlternateType() != 0 ? 2 : 0;
     }
     block.bytes[0x2c] = 1;
-    if (filter->material != NULL && filter->material->texture_id != 0) {
-        NUTEXDIM *texture = NuTextureGetDimensions(filter->material->texture_id);
+    if (filter->material != NULL && filter->material->shader.normal_map_tid != 0) {
+        NUTEXDIM *texture = NuTextureGetDimensions(filter->material->shader.normal_map_tid);
         if (texture != NULL && texture->resource != NULL) {
             texture->resource->methods->get_level_desc(texture->resource, 0, &dimensions);
             if (dimensions.format == 0x31545844) {
@@ -109,7 +109,7 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
 }
 
 /* Builds the filter view for a descriptor and generates its key. No caller. */
-extern "C" void NuShaderObjectKeyGenerate(u32 *key, const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material,
+extern "C" void NuShaderObjectKeyGenerate(u32 *key, const NUSHADERMTLDESC *desc, const NUMTL *material,
                                           i32 flags, i32 variant, i32 pixel_stage) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(desc, material, flags, variant);

@@ -10,8 +10,8 @@
 extern "C" {
 #endif
     void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end);
-    NuShaderObject *NuShaderManagerRetrieveShader(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
-    NuShaderObject *NuShaderManagerRetrieveShaderVariant(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32);
+    NuShaderObject *NuShaderManagerRetrieveShader(const NUSHADERMTLDESC *, const NUMTL *);
+    NuShaderObject *NuShaderManagerRetrieveShaderVariant(const NUSHADERMTLDESC *, const NUMTL *, i32);
     void NuShaderManagerReleaseShader(PC_SHADER_RECORD_VIEW *);
     void NuShaderManagerSetfv(i32 semantic, const f32 *values);
 
