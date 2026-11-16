@@ -2791,7 +2791,7 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
 
 void PartTimeSlip(void) {
     i32 i;
-    PART_RUNTIME_TYPE *types = (PART_RUNTIME_TYPE *)part_types;
+    PARTTYPE_LOOKUP *types = part_types;
     for (i = 0; i < 40; ++i) {
         if (part_emits[i].effect_id != -1) {
             part_emits[i].time_20 -= 800.0f;
@@ -2845,13 +2845,13 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     if (effect_index > 128) {
         return -1;
     }
-    if (((PART_RUNTIME_TYPE *)part_types)[effect_index].effect_ids[0] == -1) {
+    if (part_types[effect_index].effect_ids[0] == -1) {
         return -1;
     }
-    if (((PART_RUNTIME_TYPE *)part_types)[effect_index].scale != 1.0f) {
+    if (part_types[effect_index].scale != 1.0f) {
         // The final word identifies the original, unscaled type.
-        effect_index = ((PART_RUNTIME_TYPE *)part_types)[effect_index].unknown_174;
-        if (((PART_RUNTIME_TYPE *)part_types)[effect_index].effect_ids[0] == -1) {
+        effect_index = part_types[effect_index].unknown_174;
+        if (part_types[effect_index].effect_ids[0] == -1) {
             return -1;
         }
     }
@@ -2863,7 +2863,7 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     }
 
     if (result == 0) {
-        ratio = requested_scale / ((PART_RUNTIME_TYPE *)part_types)[effect_index].scale;
+        ratio = requested_scale / part_types[effect_index].scale;
         if (ratio <= 1.0f) {
             ratio = 1.0f - ratio;
         } else {
@@ -2872,9 +2872,9 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
         closest_index = effect_index;
         closest_distance = ratio;
         for (i = 0; i < 128; ++i) {
-            if (((PART_RUNTIME_TYPE *)part_types)[i].effect_ids[0] != -1 &&
-                ((PART_RUNTIME_TYPE *)part_types)[i].unknown_174 == (u32)effect_index) {
-                ratio = requested_scale / ((PART_RUNTIME_TYPE *)part_types)[i].scale;
+            if (part_types[i].effect_ids[0] != -1 &&
+                part_types[i].unknown_174 == (u32)effect_index) {
+                ratio = requested_scale / part_types[i].scale;
                 ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
                 if (ratio < closest_distance) {
                     closest_index = i;
@@ -2886,13 +2886,13 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
             return closest_index;
         }
         for (i = 0; i < 128; ++i) {
-            PART_RUNTIME_TYPE *scaled;
-            PART_RUNTIME_TYPE *source;
-            if (((PART_RUNTIME_TYPE *)part_types)[i].effect_ids[0] != -1) {
+            PARTTYPE_LOOKUP *scaled;
+            PARTTYPE_LOOKUP *source;
+            if (part_types[i].effect_ids[0] != -1) {
                 continue;
             }
-            scaled = &((PART_RUNTIME_TYPE *)part_types)[i];
-            source = &((PART_RUNTIME_TYPE *)part_types)[effect_index];
+            scaled = &part_types[i];
+            source = &part_types[effect_index];
             *scaled = *source;
             edpartScaleType(i, requested_scale);
             scaled->last_used_time = partglobaltime;
@@ -2960,7 +2960,7 @@ i32 fun_006489a0(char *name) {
 }
 
 void edpartLoadSingleType(PARTTYPE_LOOKUP *record, i32 version, i32 page) {
-    PART_RUNTIME_TYPE *type = (PART_RUNTIME_TYPE *)record;
+    PARTTYPE_LOOKUP *type = record;
     char name[16];
     i32 i;
     i32 scene;
@@ -3517,7 +3517,7 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
     i32 emitter_count;
     i32 emitter_slot;
     i32 sound;
-    PART_RUNTIME_TYPE discarded_type;
+    PARTTYPE_LOOKUP discarded_type;
     if (mode == 0) {
         page = 0;
     } else {
@@ -3568,13 +3568,13 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 }
                 edpartLoadSingleType(&part_types[type_slot], version, page);
                 if (part_types[type_slot].name[0] != 0) {
-                    ((PART_RUNTIME_TYPE *)part_types)[type_slot].page = page;
-                    ((PART_RUNTIME_TYPE *)part_types)[type_slot].unknown_b3 = mode;
+                    part_types[type_slot].page = page;
+                    part_types[type_slot].unknown_b3 = mode;
                     ++part_types_used;
                 }
             }
             for (i = 0; i < skipped_types; ++i) {
-                edpartLoadSingleType((PARTTYPE_LOOKUP *)&discarded_type, version, page);
+                edpartLoadSingleType(&discarded_type, version, page);
             }
             emitter_count = EdFileReadInt();
             emitter_slot = 0;
@@ -3603,8 +3603,8 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 part_emits[emitter_slot].page = page;
                 part_emits[emitter_slot].unknown_3c = 0;
                 for (sound = 0; sound < 4; ++sound) {
-                    if (((PART_RUNTIME_TYPE *)part_types)[part_emits[emitter_slot].effect_id].sounds[sound] != -1 &&
-                        ((PART_RUNTIME_TYPE *)part_types)[part_emits[emitter_slot].effect_id].sound_modes[sound] != 0) {
+                    if (part_types[part_emits[emitter_slot].effect_id].sounds[sound] != -1 &&
+                        part_types[part_emits[emitter_slot].effect_id].sound_modes[sound] != 0) {
                         part_emits[emitter_slot].unknown_3c = 1;
                         break;
                     }
@@ -3665,7 +3665,7 @@ void UpdatePartEmits(f32 time) {
     i32 remaining;
     i32 variant;
     PART_EMIT *emitter;
-    PART_RUNTIME_TYPE *type;
+    PARTTYPE_LOOKUP *type;
     ADDPART params;
     NUVEC position;
     NUVEC velocity;
@@ -3686,7 +3686,7 @@ void UpdatePartEmits(f32 time) {
         if (part_page_on[emitter->page] == 0 || emitter->effect_id == -1) {
             continue;
         }
-        type = &((PART_RUNTIME_TYPE *)part_types)[emitter->effect_id];
+        type = &part_types[emitter->effect_id];
         if (type->effect_ids[0] == -1) {
             continue;
         }

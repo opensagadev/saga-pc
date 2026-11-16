@@ -14,7 +14,7 @@ struct gameobject_s;
 
 typedef struct parttype_lookup_s { // size 0x178
     char name[16];                 // 0x000
-    char object_names[16][8];      // 0x010
+    char object_names[8][16];      // 0x010
     i16 effect_ids[8];             // 0x090
     i8 effect_pages[8];            // 0x0a0
     i8 scene_indices[8];           // 0x0a8
@@ -62,7 +62,7 @@ typedef struct parttype_lookup_s { // size 0x178
 
     f32 last_used_time;  // 0x16c
     f32 scale;           // 0x170
-    u8 unknown_174[0x4]; // 0x174
+    u32 unknown_174;     // 0x174
 } PARTTYPE_LOOKUP;
 
 typedef struct partdebrisentry_s { // size 0x14
