@@ -27,8 +27,10 @@ struct blowup_target_s;
 struct bolt_s;
 struct characterdata_s;
 struct climb_slot_s;
+struct gizforce_s;
 struct indy_guideline_s;
 struct numtl_s;
+struct player_force_los_slot_s;
 struct techno_s;
 
 struct gameobject_s;
@@ -1150,15 +1152,15 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x07d0
 
-    i16 *weapon_model_override; // 0x07f4
-    u8 unknown_7f8[0x4];        // 0x07f8
-    void *coin_packet;          // 0x07fc
-    void *gizforce_los_info;    // 0x0800
-    NUMTX locator_matrices[16]; // 0x0804
-    NUMTX vehicle_orientation;  // 0x0c04
-    f32 current_speed_mul;      // 0x0c44
-    f32 current_speed_bias;     // 0x0c48
-    f32 socket_current_speed;   // 0x0c4c
+    i16 *weapon_model_override;                        // 0x07f4
+    u8 unknown_7f8[0x4];                               // 0x07f8
+    void *coin_packet;                                 // 0x07fc
+    struct player_force_los_slot_s *gizforce_los_info; // 0x0800
+    NUMTX locator_matrices[16];                        // 0x0804
+    NUMTX vehicle_orientation;                         // 0x0c04
+    f32 current_speed_mul;                             // 0x0c44
+    f32 current_speed_bias;                            // 0x0c48
+    f32 socket_current_speed;                          // 0x0c4c
 
     union { // size 0x24
         u8 unknown_c50[0x4];
@@ -1669,7 +1671,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 ai_elapsed_time;                             // 0x10b8
     NUVEC ai_update_position;                        // 0x10bc
     f32 ai_vertical_velocity;                        // 0x10c8
-    void *gizforce_target;                           // 0x10cc
+    struct gizforce_s *gizforce_target;              // 0x10cc
     struct gameanimobj_s *gizforce_target_object;    // 0x10d0
     struct AITRIGGERSET_PARTIAL *active_trigger_set; // 0x10d4
 } GAMEOBJECT;

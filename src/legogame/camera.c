@@ -196,7 +196,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     switch (object->character_context) {
         case CHARACTER_CONTEXT_FORCE:
             if (object->gizforce_target != NULL) {
-                target = &((CAMERA_GIZFORCE_TARGET *)object->gizforce_target)->position;
+                target = &object->gizforce_target->position;
             }
             break;
         case CHARACTER_CONTEXT_FORCE_PUSH:

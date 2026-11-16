@@ -333,11 +333,6 @@ typedef struct pod_boost_view_s {
     f32 boost_timer;
 } POD_BOOST_VIEW;
 
-typedef struct FORCE_ANIMATION_OBJECT {
-    u8 unknown_000[4];
-    nuhspecial_s special;
-} FORCE_ANIMATION_OBJECT;
-
 typedef struct FORCE_ATTENTION {
     u8 unknown_000[0xc5c];
     f32 head_facing;
@@ -353,17 +348,6 @@ typedef struct FORCE_GLOW {
     u8 unknown_d90[0x9d];
     u8 candidate_kind;
 } FORCE_GLOW;
-
-typedef struct FORCE_TARGET {
-    u8 unknown_000[0x10cc];
-    GIZFORCE *force;
-    FORCE_ANIMATION_OBJECT *animation;
-} FORCE_TARGET;
-
-typedef struct WORLD_FORCE {
-    u8 unknown_000[0x46ac];
-    void *force_system;
-} WORLD_FORCE;
 
 typedef struct GLOW_OBJECT {
     u8 unused_0000[0x6c4];
@@ -385,17 +369,6 @@ typedef struct GLOW_OBJECT {
     u8 kind;
     u8 candidate_kind;
 } GLOW_OBJECT;
-
-typedef struct GLOW_FORCE {
-    u8 unused_0000[0x1c];
-    NUVEC position;
-    u8 unused_0028[0x40];
-    f32 radius;
-    u8 unused_006c[0x4];
-    f32 horizontal_scale;
-    u8 unused_0074[0x2c];
-    u32 flags;
-} GLOW_FORCE;
 
 typedef struct GLOW_ANIMATION_DATA {
     u8 unused_0000[0x4];
@@ -4807,7 +4780,7 @@ void EndForce(GAMEOBJECT *object, i32 mode) {
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
 
-static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE *force, FORCE_ANIMATION_OBJECT *animation) {
+static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE *force, GAMEANIMOBJ *animation) {
     FORCE_GLOW *glow = (FORCE_GLOW *)object;
     NUVEC *position;
     object->flags_e20 |= 0x20000;
@@ -4837,18 +4810,17 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
     i32 previous = (object->flags_ef4 >> 20) & 1;
     i32 start = 0;
     i32 can_use;
-    FORCE_TARGET *target = (FORCE_TARGET *)object;
     FORCE_ATTENTION *attention = (FORCE_ATTENTION *)object;
     GIZFORCE *force;
     object->flags_ef4 &= ~0x100000u;
     if (object->character_context == CHARACTER_CONTEXT_FORCE) {
-        if ((held || (object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE)) && target->force != NULL) {
+        if ((held || (object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE)) && object->gizforce_target != NULL) {
             if (dagobah_training != 0 && object->rider == NULL && FreePlay == 0) {
                 can_use = 0;
-            } else if (GizForce_Complete(target->force)) {
+            } else if (GizForce_Complete(object->gizforce_target)) {
                 can_use = 0;
             } else {
-                can_use = !GizForce_StoodOnForce(target->force, object);
+                can_use = !GizForce_StoodOnForce(object->gizforce_target, object);
             }
             AlertSurroundingCreatures(object, &object->collision_position);
             if (can_use) {
@@ -4858,19 +4830,19 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
                     can_use = 0;
                 }
                 if (can_use && WORLD->current_level == DAGOBAHC_LDATA && object->id == (u16)id_LUKESKYWALKERDAGOBAH &&
-                    LevGizmo[0] != NULL && target->force == LevGizmo[0]->object &&
+                    LevGizmo[0] != NULL && object->gizforce_target == LevGizmo[0]->object &&
                     GameAnimSet_GetCompletionRatio(((GIZFORCE *)LevGizmo[0]->object)->anim_set) > 0.5f) {
                     can_use = 0;
                 }
                 if (can_use) {
-                    target->force->using_object = object;
-                    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+                    object->gizforce_target->using_object = object;
+                    object->force_heading = GizForces_AngleToForce(&object->position, object->gizforce_target);
                     AlertSurroundingCreatures(object, &object->collision_position);
-                    HighlightForceObject(object, target->force, target->animation);
+                    HighlightForceObject(object, object->gizforce_target, object->gizforce_target_object);
                 }
             }
             if (!can_use) {
-                target->force = NULL;
+                object->gizforce_target = NULL;
                 object->character_context = CHARACTER_CONTEXT_NONE;
             }
         } else {
@@ -4893,27 +4865,27 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
         }
     }
     if (start) {
-        if (!(object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE) || target->force == NULL) {
-            GizForce_FindBestForceTarget(((WORLD_FORCE *)WORLD)->force_system, object);
+        if (!(object->pad->runtime_flags & GAMEPAD_AI_USE_FORCE) || object->gizforce_target == NULL) {
+            GizForce_FindBestForceTarget(WORLD->giz_force_sys, object);
         }
-        if (target->force != NULL) {
+        if (object->gizforce_target != NULL) {
             object->context_timer = 0.5f;
             object->character_context = CHARACTER_CONTEXT_FORCE;
             NewRumble(object->pad->bound_pad, 0.6f, 0);
-            target->force->using_object = object;
+            object->gizforce_target->using_object = object;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-            object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+            object->force_heading = GizForces_AngleToForce(&object->position, object->gizforce_target);
             if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
                 Hint_SetComplete(0x259);
                 LswForceUsedHintFlags |= 1;
             }
         }
     } else if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
-        GizForce_FindBestForceTarget(((WORLD_FORCE *)WORLD)->force_system, object);
+        GizForce_FindBestForceTarget(WORLD->giz_force_sys, object);
     }
-    force = target->force;
+    force = object->gizforce_target;
     if (force != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && !(object->flags_e20 & 0x20000) && object->unknown_281) {
-        HighlightForceObject(object, force, target->animation);
+        HighlightForceObject(object, force, object->gizforce_target_object);
     }
     if (object->character_context == CHARACTER_CONTEXT_FORCE && object->id == (u16)id_LUKESKYWALKERDAGOBAH && dagobah_training != 0 &&
         object->rider == NULL && FreePlay == 0) {
@@ -4924,9 +4896,9 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
             PlayGruntSfx(object);
         }
         NewBuzzFrames(object->pad->bound_pad, 2, 0);
-        if (target->force != NULL) {
-            target->force->using_object = NULL;
-            object->movement_facing_angle = GizForces_AngleToForce(&object->collision_position, target->force);
+        if (object->gizforce_target != NULL) {
+            object->gizforce_target->using_object = NULL;
+            object->movement_facing_angle = GizForces_AngleToForce(&object->collision_position, object->gizforce_target);
         }
         object->flags_e20 |= 0x1000000;
         GameCam_HitRoll();
@@ -5709,7 +5681,6 @@ i32 ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {
 
 static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     f32 distance = 1.0e9f;
-    FORCE_TARGET *target = (FORCE_TARGET *)object;
     FORCE_GLOW *glow = (FORCE_GLOW *)object;
     PART *part;
     if (object->character_context == CHARACTER_CONTEXT_FORCE_THROW) {
@@ -5728,7 +5699,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         object->context_timer = remaining;
         if (remaining <= 0.0f) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-            target->force = NULL;
+            object->gizforce_target = NULL;
             return;
         }
         NewRumble(object->pad->bound_pad, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 0.5), 0);
@@ -5741,7 +5712,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
             }
         } else {
-            force = target->force;
+            force = object->gizforce_target;
             if (force != NULL) {
                 if ((object->context_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     object->flags_e20 |= 0x20000;
@@ -5757,8 +5728,8 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                         }
                     }
                 } else {
-                    HighlightForceObject(object, force, target->animation);
-                    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+                    HighlightForceObject(object, force, object->gizforce_target_object);
+                    object->force_heading = GizForces_AngleToForce(&object->position, object->gizforce_target);
                 }
             }
         }
@@ -5775,7 +5746,7 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
             speed = GameDeflectPartSpeed;
             gravity = GameDeflectPartGravity;
         }
-        object->force_throw_part = GizForce_Throw(object, target->force, speed, gravity, 1);
+        object->force_throw_part = GizForce_Throw(object, object->gizforce_target, speed, gravity, 1);
         object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
@@ -5783,9 +5754,9 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         return;
     }
     if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (object->flags_1fc_word & 0x100) == 0) {
-        GizForce_FindBestForceTarget(((WORLD_FORCE *)WORLD)->force_system, object);
+        GizForce_FindBestForceTarget(WORLD->giz_force_sys, object);
     }
-    if (target->force == NULL || (target->force->config_flags & 0x80) == 0) {
+    if (object->gizforce_target == NULL || (object->gizforce_target->config_flags & 0x80) == 0) {
         return;
     }
     object->character_context = CHARACTER_CONTEXT_FORCE_THROW;
@@ -5822,9 +5793,9 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
         }
     }
     NewRumble(object->pad->bound_pad, 0.6f, 0);
-    target->force->using_object = object;
+    object->gizforce_target->using_object = object;
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-    object->force_heading = GizForces_AngleToForce(&object->position, target->force);
+    object->force_heading = GizForces_AngleToForce(&object->position, object->gizforce_target);
     if (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) {
         Hint_SetComplete(0x259);
     }
@@ -6067,16 +6038,16 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
     }
     switch (glow->kind) {
         case 0: {
-            GLOW_FORCE *force = glow->object;
-            if ((force->flags & 1) == 0) {
+            GIZFORCE *force = glow->object;
+            if ((force->runtime_flags & GIZFORCE_ENABLED) == 0) {
                 ResetForceGlow(glow->player_packet);
                 return;
             }
             glow->radius = force->radius;
-            glow->radius *= force->horizontal_scale;
+            glow->radius *= force->horizontal_range;
             glow->model = (i16)model;
             glow->position = force->position;
-            force->flags |= 0x20000;
+            force->runtime_flags |= 0x20000;
             break;
         }
         case 1: {

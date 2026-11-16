@@ -8,8 +8,10 @@
 struct PART;
 struct addgizmotype_s;
 struct gameanimobj_s;
+struct gameanimobjpool_s;
 struct gameobject_s;
 struct gizforce_s;
+struct gizmo_s;
 
 typedef struct addgizmotype_s *(*REGISTER_GIZMO_CONFIG_TYPE_FN)(i32 type_id);
 #ifdef __cplusplus
@@ -36,7 +38,9 @@ extern "C" {
 }
 #endif
 
-typedef struct FORCE_RESET_GROUP { // size 0x28
+/* A stack of up to eight forces that rise on top of each other (group_index); taking the top one off clears the slot
+ * above it, which for a full stack is combined_height. */
+typedef struct gizforcegroup_s { // size 0x28
 
     union { // size 0x24
 
@@ -51,7 +55,31 @@ typedef struct FORCE_RESET_GROUP { // size 0x28
     u16 runtime_flags;   // 0x24
     u8 member_count;     // 0x26
     u8 configured_count; // 0x27
-} FORCE_RESET_GROUP;
+} GIZFORCEGROUP;
+
+typedef struct gizforcesys_s {           // size 0x158
+    struct gizforce_s *forces;           // 0x000
+    struct gizforce_s **visible_forces;  // 0x004
+    struct gizmo_s **hit_test_gizmos;    // 0x008
+    u16 capacity;                        // 0x00c
+    u16 count;                           // 0x00e
+    u16 visible_force_count;             // 0x010
+    u16 hit_test_gizmo_count;            // 0x012
+    struct gameanimobjpool_s *anim_pool; // 0x014
+    GIZFORCEGROUP groups[8];             // 0x018
+} GIZFORCESYS;
+
+/* The saved state of up to 128 forces: one bit per force in each word set, the forces of each group by index. */
+typedef struct gizforceprogress_s { // size 0xb0
+    u32 enabled[4];                 // 0x00
+    u32 visible[4];                 // 0x10
+    u32 reward_released[4];         // 0x20
+    u32 socket_hidden[4];           // 0x30
+    u32 completion_released[4];     // 0x40
+    u32 completion_pending[4];      // 0x50
+    u32 destroyed[4];               // 0x60
+    u8 group_members[8][8];         // 0x70
+} GIZFORCEPROGRESS;
 
 typedef struct gizforce_target_record_s { // size 0x10
     struct gizforce_s *force;             // 0x0

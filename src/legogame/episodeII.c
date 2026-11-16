@@ -94,11 +94,6 @@ typedef struct kamino_progress_gizmo_reader_s {
     u8 flags;
 } KAMINO_PROGRESS_GIZMO_READER;
 
-typedef struct gizforce_reader_s {
-    u8 opaque_00_28[0x28];
-    GAMEANIMSET *anim_set;
-} GIZFORCE_READER;
-
 typedef struct kaminoe_turret_reader_s {
     u8 opaque_00_1c[0x1c];
     GAMEANIMOBJ *primary_anim_obj;
@@ -1121,7 +1116,7 @@ void FactoryG_Update(WORLDINFO *world) {
         return;
     }
     for (i = 0; i < 4; i++) {
-        if (GizForce_Complete((GIZFORCE *)force_array[i]) != 0) {
+        if (GizForce_Complete(force_array[i]) != 0) {
             complete++;
         }
     }
@@ -1162,7 +1157,7 @@ nuhspecial_s green_light = {0};
 nuhspecial_s striplights[2] = {0};
 JEDIB_STATE jedi_b = {0};
 void *kaminoe_netpacket = 0;
-struct GIZFORCE_s *force_array[4] = {0};
+struct gizforce_s *force_array[4] = {0};
 nuhspecial_s discolights[2] = {0};
 JEDIB_NETPACKET *jedib_netpacket = NULL;
 nuhspecial_s discorm_wall_on = {0};
@@ -1268,7 +1263,7 @@ void KaminoC_Reset(WORLDINFO *world) {
         NuSpecialSetVisibility(&disco_on_spin[i], 0);
         if (netclient == 0) {
             GizmoSetVisibility(world->gizmo_sys, disco_off_spina[i], 1, 0);
-            if (((GIZFORCE_READER *)disco_off_spina[i]->object)->anim_set->state == GAMEANIMSET_STATE_AT_START) {
+            if (((GIZFORCE *)disco_off_spina[i]->object)->anim_set->state == GAMEANIMSET_STATE_AT_START) {
                 GizmoActivate(world->gizmo_sys, disco_off_spina[i], 1, 0);
             }
         }

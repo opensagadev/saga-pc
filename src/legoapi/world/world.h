@@ -195,7 +195,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct DOOR_s *start_door;                           // 0x46a0
     void *giz_obstacle_sys;                              // 0x46a4
     struct GIZBUILDITSYS_s *giz_buildit_sys;             // 0x46a8
-    struct GIZFORCESYS_s *giz_force_sys;                 // 0x46ac
+    struct gizforcesys_s *giz_force_sys;                 // 0x46ac
     struct EQUIVALENT_GROUP *equivalent_groups;          // 0x46b0
     i32 equivalent_group_count;                          // 0x46b4
     struct GIZTURRETSYS_s *giz_turret_sys;               // 0x46b8

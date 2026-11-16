@@ -59,8 +59,11 @@ extern "C" {
     void ActivatePlayer(GAMEOBJECT *);
     void PostResetCode(GAMEOBJECT *);
 
+    /* A player's line of sight to each of the 384 force targets GizForce_FindBestForceTarget can list: clear bits,
+     * and the frame each was last tested. */
     typedef struct player_force_los_slot_s { // size 0x630
-        u8 unknown_00[0x630];                // 0x000
+        u32 clear_bits[12];                  // 0x000
+        u32 queried_at[384];                 // 0x030
     } PLAYER_FORCE_LOS_SLOT;
 
     extern i32 Hub_UsePlayerList;

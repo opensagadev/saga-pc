@@ -45,16 +45,6 @@ typedef struct trigger_spinner_s { // size 0xb0
     u8 flags;                      // 0xac
 } TRIGGER_SPINNER;
 
-typedef struct trigger_force_s { // size 0xa4
-    u8 unknown_000[0x38];        // 0x00
-    GAMEOBJECT *using_object;    // 0x38
-    i32 active_state;            // 0x3c
-    u8 unknown_040[0x34];        // 0x40
-    u32 config_flags;            // 0x74
-    u8 unknown_078[0x28];        // 0x78
-    u32 progress_flags;          // 0xa0
-} TRIGGER_FORCE;
-
 typedef struct trigger_set_s { // size 0x214
     FLOWBOX *flowbox;          // 0x000
     GIZMO *gizmos[8];          // 0x004
@@ -73,11 +63,6 @@ typedef struct trigger_system_s { // size 0x4304
     i8 assigned_trigger[64];      // 0x42c0
     i32 unknown_4300;             // 0x4300
 } TRIGGER_SYSTEM;
-
-typedef struct trigger_object_force_s { // size 0x10d0
-    u8 unknown_000[0x10cc];             // 0x0000
-    GIZFORCE *force;                    // 0x10cc
-} TRIGGER_OBJECT_FORCE;
 
 #define AITRIGGER_RELEASE(system, set, index)                                                                                              \
     if ((set)->trigger_indices[index] != -1) {                                                                                             \
@@ -177,7 +162,7 @@ i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == force_gizmotype_id) {
-        GIZFORCE_s *force = gizmo->object;
+        GIZFORCE *force = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -237,8 +222,8 @@ static i32 TriggerGizmoAvailable(GIZMO *gizmo) {
             return 1;
         }
     } else if (gizmo->type_id == force_gizmotype_id) {
-        TRIGGER_FORCE *force = gizmo->object;
-        if ((force->progress_flags & 1) && force->using_object == NULL && force->active_state == 0) {
+        GIZFORCE *force = gizmo->object;
+        if ((force->runtime_flags & GIZFORCE_ENABLED) && force->using_object == NULL && force->reset_word == 0) {
             return 1;
         }
     } else if (gizmo->type_id == grapple_gizmotype_id) {
@@ -416,7 +401,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                                 continue;
                             }
                             if (gizmo->type_id == force_gizmotype_id) {
-                                TRIGGER_FORCE *force = gizmo->object;
+                                GIZFORCE *force = gizmo->object;
                                 if ((force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) != 0) {
                                     if (!CharCategory_IsCategory(object, 1)) {
                                         continue;

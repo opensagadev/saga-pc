@@ -390,11 +390,6 @@ extern "C" {
 }
 #endif
 
-typedef struct {          // size 0xa4
-    char name[16];        // 0x00
-    u8 opaque[0xa4 - 16]; // 0x10
-} ADD_FORCE;
-
 typedef struct {          // size 0xfc
     char name[16];        // 0x00
     u8 opaque[0xfc - 16]; // 0x10

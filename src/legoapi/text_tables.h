@@ -149,76 +149,10 @@ typedef struct CREATURE_RESET_PACKET_VIEW { // size 0xe4c
     u8 packet[0x788];                       // 0x6c4
 } CREATURE_RESET_PACKET_VIEW;
 
-typedef struct {            // size 0xb0
-    u32 enabled[4];         // 0x00
-    u32 visible[4];         // 0x10
-    u32 reward[4];          // 0x20
-    u32 socket[4];          // 0x30
-    u32 released[4];        // 0x40
-    u32 pending[4];         // 0x50
-    u32 destroyed[4];       // 0x60
-    u8 group_members[8][8]; // 0x70
-} FORCE_PROGRESS;
-
-typedef struct {       // size 0xa4
-    u8 unused00[0xa0]; // 0x00
-
-    union { // size 0x4
-        u32 runtime_flags;
-
-        struct {                         // size 0x4
-            u32 enabled : 1;             // 0xa0:0
-            u32 visible : 1;             // 0xa0:1
-            u32 : 7;                     // 0xa0:2
-            u32 reward_released : 1;     // 0xa0:9
-            u32 : 1;                     // 0xa0:10
-            u32 socket_hidden : 1;       // 0xa0:11
-            u32 : 2;                     // 0xa0:12
-            u32 completion_released : 1; // 0xa0:14
-            u32 completion_pending : 1;  // 0xa0:15
-            u32 destroyed : 1;           // 0xa0:16
-            u32 : 15;                    // 0xa0:17
-        };
-    }; // 0xa0
-} FORCE_PROGRESS_RECORD;
-
-typedef struct {                       // size 0x28
-    FORCE_PROGRESS_RECORD *members[8]; // 0x00
-    u8 unused20[6];                    // 0x20
-    u8 member_count;                   // 0x26
-    u8 configured_count;               // 0x27
-} FORCE_PROGRESS_GROUP;
-
-typedef struct FORCE_RESET_PROGRESS { // size 0xb0
-    u32 enabled[4];                   // 0x00
-    u32 visible[4];                   // 0x10
-    u32 reward_released[4];           // 0x20
-    u32 socket_hidden[4];             // 0x30
-    u32 completion_released[4];       // 0x40
-    u32 completion_pending[4];        // 0x50
-    u32 destroyed[4];                 // 0x60
-    u8 group_members[8][8];           // 0x70
-} FORCE_RESET_PROGRESS;
-
 typedef struct GAME_STATE_MENU_READER { // size 0x7c1a
     u8 reserved[0x7c18];                // 0x0000
     u16 completion;                     // 0x7c18
 } GAME_STATE_MENU_READER;
-
-typedef struct GIZFORCE_ANIMATION_DATA { // size 0x4
-    u8 unknown_00[2];                    // 0x0
-    i16 platform_id;                     // 0x2
-} GIZFORCE_ANIMATION_DATA;
-
-typedef struct GIZFORCE_LOS_BEST { // size 0x34
-    u32 clear_bits[12];            // 0x00
-    u32 queried_at[1];             // 0x30
-} GIZFORCE_LOS_BEST;
-
-typedef struct GIZFORCE_PLATFORM_BEST { // size 0x4
-    u8 unknown_000[2];                  // 0x0
-    i16 platform_id;                    // 0x2
-} GIZFORCE_PLATFORM_BEST;
 
 typedef struct HINT_WORLD_TELEPORT { // size 0x4688
     u8 reserved00[0x4684];           // 0x0000

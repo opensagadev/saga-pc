@@ -46,13 +46,6 @@ void GizForce_PlayForwards(GIZFORCE *force);
 void GizForce_PlayBackwards(GIZFORCE *force);
 i32 turret_gizmotype_id;
 
-typedef struct GIZACTION_FORCE_ANIMATION { // size 0xa4
-    u8 unknown_000[0x28];                  // 0x00
-    GAMEANIMSET *anim_set;                 // 0x28
-    u8 unknown_02c[0x74];                  // 0x2c
-    u32 flags;                             // 0xa0
-} GIZACTION_FORCE_ANIMATION;
-
 i32 obstacle_gizmotype_id;
 const char GizObstacleActionNamePC[5];
 const char GizObstacleActionBackwardPC[9];
@@ -712,20 +705,20 @@ void GizActions_PlayForce(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 cou
     if (name != NULL) {
         GIZMO *gizmo = GizmoFindByName(flow->gizmo_sys, force_gizmotype_id, name);
         if (gizmo != NULL) {
-            GIZACTION_FORCE_ANIMATION *force;
+            GIZFORCE *force;
             force = gizmo->object;
             if (force != NULL) {
                 if (forward != 0) {
                     if (snap != 0) {
-                        force->flags |= 0x8000;
+                        force->runtime_flags |= GIZFORCE_COMPLETION_PENDING;
                         GameAnimSet_JumpToEnd(force->anim_set);
                     } else {
-                        GizForce_PlayForwards((GIZFORCE *)force);
+                        GizForce_PlayForwards(force);
                     }
                 } else if (snap != 0) {
                     GameAnimSet_JumpToStart(force->anim_set);
                 } else {
-                    GizForce_PlayBackwards((GIZFORCE *)force);
+                    GizForce_PlayBackwards(force);
                 }
             }
         }

@@ -142,20 +142,6 @@ typedef struct ai_context_reset_view_s { // size 0x6c5
     u8 reset_contexts;                   // 0x6c4
 } AI_CONTEXT_RESET_VIEW;
 
-typedef struct ai_force_fields_s { // size 0xa4
-    u8 unknown_000[0x1c];          // 0x00
-    NUVEC position;                // 0x1c
-    u8 unknown_028[0x74 - 0x28];   // 0x28
-    u32 config_flags;              // 0x74
-    u8 unknown_078[0xa0 - 0x78];   // 0x78
-    u32 runtime_flags;             // 0xa0
-} AI_FORCE_FIELDS;
-
-typedef struct ai_force_object_s { // size 0x10d0
-    u8 unknown_000[0x10cc];        // 0x0000
-    GIZFORCE *force;               // 0x10cc
-} AI_FORCE_OBJECT;
-
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
 
@@ -293,11 +279,6 @@ typedef struct ai_force_platform_terrain_s { // size 0x6c
     AI_FORCE_PLATFORM_RECORD *platforms;     // 0x68
 } AI_FORCE_PLATFORM_TERRAIN;
 
-typedef struct ai_force_platform_object_data_s { // size 0x4
-    u8 unknown_00[2];                            // 0x0
-    i16 platform_id;                             // 0x2
-} AI_FORCE_PLATFORM_OBJECT_DATA;
-
 typedef struct ai_trigger_world_s {    // size 0x467c
     u8 unknown_0000[0x4678];           // 0x0000
     AITRIGGERSETSYS_s *trigger_system; // 0x4678
@@ -312,13 +293,6 @@ typedef struct ai_trigger_object_s { // size 0x1073
     u8 unknown_0000[0x1072];         // 0x0000
     u8 grapple_direction;            // 0x1072
 } AI_TRIGGER_OBJECT;
-
-typedef struct ai_trigger_force_s { // size 0x78
-    u8 unknown_00[0x1c];            // 0x00
-    NUVEC position;                 // 0x1c
-    u8 unknown_28[0x4c];            // 0x28
-    u32 config_flags;               // 0x74
-} AI_TRIGGER_FORCE;
 
 void ClearSpecialMove(GAMEOBJECT *object);
 f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
@@ -1089,7 +1063,7 @@ f32 Condition_OnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIPACKET 
     }
     animation = force->anim_set->objects;
     while (animation != NULL) {
-        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
+        if (platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
             return 1.0f;
         }
         animation = animation->next;
@@ -1120,7 +1094,7 @@ f32 Condition_PlayerOnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIP
     }
     animation = force->anim_set->objects;
     while (animation != NULL) {
-        if (platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
+        if (platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
             return 1.0f;
         }
         animation = animation->next;
@@ -1158,11 +1132,11 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS *system, AISCRIPTPROCESS *proces
                 animation = force->anim_set->objects;
                 while (animation != NULL) {
                     if ((eligible & 1) != 0 &&
-                        first->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
+                        first->supporting_platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
                         return 1.0f;
                     }
                     if ((eligible & 2) != 0 &&
-                        second->supporting_platform_id == ((AI_FORCE_PLATFORM_OBJECT_DATA *)animation->object_data)->platform_id) {
+                        second->supporting_platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
                         return 1.0f;
                     }
                     animation = animation->next;
@@ -8675,7 +8649,6 @@ i32 Action_UseForce(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
     GAMEOBJECT *object;
     GIZFORCE *force;
     GIZFORCE *candidates[16];
-    AI_FORCE_FIELDS *view;
     GIZMO *gizmo;
     char *name;
     i32 index;
@@ -8704,8 +8677,7 @@ i32 Action_UseForce(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
                     if (gizmo != NULL && gizmo->object != NULL) {
                         force = gizmo->object;
                         candidates[candidate_count] = force;
-                        view = (AI_FORCE_FIELDS *)force;
-                        if ((view->runtime_flags & GIZFORCE_VISIBLE) && !(view->runtime_flags & GIZFORCE_DESTROYED)) {
+                        if ((force->runtime_flags & GIZFORCE_VISIBLE) && !(force->runtime_flags & GIZFORCE_DESTROYED)) {
                             ++candidate_count;
                         }
                     }
@@ -8720,12 +8692,11 @@ i32 Action_UseForce(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
     if (force == NULL) {
         return 1;
     }
-    view = (AI_FORCE_FIELDS *)force;
-    if (!(view->runtime_flags & GIZFORCE_ENABLED)) {
+    if (!(force->runtime_flags & GIZFORCE_ENABLED)) {
         return 0;
     }
     valid_category = 1;
-    if (view->config_flags & GIZFORCE_CONFIG_DARK_SIDE) {
+    if (force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) {
         if (CharCategory_IsCategory(object, 1) == 0) {
             valid_category = 0;
         }
@@ -8733,15 +8704,15 @@ i32 Action_UseForce(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
         valid_category = 0;
     }
     if (triggered_by_hit) {
-        view->runtime_flags |= GIZFORCE_COMPLETION_PENDING;
+        force->runtime_flags |= GIZFORCE_COMPLETION_PENDING;
     } else if (valid_category) {
-        packet->movement_look_target = &view->position;
+        packet->movement_look_target = &force->position;
         object->pad->runtime_flags |= GAMEPAD_AI_USE_FORCE;
-        ((AI_FORCE_OBJECT *)object)->force = force;
+        object->gizforce_target = force;
         if (processor->action_data_1 != 0) {
             if (packet->nearest_opponent == NULL) {
                 object->pad->runtime_flags &= ~GAMEPAD_AI_USE_FORCE;
-                ((AI_FORCE_OBJECT *)object)->force = NULL;
+                object->gizforce_target = NULL;
             }
             return 1;
         }
@@ -9918,7 +9889,7 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
                 object->respawn_timer = 0.0f;
             }
         } else if (gizmo->type_id == force_gizmotype_id) {
-            AI_TRIGGER_FORCE *force = gizmo->object;
+            GIZFORCE *force = gizmo->object;
             i32 is_category;
             if ((force->config_flags & GIZFORCE_CONFIG_DARK_SIDE) != 0) {
                 is_category = CharCategory_IsCategory(object, 1);

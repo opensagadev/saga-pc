@@ -113,11 +113,6 @@ typedef struct CAMERA_CONTEXT_FOCUS { // size 0x34
     NUVEC focus;                      // 0x28
 } CAMERA_CONTEXT_FOCUS;
 
-typedef struct CAMERA_GIZFORCE_TARGET { // size 0x28
-    u8 unknown_00[0x1c];                // 0x00
-    NUVEC position;                     // 0x1c
-} CAMERA_GIZFORCE_TARGET;
-
 typedef struct CAMERA_GRABBER { // size 0x498
     u8 unknown_000[0x48c];      // 0x000
     NUVEC grab_position;        // 0x48c
@@ -127,11 +122,6 @@ typedef struct {
     u8 unknown_00[0x34];
     NUVEC position;
 } FLOW_BUILDIT_POSITION;
-
-typedef struct {         // size 0x28
-    u8 unknown_00[0x1c]; // 0x00
-    NUVEC position;      // 0x1c
-} FLOW_FORCE_POSITION;
 
 typedef struct GAME_ANTI_NODE_DATA {
     NUVEC position;
