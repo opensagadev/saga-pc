@@ -16001,3 +16001,4 @@ class:NetSessionManager,class,NetSessionManager,33822,33826,9,gamelib/util/gamel
 variable:theNetSessionManager,variable,theNetSessionManager,33828,33828,2,gamelib/util/gamelib_util_types.h,users,theNetSessionManager: only legoapi/bolts.cpp android-path
 struct:NuNetEmu,struct,NuNetEmu,33832,33904,76,nu2api/nucore/NuNetEmu.h,android,NuNetEmu
 variable:theNuNetEmu,variable,theNuNetEmu,33906,33906,2,nu2api/nucore/NuNetEmu.h,android,theNuNetEmu
+class:EdValueControl,class,EdStringControl EdColourControl EdVectorControl EdMatrixControl EdValueControl EdIntControl EdFloatControl,0,0,0,editor/edcontrols.h,unit-dup,"editor property controls shared by edlevelall.cpp and rtlhelper.cpp (were defined in both units)"

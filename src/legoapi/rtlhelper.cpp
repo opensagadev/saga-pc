@@ -1,3 +1,4 @@
+#include "editor/edcontrols.h"
 #include "editor/edlevelall.h"
 #include "gameapi/edtools/edui.h"
 #include "gamelib/util/Refpack.h"
@@ -83,84 +84,6 @@ static inline f32 RtlVuVecLength(const VuVec &v) {
     return NuFsqrt(length_squared);
 }
 
-/* Property controls of the editor unit that the light registration creates;
- * their constructors live there. */
-class EdStringControl : public EdControl {
-  public:
-    EdStringControl();
-};
-
-class EdColourControl : public EdControl {
-  public:
-    EdColourControl();
-};
-
-class EdVectorControl : public EdControl { // size 0x1c
-  public:
-    EdVectorControl();
-
-    eduiitem_s *components[3]; // 0x10
-};
-
-class EdMatrixControl : public EdControl { // size 0x34
-  public:
-    EdMatrixControl();
-
-    eduiitem_s *components[9]; // 0x10
-};
-
-/* Numeric property row clamped to [minimum, maximum]; the button drags the
- * value with the cursor or the analogue sticks. */
-/* Layout with T = f32 or i32: value_type at 0x10, format at 0x14, minimum at 0x18, maximum at 0x1c, size 0x20. */
-template <class T> class EdValueControl : public EdControl {
-  public:
-    static void *operator new(size_t size) {
-        return theMemoryManager.AllocPool(size, 1);
-    }
-
-    static void operator delete(void *memory) {
-        theMemoryManager.FreePool(memory, sizeof(EdValueControl));
-    }
-
-    EdValueControl() : minimum(0), maximum(0) {
-    }
-
-    EdValueControl(T minimum, T maximum) : minimum(minimum), maximum(maximum) {
-    }
-
-    virtual void AddMenuItem(eduimenu_s *menu, EdRef *member, void *target);
-    virtual void Refresh();
-
-    void GetVal(T *value) {
-        reference->GetMemberData(object, value_type, value, 0);
-    }
-
-    void SetVal(T *value) {
-        reference->SetMemberData(object, value_type, value, 0, NULL);
-    }
-
-    /* Drag step per unit of stick or cursor travel; finer for narrow ranges. */
-    static f32 GetSensitivity(eduiitem_s *item) {
-        EdValueControl *control = static_cast<EdValueControl *>(item->data_ptr);
-        f32 sensitivity = 0.01f;
-        T range = control->maximum - control->minimum;
-        if (range < 5) {
-            sensitivity = 0.001f;
-        }
-        return sensitivity;
-    }
-
-    static void cbChanged(eduimenu_s *, eduiitem_s *item, u32);
-    static void cbButton(eduimenu_s *menu, eduiitem_s *item, u32 flags);
-
-    static f32 MouseScale;
-
-    i32 value_type;
-    char *format;
-    T minimum;
-    T maximum;
-};
-
 template <> f32 EdValueControl<i32>::MouseScale = 100.0f;
 template <> f32 EdValueControl<f32>::MouseScale = 100.0f;
 
@@ -238,35 +161,6 @@ template <class T> void EdValueControl<T>::AddMenuItem(eduimenu_s *menu, EdRef *
         eduiMenuAddItem(menu, control->item);
     }
 }
-
-class EdIntControl : public EdValueControl<i32> {
-  public:
-    static void operator delete(void *memory) {
-        theMemoryManager.FreePool(memory, sizeof(EdIntControl));
-    }
-
-    EdIntControl(i32 minimum, i32 maximum) : EdValueControl<i32>(minimum, maximum) {
-        value_type = EdType_Int;
-        format = "%d";
-    }
-};
-
-class EdFloatControl : public EdValueControl<f32> {
-  public:
-    static void operator delete(void *memory) {
-        theMemoryManager.FreePool(memory, sizeof(EdFloatControl));
-    }
-
-    EdFloatControl() : EdValueControl<f32>(-1000000000.0f, 1000000000.0f) {
-        value_type = EdType_Float;
-        format = "%.2f";
-    }
-
-    EdFloatControl(f32 minimum, f32 maximum) : EdValueControl<f32>(minimum, maximum) {
-        value_type = EdType_Float;
-        format = "%.2f";
-    }
-};
 
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
 i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
