@@ -516,7 +516,7 @@ extern "C" {
         tip.z = sum.z;                                                                                                                     \
         tip.w = sum.w;                                                                                                                     \
         width = size * (f64)0.02f;                                                                                                         \
-        EdDrawPolyArrow(origin, (NUVEC *)&tip, 8, (colour), width, width, 0.02f, 0.0f);                                                    \
+        EdDrawPolyArrow(origin, &tip.xyz, 8, (colour), width, width, 0.02f, 0.0f);                                                         \
     } while (0)
 } /* extern "C" */
 
@@ -2395,15 +2395,15 @@ void EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
     start.z = end.z = position->z;
     start.x = position->x - size;
     end.x = position->x + size;
-    EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, colour);
+    EdDrawLineSegment(&start.xyz, &end.xyz, colour);
     start.x = end.x = position->x;
     start.y = position->y - size;
     end.y = position->y + size;
-    EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, colour);
+    EdDrawLineSegment(&start.xyz, &end.xyz, colour);
     start.y = end.y = position->y;
     start.z = position->z - size;
     end.z = position->z + size;
-    EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, colour);
+    EdDrawLineSegment(&start.xyz, &end.xyz, colour);
 }
 
 void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
@@ -2584,36 +2584,36 @@ void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 
                 first.x = -radius * 0.0f;
                 first.y = -radius * 0.0f;
                 first.z = -radius;
-                NuVecRotateY((NUVEC *)&first, (NUVEC *)&first, -previous_angle);
+                NuVecRotateY(&first.xyz, &first.xyz, -previous_angle);
                 second.w = 1.0f;
                 second.y = -radius * 0.0f;
                 second.x = -radius * 0.0f;
                 second.z = -radius;
-                NuVecRotateY((NUVEC *)&second, (NUVEC *)&second, -angle);
+                NuVecRotateY(&second.xyz, &second.xyz, -angle);
                 break;
             case 2:
                 first.w = 1.0f;
                 first.x = 0.0f * radius;
                 first.y = radius;
                 first.z = 0.0f * radius;
-                NuVecRotateZ((NUVEC *)&first, (NUVEC *)&first, -previous_angle);
+                NuVecRotateZ(&first.xyz, &first.xyz, -previous_angle);
                 second.w = 1.0f;
                 second.x = 0.0f * radius;
                 second.y = radius;
                 second.z = 0.0f * radius;
-                NuVecRotateZ((NUVEC *)&second, (NUVEC *)&second, -angle);
+                NuVecRotateZ(&second.xyz, &second.xyz, -angle);
                 break;
             case 0:
                 first.w = 1.0f;
                 first.x = 0.0f * radius;
                 first.y = 0.0f * radius;
                 first.z = radius;
-                NuVecRotateX((NUVEC *)&first, (NUVEC *)&first, -previous_angle);
+                NuVecRotateX(&first.xyz, &first.xyz, -previous_angle);
                 second.w = 1.0f;
                 second.y = 0.0f * radius;
                 second.x = 0.0f * radius;
                 second.z = radius;
-                NuVecRotateX((NUVEC *)&second, (NUVEC *)&second, -angle);
+                NuVecRotateX(&second.xyz, &second.xyz, -angle);
                 break;
         }
         first.x += center->x;
@@ -2622,7 +2622,7 @@ void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 
         second.x += center->x;
         second.y += center->y;
         second.z += center->z;
-        EdDrawPolyTri(center, (NUVEC *)&first, (NUVEC *)&second, colour);
+        EdDrawPolyTri(center, &first.xyz, &second.xyz, colour);
     } while (remaining > 0);
 }
 
@@ -2777,7 +2777,7 @@ void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_r
             angles.y = 0;
         } else {
             angles.y = NuAtan2D(rotated.x, rotated.z);
-            NuVecRotateY((NUVEC *)&rotated, (NUVEC *)&rotated, -angles.y);
+            NuVecRotateY(&rotated.xyz, &rotated.xyz, -angles.y);
             angles.x = -NuAtan2D(rotated.y, rotated.z);
         }
         angles.z = 0;
@@ -2798,9 +2798,9 @@ void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_r
         position.z = dir.z;
         position.w = dir.w;
         NuMtxSetRotateXYZVU0(&matrix, &angles);
-        NuMtxTranslate(&matrix, (NUVEC *)&position);
+        NuMtxTranslate(&matrix, &position.xyz);
         EdDrawPolyCylinder(&matrix, half_length, radius, radius, segments, colour, 1, 0);
-        NuMtxTranslateNeg(&matrix, (NUVEC *)&position);
+        NuMtxTranslateNeg(&matrix, &position.xyz);
         offset.x = delta.x * (f64)0.1f;
         offset.y = delta.y * (f64)0.1f;
         offset.z = delta.z * (f64)0.1f;
@@ -2811,7 +2811,7 @@ void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_r
         position.y = dir.y;
         position.z = dir.z;
         position.w = dir.w;
-        NuMtxTranslate(&matrix, (NUVEC *)&position);
+        NuMtxTranslate(&matrix, &position.xyz);
         radius *= (f64)1.6f;
         half_length *= 0.25f;
         EdDrawPolyCylinder(&matrix, half_length, radius, 0.0f, segments, colour, 1, 0);
@@ -5509,7 +5509,7 @@ void EdMatrixControl::cbChanged(eduimenu_s *, eduiitem_s *item, u32) {
             scale.y = NuAToF(reinterpret_cast<edui_prop_s *>(control->components[7])->property_text);
             scale.z = NuAToF(reinterpret_cast<edui_prop_s *>(control->components[8])->property_text);
             scale.w = 1.0f;
-            NuMtxScale(&rebuilt.matrix, reinterpret_cast<NUVEC *>(&scale));
+            NuMtxScale(&rebuilt.matrix, &scale.xyz);
         }
         i32 x = (i32)(NuAToF(reinterpret_cast<edui_prop_s *>(control->components[3])->property_text) * (65536.0f / 360.0f));
         i32 y = (i32)(NuAToF(reinterpret_cast<edui_prop_s *>(control->components[4])->property_text) * (65536.0f / 360.0f));
@@ -8955,10 +8955,10 @@ void PropertyTool::RenderMenu(PropertyMenu *property_menu) {
     }
     f32 x = menu->x + menu->width * 0.5;
     f32 y = menu->y + menu->height * 0.125;
-    NuCameraCalcRay((f32)(x / 640.0), (f32)(y / 448.0), (NUVEC *)&start, (NUVEC *)&end, NULL);
+    NuCameraCalcRay((f32)(x / 640.0), (f32)(y / 448.0), &start.xyz, &end.xyz, NULL);
     property_menu->objects[0].GetAttributeData(8, EdType_VuVec, &end, 0);
     EdDrawBegin(0);
-    EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, (i32)&selected_attr);
+    EdDrawLineSegment(&start.xyz, &end.xyz, (i32)&selected_attr);
     if (NewPrim != EDDRAW_PRIM_NONE) {
         if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();

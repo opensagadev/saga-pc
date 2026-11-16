@@ -636,10 +636,10 @@ static void RacePodAlignPrivate(RACEPOD_RESOURCE *pod, NUVEC4 *direction, f32 bl
     i16 direction_pitch;
     f32 roll;
     i16 angle;
-    NuVecInvMtxRotate((NUVEC *)&local, (NUVEC *)direction, &pod->matrix);
+    NuVecInvMtxRotate(&local.xyz, &direction->xyz, &pod->matrix);
     yaw = NuAtan2D(local.x, local.z);
     pod->yaw = yaw;
-    NuVecRotateY((NUVEC *)&local, (NUVEC *)&local, -yaw);
+    NuVecRotateY(&local.xyz, &local.xyz, -yaw);
     pitch = NuAtan2D(local.y, local.z);
     pod->pitch = pitch;
     NuMtxPreRotateY(&pod->matrix, yaw);
@@ -649,16 +649,16 @@ static void RacePodAlignPrivate(RACEPOD_RESOURCE *pod, NUVEC4 *direction, f32 bl
         return;
     }
     direction_yaw = NuAtan2D(direction->x, direction->z);
-    NuVecRotateY((NUVEC *)&axis, (NUVEC *)direction, -direction_yaw);
+    NuVecRotateY(&axis.xyz, &direction->xyz, -direction_yaw);
     direction_pitch = NuAtan2D(axis.y, axis.z);
     axis.x = 1.0f;
     axis.y = 0.0f;
     axis.z = 0.0f;
     axis.w = 0.0f;
-    NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)pod->previous_position.w + 0x4000);
-    NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -direction_pitch);
-    NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, direction_yaw);
-    NuVecInvMtxRotate((NUVEC *)&axis, (NUVEC *)&axis, &pod->matrix);
+    NuVecRotateZ(&axis.xyz, &axis.xyz, (i16)(i32)pod->previous_position.w + 0x4000);
+    NuVecRotateX(&axis.xyz, &axis.xyz, -direction_pitch);
+    NuVecRotateY(&axis.xyz, &axis.xyz, direction_yaw);
+    NuVecInvMtxRotate(&axis.xyz, &axis.xyz, &pod->matrix);
     angle = NuAtan2D(axis.x, axis.y);
     if (angle > 24000.0 * FRAMETIME) {
         angle = (i16)(24000.0 * FRAMETIME);

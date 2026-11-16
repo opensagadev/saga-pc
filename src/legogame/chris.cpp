@@ -549,8 +549,8 @@ extern "C" {
             if (bolt->duration == 0.0f) {
                 continue;
             }
-            velocity = (NUVEC *)&bolt->velocity;
-            position = (NUVEC *)&bolt->matrix.m30;
+            velocity = &bolt->velocity.xyz;
+            position = &bolt->matrix.translation;
             step.x = velocity->x * FRAMETIME;
             step.y = velocity->y * FRAMETIME;
             step.z = velocity->z * FRAMETIME;
@@ -631,14 +631,14 @@ extern "C" {
             if (dx * dx + dy * dy + dz * dz < 40000.0) {
                 switch (model_id) {
                     case -300:
-                        PlaySfx("Dog_CloneARC170Gun", (NUVEC *)&matrix->m30);
+                        PlaySfx("Dog_CloneARC170Gun", &matrix->translation);
                         break;
                     case -298:
                     case -297:
-                        PlaySfx("Dog_DroidFighterBlast", (NUVEC *)&matrix->m30);
+                        PlaySfx("Dog_DroidFighterBlast", &matrix->translation);
                         break;
                     case -299:
-                        PlaySfx("Dog_TriFighterGuns", (NUVEC *)&matrix->m30);
+                        PlaySfx("Dog_TriFighterGuns", &matrix->translation);
                         break;
                 }
             }
@@ -699,7 +699,7 @@ extern "C" {
             direction.x = end_point->x - before_end->x;
             direction.y = end_point->y - before_end->y;
             direction.z = end_point->z - before_end->z;
-            NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+            NuVecNorm(&direction.xyz, &direction.xyz);
             direction.w = 1.0f;
             direction.x *= 10.0;
             direction.y *= 10.0;
@@ -963,15 +963,15 @@ extern "C" {
                     direction.z = next->z - (f64)previous->z;
                 }
                 yaw = (i16)NuAtan2D(direction.x, direction.z);
-                NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -yaw);
+                NuVecRotateY(&axis.xyz, &direction.xyz, -yaw);
                 pitch = (i16)NuAtan2D(axis.y, axis.z);
                 axis.x = 1.0f;
                 axis.y = 0.0f;
                 axis.z = 0.0f;
                 axis.w = 0.0f;
-                NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)points[i].w);
-                NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -pitch);
-                NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, yaw);
+                NuVecRotateZ(&axis.xyz, &axis.xyz, (i16)(i32)points[i].w);
+                NuVecRotateX(&axis.xyz, &axis.xyz, -pitch);
+                NuVecRotateY(&axis.xyz, &axis.xyz, yaw);
             }
         }
         for (i = 0; i < spline->point_count; ++i) {
@@ -989,15 +989,15 @@ extern "C" {
                 direction.z = next->z - (f64)previous->z;
             }
             yaw = (i16)NuAtan2D(direction.x, direction.z);
-            NuVecRotateY((NUVEC *)&axis, (NUVEC *)&direction, -yaw);
+            NuVecRotateY(&axis.xyz, &direction.xyz, -yaw);
             pitch = (i16)NuAtan2D(axis.y, axis.z);
             axis.x = 2.0f;
             axis.y = 0.0f;
             axis.z = 0.0f;
             axis.w = 0.0f;
-            NuVecRotateZ((NUVEC *)&axis, (NUVEC *)&axis, (i16)(i32)spline->points[i].w);
-            NuVecRotateX((NUVEC *)&axis, (NUVEC *)&axis, -pitch);
-            NuVecRotateY((NUVEC *)&axis, (NUVEC *)&axis, yaw);
+            NuVecRotateZ(&axis.xyz, &axis.xyz, (i16)(i32)spline->points[i].w);
+            NuVecRotateX(&axis.xyz, &axis.xyz, -pitch);
+            NuVecRotateY(&axis.xyz, &axis.xyz, yaw);
         }
     }
 
@@ -1162,10 +1162,10 @@ extern "C" {
         i16 roll;
         f64 limit;
         f32 adjustment;
-        NuVecInvMtxRotate((NUVEC *)&local, (NUVEC *)direction, &fighter->matrix);
+        NuVecInvMtxRotate(&local.xyz, &direction->xyz, &fighter->matrix);
         yaw = (i16)NuAtan2D(local.x, local.z);
         fighter->yaw = yaw;
-        NuVecRotateY((NUVEC *)&local, (NUVEC *)&local, -yaw);
+        NuVecRotateY(&local.xyz, &local.xyz, -yaw);
         pitch = (i16)NuAtan2D(local.y, local.z);
         fighter->pitch = pitch;
         NuMtxPreRotateY(&fighter->matrix, yaw);
@@ -1175,14 +1175,14 @@ extern "C" {
             return;
         }
         world_yaw = (i16)NuAtan2D(direction->x, direction->z);
-        NuVecRotateY((NUVEC *)&up, (NUVEC *)direction, -world_yaw);
+        NuVecRotateY(&up.xyz, &direction->xyz, -world_yaw);
         world_pitch = (i16)NuAtan2D(up.y, up.z);
         up.x = 1.0f;
         up.w = up.z = up.y = 0.0f;
-        NuVecRotateZ((NUVEC *)&up, (NUVEC *)&up, (i16)(i32)fighter->target_position.w + 16384);
-        NuVecRotateX((NUVEC *)&up, (NUVEC *)&up, -world_pitch);
-        NuVecRotateY((NUVEC *)&up, (NUVEC *)&up, world_yaw);
-        NuVecInvMtxRotate((NUVEC *)&up, (NUVEC *)&up, &fighter->matrix);
+        NuVecRotateZ(&up.xyz, &up.xyz, (i16)(i32)fighter->target_position.w + 16384);
+        NuVecRotateX(&up.xyz, &up.xyz, -world_pitch);
+        NuVecRotateY(&up.xyz, &up.xyz, world_yaw);
+        NuVecInvMtxRotate(&up.xyz, &up.xyz, &fighter->matrix);
         roll = (i16)NuAtan2D(up.x, up.y);
         limit = (f64)FRAMETIME * 24000.0;
         if (roll > limit) {
@@ -1245,14 +1245,14 @@ extern "C" {
             velocity->y = velocity->x = 0.0f;
             velocity->z = shot_speed;
             velocity->w = 0.0f;
-            TransformFlightVector((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
+            TransformFlightVector(&velocity->xyz, &velocity->xyz, aim_matrix);
             return 0;
         } else {
             if (fighter->target == NULL || fighter->target->active == 0) {
                 return 1;
             }
-            target_position = (NUVEC *)&fighter->target->matrix.m30;
-            target_velocity = (NUVEC *)&fighter->velocity;
+            target_position = &fighter->target->matrix.translation;
+            target_velocity = &fighter->velocity.xyz;
         }
         front = (NUVEC *)&fighter->matrix.m20;
         offset.x = target_position->x - fighter->matrix.m30;
@@ -1297,8 +1297,8 @@ extern "C" {
             } else if (front_dot > up_dot) {
                 axis = up;
             }
-            NuVecCross((NUVEC *)&fighter->aim_direction, &offset, axis);
-            NuVecNorm((NUVEC *)&fighter->aim_direction, (NUVEC *)&fighter->aim_direction);
+            NuVecCross(&fighter->aim_direction.xyz, &offset, axis);
+            NuVecNorm(&fighter->aim_direction.xyz, &fighter->aim_direction.xyz);
             fighter->aim_direction.w = 1.0f;
         }
         if (fighter->aim_bias != 0.0f) {
@@ -1320,7 +1320,7 @@ extern "C" {
         velocity->y = velocity->x = 0.0f;
         velocity->z = shot_speed;
         velocity->w = 0.0f;
-        TransformFlightVector((NUVEC *)velocity, (NUVEC *)velocity, aim_matrix);
+        TransformFlightVector(&velocity->xyz, &velocity->xyz, aim_matrix);
         return 0;
     }
 
@@ -1407,7 +1407,7 @@ extern "C" {
                     direction.z = fighter->matrix.m32 - parent->matrix.m32;
                     parent->target = *(NUVEC4 *)&fighter->matrix.m30;
                 } else {
-                    *(NUVEC *)&direction = v010;
+                    *&direction.xyz = v010;
                 }
                 magnitude = (f64)direction.y * direction.y + (f64)direction.x * direction.x + (f64)direction.z * direction.z;
                 magnitude = NuFsqrt(magnitude);
@@ -1423,7 +1423,7 @@ extern "C" {
                 fighter->death_rotate_x = qrand() * 1.0000152587890625 - 32768.0;
                 fighter->death_rotate_z = qrand() * 1.0000152587890625 - 32768.0;
                 if (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84)) {
-                    AddGameDebris(WORLD->game_debris_sys, 23, (NUVEC *)&fighter->matrix.m30);
+                    AddGameDebris(WORLD->game_debris_sys, 23, &fighter->matrix.translation);
                 }
             }
             if (fighter->health == -2) {
@@ -1433,7 +1433,7 @@ extern "C" {
         if (fighter->health <= 0 && (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84))) {
             fighter->death_timer -= FRAMETIME;
             if (fighter->death_timer <= 0.0f) {
-                AddGameDebris(WORLD->game_debris_sys, 23, (NUVEC *)&fighter->matrix.m30);
+                AddGameDebris(WORLD->game_debris_sys, 23, &fighter->matrix.translation);
                 fighter->active = 0;
             } else {
                 NUVEC step;
@@ -1445,7 +1445,7 @@ extern "C" {
                 fighter->matrix.m30 += step.x;
                 fighter->matrix.m31 += step.y;
                 fighter->matrix.m32 += step.z;
-                AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[48].effect, (NUVEC *)&fighter->matrix.m30, 1, 0, 0);
+                AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[48].effect, &fighter->matrix.translation, 1, 0, 0);
             }
             return 0;
         }
@@ -1453,14 +1453,14 @@ extern "C" {
         if (parent != NULL) {
             fighter->matrix = parent->matrix;
             fighter->velocity = parent->velocity;
-            NuVecMtxTransform((NUVEC *)&fighter->matrix.m30, (NUVEC *)&fighter->parent_offset, &parent->matrix);
+            NuVecMtxTransform(&fighter->matrix.translation, &fighter->parent_offset.xyz, &parent->matrix);
             fighter->shoot_timer -= FRAMETIME;
             if (fighter->shoot_timer <= 0.0f) {
                 NUVEC4 parent_position;
                 parent_position.x = parent_position.y = 0.0f;
                 parent_position.z = -10.0f;
                 parent_position.w = 1.0f;
-                NuVecMtxTransform((NUVEC *)&parent_position, (NUVEC *)&parent_position, &fighter->matrix);
+                NuVecMtxTransform(&parent_position.xyz, &parent_position.xyz, &fighter->matrix);
                 fighter->shoot_timer = 1.0f;
             }
             return 1;
@@ -1508,17 +1508,17 @@ extern "C" {
         }
         switch (fighter->model_id) {
             case -300:
-                PlaySfxAndSetPitch("Dog_CloneARC170EngLp", (NUVEC *)&fighter->matrix.m30, pitch);
+                PlaySfxAndSetPitch("Dog_CloneARC170EngLp", &fighter->matrix.translation, pitch);
                 break;
             case -299:
                 if (fighter->health > 0) {
-                    PlaySfxAndSetPitch("Dog_TriFighterEngLp", (NUVEC *)&fighter->matrix.m30, pitch);
+                    PlaySfxAndSetPitch("Dog_TriFighterEngLp", &fighter->matrix.translation, pitch);
                 }
                 break;
             case -298:
             case -297:
                 if (fighter->health > 0) {
-                    PlaySfxAndSetPitch("Dog_DroidFighterEngLp", (NUVEC *)&fighter->matrix.m30, pitch);
+                    PlaySfxAndSetPitch("Dog_DroidFighterEngLp", &fighter->matrix.translation, pitch);
                 }
                 break;
         }
@@ -1592,7 +1592,7 @@ extern "C" {
                     dy = (f64)missile->fields.matrix.m31 - global_camera.mtx.m31;
                     dz = (f64)missile->fields.matrix.m32 - global_camera.mtx.m32;
                     if (dy * dy + dx * dx + dz * dz < 40000.0) {
-                        PlaySfx("Ep3_1_ProtoXWingMissile", (NUVEC *)&missile->fields.matrix.m30);
+                        PlaySfx("Ep3_1_ProtoXWingMissile", &missile->fields.matrix.translation);
                     }
                 }
             }
@@ -1623,7 +1623,7 @@ extern "C" {
             }
             if (fighter->model_id == -307) {
                 if (fighter->model_id == -307) {
-                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[49].effect, (NUVEC *)&fighter->matrix.m30, 1, 0, 0);
+                    AddVariableShotDebrisEffect(WORLD->game_debris_sys->entries[49].effect, &fighter->matrix.translation, 1, 0, 0);
                 }
             }
         } else {
@@ -1658,9 +1658,9 @@ extern "C" {
         if ((u32)group->state <= 1) {
             if (group->state == 0) {
                 NUVEC4 *velocity = &group->velocity;
-                NuVecSub((NUVEC *)velocity, (NUVEC *)&GameCam->render_mtx.m30, (NUVEC *)&group->matrix.m30);
+                NuVecSub(&velocity->xyz, &GameCam->render_mtx.translation, &group->matrix.translation);
                 velocity->w = 1.0f;
-                NuVecNorm((NUVEC *)velocity, (NUVEC *)velocity);
+                NuVecNorm(&velocity->xyz, &velocity->xyz);
                 velocity->w = 1.0f;
                 speed = group->speed;
                 velocity->x *= speed;
@@ -1671,12 +1671,12 @@ extern "C" {
             step.y = (f64)group->velocity.y * FRAMETIME;
             step.z = (f64)group->velocity.z * FRAMETIME;
             {
-                NUVEC *position = (NUVEC *)&group->matrix.m30;
+                NUVEC *position = &group->matrix.translation;
                 position->x += step.x;
                 position->y += step.y;
                 position->z += step.z;
             }
-            NuVecInvMtxTransform((NUVEC *)&group->camera_position, (NUVEC *)&group->matrix.m30, &GameCam->render_mtx);
+            NuVecInvMtxTransform(&group->camera_position.xyz, &group->matrix.translation, &GameCam->render_mtx);
             group->duration -= FRAMETIME;
             if (group->duration < 0.0f || (group->camera_position.z > 800.0 && group->state == 1) ||
                 (group->camera_position.z < 0.0f && group->state == 0)) {
@@ -1849,7 +1849,7 @@ extern "C" {
             if (i > 5) {
                 NuVec4MtxTransformVU0(&ray, &ray, &matrix);
             }
-            if (NewRayCastScaleYMask(&origin, (NUVEC *)&ray, 0.0f, 1.0f, 0, 0) != 0) {
+            if (NewRayCastScaleYMask(&origin, &ray.xyz, 0.0f, 1.0f, 0, 0) != 0) {
                 f32 squared = (f32)((f64)ray.x * ray.x + (f64)ray.y * ray.y + (f64)ray.z * ray.z);
                 ray.x = NuFsqrt(squared);
                 if (ray.x < nearest) {
@@ -1890,7 +1890,7 @@ extern "C" {
         if (DogfightHideGeometry == 0) {
             for (i = 0; i < 2; ++i) {
                 if (space->crosses[i].enabled != 0) {
-                    NuVecMtxTransform((NUVEC *)&space->crosses[i].matrix.m30, (NUVEC *)&space->crosses[i].matrix.m10, &GameCam->render_mtx);
+                    NuVecMtxTransform(&space->crosses[i].matrix.translation, (NUVEC *)&space->crosses[i].matrix.m10, &GameCam->render_mtx);
                 }
             }
             for (i = 0; i < 8; ++i) {
@@ -2107,7 +2107,7 @@ extern "C" {
         NUVEC relative_position;
         __declspec(align(16)) NUVEC relative_velocity;
         __declspec(align(16)) NUVEC step;
-        NUVEC *ship_position = (NUVEC *)&fighter->matrix.m30;
+        NUVEC *ship_position = &fighter->matrix.translation;
         f32 a;
         f32 dot;
         f32 b;
@@ -2162,7 +2162,7 @@ extern "C" {
             return 0;
         }
         if (fighter->spline == NULL || (fighter->spline->id != 85 && fighter->spline->id != 84)) {
-            BoltSys->debris(bolt, position, 0, (NUVEC *)&fighter->velocity, 0);
+            BoltSys->debris(bolt, position, 0, &fighter->velocity.xyz, 0);
             bolt->active = 0;
             if (ShipDropCoins(fighter) != 0) {
                 coins = fighter->model_id == -299 ? 500 : 1000;
@@ -2473,7 +2473,7 @@ extern "C" {
         velocity->x = target->x - start->x;
         velocity->y = target->y - start->y;
         velocity->z = target->z - start->z;
-        (void)NuVecNorm((NUVEC *)velocity, (NUVEC *)velocity);
+        (void)NuVecNorm(&velocity->xyz, &velocity->xyz);
         velocity->w = 1.0f;
         speed = group->speed;
         velocity->x *= speed;
@@ -2488,7 +2488,7 @@ extern "C" {
         step = (u16)(qrand() / 21 + 0x2666);
         for (i = 0; i < 5; ++i) {
             starfighter_s *fighter = &group->fighters[i].fields;
-            NuVecRotateZ((NUVEC *)&fighter->parent_offset, (NUVEC *)&offset, (i16)angle);
+            NuVecRotateZ(&fighter->parent_offset.xyz, &offset.xyz, (i16)angle);
             angle = (u16)(angle + step);
             fighter->active = 1;
             fighter->scale = 2.0f;
@@ -2522,23 +2522,23 @@ extern "C" {
                     start.y = -5.0f;
                     start.z = -10.0f;
                     start.w = 1.0f;
-                    NuVecRotateZ((NUVEC *)&start, (NUVEC *)&start, qrand());
-                    NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
+                    NuVecRotateZ(&start.xyz, &start.xyz, qrand());
+                    NuVecMtxTransform(&start.xyz, &start.xyz, &GameCam->render_mtx);
                     target.x = 0.0f;
                     target.y = 0.0f;
                     target.z = 400.0f;
                     target.w = 1.0f;
-                    NuVecMtxTransform((NUVEC *)&target, (NUVEC *)&target, &GameCam->render_mtx);
+                    NuVecMtxTransform(&target.xyz, &target.xyz, &GameCam->render_mtx);
                     MakeWingFormation(&start, &target, state->current->value, 0);
                     state->command = 4;
                     break;
                 case 1:
-                    *(NUVEC *)&target = *(NUVEC *)&GameCam->render_mtx.m30;
+                    *&target.xyz = *&GameCam->render_mtx.translation;
                     start.x = 0.0f;
                     start.y = 0.0f;
                     start.z = 300.0f;
                     start.w = 1.0f;
-                    NuVecMtxTransform((NUVEC *)&start, (NUVEC *)&start, &GameCam->render_mtx);
+                    NuVecMtxTransform(&start.xyz, &start.xyz, &GameCam->render_mtx);
                     MakeWingFormation(&start, &target, state->current->value, 1);
                     state->command = 4;
                     break;
