@@ -1534,7 +1534,7 @@ static KAMINOEPLATE *kamino_plate_hit = 0;
 static u16 kamino_plate_id = 0;
 
 i32 KaminoE_CheckPlatHit(BOLT *bolt) {
-    if (bolt->unknown_fa == kamino_plate_id) {
+    if (bolt->hit_platform_id == kamino_plate_id) {
         if (kamino_plate_1 != NULL && kamino_plate_1_active != 0) {
             if ((kamino_plate_1->flags_13a & 0x30) == 0 && (kamino_plate_1->flags_13a & 0x2) != 0) {
                 if (kamino_plate_hit == NULL) {

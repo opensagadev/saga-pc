@@ -96,16 +96,16 @@ extern "C" {
         i16 rotation_2e;             // 0x2e
         i16 rotation_30;             // 0x30
         i8 page;                     // 0x32
-        u8 unknown_33;               // 0x33
+        u8 variant;                  // 0x33
         i32 shots_remaining;         // 0x34
         f32 time_38;                 // 0x38
-        u8 unknown_3c;               // 0x3c
-        u8 unknown_3d;               // 0x3d
+        u8 enabled;                  // 0x3c
+        u8 state;                    // 0x3d
         u8 unknown_3e;               // 0x3e
         u8 unknown_3f;               // 0x3f
         f32 camera_distance;         // 0x40
-        i16 unknown_44;              // 0x44
-        i16 unknown_46;              // 0x46
+        i16 trigger_type;            // 0x44
+        i16 trigger_id;              // 0x46
         i32 instance_id;             // 0x48
         i32 trailing_state_words[8]; // 0x4c
     } PART_EMIT;
@@ -253,7 +253,7 @@ extern "C" {
         f32 clip_extent;             // 0x038
         f32 sound_range;             // 0x03c
         f32 sound_range_override;    // 0x040
-        f32 unknown_044;             // 0x044
+        f32 render_parameter_c;      // 0x044
         f32 momentum_base;           // 0x048
         f32 momentum_random_x;       // 0x04c
         f32 rotor_speed_x;           // 0x050
@@ -292,8 +292,8 @@ extern "C" {
         f32 min_rotation;                         // 0x1d0
         f32 max_rotation;                         // 0x1d4
         DEBRIS_FLOAT_KEY rotation_keys[8];        // 0x1d8
-        DEBRIS_FLOAT_KEY field_218_keys[8];       // 0x218
-        DEBRIS_FLOAT_KEY field_258_keys[8];       // 0x258
+        DEBRIS_FLOAT_KEY scale_keys[8];           // 0x218
+        DEBRIS_FLOAT_KEY extra_keys[8];           // 0x258
         f32 texture_u0;                           // 0x298
         f32 texture_v0;                           // 0x29c
         f32 texture_u1;                           // 0x2a0

@@ -71,22 +71,22 @@ extern "C" {
 
     typedef struct BOLT_CONFIG {     // size 0xa4
         char name[16];               // 0x00
-        f32 unknown_10;              // 0x10
-        f32 unknown_14;              // 0x14
+        f32 speed;                   // 0x10
+        f32 lifetime;                // 0x14
         f32 unknown_18;              // 0x18
-        f32 unknown_1c;              // 0x1c
-        f32 unknown_20;              // 0x20
+        f32 radius;                  // 0x1c
+        f32 scale;                   // 0x20
         f32 unknown_24;              // 0x24
         i16 object_ids[3];           // 0x28
         i16 debris_id;               // 0x2e
         i16 moving_debris[2];        // 0x30
         i16 moving_debris_counts[2]; // 0x34
-        i16 unknown_38;              // 0x38
+        i16 hit_part_debris;         // 0x38
         i16 unknown_3a;              // 0x3a
-        u8 unknown_3c;               // 0x3c
+        u8 damage;                   // 0x3c
         u8 unknown_3d;               // 0x3d
         u16 unknown_3e;              // 0x3e
-        i32 unknown_40;              // 0x40
+        i32 spread;                  // 0x40
         void *callbacks[7];          // 0x44
         u32 flags_60;                // 0x60
         i16 shoot_sfx_id;            // 0x64
@@ -1411,10 +1411,10 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal
     angles.x = i_temp_xrot;
     angles.y = temp_yrot;
     NuMtxSetRotationXYVU0(&matrix, &angles);
-    if (type->unknown_3d < 0 || type->unknown_3d >= BoltSys->count) {
+    if (type->reflect_type < 0 || type->reflect_type >= BoltSys->count) {
         type_id = bolt->type_id;
     } else {
-        type_id = type->unknown_3d;
+        type_id = type->reflect_type;
     }
     offset = (f64)1.01f * bolt->ray_radius;
     position = bolt->position;
@@ -1433,8 +1433,8 @@ extern "C" void Bolt_AddDeflectedBolt(BOLT *bolt, NUVEC *incoming, NUVEC *normal
 
 extern "C" {
     void Bolt_PlayHitSfx(BOLT *bolt) {
-        if (bolt->type->unknown_66 != -1) {
-            GameAudio_PlaySfxById(bolt->type->unknown_66, &bolt->position, 0, 0);
+        if (bolt->type->fly_sfx != -1) {
+            GameAudio_PlaySfxById(bolt->type->fly_sfx, &bolt->position, 0, 0);
         } else {
             GameAudio_PlaySfx(0x28, &bolt->position, 0, 0);
         }
@@ -1533,23 +1533,23 @@ extern "C" {
     }
 
     static void BT_speed(NUFPAR *parser) {
-        BT_bolttype->unknown_10 = NuFParGetFloat(parser);
+        BT_bolttype->speed = NuFParGetFloat(parser);
     }
 
     static void BT_duration(NUFPAR *parser) {
-        BT_bolttype->unknown_14 = NuFParGetFloat(parser);
+        BT_bolttype->lifetime = NuFParGetFloat(parser);
     }
 
     static void BT_radius(NUFPAR *parser) {
-        BT_bolttype->unknown_1c = NuFParGetFloat(parser);
+        BT_bolttype->radius = NuFParGetFloat(parser);
     }
 
     static void BT_scale(NUFPAR *parser) {
-        BT_bolttype->unknown_20 = NuFParGetFloat(parser);
+        BT_bolttype->scale = NuFParGetFloat(parser);
     }
 
     static void BT_rand_angle(NUFPAR *parser) {
-        BT_bolttype->unknown_40 = (i32)((f64)NuFParGetFloat(parser) * (f64)(65536.0f / 360.0f));
+        BT_bolttype->spread = (i32)((f64)NuFParGetFloat(parser) * (f64)(65536.0f / 360.0f));
     }
 
     static void BT_sceneconfig(NUFPAR *parser) {
@@ -1617,7 +1617,7 @@ extern "C" {
 
     static void BT_part_hit(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
-            BT_bolttype->unknown_38 = (i16)(FindPartDebris(BT_worldinfo->part_debris_sys, parser->word_buffer_ptr));
+            BT_bolttype->hit_part_debris = (i16)(FindPartDebris(BT_worldinfo->part_debris_sys, parser->word_buffer_ptr));
         }
     }
 
@@ -1634,7 +1634,7 @@ extern "C" {
     }
 
     static void BT_damage(NUFPAR *parser) {
-        BT_bolttype->unknown_3c = (u8)(NuFParGetInt(parser));
+        BT_bolttype->damage = (u8)(NuFParGetInt(parser));
     }
 
     static void BT_nodeflect(NUFPAR *parser) {
@@ -1915,7 +1915,7 @@ static i32 Bolt_HitPlatPrivate(BOLT *bolt, u8 *hit_flags) {
             if (bolt->owner != NULL && (blowup->draw_flags & BLOWUP_OPTION_RIDER_BOLTS_ONLY) != 0 && bolt->owner->player.rider == NULL) {
                 return 0;
             }
-            if (GizmoBlowupBlowup(blowup, 1, BLOWUP_HIT_BOLT, bolt->type->unknown_3c, NULL, 1) != 0 && bolt->owner != NULL) {
+            if (GizmoBlowupBlowup(blowup, 1, BLOWUP_HIT_BOLT, bolt->type->damage, NULL, 1) != 0 && bolt->owner != NULL) {
                 NewRumble(bolt->owner->player.pad->bound_pad, 0.4f, 0);
             }
             return 1;
@@ -2050,7 +2050,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
                ((object->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) != 0 && object->player.rider == NULL)) {
         if ((bolt->flags & 0x4000000) != 0) {
             BoltSys->debris(bolt, points, hit, &object->velocity, 0);
-            ObjHitShield(bolt->owner, object, type->unknown_3c, bolt);
+            ObjHitShield(bolt->owner, object, type->damage, bolt);
         } else {
             BoltSys->debris(bolt, points, hit, &object->velocity, 1);
             ObjHitShield(bolt->owner, object, 0, bolt);
@@ -2078,7 +2078,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         if ((bolt->flags & 0x800000) != 0) {
             damage = 0;
         } else {
-            damage = BoltType_FindByID(bolt->type_id, WORLD)->unknown_3c;
+            damage = BoltType_FindByID(bolt->type_id, WORLD)->damage;
             if (Player_HasDoubleBoltDamage_FromBolt(bolt)) {
                 damage += damage;
             }
@@ -2164,19 +2164,19 @@ extern "C" void Bolts_Draw(WORLDINFO *world) {
                 }
             }
         }
-        if (static_cast<f64>(bolt->unknown_e4) != 2000000.0) {
+        if (static_cast<f64>(bolt->floor_height) != 2000000.0) {
             scale.x = scale.z = scale.y;
             NuMtxSetScale(&matrix, &scale);
             BoltDrawRotateZPrivate(&matrix, bolt->surface_z_rotation);
             NUMTX *shadow_matrix = BoltDrawRotateXPrivate(&matrix, bolt->surface_x_rotation);
             matrix.m30 = bolt->position.x;
-            matrix.m31 = static_cast<f32>(static_cast<f64>(bolt->unknown_e4) + static_cast<f64>(0.005f));
+            matrix.m31 = static_cast<f32>(static_cast<f64>(bolt->floor_height) + static_cast<f64>(0.005f));
             matrix.m32 = bolt->position.z;
             NuSpecialDrawAt(&type->specials[4], shadow_matrix);
         }
         if (drawn[0] != 0 || drawn[1] != 0) {
-            bolt->unknown_102 = 1;
-        } else if (Paused == 0 && bolt->unknown_102 != 0 && (bolt->flags & BOLT_KEEP_OFF_SCREEN) == 0) {
+            bolt->drawn = 1;
+        } else if (Paused == 0 && bolt->drawn != 0 && (bolt->flags & BOLT_KEEP_OFF_SCREEN) == 0) {
             bolt->active = 0;
         }
     }
@@ -2354,8 +2354,8 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     bolt->acceleration_y = type->acceleration_y;
     bolt->radius = type->radius;
     bolt->scale = type->scale;
-    bolt->hit_debris = static_cast<i16>(static_cast<u32>(type->unknown_2c) >> 16);
-    bolt->hit_part_debris = type->unknown_38;
+    bolt->hit_debris = static_cast<i16>(static_cast<u32>(type->hit_debris_packed) >> 16);
+    bolt->hit_part_debris = type->hit_part_debris;
     bolt->index = bolt - Bolt;
     if (hit_flags == 0) {
         bolt->hit_flags = ObjHitObj_Flags(owner);
@@ -2397,7 +2397,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
         }
     }
     if (shoot_id == -1) {
-        shoot_id = type->unknown_64;
+        shoot_id = type->shoot_sfx;
     }
     BoltShootIdScratch = shoot_id;
     if (!no_sfx && BoltShootIdScratch != -1) {
@@ -2410,14 +2410,14 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     bolt->previous_position = position;
     bolt->flags = flags;
     bolt->active = 1;
-    bolt->unknown_102 = 0;
+    bolt->drawn = 0;
     bolt->hit_platform = -1;
-    bolt->unknown_e4 = 2000000.0f;
+    bolt->floor_height = 2000000.0f;
     bolt->reflection_height = 2000000.0f;
-    bolt->unknown_105 = -1;
+    bolt->owner_surface = -1;
     if (owner != NULL) {
         if (owner->floor_height != 2000000.0f) {
-            bolt->unknown_e4 = owner->floor_height;
+            bolt->floor_height = owner->floor_height;
             bolt->surface_x_rotation = owner->shadow_pitch;
             bolt->surface_z_rotation = owner->shadow_roll;
         }
@@ -2592,7 +2592,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                 f32 height = GameShadow(NULL, &bolt->position, 5.0f, -1);
                 if (height != 2000000.0f) {
                     if (NuSpecialExistsFn(&reinterpret_cast<BOLT_UPDATE_TYPE *>(type)->shadow_special)) {
-                        bolt->unknown_e4 = height;
+                        bolt->floor_height = height;
                         FindAnglesZX(&ShadNorm, &bolt->surface_x_rotation, &bolt->surface_z_rotation);
                     }
                     u32 surface = ShadowInfo();
@@ -2810,7 +2810,7 @@ extern "C" {
             }
         }
         if ((object->player.flags_e20 & APIOBJECT_ATTACK_TARGET_SET) != 0) {
-            if ((object->portal_flags & APIOBJECT_ENGAGE_OBJECT) == 0 && object->field_ea0_target == NULL && object->player_index != -1 &&
+            if ((object->portal_flags & APIOBJECT_ENGAGE_OBJECT) == 0 && object->aim_target == NULL && object->player_index != -1 &&
                 (object->player.attack_target_velocity.x != 0.0f || object->player.attack_target_velocity.y != 0.0f ||
                  object->player.attack_target_velocity.z != 0.0f)) {
                 target_distance = duration * speed;
@@ -2834,8 +2834,8 @@ extern "C" {
                 NuVecScale(&target_velocity, &target_velocity, 1.0f / FRAMETIME);
                 velocity = &target_velocity;
             }
-        } else if (object->field_ea0_target != NULL) {
-            GAMEOBJECT *target = object->field_ea0_target;
+        } else if (object->aim_target != NULL) {
+            GAMEOBJECT *target = object->aim_target;
             intercept_position = &target->collision_position;
             velocity = &target->velocity;
             if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 && (object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
@@ -2892,9 +2892,8 @@ extern "C" {
             if ((flags & 0x600000) != 0) {
                 u16 pitch;
                 NUANGVEC angles;
-                if ((flags & 0x80000000) != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
-                    object->field_ea0_target != NULL) {
-                    f32 distance = NuVecXZDist(&object->field_ea0_target->collision_position, &object->collision_position, NULL);
+                if ((flags & 0x80000000) != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->aim_target != NULL) {
+                    f32 distance = NuVecXZDist(&object->aim_target->collision_position, &object->collision_position, NULL);
                     f32 degrees;
                     if (distance > 2.0f) {
                         distance = 2.0f;

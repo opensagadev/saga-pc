@@ -50,11 +50,11 @@ typedef struct BOLTTYPE_s { // size 0xa4
 
     union { // size 0x10
 
-        struct {            // size 0x10
-            i32 unknown_28; // 0x28
-            i32 unknown_2c; // 0x2c
-            i32 unknown_30; // 0x30
-            i32 unknown_34; // 0x34
+        struct {                   // size 0x10
+            i32 unknown_28;        // 0x28
+            i32 hit_debris_packed; // 0x2c
+            i32 unknown_30;        // 0x30
+            i32 unknown_34;        // 0x34
         };
 
         struct {                         // size 0x10
@@ -65,12 +65,12 @@ typedef struct BOLTTYPE_s { // size 0xa4
         };
     }; // 0x28
 
-    i16 unknown_38;                                                // 0x38
+    i16 hit_part_debris;                                           // 0x38
     i16 unknown_3a;                                                // 0x3a
-    u8 unknown_3c;                                                 // 0x3c
-    i8 unknown_3d;                                                 // 0x3d
+    u8 damage;                                                     // 0x3c
+    i8 reflect_type;                                               // 0x3d
     u16 unknown_3e;                                                // 0x3e
-    u32 unknown_40;                                                // 0x40
+    u32 spread;                                                    // 0x40
     void (*init_callback)(struct bolt_s *bolt);                    // 0x44
     void (*update_callback)(struct bolt_s *bolt);                  // 0x48
     void (*end_callback)(struct bolt_s *bolt);                     // 0x4c
@@ -90,12 +90,12 @@ typedef struct BOLTTYPE_s { // size 0xa4
     u32 flags_60; // 0x60
 
     union { // size 0x2
-        i16 unknown_64;
+        i16 shoot_sfx;
         i16 shoot_sound_id;
     }; // 0x64
 
     union { // size 0x2
-        i16 unknown_66;
+        i16 fly_sfx;
         i16 hit_sound_id;
     }; // 0x66
 
@@ -139,7 +139,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 loaded;              // 0x0110
 
     union { // size 0x8
-        u32 unknown_0114[2];
+        u32 reset_words[2];
 
         struct {             // size 0x8
             u32 initialized; // 0x0114

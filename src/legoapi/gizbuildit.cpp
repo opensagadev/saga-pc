@@ -860,7 +860,7 @@ extern "C" {
                 reflection_height = 0.0f;
                 if ((buildit->state_flags & 0x100) && set->objects != NULL && set->objects->object_data != NULL) {
                     data = set->objects->buildit_data;
-                    reflection_height = buildit->unknown_50 + data->start_mtx.m31;
+                    reflection_height = buildit->reflection_height + data->start_mtx.m31;
                 }
                 for (object = set->objects; object != NULL; object = object->next) {
                     data = object->buildit_data;
@@ -874,7 +874,7 @@ extern "C" {
             } else {
                 ResetShadowMapRendering();
                 if (buildit->state_flags & 0x100) {
-                    GameAnimSet_DrawReflection(buildit->anim_set, 2, buildit->unknown_50, NULL);
+                    GameAnimSet_DrawReflection(buildit->anim_set, 2, buildit->reflection_height, NULL);
                 }
             }
         }
@@ -1128,7 +1128,7 @@ extern "C" {
                 buildit->batch_size = (u8)EdFileReadChar();
                 buildit->progress = (u8)EdFileReadChar();
                 if (version >= 6) {
-                    buildit->unknown_50 = EdFileReadFloat();
+                    buildit->reflection_height = EdFileReadFloat();
                 }
                 buildit->blowup_type = -1;
                 if (version >= 7) {
@@ -1144,8 +1144,8 @@ extern "C" {
                     } else {
                         buildit->blowup_type = EdFileReadShort();
                     }
-                    buildit->unknown_58 = EdFileReadShort();
-                    buildit->unknown_5a = EdFileReadShort();
+                    buildit->reward_pitch = EdFileReadShort();
+                    buildit->reward_yaw = EdFileReadShort();
                     EdFileReadNuVec(&buildit->effect_position);
                 }
                 if (version >= 9) {
@@ -1284,8 +1284,8 @@ extern "C" {
                         buildit->availability_flags |= 0x200;
                         hearts = ReleaseHearts();
                         if ((u16)buildit->completion_score > 0 || hearts != 0) {
-                            NuVecRotateX(&reward_direction, &v010, (u16)buildit->unknown_58);
-                            NuVecRotateY(&reward_direction, &reward_direction, (u16)buildit->unknown_5a);
+                            NuVecRotateX(&reward_direction, &v010, (u16)buildit->reward_pitch);
+                            NuVecRotateY(&reward_direction, &reward_direction, (u16)buildit->reward_yaw);
                             AddPickups((u16)buildit->completion_score, hearts, 0, 0, &finish_position, &reward_direction, 2.0f, -1, 1.75f,
                                        2000000.0f, NULL, 1, 0);
                         }

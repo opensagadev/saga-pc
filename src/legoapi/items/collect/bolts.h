@@ -69,7 +69,7 @@ typedef struct bolt_s {         // size 0x138
     f32 collision_radius;       // 0x0d8
     f32 ray_time;               // 0x0dc
     f32 ray_radius;             // 0x0e0
-    f32 unknown_e4;             // 0x0e4
+    f32 floor_height;           // 0x0e4
     f32 reflection_height;      // 0x0e8
     f32 acceleration_y;         // 0x0ec
     u32 flags;                  // 0x0f0
@@ -79,17 +79,17 @@ typedef struct bolt_s {         // size 0x138
 
     union { // size 0x2
         i16 hit_platform;
-        u16 unknown_fa;
+        u16 hit_platform_id;
     }; // 0x0fa
 
     i16 hit_debris;              // 0x0fc
     i16 hit_part_debris;         // 0x0fe
     u8 active;                   // 0x100
     u8 type_id;                  // 0x101
-    u8 unknown_102;              // 0x102
+    u8 drawn;                    // 0x102
     u8 index;                    // 0x103
     i8 impact_surface;           // 0x104
-    i8 unknown_105;              // 0x105
+    i8 owner_surface;            // 0x105
     u16 unknown_106;             // 0x106
     NUVEC bounds_min;            // 0x108
     NUVEC bounds_max;            // 0x114

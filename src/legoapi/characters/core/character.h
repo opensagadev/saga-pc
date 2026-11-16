@@ -74,7 +74,7 @@ typedef struct characterdata_s {                    // size 0x4c
     u8 flags;                                       // 0x40
     u8 unknown_0041;                                // 0x41
     i16 icon_model;                                 // 0x42
-    u32 extra_data;                                 // 0x44: cleared by ConfigureCharacterList, otherwise unused
+    u32 ai_path_capabilities;                       // 0x44: APICHARACTERDATA.ai_path_capabilities
     u32 extra_flags;                                // 0x48: cleared by ConfigureCharacterList, otherwise unused
 } CHARACTERDATA;
 

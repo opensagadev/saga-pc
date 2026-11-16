@@ -45,7 +45,7 @@ static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     world->shadow_editor->direction.x = -2.0f;
     world->shadow_editor->direction.y = -10.0f;
     world->shadow_editor->direction.z = -2.0f;
-    world->shadow_editor->unknown_0c = 0.3f;
+    world->shadow_editor->secondary_strength = 0.3f;
     world->shadow_editor->unknown_10 = 2.0f;
     world->shadow_editor->unknown_14 = 0.5f;
     world->shadow_editor->shadow_bias = 0.0005f;
@@ -105,7 +105,7 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
     count = EdFileReadChar();
     for (record = 0; record < count; ++record) {
         EdFileReadNuVec(&shadow->direction);
-        shadow->unknown_0c = EdFileReadFloat();
+        shadow->secondary_strength = EdFileReadFloat();
         if (version >= 2) {
             shadow->unknown_10 = EdFileReadFloat();
             shadow->unknown_14 = EdFileReadFloat();

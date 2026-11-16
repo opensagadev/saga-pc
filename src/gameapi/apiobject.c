@@ -2814,7 +2814,7 @@ CHARACTERDATA *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR
             current->model_scale = 1.0f;
             current->flags &= 0xfe;
             current->icon_model = -1;
-            current->extra_data = 0;
+            current->ai_path_capabilities = 0;
             current->extra_flags = 0;
         }
     }

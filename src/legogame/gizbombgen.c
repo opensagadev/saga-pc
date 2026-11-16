@@ -91,7 +91,7 @@ void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     if (come_from_an_editor != 0) {
         s->reset_saved = 0;
     } else {
-        s->reset_saved = w->unknown_0114[1];
+        s->reset_saved = w->reset_words[1];
     }
     s->progress = progress;
 }

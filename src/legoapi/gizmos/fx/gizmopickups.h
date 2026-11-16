@@ -36,7 +36,7 @@ typedef struct GIZMOPICKUP { // size 0x2c
     NUVEC position;          // 0x08
 
     union { // size 0x2
-        u8 unknown_14[2];
+        u8 type_flags[2];
 
         struct {             // size 0x2
             u8 type_code;    // 0x14

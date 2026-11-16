@@ -1147,7 +1147,7 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT *bolt, u8 *hit
                     BOLTTYPE *type = BoltType_FindByID(bolt->type_id, world);
                     GAMEOBJECT *owner = bolt->owner;
                     i32 player = owner ? owner->player_index : -1;
-                    GizObstacles_Hit(world, obstacle, &bolt->position, player, type->unknown_3c);
+                    GizObstacles_Hit(world, obstacle, &bolt->position, player, type->damage);
                     return 1;
                 }
             }
@@ -1208,7 +1208,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, GAMEOBJECT *attacker, N
             type = BoltType_FindByID(bolt->type_id, world);
             owner = bolt->owner;
             player = owner ? owner->player_index : -1;
-            if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->unknown_3c)) {
+            if (GizObstacles_Hit(world, nearest, &bolt->position, player, type->damage)) {
                 if (attacker) {
                     NewRumble(attacker->player.pad->bound_pad, 0.4f, 0);
                     GameCam_HitJudder();

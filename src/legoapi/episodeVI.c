@@ -1768,7 +1768,7 @@ void DeathStar2BattleFire_Update(WORLDINFO *world) {
     }
 
     for (index = 0; index < 8; ++index) {
-        if (Player[index] != NULL && (Player[index]->player.unknown_e20 & 0x20) == 0) {
+        if (Player[index] != NULL && (Player[index]->player.ai_state_flags & 0x20) == 0) {
             NuVecSub(&difference, &Player[index]->position, &fireSplinePos.position);
             NuVecRotateY(&difference, &difference, -yaw);
             if (difference.z < nearest_distance) {

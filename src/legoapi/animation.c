@@ -27,13 +27,6 @@ f32 CloakMovementRecoverRate = 2.0f;
 f32 CloakMovementFallRate = 2.0f;
 static f32 HairMovementRecoverRate = 2.0f;
 
-typedef struct character_joint_movement_s { // size 0x1080
-    u8 unknown_000[0xf3c];                  // 0x0000
-    NUHGOBJ_JOINT_OVERRIDE overrides[3];    // 0x0f3c
-    u8 unknown_fd8[0x107d - 0xfd8];         // 0x0fd8
-    u8 count;                               // 0x107d
-} CHARACTER_JOINT_MOVEMENT;
-
 void AddFootSteps(GAMEOBJECT *object) {
     ANIMPACKET *packet = &object->anim_packet;
     CHARACTERANIM_CONFIG *config;
@@ -171,7 +164,6 @@ void SetObjAsHeadTarget(GAMEOBJECT *object, GAMEOBJECT *target, i8 unused_priori
 }
 
 static void HeadMovementLegacy(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 first;
     f32 second;
     f32 blend;
@@ -183,7 +175,7 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
 
     allowed = 1;
 
-    if (joints->count >= 3 || object->character_data->game_character->head_joint == -1) {
+    if (object->joint_override_count >= 3 || object->character_data->game_character->head_joint == -1) {
         return;
     }
 
@@ -214,45 +206,51 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
                              &object->player.locator_matrices[object->character_data->game_character->head_locator]);
         if (direction.z < 0.0f) {
             f32 yaw = NuAtan2(-direction.x, -direction.z);
-            first = joints->overrides[joints->count].rotation.x - yaw;
-            if (first >= object->character_data->game_character->unknown_050) {
-                first = object->character_data->game_character->unknown_050;
-            } else if (first <= -object->character_data->game_character->unknown_050) {
-                first = -object->character_data->game_character->unknown_050;
+            first = object->joint_overrides[object->joint_override_count].rotation.x - yaw;
+            if (first >= object->character_data->game_character->head_yaw_limit) {
+                first = object->character_data->game_character->head_yaw_limit;
+            } else if (first <= -object->character_data->game_character->head_yaw_limit) {
+                first = -object->character_data->game_character->head_yaw_limit;
             }
             angle = NuAtan2(-direction.y, -direction.z);
-            second = joints->overrides[joints->count].rotation.y - angle;
-            if (second >= object->character_data->game_character->unknown_054) {
-                second = object->character_data->game_character->unknown_054;
-            } else if (second <= -object->character_data->game_character->unknown_054) {
-                second = -object->character_data->game_character->unknown_054;
+            second = object->joint_overrides[object->joint_override_count].rotation.y - angle;
+            if (second >= object->character_data->game_character->head_pitch_limit) {
+                second = object->character_data->game_character->head_pitch_limit;
+            } else if (second <= -object->character_data->game_character->head_pitch_limit) {
+                second = -object->character_data->game_character->head_pitch_limit;
             }
         }
     }
-    joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
-    joints->overrides[joints->count].flags = 0;
-    blend = object->character_data->game_character->unknown_058 * FRAMETIME;
+    object->joint_overrides[object->joint_override_count].joint_index = object->character_data->game_character->head_joint;
+    object->joint_overrides[object->joint_override_count].flags = 0;
+    blend = object->character_data->game_character->head_turn_rate * FRAMETIME;
     if (blend > 1.0f) {
         blend = 1.0f;
     }
-    joints->overrides[joints->count].rotation.x = first * blend + joints->overrides[joints->count].rotation.x * (1.0f - blend);
-    joints->overrides[joints->count].rotation_max[0] = (i32)(object->character_data->game_character->unknown_050 * 10430.3779296875);
-    joints->overrides[joints->count].rotation_min[0] = (i32)(object->character_data->game_character->unknown_050 * -10430.3779296875);
-    joints->overrides[joints->count].rotation.y = second * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-    joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->unknown_054 * 10430.3779296875);
-    joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->unknown_054 * -10430.3779296875);
-    joints->overrides[joints->count].rotation.z = 0.0f;
-    if (joints->overrides[joints->count].rotation.x > HeadMovementThreshold ||
-        joints->overrides[joints->count].rotation.x < -HeadMovementThreshold ||
-        joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
-        joints->overrides[joints->count].rotation.y < -HeadMovementThreshold) {
-        joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE;
+    object->joint_overrides[object->joint_override_count].rotation.x =
+        first * blend + object->joint_overrides[object->joint_override_count].rotation.x * (1.0f - blend);
+    object->joint_overrides[object->joint_override_count].rotation_max[0] =
+        (i32)(object->character_data->game_character->head_yaw_limit * 10430.3779296875);
+    object->joint_overrides[object->joint_override_count].rotation_min[0] =
+        (i32)(object->character_data->game_character->head_yaw_limit * -10430.3779296875);
+    object->joint_overrides[object->joint_override_count].rotation.y =
+        second * blend + object->joint_overrides[object->joint_override_count].rotation.y * (1.0f - blend);
+    object->joint_overrides[object->joint_override_count].rotation_max[1] =
+        (i32)(object->character_data->game_character->head_pitch_limit * 10430.3779296875);
+    object->joint_overrides[object->joint_override_count].rotation_min[1] =
+        (i32)(object->character_data->game_character->head_pitch_limit * -10430.3779296875);
+    object->joint_overrides[object->joint_override_count].rotation.z = 0.0f;
+    if (object->joint_overrides[object->joint_override_count].rotation.x > HeadMovementThreshold ||
+        object->joint_overrides[object->joint_override_count].rotation.x < -HeadMovementThreshold ||
+        object->joint_overrides[object->joint_override_count].rotation.y > HeadMovementThreshold ||
+        object->joint_overrides[object->joint_override_count].rotation.y < -HeadMovementThreshold) {
+        object->joint_overrides[object->joint_override_count].flags = NUJOINT_OVERRIDE_ROTATE;
         if (allowed) {
-            if (joints->overrides[joints->count].rotation.x != 0.0f) {
-                joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_X;
+            if (object->joint_overrides[object->joint_override_count].rotation.x != 0.0f) {
+                object->joint_overrides[object->joint_override_count].flags |= NUJOINT_OVERRIDE_LIMIT_X;
             }
-            if (joints->overrides[joints->count].rotation.y != 0.0f) {
-                joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
+            if (object->joint_overrides[object->joint_override_count].rotation.y != 0.0f) {
+                object->joint_overrides[object->joint_override_count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
             }
         }
     }
@@ -265,11 +263,10 @@ static void HeadMovementLegacy(GAMEOBJECT *object) {
             object->head_target_priority = 0;
         }
     }
-    joints->count = joints->count + 1;
+    object->joint_override_count = object->joint_override_count + 1;
 }
 
 static void HeadMovementAlternate(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 first;
     f32 second;
     f32 blend;
@@ -280,7 +277,7 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
     NUVEC direction;
 
     allowed = 1;
-    if (joints->count < 3 && object->character_data->game_character->head_joint != -1) {
+    if (object->joint_override_count < 3 && object->character_data->game_character->head_joint != -1) {
         object->flags_ef0 &= ~0x10000u;
 
         first = 0.0f;
@@ -314,47 +311,53 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
                                  &object->player.locator_matrices[object->character_data->game_character->head_locator]);
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
-                first = pitch - joints->overrides[joints->count].rotation.y;
-                if (first >= object->character_data->game_character->unknown_054) {
-                    first = object->character_data->game_character->unknown_054;
-                } else if (first <= -object->character_data->game_character->unknown_054) {
-                    first = -object->character_data->game_character->unknown_054;
+                first = pitch - object->joint_overrides[object->joint_override_count].rotation.y;
+                if (first >= object->character_data->game_character->head_pitch_limit) {
+                    first = object->character_data->game_character->head_pitch_limit;
+                } else if (first <= -object->character_data->game_character->head_pitch_limit) {
+                    first = -object->character_data->game_character->head_pitch_limit;
                 }
                 angle = -NuAtan2(-direction.x, -direction.z);
-                second = angle - joints->overrides[joints->count].rotation.z;
-                if (second >= object->character_data->game_character->unknown_050) {
-                    second = object->character_data->game_character->unknown_050;
-                } else if (second <= -object->character_data->game_character->unknown_050) {
-                    second = -object->character_data->game_character->unknown_050;
+                second = angle - object->joint_overrides[object->joint_override_count].rotation.z;
+                if (second >= object->character_data->game_character->head_yaw_limit) {
+                    second = object->character_data->game_character->head_yaw_limit;
+                } else if (second <= -object->character_data->game_character->head_yaw_limit) {
+                    second = -object->character_data->game_character->head_yaw_limit;
                 } else {
                     object->flags_ef0 &= ~0x10000u;
                 }
             }
         }
-        joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
-        joints->overrides[joints->count].flags = 0;
-        blend = object->character_data->game_character->unknown_058 * FRAMETIME;
+        object->joint_overrides[object->joint_override_count].joint_index = object->character_data->game_character->head_joint;
+        object->joint_overrides[object->joint_override_count].flags = 0;
+        blend = object->character_data->game_character->head_turn_rate * FRAMETIME;
         if (blend > 1.0f) {
             blend = 1.0f;
         }
-        joints->overrides[joints->count].rotation.x = 0.0f;
-        joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->unknown_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->unknown_054 * -10430.3779296875);
-        joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max[2] = (i32)(object->character_data->game_character->unknown_050 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min[2] = (i32)(object->character_data->game_character->unknown_050 * -10430.3779296875);
-        if (joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
-            joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
-            joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
-            joints->overrides[joints->count].rotation.z < -HeadMovementThreshold) {
-            joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE;
+        object->joint_overrides[object->joint_override_count].rotation.x = 0.0f;
+        object->joint_overrides[object->joint_override_count].rotation.y =
+            first * blend + object->joint_overrides[object->joint_override_count].rotation.y * (1.0f - blend);
+        object->joint_overrides[object->joint_override_count].rotation_max[1] =
+            (i32)(object->character_data->game_character->head_pitch_limit * 10430.3779296875);
+        object->joint_overrides[object->joint_override_count].rotation_min[1] =
+            (i32)(object->character_data->game_character->head_pitch_limit * -10430.3779296875);
+        object->joint_overrides[object->joint_override_count].rotation.z =
+            second * blend + object->joint_overrides[object->joint_override_count].rotation.z * (1.0f - blend);
+        object->joint_overrides[object->joint_override_count].rotation_max[2] =
+            (i32)(object->character_data->game_character->head_yaw_limit * 10430.3779296875);
+        object->joint_overrides[object->joint_override_count].rotation_min[2] =
+            (i32)(object->character_data->game_character->head_yaw_limit * -10430.3779296875);
+        if (object->joint_overrides[object->joint_override_count].rotation.y > HeadMovementThreshold ||
+            object->joint_overrides[object->joint_override_count].rotation.y < -HeadMovementThreshold ||
+            object->joint_overrides[object->joint_override_count].rotation.z > HeadMovementThreshold ||
+            object->joint_overrides[object->joint_override_count].rotation.z < -HeadMovementThreshold) {
+            object->joint_overrides[object->joint_override_count].flags = NUJOINT_OVERRIDE_ROTATE;
             if (allowed) {
-                if (joints->overrides[joints->count].rotation.y != 0.0f) {
-                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
+                if (object->joint_overrides[object->joint_override_count].rotation.y != 0.0f) {
+                    object->joint_overrides[object->joint_override_count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
                 }
-                if (joints->overrides[joints->count].rotation.z != 0.0f) {
-                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Z;
+                if (object->joint_overrides[object->joint_override_count].rotation.z != 0.0f) {
+                    object->joint_overrides[object->joint_override_count].flags |= NUJOINT_OVERRIDE_LIMIT_Z;
                 }
             }
         }
@@ -367,12 +370,11 @@ static void HeadMovementAlternate(GAMEOBJECT *object) {
                 object->head_target_priority = 0;
             }
         }
-        joints->count = joints->count + 1;
+        object->joint_override_count = object->joint_override_count + 1;
     }
 }
 
 static void HeadMovementOrdinary(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 first;
     f32 second;
     f32 blend;
@@ -383,7 +385,7 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
     NUVEC direction;
 
     allowed = 1;
-    if (joints->count < 3 && object->character_data->game_character->head_joint != -1) {
+    if (object->joint_override_count < 3 && object->character_data->game_character->head_joint != -1) {
         object->flags_ef0 &= ~0x10000u;
 
         first = 0.0f;
@@ -417,47 +419,53 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
                                  &object->player.locator_matrices[object->character_data->game_character->head_locator]);
             if (direction.z < 0.0f) {
                 f32 pitch = NuAtan2(-direction.y, NuFsqrt(direction.x * direction.x + direction.z * direction.z));
-                first = joints->overrides[joints->count].rotation.y - pitch;
-                if (first >= object->character_data->game_character->unknown_054) {
-                    first = object->character_data->game_character->unknown_054;
-                } else if (first <= -object->character_data->game_character->unknown_054) {
-                    first = -object->character_data->game_character->unknown_054;
+                first = object->joint_overrides[object->joint_override_count].rotation.y - pitch;
+                if (first >= object->character_data->game_character->head_pitch_limit) {
+                    first = object->character_data->game_character->head_pitch_limit;
+                } else if (first <= -object->character_data->game_character->head_pitch_limit) {
+                    first = -object->character_data->game_character->head_pitch_limit;
                 }
                 angle = -NuAtan2(-direction.x, -direction.z);
-                second = joints->overrides[joints->count].rotation.z - angle;
-                if (second >= object->character_data->game_character->unknown_050) {
-                    second = object->character_data->game_character->unknown_050;
-                } else if (second <= -object->character_data->game_character->unknown_050) {
-                    second = -object->character_data->game_character->unknown_050;
+                second = object->joint_overrides[object->joint_override_count].rotation.z - angle;
+                if (second >= object->character_data->game_character->head_yaw_limit) {
+                    second = object->character_data->game_character->head_yaw_limit;
+                } else if (second <= -object->character_data->game_character->head_yaw_limit) {
+                    second = -object->character_data->game_character->head_yaw_limit;
                 } else {
                     object->flags_ef0 &= ~0x10000u;
                 }
             }
         }
-        joints->overrides[joints->count].joint_index = object->character_data->game_character->head_joint;
-        joints->overrides[joints->count].flags = 0;
-        blend = object->character_data->game_character->unknown_058 * FRAMETIME;
+        object->joint_overrides[object->joint_override_count].joint_index = object->character_data->game_character->head_joint;
+        object->joint_overrides[object->joint_override_count].flags = 0;
+        blend = object->character_data->game_character->head_turn_rate * FRAMETIME;
         if (blend > 1.0f) {
             blend = 1.0f;
         }
-        joints->overrides[joints->count].rotation.x = 0.0f;
-        joints->overrides[joints->count].rotation.y = first * blend + joints->overrides[joints->count].rotation.y * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max[1] = (i32)(object->character_data->game_character->unknown_054 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min[1] = (i32)(object->character_data->game_character->unknown_054 * -10430.3779296875);
-        joints->overrides[joints->count].rotation.z = second * blend + joints->overrides[joints->count].rotation.z * (1.0f - blend);
-        joints->overrides[joints->count].rotation_max[2] = (i32)(object->character_data->game_character->unknown_050 * 10430.3779296875);
-        joints->overrides[joints->count].rotation_min[2] = (i32)(object->character_data->game_character->unknown_050 * -10430.3779296875);
-        if (joints->overrides[joints->count].rotation.y > HeadMovementThreshold ||
-            joints->overrides[joints->count].rotation.y < -HeadMovementThreshold ||
-            joints->overrides[joints->count].rotation.z > HeadMovementThreshold ||
-            joints->overrides[joints->count].rotation.z < -HeadMovementThreshold) {
-            joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE;
+        object->joint_overrides[object->joint_override_count].rotation.x = 0.0f;
+        object->joint_overrides[object->joint_override_count].rotation.y =
+            first * blend + object->joint_overrides[object->joint_override_count].rotation.y * (1.0f - blend);
+        object->joint_overrides[object->joint_override_count].rotation_max[1] =
+            (i32)(object->character_data->game_character->head_pitch_limit * 10430.3779296875);
+        object->joint_overrides[object->joint_override_count].rotation_min[1] =
+            (i32)(object->character_data->game_character->head_pitch_limit * -10430.3779296875);
+        object->joint_overrides[object->joint_override_count].rotation.z =
+            second * blend + object->joint_overrides[object->joint_override_count].rotation.z * (1.0f - blend);
+        object->joint_overrides[object->joint_override_count].rotation_max[2] =
+            (i32)(object->character_data->game_character->head_yaw_limit * 10430.3779296875);
+        object->joint_overrides[object->joint_override_count].rotation_min[2] =
+            (i32)(object->character_data->game_character->head_yaw_limit * -10430.3779296875);
+        if (object->joint_overrides[object->joint_override_count].rotation.y > HeadMovementThreshold ||
+            object->joint_overrides[object->joint_override_count].rotation.y < -HeadMovementThreshold ||
+            object->joint_overrides[object->joint_override_count].rotation.z > HeadMovementThreshold ||
+            object->joint_overrides[object->joint_override_count].rotation.z < -HeadMovementThreshold) {
+            object->joint_overrides[object->joint_override_count].flags = NUJOINT_OVERRIDE_ROTATE;
             if (allowed) {
-                if (joints->overrides[joints->count].rotation.y != 0.0f) {
-                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
+                if (object->joint_overrides[object->joint_override_count].rotation.y != 0.0f) {
+                    object->joint_overrides[object->joint_override_count].flags |= NUJOINT_OVERRIDE_LIMIT_Y;
                 }
-                if (joints->overrides[joints->count].rotation.z != 0.0f) {
-                    joints->overrides[joints->count].flags |= NUJOINT_OVERRIDE_LIMIT_Z;
+                if (object->joint_overrides[object->joint_override_count].rotation.z != 0.0f) {
+                    object->joint_overrides[object->joint_override_count].flags |= NUJOINT_OVERRIDE_LIMIT_Z;
                 }
             }
         }
@@ -470,7 +478,7 @@ static void HeadMovementOrdinary(GAMEOBJECT *object) {
                 object->head_target_priority = 0;
             }
         }
-        joints->count = joints->count + 1;
+        object->joint_override_count = object->joint_override_count + 1;
     }
 }
 
@@ -488,14 +496,13 @@ void HeadMovement(GAMEOBJECT *object) {
 }
 
 void CloakMovement(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 phase;
 
-    if (joints->count >= 3 || object->character_data->game_character->cloak_joint == -1) {
+    if (object->joint_override_count >= 3 || object->character_data->game_character->cloak_joint == -1) {
         return;
     }
-    phase = NuFsqrt((joints->overrides[joints->count].rotation.z - object->character_data->game_character->unknown_060) /
-                    (object->character_data->game_character->unknown_05c - object->character_data->game_character->unknown_060));
+    phase = NuFsqrt((object->joint_overrides[object->joint_override_count].rotation.z - object->character_data->game_character->lean_min) /
+                    (object->character_data->game_character->lean_max - object->character_data->game_character->lean_min));
     if (LEGOACT_FALL != -1 && ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
                                (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
         phase += FRAMETIME * CloakMovementFallRate;
@@ -509,40 +516,38 @@ void CloakMovement(GAMEOBJECT *object) {
         }
     }
     phase *= phase;
-    joints->overrides[joints->count].joint_index = object->character_data->game_character->cloak_joint;
-    phase =
-        (1.0f - phase) * object->character_data->game_character->unknown_060 + phase * object->character_data->game_character->unknown_05c;
-    joints->overrides[joints->count].rotation.z = phase;
-    if (joints->overrides[joints->count].rotation.z != 0.0f) {
-        joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE | NUJOINT_OVERRIDE_LIMIT_Z;
-        if (object->character_data->game_character->unknown_05c < object->character_data->game_character->unknown_060) {
-            joints->overrides[joints->count].rotation_max[2] =
-                (i32)((f64)object->character_data->game_character->unknown_060 * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min[2] =
-                (i32)((f64)object->character_data->game_character->unknown_05c * AIPathAngularScale);
+    object->joint_overrides[object->joint_override_count].joint_index = object->character_data->game_character->cloak_joint;
+    phase = (1.0f - phase) * object->character_data->game_character->lean_min + phase * object->character_data->game_character->lean_max;
+    object->joint_overrides[object->joint_override_count].rotation.z = phase;
+    if (object->joint_overrides[object->joint_override_count].rotation.z != 0.0f) {
+        object->joint_overrides[object->joint_override_count].flags = NUJOINT_OVERRIDE_ROTATE | NUJOINT_OVERRIDE_LIMIT_Z;
+        if (object->character_data->game_character->lean_max < object->character_data->game_character->lean_min) {
+            object->joint_overrides[object->joint_override_count].rotation_max[2] =
+                (i32)((f64)object->character_data->game_character->lean_min * AIPathAngularScale);
+            object->joint_overrides[object->joint_override_count].rotation_min[2] =
+                (i32)((f64)object->character_data->game_character->lean_max * AIPathAngularScale);
         } else {
-            joints->overrides[joints->count].rotation_max[2] =
-                (i32)((f64)object->character_data->game_character->unknown_05c * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min[2] =
-                (i32)((f64)object->character_data->game_character->unknown_060 * AIPathAngularScale);
+            object->joint_overrides[object->joint_override_count].rotation_max[2] =
+                (i32)((f64)object->character_data->game_character->lean_max * AIPathAngularScale);
+            object->joint_overrides[object->joint_override_count].rotation_min[2] =
+                (i32)((f64)object->character_data->game_character->lean_min * AIPathAngularScale);
         }
     } else {
-        joints->overrides[joints->count].flags = 0;
+        object->joint_overrides[object->joint_override_count].flags = 0;
     }
-    joints->count++;
+    object->joint_override_count++;
 }
 
 f32 HairMovementRestAngle = 0.0f;
 
 void HairMovement(GAMEOBJECT *object) {
-    CHARACTER_JOINT_MOVEMENT *joints = (CHARACTER_JOINT_MOVEMENT *)object;
     f32 phase;
 
-    if (joints->count >= 3 || object->character_data->game_character->cloak_joint_2 == -1) {
+    if (object->joint_override_count >= 3 || object->character_data->game_character->cloak_joint_2 == -1) {
         return;
     }
-    phase =
-        NuFsqrt((joints->overrides[joints->count].rotation.z - HairMovementRestAngle) / (HairMovementFallAngle - HairMovementRestAngle));
+    phase = NuFsqrt((object->joint_overrides[object->joint_override_count].rotation.z - HairMovementRestAngle) /
+                    (HairMovementFallAngle - HairMovementRestAngle));
     if (LEGOACT_FALL != -1 && ((object->anim_packet.blending && object->anim_packet.blend_target_animation == LEGOACT_FALL) ||
                                (!object->anim_packet.blending && object->anim_packet.animation_index == LEGOACT_FALL))) {
         phase += FRAMETIME * HairMovementFallRate;
@@ -557,17 +562,17 @@ void HairMovement(GAMEOBJECT *object) {
     }
     phase *= phase;
     phase = (1.0f - phase) * HairMovementRestAngle + phase * HairMovementFallAngle;
-    joints->overrides[joints->count].joint_index = object->character_data->game_character->cloak_joint_2;
-    joints->overrides[joints->count].rotation.z = phase;
-    if (joints->overrides[joints->count].rotation.z != 0.0f) {
-        joints->overrides[joints->count].flags = NUJOINT_OVERRIDE_ROTATE | NUJOINT_OVERRIDE_LIMIT_Z;
+    object->joint_overrides[object->joint_override_count].joint_index = object->character_data->game_character->cloak_joint_2;
+    object->joint_overrides[object->joint_override_count].rotation.z = phase;
+    if (object->joint_overrides[object->joint_override_count].rotation.z != 0.0f) {
+        object->joint_overrides[object->joint_override_count].flags = NUJOINT_OVERRIDE_ROTATE | NUJOINT_OVERRIDE_LIMIT_Z;
         if (HairMovementRestAngle > HairMovementFallAngle) {
-            joints->overrides[joints->count].rotation_max[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
+            object->joint_overrides[object->joint_override_count].rotation_max[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
+            object->joint_overrides[object->joint_override_count].rotation_min[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
         } else {
-            joints->overrides[joints->count].rotation_max[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
-            joints->overrides[joints->count].rotation_min[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
+            object->joint_overrides[object->joint_override_count].rotation_max[2] = (i32)((f64)HairMovementFallAngle * AIPathAngularScale);
+            object->joint_overrides[object->joint_override_count].rotation_min[2] = (i32)((f64)HairMovementRestAngle * AIPathAngularScale);
         }
     }
-    joints->count++;
+    object->joint_override_count++;
 }

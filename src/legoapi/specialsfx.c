@@ -329,9 +329,9 @@ void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category
         effect->sound_range_override = EdFileReadFloat();
     }
     if (version >= 24) {
-        effect->unknown_044 = EdFileReadFloat();
+        effect->render_parameter_c = EdFileReadFloat();
     } else {
-        effect->unknown_044 = 0.5f;
+        effect->render_parameter_c = 0.5f;
     }
     if (version < 7) {
         EdFileReadInt();
@@ -432,12 +432,12 @@ void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category
         effect->rotation_keys[i].value = EdFileReadFloat();
     }
     for (i = 0; i < 8; ++i) {
-        effect->field_218_keys[i].time = EdFileReadFloat();
-        effect->field_218_keys[i].value = EdFileReadFloat();
+        effect->scale_keys[i].time = EdFileReadFloat();
+        effect->scale_keys[i].value = EdFileReadFloat();
     }
     for (i = 0; i < 8; ++i) {
-        effect->field_258_keys[i].time = EdFileReadFloat();
-        effect->field_258_keys[i].value = EdFileReadFloat();
+        effect->extra_keys[i].time = EdFileReadFloat();
+        effect->extra_keys[i].value = EdFileReadFloat();
     }
     effect->texture_u0 = EdFileReadFloat();
     effect->texture_v0 = EdFileReadFloat();

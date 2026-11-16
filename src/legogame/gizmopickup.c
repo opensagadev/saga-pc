@@ -688,7 +688,7 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     if (part != NULL) {
         part->rotation_y = (u16)qrand();
         part->player_mask = 3;
-        part->unknown_214 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)NuTrigTable[0x2000]);
+        part->particle_scale = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)NuTrigTable[0x2000]);
     }
 }
 
