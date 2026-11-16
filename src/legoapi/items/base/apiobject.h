@@ -1137,7 +1137,7 @@ typedef struct gameobject_s { // size 0x10d8
         void *grapple;
         struct PART *force_throw_part;
         struct techno_s *techno;
-        struct ZIPUP_s *attached_zipup;
+        struct zipup_s *attached_zipup;
         struct TUBE *attached_tube;
     }; // 0x0798
 

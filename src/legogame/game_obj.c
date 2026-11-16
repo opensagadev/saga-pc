@@ -34,6 +34,7 @@
 #include "legoapi/core/input/timing.h"
 #include "legoapi/gizmo/base/gizmessage.h"
 #include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/door/zipups.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/gizmos/object/gizbuildits.h"
 #include "legoapi/gizmos/object/gizpanel.h"
@@ -2899,7 +2900,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         object->reciprocal_target = NULL;
     }
     if (object->character_context == CHARACTER_CONTEXT_ZIP_UP && object->grapple != NULL) {
-        ((KILL_ZIPUP *)object->grapple)->runtime_flags &= ~0x100;
+        object->attached_zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
         object->grapple = NULL;
     }
     Batarangs_CheckLostData(object);

@@ -36,6 +36,7 @@
 #include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/door/zipups.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/gizmos/object/gizbuildits.h"
 #include "legoapi/gizmos/object/gizpanel.h"
@@ -165,17 +166,6 @@ typedef struct move_gunship_level_flags_s {
 
 extern f32 DirectionalGrappleSeekScale;
 extern f32 DirectionalZipUpSeekRate;
-
-typedef struct directional_zipup_s {
-    u8 unknown_00[0x1c];
-    NUVEC hook_origin;
-    u8 unknown_28[0x28];
-    NUVEC rider_target_position;
-    u8 unknown_5c[4];
-    u16 pitch_adjustment;
-    u8 unknown_62[6];
-    u8 flags;
-} DIRECTIONAL_ZIPUP;
 
 typedef struct directional_tube_s {
     u8 unknown_00[0x24];
@@ -9282,10 +9272,10 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         } else {
             object->movement_mode = 0;
             if (object->character_context == CHARACTER_CONTEXT_ZIP_UP) {
-                DIRECTIONAL_ZIPUP *zipup;
+                ZIPUP *zipup;
                 pitch = object->unknown_7a4;
-                zipup = object->grapple;
-                if (zipup != NULL && (zipup->flags & 1) != 0) {
+                zipup = object->attached_zipup;
+                if (zipup != NULL && (zipup->flags & ZIPUP_FLAG_CONFIG_0) != 0) {
                     pitch -= (i32)((f32)(object->context_timer / 1.5) * zipup->pitch_adjustment);
                 }
             } else {
@@ -9780,9 +9770,9 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                             object->target_velocity = v000;
                             object->velocity = object->target_velocity;
                         } else {
-                            DIRECTIONAL_ZIPUP *zipup;
-                            zipup = object->grapple;
-                            if ((zipup->flags & 1) != 0) {
+                            ZIPUP *zipup;
+                            zipup = object->attached_zipup;
+                            if ((zipup->flags & ZIPUP_FLAG_CONFIG_0) != 0) {
                                 SeekVec(&object->position, &object->position, &zipup->rider_target_position, DirectionalZipUpSeekRate);
                             } else {
                                 NuVecSub(&object->target_velocity, &zipup->hook_origin, &object->position);
@@ -10071,7 +10061,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         }
     } else {
         // The vertical path tests the grapple's byte at +0x68 without a type gate.
-        if (object->grapple != NULL && (((DIRECTIONAL_ZIPUP *)object->grapple)->flags & 1) != 0) {
+        if (object->attached_zipup != NULL && (object->attached_zipup->flags & ZIPUP_FLAG_CONFIG_0) != 0) {
             seek_rates.x *= DirectionalGrappleSeekScale;
             seek_rates.y *= DirectionalGrappleSeekScale;
             seek_rates.z *= DirectionalGrappleSeekScale;

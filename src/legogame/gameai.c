@@ -1670,8 +1670,8 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 }
                 break;
             case AIPATHCNX_TARGET_ZIPUP:
-                zipup_flags = *(u16 *)&((struct ZIPUP_s *)controller->target)->flags;
-                if ((zipup_flags & 0x40) == 0 || (zipup_flags & 0x80) == 0) {
+                zipup_flags = ((ZIPUP *)controller->target)->flags_word;
+                if ((zipup_flags & ZIPUP_FLAG_ACTIVE) == 0 || (zipup_flags & ZIPUP_FLAG_VISIBLE) == 0) {
                     active = 0;
                 }
                 break;

@@ -370,11 +370,6 @@ typedef struct game_save_score_s { // size 0x7c18
     u32 coins;                     // 0x7c14
 } GAME_SAVE_SCORE;
 
-typedef struct kill_zipup_s { // size 0x6a
-    u8 unknown_00[0x68];      // 0x00
-    u16 runtime_flags;        // 0x68
-} KILL_ZIPUP;
-
 typedef struct lose_coins_packet_s { // size 0x4
     u32 coins;                       // 0x0
 } LOSE_COINS_PACKET;

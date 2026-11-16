@@ -5534,11 +5534,11 @@ i32 Action_RemoveThrownForceObjects(AISYS *system, AISCRIPTPROCESS *processor, A
     return 1;
 }
 
-static ZIPUP_s *LocalGetRandomSpawnZipUp(ZIPUP_s **zipups, i32 count) {
+static ZIPUP *LocalGetRandomSpawnZipUp(ZIPUP **zipups, i32 count) {
     i32 index;
     i32 selection;
-    ZIPUP_s *result;
-    ZIPUP_s *eligible[32];
+    ZIPUP *result;
+    ZIPUP *eligible[32];
     i32 eligible_count;
     eligible_count = 0;
     result = NULL;
@@ -5558,9 +5558,9 @@ static ZIPUP_s *LocalGetRandomSpawnZipUp(ZIPUP_s **zipups, i32 count) {
     return result;
 }
 
-static ZIPUP_s *FindSpawnZipUp(char *name) {
+static ZIPUP *FindSpawnZipUp(char *name) {
     i32 index;
-    ZIPUP_s *zipup = (ZIPUP_s *)WORLD->zipups;
+    ZIPUP *zipup = WORLD->zipups;
     for (index = 0; index < WORLD->zipup_count; ++index, ++zipup) {
         if (zipup->active && zipup->visible && NuStrICmp(name, zipup->name) == 0) {
             return zipup;
@@ -11741,7 +11741,7 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     AILOCATOR *locators[64] = {NULL};
     i32 locator_count = 0;
     i32 creature_set = 0;
-    ZIPUP_s *zipups[32];
+    ZIPUP *zipups[32];
     i16 models[10];
     char script[64] = "default";
     f32 xspacing = 0.8f;
@@ -11830,7 +11830,7 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
                 max_dy = AIParamToFloat(processor, value + 6);
             } else if ((value = NuStrIStr(params[index], "zipup")) != NULL) {
                 if (locator_count < 32) {
-                    ZIPUP_s *zipup;
+                    ZIPUP *zipup;
                     value += 6;
                     zipup = FindSpawnZipUp(value);
                     if (zipup != NULL) {
@@ -11947,7 +11947,7 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         while (count != 0) {
             i16 model;
             AILOCATOR *locator;
-            ZIPUP_s *zipup;
+            ZIPUP *zipup;
             if (locator_count == 0 && zipup_count == 0 && rider == NULL && start_locator == 0) {
                 break;
             }
@@ -12047,8 +12047,8 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
                         }
                     }
                     if (zipup != NULL) {
-                        ZIPUP_s *attached_zipup;
-                        ZIPUP_s *current_zipup;
+                        ZIPUP *attached_zipup;
+                        ZIPUP *current_zipup;
                         f32 dx;
                         f32 dz;
                         i32 rotation;
