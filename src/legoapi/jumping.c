@@ -142,7 +142,7 @@ i32 StartBigJump(GAMEOBJECT *object, NUVEC *destination, i32 mode, f32 height, f
         NuAtan2D(destination->x - object->external_force.x, destination->z - object->external_force.z);
     object->flags_ef0 = (object->flags_ef0 & ~0x2000) | ((mode & 1) << 13);
     PlayJumpSfx(object, 2);
-    object->ai_packet.flags |= 0x2000000;
+    object->ai_packet.flags |= AIPACKET_KEEP_PATH_POS;
     object->ai_packet.path_target = NULL;
     object->big_jump_height = height;
     if (height < 0.0f) {
@@ -285,7 +285,7 @@ i32 Slam_Start(GAMEOBJECT *object, f32 speed) {
         object->unknown_7aa = JumpSlamAction;
         object->context_timer = 0.0f;
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-            object->portal_flags |= 0x800;
+            object->portal_flags |= APIOBJECT_MADE_NOISE;
         }
         object->velocity.y = speed;
         object->jump_sequence = 0;
@@ -478,7 +478,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 ((movement_state == JUMP_KIND_SLAM || movement_state == JUMP_KIND_LUNGE) && object->context_timer >= 2.5f)) {
                 restart_jump = 0;
                 if (player_flag != 0) {
-                    object->portal_flags |= 0x800;
+                    object->portal_flags |= APIOBJECT_MADE_NOISE;
                 }
                 if (jump_held != 0 && 0 == ((object->flags_e20 & 0x100000)) && object->action_movement_state != JUMP_KIND_LUNGE &&
                     object->action_movement_state != JUMP_KIND_SLAM && object->action_movement_state != 5 &&
@@ -972,6 +972,6 @@ void BigJumpCode(GAMEOBJECT *object) {
         }
     }
     if (object->character_context != CHARACTER_CONTEXT_NONE) {
-        object->ai_packet.flags |= 0x2000000;
+        object->ai_packet.flags |= AIPACKET_KEEP_PATH_POS;
     }
 }

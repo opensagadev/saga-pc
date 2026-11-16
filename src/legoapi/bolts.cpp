@@ -2821,7 +2821,7 @@ extern "C" {
             }
         }
         if ((object->flags_e20 & APIOBJECT_ATTACK_TARGET_SET) != 0) {
-            if ((object->portal_flags & 0x8000) == 0 && object->field_ea0_target == NULL && object->player_index != -1 &&
+            if ((object->portal_flags & APIOBJECT_ENGAGE_OBJECT) == 0 && object->field_ea0_target == NULL && object->player_index != -1 &&
                 (object->unknown_c8c != 0.0f || object->unknown_c90 != 0.0f || object->unknown_c94 != 0.0f)) {
                 target_distance = duration * speed;
                 NuVecSub(&adjusted_position, &aimed_position, &origin);
@@ -2837,9 +2837,9 @@ extern "C" {
         target_position = NULL;
         intercept_position = NULL;
         velocity = NULL;
-        if ((object->portal_flags & 0x8000) != 0) {
+        if ((object->portal_flags & APIOBJECT_ENGAGE_OBJECT) != 0) {
             target_position = intercept_position = &object->unknown_e4c;
-            if ((object->portal_flags & 0x10000) == 0 && (object->portal_flags & 0x20000) != 0) {
+            if ((object->portal_flags & APIOBJECT_ENGAGE_TARGET_NEW) == 0 && (object->portal_flags & APIOBJECT_ENGAGE_PREDICTIVE) != 0) {
                 NuVecSub(&target_velocity, &object->unknown_e4c, &object->unknown_e58);
                 NuVecScale(&target_velocity, &target_velocity, 1.0f / FRAMETIME);
                 velocity = &target_velocity;
@@ -2923,7 +2923,7 @@ extern "C" {
                 NuMtxSetRotationXYVU0(&matrix, &angles);
             } else if (target_position != NULL) {
                 NUANGVEC angles;
-                if (velocity != NULL && (object->portal_flags & 0x20000) != 0) {
+                if (velocity != NULL && (object->portal_flags & APIOBJECT_ENGAGE_PREDICTIVE) != 0) {
                     CalculateInterceptVector(shot_position, intercept_position, velocity, speed, &delta, NULL);
                 } else {
                     NuVecSub(&delta, target_position, shot_position);

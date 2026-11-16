@@ -2191,9 +2191,9 @@ void UpdateGameObjects(WORLDINFO *world) {
             } else {
                 MovePlayer(object);
             }
-            if ((object->portal_flags & 0x400000) != 0 && (object->flags_1fc_word & 4) == 0) {
+            if ((object->portal_flags & APIOBJECT_PORTAL) != 0 && (object->flags_1fc_word & 4) == 0) {
                 object->portal_room = -1;
-                if ((object->portal_flags & 0x800000) != 0 && world->current_gscn != NULL) {
+                if ((object->portal_flags & APIOBJECT_PORTAL_UPDATE_ROOM) != 0 && world->current_gscn != NULL) {
                     object->portal_room = NuPortalWhichRoom(world->current_gscn, &object->collision_position);
                 }
             }
@@ -2278,9 +2278,9 @@ void UpdateGameObjects(WORLDINFO *world) {
                 MovePlayer(object);
             }
         }
-        if ((object->portal_flags & 0x400000) != 0 && (object->flags_1fc_word & 4) == 0) {
+        if ((object->portal_flags & APIOBJECT_PORTAL) != 0 && (object->flags_1fc_word & 4) == 0) {
             object->portal_room = -1;
-            if ((object->portal_flags & 0x800000) != 0 && world->current_gscn != NULL) {
+            if ((object->portal_flags & APIOBJECT_PORTAL_UPDATE_ROOM) != 0 && world->current_gscn != NULL) {
                 object->portal_room = NuPortalWhichRoom(world->current_gscn, &object->collision_position);
             }
         }
@@ -2296,7 +2296,7 @@ void UpdateGameObjects(WORLDINFO *world) {
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 ||
             (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
-            object->portal_flags &= ~1;
+            object->portal_flags &= ~APIOBJECT_BEEN_HIT;
             if (object->timer_ecc > 0.0f) {
                 object->timer_ecc -= FRAMETIME;
             }
@@ -2353,7 +2353,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         }
         NuCameraTransformScreenClip(&object->camera_screen_position, &object->collision_position, 1, NULL);
         GameObjectToCameraCode(object);
-        object->portal_flags &= ~1;
+        object->portal_flags &= ~APIOBJECT_BEEN_HIT;
         if (object->timer_ecc > 0.0f) {
             object->timer_ecc -= FRAMETIME;
         }
@@ -3419,7 +3419,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         AlertSurroundingCreatures(attacker, &target->collision_position);
     }
     if (damage > 0 || damage == -1) {
-        target->portal_flags |= 1;
+        target->portal_flags |= APIOBJECT_BEEN_HIT;
     }
     if (flags & OBJHIT_SABRE) {
         if ((U64_PAIR(&CInfo[target->character_context].flags) & 0x4000000) ||

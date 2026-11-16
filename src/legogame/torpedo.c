@@ -779,7 +779,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         NewRumble(object->pad->bound_pad, 0.5f, 0);
         NewBuzz(object->pad->bound_pad, 0.1f, 0);
         object->flags_e20 |= 0x4000000;
-        object->portal_flags |= 0x800;
+        object->portal_flags |= APIOBJECT_MADE_NOISE;
         timers->fire_cooldown = fire_cooldown;
         TORPEDO_PACKET(object)->fire_index = 0;
         if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {

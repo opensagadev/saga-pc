@@ -1288,7 +1288,7 @@ void CurrentStart(GAMEOBJECT *object, i32 allow_any_level, i32 use_socket_rotati
     } else {
         NuVecRotateY(&object->velocity, &object->velocity, object->unknown_276);
     }
-    object->ai_packet.flags &= ~0x40000u;
+    object->ai_packet.flags &= ~AIPACKET_ZERO_ACCELERATION;
     object->target_velocity = object->velocity;
 }
 
@@ -2736,7 +2736,7 @@ static void ShootThisFrame(GAMEOBJECT *object, i32 bolt_id, i32 flags) {
     } else {
         NewBuzzFrames(object->pad->bound_pad, 2, 0);
     }
-    object->portal_flags |= 0x800;
+    object->portal_flags |= APIOBJECT_MADE_NOISE;
     object->quick_shoot_bolt_id = (i8)bolt_id;
     object->quick_shoot_flags = (u8)flags;
     if (object->character_data->game_character->put_weapon_away_on_shoot) {
@@ -2904,7 +2904,7 @@ void StartLunge(GAMEOBJECT *object, f32 speed, f32 height) {
     object->action_movement_state = JUMP_KIND_LUNGE;
     object->unknown_7aa = ACTION_LUNGE;
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-        object->portal_flags |= 0x800;
+        object->portal_flags |= APIOBJECT_MADE_NOISE;
     }
     object->velocity.y = speed;
     object->context_variant_flags |= APIOBJECT_JUMP_ATTACK;
@@ -3156,7 +3156,7 @@ static void StartComboJump(GAMEOBJECT *object, i32 variant) {
     PlayJumpSfx(object, 2);
     ResetAnimPacket(&object->anim_packet, object->unknown_7aa);
     if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-        object->portal_flags |= 0x800;
+        object->portal_flags |= APIOBJECT_MADE_NOISE;
     }
 }
 
@@ -3364,7 +3364,7 @@ i32 Dodge_UpdateHint(HINT *hint) {
             if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
                 return 0;
             }
-            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (object->portal_flags & 1) != 0 &&
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (object->portal_flags & APIOBJECT_BEEN_HIT) != 0 &&
                 (object->character_model->model_data_b[0x4f] != NULL || object->character_model->model_data_b[0x26] != NULL)) {
                 return 1;
             }
@@ -4327,7 +4327,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
     COMBO_STATE_VIEW *state = (COMBO_STATE_VIEW *)object;
     object->context_variant_flags &= ~APIOBJECT_COMBO_ENDED;
     if (object->character_context == CHARACTER_CONTEXT_COMBO) {
-        object->portal_flags |= 0x800;
+        object->portal_flags |= APIOBJECT_MADE_NOISE;
         if ((object->context_variant_flags & APIOBJECT_COMBO_WAITING) != 0) {
             if ((action_pressed || object->combo_input_latched) && object->combo_stage < 2) {
                 switch (object->combo_stage) {

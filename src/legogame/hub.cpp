@@ -4245,9 +4245,9 @@ extern "C" {
             ClearSpecialMove(owner);
         }
         if (owner->ai_packet.special_move_node != NULL) {
-            if ((owner->portal_flags & 0x1000) != 0 && owner->velocity.y < 0.0f) {
+            if ((owner->portal_flags & APIOBJECT_AI_DOUBLE_JUMP) != 0 && owner->velocity.y < 0.0f) {
                 owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-                owner->portal_flags &= ~0x1000;
+                owner->portal_flags &= ~APIOBJECT_AI_DOUBLE_JUMP;
             }
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             owner->ai_packet.movement_stopping_distance = 0.0f;
@@ -4757,12 +4757,12 @@ extern "C" {
                     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 2) != 0) {
                         if (owner->jump_reentry_timer <= 0.0f) {
                             packet->path_connection_state = AIJUMP_JUMP;
-                            owner->portal_flags |= 0x1000;
+                            owner->portal_flags |= APIOBJECT_AI_DOUBLE_JUMP;
                         }
                         break;
                     }
                     packet->path_connection_state = AIJUMP_JUMP;
-                    owner->portal_flags &= ~0x1000;
+                    owner->portal_flags &= ~APIOBJECT_AI_DOUBLE_JUMP;
                     // Single jumps immediately enter the launch state.
                 case AIJUMP_JUMP:
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -5021,7 +5021,8 @@ extern "C" {
                 return 1;
             }
         }
-        if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f &&
+        if ((packet->flags & AIPACKET_SPECIAL_MOVE_AHEAD) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
+            drop_back_in_timer > 0.0f &&
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
              (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
             TryToTeleportToNextNode(

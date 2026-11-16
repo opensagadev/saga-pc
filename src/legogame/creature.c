@@ -1590,16 +1590,16 @@ void MovePlayer(GAMEOBJECT *object) {
                                                                            : object->character_data->game_character->run_speed;
                     walk_speed = object->walk_speed_override != 1000000000.0 ? object->walk_speed_override
                                                                              : object->character_data->game_character->walk_speed;
-                    if ((object->ai_packet.flags & 0x40000) != 0) {
+                    if ((object->ai_packet.flags & AIPACKET_ZERO_ACCELERATION) != 0) {
                         pad->input_magnitude = 0.0f;
                     } else {
                         pad->input_magnitude *= run_speed;
                     }
-                    if ((object->ai_packet.flags & 0x80000) == 0 &&
+                    if ((object->ai_packet.flags & AIPACKET_INTERMEDIATE_TARGET) == 0 &&
                         pad->input_magnitude < object->character_data->game_character->tiptoe_speed * 0.5) {
                         pad->input_magnitude = 0.0f;
                     }
-                    if ((object->ai_packet.flags & 8) == 0) {
+                    if ((object->ai_packet.flags & AIPACKET_FOLLOWING_FORMATION) == 0) {
                         if (object->ai_packet.goal_speed_mode != 0) {
                             if (object->ai_packet.goal_speed_mode == 1) {
                                 if (pad->input_magnitude > walk_speed) {
@@ -3493,9 +3493,9 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->ai_packet.creature_set = 0;
     object->portal_flags |= APIOBJECT_CAN_DEFEND;
     if ((character->model_flags & CHARACTER_MODEL_BLASTER) != 0) {
-        object->portal_flags |= 4;
+        object->portal_flags |= APIOBJECT_GOT_GUN;
     } else {
-        object->portal_flags &= ~4u;
+        object->portal_flags &= ~APIOBJECT_GOT_GUN;
     }
     object->portal_flags = (object->portal_flags & 0x25fffc27) | APIOBJECT_CAN_USE_WEAPON;
     object->flags_ef0 &= 0xc7ffe6c0;
@@ -3511,11 +3511,11 @@ void InitPlayerAI(GAMEOBJECT *object) {
     }
     object->extra_layer_mask = 0;
     object->ai_packet.movement_target_radius = DEFAULT_MOVE_RANGE;
-    object->ai_packet.flags &= ~0x10000000u;
+    object->ai_packet.flags &= ~AIPACKET_OUT_OF_RANGE;
     if (object->ai_packet.movement_target_radius > 0.0f) {
-        object->ai_packet.flags = (object->ai_packet.flags & ~0x8000000u) | 0x4000000u;
+        object->ai_packet.flags = (object->ai_packet.flags & ~AIPACKET_RANGE_LOCATOR) | AIPACKET_RANGE_CREATURE;
     } else {
-        object->ai_packet.flags &= ~0xc000000u;
+        object->ai_packet.flags &= ~AIPACKET_RANGE_MASK;
     }
     object->movement_speed_scale = 1.0f;
     object->flags_ef4 &= 0xfe5fffff;
@@ -3728,7 +3728,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS *system) {
     } else {
         object->ai_packet.flags &= ~AIPACKET_IGNORE_WALL_SPLINES;
     }
-    object->ai_packet.flags &= ~0x40000u;
+    object->ai_packet.flags &= ~AIPACKET_ZERO_ACCELERATION;
     object->view_distance = creature->view_distance;
     object->hear_distance = creature->hear_distance;
     object->max_view_height = creature->max_view_height;

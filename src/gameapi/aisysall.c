@@ -2108,7 +2108,7 @@ f32 Condition_OpponentIsAThreat(AISYS *system, AISCRIPTPROCESS *process, AIPACKE
     (void)process;
     (void)name;
     (void)argument;
-    if (packet != NULL && packet->opponent != NULL && (packet->flags & 0x800u) != 0) {
+    if (packet != NULL && packet->opponent != NULL && (packet->flags & AIPACKET_OPPONENT_IS_A_THREAT) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -5207,9 +5207,9 @@ static u32 CalculateIntersection(AISYS *system, AIPACKET *packet, APIOBJECT *obj
     u32 left;
 
     if (current_connection == packet->intersection_connection && target_connection == packet->intersection_target_connection) {
-        return ((packet->flags & 0x00000020u) != 0) | ((packet->flags & 0x00000040u) != 0);
+        return ((packet->flags & AIPACKET_RIGHT_DIVERSION) != 0) | ((packet->flags & AIPACKET_LEFT_DIVERSION) != 0);
     }
-    packet->flags &= ~(((0x20u | 0x40u)) << 0);
+    packet->flags &= ~(AIPACKET_RIGHT_DIVERSION | AIPACKET_LEFT_DIVERSION);
     packet->intersection_connection = current_connection;
     packet->intersection_target_connection = target_connection;
 
@@ -5248,11 +5248,11 @@ static u32 CalculateIntersection(AISYS *system, AIPACKET *packet, APIOBJECT *obj
     }
     right = CalculateRightIntersection(object, current_connection, target_connection, first_angle, second_angle, before, shared, after,
                                        &packet->right_diversion);
-    packet->flags = (packet->flags & ~0x20u) | ((right & 1) << 5);
+    packet->flags = (packet->flags & ~AIPACKET_RIGHT_DIVERSION) | ((right & 1) << 5);
     left = CalculateRightIntersection(object, target_connection, current_connection, second_angle, first_angle, after, shared, before,
                                       &packet->left_diversion);
-    packet->flags = (packet->flags & ~0x40u) | ((left & 1) << 6);
-    return ((packet->flags & 0x00000020u) != 0) | ((packet->flags & 0x00000040u) != 0);
+    packet->flags = (packet->flags & ~AIPACKET_LEFT_DIVERSION) | ((left & 1) << 6);
+    return ((packet->flags & AIPACKET_RIGHT_DIVERSION) != 0) | ((packet->flags & AIPACKET_LEFT_DIVERSION) != 0);
 }
 
 static i32 RowMoveWander(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT *leader) {
@@ -5934,7 +5934,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
             destination_distance_0 = AIPathFabs(packet->fallback_path_info.distance * destination_connection->distance);
             destination_distance_1 = AIPathFabs((1.0f - packet->fallback_path_info.distance) * destination_connection->distance);
             if (packet->current_route != AIPACKET_NO_ROUTE) {
-                packet->flags |= 0x00100000u;
+                packet->flags |= AIPACKET_NO_ROUTE_PATH;
             }
             for (;;) {
                 if (packet->current_route != AIPACKET_NO_ROUTE &&
@@ -5964,7 +5964,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                             best_distance = candidate;
                             goal_index = destination_connection->node_indices[0];
                             direction = packet->path_info.direction;
-                            packet->flags &= ~0x00100000u;
+                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
                         }
                     }
                     {
@@ -5982,7 +5982,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                             best_distance = candidate;
                             goal_index = destination_connection->node_indices[1];
                             direction = packet->path_info.direction;
-                            packet->flags &= ~0x00100000u;
+                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
                         }
                     }
                 }
@@ -6002,7 +6002,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                             best_distance = candidate;
                             goal_index = destination_connection->node_indices[0];
                             direction = packet->path_info.direction == 0;
-                            packet->flags &= ~0x00100000u;
+                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
                         }
                     }
                     {
@@ -6020,11 +6020,11 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                             best_distance = candidate;
                             goal_index = destination_connection->node_indices[1];
                             direction = packet->path_info.direction == 0;
-                            packet->flags &= ~0x00100000u;
+                            packet->flags &= ~AIPACKET_NO_ROUTE_PATH;
                         }
                     }
                 }
-                if ((packet->flags & 0x00100000u) == 0) {
+                if ((packet->flags & AIPACKET_NO_ROUTE_PATH) == 0) {
                     break;
                 }
                 if (packet->current_route != AIPACKET_NO_ROUTE) {
@@ -6074,11 +6074,11 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
     }
     if (PreparingForSpecialMoveFn != NULL) {
         if (connection != destination_connection) {
-            packet->flags |= 0x20000000u;
+            packet->flags |= AIPACKET_SPECIAL_MOVE_AHEAD;
         }
         if (PreparingForSpecialMoveFn(packet, object, checks) != 0) {
-            packet->flags |= 0x00080000u;
-            packet->flags |= 0x40000000u;
+            packet->flags |= AIPACKET_INTERMEDIATE_TARGET;
+            packet->flags |= AIPACKET_PREPARING_SPECIAL_MOVE;
             return;
         }
     }
@@ -6170,7 +6170,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                 target_2 = packet->fallback_destination;
             } else {
                 target_2 = path->nodes[next->node_indices[direction]].position;
-                packet->flags |= 0x00080000u;
+                packet->flags |= AIPACKET_INTERMEDIATE_TARGET;
             }
             if (WithinConnection(system, &target_2, packet->path_info.path, current_2, checks, packet->path_info.connection,
                                  packet->current_route, object->object_id, NULL, object->collision_radius, 0) != 0) {
@@ -6181,25 +6181,25 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
             if (CalculateIntersection(system, packet, object, current_2, next) != 0) {
                 use_left = 0;
 
-                if ((packet->flags & 0x00000040u) != 0) {
+                if ((packet->flags & AIPACKET_LEFT_DIVERSION) != 0) {
                     NuVecSub(&difference, &packet->left_diversion, &object->position);
                     angle = NuAtan2D(difference.x, difference.z);
                     NuVecSub(&difference, &target_2, &object->position);
                     angle_2 = NuAtan2D(difference.x, difference.z);
                     if (NuAngSub(angle_2, angle) < 0) {
                         target_2 = packet->left_diversion;
-                        packet->flags |= 0x00080000u;
+                        packet->flags |= AIPACKET_INTERMEDIATE_TARGET;
                         use_left = 1;
                     }
                 }
-                if (!use_left && (packet->flags & 0x00000020u) != 0) {
+                if (!use_left && (packet->flags & AIPACKET_RIGHT_DIVERSION) != 0) {
                     NuVecSub(&difference, &packet->right_diversion, &object->position);
                     angle = NuAtan2D(difference.x, difference.z);
                     NuVecSub(&difference, &target_2, &object->position);
                     angle_2 = NuAtan2D(difference.x, difference.z);
                     if (NuAngSub(angle_2, angle) > 0) {
                         target_2 = packet->right_diversion;
-                        packet->flags |= 0x00080000u;
+                        packet->flags |= AIPACKET_INTERMEDIATE_TARGET;
                     }
                 }
             } else {
@@ -6379,7 +6379,7 @@ static void AIRetreatFromDestinationPath(AISYS *system, AIPACKET *packet, APIOBJ
         if (CalculateIntersection(system, packet, object, packet->path_info.connection, packet->movement_target) == 0) {
             return;
         }
-        if ((packet->flags & 0x00000040u) != 0) {
+        if ((packet->flags & AIPACKET_LEFT_DIVERSION) != 0) {
             NuVecSub(&difference, &packet->left_diversion, &object->position);
             angle = NuAtan2D(difference.x, difference.z);
             NuVecSub(&difference, &packet->movement_destination, &object->position);
@@ -6389,7 +6389,7 @@ static void AIRetreatFromDestinationPath(AISYS *system, AIPACKET *packet, APIOBJ
                 return;
             }
         }
-        if ((packet->flags & 0x00000020u) != 0) {
+        if ((packet->flags & AIPACKET_RIGHT_DIVERSION) != 0) {
             NuVecSub(&difference, &packet->right_diversion, &object->position);
             angle = NuAtan2D(difference.x, difference.z);
             NuVecSub(&difference, &packet->movement_destination, &object->position);
@@ -6478,7 +6478,7 @@ void AIWander(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
         }
     }
     if (packet->movement_target != NULL) {
-        packet->flags |= 0x00080000u;
+        packet->flags |= AIPACKET_INTERMEDIATE_TARGET;
         if (WithinConnection(system, &packet->terrain_origin, packet->path_info.path, packet->movement_target, checks,
                              packet->path_info.connection, packet->current_route, object->object_id, NULL, object->collision_radius,
                              0) != 0) {
@@ -6493,7 +6493,7 @@ void AIWander(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
                 packet->path_info.path->nodes[packet->movement_target->node_indices[packet->movement_target_direction == 0]].position;
             packet->movement_stopping_distance = 0.0f;
             if (CalculateIntersection(system, packet, object, packet->path_info.connection, packet->movement_target) != 0) {
-                if ((packet->flags & 0x00000040u) != 0) {
+                if ((packet->flags & AIPACKET_LEFT_DIVERSION) != 0) {
                     NuVecSub(&difference, &packet->left_diversion, &object->position);
                     angle = NuAtan2D(difference.x, difference.z);
                     NuVecSub(&difference, &packet->movement_destination, &object->position);
@@ -6503,7 +6503,7 @@ void AIWander(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
                         return;
                     }
                 }
-                if ((packet->flags & 0x00000020u) != 0) {
+                if ((packet->flags & AIPACKET_RIGHT_DIVERSION) != 0) {
                     NuVecSub(&difference, &packet->right_diversion, &object->position);
                     angle_2 = NuAtan2D(difference.x, difference.z);
                     NuVecSub(&difference, &packet->movement_destination, &object->position);
@@ -13524,7 +13524,7 @@ void AIFormationFollow(AIPACKET *packet) {
         offset.z = 0.0f;
         NuVecRotateY(&offset, &offset, row->rotation);
         NuVecAdd(&destination, &offset, &row->position);
-        packet->flags |= 8u;
+        packet->flags |= AIPACKET_FOLLOWING_FORMATION;
         mode = 5;
         if (packet->group != NULL && (packet->group->flags & AIGROUP_FORMATION)) {
             mode = 1;
@@ -13604,9 +13604,9 @@ void AIRetreatFromDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object
 void AISysCharacterMovement(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     u32 mode;
 
-    packet->flags &= ~0x20000000u;
+    packet->flags &= ~AIPACKET_SPECIAL_MOVE_AHEAD;
     if (MidSpecialMoveFn != NULL && MidSpecialMoveFn(system, packet, object) != 0) {
-        packet->flags |= 0x80080000u;
+        packet->flags |= AIPACKET_MID_SPECIAL_MOVE | AIPACKET_INTERMEDIATE_TARGET;
         return;
     }
     if (packet->path_info.path != NULL && packet->path_info.connection != NULL) {
@@ -15361,7 +15361,7 @@ void FollowAPIObject(APIOBJECT *object, APIOBJECT *target, u8 flags, f32 movemen
                 movement_mode = AIMOVE_DIRECTLY_TO_DESTINATION;
                 destination = &target->ai->terrain_origin;
             } else if (object->ai->path_info.connection != NULL && target->ai->path_info.connection != NULL &&
-                       (object->ai->flags & 0x100000u) == 0 &&
+                       (object->ai->flags & AIPACKET_NO_ROUTE_PATH) == 0 &&
                        (object->ai->path_info.path->route_matrix[object->ai->path_info.connection->node_indices[0]]
                                                                 [target->ai->path_info.connection->node_indices[0]] != 0xff ||
                         object->ai->path_info.connection->node_indices[0] == target->ai->path_info.connection->node_indices[0])) {
@@ -16241,9 +16241,9 @@ i32 Action_MoveAwayFromNode(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
 }
 
 void AISysUpdateCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *packet, i32 ground, f32 elapsed) {
-    i32 should_find_path =
-        (packet->flags & 0x02000000) == 0 && (((object->flags_low & 4) == 0 || (packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) ||
-                                              object->supporting_platform_id != -1);
+    i32 should_find_path = (packet->flags & AIPACKET_KEEP_PATH_POS) == 0 &&
+                           (((object->flags_low & 4) == 0 || (packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) ||
+                            object->supporting_platform_id != -1);
 
     if (should_find_path) {
         if (packet->path_info.path != NULL) {
@@ -16255,7 +16255,7 @@ void AISysUpdateCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *pac
         } else {
             packet->last_path_position = object->position;
         }
-        packet->flags &= ~0x02000000u;
+        packet->flags &= ~AIPACKET_KEEP_PATH_POS;
         if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) {
             packet->time_off_path += elapsed;
         } else {
@@ -16277,7 +16277,7 @@ void AISysUpdateCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *pac
         if (packet->inside_path_node != -1 && packet->path_info.path != NULL) {
             packet->path_info.path->inside_node_bits[packet->inside_path_node / 8] |= 1 << (packet->inside_path_node % 8);
         }
-        packet->flags &= ~0x02000000u;
+        packet->flags &= ~AIPACKET_KEEP_PATH_POS;
         packet->time_off_path = 0.0f;
     }
 }
@@ -16327,37 +16327,37 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
             packet->flags &= 0x3f0fffffu;
             packet->navigation_flags &= ~AIPACKET_NAV_SPECIAL_CONNECTION;
             packet->frame_state = 0;
-            if ((packet->flags & 0x10000000u) != 0) {
-                switch ((packet->flags >> 26) & 3) {
-                    case 1:
+            if ((packet->flags & AIPACKET_OUT_OF_RANGE) != 0) {
+                switch ((packet->flags >> AIPACKET_RANGE_SHIFT) & 3) {
+                    case AIRANGE_CREATURE:
                         if (packet->creature_index != AIPACKET_NO_CREATURE) {
                             AICREATURE *creature = &system->creatures[packet->creature_index];
                             AIMoveInstruction(packet, &creature->position, 0.0f, &creature->path_info, AIMOVE_TO_DESTINATION, 0.0f);
                         }
                         break;
-                    case 2:
+                    case AIRANGE_LOCATOR:
                         if (packet->locator != NULL) {
                             AIMoveInstruction(packet, &packet->locator->position, 0.0f, &packet->locator->path_info, AIMOVE_TO_DESTINATION,
                                               0.0f);
                         }
                         break;
                     default:
-                        packet->flags &= ~0x10000000u;
+                        packet->flags &= ~AIPACKET_OUT_OF_RANGE;
                         break;
                 }
             }
             AISysCharacterMovement(system, packet, object, ground);
-            source = (packet->flags >> 26) & 3;
-            if (source != 0 && packet->path_target == NULL && packet->movement_target_radius > 0.0f &&
+            source = (packet->flags >> AIPACKET_RANGE_SHIFT) & 3;
+            if (source != AIRANGE_NONE && packet->path_target == NULL && packet->movement_target_radius > 0.0f &&
                 (object->motion_flags & 0x400u) != 0) {
                 NUVEC *source_position = NULL;
                 switch (source) {
-                    case 1:
+                    case AIRANGE_CREATURE:
                         if (packet->creature_index != AIPACKET_NO_CREATURE) {
                             source_position = &system->creatures[packet->creature_index].position;
                         }
                         break;
-                    case 2:
+                    case AIRANGE_LOCATOR:
                         if (packet->locator != NULL) {
                             source_position = &packet->locator->position;
                         }
@@ -16365,13 +16365,13 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
                 }
                 if (source_position != NULL) {
                     f32 distance_squared = NuVecXZDistSqr(source_position, &object->position, &delta);
-                    if ((packet->flags & 0x10000000u) != 0) {
+                    if ((packet->flags & AIPACKET_OUT_OF_RANGE) != 0) {
                         if (distance_squared < packet->movement_target_radius * packet->movement_target_radius) {
-                            packet->flags &= ~0x10000000u;
+                            packet->flags &= ~AIPACKET_OUT_OF_RANGE;
                         }
                     } else if (distance_squared > packet->movement_target_radius * packet->movement_target_radius) {
                         if (distance_squared > (packet->movement_target_radius + 0.5) * (packet->movement_target_radius + 0.5)) {
-                            packet->flags |= 0x10000000u;
+                            packet->flags |= AIPACKET_OUT_OF_RANGE;
                         } else {
                             NUVEC movement_delta;
                             f32 object_x = object->position.x;

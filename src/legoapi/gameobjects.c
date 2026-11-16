@@ -392,7 +392,7 @@ void GameObjectOrigin(GAMEOBJECT *object) {
 void PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room, NUGSCN *scene) {
     if (enabled != 0) {
         object->portal_flags = ((object->portal_flags ^ ((update_room & 1) << 23)) & 0x00800000) ^ object->portal_flags;
-        object->portal_flags |= 0x00400000;
+        object->portal_flags |= APIOBJECT_PORTAL;
         if (room == -1) {
             if (scene != NULL) {
                 room = NuPortalWhichRoom(scene, &object->collision_position);
@@ -402,7 +402,7 @@ void PortalGameObject(GAMEOBJECT *object, i32 enabled, i32 update_room, i16 room
         }
         object->portal_room = room;
     } else {
-        object->portal_flags &= ~0x00400000;
+        object->portal_flags &= ~APIOBJECT_PORTAL;
     }
 }
 

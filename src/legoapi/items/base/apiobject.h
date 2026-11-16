@@ -243,6 +243,16 @@ extern "C" {
 #define APIOBJECT_CAN_SHOOT_OBSTRUCTIONS 0x10000000 /* CanShootObstructions */
 #define APIOBJECT_PREFERS_PLAYERS 0x40000000        /* PrefersPlayers */
 #define APIOBJECT_NO_GRAVITY 0x80000000u            /* ApplyGravity FALSE */
+/* gameobject_s.portal_flags: runtime bits, from their setters and readers. */
+#define APIOBJECT_BEEN_HIT 0x1                /* hit this frame (ObjHitObj, a batarang); the BeenHit condition */
+#define APIOBJECT_GOT_GUN 0x4                 /* a CHARACTER_MODEL_BLASTER character; the GotGun condition */
+#define APIOBJECT_MADE_NOISE 0x800            /* shot or jumped: opponents within hear_distance acquire it */
+#define APIOBJECT_AI_DOUBLE_JUMP 0x1000       /* an AI double jump: jump is pressed again once falling */
+#define APIOBJECT_ENGAGE_OBJECT 0x8000        /* EngageObject: bolts aim at the engaged position */
+#define APIOBJECT_ENGAGE_TARGET_NEW 0x10000   /* EngageObject found its target this frame: no velocity to lead it yet */
+#define APIOBJECT_ENGAGE_PREDICTIVE 0x20000   /* EngageObject predictive: bolts lead the engaged position */
+#define APIOBJECT_PORTAL 0x400000             /* PortalGameObject: the object has a portal room */
+#define APIOBJECT_PORTAL_UPDATE_ROOM 0x800000 /* PortalGameObject update_room: the room follows the object */
 
 /* gameobject_s.action_movement_state in the jump context: the kind of jump, from the starts that set it (the force
  * pushed and deactivated contexts use the field for other values). 0 is the plain jump; 5 (a jump with JumpCode's
@@ -422,6 +432,31 @@ typedef struct APIDEBRISSYS {        // size 0xc
 #define AIPACKET_CIRCLE_CLOCKWISE 0x200        /* SetCircleDirection Clockwise / AntiClockwise / Reverse / Random */
 #define AIPACKET_PATH_BLOCKED 0x400000         /* the PathBlocked and CannotReachDestination conditions */
 #define AIPACKET_FORMATION_COMMANDER 0x1000000 /* SetFormationCommander */
+#define AIPACKET_ZERO_ACCELERATION 0x40000     /* SetZeroAcceleration: the pad input of the character is zero */
+/* AIPACKET.flags bits the AI update sets (named from their setters and readers). */
+#define AIPACKET_FOLLOWING_FORMATION 0x8             /* AIFormationFollow this frame: the goal speed mode is not applied */
+#define AIPACKET_RIGHT_DIVERSION 0x20                /* CalculateIntersection found right_diversion */
+#define AIPACKET_LEFT_DIVERSION 0x40                 /* CalculateIntersection found left_diversion */
+#define AIPACKET_OPPONENT_IS_A_THREAT 0x800          /* the opponent has this packet's object as its opponent (GameOpponentIsAThreat) */
+#define AIPACKET_PENDING_OPPONENT_IS_A_THREAT 0x1000 /* the same for the pending opponent; copied to 0x800 */
+#define AIPACKET_INTERACTIVE 0x2000                  /* in this frame's interaction list: may be taken as an opponent */
+#define AIPACKET_DRAWS_ATTENTION 0x4000              /* seen widens its visibility by draw_attention_distance; breaks party cover */
+#define AIPACKET_NEEDS_LINE_OF_SIGHT 0x20000         /* an opponent is only taken in line of sight */
+#define AIPACKET_INTERMEDIATE_TARGET 0x80000         /* the destination is a waypoint: slow pad input is kept */
+#define AIPACKET_NO_ROUTE_PATH 0x100000              /* no way to the destination on the current route yet (the search tries the others) */
+#define AIPACKET_KEEP_PATH_POS 0x2000000             /* a jump or context: the next update keeps the path position */
+#define AIPACKET_RANGE_SHIFT 26                      /* bits 26-27: what SetMaxMovementRange measures from (AIRANGE_*) */
+#define AIPACKET_RANGE_CREATURE 0x4000000            /* AIRANGE_CREATURE << AIPACKET_RANGE_SHIFT */
+#define AIPACKET_RANGE_LOCATOR 0x8000000             /* AIRANGE_LOCATOR << AIPACKET_RANGE_SHIFT */
+#define AIPACKET_RANGE_MASK 0xc000000
+#define AIPACKET_OUT_OF_RANGE 0x10000000           /* farther than movement_target_radius: moves back to the range source */
+#define AIPACKET_SPECIAL_MOVE_AHEAD 0x20000000     /* PreparingForSpecialMoveFn with the destination past this connection */
+#define AIPACKET_PREPARING_SPECIAL_MOVE 0x40000000 /* PreparingForSpecialMoveFn took over the movement */
+#define AIPACKET_MID_SPECIAL_MOVE 0x80000000u      /* MidSpecialMoveFn took over the movement */
+/* the source of a movement range (AIPACKET_RANGE_SHIFT) */
+#define AIRANGE_NONE 0
+#define AIRANGE_CREATURE 1 /* the creature's position */
+#define AIRANGE_LOCATOR 2  /* SetMaxMovementRange Locator: the packet's locator */
 /* AIPACKET.navigation_flags (the code sets 0x1 and 0x8; 0x2 and 0x4 have no setter in the source) */
 #define AIPACKET_NAV_SPECIAL_CONNECTION 0x1 /* the next connection has traversal flags the packet's capabilities allow */
 #define AIPACKET_NAV_FIRST_PATH 0x2         /* follows path_sys->paths[0] instead of the active path, without position checks */

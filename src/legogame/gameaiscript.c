@@ -561,7 +561,7 @@ f32 Condition_Active(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
 
 f32 Condition_GotGun(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL) {
-        if ((packet->owner->objptr->portal_flags & 4) != 0) {
+        if ((packet->owner->objptr->portal_flags & APIOBJECT_GOT_GUN) != 0) {
             return 1.0f;
         }
         return 0.0f;
@@ -1430,7 +1430,7 @@ f32 Condition_BeenHit(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet,
         object = packet->owner->objptr;
     }
     if (object != NULL) {
-        if (object->vehicle_hit_timer > 0.0f || (object->portal_flags & 1) != 0) {
+        if (object->vehicle_hit_timer > 0.0f || (object->portal_flags & APIOBJECT_BEEN_HIT) != 0) {
             return 1.0f;
         }
     }
@@ -2782,8 +2782,8 @@ f32 Condition_ShouldAttackOpponent(AISYS *system, AISCRIPTPROCESS *process, AIPA
     }
     object = packet->owner->objptr;
     opponent = object->ai_packet.opponent;
-    if (opponent != NULL && opponent->owner != NULL && (object->ai_packet.flags & 0x800) != 0 && object->ai_packet.opponent_metric < 1.0f &&
-        (opponent->owner->id == (u16)id_BAT || opponent->owner->id == (u16)id_SNAKE)) {
+    if (opponent != NULL && opponent->owner != NULL && (object->ai_packet.flags & AIPACKET_OPPONENT_IS_A_THREAT) != 0 &&
+        object->ai_packet.opponent_metric < 1.0f && (opponent->owner->id == (u16)id_BAT || opponent->owner->id == (u16)id_SNAKE)) {
         return 1.0f;
     }
     return 0.0f;
@@ -3263,7 +3263,7 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                 }
 
                 if ((old_side & object->flags_1f8) == 0) {
-                    object->ai_packet.flags &= ~0x800u;
+                    object->ai_packet.flags &= ~AIPACKET_OPPONENT_IS_A_THREAT;
                     object->ai_packet.opponent = NULL;
                     object->alert_target = NULL;
                     object->alert_timer = 0.0f;
@@ -3323,7 +3323,7 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                     }
 
                     if ((old_side & candidate->flags_1f8) == 0) {
-                        candidate->ai_packet.flags &= ~0x800u;
+                        candidate->ai_packet.flags &= ~AIPACKET_OPPONENT_IS_A_THREAT;
                         candidate->ai_packet.opponent = NULL;
                         candidate->alert_target = NULL;
                         candidate->alert_timer = 0.0f;
@@ -4951,7 +4951,7 @@ i32 Action_EngageObject(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
         }
 
         if (processor->action_data_3 != NULL) {
-            object->portal_flags |= 0x10000;
+            object->portal_flags |= APIOBJECT_ENGAGE_TARGET_NEW;
             object->quick_shoot_timer = NuRandFloat() * processor->action_data_5;
         }
     }
@@ -4963,10 +4963,10 @@ i32 Action_EngageObject(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
     packet->movement_look_target = processor->action_data_3;
     processor->action_timer -= param_6;
     object->unknown_e4c = *(NUVEC *)processor->action_data_3;
-    object->portal_flags |= 0x8000;
+    object->portal_flags |= APIOBJECT_ENGAGE_OBJECT;
     object->portal_flags |= 0x20;
     if (processor->action_timer <= 0.0f) {
-        object->portal_flags = (object->portal_flags & ~0x20000u) | ((processor->action_data_1 & 1) << 17);
+        object->portal_flags = (object->portal_flags & ~APIOBJECT_ENGAGE_PREDICTIVE) | ((processor->action_data_1 & 1) << 17);
         processor->action_timer = NuRandFloat() * processor->action_data_5 + processor->action_data_5 * 0.5;
         object->pad->buttons_pressed |= GAMEPAD_ACTION;
     }
@@ -5464,7 +5464,7 @@ i32 Action_SetZeroAcceleration(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
             }
         }
         if (object != NULL) {
-            object->ai_packet.flags = (object->ai_packet.flags & ~0x40000u) | ((enabled & 1) << 18);
+            object->ai_packet.flags = (object->ai_packet.flags & ~AIPACKET_ZERO_ACCELERATION) | ((enabled & 1) << 18);
         }
     }
     return 1;
@@ -6474,7 +6474,7 @@ i32 Action_SetMaxMovementRange(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
     range = 0.0f;
     index = 0;
     all_non_party = 0;
-    range_type = 1;
+    range_type = AIRANGE_CREATURE;
     if (first_time != 0) {
         for (; index < count; index++) {
             if (NuStrICmp("Default", params[index]) == 0) {
@@ -6482,7 +6482,7 @@ i32 Action_SetMaxMovementRange(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
             } else if (NuStrICmp("All_Non_Party", params[index]) == 0) {
                 all_non_party = 1;
             } else if (NuStrICmp("Locator", params[index]) == 0) {
-                range_type = 2;
+                range_type = AIRANGE_LOCATOR;
             } else {
                 range = AIParamToFloat(processor, params[index]);
             }
@@ -6494,9 +6494,9 @@ i32 Action_SetMaxMovementRange(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
                     (object->flags_1f8 & APIOBJECT_CREATURE) != 0) {
                     object->ai_packet.movement_target_radius = range;
                     if (range > 0.0f) {
-                        object->ai_packet.flags = (object->ai_packet.flags & ~0x08000000u) | 0x04000000u;
+                        object->ai_packet.flags = (object->ai_packet.flags & ~AIPACKET_RANGE_LOCATOR) | AIPACKET_RANGE_CREATURE;
                     } else {
-                        object->ai_packet.flags &= ~0x0c000000u;
+                        object->ai_packet.flags &= ~AIPACKET_RANGE_MASK;
                     }
                 }
             }
@@ -6504,9 +6504,9 @@ i32 Action_SetMaxMovementRange(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
             object = ((APIOBJECT *)packet->owner)->owner;
             object->ai_packet.movement_target_radius = range;
             if (range > 0.0f) {
-                object->ai_packet.flags = (object->ai_packet.flags & ~0x0c000000u) | ((range_type & 3) << 26);
+                object->ai_packet.flags = (object->ai_packet.flags & ~AIPACKET_RANGE_MASK) | ((range_type & 3) << AIPACKET_RANGE_SHIFT);
             } else {
-                object->ai_packet.flags &= ~0x0c000000u;
+                object->ai_packet.flags &= ~AIPACKET_RANGE_MASK;
             }
         }
     }
@@ -12031,7 +12031,7 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
                         object->ai_packet.locator_set = locator_set;
                     }
                     if (no_gun != 0) {
-                        object->portal_flags &= ~4;
+                        object->portal_flags &= ~APIOBJECT_GOT_GUN;
                     }
                     if (crate_height != 0.0f) {
                         SpawnCreatureFromCrate(object, crate_height, delay);

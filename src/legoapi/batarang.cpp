@@ -869,7 +869,7 @@ extern "C" void Batarangs_Update(void) {
         if (target.type == 0) {
             GAMEOBJECT *victim = static_cast<GAMEOBJECT *>(target.object);
             if (victim->id == (u16)PunchRangeUnitId && victim->player_index == -1) {
-                victim->portal_flags |= 1;
+                victim->portal_flags |= APIOBJECT_BEEN_HIT;
                 PlayerTakeHitReaction(victim, batarang->owner, BatarangCatwomanStunTime, 0);
             } else if (!(victim->portal_flags & APIOBJECT_BOSS)) {
                 ObjHitObj(batarang->owner, victim, 1, 0, 0, 1);
@@ -933,9 +933,9 @@ extern "C" {
         }
         if (owner->ai_packet.special_move_node != NULL) {
             if ((capabilities & 0x40) == 0) {
-                if ((owner->portal_flags & 0x1000) != 0 && owner->velocity.y < 0.0f) {
+                if ((owner->portal_flags & APIOBJECT_AI_DOUBLE_JUMP) != 0 && owner->velocity.y < 0.0f) {
                     owner->pad->buttons_pressed |= GAMEPAD_JUMP;
-                    owner->portal_flags &= ~0x1000;
+                    owner->portal_flags &= ~APIOBJECT_AI_DOUBLE_JUMP;
                 }
                 if ((capabilities & 4) != 0) {
                     owner->pad->buttons_held |= GAMEPAD_JUMP;
@@ -1095,12 +1095,12 @@ extern "C" {
                     if ((packet->path_info.connection->traversal_flags[packet->path_info.direction] & 0x26) != 0) {
                         if (0.0f >= owner->jump_reentry_timer) {
                             packet->path_connection_state = AIJUMP_JUMP;
-                            owner->portal_flags |= 0x1000;
+                            owner->portal_flags |= APIOBJECT_AI_DOUBLE_JUMP;
                         }
                         break;
                     }
                     packet->path_connection_state = AIJUMP_JUMP;
-                    owner->portal_flags &= ~0x1000;
+                    owner->portal_flags &= ~APIOBJECT_AI_DOUBLE_JUMP;
                     // Single jumps immediately enter the launch state.
                 case AIJUMP_JUMP:
                     if (TryToTeleportToNextNode(owner, destination, 0) != 0) {
@@ -1676,7 +1676,8 @@ extern "C" {
                 return 1;
             }
         }
-        if ((packet->flags & 0x20000000) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f &&
+        if ((packet->flags & AIPACKET_SPECIAL_MOVE_AHEAD) != 0 && (owner->tag_flags & APIOBJECT_TAG_DISABLED) == 0 &&
+            drop_back_in_timer > 0.0f &&
             (packet->path_info.connection->traversal_flags[packet->path_info.direction] &
              (AIPATHCNX_TOO_LONG | AIPATHCNX_HIDDEN | AIPATHCNX_PERMANENT_BLOCK | AIPATHCNX_TEMPORARY_BLOCK)) == 0) {
             TryToTeleportToNextNode(
