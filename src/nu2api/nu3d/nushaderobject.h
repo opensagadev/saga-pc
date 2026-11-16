@@ -45,9 +45,9 @@ extern "C" {
         void SetFloat2(const f32 *values);
         void SetFloat3(const f32 *values);
         void SetValues(i32 first_element, i32 count, const f32 *values);
-        i32 fun_00742180();
-        PC_SHADER_PARAMETER_LOCAL *fun_00742190();
-        void fun_007421a0(PC_SHADER_PARAMETER_LOCAL *parameter);
+        i32 GetRegisterIndex();
+        PC_SHADER_PARAMETER_LOCAL *GetNext();
+        void SetNext(PC_SHADER_PARAMETER_LOCAL *parameter);
         PC_SHADER_PARAMETER_LOCAL *fun_007421b0();
         void fun_007424a0(i32 first_element, const f32 *values);
         void fun_00742720(i32 index, const f32 *values);

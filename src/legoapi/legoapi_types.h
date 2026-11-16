@@ -836,9 +836,9 @@ struct OccluderSet { // size 0xa0
     bool IsOccludedSphere(const NUVEC *, f32);
     void PrepareForQueries(const NUMTX *, const NUMTX *);
     static i32 SortByDepth(const void *, const void *);
-    u32 fun_005c5250();
-    u32 fun_005c5260();
-    bool fun_005c5270();
+    u32 GetCount();
+    u32 GetCapacity();
+    bool QueriesPrepared();
     void Clear();
 };
 
@@ -867,11 +867,11 @@ struct OcclusionManager { // size 0x170
     void AddOccluder(const NUVEC *, const NUVEC *, const NUVEC *, const NUVEC *);
     void AddOccluder(const NUVEC *, f32);
     void AddOccluder(const NUVEC *, const NUVEC *, const NUMTX *);
-    bool fun_005c5280();
+    bool IsInitialized();
     bool fun_005c5290();
     void fun_005c52b0(f32 threshold);
     void fun_005c52c0(f32 threshold);
-    OccluderSet *fun_005c52d0();
+    OccluderSet *GetCurrentSet();
     void SetEnabled(bool value);
 };
 

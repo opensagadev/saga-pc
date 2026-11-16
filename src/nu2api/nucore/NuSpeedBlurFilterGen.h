@@ -12,8 +12,8 @@ struct NU_POST_SPEED_PARAMETERS;
 
 class NuSpeedBlurFilterGen : public NuPostFilter { // size 0x20
   public:
-    void fun_005c3130(bool enable);
-    void fun_005c3140(const NU_POST_SPEED_PARAMETERS *parameters);
+    void setEnabled(bool enable);
+    void setParameters(const NU_POST_SPEED_PARAMETERS *parameters);
     void computeSpeedBlur(NUVEC4 *);
     virtual void initTextureResources(i32, i32);
     virtual void destroyTextureResources();

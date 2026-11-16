@@ -14,9 +14,9 @@ struct PC_FRAMEBUFFER;
 class NuDeferredFilterGen : public NuPostFilter { // size 0x2f8
   public:
     NuDeferredFilterGen();
-    void fun_005c30a0(bool enable);
+    void setEnabled(bool enable);
     void fun_005c30b0(NuDynamicLight *light);
-    i32 fun_005c30d0();
+    i32 getDynamicLightCount();
     void fun_005c30e0(const f32 *parameters);
     virtual void initResources();
     virtual void destroyResources();

@@ -92,11 +92,11 @@ typedef struct PC_WINDOW_OPTIONS { // size 0x460
     void SetShadowsEnabled(u8);
     void SetBloomEnabled(u8);
     void SetUseHiresPending(u8);
-    u8 fun_00509030();
-    u8 fun_00509040();
-    u8 fun_00509050();
-    u8 fun_00509060();
-    u8 fun_00509070();
+    u8 IsBloomEnabled();
+    u8 AreShadowsEnabled();
+    u8 IsSpeedBlurEnabled();
+    u8 IsHiresEnabled();
+    u8 IsHiresPending();
     u8 fun_00509080();
 #endif
 } PC_WINDOW_OPTIONS;

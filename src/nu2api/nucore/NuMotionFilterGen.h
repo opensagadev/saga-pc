@@ -13,7 +13,7 @@ class NuMotionFilterGen : public NuPostFilter { // size 0xa0
     }
 
     virtual void render();
-    void fun_005c2de0(bool enable);
+    void setEnabled(bool enable);
     void fun_005c2df0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff);
     void *programs[2]; // 0x0c
     NUMTX previous;    // 0x14

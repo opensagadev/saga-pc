@@ -1474,7 +1474,7 @@ extern "C" {
         vertex->v = v;
     }
 
-    i32 PC_DEVICE_BACKEND::fun_005f7860() {
+    i32 PC_DEVICE_BACKEND::GetMultisampleQuality() {
         return quality[multisample_index];
     }
 
@@ -1486,7 +1486,7 @@ extern "C" {
         return &parameters;
     }
 
-    u16 PC_DEVICE_BACKEND::fun_005f7890() {
+    u16 PC_DEVICE_BACKEND::GetTargetCount() {
         return target_count;
     }
 
@@ -7388,11 +7388,11 @@ extern "C" {
 extern "C" void PCGraphicsResolveFramebuffer(i32) {
 }
 
-GRAPHICS_RENDER_TEXTURE *PC_EFFECT_SURFACE::fun_005f7af0() {
+GRAPHICS_RENDER_TEXTURE *PC_EFFECT_SURFACE::GetTexture() {
     return texture;
 }
 
-u16 PC_EFFECT_SURFACE::fun_005f7b00() {
+u16 PC_EFFECT_SURFACE::GetLevel() {
     return level;
 }
 
@@ -7400,11 +7400,11 @@ u32 PC_EFFECT_SURFACE::fun_005f7b10() {
     return unknown_10;
 }
 
-u16 PC_EFFECT_SURFACE::fun_005f7b20() {
+u16 PC_EFFECT_SURFACE::GetWidth() {
     return width;
 }
 
-u16 PC_EFFECT_SURFACE::fun_005f7b30() {
+u16 PC_EFFECT_SURFACE::GetHeight() {
     return height;
 }
 
