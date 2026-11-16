@@ -123,7 +123,6 @@ typedef struct kamino_e_s {
 } KAMINO_E;
 
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
-void KaminoEGizmoMissing(char *name);
 
 static i32 PaintMixColour(i32 first, i32 second) {
     if ((first == 0 && second == 1) || (first == 1 && second == 0)) {
