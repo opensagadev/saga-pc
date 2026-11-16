@@ -1152,7 +1152,7 @@ extern "C" {
             return;
         }
         for (i32 i = 0; i < system->count; ++i) {
-            CUTINFO *cut = reinterpret_cast<CUTINFO *>(system->records[i]);
+            CUTINFO *cut = system->records[i];
             if (cut->instance != NULL) {
                 CUT_DRAW_CHARACTER_SYSTEM *definitions = reinterpret_cast<CUT_DRAW_REGISTRATION_SCENE *>(cut->scene)->characters;
                 CUT_DRAW_CHAR_INSTANCE_SYSTEM *states = reinterpret_cast<CUT_DRAW_REGISTRATION_INSTANCE *>(cut->instance)->characters;
@@ -1227,7 +1227,7 @@ extern "C" {
         i16 index = -1;
         if (system != NULL) {
             for (i32 i = 0; i < system->count; ++i) {
-                if (system->records[i] == reinterpret_cast<CUTINFO *>(cut)) {
+                if (system->records[i] == cut) {
                     index = i;
                 }
             }
@@ -1325,7 +1325,7 @@ extern "C" {
             return;
         }
         for (i32 i = 0; i < system->count; ++i) {
-            INSTNUGCUTSCENE *instance = reinterpret_cast<CUTINFO *>(system->records[i])->instance;
+            INSTNUGCUTSCENE *instance = system->records[i]->instance;
             if (instance != NULL) {
                 instNuGCutSceneStop(instance);
             }
@@ -1339,15 +1339,15 @@ void CutScenes_Destroy(CUTSYS *system) {
         return;
     }
     for (i = 0; i < system->count; ++i) {
-        if (((CUTINFO *)system->records[i])->instance != NULL) {
-            instNuGCutSceneDestroy(((CUTINFO *)system->records[i])->instance);
-            ((CUTINFO *)system->records[i])->instance = NULL;
+        if (system->records[i]->instance != NULL) {
+            instNuGCutSceneDestroy(system->records[i]->instance);
+            system->records[i]->instance = NULL;
         }
     }
     for (i = 0; i < system->count; ++i) {
-        if (((CUTINFO *)system->records[i])->scene != NULL) {
-            NuGCutSceneDestroy(((CUTINFO *)system->records[i])->scene);
-            ((CUTINFO *)system->records[i])->scene = NULL;
+        if (system->records[i]->scene != NULL) {
+            NuGCutSceneDestroy(system->records[i]->scene);
+            system->records[i]->scene = NULL;
         }
     }
 }
@@ -2152,10 +2152,10 @@ extern "C" {
         }
         instNuGCutSceneReset(cut->instance);
         if (CutScene_StartFn != NULL) {
-            CutScene_StartFn(reinterpret_cast<CUTINFO *>(cut));
+            CutScene_StartFn(cut);
         }
         if (CutScenePlayer != NULL && CutScenePlayer->active != NULL) {
-            CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(cut));
+            CutScenePlayer_SetObjects(cut);
         }
         f32 rate = cut->frames_per_second * FRAMETIME;
         cut->instance->rate = rate;
@@ -2203,9 +2203,8 @@ extern "C" {
         CutFrame = 0;
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
             if ((world->cutscene_sys->records[i]->instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
-                if (reinterpret_cast<CUTINFO *>(world->cutscene_sys->records[i]) != cut &&
-                    world->cutscene_sys->records[i]->instance != NULL &&
-                    (reinterpret_cast<CUTINFO *>(world->cutscene_sys->records[i])->flags & 1) != 0) {
+                if (world->cutscene_sys->records[i] != cut && world->cutscene_sys->records[i]->instance != NULL &&
+                    (world->cutscene_sys->records[i]->flags & 1) != 0) {
                     world->cutscene_sys->records[i]->instance->rate = 0.0f;
                     instNuGCutSceneStop(world->cutscene_sys->records[i]->instance);
                 } else {
@@ -2225,7 +2224,7 @@ extern "C" {
 
     void CutScenes_Start(WORLDINFO *world) {
         for (i32 i = 0; i < NewCutInfoCount; ++i) {
-            CutScene_Start(world, reinterpret_cast<CUTINFO *>(NewCutInfo[i]));
+            CutScene_Start(world, NewCutInfo[i]);
         }
         NewCutInfoCount = 0;
     }
@@ -2255,15 +2254,15 @@ extern "C" {
             }
             if (cut == NULL) {
                 for (i32 i = 0; cut == NULL && i < system->count;) {
-                    CUTINFO *record = reinterpret_cast<CUTINFO *>(system->records[i]);
+                    CUTINFO *record = system->records[i];
                     if ((record->flags & CUTINFO_LEVEL_INTRO) != 0) {
-                        cut = reinterpret_cast<CUTINFO *>(record);
+                        cut = record;
                     } else {
                         ++i;
                     }
                 }
             }
-            if (cut != NULL && CutScene_Start(world, reinterpret_cast<CUTINFO *>(cut)) != 0) {
+            if (cut != NULL && CutScene_Start(world, cut) != 0) {
                 CutBorderScale = 1.0f;
             }
         }
@@ -2316,7 +2315,7 @@ extern "C" {
         // keeps the loop counter as the stop index and skips the DebrisSetRenderGroup(1) test on the found path.
         i32 stop_index;
         for (stop_index = 0; stop_index < world->cutscene_sys->count; ++stop_index) {
-            CUTINFO *cut = reinterpret_cast<CUTINFO *>(world->cutscene_sys->records[stop_index]);
+            CUTINFO *cut = world->cutscene_sys->records[stop_index];
             INSTNUGCUTSCENE *instance = cut->instance;
             if (instance != NULL && (instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
                 if ((cut->flags & 1) != 0) {
@@ -2334,7 +2333,7 @@ extern "C" {
     stopped:
         ACTIVECUTCOUNT = 0;
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
-            CUTINFO *cut = reinterpret_cast<CUTINFO *>(world->cutscene_sys->records[i]);
+            CUTINFO *cut = world->cutscene_sys->records[i];
             INSTNUGCUTSCENE *instance = cut->instance;
             if (instance == NULL) {
                 continue;
@@ -2382,7 +2381,7 @@ extern "C" {
                 }
                 instNuGCutScenePause(cut->instance, 0);
                 if (CutScene_PreUpdateFn != NULL) {
-                    CutScene_PreUpdateFn(reinterpret_cast<CUTINFO *>(cut));
+                    CutScene_PreUpdateFn(cut);
                 }
                 CutSceneUpdateTextureAnimationsPrivate(cut);
                 ++ACTIVECUTCOUNT;
@@ -2396,7 +2395,7 @@ extern "C" {
         }
         if (paused == 0) {
             for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
-                CUTINFO *cut = reinterpret_cast<CUTINFO *>(world->cutscene_sys->records[i]);
+                CUTINFO *cut = world->cutscene_sys->records[i];
                 if (cut->instance == NULL) {
                     continue;
                 }
@@ -2410,7 +2409,7 @@ extern "C" {
                 }
                 if ((stop_index == -1 || i != stop_index) && active_before[i] != 0 && instNuGCutSceneIsFinished(cut->instance) != 0) {
                     if (CutScene_StoppedFn != NULL) {
-                        CutScene_StoppedFn(reinterpret_cast<CUTINFO *>(cut));
+                        CutScene_StoppedFn(cut);
                     }
                     if (CutInstEndCount < 4) {
                         INSTNUGCUTSCENE *ended_instance = cut->instance;
@@ -2424,7 +2423,7 @@ extern "C" {
         if (stop_index == -1) {
             return;
         }
-        CUTINFO *stop_cut = reinterpret_cast<CUTINFO *>(world->cutscene_sys->records[stop_index]);
+        CUTINFO *stop_cut = world->cutscene_sys->records[stop_index];
         GameFog_Reset();
         if (instNuGCutSceneIsFinished(stop_cut->instance) == 0) {
             return;
@@ -2434,7 +2433,7 @@ extern "C" {
             FadeSys.SetFade(type, 0);
         }
         if (CutScene_StoppedFn != NULL) {
-            CutScene_StoppedFn(reinterpret_cast<CUTINFO *>(stop_cut));
+            CutScene_StoppedFn(stop_cut);
         }
         CutSceneResetTextureAnimationsPrivate(stop_cut);
         i32 skip_level = stop_cut->skip_level;

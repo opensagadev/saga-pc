@@ -779,7 +779,7 @@ void BackupMenu(void) {
         parent->state_b0 = 0;
         parent->state_c0 = 0;
         if (parent->menu != -1 && MenuInfo[parent->menu].enter_fn != NULL) {
-            MenuInfo[parent->menu].enter_fn((MENU *)parent);
+            MenuInfo[parent->menu].enter_fn(parent);
             level = GameMenuLevel;
         }
         if (MenuSFX == -1) {
