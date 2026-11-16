@@ -214,7 +214,7 @@ static void RtlSpecularState(const NUVEC *direction, const NUVEC4 *intensity) {
         PCGlobalLightingState.specular_direction_missing = 1;
     }
     if (intensity != NULL) {
-        /* unknown_64 is the specular intensity (NUVEC4). */
+        /* unknown_64 is the specular intensity NUVEC4. */
         *(NUVEC4 *)PCGlobalLightingState.unknown_64 = *intensity;
         PCGlobalLightingState.specular_intensity_present = 1;
     } else {
@@ -317,15 +317,15 @@ static void rtlCalcLights(NUVEC *position, NUMTX *rotation, f32 scale, RTL_DATA 
         if (lighting_data->ambient_lights[slot] != NULL) {
             strength = ApplyAntilights(lighting_data->ambient_lights[slot], lighting_data,
                                        lighting_data->ambient_lights[slot]->intensity * lighting_data->ambient_strengths[slot]);
-#define RTL_AMBIENT_COMPONENT(component)                                                                                                   \
-    lighting_data->ambient.component =                                                                                                     \
-        lighting_data->ambient.component + lighting_data->ambient_lights[slot]->ambient.component * strength > 1.0f                        \
-            ? 1.0f                                                                                                                         \
-            : lighting_data->ambient.component + lighting_data->ambient_lights[slot]->ambient.component * strength
-            RTL_AMBIENT_COMPONENT(x);
-            RTL_AMBIENT_COMPONENT(y);
-            RTL_AMBIENT_COMPONENT(z);
-#undef RTL_AMBIENT_COMPONENT
+            lighting_data->ambient.x = lighting_data->ambient.x + lighting_data->ambient_lights[slot]->ambient.x * strength > 1.0f
+                                           ? 1.0f
+                                           : lighting_data->ambient.x + lighting_data->ambient_lights[slot]->ambient.x * strength;
+            lighting_data->ambient.y = lighting_data->ambient.y + lighting_data->ambient_lights[slot]->ambient.y * strength > 1.0f
+                                           ? 1.0f
+                                           : lighting_data->ambient.y + lighting_data->ambient_lights[slot]->ambient.y * strength;
+            lighting_data->ambient.z = lighting_data->ambient.z + lighting_data->ambient_lights[slot]->ambient.z * strength > 1.0f
+                                           ? 1.0f
+                                           : lighting_data->ambient.z + lighting_data->ambient_lights[slot]->ambient.z * strength;
         }
     }
     if (scale != 1.0f) {
@@ -368,24 +368,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
         identity &= 15;
     }
     // These three fixed paths and their falloff expressions are distinct in the reference.
-#define RTL_DISTANCE_SQ                                                                                                                    \
-    ((position->x - light->position.x) * (position->x - light->position.x) +                                                               \
-     (position->y - light->position.y) * (position->y - light->position.y) +                                                               \
-     (position->z - light->position.z) * (position->z - light->position.z))
 #define RTL_RADIUS_FRACTION ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))
-#define RTL_FALLOFF                                                                                                                        \
-    do {                                                                                                                                   \
-        if (light->outer_radius <= light->inner_radius)                                                                                    \
-            strength = 1.0f;                                                                                                               \
-        else {                                                                                                                             \
-            distance = NuFsqrt(distance_sq);                                                                                               \
-            strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f                                            \
-                                   ? 0.0f                                                                                                  \
-                                   : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));                                           \
-        }                                                                                                                                  \
-        if (light->unknown_79 == -1 && light->unknown_7a == -1)                                                                            \
-            strength *= modifiers[light->unknown_7b];                                                                                      \
-    } while (0)
     if (light != NULL) {
         while (light != NULL) {
             if (light->type == 0) {
@@ -417,12 +400,24 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                 switch (light->type) {
                     case RTL_LIGHT_AMBIENT:
                         if (position != NULL) {
-                            distance_sq = RTL_DISTANCE_SQ;
+                            distance_sq = ((position->x - light->position.x) * (position->x - light->position.x) +
+                                           (position->y - light->position.y) * (position->y - light->position.y) +
+                                           (position->z - light->position.z) * (position->z - light->position.z));
                         } else {
                             distance_sq = 0.0f;
                         }
                         if (distance_sq < light->outer_radius * light->outer_radius) {
-                            RTL_FALLOFF;
+                            if (light->outer_radius <= light->inner_radius) {
+                                strength = 1.0f;
+                            } else {
+                                distance = NuFsqrt(distance_sq);
+                                strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f
+                                                       ? 0.0f
+                                                       : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));
+                            }
+                            if (light->unknown_79 == -1 && light->unknown_7a == -1) {
+                                strength *= modifiers[light->unknown_7b];
+                            }
                             if (strength != 0.0f && lighting_data->ambient_strengths[2] <= strength) {
                                 InsertLight(light, lighting_data, strength);
                             }
@@ -434,12 +429,24 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                     case RTL_LIGHT_POINT_BLEND:
                     case RTL_LIGHT_JON_FLICKER:
                         if (position != NULL) {
-                            distance_sq = RTL_DISTANCE_SQ;
+                            distance_sq = ((position->x - light->position.x) * (position->x - light->position.x) +
+                                           (position->y - light->position.y) * (position->y - light->position.y) +
+                                           (position->z - light->position.z) * (position->z - light->position.z));
                         } else {
                             distance_sq = 0.0f;
                         }
                         if (distance_sq < light->outer_radius * light->outer_radius) {
-                            RTL_FALLOFF;
+                            if (light->outer_radius <= light->inner_radius) {
+                                strength = 1.0f;
+                            } else {
+                                distance = NuFsqrt(distance_sq);
+                                strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f
+                                                       ? 0.0f
+                                                       : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));
+                            }
+                            if (light->unknown_79 == -1 && light->unknown_7a == -1) {
+                                strength *= modifiers[light->unknown_7b];
+                            }
                             if (strength != 0.0f && lighting_data->directional_strengths[2] <= strength &&
                                 (light->ambient.x != 0.0f || light->ambient.y != 0.0f || light->ambient.z != 0.0f)) {
                                 InsertLight(light, lighting_data, strength);
@@ -489,8 +496,21 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                         InsertLight(light, lighting_data, 2.0f);
                         break;
                     case RTL_LIGHT_ANTILIGHT:
-                        if (position != NULL && (distance_sq = RTL_DISTANCE_SQ) < light->outer_radius * light->outer_radius) {
-                            RTL_FALLOFF;
+                        if (position != NULL && (distance_sq = ((position->x - light->position.x) * (position->x - light->position.x) +
+                                                                (position->y - light->position.y) * (position->y - light->position.y) +
+                                                                (position->z - light->position.z) * (position->z - light->position.z))) <
+                                                    light->outer_radius * light->outer_radius) {
+                            if (light->outer_radius <= light->inner_radius) {
+                                strength = 1.0f;
+                            } else {
+                                distance = NuFsqrt(distance_sq);
+                                strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f
+                                                       ? 0.0f
+                                                       : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));
+                            }
+                            if (light->unknown_79 == -1 && light->unknown_7a == -1) {
+                                strength *= modifiers[light->unknown_7b];
+                            }
                             if (strength != 0.0f) {
                                 InsertAntiLight(light, lighting_data, strength);
                             }
@@ -504,9 +524,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
             NuVecNorm(&lighting_data->unknown_134, &lighting_data->unknown_134);
         }
     }
-#undef RTL_FALLOFF
 #undef RTL_RADIUS_FRACTION
-#undef RTL_DISTANCE_SQ
 }
 
 static void rtlCalcShadow(RTL_DATA *data) {
@@ -2355,15 +2373,6 @@ i32 numsegs = 16;
 
 extern i32 rtl_zoff;
 
-#define EDRTL_LIGHT_MTL() mtls[rtl_zoff != 0]
-#define EDRTL_RNDR_VTX_LINE(line) edrtlRndrLine3d(NULL, line)
-#define EDRTL_RADIUS_PAIR(light)                                                                                                           \
-    RndrOSphere(&(light).position, (light).inner_radius, inner_colour, numsegs, EDRTL_LIGHT_MTL());                                        \
-    if ((light).outer_radius > (light).inner_radius)                                                                                       \
-        RndrOSphere(&(light).position, (light).outer_radius, outer_colour, numsegs, EDRTL_LIGHT_MTL());                                    \
-    if (&(light) == curr_rtl)                                                                                                              \
-    RndrOSquare(&(light).position, (light).outer_radius, -1, EDRTL_LIGHT_MTL())
-
 void edrtlDrawLightEx(i32 index, i32 style) {
     u32 colour;
     u32 inner_colour;
@@ -2380,15 +2389,31 @@ void edrtlDrawLightEx(i32 index, i32 style) {
     }
     switch (curr_set->lights[index].type) {
         case RTL_LIGHT_AMBIENT:
-            EDRTL_RADIUS_PAIR(curr_set->lights[index]);
+            RndrOSphere(&curr_set->lights[index].position, curr_set->lights[index].inner_radius, inner_colour, numsegs,
+                        mtls[rtl_zoff != 0]);
+            if (curr_set->lights[index].outer_radius > curr_set->lights[index].inner_radius) {
+                RndrOSphere(&curr_set->lights[index].position, curr_set->lights[index].outer_radius, outer_colour, numsegs,
+                            mtls[rtl_zoff != 0]);
+            }
+            if (&curr_set->lights[index] == curr_rtl) {
+                RndrOSquare(&curr_set->lights[index].position, curr_set->lights[index].outer_radius, -1, mtls[rtl_zoff != 0]);
+            }
             return;
         case RTL_LIGHT_DIRECTIONAL:
             line[0].colour = line[1].colour = colour;
             line[0].position = curr_set->lights[index].position;
             NuVecScale(&line[1].position, &curr_set->lights[index].direction, curr_set->lights[index].outer_radius);
             NuVecSub(&line[1].position, &line[0].position, &line[1].position);
-            EDRTL_RNDR_VTX_LINE(line);
-            EDRTL_RADIUS_PAIR(curr_set->lights[index]);
+            edrtlRndrLine3d(NULL, line);
+            RndrOSphere(&curr_set->lights[index].position, curr_set->lights[index].inner_radius, inner_colour, numsegs,
+                        mtls[rtl_zoff != 0]);
+            if (curr_set->lights[index].outer_radius > curr_set->lights[index].inner_radius) {
+                RndrOSphere(&curr_set->lights[index].position, curr_set->lights[index].outer_radius, outer_colour, numsegs,
+                            mtls[rtl_zoff != 0]);
+            }
+            if (&curr_set->lights[index] == curr_rtl) {
+                RndrOSquare(&curr_set->lights[index].position, curr_set->lights[index].outer_radius, -1, mtls[rtl_zoff != 0]);
+            }
             return;
         case RTL_LIGHT_CAMDIR:
             line[0].colour = line[1].colour = colour;
@@ -2396,10 +2421,10 @@ void edrtlDrawLightEx(i32 index, i32 style) {
             NuVecScale(&line[1].position, &curr_set->lights[index].direction, 2.0f);
             NuVecMtxRotate(&line[1].position, &line[1].position, &global_camera.mtx);
             NuVecSub(&line[1].position, &line[0].position, &line[1].position);
-            EDRTL_RNDR_VTX_LINE(line);
-            RndrOSphere(&curr_set->lights[index].position, 2.0f, colour, numsegs, EDRTL_LIGHT_MTL());
+            edrtlRndrLine3d(NULL, line);
+            RndrOSphere(&curr_set->lights[index].position, 2.0f, colour, numsegs, mtls[rtl_zoff != 0]);
             if (&curr_set->lights[index] == curr_rtl) {
-                RndrOSquare(&curr_set->lights[index].position, 2.0f, -1, EDRTL_LIGHT_MTL());
+                RndrOSquare(&curr_set->lights[index].position, 2.0f, -1, mtls[rtl_zoff != 0]);
             }
             return;
         case RTL_LIGHT_POINT:
@@ -2407,14 +2432,18 @@ void edrtlDrawLightEx(i32 index, i32 style) {
         case RTL_LIGHT_POINT_BLEND:
         case RTL_LIGHT_ANTILIGHT:
         case RTL_LIGHT_JON_FLICKER:
-            EDRTL_RADIUS_PAIR(curr_set->lights[index]);
+            RndrOSphere(&curr_set->lights[index].position, curr_set->lights[index].inner_radius, inner_colour, numsegs,
+                        mtls[rtl_zoff != 0]);
+            if (curr_set->lights[index].outer_radius > curr_set->lights[index].inner_radius) {
+                RndrOSphere(&curr_set->lights[index].position, curr_set->lights[index].outer_radius, outer_colour, numsegs,
+                            mtls[rtl_zoff != 0]);
+            }
+            if (&curr_set->lights[index] == curr_rtl) {
+                RndrOSquare(&curr_set->lights[index].position, curr_set->lights[index].outer_radius, -1, mtls[rtl_zoff != 0]);
+            }
             return;
     }
 }
-
-#undef EDRTL_RADIUS_PAIR
-#undef EDRTL_LIGHT_MTL
-#undef EDRTL_RNDR_VTX_LINE
 
 void edrtlDrawFogInfo(void) {
     const char *fog_types[3] = {"INVALID", "SPHERICAL", "ALSO INVALID"};

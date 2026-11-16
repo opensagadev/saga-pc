@@ -421,8 +421,6 @@ extern "C" {
     void NuTexAnimSetSignals(u32 signals);
     void NuTexAnimProcess(f32 frame_time);
 
-#define RENDER_POST_ALPHA_CACHE cacheValues
-
     /* Verified game-local light views may remain source-local: light_data4d8/current61c. No new shared fields or
      * storage.
      */
