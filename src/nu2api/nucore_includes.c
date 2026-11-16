@@ -6796,7 +6796,7 @@ i32 NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *la
                             } else {
                                 NuUnicodeToUTF8((u8 *)tmp_buf, parser->word_buffer_wide);
                                 len = NuStrLen(tmp_buf) + 1;
-                                strings[i].str_utf8 = (u8 *)((buf->addr + 1) & ~1U);
+                                strings[i].str_utf8 = (char *)((buf->addr + 1) & ~1U);
                                 buf->addr = (buf->addr + 1) & ~1U;
                                 buf->addr += (u32)len;
                                 NuStrCpy(strings[i].str_utf8, tmp_buf);
@@ -6923,7 +6923,7 @@ i32 NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
                 } else {
                     NuUnicodeToUTF8((u8 *)tmp_buf, parser->word_buffer_wide);
                     len = NuStrLen(tmp_buf) + 1;
-                    strings[i].str_utf8 = (u8 *)((buf->addr + 1) & ~1U);
+                    strings[i].str_utf8 = (char *)((buf->addr + 1) & ~1U);
                     buf->addr = (buf->addr + 1) & ~1U;
                     buf->addr += (u32)len;
                     NuStrCpy(strings[i].str_utf8, tmp_buf);
@@ -6989,7 +6989,8 @@ u16 *NuStringTableGetById(i32 id) {
     return NULL;
 }
 
-u16 *NuStringTableGetByName(char *name) {
+/* The menus load their tables in format 0, so the strings they look up by name are UTF-8. */
+char *NuStringTableGetByName(char *name) {
     i32 i;
     i32 j;
 
@@ -6997,11 +6998,11 @@ u16 *NuStringTableGetByName(char *name) {
         for (j = 0; j < StringBank[i].string_count; ++j) {
             NUSTRING *string = &StringBank[i].strings[j];
             if (string->id != NULL && string->str_utf16 != NULL && NuStrICmp(string->id, name) == 0) {
-                return StringBank[i].strings[j].str_utf16;
+                return StringBank[i].strings[j].str_utf8;
             }
         }
     }
-    return (u16 *)NuBlankString;
+    return NuBlankString;
 }
 
 void NuStrFixExtPlatform(char *dst, char *src, char *ext, i32 dst_size, char *platform_string) {

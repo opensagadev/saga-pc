@@ -12,7 +12,7 @@ typedef struct NUSTRING { // size 0x8
 
     union { // size 0x4
         u16 *str_utf16;
-        u8 *str_utf8;
+        char *str_utf8;
     }; // 0x4
 } NUSTRING;
 
@@ -35,7 +35,7 @@ extern "C" {
     void NuUnicodeToAscii(char *out, u16 *text);
     i32 NuStringTableLoadCSV(char *, VARIPTR *, VARIPTR, char *, char *);
     i32 NuStringTableLoadTXT(char *, VARIPTR *, VARIPTR);
-    u16 *NuStringTableGetByName(char *);
+    char *NuStringTableGetByName(char *);
     void NuStringTableSetBank(i32);
     void NuStringTableSetFormat(i32);
     i32 NuStringTableGetFormat(void);
