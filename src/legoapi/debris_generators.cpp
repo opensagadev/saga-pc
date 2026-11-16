@@ -19,9 +19,8 @@ extern "C" {
             key->particle_cursor = 0;
         }
         DEBRISPARTICLE *particle =
-            (effect->particle_type == 7
-                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
-                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
+            (effect->particle_type == 7 ? &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12]
+                                        : &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -61,9 +60,8 @@ extern "C" {
                 key->particle_cursor = 0;
             }
             DEBRISPARTICLE *trail_particle =
-                (effect->particle_type == 7
-                     ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
-                     : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
+                (effect->particle_type == 7 ? &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12]
+                                            : &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32]);
             key->particle_cursor++;
             *trail_particle = *particle;
             trail_particle->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -83,9 +81,8 @@ extern "C" {
             return NULL;
         }
         DEBRISPARTICLE *particle =
-            (effect->particle_type == 7
-                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
-                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
+            (effect->particle_type == 7 ? &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12]
+                                        : &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -128,8 +125,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
-                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
+            DEBRISPARTICLE *copy =
+                &key->particle_chunks[key->particle_cursor / (0 == 7 ? 12 : 32)]->particles[key->particle_cursor % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -148,9 +145,8 @@ extern "C" {
             return NULL;
         }
         DEBRISPARTICLE *particle =
-            (effect->particle_type == 7
-                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
-                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
+            (effect->particle_type == 7 ? &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12]
+                                        : &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -192,8 +188,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
-                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
+            DEBRISPARTICLE *copy =
+                &key->particle_chunks[key->particle_cursor / (0 == 7 ? 12 : 32)]->particles[key->particle_cursor % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -224,9 +220,8 @@ extern "C" {
             return NULL;
         }
         DEBRISPARTICLE *particle =
-            (effect->particle_type == 7
-                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
-                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
+            (effect->particle_type == 7 ? &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12]
+                                        : &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -273,8 +268,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
-                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
+            DEBRISPARTICLE *copy =
+                &key->particle_chunks[key->particle_cursor / (0 == 7 ? 12 : 32)]->particles[key->particle_cursor % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -293,9 +288,8 @@ extern "C" {
             return NULL;
         }
         DEBRISPARTICLE *particle =
-            (effect->particle_type == 7
-                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
-                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
+            (effect->particle_type == 7 ? &key->particle_chunks[key->particle_cursor / 12]->particles[key->particle_cursor % 12]
+                                        : &key->particle_chunks[key->particle_cursor / 32]->particles[key->particle_cursor % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -346,8 +340,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
-                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
+            DEBRISPARTICLE *copy =
+                &key->particle_chunks[key->particle_cursor / (0 == 7 ? 12 : 32)]->particles[key->particle_cursor % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;

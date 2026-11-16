@@ -51,7 +51,7 @@ typedef struct CUT_LOOKAT_LOCATOR_INFO { // size 0x60
     u8 tertiary_material;                // 0x5f
 } CUT_LOOKAT_LOCATOR_INFO;
 
-struct CUT_LOOKAT_STATE {     // size 0x18
+struct CUT_LOOKAT_STATE {             // size 0x18
     NUHGOBJ_EVAL *hierarchy;          // 0x00
     f32 blend;                        // 0x04
     u16 character;                    // 0x08

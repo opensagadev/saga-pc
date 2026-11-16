@@ -170,7 +170,7 @@ GIZMOSYS *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
             } else {
                 ((void (*)())GizmoDiagnostic)();
             }
-            system = (GIZMOSYS *)allocation_;
+            system = allocation_;
         }
         if (system != NULL) {
             system->sets = GizmoBufferAlloc(buffer, end, gizmotypes->count * sizeof(GIZMOSET));

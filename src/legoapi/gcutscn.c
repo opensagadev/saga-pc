@@ -292,77 +292,77 @@ static CUT_SCRIPT_NODE *CutScriptNodeAlloc(i32 type, VARIPTR *buffer, CUT_SCRIPT
     buffer->addr = (buffer->addr + 0xf) & ~0xfU;
     switch (type) {
         case CUTSCRIPT_START:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0xc;
             memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_PLAY:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x10;
             memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_CHAIN:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x10;
             memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_REPEAT:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x10;
             memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_RESET:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0xc;
             memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_SET_TRIGGER_FLAG:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x10;
             memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_RESET_TRIGGER:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0xc;
             memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_SET_VISIBILITY:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x10;
             memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_IF_PARAM:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x18;
             memset(node, 0, 0x18);
             break;
         case CUTSCRIPT_SET_PARAM:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x10;
             memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_IF_TRIGGER_PULLED:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x14;
             memset(node, 0, 0x14);
             break;
         case CUTSCRIPT_ENABLE_TRIGGER:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0xc;
             memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_PAUSE:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0xc;
             memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_UNPAUSE:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0xc;
             memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_APP_COMMAND:
-            node = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;
+            node = (buffer)->void_ptr;
             buffer->addr += 0x10;
             memset(node, 0, 0x10);
             break;
@@ -1093,7 +1093,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                     instance->chained_instance = chain;
                     done = 1;
                 }
-                CutSceneMissingObjectDiagnostic((char *)(node->a.name), node->b.name);
+                CutSceneMissingObjectDiagnostic(node->a.name, node->b.name);
                 break;
             case CUTSCRIPT_REPEAT:
                 instance = instNuGCutSceneFindActive(node->a.name);
@@ -1106,7 +1106,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                     instance->flags_88 ^= ((u32)(count << 13) ^ instance->flags_88) & 0x3e000;
                     done = 1;
                 }
-                CutSceneMissingObjectDiagnostic((char *)(node->a.name), node->b.value);
+                CutSceneMissingObjectDiagnostic(node->a.name, node->b.value);
                 break;
             case CUTSCRIPT_RESET:
                 instance = instNuGCutSceneFindActive(node->a.name);
@@ -1243,12 +1243,12 @@ i32 CutScriptRun(CUT_SCRIPT *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET
 void CutTriggerFire(CUT_TRIGGER_SET *set, CUT_TRIGGER_ENTRY *entry, CUT_TRIGGER_STATE *state, i32 on) {
     char name[32];
     if (on != 0) {
-        CutSceneMissingObjectDiagnostic((char *)(entry->name), entry->name);
+        CutSceneMissingObjectDiagnostic(entry->name, entry->name);
         state->pulled |= 1;
         CutScriptRun(set->scripts, entry->name, set->scene, set);
     } else {
         sprintf(name, "reset_%s", entry->name);
-        CutSceneMissingObjectDiagnostic((char *)(entry->name), name);
+        CutSceneMissingObjectDiagnostic(entry->name, name);
         state->pulled &= ~1;
         CutScriptRun(set->scripts, name, set->scene, set);
     }

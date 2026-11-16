@@ -79,7 +79,7 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
                 world->grapples[index].swing_scale = 1.0f;
             }
             if (version >= 4) {
-                ((GRAPPLE_MOTION *)world->grapples)[index].disabled = EdFileReadChar() != 0;
+                world->grapples[index].disabled = EdFileReadChar() != 0;
                 world->grapples[index].rope_length = EdFileReadFloat();
             } else {
                 world->grapples[index].flags &= ~4u;
@@ -91,7 +91,7 @@ extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
                 world->grapples[index].x_rotation = 0;
             }
             if (version >= 6) {
-                ((GRAPPLE_MOTION *)world->grapples)[index].reversed = EdFileReadChar() != 0;
+                world->grapples[index].reversed = EdFileReadChar() != 0;
             } else {
                 world->grapples[index].flags &= ~8u;
             }
@@ -209,10 +209,10 @@ extern "C" void Grapples_Reset(void *world_pointer, void *unused, void *progress
     if (world == NULL) {
         return;
     }
-    grapple = (GRAPPLE_MOTION *)world->grapples;
+    grapple = world->grapples;
     if (grapple != NULL) {
         for (index = 0; index < world->grapple_count; ++index, ++grapple) {
-            Grapple_Reset(&((GRAPPLE_MOTION *)world->grapples)[index]);
+            Grapple_Reset(&world->grapples[index]);
             if (progress != NULL && index < 32) {
                 word = index / 32;
                 bit = 1u << (index & 31);
@@ -437,7 +437,7 @@ extern "C" void Grapples_Draw(void *world_pointer, void *unused, f32 unused_delt
     f64 pulse = (f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0;
     f32 target_alpha = (f64)NU_SIN_LUT(pulse) * (f64)0.2f + (f64)0.8f;
     EnableShadowMapRendering(0);
-    GrapplesDrawList(world, (GRAPPLE_MOTION *)world->grapples, world->grapple_count, rotation, target_alpha);
+    GrapplesDrawList(world, world->grapples, world->grapple_count, rotation, target_alpha);
     GrapplesDrawList(world, DynamicGrapple, 4, rotation, target_alpha);
     ResetShadowMapRendering();
 }

@@ -347,7 +347,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                     (GCDataList[(i16)object->id].flags_094 & CHARACTER_OPTION_IMMUNE_TO_MAGNETS)) {
                     continue;
                 }
-                if (Tube_InCylinder(object, (TUBE *)tube, &distance, 0) == 0) {
+                if (Tube_InCylinder(object, tube, &distance, 0) == 0) {
                     continue;
                 }
                 tx = tube->position.x - object->collision_position.x;

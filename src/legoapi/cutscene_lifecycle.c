@@ -1029,7 +1029,6 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
     return instance;
 }
 
-
 void fun_005000c0(void) {
     CutSceneBackgroundInstances = NULL;
 }

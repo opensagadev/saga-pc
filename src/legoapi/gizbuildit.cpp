@@ -463,7 +463,7 @@ extern "C" {
             return;
         }
         player_position = player->collision_position;
-        buildit = (GIZBUILDIT *)WORLD->giz_buildit_sys->buildits;
+        buildit = WORLD->giz_buildit_sys->buildits;
         for (i = 0; i < WORLD->giz_buildit_sys->count; ++i, ++buildit) {
             centre = v000;
             if ((buildit->state_flags & 8) == 0 || (buildit->availability_flags & 2) == 0 || buildit->built_object_count <= 0) {
@@ -1004,7 +1004,7 @@ extern "C" {
             buildit->availability_flags &= (u16)~2u;
         }
         if (GizBuildIt_FinishFn != NULL) {
-            GizBuildIt_FinishFn((struct GIZBUILDIT *)buildit);
+            GizBuildIt_FinishFn(buildit);
         }
     }
 

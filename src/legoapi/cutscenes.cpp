@@ -162,7 +162,7 @@ typedef struct CUT_LOAD_SUBTITLE { // size 0x28
     f32 fade_time;                 // 0x24
 } CUT_LOAD_SUBTITLE;
 
-struct CUT_LOAD_RECORD {            // size 0x190
+struct CUT_LOAD_RECORD {                    // size 0x190
     void *scene;                            // 0x000
     INSTNUGCUTSCENE *instance;              // 0x004
     char name[64];                          // 0x008
@@ -206,17 +206,17 @@ static f32 CutscenesFabs(f32 f) {
     return rv;
 }
 
-struct CUT_LOAD_SYS {  // size 0xc
+struct CUT_LOAD_SYS {          // size 0xc
     CUT_LOAD_RECORD **records; // 0x0
     i32 count;                 // 0x4
     u32 *character_bits;       // 0x8
 };
 
 struct CUT_LOAD_LIST_ENTRY { // size 0xc
-    char *directory;                 // 0x0
-    char *name;                      // 0x4
-    i16 level;                       // 0x8
-    u8 unknown_0a[2];                // 0xa
+    char *directory;         // 0x0
+    char *name;              // 0x4
+    i16 level;               // 0x8
+    u8 unknown_0a[2];        // 0xa
 };
 
 typedef struct CUT_DRAW_LOCATOR CUT_DRAW_LOCATOR;

@@ -177,9 +177,9 @@ f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC *locator, f32 frame, NUMTX *matrix
         types = locator->animation->prefix.curve_types;
         if (locator->animation->node_flags[0] & 1) {
             NUANGVEC angle;
-            rotation.x = (types[3] == 0 ? curves[3].constant : NuAnimCurve2CalcValEx(&curves[3], time, (i32)(types)[3]));
-            rotation.y = (types[4] == 0 ? curves[4].constant : NuAnimCurve2CalcValEx(&curves[4], time, (i32)(types)[4]));
-            rotation.z = (types[5] == 0 ? curves[5].constant : NuAnimCurve2CalcValEx(&curves[5], time, (i32)(types)[5]));
+            rotation.x = (types[3] == 0 ? curves[3].constant : NuAnimCurve2CalcValEx(&curves[3], time, (types)[3]));
+            rotation.y = (types[4] == 0 ? curves[4].constant : NuAnimCurve2CalcValEx(&curves[4], time, (types)[4]));
+            rotation.z = (types[5] == 0 ? curves[5].constant : NuAnimCurve2CalcValEx(&curves[5], time, (types)[5]));
             angle.x = (i32)(rotation.x * AIPathAngularScale);
             angle.y = (i32)(rotation.y * AIPathAngularScale);
             angle.z = (i32)(rotation.z * AIPathAngularScale);
@@ -187,9 +187,9 @@ f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC *locator, f32 frame, NUMTX *matrix
         } else {
             NuMtxSetIdentity(matrix);
         }
-        translation.x = (types[0] == 0 ? curves[0].constant : NuAnimCurve2CalcValEx(&curves[0], time, (i32)(types)[0]));
-        translation.y = (types[1] == 0 ? curves[1].constant : NuAnimCurve2CalcValEx(&curves[1], time, (i32)(types)[1]));
-        translation.z = (types[2] == 0 ? curves[2].constant : NuAnimCurve2CalcValEx(&curves[2], time, (i32)(types)[2]));
+        translation.x = (types[0] == 0 ? curves[0].constant : NuAnimCurve2CalcValEx(&curves[0], time, (types)[0]));
+        translation.y = (types[1] == 0 ? curves[1].constant : NuAnimCurve2CalcValEx(&curves[1], time, (types)[1]));
+        translation.z = (types[2] == 0 ? curves[2].constant : NuAnimCurve2CalcValEx(&curves[2], time, (types)[2]));
         NuMtxTranslate(matrix, &translation);
         matrix->m02 = -matrix->m02;
         matrix->m12 = -matrix->m12;
@@ -221,9 +221,9 @@ void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC *rigid, f32 frame, NUMTX *matrix) {
         flags = rigid->animation->node_flags[0];
         NuAnimData2CalcTime(&rigid->animation->prefix, frame, &time);
         if (flags & 1) {
-            f32 rx = (types[3] == 0 ? curves[3].constant : NuAnimCurve2CalcValEx(&curves[3], &time, (i32)(types)[3]));
-            f32 ry = (types[4] == 0 ? curves[4].constant : NuAnimCurve2CalcValEx(&curves[4], &time, (i32)(types)[4]));
-            f32 rz = (types[5] == 0 ? curves[5].constant : NuAnimCurve2CalcValEx(&curves[5], &time, (i32)(types)[5]));
+            f32 rx = (types[3] == 0 ? curves[3].constant : NuAnimCurve2CalcValEx(&curves[3], &time, (types)[3]));
+            f32 ry = (types[4] == 0 ? curves[4].constant : NuAnimCurve2CalcValEx(&curves[4], &time, (types)[4]));
+            f32 rz = (types[5] == 0 ? curves[5].constant : NuAnimCurve2CalcValEx(&curves[5], &time, (types)[5]));
             NUANGVEC angle;
             angle.x = (i32)(rx * AIPathAngularScale);
             angle.y = (i32)(ry * AIPathAngularScale);
@@ -233,14 +233,14 @@ void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC *rigid, f32 frame, NUMTX *matrix) {
             NuMtxSetIdentity(matrix);
         }
         if (flags & 8) {
-            scale.x = (types[6] == 0 ? curves[6].constant : NuAnimCurve2CalcValEx(&curves[6], &time, (i32)(types)[6]));
-            scale.y = (types[7] == 0 ? curves[7].constant : NuAnimCurve2CalcValEx(&curves[7], &time, (i32)(types)[7]));
-            scale.z = (types[8] == 0 ? curves[8].constant : NuAnimCurve2CalcValEx(&curves[8], &time, (i32)(types)[8]));
+            scale.x = (types[6] == 0 ? curves[6].constant : NuAnimCurve2CalcValEx(&curves[6], &time, (types)[6]));
+            scale.y = (types[7] == 0 ? curves[7].constant : NuAnimCurve2CalcValEx(&curves[7], &time, (types)[7]));
+            scale.z = (types[8] == 0 ? curves[8].constant : NuAnimCurve2CalcValEx(&curves[8], &time, (types)[8]));
             NuMtxPreScale(matrix, &scale);
         }
-        translation.x = (types[0] == 0 ? curves[0].constant : NuAnimCurve2CalcValEx(&curves[0], &time, (i32)(types)[0]));
-        translation.y = (types[1] == 0 ? curves[1].constant : NuAnimCurve2CalcValEx(&curves[1], &time, (i32)(types)[1]));
-        translation.z = (types[2] == 0 ? curves[2].constant : NuAnimCurve2CalcValEx(&curves[2], &time, (i32)(types)[2]));
+        translation.x = (types[0] == 0 ? curves[0].constant : NuAnimCurve2CalcValEx(&curves[0], &time, (types)[0]));
+        translation.y = (types[1] == 0 ? curves[1].constant : NuAnimCurve2CalcValEx(&curves[1], &time, (types)[1]));
+        translation.z = (types[2] == 0 ? curves[2].constant : NuAnimCurve2CalcValEx(&curves[2], &time, (types)[2]));
         NuMtxTranslate(matrix, &translation);
         matrix->m02 = -matrix->m02;
         matrix->m12 = -matrix->m12;
@@ -274,14 +274,14 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
         types = character->animation->prefix.curve_types;
         flags = character->animation->node_flags[0];
         if (character->animation->prefix.curve_count > 6) {
-            f32 value = (types[6] == 0 ? curves[6].constant : NuAnimCurve2CalcValEx(&curves[6], &time, (i32)(types)[6]));
+            f32 value = (types[6] == 0 ? curves[6].constant : NuAnimCurve2CalcValEx(&curves[6], &time, (types)[6]));
             *visible = (i32)value;
         } else {
             *visible = character->flags & 1;
         }
         if (animation_index != NULL) {
             if (character->animation->prefix.curve_count > 7) {
-                f32 value = (types[7] == 0 ? curves[7].constant : NuAnimCurve2CalcValEx(&curves[7], &time, (i32)(types)[7]));
+                f32 value = (types[7] == 0 ? curves[7].constant : NuAnimCurve2CalcValEx(&curves[7], &time, (types)[7]));
                 if (value < 0.0f) {
                     *animation_index = 255;
                 } else {
@@ -294,7 +294,7 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
                 if (*animation_index == 0 || *animation_index == 255) {
                     *start_frame = 0.0f;
                 } else if (character->animation->prefix.curve_count > 10) {
-                    f32 value = (types[10] == 0 ? curves[10].constant : NuAnimCurve2CalcValEx(&curves[10], &time, (i32)(types)[10]));
+                    f32 value = (types[10] == 0 ? curves[10].constant : NuAnimCurve2CalcValEx(&curves[10], &time, (types)[10]));
                     *start_frame = value;
                 } else {
                     *start_frame = character->start_frame;
@@ -308,7 +308,7 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
         }
         if (layer_mask != NULL) {
             if (character->animation->prefix.curve_count > 11) {
-                f32 value = (types[11] == 0 ? curves[11].constant : NuAnimCurve2CalcValEx(&curves[11], &time, (i32)(types)[11]));
+                f32 value = (types[11] == 0 ? curves[11].constant : NuAnimCurve2CalcValEx(&curves[11], &time, (types)[11]));
                 *layer_mask = (i32)value;
             } else {
                 *layer_mask = -1;
@@ -316,9 +316,9 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
         }
         if (flags & 1) {
             NUANGVEC angle;
-            rotation.x = (types[3] == 0 ? curves[3].constant : NuAnimCurve2CalcValEx(&curves[3], &time, (i32)(types)[3]));
-            rotation.y = (types[4] == 0 ? curves[4].constant : NuAnimCurve2CalcValEx(&curves[4], &time, (i32)(types)[4]));
-            rotation.z = (types[5] == 0 ? curves[5].constant : NuAnimCurve2CalcValEx(&curves[5], &time, (i32)(types)[5]));
+            rotation.x = (types[3] == 0 ? curves[3].constant : NuAnimCurve2CalcValEx(&curves[3], &time, (types)[3]));
+            rotation.y = (types[4] == 0 ? curves[4].constant : NuAnimCurve2CalcValEx(&curves[4], &time, (types)[4]));
+            rotation.z = (types[5] == 0 ? curves[5].constant : NuAnimCurve2CalcValEx(&curves[5], &time, (types)[5]));
             angle.x = (i32)(rotation.x * AIPathAngularScale);
             angle.y = (i32)(rotation.y * AIPathAngularScale);
             angle.z = (i32)(rotation.z * AIPathAngularScale);
@@ -326,9 +326,9 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
         } else {
             NuMtxSetIdentity(matrix);
         }
-        translation.x = (types[0] == 0 ? curves[0].constant : NuAnimCurve2CalcValEx(&curves[0], &time, (i32)(types)[0]));
-        translation.y = (types[1] == 0 ? curves[1].constant : NuAnimCurve2CalcValEx(&curves[1], &time, (i32)(types)[1]));
-        translation.z = (types[2] == 0 ? curves[2].constant : NuAnimCurve2CalcValEx(&curves[2], &time, (i32)(types)[2]));
+        translation.x = (types[0] == 0 ? curves[0].constant : NuAnimCurve2CalcValEx(&curves[0], &time, (types)[0]));
+        translation.y = (types[1] == 0 ? curves[1].constant : NuAnimCurve2CalcValEx(&curves[1], &time, (types)[1]));
+        translation.z = (types[2] == 0 ? curves[2].constant : NuAnimCurve2CalcValEx(&curves[2], &time, (types)[2]));
         NuMtxTranslate(matrix, &translation);
         matrix->m02 = -matrix->m02;
         matrix->m12 = -matrix->m12;
@@ -340,7 +340,7 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
         NuMtxPreScale(matrix, &scale);
         if (animation_rate != NULL) {
             if (character->animation->prefix.curve_count > 9) {
-                f32 value = (types[9] == 0 ? curves[9].constant : NuAnimCurve2CalcValEx(&curves[9], &time, (i32)(types)[9]));
+                f32 value = (types[9] == 0 ? curves[9].constant : NuAnimCurve2CalcValEx(&curves[9], &time, (types)[9]));
                 *animation_rate = value;
             } else {
                 *animation_rate = character->animation_rate;
@@ -348,7 +348,7 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
         }
         if (blend_time != NULL) {
             if (character->animation->prefix.curve_count > 8) {
-                f32 value = (types[8] == 0 ? curves[8].constant : NuAnimCurve2CalcValEx(&curves[8], &time, (i32)(types)[8]));
+                f32 value = (types[8] == 0 ? curves[8].constant : NuAnimCurve2CalcValEx(&curves[8], &time, (types)[8]));
                 *blend_time = value;
             } else {
                 *blend_time = character->blend_time;
