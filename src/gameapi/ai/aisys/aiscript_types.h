@@ -8,6 +8,7 @@
 
 struct AIACTIONDEF;
 struct AICONDITIONDEF;
+struct AIAREA;
 
 typedef struct AISCRIPT AISCRIPT;
 typedef struct AISTATE AISTATE;
@@ -46,7 +47,7 @@ struct AISCRIPTPROCESS {                 // size 0xc8
     NUVEC action_pos;                    // 0x78
     AIPATHINFO path_info;                // 0x84
     f32 action_timer;                    // 0x9c
-    u32 unknown_a0;                      // 0xa0
+    struct AIAREA *trigger_area;         // 0xa0
     struct AILOCATOR *locator;           // 0xa4
     struct AILOCATORSET *locator_set;    // 0xa8
 

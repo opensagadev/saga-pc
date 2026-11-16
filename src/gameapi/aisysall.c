@@ -694,11 +694,6 @@ typedef void (*AI_LOAD)(AISYS *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
-typedef struct condition_trigger_process_reader_s { // size 0xa4
-    u8 unknown_00[0xa0];                            // 0x00
-    AIAREA *trigger_area;                           // 0xa0
-} CONDITION_TRIGGER_PROCESS_READER;
-
 SOCK *FindSock(SOCKSYS *system, char *name);
 
 static f32 AIPathSafeDivide(f32 numerator, f32 denominator) {
@@ -1999,7 +1994,7 @@ f32 Condition_NodeRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packe
 }
 
 f32 Condition_GotTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (process->unknown_a0 != 0) {
+    if (process->trigger_area != NULL) {
         return 1.0f;
     }
     return 0.0f;
@@ -2027,7 +2022,7 @@ f32 Condition_Player2InTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPA
         if (object != NULL) {
             AIAREA *area = argument;
             if (area == NULL) {
-                area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
+                area = process->trigger_area;
             }
             if (area != NULL && area->system != NULL) {
                 i32 index = area - area->system->areas;
@@ -2050,7 +2045,7 @@ f32 Condition_EitherPlayerInTriggerArea(AISYS *system, AISCRIPTPROCESS *process,
     if (system != NULL) {
         area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
+            area = process->trigger_area;
         }
         if (area != NULL) {
             if (system->player_1 != NULL && area->system != NULL) {
@@ -2078,7 +2073,7 @@ f32 Condition_EitherPlayerInTriggerArea(AISYS *system, AISCRIPTPROCESS *process,
 f32 Condition_BaddyInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     AIAREA *area = argument;
     if (area == NULL) {
-        area = (AIAREA *)process->unknown_a0;
+        area = process->trigger_area;
     }
     if (area != NULL && (area->runtime_flags & 4) != 0) {
         return 1.0f;
@@ -2089,7 +2084,7 @@ f32 Condition_BaddyInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACK
 f32 Condition_GoodyInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     AIAREA *area = argument;
     if (area == NULL) {
-        area = (AIAREA *)process->unknown_a0;
+        area = process->trigger_area;
     }
     if (area != NULL && (area->runtime_flags & 2) != 0) {
         return 1.0f;

@@ -202,11 +202,6 @@ typedef struct ai_global_trigger_world_s { // size 0x467c
     AITRIGGERSETSYS_s *trigger_system;     // 0x4678
 } AI_GLOBAL_TRIGGER_WORLD;
 
-typedef struct condition_trigger_process_reader_s { // size 0xa4
-    u8 unknown_00[0xa0];                            // 0x00
-    AIAREA *trigger_area;                           // 0xa0
-} CONDITION_TRIGGER_PROCESS_READER;
-
 typedef struct ai_been_to_level_progress_s { // size 0x2e28
     u8 unknown_0000[0x2800];                 // 0x0000
     u32 visited_flags;                       // 0x2800
@@ -2251,7 +2246,7 @@ f32 Condition_TakeOverTargetInTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
         i32 index;
         u64 mask;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
+            area = process->trigger_area;
         }
         index = (i32)((u32)area - (u32)WORLD->ai_sys->areas) >> 6;
         if (packet->owner->objptr != NULL) {
@@ -2274,7 +2269,7 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
     i32 index;
     i64 mask;
     if (system != NULL) {
-        area = ((CONDITION_TRIGGER_PROCESS_READER *)process)->trigger_area;
+        area = process->trigger_area;
         if (area != NULL) {
             if (system->player_1 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_1;
@@ -11166,7 +11161,7 @@ i32 Action_AddScriptProcessor(AISYS *system, AISCRIPTPROCESS *processor, AIPACKE
             AIScriptProcessorInit(system, NULL, created, NULL, script_name, NULL, 0, NULL, NULL);
             created->locator_set = locator_set;
             created->locator = locator;
-            created->unknown_a0 = (u32)area;
+            created->trigger_area = area;
             created->creature_set = (u8)set;
             created->myspline = spline;
             if (name != NULL) {
