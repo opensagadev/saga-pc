@@ -9,15 +9,6 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nustencilshadows_PC.h"
 
-#define DEBRIS_PARTICLE_AT(key, index, type)                                                                                               \
-    (&(key)->particle_chunks[(i16)(index) / ((type) == 7 ? 12 : 32)]->particles[(i16)(index) % ((type) == 7 ? 12 : 32)])
-
-#define DEBRIS_PARTICLE_SLOT(key, index, type)                                                                                             \
-    ((type) == 7 ? &(key)->particle_chunks[(i16)(index) / 12]->particles[(i16)(index) % 12]                                                \
-                 : &(key)->particle_chunks[(i16)(index) / 32]->particles[(i16)(index) % 32])
-
-#define DEBRIS_RANDOM_SPREAD(range) (NuRandFloatSeeded(&debrisseed) * 2.0f * (range) - (range))
-
 extern "C" {
     DEBRISPARTICLE *GenDebDummy(DEBRISKEY *key, DEBRIS_INFO *effect, float time) {
         return GenDebIndex(key, effect, time);
@@ -27,7 +18,10 @@ extern "C" {
         if (key->particle_cursor >= key->particle_count) {
             key->particle_cursor = 0;
         }
-        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle =
+            (effect->particle_type == 7
+                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
+                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -37,17 +31,17 @@ extern "C" {
         NUVEC displacement;
         NuVecScale(&displacement, &effect->emitter_velocity, time - key->emission_time);
 
-        random_position.x = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.x);
-        random_position.y = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.y);
-        random_position.z = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.z);
+        random_position.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.x - effect->emitter_random_extent.x);
+        random_position.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.y - effect->emitter_random_extent.y);
+        random_position.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.z - effect->emitter_random_extent.z);
         NuVecMtxTransformVU0(&random_position, &random_position, &key->emitter_orientation);
         particle->position.x = random_position.x + displacement.x;
         particle->position.y = random_position.y + displacement.y;
         particle->position.z = random_position.z + displacement.z;
 
-        random_position.x = DEBRIS_RANDOM_SPREAD(effect->momentum_random_x);
-        random_position.y = DEBRIS_RANDOM_SPREAD(effect->rotor_speed_x) + effect->momentum_base;
-        random_position.z = DEBRIS_RANDOM_SPREAD(effect->rotor_speed_y);
+        random_position.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->momentum_random_x - effect->momentum_random_x);
+        random_position.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_x - effect->rotor_speed_x) + effect->momentum_base;
+        random_position.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_y - effect->rotor_speed_y);
         NuVecMtxTransformVU0(&random_position, &random_position, &key->emitter_orientation);
         particle->momentum.x = random_position.x;
         particle->momentum.y = random_position.y;
@@ -66,7 +60,10 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *trail_particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+            DEBRISPARTICLE *trail_particle =
+                (effect->particle_type == 7
+                     ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
+                     : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
             key->particle_cursor++;
             *trail_particle = *particle;
             trail_particle->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -85,13 +82,18 @@ extern "C" {
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle =
+            (effect->particle_type == 7
+                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
+                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
-        i32 angle_y = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_x) + effect->emitter_random_extent.y);
-        i32 angle_z = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_y) + effect->emitter_random_extent.z);
+        i32 angle_y = static_cast<i32>((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_x - effect->rotor_speed_x) +
+                                       effect->emitter_random_extent.y);
+        i32 angle_z = static_cast<i32>((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_y - effect->rotor_speed_y) +
+                                       effect->emitter_random_extent.z);
         NUVEC vector;
         vector.y = effect->scale_in_time != 0.0f && effect->scale_in_time > globaltime - key->last_update_time
                        ? (globaltime - key->last_update_time) / effect->scale_in_time * effect->emitter_random_extent.x
@@ -104,7 +106,7 @@ extern "C" {
         particle->position.x = vector.x;
         particle->position.y = vector.y;
         particle->position.z = vector.z;
-        vector.y = DEBRIS_RANDOM_SPREAD(effect->momentum_random_x) + effect->momentum_base;
+        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->momentum_random_x - effect->momentum_random_x) + effect->momentum_base;
         vector.z = 0.0f;
         vector.x = 0.0f;
         NuVecRotateZ(&vector, &vector, angle_z);
@@ -126,7 +128,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
+                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -144,7 +147,10 @@ extern "C" {
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle =
+            (effect->particle_type == 7
+                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
+                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -164,7 +170,7 @@ extern "C" {
         particle->position.x = vector.x;
         particle->position.y = vector.y;
         particle->position.z = vector.z;
-        vector.y = DEBRIS_RANDOM_SPREAD(effect->momentum_random_x) + effect->momentum_base;
+        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->momentum_random_x - effect->momentum_random_x) + effect->momentum_base;
         vector.z = 0.0f;
         vector.x = 0.0f;
         NuVecRotateZ(&vector, &vector, angle_z);
@@ -186,7 +192,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
+                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -216,7 +223,10 @@ extern "C" {
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle =
+            (effect->particle_type == 7
+                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
+                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
@@ -241,7 +251,7 @@ extern "C" {
         particle->position.x = vector.x;
         particle->position.y = vector.y;
         particle->position.z = vector.z;
-        vector.x = DEBRIS_RANDOM_SPREAD(effect->momentum_random_x) + effect->momentum_base;
+        vector.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->momentum_random_x - effect->momentum_random_x) + effect->momentum_base;
         vector.z = 0.0f;
         vector.y = 0.0f;
         NuVecRotateZ(&vector, &vector, angle_z);
@@ -263,7 +273,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
+                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -281,14 +292,19 @@ extern "C" {
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             return NULL;
         }
-        DEBRISPARTICLE *particle = DEBRIS_PARTICLE_SLOT(key, key->particle_cursor, effect->particle_type);
+        DEBRISPARTICLE *particle =
+            (effect->particle_type == 7
+                 ? &key->particle_chunks[(i16)(key->particle_cursor) / 12]->particles[(i16)(key->particle_cursor) % 12]
+                 : &key->particle_chunks[(i16)(key->particle_cursor) / 32]->particles[(i16)(key->particle_cursor) % 32]);
         key->particle_cursor++;
         particle->start_time = time;
         key->emission_epoch = time;
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
         NUVEC vector;
-        i32 angle_y = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_x) + effect->emitter_random_extent.y);
-        i32 angle_z = static_cast<i32>(DEBRIS_RANDOM_SPREAD(effect->rotor_speed_y) + effect->emitter_random_extent.z);
+        i32 angle_y = static_cast<i32>((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_x - effect->rotor_speed_x) +
+                                       effect->emitter_random_extent.y);
+        i32 angle_z = static_cast<i32>((NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_y - effect->rotor_speed_y) +
+                                       effect->emitter_random_extent.z);
         if (effect->scale_in_time != 0.0f && effect->scale_in_time > globaltime - key->last_update_time) {
             vector.y = (globaltime - key->last_update_time) / effect->scale_in_time * effect->emitter_random_extent.x;
         } else {
@@ -308,7 +324,7 @@ extern "C" {
         particle->position.x = vector.x;
         particle->position.y = vector.y;
         particle->position.z = vector.z;
-        vector.y = DEBRIS_RANDOM_SPREAD(effect->momentum_random_x) + effect->momentum_base;
+        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->momentum_random_x - effect->momentum_random_x) + effect->momentum_base;
         vector.z = 0.0f;
         vector.x = 0.0f;
         NuVecRotateZ(&vector, &vector, angle_z);
@@ -330,7 +346,8 @@ extern "C" {
             if (key->particle_cursor >= key->particle_count) {
                 key->particle_cursor = 0;
             }
-            DEBRISPARTICLE *copy = DEBRIS_PARTICLE_AT(key, key->particle_cursor, 0);
+            DEBRISPARTICLE *copy = &key->particle_chunks[(i16)(key->particle_cursor) / (0 == 7 ? 12 : 32)]
+                                        ->particles[(i16)(key->particle_cursor) % (0 == 7 ? 12 : 32)];
             key->particle_cursor++;
             *copy = *particle;
             copy->start_time += static_cast<f32>(trail + 1) * effect->trail_time;
@@ -355,16 +372,16 @@ extern "C" {
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
 
         NUVEC vector;
-        vector.x = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.x);
-        vector.y = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.y);
-        vector.z = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.z);
+        vector.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.x - effect->emitter_random_extent.x);
+        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.y - effect->emitter_random_extent.y);
+        vector.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.z - effect->emitter_random_extent.z);
         NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
         particle->position.x = vector.x;
         particle->position.y = vector.y;
         particle->position.z = vector.z;
-        vector.x = DEBRIS_RANDOM_SPREAD(effect->momentum_random_x);
-        vector.y = DEBRIS_RANDOM_SPREAD(effect->rotor_speed_x) + effect->momentum_base;
-        vector.z = DEBRIS_RANDOM_SPREAD(effect->rotor_speed_y);
+        vector.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->momentum_random_x - effect->momentum_random_x);
+        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_x - effect->rotor_speed_x) + effect->momentum_base;
+        vector.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_y - effect->rotor_speed_y);
         NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
         particle->momentum.x = vector.x;
         particle->momentum.y = vector.y;
@@ -425,16 +442,16 @@ extern "C" {
         particle->inverse_lifetime = 64.0 / effect->particle_lifetime;
 
         NUVEC vector;
-        vector.x = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.x);
-        vector.y = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.y);
-        vector.z = DEBRIS_RANDOM_SPREAD(effect->emitter_random_extent.z);
+        vector.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.x - effect->emitter_random_extent.x);
+        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.y - effect->emitter_random_extent.y);
+        vector.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->emitter_random_extent.z - effect->emitter_random_extent.z);
         NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
         particle->position.x = vector.x;
         particle->position.y = vector.y;
         particle->position.z = vector.z;
-        vector.x = DEBRIS_RANDOM_SPREAD(effect->momentum_random_x);
-        vector.y = DEBRIS_RANDOM_SPREAD(effect->rotor_speed_x) + effect->momentum_base;
-        vector.z = DEBRIS_RANDOM_SPREAD(effect->rotor_speed_y);
+        vector.x = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->momentum_random_x - effect->momentum_random_x);
+        vector.y = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_x - effect->rotor_speed_x) + effect->momentum_base;
+        vector.z = (NuRandFloatSeeded(&debrisseed) * 2.0f * effect->rotor_speed_y - effect->rotor_speed_y);
         NuVecMtxTransformVU0(&vector, &vector, &key->emitter_orientation);
         particle->momentum.x = vector.x;
         particle->momentum.y = vector.y;

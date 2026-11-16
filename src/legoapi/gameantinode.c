@@ -78,8 +78,6 @@ typedef struct ANTINODE_AI_OUTPUT { // size 0x58
     u32 user_data[2];               // 0x50
 } ANTINODE_AI_OUTPUT;
 
-#define GAME_ANTI_NODE_ABS(destination, expression) (temporary = (expression), *(u32 *)&(destination) = *(u32 *)&temporary & 0x7fffffff)
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 GameantinodeFabs(f32 f) {
     f32 rv;
@@ -296,8 +294,8 @@ void GameAntiNodeData_Init(void *opaque_data, nuhspecial_s *special) {
             matrix = NuSpecialGetMtx(special);
             NuVecMtxTransform(&minimum, &minimum, matrix);
             NuVecMtxTransform(&maximum, &maximum, matrix);
-            GAME_ANTI_NODE_ABS(x, (maximum.x - minimum.x) * 0.5);
-            GAME_ANTI_NODE_ABS(z, (maximum.z - minimum.z) * 0.5);
+            (temporary = ((maximum.x - minimum.x) * 0.5), *(u32 *)&x = *(u32 *)&temporary & 0x7fffffff);
+            (temporary = ((maximum.z - minimum.z) * 0.5), *(u32 *)&z = *(u32 *)&temporary & 0x7fffffff);
             difference = GameantinodeFabs(x - z);
             if (difference < 0.01f) {
                 data->shape = 0;
@@ -312,7 +310,7 @@ void GameAntiNodeData_Init(void *opaque_data, nuhspecial_s *special) {
             }
             data->extent_x = x;
             data->extent_z = z;
-            GAME_ANTI_NODE_ABS(y, (maximum.y - minimum.y) * 0.5);
+            (temporary = ((maximum.y - minimum.y) * 0.5), *(u32 *)&y = *(u32 *)&temporary & 0x7fffffff);
             data->min_y = -y;
             data->max_y = y;
         }

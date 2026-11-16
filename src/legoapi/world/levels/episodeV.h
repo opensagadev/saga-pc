@@ -5,7 +5,7 @@
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"
 
-struct GIZBUILDIT_s;
+struct GIZBUILDIT;
 struct PART;
 struct WORLDINFO_s;
 struct gameobject_s;
@@ -119,13 +119,13 @@ extern "C" {
 }
 #endif
 
-typedef struct TROOPERCANNON {    // size 0x30
-    struct gizmo_s *base;         // 0x00
-    struct GIZBUILDIT_s *buildit; // 0x04
-    struct gameobject_s *object;  // 0x08
-    char character_name[32];      // 0x0c
-    u8 rebuilding;                // 0x2c
-    u8 padding[3];                // 0x2d
+typedef struct TROOPERCANNON {   // size 0x30
+    struct gizmo_s *base;        // 0x00
+    struct GIZBUILDIT *buildit;  // 0x04
+    struct gameobject_s *object; // 0x08
+    char character_name[32];     // 0x0c
+    u8 rebuilding;               // 0x2c
+    u8 padding[3];               // 0x2d
 } TROOPERCANNON;
 
 #ifdef __cplusplus

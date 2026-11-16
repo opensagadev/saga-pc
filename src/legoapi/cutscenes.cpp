@@ -198,12 +198,6 @@ typedef struct CUT_LOAD_RECORD {            // size 0x190
     i32 music_handle;                       // 0x18c
 } CUT_LOAD_RECORD;
 
-#define CS_NUFABS(destination, source)                                                                                                     \
-    do {                                                                                                                                   \
-        f32 fabs_value = (source);                                                                                                         \
-        *(i32 *)&(destination) = *(i32 *)&fabs_value & 0x7fffffff;                                                                         \
-    } while (0)
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 CutscenesFabs(f32 f) {
     f32 rv;
@@ -778,7 +772,10 @@ extern "C" {
             } else if (NuStrICmp(fp->word_buffer_ptr, "start_time") == 0) {
                 subtitle->start_frame = CutscenesFabs(NuFParGetFloat(fp));
             } else if (NuStrICmp(fp->word_buffer_ptr, "end_time") == 0) {
-                CS_NUFABS(subtitle->end_frame, NuFParGetFloat(fp));
+                {
+                    f32 fabs_value = (NuFParGetFloat(fp));
+                    *(i32 *)&subtitle->end_frame = *(i32 *)&fabs_value & 0x7fffffff;
+                }
             } else if (NuStrICmp(fp->word_buffer_ptr, "pos") == 0) {
                 subtitle->x = NuFParGetFloat(fp);
                 subtitle->y = NuFParGetFloat(fp);
@@ -796,9 +793,15 @@ extern "C" {
             } else if (NuStrICmp(fp->word_buffer_ptr, "y_scale") == 0) {
                 subtitle->y_scale = NuFParGetFloat(fp);
             } else if (NuStrICmp(fp->word_buffer_ptr, "fit_width") == 0) {
-                CS_NUFABS(subtitle->max_width, NuFParGetFloat(fp));
+                {
+                    f32 fabs_value = (NuFParGetFloat(fp));
+                    *(i32 *)&subtitle->max_width = *(i32 *)&fabs_value & 0x7fffffff;
+                }
             } else if (NuStrICmp(fp->word_buffer_ptr, "fade_time") == 0) {
-                CS_NUFABS(subtitle->fade_time, NuFParGetFloat(fp));
+                {
+                    f32 fabs_value = (NuFParGetFloat(fp));
+                    *(i32 *)&subtitle->fade_time = *(i32 *)&fabs_value & 0x7fffffff;
+                }
             }
         }
 
@@ -2120,7 +2123,7 @@ extern "C" {
         if (CutScenePlayer != NULL && clip_id >= 0 && clip_id < CutScenePlayer->clip_count) {
             clips = CutScenePlayer->clips;
             NewLevelFromMenu(&LDataList[clips[clip_id].level_id], -1, -1, 1);
-            CutScenePlayer->active = &(CutScenePlayer->clips)[clip_id];
+            CutScenePlayer->active = &CutScenePlayer->clips[clip_id];
             NextArea_FreePlay = 0;
             FreePlay = 0;
         }

@@ -112,7 +112,6 @@ typedef struct PC_MENU_SERVICE_VIEW { // size 0xe0
 } PC_MENU_SERVICE_VIEW;
 
 MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
-#define NEWMENU_VIEW ((PC_MENU_SERVICE_VIEW *)GameMenu)
     PC_MENU_SERVICE_VIEW *menu = NULL;
     i32 index;
     i32 selected = -1;
@@ -125,15 +124,17 @@ MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
             break;
         }
     }
-    previous_index = NEWMENU_VIEW[GameMenuLevel].menu;
-    NEWMENU_VIEW[GameMenuLevel].state_bc = 0;
+    previous_index = ((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].menu;
+    ((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].state_bc = 0;
 
-    if (NEWMENU_VIEW[GameMenuLevel].menu != -1) {
-        if (MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_x != -1) {
-            MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_x = NEWMENU_VIEW[GameMenuLevel].selected_column;
+    if (((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].menu != -1) {
+        if (MenuInfo[((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].menu].memory_x != -1) {
+            MenuInfo[((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].menu].memory_x =
+                ((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].selected_column;
         }
-        if (MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_y != -1) {
-            MenuInfo[NEWMENU_VIEW[GameMenuLevel].menu].memory_y = NEWMENU_VIEW[GameMenuLevel].selected_row;
+        if (MenuInfo[((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].menu].memory_y != -1) {
+            MenuInfo[((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].menu].memory_y =
+                ((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].selected_row;
         }
     }
     if (selected != -1) {
@@ -141,7 +142,7 @@ MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
         if (GameMenuLevel >= 10) {
             GameMenuLevel--;
         }
-        menu = &NEWMENU_VIEW[GameMenuLevel];
+        menu = &((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel];
         menu->menu_time = 0.0f;
         menu->time_04 = 0.0f;
         menu->first_column = 0;
@@ -198,13 +199,12 @@ MENU *NewMenu(i32 menu_id, i32 menu_y, i32 unused) {
         menu->transition_1c = 0.0f;
         menu->transition_18 = 0.0f;
     } else {
-        NEWMENU_VIEW[GameMenuLevel].menu = -1;
+        ((PC_MENU_SERVICE_VIEW *)GameMenu)[GameMenuLevel].menu = -1;
     }
     MenuAlpha = 0.0f;
     MenuA = 0;
     MenuValidated = 0;
     return (MENU *)menu;
-#undef NEWMENU_VIEW
 }
 
 char *apitxt_SELECT = "Select";

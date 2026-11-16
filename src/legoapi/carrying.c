@@ -70,17 +70,6 @@ typedef struct carry_drop_s { // size 0x778
     NUVEC drop_position;      // 0x76c
 } CARRY_DROP;
 
-#define SUPER_CARRY_IDLE_OR_WALK(object)                                                                                                   \
-    do {                                                                                                                                   \
-        if ((object)->player.pad->input_magnitude > 0.0f) {                                                                                \
-            (object)->player.unknown_7b3 = SUPERCARRY_WALK;                                                                                \
-            (object)->player.unknown_7aa = LEGOACT_SUPERCARRY_WALK;                                                                        \
-        } else {                                                                                                                           \
-            (object)->player.unknown_7b3 = SUPERCARRY_IDLE;                                                                                \
-            (object)->player.unknown_7aa = LEGOACT_SUPERCARRY_IDLE;                                                                        \
-        }                                                                                                                                  \
-    } while (0)
-
 i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP *blowup, NUVEC *position, u16 angle, i32 keep_matrix) {
     CARRY_BLOWUP *view = (CARRY_BLOWUP *)blowup;
     CARRY_PLUG *plug;
@@ -543,7 +532,13 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     object->player.jump_start_height = object->collision_min.y;
                     ResetAnimPacket(&object->anim_packet, -1);
                 }
-                SUPER_CARRY_IDLE_OR_WALK(object);
+                if (object->player.pad->input_magnitude > 0.0f) {
+                    object->player.unknown_7b3 = SUPERCARRY_WALK;
+                    object->player.unknown_7aa = LEGOACT_SUPERCARRY_WALK;
+                } else {
+                    object->player.unknown_7b3 = SUPERCARRY_IDLE;
+                    object->player.unknown_7aa = LEGOACT_SUPERCARRY_IDLE;
+                }
                 return;
             }
             case SUPERCARRY_THROW: {
@@ -648,7 +643,13 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                             return;
                         }
                     }
-                    SUPER_CARRY_IDLE_OR_WALK(object);
+                    if (object->player.pad->input_magnitude > 0.0f) {
+                        object->player.unknown_7b3 = SUPERCARRY_WALK;
+                        object->player.unknown_7aa = LEGOACT_SUPERCARRY_WALK;
+                    } else {
+                        object->player.unknown_7b3 = SUPERCARRY_IDLE;
+                        object->player.unknown_7aa = LEGOACT_SUPERCARRY_IDLE;
+                    }
                 }
                 return;
             }
@@ -656,7 +657,13 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 object->player.context_timer -= FRAMETIME;
                 if (object->player.context_timer <= 0.0f ||
                     ((object->player.context_variant_flags & APIOBJECT_JUMP_FALLING) == 0 && object->player.pad->input_magnitude > 0.0f)) {
-                    SUPER_CARRY_IDLE_OR_WALK(object);
+                    if (object->player.pad->input_magnitude > 0.0f) {
+                        object->player.unknown_7b3 = SUPERCARRY_WALK;
+                        object->player.unknown_7aa = LEGOACT_SUPERCARRY_WALK;
+                    } else {
+                        object->player.unknown_7b3 = SUPERCARRY_IDLE;
+                        object->player.unknown_7aa = LEGOACT_SUPERCARRY_IDLE;
+                    }
                 }
                 return;
             default:

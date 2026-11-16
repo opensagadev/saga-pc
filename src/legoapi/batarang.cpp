@@ -68,7 +68,6 @@ typedef struct suit_ai_capabilities_s {
 } SUIT_AI_CAPABILITIES;
 
 typedef PLAYER_BATARANG_SLOT BATARANG_NATIVE;
-#define BATARANG_PACKET(object) ((object)->player.batarang)
 extern "C" {
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
@@ -161,7 +160,7 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
         u32 bits;
     } absolute, absolute_result;
 
-    BATARANG_NATIVE *batarang = BATARANG_PACKET(object);
+    BATARANG_NATIVE *batarang = object->player.batarang;
     i32 platform = -1;
     i32 selected_type = -1;
     NUVEC forward;
@@ -324,34 +323,34 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
 }
 
 extern "C" void Batarang_Release(GAMEOBJECT *object, i32 mode) {
-    BATARANG_PACKET(object)->owner = object;
-    BATARANG_PACKET(object)->flight_state.in_flight = 1;
-    BATARANG_PACKET(object)->flight_state.current_target = 0;
-    BATARANG_PACKET(object)->flight_state.flight_time = 0.0f;
-    BATARANG_PACKET(object)->velocity.x = (f32)(NU_SIN_LUT(object->movement_facing_angle) * 4.0);
-    BATARANG_PACKET(object)->velocity.y = (f32)(object->velocity.y * 0.5);
-    BATARANG_PACKET(object)->velocity.z = (f32)(4.0 * NU_COS_LUT(object->movement_facing_angle));
+    object->player.batarang->owner = object;
+    object->player.batarang->flight_state.in_flight = 1;
+    object->player.batarang->flight_state.current_target = 0;
+    object->player.batarang->flight_state.flight_time = 0.0f;
+    object->player.batarang->velocity.x = (f32)(NU_SIN_LUT(object->movement_facing_angle) * 4.0);
+    object->player.batarang->velocity.y = (f32)(object->velocity.y * 0.5);
+    object->player.batarang->velocity.z = (f32)(4.0 * NU_COS_LUT(object->movement_facing_angle));
     NewRumble(object->player.pad->bound_pad, 0.5f, 0);
-    BATARANG_PACKET(object)->position = object->collision_position;
+    object->player.batarang->position = object->collision_position;
     if (object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) {
         i32 joint = object->character_data->game_character->throw_locator;
         if (joint != -1 && object->character_model->points_of_interest[joint] != NULL) {
-            BATARANG_PACKET(object)->position = *reinterpret_cast<NUVEC *>(&object->player.locator_matrices[joint].m30);
+            object->player.batarang->position = *reinterpret_cast<NUVEC *>(&object->player.locator_matrices[joint].m30);
         }
     }
-    if (BATARANG_PACKET(object)->active == 0 && mode == 2) {
+    if (object->player.batarang->active == 0 && mode == 2) {
         Batarang_FindTarget(WORLD, object, 1);
-        if (BATARANG_PACKET(object)->active == 0) {
-            BATARANG_PACKET(object)->targets[BATARANG_PACKET(object)->active].fallback_position.x =
+        if (object->player.batarang->active == 0) {
+            object->player.batarang->targets[object->player.batarang->active].fallback_position.x =
                 (f32)(NU_SIN_LUT(object->movement_facing_angle) * 2.0 + object->collision_position.x);
-            BATARANG_PACKET(object)->targets[BATARANG_PACKET(object)->active].fallback_position.y = object->collision_position.y;
-            BATARANG_PACKET(object)->targets[BATARANG_PACKET(object)->active].fallback_position.z =
+            object->player.batarang->targets[object->player.batarang->active].fallback_position.y = object->collision_position.y;
+            object->player.batarang->targets[object->player.batarang->active].fallback_position.z =
                 (f32)(2.0 * NU_COS_LUT(object->movement_facing_angle) + object->collision_position.z);
-            BATARANG_PACKET(object)->targets[BATARANG_PACKET(object)->active].object =
-                &BATARANG_PACKET(object)->targets[BATARANG_PACKET(object)->active].fallback_position;
-            BATARANG_PACKET(object)->targets[BATARANG_PACKET(object)->active].type = 3;
-            BATARANG_PACKET(object)->targets[BATARANG_PACKET(object)->active].lost = 0;
-            ++BATARANG_PACKET(object)->active;
+            object->player.batarang->targets[object->player.batarang->active].object =
+                &object->player.batarang->targets[object->player.batarang->active].fallback_position;
+            object->player.batarang->targets[object->player.batarang->active].type = 3;
+            object->player.batarang->targets[object->player.batarang->active].lost = 0;
+            ++object->player.batarang->active;
         }
     }
 }
@@ -627,7 +626,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                 return;
             }
             if ((object->player.pad->buttons_held & GAMEPAD_ACTION) == 0 && !(object->player.context_timer < 0.3f)) {
-                if (BATARANG_PACKET(object)->active > 0) {
+                if (object->player.batarang->active > 0) {
                     object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_INVULNERABLE;
                     object->player.unknown_7b3 = 1;
                     object->player.unknown_7aa = ACTION_THROW;
@@ -660,12 +659,12 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                         x *= ramp;
                         y *= ramp;
                     }
-                    BATARANG_PACKET(object)->sight_velocity.x = SeekValF(BATARANG_PACKET(object)->sight_velocity.x, x, 10.0f);
-                    BATARANG_PACKET(object)->sight_velocity.y = SeekValF(BATARANG_PACKET(object)->sight_velocity.y, y, 10.0f);
-                    BATARANG_PACKET(object)->sight_position.x += BATARANG_PACKET(object)->sight_velocity.x * FRAMETIME;
-                    BATARANG_PACKET(object)->sight_position.y += BATARANG_PACKET(object)->sight_velocity.y * FRAMETIME;
+                    object->player.batarang->sight_velocity.x = SeekValF(object->player.batarang->sight_velocity.x, x, 10.0f);
+                    object->player.batarang->sight_velocity.y = SeekValF(object->player.batarang->sight_velocity.y, y, 10.0f);
+                    object->player.batarang->sight_position.x += object->player.batarang->sight_velocity.x * FRAMETIME;
+                    object->player.batarang->sight_position.y += object->player.batarang->sight_velocity.y * FRAMETIME;
                 }
-                batarang = BATARANG_PACKET(object);
+                batarang = object->player.batarang;
                 KeepPointOnScreen(&batarang->sight_position, &batarang->sight_velocity);
                 if (Batarang_FindTarget(WORLD, object, 0) != 0) {
                     NewBuzzFrames(object->player.pad->bound_pad, 1, 0);
@@ -682,7 +681,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     message.green = static_cast<u8>(colour[1]);
                     message.red = static_cast<u8>(colour[0]);
                     message.blue = static_cast<u8>(colour[2]);
-                    message.position = &BATARANG_PACKET(object)->sight_position;
+                    message.position = &object->player.batarang->sight_position;
                     message.text = text;
                     message.alpha = static_cast<i32>(((f64)0.2f * game_pulse + (f64)0.8f) * 128.0);
                     message.flags = GAMEMSG_ONE_FRAME | GAMEMSG_KEEP;
@@ -692,8 +691,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     message.scale = 3.0f;
                     message.unknown_4f = 4;
                     message.alpha = static_cast<i32>(128.0 * ((f64)0.8f - (f64)0.2f * game_pulse));
-                    for (i32 i = 0; i < BATARANG_PACKET(object)->active; ++i) {
-                        if (Batarang_GetTargetPos(BATARANG_PACKET(object), i, &position) != 0) {
+                    for (i32 i = 0; i < object->player.batarang->active; ++i) {
+                        if (Batarang_GetTargetPos((object->player.batarang), i, &position) != 0) {
                             message.position = &position;
                             AddGameMsg(&message);
                         }
@@ -751,7 +750,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
         }
     } else {
         PLAYERCHARACTERCONFIG *runtime = object->character_data->game_character;
-        batarang = BATARANG_PACKET(object);
+        batarang = object->player.batarang;
         if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (runtime->flags_090 & CHARACTER_RUNTIME_GOT_BATARANG) == 0 ||
              batarang == NULL || batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 ||
              (object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) == 0 || object->model_draw_result == 0 ||

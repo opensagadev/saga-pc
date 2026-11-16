@@ -2872,8 +2872,7 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
         closest_index = effect_index;
         closest_distance = ratio;
         for (i = 0; i < 128; ++i) {
-            if (part_types[i].effect_ids[0] != -1 &&
-                part_types[i].unknown_174 == (u32)effect_index) {
+            if (part_types[i].effect_ids[0] != -1 && part_types[i].unknown_174 == (u32)effect_index) {
                 ratio = requested_scale / part_types[i].scale;
                 ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
                 if (ratio < closest_distance) {

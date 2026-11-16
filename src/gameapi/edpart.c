@@ -309,24 +309,24 @@ void edpartInitType(i32 index) {
         i32 i;                                                                                                                             \
         if (part_types_used < 128) {                                                                                                       \
             for (index = 0; index < 128; ++index) {                                                                                        \
-                if (part_types[index].name[0] == 0) {                                                               \
-                    sprintf(part_types[index].name, "New%d", index);                                                \
+                if (part_types[index].name[0] == 0) {                                                                                      \
+                    sprintf(part_types[index].name, "New%d", index);                                                                       \
                     edpartInitType(index);                                                                                                 \
                     ++part_types_used;                                                                                                     \
                     part_scene[(list)] = (list) == 0 ? edbits_things_scene : edbits_base_scene;                                            \
-                    part_types[index].unknown_b3 = (list);                                                          \
-                    part_types[index].page = (list);                                                                \
+                    part_types[index].unknown_b3 = (list);                                                                                 \
+                    part_types[index].page = (list);                                                                                       \
                     part_page_on[(list)] = 1;                                                                                              \
                     part_page_used[(list)] = 1;                                                                                            \
                     part_scene_pageid[(list)] = (list);                                                                                    \
                     edpart_create_type = index;                                                                                            \
                     for (i = 0; i < 8; ++i) {                                                                                              \
-                        part_types[index].effect_ids[i] = -1;                                                       \
-                        part_types[index].effect_pages[i] = -1;                                                     \
+                        part_types[index].effect_ids[i] = -1;                                                                              \
+                        part_types[index].effect_pages[i] = -1;                                                                            \
                     }                                                                                                                      \
-                    part_types[index].unknown_160 = 1.0f;                                                           \
-                    part_types[index].unknown_164 = 1.0f;                                                           \
-                    part_types[index].unknown_168 = 1.0f;                                                           \
+                    part_types[index].unknown_160 = 1.0f;                                                                                  \
+                    part_types[index].unknown_164 = 1.0f;                                                                                  \
+                    part_types[index].unknown_168 = 1.0f;                                                                                  \
                     break;                                                                                                                 \
                 }                                                                                                                          \
             }                                                                                                                              \
@@ -408,8 +408,7 @@ void edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     for (index = 0; index < 128; ++index) {
         if (part_types[index].name[0] != 0 && part_types[index].unknown_b3 == 1) {
             selected = edpart_create_type == index;
-            eduiMenuAddItem(edpart_leveltype_menu,
-                            eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
+            eduiMenuAddItem(edpart_leveltype_menu, eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
             if (selected == 1) {
                 edpart_leveltype_menu->selected = edui_last_item;
             }

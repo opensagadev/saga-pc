@@ -9,17 +9,6 @@
 #include "nu2api/nucore/nustring.h"
 
 /* Do not split a "~~" pair, and keep a single '~' with the text after it. */
-#define KEEP_TILDE_PAIR(text, index)                                                                                                       \
-    if ((text)[index] == '~') {                                                                                                            \
-        if ((index) > 0 && (text)[(index) - 1] == '~')                                                                                     \
-            --(index);                                                                                                                     \
-    } else if ((index) > 0 && (text)[(index) - 1] == '~' && (index) > 1 && (text)[(index) - 2] != '~')                                     \
-    --(index)
-
-#define IS_BREAK_POINT(text, index)                                                                                                        \
-    (((text)[index] == ' ' && (text)[(index) + 1] != '!' && (text)[(index) + 1] != '?' && (text)[(index) + 1] != ';' &&                    \
-      (text)[(index) + 1] != ':') ||                                                                                                       \
-     ((text)[index] == '.' && (text)[(index) + 1] != '.') || (text)[index] == '-' || (text)[index] == ',')
 
 i32 FindNextBreak(u8 *text, i32 index) {
     i32 japanese = 0;
@@ -34,7 +23,8 @@ i32 FindNextBreak(u8 *text, i32 index) {
     while (text[index] >= 0x80 && text[index] <= 0xbf) {
         --index;
     }
-    if (IS_BREAK_POINT(text, index)) {
+    if (((text[index] == ' ' && text[index + 1] != '!' && text[index + 1] != '?' && text[index + 1] != ';' && text[index + 1] != ':') ||
+         (text[index] == '.' && text[index + 1] != '.') || text[index] == '-' || text[index] == ',')) {
         return index;
     }
     ascii_start = text[index] <= 0x7f;
@@ -49,14 +39,21 @@ i32 FindNextBreak(u8 *text, i32 index) {
         while (text[index] >= 0x80 && text[index] <= 0xbf) {
             ++index;
         }
-        if (IS_BREAK_POINT(text, index)) {
+        if (((text[index] == ' ' && text[index + 1] != '!' && text[index + 1] != '?' && text[index + 1] != ';' && text[index + 1] != ':') ||
+             (text[index] == '.' && text[index + 1] != '.') || text[index] == '-' || text[index] == ',')) {
             return index;
         }
         if (japanese && ((text[index] <= 0x7f && !ascii_start) || (text[index] >= 0x80 && ascii_start))) {
             break;
         }
     }
-    KEEP_TILDE_PAIR(text, index);
+    if (text[index] == '~') {
+        if (index > 0 && text[index - 1] == '~') {
+            --index;
+        }
+    } else if (index > 0 && text[index - 1] == '~' && index > 1 && text[index - 2] != '~') {
+        --index;
+    }
     return index;
 }
 
@@ -73,7 +70,8 @@ i32 FindNearestBreak(u8 *text, i32 index) {
     while (text[index] >= 0x80 && text[index] <= 0xbf) {
         --index;
     }
-    if (IS_BREAK_POINT(text, index)) {
+    if (((text[index] == ' ' && text[index + 1] != '!' && text[index + 1] != '?' && text[index + 1] != ';' && text[index + 1] != ':') ||
+         (text[index] == '.' && text[index + 1] != '.') || text[index] == '-' || text[index] == ',')) {
         return index;
     }
     ascii_start = text[index] <= 0x7f;
@@ -97,23 +95,45 @@ i32 FindNearestBreak(u8 *text, i32 index) {
         while (text[backward] >= 0x80 && text[backward] <= 0xbf) {
             --backward;
         }
-        if (IS_BREAK_POINT(text, forward)) {
+        if (((text[forward] == ' ' && text[forward + 1] != '!' && text[forward + 1] != '?' && text[forward + 1] != ';' &&
+              text[forward + 1] != ':') ||
+             (text[forward] == '.' && text[forward + 1] != '.') || text[forward] == '-' || text[forward] == ',')) {
             return forward;
         }
         if (japanese && ((text[forward] <= 0x7f && !ascii_start) || (text[forward] >= 0x80 && ascii_start))) {
-            KEEP_TILDE_PAIR(text, forward);
+            if (text[forward] == '~') {
+                if (forward > 0 && text[forward - 1] == '~') {
+                    --forward;
+                }
+            } else if (forward > 0 && text[forward - 1] == '~' && forward > 1 && text[forward - 2] != '~') {
+                --forward;
+            }
             return forward;
         }
-        if (IS_BREAK_POINT(text, backward)) {
+        if (((text[backward] == ' ' && text[backward + 1] != '!' && text[backward + 1] != '?' && text[backward + 1] != ';' &&
+              text[backward + 1] != ':') ||
+             (text[backward] == '.' && text[backward + 1] != '.') || text[backward] == '-' || text[backward] == ',')) {
             return backward;
         }
         if (japanese && ((text[backward] <= 0x7f && !ascii_start) || (text[backward] >= 0x80 && ascii_start))) {
             ++backward;
-            KEEP_TILDE_PAIR(text, backward);
+            if (text[backward] == '~') {
+                if (backward > 0 && text[backward - 1] == '~') {
+                    --backward;
+                }
+            } else if (backward > 0 && text[backward - 1] == '~' && backward > 1 && text[backward - 2] != '~') {
+                --backward;
+            }
             return backward;
         }
     }
-    KEEP_TILDE_PAIR(text, index);
+    if (text[index] == '~') {
+        if (index > 0 && text[index - 1] == '~') {
+            --index;
+        }
+    } else if (index > 0 && text[index - 1] == '~' && index > 1 && text[index - 2] != '~') {
+        --index;
+    }
     return index;
 }
 

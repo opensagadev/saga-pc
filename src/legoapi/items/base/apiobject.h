@@ -918,6 +918,8 @@ typedef struct PLAYERPACKET {        // size 0x788
 
     union { // size 0x4
         void *grapple;
+        struct GRAPPLE_MOTION *grapple_motion;
+        struct GIZBUILDIT *buildit;
         struct PART *force_throw_part;
         struct techno_s *techno;
         struct zipup_s *attached_zipup;

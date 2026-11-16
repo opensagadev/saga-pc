@@ -75,37 +75,9 @@ GIZMO *GizmoFindByData(void *, i32, void *);
 struct panel_movement_s;
 struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
 
-#define FALCON_SLOT(object) ((i8)(object)->unknown_280)
-
 /* Asteroid field. */
 
 /* Rotating rock at the end of AsteroidChase C. */
-
-#define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
-    do {                                                                                                                                   \
-        GIZMO *gizmo = LevGizmo[gizmo_index];                                                                                              \
-        if (gizmo != NULL && gizmo->object != NULL) {                                                                                      \
-            GIZMOPICKUP *pickup = gizmo->pickup;                                                                                           \
-            if ((pickup->flags & 0x48) == 0 && *(counter) < 10) {                                                                          \
-                ++*(counter);                                                                                                              \
-                if (*(counter) == 10) {                                                                                                    \
-                    NUVEC camera;                                                                                                          \
-                    NUVEC message_pos;                                                                                                     \
-                    camera.x = 0.0f;                                                                                                       \
-                    camera.y = 0.0f;                                                                                                       \
-                    camera.z = camera_distance;                                                                                            \
-                    NuVecRotateX(&camera, &camera, camera_pitch);                                                                          \
-                    NuVecRotateY(&camera, &camera, camera_yaw);                                                                            \
-                    NuVecAdd(&camera, &camera, &pickup->position);                                                                         \
-                    GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);                                \
-                    GizmoActivate((world)->gizmo_sys, LevGizmo[gizmo_index], 1, 1);                                                        \
-                    AddGameMsgCount(&message_pos, *(counter), 10, 200, 100, 30, 0.75f);                                                    \
-                } else {                                                                                                                   \
-                    AddGameMsgCount(average, *(counter), 10, 200, 100, 30, 0.75f);                                                         \
-                }                                                                                                                          \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-    } while (0)
 
 static void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
     if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->opponent == NULL) {
@@ -510,25 +482,25 @@ void DrawFalconSpotLights(GAMEOBJECT *object) {
         matrix = object->player.locator_matrices[4];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
-    spotLightA_yrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightA_yrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightA_yrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightA_yrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
+    if (spotLightA_yrot[((i8)(object)->unknown_280)] > 1.0f) {
+        spotLightA_yrot[((i8)(object)->unknown_280)] -= 1.0f;
     }
-    spotLightA_zrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightA_zrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightA_zrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightA_zrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
+    if (spotLightA_zrot[((i8)(object)->unknown_280)] > 1.0f) {
+        spotLightA_zrot[((i8)(object)->unknown_280)] -= 1.0f;
     }
     if (object->character_model->points_of_interest[5] != NULL) {
         matrix = object->player.locator_matrices[5];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
-    spotLightB_yrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightB_yrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightB_yrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightB_yrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
+    if (spotLightB_yrot[((i8)(object)->unknown_280)] > 1.0f) {
+        spotLightB_yrot[((i8)(object)->unknown_280)] -= 1.0f;
     }
-    spotLightB_zrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightB_zrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightB_zrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightB_zrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
+    if (spotLightB_zrot[((i8)(object)->unknown_280)] > 1.0f) {
+        spotLightB_zrot[((i8)(object)->unknown_280)] -= 1.0f;
     }
 }
 
@@ -1106,9 +1078,55 @@ void IncrementMinikitCounter(GAMEOBJECT *unused) {
     NUVEC average;
     Players_AveragePos(&average, NULL);
     if (world->current_level == HOTHBATTLEA_LDATA) {
-        INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 0, &minikitCounter_A, 10.0f, -0xe38, -0x2000);
+        {
+            GIZMO *gizmo = LevGizmo[0];
+            if (gizmo != NULL && gizmo->object != NULL) {
+                GIZMOPICKUP *pickup = gizmo->pickup;
+                if ((pickup->flags & 0x48) == 0 && minikitCounter_A < 10) {
+                    ++minikitCounter_A;
+                    if (minikitCounter_A == 10) {
+                        NUVEC camera;
+                        NUVEC message_pos;
+                        camera.x = 0.0f;
+                        camera.y = 0.0f;
+                        camera.z = 10.0f;
+                        NuVecRotateX(&camera, &camera, -0xe38);
+                        NuVecRotateY(&camera, &camera, -0x2000);
+                        NuVecAdd(&camera, &camera, &pickup->position);
+                        GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);
+                        GizmoActivate(world->gizmo_sys, LevGizmo[0], 1, 1);
+                        AddGameMsgCount(&message_pos, minikitCounter_A, 10, 200, 100, 30, 0.75f);
+                    } else {
+                        AddGameMsgCount(&average, minikitCounter_A, 10, 200, 100, 30, 0.75f);
+                    }
+                }
+            }
+        }
     } else if (world->current_level == dat_0087b204) {
-        INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 1, &minikitCounter_C, 25.0f, -0x1555, -0x871c);
+        {
+            GIZMO *gizmo = LevGizmo[1];
+            if (gizmo != NULL && gizmo->object != NULL) {
+                GIZMOPICKUP *pickup = gizmo->pickup;
+                if ((pickup->flags & 0x48) == 0 && minikitCounter_C < 10) {
+                    ++minikitCounter_C;
+                    if (minikitCounter_C == 10) {
+                        NUVEC camera;
+                        NUVEC message_pos;
+                        camera.x = 0.0f;
+                        camera.y = 0.0f;
+                        camera.z = 25.0f;
+                        NuVecRotateX(&camera, &camera, -0x1555);
+                        NuVecRotateY(&camera, &camera, -0x871c);
+                        NuVecAdd(&camera, &camera, &pickup->position);
+                        GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);
+                        GizmoActivate(world->gizmo_sys, LevGizmo[1], 1, 1);
+                        AddGameMsgCount(&message_pos, minikitCounter_C, 10, 200, 100, 30, 0.75f);
+                    } else {
+                        AddGameMsgCount(&average, minikitCounter_C, 10, 200, 100, 30, 0.75f);
+                    }
+                }
+            }
+        }
     }
 }
 

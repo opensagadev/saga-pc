@@ -60,9 +60,9 @@ typedef struct parttype_lookup_s { // size 0x178
         };
     }; // 0x160
 
-    f32 last_used_time;  // 0x16c
-    f32 scale;           // 0x170
-    u32 unknown_174;     // 0x174
+    f32 last_used_time; // 0x16c
+    f32 scale;          // 0x170
+    u32 unknown_174;    // 0x174
 } PARTTYPE_LOOKUP;
 
 typedef struct partdebrisentry_s { // size 0x14

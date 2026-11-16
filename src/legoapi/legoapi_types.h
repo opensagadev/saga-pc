@@ -298,7 +298,7 @@ typedef struct CHARPLATFORMSYS_s CHARPLATFORMSYS_s;
 typedef struct CHARPLATFORM_s CHARPLATFORM_s;
 typedef struct GAMEANTINODE_s GAMEANTINODE_s;
 typedef struct GIZBUILDITANIMDATA_s GIZBUILDITANIMDATA_s;
-typedef struct GIZBUILDIT_s GIZBUILDIT_s;
+typedef struct GIZBUILDIT GIZBUILDIT_s;
 typedef struct GIZFORCEANIMDATA_s GIZFORCEANIMDATA_s;
 typedef struct GIZOBSTACLESYS_s GIZOBSTACLESYS_s;
 typedef struct GIZPANEL_s GIZPANEL_s;
@@ -1495,46 +1495,6 @@ struct CABLE_s {                 // size 0x1ec
     u16 flags;                   // 0x1ea
 };
 
-struct GIZBUILDIT_s {                                  // size 0x84
-    char name[16];                                     // 0x00
-    struct gameanimset_s *anim_set;                    // 0x10
-    struct gameanimobj_s **anim_objects;               // 0x14
-    struct GIZBUILDIT_s *linked_buildit;               // 0x18
-    struct MechObjectInterface *mech_object_interface; // 0x1c
-    NUVEC file_position;                               // 0x20
-    NUVEC start_position;                              // 0x2c
-    NUVEC position;                                    // 0x38
-    f32 bounds_radius;                                 // 0x44
-    f32 step_timer;                                    // 0x48
-    f32 step_duration;                                 // 0x4c
-    f32 interaction_radius;                            // 0x50
-    f32 unknown_54;                                    // 0x54
-    f32 radius_scale;                                  // 0x58
-    i16 unknown_5c;                                    // 0x5c
-
-    union { // size 0x2
-        i16 unknown_5e;
-        u16 completion_score;
-    }; // 0x5e
-
-    i16 unknown_60;        // 0x60
-    i16 unknown_62;        // 0x62
-    NUVEC effect_position; // 0x64
-    f32 activation_radius; // 0x70
-    u8 anim_object_count;  // 0x74
-    u8 build_state;        // 0x75
-    u8 builders_active;    // 0x76
-    u8 built_object_count; // 0x77
-    u8 unknown_78;         // 0x78
-    u8 progress;           // 0x79
-    u16 state_flags;       // 0x7a
-    u16 unknown_7c;        // 0x7c
-    i16 room_index;        // 0x7e
-    i16 blowup_type;       // 0x80
-    u8 availability_flags; // 0x82
-    u8 unknown_83;         // 0x83
-};
-
 /* STATUS_STAGE_s.step: StatusStage_Reset sets STATUS_STEP_WAITING until the status background starts the stage
  * (DrawStatusBG_*); each update callback sets itself up in STATUS_STEP_START. The stages with one timed step run
  * it as STATUS_STEP_RUNNING; the others name their steps in gamestatus.c and status_alternate.cpp. The prompt
@@ -1955,7 +1915,7 @@ struct CHARPLATFORMSYS_s {              // size 0x1c
 };
 
 struct GIZBUILDITSYS_s {                 // size 0x14
-    struct GIZBUILDIT_s *buildits;       // 0x00
+    struct GIZBUILDIT *buildits;         // 0x00
     u16 count;                           // 0x04
     u16 capacity;                        // 0x06
     u16 max_animation_objects;           // 0x08
