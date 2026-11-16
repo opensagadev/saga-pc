@@ -1,12 +1,19 @@
 # Reviewed budget raises (tools/budget.py --guard). Budgets only go down; a change that
 # raises one adds a line here in the same change: FILE KEY NEW-VALUE REASON
 # config/oddscan-budget.json goto 398 retail block order of NuFoo needs a second label
+config/castscan-budget.json float-int 3118 quick run, settled in the refix
+config/castscan-budget.json float-width 3987 quick run, settled in the refix
+config/castscan-budget.json signedness 1898 quick run, settled in the refix
+config/declscan-budget.json A 24 quick run, settled in the refix
+config/oddscan-budget.json dense-function 1180 quick run, settled in the refix
+config/castscan-budget.json embedded-base 919 quick run, settled in the refix
+config/castscan-budget.json field-address 309 quick run, settled in the refix
 config/oddscan-budget.json include-mid-file 5 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json dense-function 1196 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json long-function 21 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json long-file 12 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
 config/oddscan-budget.json data-file 6 new layout class (tools/oddscan.py group h), counted after the stricter clang-format style
-config/oddscan-budget.json address-name 2272 rename batch 1: fun_0041aec0 and fun_006272a0 (source and map row each) and the keyboard-state accessors SetCustomBindingsActive/40/50 replace address- and offset-named provisional names
+config/oddscan-budget.json address-name 2272 rename batch 1: fun_0041aec0 and fun_006272a0 (source and map row each) and the keyboard-state accessors fun_006d4e20/40/50 replace address- and offset-named provisional names
 config/oddscan-budget.json data-file 7 one declarator per declaration (tools/onedecl.py) grows one file of declarations over 200 lines
 config/oddscan-budget.json dense-function 1216 one declarator per declaration (tools/onedecl.py): split local declarations lengthen 20 functions past 40 lines without a blank line
 config/oddscan-budget.json local-extern 51 one declarator per declaration (tools/onedecl.py): the class counts lines, split extern declarations in function bodies are 30 more lines
@@ -118,7 +125,7 @@ config/castscan-budget.json scalar-pun 305 port batch 3: the header-static Fabs 
 config/castscan-budget.json view-type 532 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
 config/castscan-budget.json void-pointer-cpp 1274 port batch 3: casts the new code keeps where saga.h types the member void * or as an overlay view
 config/declscan-budget.json D 2615 port batch 3: unit-local declarations of callees and globals the new functions need
-config/oddscan-budget.json address-name 3473 the keyboard-state accessors SetCustomBindingsActive/40/50 become PC_INPUT_RUNTIME_PC members: the class declaration in PCInput.h names them a second time
+config/oddscan-budget.json address-name 3473 the keyboard-state accessors fun_006d4e20/40/50 become PC_INPUT_RUNTIME_PC members: the class declaration in PCInput.h names them a second time
 config/oddscan-budget.json magic-bound 1668 the 24 appends of PC_INPUT_RUNTIME_PC::InitializeDefaultRecords become the member AddInputRecord: its existing record bound 32 leaves the macro body the textual scan skipped
 config/oddscan-budget.json view-type 197 header plan step 2: pointers to existing decomp.h view types spelled with their struct tag (and the tag forward-declared) in the module headers that use them, so those headers need not include decomp.h; no new view type
 config/oddscan-budget.json address-name 3513 port batch 4 (members pinned by class, misjudged cdecl functions): new address names fun_XXXXXXXX, literal flags and states, existing Pc and view member names
@@ -331,10 +338,3 @@ config/castscan-budget.json truncation 2186 quick run, settled in the refix
 config/oddscan-budget.json magic-mask 1048 quick run, settled in the refix
 config/castscan-budget.json raw-offset 359 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2473 quick run, settled in the refix
-config/castscan-budget.json float-int 3118 quick run, settled in the refix
-config/castscan-budget.json float-width 3987 quick run, settled in the refix
-config/castscan-budget.json signedness 1898 quick run, settled in the refix
-config/declscan-budget.json A 24 quick run, settled in the refix
-config/oddscan-budget.json dense-function 1180 quick run, settled in the refix
-config/castscan-budget.json embedded-base 919 quick run, settled in the refix
-config/castscan-budget.json field-address 309 quick run, settled in the refix
