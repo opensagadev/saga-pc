@@ -28,12 +28,30 @@ typedef struct animpacket_s {   // size 0x44
     i16 overlay_animation;      // 0x42
 } ANIMPACKET;
 
-typedef struct minianimpacket_s MINIANIMPACKET;
+/* The short packet a character without its own ANIMPACKET plays with (AnimPacketMiniToFull, AnimPacketFullToMini). */
+typedef struct minianimpacket_s { // size 0x24
+    f32 current_time;             // 0x00
+    f32 previous_time;            // 0x04
+    f32 blend_elapsed;            // 0x08
+    f32 blend_duration;           // 0x0c
+    f32 blend_source_time;        // 0x10
+    f32 blend_target_time;        // 0x14
+    u8 flags;                     // 0x18
+    u8 blending;                  // 0x19
+    i16 blend_source_animation;   // 0x1a
+    i16 blend_target_animation;   // 0x1c
+    i16 animation_index;          // 0x1e
+    i16 previous_animation;       // 0x20
+    i16 requested_animation;      // 0x22
+} MINIANIMPACKET;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     void ResetMiniAnimPacket(MINIANIMPACKET *, i32);
+    void AnimPacketMiniToFull(MINIANIMPACKET *, ANIMPACKET *);
+    void AnimPacketFullToMini(ANIMPACKET *, MINIANIMPACKET *);
     f32 *AnimPlaying(ANIMPACKET *, i32, i32, i32);
     i32 AnimBlendingFromTo(struct CHARACTER_MODEL_LAYERS *, ANIMPACKET *, i32, i32);
 #ifdef __cplusplus

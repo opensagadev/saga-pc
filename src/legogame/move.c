@@ -135,11 +135,6 @@ typedef struct CHARACTER_FALL_ANIMATION_READER {
     f32 fall_animation_timer;
 } CHARACTER_FALL_ANIMATION_READER;
 
-typedef struct default_animation_mini_request_s {
-    u8 unknown_0000[0x7d0];
-    DRAW_ATTACHMENTS_MINI packet;
-} DEFAULT_ANIMATION_MINI_REQUEST;
-
 typedef struct pod_camera_reader_s {
     u8 unknown_0[0x1038];
     f32 camera_shake_strength;
@@ -402,19 +397,6 @@ typedef struct lunge_target_slots_s {
     GAMEOBJECT *character_target;
     GIZMOBLOWUP *gizmo_target;
 } LUNGE_TARGET_SLOTS;
-
-struct minianimpacket_s {       // size 0x24
-    f32 current_time;           // 0x00
-    f32 previous_time;          // 0x04
-    u8 unknown_08[0xc];         // 0x08
-    f32 blend_target_time;      // 0x14
-    u8 flags;                   // 0x18
-    u8 blending;                // 0x19
-    u8 unknown_1a[4];           // 0x1a
-    i16 current_animation_id;   // 0x1e
-    i16 previous_animation_id;  // 0x20
-    i16 requested_animation_id; // 0x22
-};
 
 typedef struct jump_auxiliary_fields_s {
     u8 unknown_000[0x7b1];
@@ -7424,7 +7406,6 @@ void DisorientateCode(GAMEOBJECT *object, NUVEC *target, f32 distance) {
 
 void Animate_CHARACTER(GAMEOBJECT *object) {
     DEFAULT_ANIMATION_TIMERS *timers = (DEFAULT_ANIMATION_TIMERS *)object;
-    DEFAULT_ANIMATION_MINI_REQUEST *mini = (DEFAULT_ANIMATION_MINI_REQUEST *)object;
     i16 animation;
     i32 model_id;
     if (object->id == (u16)DefaultAnimationJabbaId && WORLD->current_level == HUB_LDATA) {
@@ -7500,24 +7481,24 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
             return;
         }
         if (animation != ACTION_NONE && apicharsys->models[model_id].model_data_b[animation] != NULL) {
-            mini->packet.requested_animation = animation;
+            object->mini_anim_packet.requested_animation = animation;
         } else {
-            mini->packet.requested_animation = 1;
+            object->mini_anim_packet.requested_animation = 1;
         }
-        UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f, FRAMETIME);
+        UpdateMiniAnimPacket(&apicharsys->models[model_id], &object->mini_anim_packet, (f32)((f64)FRAMETIME * 30.0), 0.0f, FRAMETIME);
     } else if (object->suit != NULL && (object->suit->flags & SUIT_GLIDE) != 0) {
         model_id = apicharsys->playermodelids[dat_007f17bc];
         if (model_id == -1) {
             return;
         }
         if (object->character_context == CHARACTER_CONTEXT_GLIDE) {
-            mini->packet.requested_animation = 45;
+            object->mini_anim_packet.requested_animation = 45;
         } else if (object->character_context == CHARACTER_CONTEXT_JUMP && object->action_movement_state == JUMP_KIND_SLAM) {
-            mini->packet.requested_animation = 33;
+            object->mini_anim_packet.requested_animation = 33;
         } else {
-            mini->packet.requested_animation = object->character_context == CHARACTER_CONTEXT_LAND_SLAM ? 34 : 44;
+            object->mini_anim_packet.requested_animation = object->character_context == CHARACTER_CONTEXT_LAND_SLAM ? 34 : 44;
         }
-        UpdateMiniAnimPacket(&apicharsys->models[model_id], &mini->packet, (f32)((f64)FRAMETIME * 30.0), 0.0f, FRAMETIME);
+        UpdateMiniAnimPacket(&apicharsys->models[model_id], &object->mini_anim_packet, (f32)((f64)FRAMETIME * 30.0), 0.0f, FRAMETIME);
     }
 }
 

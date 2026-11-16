@@ -79,19 +79,6 @@ struct PC_ANIMATION_RENDER_VIEW { // size 0x48
     f32 overlay_weight;           // 0x44
 };
 
-typedef struct minianimpacket_s { // size 0x24
-    f32 current_time;             // 0x00
-    f32 previous_time;            // 0x04
-    u8 unknown_08[0xc];           // 0x08
-    f32 blend_target_time;        // 0x14
-    u8 flags;                     // 0x18
-    u8 blending;                  // 0x19
-    u8 unknown_1a[4];             // 0x1a
-    i16 current_animation_id;     // 0x1e
-    i16 previous_animation_id;    // 0x20
-    i16 requested_animation_id;   // 0x22
-} MINIANIMPACKET;
-
 typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
     u32 pointer_table;                    // 0x0
     u32 animation_magic;                  // 0x4
@@ -1779,11 +1766,11 @@ void ResetMiniAnimPacket(MINIANIMPACKET *packet, i32 animation) {
         return;
     }
     packet->previous_time = 1.0f;
-    packet->requested_animation_id = (i16)animation;
+    packet->requested_animation = (i16)animation;
     packet->blend_target_time = 1.0f;
-    packet->previous_animation_id = (i16)animation;
+    packet->previous_animation = (i16)animation;
     packet->current_time = 1.0f;
-    packet->current_animation_id = (i16)animation;
+    packet->animation_index = (i16)animation;
     packet->blending = 0;
     packet->flags = 4;
 }
@@ -2073,18 +2060,18 @@ update_timers:
     }
 }
 
-void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET *destination) {
+void AnimPacketMiniToFull(MINIANIMPACKET *source, ANIMPACKET *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
     destination->blend_elapsed = source->blend_elapsed;
     destination->blend_duration = source->blend_duration;
-    destination->blend_source_time = source->source_time;
-    destination->blend_target_time = source->target_time;
+    destination->blend_source_time = source->blend_source_time;
+    destination->blend_target_time = source->blend_target_time;
     destination->flags = source->flags;
     destination->blending = source->blending;
-    destination->blend_source_animation = source->source_animation;
-    destination->blend_target_animation = source->target_animation;
-    destination->animation_index = source->animation;
+    destination->blend_source_animation = source->blend_source_animation;
+    destination->blend_target_animation = source->blend_target_animation;
+    destination->animation_index = source->animation_index;
     destination->previous_animation = source->previous_animation;
     destination->requested_animation = source->requested_animation;
     destination->reversed_3c = 0;
@@ -2093,23 +2080,23 @@ void AnimPacketMiniToFull(DRAW_ATTACHMENTS_MINI *source, ANIMPACKET *destination
     destination->overlay_animation = ACTION_NONE;
 }
 
-void AnimPacketFullToMini(ANIMPACKET *source, DRAW_ATTACHMENTS_MINI *destination) {
+void AnimPacketFullToMini(ANIMPACKET *source, MINIANIMPACKET *destination) {
     destination->current_time = source->current_time;
     destination->previous_time = source->previous_time;
     destination->blend_elapsed = source->blend_elapsed;
     destination->blend_duration = source->blend_duration;
-    destination->source_time = source->blend_source_time;
-    destination->target_time = source->blend_target_time;
+    destination->blend_source_time = source->blend_source_time;
+    destination->blend_target_time = source->blend_target_time;
     destination->flags = source->flags;
     destination->blending = source->blending;
-    destination->source_animation = source->blend_source_animation;
-    destination->target_animation = source->blend_target_animation;
-    destination->animation = source->animation_index;
+    destination->blend_source_animation = source->blend_source_animation;
+    destination->blend_target_animation = source->blend_target_animation;
+    destination->animation_index = source->animation_index;
     destination->previous_animation = source->previous_animation;
     destination->requested_animation = source->requested_animation;
 }
 
-void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS *model, DRAW_ATTACHMENTS_MINI *mini, f32 frame_step, f32 movement_speed, f32 blend_step) {
+void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS *model, MINIANIMPACKET *mini, f32 frame_step, f32 movement_speed, f32 blend_step) {
     union {
         ANIMPACKET packet;
         u32 words[18];

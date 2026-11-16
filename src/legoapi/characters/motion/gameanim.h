@@ -69,7 +69,7 @@ extern "C" {
     /* Proposed finite public interfaces; UpdateAnimTimer remains original-TU private. */
     void AnimatePlayer(GAMEOBJECT *);
     void UpdateAnimPacket(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, f32, f32, f32, f32);
-    void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS *, DRAW_ATTACHMENTS_MINI *, f32, f32, f32);
+    void UpdateMiniAnimPacket(CHARACTER_MODEL_LAYERS *, MINIANIMPACKET *, f32, f32, f32);
     void SetAnimTimeRandom(CHARACTER_MODEL_LAYERS *, ANIMPACKET *);
     GAMEANIMOBJ *GameAnimSet_AddObjectByName(GAMEANIMSET *, NUGSCN *, char *, f32, f32, i32, void *, char *, char *);
     i32 GizmoFileReadGameAnimSet(GAMEANIMSET *, void *, void (*)(GAMEANIMOBJ *, u8), u8, char *, char *);

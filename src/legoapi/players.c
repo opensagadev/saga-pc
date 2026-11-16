@@ -46,19 +46,6 @@
 #include <string.h>
 #include "gameapi/edtools/edui.h"
 
-struct minianimpacket_s {       // size 0x24
-    f32 current_time;           // 0x00
-    f32 previous_time;          // 0x04
-    u8 unknown_08[0xc];         // 0x08
-    f32 blend_target_time;      // 0x14
-    u8 flags;                   // 0x18
-    u8 blending;                // 0x19
-    u8 unknown_1a[4];           // 0x1a
-    i16 current_animation_id;   // 0x1e
-    i16 previous_animation_id;  // 0x20
-    i16 requested_animation_id; // 0x22
-};
-
 /* Private helpers and combo provider. */
 
 typedef struct player_reset_packet_s { // size 0x780
@@ -836,7 +823,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         GameObjectOrigin(object);
         ResetRumble(&object->pad->rumble);
         ResetLights(&object->position, &object->lighting_packet, WORLD->rtl_set);
-        ResetMiniAnimPacket((MINIANIMPACKET *)object->mini_anim_packet, -1);
+        ResetMiniAnimPacket(&object->mini_anim_packet, -1);
         object->sock_position.sock_index = -1;
         object->sock_position.segment = -1;
         if (WORLD->sock_sys != NULL) {

@@ -15,7 +15,6 @@
 struct AIPATHCNX;
 struct AIPATHNODE;
 struct AITRIGGERSET_PARTIAL;
-struct DRAW_ATTACHMENTS_MINI;
 struct GAMEDEBRISENTRY;
 struct GAMEPAD;
 struct PLAYERCHARACTERCONFIG;
@@ -1158,19 +1157,7 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x07cc
 
-    union { // size 0x24
-        u8 mini_anim_packet[0x24];
-
-        struct {                         // size 0x24
-            u8 unknown_7d0[0x14];        // 0x07d0
-            u8 *unknown_7e4;             // 0x07e4
-            u8 unknown_7e8;              // 0x07e8
-            u8 unknown_7e9[0x5];         // 0x07e9
-            i16 mini_current_animation;  // 0x07ee
-            i16 mini_previous_animation; // 0x07f0
-            u8 unknown_7f2[0x2];         // 0x07f2
-        };
-    }; // 0x07d0
+    MINIANIMPACKET mini_anim_packet; // 0x07d0
 
     i16 *weapon_model_override;                        // 0x07f4
     u8 unknown_7f8[0x4];                               // 0x07f8
@@ -1739,8 +1726,6 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void AnimPacketMiniToFull(struct DRAW_ATTACHMENTS_MINI *, ANIMPACKET *);
-    void AnimPacketFullToMini(ANIMPACKET *, struct DRAW_ATTACHMENTS_MINI *);
     extern f32 animduration_blendouttime;
     i32 AnimPacketModelsCompatible(ANIMPACKET *packet, i32 source_id, i32 target_id);
     i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);

@@ -25,22 +25,6 @@ typedef struct playerprogress_s { // size 0x10
     f32 field_c;                  // 0xc
 } PLAYERPROGRESS;
 
-typedef struct DRAW_ATTACHMENTS_MINI { // size 0x24
-    f32 current_time;                  // 0x00
-    f32 previous_time;                 // 0x04
-    f32 blend_elapsed;                 // 0x08
-    f32 blend_duration;                // 0x0c
-    f32 source_time;                   // 0x10
-    f32 target_time;                   // 0x14
-    u8 flags;                          // 0x18
-    u8 blending;                       // 0x19
-    i16 source_animation;              // 0x1a
-    i16 target_animation;              // 0x1c
-    i16 animation;                     // 0x1e
-    i16 previous_animation;            // 0x20
-    i16 requested_animation;           // 0x22
-} DRAW_ATTACHMENTS_MINI;
-
 typedef struct BLADE { // size 0x10
     i16 model_id;      // 0x0
     i16 glow_model;    // 0x2

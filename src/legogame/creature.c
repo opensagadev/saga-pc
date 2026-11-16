@@ -2549,7 +2549,7 @@ void AnimatePlayer(GAMEOBJECT *object) {
     f32 multiplier;
     f32 *time;
     object->anim_packet.previous_animation = object->anim_packet.animation_index;
-    object->mini_previous_animation = object->mini_current_animation;
+    object->mini_anim_packet.previous_animation = object->mini_anim_packet.animation_index;
     if ((object->flags_1f8 & 0x40000) == 0) {
         object->character_data->animate_fn(object);
     }
@@ -3703,7 +3703,7 @@ i32 NewPlayerCharacter(GAMEOBJECT *object, i32 id, i32 old_id, i32 unused) {
     object->current_hp = health;
     object->unknown_107e = hitpoints;
     object->flags_1fc_bit_13 = saved_flag;
-    ResetMiniAnimPacket((MINIANIMPACKET *)object->mini_anim_packet, -1);
+    ResetMiniAnimPacket(&object->mini_anim_packet, -1);
     object->weapon_scale = ((object->flags_e20 >> 16) & 1) != 0 ? 1.0 : 0.0;
     object->unknown_e33 = 0;
     if (on_surface == 0) {
@@ -4494,7 +4494,7 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
             return;
         }
         character_id = dat_007f17bc;
-        AnimPacketMiniToFull((DRAW_ATTACHMENTS_MINI *)object->mini_anim_packet, &animation.packet);
+        AnimPacketMiniToFull(&object->mini_anim_packet, &animation.packet);
     } else if (object->id == (u16)PunchRangeUnitId && (AnimPlaying(&object->anim_packet, ACTION_PUNCH, 1, 1) != NULL ||
                                                        AnimPlaying(&object->anim_packet, ACTION_PUNCH2, 1, 1) != NULL ||
                                                        AnimPlaying(&object->anim_packet, ACTION_PUNCH3, 1, 1) != NULL ||
@@ -4508,7 +4508,7 @@ void DrawCharacterAttachments(GAMEOBJECT *object, NUMTX *joint_matrices) {
         }
     } else if (object->id == (u16)dat_007f17c8) {
         character_id = dat_007f17cc;
-        AnimPacketMiniToFull((DRAW_ATTACHMENTS_MINI *)object->mini_anim_packet, &animation.packet);
+        AnimPacketMiniToFull(&object->mini_anim_packet, &animation.packet);
     } else if (object->id == (u16)dat_007f17d0 || object->id == (u16)dat_007f17d4) {
         if (AnimPacketModelsCompatible(&object->anim_packet, (i16)object->id, PunchRangeCompanionId) == 0) {
             return;
