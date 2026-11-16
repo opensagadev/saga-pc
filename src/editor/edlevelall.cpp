@@ -7352,7 +7352,7 @@ void ClassObjectListEntry::operator delete(void *memory) {
     theMemoryManager.FreePool(memory, sizeof(ClassObjectListEntry));
 }
 
-ClassObjectListEntry::ClassObjectListEntry() : ClassObject() {
+ClassObjectListEntry::ClassObjectListEntry() {
 }
 
 void ClassObject::fun_006b89c0(EdClass *object_class, void *object_data) {
