@@ -70,14 +70,14 @@ i32 NuRndrBeginScene(i32 begin_flags) {
     currentScene.dyn_light_count = 0;
     currentScene.dyn_light_ptr = NULL;
     currentScene.unknown_48 = 0;
-    currentScene.unknown_ac = 0;
-    currentScene.unknown_c4 = 0;
-    currentScene.unknown_e4 = 0;
-    currentScene.unknown_e0 = 0;
-    currentScene.unknown_178 = 0;
-    currentScene.unknown_174 = 0;
-    currentScene.unknown_188 = 0;
-    currentScene.unknown_214 = 0;
+    currentScene.dof.enabled = 0;
+    currentScene.texture_blend_enabled = 0;
+    currentScene.motion_effect_set = 0;
+    currentScene.motion_params_set = 0;
+    currentScene.accumulation_effect_set = 0;
+    currentScene.accumulation_params_set = 0;
+    currentScene.speed_blur.enabled = 0;
+    currentScene.backbuffer_copy_texture = 0;
     currentScene.scene_id = -1;
     currentScene.unknown_40 = -1;
     return 1;
@@ -360,46 +360,22 @@ void NuRndrSetBurnoutParameters(i32 view, const BURN_PARAMETERS *parameters) {
     currentScene.burnout_parameters = *parameters;
 }
 
-/* View of the scene's post-effect block at 0xac..0x187 (depth of field,
- * texture blend, camera and accumulation motion blur). */
-typedef struct NURNDR_EFFECTS_VIEW { // size 0xdc
-    NU_POST_DOF_PARAMETERS dof;      // 0x00
-    u32 texture_blend_enabled;       // 0x18
-    i32 texture_blend_arg0;          // 0x1c
-    i32 texture_blend_arg1;          // 0x20
-    NUVEC4 texture_blend_parameters; // 0x24
-    u32 motion_params_set;           // 0x34
-    u32 motion_effect_set;           // 0x38
-    NUMTX motion_previous;           // 0x3c
-    NUMTX motion_current;            // 0x7c
-    f32 motion_scale;                // 0xbc
-    f32 motion_maximum;              // 0xc0
-    f32 motion_falloff;              // 0xc4
-    u32 accumulation_params_set;     // 0xc8
-    u32 accumulation_effect_set;     // 0xcc
-    i32 accumulation_frames;         // 0xd0
-    f32 accumulation_mode;           // 0xd4
-    f32 accumulation_blend;          // 0xd8
-} NURNDR_EFFECTS_VIEW;
-
-#define NURNDR_EFFECTS ((NURNDR_EFFECTS_VIEW *)&currentScene.unknown_ac)
-
 void NuDepthOfFieldEffectEx(const NU_POST_DOF_PARAMETERS *parameters) {
-    NURNDR_EFFECTS->dof = *parameters;
+    currentScene.dof = *parameters;
     if (NuRndrDoingScreenGrab != 0) {
-        NURNDR_EFFECTS->dof.enabled = 0;
+        currentScene.dof.enabled = 0;
     }
 }
 
 void NuDepthOfFieldEffect(f32 strength, f32 near_distance, f32 far_distance) {
-    NURNDR_EFFECTS->dof.enabled = 1;
-    NURNDR_EFFECTS->dof.strength = strength;
-    NURNDR_EFFECTS->dof.near_distance = near_distance;
-    NURNDR_EFFECTS->dof.far_distance = far_distance;
-    NURNDR_EFFECTS->dof.bias = 0;
-    NURNDR_EFFECTS->dof.mode = 3;
+    currentScene.dof.enabled = 1;
+    currentScene.dof.strength = strength;
+    currentScene.dof.near_distance = near_distance;
+    currentScene.dof.far_distance = far_distance;
+    currentScene.dof.bias = 0;
+    currentScene.dof.mode = 3;
     if (NuRndrDoingScreenGrab != 0) {
-        NURNDR_EFFECTS->dof.enabled = 0;
+        currentScene.dof.enabled = 0;
     }
 }
 
@@ -416,39 +392,39 @@ void NuDepthOfFieldEffect2(f32 near_distance, f32 far_distance, f32 strength) {
 }
 
 void NuTextureBlendEffect(i32 arg0, i32 arg1, NUVEC4 *parameters) {
-    NURNDR_EFFECTS->texture_blend_arg0 = arg0;
-    NURNDR_EFFECTS->texture_blend_enabled = 1;
-    NURNDR_EFFECTS->texture_blend_arg1 = arg1;
-    NURNDR_EFFECTS->texture_blend_parameters = *parameters;
+    currentScene.texture_blend_arg0 = arg0;
+    currentScene.texture_blend_enabled = 1;
+    currentScene.texture_blend_arg1 = arg1;
+    currentScene.texture_blend_parameters = *parameters;
 }
 
 void NuCameraMotionBlurParams(const NUMTX *current) {
-    currentScene.unknown_e0 = 1;
-    NURNDR_EFFECTS->motion_current = *current;
+    currentScene.motion_params_set = 1;
+    currentScene.motion_current = *current;
 }
 
 void NuCameraMotionBlurEffect(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff) {
-    currentScene.unknown_e4 = 1;
-    NURNDR_EFFECTS->motion_previous = *previous;
-    NURNDR_EFFECTS->motion_current = *current;
-    NURNDR_EFFECTS->motion_scale = scale;
-    NURNDR_EFFECTS->motion_maximum = maximum;
-    NURNDR_EFFECTS->motion_falloff = falloff;
+    currentScene.motion_effect_set = 1;
+    currentScene.motion_previous = *previous;
+    currentScene.motion_current = *current;
+    currentScene.motion_scale = scale;
+    currentScene.motion_maximum = maximum;
+    currentScene.motion_falloff = falloff;
 }
 
 void NuAccumulationMotionBlurParams(i32 frames, f32 blend, f32 mode) {
-    NURNDR_EFFECTS->accumulation_blend = blend;
-    currentScene.unknown_174 = 1;
-    NURNDR_EFFECTS->accumulation_frames = frames;
-    NURNDR_EFFECTS->accumulation_mode = mode;
+    currentScene.accumulation_blend = blend;
+    currentScene.accumulation_params_set = 1;
+    currentScene.accumulation_frames = frames;
+    currentScene.accumulation_mode = mode;
 }
 
 void NuAccumulationMotionBlurEffect(i32 frames, f32 blend, f32 mode) {
-    NURNDR_EFFECTS->accumulation_blend = blend;
-    currentScene.unknown_174 = 1;
-    currentScene.unknown_178 = 1;
-    NURNDR_EFFECTS->accumulation_frames = frames;
-    NURNDR_EFFECTS->accumulation_mode = mode;
+    currentScene.accumulation_blend = blend;
+    currentScene.accumulation_params_set = 1;
+    currentScene.accumulation_effect_set = 1;
+    currentScene.accumulation_frames = frames;
+    currentScene.accumulation_mode = mode;
     motionBlurAccumActiveThisFrame = 1;
 }
 
@@ -491,13 +467,13 @@ void NuDynamicLightingGetParameterfv(i32 parameter, f32 *out) {
 }
 
 void NuLightSpeedBlurOldCameraPos(NUMTX *camera) {
-    NU_POST_SPEED_PARAMETERS *parameters = (NU_POST_SPEED_PARAMETERS *)&currentScene.unknown_188;
+    NU_POST_SPEED_PARAMETERS *parameters = &currentScene.speed_blur;
     parameters->current = *camera;
     NuMtxInv(&parameters->current, &parameters->current);
 }
 
 void NuBackbufferCopy(i32 texture_id) {
-    currentScene.unknown_214 = (u32)texture_id;
+    currentScene.backbuffer_copy_texture = texture_id;
 }
 
 f32 fun_005d5270(f32 value) {
@@ -534,64 +510,56 @@ static void NuRndrPrimSetColourPrivate(i32 colour) {
     NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
-#define LOCATOR_PRIM_POSITION(X, Y, Z)                                                                                                     \
-    do {                                                                                                                                   \
-        NuPrimStreamBufferPointer->vertex_ptr->x = (X);                                                                                    \
-        NuPrimStreamBufferPointer->vertex_ptr->y = (Y);                                                                                    \
-        NuPrimStreamBufferPointer->vertex_ptr->z = (Z);                                                                                    \
-        NuPrimStreamBufferPointer->void_ptr = NuPrimStreamBufferPointer->vertex_ptr + 1;                                                   \
-        ++NuPrimVertexCount;                                                                                                               \
-    } while (0)
+// Writes the position of the current primitive vertex and advances to the next one.
+static void NuRndrPrimPosition(f32 x, f32 y, f32 z) {
+    NuPrimStreamBufferPointer->vertex_ptr->x = x;
+    NuPrimStreamBufferPointer->vertex_ptr->y = y;
+    NuPrimStreamBufferPointer->vertex_ptr->z = z;
+    NuPrimStreamBufferPointer->void_ptr = NuPrimStreamBufferPointer->vertex_ptr + 1;
+    ++NuPrimVertexCount;
+}
 
 void NuRndrAxisArrowsMtx(NUMTX *matrix, f32 length, NUMTL *material) {
     f32 base = length * 0.8f;
     f32 width = length * 0.1f;
     NuPrim3DBegin(14, 5, material, matrix);
     NuRndrPrimSetColourPrivate((i32)0xff0000ff);
-    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimPosition(0, 0, 0);
     NuRndrPrimSetColourPrivate((i32)0xff0000ff);
-    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimPosition(length, 0, 0);
     NuRndrPrimSetColourPrivate((i32)0xff00ff00);
-    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimPosition(0, 0, 0);
     NuRndrPrimSetColourPrivate((i32)0xff00ff00);
-    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimPosition(0, length, 0);
     NuRndrPrimSetColourPrivate((i32)0xffff0000);
-    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimPosition(0, 0, 0);
     NuRndrPrimSetColourPrivate((i32)0xffff0000);
-    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuRndrPrimPosition(0, 0, length);
     NuPrim3DEnd();
     NuPrim3DBegin(15, 5, material, matrix);
     NuRndrPrimSetColourPrivate((i32)0xff0000ff);
-    LOCATOR_PRIM_POSITION(base, -width, 0);
+    NuRndrPrimPosition(base, -width, 0);
     NuRndrPrimSetColourPrivate((i32)0xff0000ff);
-    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimPosition(length, 0, 0);
     NuRndrPrimSetColourPrivate((i32)0xff0000ff);
-    LOCATOR_PRIM_POSITION(base, width, 0);
+    NuRndrPrimPosition(base, width, 0);
     NuPrim3DEnd();
     NuPrim3DBegin(15, 5, material, matrix);
     NuRndrPrimSetColourPrivate((i32)0xff00ff00);
-    LOCATOR_PRIM_POSITION(0, base, width);
+    NuRndrPrimPosition(0, base, width);
     NuRndrPrimSetColourPrivate((i32)0xff00ff00);
-    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimPosition(0, length, 0);
     NuRndrPrimSetColourPrivate((i32)0xff00ff00);
-    LOCATOR_PRIM_POSITION(0, base, -width);
+    NuRndrPrimPosition(0, base, -width);
     NuPrim3DEnd();
     NuPrim3DBegin(15, 5, material, matrix);
     NuRndrPrimSetColourPrivate((i32)0xffff0000);
-    LOCATOR_PRIM_POSITION(0, width, base);
+    NuRndrPrimPosition(0, width, base);
     NuRndrPrimSetColourPrivate((i32)0xffff0000);
-    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuRndrPrimPosition(0, 0, length);
     NuRndrPrimSetColourPrivate((i32)0xffff0000);
-    LOCATOR_PRIM_POSITION(0, -width, base);
+    NuRndrPrimPosition(0, -width, base);
     NuPrim3DEnd();
-}
-
-/* Prospective insertion in src/nu2api/nurndr.c before existing LOCATOR_PRIM_POSITION undef. */
-/* Genuine inline position operation.
-   Scalar parameters materialize coordinates before persistent stream writes.
-   No standalone Native provider/allocation credit; actual emission must be audited. */
-static void NuRndrPrimPosition(f32 x, f32 y, f32 z) {
-    LOCATOR_PRIM_POSITION(x, y, z);
 }
 
 void fun_005c2050(void) {
@@ -684,41 +652,41 @@ void NuRndrAxisBright(NUMTX *matrix, f32 length, i32 brightness) {
     i32 blue = (i32)(0xff000000u | ((brightness & 0xff) << 16));
     NuPrim3DBegin(14, 5, NULL, matrix);
     NuRndrPrimSetColourPrivate(red);
-    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimPosition(0, 0, 0);
     NuRndrPrimSetColourPrivate(red);
-    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimPosition(length, 0, 0);
     NuRndrPrimSetColourPrivate(green);
-    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimPosition(0, 0, 0);
     NuRndrPrimSetColourPrivate(green);
-    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimPosition(0, length, 0);
     NuRndrPrimSetColourPrivate(blue);
-    LOCATOR_PRIM_POSITION(0, 0, 0);
+    NuRndrPrimPosition(0, 0, 0);
     NuRndrPrimSetColourPrivate(blue);
-    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuRndrPrimPosition(0, 0, length);
     NuPrim3DEnd();
     NuPrim3DBegin(15, 5, NULL, matrix);
     NuRndrPrimSetColourPrivate(red);
-    LOCATOR_PRIM_POSITION(base, -width, 0);
+    NuRndrPrimPosition(base, -width, 0);
     NuRndrPrimSetColourPrivate(red);
-    LOCATOR_PRIM_POSITION(length, 0, 0);
+    NuRndrPrimPosition(length, 0, 0);
     NuRndrPrimSetColourPrivate(red);
-    LOCATOR_PRIM_POSITION(base, width, 0);
+    NuRndrPrimPosition(base, width, 0);
     NuPrim3DEnd();
     NuPrim3DBegin(15, 5, NULL, matrix);
     NuRndrPrimSetColourPrivate(green);
-    LOCATOR_PRIM_POSITION(0, base, width);
+    NuRndrPrimPosition(0, base, width);
     NuRndrPrimSetColourPrivate(green);
-    LOCATOR_PRIM_POSITION(0, length, 0);
+    NuRndrPrimPosition(0, length, 0);
     NuRndrPrimSetColourPrivate(green);
-    LOCATOR_PRIM_POSITION(0, base, -width);
+    NuRndrPrimPosition(0, base, -width);
     NuPrim3DEnd();
     NuPrim3DBegin(15, 5, NULL, matrix);
     NuRndrPrimSetColourPrivate(blue);
-    LOCATOR_PRIM_POSITION(0, width, base);
+    NuRndrPrimPosition(0, width, base);
     NuRndrPrimSetColourPrivate(blue);
-    LOCATOR_PRIM_POSITION(0, 0, length);
+    NuRndrPrimPosition(0, 0, length);
     NuRndrPrimSetColourPrivate(blue);
-    LOCATOR_PRIM_POSITION(0, -width, base);
+    NuRndrPrimPosition(0, -width, base);
     NuPrim3DEnd();
 }
 
@@ -744,9 +712,9 @@ void NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
     pos = -1.0f;
     for (i = 0; i <= columns; ++i) {
         NuRndrPrimSetColourPrivate((i32)0xff00ff00);
-        LOCATOR_PRIM_POSITION(pos, 0.0f, -1.0f);
+        NuRndrPrimPosition(pos, 0.0f, -1.0f);
         NuRndrPrimSetColourPrivate((i32)0xff00ff00);
-        LOCATOR_PRIM_POSITION(pos, 0.0f, 1.0f);
+        NuRndrPrimPosition(pos, 0.0f, 1.0f);
         pos += dx;
     }
     pos = -1.0f;
@@ -756,19 +724,18 @@ void NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
         } else {
             NuPrimStreamBufferPointer->vertex_ptr->colour = 0xff007f00;
         }
-        LOCATOR_PRIM_POSITION(-1.0f, 0.0f, pos);
+        NuRndrPrimPosition(-1.0f, 0.0f, pos);
         if (NuPrimNeedsOverbrightening != 0) {
             NuPrimStreamBufferPointer->vertex_ptr->colour = 0xff00ff00;
         } else {
             NuPrimStreamBufferPointer->vertex_ptr->colour = 0xff007f00;
         }
-        LOCATOR_PRIM_POSITION(1.0f, 0.0f, pos);
+        NuRndrPrimPosition(1.0f, 0.0f, pos);
         pos += dz;
     }
     NuPrim3DEnd();
 }
 
-#undef LOCATOR_PRIM_POSITION
 
 i32 NuRndrLine3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix) {
     NuPrim3DBegin(14, 7, material, matrix);
@@ -890,24 +857,24 @@ i32 NuRndrTri3dClip(NURND_VERTEX3D *vertices, i32 count, NUMTX *matrix, NUMTL *m
 
 extern i32 NuPrimCoordSystemStack[2];
 
-#define NURNDR_PRIM_UV(U, V)                                                                                                               \
-    do {                                                                                                                                   \
-        NULGTVERTEX *uv_vertex = NuPrimStreamBufferPointer->vertex_ptr;                                                                    \
-        uv_vertex->u = (U);                                                                                                                \
-        uv_vertex->v = (V);                                                                                                                \
-    } while (0)
+// Writes the texture coordinates of the current primitive vertex.
+static void NuRndrPrimUV(f32 u, f32 v) {
+    NULGTVERTEX *uv_vertex = NuPrimStreamBufferPointer->vertex_ptr;
+    uv_vertex->u = u;
+    uv_vertex->v = v;
+}
 
 void NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
     NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
     NuRndrPrimSetColourPrivate(colour);
-    NURNDR_PRIM_UV(0.0f, 0.0f);
+    NuRndrPrimUV(0.0f, 0.0f);
     NuPrimStreamBufferPointer->vertex_ptr->x = x0;
     NuPrimStreamBufferPointer->vertex_ptr->y = y0;
     NuPrimStreamBufferPointer->vertex_ptr->z = z0;
     NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
     ++NuPrimVertexCount;
     NuRndrPrimSetColourPrivate(colour);
-    NURNDR_PRIM_UV(1.0f, 1.0f);
+    NuRndrPrimUV(1.0f, 1.0f);
     NuPrimStreamBufferPointer->vertex_ptr->x = x1;
     NuPrimStreamBufferPointer->vertex_ptr->y = y1;
     NuPrimStreamBufferPointer->vertex_ptr->z = z1;
@@ -1286,7 +1253,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
                 colour = ((u32)alpha << 24) | 0x808080;
             }
             NuRndrPrimSetColourPrivate(colour);
-            NURNDR_PRIM_UV((f32)row * inv_row + pixelOffsetX, ((f32)col * inv_col + pixelOffsetY) * 0.9f);
+            NuRndrPrimUV((f32)row * inv_row + pixelOffsetX, ((f32)col * inv_col + pixelOffsetY) * 0.9f);
             NuPrim2DAddXYZ(x0, y0, 0.0f);
 
             direction.x = (1.0f + x1) - 1.0f;
@@ -1326,7 +1293,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
             }
             cacheValues[col] = (u8)MIN(255.0f, MAX(0.0f, brightness));
             NuRndrPrimSetColourPrivate(((u32)cacheValues[col] << 24) | 0x808080);
-            NURNDR_PRIM_UV((f32)(row + 1) * inv_row + pixelOffsetX, ((f32)col * inv_col + pixelOffsetY) * 0.9f);
+            NuRndrPrimUV((f32)(row + 1) * inv_row + pixelOffsetX, ((f32)col * inv_col + pixelOffsetY) * 0.9f);
             NuPrim2DAddXYZ(x1, y0, 0.0f);
             y0 += step_y;
         }
@@ -2049,12 +2016,12 @@ i32 NuRndrLine2d(NULINEVERTEX2D *vertices, NUMTL *material) {
     NuRndrPrimSetColourPrivate(vertices[0].colour);
     v = vertices[0].v;
     u = vertices[0].u;
-    NURNDR_PRIM_UV(u, v);
+    NuRndrPrimUV(u, v);
     NuPrim2DAddXYZ(vertices[0].x, vertices[0].y, 0.0f);
     NuRndrPrimSetColourPrivate(vertices[1].colour);
     v = vertices[1].v;
     u = vertices[1].u;
-    NURNDR_PRIM_UV(u, v);
+    NuRndrPrimUV(u, v);
     NuPrim2DAddXYZ(vertices[1].x, vertices[1].y, 0.0f);
     NuPrim2DEnd();
     return 1;
@@ -2062,10 +2029,10 @@ i32 NuRndrLine2d(NULINEVERTEX2D *vertices, NUMTL *material) {
 
 void NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material) {
     NuPrim2DBegin(16, 7, material);
-    NURNDR_PRIM_UV(u0, v0);
+    NuRndrPrimUV(u0, v0);
     NuRndrPrimSetColourPrivate(colour);
     NuPrim2DAddXYZ(x, y, z);
-    NURNDR_PRIM_UV(u1, v1);
+    NuRndrPrimUV(u1, v1);
     NuRndrPrimSetColourPrivate(colour);
     NuPrim2DAddXYZ(x + width, y + height, z);
     NuPrim2DEnd();
@@ -2073,10 +2040,10 @@ void NuRndrRect(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 
 
 void NuRndrRectUV2dNoScale(f32 x, f32 y, f32 z, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1, i32 colour, NUMTL *material) {
     NuPrim2DBegin(16, 7, material);
-    NURNDR_PRIM_UV(u0, v0);
+    NuRndrPrimUV(u0, v0);
     NuRndrPrimSetColourPrivate(colour);
     NuPrim2DAddXYZ(x, y, 0.0f);
-    NURNDR_PRIM_UV(u1, v1);
+    NuRndrPrimUV(u1, v1);
     NuRndrPrimSetColourPrivate(colour);
     NuPrim2DAddXYZ(x + width, y + height, 0.0f);
     NuPrim2DEnd();
@@ -2190,7 +2157,7 @@ static NUMTX NuLightSpeedBlurViewProjection = {0};
 static NUMTX NuLightSpeedBlurPreviousViewProjection = {0};
 
 void NuLightSpeedBlur(i32 reuse_camera, f32 scale) {
-    NU_POST_SPEED_PARAMETERS *parameters = (NU_POST_SPEED_PARAMETERS *)&currentScene.unknown_188;
+    NU_POST_SPEED_PARAMETERS *parameters = &currentScene.speed_blur;
     f32 frame_time;
     if (NuLightSpeedBlurEnabled == 0) {
         return;

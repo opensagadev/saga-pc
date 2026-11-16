@@ -103,6 +103,8 @@ class ShaderCompilerParser { // size 0x45c
     void LoadSourceLines(ShaderCompilerBufferAllocator *, i32);
     ShaderParserNode *Parse(ShaderCompilerBufferAllocator *, i32, u8, VirtualStackAllocator *);
     void FlushText();
+    char *CopyToArena(const char *string);
+    void AppendNode(ShaderParserNode *node);
     void DefineMacro(const char *name, const char *value);
     void UndefineMacro(const char *name);
     void BeginIf(ShaderConditionNode *condition);

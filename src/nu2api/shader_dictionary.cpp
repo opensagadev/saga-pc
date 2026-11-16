@@ -118,46 +118,41 @@ ShaderMacroDefinition *ShaderCompilerDictionary::FindDefinition(const char *name
     return NULL;
 }
 
-// AddDefinition body; inlined into EmitProgram only.
 char *ShaderCloneArenaString(const char *source, VirtualStackAllocator *arena);
-#define SHADER_ADD_DEFINITION(DICTIONARY, NAME, VALUE, EMIT)                                                                               \
-    do {                                                                                                                                   \
-        ShaderMacroDefinition *definition = (DICTIONARY)->FindDefinition(NAME);                                                            \
-        if (definition != NULL) {                                                                                                          \
-            const char *stored_value;                                                                                                      \
-            if ((VALUE) != NULL) {                                                                                                         \
-                stored_value = ShaderCloneArenaString(VALUE, &(DICTIONARY)->scratch);                                                      \
-            } else {                                                                                                                       \
-                stored_value = NULL;                                                                                                       \
-            }                                                                                                                              \
-            definition->value = stored_value;                                                                                              \
-            definition->emit = (u8)(EMIT);                                                                                                 \
-        } else {                                                                                                                           \
-            char *stored_name = ShaderCloneArenaString(NAME, &(DICTIONARY)->scratch);                                                      \
-            const char *stored_value;                                                                                                      \
-            if ((VALUE) != NULL) {                                                                                                         \
-                stored_value = ShaderCloneArenaString(VALUE, &(DICTIONARY)->scratch);                                                      \
-            } else {                                                                                                                       \
-                stored_value = NULL;                                                                                                       \
-            }                                                                                                                              \
-            ShaderMacroDefinition *storage = reinterpret_cast<ShaderMacroDefinition *>((DICTIONARY)->scratch.cursor);                      \
-            (DICTIONARY)->scratch.cursor += sizeof(ShaderMacroDefinition);                                                                 \
-            if (storage != NULL) {                                                                                                         \
-                storage->name = stored_name;                                                                                               \
-                storage->value = stored_value;                                                                                             \
-                storage->emit = (u8)(EMIT);                                                                                                \
-                definition = storage;                                                                                                      \
-            } else {                                                                                                                       \
-                definition = NULL;                                                                                                         \
-            }                                                                                                                              \
-            (DICTIONARY)->programs[(DICTIONARY)->program_count++] = definition;                                                            \
-        }                                                                                                                                  \
-    } while (0)
 
 // noinline: the original calls AddDefinition out of line from ShaderCompilerDictionary::EmitVertexInput; VC8 would
 // inline it there.
 __declspec(noinline) void ShaderCompilerDictionary::AddDefinition(const char *name, const char *value, i32 emit) {
-    SHADER_ADD_DEFINITION(this, name, value, emit);
+    ShaderMacroDefinition *definition = FindDefinition(name);
+    if (definition != NULL) {
+        const char *stored_value;
+        if (value != NULL) {
+            stored_value = ShaderCloneArenaString(value, &scratch);
+        } else {
+            stored_value = NULL;
+        }
+        definition->value = stored_value;
+        definition->emit = (u8)emit;
+    } else {
+        char *stored_name = ShaderCloneArenaString(name, &scratch);
+        const char *stored_value;
+        if (value != NULL) {
+            stored_value = ShaderCloneArenaString(value, &scratch);
+        } else {
+            stored_value = NULL;
+        }
+        ShaderMacroDefinition *storage = reinterpret_cast<ShaderMacroDefinition *>(scratch.cursor);
+        scratch.cursor += sizeof(ShaderMacroDefinition);
+        if (storage != NULL) {
+            storage->name = stored_name;
+            storage->value = stored_value;
+            storage->emit = (u8)emit;
+            definition = storage;
+        } else {
+            definition = NULL;
+        }
+        programs[program_count++] = definition;
+    }
 }
 
 void ShaderCompilerDictionary::BindOutputBuffer(ShaderCompilerBufferAllocator *buffer) {
@@ -769,7 +764,7 @@ void ShaderCompilerDictionary::EmitProgram(ShaderCompilerBufferAllocator *output
         output->AppendText("#define ");
         output->AppendText(alias);
         output->AppendText("\r\n");
-        SHADER_ADD_DEFINITION(this, alias, NULL, 0);
+        AddDefinition(alias, NULL, 0);
         if (node->type == 21) {
             continue;
         }

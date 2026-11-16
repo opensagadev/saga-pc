@@ -157,28 +157,29 @@ struct PC_NATIVE_DEBUG_POSITION {
     f32 w;
 };
 
-#define DEBUG_POINT(index, px, py)                                                                                                         \
-    do {                                                                                                                                   \
-        position.x = (px);                                                                                                                 \
-        position.y = (py);                                                                                                                 \
-        position.z = 0.5f;                                                                                                                 \
-        position.w = 1.0f;                                                                                                                 \
-        *(PC_NATIVE_DEBUG_POSITION *)&vertex[index].x = position;                                                                          \
-    } while (0)
-#define DEBUG_RECT(start, l, t, r, b)                                                                                                      \
-    DEBUG_POINT(start, l, t);                                                                                                              \
-    DEBUG_POINT(start + 1, r, t);                                                                                                          \
-    DEBUG_POINT(start + 2, r, b);                                                                                                          \
-    DEBUG_POINT(start + 3, l, t);                                                                                                          \
-    DEBUG_POINT(start + 4, r, b);                                                                                                          \
-    DEBUG_POINT(start + 5, l, b)
+static void DebugPoint(PC_NATIVE_DEBUG_VERTEX *vertex, f32 x, f32 y) {
+    PC_NATIVE_DEBUG_POSITION position;
+    position.x = x;
+    position.y = y;
+    position.z = 0.5f;
+    position.w = 1.0f;
+    *(PC_NATIVE_DEBUG_POSITION *)&vertex->x = position;
+}
+
+// Two triangles covering the rectangle, from vertex[0] on.
+static void DebugRect(PC_NATIVE_DEBUG_VERTEX *vertex, f32 left, f32 top, f32 right, f32 bottom) {
+    DebugPoint(&vertex[0], left, top);
+    DebugPoint(&vertex[1], right, top);
+    DebugPoint(&vertex[2], right, bottom);
+    DebugPoint(&vertex[3], left, top);
+    DebugPoint(&vertex[4], right, bottom);
+    DebugPoint(&vertex[5], left, bottom);
+}
 
 void PC_NATIVE_DEBUG_STATE::UpdateGeometry() {
-    PC_NATIVE_DEBUG_POSITION position;
-    PC_NATIVE_DEBUG_VERTEX *vertex = vertices;
-    DEBUG_RECT(0, left + 1, top + 1, right, bottom);
-    DEBUG_RECT(6, left, top, right - 1, bottom - 1);
-    DEBUG_RECT(12, left + 1, top + 1, right - 1, bottom - 1);
+    DebugRect(&vertices[0], left + 1, top + 1, right, bottom);
+    DebugRect(&vertices[6], left, top, right - 1, bottom - 1);
+    DebugRect(&vertices[12], left + 1, top + 1, right - 1, bottom - 1);
     for (i32 i = 0; i < 6; i++) {
         vertices[i].colour = current_header->low_colour;
     }
@@ -188,9 +189,9 @@ void PC_NATIVE_DEBUG_STATE::UpdateGeometry() {
     for (i32 i = 12; i < 18; i++) {
         vertices[i].colour = current_header->face_colour;
     }
-    DEBUG_RECT(18, left + 5, top + 15, (right - 5) - 1, (bottom - 40) - 1);
-    DEBUG_RECT(24, (left + 5) + 1, (top + 15) + 1, right - 5, bottom - 40);
-    DEBUG_RECT(30, (left + 5) + 1, (top + 15) + 1, (right - 5) - 1, (bottom - 40) - 1);
+    DebugRect(&vertices[18], left + 5, top + 15, (right - 5) - 1, (bottom - 40) - 1);
+    DebugRect(&vertices[24], (left + 5) + 1, (top + 15) + 1, right - 5, bottom - 40);
+    DebugRect(&vertices[30], (left + 5) + 1, (top + 15) + 1, (right - 5) - 1, (bottom - 40) - 1);
     for (i32 i = 18; i < 24; i++) {
         vertices[i].colour = current_header->low_colour;
     }
@@ -200,9 +201,9 @@ void PC_NATIVE_DEBUG_STATE::UpdateGeometry() {
     for (i32 i = 30; i < 36; i++) {
         vertices[i].colour = current_header->inner_colour;
     }
-    DEBUG_RECT(36, (left + 5) + 1, (bottom - 35) + 1, right - 5, bottom - 5);
-    DEBUG_RECT(42, left + 5, bottom - 35, (right - 5) - 1, (bottom - 5) - 1);
-    DEBUG_RECT(48, (left + 5) + 1, (bottom - 35) + 1, (right - 5) - 1, (bottom - 5) - 1);
+    DebugRect(&vertices[36], (left + 5) + 1, (bottom - 35) + 1, right - 5, bottom - 5);
+    DebugRect(&vertices[42], left + 5, bottom - 35, (right - 5) - 1, (bottom - 5) - 1);
+    DebugRect(&vertices[48], (left + 5) + 1, (bottom - 35) + 1, (right - 5) - 1, (bottom - 5) - 1);
     for (i32 i = 36; i < 42; i++) {
         vertices[i].colour = current_header->high_colour;
     }
@@ -213,9 +214,6 @@ void PC_NATIVE_DEBUG_STATE::UpdateGeometry() {
         vertices[i].colour = current_header->inner_colour;
     }
 }
-
-#undef DEBUG_RECT
-#undef DEBUG_POINT
 
 PC_NATIVE_DEBUG_STATE::PC_NATIVE_DEBUG_STATE() {
     enabled = 1;

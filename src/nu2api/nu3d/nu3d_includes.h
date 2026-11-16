@@ -1170,19 +1170,25 @@ typedef struct nurndrlibscene_s { // size 0x218
         BURN_PARAMETERS burnout_parameters;
     }; // 0x058
 
-    u32 unknown_ac;          // 0x0ac
-    u8 opaque_b0_c4[0x14];   // 0x0b0
-    u32 unknown_c4;          // 0x0c4
-    u8 opaque_c8_e0[0x18];   // 0x0c8
-    u32 unknown_e0;          // 0x0e0
-    u32 unknown_e4;          // 0x0e4
-    u8 opaque_e8_174[0x8c];  // 0x0e8
-    u32 unknown_174;         // 0x174
-    u32 unknown_178;         // 0x178
-    u8 opaque_17c_188[0xc];  // 0x17c
-    u32 unknown_188;         // 0x188
-    u8 opaque_18c_214[0x88]; // 0x18c
-    u32 unknown_214;         // 0x214
+    NU_POST_DOF_PARAMETERS dof;          // 0x0ac
+    u32 texture_blend_enabled;           // 0x0c4
+    i32 texture_blend_arg0;              // 0x0c8
+    i32 texture_blend_arg1;              // 0x0cc
+    NUVEC4 texture_blend_parameters;     // 0x0d0
+    u32 motion_params_set;               // 0x0e0
+    u32 motion_effect_set;               // 0x0e4
+    NUMTX motion_previous;               // 0x0e8
+    NUMTX motion_current;                // 0x128
+    f32 motion_scale;                    // 0x168
+    f32 motion_maximum;                  // 0x16c
+    f32 motion_falloff;                  // 0x170
+    u32 accumulation_params_set;         // 0x174
+    u32 accumulation_effect_set;         // 0x178
+    i32 accumulation_frames;             // 0x17c
+    f32 accumulation_mode;               // 0x180
+    f32 accumulation_blend;              // 0x184
+    NU_POST_SPEED_PARAMETERS speed_blur; // 0x188
+    i32 backbuffer_copy_texture;         // 0x214
 } NURNDRLIBSCENE;
 
 #ifdef __cplusplus

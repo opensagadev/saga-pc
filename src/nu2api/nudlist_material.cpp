@@ -454,20 +454,19 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *material) {
 }
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
-#define POST_BIND_GLOBAL_TEXTURE(stage, global)                                                                                            \
-    do {                                                                                                                                   \
-        GRAPHICS_RENDER_TEXTURE *bound = (global);                                                                                         \
-        if (bound != NULL) {                                                                                                               \
-            u32 *tuple = &bound->flags;                                                                                                    \
-            if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1])          \
-                PCGraphicsSetSamplerTuple(stage, tuple);                                                                                   \
-            PCDeviceSetTexture(stage, bound->resource);                                                                                    \
-        } else {                                                                                                                           \
-            PCDeviceSetTexture(stage, NULL);                                                                                               \
-        }                                                                                                                                  \
-    } while (0)
+static void PostBindGlobalTexture(i32 stage, GRAPHICS_RENDER_TEXTURE *bound) {
+    if (bound != NULL) {
+        u32 *tuple = &bound->flags;
+        if ((u32)PCDeviceSamplerInvalidation[stage][0] != tuple[0] || (u32)PCDeviceSamplerInvalidation[stage][1] != tuple[1]) {
+            PCGraphicsSetSamplerTuple(stage, tuple);
+        }
+        PCDeviceSetTexture(stage, bound->resource);
+    } else {
+        PCDeviceSetTexture(stage, NULL);
+    }
+}
 
-// One vertex-shader tap offset; rounds both coordinates through f32 temporaries.
+// One vertex-shader tap offset.
 struct __declspec(align(16)) POST_BLUR_LOW_OFFSET {
     f32 x;
     f32 y;
@@ -475,13 +474,10 @@ struct __declspec(align(16)) POST_BLUR_LOW_OFFSET {
     f32 w;
 };
 
-#define POST_BLUR_LOW_SET_OFFSET(offset, offset_x, offset_y)                                                                               \
-    do {                                                                                                                                   \
-        f32 set_x = (f32)(offset_x);                                                                                                       \
-        f32 set_y = (f32)(offset_y);                                                                                                       \
-        (offset).x = set_x;                                                                                                                \
-        (offset).y = set_y;                                                                                                                \
-    } while (0)
+static void PostBlurLowSetOffset(POST_BLUR_LOW_OFFSET &offset, f32 x, f32 y) {
+    offset.x = x;
+    offset.y = y;
+}
 
 extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, GRAPHICS_RENDER_TEXTURE *textures, i32 first_lod,
                                i32 iterations, i32 levels, bool mip_chain, f32 radius, POST_SHADER_PROGRAM *program) {
@@ -533,14 +529,14 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             vertical[2].w = 0;
             vertical[3].z = 0;
             vertical[3].w = 0;
-            POST_BLUR_LOW_SET_OFFSET(horizontal[0], dx * -.5, dy);
-            POST_BLUR_LOW_SET_OFFSET(vertical[0], dx * .5, dy);
-            POST_BLUR_LOW_SET_OFFSET(horizontal[1], dx, dy * .5);
-            POST_BLUR_LOW_SET_OFFSET(vertical[1], dx, dy * -.5);
-            POST_BLUR_LOW_SET_OFFSET(horizontal[2], dx * .5, dy * -1.0);
-            POST_BLUR_LOW_SET_OFFSET(vertical[2], dx * -.5, dy * -1.0);
-            POST_BLUR_LOW_SET_OFFSET(horizontal[3], dx * -1.0, dy * .5);
-            POST_BLUR_LOW_SET_OFFSET(vertical[3], dx * -1.0, dy * -.5);
+            PostBlurLowSetOffset(horizontal[0], dx * -.5, dy);
+            PostBlurLowSetOffset(vertical[0], dx * .5, dy);
+            PostBlurLowSetOffset(horizontal[1], dx, dy * .5);
+            PostBlurLowSetOffset(vertical[1], dx, dy * -.5);
+            PostBlurLowSetOffset(horizontal[2], dx * .5, dy * -1.0);
+            PostBlurLowSetOffset(vertical[2], dx * -.5, dy * -1.0);
+            PostBlurLowSetOffset(horizontal[3], dx * -1.0, dy * .5);
+            PostBlurLowSetOffset(vertical[3], dx * -1.0, dy * -.5);
             f32 bias[4] = {1, 1, PostBlurInputBias / (f32)width, PostBlurInputBias / (f32)height};
             f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height, 1.0f / (f32)work_width,
                                   1.0f / (f32)work_height};
@@ -664,10 +660,10 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
                 (((PCGraphicsPostEffectWorkTexture->flags & 0xfffffbff) | 0x300) & 0xffffdfff) | 0x1800;
             PCGraphicsPostEffectWorkTexture->flags =
                 (((PCGraphicsPostEffectWorkTexture->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff) | 0x200000;
-            POST_BIND_GLOBAL_TEXTURE(0, PCGraphicsPostEffectWorkTexture);
-            POST_BIND_GLOBAL_TEXTURE(1, PCGraphicsPostEffectWorkTexture);
-            POST_BIND_GLOBAL_TEXTURE(2, PCGraphicsPostEffectWorkTexture);
-            POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectWorkTexture);
+            PostBindGlobalTexture(0, PCGraphicsPostEffectWorkTexture);
+            PostBindGlobalTexture(1, PCGraphicsPostEffectWorkTexture);
+            PostBindGlobalTexture(2, PCGraphicsPostEffectWorkTexture);
+            PostBindGlobalTexture(3, PCGraphicsPostEffectWorkTexture);
             PCDeviceBackend.DrawPostEffectQuad();
             input = output;
             input_lod = output_lod;
@@ -838,7 +834,7 @@ void NuMainFilter::RenderBloom() {
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;
     PCGraphicsPostEffectBackBufferTexture->flags =
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfffffbff) | 0x300) & 0xffffdfff | 0x1800;
-    POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectBackBufferTexture);
+    PostBindGlobalTexture(3, PCGraphicsPostEffectBackBufferTexture);
     PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
     PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
     PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
@@ -938,11 +934,11 @@ void NuSpeedBlurFilter::render() {
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfff5ffff) | 0x40000) & 0xfc2fffff | 0x200000;
     PCGraphicsPostEffectBackBufferTexture->flags =
         ((PCGraphicsPostEffectBackBufferTexture->flags & 0xfffffbff) | 0x300) & 0xffffdfff | 0x1800;
-    POST_BIND_GLOBAL_TEXTURE(0, PCGraphicsPostEffectBackBufferTexture);
+    PostBindGlobalTexture(0, PCGraphicsPostEffectBackBufferTexture);
     if (PCDeviceHardwareVertexProcessingPC <= 1) {
-        POST_BIND_GLOBAL_TEXTURE(1, PCGraphicsPostEffectBackBufferTexture);
-        POST_BIND_GLOBAL_TEXTURE(2, PCGraphicsPostEffectBackBufferTexture);
-        POST_BIND_GLOBAL_TEXTURE(3, PCGraphicsPostEffectBackBufferTexture);
+        PostBindGlobalTexture(1, PCGraphicsPostEffectBackBufferTexture);
+        PostBindGlobalTexture(2, PCGraphicsPostEffectBackBufferTexture);
+        PostBindGlobalTexture(3, PCGraphicsPostEffectBackBufferTexture);
     }
     PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
     PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 0);
