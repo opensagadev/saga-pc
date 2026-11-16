@@ -59,6 +59,7 @@ extern "C" {
     void *GizTorps_ReserveBufferSpace(void *world_ptr);
     void GizTorps_Reset(void *world_ptr, void *arg1, void *arg2);
     extern i32 giztorpmachine_gizmotype_id;
+    ADDGIZMOTYPE *GizTorpMachine_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

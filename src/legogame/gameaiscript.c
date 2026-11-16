@@ -105,6 +105,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include "legoapi/gizmos/door/gizspinner.h"
 
 typedef union AI_ACTION_FLAGS_EF4 { // size 0x4
     u32 word;
@@ -150,7 +151,6 @@ typedef struct torpedo_action_packet_s { // size 0x88
 
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
-void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 f32 debug_condition = 0;
 NUGSPLINE *script_spline_selected = 0;
 static i32 prev_droid_ix = 0;
@@ -234,8 +234,6 @@ typedef struct ai_trigger_object_s { // size 0x1073
     u8 unknown_0000[0x1072];         // 0x0000
     u8 grapple_direction;            // 0x1072
 } AI_TRIGGER_OBJECT;
-
-f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
 
 u32 LEGO_AIPATHCNX_BIGJUMP;
 u32 LEGO_AIPATHCNX_REQUIRESPERMISSION = 0;

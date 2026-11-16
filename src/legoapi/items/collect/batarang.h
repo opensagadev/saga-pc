@@ -44,6 +44,7 @@ extern "C" {
     i32 Batman_PrepareObstacle(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
     i32 Batman_PrepareSpecialUse(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
     i32 Batman_PrepareTakeOverJump(AIPACKET *packet, APIOBJECT *object, i32 checks_unused);
+    extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 #ifdef __cplusplus
 }
 #endif

@@ -88,6 +88,8 @@ extern "C" {
     extern i32 RopeCurveSubdivisions;
     extern u32 GRAPPLE_RGBA;
     void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material);
+    i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
+    void Grapple_DrawLine(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

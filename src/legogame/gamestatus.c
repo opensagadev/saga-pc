@@ -43,9 +43,7 @@
 #include "nu2api/numath/nufloat.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
-
-void Text_FillInExtendedSaveInfo(void);
-i32 TriggerAutoSave(void);
+#include "legoapi/core/startup/text.h"
 
 static f32 StatusLerp(f32 to, f32 from, f32 blend) {
     f32 result = (to - from) * blend + from;

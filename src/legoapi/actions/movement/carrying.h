@@ -48,6 +48,8 @@ extern "C" {
     i32 SuperCarry_Possible(GAMEOBJECT *, i32);
     void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP *, i32);
     void SuperCarry_MoveCode(struct WORLDINFO_s *, GAMEOBJECT *);
+    extern u8 SuperCarryPlayerRgb[2][3];
+    void SuperCarry_DrawObject(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

@@ -55,6 +55,8 @@
 #include "nu2api/numath/nuvec4.h"
 #include "nu2api/numusic/numusic.h"
 #include <stdio.h>
+#include "legoapi/ai/game/creature.h"
+#include "nu2api/nusound/nusound.h"
 static f32 MaxRadialCamY = 0;
 static NUVEC4 RadialMoveCentre = {0};
 static f32 RadialPlayerRadius[2];
@@ -299,7 +301,6 @@ extern "C" {
     i32 DogfightBoltModelsFirst[4] = {303, 305, 301, 301};
     i32 DogfightBoltModelsSecond[4] = {304, 306, 302, 302};
     extern i32 DogfightDebrisKeys[4];
-    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
     f32 DogfightCollisionRadiusSquared = 2.0f;
 
@@ -350,7 +351,6 @@ extern "C" {
 
     void FlightSplineCapacityDiagnostic(char *filename);
 
-    void SetPreSeekStartPoint(f32 offset);
     i32 DogfightDebrisKeys[4] = {-1, -1, -1, -1};
 
     static void CopyFlightMatrix(NUMTX *destination, const NUMTX *source);

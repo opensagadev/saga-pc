@@ -72,6 +72,8 @@ extern "C" {
     void GizDrawBuildItPiece(struct gameobject_s *, i32);
     void Hub_LockUnlockDoors(struct WORLDINFO_s *world);
     void Indy_GameAISysInit(void);
+    extern i32 gizbuildit_gizmotype_id;
+    void GizBuildIt_KillParts(GIZBUILDIT_s *);
 #ifdef __cplusplus
 }
 #endif

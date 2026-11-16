@@ -70,6 +70,14 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
 #include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/gizmo/base/gizmessage.h"
+#include "legoapi/gizmo/object/giztorpedo.h"
+#include "legoapi/gizmos/object/gizpanel.h"
+#include "legoapi/gizmos/traps/attracto.h"
+#include "legoapi/gizmos/traps/gizbombgen.h"
+#include "legoapi/gizmos/trigger/gizrandom.h"
+#include "legoapi/gizmos/trigger/giztimer.h"
+#include "legoapi/props/doors/doors.h"
 
 ADDGIZMOTYPE *GizBuildIts_RegisterGizmo(i32);
 ADDGIZMOTYPE *Signals_RegisterGizmo(i32);
@@ -78,18 +86,10 @@ ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32);
 ADDGIZMOTYPE *Ledges_RegisterGizmo(i32);
 ADDGIZMOTYPE *Spinner_RegisterGizmo(i32);
 ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32);
-ADDGIZMOTYPE *Attractos_RegisterGizmo(i32);
 ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32);
 ADDGIZMOTYPE *GizTurrets_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizTimer_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizRandom_RegisterGizmo(i32);
-ADDGIZMOTYPE *Door_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizAIMessage_RegisterGizmo(i32);
 ADDGIZMOTYPE *Push_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizBombGen_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32);
 ADDGIZMOTYPE *Teleport_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizTorpMachine_RegisterGizmo(i32);
 
 const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
 const f64 PlayerSlideSpeed = 1.2000000476837158;

@@ -6,6 +6,7 @@
 extern "C" {
 #endif
     extern i32 traffic_portalling;
+    void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system);
 #ifdef __cplusplus
 }
 #endif

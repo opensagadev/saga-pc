@@ -50,6 +50,7 @@ struct GIZBOMBGENSYS_s {                  // size 0x14
 extern "C" {
 #endif
     extern i32 bombgen_gizmotype_id;
+    ADDGIZMOTYPE *GizBombGen_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

@@ -189,6 +189,7 @@ extern "C" {
     void HothEscapeD_Init(struct WORLDINFO_s *);
     void HothEscapeD_Reset(struct WORLDINFO_s *);
     void HothEscapeD_Update(struct WORLDINFO_s *);
+    extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #ifdef __cplusplus
 }
 #endif

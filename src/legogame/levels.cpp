@@ -128,25 +128,25 @@
 #include <string.h>
 #include <stdio.h>
 #include "legoapi/world/levels/hub.h"
+#include "gameapi/edbits.h"
+#include "legoapi/actions/character/tagging.h"
+#include "legoapi/audio/specialsfx.h"
+#include "legoapi/gizmos/door/gizspinner.h"
+#include "legoapi/gizmos/traps/attracto.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/props/doors/doors.h"
+#include "legoapi/world/levels/episodeIV.h"
 
 extern "C" void FmvPlatformUpdate(void);
-extern "C" {
-    void ClearTakeOverObjectSys(void);
-    extern void *Door_Last;
-}
 
 extern "C" {
     extern AREA_DATA *ANEWHOPE_ADATA;
 }
 
 extern "C" {
-    void InitTexAnimScripts(char **table);
     extern char *TexAnimScriptNamesTitle[3];
     extern char *TexAnimScriptNamesGame[32];
 }
-extern "C" void CreateUsefulMaterials(void);
-extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
-extern "C" void ParticleReset(void);
 
 extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
@@ -186,32 +186,6 @@ extern "C" void KashyyykC_Init(WORLDINFO *);
 extern "C" void KashyyykC_Update(WORLDINFO *);
 extern "C" void VaderB_Init(WORLDINFO *);
 extern "C" void VaderB_DrawPanel(WORLDINFO *);
-extern "C" void BlockadeRunnerB_Init(WORLDINFO *);
-extern "C" void BlockadeRunnerB_Update(WORLDINFO *);
-extern "C" void BlockadeRunnerC_Init(WORLDINFO *);
-extern "C" void BlockadeRunnerD_Reset(WORLDINFO *);
-extern "C" void BlockadeRunnerD_Update(WORLDINFO *);
-extern "C" void MosEisleyB_Init(WORLDINFO *);
-extern "C" void MosEisleyD_AlwaysUpdate(WORLDINFO *);
-extern "C" void MosEisleyE_Init(WORLDINFO *);
-extern "C" void MosEisleyE_Reset(WORLDINFO *);
-extern "C" void MosEisleyE_Update(WORLDINFO *);
-extern "C" void DeathStarRescueB_Init(WORLDINFO *);
-extern "C" void DeathStarRescueB_Update(WORLDINFO *);
-extern "C" void DeathStarRescueB_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarRescueC_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarEscapeA_Update(WORLDINFO *);
-extern "C" void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarEscapeB_Draw(WORLDINFO *);
-extern "C" void DeathStarEscapeC_Init(WORLDINFO *);
-extern "C" void DeathStarEscapeC_Update(WORLDINFO *);
-extern "C" void DeathStarEscapeC_Reset(WORLDINFO *);
-extern "C" void DeathStarEscapeD_Update(WORLDINFO *);
-extern "C" void DeathStarBattleC_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarBattleDInit(WORLDINFO *);
-extern "C" void DeathStarBattleDUpdate(WORLDINFO *);
-extern "C" void DeathStarBattleDDraw(WORLDINFO *);
-extern "C" void DeathStarBattleDReset(WORLDINFO *);
 extern "C" {
     extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 }
@@ -221,7 +195,6 @@ extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
 extern "C" {
-    void SaveSceneObjectAnimTFactors(NUGSCN *scene);
 
     typedef struct world_script_progress_s {
         char name[16];
@@ -271,9 +244,7 @@ typedef struct world_load_reader_s {
     void *climb_object_system;
 } WORLD_LOAD_READER;
 
-extern "C" void Attractos_InitTerrain(WORLDINFO *);
 extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
-extern "C" void GizSpinners_InitTerrain(WORLDINFO *world);
 extern "C" void Signals_InitTerrain(WORLDINFO *);
 
 extern "C" {

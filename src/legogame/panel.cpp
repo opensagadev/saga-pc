@@ -64,6 +64,8 @@
 #include "nu2api/nustencilshadows_PC.h"
 #include <stdio.h>
 #include <string.h>
+#include "legoapi/cutscenes/cutscenes.h"
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 extern "C" {
     extern f32 HudBossIconScale;
@@ -100,7 +102,6 @@ extern "C" {
     extern f32 HudLevelTitleScale;
     extern f32 HudLevelTitleScaleX;
     extern f32 HudLevelTitleWidth;
-    void CutScene_DrawSubtitles(void);
     extern i32 FPSDISPLAY;
     extern f32 HudNameScale;
     extern f32 HudNameWidth;
@@ -120,11 +121,8 @@ extern "C" {
     extern i32 HudPausePromptRed;
     extern i32 HudPausePromptGreen;
     extern u8 HudPausePromptBlue;
-    void Arcade_ResetPanel(void);
-    void Arcade_DrawPanel(i32 paused);
 }
 extern "C" NUMTL *FadeMtl2;
-extern "C" void DrawPauseFade(void);
 
 typedef struct PANEL_PRIM_VERTEX {
     f32 x;

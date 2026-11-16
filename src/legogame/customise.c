@@ -52,6 +52,8 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+#include "legoapi/core/startup/text.h"
+#include "legoapi/gizmo/base/gizmo.h"
 
 typedef struct customiser_game_setting_s {
     char *name;
@@ -89,10 +91,8 @@ typedef struct custom_material_update_s {
 
 extern NUVEC CustomisePos[2];
 i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
+
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
-void Hub_ClearStats(void);
-void Text_FillInExtendedSaveInfo(void);
-i32 TriggerAutoSave(void);
 
 static void CustomiserMtxSetRotateZ(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

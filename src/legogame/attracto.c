@@ -32,6 +32,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
+#include "legoapi/items/collect/batarang.h"
 
 typedef struct attracto_progress_recovered_s { // size 0x2c
     u8 counts[32];                             // 0x00
@@ -70,8 +71,6 @@ typedef struct attracto_shard_reader_s { // size 0x54
     GAMEOBJECT *collector; // 0x44
     NUVEC velocity;        // 0x48
 } ATTRACTO_SHARD_READER;
-
-extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 AttractoFabs(f32 f) {

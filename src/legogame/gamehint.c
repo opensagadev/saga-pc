@@ -25,8 +25,7 @@
 #include "legoapi/menus/core/panel.h"
 #include "legoapi/menus/screens/shop.h"
 #include "legoapi/props/objects/zipup.h"
-
-void Text_ExpandAllButtonStrings(char *, char *);
+#include "legoapi/core/startup/text.h"
 
 f32 CurrentHintAlpha(void) {
     f32 alpha;

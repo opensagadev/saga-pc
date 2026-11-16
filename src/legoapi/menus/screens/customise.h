@@ -53,6 +53,8 @@ extern "C" {
     extern u8 downrepeatcount[2];
     extern u8 rightrepeatcount[2];
     void Customiser_SetUpCharacterData(struct customiser_config_s *customiser);
+    extern NUVEC CustomisePos[2];
+    void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 #ifdef __cplusplus
 }
 #endif

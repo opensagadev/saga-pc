@@ -53,6 +53,8 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
+#include "legoapi/gizmos/transport/grapples.h"
+#include "legoapi/menus/screens/customise.h"
 
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
@@ -61,9 +63,7 @@ extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 extern struct nuvec_s *shopcamlookat;
 extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;
-extern NUVEC CustomisePos[2];
 extern NUVEC GunshipAOffset;
-extern f32 HUB_MINIKITVIEWER_CAMDY;
 extern f32 PodCamDist;
 extern i32 movegamecamera_forcesock;
 extern i32 netcamera;
@@ -82,14 +82,11 @@ extern f32 CamWalkerRadius;
 extern f32 CamWalkerLift;
 extern f32 CamDewbackRadius;
 extern f32 CamDewbackLift;
-void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 void GetShopCamLookPos(struct nuvec_s *position);
 i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed, struct nuvec_s *player_camera_positions,
                   struct nuvec_s *player_positions, i32 player_count, struct sockposition_s *camera_socket_position,
                   struct nuvec_s *camera_position, struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
                   f32 *camera_shake, f32 *separation_scale);
-
-i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 CameraFabs(f32 f) {

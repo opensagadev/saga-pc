@@ -175,6 +175,11 @@ extern "C" {
     extern AIACTIONDEF lego_aiactiondefs[];
     extern AICONDITIONDEF lego_aiconditiondefs[];
     extern i32 Action_HelpWithTriggers(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    extern i32 turret_gizmotype_id;
+    extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+    extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
 #ifdef __cplusplus
 }
 #endif

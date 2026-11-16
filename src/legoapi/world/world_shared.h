@@ -87,6 +87,7 @@ extern "C" {
     extern COLLECTION_BUILD MiniKitCollection;
     void CharScenes_LevelLoad(WORLDINFO *);
     void Faders_Draw(WORLDINFO *world);
+    void Faders_Reset(WORLDINFO *world);
 #ifdef __cplusplus
 }
 #endif

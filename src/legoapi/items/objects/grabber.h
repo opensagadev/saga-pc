@@ -14,6 +14,7 @@ extern "C" {
     extern i16 GrabMagnetId;
     extern i16 RobotBaseId;
     void Grabber_Configure(WORLDINFO *, char *);
+    void Grabber_Reset(WORLDINFO *world);
 #ifdef __cplusplus
 }
 #endif

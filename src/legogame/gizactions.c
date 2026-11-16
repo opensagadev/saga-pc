@@ -35,8 +35,10 @@
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
+#include "legoapi/ai/core/aisysall.h"
+#include "legoapi/ai/game/creature.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
 
-void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 i32 turret_gizmotype_id;
 
 i32 obstacle_gizmotype_id;
@@ -47,11 +49,6 @@ typedef struct ACTIVATE_CHAR_BUILDIT_VIEW {
     u8 unknown_40[0x34];
     u16 angle;
 } ACTIVATE_CHAR_BUILDIT_VIEW;
-
-extern i32 gizbuildit_gizmotype_id;
-GAMEOBJECT *ActivateCharacter(char *, NUVEC *, i32);
-void DeactivateCharacter(char *);
-void GizBuildIt_KillParts(GIZBUILDIT_s *);
 
 void GizAction_ActivateEffect(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     char *name;

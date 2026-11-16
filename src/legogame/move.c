@@ -125,6 +125,9 @@
 #include <string.h>
 #include <float.h>
 #include <stdlib.h>
+#include "legoapi/actions/character/snake.h"
+#include "legoapi/actions/combat/whip.h"
+#include "legoapi/world/levels/episodeII.h"
 
 typedef struct default_animation_timers_s {
     u8 unknown_0000[0xd24];
@@ -148,11 +151,8 @@ typedef struct pod_camera_reader_s {
 extern i32 LandspeederExhaustJoints[3];
 
 void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
 void Detonator_MoveCode(GAMEOBJECT *);
 void Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void Whip_MoveCode(GAMEOBJECT *);
 
 typedef struct movement_suit_s {
     u8 unknown_00[0xc];
@@ -277,7 +277,6 @@ typedef struct critter_object_reader_s {
 } CRITTER_OBJECT_READER;
 
 void *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count);
-void UpdateSnakeBody(GAMEOBJECT *object);
 
 /* Private helpers and combo provider. */
 typedef struct COMBO_STATE_VIEW {

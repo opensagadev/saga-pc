@@ -25,6 +25,8 @@
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
+#include "gameapi/ai/aisys/gameaiscript.h"
+#include "legoapi/world/levels/episodeV.h"
 
 extern f32 StarWarsJumpDistance[3];
 
@@ -35,11 +37,6 @@ typedef struct STARWARS_PREPARE {      // size 0x8
 
 extern STARWARS_PREPARE starwars_prepareforspecialmove[8];
 extern AI_MID_SPECIAL_MOVE starwars_midspecialmovefns[4];
-extern u32 LEGO_AIPATHCNX_BIGJUMP;
-extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
-extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
-extern u32 LEGO_AIPATHCNX_JUMP_NOW;
-extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
 i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;

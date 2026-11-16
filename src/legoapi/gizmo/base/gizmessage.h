@@ -42,6 +42,7 @@ extern "C" {
     i32 GizAIMessage_GetOutput(GIZMO *gizmo, i32 output_index, i32 arg2);
     char *GizAIMessage_GetOutputName(GIZMO *gizmo, i32 output_index);
     extern i32 gizaimessage_gizmotype_id;
+    ADDGIZMOTYPE *GizAIMessage_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

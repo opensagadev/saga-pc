@@ -212,7 +212,6 @@ extern char ShopUserCode[6];
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
-extern i32 HubForceShopSave;
 extern f32 ShopPurchasePulseDuration;
 extern AREA_DATA *ANEWHOPE_ADATA;
 extern i32 ShopCodeCharacter;

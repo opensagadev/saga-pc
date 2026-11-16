@@ -28,6 +28,7 @@ extern "C" {
     i32 GizTimer_Load(void *world_info, void *arg1);
     void *GizTimer_ReserveBufferSpace(void *world_info);
     void GizTimer_Update(void *world_info, void *arg1, f32 delta_time);
+    ADDGIZMOTYPE *GizTimer_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

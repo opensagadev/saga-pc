@@ -104,6 +104,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <float.h>
+#include "legoapi/actions/movement/carrying.h"
 
 typedef struct creature_crate_part_view_s {
     u8 unknown_000[0x20c];
@@ -111,7 +112,6 @@ typedef struct creature_crate_part_view_s {
 } CREATURE_CRATE_PART_VIEW;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
-extern u8 SuperCarryPlayerRgb[2][3];
 
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,
    physical calling convention and finite reader cohorts independently reviewed.

@@ -108,6 +108,10 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
 #include <string.h>
+#include "legoapi/actions/character/transform.h"
+#include "legoapi/actions/movement/carrying.h"
+#include "legoapi/characters/motion/camera.h"
+#include "legoapi/gizmos/transport/grapples.h"
 
 typedef struct GAMEPAD_RESET {     // size 0x5c
     void *bound_pad;               // 0x00
@@ -342,8 +346,6 @@ typedef struct player_init_flags_s {
     u32 stored_flag : 1;
 } PLAYER_INIT_FLAGS;
 
-extern i32 movegamecamera_forcesock;
-
 typedef union DRAW_ATTACHMENTS_PACKET {
     ANIMPACKET packet;
     u32 words[18];
@@ -375,10 +377,6 @@ typedef struct draw_process_flags_s {
     u32 flags_ef4_bits_0_7 : 8;
     u32 previous_model_draw_result : 1;
 } DRAW_PROCESS_FLAGS;
-
-void Grapple_DrawLine(GAMEOBJECT *);
-void SuperCarry_DrawObject(GAMEOBJECT *);
-void TransformDrawTarget(NUVEC *, f32, f32);
 
 typedef struct ai_creature_init_packet_s {
     u8 unknown_000[0xa0];

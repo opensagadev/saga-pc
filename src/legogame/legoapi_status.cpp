@@ -61,6 +61,7 @@
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/Stubs.h"
 #include "nu2api/nuwin32/d3dCore.h"
+#include "legoapi/items/collect/minikits.h"
 static i32 goldbrickmsgcount = 0;
 
 /* Walks the two adjacent 0x14-byte rumble records. */
@@ -72,9 +73,6 @@ typedef struct status_world_minikit_reader_s {
 
 extern "C" i16 dat_00880bc0;
 
-extern "C" {
-    i32 AllMiniKitsDone(AREASAVE_s *save);
-}
 extern "C" {
 
     f32 StatusScoreRatio(f32 numerator, f32 denominator) {

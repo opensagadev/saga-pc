@@ -60,8 +60,8 @@
 #include "nu2api/numusic/sfx.h"
 #include <string.h>
 #include <float.h>
+#include "legoapi/gizmos/object/gizobstacle.h"
 
-u32 GizObstacles_TotalScore(WORLDINFO *world);
 u32 GizTurrets_TotalScore(WORLDINFO *world);
 
 PICKUP_TYPE_SYSTEM GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};

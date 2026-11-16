@@ -43,6 +43,7 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+#include "legoapi/ai/game/creature.h"
 
 static f32 ZipUpRiderHeight = 0.5f;
 static f32 ZipUpRiderOffsetScale = 0.9f;
@@ -56,8 +57,6 @@ f32 ZipUpRopeHalfWidth = 0.01f;
 f32 ZipUpMarkerOffsetZ = 0.9229f;
 f32 ZipUpMarkerOffsetY = 0.84f;
 static f32 ZipUpSwingOffsetLength = 1.9236159f;
-
-i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
 
 typedef struct zipup_transport_view_s { // size 0xdb0
     u8 unknown_00[0x748];               // 0x000

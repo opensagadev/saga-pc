@@ -52,6 +52,9 @@ extern "C" {
     i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
     void SetTexAnimSignals(void);
     extern u64 CharacterMaskAll;
+    void CreateUsefulMaterials(void);
+    void InitTexAnimScripts(char **table);
+    void SaveSceneObjectAnimTFactors(NUGSCN *scene);
 #ifdef __cplusplus
 }
 #endif

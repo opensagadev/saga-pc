@@ -29,6 +29,7 @@ extern "C" {
     extern f32 KITPOS2YPc;
     i32 AllMiniKitsDone(struct AREASAVE_s *);
     i32 AllMiniKitsDone(struct AREASAVE_s *);
+    void MiniKits_Init(VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }
 #endif

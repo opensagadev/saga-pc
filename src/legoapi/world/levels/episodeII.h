@@ -164,6 +164,7 @@ extern "C" {
     void KaminoE_Reset(WORLDINFO *);
     void KaminoE_Update(WORLDINFO *);
     void KaminoOutro_Init(WORLDINFO *);
+    void GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

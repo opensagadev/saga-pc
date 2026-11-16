@@ -15,6 +15,7 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
+#include "legoapi/gizmos/traps/attracto.h"
 
 typedef struct shard_progress_recovered_s { // size 0x30
     u32 collected[4];                       // 0x00
@@ -23,7 +24,6 @@ typedef struct shard_progress_recovered_s { // size 0x30
 } SHARD_PROGRESS;
 
 extern char *Shard_OutputName;
-void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
 
 typedef struct SHARD_LOST_OWNER {
     u8 unknown_00[0x3c];

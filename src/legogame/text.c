@@ -12,9 +12,7 @@
 #include "nu2api/nucore/nustring.h"
 #include <stdio.h>
 #include <string.h>
-
-extern i16 dat_00880894;
-extern i16 dat_00880898;
+#include "legoapi/text_tables.h"
 
 void Text_SetLanguage_Game(i32 language) {
     switch (language) {

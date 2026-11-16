@@ -117,6 +117,7 @@ extern "C" {
     extern AIACTIONDEF api_aiactiondefs[];
     void AINetTrace(const char *format, ...);
     void AINetReplicateAction(AIACTION *action, struct AIPACKET *packet);
+    void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 #ifdef __cplusplus
 }
 #endif

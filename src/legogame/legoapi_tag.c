@@ -36,12 +36,12 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 
 /* Defined in render.c; an empty body in this unit would let the call be dropped. */
-void TakeOverReleaseDiagnostic(char *rider_name, char *object_name);
 
 i32 Tag_Mode = 2;
 

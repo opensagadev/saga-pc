@@ -10,6 +10,7 @@ extern "C" {
     void SetSpecialSfxBits(i32 *, i32 *, WORLDINFO *);
     i32 SpecialSfxLoad(char *, void *);
     void UpdateSpecialSfx(WORLDINFO *);
+    void ParticleReset(void);
 #ifdef __cplusplus
 }
 #endif

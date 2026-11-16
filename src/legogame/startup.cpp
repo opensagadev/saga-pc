@@ -85,12 +85,12 @@
 #include "legogame/batman_gameai.h"
 #include "legoapi/world/levels/episodeIII.h"
 #include "legoapi/world/levels/episodeVI.h"
+#include "legoapi/items/collect/minikits.h"
+#include "legogame/gamestatus.h"
+#include "nu2api/nucore/nucore_includes.h"
 
 extern "C" char *lsw_memcard_objname;
 extern "C" void Alt_registerStatusScreen(void);
-extern "C" {
-    void MiniKits_Init(VARIPTR *, VARIPTR *);
-}
 
 static i32 PcInputCommandAllowed(i32 port, i32 command) {
     if (PcInput_PortIsKeyboard(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
@@ -110,7 +110,6 @@ extern "C" {
     extern FadeWipe fadeWipe;
     extern FadeStillWipe fadeStillWipe;
     extern FadeStill fadeStill;
-    void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end);
 }
 
 extern "C" {
@@ -118,7 +117,6 @@ extern "C" {
     void LoadPermLoadFonts(void);
     void LoadPermLoadSaveIconScene(void);
     void RegisterHelpers(void);
-    void LSW_registerStatusScreen(void);
 
     extern AREA_DATA *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
 

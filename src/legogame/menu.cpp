@@ -55,6 +55,8 @@
 #include "nu2api/nuwin32/pcapi.h"
 #include <stdio.h>
 #include <string.h>
+#include "legoapi/core/startup/text.h"
+#include "nu2api/nusound/nusound.h"
 
 extern "C" {
     void GameDrawMenuEntry(MENU *, char *);
@@ -76,18 +78,10 @@ struct EXTRAS_SAVE_READER {            // size 0x7c08
 };
 
 extern "C" {
-    extern i32 HubForceShopSave;
-    void Text_FillInExtendedSaveInfo(void);
-    void Hub_ClearStats(void);
-    i32 TriggerAutoSave(void);
-}
-extern "C" {
     extern f32 MenuTitlesPromptY;
     extern f32 MenuTitlesWidePromptY;
-    void Hub_UpdateKit(void);
 }
 extern "C" {
-    void SoundKillAll(void);
     i32 Movie_Play(char *, VARIPTR *, VARIPTR *, f32, i32 (*)(void), f32);
 }
 extern "C" f32 MenuNewGameY;

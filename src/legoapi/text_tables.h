@@ -148,6 +148,8 @@ extern "C" {
     extern i16 dat_00880b0c;
     extern i16 dat_00880fa0;
     extern i16 dat_00880fc4;
+    extern i16 dat_00880894;
+    extern i16 dat_00880898;
 #ifdef __cplusplus
 }
 #endif

@@ -58,6 +58,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include "gameapi/ai/aisys/gameaiscript.h"
 
 /* The Factory B paint puzzle state shared with the network partner (SetLevelHack(4)). */
 typedef struct factoryb_netpacket_s { // size 0x4
@@ -121,7 +122,6 @@ typedef struct kamino_e_s {
     i16 platform;
 } KAMINO_E;
 
-extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
 void KaminoEGizmoMissing(char *name);
 

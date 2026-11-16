@@ -95,10 +95,12 @@
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 #include <string.h>
+#include "gameapi/ai/aisys/gameaiscript.h"
+#include "legoapi/props/doors/doors.h"
+#include "legoapi/world/levels/episodeV.h"
 
 extern "C" {
     extern i32 HubDoorNewLevel;
-    extern void *Door_Last;
 }
 
 typedef struct hub_minikit_runtime_s {
@@ -165,11 +167,6 @@ extern "C" char AreaFixUpName_Negotiations[];
 extern "C" {
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
-    extern u32 LEGO_AIPATHCNX_BIGJUMP;
-    extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
-    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
-    extern u32 LEGO_AIPATHCNX_JUMP_NOW;
-    extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 }
 
 typedef struct hub_minikit_piece_s {

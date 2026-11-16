@@ -119,6 +119,7 @@ extern "C" {
     i32 CutScene_HasPlayed(struct cutinfo_s *cutscene);
     void CutScene_StartAudio(void);
     void CutScenes_BGLoadManager(void);
+    void CutScene_DrawSubtitles(void);
 #ifdef __cplusplus
 }
 #endif

@@ -151,6 +151,11 @@ extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *men
 
 #include <string.h>
 #include <stdio.h>
+#include "legoapi/characters/motion/charplatforms.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/items/objects/grabber.h"
+#include "legoapi/items/objects/legoapi_traffic.h"
+#include "legoapi/world/world_shared.h"
 extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d", -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
@@ -228,7 +233,6 @@ extern "C" {
     const char *InitAsciiRight = ">";
     const char *InitAsciiBigArrow = "\xC2\xA4";
 }
-extern "C" void Grabber_Reset(WORLDINFO *world);
 extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
 
 typedef struct SHOP_COMPLETION_GAME {     // size 0x7e4c
@@ -335,13 +339,7 @@ STATIC_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
     void Bolts_Reset(void);
     void Detonators_Reset(void);
-    void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system);
-    void Faders_Reset(WORLDINFO *world);
-    void CharPlatforms_Reset(CHARPLATFORMSYS_s *system);
     extern i32 makebaddiesforgetinresetbits;
-}
-extern "C" {
-    void GameRegisterGizActions(void);
 }
 
 typedef struct game_door_callback_s {

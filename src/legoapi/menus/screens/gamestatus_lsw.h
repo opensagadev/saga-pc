@@ -86,6 +86,8 @@ extern "C" {
     void GameAnimMissingAnimDiagnostic(char *name);
     void GameFog_Reset(void);
     void GizmoNameDiagnostic(char *name);
+    void DrawPauseFade(void);
+    void TakeOverReleaseDiagnostic(char *rider_name, char *object_name);
 #ifdef __cplusplus
 }
 #endif

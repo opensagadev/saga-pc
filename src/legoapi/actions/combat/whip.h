@@ -15,6 +15,7 @@
 extern "C" {
 #endif
     void Whip_Release(GAMEOBJECT *);
+    void Whip_MoveCode(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

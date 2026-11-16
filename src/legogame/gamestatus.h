@@ -65,6 +65,7 @@ extern "C" {
     extern f32 StatusAllMiniKitsQuestionYOffset;
     extern f32 StatusAllMiniKitsCompleteScale;
     extern f32 StatusAllMiniKitsCompleteYOffset;
+    void LSW_registerStatusScreen(void);
 #ifdef __cplusplus
 }
 #endif

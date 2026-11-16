@@ -15,6 +15,7 @@ extern "C" {
     extern const char *LEGOASCII_UP;
     void TextInputGlyphName(i32, char *);
     i32 TriggerAutoSave(void);
+    void Text_ExpandAllButtonStrings(char *, char *);
     void Text_FillInExtendedSaveInfo(void);
 #ifdef __cplusplus
 }

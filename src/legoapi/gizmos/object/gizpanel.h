@@ -77,6 +77,7 @@ extern "C" {
 
     void GizPanel_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
     void GizPanel_Reset(void *panel);
+    ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif
