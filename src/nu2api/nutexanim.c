@@ -1015,9 +1015,6 @@ TEXTURE_ANIM_PROGRAM *NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIP
 
 extern void PCSpecialEmptyHandler(void);
 
-#define TEXANIM_DIAGNOSTIC(value) ((void (*)(const void *))AnimationDiagnosticNoOp)(value)
-#define TEXANIM_EMPTY(value) ((void (*)(const void *))PCSpecialEmptyHandler)(value)
-
 void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     char filename[128];
     VARIPTR cursor;
@@ -1058,7 +1055,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
             NuStrCat(filename, ".cfg");
             item = NuFilePakGetItem(pak, filename);
             if (item == 0) {
-                TEXANIM_DIAGNOSTIC(filename);
+                ((void (*)(const void *))AnimationDiagnosticNoOp)(filename);
             }
             NuFilePakGetItemInfo(pak, item, &data, &size);
             file = NuMemFileOpen(data, size, 0);
@@ -1069,7 +1066,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
                     while (NuFParGetLine(parser)) {
                         NuFParGetWord(parser);
                         if (parser->word_buffer_ptr[0] == '\0') {
-                            TEXANIM_DIAGNOSTIC((void *)parser->line_number);
+                            ((void (*)(const void *))AnimationDiagnosticNoOp)((void *)parser->line_number);
                         }
                         name = NuStrRChr(parser->word_buffer_ptr, '/');
                         if (name == NULL && (name = NuStrRChr(parser->word_buffer_ptr, '\\')) == NULL) {
@@ -1087,13 +1084,13 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
             for (cursor = list; *cursor.char_ptr != '\0'; cursor.char_ptr += NuStrLen(cursor.char_ptr) + 1) {
                 item = NuFilePakGetItem(pak, cursor.char_ptr);
                 if (item == 0) {
-                    TEXANIM_DIAGNOSTIC(cursor.char_ptr);
+                    ((void (*)(const void *))AnimationDiagnosticNoOp)(cursor.char_ptr);
                 }
                 NuFilePakGetItemInfo(pak, item, &data, &size);
                 file = NuMemFileOpen(data, size, 0);
                 if (file != 0) {
                     if (NuTexAnimProgParseFile(file, buffer, list, 0) == NULL) {
-                        TEXANIM_EMPTY(cursor.char_ptr);
+                        ((void (*)(const void *))PCSpecialEmptyHandler)(cursor.char_ptr);
                     }
                     NuFileClose(file);
                 }
@@ -1101,9 +1098,9 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
             return;
         }
         if (NuTexAnimMissingPakDiagnostic != 0) {
-            TEXANIM_DIAGNOSTIC(path);
+            ((void (*)(const void *))AnimationDiagnosticNoOp)(path);
         } else {
-            TEXANIM_EMPTY(path);
+            ((void (*)(const void *))PCSpecialEmptyHandler)(path);
         }
         buffer->addr = (buffer->addr + 15) & ~15u;
     }
@@ -1115,7 +1112,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
         while (NuFParGetLine(parser)) {
             NuFParGetWord(parser);
             if (parser->word_buffer_ptr[0] == '\0') {
-                TEXANIM_DIAGNOSTIC((void *)parser->line_number);
+                ((void (*)(const void *))AnimationDiagnosticNoOp)((void *)parser->line_number);
             }
             list.char_ptr -= NuStrLen(parser->word_buffer_ptr) + 1;
             NuStrCpy(list.char_ptr, parser->word_buffer_ptr);
@@ -1124,7 +1121,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     }
     for (cursor = list; *cursor.char_ptr != '\0'; cursor.char_ptr += NuStrLen(cursor.char_ptr) + 1) {
         if (NuTexAnimProgReadScript(cursor.char_ptr, buffer, list, 0) == NULL) {
-            TEXANIM_EMPTY(cursor.char_ptr);
+            ((void (*)(const void *))PCSpecialEmptyHandler)(cursor.char_ptr);
         }
     }
     buffer->addr = (buffer->addr + 15) & ~15u;

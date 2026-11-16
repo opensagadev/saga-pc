@@ -7,111 +7,103 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 
-#define TERRAIN_FINISH_LOCAL_SCAN_GROUP(group_index_arg)                                                                                   \
-    do {                                                                                                                                   \
-        if (group_shape_count != 0) {                                                                                                      \
-            i16 *header = reinterpret_cast<i16 *>(group_header);                                                                           \
-            header[0] = static_cast<i16>(group_shape_count);                                                                               \
-            header[1] = static_cast<i16>(group_index_arg);                                                                                 \
-            group_header = reinterpret_cast<u8 *>(cursor);                                                                                 \
-            cursor = reinterpret_cast<TERRAIN_POLYGON_INFO **>(group_header + sizeof(TERRAIN_POLYGON_INFO *));                             \
-            group_shape_count = 0;                                                                                                         \
-        }                                                                                                                                  \
-    } while (0)
-#define TERRAIN_STORE_SCAN_SHAPE(candidate_arg, group_arg)                                                                                 \
-    do {                                                                                                                                   \
-        if (query->object_scale == 1.0f) {                                                                                                 \
-            *cursor++ = (candidate_arg);                                                                                                   \
-            ++group_shape_count;                                                                                                           \
-        } else {                                                                                                                           \
-            TERRAIN_POLYGON_INFO *source = (candidate_arg);                                                                                \
-            TERRAIN_POLYGON_INFO *scaled = &ScaleTerrain[scaled_shape_count];                                                              \
-            scaled->material[0] = source->material[0];                                                                                     \
-            scaled->material[1] = source->material[1];                                                                                     \
-            scaled->flags = source->flags;                                                                                                 \
-            scaled->normal_flags = source->normal_flags;                                                                                   \
-            scaled->vertices[0].x = source->vertices[0].x;                                                                                 \
-            scaled->vertices[0].z = source->vertices[0].z;                                                                                 \
-            scaled->vertices[0].y = (source->vertices[0].y + (group_arg).origin.y) * query->inverse_object_scale - (group_arg).origin.y;   \
-            scaled->vertices[1].x = source->vertices[1].x;                                                                                 \
-            scaled->vertices[1].z = source->vertices[1].z;                                                                                 \
-            scaled->vertices[1].y = (source->vertices[1].y + (group_arg).origin.y) * query->inverse_object_scale - (group_arg).origin.y;   \
-            scaled->vertices[2].x = source->vertices[2].x;                                                                                 \
-            scaled->vertices[2].z = source->vertices[2].z;                                                                                 \
-            scaled->vertices[2].y = (source->vertices[2].y + (group_arg).origin.y) * query->inverse_object_scale - (group_arg).origin.y;   \
-            if (source->normals[1].y < 65535.0f) {                                                                                         \
-                scaled->vertices[3].x = source->vertices[3].x;                                                                             \
-                scaled->vertices[3].z = source->vertices[3].z;                                                                             \
-                scaled->vertices[3].y =                                                                                                    \
-                    (source->vertices[3].y + (group_arg).origin.y) * query->inverse_object_scale - (group_arg).origin.y;                   \
-                const f32 inverse_length =                                                                                                 \
-                    TerrainDivideNonzeroPC(1.0f, NuFsqrt(source->normals[1].x * source->normals[1].x +                                     \
-                                                         source->normals[1].y * source->normals[1].y * query->object_scale_sq +            \
-                                                         source->normals[1].z * source->normals[1].z));                                    \
-                query = TerI;                                                                                                              \
-                scaled = &ScaleTerrain[scaled_shape_count];                                                                                \
-                scaled->normals[1].x = source->normals[1].x * inverse_length;                                                              \
-                scaled->normals[1].y = query->object_scale * source->normals[1].y * inverse_length;                                        \
-                scaled->normals[1].z = source->normals[1].z * inverse_length;                                                              \
-            } else {                                                                                                                       \
-                scaled->normals[1].y = 65536.0f;                                                                                           \
-            }                                                                                                                              \
-            const f32 inverse_length =                                                                                                     \
-                TerrainDivideNonzeroPC(1.0f, NuFsqrt(source->normals[0].x * source->normals[0].x +                                         \
-                                                     source->normals[0].y * source->normals[0].y * query->object_scale_sq +                \
-                                                     source->normals[0].z * source->normals[0].z));                                        \
-            query = TerI;                                                                                                                  \
-            scaled = &ScaleTerrain[scaled_shape_count];                                                                                    \
-            scaled->normals[0].x = source->normals[0].x * inverse_length;                                                                  \
-            scaled->normals[0].y = query->object_scale * source->normals[0].y * inverse_length;                                            \
-            scaled->normals[0].z = source->normals[0].z * inverse_length;                                                                  \
-            *cursor++ = scaled;                                                                                                            \
-            ++group_shape_count;                                                                                                           \
-            ++scaled_shape_count;                                                                                                          \
-        }                                                                                                                                  \
-    } while (0)
-
-#define TERRAIN_SCAN_BOUNDS(query_arg, scan_result_arg)                                                                                    \
-    switch (scan_result_arg) {                                                                                                             \
-        default: {                                                                                                                         \
-            scan_radius = NuFsqrt((query_arg)->movement.x * (query_arg)->movement.x + (query_arg)->movement.y * (query_arg)->movement.y +  \
-                                  (query_arg)->movement.z * (query_arg)->movement.z);                                                      \
-            (query_arg) = TerI;                                                                                                            \
-            scan_radius = (query_arg)->collision_radius + 0.1f + scan_radius;                                                              \
-            max_x = (query_arg)->position.x + 0.05f + scan_radius;                                                                         \
-            max_y = (query_arg)->position.y + 0.05f + (query_arg)->object_scale * scan_radius;                                             \
-            max_z = (query_arg)->position.z + 0.05f + scan_radius;                                                                         \
-            min_x = (query_arg)->position.x - 0.05f - scan_radius;                                                                         \
-            min_y = (query_arg)->position.y - 0.05f - (query_arg)->object_scale * scan_radius;                                             \
-            min_z = (query_arg)->position.z - 0.05f - scan_radius;                                                                         \
-        } break;                                                                                                                           \
-        case 1: {                                                                                                                          \
-            if ((query_arg)->movement.x > 0.0f) {                                                                                          \
-                min_x = (query_arg)->position.x - 0.02f - (query_arg)->collision_radius;                                                   \
-                max_x = (query_arg)->position.x + (query_arg)->movement.x + 0.02f + (query_arg)->collision_radius;                         \
-            } else {                                                                                                                       \
-                min_x = (query_arg)->position.x + (query_arg)->movement.x - 0.02f - (query_arg)->collision_radius;                         \
-                max_x = (query_arg)->position.x + 0.02f + (query_arg)->collision_radius;                                                   \
-            }                                                                                                                              \
-            if ((query_arg)->movement.y > 0.0f) {                                                                                          \
-                min_y = (query_arg)->position.y - 0.02f - (query_arg)->collision_radius;                                                   \
-                max_y = (query_arg)->position.y + (query_arg)->movement.y + 0.02f + (query_arg)->collision_radius;                         \
-            } else {                                                                                                                       \
-                min_y = (query_arg)->position.y + (query_arg)->movement.y - 0.02f - (query_arg)->collision_radius;                         \
-                max_y = (query_arg)->position.y + 0.02f + (query_arg)->collision_radius;                                                   \
-            }                                                                                                                              \
-            if ((query_arg)->movement.z > 0.0f) {                                                                                          \
-                min_z = (query_arg)->position.z - 0.02f - (query_arg)->collision_radius;                                                   \
-                max_z = (query_arg)->position.z + (query_arg)->movement.z + 0.02f + (query_arg)->collision_radius;                         \
-            } else {                                                                                                                       \
-                min_z = (query_arg)->position.z + (query_arg)->movement.z - 0.02f - (query_arg)->collision_radius;                         \
-                max_z = (query_arg)->position.z + 0.02f + (query_arg)->collision_radius;                                                   \
-            }                                                                                                                              \
-            scan_radius =                                                                                                                  \
-                NuFsqrt((min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) + (min_z - max_z) * (min_z - max_z));        \
-            (query_arg) = TerI;                                                                                                            \
-        } break;                                                                                                                           \
+// Closes the open scan group: writes its shape count and group index into the header slot and opens the next one.
+static void TerrainFinishScanGroup(u8 *&group_header, TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 group_index) {
+    if (group_shape_count != 0) {
+        i16 *header = reinterpret_cast<i16 *>(group_header);
+        header[0] = static_cast<i16>(group_shape_count);
+        header[1] = static_cast<i16>(group_index);
+        group_header = reinterpret_cast<u8 *>(cursor);
+        cursor = reinterpret_cast<TERRAIN_POLYGON_INFO **>(group_header + sizeof(TERRAIN_POLYGON_INFO *));
+        group_shape_count = 0;
     }
+}
+
+// The unit normal of a shape with its y stretched by the object scale.
+static void TerrainScaleNormal(NUVEC &out, const NUVEC &normal) {
+    TerrainQuery_s *query = TerI;
+    const f32 inverse_length = TerrainDivideNonzeroPC(
+        1.0f, NuFsqrt(normal.x * normal.x + normal.y * normal.y * query->object_scale_sq + normal.z * normal.z));
+    query = TerI;
+    out.x = normal.x * inverse_length;
+    out.y = query->object_scale * normal.y * inverse_length;
+    out.z = normal.z * inverse_length;
+}
+
+// Appends a candidate shape to the scan list; under a non-unit object scale it appends a scaled copy from ScaleTerrain.
+static void TerrainStoreScanShape(TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 &scaled_shape_count,
+                                  TERRAIN_POLYGON_INFO *source, const TERRAIN_GROUP &group) {
+    TerrainQuery_s *query = TerI;
+    if (query->object_scale == 1.0f) {
+        *cursor++ = source;
+        ++group_shape_count;
+        return;
+    }
+    TERRAIN_POLYGON_INFO *scaled = &ScaleTerrain[scaled_shape_count];
+    scaled->material[0] = source->material[0];
+    scaled->material[1] = source->material[1];
+    scaled->flags = source->flags;
+    scaled->normal_flags = source->normal_flags;
+    for (i32 i = 0; i < 3; i++) {
+        scaled->vertices[i].x = source->vertices[i].x;
+        scaled->vertices[i].z = source->vertices[i].z;
+        scaled->vertices[i].y = (source->vertices[i].y + group.origin.y) * query->inverse_object_scale - group.origin.y;
+    }
+    if (source->normals[1].y < 65535.0f) {
+        scaled->vertices[3].x = source->vertices[3].x;
+        scaled->vertices[3].z = source->vertices[3].z;
+        scaled->vertices[3].y = (source->vertices[3].y + group.origin.y) * query->inverse_object_scale - group.origin.y;
+        TerrainScaleNormal(scaled->normals[1], source->normals[1]);
+    } else {
+        scaled->normals[1].y = 65536.0f;
+    }
+    TerrainScaleNormal(scaled->normals[0], source->normals[0]);
+    *cursor++ = scaled;
+    ++group_shape_count;
+    ++scaled_shape_count;
+}
+
+// The scan box around the query's sweep; returns the scan radius. Scan result 1 boxes the swept segment, the others a
+// sphere around the start position.
+static f32 TerrainScanBounds(f32 &min_x, f32 &min_y, f32 &min_z, f32 &max_x, f32 &max_y, f32 &max_z) {
+    TerrainQuery_s *query = TerI;
+    f32 scan_radius;
+    if (query->scan_result != 1) {
+        scan_radius =
+            NuFsqrt(query->movement.x * query->movement.x + query->movement.y * query->movement.y + query->movement.z * query->movement.z);
+        query = TerI;
+        scan_radius = query->collision_radius + 0.1f + scan_radius;
+        max_x = query->position.x + 0.05f + scan_radius;
+        max_y = query->position.y + 0.05f + query->object_scale * scan_radius;
+        max_z = query->position.z + 0.05f + scan_radius;
+        min_x = query->position.x - 0.05f - scan_radius;
+        min_y = query->position.y - 0.05f - query->object_scale * scan_radius;
+        min_z = query->position.z - 0.05f - scan_radius;
+        return scan_radius;
+    }
+    if (query->movement.x > 0.0f) {
+        min_x = query->position.x - 0.02f - query->collision_radius;
+        max_x = query->position.x + query->movement.x + 0.02f + query->collision_radius;
+    } else {
+        min_x = query->position.x + query->movement.x - 0.02f - query->collision_radius;
+        max_x = query->position.x + 0.02f + query->collision_radius;
+    }
+    if (query->movement.y > 0.0f) {
+        min_y = query->position.y - 0.02f - query->collision_radius;
+        max_y = query->position.y + query->movement.y + 0.02f + query->collision_radius;
+    } else {
+        min_y = query->position.y + query->movement.y - 0.02f - query->collision_radius;
+        max_y = query->position.y + 0.02f + query->collision_radius;
+    }
+    if (query->movement.z > 0.0f) {
+        min_z = query->position.z - 0.02f - query->collision_radius;
+        max_z = query->position.z + query->movement.z + 0.02f + query->collision_radius;
+    } else {
+        min_z = query->position.z + query->movement.z - 0.02f - query->collision_radius;
+        max_z = query->position.z + 0.02f + query->collision_radius;
+    }
+    return NuFsqrt((min_x - max_x) * (min_x - max_x) + (min_y - max_y) * (min_y - max_y) + (min_z - max_z) * (min_z - max_z));
+}
 
 extern "C" {
     i32 IgnoreWallSplines = 0;
@@ -146,10 +138,9 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     f32 max_x;
     f32 max_y;
     f32 max_z;
-    f32 scan_radius;
 
     TerrainQuery_s *query = TerI;
-    TERRAIN_SCAN_BOUNDS(query, query->scan_result);
+    f32 scan_radius = TerrainScanBounds(min_x, min_y, min_z, max_x, max_y, max_z);
     if (query->object_scale > 1.0f) {
         scan_radius += (query->object_scale - 1.0) * query->collision_radius;
     }
@@ -203,12 +194,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         }
 
                         TERRAIN_POLYGON_INFO *shape = candidate;
-                        TERRAIN_STORE_SCAN_SHAPE(shape, group);
+                        TerrainStoreScanShape(cursor, group_shape_count, scaled_shape_count, shape, group);
                     }
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_LOCAL_SCAN_GROUP(group_index);
+            TerrainFinishScanGroup(group_header, cursor, group_shape_count, group_index);
         }
     }
 
@@ -249,12 +240,12 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         }
 
                         TERRAIN_POLYGON_INFO *shape = candidate;
-                        TERRAIN_STORE_SCAN_SHAPE(shape, group);
+                        TerrainStoreScanShape(cursor, group_shape_count, scaled_shape_count, shape, group);
                     }
                 }
                 batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
             }
-            TERRAIN_FINISH_LOCAL_SCAN_GROUP(CurrentTerrain->max_groups + pick_index);
+            TerrainFinishScanGroup(group_header, cursor, group_shape_count, CurrentTerrain->max_groups + pick_index);
         }
     }
     TerI->scan_list = group_header;
@@ -514,13 +505,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
 
                             platinrange = 1;
                             TERRAIN_POLYGON_INFO *shape = candidate;
-                            TERRAIN_STORE_SCAN_SHAPE(shape, group);
+                            TerrainStoreScanShape(cursor, group_shape_count, scaled_shape_count, shape, group);
                         }
                     }
                     batch = reinterpret_cast<TERRAIN_SHAPE_BATCH *>(shapes + shape_count);
                 }
             }
-            TERRAIN_FINISH_LOCAL_SCAN_GROUP(platform_group_index);
+            TerrainFinishScanGroup(group_header, cursor, group_shape_count, platform_group_index);
         }
     }
 
@@ -610,8 +601,7 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
     f32 max_x;
     f32 max_y;
     f32 max_z;
-    f32 scan_radius;
-    TERRAIN_SCAN_BOUNDS(query, query->scan_result);
+    TerrainScanBounds(min_x, min_y, min_z, max_x, max_y, max_z);
     terminator[0] = 0;
     terminator[1] = 0;
     min_x -= 0.02f;

@@ -4,13 +4,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nuwin32/d3dCore.h"
 
-// The filter predicates below are small PC_SHADER_MATERIAL_FILTER_VIEW helpers inlined here; each one
-// rereads filter->descriptor.
-#define KEY_LAYER_BIT(filter, bit) ((filter)->variant == 0 ? (u8)(((filter)->descriptor->layer_flags >> (bit)) & 1) : (u8)0)
-#define KEY_TYPE_PLAIN(filter)                                                                                                             \
-    ((filter)->variant == 0 && ((filter)->descriptor->flags & 0x80000000) && ((filter)->descriptor->flags & 0x800000) == 0)
-#define KEY_TYPE_ALTERNATE(filter)                                                                                                         \
-    ((filter)->variant == 0 && ((filter)->descriptor->flags & 0x80000000) && ((filter)->descriptor->flags & 0x800000) != 0)
 
 union PC_SHADER_KEY_BLOCK {
     u8 bytes[104];
@@ -65,41 +58,41 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
     block.bytes[0x21] = filter->first_path != 0;
     block.bytes[0x23] = filter->second_path != 0;
     block.bytes[0x22] = filter->deferred_path != 0;
-    block.bytes[0x15] = KEY_LAYER_BIT(filter, 0) || KEY_LAYER_BIT(filter, 1) ? desc->sampler_indices[0] : 0;
+    block.bytes[0x15] = filter->LayerBit(0) || filter->LayerBit(1) ? desc->sampler_indices[0] : 0;
     block.bytes[0x16] =
         (u8)(filter->variant == 0 ? filter->descriptor->specular_threshold > filter->parameter : 0) ? desc->sampler_indices[1] : 0;
     block.bytes[0x17] = filter->HasDiffuse(0) != 0;
     block.bytes[0x18] = filter->HasDiffuse(1) ? desc->sampler_indices[2] : 0;
     block.bytes[0x19] = filter->HasDiffuse(2) ? desc->sampler_indices[3] : 0;
     block.bytes[0x1a] = filter->HasDiffuse(3) ? desc->sampler_indices[4] : 0;
-    block.bytes[0x1b] = KEY_LAYER_BIT(filter, 13) || KEY_LAYER_BIT(filter, 14) ? desc->sampler_indices[5] : 0;
+    block.bytes[0x1b] = filter->LayerBit(13) || filter->LayerBit(14) ? desc->sampler_indices[5] : 0;
     block.bytes[0x1c] = filter->HasLayer(1) ? desc->blend_ops[0] : 0;
     block.bytes[0x1d] = filter->HasLayer(2) ? desc->blend_ops[1] : 0;
     block.bytes[0x1e] = filter->HasLayer(3) ? desc->blend_ops[2] : 0;
     block.bytes[0x20] = 1;
     block.bytes[0x1f] = 1;
-    if (KEY_LAYER_BIT(filter, 0) && filter->descriptor->normal_threshold > filter->parameter) {
+    if (filter->LayerBit(0) && filter->descriptor->normal_threshold > filter->parameter) {
         block.bytes[0x24] = 2;
     } else {
-        block.bytes[0x24] = (KEY_LAYER_BIT(filter, 1) && filter->descriptor->normal_threshold > filter->parameter) != 0;
+        block.bytes[0x24] = (filter->LayerBit(1) && filter->descriptor->normal_threshold > filter->parameter) != 0;
     }
-    if (KEY_LAYER_BIT(filter, 20) && filter->descriptor->surface_threshold > filter->parameter) {
+    if (filter->LayerBit(20) && filter->descriptor->surface_threshold > filter->parameter) {
         block.bytes[0x25] = 2;
     } else {
-        block.bytes[0x25] = (KEY_LAYER_BIT(filter, 20) && filter->descriptor->surface_threshold <= filter->parameter) != 0;
+        block.bytes[0x25] = (filter->LayerBit(20) && filter->descriptor->surface_threshold <= filter->parameter) != 0;
     }
     block.bytes[0x26] = filter->descriptor->extra_texture > 0;
     block.bytes[0x27] = filter->descriptor->environment_texture > 0;
-    block.bytes[0x28] = KEY_TYPE_PLAIN(filter) || KEY_TYPE_ALTERNATE(filter) ? (u8)((desc->selectors >> 2) & 3) : 0;
+    block.bytes[0x28] = filter->IsPlainType() || filter->IsAlternateType() ? (u8)((desc->selectors >> 2) & 3) : 0;
     block.bytes[0x29] = 0;
     if (desc->vertex_format & 0xc) {
         block.bytes[0x29] = 1;
     }
     block.bytes[0x2a] = desc->texture_units;
-    if (KEY_TYPE_PLAIN(filter)) {
+    if (filter->IsPlainType()) {
         block.bytes[0x2b] = 1;
     } else {
-        block.bytes[0x2b] = KEY_TYPE_ALTERNATE(filter) != 0 ? 2 : 0;
+        block.bytes[0x2b] = filter->IsAlternateType() != 0 ? 2 : 0;
     }
     block.bytes[0x2c] = 1;
     if (filter->material != NULL && filter->material->texture_id != 0) {

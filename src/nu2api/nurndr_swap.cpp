@@ -64,12 +64,12 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             scene->unknown_48 = 0;
         }
         if (!PcWindowOptions.speedblurenabled) {
-            scene->unknown_188 = 0;
+            scene->speed_blur.enabled = 0;
         }
         if ((scene->unknown_58 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) ||
-            (scene->unknown_ac != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DOF)) ||
+            (scene->dof.enabled != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DOF)) ||
             (scene->unknown_48 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DEFERRED)) ||
-            (scene->unknown_188 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_SPEED_BLUR))) {
+            (scene->speed_blur.enabled != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_SPEED_BLUR))) {
             last_effect_scene = i;
         }
     }
@@ -98,7 +98,7 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             }
             scene->scene_id = -1;
         }
-        if (scene->unknown_ac != 0) {
+        if (scene->dof.enabled != 0) {
             NuPostEffectIsInitialised(NUPOSTEFFECT_DOF);
         }
         if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) {
@@ -113,9 +113,9 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             scene->unknown_48 = 0;
             rendered_effect = 1;
         }
-        if (scene->unknown_188 != 0) {
+        if (scene->speed_blur.enabled != 0) {
             NuPostEffectEnable(NUPOSTEFFECT_SPEED_BLUR);
-            NuPostEffectSpeedBlur(reinterpret_cast<const NU_POST_SPEED_PARAMETERS *>(&scene->unknown_188));
+            NuPostEffectSpeedBlur(&scene->speed_blur);
             rendered_effect = 1;
         }
         if (i <= last_effect_scene) {
@@ -158,14 +158,14 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             NuShaderManagerBindShader(NULL);
             PCDeviceResetSamplerDefaults();
         }
-        if (scene->unknown_214 != 0) {
-            FRAME_NATIVE_TEXTURE *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions((i32)scene->unknown_214));
+        if (scene->backbuffer_copy_texture != 0) {
+            FRAME_NATIVE_TEXTURE *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions(scene->backbuffer_copy_texture));
             i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePool.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE);
             if ((u32)index <= 15u) {
                 GRAPHICS_RENDER_TEXTURE *render_texture = texture->render_texture;
                 if (render_texture != NULL) {
-                    i32 width = NuTexGetWidth((i32)scene->unknown_214);
-                    i32 height = NuTexGetHeight((i32)scene->unknown_214);
+                    i32 width = NuTexGetWidth(scene->backbuffer_copy_texture);
+                    i32 height = NuTexGetHeight(scene->backbuffer_copy_texture);
                     bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
                     PC_EFFECT_SURFACE target;
                     target.Attach(render_texture, 0, false);

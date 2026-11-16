@@ -10,6 +10,7 @@ struct PC_BUFFER_RESOURCE;
 struct PC_TEXTURE_RESOURCE;
 struct PC_VERTEX_ELEMENT;
 struct PC_VIEWPORT;
+struct RADFMV_TEXTURE;
 struct numtx_s;
 
 typedef struct PC_D3D9_DEVICE PC_D3D9_DEVICE;
@@ -17,7 +18,7 @@ typedef struct PC_D3D9_DEVICE PC_D3D9_DEVICE;
 typedef struct PC_D3D9_METHODS {                                                                         // size 0x1dc
     void *query_interface;                                                                               // 0x000
     void *add_ref;                                                                                       // 0x004
-    void *release;                                                                                       // 0x008
+    ULONG(__stdcall *release)(PC_D3D9_DEVICE *); // 0x008
     void *test_cooperative_level;                                                                        // 0x00c
     u32(__stdcall *get_available_texture_mem)(PC_D3D9_DEVICE *);                                         // 0x010
     void *evict_managed_resources;                                                                       // 0x014
@@ -32,13 +33,14 @@ typedef struct PC_D3D9_METHODS {                                                
     HRESULT(__stdcall *get_swap_chain)(PC_D3D9_DEVICE *, u32, void **);                                  // 0x038
     u32(__stdcall *get_number_of_swap_chains)(PC_D3D9_DEVICE *);                                         // 0x03c
     void *reset;                                                                                         // 0x040
-    void *present;                                                                                       // 0x044
+    HRESULT(__stdcall *present)(PC_D3D9_DEVICE *, const RECT *, const RECT *, HWND, const RGNDATA *); // 0x044
     void *get_back_buffer;                                                                               // 0x048
     HRESULT(__stdcall *get_raster_status)(PC_D3D9_DEVICE *, u32, void *);                                // 0x04c
     HRESULT(__stdcall *set_dialog_box_mode)(PC_D3D9_DEVICE *, BOOL);                                     // 0x050
     void(__stdcall *set_gamma_ramp)(PC_D3D9_DEVICE *, u32, u32, const void *);                           // 0x054
     void(__stdcall *get_gamma_ramp)(PC_D3D9_DEVICE *, u32, void *);                                      // 0x058
-    void *create_texture;                                                                                // 0x05c
+    HRESULT(__stdcall *create_texture) // 0x05c
+    (PC_D3D9_DEVICE *, u32, u32, u32, u32, u32, u32, struct RADFMV_TEXTURE **, HANDLE *);
     HRESULT(__stdcall *create_volume_texture)                                                            // 0x060
     (PC_D3D9_DEVICE *, u32, u32, u32, u32, u32, i32, i32, struct PC_TEXTURE_RESOURCE **, HANDLE *);
     HRESULT(__stdcall *create_cube_texture) // 0x064
@@ -65,9 +67,9 @@ typedef struct PC_D3D9_METHODS {                                                
     HRESULT(__stdcall *get_render_target)(PC_D3D9_DEVICE *, u32, struct PC_TEXTURE_RESOURCE **);   // 0x098
     HRESULT(__stdcall *set_depth_stencil_surface)(PC_D3D9_DEVICE *, struct PC_TEXTURE_RESOURCE *); // 0x09c
     void *get_depth_stencil_surface;                                                               // 0x0a0
-    void *begin_scene;                                                                             // 0x0a4
+    HRESULT(__stdcall *begin_scene)(PC_D3D9_DEVICE *); // 0x0a4
     HRESULT(__stdcall *end_scene)(PC_D3D9_DEVICE *);                                               // 0x0a8
-    void *clear;                                                                                   // 0x0ac
+    HRESULT(__stdcall *clear)(PC_D3D9_DEVICE *, u32, const void *, u32, u32, f32, u32); // 0x0ac
     HRESULT(__stdcall *set_transform)(PC_D3D9_DEVICE *, i32, const struct numtx_s *);              // 0x0b0
     HRESULT(__stdcall *get_transform)(PC_D3D9_DEVICE *, i32, struct numtx_s *);                    // 0x0b4
     HRESULT(__stdcall *multiply_transform)(PC_D3D9_DEVICE *, i32, const struct numtx_s *);         // 0x0b8
@@ -107,7 +109,7 @@ typedef struct PC_D3D9_METHODS {                                                
     void *get_n_patch_mode;                                                                        // 0x140
     HRESULT(__stdcall *draw_primitive)(PC_D3D9_DEVICE *, i32, u32, u32);                           // 0x144
     HRESULT(__stdcall *draw_indexed_primitive)(PC_D3D9_DEVICE *, i32, i32, u32, u32, u32, u32);    // 0x148
-    void *draw_primitive_up;                                                                       // 0x14c
+    HRESULT(__stdcall *draw_primitive_up)(PC_D3D9_DEVICE *, u32, u32, const void *, u32); // 0x14c
     void *draw_indexed_primitive_up;                                                               // 0x150
     HRESULT(__stdcall *process_vertices)                                                           // 0x154
     (PC_D3D9_DEVICE *, u32, u32, u32, struct PC_BUFFER_RESOURCE *, struct PC_TEXTURE_RESOURCE *, u32);
@@ -115,7 +117,7 @@ typedef struct PC_D3D9_METHODS {                                                
     (PC_D3D9_DEVICE *, const struct PC_VERTEX_ELEMENT *, struct PC_TEXTURE_RESOURCE **);
     HRESULT(__stdcall *set_vertex_declaration)(PC_D3D9_DEVICE *, struct PC_TEXTURE_RESOURCE *);  // 0x15c
     HRESULT(__stdcall *get_vertex_declaration)(PC_D3D9_DEVICE *, struct PC_TEXTURE_RESOURCE **); // 0x160
-    void *set_fvf;                                                                               // 0x164
+    HRESULT(__stdcall *set_fvf)(PC_D3D9_DEVICE *, u32); // 0x164
     HRESULT(__stdcall *get_fvf)(PC_D3D9_DEVICE *, u32 *);                                        // 0x168
     HRESULT(__stdcall *create_vertex_shader)                                                     // 0x16c
     (PC_D3D9_DEVICE *, const DWORD *, struct PC_TEXTURE_RESOURCE **);

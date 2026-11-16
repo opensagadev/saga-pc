@@ -76,16 +76,6 @@ i32 NuApiTextLine = 0;
 static i32 read_buffer_decoded_size = 0;
 NUFPAR NuFParRecords[4] = {0};
 
-// Fetch one control bit; the marker bit refills the buffer from the next input byte.
-#define NUPP_GETBIT()                                                                                                                      \
-    bits += bits;                                                                                                                          \
-    bit = (bits >> 8) & 1;                                                                                                                 \
-    bits &= 0xff;                                                                                                                          \
-    if (bits == 0) {                                                                                                                       \
-        bits = bit + *src++ * 2;                                                                                                           \
-        bit = (bits >> 8) & 1;                                                                                                             \
-    }
-
 struct NUPPHEADER {    // size 0xc
     u32 magic;         // 0x0
     u32 unpacked_size; // 0x4
@@ -594,6 +584,19 @@ void NuFileInit(i32 device_id) {
     NuFileInitEx(device_id, 1, 0);
 }
 
+// Fetch one control bit; the marker bit refills the buffer from the next input byte.
+static u32 NuPPGetBit(u32 *bits, u8 **src) {
+    u32 bit;
+    *bits += *bits;
+    bit = (*bits >> 8) & 1;
+    *bits &= 0xff;
+    if (*bits == 0) {
+        *bits = bit + *(*src)++ * 2;
+        bit = (*bits >> 8) & 1;
+    }
+    return bit;
+}
+
 // RNC method 2 decoder; the header is skipped since NuPPLoadBuffer already knows the sizes.
 void NuPPUnpack(void *source, void *destination) {
     u8 *src;
@@ -641,20 +644,20 @@ void NuPPUnpack(void *source, void *destination) {
         }
         length = 2;
         distance = 0;
-        NUPP_GETBIT();
+        bit = NuPPGetBit(&bits, &src);
         if (bit == 0) {
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             length = bit + 4;
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit != 0) {
                 length--;
-                NUPP_GETBIT();
+                bit = NuPPGetBit(&bits, &src);
                 length = length * 2 + bit;
                 count = length - 9;
                 if (count == 0) {
                     // Literal run of 12..72 bytes copied in groups of four.
                     for (count += 3; count >= 0; count--) {
-                        NUPP_GETBIT();
+                        bit = NuPPGetBit(&bits, &src);
                         distance = distance * 2 + bit;
                     }
                     run = distance + 2;
@@ -675,16 +678,16 @@ void NuPPUnpack(void *source, void *destination) {
                 }
             }
         } else {
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit == 0) {
                 goto copy_match;
             }
             length = 3;
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit != 0) {
                 length = *src++;
                 if (length == 0) {
-                    NUPP_GETBIT();
+                    bit = NuPPGetBit(&bits, &src);
                     if (bit != 0) {
                         continue;
                     }
@@ -699,15 +702,15 @@ void NuPPUnpack(void *source, void *destination) {
                 length += 8;
             }
         }
-        NUPP_GETBIT();
+        bit = NuPPGetBit(&bits, &src);
         if (bit != 0) {
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             distance = bit;
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             if (bit != 0) {
-                NUPP_GETBIT();
+                bit = NuPPGetBit(&bits, &src);
                 distance = (distance * 2 + bit) | 4;
-                NUPP_GETBIT();
+                bit = NuPPGetBit(&bits, &src);
                 if (bit != 0) {
                     goto swap_offset;
                 }
@@ -716,7 +719,7 @@ void NuPPUnpack(void *source, void *destination) {
             } else {
                 distance = 1;
             }
-            NUPP_GETBIT();
+            bit = NuPPGetBit(&bits, &src);
             distance = distance * 2 + bit;
         swap_offset:
             distance = (distance >> 8) | (u8)distance << 8;

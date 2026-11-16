@@ -2237,11 +2237,11 @@ extern "C" i32 AddMSituExtraTerrRot(i32 source_index, NUMTX *matrix, NUMTX *prev
     CurrentTerrain->platforms[index].instance_flags = NULL;
     CurrentTerrain->group_indices[CurrentTerrain->group_index_count] = CurrentTerrain->group_count;
     CurrentTerrain->group_index_count++;
-    CurrentTerrain->platforms[index].bounce_54 = 0.0f;
-    CurrentTerrain->platforms[index].bounce_58 = 0.0f;
-    CurrentTerrain->platforms[index].bounce_5c = 0.0f;
-    CurrentTerrain->platforms[index].bounce_64 = 0.0f;
-    CurrentTerrain->platforms[index].bounce_60 = 0.0f;
+    CurrentTerrain->platforms[index].bounce_impulse = 0.0f;
+    CurrentTerrain->platforms[index].bounce_offset = 0.0f;
+    CurrentTerrain->platforms[index].bounce_velocity = 0.0f;
+    CurrentTerrain->platforms[index].bounce_damping = 0.0f;
+    CurrentTerrain->platforms[index].bounce_spring = 0.0f;
     CurrentTerrain->platforms[index].flags &= ~TERRAIN_PLATFORM_FLAG_COLLIDED;
     if (CurrentTerrain->active_platform_count < 96) {
         CurrentTerrain->active_platform_groups[CurrentTerrain->active_platform_count] = CurrentTerrain->group_count;

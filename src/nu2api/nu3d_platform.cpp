@@ -8283,8 +8283,6 @@ extern "C" {
         u8 unknown_14[8];                   // 0x14
     } RENDERER_SCREEN_VERTEX;
 
-#define QUAD_VERTEX ((RENDERER_SCREEN_VERTEX *)data)
-
     void NuRndrQuadBufferInit(void) {
         void *data;
         if (RendererQuadVertexBuffer != NULL) {
@@ -8295,30 +8293,29 @@ extern "C" {
         if (RendererQuadVertexBuffer->methods->lock(RendererQuadVertexBuffer, 0, 0, &data, 0) < 0) {
             return;
         }
-        QUAD_VERTEX[0].x = 0.0f;
-        QUAD_VERTEX[0].y = 0.0f;
-        QUAD_VERTEX[0].z = 0.5f;
-        QUAD_VERTEX[1].x = (f32)PCDeviceBackend.parameters.width;
-        QUAD_VERTEX[1].y = 0.0f;
-        QUAD_VERTEX[1].z = 0.5f;
-        QUAD_VERTEX[2].x = (f32)PCDeviceBackend.parameters.width;
-        QUAD_VERTEX[2].y = (f32)PCDeviceBackend.parameters.height;
-        QUAD_VERTEX[2].z = 0.5f;
-        QUAD_VERTEX[3].x = 0.0f;
-        QUAD_VERTEX[3].y = (f32)PCDeviceBackend.parameters.height;
-        QUAD_VERTEX[3].z = 0.5f;
-        QUAD_VERTEX[3].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[2].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[1].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[0].attribute_bits = 0x4b000000;
-        QUAD_VERTEX[3].w = 1.0f;
-        QUAD_VERTEX[2].w = 1.0f;
-        QUAD_VERTEX[1].w = 1.0f;
-        QUAD_VERTEX[0].w = 1.0f;
+        RENDERER_SCREEN_VERTEX *quad = static_cast<RENDERER_SCREEN_VERTEX *>(data);
+        quad[0].x = 0.0f;
+        quad[0].y = 0.0f;
+        quad[0].z = 0.5f;
+        quad[1].x = (f32)PCDeviceBackend.parameters.width;
+        quad[1].y = 0.0f;
+        quad[1].z = 0.5f;
+        quad[2].x = (f32)PCDeviceBackend.parameters.width;
+        quad[2].y = (f32)PCDeviceBackend.parameters.height;
+        quad[2].z = 0.5f;
+        quad[3].x = 0.0f;
+        quad[3].y = (f32)PCDeviceBackend.parameters.height;
+        quad[3].z = 0.5f;
+        quad[3].attribute_bits = 0x4b000000;
+        quad[2].attribute_bits = 0x4b000000;
+        quad[1].attribute_bits = 0x4b000000;
+        quad[0].attribute_bits = 0x4b000000;
+        quad[3].w = 1.0f;
+        quad[2].w = 1.0f;
+        quad[1].w = 1.0f;
+        quad[0].w = 1.0f;
         RendererQuadVertexBuffer->methods->unlock(RendererQuadVertexBuffer);
     }
-
-#undef QUAD_VERTEX
 
     void NuRndrGeometryBuffersInit(void) {
         u16 *indices;
