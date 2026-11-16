@@ -44,3 +44,6 @@ extern "C" {
         storage.bits = bits;                                                                                                               \
         (destination) = storage.value;                                                                                                     \
     } while (0)
+
+/* Bit pattern of the quiet NaN the x87 produces for an invalid operation (the "indefinite" value). */
+#define NU_FLOAT_NAN_BITS 0xffc00000
