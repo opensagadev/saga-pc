@@ -1416,18 +1416,13 @@ void rtlSetUserIdName(i32 index, char *name) {
 }
 
 static void edrtlDrawHelp(void) {
-    // clang-format off: aligned table wider than the column limit
     static const char *help_text[2][6] = {
         {NULL, "SQR=ADD, O=SELECT",    "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
-         "SQR=ADD, TRI=DEL, L-UP=LOCK, X=ADJUST, O=SELECT\n",
-         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-LEFT=EDIT ALTERNATES",
-         "L-LEFT=PREV, L-RIGHT=NEXT"},
+         "SQR=ADD, TRI=DEL, L-UP=LOCK, X=ADJUST, O=SELECT\n",                                                        "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-LEFT=EDIT ALTERNATES",
+         "L-LEFT=PREV, L-RIGHT=NEXT"                                                                                                                                                                                                              },
         {NULL, "X=ADD, SELECT=SELECT", "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
-         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EDIT / ADD ALTERNATE SETTINGS",
-         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EXIT ALTERNATE SETTINGS MODE",
-         "L1-PREV, R1-NEXT"},
+         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EDIT / ADD ALTERNATE SETTINGS", "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EXIT ALTERNATE SETTINGS MODE", "L1-PREV, R1-NEXT"},
     };
-    // clang-format on
     i32 y;
     const char *source;
     NuQFntSet(system_qfont);

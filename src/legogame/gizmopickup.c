@@ -340,30 +340,24 @@ counter_sound:
 }
 
 char dat_00758c5c[12] = "PickupCoinB";
-// clang-format off: aligned table wider than the column limit
-    GIZMO_PICKUP_TYPE GizmoPickupType[10] = {
-        {dat_00758c80, NULL,                    NULL,                    115, 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f,
-         0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-        {dat_00758c74, NULL,                    NULL,                    103, 4, 64, 0, 191, 100,   0.045f, 0.045f, 10.0f,
-         0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-        {dat_00758c68, dat_00758c5c, NULL,                    98,  4, 64, 0, 199, 1000,  0.045f, 0.045f, 6.0f,
-         0.0f,  Pup_UpdateBlueCoin,   Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
-        {dat_00758c50, dat_00758c5c, NULL,                    112, 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f,
-         0.0f,  Pup_UpdatePurpleCoin, Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
-        {dat_00758c48, dat_00758c3c, NULL,                    109, 0, 69, 0, 206, 0,     0.125f, 0.15f,  2.0f,
-         0.05f, NULL,                 Pup_CollectMinikit,  20, -1,  0.0f, 0.0f},
-        {dat_00758c34, NULL,                    NULL,                    104, 0, 2,  0, 203, 0,     0.1f,   0.08f,  4.0f,
-         0.0f,  NULL,                 Pup_CollectHeart,    -1, -1,  0.0f, 0.0f},
-        {dat_00758c28, dat_00758c3c, NULL,                    114, 0, 73, 0, 210, 0,     0.12f,  0.06f,  2.0f,
-         0.1f,  NULL,                 Pup_CollectRedBrick, 99, -1,  0.0f, 0.0f},
-        {dat_00758c20, dat_00758c3c, dat_00758c14, 99,  0, 33, 0, 207, 0,     0.125f, 0.15f,  2.0f,
-         0.05f, NULL,                 Pup_CollectCharKit,  20, -1,  0.0f, 0.0f},
-        {dat_00758c0c, NULL,                    NULL,                    116, 0, 2,  0, 121, 0,     0.1f,   0.1f,   5.0f,
-         0.0f,  NULL,                 NULL,                -1, -1,  0.0f, 0.0f},
-        {dat_00758c00, dat_00758c3c, NULL,                    117, 0, 1,  0, 208, 0,     0.125f, 0.125f, 2.0f,
-         0.05f, Pup_UpdatePowerUp,    Pup_CollectPowerUp,  -1, 209, 0.0f, 0.0f},
-    };
-    f32 PANEL_COINSCALE_START = 1.0f;
+GIZMO_PICKUP_TYPE GizmoPickupType[10] = {
+    {dat_00758c80, NULL,         NULL,         115, 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f, 0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
+    {dat_00758c74, NULL,         NULL,         103, 4, 64, 0, 191, 100,   0.045f, 0.045f, 10.0f, 0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
+    {dat_00758c68, dat_00758c5c, NULL,         98,  4, 64, 0, 199, 1000,  0.045f, 0.045f, 6.0f,  0.0f,  Pup_UpdateBlueCoin,   Pup_CollectCoin,     8,  -1,
+     0.0f,                                                                                                                                                        0.0f},
+    {dat_00758c50, dat_00758c5c, NULL,         112, 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f,  0.0f,  Pup_UpdatePurpleCoin, Pup_CollectCoin,     8,  -1,
+     0.0f,                                                                                                                                                        0.0f},
+    {dat_00758c48, dat_00758c3c, NULL,         109, 0, 69, 0, 206, 0,     0.125f, 0.15f,  2.0f,  0.05f, NULL,                 Pup_CollectMinikit,  20, -1,  0.0f, 0.0f},
+    {dat_00758c34, NULL,         NULL,         104, 0, 2,  0, 203, 0,     0.1f,   0.08f,  4.0f,  0.0f,  NULL,                 Pup_CollectHeart,    -1, -1,  0.0f, 0.0f},
+    {dat_00758c28, dat_00758c3c, NULL,         114, 0, 73, 0, 210, 0,     0.12f,  0.06f,  2.0f,  0.1f,  NULL,                 Pup_CollectRedBrick, 99, -1,  0.0f, 0.0f},
+    {dat_00758c20, dat_00758c3c, dat_00758c14, 99,  0, 33, 0, 207, 0,     0.125f, 0.15f,  2.0f,  0.05f, NULL,                 Pup_CollectCharKit,  20, -1,  0.0f,
+     0.0f                                                                                                                                                             },
+    {dat_00758c0c, NULL,         NULL,         116, 0, 2,  0, 121, 0,     0.1f,   0.1f,   5.0f,  0.0f,  NULL,                 NULL,                -1, -1,  0.0f, 0.0f},
+    {dat_00758c00, dat_00758c3c, NULL,         117, 0, 1,  0, 208, 0,     0.125f, 0.125f, 2.0f,  0.05f, Pup_UpdatePowerUp,    Pup_CollectPowerUp,  -1, 209,
+     0.0f,                                                                                                                                                        0.0f},
+};
+f32 PANEL_COINSCALE_START = 1.0f;
+
 void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, i32 model_variant, GAMEOBJECT *object, i32 ignored) {
     i32 player_index;
     i32 player0_active;
@@ -465,7 +459,8 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     message.position = position;
     message.target_position = &target;
     message.target_scale = target_scale;
-    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_OBJECT_NO_ALPHA;
+    message.flags =
+        GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_OBJECT_NO_ALPHA;
     message.duration = COINMSGTIME;
     message.end_fn = EndScoreMessage;
     AddGameMsg(&message);
@@ -493,9 +488,10 @@ static void EndRedBrickMessage(GAME_MESSAGE *message) {
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 
-    char dat_00758c00[9] = "Power Up";
-    char dat_00758c0c[8] = "Torpedo";
-    char dat_00758c14[10] = "MK-Pickup";
+char dat_00758c00[9] = "Power Up";
+char dat_00758c0c[8] = "Torpedo";
+char dat_00758c14[10] = "MK-Pickup";
+
 void CollectRedBrick(NUVEC *position) {
     ADD_GAME_MESSAGE message;
     NUVEC target;
@@ -514,7 +510,8 @@ void CollectRedBrick(NUVEC *position) {
         message.end_fn = EndRedBrickMessage;
         message.scale = AreaPickupScale;
         message.allow_temporary = 1;
-        message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
+        message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN |
+                        GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
         message.target_scale = PANEL_REDBRICKSCALE;
         message.duration = 1.0f;
         AddGameMsg(&message);
@@ -542,7 +539,8 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
     message.target_position = &target;
     message.scale = AreaPickupScale;
     message.target_scale = PANEL_MINIKITSCALE;
-    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP | GAMEMSG_OBJECT_NO_ALPHA;
+    message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_WORLD_SCALE | GAMEMSG_DRAW_MOVE | GAMEMSG_DRAW_SCALE | GAMEMSG_EASE_IN | GAMEMSG_KEEP |
+                    GAMEMSG_OBJECT_NO_ALPHA;
     message.duration = 1.0f;
     message.icon = 0xce;
     message.special = &WORLD->level_objects[0xce].special;
@@ -572,7 +570,8 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
     GameAudio_PlaySfxById(GetSfxId(dat_00758c14), position, 3, 0);
 }
 
-    f32 coinimpactwait = 0;
+f32 coinimpactwait = 0;
+
 static void PartImpact_Coin(PART *part) {
     f32 speed;
     f32 volume;
@@ -645,9 +644,10 @@ static void PartMove_VehiclePickup(PART *part, f32 timestep) {
     part->position.z += part->velocity.z * gain * FRAMETIME;
 }
 
-    f32 PartVehicleHeartLifetime = 1.0f;
-    f32 PartVehicleHeartPodraceHeight = 2.0f;
-    f32 PartVehicleHeartHeight = 3.0f;
+f32 PartVehicleHeartLifetime = 1.0f;
+f32 PartVehicleHeartPodraceHeight = 2.0f;
+f32 PartVehicleHeartHeight = 3.0f;
+
 static void PartMove_VehicleHeart(PART *part, f32 timestep) {
     GAMEOBJECT *recipient = part->recipient;
     f32 progress = 1.0f - part->time_remaining / PartVehicleHeartLifetime;
@@ -667,9 +667,10 @@ static void PartMove_VehicleHeart(PART *part, f32 timestep) {
     part->position.z = start.z + (recipient->collision_position.z - start.z) * progress;
 }
 
-    f32 PartVehicleHeartPodraceScale = 4.0f;
-    f32 PartVehicleHeartGunshipScale = 7.5f;
-    f32 PartVehicleHeartScale = 5.0f;
+f32 PartVehicleHeartPodraceScale = 4.0f;
+f32 PartVehicleHeartGunshipScale = 7.5f;
+f32 PartVehicleHeartScale = 5.0f;
+
 static i32 PartDraw_VehicleHeart(PART *part) {
     NUVEC scaling;
     NUMTX matrix;
@@ -712,7 +713,8 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     params.collision_fn = PartCollide_3D;
     params.draw_fn = PartDraw_Torp;
     params.update_fn = NULL;
-    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
+    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN |
+                   PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     params.unknown_88 = lifetime;
     if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
@@ -744,7 +746,8 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
     params.unknown_88 = lifetime;
     params.collision_fn = PartCollide_3D;
     params.update_fn = PartUpdate_Heart;
-    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
+    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN |
+                   PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     if ((world->current_level->flags & LEVEL_PICKUPS_TO_PANEL) != 0) {
         params.unknown_a4 = PartVehicleHeartLifetime;
         params.move_fn = PartMove_VehicleHeart;
@@ -815,7 +818,8 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
     params.collision_fn = PartCollide_3D;
     params.update_fn = PowerUp_UpdatePart;
     params.impact_fn = PowerUp_ImpactPart;
-    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
+    params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN |
+                   PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PowerUp_DrawPart;
     params.unknown_88 = lifetime;
@@ -977,7 +981,8 @@ void SetCoinType(i32 model, GIZMOPICKUP *pickup) {
     }
 }
 
-    u8 CoinTab[4] = {0, 1, 2, 3};
+u8 CoinTab[4] = {0, 1, 2, 3};
+
 i32 GetRandomCoinType() {
     return CoinTab[qrand() / 16384];
 }
@@ -1133,7 +1138,8 @@ static void PartStop_Coin(PART *part) {
         GizmoPickup_CollectCoin(WORLD, &pickup->position, pickup->type_index, pickup->model_variant, NULL, 1);
     }
     SetCoinType(part->part_id, pickup);
-    pickup->flags = (pickup->flags & 0xf7) | GIZMOPICKUP_STATE_ACTIVE | GIZMOPICKUP_STATE_ENABLED | GIZMOPICKUP_STATE_VISIBLE | GIZMOPICKUP_STATE_DRAWN;
+    pickup->flags =
+        (pickup->flags & 0xf7) | GIZMOPICKUP_STATE_ACTIVE | GIZMOPICKUP_STATE_ENABLED | GIZMOPICKUP_STATE_VISIBLE | GIZMOPICKUP_STATE_DRAWN;
     pickup->position = part->position;
     pickup->rotation = 0;
     pickup->room = WORLD->current_gscn != NULL ? NuPortalWhichRoom(WORLD->current_gscn, &pickup->position) : -1;
@@ -1192,8 +1198,9 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     }
 }
 
-    char PickupCoinsLandName[10] = "CoinsLand";
-    f32 AddCoinDelay[2] = {0};
+char PickupCoinsLandName[10] = "CoinsLand";
+f32 AddCoinDelay[2] = {0};
+
 void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJECT *owner, i32 random_types) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     i32 remainder;
