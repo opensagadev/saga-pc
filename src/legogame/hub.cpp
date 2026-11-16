@@ -1850,8 +1850,7 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
         f32 x = hub_minikitviewer_pos.x + offset;
         if (hub_minikitviewer_movewait > 0.0f) {
             const f32 wait_ease =
-                (f32)(1.0 -
-                      (1.0 + (f64)(NuTrigTable[(((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f)) >> 1) & 0x7fff])) * 0.5);
+                (f32)(1.0 - (1.0 + (f64)(NuTrigTable[(((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f)) >> 1) & 0x7fff])) * 0.5);
             x += (f64)wait_ease * 2.0 * (f64)hub_minikitviewer_move;
         }
         MINIKIT *pieces = world->minikit_pieces_by_id[area];

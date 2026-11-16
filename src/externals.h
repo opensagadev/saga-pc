@@ -36,19 +36,19 @@ typedef struct IDirectSound3DBufferVtbl IDirectSound3DBufferVtbl;
 
 typedef void *DSOUND_OPAQUE_METHOD;
 
-typedef struct PC_DS_CAPS_VIEW { // size 0x60
-    DWORD size;                  // 0x00
-    DWORD remaining[23];         // 0x04
-} PC_DS_CAPS_VIEW;
+typedef struct PC_DS_CAPS { // size 0x60
+    DWORD size;             // 0x00
+    DWORD remaining[23];    // 0x04
+} PC_DS_CAPS;
 
-typedef struct PC_DS_BUFFER_DESC_VIEW { // size 0x24
-    DWORD size;                         // 0x00
-    DWORD flags;                        // 0x04
-    DWORD bytes;                        // 0x08
-    DWORD reserved;                     // 0x0c
-    WAVEFORMATEX *format;               // 0x10
-    GUID algorithm;                     // 0x14
-} PC_DS_BUFFER_DESC_VIEW;
+typedef struct PC_DS_BUFFER_DESC { // size 0x24
+    DWORD size;                    // 0x00
+    DWORD flags;                   // 0x04
+    DWORD bytes;                   // 0x08
+    DWORD reserved;                // 0x0c
+    WAVEFORMATEX *format;          // 0x10
+    GUID algorithm;                // 0x14
+} PC_DS_BUFFER_DESC;
 
 struct IDirectSound8 {
     const IDirectSound8Vtbl *vtable;
@@ -59,11 +59,11 @@ struct IDirectSound8Vtbl {                                                 // si
     ULONG(__stdcall *add_ref)(IDirectSound8 *);                            // 0x04
     ULONG(__stdcall *release)(IDirectSound8 *);                            // 0x08
     HRESULT(__stdcall *create_sound_buffer)                                // 0x0c
-    (IDirectSound8 *, const PC_DS_BUFFER_DESC_VIEW *, IDirectSoundBuffer **, IUnknown *);
-    HRESULT(__stdcall *get_caps)(IDirectSound8 *, PC_DS_CAPS_VIEW *);                                         // 0x10
+    (IDirectSound8 *, const PC_DS_BUFFER_DESC *, IDirectSoundBuffer **, IUnknown *);
+    HRESULT(__stdcall *get_caps)(IDirectSound8 *, PC_DS_CAPS *);                                              // 0x10
     HRESULT(__stdcall *duplicate_sound_buffer)(IDirectSound8 *, IDirectSoundBuffer *, IDirectSoundBuffer **); // 0x14
     HRESULT(__stdcall *set_cooperative_level)(IDirectSound8 *, HWND, DWORD);                                  // 0x18
-    void *unknown_1c;                                                                                         // 0x1c
+    void *compact;                                                                                            // 0x1c
     HRESULT(__stdcall *get_speaker_config)(IDirectSound8 *, DWORD *);                                         // 0x20
 };
 

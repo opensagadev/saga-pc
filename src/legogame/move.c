@@ -11170,9 +11170,9 @@ void GameObjectStuffAfterAnimation(void) {
                     if (object->character_model->points_of_interest[LandspeederExhaustJoints[joint]] != NULL) {
                         i32 count = (i32)(speed * 60.0);
                         if (count > 0) {
-                            AddVariableShotDebrisEffectTimed1(
-                                effect, &object->player.locator_matrices[LandspeederExhaustJoints[joint]].translation, count, FRAMETIME, 0,
-                                0, NULL);
+                            AddVariableShotDebrisEffectTimed1(effect,
+                                                              &object->player.locator_matrices[LandspeederExhaustJoints[joint]].translation,
+                                                              count, FRAMETIME, 0, 0, NULL);
                         }
                     }
                 }

@@ -338,18 +338,18 @@ extern "C" {
     extern struct area_data_s *DEATHSTARESCAPE_ADATA;
     typedef struct DETONATOR_s DETONATOR_s;
 
-    struct DETONATOR_s {             // size 0x38
-        NUVEC position;              // 0x00
-        NUVEC detonate_position;     // 0x0c
-        NUVEC screen_position;       // 0x18
-        struct gameobject_s *object; // 0x24
-        u8 active;                   // 0x28
-        u8 draw_result;              // 0x29
-        u16 rotation_x;              // 0x2a
-        u16 rotation_y;              // 0x2c
-        u16 rotation_z;              // 0x2e
-        f32 timer;                   // 0x30
-        void *hit_data;              // 0x34
+    struct DETONATOR_s {                 // size 0x38
+        NUVEC position;                  // 0x00
+        NUVEC detonate_position;         // 0x0c
+        NUVEC screen_position;           // 0x18
+        struct gameobject_s *object;     // 0x24
+        u8 active;                       // 0x28
+        u8 draw_result;                  // 0x29
+        u16 rotation_x;                  // 0x2a
+        u16 rotation_y;                  // 0x2c
+        u16 rotation_z;                  // 0x2e
+        f32 timer;                       // 0x30
+        struct GAMEANTINODE_s *antinode; // 0x34
     };
 
     extern DETONATOR_s Detonator[10];
