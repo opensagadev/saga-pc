@@ -7,8 +7,6 @@ src/nu2api/nu3d_includes.cpp,NuSpecialGetNoVisiTestFn,(NUINSTANCE *)legacy->inst
 src/nu2api/nu3d_includes.cpp,NuSpecialGetOnScreenFn,(NUINSTANCE *)legacy->instance,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuSpecialGetVisibilityFn,(NUINSTANCE *)legacy->instance,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuSpecialSetDrawMtx,(NUINSTANCE *)legacy->instance,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
-src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)0x414e4934,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
-src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)0x414e4935,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)i,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)overrides[i].joint_index,1,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
 src/nu2api/nu3d_includes.cpp,NuHGobjEvalAnim2Root,(i32)i,2,without it NuDeferredFilterGen::render in the same unit scores 93.90 instead of 93.89 % (unit-wide numbering)
