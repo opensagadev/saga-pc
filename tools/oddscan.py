@@ -476,7 +476,10 @@ class FileScan:
                         match = re.match(r'typedef\b(?!.*\{).*?(?:\(\s*\*\s*(\w+)\s*\)|(\w+)\s*(?:\[[^\]]*\])*)\s*'
                                          r'(?:\(.*\))?\s*$', text_head)
                         if match and text_head.startswith("typedef") and "saga_static_assert_" not in text_head:
-                            name = match.group(1) or match.group(2)
+                            # A function (pointer) typedef is named inside its first parentheses, after any calling
+                            # convention: typedef void (WINAPI *Name)(...), typedef void(Name)(...).
+                            function = re.match(r'typedef\b[^(]*\(\s*(?:\w+\s+)*\**\s*(\w+)\s*\)\s*\(', text_head)
+                            name = function.group(1) if function else match.group(1) or match.group(2)
                             if name:
                                 self.typedefs.append((name, head_line))
                             alias = re.fullmatch(r'typedef\s+(?:struct|union|class)\s+(\w+)\s+(\w+)', text_head)

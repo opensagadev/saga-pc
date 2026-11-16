@@ -165,6 +165,14 @@ void Bar(void) {
         self.assertEqual(other.counts["dup-macro-conflict"], 1)
         self.assertEqual(other.counts["dup-type-conflict"], 1)
 
+    def test_function_pointer_typedefs_are_named(self):
+        first = oddscan.FileScan("src/a.c", "typedef void (*FIRST_FN)(i32);\ntypedef void(WINAPI *SECOND_FN)(void *);\n"
+                                 "typedef void(third_fn)(i32);\n")
+        self.assertEqual([name for name, _ in first.typedefs], ["FIRST_FN", "SECOND_FN", "third_fn"])
+        second = oddscan.FileScan("src/b.c", "typedef i32 (*OTHER_FN)(void);\ntypedef void (*FIRST_FN)(i32);\n")
+        oddscan.cross_file([first, second])
+        self.assertEqual(second.counts["dup-type"], 1)
+
     def test_check_reports_growth_and_shrink(self):
         result = {"classes": [{"class": "goto", "count": 3}, {"class": "noinline", "count": 1}]}
         over, under = oddscan.check(result, {"goto": 2, "noinline": 4})
