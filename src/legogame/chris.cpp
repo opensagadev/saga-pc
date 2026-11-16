@@ -286,11 +286,6 @@ extern "C" {
         DOGFIGHT_SPACE *owner;             // 0x2c
     } DOGFIGHT_ACTION_STATE;
 
-    typedef struct DOGFIGHT_LEVEL_FLAGS { // size 0x10
-        u8 first;                         // 0x0
-        u8 remainder[15];                 // 0x1
-    } DOGFIGHT_LEVEL_FLAGS;
-
     extern void SpaceResetAudioPoint(void);
 
     /* Drawing controls, each in its own section; AnakinC occupies the intervening slot. */
@@ -2618,18 +2613,18 @@ extern "C" {
     }
 
     void ChrisDogFightAUpdate(WORLDINFO *world) {
-        DOGFIGHT_LEVEL_FLAGS *flags = (DOGFIGHT_LEVEL_FLAGS *)&LevFlag;
+        u8 *flags = LevFlag.bytes;
         SpaceResetAudioPoint();
         ProcessCurrentSpeed(world, DogfightSpeedList);
         ProcessSpaceLevel(world->dogfight_space);
-        if (AreaGlobals.unknown_00 != 0 || flags->first != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
+        if (AreaGlobals.unknown_00 != 0 || flags[0] != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
             return;
         }
         if (Game.area_save[BATTLEOVERCORUSCANT_ADATA->index].area_complete != 0) {
             return;
         }
         if (GamePlayTimer.time_elapsed >= 3.0f) {
-            flags->first = 1;
+            flags[0] = 1;
         }
     }
 

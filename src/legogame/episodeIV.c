@@ -269,8 +269,8 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
 void BlockadeRunnerD_Reset(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle15");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "obstacle14");
-    ((u8 *)LevFlag)[0] = 0;
-    ((u8 *)LevFlag)[1] = 0;
+    LevFlag.bytes[0] = 0;
+    LevFlag.bytes[1] = 0;
 }
 
 void BlockadeRunnerD_Update(WORLDINFO *world) {
@@ -295,18 +295,18 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
     }
     for (i = 0; i < 2; i++) {
         if (GizmoGetOutput(world->gizmo_sys, LevGizmo[i], 1, 1) != 0) {
-            if (((u8 *)LevFlag)[i] == 0) {
-                ((u8 *)LevFlag)[i] = 1;
+            if (LevFlag.bytes[i] == 0) {
+                LevFlag.bytes[i] = 1;
                 BlockadeRunnerDEjectCreature(i);
             }
         } else {
-            ((u8 *)LevFlag)[i] = 0;
+            LevFlag.bytes[i] = 0;
         }
     }
 }
 
 void DeathStarRescueB_Init(WORLDINFO *world) {
-    u8 *flags = (u8 *)LevFlag;
+    u8 *flags = LevFlag.bytes;
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "reactor_1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "reactor_2", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], "reactor_3", 1);
@@ -324,7 +324,7 @@ void DeathStarRescueB_Init(WORLDINFO *world) {
 }
 
 void DeathStarRescueB_Update(WORLDINFO *world) {
-    u8 *flags = (u8 *)LevFlag;
+    u8 *flags = LevFlag.bytes;
     i32 i;
     for (i = 0; i < 6; i++) {
         if (flags[i] == 0) {
@@ -665,13 +665,13 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
             }
         }
     }
-    if (((u8 *)LevFlag)[4] != 0) {
+    if (LevFlag.bytes[4] != 0) {
         return;
     }
     if (NuSpecialGetVisibilityFn(&LevHSpecial[0])) {
         PlaySfx("ffield", NuSpecialGetDrawPos(&LevHSpecial[0]));
     } else {
         PlaySfx("ffieldoff", NuSpecialGetDrawPos(&LevHSpecial[0]));
-        ((u8 *)LevFlag)[4] = 1;
+        LevFlag.bytes[4] = 1;
     }
 }

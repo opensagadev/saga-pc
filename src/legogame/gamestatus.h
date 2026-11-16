@@ -69,12 +69,6 @@ extern "C" {
 }
 #endif
 
-typedef struct BONUS_GUNSHIP_FLAGS { // size 0x10
-    u8 progress;                     // 0x0
-    u8 secondary;                    // 0x1
-    u8 reserved[14];                 // 0x2
-} BONUS_GUNSHIP_FLAGS;
-
 typedef struct KAMINO_SHIP_ZERO_ANGLES {
     u16 pitch;
     i32 yaw;

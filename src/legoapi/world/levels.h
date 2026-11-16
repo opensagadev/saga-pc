@@ -29,6 +29,36 @@ typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
     char *name;                      // 0x4
 } LEVEL_OBJECT_CONFIG;
 
+/* LevFlag: sixteen bytes of state that the current level's own code keeps, each level its own way. */
+typedef union levflag_u { // size 0x10
+    i32 words[4];
+    u8 bytes[16];
+
+    struct {               // size 0x2
+        u8 state;          // 0x0
+        u8 mushroom_state; // 0x1
+    } podrace;
+
+    struct {          // size 0x2
+        u8 progress;  // 0x0
+        u8 secondary; // 0x1
+    } gunship;
+
+    struct {                  // size 0x1
+        u8 starfighter_state; // 0x0
+    } cruiser;
+
+    struct {        // size 0x1
+        u8 started; // 0x0
+    } cloud_city;
+
+    struct {               // size 0x9
+        u8 first;          // 0x0
+        u8 light_flags[4]; // 0x1
+        u8 arrow_flags[4]; // 0x5
+    } emperor_fight;
+} LEVFLAG;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -70,7 +100,7 @@ extern "C" {
     extern i32 LevSfxFlag[4];
     extern const f32 PCKeyboardDefaultValue;
     extern i32 MAXLDATA;
-    extern i32 LevFlag[4];
+    extern LEVFLAG LevFlag;
     extern LEVEL_OBJECT_CONFIG *ObjTabList;
     extern i32 LEVELOBJECTCOUNT;
     extern i32 EXTRALEVELOBJECTCOUNT;

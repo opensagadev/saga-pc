@@ -158,12 +158,6 @@ typedef struct movement_suit_s {
     u8 store_flag;
 } MOVEMENT_SUIT;
 
-typedef struct move_gunship_level_flags_s {
-    u8 progress;
-    u8 secondary;
-    u8 reserved[14];
-} MOVE_GUNSHIP_LEVEL_FLAGS;
-
 extern f32 DirectionalGrappleSeekScale;
 extern f32 DirectionalZipUpSeekRate;
 
@@ -1306,7 +1300,7 @@ i32 MovePlayer_GUNSHIPIN(GAMEOBJECT *object) {
             object->target_velocity.z = object->movement_direction_z;
             object->movement_direction_x = object->movement_direction_z = 0.0f;
         } else {
-            if (((MOVE_GUNSHIP_LEVEL_FLAGS *)LevFlag)->secondary != 0) {
+            if (LevFlag.gunship.secondary != 0) {
                 input_x = object->position.x < -1.0f ? 1.0f : object->position.x > 1.0f ? -1.0f : 0.0f;
                 input_z = 0.0f;
                 magnitude = data->run_speed;

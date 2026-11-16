@@ -176,10 +176,6 @@ typedef struct {
     u8 object_count[64];
 } BUILD_PROGRESS;
 
-typedef struct CLOUDCITY_LEVEL_FLAG_VIEW {
-    u8 started;
-} CLOUDCITY_LEVEL_FLAG_VIEW;
-
 typedef struct GAME_STATE_MENU_READER { // size 0x7c1a
     u8 reserved[0x7c18];                // 0x0000
     u16 completion;                     // 0x7c18

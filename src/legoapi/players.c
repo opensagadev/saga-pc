@@ -780,7 +780,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                     object->position = object->sock_position.midpoint;
                     surface_y = FindGunshipHoverHeight(object);
                     snap_to_surface = 0;
-                    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag[0] & 0xff) != 0) {
+                    if (WORLD->current_level == BONUS_GUNSHIPA_LDATA && (LevFlag.words[0] & 0xff) != 0) {
                         object->position.x = (f32)((f64)object->position.x + 12.0);
                     }
                 } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {

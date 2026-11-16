@@ -58,10 +58,6 @@ extern i32 i_boulder;
 extern f32 boulder_radius;
 extern i32 boulder_blowup_type;
 
-typedef struct cruisera_levflag_s {
-    u8 starfighter_state;
-} CRUISERA_LEVFLAG;
-
 typedef struct cruiserc_s {
     GIZAIMESSAGE *dooku_fight;
     GAMEOBJECT *count_dooku;
@@ -98,17 +94,17 @@ typedef struct vaderc_s {
 } VADERC;
 
 void CruiserAInit(WORLDINFO *world) {
-    ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 0;
+    LevFlag.cruiser.starfighter_state = 0;
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "starfighter1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "starfighter2", 1);
     if (FreePlay != 0) {
-        ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 2;
+        LevFlag.cruiser.starfighter_state = 2;
     }
 }
 
 void CruiserAUpdate(WORLDINFO *world) {
-    if (((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state == 1) {
-        ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 2;
+    if (LevFlag.cruiser.starfighter_state == 1) {
+        LevFlag.cruiser.starfighter_state = 2;
         if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
             NuSpecialSetVisibility(&LevHSpecial[0], 1);
         }

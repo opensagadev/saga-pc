@@ -544,7 +544,7 @@ extras:
 extern "C" {
 
     i32 KillBoss(i32 character_id, i32 flag_index, f32 delay) {
-        u8 *flags = (u8 *)LevFlag;
+        u8 *flags = LevFlag.bytes;
         switch (flags[flag_index]) {
             case 0:
                 if (BossKilled(character_id) == NULL) {
@@ -965,7 +965,7 @@ void NewArea_ResetGlobalsPC(void) {
 extern "C" {
 
     void ClearLevData(void) {
-        memset(LevFlag, 0, sizeof(LevFlag));
+        memset(&LevFlag, 0, sizeof(LevFlag));
         memset(LevSfxFlag, 0, sizeof(LevSfxFlag));
         memset(LevHSpecial, 0, sizeof(LevHSpecial));
         memset(dynamic_antinodes, 0, sizeof(dynamic_antinodes));
@@ -1326,7 +1326,7 @@ extern "C" {
     i32 makefreeplaymodellist = 0;
     f32 LevTime[5] = {0};
     AIPATHCNX *LevPathCnx[16] = {0};
-    i32 LevFlag[4] = {0};
+    LEVFLAG LevFlag = {0};
     i32 CharacterDataLoad = 0;
     i32 LevSfxFlag[4] = {0};
     GIZMOBLOWUP *LevBlowUp[2] = {0};

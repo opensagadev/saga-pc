@@ -145,12 +145,6 @@ typedef struct pod_race_countdown_reader_s { // size 0xb004
     f32 lap_countdown;                       // 0xb000
 } POD_RACE_COUNTDOWN_READER;
 
-typedef struct podrace_levflag_s { // size 0x10
-    u8 podrace_state;              // 0x0
-    u8 mushroom_state;             // 0x1
-    u8 remaining[14];              // 0x2
-} PODRACE_LEVFLAG;
-
 typedef struct gungan_a_s { // size 0x114
     i16 unknown_000;        // 0x000
     i16 count;              // 0x002

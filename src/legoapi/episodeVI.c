@@ -125,13 +125,6 @@ typedef struct emperor_fight_packet_s { // size 0x8
     u8 reserved;                        // 0x7
 } EMPEROR_FIGHT_PACKET;
 
-typedef struct level_script_flags_s { // size 0x10
-    u8 first;                         // 0x0
-    u8 light_flags[4];                // 0x1
-    u8 arrow_flags[4];                // 0x5
-    u8 remaining[7];                  // 0x9
-} LEVEL_SCRIPT_FLAGS;
-
 typedef struct sarlacc_world_s {  // size 0x50d4
     u8 unknown_0000[0x50cc];      // 0x0000
     i32 blowup_target_count;      // 0x50cc
@@ -186,7 +179,7 @@ void DeathStar2BattleD_Init(WORLDINFO *world) {
         }
     }
     LevGizmo[7] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "shield_inner1");
-    ((u8 *)LevFlag)[5] = 0;
+    LevFlag.bytes[5] = 0;
 }
 
 GIZMOBLOWUP *DeathStar2BattleD_InZapRange(GAMEOBJECT *object) {
@@ -234,7 +227,7 @@ void DeathStar2BattleD_Update(WORLDINFO *world) {
     f32 length;
     i32 angle;
     i32 i;
-    u8 *flags = (u8 *)LevFlag;
+    u8 *flags = LevFlag.bytes;
     (void)world;
     if (flags[0] > 0 && qrand() < 0x800) {
         NewRumbleAllPlayers((f32)((f64)qrand() * (f64)0.000015259022f), 0.0f, 0, 0);
@@ -391,7 +384,7 @@ f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *object) {
 }
 
 void EmperorFightA_Init(WORLDINFO *world) {
-    LEVEL_SCRIPT_FLAGS *flags = (LEVEL_SCRIPT_FLAGS *)&LevFlag;
+    LEVFLAG *flags = &LevFlag;
     i32 i;
     emperorfighta_netpacket = SetLevelHack(8);
     ((EMPEROR_FIGHT_PACKET *)emperorfighta_netpacket)->enabled = 1;
@@ -401,14 +394,14 @@ void EmperorFightA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[5], "lift_rlight_bon3", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[6], "lift_rlight_bon4", 1);
     for (i = 0; i < 4; ++i) {
-        flags->light_flags[i] = 0;
+        flags->emperor_fight.light_flags[i] = 0;
     }
     NuSpecialFind(world->current_gscn, &LevHSpecial[7], "lift_rarr_on1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[8], "lift_rarr_on2", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[9], "lift_rarr_on3", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[10], "lift_rarr_on4", 1);
     for (i = 0; i < 4; ++i) {
-        flags->arrow_flags[i] = 0;
+        flags->emperor_fight.arrow_flags[i] = 0;
     }
     NuSpecialFind(world->current_gscn, &LevHSpecial[30], "dot_on_01", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[31], "dot_on_02", 1);
@@ -784,11 +777,11 @@ void EmperorFightA_Update(WORLDINFO *world) {
     }
 emperor_routes_done:
     EmperorFightA_UpdateFloorObstacles();
-    if (!((u8 *)LevFlag)[4]) {
+    if (!LevFlag.bytes[4]) {
         for (i = 1; i < 5; ++i) {
-            if (!((u8 *)LevFlag)[i] && NuSpecialGetVisibilityFn(&LevHSpecial[i + 2])) {
+            if (!LevFlag.bytes[i] && NuSpecialGetVisibilityFn(&LevHSpecial[i + 2])) {
                 PlaySfx("env_block_light_on", NuSpecialGetDrawPos(&LevHSpecial[i + 2]));
-                ((u8 *)LevFlag)[i] = 1;
+                LevFlag.bytes[i] = 1;
             }
         }
     }
@@ -849,8 +842,8 @@ void JabbasPalaceD_Reset(WORLDINFO *world) {
 void JabbasPalaceE_Init(WORLDINFO *world) {
     LevGizmo[0] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "prox_explo1");
     LevGizmo[1] = GizmoFindByName(world->gizmo_sys, blowup_gizmotype_id, "prox_explo2");
-    ((u8 *)LevFlag)[6] = 0;
-    ((u8 *)LevFlag)[7] = 0;
+    LevFlag.bytes[6] = 0;
+    LevFlag.bytes[7] = 0;
 }
 
 void JabbasPalaceE_Reset(WORLDINFO *world) {
@@ -867,7 +860,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
     i32 i;
     GAMEOBJECT *player;
     GIZMOBLOWUP *blowup;
-    u8 *flags = (u8 *)LevFlag;
+    u8 *flags = LevFlag.bytes;
     if (!netclient) {
         if (FreePlay) {
             KillBossCompleteLevel(id_RANCOR, 0, 0.3f);
@@ -1335,13 +1328,13 @@ void SarlaccPitB_Update(WORLDINFO *world) {
             }
         }
     }
-    if (((u8 *)LevFlag)[0] == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0])) {
+    if (LevFlag.bytes[0] == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0])) {
         NUVEC *position = NuSpecialGetDrawPos(&LevHSpecial[0]);
         sarlacc_engine_timer = 0.05f;
         sarlacc_lump_position = *position;
-        ((u8 *)LevFlag)[0] = 1;
+        LevFlag.bytes[0] = 1;
     }
-    if (((u8 *)LevFlag)[0] != 0) {
+    if (LevFlag.bytes[0] != 0) {
         sarlacc_engine_timer -= FRAMETIME;
         if (sarlacc_engine_timer <= 0.0f) {
             sarlacc_engine_timer = 0.1f;

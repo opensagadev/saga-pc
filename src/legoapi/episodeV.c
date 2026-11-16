@@ -563,7 +563,7 @@ void AsteroidChaseB_Init(WORLDINFO *world) {
             classicBlowups[count++] = blowup;
         }
     }
-    ((u8 *)LevFlag)[0] = 0;
+    LevFlag.bytes[0] = 0;
     LevArea[0] = AISysFindArea(WORLD->ai_sys, "In_Cave");
     drawLights = 0;
     LevTime[0] = 0.0f;
@@ -587,12 +587,12 @@ void AsteroidChaseB_Update(WORLDINFO *world) {
     Asteroids_Update();
     for (i = 0; i < 4; i++) {
         if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 &&
-            (((u8 *)LevFlag)[0] & (1 << i)) == 0) {
-            ((u8 *)LevFlag)[0] |= (u8)(1 << i);
+            (LevFlag.bytes[0] & (1 << i)) == 0) {
+            LevFlag.bytes[0] |= (u8)(1 << i);
             AddMiscPickups(&classicBlowups[i]->position, -1, -1, 1);
         } else if (classicBlowups[i] != NULL && (classicBlowups[i]->status_flags & BLOWUP_STATUS_BLOWN_UP) == 0 &&
-                   (((u8 *)LevFlag)[0] & (1 << i)) != 0) {
-            ((u8 *)LevFlag)[0] &= ~(u8)(1 << i);
+                   (LevFlag.bytes[0] & (1 << i)) != 0) {
+            LevFlag.bytes[0] &= ~(u8)(1 << i);
         }
     }
     for (i = 0; i < 2; i++) {
@@ -949,7 +949,7 @@ static const char CloudCityEscapeFightMessage[20] = "BobaFightStarted";
 
 void CloudCityEscapeA_Init(WORLDINFO *world) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, (char *)CloudCityEscapeFightMessage, NULL);
-    ((CLOUDCITY_LEVEL_FLAG_VIEW *)LevFlag)->started = 0;
+    LevFlag.cloud_city.started = 0;
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], (char *)CloudCityEscapeGas1, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[2], (char *)CloudCityEscapeGas2, 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[3], (char *)CloudCityEscapeGas3, 1);
@@ -971,9 +971,9 @@ static const char CloudCityEscapeSteamSfx[16] = "env_steam_lp";
 void CloudCityEscapeA_Update(WORLDINFO *world) {
     i32 i;
     NUINSTANIM *animation;
-    if (((CLOUDCITY_LEVEL_FLAG_VIEW *)LevFlag)->started == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
+    if (LevFlag.cloud_city.started == 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) != 0) {
         PlaySfx((char *)CloudCityEscapeDeskSfx, NuSpecialGetDrawPos(&LevHSpecial[0]));
-        ((CLOUDCITY_LEVEL_FLAG_VIEW *)LevFlag)->started = 1;
+        LevFlag.cloud_city.started = 1;
     }
     TerSurface[14].flags = 0x2002;
     if (LevGizPanel == NULL || (((CLOUDCITY_PANEL_FLAGS_VIEW *)LevGizPanel)->flags & 2) == 0) {

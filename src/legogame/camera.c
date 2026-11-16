@@ -1088,10 +1088,10 @@ mode_selected:
             NUVEC ahead;
             NUVEC lateral;
             NUVEC *offset;
-            f32 spline_position = (GamePlayTimer.time_elapsed + (((u8 *)(LevFlag))[0] == 2 ? CamTitlesBonusTime : 6.0f)) / 100.0f;
+            f32 spline_position = (GamePlayTimer.time_elapsed + (LevFlag.bytes[0] == 2 ? CamTitlesBonusTime : 6.0f)) / 100.0f;
             f32 first_position = spline_position;
             if (spline_position > CamTitlesSplineEnd) {
-                ((u8 *)(LevFlag))[1] = 1;
+                LevFlag.bytes[1] = 1;
                 first_position = CamTitlesSplineEnd;
             }
 
@@ -1349,7 +1349,7 @@ mode_selected:
                 (WORLD->current_level == CLOUDCITYTRAPB_LDATA && window != NULL && window->object != NULL &&
                  (window->blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0 && ((u8)(camera->sock_position.sock_index)) <= 1)) {
                 camera_shake = 0.5f;
-            } else if (WORLD->current_level == DEATHSTAR2BATTLED_LDATA && ((u8 *)(LevFlag))[0] > 0) {
+            } else if (WORLD->current_level == DEATHSTAR2BATTLED_LDATA && LevFlag.bytes[0] > 0) {
                 camera_shake = 1.5f;
             } else {
                 i32 i;
