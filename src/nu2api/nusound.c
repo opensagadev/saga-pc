@@ -666,7 +666,8 @@ static void MusicPlayStream(i32 stream, i32 track, i32 volume, f32 seek_offset, 
     if (NOSOUND == 0 && NOMUSIC == 0) {
         NuSound3StopStereoStream(stream);
         NuSound3Update();
-        NuSound3PlayStereoV(2, stream, 3, track, 6, volume, 10, seek_offset, one_shot != 0 ? 12 : 0, 1);
+        NuSound3PlayStereoV(NUSOUND3_TAG_STREAM, stream, NUSOUND3_TAG_SAMPLE, track, NUSOUND3_TAG_VOLUME, volume, NUSOUND3_TAG_START_OFFSET,
+                            seek_offset, one_shot != 0 ? 12 : NUSOUND3_TAG_NONE, NUSOUND3_TAG_END);
         NuSound3Update();
         Music.secondary_stream = (i16)stream;
         Music.transition_frames = 0;
@@ -1433,7 +1434,8 @@ void PlayAMusic(i32 stream, i32 track, i32 volume, i32 one_shot) {
     if (NOSOUND == 0 && NOMUSIC == 0) {
         NuSound3StopStereoStream(stream);
         NuSound3Update();
-        NuSound3PlayStereoV(2, stream, 3, track, 6, volume, one_shot != 0 ? 12 : 0, 1);
+        NuSound3PlayStereoV(NUSOUND3_TAG_STREAM, stream, NUSOUND3_TAG_SAMPLE, track, NUSOUND3_TAG_VOLUME, volume,
+                            one_shot != 0 ? 12 : NUSOUND3_TAG_NONE, NUSOUND3_TAG_END);
         NuSound3Update();
         Music.secondary_stream = (i16)stream;
         Music.transition_frames = 0;

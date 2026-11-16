@@ -111,6 +111,18 @@ extern "C" {
     extern CRITICAL_SECTION PCSoundStorageLock;
     extern i32 PCSoundDrainStart;
     extern i32 PCSoundDrainRemaining;
+/* NuSound3PlayStereoV's tags: each but the end tag is followed by its value. Tags 9 and 11 set fields whose
+ * meaning is not settled; 12 takes no value and clears tag 9's. */
+#define NUSOUND3_TAG_NONE 0   /* no value */
+#define NUSOUND3_TAG_END 1    /* ends the list */
+#define NUSOUND3_TAG_STREAM 2 /* the stream index */
+#define NUSOUND3_TAG_SAMPLE 3 /* a single sample (first, and last = first + 1) */
+#define NUSOUND3_TAG_FIRST_SAMPLE 4
+#define NUSOUND3_TAG_LAST_SAMPLE 5
+#define NUSOUND3_TAG_VOLUME 6 /* both channels */
+#define NUSOUND3_TAG_VOLUME_LEFT 7
+#define NUSOUND3_TAG_VOLUME_RIGHT 8
+#define NUSOUND3_TAG_START_OFFSET 10 /* a double */
     i32 NuSound3PlayStereoV(i32 token, ...);
     extern i32 PCStereoChannel0A;
     extern i32 PCStereoChannel0B;

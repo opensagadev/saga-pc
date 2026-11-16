@@ -563,36 +563,36 @@ extern "C" i32 NuSound3PlayStereoV(i32 token, ...) {
     packet.option9_mode = -1;
     packet.start_offset = 0.0f;
     va_start(arguments, token);
-    while (token != 1) {
+    while (token != NUSOUND3_TAG_END) {
         switch (token) {
-            case 0:
+            case NUSOUND3_TAG_NONE:
                 break;
-            case 2:
+            case NUSOUND3_TAG_STREAM:
                 packet.stream_index = va_arg(arguments, i32);
                 break;
-            case 3:
+            case NUSOUND3_TAG_SAMPLE:
                 packet.first_sample = va_arg(arguments, i32);
                 packet.last_sample = packet.first_sample + 1;
                 break;
-            case 4:
+            case NUSOUND3_TAG_FIRST_SAMPLE:
                 packet.first_sample = va_arg(arguments, i32);
                 break;
-            case 5:
+            case NUSOUND3_TAG_LAST_SAMPLE:
                 packet.last_sample = va_arg(arguments, i32);
                 break;
-            case 6:
+            case NUSOUND3_TAG_VOLUME:
                 packet.volume_left = packet.volume_right = va_arg(arguments, i32);
                 break;
-            case 7:
+            case NUSOUND3_TAG_VOLUME_LEFT:
                 packet.volume_left = va_arg(arguments, i32);
                 break;
-            case 8:
+            case NUSOUND3_TAG_VOLUME_RIGHT:
                 packet.volume_right = va_arg(arguments, i32);
                 break;
             case 9:
                 packet.option9_mode = va_arg(arguments, i32);
                 break;
-            case 10:
+            case NUSOUND3_TAG_START_OFFSET:
                 packet.start_offset = (f32)va_arg(arguments, f64);
                 break;
             case 11:
@@ -627,8 +627,9 @@ i32 NuMusic::Voice::Unload(void) {
         if (tracks[track_index] != NULL) {
             gain = 0.0f;
             NuSound3StopStereoStream(stream_index * 2);
-            i32 result = NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, 6, 0, 10,
-                                             tracks[track_index]->start_offset, 1);
+            i32 result = NuSound3PlayStereoV(NUSOUND3_TAG_STREAM, stream_index, NUSOUND3_TAG_SAMPLE,
+                                             tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, NUSOUND3_TAG_VOLUME, 0,
+                                             NUSOUND3_TAG_START_OFFSET, tracks[track_index]->start_offset, NUSOUND3_TAG_END);
             last_volume = 0.0f;
             tracks[track_index]->ManageEntryTime();
             if (result != 0 && status != NUMUSIC_VOICE_SEEKING_PENDING) {
@@ -703,9 +704,10 @@ void NuMusic::Process(f32 delta) {
                         }
                         voice->flags_word &= ~1U;
                     } else if (current_track->entry_count != 0) {
-                        i32 result = NuSound3PlayStereoV(2, voice->stream_index, 3,
-                                                         current_track->file_indexes[voice->track_sub[voice->track_index]], 9, 0, 6, 0, 10,
-                                                         current_track->start_offset, 1);
+                        i32 result = NuSound3PlayStereoV(NUSOUND3_TAG_STREAM, voice->stream_index, NUSOUND3_TAG_SAMPLE,
+                                                         current_track->file_indexes[voice->track_sub[voice->track_index]], 9, 0,
+                                                         NUSOUND3_TAG_VOLUME, 0, NUSOUND3_TAG_START_OFFSET, current_track->start_offset,
+                                                         NUSOUND3_TAG_END);
                         voice->last_volume = 0.0f;
                         current_track->ManageEntryTime();
                         if (result != 0 && voice->status != NUMUSIC_VOICE_SEEKING_PENDING) {
@@ -1311,8 +1313,9 @@ i32 NuMusic::Voice::Cue(void) {
         status == NUMUSIC_VOICE_SEEKING) {
         return -5;
     }
-    result = NuSound3PlayStereoV(2, stream_index, 3, tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, 6, 0, 10,
-                                 tracks[track_index]->start_offset, 1);
+    result = NuSound3PlayStereoV(NUSOUND3_TAG_STREAM, stream_index, NUSOUND3_TAG_SAMPLE,
+                                 tracks[track_index]->file_indexes[track_sub[track_index]], 9, 0, NUSOUND3_TAG_VOLUME, 0,
+                                 NUSOUND3_TAG_START_OFFSET, tracks[track_index]->start_offset, NUSOUND3_TAG_END);
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
     if (result != 0) {
@@ -1369,8 +1372,9 @@ i32 NuMusic::Voice::Play(void) {
         return 1;
     }
     Track *track = tracks[track_index];
-    i32 result = NuSound3PlayStereoV(2, stream_index, 3, track->file_indexes[track_sub[track_index]], 9, track->pitch, 6, 0, 10,
-                                     track->start_offset, 1);
+    i32 result =
+        NuSound3PlayStereoV(NUSOUND3_TAG_STREAM, stream_index, NUSOUND3_TAG_SAMPLE, track->file_indexes[track_sub[track_index]], 9,
+                            track->pitch, NUSOUND3_TAG_VOLUME, 0, NUSOUND3_TAG_START_OFFSET, track->start_offset, NUSOUND3_TAG_END);
     last_volume = 0.0f;
     tracks[track_index]->ManageEntryTime();
     if (result != 0) {
