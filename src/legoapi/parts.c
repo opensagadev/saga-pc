@@ -387,19 +387,19 @@ PART *AddPart(ADDPART *parameters) {
     part->owner = parameters->owner;
     part->recipient = parameters->recipient;
     part->velocity = *parameters->velocity;
-    part->time_remaining = part->initial_time = parameters->unknown_a4;
+    part->time_remaining = part->initial_time = parameters->fade_time;
     part->unknown_206 = -1;
     part->unknown_20b = -1;
     part->scale_time = 0.0f;
     part->time_step = parameters->time_step;
     part->active = (part->active & ~PART_STATE_SCALING_DOWN) | PART_STATE_SCALING_UP;
-    part->radius = parameters->unknown_14;
+    part->radius = parameters->start_radius;
     part->unknown_e0 = (part->time_step / PARTSCALEUPTIME) * part->radius;
-    part->unknown_e4 = parameters->unknown_18;
-    part->unknown_214 = parameters->unknown_c0;
+    part->unknown_e4 = parameters->end_radius;
+    part->unknown_214 = parameters->model_scale;
     part->gravity = parameters->gravity;
     part->field_ec = parameters->unknown_20;
-    part->unknown_f0 = parameters->unknown_88;
+    part->unknown_f0 = parameters->lifetime;
     part->part_id = (i16)parameters->part_id;
     part->active = (part->active & ~PART_STATE_STOPPED) | PART_IN_USE;
     part->flags = parameters->flags;
@@ -2412,7 +2412,7 @@ void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 
             params.special = &special;
             NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
         }
-        params.unknown_a4 = type->lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
+        params.fade_time = type->lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
         NuMtxSetIdentity(&matrix);
         range = (f32)type->rotation_random[0];
         angle_x = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[0] - range);
@@ -3773,7 +3773,7 @@ void UpdatePartEmits(f32 time) {
             }
             if (emitter->unknown_3d != 0 && (type->maximum_distance == 0.0f || type->maximum_distance > emitter->camera_distance)) {
                 params = Default_ADDPART;
-                params.unknown_c0 = type->particle_scale;
+                params.model_scale = type->particle_scale;
                 position.x = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.x - type->position_random.x;
                 position.y = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.y - type->position_random.y;
                 position.z = NuRandFloatSeeded(&partseed) * 2.0f * type->position_random.z - type->position_random.z;
@@ -3813,7 +3813,7 @@ void UpdatePartEmits(f32 time) {
                     params.special = &special;
                     NuGScnGetSpecial(&special, part_scene[type->scene_indices[variant]], params.part_id);
                 }
-                params.unknown_a4 = type->lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
+                params.fade_time = type->lifetime + NuRandFloatSeeded(&partseed) * type->lifetime_random;
                 NuMtxSetIdentity(&matrix);
                 range = (f32)type->rotation_random[0];
                 angle_x = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[0] - range);

@@ -203,7 +203,7 @@ void HubGoneThroughDoor(WORLDINFO *world) {
             object = Player[index];
             if (object != NULL && (object->flags_1fc_half & APIOBJECT_FLAG_IN_USE) != 0) {
                 AISysCharacterSetPath(&object->ai_packet, world->ai_sys->path_sys->active_path);
-                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->unknown_281);
+                AISysGetCharacterPathPos(world->ai_sys, (APIOBJECT *)object, &object->ai_packet, 0xff, (i8)object->ground_flags);
             }
         }
     }

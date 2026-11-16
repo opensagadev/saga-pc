@@ -278,10 +278,10 @@ i32 Action_SpeederBeingChased(AISYS *system, AISCRIPTPROCESS *processor, AIPACKE
             if (player2 != NULL) {
                 error = MidDistanceFromSockStart(WORLD->sock_sys, &player2->sock_position) -
                         MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
-                if (error > sock->unknown_98 * 0.5) {
-                    error -= sock->unknown_98;
-                } else if (error < sock->unknown_98 * -0.5) {
-                    error += sock->unknown_98;
+                if (error > sock->loop_length * 0.5) {
+                    error -= sock->loop_length;
+                } else if (error < sock->loop_length * -0.5) {
+                    error += sock->loop_length;
                 }
                 if (speedervals[processor->action_data_1].distance < 0.0f) {
                     reference = error > 0.0f ? player : player2;
@@ -294,10 +294,10 @@ i32 Action_SpeederBeingChased(AISYS *system, AISCRIPTPROCESS *processor, AIPACKE
                 distance = MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position) -
                            MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
             }
-            if (distance > sock->unknown_98 * 0.5) {
-                distance -= sock->unknown_98;
-            } else if (distance < sock->unknown_98 * -0.5) {
-                distance += sock->unknown_98;
+            if (distance > sock->loop_length * 0.5) {
+                distance -= sock->loop_length;
+            } else if (distance < sock->loop_length * -0.5) {
+                distance += sock->loop_length;
             }
             if (speederfirerange > distance) {
                 can_fire = 1;

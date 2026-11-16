@@ -340,8 +340,8 @@ void Customiser_AddPartAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *ob
             momentum.y += 1.0f;
         }
         params = Default_ADDPART;
-        params.unknown_14 = 0.1f;
-        params.unknown_18 = 0.1f;
+        params.start_radius = 0.1f;
+        params.end_radius = 0.1f;
         params.gravity = -5.0f;
         params.matrix = &object->player.locator_matrices[joint];
         params.velocity = &momentum;

@@ -287,9 +287,9 @@ void MiniKit_GameMsg_End(GAME_MESSAGE *message) {
             if (AreaGlobals.progress_flags > AreaGlobals.area_phase) {
                 AreaGlobals.progress_flags = AreaGlobals.area_phase;
             }
-        } else if ((i16)message->icon == CharKitModelId && AreaGlobals.unknown_20 < AreaGlobals.unknown_1c) {
-            ++AreaGlobals.unknown_20;
-            if (AreaGlobals.unknown_20 == AreaGlobals.unknown_1c && AreaGlobals.unknown_1c >= 10) {
+        } else if ((i16)message->icon == CharKitModelId && AreaGlobals.challenge_minikits_shown < AreaGlobals.challenge_minikits) {
+            ++AreaGlobals.challenge_minikits_shown;
+            if (AreaGlobals.challenge_minikits_shown == AreaGlobals.challenge_minikits && AreaGlobals.challenge_minikits >= 10) {
                 EndChallenge(CHALLENGE_WON, 1);
             }
         }

@@ -245,7 +245,7 @@ extern "C" {
         target = 0.0f;
         if (silent == 0) {
             if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
-                target = AudioFabs(object->player.unknown_dc8);
+                target = AudioFabs(object->player.speed_boost);
             } else {
                 target = object->velocity_magnitude / character->run_speed;
             }

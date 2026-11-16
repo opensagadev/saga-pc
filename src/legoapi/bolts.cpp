@@ -2417,8 +2417,8 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     if (owner != NULL) {
         if (owner->floor_height != 2000000.0f) {
             bolt->unknown_e4 = owner->floor_height;
-            bolt->surface_x_rotation = owner->unknown_1052;
-            bolt->surface_z_rotation = owner->unknown_1054;
+            bolt->surface_x_rotation = owner->shadow_pitch;
+            bolt->surface_z_rotation = owner->shadow_roll;
         }
         if (owner->reflection_height != 2000000.0f && owner->reflection_enabled == 2) {
             bolt->reflection_height = owner->reflection_height;
@@ -2799,12 +2799,12 @@ extern "C" {
         aimed_position = object->player.attack_target_position;
         BoltSys->shoot_origin(object, &origin);
         heading = BoltSys->shoot_direction(object, &direction);
-        if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.unknown_7aa != ACTION_NONE) {
-            if ((u16)object->player.unknown_7aa == BoltShootClassId0) {
+        if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.context_animation != ACTION_NONE) {
+            if ((u16)object->player.context_animation == BoltShootClassId0) {
                 heading = (u16)(heading + 0x4000);
-            } else if ((u16)object->player.unknown_7aa == BoltShootClassId1) {
+            } else if ((u16)object->player.context_animation == BoltShootClassId1) {
                 heading = (u16)(heading - 0x4000);
-            } else if ((u16)object->player.unknown_7aa == BoltShootClassId2) {
+            } else if ((u16)object->player.context_animation == BoltShootClassId2) {
                 heading = (u16)(heading + 0x8000);
             }
         }
@@ -2939,7 +2939,7 @@ extern "C" {
                 sound_positions[sound_count++] = BoltShootPositionScratch;
             }
             if ((type->flags_60 & 0x20000000) != 0) {
-                object->player.unknown_d54 = BoltShootParameter;
+                object->player.hit_cooldown = BoltShootParameter;
             }
         }
         object->player.flags_e20 |= APIOBJECT_SHOT_FIRED;

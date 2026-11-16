@@ -336,7 +336,7 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
         record->id = id_BOB;
     }
     record->flags &= ~0x1cu;
-    record->unknown_58 = 0;
+    record->saved_layer_mask = 0;
 }
 
 static f32 jedib_create_step_Normal = 2.0f;
@@ -735,7 +735,7 @@ void JediB_Update(WORLDINFO *world) {
             jedi_b.heroes[hero]->position = *NuSpecialGetDrawPos(&jedi_b.hero_spawns[hero][spawn]);
             NuVecAdd(&jedi_b.heroes[hero]->position, &jedi_b.heroes[hero]->position, &jedib_offsets[hero]);
             jedi_b.heroes[hero]->ai_update_position = jedi_b.heroes[hero]->position;
-            jedi_b.heroes[hero]->unknown_276 = (u16)jedib_yrot[hero];
+            jedi_b.heroes[hero]->movement_angle = (u16)jedib_yrot[hero];
             jedi_b.heroes[hero]->velocity.x = 0.0f;
             jedi_b.heroes[hero]->velocity.y = 0.0f;
             jedi_b.heroes[hero]->velocity.z = 0.0f;
@@ -830,7 +830,7 @@ void JediB_Update(WORLDINFO *world) {
                             OnOrInsidePlane(&baddie->locator.position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 2.0f, NULL) == 0);
                 if (in_range == 0) {
                     baddie->position = baddie->object->position;
-                    baddie->angle = baddie->object->unknown_276;
+                    baddie->angle = baddie->object->movement_angle;
                     RemoveGameObject(baddie->object, 1);
                     baddie->object = NULL;
                     continue;
@@ -865,15 +865,15 @@ void JediB_Update(WORLDINFO *world) {
             baddie->object->ai_packet.locator = &baddie->locator;
             baddie->object->tag_object_callback = JediBKilledCallback;
             if (baddie->id == id_BOB) {
-                if (baddie->unknown_58 == 0) {
-                    baddie->unknown_58 = baddie->object->layer_mask;
+                if (baddie->saved_layer_mask == 0) {
+                    baddie->saved_layer_mask = baddie->object->layer_mask;
                     if (baddie->object->flags_ef0 & 0x200) {
                         baddie->flags |= 4;
                     } else {
                         baddie->flags &= ~4u;
                     }
                 } else {
-                    baddie->object->layer_mask = baddie->unknown_58;
+                    baddie->object->layer_mask = baddie->saved_layer_mask;
                     if (baddie->flags & 4) {
                         baddie->object->flags_ef0 |= 0x200;
                     } else {
@@ -1104,7 +1104,7 @@ void FactoryG_Update(WORLDINFO *world) {
         ObiWan->position.z = -10.5f;
         lamp =
             (f32)(NuTrigTable[(u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * NuQFntHalfScale * VehicleTurnPhaseScale) >> 1] * 30.0);
-        ObiWan->unknown_276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
+        ObiWan->movement_angle = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
         return;
     }
     if (ObiWan == NULL) {
@@ -1360,7 +1360,7 @@ void KaminoC_Update(WORLDINFO *world) {
                 for (i = 0; i < 8; i++) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-                        (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->unknown_281 != 0) {
+                        (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->ground_flags != 0) {
                         f32 dx = position->x - object->position.x;
                         f32 dy = position->y - object->position.y;
                         f32 dz = position->z - object->position.z;
@@ -1863,7 +1863,7 @@ void KaminoE_Update(WORLDINFO *world) {
         return;
     }
     target->position = wait->position;
-    target->unknown_276 = wait->rotation;
+    target->movement_angle = wait->rotation;
     target->facing_angle = wait->rotation;
     target->movement_facing_angle = wait->rotation;
     target->ai_packet.path_info = wait->path_info;

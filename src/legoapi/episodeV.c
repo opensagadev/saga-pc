@@ -158,7 +158,7 @@ void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
                 ActivateCharacter(name, NULL, 0);
                 AddGameDebris(world->game_debris_sys, 0x5c, &troopercannons[index].object->collision_position);
                 trooper = AddDynamicCreature(trooper_id, &troopercannons[index].object->collision_position,
-                                             troopercannons[index].object->unknown_276, "CannonTrooper",
+                                             troopercannons[index].object->movement_angle, "CannonTrooper",
                                              &troopercannons[index].object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
                 if (trooper != NULL) {
                     TakeOverGameObject(trooper, troopercannons[index].object, 0, 1);
@@ -327,8 +327,8 @@ void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
         params = Default_ADDPART;
         params.matrix = &matrix;
         params.velocity = &velocity;
-        NuSpecialGetRadius(special, &centre, &params.unknown_14);
-        params.unknown_18 = params.unknown_14;
+        NuSpecialGetRadius(special, &centre, &params.start_radius);
+        params.end_radius = params.start_radius;
         params.gravity = 0.0f;
         params.special = special;
         params.flags = 0x8000193;
@@ -338,7 +338,7 @@ void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
         params.time_step = FRAMETIME;
         params.collision_fn = (PART_ACTION)PartCollide_3D;
         params.kill_fn = (PART_KILL)Asteroid_PartKill;
-        params.unknown_a4 = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
+        params.fade_time = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
         part = AddPart(&params);
         if (part != NULL) {
             part->unknown_206 = (index != 0) + 1;
@@ -1001,7 +1001,7 @@ i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *of
         !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;
     }
-    NuVecRotateY(offset, offset, -luke->unknown_276);
+    NuVecRotateY(offset, offset, -luke->movement_angle);
     return offset->z > 0.0f;
 }
 
@@ -1448,7 +1448,7 @@ i32 SpawnMeleeCreatureType(i32 type) {
     NUVEC offset;
     for (index = 0; index < melee.waves[type].active_count; ++index) {
         if (melee.waves[type].character_id != id_ATAT && melee.waves[type].creatures[index] != NULL &&
-            melee.waves[type].creatures[index]->unknown_f10 > 5.0f) {
+            melee.waves[type].creatures[index]->offscreen_time > 5.0f) {
             KillGameObject(melee.waves[type].creatures[index], KILL_REASON_REMOVED, 0);
             melee.waves[type].creatures[index] = NULL;
             --melee.waves[type].active_count;

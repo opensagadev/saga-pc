@@ -91,7 +91,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         }
         distance = NuVecDistSqr(&object->position, &candidate->position, &direction);
         if (distance < nearest_distance) {
-            NuVecRotateY(&direction, &direction, -object->unknown_276);
+            NuVecRotateY(&direction, &direction, -object->movement_angle);
             if (direction.z < 0.0f) {
                 nearest_distance = distance;
                 nearest = candidate;
@@ -122,7 +122,7 @@ static void SetRiderPos(GAMEOBJECT *object, NUVEC *position) {
         }
         object->pitch_angle = 0;
         object->roll_angle = 0;
-        object->unknown_276 = object->player.rider->facing_angle;
+        object->movement_angle = object->player.rider->facing_angle;
         object->facing_angle = object->player.rider->facing_angle;
         object->movement_facing_angle = object->player.rider->facing_angle;
     }
@@ -179,11 +179,11 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         goto no_action;
     }
     if (rider->character_model->action_animations[action] != NULL) {
-        rider->player.unknown_7aa = (i16)action;
+        rider->player.context_animation = (i16)action;
         return;
     }
 no_action:
-    rider->player.unknown_7aa = ACTION_RIDE;
+    rider->player.context_animation = ACTION_RIDE;
 }
 
 i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
@@ -231,10 +231,10 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     model = rider->character_model;
     if (model->action_animations[6] != NULL) {
         ResetAnimPacket(&rider->anim_packet, -1);
-        rider->player.unknown_7aa = ACTION_JUMP;
+        rider->player.context_animation = ACTION_JUMP;
         rider->player.context_duration = AnimDuration((i16)rider->id, 6, 0.0f, 0.0f, 1);
     } else {
-        rider->player.unknown_7aa = ACTION_FALL;
+        rider->player.context_animation = ACTION_FALL;
         rider->player.context_duration = 0.5f;
     }
     if (vehicle->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
@@ -244,7 +244,7 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     }
     rider->player.context_timer = 0.0f;
     rider->player.external_force = rider->position;
-    rider->player.takeover_start_angle = rider->unknown_276;
+    rider->player.takeover_start_angle = rider->movement_angle;
     rider->player.force_target = vehicle;
     rider->takeover_target = NULL;
     vehicle->takeover_target = NULL;
@@ -273,7 +273,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
     if (CUTSKIPLOCK == 0) {
         source_pad = source->player.pad;
         destination_pad = destination->player.pad;
-        source_da8 = source->player.unknown_da8;
+        source_da8 = source->player.keep_time;
         source_hp = source->current_hp;
         destination_hp = destination->current_hp;
         source_player = source->player_controlled;
@@ -292,8 +292,8 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
         source->player.pad = destination_pad;
         source->player_controlled = destination_player;
         destination->player_controlled = source_player;
-        source->player.unknown_da8 = destination->player.unknown_da8;
-        destination->player.unknown_da8 = source_da8;
+        source->player.keep_time = destination->player.keep_time;
+        destination->player.keep_time = source_da8;
         pointer = source->player.coin_packet;
         source->player.coin_packet = destination->player.coin_packet;
         destination->player.coin_packet = pointer;
@@ -342,31 +342,31 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
                 Player[source->player_index] = source;
                 if (source->player.rider == NULL) {
                     if (WORLD->current_level != VADERC_LDATA) {
-                        source->unknown_107e = DEFAULT_PLAYERHITPOINTS;
+                        source->max_hitpoints = DEFAULT_PLAYERHITPOINTS;
                     }
                 } else {
-                    source->unknown_107e = source->character_data->game_character->hitpoints;
+                    source->max_hitpoints = source->character_data->game_character->hitpoints;
                 }
             } else {
-                source->unknown_107e = source->character_data->game_character->hitpoints;
+                source->max_hitpoints = source->character_data->game_character->hitpoints;
             }
             if (destination->player_index != -1) {
                 Player[destination->player_index] = destination;
                 if (destination->player.rider == NULL) {
                     if (WORLD->current_level != VADERC_LDATA) {
-                        destination->unknown_107e = DEFAULT_PLAYERHITPOINTS;
+                        destination->max_hitpoints = DEFAULT_PLAYERHITPOINTS;
                     }
                 } else {
-                    destination->unknown_107e = destination->character_data->game_character->hitpoints;
+                    destination->max_hitpoints = destination->character_data->game_character->hitpoints;
                 }
             } else {
-                destination->unknown_107e = destination->character_data->game_character->hitpoints;
+                destination->max_hitpoints = destination->character_data->game_character->hitpoints;
             }
             destination->current_hp = (i8)source_hp;
-            if (destination->current_hp > destination->unknown_107e) {
-                destination->current_hp = (i8)destination->unknown_107e;
+            if (destination->current_hp > destination->max_hitpoints) {
+                destination->current_hp = (i8)destination->max_hitpoints;
             }
-            if (destination->current_hp == 0 && destination->unknown_107e > 0) {
+            if (destination->current_hp == 0 && destination->max_hitpoints > 0) {
                 destination->current_hp = 1;
             }
             if (WORLD->current_level == VADERC_LDATA || (source->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -374,7 +374,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             } else if ((source->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                 source->current_hp = (i8)source->player.saved_hitpoints;
             } else {
-                source->current_hp = (i8)source->unknown_107e;
+                source->current_hp = (i8)source->max_hitpoints;
             }
         }
         destination->flags_ef0 &= ~0x180000u;
@@ -647,7 +647,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         GetTakeOverPos(rider->player.rider, &rider->position);
         rider->pitch_angle = 0;
         rider->roll_angle = 0;
-        rider->unknown_276 = rider->player.rider->facing_angle;
+        rider->movement_angle = rider->player.rider->facing_angle;
         rider->facing_angle = rider->player.rider->facing_angle;
         rider->movement_facing_angle = rider->player.rider->facing_angle;
     }
@@ -777,7 +777,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         object->position.y = (destination.y - object->player.external_force.y) * fraction + object->player.external_force.y;
         object->position.z = (destination.z - object->player.external_force.z) * fraction + object->player.external_force.z;
         height = target->bounds_half_height;
-        if (object->player.unknown_7aa == ACTION_JUMP || object->player.unknown_7aa == ACTION_MAGNET_JUMP) {
+        if (object->player.context_animation == ACTION_JUMP || object->player.context_animation == ACTION_MAGNET_JUMP) {
             if (object->character_data->game_character->jump_height > height) {
                 height = object->character_data->game_character->jump_height;
             }
@@ -787,9 +787,9 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         }
         phase = (f64)fraction * 32768.0;
         object->position.y += height * NuTrigTable[((i32)phase >> 1) & 0x7fff];
-        object->facing_angle = object->movement_facing_angle = object->unknown_276 =
+        object->facing_angle = object->movement_facing_angle = object->movement_angle =
             (u16)((f64)object->player.takeover_start_angle +
-                  (f64)RotDiff(object->player.takeover_start_angle, object->player.force_target->unknown_276) *
+                  (f64)RotDiff(object->player.takeover_start_angle, object->player.force_target->movement_angle) *
                       (1.0 - ((f64)NuTrigTable[((i32)(phase + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5));
         return;
     }
@@ -822,7 +822,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
             target = object->player.rider;
             model = target->character_model;
             if (model->action_animations[animation] != NULL) {
-                target->player.unknown_7aa = (i16)animation;
+                target->player.context_animation = (i16)animation;
             }
         }
         return;
@@ -848,7 +848,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         f32 range;
         f32 range_squared;
         f32 distance;
-        if (object->unknown_281 == 0) {
+        if (object->ground_flags == 0) {
             return;
         }
         candidate = Obj;

@@ -316,8 +316,8 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     }; // 0x080
 
     f32 jump_move_speed_scale; // 0x084
-    f32 unknown_088;           // 0x088
-    f32 unknown_08c;           // 0x08c
+    f32 text_height;           // 0x088
+    f32 shadow_radius;           // 0x08c
     u32 flags_090;             // 0x090
 
     union { // size 0x4

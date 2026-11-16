@@ -15,14 +15,14 @@ struct nugspline_s;
 
 typedef struct playerprogress_s { // size 0x10
     u32 coins;                    // 0x0
-    u16 unknown_0004;             // 0x4
+    u16 attract_count;             // 0x4
     u8 active;                    // 0x6
-    u8 unknown_7;                 // 0x7
+    u8 weapon_out;                 // 0x7
     u8 hitpoints;                 // 0x8
-    u8 unknown_9;                 // 0x9
-    u8 field_a;                   // 0xa
-    u8 field_b;                   // 0xb
-    f32 field_c;                  // 0xc
+    u8 saved_hitpoints;                 // 0x9
+    u8 helmet;                   // 0xa
+    u8 jump_variant;                   // 0xb
+    f32 powerup_time;                  // 0xc
 } PLAYERPROGRESS;
 
 typedef struct BLADE { // size 0x10

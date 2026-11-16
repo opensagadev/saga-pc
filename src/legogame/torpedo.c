@@ -338,7 +338,7 @@ void Torpedo_UpdateJobbies(GAMEOBJECT *object) {
             target_z = (u16)object->player.torpedo->pickup_data[index - 1];
             target_y = (u16)object->player.torpedo->pickup_flags[index - 1];
         } else {
-            target_z = NuAngAdd(object->unknown_276, 0x8000);
+            target_z = NuAngAdd(object->movement_angle, 0x8000);
             target_y = (u16)-object->player.secondary_lean_angle;
         }
         object->player.torpedo->pickup_data[index] = SeekRot((u16)object->player.torpedo->pickup_data[index], target_z, 5.0f);

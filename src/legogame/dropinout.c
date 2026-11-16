@@ -47,7 +47,7 @@ void CheckForPlayersTurnedOff(void) {
                     target->player.character_context == CHARACTER_CONTEXT_BIG_JUMP) {
                     continue;
                 }
-                if (target->unknown_281 != 0 ||
+                if (target->ground_flags != 0 ||
                     (target->player.jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) {
                     TagCharacter(Player[source_index], target, 1);
                 }
@@ -87,7 +87,7 @@ i32 FreePlay_DropInToPlayerPos(GAMEOBJECT *object) {
             object->start_position = position;
             object->position = position;
             object->velocity = v000;
-            object->unknown_276 = player->unknown_276;
+            object->movement_angle = player->movement_angle;
             ResetPlayerMoves(object);
             object->respawn_timer = 0.0f;
             InitSurfaceInfo(object);
@@ -126,7 +126,7 @@ void DropInOutCode(GAMEOBJECT *object) {
         }
         object->player.character_context = CHARACTER_CONTEXT_NONE;
         if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
-            object->unknown_281 = 0;
+            object->ground_flags = 0;
             object->velocity.y = -0.1f;
         }
     } else if (WORLD->current_level == PODSPRINTA_LDATA) {
@@ -145,7 +145,7 @@ void StartDropIn(GAMEOBJECT *object) {
     animation = (object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0 ? 5 : 1;
     object->player.context_timer = 0.0f;
     object->player.context_duration = 0.5f;
-    object->player.unknown_7aa = animation;
+    object->player.context_animation = animation;
 }
 
 void StartDropOut(GAMEOBJECT *object) {
@@ -158,7 +158,7 @@ void StartDropOut(GAMEOBJECT *object) {
     animation = CurrentAnim(&object->anim_packet);
     object->player.context_timer = 0.0f;
     object->player.context_duration = 0.5f;
-    object->player.unknown_7aa = animation;
+    object->player.context_animation = animation;
 }
 
 void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
@@ -194,7 +194,7 @@ void DropOut(i32 player, i32 resume, i32 silent, i32 unused) {
         StartDropOut(object);
     }
     if (object->dead || object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
-        PlayerProgress[player].hitpoints = object->unknown_107e;
+        PlayerProgress[player].hitpoints = object->max_hitpoints;
     } else {
         PlayerProgress[player].hitpoints = object->current_hp;
     }
@@ -346,7 +346,7 @@ i32 PlayersDropInOut(void) {
                  object->player.camera_screen_position.x < 0.8500000238418579 &&
                  object->player.camera_screen_position.y > -0.8500000238418579 &&
                  object->player.camera_screen_position.y < 0.8500000238418579) &&
-                (force_join || object->unknown_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
+                (force_join || object->ground_flags != 0 || object->id == (u16)id_SPEEDERBIKE ||
                  (object->player.jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
                 join = 1;
             } else if (force_join) {
@@ -365,7 +365,7 @@ i32 PlayersDropInOut(void) {
                 if (!tag && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(target->player.tag_flags & APIOBJECT_TAG_DISABLED) &&
                     !(target->portal_flags & APIOBJECT_CANNOT_DROP_IN) && target->player.character_context != CHARACTER_CONTEXT_DROP_OUT &&
                     target->player.character_context != CHARACTER_CONTEXT_BIG_JUMP && target->model_draw_result != 0 &&
-                    (target->unknown_281 != 0 ||
+                    (target->ground_flags != 0 ||
                      (target->player.jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
                     (target->player.camera_screen_position.x > -0.8500000238418579 &&
                      target->player.camera_screen_position.x < 0.8500000238418579 &&
@@ -440,7 +440,7 @@ i32 PlayersDropInOut(void) {
                 }
                 continue;
             }
-            if (object->player.unknown_da8 >= 2.0f) {
+            if (object->player.keep_time >= 2.0f) {
                 continue;
             }
             if ((object->model_draw_result != 0 ||
@@ -451,7 +451,7 @@ i32 PlayersDropInOut(void) {
             }
         } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&
                    (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-            if (object->player.unknown_da8 >= 2.0f ||
+            if (object->player.keep_time >= 2.0f ||
                 (object->model_draw_result == 0 &&
                  (object->player.camera_screen_position.x < -1.0f || object->player.camera_screen_position.x > 1.0f ||
                   object->player.camera_screen_position.y < -1.0f || object->player.camera_screen_position.y > 1.0f))) {

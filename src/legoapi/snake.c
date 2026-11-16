@@ -107,7 +107,7 @@ SNAKE_BODY *CreateSnakeBody(GAMEOBJECT *object, i32 segment_count) {
             body->flags |= 1;
             body->segment_count = (u16)segment_count;
             for (index = 0; index < body->segment_count; index++) {
-                body->segments[index].yaw = object->unknown_276;
+                body->segments[index].yaw = object->movement_angle;
                 body->segments[index].pitch = 0;
                 body->segments[index].ground_height = 1000000000.0f;
             }
@@ -134,7 +134,7 @@ void UpdateSnakeBody(GAMEOBJECT *object) {
         reader->snake_body->segments[index].position = position;
         reader->snake_body->segments[index].yaw =
             SeekRot((u16)reader->snake_body->segments[index].yaw,
-                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->unknown_276, SnakeYawSeekRate);
+                    index != 0 ? reader->snake_body->segments[index - 1].yaw : object->movement_angle, SnakeYawSeekRate);
         reader->snake_body->segments[index].pitch = 0;
         offset.x = 0.0f;
         offset.y = 0.0f;
@@ -194,8 +194,8 @@ void SnakeBeenHit(GAMEOBJECT *object) {
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.unknown_14 = 0.1f;
-            params.unknown_18 = 0.1f;
+            params.start_radius = 0.1f;
+            params.end_radius = 0.1f;
             params.gravity = -5.0f;
             params.special = special;
             params.time_step = FRAMETIME;
@@ -250,8 +250,8 @@ void BlowUpSnakeBody(GAMEOBJECT *object) {
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.unknown_14 = 0.1f;
-            params.unknown_18 = 0.1f;
+            params.start_radius = 0.1f;
+            params.end_radius = 0.1f;
             params.gravity = -5.0f;
             params.special = special;
             params.time_step = FRAMETIME;

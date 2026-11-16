@@ -132,8 +132,8 @@ extern "C" {
         i32 new_minikit_count;      // 0x10
         i32 progress_flags;         // 0x14
         i32 unknown_18;             // 0x18
-        i32 unknown_1c;             // 0x1c
-        i32 unknown_20;             // 0x20
+        i32 challenge_minikits;             // 0x1c
+        i32 challenge_minikits_shown;             // 0x20
         u32 arcade_player_kills[2]; // 0x24
         u32 arcade_ai_kills[2];     // 0x2c
     } AREA_GLOBALS;

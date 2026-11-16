@@ -129,8 +129,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             *position = object->previous_position;
         }
         position->y += height;
-        if (VehicleArea != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->unknown_1010 > 0.0f) {
-            f32 blend = 1.0f - object->unknown_1010 * 0.5f;
+        if (VehicleArea != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->invulnerable_timer > 0.0f) {
+            f32 blend = 1.0f - object->invulnerable_timer * 0.5f;
             if (blend < 0.5f) {
                 blend = NU_SIN_LUT((blend * 2.0f) * 16384.0f);
             } else {
@@ -596,12 +596,12 @@ mode_selected:
                     if ((i16)object->id == id_LANDSPEEDER) {
                         if (landspeeder_lookahead != 0.0f) {
                             landspeeder_lookahead = (landspeeder_lookahead + (object->horizontal_velocity_magnitude * 0.6f)) * 0.5f;
-                            landspeeder_yaw = (landspeeder_yaw + object->unknown_276) * 0.5f;
+                            landspeeder_yaw = (landspeeder_yaw + object->movement_angle) * 0.5f;
                             landspeeder_speed = (landspeeder_speed + object->horizontal_velocity_magnitude) * 0.5f;
                         } else {
                             landspeeder_speed = object->horizontal_velocity_magnitude;
                             landspeeder_lookahead = object->horizontal_velocity_magnitude * 0.6f;
-                            landspeeder_yaw = object->unknown_276;
+                            landspeeder_yaw = object->movement_angle;
                         }
                     }
                 }
@@ -638,7 +638,7 @@ mode_selected:
                     player_roll[player_count] = 0;
                 }
                 camera_players[player_count] = object;
-                player_yaw[player_count] = object->unknown_276;
+                player_yaw[player_count] = object->movement_angle;
                 player_count++;
             }
             if (player_count != 0) {
@@ -679,9 +679,9 @@ mode_selected:
                             pullback = (abs(index) - 0x4000) * (1.0f / 16384.0f);
                         }
                     }
-                    camera->unknown_1e8 = SeekLinearF(camera->unknown_1e8, pullback, FRAMETIME);
-                    camera->unknown_1ec = SeekValF(camera->unknown_1ec, camera->unknown_1e8, 3.0f);
-                    NuVecScale(&(*pullback_offset), &(*pullback_direction), camera->unknown_1ec * WORLD->current_level->cam_pullback_dist);
+                    camera->pullback_target = SeekLinearF(camera->pullback_target, pullback, FRAMETIME);
+                    camera->pullback = SeekValF(camera->pullback, camera->pullback_target, 3.0f);
+                    NuVecScale(&(*pullback_offset), &(*pullback_direction), camera->pullback * WORLD->current_level->cam_pullback_dist);
                     NuVecAdd(&position, &position, &(*pullback_offset));
                     NuVecAdd(&target, &target, &(*pullback_offset));
                     lateral = 0.0f;
@@ -692,11 +692,11 @@ mode_selected:
                             lateral = -lateral;
                         }
                     }
-                    camera->unknown_1f0 = SeekLinearF(camera->unknown_1f0, lateral, FRAMETIME);
-                    camera->unknown_1f4 = SeekValF(camera->unknown_1f4, camera->unknown_1f0, 3.0f);
+                    camera->lateral_target = SeekLinearF(camera->lateral_target, lateral, FRAMETIME);
+                    camera->lateral = SeekValF(camera->lateral, camera->lateral_target, 3.0f);
                     NuVecRotateY(&(*pullback_offset), &(*pullback_direction), 0x4000);
                     NuVecScale(&(*pullback_offset), &(*pullback_offset),
-                               (0.5f * WORLD->current_level->cam_lateral_dist) * camera->unknown_1f4);
+                               (0.5f * WORLD->current_level->cam_lateral_dist) * camera->lateral);
                     NuVecSub(&position, &position, &(*pullback_offset));
                     NuVecSub(&target, &target, &(*pullback_offset));
                 }
@@ -1383,7 +1383,7 @@ i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
     if (object->player.in_narrow_socket != 0) {
         i32 context;
         u16 heading = object->sock_heading;
-        forwards = abs(RotDiff(heading, object->unknown_276)) < 0x4000;
+        forwards = abs(RotDiff(heading, object->movement_angle)) < 0x4000;
         context = object->player.character_context;
         if (context == CHARACTER_CONTEXT_TURN && object->player.context_timer < object->player.context_duration * (f64)0.8f) {
             forwards = 1 - forwards;

@@ -220,8 +220,8 @@ void SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
     parameters = Default_ADDPART;
     parameters.matrix = &matrix;
     parameters.velocity = &velocity;
-    parameters.unknown_14 = 0.1f;
-    parameters.unknown_18 = 0.1f;
+    parameters.start_radius = 0.1f;
+    parameters.end_radius = 0.1f;
     parameters.special = &WORLD->level_objects[0xe6].special;
     parameters.time_step = FRAMETIME;
     parameters.gravity = -2.0f;
@@ -413,10 +413,10 @@ void ManageGameObjects(void) {
                     object->tag_object_callback(object);
                     object->tag_object_callback = NULL;
                 }
-                if (object->unknown_1010 > 0.0f) {
-                    object->unknown_1010 -= FRAMETIME;
-                    if (object->unknown_1010 <= 0.0f) {
-                        object->unknown_1010 = 0.0f;
+                if (object->invulnerable_timer > 0.0f) {
+                    object->invulnerable_timer -= FRAMETIME;
+                    if (object->invulnerable_timer <= 0.0f) {
+                        object->invulnerable_timer = 0.0f;
                         other = NULL;
                         if (WORLD->current_level == PODSPRINTA_LDATA) {
                             other = GetOtherActivePlayer(object);
@@ -425,19 +425,19 @@ void ManageGameObjects(void) {
                             object->ai_update_position = object->position = object->start_position = other->position;
                             GameObjectOrigin(object);
                             object->velocity = other->velocity;
-                            object->unknown_276 = object->facing_angle = object->movement_facing_angle = other->unknown_276;
+                            object->movement_angle = object->facing_angle = object->movement_facing_angle = other->movement_angle;
                         } else {
                             SetToLastSafePos(object);
                             GameObjectOrigin(object);
                             object->velocity.x = object->velocity.z = 0.0f;
                             object->velocity.y = -0.1f;
-                            object->unknown_276 = object->facing_angle = object->movement_facing_angle;
+                            object->movement_angle = object->facing_angle = object->movement_facing_angle;
                         }
                         saved_flags = object->flags_1fc_bit_13;
                         ResetPlayerMoves(object);
                         object->dead = 0;
                         object->flags_1fc_bit_13 = saved_flags;
-                        object->current_hp = object->unknown_107e;
+                        object->current_hp = object->max_hitpoints;
                         object->player.shield_hitpoints = object->character_data->game_character->shield_hitpoints;
                         object->player.saved_hitpoints = 4;
                         object->flags_ef0 |= 0x80;
@@ -475,15 +475,15 @@ void ManageGameObjects(void) {
                         }
                         if ((object->flags_1f8 & 0x4000) != 0) {
                             if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
-                                object->unknown_1010 = 2.0f;
+                                object->invulnerable_timer = 2.0f;
                             } else {
                                 creature = &WORLD->ai_sys->creatures[object->ai_packet.creature_index];
                                 if (object->respawnable) {
                                     if (!object->respawn_at_origin) {
                                         if (object->id == (u16)id_STAP2 && WORLD->current_level == NEGOTIATIONSC_LDATA) {
-                                            object->unknown_1010 = 5.0f;
+                                            object->invulnerable_timer = 5.0f;
                                         } else {
-                                            object->unknown_1010 = 1.0f;
+                                            object->invulnerable_timer = 1.0f;
                                         }
                                         continue;
                                     }
@@ -507,7 +507,7 @@ void ManageGameObjects(void) {
                                                                 creature->min_respawn_time * (1.0f - object->ai_packet.spawn_delay);
                             }
                         } else if (object->respawnable) {
-                            object->unknown_1010 = 1.0f;
+                            object->invulnerable_timer = 1.0f;
                         } else {
                             if (object->ai_packet.group != NULL) {
                                 alive = 0;
@@ -683,7 +683,7 @@ void CollideGameObjects(WORLDINFO *world) {
             (object->player.context_variant_flags & APIOBJECT_PUNCH_SPECIAL_MOVE)) {
             continue;
         }
-        if (object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP && object->player.unknown_7b3 == 1) {
+        if (object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP && object->player.context_phase == 1) {
             continue;
         }
         data = object->character_data->game_character;
@@ -710,7 +710,7 @@ void CollideGameObjects(WORLDINFO *world) {
                     !(((COLLISION_PLATFORM_PUSH_VIEW *)selected_player)->platform_push_timer > 0) ||
                     selected_player->supporting_platform_id != object->level_object_index ||
                     (selected_player->terrain_platform_id == object->level_object_index &&
-                     (selected_player->unknown_281 != 0 || GameObjectNearFloor(selected_player, 3.0f, NULL) != 0))) {
+                     (selected_player->ground_flags != 0 || GameObjectNearFloor(selected_player, 3.0f, NULL) != 0))) {
                     continue;
                 }
                 direction.x = object->collision_position.x - selected_player->collision_position.x;
@@ -784,7 +784,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
             offsets = GAMEOBJECT_ROTATION_DEFAULT_OFFSETS;
         }
         for (index = 0; index < 4; ++index) {
-            NuVecRotateY(&points[index], (NUVEC *)&offsets[index], object->unknown_276);
+            NuVecRotateY(&points[index], (NUVEC *)&offsets[index], object->movement_angle);
             NuVecAdd(&points[index], &points[index], &object->lower_position);
             height = GameShadow(NULL, &points[index], 5.0f, -1);
             if (height == GameObjectNearFloorNoFloorHeight) {
@@ -843,24 +843,24 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
 
     if (0 == ((object->flags_1fc & 4))) {
         if (0 != ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_SHADOW_ORIENTATION))) {
-            FindAnglesZX(&object->player.suspension_normal, &object->unknown_1056, &object->unknown_1058);
+            FindAnglesZX(&object->player.suspension_normal, &object->surface_pitch, &object->surface_roll);
         } else if (object->surface_normal.x != 0.0f || object->surface_normal.y != 1.0f || object->surface_normal.z != 0.0f) {
-            FindAnglesZX(&object->surface_normal, &object->unknown_1056, &object->unknown_1058);
+            FindAnglesZX(&object->surface_normal, &object->surface_pitch, &object->surface_roll);
         } else {
-            object->unknown_1058 = 0;
-            object->unknown_1056 = 0;
+            object->surface_roll = 0;
+            object->surface_pitch = 0;
         }
     }
 
-    x = object->unknown_1056;
+    x = object->surface_pitch;
     temp_zrot = x;
-    z = object->unknown_1058;
+    z = object->surface_roll;
     temp_xrot = z;
     game = object->character_data->game_character;
     flags = game->flags_090;
     sliding = (flags & CHARACTER_RUNTIME_SLIDE_ORIENTATION) != 0 && object->player.character_context == CHARACTER_CONTEXT_SLIDE;
     magnet = (flags & CHARACTER_RUNTIME_TIGHTROPE_TILT) != 0 && object->player.character_context == CHARACTER_CONTEXT_TIGHTROPE;
-    grapple = object->player.character_context == CHARACTER_CONTEXT_GRAPPLE && object->player.unknown_7b3 == 0;
+    grapple = object->player.character_context == CHARACTER_CONTEXT_GRAPPLE && object->player.context_phase == 0;
 
     if (object->flags_107a == 2 && ((object->character_data->model_flags & CHARACTER_MODEL_ORIENTATE) != 0 ||
                                     (flags & CHARACTER_RUNTIME_SHADOW_ORIENTATION) != 0 || sliding)) {
@@ -885,7 +885,7 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
                 z = 0;
             }
             alignment = 2;
-        } else if (object->unknown_281 != 0 ||
+        } else if (object->ground_flags != 0 ||
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_SHADOW_ORIENTATION) != 0 || sliding) {
             alignment = 1;
         } else if ((object->character_data->model_flags & CHARACTER_MODEL_ORIENTATE) != 0 &&
@@ -905,29 +905,29 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     }
 
     reflection = 0 != (CHARACTER_MODEL_VEHICLE & object->character_data->model_flags) &&
-                 object->character_data->game_character->unknown_028 > 0.0f && (object->unknown_283 == 7 || object->unknown_283 == 0x10) &&
+                 object->character_data->game_character->unknown_028 > 0.0f && (object->ground_layer == 7 || object->ground_layer == 0x10) &&
                  object->player_index == -1;
 
     if (mode == 1) {
-        object->unknown_1052 = x;
-        object->unknown_1054 = z;
+        object->shadow_pitch = x;
+        object->shadow_roll = z;
         if (alignment == 0) {
             object->pitch_angle = object->roll_angle = 0;
         } else if (magnet) {
-            if (object->player.unknown_7aa == ACTION_JUMP || object->player.unknown_7aa == ACTION_FALL) {
+            if (object->player.context_animation == ACTION_JUMP || object->player.context_animation == ACTION_FALL) {
                 object->pitch_angle = 0;
                 object->roll_angle = 0;
             } else {
-                object->pitch_angle = object->player.unknown_7a4;
-                object->roll_angle = object->player.unknown_7a8;
+                object->pitch_angle = object->player.saved_pitch;
+                object->roll_angle = object->player.saved_roll;
             }
         } else if (grapple) {
             GRAPPLE_ROTATION *hook = object->player.grapple;
             NuVecSub(&direction, &hook->hook_position, &object->collision_position);
             FindAnglesZX(&direction, &object->pitch_angle, &object->roll_angle);
         } else if (reflection) {
-            object->pitch_angle = object->unknown_105c;
-            object->roll_angle = object->unknown_105e;
+            object->pitch_angle = object->tilt_target_pitch;
+            object->roll_angle = object->tilt_target_roll;
         } else if (!(alignment == 2 || object->surface_normal.y > NuTrigTable[0x3000])) {
             object->pitch_angle = object->roll_angle = 0;
         } else {
@@ -935,33 +935,33 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
             object->roll_angle = z;
         }
     } else if (mode == 2) {
-        if (object->unknown_1052 != object->unknown_1056) {
-            object->unknown_1052 = SeekRot(object->unknown_1052, x, 8.0f);
+        if (object->shadow_pitch != object->surface_pitch) {
+            object->shadow_pitch = SeekRot(object->shadow_pitch, x, 8.0f);
         }
-        if (object->unknown_1054 != object->unknown_1058) {
-            object->unknown_1054 = SeekRot(object->unknown_1054, z, 8.0f);
+        if (object->shadow_roll != object->surface_roll) {
+            object->shadow_roll = SeekRot(object->shadow_roll, z, 8.0f);
         }
         if (object->flags_107a == 2) {
             f32 speed;
             u16 target_x;
             u16 target_z;
             if (magnet) {
-                if (object->player.unknown_7aa == ACTION_JUMP || object->player.unknown_7aa == ACTION_FALL) {
+                if (object->player.context_animation == ACTION_JUMP || object->player.context_animation == ACTION_FALL) {
                     object->pitch_angle = 0;
                     target_z = 0;
                     object->roll_angle = 0;
                     target_x = 0;
                 } else {
-                    target_x = object->player.unknown_7a4;
-                    target_z = object->player.unknown_7a8;
+                    target_x = object->player.saved_pitch;
+                    target_z = object->player.saved_roll;
                 }
             } else if (grapple) {
                 GRAPPLE_ROTATION *hook = object->player.grapple;
                 NuVecSub(&direction, &hook->hook_position, &object->collision_position);
                 FindAnglesZX(&direction, &target_x, &target_z);
             } else if (reflection) {
-                target_x = object->unknown_105c;
-                target_z = object->unknown_105e;
+                target_x = object->tilt_target_pitch;
+                target_z = object->tilt_target_roll;
             } else if (alignment == 2 || (alignment != 0 && object->surface_normal.y > NuTrigTable[0x3000])) {
                 target_x = x;
                 target_z = z;
@@ -1005,12 +1005,12 @@ void PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
         object->player.force_target->player.character_context == CHARACTER_CONTEXT_FORCE_PUSHED) {
         object->player.force_target->player.character_context = CHARACTER_CONTEXT_NONE;
     }
-    object->player.unknown_7aa = (i16)animation;
+    object->player.context_animation = (i16)animation;
     ResetAnimPacket(&object->anim_packet, -1);
     Player_ClearContext(object, 1);
     Player_ResetContexts(&object->player);
     object->player.character_context = CHARACTER_CONTEXT_TAKE_HIT;
-    duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+    duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
     object->player.context_timer = duration;
     if (duration <= 0.0f) {
         object->player.context_timer = 1.0f;
@@ -1018,7 +1018,7 @@ void PlayerTakeHit(GAMEOBJECT *object, GAMEOBJECT *attacker) {
     object->player.jump_variant_state = state;
     SetFlicker(object, 0.4f);
     if (attacker != NULL) {
-        object->facing_angle = object->movement_facing_angle = object->unknown_276 = NuAtan2D(
+        object->facing_angle = object->movement_facing_angle = object->movement_angle = NuAtan2D(
             attacker->collision_position.x - object->collision_position.x, attacker->collision_position.z - object->collision_position.z);
     }
 }
@@ -1061,10 +1061,10 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
         }
         if (animation != -1) {
             saved_jump_state = target->player.jump_variant_state;
-            target->player.unknown_7aa = (i16)animation;
+            target->player.context_animation = (i16)animation;
             speed = AnimSpeed(target->character_model, (i16)animation);
             view->animation_speed = speed;
-            if (target->player.unknown_7aa != ACTION_STUN_DIE && target->player.unknown_7aa != ACTION_TAKEHIT) {
+            if (target->player.context_animation != ACTION_STUN_DIE && target->player.context_animation != ACTION_TAKEHIT) {
                 if (speed <= 0.0f) {
                     view->animation_speed = 1.0f;
                 } else if (speed <= (f64)0.8f) {
@@ -1076,13 +1076,13 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
             Player_ResetContexts(&target->player);
             view->reaction_duration = duration;
             target->player.character_context = CHARACTER_CONTEXT_STUNNED;
-            target->player.unknown_7b3 = 0;
+            target->player.context_phase = 0;
             if (attacker != NULL) {
-                target->facing_angle = target->movement_facing_angle = target->unknown_276 =
+                target->facing_angle = target->movement_facing_angle = target->movement_angle =
                     NuAtan2D(attacker->collision_position.x - target->collision_position.x,
                              attacker->collision_position.z - target->collision_position.z);
             }
-            index = target->player.unknown_7aa;
+            index = target->player.context_animation;
             if (target->character_model->model_data_b[index] != NULL &&
                 (target->character_model->animation_configs[index]->flags & CHARANIM_CYCLE)) {
                 target->player.context_timer = (f32)(((f64)qrand() * 1.5259021893143654e-05) * 0.5 + 1.0);
@@ -1099,7 +1099,7 @@ i32 PlayerTakeHitReaction(GAMEOBJECT *target, GAMEOBJECT *attacker, f32 duration
                 target->movement_facing_angle = NuAtan2D(-dx, -dz);
             }
             target->player.jump_variant_state = saved_jump_state;
-            return target->player.unknown_7aa == ACTION_STUN_DIE ? 2 : 1;
+            return target->player.context_animation == ACTION_STUN_DIE ? 2 : 1;
         }
     }
     return 0;
@@ -1121,12 +1121,12 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
                 object->character_data->game_character->variant == CHARVARIANT_STORMTROOPER &&
                 object->character_model->model_data_b[0x62] != NULL) {
                 duration = 4.0f;
-                object->player.unknown_7aa = ACTION_IDLE7;
+                object->player.context_animation = ACTION_IDLE7;
             } else if (object->character_model->model_data_b[0x81] != NULL &&
                        !(object->character_model->animation_configs[0x81]->flags & CHARANIM_CYCLE)) {
-                object->player.unknown_7aa = ACTION_DEACTIVATE;
+                object->player.context_animation = ACTION_DEACTIVATE;
             } else {
-                object->player.unknown_7aa = object->character_model->model_data_b[0x41] != NULL ? 0x41 : 1;
+                object->player.context_animation = object->character_model->model_data_b[0x41] != NULL ? 0x41 : 1;
             }
             if (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) {
                 SetProtocolDroidDeactivatedAction(object);
@@ -1146,7 +1146,7 @@ void ActivatePlayer(GAMEOBJECT *object) {
     object->player.character_context = CHARACTER_CONTEXT_NONE;
     if (object->character_model->model_data_b[0x80] != NULL) {
         object->player.character_context = CHARACTER_CONTEXT_ACTIVATE;
-        object->player.unknown_7aa = ACTION_ACTIVATE;
+        object->player.context_animation = ACTION_ACTIVATE;
         object->player.context_timer = AnimDuration((i16)object->id, 0x80, 0.0f, 0.0f, 1);
         object->player.context_duration = 0.0f;
     }
@@ -1398,7 +1398,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
                 NuVecRotateY(&spin_velocity, &spin_velocity, xrot);
                 params->move_fn = TieSpinZPart_Move;
             }
-            params->unknown_a4 = 2.0f;
+            params->fade_time = 2.0f;
             params->kill_fn = TiePart_Kill;
             params->impact_fn = TiePart_Impact;
             params->velocity = &spin_velocity;
@@ -1408,7 +1408,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
         case 0: {
             params->flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE;
             params->kill_fn = TiePart_KillExplode;
-            params->unknown_a4 = FRAMETIME;
+            params->fade_time = FRAMETIME;
             params->velocity = &v000;
             break;
         }
@@ -1490,7 +1490,7 @@ void SpeederPart_Update(PART *part) {
         tilt.bits &= 0x7fffffff;
         spin = ((u16)(((i32)((NU_SIN_LUT(((i32)(time * 16384.0f + 32768.0f + 16384.0f))) + 1.0f) * 196608.0f))));
         part->rotation_x = SeekRot(part->rotation_x, 0xd556, 10.0f);
-        part->rotation_y = SeekRot(part->rotation_y, Player[0]->unknown_276 + 0x4000, 10.0f);
+        part->rotation_y = SeekRot(part->rotation_y, Player[0]->movement_angle + 0x4000, 10.0f);
         part->rotation_z = SeekRot(part->rotation_z, spin, 10.0f);
         GameShadow(NULL, &previous_position, 3.0f, 0);
         velocity = v001;
@@ -1523,7 +1523,7 @@ void SpeederPart_Update(PART *part) {
             bike->rider->ai_update_position = bike->rider_position;
             bike->rider->velocity = velocity;
             bike->rider->pitch_angle += ((i32)(NuFloatRand(&GAMERAND) * 2730.0f));
-            bike->rider->unknown_276 += ((i32)(NuFloatRand(&GAMERAND) * 2730.0f));
+            bike->rider->movement_angle += ((i32)(NuFloatRand(&GAMERAND) * 2730.0f));
             bike->rider->roll_angle += ((i32)(NuFloatRand(&GAMERAND) * 2730.0f));
             ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].x = 1.0f;
             ((KILLPARTS_RIDER_LIGHT *)bike->rider)->intensity[0].y = 1.0f;
@@ -1572,8 +1572,8 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
         params = Default_ADDPART;
         params.matrix = &object->player.locator_matrices[locator];
         params.velocity = &velocity;
-        params.unknown_14 = 0.1f;
-        params.unknown_18 = 0.1f;
+        params.start_radius = 0.1f;
+        params.end_radius = 0.1f;
         params.gravity = -5.0f;
         params.special = &WORLD->level_objects[object->helmet + 0xf9].special;
         params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
@@ -2115,7 +2115,7 @@ void UpdateGameObjects(WORLDINFO *world) {
                 } else if (world->rooms_visible_ptr[object->portal_room] == 0 || object->model_draw_result == 0) {
                     interval = 10;
                     object->flags_ef4 &= ~APIOBJECT_AI_EVERY_FRAME;
-                } else if (object->unknown_281 == 0) {
+                } else if (object->ground_flags == 0) {
                     object->flags_ef4 |= APIOBJECT_AI_EVERY_FRAME;
                     interval = 1;
                 } else {
@@ -2168,8 +2168,8 @@ void UpdateGameObjects(WORLDINFO *world) {
         if (object->player.timer_d34 > 0.0f) {
             object->player.timer_d34 -= FRAMETIME;
         }
-        if (object->player.unknown_d54 > 0.0f) {
-            object->player.unknown_d54 -= FRAMETIME;
+        if (object->player.hit_cooldown > 0.0f) {
+            object->player.hit_cooldown -= FRAMETIME;
         }
         if ((object->flags_1f8 & 0x40000) != 0) {
             MovePlayer_NETWORK(object);
@@ -2252,8 +2252,8 @@ void UpdateGameObjects(WORLDINFO *world) {
         if (object->player.timer_d34 > 0.0f) {
             object->player.timer_d34 -= FRAMETIME;
         }
-        if (object->player.unknown_d54 > 0.0f) {
-            object->player.unknown_d54 -= FRAMETIME;
+        if (object->player.hit_cooldown > 0.0f) {
+            object->player.hit_cooldown -= FRAMETIME;
         }
         object->flags_1fc_word ^= (((object->player.character_context == CHARACTER_CONTEXT_JUMP) << 14) ^ object->flags_1fc_word) & 0x4000;
         if ((object->flags_1f8 & 0x40000) != 0) {
@@ -2439,7 +2439,7 @@ void UpdateGameObjects(WORLDINFO *world) {
         UpdateCoinPacket(object->player.coin_packet, (object->flags_1fc_word >> 7) & 1, object->player_index);
         if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->dead == 0 &&
             object->player.character_context != CHARACTER_CONTEXT_DOOMED &&
-            !(object->player.character_context == CHARACTER_CONTEXT_TELEPORT && object->player.unknown_7b3 == 1)) {
+            !(object->player.character_context == CHARACTER_CONTEXT_TELEPORT && object->player.context_phase == 1)) {
             GizmoPickups_Collide(world, object, 1);
         } else {
             ResetCoinPacket(object->player.coin_packet);
@@ -2777,9 +2777,9 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     }
     object->dead = (u8)reason;
     object->current_hp = 0;
-    if (object->player.character_context == CHARACTER_CONTEXT_WEAPON_OUT || object->player.unknown_e33 == 1) {
+    if (object->player.character_context == CHARACTER_CONTEXT_WEAPON_OUT || object->player.weapon_draw_state == 1) {
         object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
-    } else if (object->player.character_context == CHARACTER_CONTEXT_WEAPON_IN || object->player.unknown_e33 == 2) {
+    } else if (object->player.character_context == CHARACTER_CONTEXT_WEAPON_IN || object->player.weapon_draw_state == 2) {
         object->player.flags_e20 = object->player.flags_e20 & (~APIOBJECT_WEAPON_OUT);
     }
     if (object->helmet != HELMET_NONE) {
@@ -3007,7 +3007,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
                     object->ai_packet.spawn_delay = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * 2.0 * (f64)object->ai_packet.spawn_delay);
                 }
             } else {
-                object->unknown_1010 = 1.0f;
+                object->invulnerable_timer = 1.0f;
             }
         }
     }
@@ -3163,8 +3163,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             momentum.z += object->velocity.z * 0.75f;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.unknown_14 = 0.2f;
-            params.unknown_18 = 0.2f;
+            params.start_radius = 0.2f;
+            params.end_radius = 0.2f;
             params.gravity = -10.0f;
             params.special = &pieces->pieces[i].special;
             params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
@@ -3231,8 +3231,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
                 momentum.x += object->velocity.x * 0.75f;
                 momentum.y += object->velocity.y * 0.75f;
                 momentum.z += object->velocity.z * 0.75f;
-                params.unknown_14 = 0.4f;
-                params.unknown_18 = 0.4f;
+                params.start_radius = 0.4f;
+                params.end_radius = 0.4f;
                 params.gravity = -10.0f;
             } else {
                 SetKillPartMom(&momentum);
@@ -3254,8 +3254,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
                 }
                 NuMtxMul(&matrix, &joint_matrices[joint], &object->transform);
                 params = Default_ADDPART;
-                params.unknown_14 = 0.1f;
-                params.unknown_18 = 0.1f;
+                params.start_radius = 0.1f;
+                params.end_radius = 0.1f;
                 params.gravity = -5.0f;
             }
             params.matrix = &matrix;
@@ -3303,8 +3303,8 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             momentum.z += object->velocity.z * 0.75f;
             params.matrix = &matrix;
             params.velocity = &momentum;
-            params.unknown_14 = 0.8f;
-            params.unknown_18 = 0.4f;
+            params.start_radius = 0.8f;
+            params.end_radius = 0.4f;
             params.gravity = -10.0f;
             params.special = special;
             params.lighting_data = Cheats_CheckFlags(CHEAT_ZERO_LIGHTING) ? ((PART_LIGHTING_DATA *)(&KillPartsZeroLighting))
@@ -3358,7 +3358,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
     f32 random_unit;
 
     if (target == NULL || (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
-        (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || target->dead != 0 || target->unknown_1010 > 0.0f) {
+        (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || target->dead != 0 || target->invulnerable_timer > 0.0f) {
         return 0;
     }
     no_hurt = objhitobj_nohurtsfx;
@@ -3388,7 +3388,7 @@ i32 ObjHitObj(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, u16 flags, i
         return 0;
     }
     if (target->player.character_context == CHARACTER_CONTEXT_STUNNED &&
-        (!target->player.unknown_7b3 || (attacker && !(attacker->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)))) {
+        (!target->player.context_phase || (attacker && !(attacker->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)))) {
         return 0;
     }
     if (!(damage == -1 && (flags & OBJHIT_EXPLOSION))) {
@@ -3568,7 +3568,7 @@ impact:
             GameAudio_PlaySfx(40, &target->collision_position, bits, 0);
         } else if (flags & OBJHIT_PUNCH) {
             if (attacker && attacker->player.character_context == CHARACTER_CONTEXT_PUNCH &&
-                (AnimMiscFlags(attacker->character_model, attacker->player.unknown_7aa) & 4)) {
+                (AnimMiscFlags(attacker->character_model, attacker->player.context_animation) & 4)) {
                 PlaySfx("WhipHit", &target->collision_position);
             } else {
                 i32 bits = attacker && attacker->unknown_280 <= 1 ? 1 << attacker->unknown_280 : 0;
@@ -3636,7 +3636,7 @@ impact:
             AddPickups(coins, 0, 0, 0, &target->collision_position, NULL, 2.0f, attacker ? attacker->player_index : -1, 1.0f, 2000000.0f,
                        attacker, 1, 0);
             DeactivatePlayer(target, 1000000000.0f, NULL);
-            target->current_hp = target->unknown_107e;
+            target->current_hp = target->max_hitpoints;
             SetFlicker(target, 0.4f);
             goto hurt;
         }
@@ -3676,9 +3676,9 @@ impact:
                 goto ordinary_death;
             }
             target->player.character_context = CHARACTER_CONTEXT_DIE_AIR;
-            target->player.unknown_7aa = ACTION_DIE_AIR;
+            target->player.context_animation = ACTION_DIE_AIR;
             if (target->character_model->model_data_b[0xb8] == NULL) {
-                target->player.unknown_7aa = ACTION_FALL;
+                target->player.context_animation = ACTION_FALL;
             }
             target->current_hp = 1;
             target->player.context_timer = 0.0f;
@@ -3851,6 +3851,6 @@ refill:
         SetFlicker(target, 0.4f);
     }
     Player_ClearContext(target, 1);
-    target->current_hp = target->unknown_107e;
+    target->current_hp = target->max_hitpoints;
     goto hurt;
 }

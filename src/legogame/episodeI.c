@@ -815,8 +815,8 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
                     part = Default_ADDPART;
                     part.matrix = &matrix;
                     part.velocity = &velocity;
-                    part.unknown_14 = NuSpecialGetOriginRadius(&minesys.mine_special);
-                    part.unknown_18 = part.unknown_14;
+                    part.start_radius = NuSpecialGetOriginRadius(&minesys.mine_special);
+                    part.end_radius = part.start_radius;
                     part.special = &minesys.mine_special;
                     part.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS | PART_FLAG_KEEP_OFF_SCREEN |
                                  PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
@@ -824,7 +824,7 @@ static i32 PodRaceUpdatePod(RACEPOD_RESOURCE *pod, WORLDINFO *world) {
                     part.collision_fn = PartCollide_3D;
                     part.kill_fn = PodRaceMineKill;
                     part.time_step = FRAMETIME;
-                    part.unknown_a4 = 5.0f;
+                    part.fade_time = 5.0f;
                     AddPart(&part);
                     {
                         const f64 random = NuRandFloat();
@@ -1387,8 +1387,8 @@ i32 Action_Sebulba(AISYS *unused0, AISCRIPTPROCESS *process, AIPACKET *packet, c
                 part.matrix = &matrix;
                 part.velocity = &throw_velocity;
                 part.special = &SebulbaMineSpecial;
-                part.unknown_14 = 0.1f;
-                part.unknown_18 = 0.1f;
+                part.start_radius = 0.1f;
+                part.end_radius = 0.1f;
                 part.gravity = PodSebulbaThrowGravity;
                 part.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS |
                              PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
@@ -1480,9 +1480,9 @@ void PodDust(WORLDINFO *world, GAMEOBJECT *object) {
         if (PodRaceKey[key + 2] == -1) {
             AddDebrisEffect(&PodRaceKey[key + 2], world->game_debris_sys->entries[54].effect, 0, 0, 0);
         } else {
-            matrix.m00 = -NuTrigTable[((object->unknown_276 + 0x4000) >> 1) & 0x7fff];
+            matrix.m00 = -NuTrigTable[((object->movement_angle + 0x4000) >> 1) & 0x7fff];
             matrix.m01 = 0;
-            matrix.m02 = NuTrigTable[object->unknown_276 >> 1];
+            matrix.m02 = NuTrigTable[object->movement_angle >> 1];
             matrix.m10 = -matrix.m02;
             matrix.m11 = 0;
             matrix.m12 = matrix.m00;
@@ -1614,11 +1614,11 @@ void PodSprintA_Reset(WORLDINFO *world) {
         for (i = 0; i < 2; i++) {
             object = i != 0 ? player2 : player;
             if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
-                object->player.unknown_dc8 = 1.0f;
+                object->player.speed_boost = 1.0f;
                 object->velocity.x = 0.0f;
                 object->velocity.y = 0.0f;
                 object->velocity.z = object->character_data->game_character->run_speed;
-                NuVecRotateY(&object->velocity, &object->velocity, object->unknown_276);
+                NuVecRotateY(&object->velocity, &object->velocity, object->movement_angle);
             }
         }
         if (game_cutscenes_cutscene != NULL) {
@@ -1677,7 +1677,7 @@ static i32 PodSprint_UpdateCountdown(void) {
         }
         if (Player[0] != NULL) {
             if (podsprint.countdown > 0.0f) {
-                Player[0]->player.unknown_dc8 = 0.0f;
+                Player[0]->player.speed_boost = 0.0f;
                 Player[0]->velocity.z = 0.0f;
                 Player[0]->velocity.x = 0.0f;
                 Player[0]->run_speed_override = 0.0f;
@@ -1687,7 +1687,7 @@ static i32 PodSprint_UpdateCountdown(void) {
         }
         if (Player[1] != NULL) {
             if (podsprint.countdown > 0.0f) {
-                Player[1]->player.unknown_dc8 = 0.0f;
+                Player[1]->player.speed_boost = 0.0f;
                 Player[1]->velocity.z = 0.0f;
                 Player[1]->velocity.x = 0.0f;
                 Player[1]->run_speed_override = 0.0f;
@@ -1920,10 +1920,10 @@ i32 Action_NewSebulba(AISYS *sys, AISCRIPTPROCESS *process, AIPACKET *packet, ch
                 GAMEOBJECT *lead;
                 distance = MidDistanceFromSockStart(sock_sys, &player2->sock_position) -
                            MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
-                if (distance > sock->unknown_98 * 0.5) {
-                    distance -= sock->unknown_98;
-                } else if (distance < sock->unknown_98 * -0.5) {
-                    distance += sock->unknown_98;
+                if (distance > sock->loop_length * 0.5) {
+                    distance -= sock->loop_length;
+                } else if (distance < sock->loop_length * -0.5) {
+                    distance += sock->loop_length;
                 }
                 if (goal < 0.0f) {
                     lead = distance > 0.0f ? player : player2;
@@ -1936,10 +1936,10 @@ i32 Action_NewSebulba(AISYS *sys, AISCRIPTPROCESS *process, AIPACKET *packet, ch
                 distance = MidDistanceFromSockStart(sock_sys, &object->sock_position) -
                            MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
             }
-            if (distance > sock->unknown_98 * 0.5) {
-                distance -= sock->unknown_98;
-            } else if (distance < sock->unknown_98 * -0.5) {
-                distance += sock->unknown_98;
+            if (distance > sock->loop_length * 0.5) {
+                distance -= sock->loop_length;
+            } else if (distance < sock->loop_length * -0.5) {
+                distance += sock->loop_length;
             }
             ratio = distance - goal;
         } else {
@@ -2055,7 +2055,7 @@ void MaulA_Panel(WORLDINFO *world) {
         if (Maul_obj != NULL && MaulA_ai_message != NULL && MaulA_ai_message->value == 0.0f && MaulA_hits_message != NULL) {
             GAMEOBJECT *maul = Maul_obj;
             maul->current_hp = (u8)(i32)MaulA_hits_message->value;
-            maul->unknown_107e = 3;
+            maul->max_hitpoints = 3;
             DrawBossHitPoints(maul);
         } else {
             DrawBossHitPoints(NULL);

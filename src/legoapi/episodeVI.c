@@ -486,12 +486,12 @@ void EmperorFightA_Update(WORLDINFO *world) {
 
         emperorfighta_netpacket->player_floor_mask = 0;
         player = Player[0];
-        if (player != NULL && !player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
+        if (player != NULL && !player->dead && player->invulnerable_timer <= 0.0f && LevArea[0] != NULL &&
             (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas)))) {
             emperorfighta_netpacket->player_floor_mask |= 1;
         }
         player = Player[1];
-        if (player != NULL && !player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
+        if (player != NULL && !player->dead && player->invulnerable_timer <= 0.0f && LevArea[0] != NULL &&
             (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas)))) {
             emperorfighta_netpacket->player_floor_mask |= 2;
         }
@@ -587,7 +587,7 @@ void EmperorFightA_Update(WORLDINFO *world) {
                 NUVEC *sound_position;
                 i32 sound;
                 player = Player[i];
-                if (player->dead || !(player->unknown_1010 <= 0.0f) || !(emperorfighta_netpacket->player_floor_mask & (1 << i))) {
+                if (player->dead || !(player->invulnerable_timer <= 0.0f) || !(emperorfighta_netpacket->player_floor_mask & (1 << i))) {
                     continue;
                 }
                 if ((i8)player->flags_1fc_word < 0) {
@@ -681,14 +681,14 @@ void EmperorFightA_Update(WORLDINFO *world) {
             f64 minimum;
             player = Player[0];
             minimum = EmperorFloorSafeXMinimum;
-            if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
+            if (!player->dead && player->invulnerable_timer <= 0.0f && LevArea[0] != NULL &&
                 (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas))) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 Player[0]->last_safe_position.x = (f32)minimum;
                 Player[0]->respawn_position.x = (f32)minimum;
             }
             player = Player[1];
-            if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
+            if (!player->dead && player->invulnerable_timer <= 0.0f && LevArea[0] != NULL &&
                 (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas))) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 Player[1]->last_safe_position.x = (f32)minimum;
@@ -1197,7 +1197,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
                     for (index = 0; index < 8; ++index) {
                         GAMEOBJECT *object = Player[index];
                         if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) &&
-                            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->unknown_281 != 0) {
+                            (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->ground_flags != 0) {
                             f32 dx = position->x - object->position.x;
                             f32 dz = position->z - object->position.z;
                             f32 distance = dx * dx + dz * dz;

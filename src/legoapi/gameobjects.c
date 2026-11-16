@@ -76,7 +76,7 @@ GAMEOBJECT *AddGameObject(void) {
         object->layer_mask = 1;
         object->floor_height = 2000000.0f;
         object->roof_surface_id = 0xff;
-        object->unknown_283 = -1;
+        object->ground_layer = -1;
         object->jump_animation_state = 0xff;
         RecomputeHighGameObject();
         ((APIOBJECT *)object)->owner = object;
@@ -410,7 +410,7 @@ NUVEC plr_lastpos = {0};
 
 void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO *path_info, i32 set_on_surface) {
     object->position = *position;
-    object->unknown_276 = (u16)angle;
+    object->movement_angle = (u16)angle;
     object->facing_angle = (u16)angle;
     object->movement_facing_angle = (u16)angle;
     object->collision_position = object->position;
@@ -455,7 +455,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                              : object;
         surface = terrain_object->jump_animation_state;
         if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
-            ((layer = terrain_object->unknown_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
+            ((layer = terrain_object->ground_layer) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
             unsafe = 1;
             if (VehicleArea && BonusArea && terrain_object->character_data->game_character->unknown_028 > 0.0f) {
                 unsafe = 0;
@@ -471,7 +471,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0) {
                 break;
             }
-            if (object->unknown_281 == 0 &&
+            if (object->ground_flags == 0 &&
                 (context == CHARACTER_CONTEXT_NONE ||
                  (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN && context != LEGOCONTEXT_GETIN)) &&
                 !VehicleArea) {
@@ -508,7 +508,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 object->respawn_position = object->last_safe_position;
                 object->flags_1fc_word |= 0x2000;
             }
-            if ((object->unknown_280 == 0 || object->unknown_280 == 1) && object->player.unknown_da8 <= 0.0f &&
+            if ((object->unknown_280 == 0 || object->unknown_280 == 1) && object->player.keep_time <= 0.0f &&
                 GameCam->blend_time >= GameCam->blend_duration && object->sock_index != 0xff) {
                 if (object->player.takeover_owner != NULL &&
                     (LEGOCONTEXT_GETIN == -1 || object->player.character_context != LEGOCONTEXT_GETIN) &&
@@ -519,7 +519,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             }
             goto safe_position_done;
         } while (0);
-        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (layer = object->unknown_283) != -1 &&
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (layer = object->ground_layer) != -1 &&
             (TerLayer[layer].flags & 1) != 0 && !NoLayerKill(object)) {
             if (object->player.fall_recovery_timer <= 0.0f) {
                 object->player.fall_hover_height = object->position.y;

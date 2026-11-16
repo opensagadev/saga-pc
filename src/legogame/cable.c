@@ -139,7 +139,7 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     GAMEOBJECT *object;
     i32 i;
     target->player.character_context = CHARACTER_CONTEXT_FLATTEN;
-    target->player.unknown_7aa = ACTION_SPLAT;
+    target->player.context_animation = ACTION_SPLAT;
     target->player.context_duration = AnimDuration((i16)target->id, 0x85, 0.0f, 0.0f, 1);
     target->flags_ef4 |= 0x800000;
     target->player.context_timer = 0.0f;

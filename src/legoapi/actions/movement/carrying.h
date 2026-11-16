@@ -9,7 +9,7 @@
 
 struct WORLDINFO_s;
 
-/* gameobject_s.unknown_7b3 in the super carry context: the step, after the LEGOACT_SUPERCARRY_* animation
+/* gameobject_s.player.context_phase in the super carry context: the step, after the LEGOACT_SUPERCARRY_* animation
  * each plays. */
 #define SUPERCARRY_PICKUP 0
 #define SUPERCARRY_PUTDOWN 1

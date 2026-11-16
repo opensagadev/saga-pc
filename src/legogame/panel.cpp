@@ -562,7 +562,7 @@ extern "C" {
         f32 spacing;
         f32 draw_y;
         f32 start_x;
-        if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->unknown_107e == 10) {
+        if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->max_hitpoints == 10) {
             two_rows = 1;
         } else if ((object->portal_flags & APIOBJECT_BOSS) != 0) {
             two_rows = DrawBossHitPointsTwoRows != 0;
@@ -574,8 +574,8 @@ extern "C" {
         if (WORLD->level_objects[heart_object].active == 0) {
             return;
         }
-        if (object->unknown_107e > 0) {
-            hitpoints = object->unknown_107e;
+        if (object->max_hitpoints > 0) {
+            hitpoints = object->max_hitpoints;
             current_hp = object->current_hp;
             if ((PlayerHitPointsTwoHearts != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) ||
                 WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
@@ -591,10 +591,10 @@ extern "C" {
         if (two_rows != 0 && hitpoints < 2) {
             two_rows = 0;
         }
-        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && hitpoints > 1 && object->dead != 0 && object->unknown_1010 > 0.0f &&
-            object->unknown_1010 < 1.0f) {
+        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && hitpoints > 1 && object->dead != 0 && object->invulnerable_timer > 0.0f &&
+            object->invulnerable_timer < 1.0f) {
             transitioning = 1;
-            current_hp = (i32)((1.0f - object->unknown_1010) * (f32)object->unknown_107e);
+            current_hp = (i32)((1.0f - object->invulnerable_timer) * (f32)object->max_hitpoints);
         }
         spacing = PanelHeartSpacing * scale;
         if (GetMenuID() == MENU_OPTIONS) {
@@ -896,7 +896,7 @@ extern "C" {
                     ((WORLD->area->flags & AREAFLAG_MINIKIT) != 0 ||
                      ((WORLD->current_level->flags & LEVEL_TEST) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
                     DrawMiniKitCount(minikittime, MiniKitScale,
-                                     ChallengeMode != CHALLENGE_OFF ? AreaGlobals.unknown_20 : AreaGlobals.progress_flags, 10);
+                                     ChallengeMode != CHALLENGE_OFF ? AreaGlobals.challenge_minikits_shown : AreaGlobals.progress_flags, 10);
                 }
                 if (SuperStory == 0 && ChallengeMode == CHALLENGE_OFF && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&

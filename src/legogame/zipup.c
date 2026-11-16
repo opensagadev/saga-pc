@@ -405,21 +405,21 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             f32 duration;
 
             playing = NULL;
-            if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
-                (playing = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0)) != NULL) {
+            if (object->character_model->model_data_b[object->player.context_animation] == NULL ||
+                (playing = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0)) != NULL) {
                 object->player.context_timer += FRAMETIME;
                 if (object->player.context_timer >= object->player.context_duration) {
                     object->player.context_timer = object->player.context_duration;
                 }
             }
             object->velocity = v000;
-            switch (object->player.unknown_7b3) {
+            switch (object->player.context_phase) {
                 case 0:
                     if (playing != NULL && *playing > 0.0f) {
                         f32 frame;
 
-                        frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
-                        if (frame > 1.0f && frame < AnimEndFrame(object->character_model, object->player.unknown_7aa)) {
+                        frame = AnimListFrame(object->character_model, object->player.context_animation, 0);
+                        if (frame > 1.0f && frame < AnimEndFrame(object->character_model, object->player.context_animation)) {
                             fraction = (*playing - 1.0f) / (frame - 1.0f);
                             if (fraction > 1.0f) {
                                 fraction = 1.0f;
@@ -433,10 +433,10 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                     NuVecScale(&delta, &delta, fraction);
                     NuVecAdd(&object->position, &transport->entry, &delta);
                     if (object->player.context_timer >= object->player.context_duration) {
-                        object->player.unknown_7b3 = 1;
-                        object->player.unknown_7aa = ZipUpSwingSwingAnimation;
+                        object->player.context_phase = 1;
+                        object->player.context_animation = ZipUpSwingSwingAnimation;
                         object->player.context_timer = 0.0f;
-                        duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 0);
+                        duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 0);
                         object->player.context_duration = duration;
                         if (duration <= 0.0f) {
                             object->player.context_duration = 1.0f;
@@ -450,10 +450,10 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                     NuVecScale(&delta, &delta, fraction);
                     NuVecAdd(&object->position, &transport->start, &delta);
                     if (object->player.context_timer >= object->player.context_duration) {
-                        object->player.unknown_7b3 = 2;
-                        object->player.unknown_7aa = ZipUpSwingJumpAnimation;
+                        object->player.context_phase = 2;
+                        object->player.context_animation = ZipUpSwingJumpAnimation;
                         object->player.context_timer = 0.0f;
-                        duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 0);
+                        duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 0);
                         object->player.context_duration = duration;
                         if (duration <= 0.0f) {
                             object->player.context_duration = 1.0f;
@@ -479,7 +479,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         }
         zipup = object->player.attached_zipup;
         hook = &zipup->hook_origin;
-        destination = object->player.unknown_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
+        destination = object->player.context_phase == 0 ? &zipup->upper_position : &zipup->lower_position;
         if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
             if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f || object->player.context_timer >= 5.0f) {
                 StartJump(object, JUMP_KIND_ZIPUP);
@@ -487,7 +487,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     Hint_SetComplete(0x262);
                 }
-                object->movement_facing_angle = object->facing_angle = object->unknown_276 =
+                object->movement_facing_angle = object->facing_angle = object->movement_angle =
                     NuAtan2D(destination->x - object->position.x, destination->z - object->position.z);
                 object->player.airborne_action_timer =
                     NuVecXZDist(&object->position, destination, NULL) / object->character_data->game_character->jump_duration;
@@ -517,7 +517,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 object->player.attached_zipup->flags_word &= ~ZIPUP_FLAG_IN_USE;
                 transport->detach_fall_delay = 0.2f;
                 object->player.grapple = NULL;
-                object->player.unknown_7a4 = 0;
+                object->player.saved_pitch = 0;
                 object->target_velocity = v000;
                 object->target_velocity.y = -1.0f;
                 object->velocity = v000;
@@ -628,10 +628,10 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             object->player.action_movement_state = 1;
             SetWeaponIn(object);
             GameAudio_PlaySfx(0x4c, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
-            object->player.unknown_7b3 = 0;
-            object->player.unknown_7aa = ZipUpSwingStartAnimation;
+            object->player.context_phase = 0;
+            object->player.context_animation = ZipUpSwingStartAnimation;
             object->player.context_timer = 0.0f;
-            duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 0);
+            duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 0);
             object->player.context_duration = duration;
             if (duration <= 0.0f) {
                 object->player.context_duration = 0.5f;
@@ -648,7 +648,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             NuVecAdd(&transport->swing, &transport->start, &offset);
             transport->swing.y = transport->swing.y + ZipUpSwingOffsetHeight;
             object->movement_facing_angle = NuAtan2D(transport->landing.x - transport->start.x, transport->landing.z - transport->start.z);
-            object->unknown_281 = 0;
+            object->ground_flags = 0;
         } else {
             NUVEC end_offset;
             NUVEC start_offset;
@@ -664,14 +664,14 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
 
             zipup = object->player.attached_zipup;
             object->player.action_movement_state = 0;
-            object->player.unknown_7aa = ACTION_UP;
+            object->player.context_animation = ACTION_UP;
             hook = &zipup->hook_origin;
             if (endpoint == 0) {
-                object->player.unknown_7b3 = 0;
+                object->player.context_phase = 0;
                 start = &zipup->lower_position;
                 destination = &zipup->upper_position;
             } else {
-                object->player.unknown_7b3 = 1;
+                object->player.context_phase = 1;
                 start = &zipup->upper_position;
                 destination = &zipup->lower_position;
             }
@@ -689,7 +689,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             dz = hook->z - start->z;
             angle = NuAtan2D(hook->y - start->y, NuFsqrt(dx * dx + dz * dz));
             pitch = 0x4000 - abs(angle);
-            object->player.unknown_7a4 = angle < 0 ? -pitch : pitch;
+            object->player.saved_pitch = angle < 0 ? -pitch : pitch;
             zipup = object->player.attached_zipup;
             if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
                 return;

@@ -458,8 +458,8 @@ static void ForceResetSingle(WORLDINFO *world, GIZFORCE *force) {
     GAMEANIMOBJ *object;
     force->runtime_flags = (force->runtime_flags & 0xffe2049fu) | GIZFORCE_ENABLED | GIZFORCE_VISIBLE;
     force->animation_speed = 1.0f;
-    force->unknown_48 = 0.0f;
-    force->unknown_50 = 0.0f;
+    force->hold_timer = 0.0f;
+    force->shake_timer = 0.0f;
     force->reset_word = 0;
     if (force->anim_set == NULL) {
         return;
@@ -733,8 +733,8 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
     params = Default_ADDPART;
     params.matrix = matrix;
     params.velocity = &velocity;
-    params.unknown_18 = 0.15f;
-    params.unknown_14 = 0.15f;
+    params.end_radius = 0.15f;
+    params.start_radius = 0.15f;
     params.gravity = gravity;
     params.special = special;
     params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS |
@@ -1230,8 +1230,8 @@ void GizmoForce_Activate(GIZMO *gizmo, i32 active) {
     }
     force->enabled = active != 0;
     if (active != 0) {
-        force->unknown_48 = 0.0f;
-        force->unknown_50 = 0.0f;
+        force->hold_timer = 0.0f;
+        force->shake_timer = 0.0f;
         force->runtime_flags &= 0xfffeffafu;
         if (force->config_flags & GIZFORCE_CONFIG_REPEAT_REWARD) {
             force->runtime_flags &= ~GIZFORCE_REWARD_RELEASED;
@@ -1382,7 +1382,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         force->being_used = user != NULL;
         was_moving = (force->anim_set->flags >> 1) & 1;
         force->runtime_flags &= ~GIZFORCE_ON_SCREEN;
-        if ((force->runtime_flags & GIZFORCE_SHAKE_OFFSET) != 0 && force->unknown_50 == 0.0f) {
+        if ((force->runtime_flags & GIZFORCE_SHAKE_OFFSET) != 0 && force->shake_timer == 0.0f) {
             offset.x = 0.0f;
             if ((force->runtime_flags & GIZFORCE_IN_STACK) == 0) {
                 offset.y = 0.0f;
@@ -1405,15 +1405,15 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                        GameAnimSet_GetCurrentFrame(force->anim_set) > force->effect_scale && !ForceAnimationDone(force);
         force->animation_speed = ForceUpdateSpeed(force, user);
         if (user == NULL && !still_rising && (force->runtime_flags & GIZFORCE_COMPLETION_PENDING) == 0) {
-            force->unknown_50 = 0.0f;
+            force->shake_timer = 0.0f;
             if (ForceAnimationDone(force)) {
-                if ((force->runtime_flags & GIZFORCE_IN_STACK) == 0 && ((force->config_flags & 2) != 0 || force->unknown_48 > 0.0f)) {
-                    f32 remaining = (f64)force->unknown_48 - FRAMETIME;
-                    force->unknown_48 = remaining;
+                if ((force->runtime_flags & GIZFORCE_IN_STACK) == 0 && ((force->config_flags & 2) != 0 || force->hold_timer > 0.0f)) {
+                    f32 remaining = (f64)force->hold_timer - FRAMETIME;
+                    force->hold_timer = remaining;
                     if (remaining <= 0.0f) {
-                        force->unknown_48 = 0.0f;
+                        force->hold_timer = 0.0f;
                     }
-                    if (force->unknown_48 == 0.0f) {
+                    if (force->hold_timer == 0.0f) {
                         if ((force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0 &&
                             (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) != 0) {
                             GameAnimSet_SetVisibility(force->anim_set, 1);
@@ -1431,22 +1431,22 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
             playing_forwards = 1;
             GizForce_PlayForwards(force);
             if ((force->runtime_flags & GIZFORCE_STACK_COMPLETE) != 0) {
-                force->unknown_48 = 0.0f;
-                force->unknown_50 = 0.0f;
+                force->hold_timer = 0.0f;
+                force->shake_timer = 0.0f;
             } else {
-                force->unknown_48 = force->force_strength;
+                force->hold_timer = force->force_strength;
                 if (force->force_range > 0.0f && (force->runtime_flags & GIZFORCE_SHAKE_DONE) == 0 &&
                     force->anim_set->state == GAMEANIMSET_STATE_AT_END) {
-                    if (force->unknown_50 == 0.0f) {
+                    if (force->shake_timer == 0.0f) {
                         started_shaking = 1;
                     }
-                    force->unknown_50 += FRAMETIME;
-                    if (force->unknown_50 >= force->force_range) {
+                    force->shake_timer += FRAMETIME;
+                    if (force->shake_timer >= force->force_range) {
                         force->runtime_flags |= GIZFORCE_SHAKE_DONE;
-                        force->unknown_50 = 0.0f;
+                        force->shake_timer = 0.0f;
                     }
                 } else {
-                    force->unknown_50 = 0.0f;
+                    force->shake_timer = 0.0f;
                 }
                 if ((force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0 && (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) == 0 &&
                     ForceAnimationDone(force) && (force->force_range == 0.0f || (force->runtime_flags & GIZFORCE_SHAKE_DONE) != 0)) {
@@ -1455,7 +1455,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 }
             }
         }
-        if (force->unknown_50 > 0.0f) {
+        if (force->shake_timer > 0.0f) {
             offset.x = (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.05f - (f64)0.025f;
             offset.y = (force->runtime_flags & GIZFORCE_IN_STACK) != 0
                            ? GameAnimSet_GetCompletionRatio(force->anim_set) * force->group->combined_height
@@ -1498,7 +1498,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 }
             } else if (((force->anim_set->flags & GAMEANIMSET_PLAYING) != 0 ||
                         (force->anim_set->flags & GAMEANIMSET_IN_ACTIVE_LIST) != 0) &&
-                       force->unknown_50 == 0.0f && playing_forwards) {
+                       force->shake_timer == 0.0f && playing_forwards) {
                 if (force->process_sfx != -1) {
                     if (force->anim_set->state == GAMEANIMSET_STATE_AT_START || IsSfxLooping(force->process_sfx)) {
                         GameAudio_PlaySfxById(force->process_sfx, &force->position, 0, 0);

@@ -813,8 +813,8 @@ extern "C" {
             params.matrix = &matrix;
             params.velocity = &velocity;
             params.special = &object->special;
-            params.unknown_14 = 0.2f;
-            params.unknown_18 = 0.2f;
+            params.start_radius = 0.2f;
+            params.end_radius = 0.2f;
             params.gravity = -4.0f;
             params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
             params.unknown_c4 = 1;
@@ -1619,7 +1619,7 @@ extern "C" {
                 buildit->builders_active = 1;
                 (player->player.buildit)->availability_flags |= 4;
             }
-            animation = player->player.unknown_7aa;
+            animation = player->player.context_animation;
             if (player->character_model->model_data_b[animation] != NULL && AnimPlaying(&player->anim_packet, animation, 1, 0) == NULL) {
                 return;
             }
@@ -1646,7 +1646,7 @@ extern "C" {
         if (AnimPlaying(&player->anim_packet, LEGOACT_BUILD, 1, 1) != NULL) {
             return;
         }
-        if (player->unknown_281 == 0) {
+        if (player->ground_flags == 0) {
             return;
         }
         if (ObjLandReady(player) == 0 && objInNetWaitContext(player, LEGOCONTEXT_BUILDIT) == 0) {
@@ -1664,7 +1664,7 @@ extern "C" {
         if (buildit == NULL || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
             return;
         }
-        if (player->unknown_281 != 0 && (buildit->state_flags & 4) != 0) {
+        if (player->ground_flags != 0 && (buildit->state_flags & 4) != 0) {
             GizBuildItPushAwayFromStart(player, buildit);
         }
         GizBuildIt_SetHeadTarget(buildit, player);
@@ -1675,7 +1675,7 @@ extern "C" {
                 return;
             }
             player->player.character_context = (i8)LEGOCONTEXT_BUILDIT;
-            player->player.unknown_7aa = LEGOACT_BUILD;
+            player->player.context_animation = LEGOACT_BUILD;
             player->player.context_timer = 0.4f;
             player->player.flags_e20 &= ~0x4000;
             player->player.grapple = buildit;
@@ -1684,7 +1684,7 @@ extern "C" {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             Hint_SetComplete(LEGOHINT_BUILD);
         }
-        if ((player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && player->unknown_281 != 0) {
+        if ((player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && player->ground_flags != 0) {
             GizBuildItPushAwayFromEnd(player);
         }
     }

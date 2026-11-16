@@ -540,8 +540,8 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
             for (index = 0; index < 8; ++index) {
                 GAMEOBJECT *object = Player[index];
                 if (object != NULL) {
-                    PlayerProgress[index].field_b = object->player.jump_variant_state == 1;
-                    PlayerProgress[index].unknown_9 = object->dead != 0 ? 4 : object->player.saved_hitpoints;
+                    PlayerProgress[index].jump_variant = object->player.jump_variant_state == 1;
+                    PlayerProgress[index].saved_hitpoints = object->dead != 0 ? 4 : object->player.saved_hitpoints;
                 }
             }
             gone_through_door_to_new_mode = 1;

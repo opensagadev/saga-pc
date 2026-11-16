@@ -412,8 +412,8 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             }
         }
         if (nearest_player != NULL) {
-            u16 previous_x = panel->unknown_7c;
-            u16 previous_y = panel->unknown_7e;
+            u16 previous_x = panel->arm_pitch;
+            u16 previous_y = panel->arm_roll;
             u16 target_x;
             u16 target_y;
             FindAnglesXY(&nearest_direction, &target_x, &target_y);
@@ -428,8 +428,8 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             } else if (previous_x >= 0xc000 && target_x > 0x4000 && target_x < 0xc000) {
                 target_x = 0xc000;
             }
-            panel->unknown_7c = SeekRot(panel->unknown_7c, target_x, 5.0f);
-            panel->unknown_7e = SeekRot(panel->unknown_7e, target_y, 5.0f);
+            panel->arm_pitch = SeekRot(panel->arm_pitch, target_x, 5.0f);
+            panel->arm_roll = SeekRot(panel->arm_roll, target_y, 5.0f);
             if ((panel->flags & 0x10) == 0) {
                 panel->activation_time = 0.0f;
                 panel->flags |= 0x10;
@@ -442,8 +442,8 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
                 }
             }
         } else {
-            panel->unknown_7c = SeekRot(panel->unknown_7c, 0xe000, 10.0f);
-            panel->unknown_7e = SeekRot(panel->unknown_7e, 0, 10.0f);
+            panel->arm_pitch = SeekRot(panel->arm_pitch, 0xe000, 10.0f);
+            panel->arm_roll = SeekRot(panel->arm_roll, 0, 10.0f);
             if ((panel->flags & 0x10) != 0) {
                 PlaySfx("DPanelDis", &panel->position);
             }
@@ -644,8 +644,8 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             NuVecRotateY(&arm_offset, &arm_offset, panel->y_rotation);
             NuMtxSetRotationX(&base_matrix, panel->arm_x_rotation);
             NuMtxRotateY(&base_matrix, panel->y_rotation);
-            NuMtxPreRotateX(&base_matrix, panel->unknown_7c);
-            NuMtxRotateY(&base_matrix, panel->unknown_7e);
+            NuMtxPreRotateX(&base_matrix, panel->arm_pitch);
+            NuMtxRotateY(&base_matrix, panel->arm_roll);
             NuMtxTranslate(&base_matrix, &panel->position);
             NuMtxTranslate(&base_matrix, &arm_offset);
             NuSpecialDrawAt(&world->level_objects[arm].special, &base_matrix);
@@ -783,15 +783,15 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     f32 distance;
     f32 radius;
     f32 radius_squared;
-    if (object->player.unknown_db0 > 0.0f) {
-        object->player.unknown_db0 -= FRAMETIME;
+    if (object->player.use_cooldown > 0.0f) {
+        object->player.use_cooldown -= FRAMETIME;
     }
     PanelStormActive = 0;
     PanelDroidActive = 0;
     PanelBountyHunterActive = 0;
     if (object->player.character_context == CHARACTER_CONTEXT_INTERFACE && object->player.grapple != NULL) {
-        if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
+        if (object->character_model->model_data_b[object->player.context_animation] == NULL ||
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) != NULL) {
             object->player.context_hover_target_y += FRAMETIME;
             if (object->player.context_hover_target_y > 1.0f) {
                 object->player.context_hover_target_y = 1.0f;
@@ -863,29 +863,29 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         object->player.flags_e20 &= ~0x1000u;
         object->player.character_context = CHARACTER_CONTEXT_INTERFACE;
         object->player.grapple = panel;
-        object->player.unknown_7b3 = 0;
+        object->player.context_phase = 0;
         FastWeaponIn(object, 0);
         object->player.flags_e24 |= APIOBJECT_AT_INTERFACE;
         panel = object->player.grapple;
         if (panel->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
             if (object->character_model->model_data_b[0x46] != NULL) {
-                object->player.unknown_7aa = ACTION_INTERFACE3;
+                object->player.context_animation = ACTION_INTERFACE3;
             } else {
-                object->player.unknown_7aa = ACTION_INTERFACE2;
+                object->player.context_animation = ACTION_INTERFACE2;
             }
             Hint_SetComplete(0x261);
             Hint_SetComplete(0x26a);
         } else if (panel->model_variant == PANEL_VARIANT_STORMTROOPER) {
             if (object->character_model->model_data_b[0x45] == NULL && object->character_model->model_data_b[0x46] != NULL) {
-                object->player.unknown_7aa = ACTION_INTERFACE3;
+                object->player.context_animation = ACTION_INTERFACE3;
             } else {
-                object->player.unknown_7aa = ACTION_INTERFACE2;
+                object->player.context_animation = ACTION_INTERFACE2;
             }
             MakeBaddiesForgetAboutParty(1);
             Hint_SetComplete(0x260);
             Hint_SetComplete(0x269);
         } else {
-            object->player.unknown_7aa = ACTION_INTERFACE;
+            object->player.context_animation = ACTION_INTERFACE;
             if (panel->model_variant == PANEL_VARIANT_PROTOCOL_DROID) {
                 if (!InStory() || (object->player.panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
                     GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
@@ -902,17 +902,17 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             LswForceUsedHintFlags |= 4;
         }
         {
-            f32 duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+            f32 duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
             object->player.context_timer = duration;
             if (duration <= 0.0f) {
                 object->player.context_timer = 2.0f;
             }
-            object->player.unknown_db0 = 0.0f;
+            object->player.use_cooldown = 0.0f;
         }
     } else if (use != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-               (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->player.unknown_db0 <= 0.0f) {
+               (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->player.use_cooldown <= 0.0f) {
         GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->unknown_280);
-        object->player.unknown_db0 = 0.5f;
+        object->player.use_cooldown = 0.5f;
     }
 }
 

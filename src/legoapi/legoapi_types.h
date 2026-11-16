@@ -639,10 +639,10 @@ typedef struct gamecamera_s { // size 0x230
     f32 shake_freq;                   // 0x1dc
     f32 position_seek;                // 0x1e0
     f32 angle_seek;                   // 0x1e4
-    f32 unknown_1e8;                  // 0x1e8
-    f32 unknown_1ec;                  // 0x1ec
-    f32 unknown_1f0;                  // 0x1f0
-    f32 unknown_1f4;                  // 0x1f4
+    f32 pullback_target;                  // 0x1e8
+    f32 pullback;                  // 0x1ec
+    f32 lateral_target;                  // 0x1f0
+    f32 lateral;                  // 0x1f4
     i32 pitch;                        // 0x1f8
 
     union { // size 0x4
@@ -1424,9 +1424,9 @@ struct gizforce_s {                    // size 0xa4
     u32 reset_word;                    // 0x3c
     struct gizforcegroup_s *group;     // 0x40
     f32 force_strength;                // 0x44
-    f32 unknown_48;                    // 0x48
+    f32 hold_timer;                    // 0x48
     f32 force_range;                   // 0x4c
-    f32 unknown_50;                    // 0x50
+    f32 shake_timer;                    // 0x50
     f32 interaction_radius;            // 0x54
     f32 animation_speed;               // 0x58
     f32 start_frame;                   // 0x5c
@@ -1670,7 +1670,7 @@ struct STATUSPACKET_s {                                                         
     f32 previous_best_time;                                                                  // 0x05c
     f32 new_best_time;                                                                       // 0x060
     f32 elapsed_time;                                                                        // 0x064
-    f32 unknown_68;                                                                          // 0x068
+    f32 stage_delay;                                                                          // 0x068
     u32 previous_best_score;                                                                 // 0x06c
     u32 new_best_score;                                                                      // 0x070
     u32 original_score;                                                                      // 0x074
@@ -1810,7 +1810,7 @@ struct STATUS_STAGE_s {                                                         
     void (*skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);             // 0x08
     i32 type;                                                                                    // 0x0c
     i16 panel_object;  // 0x10 level object drawn on the background grid
-    u8 unknown_12;     // 0x12
+    u8 shown;     // 0x12
     u8 pad_13;         // 0x13
     i32 step;          // 0x14
     f32 step_time;     // 0x18

@@ -929,7 +929,7 @@ void NewArea_ResetGlobalsPC(void) {
     phase = Area != -1 ? Game.area_save[Area].minikit_count : 0;
     AreaGlobals.area_phase = phase;
     AreaGlobals.progress_flags = phase;
-    AreaGlobals.unknown_1c = 0;
+    AreaGlobals.challenge_minikits = 0;
     Door_UseCutCam = 0;
     BuildUpDone = 0;
     BuildUpTotal = 0;
@@ -3634,7 +3634,7 @@ void NewArea(void) {
     for (i = 0; i < 8; ++i) {
         ((PLAYER_PROGRESS_HP *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
         if (Player[i] != NULL) {
-            Player[i]->current_hp = (i8)Player[i]->unknown_107e;
+            Player[i]->current_hp = (i8)Player[i]->max_hitpoints;
         }
     }
     ResetTimer(&AreaTimer, 0.0f);

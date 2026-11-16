@@ -485,7 +485,7 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
 static void AttractoStartSuction(GAMEOBJECT *object) {
     object->player.character_context = CHARACTER_CONTEXT_ATTRACTO_TARGET;
     object->player.context_timer = 0.0f;
-    object->player.unknown_7aa = ACTION_ATTRACT;
+    object->player.context_animation = ACTION_ATTRACT;
     object->player.context_duration = 0.2f;
     object->player.external_force.x = object->player.camera_screen_position.x;
     object->player.external_force.y = object->player.camera_screen_position.y;
@@ -503,7 +503,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         (object->player.suit->flags & SUIT_ATTRACT) != 0) {
         GAME_MESSAGE *message;
         available = 1;
-        sprintf(text, "%i", object->unknown_1062);
+        sprintf(text, "%i", object->attract_count);
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);
         NuVecAdd(&position, &position, &object->position);
         message = AddGameMessage(text, &position, 1.3f, NULL, 0.0f, 255, 255, 255,
@@ -513,8 +513,8 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
     }
     if (object->player.character_context == CHARACTER_CONTEXT_ATTRACTO_DEPOSIT) {
-        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
+        if (object->character_model->action_animations[object->player.context_animation] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) == NULL) {
             return;
         }
         if ((object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
@@ -523,16 +523,16 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (!(object->player.context_duration <= 0.0f)) {
                 return;
             }
-            if (object->unknown_1062 > 0) {
+            if (object->attract_count > 0) {
                 ATTRACTO *attracto = object->player.grapple;
                 if (attracto->collected_count < attracto->capacity) {
-                    --object->unknown_1062;
+                    --object->attract_count;
                     ++attracto->collected_count;
                     object->player.context_duration = 0.2f;
                     attracto = object->player.grapple;
                     if (attracto->collected_count == attracto->capacity) {
                         attracto->filled = 1;
-                    } else if (object->unknown_1062 != 0) {
+                    } else if (object->attract_count != 0) {
                         goto check_context;
                     }
                 }
@@ -558,8 +558,8 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (object->character_model->action_animations[object->player.unknown_7aa] == NULL ||
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
+        if (object->character_model->action_animations[object->player.context_animation] == NULL ||
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) != NULL) {
             f32 x;
             f32 y;
             ATTRACTO_SHARD_READER *nearest;
@@ -592,17 +592,17 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         AddGameMessage("[  ]", &object->player.external_force, 1.0f, NULL, 0.0f, red, green, blue, GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         return;
     }
-    if (available && object->unknown_281 != 0 && ObjLandReady(object)) {
+    if (available && object->ground_flags != 0 && ObjLandReady(object)) {
         f32 radius = (f64)object->bounds_radius + 0.25;
         f32 distance;
         ATTRACTO *attracto = Attracto_FindNearest(world, &object->lower_position, object, &distance);
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
-            if (distance < radius && object->unknown_1062 > 0 && (object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
+            if (distance < radius && object->attract_count > 0 && (object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
                 object->player.character_context = CHARACTER_CONTEXT_ATTRACTO_DEPOSIT;
                 object->player.context_timer = 0.0f;
                 object->player.grapple = attracto;
-                object->player.unknown_7aa = ACTION_TRANSFER;
+                object->player.context_animation = ACTION_TRANSFER;
                 object->movement_facing_angle = attracto->angle;
                 return;
             }

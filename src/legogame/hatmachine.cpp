@@ -114,11 +114,11 @@ extern "C" i16 id_PRINCESSLEIABOUSHH;
 
 extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
     HATMACHINE *machine = object->player.hat_machine;
-    if (object->player.unknown_db0 > 0.0f) {
-        object->player.unknown_db0 -= FRAMETIME;
+    if (object->player.use_cooldown > 0.0f) {
+        object->player.use_cooldown -= FRAMETIME;
     }
     if (object->player.character_context != CHARACTER_CONTEXT_HAT_MACHINE || machine == NULL) {
-        if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
+        if (object->character_model->model_data_b[0x5d] == NULL || object->ground_flags == 0 || ObjLandReady(object) == 0) {
             return;
         }
         f32 distance;
@@ -136,17 +136,17 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             object->player.delayed_turn_timer = 0.0f;
             object->player.flags_e20 &= ~0x1000;
             object->player.character_context = CHARACTER_CONTEXT_HAT_MACHINE;
-            object->player.unknown_7b3 = 0;
+            object->player.context_phase = 0;
             FastWeaponIn(object, 0);
             object->player.flags_e24 |= APIOBJECT_AT_INTERFACE;
-            object->player.unknown_7aa = ACTION_PULLLEVER;
+            object->player.context_animation = ACTION_PULLLEVER;
             machine->animation_state = HATMACHINE_ANIM_LID_OPENING;
             if (StartupGameFlag1 != 0) {
                 machine->state_duration = 3.0f;
             } else {
-                machine->state_duration = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+                machine->state_duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
             }
-            f32 end_frame = -AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+            f32 end_frame = -AnimListFrame(object->character_model, object->player.context_animation, 0);
             machine->flags |= HATMACHINE_FLAG_IN_USE;
             machine->state_elapsed = end_frame;
             machine->state_duration -= end_frame;
@@ -157,29 +157,29 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 ResetAnimPacket(&object->anim_packet, -1);
             }
             AlertSurroundingCreatures(object, &object->collision_position);
-            object->player.context_timer = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+            object->player.context_timer = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
             object->player.hat_machine->state_duration = object->player.context_timer;
             if (object->player.context_timer <= 0.0f) {
                 object->player.context_timer = 2.0f;
             }
-            object->player.unknown_db0 = 0.0f;
+            object->player.use_cooldown = 0.0f;
             return;
         }
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-            (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->player.unknown_db0 <= 0.0f) {
+            (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->player.use_cooldown <= 0.0f) {
             PlaySfx("TC14_VLN", &object->collision_position);
-            object->player.unknown_db0 = 0.5f;
+            object->player.use_cooldown = 0.5f;
         }
         return;
     }
-    if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
-        AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
+    if (object->character_model->model_data_b[object->player.context_animation] == NULL ||
+        AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) != NULL) {
         object->player.context_hover_target_y += FRAMETIME;
         if (object->player.context_hover_target_y > 1.0f) {
             object->player.context_hover_target_y = 1.0f;
         }
         object->player.context_timer -= FRAMETIME;
-        switch (object->player.unknown_7b3) {
+        switch (object->player.context_phase) {
             case 0:
                 if (!(object->player.context_timer <= 0.0f)) {
                     return;
@@ -188,33 +188,33 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) != 0 ||
                      (object->id == (u16)id_PRINCESSLEIABOUSHH && FreePlay != 0))) {
                     if (machine->animation_state == HATMACHINE_ANIM_ARMS_OUT) {
-                        object->player.unknown_7aa = ACTION_HELMETON2;
-                        object->player.unknown_7b3 = 1;
+                        object->player.context_animation = ACTION_HELMETON2;
+                        object->player.context_phase = 1;
                         object->player.context_timer = AnimDuration((i16)object->id, 0x6d, 0.0f, 0.0f, 1);
                         machine->state_duration = (f64)object->player.context_timer * (f64)0.35f;
                         return;
                     }
-                    object->player.unknown_7aa = ACTION_IDLE;
+                    object->player.context_animation = ACTION_IDLE;
                     return;
                 }
                 if (object->character_model->model_data_b[0x5e] != NULL) {
                     if (machine->animation_state == HATMACHINE_ANIM_ARMS_OUT) {
-                        object->player.unknown_7aa = ACTION_HELMETON;
-                        object->player.unknown_7b3 = 1;
+                        object->player.context_animation = ACTION_HELMETON;
+                        object->player.context_phase = 1;
                         object->player.context_timer = AnimDuration((i16)object->id, 0x5e, 0.0f, 0.0f, 1);
                         if (StartupGameFlag1 == 0) {
                             machine->state_duration = (f64)object->player.context_timer * (f64)0.35f;
                         }
                         return;
                     }
-                    object->player.unknown_7aa = ACTION_IDLE;
+                    object->player.context_animation = ACTION_IDLE;
                     return;
                 }
                 if (machine->animation_state != HATMACHINE_ANIM_ARMS_OUT) {
                     return;
                 }
-                object->player.unknown_7aa = ACTION_IDLE;
-                object->player.unknown_7b3 = 1;
+                object->player.context_animation = ACTION_IDLE;
+                object->player.context_phase = 1;
                 machine->state_duration = 0.2f;
                 return;
             case 1:
@@ -230,7 +230,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     }
                 }
                 machine->displayed_hat = 0;
-                object->player.unknown_7b3 = 2;
+                object->player.context_phase = 2;
                 if (StartupGameFlag1 != 0) {
                     machine->animation_state = HATMACHINE_ANIM_LID_CLOSING;
                 }

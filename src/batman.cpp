@@ -923,7 +923,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 InitPanel(GetMenuID() == MENU_OPTIONS ? TempOptions.widescreen : Game.options_save.widescreen);
                 saved_frametime = FRAMETIME;
                 if ((waiting_for_level == -1 || gone_through_door_to_new_level == 0) && screendump == 0) {
-                    if (ChallengeMode == CHALLENGE_RUNNING && AreaGlobals.unknown_20 >= 10 && WORLD->current_level != HUB_LDATA &&
+                    if (ChallengeMode == CHALLENGE_RUNNING && AreaGlobals.challenge_minikits_shown >= 10 && WORLD->current_level != HUB_LDATA &&
                         MiniCutCam == 0 && CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
                         EndChallenge(CHALLENGE_WON, 1);
                     }
@@ -1124,7 +1124,7 @@ extern "C" int NuMain(int argc, char **argv) {
                     PlayerList[player_index] = -1;
                     PlayerProgress[player_index].active = 0;
                 }
-                PlayerProgress[player_index].unknown_7 = 0;
+                PlayerProgress[player_index].weapon_out = 0;
                 PlayerProgress[player_index].coins = 0;
             }
             UsePlayerList = HUB_ADATA != NULL && Area == HUB_ADATA->index && LastLData != TITLES_LDATA ? 1 : 2;

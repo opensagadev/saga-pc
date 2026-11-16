@@ -86,7 +86,7 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
     if (object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
         return;
     }
-    layer = object->unknown_283;
+    layer = object->ground_layer;
     if (layer != -1 && (TerLayer[layer].flags & 1)) {
         return;
     }

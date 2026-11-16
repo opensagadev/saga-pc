@@ -83,7 +83,7 @@ void StoreStatusTakeOverObjectSys(void) {
             continue;
         }
         takeoverobjects[index].last_safe_position = object->last_safe_position;
-        takeoverobjects[index].heading = object->unknown_276;
+        takeoverobjects[index].heading = object->movement_angle;
         if (object->player.rider != NULL && LEGOCONTEXT_BEENTAKENOVER != -1 &&
             object->player.rider->player.character_context == LEGOCONTEXT_BEENTAKENOVER && object->player_index != -1 &&
             Door_Last != NULL && ((struct DOOR_s *)Door_Last)->takeover_character_mask != 0 &&
@@ -95,8 +95,8 @@ void StoreStatusTakeOverObjectSys(void) {
             takeoverobjects[index].contact_index = 0xff;
         }
         takeoverobjects[index].hitpoints = takeoverobjects[index].object->current_hp;
-        if (takeoverobjects[index].hitpoints == 0 && takeoverobjects[index].object->unknown_107e != 0) {
-            takeoverobjects[index].hitpoints = takeoverobjects[index].object->unknown_107e;
+        if (takeoverobjects[index].hitpoints == 0 && takeoverobjects[index].object->max_hitpoints != 0) {
+            takeoverobjects[index].hitpoints = takeoverobjects[index].object->max_hitpoints;
         }
         takeoverobjects[index].current_level = (u8)level;
     }
@@ -158,7 +158,7 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                 takeoverobjects[index].object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
                 takeoverobjects[index].object->flags_1fc_word |= APIOBJECT_FLAG_IN_USE;
                 takeoverobjects[index].object->ai_packet.reset_mode = AIPACKET_RESET_ACTIVE;
-                SnapCreaturePos(takeoverobjects[index].object, &controller->position, controller->unknown_276,
+                SnapCreaturePos(takeoverobjects[index].object, &controller->position, controller->movement_angle,
                                 &controller->ai_packet.path_info, 1);
                 InitPlayerAI(controller);
                 TakeOverGameObject(controller, takeoverobjects[index].object, 0, 1);
@@ -312,7 +312,7 @@ void Buck_Start(GAMEOBJECT *object, GAMEOBJECT *rider) {
         NewRumble(rider->player.pad->bound_pad, 0.6f, 0);
     }
     object->player.character_context = (i8)LEGOCONTEXT_BUCK;
-    object->player.unknown_7aa = LEGOACT_BUCK;
+    object->player.context_animation = LEGOACT_BUCK;
     object->player.context_timer = AnimDuration((i16)object->id, LEGOACT_BUCK, 0.0f, 0.0f, 1);
     if (BuckStartExtraFn != NULL) {
         BuckStartExtraFn(object);

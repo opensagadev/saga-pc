@@ -341,8 +341,8 @@ extern "C" {
 
     struct DETONATOR_s {             // size 0x38
         NUVEC position;              // 0x00
-        NUVEC unknown_0c;            // 0x0c
-        NUVEC unknown_18;            // 0x18
+        NUVEC detonate_position;            // 0x0c
+        NUVEC screen_position;            // 0x18
         struct gameobject_s *object; // 0x24
         u8 active;                   // 0x28
         u8 draw_result;              // 0x29
@@ -350,7 +350,7 @@ extern "C" {
         u16 rotation_y;              // 0x2c
         u16 rotation_z;              // 0x2e
         f32 timer;                   // 0x30
-        void *unknown_34;            // 0x34
+        void *hit_data;            // 0x34
     };
 
     extern DETONATOR_s Detonator[10];

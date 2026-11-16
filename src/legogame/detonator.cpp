@@ -168,12 +168,12 @@ extern "C" {
 
 extern "C" void Detonator_Detonate(DETONATOR_s *detonator) {
     Batarangs_CheckLostData(detonator);
-    Detonate(&detonator->unknown_0c, 0);
-    BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->unknown_34);
+    Detonate(&detonator->detonate_position, 0);
+    BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->hit_data);
     detonator->active = 0;
     if (hit_data != NULL) {
         hit_data->delay = BatarangDetonatorHitDelay;
-        detonator->unknown_34 = NULL;
+        detonator->hit_data = NULL;
     }
 }
 
@@ -185,14 +185,14 @@ extern "C" void Detonators_Update(void) {
             continue;
         }
         detonator->timer += FRAMETIME;
-        NuCameraTransformScreenClip(&detonator->unknown_18, &detonator->unknown_0c, 1, NULL);
+        NuCameraTransformScreenClip(&detonator->screen_position, &detonator->detonate_position, 1, NULL);
         timer = detonator->timer;
         if (timer >= 10.7f) {
             Detonator_Detonate(detonator);
-        } else if (detonator->unknown_34 != NULL) {
-            BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->unknown_34);
+        } else if (detonator->hit_data != NULL) {
+            BATARANG_DETONATOR_HIT_VIEW *hit_data = static_cast<BATARANG_DETONATOR_HIT_VIEW *>(detonator->hit_data);
             if (!(detonator->timer >= 10.0f) &&
-                (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->player.unknown_de0 >= 0.3f))) {
+                (detonator->object == NULL || detonator->object->dead != 0 || !(detonator->object->player.detonator_hold_time >= 0.3f))) {
                 hit_data->scale = DetonatorHitScaleIdle;
             } else {
                 hit_data->scale = DetonatorHitScaleArmed;
@@ -218,7 +218,7 @@ extern "C" void Detonators_Draw(void) {
         NuMtxTranslate(&matrix, &detonator->position);
         NuSpecialDrawAt(&WORLD->level_objects[0xec].special, &matrix);
         if (GameTimer.update_count % 6 < 3 && (detonator->timer >= 10.0f || (detonator->object != NULL && detonator->object->dead == 0 &&
-                                                                             detonator->object->player.unknown_de0 >= 0.3f))) {
+                                                                             detonator->object->player.detonator_hold_time >= 0.3f))) {
             if (WORLD->level_objects[0xef].active) {
                 detonator->draw_result = (u8)NuSpecialDrawAt(&WORLD->level_objects[0xef].special, &matrix);
             }
@@ -234,37 +234,37 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     if (object->player.character_context != CHARACTER_CONTEXT_PICK_UP_DETONATOR &&
         object->player.character_context != CHARACTER_CONTEXT_PLACE_DETONATOR) {
         if (WORLD->level_objects[0xec].active == 0 || (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
-            (object->unknown_281 == 0 && object->player.jump_variant_state != 1) ||
+            (object->ground_flags == 0 && object->player.jump_variant_state != 1) ||
             (ObjLandReady(object) == 0 && (*(u64 *)&CInfo[object->player.character_context].flags & 0x2000) == 0)) {
             object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-            object->player.unknown_de0 = 0.0f;
+            object->player.detonator_hold_time = 0.0f;
             return;
         }
         if ((object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
-            if (!(object->player.unknown_de0 > 0.0f) && (object->player.flags_e20 & APIOBJECT_DETONATOR_WAIT_RELEASE) != 0) {
+            if (!(object->player.detonator_hold_time > 0.0f) && (object->player.flags_e20 & APIOBJECT_DETONATOR_WAIT_RELEASE) != 0) {
                 return;
             }
             object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-            object->player.unknown_de0 += FRAMETIME;
-            if (object->player.unknown_de0 >= 0.3f && object->player.unknown_de0 >= 1.0f) {
+            object->player.detonator_hold_time += FRAMETIME;
+            if (object->player.detonator_hold_time >= 0.3f && object->player.detonator_hold_time >= 1.0f) {
                 DETONATOR_s *oldest = Detonator_FindOldest();
                 if (oldest != NULL) {
                     Detonator_Detonate(oldest);
-                    object->player.unknown_de0 = 0.7f;
+                    object->player.detonator_hold_time = 0.7f;
                 } else {
-                    object->player.unknown_de0 = 0.0f;
+                    object->player.detonator_hold_time = 0.0f;
                     object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
                 }
             }
             return;
         }
-        if (object->player.unknown_de0 > 0.0f && object->player.unknown_de0 < 0.3f) {
+        if (object->player.detonator_hold_time > 0.0f && object->player.detonator_hold_time < 0.3f) {
             DETONATOR_s *nearest = Detonator_FindNearest(&object->lower_position, object->bounds_radius + 0.0775f, object);
             if (nearest != NULL) {
-                object->player.unknown_7b3 = 0;
+                object->player.context_phase = 0;
                 object->player.character_context = CHARACTER_CONTEXT_PICK_UP_DETONATOR;
                 FastWeaponIn(object, 0);
-                object->player.unknown_7aa = ACTION_PICKUP;
+                object->player.context_animation = ACTION_PICKUP;
                 object->player.grapple = nearest;
                 object->movement_facing_angle =
                     NuAtan2D(nearest->position.x - object->position.x, nearest->position.z - object->position.z);
@@ -278,13 +278,13 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 object->player.launch_origin.y = object->floor_height;
                 object->player.launch_origin.z = object->lower_position.z;
                 if (Detonator_FindNearest(&object->player.launch_origin, 0.155f, NULL) == NULL) {
-                    object->player.unknown_7b3 = 0;
+                    object->player.context_phase = 0;
                     object->player.character_context = CHARACTER_CONTEXT_PLACE_DETONATOR;
                     FastWeaponIn(object, 0);
-                    object->player.unknown_7aa = ACTION_PUTDOWN;
-                    object->player.unknown_7a4 = object->unknown_1056;
+                    object->player.context_animation = ACTION_PUTDOWN;
+                    object->player.saved_pitch = object->surface_pitch;
                     object->player.takeover_start_angle = (u16)qrand();
-                    object->player.unknown_7a8 = object->unknown_1058;
+                    object->player.saved_roll = object->surface_roll;
                 } else {
                     GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 }
@@ -295,26 +295,26 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 object->player.character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
                 object->velocity.z = 0.0f;
                 object->velocity.x = 0.0f;
-                if (AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 1) != NULL) {
+                if (AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 1) != NULL) {
                     ResetAnimPacket(&object->anim_packet, -1);
                 }
-                if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-                    object->player.context_timer = AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1);
+                if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+                    object->player.context_timer = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                 } else {
                     object->player.context_timer = 1.0f;
                 }
             }
         }
         object->player.flags_e20 &= ~APIOBJECT_DETONATOR_WAIT_RELEASE;
-        object->player.unknown_de0 = 0.0f;
+        object->player.detonator_hold_time = 0.0f;
         return;
     }
 
     object->player.flags_e20 |= APIOBJECT_DETONATOR_WAIT_RELEASE;
-    object->player.unknown_de0 = 0.0f;
+    object->player.detonator_hold_time = 0.0f;
     f32 *frame = NULL;
-    if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-        frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+    if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+        frame = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
         if (frame == NULL) {
             return;
         }
@@ -322,15 +322,15 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     object->player.context_timer -= FRAMETIME;
     if (object->player.context_timer <= 0.0f) {
         object->player.character_context = CHARACTER_CONTEXT_NONE;
-        if (object->player.unknown_7b3 != 0) {
+        if (object->player.context_phase != 0) {
             return;
         }
     } else {
-        if (object->player.unknown_7b3 != 0) {
+        if (object->player.context_phase != 0) {
             return;
         }
-        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-            f32 marker = AnimListFrame(object->character_model, object->player.unknown_7aa,
+        if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+            f32 marker = AnimListFrame(object->character_model, object->player.context_animation,
                                        object->player.character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR ? 0 : 2);
             if (frame == NULL || !(*frame > 0.0f)) {
                 return;
@@ -342,14 +342,14 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
             return;
         }
     }
-    object->player.unknown_7b3 = 1;
+    object->player.context_phase = 1;
     if (object->player.character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
         DETONATOR_s *detonator = object->player.detonator;
         if (detonator != NULL) {
             detonator->active = 0;
-            if (object->player.detonator->unknown_34 != NULL) {
-                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, object->player.detonator->unknown_34);
-                object->player.detonator->unknown_34 = NULL;
+            if (object->player.detonator->hit_data != NULL) {
+                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, object->player.detonator->hit_data);
+                object->player.detonator->hit_data = NULL;
             }
         }
         return;
@@ -359,18 +359,18 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
         detonator->position = object->player.launch_origin;
         detonator->active = 1;
         detonator->object = object;
-        detonator->rotation_x = object->player.unknown_7a4;
-        detonator->rotation_y = (u16)(object->player.takeover_start_angle + object->unknown_276);
-        detonator->rotation_z = object->player.unknown_7a8;
-        detonator->unknown_0c.z = 0.0f;
-        detonator->unknown_0c.x = 0.0f;
-        detonator->unknown_0c.y = 0.0775f;
-        NuVecRotateZ(&detonator->unknown_0c, &detonator->unknown_0c, detonator->rotation_z);
-        NuVecRotateX(&detonator->unknown_0c, &detonator->unknown_0c, detonator->rotation_x);
-        NuVecAdd(&detonator->unknown_0c, &detonator->unknown_0c, &detonator->position);
+        detonator->rotation_x = object->player.saved_pitch;
+        detonator->rotation_y = (u16)(object->player.takeover_start_angle + object->movement_angle);
+        detonator->rotation_z = object->player.saved_roll;
+        detonator->detonate_position.z = 0.0f;
+        detonator->detonate_position.x = 0.0f;
+        detonator->detonate_position.y = 0.0775f;
+        NuVecRotateZ(&detonator->detonate_position, &detonator->detonate_position, detonator->rotation_z);
+        NuVecRotateX(&detonator->detonate_position, &detonator->detonate_position, detonator->rotation_x);
+        NuVecAdd(&detonator->detonate_position, &detonator->detonate_position, &detonator->position);
         detonator->timer = 0.0f;
-        detonator->unknown_34 =
-            GameAntinode_RegisterAntiNode(WORLD->game_antinode_sys, &detonator->unknown_0c, 1.0f, 1.0f, 1.0f, 0, 0, 0.0f);
+        detonator->hit_data =
+            GameAntinode_RegisterAntiNode(WORLD->game_antinode_sys, &detonator->detonate_position, 1.0f, 1.0f, 1.0f, 0, 0, 0.0f);
         PlaySfx((char *)"imp_thermalDet_attach", &detonator->position);
     } else {
         GameAudio_PlaySfx(0x32, NULL, 0, 0);

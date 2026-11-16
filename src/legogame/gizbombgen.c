@@ -145,7 +145,7 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
             position.x = 0.0f;
             position.y = 0.0f;
             position.z = -2.0f;
-            NuVecRotateY(&position, &position, Player[index]->unknown_276);
+            NuVecRotateY(&position, &position, Player[index]->movement_angle);
             NuVecAdd(&position, &position, &Player[index]->collision_position);
             bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 0, NULL, NULL, 0, 0);
         }

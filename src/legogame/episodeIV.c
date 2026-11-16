@@ -245,8 +245,8 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &BlockadeRunnerDEjectMom;
-            params.unknown_14 = 0.15f;
-            params.unknown_18 = 0.15f;
+            params.start_radius = 0.15f;
+            params.end_radius = 0.15f;
             params.gravity = 0.0f;
             params.special = &WORLD->level_objects[254].special;
             params.flags = PART_FLAG_DAMAGE_CHARACTERS | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY |
@@ -488,18 +488,18 @@ void TrenchMove(GAMEOBJECT *object) {
     pad = object->player.pad;
     object->start_position = object->position;
     object->initial_position = object->collision_position;
-    object->unknown_282 = object->unknown_281;
+    object->previous_ground_flags = object->ground_flags;
     input_magnitude = pad->input_magnitude;
     input_angle = pad->input_angle;
     pad->previous_input_magnitude = input_magnitude;
     pad->previous_input_angle = input_angle;
-    object->previous_movement_angle = object->unknown_276;
+    object->previous_movement_angle = object->movement_angle;
     object->flags_ef0 &= ~0x4000;
     object->flags_107a = 0;
     if (object->model_draw_result != 0) {
-        object->unknown_f10 = 0.0f;
+        object->offscreen_time = 0.0f;
     } else {
-        object->unknown_f10 = FRAMETIME + object->unknown_f10;
+        object->offscreen_time = FRAMETIME + object->offscreen_time;
     }
     if (object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
         object->player.turn_braking += FRAMETIME;
@@ -512,7 +512,7 @@ void TrenchMove(GAMEOBJECT *object) {
         } else if (object->player.character_context != CHARACTER_CONTEXT_LOOP &&
                    player->player.character_context == CHARACTER_CONTEXT_LOOP && player->player.context_timer < 0.75 * VehicleLoopTime) {
             object->player.character_context = player->player.character_context;
-            object->player.unknown_7aa = ACTION_IDLE;
+            object->player.context_animation = ACTION_IDLE;
             object->player.context_duration = VehicleLoopTime;
             object->player.context_timer = VehicleLoopTime;
         }

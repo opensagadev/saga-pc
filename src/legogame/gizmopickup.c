@@ -198,8 +198,8 @@ void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
         queued->target_is_coin_total = 6;
     }
     DrawMiniKitTime = 2.0f;
-    if (AreaGlobals.unknown_1c < 10) {
-        ++AreaGlobals.unknown_1c;
+    if (AreaGlobals.challenge_minikits < 10) {
+        ++AreaGlobals.challenge_minikits;
     }
 }
 
@@ -663,13 +663,13 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     PART *part;
     params.position = position;
     params.velocity = velocity;
-    params.unknown_14 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_radius_x);
-    params.unknown_18 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_extent_x);
+    params.start_radius = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_radius_x);
+    params.end_radius = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)GizmoPickupType[8].shadow_extent_x);
     params.part_id = 0x79;
     params.special = &world->level_objects[0x79].special;
     params.gravity = AreaPickupGravity;
     if (params.gravity == 0.0f) {
-        params.unknown_a4 = 5.0f;
+        params.fade_time = 5.0f;
     } else {
         params.stop_fn = PartStop_Flickerer;
     }
@@ -678,12 +678,12 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     params.update_fn = NULL;
     params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN |
                    PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
-    params.unknown_88 = lifetime;
+    params.lifetime = lifetime;
     if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
     }
     params.time_step = FRAMETIME;
-    params.unknown_c0 = scale;
+    params.model_scale = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->rotation_y = (u16)qrand();
@@ -703,16 +703,16 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
     params.position = position;
     params.velocity = velocity;
     params.part_id = 0xcb;
-    params.unknown_18 = params.unknown_14 = scale * GizmoPickupType[5].shadow_radius_x;
+    params.end_radius = params.start_radius = scale * GizmoPickupType[5].shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.special = &world->level_objects[0xcb].special;
-    params.unknown_88 = lifetime;
+    params.lifetime = lifetime;
     params.collision_fn = PartCollide_3D;
     params.update_fn = PartUpdate_Heart;
     params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN |
                    PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     if ((world->current_level->flags & LEVEL_PICKUPS_TO_PANEL) != 0) {
-        params.unknown_a4 = PartVehicleHeartLifetime;
+        params.fade_time = PartVehicleHeartLifetime;
         params.move_fn = PartMove_VehicleHeart;
         params.recipient = recipient;
         params.draw_fn = PartDraw_VehicleHeart;
@@ -725,7 +725,7 @@ void AddHeartAsPart(GAMEOBJECT *recipient, NUVEC *position, NUVEC *velocity, f32
         }
     }
     params.time_step = FRAMETIME;
-    params.unknown_c0 = scale;
+    params.model_scale = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->rotation_y = (u16)qrand();
@@ -772,7 +772,7 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     ADDPART params = Default_ADDPART;
     PART *part;
-    params.unknown_18 = params.unknown_14 = scale * GizmoPickupType[9].shadow_radius_x;
+    params.end_radius = params.start_radius = scale * GizmoPickupType[9].shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.position = position;
     params.velocity = velocity;
@@ -785,12 +785,12 @@ void PowerUp_AddPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime) 
                    PART_FLAG_COLLECTIBLE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PowerUp_DrawPart;
-    params.unknown_88 = lifetime;
+    params.lifetime = lifetime;
     if (params.gravity == 0.0f) {
         params.move_fn = PartMove_VehiclePickup;
     }
     params.time_step = FRAMETIME;
-    params.unknown_c0 = scale;
+    params.model_scale = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->rotation_y = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
@@ -847,8 +847,8 @@ void CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
     NUVEC momentum;
     // MATCH-EXCEPTION: the original tests the same range twice (likely a macro/PC variant pair that
     // expanded to the same check); a single test drops the second compare.
-    if ((object->current_hp > 0 && object->current_hp < object->unknown_107e) ||
-        (object->current_hp > 0 && object->current_hp < object->unknown_107e)) {
+    if ((object->current_hp > 0 && object->current_hp < object->max_hitpoints) ||
+        (object->current_hp > 0 && object->current_hp < object->max_hitpoints)) {
         ++object->current_hp;
     }
     if (object->player.saved_hitpoints < 4) {
@@ -874,7 +874,7 @@ i32 ReleaseHearts(void) {
     i32 chance;
     i32 adjustment;
     if (player != NULL && player->dead == 0) {
-        hitpoints = player->unknown_107e;
+        hitpoints = player->max_hitpoints;
         if (hitpoints > 0) {
             missing_hitpoints = hitpoints - player->current_hp;
             total_hitpoints = hitpoints;
@@ -882,7 +882,7 @@ i32 ReleaseHearts(void) {
     }
     player = Player[1];
     if (player != NULL && player->dead == 0) {
-        hitpoints = player->unknown_107e;
+        hitpoints = player->max_hitpoints;
         if (hitpoints > 0) {
             missing_hitpoints += hitpoints - player->current_hp;
             total_hitpoints += hitpoints;
@@ -1122,7 +1122,7 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     params.position = position;
     params.velocity = velocity;
     params.part_id = model;
-    params.unknown_18 = params.unknown_14 = scale * type->shadow_radius_x;
+    params.end_radius = params.start_radius = scale * type->shadow_radius_x;
     params.gravity = AreaPickupGravity;
     params.special = &world->level_objects[model].special;
     params.flags = PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_ACTIVE_CHARACTERS_ONLY | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_COLLECTIBLE;
@@ -1137,12 +1137,12 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     } else {
         params.destroy_fn = PartStolen_Coin;
     }
-    params.unknown_88 = lifetime;
+    params.lifetime = lifetime;
     params.collision_fn = PartCollide_3D;
     params.stop_fn = PartStop_Coin;
     params.impact_fn = PartImpact_Coin;
     params.time_step = FRAMETIME;
-    params.unknown_c0 = scale;
+    params.model_scale = scale;
     part = AddPart(&params);
     if (part != NULL) {
         part->time_remaining = 30.0f;

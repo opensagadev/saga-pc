@@ -47,8 +47,8 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     if (object->player.character_context == CHARACTER_CONTEXT_TRANSFORM) {
         i32 trigger;
         f32 *frame = NULL;
-        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-            frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+        if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+            frame = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
             if (frame == NULL) {
                 return;
             }
@@ -58,7 +58,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->movement_facing_angle =
             NuAtan2D(target->mid_position.x - object->collision_position.x, target->mid_position.z - object->collision_position.z);
         if (frame != NULL && !(object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE)) {
-            f32 marker = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+            f32 marker = AnimListFrame(object->character_model, object->player.context_animation, 0);
             if (marker >= 1.0f && *frame >= marker) {
                 trigger = 1;
             }
@@ -85,7 +85,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         f32 distance;
         i32 i;
         if (!(object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) ||
-            !(object->flags_1fc_low & APIOBJECT_FLAG_PLAYER_ACTIVE) || object->unknown_281 == 0 || !ObjLandReady(object)) {
+            !(object->flags_1fc_low & APIOBJECT_FLAG_PLAYER_ACTIVE) || object->ground_flags == 0 || !ObjLandReady(object)) {
             return;
         }
         candidate = world->gizmo_blowups;
@@ -131,7 +131,7 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 object->player.context_timer = 0.0f;
                 object->player.character_context = CHARACTER_CONTEXT_TRANSFORM;
                 object->player.grapple = nearest;
-                object->player.unknown_7aa = ACTION_TRANSFORM;
+                object->player.context_animation = ACTION_TRANSFORM;
                 object->player.context_duration = AnimDuration((i16)object->id, 160, 0.0f, 0.0f, 1);
                 if (object->player.context_duration <= 0.0f) {
                     object->player.context_duration = 1.0f;

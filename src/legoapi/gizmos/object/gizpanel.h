@@ -32,8 +32,8 @@ typedef struct panel_movement_s { // size 0x90
     u8 draw_flags;                // 0x63
     NUVEC floor_position;         // 0x64
     NUVEC target_offset;          // 0x70
-    u16 unknown_7c;               // 0x7c
-    u16 unknown_7e;               // 0x7e
+    u16 arm_pitch;               // 0x7c
+    u16 arm_roll;               // 0x7e
     u16 arm_x_rotation;           // 0x80
     u16 target_pitch;             // 0x82
     u16 target_roll;              // 0x84

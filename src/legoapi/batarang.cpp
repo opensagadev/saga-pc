@@ -243,16 +243,16 @@ extern "C" i32 Batarang_FindTarget(WORLDINFO *world, GAMEOBJECT *object, i32 aut
             if (target < batarang->active) {
                 continue;
             }
-            if (((absolute.value = (detonator->unknown_18.x - batarang->sight_position.x)),
+            if (((absolute.value = (detonator->screen_position.x - batarang->sight_position.x)),
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f &&
-                ((absolute.value = (detonator->unknown_18.y - batarang->sight_position.y)),
+                ((absolute.value = (detonator->screen_position.y - batarang->sight_position.y)),
                  (absolute_result.bits = absolute.bits & 0x7fffffff), absolute_result.value) < (f64)0.1f) {
-                distance = NuVecDistSqr(&detonator->unknown_0c, &object->collision_position, NULL);
+                distance = NuVecDistSqr(&detonator->detonate_position, &object->collision_position, NULL);
                 if (distance < selected_distance) {
                     selected_distance = distance;
                     selected = detonator;
                     selected_type = 1;
-                    selected_position = detonator->unknown_0c;
+                    selected_position = detonator->detonate_position;
                     platform = -1;
                 }
             }
@@ -376,7 +376,7 @@ extern "C" {
         if (target->type == 0) {
             *position = static_cast<GAMEOBJECT *>(target->object)->collision_position;
         } else if (target->type == 1) {
-            *position = static_cast<DETONATOR_s *>(target->object)->unknown_0c;
+            *position = static_cast<DETONATOR_s *>(target->object)->detonate_position;
         } else if (target->type == 2) {
             *position = static_cast<GIZMOBLOWUP *>(target->object)->mid_position;
         } else if (target->type == 3) {
@@ -391,7 +391,7 @@ extern "C" {
 extern "C" void Batarang_StartThrowQuick(GAMEOBJECT *object) {
     ResetAnimPacket(&object->anim_packet, -1);
     object->player.character_context = CHARACTER_CONTEXT_THROW_QUICK;
-    object->player.unknown_7aa = ACTION_THROW_QUICK;
+    object->player.context_animation = ACTION_THROW_QUICK;
     object->player.context_timer = AnimDuration((i16)object->id, 0xb2, 0.0f, 0.0f, 1);
 }
 
@@ -560,11 +560,11 @@ i32 Batarang_StartTargetting(GAMEOBJECT *object) {
         packet = object->player.batarang;
         if (WORLD->level_objects[packet->cooldown].active != 0) {
             object->player.context_variant_flags |= APIOBJECT_CONTEXT_INVULNERABLE;
-            object->player.unknown_7b3 = 0;
+            object->player.context_phase = 0;
             object->player.context_timer = 0.0f;
             object->player.landing_followup = 0;
             object->player.character_context = CHARACTER_CONTEXT_BATARANG;
-            object->player.unknown_7aa = ACTION_TARGET;
+            object->player.context_animation = ACTION_TARGET;
             packet->owner = object;
             object->player.batarang->active = 0;
             object->player.batarang->sight_position.x = object->player.camera_screen_position.x;
@@ -596,7 +596,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             Batarang_StartTargetting(object);
             return;
         }
-        if (AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 0, 0) == NULL) {
+        if (AnimPlaying(&object->anim_packet, object->player.context_animation, 0, 0) == NULL) {
             return;
         }
         if (object->player.pad->input_magnitude > 0.0f) {
@@ -618,7 +618,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
         return;
     }
     if (object->player.character_context == CHARACTER_CONTEXT_BATARANG) {
-        if (object->player.unknown_7b3 == 0) {
+        if (object->player.context_phase == 0) {
             object->player.flags_e20 |= 0x00400000;
             object->player.context_variant_flags |= APIOBJECT_CONTEXT_INVULNERABLE;
             if (((object->player.pad->buttons_pressed & GAMEPAD_JUMP) != 0)) {
@@ -628,8 +628,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
             if ((object->player.pad->buttons_held & GAMEPAD_ACTION) == 0 && !(object->player.context_timer < 0.3f)) {
                 if (object->player.batarang->active > 0) {
                     object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_INVULNERABLE;
-                    object->player.unknown_7b3 = 1;
-                    object->player.unknown_7aa = ACTION_THROW;
+                    object->player.context_phase = 1;
+                    object->player.context_animation = ACTION_THROW;
                     f32 duration = AnimDuration((i16)object->id, 0x65, 0.0f, 0.0f, 1);
                     object->player.context_duration = duration;
                     if (duration <= 0.0f) {
@@ -637,8 +637,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     }
                     object->player.context_timer = 0.0f;
                     object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                    if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
-                        AnimListFrame(object->character_model, object->player.unknown_7aa, 0) != 0.0f) {
+                    if (object->character_model->model_data_b[object->player.context_animation] == NULL ||
+                        AnimListFrame(object->character_model, object->player.context_animation, 0) != 0.0f) {
                         object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
                         object->player.batarang_release = 1;
                     } else {
@@ -648,8 +648,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     object->player.character_context = CHARACTER_CONTEXT_NONE;
                 }
             } else {
-                if ((object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
-                     AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL)) {
+                if ((object->character_model->model_data_b[object->player.context_animation] == NULL ||
+                     AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) != NULL)) {
                     GAMEPAD *pad = object->player.pad;
                     object->player.context_timer += FRAMETIME;
                     f32 x = pad->input_direction_z * 1.25f;
@@ -699,7 +699,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     }
                 }
             }
-        } else if (object->player.unknown_7b3 == 1) {
+        } else if (object->player.context_phase == 1) {
             f32 *frame = NULL;
             object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_INVULNERABLE;
             if ((object->player.pad->buttons_pressed & GAMEPAD_JUMP) != 0) {
@@ -715,8 +715,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                 object->player.character_context = CHARACTER_CONTEXT_NONE;
                 goto finish;
             }
-            if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-                frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+            if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+                frame = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
                 if (frame == NULL) {
                     goto finish;
                 }
@@ -732,8 +732,8 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                 if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     return;
                 }
-                if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-                    f32 marker = AnimListFrame(object->character_model, object->player.unknown_7aa, 2);
+                if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+                    f32 marker = AnimListFrame(object->character_model, object->player.context_animation, 2);
                     if (frame == NULL) {
                         goto finish;
                     }
@@ -754,7 +754,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
         if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || (runtime->flags_090 & CHARACTER_RUNTIME_GOT_BATARANG) == 0 ||
              batarang == NULL || batarang->flight_state.in_flight != 0 || object->use_model_origin == 0 ||
              (object->player.flags_e24 & APIOBJECT_LOCATORS_VALID) == 0 || object->model_draw_result == 0 ||
-             !(object->player.camera_screen_position.z > 0.0f) || !(object->player.hold_timer >= 0.25f) || object->unknown_281 == 0 ||
+             !(object->player.camera_screen_position.z > 0.0f) || !(object->player.hold_timer >= 0.25f) || object->ground_flags == 0 ||
              ObjLandReady(object) == 0)) {
             return;
         }
@@ -849,9 +849,9 @@ extern "C" void Batarangs_Update(void) {
             } else if (owner->player.pad->input_magnitude == 0 && owner->player.character_context == CHARACTER_CONTEXT_NONE &&
                        owner->character_model->model_data_b[0x98] != NULL) {
                 owner->player.character_context = CHARACTER_CONTEXT_CATCH;
-                owner->player.unknown_7aa = ACTION_CATCH;
+                owner->player.context_animation = ACTION_CATCH;
                 batarang->owner->player.context_timer =
-                    AnimDuration((i16)batarang->owner->id, batarang->owner->player.unknown_7aa, 0, 0, 1);
+                    AnimDuration((i16)batarang->owner->id, batarang->owner->player.context_animation, 0, 0, 1);
             }
             batarang->flight_state.in_flight = 0;
             batarang->active = 0;
@@ -914,7 +914,7 @@ extern "C" {
                     AIPathNodeUpdatePos(system, path, node);
                 }
             }
-            if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
+            if (owner->ground_flags != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
                 NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle) ==
                     CurrentTerrain->platforms[owner->supporting_platform_id].scene_object_index) {
                 skip_inside = 0;
@@ -925,7 +925,7 @@ extern "C" {
         if (((GAMEOBJECT *)object)->respawn_timer > 2.0f ||
             (skip_inside == 0 &&
              owner->ai_packet.inside_path_node == owner->ai_packet.special_move_node - owner->ai_packet.path_info.path->nodes &&
-             (owner->unknown_281 != 0 || owner->velocity.y < 0.0f))) {
+             (owner->ground_flags != 0 || owner->velocity.y < 0.0f))) {
             ClearSpecialMove(owner);
         } else if (owner->player.character_context != CHARACTER_CONTEXT_JUMP &&
                    (owner->position.y < owner->ai_packet.special_move_node->min_height ||
@@ -1198,7 +1198,7 @@ extern "C" {
 
     i32 Batman_MidSpecialMove_SpecialUse(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        switch ((i8)owner->unknown_1087) {
+        switch ((i8)owner->helper_wait) {
             case 0:
                 if (owner->player.character_context == CHARACTER_CONTEXT_TELEPORT) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -1206,7 +1206,7 @@ extern "C" {
                     ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                     return 1;
                 }
-                owner->unknown_1087 = 1;
+                owner->helper_wait = 1;
                 owner->special_move_timer = 1.0f;
             case 1:
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -1273,9 +1273,9 @@ extern "C" {
         owner->ai_packet.movement_stopping_distance = 0.0f;
         ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         owner->flags_ef4 |= 0x4000;
-        if (owner->unknown_1087 == 0) {
+        if (owner->helper_wait == 0) {
             if (owner->player.character_context == CHARACTER_CONTEXT_JUMP) {
-                owner->unknown_1087 = 1;
+                owner->helper_wait = 1;
             } else {
                 owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
                 return 1;
@@ -1283,7 +1283,7 @@ extern "C" {
         }
         if (owner->player.character_context == CHARACTER_CONTEXT_TIGHTROPE ||
             (owner->player.character_context != CHARACTER_CONTEXT_JUMP &&
-             (owner->unknown_281 != 0 || owner->position.y < owner->ai_packet.special_move_node->min_height))) {
+             (owner->ground_flags != 0 || owner->position.y < owner->ai_packet.special_move_node->min_height))) {
             ClearSpecialMove(owner);
             return 0;
         }
@@ -1306,7 +1306,7 @@ extern "C" {
             if (destination->position.y > source->position.y) {
                 SetSpecialMove(owner, destination, source, 5);
             } else {
-                if (owner->unknown_281 && owner->position.y < source->min_height) {
+                if (owner->ground_flags && owner->position.y < source->min_height) {
                     return 0;
                 }
                 SetSpecialMove(owner, destination, source, 6);
@@ -1406,8 +1406,8 @@ extern "C" {
                 }
                 return 1;
             }
-            if (!owner->unknown_281 || !(owner->position.y < owner->special_move_source->min_height)) {
-                if (owner->unknown_281) {
+            if (!owner->ground_flags || !(owner->position.y < owner->special_move_source->min_height)) {
+                if (owner->ground_flags) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
                     owner->ai_packet.movement_stopping_distance = 0.0f;
                 } else {
@@ -1699,10 +1699,10 @@ extern "C" {
         AI_MID_SPECIAL_MOVE function;
         owner->special_move_timer -= FRAMETIME;
         if (owner->ai_packet.special_move_node != NULL) {
-            if (owner->unknown_1086 != 4 && TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
+            if (owner->helper_type != 4 && TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
                 ClearSpecialMove(owner);
             } else {
-                function = batman_midspecialmovefns[(i8)owner->unknown_1086];
+                function = batman_midspecialmovefns[(i8)owner->helper_type];
                 if (function != NULL) {
                     return function(system, packet, apiobject);
                 }

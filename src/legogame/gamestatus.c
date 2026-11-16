@@ -558,7 +558,7 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
                  255, 255, 255, (u8)(title_alpha * 128.0));
         return;
     }
-    if (stage->unknown_12 == 0) {
+    if (stage->shown == 0) {
         return;
     }
     alpha = getFinishedStatusAlpha(packet);
@@ -679,7 +679,7 @@ void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cur
         }
         return;
     }
-    if (stage->unknown_12 == 0) {
+    if (stage->shown == 0) {
         return;
     }
     alpha = getFinishedStatusAlpha(packet);
@@ -929,7 +929,7 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
         }
         Text3DEx(TTab[dat_008808d4], 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0,
                  255, 255, 255, (u8)(alpha * 128.0f));
-    } else if (stage->unknown_12 != 0) {
+    } else if (stage->shown != 0) {
         CoinTotal_Draw((i32)*packet->score,
                        (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(getFinishedStatusAlpha(packet) * 16384.0f) >> 1) & 0x7fff] +
                            STATSPOS2Y,
@@ -1513,7 +1513,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
             Text3D(text, 0.0f, -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)(slide * 16384.0f) >> 1) & 0x7fff] + STATSPOS2Y), 1.0f, 0.6f,
                    0.6f, 0.6f, 0, 255, 191, 0);
         }
-    } else if (stage->unknown_12 != 0) {
+    } else if (stage->shown != 0) {
         f32 alpha = getFinishedStatusAlpha(packet);
         if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) ||
             (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON)) {
@@ -1637,7 +1637,7 @@ void BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curre
                 DrawBonusTime(packet, position, opacity);
             }
         }
-    } else if (stage->unknown_12 != 0) {
+    } else if (stage->shown != 0) {
         i32 opacity = (i32)((f64)getFinishedStatusAlpha(packet) * 128.0);
         DrawBonusTime(packet, 1.0f, opacity);
     }
@@ -1950,7 +1950,7 @@ void BonusWin_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
                         (u32)opacity);
         }
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, iconalphaoverride, BonusScore);
-    } else if (stage->unknown_12 != 0 && packet->stage->type != STATUS_STAGE_CHALLENGE_CASH) {
+    } else if (stage->shown != 0 && packet->stage->type != STATUS_STAGE_CHALLENGE_CASH) {
         f32 alpha = getFinishedStatusAlpha(packet);
         DrawBonusScore(STATSPOSY, StatusPacket.player0_active, StatusPacket.player1_active, alpha, BonusScore);
     }

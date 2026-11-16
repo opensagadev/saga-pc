@@ -990,7 +990,7 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
             if ((effects->flags & CHAREFFECT_PLAYER_ONLY) != 0 && api->unknown_280 == 255) {
                 continue;
             }
-            if ((effects->flags & CHAREFFECT_ON_GROUND) != 0 && (api->unknown_281 & GROUND_NEAR) == 0) {
+            if ((effects->flags & CHAREFFECT_ON_GROUND) != 0 && (api->ground_flags & GROUND_NEAR) == 0) {
                 continue;
             }
             if ((effects->flags & CHAREFFECT_ABOVE_WATER) != 0 && api->is_underwater != 0) {
@@ -1003,7 +1003,7 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
                 continue;
             }
             if ((effects->flags & (CHAREFFECT_LEFT_FOOTPRINT | CHAREFFECT_RIGHT_FOOTPRINT)) != 0 &&
-                (api->model_draw_result == 0 || (api->unknown_281 & GROUND_NEAR) == 0)) {
+                (api->model_draw_result == 0 || (api->ground_flags & GROUND_NEAR) == 0)) {
                 continue;
             }
         } else if ((effects->flags & (CHAREFFECT_LEFT_FOOTPRINT | CHAREFFECT_RIGHT_FOOTPRINT)) != 0) {

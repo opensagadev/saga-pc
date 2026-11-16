@@ -156,7 +156,7 @@ typedef struct sock_s {          // size 0x13c
     f32 look_ratio_y;               // 0x08c
     f32 camera_position_seek;       // 0x090
     f32 camera_angle_seek;          // 0x094
-    f32 unknown_98;                 // 0x098
+    f32 loop_length;                 // 0x098
     f32 camera_local_x_ratio;       // 0x09c
     f32 camera_vertical_ratio;      // 0x0a0
     f32 camera_lateral_ratio;       // 0x0a4

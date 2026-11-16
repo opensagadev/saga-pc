@@ -387,8 +387,8 @@ static void TeleportGetSegment(i32 *start, i32 *end, GAMEOBJECT *object) {
 }
 
 static void Teleport_SetCrawlTime(GAMEOBJECT *object, i32 start, i32 end) {
-    if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-        f32 animation_speed = AnimSpeed(object->character_model, object->player.unknown_7aa);
+    if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+        f32 animation_speed = AnimSpeed(object->character_model, object->player.context_animation);
         if (animation_speed != 0.0f) {
             TELEPORT_MOTION *teleport = object->player.teleport;
 
@@ -451,7 +451,7 @@ extern "C" void Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
 }
 
 extern "C" void Teleport_NetMoveCode(GAMEOBJECT *object) {
-    if (object->player.character_context != CHARACTER_CONTEXT_TELEPORT || object->player.unknown_7b3 != 0) {
+    if (object->player.character_context != CHARACTER_CONTEXT_TELEPORT || object->player.context_phase != 0) {
         return;
     }
     i32 rotation = (object->player.context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0 ? 0x4000 : 0xc000;
@@ -462,8 +462,8 @@ extern "C" void Teleport_NetMoveCode(GAMEOBJECT *object) {
                 continue;
             }
             object->player.teleport->flap_target[flap] = (u16)(flap == 0 ? rotation : -rotation);
-            if ((object->player.unknown_7a4 & (1 << flap)) == 0) {
-                object->player.unknown_7a4 |= (u16)(1 << flap);
+            if ((object->player.saved_pitch & (1 << flap)) == 0) {
+                object->player.saved_pitch |= (u16)(1 << flap);
                 PlaySfx("env_door_flap", &object->collision_position);
             }
         }
@@ -478,7 +478,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         return;
     }
     if (object->player.character_context == CHARACTER_CONTEXT_TELEPORT) {
-        if (object->player.unknown_7b3 == 0) {
+        if (object->player.context_phase == 0) {
             i32 first_rotation = (object->player.context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0 ? 0x4000 : 0xc000;
             for (i32 i = 0; i < 2; ++i) {
                 if (NuSpecialExistsFn(&(&object->player.teleport->flap1_special)[i])) {
@@ -487,18 +487,18 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                         continue;
                     }
                     object->player.teleport->flap_target[i] = (u16)(i == 0 ? (u16)first_rotation : -(u16)first_rotation);
-                    if ((object->player.unknown_7a4 & (1 << i)) == 0) {
-                        object->player.unknown_7a4 |= (1 << i);
+                    if ((object->player.saved_pitch & (1 << i)) == 0) {
+                        object->player.saved_pitch |= (1 << i);
                         PlaySfx("env_door_flap", position);
                     }
                 }
             }
         }
-        switch (object->player.unknown_7b3) {
+        switch (object->player.context_phase) {
             case 0: {
                 i32 completed = 0;
-                if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL ||
-                    CurrentAnim(&object->anim_packet) == object->player.unknown_7aa) {
+                if (object->character_model->model_data_b[object->player.context_animation] == NULL ||
+                    CurrentAnim(&object->anim_packet) == object->player.context_animation) {
                     object->player.context_timer -= FRAMETIME;
                     if (object->player.context_timer <= 0.0f) {
                         object->player.character_context = CHARACTER_CONTEXT_NONE;
@@ -537,12 +537,12 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                 teleport = object->player.teleport;
                 if ((teleport->flags & TELEPORT_CRAWL) != 0 || object->player.big_jump_animation != 0) {
                     object->velocity.y = -0.1f;
-                    object->unknown_281 = 0;
+                    object->ground_flags = 0;
                     return;
                 }
                 object->player.big_jump_animation = 1;
                 object->player.character_context = CHARACTER_CONTEXT_TELEPORT;
-                object->player.unknown_7b3 = 1;
+                object->player.context_phase = 1;
                 object->player.context_timer = 2.0f;
                 object->start_position =
                     teleport->path->pts[(object->player.context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0 ? 1 : 2];
@@ -557,14 +557,14 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                 f32 progress;
                 if (object->player.context_timer <= 0.0f) {
                     progress = 1.0f;
-                    object->player.unknown_7b3 = 0;
+                    object->player.context_phase = 0;
                     TeleportGetSegment(&start_index, &end_index, object);
                     Teleport_SetCrawlTime(object, start_index, end_index);
                     object->player.context_timer = object->player.context_duration;
                     teleport = object->player.teleport;
                     NUVEC *segment_start = &teleport->path->pts[start_index];
                     NUVEC *segment_end = &teleport->path->pts[end_index];
-                    object->movement_facing_angle = object->facing_angle = object->unknown_276 =
+                    object->movement_facing_angle = object->facing_angle = object->movement_angle =
                         NuAtan2D(segment_end->x - segment_start->x, segment_end->z - segment_start->z);
                     shadow_height = GameShadow(NULL, &object->position, 5.0f, -1);
                     object->floor_height = shadow_height;
@@ -596,7 +596,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                 return;
         }
     } else {
-        if (object->unknown_281 == 0 || object->dead != 0) {
+        if (object->ground_flags == 0 || object->dead != 0) {
             return;
         }
         if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.character_context != CHARACTER_CONTEXT_LAND_JUMP &&
@@ -633,8 +633,8 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             Hint_SetComplete(0x268);
         }
-        object->player.unknown_7aa = ACTION_CRAWL;
-        object->player.unknown_7b3 = 0;
+        object->player.context_animation = ACTION_CRAWL;
+        object->player.context_phase = 0;
         object->player.big_jump_animation = 0;
         TeleportGetSegment(&start_index, &end_index, object);
         Teleport_SetCrawlTime(object, start_index, end_index);
@@ -644,7 +644,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         NUVEC *segment_end = &teleport->path->pts[end_index];
         object->movement_facing_angle = NuAtan2D(segment_end->x - segment_start->x, segment_end->z - segment_start->z);
         object->velocity = v000;
-        object->player.unknown_7a4 = 0;
+        object->player.saved_pitch = 0;
     }
 }
 

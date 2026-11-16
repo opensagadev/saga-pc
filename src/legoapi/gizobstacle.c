@@ -572,11 +572,11 @@ static i32 GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *position) {
 static i32 GizObstacle_SatisfyingTerrainChecks(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
     GAMEANIMOBJ *anim_object;
     if ((i8)obstacle->trigger_mode >= 0) {
-        if ((!object->unknown_281 && !(object->flags_ef4 & 0x20000000)) || object->jump_animation_state != obstacle->trigger_mode) {
+        if ((!object->ground_flags && !(object->flags_ef4 & 0x20000000)) || object->jump_animation_state != obstacle->trigger_mode) {
             return 0;
         }
     } else if (obstacle->config_flags & GIZOBSTACLE_CONFIG_STAND_ON) {
-        if (!object->unknown_281 && !(object->flags_ef4 & 0x20000000)) {
+        if (!object->ground_flags && !(object->flags_ef4 & 0x20000000)) {
             return 0;
         }
         if (object->supporting_platform_id >= 0 && obstacle->anim_set && (obstacle->runtime_flags & GIZOBSTACLE_ON_PLATFORM)) {
@@ -653,7 +653,7 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 continue;
             }
             if ((obstacle->mode == OBSTACLE_TRIGGER_PROXIMITY_GROUND || obstacle->mode == OBSTACLE_TRIGGER_IN_BOX_AND_GROUND) &&
-                !object->unknown_281 && !(object->flags_ef4 & 0x20000000) && object->player.jump_variant_state != 1) {
+                !object->ground_flags && !(object->flags_ef4 & 0x20000000) && object->player.jump_variant_state != 1) {
                 GAMEANIMOBJ *anim_object = obstacle->anim_set ? obstacle->anim_set->objects : NULL;
                 while (anim_object) {
                     i16 platform = ((GIZOBSTACLE_OBJECT_DATA *)anim_object->object_data)->platform_id;

@@ -357,15 +357,15 @@ static i32 GrabberFindShadow(NUVEC *position, GRABBER *grabber) {
 
 static void GrabberGrabVictim(GAMEOBJECT *victim) {
     victim->player.character_context = CHARACTER_CONTEXT_GRABBED;
-    victim->player.unknown_7aa = ACTION_GRABBED;
+    victim->player.context_animation = ACTION_GRABBED;
     if (victim->character_model->model_data_b[104] == NULL) {
-        victim->player.unknown_7aa = ACTION_FALL;
+        victim->player.context_animation = ACTION_FALL;
     }
     NewRumbleAllPlayers(0.0f, 0.1f, 0, 0);
     victim->player.context_timer = 0.0f;
     victim->player.context_duration = 0.75f;
     victim->player.external_force = victim->start_position;
-    victim->player.unknown_7b3 = 0;
+    victim->player.context_phase = 0;
     Hint_SetComplete(0x28b);
 }
 
@@ -532,18 +532,18 @@ static void Grabber_SetVictimPos(GRABBER *grabber) {
         grabber->victim->position.y = start.y + (position.y - start.y) * fraction;
         grabber->victim->position.z = start.z + (position.z - start.z) * fraction;
         victim = grabber->victim;
-        victim->position.x -= NU_SIN_LUT(victim->unknown_276) * victim->bounds_half_height * fraction;
+        victim->position.x -= NU_SIN_LUT(victim->movement_angle) * victim->bounds_half_height * fraction;
         victim = grabber->victim;
-        victim->position.z -= NU_COS_LUT(victim->unknown_276) * victim->bounds_half_height * fraction;
-        if (grabber->victim->player.unknown_7b3 == 0 && fraction == 1.0f) {
+        victim->position.z -= NU_COS_LUT(victim->movement_angle) * victim->bounds_half_height * fraction;
+        if (grabber->victim->player.context_phase == 0 && fraction == 1.0f) {
             PlaySfx("imp_C3PO_magnet", &position);
-            grabber->victim->player.unknown_7b3 = 1;
+            grabber->victim->player.context_phase = 1;
         }
-    } else if (victim->player.unknown_7aa == ACTION_FALL) {
-        victim->position.x = position.x - NU_SIN_LUT(victim->unknown_276) * victim->bounds_half_height;
+    } else if (victim->player.context_animation == ACTION_FALL) {
+        victim->position.x = position.x - NU_SIN_LUT(victim->movement_angle) * victim->bounds_half_height;
         grabber->victim->position.y = position.y;
         victim = grabber->victim;
-        victim->position.z = position.z - NU_COS_LUT(victim->unknown_276) * victim->bounds_half_height;
+        victim->position.z = position.z - NU_COS_LUT(victim->movement_angle) * victim->bounds_half_height;
     } else {
         victim->position = position;
     }
@@ -642,7 +642,7 @@ void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
 
     grabber->flags |= GRABBER_LIFTED;
     if (grabber->victim != NULL) {
-        if (grabber->character_id == GrabMagnetId && grabber->victim->player.unknown_7b3 != 0) {
+        if (grabber->character_id == GrabMagnetId && grabber->victim->player.context_phase != 0) {
             PlaySfx("imp_C3PO_magnet_drop", Grabber_GetGrabPos(grabber, NULL));
         }
         Grabber_SetVictimPos(grabber);
@@ -663,12 +663,12 @@ void Grabber_Drop(GRABBER *grabber, NUVEC *previous) {
         velocity.y = -0.1f;
         velocity.z = (grabber->grab_position.z - previous->z) / FRAMETIME * 0.5f;
         params.velocity = &velocity;
-        NuSpecialGetRadius(&grabber->carried_blowup->type->animated_special, &centre, &params.unknown_14);
-        params.unknown_18 = params.unknown_14;
+        NuSpecialGetRadius(&grabber->carried_blowup->type->animated_special, &centre, &params.start_radius);
+        params.end_radius = params.start_radius;
         params.gravity = -6.0f;
         params.special = &grabber->carried_blowup->type->animated_special;
         params.time_step = FRAMETIME;
-        params.unknown_a4 = 3.0f;
+        params.fade_time = 3.0f;
         params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_NO_BOUNCE | PART_FLAG_SLOT_CANNOT_BE_STOLEN;
         params.kill_fn = PartKill_Grabber;
         part = AddPart(&params);
@@ -1058,7 +1058,7 @@ void Grabber_Update(WORLDINFO *world) {
         grabber->victim->velocity.z = 0.0f;
         grabber->victim->velocity.x = 0.0f;
         grabber->victim->velocity.y = -0.1f;
-        grabber->victim->unknown_281 = 0;
+        grabber->victim->ground_flags = 0;
     }
     if (grabber->character_id == GrabMachineId) {
         mask = 0;

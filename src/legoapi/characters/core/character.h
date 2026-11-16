@@ -78,7 +78,7 @@ typedef struct characterdata_s {                    // size 0x4c
     u32 extra_flags;                                // 0x48: cleared by ConfigureCharacterList, otherwise unused
 } CHARACTERDATA;
 
-/* Character action ids (gameobject_s.unknown_7aa, the ANIMPACKET animations, the index into a model's
+/* Character action ids (gameobject_s.player.context_animation, the ANIMPACKET animations, the index into a model's
    action_animations): PlayerActionInfoList[1 + action] holds each one's name (ActionFromName). */
 #define ACTION_NONE (-1)
 #define ACTION_WALK 0

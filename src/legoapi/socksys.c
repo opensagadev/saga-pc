@@ -915,17 +915,17 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         }
 
         if (sock->mid != NULL) {
-            sock->unknown_98 = SockSplineLength(sock->mid, sock->unknown_33);
+            sock->loop_length = SockSplineLength(sock->mid, sock->unknown_33);
         } else {
             i32 segment_count;
 
-            sock->unknown_98 = 0.0f;
+            sock->loop_length = 0.0f;
             segment_count = sock->length;
             if (sock->unknown_33 != 0) {
                 ++segment_count;
             }
             for (segment_index = 0; segment_index < segment_count; ++segment_index) {
-                sock->unknown_98 += NuVecDist(&sock->segments[segment_index].midpoint, &sock->segments[segment_index].next_midpoint, NULL);
+                sock->loop_length += NuVecDist(&sock->segments[segment_index].midpoint, &sock->segments[segment_index].next_midpoint, NULL);
             }
         }
         buf->void_ptr = segment;

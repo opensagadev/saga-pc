@@ -172,7 +172,7 @@ void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time
             shard->current_position.z = (f64)shard->current_position.z + (f64)shard->collection_velocity.z * (f64)FRAMETIME;
             if (NuVecDistSqr(&shard->current_position, &target, NULL) < ForcePushApproachOuterSquare) {
                 shard->state_flags = (shard->state_flags & ~SHARD_COLLECTING) | SHARD_COLLECTED;
-                ++shard->collector->unknown_1062;
+                ++shard->collector->attract_count;
                 NewBuzzFrames(shard->collector->player.pad->bound_pad, 1, 0);
             }
         } else if ((shard->state_flags & SHARD_RANDOM_OFFSET) != 0) {

@@ -647,8 +647,8 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 hint_range;
     if (object->player.character_context == CHARACTER_CONTEXT_TECHNO) {
         object->player.techno->flags |= TECHNO_FLAG_USED_THIS_FRAME;
-        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
+        if (object->character_model->model_data_b[object->player.context_animation] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) == NULL) {
             return;
         }
         object->player.context_timer += FRAMETIME;
@@ -677,7 +677,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (distance < (f64)hint_range * hint_range) {
             techno->flags |= TECHNO_FLAG_USED_THIS_FRAME;
         }
-        if (object->unknown_281 == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
+        if (object->ground_flags == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
             ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->unknown_f00 != 2)) {
             return;
         }
@@ -685,7 +685,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->player.character_context = CHARACTER_CONTEXT_TECHNO;
             object->player.context_timer = 0.0f;
             object->player.techno = techno;
-            object->player.unknown_7aa = ACTION_HACK;
+            object->player.context_animation = ACTION_HACK;
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             if (object->unknown_280 == 0 || object->unknown_280 == 1) {

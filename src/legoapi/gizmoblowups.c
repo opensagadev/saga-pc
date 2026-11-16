@@ -760,7 +760,7 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP *blowup, i32 effects, i32 hit_type, i32 damage
             for (player = 0; player < 8; ++player) {
                 target = Player[player];
                 if (target != NULL && (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-                    (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && target->dead == 0 && !(target->unknown_1010 > 0.0f)) {
+                    (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && target->dead == 0 && !(target->invulnerable_timer > 0.0f)) {
                     x = blowup->mid_position.x - target->collision_position.x;
                     y = blowup->mid_position.y - target->collision_position.y;
                     z = blowup->mid_position.z - target->collision_position.z;

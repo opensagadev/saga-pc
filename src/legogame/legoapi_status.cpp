@@ -277,7 +277,7 @@ extern "C" {
         if (stage != NULL) {
             stage->step = STATUS_STEP_WAITING;
             stage->step_time = 0.0f;
-            stage->unknown_12 = 0;
+            stage->shown = 0;
             stage->step_duration = 1.0f;
         }
     }
@@ -323,12 +323,12 @@ extern "C" {
     }
 
     void NextStatusStage(STATUSPACKET_s *packet) {
-        if (packet->stage != NULL && packet->stage->step == STATUS_STEP_WAITING && packet->stage->step_time < packet->unknown_68) {
+        if (packet->stage != NULL && packet->stage->step == STATUS_STEP_WAITING && packet->stage->step_time < packet->stage_delay) {
             packet->flags_word |= 2;
             return;
         }
         if (packet->stage != NULL) {
-            packet->stage->unknown_12 = 1;
+            packet->stage->shown = 1;
         }
         packet->previous_stage_2 = packet->previous_stage;
         packet->current_gold_brick = (i8)((u8)packet->current_gold_brick + 1);
@@ -420,14 +420,14 @@ extern "C" {
         i32 (*init)(WORLDINFO *, STATUSPACKET_s *) = packet->init_callback;
         i32 (*finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
         void (*draw)(STATUSPACKET_s *) = packet->draw_background_callback;
-        f32 delay = packet->unknown_68;
+        f32 delay = packet->stage_delay;
         reset(packet);
         memset(packet, 0, sizeof(*packet));
         packet->lsw_packet = lsw;
         packet->finish_callback = finish;
         packet->reset_callback = reset;
         packet->draw_background_callback = draw;
-        packet->unknown_68 = delay;
+        packet->stage_delay = delay;
         packet->init_callback = init;
     }
 
@@ -1501,7 +1501,7 @@ extern "C" {
         StatusPacket.finish_callback = registration->finish_callback;
         StatusPacket.reset_callback = registration->reset_callback;
         StatusPacket.draw_background_callback = registration->draw_background_callback;
-        StatusPacket.unknown_68 = registration->stage_delay;
+        StatusPacket.stage_delay = registration->stage_delay;
     }
 
     void UpdateStatusScreen(WORLDINFO *world) {

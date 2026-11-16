@@ -302,7 +302,7 @@ void Player_ResetContexts(PLAYERPACKET *packet) {
         packet->weapon_scale = 0.0f;
     }
     packet->weapon_scale_rate = 5.0f;
-    packet->unknown_e33 = 0;
+    packet->weapon_draw_state = 0;
     packet->origin_scale_override = 0.0f;
     packet->character_context = -1;
     packet->communicate_blend = 0.0f;
@@ -312,7 +312,7 @@ void Player_ResetContexts(PLAYERPACKET *packet) {
     packet->pad->runtime_flags &= ~GAMEPAD_AI_USE_FORCE;
     packet->pad->runtime_flags &= ~GAMEPAD_AI_FORCE_PUSH;
     packet->flags_e20 &= ~0x400;
-    packet->unknown_d20 = 0;
+    packet->force_action_target = 0;
     packet->unknown_d0c = 0;
     packet->combo_style = (u8)(qrand() / 0x8000);
     packet->quick_shoot_timer = 0.0f;
@@ -337,7 +337,7 @@ i32 MovingBackwards(GAMEOBJECT *object) {
     GAMEPAD *pad = object->player.pad;
     i32 difference;
     if (pad->operator_data != NULL && pad->input_magnitude != 0.0f) {
-        difference = RotDiff(object->player.pad->input_angle + GameCam->input_yaw, object->unknown_276);
+        difference = RotDiff(object->player.pad->input_angle + GameCam->input_yaw, object->movement_angle);
         if (difference < -0x4000 || difference > 0x4000) {
             return 1;
         }
@@ -378,7 +378,7 @@ void PushAway(NUVEC *position, f32 radius, NUVEC *minimum, NUVEC *maximum, GAMEO
             !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead || (object->player.flags_e20 & 0x20)) {
             continue;
         }
-        if ((flags & 2) && !object->unknown_281) {
+        if ((flags & 2) && !object->ground_flags) {
             continue;
         }
         if (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x40000000) {
@@ -592,7 +592,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                              (GCDataList[id].flags_094 & CHARACTER_OPTION_TOGGLE_IF_IN_MINIKIT_BONUS) != 0)) {
                     goto next_character;
                 }
-                if (object->unknown_283 >= 0 && object->unknown_283 < 17 && (TerLayer[object->unknown_283].flags & 1) != 0 &&
+                if (object->ground_layer >= 0 && object->ground_layer < 17 && (TerLayer[object->ground_layer].flags & 1) != 0 &&
                     GCDataList[id].unknown_028 <= 0.0f) {
                     goto next_character;
                 }
@@ -813,7 +813,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         object->pitch_angle = 0;
         object->movement_facing_angle = facing;
         object->facing_angle = facing;
-        object->unknown_276 = facing;
+        object->movement_angle = facing;
         object->roll_angle = 0;
         NuVecRotateYValZ(&object->facing_direction, 1.0f, facing);
         object->player.current_speed_mul = 1.0f;
@@ -842,39 +842,39 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
         if ((ResetBits & 2) != 0 || object->dead != 0 || restore_hitpoints != 0) {
             object->current_hp = (i8)DEFAULT_PLAYERHITPOINTS;
-            if (object->current_hp > object->unknown_107e) {
-                object->current_hp = (i8)object->unknown_107e;
+            if (object->current_hp > object->max_hitpoints) {
+                object->current_hp = (i8)object->max_hitpoints;
             }
             object->player.vehicle_secondary_hp = 4;
         }
         if ((ResetBits & 8) != 0) {
             player_index = object->player_index;
-            if (PlayerProgress[player_index].field_b != 0) {
+            if (PlayerProgress[player_index].jump_variant != 0) {
                 object->player.jump_variant_state = 1;
             }
-            object->player.vehicle_secondary_hp = PlayerProgress[player_index].unknown_9;
+            object->player.vehicle_secondary_hp = PlayerProgress[player_index].saved_hitpoints;
         }
         ResetPlayerAI(object);
         object->last_safe_position = object->position;
         object->ai_update_position = object->position;
         if ((object->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
             object->player.in_narrow_socket = ObjInNarrowSock(object, WORLD->sock_sys, WORLD->level_idx);
-            object->player.unknown_dc8 = GetVehicleSpeedMul(object, 0.0f);
+            object->player.speed_boost = GetVehicleSpeedMul(object, 0.0f);
         } else {
-            object->player.unknown_dc8 = 0.0f;
+            object->player.speed_boost = 0.0f;
         }
-        if (object->player.unknown_dc8 > 0.0f) {
-            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->player.unknown_dc8;
-            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->player.unknown_dc8;
+        if (object->player.speed_boost > 0.0f) {
+            object->velocity.x = NuTrigTable[object->facing_angle >> 1] * object->player.speed_boost;
+            object->velocity.z = NuTrigTable[((object->facing_angle + 0x4000) >> 1) & 0x7fff] * object->player.speed_boost;
         }
     } else {
-        object->player.unknown_dc8 = 0.0f;
+        object->player.speed_boost = 0.0f;
     }
     object->flags_1fc_word &= 0xfffdfa83u;
     object->collision_scale = 1.0f;
     object->flags_ef0 |= 0x80;
-    object->unknown_1010 = 0.0f;
-    object->player.unknown_da8 = 0.0f;
+    object->invulnerable_timer = 0.0f;
+    object->player.keep_time = 0.0f;
     // MATCH-EXCEPTION: the original clears bit 8 as or 0x100 then xor 0x100 in a register; a plain &= ~0x100
     // emits a memory and.
     object->flags_1f8 |= 0x100;
@@ -886,9 +886,9 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
     object->previous_floor_height = 2000000.0f;
     object->effect_flags = 0;
     object->player.field_dbc = 0.0f;
-    object->unknown_f10 = 0.0f;
+    object->offscreen_time = 0.0f;
     object->player.camera_screen_position.z = -1.0f;
-    object->player.unknown_de0 = 0.0f;
+    object->player.detonator_hold_time = 0.0f;
 }
 
 static i32 Customise_FindLetter(char character) {

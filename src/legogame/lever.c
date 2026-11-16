@@ -139,12 +139,12 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
-            if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-                f32 *playing = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+            if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+                f32 *playing = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
                 if (playing == NULL) {
                     return;
                 }
-                if (!(*playing >= AnimListFrame(object->character_model, object->player.unknown_7aa, 0))) {
+                if (!(*playing >= AnimListFrame(object->character_model, object->player.context_animation, 0))) {
                     return;
                 }
             } else if (!(object->player.context_timer >= 0.25f)) {
@@ -160,7 +160,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
-    if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0) {
+    if (object->character_model->model_data_b[0x5d] == NULL || object->ground_flags == 0) {
         return;
     }
     if (ObjLandReady(object) == 0 && objInNetWaitContext(object, 0x4a) == 0) {
@@ -187,7 +187,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->player.context_hover_target_y = 0.0f;
         object->player.character_context = CHARACTER_CONTEXT_PULL_LEVER;
         object->player.grapple = lever;
-        object->player.unknown_7aa = ACTION_PULLLEVER;
+        object->player.context_animation = ACTION_PULLLEVER;
         object->player.context_duration = AnimDuration((i16)object->id, 0x5d, 0.0f, 0.0f, 1);
         if (object->player.context_duration <= 0.0f) {
             object->player.context_duration = 1.0f;

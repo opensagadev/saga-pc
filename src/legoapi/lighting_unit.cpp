@@ -427,7 +427,7 @@ extern "C" {
             i32 angle = (i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0);
             red = green = blue = (f32)(NuTrigTable[((u32)(angle >> 1)) & 0x7fff] * ((f64)owner->player.arrow_blend * 0.5) + 1.0);
         } else if (Lighting_FlashRedOnLastHeart != 0 && (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && owner->current_hp == 1 &&
-                   owner->unknown_107e > 1 && owner->vehicle_hit_timer < -0.5f) {
+                   owner->max_hitpoints > 1 && owner->vehicle_hit_timer < -0.5f) {
             // MATCH-EXCEPTION: the original negates the (negative) timer and subtracts it rather than adding.
             i32 angle = (i32)((1.0 - (-owner->vehicle_hit_timer)) * 2.0 * 65536.0 + 16384.0);
             f32 flash = (f32)((1.0 - NuTrigTable[((u32)(angle >> 1)) & 0x7fff]) * 0.5 * (f64)0.333f);

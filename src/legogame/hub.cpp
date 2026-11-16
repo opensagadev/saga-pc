@@ -3215,13 +3215,13 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     if (SHOPACTIVE != 0) {
         DrawCoinTotalTime = 1;
     } else if (GetMenuID() != MENU_CUSTOMISER) {
-        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->unknown_281 != 0 &&
+        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->ground_flags != 0 &&
              (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
               Player[0]->player.character_context == 0x32) &&
              Player[0]->jump_animation_state == 14)) {
             available = 1;
         }
-        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->unknown_281 != 0 &&
+        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->ground_flags != 0 &&
              (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
               Player[1]->player.character_context == 0x32) &&
              Player[1]->jump_animation_state == 14)) {
@@ -3249,13 +3249,13 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     }
     available = 0;
     if (Customiser_MenuAvailable(CharacterCustomiser) != 0) {
-        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->unknown_281 != 0 &&
+        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->ground_flags != 0 &&
              (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
               Player[0]->player.character_context == 0x32) &&
              Player[0]->jump_animation_state == 15)) {
             available = 1;
         }
-        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->unknown_281 != 0 &&
+        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->ground_flags != 0 &&
              (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
               Player[1]->player.character_context == 0x32) &&
              Player[1]->jump_animation_state == 15)) {
@@ -3282,13 +3282,13 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     Customiser_Update(CharacterCustomiser, world);
     available = 0;
     if (Missions_PartyAvailable(NULL) != 0) {
-        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->unknown_281 != 0 &&
+        if (((Player[0]) != NULL && (Player[0]->flags_1fc & 0x80) != 0 && Player[0]->ground_flags != 0 &&
              (Player[0]->player.character_context == -1 || Player[0]->player.character_context == 0x31 ||
               Player[0]->player.character_context == 0x32) &&
              Player[0]->jump_animation_state == 20)) {
             available = 1;
         }
-        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->unknown_281 != 0 &&
+        if (((Player[1]) != NULL && (Player[1]->flags_1fc & 0x80) != 0 && Player[1]->ground_flags != 0 &&
              (Player[1]->player.character_context == -1 || Player[1]->player.character_context == 0x31 ||
               Player[1]->player.character_context == 0x32) &&
              Player[1]->jump_animation_state == 20)) {
@@ -4233,7 +4233,7 @@ extern "C" {
                     AIPathNodeUpdatePos(system, path, node);
                 }
             }
-            if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
+            if (owner->ground_flags != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL) {
                 instance = NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle);
                 if (instance == CurrentTerrain->platforms[owner->supporting_platform_id].scene_object_index) {
                     skip_inside = 0;
@@ -4283,7 +4283,7 @@ extern "C" {
             if (destination->position.y > source->position.y) {
                 SetSpecialMove(owner, destination, source, 3);
             } else {
-                if (owner->unknown_281 && owner->position.y < source->min_height) {
+                if (owner->ground_flags && owner->position.y < source->min_height) {
                     return 0;
                 }
                 SetSpecialMove(owner, destination, source, 4);
@@ -4389,11 +4389,11 @@ extern "C" {
                 packet->movement_stopping_distance = 0.0f;
             }
         } else {
-            if (owner->unknown_281 && owner->position.y < owner->special_move_source->min_height) {
+            if (owner->ground_flags && owner->position.y < owner->special_move_source->min_height) {
                 ClearSpecialMove(owner);
                 return 0;
             }
-            if (owner->unknown_281) {
+            if (owner->ground_flags) {
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
             } else {
                 owner->ai_packet.movement_destination.x = owner->indy_climb->impact_x;
@@ -4445,9 +4445,9 @@ extern "C" {
                 owner->ai_packet.movement_destination = owner->position;
                 owner->ai_packet.movement_stopping_distance = 0;
                 SetSpecialMove(owner, destination, source, 7);
-                if (owner->unknown_1088) {
-                    owner->unknown_1087 = 50;
-                    owner->unknown_1088 = 0;
+                if (owner->helper_retry_delay) {
+                    owner->helper_wait = 50;
+                    owner->helper_retry_delay = 0;
                 }
                 return 1;
             }
@@ -4527,12 +4527,12 @@ extern "C" {
             } else if (difference < -IndyGrappleHeightTolerance) {
                 owner->indy_guideline_state.movement_direction = 2;
             }
-            owner->unknown_1087 = 50;
+            owner->helper_wait = 50;
             return 1;
         }
-        if (owner->unknown_1087 != 0) {
-            --owner->unknown_1087;
-            if (owner->unknown_1087 == 0 || (owner->ai_packet.fallback_path_info.flags & AIPATHINFO_FLAG_ON_PATH)) {
+        if (owner->helper_wait != 0) {
+            --owner->helper_wait;
+            if (owner->helper_wait == 0 || (owner->ai_packet.fallback_path_info.flags & AIPATHINFO_FLAG_ON_PATH)) {
                 ClearSpecialMove(owner);
                 return 0;
             }
@@ -4969,7 +4969,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_WhipSwing(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        switch ((i8)owner->unknown_1087) {
+        switch ((i8)owner->helper_wait) {
             case 0:
                 if (owner->player.character_context == CHARACTER_CONTEXT_ZIP_UP) {
                     owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -4977,7 +4977,7 @@ extern "C" {
                     ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                     return 1;
                 }
-                owner->unknown_1087 = 1;
+                owner->helper_wait = 1;
                 owner->special_move_timer = 1.0f;
             case 1:
                 owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -5055,7 +5055,7 @@ extern "C" {
             if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
                 ClearSpecialMove(owner);
             } else {
-                callback = IndyMidSpecialMoveFns[(i8)owner->unknown_1086];
+                callback = IndyMidSpecialMoveFns[(i8)owner->helper_type];
                 if (callback != NULL) {
                     return callback(system, packet, apiobject);
                 }
