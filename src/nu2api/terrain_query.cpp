@@ -101,44 +101,42 @@ extern "C" {
             cursor = group_header + 1;
             shape_count = 0;
             limit = cursor + 508;
-            do {
-                for (;;) {
-                    const i16 count = entry->header.shape_count;
-                    if (count <= 0) {
-                        break;
-                    }
-                    const i32 group_index = entry->header.terrain_group;
-                    TERRAIN_SCAN_WORD *shapes = entry + 1;
-                    TERRAIN_GROUP *group = &CurrentTerrain->groups[group_index];
-                    if ((max_x >= group->bounds_min.x && max_z >= group->bounds_min.z && group->bounds_max.x >= min_x &&
-                         group->bounds_max.z > min_z) &&
-                        group->chunk_type != -1) {
-                        local_max_x = max_x - group->origin.x;
-                        local_max_z = max_z - group->origin.z;
-                        local_min_x = min_x - group->origin.x;
-                        local_min_z = min_z - group->origin.z;
-                        for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
-                            TERRAIN_POLYGON_INFO *shape = shapes->shape;
-                            if ((local_max_x >= shape->min_x && shape->max_x > local_min_x && local_max_z >= shape->min_z &&
-                                 shape->max_z > local_min_z) &&
-                                cursor < limit && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask)) {
-                                (cursor++)->shape = shape;
-                                ++shape_count;
-                            }
-                        }
-                        if (shape_count != 0) {
-                            group_header->header.shape_count = (i16)shape_count;
-                            group_header->header.terrain_group = (i16)(group_index);
-                            group_header = cursor;
-                            cursor++;
-                            shape_count = 0;
-                        }
-                    } else {
-                        shapes += count;
-                    }
-                    entry = shapes;
+            for (;;) {
+                const i16 count = entry->header.shape_count;
+                if (count <= 0) {
+                    break;
                 }
-            } while (0);
+                const i32 group_index = entry->header.terrain_group;
+                TERRAIN_SCAN_WORD *shapes = entry + 1;
+                TERRAIN_GROUP *group = &CurrentTerrain->groups[group_index];
+                if ((max_x >= group->bounds_min.x && max_z >= group->bounds_min.z && group->bounds_max.x >= min_x &&
+                     group->bounds_max.z > min_z) &&
+                    group->chunk_type != -1) {
+                    local_max_x = max_x - group->origin.x;
+                    local_max_z = max_z - group->origin.z;
+                    local_min_x = min_x - group->origin.x;
+                    local_min_z = min_z - group->origin.z;
+                    for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
+                        TERRAIN_POLYGON_INFO *shape = shapes->shape;
+                        if ((local_max_x >= shape->min_x && shape->max_x > local_min_x && local_max_z >= shape->min_z &&
+                             shape->max_z > local_min_z) &&
+                            cursor < limit && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask)) {
+                            (cursor++)->shape = shape;
+                            ++shape_count;
+                        }
+                    }
+                    if (shape_count != 0) {
+                        group_header->header.shape_count = (i16)shape_count;
+                        group_header->header.terrain_group = (i16)(group_index);
+                        group_header = cursor;
+                        cursor++;
+                        shape_count = 0;
+                    }
+                } else {
+                    shapes += count;
+                }
+                entry = shapes;
+            }
         } else {
             max_x = saved_position.x + 1.0f;
             max_z = saved_position.z + 1.0f;
@@ -213,44 +211,42 @@ extern "C" {
             min_x = saved_position.x - 0.1f;
             min_z = saved_position.z - 0.1f;
             entry = CurrentTerrain->index_levels[oldest_index].scan_words;
-            do {
-                for (;;) {
-                    const i16 count = entry->header.shape_count;
-                    if (count <= 0) {
-                        break;
-                    }
-                    const i32 group_index = entry->header.terrain_group;
-                    TERRAIN_SCAN_WORD *shapes = entry + 1;
-                    TERRAIN_GROUP *group = &CurrentTerrain->groups[group_index];
-                    if ((max_x >= group->bounds_min.x && max_z >= group->bounds_min.z && group->bounds_max.x >= min_x &&
-                         group->bounds_max.z > min_z) &&
-                        group->chunk_type != -1) {
-                        local_max_x = max_x - group->origin.x;
-                        local_max_z = max_z - group->origin.z;
-                        local_min_x = min_x - group->origin.x;
-                        local_min_z = min_z - group->origin.z;
-                        for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
-                            TERRAIN_POLYGON_INFO *shape = shapes->shape;
-                            if ((local_max_x >= shape->min_x && shape->max_x > local_min_x && local_max_z >= shape->min_z &&
-                                 shape->max_z > local_min_z) &&
-                                cursor < limit && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask)) {
-                                (cursor++)->shape = shape;
-                                ++shape_count;
-                            }
-                        }
-                        if (shape_count != 0) {
-                            group_header->header.shape_count = (i16)shape_count;
-                            group_header->header.terrain_group = (i16)(group_index);
-                            group_header = cursor;
-                            cursor++;
-                            shape_count = 0;
-                        }
-                    } else {
-                        shapes += count;
-                    }
-                    entry = shapes;
+            for (;;) {
+                const i16 count = entry->header.shape_count;
+                if (count <= 0) {
+                    break;
                 }
-            } while (0);
+                const i32 group_index = entry->header.terrain_group;
+                TERRAIN_SCAN_WORD *shapes = entry + 1;
+                TERRAIN_GROUP *group = &CurrentTerrain->groups[group_index];
+                if ((max_x >= group->bounds_min.x && max_z >= group->bounds_min.z && group->bounds_max.x >= min_x &&
+                     group->bounds_max.z > min_z) &&
+                    group->chunk_type != -1) {
+                    local_max_x = max_x - group->origin.x;
+                    local_max_z = max_z - group->origin.z;
+                    local_min_x = min_x - group->origin.x;
+                    local_min_z = min_z - group->origin.z;
+                    for (i32 remaining = count; remaining > 0; --remaining, ++shapes) {
+                        TERRAIN_POLYGON_INFO *shape = shapes->shape;
+                        if ((local_max_x >= shape->min_x && shape->max_x > local_min_x && local_max_z >= shape->min_z &&
+                             shape->max_z > local_min_z) &&
+                            cursor < limit && TERRAIN_SHAPE_MATERIAL_OK(shape, terrain_mask)) {
+                            (cursor++)->shape = shape;
+                            ++shape_count;
+                        }
+                    }
+                    if (shape_count != 0) {
+                        group_header->header.shape_count = (i16)shape_count;
+                        group_header->header.terrain_group = (i16)(group_index);
+                        group_header = cursor;
+                        cursor++;
+                        shape_count = 0;
+                    }
+                } else {
+                    shapes += count;
+                }
+                entry = shapes;
+            }
         }
 
         min_x = min_x - 0.05f;
@@ -2324,6 +2320,7 @@ extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
     if ((query->hit_type & 0xf) != TERRAIN_HIT_TYPE_CYLINDER) {
         return;
     }
+
     TERRAIN_GROUP *groups;
     switch (query->hit_edge) {
         case TERRAIN_HIT_EDGE_0_1:
@@ -2335,6 +2332,7 @@ extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
             second->y = groups[query->terrain_group_index].origin.y + query->surface->vertices[1].y;
             second->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[1].z;
             break;
+
         case TERRAIN_HIT_EDGE_1_2:
             groups = CurrentTerrain->groups;
             first->x = groups[query->terrain_group_index].origin.x + query->surface->vertices[1].x;
@@ -2344,6 +2342,7 @@ extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
             second->y = groups[query->terrain_group_index].origin.y + query->surface->vertices[2].y;
             second->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[2].z;
             break;
+
         case TERRAIN_HIT_EDGE_2_0:
             groups = CurrentTerrain->groups;
             first->x = groups[query->terrain_group_index].origin.x + query->surface->vertices[2].x;
@@ -2353,6 +2352,7 @@ extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
             second->y = groups[query->terrain_group_index].origin.y + query->surface->vertices[0].y;
             second->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[0].z;
             break;
+
         case TERRAIN_HIT_EDGE_1_3:
             groups = CurrentTerrain->groups;
             first->x = groups[query->terrain_group_index].origin.x + query->surface->vertices[1].x;
@@ -2362,6 +2362,7 @@ extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
             second->y = groups[query->terrain_group_index].origin.y + query->surface->vertices[3].y;
             second->z = groups[query->terrain_group_index].origin.z + query->surface->vertices[3].z;
             break;
+
         case TERRAIN_HIT_EDGE_3_2:
             groups = CurrentTerrain->groups;
             first->x = groups[query->terrain_group_index].origin.x + query->surface->vertices[3].x;

@@ -615,21 +615,21 @@ void SkinPlatform(TERRAIN_GROUP *group, TERRAIN_SKIN_STREAM *output, const TERRA
                 b.x = polygon->vertices[2].x - polygon->vertices[3].x;
                 b.y = polygon->vertices[2].y - polygon->vertices[3].y;
                 b.z = polygon->vertices[2].z - polygon->vertices[3].z;
-                do {
+                {
                     NUVEC cross;
                     f32 length;
                     f32 inverse;
                     cross.x = a.y * b.z - a.z * b.y;
                     cross.y = a.z * b.x - a.x * b.z;
                     cross.z = a.x * b.y - a.y * b.x;
-                    *(&polygon->normals[1]) = cross;
+                    polygon->normals[1] = cross;
                     length = NuFsqrt(polygon->normals[1].x * polygon->normals[1].x + polygon->normals[1].y * polygon->normals[1].y +
                                      polygon->normals[1].z * polygon->normals[1].z);
                     inverse = length != 0.0f ? 1.0f / length : 0.0f;
                     polygon->normals[1].x = polygon->normals[1].x * inverse;
                     polygon->normals[1].y = polygon->normals[1].y * inverse;
                     polygon->normals[1].z = polygon->normals[1].z * inverse;
-                } while (0);
+                }
             }
             a.x = polygon->vertices[2].x - polygon->vertices[0].x;
             a.y = polygon->vertices[2].y - polygon->vertices[0].y;
@@ -637,21 +637,21 @@ void SkinPlatform(TERRAIN_GROUP *group, TERRAIN_SKIN_STREAM *output, const TERRA
             b.x = polygon->vertices[1].x - polygon->vertices[0].x;
             b.y = polygon->vertices[1].y - polygon->vertices[0].y;
             b.z = polygon->vertices[1].z - polygon->vertices[0].z;
-            do {
+            {
                 NUVEC cross;
                 f32 length;
                 f32 inverse;
                 cross.x = a.y * b.z - a.z * b.y;
                 cross.y = a.z * b.x - a.x * b.z;
                 cross.z = a.x * b.y - a.y * b.x;
-                *(&polygon->normals[0]) = cross;
+                polygon->normals[0] = cross;
                 length = NuFsqrt(polygon->normals[0].x * polygon->normals[0].x + polygon->normals[0].y * polygon->normals[0].y +
                                  polygon->normals[0].z * polygon->normals[0].z);
                 inverse = length != 0.0f ? 1.0f / length : 0.0f;
                 polygon->normals[0].x = polygon->normals[0].x * inverse;
                 polygon->normals[0].y = polygon->normals[0].y * inverse;
                 polygon->normals[0].z = polygon->normals[0].z * inverse;
-            } while (0);
+            }
             ++source;
             ++polygon;
         }
@@ -1145,7 +1145,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                             vertices[1].x = transformed->vertices[2].x - transformed->vertices[3].x;
                             vertices[1].y = transformed->vertices[2].y - transformed->vertices[3].y;
                             vertices[1].z = transformed->vertices[2].z - transformed->vertices[3].z;
-                            do {
+                            {
                                 NUVEC cross;
                                 cross.x = ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->z -
                                           ((NUVEC *)&vertices[0])->z * ((NUVEC *)&vertices[1])->y;
@@ -1154,7 +1154,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                                 cross.z = ((NUVEC *)&vertices[0])->x * ((NUVEC *)&vertices[1])->y -
                                           ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->x;
                                 transformed->normals[1] = cross;
-                            } while (0);
+                            }
                             length_squared = (transformed->normals[1].x * transformed->normals[1].x +
                                               transformed->normals[1].y * transformed->normals[1].y) +
                                              transformed->normals[1].z * transformed->normals[1].z;
@@ -1173,7 +1173,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         vertices[1].x = transformed->vertices[1].x - transformed->vertices[0].x;
                         vertices[1].y = transformed->vertices[1].y - transformed->vertices[0].y;
                         vertices[1].z = transformed->vertices[1].z - transformed->vertices[0].z;
-                        do {
+                        {
                             NUVEC cross;
                             cross.x = ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->z -
                                       ((NUVEC *)&vertices[0])->z * ((NUVEC *)&vertices[1])->y;
@@ -1182,7 +1182,7 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                             cross.z = ((NUVEC *)&vertices[0])->x * ((NUVEC *)&vertices[1])->y -
                                       ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->x;
                             transformed->normals[0] = cross;
-                        } while (0);
+                        }
                         length_squared = (transformed->normals[0].x * transformed->normals[0].x +
                                           transformed->normals[0].y * transformed->normals[0].y) +
                                          transformed->normals[0].z * transformed->normals[0].z;
@@ -3316,20 +3316,20 @@ void TerrainSkinPrepareGroup(i32 group_index, TERRAIN_SKIN_STREAM *output, const
                     b.x = polygon->vertices[2].x - polygon->vertices[3].x;
                     b.y = polygon->vertices[2].y - polygon->vertices[3].y;
                     b.z = polygon->vertices[2].z - polygon->vertices[3].z;
-                    do {
+                    {
                         NUVEC cross;
                         f32 inverse;
                         cross.x = a.y * b.z - a.z * b.y;
                         cross.y = a.z * b.x - a.x * b.z;
                         cross.z = a.x * b.y - a.y * b.x;
-                        *(&polygon->normals[1]) = cross;
+                        polygon->normals[1] = cross;
                         length_squared = polygon->normals[1].x * polygon->normals[1].x + polygon->normals[1].y * polygon->normals[1].y +
                                          polygon->normals[1].z * polygon->normals[1].z;
                         inverse = length_squared != 0.0f ? 1.0f / NuFsqrt(length_squared) : 0.0f;
                         polygon->normals[1].x = polygon->normals[1].x * inverse;
                         polygon->normals[1].y = polygon->normals[1].y * inverse;
                         polygon->normals[1].z = polygon->normals[1].z * inverse;
-                    } while (0);
+                    }
                 }
                 a.x = polygon->vertices[2].x - polygon->vertices[0].x;
                 a.y = polygon->vertices[2].y - polygon->vertices[0].y;
@@ -3337,20 +3337,20 @@ void TerrainSkinPrepareGroup(i32 group_index, TERRAIN_SKIN_STREAM *output, const
                 b.x = polygon->vertices[1].x - polygon->vertices[0].x;
                 b.y = polygon->vertices[1].y - polygon->vertices[0].y;
                 b.z = polygon->vertices[1].z - polygon->vertices[0].z;
-                do {
+                {
                     NUVEC cross;
                     f32 inverse;
                     cross.x = a.y * b.z - a.z * b.y;
                     cross.y = a.z * b.x - a.x * b.z;
                     cross.z = a.x * b.y - a.y * b.x;
-                    *(&polygon->normals[0]) = cross;
+                    polygon->normals[0] = cross;
                     length_squared = polygon->normals[0].x * polygon->normals[0].x + polygon->normals[0].y * polygon->normals[0].y +
                                      polygon->normals[0].z * polygon->normals[0].z;
                     inverse = length_squared != 0.0f ? 1.0f / NuFsqrt(length_squared) : 0.0f;
                     polygon->normals[0].x = polygon->normals[0].x * inverse;
                     polygon->normals[0].y = polygon->normals[0].y * inverse;
                     polygon->normals[0].z = polygon->normals[0].z * inverse;
-                } while (0);
+                }
                 ++source;
                 ++polygon;
             }
