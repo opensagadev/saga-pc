@@ -10,6 +10,7 @@
 extern "C" {
 #endif
     i32 GizmoSys_BoltHit(void *, WORLDINFO *, BOLT *, NUVEC *, NUVEC *, NUVEC *, f32, u8 *);
+    void GizmoSysSetGame(void);
 #ifdef __cplusplus
 }
 #endif

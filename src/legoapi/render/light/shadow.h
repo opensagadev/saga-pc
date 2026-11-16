@@ -11,6 +11,7 @@ extern "C" {
     void EnableShadowMapRendering(i32);
     void ResetShadowMapRendering(void);
     void InitShadowLights(void);
+    void SetDepthOfField(void);
 #ifdef __cplusplus
 }
 #endif
