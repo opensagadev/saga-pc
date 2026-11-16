@@ -448,7 +448,7 @@ void InitExtraList(void) {
     for (i = 0; i < 44; ++i) {
         NuStrCpy(ExtraItems[i].special_name, ExtrasCheats[i].extra_name);
         NuSpecialFind(WORLD->current_gscn, &ExtraItems[i].special, ExtraItems[i].special_name, 1);
-        ExtraItems[i].item_id = (i16)i;
+        ExtraItems[i].item_id = (u16)i;
         ExtraItems[i].type = SHOP_SHELF_EXTRAS;
         ExtraItems[i].unlocked = 0;
         // MATCH-EXCEPTION: the original keeps the word's byte offset in a register (add r, r twice)
@@ -596,7 +596,7 @@ void InitShop(WORLDINFO *world) {
     for (i = 0; i < SHOPHINTCOUNT; ++i) {
         HINT *hint = Hint_FindHint(ShopHintIds[i]);
         HintItems[i].type = SHOP_SHELF_HINTS;
-        HintItems[i].item_id = (i16)i;
+        HintItems[i].item_id = (u16)i;
         HintItems[i].price = hint != NULL ? hint->price : 0;
         HintItems[i].unlocked = 0;
         if (((u64)save->hint_purchased_bits[i / 32] & ((u64)1 << (i % 32))) != 0) {
@@ -641,7 +641,7 @@ void InitShop(WORLDINFO *world) {
     price = 10000;
     for (i = 0; i < SHOPGOLDBRICKS; ++i) {
         BrickItems[i].type = SHOP_SHELF_GOLD_BRICKS;
-        BrickItems[i].item_id = (i16)i;
+        BrickItems[i].item_id = (u16)i;
         BrickItems[i].price = price;
         BrickItems[i].special = TopShelf[4].special;
         BrickItems[i].unlocked = 0;
@@ -660,7 +660,7 @@ void InitShop(WORLDINFO *world) {
     for (i = 0; i < SHOPCUTCOUNT && i < 128; ++i) {
         shopitem_s *item = &CutItems[i];
         item->special = TopShelf[5].special;
-        item->item_id = (i16)i;
+        item->item_id = (u16)i;
         item->type = SHOP_SHELF_CUTSCENES;
         item->price = 0;
         item->unlocked = 0;
@@ -772,7 +772,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
             if (items[index].unlocked == 1) {
                 return 0;
             }
-            id = (u16)items[index].item_id;
+            id = items[index].item_id;
             if (id < 0 || id >= CHARCOUNT) {
                 return 0;
             }
@@ -792,7 +792,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
             }
             return 1;
         case SHOP_SHELF_HINTS:
-            id = (u16)items[index].item_id;
+            id = items[index].item_id;
             if (items[index].unlocked == 1 || items[index].price == 0) {
                 return 1;
             }
@@ -807,7 +807,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
             }
             goto buy;
         case SHOP_SHELF_EXTRAS:
-            id = (u16)items[index].item_id;
+            id = items[index].item_id;
             if (items[index].unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0) {
                 return 0;
             }
@@ -1063,8 +1063,8 @@ i32 SubItemMenu(void *menu) {
         positions = HintCurPos;
         count = &SHOPHINTCOUNT;
         if (ShopHintDrawWait <= 0.0f && (items[ids[3]].unlocked == 1 || items[ids[3]].price == 0)) {
-            Hint_ResetHint(ShopHintIds[(u16)items[ids[3]].item_id], 0);
-            Hint_SetHintFromId(ShopHintIds[(u16)items[ids[3]].item_id], 1, 0);
+            Hint_ResetHint(ShopHintIds[items[ids[3]].item_id], 0);
+            Hint_SetHintFromId(ShopHintIds[items[ids[3]].item_id], 1, 0);
         } else {
             Hint_CancelCurrent();
         }
@@ -1391,14 +1391,14 @@ i32 CodeMenu(void *menu) {
                 ShopCheatName = NULL;
             } else {
                 if (i < charcheatix) {
-                    if (Game_CharacterSave && !(Game_CharacterSave[(u16)CharItems[i].item_id] & SAVE_CHARACTER_UNLOCKED)) {
-                        Game_CharacterSave[(u16)CharItems[i].item_id] |= SAVE_CHARACTER_UNLOCKED;
+                    if (Game_CharacterSave && !(Game_CharacterSave[CharItems[i].item_id] & SAVE_CHARACTER_UNLOCKED)) {
+                        Game_CharacterSave[CharItems[i].item_id] |= SAVE_CHARACTER_UNLOCKED;
                         AddToCompletionPoints(POINTS_PER_CHARACTER);
                         PlaySfx("Shop_BuyCheat", &SubShelfPos[3]);
                     } else {
                         PlaySfx("Shop_NotEnufMuny", &SubShelfPos[3]);
                     }
-                    ShopCheatName = TTab[CDataList[(u16)CharItems[i].item_id].name_id];
+                    ShopCheatName = TTab[CDataList[CharItems[i].item_id].name_id];
                 } else if (i < extracheatix) {
                     i -= charcheatix;
                     if (!(save->extra_purchased_bits[i / 32] & (1U << (i & 31)))) {
@@ -1508,7 +1508,7 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
             top_shelf_character = 0;
         }
 
-        character_id = (u16)(item->item_id);
+        character_id = item->item_id;
         unavailable = 1;
         if ((character_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) &&
             item->unlocked == 1) {
@@ -1822,7 +1822,7 @@ void DrawSubItems(void) {
                     angle = shelfang + (item->unlocked == 1 ? rotation : 0);
                     DrawItem(&toolblank, &positions[slot], scale, 1.0f, ypush, 0, angle, 0);
                     item = &items[shelf_ids[slot]];
-                    id = (u16)item->item_id;
+                    id = item->item_id;
                     if ((save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0 || id < 8 || ExtrasCheats[id].area_index == -1 ||
                         Game.area_save[ExtrasCheats[id].area_index].red_brick_collected != 0) {
                         Shop_DrawItem(item, &positions[slot], scale, 1.0f, 1, ypush, 0, angle, 0);
@@ -1851,7 +1851,7 @@ void DrawSubItems(void) {
             case SHOP_SHELF_CUTSCENES:
                 blank = &cutblank;
                 film = &cutfilm_locked;
-                id = (u16)item->item_id;
+                id = item->item_id;
                 if (shopcutsceneplayer != NULL && CutScenePlayer_CanStart(id) != 0) {
                     blank = &toolblank;
                     level = &LDataList[shopcutsceneplayer->clips[id].level_id];
@@ -1940,8 +1940,8 @@ void DrawSubItemMenu2D(void) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if ((u16)items[ids[3]].item_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
-                                                              : CollectIDUnlocked((u16)items[ids[3]].item_id) != 0) {
+        } else if (items[ids[3]].item_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
+                                                         : CollectIDUnlocked(items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
         } else {
             scale = (f32)((f64)ShopLockedScale * (f64)0.7f);
@@ -1952,7 +1952,7 @@ void DrawSubItemMenu2D(void) {
         show_name = 0;
         buyable = items[ids[3]].unlocked == 1 ? 0 : (u32)items[ids[3]].price > 0;
     } else if (items[ids[3]].type == SHOP_SHELF_EXTRAS) {
-        id = (u16)items[ids[3]].item_id;
+        id = items[ids[3]].item_id;
         // MATCH-EXCEPTION: the original selects the 16-bit text id before sign-extending it once, which the
         // casts reproduce; the plain ternary widens each arm separately.
         NuStrCpy(subtitle, TTab[(i16)(ExtrasCheats[id].text_id != NULL ? (u16)*ExtrasCheats[id].text_id : tUNKNOWN)]);
@@ -1974,7 +1974,7 @@ void DrawSubItemMenu2D(void) {
             }
         }
     } else if (items[ids[3]].type == SHOP_SHELF_GOLD_BRICKS) {
-        id = (u16)items[ids[3]].item_id;
+        id = items[ids[3]].item_id;
         sprintf(title, "%s %i", TTab[dat_00880778], id + 1);
         name = title;
         if (items[ids[3]].unlocked == 1) {
@@ -1991,7 +1991,7 @@ void DrawSubItemMenu2D(void) {
             buyable = show_name = 1;
         }
     } else if (items[ids[3]].type == SHOP_SHELF_CUTSCENES) {
-        id = (u16)items[ids[3]].item_id;
+        id = items[ids[3]].item_id;
         available = CutScenePlayer_CanStart(id);
         CutScenePlayer_GetText(id, title, subtitle, available);
         SmartTextEx(title, 0.0f, HubEpisodeTitleY, 1.0f, 0.6f, 0.6f, 0.6f, 0, 255, 255, 255, 1.7f, 1, NULL, 0,
@@ -2066,7 +2066,7 @@ static i32 Shop_CanSelect(void) {
                 return 0;
             }
             item = &CharItems[CharShelfIds[3]];
-            return Shop_CharacterUnlocked((u16)item->item_id) != 0 && item->unlocked != 1;
+            return Shop_CharacterUnlocked(item->item_id) != 0 && item->unlocked != 1;
         case SHOP_SHELF_HINTS:
             index = HintShelfIds[3];
             return Game.coins >= (u32)HintItems[index].price && HintItems[index].unlocked != 1;
@@ -2075,7 +2075,7 @@ static i32 Shop_CanSelect(void) {
                 return 0;
             }
             item = &ExtraItems[ExtraShelfIds[3]];
-            id = (u16)item->item_id;
+            id = item->item_id;
             if (id >= 8 && ExtrasCheats[id].area_index != -1 && Game.area_save[ExtrasCheats[id].area_index].red_brick_collected == 0) {
                 return 0;
             }

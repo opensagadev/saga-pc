@@ -1436,7 +1436,7 @@ extern "C" {
                        0.6f, 0.6f, 0, 255, 191, 0);
             } else if (BonusArea == 0 && Mission_Active(NULL) != NULL) {
                 f32 mission_y = (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y;
-                f32 remaining = (f32)MissionSys->missions[(i8)MissionSys->active_mission->index].time - MissionSys->timer.time_elapsed;
+                f32 remaining = (f32)MissionSys->missions[MissionSys->active_mission->index].time - MissionSys->timer.time_elapsed;
                 if (remaining < 0.0f) {
                     remaining = 0.0f;
                 }
@@ -1461,7 +1461,7 @@ extern "C" {
                             distance = 10.0f;
                         }
                         f32 alpha = (f32)((1.0 - (f64)distance / 10.0) * (f64)pulse);
-                        DrawCharIcon(MissionSys->missions[(i8)MissionSys->active_mission->index].find_character, 0.0f,
+                        DrawCharIcon(MissionSys->missions[MissionSys->active_mission->index].find_character, 0.0f,
                                      (f32)((f64)0.055f - (f64)mission_y), 0.0f, 0.25f, 167, alpha, alpha, 1, NULL);
                     }
                 }

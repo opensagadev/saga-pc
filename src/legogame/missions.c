@@ -215,7 +215,7 @@ void MenuDrawEndMission(MENU *menu) {
     }
     if (MissionSys->state == MISSION_STATE_COMPLETE) {
         if ((f64)NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
-            index = (i8)MissionSys->active_mission->index;
+            index = MissionSys->active_mission->index;
             remaining = (f32)(i32)MissionSys->missions[index].time - BonusTimer.time_elapsed;
             if (remaining < 0.0f) {
                 remaining = 0.0f;

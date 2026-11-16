@@ -21,7 +21,7 @@ extern "C" {
         i32 bounty;           // 0x08
         i32 alternate_bounty; // 0x0c
         u16 time;             // 0x10
-        u8 index;             // 0x12
+        i8 index;             // 0x12
         u8 unknown_13[5];     // 0x13
     };
     typedef struct mission_data_s MISSIONDATA;

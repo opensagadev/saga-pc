@@ -874,7 +874,7 @@ struct AITRIGGERSETSYS_s {          // size 0x4304
 struct shopitem_s {              // size 0x74
     char name[64];               // 0x00
     char special_name[32];       // 0x40
-    i16 item_id;                 // 0x60
+    u16 item_id;                 // 0x60
     u8 type;                     // 0x62
     u8 unlocked;                 // 0x63
     i32 price;                   // 0x64

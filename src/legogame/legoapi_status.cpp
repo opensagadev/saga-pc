@@ -658,9 +658,9 @@ extern "C" {
             p->reward_score = p->original_score;
             p->elapsed_time = MissionSys->timer.time_elapsed;
             if (p->mission_state == MISSION_STATE_COMPLETE) {
-                if (Game_MissionSave == NULL || Game_MissionSave->completed[(i8)MissionSys->active_mission->index] == 0) {
+                if (Game_MissionSave == NULL || Game_MissionSave->completed[MissionSys->active_mission->index] == 0) {
                     if (Game_MissionSave != NULL) {
-                        Game_MissionSave->completed[(i8)MissionSys->active_mission->index] = 1;
+                        Game_MissionSave->completed[MissionSys->active_mission->index] = 1;
                     }
                     AddToCompletionPoints(POINTS_PER_MISSION);
                     gold = AddGoldBrickMessage(p, dat_008806e4);
@@ -675,7 +675,7 @@ extern "C" {
                     IncreaseScore(&p->reward_score, reward, 0);
                 }
                 if (Game_MissionSave != NULL) {
-                    f32 *best = &Game_MissionSave->best_times[(i8)MissionSys->active_mission->index];
+                    f32 *best = &Game_MissionSave->best_times[MissionSys->active_mission->index];
                     if (*best == 0.0f || *best > p->elapsed_time) {
                         *best = p->elapsed_time;
                     }
@@ -1445,7 +1445,7 @@ extern "C" void FinishStatusPacket(i32 choice) {
             InitChallenge(StatusPacket.area->index);
         }
         if (StatusPacket.mission_state != MISSION_STATE_NONE) {
-            InitMission(MissionSys, (i8)MissionSys->active_mission->index);
+            InitMission(MissionSys, MissionSys->active_mission->index);
             NewLData = &LDataList[MissionSys->active_mission->level];
         }
     } else if (choice == 0 && StatusPacket.next_area != -1) {
@@ -1467,7 +1467,7 @@ extern "C" void FinishStatusPacket(i32 choice) {
     }
     if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & AREAFLAG_HUB_AREA) != 0 &&
         StatusPacket.mission_state != MISSION_STATE_NONE && MissionSys->active_mission != NULL) {
-        hub_from_mission = (i8)MissionSys->active_mission->index;
+        hub_from_mission = MissionSys->active_mission->index;
     }
     if (NewLData == HUB_LDATA) {
         OldBonusScore[0] = 0;
