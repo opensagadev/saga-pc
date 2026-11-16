@@ -51,8 +51,9 @@ typedef struct gamesave_s { // size 0x7e4c
                 u8 save_version;
             }; // 0x0001
 
-            u8 header_02;    // 0x0002
-            u8 areas_opened; // 0x0003: set by Areas_OpenAll
+            u8 header_02; // 0x0002
+            /* set by Areas_OpenAll */
+            u8 areas_opened; // 0x0003
         };
     }; // 0x0000
 
