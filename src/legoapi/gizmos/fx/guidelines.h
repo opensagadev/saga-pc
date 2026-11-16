@@ -6,8 +6,7 @@
 
 typedef struct guideline_record_s { // size 0x24
     char name[8];                   // 0x00
-    NUVEC start_position;           // 0x08
-    NUVEC end_position;             // 0x14
+    NUVEC endpoints[2];             // 0x08  start and end
 
     union { // size 0x1
         u8 flags;
@@ -23,16 +22,10 @@ typedef struct guideline_record_s { // size 0x24
 
 struct WORLDINFO_s;
 
-typedef struct indy_guideline_s { // size 0x24
-    char name[8];                 // 0x00
-    NUVEC endpoints[2];           // 0x08
-    u32 flags;                    // 0x20
-} INDY_GUIDELINE;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-    INDY_GUIDELINE *GuideLine_FindNearest(NUVEC *position, struct WORLDINFO_s *world, i32 *endpoint, f32 *distance);
+    GUIDELINE_RECORD *GuideLine_FindNearest(NUVEC *position, struct WORLDINFO_s *world, i32 *endpoint, f32 *distance);
     void GuideLines_Draw(void *world, void *unused, f32 delta_time);
 #ifdef __cplusplus
 }

@@ -4284,7 +4284,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_ClimbUp(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        INDY_GUIDELINE *guide;
+        GUIDELINE_RECORD *guide;
         i32 endpoint;
         f32 distance;
         f32 height;
@@ -4339,7 +4339,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_ClimbDown(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        INDY_GUIDELINE *guide;
+        GUIDELINE_RECORD *guide;
         i32 endpoint;
         f32 distance;
         f32 height;

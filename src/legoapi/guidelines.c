@@ -19,8 +19,8 @@ i32 GuideLines_Load(void *world_ptr, void *unused) {
         world->guideline_count = EdFileReadInt();
         for (index = 0; index < world->guideline_count; ++index) {
             EdFileRead(world->guidelines[index].name, 8);
-            EdFileReadNuVec(&world->guidelines[index].start_position);
-            EdFileReadNuVec(&world->guidelines[index].end_position);
+            EdFileReadNuVec(&world->guidelines[index].endpoints[0]);
+            EdFileReadNuVec(&world->guidelines[index].endpoints[1]);
         }
         return 1;
     }
@@ -57,9 +57,9 @@ void GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS *progre
     }
 }
 
-INDY_GUIDELINE *GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance) {
-    INDY_GUIDELINE *nearest = NULL;
-    INDY_GUIDELINE *guide = (INDY_GUIDELINE *)world->guidelines;
+GUIDELINE_RECORD *GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance) {
+    GUIDELINE_RECORD *nearest = NULL;
+    GUIDELINE_RECORD *guide = world->guidelines;
     i32 nearest_endpoint = -1;
     i32 index;
     i32 side;

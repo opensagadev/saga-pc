@@ -27,7 +27,7 @@ struct bolt_s;
 struct characterdata_s;
 struct climb_slot_s;
 struct gizforce_s;
-struct indy_guideline_s;
+struct guideline_record_s;
 struct numtl_s;
 struct player_force_los_slot_s;
 struct techno_s;
@@ -880,10 +880,10 @@ typedef struct AI_SPECIAL_PROGRESS { // size 0x6
     f32 progress;                    // 0x2
 } AI_SPECIAL_PROGRESS;
 
-typedef struct INDY_GUIDELINE_STATE {   // size 0x6
-    u8 movement_direction;              // 0x0
-    i8 endpoint;                        // 0x1
-    struct indy_guideline_s *guideline; // 0x2
+typedef struct INDY_GUIDELINE_STATE {     // size 0x6
+    u8 movement_direction;                // 0x0
+    i8 endpoint;                          // 0x1
+    struct guideline_record_s *guideline; // 0x2
 } INDY_GUIDELINE_STATE;
 
 #pragma pack(pop)
