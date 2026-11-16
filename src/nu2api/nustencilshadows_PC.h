@@ -109,10 +109,10 @@ extern "C" {
     extern f32 NuRndrFxPreviousHeight;
     extern u32 NuRndrFxColour;
     extern PC_BUFFER_RESOURCE *NuDebrisVertexBuffers[4];
-    extern void *NuDebrisSystemBuffers[8];
+    extern NULGTVERTEX *NuDebrisSystemBuffers[8];
     extern i32 NuDebrisUseSystemMemory;
     extern u32 NuDebrisMaxVertexCount;
-    extern void *NuDebrisVertexData;
+    extern NULGTVERTEX *NuDebrisVertexData;
     extern u32 NuDebrisFrameVertexCount;
 
     typedef struct debris_particle_chunk_s DEBRIS_PARTICLE_CHUNK;

@@ -22,7 +22,7 @@ extern "C" {
     const char *dat_02974d58[256] = {0};
     TEXT_INPUT_LABELS *TextInputAlternateLabels = 0;
     u8 PcMouseAxisModes[3] = {0};
-    NuKeyboardState *nu_input_state = 0;
+    PC_INPUT_RUNTIME *nu_input_state = 0;
     i8 PcInputActionOrder[20] = {0};
     TEXT_INPUT_LABELS *TextInputDefaultLabels = 0;
     u32 mbuttons = 0;
@@ -174,11 +174,11 @@ i32 PC_INPUT_RUNTIME::fun_006d7410(i32 key, i32 port) {
 }
 
 extern "C" u8 PcInput_MappingIsGood(i32 port, i32 player_index) {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->InstallDropInConfiguration(port, player_index);
+    return nu_input_state->InstallDropInConfiguration(port, player_index);
 }
 
 extern "C" i32 PcInput_ScanForAnyInput(u32 excluded, u8 kinds, i32 *kind, i32 *value, i32 skip_active) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     runtime->action_mask = (u32)-1;
     for (i32 port = 0; port < 14; ++port) {
         if ((skip_active && runtime->mouse.port_activity[port]) || (excluded & (1u << port))) {
@@ -226,7 +226,7 @@ extern "C" i32 PcInput_RemapVirtualKeyboard(i32 port, i32 player) {
     if (port >= 14) {
         return port;
     }
-    if (player != ((PC_INPUT_RUNTIME *)nu_input_state)->captured_port) {
+    if (player != nu_input_state->captured_port) {
         ++port;
     }
     if (player >= 0) {
@@ -236,7 +236,7 @@ extern "C" i32 PcInput_RemapVirtualKeyboard(i32 port, i32 player) {
 }
 
 extern "C" u8 PcInput_SafeGetMapping(i32 port, i32 key, i32 auxiliary_index) {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->SelectConfiguration(port, key, auxiliary_index);
+    return nu_input_state->SelectConfiguration(port, key, auxiliary_index);
 }
 
 extern "C" void PcInput_SetIsUsedCallBack(i32 (*filter)(i32, i32)) {
@@ -604,7 +604,7 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
 }
 
 extern "C" void NuKeyboardRead(void) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->PollKeyboard();
+    nu_input_state->PollKeyboard();
 }
 
 // Uncompiled PC reconstruction draft. Append to input_runtime.cpp only after shared contract review.
@@ -612,13 +612,13 @@ extern "C" i32 NuPadGetDeadzoneByPortPS(i32 port) {
     if ((u32)(port - 10) <= 3) {
         return 0;
     }
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].deadzone;
+    return nu_input_state->devices[port].deadzone;
 }
 
 extern "C" i32 NuPadReadOutputs(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l1, u8 *l2, u8 *r1, u8 *r2, u32 *buttons, u8 *unknown,
                                 i32 *flags) {
     if (nu_input_state != NULL) {
-        return ((PC_INPUT_RUNTIME *)nu_input_state)->ReadSample(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
+        return nu_input_state->ReadSample(port, lx, ly, rx, ry, l1, l2, r1, r2, buttons, unknown, flags);
     }
     return 0;
 }
@@ -922,7 +922,7 @@ i32 PC_INPUT_RUNTIME::UpdateMouse() {
 
 void PC_INPUT_RUNTIME::ApplyMouseAxis(PC_INPUT_SAMPLE *sample) {
     (void)NuTimeGetFrameTime();
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     f32 goal = 0.0f;
     f32 x = (f32)(runtime->mouse.delta[0] * -4.0);
     f32 y = (f32)(runtime->mouse.delta[1] * -4.0);
@@ -1528,11 +1528,11 @@ i32 PC_INPUT_RUNTIME::fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank
 }
 
 extern "C" i32 fun_006d5d40(i32 port, i32 kind, i32 value) {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->fun_006d4fe0(port, kind, value);
+    return nu_input_state->fun_006d4fe0(port, kind, value);
 }
 
 extern "C" void PcInputEndFrame(void) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->EndFrame();
+    nu_input_state->EndFrame();
 }
 
 // Append to input_runtime.cpp; declarations/mappings in B-contract.json.
@@ -1550,26 +1550,26 @@ void PC_INPUT_RUNTIME::CopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
 }
 
 extern "C" void PcInputCopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->CopyBindings(port, to_auxiliary, bank);
+    nu_input_state->CopyBindings(port, to_auxiliary, bank);
 }
 
 extern "C" f32 fun_006d5b00(void) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     return runtime->mouse.accumulated[0];
 }
 
 extern "C" f32 fun_006d5b10(void) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     return runtime->mouse.accumulated[1];
 }
 
 extern "C" f32 fun_006d5b20(void) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     return runtime->mouse.accumulated[2];
 }
 
 extern "C" void PcInputResetMouseMotion() {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     runtime->mouse.accumulated[2] = 0.0f;
     runtime->mouse.accumulated[1] = 0.0f;
     runtime->mouse.accumulated[0] = 0.0f;
@@ -1601,7 +1601,7 @@ extern "C" void fun_006d5e30(void (*callback)(PC_INPUT_RUNTIME *)) {
 }
 
 extern "C" void fun_006d5e40(u32 *buttons, u32 *axes, i32 bank) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     u32 button_mask = 0;
     u32 axis_mask = 0;
     for (i32 action = 0; action < 32; ++action) {
@@ -1623,7 +1623,7 @@ extern "C" void fun_006d5e40(u32 *buttons, u32 *axes, i32 bank) {
 }
 
 extern "C" u32 fun_006d5ed0(i32 bank) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     u32 mask = 0;
     for (i32 action = 0; action < 32; ++action) {
         i32 active;
@@ -1649,8 +1649,7 @@ extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
     }
     if (buttons != 0) {
         for (action = 0; action < 32; ++action) {
-            if (((PC_INPUT_RUNTIME *)nu_input_state)->fun_006d4ef0(action, &active, &axis, &button, &value) && button >= 0 &&
-                (buttons & (1 << button))) {
+            if (nu_input_state->fun_006d4ef0(action, &active, &axis, &button, &value) && button >= 0 && (buttons & (1 << button))) {
                 if (buttons & ~(1 << button)) {
                     return -4;
                 }
@@ -1659,7 +1658,7 @@ extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
         }
     } else {
         for (action = 0; action < 32; ++action) {
-            if (((PC_INPUT_RUNTIME *)nu_input_state)->fun_006d4ef0(action, NULL, &axis, NULL, NULL) && axis >= 0 && (axes & (1 << axis))) {
+            if (nu_input_state->fun_006d4ef0(action, NULL, &axis, NULL, NULL) && axis >= 0 && (axes & (1 << axis))) {
                 if (axes & ~(1 << axis)) {
                     return -5;
                 }
@@ -1671,27 +1670,27 @@ extern "C" i32 fun_006d5f20(u32 buttons, u32 axes) {
 }
 
 extern "C" char *PcInputDeviceName(i32 port) {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].name;
+    return nu_input_state->devices[port].name;
 }
 
 extern "C" void PcInputSuppressKeyOne(i32 value) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->suppress_key_1 = (u8)value;
+    nu_input_state->suppress_key_1 = (u8)value;
 }
 
 extern "C" void PcInputSetMouseField(i32 value) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->mouse.unknown_58 = value;
+    nu_input_state->mouse.unknown_58 = value;
 }
 
 extern "C" void PcInputSetCapturedPort(i32 port) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->captured_port = port;
+    nu_input_state->captured_port = port;
 }
 
 extern "C" i32 PcInputCapturedPort() {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->captured_port;
+    return nu_input_state->captured_port;
 }
 
 extern "C" void PcInputSetBlockedKeys(const char *keys) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     runtime->blocked_keys[0] = 0;
     if (keys != NULL) {
         NuStrCpy(runtime->blocked_keys, keys);
@@ -1699,7 +1698,7 @@ extern "C" void PcInputSetBlockedKeys(const char *keys) {
 }
 
 extern "C" i32 fun_006d6760(void) {
-    PC_INPUT_RUNTIME *state = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *state = nu_input_state;
     i32 i;
     for (i = 0; i <= 3; ++i) {
         if (state->devices[i].kind == PC_INPUT_DEVICE_XINPUT && state->devices[i].unknown_29 != 0) {
@@ -1745,20 +1744,20 @@ i32 PC_INPUT_RUNTIME::fun_006d38b0(PC_INPUT_CONFIG *config) {
 }
 
 extern "C" i32 PcInputHashAuxiliaryBindings() {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->HashAuxiliaryBindings();
+    return nu_input_state->HashAuxiliaryBindings();
 }
 
 extern "C" void PcInputInstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key, i32 auxiliary, i32 bank) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->InstallConfig(config, port, key, auxiliary, bank);
+    nu_input_state->InstallConfig(config, port, key, auxiliary, bank);
 }
 
 extern "C" i32 PcInputBindingPresent(i32 port, i32 action, i32 auxiliary, i32 bank) {
-    return auxiliary ? ((PC_INPUT_RUNTIME *)nu_input_state)->auxiliary_bindings[bank][action].kind != PC_BINDING_NONE
-                     : ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].bindings[action].kind != PC_BINDING_NONE;
+    return auxiliary ? nu_input_state->auxiliary_bindings[bank][action].kind != PC_BINDING_NONE
+                     : nu_input_state->devices[port].bindings[action].kind != PC_BINDING_NONE;
 }
 
 extern "C" PC_INPUT_CONFIG *PcInputFindConfig(u8 mask, i32 port, i32 key) {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->FindConfig(mask, port, key);
+    return nu_input_state->FindConfig(mask, port, key);
 }
 
 i32 PC_INPUT_RUNTIME::BindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 value) {
@@ -1808,7 +1807,7 @@ i32 PC_INPUT_RUNTIME::BindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 v
 }
 
 extern "C" i32 PcInputBindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 value) {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->BindingAvailable(bank, bank_count, kind, value);
+    return nu_input_state->BindingAvailable(bank, bank_count, kind, value);
 }
 
 void PC_INPUT_RUNTIME::ClearOtherBankConflicts(i32 bank, i32 bank_count) {
@@ -1840,11 +1839,11 @@ void PC_INPUT_RUNTIME::ClearOtherBankConflicts(i32 bank, i32 bank_count) {
 }
 
 extern "C" void PcInputClearOtherBankConflicts(i32 bank, i32 bank_count) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->ClearOtherBankConflicts(bank, bank_count);
+    nu_input_state->ClearOtherBankConflicts(bank, bank_count);
 }
 
 extern "C" i32 PcInputResolveAuxiliaryConflicts(i32 bank, i32 bank_count) {
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->ResolveAuxiliaryConflicts(bank, bank_count);
+    return nu_input_state->ResolveAuxiliaryConflicts(bank, bank_count);
 }
 
 void PC_INPUT_RUNTIME::InitializeDefaultRecords() {
@@ -1883,11 +1882,11 @@ extern "C" i32 PcInputAlternateDeadzone(i32 port) {
     if ((u32)(port - 10) > 3) {
         return 0;
     }
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].alternate_deadzone;
+    return nu_input_state->devices[port].alternate_deadzone;
 }
 
 extern "C" void PcInputSetDeadzone(i32 port, i32 value) {
-    PC_INPUT_DEVICE *device = &((PC_INPUT_RUNTIME *)nu_input_state)->devices[port];
+    PC_INPUT_DEVICE *device = &nu_input_state->devices[port];
     if ((u32)(port - 10) > 3) {
         device->deadzone = value;
     } else {
@@ -1896,7 +1895,7 @@ extern "C" void PcInputSetDeadzone(i32 port, i32 value) {
 }
 
 extern "C" void PcInputSetAlternateDeadzone(i32 port, i32 value) {
-    PC_INPUT_DEVICE *device = &((PC_INPUT_RUNTIME *)nu_input_state)->devices[port];
+    PC_INPUT_DEVICE *device = &nu_input_state->devices[port];
     if ((u32)(port - 10) <= 3) {
         device->alternate_deadzone = value;
     } else {
@@ -1905,7 +1904,7 @@ extern "C" void PcInputSetAlternateDeadzone(i32 port, i32 value) {
 }
 
 extern "C" void NuPadSetMotorsPS(i32 port, i32 motor0, i32 motor1) {
-    PC_INPUT_DEVICE *device = &((PC_INPUT_RUNTIME *)nu_input_state)->devices[port];
+    PC_INPUT_DEVICE *device = &nu_input_state->devices[port];
     if (port >= 0 && port < 4) {
         XINPUT_VIBRATION vibration;
         vibration.wLeftMotorSpeed = device->left_trigger * motor1 / 256;
@@ -2037,11 +2036,11 @@ void PC_INPUT_RUNTIME::AssignBinding(i32 action, i32 port, i32 kind, i32 value, 
 }
 
 extern "C" void PcInputAssignBinding(i32 action, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
+    nu_input_state->AssignBinding(action, port, kind, value, unused, auxiliary, bank, excluded);
 }
 
 extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     i32 command_button;
     for (i32 action = 0; action < 32; ++action) {
         runtime->fun_006d4ef0(action, NULL, NULL, &command_button, NULL);
@@ -2053,7 +2052,7 @@ extern "C" void fun_006d9250(i32 button, i32 port, i32 kind, i32 value, i32 unus
 }
 
 extern "C" void fun_006d92c0(i32 axis, i32 active, i32 port, i32 kind, i32 value, i32 unused, i32 auxiliary, i32 bank, u32 excluded) {
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     i32 command_active;
     i32 command_axis;
     for (i32 action = 0; action < 32; ++action) {
@@ -2194,7 +2193,7 @@ void PC_INPUT_RUNTIME::fun_006d3980(i32) {
 
 extern "C" void PcInputStageAuxiliaryConfig(i32 port, i32 bank, i32 key) {
     PC_INPUT_CONFIG config;
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     runtime->ExportConfig(port, &config, 1, bank, key);
     runtime->PromoteConfig(runtime->primary, 64, &config);
 }
@@ -2349,7 +2348,7 @@ void PC_INPUT_RUNTIME::SaveConfiguration() {
 }
 
 extern "C" void PcInputSaveConfiguration() {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->SaveConfiguration();
+    nu_input_state->SaveConfiguration();
 }
 
 u8 PcInputAxisRemap[16] = {0};

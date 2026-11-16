@@ -825,7 +825,7 @@ void NuKeyboardOwner::Setup(HWND window, HINSTANCE instance) {
         mouse_axes = 0;
         mouse_buttons = 0;
     }
-    nu_input_state = (NuKeyboardState *)new PC_INPUT_RUNTIME;
+    nu_input_state = new PC_INPUT_RUNTIME;
     PcInput_EnableKeyboards(NULL, 0);
     device_count = 0;
     PcXInputDeviceCount = 0;
@@ -958,7 +958,7 @@ extern "C" void NuPadInitPS(FRAME_SCANNED_PAD *pad) {
 }
 
 extern "C" i32 fun_006d60f0(void) {
-    return nu_input_state->unknown_5d29;
+    return nu_input_state->devices[10].alternate_deadzone;
 }
 
 extern "C" void fun_006d6100(i32 value) {
@@ -967,7 +967,7 @@ extern "C" void fun_006d6100(i32 value) {
     } else if (value > 10) {
         value = 10;
     }
-    nu_input_state->unknown_5d29 = value;
+    nu_input_state->devices[10].alternate_deadzone = value;
 }
 
 extern "C" void fun_006d6140(void) {
@@ -1865,9 +1865,9 @@ static f32 PCInputFabs(f32 f) {
 
 /* Eases the smoothed mouse axis towards the latest delta and returns it scaled, with a small dead zone. */
 extern "C" f32 NuMouseSmoothAxis(i32 axis) {
-    f32 value = nu_input_state->mouse_delta[axis] - nu_input_state->mouse_smoothed[axis];
-    value = value * 0.125 + nu_input_state->mouse_smoothed[axis];
-    nu_input_state->mouse_smoothed[axis] = value;
+    f32 value = nu_input_state->mouse.delta[axis] - nu_input_state->mouse.smoothed[axis];
+    value = value * 0.125 + nu_input_state->mouse.smoothed[axis];
+    nu_input_state->mouse.smoothed[axis] = value;
     value = value * 4.0;
     if (PCInputFabs(value) < 0.01f) {
         value = 0.0f;
@@ -1884,27 +1884,27 @@ extern "C" f32 NuMouseReadYRel(void) {
 }
 
 extern "C" f32 NuMouseReadZRel(void) {
-    return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+    return (f32)(nu_input_state->mouse.delta[2] * -4.0);
 }
 
 extern "C" f32 NuMouseReadXVel(void) {
-    return (f32)(nu_input_state->mouse_delta[0] * -4.0);
+    return (f32)(nu_input_state->mouse.delta[0] * -4.0);
 }
 
 extern "C" f32 NuMouseReadYVel(void) {
-    return (f32)(nu_input_state->mouse_delta[1] * -4.0);
+    return (f32)(nu_input_state->mouse.delta[1] * -4.0);
 }
 
 extern "C" f32 NuMouseReadZVel(void) {
-    return (f32)(nu_input_state->mouse_delta[2] * -4.0);
+    return (f32)(nu_input_state->mouse.delta[2] * -4.0);
 }
 
 extern "C" f32 fun_006d5c50(void) {
-    return nu_input_state->cursor_x;
+    return nu_input_state->mouse.position[0];
 }
 
 extern "C" f32 fun_006d5c60(void) {
-    return nu_input_state->cursor_y;
+    return nu_input_state->mouse.position[1];
 }
 
 extern "C" void fun_006d5c70(f32 threshold, i32 motion, f32 ramp) {

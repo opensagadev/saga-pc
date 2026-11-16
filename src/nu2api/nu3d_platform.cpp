@@ -136,7 +136,7 @@ static u32 NuDebrisCurrentVertexCount = 0;
 static u32 NuDebrisVertexBufferSize = 0;
 extern "C" {
     u32 NuDebrisMaxVertexCount = 0;
-    void *NuDebrisVertexData = 0;
+    NULGTVERTEX *NuDebrisVertexData = 0;
 }
 
 static f32 Nu3dPcIncludesVuVecLengthSq(const VuVec &v) {
@@ -4388,7 +4388,7 @@ extern "C" {
         for (index = 0; index != 4; ++index) {
             PCDeviceCreateVertexBuffer(NuDebrisVertexBufferSize, 0x208, 0, 0, &NuDebrisVertexBuffers[index]);
         }
-        PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
+        PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, (void **)&NuDebrisVertexData, 0x2000,
                                  NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
     }
 
@@ -4432,7 +4432,7 @@ extern "C" {
         if (NuDebrisUseSystemMemory != 0) {
             NuDebrisVertexData = NuDebrisSystemBuffers[NuDebrisCurrentBufferIndex];
         } else {
-            PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
+            PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, (void **)&NuDebrisVertexData, 0x2000,
                                      NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
         }
         return 1;
@@ -4444,7 +4444,7 @@ extern "C" {
             return;
         }
         if (packet->use_system_buffer != 0) {
-            const void *vertices = (const u8 *)NuDebrisSystemBuffers[packet->buffer_index] + packet->first_vertex * 24u;
+            const void *vertices = NuDebrisSystemBuffers[packet->buffer_index] + packet->first_vertex;
             PCDeviceDrawPrimitiveUPPc(4, packet->vertex_count / 3u, vertices, 24);
         } else {
             PCDeviceSetStreamSource(0, NuDebrisVertexBuffers[packet->buffer_index], 0, 24);
@@ -6231,7 +6231,7 @@ extern "C" {
         NuDebrisMaxVertexCount = NuDebrisIdealDynamicVBSize / 24u;
         NuDebrisVertexBufferSize = NuDebrisMaxVertexCount * 24u;
         for (index = 0; index != 8; ++index) {
-            NuDebrisSystemBuffers[index] = buffer->void_ptr;
+            NuDebrisSystemBuffers[index] = (NULGTVERTEX *)buffer->void_ptr;
             buffer->addr += NuDebrisVertexBufferSize;
         }
         debris_InitializeD3D();
@@ -7088,30 +7088,30 @@ extern "C" {
                 }
                 colour = first->colour;
                 index = NuDebrisCurrentVertexCount + emitted;
-                *(NUVEC *)&((NULGTVERTEX *)NuDebrisVertexData)[index].x = corners[0];
-                ((NULGTVERTEX *)NuDebrisVertexData)[index].colour = colour;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index].u = u0;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index].v = v1;
-                *(NUVEC *)&((NULGTVERTEX *)NuDebrisVertexData)[index + 1].x = corners[2];
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 1].colour = colour;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 1].u = u1;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 1].v = v1;
-                *(NUVEC *)&((NULGTVERTEX *)NuDebrisVertexData)[index + 2].x = corners[1];
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 2].colour = colour;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 2].u = u1;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 2].v = v0;
-                *(NUVEC *)&((NULGTVERTEX *)NuDebrisVertexData)[index + 3].x = corners[0];
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 3].colour = colour;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 3].u = u0;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 3].v = v1;
-                *(NUVEC *)&((NULGTVERTEX *)NuDebrisVertexData)[index + 4].x = corners[1];
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 4].colour = colour;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 4].u = u1;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 4].v = v0;
-                *(NUVEC *)&((NULGTVERTEX *)NuDebrisVertexData)[index + 5].x = corners[3];
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 5].colour = colour;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 5].u = u0;
-                ((NULGTVERTEX *)NuDebrisVertexData)[index + 5].v = v0;
+                *(NUVEC *)&NuDebrisVertexData[index].x = corners[0];
+                NuDebrisVertexData[index].colour = colour;
+                NuDebrisVertexData[index].u = u0;
+                NuDebrisVertexData[index].v = v1;
+                *(NUVEC *)&NuDebrisVertexData[index + 1].x = corners[2];
+                NuDebrisVertexData[index + 1].colour = colour;
+                NuDebrisVertexData[index + 1].u = u1;
+                NuDebrisVertexData[index + 1].v = v1;
+                *(NUVEC *)&NuDebrisVertexData[index + 2].x = corners[1];
+                NuDebrisVertexData[index + 2].colour = colour;
+                NuDebrisVertexData[index + 2].u = u1;
+                NuDebrisVertexData[index + 2].v = v0;
+                *(NUVEC *)&NuDebrisVertexData[index + 3].x = corners[0];
+                NuDebrisVertexData[index + 3].colour = colour;
+                NuDebrisVertexData[index + 3].u = u0;
+                NuDebrisVertexData[index + 3].v = v1;
+                *(NUVEC *)&NuDebrisVertexData[index + 4].x = corners[1];
+                NuDebrisVertexData[index + 4].colour = colour;
+                NuDebrisVertexData[index + 4].u = u1;
+                NuDebrisVertexData[index + 4].v = v0;
+                *(NUVEC *)&NuDebrisVertexData[index + 5].x = corners[3];
+                NuDebrisVertexData[index + 5].colour = colour;
+                NuDebrisVertexData[index + 5].u = u0;
+                NuDebrisVertexData[index + 5].v = v0;
                 emitted += 6;
             }
         }
@@ -7214,7 +7214,7 @@ extern "C" {
             packet->vertex_count = 0;
             NuDebrisCurrentPacket = packet;
             if (NuDebrisVertexData == NULL) {
-                PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, &NuDebrisVertexData, 0x2000,
+                PCDeviceLockVertexBuffer(0, NuDebrisVertexBufferSize, (void **)&NuDebrisVertexData, 0x2000,
                                          NuDebrisVertexBuffers[NuDebrisCurrentBufferIndex]);
             }
             AddParticleGroupToDisplayList(NuDebrisCurrentPacket);
@@ -8216,7 +8216,7 @@ extern "C" {
     i32 NuDebrisUseSystemMemory = 0;
     static NUMTX RendererConfigMatrix = {0};
     u32 nuprim_field_ba8 = 0;
-    void *NuDebrisSystemBuffers[8] = {0};
+    NULGTVERTEX *NuDebrisSystemBuffers[8] = {0};
     u32 RenderFrameSceneFlags = 0;
     i32 PCGraphicsRenderTextureBytes = 0;
     static PC_BUFFER_RESOURCE *RendererGeometryVertexBuffer = 0;

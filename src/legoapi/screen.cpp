@@ -108,39 +108,36 @@ extern "C" {
 
 extern "C" void CreateFadeMaterials(void) {
     FadeMtl = NuMtlCreate(1);
-    ((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes |= 0xc000;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes & ~0x20u) | 0x10u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes & ~0x10000u) | 0x20000u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes & ~0x200u) | 0x100u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes & ~0x800u) | 0x400u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes |= 0x40000;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl)->attributes & ~0xcu) | 3u;
+    FadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
+    FadeMtl->attribs.filter_mode = 1;
+    FadeMtl->attribs.unknown_2_1_2 = 2;
+    FadeMtl->attribs.unknown_1_1_2 = 1;
+    FadeMtl->attribs.unknown_1_4_8 = 1;
+    FadeMtl->attribs.unknown_2_4 = 1;
+    FadeMtl->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
     NuMtlUpdate(FadeMtl);
 
     FadeMtl2 = NuMtlCreate(1);
-    ((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes |= 0xc000;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes & ~0x20u) | 0x10u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes & ~0x10000u) | 0x20000u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes & ~0x200u) | 0x100u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes & ~0x800u) | 0x400u;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes |= 0x40000;
-    ((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes = (((PERMANENT_MATERIAL_READER *)FadeMtl2)->attributes & ~0xeu) | 1u;
+    FadeMtl2->attribs.z_mode = NUMTL_ZMODE_OFF;
+    FadeMtl2->attribs.filter_mode = 1;
+    FadeMtl2->attribs.unknown_2_1_2 = 2;
+    FadeMtl2->attribs.unknown_1_1_2 = 1;
+    FadeMtl2->attribs.unknown_1_4_8 = 1;
+    FadeMtl2->attribs.unknown_2_4 = 1;
+    FadeMtl2->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(FadeMtl2);
 
     ScreenFadeMtl = NuMtlCreate(1);
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes |= 0xc000;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes & ~0x200u) | 0x100u;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes & ~0x800u) | 0x400u;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes = (((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes & ~0x20u) | 0x10u;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes =
-        (((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes & ~0x10000u) | 0x20000u;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes |= 0x40000;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->opacity = 1.0f;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes = (((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->attributes & ~0xeu) | 1u;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->texture_id = 0;
-    ((PERMANENT_MATERIAL_READER *)ScreenFadeMtl)->sort_priority = 0x7ffe;
+    ScreenFadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
+    ScreenFadeMtl->attribs.unknown_1_1_2 = 1;
+    ScreenFadeMtl->attribs.unknown_1_4_8 = 1;
+    ScreenFadeMtl->attribs.filter_mode = 1;
+    ScreenFadeMtl->attribs.unknown_2_1_2 = 2;
+    ScreenFadeMtl->attribs.unknown_2_4 = 1;
+    ScreenFadeMtl->opacity = 1.0f;
+    ScreenFadeMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
+    ScreenFadeMtl->texture_id = 0;
+    ScreenFadeMtl->unknown_076 = 0x7ffe;
     NuMtlUpdate(ScreenFadeMtl);
 }
 

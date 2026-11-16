@@ -206,26 +206,6 @@ struct nusound_filename_info_s;
 #endif
 #ifdef __cplusplus
 
-class SoundQueueVolumeSink {
-  public:
-    virtual void Slot00(void) = 0;
-    virtual void Slot04(void) = 0;
-    virtual void Slot08(void) = 0;
-    virtual void Slot0c(void) = 0;
-    virtual void Slot10(void) = 0;
-    virtual void Slot14(void) = 0;
-    virtual void Slot18(void) = 0;
-    virtual void Slot1c(void) = 0;
-    virtual void Slot20(void) = 0;
-    virtual void Slot24(void) = 0;
-    virtual void Slot28(void) = 0;
-    virtual void Slot2c(void) = 0;
-    virtual void Slot30(void) = 0;
-    virtual void Slot34(void) = 0;
-    virtual void Slot38(void) = 0;
-    virtual i32 __stdcall SetVolume(i32 volume) = 0;
-};
-
 extern "C" const IID PCSoundBuffer8IID;
 extern "C" DWORD __stdcall PCSoundStreamWorker(void *);
 #endif
@@ -340,7 +320,7 @@ struct SoundQueue {                    // size 0x400
     WAVEFORMATEX wave_format;          // 0x01c
     u8 unknown_02e[2];                 // 0x02e
     PC_DS_BUFFER_DESC_VIEW descriptor; // 0x030
-    SoundQueueVolumeSink *volume_sink; // 0x054
+    IDirectSoundBuffer *volume_sink;   // 0x054
     i32 buffer_seconds;                // 0x058
 
     union { // size 0x8

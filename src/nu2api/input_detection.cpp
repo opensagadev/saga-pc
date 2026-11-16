@@ -38,7 +38,7 @@ void PC_INPUT_RUNTIME::fun_006d3630(f32 threshold, i32 motion, f32 ramp) {
     }
 }
 
-extern "C" NuKeyboardState *fun_006d36c0(void) {
+extern "C" PC_INPUT_RUNTIME *fun_006d36c0(void) {
     return nu_input_state;
 }
 

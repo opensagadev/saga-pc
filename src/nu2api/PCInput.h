@@ -7,20 +7,6 @@
 
 struct FRAME_PAD;
 
-typedef struct NuKeyboardState {              // size 0x68b4
-    u8 unknown_0000_to_4e10[0x4e10];          // 0x0000
-    u8 keyboard_polled;                       // 0x4e10
-    u8 unknown_4e11_to_5d29[0x5d29 - 0x4e11]; // 0x4e11
-    u8 unknown_5d29;                          // 0x5d29
-    u8 unknown_5d2a_to_6314[0x6314 - 0x5d2a]; // 0x5d2a
-    f32 mouse_delta[3];                       // 0x6314
-    f32 mouse_smoothed[3];                    // 0x6320
-    f32 cursor_x;                             // 0x632c
-    f32 cursor_y;                             // 0x6330
-    u8 unknown_6334_to_68b0[0x68b0 - 0x6334]; // 0x6334
-    u8 *keyboard_state;                       // 0x68b0
-} NuKeyboardState;
-
 typedef struct NuKeyboardDevice NuKeyboardDevice;
 typedef struct PC_DI_FACTORY PC_DI_FACTORY;
 
@@ -170,7 +156,7 @@ extern "C" {
     void MenuSetPlatformState(i32 state);
     extern PC_NATIVE_DEBUG_STATE PCNativeWarningDebugState;
     extern NUFILE_DEVICE devices[16];
-    extern NuKeyboardState *nu_input_state;
+    extern struct PC_INPUT_RUNTIME *nu_input_state;
     extern NuKeyboardOwner nu_keyboard_owner;
     extern u8 nu_keyboard_pages[0x200];
     extern u8 nu_keyboard_page_index;
@@ -312,7 +298,7 @@ struct PC_INPUT_MOUSE_RUNTIME { // size 0x5c
     i16 previous[3];            // 0x06
     f32 accumulated[3];         // 0x0c
     f32 delta[3];               // 0x18
-    u8 unknown_24[12];          // 0x24
+    f32 smoothed[3];            // 0x24
     f32 position[2];            // 0x30
     u8 buttons[16];             // 0x38
     u8 unknown_48;              // 0x48
