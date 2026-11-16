@@ -345,7 +345,7 @@ void fun_005d4740(f32 speed, f32 scale) {
     global_windscale = scale;
 }
 
-u32 fun_005d4760(void) {
+u32 NuRndrGetWindFrameCount(void) {
     return PCWindFrameCount;
 }
 
@@ -493,7 +493,7 @@ void fun_005d5250(i32 value) {
     dat_0080b6e4 = value;
 }
 
-void fun_005d5260(f32 offset) {
+void NuRndrSetSamplerBiasOffset(f32 offset) {
     PCShaderMaterialSamplerBiasOffset = offset;
 }
 

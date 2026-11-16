@@ -24,11 +24,11 @@ class NuMainFilterGen : public NuPostFilter { // size 0x128
     void preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE *color, GRAPHICS_RENDER_TEXTURE *normal);
     void preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE *depth);
     void fun_005c2310(i32 filter, bool enable);
-    bool fun_005c2360(i32 filter);
+    bool isFilterEnabled(i32 filter);
     void fun_005c2370(const NU_POST_DOF_PARAMETERS *parameters);
-    void fun_005c23a0(const NU_POST_BLOOM_PARAMETERS *parameters);
+    void setBloomParameters(const NU_POST_BLOOM_PARAMETERS *parameters);
     void fun_005c23b0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff);
-    void fun_005c2400(i32 frames, f32 blend, f32 mode);
+    void setAccumulationParameters(i32 frames, f32 blend, f32 mode);
     POST_SHADER_PROGRAM *programs[18];           // 0x00c
     GRAPHICS_RENDER_TEXTURE *blur_texture;       // 0x054
     PC_FRAMEBUFFER *blur_fbo;                    // 0x058

@@ -23,7 +23,7 @@ class NuPostFilterGen { // size 0xc
     virtual void resetAll();
     virtual bool isEnabled();
     virtual PC_FRAMEBUFFER *getInputFbo();
-    void fun_005c22b0();
+    void releaseAllResources();
     static void copy(GRAPHICS_RENDER_TEXTURE *, PC_FRAMEBUFFER *);
     static void copy(GRAPHICS_RENDER_TEXTURE *, GRAPHICS_RENDER_TEXTURE *, PC_FRAMEBUFFER *);
     bool enabled;              // 0x4

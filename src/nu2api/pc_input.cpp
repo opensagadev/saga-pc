@@ -1871,7 +1871,7 @@ extern "C" f32 fun_006d5c60(void) {
 }
 
 extern "C" void fun_006d5c70(f32 threshold, i32 motion, f32 ramp) {
-    nu_input_state->fun_006d3630(threshold, motion, ramp);
+    nu_input_state->SetThresholds(threshold, motion, ramp);
 }
 
 extern "C" i32 fun_006d5ca0(i32 device, i32 binding, i32 auxiliary, i32 auxiliary_port) {

@@ -6,27 +6,27 @@
 extern "C" void fun_006d3560(void) {
 }
 
-void PC_INPUT_RUNTIME::fun_006d35d0(u8 value) {
+void PC_INPUT_RUNTIME::SetSuppressKey(u8 value) {
     suppress_key_1 = value;
 }
 
-void PC_INPUT_RUNTIME::fun_006d35e0(i32 port, u8 value) {
+void PC_INPUT_RUNTIME::SetActionKeysActive(i32 port, u8 value) {
     devices[port].action_keys_active = value;
 }
 
-void PC_INPUT_RUNTIME::fun_006d3600(i32 port) {
+void PC_INPUT_RUNTIME::SetCapturedPort(i32 port) {
     captured_port = port;
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d3610() {
+i32 PC_INPUT_RUNTIME::GetCapturedPort() {
     return captured_port;
 }
 
-void PC_INPUT_RUNTIME::fun_006d3620() {
+void PC_INPUT_RUNTIME::ResetShutdownState() {
     shutdown_state = 0;
 }
 
-void PC_INPUT_RUNTIME::fun_006d3630(f32 threshold, i32 motion, f32 ramp) {
+void PC_INPUT_RUNTIME::SetThresholds(f32 threshold, i32 motion, f32 ramp) {
     if (threshold >= 0.0f && threshold <= 1.0f) {
         axis_threshold = threshold * 32767.0;
     }
@@ -38,7 +38,7 @@ void PC_INPUT_RUNTIME::fun_006d3630(f32 threshold, i32 motion, f32 ramp) {
     }
 }
 
-extern "C" PC_INPUT_RUNTIME *fun_006d36c0(void) {
+extern "C" PC_INPUT_RUNTIME *PcInputGetRuntime(void) {
     return nu_input_state;
 }
 
@@ -51,7 +51,7 @@ void PC_INPUT_RUNTIME::fun_006d36d0() {
     }
 }
 
-void PC_INPUT_RUNTIME::fun_006d3710(i32 port, i32 *buttons, i32 *axes, i32 *povs) {
+void PC_INPUT_RUNTIME::GetDeviceCounts(i32 port, i32 *buttons, i32 *axes, i32 *povs) {
     *buttons = devices[port].button_count;
     *axes = devices[port].axis_count;
     *povs = devices[port].pov_count;

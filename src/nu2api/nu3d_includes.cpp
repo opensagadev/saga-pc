@@ -4604,7 +4604,7 @@ extern "C" {
         }
     }
 
-    u32 fun_005d08e0(void) {
+    u32 NuQFntGetMode(void) {
         return NuQFntMode;
     }
 
@@ -4797,7 +4797,7 @@ extern "C" {
         NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
     }
 
-    void fun_005c1fe0(f32 u, f32 v) {
+    void NuPrimSetUV(f32 u, f32 v) {
         NULGTVERTEX *vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = u;
         vertex->v = v;
@@ -4989,11 +4989,11 @@ extern "C" {
         nuqfnt_space_width = width;
     }
 
-    f32 fun_005d0920(void) {
+    f32 NuQFntGetLengthScale(void) {
         return qfnt_len_scale;
     }
 
-    f32 fun_005d0930(void) {
+    f32 NuQFntGetHeightScale(void) {
         return qfnt_height_scale;
     }
 
@@ -6994,7 +6994,7 @@ extern "C" {
         scene->portal_depth = depth;
     }
 
-    u16 fun_005d9290(NUGSCN *scene) {
+    u16 NuPortalGetRoomCount(NUGSCN *scene) {
         return scene != NULL ? scene->num_rooms : 0;
     }
 
@@ -7061,11 +7061,11 @@ extern "C" {
         return 0;
     }
 
-    void fun_005da450(i32 enabled) {
+    void NuPortalSetDebugEnabled(i32 enabled) {
         NuPortalDebugEnabled = enabled;
     }
 
-    void fun_005da460(NUVEC *camera) {
+    void NuPortalSetOverrideCamera(NUVEC *camera) {
         NuPortalOverrideCamera = camera;
     }
 
@@ -11196,7 +11196,7 @@ extern "C" VirtualStackAllocator NuPostFilterAllocator;
 extern "C" NuCopyFilter *NuPostCopyFilter;
 extern "C" u32 NuPostShaderEngineFlags;
 
-GRAPHICS_RENDER_TEXTURE *PC_DEVICE_BACKEND::fun_005c2190(u16 index) {
+GRAPHICS_RENDER_TEXTURE *PC_DEVICE_BACKEND::GetTargetTexture(u16 index) {
     return textures[index];
 }
 
@@ -11207,16 +11207,16 @@ void PC_POST_BUFFER_PROXY::fun_005c21c0(GRAPHICS_RENDER_TEXTURE *texture, i32 ki
     this->resolved = resolved;
 }
 
-u8 PC_POST_BUFFER_PROXY::fun_005c21e0() {
+u8 PC_POST_BUFFER_PROXY::IsResolved() {
     return resolved;
 }
 
-void PC_POST_BUFFER_PROXY::fun_005c21f0() {
+void PC_POST_BUFFER_PROXY::Resolve() {
     PCGraphicsFramebufferBarrier(kind, enabled);
     resolved = 1;
 }
 
-GRAPHICS_RENDER_TEXTURE *PC_POST_BUFFER_PROXY::fun_005c2210() {
+GRAPHICS_RENDER_TEXTURE *PC_POST_BUFFER_PROXY::GetBufferTexture() {
     return texture;
 }
 
@@ -11290,7 +11290,7 @@ extern "C" {
         }
     }
 
-    void fun_005c27d0(void) {
+    void NuDisplayHandlerResetShaderCache(void) {
         NuDisplayHandlerVertexShaderCache = NULL;
         NuDisplayHandlerPixelShaderCache = NULL;
     }
@@ -11545,7 +11545,7 @@ void NuPostFilterGen::destroyResources() {
     input_fbo = NULL;
 }
 
-void NuPostFilterGen::fun_005c22b0() {
+void NuPostFilterGen::releaseAllResources() {
     destroyTextureResources();
     destroyResources();
 }
@@ -11567,7 +11567,7 @@ void NuMainFilterGen::fun_005c2310(i32 filter, bool enable) {
     }
 }
 
-bool NuMainFilterGen::fun_005c2360(i32 filter) {
+bool NuMainFilterGen::isFilterEnabled(i32 filter) {
     bool *flags = &dof_enabled;
     return flags[filter];
 }
@@ -11580,7 +11580,7 @@ void NuMainFilterGen::fun_005c2370(const NU_POST_DOF_PARAMETERS *parameters) {
     dof_mode = parameters->mode;
 }
 
-void NuMainFilterGen::fun_005c23a0(const NU_POST_BLOOM_PARAMETERS *parameters) {
+void NuMainFilterGen::setBloomParameters(const NU_POST_BLOOM_PARAMETERS *parameters) {
     bloom = parameters;
 }
 
@@ -11592,13 +11592,13 @@ void NuMainFilterGen::fun_005c23b0(const NUMTX *previous, const NUMTX *current, 
     motion_falloff = falloff;
 }
 
-void NuMainFilterGen::fun_005c2400(i32 frames, f32 blend, f32 mode) {
+void NuMainFilterGen::setAccumulationParameters(i32 frames, f32 blend, f32 mode) {
     accumulation_blend = blend;
     accumulation_frames = frames;
     accumulation_weight_exponent = mode;
 }
 
-extern "C" i32 fun_005c2470(void) {
+extern "C" i32 PCDeviceGetVertexProcessing(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
@@ -13747,7 +13747,7 @@ extern "C" {
         return 0;
     }
 
-    NUTEXDIM **fun_005e52c0(void) {
+    NUTEXDIM **NuTexGetDimensionTable(void) {
         return NuTextureDimensions;
     }
 
@@ -15610,7 +15610,7 @@ extern "C" {
     void PCSpecialEmptyHandler(...) {
     }
 
-    i32 fun_005c1350(void) {
+    i32 NuRndrIsScreenGrabbing(void) {
         return NuRndrDoingScreenGrab;
     }
 
@@ -16254,7 +16254,7 @@ extern "C" {
         }
     }
 
-    void fun_005da970(u8 track_root) {
+    void NuCutSceneSetBoundsTrackRoot(u8 track_root) {
         CutSceneBoundingBoxTrackRoot = track_root;
     }
 

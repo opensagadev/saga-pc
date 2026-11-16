@@ -1297,9 +1297,9 @@ typedef struct PC_POST_BUFFER_PROXY { // size 0xc
     u8 unknown_0a[2];                 // 0xa
 #ifdef __cplusplus
     void fun_005c21c0(GRAPHICS_RENDER_TEXTURE *texture, i32 kind, u8 enabled, u8 resolved);
-    u8 fun_005c21e0();
-    void fun_005c21f0();
-    GRAPHICS_RENDER_TEXTURE *fun_005c2210();
+    u8 IsResolved();
+    void Resolve();
+    GRAPHICS_RENDER_TEXTURE *GetBufferTexture();
 #endif
 } PC_POST_BUFFER_PROXY;
 
@@ -1494,8 +1494,8 @@ extern "C" {
     u8 NuAnimSetForceEulerToQuat(u8 force);
     extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectAuxTexture;
     extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
-    f32 fun_005d0920(void);
-    f32 fun_005d0930(void);
+    f32 NuQFntGetLengthScale(void);
+    f32 NuQFntGetHeightScale(void);
     void NuMtlAnimateSetMask(i32 mask);
     void NuMtlAnimateSetSpeedScale(f32 scale);
     void SetSpotLightMode(void);

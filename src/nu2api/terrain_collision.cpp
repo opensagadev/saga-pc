@@ -2511,6 +2511,6 @@ extern "C" void FullReflect(NUVEC *normal, NUVEC *movement, NUVEC *result) {
     result->z = normal->z * reflection * 2.0 + movement->z;
 }
 
-extern "C" void fun_006786e0(f32 value) {
+extern "C" void TerrainSetWallOver(f32 value) {
     wallover = value;
 }
