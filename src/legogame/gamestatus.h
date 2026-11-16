@@ -75,23 +75,6 @@ typedef struct KAMINO_SHIP_ZERO_ANGLES {
     i32 yaw;
 } KAMINO_SHIP_ZERO_ANGLES;
 
-typedef struct SHOP_SAVE_VIEW {
-    u8 unknown_0000[0x7bd4];
-    u32 hint_purchased_bits[3];
-    u32 character_purchased_bits[4];
-    u32 extra_unlocked_bits[2];
-    u32 gold_brick_purchased_bits[2];
-    u32 extra_purchased_bits[2];
-    u8 unknown_7c08[0x15];
-    u8 bolt_unlocked;
-} SHOP_SAVE_VIEW;
-
-typedef struct TAG_CHARACTER_DATA_READER {
-    u8 opaque_00[0x42];
-    i16 icon_model;
-    u8 opaque_44[8];
-} TAG_CHARACTER_DATA_READER;
-
 typedef struct kaminoc_packet_s {
     i16 off_mask;
     i16 pending_mask;
@@ -107,8 +90,3 @@ typedef struct {                   // size 0x8
     BOMB_PROGRESS_RECORD *records; // 0x0
     u16 count;                     // 0x4
 } BOMB_PROGRESS_SYSTEM;
-
-typedef struct {                    // size 0x8
-    i32 count;                      // 0x0
-    PANEL_PROGRESS_RECORD *records; // 0x4
-} PANEL_PROGRESS_SYSTEM;

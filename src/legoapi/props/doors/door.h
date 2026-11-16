@@ -7,7 +7,7 @@
 #include "nu2api/numath/nuplane.h"
 #include "nu2api/numath/nuvec.h"
 
-struct game_door_callback_s;
+struct DOOR_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,7 +63,7 @@ extern "C" {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_s *door);
+    extern void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct DOOR_s *door);
 #ifdef __cplusplus
 }
 #endif

@@ -47,7 +47,7 @@ void StartJump(GAMEOBJECT *object, i32 movement_state) {
         }
     }
     object->ground_flags = 0;
-    object->unknown_1050 = 0;
+    object->terrain_contact_mask = 0;
     object->velocity.y = object->character_data->game_character->jump_speed;
     object->player.flags_e20 |= 0x100000;
     object->player.delayed_turn_timer = 0.0f;
@@ -56,7 +56,7 @@ void StartJump(GAMEOBJECT *object, i32 movement_state) {
     ResetAnimPacket(&object->anim_packet, -1);
     object->pitch_angle = 0;
     object->roll_angle = 0;
-    object->flags_107a = 2;
+    object->movement_mode = 2;
 }
 
 void MakeJumpReachHeight(GAMEOBJECT *object, f32 height, i32 force) {
@@ -874,7 +874,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 }
                 object->player.flags_e20 |= 0x100000;
                 object->ground_flags = 0;
-                object->unknown_1050 = 0;
+                object->terrain_contact_mask = 0;
                 object->player.delayed_turn_timer = 0.0f;
                 if ((animation_set & 4) != 0) {
                     object->player.jump_variant_timer = object->character_data->game_character->jump_hold_duration;

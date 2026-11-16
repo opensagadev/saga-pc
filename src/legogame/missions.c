@@ -260,8 +260,8 @@ void CheckMissionEnd(MISSIONSYS *system) {
     GAMEOBJECT *candidate;
     u64 mask;
     i32 index;
-    target = FindGameObject(((MISSION_END_DATA_VIEW *)system->active_mission)->find_character, 0, 0, 1, 0);
-    if (((MISSION_END_SYSTEM_VIEW *)system)->elapsed_time < 3.0f) {
+    target = FindGameObject(system->active_mission->find_character, 0, 0, 1, 0);
+    if (system->timer.time_elapsed < 3.0f) {
         return;
     }
     if (GetMenuID() == MENU_END_MISSION) {

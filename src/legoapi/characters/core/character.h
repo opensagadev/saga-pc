@@ -438,7 +438,9 @@ extern "C" {
 #define CHARVARIANT_HOVERDROID 17
 #define CHARVARIANT_CRITTER 18
 #define CHARVARIANT_NABOOSTARFIGHTER 19
-#define CHARVARIANT_HENCHMAN 20
+#define CHARVARIANT_POD 20
+#define CHARVARIANT_REPUBLICGUNSHIP 21
+#define CHARVARIANT_HENCHMAN 22
     i32 CharVariant_Find(char *);
     void CharVariants_Init(char **, i32);
     void IconScenes_Init(char *, VARIPTR *, VARIPTR *);

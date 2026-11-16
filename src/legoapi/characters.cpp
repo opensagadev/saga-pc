@@ -110,12 +110,12 @@ extern "C" CHARACTERDATA *CDataFromName(const char *name) {
 
 // Character subsystem callback.
 i32 RedirectAnim(char *directory, void *list, CHARACTERANIM_CONFIG *animation, char *output_path) {
-    const ANIM_REDIRECT_VIEW *redirect;
+    const ANIM_REDIRECT *redirect;
     const char *name;
     if (list == NULL) {
         return 0;
     }
-    for (redirect = (const ANIM_REDIRECT_VIEW *)list; (name = redirect->name) != NULL; ++redirect) {
+    for (redirect = (const ANIM_REDIRECT *)list; (name = redirect->name) != NULL; ++redirect) {
         if (redirect->animation_id == animation->action_id && NuStrICmp(name, animation->name) == 0) {
             NuStrCpy(output_path, directory);
             NuStrCat(output_path, animation->name);

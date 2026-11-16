@@ -6,6 +6,7 @@
 #include "gameapi/ai/aisys/aiscript_types.h"
 #include "legoapi/characters/motion/charshadows.h"
 #include "legoapi/items/base/animpacket.h"
+#include "legoapi/items/collect/bolt.h"
 #include "legoapi/props/system/socksys.h"
 #include "legoapi/render/core/rtl.h"
 #include "legoapi/render/fx/edsplines.h"
@@ -15,7 +16,7 @@
 
 struct AIPATHCNX;
 struct AIPATHNODE;
-struct AITRIGGERSET_PARTIAL;
+struct AITRIGGERSET_s;
 struct GAMEDEBRISENTRY;
 struct GAMEPAD;
 struct PLAYERCHARACTERCONFIG;
@@ -23,7 +24,7 @@ struct SUIT_LAYERS;
 struct TUBE;
 struct ai_helper_slot_s;
 struct apicharactermodellist_s;
-struct blowup_target_s;
+struct GIZMOBLOWUP;
 struct bolt_s;
 struct characterdata_s;
 struct climb_slot_s;
@@ -94,7 +95,13 @@ typedef struct TORPEDOPACKET { // size 0x88
     u32 pickup_flags[5];       // 0x28
     NUVEC pickup_positions[5]; // 0x3c
     NUVEC ricochet_position;   // 0x78
-    void *target;              // 0x84
+
+    union { // size 0x4 by target_type (TORPEDO_TARGET_*)
+        void *target;
+        struct GIZMOBLOWUP *target_blowup;
+        struct GIZTURRET_s *target_turret;
+        struct gizobstacle_s *target_obstacle;
+    }; // 0x84
 } TORPEDOPACKET;
 
 #ifdef __cplusplus
@@ -165,7 +172,15 @@ extern "C" {
 #define APIOBJECT_WEAPON_OUT 0x10000         /* SetWeaponOut/KeepWeaponOut set it, SetWeaponIn clears it */
 
 /* gameobject_s.flags_e20, more runtime bits from their setters. */
-#define APIOBJECT_LAUNCH_ROCKET 0x10            /* set at the JgRocket release frame; GameObjectStuffAfterAnimation fires the rocket part */
+#define APIOBJECT_LAUNCH_ROCKET 0x10      /* set at the JgRocket release frame; GameObjectStuffAfterAnimation fires the rocket part */
+#define APIOBJECT_UPDATE_SKIPPED 0x20     /* the object sits this update out (cleared when its AI update runs) */
+#define APIOBJECT_FORCE_BLOCKED 0x1000000 /* the force was cut off (Dagobah training): no force or weapon until it clears */
+
+/* gameobject_s.ai_flags (flags_ef8_word): the AI script actions that set them. */
+#define APIOBJECT_CAN_MOVE_WHEN_DEACTIVATED 0x1 /* Action_CanMoveWhenDeactivated */
+#define APIOBJECT_DONT_ATTACK 0x2               /* Action_DontAttack */
+#define APIOBJECT_TRENCH_BADDIE 0x4             /* the Death Star trench run's spawned ships */
+#define APIOBJECT_PLAYER_SPEEDER_HACK 0x8       /* Action_PlayerSpeederHack */
 #define APIOBJECT_COMBO_IN_TIME 0x40            /* sabre combo: no mistimed press yet, the next hit takes the special branch */
 #define APIOBJECT_DETONATOR_WAIT_RELEASE 0x8000 /* Detonator_MoveCode ignores the held special button until it is released */
 #define APIOBJECT_SHOT_FIRED 0x40000            /* the shot of the current shoot animation has been fired */
@@ -509,7 +524,7 @@ struct AIPACKET { // size 0x20c
             NUVEC script_action_position;            // 0x078
             AIPATHINFO script_destination_path_info; // 0x084
             f32 action_timer;                        // 0x09c
-            u8 unknown_a0[0x4];                      // 0x0a0
+            void *area;                              // 0x0a0 (the creature's area)
             struct AILOCATOR *locator;               // 0x0a4
             struct AILOCATORSET *locator_set;        // 0x0a8
             u8 unknown_ac[0x4];                      // 0x0ac
@@ -831,7 +846,7 @@ typedef struct apicharacterdata_s {               // size 0x4c
     f32 field17_0x3c;                             // 0x3c
     u8 flags;                                     // 0x40
     u8 field19_0x41;                              // 0x41
-    i16 field20_0x42;                             // 0x42
+    i16 icon_model;                               // 0x42: the HUD icon of the character
     u32 ai_path_capabilities;                     // 0x44
     u32 field22_0x48;                             // 0x48
 } APICHARACTERDATA;
@@ -898,20 +913,33 @@ typedef struct PLAYERPACKET {        // size 0x788
         f32 velocity; // 0x068
     } suspension[4];  // 0x064
 
-    NUVEC external_force;                  // 0x084
-    NUVEC launch_origin;                   // 0x090
-    NUVEC context_position_offset;         // 0x09c
-    f32 context_animation_timer;           // 0x0a8
-    f32 unknown_770;                       // 0x0ac
-    u8 unknown_774[0x4];                   // 0x0b0
-    f32 context_hover_target_y;            // 0x0b4
-    f32 context_timer;                     // 0x0b8
-    f32 last_countdown_second;             // 0x0bc
-    f32 context_duration;                  // 0x0c0
-    f32 airborne_action_timer;             // 0x0c4
-    f32 jump_start_height;                 // 0x0c8
-    struct gameobject_s *force_target;     // 0x0cc
-    struct blowup_target_s *blowup_target; // 0x0d0
+    union { // size 0x30
+
+        struct {                           // size 0x30
+            NUVEC external_force;          // 0x084
+            NUVEC launch_origin;           // 0x090
+            NUVEC context_position_offset; // 0x09c
+            f32 context_animation_timer;   // 0x0a8
+            f32 unknown_770;               // 0x0ac
+            u8 unknown_774[0x4];           // 0x0b0
+        };
+
+        struct {           // size 0x30
+            NUVEC entry;   // 0x084
+            NUVEC start;   // 0x090
+            NUVEC swing;   // 0x09c
+            NUVEC landing; // 0x0a8
+        } zipup;           /* the zip-up context: the path from where the player grabbed on to the landing */
+    }; // 0x084
+
+    f32 context_hover_target_y;        // 0x0b4
+    f32 context_timer;                 // 0x0b8
+    f32 last_countdown_second;         // 0x0bc
+    f32 context_duration;              // 0x0c0
+    f32 airborne_action_timer;         // 0x0c4
+    f32 jump_start_height;             // 0x0c8
+    struct gameobject_s *force_target; // 0x0cc
+    struct GIZMOBLOWUP *blowup_target; // 0x0d0
 
     union { // size 0x4
         void *grapple;
@@ -919,6 +947,7 @@ typedef struct PLAYERPACKET {        // size 0x788
         struct GIZBUILDIT *buildit;
         struct PART *force_throw_part;
         struct techno_s *techno;
+        struct gizobstacle_s *push_obstacle;
         struct zipup_s *attached_zipup;
         struct TUBE *attached_tube;
         struct GIZMO_LEVER *lever;
@@ -926,8 +955,8 @@ typedef struct PLAYERPACKET {        // size 0x788
         struct security_door_record_s *security_door;
         struct attracto_s *attracto;
         struct SIGNAL_s *signal;
-        struct TELEPORT_MOTION *teleport;
-        struct TIGHTROPE_MOTION *tightrope;
+        struct TELEPORT_CONFIG *teleport;
+        struct TIGHTROPE_s *tightrope;
         struct HATMACHINE *hat_machine;
         struct DETONATOR_s *detonator;
     }; // 0x0d4
@@ -936,6 +965,7 @@ typedef struct PLAYERPACKET {        // size 0x788
 
     union { // size 0x4
         void *panel_request_data;
+        void *net_wait_info; /* the network wait request of a lever, teleport or hat machine */
 
         struct {                 // size 0x4
             u8 unknown_7a0[0x3]; // 0x0dc
@@ -949,7 +979,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     i16 context_animation;        // 0x0e6
     i16 queued_context_animation; // 0x0e8
     u8 combo_branch;              // 0x0ea
-    u8 unknown_07af;              // 0x0eb
+    u8 takeover_turn_direction;   // 0x0eb
     u8 combo_input_latched;       // 0x0ec
 
     union { // size 0x1
@@ -966,7 +996,11 @@ typedef struct PLAYERPACKET {        // size 0x788
     u8 action_movement_state; // 0x0f4
     u8 jump_sequence;         // 0x0f5
     i8 whip_action;           // 0x0f6
-    i8 hit_variant;           // 0x0f7
+
+    union { // size 0x1
+        i8 hit_variant;
+        i8 attacker_slot; /* ObjHitObj: the player index of the last player attacker, -1 for none */
+    }; // 0x0f7
 
     union { // size 0x4
         u32 context_variant_flags;
@@ -976,6 +1010,14 @@ typedef struct PLAYERPACKET {        // size 0x788
             i8 context_variant_bits; // 0x0f9
             u8 jump_flags;           // 0x0fa
             u8 unknown_7bf[0x1];     // 0x0fb
+        };
+
+        struct {                      // size 0x4
+            u32 : 8;                  // 0x0f8:0
+            u32 r2q5_zapped : 1;      // 0x0f8:8 (zapped by R2-Q5 rather than another droid)
+            u32 : 1;                  // 0x0f8:9
+            u32 teleport_reverse : 1; // 0x0f8:10 (APIOBJECT_TELEPORT_REVERSE)
+            u32 : 21;                 // 0x0f8:11
         };
     }; // 0x0f8
 
@@ -996,8 +1038,15 @@ typedef struct PLAYERPACKET {        // size 0x788
 
     MINIANIMPACKET mini_anim_packet; // 0x10c
 
-    i16 *weapon_model_override;                        // 0x130
-    u8 unknown_7f8[0x4];                               // 0x134
+    union { // size 0x8
+        /* A vehicle's weapon and its ammo; the weapon item starts with the model it draws. */
+        WEAPON_AMMO weapon;
+
+        struct {                          // size 0x8
+            i16 *weapon_model_override;   // 0x130
+            u8 weapon_ammo_reserved[0x4]; // 0x134
+        };
+    }; // 0x130
     struct player_coin_packet_s *coin_packet;          // 0x138
     struct player_force_los_slot_s *gizforce_los_info; // 0x13c
     NUMTX locator_matrices[16];                        // 0x140
@@ -1007,11 +1056,6 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 socket_current_speed;                          // 0x588
 
     union { // size 0x24
-        u8 unknown_c50[0x4];
-        f32 unknown_c54;
-        u8 unknown_c58[0x4];
-        f32 head_target_facing;
-        u8 unknown_c60[0x14];
         NUVEC weapon_trail_offset;
 
         struct {                           // size 0x24
@@ -1019,31 +1063,21 @@ typedef struct PLAYERPACKET {        // size 0x788
             NUVEC camera_screen_position;  // 0x598
             NUVEC glow_position;           // 0x5a4
         };
+
+        /* The force push target's attention: where its head turns and for how long. */
+        struct {                            // size 0x24
+            u8 attention_reserved_c50[12];  // 0x58c
+            f32 head_facing;                // 0x598
+            f32 attention_reserved_c60;     // 0x59c
+            f32 attention_timer;            // 0x5a0
+            u8 attention_reserved_c68[0xc]; // 0x5a4
+        };
     }; // 0x58c
 
     NUVEC camera_saved_position; // 0x5b0
 
-    union { // size 0xc
-
-        struct {               // size 0xc
-            void *unknown_c80; // 0x5bc
-            void *unknown_c84; // 0x5c0
-            void *unknown_c88; // 0x5c4
-        };
-
-        NUVEC attack_target_position;
-    }; // 0x5bc
-
-    union { // size 0xc
-
-        struct {             // size 0xc
-            f32 unknown_c8c; // 0x5c8
-            f32 unknown_c90; // 0x5cc
-            f32 unknown_c94; // 0x5d0
-        };
-
-        NUVEC attack_target_velocity;
-    }; // 0x5c8
+    NUVEC attack_target_position; // 0x5bc
+    NUVEC attack_target_velocity; // 0x5c8
 
     NUVEC suspension_normal;              // 0x5d4
     struct GAMEPAD *pad;                  // 0x5e0
@@ -1077,15 +1111,19 @@ typedef struct PLAYERPACKET {        // size 0x788
     i32 unknown_d0c;                         // 0x648
     struct gameobject_s *force_throw_target; // 0x64c
 
-    void *glow_object;                              // 0x650
-    void *glow_pending;                             // 0x654
+    void *glow_object; // 0x650
+
+    union {                                          // size 0x4
+        void *glow_pending;                          /* what glow_pending_kind says it is */
+        struct gameobject_s *glow_pending_character; /* glow_pending_kind 2 */
+    }; // 0x654
     struct gameobject_s *airborne_collision_target; // 0x658
     u32 force_action_target;                        // 0x65c
     f32 ground_contact_grace_timer;                 // 0x660
     f32 jump_reentry_timer;                         // 0x664
     f32 airborne_input_timer;                       // 0x668
-    f32 origin_scale_override;                      // 0x66c
-    f32 timer_d34;                                  // 0x670
+    f32 shield_scale;                               // 0x66c: the shield paraphernalia (1: fully up)
+    f32 shield_timer;                               // 0x670
     f32 communicate_blend;                          // 0x674
     f32 weapon_scale;                               // 0x678
     f32 weapon_scale_rate;                          // 0x67c
@@ -1105,7 +1143,11 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 directional_seek_multiplier;                // 0x6b4
     f32 terrain_origin_floor_offset;                // 0x6b8
 
-    f32 glow_alpha;    // 0x6bc
+    union { // size 0x4
+        f32 glow_alpha;
+        f32 torpedo_target_timer; /* vehicles: the fade of the torpedo target marker */
+    }; // 0x6bc
+
     f32 glow_target;   // 0x6c0
     f32 glow_recovery; // 0x6c4
     f32 glow_radius;   // 0x6c8
@@ -1127,7 +1169,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 pre_reset_hover_height;      // 0x6f4
     f32 field_dbc;                   // 0x6f8
     f32 sabre_contact_sfx_timer;     // 0x6fc
-    f32 unknown_dc4;                 // 0x700
+    f32 platform_push_timer;         // 0x700
     f32 speed_boost;                 // 0x704
     f32 thrust_effect_scale;         // 0x708
     f32 takeover_timer;              // 0x70c
@@ -1158,22 +1200,23 @@ typedef struct PLAYERPACKET {        // size 0x788
     union { // size 0x4
         u32 flags_e20;
 
-        struct {            // size 0x4
-            u8 unknown_e20; // 0x75c
-            u8 unknown_e21; // 0x75d
-            u8 unknown_e22; // 0x75e
-            u8 unknown_e23; // 0x75f
+        struct {             // size 0x4
+            u8 unknown_e20;  // 0x75c
+            u8 unknown_e21;  // 0x75d
+            u8 weapon_flags; // 0x75e: bit 0 the weapon is out (weapon_animation)
+            u8 unknown_e23;  // 0x75f
         };
 
-        struct {                      // size 0x4
-            u32 : 16;                 // 0x75c:0
-            u32 weapon_animation : 1; // 0x75c:16
+        struct {                            // size 0x4
+            u32 : 16;                       // 0x75c:0
+            u32 weapon_animation : 1;       // 0x75c:16
+            u32 : 10;                       // 0x75c:17
+            u32 origin_joint_was_ready : 1; // 0x75c:27
         };
     }; // 0x75c
 
     union { // size 0x4
         u32 flags_e24;
-        u8 unknown_e24;
 
         struct {                                                                            // size 0x4
             u32 : 3;                                                                        // 0x760:0
@@ -1182,22 +1225,27 @@ typedef struct PLAYERPACKET {        // size 0x788
             u32 hit_side : 3; /* 3 = hit from behind, 4 = from the front */                 // 0x760:16
             u32 : 13;                                                                       // 0x760:19
         };
+
+        struct {                      // size 0x4
+            u32 : 3;                  // 0x760:0
+            u32 locators_updated : 1; // 0x760:3 (DrawGameObjects: the drawn model's locators are current)
+        };
     }; // 0x760
 
-    u8 effect_noise[4];    // 0x764
-    u8 glow_kind;          // 0x768
-    u8 glow_pending_kind;  // 0x769
-    u8 unknown_0e2e;       // 0x76a
-    u8 block_latch;        // 0x76b
-    u8 quick_shoot_flags;  // 0x76c
-    u8 unknown_0e31;       // 0x76d
-    u8 jump_variant_state; // 0x76e
-    u8 weapon_draw_state;  // 0x76f
-    u8 sabre_flags;        // 0x770
-    u8 sabre_damage;       // 0x771
-    u8 unknown_0e36;       // 0x772
-    u8 wall_run_state;     // 0x773
-    u8 shield_hitpoints;   // 0x774
+    u8 effect_noise[4];      // 0x764
+    u8 glow_kind;            // 0x768
+    u8 glow_pending_kind;    // 0x769
+    u8 blocked_attack_stage; // 0x76a
+    u8 block_latch;          // 0x76b
+    u8 quick_shoot_flags;    // 0x76c
+    u8 shot_latched;         // 0x76d
+    u8 jump_variant_state;   // 0x76e
+    u8 weapon_draw_state;    // 0x76f
+    u8 sabre_flags;          // 0x770
+    u8 sabre_damage;         // 0x771
+    u8 unknown_0e36;         // 0x772
+    u8 wall_run_state;       // 0x773
+    u8 shield_hitpoints;     // 0x774
 
     union { // size 0x1
         u8 saved_hitpoints;
@@ -1237,7 +1285,7 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x0000
 
-    u8 unknown_004c[4];                      // 0x004c
+    f32 anim_overlay_weight;                 // 0x004c: the weight of anim_packet.overlay_animation
     CHARACTER_MODEL_LAYERS *character_model; // 0x0050
     struct characterdata_s *character_data;  // 0x0054
     u16 facing_angle;                        // 0x0058
@@ -1251,7 +1299,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 scaled_radius;                       // 0x00a4
     f32 origin_scale;                        // 0x00a8
     f32 collision_radius;                    // 0x00ac
-    f32 unknown_b0;                          // 0x00b0
+    f32 collision_half_height;               // 0x00b0: collision_radius scaled by collision_y_scale
     f32 scaled_height;                       // 0x00b4
     NUMTX transform;                         // 0x00b8
     NUMTX draw_secondary_mtx;                // 0x00f8
@@ -1337,7 +1385,7 @@ typedef struct gameobject_s { // size 0x10d8
     i16 supporting_platform_id;                                   // 0x027e
 
     union { // size 0x1
-        u8 unknown_280;
+        u8 player_slot;
         i8 player_index; /* -1 when no player controls the object */
     }; // 0x0280
 
@@ -1386,7 +1434,11 @@ typedef struct gameobject_s { // size 0x10d8
     }; // 0x028e
     struct APIOBJECT *collision_link; // 0x0298
     u8 unknown_29c[0x4];              // 0x029c
-    u32 collision_exclusion_mask[2];  // 0x02a0
+
+    union { // size 0x8 one bit per object id this object does not collide with
+        u32 collision_exclusion_mask[2];
+        u64 collision_exclusion_bits;
+    }; // 0x02a0
 
     u64 awareness; // 0x02a8
 
@@ -1408,7 +1460,9 @@ typedef struct gameobject_s { // size 0x10d8
 
     u8 unknown_4d4[0x4];      // 0x04d4
     RTL_DATA lighting_packet; // 0x04d8
-    u8 unknown_61c[0x45];     // 0x061c
+    u8 unknown_61c[0xc];      // 0x061c
+    NUVEC light_intensity[2]; // 0x0628: the speeder chase bike riders are lit full white
+    u8 unknown_640[0x21];     // 0x0640
     u8 unknown_661;           // 0x0661
     i16 sock_segment;         // 0x0662
     u8 unknown_664[0xc];      // 0x0664
@@ -1437,13 +1491,13 @@ typedef struct gameobject_s { // size 0x10d8
         u8 contact_material[4];
     }; // 0x06c0
 
-    PLAYERPACKET player;                // 0x06c4
-    NUVEC unknown_e4c;                  // 0x0e4c
-    NUVEC unknown_e58;                  // 0x0e58
-    SPLINEPOS movement_spline_position; // 0x0e64
-    NUVEC movement_spline_offset;       // 0x0e84
-    f32 movement_spline_lateral_speed;  // 0x0e90
-    NUVEC render_offset;                // 0x0e94
+    PLAYERPACKET player;                   // 0x06c4
+    NUVEC script_target_position;          // 0x0e4c: the AI script's fire target
+    NUVEC previous_script_target_position; // 0x0e58
+    SPLINEPOS movement_spline_position;    // 0x0e64
+    NUVEC movement_spline_offset;          // 0x0e84
+    f32 movement_spline_lateral_speed;     // 0x0e90
+    NUVEC render_offset;                   // 0x0e94
 
     union { // size 0xc
         NUVEC unknown_ea0;
@@ -1510,7 +1564,9 @@ typedef struct gameobject_s { // size 0x10d8
         };
 
         struct {                               // size 0x4
-            u32 : 11;                          // 0x0ef0:0
+            u32 : 9;                           // 0x0ef0:0
+            u32 alternate_variant : 1;         // 0x0ef0:9 (a coin toss at spawn: bob, geonosian look)
+            u32 : 1;                           // 0x0ef0:10
             u32 doomed_escape_take_damage : 1; // 0x0ef0:11
             u32 still_take_hit : 1;            // 0x0ef0:12
             u32 : 8;                           // 0x0ef0:13
@@ -1523,13 +1579,18 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x4
         u32 flags_ef4;
         u8 ai_update_flags;
+
+        struct {                                // size 0x4
+            u32 : 8;                            // 0x0ef4:0
+            u32 previous_model_draw_result : 1; // 0x0ef4:8
+        };
     }; // 0x0ef4
 
     union { // size 0x4
         u32 flags_ef8_word;
 
         struct {            // size 0x4
-            u8 unknown_ef8; // 0x0ef8
+            u8 ai_flags;    // 0x0ef8
             u8 unknown_ef9; // 0x0ef9
             u8 field_efa;   // 0x0efa
             u8 field_efb;   // 0x0efb
@@ -1541,7 +1602,7 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x4
 
         struct {                  // size 0x4
-            u8 unknown_f00;       // 0x0f00
+            u8 use_action;        // 0x0f00: what can_use_object is used for (GameObjectSetCanUse)
             u8 use_action_frames; // 0x0f01
             u8 unknown_f02[0x2];  // 0x0f02
         };
@@ -1597,7 +1658,7 @@ typedef struct gameobject_s { // size 0x10d8
     u32 extra_layer_mask;                      // 0x104c
 
     union { // size 0x2
-        i16 unknown_1050;
+        i16 terrain_contact_mask;
         u16 lift_clear_state;
     }; // 0x1050
 
@@ -1630,7 +1691,7 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x6
         u8 unknown_1072[6];
         u8 ai_frame_event;
-        u8 input_flags;
+        u8 input_flags; /* also the AI grapple trigger: 1 toward the ground position, 2 away */
         AI_SPECIAL_PROGRESS special_move_progress_view;
         INDY_GUIDELINE_STATE indy_guideline_state;
     }; // 0x1072
@@ -1638,28 +1699,19 @@ typedef struct gameobject_s { // size 0x10d8
     u8 contact_count;    // 0x1078
     u8 use_model_origin; // 0x1079
 
-    union { // size 0x1
-        u8 flags_107a;
-        i8 movement_mode;
-    }; // 0x107a
+    i8 movement_mode; // 0x107a
 
     u8 reflection_enabled; // 0x107b
 
-    union { // size 0x2
-        i16 unknown_107c;
-
-        struct {                     // size 0x2
-            u8 reflection_active;    // 0x107c
-            u8 joint_override_count; // 0x107d
-        };
-    }; // 0x107c
+    u8 reflection_active;    // 0x107c
+    u8 joint_override_count; // 0x107d
 
     u8 max_hitpoints;        // 0x107e
     i8 current_hp;           // 0x107f
     i8 head_target_priority; // 0x1080
     u8 route_start_index;    // 0x1081
     u8 helmet;               // 0x1082
-    u8 unknown_1083;         // 0x1083
+    u8 attack_count;         // 0x1083: hits this attacker has landed (ObjHitObj)
     u8 one_at_once_player;   // 0x1084
     u8 attack_override;      // 0x1085
     u8 helper_type;          // 0x1086
@@ -1722,12 +1774,12 @@ typedef struct gameobject_s { // size 0x10d8
         struct climb_slot_s *indy_climb;
     }; // 0x10b4
 
-    f32 ai_elapsed_time;                             // 0x10b8
-    NUVEC ai_update_position;                        // 0x10bc
-    f32 ai_vertical_velocity;                        // 0x10c8
-    struct gizforce_s *gizforce_target;              // 0x10cc
-    struct gameanimobj_s *gizforce_target_object;    // 0x10d0
-    struct AITRIGGERSET_PARTIAL *active_trigger_set; // 0x10d4
+    f32 ai_elapsed_time;                          // 0x10b8
+    NUVEC ai_update_position;                     // 0x10bc
+    f32 ai_vertical_velocity;                     // 0x10c8
+    struct gizforce_s *gizforce_target;           // 0x10cc
+    struct gameanimobj_s *gizforce_target_object; // 0x10d0
+    struct AITRIGGERSET_s *active_trigger_set;    // 0x10d4
 } GAMEOBJECT;
 
 #ifdef __cplusplus

@@ -85,7 +85,7 @@ ADDPART Default_ADDPART = {
     0.1f,                                 // unknown_14
     0.1f,                                 // unknown_18
     -5.0f,                                // gravity
-    0.75f,                                // unknown_20
+    0.75f,                                // bounce
     0,                                    // special
     -1,                                   // part_id
     0x00000000u,                          // flags
@@ -119,9 +119,9 @@ ADDPART Default_ADDPART = {
     1.0f,                                 // lighting_scale_y
     1.0f,                                 // lighting_scale_z
     0.0f,                                 // unknown_a4
-    {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // unknown_a8
+    {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // rotation_parameters
     1.0f,                                 // unknown_c0
-    0,                                    // unknown_c4
+    0,                                    // flicker_flags
 };
 i32 part_slot_cursor = -1;
 f32 PartCollisionInterval = 0.1f;
@@ -326,16 +326,16 @@ void NewPartRotation(PART *part) {
         do {
             part->rotation_axes[index] = (u8)((NuRandIntSeeded(&partseed) % 65535u) / 21845u + 1);
         } while (index == 1 && part->rotation_axes[1] == part->rotation_axes[0]);
-        part->unknown_124[index + 3] = (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * 65536.0);
+        part->spin_rates[index + 3] = (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * 65536.0);
     }
 }
 
 void NewPartOrderedRotation(PART *part) {
-    part->unknown_124[0] =
+    part->spin_rates[0] =
         part->rotation_parameters[0] + (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[3]);
-    part->unknown_124[1] =
+    part->spin_rates[1] =
         part->rotation_parameters[1] + (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[4]);
-    part->unknown_124[2] =
+    part->spin_rates[2] =
         part->rotation_parameters[2] + (i32)(((f64)NuRandFloatSeeded(&partseed) * 2.0 - 1.0) * part->rotation_parameters[5]);
 }
 
@@ -388,22 +388,22 @@ PART *AddPart(ADDPART *parameters) {
     part->recipient = parameters->recipient;
     part->velocity = *parameters->velocity;
     part->time_remaining = part->initial_time = parameters->fade_time;
-    part->unknown_206 = -1;
+    part->player_mask = -1;
     part->unknown_20b = -1;
     part->scale_time = 0.0f;
     part->time_step = parameters->time_step;
     part->active = (part->active & ~PART_STATE_SCALING_DOWN) | PART_STATE_SCALING_UP;
     part->radius = parameters->start_radius;
-    part->unknown_e0 = (part->time_step / PARTSCALEUPTIME) * part->radius;
-    part->unknown_e4 = parameters->end_radius;
+    part->glow_radius = (part->time_step / PARTSCALEUPTIME) * part->radius;
+    part->collision_radius = parameters->end_radius;
     part->unknown_214 = parameters->model_scale;
     part->gravity = parameters->gravity;
-    part->field_ec = parameters->unknown_20;
+    part->bounce = parameters->bounce;
     part->unknown_f0 = parameters->lifetime;
     part->part_id = (i16)parameters->part_id;
     part->active = (part->active & ~PART_STATE_STOPPED) | PART_IN_USE;
     part->flags = parameters->flags;
-    part->flicker_flags = parameters->unknown_c4;
+    part->flicker_flags = parameters->flicker_flags;
     part->active &= ~PART_STATE_BEEPED;
     if (parameters->lighting_data != NULL) {
         part->lighting[0] = parameters->lighting_data->values[0];
@@ -448,9 +448,9 @@ PART *AddPart(ADDPART *parameters) {
     part->stop_fn = parameters->stop_fn;
     part->destroy_fn = parameters->destroy_fn;
     part->draw_fn = parameters->draw_fn;
-    memcpy(part->unknown_10c, parameters->unknown_a8, sizeof(part->unknown_10c));
+    memcpy(part->pickup_data, parameters->rotation_parameters, sizeof(part->pickup_data));
     for (index = 0; index < 5; ++index) {
-        part->unknown_124[index] = 0;
+        part->spin_rates[index] = 0;
     }
     if ((part->flags & PART_FLAG_ROTATE_RANDOMLY) != 0) {
         NewPartRotation(part);
@@ -488,7 +488,7 @@ PART *AddPart(ADDPART *parameters) {
     hostility_group = (u8)parameters->hostility_group;
     part->active |= 0x1800;
     part->hostility_group = hostility_group;
-    part->unknown_204 = 1;
+    part->damage = 1;
     if ((part->flags & PART_FLAG_REAL_TIME_LIGHTING) != 0 && parameters->lighting_handle != NULL && PartRTL != NULL) {
         part->lighting_handle = parameters->lighting_handle;
         *parameters->lighting_handle = rtlDynamicAllocTemplate((RTL_SET *)PartRTL, parameters->lighting_id);
@@ -2397,7 +2397,7 @@ void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 
         params.gravity = type->gravity;
         params.position = &part_position;
         params.velocity = &velocity;
-        params.unknown_20 = type->bounce;
+        params.bounce = type->bounce;
         if (type->variant_count == 0) {
             variant = 0;
         } else if (type->variant_mode == 0 || type->variant_mode == 1) {
@@ -2421,8 +2421,8 @@ void AddVariableShotPARTEffect(i32 effect_index, NUVEC *position, f32 rate, f32 
         range = (f32)type->rotation_random[2];
         angle_z = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[2] - range);
         for (axis = 0; axis < 3; ++axis) {
-            params.unknown_a8[axis] = type->rotation[axis];
-            params.unknown_a8[axis + 3] = type->rotation_random[axis];
+            params.rotation_parameters[axis] = type->rotation[axis];
+            params.rotation_parameters[axis + 3] = type->rotation_random[axis];
         }
         NuMtxRotateX(&matrix, angle_x);
         NuMtxRotateY(&matrix, angle_y);
@@ -2478,7 +2478,7 @@ PART *FindPart(NUVEC *position, i32 player, GAMEOBJECT *owner) {
     nearest = 1000000.0f;
     result = NULL;
     for (i = 0; i < MAXPARTS; ++i, ++part) {
-        if ((part->active & PART_IN_USE) != 0 && (player == -1 || part->unknown_206 == player) && (owner == NULL || part->owner == owner)) {
+        if ((part->active & PART_IN_USE) != 0 && (player == -1 || part->player_mask == player) && (owner == NULL || part->owner == owner)) {
             if (position != NULL) {
                 f32 distance = NuVecDistSqr(position, &part->position, NULL);
                 if (distance < nearest) {
@@ -3793,7 +3793,7 @@ void UpdatePartEmits(f32 time) {
                 NuVecRotateX(&velocity, &velocity, emitter->rotation_30);
                 params.velocity = &velocity;
                 params.gravity = type->gravity;
-                params.unknown_20 = type->bounce;
+                params.bounce = type->bounce;
                 variant = 0;
                 if (type->variant_count != 0) {
                     if (type->variant_mode == 0) {
@@ -3822,8 +3822,8 @@ void UpdatePartEmits(f32 time) {
                 range = (f32)type->rotation_random[2];
                 angle_z = (i16)(i32)(NuRandFloatSeeded(&partseed) * 2.0f * range + type->rotation[2] - range);
                 for (axis = 0; axis < 3; ++axis) {
-                    params.unknown_a8[axis] = type->rotation[axis];
-                    params.unknown_a8[axis + 3] = type->rotation_random[axis];
+                    params.rotation_parameters[axis] = type->rotation[axis];
+                    params.rotation_parameters[axis + 3] = type->rotation_random[axis];
                 }
                 NuMtxRotateX(&matrix, angle_x);
                 NuMtxRotateY(&matrix, angle_y);
@@ -3934,7 +3934,7 @@ void CastPart(PART *part, f32 time) {
     }
     part->active &= ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN);
     cast_movement = movement;
-    hit = PartRayCast(&part->position, &cast_movement, part->unknown_e0, 0);
+    hit = PartRayCast(&part->position, &cast_movement, part->glow_radius, 0);
     if (hit == 0) {
         state->impact_material = -1;
         return;
@@ -4764,7 +4764,7 @@ void UpdateParts(f32 time) {
             f32 movement_time = time;
             if ((part->flags & PART_FLAG_IGNORE_TERRAIN) == 0) {
                 if (time >= part->unknown_f4) {
-                    if (part->unknown_e0 < part->radius) {
+                    if (part->glow_radius < part->radius) {
                         part->active = (part->active & ~PART_STATE_SCALING_DOWN) | PART_STATE_SCALING_UP;
                     } else {
                         part->active &= ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN);
@@ -4793,10 +4793,10 @@ void UpdateParts(f32 time) {
                             if ((part->flags & PART_FLAG_ORDERED_ROTATE_RANDOMLY) != 0) {
                                 NewPartOrderedRotation(part);
                             }
-                            part->velocity.x *= part->field_ec;
-                            part->velocity.z *= part->field_ec;
+                            part->velocity.x *= part->bounce;
+                            part->velocity.z *= part->bounce;
                             if (part->impact_normal.y > 0.5f) {
-                                part->velocity.y *= part->field_ec;
+                                part->velocity.y *= part->bounce;
                                 if (part->velocity.x * part->velocity.x + part->velocity.y * part->velocity.y +
                                         part->velocity.z * part->velocity.z <
                                     PartStopSpeedSquared) {
@@ -4858,9 +4858,9 @@ void UpdateParts(f32 time) {
             part->collision_max.z = part->position.z + part->radius;
             if (((part->active >> 5) & 3) == 1) {
                 part->time_step += time;
-                part->unknown_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
-                if (part->unknown_e0 > part->radius) {
-                    part->unknown_e0 = part->radius;
+                part->glow_radius = part->time_step / PARTSCALEUPTIME * part->radius;
+                if (part->glow_radius > part->radius) {
+                    part->glow_radius = part->radius;
                     part->active &= ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN);
                 }
             } else if (((part->active >> 5) & 3) == 2) {
@@ -4868,12 +4868,12 @@ void UpdateParts(f32 time) {
                 if (part->time_step <= 0.0f) {
                     KillPart(part, 0);
                 } else {
-                    part->unknown_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
+                    part->glow_radius = part->time_step / PARTSCALEUPTIME * part->radius;
                 }
             }
             if ((part->flags & PART_FLAG_ROTATE_RANDOMLY) != 0) {
                 for (axis = 0; axis < 2; ++axis) {
-                    angle = (i32)((f32)part->unknown_124[3 + axis] * time);
+                    angle = (i32)((f32)part->spin_rates[3 + axis] * time);
                     switch (part->rotation_axes[axis]) {
                         case 1:
                             NuMtxPreRotateX(&part->transform, angle);
@@ -4888,14 +4888,14 @@ void UpdateParts(f32 time) {
                 }
             }
             if ((part->flags & PART_FLAG_ORDERED_ROTATE_RANDOMLY) != 0) {
-                if (part->unknown_124[0] != 0) {
-                    NuMtxPreRotateX(&part->transform, (i32)((f64)part->unknown_124[0] * time));
+                if (part->spin_rates[0] != 0) {
+                    NuMtxPreRotateX(&part->transform, (i32)((f64)part->spin_rates[0] * time));
                 }
-                if (part->unknown_124[1] != 0) {
-                    NuMtxPreRotateY(&part->transform, (i32)((f64)part->unknown_124[1] * time));
+                if (part->spin_rates[1] != 0) {
+                    NuMtxPreRotateY(&part->transform, (i32)((f64)part->spin_rates[1] * time));
                 }
-                if (part->unknown_124[2] != 0) {
-                    NuMtxPreRotateZ(&part->transform, (i32)((f64)part->unknown_124[2] * time));
+                if (part->spin_rates[2] != 0) {
+                    NuMtxPreRotateZ(&part->transform, (i32)((f64)part->spin_rates[2] * time));
                 }
             }
             if ((part->flags & PART_FLAG_FACE_MOVEMENT) != 0) {

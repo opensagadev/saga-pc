@@ -221,7 +221,7 @@ extern "C" {
                 }
                 if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
                     (Paused != 0 ||
-                     (NetPaused != 0 && (AreaGlobals.unknown_08 != 0 ||
+                     (NetPaused != 0 && (AreaGlobals.red_brick_state != 0 ||
                                          (WORLD->area_index != -1 && Game.area_save[WORLD->area_index].red_brick_collected != 0))) ||
                      DrawRedBrickTime > 0.0f) &&
                     screendump == 0) {
@@ -589,7 +589,7 @@ extern "C" {
         if (two_rows != 0 && hitpoints < 2) {
             two_rows = 0;
         }
-        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && hitpoints > 1 && object->dead != 0 &&
+        if ((object->player_slot == 0 || object->player_slot == 1) && hitpoints > 1 && object->dead != 0 &&
             object->invulnerable_timer > 0.0f && object->invulnerable_timer < 1.0f) {
             transitioning = 1;
             current_hp = (i32)((1.0f - object->invulnerable_timer) * (f32)object->max_hitpoints);
@@ -899,7 +899,7 @@ extern "C" {
                 }
                 if (SuperStory == 0 && ChallengeMode == CHALLENGE_OFF && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&
-                    (AreaGlobals.unknown_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
+                    (AreaGlobals.red_brick_state == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
                     redbrickslidetime > 0.0f) {
                     f32 factor = NuTrigTable[((i32)((f64)redbrickslidetime * 16384.0) >> 1) & 0x7fff];
                     f32 x = (REDBRICKPOSX - REDBRICKPOS2X) * factor + REDBRICKPOS2X;
@@ -1563,7 +1563,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
         return;
     }
     message = AddGameMsg_Default;
-    if (object->unknown_280 == 0) {
+    if (object->player_slot == 0) {
         first_red = 0;
         first_green = 127;
         first_blue = 255;
@@ -1602,14 +1602,14 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     }
     message = AddGameMsg_Default;
     message.position = &position;
-    message.unknown_34 = 0.0f;
+    message.drift = 0.0f;
     message.red = (u8)first_red;
     message.target_is_coin_total = 2;
     message.green = (u8)first_green;
     message.blue = (u8)first_blue;
     message.alpha = (u8)alpha;
-    if (object->unknown_280 == 1) {
-        message.unknown_34 += 0.002f;
+    if (object->player_slot == 1) {
+        message.drift += 0.002f;
     }
     message.text = TagAsciiDown;
     message.scale = 2.0f;
@@ -1619,10 +1619,10 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.text = NULL;
     message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP | GAMEMSG_OBJECT_ALPHA;
-    message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
+    message.icon = apicharsys->char_data[(i16)object->id].icon_model;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
-    message.icon = object->unknown_280 != 0 ? 0xa5 : 0xa6;
+    message.icon = object->player_slot != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }
@@ -1654,18 +1654,18 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.target_is_coin_total = 2;
     message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
-    message.unknown_34 = 0.0f;
-    if (object->unknown_280 == 1) {
-        message.unknown_34 += 0.002f;
+    message.drift = 0.0f;
+    if (object->player_slot == 1) {
+        message.drift += 0.002f;
     }
     id = (i16)object->id;
-    message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
+    message.icon = apicharsys->char_data[(i16)object->id].icon_model;
     if (message.icon != -1 && GCDataList[id].hover_fall_mode == 0 && message.icon != PCArcadeUnpairedIconModel) {
         message.icon++;
     }
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
-    message.icon = object->unknown_280 != 0 ? 0xa5 : 0xa6;
+    message.icon = object->player_slot != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }

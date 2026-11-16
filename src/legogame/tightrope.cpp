@@ -27,46 +27,10 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct TIGHTROPE_MOTION { // size 0x48
-    char name[16];                // 0x00
-    NUVEC start;                  // 0x10
-    NUVEC end;                    // 0x1c
-    u16 start_x_rotation;         // 0x28
-    u16 end_x_rotation;           // 0x2a
-    u16 start_y_rotation;         // 0x2c
-    u16 end_y_rotation;           // 0x2e
-    u8 start_model;               // 0x30
-    u8 end_model;                 // 0x31
-    i8 start_visible;             // 0x32
-    u8 reserved_33;               // 0x33
-    NUVEC direction;              // 0x34
-    f32 horizontal_length;        // 0x40
-    u16 rotation;                 // 0x44
-    u8 enabled;                   // 0x46
-    u8 available;                 // 0x47
-} TIGHTROPE_MOTION;
-
-typedef struct WORLD_TIGHTROPE_VIEW { // size 0x5060
-    u8 unknown_0000[0x5058];          // 0x0000
-    TIGHTROPE_MOTION *tightropes;     // 0x5058
-    i32 tightrope_count;              // 0x505c
-} WORLD_TIGHTROPE_VIEW;
-
-typedef struct TIGHTROPE_OBJECT_AUX { // size 0xd2c
-    u8 unknown_0000[0xd28];           // 0x000
-    f32 jump_reentry_timer;           // 0xd28
-} TIGHTROPE_OBJECT_AUX;
-
 typedef struct tightrope_progress_recovered_s {
     u32 active_mask[1];
     u32 visible_mask[1];
 } TIGHTROPE_PROGRESS;
-
-typedef struct tightrope_movement_s {
-    u8 unknown_00[0x40];
-    f32 horizontal_length;
-    u16 rotation;
-} TIGHTROPE_MOVEMENT;
 
 extern "C" {
 
@@ -178,12 +142,12 @@ extern "C" {
     }
 }
 
-extern "C" TIGHTROPE_MOTION *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
-    TIGHTROPE_MOTION *rope = ((WORLD_TIGHTROPE_VIEW *)world)->tightropes;
+extern "C" TIGHTROPE_s *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
+    TIGHTROPE_s *rope = world->tightropes;
     f32 width = 3.0f * object->bounds_radius;
     NUVEC origin = object->collision_position;
     NUVEC offset;
-    for (i32 index = 0; index < ((WORLD_TIGHTROPE_VIEW *)world)->tightrope_count; ++index, ++rope) {
+    for (i32 index = 0; index < world->tightrope_count; ++index, ++rope) {
         if (rope->enabled == 0 || rope->available == 0) {
             continue;
         }
@@ -423,7 +387,7 @@ extern "C" {
     }
 }
 
-static i32 TightRopeSetPosition(TIGHTROPE_MOTION *rope, NUVEC *position, GAMEOBJECT *object) {
+static i32 TightRopeSetPosition(TIGHTROPE_s *rope, NUVEC *position, GAMEOBJECT *object) {
     f32 margin;
     i32 result;
     NuVecSub(position, position, &rope->start);
@@ -455,7 +419,7 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
     i32 result = 1;
     if (object->player.pad->input_magnitude > 0.0f && object->player.context_animation != ACTION_TIGHTROPE_GETON) {
         NUVEC previous = object->player.launch_origin;
-        TIGHTROPE_MOTION *rope = object->player.tightrope;
+        TIGHTROPE_s *rope = object->player.tightrope;
         f32 input = PushingTowardsAngle(GamePad_InputAngle(object, object->player.pad), rope->rotation);
         f32 direction;
         f32 speed;
@@ -503,7 +467,7 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
 
 static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     NUVEC position;
-    TIGHTROPE_MOTION *rope = TightRope_InRange(object, world, &position);
+    TIGHTROPE_s *rope = TightRope_InRange(object, world, &position);
     if (rope != NULL) {
         object->player.character_context = CHARACTER_CONTEXT_TIGHTROPE;
         object->player.grapple = rope;
@@ -595,7 +559,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                         object->player.character_context = CHARACTER_CONTEXT_LAND_JUMP;
                         object->player.context_animation = ACTION_LAND;
                         object->player.context_timer = AnimDuration((i16)object->id, 7, 0.0f, 0.0f, 1);
-                        ((TIGHTROPE_OBJECT_AUX *)object)->jump_reentry_timer = 0.2f;
+                        object->player.jump_reentry_timer = 0.2f;
                         ResetAnimPacket(&object->anim_packet, -1);
                     } else {
                         object->player.character_context = CHARACTER_CONTEXT_NONE;
@@ -677,7 +641,7 @@ extern "C" {
 
     i32 TightRope_SetTargetMom(GAMEOBJECT *object) {
         NUVEC *anchor;
-        TIGHTROPE_MOVEMENT *rope;
+        TIGHTROPE_s *rope;
         u16 rotation;
         f32 fraction;
         f32 amplitude;
@@ -686,7 +650,7 @@ extern "C" {
         object->target_velocity.x = (object->player.launch_origin.x - anchor->x) * 3.0f;
         object->target_velocity.y = (object->player.launch_origin.y - anchor->y) * 3.0f;
         object->target_velocity.z = (object->player.launch_origin.z - anchor->z) * 3.0f;
-        rope = (TIGHTROPE_MOVEMENT *)object->player.grapple;
+        rope = object->player.tightrope;
         rotation = rope->rotation + 0x4000;
         fraction = object->player.context_hover_target_y / rope->horizontal_length;
         if (fraction > 1.0f) {

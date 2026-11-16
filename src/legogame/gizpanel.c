@@ -121,34 +121,6 @@ static NUVEC *PanelGetTrackingPosition(PANEL_MOVEMENT *panel, NUVEC *position) {
 }
 
 i32 GizPanel_Load(void *world_pointer, void *unused) {
-    typedef union PanelLoadFlags { // size 0x1
-        u8 value;
-
-        struct {
-            u8 unknown_0 : 5;
-            u8 flag_5 : 1;
-            u8 flag_6 : 1;
-            u8 flag_7 : 1;
-        } bits;
-    } PanelLoadFlags;
-
-    typedef union PanelLoadDrawFlags { // size 0x1
-        u8 value;
-
-        struct {
-            u8 flag_0 : 1;
-            u8 flag_1 : 1;
-            u8 flag_2 : 1;
-            u8 unknown_3 : 5;
-        } bits;
-    } PanelLoadDrawFlags;
-
-    typedef struct PanelLoadState { // size 0x64
-        u8 unknown_00[0x62];
-        PanelLoadFlags flags;          // 0x62
-        PanelLoadDrawFlags draw_flags; // 0x63
-    } PanelLoadState;
-
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM *system;
     i32 version;
@@ -173,7 +145,7 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
         system->panels[index].model_variant = value;
         if (version >= 3) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadState *)&system->panels[index])->flags.bits.flag_5 = value & 1;
+            system->panels[index].no_models = value & 1;
         }
         if (version >= 4) {
             EdFileReadNuVec(&system->panels[index].target_offset);
@@ -186,23 +158,23 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
         }
         if (version >= 5) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadState *)&system->panels[index])->flags.bits.flag_6 = value & 1;
+            system->panels[index].no_target = value & 1;
         }
         if (version >= 6) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadState *)&system->panels[index])->flags.bits.flag_7 = value & 1;
+            system->panels[index].alt_animated = value & 1;
             value = (u8)EdFileReadChar();
-            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_0 = value & 1;
+            system->panels[index].alt_base = value & 1;
         }
         if (version >= 7) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_1 = value & 1;
+            system->panels[index].casts_shadow = value & 1;
         }
         if (version >= 8) {
             value = (u8)EdFileReadChar();
-            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_2 = value != 0;
+            system->panels[index].no_voice_in_story = value != 0;
         } else {
-            ((PanelLoadState *)&system->panels[index])->draw_flags.bits.flag_2 = 0;
+            system->panels[index].no_voice_in_story = 0;
         }
     }
     return 1;
@@ -227,34 +199,17 @@ void *GizPanels_ReserveBufferSpace(void *pointer) {
 }
 
 void GizPanel_SetVisibility(GIZMO *gizmo, i32 visible) {
-    typedef union PanelVisibleFlags { // size 0x1
-        u8 value;
-
-        struct {
-            u8 unknown_0 : 2;
-            u8 visible : 1;
-            u8 unknown_3 : 5;
-        } bits;
-    } PanelVisibleFlags;
-
-    typedef struct PanelVisibleState {
-        u8 unknown_00[0x62];
-        PanelVisibleFlags flags; // 0x62
-    } PanelVisibleState;
-
     PANEL_MOVEMENT *panel;
-    PanelVisibleState *state;
     i32 was_visible;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
     panel = gizmo->object;
-    state = (PanelVisibleState *)panel;
-    was_visible = state->flags.bits.visible;
-    state->flags.bits.visible = visible != 0;
-    if (state->flags.bits.visible && !was_visible) {
+    was_visible = panel->visible;
+    panel->visible = visible != 0;
+    if (panel->visible && !was_visible) {
         GizPanel_CreateTerrain(panel);
-    } else if (!state->flags.bits.visible && was_visible) {
+    } else if (!panel->visible && was_visible) {
         DeletePlatinst(panel->platform_id);
     }
 }
@@ -356,7 +311,8 @@ PANEL_MOVEMENT *GizPanel_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJE
         f32 distance;
         if (object != NULL) {
             NUVEC target;
-            if ((panel->flags & 8) == 0 || (panel->flags & 4) == 0 || (panel->flags & 3) != 0 || panel->floor_position.y == 2000000.0f) {
+            if ((panel->flags & PANEL_ACTIVE) == 0 || (panel->flags & PANEL_VISIBLE) == 0 ||
+                (panel->flags & (PANEL_IN_USE | PANEL_USED)) != 0 || panel->floor_position.y == 2000000.0f) {
                 continue;
             }
             if (check_eligibility != 0 && GizPanel_CanUsePanel(object, panel) == 0) {
@@ -389,12 +345,12 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
     }
     for (index = 0; index < system->count; ++index) {
         PANEL_MOVEMENT *panel = &system->panels[index];
-        if ((panel->flags & 8) != 0) {
+        if ((panel->flags & PANEL_ACTIVE) != 0) {
             f32 nearest_distance = 1000000000.0f;
             f32 maximum_distance;
             i32 player_index;
             nearest_player = NULL;
-            maximum_distance = (panel->flags & 0x10) != 0 ? 1.21f : 0.80999994f;
+            maximum_distance = (panel->flags & PANEL_ARM_OUT) != 0 ? 1.21f : 0.80999994f;
             for (player_index = 0; player_index < 8; ++player_index) {
                 GAMEOBJECT *player = Player[player_index];
                 if (player != NULL && (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && player->dead == 0) {
@@ -430,9 +386,9 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
             }
             panel->arm_pitch = SeekRot(panel->arm_pitch, target_x, 5.0f);
             panel->arm_roll = SeekRot(panel->arm_roll, target_y, 5.0f);
-            if ((panel->flags & 0x10) == 0) {
+            if ((panel->flags & PANEL_ARM_OUT) == 0) {
                 panel->activation_time = 0.0f;
-                panel->flags |= 0x10;
+                panel->flags |= PANEL_ARM_OUT;
                 PlaySfx("DPanelAct", &panel->position);
             } else {
                 f32 time = panel->activation_time + FRAMETIME;
@@ -444,10 +400,10 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
         } else {
             panel->arm_pitch = SeekRot(panel->arm_pitch, 0xe000, 10.0f);
             panel->arm_roll = SeekRot(panel->arm_roll, 0, 10.0f);
-            if ((panel->flags & 0x10) != 0) {
+            if ((panel->flags & PANEL_ARM_OUT) != 0) {
                 PlaySfx("DPanelDis", &panel->position);
             }
-            panel->flags &= (u8)~0x10;
+            panel->flags &= (u8)~PANEL_ARM_OUT;
             if (panel->activation_time > 0.0f) {
                 f32 time = panel->activation_time - delta_time;
                 panel->activation_time = time;
@@ -495,17 +451,17 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
         i32 target;
         f32 arm_y;
         f32 arm_z;
-        if ((panel->flags & 4) == 0 && editor_active == 0) {
+        if ((panel->flags & PANEL_VISIBLE) == 0 && editor_active == 0) {
             continue;
         }
-        if ((panel->draw_flags & 2) == 0) {
+        if ((panel->draw_flags & PANEL_CASTS_SHADOW) == 0) {
             EnableShadowMapRendering(0);
         } else {
             ResetShadowMapRendering();
         }
         switch (panel->model_variant) {
             case PANEL_VARIANT_ASTROMECH:
-                base = (panel->draw_flags & 1) | 0x106;
+                base = (panel->draw_flags & PANEL_ALT_BASE) | 0x106;
                 animated = ((u32)panel->flags >> 7) | 0x108;
                 transition = 0x10a;
                 state_on = 0x10b;
@@ -516,8 +472,8 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 arm_z = 0.0f;
                 break;
             case PANEL_VARIANT_PROTOCOL_DROID:
-                base = (panel->draw_flags & 1) != 0 ? 0x107 : 0x100;
-                animated = (panel->flags & 0x80) != 0 ? 0x102 : 0x101;
+                base = (panel->draw_flags & PANEL_ALT_BASE) != 0 ? 0x107 : 0x100;
+                animated = (panel->flags & PANEL_ALT_ANIMATED) != 0 ? 0x102 : 0x101;
                 transition = 0x103;
                 state_on = 0x104;
                 state_off = 0x105;
@@ -562,10 +518,10 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
         }
         NuMtxSetRotationY(&base_matrix, panel->y_rotation);
         NuMtxTranslate(&base_matrix, &panel->position);
-        if ((panel->flags & 0x20) == 0 && base != -1 && world->level_objects[base].active != 0) {
+        if ((panel->flags & PANEL_NO_MODELS) == 0 && base != -1 && world->level_objects[base].active != 0) {
             NuSpecialDrawAt(&world->level_objects[base].special, &base_matrix);
         }
-        if ((panel->flags & 0x20) == 0) {
+        if ((panel->flags & PANEL_NO_MODELS) == 0) {
             if ((panel->flags & PANEL_USED) != 0) {
                 if (state_on != -1 && world->level_objects[state_on].active != 0) {
                     NuSpecialDrawAt(&world->level_objects[state_on].special, &base_matrix);
@@ -574,7 +530,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 NuSpecialDrawAt(&world->level_objects[state_off].special, &base_matrix);
             }
         }
-        if ((panel->flags & 0x20) == 0 && (panel->activation_time > 0.0f || editor_active != 0)) {
+        if ((panel->flags & PANEL_NO_MODELS) == 0 && (panel->activation_time > 0.0f || editor_active != 0)) {
             NUVEC picture_offset;
             NUVEC transition_offset;
             NUMTX transition_base;
@@ -619,8 +575,8 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 NuSpecialDrawAtAlpha(&world->level_objects[animated].special, &animated_matrix, 1.0f);
             }
         }
-        if ((panel->flags & 0x40) == 0 && (panel->flags & 8) != 0 && (f64)panel->target_offset.y != GameObjectNearFloorNoFloorHeight &&
-            target != -1 && world->level_objects[target].active != 0) {
+        if ((panel->flags & PANEL_NO_TARGET) == 0 && (panel->flags & PANEL_ACTIVE) != 0 &&
+            (f64)panel->target_offset.y != GameObjectNearFloorNoFloorHeight && target != -1 && world->level_objects[target].active != 0) {
             NUVEC target_position;
             GizPanel_GetAbsTargetPos(panel, &target_position, 0);
             NuMtxSetRotationY(&base_matrix, target_spin);
@@ -635,7 +591,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             NuSpecialDrawAtAlpha(&world->level_objects[target].special, &base_matrix,
                                  (panel->flags & PANEL_IN_USE) != 0 ? 0.0f : target_alpha);
         }
-        if ((panel->flags & 0x20) == 0 && arm != -1 && world->level_objects[arm].active != 0) {
+        if ((panel->flags & PANEL_NO_MODELS) == 0 && arm != -1 && world->level_objects[arm].active != 0) {
             NUVEC arm_offset;
             arm_offset.x = 0.0f;
             arm_offset.y = arm_y;
@@ -690,7 +646,7 @@ i32 fun_0046eb50(PANEL_MOVEMENT *panel) {
 i32 GizPanel_GetOutput(void *input, i32 output, i32 mode) {
     GIZMO *gizmo = input;
     PANEL_MOVEMENT *panel = gizmo->object;
-    if ((panel->flags & 8) != 0 && (panel->flags & 4) != 0) {
+    if ((panel->flags & PANEL_ACTIVE) != 0 && (panel->flags & PANEL_VISIBLE) != 0) {
         return (panel->flags >> 1) & 1;
     }
     return 0;
@@ -721,8 +677,8 @@ void GizPanels_ClearProgress(void *owner, void *progress_ptr) {
 void GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     PANEL_PROGRESS *progress = progress_ptr;
     WORLDINFO *world = world_ptr;
-    PANEL_PROGRESS_SYSTEM *system;
-    PANEL_PROGRESS_RECORD *record;
+    PANEL_SYSTEM *system;
+    PANEL_MOVEMENT *record;
     i32 index;
     i32 word;
     u32 bit;
@@ -733,21 +689,21 @@ void GizPanels_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     progress->enabled[0] = 0xffffffffu;
     progress->visible[0] = 0xffffffffu;
 
-    if (world == NULL || world->giz_panel_sys == NULL || ((PANEL_PROGRESS_SYSTEM *)world->giz_panel_sys)->records == NULL) {
+    if (world == NULL || world->giz_panel_sys == NULL || world->giz_panel_sys->panels == NULL) {
         return;
     }
-    for (index = 0; index < ((PANEL_PROGRESS_SYSTEM *)world->giz_panel_sys)->count && index < 32; ++index) {
-        system = (PANEL_PROGRESS_SYSTEM *)world->giz_panel_sys;
-        record = &system->records[index];
+    for (index = 0; index < world->giz_panel_sys->count && index < 32; ++index) {
+        system = world->giz_panel_sys;
+        record = &system->panels[index];
         word = index / 32;
         bit = 1u << (index % 32);
-        if (record->flags & 2) {
+        if (record->flags & PANEL_USED) {
             progress->triggered[word] |= bit;
         }
-        if (!(record->flags & 4)) {
+        if (!(record->flags & PANEL_VISIBLE)) {
             progress->visible[word] &= ~bit;
         }
-        if (!(record->flags & 8)) {
+        if (!(record->flags & PANEL_ACTIVE)) {
             progress->enabled[word] &= ~bit;
         }
     }
@@ -888,14 +844,14 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             object->player.context_animation = ACTION_INTERFACE;
             if (panel->model_variant == PANEL_VARIANT_PROTOCOL_DROID) {
                 if (!InStory() || (object->player.panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
-                    GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
+                    GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->player_slot);
                 }
                 if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                     SetProtocolDroidInterfaceAction(object);
                 }
             } else {
                 if (!InStory() || (object->player.panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
-                    GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->unknown_280);
+                    GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->player_slot);
                 }
             }
             Hint_SetComplete(0x25f);
@@ -911,7 +867,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         }
     } else if (use != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                (object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 && object->player.use_cooldown <= 0.0f) {
-        GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->unknown_280);
+        GizPanel_PlaySfx("TC14_VLN", &object->collision_position, 1 << object->player_slot);
         object->player.use_cooldown = 0.5f;
     }
 }
@@ -928,8 +884,8 @@ i32 GizPanel_UpdateHint(HINT *hint) {
         GAMEOBJECT *object = Player[index];
         if (object != NULL) {
             f32 distance;
-            HINT_PANEL *panel = (HINT_PANEL *)GizPanel_FindNearest(WORLD, &object->position, object, &distance, 0);
-            if (panel != NULL && (panel->flags & 8) != 0 && (panel->flags & 3) == 0) {
+            PANEL_MOVEMENT *panel = GizPanel_FindNearest(WORLD, &object->position, object, &distance, 0);
+            if (panel != NULL && (panel->flags & PANEL_ACTIVE) != 0 && (panel->flags & (PANEL_IN_USE | PANEL_USED)) == 0) {
                 f32 radius = (f32)(((f64)Player[index]->bounds_radius + 1.0) * panel->target_scale);
                 radius *= radius;
                 if (distance < radius) {
@@ -1008,22 +964,6 @@ void GizPanel_Reset(void *context) {
 }
 
 void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) {
-    typedef union PanelProgressFlags { // size 0x1
-        u8 value;
-
-        struct {
-            u8 unknown_0 : 2;
-            u8 progress_2 : 1;
-            u8 progress_3 : 1;
-            u8 unknown_4 : 4;
-        } bits;
-    } PanelProgressFlags;
-
-    typedef struct PanelProgressState { // size 0x63
-        u8 unknown_00[0x62];
-        PanelProgressFlags flags; // 0x62
-    } PanelProgressState;
-
     WORLDINFO *world = world_pointer;
     PANEL_SYSTEM *system;
     PANEL_MOVEMENT *panel;
@@ -1040,14 +980,13 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
         panel = &system->panels[index];
         GizPanel_Reset(panel);
         if (progress != NULL && index < 32) {
-            PanelProgressState *state = (PanelProgressState *)panel;
             i32 word = index / 32;
             u32 bit = 1u << (index % 32);
             if (progress[word] & bit) {
                 panel->flags |= PANEL_USED;
             }
-            state->flags.bits.progress_2 = (progress[word + 2] & bit) != 0;
-            state->flags.bits.progress_3 = (progress[word + 1] & bit) != 0;
+            panel->visible = (progress[word + 2] & bit) != 0;
+            panel->active = (progress[word + 1] & bit) != 0;
         }
     }
 }
@@ -1063,26 +1002,11 @@ void fun_0046f6f0(PANEL_MOVEMENT *panel, NUVEC *position) {
 }
 
 void GizPanel_Activate(void *input, i32 active) {
-    typedef union PanelActiveFlags { // size 0x1
-        u8 value;
-
-        struct {
-            u8 unknown_0 : 3;
-            u8 active : 1;
-            u8 unknown_4 : 4;
-        } bits;
-    } PanelActiveFlags;
-
-    typedef struct PanelActiveState { // size 0x63
-        u8 unknown_00[0x62];
-        PanelActiveFlags flags; // 0x62
-    } PanelActiveState;
-
     GIZMO *gizmo = input;
     PANEL_MOVEMENT *panel;
     if (gizmo != NULL && gizmo->object != NULL) {
         panel = gizmo->object;
-        ((PanelActiveState *)panel)->flags.bits.active = active != 0;
+        panel->active = active != 0;
         if (active != 0) {
             GizPanel_Reset(panel);
         }

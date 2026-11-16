@@ -66,7 +66,7 @@ typedef struct partdebrissys_s { // size 0xc
     PARTDEBRISENTRY *entries;    // 0x8
 } PARTDEBRISSYS;
 
-typedef struct rtlset_s RTLSET;
+typedef struct RTL_SET RTLSET;
 struct PART;
 
 typedef struct debris_collision_entry_s { // size 0x8

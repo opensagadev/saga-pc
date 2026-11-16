@@ -283,7 +283,7 @@ void Asteroid_PartKill(PART *part, i32 reason) {
     AddGameDebris(WORLD->game_debris_sys, 0x5e, &part->position);
     AddGameDebris(WORLD->game_debris_sys, 0x5f, &part->position);
     AddPartDebris(WORLD->part_debris_sys, 4, &part->position);
-    if (part->unknown_206 == 1) {
+    if (part->player_mask == 1) {
         i32 type;
         if (reason == 4) {
             type = 0;
@@ -341,7 +341,7 @@ void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
         params.fade_time = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
         part = AddPart(&params);
         if (part != NULL) {
-            part->unknown_206 = (index != 0) + 1;
+            part->player_mask = (index != 0) + 1;
         }
     }
 }
@@ -474,7 +474,7 @@ i8 melee_wavePhase = -1;
 
 void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
-    if ((object->unknown_280 != 0 && object->unknown_280 != 1) || (i16)object->id != dat_007f19a4 ||
+    if ((object->player_slot != 0 && object->player_slot != 1) || (i16)object->id != dat_007f19a4 ||
         WORLD->level_objects[0x127].active == 0) {
         return;
     }
@@ -482,25 +482,25 @@ void DrawFalconSpotLights(GAMEOBJECT *object) {
         matrix = object->player.locator_matrices[4];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
-    spotLightA_yrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
-    if (spotLightA_yrot[((i8)(object)->unknown_280)] > 1.0f) {
-        spotLightA_yrot[((i8)(object)->unknown_280)] -= 1.0f;
+    spotLightA_yrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightA_yrot[object->player_index] > 1.0f) {
+        spotLightA_yrot[object->player_index] -= 1.0f;
     }
-    spotLightA_zrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
-    if (spotLightA_zrot[((i8)(object)->unknown_280)] > 1.0f) {
-        spotLightA_zrot[((i8)(object)->unknown_280)] -= 1.0f;
+    spotLightA_zrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightA_zrot[object->player_index] > 1.0f) {
+        spotLightA_zrot[object->player_index] -= 1.0f;
     }
     if (object->character_model->points_of_interest[5] != NULL) {
         matrix = object->player.locator_matrices[5];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
-    spotLightB_yrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
-    if (spotLightB_yrot[((i8)(object)->unknown_280)] > 1.0f) {
-        spotLightB_yrot[((i8)(object)->unknown_280)] -= 1.0f;
+    spotLightB_yrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightB_yrot[object->player_index] > 1.0f) {
+        spotLightB_yrot[object->player_index] -= 1.0f;
     }
-    spotLightB_zrot[((i8)(object)->unknown_280)] += FRAMETIME / 5.0f;
-    if (spotLightB_zrot[((i8)(object)->unknown_280)] > 1.0f) {
-        spotLightB_zrot[((i8)(object)->unknown_280)] -= 1.0f;
+    spotLightB_zrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightB_zrot[object->player_index] > 1.0f) {
+        spotLightB_zrot[object->player_index] -= 1.0f;
     }
 }
 

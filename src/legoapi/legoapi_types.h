@@ -412,10 +412,10 @@ struct AREASAVE_s {           // size 0xc
 };
 
 struct STATUSPACKET_LSW_s { // size 0x4
-    i32 unknown_00;         // 0x0
+    i32 flags;              // 0x0
 };
 
-/* GIZFORCEANIMDATA_s.unknown_04 */
+/* GIZFORCEANIMDATA_s.glow_flags */
 #define GIZFORCEANIMDATA_GLOW_ACTIVE 0x1
 
 struct GIZFORCEANIMDATA_s { // size 0x8
@@ -423,7 +423,7 @@ struct GIZFORCEANIMDATA_s { // size 0x8
     i16 platform_id;        // 0x2
 
     union { // size 0x4
-        u32 unknown_04;
+        u32 glow_flags;
 
         struct {                       // size 0x4
             u32 force_glow_active : 1; // 0x4:0
@@ -921,34 +921,26 @@ struct AITRIGGERSET_s { // size 0x214
 
     i8 trigger_indices[8]; // 0x204
 
-    union { // size 0x8
-        u8 unknown_20c[0x2];
-        u16 field_20e;
-        u8 unknown_210[0x4];
+    u8 trigger_count; // 0x20c
+    u8 unknown_20d;   // 0x20d
+    u16 occupied;     // 0x20e: one bit per trigger a player holds
 
-        struct {              // size 0x8
-            u8 trigger_count; // 0x20c
-            u8 unknown_20d;   // 0x20d
-            u16 field_0x20e;  // 0x20e
+    union { // size 0x2
+        u16 flags_word;
 
-            union { // size 0x2
-                u16 flags_word;
-
-                struct {             // size 0x2
-                    u8 flags;        // 0x210
-                    u8 reserved_211; // 0x211
-                };
-            }; // 0x210
-
-            u8 reserved_212[2]; // 0x212
+        struct {             // size 0x2
+            u8 flags;        // 0x210
+            u8 reserved_211; // 0x211
         };
-    }; // 0x20c
+    }; // 0x210
+
+    u8 reserved_212[2]; // 0x212
 };
 
 struct AITRIGGERSETSYS_s {          // size 0x4304
     struct AITRIGGERSET_s sets[32]; // 0x0000
-    i8 unknown_4280[64];            // 0x4280
-    i8 unknown_42c0[64];            // 0x42c0
+    i8 assigned_set[64];            // 0x4280: per object id, the set it helps with
+    i8 assigned_trigger[64];        // 0x42c0: per object id, the trigger in that set
     i32 unknown_4300;               // 0x4300
 };
 
@@ -1015,7 +1007,8 @@ struct TRAFFICANIM_s {           // size 0x140
     u8 rooms[256];               // 0x038
     i8 vehicle_count;            // 0x138
     u8 disabled;                 // 0x139
-    u8 reserved_13a[2];          // 0x13a
+    i8 direction;                // 0x13a: the pursuit's travel direction test, 1 or -1 (0 unknown)
+    u8 reserved_13b;             // 0x13b
     f32 next_spawn_time;         // 0x13c
 };
 
@@ -1165,7 +1158,8 @@ struct TRAFFICANIMSYS_s {                        // size 0x77e4
     NULISTHDR active_instances;                  // 0x77d8
     i8 animation_count;                          // 0x77e0
     i8 vehicle_count;                            // 0x77e1
-    u8 reserved_77e2[2];                         // 0x77e2
+    u8 reserved_77e2;                            // 0x77e2
+    i8 side;                                     // 0x77e3: the pursuit's active side, 1 or -1
 };
 
 struct GIZMOPICKUPRUNTIMESYS_s {           // size 0x1c
@@ -1399,7 +1393,7 @@ typedef struct GIZMO_PICKUP_TYPE { // size 0x38
     u8 letter;                     // 0x0c
     u8 random_model_count;         // 0x0d
     u8 flags;                      // 0x0e
-    u8 unknown_0f;                 // 0x0f
+    u8 disabled;                   // 0x0f: switched off for this area (GizmoPickups_SetOnOff)
     i16 first_model_id;            // 0x10
     u16 score;                     // 0x12
     f32 shadow_radius_x;           // 0x14
@@ -1681,11 +1675,19 @@ struct STATUSPACKET_s {                                                         
     u32 coins_collected[2];                                                                  // 0x08c
     i32 new_minikits;                                                                        // 0x094
     u32 unknown_98;                                                                          // 0x098
-    u16 player0_model;                                                                       // 0x09c
-    u16 player1_model;                                                                       // 0x09e
-    i16 area_id;                                                                             // 0x0a0
-    i8 episode_id;                                                                           // 0x0a2
-    u8 unknown_a3;                                                                           // 0x0a3
+
+    union { // size 0x4
+        u16 player_models[2];
+
+        struct {               // size 0x4
+            u16 player0_model; // 0x09c
+            u16 player1_model; // 0x09e
+        };
+    }; // 0x09c
+
+    i16 area_id;   // 0x0a0
+    i8 episode_id; // 0x0a2
+    u8 unknown_a3; // 0x0a3
 
     union { // size 0x2
         u8 player_active[2];
@@ -1707,7 +1709,7 @@ struct STATUSPACKET_s {                                                         
         struct { // size 0x4
 
             union { // size 0x1
-                u8 unknown_b0;
+                u8 result_flags;
 
                 struct {                         // size 0x1
                     u8 : 2;                      // 0x0b0:0
@@ -1748,8 +1750,8 @@ struct STATUSPACKET_s {                                                         
     u8 previous_completion;                  // 0x0bc
     u8 previous_gold_bricks;                 // 0x0bd
     u8 displayed_gold_bricks;                // 0x0be
-    u8 field_0xbd;                           // 0x0bf
-    i8 field_0xbe;                           // 0x0c0
+    u8 completion_shown;                     // 0x0bf
+    i8 pending_area;                         // 0x0c0
     u8 field_0xbf[7];                        // 0x0c1
     i8 stage_types[40];                      // 0x0c8
     u8 gold_brick_enabled[40];               // 0x0f0
@@ -1760,7 +1762,7 @@ struct STATUSPACKET_s {                                                         
     struct STATUS_STAGE_s *previous_stage;   // 0x120
     struct STATUS_STAGE_s *stage;            // 0x124
     struct STATUS_STAGE_s *next_stage;       // 0x128
-    u8 unknown_12c[32];                      // 0x12c
+    i16 gold_brick_messages[16];             // 0x12c
 };
 
 /* STATUSPACKET_s.flags_word: the bits of the bit-fields above, set from the area flags and the game globals
@@ -2125,7 +2127,7 @@ struct GIZSPINNER_s {                       // size 0x304
         u8 unknown_070[8];
 
         struct {            // size 0x8
-            f32 unknown_70; // 0x070
+            f32 progress;   // 0x070: the anim set's completion ratio
             u32 unknown_74; // 0x074
         };
     }; // 0x070

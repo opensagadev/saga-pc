@@ -312,25 +312,36 @@ typedef struct AIPATHSYS {              // size 0x10
     AIPATHSPECIALROUTE *special_routes; // 0xc
 } AIPATHSYS;
 
-typedef struct AIANTINODE {          // size 0x58
-    NUVEC position;                  // 0x00
-    f32 radius;                      // 0x0c
-    f32 min_y;                       // 0x10
-    f32 min_y_offset;                // 0x14
-    f32 max_y;                       // 0x18
-    f32 max_y_offset;                // 0x1c
-    nuhspecial_s special_handle;     // 0x20
-    NUVEC special_position;          // 0x2c
-    i32 rotation;                    // 0x38
-    i32 rotation_offset;             // 0x3c
-    f32 base_radius;                 // 0x40
-    f32 base_height;                 // 0x44
-    u8 enabled;                      // 0x48
-    u8 game_flags;                   // 0x49
-    u8 type;                         // 0x4a
-    u8 has_special;                  // 0x4b
-    u8 unknown_4c_b[0x4];            // 0x4c
-    u32 excluded_character_types[2]; // 0x50: one bit per object id
+typedef struct AIANTINODE {      // size 0x58
+    NUVEC position;              // 0x00
+    f32 radius;                  // 0x0c
+    f32 min_y;                   // 0x10
+    f32 min_y_offset;            // 0x14
+    f32 max_y;                   // 0x18
+    f32 max_y_offset;            // 0x1c
+    nuhspecial_s special_handle; // 0x20
+    NUVEC special_position;      // 0x2c
+    i32 rotation;                // 0x38
+    i32 rotation_offset;         // 0x3c
+    f32 base_radius;             // 0x40
+    f32 base_height;             // 0x44
+    u8 enabled;                  // 0x48
+    u8 game_flags;               // 0x49
+    u8 type;                     // 0x4a
+    u8 has_special;              // 0x4b
+    u8 unknown_4c_b[0x4];        // 0x4c
+
+    union { // size 0x8
+
+        struct {                // size 0x8
+            u8 special_type;    // 0x50
+            u8 unknown_51[0x7]; // 0x51
+        };
+
+        i64 object_mask; /* the grabber's single-frame node: the objects it keeps away */
+
+        u32 excluded_character_types[2]; /* one bit per object id */
+    }; // 0x50
 } AIANTINODE;
 #ifdef __cplusplus
 extern "C" {

@@ -298,8 +298,8 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
         source->player.coin_packet = destination->player.coin_packet;
         destination->player.coin_packet = pointer;
         player_index = source->player_index;
-        source->unknown_280 = destination->unknown_280;
-        destination->unknown_280 = player_index;
+        source->player_slot = destination->player_slot;
+        destination->player_slot = player_index;
         timer = source->player.powerup_time;
         source->player.powerup_time = destination->player.powerup_time;
         destination->player.powerup_time = timer;
@@ -418,7 +418,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             if (blend_camera != 0) {
                 GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             }
-            if (destination->character_data->game_character->unknown_028 > 0.0f) {
+            if (destination->character_data->game_character->hover_height > 0.0f) {
                 destination->velocity.y -= (f64)source->character_data->game_character->jump_speed * 0.5;
             }
         }
@@ -596,7 +596,7 @@ tagged_result:
         if (Tag_Mode == 1 || Tag_Mode == 3) {
             Tag_NewTransfer(object, target);
         }
-        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && (target->unknown_280 == 0 || target->unknown_280 == 1)) {
+        if ((object->player_slot == 0 || object->player_slot == 1) && (target->player_slot == 0 || target->player_slot == 1)) {
             ResetTimer(&JoinInTimer, 0.0f);
         }
     }
@@ -664,7 +664,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         Buck_StartRiderJump(rider, object);
     }
     character = object->character_data->game_character;
-    if (character->unknown_028 > 0.0f) {
+    if (character->hover_height > 0.0f) {
         object->velocity.y -= (f64)rider->velocity.y * 0.5;
     } else if ((character->flags_094 & CHARACTER_OPTION_BUCK_RIDER) != 0) {
         Buck_Start(object, rider);

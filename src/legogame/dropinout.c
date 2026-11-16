@@ -48,7 +48,7 @@ void CheckForPlayersTurnedOff(void) {
                     continue;
                 }
                 if (target->ground_flags != 0 ||
-                    (target->player.jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) {
+                    (target->player.jump_variant_state == 1 && target->character_data->game_character->hover_height > 0.0f)) {
                     TagCharacter(Player[source_index], target, 1);
                 }
             }
@@ -347,7 +347,7 @@ i32 PlayersDropInOut(void) {
                  object->player.camera_screen_position.y > -0.8500000238418579 &&
                  object->player.camera_screen_position.y < 0.8500000238418579) &&
                 (force_join || object->ground_flags != 0 || object->id == (u16)id_SPEEDERBIKE ||
-                 (object->player.jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
+                 (object->player.jump_variant_state == 1 && object->character_data->game_character->hover_height > 0.0f))) {
                 join = 1;
             } else if (force_join) {
                 join = 1;
@@ -366,7 +366,7 @@ i32 PlayersDropInOut(void) {
                     !(target->portal_flags & APIOBJECT_CANNOT_DROP_IN) && target->player.character_context != CHARACTER_CONTEXT_DROP_OUT &&
                     target->player.character_context != CHARACTER_CONTEXT_BIG_JUMP && target->model_draw_result != 0 &&
                     (target->ground_flags != 0 ||
-                     (target->player.jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
+                     (target->player.jump_variant_state == 1 && target->character_data->game_character->hover_height > 0.0f)) &&
                     (target->player.camera_screen_position.x > -0.8500000238418579 &&
                      target->player.camera_screen_position.x < 0.8500000238418579 &&
                      target->player.camera_screen_position.y > -0.8500000238418579 &&

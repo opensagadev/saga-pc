@@ -12,11 +12,6 @@ struct AISYS;
 struct climb_slot_s;
 struct gameobject_s;
 
-typedef struct AITRIGGERSET_PARTIAL { // size 0x211
-    u8 unknown_00[0x210];             // 0x000
-    u8 flags_low;                     // 0x210
-} AITRIGGERSET_PARTIAL;
-
 #ifdef __cplusplus
 extern "C" {
 #endif

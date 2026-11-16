@@ -90,7 +90,7 @@ void StoreStatusTakeOverObjectSys(void) {
             (((struct DOOR_s *)Door_Last)->takeover_character_mask == CharacterMaskAll ||
              ((character_index = (u8)Area_CharIDInCurrentList((i16)object->id)) < 63 &&
               (((struct DOOR_s *)Door_Last)->takeover_character_mask & ((u64)1 << character_index)) != 0))) {
-            takeoverobjects[index].contact_index = takeoverobjects[index].object->unknown_280;
+            takeoverobjects[index].contact_index = takeoverobjects[index].object->player_slot;
         } else {
             takeoverobjects[index].contact_index = 0xff;
         }
@@ -181,7 +181,7 @@ void Tag_NewTransfer(GAMEOBJECT *source, GAMEOBJECT *target) {
     f32 height;
     f32 lower;
     NUVEC *previous;
-    if (target->unknown_280 == 0 || target->unknown_280 == 1) {
+    if (target->player_slot == 0 || target->player_slot == 1) {
         TagTransfers[target->player_index].source = source;
         TagTransfers[target->player_index].elapsed = 0.0f;
         for (particle = 0; particle < 3; ++particle) {

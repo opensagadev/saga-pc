@@ -285,14 +285,14 @@ void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
                 continue;
             }
             piece = &customiser->piece_sets[category][selection[category]];
-            if (piece->unknown_10 != -1) {
-                counts[piece->unknown_10] += (i8)customiser->categories[category]->material_indices[0];
+            if (piece->bonus_group != -1) {
+                counts[piece->bonus_group] += (i8)customiser->categories[category]->material_indices[0];
             }
-            if (parts[0].piece == NULL && piece->unknown_indices_0a[0] != 0) {
+            if (parts[0].piece == NULL && piece->part_slots[0] != 0) {
                 parts[0].piece = piece;
-            } else if (parts[1].piece == NULL && piece->unknown_indices_0a[1] != 0) {
+            } else if (parts[1].piece == NULL && piece->part_slots[1] != 0) {
                 parts[1].piece = piece;
-            } else if (third == NULL && piece->unknown_indices_0a[2] != 0) {
+            } else if (third == NULL && piece->part_slots[2] != 0) {
                 third = piece;
             }
         }
@@ -1067,7 +1067,7 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
                 NUVEC position;
                 position = *(NUVEC *)&customiser->joint_matrices[side][locator].m30;
                 message.text = InitAsciiLeft;
-                message.unknown_4f = 2;
+                message.slot_flags = 2;
                 if (customiser->locator_x_offsets[category] != 0.0f) {
                     position.x += NuTrigTable[(angle >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
                     position.z += NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * customiser->locator_x_offsets[category];

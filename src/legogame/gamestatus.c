@@ -68,7 +68,7 @@ static f32 StatusCoinsRatio(f32 numerator, f32 denominator) {
 }
 
 void ResetStatusPacket_LSW(STATUSPACKET_s *packet) {
-    packet->lsw_packet->unknown_00 = 0;
+    packet->lsw_packet->flags = 0;
 }
 
 i32 InitStatusScreen_LSW(WORLDINFO *world, STATUSPACKET_s *packet) {
@@ -148,7 +148,7 @@ void TrueHero_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
         case TRUEHERO_STEP_FILL: {
             f32 percent;
             SetDrawGoldBrick(packet, packet->current_gold_brick);
-            if ((packet->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) == 0) {
+            if ((packet->result_flags & STATUSPACKET_TRUE_HERO_COMPLETE) == 0) {
                 percent = packet->collected_score * 100.0 / packet->true_hero_target;
                 if (percent > 99.0f) {
                     percent = 99.0f;
@@ -286,16 +286,16 @@ void TrueHero_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curren
     NuStrCpy(text, TTab[dat_00880f9c]);
     if (HubBothTrueJediGoldBricks != 0) {
         NuStrCat(text, " ");
-        NuStrCat(text, TTab[(packet->unknown_b0 & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4]);
+        NuStrCat(text, TTab[(packet->result_flags & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4]);
     }
     Text3DEx(text, 0.0f, StatusCoinsTitleY, 1.0f, StatusCoinsTitleScale, StatusCoinsTitleScale, StatusCoinsTitleScale, 0, 255, 255, 255,
              (u8)(alpha * 128.0f));
 }
 
 void MiniKit_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    if ((packet->unknown_b0 & 2) == 0) {
-        currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCount);
-        if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 &&
+    if ((packet->result_flags & 2) == 0) {
+        currentminikit += StatusNewMinikitCount;
+        if ((packet->result_flags & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 &&
             (stage->step != MINIKIT_STEP_COMPLETE || !(stage->step_time >= stage->step_duration))) {
             IncreaseScore(packet->score, 50000, 0);
         }
@@ -374,7 +374,7 @@ void MiniKit_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elaps
                 stage->step = MINIKIT_STEP_HOLD;
             }
             if (stage->step == MINIKIT_STEP_HOLD) {
-                if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0) {
+                if ((packet->result_flags & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0) {
                     stage->step = MINIKIT_STEP_COMPLETE;
                     stage->step_duration = 1.0f;
                 } else {
@@ -972,7 +972,7 @@ void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                     total = packet->previous_gold_bricks + index + 1;
                     sprintf(text, "%i/%i", total, GOLDBRICKPOINTS);
                     AddFancyMessage(text, 0.0f, 0.3f, 0.75f, 1.25f, 1, 1);
-                    message_id = ((i16 *)packet->unknown_12c)[index];
+                    message_id = packet->gold_brick_messages[index];
                     position.x = 0.0f;
                     position.y = 0.0375f;
                     position.z = 1.0f;
@@ -981,7 +981,7 @@ void GoldBrick_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 ela
                         if (HubBothTrueJediGoldBricks != 0) {
                             i16 name_id;
                             NuStrCat(text, " - ");
-                            name_id = (packet->unknown_b0 & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4;
+                            name_id = (packet->result_flags & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4;
                             NuStrCat(text, TTab[name_id]);
                         }
                         message = text;
@@ -1175,7 +1175,7 @@ i32 StatusCollectionAppearSoundPlayed = 0;
 i32 StatusCollectionMoveSoundPlayed = 0;
 
 void CollectCharcters_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
-    COLLECTION_BUILD *collection = (packet->unknown_b0 & STATUSPACKET_VEHICLE_AREA) != 0 ? &VehicleCollection : &CharacterCollection;
+    COLLECTION_BUILD *collection = (packet->result_flags & STATUSPACKET_VEHICLE_AREA) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1271,7 +1271,7 @@ void CollectCharactersOff_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, 
 
 void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) {
     f32 alpha;
-    COLLECTION_BUILD *collection = (packet->unknown_b0 & STATUSPACKET_VEHICLE_AREA) != 0 ? &VehicleCollection : &CharacterCollection;
+    COLLECTION_BUILD *collection = (packet->result_flags & STATUSPACKET_VEHICLE_AREA) != 0 ? &VehicleCollection : &CharacterCollection;
     if (current == 0) {
         return;
     }
@@ -1905,12 +1905,12 @@ void BonusWin_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elap
                 NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 BonusScore[(packet->flags_word >> 5) & 1]++;
                 sprintf(text, "%i", BonusScore[(packet->flags_word >> 5) & 1]);
-                if ((packet->unknown_b0 & STATUSPACKET_BONUS_WINNER) == 0) {
+                if ((packet->result_flags & STATUSPACKET_BONUS_WINNER) == 0) {
                     position.x = -0.015f;
-                    message.unknown_4f = 8;
+                    message.slot_flags = 8;
                 } else {
                     position.x = 0.015f;
-                    message.unknown_4f = 2;
+                    message.slot_flags = 2;
                 }
                 position.y = STATSPOSY;
                 position.z = 1.0f;

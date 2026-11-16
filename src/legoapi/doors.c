@@ -266,7 +266,7 @@ i32 Door_UseCutCam = 0;
 i32 Door_CutLookAtPlayers = 0;
 i32 gone_through_door_to_new_mode = 0;
 void *LastDoorPointer = 0;
-void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_s *door) = NULL;
+void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct DOOR_s *door) = NULL;
 static DOOR_s *D_door = 0;
 f32 Door_CutCamWait = 0;
 NUVEC DoorCutCameraPosition1 = {0};
@@ -559,7 +559,7 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     }
     Door_Last = door;
     if (Door_GoThrough_ExtraCodeFn != NULL) {
-        Door_GoThrough_ExtraCodeFn(world, (struct game_door_callback_s *)door);
+        Door_GoThrough_ExtraCodeFn(world, door);
     }
 }
 

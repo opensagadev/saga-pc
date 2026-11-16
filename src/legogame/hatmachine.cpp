@@ -104,12 +104,6 @@ extern "C" i32 HatMachine_BeingUsed(HATMACHINE *machine) {
     return machine->flags & HATMACHINE_FLAG_IN_USE;
 }
 
-struct HAT_USE_REQUEST {   // size 0x7a4
-    u8 unknown_000[0x79c]; // 0x000
-    i32 request;           // 0x79c
-    void *net_wait_info;   // 0x7a0
-};
-
 extern "C" i16 id_PRINCESSLEIABOUSHH;
 
 extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
@@ -128,8 +122,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         f32 range = (f64)object->bounds_radius + 0.25;
         range *= machine->scale;
-        if (distance < range &&
-            (special_pressed != 0 || (((HAT_USE_REQUEST *)object)->request == 2 && ((HAT_USE_REQUEST *)object)->net_wait_info != NULL))) {
+        if (distance < range && (special_pressed != 0 || (object->player.panel_use_request == 2 && object->player.net_wait_info != NULL))) {
             object->player.grapple = machine;
             object->movement_facing_angle = machine->yaw;
             object->player.context_hover_target_y = 0.0f;

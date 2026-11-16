@@ -81,7 +81,7 @@ extern "C" {
 }
 static VARIPTR *CS_buffend = 0;
 extern "C" {
-    void *CutStopInfo = 0;
+    CUTINFO *CutStopInfo = 0;
 }
 static u8 CutBlobShadowAlpha = 0;
 static f32 CutBlobShadowFadeFar = 0;
@@ -1302,7 +1302,7 @@ extern "C" {
 
     static void SetStopCutFlags(CUTINFO *cut) {
         CUTSTOPGAME = 1;
-        CutStopInfo = cut;
+        CutStopInfo = (CUTINFO *)cut;
         CUTDRAWWORLD = cut->flags & CUTINFO_DRAW_WORLD;
         CUTNOFOG = cut->flags & CUTINFO_NO_FOG;
         DebrisSetRenderGroup(cut->debris_render_group);

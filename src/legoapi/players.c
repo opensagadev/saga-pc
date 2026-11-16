@@ -303,7 +303,7 @@ void Player_ResetContexts(PLAYERPACKET *packet) {
     }
     packet->weapon_scale_rate = 5.0f;
     packet->weapon_draw_state = 0;
-    packet->origin_scale_override = 0.0f;
+    packet->shield_scale = 0.0f;
     packet->character_context = -1;
     packet->communicate_blend = 0.0f;
     packet->jump_sequence = 0;
@@ -317,10 +317,10 @@ void Player_ResetContexts(PLAYERPACKET *packet) {
     packet->combo_style = (u8)(qrand() / 0x8000);
     packet->quick_shoot_timer = 0.0f;
     packet->torpedo_fire_cooldown = 0.0f;
-    packet->timer_d34 = 0.0f;
+    packet->shield_timer = 0.0f;
     packet->engine_level = 0.0f;
     packet->fall_animation_timer = 0.0f;
-    packet->unknown_dc4 = 0.0f;
+    packet->platform_push_timer = 0.0f;
     packet->block_cooldown = 0.0f;
     packet->queued_context_animation = 0;
     packet->hold_timer = 0.0f;
@@ -593,7 +593,7 @@ void Player_ToggleCharacter(GAMEOBJECT *object, i32 direction, i32 sound) {
                     goto next_character;
                 }
                 if (object->ground_layer >= 0 && object->ground_layer < 17 && (TerLayer[object->ground_layer].flags & 1) != 0 &&
-                    GCDataList[id].unknown_028 <= 0.0f) {
+                    GCDataList[id].hover_height <= 0.0f) {
                     goto next_character;
                 }
             }

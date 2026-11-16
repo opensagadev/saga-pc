@@ -48,12 +48,12 @@ static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     world->shadow_editor->unknown_0c = 0.3f;
     world->shadow_editor->unknown_10 = 2.0f;
     world->shadow_editor->unknown_14 = 0.5f;
-    world->shadow_editor->unknown_18 = 0.0005f;
+    world->shadow_editor->shadow_bias = 0.0005f;
     world->shadow_editor->unknown_1c = 0.01f;
     world->shadow_editor->unknown_20 = 22.0f;
-    world->shadow_editor->unknown_24 = 0.5f;
-    world->shadow_editor->unknown_28 = 0.0f;
-    world->shadow_editor->unknown_2c = 0.0f;
+    world->shadow_editor->coefficient_0 = 0.5f;
+    world->shadow_editor->coefficient_1 = 0.0f;
+    world->shadow_editor->coefficient_2 = 0.0f;
     world->shadow_editor->unknown_30 = -2.0f;
     world->shadow_editor->preset = 0;
     return world->shadow_editor;
@@ -68,24 +68,24 @@ static void Shadow_ApplyPreset(EDGIZSHADOW *shadow, i32 preset) {
             shadow->preset = 1;
             shadow->unknown_10 = 2.0f;
             shadow->unknown_14 = 0.1f;
-            shadow->unknown_18 = 0.0005f;
+            shadow->shadow_bias = 0.0005f;
             shadow->unknown_1c = 0.01f;
             shadow->unknown_20 = 6.0f;
-            shadow->unknown_24 = 1.3f;
-            shadow->unknown_28 = 0.0f;
-            shadow->unknown_2c = 0.75f;
+            shadow->coefficient_0 = 1.3f;
+            shadow->coefficient_1 = 0.0f;
+            shadow->coefficient_2 = 0.75f;
             shadow->unknown_30 = -2.0f;
             break;
         case 2:
             shadow->preset = 2;
             shadow->unknown_10 = 2.0f;
             shadow->unknown_14 = 0.1f;
-            shadow->unknown_18 = 0.0005f;
+            shadow->shadow_bias = 0.0005f;
             shadow->unknown_1c = 0.01f;
             shadow->unknown_20 = 25.0f;
-            shadow->unknown_24 = 0.5f;
-            shadow->unknown_28 = 0.0f;
-            shadow->unknown_2c = 0.5f;
+            shadow->coefficient_0 = 0.5f;
+            shadow->coefficient_1 = 0.0f;
+            shadow->coefficient_2 = 0.5f;
             shadow->unknown_30 = -15.0f;
             break;
     }
@@ -114,10 +114,10 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
             shadow->unknown_14 = 0.5f;
         }
         if (version >= 3) {
-            shadow->unknown_18 = EdFileReadFloat();
+            shadow->shadow_bias = EdFileReadFloat();
             shadow->unknown_1c = EdFileReadFloat();
         } else {
-            shadow->unknown_18 = 0.0005f;
+            shadow->shadow_bias = 0.0005f;
             shadow->unknown_1c = 0.01f;
         }
         if (version >= 4) {
@@ -130,9 +130,9 @@ static i32 Shadow_Load(void *world_ptr, void *data) {
             (void)EdFileReadFloat();
         }
         if (version >= 6) {
-            shadow->unknown_24 = EdFileReadFloat();
-            shadow->unknown_28 = EdFileReadFloat();
-            shadow->unknown_2c = EdFileReadFloat();
+            shadow->coefficient_0 = EdFileReadFloat();
+            shadow->coefficient_1 = EdFileReadFloat();
+            shadow->coefficient_2 = EdFileReadFloat();
         }
         if (version >= 7) {
             shadow->unknown_30 = EdFileReadFloat();

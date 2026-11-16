@@ -121,7 +121,7 @@ void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
 
 void GameObjectDimensions(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *config;
-    if (object->use_model_origin > 0 && object->player.origin_scale_override == 1.0f) {
+    if (object->use_model_origin > 0 && object->player.shield_scale == 1.0f) {
         config = object->character_data->game_character;
         if (config->collision_origin_joint != -1 && object->character_model->points_of_interest[config->collision_origin_joint] != NULL &&
             object->origin_joint_ready != 0) {
@@ -132,7 +132,7 @@ void GameObjectDimensions(GAMEOBJECT *object) {
         }
     }
     object->bounds_radius = object->collision_radius;
-    object->bounds_half_height = object->unknown_b0;
+    object->bounds_half_height = object->collision_half_height;
 extra:
     if (GameObjectDimensionsExtraFn != NULL) {
         GameObjectDimensionsExtraFn(object);
@@ -143,7 +143,7 @@ void ScaleGameObject(GAMEOBJECT *object) {
     CHARACTERDATA *character = object->character_data;
     object->scaled_radius = character->scaled_radius * object->origin_scale;
     object->collision_radius = object->collision_radius_unscaled * object->origin_scale;
-    object->unknown_b0 = object->collision_radius * object->collision_y_scale;
+    object->collision_half_height = object->collision_radius * object->collision_y_scale;
     object->scaled_height = (character->top - character->bottom) * object->collision_scale;
 }
 
@@ -346,7 +346,7 @@ void GameObjectOrigin(GAMEOBJECT *object) {
         object->collision_position.x += object->previous_velocity.x * FRAMETIME;
         object->collision_position.y += object->previous_velocity.y * FRAMETIME;
         object->collision_position.z += object->previous_velocity.z * FRAMETIME;
-    } else if (object->use_model_origin > 0 && object->player.origin_scale_override == 1.0f &&
+    } else if (object->use_model_origin > 0 && object->player.shield_scale == 1.0f &&
                object->character_data->game_character->collision_origin_joint != -1 &&
                object->character_model->points_of_interest[object->character_data->game_character->collision_origin_joint] != NULL &&
                object->origin_joint_ready != 0) {
@@ -457,7 +457,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
         if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
             ((layer = terrain_object->ground_layer) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
             unsafe = 1;
-            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->unknown_028 > 0.0f) {
+            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->hover_height > 0.0f) {
                 unsafe = 0;
             }
         } else {
@@ -476,7 +476,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                  (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN && context != LEGOCONTEXT_GETIN)) &&
                 !VehicleArea) {
                 model_flags = object->character_data->model_flags;
-                if (((model_flags & CHARACTER_MODEL_VEHICLE) == 0 || !(object->character_data->game_character->unknown_028 > 0.0f)) &&
+                if (((model_flags & CHARACTER_MODEL_VEHICLE) == 0 || !(object->character_data->game_character->hover_height > 0.0f)) &&
                     ((model_flags & CHARACTER_MODEL_JETPACK) == 0 || object->player.jump_variant_state != 1)) {
                     break;
                 }
@@ -508,7 +508,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 object->respawn_position = object->last_safe_position;
                 object->flags_1fc_word |= 0x2000;
             }
-            if ((object->unknown_280 == 0 || object->unknown_280 == 1) && object->player.keep_time <= 0.0f &&
+            if ((object->player_slot == 0 || object->player_slot == 1) && object->player.keep_time <= 0.0f &&
                 GameCam->blend_time >= GameCam->blend_duration && object->sock_index != 0xff) {
                 if (object->player.takeover_owner != NULL &&
                     (LEGOCONTEXT_GETIN == -1 || object->player.character_context != LEGOCONTEXT_GETIN) &&
@@ -559,7 +559,7 @@ TERRAIN_LAYER TerLayer[17] = {
 
 void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
     object->can_use_object = target;
-    object->unknown_f00 = action;
+    object->use_action = action;
     object->use_action_frames = grapple_attach_frames;
     object->use_action_parameter = parameter;
 }

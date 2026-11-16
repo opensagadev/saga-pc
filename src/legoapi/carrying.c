@@ -149,7 +149,7 @@ void SuperCarry_DrawObject(struct gameobject_s *object) {
         config = object->character_data->game_character;
         blowup = object->player.grapple;
         DrawObjectOnCharacter(WORLD, object, -1, &blowup->type->animated_special, config->hand_locators[0], config->hand_locators[1],
-                              object->player.locator_matrices, ((u8)object->unknown_107c), object->layer_mask, &matrix, translation, 1.0f,
+                              object->player.locator_matrices, object->reflection_active, object->layer_mask, &matrix, translation, 1.0f,
                               1.0f);
     }
 }
@@ -528,7 +528,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                     object->player.context_variant_flags &= ~APIOBJECT_JUMP_FALLING;
                     object->player.context_duration += 0.1f;
                     object->ground_flags = 0;
-                    object->unknown_1050 = 0;
+                    object->terrain_contact_mask = 0;
                     object->player.jump_start_height = object->collision_min.y;
                     ResetAnimPacket(&object->anim_packet, -1);
                 }
@@ -729,11 +729,11 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             message.text = LEGOASCII_DOWN != NULL ? LEGOASCII_DOWN : txt_UNKNOWN;
             message.position = &nearest->mid_position;
             message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
-            message.unknown_4f = 4;
+            message.slot_flags = 4;
             message.scale = 2.0f;
             if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&
                 (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-                message.unknown_4f = (player == 0 ? 8 : 2) | 4;
+                message.slot_flags = (player == 0 ? 8 : 2) | 4;
             }
             message.red = SuperCarryPlayerRgb[player][0];
             message.green = SuperCarryPlayerRgb[player][1];

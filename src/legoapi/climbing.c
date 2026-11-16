@@ -491,7 +491,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
 i32 Hang_SetTargetMom(GAMEOBJECT *object) {
     if (object->player.pad->input_magnitude > 0.0f) {
         f32 speed;
-        if (LEGOACT_HANG_MOVE != -1 && ((MOVEMENT_MODEL *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
+        if (LEGOACT_HANG_MOVE != -1 && object->character_model->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
             speed = AnimSpeed(object->character_model, LEGOACT_HANG_MOVE);
             if (speed < 0.25f) {
                 speed = 0.25f;

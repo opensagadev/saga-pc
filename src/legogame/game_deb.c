@@ -38,12 +38,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Cut resource access prefix; the cut loader owns the resource. */
-typedef struct BURNOUT_CUT_PREFIX { // size 0x54
-    u8 unknown_00[0x50];            // 0x00
-    u32 flags;                      // 0x50
-} BURNOUT_CUT_PREFIX;
-
 void DebrisKillPlayers(void) {
     i32 i;
     GAMEOBJECT *player;
@@ -209,7 +203,7 @@ void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
             *result = NuMtlCreateEx3D(1, 1);
             (*result)->attribs.u_address = NUMTL_ADDRESS_WRAP;
             (*result)->attribs.v_address = NUMTL_ADDRESS_WRAP;
-            ((RIPPLE_MATERIAL_READER *)*result)->opacity = 1.0f;
+            (*result)->opacity = 1.0f;
             (*result)->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
             (*result)->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
             (*result)->attribs.filter_mode = 1;
@@ -234,16 +228,16 @@ void BurnoutApply(i32 view) {
     NUVEC average;
     parameters.enabled = 0;
     memset(&parameters.start_angle, 0, 0x50);
-    if ((CutStopInfo == NULL || (((BURNOUT_CUT_PREFIX *)CutStopInfo)->flags & 0x80) == 0) && WORLD->page_unknown != 0) {
-        edrtlCalculateBurnoutEx((BURN_SET *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
+    if ((CutStopInfo == NULL || (CutStopInfo->flags & 0x80) == 0) && WORLD->burnset != NULL) {
+        edrtlCalculateBurnoutEx(WORLD->burnset, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
     }
     if (parameters.intensity > 0.0f) {
         NuRndrSetBurnoutParameters(view, &parameters);
     }
     if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->enabled != 0) {
-        NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->unknown_24);
-        NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->unknown_28);
-        NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->unknown_2c);
+        NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->coefficient_0);
+        NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->coefficient_1);
+        NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->coefficient_2);
         NuDeferredShadingRender();
     }
 }
@@ -255,7 +249,6 @@ f32 RippleSfxCooldown = 0.5f;
 f32 ForceFieldRippleRate = 100.0f;
 
 void AddSurfaceRipples(GAMEOBJECT *object) {
-    RIPPLE_CONTACT_TIMER_VIEW *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW *)object;
     NUVEC position;
     NUVEC normal;
     NUVEC seed;
@@ -303,13 +296,13 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
                 }
             }
             /* The sound position stays unwritten when no particles are emitted. */
-            if (contact_timer->timer <= 0) {
+            if (object->player.sabre_contact_sfx_timer <= 0) {
                 PlaySfx("SabFField", &position);
-                contact_timer->timer = RippleSfxCooldown;
+                object->player.sabre_contact_sfx_timer = RippleSfxCooldown;
             }
         }
-        if (contact_timer->timer > 0) {
-            contact_timer->timer -= FRAMETIME;
+        if (object->player.sabre_contact_sfx_timer > 0) {
+            object->player.sabre_contact_sfx_timer -= FRAMETIME;
         }
     } else {
         if (object->water_intersects == 0 || object->model_draw_result == 0) {

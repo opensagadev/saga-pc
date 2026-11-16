@@ -272,7 +272,7 @@ void EndScoreMessage(GAME_MESSAGE *message) {
                     }
                 }
             } else {
-                IncreaseScore(&((GAME_SAVE_SCORE *)&Game)->coins, message->score, 1);
+                IncreaseScore(&Game.coins, message->score, 1);
             }
         }
     } else {
@@ -449,8 +449,8 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
 }
 
 static void EndRedBrickMessage(GAME_MESSAGE *message) {
-    if (AreaGlobals.unknown_08 != 0) {
-        AreaGlobals.unknown_08 = 2;
+    if (AreaGlobals.red_brick_state != 0) {
+        AreaGlobals.red_brick_state = 2;
     }
     RedBrickScale = 2.0f;
     GameAudio_PlaySfx(0x26, NULL, 0, 0);
@@ -483,7 +483,7 @@ void CollectRedBrick(NUVEC *position) {
         AddGameMsg(&message);
         DrawRedBrickTime = 2.0f;
         if (WORLD->area_index != -1) {
-            AreaGlobals.unknown_08 = 1;
+            AreaGlobals.red_brick_state = 1;
         }
     }
 }
@@ -687,7 +687,7 @@ void AddTorpedoAsPart(NUVEC *position, NUVEC *velocity, f32 scale, f32 lifetime)
     part = AddPart(&params);
     if (part != NULL) {
         part->rotation_y = (u16)qrand();
-        part->unknown_206 = 3;
+        part->player_mask = 3;
         part->unknown_214 = (f32)((f64)WORLD->torpedo_machine_sys->scale * 4.0 * (f64)NuTrigTable[0x2000]);
     }
 }
@@ -1028,7 +1028,7 @@ void GizmoPickups_SetOnOff(void) {
                 off = 0;
             }
         }
-        GizmoPickupType[index].unknown_0f = off == 0;
+        GizmoPickupType[index].disabled = off == 0;
     }
 }
 

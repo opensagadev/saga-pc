@@ -18,6 +18,14 @@
 /* PANEL_MOVEMENT.flags runtime bits, PANEL_MOVEMENT.draw_flags */
 #define PANEL_IN_USE 0x1            /* a character works the panel */
 #define PANEL_USED 0x2              /* worked to the end: the panel shows its on state */
+#define PANEL_VISIBLE 0x4           /* GizPanel_SetVisibility */
+#define PANEL_ACTIVE 0x8            /* GizPanel_Activate */
+#define PANEL_ARM_OUT 0x10          /* the arm reached out for the character */
+#define PANEL_NO_MODELS 0x20        /* editor option (file version 3): no base, arm or state models */
+#define PANEL_NO_TARGET 0x40        /* editor option (file version 5): no target indicator */
+#define PANEL_ALT_ANIMATED 0x80     /* editor option (file version 6): the alternative animated model */
+#define PANEL_ALT_BASE 0x1          /* draw_flags, editor option (file version 6): the alternative base model */
+#define PANEL_CASTS_SHADOW 0x2      /* draw_flags, editor option (file version 7): drawn into the shadow map */
 #define PANEL_NO_VOICE_IN_STORY 0x4 /* draw_flags, an editor option (file version 8): no droid interface line in story mode */
 
 /* A wall panel that a character of the right kind uses (protocol droid, bounty hunter, storm trooper). */
@@ -28,18 +36,43 @@ typedef struct panel_movement_s { // size 0x90
     u16 y_rotation;               // 0x5c
     u8 unknown_5e[3];             // 0x5e
     u8 model_variant;             // 0x61
-    u8 flags;                     // 0x62
-    u8 draw_flags;                // 0x63
-    NUVEC floor_position;         // 0x64
-    NUVEC target_offset;          // 0x70
-    u16 arm_pitch;                // 0x7c
-    u16 arm_roll;                 // 0x7e
-    u16 arm_x_rotation;           // 0x80
-    u16 target_pitch;             // 0x82
-    u16 target_roll;              // 0x84
-    i16 platform_id;              // 0x86
-    f32 activation_time;          // 0x88
-    f32 target_scale;             // 0x8c
+
+    union { // size 0x1
+        u8 flags;
+
+        struct {                 // size 0x1
+            u8 in_use : 1;       // 0x62:0
+            u8 used : 1;         // 0x62:1
+            u8 visible : 1;      // 0x62:2
+            u8 active : 1;       // 0x62:3
+            u8 arm_out : 1;      // 0x62:4
+            u8 no_models : 1;    // 0x62:5
+            u8 no_target : 1;    // 0x62:6
+            u8 alt_animated : 1; // 0x62:7
+        };
+    }; // 0x62
+
+    union { // size 0x1
+        u8 draw_flags;
+
+        struct {                      // size 0x1
+            u8 alt_base : 1;          // 0x63:0
+            u8 casts_shadow : 1;      // 0x63:1
+            u8 no_voice_in_story : 1; // 0x63:2
+            u8 : 5;                   // 0x63:3
+        };
+    }; // 0x63
+
+    NUVEC floor_position; // 0x64
+    NUVEC target_offset;  // 0x70
+    u16 arm_pitch;        // 0x7c
+    u16 arm_roll;         // 0x7e
+    u16 arm_x_rotation;   // 0x80
+    u16 target_pitch;     // 0x82
+    u16 target_roll;      // 0x84
+    i16 platform_id;      // 0x86
+    f32 activation_time;  // 0x88
+    f32 target_scale;     // 0x8c
 } PANEL_MOVEMENT;
 
 typedef struct panel_load_system_s { // size 0x8

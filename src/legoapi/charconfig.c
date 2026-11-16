@@ -1411,7 +1411,7 @@ static void CC_blobshadow_alpha(NUFPAR *parser) {
 }
 
 static void CC_hover_height(NUFPAR *parser) {
-    charconfig.runtime->unknown_028 = NuFParGetFloat(parser);
+    charconfig.runtime->hover_height = NuFParGetFloat(parser);
 }
 
 static void CC_hover_time(NUFPAR *parser) {

@@ -96,9 +96,9 @@ void PartImpact_ThermalDetonator(PART *part) {
         PlaySfx("ThermalDet_Bnce", &part->position);
     }
     if ((part->active & PART_IN_USE) != 0 && (part->active & PART_STATE_STOPPED) == 0) {
-        trail.x = part->impact_position.x - part->impact_normal.x * part->unknown_e0;
-        trail.y = part->impact_position.y - part->impact_normal.y * part->unknown_e0;
-        trail.z = part->impact_position.z - part->impact_normal.z * part->unknown_e0;
+        trail.x = part->impact_position.x - part->impact_normal.x * part->glow_radius;
+        trail.y = part->impact_position.y - part->impact_normal.y * part->glow_radius;
+        trail.z = part->impact_position.z - part->impact_normal.z * part->glow_radius;
         AddGameDebris(WORLD->game_debris_sys, 1, &trail);
     }
 }
@@ -138,7 +138,7 @@ void PartUpdate_ThermalDetonator(PART *part) {
     if ((u32)layer > 16) {
         return;
     }
-    if ((part->active & PART_STATE_IN_WATER) == 0 && part->position.y + part->unknown_e0 < water &&
+    if ((part->active & PART_STATE_IN_WATER) == 0 && part->position.y + part->glow_radius < water &&
         ((TerLayer[layer].flags & 1) != 0 || layer == 1 || layer == 9)) {
         part->active |= PART_STATE_IN_WATER;
     }
@@ -195,8 +195,8 @@ void PartKill_ThermalDetonator(PART *part, i32 unused1) {
     }
 
     explosion = Detonate(&part->position, flags);
-    if (explosion != NULL && part->owner != NULL && (part->owner->unknown_280 == 0 || part->owner->unknown_280 == 1)) {
-        explosion->player_index = part->owner->unknown_280;
+    if (explosion != NULL && part->owner != NULL && (part->owner->player_slot == 0 || part->owner->player_slot == 1)) {
+        explosion->player_index = part->owner->player_slot;
     }
 }
 
@@ -264,7 +264,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     params.flags = 0x08000292;
     params.fade_time = 10.0f;
     params.owner = object;
-    params.unknown_c4 = 1;
+    params.flicker_flags = 1;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PartDraw_ThermalDetonator;
     params.impact_fn = PartImpact_ThermalDetonator;
@@ -273,7 +273,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = ObjHitObj_Flags(object);
-        part->unknown_206 = 0;
+        part->player_mask = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
         part->active &= ~0x38000;
@@ -325,7 +325,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     params.flags = 0x08000292;
     params.fade_time = 10.0f;
     params.owner = object;
-    params.unknown_c4 = 1;
+    params.flicker_flags = 1;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PartDraw_ThermalDetonator;
     params.impact_fn = PartImpact_ThermalDetonator;
@@ -334,7 +334,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = ObjHitObj_Flags(object);
-        part->unknown_206 = 0;
+        part->player_mask = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
         part->active &= ~0x38000;

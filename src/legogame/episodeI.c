@@ -312,8 +312,8 @@ void PodRaceSnipersUpdate(void) {
                     if (player_ix == 0) {
                         target = player;
                     }
-                    CalculateInterceptVector(&PodRace_snipers[i].prev, &target->collision_position, &target->velocity, type->unknown_10,
-                                             &aim, NULL);
+                    CalculateInterceptVector(&PodRace_snipers[i].prev, &target->collision_position, &target->velocity, type->speed, &aim,
+                                             NULL);
                     NuVecAdd(&aim, &aim, &PodRace_snipers[i].prev);
                     PodRace_snipers[i].state -= FRAMETIME;
                     if (PodRace_snipers[i].state < 0.0f) {
@@ -2211,7 +2211,7 @@ void PodRaceCInit(WORLDINFO *world) {
         sprintf(name, "boost0%i", i + 1);
         NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1);
     }
-    if (FreePlay != 0 || (LevelProgressData[world->current_level->index].unknown_2800[0] & 1) != 0) {
+    if (FreePlay != 0 || (LevelProgressData[world->current_level->index].flags & 1) != 0) {
         for (i = 0; i < 10; i++) {
             if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 1);

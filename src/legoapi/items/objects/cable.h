@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/legoapi_types.h"
 #include "legoapi/world/level.h"
 #include "legoapi/world/world.h"
 #include "nu2api/numath/nuvec.h"
@@ -16,7 +17,7 @@ extern "C" {
     struct CABLE_s *CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
     extern const f32 AIPositionUnset;
     void InitCables(WORLDINFO *world);
-    extern u8 cables[0xf60];
+    extern struct CABLE_s cables[8];
     extern f32 default_targetmomf;
     extern f32 targetmomf;
     extern f32 default_ownermomf;

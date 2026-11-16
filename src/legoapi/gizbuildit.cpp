@@ -817,7 +817,7 @@ extern "C" {
             params.end_radius = 0.2f;
             params.gravity = -4.0f;
             params.flags = PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY;
-            params.unknown_c4 = 1;
+            params.flicker_flags = 1;
             params.stop_fn = PartStop_Flickerer;
             params.draw_fn = PartDraw_Flickerer;
             params.impact_fn = PartImpact_Brick;

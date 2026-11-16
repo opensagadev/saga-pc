@@ -6,14 +6,12 @@
 #include "legoapi/world/world.h"
 #include "nu2api/numath/nuvec.h"
 
-/* Nine held scalar declarations are in the separately pinned state proposal. */
+struct TIGHTROPE_s;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    /* Inside the existing C public declaration section; definition remains owner-local. */
-    typedef struct TIGHTROPE_MOTION TIGHTROPE_MOTION;
-    TIGHTROPE_MOTION *TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
+    struct TIGHTROPE_s *TightRope_InRange(GAMEOBJECT *, WORLDINFO *, NUVEC *);
     void TightRope_MoveCode(GAMEOBJECT *, i32);
 #ifdef __cplusplus
 }

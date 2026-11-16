@@ -987,7 +987,7 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
 
         if (object != NULL) {
             api = object;
-            if ((effects->flags & CHAREFFECT_PLAYER_ONLY) != 0 && api->unknown_280 == 255) {
+            if ((effects->flags & CHAREFFECT_PLAYER_ONLY) != 0 && api->player_slot == 255) {
                 continue;
             }
             if ((effects->flags & CHAREFFECT_ON_GROUND) != 0 && (api->ground_flags & GROUND_NEAR) == 0) {

@@ -196,54 +196,12 @@ extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
 extern "C" {
 
-    typedef struct world_script_progress_s {
-        char name[16];
-        f32 params[4];
-    } WORLD_SCRIPT_PROGRESS;
-
-    typedef struct level_progress_transfer_s {
-        SCENEPROGRESS scene_progress;
-        u32 flags;
-        u8 unknown_2804[0x20];
-        WORLD_SCRIPT_PROGRESS scripts[32];
-        GIZFLOWPROGRESS giz_flow_progress;
-        char disabled_effect_names[12][16];
-    } LEVEL_PROGRESS_TRANSFER;
-
-    typedef struct world_persistence_flags_s {
-        u8 unknown_0000[0x5170];
-        u32 progress_flags;
-    } WORLD_PERSISTENCE_FLAGS;
-
     void LoadGrassFile(WORLDINFO *world);
     void LoadBridgeFile(WORLDINFO *world);
     void LoadTerrainFile(WORLDINFO *world);
 }
 
-typedef struct world_minikit_load_s {
-    NUGSCN *scene;
-    u8 unknown_04[0x14];
-} WORLD_MINIKIT_LOAD;
-
-typedef struct world_load_reader_s {
-    u8 unknown_0000[0x2964];
-    NUGSCN *icons_scene;
-    WORLD_MINIKIT_LOAD minikit;
-    void *character_scenes;
-    u8 unknown_2984[0x2ab8 - 0x2984];
-    i32 light_index;
-    NUVEC *light_direction;
-    u8 unknown_2ac0[0xc];
-    GIZFLOW *giz_flow;
-    u8 unknown_2ad0[0x14];
-    i32 ai_loaded;
-    u8 unknown_2ae8[0x4670 - 0x2ae8];
-    void *ai_connection_control;
-    void *ai_connection_helper;
-    void *ai_trigger_set;
-    void *climb_object_system;
-} WORLD_LOAD_READER;
-
+extern "C" void Attractos_InitTerrain(WORLDINFO *);
 extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void Signals_InitTerrain(WORLDINFO *);
 
@@ -833,7 +791,7 @@ extern "C" {
         if (index >= 0) {
             memset(&LevelProgressData[index], 0, sizeof(LEVEL_PROGRESS));
             LevelProgressData[index].progress_state = 0;
-            LevelProgressData[index].minimum_tfactor = 2000000.0f;
+            LevelProgressData[index].grabber_position.y = 2000000.0f;
             if (world != NULL) {
                 memcpy(&LevelProgressData[index].scene_progress, &world->scene_progress, sizeof(SCENEPROGRESS));
             }
@@ -850,15 +808,15 @@ extern "C" {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].name) == 0) {
-                NuStrCpy(((LEVEL_PROGRESS_TRANSFER *)world->level_progress)->scripts[index].name, processor->name);
+            if (NuStrLen(progress->scripts[index].name) == 0) {
+                NuStrCpy(world->level_progress->scripts[index].name, processor->name);
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
+                    progress->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
-            } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].name, processor->name) == 0) {
+            } else if (NuStrICmp(progress->scripts[index].name, processor->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
+                    progress->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
             }
@@ -872,13 +830,12 @@ extern "C" {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].name) == 0) {
+            if (NuStrLen(world->level_progress->scripts[index].name) == 0) {
                 break;
             }
-            if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].name, process->name) == 0) {
+            if (NuStrICmp(world->level_progress->scripts[index].name, process->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    process->processor.params[parameter] =
-                        ((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].params[parameter];
+                    process->processor.params[parameter] = world->level_progress->scripts[index].params[parameter];
                 }
                 break;
             }
@@ -904,13 +861,13 @@ void NewArea_ResetGlobalsPC(void) {
     Door_UseCutCam = 0;
     BuildUpDone = 0;
     BuildUpTotal = 0;
-    AreaGlobals.unknown_00 = 0;
-    AreaGlobals.unknown_08 = 0;
+    AreaGlobals.player_deaths = 0;
+    AreaGlobals.red_brick_state = 0;
     AreaGlobals.arcade_player_kills[0] = 0;
     AreaGlobals.arcade_ai_kills[0] = 0;
     AreaGlobals.arcade_player_kills[1] = 0;
     AreaGlobals.arcade_ai_kills[1] = 0;
-    AreaGlobals.unknown_18 = 0;
+    AreaGlobals.special_pickups_collected = 0;
     if (WORLD->area == HOTHBATTLE_ADATA) {
         ResetMinikitCounter();
     }
@@ -960,7 +917,7 @@ void LoadPerm1(void) {
     u8 shadow_random[0x800];
     i32 index;
     i32 texture_id;
-    PERMANENT_MATERIAL_READER *material;
+    NUMTL *material;
     NUGSCN *terrain_scene;
     VARIPTR native_end_address;
     rtlInitDynamic(&permbuffer_ptr, superbuffer_end, 0x40);
@@ -971,19 +928,19 @@ void LoadPerm1(void) {
         edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);
     }
     PermanentEffectsMaterial = NuMtlCreateEx(1, 10);
-    material = (PERMANENT_MATERIAL_READER *)PermanentEffectsMaterial;
-    material->diffuse[2] = 1.0f;
-    material->diffuse[1] = 1.0f;
-    material->diffuse[0] = 1.0f;
-    material->attributes = (material->attributes & ~0x1000u) | 0x2000u;
-    material->attributes = (material->attributes & ~0x8000u) | 0x4000u;
-    material->attributes = (material->attributes & ~0x20u) | 0x10u;
+    material = PermanentEffectsMaterial;
+    material->diffuse_b = 1.0f;
+    material->diffuse_g = 1.0f;
+    material->diffuse_r = 1.0f;
+    material->attribs.word = (material->attribs.word & ~0x1000u) | 0x2000u;
+    material->attribs.word = (material->attribs.word & ~0x8000u) | 0x4000u;
+    material->attribs.word = (material->attribs.word & ~0x20u) | 0x10u;
     material->opacity = 0.999f;
-    material->attributes = (material->attributes & ~0xdu) | 2u;
-    material->attributes = (material->attributes & ~0x200u) | 0x100u;
-    material->attributes = (material->attributes & ~0x800u) | 0x400u;
-    material->texture_id = ((PERMANENT_MATERIAL_READER *)DebMat[5])->texture_id;
-    material->shader_flags = (material->shader_flags & ~2u) | 1u;
+    material->attribs.word = (material->attribs.word & ~0xdu) | 2u;
+    material->attribs.word = (material->attribs.word & ~0x200u) | 0x100u;
+    material->attribs.word = (material->attribs.word & ~0x800u) | 0x400u;
+    material->texture_id = DebMat[5]->texture_id;
+    material->attribs2 = (material->attribs2 & ~2u) | 1u;
     NuMtlUpdate(PermanentEffectsMaterial);
     NuLgtSetArcMat(PermanentEffectsMaterial, 0.0f, 0.50390625f, 0.25f, 0.5625f);
     PermanentGraphicsResourceSetup();
@@ -1007,19 +964,19 @@ void LoadPerm1(void) {
     InitRipples(&RippleSet, &permbuffer_ptr, &permbuffer_end, 0x40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
     PermanentShadowMaterial = NuMtlCreate3D(1);
-    material = (PERMANENT_MATERIAL_READER *)PermanentShadowMaterial;
-    material->diffuse[0] = 1.0f;
-    material->diffuse[1] = 1.0f;
-    material->diffuse[2] = 1.0f;
-    material->attributes = (material->attributes & ~0x1000u) | 0x2000u;
-    material->attributes = (material->attributes & ~0x8000u) | 0x4000u;
+    material = PermanentShadowMaterial;
+    material->diffuse_r = 1.0f;
+    material->diffuse_g = 1.0f;
+    material->diffuse_b = 1.0f;
+    material->attribs.word = (material->attribs.word & ~0x1000u) | 0x2000u;
+    material->attribs.word = (material->attribs.word & ~0x8000u) | 0x4000u;
     material->opacity = 0.999f;
-    material->attributes = (material->attributes & ~0xeu) | 1u;
-    material->attributes = (material->attributes & ~0x600000u) | 0x100000u;
+    material->attribs.word = (material->attribs.word & ~0xeu) | 1u;
+    material->attribs.word = (material->attribs.word & ~0x600000u) | 0x100000u;
     material->sort_priority = 0xff;
-    material->attributes = (material->attributes & ~0x10000u) | 0x20000u;
+    material->attribs.word = (material->attribs.word & ~0x10000u) | 0x20000u;
     texture_id = NuTexRead("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
-    ((PERMANENT_MATERIAL_READER *)PermanentShadowMaterial)->texture_id = (i16)texture_id;
+    PermanentShadowMaterial->texture_id = (i16)texture_id;
     NuMtlUpdate(PermanentShadowMaterial);
     for (index = 0; index < 0x800; ++index) {
         shadow_random[index] = (u8)(qrand() >> 8);
@@ -1321,7 +1278,7 @@ void LoadAreaCharacters(void) {
     saved_override = AreaGetKeyboardOverride();
     VehicleArea = Area != -1 && (ADataList[Area].flags & AREAFLAG_VEHICLE_AREA) != 0;
     BonusArea = -1 != Area && (ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0;
-    AreaGlobals.unknown_04 = VehicleArea != 0 && BonusArea == 0;
+    AreaGlobals.vehicle_area = VehicleArea != 0 && BonusArea == 0;
     AreaDataLoaded = 0;
     loadareadata_loadlevel = 0;
     loadareacharacters_loadedlevel = 0;
@@ -1394,8 +1351,9 @@ void LoadAreaCharacters(void) {
             }
         } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTime && skip_text_scroll == 0 &&
                    (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTime))) {
-            AREA_LOADING_PAD_READER *pads = (AREA_LOADING_PAD_READER *)GamePadStorage;
-            if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 || NuKeyboard_db(1) != 0) {
+            GAMEPAD_INIT_RECORD *pads = GamePadStorage;
+            if ((pads[0].menu_buttons_pressed & GAMEPAD_START) != 0 || (pads[1].menu_buttons_pressed & GAMEPAD_START) != 0 ||
+                NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
             } else {
                 draw_touch_prompt = 1;
@@ -1403,7 +1361,7 @@ void LoadAreaCharacters(void) {
             touch_prompt_time += FRAMETIME;
         }
         UpdateTimer(&GlobalTimer);
-        ((AREA_LOADING_CLOCK_READER *)&Game)->elapsed_time = ((AREA_LOADING_CLOCK_READER *)&Game)->elapsed_time + FRAMETIME;
+        Game.game_time = Game.game_time + FRAMETIME;
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
             if (CharacterDataLoad == 2 ||
@@ -1935,7 +1893,6 @@ void WorldInfo_Load(WORLDINFO *world) {
     char ai_name[32];
     char title_light_path[] = "levels\\titles\\titles";
     NUGSCN *cutscene_scene;
-    WORLD_LOAD_READER *resource = (WORLD_LOAD_READER *)world;
     i32 index;
     LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index, world->level_idx,
              world->config_file);
@@ -1973,7 +1930,7 @@ void WorldInfo_Load(WORLDINFO *world) {
                 goto archive_selected;
             }
         }
-        NuWin32SetDFS((i8)world->current_level->unknown_00a2 + 1);
+        NuWin32SetDFS((i8)world->current_level->dfs_mode + 1);
     archive_selected:
         if (PcWindowOptions.shadowmethod == 2) {
             world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
@@ -2027,16 +1984,16 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     } else if ((world->current_level->flags & LEVEL_STATUS) != 0 && world->area != NULL && world->area->minikit_id != -1) {
-        MiniKit_Load((MINIKIT *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
-        if (resource->minikit.scene != NULL) {
-            MiniKit_InitPieces((MINIKIT *)&resource->minikit, 10, &world->giz_buffer, &world->buffer_end);
+        MiniKit_Load(&world->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
+        if (world->minikit.scene != NULL) {
+            MiniKit_InitPieces(&world->minikit, 10, &world->giz_buffer, &world->buffer_end);
         }
         if (abort_load != 0) {
             goto abort;
         }
     }
     if ((world->current_level == HUB_LDATA || (world->current_level->flags & LEVEL_STATUS) != 0) && big_icon_scene == NULL) {
-        resource->icons_scene = NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
+        world->icons_scene = NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
     }
     cutscene_scene = area_scene;
     if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & AREAFLAG_OVERRIDE_THINGS_SCENE) == 0) {
@@ -2048,7 +2005,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         goto abort;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    resource->character_scenes = world->giz_buffer.void_ptr;
+    world->character_scenes = world->giz_buffer.void_ptr;
     world->giz_buffer.addr += CHARCOUNT * 0x10;
     CharScenes_LevelLoad(world);
     if ((world->current_level->flags & LEVEL_GAMEPLAY) != 0 &&
@@ -2101,20 +2058,20 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (abort_load != 0) {
         goto abort;
     }
-    resource->ai_loaded = (world->current_level->flags & LEVEL_GAMEPLAY) == 0 ||
-                          (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0;
-    if (resource->ai_loaded == 0) {
+    world->ai_loaded = (world->current_level->flags & LEVEL_GAMEPLAY) == 0 ||
+                       (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0;
+    if (world->ai_loaded == 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         sprintf(ai_name, "ai");
         world->ai_sys = AISysLoad(&world->giz_buffer, &world->buffer_end, 0x1cc00, world->current_gscn, world->current_level->dir,
                                   world->current_level->name, ai_name);
-        resource->ai_connection_control = AIPathCnxControlSysCreate(&world->giz_buffer, &world->buffer_end, 32);
-        resource->ai_connection_helper = AIPathCnxHelperSysCreate(&world->giz_buffer, &world->buffer_end, 32);
-        resource->ai_trigger_set = AITriggerSetSysCreate(&world->giz_buffer, &world->buffer_end);
+        world->ai_path_cnx_control_sys = (ai_control_system_s *)AIPathCnxControlSysCreate(&world->giz_buffer, &world->buffer_end, 32);
+        world->ai_connection_helpers = (ai_helper_system_s *)AIPathCnxHelperSysCreate(&world->giz_buffer, &world->buffer_end, 32);
+        world->ai_trigger_set = AITriggerSetSysCreate(&world->giz_buffer, &world->buffer_end);
         GameAIScriptAddLevelSfx(world, &global_aiscripts);
         GameAIScriptAddLevelSfx(world, &world->ai_sys->scripts);
-        resource->climb_object_system =
-            CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end, world->current_level->max_climb_objects);
+        world->climb_objects =
+            (climb_system_s *)CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end, world->current_level->max_climb_objects);
     }
     if (abort_load != 0) {
         goto abort;
@@ -2125,15 +2082,15 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     if ((world->current_level->flags & 4) != 0) {
         LoadLights(world, world->current_level == TITLES_LDATA ? title_light_path : world->config_file);
-        resource->light_index = rtlFindByUserId((RTL_SET *)world->rtl_set, WorldLightUserId);
-        if (resource->light_index == -1) {
-            resource->light_direction = NULL;
+        world->rtl_id = rtlFindByUserId(world->rtl_set, WorldLightUserId);
+        if (world->rtl_id == -1) {
+            world->light_dir = NULL;
         } else {
-            rtlGetDirection((RTL_SET *)world->rtl_set, resource->light_index, &resource->light_direction);
+            rtlGetDirection(world->rtl_set, world->rtl_id, &world->light_dir);
         }
     } else {
-        resource->light_index = -1;
-        resource->light_direction = NULL;
+        world->rtl_id = -1;
+        world->light_dir = NULL;
     }
     if (abort_load != 0) {
         goto abort;
@@ -2145,13 +2102,13 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     }
-    GizmoSysAddGizmos(world->gizmo_sys, resource->giz_flow, world);
+    GizmoSysAddGizmos(world->gizmo_sys, world->giz_flow, world);
     if (abort_load != 0) {
         goto abort;
     }
     NuStrCpy(path, world->config_file);
     NuStrCat(path, ".git");
-    resource->giz_flow = (GIZFLOW *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
+    world->giz_flow = (GIZFLOW *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
     if (abort_load != 0) {
         goto abort;
     }
@@ -3554,8 +3511,8 @@ extern "C" {
             }
             GizmoSysStoreProgress(world->gizmo_sys, world, index);
             if (progress != NULL) {
-                GizFlowStoreProgress(world->giz_flow, &((LEVEL_PROGRESS_TRANSFER *)progress)->giz_flow_progress);
-                StoreSceneProgress(world->current_gscn, &((LEVEL_PROGRESS_TRANSFER *)progress)->scene_progress, 0);
+                GizFlowStoreProgress(world->giz_flow, &progress->giz_flow_progress);
+                StoreSceneProgress(world->current_gscn, &progress->scene_progress, 0);
             }
             GameAnimSys_StoreProgress(world->game_anim_sys, index);
             WorldStoreScriptsProgressPC(world, progress);
@@ -3563,11 +3520,10 @@ extern "C" {
     store_flags:
         if (progress != NULL) {
             if (progress != world->level_progress) {
-                PCByteCopy(((LEVEL_PROGRESS_TRANSFER *)progress)->disabled_effect_names, world->level_progress->disabled_effect_names,
-                           sizeof(((LEVEL_PROGRESS_TRANSFER *)progress)->disabled_effect_names));
+                PCByteCopy(progress->disabled_effect_names, world->level_progress->disabled_effect_names,
+                           sizeof(progress->disabled_effect_names));
             }
-            ((LEVEL_PROGRESS_TRANSFER *)progress)->flags =
-                (((LEVEL_PROGRESS_TRANSFER *)progress)->flags & ~4U) | ((((WORLD_PERSISTENCE_FLAGS *)world)->progress_flags << 2) & 4) | 2;
+            progress->flags = (progress->flags & ~4U) | ((world->belt_active << 2) & 4) | 2;
         }
     }
 
@@ -3603,7 +3559,7 @@ void NewArea(void) {
     SuperCounters_Reset(Area);
     NewArea_ResetGlobalsPC();
     for (i = 0; i < 8; ++i) {
-        ((PLAYER_PROGRESS_HP *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
+        PlayerProgress[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
         if (Player[i] != NULL) {
             Player[i]->current_hp = (i8)Player[i]->max_hitpoints;
         }

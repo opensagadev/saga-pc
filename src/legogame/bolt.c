@@ -32,13 +32,6 @@
 #include "nu2api/numath/nuvec.h"
 #include <math.h>
 
-typedef struct VEHICLE_FIRE_STATE { // size 0xe3c
-    u8 unknown_000[0x7f4];          // 0x000
-    WEAPON_AMMO weapon_ammo;        // 0x7f4
-    u8 unknown_7fc[0xe3a - 0x7fc];  // 0x7fc
-    u8 bolt_fire_phase;             // 0xe3a
-} VEHICLE_FIRE_STATE;
-
 i16 dat_007f190c = -1;
 i16 dat_007f1910 = -1;
 i16 id_TIEBOMBER = -1;
@@ -65,21 +58,20 @@ i16 dat_007f1b38 = -1;
 
 i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
-    VEHICLE_FIRE_STATE *state = (VEHICLE_FIRE_STATE *)object;
     i32 id;
     i32 result;
     if (object == NULL) {
         return fallback;
     }
-    if (StartupGameFlag0 != 0 && state->weapon_ammo.type != NULL && state->weapon_ammo.type->bolt_override != -1) {
-        return state->weapon_ammo.type->bolt_override;
+    if (StartupGameFlag0 != 0 && object->player.weapon.type != NULL && object->player.weapon.type->bolt_override != -1) {
+        return object->player.weapon.type->bolt_override;
     }
     id = (i16)object->id;
     if (id == VehicleSpecialShooterId) {
         return 43;
     }
     if (id == dat_007f19a4) {
-        result = 7 + 2 * (state->bolt_fire_phase != 0);
+        result = 7 + 2 * (object->player.bolt_fire_phase != 0);
         if (result == 7 && world->current_level == ASTEROIDCHASED_LDATA) {
             return 8;
         }
@@ -119,7 +111,7 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
         return 23;
     }
     if (id == dat_007f1af0) {
-        return 21 + (state->bolt_fire_phase != 0);
+        return 21 + (object->player.bolt_fire_phase != 0);
     }
     if (id == id_JEDISTARFIGHTERYELLOWEP3 || id == dat_007f19e8) {
         if (WORLD->area != NULL && WORLD->area == BATTLEOVERCORUSCANT_ADATA && WORLD->level_objects[0x12d].active != 0) {
@@ -209,7 +201,7 @@ void Bolt_Debris_LSW(BOLT *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no
     i32 effect;
     if (world->current_level == DOGFIGHTA_LDATA) {
         effect = 0x2e;
-        if (bolt->unknown_104 != -1) {
+        if (bolt->impact_surface != -1) {
             points = &bolt->dogfight_hit_position;
         }
     } else {
@@ -250,7 +242,7 @@ void Bolt_Debris_LSW(BOLT *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no
         if (explosion != NULL && Arcade != 0) {
             GAMEOBJECT *owner = bolt->owner;
             if (owner != NULL && (owner == Player[0] || owner == Player[1]) && (owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-                (owner->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (owner->unknown_280 == 0 || owner->unknown_280 == 1)) {
+                (owner->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (owner->player_slot == 0 || owner->player_slot == 1)) {
                 explosion->flags |= 0x10000;
                 explosion->owner = bolt->owner;
             }
@@ -259,10 +251,10 @@ void Bolt_Debris_LSW(BOLT *bolt, NUVEC *points, i32 point, NUVEC *unused, i32 no
 }
 
 i32 Bolt_HitPart_LSW(BOLT *bolt, PART *part) {
-    if (part->unknown_206 == 1 && part->scale_time < 2.0f) {
+    if (part->player_mask == 1 && part->scale_time < 2.0f) {
         return 1;
     }
-    if (part->unknown_206 == 2 && part->scale_time < 1.0f) {
+    if (part->player_mask == 2 && part->scale_time < 1.0f) {
         return 1;
     }
     return 0;

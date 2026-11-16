@@ -53,19 +53,6 @@
 void NuTexAnimScriptMissing(char *path);
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
-/* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
- */
-typedef struct shadow_platform_entry_s {
-    GAMEOBJECT *object;
-    u8 unknown_04_14[0x10];
-} SHADOW_PLATFORM_ENTRY;
-
-struct shadow_platform_list_s {
-    u8 unknown_00_04[4];
-    i32 count;
-    u8 unknown_08_18[0x10];
-    SHADOW_PLATFORM_ENTRY entries[1];
-};
 
 static f32 UtilitiesFabs(f32 value);
 
@@ -488,17 +475,17 @@ f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
         }
         if (world != NULL && world->shadow_platform_list != NULL && VehicleArea == 0 &&
             (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
-            struct shadow_platform_list_s *list = world->shadow_platform_list;
-            for (i = 0; i < list->count; ++i) {
-                if (list->entries[i].object != NULL) {
-                    handles[handle_count++] = list->entries[i].object->level_object_index;
+            CHARPLATFORMSYS_s *list = world->shadow_platform_list;
+            for (i = 0; i < list->platform_count; ++i) {
+                if (list->platforms[i].object != NULL) {
+                    handles[handle_count++] = list->platforms[i].object->level_object_index;
                 }
             }
         }
         for (i = 0; i < handle_count; ++i) {
             PlatOnOff(handles[i], 0);
         }
-        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->unknown_028 == 0.0f) {
+        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->hover_height == 0.0f) {
             mask &= (i32)~LAYER_HOVERIGNORE;
         }
     }

@@ -278,12 +278,12 @@ extern "C" {
     }
 
     void LoadLights(void *world_ptr, char *path) {
-        LIGHTING_LOAD_WORLD *world = (LIGHTING_LOAD_WORLD *)world_ptr;
+        WORLDINFO *world = (WORLDINFO *)world_ptr;
         char filename[256];
         sprintf(filename, "%s.rtl", path);
-        world->rtl_set = rtlLoadSet(filename, &world->buffer, world->end_buffer.addr);
+        world->rtl_set = rtlLoadSet(filename, &world->giz_buffer, world->buffer_end.addr);
         sprintf(filename, "%s.bur", path);
-        world->burnset = edrtlBurnoutLoad(filename, &world->buffer, world->end_buffer.addr);
+        world->burnset = edrtlBurnoutLoad(filename, &world->giz_buffer, world->buffer_end.addr);
     }
 
     void InitGameObjectLights(void) {
@@ -399,7 +399,7 @@ extern "C" {
         } else if (Lighting_HighlightFlash != 0 && (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) &&
                    owner->player.hud_icon_timer > 0.0f &&
                    (owner->player.hud_icon_timer >= 2.0f || (f64)NuFmod(owner->player.hud_icon_timer, 0.4f) >= (f64)0.2f)) {
-            if (owner->unknown_280 == 1) {
+            if (owner->player_slot == 1) {
                 red = 1.7f;
                 green = 2.0f;
                 blue = 1.4f;
@@ -746,10 +746,10 @@ extern "C" void SetShadowLight(void) {
     PCShadowCurrentLight->SetParameterf(1, WORLD->shadow_editor->unknown_10);
     PCShadowCurrentLight->SetParameterf(2, WORLD->shadow_editor->unknown_14);
     PCShadowCurrentLight->SetParameterf(12, WORLD->shadow_editor->unknown_1c);
-    PCShadowCurrentLight->SetParameterf(9, WORLD->shadow_editor->unknown_18);
+    PCShadowCurrentLight->SetParameterf(9, WORLD->shadow_editor->shadow_bias);
     PCShadowCurrentLight->SetParameterf(6, ShadowLightWarp);
     PCShadowCurrentLight->SetParameterf(17, WORLD->shadow_editor->unknown_1c);
-    PCShadowCurrentLight->SetParameterf(15, WORLD->shadow_editor->unknown_18);
+    PCShadowCurrentLight->SetParameterf(15, WORLD->shadow_editor->shadow_bias);
     PCShadowCurrentLight->SetParameterf(8, ShadowLightWarp);
     PCShadowCurrentLight->SetParameterf(19, splits[split_count - 1] * ShadowLightSplitScale);
     PCShadowCurrentLight->SetParameterf(20, splits[split_count - 1]);

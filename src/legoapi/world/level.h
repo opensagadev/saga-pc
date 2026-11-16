@@ -2,6 +2,7 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/gizmo/base/gizflow.h"
 #include "legoapi/world/sceneprogress.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/numath/nuvec.h"
@@ -18,32 +19,19 @@ struct numtx_s;
 typedef struct level_progress_s { // size 0x2e28
     SCENEPROGRESS scene_progress; // 0x0000
 
-    union { // size 0x14
-        u8 unknown_2800[0x14];
-        u32 flags;
-    }; // 0x2800
+    u32 flags;         // 0x2800: bit 0 the level is complete
+    u32 reserved_2804; // 0x2804
 
-    f32 minimum_tfactor; // 0x2814
+    union { // size 0x8 StoreProgressAICharacter: one bit per level AI object that is switched off
+        u32 disabled_ai_object_mask[2];
+        u64 disabled_ai_objects;
+    }; // 0x2808
 
-    union { // size 0x8
-        u8 unknown_2818[8];
-
-        struct {                               // size 0x8
-            u8 unknown_2818_prefix[4];         // 0x2818
-            u32 destroyed_trooper_cannon_mask; // 0x281c
-        };
-    }; // 0x2818
-
-    u32 progress_state; // 0x2820
-
-    union { // size 0x544
-        u8 unknown_2824[0x544];
-
-        struct {                         // size 0x544
-            u8 unknown_2824_head[0x400]; // 0x2824
-            u8 giz_flow_progress[0x144]; // 0x2c24
-        };
-    }; // 0x2824
+    NUVEC grabber_position;            // 0x2810: Grabber_StoreProgress; y 2000000 when none is stored
+    u32 destroyed_trooper_cannon_mask; // 0x281c
+    u32 progress_state;                // 0x2820
+    LEVEL_SCRIPT_PROGRESS scripts[32]; // 0x2824
+    GIZFLOWPROGRESS giz_flow_progress; // 0x2c24
 
     char disabled_effect_names[12][16]; // 0x2d68
 } LEVEL_PROGRESS;
@@ -141,7 +129,7 @@ typedef struct level_data_s { // size 0x130
     u8 blob_shadow_alpha;  // 0x0a1
 
     union { // size 0x1
-        u8 unknown_00a2;
+        u8 dfs_mode;
         u8 episode;
     }; // 0x0a2
 

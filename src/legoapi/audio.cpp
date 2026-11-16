@@ -44,7 +44,7 @@ extern "C" {
     i32 GameAudio_GetPlrSfxBits(void *object_ptr) {
         GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
         if (object != NULL && object->player_controlled) {
-            return 1 << object->unknown_280;
+            return 1 << object->player_slot;
         }
         return 0;
     }
@@ -483,7 +483,7 @@ extern "C" void PlayDieSfx(GAMEOBJECT *object) {
 }
 
 extern "C" void PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
-    u8 player = object->unknown_280;
+    u8 player = object->player_slot;
     i32 bits = 0;
     if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0) {
         return;
@@ -835,7 +835,7 @@ extern "C" void ProcessMusicChanges(LEVELDATA *level, OPTIONSSAVE *options) {
         sticky_attack_time = ActionMusicStickyTimeout[MusicActiveReset];
     }
     if (CutStopInfo != NULL) {
-        CUTINFO *cut = (CUTINFO *)CutStopInfo;
+        CUTINFO *cut = CutStopInfo;
         if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & LEVEL_CONFIG_LOADED) != 0) {
             level = &LDataList[cut->skip_level];
         }

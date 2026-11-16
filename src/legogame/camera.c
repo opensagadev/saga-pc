@@ -20,6 +20,7 @@
 #include "legoapi/gizmos/object/newblowup.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/objects/game_obj.h"
+#include "legoapi/items/objects/grabber.h"
 #include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/camera.h"
@@ -38,6 +39,8 @@
 #include "legoapi/world/level.h"
 #include "legoapi/world/levels.h"
 #include "legoapi/world/levels/episodeI.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
+#include "legoapi/gizmos/transport/teleport.h"
 #include "legoapi/world/levels/episodeII.h"
 #include "legoapi/world/levels/levels.h"
 #include "legoapi/world/world.h"
@@ -139,9 +142,9 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         return;
     }
     target = NULL;
-    if (object->player.character_context == CHARACTER_CONTEXT_TELEPORT && object->player.techno != NULL &&
-        (((CAMERA_CONTEXT_PATH *)object->player.techno)->flags & 0x10) != 0) {
-        NUVEC *points = ((CAMERA_CONTEXT_PATH *)object->player.techno)->path->pts;
+    if (object->player.character_context == CHARACTER_CONTEXT_TELEPORT && object->player.teleport != NULL &&
+        (object->player.teleport->flags & TELEPORT_HACKY_CAM) != 0) {
+        NUVEC *points = object->player.teleport->path->pts;
         f32 scale;
         NuVecSub(&direction, &points[0], &points[3]);
         NuVecSub(&focus, &points[0], &object->position);
@@ -180,8 +183,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             }
             break;
         case CHARACTER_CONTEXT_BUILD_IT:
-            if (object->player.techno != NULL) {
-                target = &((CAMERA_CONTEXT_BUILDIT *)object->player.techno)->position;
+            if (object->player.buildit != NULL) {
+                target = &object->player.buildit->position;
             }
             break;
         case CHARACTER_CONTEXT_TECHNO:
@@ -195,8 +198,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             }
             break;
         case CHARACTER_CONTEXT_PUSH_OBSTACLE:
-            if (object->player.techno != NULL) {
-                target = &((CAMERA_CONTEXT_FOCUS *)object->player.techno)->focus;
+            if (object->player.push_obstacle != NULL) {
+                target = &object->player.push_obstacle->evaluated_position;
             }
             break;
         case CHARACTER_CONTEXT_GRAPPLE:
@@ -206,7 +209,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             break;
     }
     if ((object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) && world->grabber != NULL) {
-        CAMERA_GRABBER *grabber = world->grabber;
+        GRABBER *grabber = world->grabber;
         focus.x = (grabber->grab_position.x + position->x) * 0.5f;
         focus.y = position->y;
         focus.z = (grabber->grab_position.z + position->z) * 0.5f;
@@ -291,7 +294,7 @@ void UpdatePlayerCameraOcclusion(void) {
             if (FadeSys.fade != 0.0f || object->dead != 0 || object->player.character_context == CHARACTER_CONTEXT_DOOMED ||
                 object->player.hud_icon_timer > 0.0f || GetMenuID() != -1 ||
                 object->player.character_context == CHARACTER_CONTEXT_TELEPORT || object->player.rider != NULL ||
-                (object->player.unknown_e24 & 8) == 0 ||
+                object->player.origin_hold == 0 ||
                 ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 && object->player.communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
@@ -1265,7 +1268,7 @@ mode_selected:
         NUMTX orientation = {0};
         shared_count = 0;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->flags_107a == 4) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->movement_mode == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
                          NUMTX_GET_ROW_VEC(&Player[i]->player.vehicle_orientation, 0));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 1), NUMTX_GET_ROW_VEC(&orientation, 1),

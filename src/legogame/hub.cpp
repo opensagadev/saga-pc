@@ -103,43 +103,6 @@ extern "C" {
     extern i32 HubDoorNewLevel;
 }
 
-typedef struct hub_minikit_runtime_s {
-    NUVEC position;
-    f32 scale;
-    f32 scalar_10;
-    i32 phase_x;
-    i32 rate_x;
-    i32 phase_y;
-    i32 rate_y;
-    i32 phase_z;
-    i32 rate_z;
-    i32 phase_rotation;
-    i32 rate_rotation;
-    u16 rotation;
-    u16 rotation_velocity;
-    u16 tilt;
-    u16 target_rotation;
-    u8 displayed_piece_count;
-    u8 target_piece_count;
-    u8 unknown_3e[2];
-    NUVEC collision_center;
-    NUVEC bounds_min;
-    NUVEC bounds_max;
-    f32 radius;
-    f32 height_ratio;
-    f32 offset_x;
-    f32 offset_z;
-    f32 velocity_x;
-    f32 velocity_z;
-} HUB_MINIKIT_RUNTIME;
-
-typedef struct hub_world_reader_s {
-    u8 unknown_0000[0x2984];
-    struct hub_minikit_pieces_s **pieces;
-    u8 unknown_2988[0x158];
-    HUB_MINIKIT_RUNTIME *minikits;
-} HUB_WORLD_READER;
-
 typedef struct hub_area_info_s {
     const char *area_name;
     const char *door_name;
@@ -150,7 +113,7 @@ typedef struct hub_area_info_s {
     f32 panel_scale;
     i32 flags;
     AREA_DATA *area;
-    void *door;
+    GIZMO *door;
     nuhspecial_s lock;
     GIZMO *bonus_gizmo;
     GIZMO *second_bonus_gizmo;
@@ -169,36 +132,11 @@ extern "C" {
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
 }
 
-typedef struct hub_minikit_piece_s {
-    nuhspecial_s special;
-    NUMTX matrix;
-    u8 unknown_4c[0x1a];
-    u8 enabled;
-    u8 direction_index;
-} HUB_MINIKIT_PIECE;
-
-typedef struct hub_minikit_pieces_s {
-    NUGSCN *scene;
-    HUB_MINIKIT_PIECE *pieces;
-    u8 piece_count;
-    i8 area_index;
-    i16 model_id;
-    nuhspecial_s base;
-} HUB_MINIKIT_PIECES;
-
 typedef struct hub_pad_reader_s {
     void *pad;
     u32 held;
     u8 unknown_08[0x58];
 } HUB_PAD_READER;
-
-/* Draw3D on PC has no sign/episode scene branch. */
-typedef struct hub_game_stats_reader_s {
-    u8 unknown_0000[0x7c18];
-    u16 completion;
-    u8 unknown_7c1a[6];
-    f32 elapsed;
-} HUB_GAME_STATS_READER;
 
 typedef struct hub_episode_info_s {
     i16 episode;
@@ -208,25 +146,9 @@ typedef struct hub_episode_info_s {
     i32 force_open;
     u32 unknown_10;
     EPISODEDATA *data;
-    void *door;
+    GIZMO *door;
     nuhspecial_s lock_on;
 } HUB_EPISODE_INFO;
-
-typedef struct hub_init_world_reader_s {
-    u8 unknown_00[0x13c];
-    NUGSCN *scene;
-    u8 unknown_140[0x2988];
-    void *gizmo_system;
-} HUB_INIT_WORLD_READER;
-
-typedef struct hub_door_object_reader_s {
-    u8 unknown_00[0x9c];
-    u32 flags;
-} HUB_DOOR_OBJECT_READER;
-
-typedef struct hub_door_reader_s {
-    HUB_DOOR_OBJECT_READER *object;
-} HUB_DOOR_READER;
 
 struct GIZBUILDIT;
 extern "C" i32 HubDrawMiniKitCharacter;
@@ -398,13 +320,12 @@ static void MiniKitRotateZ(NUMTX *m, NUANG a) {
 }
 
 static void HubResolveAreaInfo(HUB_AREA_INFO *info, WORLDINFO *world) {
-    HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     for (; info->area_name != NULL; ++info) {
-        info->door = GizmoFindByName(w->gizmo_system, -1, (char *)info->door_name);
-        info->bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(w->gizmo_system, -1, (char *)info->bonus_name));
-        info->second_bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(w->gizmo_system, -1, (char *)info->second_bonus_name));
+        info->door = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->door_name));
+        info->bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->bonus_name));
+        info->second_bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->second_bonus_name));
         info->area = Area_FindByName((char *)info->area_name, NULL);
-        NuSpecialFind(w->scene, &info->lock, (char *)info->lock_name, 1);
+        NuSpecialFind(world->current_gscn, &info->lock, (char *)info->lock_name, 1);
     }
 }
 
@@ -538,15 +459,14 @@ static void HubUpdateBonusBuildIts(WORLDINFO *world) {
 }
 
 static void HubResolveEpisodeInfo(HUB_EPISODE_INFO *info, WORLDINFO *world) {
-    HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     for (; info->episode != -1; ++info) {
         if (info->episode >= 0 && info->episode < EPISODECOUNT) {
             info->data = &EDataList[info->episode];
         } else {
             info->data = NULL;
         }
-        info->door = GizmoFindByName(w->gizmo_system, -1, (char *)info->door_name);
-        NuSpecialFind(w->scene, &info->lock_on, (char *)info->lock_on_name, 1);
+        info->door = static_cast<GIZMO *>(GizmoFindByName(world->gizmo_sys, -1, (char *)info->door_name));
+        NuSpecialFind(world->current_gscn, &info->lock_on, (char *)info->lock_on_name, 1);
     }
 }
 
@@ -888,10 +808,10 @@ extern "C" {
         }
         if (player_index == 0) {
             position.x = -0.015f;
-            message.unknown_4f = 8;
+            message.slot_flags = 8;
         } else {
             position.x = 0.015f;
-            message.unknown_4f = 2;
+            message.slot_flags = 2;
         }
         position.y = PCArcadePointMessageY;
         position.z = 1.0f;
@@ -1606,31 +1526,30 @@ extern "C" void Hub_Load(WORLDINFO *world, VARIPTR *, VARIPTR *) {
 extern "C" {
 
     void Hub_LoadAndFixUpMiniKits(WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
-        WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
         i32 i;
         i32 size;
         buffer->addr = (buffer->addr + 3) & ~3u;
-        view->hub_minikits = (u8 *)buffer->void_ptr;
+        world->hub_minikits = (struct HUBMINIKIT_s *)buffer->void_ptr;
         buffer->addr = (buffer->addr + AREACOUNT * 0x7c + 3) & ~3u;
-        view->pieces_by_id = (MINIKIT **)buffer->void_ptr;
+        world->minikit_pieces_by_id = (MINIKIT **)buffer->void_ptr;
         size = AREACOUNT * 4;
-        memset(view->pieces_by_id, 0, size);
+        memset(world->minikit_pieces_by_id, 0, size);
         buffer->addr += size;
         for (i = 0; i < AREACOUNT; ++i) {
             i32 minikit_id;
             i32 piece_count;
-            view->pieces_by_id[i] = NULL;
+            world->minikit_pieces_by_id[i] = NULL;
             piece_count = (ADataList[i].flags & AREAFLAG_MINIKIT) != 0 ? 10 : 0;
             minikit_id = ADataList[i].minikit_id;
             if (piece_count > 0 && minikit_id != -1) {
-                view->pieces_by_id[i] = (MINIKIT *)buffer->void_ptr;
+                world->minikit_pieces_by_id[i] = (MINIKIT *)buffer->void_ptr;
                 buffer->addr += 0x18;
-                MiniKit_Load(view->pieces_by_id[i], minikit_id, buffer, end, NULL);
-                if (view->pieces_by_id[i]->scene != NULL) {
-                    MiniKit_InitPieces(view->pieces_by_id[i], piece_count, buffer, end);
-                    view->pieces_by_id[i]->area_index = (i8)i;
+                MiniKit_Load(world->minikit_pieces_by_id[i], minikit_id, buffer, end, NULL);
+                if (world->minikit_pieces_by_id[i]->scene != NULL) {
+                    MiniKit_InitPieces(world->minikit_pieces_by_id[i], piece_count, buffer, end);
+                    world->minikit_pieces_by_id[i]->area_index = (i8)i;
                 } else {
-                    view->pieces_by_id[i] = NULL;
+                    world->minikit_pieces_by_id[i] = NULL;
                     buffer->addr -= 0x18;
                 }
             }
@@ -1639,7 +1558,7 @@ extern "C" {
 }
 
 extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
-    HUB_MINIKIT_RUNTIME *kit = ((HUB_WORLD_READER *)world)->minikits;
+    HUBMINIKIT_s *kit = world->hub_minikits;
     i32 i;
     if (kit != NULL) {
         for (i = 0; i < AREACOUNT; ++i, ++kit) {
@@ -1647,7 +1566,7 @@ extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
             f32 height;
             kit->position.y = 2000000.0f;
             kit->scale = 0;
-            kit->scalar_10 = 0;
+            kit->unknown_10 = 0;
             kit->rotation = (u16)qrand();
             for (info = HubAreaInfo; info->area_name != NULL; ++info) {
                 if (info->area != NULL && info->area->index == i) {
@@ -1681,11 +1600,10 @@ extern "C" void Hub_InitMiniKits(WORLDINFO *world) {
 
 static i32 Hub_UpdateMiniKitBounds(i32 area_index, WORLDINFO *world) {
     const i32 model = ADataList[area_index].minikit_id;
-    HUB_WORLD_READER *w = (HUB_WORLD_READER *)world;
-    if (model == -1 || w->minikits == NULL) {
+    if (model == -1 || world->hub_minikits == NULL) {
         return 0;
     }
-    HUB_MINIKIT_RUNTIME *kit = &w->minikits[area_index];
+    HUBMINIKIT_s *kit = &world->hub_minikits[area_index];
     HUB_AREA_INFO *info = NULL;
     for (HUB_AREA_INFO *entry = HubAreaInfo; entry->area_name != NULL; ++entry) {
         if (entry->area != NULL && entry->area->index == area_index) {
@@ -1750,8 +1668,7 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
             angle = Hub_PadAngle[1] + GameCam->yaw;
         }
     }
-    HUB_WORLD_READER *w = (HUB_WORLD_READER *)world;
-    if (w->pieces == NULL || w->minikits == NULL) {
+    if (world->minikit_pieces_by_id == NULL || world->hub_minikits == NULL) {
         return;
     }
     if (viewer) {
@@ -1771,9 +1688,9 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
         }
     }
     PlaySfx("ui_hover_lp", &hub_minikitviewer_pos);
-    HUB_MINIKIT_RUNTIME *kit = w->minikits;
+    HUBMINIKIT_s *kit = world->hub_minikits;
     for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
-        HUB_MINIKIT_PIECES *pieces = w->pieces[i];
+        MINIKIT *pieces = world->minikit_pieces_by_id[i];
         if (pieces == NULL) {
             continue;
         }
@@ -1856,9 +1773,9 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
         }
         Hub_UpdateMiniKitBounds(i, world);
     }
-    kit = w->minikits;
+    kit = world->hub_minikits;
     for (i32 i = 0; i < AREACOUNT; ++i, ++kit) {
-        if (w->pieces[i] == NULL) {
+        if (world->minikit_pieces_by_id[i] == NULL) {
             continue;
         }
         if (kit->displayed_piece_count != kit->target_piece_count &&
@@ -1888,7 +1805,7 @@ extern "C" {
 static f32 HubMiniKitViewerBaseY = 0.143f;
 
 extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
-    if (((HUB_WORLD_READER *)world)->pieces == NULL || ((HUB_WORLD_READER *)world)->minikits == NULL) {
+    if (world->minikit_pieces_by_id == NULL || world->hub_minikits == NULL) {
         return;
     }
     i32 areas[72];
@@ -1905,8 +1822,8 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
     }
     for (i32 index = 0; index < count; ++index) {
         const i32 area = areas[index];
-        HUB_MINIKIT_RUNTIME *kit = &((HUB_WORLD_READER *)world)->minikits[area];
-        if (((HUB_WORLD_READER *)world)->pieces[area] == NULL || ADataList[area].minikit_id == -1) {
+        HUBMINIKIT_s *kit = &world->hub_minikits[area];
+        if (world->minikit_pieces_by_id[area] == NULL || ADataList[area].minikit_id == -1) {
             continue;
         }
         HUB_AREA_INFO *info = NULL;
@@ -1937,7 +1854,7 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
                       (1.0 + (f64)(NuTrigTable[(((i32)((i32)(hub_minikitviewer_movewait * 32768.0f + 16384.0f))) >> 1) & 0x7fff])) * 0.5);
             x += (f64)wait_ease * 2.0 * (f64)hub_minikitviewer_move;
         }
-        HUB_MINIKIT_PIECES *pieces = ((HUB_WORLD_READER *)world)->pieces[area];
+        MINIKIT *pieces = world->minikit_pieces_by_id[area];
         const f32 scale = kit->scale;
         const f32 lift =
             (f32)((1.0 - (1.0 + (f64)(NuTrigTable[(((i32)((i32)(scale * 32768.0f + 16384.0f))) >> 1) & 0x7fff])) * 0.5) * (f64)0.333f);
@@ -1973,13 +1890,13 @@ extern "C" void Hub_DrawMiniKits(WORLDINFO *world) {
                 }
             }
         }
-        if (NuSpecialExistsFn(&pieces->base)) {
+        if (NuSpecialExistsFn(&pieces->shadow)) {
             NUMTX base_matrix;
             NuMtxSetRotationY(&base_matrix, rotation);
             base_matrix.m30 = x;
             base_matrix.m31 = HubMiniKitViewerBaseY;
             base_matrix.m32 = hub_minikitviewer_pos.z;
-            NuSpecialDrawAtAlpha(&pieces->base, &base_matrix, 1.0f - 0.5f * kit->scale);
+            NuSpecialDrawAtAlpha(&pieces->shadow, &base_matrix, 1.0f - 0.5f * kit->scale);
         }
     }
     SetLevelLights(world->rtl_set, 1.0f);
@@ -2242,10 +2159,10 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     for (i32 i = 0; HubAreaInfo[i].area_name != NULL; i++) {
         if (HubAreaInfo[i].door != NULL) {
             if (Episode_CountOpenAreas(HubAreaInfo[i].area->episode_index, HubAreaInfo[i].area->index, Game_AreaSave) != 0) {
-                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags &= ~8U;
+                HubAreaInfo[i].door->obstacle->runtime_flags &= ~GIZOBSTACLE_LOCKED_SHUT;
                 NuSpecialSetVisibility(&HubAreaInfo[i].lock, 1);
             } else {
-                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags |= 8U;
+                HubAreaInfo[i].door->obstacle->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
                 NuSpecialSetVisibility(&HubAreaInfo[i].lock, 0);
             }
         }
@@ -2253,10 +2170,10 @@ extern "C" void Hub_Reset(WORLDINFO *world) {
     for (i32 i = 0; HubEpisodeInfo[i].episode >= 0 && HubEpisodeInfo[i].episode < 9; i++) {
         if (HubEpisodeInfo[i].door != NULL) {
             if (Episode_CountOpenAreas(HubEpisodeInfo[i].episode, -1, Game_AreaSave) == 0 && (u8)HubEpisodeInfo[i].force_open == 0) {
-                ((HUB_DOOR_READER *)HubEpisodeInfo[i].door)->object->flags |= 8U;
+                HubEpisodeInfo[i].door->obstacle->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
                 NuSpecialSetVisibility(&HubEpisodeInfo[i].lock_on, 0);
             } else {
-                ((HUB_DOOR_READER *)HubEpisodeInfo[i].door)->object->flags &= ~8U;
+                HubEpisodeInfo[i].door->obstacle->runtime_flags &= ~GIZOBSTACLE_LOCKED_SHUT;
                 NuSpecialSetVisibility(&HubEpisodeInfo[i].lock_on, 1);
             }
         }
@@ -2281,7 +2198,7 @@ extern "C" {
 
     i32 Percent_UpdateHint(HINT *hint) {
         if (hint->completed == 0 && WORLD->current_level == HUB_LDATA && FadeSys.fade == 0.0f && CustomiserCompletionSave != NULL &&
-            ((HINT_COMPLETION *)CustomiserCompletionSave)->points >= HubCompletionPoints) {
+            CustomiserCompletionSave->completion_points >= HubCompletionPoints) {
             i32 nearby = 0;
             i32 active = 0;
             i32 index;
@@ -2347,11 +2264,11 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         const i32 pulse = (i32)((f64)NuFmod(GameTimer.time_elapsed, 3.21f) / (f64)3.21f * 65536.0);
         const f32 bob = NuTrigTable[(pulse >> 1) & 0x7fff] * HubStatsBobAmplitude;
         const i32 alpha = (i32)((f64)HubHologramAlpha * 15.0 + 56.0);
-        const HUB_GAME_STATS_READER *save = (const HUB_GAME_STATS_READER *)&Game;
+        const GAMESAVE *save = &Game;
         char text[128];
         NUMTX matrix;
         u32 colour;
-        sprintf(text, "%.1f%%", (f64)(save->completion * 100) / (f64)HubCompletionPoints);
+        sprintf(text, "%.1f%%", (f64)(save->completion_points * 100) / (f64)HubCompletionPoints);
         HubStatsTextMatrix(&matrix, angle);
         NuMtxTranslate(&matrix, const_cast<NUVEC *>(&HubPercentPosition));
         matrix.m31 += bob;
@@ -2365,7 +2282,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         NuQFntMove(QFont3DZ, (f32)(-NuQFntPrintLenU(QFont3DZ, text) * 0.5), 0, 0);
         NuQFntPrintU(QFont3DZ, text);
         NuQFntPopPrintMode();
-        Text_MakeTime(save->elapsed, 1, 1, 1, text);
+        Text_MakeTime(save->game_time, 1, 1, 1, text);
         HubStatsTextMatrix(&matrix, angle);
         NuMtxTranslate(&matrix, const_cast<NUVEC *>(&HubPercentPosition));
         matrix.m31 += bob;
@@ -3119,32 +3036,31 @@ extern "C" {
 }
 
 extern "C" void Hub_Init(WORLDINFO *world) {
-    HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     HubAreaPanelX = HubBothTrueJediGoldBricks != 0 ? HubAreaPanelOne : HubAreaPanelTwo;
     HubResolveAreaInfo(HubAreaInfo, world);
     HubResolveEpisodeInfo(HubEpisodeInfo, world);
-    HubMiniKitViewerGizmo = GizmoFindByName(w->gizmo_system, obstacle_gizmotype_id, "conveyor_test");
-    HubMiniKitViewerSpline = NuSplineFind(w->scene, "mini_cam_e1_1");
-    NuSpecialFind(w->scene, &LevHSpecial[0], "lock_4_off", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[1], "lock_4_on", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[2], "lock_5_off", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[3], "lock_5_on", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[4], "lock_6_off", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[5], "lock_6_on", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[6], "lock_b_off", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[7], "lock_b_on", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[8], "lock_4_7_off", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[9], "lock_4_7_on", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[10], "lock_5_7_off", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[11], "lock_5_7_on", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[12], "lock_6_7_off", 1);
-    NuSpecialFind(w->scene, &LevHSpecial[13], "lock_6_7_on", 1);
-    if (NuSpecialFind(w->scene, &LevHSpecial[15], "holo", 1) != 0) {
+    HubMiniKitViewerGizmo = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, "conveyor_test");
+    HubMiniKitViewerSpline = NuSplineFind(world->current_gscn, "mini_cam_e1_1");
+    NuSpecialFind(world->current_gscn, &LevHSpecial[0], "lock_4_off", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[1], "lock_4_on", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[2], "lock_5_off", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[3], "lock_5_on", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[4], "lock_6_off", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[5], "lock_6_on", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[6], "lock_b_off", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[7], "lock_b_on", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[8], "lock_4_7_off", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[9], "lock_4_7_on", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[10], "lock_5_7_off", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[11], "lock_5_7_on", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[12], "lock_6_7_off", 1);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[13], "lock_6_7_on", 1);
+    if (NuSpecialFind(world->current_gscn, &LevHSpecial[15], "holo", 1) != 0) {
         NuSpecialSetVisibility(&LevHSpecial[15], 0);
     }
-    NuSpecialFindMulti(w->scene, &LevHSpecial[20], "ps2_only_", 32, 0);
-    NuSpecialFindMulti(w->scene, &LevHSpecial[52], "psp_only_", 32, 0);
-    NuSpecialFind(w->scene, &LevHSpecial[84], "fake_wall", 1);
+    NuSpecialFindMulti(world->current_gscn, &LevHSpecial[20], "ps2_only_", 32, 0);
+    NuSpecialFindMulti(world->current_gscn, &LevHSpecial[52], "psp_only_", 32, 0);
+    NuSpecialFind(world->current_gscn, &LevHSpecial[84], "fake_wall", 1);
     HubAreaTime = 0;
     HubEpisodeTime = 0;
     HubStatsTime = 0;
@@ -3166,7 +3082,7 @@ extern "C" void Hub_Init(WORLDINFO *world) {
     hub_startoutsidebonusdoor_area = -1;
     CutScenePlayer_Reset();
     HubBuildIt = GizBuildIt_Find(world, "fountain");
-    LevGizmo[0] = (GIZMO *)GizmoFindByName(w->gizmo_system, -1, "fountain");
+    LevGizmo[0] = (GIZMO *)GizmoFindByName(world->gizmo_sys, -1, "fountain");
     if (HubBuildIt == NULL || LevGizmo[0] == NULL) {
         HubBuildIt = NULL;
         LevGizmo[0] = NULL;
@@ -3321,10 +3237,10 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         for (episode_index = 0; HubEpisodeInfo[episode_index].episode >= 0 && HubEpisodeInfo[episode_index].episode < 9; ++episode_index) {
             if (HubEpisodeInfo[episode_index].door != NULL) {
                 if (HubEpisodeInfo[episode_index].episode != selected && selected != -1) {
-                    ((HUB_DOOR_READER *)HubEpisodeInfo[episode_index].door)->object->flags |= 8;
+                    HubEpisodeInfo[episode_index].door->obstacle->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
                 } else if ((u8)HubEpisodeInfo[episode_index].force_open != 0 ||
                            Episode_CountOpenAreas(HubEpisodeInfo[episode_index].episode, -1, Game_AreaSave) != 0) {
-                    ((HUB_DOOR_READER *)HubEpisodeInfo[episode_index].door)->object->flags &= ~8U;
+                    HubEpisodeInfo[episode_index].door->obstacle->runtime_flags &= ~GIZOBSTACLE_LOCKED_SHUT;
                 }
             }
         }
@@ -3356,7 +3272,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     if (selected_area != -1) {
         for (i32 i = 0; HubAreaInfo[i].area_name != NULL; ++i) {
             if (HubAreaInfo[i].door != NULL && HubAreaInfo[i].area != NULL && HubAreaInfo[i].area->index != selected_area) {
-                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags |= 8;
+                HubAreaInfo[i].door->obstacle->runtime_flags |= GIZOBSTACLE_LOCKED_SHUT;
             }
         }
     } else {
@@ -3365,7 +3281,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
                 (Episode_CountOpenAreas(HubAreaInfo[i].area->episode_index, HubAreaInfo[i].area->index, Game_AreaSave) != 0 ||
                  (HubAreaInfo[i].bonus_gizmo != NULL && GizmoGetOutput(world->gizmo_sys, HubAreaInfo[i].bonus_gizmo, 0, 0) != 0) ||
                  ((HubAreaInfo[i].flags >> 8) & 255) == 1)) {
-                ((HUB_DOOR_READER *)HubAreaInfo[i].door)->object->flags &= ~8U;
+                HubAreaInfo[i].door->obstacle->runtime_flags &= ~GIZOBSTACLE_LOCKED_SHUT;
                 NuSpecialSetVisibility(&HubAreaInfo[i].lock, 1);
             }
         }
@@ -5206,7 +5122,7 @@ extern "C" {
 }
 
 extern "C" void LostTempleC_Reset(WORLDINFO *world) {
-    LevGizObst[0] = GizObstacle_FindByName((GIZOBSTACLESYS_s *)world->giz_obstacle_sys, "obstacle1");
+    LevGizObst[0] = GizObstacle_FindByName(world->giz_obstacle_sys, "obstacle1");
     LostTempleExitSockPosition.sock_index = -1;
     LostTempleExitSockPosition.segment = -1;
 }

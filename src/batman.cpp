@@ -123,11 +123,6 @@ extern "C" {
     i32 BURNOUTON = 1;
 }
 
-typedef struct main_controller_world_view_s { // size 0x4674
-    u8 unknown_0000[0x4670];                  // 0x0000
-    AI_CONTROL_SYSTEM *control_system;        // 0x4670
-} MAIN_CONTROLLER_WORLD_VIEW;
-
 extern "C" void DrawSaveSlots(MENU *, f32);
 
 struct FADEINFO_s;
@@ -274,7 +269,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     if (memcard_autosaveenabled != 0 && memcard_autosavedisabled != 0 &&
         (world == NULL || world->area == NULL || (world->area->flags & AREAFLAG_ENDING_AREA) == 0) && NewMode == 0 && NewLData == NULL &&
         FadeSys.fade == 0.0f && editor_active == 0 && (GamePads_IgnoreInputFn == NULL || GamePads_IgnoreInputFn() == 0)) {
-        if ((CUTSTOPGAME == 0 || CutScene_IsSkippable((CUTINFO *)CutStopInfo) != 0) && MiniCutCam == 0 && CutSceneWaiting == 0) {
+        if ((CUTSTOPGAME == 0 || CutScene_IsSkippable(CutStopInfo) != 0) && MiniCutCam == 0 && CutSceneWaiting == 0) {
             if (GameMenu[GameMenuLevel].menu != -1) {
                 if (MenuInMemoryCard() == 0 && MenuInfo[GameMenu[GameMenuLevel].menu].id != MENU_NEW_GAME &&
                     MenuInfo[GameMenu[GameMenuLevel].menu].id != MENU_OPTIONS) {
@@ -305,17 +300,17 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
     LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: before sound world=%p", (void *)WORLD);
     if (NOSOUND == 0) {
         if (Paused != 0 && GameMenu[GameMenuLevel].menu == 4) {
-            NuSound3SetDPL(TempOptions.option_0002, 0);
+            NuSound3SetDPL(TempOptions.dolby_surround, 0);
         } else {
-            NuSound3SetDPL(Game.options_save.option_0002, 0);
+            NuSound3SetDPL(Game.options_save.dolby_surround, 0);
         }
         NuSound3Update();
         UpdateLevelSfx(world, Paused);
         NuSound3SetRumblePads(
-            Game.options_save.unknown_0000[0] != 0 && Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
+            Game.options_save.rumble[0] != 0 && Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
                 ? Player[0]->player.pad->bound_pad
                 : NULL,
-            Game.options_save.unknown_0000[1] != 0 && Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
+            Game.options_save.rumble[1] != 0 && Player[1] != NULL && (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0
                 ? Player[1]->player.pad->bound_pad
                 : NULL);
         NuSound3UpdateRumble(FRAMETIME);
@@ -364,8 +359,8 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
         ProcessGizFlow(world->giz_flow, FRAMETIME);
         SAGA_SOUND_CHECK("after ProcessGizFlow");
         LOG_INFO_IF(GameTimer.update_count < 2, "Update stage: after ProcessGizFlow world=%p", (void *)WORLD);
-        if (((MAIN_CONTROLLER_WORLD_VIEW *)world)->control_system != NULL) {
-            AIPathCnxControlSysUpdate(((MAIN_CONTROLLER_WORLD_VIEW *)world)->control_system);
+        if (world->ai_path_cnx_control_sys != NULL) {
+            AIPathCnxControlSysUpdate(world->ai_path_cnx_control_sys);
         }
         if (world->current_gscn != NULL) {
             NuGScnUpdate(world->current_gscn, FRAMETIME * 60.0f);
@@ -380,7 +375,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             NuFadeObjUpdateArray(wind_objects);
         }
         rtlProcessLights(world->rtl_set, FRAMETIME);
-        CharPlatforms_Update((CHARPLATFORMSYS_s *)world->shadow_platform_list);
+        CharPlatforms_Update(world->shadow_platform_list);
         Grabber_Update(world);
         TrafficAnimSys_Update(world->trafficanim_sys);
         SAGA_SOUND_CHECK("after TrafficAnimSys_Update");
@@ -646,15 +641,6 @@ static void NuMainRenderWorld(WORLDINFO *world) {
     }
 }
 
-typedef struct NU_MAIN_STATUS_PACKET { // size 0xb6
-    u8 unknown_00[0x9c];               // 0x00
-    u16 player_models[2];              // 0x9c
-    u8 unknown_a0[4];                  // 0xa0
-    u8 player_active[2];               // 0xa4
-    u8 unknown_a6[0xe];                // 0xa6
-    u8 status_flags;                   // 0xb4
-} NU_MAIN_STATUS_PACKET;
-
 extern "C" {
     u8 StatusPlayerActive[8] = {0};
     void WorldInfo_ClearAllIfScreenFaded(void);
@@ -675,7 +661,7 @@ extern "C" int NuMain(int argc, char **argv) {
     i64 previous_vbcnt;
     f32 saved_frametime;
     i32 player_index;
-    NU_MAIN_STATUS_PACKET *status = (NU_MAIN_STATUS_PACKET *)&StatusPacket;
+    STATUSPACKET_s *status = &StatusPacket;
 
     LOG_INFO("Game startup: argc=%d", argc);
     NuCommandLine(&argc, &argv);

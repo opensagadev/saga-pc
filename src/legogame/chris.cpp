@@ -125,16 +125,6 @@ extern "C" {
         f32 scale;                  // 0x4c
     } DOGFIGHT_CROSS;
 
-    typedef struct DOGFIGHT_SPLINE_HISTORY { // size 0x530
-        u8 unknown_000[0x404];               // 0x000
-        f32 current_value;                   // 0x404
-        f32 reset_value;                     // 0x408
-        u8 unknown_40c[0x514 - 0x40c];       // 0x40c
-        u32 reset_state;                     // 0x514
-        u32 current_state;                   // 0x518
-        u8 unknown_51c[0x530 - 0x51c];       // 0x51c
-    } DOGFIGHT_SPLINE_HISTORY;
-
     typedef struct DOGFIGHT_ACTION { // size 0x8
         i32 command;                 // 0x0
         f32 value;                   // 0x4
@@ -162,17 +152,23 @@ extern "C" {
         u8 unknown_08[8];                 // 0x8
     } DOGFIGHT_COIN_RECORD;
 
+    typedef struct DOGFIGHT_ACTION_STATE { // size 0x30
+        NUVEC4 draw_scale;                 // 0x00
+        DOGFIGHT_ACTION *actions;          // 0x10
+        DOGFIGHT_ACTION *current;          // 0x14
+        i32 next_index;                    // 0x18
+        i32 command;                       // 0x1c
+        u32 unknown_20;                    // 0x20
+        f32 timer;                         // 0x24
+        u32 unknown_28;                    // 0x28
+        struct DOGFIGHT_SPACE *owner;      // 0x2c
+    } DOGFIGHT_ACTION_STATE;
+
     typedef struct DOGFIGHT_SPACE {               // size 0x64740
         DOGFIGHT_CROSS crosses[2];                // 0x00000
         DOGFIGHT_GROUP groups[8];                 // 0x000a0
-        NUVEC4 draw_scale;                        // 0x034a0
-        DOGFIGHT_ACTION *actions;                 // 0x034b0
-        DOGFIGHT_ACTION *current_action;          // 0x034b4
-        i32 unknown_34b8;                         // 0x034b8
-        i32 unknown_34bc;                         // 0x034bc
-        u8 unknown_34c0[12];                      // 0x034c0
-        struct DOGFIGHT_SPACE *owner;             // 0x034cc
-        DOGFIGHT_SPLINE_HISTORY splines[256];     // 0x034d0
+        DOGFIGHT_ACTION_STATE formation;          // 0x034a0
+        FLIGHT_SPLINE_RESOURCE splines[256];      // 0x034d0
         DOGFIGHT_FIGHTER queued_fighters[96];     // 0x564d0
         DOGFIGHT_RESET_RECORD reset_records[256]; // 0x5d6d0
         DOGFIGHT_RESET_BUFFER reset_buffer;       // 0x636d0
@@ -244,12 +240,6 @@ extern "C" {
         u32 used;                          // 0x8
     } DOGFIGHT_QUICK_BUFFER;
 
-    typedef struct DOGFIGHT_TARGET_SPLINE { // size 0x530
-        u8 unknown_000[0x51c];              // 0x000
-        i32 target_id;                      // 0x51c
-        u8 unknown_520[16];                 // 0x520
-    } DOGFIGHT_TARGET_SPLINE;
-
     f32 DogfightDeathImpulseScale = 10.0f;
     f32 DogfightAimReset = 2.0f;
     f32 DogfightAimDecay = 2.0f;
@@ -258,35 +248,6 @@ extern "C" {
     f32 MissileDist = -3.0f;
     NUVEC DogfightCachedPlayerPosition = {0.0f, 0.0f, 0.0f};
     NUVEC DogfightCachedPlayerVelocity = {0.0f, 0.0f, 0.0f};
-
-    /* Recovered PC playback views; original private source names are unknown. */
-    typedef struct DOGFIGHT_PLAYBACK_SPLINE { // size 0x530
-        NUVEC4 points[64];                    // 0x000
-        i32 point_count;                      // 0x400
-        f32 next_spawn;                       // 0x404
-        f32 reset_spawn;                      // 0x408
-        f32 interval;                         // 0x40c
-        f32 length;                           // 0x410
-        f32 cumulative[64];                   // 0x414
-        i32 repeat_limit;                     // 0x514
-        i32 remaining;                        // 0x518
-        i32 target_id;                        // 0x51c
-        i32 object_id;                        // 0x520
-        i32 model_id;                         // 0x524
-        u8 unknown_528[8];                    // 0x528
-    } DOGFIGHT_PLAYBACK_SPLINE;
-
-    typedef struct DOGFIGHT_ACTION_STATE { // size 0x30
-        NUVEC4 draw_scale;                 // 0x00
-        DOGFIGHT_ACTION *actions;          // 0x10
-        DOGFIGHT_ACTION *current;          // 0x14
-        i32 next_index;                    // 0x18
-        i32 command;                       // 0x1c
-        u32 unknown_20;                    // 0x20
-        f32 timer;                         // 0x24
-        u32 unknown_28;                    // 0x28
-        DOGFIGHT_SPACE *owner;             // 0x2c
-    } DOGFIGHT_ACTION_STATE;
 
     extern void SpaceResetAudioPoint(void);
 
@@ -327,24 +288,6 @@ extern "C" {
         {"", NULL, 0.0f, 0.0f, 0, {0}, {0.0f, 0.0f, 0.0f}, 0.0f, 0.0f},
     };
 
-    /* PC file records share the established 0x530-byte evaluator layout. */
-    typedef struct FLIGHT_SPLINE_FILE { // size 0x530
-        NUVEC4 points[64];              // 0x000
-        i32 point_count;                // 0x400
-        f32 current_value;              // 0x404
-        f32 reset_value;                // 0x408
-        f32 rate;                       // 0x40c
-        f32 length;                     // 0x410
-        f32 cumulative_distances[64];   // 0x414
-        i32 reset_state;                // 0x514
-        i32 current_state;              // 0x518
-        i32 previous_id;                // 0x51c
-        i32 order;                      // 0x520
-        i32 id;                         // 0x524
-        i32 enabled;                    // 0x528
-        u32 unknown_52c;                // 0x52c
-    } FLIGHT_SPLINE_FILE;
-
     char *FlightSplineExtension = ".FSP";
     f32 FlightSplineDefaultIncrement = 0.01f;
     f32 PodRaceSplineIncrement = 0.001f;
@@ -364,11 +307,11 @@ extern "C" {
     static void SampleFlightSpline(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *points, i32 count);
     static f32 FlightSplineLegacyLength(FLIGHT_SPLINE_RESOURCE *spline);
     static f32 FlightSplineCumulativeLength(FLIGHT_SPLINE_RESOURCE *spline);
-    static void FlightSplineLoadRecord(FLIGHT_SPLINE_FILE *spline, i32 version, i32 index);
+    static void FlightSplineLoadRecord(FLIGHT_SPLINE_RESOURCE *spline, i32 version, i32 index);
     static void DrawFlightSplineDebug(FLIGHT_SPLINE_RESOURCE *spline, i32 mode);
     static void DogfightResetCrosses(DOGFIGHT_CROSS *crosses, i32 count);
     static DOGFIGHT_FIGHTER *QueuedFighterSelector(DOGFIGHT_SPACE *space);
-    static void DogfightResetSplineHistory(DOGFIGHT_SPLINE_HISTORY *records, i32 count);
+    static void DogfightResetSplineHistory(FLIGHT_SPLINE_RESOURCE *records, i32 count);
     static void DogfightResetWorldRecords(WORLDINFO *world, DOGFIGHT_SPACE *space);
     static __declspec(noinline) void DogfightResetGroup(DOGFIGHT_GROUP *group);
     static void StarFighterAlign(starfighter_s *fighter, NUVEC4 *direction, f32 distance, i32 mode);
@@ -391,8 +334,8 @@ extern "C" {
     i32 ChrisExtraBoltCollision(BOLT *bolt, NUVEC *points);
     static void DrawSelectedSock(SOCKSYS *system, i32 radius, SOCKPOSITION *position, i32 mode, i32 count);
     void ChrisAnakinCInit();
-    static void SpawnFlightFighter(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_FIGHTER *record);
-    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE *space);
+    static void SpawnFlightFighter(FLIGHT_SPLINE_RESOURCE *spline, DOGFIGHT_FIGHTER *record);
+    static void ProcessFlightSpline(FLIGHT_SPLINE_RESOURCE *spline, DOGFIGHT_SPACE *space);
     void MakeWingFormation(NUVEC4 *start, NUVEC4 *target, f32 duration, i32 mode);
     static void ProcessFormationActions(DOGFIGHT_ACTION_STATE *state);
     static void ProcessSpaceLevel(DOGFIGHT_SPACE *space);
@@ -857,25 +800,25 @@ extern "C" {
         return distance;
     }
 
-    static void FlightSplineLoadRecord(FLIGHT_SPLINE_FILE *spline, i32 version, i32 index) {
+    static void FlightSplineLoadRecord(FLIGHT_SPLINE_RESOURCE *spline, i32 version, i32 index) {
         i32 point;
         spline->point_count = EdFileReadInt();
-        spline->reset_value = EdFileReadFloat();
+        spline->reset_spawn = EdFileReadFloat();
         spline->id = EdFileReadInt();
         spline->enabled = 1;
         if (version >= 2) {
-            spline->rate = EdFileReadFloat();
-            spline->reset_state = EdFileReadInt();
+            spline->spawn_interval = EdFileReadFloat();
+            spline->repeat_limit = EdFileReadInt();
         } else {
-            spline->reset_state = 0;
-            spline->rate = 0.0f;
+            spline->repeat_limit = 0;
+            spline->spawn_interval = 0.0f;
         }
         if (version >= 3) {
-            spline->previous_id = EdFileReadInt();
-            spline->order = EdFileReadInt();
+            spline->target_id = EdFileReadInt();
+            spline->object_id = EdFileReadInt();
         } else {
-            spline->previous_id = -1;
-            spline->order = index;
+            spline->target_id = -1;
+            spline->object_id = index;
         }
         for (point = 0; point < spline->point_count; ++point) {
             spline->points[point].x = EdFileReadFloat();
@@ -890,7 +833,7 @@ extern "C" {
         i32 version;
         i32 count;
         i32 i;
-        FLIGHT_SPLINE_FILE *spline;
+        FLIGHT_SPLINE_RESOURCE *spline;
         sprintf(filename, "%s%s", world->config_file, FlightSplineExtension);
         EdFileSetMedia(1);
         if (!EdFileOpen(filename, 0)) {
@@ -902,11 +845,11 @@ extern "C" {
             FlightSplineCapacityDiagnostic(filename);
         }
         for (i = 0; i < count; ++i) {
-            FlightSplineLoadRecord((FLIGHT_SPLINE_FILE *)&splines[i], version, i);
+            FlightSplineLoadRecord(&splines[i], version, i);
         }
         if (version > 3) {
             for (i = 0; i < count; ++i) {
-                spline = (FLIGHT_SPLINE_FILE *)&splines[i];
+                spline = &splines[i];
                 spline->length = EdFileReadFloat();
                 if (version > 4) {
                     i32 point;
@@ -1092,11 +1035,11 @@ extern "C" {
         return NULL;
     }
 
-    static void DogfightResetSplineHistory(DOGFIGHT_SPLINE_HISTORY *records, i32 count) {
+    static void DogfightResetSplineHistory(FLIGHT_SPLINE_RESOURCE *records, i32 count) {
         i32 i;
         for (i = 0; i < count; ++i, ++records) {
-            records->current_value = records->reset_value;
-            records->current_state = records->reset_state;
+            records->next_spawn = records->reset_spawn;
+            records->remaining = records->repeat_limit;
         }
     }
 
@@ -1106,23 +1049,23 @@ extern "C" {
         DogfightDrawScale.y = 4.0f;
         DogfightDrawScale.z = 4.0f;
         DogfightDrawScale.w = 1.0f;
-        space->draw_scale.x = DogfightOriginEndXPc;
-        space->draw_scale.y = DogfightOriginEndY;
-        space->draw_scale.z = DogfightOriginEndZ;
-        space->draw_scale.w = 1.0f;
-        space->actions = NULL;
+        space->formation.draw_scale.x = DogfightOriginEndXPc;
+        space->formation.draw_scale.y = DogfightOriginEndY;
+        space->formation.draw_scale.z = DogfightOriginEndZ;
+        space->formation.draw_scale.w = 1.0f;
+        space->formation.actions = NULL;
         if (world->current_level != DOGFIGHTA_LDATA) {
-            space->actions = DogfightAnakinActions;
+            space->formation.actions = DogfightAnakinActions;
         }
         buffer = &space->reset_buffer;
         if (buffer != NULL && buffer->capacity != 0) {
             memset(buffer->records, 0, buffer->capacity * 96u);
             buffer->used = 0;
         }
-        space->current_action = NULL;
-        space->unknown_34b8 = 0;
-        space->unknown_34bc = 4;
-        space->owner = space;
+        space->formation.current = NULL;
+        space->formation.next_index = 0;
+        space->formation.command = 4;
+        space->formation.owner = space;
         space->value_one_a = 1.0f;
         space->value_one_b = 1.0f;
     }
@@ -1324,7 +1267,7 @@ extern "C" {
 
     static void StarFighterTarget(starfighter_s *fighter) {
         DOGFIGHT_SPACE *space = WORLD->dogfight_space;
-        DOGFIGHT_TARGET_SPLINE *spline = (DOGFIGHT_TARGET_SPLINE *)fighter->spline;
+        FLIGHT_SPLINE_RESOURCE *spline = fighter->spline;
         DOGFIGHT_FIGHTER *record;
         i32 target_id;
         i32 i;
@@ -2354,7 +2297,7 @@ extern "C" {
         NuMtxPreRotateY(matrix, 0x8000);
     }
 
-    static void SpawnFlightFighter(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_FIGHTER *record) {
+    static void SpawnFlightFighter(FLIGHT_SPLINE_RESOURCE *spline, DOGFIGHT_FIGHTER *record) {
         starfighter_s *fighter = &record->fields;
         __declspec(align(16)) NUVEC4 direction;
         i32 model;
@@ -2382,7 +2325,7 @@ extern "C" {
         fighter->hit_count = 0;
         fighter->fired = 0;
         fighter->delete_when_done = 0;
-        model = spline->model_id;
+        model = spline->id;
         if (model == 87) {
             fighter->model_id = -297;
         } else if (model == 86) {
@@ -2402,7 +2345,7 @@ extern "C" {
         fighter->object_id = spline->object_id;
         fighter->target_id = (i16)spline->target_id;
         fighter->missile_count = 1;
-        model = spline->model_id;
+        model = spline->id;
         if (model == 85 || model == 84 || model == 86) {
             fighter->scale = 1.0f;
             fighter->speed = 22.5f;
@@ -2418,7 +2361,7 @@ extern "C" {
         }
     }
 
-    static void ProcessFlightSpline(DOGFIGHT_PLAYBACK_SPLINE *spline, DOGFIGHT_SPACE *space) {
+    static void ProcessFlightSpline(FLIGHT_SPLINE_RESOURCE *spline, DOGFIGHT_SPACE *space) {
         DOGFIGHT_FIGHTER *fighter;
         if (spline->point_count == 0) {
             return;
@@ -2429,7 +2372,7 @@ extern "C" {
         fighter = QueuedFighterSelector(space);
         fighter->fields.spawn_time = spline->next_spawn;
         SpawnFlightFighter(spline, fighter);
-        if (spline->interval != 0.0f) {
+        if (spline->spawn_interval != 0.0f) {
             if (spline->repeat_limit != 0) {
                 --spline->remaining;
                 if (spline->remaining == 0) {
@@ -2437,7 +2380,7 @@ extern "C" {
                     return;
                 }
             }
-            spline->next_spawn += spline->interval;
+            spline->next_spawn += spline->spawn_interval;
         } else {
             spline->next_spawn = -1.0f;
         }
@@ -2563,14 +2506,14 @@ extern "C" {
         space->door_elapsed = space->door_countdown;
         space->door_time += FRAMETIME;
         space->door_countdown += (f64)space->normalized_speed * FRAMETIME;
-        ProcessFormationActions((DOGFIGHT_ACTION_STATE *)&space->draw_scale);
+        ProcessFormationActions(&space->formation);
         buffer = (DOGFIGHT_QUICK_BUFFER *)&space->reset_buffer;
         for (i = 0; i < 8; ++i) {
             ProcessFlightGroup(&space->groups[i], buffer);
         }
         ProcessQuickBolts(buffer);
         for (i = 0; i < 256; ++i) {
-            ProcessFlightSpline((DOGFIGHT_PLAYBACK_SPLINE *)&space->splines[i], space);
+            ProcessFlightSpline(&space->splines[i], space);
         }
         for (i = 0; i < 96; ++i) {
             if (space->queued_fighters[i].fields.active != 0) {
@@ -2620,7 +2563,7 @@ extern "C" {
         SpaceResetAudioPoint();
         ProcessCurrentSpeed(world, DogfightSpeedList);
         ProcessSpaceLevel(world->dogfight_space);
-        if (AreaGlobals.unknown_00 != 0 || flags[0] != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
+        if (AreaGlobals.player_deaths != 0 || flags[0] != 0 || BATTLEOVERCORUSCANT_ADATA == NULL) {
             return;
         }
         if (Game.area_save[BATTLEOVERCORUSCANT_ADATA->index].area_complete != 0) {

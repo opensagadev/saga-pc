@@ -64,6 +64,7 @@
 #include "nu2api/nu3d/nuspline.h"
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/nucore/nuanim3.h"
+#include "nu2api/nucore/nugcutscene.h"
 #include "nu2api/nucore/nulist.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuang.h"
@@ -76,41 +77,13 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct ai_controller_scene_view_s {
-    u8 unknown_0000[0x1394];
-    NUGSCN *scene;
-} AI_CONTROLLER_SCENE_VIEW;
-
 void *CutScene_FindInst(void *, char *);
-
-typedef struct controller_animation_view_s {
-    u8 unknown_00[0x5c];
-    u16 animation_index;
-} CONTROLLER_ANIMATION_VIEW;
-
-typedef struct controller_cut_animation_s {
-    u8 unknown_00[8];
-    f32 end_frame;
-} CONTROLLER_CUT_ANIMATION;
-
-typedef struct controller_cut_view_s {
-    u8 unknown_00[0x58];
-    CONTROLLER_CUT_ANIMATION *animation;
-    u8 unknown_5c[0x34];
-    f32 current_frame;
-} CONTROLLER_CUT_VIEW;
 
 i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
-
-typedef struct ai_frame_world_s {
-    u8 unknown_0000[0x2aec];
-    i32 processor_count;
-    LEVEL_SCRIPT_PROCESS processors[32];
-} AI_FRAME_WORLD;
 
 extern char AIGizmoNameBuffer[16];
 
@@ -839,7 +812,6 @@ void GameAISysStartFrame(AISYS *system) {
     AIPATH *path;
     AIPATHCNX *connection;
     AIPATHNODE *node;
-    AI_FRAME_WORLD *world;
     if (system == NULL || netclient != 0) {
         return;
     }
@@ -874,10 +846,9 @@ void GameAISysStartFrame(AISYS *system) {
             system->next_area_check = 0;
         }
     }
-    for (script_index = 0; script_index < ((AI_FRAME_WORLD *)WORLD)->processor_count; ++script_index) {
-        world = (AI_FRAME_WORLD *)WORLD;
-        if ((world->processors[script_index].processor.flags & AISCRIPTPROCESS_INACTIVE) == 0) {
-            AIScriptProcess(system, NULL, NULL, &world->processors[script_index].processor, FRAMETIME);
+    for (script_index = 0; script_index < WORLD->script_processor_count; ++script_index) {
+        if ((WORLD->script_processors[script_index].processor.flags & AISCRIPTPROCESS_INACTIVE) == 0) {
+            AIScriptProcess(system, NULL, NULL, &WORLD->script_processors[script_index].processor, FRAMETIME);
         }
     }
 }
@@ -1415,7 +1386,7 @@ struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *syste
             switch (target_type) {
                 case AIPATHCNX_TARGET_SPECIAL:
                     if (target_name != NULL) {
-                        NuSpecialFind(((AI_CONTROLLER_SCENE_VIEW *)ai)->scene, &special, target_name, 1);
+                        NuSpecialFind(ai->scene, &special, target_name, 1);
                     }
                     break;
                 case AIPATHCNX_TARGET_CUTSCENE:
@@ -1500,7 +1471,7 @@ void fun_0043cf70(AI_CONTROL_SYSTEM *system, AI_CONTROL_SLOT *controller) {
 void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32 first, i32 last) {
     i32 end;
     i32 frame;
-    CONTROLLER_ANIMATION_VIEW *animation;
+    NUINSTANIM *animation;
     void *data;
     NUGSCN *scene;
     if (controller == NULL) {
@@ -1519,7 +1490,7 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
             }
             break;
         case AIPATHCNX_TARGET_CUTSCENE:
-            end = (i32)((CONTROLLER_CUT_VIEW *)controller->target)->animation->end_frame;
+            end = (i32)((INSTNUGCUTSCENE *)controller->target)->scene->duration;
             break;
         case AIPATHCNX_TARGET_BUILDIT:
         case AIPATHCNX_TARGET_GIZMO:
@@ -1558,7 +1529,7 @@ void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *controller, i32
 void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
     struct AIPATHCNXCONTROLLER_s *controller;
     NUINSTANIM *animation;
-    CONTROLLER_CUT_VIEW *cut;
+    INSTNUGCUTSCENE *cut;
     void *data;
     i32 end;
     i32 frame;
@@ -1602,7 +1573,7 @@ void AIPathCnxControlSysUpdate(AI_CONTROL_SYSTEM *system) {
                 break;
             case AIPATHCNX_TARGET_CUTSCENE:
                 cut = controller->target;
-                end = (i32)cut->animation->end_frame;
+                end = (i32)cut->scene->duration;
                 if (end > 1024) {
                     end = 1024;
                 }
@@ -2062,19 +2033,19 @@ i32 AI_GetMaxGizmos(void *world_ptr) {
 }
 
 void AI_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
-    struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD *)world_ptr)->items;
+    LEVEL_SCRIPT_PROCESS *item = ((WORLDINFO *)world_ptr)->script_processors;
     i32 i;
     if (item == NULL) {
         return;
     }
-    for (i = 0; i < ((ADD_AI_WORLD *)WORLD)->count; ++i, ++item) {
+    for (i = 0; i < WORLD->script_processor_count; ++i, ++item) {
         AddGizmo(giz, type, NULL, item);
     }
 }
 
 char *AI_GetGizmoName(void *gizmo_pointer) {
     GIZMO *gizmo = gizmo_pointer;
-    AI_GIZMO_NAME_PROCESS *process;
+    LEVELSCRIPTPROCESS_s *process;
     i8 length;
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
@@ -2083,34 +2054,34 @@ char *AI_GetGizmoName(void *gizmo_pointer) {
     if (NuStrLen(process->name) != 0) {
         return process->name;
     }
-    if (process->script != NULL && process->script->name != NULL) {
-        NuStrNCpy(AIGizmoNameBuffer, process->script->name, sizeof(AIGizmoNameBuffer));
+    if (process->processor.script != NULL && process->processor.script->name != NULL) {
+        NuStrNCpy(AIGizmoNameBuffer, process->processor.script->name, sizeof(AIGizmoNameBuffer));
     } else {
         NuStrCpy(AIGizmoNameBuffer, "");
     }
     length = (i8)NuStrLen(AIGizmoNameBuffer);
-    if (process->locator_set_name != NULL) {
+    if (process->processor.locator_set != NULL) {
         length += (i8)NuStrLen("()");
-        length += (i8)NuStrLen(process->locator_set_name);
+        length += (i8)NuStrLen(process->processor.locator_set->name);
         if (length < 16) {
             NuStrCat(AIGizmoNameBuffer, "(");
-            NuStrCat(AIGizmoNameBuffer, process->locator_set_name);
+            NuStrCat(AIGizmoNameBuffer, process->processor.locator_set->name);
             NuStrCat(AIGizmoNameBuffer, ")");
         }
-    } else if (process->locator_name != NULL) {
+    } else if (process->processor.locator != NULL) {
         length += (i8)NuStrLen("()");
-        length += (i8)NuStrLen(process->locator_name);
+        length += (i8)NuStrLen(process->processor.locator->name);
         if (length < 16) {
             NuStrCat(AIGizmoNameBuffer, "(");
-            NuStrCat(AIGizmoNameBuffer, process->locator_name);
+            NuStrCat(AIGizmoNameBuffer, process->processor.locator->name);
             NuStrCat(AIGizmoNameBuffer, ")");
         }
-    } else if (process->context_name != NULL) {
+    } else if (process->processor.trigger_area != NULL) {
         length += (i8)NuStrLen("()");
-        length += (i8)NuStrLen(process->context_name);
+        length += (i8)NuStrLen(process->processor.trigger_area->name);
         if (length < 16) {
             NuStrCat(AIGizmoNameBuffer, "(");
-            NuStrCat(AIGizmoNameBuffer, process->context_name);
+            NuStrCat(AIGizmoNameBuffer, process->processor.trigger_area->name);
             NuStrCat(AIGizmoNameBuffer, ")");
         }
     }
@@ -2275,7 +2246,7 @@ void GameAIProcess(void) {
             object->use_action_parameter -= FRAMETIME;
         } else {
             object->can_use_object = NULL;
-            object->unknown_f00 = 0;
+            object->use_action = 0;
         }
         if (object->helper_retry_delay != 0) {
             --object->helper_retry_delay;
@@ -2470,7 +2441,7 @@ void GameAIProcess(void) {
             object->script_fire_target = NULL;
             if ((combat_flags & 0x8000u) != 0) {
                 object->portal_flags = combat_flags & ~0x8000u;
-                object->unknown_e58 = object->unknown_e4c;
+                object->previous_script_target_position = object->script_target_position;
             }
             object->portal_flags &= ~0x30000u;
         }
@@ -2626,7 +2597,7 @@ void GameAIProcess(void) {
             defend = 0;
             if ((object->combat_flags & APIOBJECT_SHOOT_OPPONENTS) != 0 && object->ai_packet.opponent != NULL) {
                 bolt = BoltType_FindByID(0, WORLD);
-                if (bolt->unknown_10 * bolt->unknown_14 > object->ai_packet.opponent_metric) {
+                if (bolt->speed * bolt->lifetime > object->ai_packet.opponent_metric) {
                     NuVecSub(&direction, &object->ai_packet.opponent->collision_position, &object->collision_position);
                     scale = object->ai_packet.opponent_metric == 0.0f ? 0.0f : 1.0f / object->ai_packet.opponent_metric;
                     NuVecScale(&direction, &direction, scale);
@@ -2648,19 +2619,19 @@ void GameAIProcess(void) {
                 ((CharCategory_IsCategory(object, 0) != 0 || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_BODYGUARD ||
                   object->id == (u16)id_IMPERIALGUARD) != 0 ||
                  object->id == (u16)id_GAMORREANGUARD)) {
-                if ((object->combat_flags & 1) != 0 || object->ai_packet.opponent != NULL || (object->player.unknown_e22 & 8) != 0) {
+                if ((object->combat_flags & 1) != 0 || object->ai_packet.opponent != NULL || (object->player.weapon_flags & 8) != 0) {
                     object->timer_ecc = DEFENDTIME;
                 }
                 if (object->timer_ecc > 0.0f) {
                     defend = 1;
-                    if ((object->player.unknown_e22 & 9) == 9) {
+                    if ((object->player.weapon_flags & 9) == 9) {
                         object->player.pad->buttons_pressed |= GAMEPAD_ACTION;
                     }
                 }
             }
             if ((object->combat_flags4 & 0x20) != 0) {
                 defend = 1;
-                if ((object->player.unknown_e22 & 1) != 0) {
+                if ((object->player.weapon_flags & 1) != 0) {
                     object->player.pad->buttons_pressed |= GAMEPAD_ACTION;
                     object->combat_flags4 &= ~0x20;
                 }
@@ -2669,11 +2640,11 @@ void GameAIProcess(void) {
                 (defend || (object->combat_flags & 0x30) != 0 ||
                  ((object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) &&
                   (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->player_index != -1))) {
-                if ((object->player.unknown_e22 & 1) == 0 && object->player.character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
+                if ((object->player.weapon_flags & 1) == 0 && object->player.character_context != CHARACTER_CONTEXT_WEAPON_OUT &&
                     object->player.weapon_draw_state == 0) {
                     object->player.pad->buttons_pressed |= GAMEPAD_ACTION;
                 }
-            } else if ((object->player.pad->buttons_pressed & GAMEPAD_ACTION) == 0 && (object->player.unknown_e22 & 1) != 0 &&
+            } else if ((object->player.pad->buttons_pressed & GAMEPAD_ACTION) == 0 && (object->player.weapon_flags & 1) != 0 &&
                        object->player.character_context != CHARACTER_CONTEXT_WEAPON_IN && object->player.weapon_draw_state == 0) {
                 object->player.pad->buttons_pressed |= GAMEPAD_SPECIAL;
             }

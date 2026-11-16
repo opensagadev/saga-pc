@@ -18,7 +18,7 @@ extern "C" {
     void MiniKit_GameMsg_Update(GAME_MESSAGE *);
     void MiniKit_GameMsg_End(GAME_MESSAGE *);
     void CharacterMiniKits_Dump(WORLDINFO *);
-    extern i32 *Char_MiniKit;
+    extern MINIKIT **Char_MiniKit;
     extern VARIPTR minikits_savecharacterbufferptr;
     extern const char GizmoConfigPathFormat[7];
     void ResetMinikitCounter(void);

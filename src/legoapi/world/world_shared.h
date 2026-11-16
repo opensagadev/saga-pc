@@ -76,7 +76,7 @@ extern "C" {
     AISYS *AISysLoad(VARIPTR *, VARIPTR *, i32, NUGSCN *, char *, char *, char *);
     void *AIPathCnxControlSysCreate(VARIPTR *, VARIPTR *, i32);
     void *AIPathCnxHelperSysCreate(VARIPTR *, VARIPTR *, i32);
-    void *AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
+    struct AITRIGGERSETSYS_s *AITriggerSetSysCreate(VARIPTR *, VARIPTR *);
     void *CreateClimbObjectSys(VARIPTR *, VARIPTR *, i32);
     APIOBJECTSYS *APIObjectSysInit(i32, VARIPTR *, VARIPTR *);
     void MiniKit_Load(MINIKIT *, i32, VARIPTR *, VARIPTR *, void *);

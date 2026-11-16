@@ -183,7 +183,7 @@ extern "C" {
                 current_level->unknown_009e = -1;
                 current_level->mipmap_mode = 3;
                 current_level->blob_shadow_alpha = 0x7f;
-                current_level->unknown_00a2 = -1;
+                current_level->dfs_mode = -1;
                 current_level->area_index = -1;
                 current_level->cam_tilt = 0.0f;
                 current_level->hover_height = 0.0f;
@@ -1030,8 +1030,8 @@ extern "C" {
         if (DoubleScoreTime > 0.0f && (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0)) {
             GameAudio_PlaySfxAndSetVolume(0x35, NULL, DoubleScoreTime);
         }
-        if (AreaGlobals.unknown_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
-            AreaGlobals.unknown_00 = 1;
+        if (AreaGlobals.player_deaths == 0 && Cheats_CheckFlags(0x2000) != 0) {
+            AreaGlobals.player_deaths = 1;
         }
     }
 

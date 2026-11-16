@@ -192,7 +192,7 @@ void CruiserDReset(WORLDINFO *world) {
     CruiserD_LiftChase_msg = CheckGizAIMessage(gizaimessagesys, "LiftChase", NULL);
     MiscTime = 0.0f;
     if (NuSpecialExistsFn(&CruiserD_Lift) != 0 && CruiserD_LiftAnim != NULL) {
-        if ((LevelProgressData[CruiserE_ix].unknown_2800[0] & 1) == 0) {
+        if ((LevelProgressData[CruiserE_ix].flags & 1) == 0) {
             CruiserD_LiftAnim->playing = 1;
             CruiserD_LiftAnim->ltime = 1.0f;
             CruiserD_direction = 1;

@@ -689,7 +689,7 @@ extern "C" void Batarang_MoveCode(GAMEOBJECT *object) {
                     message.text = TagAsciiDown;
                     message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
                     message.scale = 3.0f;
-                    message.unknown_4f = 4;
+                    message.slot_flags = 4;
                     message.alpha = static_cast<i32>(128.0 * ((f64)0.8f - (f64)0.2f * game_pulse));
                     for (i32 i = 0; i < object->player.batarang->active; ++i) {
                         if (Batarang_GetTargetPos((object->player.batarang), i, &position) != 0) {

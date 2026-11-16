@@ -6,6 +6,7 @@
 #include "legoapi/characters/core/customiser.h"
 #include "legoapi/items/collect/shard.h"
 #include "legoapi/items/objects/game_obj.h"
+#include "legoapi/menus/screens/gamestructure.h"
 #include "legoapi/world/missions.h"
 #include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nufile/nufpar.h"
@@ -40,95 +41,73 @@ struct EPISODESAVE_s {           // size 0xc
 typedef struct gamesave_s { // size 0x7e4c
 
     union { // size 0x4
-        u32 unknown_0000;
+        u32 header_word;
 
-        struct {                // size 0x4
-            u8 unknown_game_00; // 0x0000
+        struct {          // size 0x4
+            u8 header_00; // 0x0000
 
             union { // size 0x1
                 u8 difficulty;
                 u8 save_version;
             }; // 0x0001
 
-            u8 unknown_game_02[2]; // 0x0002
+            u8 header_02;    // 0x0002
+            u8 areas_opened; // 0x0003: set by Areas_OpenAll
         };
     }; // 0x0000
 
-    OPTIONSSAVE options_save;       // 0x0004
-    u8 level_save[0x781b];          // 0x0011
-    AREA_SAVE_PICKUP area_save[72]; // 0x782c
+    OPTIONSSAVE options_save;             // 0x0004
+    u8 level_save[0x781b];                // 0x0011
+    AREA_SAVE_PICKUP area_save[72];       // 0x782c
+    struct EPISODESAVE_s episode_save[6]; // 0x7b8c
+    u32 hint_purchased_bits[3];           // 0x7bd4
+    u32 character_purchased_bits[4];      // 0x7be0
+    u32 extra_unlocked_bits[2];           // 0x7bf0
 
-    union { // size 0x108
+    union { // size 0x8
+        u32 gold_brick_purchased_bits[2];
 
-        struct { // size 0x108
+        struct {                          // size 0x8
+            u32 gold_brick_purchased_low; // 0x7bf8
+            u32 initial_store_pack_flags; // 0x7bfc
+        };
+    }; // 0x7bf8
 
-            union { // size 0x8f
-                u8 unknown_7b8c[0x8f];
+    union { // size 0x8
+        u32 extra_purchased_bits[2];
 
-                struct {                                // size 0x8f
-                    u8 unknown_gold_brick_prefix[0x8e]; // 0x7b8c
-                    u8 gold_bricks;                     // 0x7c1a
-                };
-            }; // 0x7b8c
+        struct {                           // size 0x8
+            u32 extra_purchased_low;       // 0x7c00
+            u32 purchased_extra_bits_high; // 0x7c04
+        };
+    }; // 0x7c00
 
+    u32 hint_completion_bits[3]; // 0x7c08
+    u32 coins;                   // 0x7c14
+
+    union {                         // size 0x4
+        STATUSCOLLECT_s completion; /* CustomiserCompletionSave points here */
+
+        struct {                        // size 0x4
+            u16 completion_points;      // 0x7c18
+            u8 gold_bricks;             // 0x7c1a
             u8 customizer_weirdo_flags; // 0x7c1b
-
-            union { // size 0x4
-                u8 unknown_7c1c[4];
-
-                struct {                      // size 0x4
-                    u8 hub_buildit_completed; // 0x7c1c
-
-                    union { // size 0x1
-                        u8 losttemple_trailer_watched;
-                        u8 lost_temple_area_complete;
-                    }; // 0x7c1d
-
-                    u8 unknown_7c1e[2]; // 0x7c1e
-                };
-            }; // 0x7c1c
-
-            f32 game_time;                       // 0x7c20
-            u8 unknown_7c24[0xa];                // 0x7c24
-            u16 customizer_cape_piece;           // 0x7c2e
-            u8 unknown_7c30[0x36];               // 0x7c30
-            u16 customizer_secondary_cape_piece; // 0x7c66
-            u8 unknown_7c68[0x2c];               // 0x7c68
         };
+    }; // 0x7c18
 
-        struct {                                  // size 0x108
-            struct EPISODESAVE_s episode_save[6]; // 0x7b8c
-            u8 newgame_reserved_7bd4[0x28];       // 0x7bd4
-            u32 initial_store_pack_flags;         // 0x7bfc
-            u32 newgame_reserved_7c00;            // 0x7c00
-            u32 purchased_extra_bits_high;        // 0x7c04
+    u8 hub_buildit_completed; // 0x7c1c
 
-            union { // size 0x10
-                u8 newgame_reserved_7c08[0x10];
+    union { // size 0x1
+        u8 losttemple_trailer_watched;
+        u8 lost_temple_area_complete;
+        u8 bolt_unlocked; /* the shop's Bolt entry is unlocked */
+    }; // 0x7c1d
 
-                struct { // size 0x10
-
-                    union { // size 0xc
-                        u8 hud_coin_reserved_7c08[0xc];
-                        u32 hint_completion_bits[3];
-                    }; // 0x7c08
-
-                    u32 coins; // 0x7c14
-                };
-            }; // 0x7c08
-
-            u16 save_hash;                             // 0x7c18
-            u8 newgame_reserved_7c1a[0xa];             // 0x7c1a
-            GAME_CUSTOMISER_START customiser_start[2]; // 0x7c24
-        };
-    }; // 0x7b8c
-
-    MISSION_SAVE_READER mission_save; // 0x7c94
-
-    union { // size 0x154
-        u8 unknown_7cf8[0x154];
-        u8 character_save[0x154];
-    }; // 0x7cf8
+    u8 reserved_7c1e[2];                       // 0x7c1e
+    f32 game_time;                             // 0x7c20
+    GAME_CUSTOMISER_START customiser_start[2]; // 0x7c24
+    MISSION_SAVE_READER mission_save;          // 0x7c94
+    u8 character_save[0x154];                  // 0x7cf8
 } GAMESAVE;
 
 #ifdef __cplusplus
@@ -267,16 +246,11 @@ extern "C" {
 }
 #endif
 
-typedef struct customiser_completion_reader_s { // size 0x4
-    u8 unknown_00[3];                           // 0x0
-    u8 flags;                                   // 0x3
-} CUSTOMISER_COMPLETION_READER;
-
-typedef struct ANIM_REDIRECT_VIEW { // size 0x8
-    const char *name;               // 0x0
-    i16 animation_id;               // 0x4
-    u8 unknown_06[2];               // 0x6
-} ANIM_REDIRECT_VIEW;
+typedef struct ANIM_REDIRECT { // size 0x8
+    const char *name;          // 0x0
+    i16 animation_id;          // 0x4
+    u8 pad_06[2];              // 0x6
+} ANIM_REDIRECT;
 
 #ifdef __cplusplus
 extern "C" {
@@ -301,8 +275,8 @@ extern "C" {
     extern struct area_data_s *BONUSKAMINO_ADATA;
     extern struct area_data_s *BONUSKASHYYYK_ADATA;
     void NewGame(void);
-    extern ANIM_REDIRECT_VIEW AnimRedirectList_LSW[41];
-    extern ANIM_REDIRECT_VIEW AnimRedirectList_Batman[1];
+    extern ANIM_REDIRECT AnimRedirectList_LSW[41];
+    extern ANIM_REDIRECT AnimRedirectList_Batman[1];
 
     extern u8 CheatC3poBitsEnabled;
     extern i32 deathstar_hold_count;
@@ -312,7 +286,6 @@ extern "C" {
 }
 #endif
 
-struct game_door_callback_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -394,11 +367,6 @@ extern "C" {
 }
 #endif
 
-typedef struct {          // size 0xfc
-    char name[16];        // 0x00
-    u8 opaque[0xfc - 16]; // 0x10
-} ADD_TELEPORT;
-
 typedef struct ASTEROID {
     nuhspecial_s special;
     struct GIZMOBLOWUP *blowup;
@@ -424,17 +392,6 @@ typedef struct KILLPARTS_OBJECT_LIGHT {
     u8 unknown_0[0x4d8];
     PART_LIGHTING_DATA lighting;
 } KILLPARTS_OBJECT_LIGHT;
-
-typedef struct ai_gizmo_name_process_s { // size 0xdc
-    char name[16];                       // 0x00
-    u8 unknown_10[4];                    // 0x10
-    struct AISCRIPT *script;             // 0x14
-    u8 unknown_18[0x98];                 // 0x18
-    char *context_name;                  // 0xb0
-    char *locator_name;                  // 0xb4
-    char *locator_set_name;              // 0xb8
-    u8 unknown_bc[0x20];                 // 0xbc
-} AI_GIZMO_NAME_PROCESS;
 
 typedef struct custom_category_config_s {
     char *name;
@@ -463,25 +420,11 @@ typedef struct custom_piece_config_s {
     i16 character_id;
     i16 icon_character_id;
     i16 weapon_model;
-    i16 unknown_indices_0a[3];
-    i8 unknown_10;
+    i16 part_slots[3]; /* which of the three part slots the piece fills */
+    i8 bonus_group;    /* the set four pieces of which make a bonus character (-1 none) */
     i8 collection_type;
     u16 availability_flags;
     u32 model_flags;
     u32 gameplay_flags;
-    u8 unknown_1c[12];
+    u8 pad_1c[12];
 } CUSTOM_PIECE_CONFIG;
-
-typedef struct {          // size 0x2c
-    char name[16];        // 0x00
-    u8 opaque[0x2b - 16]; // 0x10
-    u8 flags;             // 0x2b
-} ADD_TORP;
-
-typedef struct HINT_ZIPUP { // size 0x7c
-    u8 name[16];            // 0x00
-    NUVEC lower_position;   // 0x10
-    u8 reserved1c[0x4c];    // 0x1c
-    u8 flags;               // 0x68
-    u8 reserved69[0x13];    // 0x69
-} HINT_ZIPUP;

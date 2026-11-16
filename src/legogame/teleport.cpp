@@ -32,34 +32,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct TELEPORT_CONFIG {   // size 0xfc
-    char name[0x40];               // 0x00
-    NUGSPLINE *path;               // 0x40
-    f32 duration;                  // 0x44
-    f32 range_squared;             // 0x48
-    u16 flags;                     // 0x4c
-    u8 enabled;                    // 0x4e
-    u8 active;                     // 0x4f
-    nuhspecial_s blocking_special; // 0x50
-    nuhspecial_s flap1_special;    // 0x5c
-    nuhspecial_s flap2_special;    // 0x68
-    u8 unknown_74[8];              // 0x74
-    NUMTX flap1_matrix;            // 0x7c
-    NUMTX flap2_matrix;            // 0xbc
-} TELEPORT_CONFIG;
-
-typedef struct WORLD_TELEPORT_CONFIG { // size 0x4688
-    u8 unknown_00[0x104];              // 0x0000
-    VARIPTR giz_buffer;                // 0x0104
-    u8 unknown_108[0x34];              // 0x0108
-    NUGSCN *scene;                     // 0x013c
-    u8 unknown_140[0x2988];            // 0x0140
-    GIZMOSYS *gizmo_system;            // 0x2ac8
-    u8 unknown_2acc[0x1bb4];           // 0x2acc
-    TELEPORT_CONFIG *teleports;        // 0x4680
-    i32 teleport_count;                // 0x4684
-} WORLD_TELEPORT_CONFIG;
-
 typedef struct TELEPORT_KEYWORDS { // size 0x64
     char *name_prefix;             // 0x00
     NUFPCOMJMP keywords[12];       // 0x04
@@ -76,46 +48,6 @@ extern "C" {
     i32 Teleport_ActivateRev(GIZMO *, i32, i32);
 }
 
-typedef struct TELEPORT_MOTION {   // size 0xfc
-    char name[0x40];               // 0x00
-    NUGSPLINE *path;               // 0x40
-    f32 duration;                  // 0x44
-    f32 range_squared;             // 0x48
-    u16 flags;                     // 0x4c
-    u8 enabled;                    // 0x4e
-    u8 active;                     // 0x4f
-    nuhspecial_s blocking_special; // 0x50
-    nuhspecial_s flap1_special;    // 0x5c
-    nuhspecial_s flap2_special;    // 0x68
-    u16 flap_angle[2];             // 0x74
-    u16 flap_target[2];            // 0x78
-    NUMTX flap1_matrix;            // 0x7c
-    NUMTX flap2_matrix;            // 0xbc
-} TELEPORT_MOTION;
-
-typedef struct TELEPORT_WORLD { // size 0x4688
-    u8 unknown_000[0x4680];     // 0x0000
-    TELEPORT_MOTION *teleports; // 0x4680
-    i32 teleport_count;         // 0x4684
-} TELEPORT_WORLD;
-
-typedef struct TELEPORT_NET_WAIT_VIEW { // size 0x7a4
-    u8 unknown_000[0x7a0];              // 0x000
-    void *net_wait_info;                // 0x7a0
-} TELEPORT_NET_WAIT_VIEW;
-
-typedef struct TELEPORT_VARIANT_VIEW { // size 0x7c0
-    u8 unknown_000[0x7bc];             // 0x000
-    u32 variant_low_bits : 10;         // 0x7bc:0
-    u32 forwards : 1;                  // 0x7bc:10
-} TELEPORT_VARIANT_VIEW;
-
-typedef struct {
-    u8 opaque[0x4680];
-    ADD_TELEPORT *items;
-    i32 count;
-} ADD_TELEPORT_WORLD;
-
 extern "C" {
     static void Tel_1_way(NUFPAR *parser);
     static void Tel_Hacky_Cam(NUFPAR *parser);
@@ -130,7 +62,7 @@ extern "C" {
 }
 extern "C" {
     static TELEPORT_CONFIG *Tel_teleport = 0;
-    static WORLD_TELEPORT_CONFIG *Tel_worldinfo = 0;
+    static WORLDINFO *Tel_worldinfo = 0;
     static TELEPORT_KEYWORDS TeleportConfigData = {"TLT_",
                                                    {{"spline", Tel_spline},
                                                     {"duration", Tel_duration},
@@ -151,7 +83,7 @@ extern "C" {
         if (NuFParGetWord(parser) == 0) {
             return;
         }
-        Tel_teleport->path = edSpline_SplineFind(Tel_worldinfo->scene, parser->word_buffer_ptr);
+        Tel_teleport->path = edSpline_SplineFind(Tel_worldinfo->current_gscn, parser->word_buffer_ptr);
         teleport = Tel_teleport;
         if (teleport->path == NULL || teleport->path->length != 4) {
             teleport->path = NULL;
@@ -168,7 +100,7 @@ extern "C" {
         if (teleport->path != NULL) {
             NuStrCpy(teleport->name, TeleportConfigData.name_prefix);
             NuStrCat(Tel_teleport->name, Tel_teleport->path->name);
-            GizmoGetUniqueName(Tel_worldinfo->gizmo_system, TeleportConfigData.name_prefix, Tel_teleport->name, Tel_teleport->name, 0x40);
+            GizmoGetUniqueName(Tel_worldinfo->gizmo_sys, TeleportConfigData.name_prefix, Tel_teleport->name, Tel_teleport->name, 0x40);
         }
     }
 
@@ -200,7 +132,7 @@ extern "C" {
 
     static void Tel_obj(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
-            NuSpecialFind(Tel_worldinfo->scene, &Tel_teleport->blocking_special, parser->word_buffer_ptr, 1);
+            NuSpecialFind(Tel_worldinfo->current_gscn, &Tel_teleport->blocking_special, parser->word_buffer_ptr, 1);
         }
     }
 
@@ -209,11 +141,11 @@ extern "C" {
             return;
         }
         if (NuStrIStr(parser->line_buffer_ptr, "flap1") != NULL) {
-            if (NuSpecialFind(Tel_worldinfo->scene, &Tel_teleport->flap1_special, parser->word_buffer_ptr, 1) != 0) {
+            if (NuSpecialFind(Tel_worldinfo->current_gscn, &Tel_teleport->flap1_special, parser->word_buffer_ptr, 1) != 0) {
                 Tel_teleport->flap1_matrix = *NuSpecialGetDrawMtx(&Tel_teleport->flap1_special);
             }
         } else {
-            if (NuSpecialFind(Tel_worldinfo->scene, &Tel_teleport->flap2_special, parser->word_buffer_ptr, 1) != 0) {
+            if (NuSpecialFind(Tel_worldinfo->current_gscn, &Tel_teleport->flap2_special, parser->word_buffer_ptr, 1) != 0) {
                 Tel_teleport->flap2_matrix = *NuSpecialGetDrawMtx(&Tel_teleport->flap2_special);
             }
         }
@@ -221,18 +153,16 @@ extern "C" {
 
     static void Tel_name(NUFPAR *parser) {
         if (NuFParGetWord(parser) != 0) {
-            GizmoGetUniqueName(((WORLD_TELEPORT_CONFIG *)WORLD)->gizmo_system, TeleportConfigData.name_prefix, parser->word_buffer_ptr,
-                               Tel_teleport->name, 0x40);
+            GizmoGetUniqueName(WORLD->gizmo_sys, TeleportConfigData.name_prefix, parser->word_buffer_ptr, Tel_teleport->name, 0x40);
         }
     }
 
-    void Teleports_Configure(WORLDINFO *world_ptr, char *config) {
-        WORLD_TELEPORT_CONFIG *world = (WORLD_TELEPORT_CONFIG *)world_ptr;
+    void Teleports_Configure(WORLDINFO *world, char *config) {
         TELEPORT_CONFIG *teleport;
         NUFPAR *parser;
         i32 active;
         world->teleports = NULL;
-        if (world->scene == NULL) {
+        if (world->current_gscn == NULL) {
             return;
         }
         parser = NuFParCreateMem("teleports", config, 0xffff);
@@ -240,7 +170,7 @@ extern "C" {
             return;
         }
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        teleport = (TELEPORT_CONFIG *)world->giz_buffer.addr;
+        teleport = static_cast<TELEPORT_CONFIG *>(world->giz_buffer.void_ptr);
         world->teleports = teleport;
         NuFParPushCom(parser, TeleportConfigData.keywords);
         active = 0;
@@ -254,8 +184,7 @@ extern "C" {
                     if (NuStrLen(Tel_teleport->name) == 0) {
                         NuStrCpy(Tel_teleport->name, TeleportConfigData.name_prefix);
                         NuStrCat(Tel_teleport->name, "TeleportNoSpline!");
-                        GizmoGetUniqueName(((WORLD_TELEPORT_CONFIG *)WORLD)->gizmo_system, TeleportConfigData.name_prefix,
-                                           Tel_teleport->name, Tel_teleport->name, 0x40);
+                        GizmoGetUniqueName(WORLD->gizmo_sys, TeleportConfigData.name_prefix, Tel_teleport->name, Tel_teleport->name, 0x40);
                     }
                     if (teleport->path != NULL) {
                         ++teleport;
@@ -307,8 +236,8 @@ extern "C" {
     }
 }
 
-extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared) {
-    TELEPORT_MOTION *teleport = ((TELEPORT_WORLD *)WORLD)->teleports;
+extern "C" TELEPORT_CONFIG *Teleport_Find(GAMEOBJECT *object, f32 range_squared) {
+    TELEPORT_CONFIG *teleport = WORLD->teleports;
     if (teleport == NULL) {
         return NULL;
     }
@@ -316,7 +245,7 @@ extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared)
     radius_squared *= radius_squared;
     i32 nearest = -1;
     f32 nearest_distance = 100000000.0f;
-    for (i32 i = 0; i < ((TELEPORT_WORLD *)WORLD)->teleport_count; ++i, ++teleport) {
+    for (i32 i = 0; i < WORLD->teleport_count; ++i, ++teleport) {
         if (teleport->active != 0 || teleport->enabled == 0) {
             continue;
         }
@@ -352,13 +281,13 @@ extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared)
         }
     }
     if (nearest != -1) {
-        return &((TELEPORT_WORLD *)WORLD)->teleports[nearest];
+        return &WORLD->teleports[nearest];
     }
     return NULL;
 }
 
 static void TeleportGetSegment(i32 *start, i32 *end, GAMEOBJECT *object) {
-    TELEPORT_MOTION *teleport = object->player.teleport;
+    TELEPORT_CONFIG *teleport = object->player.teleport;
     if ((teleport->flags & TELEPORT_CRAWL) != 0) {
         if ((object->player.context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0) {
             *start = 0;
@@ -390,7 +319,7 @@ static void Teleport_SetCrawlTime(GAMEOBJECT *object, i32 start, i32 end) {
     if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
         f32 animation_speed = AnimSpeed(object->character_model, object->player.context_animation);
         if (animation_speed != 0.0f) {
-            TELEPORT_MOTION *teleport = object->player.teleport;
+            TELEPORT_CONFIG *teleport = object->player.teleport;
 
             f32 speed_abs = TeleportFabs(animation_speed);
             NUVEC *points = teleport->path->pts;
@@ -406,11 +335,11 @@ static void Teleport_SetCrawlTime(GAMEOBJECT *object, i32 start, i32 end) {
 }
 
 extern "C" void Teleports_Reset(WORLDINFO *world) {
-    TELEPORT_MOTION *teleport = ((TELEPORT_WORLD *)world)->teleports;
+    TELEPORT_CONFIG *teleport = world->teleports;
     if (teleport == NULL) {
         return;
     }
-    for (i32 index = 0; index < ((TELEPORT_WORLD *)WORLD)->teleport_count; ++index, ++teleport) {
+    for (i32 index = 0; index < WORLD->teleport_count; ++index, ++teleport) {
         teleport->active = 0;
         teleport->enabled = 1;
         for (i32 flap = 0; flap < 2; ++flap) {
@@ -421,22 +350,22 @@ extern "C" void Teleports_Reset(WORLDINFO *world) {
 }
 
 extern "C" void Teleports_UpdateBeforeGameObjects(WORLDINFO *world) {
-    TELEPORT_MOTION *teleport = ((TELEPORT_WORLD *)world)->teleports;
+    TELEPORT_CONFIG *teleport = world->teleports;
     if (teleport == NULL) {
         return;
     }
-    for (i32 index = 0; index < ((TELEPORT_WORLD *)WORLD)->teleport_count; ++index, ++teleport) {
+    for (i32 index = 0; index < WORLD->teleport_count; ++index, ++teleport) {
         memset(teleport->flap_target, 0, sizeof(teleport->flap_target));
     }
 }
 
 extern "C" void Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
-    TELEPORT_MOTION *teleport = ((TELEPORT_WORLD *)world)->teleports;
+    TELEPORT_CONFIG *teleport = world->teleports;
     NUMTX matrix;
     if (teleport == NULL) {
         return;
     }
-    for (i32 index = 0; index < ((TELEPORT_WORLD *)WORLD)->teleport_count; ++index, ++teleport) {
+    for (i32 index = 0; index < WORLD->teleport_count; ++index, ++teleport) {
         for (i32 flap = 0; flap < 2; ++flap) {
             teleport->flap_angle[flap] = SeekRot(teleport->flap_angle[flap], teleport->flap_target[flap], 5.0f);
             if (NuSpecialExistsFn(&(&teleport->flap1_special)[flap])) {
@@ -471,7 +400,7 @@ extern "C" void Teleport_NetMoveCode(GAMEOBJECT *object) {
 }
 
 extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
-    TELEPORT_MOTION *teleport;
+    TELEPORT_CONFIG *teleport;
     i32 start_index;
     i32 end_index;
     if ((object->character_data->model_flags & CHARACTER_MODEL_TELEPORT) == 0 && SuperWeirdo(object) == 0) {
@@ -605,7 +534,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
             object->player.character_context != CHARACTER_CONTEXT_LAND_COMBO_JUMP && objInNetWaitContext(object, 15) == 0) {
             return;
         }
-        if (!(object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && object->unknown_f00 != 3) {
+        if (!(object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && object->use_action != 3) {
             return;
         }
         teleport = Teleport_Find(object, 0.0f);
@@ -616,10 +545,10 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
             object->player.context_timer -= FRAMETIME;
             if (object->player.context_timer <= 0.0f) {
                 object->player.character_context = CHARACTER_CONTEXT_NONE;
-                ((TELEPORT_NET_WAIT_VIEW *)object)->net_wait_info = NULL;
+                object->player.panel_request_data = NULL;
             }
         }
-        if (start_immediately == 0 && (objInNetWaitContext(object, 15) == 0 || ((TELEPORT_NET_WAIT_VIEW *)object)->net_wait_info == NULL)) {
+        if (start_immediately == 0 && (objInNetWaitContext(object, 15) == 0 || object->player.panel_request_data == NULL)) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                 object->player.flags_e24 |= APIOBJECT_TELEPORT_WAITING;
             }
@@ -628,7 +557,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
         object->player.character_context = CHARACTER_CONTEXT_TELEPORT;
         object->player.grapple = teleport;
         teleport->active = 1;
-        ((TELEPORT_VARIANT_VIEW *)object)->forwards = FindTeleport_Direction == 0;
+        object->player.teleport_reverse = FindTeleport_Direction == 0;
         PlayJumpSfx(object, 0);
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             Hint_SetComplete(0x268);
@@ -649,12 +578,11 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
 }
 
 extern "C" {
-
     i32 Teleport_UpdateHints(HINT *hint) {
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
             return 0;
         }
-        if (((HINT_WORLD_TELEPORT *)WORLD)->teleport_count <= 0 || AvailableToPlayer(CHARACTER_MODEL_TELEPORT, -1, -1, 0) == 0) {
+        if (WORLD->teleport_count <= 0 || AvailableToPlayer(CHARACTER_MODEL_TELEPORT, -1, -1, 0) == 0) {
             return 0;
         }
         if ((Player[0] != NULL &&
@@ -674,7 +602,7 @@ extern "C" {
         if (gizmo->object == NULL) {
             return 0;
         }
-        teleport = (TELEPORT_CONFIG *)gizmo->object;
+        teleport = static_cast<TELEPORT_CONFIG *>(gizmo->object);
         if ((mode & 1) != 0 && teleport->enabled != reverse) {
             return 0;
         }
@@ -687,7 +615,7 @@ extern "C" {
     }
 
     void Teleport_Activate(GIZMO *gizmo, i32 active) {
-        TELEPORT_CONFIG *teleport = (TELEPORT_CONFIG *)gizmo->object;
+        TELEPORT_CONFIG *teleport = static_cast<TELEPORT_CONFIG *>(gizmo->object);
         if (active != 0) {
             teleport->enabled = 1;
             teleport->active = 0;
@@ -705,13 +633,13 @@ extern "C" {
     }
 
     void Teleport_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
-        ADD_TELEPORT_WORLD *w = (ADD_TELEPORT_WORLD *)world_ptr;
+        WORLDINFO *world = static_cast<WORLDINFO *>(world_ptr);
         i32 i;
-        if (w == NULL || w->items == NULL) {
+        if (world == NULL || world->teleports == NULL) {
             return;
         }
-        for (i = 0; i < w->count; ++i) {
-            AddGizmo(giz, type, NULL, &w->items[i]);
+        for (i = 0; i < world->teleport_count; ++i) {
+            AddGizmo(giz, type, NULL, &world->teleports[i]);
         }
     }
 
@@ -724,7 +652,7 @@ extern "C" {
 
     i32 Teleport_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
         if (gizmo != NULL && gizmo->object != NULL) {
-            return ((TELEPORT_CONFIG *)gizmo->object)->active;
+            return static_cast<TELEPORT_CONFIG *>(gizmo->object)->active;
         }
         return 0;
     }

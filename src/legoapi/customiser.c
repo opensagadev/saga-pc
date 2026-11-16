@@ -298,8 +298,8 @@ void CustomiserDrawAccessories(CUSTOMISER_CONFIG *customiser, GAMEOBJECT *object
             matrix = object->player.locator_matrices[joint];
         }
         NuSpecialDrawAt(&resource->special, &matrix);
-        if ((u8)object->unknown_107c != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
-                                                              WORLD->current_level->reflection_y, &reflection) != 0) {
+        if (object->reflection_active != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                                               WORLD->current_level->reflection_y, &reflection) != 0) {
             NuRndrStartReflectionRender(0);
             NuSpecialDrawAt(&resource->special, &reflection);
             NuRndrEndReflectionRender();
@@ -724,10 +724,10 @@ CUSTOMISER_CONFIG *Customiser_Configure(char *filename, VARIPTR *buffer, VARIPTR
             piece->weapon_model = -1;
             piece->character_id = -1;
             piece->icon_character_id = -1;
-            piece->unknown_indices_0a[0] = -1;
-            piece->unknown_indices_0a[1] = -1;
-            piece->unknown_indices_0a[2] = -1;
-            piece->unknown_10 = -1;
+            piece->part_slots[0] = -1;
+            piece->part_slots[1] = -1;
+            piece->part_slots[2] = -1;
+            piece->bonus_group = -1;
             piece->collection_type = -1;
             piece->name = names;
             piece->availability_flags = 0;

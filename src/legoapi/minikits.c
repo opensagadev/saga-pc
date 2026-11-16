@@ -38,7 +38,7 @@
 #ifdef __cplusplus
 #endif
 
-i32 *Char_MiniKit = 0;
+MINIKIT **Char_MiniKit = 0;
 
 void MiniKits_Init(VARIPTR *buffer, VARIPTR *end) {
     buffer->addr = (buffer->addr + 3) & ~3u;
@@ -116,7 +116,7 @@ void CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection
     if (Char_MiniKit == NULL) {
         return;
     }
-    kit = (MINIKIT *)Char_MiniKit[id];
+    kit = Char_MiniKit[id];
     if (kit == NULL) {
         return;
     }
@@ -141,7 +141,6 @@ void CharMiniKit_Draw(i32 id, NUMTX *matrix, i32 reflection_axis, f32 reflection
 VARIPTR minikits_savecharacterbufferptr = {0};
 
 void CharacterMiniKits_Load(COLLECTION_BUILD *collection, WORLDINFO *world, VARIPTR *buffer, VARIPTR *end) {
-    WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
     i32 i;
     i32 character_id;
     u32 table_size;
@@ -151,12 +150,12 @@ void CharacterMiniKits_Load(COLLECTION_BUILD *collection, WORLDINFO *world, VARI
     }
     minikits_savecharacterbufferptr = characterbuffer_ptr;
     for (i = 0; i < CHARCOUNT; ++i) {
-        Char_MiniKit[i] = 0;
+        Char_MiniKit[i] = NULL;
     }
     buffer->addr = (buffer->addr + 3) & ~3u;
-    view->pieces_by_id = buffer->void_ptr;
+    world->minikit_pieces_by_id = buffer->void_ptr;
     table_size = CHARCOUNT * sizeof(MINIKIT *);
-    memset(view->pieces_by_id, 0, table_size);
+    memset(world->minikit_pieces_by_id, 0, table_size);
     buffer->addr += table_size;
     for (i = 0; i < collection->count; ++i) {
         character_id = collection->list[i].id;
@@ -164,7 +163,7 @@ void CharacterMiniKits_Load(COLLECTION_BUILD *collection, WORLDINFO *world, VARI
             APICharacterLoaded(character_id) == NULL) {
             continue;
         }
-        view->pieces_by_id[character_id] = buffer->void_ptr;
+        world->minikit_pieces_by_id[character_id] = buffer->void_ptr;
         buffer->addr += 0x18;
         NuStrCpy(path, "chars\\minikits\\");
         NuStrCat(path, CDataList[character_id].name);
@@ -173,31 +172,30 @@ void CharacterMiniKits_Load(COLLECTION_BUILD *collection, WORLDINFO *world, VARI
         NuStrCat(path, ".gsc");
         buffer->addr = (buffer->addr + 3) & ~3u;
         if (i >= 18) {
-            view->pieces_by_id[character_id]->scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
+            world->minikit_pieces_by_id[character_id]->scene = NuGScnRead(&characterbuffer_ptr, characterbuffer_end, path);
         } else {
-            view->pieces_by_id[character_id]->scene = NuGScnRead(buffer, *end, path);
+            world->minikit_pieces_by_id[character_id]->scene = NuGScnRead(buffer, *end, path);
         }
-        view->pieces_by_id[character_id]->model_id = (i16)character_id;
-        if (view->pieces_by_id[character_id]->scene != NULL) {
-            MiniKit_InitPieces(view->pieces_by_id[character_id], 10, buffer, end);
-            ((MINIKIT **)Char_MiniKit)[character_id] = view->pieces_by_id[character_id];
+        world->minikit_pieces_by_id[character_id]->model_id = (i16)character_id;
+        if (world->minikit_pieces_by_id[character_id]->scene != NULL) {
+            MiniKit_InitPieces(world->minikit_pieces_by_id[character_id], 10, buffer, end);
+            Char_MiniKit[character_id] = world->minikit_pieces_by_id[character_id];
         } else {
-            view->pieces_by_id[character_id] = NULL;
+            world->minikit_pieces_by_id[character_id] = NULL;
             buffer->addr -= 0x18;
         }
     }
 }
 
 void CharacterMiniKits_Dump(WORLDINFO *world) {
-    WORLD_MINIKIT_READER *view = (WORLD_MINIKIT_READER *)world;
     i32 i;
-    if (view->minikit.scene != NULL) {
-        NuGScnRemove(view->minikit.scene);
-        view->minikit.scene = NULL;
-        view->minikit.pieces = NULL;
-        view->minikit.piece_count = 0;
+    if (world->minikit.scene != NULL) {
+        NuGScnRemove(world->minikit.scene);
+        world->minikit.scene = NULL;
+        world->minikit.pieces = NULL;
+        world->minikit.piece_count = 0;
     }
-    if (view->pieces_by_id == NULL) {
+    if (world->minikit_pieces_by_id == NULL) {
         return;
     }
     if (world->area != NULL && (world->area->flags & (AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA)) == 5) {
@@ -205,19 +203,19 @@ void CharacterMiniKits_Dump(WORLDINFO *world) {
             return;
         }
         for (i = 0; i < CHARCOUNT; ++i) {
-            if (view->pieces_by_id[i] != NULL && view->pieces_by_id[i]->scene != NULL) {
-                NuGScnRemove(view->pieces_by_id[i]->scene);
-                view->pieces_by_id[i]->scene = NULL;
+            if (world->minikit_pieces_by_id[i] != NULL && world->minikit_pieces_by_id[i]->scene != NULL) {
+                NuGScnRemove(world->minikit_pieces_by_id[i]->scene);
+                world->minikit_pieces_by_id[i]->scene = NULL;
             }
-            Char_MiniKit[i] = 0;
+            Char_MiniKit[i] = NULL;
         }
         characterbuffer_ptr = minikits_savecharacterbufferptr;
         return;
     }
     for (i = 0; i < AREACOUNT; ++i) {
-        if (view->pieces_by_id[i] != NULL && view->pieces_by_id[i]->scene != NULL) {
-            NuGScnRemove(view->pieces_by_id[i]->scene);
-            view->pieces_by_id[i]->scene = NULL;
+        if (world->minikit_pieces_by_id[i] != NULL && world->minikit_pieces_by_id[i]->scene != NULL) {
+            NuGScnRemove(world->minikit_pieces_by_id[i]->scene);
+            world->minikit_pieces_by_id[i]->scene = NULL;
         }
     }
 }

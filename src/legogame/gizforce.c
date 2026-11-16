@@ -1589,7 +1589,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
             if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
                     GIZFORCEANIMDATA_s *data = object->object_data;
-                    if ((data->unknown_04 & GIZFORCEANIMDATA_GLOW_ACTIVE) != 0 || !NuSpecialExistsFn(&object->special)) {
+                    if ((data->glow_flags & GIZFORCEANIMDATA_GLOW_ACTIVE) != 0 || !NuSpecialExistsFn(&object->special)) {
                         continue;
                     }
                     radius = 0.0f;
@@ -1642,7 +1642,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         force->runtime_flags &= ~0x20000u;
         if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
             for (object = force->anim_set->objects; object != NULL; object = object->next) {
-                object->force_data->unknown_04 &= ~GIZFORCEANIMDATA_GLOW_ACTIVE;
+                object->force_data->glow_flags &= ~GIZFORCEANIMDATA_GLOW_ACTIVE;
             }
         }
     }

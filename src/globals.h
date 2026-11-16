@@ -12,7 +12,7 @@
 
 struct apicharactermodellist_s;
 struct char_category_record_s;
-struct customiser_completion_reader_s;
+struct STATUSCOLLECT_s;
 struct gizobstacle_s;
 
 struct CHARACTER_MODEL_LAYERS;
@@ -43,7 +43,7 @@ extern "C" {
     extern u8 *Game_CharacterSave;
     extern i32 drawcharicon_i_panel;
     extern i32 drawcharicon_find;
-    extern void *CutStopInfo;
+    extern struct cutinfo_s *CutStopInfo;
     extern i32 (*MatrixReflection_CanOverrideFn)(void);
     extern f32 PUNCHGAP;
     extern f32 PUNCHCHARGAP;
@@ -201,7 +201,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef struct EPISODESAVE_s EPISODESAVE_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -363,7 +362,7 @@ extern "C" {
 extern "C" {
 #endif
     extern struct customiser_config_s *CharacterCustomiser;
-    extern struct customiser_completion_reader_s *CustomiserCompletionSave;
+    extern struct STATUSCOLLECT_s *CustomiserCompletionSave;
 #ifdef __cplusplus
 }
 #endif

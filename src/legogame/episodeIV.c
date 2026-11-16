@@ -64,18 +64,13 @@ void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "RescuedDroids", NULL);
 }
 
-typedef struct TORPEDO_MUSIC_FLAGS_VIEW { // size 0x2
-    u8 count;                             // 0x0
-    u8 flags;                             // 0x1
-} TORPEDO_MUSIC_FLAGS_VIEW;
-
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // BlockadeRunnerDEjectCreature (docs/cleanup-audit.md, section 6).
 
 i32 DeathStarShieldDown(void) {
     GIZMOBLOWUP *blowup;
     GAMEOBJECT *player;
-    TORPEDO_MUSIC_FLAGS_VIEW *packet;
+    TORPEDOPACKET *packet;
     if (LevGizmo[0] == NULL) {
         LevGizmo[0] = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "bigbang1");
     }
@@ -93,7 +88,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL &&
         (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[0];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->player.torpedo;
+        packet = player->player.torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -102,7 +97,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL &&
         (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[1];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->player.torpedo;
+        packet = player->player.torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -283,7 +278,7 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
             continue;
         }
         if ((LevGamePart[i]->active & PART_IN_USE) != 0) {
-            LevGameObject[i]->flags_107a = 5;
+            LevGameObject[i]->movement_mode = 5;
             LevGameObject[i]->player.vehicle_orientation = LevGamePart[i]->transform;
             LevGameObject[i]->position = LevGameObject[i]->player.vehicle_orientation.translation;
             LevGameObject[i]->ai_update_position = LevGameObject[i]->position;
@@ -495,7 +490,7 @@ void TrenchMove(GAMEOBJECT *object) {
     pad->previous_input_angle = input_angle;
     object->previous_movement_angle = object->movement_angle;
     object->flags_ef0 &= ~0x4000;
-    object->flags_107a = 0;
+    object->movement_mode = 0;
     if (object->model_draw_result != 0) {
         object->offscreen_time = 0.0f;
     } else {

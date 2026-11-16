@@ -25,21 +25,6 @@ typedef struct shard_progress_recovered_s { // size 0x30
 
 extern char *Shard_OutputName;
 
-typedef struct SHARD_LOST_OWNER {
-    u8 unknown_00[0x3c];
-    u8 state_flags;
-    u8 unknown_3d[3];
-    f32 collection_time;
-    GAMEOBJECT *collector;
-    u8 unknown_48[0xc];
-} SHARD_LOST_OWNER;
-
-typedef struct WORLD_SHARDS_READER {
-    u8 unknown_0000[0x5090];
-    SHARD_LOST_OWNER *shards;
-    i32 shard_count;
-} WORLD_SHARDS_READER;
-
 i32 Shards_Load(WORLDINFO *world, void *unused) {
     i32 index;
     i32 version;
@@ -380,13 +365,12 @@ void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
     shard->tumble_x = qrand() < 0x8000;
 }
 
-void Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
-    WORLD_SHARDS_READER *world = (WORLD_SHARDS_READER *)opaque_world;
-    SHARD_LOST_OWNER *shard = world->shards;
+void Shards_HandleLostObj(WORLDINFO *world, GAMEOBJECT *object) {
+    SHARD_s *shard = world->shards;
     i32 i;
     for (i = 0; i < world->shard_count; ++i, ++shard) {
-        if (!(shard->state_flags & SHARD_COLLECTED) && (shard->state_flags & 4) && shard->collector == object) {
-            shard->state_flags &= (u8)~4;
+        if (!(shard->state_flags & SHARD_COLLECTED) && shard->collecting && shard->collector == object) {
+            shard->collecting = 0;
             shard->collection_time = 0.0f;
             shard->collector = NULL;
         }

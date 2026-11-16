@@ -64,19 +64,6 @@ extern "C" {
     extern f32 ExtrasFadeEnd;
 }
 
-struct EXTRAS_AREA_SAVE_READER { // size 0xc
-    u8 unknown_0[6];             // 0x0
-    u8 red_brick_unlocked;       // 0x6
-    u8 unknown_7[5];             // 0x7
-};
-
-struct EXTRAS_SAVE_READER {            // size 0x7c08
-    u8 unknown_0[0x782c];              // 0x0000
-    EXTRAS_AREA_SAVE_READER areas[72]; // 0x782c
-    u8 unknown_7b8c[0x74];             // 0x7b8c
-    u32 unlocked[2];                   // 0x7c00
-};
-
 extern "C" {
     extern f32 MenuTitlesPromptY;
     extern f32 MenuTitlesWidePromptY;
@@ -212,7 +199,7 @@ extern "C" void DrawGameState(f32 x, f32 y, i32 highlight, i32 slot) {
     }
     Text3DEx(game_name, x, (f32)(y - spacing * 1.5), 1.0f, scale, scale, scale, 0, red, green, 255, (u8)MenuA);
     if (slot == -1 || saveload_slotused[slot] != 0) {
-        i32 completion = slot == -1 ? ((GAME_STATE_MENU_READER *)&Game)->completion : saveload_slotcode[slot];
+        i32 completion = slot == -1 ? Game.completion_points : saveload_slotcode[slot];
         sprintf(progress, "%.1f%%", (f64)(completion * 100) / HubCompletionPoints);
         spacing = (f32)(spacing * 1.5);
         Text3DEx(progress, x, (f32)(y + spacing * 0.5), 1.0f, scale, scale, scale, 0, 255, 191, 0, (u8)MenuA);
@@ -307,7 +294,7 @@ extern "C" void MenuUpdateOptions(MENU *menu) {
         requested_sound = memcmp(&TempOptions, &Game.options_save, sizeof(TempOptions)) == 0 ? 0x31 : 0x30;
         sound = GameAudio_GetSfxId(requested_sound);
         Game.options_save = TempOptions;
-        MenuOptionsPlayerFlag = ((OPTIONS_MENU_READER *)&TempOptions)->player_control[pause_i_pad] == 0;
+        MenuOptionsPlayerFlag = TempOptions.rumble[pause_i_pad] == 0;
         PcWindowOptions.SetSfxVolume(TempOptions.sound_volume);
         PcWindowOptions.SetMusicVolume(TempOptions.music_volume);
         PcWindowOptions.SetMasterVolume(TempOptions.master_volume);
@@ -354,11 +341,11 @@ extern "C" {
 }
 
 extern "C" void MenuUpdateExtras(MENU *menu) {
-    EXTRAS_SAVE_READER *save = (EXTRAS_SAVE_READER *)&Game;
+    GAMESAVE *save = &Game;
     if (menu->confirm_pressed) {
         i32 index = (menu->selected_item + 44) % 45;
         i32 locked = 1;
-        if ((save->unlocked[index / 32] & (1u << (index & 31))) && (!BonusArea || !Cheat_CheckFlags(index, CHEAT_POWERUP))) {
+        if ((save->extra_purchased_bits[index / 32] & (1u << (index & 31))) && (!BonusArea || !Cheat_CheckFlags(index, CHEAT_POWERUP))) {
             locked = 0;
         }
         if (locked) {
@@ -376,20 +363,20 @@ extern "C" void MenuUpdateExtras(MENU *menu) {
 extern "C" void MenuDrawExtras(MENU *menu) {
     char text[256];
     char number[64];
-    EXTRAS_SAVE_READER *save = (EXTRAS_SAVE_READER *)&Game;
+    GAMESAVE *save = &Game;
     menu->draw_y = -menu->selected_row * MENUDY * menu->item_scale;
     for (i32 i = 0; i < 45; ++i) {
         i32 index = (i + 44) % 45;
         f32 alpha;
-        if (index >= 8 && !(save->unlocked[index / 32] & (1u << (index & 31))) && ExtrasCheats[index].area_index != -1 &&
-            !save->areas[ExtrasCheats[index].area_index].red_brick_unlocked) {
+        if (index >= 8 && !(save->extra_purchased_bits[index / 32] & (1u << (index & 31))) && ExtrasCheats[index].area_index != -1 &&
+            !save->area_save[ExtrasCheats[index].area_index].red_brick_collected) {
             alpha = 0.5f;
             NuStrCpy(text, TTab[dat_0088074c]);
             sprintf(number, " %i: ", index - 7);
             NuStrCat(text, number);
             NuStrCat(text, TTab[dat_00880708]);
         } else {
-            if (save->unlocked[index / 32] & (1u << (index & 31))) {
+            if (save->extra_purchased_bits[index / 32] & (1u << (index & 31))) {
                 alpha = 1.0f;
                 NuStrCpy(number, Cheat_IsOn(index) ? TTab[tON] : TTab[tOFF]);
                 if (BonusArea && Cheat_CheckFlags(index, CHEAT_POWERUP)) {

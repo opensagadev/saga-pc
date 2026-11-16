@@ -27,24 +27,6 @@
 
 /* Bounty hunter pursuit level callbacks (original pursuit.cpp). */
 
-typedef struct PURSUIT_TRAFFIC_ENTRY { // size 0x140
-    nuhspecial_s special;              // 0x000
-    void *animation;                   // 0x00c
-    f32 end_frame;                     // 0x010
-    u8 unknown_14[0x139 - 0x14];       // 0x014
-    u8 active;                         // 0x139
-    i8 direction;                      // 0x13a
-    u8 unknown_13b[5];                 // 0x13b
-} PURSUIT_TRAFFIC_ENTRY;
-
-typedef struct PURSUIT_TRAFFIC {       // size 0x77e4
-    PURSUIT_TRAFFIC_ENTRY entries[64]; // 0x0000
-    u8 unknown_5000[0x77e0 - 0x5000];  // 0x5000
-    i8 count;                          // 0x77e0
-    u8 unknown_77e1[2];                // 0x77e1
-    i8 side;                           // 0x77e3
-} PURSUIT_TRAFFIC;
-
 typedef struct ZAMARROW {
     GAMEOBJECT *object;
     f32 timer;
@@ -139,20 +121,20 @@ void BountyHunterPursuitC_Init(WORLDINFO *world) {
 }
 
 void BountyHunterPursuitC_Reset(WORLDINFO *world) {
-    PURSUIT_TRAFFIC *traffic;
-    PURSUIT_TRAFFIC_ENTRY *entry;
+    TRAFFICANIMSYS_s *traffic;
+    TRAFFICANIM_s *entry;
     NUMTX first;
     NUMTX last;
     i32 i;
     memset(&zamarrow, 0, sizeof(zamarrow));
     zamarrow.object = GetNamedGameObject(world->ai_sys, "ai_zam");
-    traffic = (PURSUIT_TRAFFIC *)world->trafficanim_sys;
+    traffic = world->trafficanim_sys;
     if (traffic == NULL) {
         return;
     }
     traffic->side = 0;
-    entry = traffic->entries;
-    for (i = 0; i < traffic->count; i++, entry++) {
+    entry = traffic->animations;
+    for (i = 0; i < traffic->animation_count; i++, entry++) {
         if (pursuit_c_hack != 0) {
             EvalAnim(&entry->special, 1.0f, &first, 1);
             EvalAnim(&entry->special, entry->end_frame, &last, 1);
@@ -171,11 +153,11 @@ void BountyHunterPursuitC_Reset(WORLDINFO *world) {
 }
 
 void BountyHunterPursuitC_Update(WORLDINFO *world) {
-    PURSUIT_TRAFFIC *traffic;
-    PURSUIT_TRAFFIC_ENTRY *entry;
+    TRAFFICANIMSYS_s *traffic;
+    TRAFFICANIM_s *entry;
     i32 i;
     UpdateZamArrow(world);
-    traffic = (PURSUIT_TRAFFIC *)world->trafficanim_sys;
+    traffic = world->trafficanim_sys;
     if (traffic == NULL || player == NULL) {
         return;
     }
@@ -190,12 +172,12 @@ void BountyHunterPursuitC_Update(WORLDINFO *world) {
         }
         traffic->side = 1;
     }
-    entry = traffic->entries;
-    for (i = 0; i < traffic->count; i++, entry++) {
+    entry = traffic->animations;
+    for (i = 0; i < traffic->animation_count; i++, entry++) {
         if (player->position.z < traffic_test_z) {
-            entry->active = entry->direction == 1;
+            entry->disabled = entry->direction == 1;
         } else {
-            entry->active = entry->direction == -1;
+            entry->disabled = entry->direction == -1;
         }
     }
 }

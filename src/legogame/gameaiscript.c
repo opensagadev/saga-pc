@@ -37,6 +37,7 @@
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/gizmo/object/takeoverobjects.h"
 #include "legoapi/gizmos/door/spinner.h"
+#include "legoapi/gizmos/object/hatmachine.h"
 #include "legoapi/gizmos/door/zipups.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/gizmos/object/gizobstacles.h"
@@ -117,37 +118,10 @@ typedef union AI_ACTION_FLAGS_EF4 { // size 0x4
     } bits;
 } AI_ACTION_FLAGS_EF4;
 
-typedef struct GIZSPECIAL_PARTIAL { // size 0x24
-    u8 unknown_00[0x20];            // 0x00
-    GAMEANIMSET *anim_set;          // 0x20
-} GIZSPECIAL_PARTIAL;
-
-typedef struct AITURRET_PARTIAL { // size 0xec
-    u8 unknown_00[0xe8];          // 0x00
-    GAMEOBJECT *controller;       // 0xe8
-} AITURRET_PARTIAL;
-
-typedef struct AIOBSTACLE_PARTIAL { // size 0xa0
-    u8 unknown_00[0x9c];            // 0x00
-    u32 runtime_flags;              // 0x9c
-} AIOBSTACLE_PARTIAL;
-
 /* AISYS PC callbacks. */
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
-
-typedef struct torpedo_action_packet_s { // size 0x88
-    u8 count;                            // 0x00
-    u8 flags;                            // 0x01
-    u8 unknown_02;                       // 0x02
-    u8 state;                            // 0x03
-    u8 unknown_04[4];                    // 0x04
-    f32 timer;                           // 0x08
-    u8 unknown_0c[0x30];                 // 0x0c
-    NUVEC pickup_positions[5];           // 0x3c
-    u8 unknown_78[0x10];                 // 0x78
-} TORPEDO_ACTION_PACKET;
 
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
@@ -177,63 +151,7 @@ f32 test_missile_scale = 8.0f;
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
-typedef struct AI_CONDITION_TURRET { // size 0x13c
-    u8 unknown_000[0x13a];           // 0x000
-    u16 flags;                       // 0x13a
-} AI_CONDITION_TURRET;
-
-typedef struct ai_global_trigger_world_s { // size 0x467c
-    u8 unknown_0000[0x4678];               // 0x0000
-    AITRIGGERSETSYS_s *trigger_system;     // 0x4678
-} AI_GLOBAL_TRIGGER_WORLD;
-
-typedef struct ai_been_to_level_progress_s { // size 0x2e28
-    u8 unknown_0000[0x2800];                 // 0x0000
-    u32 visited_flags;                       // 0x2800
-    u8 unknown_2804[0x624];                  // 0x2804
-} AI_BEEN_TO_LEVEL_PROGRESS;
-
-typedef struct ai_on_object_platform_s { // size 0x6c
-    u8 unknown_00[0x40];                 // 0x00
-    NUMTX *scene_object;                 // 0x40
-    u8 unknown_44[0x28];                 // 0x44
-} AI_ON_OBJECT_PLATFORM;
-
-typedef struct ai_on_object_terrain_s { // size 0x6c
-    u8 unknown_00[0x68];                // 0x00
-    AI_ON_OBJECT_PLATFORM *platforms;   // 0x68
-} AI_ON_OBJECT_TERRAIN;
-
-typedef struct condition_hat_name_reader_s { // size 0x50
-    u8 unknown_00[0x40];                     // 0x00
-    char name[16];                           // 0x40
-} CONDITION_HAT_NAME_READER;
-
-typedef struct ai_force_platform_record_s { // size 0x6c
-    u8 unknown_00[0x40];                    // 0x00
-    NUMTX *scene_matrix;                    // 0x40
-    u8 unknown_44[0x28];                    // 0x44
-} AI_FORCE_PLATFORM_RECORD;
-
-typedef struct ai_force_platform_terrain_s { // size 0x6c
-    u8 unknown_00[0x68];                     // 0x00
-    AI_FORCE_PLATFORM_RECORD *platforms;     // 0x68
-} AI_FORCE_PLATFORM_TERRAIN;
-
-typedef struct ai_trigger_world_s {    // size 0x467c
-    u8 unknown_0000[0x4678];           // 0x0000
-    AITRIGGERSETSYS_s *trigger_system; // 0x4678
-} AI_TRIGGER_WORLD;
-
-typedef struct ai_trigger_grapple_s { // size 0x30
-    u8 unknown_00[0x24];              // 0x00
-    NUVEC ground_position;            // 0x24
-} AI_TRIGGER_GRAPPLE;
-
-typedef struct ai_trigger_object_s { // size 0x1073
-    u8 unknown_0000[0x1072];         // 0x0000
-    u8 grapple_direction;            // 0x1072
-} AI_TRIGGER_OBJECT;
+f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
 
 u32 LEGO_AIPATHCNX_BIGJUMP;
 u32 LEGO_AIPATHCNX_REQUIRESPERMISSION = 0;
@@ -245,23 +163,6 @@ u32 LEGO_AIPATHCNX_JUMP_NOW;
 u32 LEGO_AIPATHCNX_DONT_JUMP_NOW = 0;
 u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
-typedef struct bulk_ai_lever_s { // size 0x98
-    u8 unknown_00[0x40];         // 0x00
-    NUVEC floor_position;        // 0x40
-    u8 unknown_4c[0x1c];         // 0x4c
-    NUVEC position;              // 0x68
-    u8 unknown_74[4];            // 0x74
-    f32 pull_progress;           // 0x78
-    u8 unknown_7c[0x12];         // 0x7c
-    u16 animation_frame;         // 0x8e
-    u8 unknown_90[4];            // 0x90
-    u16 flags;                   // 0x94
-} BULK_AI_LEVER;
-
-typedef struct ai_action_controller_world_s { // size 0x4674
-    u8 unknown_0000[0x4670];                  // 0x0000
-    AI_CONTROL_SYSTEM *control_system;        // 0x4670
-} AI_ACTION_CONTROLLER_WORLD;
 struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS *, AIPATH *, char *, char *, i32, char *, i32, i32);
 void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
 i32 turret_gizmotype_id;
@@ -677,7 +578,7 @@ void *Condition_TurretAliveInit(AISYS *system, char *name, AISCRIPT *script) {
 }
 
 f32 Condition_TurretAlive(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    AI_CONDITION_TURRET *turret = argument;
+    GIZTURRET_s *turret = argument;
     u16 flags;
     if (turret != NULL) {
         memcpy(&flags, &turret->flags, sizeof(flags));
@@ -889,7 +790,7 @@ f32 Condition_OnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIPACKET 
     GIZFORCE *force = argument;
     GAMEOBJECT *object;
     i16 platform_id;
-    AI_FORCE_PLATFORM_TERRAIN *terrain;
+    TERRAIN_SET *terrain;
     GAMEANIMOBJ *animation;
     if (force == NULL || packet == NULL || packet->owner == NULL) {
         return 0.0f;
@@ -902,8 +803,8 @@ f32 Condition_OnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIPACKET 
     if (platform_id == -1) {
         return 0.0f;
     }
-    terrain = (AI_FORCE_PLATFORM_TERRAIN *)CurrentTerrain;
-    if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)) {
+    terrain = CurrentTerrain;
+    if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_object->m31)) {
         return 0.0f;
     }
     animation = force->anim_set->objects;
@@ -920,7 +821,7 @@ f32 Condition_PlayerOnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIP
     GIZFORCE *force = argument;
     GAMEOBJECT *object;
     i16 platform_id;
-    AI_FORCE_PLATFORM_TERRAIN *terrain;
+    TERRAIN_SET *terrain;
     GAMEANIMOBJ *animation;
     if (force == NULL) {
         return 0.0f;
@@ -933,8 +834,8 @@ f32 Condition_PlayerOnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIP
     if (platform_id == -1) {
         return 0.0f;
     }
-    terrain = (AI_FORCE_PLATFORM_TERRAIN *)CurrentTerrain;
-    if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31)) {
+    terrain = CurrentTerrain;
+    if (!((f64)object->position.y >= (f64)terrain->platforms[platform_id].scene_object->m31)) {
         return 0.0f;
     }
     animation = force->anim_set->objects;
@@ -951,25 +852,25 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS *system, AISCRIPTPROCESS *proces
     GIZFORCE *force = argument;
     GAMEOBJECT *first;
     GAMEOBJECT *second;
-    AI_FORCE_PLATFORM_TERRAIN *terrain;
+    TERRAIN_SET *terrain;
     i32 eligible;
     i16 platform_id;
     GAMEANIMOBJ *animation;
     if (force != NULL) {
         first = player;
         if (first != NULL) {
-            terrain = (AI_FORCE_PLATFORM_TERRAIN *)CurrentTerrain;
+            terrain = CurrentTerrain;
             eligible = 0;
             if (first->ground_flags != 0 || first->previous_ground_flags != 0) {
                 platform_id = first->supporting_platform_id;
-                if (platform_id != -1 && (f64)first->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31) {
+                if (platform_id != -1 && (f64)first->position.y >= (f64)terrain->platforms[platform_id].scene_object->m31) {
                     eligible = 1;
                 }
             }
             second = player2;
             if (second != NULL && (second->ground_flags != 0 || second->previous_ground_flags != 0)) {
                 platform_id = second->supporting_platform_id;
-                if (platform_id != -1 && (f64)second->position.y >= (f64)terrain->platforms[platform_id].scene_matrix->m31) {
+                if (platform_id != -1 && (f64)second->position.y >= (f64)terrain->platforms[platform_id].scene_object->m31) {
                     eligible |= 2;
                 }
             }
@@ -1019,7 +920,7 @@ f32 Condition_EitherPlayerPullingLever(AISYS *system, AISCRIPTPROCESS *process, 
 }
 
 f32 Condition_EitherPlayerUsingHatMachine(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    CONDITION_HAT_NAME_READER *target;
+    HATMACHINE *target;
     if (player != NULL && player->player.character_context == CHARACTER_CONTEXT_HAT_MACHINE && (target = player->player.grapple) != NULL &&
         (name == NULL || NuStrICmp(target->name, name) == 0)) {
         return 1.0f;
@@ -1237,7 +1138,7 @@ f32 Condition_PlayerOnObject(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *
     i32 platform = (i32)argument;
     if (player != NULL && platform != -1 && (player->ground_flags != 0 || player->previous_ground_flags != 0) &&
         player->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
+        NUMTX *transform = CurrentTerrain->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31) {
             return 1.0f;
         }
@@ -1250,14 +1151,14 @@ f32 Condition_EitherPlayerOnObject(AISYS *system, AISCRIPTPROCESS *process, AIPA
 
     if (player != NULL && platform != -1 && (player->ground_flags != 0 || player->previous_ground_flags != 0) &&
         player->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player->supporting_platform_id].scene_object;
+        NUMTX *transform = CurrentTerrain->platforms[player->supporting_platform_id].scene_object;
         if (player->position.y >= transform->m31) {
             return 1.0f;
         }
     }
     if (player2 != NULL && platform != -1 && (player2->ground_flags != 0 || player2->previous_ground_flags != 0) &&
         player2->supporting_platform_id == platform) {
-        NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[player2->supporting_platform_id].scene_object;
+        NUMTX *transform = CurrentTerrain->platforms[player2->supporting_platform_id].scene_object;
         if (player2->position.y >= transform->m31) {
             return 1.0f;
         }
@@ -1297,7 +1198,7 @@ f32 Condition_OnObject(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet
         i32 platform = (i32)argument;
         if (object != NULL && platform != -1 && (object->ground_flags != 0 || object->previous_ground_flags != 0) &&
             object->supporting_platform_id == platform) {
-            NUMTX *transform = ((AI_ON_OBJECT_TERRAIN *)CurrentTerrain)->platforms[object->supporting_platform_id].scene_object;
+            NUMTX *transform = CurrentTerrain->platforms[object->supporting_platform_id].scene_object;
             if (object->position.y >= transform->m31) {
                 return 1.0f;
             }
@@ -1655,7 +1556,7 @@ void *Condition_BeenToLevelInit(AISYS *system, char *name, AISCRIPT *script) {
 f32 Condition_BeenToLevel(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     i32 index = (i32)argument;
     if (index != -1) {
-        return (f32)(((AI_BEEN_TO_LEVEL_PROGRESS *)LevelProgressData)[index].visited_flags & 1u);
+        return (f32)(LevelProgressData[index].flags & 1u);
     }
     return 0.0f;
 }
@@ -2027,12 +1928,10 @@ f32 Condition_NumBaddiesThatCanSeePlayers(AISYS *system, AISCRIPTPROCESS *proces
 }
 
 f32 Condition_HelpWithTriggers(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL) {
+    AITRIGGERSETSYS_s *triggers = WORLD->ai_trigger_set;
+    if (triggers != NULL && packet != NULL && packet->owner != NULL) {
         i32 index = packet->owner->object_id;
-        if (((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system->unknown_42c0[index] != -1 &&
-            ((AI_GLOBAL_TRIGGER_WORLD *)WORLD)
-                    ->trigger_system->sets[((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system->unknown_4280[index]]
-                    .field_0x20e != 0) {
+        if (triggers->assigned_trigger[index] != -1 && triggers->sets[triggers->assigned_set[index]].occupied != 0) {
             return 1.0f;
         }
     }
@@ -2093,7 +1992,7 @@ f32 Condition_CharacterRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *
 }
 
 f32 Condition_BeenSpawned(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    // MATCH-EXCEPTION: unknown_280 is a signed char in the original (compared with -1); the header declares u8
+    // MATCH-EXCEPTION: the original reads byte 0x280 signed (player_index, compared with -1), not as the u8 player_slot
     if (packet != NULL && packet->owner != NULL && packet->owner->player_index == -1 && packet->creature_index == AIPACKET_NO_CREATURE) {
         return 1.0f;
     }
@@ -2113,7 +2012,7 @@ f32 Condition_TakeOverTargetInTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
         if (area == NULL) {
             area = process->trigger_area;
         }
-        index = (i32)((u32)area - (u32)WORLD->ai_sys->areas) >> 6;
+        index = (i32)(area - WORLD->ai_sys->areas);
         if (packet->owner->objptr != NULL) {
             target = packet->owner->objptr->takeover_target;
         }
@@ -2138,7 +2037,7 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
         if (area != NULL) {
             if (system->player_1 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_1;
-                index = (i32)((u32)area - (u32)area->system->areas) >> 6;
+                index = (i32)(area - area->system->areas);
                 /* Wraps the 32-bit shift and sign-extends bit 31. */
                 mask = (i32)(1u << ((u32)index & 31));
                 if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
@@ -2147,7 +2046,7 @@ f32 Condition_EitherPlayerInMyTriggerArea(AISYS *system, AISCRIPTPROCESS *proces
             }
             if (system->player_2 != NULL && area->system != NULL) {
                 object = (GAMEOBJECT *)system->player_2;
-                index = (i32)((u32)area - (u32)area->system->areas) >> 6;
+                index = (i32)(area - area->system->areas);
                 mask = (i32)(1u << ((u32)index & 31));
                 if ((((CONDITION_TRIGGER_PLAYER_READER *)object)->membership & mask) != 0) {
                     return 1.0f;
@@ -3899,8 +3798,8 @@ i32 Action_BigJumpToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
         }
 
         if (name != NULL) {
-            if (indexed != 0 && object != NULL && (i8)(object->unknown_280) != -1) {
-                sprintf(locator_name, "%s_%d", name, (i8)(object->unknown_280));
+            if (indexed != 0 && object != NULL && object->player_index != -1) {
+                sprintf(locator_name, "%s_%d", name, object->player_index);
             } else if (personal != 0 && object != NULL && object->character_data != NULL) {
                 sprintf(locator_name, "%s_%s", name, object->character_data->name);
             } else if (random_count != 0) {
@@ -4045,8 +3944,8 @@ i32 Action_SetDoomedEscapeLocator(AISYS *system, AISCRIPTPROCESS *processor, AIP
         object->flags_ef0 &= ~APIOBJECT_DOOMED_ESCAPE_TAKE_DAMAGE;
         object->doomed_escape_locator = NULL;
         if (name != NULL) {
-            if (indexed && (i8)(object->unknown_280) != -1) {
-                sprintf(locator_name, "%s_%d", name, (i8)(object->unknown_280));
+            if (indexed && object->player_index != -1) {
+                sprintf(locator_name, "%s_%d", name, object->player_index);
             } else if (personal && object->character_data != NULL) {
                 sprintf(locator_name, "%s_%s", name, object->character_data->name);
             } else if (random_count != 0) {
@@ -4860,7 +4759,7 @@ i32 Action_EngageObject(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
 
     packet->movement_look_target = processor->action_data_3;
     processor->action_timer -= param_6;
-    object->unknown_e4c = *(NUVEC *)processor->action_data_3;
+    object->script_target_position = *(NUVEC *)processor->action_data_3;
     object->portal_flags |= APIOBJECT_ENGAGE_OBJECT;
     object->portal_flags |= 0x20;
     if (processor->action_timer <= 0.0f) {
@@ -6114,7 +6013,7 @@ void GuidedMissile_Move(PART *part, f32 time) {
     GAMEOBJECT *recipient = part->recipient;
     f32 rotate_speed;
     if (part->scale_time > guided_life) {
-        part->unknown_124[3] = (i32)SeekValF((f32)part->unknown_124[3], 0.0f, 2.0f);
+        part->spin_rates[3] = (i32)SeekValF((f32)part->spin_rates[3], 0.0f, 2.0f);
     } else if (recipient != NULL && part->scale_time > guided_start_time) {
         NUVEC direction;
         i32 yaw;
@@ -6126,11 +6025,11 @@ void GuidedMissile_Move(PART *part, f32 time) {
         pitch = -NuAtan2D(direction.y, direction.z);
         part->rotation_x = SeekRot(part->rotation_x, (u16)pitch, 1.0f);
         part->rotation_y = SeekRot(part->rotation_y, (u16)yaw, 3.0f);
-        part->unknown_124[3] = guided_rotate_speed;
+        part->spin_rates[3] = guided_rotate_speed;
     } else {
-        part->unknown_124[3] = guided_rotate_speed;
+        part->spin_rates[3] = guided_rotate_speed;
     }
-    rotate_speed = (f32)part->unknown_124[3];
+    rotate_speed = (f32)part->spin_rates[3];
     part->rotation_z += (i32)(rotate_speed * FRAMETIME);
     part->velocity.x = 0.0f;
     part->velocity.y = 0.0f;
@@ -7126,8 +7025,8 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
         }
     }
 
-    controller = AIPathCnxControllerCreate(((AI_ACTION_CONTROLLER_WORLD *)WORLD)->control_system, WORLD->ai_sys, path, from, to,
-                                           target_type, target_name, fake_animation_id, gizmo_output);
+    controller = AIPathCnxControllerCreate(WORLD->ai_path_cnx_control_sys, WORLD->ai_sys, path, from, to, target_type, target_name,
+                                           fake_animation_id, gizmo_output);
     if (controller == NULL) {
         return 1;
     }
@@ -7462,7 +7361,7 @@ i32 Action_AnimTimeRandom(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
 i32 Action_AlwaysTriggerObstacle(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                                  f32 elapsed) {
     i32 index;
-    AIOBSTACLE_PARTIAL *obstacle;
+    GIZOBSTACLE *obstacle;
     i32 enabled;
     char *value;
     GIZMO *gizmo;
@@ -7492,7 +7391,7 @@ i32 Action_AlwaysTriggerObstacle(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKE
 i32 Action_CanTriggerObstacle(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                               f32 elapsed) {
     i32 index;
-    AIOBSTACLE_PARTIAL *obstacle;
+    GIZOBSTACLE *obstacle;
     i32 blocked;
     char *value;
     GIZMO *gizmo;
@@ -7569,7 +7468,7 @@ i32 Action_PlayGizObstacle(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
 
 i32 Action_PlayGizSpecial(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_4, i32 param_5, f32 param_6) {
     i32 index;
-    GIZSPECIAL_PARTIAL *special;
+    GIZSPECIAL_s *special;
     i32 backwards;
     i32 snap;
     i32 restart;
@@ -9424,13 +9323,13 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
     f32 dist;
     NUVEC spinner_position;
     NUVEC spinner_direction;
-    if (((AI_TRIGGER_WORLD *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
-        system = ((AI_TRIGGER_WORLD *)WORLD)->trigger_system;
-        if (system->unknown_42c0[packet->owner->object_id] == -1) {
+    if (WORLD->ai_trigger_set != NULL && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
+        system = WORLD->ai_trigger_set;
+        if (system->assigned_trigger[packet->owner->object_id] == -1) {
             return 0;
         }
-        set = &system->sets[system->unknown_4280[packet->owner->object_id]];
-        trigger_index = system->unknown_42c0[packet->owner->object_id];
+        set = &system->sets[system->assigned_set[packet->owner->object_id]];
+        trigger_index = system->assigned_trigger[packet->owner->object_id];
         object = packet->owner->objptr;
         target = &set->targets[trigger_index];
         gizmo = set->triggers[trigger_index];
@@ -9447,7 +9346,7 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
                 AIMoveInstruction(packet, &spinner_position, 0.0f, &target->path, AIMOVE_TO_DESTINATION, 0.0f);
             }
         } else if (gizmo->type_id == grapple_gizmotype_id) {
-            AI_TRIGGER_GRAPPLE *grapple = gizmo->object;
+            GRAPPLE_DYNAMIC *grapple = gizmo->object;
             if (object->player.character_context == LEGOCONTEXT_GRAPPLE && object->player.grapple == grapple) {
                 GAMEOBJECT *found;
                 i32 i;
@@ -9471,9 +9370,9 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
                 }
                 if (found != NULL) {
                     if (player->position.y > object->position.y + (double)0.05f) {
-                        ((AI_TRIGGER_OBJECT *)object)->grapple_direction = 1;
+                        object->input_flags = 1;
                     } else if (object->position.y - (double)0.05f > player->position.y) {
-                        ((AI_TRIGGER_OBJECT *)object)->grapple_direction = 2;
+                        object->input_flags = 2;
                     }
                 }
                 return 0;
@@ -9534,7 +9433,7 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
                 object->gizforce_target = force;
             }
         } else if (gizmo->type_id == grapple_gizmotype_id) {
-            AI_TRIGGER_GRAPPLE *grapple = gizmo->object;
+            GRAPPLE_DYNAMIC *grapple = gizmo->object;
             if (processor->action_data_1 != 0) {
                 if (object->player.character_context != CHARACTER_CONTEXT_JUMP) {
                     processor->action_data_1 = 1;
@@ -9574,14 +9473,14 @@ i32 Action_UseTriggerSet(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pa
             if (value != NULL) {
                 i32 set_number = (i32)AIParamToFloat(processor, value + 4);
                 if ((u32)set_number - 1u <= 31u) {
-                    processor->action_data_3 = &((AITRIGGERSETSYS_s *)WORLD->ai_trigger_set)->sets[set_number - 1];
+                    processor->action_data_3 = &WORLD->ai_trigger_set->sets[set_number - 1];
                 }
             }
         }
     }
     set = processor->action_data_3;
     if (set != NULL) {
-        object->active_trigger_set = (AITRIGGERSET_PARTIAL *)set;
+        object->active_trigger_set = set;
         set->flags_word |= 2;
         Action_HelpWithTriggers(system, processor, packet, params, count, first_time, elapsed);
     }
@@ -9590,7 +9489,7 @@ i32 Action_UseTriggerSet(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pa
 
 i32 Action_PullLever(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                      f32 elapsed) {
-    BULK_AI_LEVER *lever;
+    GIZMO_LEVER *lever;
     GAMEOBJECT *object;
     i32 instant = 0;
     if (first_time != 0) {
@@ -9598,7 +9497,7 @@ i32 Action_PullLever(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet
         for (index = 0; index < param_count; ++index) {
             char *name = NuStrIStr(params[index], (char *)"lever=");
             if (name != NULL) {
-                BULK_AI_LEVER *lever;
+                GIZMO_LEVER *lever;
                 f32 height;
                 GIZMO *gizmo = GizmoFindByName(WORLD->gizmo_sys, lever_gizmotype_id, name + 6);
                 if (gizmo == NULL || gizmo->object == NULL) {
@@ -10136,7 +10035,7 @@ i32 Action_LinkTurretToController(AISYS *system, AISCRIPTPROCESS *processor, AIP
                                   i32 first_time, f32 elapsed) {
     i32 index;
     APIOBJECT *lookup;
-    AITURRET_PARTIAL *turret;
+    GIZTURRET_s *turret;
     GAMEOBJECT *controller;
     char *value;
     GIZMO *gizmo;
@@ -10669,7 +10568,7 @@ i32 Action_ThrowDetonator(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
     object->player.character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
     if (object->player.jump_variant_state == 1) {
         object->player.context_animation = ACTION_THROW3;
-    } else if ((object->player.unknown_e22 & 1) != 0) {
+    } else if ((object->player.weapon_flags & 1) != 0) {
         object->player.context_animation = ACTION_THROW2;
     } else {
         object->player.context_animation = ACTION_THROW;
@@ -11287,12 +11186,12 @@ i32 Action_AddTorpedoPacket(AISYS *unused0, AISCRIPTPROCESS *unused1, AIPACKET *
         }
         object->player.torpedo = GetTorpedoPacket();
         if (object->player.torpedo != NULL && count != 0) {
-            ((TORPEDO_ACTION_PACKET *)object->player.torpedo)->count = (u8)count;
-            ((TORPEDO_ACTION_PACKET *)object->player.torpedo)->flags |= flags;
+            object->player.torpedo->count = (u8)count;
+            object->player.torpedo->flags |= flags;
             for (index = 0; index < count; ++index) {
-                ((TORPEDO_ACTION_PACKET *)object->player.torpedo)->pickup_positions[index] = object->collision_position;
-                ((TORPEDO_ACTION_PACKET *)object->player.torpedo)->timer = 0.8f;
-                ((TORPEDO_ACTION_PACKET *)object->player.torpedo)->state = 0;
+                object->player.torpedo->pickup_positions[index] = object->collision_position;
+                object->player.torpedo->pickup_timer = 0.8f;
+                object->player.torpedo->pickup_state = 0;
             }
         }
     }

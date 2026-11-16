@@ -22,13 +22,13 @@ typedef struct repeat_sfx_entry_s { // size 0x10
 
 typedef struct optionssave_s { // size 0xd
 
-    union { // size 0x3
-        u8 unknown_0000[3];
+    union {           // size 0x3
+        u8 rumble[2]; /* per player */
 
-        struct {            // size 0x3
-            u8 option_0000; // 0x0
-            u8 option_0001; // 0x1
-            u8 option_0002; // 0x2
+        struct {               // size 0x3
+            u8 rumble_player1; // 0x0
+            u8 rumble_player2; // 0x1
+            u8 dolby_surround; // 0x2: NuSound3SetDPL
         };
     }; // 0x0
 

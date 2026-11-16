@@ -1123,7 +1123,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         if (Grapples_Available == 0) {
             return;
         }
-        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 != 1) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->use_action != 1) {
             return;
         }
         if (ObjLandReady(object) == 0 && (-1 == LEGOCONTEXT_JUMP || object->player.character_context != LEGOCONTEXT_JUMP)) {

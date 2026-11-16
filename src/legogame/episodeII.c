@@ -196,7 +196,7 @@ i32 painttarget = 0;
 i32 paintsused[2] = {0};
 i32 played_sound = 0;
 struct gizmo_s *paintpanel[3] = {0};
-KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState = {0};
+KAMINODISCO KaminoDiscoMusicState = {0};
 
 void UpdatePaintPuzzle(WORLDINFO *world) {
     i32 i;
@@ -1913,7 +1913,7 @@ i32 fun_004e2370(void) {
 }
 
 i32 KaminoDiscoOn(void) {
-    return KaminoDiscoMusicState.mode == 2;
+    return KaminoDiscoMusicState.phase == 2;
 }
 
 void KaminoOutro_Init(WORLDINFO *world) {

@@ -10,6 +10,7 @@
 #include "legoapi/characters/motion/move.h"
 #include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/gizmos/object/hatmachine.h"
 #include "legoapi/items/fx/pulses.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
@@ -26,33 +27,6 @@
 #include "nu2api/numusic/sfx.h"
 #include <string.h>
 #include <stdio.h>
-
-typedef struct level_sfx_world_view_s { // size 0x5078
-    u8 unknown_00[0x4684];              // 0x0000
-    i32 teleport_count;                 // 0x4684
-    u8 unknown_4688[0x38];              // 0x4688
-    i32 push_block_count;               // 0x46c0
-    u8 unknown_46c4[0x20];              // 0x46c4
-    i32 spinner_count;                  // 0x46e4
-    u8 unknown_46e8[4];                 // 0x46e8
-    void *grabber;                      // 0x46ec
-    u8 unknown_46f0[0x960];             // 0x46f0
-    LEVEL_SFX_PULSE *pulses_sys;        // 0x5050
-    u8 unknown_5054[0x18];              // 0x5054
-    i32 nlevers;                        // 0x506c
-    u8 unknown_5070[4];                 // 0x5070
-    i32 *hat_machine_sys;               // 0x5074
-} LEVEL_SFX_WORLD_VIEW;
-
-typedef struct level_sfx_cut_slot_s { // size 0x14
-    i16 id;                           // 0x00
-    u8 unknown_02[0x12];              // 0x02
-} LEVEL_SFX_CUT_SLOT;
-
-typedef struct level_sfx_cut_s { // size 0xe8
-    u8 unknown_00[0x70];         // 0x00
-    LEVEL_SFX_CUT_SLOT sfx[6];   // 0x70
-} LEVEL_SFX_CUT;
 
 AREA_DATA *DEATHSTARRESCUE_ADATA;
 AREA_DATA *DEATHSTARRESCUE_ADATA = 0;
@@ -102,7 +76,6 @@ i32 GameAudio_CheckReverb_LSW(void) {
 }
 
 void SetLevelSfxBits(WORLDINFO *world) {
-    LEVEL_SFX_WORLD_VIEW *view = (LEVEL_SFX_WORLD_VIEW *)world;
     i32 i;
     i32 j;
     i32 character_id;
@@ -120,11 +93,11 @@ void SetLevelSfxBits(WORLDINFO *world) {
         sfx_ids[sfx_count++] = world->level_sfx[i].id;
     }
 
-    if (view->spinner_count > 0) {
+    if (world->spinner_count > 0) {
         AddLevelSfxFromName("fly_paddle_rotate_lp", sfx_ids, &sfx_count, 0x400);
         AddLevelSfxFromName("fly_paddle_stuck", sfx_ids, &sfx_count, 0x400);
     }
-    if (view->teleport_count > 0) {
+    if (world->teleport_count > 0) {
         AddLevelSfxFromName("env_door_flap", sfx_ids, &sfx_count, 0x400);
     }
 
@@ -133,7 +106,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
     GameAudio_AddSfx(0x52, sfx_ids, &sfx_count, 0x400);
     AddLevelSfxFromName("Grv_GuardWeaponLp", sfx_ids, &sfx_count, 0x400);
 
-    if (view->grabber != NULL) {
+    if (world->grabber != NULL) {
         if (world->current_level == CLOUDCITYTRAPA_LDATA) {
             AddLevelSfxFromName("CarbonFreezeCraneLp", sfx_ids, &sfx_count, 0x400);
             AddLevelSfxFromName("CarbonFreezeCrane", sfx_ids, &sfx_count, 0x400);
@@ -156,7 +129,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
     if (world->cutscene_sys != NULL) {
         for (i = 0; i < world->cutscene_sys->count; ++i) {
             for (j = 0; j < 6; ++j) {
-                LEVEL_SFX_CUT *cut = (LEVEL_SFX_CUT *)world->cutscene_sys->records[i];
+                CUTINFO *cut = world->cutscene_sys->records[i];
                 i32 id = cut->sfx[j].id;
                 if (id != -1) {
                     sfx_ids[sfx_count++] = id;
@@ -165,18 +138,18 @@ void SetLevelSfxBits(WORLDINFO *world) {
         }
     }
 
-    Pulses_AddSfx(view->pulses_sys, sfx_ids, &sfx_count, 0x400);
-    if (view->hat_machine_sys != NULL && *view->hat_machine_sys > 0) {
+    Pulses_AddSfx(world->pulses_sys, sfx_ids, &sfx_count, 0x400);
+    if (world->hat_machine_sys != NULL && world->hat_machine_sys->count > 0) {
         AddLevelSfxFromName("SwLever", sfx_ids, &sfx_count, 0x400);
         AddLevelSfxFromName("HatOn", sfx_ids, &sfx_count, 0x400);
     }
-    if (view->nlevers > 0) {
+    if (world->nlevers > 0) {
         AddLevelSfxFromName("SwLever", sfx_ids, &sfx_count, 0x400);
     }
 
     if (world->area == NULL || (world->area->flags & AREAFLAG_VEHICLE_AREA) == 0) {
         AddLevelSfxFromName("Char_Slide_Lp", sfx_ids, &sfx_count, 0x400);
-        if (view->push_block_count > 0) {
+        if (world->push_block_count > 0) {
             AddLevelSfxFromName("Block_Shove", sfx_ids, &sfx_count, 0x400);
             AddLevelSfxFromName("Block_Push_Lp", sfx_ids, &sfx_count, 0x400);
         }

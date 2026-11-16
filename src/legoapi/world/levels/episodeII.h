@@ -18,18 +18,14 @@ typedef struct kaminoeplate_s {
     u8 opaque_13c_140[0x4];
 } KAMINOEPLATE;
 
-typedef struct KAMINO_DISCO_MUSIC_VIEW { // size 0x3e8
-    u8 unknown_00[0x3d5];                // 0x000
-    u8 mode;                             // 0x3d5
-    u8 unknown_3d6[0x12];                // 0x3d6
-} KAMINO_DISCO_MUSIC_VIEW;
+struct kaminodisco_s;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     i32 KaminoE_CheckPlatHit(struct bolt_s *bolt);
     extern NUVEC GunshipANorm;
-    extern KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState;
+    extern struct kaminodisco_s KaminoDiscoMusicState; /* the disco state the music test reads */
     i32 KaminoInside(void);
     i32 KaminoDiscoOn(void);
     extern AREA_DATA *KAMINO_ADATA;

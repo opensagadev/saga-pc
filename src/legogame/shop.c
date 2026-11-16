@@ -299,7 +299,7 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
 /* Same-unit helper taking EAX; includes the vehicle exception. */
 static i32 Shop_CharacterUnlocked(i32 character_id) {
     if (character_id == dat_007f17d4) {
-        return ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0;
+        return Game.bolt_unlocked != 0;
     }
     return CollectIDUnlocked(character_id) != 0;
 }
@@ -426,7 +426,7 @@ void LoadShelfSplines(void) {
 void InitExtraList(void) {
     i32 i;
     i32 word;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     for (i = 0; i < 44; ++i) {
         NuStrCpy(ExtraItems[i].special_name, ExtrasCheats[i].extra_name);
         NuSpecialFind(WORLD->current_gscn, &ExtraItems[i].special, ExtraItems[i].special_name, 1);
@@ -488,7 +488,7 @@ void InitShop(WORLDINFO *world) {
     i32 i;
     i32 code_count;
     i32 price;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     CharItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 100 * sizeof(shopitem_s));
     HintItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
     ExtraItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
@@ -716,7 +716,7 @@ i32 CheckCash(shopitem_s *items, i32 item) {
 f32 ShopPurchasePulseDuration = 0.35f;
 
 i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     u32 *bits = NULL;
     if (items[index].type == SHOP_SHELF_HINTS) {
         bits = save->hint_purchased_bits;
@@ -745,7 +745,7 @@ i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
 }
 
 i32 SelectShopItem(shopitem_s *items, i32 index) {
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     HINT *hint;
     i32 id;
     i32 i;
@@ -1272,7 +1272,7 @@ i32 CodeMenu(void *menu) {
     i32 confirm = 0;
     i32 cancel = 0;
     SHOP_INPUT input;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     f32 factor;
     f32 phase;
     i32 i;
@@ -1541,13 +1541,10 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
         character_id = item->item_id;
         unavailable = 1;
-        if ((character_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) &&
-            item->unlocked == 1) {
+        if ((character_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) && item->unlocked == 1) {
             unavailable = 0;
         }
-        alpha = (character_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL)
-                    ? 1.0f
-                    : 0.5f;
+        alpha = (character_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) ? 1.0f : 0.5f;
 
         scale.x = scale.y = scale.z = scale_value;
         NuMtxSetScale(&matrix, &scale);
@@ -1723,7 +1720,7 @@ void DrawSubItems(void) {
     nuhspecial_s *blank;
     nuhspecial_s *film;
     LEVELDATA *level;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     if (ShopPurchasePulse > 0.0f) {
         bing = ShopPurchasePulse / ShopPurchasePulseDuration;
         ShopPurchasePulse -= FRAMETIME;
@@ -1971,8 +1968,7 @@ void DrawSubItemMenu2D(void) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if (items[ids[3]].item_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
-                                                         : CollectIDUnlocked(items[ids[3]].item_id) != 0) {
+        } else if (items[ids[3]].item_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
         } else {
             scale = (f32)((f64)ShopLockedScale * (f64)0.7f);
@@ -2088,7 +2084,7 @@ void DrawShopPanel(void) {
 
 static i32 Shop_CanSelect(void) {
     shopitem_s *item;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     i32 id;
     i32 index;
     switch (picked) {
@@ -2121,7 +2117,7 @@ static i32 Shop_CanSelect(void) {
 }
 
 void Shop_CollectAllCharacters(i32 mode) {
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     i32 i;
     if (mode != 0) {
         return;
