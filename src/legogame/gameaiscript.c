@@ -204,12 +204,6 @@ typedef struct ai_on_object_terrain_s { // size 0x6c
     AI_ON_OBJECT_PLATFORM *platforms;   // 0x68
 } AI_ON_OBJECT_TERRAIN;
 
-/* Instance reader: only the condition's flags field is consumed. */
-typedef struct condition_cut_instance_reader_s { // size 0x8c
-    u8 opaque_00_88[0x88];                       // 0x00
-    u32 flags;                                   // 0x88
-} CONDITION_CUT_INSTANCE_READER;
-
 typedef struct condition_hat_name_reader_s { // size 0x50
     u8 unknown_00[0x40];                     // 0x00
     char name[16];                           // 0x40
@@ -1784,7 +1778,7 @@ void *Condition_CutSceneStartedInit(AISYS *system, char *name, AISCRIPT *script)
 
 f32 Condition_CutSceneStarted(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     CUTINFO *cutscene = argument;
-    if (cutscene != NULL && cutscene->instance != NULL && (((CONDITION_CUT_INSTANCE_READER *)cutscene->instance)->flags & 2) != 0) {
+    if (cutscene != NULL && cutscene->instance != NULL && (cutscene->instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
         return 1.0f;
     }
     return 0.0f;

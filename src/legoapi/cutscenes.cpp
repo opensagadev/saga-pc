@@ -225,11 +225,6 @@ typedef struct CUT_LOAD_LIST_ENTRY { // size 0xc
     u8 unknown_0a[2];                // 0xa
 } CUT_LOAD_LIST_ENTRY;
 
-typedef struct CUT_LOAD_INSTANCE_RATE { // size 0x9c
-    u8 unknown_00[0x98];                // 0x00
-    f32 rate;                           // 0x98
-} CUT_LOAD_INSTANCE_RATE;
-
 typedef struct CUT_DRAW_LOCATOR CUT_DRAW_LOCATOR;
 
 typedef struct CUT_DRAW_CHARACTER { // size 0x64
@@ -372,15 +367,6 @@ typedef struct CUT_DRAW_LOCATOR_ENTRY { // size 0x14
     u32 unknown_0c;                     // 0x0c
     void (*update)(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS *, CUT_DRAW_LOCATOR_INSTANCE *, CUT_DRAW_LOCATOR *, f32, NUMTX *, i32); // 0x10
 } CUT_DRAW_LOCATOR_ENTRY;
-
-typedef struct CUT_CONTROLLER_INSTANCE { // size 0x9c
-    u8 unknown_00[0x88];                 // 0x00
-    u32 flags_88;                        // 0x88
-    u32 flags_8c;                        // 0x8c
-    f32 current_frame;                   // 0x90
-    f32 render_frame;                    // 0x94
-    f32 rate;                            // 0x98
-} CUT_CONTROLLER_INSTANCE;
 
 typedef struct CUT_CONTROLLER_PROGRESS { // size 0x2801
     u8 unknown_00[0x2800];               // 0x0000
@@ -1084,7 +1070,7 @@ extern "C" {
                     NuGCutSceneFixUpExtra(cut->scene, gscn2);
                     cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, CutList[i].name, buf, 0);
                     if (cut->instance != NULL) {
-                        reinterpret_cast<CUT_LOAD_INSTANCE_RATE *>(cut->instance)->rate = cut->frames_per_second * DEFAULTFRAMETIME;
+                        cut->instance->rate = cut->frames_per_second * DEFAULTFRAMETIME;
                         buf->addr = (buf->addr + 15) & ~15U;
                     }
                     ++sys->count;
@@ -1196,7 +1182,7 @@ extern "C" CUT_LOAD_SYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gsc
                 NuGCutSceneFixUpExtra(cut->scene, gscn2);
                 cut->instance = instNuGCutSceneCreate(cut->scene, NULL, NULL, name, buf, 0);
                 if (cut->instance != NULL) {
-                    reinterpret_cast<CUT_LOAD_INSTANCE_RATE *>(cut->instance)->rate = cut->frames_per_second * DEFAULTFRAMETIME;
+                    cut->instance->rate = cut->frames_per_second * DEFAULTFRAMETIME;
                     buf->void_ptr = (char *)((buf->addr + 15) & ~15U);
                 }
                 sys->count++;
@@ -1290,8 +1276,7 @@ extern "C" {
             i32 index = cut->texture_animations[i].index;
             if (index != -1) {
                 u32 bit = 1U << index;
-                if ((bits & bit) == 0 &&
-                    reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->current_frame >= cut->texture_animations[i].frame) {
+                if ((bits & bit) == 0 && cut->instance->current_frame >= cut->texture_animations[i].frame) {
                     bits |= bit;
                     texanimbits = bits;
                 }
@@ -1416,7 +1401,7 @@ extern "C" {
 
 void CutScene_SnapToEnd(void *cut) {
     if (cut != NULL) {
-        instNuGCutSceneEnd((INSTNUGCUTSCENE *)((CUTINFO *)cut)->instance);
+        instNuGCutSceneEnd(((CUTINFO *)cut)->instance);
     }
 }
 
@@ -2260,12 +2245,12 @@ extern "C" {
             CutScenePlayer_SetObjects(reinterpret_cast<CUTINFO *>(cut));
         }
         f32 rate = cut->frames_per_second * FRAMETIME;
-        reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = rate;
+        cut->instance->rate = rate;
         instNuGCutSceneStart(cut->instance);
         if ((cut->flags & CUTINFO_LOOPING) != 0) {
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 |= NUGCUTSCENE_INST_LOOP;
+            cut->instance->flags_88 |= NUGCUTSCENE_INST_LOOP;
         } else {
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->flags_88 &= ~NUGCUTSCENE_INST_LOOP;
+            cut->instance->flags_88 &= ~NUGCUTSCENE_INST_LOOP;
         }
         cut->unknown_58 = 0.0f;
         if (cut->music_handle != -1) {
@@ -2279,7 +2264,7 @@ extern "C" {
                 // empty stub leaves the status there), so the status is read back from the call.
                 status = reinterpret_cast<i32 (*)(char *)>(CutSceneConfigMissing)(reinterpret_cast<char *>(status));
             }
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = 0.0f;
+            cut->instance->rate = 0.0f;
             if ((cut->flags & 1) != 0 && status == 1) {
                 CutSceneWaiting = 1;
                 PauseGameAudio(0);
@@ -2291,7 +2276,7 @@ extern "C" {
             PauseGameAudio(0);
             SetLinkedCutSceneMusic(cut->instance, cut->linked_audio != 0 ? MUSIC_PLAYBACK_DUAL_STREAM_PENDING : MUSIC_PLAYBACK_DUAL_STREAM);
             rate = cut->frames_per_second * FRAMETIME;
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = rate;
+            cut->instance->rate = rate;
             if ((cut->flags & 1) == 0) {
                 return 1;
             }
@@ -2304,21 +2289,15 @@ extern "C" {
         Panel_Clear();
         CutFrame = 0;
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
-            if ((reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance)
-                     ->flags_88 &
-                 NUGCUTSCENE_INST_PLAYING) != 0) {
+            if ((world->cutscene_sys->records[i]->instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
                 if (reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i]) != cut &&
-                    reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance != NULL &&
+                    world->cutscene_sys->records[i]->instance != NULL &&
                     (reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->flags & 1) != 0) {
-                    reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(
-                        reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance)
-                        ->rate = 0.0f;
-                    instNuGCutSceneStop(reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance);
+                    world->cutscene_sys->records[i]->instance->rate = 0.0f;
+                    instNuGCutSceneStop(world->cutscene_sys->records[i]->instance);
                 } else {
-                    reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(
-                        reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance)
-                        ->rate = 0.0f;
-                    instNuGCutScenePause(reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i])->instance, 1);
+                    world->cutscene_sys->records[i]->instance->rate = 0.0f;
+                    instNuGCutScenePause(world->cutscene_sys->records[i]->instance, 1);
                 }
             }
         }
@@ -2425,7 +2404,7 @@ extern "C" {
         i32 stop_index;
         for (stop_index = 0; stop_index < world->cutscene_sys->count; ++stop_index) {
             CUT_LOAD_RECORD *cut = reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[stop_index]);
-            CUT_CONTROLLER_INSTANCE *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance);
+            INSTNUGCUTSCENE *instance = cut->instance;
             if (instance != NULL && (instance->flags_88 & NUGCUTSCENE_INST_PLAYING) != 0) {
                 if ((cut->flags & 1) != 0) {
                     SetStopCutFlags(cut);
@@ -2443,7 +2422,7 @@ extern "C" {
         ACTIVECUTCOUNT = 0;
         for (i32 i = 0; i < world->cutscene_sys->count; ++i) {
             CUT_LOAD_RECORD *cut = reinterpret_cast<CUT_LOAD_RECORD *>(world->cutscene_sys->records[i]);
-            CUT_CONTROLLER_INSTANCE *instance = reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance);
+            INSTNUGCUTSCENE *instance = cut->instance;
             if (instance == NULL) {
                 continue;
             }
@@ -2464,14 +2443,14 @@ extern "C" {
                 bool wait = false;
                 if (NOSOUND == 0 && NOMUSIC == 0 && i == stop_index && cut->music_handle != -1 && instance->rate == 0.0f &&
                     cutaudiopaused != 0 && music_man.GetStatus(16, NULL) != 4) {
-                    reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = 0.0f;
+                    cut->instance->rate = 0.0f;
                     CutSceneWaiting = 1;
                     wait = true;
                 }
                 if (!wait) {
                     if (CutSceneMusicStartFrame != -1) {
                         if (nuapi.frame_count < static_cast<i32>(static_cast<u32>(CutSceneMusicStartFrame) + 5U)) {
-                            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = 0.0f;
+                            cut->instance->rate = 0.0f;
                             CutSceneWaiting = 1;
                             wait = true;
                         } else {
@@ -2481,7 +2460,7 @@ extern "C" {
                     }
                     if (!wait) {
                         f32 rate = cut->frames_per_second * FRAMETIME;
-                        reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate = rate;
+                        cut->instance->rate = rate;
                         if (i == stop_index && CutSceneWaiting != 0) {
                             CutSceneWaiting = 0;
                             cutaudiopaused = 0;
@@ -2508,11 +2487,10 @@ extern "C" {
                 if (cut->instance == NULL) {
                     continue;
                 }
-                if (active_before[i] != 0 && reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->rate > 0.0f) {
+                if (active_before[i] != 0 && cut->instance->rate > 0.0f) {
                     for (i32 j = 0; j < 6; ++j) {
                         CUT_LOAD_SFX *sfx = &cut->sfx[j];
-                        if (sfx->id != -1 && cut->previous_frame < sfx->frame &&
-                            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(cut->instance)->current_frame >= sfx->frame) {
+                        if (sfx->id != -1 && cut->previous_frame < sfx->frame && cut->instance->current_frame >= sfx->frame) {
                             PlaySfxById(sfx->id, (sfx->flags & 1) != 0 ? &sfx->position : NULL);
                         }
                     }
@@ -2524,7 +2502,7 @@ extern "C" {
                     if (CutInstEndCount < 4) {
                         INSTNUGCUTSCENE *ended_instance = cut->instance;
                         CutInstEnd[CutInstEndCount] = ended_instance;
-                        reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(ended_instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
+                        ended_instance->flags_88 |= NUGCUTSCENE_INST_PLAYING;
                         ++CutInstEndCount;
                     }
                 }
@@ -2592,7 +2570,7 @@ extern "C" {
         if (CutInstEndCount < 4) {
             INSTNUGCUTSCENE *ended_instance = stop_cut->instance;
             CutInstEnd[CutInstEndCount] = ended_instance;
-            reinterpret_cast<CUT_CONTROLLER_INSTANCE *>(ended_instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
+            ended_instance->flags_88 |= NUGCUTSCENE_INST_PLAYING;
             CutInstEndStop = CutInstEndCount;
             ++CutInstEndCount;
         }

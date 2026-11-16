@@ -995,8 +995,8 @@ void FactoryB_Reset(WORLDINFO *world) {
     ResetPaintPuzzle(world);
     factoryb_cut = NewCutScene(NULL, world->cutscene_sys, "ep2_droidfactory_conveyor", 0);
     if (factoryb_cut != NULL && factoryb_cut->instance != NULL) {
-        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
-        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 |= NUGCUTSCENE_INST_LOOP;
+        factoryb_cut->instance->flags_88 |= NUGCUTSCENE_INST_PLAYING;
+        factoryb_cut->instance->flags_88 |= NUGCUTSCENE_INST_LOOP;
     }
     factoryb_conveyor_stopped_msg = CheckGizAIMessage(gizaimessagesys, "conveyor_stop", NULL);
 }
@@ -1010,13 +1010,12 @@ void FactoryB_Update(WORLDINFO *world) {
     GIZAIMESSAGE *message;
     UpdatePaintPuzzle(world);
     message = factoryb_conveyor_stopped_msg;
-    if (message != NULL && message->value != 0.0f && ((CUTINFO_READER *)factoryb_cut)->previous_frame > 50.0 &&
-        ((CUTINFO_READER *)factoryb_cut)->previous_frame < 54.0) {
-        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->current_frame = 0.0f;
-        ((CUT_INSTANCE_READER *)factoryb_cut->instance)->flags_88 &= ~NUGCUTSCENE_INST_PLAYING;
+    if (message != NULL && message->value != 0.0f && factoryb_cut->previous_frame > 50.0 && factoryb_cut->previous_frame < 54.0) {
+        factoryb_cut->instance->current_frame = 0.0f;
+        factoryb_cut->instance->flags_88 &= ~NUGCUTSCENE_INST_PLAYING;
         world->current_level->conveyor_x_speed = 0.0f;
         world->current_level->conveyor_z_speed = 0.0f;
-    } else if (((CUT_INSTANCE_READER *)factoryb_cut->instance)->current_frame > FactoryBConveyorStopFrame) {
+    } else if (factoryb_cut->instance->current_frame > FactoryBConveyorStopFrame) {
         world->current_level->conveyor_x_speed = FactoryBConveyorXSpeed;
         world->current_level->conveyor_z_speed = FactoryBConveyorZSpeed;
         PlaySfx("FacB_BeltLp", NULL);
@@ -1119,7 +1118,7 @@ void FactoryG_Update(WORLDINFO *world) {
         CompleteLevel(WORLD);
     } else {
         CUTINFO *cut = NewCutScene(NULL, world->cutscene_sys, "ep2_factory_outro", 1);
-        ((CUT_INSTANCE_READER *)((CUTINFO_READER *)cut)->instance)->flags_88 |= NUGCUTSCENE_INST_PLAYING;
+        cut->instance->flags_88 |= NUGCUTSCENE_INST_PLAYING;
     }
 }
 
@@ -1838,7 +1837,7 @@ void KaminoE_Update(WORLDINFO *world) {
         }
     }
     if (kamino_e.jango_fight->value == 0.0f && FreePlay == 0 && kamino_e.intro_cutscene != NULL &&
-        instNuGCutSceneIsFinished(((CUTINFO_READER *)kamino_e.intro_cutscene)->instance) != 0) {
+        instNuGCutSceneIsFinished(kamino_e.intro_cutscene->instance) != 0) {
         kamino_e.jango_fight->value = 1.0f;
     }
     KaminoE_UpdateSlave1(world);

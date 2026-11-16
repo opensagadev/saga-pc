@@ -54,7 +54,9 @@ typedef struct instnugcutscene_s {      // size 0xf8
         u32 flags_88;
 
         struct {                          // size 0x4
-            u32 flags_88_bits_0_12 : 13;  // 0x88:0
+            u32 flags_88_bits_0_1 : 2;    // 0x88:0
+            u32 paused : 1;               // 0x88:2
+            u32 flags_88_bits_3_12 : 10;  // 0x88:3
             i32 repeat_count : 5;         // 0x88:13
             u32 flags_88_bit_18 : 1;      // 0x88:18
             u32 synchro : 8;              // 0x88:19

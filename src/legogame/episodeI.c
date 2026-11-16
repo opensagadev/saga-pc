@@ -1208,7 +1208,7 @@ void PodRaceBUpdate(WORLDINFO *world) {
                 }
                 break;
             case PODRACE_MUSHROOM_FALLING:
-                if (mushroom0_cut != NULL && (((CUT_INSTANCE_READER *)mushroom0_cut->instance)->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
+                if (mushroom0_cut != NULL && (mushroom0_cut->instance->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
                     NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM1", 1);
                     mushroom_countdown = mushroom_time_available;
                     LevFlag.podrace.mushroom_state = PODRACE_MUSHROOM_COUNTDOWN;
@@ -1256,7 +1256,7 @@ void PodRaceCUpdate(WORLDINFO *world) {
     PodRaceSnipersUpdate();
     if (LevFlag.podrace.state == PODRACE_STEP_START) {
         CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
-        if (cutscene != NULL && (((CUT_INSTANCE_READER *)cutscene->instance)->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
+        if (cutscene != NULL && (cutscene->instance->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
             LevFlag.podrace.state = PODRACE_STEP_TRIGGERED;
         }
     }

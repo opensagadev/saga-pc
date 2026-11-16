@@ -2869,7 +2869,7 @@ extern "C" {
             }
             NuMtxSetRotationY(&matrix, rotation);
             NuMtxTranslate(&matrix, position);
-            instNuGCutSceneSetMtx((INSTNUGCUTSCENE *)cut->instance, &matrix);
+            instNuGCutSceneSetMtx(cut->instance, &matrix);
             return 1;
         }
         if (BONUS_GUNSHIP_ADATA != NULL && WORLD->area == BONUS_GUNSHIP_ADATA) {
@@ -2885,7 +2885,7 @@ extern "C" {
             }
             NuMtxSetRotationY(&matrix, rotation);
             NuMtxTranslate(&matrix, position);
-            instNuGCutSceneSetMtx((INSTNUGCUTSCENE *)cut->instance, &matrix);
+            instNuGCutSceneSetMtx(cut->instance, &matrix);
             return 1;
         }
         return 0;
@@ -2898,7 +2898,7 @@ extern "C" {
         if (cut != game_cutscenes_podrace_avalanche && cut != game_cutscenes_cutscene) {
             return;
         }
-        intensity = PodAvalancheShakeFrames - ((INSTNUGCUTSCENE *)cut->instance)->current_frame;
+        intensity = PodAvalancheShakeFrames - (cut->instance)->current_frame;
         if (intensity < -(PodAvalancheShakeFrames - 1.0f)) {
             intensity = -(PodAvalancheShakeFrames - 1.0f);
         }

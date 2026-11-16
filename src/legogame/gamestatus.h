@@ -91,13 +91,6 @@ typedef struct TAG_CHARACTER_DATA_READER {
     u8 opaque_44[8];
 } TAG_CHARACTER_DATA_READER;
 
-typedef struct cutinfo_reader_s {
-    u8 opaque_00_04[0x4];
-    void *instance;
-    u8 opaque_08_54[0x4c];
-    f32 previous_frame;
-} CUTINFO_READER;
-
 typedef struct kaminoc_packet_s {
     i16 off_mask;
     i16 pending_mask;

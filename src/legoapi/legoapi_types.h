@@ -161,16 +161,17 @@ typedef struct cut_player_state_s { // size 0x10
     u8 unknown_0d[3];               // 0xd
 } CUT_PLAYER_STATE;
 
-typedef struct cutinfo_s {           // size 0xf0
-    u8 opaque_00_04[0x4];            // 0x00
-    void *instance;                  // 0x04
-    char name[0x40];                 // 0x08
-    CUT_PLAYER_STATE *player_states; // 0x48
-    u8 player_state_count;           // 0x4c
-    u8 unknown_4d[3];                // 0x4d
-    u32 flags;                       // 0x50
-    u8 unknown_54[0x98];             // 0x54
-    i16 skip_level;                  // 0xec
+typedef struct cutinfo_s {              // size 0xf0
+    u8 opaque_00_04[0x4];               // 0x00
+    struct instnugcutscene_s *instance; // 0x04
+    char name[0x40];                    // 0x08
+    CUT_PLAYER_STATE *player_states;    // 0x48
+    u8 player_state_count;              // 0x4c
+    u8 unknown_4d[3];                   // 0x4d
+    u32 flags;                          // 0x50
+    f32 previous_frame;                 // 0x54
+    u8 unknown_58[0x94];                // 0x58
+    i16 skip_level;                     // 0xec
 } CUTINFO;
 
 typedef struct gameanimset_s GAMEANIMSET;

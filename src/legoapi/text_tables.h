@@ -310,13 +310,6 @@ typedef struct custom_save_config_s {
     u8 unknown_4a[0x26];
 } CUSTOM_SAVE_CONFIG;
 
-typedef struct cut_instance_reader_s { // size 0x94
-    u8 opaque_00_88[0x88];             // 0x00
-    u32 flags_88;                      // 0x88
-    u32 unknown_8c;                    // 0x8c
-    f32 current_frame;                 // 0x90
-} CUT_INSTANCE_READER;
-
 typedef struct cut_load_character_animation_s { // size 0x10
     u32 unknown_00;                             // 0x0
     void *animation;                            // 0x4

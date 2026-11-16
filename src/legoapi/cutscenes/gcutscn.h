@@ -322,7 +322,9 @@ struct cut_scene_load_s {                                        // size 0x5c
     void *stream_buffer_1;                                       // 0x34
     u32 flags;                                                   // 0x38
     i32 stream_buffer_size;                                      // 0x3c
-    u32 unknown_40;                                              // 0x40
+    u8 last_stream;                                              // 0x40
+    u8 unknown_41;                                               // 0x41
+    u16 total_stream_frames;                                     // 0x42
     struct NUGSCN_s *scene;                                      // 0x44
     void *extra_scene;                                           // 0x48
     u32 stream_buffer_offset;                                    // 0x4c
