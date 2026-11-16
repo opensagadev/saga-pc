@@ -26,7 +26,7 @@ class NuDeferredFilterGen : public NuPostFilter { // size 0x2f8
     virtual void resetAll();
     virtual bool isEnabled();
     i32 sample_count;                     // 0x00c
-    void *programs[6];                    // 0x010
+    POST_SHADER_PROGRAM *programs[6];     // 0x010
     GRAPHICS_RENDER_TEXTURE *textures[6]; // 0x028
     u32 unknown_040;                      // 0x040
     f32 parameters[4];                    // 0x044

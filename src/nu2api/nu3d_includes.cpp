@@ -8763,19 +8763,6 @@ extern "C" {
 /* Original nutimebar module. */
 extern "C" {
 
-    typedef struct TimeBarSet {  // size 0x2c
-        i32 uses_buffer;         // 0x00
-        i32 slot_count;          // 0x04
-        i32 *accumulators[2];    // 0x08
-        NuTime *start_times;     // 0x10
-        i32 *unknown_14;         // 0x14
-        i32 *unknown_18;         // 0x18
-        i32 *colours;            // 0x1c
-        i32 *toggle_flags;       // 0x20
-        const char **slot_names; // 0x24
-        i32 unknown_28;          // 0x28
-    } TimeBarSet;
-
     static i32 TimeBarAddSet(TimeBarSet *timebar) {
         i32 index;
         for (index = 0; index < 16; ++index) {
@@ -8793,7 +8780,7 @@ extern "C" {
     }
 
     static TimeBarSet *TimeBarGetSet(i32 set) {
-        return (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        return NuTimeBar_SetList[set + 1];
     }
 
     void NuTimeBarSlotReset(i32 set, i32 slot) {
@@ -8804,7 +8791,7 @@ extern "C" {
 
         if (set == -1 && slot == 0) {
             i32 index;
-            timebar = (TimeBarSet *)NuTimeBar_SetList[0];
+            timebar = NuTimeBar_SetList[0];
             for (index = 0; index < timebar->slot_count; ++index) {
                 timebar->toggle_flags[index] ^= 1;
                 timebar->accumulators[timebar->toggle_flags[index] == 0][index] = 0;
@@ -8812,7 +8799,7 @@ extern "C" {
             return;
         }
 
-        timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        timebar = NuTimeBar_SetList[set + 1];
         timebar->toggle_flags[slot] ^= 1;
         timebar->accumulators[timebar->toggle_flags[slot] == 0][slot] = 0;
     }
@@ -8822,13 +8809,13 @@ extern "C" {
         if (NuTimeBar_Initialised == 0) {
             return;
         }
-        timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        timebar = NuTimeBar_SetList[set + 1];
         NuTimeGet(&timebar->start_times[slot]);
         timebar->slot_names[slot] = name;
     }
 
     void NuTimeBarDestroySet(i32 set) {
-        TimeBarSet *timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        TimeBarSet *timebar = NuTimeBar_SetList[set + 1];
 
         /* Frees the allocations when this word is nonzero. */
         if (timebar->uses_buffer != 0) {
@@ -8854,7 +8841,7 @@ extern "C" {
         if (NuTimeBar_Initialised == 0) {
             return 0;
         }
-        timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        timebar = NuTimeBar_SetList[set + 1];
         NuTimeGet(&now);
         NuTimeSub(&delta, &now, &timebar->start_times[slot]);
         elapsed = NuTimeMicroSeconds(&delta);
@@ -8868,7 +8855,7 @@ extern "C" {
         if (NuTimeBar_Initialised == 0) {
             return;
         }
-        timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        timebar = NuTimeBar_SetList[set + 1];
         timebar->accumulators[1 - timebar->toggle_flags[slot]][slot] = value;
     }
 
@@ -8878,7 +8865,7 @@ extern "C" {
         if (NuTimeBar_Initialised == 0) {
             return;
         }
-        timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        timebar = NuTimeBar_SetList[set + 1];
         timebar->slot_names[slot] = name;
     }
 
@@ -8891,13 +8878,13 @@ extern "C" {
         if (set == -1 && slot == 6) {
             value = (i32)(u32)((f32)(u32)value * 63.556);
         }
-        timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        timebar = NuTimeBar_SetList[set + 1];
         timebar->accumulators[1 - timebar->toggle_flags[slot]][slot] = value;
         timebar->slot_names[slot] = name;
     }
 
     i32 NuTimeBarSlotLastValueMicroseconds(i32 set, i32 slot) {
-        TimeBarSet *timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        TimeBarSet *timebar = NuTimeBar_SetList[set + 1];
         return timebar->accumulators[timebar->toggle_flags[slot]][slot];
     }
 
@@ -9062,7 +9049,7 @@ extern "C" {
         NuQFntSetColour(system_qfont, 0xe0e0e0e0);
         NuQFntSetScale(system_qfont, NuTimeBarFontScale, NuTimeBarFontScale);
         vertical_scale = (f32)(120.0 / PS2_VREZ_H);
-        timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        timebar = NuTimeBar_SetList[set + 1];
         for (slot = 0; slot < timebar->slot_count; ++slot) {
             if (timebar->slot_names[slot] != NULL) {
                 f32 width = NuQFntPrintLenU(system_qfont, (char *)timebar->slot_names[slot]);
@@ -9170,7 +9157,7 @@ extern "C" {
     }
 
     void NuTimeBarSetRender(i32 set) {
-        TimeBarSet *timebar = (TimeBarSet *)NuTimeBar_SetList[set + 1];
+        TimeBarSet *timebar = NuTimeBar_SetList[set + 1];
         f32 gpu_frames = 0.0f;
         i32 engine_enabled = NuTimeBar_EngineEnabled;
         i32 slot;
@@ -12326,10 +12313,10 @@ void NuMainFilterGen::preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE *color, GRA
         threshold[2] = 0.0f;
         threshold[3] = 0.0f;
         static f32 scaleBias[4] = {1.0f, 1.0f, 0.0f, 0.0f};
-        NuShaderProgramMakeCurrent((POST_SHADER_PROGRAM *)programs[17]);
+        NuShaderProgramMakeCurrent(programs[17]);
         PCDeviceSetVertexShaderConstantsF(0xae, threshold, 1);
         PCDeviceSetVertexShaderConstantsF(0xaf, scaleBias, 1);
-        PostFilterCopyTexture(downsample_texture, 0, color, downsample_lod, (POST_SHADER_PROGRAM *)programs[17], NULL);
+        PostFilterCopyTexture(downsample_texture, 0, color, downsample_lod, programs[17], NULL);
         i32 passes = (i32)bloom->blur_iterations;
         if (passes >= 1) {
             PostBlur7x7Dispatch(downsample_texture, 0, downsample_texture, 0, passes, 1, true, 1.0f, PostBlur5x5Program);
@@ -12345,12 +12332,12 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE *depth) {
     POST_SHADER_PROGRAM *program;
     if (dof_enabled) {
         if (dof_bias == 1) {
-            program = (POST_SHADER_PROGRAM *)(motion_blur_enabled ? programs[4] : programs[3]);
+            program = motion_blur_enabled ? programs[4] : programs[3];
         } else {
-            program = (POST_SHADER_PROGRAM *)(motion_blur_enabled ? programs[2] : programs[0]);
+            program = motion_blur_enabled ? programs[2] : programs[0];
         }
     } else {
-        program = (POST_SHADER_PROGRAM *)programs[1];
+        program = programs[1];
     }
     NuShaderProgramMakeCurrent(program);
     if (dof_enabled) {
@@ -12394,8 +12381,7 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE *depth) {
         PCGraphicsDrawPostEffectQuad();
         PCGraphicsResolveFramebuffer(1);
         if (dof_mode > 0) {
-            PostBlur7x7Dispatch(blur_texture, 0, blur_texture, 1, dof_mode, 1, true, NuMainFilterDofBlurScale,
-                                (POST_SHADER_PROGRAM *)programs[15]);
+            PostBlur7x7Dispatch(blur_texture, 0, blur_texture, 1, dof_mode, 1, true, NuMainFilterDofBlurScale, programs[15]);
         }
     }
 }
@@ -12563,34 +12549,34 @@ void NuMainFilterGen::render() {
     i32 selection = (bloom_enabled && bloom->directional ? 1 : 0) | (bloom_enabled && !bloom->directional ? 2 : 0) | (dof_enabled ? 4 : 0);
     switch (selection) {
         case 1:
-            program = (POST_SHADER_PROGRAM *)programs[8];
+            program = programs[8];
             break;
         case 2:
-            program = (POST_SHADER_PROGRAM *)programs[6];
+            program = programs[6];
             break;
         case 4:
-            program = (POST_SHADER_PROGRAM *)programs[5];
+            program = programs[5];
             break;
         case 5:
-            program = (POST_SHADER_PROGRAM *)programs[9];
+            program = programs[9];
             break;
         case 6:
-            program = (POST_SHADER_PROGRAM *)programs[7];
+            program = programs[7];
             break;
         case 9:
-            program = (POST_SHADER_PROGRAM *)programs[13];
+            program = programs[13];
             break;
         case 10:
-            program = (POST_SHADER_PROGRAM *)programs[11];
+            program = programs[11];
             break;
         case 12:
-            program = (POST_SHADER_PROGRAM *)programs[10];
+            program = programs[10];
             break;
         case 13:
-            program = (POST_SHADER_PROGRAM *)programs[14];
+            program = programs[14];
             break;
         case 14:
-            program = (POST_SHADER_PROGRAM *)programs[12];
+            program = programs[12];
             break;
         default:
             AnimationDiagnosticNoOp();
@@ -14984,7 +14970,7 @@ extern "C" {
     NUVEC NuRndrDebRange = {0};
     NUMTX NuCameraScalingTemplate = {0};
     __declspec(align(16)) NUMTX VisibilityAlternateAbsoluteMatrix = {0};
-    void *NuTimeBar_SetList[16] = {0};
+    TimeBarSet *NuTimeBar_SetList[16] = {0};
     i32 *NuTextureLoadOrderPC = 0;
     u8 NuAnimDataBitCount[256] = {0};
     __declspec(align(16)) NUPLANE NuPortalNearPlane = {0};
@@ -17628,9 +17614,9 @@ extern "C" {
         scales[255].y = 1.0f;
         scales[255].z = 1.0f;
         NuAnimDataCalcTime(animation_a, frame_a, &time_a);
-        chunk_a = (NUANIM_LEGACY_CHUNK *)animation_a->chunks[time_a.chunk];
+        chunk_a = animation_a->chunks[time_a.chunk];
         NuAnimDataCalcTime(animation_b, frame_b, &time_b);
-        chunk_b = (NUANIM_LEGACY_CHUNK *)animation_b->chunks[time_b.chunk];
+        chunk_b = animation_b->chunks[time_b.chunk];
         if (override_count != 0) {
             memset(joint_overrides, 0, object->joint_count * sizeof(joint_overrides[0]));
             for (index = 0; index < override_count; ++index) {
@@ -17685,15 +17671,15 @@ extern "C" {
                         if (node < 0) {
                             continue;
                         }
-                        if (node >= ((NUANIM_LEGACY_CHUNK *)animation->chunks[time.chunk])->node_count) {
+                        if (node >= animation->chunks[time.chunk]->node_count) {
                             weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
                             continue;
                         }
                     } else {
                         node = 0;
                     }
-                    if (((NUANIM_LEGACY_CHUNK *)animation->chunks[time.chunk])->curve_sets[node] != NULL) {
-                        curve_count = ((NUANIM_LEGACY_CHUNK *)animation->chunks[time.chunk])->curve_sets[node]->curve_count;
+                    if (animation->chunks[time.chunk]->curve_sets[node] != NULL) {
+                        curve_count = animation->chunks[time.chunk]->curve_sets[node]->curve_count;
                     } else {
                         weights_by_render[render] = NuRndrCreateBlendShapeDeformerWeightsArray(0);
                         continue;
@@ -17704,7 +17690,7 @@ extern "C" {
                         continue;
                     }
                     for (curve = 0; curve < curve_count; ++curve) {
-                        NUANIM_LEGACY_SET *set = ((NUANIM_LEGACY_CHUNK *)animation->chunks[time.chunk])->curve_sets[node];
+                        NUANIM_LEGACY_SET *set = animation->chunks[time.chunk]->curve_sets[node];
                         if (set->curves[curve] != NULL) {
                             weights->values[curve] = NuAnimCurveCalcVal2(set->curves[curve], &time);
                         } else {
@@ -17751,15 +17737,15 @@ extern "C" {
                     } else {
                         node = 0;
                     }
-                    if (animation_a != NULL && node < ((NUANIM_LEGACY_CHUNK *)animation_a->chunks[time_a.chunk])->node_count &&
-                        ((NUANIM_LEGACY_CHUNK *)animation_a->chunks[time_a.chunk])->curve_sets[node] != NULL) {
-                        count_a = ((NUANIM_LEGACY_CHUNK *)animation_a->chunks[time_a.chunk])->curve_sets[node]->curve_count;
+                    if (animation_a != NULL && node < animation_a->chunks[time_a.chunk]->node_count &&
+                        animation_a->chunks[time_a.chunk]->curve_sets[node] != NULL) {
+                        count_a = animation_a->chunks[time_a.chunk]->curve_sets[node]->curve_count;
                     } else {
                         count_a = 0;
                     }
-                    if (animation_b != NULL && node < ((NUANIM_LEGACY_CHUNK *)animation_b->chunks[time_b.chunk])->node_count &&
-                        ((NUANIM_LEGACY_CHUNK *)animation_b->chunks[time_b.chunk])->curve_sets[node] != NULL) {
-                        count_b = ((NUANIM_LEGACY_CHUNK *)animation_b->chunks[time_b.chunk])->curve_sets[node]->curve_count;
+                    if (animation_b != NULL && node < animation_b->chunks[time_b.chunk]->node_count &&
+                        animation_b->chunks[time_b.chunk]->curve_sets[node] != NULL) {
+                        count_b = animation_b->chunks[time_b.chunk]->curve_sets[node]->curve_count;
                     } else {
                         count_b = 0;
                     }
@@ -17774,13 +17760,13 @@ extern "C" {
                         f32 value_b;
                         NUANIM_LEGACY_SET *set;
                         if (curve < count_a) {
-                            set = ((NUANIM_LEGACY_CHUNK *)animation_a->chunks[time_a.chunk])->curve_sets[node];
+                            set = animation_a->chunks[time_a.chunk]->curve_sets[node];
                             value_a = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_a) : set->constants[curve];
                         } else {
                             value_a = 0.0f;
                         }
                         if (curve < count_b) {
-                            set = ((NUANIM_LEGACY_CHUNK *)animation_b->chunks[time_b.chunk])->curve_sets[node];
+                            set = animation_b->chunks[time_b.chunk]->curve_sets[node];
                             value_b = set->curves[curve] != NULL ? NuAnimCurveCalcVal2(set->curves[curve], &time_b) : set->constants[curve];
                         } else {
                             value_b = 0.0f;
@@ -18457,11 +18443,11 @@ void NuDeferredFilterGen::render() {
         }
         POST_SHADER_PROGRAM *program;
         if (light->parameter_5 == 0) {
-            program = (POST_SHADER_PROGRAM *)programs[0];
+            program = programs[0];
         } else if (light->parameter_5 == 1) {
-            program = (POST_SHADER_PROGRAM *)programs[0];
+            program = programs[0];
         } else {
-            program = (POST_SHADER_PROGRAM *)programs[1];
+            program = programs[1];
         }
         if (!first) {
             NuDisplayHandlerVertexShaderCache = NULL;
@@ -18545,9 +18531,9 @@ void NuDeferredFilterGen::render() {
     PCGraphicsSubmitViewport(0, 0, width, height);
     POST_SHADER_PROGRAM *program;
     if (output == NuFramebufferGetObject(1) && PCDeviceBackend.textures[0] != NULL) {
-        program = (POST_SHADER_PROGRAM *)programs[2];
+        program = programs[2];
     } else {
-        program = (POST_SHADER_PROGRAM *)programs[3];
+        program = programs[3];
     }
     NuShaderProgramMakeCurrent(program);
     f32 shader_parameters[4] = {parameters[1], last_sample, parameters[2], parameters[3]};

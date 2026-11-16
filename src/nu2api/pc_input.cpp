@@ -678,7 +678,7 @@ extern "C" {
 extern const PC_DI_DATA_FORMAT PcJoystickDataFormat = {24, 16, 1, 272, 164, PcJoystickDataFormatObjects};
 
 extern "C" BOOL __stdcall InputEnumDevices(const PC_DI_INSTANCE *instance, void *unused) {
-    PC_INPUT_RUNTIME *state = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *state = nu_input_state;
     PC_INPUT_DEVICE *devices = state->devices;
     if (IsXInputProduct(&instance->product)) {
         i32 port = PcXInputDeviceCount;
@@ -842,7 +842,7 @@ void NuKeyboardOwner::Shutdown() {
     if (nu_input_state == NULL) {
         return;
     }
-    PC_INPUT_DEVICE *devices = ((PC_INPUT_RUNTIME *)nu_input_state)->devices;
+    PC_INPUT_DEVICE *devices = nu_input_state->devices;
     if (device != NULL) {
         device->methods->unacquire(device);
         if (device != NULL) {
@@ -873,7 +873,7 @@ void NuKeyboardOwner::Shutdown() {
         factory->methods->release(factory);
         factory = NULL;
     }
-    PC_INPUT_RUNTIME *released = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *released = nu_input_state;
     if (released != NULL) {
         released->shutdown_state = 0;
         ::operator delete(released);
@@ -881,7 +881,7 @@ void NuKeyboardOwner::Shutdown() {
 }
 
 extern "C" void PcInput_DisableAllKeyboards(void) {
-    PC_INPUT_RUNTIME *state = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *state = nu_input_state;
     for (i32 device = 10; device < 14; ++device) {
         state->devices[device].action_keys_active = 0;
     }
@@ -912,7 +912,7 @@ void PC_INPUT_RUNTIME::AutoConfigurePads(i32 count) {
 }
 
 extern "C" void NuPadAutoConfigure(i32 count) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->AutoConfigurePads(count);
+    nu_input_state->AutoConfigurePads(count);
 }
 
 extern "C" i32 GamePadReadBackend(FRAME_PAD *pad, i32 ignored) {
@@ -1685,8 +1685,8 @@ extern "C" void fun_006d5890(void) {
 }
 
 void NuKeyboardOwner::RescanDevices() {
-    PC_INPUT_DEVICE *devices = ((PC_INPUT_RUNTIME *)nu_input_state)->devices;
-    PC_INPUT_RUNTIME *runtime = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_DEVICE *devices = nu_input_state->devices;
+    PC_INPUT_RUNTIME *runtime = nu_input_state;
     device_count = 0;
     PcXInputDeviceCount = 0;
     for (i32 port = 0; port < 4; ++port) {
@@ -1735,7 +1735,7 @@ void NuKeyboardOwner::RescanDevices() {
 }
 
 extern "C" void fun_006da360(i32 player) {
-    PC_INPUT_RUNTIME *state = (PC_INPUT_RUNTIME *)nu_input_state;
+    PC_INPUT_RUNTIME *state = nu_input_state;
     PC_INPUT_CONFIG config;
     i32 port = NuPadGetPort(player);
     state->ExportConfig(port, &config, 0, 0, 0);
@@ -1908,26 +1908,26 @@ extern "C" f32 fun_006d5c60(void) {
 }
 
 extern "C" void fun_006d5c70(f32 threshold, i32 motion, f32 ramp) {
-    ((PC_INPUT_RUNTIME *)nu_input_state)->fun_006d3630(threshold, motion, ramp);
+    nu_input_state->fun_006d3630(threshold, motion, ramp);
 }
 
 extern "C" i32 fun_006d5ca0(i32 device, i32 binding, i32 auxiliary, i32 auxiliary_port) {
     if (auxiliary != 0) {
-        return ((PC_INPUT_RUNTIME *)nu_input_state)->auxiliary_bindings[auxiliary_port][binding].kind;
+        return nu_input_state->auxiliary_bindings[auxiliary_port][binding].kind;
     }
-    return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[device].bindings[binding].kind;
+    return nu_input_state->devices[device].bindings[binding].kind;
 }
 
 extern "C" void fun_006d5ce0(i32 device, i32 auxiliary, i32 auxiliary_port) {
     PC_INPUT_BINDING *bindings;
     i32 i;
     if (auxiliary != 0) {
-        bindings = ((PC_INPUT_RUNTIME *)nu_input_state)->auxiliary_bindings[auxiliary_port];
+        bindings = nu_input_state->auxiliary_bindings[auxiliary_port];
     } else {
         if (device < 0) {
             return;
         }
-        bindings = ((PC_INPUT_RUNTIME *)nu_input_state)->devices[device].bindings;
+        bindings = nu_input_state->devices[device].bindings;
     }
     for (i = 0; i < 32; ++i) {
         bindings[i].kind = PC_BINDING_NONE;
@@ -1937,7 +1937,7 @@ extern "C" void fun_006d5ce0(i32 device, i32 auxiliary, i32 auxiliary_port) {
 
 extern "C" i32 fun_006d5d60(i32 device) {
     if (device >= 0) {
-        return ((PC_INPUT_RUNTIME *)nu_input_state)->devices[device].kind != PC_INPUT_DEVICE_NONE;
+        return nu_input_state->devices[device].kind != PC_INPUT_DEVICE_NONE;
     }
     return 0;
 }

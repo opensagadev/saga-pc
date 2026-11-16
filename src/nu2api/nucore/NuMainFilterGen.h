@@ -29,7 +29,7 @@ class NuMainFilterGen : public NuPostFilter { // size 0x128
     void fun_005c23a0(const NU_POST_BLOOM_PARAMETERS *parameters);
     void fun_005c23b0(const NUMTX *previous, const NUMTX *current, f32 scale, f32 maximum, f32 falloff);
     void fun_005c2400(i32 frames, f32 blend, f32 mode);
-    void *programs[18];                          // 0x00c
+    POST_SHADER_PROGRAM *programs[18];           // 0x00c
     GRAPHICS_RENDER_TEXTURE *blur_texture;       // 0x054
     PC_FRAMEBUFFER *blur_fbo;                    // 0x058
     GRAPHICS_RENDER_TEXTURE *downsample_texture; // 0x05c

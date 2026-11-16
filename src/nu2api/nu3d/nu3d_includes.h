@@ -12,6 +12,7 @@
 #include "nu2api/nu3d/nutexanm.h"
 #include "nu2api/nucore/nuanimdata.h"
 #include "nu2api/nucore/nulst.h"
+#include "nu2api/nucore/nutime.h"
 #include "nu2api/nudynamiclight_gen.h"
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/nuang.h"
@@ -247,7 +248,21 @@ extern "C" {
 
     void NuBackbufferCopy(i32);
     extern i32 PCPortalsEnabled;
-    extern void *NuTimeBar_SetList[16];
+
+    typedef struct TimeBarSet {  // size 0x2c
+        i32 uses_buffer;         // 0x00
+        i32 slot_count;          // 0x04
+        i32 *accumulators[2];    // 0x08
+        NuTime *start_times;     // 0x10
+        i32 *unknown_14;         // 0x14
+        i32 *unknown_18;         // 0x18
+        i32 *colours;            // 0x1c
+        i32 *toggle_flags;       // 0x20
+        const char **slot_names; // 0x24
+        i32 unknown_28;          // 0x28
+    } TimeBarSet;
+
+    extern TimeBarSet *NuTimeBar_SetList[16];
     extern i32 NuTimeBar_Initialised;
     extern i32 NuTimeBar_PeakReset;
     extern i32 NuTimeBar_EngineEnabled;
@@ -434,18 +449,18 @@ extern "C" {
         u8 unknown_0d[3];              // 0xd
     } NUANIM_LEGACY_SET;
 
-    typedef struct NUANIM_LEGACY_HEADER { // size 0x10
-        f32 duration;                     // 0x0
-        u32 unknown_04;                   // 0x4
-        i32 chunk_count;                  // 0x8
-        void **chunks;                    // 0xc
-    } NUANIM_LEGACY_HEADER;
-
     typedef struct NUANIM_LEGACY_CHUNK { // size 0xc
         i32 node_count;                  // 0x0
         u32 unknown_04;                  // 0x4
         NUANIM_LEGACY_SET **curve_sets;  // 0x8
     } NUANIM_LEGACY_CHUNK;
+
+    typedef struct NUANIM_LEGACY_HEADER {    // size 0x10
+        f32 duration;                        // 0x0
+        u32 unknown_04;                      // 0x4
+        i32 chunk_count;                     // 0x8
+        struct NUANIM_LEGACY_CHUNK **chunks; // 0xc
+    } NUANIM_LEGACY_HEADER;
 
     void NuAnimDataCalcTime(NUANIM_LEGACY_HEADER *, f32, NUANIM_TIME2 *);
     DWA_WEIGHT_BLOCK **NuHGobjEvalDwa(i32, i16 *, NUANIM_LEGACY_HEADER *, f32);

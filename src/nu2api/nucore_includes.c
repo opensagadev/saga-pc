@@ -228,19 +228,6 @@ static u8 ImplodeLiteralLengths[0x1fe] = {0};
 static u32 subbitbuf = 0;
 static u32 bitcount = 0;
 
-typedef struct TimeBarSet {  // size 0x2c
-    i32 uses_buffer;         // 0x00
-    i32 slot_count;          // 0x04
-    i32 *accumulators[2];    // 0x08
-    NuTime *start_times;     // 0x10
-    i32 *unknown_14;         // 0x14
-    i32 *unknown_18;         // 0x18
-    i32 *colours;            // 0x1c
-    i32 *toggle_flags;       // 0x20
-    const char **slot_names; // 0x24
-    i32 unknown_28;          // 0x28
-} TimeBarSet;
-
 /* Original source: nu2api/nucore/nuapi.cpp; PC initializes only the fields
  * below after clearing the real 0x90-byte API record. */
 static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
