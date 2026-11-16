@@ -272,9 +272,9 @@ void NuRndrCalcRandEllipsePos(NUVEC4 *position, NUMTX *matrix, NUVEC *axes) {
     f32 length;
     f32 scale;
 
-    random.x = (f32)((f64)(i32)NuWindRand() - 32768.0);
-    random.y = (f32)((f64)(i32)NuWindRand() - 32768.0);
-    random.z = (f32)((f64)(i32)NuWindRand() - 32768.0);
+    random.x = (f32)((f64)NuWindRand() - 32768.0);
+    random.y = (f32)((f64)NuWindRand() - 32768.0);
+    random.z = (f32)((f64)NuWindRand() - 32768.0);
     length = (f32)((f64)random.x * random.x + (f64)random.y * random.y + (f64)random.z * random.z);
     scale = 1.0f / NuFsqrt(length);
     random.x *= scale;
@@ -292,9 +292,9 @@ void NuRndrCalcRandCylinderPos(NUVEC4 *position, NUMTX *matrix, NUVEC *axes) {
     f32 length;
     f32 scale;
 
-    random.x = (f32)((f64)((i32)NuWindRand() - 32768) * (1.0 / 32768.0));
-    random.y = (f32)((f64)(i32)NuWindRand() - 32768.0);
-    random.z = (f32)((f64)(i32)NuWindRand() - 32768.0);
+    random.x = (f32)((f64)(NuWindRand() - 32768) * (1.0 / 32768.0));
+    random.y = (f32)((f64)NuWindRand() - 32768.0);
+    random.z = (f32)((f64)NuWindRand() - 32768.0);
     length = (f32)((f64)random.y * random.y + (f64)random.z * random.z);
     scale = 1.0f / NuFsqrt(length);
     random.y *= scale;

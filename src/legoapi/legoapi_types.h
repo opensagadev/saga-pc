@@ -1763,12 +1763,12 @@ struct STATUS_STAGE_s {                                                         
     void (*update_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1, f32 arg2); // 0x04
     void (*skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);             // 0x08
     i32 type;                                                                                    // 0x0c
-    u16 unknown_10;                                                                              // 0x10
-    u8 unknown_12;                                                                               // 0x12
-    u8 pad_13;                                                                                   // 0x13
-    i32 step;                                                                                    // 0x14
-    f32 step_time;                                                                               // 0x18
-    f32 step_duration;                                                                           // 0x1c
+    i16 panel_object;  // 0x10 level object drawn on the background grid
+    u8 unknown_12;     // 0x12
+    u8 pad_13;         // 0x13
+    i32 step;          // 0x14
+    f32 step_time;     // 0x18
+    f32 step_duration; // 0x1c
 };
 
 /* GIZTURRET_s.behavior_flags: the level file's options (GizTurret_Reset sets ORIGIN_AT_ANIMATION and

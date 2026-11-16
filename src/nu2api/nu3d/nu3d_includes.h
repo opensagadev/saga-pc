@@ -126,7 +126,7 @@ typedef struct ANI3_SCALEMIN { // size 0x8
 } ANI3_SCALEMIN;
 
 typedef struct ANI3_HEADER {  // size 0x3c
-    u32 magic;                // 0x00
+    i32 magic;                // 0x00
     u16 node_count;           // 0x04
     u16 key_count;            // 0x06
     u16 key_stride;           // 0x08
@@ -302,7 +302,7 @@ extern "C" {
     extern u32 nudlist_field_fc8;
     extern i32 nudlist_field_fc4;
     extern u32 nudlist_field_9d0;
-    extern u32 nudlist_field_9d8;
+    extern i32 nudlist_field_9d8;
     extern u32 nudlist_field_fe4;
     extern u32 nudlist_field_1598;
     extern i32 sceneParametersCount;

@@ -9,7 +9,7 @@ union DWA_CURVE_CELL;
 
 typedef union DWA_FRAME_HEADER {
     f32 duration;
-    u32 magic;
+    i32 magic;
 } DWA_FRAME_HEADER;
 
 typedef union DWA_NODE_COUNT {

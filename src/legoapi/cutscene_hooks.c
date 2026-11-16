@@ -178,7 +178,7 @@ f32 *NuGCutLocatorCalcMtx(CUT_LOCATOR_GENERIC *locator, f32 frame, NUMTX *matrix
     NUVEC translation;
     NUVEC rotation;
     if (locator->animation != NULL) {
-        if ((i32)locator->animation->prefix.header.magic >= 0x414e4934 && (i32)locator->animation->prefix.header.magic <= 0x414e4935) {
+        if (locator->animation->prefix.header.magic >= 0x414e4934 && locator->animation->prefix.header.magic <= 0x414e4935) {
             return PCCutLocatorAni3((CUT_LOCATOR_ANIMATION *)locator, matrix, frame);
         }
         curves = locator->animation->prefix.curves;
@@ -215,7 +215,7 @@ void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC *rigid, f32 frame, NUMTX *matrix) {
     NUVEC translation;
     NUVEC scale;
     if (rigid->animation != NULL) {
-        if ((i32)rigid->animation->prefix.header.magic >= 0x414e4934 && (i32)rigid->animation->prefix.header.magic <= 0x414e4935) {
+        if (rigid->animation->prefix.header.magic >= 0x414e4934 && rigid->animation->prefix.header.magic <= 0x414e4935) {
             PCCutRigidAni3((CUT_RIGID_ANIMATION *)rigid, frame, matrix);
             return;
         }
@@ -262,7 +262,7 @@ void NuGCutCharAnimProcess(CUT_CHARACTER_GENERIC *character, f32 frame, NUMTX *m
     NUVEC scale;
     NUVEC rotation;
     if (character->animation != NULL) {
-        if ((i32)character->animation->prefix.header.magic >= 0x414e4934 && (i32)character->animation->prefix.header.magic <= 0x414e4935) {
+        if (character->animation->prefix.header.magic >= 0x414e4934 && character->animation->prefix.header.magic <= 0x414e4935) {
             PCCutCharacterAni3((CUT_CHARACTER_ANIMATION *)character, frame, matrix, visible, animation_index, animation_rate, blend_time,
                                start_frame, layer_mask);
             return;
@@ -413,8 +413,8 @@ i32 NuGCutLocatorIsVisble(CUT_LOCATOR_GENERIC *locator, f32 frame, NUANIM_TIME2 
     i32 visible;
     f32 evaluated;
     if (locator->animation != NULL) {
-        if ((i32)((NUANIMDATA2 *)locator->animation)->header.magic >= 0x414e4934 &&
-            (i32)((NUANIMDATA2 *)locator->animation)->header.magic <= 0x414e4935) {
+        if (((NUANIMDATA2 *)locator->animation)->header.magic >= 0x414e4934 &&
+            ((NUANIMDATA2 *)locator->animation)->header.magic <= 0x414e4935) {
             return NuGCutLocatorIsVisble_3(locator, frame, scale, rate);
         }
         if (rate != NULL) {

@@ -649,7 +649,7 @@ extern "C" {
     void NuAnimData2CalcTime(NUANIMDATA2 *animation, f32 frame, NUANIM_TIME2 *time) {
         i32 chunk_frame;
         i32 shift;
-        if ((i32)animation->header.magic >= 0x414e4934 && (i32)animation->header.magic <= 0x414e4935) {
+        if (animation->header.magic >= 0x414e4934 && animation->header.magic <= 0x414e4935) {
             if (frame < 1.0f) {
                 time->time = 1.0f;
             } else if (frame >= animation->modern_frame_count) {
@@ -930,7 +930,7 @@ extern "C" {
     }
 
     i32 NuAnimNumNodes(NUANIMDATA2 *animation) {
-        if ((i32)animation->header.magic >= 0x414e4934 && (i32)animation->header.magic <= 0x414e4935) {
+        if (animation->header.magic >= 0x414e4934 && animation->header.magic <= 0x414e4935) {
             return animation->node_count.modern;
         }
         return animation->node_count.legacy;
@@ -8561,7 +8561,7 @@ extern "C" {
     i32 dat_009739c0 = 0;
     u8 CutSceneBoundingBoxTrackRoot = 0;
     u32 nudlist_field_9d0 = 0;
-    u32 nudlist_field_9d8 = 0;
+    i32 nudlist_field_9d8 = 0;
     NUDISPLAY_LIST *PCDisplayScenes[256] = {0};
     NUDISPLAY_LIST PCDynamicDisplayScene = {0};
     i32 PCDisplayMaterialAddCount = 0;
@@ -9182,7 +9182,7 @@ extern "C" {
         }
         NuThreadCriticalSectionBegin(nudlist_field_fc4);
         NuDisplaySceneDestroyPS(scene);
-        for (i = 0, cursor = PCDisplayScenes; i < (i32)nudlist_field_9d8; ++i, ++cursor) {
+        for (i = 0, cursor = PCDisplayScenes; i < nudlist_field_9d8; ++i, ++cursor) {
             if (*cursor == scene) {
                 goto found;
             }
@@ -9218,7 +9218,7 @@ extern "C" {
                 animation->next = animation->next->next;
             }
         }
-        for (i = 0, cursor = PCDisplayScenes; i < (i32)nudlist_field_9d8; ++i, ++cursor) {
+        for (i = 0, cursor = PCDisplayScenes; i < nudlist_field_9d8; ++i, ++cursor) {
             PCDisplayScenes[i - removed] = *cursor;
             if (*cursor == scene) {
                 ++removed;
@@ -9314,7 +9314,7 @@ extern "C" {
     void NuDisplaySceneAdd(NUDISPLAY_LIST *scene) {
         i32 i;
         NuThreadCriticalSectionBegin(nudlist_field_fc4);
-        if ((i32)nudlist_field_9d8 >= 256) {
+        if (nudlist_field_9d8 >= 256) {
             AnimationDiagnosticNoOp();
         }
         PCDisplayScenes[nudlist_field_9d8++] = scene;
@@ -9343,7 +9343,7 @@ extern "C" {
             (PCDynamicDisplayScene.render_flags & ~0x8000u) | (~PCDynamicDisplayScene.render_flags & 0x8000u);
         ResetSceneBeforeFramePC(&PCDynamicDisplayScene, 0);
         i = 0;
-        if ((i32)nudlist_field_9d8 > 0) {
+        if (nudlist_field_9d8 > 0) {
             NUDISPLAY_LIST **scenes = PCDisplayScenes;
             do {
                 NUDISPLAY_LIST *scene = *scenes;
@@ -9354,7 +9354,7 @@ extern "C" {
                 }
                 ++i;
                 ++scenes;
-            } while (i < (i32)nudlist_field_9d8);
+            } while (i < nudlist_field_9d8);
         }
         render_scene_index = 0;
         for (sort = sort_list; sort != NULL; sort = sort->sys_next) {
@@ -9844,7 +9844,7 @@ extern "C" {
             }
         }
         i = 0;
-        if ((i32)nudlist_field_9d8 > 0) {
+        if (nudlist_field_9d8 > 0) {
             NUDISPLAY_LIST **scenes = PCDisplayScenes;
             do {
                 if ((*scenes)->local_state != NULL) {
@@ -9852,7 +9852,7 @@ extern "C" {
                 }
                 ++i;
                 ++scenes;
-            } while (i < (i32)nudlist_field_9d8);
+            } while (i < nudlist_field_9d8);
         }
     }
 
@@ -9873,7 +9873,7 @@ extern "C" {
         DisplayListSwapBuffersPS();
         UpdateMaterialClipBitsPC(&PCDynamicDisplayScene);
         i = 0;
-        if ((i32)nudlist_field_9d8 > 0) {
+        if (nudlist_field_9d8 > 0) {
             NUDISPLAY_LIST **scenes = PCDisplayScenes;
             do {
                 NUDISPLAY_LIST *scene = *scenes;
@@ -9886,7 +9886,7 @@ extern "C" {
                 }
                 ++i;
                 ++scenes;
-            } while (i < (i32)nudlist_field_9d8);
+            } while (i < nudlist_field_9d8);
         }
         for (i = 0; i < 24; ++i) {
             PCSafeRenderScenes[i] = render_scene_ptrs[i];
@@ -16931,7 +16931,7 @@ extern "C" {
 
     void NuHGobjEvalAnimBlend2(NUHGOBJ_EVAL *object, ANI3_HEADER *animation_a, f32 time_a, ANI3_HEADER *animation_b, f32 time_b, f32 blend,
                                i32 override_count, void *overrides, NUMTX *matrices) {
-        if ((i32)animation_a->magic < 0x414e4934 || (i32)animation_a->magic > 0x414e4935) {
+        if (animation_a->magic < 0x414e4934 || animation_a->magic > 0x414e4935) {
             AnimationDiagnosticNoOp();
             return;
         }
@@ -17072,7 +17072,7 @@ extern "C" {
     void NuHGobjEvalAnimBlend2Root(NUHGOBJ_EVAL *object, ANI3_HEADER *animation_a, f32 time_a, ANI3_HEADER *animation_b, f32 time_b,
                                    f32 blend, i32 override_count, void *overrides, NUMTX *matrices, ANI3_ROOT_CALLBACK root_fn,
                                    void *root_data) {
-        if ((i32)animation_a->magic < 0x414e4934 || (i32)animation_a->magic > 0x414e4935) {
+        if (animation_a->magic < 0x414e4934 || animation_a->magic > 0x414e4935) {
             AnimationDiagnosticNoOp();
             return;
         }
@@ -17090,7 +17090,7 @@ extern "C" {
         NUVEC translation;
         NUVEC locator_translation;
         u8 i;
-        if ((i32)animation->magic >= (i32)0x414e4934 && (i32)animation->magic <= (i32)0x414e4935) {
+        if (animation->magic >= 0x414e4934 && animation->magic <= 0x414e4935) {
             NuHGobjEvalAnim2Root_3(object, animation, time, override_count, overrides, matrices, root_fn, root_data);
             return;
         }
@@ -17202,7 +17202,7 @@ extern "C" {
                 counts[i] = 0;
             }
             for (i = 0; i < count; ++i) {
-                ++counts[((i32)NuWindRand() >> 8) % total];
+                ++counts[(NuWindRand() >> 8) % total];
             }
             index = 0;
 

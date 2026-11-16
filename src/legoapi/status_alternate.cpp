@@ -167,7 +167,6 @@ extern "C" {
     void Save_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void Fade_Alt_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
 
-    /* unknown_10 is the panel object drawn for the stage on the background grid. */
     STATUS_STAGE_s StatusStagesAlt[20] = {
         {LevelComplete_Alt_Draw, LevelComplete_Alt_Update, LevelComplete_Alt_Skip, STATUS_STAGE_LEVEL_COMPLETE, 3, 0, 0, 0, 0.0f, 0.0f},
         {RedBrick_Alt_Draw, RedBrick_Alt_Update, RedBrick_Alt_Skip, STATUS_STAGE_RED_BRICK, 4, 0, 0, 0, 0.0f, 0.0f},
@@ -630,32 +629,32 @@ extern "C" {
             previous_x = x - StatusAltGridStepX;
             previous_2_x = previous_x - StatusAltGridStepX;
             DrawPanel3DObjectNoAlpha(x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                     &WORLD->level_objects[(i16)stage->unknown_10].special, 0);
+                                     &WORLD->level_objects[stage->panel_object].special, 0);
             if (packet->previous_stage_2 != NULL) {
                 DrawPanel3DObjectNoAlpha(previous_2_x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->previous_stage_2->unknown_10].special, 0);
+                                         &WORLD->level_objects[packet->previous_stage_2->panel_object].special, 0);
             }
             if (packet->previous_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(previous_x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->previous_stage->unknown_10].special, 0);
+                                         &WORLD->level_objects[packet->previous_stage->panel_object].special, 0);
             }
             if (packet->next_stage != NULL) {
                 x = StatusAltGridStepX + x;
                 DrawPanel3DObjectNoAlpha(x, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->next_stage->unknown_10].special, 0);
+                                         &WORLD->level_objects[packet->next_stage->panel_object].special, 0);
             }
         } else {
             if (packet->previous_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(-StatusAltGridStepX, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->previous_stage->unknown_10].special, 0);
+                                         &WORLD->level_objects[packet->previous_stage->panel_object].special, 0);
             }
             if (packet->stage != NULL) {
                 DrawPanel3DObjectNoAlpha(0.0f, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->stage->unknown_10].special, 0);
+                                         &WORLD->level_objects[packet->stage->panel_object].special, 0);
             }
             if (packet->next_stage != NULL) {
                 DrawPanel3DObjectNoAlpha(StatusAltGridStepX, dat_007f8254, StatusAltZoom, 3.0f, 3.0f, 3.0f, 0xc000, 0, 0,
-                                         &WORLD->level_objects[(i16)packet->next_stage->unknown_10].special, 0);
+                                         &WORLD->level_objects[packet->next_stage->panel_object].special, 0);
             }
         }
     }
@@ -671,7 +670,7 @@ extern "C" {
             }
             DrawPanel3DObjectNoAlpha((f32)(i % StatusAltColumns) * StatusAltGridStepX + StatusAltBgPos.x,
                                      (f32) - (i / StatusAltColumns) * StatusAltGridStepY - StatusAltBgPos.y, 1.5 - StatusAltBgPos.z, 3.0f,
-                                     3.0f, 3.0f, 0xc000, 0, 0, &WORLD->level_objects[(i16)StatusStagesAlt[i].unknown_10].special, 0);
+                                     3.0f, 3.0f, 0xc000, 0, 0, &WORLD->level_objects[StatusStagesAlt[i].panel_object].special, 0);
         }
         stage = packet->stage;
         if (stage->step != STATUS_STEP_WAITING) {

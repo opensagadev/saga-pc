@@ -122,13 +122,13 @@ void NuRainProcess(i32 paused) {
                     particle->start_time = globaltime + debris_time_increment;
                     particle->inverse_lifetime = 106.666664f;
                     spread = (1.0 - NU_COS_LUT(NuRainTilt)) * 3.0 + 1.0;
-                    angle = (i32)((i32)NuWindRand() * spread * 0.125 - spread * 4096.0);
-                    distance = (i32)NuWindRand() / spread * (1.0 / 32768.0);
+                    angle = (i32)(NuWindRand() * spread * 0.125 - spread * 4096.0);
+                    distance = NuWindRand() / spread * (1.0 / 32768.0);
                     distance = (distance * 8.0 + distance * distance) * (NU_COS_LUT(NuRainTilt) * 0.25 + 0.75);
                     height = distance * 0.25 + 1.0 + NU_SIN_LUT(NuRainTilt);
-                    particle->momentum.x = (i32)NuWindRand() / 131070.0 + NU_COS_LUT(NuRainPitch) * 3.0 - 0.25;
+                    particle->momentum.x = NuWindRand() / 131070.0 + NU_COS_LUT(NuRainPitch) * 3.0 - 0.25;
                     particle->momentum.y = -15.0f;
-                    particle->momentum.z = (i32)NuWindRand() / 131070.0 + NU_COS_LUT(NuRainPitch) * 3.0 - 0.25;
+                    particle->momentum.z = NuWindRand() / 131070.0 + NU_COS_LUT(NuRainPitch) * 3.0 - 0.25;
                     particle->position.x = global_camera.mtx.m30 + distance * NU_SIN_LUT(NuRainYaw + angle) -
                                            NU_SIN_LUT(NuRainYaw) * 2.0 * (NU_COS_LUT(NuRainTilt) * 0.75 + 0.25) +
                                            particle->momentum.x * height / particle->momentum.y;

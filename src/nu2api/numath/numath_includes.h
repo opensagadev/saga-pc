@@ -16,7 +16,7 @@ extern "C" {
 
     extern u32 NuWindQS;
     extern const f64 PCAtan2RadianScale;
-    u32 NuWindRand(void);
+    i32 NuWindRand(void);
     extern NUMTX VisibilityZeroMatrixTemplate;
     extern i32 NuPowFirstTime;
     extern i32 NuPowCacheIndex;

@@ -8269,7 +8269,7 @@ extern "C" {
         i32 i;
         FrameShaderMaterialAnimationTime += frame_time;
         if (FrameShaderMaterialFirstCall != 0) {
-            for (i = 0; i < (i32)nudlist_field_9d8; ++i) {
+            for (i = 0; i < nudlist_field_9d8; ++i) {
                 NUDISPLAY_LIST *scene = PCDisplayScenes[i];
                 if (((FRAME_MTL_SCENE *)scene->gscene)->shader_texture_animation_enabled != 0) {
                     i32 j;

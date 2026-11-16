@@ -3019,7 +3019,7 @@ void UpdateCharacterLoad(void) {
         BGLOAD == 0) {
         return;
     }
-    if (waiting_for_character != -1 || hub_character_ready != -1 || bgGetProcActive() != NULL || (i32)nudlist_field_9d8 > 0xfd) {
+    if (waiting_for_character != -1 || hub_character_ready != -1 || bgGetProcActive() != NULL || nudlist_field_9d8 > 0xfd) {
         return;
     }
     required = (0x3ff - (i32)(((f64)CHARACTERBUFFERSIZE / 7077888.0) * -1048576.0)) & ~0x3ff;

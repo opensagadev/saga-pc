@@ -1541,7 +1541,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *instance, f32 frame) {
     } else {
         ANI3_HEADER *animation;
         ANI3_HEADER *focus = system->focus_animation;
-        if ((instance->scene->version & 0xff) >= 5 && focus != NULL && (i32)focus->magic >= 0x414e4934 && (i32)focus->magic <= 0x414e4935) {
+        if ((instance->scene->version & 0xff) >= 5 && focus != NULL && focus->magic >= 0x414e4934 && focus->magic <= 0x414e4935) {
             f32 *values = NuAnimCurveExtractAllNodeCurves_3(focus, camera->animation_node, instance->render_frame, NULL);
             CutSceneFStop = values[2];
             CutSceneCameraFocalLength = (f32)(values[0] * (f64)1.3f);
@@ -1564,7 +1564,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *instance, f32 frame) {
             }
         }
         animation = system->animation;
-        if ((i32)animation->magic >= 0x414e4934 && (i32)animation->magic <= 0x414e4935) {
+        if (animation->magic >= 0x414e4934 && animation->magic <= 0x414e4935) {
             NuAnimCurve2SetApplyToMatrix_3(animation, camera->animation_node, instance->render_frame, &CutSceneCameraMatrix);
         } else {
             ((void (*)(void))CutSceneLoadDiagnostic)();
