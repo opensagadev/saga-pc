@@ -1147,12 +1147,9 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                             vertices[1].z = transformed->vertices[2].z - transformed->vertices[3].z;
                             {
                                 NUVEC cross;
-                                cross.x = ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->z -
-                                          ((NUVEC *)&vertices[0])->z * ((NUVEC *)&vertices[1])->y;
-                                cross.y = ((NUVEC *)&vertices[0])->z * ((NUVEC *)&vertices[1])->x -
-                                          ((NUVEC *)&vertices[0])->x * ((NUVEC *)&vertices[1])->z;
-                                cross.z = ((NUVEC *)&vertices[0])->x * ((NUVEC *)&vertices[1])->y -
-                                          ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->x;
+                                cross.x = vertices[0].y * vertices[1].z - vertices[0].z * vertices[1].y;
+                                cross.y = vertices[0].z * vertices[1].x - vertices[0].x * vertices[1].z;
+                                cross.z = vertices[0].x * vertices[1].y - vertices[0].y * vertices[1].x;
                                 transformed->normals[1] = cross;
                             }
                             length_squared = (transformed->normals[1].x * transformed->normals[1].x +
@@ -1175,12 +1172,9 @@ void NewScanRot(NUVEC *position, i32 terrain_mask) {
                         vertices[1].z = transformed->vertices[1].z - transformed->vertices[0].z;
                         {
                             NUVEC cross;
-                            cross.x = ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->z -
-                                      ((NUVEC *)&vertices[0])->z * ((NUVEC *)&vertices[1])->y;
-                            cross.y = ((NUVEC *)&vertices[0])->z * ((NUVEC *)&vertices[1])->x -
-                                      ((NUVEC *)&vertices[0])->x * ((NUVEC *)&vertices[1])->z;
-                            cross.z = ((NUVEC *)&vertices[0])->x * ((NUVEC *)&vertices[1])->y -
-                                      ((NUVEC *)&vertices[0])->y * ((NUVEC *)&vertices[1])->x;
+                            cross.x = vertices[0].y * vertices[1].z - vertices[0].z * vertices[1].y;
+                            cross.y = vertices[0].z * vertices[1].x - vertices[0].x * vertices[1].z;
+                            cross.z = vertices[0].x * vertices[1].y - vertices[0].y * vertices[1].x;
                             transformed->normals[0] = cross;
                         }
                         length_squared = (transformed->normals[0].x * transformed->normals[0].x +
@@ -2180,6 +2174,9 @@ typedef struct TERRAIN_PLATFORM_LIFECYCLE { // size 0x6c
     u32 *instance_flags;                    // 0x68
 } TERRAIN_PLATFORM_LIFECYCLE;
 
+/* The platform table seen through the lifecycle view. */
+#define TERRAIN_PLATFORM_LIFECYCLES ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)
+
 void noterraininit(void) {
     terraincnt = 0;
     curSphereter = 0;
@@ -2211,9 +2208,8 @@ void TerrainPlatformOldUpdate(void) {
     CurrentTerrain->removed_platform_count = 0;
     curSphereter = 0;
     for (i = 0; i < CurrentTerrain->max_platforms; ++i) {
-        if (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[i].scene_matrix != NULL) {
-            ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[i].previous_matrix =
-                *((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[i].scene_matrix;
+        if (TERRAIN_PLATFORM_LIFECYCLES[i].scene_matrix != NULL) {
+            TERRAIN_PLATFORM_LIFECYCLES[i].previous_matrix = *TERRAIN_PLATFORM_LIFECYCLES[i].scene_matrix;
         }
     }
 }
@@ -2325,7 +2321,7 @@ void TerrainPlatformNewUpdate(void) {
     for (i = 0; i < CurrentTerrain->platform_cell.group_count; ++i, ++group_index) {
         TERRAIN_GROUP *group = &CurrentTerrain->groups[*group_index];
         i32 index = group->scene_index;
-        TERRAIN_PLATFORM_LIFECYCLE *platform = &(((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]);
+        TERRAIN_PLATFORM_LIFECYCLE *platform = &(TERRAIN_PLATFORM_LIFECYCLES[index]);
         if (platform->instance_flags != NULL) {
             if ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0) {
                 if ((*platform->instance_flags & 2) == 0) {
@@ -2341,41 +2337,36 @@ void TerrainPlatformNewUpdate(void) {
         if (platform->scene_matrix != NULL) {
             if (platform->bounce_frames != 0) {
                 if (platform->bounce_frames > 124) {
-                    (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity =
-                        ((((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_impulse -
-                         (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_damping *
-                             (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity) +
-                        (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity;
+                    (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity =
+                        ((TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_impulse -
+                         (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_damping * (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity) +
+                        (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
                 } else {
-                    (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity =
-                        (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity -
-                        (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_damping *
-                            (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity;
+                    (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity =
+                        (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity -
+                        (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_damping * (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
                 }
-                offset = (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_offset;
+                offset = (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset;
                 offset_bits = *(u32 *)&offset & 0x7fffffff;
-                (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity =
-                    (-(((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_offset * *(f32 *)&offset_bits *
-                         (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_spring * 0.5 -
-                     (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_offset *
-                         (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_spring) +
-                    (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity;
-                (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_offset +=
-                    (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_velocity;
-                --(((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_frames;
-                (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).scene_matrix->m31 +=
-                    (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_offset;
+                (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity =
+                    (-(TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset * *(f32 *)&offset_bits *
+                         (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_spring * 0.5 -
+                     (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset * (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_spring) +
+                    (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
+                (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset += (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_velocity;
+                --(TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_frames;
+                (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m31 += (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_offset;
             }
-            group->origin.x = (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).scene_matrix->m30;
-            group->origin.y = (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).scene_matrix->m31;
-            group->origin.z = (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).scene_matrix->m32;
+            group->origin.x = (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m30;
+            group->origin.y = (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m31;
+            group->origin.z = (TERRAIN_PLATFORM_LIFECYCLES[index]).scene_matrix->m32;
         }
-        if (((((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).flags & 2) != 0) {
-            (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).bounce_frames = 128;
+        if (((TERRAIN_PLATFORM_LIFECYCLES[index]).flags & 2) != 0) {
+            (TERRAIN_PLATFORM_LIFECYCLES[index]).bounce_frames = 128;
         }
-        (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).flags &= ~2U;
-        (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).motion_status = 0;
-        if (((((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index]).flags & 1) != 0) {
+        (TERRAIN_PLATFORM_LIFECYCLES[index]).flags &= ~2U;
+        (TERRAIN_PLATFORM_LIFECYCLES[index]).motion_status = 0;
+        if (((TERRAIN_PLATFORM_LIFECYCLES[index]).flags & 1) != 0) {
             if (group->origin.x - group->radius > max_x || group->radius + group->origin.x < min_x ||
                 group->origin.z - group->radius > max_z) {
                 continue;
@@ -3744,13 +3735,13 @@ void TerrainRemoveWallSpline(TERRAIN_SPATIAL_NODE *node, TERRAIN_SET *terrain) {
 void PlatInstBounce(i32 index, f32 impulse, f32 spring, f32 damping) {
     if (index >= 0) {
         if (index < CurrentTerrain->max_platforms) {
-            if (((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index].bounce_impulse == 0.0f) {
-                ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index].bounce_offset = 0.0f;
-                ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index].bounce_velocity = 0.0f;
+            if (TERRAIN_PLATFORM_LIFECYCLES[index].bounce_impulse == 0.0f) {
+                TERRAIN_PLATFORM_LIFECYCLES[index].bounce_offset = 0.0f;
+                TERRAIN_PLATFORM_LIFECYCLES[index].bounce_velocity = 0.0f;
             }
-            ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index].bounce_impulse = impulse;
-            ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index].bounce_spring = spring;
-            ((TERRAIN_PLATFORM_LIFECYCLE *)CurrentTerrain->platforms)[index].bounce_damping = damping;
+            TERRAIN_PLATFORM_LIFECYCLES[index].bounce_impulse = impulse;
+            TERRAIN_PLATFORM_LIFECYCLES[index].bounce_spring = spring;
+            TERRAIN_PLATFORM_LIFECYCLES[index].bounce_damping = damping;
         }
     }
 }

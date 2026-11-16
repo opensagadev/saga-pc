@@ -10489,7 +10489,7 @@ extern "C" {
             return NuDisplayListRndrSpecial(special, &combined, 0, NULL, NULL);
         }
         NuMtxMul(&combined, special->special, matrix);
-        return NuRndrGobj(special->scene->objects[((NUSPECIAL_LEGACY *)special->special)->instance->object_index], &combined);
+        return NuRndrGobj(special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index], &combined);
     }
 
     void fun_005f34c0(void *, VUFNT *font, u16 *text, u32 flags) {
@@ -15514,8 +15514,8 @@ extern "C" {
 
     void NuSpecialGetRadius(nuhspecial_s *special, NUVEC *position, f32 *radius) {
         if (special->special != NULL) {
-            *radius = special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]->radius;
-            *position = special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]->center;
+            *radius = special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]->radius;
+            *position = special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]->center;
         } else {
             *position = special->display_special->center;
             *radius = special->display_special->radius;
@@ -15524,7 +15524,7 @@ extern "C" {
 
     f32 NuSpecialGetOriginRadius(nuhspecial_s *special) {
         if (special->special != NULL) {
-            return special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]->origin_radius;
+            return special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]->origin_radius;
         }
         return NuVecMag(&special->display_special->center) + special->display_special->radius;
     }
@@ -15583,7 +15583,7 @@ extern "C" {
             if (special->display_special->instance_animation != (NUINSTANIM *)-1 && special->display_special->instance_animation != NULL) {
                 return 1;
             }
-        } else if (special->special != NULL && ((NUSPECIAL_LEGACY *)(special)->special)->instance->animation != NULL) {
+        } else if (special->special != NULL && NUSPECIAL_LEGACY_OF(special)->instance->animation != NULL) {
             return 1;
         }
         return 0;
@@ -15607,10 +15607,10 @@ extern "C" {
             return (NUVEC *)&special->display_special->draw_matrix.m30;
         }
         if (special->special != NULL) {
-            if (((NUSPECIAL_LEGACY *)(special)->special)->instance->animation != NULL) {
-                return (NUVEC *)&((NUSPECIAL_LEGACY *)(special)->special)->instance->animation->matrix.m30;
+            if (NUSPECIAL_LEGACY_OF(special)->instance->animation != NULL) {
+                return (NUVEC *)&NUSPECIAL_LEGACY_OF(special)->instance->animation->matrix.m30;
             }
-            return (NUVEC *)&((NUSPECIAL_LEGACY *)(special)->special)->instance->matrix.m30;
+            return (NUVEC *)&NUSPECIAL_LEGACY_OF(special)->instance->matrix.m30;
         }
         return NULL;
     }
@@ -15649,15 +15649,15 @@ extern "C" {
 
     void NuSpecialSetInstanceMtx(nuhspecial_s *special, NUMTX *matrix) {
         if (special != NULL && special->scene != NULL && special->special != NULL) {
-            *(NUMTX *)((NUSPECIAL_LEGACY *)special->special)->instance = *matrix;
+            *(NUMTX *)NUSPECIAL_LEGACY_OF(special)->instance = *matrix;
         }
     }
 
     i32 NuSpecialClipTestExtents(nuhspecial_s *special, NUMTX *matrix) {
         if (special->special != NULL) {
-            return NuCameraClipTestExtents(
-                &special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]->bounds_min,
-                &special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]->bounds_max, matrix, 0.0f, 0);
+            return NuCameraClipTestExtents(&special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]->bounds_min,
+                                           &special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]->bounds_max,
+                                           matrix, 0.0f, 0);
         }
         return NuCameraClipTestExtents((NUVEC *)&special->display_special->bounds_min, (NUVEC *)&special->display_special->bounds_max,
                                        matrix, 0.0f, 0);
@@ -15665,7 +15665,7 @@ extern "C" {
 
     void *NuSpecialGetInstAnim(nuhspecial_s *special) {
         if (special->special != NULL) {
-            return ((NUSPECIAL_LEGACY *)(special)->special)->instance->animation;
+            return NUSPECIAL_LEGACY_OF(special)->instance->animation;
         }
         if (special->display_special != NULL && special->display_special->instance_animation != (NUINSTANIM *)-1 &&
             special->display_special->instance_animation != NULL) {
@@ -15680,9 +15680,9 @@ extern "C" {
         }
         if (special->special != NULL) {
             if (enabled != 0) {
-                ((NUSPECIAL_LEGACY *)(special)->special)->flags |= NUSPECIAL_COLLISION_FLAG;
+                NUSPECIAL_LEGACY_OF(special)->flags |= NUSPECIAL_COLLISION_FLAG;
             } else {
-                ((NUSPECIAL_LEGACY *)(special)->special)->flags &= ~NUSPECIAL_COLLISION_FLAG;
+                NUSPECIAL_LEGACY_OF(special)->flags &= ~NUSPECIAL_COLLISION_FLAG;
             }
         } else if (special->display_special != NULL) {
             if (enabled != 0) {
@@ -15712,7 +15712,7 @@ extern "C" {
             return;
         }
         if (special->special != NULL) {
-            ((NUSPECIAL_LEGACY *)(special)->special)->instance->no_visibility_test = enabled;
+            NUSPECIAL_LEGACY_OF(special)->instance->no_visibility_test = enabled;
         } else if (special->display_special != NULL) {
             if (enabled != 0) {
                 special->display_special->flags |= NUSPECIAL_NO_VISIBILITY_TEST_FLAG;
@@ -15743,8 +15743,7 @@ extern "C" {
             return;
         }
         if (special->special != NULL) {
-            ((NUSPECIAL_LEGACY *)(special)->special)->instance->flags ^=
-                (((u32)enabled << 1) ^ ((NUSPECIAL_LEGACY *)(special)->special)->instance->flags) & 2;
+            NUSPECIAL_LEGACY_OF(special)->instance->flags ^= (((u32)enabled << 1) ^ NUSPECIAL_LEGACY_OF(special)->instance->flags) & 2;
         } else if (special->display_special != NULL) {
             if (enabled != 0) {
                 special->display_special->flags |= NUSPECIAL_ON_SCREEN_FLAG;
@@ -15756,13 +15755,13 @@ extern "C" {
 
     void fun_005cfea0(nuhspecial_s *special) {
         if (special->special != NULL) {
-            fun_006030d0((special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]));
+            fun_006030d0((special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]));
         }
     }
 
     void fun_005cff80(nuhspecial_s *special, i32 first, i32 second) {
         if (special->special != NULL) {
-            fun_006030f0((special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]), first, second);
+            fun_006030f0((special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]), first, second);
         }
     }
 
@@ -15984,13 +15983,13 @@ extern "C" {
             return;
         }
         if (handle->special != NULL) {
-            if (((NUSPECIAL_LEGACY *)(handle)->special)->instance != NULL) {
-                ((NUSPECIAL_LEGACY *)(handle)->special)->instance->visible = visible;
+            if (NUSPECIAL_LEGACY_OF(handle)->instance != NULL) {
+                NUSPECIAL_LEGACY_OF(handle)->instance->visible = visible;
             }
             if (visible != 0) {
-                ((NUSPECIAL_LEGACY *)(handle)->special)->flags |= 0x200;
+                NUSPECIAL_LEGACY_OF(handle)->flags |= 0x200;
             } else {
-                ((NUSPECIAL_LEGACY *)(handle)->special)->flags &= ~0x200;
+                NUSPECIAL_LEGACY_OF(handle)->flags &= ~0x200;
             }
             return;
         }
@@ -16188,7 +16187,7 @@ extern "C" {
         i32 i;
         if (handle->special != NULL) {
             for (i = 0; i < handle->scene->num_instances; ++i) {
-                if (&handle->scene->instances[i] == ((NUSPECIAL_LEGACY *)handle->special)->instance) {
+                if (&handle->scene->instances[i] == NUSPECIAL_LEGACY_OF(handle)->instance) {
                     return i;
                 }
             }
@@ -16503,7 +16502,7 @@ extern "C" {
     void NuSpecialGetBounds(nuhspecial_s *special, NUVEC *minimum, NUVEC *maximum) {
         NUGOBJ *object;
         if (special->special != NULL) {
-            object = (special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]);
+            object = (special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]);
             while (object->next != NULL) {
                 object = object->next;
             }
@@ -16518,7 +16517,7 @@ extern "C" {
     void NuSpecialSetBounds(nuhspecial_s *special, NUVEC *minimum, NUVEC *maximum) {
         NUGOBJ *object;
         if (special->special != NULL) {
-            for (object = (special->scene->objects[((NUSPECIAL_LEGACY *)(special)->special)->instance->object_index]); object != NULL;
+            for (object = (special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]); object != NULL;
                  object = object->next) {
                 object->bounds_min = *minimum;
                 object->bounds_max = *maximum;
@@ -16536,9 +16535,9 @@ extern "C" {
             return;
         }
         if (special->special != NULL) {
-            ((NUINSTANCE *)((NUSPECIAL_LEGACY *)special->special)->instance)->matrix.m30 = position->x;
-            ((NUINSTANCE *)((NUSPECIAL_LEGACY *)special->special)->instance)->matrix.m31 = position->y;
-            ((NUINSTANCE *)((NUSPECIAL_LEGACY *)special->special)->instance)->matrix.m32 = position->z;
+            ((NUINSTANCE *)NUSPECIAL_LEGACY_OF(special)->instance)->matrix.m30 = position->x;
+            ((NUINSTANCE *)NUSPECIAL_LEGACY_OF(special)->instance)->matrix.m31 = position->y;
+            ((NUINSTANCE *)NUSPECIAL_LEGACY_OF(special)->instance)->matrix.m32 = position->z;
         } else {
             special->display_special->draw_matrix.m30 = position->x;
             special->display_special->draw_matrix.m31 = position->y;

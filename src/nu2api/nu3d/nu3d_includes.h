@@ -669,6 +669,9 @@ typedef struct nuspecial_legacy_s { // size 0x4c
     u32 flags;                      // 0x48
 } NUSPECIAL_LEGACY;
 
+/* The legacy record behind a special handle. */
+#define NUSPECIAL_LEGACY_OF(handle) ((NUSPECIAL_LEGACY *)(handle)->special)
+
 typedef struct nudisplay_special_s {         // size 0xd0
     NUMTX instance_matrix;                   // 0x00
     NUMTX draw_matrix;                       // 0x40
