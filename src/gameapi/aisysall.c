@@ -10413,7 +10413,7 @@ static void AiEditorSetLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     }
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
-        if ((void *)aieditor->selected_creature->check.path == (void *)locator->path_check.path) {
+        if (aieditor->selected_creature->check.path == locator->path_check.path) {
             if (index == item->data) {
                 aieditor->selected_creature->locator = locator;
                 return;
@@ -10435,7 +10435,7 @@ void AiEditorSelectLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) 
     index = 0;
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
-        if ((void *)aieditor->selected_creature->check.path == (void *)locator->path_check.path) {
+        if (aieditor->selected_creature->check.path == locator->path_check.path) {
             i32 selected = aieditor->selected_creature->locator == locator;
             eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorSetLocator, locator->name));
             if (selected) {

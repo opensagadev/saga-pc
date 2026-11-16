@@ -4757,8 +4757,8 @@ void DrawGameObjectsDraw(i32 pass) {
         if (object->model_draw_result != 0) {
             object->flags_ef0 |= 0x40000;
         }
-        if (Paused == 0 && object->character_data->draw_fn != NULL) {
-            ((void (*)(GAMEOBJECT *))object->character_data->draw_fn)(object);
+        if (Paused == 0 && object->character_data->post_animate_fn != NULL) {
+            object->character_data->post_animate_fn(object);
         }
     }
     ResetShadowMapRendering();

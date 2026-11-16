@@ -270,7 +270,7 @@ found:
 
 /* Opens a submenu with one 0..1 strength slider per light modifier. */
 void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32) {
-    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, (void *)EdLevelFnt, cbEdLevelDestroy, NULL);
+    eduimenu_s *menu = eduiMenuCreate(item->x + parent->width, item->y, 180, 250, (VUFNT *)EdLevelFnt, cbEdLevelDestroy, NULL);
     i32 i;
     if (menu == NULL) {
         return;
