@@ -373,7 +373,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     NuPrimInit(buffer, *end);
     PCGraphicsInitRenderTexturePool(buffer, *end);
     NuKeyboardPlatformStartup();
-    nuapi.video_aspect = PcWindowOptions.aspect_mode == 3 ? PCDeviceBackend.active_aspect_mode : PcWindowOptions.aspect_mode;
+    nuapi.video_aspect = PcWindowOptions.aspect_mode == PC_ASPECT_AUTO ? PCDeviceBackend.active_aspect_mode : PcWindowOptions.aspect_mode;
     SetCursor(NULL);
     if (!PCDeviceIsAbsent()) {
         PCDeviceShowCursor(0);

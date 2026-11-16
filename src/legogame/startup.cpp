@@ -1212,16 +1212,16 @@ extern "C" {
                     legal_alpha = LoadPermFadeAlpha(legal_timer, 5.0f);
                     if (legal_alpha > 0.0f) {
                         switch (PcWindowOptions.aspect_mode) {
-                            case 0:
+                            case PC_ASPECT_4_3:
                                 aspect = 1.3333334f;
                                 break;
-                            case 1:
+                            case PC_ASPECT_16_9:
                                 aspect = 1.7777778f;
                                 break;
-                            case 2:
+                            case PC_ASPECT_16_10:
                                 aspect = 1.6f;
                                 break;
-                            case 3:
+                            case PC_ASPECT_AUTO:
                                 aspect = PCDeviceBackend.active_aspect;
                                 break;
                             default:

@@ -225,16 +225,16 @@ extern "C" i32 FmvOpen(PC_FMV_MOVIE *movie, const char *path, i32 render_to_text
         f32 ratio = (f32)movie->bink->width / movie->bink->height;
         f32 display_ratio;
         switch (PcWindowOptions.aspect_mode) {
-            case 1:
+            case PC_ASPECT_16_9:
                 display_ratio = 1.7777778f;
                 break;
-            case 2:
+            case PC_ASPECT_16_10:
                 display_ratio = 1.6f;
                 break;
-            case 3:
+            case PC_ASPECT_AUTO:
                 display_ratio = PCDeviceBackend.active_aspect;
                 break;
-            case 0:
+            case PC_ASPECT_4_3:
                 display_ratio = 1.3333334f;
                 break;
             default:

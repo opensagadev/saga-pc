@@ -506,7 +506,7 @@ extern "C" void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours) {
 
 extern "C" void WidescreenCode(i32 widescreen) {
     f32 aspect = 0.5625f;
-    if (PcWindowOptions.aspect_mode == 2) {
+    if (PcWindowOptions.aspect_mode == PC_ASPECT_16_10) {
         aspect = 0.625f;
     }
     if (widescreen != 0) {

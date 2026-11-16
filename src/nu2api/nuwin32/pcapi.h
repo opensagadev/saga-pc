@@ -2,6 +2,13 @@
 
 #include "nu2api/nucore/common.h"
 
+/* PC_WINDOW_OPTIONS.aspect_mode (the "Widescreen" option), PC_DEVICE_BACKEND.active_aspect_mode: the aspect
+ * ratio PcInputAspectRatio and PCDeviceBackend_GetActiveAspect return for each. */
+#define PC_ASPECT_4_3 0
+#define PC_ASPECT_16_9 1
+#define PC_ASPECT_16_10 2
+#define PC_ASPECT_AUTO 3 /* the display's (PCDeviceBackend.active_aspect) */
+
 typedef struct PC_WINDOW_OPTIONS { // size 0x460
     i32 context;                   // 0x000
     char file_name[1024];          // 0x004

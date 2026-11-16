@@ -187,7 +187,7 @@ extern "C" u32 PcGetRefreshRate(void) {
 
 extern "C" u32 fun_006df280(void) {
     u32 mode = PcWindowOptions.aspect_mode;
-    if (mode == 3) {
+    if (mode == PC_ASPECT_AUTO) {
         mode = PCDeviceBackend.active_aspect_mode;
     }
     return mode;
@@ -196,16 +196,16 @@ extern "C" u32 fun_006df280(void) {
 extern "C" f32 PcInputAspectRatio(void) {
     f32 value;
     switch (PcWindowOptions.aspect_mode) {
-        case 0:
+        case PC_ASPECT_4_3:
             value = 1.3333334f;
             break;
-        case 1:
+        case PC_ASPECT_16_9:
             value = 1.7777778f;
             break;
-        case 2:
+        case PC_ASPECT_16_10:
             value = 1.6f;
             break;
-        case 3:
+        case PC_ASPECT_AUTO:
             value = PCDeviceBackend.active_aspect;
             break;
         default:

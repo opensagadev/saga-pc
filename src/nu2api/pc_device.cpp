@@ -443,8 +443,8 @@ PC_DEVICE_BACKEND::PC_DEVICE_BACKEND() {
     mode_count = 0;
     modes = NULL;
     active_mode = 0;
-    aspect_mode = 0;
-    active_aspect_mode = 0;
+    aspect_mode = PC_ASPECT_4_3;
+    active_aspect_mode = PC_ASPECT_4_3;
     feature634 = 0;
     multisample_index = 0;
     multisample_tested = 0;
@@ -1241,7 +1241,7 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     }
     active_aspect_mode = FindAspect(parameters.width, parameters.height);
     active_aspect = (f32)parameters.width / (f32)parameters.height;
-    nuapi.video_aspect = PcWindowOptions.aspect_mode == 3 ? active_aspect_mode : PcWindowOptions.aspect_mode;
+    nuapi.video_aspect = PcWindowOptions.aspect_mode == PC_ASPECT_AUTO ? active_aspect_mode : PcWindowOptions.aspect_mode;
     u32 refresh = parameters.windowed != 0 ? modes[requested_mode].refresh_rate : parameters.refresh_rate;
     active_mode = FindMode(parameters.width, parameters.height, refresh);
     GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
@@ -1405,16 +1405,16 @@ u32 PC_DEVICE_BACKEND::CaptureScreenshot(u32 width, u32 height, void **data) {
     if (height == 0) {
         f32 aspect;
         switch (PcWindowOptions.aspect_mode) {
-            case 0:
+            case PC_ASPECT_4_3:
                 aspect = 1.3333334f;
                 break;
-            case 1:
+            case PC_ASPECT_16_9:
                 aspect = 1.7777778f;
                 break;
-            case 2:
+            case PC_ASPECT_16_10:
                 aspect = 1.6f;
                 break;
-            case 3:
+            case PC_ASPECT_AUTO:
                 aspect = active_aspect;
                 break;
             default:
@@ -1517,7 +1517,7 @@ void PC_DEVICE_BACKEND::fun_00509130(i32 multisample) {
 void PC_DEVICE_BACKEND::fun_00509140(i32 mode) {
     PcWindowOptions.SetAspectMode(mode);
     PcWindowOptions.Save();
-    if (PcWindowOptions.aspect_mode == 3) {
+    if (PcWindowOptions.aspect_mode == PC_ASPECT_AUTO) {
         MenuAppliedAspect = active_aspect_mode;
     } else {
         MenuAppliedAspect = PcWindowOptions.aspect_mode;

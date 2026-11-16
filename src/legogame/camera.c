@@ -128,13 +128,13 @@ static f32 CameraFabs(f32 f) {
 
 f32 __fastcall PCDeviceBackend_GetActiveAspect(PC_DEVICE_BACKEND *backend) {
     switch (PcWindowOptions.aspect_mode) {
-        case 1:
+        case PC_ASPECT_16_9:
             return 1.7777778f;
-        case 2:
+        case PC_ASPECT_16_10:
             return 1.6f;
-        case 3:
+        case PC_ASPECT_AUTO:
             return backend->active_aspect;
-        case 0:
+        case PC_ASPECT_4_3:
             return 1.3333334f;
         default:
             return 1.3333334f;

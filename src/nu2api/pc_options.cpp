@@ -161,7 +161,7 @@ void PC_WINDOW_OPTIONS::Defaults() {
     shadowmethod = 2;
     desiredshadowmethod = 2;
     multisample = 0;
-    aspect_mode = 3;
+    aspect_mode = PC_ASPECT_AUTO;
     musicenabled = 1;
     inverty = 0;
     vibration = 0;
@@ -195,7 +195,7 @@ void PC_WINDOW_OPTIONS::Validate() {
         multisample = 0;
     }
     if (aspect_mode < 0 || aspect_mode > 3) {
-        aspect_mode = 3;
+        aspect_mode = PC_ASPECT_AUTO;
     }
     if (sfxvolume < 0 || sfxvolume > 10) {
         sfxvolume = 10;

@@ -551,10 +551,10 @@ extern "C" {
 
 extern "C" void MenuUpdateNewGame(MENU *menu) {
     i32 aspect_mode = PcWindowOptions.aspect_mode;
-    if (aspect_mode == 3) {
+    if (aspect_mode == PC_ASPECT_AUTO) {
         aspect_mode = PCDeviceBackend.active_aspect_mode;
     }
-    Game.options_save.widescreen = aspect_mode != 0;
+    Game.options_save.widescreen = aspect_mode != PC_ASPECT_4_3;
     if (MenuLoadOccurred != 0) {
         MenuLoadOccurred = 0;
         NewLData = LOADGAME_LDATA;
@@ -902,10 +902,10 @@ extern "C" {
 
 extern "C" void MenuUpdatePauseMain(MENU *menu) {
     i32 aspect = PcWindowOptions.aspect_mode;
-    if (aspect == 3) {
+    if (aspect == PC_ASPECT_AUTO) {
         aspect = PCDeviceBackend.active_aspect_mode;
     }
-    Game.options_save.widescreen = aspect != 0;
+    Game.options_save.widescreen = aspect != PC_ASPECT_4_3;
     if (!menu->confirm_pressed) {
         return;
     }

@@ -32,7 +32,7 @@ void MENU_VIDEO_OPTIONS::Apply() {
     PcWindowOptions.SetAspectMode(aspect_mode);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
-    if (aspect == 3) {
+    if (aspect == PC_ASPECT_AUTO) {
         aspect = PCDeviceBackend.active_aspect_mode;
     }
     MenuAppliedAspect = aspect;
@@ -151,12 +151,12 @@ extern "C" void MenuUpdateVideo(MENU *menu) {
             if (menu->right_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
                 if (++MenuVideoOptions.aspect_mode > 3) {
-                    MenuVideoOptions.aspect_mode = 0;
+                    MenuVideoOptions.aspect_mode = PC_ASPECT_4_3;
                 }
             } else if (menu->left_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
                 if (--MenuVideoOptions.aspect_mode < 0) {
-                    MenuVideoOptions.aspect_mode = 3;
+                    MenuVideoOptions.aspect_mode = PC_ASPECT_AUTO;
                 }
             }
             break;
@@ -260,25 +260,25 @@ extern "C" void MenuDrawVideo(MENU *menu) {
     NuSPrintf(text, "%s: %dHz", MenuSettingsStrings[20], mode->refresh_rate);
     DrawMenuEntryEx(menu, text, (u8)MenuA);
     switch (MenuVideoOptions.aspect_mode) {
-        case 0:
+        case PC_ASPECT_4_3:
             if (!MenuSettingsStringsInitialized) {
                 MenuSettingsStringsInit();
             }
             NuSPrintf(text, "%s: 4:3", MenuSettingsStrings[22]);
             break;
-        case 1:
+        case PC_ASPECT_16_9:
             if (!MenuSettingsStringsInitialized) {
                 MenuSettingsStringsInit();
             }
             NuSPrintf(text, "%s: 16:9", MenuSettingsStrings[22]);
             break;
-        case 2:
+        case PC_ASPECT_16_10:
             if (!MenuSettingsStringsInitialized) {
                 MenuSettingsStringsInit();
             }
             NuSPrintf(text, "%s: 16:10", MenuSettingsStrings[22]);
             break;
-        case 3: {
+        case PC_ASPECT_AUTO: {
             if (!MenuSettingsStringsInitialized) {
                 MenuSettingsStringsInit();
             }
@@ -478,7 +478,7 @@ void PC_DEVICE_BACKEND::RestoreSavedMode() {
     PcWindowOptions.SetAspectMode(saved_aspect);
     PcWindowOptions.Save();
     i32 aspect = PcWindowOptions.aspect_mode;
-    if (aspect == 3) {
+    if (aspect == PC_ASPECT_AUTO) {
         aspect = active_aspect_mode;
     }
     MenuAppliedAspect = aspect;
