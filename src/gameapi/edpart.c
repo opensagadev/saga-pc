@@ -67,7 +67,7 @@ i32 edpart_count = 0;
 static struct eduiitem_s *edpart_nullobject_highlight = 0;
 
 void edpartScaleType(i32 index, f32 scale) {
-    PARTTYPE_LOOKUP *type = &part_types[index];
+    PART_RUNTIME_TYPE *type = &((PART_RUNTIME_TYPE *)part_types)[index];
     type->particle_scale *= scale;
     type->effect_scale *= scale;
     type->speed *= scale;
@@ -198,6 +198,14 @@ void edpartCancelInstanceOrientMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_instorient_menu = NULL;
 }
 
+/* Adds a slider for one axis of an instance angle (stored in 1/65536 turns, shown in degrees). */
+static void edpartAddOrientSlider(i32 axis, i32 *angles, void *callback, f32 minimum, f32 maximum, char *label) {
+    eduiMenuAddItem(edpart_instorient_menu,
+                    eduiItemSliderCreate(axis, edblack, 0, callback, minimum, maximum, angles[axis] * (360.0f / 65536.0f), label));
+    eduiItemSliderSetFmt((edui_slider_s *)edui_last_item, "(%1.01f)");
+    eduiItemSliderSetGranularity((edui_slider_s *)edui_last_item, 0.1f);
+}
+
 void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     if (edpart_nearest_type == NULL) {
         return;
@@ -206,20 +214,12 @@ void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     if (edpart_instorient_menu == NULL) {
         return;
     }
-#define EDPART_ORIENT_SLIDER(axis, field, callback, minimum, maximum, label)                                                               \
-    do {                                                                                                                                   \
-        eduiMenuAddItem(edpart_instorient_menu, eduiItemSliderCreate(axis, edblack, 0, callback, minimum, maximum,                         \
-                                                                     edpart_nearest_type->field[axis] * (360.0f / 65536.0f), label));      \
-        eduiItemSliderSetFmt(((edui_slider_s *)(edui_last_item)), "(%1.01f)");                                                             \
-        eduiItemSliderSetGranularity(((edui_slider_s *)(edui_last_item)), 0.1f);                                                           \
-    } while (0)
-    EDPART_ORIENT_SLIDER(0, rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation X");
-    EDPART_ORIENT_SLIDER(1, rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation Y");
-    EDPART_ORIENT_SLIDER(2, rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation Z");
-    EDPART_ORIENT_SLIDER(0, rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation X");
-    EDPART_ORIENT_SLIDER(1, rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation Y");
-    EDPART_ORIENT_SLIDER(2, rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation Z");
-#undef EDPART_ORIENT_SLIDER
+    edpartAddOrientSlider(0, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation X");
+    edpartAddOrientSlider(1, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation Y");
+    edpartAddOrientSlider(2, edpart_nearest_type->rotation, edpartChangeInstanceRot, edpart_superscale * -180.0f, edpart_superscale * 360.0f, "Base Rotation Z");
+    edpartAddOrientSlider(0, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation X");
+    edpartAddOrientSlider(1, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation Y");
+    edpartAddOrientSlider(2, edpart_nearest_type->rotation_random, edpartChangeInstanceVarRot, 0.0f, edpart_superscale * 180.0f, "Rotation Variation Z");
     eduiMenuAttach(menu, edpart_instorient_menu);
     edpart_instorient_menu->x = menu->x + 10;
     edpart_instorient_menu->y = menu->y + 40;
@@ -271,76 +271,77 @@ extern i8 edpart_effect_list;
 void edpartInitType(i32 index) {
     i32 i;
     for (i = 0; i < 8; ++i) {
-        part_types[index].effect_ids[i] = -1;
-        part_types[index].effect_pages[i] = 1;
+        ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[i] = -1;
+        ((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[i] = 1;
     }
-    part_types[index].variant_count = 0;
-    part_types[index].lifetime = 0.0f;
-    part_types[index].speed = 1.0f;
-    part_types[index].gravity = 0.0f;
-    part_types[index].emission_rate = 1.0f;
-    part_types[index].emission_period = 1.0f;
-    part_types[index].emission_period_random = 0.0f;
-    part_types[index].emission_pause = 0.0f;
-    part_types[index].emission_pause_random = 0.0f;
-    part_types[index].rotation[0] = 0;
-    part_types[index].rotation[1] = 0;
-    part_types[index].rotation[2] = 0;
-    part_types[index].flags = 0;
-    part_types[index].trail_effects[0] = -1;
-    part_types[index].trail_effects[1] = -1;
-    part_types[index].attached_effect = -1;
-    part_types[index].kill_effect = -1;
-    part_types[index].impact_effect = -1;
-    part_types[index].impact_part = -1;
-    part_types[index].last_used_time = 0.0f;
-    part_types[index].unknown_174 = -1;
-    part_types[index].scale = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].variant_count = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].lifetime = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].speed = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].gravity = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_rate = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_period = 1.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_period_random = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_pause = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].emission_pause_random = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].rotation[0] = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].rotation[1] = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].rotation[2] = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].flags = 0;
+    ((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[0] = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[1] = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].attached_effect = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].kill_effect = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].impact_effect = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].impact_part = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].last_used_time = 0.0f;
+    ((PART_RUNTIME_TYPE *)part_types)[index].unknown_174 = -1;
+    ((PART_RUNTIME_TYPE *)part_types)[index].scale = 1.0f;
     for (i = 0; i < 4; ++i) {
-        part_types[index].sounds[i] = -1;
-        part_types[index].sound_modes[i] = 0;
+        ((PART_RUNTIME_TYPE *)part_types)[index].sounds[i] = -1;
+        ((PART_RUNTIME_TYPE *)part_types)[index].sound_modes[i] = 0;
     }
 }
 
-#define EDPART_ADD_TYPE(menu, list)                                                                                                        \
-    do {                                                                                                                                   \
-        struct eduimenu_s *parent = NULL;                                                                                                  \
-        i32 index;                                                                                                                         \
-        i32 i;                                                                                                                             \
-        if (part_types_used < 128) {                                                                                                       \
-            for (index = 0; index < 128; ++index) {                                                                                        \
-                if (part_types[index].name[0] == 0) {                                                                                      \
-                    sprintf(part_types[index].name, "New%d", index);                                                                       \
-                    edpartInitType(index);                                                                                                 \
-                    ++part_types_used;                                                                                                     \
-                    part_scene[(list)] = (list) == 0 ? edbits_things_scene : edbits_base_scene;                                            \
-                    part_types[index].unknown_b3 = (list);                                                                                 \
-                    part_types[index].page = (list);                                                                                       \
-                    part_page_on[(list)] = 1;                                                                                              \
-                    part_page_used[(list)] = 1;                                                                                            \
-                    part_scene_pageid[(list)] = (list);                                                                                    \
-                    edpart_create_type = index;                                                                                            \
-                    for (i = 0; i < 8; ++i) {                                                                                              \
-                        part_types[index].effect_ids[i] = -1;                                                                              \
-                        part_types[index].effect_pages[i] = -1;                                                                            \
-                    }                                                                                                                      \
-                    part_types[index].unknown_160 = 1.0f;                                                                                  \
-                    part_types[index].unknown_164 = 1.0f;                                                                                  \
-                    part_types[index].unknown_168 = 1.0f;                                                                                  \
-                    break;                                                                                                                 \
-                }                                                                                                                          \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-        if ((menu)->parent) {                                                                                                              \
-            parent = (menu)->parent;                                                                                                       \
-            eduiMenuDetach(menu);                                                                                                          \
-        }                                                                                                                                  \
-        if ((menu)->callback)                                                                                                              \
-            (menu)->callback(menu, parent);                                                                                                \
-    } while (0)
+/* Claims the first free part type for page LIST, then closes MENU. */
+static void edpartAddType(eduimenu_s *menu, i32 list) {
+    struct eduimenu_s *parent = NULL;
+    i32 index;
+    i32 i;
+    if (part_types_used < 128) {
+        for (index = 0; index < 128; ++index) {
+            if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] == 0) {
+                sprintf(((PART_RUNTIME_TYPE *)part_types)[index].name, "New%d", index);
+                edpartInitType(index);
+                ++part_types_used;
+                part_scene[list] = list == 0 ? edbits_things_scene : edbits_base_scene;
+                ((PART_RUNTIME_TYPE *)part_types)[index].unknown_b3 = list;
+                ((PART_RUNTIME_TYPE *)part_types)[index].page = list;
+                part_page_on[list] = 1;
+                part_page_used[list] = 1;
+                part_scene_pageid[list] = list;
+                edpart_create_type = index;
+                for (i = 0; i < 8; ++i) {
+                    ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[i] = -1;
+                    ((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[i] = -1;
+                }
+                ((PART_RUNTIME_TYPE *)part_types)[index].unknown_160 = 1.0f;
+                ((PART_RUNTIME_TYPE *)part_types)[index].unknown_164 = 1.0f;
+                ((PART_RUNTIME_TYPE *)part_types)[index].unknown_168 = 1.0f;
+                break;
+            }
+        }
+    }
+    if (menu->parent) {
+        parent = menu->parent;
+        eduiMenuDetach(menu);
+    }
+    if (menu->callback) {
+        menu->callback(menu, parent);
+    }
+}
 
 void edpartAddGeneralType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    EDPART_ADD_TYPE(menu, 0);
+    edpartAddType(menu, 0);
 }
 
 void edpartCancelGeneralTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -352,7 +353,7 @@ void edpartSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edpart_type_menu = NULL;
     edpart_active_menu = NULL;
     edpart_create_type = item->data;
-    edpart_effect_list = part_types[edpart_create_type].unknown_b3;
+    edpart_effect_list = ((PART_RUNTIME_TYPE *)part_types)[edpart_create_type].unknown_b3;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
@@ -370,10 +371,10 @@ void edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(edpart_generaltype_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Add Type"));
     }
     for (index = 0; index < 128; ++index) {
-        if (part_types[index].name[0] != 0 && part_types[index].unknown_b3 == 0) {
+        if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] != 0 && ((PART_RUNTIME_TYPE *)part_types)[index].unknown_b3 == 0) {
             selected = edpart_create_type == index;
             eduiMenuAddItem(edpart_generaltype_menu,
-                            eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
+                            eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, ((PART_RUNTIME_TYPE *)part_types)[index].name));
             if (selected == 1) {
                 edpart_generaltype_menu->selected = edui_last_item;
             }
@@ -385,7 +386,7 @@ void edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 }
 
 void edpartAddLevelType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
-    EDPART_ADD_TYPE(menu, 1);
+    edpartAddType(menu, 1);
 }
 
 void edpartCancelLevelTypeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
@@ -406,9 +407,10 @@ void edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(edpart_leveltype_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Add Type"));
     }
     for (index = 0; index < 128; ++index) {
-        if (part_types[index].name[0] != 0 && part_types[index].unknown_b3 == 1) {
+        if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] != 0 && ((PART_RUNTIME_TYPE *)part_types)[index].unknown_b3 == 1) {
             selected = edpart_create_type == index;
-            eduiMenuAddItem(edpart_leveltype_menu, eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
+            eduiMenuAddItem(edpart_leveltype_menu,
+                            eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, ((PART_RUNTIME_TYPE *)part_types)[index].name));
             if (selected == 1) {
                 edpart_leveltype_menu->selected = edui_last_item;
             }
@@ -573,18 +575,21 @@ void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
 extern i32 edpart_nearest_duplicates;
 
-#define EDPART_REMOVE_INSTANCE(first)                                                                                                      \
-    for (slot = (first); slot < 7; ++slot) {                                                                                               \
-        edpart_nearest_type->effect_ids[slot] = edpart_nearest_type->effect_ids[slot + 1];                                                 \
-        edpart_nearest_type->effect_pages[slot] = edpart_nearest_type->effect_pages[slot + 1];                                             \
-    }                                                                                                                                      \
-    edpart_nearest_type->effect_ids[7] = -1;                                                                                               \
-    edpart_nearest_type->effect_pages[7] = -1;                                                                                             \
-    --edpart_nearest_type->variant_count
+
+/* Removes variant FIRST from the nearest type, shifting the later variants down. */
+static void edpartRemoveVariant(i32 first) {
+    i32 slot;
+    for (slot = first; slot < 7; ++slot) {
+        edpart_nearest_type->effect_ids[slot] = edpart_nearest_type->effect_ids[slot + 1];
+        edpart_nearest_type->effect_pages[slot] = edpart_nearest_type->effect_pages[slot + 1];
+    }
+    edpart_nearest_type->effect_ids[7] = -1;
+    edpart_nearest_type->effect_pages[7] = -1;
+    --edpart_nearest_type->variant_count;
+}
 
 void edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     i32 index;
-    i32 slot;
     if (edpart_nearest_type == NULL) {
         return;
     }
@@ -612,7 +617,7 @@ void edpartSetInstanceType(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     } else {
         for (index = 0; index < 8; ++index) {
             if (edpart_nearest_type->effect_ids[index] == item->data) {
-                EDPART_REMOVE_INSTANCE(index);
+                edpartRemoveVariant(index);
                 return;
             }
         }
@@ -626,9 +631,8 @@ void edpartCancelWorldInstanceMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
 
 static void edpartDeleteInstanceOrphan(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     struct eduimenu_s *parent;
-    i32 slot;
     parent = NULL;
-    EDPART_REMOVE_INSTANCE(item->data);
+    edpartRemoveVariant(item->data);
     --edpart_nearest_orphans;
     if (menu->parent) {
         parent = menu->parent;
@@ -642,11 +646,10 @@ static void edpartDeleteInstanceOrphan(eduimenu_s *menu, eduiitem_s *item, u32 u
 static void edpartDeleteAllInstanceOrphans(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     i32 index;
-    i32 slot;
     parent = NULL;
     for (index = 0; index < 8; ++index) {
         if (edpart_nearest_type->effect_ids[index] == 9998) {
-            EDPART_REMOVE_INSTANCE(index);
+            edpartRemoveVariant(index);
             --index;
         }
     }
@@ -664,7 +667,6 @@ void edpartDeleteAllInstanceDuplicates(eduimenu_s *menu, eduiitem_s *unused1, u3
     struct eduimenu_s *parent;
     i32 index;
     i32 previous;
-    i32 slot;
     parent = NULL;
     for (index = 0; index < 8; ++index) {
         i16 effect = edpart_nearest_type->effect_ids[index];
@@ -673,7 +675,7 @@ void edpartDeleteAllInstanceDuplicates(eduimenu_s *menu, eduiitem_s *unused1, u3
         }
         for (previous = 0; previous < index; ++previous) {
             if (effect == edpart_nearest_type->effect_ids[previous]) {
-                EDPART_REMOVE_INSTANCE(index);
+                edpartRemoveVariant(index);
                 --index;
                 break;
             }
@@ -1080,25 +1082,29 @@ void fun_0064a430(void) {
 
 extern struct eduimenu_s *edpart_sscale_menu;
 
-#define EDPART_REFRESH_EMITTER_SOUNDS()                                                                                                    \
-    for (emitter = 0; emitter < 40; ++emitter) {                                                                                           \
-        if (part_emits[emitter].effect_id == edpart_nearest_emit->effect_id) {                                                             \
-            part_emits[emitter].unknown_3c = 0;                                                                                            \
-            for (sound = 0; emitter < 4; ++sound) {                                                                                        \
-                if (part_types[part_emits[emitter].effect_id].sounds[sound] != -1 &&                                                       \
-                    part_types[part_emits[emitter].effect_id].sound_modes[sound] != 0) {                                                   \
-                    part_emits[emitter].unknown_3c = 1;                                                                                    \
-                    break;                                                                                                                 \
-                }                                                                                                                          \
-            }                                                                                                                              \
-        }                                                                                                                                  \
+
+/* Marks every emitter of the nearest emitter's effect that has an active sound. The inner loop tests the
+ * emitter index, not the sound index. */
+static void edpartRefreshEmitterSounds(void) {
+    i32 emitter;
+    i32 sound;
+    for (emitter = 0; emitter < 40; ++emitter) {
+        if (part_emits[emitter].effect_id == edpart_nearest_emit->effect_id) {
+            part_emits[emitter].unknown_3c = 0;
+            for (sound = 0; emitter < 4; ++sound) {
+                if (part_types[part_emits[emitter].effect_id].sounds[sound] != -1 &&
+                    part_types[part_emits[emitter].effect_id].sound_modes[sound] != 0) {
+                    part_emits[emitter].unknown_3c = 1;
+                    break;
+                }
+            }
+        }
     }
+}
 
 void edpartSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     u32 slot;
     i32 value;
-    i32 emitter;
-    i32 sound;
     edpart_soundid_menu = NULL;
     slot = (u32)item->data >> 16;
     value = item->data - (slot << 16);
@@ -1108,7 +1114,7 @@ void edpartSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_nearest_type->sounds[slot] = value;
     }
-    EDPART_REFRESH_EMITTER_SOUNDS();
+    edpartRefreshEmitterSounds();
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
@@ -1116,8 +1122,6 @@ void edpartSetSoundID(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
 void edpartSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     u32 slot;
     i32 value;
-    i32 emitter;
-    i32 sound;
     edpart_soundcontrol_menu = NULL;
     slot = (u32)item->data >> 16;
     value = item->data - (slot << 16);
@@ -1128,7 +1132,7 @@ void edpartSetSoundControl(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
             edpart_nearest_type->sound_modes[slot] = value;
         }
     }
-    EDPART_REFRESH_EMITTER_SOUNDS();
+    edpartRefreshEmitterSounds();
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
@@ -1168,24 +1172,27 @@ void edpartCancelSoundControlMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_soundcontrol_menu = NULL;
 }
 
-#define EDPART_SOUND_CONTROL_ITEM(mode, label)                                                                                             \
-    eduiMenuAddItem(edpart_soundcontrol_menu,                                                                                              \
-                    eduiItemCheckCreate((item->data << 16) + (mode), edblack, edpart_nearest_type->sound_modes[item->data] == (mode), 1,   \
-                                        edpartSetSoundControl, (label)));                                                                  \
-    if (edui_last_item->highlighted)                                                                                                       \
-    edpart_soundcontrol_menu->selected = edui_last_item
 
 const char dat_0076b274[4] = "Off";
+
+/* Adds the check item for sound MODE of sound slot SLOT, selected when it is the slot's current mode. */
+static void edpartAddSoundControlItem(i32 slot, i32 mode, char *label) {
+    eduiMenuAddItem(edpart_soundcontrol_menu, eduiItemCheckCreate((slot << 16) + mode, edblack, edpart_nearest_type->sound_modes[slot] == mode, 1,
+                                                                  edpartSetSoundControl, label));
+    if (edui_last_item->highlighted) {
+        edpart_soundcontrol_menu->selected = edui_last_item;
+    }
+}
 
 void edpartSoundControlMenu(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type != NULL) {
         edpart_soundcontrol_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelSoundControlMenu, "Sound Control");
         if (edpart_soundcontrol_menu != NULL) {
-            EDPART_SOUND_CONTROL_ITEM(0, (char *)dat_0076b274);
-            EDPART_SOUND_CONTROL_ITEM(1, "On Edge");
-            EDPART_SOUND_CONTROL_ITEM(2, "Off Edge");
-            EDPART_SOUND_CONTROL_ITEM(3, "Per PART");
-            EDPART_SOUND_CONTROL_ITEM(4, "Continuous");
+            edpartAddSoundControlItem(item->data, 0, (char *)dat_0076b274);
+            edpartAddSoundControlItem(item->data, 1, "On Edge");
+            edpartAddSoundControlItem(item->data, 2, "Off Edge");
+            edpartAddSoundControlItem(item->data, 3, "Per PART");
+            edpartAddSoundControlItem(item->data, 4, "Continuous");
             eduiMenuAttach(menu, edpart_soundcontrol_menu);
             edpart_soundcontrol_menu->x = menu->x + 10;
             edpart_soundcontrol_menu->y = menu->y + 40;
@@ -1362,7 +1369,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
     i32 emitter_count = 0;
     memset(empty_name, 0, sizeof(empty_name));
     for (index = 0; index < 128; ++index) {
-        if (part_types[index].name[0] != '\0' && part_types[index].unknown_b3 == page) {
+        if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] != '\0' && ((PART_RUNTIME_TYPE *)part_types)[index].unknown_b3 == page) {
             ++type_count;
         }
     }
@@ -1374,102 +1381,102 @@ i32 edpartSaveEffects(char *filename, u8 page) {
         EdFileWriteInt(type_count);
 
         for (index = 0; index < 128; ++index) {
-            if (part_types[index].name[0] == '\0' || part_types[index].unknown_b3 != page) {
+            if (((PART_RUNTIME_TYPE *)part_types)[index].name[0] == '\0' || ((PART_RUNTIME_TYPE *)part_types)[index].unknown_b3 != page) {
                 continue;
             }
 
-            EdFileWrite(part_types[index].name, 16);
+            EdFileWrite(((PART_RUNTIME_TYPE *)part_types)[index].name, 16);
             for (variant = 0; variant < 8; ++variant) {
-                EdFileWriteChar((u8)part_types[index].effect_pages[variant]);
+                EdFileWriteChar((u8)((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant]);
             }
             for (variant = 0; variant < 8; ++variant) {
-                i16 effect_id = part_types[index].effect_ids[variant];
+                i16 effect_id = ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[variant];
                 nuhspecial_s special;
                 if (effect_id == -1) {
                     EdFileWrite(empty_name, 16);
                 } else if (effect_id == 9999) {
                     EdFileWrite(PartNullInstanceName, 16);
                 } else if (effect_id == 9998) {
-                    EdFileWrite(part_types[index].object_names[variant], 16);
-                } else if (part_types[index].effect_pages[variant] == 0) {
+                    EdFileWrite(((PART_RUNTIME_TYPE *)part_types)[index].object_names[variant], 16);
+                } else if (((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant] == 0) {
                     NuGScnGetSpecial(&special, edbits_base_scene, effect_id);
                     EdFileWrite(NuSpecialGetName(&special), 16);
-                } else if (part_types[index].effect_pages[variant] == 1) {
+                } else if (((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant] == 1) {
                     NuGScnGetSpecial(&special, edbits_things_scene, effect_id);
                     EdFileWrite(NuSpecialGetName(&special), 16);
                 } else {
                     EdFileWrite(empty_name, 16);
                 }
             }
-            EdFileWriteChar(part_types[index].variant_mode);
-            EdFileWriteFloat(part_types[index].particle_scale);
-            EdFileWriteFloat(part_types[index].effect_scale);
-            EdFileWriteFloat(part_types[index].lifetime);
-            EdFileWriteFloat(part_types[index].lifetime_random);
-            EdFileWriteFloat(part_types[index].speed);
-            EdFileWriteFloat(part_types[index].gravity);
-            EdFileWriteFloat(part_types[index].emission_rate);
-            EdFileWriteFloat(part_types[index].bounce);
-            EdFileWriteNuVec(&part_types[index].position_random);
-            EdFileWriteNuVec(&part_types[index].velocity_random);
-            EdFileWriteFloat(part_types[index].emission_period);
-            EdFileWriteFloat(part_types[index].emission_period_random);
-            EdFileWriteFloat(part_types[index].emission_pause);
-            EdFileWriteFloat(part_types[index].emission_pause_random);
-            EdFileWriteInt(part_types[index].rotation[0]);
-            EdFileWriteInt(part_types[index].rotation[1]);
-            EdFileWriteInt(part_types[index].rotation[2]);
-            EdFileWriteInt(part_types[index].rotation_random[0]);
-            EdFileWriteInt(part_types[index].rotation_random[1]);
-            EdFileWriteInt(part_types[index].rotation_random[2]);
-            EdFileWriteUnsignedInt(part_types[index].flags);
+            EdFileWriteChar(((PART_RUNTIME_TYPE *)part_types)[index].variant_mode);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].particle_scale);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].effect_scale);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].lifetime);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].lifetime_random);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].speed);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].gravity);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_rate);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].bounce);
+            EdFileWriteNuVec(&((PART_RUNTIME_TYPE *)part_types)[index].position_random);
+            EdFileWriteNuVec(&((PART_RUNTIME_TYPE *)part_types)[index].velocity_random);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_period);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_period_random);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_pause);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].emission_pause_random);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation[0]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation[1]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation[2]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation_random[0]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation_random[1]);
+            EdFileWriteInt(((PART_RUNTIME_TYPE *)part_types)[index].rotation_random[2]);
+            EdFileWriteUnsignedInt(((PART_RUNTIME_TYPE *)part_types)[index].flags);
 
-            if (part_types[index].trail_effects[0] != -1) {
-                EdFileWrite(debtab[part_types[index].trail_effects[0]]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[0] != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[0]]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (part_types[index].trail_effects[1] != -1) {
-                EdFileWrite(debtab[part_types[index].trail_effects[1]]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[1] != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].trail_effects[1]]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (part_types[index].attached_effect != -1) {
-                EdFileWrite(debtab[part_types[index].attached_effect]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].attached_effect != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].attached_effect]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            EdFileWriteFloat(part_types[index].trail_rates[0]);
-            EdFileWriteFloat(part_types[index].trail_rates[1]);
-            if (part_types[index].kill_effect != -1) {
-                EdFileWrite(debtab[part_types[index].kill_effect]->name, 16);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].trail_rates[0]);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].trail_rates[1]);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].kill_effect != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].kill_effect]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (part_types[index].impact_effect != -1) {
-                EdFileWrite(debtab[part_types[index].impact_effect]->name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].impact_effect != -1) {
+                EdFileWrite(debtab[((PART_RUNTIME_TYPE *)part_types)[index].impact_effect]->name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
-            if (part_types[index].impact_part != -1) {
-                EdFileWrite(part_types[part_types[index].impact_part].name, 16);
+            if (((PART_RUNTIME_TYPE *)part_types)[index].impact_part != -1) {
+                EdFileWrite(((PART_RUNTIME_TYPE *)part_types)[((PART_RUNTIME_TYPE *)part_types)[index].impact_part].name, 16);
             } else {
                 EdFileWrite(empty_name, 16);
             }
             for (variant = 0; variant < 4; ++variant) {
-                if (part_types[index].sounds[variant] != -1) {
-                    EdFileWrite(SfxInfo[part_types[index].sounds[variant]].name, 16);
+                if (((PART_RUNTIME_TYPE *)part_types)[index].sounds[variant] != -1) {
+                    EdFileWrite(SfxInfo[((PART_RUNTIME_TYPE *)part_types)[index].sounds[variant]].name, 16);
                 } else {
                     EdFileWrite(empty_name, 16);
                 }
             }
             for (variant = 0; variant < 4; ++variant) {
-                EdFileWriteChar(part_types[index].sound_modes[variant]);
+                EdFileWriteChar(((PART_RUNTIME_TYPE *)part_types)[index].sound_modes[variant]);
             }
-            EdFileWriteFloat(part_types[index].maximum_distance);
-            EdFileWriteFloat(part_types[index].unknown_160);
-            EdFileWriteFloat(part_types[index].unknown_164);
-            EdFileWriteFloat(part_types[index].unknown_168);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].maximum_distance);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].unknown_160);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].unknown_164);
+            EdFileWriteFloat(((PART_RUNTIME_TYPE *)part_types)[index].unknown_168);
         }
 
         if (page == 1) {
@@ -1785,8 +1792,8 @@ void edpartFileLoadEffects(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2)
     memset(part_types, 0, sizeof(part_types));
     for (index = 0; index < 128; ++index) {
         for (variant = 0; variant < 8; ++variant) {
-            part_types[index].effect_ids[variant] = -1;
-            part_types[index].effect_pages[variant] = -1;
+            ((PART_RUNTIME_TYPE *)part_types)[index].effect_ids[variant] = -1;
+            ((PART_RUNTIME_TYPE *)part_types)[index].effect_pages[variant] = -1;
         }
     }
     part_types_used = 0;

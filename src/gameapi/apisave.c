@@ -89,19 +89,22 @@ i32 ChecksumSaveData(void *buffer, i32 size) {
     return (i32)sum;
 }
 
+/* Counts down a message delay, then the result delay that follows it. */
+static void AdvanceSaveDelay(f32 *message, f32 *result, f32 elapsed) {
+    if (*message > 0.0f) {
+        *message -= elapsed;
+    } else if (*result > 0.0f) {
+        *result -= elapsed;
+    }
+}
+
 void UpdateSaveSlots(void) {
     const f32 elapsed = NuTimeGetFrameTime();
     if (memcard_autosavecanceldelay > 0.0f) {
         memcard_autosavecanceldelay -= elapsed;
     }
-#define ADVANCE_SAVE_DELAY(message, result)                                                                                                \
-    if (message > 0.0f) {                                                                                                                  \
-        message -= elapsed;                                                                                                                \
-    } else if (result > 0.0f) {                                                                                                            \
-        result -= elapsed;                                                                                                                 \
-    }
-    ADVANCE_SAVE_DELAY(memcard_loadmessage_delay, memcard_loadresult_delay);
-    ADVANCE_SAVE_DELAY(memcard_savemessage_delay, memcard_saveresult_delay);
+    AdvanceSaveDelay(&memcard_loadmessage_delay, &memcard_loadresult_delay, elapsed);
+    AdvanceSaveDelay(&memcard_savemessage_delay, &memcard_saveresult_delay, elapsed);
     if (memcard_autosavepredelay > 0.0f) {
         memcard_autosavepredelay -= elapsed;
     } else if (memcard_autosavepostdelay > 0.0f) {
@@ -110,11 +113,10 @@ void UpdateSaveSlots(void) {
             memcard_autosaveinprogress = 0;
         }
     }
-    ADVANCE_SAVE_DELAY(memcard_formatmessage_delay, memcard_formatresult_delay);
-    ADVANCE_SAVE_DELAY(memcard_createmessage_delay, memcard_createresult_delay);
-    ADVANCE_SAVE_DELAY(memcard_deletemessage_delay, memcard_deleteresult_delay);
-    ADVANCE_SAVE_DELAY(memcard_message_delay, memcard_result_delay);
-#undef ADVANCE_SAVE_DELAY
+    AdvanceSaveDelay(&memcard_formatmessage_delay, &memcard_formatresult_delay, elapsed);
+    AdvanceSaveDelay(&memcard_createmessage_delay, &memcard_createresult_delay, elapsed);
+    AdvanceSaveDelay(&memcard_deletemessage_delay, &memcard_deleteresult_delay, elapsed);
+    AdvanceSaveDelay(&memcard_message_delay, &memcard_result_delay, elapsed);
 
     if (saveload_cardtype != 2) {
         memcard_justformatted = 0;

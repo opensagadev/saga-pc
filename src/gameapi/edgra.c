@@ -26,8 +26,6 @@
 extern struct eduimenu_s *edgra_sscale_menu;
 extern NUMTL *edgra_mtl_zoff;
 
-#define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
-
 i32 edgraFileSave(char *path) {
     nuhspecial_s special;
     char name[20];
@@ -78,10 +76,10 @@ i32 edgraFileSave(char *path) {
             EdFileWriteFloat(GrassClumps[i].unknown_44);
             if (GrassClumps[i].kind == 3) {
                 for (j = 0; j < GrassClumps[i].element_count; ++j) {
-                    EdFileWriteNuVec(&EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->position);
-                    EdFileWriteFloat(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->unknown_0c);
-                    EdFileWriteShort(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->unknown_10);
-                    EdFileWriteShort(EDGRA_INDIVIDUAL(GrassClumps[i].individual_index, j)->unknown_12);
+                    EdFileWriteNuVec(&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * GrassClumps[i].individual_index + j].position);
+                    EdFileWriteFloat(IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * GrassClumps[i].individual_index + j].unknown_0c);
+                    EdFileWriteShort(IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * GrassClumps[i].individual_index + j].unknown_10);
+                    EdFileWriteShort(IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * GrassClumps[i].individual_index + j].unknown_12);
                 }
             }
             for (j = 0; j < GrassClumps[i].element_count; ++j) {
@@ -351,11 +349,11 @@ void edgraRender(void) {
                                         GrassClumps[edgra_nearest].position.z, 0.125f, 0xffff0000, edgra_mtl);
                 if (edgra_nearest_instance != -1) {
                     edbitsDrawCross(GrassClumps[edgra_nearest].position.x +
-                                        EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->position.x,
+                                        IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * GrassClumps[edgra_nearest].individual_index + edgra_nearest_instance].position.x,
                                     GrassClumps[edgra_nearest].position.y +
-                                        EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->position.y,
+                                        IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * GrassClumps[edgra_nearest].individual_index + edgra_nearest_instance].position.y,
                                     GrassClumps[edgra_nearest].position.z +
-                                        EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->position.z,
+                                        IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * GrassClumps[edgra_nearest].individual_index + edgra_nearest_instance].position.z,
                                     0.125f, 0xff80ffff, edgra_mtl);
                 }
             } else {
