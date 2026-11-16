@@ -6141,8 +6141,8 @@ extern "C" {
     i32 NuRndrSetAmbientLightSpecular(const NUVEC4 *colour) {
         AMBIENT_SPECULAR_RENDER_VIEW *state = (AMBIENT_SPECULAR_RENDER_VIEW *)&render_state;
         state->global_specular = colour->w;
-        PCGlobalLightingState.ambient = *(const NUVEC *)colour;
-        NuRndrSetAmbientLightPS((const NUVEC *)colour);
+        PCGlobalLightingState.ambient = colour->xyz;
+        NuRndrSetAmbientLightPS(&colour->xyz);
         return 0;
     }
 

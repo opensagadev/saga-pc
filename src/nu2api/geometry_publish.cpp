@@ -266,5 +266,5 @@ NuMtx NuMtx::fun_005c6a20(NuMtx &other) {
 }
 
 extern "C" f32 fun_005c6b30(const NUVEC4 *plane, const NUVEC *point) {
-    return fun_005c6990((const NUVEC *)plane, point) + plane->w;
+    return fun_005c6990(&plane->xyz, point) + plane->w;
 }
