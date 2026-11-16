@@ -15,23 +15,34 @@ typedef struct PODSPRINT_AI { // size 0x10
 } PODSPRINT_AI;
 
 typedef struct PODSPRINT {                 // size 0x94
-    u8 unknown_0[8];                       // 0x00
+    NUGSPLINE *finish_line;                // 0x00
+    NUGSPLINE *halfway;                    // 0x04
     PODSPRINT_AI ai[6];                    // 0x08
     struct gizaimessage_s *lap_msg;        // 0x68
     struct gizaimessage_s *max_speed_msg;  // 0x6c
     struct gizaimessage_s *min_speed_msg;  // 0x70
     struct gizaimessage_s *speed_step_msg; // 0x74
-    void *unknown_78;                      // 0x78
-    void *boulders;                        // 0x7c
-    f32 unknown_80;                        // 0x80
-    f32 speed;                             // 0x84
-    f32 unknown_88;                        // 0x88
-    u8 unknown_8c[0x2];                    // 0x8c
-    u8 ai_state;                           // 0x8e
+    GAMEOBJECT *pacemaker;                 // 0x78
+    AIAREA *boulders;                      // 0x7c
+    f32 arrow_timer;                       // 0x80
+    f32 countdown;                         // 0x84
+    f32 lap_time;                          // 0x88
+    i16 pacemaker_laps;                    // 0x8c laps the pacemaker finished; each slows it by speed_step_msg
+    i8 ai_state;                           // 0x8e
     i8 ai_index;                           // 0x8f
-    u8 unknown_90_b[0x2];                  // 0x90
-    u8 flags;                              // 0x92
-    u8 unknown_93[0x1];                    // 0x93
+    u8 unknown_90[2];                      // 0x90
+
+    union { // size 0x2
+        u16 flags;
+
+        struct {                     // size 0x2
+            i16 halfway : 1;         // 0x92:0
+            i16 unknown_1 : 1;       // 0x92:1
+            i16 finished : 2;        // 0x92:2
+            i16 reset_requested : 1; // 0x92:4
+            i16 unknown_5 : 11;      // 0x92:5
+        } bits;
+    }; // 0x92
 } PODSPRINT;
 
 #ifdef __cplusplus

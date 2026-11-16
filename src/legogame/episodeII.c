@@ -94,20 +94,6 @@ typedef struct kamino_progress_gizmo_reader_s {
     u8 flags;
 } KAMINO_PROGRESS_GIZMO_READER;
 
-typedef struct kaminoe_turret_reader_s {
-    u8 opaque_00_1c[0x1c];
-    GAMEANIMOBJ *primary_anim_obj;
-    u8 opaque_20_e4[0xc4];
-    NUVEC *target_position;
-    u8 opaque_e8_12c[0x44];
-    u8 unknown_12c;
-    u8 opaque_12d;
-    u8 unknown_12e;
-    u8 opaque_12f_13a[0xb];
-    u16 flags_13a;
-    u8 opaque_13c_140[0x4];
-} KAMINOE_TURRET_READER;
-
 typedef struct kamino_e_s {
     GIZAIMESSAGE *jango_fight;
     GIZAIMESSAGE *can_fire;
@@ -117,8 +103,8 @@ typedef struct kamino_e_s {
     CUTINFO *intro_cutscene;
     AIAREA *landing_area;
     nuhspecial_s slave1;
-    KAMINOE_TURRET_READER *turrets[4];
-    KAMINOE_TURRET_READER *active_turret;
+    GIZTURRET_s *turrets[4];
+    GIZTURRET_s *active_turret;
     void *panels[4];
     NUVEC position;
     i32 pitch;
@@ -1514,9 +1500,9 @@ void KaminoE_Reset(WORLDINFO *world) {
         gizmo = GizmoFindByName(world->gizmo_sys, turret_gizmotype_id, name);
         if (gizmo != NULL) {
             kamino_e.turrets[i] = gizmo->object;
-            kamino_e.turrets[i]->target_position = &kamino_e.position;
-            kamino_e.turrets[i]->unknown_12c = 2;
-            kamino_e.turrets[i]->flags_13a |= 1;
+            kamino_e.turrets[i]->opponent = &kamino_e.position;
+            kamino_e.turrets[i]->opponent_type = 2;
+            kamino_e.turrets[i]->flags |= 1;
         } else {
             KaminoEGizmoMissing(name);
         }
@@ -1588,8 +1574,8 @@ static void KaminoEResetTurrets(void) {
     kamino_e.active_turret = NULL;
     for (i = 0; i < 4; i++) {
         GizmoActivate(WORLD->gizmo_sys, GizmoFindByData(WORLD->gizmo_sys, gizpanel_gizmotype_id, kamino_e.panels[i]), 1, 1);
-        kamino_e.turrets[i]->unknown_12e = 1;
-        kamino_e.turrets[i]->flags_13a &= ~0x10;
+        kamino_e.turrets[i]->state = 1;
+        kamino_e.turrets[i]->flags &= ~0x10;
     }
 }
 
@@ -1627,7 +1613,7 @@ void KaminoE_UpdateSlave1(WORLDINFO *world) {
     f32 phase;
     f32 wave;
     i32 angle;
-    if (kamino_e.active_turret != NULL && (kamino_e.active_turret->flags_13a & 0x10) != 0) {
+    if (kamino_e.active_turret != NULL && (kamino_e.active_turret->flags & 0x10) != 0) {
         kamino_e.active_turret = NULL;
     }
     matrix = NuSpecialGetDrawMtx(&kamino_e.slave1);

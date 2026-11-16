@@ -76,3 +76,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | force records: one GIZFORCE, GIZFORCEGROUP, GIZFORCESYS | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
 | force records: one GIZFORCE, GIZFORCEGROUP, GIZFORCESYS | DebrisSetup2 | legoapi/parts.c | exact | 99.95 % |
 | force records: one GIZFORCE, GIZFORCEGROUP, GIZFORCESYS | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
+| episode records: one PODSPRINT, the unused copies go | InitGameAfterConfig | legogame/game.cpp | 82.2397 % | 82.2372 % |
