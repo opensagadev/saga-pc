@@ -158,9 +158,6 @@ typedef struct movement_suit_s {
     u8 store_flag;
 } MOVEMENT_SUIT;
 
-/* Subtracts the shared 0.0 double literal without folding it. */
-extern const f64 ActionSnapWeightedRandomZero;
-
 typedef struct move_gunship_level_flags_s {
     u8 progress;
     u8 secondary;

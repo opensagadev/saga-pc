@@ -122,7 +122,7 @@ extern "C" {
     extern f32 cointotaltime;
     extern f32 goldbricktime;
     extern f32 statstime;
-    extern void *hothtroopers;
+    extern struct nuhspecial_s *hothtroopers;
     extern i8 trooper_side[10];
     extern i32 LevForce;
     extern i32 PodRace_nsnipers;

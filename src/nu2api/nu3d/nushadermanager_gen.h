@@ -2,6 +2,8 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "nu2api/nu3d/nushaderobject.h"
+
 typedef struct PC_SHADER_RECORD_VIEW { // size 0x8
     u32 unknown_0;                     // 0x0
     i32 ref_count;                     // 0x4
@@ -18,7 +20,7 @@ extern "C" {
 #endif
     extern PC_SHADER_SLOT_VIEW *PCShaderSlots;
     PC_SHADER_RECORD_VIEW *PCShaderRecordFromHandle(u32);
-    void *PCShaderCurrentObject(void);
+    NuShaderObject *PCShaderCurrentObject(void);
     extern f32 PCShaderShininessFactorStorage;
     f32 NuShaderManagerGetShininessFactor(void);
 #ifdef __cplusplus

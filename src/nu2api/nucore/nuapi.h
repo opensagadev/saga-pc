@@ -40,7 +40,7 @@ typedef struct nuapi_s {   // size 0x90
         };
     }; // 0x48
 
-    void *wind;                      // 0x78
+    struct nuwind_s *wind;           // 0x78
     i32 reversible_characters;       // 0x7c
     i32 loading_hgobj;               // 0x80
     i32 force_shadows_on_characters; // 0x84

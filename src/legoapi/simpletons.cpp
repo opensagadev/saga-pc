@@ -32,7 +32,7 @@
 extern "C" {
     void NuSpecialBurstDrawAt(struct nuhspecial_s *, u32, NUMTX *, i32);
     i32 droid_hack = 0;
-    void *hothtroopers = 0;
+    nuhspecial_s *hothtroopers = 0;
     i16 gunship_bolts[2] = {0};
     static i32 trooperteamcount = 0;
     u8 gunship_flags[10] = {0};
@@ -867,12 +867,11 @@ extern "C" {
         next[2] = matrices[2];
         NUMTX *second_side[3];
         for (i32 frame = 0; frame < 3; ++frame) {
-            NuSpecialBurstDrawAt(&((struct nuhspecial_s *)hothtroopers)[frame], first_side_counts[frame], next[frame], 1);
+            NuSpecialBurstDrawAt(&hothtroopers[frame], first_side_counts[frame], next[frame], 1);
             second_side[frame] = next[frame] + first_side_counts[frame];
         }
         for (i32 frame = 0; frame < 3; ++frame) {
-            NuSpecialBurstDrawAt(&((struct nuhspecial_s *)hothtroopers)[frame + 3], counts[frame] - first_side_counts[frame],
-                                 second_side[frame], 1);
+            NuSpecialBurstDrawAt(&hothtroopers[frame + 3], counts[frame] - first_side_counts[frame], second_side[frame], 1);
         }
     }
 }

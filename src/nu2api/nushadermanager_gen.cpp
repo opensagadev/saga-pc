@@ -142,7 +142,7 @@ extern "C" i32 fun_00741860(void) {
     return PCDeviceHardwareVertexProcessingPC;
 }
 
-extern "C" void *PCShaderCurrentObject(void) {
+extern "C" NuShaderObject *PCShaderCurrentObject(void) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->bound_slot;
 }
 

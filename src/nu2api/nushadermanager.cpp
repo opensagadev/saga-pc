@@ -664,9 +664,9 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
+            NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), semantic, 0, 1, values);
+                NuShaderObjectSetElementsfv(PCShaderCurrentObject(), semantic, 0, 1, values);
             }
         }
         return;
@@ -7990,9 +7990,9 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
+            NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), semantic, element, 1, values);
+                NuShaderObjectSetElementsfv(PCShaderCurrentObject(), semantic, element, 1, values);
             }
         }
         return;
@@ -8030,9 +8030,9 @@ void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element,
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
+            NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv_transpose((NuShaderObject *)PCShaderCurrentObject(), semantic, first_element, count, values);
+                NuShaderObjectSetElementsfv_transpose(PCShaderCurrentObject(), semantic, first_element, count, values);
             }
         }
         return;
@@ -8062,9 +8062,9 @@ void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count
             }
         }
         if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
-            NuShaderObject *bound = (NuShaderObject *)PCShaderCurrentObject();
+            NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
-                NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), semantic, first_element, count, values);
+                NuShaderObjectSetElementsfv(PCShaderCurrentObject(), semantic, first_element, count, values);
             }
         }
         return;

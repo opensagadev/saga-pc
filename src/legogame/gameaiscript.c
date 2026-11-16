@@ -220,8 +220,6 @@ typedef struct condition_hat_name_reader_s { // size 0x50
     char name[16];                           // 0x40
 } CONDITION_HAT_NAME_READER;
 
-extern const f64 ActionSnapWeightedRandomZero;
-
 typedef struct ai_force_platform_record_s { // size 0x6c
     u8 unknown_00[0x40];                    // 0x00
     NUMTX *scene_matrix;                    // 0x40

@@ -336,7 +336,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
     write_mask >>= 3;
     PCDeviceBackend.SetColorWriteMask(write_mask, write_mask, 3);
     if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0 && PCShaderCurrentObject() != NULL) {
-        if (PCShaderCurrentObject() != NULL && ((NuShaderObject *)PCShaderCurrentObject())->parameters[0x4f].register_index >= 0) {
+        if (PCShaderCurrentObject() != NULL && (PCShaderCurrentObject())->parameters[0x4f].register_index >= 0) {
             for (i32 i = 0; i < 32; ++i) {
                 NUVEC4 group;
                 group.x = 1.0f;
@@ -351,8 +351,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             if (count >= 8) {
                 count = 8;
             }
-            NuShaderObjectSetElementsfv((NuShaderObject *)PCShaderCurrentObject(), SHADER_UNIFORM_OFFSET_TABLE, 0, count,
-                                        &nuspecial_vertex_offsets[0][0]);
+            NuShaderObjectSetElementsfv(PCShaderCurrentObject(), SHADER_UNIFORM_OFFSET_TABLE, 0, count, &nuspecial_vertex_offsets[0][0]);
         }
     }
 }

@@ -3921,7 +3921,7 @@ extern "C" {
         PC_DL_SKIN_PALETTE_READER *packet = (PC_DL_SKIN_PALETTE_READER *)arg;
         i32 count = packet->count;
         void *elements = packet->elements;
-        NuShaderObject *shader = (NuShaderObject *)PCShaderCurrentObject();
+        NuShaderObject *shader = PCShaderCurrentObject();
         if (shader != NULL) {
             if (count > 8) {
                 NuPtlDmaSlotsExhausted();
@@ -4959,7 +4959,7 @@ extern "C" {
     void fun_00601790(void) {
     }
 
-    void fun_006017a0(void) {
+    void fun_006017a0(NUMTL *material, i32 plane) {
     }
 
     void fun_006017b0(void) {

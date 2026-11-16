@@ -3681,8 +3681,6 @@ void eduiInitMaterials(void) {
     NuMtlUpdate((uimtls[3]));
 }
 
-void fun_006017a0(NUMTL *material, i32 plane);
-
 void eduiSetRenderPlane(i32 plane) {
     i32 i;
     for (i = 0; i < 4; i++) {

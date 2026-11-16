@@ -858,8 +858,8 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 break;
             }
             case SHADER_UNIFORM_WIND_SAMPLER: {
-                if (NuWindCurrent(static_cast<NUWIND *>(nuapi.wind)) >= 0) {
-                    const i32 id = NuWindCurrent(static_cast<NUWIND *>(nuapi.wind));
+                if (NuWindCurrent(nuapi.wind) >= 0) {
+                    const i32 id = NuWindCurrent(nuapi.wind);
                     PCGraphicsBindTextureDimensions(NuTextureGetDimensions(id), parameter->register_index);
                     PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSU, 1);
                     PCDeviceSetSamplerState(parameter->register_index, D3DSAMP_ADDRESSV, 1);
@@ -870,7 +870,7 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
                 break;
             }
             case SHADER_UNIFORM_WIND_PARAMS: {
-                NUWIND *wind = static_cast<NUWIND *>(nuapi.wind);
+                NUWIND *wind = nuapi.wind;
                 if (wind != NULL) {
                     const f32 parameter24 = wind->parameter_24;
                     const i32 angle0 = (i32)(wind->accumulated_time * 10430.3779296875);

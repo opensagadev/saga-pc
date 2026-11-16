@@ -45,8 +45,6 @@ typedef struct edpp_file_particle_s { // size 0x58
     i16 facing_rotation_y;            // 0x56
 } EDPP_FILE_PARTICLE;
 
-extern const f64 ActionSnapWeightedRandomZero;
-
 static void UpdateTotalPtls(DEBRIS_INFO *effect) {
     f32 active = 0.0f;
     f32 elapsed = 0.0f;

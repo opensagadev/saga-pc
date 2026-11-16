@@ -332,6 +332,8 @@ extern "C" {
     i32 TerrainPlatformMoveCheck(NUVEC *, NUVEC *, i32, i32, i32);
     void AddCollisionSphere(NUVEC *, f32);
     extern const f64 TerrainOpposingContactThreshold;
+    /* The shared 0.0 double of float_constants.c: reading it keeps a subtraction or comparison from being folded. */
+    extern const f64 ActionSnapWeightedRandomZero;
     extern f32 TerConTol;
     extern f32 TerrWallDeflectYScale;
     extern i32 PlatCrush;
