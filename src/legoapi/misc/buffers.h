@@ -18,6 +18,7 @@ extern "C" {
     extern NUGSCN *area_scene;
     extern NUGSCN *vehicle_scene;
     extern NUGSCN *big_icon_scene;
+    void ResetCharacterBuffer(i32 keep);
 #ifdef __cplusplus
 }
 #endif

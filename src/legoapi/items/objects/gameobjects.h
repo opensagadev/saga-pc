@@ -30,6 +30,7 @@ extern "C" {
     extern f32 default_mover_extra;
     extern u8 grapple_attach_frames;
     void GameObjectSetCanUse(GAMEOBJECT *, void *, u8, u8, f32);
+    void GameObjectToCameraDistances(void);
 #ifdef __cplusplus
 }
 #endif

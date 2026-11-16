@@ -88,6 +88,9 @@ extern "C" {
     void GizmoNameDiagnostic(char *name);
     void DrawPauseFade(void);
     void TakeOverReleaseDiagnostic(char *rider_name, char *object_name);
+    u8 IsGrabbingScreen(void);
+    void DrawCutBorders(i32 widescreen);
+    void HandleStillRender(void);
 #ifdef __cplusplus
 }
 #endif

@@ -6,6 +6,8 @@
 #include "legoapi/lib/camera.h"
 #include "nu2api/numath/nuvec.h"
 
+struct GAMEPAD;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -13,6 +15,8 @@ extern "C" {
     i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *);
     extern NUVEC ObstacleCamCutPts[2];
     extern i32 movegamecamera_forcesock;
+    void MoveGameCamera(GAMECAMERA *camera);
+    void ViewCamSetActive(i32 mode, struct GAMEPAD *gamepad);
 #ifdef __cplusplus
 }
 #endif
