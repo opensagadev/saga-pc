@@ -4,7 +4,6 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nuwin32/d3dCore.h"
 
-
 union PC_SHADER_KEY_BLOCK {
     u8 bytes[104];
 
@@ -109,8 +108,8 @@ extern "C" void NuShaderObjectKeyGenerate3(u32 *key, const PC_SHADER_MATERIAL_FI
 }
 
 /* Builds the filter view for a descriptor and generates its key. No caller. */
-extern "C" void NuShaderObjectKeyGenerate(u32 *key, const NUSHADERMTLDESC *desc, const NUMTL *material,
-                                          i32 flags, i32 variant, i32 pixel_stage) {
+extern "C" void NuShaderObjectKeyGenerate(u32 *key, const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags, i32 variant,
+                                          i32 pixel_stage) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     filter.Initialize(desc, material, flags, variant);
     NuShaderObjectKeyGenerate3(key, &filter, pixel_stage);

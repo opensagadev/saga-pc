@@ -618,7 +618,6 @@ extern "C" {
     f32 NuPrimXScale = 1.0f;
     f32 NuPrimYScale = 1.0f;
 
-
     static VARIPTR rndrstream_b = {0};
     f32 NuCameraProjectionGlobalOffsetX = 0;
     DWA_WEIGHT_BLOCK DwaWeightPool[60669] = {0};
@@ -1101,23 +1100,17 @@ extern "C" {
     }
 
     extern "C" void Nu360MtlInit(void) {
-        NuDisplayMaterialDebrisPrograms =
-            PostShaderProgramCreate(2, dat_00769710, dat_00769840);
+        NuDisplayMaterialDebrisPrograms = PostShaderProgramCreate(2, dat_00769710, dat_00769840);
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialGlassPrograms =
-                PostShaderProgramCreate(2, dat_007698f0, dat_00769a58);
+            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, dat_007698f0, dat_00769a58);
         } else {
-            NuDisplayMaterialGlassPrograms =
-                PostShaderProgramCreate(2, dat_00769c48, dat_00769da8);
+            NuDisplayMaterialGlassPrograms = PostShaderProgramCreate(2, dat_00769c48, dat_00769da8);
         }
         if (PCDeviceHardwareVertexProcessingPC > 1) {
-            NuDisplayMaterialFaceOnDecalPrograms =
-                PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8);
+            NuDisplayMaterialFaceOnDecalPrograms = PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8);
         }
-        NuDisplayMaterialFaceOnPrograms =
-            PostShaderProgramCreate(2, dat_00769e80, dat_0076a298);
-        NuDisplayMaterialDefaultPrograms =
-            PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8);
+        NuDisplayMaterialFaceOnPrograms = PostShaderProgramCreate(2, dat_00769e80, dat_0076a298);
+        NuDisplayMaterialDefaultPrograms = PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8);
         PCDeviceCreateVertexDeclaration(NuMaterialFaceOnElements, &NuDisplayMaterialFaceOnDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDebrisElements, &NuDisplayMaterialDebrisDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDefaultElements, &NuDisplayMaterialDefaultDeclaration);
@@ -1220,7 +1213,6 @@ extern "C" {
         i32 count;                               // 0x00
         NUVEC4 values[1];                        // 0x04
     } PC_DL_VERTEX_OFFSETS_READER;
-
 
     /* PC-only table slot 0xad. */
     typedef struct PC_DL_AD_COLOURS { // size 0x3c
@@ -1391,7 +1383,6 @@ extern "C" {
         f32 NuCameraProjectionGlobalScaleX = 0;
         i32 NuLgtArcLaserFrame = 0;
     }
-
 
     PC_BUFFER_RESOURCE *NuWaterVertexBuffer = 0;
 
@@ -4804,16 +4795,11 @@ extern "C" {
             NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handles[1]));
         }
         if ((mtl->attribs2 & 0x800000) != 0 && mtl->display_list == NULL) {
-            shader = NuShaderManagerRetrieveShader(&mtl->shader,
-                                              mtl);
+            shader = NuShaderManagerRetrieveShader(&mtl->shader, mtl);
             mtl->shader.shader_handles[0] = (i16)shader->marker;
         } else {
-            shader = NuShaderManagerRetrieveShaderVariant(
-                &mtl->shader,
-                mtl, device->ShaderVariant16());
-            variant = NuShaderManagerRetrieveShaderVariant(
-                &mtl->shader,
-                mtl, device->ShaderVariant1());
+            shader = NuShaderManagerRetrieveShaderVariant(&mtl->shader, mtl, device->ShaderVariant16());
+            variant = NuShaderManagerRetrieveShaderVariant(&mtl->shader, mtl, device->ShaderVariant1());
             mtl->shader.shader_handles[0] = (i16)shader->marker;
             mtl->shader.shader_handles[1] = (i16)variant->marker;
         }

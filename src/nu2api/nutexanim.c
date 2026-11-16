@@ -1009,7 +1009,6 @@ TEXTURE_ANIM_PROGRAM *NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIP
     return program;
 }
 
-
 void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     char filename[128];
     VARIPTR cursor;

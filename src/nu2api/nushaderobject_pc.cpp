@@ -24,7 +24,6 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nu3d/nushaderobjectbase.h"
 
-
 void PCShaderNativeUnInit(NuShaderObject *shader) {
     if (shader->vertex_shader != NULL) {
         shader->vertex_shader->methods->release(shader->vertex_shader);

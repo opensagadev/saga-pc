@@ -1297,12 +1297,22 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             if (surface->normals[1].y > 65535.0) {
                 /* Triangle: a single plane. */
                 if (surface->normals[0].y > 0.0f) {
-                    if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x, surface->vertices[0].z) || !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x, surface->vertices[2].z) || !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x, surface->vertices[1].z)) {
+                    if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x,
+                                     surface->vertices[0].z) ||
+                        !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x,
+                                     surface->vertices[2].z) ||
+                        !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x,
+                                     surface->vertices[1].z)) {
                         continue;
                     }
                     facing = 1;
                 } else if (surface->normals[0].y < 0.0f) {
-                    if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x, surface->vertices[1].z) || !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x, surface->vertices[0].z) || !InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x, surface->vertices[2].z)) {
+                    if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x,
+                                     surface->vertices[1].z) ||
+                        !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x,
+                                     surface->vertices[0].z) ||
+                        !InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x,
+                                     surface->vertices[2].z)) {
                         continue;
                     }
                     facing = 2;
@@ -1314,22 +1324,36 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
             } else {
                 /* Quad: two planes sharing the 1-2 edge. */
                 if (surface->normals[0].y > 0.0f) {
-                    side = InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x, surface->vertices[1].z);
+                    side =
+                        InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[1].x, surface->vertices[1].z);
                     if (side != 0) {
-                        if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x, surface->vertices[0].z) || !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x, surface->vertices[2].z)) {
+                        if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[0].x,
+                                         surface->vertices[0].z) ||
+                            !InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[2].x,
+                                         surface->vertices[2].z)) {
                             continue;
                         }
-                    } else if (!InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[1].x, surface->vertices[1].z) || !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[3].x, surface->vertices[3].z)) {
+                    } else if (!InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[1].x,
+                                            surface->vertices[1].z) ||
+                               !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[3].x,
+                                            surface->vertices[3].z)) {
                         continue;
                     }
                     facing = 1;
                 } else if (surface->normals[0].y < 0.0f) {
-                    side = InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x, surface->vertices[2].z);
+                    side =
+                        InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[2].x, surface->vertices[2].z);
                     if (side != 0) {
-                        if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x, surface->vertices[1].z) || !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x, surface->vertices[0].z)) {
+                        if (!InsideLineF(x, z, surface->vertices[0].x, surface->vertices[0].z, surface->vertices[1].x,
+                                         surface->vertices[1].z) ||
+                            !InsideLineF(x, z, surface->vertices[2].x, surface->vertices[2].z, surface->vertices[0].x,
+                                         surface->vertices[0].z)) {
                             continue;
                         }
-                    } else if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[3].x, surface->vertices[3].z) || !InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[2].x, surface->vertices[2].z)) {
+                    } else if (!InsideLineF(x, z, surface->vertices[1].x, surface->vertices[1].z, surface->vertices[3].x,
+                                            surface->vertices[3].z) ||
+                               !InsideLineF(x, z, surface->vertices[3].x, surface->vertices[3].z, surface->vertices[2].x,
+                                            surface->vertices[2].z)) {
                         continue;
                     }
                     facing = 2;
@@ -2876,10 +2900,10 @@ static __forceinline void TerrDrawEdgeLines(const NUVEC4 *points, i16 index, i32
     for (i = 0; i <= 1; ++i) {
         f32 t = (f32)i;
         const NUVEC *origin = &CurrentTerrain->groups[index].origin;
-        NuRndrLine3dDbg(origin->x + points[a].x + (points[b].x - points[a].x) * t, origin->y + points[a].y + (points[b].y - points[a].y) * t,
-                        origin->z + points[a].z + (points[b].z - points[a].z) * t, origin->x + points[c].x + (points[d].x - points[c].x) * t,
-                        origin->y + points[c].y + (points[d].y - points[c].y) * t, origin->z + points[c].z + (points[d].z - points[c].z) * t,
-                        colour);
+        NuRndrLine3dDbg(
+            origin->x + points[a].x + (points[b].x - points[a].x) * t, origin->y + points[a].y + (points[b].y - points[a].y) * t,
+            origin->z + points[a].z + (points[b].z - points[a].z) * t, origin->x + points[c].x + (points[d].x - points[c].x) * t,
+            origin->y + points[c].y + (points[d].y - points[c].y) * t, origin->z + points[c].z + (points[d].z - points[c].z) * t, colour);
     }
 }
 

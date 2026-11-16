@@ -251,8 +251,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
         NuDisplayHandlerPixelShaderCache = NULL;
         NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexDeclaration(NuDisplayMaterialDebrisDeclaration);
-        PCDisplayHandlerBindPrograms(material->material_kind == 0x97 ? NuDisplayMaterialGlassPrograms
-                                                                             : NuDisplayMaterialDebrisPrograms);
+        PCDisplayHandlerBindPrograms(material->material_kind == 0x97 ? NuDisplayMaterialGlassPrograms : NuDisplayMaterialDebrisPrograms);
         if (PcWindowOptions.usehires == 0 || PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             NuMtxTranspose(&transposed, &PcGeometryViewProjectionMatrix);
             PCDeviceSetVertexShaderConstantsF(0, &transposed.m00, 4);

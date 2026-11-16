@@ -120,14 +120,14 @@ typedef struct FRAME_SCANNED_PAD { // size 0x84
     u8 analog_left_pad_right;      // 0x79
     u8 analog_left_pad_up;         // 0x7a
     u8 analog_left_pad_down;       // 0x7b
-    u8 raw_pad_left;                 // 0x7c
-    u8 raw_pad_right;                 // 0x7d
+    u8 raw_pad_left;               // 0x7c
+    u8 raw_pad_right;              // 0x7d
     u8 raw_pad_up;                 // 0x7e
-    u8 raw_pad_down;                 // 0x7f
-    u8 raw_extra_axis_x;                 // 0x80
-    u8 raw_extra_axis_y;                 // 0x81
-    u8 extra_axis_x;                 // 0x82
-    u8 extra_axis_y;                 // 0x83
+    u8 raw_pad_down;               // 0x7f
+    u8 raw_extra_axis_x;           // 0x80
+    u8 raw_extra_axis_y;           // 0x81
+    u8 extra_axis_x;               // 0x82
+    u8 extra_axis_y;               // 0x83
 } FRAME_SCANNED_PAD;
 
 typedef union FRAME_RECORD_CURSOR {

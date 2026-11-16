@@ -26,7 +26,6 @@
 #include "nu2api/pc_fmv_native.h"
 #include "legoapi/core/input/gamepads.h"
 
-
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX { // size 0x40
     FLOAT m11;      // 0x00

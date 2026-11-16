@@ -5,8 +5,6 @@
 #include "nu2api/numath/nufloat.h"
 #include <stdio.h>
 
-
-
 extern "C" {
     i32 PcInput_GetCtrlStringPlayer(void) {
         return TextInputLastDeviceIndex;
@@ -20,7 +18,7 @@ extern "C" {
 }
 
 i32 PC_INPUT_RUNTIME::ButtonName(i32 device, i32 button, char *destination, i32 custom, i32 custom_index, i32 use_callback,
-                                   i32 alternate_labels, char *delimiters) {
+                                 i32 alternate_labels, char *delimiters) {
     i32 result = 0;
     i32 open = 0;
     i32 close = 0;
