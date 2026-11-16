@@ -14588,7 +14588,7 @@ variable:err_msg_filter,variable,err_msg_filter,30320,30320,1,nu2api/nuerror_gen
 variable:nudebug_handler,variable,nudebug_handler,30321,30321,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nuerror_gen.h (saga.h neighbour)
 variable:nufile,variable,nufile,30322,30322,1,nu2api/nuerror_gen.h,users,nufile: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
 variable:nuline,variable,nuline,30323,30323,1,nu2api/nuerror_gen.h,users,nuline: only nu2api/nucore_pc_includes.cpp[nuerror_gen.cpp] pc-path
-function:NuHtmlFlush,function,NuHtmlFlush,30324,30324,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nu3d/nu3d_includes.h (android)
+function:NuHtmlEnd,function,NuHtmlEnd,30324,30324,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nu3d/nu3d_includes.h (android)
 function:NuRndrPrimSetColour,function,NuRndrPrimSetColour,30325,30325,1,nu2api/nu3d/nuprim_internal.h,android,NuRndrPrimSetColour
 function:NuRndrPrimUV,function,NuRndrPrimUV,30326,30326,1,transitional/unused.h,unused,no unit uses it; Android-transferred section; would go to nu2api/nu3d/nuprim_internal.h (android)
 function:cbCancelSubMenu,function,cbCancelSubMenu,30327,30327,1,gameapi/edtools/edtoolsall.h,android,cbCancelSubMenu

@@ -7864,14 +7864,14 @@ address,symbol,size,ctype
 0x5d6f30,_NuVisiOcclusion,293,void __cdecl(NUVISIBILITYRESULT*)
 0x5d7060,_BoxTreeRndrRec,243,
 0x5d7160,_NuVisiBoxTree,102,
-0x5d71d0,_fun_005d71d0,62,
-0x5d7210,_fun_005d7210,30,
+0x5d71d0,_NuHtmlFlush,62,
+0x5d7210,_NuHtmlBegin,30,
 0x5d7230,_NuHtmlWrite,117,
 0x5d72b0,_NuHtmlHeading,86,"void __cdecl(char *,...)"
 0x5d7310,_NuHtmlHeading2,86,
 0x5d7370,_NuHtmlHeading3,86,
 0x5d73d0,_NuHtmlBanner,16,
-0x005d73e0,_NuHtmlFlush,71,void __cdecl(void)
+0x005d73e0,_NuHtmlEnd,71,void __cdecl(void)
 0x5d7430,_NuHtmlBitmap,210,
 0x5d7510,_NuHtmlTitle,46,
 0x5d7540,_NuHtmlGraphArray,37,void __cdecl(char **)

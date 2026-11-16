@@ -5,7 +5,7 @@
 // block and the nu3d post-blur helpers of nudlist_material.
 // The PS/Pc halves live in the platform unit, nu3d_platform.cpp.
 // nufloat, numtx, nuhtml and nustateanim stay separate: merged, their small leaves inline into nu3d callers
-// that the original compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlFlush, StateAnimEvaluate2).
+// that the original compiles as calls (NuFsqrt, NuMtxMulH, NuHtmlEnd, StateAnimEvaluate2).
 // StateAnimEvaluate itself is defined here: it keeps x87 and edx live across its call to
 // PCSpecialEmptyHandler, so it knew the hook's register use (same unit).
 // nuvec, nucamera and nutexanim are separate units for the same reason.
@@ -11213,12 +11213,12 @@ extern "C" void NuDisplayListCaptureBegin(void) {
     }
 }
 
-extern "C" void NuHtmlFlush(void);
+extern "C" void NuHtmlEnd(void);
 
 extern "C" void NuDisplayListHtmlEnd(void) {
     if (nudlist_field_fe4 != 0) {
         NuHtmlWrite("<table   width=100%c height=20 bgcolor=#FF0000><tr><td><font face=arial size=+2></font></table>", 0x25);
-        NuHtmlFlush();
+        NuHtmlEnd();
         NuFileClose(nudlist_field_958);
         nudlist_field_fe4 = 0;
     }
@@ -14994,7 +14994,7 @@ extern "C" {
         }
     }
 
-    void fun_005d71d0(i32 force) {
+    void NuHtmlFlush(i32 force) {
         if ((PCDisplayCaptureCursor > nudlist_field_18b0) | force) {
             NuFileWriteString(nudlist_field_988, PCDisplayCaptureBuffer);
             PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
@@ -15002,7 +15002,7 @@ extern "C" {
         }
     }
 
-    void fun_005d7210(NUFILE file) {
+    void NuHtmlBegin(NUFILE file) {
         nudlist_field_988 = file;
         PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
         nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;

@@ -579,7 +579,7 @@ Transferred, by proposed owner:
 - `legoapi/world/levels/episodeV.h` (saga.h neighbour): `gameobj`
 - `legoapi/world/levels/hub.h` (android): `hub_new_level`
 - `legoapi/world/mission.h` (saga.h neighbour): `NuLegacyInstanceLayout`
-- `nu2api/nu3d/nu3d_includes.h` (android): `NuHtmlFlush`
+- `nu2api/nu3d/nu3d_includes.h` (android): `NuHtmlEnd`
 - `nu2api/nu3d/nudlist.h` (saga.h neighbour): `nudlist_debug_level`
 - `nu2api/nu3d/nupostresources.h` (android): `NuFramebufferGetFrontBuffer`
 - `nu2api/nu3d/nuprim_internal.h` (android): `NuRndrPrimUV`

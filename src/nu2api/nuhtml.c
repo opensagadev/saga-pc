@@ -23,7 +23,7 @@ void NuHtmlWrite(char *text, ...) {
     }
 }
 
-void NuHtmlFlush(void) {
+void NuHtmlEnd(void) {
     if (nudlist_field_18b0 != PCDisplayCaptureCursor) {
         NuFileWriteString(nudlist_field_988, PCDisplayCaptureBuffer);
         PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
