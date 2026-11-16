@@ -100,14 +100,6 @@ typedef struct controller_cut_view_s {
     f32 current_frame;
 } CONTROLLER_CUT_VIEW;
 
-void InitFn_LevelCharacterName(AI_CHARACTER_NAME);
-void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME);
-void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME);
-void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER);
-void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ);
-void InitFn_ClearAICreatures(AI_CLEAR_CREATURES);
-void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT);
-void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN);
 i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))

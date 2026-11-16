@@ -40,8 +40,6 @@ extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
 extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
 extern u32 LEGO_AIPATHCNX_JUMP_NOW;
 extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
-void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE);
-void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE);
 
 i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;

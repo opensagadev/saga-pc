@@ -93,6 +93,8 @@ extern "C" {
     typedef i32 (*AI_MID_SPECIAL_MOVE)(struct AISYS *, struct AIPACKET *, struct APIOBJECT *);
 
     extern AI_MID_SPECIAL_MOVE MidSpecialMoveFn;
+    void InitFn_PreparingForSpecialMove(AI_PREPARING_SPECIAL_MOVE);
+    void InitFn_MidSpecialMove(AI_MID_SPECIAL_MOVE);
     extern const f64 PCPathArcSineCoefficient3;
     extern const f64 PCPathArcSineCoefficient5;
     extern const f64 PCPathArcSineCoefficient7;

@@ -38,6 +38,14 @@ extern "C" {
     typedef void (*AI_CLEAR_CREATURES)(void);
     typedef struct APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
     typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(struct AISYS *, struct AIPACKET *);
+    void InitFn_LevelCharacterName(AI_CHARACTER_NAME);
+    void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME);
+    void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME);
+    void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER);
+    void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ);
+    void InitFn_ClearAICreatures(AI_CLEAR_CREATURES);
+    void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT);
+    void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN);
     extern i32 party_under_cover;
     extern f32 alert_timer;
     void MakeBaddiesForgetAboutParty(i32);
