@@ -37,7 +37,6 @@
 #include "nu2api/numath/nuvec.h"
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
-SOCK *FindSock(SOCKSYS *system, char *name);
 i32 turret_gizmotype_id;
 
 i32 obstacle_gizmotype_id;
