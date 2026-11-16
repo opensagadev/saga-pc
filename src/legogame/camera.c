@@ -90,11 +90,6 @@ i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i
                   f32 *camera_shake, f32 *separation_scale);
 struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
 
-typedef struct CAMERA_CABLE {
-    GAMEOBJECT *source;
-    GAMEOBJECT *target;
-} CAMERA_CABLE;
-
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 #define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
     do {                                                                                                                                   \
@@ -182,8 +177,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
     position->x = object->position.x;
     position->y = object->position.y + height;
     position->z = object->position.z;
-    if (object->cable != NULL && ((CAMERA_CABLE *)object->cable)->target != NULL) {
-        target = &((CAMERA_CABLE *)object->cable)->target->collision_position;
+    if (object->cable != NULL && object->cable->target != NULL) {
+        target = &object->cable->target->collision_position;
     }
     switch (object->character_context) {
         case CHARACTER_CONTEXT_FORCE:

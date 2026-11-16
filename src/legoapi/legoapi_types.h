@@ -1478,8 +1478,8 @@ struct CABLE_s {                 // size 0x1ec
     u8 wrap_indices[15];         // 0x1d8
     u8 point_count;              // 0x1e7
     u8 wrap_count;               // 0x1e8
-    u8 flags_1e9;                // 0x1e9
-    u8 unknown_1ea[2];           // 0x1ea
+    u8 unused_1e9;               // 0x1e9
+    u16 flags;                   // 0x1ea
 };
 
 struct GIZBUILDIT_s {                                  // size 0x84

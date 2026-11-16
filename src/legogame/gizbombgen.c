@@ -127,9 +127,9 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
             break;
         }
         player = Player[index];
-        if (player != NULL && BombGenerator_PlayerBomb[index] != NULL && player->cable != NULL &&
-            ((CABLE_s *)player->cable)->target != NULL && ((CABLE_s *)player->cable)->target->id == id_DRAGBOMB) {
-            KillGameObject(((CABLE_s *)player->cable)->target, KILL_REASON_REMOVED, 0);
+        if (player != NULL && BombGenerator_PlayerBomb[index] != NULL && player->cable != NULL && player->cable->target != NULL &&
+            player->cable->target->id == id_DRAGBOMB) {
+            KillGameObject(player->cable->target, KILL_REASON_REMOVED, 0);
             Player[index]->cable = NULL;
         }
         player = Player[index];
@@ -137,9 +137,9 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
             player->cable != NULL) {
             continue;
         }
-        if (index != 0 && shared_bomb != 0 && Player[0]->cable != NULL && ((CABLE_s *)Player[0]->cable)->target != NULL &&
-            ((CABLE_s *)Player[0]->cable)->target->id == id_DRAGBOMB) {
-            bomb = ((CABLE_s *)Player[0]->cable)->target;
+        if (index != 0 && shared_bomb != 0 && Player[0]->cable != NULL && Player[0]->cable->target != NULL &&
+            Player[0]->cable->target->id == id_DRAGBOMB) {
+            bomb = Player[0]->cable->target;
         } else {
             NUVEC position;
             position.x = 0.0f;
@@ -150,7 +150,7 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
             bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 0, NULL, NULL, 0, 0);
         }
         if (bomb != NULL) {
-            CABLE_RECORD *created = CreateCable(Player[index], bomb, 0);
+            CABLE_s *created = CreateCable(Player[index], bomb, 0);
             Player[index]->cable = created;
             cable = Player[index]->cable;
             if (cable != NULL) {

@@ -33,24 +33,6 @@
 #include <math.h>
 #include <string.h>
 
-struct CABLE_RECORD {        // size 0x1ec
-    GAMEOBJECT *source;      // 0x000
-    GAMEOBJECT *target;      // 0x004
-    NUVEC points[16];        // 0x008
-    NUVEC velocities[16];    // 0x0c8
-    f32 segment_lengths[15]; // 0x188
-    f32 max_length;          // 0x1c4
-    f32 total_length;        // 0x1c8
-    u8 unused_01cc[4];       // 0x1cc
-    f32 slack;               // 0x1d0
-    f32 pull_time;           // 0x1d4
-    u8 wrap_indices[15];     // 0x1d8
-    u8 point_count;          // 0x1e7
-    u8 wrap_count;           // 0x1e8
-    u8 unused_01e9;          // 0x1e9
-    u16 flags;               // 0x1ea
-};
-
 // The cable code tests the character context flags as a 64-bit field.
 typedef struct cable_context_info_s { // size 0x10
     const char *name;                 // 0x0
@@ -93,11 +75,11 @@ void InitCables(WORLDINFO *world) {
     }
 }
 
-CABLE_RECORD *CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
+CABLE_s *CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
     i32 i;
-    CABLE_RECORD *cable;
+    CABLE_s *cable;
     if (source != NULL && target != NULL) {
-        cable = (CABLE_RECORD *)cables;
+        cable = (CABLE_s *)cables;
         for (i = 0; i < 8; ++i, ++cable) {
             if ((cable->flags & 1) == 0) {
                 cable->flags |= 1;
@@ -125,7 +107,7 @@ void DestroyCable(CABLE_s *cable) {
     }
 }
 
-static void ReleaseCable(CABLE_RECORD *cable, i32 snapped) {
+static void ReleaseCable(CABLE_s *cable, i32 snapped) {
     i32 i;
     cable->flags |= 4;
     if (cable->target != NULL) {
@@ -165,7 +147,7 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     object = Obj;
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++object) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->dead == 0 && object->cable != NULL &&
-            ((CABLE_RECORD *)object->cable)->target == target) {
+            object->cable->target == target) {
             ReleaseCable(object->cable, 1);
         }
     }
@@ -180,7 +162,7 @@ f32 cable_ground_damping = 20.0f;
 AREA_DATA *HOTHBATTLE_ADATA = 0;
 
 void UpdateCables(void) {
-    CABLE_RECORD *cable = (CABLE_RECORD *)cables;
+    CABLE_s *cable = (CABLE_s *)cables;
     NUVEC closest;
     NUVEC delta;
     NUVEC path[16];
@@ -374,8 +356,8 @@ void UpdateCables(void) {
                                     object->id != (u16)id_ATST_LOWRES) {
                                     continue;
                                 }
-                                if (object->cable != NULL && (((CABLE_RECORD *)object->cable)->target == cable->target ||
-                                                              ((CABLE_RECORD *)object->cable)->target == cable->source)) {
+                                if (object->cable != NULL &&
+                                    (object->cable->target == cable->target || object->cable->target == cable->source)) {
                                     continue;
                                 }
                                 if (object == cable->source || object == cable->target) {
@@ -514,7 +496,7 @@ i32 nsegments_drawn = 0;
 i32 solid_cable = 0;
 
 void DrawCables(void) {
-    CABLE_RECORD *cable = (CABLE_RECORD *)cables;
+    CABLE_s *cable = (CABLE_s *)cables;
     NURND_VERTEX3D vertices[2];
     NUVEC step;
     i32 index;

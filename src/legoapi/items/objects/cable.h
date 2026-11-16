@@ -9,12 +9,11 @@
 
 struct CABLE_s;
 
-typedef struct CABLE_RECORD CABLE_RECORD;
 #ifdef __cplusplus
 extern "C" {
 #endif
     GAMEOBJECT *CableTargetGameObject(GAMEOBJECT *, NUVEC *, f32);
-    CABLE_RECORD *CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
+    struct CABLE_s *CreateCable(GAMEOBJECT *, GAMEOBJECT *, i32);
     extern const f32 AIPositionUnset;
     void InitCables(WORLDINFO *world);
     extern u8 cables[0xf60];

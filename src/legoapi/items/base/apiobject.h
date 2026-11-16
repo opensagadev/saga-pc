@@ -1593,7 +1593,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 animation_speed_multiplier;            // 0x1034
     f32 pod_boost_timer;                       // 0x1038
     f32 fall_acceleration_timer;               // 0x103c
-    void *cable;                               // 0x1040
+    struct CABLE_s *cable;                     // 0x1040
     u32 flags_1044;                            // 0x1044
     u32 layer_mask;                            // 0x1048
     u32 extra_layer_mask;                      // 0x104c

@@ -187,7 +187,7 @@ typedef struct ai_cable_head_s { // size 0x8
 
 typedef struct ai_cable_object_s { // size 0x1044
     u8 unknown_000[0x1040];        // 0x0000
-    CABLE_RECORD *cable;           // 0x1040
+    CABLE_s *cable;                // 0x1040
 } AI_CABLE_OBJECT;
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
