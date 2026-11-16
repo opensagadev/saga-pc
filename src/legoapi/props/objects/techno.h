@@ -106,6 +106,8 @@ extern "C" {
     NUVEC *Technos_TgtPos(TECHNO *techno);
     i32 GizTechno_CanUseTechno(struct gameobject_s *object, TECHNO *techno);
     void Techno_MoveCode(struct WORLDINFO_s *, struct gameobject_s *);
+    void TechnoMoveSpecialTarget(void);
+    void TechnoTargetDiagnostic(char *name);
 #ifdef __cplusplus
 }
 #endif

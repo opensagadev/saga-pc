@@ -54,6 +54,7 @@
 #include "nu2api/numath/nuvec.h"
 #include "legoapi/core/startup/text.h"
 #include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/ai/game/creature.h"
 
 typedef struct customiser_game_setting_s {
     char *name;
@@ -90,7 +91,6 @@ typedef struct custom_material_update_s {
 } CUSTOM_MATERIAL_UPDATE;
 
 extern NUVEC CustomisePos[2];
-i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
 

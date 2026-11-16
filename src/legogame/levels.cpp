@@ -136,6 +136,7 @@
 #include "legoapi/misc/utilities.h"
 #include "legoapi/props/doors/doors.h"
 #include "legoapi/world/levels/episodeIV.h"
+#include "legoapi/gizmos/door/securitydoors.h"
 
 extern "C" void FmvPlatformUpdate(void);
 
@@ -155,27 +156,6 @@ extern "C" {
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void LostTempleC_Reset(WORLDINFO *);
 extern "C" void LostTempleC_Update(WORLDINFO *);
-extern "C" void AnakinsFlightB_Update(WORLDINFO *);
-extern "C" void AnakinsFlightB_Draw(WORLDINFO *);
-extern "C" void RetakeG_Reset(WORLDINFO *);
-extern "C" void MaulA_Update(WORLDINFO *);
-extern "C" void MaulD_Init(WORLDINFO *);
-extern "C" void MaulD_Update(WORLDINFO *);
-extern "C" void MaulE_Init(WORLDINFO *);
-extern "C" void MaulE_Update(WORLDINFO *);
-extern "C" void MaulF_Update(WORLDINFO *);
-extern "C" void BountyHunterPursuitA_Init(WORLDINFO *);
-extern "C" void BountyHunterPursuitA_Reset(WORLDINFO *);
-extern "C" void BountyHunterPursuitA_Update(WORLDINFO *);
-extern "C" void BountyHunterPursuitB_Init(WORLDINFO *);
-extern "C" void BountyHunterPursuitB_Reset(WORLDINFO *);
-extern "C" void BountyHunterPursuitB_Update(WORLDINFO *);
-extern "C" void BountyHunterPursuitC_Init(WORLDINFO *);
-extern "C" void BountyHunterPursuitC_Reset(WORLDINFO *);
-extern "C" void BountyHunterPursuitC_Update(WORLDINFO *);
-extern "C" void BountyHunterPursuitD_Init(WORLDINFO *);
-extern "C" void BountyHunterPursuitD_Reset(WORLDINFO *);
-extern "C" void BountyHunterPursuitD_Update(WORLDINFO *);
 extern "C" void GrievousA_Init(WORLDINFO *);
 extern "C" void KashyyykA_Init(WORLDINFO *);
 extern "C" void KashyyykA_Update(WORLDINFO *);
@@ -202,7 +182,6 @@ extern "C" {
 }
 
 extern "C" void Attractos_InitTerrain(WORLDINFO *);
-extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void Signals_InitTerrain(WORLDINFO *);
 
 extern "C" {

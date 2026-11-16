@@ -8,3 +8,11 @@ typedef struct nupad_init_state_s { // size 0x8b
     u8 init_flags;                  // 0x89
     u8 init_port;                   // 0x8a
 } NUPAD_INIT_STATE;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    void Movies_ConfigureList(char *, VARIPTR *, VARIPTR *);
+#ifdef __cplusplus
+}
+#endif

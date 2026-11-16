@@ -41,6 +41,10 @@ extern "C" {
 extern "C" {
 #endif
     i32 ShipDropCoins(struct starfighter_s *fighter);
+    extern const f32 DogfightOriginEndXPc;
+    extern const f32 DogfightOriginEndY;
+    extern const f32 DogfightOriginEndZ;
+    extern const f32 DogfightOriginStartX;
 #ifdef __cplusplus
 }
 #endif

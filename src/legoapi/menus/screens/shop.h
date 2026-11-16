@@ -85,6 +85,21 @@ extern "C" {
     void InitShop(WORLDINFO *);
     void DrawShop3D(WORLDINFO *);
     i32 UpdateShop(void *);
+    extern char ShopCodeCharacters[37];
+    extern char ShopUserCode[6];
+    extern f32 ShopCodeExitPush;
+    extern f32 ShopCodeRepeatInterval;
+    extern f32 ShopCodeRepeatTimer;
+    extern f32 ShopNativeSubNormCharPush;
+    extern f32 ShopTopBrickOffset;
+    extern f32 ShopTopCodeOffset;
+    extern f32 ShopTopExtraOffset;
+    extern f32 ShopTopHintOffset;
+    extern i32 ShopCodeCharacter;
+    extern i32 ShopCodeItemChanged;
+    extern i32 ShopCodeMoveSfxLock;
+    extern i32 ShopCodeValid;
+    extern i32 ShopSubMoveSfxLock;
 #ifdef __cplusplus
 }
 #endif

@@ -78,6 +78,9 @@
 #include "legoapi/gizmos/trigger/gizrandom.h"
 #include "legoapi/gizmos/trigger/giztimer.h"
 #include "legoapi/props/doors/doors.h"
+#include "legoapi/gizmos/door/securitydoors.h"
+#include "legoapi/gizmos/transport/teleport.h"
+#include "legoapi/gizmos/traps/gizturret.h"
 
 ADDGIZMOTYPE *GizBuildIts_RegisterGizmo(i32);
 ADDGIZMOTYPE *Signals_RegisterGizmo(i32);
@@ -85,11 +88,8 @@ ADDGIZMOTYPE *Grapples_RegisterGizmo(i32);
 ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32);
 ADDGIZMOTYPE *Ledges_RegisterGizmo(i32);
 ADDGIZMOTYPE *Spinner_RegisterGizmo(i32);
-ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32);
 ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizTurrets_RegisterGizmo(i32);
 ADDGIZMOTYPE *Push_RegisterGizmo(i32);
-ADDGIZMOTYPE *Teleport_RegisterGizmo(i32);
 
 const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
 const f64 PlayerSlideSpeed = 1.2000000476837158;
