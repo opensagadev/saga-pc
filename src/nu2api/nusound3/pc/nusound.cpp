@@ -77,8 +77,6 @@ extern "C" void fun_00698810(void) {
 }
 
 extern "C" void NuSound3SetDPL(i32 mode, i32 unused) {
-    (void)mode;
-    (void)unused;
 }
 
 extern "C" void fun_00698850(void) {
@@ -142,14 +140,6 @@ extern "C" void PCSoundPlayUnpositioned(i32 sample_id, i32 volume_index, i32 arg
     }
 
     SoundVoiceManager.SetVoice(voice_id, 0, NuSound3VolumeTable[table_index], 0);
-
-    (void)arg3;
-    (void)arg4;
-    (void)arg5;
-    (void)arg6;
-    (void)arg7;
-    (void)arg8;
-    (void)arg9;
 }
 
 extern "C" void PCSoundPlayUnpositionedWrapper(i32 arg1, i32 arg2, i32 arg3, i32 arg4, f32 arg5, i32 arg6, f32 arg7, f32 arg8) {
@@ -225,12 +215,6 @@ extern "C" void PCSoundPlayPositioned(NUVEC *position, i32 sample_id, i32 volume
     }
     SoundVoiceManager.SetVoice(voice_id, 0, NuSound3VolumeTable[table_index], pitch);
     ++PCSoundStartedOneShotCount;
-    (void)volume_right;
-    (void)buzz_timer;
-    (void)rumble_strength;
-    (void)rumble_sustain;
-    (void)rumble_release;
-    (void)priority;
 }
 
 extern "C" void PCSoundPlayPositionedWrapper(NUVEC *position, i32 sample_id, i32 volume_left, i32 volume_right, i32 pitch, f32 buzz_timer,
@@ -317,11 +301,6 @@ extern "C" void PCSoundPlayPositionedLoop(NUVEC *position, i32 sample_id, i32 vo
         SoundVoiceManager.SetFrequencyParameter(voice_id, pitch);
         ++PCSoundUpdatedLoopCount;
     }
-    (void)volume_right;
-    (void)buzz_timer;
-    (void)rumble_strength;
-    (void)rumble_sustain;
-    (void)rumble_release;
 }
 
 i32 SoundVoiceManagerPC::AllocateVoice(i32 sample_id, i32 bank) {
@@ -751,7 +730,6 @@ extern "C" {
 }
 
 void SoundVoiceManagerPC::Init(i32 unused, u8 option5_value, u8 option6_value) {
-    (void)unused;
     option5 = option5_value;
     option6 = option6_value;
     if (FAILED(DirectSoundCreate8(NULL, &factory, NULL))) {
@@ -1084,7 +1062,6 @@ extern "C" void NuSound3StopSFX(void) {
 }
 
 extern "C" void NuSound3SetSFXPitch(i32 pitch) {
-    (void)pitch;
 }
 
 extern "C" void NuSound3CancelCheckStereo(void) {

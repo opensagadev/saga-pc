@@ -726,7 +726,6 @@ static void TextureAnimationBranchPrivate(NUFPAR *parser) {
 }
 
 static void TextureAnimationReturnPrivate(NUFPAR *parser) {
-    (void)parser;
     TextureAnimationParseProgramPrivate->instructions[TextureAnimationParseProgramPrivate->instruction_count++] = TEXANIM_OP_RET;
 }
 
@@ -745,7 +744,6 @@ static void TextureAnimationRepeatPrivate(NUFPAR *parser) {
 }
 
 static void TextureAnimationRepeatEndPrivate(NUFPAR *parser) {
-    (void)parser;
     TextureAnimationParseProgramPrivate->instructions[TextureAnimationParseProgramPrivate->instruction_count++] = TEXANIM_OP_REPEND;
 }
 
@@ -759,7 +757,6 @@ static void TextureAnimationUntilPrivate(NUFPAR *parser) {
 }
 
 static void TextureAnimationEndPrivate(NUFPAR *parser) {
-    (void)parser;
     TextureAnimationParseProgramPrivate->instructions[TextureAnimationParseProgramPrivate->instruction_count++] = TEXANIM_OP_END;
 }
 
@@ -959,7 +956,6 @@ TEXTURE_ANIM_PROGRAM *NuTexAnimProgParseFile(NUFILE file, VARIPTR *buffer, VARIP
     NUFPAR *parser;
     i32 length;
     TEXTURE_ANIM_PROGRAM *result;
-    (void)fps;
     if (buffer != NULL) {
         program = (TEXTURE_ANIM_PROGRAM *)((buffer->addr + 3) & ~3u);
     } else {

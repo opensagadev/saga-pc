@@ -77,8 +77,6 @@ OggReader::~OggReader(void) {
 }
 
 HRESULT OggReader::Unknown08(u32 a, u32 b) {
-    (void)a;
-    (void)b;
     return E_FAIL;
 }
 

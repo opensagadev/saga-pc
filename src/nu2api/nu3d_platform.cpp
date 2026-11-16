@@ -1622,8 +1622,6 @@ extern "C" {
     }
 
     void NuEffectTexLockVP(VARIPTR *buffer, VARIPTR end) {
-        (void)buffer;
-        (void)end;
     }
 
     i32 NuEffectTexUnlockVP(void) {
@@ -1938,7 +1936,6 @@ extern "C" {
     }
 
     void PCGraphicsRestoreEffectTextures(i32 unused) {
-        (void)unused;
         for (i32 index = 0; index != 32; ++index) {
             GRAPHICS_RENDER_TEXTURE *texture = &PCGraphicsRenderTextures[index];
             if (PCGraphicsRenderTextureActive[index]) {
@@ -2058,8 +2055,6 @@ extern "C" {
     }
 
     void PCGraphicsEnableFramebufferGuards(PC_FRAMEBUFFER *frame, i32 enabled) {
-        (void)frame;
-        (void)enabled;
     }
 
     void PCGraphicsBindFramebuffer(PC_FRAMEBUFFER *frame) {
@@ -2118,7 +2113,6 @@ extern "C" {
         i32 id;
         void *data;
         NUTEXDIM *texture;
-        (void)end;
         NuStrFixExt(filename, name, "dds", sizeof(filename));
         file = NuFileOpen(filename, 0);
         if (file == 0) {
@@ -2190,7 +2184,6 @@ extern "C" {
     }
 
     void NuTexInitExPS(VARIPTR *buffer) {
-        (void)buffer;
         PCDeviceCreateCubeTextureFromFile("pc\\stuff\\LegoCubeMap_PC.dds", &NuTextureEnvironmentCube);
         PCDeviceCreateCubeTextureFromFile("pc\\stuff\\PhongMap_PC.dds", &NuTexturePhongCube);
     }
@@ -2754,7 +2747,6 @@ extern "C" {
         NUQFNT_RENDER_DATA *platform;
         NUMTL *material;
 
-        (void)end;
         NuTexGetWidth(texture_id);
         NuTexGetHeight(texture_id);
         buffer->addr = (buffer->addr + 15) & ~15U;
@@ -3743,8 +3735,6 @@ extern "C" {
     }
 
     void RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint, NUMTL *material) {
-        (void)tint_enabled;
-        (void)tint;
         render_state.state_00f8 = alpha;
         render_state.const_alpha_material = material;
         ++render_state.global_id;
@@ -4176,15 +4166,9 @@ extern "C" {
     }
 
     void NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS *params, i32 tiles, f32 b, f32 a, f32 c) {
-        (void)params;
-        (void)tiles;
-        (void)b;
-        (void)a;
-        (void)c;
     }
 
     void NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS *params) {
-        (void)params;
     }
 
     void NuRndrScreenGrabTileBegin(void **tile) {
@@ -4192,7 +4176,6 @@ extern "C" {
     }
 
     void NuRndrScreenGrabTileEnd(void **tile) {
-        (void)tile;
     }
 
     void NuVpRestore(void) {
@@ -4695,8 +4678,6 @@ extern "C" {
     }
 
     void NuPrimInit(VARIPTR *buffer, VARIPTR end) {
-        (void)buffer;
-        (void)end;
     }
 
     void NuPrimSetCoordinateSystem(i32 scale_mode) {
@@ -5118,8 +5099,6 @@ extern "C" {
         void *data;
         i32 skip_texture;
         SCENE_FILE_TEXTURE_HEADER texture;
-        (void)cursor;
-        (void)end;
         section_size = 0;
         if (SceneUploadBufferStartPC.addr == 0) {
             SceneUploadBufferStartPC.void_ptr =
@@ -5235,8 +5214,6 @@ extern "C" {
 
     void NuGScnCreatePS(NUGSCN *scene, VARIPTR *cursor, VARIPTR *end) {
         i32 i;
-        (void)cursor;
-        (void)end;
         for (i = 0; i != scene->texture_count; ++i) {
             scene->textures[i]->resource = SceneVideoResourcesPC.textures[i];
             scene->textures[i]->image_data = NULL;
@@ -5455,20 +5432,16 @@ extern "C" {
     }
 
     i32 DisplayListDebugPS(NUDISPLAYLISTITEM *item, char *text) {
-        (void)item;
-        (void)text;
         return 0;
     }
 
     void NuDisplayListAddClut(NUDISPLAYLISTITEM *item, i32 texture_id) {
-        (void)texture_id;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = NUDLISTITEM_SKIP;
     }
 
     void NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
-        (void)texture_id;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = NUDLISTITEM_SKIP;
@@ -5481,23 +5454,18 @@ extern "C" {
     }
 
     void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
-        (void)material;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = NUDLISTITEM_SKIP;
     }
 
     void NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
-        (void)material;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
         item->id = NUDLISTITEM_SKIP;
     }
 
     void DisplayListCreatePS(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARIPTR end) {
-        (void)scene;
-        (void)buffer;
-        (void)end;
     }
 
     VARIPTR *NuDisplayListLinkItem(NUDISPLAYLIST *list, u8 type, void *target) {
@@ -5539,9 +5507,6 @@ extern "C" {
         NUVEC translation;
         NUVEC scale;
         NUMTX *result;
-        (void)material;
-        (void)geometry;
-        (void)existing;
         NuCameraGetProjectionMtx();
         NuCameraGetViewMtx();
         scale.z = 1.0f;
@@ -5564,7 +5529,6 @@ extern "C" {
         NUMTX *orientation;
         NUVEC direction;
         f32 magnitude;
-        (void)material;
         buffer->addr = (buffer->addr + 3) & ~3u;
         result = buffer->mtx_ptr;
         *result = *matrix;
@@ -5611,7 +5575,6 @@ extern "C" {
         void *locked;
         PC_SPECIAL_GEOMETRY *copy;
         i32 i;
-        (void)unused;
         if (weights != NULL && geometry->morph_count != 0) {
             *render_geometry = (void *)((buffer->addr + 31) & ~31u);
             buffer->addr = ((buffer->addr + 31) & ~31u) + sizeof(*copy);
@@ -5654,8 +5617,6 @@ extern "C" {
     }
 
     void DisplayListPrintItemPS(NUDISPLAYLISTITEM *item, i32 file_handle) {
-        (void)item;
-        (void)file_handle;
     }
 
     void DisplayListSwapBuffersPS(void) {
@@ -5671,12 +5632,9 @@ extern "C" {
     }
 
     void DisplayGenerateTransformsNoOp(NUDISPLAY_LIST *scene) {
-        (void)scene;
     }
 
     void *NuDisplayListPrepareFaceonPS(VARIPTR *buffer, void *faceon, NUMTX *matrix) {
-        (void)buffer;
-        (void)matrix;
         return faceon;
     }
 
@@ -5691,7 +5649,6 @@ extern "C" {
     }
 
     void NuDisplaySceneDestroyPS(NUDISPLAY_LIST *scene) {
-        (void)scene;
     }
 
     i32 fun_006039c0(void) {
@@ -5745,13 +5702,11 @@ extern "C" {
 
     void DisplayListSetAlphaPS(NUDISPLAYLISTITEM *item, NUDISPLAYLISTITEM *geometry, f32 alpha) {
         NUMTX *matrix = (NUMTX *)item->next;
-        (void)geometry;
         matrix->m33 = alpha < 0.0f ? 0.0f : (alpha > 1.0f ? 1.0f : alpha);
     }
 
     void DisplayListSetShadowCasterFlagPS(NUDISPLAYLISTITEM *first, NUDISPLAYLISTITEM *last, i32 shadow) {
         PC_SPECIAL_TRANSFORM_PACKET *packet = (PC_SPECIAL_TRANSFORM_PACKET *)first->next;
-        (void)last;
         packet->matrix.m32 = (f32)shadow;
     }
 
@@ -5779,8 +5734,6 @@ extern "C" {
 
     void PCGraphicsInitRenderTexturePool(VARIPTR *buffer, VARIPTR end) {
         i32 index;
-        (void)buffer;
-        (void)end;
         memset(PCGraphicsRenderTextures, 0, sizeof(PCGraphicsRenderTextures));
         for (index = 0; index != 32; ++index) {
             PCGraphicsRenderTextureActive[index] = 0;
@@ -6328,7 +6281,6 @@ extern "C" {
 
     void NuInitDebrisRenderer(VARIPTR *buffer, VARIPTR buffer_end) {
         i32 index;
-        (void)buffer_end;
         NuDebrisMaxVertexCount = NuDebrisIdealDynamicVBSize / 24u;
         NuDebrisVertexBufferSize = NuDebrisMaxVertexCount * 24u;
         for (index = 0; index != 8; ++index) {
@@ -6366,7 +6318,6 @@ extern "C" {
         VARIPTR *cursor;
         NUPRIM_PACKET *packet;
 
-        (void)vertex_format;
         if (material == NULL) {
             material = numtl_defaultmtl2d;
         }
@@ -6421,7 +6372,6 @@ extern "C" {
         VARIPTR *primitive_buffer;
         void *transform;
         NUPRIM_PACKET *geometry;
-        (void)vertex_format;
         if (material == NULL) {
             material = numtl_defaultmtl3d;
         }
@@ -7062,9 +7012,6 @@ extern "C" {
     }
 
     void PCGraphicsInitializeFramebuffers(u32 flags, i32 unused, VARIPTR *buffer, VARIPTR end) {
-        (void)unused;
-        (void)buffer;
-        (void)end;
         memset(PcFramebufferPool, 0, sizeof(PcFramebufferPool));
         memset(PcFramebufferActive, 0, sizeof(PcFramebufferActive));
         PcBoundFramebuffer = NULL;
@@ -7103,9 +7050,6 @@ extern "C" {
         f32 u1;
         f32 v1;
         i32 i;
-        (void)unused_a;
-        (void)unused_b;
-        (void)unused_c;
         if (material->particle_type_tag == -105) {
             u0 = 0.0f;
             u1 = 1.0f;
@@ -7612,14 +7556,9 @@ extern "C" {
     }
 
     void RndrStateUpdate(NURNDRLIBSTATE *state, NUMTL *material, NUDISPLAYLISTITEM *item) {
-        (void)state;
-        (void)material;
-        (void)item;
     }
 
     void RndrStateUpdateFx(NURNDRLIBSTATE *state, NUDISPLAYLISTITEM *item) {
-        (void)state;
-        (void)item;
     }
 
     void NuDisplayListInit(VARIPTR *cursor, i32 arg2) {
@@ -7721,9 +7660,6 @@ extern "C" {
     }
 
     void NuRndrConfigureLeaf(f32 a, f32 b, i32 c) {
-        (void)a;
-        (void)b;
-        (void)c;
     }
 
     void fun_00602940(void) {
@@ -7888,7 +7824,6 @@ extern "C" {
     }
 
     void NuRndrShadowInit(u8 *random) {
-        (void)random;
         NuPtlDmaSlotsExhausted();
     }
 
@@ -7912,7 +7847,6 @@ extern "C" {
     }
 
     void NuLightSpotFadeSet(u32 fade) {
-        (void)fade;
     }
 
     void fun_005fef70(void) {
@@ -8557,7 +8491,6 @@ extern "C" {
     }
 
     void NuRndrFx(i32 paused, void *context) {
-        (void)context;
         NuLgtLaserDraw(paused);
         NuLgtArcLaserDraw(paused);
         if (NuRndrFxHeightOverride != 0.0f) {

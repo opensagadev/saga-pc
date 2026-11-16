@@ -194,7 +194,6 @@ BGPROCINFO *bgPostRequest(bgprocdofn *do_fn, bgprocdofn *ack_fn, void *data, i32
 
 /* Native Windows worker: the callback never returns during process lifetime. */
 static DWORD WINAPI bgProcWorker(void *unused) {
-    (void)unused;
     WaitForSingleObject(bgproc_work_event, INFINITE);
     EnterCriticalSection(&bgproc_critical_section);
     bgproc_active = (BGPROCINFO *)NuLstGetNext(bgproc_procinfo_pool, NULL);

@@ -31,8 +31,6 @@ void NuBridgeDrawRopeSegment(NUMTL *material, NUVEC *points, i32 count, i32 colo
     NUVEC edge;
     NUVEC corner;
     NUVEC direction;
-    (void)material;
-    (void)colour;
 
     next = points + 1;
     for (i = 0; i < count; ++i, ++points, ++next) {
@@ -79,7 +77,6 @@ void NuBridgeDrawRopeSegment(NUMTL *material, NUVEC *points, i32 count, i32 colo
 
 void NuBrdigeDrawRope(NUMTL *material, NUVEC *first, NUVEC *second, i32 count, i32 *boundaries, i32 colour) {
     i32 i;
-    (void)count;
     for (i = 0; boundaries[i] < boundaries[i + 1]; ++i) {
         NuBridgeDrawRopeSegment(material, &first[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);
         NuBridgeDrawRopeSegment(material, &second[boundaries[i]], boundaries[i + 1] - boundaries[i], colour);

@@ -309,7 +309,6 @@ void NuRndrCalcRandCylinderPos(NUVEC4 *position, NUMTX *matrix, NUVEC *axes) {
 void NuRndrStartReflectionRender(i32 clip) {
     PCSpecialReflectionPass = 1;
     RndrStateSetReflection(1);
-    (void)clip;
 }
 
 void NuRndrEndReflectionRender(void) {
@@ -1346,8 +1345,6 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
 }
 
 u8 NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
-    (void)minimum_unused;
-    (void)maximum_unused;
     return (u8)MIN(255.0f, MAX(0.0f, value));
 }
 

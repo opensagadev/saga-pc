@@ -3787,7 +3787,6 @@ void NuRDPFNumberError(void) {
 }
 
 void NuRDPFVariableError(char *name) {
-    (void)name;
 }
 
 static void NuRDPFGetToken(NURDPFCTX *context) {
@@ -4912,7 +4911,6 @@ void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 alig
     NUALLOC_MANAGER_BLOCK *block;
     NUALLOC_MANAGER_BLOCK *allocated;
     NUALLOC_MANAGER_BLOCK *remainder;
-    (void)unused;
     NuAllocManagerCheck(manager);
     if (size == 0) {
         return NULL;
@@ -7830,8 +7828,6 @@ void NuPadRecordLoad(char *filepath, VARIPTR *buffer, VARIPTR end) {
     FRAME_PAD_RECORD *record = &nuapi.pad_record;
     NUFILE file;
     i32 size;
-    (void)buffer;
-    (void)end;
     record->mode = NUPAD_NORM;
     if (filepath != NULL) {
         file = NuFileOpenDF(filepath, 0, curr_dat, 0);

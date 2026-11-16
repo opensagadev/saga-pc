@@ -845,7 +845,6 @@ extern "C" {
     }
 
     void ANI_FixUpAddrs(ANI3_HEADER *anim, i32 delta, i32 flags) {
-        (void)flags;
         if (anim->magic != 0x414e4934) {
             return;
         }
@@ -2977,7 +2976,6 @@ extern "C" {
      * or allocation provider is invented. */
     void NuAnimInit(i32 max_joints, VARIPTR *buffer, VARIPTR end) {
         ANI3_GLOBALBUFFER *header;
-        (void)end;
         buildBitCountTable();
         MaxAnimJoints = max_joints;
 
@@ -4677,12 +4675,10 @@ extern "C" {
     }
 
     void NuQFntSetRS(void *stream, VUFNT *font) {
-        (void)stream;
         font->mode = 1;
     }
 
     void NuQFntSetScaleRS(void *stream, VUFNT *font, f32 x_scale, f32 y_scale) {
-        (void)stream;
         *font->x_scale = x_scale;
         if ((NuQFntMode & 4) != 0) {
             *font->y_scale = y_scale;
@@ -4692,7 +4688,6 @@ extern "C" {
     }
 
     void NuQFntSetColourRS(void *stream, VUFNT *font, u32 colour) {
-        (void)stream;
         font->platform_data->colour = colour;
     }
 
@@ -4773,7 +4768,6 @@ extern "C" {
     }
 
     void NuQFntMoveRS(void *stream, VUFNT *font, f32 x, f32 y, f32 z) {
-        (void)stream;
         if (nuqfnt_cs_mode != 4) {
             x = x * qfnt_rezscale_w + qfnt_offscale_x;
             y = y * qfnt_rezscale_h + qfnt_offscale_y - font->baseline * *font->y_scale;
@@ -4788,7 +4782,6 @@ extern "C" {
     }
 
     void NuQFntSetMtxRS(void *stream, VUFNT *font, NUMTX *matrix) {
-        (void)stream;
         font->platform_data->matrix = *matrix;
     }
 
@@ -4993,7 +4986,6 @@ extern "C" {
     } FONT_STREAM_ANCHOR;
 
     void NuQFntSetSpaceWidth(VUFNT *font, f32 width) {
-        (void)font;
         nuqfnt_space_width = width;
     }
 
@@ -5015,7 +5007,6 @@ extern "C" {
         f32 line_height;
         u16 hyphen;
         i32 line_number;
-        (void)stream;
         NuQFntSetColourRS(stream, font, colour);
         NuQFntSetScaleRS(stream, font, sx, sy);
         NuQFntSetSpaceWidth(font, space_width);
@@ -5227,8 +5218,6 @@ extern "C" {
     }
 
     void NuRndrInitLeaf(VARIPTR *buffer, VARIPTR end) {
-        (void)buffer;
-        (void)end;
     }
 
     /* The PS2 bitmap-font tools are compiled empty on PC. */
@@ -5244,55 +5233,31 @@ extern "C" {
     }
 
     void NuFntSetPen(i32 pen) {
-        (void)pen;
     }
 
     void NuFntSave(void *font, i32 flags, char *path) {
-        (void)font;
-        (void)flags;
-        (void)path;
     }
 
     void NuFntDumpReadable(void *font, char *path) {
-        (void)font;
-        (void)path;
     }
 
     i32 CheckCol(nutex_s *texture, i32 x, i32 y0, i32 y1, i32 colour) {
-        (void)texture;
-        (void)x;
-        (void)y0;
-        (void)y1;
-        (void)colour;
         return 1;
     }
 
     i32 NuFntFindStart(nutex_s *texture, i32 *x, i32 *y, i32 width, i32 height) {
-        (void)texture;
-        (void)x;
-        (void)y;
-        (void)width;
-        (void)height;
         return 1;
     }
 
     i32 NuFntFindEnd(nutex_s *texture, i32 *x, i32 *y, i32 width, i32 height) {
-        (void)texture;
-        (void)x;
-        (void)y;
-        (void)width;
-        (void)height;
         return 1;
     }
 
     /* The PS2 font selection calls are no-ops on PC. */
     void NuFntSet(i32 font) {
-        (void)font;
     }
 
     void NuFntScale(i32 x, i32 y) {
-        (void)x;
-        (void)y;
     }
 
     i32 NuFntGetScreenHeight(void) {
@@ -5320,7 +5285,6 @@ extern "C" {
     }
 
     i32 NuFntPrintChar(char character) {
-        (void)character;
         return 1;
     }
 
@@ -6121,7 +6085,6 @@ extern "C" void NuOcclusionManagerSetOccluderScreenSpaceThreshold(f32 threshold)
 /* Original legoapi/render/light/occlusion.cpp family; public material APIs
  * preserve the original inline operations without exposing private ABIs. */
 void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
-    (void)buffer_end;
     capacity = max_occluders;
     count = 0;
     occluders = reinterpret_cast<PC_OCCLUDER_RECORD *>((buffer->addr + 15u) & ~15u);
@@ -7702,7 +7665,6 @@ extern "C" {
         NUVEC rays[4];
         NUVEC corners[4];
         i32 i;
-        (void)frustum;
         if (NuPortalDebugEnabled == 0) {
             return;
         }
@@ -8805,7 +8767,6 @@ extern "C" {
     static i32 CreateTimeBar(VARIPTR *buffer, VARIPTR unused_buffer, i32 *colours, i32 slot_count) {
         TimeBarSet *timebar;
         i32 set;
-        (void)unused_buffer;
 
         if (buffer != NULL) {
             timebar = (TimeBarSet *)ALIGN_UP(buffer->addr, 4);
@@ -9764,8 +9725,6 @@ extern "C" {
     NUDISPLAYLISTITEM *NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *unused, NUMTL *material, VARIPTR *cursor, VARIPTR end) {
         NUDISPLAYLISTITEM *items = (NUDISPLAYLISTITEM *)cursor->addr;
         PC_DISPLAY_MATERIAL *view = (PC_DISPLAY_MATERIAL *)material;
-        (void)unused;
-        (void)end;
         cursor->addr += 0x80;
         items[0].type = NUDLIST_MTL_CLIP;
         items[0].next = items + PCMaterialBlockItemCount - 1;
@@ -10285,7 +10244,6 @@ extern "C" {
         NUVEC maximum;
         void *transform_packet;
         NUDISPLAYLISTITEM *first_and_last[3];
-        (void)skinned;
         if (handle == NULL) {
             return 0;
         }
@@ -10473,9 +10431,6 @@ extern "C" void NuDisplayListCreate(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARI
     i32 used_size;
     NUDISPLAYLIST *lists;
     NUDISPLAYLISTITEM *first;
-    (void)unused5;
-    (void)unused6;
-    (void)unused8;
     buffer->addr = ALIGN_UP(buffer->addr, 16);
     scene->item_count = item_count;
     scene->items = (NUDISPLAYLISTITEM *)ALIGN_UP(buffer->addr, 16);
@@ -12166,7 +12121,6 @@ extern "C" {
 }
 
 void NuMainFilterGen::preprocessBlurTextures(GRAPHICS_RENDER_TEXTURE *color, GRAPHICS_RENDER_TEXTURE *normal) {
-    (void)normal;
     i32 width = PCGraphicsEffectTextureWidth(color);
     i32 height = PCGraphicsEffectTextureHeight(color);
     if (!dof_enabled && !bloom_enabled) {
@@ -15396,7 +15350,6 @@ extern "C" {
         i32 enabled = result->instance_tree != NULL && do_InstTree != 0;
         i32 root;
         VISIBILITY_TREE_READER *tree;
-        (void)scene;
         ((VISIBILITY_TREE_FLAG_WORD *)&result->flags)->bits.instance_tree = enabled;
         if ((result->flags & 0x10u) == 0) {
             return;
@@ -16289,7 +16242,6 @@ extern "C" {
     i32 NuSpecialFind(NUGSCN *scene, nuhspecial_s *handle, char *name, i32 report_missing) {
         NUSPECIAL_LEGACY *special;
         i32 index;
-        (void)report_missing;
         if (scene == NULL || name == NULL) {
             handle->scene = NULL;
             handle->special = NULL;
@@ -17410,7 +17362,6 @@ extern "C" {
         }
         PCSpecialClipState = old_clip;
         PCSpecialShadowClipResultsPresent = 0;
-        (void)render_flags;
         return drawn;
     }
 

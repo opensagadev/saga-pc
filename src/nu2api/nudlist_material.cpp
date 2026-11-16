@@ -702,8 +702,6 @@ inline NuPostFilterGen::~NuPostFilterGen() {
 
 extern "C" void PCGraphicsCopyFramebufferTex2D(i32 attachment, GRAPHICS_RENDER_TEXTURE *texture, i32 level, i32 x, i32 y, i32 width,
                                                i32 height) {
-    (void)x;
-    (void)y;
     if (attachment == 0) {
         bool resize = width != PS2_REZ_W || height != PS2_REZ_H;
         PC_EFFECT_SURFACE target;

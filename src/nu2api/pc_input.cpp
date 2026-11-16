@@ -916,7 +916,6 @@ extern "C" void NuPadAutoConfigure(i32 count) {
 }
 
 extern "C" i32 GamePadReadBackend(FRAME_PAD *pad, i32 ignored) {
-    (void)ignored;
     return NuPadRead(pad);
 }
 

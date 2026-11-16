@@ -166,20 +166,13 @@ void NuRainSetTexture(f32 u0, f32 v0, f32 u1, f32 v1) {
 }
 
 void NuRainDrawDrop(i32 a, i32 b, f32 c, f32 d, i32 e) {
-    (void)a;
-    (void)b;
-    (void)c;
-    (void)d;
-    (void)e;
 }
 
 void NuRainDrawShape(f32 size) {
-    (void)size;
 }
 
 /* PC draws no rain; the debris glass pass still hands it the reserved texture. */
 void NuRainDraw(i32 reserved) {
-    (void)reserved;
 }
 
 void NuRainSetFall(f32 fall) {

@@ -12,7 +12,6 @@
 #include "nu2api/nuwin32/Stubs.h"
 
 void PCAnimationLoadFailureNoOp(char *path) {
-    (void)path;
 }
 
 void PCCharacterSystemExistingNoOp() {
@@ -31,8 +30,6 @@ void PCGraphicsRenderTextureAllocationError(void) {
 }
 
 void NuTexBmpUnsupportedDepth(i32 bit_count, const char *path) {
-    (void)bit_count;
-    (void)path;
 }
 
 void NuFrameEndLeaf(void) {
@@ -55,8 +52,6 @@ void fun_005c6110(void) {
 }
 
 void DisplayListSpecialTransformNoOp(nuhspecial_s *special, NUMTX *matrix) {
-    (void)special;
-    (void)matrix;
 }
 
 /* PC has no PS2 screen grab; the dump is empty. */
@@ -150,15 +145,12 @@ void PCCharacterModelDiagnosticNoOp() {
 }
 
 void CutSceneLoadDiagnostic(void *unused, ...) {
-    (void)unused;
 }
 
 void CutSceneConfigMissing(char *unused) {
-    (void)unused;
 }
 
 void CutSceneStreamDiagnostic(char *unused) {
-    (void)unused;
 }
 
 void NuFileError(void) {
@@ -173,14 +165,12 @@ void fun_004ef7c0(void) {
 /* Empty release diagnostics with an argument; the linker folds them into
    NuFileError and NuFileRetry. */
 void NuRDPIVariableError(char *name) {
-    (void)name;
 }
 
 void fun_004ef7a0(void) {
 }
 
 void NuDatFileMissing(char *filepath) {
-    (void)filepath;
 }
 
 void NuAllocBadPointer(void) {
@@ -190,5 +180,4 @@ void fun_004eedb0(void) {
 }
 
 void NuAllocReport(const void *message, ...) {
-    (void)message;
 }

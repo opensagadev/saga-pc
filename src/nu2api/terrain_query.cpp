@@ -2080,7 +2080,6 @@ extern "C" void DrawHitTerrain(void) {
 }
 
 extern "C" f32 NewShadowHandelEx(NUVEC *position, f32 unused, f32 height_above, f32 height_below, i32 terrain_mask, i16 *handle) {
-    (void)unused;
     if (CurrentTerrain == NULL) {
         return LevelConfigFarDistance;
     }

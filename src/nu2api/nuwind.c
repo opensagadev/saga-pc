@@ -17,7 +17,6 @@ void NuWindSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_count
     buffer->addr = (buffer->addr + 15) & ~15u;
     NuWindGroup = buffer->void_ptr;
     buffer->addr += group_count * sizeof(PC_NUWINDGROUP);
-    (void)end;
 }
 
 i32 fun_00546fc0(void) {

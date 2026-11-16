@@ -30,7 +30,6 @@ void NuFadeObjSetup(VARIPTR *buffer, VARIPTR end, i32 matrix_count, i32 group_co
     buffer->addr = (buffer->addr + 15) & ~15u;
     NuFadeData = buffer->void_ptr;
     buffer->addr += matrix_count * sizeof(i16);
-    (void)end;
 }
 
 void fun_00545e00(void) {

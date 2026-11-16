@@ -925,16 +925,9 @@ f32 GetSoundVolume(void) {
 }
 
 void NuSound3AddRumble(void *pad, f32 strength, i32 duration, f32 priority, f32 buzz) {
-    (void)pad;
-    (void)strength;
-    (void)duration;
-    (void)priority;
-    (void)buzz;
 }
 
 void NuSound3SetRumblePads(void *pad_0, void *pad1) {
-    (void)pad_0;
-    (void)pad1;
 }
 
 i32 fun_00698940(void) {
@@ -1031,7 +1024,6 @@ void NuSound3StopRumble(void) {
 }
 
 void NuSound3UpdateRumble(f32 frame_time) {
-    (void)frame_time;
 }
 
 f32 PCSoundVolumeLookup(i32 index) {
@@ -1407,7 +1399,6 @@ void InitSfx(VARIPTR *cursor, VARIPTR end, const char *file) {
 }
 
 void PauseGameAudio(i32 ignored) {
-    (void)ignored;
     if (NOSOUND == 0) {
         NuSound3StopSFX();
         NuSound3SetSFXPitch(0);
@@ -1719,5 +1710,4 @@ void fun_00698a30(void) {
 /* Sound error report, compiled empty. It lives outside the sound voice code so its callers keep their
  * failure tests and calls; they pass a path, an index, an HRESULT or nothing. */
 void PCSoundFailure(const char *format, ...) {
-    (void)format;
 }

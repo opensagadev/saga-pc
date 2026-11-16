@@ -1471,7 +1471,6 @@ f32 NewCast(NUVEC *position, f32 height_above, f32 roof_range) {
 
 f32 NewShadowEx(NUVEC *position, f32 unused, f32 height_above, f32 roof_range, i32 mask) {
     NUVEC local_position;
-    (void)unused;
     TerrainShadowHeight = LevelConfigFarDistance;
     EShadY = LevelConfigFarDistance;
     GetSurfaceInfoWaterNormal.y = 1.0f;
@@ -1700,10 +1699,6 @@ void *TerrainInitEx(i32 level_num, void *buf, void *buf_end, i32 options, char *
     TERRAIN_DISPLAY_OBJECT *display_object;
     TERRAIN_DISPLAY_OBJECT *candidate;
     TERRAIN_SCENE_OBJECT *scene_object;
-
-    (void)level_num;
-    (void)options;
-    (void)scene_id;
 
     cursor = buf;
     saved_cursor = *cursor;

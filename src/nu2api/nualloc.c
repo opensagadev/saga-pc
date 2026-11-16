@@ -287,8 +287,6 @@ void NuFree(void *user_data, const char *file, i32 line) {
     }
 
     free(record);
-    (void)file;
-    (void)line;
 }
 
 /* Resizes a tracked allocation in place through the CRT, re-linking its record at the list head. */

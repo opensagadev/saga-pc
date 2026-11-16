@@ -2209,7 +2209,6 @@ extern "C" void PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, 
 }
 
 HRESULT PC_DEVICE_BACKEND::CopySurfaceTarget(PC_EFFECT_SURFACE *target, i32 filter, i32 unused) {
-    (void)unused;
     GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
     return view->methods->stretch_rect(view, current_surface, NULL, target->surface, NULL, filter);
 }

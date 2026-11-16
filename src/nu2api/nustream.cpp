@@ -43,8 +43,6 @@ class OggReader : public WavReader { // size 0x338
 #pragma pack(pop)
 
 extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
-    (void)stream_index;
-    (void)info;
 }
 
 extern "C" i32 fun_00698a50(i32 stream, i32 alternate, char *text, i32 size) {

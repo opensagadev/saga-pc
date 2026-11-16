@@ -156,8 +156,6 @@ extern "C" {
 }
 
 extern "C" void PostFilterInitPrograms(i32 width, i32 height) {
-    (void)width;
-    (void)height;
     PostFilterInitSharedResources();
     PostCopyTexProgram = PostShaderProgramCreate(2, dat_007656f0, dat_00765798);
     PostCopyTexLodProgram = NULL;

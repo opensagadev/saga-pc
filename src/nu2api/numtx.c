@@ -26,8 +26,6 @@ i32 NuPlnLineVU0(NUPLANE *plane, NUVEC *start, NUVEC *end, NUVEC *out) {
 
 /* The PS2 VU0 clip test has no PC body; every point reports as unclipped. */
 i32 NuVecClipTestPointVU0(NUVEC *point, NUMTX *matrix) {
-    (void)point;
-    (void)matrix;
     return 0;
 }
 

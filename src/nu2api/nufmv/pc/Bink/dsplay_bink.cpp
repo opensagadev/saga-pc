@@ -175,7 +175,6 @@ static u32 RadFmvRoundTexture(u32 size) {
 }
 
 RADFMV_TEXTURE *RadFmvCreateTexture(PC_D3D9_DEVICE *device, u32 format, u32 pitch, u32 bytes, u32 width, u32 height) {
-    (void)pitch;
     RADFMV_TEXTURE *texture = NULL;
     RADFMV_LOCK locked;
     if (RAD_DEVICE_METHODS(device)->create_texture(device, width, height, 1, 0x200, format, 0, &texture, NULL) < 0) {
@@ -521,7 +520,6 @@ void RadFmvUnlockSingle(RADFMV_IMAGE *image) {
 }
 
 RADFMV_IMAGE *RadFmvCreateSingle(RADFMV_CONTEXT *context, u32 width, u32 height, u32 alpha, u32 maximum) {
-    (void)maximum;
     RADFMV_IMAGE *image = static_cast<RADFMV_IMAGE *>(malloc(0x50));
     if (!image) {
         return NULL;

@@ -225,21 +225,18 @@ void NuVecInvMtxRotate(NUVEC *out, NUVEC *v, NUMTX *m) {
 }
 
 void NuVecInvMtxRotateValX(NUVEC *out, f32 unused, NUMTX *matrix) {
-    (void)unused;
     out->x = out->x * matrix->m00;
     out->y = out->x * matrix->m10;
     out->z = out->x * matrix->m20;
 }
 
 void NuVecInvMtxRotateValY(NUVEC *out, f32 unused, NUMTX *matrix) {
-    (void)unused;
     out->x = out->y * matrix->m01;
     out->y = out->y * matrix->m11;
     out->z = out->y * matrix->m21;
 }
 
 void NuVecInvMtxRotateValZ(NUVEC *out, f32 unused, NUMTX *matrix) {
-    (void)unused;
     out->x = out->z * matrix->m02;
     out->y = out->z * matrix->m12;
     out->z = out->z * matrix->m22;

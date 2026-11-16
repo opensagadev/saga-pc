@@ -17,8 +17,6 @@ WavReader::~WavReader(void) {
 }
 
 HRESULT WavReader::Unknown08(u32 unused0, u32 unused1) {
-    (void)unused0;
-    (void)unused1;
     return E_FAIL;
 }
 

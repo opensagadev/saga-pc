@@ -20,9 +20,6 @@ i32 NuFileUseHiresPC(void) {
 }
 
 void NuPSFileInitDevices(i32 device_id, i32 reboot_iop, i32 eject) {
-    (void)device_id;
-    (void)reboot_iop;
-    (void)eject;
 }
 
 char *FileDirectoryPathSlots[16] = {0};

@@ -15,7 +15,6 @@ void bgProcDataOversize(i32 size) {
 
 /* Empty, next to the other empty error hooks; NuFileReadDir in nufile_pc.c keeps its call. */
 void FileDirectoryError(i32 error) {
-    (void)error;
 }
 
 void NuErrorPrint(char *text) {
@@ -35,15 +34,10 @@ typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
 /* The PC build has no online service: achievements report success and no
  * player is ever signed in. */
 i32 NuOnlineAchievementAchievedPS(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
-    (void)achievement;
-    (void)callback;
     return 1;
 }
 
 i32 NuOnlineAchievementAchievedExPS(i32 player, i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
-    (void)player;
-    (void)achievement;
-    (void)callback;
     return 1;
 }
 
@@ -59,7 +53,6 @@ i32 NuOnlineHasPlayerSignedInPS(void) {
 }
 
 i32 NuOnlineHasPlayerDownloadedPS(u32 argument) {
-    (void)argument;
     return 0;
 }
 

@@ -13,7 +13,6 @@
  * still calls it, which suggests it was compiled in another unit; here the
  * compiler drops the call to the empty body. */
 extern "C" void PCNativeErrorHook(char *text) {
-    (void)text;
 }
 
 PC_NATIVE_DEBUG_STATE *PC_NATIVE_DEBUG_STATE::fun_006dff70() {
@@ -53,7 +52,6 @@ void PCGraphicsFatalDiagnostic(PC_NATIVE_DEBUG_STATE *state, const char *format,
 
 extern "C" void PCNativeMessagePrint(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list arguments;
-    (void)state;
     if (format != NULL) {
         va_start(arguments, format);
         vsprintf(PCNativeDebugFormatBuffer, format, arguments);
@@ -105,10 +103,6 @@ extern "C" void PCNativeWarningPrint(PC_NATIVE_DEBUG_STATE *state, const char *f
 /* Only format the text; the PC build draws nothing. */
 extern "C" void PCNativeDebugPrintAt(PC_NATIVE_DEBUG_STATE *state, i32 x, i32 y, u32 colour, const char *format, ...) {
     va_list arguments;
-    (void)state;
-    (void)x;
-    (void)y;
-    (void)colour;
     if (format != NULL) {
         va_start(arguments, format);
         vsprintf(PCNativeDebugFormatBuffer, format, arguments);
@@ -118,7 +112,6 @@ extern "C" void PCNativeDebugPrintAt(PC_NATIVE_DEBUG_STATE *state, i32 x, i32 y,
 
 extern "C" void PCNativeDebugFormat(PC_NATIVE_DEBUG_STATE *state, const char *format, ...) {
     va_list arguments;
-    (void)state;
     if (format != NULL) {
         va_start(arguments, format);
         vsprintf(PCNativeDebugFormatBuffer, format, arguments);

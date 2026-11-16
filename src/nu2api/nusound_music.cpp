@@ -224,7 +224,6 @@ i32 NuMusic::StopAll(i32 mode) {
     Voice *voice;
     i32 voice_index;
 
-    (void)mode;
     for (voice_index = 0, voice = voices; voice_index < 2; ++voice_index, ++voice) {
         if (voice->status != NUMUSIC_VOICE_IDLE_PENDING && voice->status != NUMUSIC_VOICE_IDLE) {
             NuSound3StopStereoStream(voice->stream_index * 2);
@@ -505,7 +504,6 @@ extern "C" {
 }
 
 void NuMusic::Debug(i32 unused, i32 y) {
-    (void)unused;
     const char *class_names[] = {"INVALID", "QUIET", "ACTION", "SIGNATURE", "OVERLAY", "CUTSCENE", "NOMUSIC"};
 
     struct StreamPlaybackInfo { // size 0x10
@@ -897,7 +895,6 @@ void NuMusic::BuildSoundTable(VARIPTR *cursor, VARIPTR end) {
     i32 count;
     i32 i;
 
-    (void)end;
     fileinfo = (nusound_filename_info_s *)cursor->void_ptr;
     count = 0;
     for (i = 0; i < extra_track_count; ++i) {

@@ -5,8 +5,6 @@
 #include <string.h>
 
 i32 StartupParseArgument(i32 count, char **arguments) {
-    (void)count;
-    (void)arguments;
     return 0;
 }
 
@@ -14,11 +12,9 @@ void NuVideoSetBrightnessPS(void) {
 }
 
 void NuVideoSetSwapModePS(i32 mode) {
-    (void)mode;
 }
 
 void MenuSetPlatformState(i32 state) {
-    (void)state;
 }
 
 /* Empty; its presentation caller consumes no return value. */

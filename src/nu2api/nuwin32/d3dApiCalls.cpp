@@ -457,7 +457,6 @@ extern "C" void fun_006dfd20(void) {
 }
 
 extern "C" i32 PCFrameBeginScene(i32 begin) {
-    (void)begin;
     PCDeviceBeginScene();
     return 0;
 }

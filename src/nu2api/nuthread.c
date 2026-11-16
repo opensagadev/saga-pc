@@ -65,7 +65,6 @@ i64 PCThreadMilliseconds(void) {
 }
 
 void PCThreadCriticalSectionDeleteNoOp(i32 index) {
-    (void)index;
 }
 
 void NuTimeGetTicksPerSecondPS(u32 *low, u32 *high) {

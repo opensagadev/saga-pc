@@ -6,68 +6,42 @@
 
 /* The card queries are equally empty on PC. */
 i32 NuMcCheckCardPresent(i32 port, i32 slot) {
-    (void)port;
-    (void)slot;
     return 0;
 }
 
 i32 NuMcCheckCardChanged(i32 port, i32 slot) {
-    (void)port;
-    (void)slot;
     return 0;
 }
 
 i32 NuMcCheckCardFormatted(i32 port, i32 slot) {
-    (void)port;
-    (void)slot;
     return 0;
 }
 
 i32 NuMcCheckCardFreeSpace(i32 port, i32 slot) {
-    (void)port;
-    (void)slot;
     return 0;
 }
 
 i32 NuMcFormat(i32 port, i32 slot) {
-    (void)port;
-    (void)slot;
     return 0;
 }
 
 i32 NuMcOpen(i32 port, i32 slot, char *filepath, i32 mode, i32 async) {
-    (void)port;
-    (void)slot;
-    (void)filepath;
-    (void)mode;
-    (void)async;
     return 0;
 }
 
 i32 NuMcFileOpenSize(NUFILE file) {
-    (void)file;
     return 0;
 }
 
 i32 NuMcRead(i32 file, void *destination, i32 size, i32 async) {
-    (void)file;
-    (void)destination;
-    (void)size;
-    (void)async;
     return 0;
 }
 
 i32 NuMcWrite(i32 file, const void *data, i32 size, i32 flags) {
-    (void)file;
-    (void)data;
-    (void)size;
-    (void)flags;
     return 0;
 }
 
 i32 NuMcClose(i32 file, i32 async) {
-    (void)file;
-    (void)async;
     return 0;
 }
 
@@ -76,10 +50,6 @@ i32 fun_006dee80(void) {
 }
 
 i32 NuMcSeek(i32 file, i32 offset, i32 origin, i32 async) {
-    (void)file;
-    (void)offset;
-    (void)origin;
-    (void)async;
     return 0;
 }
 
@@ -124,19 +94,13 @@ u8 fun_006def30(void) {
 }
 
 i32 FileDirectoryMcOpen(i32 port, i32 slot, char *path) {
-    (void)port;
-    (void)slot;
-    (void)path;
     return 0;
 }
 
 void FileDirectoryMcClose(i32 file) {
-    (void)file;
 }
 
 i32 FileDirectoryMcRead(i32 file, struct FILE_DIRECTORY_ENTRY *entry) {
-    (void)file;
-    (void)entry;
     return 0;
 }
 
