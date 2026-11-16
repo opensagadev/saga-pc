@@ -3686,7 +3686,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
                 total = ((GIZBUILDIT *)HubBuildIt)->anim_object_count * 2;
                 Hub_DrawImportantBrick(211, 0.0f, HubEpisodeSubtitleY, alpha, Game.gold_bricks > total ? total : Game.gold_bricks, total);
             } else {
-                GIZMO *gizmo = (GIZMO *)HubAreaInfo[HubEpisode].bonus_gizmo;
+                GIZMO *gizmo = HubAreaInfo[HubEpisode].bonus_gizmo;
                 if (gizmo != NULL) {
                     i32 count = Game.gold_bricks;
                     total = ((GIZBUILDIT *)gizmo->object)->anim_object_count;
