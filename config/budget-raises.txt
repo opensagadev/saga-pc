@@ -332,3 +332,4 @@ config/castscan-budget.json truncation 2186 quick run, settled in the refix
 config/oddscan-budget.json magic-mask 1048 quick run, settled in the refix
 config/castscan-budget.json raw-offset 359 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2473 quick run, settled in the refix
+config/standalone-budget.json non-standalone 8 quick run, settled in the refix: eight module headers lost their standalone includes when the quick run moved declarations into them
