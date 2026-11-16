@@ -954,6 +954,10 @@ extern "C" {
     void InitSoundInfo(i32);
     void LoadSfx(const char *, VARIPTR *, VARIPTR);
     i32 edbriProc(f32 delta_time, struct FRAME_PAD *pad);
+    extern f32 DebrisGlassU1;
+    extern f32 DebrisGlassV1;
+    extern i32 DebrisGlassInitialized;
+    extern void *DebrisGlassCopyMaterial;
 #ifdef __cplusplus
 }
 #endif

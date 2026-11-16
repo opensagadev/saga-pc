@@ -625,8 +625,6 @@ void ResetGizFlow(GIZFLOW *system, GIZFLOWPROGRESS *progress) {
     }
 }
 
-i32 GizmoGetTypeIDByName(void *, char *);
-
 static VARIPTR *load_buff = 0;
 static VARIPTR *load_endbuff = 0;
 static FLOWBOX *load_flowbox = 0;

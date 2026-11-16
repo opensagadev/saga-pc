@@ -108,6 +108,8 @@ extern "C" {
     void GameLoadCharacterModels(struct apicharactermodellist_s *, i32, VARIPTR *, VARIPTR *, i32, i32);
     i32 InModelListDataFlags(struct apicharactermodellist_s *, u32, u32, i32, i32);
     i32 RandomIDFromFlags(u32, u32, i32, struct apicharactermodellist_s *, i32);
+    extern i32 configureallcharacters_perm;
+    void CharConfigPakDiagnostic(const char *format, ...);
 #ifdef __cplusplus
 }
 #endif

@@ -32,7 +32,6 @@
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 
-extern "C" void DumpAreaData(i32 mode, i32 last_area);
 extern "C" void BackDrop_Dump(void);
 
 extern "C" {

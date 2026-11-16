@@ -23,11 +23,9 @@
 #include "gameapi/ai/aisys/aisys.h"
 
 extern struct eduimenu_s *edgra_sscale_menu;
-void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
-void EdFileWriteNuVec(NUVEC *value);
 extern struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
                     i32 outer_y, i32 colour, NUMTL *material);

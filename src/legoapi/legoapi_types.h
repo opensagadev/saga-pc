@@ -2104,6 +2104,8 @@ extern "C" {
     typedef void (*DEBRISMOMENTUMADJUSTER)(struct debris_key_s *, struct debris_info_s *, struct debris_particle_s *);
 
     extern DEBRISMOMENTUMADJUSTER gencodetab[7];
+    extern i32 FRAMES_TO_WAIT;
+    extern i32 NuMainSkipCutBorders;
 #ifdef __cplusplus
 }
 #endif

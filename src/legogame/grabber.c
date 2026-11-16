@@ -157,7 +157,6 @@ typedef struct grabber_antinode_view_s { // size 0x58
 
 GIZMOPICKUP *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
 extern i32 CharacterBlobShadowsOn;
-i32 MatrixReflectionVU0_AXISY(NUMTX *matrix, f32 plane, f32 override_plane, NUMTX *result);
 #define GRABBER_FIND_SWITCH(field, name)                                                                                                   \
     gizmo = (GIZOBSTACLE **)GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, name);                                                \
     if (gizmo != NULL) {                                                                                                                   \

@@ -18026,8 +18026,6 @@ extern "C" {
 
 /* nupostdeferred */
 extern "C" {
-    extern NUMTX PostShadowView;
-    extern NUMTX PostShadowProjection;
     // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
     void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
     // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).

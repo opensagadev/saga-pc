@@ -87,7 +87,6 @@ typedef struct CUT_BORDER_RECORD { // size 0x54
 extern "C" NUMTL *FadeMtl;
 extern "C" u8 ScreenGrabNeeded;
 extern "C" f32 pause_fade;
-extern "C" NUVPCURRENT *NuVpGetCurrentViewport(void);
 extern "C" i32 ScreenStillX;
 extern "C" i32 ScreenStillY;
 extern "C" i32 ScreenStillWidth;

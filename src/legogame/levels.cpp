@@ -142,11 +142,9 @@ extern "C" {
 }
 
 extern "C" {
-    void MusicClearAll(void);
     void SoundKillAll(void);
     void GamePlayMusic(LEVELDATA *, i32, OPTIONSSAVE *);
 }
-void legoSetMusicVolume(f32);
 extern "C" {
     void NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1);
     void PermanentGraphicsResourceSetup(void);

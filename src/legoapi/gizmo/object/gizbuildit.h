@@ -4,6 +4,7 @@
 
 #include "nu2api/numath/nuvec.h"
 
+struct GIZBUILDIT_s;
 struct gameanimobj_s;
 struct gameanimset_s;
 
@@ -29,3 +30,16 @@ typedef struct GIZBUILDIT {              // size 0x7c
     u8 unknown_74[6];                    // 0x74
     u16 availability_flags;              // 0x7a
 } GIZBUILDIT;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern f32 BuilditHopSfxWait;
+    extern f32 GIZBUILDITWOBBLEJUMPHEIGHT;
+    extern i32 gizbuildit_gizmotype_id;
+    i32 GizBuildIt_AtEnd(void *);
+    void GizBuildIt_KillParts(struct GIZBUILDIT_s *);
+    void GizBuildit_SetVisibility(struct GIZBUILDIT_s *, i32);
+#ifdef __cplusplus
+}
+#endif

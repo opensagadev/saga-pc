@@ -242,7 +242,6 @@ extern f32 ShopCodeRepeatInterval;
 extern char ShopCodeCharacters[37];
 extern i16 dat_00880708;
 extern i16 dat_0088074c;
-extern i16 dat_00880778;
 
 /* Same-unit matrix helpers, also kept as standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopy(NUMTX *destination, const NUMTX *source) {

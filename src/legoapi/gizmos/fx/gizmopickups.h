@@ -128,6 +128,8 @@ extern "C" {
 extern "C" {
 #endif
     void GameMsg_Draw_MiniKitDetector(struct game_message_s *arg0, struct nuvec_s *arg1, f32 arg2);
+    extern char *GizmoPickup_OutputName;
+    void GizmoPickups_PostLoad(void *, void *);
 #ifdef __cplusplus
 }
 #endif

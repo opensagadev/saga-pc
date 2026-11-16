@@ -500,8 +500,6 @@ extern "C" {
         return PcControlScreen.active;
     }
 
-    extern i32 PlayerDevicePorts[2];
-
     /* Original source name unknown. PlayersDropInOut calls it rather than inlining it. */
     i32 PC_CtrlConfigGetPlayerPort(i32 player_index) {
         if (player_index < 0) {
@@ -544,13 +542,6 @@ extern "C" {
 }
 
 /* Native421720; append to ControlSetup source after API declarations. */
-extern "C" {
-    extern u32 PcControlButtons;
-    extern u32 PcControlHeld[2];
-    extern u32 PcControlPressed[2];
-    extern i32 PcControlPulseAngle;
-    extern f32 PcControlRepeat[2];
-}
 
 extern "C" {
     u32 PcControlButtons = 0;
@@ -1006,7 +997,6 @@ struct PC_CONTROL_VERTEX { // size 0x18
     f32 v;                 // 0x14
 };
 
-extern "C" i32 PcControlWrapText(char *, f32);
 extern "C" void PcControlFontScale(VUFNT *, f32, f32, f32 *, f32 *);
 
 static void PcControlPrimColour(u32 colour) {

@@ -8833,7 +8833,7 @@ void pathEditorSaveData(AIPATHSYS *path_system) {
             length = node->name != NULL ? strlen(node->name) + 1 : 0;
             EdFileWriteInt((i32)length);
             if (length != 0) {
-                EdFileWrite(node->name, (i32)length);
+                EdFileWrite(node->name, length);
             }
             EdFileWriteFloat(node->position.x);
             EdFileWriteFloat(node->position.y);
@@ -8856,7 +8856,7 @@ void pathEditorSaveData(AIPATHSYS *path_system) {
             if (NuSpecialExistsFn(&node->special_handle) != 0 && (text = NuSpecialGetName(&node->special_handle)) != NULL) {
                 length = strlen(text) + 1;
                 EdFileWriteChar(length);
-                EdFileWrite(text, (i32)length);
+                EdFileWrite(text, length);
                 EdFileWriteFloat(node->special_position.x);
                 EdFileWriteFloat(node->special_position.y);
                 EdFileWriteFloat(node->special_position.z);
@@ -8881,7 +8881,7 @@ void pathEditorSaveData(AIPATHSYS *path_system) {
                 route = &path->routes[index];
                 length = strlen(route->name) + 1;
                 EdFileWriteChar(length);
-                EdFileWrite(route->name, (i32)length);
+                EdFileWrite(route->name, length);
                 EdFileWriteChar(route->route_count);
                 EdFileWriteChar(route->exit_node_count);
                 EdFileWriteChar(0);
@@ -8910,7 +8910,7 @@ void pathEditorSaveData(AIPATHSYS *path_system) {
                             if (text != NULL) {
                                 length = strlen(text) + 1;
                                 EdFileWriteChar(length);
-                                EdFileWrite(text, (i32)length);
+                                EdFileWrite(text, length);
                             } else {
                                 EdFileWriteChar(0);
                             }
@@ -8918,7 +8918,7 @@ void pathEditorSaveData(AIPATHSYS *path_system) {
                     }
                     if ((*(u64 *)&route->character_mask[2] & 0x8000000000000000ull) != 0) {
                         EdFileWriteChar(9);
-                        EdFileWrite((void *)"Everyone", 9);
+                        EdFileWrite("Everyone", 9);
                     }
                 } else {
                     EdFileWriteChar(0);

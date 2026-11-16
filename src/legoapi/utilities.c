@@ -49,7 +49,6 @@
 
 #include <stdlib.h>
 
-extern char **TexAnimScriptTable;
 void NuTexAnimScriptMissing(char *path);
 #define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;

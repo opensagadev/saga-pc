@@ -20,6 +20,7 @@ extern "C" {
     void ResetFrameCounters(void);
     void UpdateFrameCounters(void);
     extern f32 LevelNameMul;
+    extern f32 global_pulse;
 #ifdef __cplusplus
 }
 #endif

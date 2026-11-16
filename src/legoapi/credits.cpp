@@ -268,8 +268,6 @@ void Credits_DrawPanel(WORLDINFO *world) {
     CreditsDrawList(CreditList, CreditsTime);
 }
 
-void legoSetMusicVolume(f32);
-extern "C" void MusicClearAll(void);
 extern "C" void SoundKillAll(void);
 
 extern "C" void Credits_UpdateMenu(MENU *menu) {

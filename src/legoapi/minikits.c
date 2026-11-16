@@ -35,8 +35,6 @@
 #include "nu2api/numath/nutrig.h"
 #include <stdio.h>
 
-extern f32 KITPOS2YPc;
-
 #ifdef __cplusplus
 #endif
 

@@ -17,7 +17,6 @@
 #include "nu2api/nufile/nufilepak.h"
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/numusic/sfx.h"
-extern i32 configureallcharacters_perm;
 
 typedef struct CHARCONFIG {            // size 0xfc8
     CHARACTERDATA *character;          // 0x000
@@ -48,7 +47,6 @@ typedef struct CHARCONFIG {            // size 0xfc8
 CHARCONFIG charconfig = {0};
 
 /* Defined at the end of this file; called with and without a path. */
-void CharConfigPakDiagnostic(const char *format, ...);
 /* MATCH-EXCEPTION: it is also called with no arguments or with a number first; those calls go through a type
  * without a prototype, as C allows no other way. */
 #define CHARCONFIG_PAK_DIAGNOSTIC_UNPROTOTYPED ((void (*)())CharConfigPakDiagnostic)

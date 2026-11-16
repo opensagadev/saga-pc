@@ -24,6 +24,7 @@ extern "C" {
     extern f32 KITPOS2X;
     extern const char *LEGOASCII_BIGARROW;
     void IncrementMinikitCounter(struct gameobject_s *object);
+    extern f32 KITPOS2YPc;
 #ifdef __cplusplus
 }
 #endif

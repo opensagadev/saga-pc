@@ -21,9 +21,6 @@ typedef struct whip_basis_s { // size 0x76c
     NUVEC basis[3];           // 0x748
 } WHIP_BASIS;
 
-i32 SuperCarry_Possible(GAMEOBJECT *, i32);
-void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP *, i32);
-
 void Whip_MoveCode(GAMEOBJECT *object) {
     GIZMOBLOWUP *target;
     f32 *frame;

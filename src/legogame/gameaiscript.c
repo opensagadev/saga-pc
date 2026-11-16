@@ -189,8 +189,6 @@ f32 guided_start_time = 0.5f;
 i32 guided_rotate_speed = 240000;
 f32 test_missile_scale = 8.0f;
 
-extern i32 GizmoGetTypeIDByName(void *, char *);
-
 typedef struct ai_cable_head_s { // size 0x8
     GAMEOBJECT *source;          // 0x0
     GAMEOBJECT *target;          // 0x4
@@ -208,8 +206,6 @@ i32 CharCategory_FindByName(char *);
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
 i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP *);
-
-extern i32 gizbuildit_gizmotype_id;
 
 typedef struct AI_CONDITION_TURRET { // size 0x13c
     u8 unknown_000[0x13a];           // 0x000
@@ -297,8 +293,6 @@ typedef struct ai_trigger_object_s { // size 0x1073
 void ClearSpecialMove(GAMEOBJECT *object);
 f32 GizSpinner_GetNearestTargetPoint(GIZSPINNER_s *, NUVEC *, NUVEC *, NUVEC *, i32);
 
-void SockOn(SOCKSYS *sys, i32 index);
-void SockOff(SOCKSYS *sys, i32 index);
 u32 LEGO_AIPATHCNX_BIGJUMP;
 u32 LEGO_AIPATHCNX_REQUIRESPERMISSION = 0;
 u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;

@@ -30,8 +30,6 @@ typedef struct guideline_progress_s { // size 0x8
 
 extern char dat_007516c0[1];
 
-void GuideLines_Draw(void *world, void *unused, f32 delta_time);
-
 i32 GuideLines_Load(void *world_ptr, void *unused) {
     WORLDINFO *world = world_ptr;
     i32 index;

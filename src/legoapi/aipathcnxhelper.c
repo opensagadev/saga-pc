@@ -7,8 +7,6 @@
 
 #include <float.h>
 
-extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
-
 void *AIPathCnxHelperSysCreate(VARIPTR *buffer, VARIPTR *end, i32 count) {
     AI_HELPER_SYSTEM *system = NULL;
     if (count != 0) {

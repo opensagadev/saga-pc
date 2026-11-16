@@ -44,6 +44,7 @@ extern "C" {
 #endif
     AI_HELPER_SLOT *AIPathCnxHelperSys_Find(AI_HELPER_SYSTEM *system, struct gameobject_s *object, struct AIPATHCNX *connection,
                                             u8 direction, u8 type, AI_HELPER_FILTER filter);
+    extern void (*AIPathCnxHelperSysInitFn)(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif

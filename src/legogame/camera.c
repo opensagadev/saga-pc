@@ -71,7 +71,6 @@ extern NUVEC GunshipAOffset;
 extern f32 HUB_MINIKITVIEWER_CAMDY;
 extern f32 PodCamDist;
 extern i32 movegamecamera_forcesock;
-extern i32 complexsockposition_forcesock;
 extern i32 netcamera;
 extern f32 testmovef;
 extern f32 CamTitlesSplineEnd;
@@ -103,7 +102,6 @@ typedef struct CAMERA_CABLE {
 } CAMERA_CABLE;
 
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
-f32 NuVecMagVU0(NUVEC *v);
 #define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
     do {                                                                                                                                   \
         union {                                                                                                                            \

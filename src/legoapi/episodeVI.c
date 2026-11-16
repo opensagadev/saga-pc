@@ -143,8 +143,6 @@ typedef struct sarlacc_panel_s { // size 0x63
     u8 state_flags;              // 0x62
 } SARLACC_PANEL;
 
-extern i32 DrawBossHitPointsTwoRows;
-
 /* Emperor floor packet and private controls. */
 typedef struct emperor_update_packet_s { // size 0x8
     i32 state;                           // 0x0
@@ -154,7 +152,6 @@ typedef struct emperor_update_packet_s { // size 0x8
     u8 reserved;                         // 0x7
 } EMPEROR_UPDATE_PACKET;
 
-void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 #define RANCOR_PLAYER_IN_AREA(player, world, n) (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
 /* Fairground party split locator. */
 static AILOCATOR *FairgroundSplitPartyLocator;

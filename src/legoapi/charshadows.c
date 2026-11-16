@@ -18,7 +18,6 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
 
-extern i32 CharacterBlobShadowsOn;
 f32 DropInOutScale(GAMEOBJECT *object);
 
 void CharShadows_Reset(CHARACTER_SHADOW_PACKET *packet) {

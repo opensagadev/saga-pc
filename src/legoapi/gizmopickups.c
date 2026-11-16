@@ -53,13 +53,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-extern i32 NuMainSkipCutBorders;
-extern i32 drawautosaveicon;
-
-extern char *GizmoPickup_OutputName;
-
-void GizmoPickups_PostLoad(void *, void *);
-
 typedef struct SPECIAL_MINIKIT {    // size 0x3c
     nuhspecial_s special;           // 0x00
     NUINSTANIM *instance_animation; // 0x0c
@@ -121,7 +114,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
     u32 activated[16];                 // 0xc0
 } PICKUP_RESET_PROGRESS;
 
-extern u8 *Game_LevelSave;
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;

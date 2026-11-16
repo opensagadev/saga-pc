@@ -22,18 +22,8 @@
  * beside the C rtl.c code. Editor-only and unreachable. */
 
 extern "C" {
-    extern RTL_SET *curr_set;
-    extern f32 rtl_helper_radius;
-    extern i32 rtl_helper_radius_mode;
-    extern f32 min_r;
-    extern f32 def_fr;
     void cbRtlHelperModifiers(eduimenu_s *parent, eduiitem_s *item, u32 data);
     void cbModifierAdjust(eduimenu_s *menu, eduiitem_s *item, u32 buttons);
-    extern i32 modifier_cnt;
-    extern char **modifier_names;
-    extern RTL_LIGHT *rtl_locked;
-    void rtlFree(RTL_LIGHT *light);
-    void fogFree(RTL_FOG_MIGRATION *fog);
 }
 
 /* The engine's VuVec helpers (the same header edlevelall.cpp uses). VC8 inlines them here and keeps
@@ -163,7 +153,6 @@ template <class T> void EdValueControl<T>::AddMenuItem(eduimenu_s *menu, EdRef *
 }
 
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *);
-i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
 
 class RTLHelper : public EdClassInterface { // size 0xc
   public:

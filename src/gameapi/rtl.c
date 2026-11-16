@@ -1603,7 +1603,6 @@ void edrtlDrawRTLInfo(void) {
 }
 
 void EdFileWriteInt(i32 value);
-void EdFileWriteNuVec(NUVEC *value);
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 i32 edrtlBurnoutSave(char *filename, BURN_SET *set) {
@@ -2616,9 +2615,6 @@ static void edrtlInvalidateUndo(void) {
     undo_item->flags |= 2u;
     redo_item->flags |= 2u;
 }
-
-extern f32 min_r;
-extern f32 def_fr;
 
 void rtlSetMinR(f32 radius) {
     min_r = radius;

@@ -304,6 +304,8 @@ extern "C" {
     struct nusound_filename_info_s *ConfigureMusic(char *, VARIPTR *, VARIPTR *);
     i32 NuSoundGetStereoStreamStatus(i32 stream);
     void fun_00697eb0(void);
+    void PauseGameCut(void);
+    void ResetSounds(void);
 #ifdef __cplusplus
 }
 #endif

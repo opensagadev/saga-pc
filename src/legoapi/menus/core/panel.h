@@ -5,6 +5,7 @@
 #include "legoapi/menus/core/hint.h"
 
 struct gameobject_s;
+struct nuhspecial_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,6 +77,13 @@ extern "C" {
     void DrawTimer(i32 time, i32 expanded, i32 reset);
     void DrawMeleeTargets(i16 *, u8 *, i32);
     void DrawMeleeTargetsAlpha(i16 *, u8 *, f32 *, i32);
+    extern f32 CoinTotalCoinOffset;
+    extern f32 CoinTotalScoreSize;
+    extern i32 DrawBossHitPointsTwoRows;
+    extern i32 drawautosaveicon;
+    void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, struct nuhspecial_s *special);
+    void DrawMeleeTargetsRows(i16 *targets, char *defeated, f32 *values, i32 count);
+    void Panel_Clear(void);
 #ifdef __cplusplus
 }
 #endif

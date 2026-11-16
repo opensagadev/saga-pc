@@ -64,6 +64,7 @@ extern "C" {
     void Customiser_LoadAll(struct CUSTOMISER_LAYERS *, struct WORLDINFO_s *);
     void Customiser_TransformToPanel(struct CUSTOMISER_LAYERS *);
     i32 Customiser_NextPieceLeft(struct CUSTOMISER_LAYERS *, i32, i32, i32, i32);
+    void CustomiserLoadTrace(char *path);
 #ifdef __cplusplus
 }
 #endif

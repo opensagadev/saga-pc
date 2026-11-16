@@ -98,9 +98,6 @@ extern "C" {
         u32 reset_flags;                   // 0x118
     } WORLD_INITIAL_RESET;
 
-    void ResetSounds(void);
-    i32 AmbientFromQuiet(i32);
-
     typedef struct world_resource_icons_reader_s { // size 0x2968
         u8 unknown_0000[0x2964];                   // 0x0000
         NUGSCN *icons_scene;                       // 0x2964
@@ -369,8 +366,6 @@ extern "C" {
             view->portal_doors = NULL;
         }
     }
-
-    void NuPortalSetActive(NUGSCN *scene, i32 portal_id, i32 active);
 
     void PortalDoors_Update(WORLDINFO *world) {
         i32 index;

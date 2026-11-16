@@ -19,7 +19,6 @@
 
 #include <string.h>
 
-extern u8 snakebodies[0x440];
 static nuhspecial_s snake_hspecials[3] = {0};
 u8 snakebodies[0x440] = {0};
 
@@ -50,10 +49,6 @@ typedef struct snake_object_reader_s { // size 0x10b0
     u8 unknown_5a4[0x10ac - 0x5a4];    // 0x05a4
     SNAKE_BODY *snake_body;            // 0x10ac
 } SNAKE_OBJECT_READER;
-
-extern f32 SnakeSegmentSpacing;
-extern f32 SnakeHeadHeight;
-extern f32 SnakeYawSeekRate;
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 SnakeFabs(f32 f) {

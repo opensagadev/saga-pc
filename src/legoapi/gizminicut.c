@@ -19,8 +19,6 @@
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
-extern i32 FRAMES_TO_WAIT;
-
 typedef struct minicut_part_s { // size 0x44
     char name[32];              // 0x00
     NUVEC *resolved_position;   // 0x20

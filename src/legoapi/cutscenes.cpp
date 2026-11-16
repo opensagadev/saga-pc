@@ -107,8 +107,6 @@ extern "C" {
 static f32 CutBlobShadowFadeNear = 0;
 static f32 CutReflectRange2 = 0;
 extern "C" void GameFog_Reset(void);
-extern "C" void Panel_Clear(void);
-extern "C" void PauseGameCut(void);
 
 typedef struct cut_record_cleanup_s { // size 0x8
     void *scene;                      // 0x0

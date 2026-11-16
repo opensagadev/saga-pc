@@ -16,6 +16,7 @@ typedef struct indy_guideline_s { // size 0x24
 extern "C" {
 #endif
     INDY_GUIDELINE *GuideLine_FindNearest(NUVEC *position, struct WORLDINFO_s *world, i32 *endpoint, f32 *distance);
+    void GuideLines_Draw(void *world, void *unused, f32 delta_time);
 #ifdef __cplusplus
 }
 #endif

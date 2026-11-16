@@ -237,6 +237,11 @@ extern "C" {
 extern "C" {
 #endif
     void SockSysPointAlongSpline(NUVEC *, struct nugspline_s *, i32, i32, f32);
+    extern i32 complexsockposition_forcesock;
+    i32 SockBitSet(SOCK *sock, i32 index);
+    void SetSockBit(SOCK *sock, i32 index);
+    void SockOff(SOCKSYS *sys, i32 index);
+    void SockOn(SOCKSYS *sys, i32 index);
 #ifdef __cplusplus
 }
 #endif

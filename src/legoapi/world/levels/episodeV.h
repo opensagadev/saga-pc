@@ -132,6 +132,7 @@ typedef struct TROOPERCANNON {    // size 0x30
 extern "C" {
 #endif
     extern TROOPERCANNON troopercannons[4];
+    extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #ifdef __cplusplus
 }
 #endif

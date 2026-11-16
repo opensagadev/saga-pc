@@ -44,7 +44,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
 void Text_FillInExtendedSaveInfo(void);
 i32 TriggerAutoSave(void);
 

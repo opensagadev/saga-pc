@@ -2696,12 +2696,8 @@ typedef struct cut_cleanup_instance_s { // size 0xe4
 } CUT_CLEANUP_INSTANCE;
 
 extern CUT_CLEANUP_ENTRY *DefragCutSceneListBase;
-extern i32 DefragCutSceneListSize;
-extern void *DefragCutSceneBaseMem;
-extern void *DefragInstBaseMem;
 extern INSTNUGCUTSCENE *(*DefragGetInstFn)(void *);
 extern CUT_CLEANUP_INSTANCE *(*DefragCreateInstFn)(void *, CUT_SCENE_LOAD *, VARIPTR *);
-extern void (*DefragInstDestroyedFn)(void *);
 
 /* Destroys the listed instances, compacts the surviving cutscene images to the front of the cutscene
    pool and recreates their instances; returns the first free byte. */

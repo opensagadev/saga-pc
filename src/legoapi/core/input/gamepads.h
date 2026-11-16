@@ -59,6 +59,7 @@ extern "C" {
     void PadOutPause(i32 port, struct WORLDINFO_s *world);
     void DoInput(WORLDINFO *world);
     void PadOutPause(i32, WORLDINFO *);
+    extern i32 PlayPlanesUseRenderMtx;
 #ifdef __cplusplus
 }
 #endif

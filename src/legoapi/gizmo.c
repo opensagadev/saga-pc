@@ -21,7 +21,6 @@
 
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
-void GizmoDiagnostic(char *format, ...);
 #define GIZMO_DIAGNOSTIC_BARE() ((void (*)())GizmoDiagnostic)()
 void GizmoNameDiagnostic(char *name);
 #define GIZMO_BUFFER_ALLOC_CHECKED(result, type, buffer, end, size)                                                                        \
@@ -51,7 +50,6 @@ typedef struct bolt_gizmo_type_s {                          // size 0x9c
 } BOLT_GIZMO_TYPE;
 
 typedef NUVEC *(*GIZMO_GET_POS_FN)(GIZMO *gizmo);
-void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
 extern GIZACTIONDEF *gizactiondefs;

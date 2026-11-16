@@ -46,12 +46,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern i32 last_currentmusicpair_quiet;
-    extern i32 MusicOther;
-    extern i32 sticky_attack;
-}
-
-extern "C" {
 
     i32 GameAudio_GetPlrSfxBits(void *object_ptr) {
         GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;

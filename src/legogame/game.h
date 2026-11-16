@@ -386,6 +386,7 @@ extern "C" {
     extern i16 dat_007f1828;
     void MenuDrawEndChallenge(struct menu_s *);
     void MenuUpdateEndChallenge(struct menu_s *);
+    extern TIMER OverallGamePlayTimer;
 #ifdef __cplusplus
 }
 #endif

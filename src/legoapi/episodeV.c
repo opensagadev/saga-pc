@@ -71,16 +71,10 @@ struct GIZBOMBGEN_s *HothBattleC_BombGenerator = 0;
 AILOCATOR *HothEscapeBLocator = NULL;
 GAMEOBJECT *HothEscapeBSnowmob = NULL;
 
-extern i32 gizbuildit_gizmotype_id;
 GIZMO *GizmoFindByData(void *, i32, void *);
-i32 GizBuildIt_AtEnd(void *);
-void GizBuildIt_KillParts(GIZBUILDIT_s *);
-void GizBuildit_SetVisibility(GIZBUILDIT_s *, i32);
 struct panel_movement_s;
 struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
 
-extern i32 turret_gizmotype_id;
-void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, nuhspecial_s *special);
 #define FALCON_SLOT(object) ((i8)(object)->unknown_280)
 
 /* Asteroid field. */
@@ -88,7 +82,6 @@ void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, nuhsp
 /* Rotating rock at the end of AsteroidChase C. */
 
 void LevelStreaming_DoorOverride(WORLDINFO *world, LEVELDATA *level, f32 radius, f32 *distance);
-extern u32 LEGO_AIPATHCNX_BIGJUMP;
 #define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
     do {                                                                                                                                   \
         GIZMO *gizmo = LevGizmo[gizmo_index];                                                                                              \
@@ -114,8 +107,6 @@ extern u32 LEGO_AIPATHCNX_BIGJUMP;
             }                                                                                                                              \
         }                                                                                                                                  \
     } while (0)
-
-void DrawMeleeTargetsRows(i16 *targets, char *defeated, f32 *values, i32 count);
 
 static void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
     if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->opponent == NULL) {

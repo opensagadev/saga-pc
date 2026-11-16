@@ -77,9 +77,7 @@ struct SPINNER_HIT_FLAGS_STACK { // size 0x4
 };
 
 extern "C" {
-    extern char SpinnerOutputBuffer[14];
     extern const f64 GameObjectNearFloorNoFloorHeight;
-    i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
     nuhspecial_s thingsSceneArm = {0};
     nuhspecial_s thingsSceneBase = {0};
     static ADDGIZMOTYPE GizmoRegistrySpinnerAddType = {0};

@@ -93,6 +93,10 @@ extern "C" {
     void Grapple_MoveCode(GAMEOBJECT *);
     GRAPPLE_DYNAMIC *Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position);
     i32 IndyGrappleCanJump(GAMEOBJECT *object);
+    extern i32 GrappleCurvedRopeEnabled;
+    extern i32 RopeCurveSubdivisions;
+    extern u32 GRAPPLE_RGBA;
+    void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material);
 #ifdef __cplusplus
 }
 #endif

@@ -4,11 +4,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec4.h"
 
-extern "C" {
-    extern NUMTX PostShadowProjection;
-    extern NUMTX PostShadowView;
-}
-
 void PC_SPECIAL_SHADOW_LIGHT::SetupCustomCameraFrustum(NUCAMERA *camera, const f32 *splits, i32 split_count) {
     f32 aspect = 1.0f / camera->aspect;
     f32 fov = ((f64)camera->fov * 180.0) / 3.1415927410125732;

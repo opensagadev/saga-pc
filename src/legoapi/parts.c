@@ -548,8 +548,6 @@ void edpartCancelInstanceFlagsMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     edpart_instanceflags_menu = NULL;
 }
 
-extern i32 edpart_particle_list;
-extern i32 edpart_part_list;
 extern struct eduimenu_s *edpart_debrisindex_menu;
 extern struct eduimenu_s *edpart_partindex_menu;
 
@@ -974,9 +972,7 @@ typedef struct debris_animation_effect_s { // size 0xb0
 void edpartChangeMaxLifeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 void edpartInstanceOrientMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2);
 extern NUMTL *edpart_mtl;
-extern i32 edpart_copy_source[8];
 extern NUVEC edpart_copy_source_vec;
-extern i32 edpart_copy_source_count;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
                     i32 outer_y, i32 colour, NUMTL *material);
 
@@ -988,9 +984,6 @@ typedef struct PART_TERRAIN_STATE { // size 0x20c
 } PART_TERRAIN_STATE;
 
 #define PART_NORM PartImpactNormalPrivate
-i32 edpartPlace(i32 index, NUVEC *position);
-void edpartOptMenu(void);
-void edmainSetLocVec(NUVEC *location);
 
 static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;

@@ -38,6 +38,9 @@ extern "C" {
     void cbCopy(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     void cbPaste(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     void cbmcfgCameraSpeed(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    void EdFileWrite(void *data, i32 len);
+    void EdFileWriteNuVec(NUVEC *value);
+    void edmainSetLocVec(NUVEC *location);
 #ifdef __cplusplus
 }
 #endif

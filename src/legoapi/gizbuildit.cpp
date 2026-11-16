@@ -154,10 +154,6 @@ typedef struct buildit_reset_progress_s { // size 0x60
 } BUILDIT_RESET_PROGRESS;
 
 extern "C" {}
-extern "C" {
-    extern f32 BuilditHopSfxWait;
-    extern f32 GIZBUILDITWOBBLEJUMPHEIGHT;
-}
 
 typedef struct buildit_attracto_reader_s { // size 0x7c
     u8 unknown_00[0x18];                   // 0x00
@@ -192,9 +188,6 @@ typedef struct registry_buildit_system_s {
     GAMEANIMOBJ **anim_objects;
 } REGISTRY_BUILDIT_SYSTEM;
 
-extern "C" {
-    extern i32 gizbuildit_gizmotype_id;
-}
 struct GIZBUILDIT;
 
 typedef struct hub_buildit_sys_s {

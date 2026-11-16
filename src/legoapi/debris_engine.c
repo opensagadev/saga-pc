@@ -1740,9 +1740,6 @@ i32 DebrisGlassParticlesActive(void) {
     return freedebchkptrg > 0;
 }
 
-extern i32 DebrisGlassInitialized;
-extern void *DebrisGlassCopyMaterial;
-
 i32 debris_rt = 0;
 i32 debris_render_group = 0;
 i32 forced_debris_thinning = 0;
@@ -1770,8 +1767,6 @@ void DebrisReleaseResources(void) {
 void DebrisRestoreResources(void) {
 }
 
-extern f32 DebrisGlassU1;
-extern f32 DebrisGlassV1;
 i32 NuPower2(i32 value);
 
 f32 DebrisGlassV1 = 0;
@@ -1809,9 +1804,6 @@ void DebrisGlassInit(void) {
     DebrisGlassInitialized = 1;
 }
 
-i32 NuTexGetReqSize(i32 tex_id, i32 level);
-i32 NuTexReserve(i32 size);
-void NuTexUnReserve(void);
 void NuRainDraw(i32 reserved);
 
 void DebrisDrawGlassEx(i32 flicker) {

@@ -378,6 +378,10 @@ extern "C" {
     extern PC_DEVICE_BACKEND PCDeviceBackend;
     extern void (*PCGraphicsDeviceLostCallback)(GRAPHICS_PRESENT_PARAMETERS *);
     void PCDeviceEvictManagedResources();
+    i32 NuTexGetReqSize(i32 tex_id, i32 level);
+    i32 NuTexReserve(i32 size);
+    void NuLightSpotFadeSet(u32 fade);
+    void NuTexUnReserve(void);
 #ifdef __cplusplus
 }
 #endif

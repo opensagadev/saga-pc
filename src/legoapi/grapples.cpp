@@ -84,11 +84,6 @@ typedef struct grapple_load_extra_s { // size 0xf8
 } GRAPPLE_LOAD_EXTRA;
 
 extern "C" const f64 GameObjectNearFloorNoFloorHeight;
-extern "C" {
-    extern i32 RopeCurveSubdivisions;
-    extern u32 GRAPPLE_RGBA;
-    extern i32 GrappleCurvedRopeEnabled;
-}
 extern "C" {}
 
 typedef struct grapple_movement_s {
@@ -101,7 +96,6 @@ typedef struct grapple_movement_s {
 extern "C" {
     static inline f32 GrapplesFabs(f32 value);
 }
-extern "C" void DrawRopeCurved(NUVEC *start, NUVEC *points, i32 count, i32 unused_flags, NUMTL *unused_material);
 
 extern "C" i32 Grapples_Load(void *world_pointer, void *unused) {
     WORLDINFO *world = (WORLDINFO *)world_pointer;

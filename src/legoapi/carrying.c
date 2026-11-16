@@ -89,9 +89,6 @@ typedef struct carry_drop_s { // size 0x778
     NUVEC drop_position;      // 0x76c
 } CARRY_DROP;
 
-extern i32 SuperCarry_PutDownDrop;
-extern f32 SUPERCARRY_JUMPSPEED;
-extern u8 SuperCarryPlayerRgb[2][3];
 #define SUPER_CARRY_IDLE_OR_WALK(object)                                                                                                   \
     do {                                                                                                                                   \
         if ((object)->pad->input_magnitude > 0.0f) {                                                                                       \

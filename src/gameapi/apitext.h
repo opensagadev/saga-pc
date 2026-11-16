@@ -228,6 +228,12 @@ extern "C" {
     void MenuUpdateHiresNotice(MENU *);
     void MenuUpdateQuit(MENU *);
     char *TextButtonString(i32, const char *, const char *);
+    extern f32 PcControlRepeat[2];
+    extern i32 PcControlPulseAngle;
+    extern u32 PcControlButtons;
+    extern u32 PcControlHeld[2];
+    extern u32 PcControlPressed[2];
+    i32 PcControlWrapText(char *, f32);
 #ifdef __cplusplus
 }
 #endif

@@ -1434,6 +1434,19 @@ extern "C" {
     void NuRndrSphereMtx(NUMTX *matrix, i32 colour, i32 segments, NUMTL *material);
     void PostFilterInitSharedResources(void);
     void fun_005f1f50(i32 texture_id);
+    NUVPCURRENT *NuVpGetCurrentViewport(void);
+    extern NUMTX PostShadowProjection;
+    extern NUMTX PostShadowView;
+    extern NUVEC ShadowLightUp;
+    extern f32 ShadowLightBlendPower;
+    extern f32 ShadowLightEyeDistance;
+    extern f32 ShadowLightFallbackHeight;
+    extern f32 ShadowLightFocusHeight;
+    extern f32 ShadowLightNearOffset;
+    extern f32 ShadowLightSplitScale;
+    extern f32 ShadowLightWarp;
+    extern i32 ShadowLightSplitCount;
+    void NuPortalSetActive(NUGSCN *scene, i32 portal_id, i32 active);
 #ifdef __cplusplus
 }
 #endif

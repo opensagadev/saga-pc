@@ -25,9 +25,6 @@
      : ((i32)(to) - (i32)(from) < -0x8000) ? (i32)(to) - (i32)(from) + 0x10000                                                             \
                                            : (i32)(to) - (i32)(from))
 
-void SetSockBit(SOCK *sock, i32 index);
-i32 SockBitSet(SOCK *sock, i32 index);
-
 // The SDK's NuFdiv: 0 when either operand is 0.
 static f32 SockFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -2229,8 +2226,6 @@ i32 SockSysCamera(SOCKSYS *sock_sys, NUVEC *fallback_camera_position, i32 socket
     }
     return 1;
 }
-
-f32 NuVecMagVU0(NUVEC *);
 
 f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION *resolved, i32 unused, SOCKSYS *system) {
     NUVEC flat = *position;

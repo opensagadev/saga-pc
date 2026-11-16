@@ -107,7 +107,6 @@ typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
 typedef void (*AI_CLEAR_CREATURES)(void);
 typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
 typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS *, AIPACKET *);
-extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
 extern AIACTIONDEF lego_aiactiondefs[];
 extern AIACTIONDEF api_aiactiondefs[];
 extern AIACTIONDEF *game_aiactiondefs;
@@ -143,7 +142,6 @@ void ClearAICreatures(void);
 void StarWars_GameAISysInit(void);
 void Indy_GameAISysInit(void);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
-extern i32 complexsockposition_forcesock;
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 #define INTERACTION_COPY_ANTINODE(source, target)                                                                                          \
     (target)->ai->antinode_timer = (source)->ai->antinode_timer;                                                                           \

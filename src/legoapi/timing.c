@@ -69,9 +69,6 @@ void UpdateTimer(TIMER *timer) {
     timer->update_count++;
 }
 
-extern TIMER OverallGamePlayTimer;
-extern f32 global_pulse;
-
 typedef struct GAME_TIMING_MISSION_DATA { // size 0x12
     u8 unknown_00[0x10];                  // 0x00
     u16 time;                             // 0x10

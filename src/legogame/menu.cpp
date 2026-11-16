@@ -110,9 +110,7 @@ extern "C" {
     extern i16 dat_00880700;
     extern i16 dat_00880754;
 }
-void legoSetMusicVolume(f32);
 extern "C" {
-    void MusicClearAll(void);
     void SoundKillAll(void);
     void GamePlayMusic(LEVELDATA *, i32, OPTIONSSAVE *);
     i32 Movie_Play(char *, VARIPTR *, VARIPTR *, f32, i32 (*)(void), f32);

@@ -46,6 +46,8 @@ extern "C" {
     i32 DrawPanel3DObjectMtxNoAlpha(nuhspecial_s *, NUMTX *);
     f32 XZLinesClosest(struct nuvec_s *first_start, struct nuvec_s *first_end, struct nuvec_s *second_start, struct nuvec_s *second_end,
                        f32 *first_fraction, f32 *second_fraction);
+    extern char **TexAnimScriptTable;
+    i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
 #ifdef __cplusplus
 }
 #endif

@@ -61,9 +61,7 @@ typedef struct {      // size 0x70
 } TURRET_PROGRESS;
 
 extern "C" {
-    extern char *GizmoRegistryGizTurretsNamePtr;
     extern i32 turret_gizmotype_id;
-    extern char TurretOutputBuffer[32];
     i32 LEGOHINT_SHOOTCAMERAS = -1;
     i32 GizTurretAnimDataVersion = 7;
     i32 gizturret_test_ang = 3640;

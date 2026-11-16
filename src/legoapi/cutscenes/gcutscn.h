@@ -161,6 +161,10 @@ typedef struct CUT_CHARACTER_GENERIC {      // size 0x64
 extern "C" {
 #endif
     void NuGCutRigidCalcMtx(CUT_RIGID_GENERIC *, f32, NUMTX *);
+    extern i32 DefragCutSceneListSize;
+    extern void (*DefragInstDestroyedFn)(void *);
+    extern void *DefragCutSceneBaseMem;
+    extern void *DefragInstBaseMem;
 #ifdef __cplusplus
 }
 #endif

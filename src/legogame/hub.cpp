@@ -174,7 +174,6 @@ typedef struct ARCADE_COIN_PACKET {
 } ARCADE_COIN_PACKET;
 
 extern "C" {
-    extern void (*AIPathCnxHelperSysInitFn)(WORLDINFO *);
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
     extern u32 LEGO_AIPATHCNX_BIGJUMP;

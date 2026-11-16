@@ -132,7 +132,6 @@ typedef union player_position_sock_u { // size 0x38
     } start;
 } PLAYER_POSITION_SOCK;
 
-extern i32 complexsockposition_forcesock;
 extern i32 movegamecamera_forcesock;
 
 char PlayerArcadeStartDoor[16] = "door_to_network";

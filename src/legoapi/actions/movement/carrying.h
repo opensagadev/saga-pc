@@ -43,6 +43,11 @@ extern "C" {
     extern char dat_0075314c[7];
     extern char dat_00753144[6];
     extern u32 (*CanSuperCarryFn)(GAMEOBJECT *);
+    extern f32 SUPERCARRY_JUMPSPEED;
+    extern i32 SuperCarry_PutDownDrop;
+    extern u8 SuperCarryPlayerRgb[2][3];
+    i32 SuperCarry_Possible(GAMEOBJECT *, i32);
+    void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP *, i32);
 #ifdef __cplusplus
 }
 #endif

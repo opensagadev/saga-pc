@@ -353,7 +353,6 @@ extern "C" {
     void Bolts_Reset(void);
     void Detonators_Reset(void);
     void ResetParts(void);
-    void Panel_Clear(void);
     void Hint_Reset(void);
     void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system);
     void Faders_Reset(WORLDINFO *world);

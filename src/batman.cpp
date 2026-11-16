@@ -150,8 +150,6 @@ extern "C" void DrawSaveSlots(MENU *, f32);
 
 struct FADEINFO_s;
 
-void legoSetMusicVolume(f32 volume);
-
 extern "C" {
     extern FADEINFO *pFadeInfo;
     void GizmoSysSetGame(void);
@@ -708,7 +706,6 @@ typedef struct NU_MAIN_STATUS_PACKET { // size 0xb6
 extern "C" {
     u8 StatusPlayerActive[8] = {0};
     void NuMainStatusHelper(STATUSPACKET_s *);
-    void MusicClearAll(void);
     void SoundKillAll(void);
     void ClearUpAreaData(void);
     void WorldInfo_ClearAllIfScreenFaded(void);

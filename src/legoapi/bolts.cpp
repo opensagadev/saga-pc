@@ -278,8 +278,6 @@ typedef struct BOLT_UPDATE_TYPE_s { // size 0xa4
     nuhspecial_s shadow_special;    // 0x98
 } BOLT_UPDATE_TYPE;
 
-extern "C" i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
-
 extern "C" {
     static void NuMtxSetRotationYInline(NUMTX *matrix, NUANG angle) {
         f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];

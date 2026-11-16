@@ -27,9 +27,6 @@ extern "C" {
         }
         return NULL;
     }
-
-    void SockOn(SOCKSYS *sys, i32 index);
-    void SockOff(SOCKSYS *sys, i32 index);
 }
 
 static i32 NuSpecialFindMultiDisplay(NUGSCN *scene, nuhspecial_s *dest, char *name, i32 capacity, i32 flags) {

@@ -279,6 +279,10 @@ extern "C" {
     i32 InitGizmoBlowups(struct WORLDINFO_s *);
     i32 InitGizmoBlowupsMtxBuffer(struct WORLDINFO_s *);
     GIZMOBLOWUP *GizmoBlowUp_Hit(struct gameobject_s *, NUVEC *, i32, f32, NUVEC *, NUVEC *, struct bolt_s *, u32, u8 *);
+    extern char *BlowupOutputNames[3];
+    extern char *GizmoRegistryGizTurretsNamePtr;
+    extern char SpinnerOutputBuffer[14];
+    extern char TurretOutputBuffer[32];
 #ifdef __cplusplus
 }
 #endif

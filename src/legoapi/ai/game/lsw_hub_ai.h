@@ -41,6 +41,7 @@ extern "C" {
     void *Condition_InHubAreaInit(AISYS *, char *, AISCRIPT *);
     f32 Condition_InHubArea(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char *, void *);
     extern i16 dat_007f18c4;
+    extern const char *HubAreaNames[10];
 #ifdef __cplusplus
 }
 #endif

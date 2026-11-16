@@ -14,6 +14,10 @@ extern "C" {
     void InitSnakes(WORLDINFO *world);
     void DestroySnakeBody(GAMEOBJECT *);
     void BlowUpSnakeBody(GAMEOBJECT *);
+    extern f32 SnakeHeadHeight;
+    extern f32 SnakeSegmentSpacing;
+    extern f32 SnakeYawSeekRate;
+    extern u8 snakebodies[0x440];
 #ifdef __cplusplus
 }
 #endif

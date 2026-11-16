@@ -210,6 +210,15 @@ extern "C" {
     f32 rtlSpecularValue(RTL_DATA *);
     void rtlSetSpecularValue(RTL_DATA *, f32);
     void rtlSetSpecularLight(RTL_DATA *);
+    extern RTL_LIGHT *rtl_locked;
+    extern RTL_SET *curr_set;
+    extern char **modifier_names;
+    extern f32 def_fr;
+    extern f32 min_r;
+    extern i32 modifier_cnt;
+    extern i32 rtl_helper_radius_mode;
+    void fogFree(RTL_FOG_MIGRATION *fog);
+    void rtlFree(RTL_LIGHT *light);
 #ifdef __cplusplus
 }
 #endif

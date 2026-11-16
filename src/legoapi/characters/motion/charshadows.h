@@ -15,6 +15,7 @@ extern "C" {
     void CharShadows_Reset(CHARACTER_SHADOW_PACKET *);
     void CharShadows_Update(void);
     void CharShadows_Draw(void);
+    extern i32 CharacterBlobShadowsOn;
 #ifdef __cplusplus
 }
 #endif

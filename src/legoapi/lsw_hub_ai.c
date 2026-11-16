@@ -93,7 +93,6 @@ static void Hub_MakeListCharactersAvailable(i16 *characters) {
 }
 
 /* HubAI producer family. */
-extern const char *HubAreaNames[10];
 
 i16 dat_007f18c4 = -1;
 i16 PermanentWeirdo1Id = -1;

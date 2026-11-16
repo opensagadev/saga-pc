@@ -43,20 +43,6 @@
 #include <stdio.h>
 
 extern "C" {
-    extern f32 ShadowLightSplitScale;
-    extern f32 ShadowLightWarp;
-    extern f32 ShadowLightNearOffset;
-    extern f32 ShadowLightBlendPower;
-    extern f32 ShadowLightFallbackHeight;
-    extern f32 ShadowLightEyeDistance;
-    extern f32 ShadowLightFocusHeight;
-    extern NUVEC ShadowLightUp;
-    extern i32 ShadowLightSplitCount;
-}
-
-extern "C" void NuLightSpotFadeSet(u32 fade);
-
-extern "C" {
 
     static void ZeroLightSetupPrivate(NUVEC *direction0, NUVEC *colour0, NUVEC *direction1, NUVEC *colour1, NUVEC *direction2,
                                       NUVEC *colour2) {

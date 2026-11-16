@@ -376,7 +376,6 @@ typedef struct PLAYER_ROUTE_MASK_WORDS {
 } PLAYER_ROUTE_MASK_WORDS;
 
 extern u64 CharacterMaskAll;
-extern i32 complexsockposition_forcesock;
 
 typedef struct PLAYER_LAYER_FLAGS {
     u32 unknown_0 : 9;
@@ -455,7 +454,6 @@ typedef struct CHARACTER_DRAW_HIERARCHY {
 } CHARACTER_DRAW_HIERARCHY;
 
 extern i32 GameKeepMergeAction;
-extern i32 CharacterBlobShadowsOn;
 extern i32 GameDrawCharacterModelFlag;
 
 typedef struct DRAW_PREPASS_TELEPORT {

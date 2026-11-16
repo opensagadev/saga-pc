@@ -214,6 +214,7 @@ extern "C" {
 extern "C" {
 #endif
     struct gameobject_s *GetNamedGameObject(void *, char *);
+    extern i32 turret_gizmotype_id;
 #ifdef __cplusplus
 }
 #endif

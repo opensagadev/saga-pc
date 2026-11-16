@@ -38,10 +38,7 @@
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 extern i32 Action_HelpWithTriggers(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
-i32 GizmoGetTypeIDByName(void *system, char *name);
 SOCK *FindSock(SOCKSYS *system, char *name);
-void SockOn(SOCKSYS *system, i32 index);
-void SockOff(SOCKSYS *system, i32 index);
 void GizForce_PlayForwards(GIZFORCE *force);
 void GizForce_PlayBackwards(GIZFORCE *force);
 i32 turret_gizmotype_id;

@@ -1783,13 +1783,11 @@ void edppHighlightNearest(void) {
     }
 }
 
-void EdFileWrite(void *data, i32 len);
 void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteUnsignedShort(u16 value);
 void EdFileWriteChar(char value);
 void EdFileWriteUnsignedChar(u8 value);
-void EdFileWriteNuVec(NUVEC *value);
 i32 EdFileBackup(char *source, char *destination);
 
 i32 edppSaveEffects(char *filename, u8 page) {
@@ -4303,8 +4301,6 @@ void NewTerrain(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_inde
         NewTerrainScaleYMask(position, movement, hit_flags, object_index, radius, collision_radius, 1.0f, 0, scan_flags, 0);
     }
 }
-
-void edmainSetLocVec(NUVEC *position);
 
 void edppRegisterPointerToGameCharLocation(NUVEC *position) {
     edmainSetLocVec(position);

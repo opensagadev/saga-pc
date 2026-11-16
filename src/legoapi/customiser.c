@@ -65,8 +65,6 @@ typedef struct customiser_config_s {
     f32 locator_y_offsets[9];
 } CUSTOMISER_CONFIG;
 
-void CustomiserLoadTrace(char *path);
-
 typedef struct custom_accessory_resource_s {
     NUGSCN *scene;
     nuhspecial_s special;

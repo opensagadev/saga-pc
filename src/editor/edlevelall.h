@@ -56,6 +56,7 @@ extern "C" {
     void EdDrawPolyCylinderEx(NUVEC *start, NUVEC *end, i32 sides, i32 colour, i32 cap_colour, f32 radius, f32 limit, f32 offset);
     void EdDrawPolySector(NUVEC *center, f32 radius, i32 axis, i32 first_angle, i32 last_angle, i32 colour, i32 segments);
     void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour);
+    extern f32 rtl_helper_radius;
 #ifdef __cplusplus
 }
 #endif
@@ -1055,4 +1056,8 @@ extern LevelEditor theLevelEditor;
 
 #ifdef __cplusplus
 extern EdManipulator theDefaultManipulator;
+#endif
+
+#ifdef __cplusplus
+i32 LineToPlaneIntersecion(VuVec &origin, VuVec &direction, VuVec &plane, VuVec *intersection);
 #endif

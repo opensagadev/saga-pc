@@ -120,6 +120,8 @@ extern "C" {
     void SetDrawGoldBrick(struct STATUSPACKET_s *, i32);
     void DrawBonusTime(struct STATUSPACKET_s *, f32, i32);
     extern struct STATUS_STAGE_s *StatusStages;
+    void DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
+    void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
 #ifdef __cplusplus
 }
 #endif

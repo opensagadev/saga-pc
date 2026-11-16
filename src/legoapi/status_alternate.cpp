@@ -52,10 +52,6 @@ extern "C" {
 
     void Text_FillInExtendedSaveInfo(void);
     i32 TriggerAutoSave(void);
-    void DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
-    extern f32 CoinTotalScoreSize;
-    extern f32 CoinTotalCoinOffset;
-    extern i16 dat_00880778;
 
     i16 dat_007f195c = -1;
     char dat_00754900[] = "------";
@@ -652,8 +648,6 @@ extern "C" {
         (void)result;
         return 0;
     }
-
-    void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
 
     /* Stage type 9. */
     void Prompt_Alt_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 active) {

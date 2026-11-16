@@ -108,6 +108,11 @@ extern "C" {
     void edpartInstanceMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     void edpartInstanceSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *arg1, u32 arg2);
     extern const char dat_0076b274[4];
+    extern i32 edpart_copy_source[8];
+    extern i32 edpart_copy_source_count;
+    extern i32 edpart_part_list;
+    extern i32 edpart_particle_list;
+    void edpartOptMenu(void);
 #ifdef __cplusplus
 }
 #endif

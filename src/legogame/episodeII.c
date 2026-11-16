@@ -67,7 +67,6 @@ typedef struct dooku_c_s {
     nuhspecial_s node;
 } DOOKU_C;
 
-void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 void DrawForceBackEffect(nuhspecial_s *special);
 void GizPanel_Reset(void *panel);
 

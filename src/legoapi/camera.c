@@ -154,7 +154,6 @@ i32 GAMEPAD_DUP = PAD_BUTTON_UP;
 i32 GAMEPAD_DDOWN = PAD_BUTTON_DOWN;
 i32 GAMEPAD_DLEFT = PAD_BUTTON_LEFT;
 i32 GAMEPAD_DRIGHT = PAD_BUTTON_RIGHT;
-extern i32 PlayPlanesUseRenderMtx;
 
 void GameCam_ResetLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {

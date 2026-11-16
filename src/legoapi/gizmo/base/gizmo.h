@@ -169,6 +169,8 @@ extern "C" {
     i32 GizmoSys_SetBestBoltTarget(void *, struct WORLDINFO_s *, struct gameobject_s *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32);
     i32 GizmoSys_BoltHitPlat(void *, struct WORLDINFO_s *, struct bolt_s *, u8 *);
     void ResetPaintPuzzle(struct WORLDINFO_s *world);
+    i32 GizmoGetTypeIDByName(void *, char *);
+    void GizmoDiagnostic(char *format, ...);
 #ifdef __cplusplus
 }
 #endif

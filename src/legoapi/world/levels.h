@@ -334,6 +334,7 @@ extern "C" {
     void Credits_Update_Game(struct WORLDINFO_s *);
     void Credits_Draw_Game(struct WORLDINFO_s *);
     extern char AreaFixUpName_Gungan[8];
+    void KillBossNewLevel(i32 id, i32 unused_4, f32 delay, i32 level_index);
 #ifdef __cplusplus
 }
 #endif

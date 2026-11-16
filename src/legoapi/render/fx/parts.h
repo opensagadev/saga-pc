@@ -38,6 +38,7 @@ extern "C" {
     void LoadPartFile(WORLDINFO *);
     i32 FindPartDebris(PARTDEBRISSYS *, char *);
     void AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
+    i32 edpartPlace(i32 index, NUVEC *position);
 #ifdef __cplusplus
 }
 #endif

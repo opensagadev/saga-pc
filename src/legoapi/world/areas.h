@@ -136,6 +136,8 @@ extern "C" {
     } AREA_GLOBALS;
 
     extern AREA_GLOBALS AreaGlobals;
+    extern u8 *Game_LevelSave;
+    void DumpAreaData(i32 mode, i32 last_area);
 #ifdef __cplusplus
 }
 #endif

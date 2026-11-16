@@ -124,6 +124,15 @@ extern "C" {
     void GameAudio_Init(struct GAMEAUDIO *audio);
     extern i32 ticktock;
     void TickTockSfx(void);
+    extern i32 MusicOther;
+    extern i32 last_currentmusicpair_quiet;
+    extern i32 sticky_attack;
+    i32 AmbientFromQuiet(i32);
+    void MusicClearAll(void);
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+void legoSetMusicVolume(f32);
 #endif
