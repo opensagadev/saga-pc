@@ -27,7 +27,6 @@ quoted includes (read without evaluating conditions, so the set is a superset).
     python3 tools/standalone.py --vc8 HEADER...  # compile with VC8 (tools/cc.py) instead, C and C++
 """
 import argparse
-import contextlib
 import hashlib
 import json
 import multiprocessing
@@ -194,31 +193,21 @@ def scan(headers, compiler, jobs=2, use_cache=True, root=ROOT, cache_dir=None):
         keys[header] = cache_key(compiler.common, header, files, root)
         inputs[header] = [Path(path).relative_to(root.resolve()).as_posix() for path in files
                           if Path(path).is_relative_to(root.resolve())]
-    results, todo = {}, []
 
-    def missing(header):
-        found = cache.lookup(keys[header]) if cache else None
-        if found is None:
-            return True
-        results[header] = tuple(found)
-        return False
-
-    todo = [header for header in headers if missing(header)]
-    with cache.lock() if cache and todo else contextlib.nullcontext():
-        todo = [header for header in todo if missing(header)]  # another worktree may have checked them meanwhile
+    def check(names):
         started = time.time_ns()
-        if jobs > 1 and len(todo) > 1:
-            with multiprocessing.Pool(min(jobs, len(todo))) as pool:
-                for header, result in zip(todo, pool.map(_check_job, [(header, compiler.flags) for header in todo])):
-                    results[header] = tuple(result)
+        if jobs > 1 and len(names) > 1:
+            with multiprocessing.Pool(min(jobs, len(names))) as pool:
+                results = pool.map(_check_job, [(header, compiler.flags) for header in names])
         else:
-            for header in todo:
-                results[header] = compiler.check(header)
-        if cache:
-            for header in todo:
-                cache.store(keys[header], inputs[header], list(results[header]), started)
-            cache.finish()
-    return {header: results[header] for header in headers}
+            results = [compiler.check(header) for header in names]
+        for header, result in zip(names, results):
+            yield header, list(result), inputs[header], started
+
+    if cache is None:
+        return {header: tuple(result) for header, result, _, _ in check(list(headers))}
+    found = unitcache.run_cached(cache, keys, check)
+    return {header: tuple(found[header]) for header in headers}
 
 
 def vc8(headers):

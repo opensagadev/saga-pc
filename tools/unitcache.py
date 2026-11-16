@@ -9,8 +9,8 @@ only that tool's units.
 
 The cache directory is shared by every worktree of the project (SAGA_CACHE_DIR, default build/cache):
 paths under the worktree are stored relative to it, so one worktree's parse serves the others. The
-parse of missing units runs under a per-tool lock and re-checks the cache first, so concurrent scans of
-the same tree parse each unit once. Least recently used entries go first when the directory grows
+parse of a missing unit runs under a lock on its key and re-checks the cache first, so concurrent scans
+of the same inputs parse each unit once, and scans of different trees do not wait for each other. Least recently used entries go first when the directory grows
 beyond SAGA_CACHE_MAX_MB (default 2048).
 
 A parse with a fatal diagnostic (an include that did not resolve, which is no recorded input) is not
@@ -134,6 +134,7 @@ class UnitCache:
                              libclang_identity() if clang else None, common, root=self.root)
         self.digests = Digests()
         self._names = None
+        self._locks = {}
         self.hits = self.stored = 0
 
     # -- keys and inputs
@@ -208,16 +209,31 @@ class UnitCache:
         self.stored += 1
         return True
 
-    @contextlib.contextmanager
-    def lock(self):
-        """Held while parsing missing units, so two scans of the same inputs parse them once."""
-        self.directory.mkdir(parents=True, exist_ok=True)
-        with open(self.directory / ".lock", "a") as handle:
-            fcntl.flock(handle, fcntl.LOCK_EX)
-            try:
-                yield
-            finally:
-                fcntl.flock(handle, fcntl.LOCK_UN)
+    def claim(self, key, wait=False):
+        """A lock on `key` (one of 4096 lock files of this tool, shared by the keys this process holds with the
+        same prefix), or None when another process holds it and `wait` is false. Held while that key is
+        parsed, so concurrent scans parse a unit once."""
+        prefix = key[:3]
+        if prefix in self._locks:
+            self._locks[prefix][1] += 1
+            return prefix
+        locks = self.directory / ".locks"
+        locks.mkdir(parents=True, exist_ok=True)
+        handle = open(locks / prefix, "a")  # noqa: SIM115 (closed by release())
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX if wait else fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            handle.close()
+            return None
+        self._locks[prefix] = [handle, 1]
+        return prefix
+
+    def release(self, token):
+        if token is None or token not in self._locks:
+            return
+        self._locks[token][1] -= 1
+        if not self._locks[token][1]:
+            self._locks.pop(token)[0].close()
 
     def finish(self):
         if self.stored:
@@ -261,34 +277,62 @@ def _call(job):
     return name, *work(payload)
 
 
-def scan_units(cache, jobs, work, workers, label):
-    """Facts for every job, from the cache where its inputs are unchanged.
+def run_cached(cache, keys, parse):
+    """Facts for every name in `keys` ({name: key}), from the cache where its inputs are unchanged.
 
-    `jobs`: {name: (key, payload)}. `work(payload)` (a module-level function) returns (facts, deps,
-    started_ns) with `deps` the project files the parse read, or None when the result must not be stored
-    (a fatal diagnostic, a failure). Missing jobs are parsed by `workers` processes under the tool's lock,
-    after a second lookup (another worktree may have parsed them meanwhile)."""
+    `parse(names)` yields (name, facts, deps, started_ns) for the names it is given, `deps` being the project
+    files the parse read, or None when the result must not be stored (a fatal diagnostic, a failure). Each
+    missing name is parsed under a lock on its key taken before a second lookup. A key another scan holds is
+    parsed there right now: it is waited for (holding no lock) and looked up again. So concurrent scans of
+    the same inputs parse each unit once, and scans of different trees do not wait for each other."""
+    facts, held = {}, {}
+
+    def missing(names):
+        return [name for name in names if (found := cache.lookup(keys[name])) is None or facts.update({name: found})]
+
+    try:
+        todo = missing(keys)
+        while todo:
+            busy = []
+            for name in todo:
+                token = cache.claim(keys[name])
+                if token is None:
+                    busy.append(name)
+                else:
+                    held[name] = token
+            names = missing(list(held))
+            for name in set(held) - set(names):
+                cache.release(held.pop(name))
+            if names:
+                # Each result is stored as it arrives (and its lock released): an interrupted scan keeps its work.
+                for name, result, deps, started in parse(names):
+                    facts[name] = result
+                    if deps is not None:
+                        cache.store(keys[name], deps, result, started)
+                    cache.release(held.pop(name, None))
+            for name in busy:
+                cache.release(cache.claim(keys[name], wait=True))
+            todo = missing(busy)
+    finally:
+        for token in held.values():
+            cache.release(token)
+    cache.finish()
+    return {name: facts[name] for name in keys}
+
+
+def scan_units(cache, jobs, work, workers, label):
+    """run_cached over `jobs` ({name: (key, payload)}): `work(payload)`, a module-level function returning
+    (facts, deps, started_ns), runs in `workers` processes."""
     import multiprocessing  # noqa: PLC0415
     import sys  # noqa: PLC0415
-    facts = {}
-    todo = [name for name in jobs if (found := cache.lookup(jobs[name][0])) is None or facts.update({name: found})]
-    if todo:
-        with cache.lock():
-            todo = [name for name in todo
-                    if (found := cache.lookup(jobs[name][0])) is None or facts.update({name: found})]
-            if todo:
-                print(f"{label}: parsing {len(todo)} of {len(jobs)} units", file=sys.stderr)
-                work_list = [(work, name, jobs[name][1]) for name in todo]
-                with contextlib.ExitStack() as stack:
-                    if workers > 1 and len(work_list) > 1:
-                        pool = stack.enter_context(multiprocessing.Pool(min(workers, len(work_list))))
-                        results = pool.imap_unordered(_call, work_list)
-                    else:
-                        results = map(_call, work_list)
-                    # Each result is stored as it arrives, so an interrupted scan keeps its work.
-                    for name, result, deps, started in results:
-                        facts[name] = result
-                        if deps is not None:
-                            cache.store(jobs[name][0], deps, result, started)
-    cache.finish()
-    return {name: facts[name] for name in jobs}
+
+    def parse(names):
+        print(f"{label}: parsing {len(names)} of {len(jobs)} units", file=sys.stderr)
+        work_list = [(work, name, jobs[name][1]) for name in names]
+        if workers > 1 and len(work_list) > 1:
+            with multiprocessing.Pool(min(workers, len(work_list))) as pool:
+                yield from pool.imap_unordered(_call, work_list)
+        else:
+            yield from map(_call, work_list)
+
+    return run_cached(cache, {name: key for name, (key, _) in jobs.items()}, parse)

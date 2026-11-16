@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import tempfile
+import threading
 import time
 import unittest
 
@@ -93,6 +94,31 @@ class UnitCacheTest(unittest.TestCase):
         cache = self.cache(root)
         (root / "src/head.h").write_text("int fresh;\n")
         self.assertFalse(cache.store(cache.key("src/unit.c"), ["src/unit.c", "src/head.h"], {}, time.time_ns()))
+
+    def test_a_unit_another_scan_is_parsing_is_waited_for_and_taken_from_it(self):
+        root = self.roots[0]
+        other, cache = self.cache(root), self.cache(root)
+        key = cache.key("src/unit.c")
+        token = other.claim(key)
+        calls = []
+
+        def parse(names):
+            calls.extend(names)
+            for name in names:
+                yield name, {"parsed": name}, ["src/unit.c"], time.time_ns()
+
+        def finish():
+            time.sleep(0.2)
+            other.store(key, ["src/unit.c"], {"parsed": "elsewhere"}, time.time_ns())
+            other.release(token)
+        thread = threading.Thread(target=finish)
+        thread.start()
+        self.assertEqual(unitcache.run_cached(cache, {"unit": key}, parse), {"unit": {"parsed": "elsewhere"}})
+        thread.join()
+        self.assertEqual(calls, [])
+        # Two keys of one lock file in one scan do not wait for each other.
+        keys = {"a": "abc" + "0" * 61, "b": "abc" + "1" * 61}
+        self.assertEqual(unitcache.run_cached(cache, keys, parse), {"a": {"parsed": "a"}, "b": {"parsed": "b"}})
 
     def test_eviction_removes_the_least_recently_used_entries(self):
         tool = self.directory / "tool"
