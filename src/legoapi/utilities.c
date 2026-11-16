@@ -1271,15 +1271,15 @@ void VecRotateAxis(NUVEC *vector, u16 angle, NUVEC *axis) {
 }
 
 /* PC animation constructors call the shared game allocator out of line. */
-void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size) {
+void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, u32 size) {
     void *ptr = NULL;
 
-    if (buf != NULL && end != NULL && buf->addr + (u32)size < end->addr) {
+    if (buf != NULL && end != NULL && buf->addr + size < end->addr) {
         ptr = (void *)((buf->addr + 3) & ~3u);
-        buf->addr = ((buf->addr + 3) & ~3u) + (u32)size;
+        buf->addr = ((buf->addr + 3) & ~3u) + size;
     }
     if (ptr != NULL) {
-        memset(ptr, 0, (u32)size);
+        memset(ptr, 0, size);
     }
     return ptr;
 }

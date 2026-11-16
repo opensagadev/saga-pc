@@ -91,7 +91,7 @@ void *NuAllocGetPeakEnd(void) {
 }
 
 /* Allocates zeroed storage without a tracking record. */
-void *NuAllocUntracked(i32 size) {
+void *NuAllocUntracked(u32 size) {
     void *user_data;
     void *allocation_end;
     NUALLOC_ARENA *arena;
@@ -100,16 +100,16 @@ void *NuAllocUntracked(i32 size) {
     arena = NuAllocArena;
     if (arena != NULL) {
         *arena->cursor = (*arena->cursor + 15) & 0xfffffff0U;
-        if (arena->end - *arena->cursor >= (u32)size) {
+        if (arena->end - *arena->cursor >= size) {
             user_data = (void *)*arena->cursor;
-            *arena->cursor += (u32)size;
+            *arena->cursor += size;
             return user_data;
         }
         return NULL;
     }
     pool = NuAllocPool;
     if (pool != NULL) {
-        u32 aligned_size = ((u32)size + 15) & 0xfffffff0U;
+        u32 aligned_size = (size + 15) & 0xfffffff0U;
         if ((i32)aligned_size < (i32)pool->remaining) {
             user_data = (void *)pool->cursor;
             pool->cursor += aligned_size;
@@ -118,14 +118,14 @@ void *NuAllocUntracked(i32 size) {
         }
         return NULL;
     }
-    NuAllocTrackedBytes += (u32)size;
+    NuAllocTrackedBytes += size;
     if (NuAllocManager != NULL) {
-        user_data = NuAllocManagerAllocateAligned(NuAllocManager, (u32)size, 4);
+        user_data = NuAllocManagerAllocateAligned(NuAllocManager, size, 4);
     } else {
-        user_data = malloc((u32)size);
+        user_data = malloc(size);
     }
-    memset(user_data, 0, (u32)size);
-    allocation_end = (void *)((u32)user_data + (u32)size);
+    memset(user_data, 0, size);
+    allocation_end = (void *)((u32)user_data + size);
     if ((i32)allocation_end > (i32)NuAllocPeakEnd0) {
         NuAllocPeakEnd0 = allocation_end;
     }
@@ -292,7 +292,7 @@ void NuFree(void *user_data, const char *file, i32 line) {
 }
 
 /* Resizes a tracked allocation in place through the CRT, re-linking its record at the list head. */
-void *NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
+void *NuReAlloc(void *user_data, u32 size, const char *file, i32 line) {
     NUALLOC_RECORD *record;
     NUALLOC_RECORD *old_head;
     NUALLOC_TAIL *tail;
@@ -308,16 +308,16 @@ void *NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
     if (arena != NULL) {
         NuAllocBadPointer();
         *arena->cursor = (*arena->cursor + 15) & 0xfffffff0U;
-        if (arena->end - *arena->cursor >= (u32)size) {
+        if (arena->end - *arena->cursor >= size) {
             user_data = (void *)*arena->cursor;
-            *arena->cursor += (u32)size;
+            *arena->cursor += size;
             return user_data;
         }
         return NULL;
     }
     pool = NuAllocPool;
     if (pool != NULL) {
-        u32 aligned_size = ((u32)size + 15) & 0xfffffff0U;
+        u32 aligned_size = (size + 15) & 0xfffffff0U;
         if ((i32)aligned_size < (i32)pool->remaining) {
             user_data = (void *)pool->cursor;
             pool->cursor += aligned_size;
@@ -339,14 +339,14 @@ void *NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
         NuAllocRecordHead = old_head;
     }
 
-    record = realloc(record, strlen(file) + (u32)size + 0x2d);
+    record = realloc(record, strlen(file) + size + 0x2d);
     if (record == NULL) {
-        NuAllocReport((const void *)(u32)size, file, line);
+        NuAllocReport((const void *)size, file, line);
         user_data = NULL;
     } else {
-        NuAllocTrackedBytes += (u32)size - record->requested_size;
-        record->requested_size = (u32)size;
-        tail = (NUALLOC_TAIL *)((u32)record + (u32)size + 32);
+        NuAllocTrackedBytes += size - record->requested_size;
+        record->requested_size = size;
+        tail = (NUALLOC_TAIL *)((u32)record + size + 32);
         for (i = 0; i < sizeof(tail->metadata) / sizeof(tail->metadata[0]); ++i) {
             tail->metadata[i] = NuAllocTailMetadata[i];
         }
@@ -365,7 +365,7 @@ void *NuReAlloc(void *user_data, i32 size, const char *file, i32 line) {
         NuAllocRecordHead = record;
         user_data = (void *)((u32)record + 32);
     }
-    allocation_end = (void *)((u32)user_data + (u32)size);
+    allocation_end = (void *)((u32)user_data + size);
     if ((i32)allocation_end > (i32)NuAllocPeakEnd0) {
         NuAllocPeakEnd0 = allocation_end;
     }

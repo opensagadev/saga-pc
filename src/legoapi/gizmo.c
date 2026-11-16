@@ -80,9 +80,9 @@ static i32 DefaultGizmo_GetNumOutputs(GIZMO *gizmo) {
     return 1;
 }
 
-void *GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, i32 size) {
+void *GizmoBufferAlloc(VARIPTR *buffer, VARIPTR *end, u32 size) {
     void *allocation = NULL;
-    if (buffer != NULL && end != NULL && buffer->addr + (u32)size < end->addr) {
+    if (buffer != NULL && end != NULL && buffer->addr + size < end->addr) {
         allocation = (void *)((buffer->addr + 15) & ~15u);
         buffer->addr = ((buffer->addr + 15) & ~15u) + size;
         memset(allocation, 0, size);

@@ -7,7 +7,7 @@ struct nuhspecial_s;
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, i32 size);
+    void *GameBufferAlloc(VARIPTR *buf, VARIPTR *end, u32 size);
     extern u32 LAYER_HOVERIGNORE;
     i32 getqseed(void);
     i32 StreamingInsideLineXZ(f32, f32, f32, f32, f32, f32);

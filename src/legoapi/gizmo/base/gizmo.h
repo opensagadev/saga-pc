@@ -154,7 +154,7 @@ typedef struct GIZACTIONDEF { // size 0x8
 extern "C" {
 #endif
 
-    void *GizmoBufferAlloc(VARIPTR *, VARIPTR *, i32);
+    void *GizmoBufferAlloc(VARIPTR *, VARIPTR *, u32);
 #ifdef __cplusplus
 }
 #endif
