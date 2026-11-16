@@ -7,10 +7,19 @@
 struct numtx_s;
 
 typedef struct NUVEC4 { // size 0x10
-    f32 x;              // 0x0
-    f32 y;              // 0x4
-    f32 z;              // 0x8
-    f32 w;              // 0xc
+
+    union { // size 0xc
+
+        struct {   // size 0xc
+            f32 x; // 0x0
+            f32 y; // 0x4
+            f32 z; // 0x8
+        };
+
+        NUVEC xyz;
+    }; // 0x0
+
+    f32 w; // 0xc
 #ifdef __cplusplus
     NUVEC operator-(const NUVEC4 &other) const {
         __declspec(align(16)) NUVEC result;

@@ -1247,10 +1247,10 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
             direction.x = (1.0f + x0) - 1.0f;
             direction.y = direction_y;
             direction.z = adjacent;
-            NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+            NuVecNorm(&direction.xyz, &direction.xyz);
             direction.w = 1.0f;
-            NuVecMtxTransform((NUVEC *)&direction, (NUVEC *)&direction, &camera.mtx);
-            NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+            NuVecMtxTransform(&direction.xyz, &direction.xyz, &camera.mtx);
+            NuVecNorm(&direction.xyz, &direction.xyz);
             direction.w = 1.0f;
             brightness = direction.y * 0.5 + 0.5;
             if (strip_row) {
@@ -1293,10 +1293,10 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
             direction.x = (1.0f + x1) - 1.0f;
             direction.y = direction_y;
             direction.z = adjacent;
-            NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+            NuVecNorm(&direction.xyz, &direction.xyz);
             direction.w = 1.0f;
-            NuVecMtxTransform((NUVEC *)&direction, (NUVEC *)&direction, &camera.mtx);
-            NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+            NuVecMtxTransform(&direction.xyz, &direction.xyz, &camera.mtx);
+            NuVecNorm(&direction.xyz, &direction.xyz);
             direction.w = 1.0f;
             brightness = direction.y * 0.5 + 0.5;
             if (brightness <= near_angle) {

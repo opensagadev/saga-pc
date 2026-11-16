@@ -761,7 +761,7 @@ i32 GameAnimSet_GetCentreAndRadius(GAMEANIMSET *set, NUVEC *centre, f32 *radius,
                 }
                 matrix = *NuSpecialGetDrawMtx(&object->special);
             }
-            NuSpecialGetRadius(&object->special, (NUVEC *)&object_centre, &object_radius);
+            NuSpecialGetRadius(&object->special, &object_centre.xyz, &object_radius);
             object_radius *= 0.75f;
             object_centre.w = 1.0f;
             NuVec4MtxTransformVU0(&object_centre, &object_centre, &matrix);

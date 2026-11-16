@@ -7198,27 +7198,27 @@ extern "C" {
                 }
                 colour = first->colour;
                 index = NuDebrisCurrentVertexCount + emitted;
-                *(NUVEC *)&NuDebrisVertexData[index].x = corners[0];
+                NuDebrisVertexData[index].position = corners[0];
                 NuDebrisVertexData[index].colour = colour;
                 NuDebrisVertexData[index].u = u0;
                 NuDebrisVertexData[index].v = v1;
-                *(NUVEC *)&NuDebrisVertexData[index + 1].x = corners[2];
+                NuDebrisVertexData[index + 1].position = corners[2];
                 NuDebrisVertexData[index + 1].colour = colour;
                 NuDebrisVertexData[index + 1].u = u1;
                 NuDebrisVertexData[index + 1].v = v1;
-                *(NUVEC *)&NuDebrisVertexData[index + 2].x = corners[1];
+                NuDebrisVertexData[index + 2].position = corners[1];
                 NuDebrisVertexData[index + 2].colour = colour;
                 NuDebrisVertexData[index + 2].u = u1;
                 NuDebrisVertexData[index + 2].v = v0;
-                *(NUVEC *)&NuDebrisVertexData[index + 3].x = corners[0];
+                NuDebrisVertexData[index + 3].position = corners[0];
                 NuDebrisVertexData[index + 3].colour = colour;
                 NuDebrisVertexData[index + 3].u = u0;
                 NuDebrisVertexData[index + 3].v = v1;
-                *(NUVEC *)&NuDebrisVertexData[index + 4].x = corners[1];
+                NuDebrisVertexData[index + 4].position = corners[1];
                 NuDebrisVertexData[index + 4].colour = colour;
                 NuDebrisVertexData[index + 4].u = u1;
                 NuDebrisVertexData[index + 4].v = v0;
-                *(NUVEC *)&NuDebrisVertexData[index + 5].x = corners[3];
+                NuDebrisVertexData[index + 5].position = corners[3];
                 NuDebrisVertexData[index + 5].colour = colour;
                 NuDebrisVertexData[index + 5].u = u0;
                 NuDebrisVertexData[index + 5].v = v0;
@@ -8255,7 +8255,7 @@ extern "C" {
             }
         }
         NuVecNeg(&view_direction, &view_direction);
-        NuRndrStateSetSpecularLightEx(&view_direction, &matrix, (const NUVEC *)&rndrstream_specular_intensity);
+        NuRndrStateSetSpecularLightEx(&view_direction, &matrix, &rndrstream_specular_intensity.xyz);
         return 1;
     }
 

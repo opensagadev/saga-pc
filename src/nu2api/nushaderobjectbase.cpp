@@ -89,7 +89,7 @@ extern "C" void NuShaderObjectBaseUpdateWaterTable(NuShaderObject *shader, PC_SH
             angle = (i32)(displacement.z * 10430.3779296875);
             displacement.z = amplitude * NuTrigTable[(angle >> 1) & 0x7fff];
             PCShaderWaterTable[i].w = displacement.x / PCShaderWaterAmplitudeScale;
-            NuVecMtxTransformH((NUVEC *)&PCShaderWaterTable[i], &displacement, &inverse);
+            NuVecMtxTransformH(&PCShaderWaterTable[i].xyz, &displacement, &inverse);
         }
     }
     NuShaderObjectSetElementsfv(shader, SHADER_UNIFORM_WATER_TABLE, 0, 32, (const f32 *)PCShaderWaterTable);

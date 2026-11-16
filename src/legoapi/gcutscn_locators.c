@@ -379,7 +379,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
             direction.w = 0.0f;
             NuMtxTranspose(&inverse, &joint_world);
             NuVec4MtxRotateVU0(&local_direction, &direction, &inverse);
-            NuVecNorm((NUVEC *)&local_direction, (NUVEC *)&local_direction);
+            NuVecNorm(&local_direction.xyz, &local_direction.xyz);
             if ((f64)local_direction.z > 0.10000000149011612) {
                 x = (f32)((f64)local_direction.x * 0.5);
                 y = (f32)((f64)local_direction.y * 0.5);

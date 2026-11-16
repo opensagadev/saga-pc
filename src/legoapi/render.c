@@ -37,10 +37,10 @@
         direction.x = (vx);                                                                                                                \
         direction.y = -(vy) * camera.aspect;                                                                                               \
         direction.z = adjacent;                                                                                                            \
-        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                                               \
+        NuVecNorm(&direction.xyz, &direction.xyz);                                                                                         \
         direction.w = 1.0f;                                                                                                                \
-        NuVecMtxTransform((NUVEC *)&direction, (NUVEC *)&direction, &camera.mtx);                                                          \
-        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);                                                                               \
+        NuVecMtxTransform(&direction.xyz, &direction.xyz, &camera.mtx);                                                                    \
+        NuVecNorm(&direction.xyz, &direction.xyz);                                                                                         \
         direction.w = 1.0f;                                                                                                                \
         brightness = direction.y * 0.5f + 0.5f;                                                                                            \
         if (brightness <= near_angle)                                                                                                      \
@@ -50,7 +50,7 @@
         else                                                                                                                               \
             brightness = ((brightness - near_angle) * scale_delta / angle_delta + near_scale) * parameters->intensity;                     \
         if (parameters->directional) {                                                                                                     \
-            f32 angle = (i16)(0x4000 - RenderPostASin(NuVecDot(&parameters->direction, (NUVEC *)&direction))) * 0.005493164f;              \
+            f32 angle = (i16)(0x4000 - RenderPostASin(NuVecDot(&parameters->direction, &direction.xyz))) * 0.005493164f;                   \
             if (angle < parameters->direction_near_angle) {                                                                                \
                 brightness += 128.0f * parameters->direction_far_scale;                                                                    \
             } else if (!(angle > parameters->direction_far_angle)) {                                                                       \

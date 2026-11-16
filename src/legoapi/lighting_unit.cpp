@@ -59,7 +59,7 @@ extern "C" {
 /* The engine's VuVecNormalise: unit-length copy of a direction, as a point (w = 1). */
 extern "C" {
     static void fun_00595220(NUVEC4 &destination, NUVEC4 &source) {
-        NuVecNorm((NUVEC *)&destination, (NUVEC *)&source);
+        NuVecNorm(&destination.xyz, &source.xyz);
         destination.w = 1.0f;
     }
 }
@@ -72,7 +72,7 @@ void NUVEC4::fun_00595250(f32 new_x, f32 new_y, f32 new_z, f32 new_w) {
 }
 
 void NUVEC4::fun_00595270() {
-    NuVecNorm((NUVEC *)this, (NUVEC *)this);
+    NuVecNorm(&this->xyz, &this->xyz);
     w = 1.0f;
 }
 
@@ -709,11 +709,11 @@ extern "C" void SetShadowLight(void) {
         camera_position = *(NUVEC *)&NuCameraGetCam()->mtx.m30;
         camera = edmainGetCamera();
     } else {
-        NuVecSub((NUVEC *)&view_direction, &GameCam->target, &GameCam->position);
+        NuVecSub(&view_direction.xyz, &GameCam->target, &GameCam->position);
         camera_position = GameCam->position;
         camera = pNuCam;
     }
-    NuVecNorm((NUVEC *)&view_direction, (NUVEC *)&view_direction);
+    NuVecNorm(&view_direction.xyz, &view_direction.xyz);
     view_direction.w = 1.0f;
     f64 weight = 1.0 < 1.0 + (f64)view_direction.y ? 1.0 : 1.0 + (f64)view_direction.y;
     f32 distance = NuVecDist(&camera_position, &target, NULL);

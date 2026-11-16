@@ -828,7 +828,7 @@ void NuMainFilter::RenderBloom() {
         f32 direction_y = source->y;
         f32 direction_z = source->z;
         NUVEC4 direction = {source->x, direction_y, direction_z, 1.0f};
-        NuVecNorm((NUVEC *)&direction, (NUVEC *)&direction);
+        NuVecNorm(&direction.xyz, &direction.xyz);
         direction.w = 1.0f;
         direction.w = bloom->direction_bias;
         PCDeviceSetVertexShaderConstantsF(platform_uniforms[3], &direction.x, 1);

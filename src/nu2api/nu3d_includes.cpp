@@ -3287,11 +3287,11 @@ extern "C" {
                 root_values.y = joint->translation.y;
                 root_values.z = -joint->translation.z;
                 if (parent != 255) {
-                    NuVecMtxTransform((NUVEC *)&matrix->m30, (NUVEC *)&joint->translation, &matrices[parent]);
+                    NuVecMtxTransform((NUVEC *)&matrix->m30, &joint->translation.xyz, &matrices[parent]);
                 } else if (base != NULL) {
-                    NuVecMtxTransform((NUVEC *)&matrix->m30, (NUVEC *)&joint->translation, base);
+                    NuVecMtxTransform((NUVEC *)&matrix->m30, &joint->translation.xyz, base);
                 } else {
-                    *(NUVEC *)&matrix->m30 = *(NUVEC *)&joint->translation;
+                    *(NUVEC *)&matrix->m30 = joint->translation.xyz;
                 }
             } else if (parent != 255) {
                 matrix->m30 = matrices[parent].m30;
@@ -5893,7 +5893,7 @@ bool OccluderSet::IsOccludedSphere(NUVEC const *center, f32 radius) {
             const NUVEC4 &second = record.transformed[end];
             normal.x = second.y - first.y;
             normal.y = -(second.x - first.x);
-            NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
+            NuVecNorm(&normal.xyz, &normal.xyz);
             normal.z = normal.w = 0.0f;
             NUVEC delta;
             delta.x = projected.x - first.x;
@@ -5931,7 +5931,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
         NuAnimMtxCopyPrivate(&transform, &projection_matrix);
     }
     for (u32 i = 0; i < sizeof(corners) / sizeof(corners[0]); ++i) {
-        NuVec4MtxTransform(&corners[i], reinterpret_cast<NUVEC *>(&corners[i]), &transform);
+        NuVec4MtxTransform(&corners[i], &corners[i].xyz, &transform);
         if (corners[i].w <= 0.0f) {
             return false;
         }
@@ -5988,7 +5988,7 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
             const NUVEC4 &second = record.transformed[end];
             normal.x = second.y - first.y;
             normal.y = -(second.x - first.x);
-            NuVecNorm(reinterpret_cast<NUVEC *>(&normal), reinterpret_cast<NUVEC *>(&normal));
+            NuVecNorm(&normal.xyz, &normal.xyz);
             normal.z = normal.w = 0.0f;
             for (u32 corner = 0; corner < sizeof(corners) / sizeof(corners[0]); ++corner) {
                 NUVEC delta;
@@ -6020,7 +6020,7 @@ void OccluderSet::PrepareForQueries(NUMTX const *query, NUMTX const *projection)
         record.depth = -1000000.0f;
         bool valid = true;
         for (u32 vertex = 0; vertex != sizeof(record.transformed) / sizeof(record.transformed[0]); ++vertex) {
-            NuVec4MtxTransform(&record.transformed[vertex], reinterpret_cast<NUVEC *>(&record.vertices[vertex]), &projection_matrix);
+            NuVec4MtxTransform(&record.transformed[vertex], &record.vertices[vertex].xyz, &projection_matrix);
             if (!(record.transformed[vertex].w > 0.0f)) {
                 valid = false;
                 break;
@@ -6445,7 +6445,7 @@ void OcclusionManager::AddOccluder(const NUVEC *center, f32 radius) {
     d.x -= forward.x;
     d.y -= forward.y;
     d.z -= forward.z;
-    AddOccluder(reinterpret_cast<NUVEC *>(&a), reinterpret_cast<NUVEC *>(&b), reinterpret_cast<NUVEC *>(&c), reinterpret_cast<NUVEC *>(&d));
+    AddOccluder(&a.xyz, &b.xyz, &c.xyz, &d.xyz);
 }
 
 void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, const NUMTX *matrix) {
@@ -6462,13 +6462,11 @@ void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, c
                                                {min_x, min_y, min_z, 1.0f}, {min_x, max_y, max_z, 1.0f}, {max_x, max_y, min_z, 1.0f},
                                                {max_x, min_y, min_z, 1.0f}, {min_x, min_y, max_z, 1.0f}};
     for (i32 i = 0; i < 8; ++i) {
-        NUVEC *vertex = reinterpret_cast<NUVEC *>(&corners[i]);
+        NUVEC *vertex = &corners[i].xyz;
         NuVecMtxTransform(vertex, vertex, const_cast<NUMTX *>(matrix));
     }
-    AddOccluder(reinterpret_cast<NUVEC *>(&corners[0]), reinterpret_cast<NUVEC *>(&corners[1]), reinterpret_cast<NUVEC *>(&corners[2]),
-                reinterpret_cast<NUVEC *>(&corners[3]));
-    AddOccluder(reinterpret_cast<NUVEC *>(&corners[4]), reinterpret_cast<NUVEC *>(&corners[5]), reinterpret_cast<NUVEC *>(&corners[6]),
-                reinterpret_cast<NUVEC *>(&corners[7]));
+    AddOccluder(&corners[0].xyz, &corners[1].xyz, &corners[2].xyz, &corners[3].xyz);
+    AddOccluder(&corners[4].xyz, &corners[5].xyz, &corners[6].xyz, &corners[7].xyz);
 }
 
 extern "C" {
@@ -6653,28 +6651,28 @@ extern "C" void PostShadowComputeClippingPlanes(const NUMTX *matrix, bool zero_n
     depth_right.x = corners[2].x - corners[6].x;
     depth_right.y = corners[2].y - corners[6].y;
     depth_right.z = corners[2].z - corners[6].z;
-    NuVecCross(reinterpret_cast<NUVEC *>(left), reinterpret_cast<NUVEC *>(&near_up), reinterpret_cast<NUVEC *>(&depth_left));
-    NuVecNorm(reinterpret_cast<NUVEC *>(left), reinterpret_cast<NUVEC *>(left));
+    NuVecCross(&left->xyz, &near_up.xyz, &depth_left.xyz);
+    NuVecNorm(&left->xyz, &left->xyz);
     f32 dot = (left->y * corners[0].y + left->x * corners[0].x) + left->z * corners[0].z;
     left->w = -dot;
-    NuVecCross(reinterpret_cast<NUVEC *>(right), reinterpret_cast<NUVEC *>(&depth_right), reinterpret_cast<NUVEC *>(&far_down));
-    NuVecNorm(reinterpret_cast<NUVEC *>(right), reinterpret_cast<NUVEC *>(right));
+    NuVecCross(&right->xyz, &depth_right.xyz, &far_down.xyz);
+    NuVecNorm(&right->xyz, &right->xyz);
     dot = (right->y * corners[6].y + right->x * corners[6].x) + right->z * corners[6].z;
     right->w = -dot;
-    NuVecCross(reinterpret_cast<NUVEC *>(top), reinterpret_cast<NUVEC *>(&far_left), reinterpret_cast<NUVEC *>(&depth_right));
-    NuVecNorm(reinterpret_cast<NUVEC *>(top), reinterpret_cast<NUVEC *>(top));
+    NuVecCross(&top->xyz, &far_left.xyz, &depth_right.xyz);
+    NuVecNorm(&top->xyz, &top->xyz);
     dot = (top->y * corners[6].y + top->x * corners[6].x) + top->z * corners[6].z;
     top->w = -dot;
-    NuVecCross(reinterpret_cast<NUVEC *>(bottom), reinterpret_cast<NUVEC *>(&depth_left), reinterpret_cast<NUVEC *>(&near_right));
-    NuVecNorm(reinterpret_cast<NUVEC *>(bottom), reinterpret_cast<NUVEC *>(bottom));
+    NuVecCross(&bottom->xyz, &depth_left.xyz, &near_right.xyz);
+    NuVecNorm(&bottom->xyz, &bottom->xyz);
     dot = (bottom->y * corners[0].y + bottom->x * corners[0].x) + bottom->z * corners[0].z;
     bottom->w = -dot;
-    NuVecCross(reinterpret_cast<NUVEC *>(far_plane), reinterpret_cast<NUVEC *>(&far_down), reinterpret_cast<NUVEC *>(&far_left));
-    NuVecNorm(reinterpret_cast<NUVEC *>(far_plane), reinterpret_cast<NUVEC *>(far_plane));
+    NuVecCross(&far_plane->xyz, &far_down.xyz, &far_left.xyz);
+    NuVecNorm(&far_plane->xyz, &far_plane->xyz);
     dot = (far_plane->y * corners[6].y + far_plane->x * corners[6].x) + far_plane->z * corners[6].z;
     far_plane->w = -dot;
-    NuVecCross(reinterpret_cast<NUVEC *>(near_plane), reinterpret_cast<NUVEC *>(&near_right), reinterpret_cast<NUVEC *>(&near_up));
-    NuVecNorm(reinterpret_cast<NUVEC *>(near_plane), reinterpret_cast<NUVEC *>(near_plane));
+    NuVecCross(&near_plane->xyz, &near_right.xyz, &near_up.xyz);
+    NuVecNorm(&near_plane->xyz, &near_plane->xyz);
     dot = (near_plane->y * corners[0].y + near_plane->x * corners[0].x) + near_plane->z * corners[0].z;
     near_plane->w = -dot;
 }
@@ -6683,8 +6681,8 @@ extern "C" void PostShadowComputeClippingPlanes(const NUMTX *matrix, bool zero_n
 static void PostShadowMakePlanePrivate(NUVEC4 *plane, const NUVEC4 *origin, const NUVEC4 *point_a, const NUVEC4 *point_b) {
     __declspec(align(16)) NUVEC a = {point_a->x - origin->x, point_a->y - origin->y, point_a->z - origin->z};
     __declspec(align(16)) NUVEC b = {point_b->x - origin->x, point_b->y - origin->y, point_b->z - origin->z};
-    NuVecCross(reinterpret_cast<NUVEC *>(plane), &a, &b);
-    NuVecNorm(reinterpret_cast<NUVEC *>(plane), reinterpret_cast<NUVEC *>(plane));
+    NuVecCross(&plane->xyz, &a, &b);
+    NuVecNorm(&plane->xyz, &plane->xyz);
     plane->w = 1.0f;
     f32 dot = (plane->y * origin->y + origin->x * plane->x) + plane->z * origin->z;
     plane->w = -dot;
@@ -6709,7 +6707,7 @@ extern "C" void PostShadowComputeFrustumCube(const NUCAMERA *camera, NUVEC4 *cor
     NUMTX matrix;
     NuAnimMtxCopyPrivate(&matrix, &camera->mtx);
     for (i32 i = 0; i < 8; ++i) {
-        NuVecMtxTransform(reinterpret_cast<NUVEC *>(&corners[i]), reinterpret_cast<NUVEC *>(&corners[i]), &matrix);
+        NuVecMtxTransform(&corners[i].xyz, &corners[i].xyz, &matrix);
     }
     PostShadowMakePlanePrivate(plane, &corners[4], &corners[5], &corners[6]);
 }
@@ -6742,7 +6740,7 @@ extern "C" i32 PostShadowComputePlanes(const NUVEC4 *direction, const NUVEC4 *co
             output->y = inward.y;
             output->z = inward.z;
             output->w = 0.0f;
-            NuVecNorm(reinterpret_cast<NUVEC *>(output), reinterpret_cast<NUVEC *>(output));
+            NuVecNorm(&output->xyz, &output->xyz);
             ++count;
             output->w = 1.0f;
             f32 plane_dot = (output->y * origin->y + output->x * origin->x) + output->z * origin->z;
@@ -10298,8 +10296,7 @@ extern "C" {
         }
         i32 clip;
         if (PCSpecialClipState == -1) {
-            clip = NuCameraClipTestExtents(reinterpret_cast<NUVEC *>(&special->common.bounds_min),
-                                           reinterpret_cast<NUVEC *>(&special->common.bounds_max), matrix, 0.0f, 0);
+            clip = NuCameraClipTestExtents(&special->common.bounds_min.xyz, &special->common.bounds_max.xyz, matrix, 0.0f, 0);
         } else {
             clip = PCSpecialClipState;
         }
@@ -10308,8 +10305,8 @@ extern "C" {
         i32 shadow_clip;
         if ((scene->visibility_flags[special->common.instance_ix] & 0x20) != 0 && PCSpecialActiveShadowLights > 0) {
             previous_shadow = PCSpecialShadowClipResultsPresent;
-            NuVecMtxTransform(&minimum, reinterpret_cast<NUVEC *>(&special->common.bounds_min), matrix);
-            NuVecMtxTransform(&maximum, reinterpret_cast<NUVEC *>(&special->common.bounds_max), matrix);
+            NuVecMtxTransform(&minimum, &special->common.bounds_min.xyz, matrix);
+            NuVecMtxTransform(&maximum, &special->common.bounds_max.xyz, matrix);
             shadow_clip = NuSpecialClipTestShadowLights(&minimum, &maximum, 0);
         } else {
             previous_shadow = 0;
@@ -10318,7 +10315,7 @@ extern "C" {
         if (clip == 0 && shadow_clip == 0) {
             return 0;
         }
-        NuVecAdd(&center, reinterpret_cast<NUVEC *>(&special->common.bounds_min), reinterpret_cast<NUVEC *>(&special->common.bounds_max));
+        NuVecAdd(&center, &special->common.bounds_min.xyz, &special->common.bounds_max.xyz);
         NuVecScale(&center, &center, 0.5f);
         NuVecMtxTransform(&center, &center, matrix);
         f32 distance = NuVecDistSqr(&center, reinterpret_cast<NUVEC *>(&global_camera.mtx.m30), NULL);
@@ -10698,7 +10695,7 @@ static void DisplayClipFallbackPC(NUDISPLAY_LIST *scene, NUVISIBILITYRESULT *vis
                 far_clip = view->fade_ranges[instance_index * 2 + 1];
             }
             center = &scene->clip_bounds[instance_index * 2];
-            result = NuCameraClipTestExtentsAxisAligned(reinterpret_cast<NUVEC *>(center), reinterpret_cast<NUVEC *>(center + 1), far_clip);
+            result = NuCameraClipTestExtentsAxisAligned(&center->xyz, &center[1].xyz, far_clip);
             if (result != 0 && NuOcclusionManagerIsEnabled() != 0) {
                 NUVEC minimum;
                 NUVEC maximum;
@@ -11005,8 +11002,7 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
     if (clip != 0) {
         visible_count = 0;
         for (u32 i = 0; i < count; ++i) {
-            i32 result = NuCameraClipTestExtents(reinterpret_cast<NUVEC *>(&special->bounds_min),
-                                                 reinterpret_cast<NUVEC *>(&special->bounds_max), &matrices[i], 0.0f, 0);
+            i32 result = NuCameraClipTestExtents(&special->bounds_min.xyz, &special->bounds_max.xyz, &matrices[i], 0.0f, 0);
             if (static_cast<u8>(result) != 0) {
                 visible[visible_count++] = static_cast<u16>(i | (result << 8));
             }
@@ -13697,9 +13693,8 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                 SHADOW_PRODUCER_BOUNDS *world_bounds = static_cast<SHADOW_PRODUCER_BOUNDS *>(scene->portal_boxes) + instance;
                 __declspec(align(16)) NUVEC4 sphere = {world_bounds->center_radius.x, world_bounds->center_radius.y,
                                                        world_bounds->center_radius.z, world_bounds->center_radius.w};
-                if (ShadowSegmentClip(reinterpret_cast<NUVEC *>(&sphere), reinterpret_cast<NUVEC *>(&render_sets[set].endpoint1),
-                                      reinterpret_cast<NUVEC *>(&render_sets[set].endpoint0), render_sets[set].shadow_radius,
-                                      world_bounds->center_radius.w) != 0) {
+                if (ShadowSegmentClip(&sphere.xyz, &render_sets[set].endpoint1.xyz, &render_sets[set].endpoint0.xyz,
+                                      render_sets[set].shadow_radius, world_bounds->center_radius.w) != 0) {
                     world_bounds = static_cast<SHADOW_PRODUCER_BOUNDS *>(scene->portal_boxes) + instance;
                     NUVEC extent = {world_bounds->extent.x, world_bounds->extent.y, world_bounds->extent.z};
                     NUVEC center = {world_bounds->center_radius.x, world_bounds->center_radius.y, world_bounds->center_radius.z};
@@ -14109,7 +14104,7 @@ extern "C" i32 NuSpecialClipTestShadowLights(NUVEC *minimum, NUVEC *maximum, i32
         min_box.y = min_copy.y;
         min_box.z = min_copy.z;
         min_box.w = min_copy.w;
-        i32 result = reinterpret_cast<PCFrustumClipSet *>(PCSpecialShadowLights[light])->TestBoxes((NUVEC *)&min_box, (NUVEC *)&max_box);
+        i32 result = reinterpret_cast<PCFrustumClipSet *>(PCSpecialShadowLights[light])->TestBoxes(&min_box.xyz, &max_box.xyz);
         PCSpecialShadowClipResults[light] = static_cast<u32>(result);
         if (result > 0) {
             any = 1;
@@ -16047,7 +16042,7 @@ extern "C" {
         extent.z = abs_row[0].z * extent.x + abs_row[1].z * extent.y + abs_row[2].z * extent.z;
         extent.x = extent_x;
         extent.y = extent_y;
-        NuVecMtxTransform((NUVEC *)&center, (NUVEC *)&center, &draw_matrix);
+        NuVecMtxTransform(&center.xyz, &center.xyz, &draw_matrix);
         center.w = NuFsqrt(extent.x + extent.y + extent.z);
         if ((display_scene->render_flags & 0x4000) != 0) {
             display_scene->clip_bounds[display->instance_ix * 2] = center;
@@ -16098,28 +16093,28 @@ extern "C" {
         corners[7].x = display->bounds_max.x;
         corners[7].y = display->bounds_min.y;
         corners[7].z = display->bounds_max.z;
-        NuVecMtxTransform((NUVEC *)&corners[0], (NUVEC *)&corners[0], &matrix);
-        NuVecMtxTransform((NUVEC *)&corners[1], (NUVEC *)&corners[1], &matrix);
-        NuVecMtxTransform((NUVEC *)&corners[2], (NUVEC *)&corners[2], &matrix);
-        NuVecMtxTransform((NUVEC *)&corners[3], (NUVEC *)&corners[3], &matrix);
-        NuVecMtxTransform((NUVEC *)&corners[4], (NUVEC *)&corners[4], &matrix);
-        NuVecMtxTransform((NUVEC *)&corners[5], (NUVEC *)&corners[5], &matrix);
-        NuVecMtxTransform((NUVEC *)&corners[6], (NUVEC *)&corners[6], &matrix);
-        NuVecMtxTransform((NUVEC *)&corners[7], (NUVEC *)&corners[7], &matrix);
-        NuVecMin((NUVEC *)&minimum, (NUVEC *)&corners[0], (NUVEC *)&corners[1]);
-        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[2]);
-        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[3]);
-        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[4]);
-        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[5]);
-        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[6]);
-        NuVecMin((NUVEC *)&minimum, (NUVEC *)&minimum, (NUVEC *)&corners[7]);
-        NuVecMax((NUVEC *)&maximum, (NUVEC *)&corners[0], (NUVEC *)&corners[1]);
-        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[2]);
-        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[3]);
-        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[4]);
-        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[5]);
-        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[6]);
-        NuVecMax((NUVEC *)&maximum, (NUVEC *)&maximum, (NUVEC *)&corners[7]);
+        NuVecMtxTransform(&corners[0].xyz, &corners[0].xyz, &matrix);
+        NuVecMtxTransform(&corners[1].xyz, &corners[1].xyz, &matrix);
+        NuVecMtxTransform(&corners[2].xyz, &corners[2].xyz, &matrix);
+        NuVecMtxTransform(&corners[3].xyz, &corners[3].xyz, &matrix);
+        NuVecMtxTransform(&corners[4].xyz, &corners[4].xyz, &matrix);
+        NuVecMtxTransform(&corners[5].xyz, &corners[5].xyz, &matrix);
+        NuVecMtxTransform(&corners[6].xyz, &corners[6].xyz, &matrix);
+        NuVecMtxTransform(&corners[7].xyz, &corners[7].xyz, &matrix);
+        NuVecMin(&minimum.xyz, &corners[0].xyz, &corners[1].xyz);
+        NuVecMin(&minimum.xyz, &minimum.xyz, &corners[2].xyz);
+        NuVecMin(&minimum.xyz, &minimum.xyz, &corners[3].xyz);
+        NuVecMin(&minimum.xyz, &minimum.xyz, &corners[4].xyz);
+        NuVecMin(&minimum.xyz, &minimum.xyz, &corners[5].xyz);
+        NuVecMin(&minimum.xyz, &minimum.xyz, &corners[6].xyz);
+        NuVecMin(&minimum.xyz, &minimum.xyz, &corners[7].xyz);
+        NuVecMax(&maximum.xyz, &corners[0].xyz, &corners[1].xyz);
+        NuVecMax(&maximum.xyz, &maximum.xyz, &corners[2].xyz);
+        NuVecMax(&maximum.xyz, &maximum.xyz, &corners[3].xyz);
+        NuVecMax(&maximum.xyz, &maximum.xyz, &corners[4].xyz);
+        NuVecMax(&maximum.xyz, &maximum.xyz, &corners[5].xyz);
+        NuVecMax(&maximum.xyz, &maximum.xyz, &corners[6].xyz);
+        NuVecMax(&maximum.xyz, &maximum.xyz, &corners[7].xyz);
         if ((scene->render_flags & 0x4000) != 0) {
             NUVEC4 center;
             __declspec(align(16)) NUVEC4 extent;
@@ -17236,7 +17231,7 @@ extern "C" {
                             count -= n;
                             do {
                                 NuRndrCalcRandEllipsePos(&point, &combined, group->ellipses[i].axes);
-                                *--out = *(NUVEC *)&point;
+                                *--out = point.xyz;
                             } while (--n != 0);
                         }
                     }
@@ -17260,7 +17255,7 @@ extern "C" {
                             count -= n;
                             do {
                                 NuRndrCalcRandCylinderPos(&point, &combined, group->cylinders[i].position.axes);
-                                *--out = *(NUVEC *)&point;
+                                *--out = point.xyz;
                             } while (--n != 0);
                         }
                     }

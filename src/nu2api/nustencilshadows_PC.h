@@ -43,12 +43,21 @@ typedef struct nutexbmp_s { // size 0x24
 } NUTEXBMP;
 
 typedef struct nulgtvertex_s { // size 0x18
-    f32 x;                     // 0x00
-    f32 y;                     // 0x04
-    f32 z;                     // 0x08
-    u32 colour;                // 0x0c
-    f32 u;                     // 0x10
-    f32 v;                     // 0x14
+
+    union { // size 0xc
+
+        struct {   // size 0xc
+            f32 x; // 0x00
+            f32 y; // 0x04
+            f32 z; // 0x08
+        };
+
+        NUVEC position;
+    }; // 0x00
+
+    u32 colour; // 0x0c
+    f32 u;      // 0x10
+    f32 v;      // 0x14
 } NULGTVERTEX;
 
 typedef struct PC_BUFFER_RESOURCE PC_BUFFER_RESOURCE;
