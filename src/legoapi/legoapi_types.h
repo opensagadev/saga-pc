@@ -1620,6 +1620,72 @@ struct GIZBUILDIT_s {                                  // size 0x84
     u8 unknown_83;         // 0x83
 };
 
+/* STATUS_STAGE_s.step: StatusStage_Reset sets STATUS_STEP_WAITING until the status background starts the stage
+ * (DrawStatusBG_*); each update callback sets itself up in STATUS_STEP_START. The stages with one timed step run
+ * it as STATUS_STEP_RUNNING; the others name their steps in gamestatus.c and status_alternate.cpp. The prompt
+ * stage waits for the choice in PROMPT_STEP_CHOOSE. */
+#define STATUS_STEP_WAITING -1
+#define STATUS_STEP_START 0
+#define STATUS_STEP_RUNNING 1
+#define PROMPT_STEP_CHOOSE 0 /* the players choose an entry */
+#define PROMPT_STEP_CHOSEN 1 /* half a second after the choice */
+
+/* STATUS_STAGE_s.step of the stages of gamestatus.c with more than one timed step (STATUS_STEP_* for the others), from
+ * what each update callback does in the step and what the draw callback shows. */
+#define TRUEHERO_STEP_DELAY 1       /* a second before the bar */
+#define TRUEHERO_STEP_FILL 2        /* the true jedi bar fills up to the percentage */
+#define TRUEHERO_STEP_FULL 3        /* the bar reached 100 % (TrueJedi_100pc) */
+#define TRUEHERO_STEP_HOLD 6        /* a second before the next stage */
+#define MINIKIT_STEP_DELAY 1        /* a second before the first new kit piece */
+#define MINIKIT_STEP_NEXT_KIT 2     /* half a second before each new piece */
+#define MINIKIT_STEP_KIT_IN 3       /* a new piece flies into the kit (UpdateNewMiniKits) */
+#define MINIKIT_STEP_HOLD 4         /* the hold before the next stage */
+#define MINIKIT_STEP_COMPLETE 6     /* the kit is complete: it flashes and explodes into parts */
+#define COINS_STEP_DELAY 1          /* a second before the count */
+#define COINS_STEP_COUNT 2          /* the players' coins count into the score */
+#define COINS_STEP_HOLD 3           /* a second before the next stage */
+#define CHALLENGE_CASH_STEP_COUNT 1 /* the reward counts into the score */
+#define CHALLENGE_CASH_STEP_HOLD 2  /* a second before the next stage */
+
+/* STATUS_STAGE_s.step of the stages of status_alternate.cpp with more than one timed step (STATUS_STEP_* for the others), from
+ * what each update callback does in the step (StatusAltSpin turns while something spins in or out) and what
+ * the draw callback shows. */
+#define GOLDBRICK_ALT_STEP_DELAY 1    /* nothing shown yet */
+#define GOLDBRICK_ALT_STEP_TITLE_IN 2 /* the title spins in */
+#define GOLDBRICK_ALT_STEP_TITLE 3    /* the title is shown */
+#define GOLDBRICK_ALT_STEP_COUNT_IN 4 /* the brick count spins in */
+#define GOLDBRICK_ALT_STEP_COUNT 5    /* the count is shown */
+#define GOLDBRICK_ALT_STEP_AWARD 6    /* one new gold brick, repeated per brick */
+#define GOLDBRICK_ALT_STEP_HOLD 7     /* the count after the last brick */
+#define GOLDBRICK_ALT_STEP_OUT 8      /* everything spins out */
+#define COINS_ALT_STEP_IN 1           /* the title, then the players' totals spin in */
+#define COINS_ALT_STEP_COUNT 2        /* the coins count into the score */
+#define COINS_ALT_STEP_HOLD 3         /* the totals are shown */
+#define COINS_ALT_STEP_OUT 4          /* everything spins out */
+#define REDBRICK_ALT_STEP_BRICK_IN 1  /* the brick grows in */
+#define REDBRICK_ALT_STEP_CHEAT_IN 2  /* the cheat name spins in */
+#define REDBRICK_ALT_STEP_CHEAT 3     /* the cheat name is shown */
+#define REDBRICK_ALT_STEP_TITLE_IN 4  /* the title spins in */
+#define REDBRICK_ALT_STEP_TITLE 5     /* the title is shown */
+#define REDBRICK_ALT_STEP_PULSE 6     /* the brick pulses */
+#define REDBRICK_ALT_STEP_OUT 7       /* everything spins out */
+#define TRUEHERO_ALT_STEP_BAR_IN 1    /* the bar and percentage spin in */
+#define TRUEHERO_ALT_STEP_TITLE_IN 2  /* the title spins in */
+#define TRUEHERO_ALT_STEP_TITLE 3     /* the title is shown */
+#define TRUEHERO_ALT_STEP_MODE_IN 4   /* the story or free play name spins in */
+#define TRUEHERO_ALT_STEP_FILL 5      /* the bar fills up to the percentage */
+#define TRUEHERO_ALT_STEP_FULL 6      /* 100 %: the percentage flashes (TrueJedi_100pc) */
+#define TRUEHERO_ALT_STEP_NOT_FULL 7  /* below 100 %: the percentage fades (TrueJedi_NOT) */
+#define TRUEHERO_ALT_STEP_OUT 8       /* everything spins out */
+#define MINIKIT_ALT_STEP_IN 1         /* the title and the kit come in */
+#define MINIKIT_ALT_STEP_NEXT_KIT 2   /* half a second before each new piece */
+#define MINIKIT_ALT_STEP_KIT_IN 3     /* a new piece flies into the kit */
+#define MINIKIT_ALT_STEP_HOLD 4       /* the hold before the next stage */
+#define MINIKIT_ALT_STEP_COMPLETE 5   /* the kit is complete: it flashes and explodes into parts */
+#define SUITS_ALT_STEP_LIST 1         /* the suits appear one after another */
+#define SUITS_ALT_STEP_NEW_SUIT 2     /* each newly collected suit is revealed */
+#define SUITS_ALT_STEP_HOLD 3         /* a second before the next stage */
+
 struct STATUSPACKET_s {                                                                      // size 0x14c
     struct STATUSPACKET_LSW_s *lsw_packet;                                                   // 0x000
     i32 (*init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);             // 0x004
@@ -1791,9 +1857,9 @@ struct STATUS_STAGE_s {                                                         
     u16 unknown_10;                                                                              // 0x10
     u8 unknown_12;                                                                               // 0x12
     u8 pad_13;                                                                                   // 0x13
-    i32 unknown_14;                                                                              // 0x14
-    f32 unknown_18;                                                                              // 0x18
-    f32 unknown_1c;                                                                              // 0x1c
+    i32 step;                                                                                    // 0x14
+    f32 step_time;                                                                               // 0x18
+    f32 step_duration;                                                                           // 0x1c
 };
 
 /* GIZTURRET_s.behavior_flags: the level file's options (GizTurret_Reset sets ORIGIN_AT_ANIMATION and

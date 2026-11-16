@@ -398,7 +398,7 @@ GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
 GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
 GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, type) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, unknown_18) == 0x18);
+GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, step_time) == 0x18);
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
 GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, flags) == 0x64);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
@@ -1457,8 +1457,8 @@ static void BackDrop_Alpha(f32 *alpha) {
         }
         if ((WORLD->current_level->flags & LEVEL_STATUS) != 0 && StatusPacket.status_flags != 0 &&
             StatusPacket.stage->type == STATUS_STAGE_FADE && (StatusPacket.flags_word & STATUSPACKET_CONTINUE_STORY) == 0) {
-            if (StatusPacket.stage->unknown_18 < 0.5f) {
-                *alpha = 1.0f - StatusPacket.stage->unknown_18 * 2.0f;
+            if (StatusPacket.stage->step_time < 0.5f) {
+                *alpha = 1.0f - StatusPacket.stage->step_time * 2.0f;
             } else {
                 *alpha = 0.0f;
             }

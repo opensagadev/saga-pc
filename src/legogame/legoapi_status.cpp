@@ -166,7 +166,7 @@ extern "C" {
         if (packet->gold_brick_enabled[index] != 0) {
             STATUS_STAGE_s *stage = packet->stage;
             DrawGoldBrick_Stage = index;
-            DrawGoldBrick_Phase = stage->unknown_14;
+            DrawGoldBrick_Phase = stage->step;
         }
     }
 
@@ -292,10 +292,10 @@ extern "C" {
 
     void StatusStage_Reset(STATUS_STAGE_s *stage) {
         if (stage != NULL) {
-            stage->unknown_14 = -1;
-            stage->unknown_18 = 0.0f;
+            stage->step = STATUS_STEP_WAITING;
+            stage->step_time = 0.0f;
             stage->unknown_12 = 0;
-            stage->unknown_1c = 1.0f;
+            stage->step_duration = 1.0f;
         }
     }
 
@@ -340,7 +340,7 @@ extern "C" {
     }
 
     void NextStatusStage(STATUSPACKET_s *packet) {
-        if (packet->stage != NULL && packet->stage->unknown_14 == -1 && packet->stage->unknown_18 < packet->unknown_68) {
+        if (packet->stage != NULL && packet->stage->step == STATUS_STEP_WAITING && packet->stage->step_time < packet->unknown_68) {
             packet->flags_word |= 2;
             return;
         }
@@ -963,15 +963,15 @@ extern "C" {
 
 i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
     (void)packet;
-    if (stage->unknown_18 > stage->unknown_1c) {
-        stage->unknown_18 = 0.0f;
+    if (stage->step_time > stage->step_duration) {
+        stage->step_time = 0.0f;
         currentminikit = (i32)((u32)currentminikit + 1u);
         pop_timer = 0.5f;
         slideseek = 1.0f;
         return 1;
     }
-    if (stage->unknown_18 > stage->unknown_1c - jibberlen - slidetime && stage->unknown_18 <= stage->unknown_1c - jibberlen) {
-        slideseek = (stage->unknown_1c - stage->unknown_18 - jibberlen) / slidetime;
+    if (stage->step_time > stage->step_duration - jibberlen - slidetime && stage->step_time <= stage->step_duration - jibberlen) {
+        slideseek = (stage->step_duration - stage->step_time - jibberlen) / slidetime;
     }
     return 0;
 }
@@ -1353,29 +1353,29 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
         if (StatusPacket.draw_background_callback != NULL) {
             StatusPacket.draw_background_callback(&StatusPacket);
         }
-        if (DrawGoldBrick_Phase != -1 && DrawGoldBrick_Stage != -1 && StatusPacket.stage->unknown_14 == DrawGoldBrick_Phase &&
+        if (DrawGoldBrick_Phase != -1 && DrawGoldBrick_Stage != -1 && StatusPacket.stage->step == DrawGoldBrick_Phase &&
             StatusPacket.current_gold_brick == DrawGoldBrick_Stage) {
             f32 duration;
             if (DrawGoldBrick_Phase == 4) {
                 duration = 5.5f;
-                if (StatusPacket.stage->unknown_18 >= duration) {
+                if (StatusPacket.stage->step_time >= duration) {
                     goto draw_stages;
                 }
             } else {
-                duration = StatusPacket.stage->unknown_1c;
+                duration = StatusPacket.stage->step_duration;
             }
             u16 rotation = (u16)(NuFmod(GlobalTimer.time_elapsed, 4.0f) * 0.25f * 65536.0f);
             u16 tilt = (u16)(NuTrigTable[((rotation * 2) >> 1) & 0x7fff] * 1820.0f);
             f32 quarter = duration * 0.25f;
             f32 three_quarters = duration * 0.75f;
             f32 alpha;
-            if (StatusPacket.stage->unknown_18 < quarter) {
-                alpha = NuTrigTable[((i32)(StatusPacket.stage->unknown_18 / quarter * 16384.0f) >> 1) & 0x7fff];
-            } else if (StatusPacket.stage->unknown_18 < three_quarters) {
+            if (StatusPacket.stage->step_time < quarter) {
+                alpha = NuTrigTable[((i32)(StatusPacket.stage->step_time / quarter * 16384.0f) >> 1) & 0x7fff];
+            } else if (StatusPacket.stage->step_time < three_quarters) {
                 alpha = 1.0f;
             } else {
                 alpha = NuTrigTable
-                    [((i32)((1.0f - (StatusPacket.stage->unknown_18 - three_quarters) / (duration - three_quarters)) * 16384.0f) >> 1) &
+                    [((i32)((1.0f - (StatusPacket.stage->step_time - three_quarters) / (duration - three_quarters)) * 16384.0f) >> 1) &
                      0x7fff];
             }
             f32 scale = StatusGoldBrickScale * alpha;
@@ -1404,14 +1404,14 @@ extern "C" void DrawStatusScreen(WORLDINFO *) {
         if (StatusPacket.stage->type == STATUS_STAGE_FADE) {
             alpha = 0.0f;
         } else if (StatusPacket.stage->type == STATUS_STAGE_EXIT) {
-            alpha = StatusPacket.stage->unknown_18 < 1.0f ? 1.0f - StatusPacket.stage->unknown_18 : 0.0f;
-        } else if (StatusPacket.stage->type == STATUS_STAGE_GOLD_BRICK && StatusPacket.stage->unknown_14 != 0) {
-            if (StatusPacket.stage->unknown_18 < 1.0f) {
-                alpha = 1.0f - StatusPacket.stage->unknown_18;
+            alpha = StatusPacket.stage->step_time < 1.0f ? 1.0f - StatusPacket.stage->step_time : 0.0f;
+        } else if (StatusPacket.stage->type == STATUS_STAGE_GOLD_BRICK && StatusPacket.stage->step != 0) {
+            if (StatusPacket.stage->step_time < 1.0f) {
+                alpha = 1.0f - StatusPacket.stage->step_time;
             } else {
-                f32 fade_start = StatusPacket.stage->unknown_1c - 1.0;
-                if (StatusPacket.stage->unknown_18 >= fade_start) {
-                    alpha = (StatusPacket.stage->unknown_18 - fade_start) / (StatusPacket.stage->unknown_1c - fade_start);
+                f32 fade_start = StatusPacket.stage->step_duration - 1.0;
+                if (StatusPacket.stage->step_time >= fade_start) {
+                    alpha = (StatusPacket.stage->step_time - fade_start) / (StatusPacket.stage->step_duration - fade_start);
                 } else {
                     alpha = 0.0f;
                 }
