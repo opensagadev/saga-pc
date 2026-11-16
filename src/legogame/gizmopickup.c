@@ -607,13 +607,13 @@ static void PartImpact_Coin(PART *part) {
 }
 
 static void PartExtra_BlueCoin(PART *part) {
-    if ((part->active & 0x200) != 0) {
+    if ((part->active & PART_STATE_DRAWN) != 0) {
         PartExtraCoinsPrivate(&part->position, 56);
     }
 }
 
 void PartExtra_PurpleCoin(PART *part) {
-    if ((part->active & 0x200) != 0) {
+    if ((part->active & PART_STATE_DRAWN) != 0) {
         PartExtraCoinsPrivate(&part->position, 57);
     }
 }
@@ -636,7 +636,7 @@ static void PartMove_VehiclePickup(PART *part, f32 timestep) {
         gain = 1.0f - GizmopickupFdiv(part->scale_time, part->initial_time);
     }
     if (gain <= 0.0f) {
-        part->active |= 2;
+        part->active |= PART_STATE_STOPPED;
         if (part->stop_fn != NULL) {
             part->stop_fn(part);
         }
@@ -1102,7 +1102,7 @@ static void PartStolen_Coin(PART *part) {
     i32 first_active;
     i32 second_active;
     GIZMOPICKUP pickup;
-    if (netclient != 0 || (part->active & 0x200) == 0) {
+    if (netclient != 0 || (part->active & PART_STATE_DRAWN) == 0) {
         return;
     }
     recipient = Player[0];

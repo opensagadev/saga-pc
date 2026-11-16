@@ -2532,10 +2532,11 @@ extern "C" {
                                                api->collision_radius, api->bounds_half_height)) {
                     continue;
                 }
-                if (!((part->active & 2) != 0 && (part->flags & 0x1000008) == 0x1000008)) {
+                if (!((part->active & PART_STATE_STOPPED) != 0 && (part->flags & 0x1000008) == 0x1000008)) {
                     KillPart(part, 1);
                 }
-                if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) != 0 && !((part->flags & 0x1000000) != 0 && (part->active & 2) != 0) &&
+                if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) != 0 &&
+                    !((part->flags & 0x1000000) != 0 && (part->active & PART_STATE_STOPPED) != 0) &&
                     ((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (part->flags & 0x800000) == 0)) {
                     flags = U64_PAIR(&CInfo[(object->character_context)].flags);
                     if ((flags & 0x4000000) != 0 ||
@@ -2575,7 +2576,7 @@ extern "C" {
                     api->velocity.x += direction.x * speed;
                     api->velocity.z += direction.z * speed;
                 }
-                if ((part->flags & 0x2000000) != 0 && ((part->flags & 0x4000000) == 0 || (part->active & 2) != 0)) {
+                if ((part->flags & 0x2000000) != 0 && ((part->flags & 0x4000000) == 0 || (part->active & PART_STATE_STOPPED) != 0)) {
                     angle = NuAtan2D(api->position.x - part->position.x, api->position.z - part->position.z);
                     api->movement_direction_x = NuTrigTable[angle >> 1] * api->character_data->game_character->run_speed;
                     api->movement_direction_z =
@@ -2583,7 +2584,7 @@ extern "C" {
                 }
             } else {
             collect_pickup:
-                if ((part->active & 2) == 0) {
+                if ((part->active & PART_STATE_STOPPED) == 0) {
                     if (part->part_id != 0xcb || !(part->scale_time >= 0.5f) ||
                         (VehicleArea == 0 && (object->current_hp <= 0 || object->current_hp >= object->unknown_107e))) {
                         if (part->part_id == 0xcb) {

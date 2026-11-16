@@ -86,6 +86,20 @@ typedef void (*PART_KILL)(struct PART *, i32);
  * without it. */
 #define PART_IN_USE 0x1
 
+/* PART.active, the other runtime bits, from AddPart, CastPart, the part update and draw and the detonators;
+ * 0x10, 0x80, 0x400, 0x800 and 0x1000 are not named yet. */
+#define PART_STATE_STOPPED 0x2        /* it has stopped moving (debris may stop with it) */
+#define PART_STATE_IMPACT_PENDING 0x4 /* CastPart found an impact within this step */
+#define PART_STATE_LIT 0x8            /* lighting data from the parameters */
+#define PART_STATE_SCALING_UP 0x20    /* growing after AddPart (PARTSCALEUPTIME) */
+#define PART_STATE_SCALING_DOWN 0x40  /* shrinking */
+#define PART_STATE_BELOW_CUTOFF 0x100 /* fell below its cutoff height: dies off screen */
+#define PART_STATE_DRAWN 0x200        /* drawn this frame */
+#define PART_STATE_LIGHT_SCALE 0x2000 /* the parameters' lighting scale */
+#define PART_STATE_BEEPED 0x4000      /* a thermal detonator's last-second beep has played */
+#define PART_STATE_IN_WATER 0x8000    /* a thermal detonator under the water surface */
+#define PART_STATE_REFLECTED 0x20000  /* a thermal detonator drawn reflected */
+
 /* PART.flags, ADDPART.flags and the part type's flags: the part editor's "Instance Flags" and "Debris Settings"
  * toggles (parts.c), labels in the comments. */
 #define PART_FLAG_DIE_WHEN_STOPPED 0x1             /* "Die when stopped" */

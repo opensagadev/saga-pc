@@ -53,7 +53,7 @@ void PartImpact_ThermalDetonator(PART *part) {
     f32 water;
     PART_ACTION stop;
     NUVEC trail;
-    if ((part->active & 0x8000) != 0) {
+    if ((part->active & PART_STATE_IN_WATER) != 0) {
         KillPart(part, 0);
         return;
     }
@@ -86,7 +86,7 @@ void PartImpact_ThermalDetonator(PART *part) {
     }
     if (stuck != 0) {
         stop = part->stop_fn;
-        part->active |= 2;
+        part->active |= PART_STATE_STOPPED;
         if (stop != NULL) {
             stop(part);
         }
@@ -95,7 +95,7 @@ void PartImpact_ThermalDetonator(PART *part) {
         PartImpact_Brick(part);
         PlaySfx("ThermalDet_Bnce", &part->position);
     }
-    if ((part->active & PART_IN_USE) != 0 && (part->active & 2) == 0) {
+    if ((part->active & PART_IN_USE) != 0 && (part->active & PART_STATE_STOPPED) == 0) {
         trail.x = part->impact_position.x - part->impact_normal.x * part->unknown_e0;
         trail.y = part->impact_position.y - part->impact_normal.y * part->unknown_e0;
         trail.z = part->impact_position.z - part->impact_normal.z * part->unknown_e0;
@@ -108,15 +108,16 @@ void PartUpdate_ThermalDetonator(PART *part) {
     f32 water;
     i32 surface;
     i32 layer;
-    if ((part->active & 0x4000) == 0 && (part->active & 2) != 0 && part->time_remaining > 0.0f && part->time_remaining < 1.0f) {
+    if ((part->active & PART_STATE_BEEPED) == 0 && (part->active & PART_STATE_STOPPED) != 0 && part->time_remaining > 0.0f &&
+        part->time_remaining < 1.0f) {
         PlaySfx("ThermalDet_Beep", &part->position);
-        part->active |= 0x4000;
+        part->active |= PART_STATE_BEEPED;
         return;
     }
-    if ((part->active & 2) != 0) {
+    if ((part->active & PART_STATE_STOPPED) != 0) {
         return;
     }
-    part->active &= ~0x20000;
+    part->active &= ~PART_STATE_REFLECTED;
     NewTerrPlatformsOff();
     height = GameShadow(NULL, &part->position, 5.0f, -1);
     if ((f64)height == 2000000.0) {
@@ -126,7 +127,7 @@ void PartUpdate_ThermalDetonator(PART *part) {
         surface = ShadowInfo();
         if ((u32)surface + 1 <= 17 && (TerSurface[surface].flags & TERSURFACE_REFLECTIVE) != 0) {
             part->reflection_height = height;
-            part->active |= 0x20000;
+            part->active |= PART_STATE_REFLECTED;
         }
     }
     water = EShadY;
@@ -137,9 +138,9 @@ void PartUpdate_ThermalDetonator(PART *part) {
     if ((u32)layer > 16) {
         return;
     }
-    if ((part->active & 0x8000) == 0 && part->position.y + part->unknown_e0 < water &&
+    if ((part->active & PART_STATE_IN_WATER) == 0 && part->position.y + part->unknown_e0 < water &&
         ((TerLayer[layer].flags & 1) != 0 || layer == 1 || layer == 9)) {
-        part->active |= 0x8000;
+        part->active |= PART_STATE_IN_WATER;
     }
     if (WORLD->current_level == DEATHSTARRESCUEA_LDATA && GameCam->sock == 2) {
         part->velocity.x = SeekValF(part->velocity.x, 0.0f, 3.0f);
@@ -154,7 +155,7 @@ i32 PartDraw_ThermalDetonator(PART *part) {
     i32 reflected = 0;
     i32 level_index;
     matrix = part->transform;
-    if ((part->active & 0x20000) != 0 && (f64)part->reflection_height != 2000000.0 &&
+    if ((part->active & PART_STATE_REFLECTED) != 0 && (f64)part->reflection_height != 2000000.0 &&
         MatrixReflection(&matrix, 2, part->reflection_height, WORLD->current_level->reflection_y, &reflection) != 0) {
         reflected = 1;
     }
@@ -388,7 +389,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     }
     part = FindPart(NULL, 0, object);
     if (part != NULL) {
-        if ((part->active & 2) != 0 && !(part->time_remaining > 1.0f)) {
+        if ((part->active & PART_STATE_STOPPED) != 0 && !(part->time_remaining > 1.0f)) {
             return 0;
         }
         KillPart(part, 0);

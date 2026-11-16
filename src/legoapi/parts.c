@@ -392,7 +392,7 @@ PART *AddPart(ADDPART *parameters) {
     part->unknown_20b = -1;
     part->scale_time = 0.0f;
     part->time_step = parameters->time_step;
-    part->active = (part->active & ~0x40u) | 0x20;
+    part->active = (part->active & ~PART_STATE_SCALING_DOWN) | PART_STATE_SCALING_UP;
     part->radius = parameters->unknown_14;
     part->unknown_e0 = (part->time_step / PARTSCALEUPTIME) * part->radius;
     part->unknown_e4 = parameters->unknown_18;
@@ -401,10 +401,10 @@ PART *AddPart(ADDPART *parameters) {
     part->field_ec = parameters->unknown_20;
     part->unknown_f0 = parameters->unknown_88;
     part->part_id = (i16)parameters->part_id;
-    part->active = (part->active & ~2u) | PART_IN_USE;
+    part->active = (part->active & ~PART_STATE_STOPPED) | PART_IN_USE;
     part->flags = parameters->flags;
     part->flicker_flags = parameters->unknown_c4;
-    part->active &= ~0x4000u;
+    part->active &= ~PART_STATE_BEEPED;
     if (parameters->lighting_data != NULL) {
         part->lighting[0] = parameters->lighting_data->values[0];
         part->lighting[3] = parameters->lighting_data->values[3];
@@ -413,15 +413,15 @@ PART *AddPart(ADDPART *parameters) {
         part->lighting[2] = parameters->lighting_data->values[2];
         part->lighting[5] = parameters->lighting_data->values[5];
         part->lighting[6] = parameters->lighting_data->values[6];
-        part->active |= 8;
+        part->active |= PART_STATE_LIT;
     } else {
-        part->active &= ~8u;
+        part->active &= ~PART_STATE_LIT;
         if (parameters->lighting_scale_x != 1.0f || parameters->lighting_scale_y != 1.0f || parameters->lighting_scale_z != 1.0f) {
             // lighting_scale_x/y/z are one NUVEC in the original (struct copy).
             part->lighting[6] = *(NUVEC *)&parameters->lighting_scale_x;
-            part->active |= 0x2000;
+            part->active |= PART_STATE_LIGHT_SCALE;
         } else {
-            part->active &= ~0x2000u;
+            part->active &= ~PART_STATE_LIGHT_SCALE;
         }
     }
     part->source_special = parameters->special;
@@ -3929,7 +3929,7 @@ void CastPart(PART *part, f32 time) {
     f32 radius;
     NUVEC movement;
     NUVEC cast_movement;
-    part->active &= ~4;
+    part->active &= ~PART_STATE_IMPACT_PENDING;
     part->unknown_f4 = time;
     movement.x = time * part->velocity.x;
     movement.y = time * time * (0.5 * part->gravity) + time * part->velocity.y;
@@ -3946,7 +3946,7 @@ void CastPart(PART *part, f32 time) {
         state->impact_material = -1;
         return;
     }
-    if ((part->active & 0x60) == 0x20) {
+    if ((part->active & (PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN)) == PART_STATE_SCALING_UP) {
         radius = (part->time_step + time) / PARTSCALEUPTIME * part->radius;
         if (radius > part->radius) {
             radius = part->radius;
@@ -3967,7 +3967,7 @@ void CastPart(PART *part, f32 time) {
             part->position.z -= PART_NORM.z * NewRayCastGetEmbedDist() * 1.05f;
         }
     }
-    part->active &= ~0x60;
+    part->active &= ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN);
     cast_movement = movement;
     hit = PartRayCast(&part->position, &cast_movement, part->unknown_e0, 0);
     if (hit == 0) {
@@ -3988,7 +3988,7 @@ void CastPart(PART *part, f32 time) {
         if (!(radius > 0.0f)) {
             return;
         }
-        part->active = (part->active & ~0x60) | 0x40;
+        part->active = (part->active & ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN)) | PART_STATE_SCALING_DOWN;
         cast_movement = movement;
         if (PartRayCast(&part->position, &cast_movement, radius, 0) == 0) {
             state->impact_material = -1;
@@ -4000,7 +4000,7 @@ void CastPart(PART *part, f32 time) {
         }
     }
 impact:
-    part->active |= 4;
+    part->active |= PART_STATE_IMPACT_PENDING;
     state->platform_id = PartPlatId();
     part->active ^= (((u32)(state->platform_id != (u32)-1) << 4) ^ part->active) & 0x10;
     part->unknown_f4 *= NewRayCastGetTOFI();
@@ -4712,16 +4712,16 @@ void DrawParts(i32 keep_offscreen) {
         if (part->draw_fn != NULL && part->draw_fn(part) == 0) {
             continue;
         }
-        if ((part->active & 8) != 0) {
+        if ((part->active & PART_STATE_LIT) != 0) {
             PartRuntimeDirectionalLightsPrivate(&part->lighting[3], &part->lighting[0], &part->lighting[4], &part->lighting[1],
                                                 &part->lighting[5], &part->lighting[2]);
             PCGlobalLightingState.ambient = part->lighting[6];
             NuRndrSetAmbientLightPS(&part->lighting[6]);
-        } else if ((part->active & 0x2000) != 0) {
+        } else if ((part->active & PART_STATE_LIGHT_SCALE) != 0) {
             PCGlobalLightingState.ambient = part->lighting[6];
             NuRndrSetAmbientLightPS(&part->lighting[6]);
         }
-        part->active &= ~0x200;
+        part->active &= ~PART_STATE_DRAWN;
         matrix = &part->transform;
         if (part->unknown_214 != 1.0f) {
             PartRuntimeMatrixCopyPrivate(&scaled, matrix);
@@ -4732,7 +4732,8 @@ void DrawParts(i32 keep_offscreen) {
         }
         if (part->source_special != NULL && NuSpecialDrawAt(&part->special, matrix) != 0) {
             part->active |= 0x600;
-        } else if (keep_offscreen == 0 && ((part->flags & PART_FLAG_KEEP_OFF_SCREEN) == 0 || (part->active & 0x100) != 0)) {
+        } else if (keep_offscreen == 0 &&
+                   ((part->flags & PART_FLAG_KEEP_OFF_SCREEN) == 0 || (part->active & PART_STATE_BELOW_CUTOFF) != 0)) {
             KillPart(part, 0);
         }
     }
@@ -4795,21 +4796,21 @@ void UpdateParts(f32 time) {
         }
         PartRuntimeMatrixCopyPrivate(&part->previous_transform, &part->transform);
         part->scale_time += time;
-        if ((part->active & 2) == 0) {
+        if ((part->active & PART_STATE_STOPPED) == 0) {
             f32 movement_time = time;
             if ((part->flags & PART_FLAG_IGNORE_TERRAIN) == 0) {
                 if (time >= part->unknown_f4) {
                     if (part->unknown_e0 < part->radius) {
-                        part->active = (part->active & ~0x40) | 0x20;
+                        part->active = (part->active & ~PART_STATE_SCALING_DOWN) | PART_STATE_SCALING_UP;
                     } else {
-                        part->active &= ~0x60;
+                        part->active &= ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN);
                     }
-                    if ((part->active & 4) != 0) {
+                    if ((part->active & PART_STATE_IMPACT_PENDING) != 0) {
                         if ((part->flags & 0x80000) != 0 && (part->active & 0x10) != 0 && part_platimpactcnt < 4) {
                             PartPlatformImpactList[part_platimpactcnt++] = state->platform_id;
                         }
                         if ((part->flags & PART_FLAG_NO_BOUNCE) != 0) {
-                            part->active |= 2;
+                            part->active |= PART_STATE_STOPPED;
                             if (part->stop_fn != NULL) {
                                 part->stop_fn(part);
                             }
@@ -4835,15 +4836,15 @@ void UpdateParts(f32 time) {
                                 if (part->velocity.x * part->velocity.x + part->velocity.y * part->velocity.y +
                                         part->velocity.z * part->velocity.z <
                                     PartStopSpeedSquared) {
-                                    part->active |= 2;
+                                    part->active |= PART_STATE_STOPPED;
                                     if (part->stop_fn != NULL) {
                                         part->stop_fn(part);
                                     }
                                     if ((part->flags & PART_FLAG_DIE_WHEN_STOPPED) != 0 || (part->active & 0x10) != 0 ||
-                                        (part->active & 0x100) != 0) {
+                                        (part->active & PART_STATE_BELOW_CUTOFF) != 0) {
                                         KillPart(part, 0);
                                     }
-                                } else if ((part->active & 0x100) != 0) {
+                                } else if ((part->active & PART_STATE_BELOW_CUTOFF) != 0) {
                                     KillPart(part, 0);
                                 }
                             }
@@ -4866,7 +4867,7 @@ void UpdateParts(f32 time) {
                     if (PartRaycastsEnabledPrivate != 0) {
                         CastPart(part, PartCollisionInterval);
                     }
-                    if ((part->active & 4) != 0 && part->unknown_f4 <= movement_time) {
+                    if ((part->active & PART_STATE_IMPACT_PENDING) != 0 && part->unknown_f4 <= movement_time) {
                         movement_time = 0.0f;
                     }
                 }
@@ -4882,8 +4883,8 @@ void UpdateParts(f32 time) {
                     part->position.z += part->velocity.z * movement_time;
                 }
             }
-            if ((part->active & 0x100) == 0 && part->unknown_f0 != 2000000.0f && part->position.y < part->unknown_f0) {
-                part->active |= 0x100;
+            if ((part->active & PART_STATE_BELOW_CUTOFF) == 0 && part->unknown_f0 != 2000000.0f && part->position.y < part->unknown_f0) {
+                part->active |= PART_STATE_BELOW_CUTOFF;
             }
             part->collision_min.x = part->position.x - part->radius;
             part->collision_max.x = part->position.x + part->radius;
@@ -4896,7 +4897,7 @@ void UpdateParts(f32 time) {
                 part->unknown_e0 = part->time_step / PARTSCALEUPTIME * part->radius;
                 if (part->unknown_e0 > part->radius) {
                     part->unknown_e0 = part->radius;
-                    part->active &= ~0x60;
+                    part->active &= ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN);
                 }
             } else if (((part->active >> 5) & 3) == 2) {
                 part->time_step -= time;
@@ -4967,20 +4968,20 @@ void UpdateParts(f32 time) {
             NuMtxLookAtY(&mtx, &velocity);
             DebrisOrientationMtx(*part->debris_handle, &mtx);
             DebrisEmitterPos(*part->debris_handle, part->position.x, part->position.y, part->position.z);
-            if (((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & 2) != 0) ||
+            if (((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & PART_STATE_STOPPED) != 0) ||
                 (part->flags & PART_FLAG_DISABLE_DRAW) != 0) {
                 DebrisStatusAlwaysOff(part->debris_handle);
             }
         }
         if (time != 0.0f) {
             if ((part->flags & 0x40000) != 0 && part->effect_id_1e0 != -1 &&
-                !((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & 2) != 0) &&
+                !((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & PART_STATE_STOPPED) != 0) &&
                 (part->flags & PART_FLAG_DISABLE_DRAW) == 0) {
                 AddScaledVariableShotDebrisEffect1(part->effect_id_1e0, &part->position, (i32)(part->unknown_1e8), time, 0, 0, NULL,
                                                    part->effect_scale);
             }
             if ((part->flags & 0x40000) != 0 && part->effect_id_1e4 != -1 &&
-                !((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & 2) != 0) &&
+                !((part->flags & PART_FLAG_DEBRIS_STOPS_WITH_PART) != 0 && (part->active & PART_STATE_STOPPED) != 0) &&
                 (part->flags & PART_FLAG_DISABLE_DRAW) == 0) {
                 AddScaledVariableShotDebrisEffect1(part->effect_id_1e4, &part->position, (i32)(part->unknown_1ec), time, 0, 0, NULL,
                                                    part->effect_scale);
