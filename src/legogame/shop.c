@@ -1048,7 +1048,6 @@ i32 SubItemMenu(void *menu) {
     f32 phase;
     f32 factor;
     i32 angle;
-    (void)menu;
     Shop_GetInput(&input);
     if (ShopHintDrawWait > 0.0f) {
         ShopHintDrawWait -= FRAMETIME;
@@ -1251,7 +1250,6 @@ i32 CodeMenu(void *menu) {
     i8 area;
     char code[7];
     u32 crc;
-    (void)menu;
     Shop_GetInput(&input);
     if (ShopSlideTimer >= 0.0f) {
         ShopSlideTimer -= FRAMETIME;
@@ -2123,7 +2121,6 @@ i32 ItemMenu(void *menu) {
     f32 forward_factor;
     i32 old_angle;
     i32 forward_angle;
-    (void)menu;
     Shop_GetInput(&input);
     if (ShopSlideTimer >= 0.0f) {
         ShopSlideTimer -= FRAMETIME;

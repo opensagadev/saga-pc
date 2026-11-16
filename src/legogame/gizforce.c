@@ -386,7 +386,6 @@ void GizForces_AddLevelSfx(void *world, void *system_pointer, i32 *ids, i32 *cou
     GIZFORCESYS *system = system_pointer;
     GIZFORCE *force;
     i32 index;
-    (void)world;
     if (system == NULL) {
         return;
     }
@@ -600,7 +599,6 @@ static void ForceGroupPop(GIZFORCE *force) {
 
 i32 GizForce_UpdateHint(HINT *hint) {
     i32 index;
-    (void)hint;
     if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
         return 0;
     }
@@ -623,7 +621,6 @@ void GizForces_Draw(void *world_pointer, void *system_pointer, f32 unused) {
     NUMTX reflection;
     f32 reflection_height;
     i32 index;
-    (void)unused;
     if (system == NULL) {
         return;
     }
@@ -721,7 +718,6 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
     NUVEC velocity;
     ADDPART params;
     PART *part;
-    (void)unused;
 
     if (WORLD->current_level == MAULF_LDATA) {
         NuMtxSetTranslation(&translated, &ForceThrowMaulPosition);
@@ -768,7 +764,6 @@ i32 GizForces_GetMaxGizmos(void *world_ptr) {
 void GizForces_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
     GIZFORCESYS *s = data;
     i32 i;
-    (void)world;
     if (s == NULL) {
         return;
     }
@@ -855,7 +850,6 @@ char *GizmoForce_GetOutputName(GIZMO *unused0, i32 output_index) {
 }
 
 i32 GizmoForce_GetNumOutputs(GIZMO *unused) {
-    (void)unused;
     return 8;
 }
 
@@ -1350,7 +1344,6 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
     GIZMO *gizmo;
     i32 index;
     i32 group_index;
-    (void)unused_time;
     if (world == NULL || system == NULL) {
         return;
     }

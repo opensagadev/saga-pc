@@ -301,7 +301,6 @@ static char *Lever_GetGizmoName(GIZMO *gizmo) {
 
 static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     GIZMO_LEVER *lever;
-    (void)mode;
     lever = gizmo->object;
     if ((lever->flags & LEVER_FLAG_ENABLED) != 0) {
         switch (output) {
@@ -326,7 +325,6 @@ static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
 }
 
 static char *Lever_GetOutputName(GIZMO *gizmo, i32 output) {
-    (void)gizmo;
     switch (output) {
         case LEVER_OUTPUT_DOWN:
             return LeverOutputDownNamePtr;
@@ -339,7 +337,6 @@ static char *Lever_GetOutputName(GIZMO *gizmo, i32 output) {
 }
 
 static i32 Lever_GetNumOutputs(GIZMO *gizmo) {
-    (void)gizmo;
     return 3;
 }
 
@@ -391,7 +388,6 @@ static void *Levers_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 static void Levers_ClearProgress(void *world, void *progress_ptr) {
     LEVER_PROGRESS *progress = progress_ptr;
-    (void)world;
     if (progress == NULL) {
         return;
     }
@@ -405,7 +401,6 @@ static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr
     LEVER_PROGRESS *progress = progress_ptr;
     GIZMO_LEVER *lever;
     i32 index;
-    (void)data;
     if (progress == NULL) {
         return;
     }
@@ -437,7 +432,6 @@ static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
     LEVER_PROGRESS *progress = progress_ptr;
     GIZMO_LEVER *lever;
     i32 index;
-    (void)data;
     if (world == NULL) {
         return;
     }
@@ -477,7 +471,6 @@ static i32 Levers_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 version;
     i32 index;
-    (void)data;
     if (((LEVER_WORLD *)world)->lever_count == 0) {
         version = EdFileReadInt();
         ((LEVER_WORLD *)world)->lever_count = EdFileReadInt();
@@ -527,7 +520,6 @@ static i32 Levers_Load(void *world_ptr, void *data) {
 static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 index;
-    (void)data;
     for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index) {
         if (NuStrLen(((LEVER_WORLD *)world)->levers[index].name) != 0) {
             AddGizmo(system, type_id, NULL, &((LEVER_WORLD *)world)->levers[index]);
@@ -539,8 +531,6 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
     WORLDINFO *world = world_ptr;
     GIZMO_LEVER *lever = ((LEVER_WORLD *)world)->levers;
     i32 index;
-    (void)data;
-    (void)elapsed;
     if (lever == NULL) {
         return;
     }

@@ -1560,8 +1560,6 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
     i32 locator;
     NUVEC velocity;
     ADDPART params;
-    (void)unused1;
-    (void)unused2;
     if (object->helmet == HELMET_NONE) {
         return;
     }
@@ -1598,7 +1596,6 @@ void ObjHitShield(GAMEOBJECT *attacker, GAMEOBJECT *target, i32 damage, void *un
     i32 health;
     f32 first_rumble;
     f32 second_rumble;
-    (void)unused_bolt;
     if (target == NULL) {
         return;
     }
@@ -3027,7 +3024,6 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
 i32 KillPlayer(GAMEOBJECT *object, i32 reason, i32 ignore_spawn_protection, NUVEC *unused) {
     i32 other;
     i32 active;
-    (void)unused;
     if (object->dead != 0) {
         return 0;
     }

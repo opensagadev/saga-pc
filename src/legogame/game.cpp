@@ -1682,7 +1682,6 @@ static i32 GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
 void GizmoBlowUp_Sfx(GIZMOBLOWUP *unused, NUVEC *position) {
     LEVELDATA *level = WORLD->current_level;
     GAME_GIZMO_SFX_CAMERA_READER *camera = (GAME_GIZMO_SFX_CAMERA_READER *)GameCam;
-    (void)unused;
     if (level == PODSPRINTA_LDATA && (camera->sock == 10 || camera->sock == 11 || camera->sock == 12) && camera->sock_distance > 145.0f &&
         camera->sock_distance < 195.0f) {
         PlaySfx("PodX_PurpCrysHit", position);
@@ -2046,7 +2045,6 @@ extern "C" {
 }
 
 extern "C" void InitChallenge(i32 area) {
-    (void)area;
     ChallengeMode = CHALLENGE_RUNNING;
     ResetTimer(&ChallengeTimer, 0);
     Cheats_TurnOff(0);
@@ -2065,7 +2063,6 @@ extern "C" void MenuUpdateEndChallenge(MENU *menu) {
 extern "C" {
 
     void MenuDrawEndChallenge(MENU *menu) {
-        (void)menu;
         if (MenuStopDraw == 0) {
             if (ChallengeMode == CHALLENGE_WON) {
                 if (NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {

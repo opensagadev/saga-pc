@@ -155,7 +155,6 @@ i32 GizPanel_Load(void *world_pointer, void *unused) {
     i32 index;
     i32 length;
     u8 value;
-    (void)unused;
     if (world == NULL || world->giz_panel_sys == NULL) {
         return 0;
     }
@@ -385,7 +384,6 @@ void GizPanel_Update(void *world_pointer, void *unused, f32 delta_time) {
     GAMEOBJECT *nearest_player = NULL;
     NUVEC nearest_direction;
     i32 index;
-    (void)unused;
     if (system == NULL) {
         return;
     }
@@ -475,8 +473,6 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
     f32 target_alpha;
     NUMTX base_matrix;
     i32 index;
-    (void)unused;
-    (void)unused_time;
     if (world == NULL) {
         return;
     }
@@ -669,7 +665,6 @@ i32 GizPanel_GetMaxGizmos(void *world_ptr) {
 void GizPanel_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     i32 i;
-    (void)data;
     if (w == NULL || w->giz_panel_sys == NULL) {
         return;
     }
@@ -695,8 +690,6 @@ i32 fun_0046eb50(PANEL_MOVEMENT *panel) {
 i32 GizPanel_GetOutput(void *input, i32 output, i32 mode) {
     GIZMO *gizmo = input;
     PANEL_MOVEMENT *panel = gizmo->object;
-    (void)output;
-    (void)mode;
     if ((panel->flags & 8) != 0 && (panel->flags & 4) != 0) {
         return (panel->flags >> 1) & 1;
     }
@@ -708,7 +701,6 @@ char *GizPanel_GetOutputName(void *unused, i32 output_index) {
 }
 
 i32 GizPanel_GetNumOutputs(void *unused) {
-    (void)unused;
     return 1;
 }
 
@@ -791,7 +783,6 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
     f32 distance;
     f32 radius;
     f32 radius_squared;
-    (void)world;
     if (object->player.unknown_db0 > 0.0f) {
         object->player.unknown_db0 -= FRAMETIME;
     }
@@ -1038,7 +1029,6 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
     PANEL_MOVEMENT *panel;
     u32 *progress = progress_pointer;
     i32 index;
-    (void)unused;
     if (world == NULL) {
         return;
     }

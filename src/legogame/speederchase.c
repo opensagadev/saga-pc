@@ -30,7 +30,6 @@
 #include "nu2api/numath/nuvec.h"
 
 i32 SpeederBlowupHack(GIZMOBLOWUP *blowup, i32 hit_type) {
-    (void)hit_type;
     if (blowup != NULL) {
         if (NuStrCmp(blowup->name, "thermocrate_011") == 0) {
             return 0;
@@ -165,7 +164,6 @@ void SpeederChaseA_Panel(WORLDINFO *world) {
     i32 count;
     i32 killed;
     i32 i;
-    (void)world;
     if (netclient != 0) {
         if (SpeederChaseNetPacket == NULL || SpeederChaseNetPacket->phase != 1 || SpeederChaseNetPacket->target_count == 0) {
             return;

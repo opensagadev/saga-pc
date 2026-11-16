@@ -74,15 +74,10 @@ void ResetStatusPacket_LSW(STATUSPACKET_s *packet) {
 }
 
 i32 InitStatusScreen_LSW(WORLDINFO *world, STATUSPACKET_s *packet) {
-    (void)world;
-    (void)packet;
     return 0;
 }
 
 i32 FinishStatusPacket_LSW(WORLDINFO *world, STATUSPACKET_s *packet, i32 result) {
-    (void)world;
-    (void)packet;
-    (void)result;
     return 0;
 }
 
@@ -128,7 +123,6 @@ f32 getFinishedStatusAlpha(STATUSPACKET_s *packet) {
 }
 
 void TrueHero_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
     NextStatusStage(packet);
 }
 
@@ -601,7 +595,6 @@ void MiniKit_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current
 }
 
 void AllMiniKits_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
     AddToCollection(dat_007f195c);
     NextStatusStage(packet);
 }
@@ -722,7 +715,6 @@ void AllMiniKits_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 cur
 }
 
 void RedBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
     NextStatusStage(packet);
 }
 
@@ -782,7 +774,6 @@ f32 StatusIconY = 0;
 
 void Coins_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
     u32 remaining;
-    (void)stage;
     StatusIconY = StatusIconsOnOff(1.0f);
     remaining = packet->coins_remaining[0] + packet->coins_remaining[1];
     IncreaseScore(packet->score, remaining, 0);
@@ -947,7 +938,6 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
 }
 
 void GoldBrick_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
     if (Game.gold_bricks <= 60) {
         NextStatusStage(packet);
     }
@@ -1533,7 +1523,6 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
 }
 
 void BonusComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
     NextStatusStage(packet);
 }
 
@@ -1655,7 +1644,6 @@ void BonusTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curre
 }
 
 void SuperStoryTime_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
     *packet->score = packet->time_reward_score;
     NextStatusStage(packet);
 }
@@ -1779,7 +1767,6 @@ void SuperStoryTime_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 
 }
 
 void SuperStoryScore_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    (void)stage;
     *packet->score = packet->final_reward_score;
     NextStatusStage(packet);
 }

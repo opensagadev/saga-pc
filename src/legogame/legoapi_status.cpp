@@ -153,7 +153,6 @@ extern "C" {
 
     void SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
         i32 index = packet->current_gold_brick;
-        (void)unused;
         if (packet->gold_brick_enabled[index] != 0) {
             STATUS_STAGE_s *stage = packet->stage;
             DrawGoldBrick_Stage = index;
@@ -953,7 +952,6 @@ extern "C" {
 }
 
 i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
-    (void)packet;
     if (stage->step_time > stage->step_duration) {
         stage->step_time = 0.0f;
         currentminikit = (i32)((u32)currentminikit + 1u);
@@ -1486,7 +1484,6 @@ extern "C" void NuMainStatusHelper(STATUSPACKET_s *) {
 extern "C" {
 
     void RegisterStatusScreen(STATUS_STAGE_s *stages, i32 *unused, const REGISTER_STATUS_PACKET *registration) {
-        (void)unused;
         StatusStages = stages;
         StatusPacket.lsw_packet = registration->lsw_packet;
         StatusPacket.init_callback = registration->init_callback;
@@ -1503,7 +1500,6 @@ extern "C" {
         i32 select = 0;
         i32 up = 0;
         i32 down = 0;
-        (void)world;
         CoinTotalScale = SeekLinearF(CoinTotalScale, 1.0f, seek_step);
         DrawGoldBrick_Phase = -1;
         DrawGoldBrick_Stage = -1;

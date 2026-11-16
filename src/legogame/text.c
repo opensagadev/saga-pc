@@ -90,8 +90,6 @@ void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     char path[256];
     u8 *string_buffer = buffer->void_ptr;
 
-    (void)buffer_end;
-
     TextRegisterButtonMapFn(Text_DecodeButtons);
     NuStrCpy(language, Text_GetLanguagePath(Text_Language));
 

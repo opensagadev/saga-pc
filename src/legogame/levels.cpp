@@ -1185,7 +1185,6 @@ extern "C" {
         APICHARACTERMODELLIST *list;
         APICHARACTERMODELLIST *story;
         NUGSCN *scene;
-        (void)bg_info;
         if (area != -1) {
             if (area != last_area) {
                 characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 3) & ~3u;

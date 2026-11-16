@@ -196,7 +196,6 @@ no_action:
 }
 
 i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
-    (void)unused;
     ReleaseForce(rider, 0);
     ReleaseBuildIt(rider, 0);
     ReleasePush(rider);
@@ -280,7 +279,6 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
     u32 saved_flags;
     u32 mask;
     void (*callback)(GAMEOBJECT *);
-    (void)unused;
     if (CUTSKIPLOCK == 0) {
         source_pad = source->player.pad;
         destination_pad = destination->player.pad;
@@ -627,7 +625,6 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     u32 rider_flag;
     u32 object_flag;
     PLAYERCHARACTERCONFIG *character;
-    (void)unused;
     if (target->player.rider == NULL) {
         return;
     }

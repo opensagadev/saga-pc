@@ -173,7 +173,6 @@ void GameCreatureOpponentSelection(AISYS *system, i32 count, APIOBJECT **objects
     i32 have_distance;
     GAMEOBJECT *baddy_object;
     u16 baddy_id;
-    GAMEOBJECT *goody_object;
     AIPACKET *packet;
     f32 metric;
     u64 bit;
@@ -1023,8 +1022,6 @@ void GlobalCharacterRender(NUVEC *position, i16 angle, i32 character, i32 unused
     u32 layer_mask;
     NUVEC scale;
     NUMTX matrix;
-    (void)unused;
-    (void)creature;
     if (character < CHARCOUNT) {
         model_id = apicharsys->playermodelids[character];
         if (model_id != -1) {
@@ -1262,7 +1259,6 @@ i32 AIBigJumpToDestination(APIOBJECT *apiobject, NUVEC *destination) {
 }
 
 i32 GameFindAlternativeSpecialObject(AISYS *system, nuhspecial_s *special) {
-    (void)system;
     return EquivalentObject_Find(WorldInfo_CurrentlyActive(), special);
 }
 
@@ -2063,14 +2059,12 @@ void AISysGetPathPos2(AISYS *system, NUVEC *position, AIPATHINFO *path_info, NUV
 }
 
 i32 AI_GetMaxGizmos(void *world_ptr) {
-    (void)world_ptr;
     return 32;
 }
 
 void AI_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     struct LEVELSCRIPTPROCESS_s *item = ((ADD_AI_WORLD *)world_ptr)->items;
     i32 i;
-    (void)data;
     if (item == NULL) {
         return;
     }
@@ -2126,8 +2120,6 @@ char *AI_GetGizmoName(void *gizmo_pointer) {
 
 i32 AI_GetOutput(void *input, i32 output, i32 mode) {
     GIZMO *gizmo = input;
-    (void)output;
-    (void)mode;
     if (gizmo != NULL && gizmo->object != NULL) {
         return (~(gizmo->script_process->processor.flags >> 1)) & 1;
     }

@@ -675,7 +675,6 @@ void ExtraCharacterFixUpAfterConfig(void) {
 
 void ResetPlayerPacket(PLAYERPACKET *packet, CHARACTERDATA *character) {
     i32 i;
-    (void)character;
     packet->tag_flags &= (u8)~1;
     packet->ground_contact_grace_timer = 0.0f;
     packet->delayed_turn_timer = 0.0f;

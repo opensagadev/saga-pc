@@ -113,7 +113,6 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
     ADD_GAME_MESSAGE message;
     GAME_MESSAGE *queued;
     u16 panel_rotation;
-    (void)flags;
     if (object == NULL || (object->player_index != 0 && object->player_index != 1)) {
         return;
     }
@@ -152,8 +151,6 @@ void CollectPowerUp(GAMEOBJECT *object, NUVEC *position, u16 rotation, i32 flags
 }
 
 void Pup_CollectPowerUp(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
-    (void)world;
-    (void)type;
     CollectPowerUp(object, &pickup->position, pickup->rotation, flags);
 }
 
@@ -174,9 +171,6 @@ void Pup_CollectCharKit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJ
     ADD_GAME_MESSAGE message;
     GAME_MESSAGE *queued;
     LEVEL_OBJECT_RUNTIME *objects;
-    (void)world;
-    (void)type;
-    (void)flags;
     NewBuzz(object->player.pad->bound_pad, 0.2f, 0);
     AddGameDebris(WORLD->game_debris_sys, 0x13, &pickup->position);
     objects = WORLD->level_objects;
@@ -226,14 +220,12 @@ static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
 }
 
 void Pup_UpdateBlueCoin(WORLDINFO *world, GIZMOPICKUP *pickup) {
-    (void)world;
     if ((pickup->flags & GIZMOPICKUP_STATE_DRAWN) != 0 && (pickup->flags & GIZMOPICKUP_STATE_DRAW_VISIBLE) != 0) {
         PartExtraCoinsPrivate(&pickup->position, 56);
     }
 }
 
 void Pup_UpdatePurpleCoin(WORLDINFO *world, GIZMOPICKUP *pickup) {
-    (void)world;
     if ((pickup->flags & GIZMOPICKUP_STATE_DRAWN) != 0 && (pickup->flags & GIZMOPICKUP_STATE_DRAW_VISIBLE) != 0) {
         PartExtraCoinsPrivate(&pickup->position, 57);
     }
@@ -350,7 +342,6 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
     u32 score;
     ADD_GAME_MESSAGE message;
     char text[8];
-    (void)ignored;
     if (object != NULL) {
         player_index = object->player_index;
     } else {
@@ -458,7 +449,6 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
 }
 
 static void EndRedBrickMessage(GAME_MESSAGE *message) {
-    (void)message;
     if (AreaGlobals.unknown_08 != 0) {
         AreaGlobals.unknown_08 = 2;
     }
@@ -502,7 +492,6 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
     ADD_GAME_MESSAGE message;
     NUVEC target;
     i32 area_id;
-    (void)flags;
     if (WORLD->level_objects[0xce].active == 0) {
         return;
     }
@@ -597,7 +586,6 @@ static void PartMove_VehiclePickup(PART *part, f32 timestep) {
     f32 gain;
     f32 target;
     GAMEOBJECT *object;
-    (void)timestep;
     if (part->initial_time == 0.0f) {
         gain = 0.0f;
     } else {
@@ -629,7 +617,6 @@ static void PartMove_VehicleHeart(PART *part, f32 timestep) {
     f32 progress = 1.0f - part->time_remaining / PartVehicleHeartLifetime;
     NUVEC start;
     f32 height;
-    (void)timestep;
     if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
         NuVecAdd(&start, &recipient->collision_position, &part->previous_position);
         height = PartVehicleHeartPodraceHeight;
@@ -858,7 +845,6 @@ u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *build
 
 void CollectHitPoint(GAMEOBJECT *object, NUVEC *position, i32 flags) {
     NUVEC momentum;
-    (void)flags;
     // MATCH-EXCEPTION: the original tests the same range twice (likely a macro/PC variant pair that
     // expanded to the same check); a single test drops the second compare.
     if ((object->current_hp > 0 && object->current_hp < object->unknown_107e) ||
@@ -1051,23 +1037,16 @@ void Pup_CollectCoin(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT
 }
 
 void Pup_CollectMinikit(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
-    (void)world;
-    (void)type;
     CollectMinikit(&pickup->position, pickup->name, flags);
     NewBuzz(object->player.pad->bound_pad, 0.2f, 0);
 }
 
 void Pup_CollectRedBrick(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
-    (void)world;
-    (void)type;
-    (void)flags;
     CollectRedBrick(&pickup->position);
     NewBuzz(object->player.pad->bound_pad, 0.2f, 0);
 }
 
 void Pup_CollectHeart(WORLDINFO *world, GIZMOPICKUP *pickup, i32 type, GAMEOBJECT *object, i32 flags) {
-    (void)world;
-    (void)type;
     CollectHitPoint(object, &pickup->position, flags);
 }
 
@@ -1192,8 +1171,6 @@ void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJ
     f32 target_scale;
     GIZMO_PICKUP_TYPE *pickup;
     ADD_GAME_MESSAGE message;
-    (void)unused;
-    (void)owner;
     if (coins == 0) {
         return;
     }
@@ -1300,7 +1277,6 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
     NUVEC velocity;
     GAMEOBJECT *recipient;
     GAMEOBJECT *eligible[2];
-    (void)unused;
     Arcade_GetMode(&arcade_flags);
     if (arcade_flags & 0x10) {
         coins = torpedoes = 0;

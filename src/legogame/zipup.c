@@ -312,7 +312,6 @@ static void ZipUpResetSingle(ZIPUP *zipup) {
 extern void ZipUps_Reset(WORLDINFO *world, void *unused, ZIPUP_PROGRESS *progress) {
     ZIPUP *zipup;
 
-    (void)unused;
     if (world == NULL) {
         return;
     }
@@ -745,8 +744,6 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     ZIPUP *zipup;
     i32 index;
 
-    (void)unused;
-    (void)time;
     if (world == NULL) {
         return;
     }

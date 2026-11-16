@@ -444,7 +444,6 @@ static NUVEC CustomiseScreenPos[2] = {0};
 
 /* 004243b0 / 42 */
 void Customiser_TransformToPanel(CUSTOMISER_CONFIG *unused) {
-    (void)unused;
     NuCameraTransformScreenClip(&CustomiseScreenPos[0], &CustomisePos[0], 1, NULL);
     NuCameraTransformScreenClip(&CustomiseScreenPos[1], &CustomisePos[1], 1, NULL);
 }
@@ -1220,7 +1219,6 @@ void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
 
 void MenuUpdateCustomiser(MENU *menu) {
     i32 quit;
-    (void)menu;
     if (customiser_save_done != 0) {
         CustomiserMenu_End();
         customiser_save_done = 0;
@@ -1264,7 +1262,6 @@ void MenuDrawCustomiser(MENU *menu) {
     f32 x;
     f32 y;
     f32 alpha;
-    (void)menu;
     if (MenuStopDraw != 0 || customiser_quit != 0 || CharacterCustomiser == NULL) {
         return;
     }

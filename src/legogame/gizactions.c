@@ -225,7 +225,6 @@ void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEOBJECT *player;
     AICREATURE *creature;
-    (void)unused;
     for (; index < count; ++index) {
         char *value = NuStrIStr(params[index], "name=");
         if (value != NULL) {
@@ -727,8 +726,6 @@ void GizActions_HitBlowup(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32
     i8 gizmo_type = 0;
     char *name = NULL;
     i32 damage = 0;
-    (void)unused0;
-    (void)unused1;
     if (0 >= count) {
         return;
     }

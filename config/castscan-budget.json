@@ -2,7 +2,7 @@
   "redundant-identity": 18,
   "redundant-implicit": 24,
   "codegen-steering": 53,
-  "discard": 443,
+  "discard": 36,
   "null-pointer": 20,
   "address-constant": 52,
   "raw-offset": 345,

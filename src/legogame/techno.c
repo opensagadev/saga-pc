@@ -228,8 +228,6 @@ static void Technos_Reset(void *world_ptr, void *data, void *progress_ptr) {
 }
 
 i32 GizTechno_CanUseTechno(GAMEOBJECT *object, TECHNO *techno) {
-    (void)object;
-    (void)techno;
     return 1;
 }
 

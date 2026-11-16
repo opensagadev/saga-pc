@@ -225,8 +225,6 @@ void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
 }
 
 void BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x, u16 unused_y) {
-    (void)unused_x;
-    (void)unused_y;
     FindAnglesXY(normal, NULL, NULL);
     NuMtxSetRotationX(matrix, temp_zrot);
     NuMtxRotateY(matrix, temp_yrot);

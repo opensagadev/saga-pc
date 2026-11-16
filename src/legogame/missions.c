@@ -123,7 +123,6 @@ void MenuDrawMissions(MENU *menu) {
     i32 select1;
     i32 back1;
     i32 status1;
-    (void)menu;
     if (MenuStopDraw) {
         return;
     }
@@ -209,7 +208,6 @@ void MenuDrawEndMission(MENU *menu) {
     char text[32];
     i32 index;
     f32 remaining;
-    (void)menu;
     if (MenuStopDraw != 0) {
         return;
     }
@@ -316,7 +314,6 @@ void MenuUpdateMissions(MENU *menu) {
     for (player = 0; player < 2; ++player) {
         GAMEPAD_INIT_RECORD *pad;
         u32 pressed;
-        u32 directions;
         if (start != 0 || cancel != 0) {
             break;
         }

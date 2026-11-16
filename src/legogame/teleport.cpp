@@ -184,22 +184,18 @@ extern "C" {
 
     static void Tel_1_way(NUFPAR *parser) {
         Tel_teleport->flags |= TELEPORT_ONE_WAY;
-        (void)parser;
     }
 
     static void Tel_crawl(NUFPAR *parser) {
         Tel_teleport->flags |= TELEPORT_CRAWL;
-        (void)parser;
     }
 
     static void Tel_flip_flap(NUFPAR *parser) {
         Tel_teleport->flags |= TELEPORT_FLIP_FLAP;
-        (void)parser;
     }
 
     static void Tel_Hacky_Cam(NUFPAR *parser) {
         Tel_teleport->flags |= TELEPORT_HACKY_CAM;
-        (void)parser;
     }
 
     static void Tel_obj(NUFPAR *parser) {
@@ -411,7 +407,6 @@ static void Teleport_SetCrawlTime(GAMEOBJECT *object, i32 start, i32 end) {
 
 extern "C" void Teleports_Reset(WORLDINFO *world) {
     TELEPORT_MOTION *teleport = ((TELEPORT_WORLD *)world)->teleports;
-    NUMTX matrix;
     if (teleport == NULL) {
         return;
     }
@@ -427,7 +422,6 @@ extern "C" void Teleports_Reset(WORLDINFO *world) {
 
 extern "C" void Teleports_UpdateBeforeGameObjects(WORLDINFO *world) {
     TELEPORT_MOTION *teleport = ((TELEPORT_WORLD *)world)->teleports;
-    NUMTX matrix;
     if (teleport == NULL) {
         return;
     }
@@ -657,7 +651,6 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
 extern "C" {
 
     i32 Teleport_UpdateHints(HINT *hint) {
-        (void)hint;
         if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
             return 0;
         }
@@ -714,7 +707,6 @@ extern "C" {
     void Teleport_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
         ADD_TELEPORT_WORLD *w = (ADD_TELEPORT_WORLD *)world_ptr;
         i32 i;
-        (void)data;
         if (w == NULL || w->items == NULL) {
             return;
         }
@@ -731,8 +723,6 @@ extern "C" {
     }
 
     i32 Teleport_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-        (void)output;
-        (void)mode;
         if (gizmo != NULL && gizmo->object != NULL) {
             return ((TELEPORT_CONFIG *)gizmo->object)->active;
         }

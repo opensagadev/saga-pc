@@ -1273,9 +1273,6 @@ void PodRaceCUpdate(WORLDINFO *world) {
 i32 Action_SetLapTime(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                       f32 ignored) {
     i32 i;
-    (void)system;
-    (void)process;
-    (void)ignored;
     if (first_time != 0 && ActivePodRace->previous_lap_display == 0.0f) {
         for (i = 0; i < param_count; ++i) {
             char *value = NuStrIStr(params[i], "maxlaptime=");
@@ -2282,9 +2279,6 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
     NUVEC4 position;
     NUVEC4 next_position;
     __declspec(align(16)) NUVEC4 direction;
-    (void)system;
-    (void)process;
-    (void)ignored;
     if (first_time == 0 || param_count <= 0) {
         return 1;
     }

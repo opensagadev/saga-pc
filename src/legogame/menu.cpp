@@ -253,7 +253,6 @@ extern "C" {
 
     void MenuEnterOptions(MENU *menu) {
         i32 parent_menu;
-        (void)menu;
         parent_menu = GetParentMenuID();
         if (parent_menu == MENU_PAUSE_MAIN || parent_menu == MENU_NEW_GAME) {
             TempOptions = Game.options_save;
@@ -356,7 +355,6 @@ extern "C" {
     }
 
     void MenuExitOptions(MENU *menu) {
-        (void)menu;
         RestoreOptions();
     }
 }
@@ -493,7 +491,6 @@ static i32 UpdateTitleSequence(MENU *menu) {
 extern "C" {
 
     void MenuEnterNewGame(MENU *menu) {
-        (void)menu;
         if (MenuLoadOccurred == 0 && startnewgame_initiated == 0 && startnewgame == 0) {
             saveload_autosave = -1;
         }
@@ -796,7 +793,6 @@ extern "C" {
 
     void MenuEnterTitles(MENU *menu) {
         i32 i;
-        (void)menu;
         NuPadResetState(1);
         for (i = 0; i < 8; ++i) {
             PlayerProgress[i].active = 0;
@@ -838,7 +834,6 @@ extern "C" {
 
     void MenuDrawTitles(MENU *menu) {
         f32 y;
-        (void)menu;
         if (GameTimer.time_elapsed >= 3.0f && GameTimer.time_elapsed_mod_seconds < 0.666f) {
             if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
                 y = MenuTitlesWidePromptY;
@@ -1140,7 +1135,6 @@ extern "C" {
 
     void MenuDrawShop(MENU *menu) {
         f32 alpha;
-        (void)menu;
         if (MenuStopDraw == 0 && shop_quit == 0) {
             alpha = MissionMenuPacket.active_player[0] != 0 ? 1.0f : MissionDropInAlpha;
             DrawCharIcon(MissionMenuPacket.player_model[0], -ICONX, STATSPOSY, 0.0f, MissionPlayerIconSize, 166, alpha, alpha, 1, NULL);
@@ -1167,7 +1161,6 @@ extern "C" {
     }
 
     void MenuUpdateMiniKit(MENU *menu) {
-        (void)menu;
         Hub_UpdateKit();
     }
 
@@ -1191,7 +1184,6 @@ extern "C" {
         f32 scale;
         i32 colour;
         i32 opacity;
-        (void)menu;
         if (MenuStopDraw != 0) {
             return;
         }
@@ -1263,7 +1255,6 @@ extern "C" {
     void MenuDrawBonusComplete(MENU *menu) {
         i32 red;
         i32 green;
-        (void)menu;
         if (MenuStopDraw != 0) {
             return;
         }

@@ -47,7 +47,6 @@ i32 GizTorp_Load(void *world_pointer, void *unused) {
     i32 version;
     i32 index;
     i32 length;
-    (void)unused;
     if (world != NULL) {
         system = (TORPEDO_MACHINE_QUERY_SYS *)world->torpedo_machine_sys;
         if (system != NULL && system->count == 0) {
@@ -117,8 +116,6 @@ void GizTorps_Reset(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = world_ptr;
     ADD_TORP_SYS *s;
     i32 i;
-    (void)data;
-    (void)progress;
     if (w == NULL || w->torpedo_machine_sys == NULL) {
         return;
     }
@@ -161,8 +158,6 @@ void GizTorp_Update(void *world_ptr, void *unused, f32 elapsed) {
     WORLDINFO *world = world_ptr;
     TORPEDO_MACHINE_QUERY_SYS *system = (TORPEDO_MACHINE_QUERY_SYS *)world->torpedo_machine_sys;
     i32 index;
-    (void)unused;
-    (void)elapsed;
     if (system == NULL) {
         return;
     }
@@ -183,8 +178,6 @@ void GizTorp_Draw(void *world_ptr, void *unused, f32 elapsed) {
     TORPEDO_MACHINE_QUERY_SYS *system;
     NUMTX matrix;
     i32 index;
-    (void)unused;
-    (void)elapsed;
     if (world == NULL) {
         return;
     }
@@ -233,7 +226,6 @@ void GizTorp_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, void *data) {
     WORLDINFO *w = world_ptr;
     ADD_TORP_SYS *s;
     i32 i;
-    (void)data;
     if (w == NULL || w->torpedo_machine_sys == NULL) {
         return;
     }
@@ -255,9 +247,6 @@ char *GizTorp_GetGizmoName(void *input) {
 }
 
 i32 GizTorp_GetOutput(void *input, i32 output, i32 mode) {
-    (void)input;
-    (void)output;
-    (void)mode;
     return 0;
 }
 

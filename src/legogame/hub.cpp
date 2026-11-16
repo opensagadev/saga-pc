@@ -860,7 +860,6 @@ extern "C" {
         i32 icon;
         i32 marker;
         i32 character_id;
-        (void)unused;
         if (reset_score != 0) {
             Arcade_Score[player_index] = 0;
             earned = 1;

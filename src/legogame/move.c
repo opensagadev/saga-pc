@@ -917,7 +917,6 @@ void MoveInactiveVehicle(GAMEOBJECT *object, i32 mode, GAMEOBJECT **followed_obj
     NUVEC position;
     f32 count;
 
-    (void)mode;
     object->target_velocity.x = object->target_velocity.y = object->target_velocity.z = 0.0f;
     if (object == Player[0]) {
         other = Player[1];
@@ -1510,7 +1509,6 @@ i32 MovePlayer_POD(GAMEOBJECT *object) {
     f32 input = pad->input_direction_z;
     f32 height;
     f32 blend;
-    f32 speed;
     f32 seek_rate;
     u16 heading = 0;
     u16 pitch;
@@ -1603,7 +1601,6 @@ void LoopCode(GAMEOBJECT *object, i32 jump_pressed, i32 unused, GAMEPAD *pad, i3
     i32 loop_request;
     i32 roll_request;
     i32 turn_request;
-    (void)unused;
     if (WORLD->area != NULL) {
         if (WORLD->area == BATTLEOVERCORUSCANT_ADATA) {
             allow_loop = 0;
@@ -3306,7 +3303,6 @@ static void StartDodge(GAMEOBJECT *object) {
 
 i32 Dodge_UpdateHint(HINT *hint) {
     i32 index;
-    (void)hint;
     if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
         return 0;
     }
@@ -5803,7 +5799,6 @@ void DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAME
     f32 distance;
     f32 offset;
     NUANG angle;
-    (void)object;
     world = WorldInfo_CurrentlyActive();
     if (model == -1 || world->level_objects[model].active == 0) {
         return;
@@ -6101,7 +6096,6 @@ void BobaRocket_Move(PART *part, f32 elapsed) {
 void BobaRocket_Kill(PART *part, i32 reason) {
     EXPLOSION *explosion = Detonate(&part->position, 0);
     GAMEOBJECT *owner;
-    (void)reason;
     if (explosion == NULL || Arcade == 0) {
         return;
     }
@@ -6654,7 +6648,6 @@ void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
     CABLE_VIEW *view = (CABLE_VIEW *)object;
     GAMEOBJECT *target;
     GAME_MESSAGE *message;
-    (void)unused;
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->player.character_context == CHARACTER_CONTEXT_NONE &&
         view->cable == NULL) {
         target = CableTargetGameObject(object, &object->collision_position, (f32)((f64)max_cable_length * (f64)0.9f));
@@ -6731,7 +6724,6 @@ static void JumpAnimCode(GAMEOBJECT *object) {
 
 i32 CanObjSlide(GAMEOBJECT *object, i32 unused_surface) {
     i8 surface = (i8)object->jump_animation_state;
-    (void)unused_surface;
     if (surface < 0) {
         return 0;
     }
@@ -7224,7 +7216,6 @@ void Disorientate(GAMEOBJECT *object, NUVEC *unused) {
     f32 speed;
     f32 ratio;
     f64 fraction;
-    (void)unused;
     if ((elapsed_seconds % 2) == 0 && object->player.unknown_780 != (f32)elapsed_seconds) {
         object->player.unknown_780 = (f32)elapsed_seconds;
         disorientAxis = 0;
@@ -8443,7 +8434,6 @@ f32 getPodRoll(i32 index) {
 }
 
 i32 Shop_UpdateHint(HINT *hint) {
-    (void)hint;
     return 0;
 }
 
@@ -11894,7 +11884,6 @@ void Move_JAWA(GAMEOBJECT *object) {
     WeaponInCode(object);
     WeaponScalingCode(object);
     ZapCode(object, action_pressed, special_pressed);
-    (void)action_pressed;
     BeastStartFallCode(object);
     HeadMovement(object);
     CloakMovement(object);
@@ -12402,7 +12391,6 @@ after_gravity:
     HeadMovement(object);
     CloakMovement(object);
     HairMovement(object);
-    (void)jump_held;
 }
 
 void Move_VEHICLE(GAMEOBJECT *object) {
@@ -12758,7 +12746,6 @@ zap:
         PunchCode(object, object->player.pad->buttons_pressed & GAMEPAD_ACTION, 0, 0, 1, 0.0f);
     }
     ZapCode(object, zap_pressed, 0);
-    (void)zap_pressed;
     DeactivatedCode(object);
     BeastStartFallCode(object);
     if ((object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0) {
@@ -12996,7 +12983,6 @@ void Move_POD(GAMEOBJECT *object) {
 }
 
 void PostResetCode(GAMEOBJECT *object) {
-    PLAYERCHARACTERCONFIG *character;
     object->attack_override = ATTACK_OVERRIDE_NONE;
     if (object->character_data->game_character->sfx_chatter != -1) {
         ChatterSfx(object, object->character_data->game_character->sfx_chatter,
