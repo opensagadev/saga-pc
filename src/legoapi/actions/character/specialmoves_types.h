@@ -12,8 +12,8 @@
 typedef struct specialmove_s {
     i16 attacker_animation;
     i16 attacker_id;
-    i8 attacker_action_type;
-    i8 victim_action_type;
+    i8 attacker_variant;
+    i8 victim_variant;
     i16 victim_id;
     i16 victim_animation;
     u16 flags;

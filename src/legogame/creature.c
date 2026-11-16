@@ -716,15 +716,15 @@ void ExtraCharacterFixUpAfterConfig(void) {
     SetMoveAndAnimateFunctions(0, 0, CHARACTER_RUNTIME_CANNON, 0x800, -1, Move_CANNON, Animate_CANNON, NULL);
     SetMoveAndAnimateFunctions(CHARACTER_MODEL_VEHICLE, 0x2000, 0, 0, -1, Move_VEHICLE, Animate_VEHICLE, NULL);
     SetMoveAndAnimateFunctions(CHARACTER_MODEL_BEAST, 0x40000000, 0, 0, -1, Move_BEAST, Animate_BEAST, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 4, Move_DROIDGENERIC, Animate_BATTLEDROID, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 17, Move_HOVERDROID, Animate_HOVERDROID, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 15, Move_WALKER, Animate_WALKER, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 16, Move_ATAT, Animate_ATAT, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 18, Move_CRITTER, Animate_CRITTER, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 18, Move_CRITTER, Animate_CRITTER, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 20, Move_POD, Animate_POD, NULL);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 2, NULL, NULL, PostAnimate_FETT);
-    SetMoveAndAnimateFunctions(0, 0, 0, 0, 0, Move_WEIRDO, Animate_WEIRDO, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_BATTLEDROID, Move_DROIDGENERIC, Animate_BATTLEDROID, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_HOVERDROID, Move_HOVERDROID, Animate_HOVERDROID, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_WALKER_2LEGS, Move_WALKER, Animate_WALKER, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_WALKER_4LEGS, Move_ATAT, Animate_ATAT, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_CRITTER, Move_CRITTER, Animate_CRITTER, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_CRITTER, Move_CRITTER, Animate_CRITTER, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_HENCHMAN, Move_POD, Animate_POD, NULL);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_FETT, NULL, NULL, PostAnimate_FETT);
+    SetMoveAndAnimateFunctions(0, 0, 0, 0, CHARVARIANT_WEIRDO, Move_WEIRDO, Animate_WEIRDO, NULL);
     for (i = 0; i < CHARCOUNT; ++i) {
         if ((GCDataList[i].flags_094 & CHARACTER_OPTION_HOVER_WINGS) != 0) {
             CDataList[i].move_fn = Move_GEONOSIAN;
@@ -884,10 +884,10 @@ void DeactivateGameObject(GAMEOBJECT *object) {
     object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
     if (object->ai_packet.creature_index != AIPACKET_NO_CREATURE &&
         AIScriptSetBaseScriptStateByName(&object->ai_packet.script_processor, "InActive") != 0) {
-        object->ai_packet.reset_mode = 0;
+        object->ai_packet.reset_mode = AIPACKET_RESET_INACTIVE;
         WORLD->ai_sys->creatures[object->ai_packet.creature_index].activation_type = 2;
     } else {
-        object->ai_packet.reset_mode = 4;
+        object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
     }
 }
 
@@ -1025,7 +1025,7 @@ void StoreProgressAICharacter(LEVEL_PROGRESS *progress) {
     saved->disabled_ai_object_mask[1] = 0;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0 && (object->flags_1f8 & APIOBJECT_CREATURE) != 0 &&
-            object->ai_packet.reset_mode == 4) {
+            object->ai_packet.reset_mode == AIPACKET_RESET_DISABLED) {
             u64 bit = (u64)1 << index;
             saved->disabled_ai_object_mask[0] |= (u32)bit;
             saved->disabled_ai_object_mask[1] |= (u32)(bit >> 32);
@@ -3145,7 +3145,7 @@ i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_square
     return 0;
 }
 
-i32 AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet, i32 require_all) {
+i32 AvailableToPlayer(u32 character_flags, i32 variant, i32 helmet, i32 require_all) {
     i32 index;
     for (index = 0; index < 8; ++index) {
         GAMEOBJECT *object = Player[index];
@@ -3161,8 +3161,8 @@ i32 AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet, i32 re
                 continue;
             }
         }
-        if (weapon_action != -1) {
-            if (object->character_data->game_character->weapon_action == weapon_action) {
+        if (variant != -1) {
+            if (object->character_data->game_character->variant == variant) {
                 if (require_all == 0) {
                     return 1;
                 }
@@ -3195,8 +3195,8 @@ i32 AvailableToPlayer(u32 character_flags, i32 weapon_action, i32 helmet, i32 re
                     continue;
                 }
             }
-            if (weapon_action != -1) {
-                if (GCDataList[index].weapon_action != weapon_action) {
+            if (variant != -1) {
+                if (GCDataList[index].variant != variant) {
                     continue;
                 }
                 if (require_all == 0) {
@@ -3854,7 +3854,7 @@ void ResetAICreature(GAMEOBJECT *object, AISYS *system) {
     PortalGameObject(object, 1, 1, -1, WORLD->current_gscn);
     object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
     ++object->ai_packet.respawn_count;
-    object->ai_packet.reset_mode = 2;
+    object->ai_packet.reset_mode = AIPACKET_RESET_ACTIVE;
     if (object->ai_packet.group != NULL) {
         object->ai_packet.group->member_is_alive |= (u32)((u64)1 << object->ai_packet.group_member_index);
         row = &object->ai_packet.group->rows[object->ai_packet.group_row];
@@ -3898,7 +3898,7 @@ void ResetAICreatures(AISYS *system) {
         } else {
             creature = &system->creatures[object->ai_packet.creature_index];
             object->ai_packet.respawn_count = 0;
-            object->ai_packet.reset_mode = 0;
+            object->ai_packet.reset_mode = AIPACKET_RESET_INACTIVE;
             AIScriptProcessorInit(WORLD->ai_sys, &object->ai_packet, &object->ai_packet.script_processor, creature,
                                   ((AI_CREATURE_RESET_VIEW *)creature)->script_name, "InActive", 1, NULL, NULL);
             if (object->ai_packet.script_processor.state != NULL && object->ai_packet.script_processor.state->name != NULL &&
@@ -3911,14 +3911,14 @@ void ResetAICreatures(AISYS *system) {
             if (Game.difficulty >= creature->activation_difficulty) {
                 if (creature->count > 1 && creature->start_stagger > 0.0f && object->ai_packet.group_member_index != 0) {
                     object->ai_packet.spawn_delay = (f32)object->ai_packet.group_member_index * creature->start_stagger;
-                    object->ai_packet.reset_mode = 1;
+                    object->ai_packet.reset_mode = AIPACKET_RESET_STAGGERED;
                 } else {
                     ResetAICreature(object, system);
                 }
                 continue;
             }
         }
-        object->ai_packet.reset_mode = 4;
+        object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
     }
 }
 
@@ -4331,8 +4331,8 @@ void DrawWeapons(GAMEOBJECT *object, i32 reflection, f32 weapon_scale) {
             green = 0;
             blue = 0;
             purple = 0;
-            if (Cheat_IsOn(15) && (object->character_data->game_character->weapon_action == 1 ||
-                                   object->character_data->game_character->weapon_action == 8)) {
+            if (Cheat_IsOn(15) && (object->character_data->game_character->variant == CHARVARIANT_STORMTROOPER ||
+                                   object->character_data->game_character->variant == CHARVARIANT_CLONE)) {
                 models[0] = 0x59;
             } else {
                 data = object->character_data->game_character;
@@ -4680,7 +4680,8 @@ void DrawParaphernalia(GAMEOBJECT *object) {
         DrawObjectOnCharacter(WORLD, object, 0xf0, NULL, object->character_data->game_character->weapon_shoot_joints[0], -1,
                               object->locator_matrices, 0, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
-    if (object->character_data->game_character->weapon_action == 1 && AnimPlaying(&object->anim_packet, ACTION_IDLE5, 1, 1) != NULL) {
+    if (object->character_data->game_character->variant == CHARVARIANT_STORMTROOPER &&
+        AnimPlaying(&object->anim_packet, ACTION_IDLE5, 1, 1) != NULL) {
         DrawObjectOnCharacter(WORLD, object, 9, NULL, object->character_data->game_character->weapon_joints[0], -1,
                               object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     } else if (object->weapon_scale > 0.0f) {
@@ -4771,7 +4772,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     if (object->torpedo != NULL && object->torpedo->count > 0) {
         DrawTorpedos(object);
     }
-    if (object->character_data->game_character->weapon_action == 0) {
+    if (object->character_data->game_character->variant == CHARVARIANT_WEIRDO) {
         CustomiserDrawAccessories(CharacterCustomiser, object, NULL);
     }
     if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 && extra->force_alpha > 0.0f &&
@@ -4782,7 +4783,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     }
     config = object->character_data->game_character;
 
-    if (config->weapon_action == 1) {
+    if (config->variant == CHARVARIANT_STORMTROOPER) {
         special_locator = config->thingy_locator;
         if (special_locator == -1 || object->character_model->points_of_interest[special_locator] == NULL ||
             (time = AnimPlaying(&object->anim_packet, ACTION_COMMUNICATE, 1, 1)) == NULL) {

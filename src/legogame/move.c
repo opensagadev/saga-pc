@@ -4072,7 +4072,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         effect = (blade == 3 || blade == 0) ? 3 : 2;
     }
     data = object->character_data->game_character;
-    if (data->weapon_action == 12 && object->character_context == CHARACTER_CONTEXT_COMBO && 2 == object->combo_stage &&
+    if (data->variant == CHARVARIANT_LUKE && object->character_context == CHARACTER_CONTEXT_COMBO && 2 == object->combo_stage &&
         object->unknown_7aa == ACTION_COMBO1_3D && object->character_model->points_of_interest[4] != NULL) {
         memcpy(&points[0], &object->locator_matrices[4].m30, sizeof(points[0]));
         NuVecAdd(&points[1], &points[0], &object->collision_position);
@@ -4258,7 +4258,7 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
     u8 damage;
     u8 blade_flags[2];
     i32 blade;
-    if ((data->weapon_action == 3 || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_DOOKU) &&
+    if ((data->variant == CHARVARIANT_MACEWINDU || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_DOOKU) &&
         object->character_context == CHARACTER_CONTEXT_JUMP && object->action_movement_state == JUMP_KIND_LUNGE) {
         object->sabre_flags |= 2;
     } else if (object->id == (u16)id_GRIEVOUS &&
@@ -5222,7 +5222,7 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             target = object->force_target;
             if ((f64)object->context_timer >= (f64)0.4f && target != NULL && (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
                 target->dead == 0 &&
-                (target->character_data->game_character->weapon_action == 4 || target->id == (u16)id_BATTLEDROIDSECURITY ||
+                (target->character_data->game_character->variant == CHARVARIANT_BATTLEDROID || target->id == (u16)id_BATTLEDROIDSECURITY ||
                  target->id == id_GONKDROID || target->id == (u16)id_PKDROID || target->id == (u16)dat_007f1a78)) {
                 DeactivatePlayer(target, (f32)((f64)DEACTIVATEDTIME * 0.5), NULL);
                 NewRumble(object->pad->bound_pad, 0.5f, 0);
@@ -5283,7 +5283,7 @@ void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
         best = ((GAMEOBJECT *)object->unknown_d20);
         candidate_direct = 0;
         candidate_second = second_style;
-        if (choke_style == 0 && object->character_data->game_character->weapon_action == 0x0c &&
+        if (choke_style == 0 && object->character_data->game_character->variant == CHARVARIANT_LUKE &&
             (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0 && best->id == (u16)id_GAMORREANGUARD) {
             choke_style = CHARACTER_RUNTIME_BANKING;
         }
@@ -5377,7 +5377,7 @@ void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
             candidate_choke = choke_style;
             candidate_second = second_style;
             candidate_direct = 0;
-            if (candidate_choke == 0 && object->character_data->game_character->weapon_action == 0x0c &&
+            if (candidate_choke == 0 && object->character_data->game_character->variant == CHARVARIANT_LUKE &&
                 (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0 && candidate->id == (u16)id_GAMORREANGUARD) {
                 candidate_choke = CHARACTER_RUNTIME_BANKING;
             }
@@ -6593,7 +6593,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
                   (candidate->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && candidate->dead == 0 &&
                   candidate->character_context != CHARACTER_CONTEXT_DEACTIVATED &&
                   (((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 &&
-                    candidate->character_data->game_character->weapon_action == 1) ||
+                    candidate->character_data->game_character->variant == CHARVARIANT_STORMTROOPER) ||
                    (Cheat_IsOn(0x26) != 0 && candidate->character_model->model_data_b[0x41] != NULL)))) {
                 continue;
             }
@@ -6616,7 +6616,7 @@ static void ZapCode(GAMEOBJECT *object, i32 pressed, i32 retract_weapon) {
         object->unknown_e33 == 0 && object->character_context != CHARACTER_CONTEXT_WEAPON_IN &&
         object->character_context != CHARACTER_CONTEXT_WEAPON_OUT) {
         if (object->unknown_281 != 0 && !object->pad->input_magnitude &&
-            object->character_model->model_data_b[object->character_data->game_character->weapon_action == 0 &&
+            object->character_model->model_data_b[object->character_data->game_character->variant == CHARVARIANT_WEIRDO &&
                                                           (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0
                                                       ? 0x7e
                                                       : 0x10] != NULL &&
@@ -7499,7 +7499,8 @@ void Animate_CHARACTER(GAMEOBJECT *object) {
             }
         } else if (object->anim_packet.requested_animation != ACTION_FALL) {
             if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->pad->input_magnitude > 0.0f) {
-                if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->character_data->game_character->weapon_action == 1) {
+                if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
+                    object->character_data->game_character->variant == CHARVARIANT_STORMTROOPER) {
                     MoveAnim_Manage(object, object->pad->input_magnitude, 0, 1);
                 } else {
                     MoveAnim_Manage(object, object->pad->input_magnitude,
@@ -9301,7 +9302,7 @@ void ApplyGravity_Network(GAMEOBJECT *object) {
     if (character->model_flags == CHARACTER_MODEL_VEHICLE) {
         data = character->game_character;
         if ((data->flags_094 & CHARACTER_OPTION_LIFT_HOVER) == 0) {
-            if (data->weapon_action == 0x15) {
+            if (data->variant == 0x15) {
                 ApplyGravity(object, NULL, FindGunshipHoverHeight(object), 8.0f, NULL);
             } else {
                 if (data->unknown_028 > 0.0f) {
@@ -9319,7 +9320,7 @@ void ApplyGravity_Network(GAMEOBJECT *object) {
     } else if (object->unknown_281 != 0 || object->jump_variant_timer >= character->game_character->jump_hold_duration ||
                object->jump_animation_state == 0x1a) {
         data = character->game_character;
-        if (data->weapon_action == 2 && object->jump_variant_state == 1) {
+        if (data->variant == CHARVARIANT_FETT && object->jump_variant_state == 1) {
             ApplyGravity(object, NULL, data->unknown_028, 8.0f, NULL);
         } else {
             ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
@@ -12133,9 +12134,10 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
             SetWeaponOut(object);
         } else {
             if (object->unknown_e33 == 0 && object->unknown_281 != 0 && !object->pad->input_magnitude &&
-                object->character_model->model_data_b
-                        [data->weapon_action == 0 && (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 0x7f : 0x11] !=
-                    NULL &&
+                object->character_model->model_data_b[data->variant == CHARVARIANT_WEIRDO &&
+                                                              (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0
+                                                          ? 0x7f
+                                                          : 0x11] != NULL &&
                 (context == CHARACTER_CONTEXT_NONE || (context_flags & 4) != 0)) {
                 SlowWeaponOut(object);
             } else {
@@ -12162,8 +12164,8 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
         return 0;
     }
     if (Cheat_IsOn(0x0f)) {
-        u8 kind = object->character_data->game_character->weapon_action;
-        if (kind == 1 || kind == 8) {
+        u8 kind = object->character_data->game_character->variant;
+        if (kind == CHARVARIANT_STORMTROOPER || kind == CHARVARIANT_CLONE) {
             return 0;
         }
     }
@@ -12247,13 +12249,13 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
     data = object->character_data->game_character;
     if (object->unknown_7aa != ACTION_SHOOTLEFT && object->unknown_7aa != ACTION_SHOOTRIGHT && object->unknown_7aa != ACTION_SHOOTBACK &&
         !data->always_stop_to_shoot) {
-        if (data->weapon_action == 4 && object->anim_packet.animation_index == ACTION_RUN) {
+        if (data->variant == CHARVARIANT_BATTLEDROID && object->anim_packet.animation_index == ACTION_RUN) {
             goto immediate_shot;
         }
         if (object->anim_packet.animation_index == ACTION_RUN2 && object->character_model->model_data_b[0x17] != NULL) {
             goto immediate_shot;
         }
-        if (data->weapon_action == 0 && object->anim_packet.animation_index == ACTION_EXTRA_RUN &&
+        if (data->variant == CHARVARIANT_WEIRDO && object->anim_packet.animation_index == ACTION_EXTRA_RUN &&
             object->character_model->model_data_b[0x73] != NULL) {
             goto immediate_shot;
         }
@@ -12327,14 +12329,14 @@ weapon_in:
         (object->unknown_e22 & 1) == 0 || object->unknown_e33 != 0 || context == CHARACTER_CONTEXT_WEAPON_IN ||
         context == CHARACTER_CONTEXT_WEAPON_OUT || context == CHARACTER_CONTEXT_ZIP_UP || context == CHARACTER_CONTEXT_GRAPPLE ||
         context == CHARACTER_CONTEXT_INTERFACE || context == CHARACTER_CONTEXT_THROW_DETONATOR ||
-        (object->character_data->game_character->weapon_action == 2 && object->jump_variant_state == 1) ||
+        (object->character_data->game_character->variant == CHARVARIANT_FETT && object->jump_variant_state == 1) ||
         context == CHARACTER_CONTEXT_FORCE || context == CHARACTER_CONTEXT_FORCE_PUSH || context == CHARACTER_CONTEXT_FORCE_DEFLECT) {
         return 0;
     }
     if (weapon_mode == 2) {
         SetWeaponIn(object);
     } else if (object->unknown_281 != 0 && !object->pad->input_magnitude &&
-               object->character_model->model_data_b[object->character_data->game_character->weapon_action == 0 &&
+               object->character_model->model_data_b[object->character_data->game_character->variant == CHARVARIANT_WEIRDO &&
                                                              (object->character_data->model_flags & CHARACTER_MODEL_BLASTER) != 0
                                                          ? 0x7e
                                                          : 0x10] != NULL &&
@@ -12390,7 +12392,7 @@ void Move_CHARACTER(GAMEOBJECT *object) {
     if ((object->flags_e20 & 0x20) != 0) {
         return;
     }
-    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->character_data->game_character->weapon_action == 2 &&
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->character_data->game_character->variant == CHARVARIANT_FETT &&
         object->character_context != CHARACTER_CONTEXT_DOOMED && object->jump_variant_state == 1) {
         f32 timer = object->horizontal_velocity_magnitude / object->character_data->game_character->run_speed * FRAMETIME +
                     object->jump_variant_timer;
@@ -12406,7 +12408,7 @@ void Move_CHARACTER(GAMEOBJECT *object) {
         }
     }
     runtime = object->character_data->game_character;
-    if (runtime->weapon_action == 2 && object->jump_variant_state == 1) {
+    if (runtime->variant == CHARVARIANT_FETT && object->jump_variant_state == 1) {
         ApplyGravity(object, NULL, runtime->unknown_028, 8.0f, NULL);
     } else {
         ApplyGravity(object, NULL, 0.0f, 8.0f, NULL);
@@ -12453,7 +12455,7 @@ after_gravity:
     }
     Glide_MoveCode(object);
     runtime = object->character_data->game_character;
-    if (runtime->weapon_action == 2 && object->jump_variant_state == 1) {
+    if (runtime->variant == CHARVARIANT_FETT && object->jump_variant_state == 1) {
         JetPackCode(object, jump_pressed, 0, 0);
     } else if ((runtime->flags_094 & CHARACTER_OPTION_NO_JUMP) == 0) {
         u32 animations = object->id == (u16)id_GAMORREANGUARD ? 0x20 : 8;
@@ -12551,7 +12553,7 @@ void Move_VEHICLE(GAMEOBJECT *object) {
     }
     character = object->character_data->game_character;
     if ((character->flags_094 & CHARACTER_OPTION_LIFT_HOVER) == 0) {
-        if (character->weapon_action == 0x15) {
+        if (character->variant == 0x15) {
             ApplyGravity(object, NULL, FindGunshipHoverHeight(object), 8.0f, NULL);
         } else {
             if (character->unknown_028 > 0.0f) {
@@ -12622,7 +12624,7 @@ gravity_done:
     EngineNoiseCode(object, object->character_context == CHARACTER_CONTEXT_DEACTIVATED);
     if (((((object->flags_1fc_word >> 7) & 1) && object->current_hp == 1) ||
          (((object->flags_1fc_word >> 7) & 1) == 0 && object->current_hp < 2)) &&
-        object->character_data->game_character->weapon_action == 10 &&
+        object->character_data->game_character->variant == CHARVARIANT_TIE &&
         (object->character_data->model_flags & CHARACTER_MODEL_MINIKIT) == 0) {
         effect = WORLD->game_debris_sys->entries[96].effect;
         if (effect != -1) {
@@ -12840,7 +12842,7 @@ void Move_DROIDGENERIC(GAMEOBJECT *object) {
             zap_pressed = object->pad->buttons_pressed & GAMEPAD_ACTION;
         }
         KeepWeaponIn(object);
-    } else if (object->character_data->game_character->weapon_action == 4 || object->id == (u16)dat_007f18b4) {
+    } else if (object->character_data->game_character->variant == CHARVARIANT_BATTLEDROID || object->id == (u16)dat_007f18b4) {
         KeepWeaponOut(object);
     }
     DropInOutCode(object);

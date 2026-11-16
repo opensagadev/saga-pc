@@ -452,7 +452,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
 
     union { // size 0x1
         u8 hover_fall_mode;
-        i8 weapon_action;
+        i8 variant;
     }; // 0x116
 
     union { // size 0x1

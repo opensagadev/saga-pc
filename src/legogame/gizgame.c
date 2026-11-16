@@ -117,7 +117,7 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT *bolt, NUVEC *points, 
 }
 
 i32 GizObstacle_CheckExcludeFlagsFn_LSW(GIZOBSTACLE *obstacle, GAMEOBJECT *object) {
-    if ((obstacle->exclude_flags & 1) != 0 && object->character_data->game_character->weapon_action != 10) {
+    if ((obstacle->exclude_flags & 1) != 0 && object->character_data->game_character->variant != CHARVARIANT_TIE) {
         return 1;
     }
     if ((obstacle->exclude_flags & 2) != 0 && object->character_data->move_fn != Move_BEAST) {

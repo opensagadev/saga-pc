@@ -1364,7 +1364,7 @@ APIOBJECT *GameAPIOBJECTFromObjID(u8 object_id) {
         if ((flags & APIOBJECT_FLAG_IN_USE) == 0) {
             return NULL;
         }
-        if ((flags & APIOBJECT_FLAG_CHARACTER) == 0 && object->ai_packet.reset_mode != 3) {
+        if ((flags & APIOBJECT_FLAG_CHARACTER) == 0 && object->ai_packet.reset_mode != AIPACKET_RESET_IN_CRATE) {
             return NULL;
         }
         if (object->dead != 0 && !(object->unknown_1010 > 0.0f)) {

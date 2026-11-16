@@ -56,26 +56,26 @@ void SpecialMoves_Configure(char *filename, VARIPTR *buffer, VARIPTR *end) {
             continue;
         }
         move = &SpecialMove[SpecialMoveCount];
-        move->attacker_action_type = -1;
+        move->attacker_variant = -1;
         move->attacker_animation = -1;
         move->attacker_id = -1;
-        move->victim_action_type = -1;
+        move->victim_variant = -1;
         move->victim_animation = -1;
         move->victim_id = -1;
         move->flags = 0;
         move->distance_apart = 0.0f;
         while (NuFParGetLine(parser) && NuFParGetWord(parser)) {
             if (NuStrICmp(parser->word_buffer_ptr, "specialmove_end") == 0) {
-                if ((move->attacker_action_type != -1 || move->attacker_id != -1) && move->attacker_animation != -1 &&
-                    (move->victim_action_type != -1 || move->victim_id != -1) && move->victim_animation != -1) {
+                if ((move->attacker_variant != -1 || move->attacker_id != -1) && move->attacker_animation != -1 &&
+                    (move->victim_variant != -1 || move->victim_id != -1) && move->victim_animation != -1) {
                     ++SpecialMoveCount;
                 }
                 break;
             }
             if (NuStrICmp(parser->word_buffer_ptr, "attacker") == 0) {
-                SpecialMove_ConfigParticipant(parser, &move->attacker_id, &move->attacker_action_type, &move->attacker_animation);
+                SpecialMove_ConfigParticipant(parser, &move->attacker_id, &move->attacker_variant, &move->attacker_animation);
             } else if (NuStrICmp(parser->word_buffer_ptr, "victim") == 0) {
-                SpecialMove_ConfigParticipant(parser, &move->victim_id, &move->victim_action_type, &move->victim_animation);
+                SpecialMove_ConfigParticipant(parser, &move->victim_id, &move->victim_variant, &move->victim_animation);
             } else if (NuStrICmp(parser->word_buffer_ptr, "distance_apart") == 0) {
                 move->distance_apart = NuFParGetFloat(parser);
             } else if (NuStrICmp(parser->word_buffer_ptr, "kill_victim_at_end") == 0) {
@@ -145,10 +145,10 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     for (i = 0; i < SpecialMoveCount; ++i) {
         SPECIALMOVE *move = &moves[i];
         if ((attacker->id == (u16)move->attacker_id ||
-             (move->attacker_action_type != -1 && attacker->character_data->game_character->weapon_action == move->attacker_action_type)) &&
+             (move->attacker_variant != -1 && attacker->character_data->game_character->variant == move->attacker_variant)) &&
             attacker->character_model->model_data_b[move->attacker_animation] != NULL &&
             (victim->id == (u16)move->victim_id ||
-             (move->victim_action_type != -1 && victim->character_data->game_character->weapon_action == move->victim_action_type)) &&
+             (move->victim_variant != -1 && victim->character_data->game_character->variant == move->victim_variant)) &&
             victim->character_model->model_data_b[move->victim_animation] != NULL &&
             (!(victim->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) ||
              (!(victim->spawn_protection_timer > 0.0f) && !(victim->flags_ef0 & 0x400000)))) {

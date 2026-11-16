@@ -284,7 +284,7 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
 GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, game_character) == 0x24);
 GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, model_flags) == 4);
 GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, weapon_action) == 0x116);
+GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, variant) == 0x116);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_e20) == 0xe20);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_e33) == 0xe33);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
@@ -997,12 +997,12 @@ static i32 GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *r
 
 static i32 Fighting_WeaponInAction_Game(GAMEOBJECT *object) {
     CHARACTERDATA *data = object->character_data;
-    return data->game_character->weapon_action == 0 && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 126 : 16;
+    return data->game_character->variant == CHARVARIANT_WEIRDO && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 126 : 16;
 }
 
 static i32 Fighting_WeaponOutAction_Game(GAMEOBJECT *object) {
     CHARACTERDATA *data = object->character_data;
-    return data->game_character->weapon_action == 0 && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 127 : 17;
+    return data->game_character->variant == CHARVARIANT_WEIRDO && (data->model_flags & CHARACTER_MODEL_BLASTER) != 0 ? 127 : 17;
 }
 
 static void GameMsg_EndDelay_Game(GAME_MESSAGE *message) {
@@ -1124,7 +1124,7 @@ static void Punch_HitExtraCode_LSW(GAMEOBJECT *object, NUVEC *position) {
 }
 
 static i32 Punch_GetDamage_LSW(GAMEOBJECT *attacker, GAMEOBJECT *target) {
-    if (attacker->character_data->game_character->weapon_action == 7 && Cheat_IsOn(0x0c)) {
+    if (attacker->character_data->game_character->variant == CHARVARIANT_LEIA && Cheat_IsOn(0x0c)) {
         GameAudio_PlaySfx(0x4a, target != NULL ? &target->collision_position : &attacker->collision_position, 0, 0);
         GameCam_NewShake(NULL, 0.75f, 0.75f, 1.0f);
         return -1;
@@ -1343,7 +1343,7 @@ static void DisguiseAdjust_LSW(i32 character_id, i32 hat, NUVEC *scale, NUVEC *o
         offset->z = -0.03f;
     } else if (character_id == id_SNOWTROOPER || character_id == id_DEATHSTARTROOPER) {
         offset->z = -0.00999f;
-    } else if (GCDataList[character_id].weapon_action == 1) {
+    } else if (GCDataList[character_id].variant == CHARVARIANT_STORMTROOPER) {
         offset->z = -0.03f;
     } else if (character_id == (i16)id_GONKDROID) {
         offset->z = -0.0075f;

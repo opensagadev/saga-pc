@@ -457,7 +457,7 @@ extern "C" {
         return 1;
     }
 
-    void SetMoveAndAnimateFunctions(u32 model_mask, u32 model_value, u32 game_mask, u32 game_value, i32 movement_type,
+    void SetMoveAndAnimateFunctions(u32 model_mask, u32 model_value, u32 game_mask, u32 game_value, i32 variant,
                                     CHARACTER_UPDATE_CALLBACK move, CHARACTER_UPDATE_CALLBACK animate,
                                     CHARACTER_UPDATE_CALLBACK post_animate) {
         i32 index;
@@ -468,7 +468,7 @@ extern "C" {
             if (game_mask != 0 && (GCDataList[index].flags_090 & game_mask) != game_value) {
                 continue;
             }
-            if (movement_type != -1 && GCDataList[index].weapon_action != movement_type) {
+            if (variant != -1 && GCDataList[index].variant != variant) {
                 continue;
             }
             if (move != NULL) {

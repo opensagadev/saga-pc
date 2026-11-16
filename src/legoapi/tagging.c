@@ -157,7 +157,7 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                 takeoverobjects[index].object->dead = 0;
                 takeoverobjects[index].object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
                 takeoverobjects[index].object->flags_1fc_word |= APIOBJECT_FLAG_IN_USE;
-                takeoverobjects[index].object->ai_packet.reset_mode = 2;
+                takeoverobjects[index].object->ai_packet.reset_mode = AIPACKET_RESET_ACTIVE;
                 SnapCreaturePos(takeoverobjects[index].object, &controller->position, controller->unknown_276,
                                 &controller->ai_packet.path_info, 1);
                 InitPlayerAI(controller);

@@ -157,7 +157,7 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         action = ACTION_RIDE3;
     } else if (StartupGameFlag1 == 0) {
         goto no_action;
-    } else if (vehicle->character_data->game_character->weapon_action == 12) {
+    } else if (vehicle->character_data->game_character->variant == CHARVARIANT_LUKE) {
         if (CurrentAnim(&vehicle->anim_packet) == 3 || CurrentAnim(&vehicle->anim_packet) == 0x17) {
             action = ACTION_RIDE10;
         } else {
@@ -823,7 +823,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
             }
             SetRiderPos(object, NULL);
             object->takeover_timer = 1.0f;
-        } else if (object->character_data->game_character->weapon_action == 12) {
+        } else if (object->character_data->game_character->variant == CHARVARIANT_LUKE) {
             i32 animation = CurrentAnim(&object->anim_packet) == 3 || CurrentAnim(&object->anim_packet) == 0x17 ? 0xc4 : 0xc3;
             CHARACTER_MODEL_LAYERS *model;
             target = object->rider;

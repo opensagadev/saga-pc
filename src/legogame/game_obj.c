@@ -193,7 +193,7 @@ static void CreatureCrate_Stop(PART *part) {
         AddFiniteShotPART(type, &part->position, 1);
     }
     object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
-    object->ai_packet.reset_mode = 2;
+    object->ai_packet.reset_mode = AIPACKET_RESET_ACTIVE;
     PlaySfx("Explode1", &part->position);
     GameCam_Judder(GameCam, 0.1f, 0, NULL);
     NewRumbleAllPlayers(0.0f, 0.0f, 2, 0);
@@ -252,7 +252,7 @@ void SpawnCreatureFromCrate(GAMEOBJECT *object, f32 height, f32 delay) {
         ((CREATURE_CRATE_PART_VIEW *)part)->spawn_delay = 0.0f;
     }
     object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
-    object->ai_packet.reset_mode = 3;
+    object->ai_packet.reset_mode = AIPACKET_RESET_IN_CRATE;
 }
 
 void ManageGameObjects(void) {
@@ -287,14 +287,14 @@ void ManageGameObjects(void) {
         if ((object->flags_1f8 & 0x40000) == 0) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
                 if (object->ai_packet.creature_index == AIPACKET_NO_CREATURE) {
-                    if (object->ai_packet.reset_mode == 1) {
+                    if (object->ai_packet.reset_mode == AIPACKET_RESET_STAGGERED) {
                         object->ai_packet.spawn_delay -= FRAMETIME;
                         if (object->ai_packet.spawn_delay <= 0.0f) {
                             object->flags_1fc_word |= APIOBJECT_FLAG_CHARACTER;
                             object->ai_packet.spawn_delay = 0.0f;
-                            object->ai_packet.reset_mode = 2;
+                            object->ai_packet.reset_mode = AIPACKET_RESET_ACTIVE;
                         }
-                    } else if (object->ai_packet.reset_mode != 3) {
+                    } else if (object->ai_packet.reset_mode != AIPACKET_RESET_IN_CRATE) {
                         if ((object->flags_1f8 & 0x4000) == 0) {
                             if (object->ai_packet.group != NULL) {
                                 alive = 0;
@@ -325,13 +325,13 @@ void ManageGameObjects(void) {
                     system = WORLD->ai_sys;
                     creature = &system->creatures[object->ai_packet.creature_index];
                     switch (object->ai_packet.reset_mode) {
-                        case 0:
+                        case AIPACKET_RESET_INACTIVE:
                             switch (creature->activation_type) {
                                 case 0:
                                     if (Game.difficulty >= creature->activation_difficulty) {
                                         ResetAICreature(object, system);
                                     } else {
-                                        object->ai_packet.reset_mode = 4;
+                                        object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
                                     }
                                     break;
                                 case 1:
@@ -345,12 +345,12 @@ void ManageGameObjects(void) {
                                                         object->ai_packet.group_member_index != 0) {
                                                         object->ai_packet.spawn_delay =
                                                             (f32)(u32)object->ai_packet.group_member_index * creature->start_stagger;
-                                                        object->ai_packet.reset_mode = 1;
+                                                        object->ai_packet.reset_mode = AIPACKET_RESET_STAGGERED;
                                                     } else {
                                                         ResetAICreature(object, system);
                                                     }
                                                 } else {
-                                                    object->ai_packet.reset_mode = 4;
+                                                    object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
                                                 }
                                             }
                                         }
@@ -366,7 +366,7 @@ void ManageGameObjects(void) {
                                     break;
                             }
                             break;
-                        case 1:
+                        case AIPACKET_RESET_STAGGERED:
                             group = object->ai_packet.group;
                             if (group != NULL && (group->flags & AIGROUP_ALL_DEAD) == 0) {
                                 break;
@@ -504,12 +504,12 @@ void ManageGameObjects(void) {
                                     }
                                     if (object->ai_packet.respawn_count >= limit) {
                                         object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
-                                        object->ai_packet.reset_mode = 4;
+                                        object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
                                         continue;
                                     }
                                 }
                                 object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
-                                object->ai_packet.reset_mode = 1;
+                                object->ai_packet.reset_mode = AIPACKET_RESET_STAGGERED;
                                 object->ai_packet.spawn_delay = 1.0 - ((f64)(u32)Game.difficulty - 1.0) / 9.0;
                                 object->ai_packet.spawn_delay = creature->max_respawn_time * object->ai_packet.spawn_delay +
                                                                 creature->min_respawn_time * (1.0f - object->ai_packet.spawn_delay);
@@ -542,8 +542,8 @@ void ManageGameObjects(void) {
                 }
             }
         } else if (nethost != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 &&
-                   object->ai_packet.creature_index == AIPACKET_NO_CREATURE && object->ai_packet.reset_mode != 1 &&
-                   object->ai_packet.reset_mode != 3 && (object->flags_1f8 & 0x4000) != 0) {
+                   object->ai_packet.creature_index == AIPACKET_NO_CREATURE && object->ai_packet.reset_mode != AIPACKET_RESET_STAGGERED &&
+                   object->ai_packet.reset_mode != AIPACKET_RESET_IN_CRATE && (object->flags_1f8 & 0x4000) != 0) {
             AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, &object->ai_packet.script_processor, FRAMETIME);
         }
     }
@@ -1126,7 +1126,8 @@ i32 DeactivatePlayer(GAMEOBJECT *object, f32 duration, GAMEOBJECT *source) {
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)object, &object->ai_packet, (AISCRIPTPROCESS *)&object->ai_packet, FRAMETIME);
             }
             if (source != NULL && (source->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) &&
-                object->character_data->game_character->weapon_action == 1 && object->character_model->model_data_b[0x62] != NULL) {
+                object->character_data->game_character->variant == CHARVARIANT_STORMTROOPER &&
+                object->character_model->model_data_b[0x62] != NULL) {
                 duration = 4.0f;
                 object->unknown_7aa = ACTION_IDLE7;
             } else if (object->character_model->model_data_b[0x81] != NULL &&
@@ -2218,7 +2219,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             }
             FRAMETIME = frame_time;
         }
-        if (object->character_data->game_character->weapon_action == 10) {
+        if (object->character_data->game_character->variant == CHARVARIANT_TIE) {
             if (object->model_draw_result != 0) {
                 if ((object->flags_ef4 & 0x100) == 0 && tieonsfxwait <= 0.0f) {
                     PlaySfx("veh_tie_by", &object->collision_position);
@@ -2994,7 +2995,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         f32 delay;
         if (requested_reason == 5) {
             object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
-            object->ai_packet.reset_mode = 4;
+            object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
         } else {
             persistent = object->respawnable;
             respawn = 0;
@@ -3017,10 +3018,10 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
             }
             if (!persistent) {
                 object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
-                object->ai_packet.reset_mode = 4;
+                object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
             } else if (respawn && creature != NULL) {
                 object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
-                object->ai_packet.reset_mode = 1;
+                object->ai_packet.reset_mode = AIPACKET_RESET_STAGGERED;
                 delay = (f32)(1.0 - ((f64)Game.difficulty - 1.0) / 9.0);
                 object->ai_packet.spawn_delay = delay;
                 if (creature->min_respawn_time > 0.0f && creature->max_respawn_time > 0.0f) {
@@ -3344,7 +3345,7 @@ void KillParts(GAMEOBJECT *object, i32 animation, i32 excluded_layer, i32 mode, 
             }
         }
     }
-    if (object->character_data->game_character->weapon_action == 0) {
+    if (object->character_data->game_character->variant == CHARVARIANT_WEIRDO) {
         Customiser_AddPartAccessories(CharacterCustomiser, object, animation, mode, vertical_scale);
     }
 }

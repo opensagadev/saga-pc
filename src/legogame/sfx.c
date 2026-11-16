@@ -551,7 +551,7 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("Lego_PLOP");
             ADD_SFX("FliesLp");
         }
-        if (game_character->weapon_action == 10) {
+        if (game_character->variant == CHARVARIANT_TIE) {
             ADD_SFX("veh_tie_by");
             ADD_SFX("Tie_Spins");
         }
@@ -566,8 +566,8 @@ void SetLevelSfxBits(WORLDINFO *world) {
         } else if ((character->model_flags & CHARACTER_MODEL_JEDI) != 0) {
             ADD_SFX("ForceMindTrick");
         }
-        if (game_character->weapon_action == 12 && (character->model_flags & CHARACTER_MODEL_JEDI) != 0 && id_GAMORREANGUARD != -1 &&
-            apicharsys->playermodelids[id_GAMORREANGUARD] != -1) {
+        if (game_character->variant == CHARVARIANT_LUKE && (character->model_flags & CHARACTER_MODEL_JEDI) != 0 &&
+            id_GAMORREANGUARD != -1 && apicharsys->playermodelids[id_GAMORREANGUARD] != -1) {
             ADD_SFX("ForceChokeCrunch");
         }
         if ((game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {

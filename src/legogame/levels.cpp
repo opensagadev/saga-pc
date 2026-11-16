@@ -496,9 +496,9 @@ static i32 World_HasImperialPrivate(APICHARACTERMODELLIST *list) {
     for (; list->model_id != -1; ++list) {
         if (Collection_Got(list->model_id) != 0) {
             i16 id = list->model_id;
-            i8 action = GCDataList[id].weapon_action;
-            if (action == 1 || action == 8 || id == dat_007f199c || id == id_THEEMPEROR || id == dat_007f1a4c || id == dat_007f1a48 ||
-                id == dat_007f1a44) {
+            i8 action = GCDataList[id].variant;
+            if (action == CHARVARIANT_STORMTROOPER || action == CHARVARIANT_CLONE || id == dat_007f199c || id == id_THEEMPEROR ||
+                id == dat_007f1a4c || id == dat_007f1a48 || id == dat_007f1a44) {
                 return 1;
             }
         }
@@ -522,9 +522,9 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
         if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0) {
             continue;
         }
-        action = GCDataList[id].weapon_action;
-        if ((action == 1 || action == 8 || id == dat_007f199c || id == id_THEEMPEROR || id == dat_007f1a4c || id == dat_007f1a48 ||
-             id == dat_007f1a44) &&
+        action = GCDataList[id].variant;
+        if ((action == CHARVARIANT_STORMTROOPER || action == CHARVARIANT_CLONE || id == dat_007f199c || id == id_THEEMPEROR ||
+             id == dat_007f1a4c || id == dat_007f1a48 || id == dat_007f1a44) &&
             count < 500) {
             candidates[count++] = (i16)id;
         }

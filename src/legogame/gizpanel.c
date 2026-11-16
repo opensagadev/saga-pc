@@ -311,7 +311,8 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, PANEL_MOVEMENT *panel) {
             if (object->helmet == 5 || (object->character_data->game_character->flags_090 & 0x40000) != 0) {
                 return 1;
             }
-            if (GCDataList[(i16)object->id].weapon_action == 1 || GCDataList[(i16)object->id].weapon_action == 8) {
+            if (GCDataList[(i16)object->id].variant == CHARVARIANT_STORMTROOPER ||
+                GCDataList[(i16)object->id].variant == CHARVARIANT_CLONE) {
                 return 1;
             }
             if ((i16)object->id == dat_007f199c || (i16)object->id == id_THEEMPEROR || (i16)object->id == dat_007f1a4c ||
@@ -957,7 +958,7 @@ i32 GizPanel_UpdateHint(HINT *hint) {
         }
     }
     if (storm != 0 && ((u16)hint->id == 0x260 || (u16)hint->id == 0x269)) {
-        if (AvailableToPlayer(0, 1, 5, 0) != 0) {
+        if (AvailableToPlayer(0, CHARVARIANT_STORMTROOPER, 5, 0) != 0) {
             if ((u16)hint->id == 0x260) {
                 return 1;
             }

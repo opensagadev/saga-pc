@@ -828,8 +828,8 @@ void JediB_Update(WORLDINFO *world) {
                 target = NULL;
                 if ((player->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
                     ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
-                    (player->character_data->game_character->weapon_action != 4 ||
-                     baddie->object->character_data->game_character->weapon_action != 4)) {
+                    (player->character_data->game_character->variant != CHARVARIANT_BATTLEDROID ||
+                     baddie->object->character_data->game_character->variant != CHARVARIANT_BATTLEDROID)) {
                     target = player;
                 } else {
                     if (baddie->object->ai_packet.opponent == player) {
@@ -838,8 +838,8 @@ void JediB_Update(WORLDINFO *world) {
                     if (player2 != NULL) {
                         if ((player2->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0 &&
                             ((i16)player->objptr->id != dat_007f19c4 || (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
-                            (player->character_data->game_character->weapon_action != 4 ||
-                             baddie->object->character_data->game_character->weapon_action != 4)) {
+                            (player->character_data->game_character->variant != CHARVARIANT_BATTLEDROID ||
+                             baddie->object->character_data->game_character->variant != CHARVARIANT_BATTLEDROID)) {
                             target = player2;
                         } else if (baddie->object->ai_packet.opponent == player2) {
                             baddie->object->ai_packet.opponent = NULL;

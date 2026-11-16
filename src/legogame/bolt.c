@@ -140,7 +140,7 @@ i32 BoltType_FindIDByCreature(GAMEOBJECT *object, i32 fallback) {
     if (object->character_data->move_fn == Move_CANNON) {
         return 20;
     }
-    if (GCDataList[id].weapon_action == 8) {
+    if (GCDataList[id].variant == CHARVARIANT_CLONE) {
         return 2;
     }
     if (GCDataList[id].weapon_model == 22) {

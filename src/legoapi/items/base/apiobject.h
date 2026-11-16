@@ -397,6 +397,12 @@ typedef struct APIDEBRISSYS {        // size 0xc
 #define AIPACKET_CIRCLE_CLOCKWISE 0x200        /* SetCircleDirection Clockwise / AntiClockwise / Reverse / Random */
 #define AIPACKET_PATH_BLOCKED 0x400000         /* the PathBlocked and CannotReachDestination conditions */
 #define AIPACKET_FORMATION_COMMANDER 0x1000000 /* SetFormationCommander */
+/* AIPACKET.reset_mode: a creature's spawn state in UpdateGameObjects and ResetCreatures. */
+#define AIPACKET_RESET_INACTIVE 0  /* waits for its activation (the "InActive" script state, an area, the difficulty) */
+#define AIPACKET_RESET_STAGGERED 1 /* a group member waits spawn_delay before it appears */
+#define AIPACKET_RESET_ACTIVE 2    /* spawned */
+#define AIPACKET_RESET_IN_CRATE 3  /* hidden in a crate until the crate part breaks */
+#define AIPACKET_RESET_DISABLED 4  /* not activated or dead for good; saved in disabled_ai_object_mask */
 /* AIPACKET.path_connection_state in the jump connection handlers (StarWars_, Indy_ and Batman_PrepareJump); the
  * tube, door and other special connections count their own steps. */
 #define AIJUMP_NONE 0

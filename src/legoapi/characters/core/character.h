@@ -416,6 +416,29 @@ extern "C" {
     extern i16 id_CLOUDCITYCITIZEN;
     extern i16 id_JANGOFETT;
     extern i16 id_UGNAUGHT;
+/* PLAYERCHARACTERCONFIG.variant (the special moves' attacker and victim variant): the index into the character
+ * variant names CharVariants_Init gets from StartupCharVariantNames (CharVariant_Find). */
+#define CHARVARIANT_WEIRDO 0
+#define CHARVARIANT_STORMTROOPER 1
+#define CHARVARIANT_FETT 2
+#define CHARVARIANT_MACEWINDU 3
+#define CHARVARIANT_BATTLEDROID 4
+#define CHARVARIANT_WOOKIEE 5
+#define CHARVARIANT_OBIWANKENOBI 6
+#define CHARVARIANT_LEIA 7
+#define CHARVARIANT_CLONE 8
+#define CHARVARIANT_REBEL 9
+#define CHARVARIANT_TIE 10
+#define CHARVARIANT_LANDO 11
+#define CHARVARIANT_LUKE 12
+#define CHARVARIANT_HANSOLO 13
+#define CHARVARIANT_PADME 14
+#define CHARVARIANT_WALKER_2LEGS 15
+#define CHARVARIANT_WALKER_4LEGS 16
+#define CHARVARIANT_HOVERDROID 17
+#define CHARVARIANT_CRITTER 18
+#define CHARVARIANT_NABOOSTARFIGHTER 19
+#define CHARVARIANT_HENCHMAN 20
     i32 CharVariant_Find(char *);
     void CharVariants_Init(char **, i32);
     void IconScenes_Init(char *, VARIPTR *, VARIPTR *);

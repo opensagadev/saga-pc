@@ -697,7 +697,7 @@ f32 Condition_Debug(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, c
 }
 
 f32 Condition_Active(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->reset_mode == 2) {
+    if (packet != NULL && packet->reset_mode == AIPACKET_RESET_ACTIVE) {
         return 1.0f;
     }
     return 0.0f;
