@@ -855,7 +855,7 @@ def duplicate_type_names():
     """Type names defined in more than one src/ file (tools/oddscan.py class dup-type)."""
     from tools import oddscan  # noqa: PLC0415
     files = defaultdict(set)
-    for scan_ in oddscan.scan_files(oddscan.source_paths()[0]):
+    for scan_ in oddscan.scan_files(oddscan.source_paths()[0], cache=oddscan.default_cache()):
         for _, name, _, _ in scan_.aggregates:
             if name:
                 files[name].add(scan_.path)

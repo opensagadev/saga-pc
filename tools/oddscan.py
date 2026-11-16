@@ -971,6 +971,11 @@ class FileCache:
             unitcache.evict()
 
 
+def default_cache(root=ROOT):
+    """The FileCache for scans of this worktree (SAGA_ODDSCAN_CACHE=0: none)."""
+    return FileCache() if root == ROOT and os.environ.get("SAGA_ODDSCAN_CACHE", "1") != "0" else None
+
+
 def scan_files(paths, root=ROOT, cache=None):
     """FileScans of `paths` in order. `cache` (a FileCache) reuses the scans of unchanged files."""
     FileScan._shared_constants = {}
@@ -1252,7 +1257,7 @@ def summarize(scans):
 
 def report(root=ROOT, magic_limit=40, hints=None):
     src_paths, vendored_paths = source_paths(root)
-    cache = FileCache() if root == ROOT and os.environ.get("SAGA_ODDSCAN_CACHE", "1") != "0" else None
+    cache = default_cache(root)
     scans = scan_files(src_paths, root, cache)
     cross_file(scans)
     constants = dict(FileScan._shared_constants)
