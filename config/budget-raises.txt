@@ -235,3 +235,4 @@ config/oddscan-budget.json declspec-align 191 nu2api data move: NuMtxSetIdentity
 config/declscan-budget.json A 35 nu2api data move: a global data.cpp defined now sits in a unit that also kept its own extern of it (same construct, new place)
 config/castscan-budget.json duplicate-type 1241 restores the clang 18 count (CI): 62f3f94f lowered it to 1236 from a cache a newer system libclang had filled; no new cast
 config/castscan-budget.json record-pun 807 restores the clang 18 count (CI): 62f3f94f lowered it to 803 from a cache a newer system libclang had filled; no new cast
+config/castscan-budget.json void-pointer-cpp 959 the visibility clip results are u8 * now: the two declaration-type casts of the readers (myvisi->context) became one void * conversion where NuVisiEvaluate stores its context (same construct, new place)

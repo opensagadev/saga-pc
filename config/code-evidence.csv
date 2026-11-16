@@ -1045,7 +1045,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005d5270,53,_fun_005d5270,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005d52b0,54,_fun_005d52b0,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005d7060,243,_BoxTreeRndrRec,extent,,nu2api/nu3d_includes.cpp,unreferenced,
-0x005d7160,102,_fun_005d7160,extent,,nu2api/nu3d_includes.cpp,unreferenced,
+0x005d7160,102,_NuVisiBoxTree,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005d71d0,62,_fun_005d71d0,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005d7210,30,_fun_005d7210,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005d7310,86,_NuHtmlHeading2,extent,,nu2api/nu3d_includes.cpp,unreferenced,

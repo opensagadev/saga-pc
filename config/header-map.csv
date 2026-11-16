@@ -9757,14 +9757,14 @@ function:Action_SetLapTime,function,Action_SetLapTime,18827,18827,1,legoapi/worl
 function:WorldInfo_Init#2,function,WorldInfo_Init,18829,18829,2,legoapi/world/world.h,android,WorldInfo_Init
 function:NuRndrInitWorld,function,NuRndrInitWorld,18830,18830,1,legoapi/world/world_shared.h,android,NuRndrInitWorld
 function:NuRndrGobj,function,NuRndrGobj,18831,18831,1,nu2api/nu3d/nurndr.h,symbol,nu2api/nu3d_pc_includes.cpp[nurndr.cpp] android-path
-struct:visibility_result_reader_s,struct,visibility_result_reader_s VISIBILITY_RESULT_READER,18834,18846,15,nu2api/nu3d/nu3d_includes.h,users,VISIBILITY_RESULT_READER: only nu2api/nu3d_includes.cpp android-path
-assert:-#3741,assert,,18848,18848,2,nu2api/nu3d/nu3d_includes.h,follow-type,VISIBILITY_RESULT_READER
-assert:-#3742,assert,,18849,18849,1,nu2api/nu3d/nu3d_includes.h,follow-type,VISIBILITY_RESULT_READER
-assert:-#3743,assert,,18850,18850,1,nu2api/nu3d/nu3d_includes.h,follow-type,VISIBILITY_RESULT_READER
-assert:-#3744,assert,,18851,18851,1,nu2api/nu3d/nu3d_includes.h,follow-type,VISIBILITY_RESULT_READER
-assert:-#3745,assert,,18852,18852,1,nu2api/nu3d/nu3d_includes.h,follow-type,VISIBILITY_RESULT_READER
-assert:-#3746,assert,,18853,18853,1,nu2api/nu3d/nu3d_includes.h,follow-type,VISIBILITY_RESULT_READER
-assert:-#3747,assert,,18854,18854,1,nu2api/nu3d/nu3d_includes.h,follow-type,VISIBILITY_RESULT_READER
+struct:nuvisibilityresult_s,struct,nuvisibilityresult_s NUVISIBILITYRESULT,18834,18846,15,nu2api/nu3d/nu3d_includes.h,users,NUVISIBILITYRESULT: only nu2api/nu3d_includes.cpp android-path
+assert:-#3741,assert,,18848,18848,2,nu2api/nu3d/nu3d_includes.h,follow-type,NUVISIBILITYRESULT
+assert:-#3742,assert,,18849,18849,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVISIBILITYRESULT
+assert:-#3743,assert,,18850,18850,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVISIBILITYRESULT
+assert:-#3744,assert,,18851,18851,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVISIBILITYRESULT
+assert:-#3745,assert,,18852,18852,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVISIBILITYRESULT
+assert:-#3746,assert,,18853,18853,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVISIBILITYRESULT
+assert:-#3747,assert,,18854,18854,1,nu2api/nu3d/nu3d_includes.h,follow-type,NUVISIBILITYRESULT
 variable:VisibilityEvaluateEnabled,variable,VisibilityEvaluateEnabled,18855,18855,1,nu2api/nu3d/nu3d_includes.h,users,VisibilityEvaluateEnabled: only nu2api/nu3d_includes.cpp android-path
 variable:VisibilityOcclusionEnabled,variable,VisibilityOcclusionEnabled,18856,18856,1,nu2api/nu3d/nu3d_includes.h,users,VisibilityOcclusionEnabled: only nu2api/nu3d_includes.cpp android-path
 variable:do_InstTree,variable,do_InstTree,18857,18857,1,nu2api/nu3d/nu3d_includes.h,android,do_InstTree

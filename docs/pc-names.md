@@ -7,8 +7,7 @@ different thing (a descriptive name now). The renames are in `renames/16-*.csv` 
 
 oddscan's `pc-suffix` class counts the markers left in code identifiers (strings and comments are not
 counted) and lists them with `python3 tools/oddscan.py --list --class pc-suffix`. Its budget only goes down;
-the end state is the kept names below (about 20 lines). The rest of today's budget is the records under
-"Not yet resolved".
+the end state is the kept names below (about 20 lines).
 
 ## Kept
 
@@ -22,12 +21,3 @@ the end state is the kept names below (about 20 lines). The rest of today's budg
 | `apitxt_PCPRESSSTARTFE`, `apitxt_PCPRESSSTARTP1`, `apitxt_PCPRESSSTARTP2` | the PC "press start" texts, named after their string table keys `GEN_PCPRESSSTART*` |
 | string literals: retail source paths, `"_PC. \| _360. \| _PS3."`, `pc\stuff\LegoCubeMap_PC.dds`, `"%s_pc%03d.bmp"` | retail data; never changed |
 | `ov_pcm_total`, `ov_pcm_tell` | Ogg Vorbis PCM, not a marker |
-
-## Not yet resolved
-
-These records have a plain-named twin with a different layout in the same module. Each needs a field
-by field merge (which layout is real, which fields the users touch), not a rename:
-
-| Name | Twin |
-|------|------|
-| `NUVISIBOXTREENODE_PC`, `NUVISIBOXTREE_PC`, `NUBOXTREEVISIBILITY_PC` | the compact box tree `NUVISIBOXTREENODE`, `NUVISIBOXTREE`, `NUBOXTREEVISIBILITY` in `nu3d_includes.cpp` |

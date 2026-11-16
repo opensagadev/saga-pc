@@ -8721,45 +8721,36 @@ extern "C" {
         NuRndrEndScene();
     }
 
-    typedef struct nuvisiboxtreenode_pc_s {         // size 0x5c
-        NUVEC minimum;                              // 0x00
-        f32 minimum_w;                              // 0x0c
-        NUVEC maximum;                              // 0x10
-        f32 maximum_w;                              // 0x1c
-        struct nuvisiboxtreenode_pc_s *children[8]; // 0x20
-        i32 child_count;                            // 0x40
-        i32 inside_count;                           // 0x44
-        i32 *inside_instances;                      // 0x48
-        i32 partial_count;                          // 0x4c
-        i32 *partial_instances;                     // 0x50
-        u32 unknown_54;                             // 0x54
-        f32 far_clip;                               // 0x58
-    } NUVISIBOXTREENODE_PC;
+    typedef struct nuvisioctreenode_s {         // size 0x5c
+        NUVEC minimum;                          // 0x00
+        f32 minimum_w;                          // 0x0c
+        NUVEC maximum;                          // 0x10
+        f32 maximum_w;                          // 0x1c
+        struct nuvisioctreenode_s *children[8]; // 0x20
+        i32 child_count;                        // 0x40
+        i32 inside_count;                       // 0x44
+        i32 *inside_instances;                  // 0x48
+        i32 partial_count;                      // 0x4c
+        i32 *partial_instances;                 // 0x50
+        u32 unknown_54;                         // 0x54
+        f32 far_clip;                           // 0x58
+    } NUVISIOCTREENODE;
 
-    typedef struct nuvisiboxtree_pc_s {
-        NUVISIBOXTREENODE_PC *root;
-    } NUVISIBOXTREE_PC;
+    typedef struct nuvisioctree_s {
+        NUVISIOCTREENODE *root;
+    } NUVISIOCTREE;
 
-    typedef struct nuboxtreevisibility_pc_s { // size 0x2c
-        i32 instance_count;                   // 0x00
-        NUVISIBOXTREE_PC *tree;               // 0x04
-        u32 unknown_08[6];                    // 0x08
-        u8 *clip_results;                     // 0x20
-        u32 unknown_24;                       // 0x24
-        u32 state;                            // 0x28
-    } NUBOXTREEVISIBILITY_PC;
-
-    typedef struct boxtree_stack_entry_s {
-        NUVISIBOXTREENODE_PC *node;
+    typedef struct octree_stack_entry_s {
+        NUVISIOCTREENODE *node;
         i32 next_child;
-    } BOXTREE_STACK_ENTRY;
+    } OCTREE_STACK_ENTRY;
 
-    i32 do_boxtree = 0;
+    i32 do_octree = 0;
     i32 VisibilityLoadedOcclusion = 0;
     i32 VisibilityCameraLock = 0;
     i32 NuPortalCameraSelect = 0;
     i32 VisibilityUsingOcclusion = 0;
-    i32 dat_00973984 = 0;
+    i32 do_boxtree = 0;
     NUFILE nudlist_field_988 = 0;
     i32 NuTimeBar_Initialised = 0;
     i32 NuTimeBar_EngineEnabled = 0;
@@ -8767,7 +8758,7 @@ extern "C" {
     i32 NuTimeBar_PeakReset = 0;
     NUMTL *NuTimeBar_FrameOutMtl = 0;
     i32 TreeInitialised = 0;
-    VISIBILITY_RESULT_READER *myvisi = 0;
+    NUVISIBILITYRESULT *myvisi = 0;
     i32 NuPortalDebugEnabled = 0;
     NUVEC *NuPortalOverrideCamera = 0;
     i32 dat_009739b4 = 0;
@@ -8793,7 +8784,7 @@ extern "C" {
     NULSTHDR *g_overrideList = 0;
     i32 dat_0097401c = 0;
     i32 dat_00974020 = 0;
-    i32 BoxTreeDrawBounds = 1;
+    i32 OctreeDrawBounds = 1;
     i32 VisibilityEvaluateEnabled = 1;
     i32 VisibilityOcclusionEnabled = 1;
     NUMTX vpmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
@@ -8810,7 +8801,7 @@ extern "C" {
     i32 nudlist_frame_active = 2;
     NUMTX NuVpIdentityMatrix = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 
-    static void BoxTreeSetClipResults(u8 *results, i32 *instances, i32 clip, i32 count) {
+    static void OctreeSetClipResults(u8 *results, i32 *instances, i32 clip, i32 count) {
         i32 i;
         for (i = 0; i < count; ++i) {
             i32 instance = instances[i];
@@ -8818,8 +8809,8 @@ extern "C" {
         }
     }
 
-    void BoxTreeRndr(u8 *results, NUVISIBOXTREENODE_PC *root, i32 instance_count) {
-        BOXTREE_STACK_ENTRY stack[128];
+    void OctreeRndr(u8 *results, NUVISIOCTREENODE *root, i32 instance_count) {
+        OCTREE_STACK_ENTRY stack[128];
         i32 depth;
         if (root == NULL || instance_count == 0) {
             return;
@@ -8828,20 +8819,20 @@ extern "C" {
         stack[0].node = root;
         stack[0].next_child = 0;
         do {
-            NUVISIBOXTREENODE_PC *node = stack[depth].node;
+            NUVISIOCTREENODE *node = stack[depth].node;
             f32 distance;
             i32 clip =
                 NuCameraClipTestExtentsGeneric(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate, node->far_clip, 1, &distance);
             if (clip != 0) {
                 if (clip == 1) {
-                    if (BoxTreeDrawBounds != 0) {
+                    if (OctreeDrawBounds != 0) {
                         NuRndrBoundingBox(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate, 0xff0000ff);
                     }
-                    BoxTreeSetClipResults(results, node->inside_instances, 1, node->inside_count);
+                    OctreeSetClipResults(results, node->inside_instances, 1, node->inside_count);
                 } else {
                     i32 child;
-                    BoxTreeSetClipResults(results, node->partial_instances, 2, node->partial_count);
-                    if (node->child_count == 0 && BoxTreeDrawBounds != 0) {
+                    OctreeSetClipResults(results, node->partial_instances, 2, node->partial_count);
+                    if (node->child_count == 0 && OctreeDrawBounds != 0) {
                         NuRndrBoundingBox(&node->minimum, &node->maximum, &NuMtxSetIdentityTemplate, 0xff00ff00);
                     }
                     child = stack[depth].next_child++;
@@ -8857,12 +8848,12 @@ extern "C" {
         } while (depth >= 0);
     }
 
-    void NuVisiBoxTree(NUBOXTREEVISIBILITY_PC *visibility) {
-        if (visibility->tree != NULL && do_boxtree != 0) {
-            BoxTreeRndr(visibility->clip_results, visibility->tree->root, visibility->instance_count);
-            visibility->state |= 4;
+    void NuVisiOctree(NUVISIBILITYRESULT *result) {
+        if (result->octree != NULL && do_octree != 0) {
+            OctreeRndr(result->clip_results, result->octree->root, result->instance_count);
+            result->flags |= 4;
         } else {
-            visibility->state &= ~4u;
+            result->flags &= ~4u;
         }
     }
 
@@ -10926,7 +10917,7 @@ union PC_CLIP_SCENE_VIEW { // size 0x90
     };
 };
 
-static void DisplayClipFallbackPC(NUDISPLAY_LIST *scene, VISIBILITY_RESULT_READER *visibility) {
+static void DisplayClipFallbackPC(NUDISPLAY_LIST *scene, NUVISIBILITYRESULT *visibility) {
     PC_CLIP_SCENE_VIEW *view = reinterpret_cast<PC_CLIP_SCENE_VIEW *>(scene);
     i32 instance_index = 0;
     i32 fade_mask = 0;
@@ -11032,7 +11023,7 @@ typedef union visibility_display_special_reader_u { // size 0xd0
 extern "C" void NuDisplaySceneRndr(NUDISPLAY_LIST *scene) {
     u8 visibility_context[0x2800];
     NUGSCN temporary_scene;
-    VISIBILITY_RESULT_READER *visibility;
+    NUVISIBILITYRESULT *visibility;
     NUGSCN *gscene;
     nuhspecial_s handle;
     i32 portal_filter;
@@ -11266,7 +11257,7 @@ extern "C" void NuDisplayListDrawRenderScene(i32 scene_id) {
 
 extern "C" void DisplaySceneRndrSpecials(NUDISPLAY_LIST *scene, i32 unused0, i32 unused1) {
     NUGSCN temporary_scene;
-    VISIBILITY_RESULT_READER *visibility = NuVisiEvaluate(scene->gscene, &unused1);
+    NUVISIBILITYRESULT *visibility = NuVisiEvaluate(scene->gscene, &unused1);
     i32 portal_filter =
         visibility != NULL && VisibilityPortalFilterEnabled != 0 && visibility->portal_marker != NULL && PCPortalsEnabled != 0;
     i32 shadow_filter = currentScene.dyn_light_ptr != NULL;
@@ -14831,7 +14822,7 @@ extern "C" {
         u8 unknown_00[0x1c];                   // 0x000
         i32 instance_count;                    // 0x01c
         u8 unknown_20[0x100];                  // 0x020
-        VISIBILITY_RESULT_READER result;       // 0x120
+        NUVISIBILITYRESULT result;             // 0x120
     } VISIBILITY_SCENE_READER;
 
     typedef struct visibility_occlusion_grid_s { // size 0x30
@@ -14889,7 +14880,7 @@ extern "C" {
         return (f32)integer > value ? integer - 1 : integer;
     }
 
-    void NuVisiOcclusion(VISIBILITY_RESULT_READER *result) {
+    void NuVisiOcclusion(NUVISIBILITYRESULT *result) {
         VISIBILITY_OCCLUSION_GRID *grid = (VISIBILITY_OCCLUSION_GRID *)result->occlusion_data;
         f32 grid_x;
         f32 grid_z;
@@ -14989,8 +14980,8 @@ extern "C" {
         }
     }
 
-    void fun_005d7160(NUBOXTREEVISIBILITY *visibility, NUGSCN *scene) {
-        if (visibility->tree != NULL && dat_00973984 != 0) {
+    void NuVisiBoxTree(NUBOXTREEVISIBILITY *visibility, NUGSCN *scene) {
+        if (visibility->tree != NULL && do_boxtree != 0) {
             for (u32 i = 0; i < visibility->tree->root_count; ++i) {
                 NUVISIBOXTREE *tree = visibility->tree;
                 BoxTreeRndrRec(tree, visibility->clip_results, &tree->nodes[tree->roots[i]], visibility->instance_count, tree->far_clip[i],
@@ -15365,15 +15356,15 @@ extern "C" {
         NuHtmlWrite(text);
     }
 
-    VISIBILITY_RESULT_READER *NuVisiEvaluate(NUGSCN *scene, void *context) {
+    NUVISIBILITYRESULT *NuVisiEvaluate(NUGSCN *scene, void *context) {
         VISIBILITY_SCENE_READER *view = (VISIBILITY_SCENE_READER *)scene;
-        VISIBILITY_RESULT_READER *result;
+        NUVISIBILITYRESULT *result;
         if (context == NULL || VisibilityEvaluateEnabled == 0) {
             return NULL;
         }
         NuCameraLock(VisibilityCameraLock);
         result = &view->result;
-        result->context = NULL;
+        result->clip_results = NULL;
         result->instance_tree_bits = NULL;
         if (result->source_scene != NULL) {
             result->instance_count = ((VISIBILITY_SCENE_READER *)result->source_scene)->instance_count;
@@ -15388,7 +15379,7 @@ extern "C" {
         if (result->portal_marker != NULL && PCPortalsEnabled != 0) {
             NuPortalVisibility(scene);
         } else if (result->instance_tree != NULL && do_InstTree != 0) {
-            result->context = context;
+            result->clip_results = (u8 *)context;
             NuVisiInstTree(result, scene);
             result->flags |= 1;
         }
@@ -15758,7 +15749,7 @@ extern "C" {
                 u16 *end = id + node->subtree_instance_count;
                 while (id != end) {
                     u16 index = *id++;
-                    ((u8 *)myvisi->context)[index >> 2] |= (u8)(1 << ((index & 3) * 2));
+                    myvisi->clip_results[index >> 2] |= (u8)(1 << ((index & 3) * 2));
                 }
             } else {
                 VISIBILITY_TREE_NODE *child;
@@ -15780,7 +15771,7 @@ extern "C" {
                     while (id != end) {
                         u16 index = *id++;
                         i32 instance_clip = VisibilityTreeClipNode(&instance_bounds->center, &instance_bounds->extent, far_distance, 1);
-                        ((u8 *)myvisi->context)[index >> 2] |= (u8)(instance_clip << ((index & 3) * 2));
+                        myvisi->clip_results[index >> 2] |= (u8)(instance_clip << ((index & 3) * 2));
                         ++instance_bounds;
                     }
                 }
@@ -15788,7 +15779,7 @@ extern "C" {
         } while (cursor != work);
     }
 
-    void NuVisiInstTree(VISIBILITY_RESULT_READER *result, NUGSCN *scene) {
+    void NuVisiInstTree(NUVISIBILITYRESULT *result, NUGSCN *scene) {
         i32 enabled = result->instance_tree != NULL && do_InstTree != 0;
         i32 root;
         VISIBILITY_TREE_READER *tree;

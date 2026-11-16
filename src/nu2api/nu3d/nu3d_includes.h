@@ -1163,26 +1163,27 @@ extern "C" {
     extern NUDISPLAYLISTRENDERSCENE *render_scene_ptrs[24];
     void SetProceduralAnimationFn(NUJOINTPROCANIMFN callback);
 
-    /* Qualified CPU visibility/tree views; original owning extents remain unknown. */
-    typedef struct visibility_result_reader_s { // size 0x2c
-        i32 instance_count;                     // 0x00
-        u8 unknown_04[4];                       // 0x04
-        NUGSCN *source_scene;                   // 0x08
-        void *occlusion_data;                   // 0x0c
-        u8 unknown_10[4];                       // 0x10
-        void *instance_tree;                    // 0x14
-        void *portal_marker;                    // 0x18
-        u8 *portal_bits;                        // 0x1c
-        void *context;                          // 0x20
-        u8 *instance_tree_bits;                 // 0x24
-        u32 flags;                              // 0x28
-    } VISIBILITY_RESULT_READER;
+    /* A scene's visibility result: NuVisiEvaluate fills it, the walkers write two bits per instance into
+     * clip_results (1 inside, 2 partial) and set their bit in flags (1 instance tree, 4 octree). */
+    typedef struct nuvisibilityresult_s { // size 0x2c
+        i32 instance_count;               // 0x00
+        struct nuvisioctree_s *octree;    // 0x04
+        NUGSCN *source_scene;             // 0x08
+        void *occlusion_data;             // 0x0c
+        u8 unknown_10[4];                 // 0x10
+        void *instance_tree;              // 0x14
+        void *portal_marker;              // 0x18
+        u8 *portal_bits;                  // 0x1c
+        u8 *clip_results;                 // 0x20
+        u8 *instance_tree_bits;           // 0x24
+        u32 flags;                        // 0x28
+    } NUVISIBILITYRESULT;
 
-    extern VISIBILITY_RESULT_READER *myvisi;
+    extern NUVISIBILITYRESULT *myvisi;
     extern NURNDRLIBSCENE sceneParameters[16];
-    void NuVisiOcclusion(VISIBILITY_RESULT_READER *);
-    VISIBILITY_RESULT_READER *NuVisiEvaluate(NUGSCN *, void *);
-    void NuVisiInstTree(VISIBILITY_RESULT_READER *, NUGSCN *);
+    void NuVisiOcclusion(NUVISIBILITYRESULT *);
+    NUVISIBILITYRESULT *NuVisiEvaluate(NUGSCN *, void *);
+    void NuVisiInstTree(NUVISIBILITYRESULT *, NUGSCN *);
     NUGSCN *PCGraphicsSceneReadClones(VARIPTR *, VARIPTR, char *, i32);
     i32 findrange(struct NUGSCN_s *arg0, i32 arg1);
     void NuSpecialSetDrawPos(struct nuhspecial_s *special, struct nuvec_s *pos);
