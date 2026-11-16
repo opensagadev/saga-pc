@@ -549,7 +549,7 @@ extern "C" {
         char *name = LedgeRegistryName;
         LedgeAddType = Default_ADDGIZMOTYPE;
         LedgeAddType.name = name;
-        LedgeAddType.prefix = dat_007516c0;
+        LedgeAddType.prefix = "";
         LedgeAddType.fns.options = 0x20;
         LedgeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Ledges_GetMaxGizmos;
         LedgeAddType.fns.add_gizmos_fn = (void *)Ledges_AddGizmos;

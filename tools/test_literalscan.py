@@ -198,6 +198,43 @@ class LiteralScanTests(unittest.TestCase):
         self.assertEqual(new, '#pragma const_seg(".rdata$APc")\nconst char *Table[] = {"x"};\n'
                               '#pragma const_seg()\nchar *Name = "ab";\n')
 
+    def test_writable_char_arrays_in_a_table(self):
+        """gizmopickup.c: `char dat_00758c3c[10] = "MK-Appear";` with an extern in the header, read twice in the
+        GizmoPickupType table, and a `#define` alias whose uses are the array's uses."""
+        (self.root / "src/pickup.h").write_text("extern char dat_00758c3c[10];\nextern char dat_00758c5c[12];\n"
+                                                "#define PickupCoinBName dat_00758c5c // NOLINT\n")
+        (self.root / "src/pickup.c").write_text(
+            '#include "pickup.h"\n'
+            'char dat_00758c3c[10] = "MK-Appear";\n'
+            'char dat_00758c48[8] = "Minikit";\n'
+            'const char dat_00758c28[];\n'
+            'const char dat_00758c28[10] = "Red Brick";\n'
+            'char dat_00758c5c[12] = "PickupCoinB";\n'
+            'char Buffer[8] = "Counter";\n'
+            'PICKUP Table[2] = {\n'
+            '    {dat_00758c48, dat_00758c3c, 109},\n'
+            '    {dat_00758c28, dat_00758c3c, 114},\n'
+            '};\n'
+            'void Collect(void) { PlaySfx((char *)PickupCoinBName, 0); NuStrCpy(Buffer, "x"); Print(Buffer); }\n'
+            'void Local(void) { char copy[4] = "abc"; Print(copy); }\n')
+        path = self.root / "config/symbols.csv"
+        path.write_text(SYMBOLS + "0x758c3c,_dat_00758c3c,10,char[10]\n0x758c48,_dat_00758c48,8,char[8]\n"
+                        "0x758c28,_dat_00758c28,10,char[10]\n0x758c5c,_dat_00758c5c,12,char[12]\n")
+        sources, found, _ = self.scan()
+        names = {d["name"]: d for d in found if d["file"] == "src/pickup.c"}
+        self.assertEqual(sorted(names), ["dat_00758c28", "dat_00758c3c", "dat_00758c48", "dat_00758c5c"])
+        self.assertEqual(names["dat_00758c3c"]["class"], "multi-use")
+        fixed, skipped = literalscan.fix(sources, list(names.values()))
+        self.assertEqual((len(fixed), skipped), (4, []))
+        unit = (self.root / "src/pickup.c").read_text()
+        self.assertIn('{"Minikit", "MK-Appear", 109}', unit)
+        self.assertIn('{"Red Brick", "MK-Appear", 114}', unit)
+        self.assertIn('PlaySfx("PickupCoinB", 0);', unit)
+        self.assertNotIn("dat_00758c", unit)
+        self.assertIn('char Buffer[8] = "Counter";', unit)
+        self.assertEqual((self.root / "src/pickup.h").read_text(), "")
+        self.assertIn("0x758c3c,??_C@_09", path.read_text())
+
     def test_tidy_segments(self):
         text = ('#pragma const_seg(".rdata$A")\n#pragma const_seg(".rdata$B")\nconst char B[] = "b";\n'
                 '#pragma const_seg()\n#pragma const_seg()\n')

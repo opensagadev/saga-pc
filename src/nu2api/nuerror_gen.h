@@ -52,10 +52,6 @@ typedef struct PC_NATIVE_DEBUG_STATE {      // size 0x508
 #endif
 } PC_NATIVE_DEBUG_STATE;
 
-#define PlayerCarryRotationScale TerrainSkinSampleCount // NOLINT(readability-identifier-naming)
-
-#define PCWarningPrefix NuBlankStringValue            // NOLINT(readability-identifier-naming)
-#define PCWarningNativeFormat GizAIMessage_NameFormat // NOLINT(readability-identifier-naming)
 #ifdef __cplusplus
 extern "C" {
 #endif

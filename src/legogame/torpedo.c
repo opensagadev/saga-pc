@@ -740,8 +740,6 @@ i32 PartDraw_Torp(PART *part) {
     return draw;
 }
 
-char dat_00759770[2] = "X";
-
 void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
     TORPEDO_RUNTIME *packet = (TORPEDO_RUNTIME *)object->torpedo;
     TORPEDO_TIMERS *timers = (TORPEDO_TIMERS *)object;
@@ -891,7 +889,7 @@ void TorpedoCode(GAMEOBJECT *object, i32 fire, f32 fire_cooldown) {
         }
         if (target_position != NULL) {
             message = AddGameMessage(
-                dat_00759770, target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0, 255,
+                "X", target_position, (f32)((f64)AreaPickupScale * 5.0), NULL, 0.0f, 255, 0, 255,
                 GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
             if (message != NULL) {
                 message->target_is_coin_total = 4;

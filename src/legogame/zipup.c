@@ -44,9 +44,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-char GrapDetach_text[11] = "GrapDetach";
-char GrapAttach_text[11] = "GrapAttach";
-static char GrapSwing_text[10] = "GrapSwing";
 static f32 ZipUpRiderHeight = 0.5f;
 static f32 ZipUpRiderOffsetScale = 0.9f;
 static f32 ZipUpSwingDuration = 1.5f;
@@ -567,7 +564,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
             if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f || object->context_timer >= 5.0f) {
                 StartJump(object, JUMP_KIND_ZIPUP);
-                PlaySfx(GrapDetach_text, &object->collision_position);
+                PlaySfx("GrapDetach", &object->collision_position);
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     Hint_SetComplete(0x262);
                 }
@@ -606,7 +603,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 object->target_velocity.y = -1.0f;
                 object->velocity = v000;
                 object->velocity.y = -1.0f;
-                PlaySfx(GrapDetach_text, &object->collision_position);
+                PlaySfx("GrapDetach", &object->collision_position);
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     Hint_SetComplete(0x262);
                 }
@@ -652,7 +649,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 object->context_timer += FRAMETIME;
                 threshold = (f32)(ZipUpSwingDuration * 0.5 - (f64)0.2f);
                 if (old_time < threshold && object->context_timer >= threshold) {
-                    PlaySfx(GrapSwing_text, &object->collision_position);
+                    PlaySfx("GrapSwing", &object->collision_position);
                 }
             }
         } else {
@@ -766,7 +763,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
                 FastWeaponOut(object, 1);
             }
             object->context_timer = 0.0f;
-            PlaySfx(GrapAttach_text, &object->upper_position);
+            PlaySfx("GrapAttach", &object->upper_position);
             FastWeaponOut(object, 0);
             object->jump_variant_state = 0;
             dx = hook->x - start->x;

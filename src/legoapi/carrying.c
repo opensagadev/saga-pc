@@ -762,8 +762,6 @@ i32 SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     return 0;
 }
 
-const f64 TerrainSkinSampleCount = 8.0;
-
 i32 SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
     if (object->unknown_7b3 == SUPERCARRY_PICKUP) {
         object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
@@ -777,8 +775,8 @@ i32 SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
         object->unknown_276 = object->facing_angle;
     } else if (object->unknown_7b3 == SUPERCARRY_IDLE || object->unknown_7b3 == SUPERCARRY_WALK || object->unknown_7b3 == SUPERCARRY_JUMP) {
         if (object->pad->input_magnitude > 0.0f) {
-            object->facing_angle = TurnRot(object->facing_angle, input_angle,
-                                           (i32)(VehicleTurnPhaseOffset * object->context_hover_target_y * TerrainSkinSampleCount), NULL);
+            object->facing_angle =
+                TurnRot(object->facing_angle, input_angle, (i32)(VehicleTurnPhaseOffset * object->context_hover_target_y * 8.0), NULL);
         }
         object->unknown_276 = SeekRot(object->unknown_276, object->facing_angle, 10.0f);
         object->movement_facing_angle = object->facing_angle;

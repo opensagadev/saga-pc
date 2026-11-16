@@ -1300,7 +1300,7 @@ i32 CreateScaledEffect(i32 effect_index, f32 requested_scale) {
                     if (strlen(debtab[effect_index]->name) <= 12) {
                         sprintf(debtab[result]->name, "%s%03d", debtab[effect_index]->name, result);
                     } else {
-                        sprintf(shortened, GizAIMessage_NameFormat, debtab[effect_index]->name);
+                        sprintf(shortened, "%s", debtab[effect_index]->name);
                         shortened[12] = 0;
                         sprintf(debtab[result]->name, "%s%03d", shortened, result);
                     }

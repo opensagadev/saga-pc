@@ -516,7 +516,7 @@ extern "C" char *GizSpinner_GetOutputName(void *gizmo, i32 output) {
         NuStrCpy(SpinnerOutputBuffer, "100%% Complete");
         return SpinnerOutputBuffer;
     }
-    NuStrCpy(SpinnerOutputBuffer, dat_007516c0);
+    NuStrCpy(SpinnerOutputBuffer, "");
     return SpinnerOutputBuffer;
 }
 

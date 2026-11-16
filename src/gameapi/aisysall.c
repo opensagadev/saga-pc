@@ -87,9 +87,7 @@ extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 
 extern i32 ai_onlyusepackfile;
 
-char dat_007516c0[1] = "";
 const char AIScriptFalse[6] = "false";
-const char GizObstacleActionNamePC[5] = "Name";
 const char dat_0075f2c0[3] = "No";
 const char dat_0075f2c4[4] = "Yes";
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
@@ -14083,8 +14081,7 @@ void locatorEditor_cbRenameLocatorSetMenu(eduimenu_s *parent, eduiitem_s *item, 
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu,
-                    eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameLocatorSet, (char *)GizObstacleActionNamePC));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorRenameLocatorSet, "Name"));
     strcpy(((edui_textpicker_s *)edui_last_item)->value, aieditor->current_locator_set->name);
     ((edui_textpicker_s *)edui_last_item)->max_length = 15;
     eduiMenuAttach(parent, menu);
@@ -14140,8 +14137,7 @@ void locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *item, u32
     if (menu == NULL) {
         return;
     }
-    eduiMenuAddItem(menu,
-                    eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorSetPendingLocatorName, (char *)GizObstacleActionNamePC));
+    eduiMenuAddItem(menu, eduiItemTextPickCreate(0, &AiEditorSaveMessageColours, AiEditorSetPendingLocatorName, "Name"));
     if (aieditor->current_locator != NULL) {
         strcpy(aieditor->pending_locator_name, aieditor->current_locator->name);
     } else {
@@ -18428,7 +18424,7 @@ f32 default_xspacing = 0.4f;
 f32 default_zspacing = 0.4f;
 i32 ai_usepackfile = 1;
 f32 ai_moveradius = 0.1f;
-char *AiLevelPathName = dat_007516c0;
+char *AiLevelPathName = "";
 f32 antinode_time = 1.0f;
 f32 antinode_reverse_time = 1.0f;
 

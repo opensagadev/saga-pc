@@ -36,11 +36,6 @@ extern "C" {
     extern const char AITransferLiteral7581d4[10];
     extern const char AITransferLiteral7581ec[9];
     extern const char AITransferLiteral7581e0[9];
-    extern const char GizObstacleActionNamePC[5];
-    extern const char GizObstacleActionBackwardPC[9];
-    extern const char GizObstacleActionForwardPC[8];
-    extern const char GizObstacleActionStayOpenPC[9];
-    extern const char GizObstacleActionStayShutPC[9];
     extern const char NuMusicDebugClassInvalid[8];
     extern const char NuMusicDebugClassQuiet[6];
     extern const char NuMusicDebugClassAction[7];

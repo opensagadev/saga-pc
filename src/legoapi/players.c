@@ -119,8 +119,6 @@ typedef union player_position_sock_u { // size 0x38
 
 extern i32 movegamecamera_forcesock;
 
-char PlayerArcadeStartDoor[16] = "door_to_network";
-char PlayerMissionStartDoor[13] = "mission_door";
 PLAYERPROGRESS PlayerProgress[8] = {0};
 PLAYER_START_INITIALIZER_RECORD PlayerStart[8] = {0};
 
@@ -176,9 +174,9 @@ void Players_InitPositions(WORLDINFO *world) {
             i32 area = Episode_FindAreaFromFlags(&EDataList[hub_from_superstory], AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 5);
             door = Door_FindByIndex(world, area, -1, NULL);
         } else if (hub_from_mission != -1) {
-            door = Door_FindByName(world, PlayerMissionStartDoor);
+            door = Door_FindByName(world, "mission_door");
         } else if (hub_from_arcade != -1) {
-            door = Door_FindByName(world, PlayerArcadeStartDoor);
+            door = Door_FindByName(world, "door_to_network");
         } else if (hub_startoutsidebonusdoor_area != -1) {
             door = Door_FindByIndex(world, hub_startoutsidebonusdoor_area, -1, NULL);
         } else if (last_area != -1) {

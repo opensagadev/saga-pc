@@ -28,14 +28,8 @@ extern "C" char *PcGetUserFolder(const char *unused_company, const char *unused_
     return PcUserFolder;
 }
 
-extern "C" {
-    static char dat_00775ec0[7] = "TTales";
-}
-const char *PcCompanyName = dat_00775ec0;
-extern "C" {
-    static char dat_00775eb4[10] = "GameTitle";
-}
-const char *PcProductName = dat_00775eb4;
+const char *PcCompanyName = "TTales";
+const char *PcProductName = "GameTitle";
 
 extern "C" i32 fun_006dd460(const char *name, const char *prefix, i32 use_user_folder, void *buffer, i32 size) {
     char path[256];

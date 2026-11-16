@@ -71,15 +71,6 @@ typedef struct coinpacket_pickup_s {
 u32 GizObstacles_TotalScore(WORLDINFO *world);
 u32 GizTurrets_TotalScore(WORLDINFO *world);
 
-char dat_00758c20[8] = "Charkit";
-char dat_00758c28[10] = "Red Brick";
-char dat_00758c34[6] = "Heart";
-char dat_00758c3c[10] = "MK-Appear";
-char dat_00758c48[8] = "Minikit";
-char dat_00758c50[12] = "Purple Coin";
-char dat_00758c68[10] = "Blue Coin";
-char dat_00758c74[10] = "Gold Coin";
-char dat_00758c80[12] = "Silver Coin";
 PICKUP_TYPE_SYSTEM GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
 
 void PowerUp_Particles(WORLDINFO *world, NUVEC *position) {
@@ -259,8 +250,6 @@ void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE *message) {
     message->target_position.x = cointotal_x[message->player_index];
 }
 
-char ScoreCounterName[8] = "Counter";
-
 void EndScoreMessage(GAME_MESSAGE *message) {
     i32 icon;
     OBJECT_COIN_PACKET *player;
@@ -293,7 +282,7 @@ void EndScoreMessage(GAME_MESSAGE *message) {
                         SetBonusWinner(message->player_index);
                         BonusWinFlag = 0;
                         NewMenu(MENU_BONUS_COMPLETE, -1, -1);
-                        PlaySfx((char *)ScorePanelName, NULL);
+                        PlaySfx("MK-Panel", NULL);
                         ResetGameMessages();
                     }
                 }
@@ -327,34 +316,39 @@ void EndScoreMessage(GAME_MESSAGE *message) {
             SetBonusWinner(message->player_index);
             BonusWinFlag = 0;
             NewMenu(MENU_BONUS_WIN, -1, -1);
-            PlaySfx((char *)ScorePanelName, NULL);
+            PlaySfx("MK-Panel", NULL);
             ResetGameMessages();
         }
     }
 counter_sound:
     if (DoubleScoreTime > 0.0f) {
-        PlayRepeatSfx((char *)ScoreCounterName, -1, 0.0f, 2, 0.1f, NULL);
+        PlayRepeatSfx("Counter", -1, 0.0f, 2, 0.1f, NULL);
     } else {
-        PlaySfx((char *)ScoreCounterName, NULL);
+        PlaySfx("Counter", NULL);
     }
 }
 
-char dat_00758c5c[12] = "PickupCoinB";
 GIZMO_PICKUP_TYPE GizmoPickupType[10] = {
-    {dat_00758c80, NULL,         NULL,         115, 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f, 0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-    {dat_00758c74, NULL,         NULL,         103, 4, 64, 0, 191, 100,   0.045f, 0.045f, 10.0f, 0.0f,  NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-    {dat_00758c68, dat_00758c5c, NULL,         98,  4, 64, 0, 199, 1000,  0.045f, 0.045f, 6.0f,  0.0f,  Pup_UpdateBlueCoin,   Pup_CollectCoin,     8,  -1,
-     0.0f,                                                                                                                                                        0.0f},
-    {dat_00758c50, dat_00758c5c, NULL,         112, 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f,  0.0f,  Pup_UpdatePurpleCoin, Pup_CollectCoin,     8,  -1,
-     0.0f,                                                                                                                                                        0.0f},
-    {dat_00758c48, dat_00758c3c, NULL,         109, 0, 69, 0, 206, 0,     0.125f, 0.15f,  2.0f,  0.05f, NULL,                 Pup_CollectMinikit,  20, -1,  0.0f, 0.0f},
-    {dat_00758c34, NULL,         NULL,         104, 0, 2,  0, 203, 0,     0.1f,   0.08f,  4.0f,  0.0f,  NULL,                 Pup_CollectHeart,    -1, -1,  0.0f, 0.0f},
-    {dat_00758c28, dat_00758c3c, NULL,         114, 0, 73, 0, 210, 0,     0.12f,  0.06f,  2.0f,  0.1f,  NULL,                 Pup_CollectRedBrick, 99, -1,  0.0f, 0.0f},
-    {dat_00758c20, dat_00758c3c, dat_00758c14, 99,  0, 33, 0, 207, 0,     0.125f, 0.15f,  2.0f,  0.05f, NULL,                 Pup_CollectCharKit,  20, -1,  0.0f,
-     0.0f                                                                                                                                                             },
-    {dat_00758c0c, NULL,         NULL,         116, 0, 2,  0, 121, 0,     0.1f,   0.1f,   5.0f,  0.0f,  NULL,                 NULL,                -1, -1,  0.0f, 0.0f},
-    {dat_00758c00, dat_00758c3c, NULL,         117, 0, 1,  0, 208, 0,     0.125f, 0.125f, 2.0f,  0.05f, Pup_UpdatePowerUp,    Pup_CollectPowerUp,  -1, 209,
-     0.0f,                                                                                                                                                        0.0f},
+    {"Silver Coin", NULL,          NULL,        's', 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f, 0.0f,  //
+     NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
+    {"Gold Coin",   NULL,          NULL,        'g', 4, 64, 0, 191, 100,   0.045f, 0.045f, 10.0f, 0.0f,  //
+     NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
+    {"Blue Coin",   "PickupCoinB", NULL,        'b', 4, 64, 0, 199, 1000,  0.045f, 0.045f, 6.0f,  0.0f,  //
+     Pup_UpdateBlueCoin,   Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
+    {"Purple Coin", "PickupCoinB", NULL,        'p', 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f,  0.0f,  //
+     Pup_UpdatePurpleCoin, Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
+    {"Minikit",     "MK-Appear",   NULL,        'm', 0, 69, 0, 206, 0,     0.125f, 0.15f,  2.0f,  0.05f, //
+     NULL,                Pup_CollectMinikit,  20, -1,  0.0f, 0.0f},
+    {"Heart",       NULL,          NULL,        'h', 0, 2,  0, 203, 0,     0.1f,   0.08f,  4.0f,  0.0f,  //
+     NULL,                 Pup_CollectHeart,    -1, -1,  0.0f, 0.0f},
+    {"Red Brick",   "MK-Appear",   NULL,        'r', 0, 73, 0, 210, 0,     0.12f,  0.06f,  2.0f,  0.1f,  //
+     NULL,                 Pup_CollectRedBrick, 99, -1,  0.0f, 0.0f},
+    {"Charkit",     "MK-Appear",   "MK-Pickup", 'c', 0, 33, 0, 207, 0,     0.125f, 0.15f,  2.0f,  0.05f, //
+     NULL,                Pup_CollectCharKit,  20, -1,  0.0f, 0.0f},
+    {"Torpedo",     NULL,          NULL,        't', 0, 2,  0, 121, 0,     0.1f,   0.1f,   5.0f,  0.0f,  //
+     NULL,                 NULL,                -1, -1,  0.0f, 0.0f},
+    {"Power Up",    "MK-Appear",   NULL,        'u', 0, 1,  0, 208, 0,     0.125f, 0.125f, 2.0f,  0.05f, //
+     Pup_UpdatePowerUp,   Pup_CollectPowerUp,  -1, 209, 0.0f, 0.0f},
 };
 f32 PANEL_COINSCALE_START = 1.0f;
 
@@ -402,9 +396,9 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
             break;
     }
     if (DoubleScoreTime > 0.0f || type_index == 2 || type_index == 3) {
-        PlaySfx((char *)dat_00758c5c, position);
+        PlaySfx("PickupCoinB", position);
     } else {
-        PlaySfx((char *)PickupCoinSfx, position);
+        PlaySfx("PickupCoin", position);
     }
     if (CoinsGoToMainTotal()) {
         target.x = cointotal_x[player_index];
@@ -488,15 +482,11 @@ static void EndRedBrickMessage(GAME_MESSAGE *message) {
     GameCam_Judder(GameCam, -0.2f, 0, NULL);
 }
 
-char dat_00758c00[9] = "Power Up";
-char dat_00758c0c[8] = "Torpedo";
-char dat_00758c14[10] = "MK-Pickup";
-
 void CollectRedBrick(NUVEC *position) {
     ADD_GAME_MESSAGE message;
     NUVEC target;
     AddGameDebris(WORLD->game_debris_sys, 0x62, position);
-    GameAudio_PlaySfxById(GetSfxId(dat_00758c14), position, 3, 0);
+    GameAudio_PlaySfxById(GetSfxId("MK-Pickup"), position, 3, 0);
     if (WORLD->area_index == -1 || Game.area_save[WORLD->area_index].red_brick_collected == 0) {
         target.x = REDBRICKPOSX;
         target.y = REDBRICKPOSY;
@@ -567,7 +557,7 @@ void CollectMinikit(NUVEC *position, char *name, i32 flags) {
         }
     }
     AddGameDebris(WORLD->game_debris_sys, 0x13, position);
-    GameAudio_PlaySfxById(GetSfxId(dat_00758c14), position, 3, 0);
+    GameAudio_PlaySfxById(GetSfxId("MK-Pickup"), position, 3, 0);
 }
 
 f32 coinimpactwait = 0;
@@ -589,7 +579,7 @@ static void PartImpact_Coin(PART *part) {
     angle = (i32)(((1.5 - (f64)speed) / 1.5) * 16384.0 + 16384.0);
     volume = NuTrigTable[(angle >> 1) & 0x7fff];
     if (GAMEDEMO != 0) {
-        PlaySfxAndSetVolume((char *)PickupCoinSfx, &part->position, volume);
+        PlaySfxAndSetVolume("PickupCoin", &part->position, volume);
         coinimpactwait = 0.1f;
     } else if (part->part_id >= 0xb7 && part->part_id <= 0xba) {
         PlaySfxAndSetVolume("CoinDropS", &part->position, volume);
@@ -1198,7 +1188,6 @@ void AddCoinsAsParts(i32 type_id, NUVEC *position, NUVEC *velocity, f32 lifetime
     }
 }
 
-char PickupCoinsLandName[10] = "CoinsLand";
 f32 AddCoinDelay[2] = {0};
 
 void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJECT *owner, i32 random_types) {
@@ -1234,7 +1223,7 @@ void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJ
         coins = 512000;
     }
     if (coins > 0) {
-        PlaySfx((char *)PickupCoinsLandName, position);
+        PlaySfx("CoinsLand", position);
     }
     remaining = coins;
     if (random_types) {
@@ -1368,7 +1357,7 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
         coins = 512000;
     }
     if (coins > 0) {
-        PlaySfx((char *)PickupCoinsLandName, position);
+        PlaySfx("CoinsLand", position);
     }
     remaining = coins;
     if (random_types) {

@@ -135,19 +135,6 @@ extern "C" {
     void Pup_CollectPowerUp(struct WORLDINFO_s *, GIZMOPICKUP *, i32, struct gameobject_s *, i32);
     void CollectRedBrick(NUVEC *);
     void SetCoinType(i32, GIZMOPICKUP *);
-    extern char dat_00758c00[9];
-    extern char dat_00758c0c[8];
-    extern char dat_00758c14[10];
-    extern char dat_00758c20[8];
-    extern char dat_00758c28[10];
-    extern char dat_00758c34[6];
-    extern char dat_00758c3c[10];
-    extern char dat_00758c48[8];
-    extern char dat_00758c50[12];
-    extern char dat_00758c5c[12];
-    extern char dat_00758c68[10];
-    extern char dat_00758c74[10];
-    extern char dat_00758c80[12];
     extern GIZMO_PICKUP_TYPE GizmoPickupType[10];
 
     void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *position, NUVEC *direction, f32 unused, i32 player_index,
@@ -171,20 +158,13 @@ extern "C" {
     void AddHeartAsPart(struct gameobject_s *, NUVEC *, NUVEC *, f32, f32);
     void PowerUp_AddPart(NUVEC *, NUVEC *, f32, f32);
     void AddCoinsAsParts(i32, NUVEC *, NUVEC *, f32, f32);
-#define PickupCoinName PickupCoinSfx // NOLINT(readability-identifier-naming)
-#define PickupCoinBName dat_00758c5c // NOLINT(readability-identifier-naming)
     void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player_index, f32 scale, struct gameobject_s *object, i32 mode);
     i32 LoseCoins(struct gameobject_s *object, i32 cause);
-    extern char ScorePanelName[9];
-    extern char ScoreCounterName[8];
-    extern char PickupCoinsLandName[10];
     extern u8 CoinTab[4];
     extern f32 AddCoinDelay[2];
     extern const f64 PlayerSlideSpeed;
     extern const f64 PlayerTightRopePhase;
     void PowerUp_Update(struct gameobject_s *);
-    extern char ScorePanelName[9];
-    extern char dat_00758c14[10];
     void GizmoPickups_SetOnOff(void);
     i32 GetRandomCoinType(void);
     u32 TotalLevelCoinTally(struct WORLDINFO_s *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces, u32 *obstacles, u32 *turrets,

@@ -10,8 +10,6 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-const char GizAIMessage_NameFormat[3] = "%s";
-
 void bgProcDataOversize(i32 size) {
 }
 
@@ -21,15 +19,15 @@ void FileDirectoryError(i32 error) {
 }
 
 void NuErrorPrint(char *text) {
-    PCNativeErrorPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, text);
+    PCNativeErrorPrint(&PCNativeWarningDebugState, "%s", text);
 }
 
 void NuWarningPrint(char *text) {
-    PCNativeWarningPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, text);
+    PCNativeWarningPrint(&PCNativeWarningDebugState, "%s", text);
 }
 
 void NuDebugMsgPrint(char *text) {
-    PCNativeDebugPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, text);
+    PCNativeDebugPrint(&PCNativeWarningDebugState, "%s", text);
 }
 
 typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
@@ -143,7 +141,7 @@ static void NuDebugMsgFunction(char *format, ...) {
             if (PCWarningHandler != NULL) {
                 PCWarningHandler(captxt);
             }
-            PCNativeDebugPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, captxt);
+            PCNativeDebugPrint(&PCNativeWarningDebugState, "%s", captxt);
         }
     }
 }

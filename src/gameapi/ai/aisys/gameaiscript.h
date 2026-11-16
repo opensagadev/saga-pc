@@ -83,7 +83,6 @@ extern "C" {
     extern const char AITransferLiteral757b9c[10];
     extern const char AITransferLiteral757ec4[10];
     extern const char AITransferLiteral757a5c[12];
-    extern const char dat_00757a7c[8];
     extern const char AITransferLiteral757cd8[5];
     extern const char AITransferLiteral757cc8[7];
     extern const char AITransferLiteral757e68[5];
@@ -101,14 +100,12 @@ extern "C" {
     extern const char AITransferLiteral7583e4[12];
     extern const char AITransferLiteral7583f0[8];
     extern const char AITransferLiteral757a8c[7];
-    extern const char dat_00757824[7];
     extern const char AITransferLiteral757884[12];
     extern const char AITransferLiteral757c10[13];
     extern const char AITransferLiteral758194[11];
     extern const char AITransferLiteral758188[11];
     extern const char AITransferLiteral7581a0[8];
     extern const char AITransferLiteral758174[19];
-    extern const char GizmoSnapOptionName[];
     extern const char AIActionCircleAnticlockwiseName[14];
     extern const char AIActionCircleClockwiseName[10];
     extern const char PlayCountArgPrefix[11];

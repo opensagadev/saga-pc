@@ -441,7 +441,7 @@ ADDGIZMOTYPE *Attractos_RegisterGizmo(i32 unused_type_id) {
     char *name = AttractoRegistryName;
     AttractoAddType = Default_ADDGIZMOTYPE;
     AttractoAddType.name = name;
-    AttractoAddType.prefix = dat_007516c0;
+    AttractoAddType.prefix = "";
     AttractoAddType.fns.options = 0x2c;
     AttractoAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Attractos_GetMaxGizmos;
     AttractoAddType.fns.add_gizmos_fn = (void *)Attractos_AddGizmos;

@@ -59,18 +59,8 @@ extern "C" {
     /* ActivePodRace is a private static of episodeI.c. */
     extern GAMEOBJECT *PodPacemaker;
     extern f32 PodRaceSplineIncrement;
-    extern char PodCreateSplineKeyword[11];
-    extern char PodCreateStartKeyword[14];
-    extern char PodCreateEndKeyword[12];
-    extern char PodCreateTimeKeyword[13];
-    extern char PodCreatePacemakerKeyword[10];
-    extern char PodCreateDamagedKeyword[8];
 
     extern GAMEOBJECT *PodPacemaker;
-    extern char PodRaceMaxLapTimeKeyword[12];
-    extern char PodRaceLapTimeKeyword[9];
-    extern char PodRaceAttemptsKeyword[25];
-    extern char PodRaceIncrementKeyword[11];
     i32 Action_SetLapTime(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
     void PodDust(WORLDINFO *, GAMEOBJECT *);
     extern i32 PodDustLocatorIndices[2];

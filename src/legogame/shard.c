@@ -337,7 +337,7 @@ ADDGIZMOTYPE *Shards_RegisterGizmo(i32 unused_type_id) {
     char *name = ShardRegistryName;
     ShardAddType = Default_ADDGIZMOTYPE;
     ShardAddType.name = name;
-    ShardAddType.prefix = dat_007516c0;
+    ShardAddType.prefix = "";
     ShardAddType.fns.options = 0x30;
     ShardAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Shards_GetMaxGizmos;
     ShardAddType.fns.add_gizmos_fn = (void *)Shards_AddGizmos;

@@ -159,8 +159,6 @@ extern "C" char AreaFixUpName_Losttemple[];
 extern "C" char AreaFixUpName_Emperorfight[];
 extern "C" char AreaFixUpName_Moseisley[];
 extern "C" char AreaFixUpName_Tatooine[];
-extern "C" char AreaFixUpName_Gunship[];
-extern "C" char AreaFixUpName_Pursuit[];
 extern "C" char AreaFixUpName_Podsprint[];
 extern "C" char AreaFixUpName_Negotiations[];
 
@@ -307,8 +305,6 @@ extern "C" {
     extern char AreaFixUpName_Emperorfight[16] = "emperorfight";
     extern char AreaFixUpName_Moseisley[12] = "moseisley";
     extern char AreaFixUpName_Tatooine[12] = "tatooine";
-    extern char AreaFixUpName_Gunship[8] = "gunship";
-    extern char AreaFixUpName_Pursuit[8] = "pursuit";
     extern char AreaFixUpName_Podsprint[12] = "podsprint";
     extern char AreaFixUpName_Negotiations[16] = "negotiations";
 }
@@ -434,11 +430,11 @@ static HUB_AREA_INFO HubAreaInfo[51] = {
     {"retakepalace",             "de1_5",        "lock_1_5_on", NULL,      NULL, 0.075f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"maul",                     "de1_6",        "lock_1_6_on", NULL,      NULL, 0.225f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"e1vehiclebonus",           "de1_7",        "lock_1_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Pursuit,      "de2_1",        "lock_2_1_on", NULL,      NULL, 0.125f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"pursuit",                  "de2_1",        "lock_2_1_on", NULL,      NULL, 0.125f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"kamino",                   "de2_2",        "lock_2_2_on", NULL,      NULL, 0.075f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"factory",                  "de2_3",        "lock_2_3_on", NULL,      NULL, 0.25f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"jedi",                     "de2_4",        "lock_2_4_on", NULL,      NULL, 0.0125f, 1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
-    {AreaFixUpName_Gunship,      "de2_5",        "lock_2_5_on", NULL,      NULL, 0.11f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
+    {"gunship",                  "de2_5",        "lock_2_5_on", NULL,      NULL, 0.11f,   1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"dooku",                    "de2_6",        "lock_2_6_on", NULL,      NULL, 0.42f,   0.5f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"e2vehiclebonus",           "de2_7",        "lock_2_7_on", NULL,      NULL, 0.0f,    1.0f, 1,   NULL, NULL, {0}, NULL, NULL},
     {"dogfight",                 "de3_1",        "lock_3_1_on", NULL,      NULL, 0.275f,  1.0f, 1,   NULL, NULL, {0}, NULL, NULL},

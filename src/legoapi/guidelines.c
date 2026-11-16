@@ -28,8 +28,6 @@ typedef struct guideline_progress_s { // size 0x8
     u32 visible_mask[1];              // 0x4
 } GUIDELINE_PROGRESS;
 
-extern char dat_007516c0[1];
-
 i32 GuideLines_Load(void *world_ptr, void *unused) {
     WORLDINFO *world = world_ptr;
     i32 index;
@@ -189,7 +187,7 @@ ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32 unused_type_id) {
     char *name = GuideLineRegistryName;
     GuideLineAddType = Default_ADDGIZMOTYPE;
     GuideLineAddType.name = name;
-    GuideLineAddType.prefix = dat_007516c0;
+    GuideLineAddType.prefix = "";
     GuideLineAddType.fns.options = sizeof(GUIDELINE_PROGRESS);
     GuideLineAddType.fns.get_max_gizmos_fn = (i32(*)(void *))GuideLines_GetMaxGizmos;
     GuideLineAddType.fns.add_gizmos_fn = (void *)GuideLines_AddGizmos;

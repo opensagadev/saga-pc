@@ -15,7 +15,6 @@ class CRC16 {
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern const char NuBlankStringValue[2];
     extern i32 append;
 #ifdef __cplusplus
 }

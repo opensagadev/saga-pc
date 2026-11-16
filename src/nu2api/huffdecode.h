@@ -152,8 +152,6 @@ typedef struct FRAME_PAD_RECORD { // size 0x28
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern char UiSelectPromptLiteral[7];
-    extern char UiBackPromptLiteral[5];
     extern NUDATHDR *curr_dat;
     extern const f64 NuTime_LowScale;
     extern const f64 NuTime_MicroScale;

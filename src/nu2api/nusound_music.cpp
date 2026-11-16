@@ -794,8 +794,6 @@ void NuMusic::Process(f32 delta) {
     }
 }
 
-static char NuMusicLanguageToken[6] = "$lang";
-
 void NuMusic::InitVoiceManager(void) {
     Voice *voice;
     i32 i;
@@ -1027,7 +1025,7 @@ void NuMusic::ParseTrack(u32 category, NUFPAR *parser) {
     NuFParGetWord(parser);
     NuStrCpy(path, current_path);
     NuStrCat(path, parser->word_buffer_ptr);
-    SubstituteString(substituted, path, NuMusicLanguageToken, language);
+    SubstituteString(substituted, path, "$lang", language);
     current_track->filenames[0] = AllocString(substituted);
     current_track->ident = RemovePath(current_track->filenames[0]);
     if (strict_mode != 0) {
@@ -1072,7 +1070,7 @@ void NuMusic::xIndex(NUFPAR *parser) {
 void NuMusic::xNoMusic(NUFPAR *parser) {
     char substituted[256];
     NuFParGetWord(parser);
-    SubstituteString(substituted, parser->word_buffer_ptr, NuMusicLanguageToken, language);
+    SubstituteString(substituted, parser->word_buffer_ptr, "$lang", language);
     current_track->filenames[1] = AllocString(substituted);
 }
 

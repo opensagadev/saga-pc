@@ -41,10 +41,8 @@ extern "C" {
     extern const char ShieldHitSfx[9];
     extern const char ShieldFlickerSfx[13];
     extern i32 KillPartsPreviousVariant;
-    extern char KillPartsTieSpinsText[10];
     extern f32 KillPartsTieTrailScale;
     extern NUVEC KillPartsTieSpinTranslation;
-    extern char KillPartsAtatExplodeText[9];
     extern const NUVEC GAMEOBJECT_ROTATION_BUGGY_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_RADIOCAR_OFFSETS[4];
     extern const NUVEC GAMEOBJECT_ROTATION_POLICECAR_OFFSETS[4];

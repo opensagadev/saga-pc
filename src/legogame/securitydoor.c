@@ -375,7 +375,7 @@ ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     char *name = SecurityDoorRegistryName;
     SecurityDoorAddType = Default_ADDGIZMOTYPE;
     SecurityDoorAddType.name = name;
-    SecurityDoorAddType.prefix = dat_007516c0;
+    SecurityDoorAddType.prefix = "";
     SecurityDoorAddType.fns.options = sizeof(SECURITY_DOOR_PROGRESS);
     SecurityDoorAddType.fns.get_max_gizmos_fn = (i32(*)(void *))SecurityDoors_GetMaxGizmos;
     SecurityDoorAddType.fns.add_gizmos_fn = (void *)SecurityDoors_AddGizmos;

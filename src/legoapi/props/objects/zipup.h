@@ -28,10 +28,6 @@ extern "C" {
     extern u32 ZipUpRopeCheatColour;
     extern char *ZipUpTypeNamePtr;
     extern i32 ZipUpRopeModulation;
-    extern char GrapAttach_text[11];
-    extern char GrapDetach_text[11];
-    extern char GrapDetach_text[11];
-    extern char GrapAttach_text[11];
 #ifdef __cplusplus
 }
 #endif

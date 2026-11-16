@@ -1237,10 +1237,8 @@ static void TiePart_MoveCorePC(PART *part, f32 time) {
     AddVariableShotDebrisEffectTimed1(WORLD->game_debris_sys->entries[100].effect, &position, 10, FRAMETIME, 0, 0, NULL);
 }
 
-char KillPartsAtatExplodeText[9] = "EXPLODE1";
-
 void AtatPart_Stop(PART *part) {
-    PlaySfx(KillPartsAtatExplodeText, &part->position);
+    PlaySfx("EXPLODE1", &part->position);
     PartStop_Flickerer(part);
 }
 
@@ -1369,8 +1367,6 @@ void TiePart_Move(PART *part, f32 time) {
     TiePart_MoveCorePC(part, time);
 }
 
-char KillPartsTieSpinsText[10] = "Tie_Spins";
-
 void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJECT *object, i32 mode, u16 xrot, u16 yrot, NUVEC *velocity) {
     if (variant != 0) {
         params->flags = PART_FLAG_KEEP_OFF_SCREEN;
@@ -1416,7 +1412,7 @@ void KillParts_TIEFIGHTER(ADDPART *params, i32 part_index, i32 variant, GAMEOBJE
             params->kill_fn = TiePart_Kill;
             params->impact_fn = TiePart_Impact;
             params->velocity = &spin_velocity;
-            PlaySfx(KillPartsTieSpinsText, &object->collision_position);
+            PlaySfx("Tie_Spins", &object->collision_position);
             break;
         }
         case 0: {

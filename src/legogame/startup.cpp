@@ -331,8 +331,8 @@ extern "C" {
         CHARFIXUP CharacterFixupTable[219] = {
             {const_cast<char *>("weirdo1"),                    &PermanentWeirdo1Id                                    },
             {const_cast<char *>("weirdo2"),                    &PermanentWeirdo2Id                                    },
-            {const_cast<char *>(dat_0075314c),                 &ID_DEFAULTCHARACTER_A                                 },
-            {const_cast<char *>(dat_00753144),                 &ID_DEFAULTCHARACTER_B                                 },
+            {const_cast<char *>("batman"),                     &ID_DEFAULTCHARACTER_A                                 },
+            {const_cast<char *>("robin"),                      &ID_DEFAULTCHARACTER_B                                 },
             {"henchman",                                       &dat_007f1810                                          },
             {const_cast<char *>("buggy"),                      reinterpret_cast<i16 *>(&GameObjectRotationBuggyId)    },
             {const_cast<char *>("glide_pack"),                 &dat_007f17bc                                          },

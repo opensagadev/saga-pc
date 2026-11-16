@@ -40,8 +40,6 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
 
-extern const char GizmoSnapOptionName[5];
-
 void GizObstacle_JumpToStart(GIZOBSTACLE *obstacle) {
     if (obstacle && obstacle->anim_set) {
         GameAnimSet_JumpToStart(obstacle->anim_set);

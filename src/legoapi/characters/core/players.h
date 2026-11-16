@@ -140,8 +140,6 @@ extern "C" {
 
     extern i32 PlayerStartSplineIndex;
     extern struct nugspline_s *DoorCutSpline;
-    extern char PlayerMissionStartDoor[13];
-    extern char PlayerArcadeStartDoor[16];
     /* Replace canonical DoorExitName declaration with char[64]; selected copied exit-name length<=63. Remove
      * standalone MiscTime/TargetDeg_Mid/TargetDeg_Far externs before introducing the reviewed member macros. */
 

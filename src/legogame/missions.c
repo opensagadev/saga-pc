@@ -252,7 +252,7 @@ void EndMission(MISSIONSYS *system, i32 state, i32 show_message) {
         NewMenu(MENU_END_MISSION, -1, -1);
         ResetGameMessages();
         if (state == MISSION_STATE_TIME_UP) {
-            PlaySfx(ScorePanelName, NULL);
+            PlaySfx("MK-Panel", NULL);
         }
     }
 }

@@ -10,7 +10,7 @@
 void NuSevereWarning(const char *format, ...) {
     va_list args;
     char *message;
-    sprintf(PCWarningOutputBuffer, PCWarningPrefix);
+    sprintf(PCWarningOutputBuffer, " ");
     va_start(args, format);
     vsprintf(PCWarningFormatBuffer, format, args);
     va_end(args);
@@ -19,7 +19,7 @@ void NuSevereWarning(const char *format, ...) {
     if (PCWarningHandler != NULL) {
         PCWarningHandler(PCWarningOutputBuffer);
     }
-    PCNativeDebugPrint(&PCNativeWarningDebugState, PCWarningNativeFormat, PCWarningOutputBuffer);
+    PCNativeDebugPrint(&PCNativeWarningDebugState, "%s", PCWarningOutputBuffer);
     message = PCWarningOutputBuffer;
     while (*message != '\0' && bHaveErr < 1023) {
         PCWarningMessages[bHaveErr++] = *message++;

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Find string and floating constants that only name their literal, and write the literal inline.
 
-A named `const char NAME[] = "..."` (or `const char *const NAME = "..."`) that
-expressions only read as a value is a literal moved away from its uses. The
+A named `const char NAME[] = "..."` (or `const char *const NAME = "..."`, or a
+file-scope `char NAME[] = "..."` that no code writes) that expressions only read
+as a value is a literal moved away from its uses. The
 original wrote the literal at the call (`NuSevereWarning("Your Scene version is
 %d, ...", ...)`): VC8 emits it as a `??_C@` COMDAT that the linker pools with
 every identical literal of the program, whereas a named array is a data object
@@ -33,8 +34,15 @@ uses. Classes:
                object of its own, a match that needs the name, or a meaning
                beyond the text (a key the original plausibly #defined)
 
-Constants used through `sizeof`, an index, `&`, or a macro, or whose array is
-longer than the text are not counted: they have a meaning beyond their text.
+Constants used through `sizeof`, an index, `&`, a macro, or as the destination of
+a writing call (NuStrCpy, sprintf, memset, ...), or whose array is longer than the
+text are not counted: they have a
+meaning beyond their text. A local `char` array initialised from a string is a copy
+on the stack and is never counted. `#define ALIAS NAME` makes ALIAS's uses NAME's
+uses, and a bodiless `char NAME[N];` re-declaration counts as a declaration;
+`--fix` deletes both. A writable `char` array whose retail address lies in the
+original executable's .data section (res/orig) is not changed: list it in the keep
+file.
 
 `--fix` deletes the declaration (with its `#pragma const_seg` pair and any
 `extern` declaration of the name),
@@ -72,7 +80,7 @@ SUFFIXES = {".c", ".cpp", ".h", ".inc"}
 CLASSES = ("single-use", "multi-use", "kept")
 
 # On code whose comments are blanked and whose string contents are spaces.
-DECL = re.compile(r'(?P<storage>\b(?:extern\s*"\s*"\s*|extern\s+|static\s+))?\bconst\s+char\s+'
+DECL = re.compile(r'(?P<storage>\b(?:extern\s*"\s*"\s*|extern\s+|static\s+))?(?P<const>\bconst\s+)?\bchar\s+'
                   r'(?:(?P<array>[A-Za-z_]\w*)\s*\[\s*(?P<size>[^\]\n]*)\]|\*\s*const\s+(?P<pointer>[A-Za-z_]\w*))'
                   r'\s*=\s*(?P<init>(?:"[^"\n]*"\s*)+);')
 FLOAT_DECL = re.compile(r'(?P<storage>\b(?:extern\s*"\s*"\s*|extern\s+|static\s+))?\bconst\s+'
@@ -80,6 +88,10 @@ FLOAT_DECL = re.compile(r'(?P<storage>\b(?:extern\s*"\s*"\s*|extern\s+|static\s+
                         r'(?P<init>-?\s*(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?[fF]?)\s*;')
 PIECE = re.compile(r'"((?:\\.|[^"\\\n])*)"')
 PREPROCESSOR = re.compile(r'^[ \t]*#(?:[^\n]*\\\n)*[^\n]*', re.MULTILINE)
+# A call whose first argument it writes: a use there makes the array data, not a literal.
+WRITER_CALL = re.compile(r'\b(?:\w*str\w*(?:cpy|cat)|\w*Str\w*(?:Cpy|Cat)|v?s(?:n|_)?printf|_v?snprintf|NuSPrintf|'
+                         r'NuStrFormat\w*|mem(?:cpy|set|move)|f?gets|_?str(?:upr|lwr)|NuStr(?:Upr|Lwr)\w*|'
+                         r'NuFileRead\w*)\s*\(\s*$')
 CHAR_CAST = re.compile(r'\(\s*(?:const\s+)?char\s*\*\s*\)\s*$')
 ESCAPES = {"n": 10, "t": 9, "r": 13, "a": 7, "b": 8, "f": 12, "v": 11, "\\": 92, "'": 39, '"': 34, "?": 63}
 
@@ -128,6 +140,9 @@ def function_bodies(code):
 
 
 EXTERN = re.compile(r'^[ \t]*extern\b[^;{}=\n]*\b([A-Za-z_]\w*)\s*(?:\[[^\]]*\])?\s*;', re.MULTILINE)
+TENTATIVE = re.compile(r'^[ \t]*(?:static\s+)?(?:const\s+)?char\s+([A-Za-z_]\w*)\s*\[[^\]\n]*\]\s*;', re.MULTILINE)
+# `#define ALIAS NAME`: an object-like macro that only renames the constant; its uses are the constant's uses.
+ALIAS = re.compile(r'^[ \t]*#[ \t]*define[ \t]+([A-Za-z_]\w*)[ \t]+([A-Za-z_]\w*)[ \t]*$', re.MULTILINE)
 WORD = re.compile(r'[A-Za-z_]\w*')
 
 
@@ -151,6 +166,12 @@ class Source:
         self.externs = collections.defaultdict(list)
         for match in EXTERN.finditer(self.code):
             self.externs[match.group(1)].append(match.span())
+        for match in TENTATIVE.finditer(self.code):
+            if find_span(self.bodies, match.start()) is None:
+                self.externs[match.group(1)].append(match.span())
+        self.aliases = collections.defaultdict(list)
+        for match in ALIAS.finditer(self.code):
+            self.aliases[match.group(2)].append((match.group(1), match.span()))
 
     def line(self, offset):
         return self.text.count("\n", 0, offset) + 1
@@ -206,6 +227,9 @@ def declarations(source):
         if source.in_macro(match.start()):
             continue
         name = match.group("array") or match.group("pointer")
+        writable = not match.group("const")
+        if writable and match.group("pointer"):
+            continue
         start = match.start("storage") if match.group("storage") else match.start()
         storage = (match.group("storage") or "").split()[0] if match.group("storage") else ""
         init = source.text[match.start("init"):match.end("init")]
@@ -213,8 +237,10 @@ def declarations(source):
         data = decode(pieces)
         size = (match.group("size") or "").strip()
         body = source.body_at(start)
+        if writable and body is not None:
+            continue  # a local char array initialised from a string is a copy on the stack, not a literal
         yield {"file": source.path, "line": source.line(start), "name": name, "span": (start, match.end()),
-               "storage": storage, "local": body is not None, "body": body,
+               "storage": storage, "local": body is not None, "body": body, "writable": writable,
                "literal": " ".join(f'"{p}"' for p in pieces), "data": data,
                "padded": bool(size) and (not size.isdigit() or int(size) != len(data)),
                "pointer": match.group("pointer") is not None, "symbol": None, "ctype": f"char[{len(data)}]"}
@@ -235,11 +261,13 @@ def uses(sources, decl):
     else:
         scope = [(s, 0, len(s.code)) for s in sources]
     found = []
+    aliases = [alias for source, _, _ in scope for alias, _ in source.aliases.get(decl["name"], ())]
     for source, low, high in scope:
-        skip = list(extern_spans(source, decl["name"]))
+        skip = list(extern_spans(source, decl["name"])) + [span for _, span in source.aliases.get(decl["name"], ())]
         if source.path == decl["file"]:
             skip.append(decl["span"])
-        for at, end in source.words.get(decl["name"], ()):
+        spans = [span for name in [decl["name"]] + aliases for span in source.words.get(name, ())]
+        for at, end in sorted(spans):
             if not low <= at < high or any(start <= at < stop for start, stop in skip):
                 continue
             before = source.code[max(0, at - 200):at].rstrip()
@@ -252,6 +280,8 @@ def uses(sources, decl):
                 kind = "index"  # pointer arithmetic on a string; a float added to something is a value
             elif before.endswith("&") and not before.endswith("&&"):
                 kind = "address"
+            elif WRITER_CALL.search(before):
+                kind = "write"
             elif CHAR_CAST.search(before):
                 kind = "cast"
             else:
@@ -338,10 +368,24 @@ class SymbolMap:
 SEGMENT_SUFFIX = "HMDOKFMK@"
 
 
-def plan_symbols(symbols, decl, in_segment=False):
+def retail_sections():
+    """{name: (start, end)} of the original executable's sections, or {} without res/orig."""
+    exe = ROOT / "res/orig/LEGOStarWarsSaga.exe"
+    if not exe.is_file():
+        return {}
+    from tools.binary import PE
+    pe = PE(exe)
+    return {s["name"]: (pe.image_base + s["virtual_address"], pe.image_base + s["virtual_address"] + s["virtual_size"])
+            for s in pe.sections}
+
+
+def plan_symbols(symbols, decl, in_segment=False, sections=None):
     """(edits {line index: new line or None}, problem) for the symbols.csv rows of an inlined constant."""
     literal = decl["symbol"] or literal_name(decl["data"], False) + (SEGMENT_SUFFIX if in_segment else "")
     named = symbols.named(decl["name"])
+    data = (sections or {}).get(".data")
+    if decl.get("writable") and data and any(data[0] <= int(r[0], 16) < data[1] for _, r in named):
+        return None, f"retail keeps {decl['name']} in the writable .data section"
     existing = {int(r[0], 16) for _, r in symbols.by_symbol(literal)}
     addresses = {int(r[0], 16) for _, r in named} or symbols.renamed.get(decl["name"], set())
     if len(addresses) > 1:
@@ -419,7 +463,7 @@ def source_edits(sources, decl):
         edits.setdefault(use_source.path, []).append((use_start, use_end, literal,
                                                       (decl["file"], decl["name"], index)))
     for other in sources:
-        for span in extern_spans(other, decl["name"]):
+        for span in extern_spans(other, decl["name"]) + [span for _, span in other.aliases.get(decl["name"], ())]:
             edits.setdefault(other.path, []).append((*remove_line_span(other.text, *span), "", None))
     return edits
 
@@ -462,13 +506,14 @@ def fix(sources, found, only=None):
             for (file, name, _), offset in placed.items():
                 segment.setdefault((file, name), set()).add(in_named_segment(texts[path], offset))
         symbols = SymbolMap()
+        sections = retail_sections()
         problems = []
         for decl in chosen:
             segments = segment[(decl["file"], decl["name"])]
             if len(segments) > 1:
                 problems.append((decl, "its uses sit under different #pragma const_seg settings"))
                 continue
-            rows, problem = plan_symbols(symbols, decl, segments.pop())
+            rows, problem = plan_symbols(symbols, decl, segments.pop(), sections)
             if problem or rows is None:
                 problems.append((decl, problem))
                 continue

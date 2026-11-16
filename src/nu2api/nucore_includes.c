@@ -1701,7 +1701,7 @@ char *iop_image_name = "ioprp300.img";
 i32 nufile_lsn_allowed = 1;
 NUFILE_DEVICE *default_device = &host_device;
 u32 nustring_format = 1;
-char *NuBlankString = (char *)NuBlankStringValue;
+char *NuBlankString = " ";
 static NUFILE_WRITEBLOCK nufile_wblkinfo[1024];
 PC_NUDATFILEINFO *unpack_file_info = 0;
 static i32 ref_count;

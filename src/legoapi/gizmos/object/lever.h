@@ -94,7 +94,6 @@ extern "C" {
     extern char *LeverOutputDownNamePtr;
     extern char *LeverTypeNamePtr;
     extern char *LeverOutputDownNamePtr;
-    extern char dat_0075ac34[5];
 #ifdef __cplusplus
 }
 #endif

@@ -27,7 +27,6 @@ extern "C" {
     void SuperCarry_Throw(GAMEOBJECT *, i32);
     void SuperCarry_Release(GAMEOBJECT *);
     void SuperCarry_GetObjectPos(GAMEOBJECT *, NUVEC *, NUVEC *);
-    extern const f64 TerrainSkinSampleCount;
     struct carry_plug_s;
     struct carry_plug_sys_s;
     void SuperCarry_PartImpact(PART *);
@@ -42,8 +41,6 @@ extern "C" {
     extern i32 SuperCarry_KeepObjectLevel;
     extern i32 SuperCarry_AlignObject;
 
-    extern char dat_0075314c[7];
-    extern char dat_00753144[6];
     extern u32 (*CanSuperCarryFn)(GAMEOBJECT *);
     extern f32 SUPERCARRY_JUMPSPEED;
     extern i32 SuperCarry_PutDownDrop;

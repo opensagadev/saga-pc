@@ -394,7 +394,7 @@ ADDGIZMOTYPE *Signals_RegisterGizmo(i32 unused_type_id) {
     char *name = SignalRegistryName;
     SignalAddType = Default_ADDGIZMOTYPE;
     SignalAddType.name = name;
-    SignalAddType.prefix = dat_007516c0;
+    SignalAddType.prefix = "";
     SignalAddType.fns.options = sizeof(SIGNALPROGRESS_s);
     SignalAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
     SignalAddType.fns.add_gizmos_fn = (void *)Signals_AddGizmos;

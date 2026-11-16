@@ -160,10 +160,6 @@ __declspec(noinline) void ShaderCompilerDictionary::AddDefinition(const char *na
     SHADER_ADD_DEFINITION(this, name, value, emit);
 }
 
-extern "C" {
-    extern const char NuBlankStringValue[2] = " ";
-}
-
 void ShaderCompilerDictionary::BindOutputBuffer(ShaderCompilerBufferAllocator *buffer) {
     ShaderMacroDefinition **cursor = programs;
     ShaderMacroDefinition **end = programs + program_count;
@@ -173,7 +169,7 @@ void ShaderCompilerDictionary::BindOutputBuffer(ShaderCompilerBufferAllocator *b
             const char *value = definition->value != NULL ? definition->value : "";
             buffer->AppendText("#define ");
             buffer->AppendText(definition->name);
-            buffer->AppendText(NuBlankStringValue);
+            buffer->AppendText(" ");
             buffer->AppendText(value);
             buffer->AppendText("\r\n");
         }
@@ -429,7 +425,7 @@ void ShaderCompilerDictionary::EmitType(ShaderCompilerBufferAllocator *output) {
             output->AppendText("\r\n");
             AddDefinition(alias, NULL, 0);
             output->AppendText(ShaderCompilerTypeNames[node->type]);
-            output->AppendText(NuBlankStringValue);
+            output->AppendText(" ");
             output->AppendText(node->name);
             output->AppendText(";\r\n");
         }
@@ -446,7 +442,7 @@ void ShaderCompilerDictionary::EmitRegister(ShaderCompilerBufferAllocator *outpu
             output->AppendText("\r\n");
             AddDefinition(alias, NULL, 0);
             output->AppendText(ShaderCompilerTypeNames[node->type]);
-            output->AppendText(NuBlankStringValue);
+            output->AppendText(" ");
             output->AppendText(node->name);
             if (node->semantic != SHADER_SEMANTIC_DEFAULT) {
                 output->AppendText(":");
@@ -476,7 +472,7 @@ void ShaderCompilerDictionary::EmitVertexInput(ShaderCompilerBufferAllocator *ou
             const char *type_name = ShaderCompilerTypeNames[node->type];
             output->AppendText("\t");
             output->AppendText(type_name);
-            output->AppendText(NuBlankStringValue);
+            output->AppendText(" ");
             output->AppendText(node->name);
             output->AppendText(array_suffix);
             output->AppendText(": ");
@@ -815,7 +811,7 @@ void ShaderCompilerDictionary::EmitProgram(ShaderCompilerBufferAllocator *output
         output->AppendText(shared);
         output->AppendText("uniform ");
         output->AppendText(type_name);
-        output->AppendText(NuBlankStringValue);
+        output->AppendText(" ");
         output->AppendText(node->name);
         output->AppendText(array_suffix);
         output->AppendText(semantic_separator);
@@ -860,7 +856,7 @@ void ShaderCompilerDictionary::Expand(void *input, ShaderCompilerBufferAllocator
                     const char *value = node->data.definition.value != NULL ? node->data.definition.value : "";
                     output->AppendText("#define ");
                     output->AppendText(node->data.definition.name);
-                    output->AppendText(NuBlankStringValue);
+                    output->AppendText(" ");
                     output->AppendText(value);
                     output->AppendText("\r\n");
                 }

@@ -31,7 +31,6 @@ extern "C" {
     extern f32 TorpedoGrabRangeSquared;
     extern f32 TorpedoStealTimer;
     extern f32 TorpedoStealRange;
-    extern char dat_00759770[2];
     TORPEDOPACKET *GetTorpedoPacket(void);
     void Torpedo_InitRicochet(BOLT *, NUVEC *);
     void Torpedo_EndBolt(BOLT *);

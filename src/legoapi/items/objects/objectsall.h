@@ -95,8 +95,6 @@ extern "C" {
         f32 scale;                        // 0x8
     } DEBRIS_SCALE_CACHE;
 
-    extern char KillPartsLegoSingleText[11];
-
     typedef struct part_emit_s {     // size 0x6c
         NUVEC position;              // 0x00
         i32 effect_id;               // 0x0c
@@ -194,7 +192,6 @@ extern "C" {
     extern i32 edpart_set_debris;
     extern i32 edpart_set_part;
     extern i32 edpart_snap_enabled;
-    extern char KillPartsLegoSingleText[11];
 #ifdef __cplusplus
 }
 #endif

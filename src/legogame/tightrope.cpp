@@ -390,7 +390,7 @@ extern "C" {
         char *name = TightRopeRegistryName;
         TightRopeAddType = Default_ADDGIZMOTYPE;
         TightRopeAddType.name = name;
-        TightRopeAddType.prefix = dat_007516c0;
+        TightRopeAddType.prefix = "";
         TightRopeAddType.fns.options = sizeof(TIGHTROPE_PROGRESS);
         TightRopeAddType.fns.get_max_gizmos_fn = (i32(*)(void *))TightRopes_GetMaxGizmos;
         TightRopeAddType.fns.add_gizmos_fn = (void *)TightRopes_AddGizmos;

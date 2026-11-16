@@ -1176,8 +1176,6 @@ void AddPartDebris(PARTDEBRISSYS *sys, i32 index, NUVEC *position) {
     AddFiniteShotPART(effect, position, 1);
 }
 
-char KillPartsLegoSingleText[11] = "LegoSingle";
-
 f32 brickimpactwait = 0;
 
 void PartImpact_Brick(PART *part) {
@@ -1192,7 +1190,7 @@ void PartImpact_Brick(PART *part) {
             }
             angle = ((i32)((1.0 - speed) * 16384.0 + 16384.0));
             volume = NuTrigTable[(angle >> 1) & 0x7fff];
-            sound_id = GetSfxId(KillPartsLegoSingleText);
+            sound_id = GetSfxId("LegoSingle");
             PlaySfxByIdAndSetVolume(sound_id, &part->position, volume);
             brickimpactwait = 0.1f;
         }

@@ -25,12 +25,10 @@ extern "C" {
     void MenuUpdateFreePlay(MENU *);
     void MenuDrawFreePlay(MENU *);
     extern char AreaFixUpName_Emperorfight[16];
-    extern char AreaFixUpName_Gunship[8];
     extern char AreaFixUpName_Losttemple[12];
     extern char AreaFixUpName_Moseisley[12];
     extern char AreaFixUpName_Negotiations[16];
     extern char AreaFixUpName_Podsprint[12];
-    extern char AreaFixUpName_Pursuit[8];
     extern char AreaFixUpName_Senate[8];
     extern char AreaFixUpName_Tatooine[12];
     void Arcade_DrawEndMenu(MENU *);

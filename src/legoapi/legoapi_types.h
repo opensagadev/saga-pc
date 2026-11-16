@@ -1310,7 +1310,7 @@ typedef struct GIZMO_PICKUP_TYPE { // size 0x38
     char *name;                    // 0x00
     char *activation_sfx_name;     // 0x04
     char *collection_sfx_name;     // 0x08
-    u8 field_c;                    // 0x0c
+    u8 letter;                     // 0x0c
     u8 random_model_count;         // 0x0d
     u8 flags;                      // 0x0e
     u8 unknown_0f;                 // 0x0f

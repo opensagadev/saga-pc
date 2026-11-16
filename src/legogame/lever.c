@@ -41,8 +41,6 @@ typedef struct lever_trigger_flags_s { // size 0x95
     u8 flags;                          // 0x94
 } LEVER_TRIGGER_FLAGS;
 
-char dat_0075ac34[5] = "Down";
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 LeverFabs(f32 f) {
     f32 rv;
@@ -589,7 +587,7 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
 }
 
 i32 lever_gizmotype_id = -1;
-char *LeverOutputDownNamePtr = dat_0075ac34;
+char *LeverOutputDownNamePtr = "Down";
 char *LeverTypeNamePtr = "Lever";
 
 ADDGIZMOTYPE *Levers_RegisterGizmo(i32 type_id) {

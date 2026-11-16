@@ -8,28 +8,17 @@
 #include "legogame/game.h"
 
 SUIT_INITIALIZER_RECORD SuitRecordInit[10] = {
-    {dat_0075314c, dat_0075314c, &tBATMANSUIT,     0,   98,  'b', 0x0,      0, 0, 0},
-    {dat_0075314c, dat_0075d280, &tSHADOWSUIT,     1,   98,  'i', 0x0,      0, 0, 0},
-    {dat_0075314c, dat_0075d270, &tGLIDESUIT,      258, 98,  'a', 0x4,      0, 0, 0},
-    {dat_0075314c, dat_0075d25c, &tDEMOLITIONSUIT, 260, 98,  'c', 0x0,      0, 0, 0},
-    {dat_0075314c, dat_0075d24c, &tSONARSUIT,      8,   98,  'h', 0x0,      0, 0, 0},
-    {dat_00753144, dat_00753144, &tROBINSUIT,      0,   114, 'r', 0x0,      0, 0, 0},
-    {dat_00753144, dat_0075d240, &tWATERSUIT,      272, 114, 'w', 0x0,      0, 0, 0},
-    {dat_00753144, dat_0075d22c, &tTECHNOLOGYSUIT, 288, 114, 't', 0x0,      0, 0, 0},
-    {dat_00753144, dat_0075d21c, &tMAGNETSUIT,     64,  114, 'm', 0x200000, 0, 0, 0},
-    {dat_00753144, dat_0075d20c, &tATTRACTSUIT,    384, 114, 'd', 0x0,      0, 0, 0}
+    {"batman", "batman",            &tBATMANSUIT,     0,   98,  'b', 0x0,      0, 0, 0},
+    {"batman", "batman_shadow",     &tSHADOWSUIT,     1,   98,  'i', 0x0,      0, 0, 0},
+    {"batman", "batman_glide",      &tGLIDESUIT,      258, 98,  'a', 0x4,      0, 0, 0},
+    {"batman", "batman_demolition", &tDEMOLITIONSUIT, 260, 98,  'c', 0x0,      0, 0, 0},
+    {"batman", "batman_sonar",      &tSONARSUIT,      8,   98,  'h', 0x0,      0, 0, 0},
+    {"robin",  "robin",             &tROBINSUIT,      0,   114, 'r', 0x0,      0, 0, 0},
+    {"robin",  "robin_water",       &tWATERSUIT,      272, 114, 'w', 0x0,      0, 0, 0},
+    {"robin",  "robin_technology",  &tTECHNOLOGYSUIT, 288, 114, 't', 0x0,      0, 0, 0},
+    {"robin",  "robin_magnet",      &tMAGNETSUIT,     64,  114, 'm', 0x200000, 0, 0, 0},
+    {"robin",  "robin_attract",     &tATTRACTSUIT,    384, 114, 'd', 0x0,      0, 0, 0}
 };
-
-char dat_00753144[6] = "robin";
-char dat_0075314c[7] = "batman";
-char dat_0075d20c[14] = "robin_attract";
-char dat_0075d21c[13] = "robin_magnet";
-char dat_0075d22c[17] = "robin_technology";
-char dat_0075d240[12] = "robin_water";
-char dat_0075d24c[13] = "batman_sonar";
-char dat_0075d25c[18] = "batman_demolition";
-char dat_0075d270[13] = "batman_glide";
-char dat_0075d280[14] = "batman_shadow";
 
 SUIT_LAYERS *Suit_GetDefault(i32 character_id) {
     i32 index;

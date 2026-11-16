@@ -47,9 +47,8 @@ extern "C" {
 extern "C" void PcRegisterSaveMetadata(const void *);
 
 extern "C" {
-    extern char dat_007516c0[];
-    const char *NuHwSoundDfsName = dat_007516c0;
-    const char *NuHwDfsName = dat_007516c0;
+    const char *NuHwSoundDfsName = "";
+    const char *NuHwDfsName = "";
     HINSTANCE PCInputWindow = 0;
     i32 NuHwShowCommand = 0;
 }

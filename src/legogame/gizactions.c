@@ -41,35 +41,6 @@ SOCK *FindSock(SOCKSYS *system, char *name);
 i32 turret_gizmotype_id;
 
 i32 obstacle_gizmotype_id;
-const char GizObstacleActionNamePC[5];
-const char GizObstacleActionBackwardPC[9];
-const char GizObstacleActionForwardPC[8];
-const char GizObstacleActionBackwardPC[9] = "BACKWARD";
-const char GizObstacleActionStayOpenPC[9];
-const char GizObstacleActionForwardPC[8] = "FORWARD";
-const char GizObstacleActionStayShutPC[9];
-const char GizObstacleActionStayShutPC[9] = "STAYSHUT";
-const char GizObstacleActionStayOpenPC[9] = "STAYOPEN";
-const char GizmoSnapOptionName[5];
-const char GizmoSnapOptionName[5] = "SNAP";
-const char dat_007589f0[];
-const char dat_007589f0[] = "NO_TARGET";
-const char dat_007589fc[];
-const char dat_007589fc[] = "CREATURE";
-const char dat_00758a08[];
-const char dat_00758a08[] = "HSPECIAL";
-const char dat_00758a14[];
-const char dat_00758a14[] = "GIZMO";
-const char dat_00758a1c[];
-const char dat_00758a1c[] = "Move_Vertical";
-const char dat_00758a2c[];
-const char dat_00758a2c[] = "Move_Horizontal";
-const char dat_00758a3c[];
-const char dat_00758a3c[] = "Move_Spin";
-const char dat_00758a48[];
-const char dat_00758a48[] = "Move_Waggle";
-const char dat_00758a54[];
-const char dat_00758a54[] = "techno=";
 
 typedef struct ACTIVATE_CHAR_BUILDIT_VIEW {
     u8 unknown_00[0x34];
@@ -351,26 +322,26 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
     i32 target_kind = 0;
     u8 movement = 0xff;
     for (index = 0; index < count; ++index) {
-        char *value = NuStrIStr(params[index], (char *)dat_00758a54);
+        char *value = NuStrIStr(params[index], "techno=");
         if (value != NULL) {
-            techno_name = value + NuStrLen(dat_00758a54);
+            techno_name = value + NuStrLen("techno=");
         } else if ((value = NuStrIStr(params[index], "target=")) != NULL) {
             target_name = value + NuStrLen("target=");
-        } else if (NuStrICmp(value, dat_00758a48) == 0) {
+        } else if (NuStrICmp(value, "Move_Waggle") == 0) {
             movement = 1;
-        } else if (NuStrICmp(value, dat_00758a3c) == 0) {
+        } else if (NuStrICmp(value, "Move_Spin") == 0) {
             movement = 2;
-        } else if (NuStrICmp(value, dat_00758a2c) == 0) {
+        } else if (NuStrICmp(value, "Move_Horizontal") == 0) {
             movement = 8;
-        } else if (NuStrICmp(value, dat_00758a1c) == 0) {
+        } else if (NuStrICmp(value, "Move_Vertical") == 0) {
             movement = 4;
-        } else if (NuStrICmp(params[index], dat_00758a14) == 0) {
+        } else if (NuStrICmp(params[index], "GIZMO") == 0) {
             target_kind = 3;
-        } else if (NuStrICmp(params[index], dat_00758a08) == 0) {
+        } else if (NuStrICmp(params[index], "HSPECIAL") == 0) {
             target_kind = 2;
-        } else if (NuStrICmp(params[index], dat_007589fc) == 0) {
+        } else if (NuStrICmp(params[index], "CREATURE") == 0) {
             target_kind = 1;
-        } else if (NuStrICmp(params[index], dat_007589f0) == 0) {
+        } else if (NuStrICmp(params[index], "NO_TARGET") == 0) {
             target_kind = -1;
         }
     }
@@ -598,18 +569,18 @@ void GizActions_PlayObstacle(GIZFLOW *flow, FLOWBOX *box, char **params, i32 cou
     GIZOBSTACLE *obstacle;
     u32 flags;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
+        char *value = NuStrIStr(params[i], "Name");
         if (value) {
-            name = value + NuStrLen(GizObstacleActionNamePC) + 1;
-        } else if (!NuStrICmp(params[i], GizObstacleActionBackwardPC)) {
+            name = value + NuStrLen("Name") + 1;
+        } else if (!NuStrICmp(params[i], "BACKWARD")) {
             forwards = 0;
-        } else if (!NuStrICmp(params[i], GizObstacleActionForwardPC)) {
+        } else if (!NuStrICmp(params[i], "FORWARD")) {
             forwards = 1;
-        } else if (!NuStrICmp(params[i], GizmoSnapOptionName)) {
+        } else if (!NuStrICmp(params[i], "SNAP")) {
             snap = 1;
-        } else if (!NuStrICmp(params[i], GizObstacleActionStayOpenPC)) {
+        } else if (!NuStrICmp(params[i], "STAYOPEN")) {
             stay_open = 1;
-        } else if (!NuStrICmp(params[i], GizObstacleActionStayShutPC)) {
+        } else if (!NuStrICmp(params[i], "STAYSHUT")) {
             stay_shut = 1;
         }
     }
@@ -645,14 +616,14 @@ void GizActions_PlaySpecial(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 c
     i32 forward = 1;
     i32 snap = 0;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
+        char *value = NuStrIStr(params[i], "Name");
         if (value != NULL) {
-            name = value + NuStrLen(GizObstacleActionNamePC) + 1;
-        } else if (NuStrICmp(params[i], GizObstacleActionBackwardPC) == 0) {
+            name = value + NuStrLen("Name") + 1;
+        } else if (NuStrICmp(params[i], "BACKWARD") == 0) {
             forward = 0;
-        } else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0) {
+        } else if (NuStrICmp(params[i], "FORWARD") == 0) {
             forward = 1;
-        } else if (NuStrICmp(params[i], GizmoSnapOptionName) == 0) {
+        } else if (NuStrICmp(params[i], "SNAP") == 0) {
             snap = 1;
         }
     }
@@ -683,14 +654,14 @@ void GizActions_PlayForce(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 cou
     i32 forward = 1;
     i32 snap = 0;
     for (i = 0; i < count; ++i) {
-        char *value = NuStrIStr(params[i], (char *)GizObstacleActionNamePC);
+        char *value = NuStrIStr(params[i], "Name");
         if (value != NULL) {
-            name = value + NuStrLen(GizObstacleActionNamePC) + 1;
-        } else if (NuStrICmp(params[i], GizObstacleActionBackwardPC) == 0) {
+            name = value + NuStrLen("Name") + 1;
+        } else if (NuStrICmp(params[i], "BACKWARD") == 0) {
             forward = 0;
-        } else if (NuStrICmp(params[i], GizObstacleActionForwardPC) == 0) {
+        } else if (NuStrICmp(params[i], "FORWARD") == 0) {
             forward = 1;
-        } else if (NuStrICmp(params[i], GizmoSnapOptionName) == 0) {
+        } else if (NuStrICmp(params[i], "SNAP") == 0) {
             snap = 1;
         }
     }

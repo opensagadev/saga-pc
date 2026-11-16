@@ -1270,11 +1270,6 @@ void PodRaceCUpdate(WORLDINFO *world) {
     }
 }
 
-char PodRaceIncrementKeyword[11] = "increment=";
-char PodRaceAttemptsKeyword[25] = "nattempts_per_increment=";
-char PodRaceLapTimeKeyword[9] = "laptime=";
-char PodRaceMaxLapTimeKeyword[12] = "maxlaptime=";
-
 i32 Action_SetLapTime(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                       f32 ignored) {
     i32 i;
@@ -1283,14 +1278,14 @@ i32 Action_SetLapTime(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet,
     (void)ignored;
     if (first_time != 0 && ActivePodRace->previous_lap_display == 0.0f) {
         for (i = 0; i < param_count; ++i) {
-            char *value = NuStrIStr(params[i], PodRaceMaxLapTimeKeyword);
+            char *value = NuStrIStr(params[i], "maxlaptime=");
             if (value != NULL) {
                 ActivePodRace->max_lap_time = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
-            } else if ((value = NuStrIStr(params[i], PodRaceLapTimeKeyword)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "laptime=")) != NULL) {
                 ActivePodRace->previous_lap_display = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 8);
-            } else if ((value = NuStrIStr(params[i], PodRaceAttemptsKeyword)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "nattempts_per_increment=")) != NULL) {
                 ActivePodRace->attempts_per_increment = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 24);
-            } else if ((value = NuStrIStr(params[i], PodRaceIncrementKeyword)) != NULL) {
+            } else if ((value = NuStrIStr(params[i], "increment=")) != NULL) {
                 ActivePodRace->lap_time_increment = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
             }
         }
@@ -2268,13 +2263,6 @@ void PodRaceCReset(WORLDINFO *world) {
     }
 }
 
-char PodCreateDamagedKeyword[8] = "damaged";
-char PodCreatePacemakerKeyword[10] = "pacemaker";
-char PodCreateTimeKeyword[13] = "time_factor=";
-char PodCreateEndKeyword[12] = "spline_end=";
-char PodCreateStartKeyword[14] = "spline_start=";
-char PodCreateSplineKeyword[11] = "spline_id=";
-
 i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                      f32 ignored) {
     i32 spline_id = -1;
@@ -2301,7 +2289,7 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
         return 1;
     }
     for (i = 0; i < param_count; ++i) {
-        char *value = NuStrIStr(params[i], PodCreateSplineKeyword);
+        char *value = NuStrIStr(params[i], "spline_id=");
         if (value != NULL) {
             spline_id = (i32)AIParamToFloat((AISCRIPTPROCESS *)packet, value + 10);
         } else if ((value = NuStrIStr(params[i], "type=")) != NULL) {
@@ -2311,15 +2299,15 @@ i32 Action_CreatePod(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
                     model_id = LevelCharacterGlobalIDFn(model_id);
                 }
             }
-        } else if ((value = NuStrIStr(params[i], PodCreateStartKeyword)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], "spline_start=")) != NULL) {
             start = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 13);
-        } else if ((value = NuStrIStr(params[i], PodCreateEndKeyword)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], "spline_end=")) != NULL) {
             end = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 11);
-        } else if ((value = NuStrIStr(params[i], PodCreateTimeKeyword)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], "time_factor=")) != NULL) {
             time_factor = AIParamToFloat((AISCRIPTPROCESS *)packet, value + 12);
-        } else if (NuStrICmp(params[i], PodCreatePacemakerKeyword) == 0) {
+        } else if (NuStrICmp(params[i], "pacemaker") == 0) {
             pacemaker = 1;
-        } else if (NuStrICmp(params[i], PodCreateDamagedKeyword) == 0) {
+        } else if (NuStrICmp(params[i], "damaged") == 0) {
             damaged = 1;
         }
     }

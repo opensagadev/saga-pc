@@ -43,7 +43,7 @@ GIZAIMESSAGE *CheckGizAIMessage(GIZAIMESSAGESYS *sys, const char *name, GIZAIMES
         }
         if (name != NULL) {
             if (NuStrIStr((char *)name, gizaimessage_prefix) != NULL) {
-                sprintf(local, GizAIMessage_NameFormat, name);
+                sprintf(local, "%s", name);
             } else {
                 if (NuStrLen(name) + NuStrLen(gizaimessage_prefix) + 1 >= (i32)sizeof(local)) {
                     return NULL;

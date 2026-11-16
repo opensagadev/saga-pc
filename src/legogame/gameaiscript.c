@@ -301,91 +301,10 @@ typedef struct ai_action_controller_world_s { // size 0x4674
 } AI_ACTION_CONTROLLER_WORLD;
 struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS *, AIPATH *, char *, char *, i32, char *, i32, i32);
 void AIPathCnxControllerSetOnRange(struct AIPATHCNXCONTROLLER_s *, i32, i32);
-const char dat_00757e34[10];
-const char dat_00757d98[10];
-const char dat_00757d70[16];
-const char dat_00757db4[9];
-const char dat_00757de4[9];
-const char dat_00757e18[9];
-const char dat_00757e40[10];
-const char dat_00757e40[10] = "on_frames";
-const char dat_00757dc8[14];
-const char dat_00757da4[7];
-const char dat_00757da4[7] = "force=";
-const char dat_00757e10[8];
-const char dat_00757e18[9] = "bothways";
-const char dat_00757d60[12];
-const char dat_00757dac[8];
-const char dat_00757dac[8] = "blowup=";
-const char dat_00757db4[9] = "flowbox=";
-const char dat_00757dc0[7];
-const char dat_00757dc0[7] = "gizmo=";
-const char dat_00757dc8[14] = "gizmo_output=";
-const char dat_00757dfc[5];
-const char dat_00757d6c[3];
-const char dat_00757d6c[3] = "to";
-const char dat_00757d70[16] = "OBSTACLE_CLOSED";
-const char dat_00757d80[14];
-const char dat_00757d80[14] = "OBSTACLE_OPEN";
-const char dat_00757e04[9];
-const char dat_00757e04[9] = "off_flag";
-const char dat_00757e10[8] = "on_flag";
-const char dat_00757d54[10];
-const char dat_00757d60[12] = "lastframe-1";
-const char dat_00757dd8[12];
-const char dat_00757dd8[12] = "fakeanimid=";
-const char dat_00757de4[9] = "buildit=";
-const char dat_00757d90[7];
-const char dat_00757d90[7] = "zipup=";
-const char dat_00757d98[10] = "obstacle=";
-const char dat_00757e24[13];
-const char dat_00757e24[13] = "CheckVisible";
-const char dat_00757e34[10] = "pathname=";
-const char dat_00757df0[10];
-const char dat_00757df0[10] = "cutscene=";
-const char dat_00757dfc[5] = "obj=";
 i32 turret_gizmotype_id;
 i32 obstacle_gizmotype_id;
 i32 turret_gizmotype_id = -1;
-const char GizmoSnapOptionName[5];
-const char dat_00758274[];
-const char dat_00758274[] = "reserve";
-const char dat_0075827c[];
-const char dat_0075827c[] = "set";
-const char dat_00758280[];
-const char dat_00758280[] = "locator";
-const char dat_00758288[];
-const char dat_00758288[] = "locator=mylocator";
-const char dat_0075829c[];
-const char dat_0075829c[] = "nearest_either_player";
-const char dat_007582b4[];
-const char dat_007582b4[] = "furthest_from_either_player";
-const char dat_007582d0[];
-const char dat_007582d0[] = "furthest_from_opponent";
-const char dat_007582e8[];
-const char dat_007582e8[] = "ignore_assigned=FALSE";
-const char dat_00758300[];
-const char dat_00758300[] = "ignore_assigned=TRUE";
-const char dat_00758318[];
-const char dat_00758318[] = "finish_at_end";
-const char dat_00758328[];
-const char dat_00758328[] = "first";
-const char dat_00758330[];
-const char dat_00758330[] = "next";
-const char dat_00758338[];
-const char dat_00758338[] = "off_screen_radius=";
-const char dat_0075834c[];
-const char dat_0075834c[] = "max_opponent_range=";
-const char dat_00758360[];
-const char dat_00758360[] = "max_player_range=";
-const char dat_00758374[];
 const f64 MoveSplineRunSpeedSentinel = 1000000000.0;
-const char dat_00758374[] = "max_range=";
-const char dat_00757824[];
-const char dat_00757824[7] = "random";
-const char dat_00757a7c[];
-const char dat_00757a7c[8] = "looping";
-const char dat_00757d54[10] = "lastframe";
 
 GAMEOBJECT *GetNamedGameObject(void *sys, char *name) {
     APIOBJECT *result;
@@ -3980,7 +3899,7 @@ i32 Action_SnapToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
             personal = 1;
         } else if (NuStrIStr(params[i], "indexed") != NULL) {
             indexed = 1;
-        } else if ((value = NuStrIStr(params[i], (char *)dat_00757824)) != NULL) {
+        } else if ((value = NuStrIStr(params[i], "random")) != NULL) {
             random_count = (i32)AIParamToFloat(processor, value + 9);
         } else if ((value = NuStrIStr(params[i], "character")) != NULL) {
             object = GetNamedGameObject(sys, value + 10);
@@ -4067,7 +3986,7 @@ i32 Action_BigJumpToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
                 personal = 1;
             } else if (NuStrIStr(params[index], "indexed") != NULL) {
                 indexed = 1;
-            } else if ((value = NuStrIStr(params[index], (char *)dat_00757824)) != NULL) {
+            } else if ((value = NuStrIStr(params[index], "random")) != NULL) {
                 random_count = (i32)(AIParamToFloat(processor, value + 9));
             } else if ((value = NuStrIStr(params[index], "jump_factor=")) != NULL) {
                 jump_factor = AIParamToFloat(processor, value + 12);
@@ -4217,7 +4136,7 @@ i32 Action_SetDoomedEscapeLocator(AISYS *system, AISCRIPTPROCESS *processor, AIP
             indexed = 1;
         } else if (NuStrIStr(params[index], "take_damage") != NULL) {
             take_damage = 1;
-        } else if ((value = NuStrIStr(params[index], (char *)dat_00757824)) != NULL) {
+        } else if ((value = NuStrIStr(params[index], "random")) != NULL) {
             random_count = (i32)(AIParamToFloat(processor, value + 9));
         }
     }
@@ -5509,7 +5428,7 @@ i32 Action_SetSpline(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, c
             value = NuStrIStr(params[index], "spline=");
             if (value != NULL) {
                 spline = NuSplineFind(WORLD->current_gscn, value + 7);
-            } else if (NuStrICmp(params[index], (char *)dat_00757a7c) == 0) {
+            } else if (NuStrICmp(params[index], "looping") == 0) {
                 looping = 1;
             }
         }
@@ -7290,7 +7209,7 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
         u32 *flag_target;
         i32 is_on;
         char *value;
-        if (NuStrIStr(params[index], (char *)dat_00757e40) != NULL) {
+        if (NuStrIStr(params[index], "on_frames") != NULL) {
             continue;
         }
         match = NuStrIStr(params[index], (char *)("from="));
@@ -7303,72 +7222,72 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
             to = match + 3;
             continue;
         }
-        match = NuStrIStr(params[index], (char *)dat_00757e34);
+        match = NuStrIStr(params[index], "pathname=");
         if (match != NULL) {
             path = AISysFindPath(sys, match + 9);
             continue;
         }
-        if (NuStrIStr(params[index], (char *)dat_00757e24) != NULL) {
+        if (NuStrIStr(params[index], "CheckVisible") != NULL) {
             check_visible = 1;
             continue;
         }
-        if (NuStrIStr(params[index], (char *)dat_00757e18) != NULL) {
+        if (NuStrIStr(params[index], "bothways") != NULL) {
             both_ways = 1;
             continue;
         }
 
-        match = NuStrIStr(params[index], (char *)dat_00757e10);
+        match = NuStrIStr(params[index], "on_flag");
         if (match == NULL) {
-            match = NuStrIStr(params[index], (char *)dat_00757e04);
+            match = NuStrIStr(params[index], "off_flag");
         }
         if (match == NULL) {
-            if ((match = NuStrIStr(params[index], (char *)dat_00757dfc)) != NULL) {
+            if ((match = NuStrIStr(params[index], "obj=")) != NULL) {
                 target_name = match + 4;
                 target_type = AIPATHCNX_TARGET_SPECIAL;
                 continue;
             }
-            if ((match = NuStrIStr(params[index], (char *)dat_00757df0)) != NULL) {
+            if ((match = NuStrIStr(params[index], "cutscene=")) != NULL) {
                 target_name = match + 9;
                 target_type = AIPATHCNX_TARGET_CUTSCENE;
                 continue;
             }
-            if ((match = NuStrIStr(params[index], (char *)dat_00757de4)) != NULL) {
+            if ((match = NuStrIStr(params[index], "buildit=")) != NULL) {
                 target_name = match + 8;
                 target_type = AIPATHCNX_TARGET_BUILDIT;
                 continue;
             }
-            match = NuStrIStr(params[index], (char *)dat_00757dd8);
+            match = NuStrIStr(params[index], "fakeanimid=");
             if (match != NULL) {
                 fake_animation_id = (i32)(AIParamToFloat(processor, match + 11));
                 target_type = AIPATHCNX_TARGET_FAKE_ANIMATION;
                 continue;
             }
-            match = NuStrIStr(params[index], (char *)dat_00757dc8);
+            match = NuStrIStr(params[index], "gizmo_output=");
             if (match != NULL) {
                 gizmo_output = (i32)(AIParamToFloat(processor, match + 13));
                 continue;
             }
-            if ((match = NuStrIStr(params[index], (char *)dat_00757dc0)) != NULL) {
+            if ((match = NuStrIStr(params[index], "gizmo=")) != NULL) {
                 target_name = match + 6;
                 target_type = AIPATHCNX_TARGET_GIZMO;
-            } else if ((match = NuStrIStr(params[index], (char *)dat_00757db4)) != NULL) {
-                target_name = match + NuStrLen(dat_00757db4);
+            } else if ((match = NuStrIStr(params[index], "flowbox=")) != NULL) {
+                target_name = match + NuStrLen("flowbox=");
                 target_type = AIPATHCNX_TARGET_FLOW;
-            } else if ((match = NuStrIStr(params[index], (char *)dat_00757dac)) != NULL) {
+            } else if ((match = NuStrIStr(params[index], "blowup=")) != NULL) {
                 target_name = match + 7;
                 target_type = AIPATHCNX_TARGET_BLOWUP;
-            } else if ((match = NuStrIStr(params[index], (char *)dat_00757da4)) != NULL) {
+            } else if ((match = NuStrIStr(params[index], "force=")) != NULL) {
                 target_name = match + 6;
                 target_type = AIPATHCNX_TARGET_FORCE;
-            } else if ((match = NuStrIStr(params[index], (char *)dat_00757d98)) != NULL) {
+            } else if ((match = NuStrIStr(params[index], "obstacle=")) != NULL) {
                 target_name = match + 9;
                 target_type = AIPATHCNX_TARGET_OBSTACLE;
-            } else if ((match = NuStrIStr(params[index], (char *)dat_00757d90)) != NULL) {
+            } else if ((match = NuStrIStr(params[index], "zipup=")) != NULL) {
                 target_name = match + 6;
                 target_type = AIPATHCNX_TARGET_ZIPUP;
             }
         } else {
-            if (NuStrIStr(params[index], (char *)dat_00757e10) != NULL) {
+            if (NuStrIStr(params[index], "on_flag") != NULL) {
                 flag_target = &on_flags;
                 is_on = 1;
                 value = match + 8;
@@ -7377,13 +7296,13 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
                 is_on = 0;
                 value = match + 9;
             }
-            if (NuStrIStr(params[index], (char *)dat_00757d80) != NULL) {
+            if (NuStrIStr(params[index], "OBSTACLE_OPEN") != NULL) {
                 if (is_on) {
                     on_obstacle_open = 1;
                 } else {
                     off_obstacle_open = 1;
                 }
-            } else if (NuStrIStr(params[index], (char *)dat_00757d70) != NULL) {
+            } else if (NuStrIStr(params[index], "OBSTACLE_CLOSED") != NULL) {
                 if (is_on) {
                     on_obstacle_open = 0;
                 } else {
@@ -7411,23 +7330,23 @@ i32 Action_CnxController(struct AISYS *sys, struct AISCRIPTPROCESS *processor, s
         char *separator;
         i32 start_frame;
         i32 end_frame;
-        char *match = NuStrIStr(params[index], (char *)dat_00757e40);
+        char *match = NuStrIStr(params[index], "on_frames");
         if (match == NULL) {
             continue;
         }
         NuStrCpy(range, match + 10);
-        separator = NuStrIStr(range, (char *)dat_00757d6c);
+        separator = NuStrIStr(range, "to");
         if (separator == NULL) {
             continue;
         }
         *separator = '\0';
         separator += 2;
-        start_frame = NuStrICmp(range, dat_00757d60) == 0   ? -2
-                      : NuStrICmp(range, dat_00757d54) == 0 ? -1
-                                                            : (i32)(AIParamToFloat(processor, range));
-        end_frame = NuStrICmp(separator, dat_00757d60) == 0   ? -2
-                    : NuStrICmp(separator, dat_00757d54) == 0 ? -1
-                                                              : (i32)(AIParamToFloat(processor, separator));
+        start_frame = NuStrICmp(range, "lastframe-1") == 0 ? -2
+                      : NuStrICmp(range, "lastframe") == 0 ? -1
+                                                           : (i32)(AIParamToFloat(processor, range));
+        end_frame = NuStrICmp(separator, "lastframe-1") == 0 ? -2
+                    : NuStrICmp(separator, "lastframe") == 0 ? -1
+                                                             : (i32)(AIParamToFloat(processor, separator));
         if (end_frame >= start_frame || end_frame == -1 || end_frame == -2) {
             AIPathCnxControllerSetOnRange(controller, start_frame, end_frame);
         }
@@ -7881,7 +7800,7 @@ i32 Action_PlayGizSpecial(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
                 }
             } else if (NuStrICmp(params[index], "backwards") == 0) {
                 backwards = 1;
-            } else if (NuStrICmp(params[index], (char *)GizmoSnapOptionName) == 0) {
+            } else if (NuStrICmp(params[index], "SNAP") == 0) {
                 snap = 1;
             } else if (NuStrICmp(params[index], "Restart") == 0) {
                 restart = 1;
@@ -8826,7 +8745,7 @@ i32 Action_SetPathCnxFlag(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
             from = match + 5;
             continue;
         }
-        match = NuStrIStr(params[index], (char *)dat_00757d6c);
+        match = NuStrIStr(params[index], "to");
         if (match != NULL) {
             to = match + 3;
             continue;
@@ -10147,15 +10066,15 @@ i32 Action_AssignLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
         if (0 < param_count) {
             for (index = 0; index < param_count; ++index) {
                 char *value;
-                if (NuStrICmp(params[index], dat_00758288) == 0) {
+                if (NuStrICmp(params[index], "locator=mylocator") == 0) {
                     if (object != NULL) {
                         locator = object->ai_packet.locator;
                     }
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)dat_00758280);
+                value = NuStrIStr(params[index], "locator");
                 if (value != NULL) {
-                    locator = AIPathFindLocator(sys, value + NuStrLen(dat_00758280) + 1);
+                    locator = AIPathFindLocator(sys, value + NuStrLen("locator") + 1);
                     continue;
                 }
                 value = NuStrIStr(params[index], "character");
@@ -10164,12 +10083,12 @@ i32 Action_AssignLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
                     assignment = ((APIOBJECT *)object)->object_id;
                     continue;
                 }
-                value = NuStrIStr(params[index], (char *)dat_0075827c);
+                value = NuStrIStr(params[index], "set");
                 if (value != NULL) {
-                    locator_set = AIPathFindLocatorSet(sys, value + NuStrLen(dat_0075827c) + 1);
+                    locator_set = AIPathFindLocatorSet(sys, value + NuStrLen("set") + 1);
                     continue;
                 }
-                if (NuStrICmp(params[index], dat_00758274) == 0) {
+                if (NuStrICmp(params[index], "reserve") == 0) {
                     assignment = 0x80;
                 }
             }
@@ -10240,24 +10159,24 @@ i32 Action_GetLocatorFromSet(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *p
                 (GetNamedGameObjectCallback != NULL && (named = GetNamedGameObjectCallback(sys, value + 10)) != NULL ? named->owner : NULL);
             continue;
         }
-        value = NuStrIStr(params[index], (char *)dat_00758374);
+        value = NuStrIStr(params[index], "max_range=");
         if (value != NULL) {
             max_range = AIParamToFloat(processor, value + 10);
             continue;
         }
-        value = NuStrIStr(params[index], (char *)dat_00758360);
+        value = NuStrIStr(params[index], "max_player_range=");
         if (value != NULL) {
             max_range = AIParamToFloat(processor, value + 17);
             use_player = 1;
             continue;
         }
-        value = NuStrIStr(params[index], (char *)dat_0075834c);
+        value = NuStrIStr(params[index], "max_opponent_range=");
         if (value != NULL) {
             max_range = AIParamToFloat(processor, value + 19);
             use_opponent = 1;
             continue;
         }
-        value = NuStrIStr(params[index], (char *)dat_00758338);
+        value = NuStrIStr(params[index], "off_screen_radius=");
         if (value != NULL) {
             off_screen_radius = AIParamToFloat(processor, value + 18);
             continue;
@@ -10268,28 +10187,28 @@ i32 Action_GetLocatorFromSet(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *p
             continue;
         }
 
-        if (NuStrICmp(params[index], dat_00757824) == 0) {
+        if (NuStrICmp(params[index], "random") == 0) {
             random = 1;
-        } else if (NuStrICmp(params[index], dat_00758330) == 0) {
+        } else if (NuStrICmp(params[index], "next") == 0) {
             next = 1;
-        } else if (NuStrICmp(params[index], dat_00758328) == 0) {
+        } else if (NuStrICmp(params[index], "first") == 0) {
             first = 1;
-        } else if (NuStrICmp(params[index], dat_00757a7c) == 0) {
+        } else if (NuStrICmp(params[index], "looping") == 0) {
             looping = 1;
-        } else if (NuStrICmp(params[index], dat_00758318) == 0) {
+        } else if (NuStrICmp(params[index], "finish_at_end") == 0) {
             finish_at_end = 1;
-        } else if (NuStrICmp(params[index], dat_00758300) == 0) {
+        } else if (NuStrICmp(params[index], "ignore_assigned=TRUE") == 0) {
             ignore_assigned = 1;
-        } else if (NuStrICmp(params[index], dat_007582e8) == 0) {
+        } else if (NuStrICmp(params[index], "ignore_assigned=FALSE") == 0) {
             ignore_assigned = 0;
-        } else if (NuStrICmp(params[index], dat_007582d0) == 0) {
+        } else if (NuStrICmp(params[index], "furthest_from_opponent") == 0) {
             use_opponent = 1;
             furthest = 1;
-        } else if (NuStrICmp(params[index], dat_007582b4) == 0) {
+        } else if (NuStrICmp(params[index], "furthest_from_either_player") == 0) {
             furthest = 1;
             use_player = 1;
             use_second_player = 1;
-        } else if (NuStrICmp(params[index], dat_0075829c) == 0) {
+        } else if (NuStrICmp(params[index], "nearest_either_player") == 0) {
             use_player = 1;
             use_second_player = 1;
         }

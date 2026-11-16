@@ -219,7 +219,7 @@ void GizmoPickups_InitSys(PICKUP_TYPE_SYSTEM *system) {
 static i32 FindPickupTypeIndex(u8 type_code) {
     i32 index;
     for (index = 0; index < GizmoPickupSys->type_count; ++index) {
-        if (GizmoPickupSys->types[index].field_c == type_code) {
+        if (GizmoPickupSys->types[index].letter == type_code) {
             return index;
         }
     }
