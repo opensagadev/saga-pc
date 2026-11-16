@@ -84,6 +84,7 @@ same function initialises and steps (its values are indexes).
 | `freeplaymode` | `FREEPLAY_MENU_*` (hub.h) | what the hub's free play update and draw do in each step |
 | `NuSound3PlayStereoV` tags | `NUSOUND3_TAG_*` (nusound.h) | the packet field the switch fills for each tag; 9, 11 and 12 stay literal |
 | `PC_WINDOW_OPTIONS.aspect_mode`, `PC_DEVICE_BACKEND.active_aspect_mode`, `MENU_VIDEO_OPTIONS.aspect_mode` | `PC_ASPECT_*` (pcapi.h) | the ratio `PcInputAspectRatio` returns for each (4:3, 16:9, 1.6, the display's) |
+| `GetMenuID()` and `GetParentMenuID()` results | the existing `MENU_*` (apimenu.h) | they return `menufninfo_s.id`; the call-site comparisons and the locals holding the result |
 | `gameobject_s.unknown_7b3` in the super carry and whip contexts, `gameobject_s.whip_action` | `SUPERCARRY_*` (carrying.h), `WHIP_*` (whip.h) | the LEGOACT_SUPERCARRY_* and LEGOACT_WHIP_* animation each step plays; the whip action chosen on the button press |
 | `GIZMOPICKUP.flags` (4 bits) | `GIZMOPICKUP_STATE_*` (gizmopickups.h) | `GizmoPickup_TurnOnPickup`, the draw loop, collecting, the saved-minikit alternate type |
 | cut scene instance `flags_88` (all views, 6 bits) | `NUGCUTSCENE_INST_*` (nugcutscene.h) | what `instNuGCutSceneStart`/`End`/`Reset`, the `instNuGCutSceneSet*` transforms and `instNuGCutSceneClipTest` set and test |
@@ -195,14 +196,14 @@ same function initialises and steps (its values are indexes).
 Counted like the magic-state and magic-flag classes of `oddscan.py --magic` (a
 comparison, assignment or `case` with a value other than 0, 1 and -1, or a
 one-bit mask), per field. On 15 November 2026 the named constants stood at
-25878 sites and the literals at 7954 (76.5 % named); the 62 fields below hold
-2508 of the literals, and 1668 more fields have fewer than 20 sites each (5446
+25928 sites and the literals at 7915 (76.6 % named); the 61 fields below hold
+2471 of the literals, and 1665 more fields have fewer than 20 sites each (5444
 in all; `oddscan.py --magic` lists them by use).
 
 | Field | Sites | Values | Where | What is known |
 |---|---:|---|---|---|
 | `flags` | 149 | 0x0 0x1 0x2 0x3 0x4 0x8 0x10 0x17 ... | nu2api/nu3d_includes.cpp, gamelib/net/NetworkObjectManager.cpp | bare `flags` locals and parameters of many functions; `magicnames.py --locals flags` lists them per function (GizSpinner_*, ObjHitObj, NuAnimBuff*, UpdateGameMessages) |
-| `*.flags` | 143 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | gameapi/aisysall.c, nu2api/nu3d_includes.cpp | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
+| `*.flags` | 135 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | gameapi/aisysall.c, nu2api/nu3d_includes.cpp | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
 | `gameobject_s.flags_e20` | 135 | 0x1 0x2 0x4 0x8 0x20 0x1000 0x4000 0x20000 ... | legogame/move.c, legogame/creature.c | runtime bits; 0x20 is tested to skip an object almost everywhere and cleared by UpdateGameObjects, its setter is not in the source yet |
 | `mode` | 110 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
 | `gameobject_s.flags_ef0` | 93 | 0x4 0x40 0x80 0x200 0x400 0x1000 0x2000 0x4000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code, no keyword |
@@ -228,7 +229,6 @@ in all; `oddscan.py --magic` lists them by use).
 | `kind` | 34 | 1 2 3 4 5 6 7 10 ... | nu2api/input_runtime.cpp, nu2api/pc_input.cpp | no name table, keyword or label found yet |
 | `value` | 34 | -32768 -32767 1 6 7 10 12 13 ... | nu2api/input_runtime.cpp, legogame/gizpanel.c | no name table, keyword or label found yet |
 | `*.capabilities` | 33 | 0x1 0x2 0x4 0x8 0x10 0x20 0x80 0x100 ... | legoapi/batarang.cpp, legogame/starwars_gameai.c | no name table, keyword or label found yet |
-| `id` | 33 | -3 0 2 3 8 9 10 11 ... | nu2api/shader_compiler.cpp, legogame/hub.cpp | no name table, keyword or label found yet |
 | `axis` | 31 | 0 1 2 3 4 5 6 7 | editor/edlevelall.cpp, legoapi/utilities.c | no name table, keyword or label found yet |
 | `PC_SHADER_FILTER_DESC_VIEW.flags` | 30 | 0x1 0x2 0x8 0x20 0x80 0x100 0x400 0x4000 ... | nu2api/nushadermanager.cpp, nu2api/shader_compiler.cpp | no name table, keyword or label found yet |
 | `eduiitem_s.data` | 30 | 0 1 2 3 7 9999 99999 | gameapi/aisysall.c, gameapi/edpp_load.c | some of its sites already use DEBRIS_GENERATOR_* (anonymous enum/#define) names |
@@ -238,6 +238,7 @@ in all; `oddscan.py --magic` lists them by use).
 | `JEDIB_STATE.phase` | 28 | 1 2 3 4 5 6 7 | legogame/episodeII.c | no name table, keyword or label found yet |
 | `*.type` | 27 | 0 1 2 3 4 12 13 14 ... | nu2api/nu3d_platform.cpp, gameapi/aisysall.c | some of its sites already use NUDLIST_* (anonymous enum/#define) names |
 | `source` | 27 | 1 2 128 129 130 133 159 188 ... | legoapi/text.c, nu2api/nucore_includes.c | no name table, keyword or label found yet |
+| `id` | 26 | -3 0 2 3 9 10 11 12 ... | nu2api/shader_compiler.cpp, nu2api/nucore_includes.c | no name table, keyword or label found yet |
 | `alignment` | 25 | 1 2 4 8 16 32 64 | legoapi/text.c, legogame/panel.cpp | no name table, keyword or label found yet |
 | `index` | 25 | 0 1 2 3 4 8 15 32 ... | nu2api/nu3d_includes.cpp, nu2api/nurndr.c | some of its sites already use ACTION_STUN_* (anonymous enum/#define) names |
 | `models` | 25 | 12 13 89 101 102 103 104 105 ... | legogame/creature.c | no name table, keyword or label found yet |
@@ -252,7 +253,6 @@ in all; `oddscan.py --magic` lists them by use).
 | `*.flags_low` | 22 | 0x1 0x80 0x100 0x200 0x400 0x4000 0x100000 | gameapi/apiobject.c, gameapi/aisysall.c | no name table, keyword or label found yet |
 | `APIOBJECT.flags_low` | 22 | 0x1 0x4 0x80 0x100 0x800 0x1000 0x40000 0x80000 | gameapi/aisysall.c, legogame/gameai.c | no name table, keyword or label found yet |
 | `green` | 22 | 31 63 143 191 223 255 65280 | legogame/panel.cpp, legogame/menu.cpp | no name table, keyword or label found yet |
-| `menu` | 22 | 8 12 13 14 15 16 17 | legogame/dropinout.c, legogame/panel.cpp | no name table, keyword or label found yet |
 | `panel_movement_s.model_variant` | 22 | 0 1 2 3 | legogame/gizpanel.c | no name table, keyword or label found yet |
 | `buildit_reset_s.state_flags` | 21 | 0x1 0x2 0x4 0x8 0x10 0x40 0x80 0x100 ... | legoapi/gizbuildit.cpp | some of its sites already use GIZBUILDIT_STATE_* (anonymous enum/#define) names |
 | `model` | 21 | -307 14 25 53 54 84 85 86 ... | legogame/chris.cpp, legogame/creature.c | no name table, keyword or label found yet |
