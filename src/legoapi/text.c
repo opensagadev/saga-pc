@@ -264,7 +264,7 @@ void Text_LoadAndFixUpStrings(char *path, u8 **buffer, char **table, i32 count) 
                 if (index > 0 && index < count) {
                     u16 *word;
                     NuFParGetWordW(parser);
-                    word = (u16 *)parser->word_buffer_ptr;
+                    word = parser->word_buffer_wide;
                     length = NuStrLenW(word);
                     if (length > 0) {
                         table[index] = (char *)out;

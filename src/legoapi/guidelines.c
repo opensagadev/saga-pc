@@ -6,23 +6,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct guideline_record_s { // size 0x24
-    char name[8];                   // 0x00
-    NUVEC start_position;           // 0x08
-    NUVEC end_position;             // 0x14
-
-    union { // size 0x1
-        u8 flags;
-
-        struct {            // size 0x1
-            u8 active : 1;  // 0x20:0
-            u8 visible : 1; // 0x20:1
-        };
-    }; // 0x20
-
-    u8 unknown_21[3]; // 0x21
-} GUIDELINE_RECORD;
-
 typedef struct guideline_progress_s { // size 0x8
     u32 active_mask[1];               // 0x0
     u32 visible_mask[1];              // 0x4
@@ -35,9 +18,9 @@ i32 GuideLines_Load(void *world_ptr, void *unused) {
         EdFileReadInt();
         world->guideline_count = EdFileReadInt();
         for (index = 0; index < world->guideline_count; ++index) {
-            EdFileRead(((GUIDELINE_RECORD *)world->guidelines)[index].name, 8);
-            EdFileReadNuVec(&((GUIDELINE_RECORD *)world->guidelines)[index].start_position);
-            EdFileReadNuVec(&((GUIDELINE_RECORD *)world->guidelines)[index].end_position);
+            EdFileRead(world->guidelines[index].name, 8);
+            EdFileReadNuVec(&world->guidelines[index].start_position);
+            EdFileReadNuVec(&world->guidelines[index].end_position);
         }
         return 1;
     }
@@ -76,7 +59,7 @@ void GuideLines_Reset(WORLDINFO *world, void *unused, GUIDELINE_PROGRESS *progre
 
 INDY_GUIDELINE *GuideLine_FindNearest(NUVEC *position, WORLDINFO *world, i32 *endpoint, f32 *distance) {
     INDY_GUIDELINE *nearest = NULL;
-    INDY_GUIDELINE *guide = world->guidelines;
+    INDY_GUIDELINE *guide = (INDY_GUIDELINE *)world->guidelines;
     i32 nearest_endpoint = -1;
     i32 index;
     i32 side;
@@ -122,8 +105,8 @@ i32 GuideLines_GetMaxGizmos(WORLDINFO *world) {
 void GuideLines_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->guideline_count; ++index) {
-        if (NuStrLen(((GUIDELINE_RECORD *)world->guidelines)[index].name) != 0) {
-            AddGizmo(system, type_id, NULL, &((GUIDELINE_RECORD *)world->guidelines)[index]);
+        if (NuStrLen(world->guidelines[index].name) != 0) {
+            AddGizmo(system, type_id, NULL, &world->guidelines[index]);
         }
     }
 }

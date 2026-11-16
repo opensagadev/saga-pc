@@ -248,7 +248,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 shard_count;                                     // 0x5094
     void *attractos;                                     // 0x5098
     i32 attracto_count;                                  // 0x509c
-    void *guidelines;                                    // 0x50a0
+    struct guideline_record_s *guidelines;               // 0x50a0
     i32 guideline_count;                                 // 0x50a4
     struct LEDGE_s *ledges;                              // 0x50a8
     i32 ledge_count;                                     // 0x50ac

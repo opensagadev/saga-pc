@@ -31,14 +31,19 @@ typedef struct nufpar_s {    // size 0x584
     char line_buffer[0x202]; // 0x108
     char word_buffer[0x202]; // 0x30a
     char *line_buffer_ptr;   // 0x50c
-    char *word_buffer_ptr;   // 0x510
-    i32 line_buffer_size;    // 0x514
-    i32 word_buffer_size;    // 0x518
-    i32 line_number;         // 0x51c
-    i32 line_position;       // 0x520
-    i32 character_position;  // 0x524
-    i32 buffer_start;        // 0x528
-    i32 buffer_end;          // 0x52c
+
+    union { // size 0x4
+        char *word_buffer_ptr;
+        u16 *word_buffer_wide; // the word of a UTF-16 file
+    }; // 0x510
+
+    i32 line_buffer_size;   // 0x514
+    i32 word_buffer_size;   // 0x518
+    i32 line_number;        // 0x51c
+    i32 line_position;      // 0x520
+    i32 character_position; // 0x524
+    i32 buffer_start;       // 0x528
+    i32 buffer_end;         // 0x52c
 
     union { // size 0x20
         struct nufpcomjmp_s *command_stack[8];

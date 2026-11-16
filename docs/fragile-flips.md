@@ -87,3 +87,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | view types onto their records (gizmo bolt hooks, MINIANIMPACKET, menu pads, customiser; stream A on f878f821) | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.92 % | 95.37 % |
 | writable char arrays inlined as literals (stream C) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
 | writable char arrays inlined as literals (stream C) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.97 % |
+| nufpar wide word buffer, typed WORLDINFO.guidelines (stream B) | BoulderSpawn | legogame/episodeIII.c | exact | different |

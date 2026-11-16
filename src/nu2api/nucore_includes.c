@@ -3113,7 +3113,7 @@ i32 NuFParGetWordW(NUFPAR *parser) {
     u16 *word;
 
     line = (u16 *)parser->line_buffer_ptr;
-    word = (u16 *)parser->word_buffer_ptr;
+    word = parser->word_buffer_wide;
     length = 0;
     in_quoted_text = 0;
     old_line_pos = parser->line_position;
@@ -3238,7 +3238,7 @@ i32 NuFParGetInt(NUFPAR *parser) {
 
     NuFParGetWord(parser);
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -3260,7 +3260,7 @@ f32 NuFParGetFloat(NUFPAR *parser) {
 
     NuFParGetWord(parser);
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -3276,7 +3276,7 @@ void NuFParGetOptionalFloat(NUFPAR *parser, f32 *value) {
 
     NuFParGetWord(parser);
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -3294,7 +3294,7 @@ void NuFParGetOptionalInt(NUFPAR *parser, i32 *value) {
 
     NuFParGetWord(parser);
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -3312,7 +3312,7 @@ i32 NuFParGetIntRDP(NUFPAR *parser) {
 
     NuFParGetWord(parser);
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -3336,7 +3336,7 @@ f32 NuFParGetFloatRDP(NUFPAR *parser) {
 
     NuFParGetWord(parser);
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -3759,7 +3759,7 @@ i32 NuFParInterpretWord(NUFPAR *parser) {
     NUFPCOMJMP *commands;
 
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -3801,7 +3801,7 @@ i32 NuFParInterpretWordCTX(NUFPAR *parser, void *context) {
     NUFPCOMJMPCTX *commands;
 
     if (parser->is_utf16 != 0) {
-        NuUnicodeToAscii(buffer, (u16 *)parser->word_buffer_ptr);
+        NuUnicodeToAscii(buffer, parser->word_buffer_wide);
     } else {
         NuStrCpy(buffer, parser->word_buffer_ptr);
     }
@@ -6816,10 +6816,10 @@ i32 NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *la
             while (NuFParGetLine(parser) != 0) {
                 column = 0;
                 while (NuFParGetWord(parser) != 0) {
-                    if (NuStrICmpW((NUWCHAR *)parser->word_buffer_ptr, label_utf16) == 0) {
+                    if (NuStrICmpW(parser->word_buffer_wide, label_utf16) == 0) {
                         label_column = column;
                     }
-                    if (NuStrICmpW((NUWCHAR *)parser->word_buffer_ptr, lang_utf16) == 0) {
+                    if (NuStrICmpW(parser->word_buffer_wide, lang_utf16) == 0) {
                         lang_column = column;
                     }
                     ++column;
@@ -6838,7 +6838,7 @@ i32 NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *la
                             ++len;
                             strings[i].id = buf->char_ptr;
                             buf->addr += (u32)len;
-                            NuUnicodeToAscii(strings[i].id, (u16 *)parser->word_buffer_ptr);
+                            NuUnicodeToAscii(strings[i].id, parser->word_buffer_wide);
                         }
                         if (column == lang_column) {
                             if (nustring_format == 1) {
@@ -6847,9 +6847,9 @@ i32 NuStringTableLoadCSV(char *filepath, VARIPTR *buf, VARIPTR buf_end, char *la
                                 strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
                                 buf->addr = (buf->addr + 1) & ~1U;
                                 buf->addr += (u32)len * 2;
-                                NuStrCpyW(strings[i].str_utf16, (NUWCHAR *)parser->word_buffer_ptr);
+                                NuStrCpyW(strings[i].str_utf16, parser->word_buffer_wide);
                             } else {
-                                NuUnicodeToUTF8((u8 *)tmp_buf, (u16 *)parser->word_buffer_ptr);
+                                NuUnicodeToUTF8((u8 *)tmp_buf, parser->word_buffer_wide);
                                 len = NuStrLen(tmp_buf) + 1;
                                 strings[i].str_utf8 = (u8 *)((buf->addr + 1) & ~1U);
                                 buf->addr = (buf->addr + 1) & ~1U;
@@ -6959,14 +6959,14 @@ i32 NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
                 ++len;
                 strings[i].id = buf->char_ptr;
                 buf->addr += (u32)len;
-                NuUnicodeToAscii(strings[i].id, (u16 *)parser->word_buffer_ptr);
+                NuUnicodeToAscii(strings[i].id, parser->word_buffer_wide);
                 NuFParGetWord(parser);
                 NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
                 ++len;
                 strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
                 buf->addr = (buf->addr + 1) & ~1U;
                 buf->addr += (u32)len * 2;
-                NuStrCpyW(strings[i].str_utf16, (NUWCHAR *)parser->word_buffer_ptr);
+                NuStrCpyW(strings[i].str_utf16, parser->word_buffer_wide);
 
                 if (nustring_format == 1) {
                     NU_WIDE_LENGTH(parser->word_buffer_ptr, len);
@@ -6974,9 +6974,9 @@ i32 NuStringTableLoadTXT(char *filepath, VARIPTR *buf, VARIPTR buf_end) {
                     strings[i].str_utf16 = (u16 *)((buf->addr + 1) & ~1U);
                     buf->addr = (buf->addr + 1) & ~1U;
                     buf->addr += (u32)len * 2;
-                    NuStrCpyW(strings[i].str_utf16, (NUWCHAR *)parser->word_buffer_ptr);
+                    NuStrCpyW(strings[i].str_utf16, parser->word_buffer_wide);
                 } else {
-                    NuUnicodeToUTF8((u8 *)tmp_buf, (u16 *)parser->word_buffer_ptr);
+                    NuUnicodeToUTF8((u8 *)tmp_buf, parser->word_buffer_wide);
                     len = NuStrLen(tmp_buf) + 1;
                     strings[i].str_utf8 = (u8 *)((buf->addr + 1) & ~1U);
                     buf->addr = (buf->addr + 1) & ~1U;

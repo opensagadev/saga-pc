@@ -4,6 +4,23 @@
 
 #include "nu2api/numath/nuvec.h"
 
+typedef struct guideline_record_s { // size 0x24
+    char name[8];                   // 0x00
+    NUVEC start_position;           // 0x08
+    NUVEC end_position;             // 0x14
+
+    union { // size 0x1
+        u8 flags;
+
+        struct {            // size 0x1
+            u8 active : 1;  // 0x20:0
+            u8 visible : 1; // 0x20:1
+        };
+    }; // 0x20
+
+    u8 unknown_21[3]; // 0x21
+} GUIDELINE_RECORD;
+
 struct WORLDINFO_s;
 
 typedef struct indy_guideline_s { // size 0x24
