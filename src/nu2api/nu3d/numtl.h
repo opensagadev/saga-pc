@@ -34,9 +34,12 @@ typedef struct nushadermtldesc_s { // size 0x208
     i32 shine_map_tid;             // 0x054
     i32 vtf_height_map_tid;        // 0x058
     i32 vtf_normal_map_tid;        // 0x05c
-    u8 unknown_060[0x48];          // 0x060
+    u8 unknown_060[0x28];          // 0x060
+    f32 shininess;                 // 0x088
+    u8 unknown_08c[0x1c];          // 0x08c
     u8 texture_unit_count;         // 0x0a8
-    u8 unknown_0a9[0x63];          // 0x0a9
+    u8 sampler_indices[6];         // 0x0a9
+    u8 unknown_0af[0x5d];          // 0x0af
     i32 animation_ids[4];          // 0x10c -1: layer not animated
     f32 animation_offsets[4][2];   // 0x11c
     u32 vertex_format;             // 0x13c
@@ -48,7 +51,8 @@ typedef struct nushadermtldesc_s { // size 0x208
     u8 shadow_set;                 // 0x1b4
     u8 unknown_1b5[3];             // 0x1b5
     u32 layer_flags;               // 0x1b8 PC_SHADER_LAYER_*
-    u8 unknown_1bc[0x28];          // 0x1bc
+    u32 selectors;                 // 0x1bc
+    u8 unknown_1c0[0x24];          // 0x1c0
     i32 extra_texture;             // 0x1e4
     i32 environment_texture;       // 0x1e8
     u8 unknown_1ec[0x1c];          // 0x1ec

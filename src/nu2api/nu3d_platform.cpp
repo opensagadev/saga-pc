@@ -3464,7 +3464,7 @@ extern "C" {
         render_state.camera_matrix = *view;
         render_state.projection_0154 = projection->m00;
         render_state.projection_0158 = projection->m11;
-        render_state.projection_015c = projection->m22;
+        render_state.projection_m22 = projection->m22;
         render_state.projection_0160 = projection->m23;
         render_state.projection_0164 = projection->m32;
         NuVpGetPosition2(&render_state.viewport_x, &render_state.viewport_y);
@@ -3492,7 +3492,7 @@ extern "C" {
         render_state.fog_value_0170 = near_distance;
         render_state.fog_value_0174 = far_distance;
         render_state.fog_pointer_0178 = colour;
-        render_state.fog_value_017c = density;
+        render_state.fog_density = density;
         render_state.fog_packet_cache = NULL;
         ++render_state.global_id;
         ++render_state.fog_id;
@@ -3535,8 +3535,8 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
         packet = cursor->f32_ptr;
-        if (state->state_00f4 != 0) {
-            *packet = state->state_00f8;
+        if (state->const_alpha_enabled != 0) {
+            *packet = state->const_alpha;
         } else {
             *packet = 1.0f;
         }
@@ -3574,7 +3574,7 @@ extern "C" {
             *field = state->fog_value_0174;
             cursor->void_ptr = field + 1;
             field = cursor->f32_ptr;
-            *field = state->fog_value_017c;
+            *field = state->fog_density;
             cursor->void_ptr = field + 1;
         }
         return packet;
@@ -3631,7 +3631,7 @@ extern "C" {
     }
 
     void RndrStateResetGlobalState(NUGLOBALRNDRSTATE *state) {
-        state->state_00f4 = 0;
+        state->const_alpha_enabled = 0;
         state->state_0100 = 0;
         state->fog_packet_cache = NULL;
         state->light_packet_cache = NULL;
@@ -3649,7 +3649,7 @@ extern "C" {
     }
 
     void RndrStateResetSharedGlobalState(void) {
-        render_state.state_00f4 = 0;
+        render_state.const_alpha_enabled = 0;
         render_state.state_0100 = 0;
         render_state.fog_packet_cache = NULL;
         render_state.light_packet_cache = NULL;
@@ -3682,11 +3682,11 @@ extern "C" {
     }
 
     void RndrStateSetConstAlphaTint(i32 alpha_enabled, i32 tint_enabled, f32 alpha, const NUVEC *tint, NUMTL *material) {
-        render_state.state_00f8 = alpha;
+        render_state.const_alpha = alpha;
         render_state.const_alpha_material = material;
         ++render_state.global_id;
         ++render_state.konst_id;
-        render_state.state_00f4 = alpha_enabled;
+        render_state.const_alpha_enabled = alpha_enabled;
         render_state.konst_packet_cache = NULL;
     }
 
@@ -4804,16 +4804,16 @@ extern "C" {
             NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handles[1]));
         }
         if ((mtl->attribs2 & 0x800000) != 0 && mtl->display_list == NULL) {
-            shader = NuShaderManagerRetrieveShader(reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                                              reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl));
+            shader = NuShaderManagerRetrieveShader(&mtl->shader,
+                                              mtl);
             mtl->shader.shader_handles[0] = (i16)shader->marker;
         } else {
             shader = NuShaderManagerRetrieveShaderVariant(
-                reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant16());
+                &mtl->shader,
+                mtl, device->ShaderVariant16());
             variant = NuShaderManagerRetrieveShaderVariant(
-                reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant1());
+                &mtl->shader,
+                mtl, device->ShaderVariant1());
             mtl->shader.shader_handles[0] = (i16)shader->marker;
             mtl->shader.shader_handles[1] = (i16)variant->marker;
         }
@@ -6062,7 +6062,7 @@ extern "C" {
                 memset(&projection.m01, 0, sizeof(projection) - sizeof(projection.m00));
                 projection.m00 = global->projection_0154;
                 projection.m11 = global->projection_0158;
-                projection.m22 = global->projection_015c;
+                projection.m22 = global->projection_m22;
                 projection.m23 = global->projection_0160;
                 projection.m32 = global->projection_0164;
                 NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
@@ -6283,9 +6283,9 @@ extern "C" {
 
         render_state.global_id++;
         render_state.konst_id++;
-        render_state.state_00f8 = 0;
+        render_state.const_alpha = 0;
         render_state.const_alpha_material = NULL;
-        render_state.state_00f4 = 0;
+        render_state.const_alpha_enabled = 0;
         render_state.konst_packet_cache = NULL;
         DisplayListUpdateRenderState(list, &render_state);
 

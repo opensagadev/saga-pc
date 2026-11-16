@@ -2,40 +2,12 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "nu2api/nu3d/numtl.h"
 #include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/nu3d/nushaderobjectbase.h"
 
-typedef struct PC_SHADER_FILTER_DESC_VIEW PC_SHADER_FILTER_DESC_VIEW;
-typedef struct PC_SHADER_FILTER_MATERIAL_VIEW PC_SHADER_FILTER_MATERIAL_VIEW;
 
-struct PC_SHADER_FILTER_DESC_VIEW {
-    u32 flags;
-    i32 diffuse_maps[4];
-    u8 unknown_014[0x20];
-    i32 surface_threshold;
-    i32 normal_threshold;
-    u8 unknown_03c[8];
-    u8 blend_ops[3];
-    u8 unknown_047;
-    i32 specular_threshold;
-    u8 unknown_04c[0x3c];
-    f32 shininess;
-    u8 unknown_08c[0x1c];
-    u8 texture_units;
-    u8 sampler_indices[6];
-    u8 unknown_0af[0x8d];
-    u32 vertex_format;
-    u8 unknown_140[0x74];
-    u8 override_mode;
-    u8 unknown_1b5[3];
-    u32 layer_flags;
-    u32 selectors;
-    u8 unknown_1c0[0x24];
-    i32 extra_texture;
-    i32 environment_texture;
-};
-
-/* PC_SHADER_FILTER_DESC_VIEW.layer_flags, named after the shader definitions each bit selects when the shader source
+/* NUSHADERMTLDESC.layer_flags, named after the shader definitions each bit selects when the shader source
  * is built (shader_compiler.cpp) and the filter's Has* tests (nushadermanager.cpp). */
 #define PC_SHADER_LAYER_NORMAL_MAP 0x1             /* SURFACE_NORMAL_MAP */
 #define PC_SHADER_LAYER_PARALLAX_MAP 0x2           /* SURFACE_PARALLAX_MAP */
@@ -167,20 +139,11 @@ struct PC_SHADER_FILTER_DESC_VIEW {
 #define SHADER_UNIFORM_TEX_ANIM_CURVES_SAMPLER 98
 #define SHADER_UNIFORM_SHADOW_CASTING_OBJECT 99
 
-struct PC_SHADER_FILTER_DESC_VIEW;
 
-struct PC_SHADER_FILTER_MATERIAL_VIEW {
-    u8 unknown_000[0x40];
-    u32 blend_flags;
-    u8 unknown_044[0xbc];
-    i32 texture_id;
-};
-
-struct PC_SHADER_FILTER_MATERIAL_VIEW;
 #ifdef __cplusplus
 struct PC_SHADER_MATERIAL_FILTER_VIEW {
-    const struct PC_SHADER_FILTER_DESC_VIEW *descriptor;
-    const struct PC_SHADER_FILTER_MATERIAL_VIEW *material;
+    const NUSHADERMTLDESC *descriptor;
+    const NUMTL *material;
     i32 flags;
     i32 variant;
     i32 first_path;
@@ -192,11 +155,11 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     PC_SHADER_MATERIAL_FILTER_VIEW() {
     }
 
-    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *descriptor, i32 flags, i32 parameter);
+    PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *descriptor, i32 flags, i32 parameter);
 
-    PC_SHADER_MATERIAL_FILTER_VIEW(const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *material, i32 flags,
+    PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags,
                                    i32 variant);
-    void Initialize(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32);
+    void Initialize(const NUSHADERMTLDESC *, const NUMTL *, i32, i32);
     bool UnfilteredHasLayer(i32) const;
     bool HasDiffuse(i32) const;
     bool HasLayer(i32) const;
@@ -229,8 +192,8 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
     i32 HasLayerFlag27() const;
     i32 HasSelector0() const;
     i32 HasSelector1() const;
-    const PC_SHADER_FILTER_DESC_VIEW *GetDescriptor() const;
-    const PC_SHADER_FILTER_MATERIAL_VIEW *GetMaterial() const;
+    const NUSHADERMTLDESC *GetDescriptor() const;
+    const NUMTL *GetMaterial() const;
     bool HasBaseLayer() const;
     i32 HasSpecular() const;
     bool HasBaseLighting() const;
@@ -330,12 +293,12 @@ template <class T> class ShaderManagerTemplate {
     ShaderManagerTemplate();
     virtual ~ShaderManagerTemplate();
     virtual bool CreateShader(const struct PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
-    virtual void AdaptDescriptor(const struct PC_SHADER_FILTER_DESC_VIEW *, const struct PC_SHADER_FILTER_MATERIAL_VIEW *);
+    virtual void AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
     T slots[400];
     i32 last_allocated;
     NuShaderObject *bound_slot;
     NuShaderObject *AllocateSlot(i32 *index);
-    NuShaderObject *Retrieve(const struct PC_SHADER_FILTER_DESC_VIEW *, const struct PC_SHADER_FILTER_MATERIAL_VIEW *, i32, i32, bool);
+    NuShaderObject *Retrieve(const NUSHADERMTLDESC *, const NUMTL *, i32, i32, bool);
     void ReleaseShader(T *slot);
     void DestroyShaders();
     void SetCurrentShader(T *slot);

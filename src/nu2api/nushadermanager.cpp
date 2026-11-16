@@ -16,9 +16,9 @@
 #include <string.h>
 
 template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
-template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *);
+template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
 
-void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW *desc, const PC_SHADER_FILTER_MATERIAL_VIEW *mtl,
+void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const NUSHADERMTLDESC *desc, const NUMTL *mtl,
                                                 i32 input_flags, i32 input_parameter) {
     descriptor = desc;
     material = mtl;
@@ -27,12 +27,12 @@ void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const PC_SHADER_FILTER_DESC_VIEW
     variant = input_flags & 3;
     /* Bit 18 of the vertex format is a one-bit field (shr 18, test dl 1). */
     first_path = variant == 0 && (input_flags & 0x10) != 0 && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
-                 (((mtl->blend_flags >> 14) & 3) == 0 || ((mtl->blend_flags >> 14) & 3) == 2);
+                 (((mtl->attribs.word >> 14) & 3) == 0 || ((mtl->attribs.word >> 14) & 3) == 2);
     second_path = (variant != 0 || (input_flags & 0x10) != 0) && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
-                  (((mtl->blend_flags >> 14) & 3) == 0 || ((mtl->blend_flags >> 14) & 3) == 2);
+                  (((mtl->attribs.word >> 14) & 3) == 0 || ((mtl->attribs.word >> 14) & 3) == 2);
     deferred_path = variant == 0 && (input_flags & 0x20) != 0 && ((u8)(desc->vertex_format >> 18) & 1) == 0 &&
-                    (((mtl->blend_flags >> 14) & 3) == 0 || ((mtl->blend_flags >> 14) & 3) == 2);
-    if ((mtl->blend_flags & 0xf) == 2) {
+                    (((mtl->attribs.word >> 14) & 3) == 0 || ((mtl->attribs.word >> 14) & 3) == 2);
+    if ((mtl->attribs.word & 0xf) == 2) {
         first_path = 0;
         second_path = 0;
     }
@@ -64,18 +64,18 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::UnfilteredHasLayer(i32 which) const {
 }
 
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32 which) const {
-    if (variant != 0 && descriptor->override_mode == 0) {
+    if (variant != 0 && descriptor->shadow_set == 0) {
         return false;
     }
     switch (which) {
         case 0:
-            return descriptor->diffuse_maps[0] > parameter;
+            return descriptor->diffuse_map_ids[0] > parameter;
         case 1:
-            return descriptor->diffuse_maps[1] > parameter;
+            return descriptor->diffuse_map_ids[1] > parameter;
         case 2:
-            return descriptor->diffuse_maps[2] > parameter;
+            return descriptor->diffuse_map_ids[2] > parameter;
         case 3:
-            return descriptor->diffuse_maps[3] > parameter;
+            return descriptor->diffuse_map_ids[3] > parameter;
         default:
             return false;
     }
@@ -83,7 +83,7 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::HasDiffuse(i32 which) const {
 
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
     if (variant != 0) {
-        return UnfilteredHasLayer(which) && which == 0 && (descriptor->override_mode & 1) != 0;
+        return UnfilteredHasLayer(which) && which == 0 && (descriptor->shadow_set & 1) != 0;
     }
     return UnfilteredHasLayer(which);
 }
@@ -130,24 +130,24 @@ u32 PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasTexCoordSets(i32 count) const {
-    if (variant != 0 && descriptor->override_mode == 0) {
+    if (variant != 0 && descriptor->shadow_set == 0) {
         return 0;
     }
     return (i32)((descriptor->vertex_format >> 9) & 3) >= count;
 }
 
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerVertexFlag8(i32 layer) const {
-    if ((variant != 0 && descriptor->override_mode == 0) || layer != 0) {
+    if ((variant != 0 && descriptor->shadow_set == 0) || layer != 0) {
         return false;
     }
     return (descriptor->vertex_format >> 8) & 1 ? true : false;
 }
 
-const PC_SHADER_FILTER_DESC_VIEW *PC_SHADER_MATERIAL_FILTER_VIEW::GetDescriptor() const {
+const NUSHADERMTLDESC *PC_SHADER_MATERIAL_FILTER_VIEW::GetDescriptor() const {
     return descriptor;
 }
 
-const PC_SHADER_FILTER_MATERIAL_VIEW *PC_SHADER_MATERIAL_FILTER_VIEW::GetMaterial() const {
+const NUMTL *PC_SHADER_MATERIAL_FILTER_VIEW::GetMaterial() const {
     return material;
 }
 
@@ -159,7 +159,7 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSpecular() const {
     if (variant != 0) {
         return 0;
     }
-    return descriptor->specular_threshold > parameter;
+    return descriptor->specular_map_tid > parameter;
 }
 
 bool PC_SHADER_MATERIAL_FILTER_VIEW::HasBaseLighting() const {
@@ -189,7 +189,7 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag1() const {
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasNormalLayer1() const {
-    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_PARALLAX_MAP) != 0 && descriptor->normal_threshold > parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_PARALLAX_MAP) != 0 && descriptor->lightmap_tids[1] > parameter;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag0() const {
@@ -200,7 +200,7 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag0() const {
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasNormalLayer0() const {
-    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_NORMAL_MAP) != 0 && descriptor->normal_threshold > parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_NORMAL_MAP) != 0 && descriptor->lightmap_tids[1] > parameter;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasLayerFlag14() const {
@@ -238,11 +238,11 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::HasEnvironmentTexture() const {
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAbove() const {
-    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0 && descriptor->surface_threshold > parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0 && descriptor->lightmap_tids[0] > parameter;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAtOrBelow() const {
-    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0 && descriptor->surface_threshold <= parameter;
+    return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0 && descriptor->lightmap_tids[0] <= parameter;
 }
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const {
@@ -399,9 +399,9 @@ i32 NuShaderObject::fun_007454a0() {
     return marker;
 }
 
-void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *input, const PC_SHADER_FILTER_MATERIAL_VIEW *input_material) {
-    PC_SHADER_FILTER_DESC_VIEW *desc = const_cast<PC_SHADER_FILTER_DESC_VIEW *>(input);
-    PC_SHADER_FILTER_MATERIAL_VIEW *material = const_cast<PC_SHADER_FILTER_MATERIAL_VIEW *>(input_material);
+void ShaderManagerHLSLPc::AdaptDescriptor(const NUSHADERMTLDESC *input, const NUMTL *input_material) {
+    NUSHADERMTLDESC *desc = const_cast<NUSHADERMTLDESC *>(input);
+    NUMTL *material = const_cast<NUMTL *>(input_material);
     if ((desc->vertex_format & 0x4000000) != 0) {
         desc->layer_flags |= PC_SHADER_LAYER_PRELIGHT_FX;
         desc->flags |= 0x200000;
@@ -454,7 +454,7 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
                 desc->flags &= ~1U;
                 desc->layer_flags &= ~PC_SHADER_LAYER_NORMAL_MAP;
             }
-            if ((desc->flags & 1) != 0 && desc->normal_threshold != 0) {
+            if ((desc->flags & 1) != 0 && desc->lightmap_tids[1] != 0) {
                 desc->flags &= ~1U;
                 desc->layer_flags &= ~PC_SHADER_LAYER_NORMAL_MAP;
             }
@@ -488,8 +488,8 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
                 desc->flags &= ~0x400U;
             }
             desc->layer_flags &= ~PC_SHADER_LAYER_REFRACTION;
-            if (layer && (desc->layer_flags & PC_SHADER_LAYER_REFRACTION) == 0 && (material->blend_flags & 0x700000) != 0x100000) {
-                material->blend_flags &= 0x807fffff;
+            if (layer && (desc->layer_flags & PC_SHADER_LAYER_REFRACTION) == 0 && (material->attribs.word & 0x700000) != 0x100000) {
+                material->attribs.word &= 0x807fffff;
             }
             if ((desc->flags & 0x4000) != 0) {
                 desc->shininess = (f32)(desc->shininess * (f64)0.4f);
@@ -709,7 +709,7 @@ template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_F
     return false;
 }
 
-template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *, const PC_SHADER_FILTER_MATERIAL_VIEW *) {
+template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *) {
 }
 
 // The HLSL uber-shader source compiled into every material variant, with its NUL.
