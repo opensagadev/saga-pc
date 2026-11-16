@@ -877,7 +877,6 @@ APIDEBRISSYS *InitGameDebris(VARIPTR *cursor, VARIPTR end, i32 count, i32 named_
     APIDEBRISSYS *system;
     i32 i;
     i32 j;
-    (void)end;
     system = (APIDEBRISSYS *)((cursor->addr + 15) & ~15u);
     cursor->addr = ((cursor->addr + 15) & ~15u) + sizeof(*system);
     if (system != NULL) {
@@ -992,7 +991,6 @@ void AddAnimEffects(CHARACTER_MODEL_LAYERS *model, APICHARACTERDATA *character_d
     i32 position_count;
     i32 count;
     NUVEC velocity;
-    (void)character_data;
     if (paused != 0 || effects == NULL) {
         return;
     }
@@ -2778,7 +2776,6 @@ CHARACTERDATA *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR
     i32 inside;
     i32 index;
     i32 length;
-    (void)buffer_end; /* Unused. */
     parser = NuFParCreate(file);
     if (parser == NULL) {
         PCCharacterSystemExistingNoOp(file);
@@ -2882,7 +2879,6 @@ void APICharacterSysInit(VARIPTR *cursor, VARIPTR end, i32 character_count, i32 
                          i32 animation_capacity, APICHARACTERDATA *characters, void (*lights)(APIOBJECT *)) {
     i32 i;
     CHARACTER_MODEL_LAYERS *model;
-    (void)end;
     if (apicharsys != NULL) {
         PCCharacterSystemExistingNoOp();
     }
