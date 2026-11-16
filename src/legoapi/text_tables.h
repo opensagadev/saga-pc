@@ -307,10 +307,6 @@ typedef struct combat_attack_counter_s { // size 0x1084
     u8 attack_count;                     // 0x1083
 } COMBAT_ATTACK_COUNTER;
 
-typedef struct combat_coinpacket_s { // size 0x4
-    u32 coins;                       // 0x0
-} COMBAT_COINPACKET;
-
 typedef struct combat_reaction_owner_s { // size 0x7bc
     u8 unknown_000[0x7bb];               // 0x000
     i8 attacker_slot;                    // 0x7bb
@@ -362,10 +358,6 @@ typedef struct game_save_score_s { // size 0x7c18
     u8 unknown_0000[0x7c14];       // 0x0000
     u32 coins;                     // 0x7c14
 } GAME_SAVE_SCORE;
-
-typedef struct lose_coins_packet_s { // size 0x4
-    u32 coins;                       // 0x0
-} LOSE_COINS_PACKET;
 
 typedef struct movement_model_s {
     u8 unknown_00[0xc];

@@ -180,16 +180,6 @@ f32 guided_start_time = 0.5f;
 i32 guided_rotate_speed = 240000;
 f32 test_missile_scale = 8.0f;
 
-typedef struct ai_cable_head_s { // size 0x8
-    GAMEOBJECT *source;          // 0x0
-    GAMEOBJECT *target;          // 0x4
-} AI_CABLE_HEAD;
-
-typedef struct ai_cable_object_s { // size 0x1044
-    u8 unknown_000[0x1040];        // 0x0000
-    CABLE_s *cable;                // 0x1040
-} AI_CABLE_OBJECT;
-
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 
 typedef struct AI_CONDITION_TURRET { // size 0x13c
@@ -10271,9 +10261,6 @@ i32 Action_ProbeDroid(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
     GAMEOBJECT *object;
     GAMEOBJECT *towing_player;
     GAMEOBJECT *bomb;
-    AI_CABLE_OBJECT *view;
-    AI_CABLE_OBJECT *player_view;
-    AI_CABLE_HEAD *cable;
     AILOCATOR *locator;
     NUVEC difference;
     f32 distance;
@@ -10284,29 +10271,26 @@ i32 Action_ProbeDroid(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
         return 1;
     }
     object = packet->owner->objptr;
-    if (((AI_CABLE_OBJECT *)player)->cable != NULL && (bomb = ((AI_CABLE_HEAD *)((AI_CABLE_OBJECT *)player)->cable)->target) != NULL &&
-        bomb->id == id_DRAGBOMB) {
+    if (player->cable != NULL && (bomb = player->cable->target) != NULL && bomb->id == id_DRAGBOMB) {
         towing_player = player;
-    } else if (player2 != NULL && ((AI_CABLE_OBJECT *)player2)->cable != NULL &&
-               (bomb = ((AI_CABLE_HEAD *)((AI_CABLE_OBJECT *)player2)->cable)->target) != NULL && bomb->id == id_DRAGBOMB) {
+    } else if (player2 != NULL && player2->cable != NULL && (bomb = player2->cable->target) != NULL && bomb->id == id_DRAGBOMB) {
         towing_player = player2;
     } else {
         bomb = NULL;
         towing_player = NULL;
     }
-    view = (AI_CABLE_OBJECT *)object;
     if (bomb != NULL && towing_player != NULL) {
-        if (view->cable != NULL && ((AI_CABLE_HEAD *)view->cable)->target != bomb) {
-            ((AI_CABLE_HEAD *)view->cable)->source = NULL;
-            view->cable = NULL;
+        if (object->cable != NULL && object->cable->target != bomb) {
+            object->cable->source = NULL;
+            object->cable = NULL;
         }
-        if (view->cable == NULL) {
+        if (object->cable == NULL) {
             distance = NuVecXZDistSqr(&object->collision_position, &bomb->collision_position, &difference);
             if (distance < (f64)max_cable_length * max_cable_length * 0.5) {
-                view->cable = CreateCable(object, bomb, 1);
+                object->cable = CreateCable(object, bomb, 1);
             }
         }
-        if (view->cable != NULL) {
+        if (object->cable != NULL) {
             locator = object->ai_packet.locator;
             if (locator != NULL) {
                 AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, AIMOVE_TO_DESTINATION, 0.0f);
@@ -10319,9 +10303,9 @@ i32 Action_ProbeDroid(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
                               AIMOVE_TO_DESTINATION, 0.0f);
         }
     } else {
-        if (view->cable != NULL) {
-            ((AI_CABLE_HEAD *)view->cable)->source = NULL;
-            view->cable = NULL;
+        if (object->cable != NULL) {
+            object->cable->source = NULL;
+            object->cable = NULL;
         }
         AIMoveInstruction(packet, NULL, 0.0f, NULL, AIMOVE_WANDER, packet->movement_instruction_parameter);
     }

@@ -3629,8 +3629,8 @@ impact:
         if ((target->character_data->model_flags & CHARACTER_MODEL_ONLY_ACTIVE_WHEN_TAKEN_OVER) && !ObjIsTargetSpeeder(target) &&
             !no_impact) {
             coins = 0;
-            if (((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) && target->coin_packet &&
-                ((COMBAT_COINPACKET *)target->coin_packet)->coins && BonusWinner == -1) {
+            if (((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) && target->coin_packet && target->coin_packet->coins &&
+                BonusWinner == -1) {
                 coins = LoseCoins(target, 1);
             }
             AddPickups(coins, 0, 0, 0, &target->collision_position, NULL, 2.0f, attacker ? attacker->player_index : -1, 1.0f, 2000000.0f,
@@ -3714,7 +3714,7 @@ impact:
         coins = 0;
         if (target->player_index != -1) {
             if ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-                if (target->coin_packet && ((COMBAT_COINPACKET *)target->coin_packet)->coins && BonusWinner == -1) {
+                if (target->coin_packet && target->coin_packet->coins && BonusWinner == -1) {
                     coins = LoseCoins(target, 1);
                 }
                 if (!BuildUpTotal) {
@@ -3841,8 +3841,8 @@ finish:
     return result;
 refill:
     coins = 0;
-    if (((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) && target->coin_packet &&
-        ((COMBAT_COINPACKET *)target->coin_packet)->coins && BonusWinner == -1) {
+    if (((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) && target->coin_packet && target->coin_packet->coins &&
+        BonusWinner == -1) {
         coins = LoseCoins(target, 1);
     }
     AddPickups(coins, 0, 0, 0, &target->collision_position, NULL, 2.0f, attacker ? attacker->player_index : -1, 1.0f, 2000000.0f, attacker,

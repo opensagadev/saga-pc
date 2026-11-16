@@ -217,11 +217,6 @@ typedef struct TERRAIN_PLAYER_BLOWUP { // size 0x104
     i16 platform_id;                   // 0x102
 } TERRAIN_PLAYER_BLOWUP;
 
-typedef struct TERRAIN_PLAYER_COINS { // size 0x8
-    u32 coins;                        // 0x0
-    f32 scale;                        // 0x4
-} TERRAIN_PLAYER_COINS;
-
 typedef struct TERRAIN_PLAYER_SET { // size 0x1bb0
     u8 unknown_0[0x1bac];           // 0x0000
     i32 minimum_height;             // 0x1bac
@@ -2425,9 +2420,8 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                         object->turn_braking = 0.0f;
                                         PlayDieSfx(object);
                                         object->current_hp = 0;
-                                        if (((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) &&
-                                            ((TERRAIN_PLAYER_COINS *)(object->coin_packet)) != NULL &&
-                                            ((TERRAIN_PLAYER_COINS *)(object->coin_packet))->coins > 0 && BonusWinner == -1) {
+                                        if (((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) && object->coin_packet != NULL &&
+                                            object->coin_packet->coins > 0 && BonusWinner == -1) {
                                             i32 coins;
 
                                             coins = LoseCoins(object, 2);
@@ -2439,7 +2433,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                                                : 2000000.0f,
                                                            NULL, 1, 0);
                                             }
-                                            ((TERRAIN_PLAYER_COINS *)(object->coin_packet))->scale = 1.5f;
+                                            object->coin_packet->scale = 1.5f;
                                         }
                                     }
                                 rescue_done:;

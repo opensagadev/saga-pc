@@ -1004,11 +1004,11 @@ i32 LoseCoins(GAMEOBJECT *object, i32 cause) {
             lost >>= 1;
         }
     }
-    if (lost > ((LOSE_COINS_PACKET *)object->coin_packet)->coins) {
-        lost = ((LOSE_COINS_PACKET *)object->coin_packet)->coins;
-        ((LOSE_COINS_PACKET *)object->coin_packet)->coins = 0;
+    if (lost > object->coin_packet->coins) {
+        lost = object->coin_packet->coins;
+        object->coin_packet->coins = 0;
     } else if (lost > 0) {
-        ((LOSE_COINS_PACKET *)object->coin_packet)->coins -= lost;
+        object->coin_packet->coins -= lost;
     }
     if (Cheats_CheckFlags(CHEAT_SCORE_X2 | CHEAT_SCORE_X4 | CHEAT_SCORE_X6 | CHEAT_SCORE_X8 | CHEAT_SCORE_X10) || DoubleScoreTime > 0.0f) {
         lost = 0;
