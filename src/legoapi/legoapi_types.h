@@ -1588,6 +1588,24 @@ struct GIZBUILDIT_s {                                  // size 0x84
 #define SUITS_ALT_STEP_NEW_SUIT 2     /* each newly collected suit is revealed */
 #define SUITS_ALT_STEP_HOLD 3         /* a second before the next stage */
 
+typedef struct RUMBLE_PACKET_RESOURCE { // size 0x14
+
+    union { // size 0x4
+        u8 unknown_00[4];
+        f32 intensity;
+    }; // 0x00
+
+    f32 amount; // 0x04
+
+    union { // size 0x4
+        u8 unknown_08[4];
+        f32 decay_duration;
+    }; // 0x08
+
+    f32 duration; // 0x0c
+    u8 active;    // 0x10
+} RUMBLE_PACKET_RESOURCE;
+
 struct STATUSPACKET_s {                                                                      // size 0x14c
     struct STATUSPACKET_LSW_s *lsw_packet;                                                   // 0x000
     i32 (*init_callback)(struct WORLDINFO_s *arg0, struct STATUSPACKET_s *arg1);             // 0x004
@@ -1598,18 +1616,7 @@ struct STATUSPACKET_s {                                                         
     struct episode_data_s *episode;                                                          // 0x018
     u32 *score;                                                                              // 0x01c
     struct mission_data_s *mission;                                                          // 0x020
-    f32 player0_rumble_amount;                                                               // 0x024
-    f32 player0_rumble_time;                                                                 // 0x028
-    f32 player0_rumble_duration;                                                             // 0x02c
-    f32 player0_buzz_amount;                                                                 // 0x030
-    u8 player0_rumble_priority;                                                              // 0x034
-    u8 unknown_35[3];                                                                        // 0x035
-    f32 player1_rumble_amount;                                                               // 0x038
-    f32 player1_rumble_time;                                                                 // 0x03c
-    f32 player1_rumble_duration;                                                             // 0x040
-    f32 player1_buzz_amount;                                                                 // 0x044
-    u8 player1_rumble_priority;                                                              // 0x048
-    u8 unknown_49[3];                                                                        // 0x049
+    RUMBLE_PACKET_RESOURCE rumble[2];                                                        // 0x024
     f32 area_time;                                                                           // 0x04c
     f32 collected_score;                                                                     // 0x050
     f32 true_hero_target;                                                                    // 0x054

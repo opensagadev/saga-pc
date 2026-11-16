@@ -61,6 +61,14 @@
 
 #define BONUS_GUNSHIP_LEVFLAGS ((BONUS_GUNSHIP_FLAGS *)LevFlag)
 
+/* The Factory B paint puzzle state shared with the network partner (SetLevelHack(4)). */
+typedef struct factoryb_netpacket_s { // size 0x4
+    u8 unknown_0;                     // 0x0 cleared every update
+    i8 paint_try;                     // 0x1 painttry, the paint lights that are lit
+    u8 cylinder_up;                   // 0x2 the bonus cylinder rose (stage 4)
+    i8 paint_target;                  // 0x3 painttarget, 0 or the target colour + 3
+} FACTORYB_NETPACKET;
+
 typedef struct dooku_c_s {
     GIZAIMESSAGE *total_message;
     GIZAIMESSAGE *hit_message;
@@ -157,13 +165,13 @@ nuhspecial_s painttargetcolour[3] = {0};
 
 void DrawPaintLights(void) {
     i32 i;
-    for (i = 0; i < ((i8 *)factoryb_netpacket)[1]; i++) {
+    for (i = 0; i < factoryb_netpacket->paint_try; i++) {
         if (NuSpecialExistsFn(&paintlights[i]) != 0) {
             NuSpecialDrawAt(&green_light, NuSpecialGetDrawMtx(&paintlights[i]));
         }
     }
     for (i = 0; i < 3; i++) {
-        i8 colour = ((i8 *)factoryb_netpacket)[3];
+        i8 colour = factoryb_netpacket->paint_target;
         if (i == colour - 3 || colour == 0) {
             NuSpecialSetVisibility(&painttargetcolour[i], 1);
         } else {
@@ -257,15 +265,15 @@ void UpdatePaintPuzzle(WORLDINFO *world) {
         }
         case 4:
             GizObstacle_PlayForwards(forcetube->object);
-            ((u8 *)factoryb_netpacket)[2] = 1;
+            factoryb_netpacket->cylinder_up = 1;
             break;
         default:
             break;
     }
-    ((u8 *)factoryb_netpacket)[0] = 0;
-    ((u8 *)factoryb_netpacket)[1] = (u8)painttry;
-    ((u8 *)factoryb_netpacket)[3] = (u8)painttarget;
-    if (((u8 *)factoryb_netpacket)[2] == 1 && played_sound == 0) {
+    factoryb_netpacket->unknown_0 = 0;
+    factoryb_netpacket->paint_try = (i8)painttry;
+    factoryb_netpacket->paint_target = (i8)painttarget;
+    if (factoryb_netpacket->cylinder_up == 1 && played_sound == 0) {
         PlaySfx("Fac_BonusCylUp", &NuSpecialGetMtx(&((GIZOBSTACLE *)forcetube->object)->anim_set->objects->special)->translation);
         played_sound = 1;
     }
@@ -1126,7 +1134,7 @@ KAMINOC_PACKET *kaminoc_netpacket = NULL;
 nuhspecial_s disco_on_spin[3] = {0};
 GIZMO *disco_off_spina[3] = {0};
 nuhspecial_s walllights[2] = {0};
-void *factoryb_netpacket = 0;
+FACTORYB_NETPACKET *factoryb_netpacket = 0;
 nuhspecial_s walllights_disco[2] = {0};
 nuhspecial_s green_light = {0};
 nuhspecial_s striplights[2] = {0};
@@ -2144,7 +2152,7 @@ JEDIB_PHASE jedi_b_phase3[8] = {{&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUP
 
 void InitPaintPuzzle(WORLDINFO *world) {
     i32 i;
-    ((u8 *)factoryb_netpacket)[2] = 0;
+    factoryb_netpacket->cylinder_up = 0;
     for (i = 0; i < 6; i++) {
         paintobst[i] = GizmoFindByName(world->gizmo_sys, obstacle_gizmotype_id, paint_name[i]);
     }

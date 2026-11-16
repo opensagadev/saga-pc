@@ -18,27 +18,6 @@ typedef struct PAD_INPUT {
     u8 analog_left_y;
 } PAD_INPUT;
 
-typedef struct RUMBLE_PACKET_RESOURCE { // size 0x14
-
-    union { // size 0x4
-        u8 unknown_00[4];
-        f32 intensity;
-    }; // 0x00
-
-    f32 amount; // 0x04
-
-    union { // size 0x4
-        u8 unknown_08[4];
-        f32 decay_duration;
-    }; // 0x08
-
-    f32 duration; // 0x0c
-    u8 active;    // 0x10
-} RUMBLE_PACKET_RESOURCE;
-
-typedef struct STATUS_RUMBLE_PAIR {
-    RUMBLE_PACKET_RESOURCE players[2];
-} STATUS_RUMBLE_PAIR;
 #ifdef __cplusplus
 extern "C" {
 #endif

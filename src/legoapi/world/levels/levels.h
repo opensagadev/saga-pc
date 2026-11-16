@@ -136,7 +136,7 @@ extern "C" {
     extern f32 PodRace_sniper_start_fire_radius;
     extern struct gizforce_s *force_array[4];
     struct GIZMOBLOWUP *DeathStar2BattleD_InZapRange(struct gameobject_s *object);
-    extern void *factoryb_netpacket;
+    extern struct factoryb_netpacket_s *factoryb_netpacket;
     void Hub_UpdateMiniKits(WORLDINFO *world);
     void Hub_UpdateMiniKits(WORLDINFO *);
     void Hub_Update(WORLDINFO *);

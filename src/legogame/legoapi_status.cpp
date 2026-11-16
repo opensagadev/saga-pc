@@ -294,7 +294,7 @@ extern "C" {
     void NewStatusRumbleBuzz(i32 player, float amount, float buzz, i32 priority) {
         for (i32 i = 0; i < 2; ++i) {
             if (StatusPacket.player_active[i] != 0 && (player == -1 || player == i)) {
-                RUMBLE_PACKET_RESOURCE *rumble = &((STATUS_RUMBLE_PAIR *)&StatusPacket.player0_rumble_amount)->players[i];
+                RUMBLE_PACKET_RESOURCE *rumble = &StatusPacket.rumble[i];
                 if (amount > 0.0f && (rumble->amount <= 0.0f || amount > rumble->amount / rumble->decay_duration * rumble->intensity)) {
                     rumble->intensity = amount;
                     rumble->decay_duration = amount;
@@ -311,7 +311,7 @@ extern "C" {
     }
 
     void StatusRumbleUpdate(void) {
-        RUMBLE_PACKET_RESOURCE *packet = ((STATUS_RUMBLE_PAIR *)&StatusPacket.player0_rumble_amount)->players;
+        RUMBLE_PACKET_RESOURCE *packet = StatusPacket.rumble;
         i32 player;
         for (player = 0; player < 2; ++player, ++packet) {
             i32 motor1;
@@ -359,8 +359,8 @@ extern "C" {
         packet->flags_word &= ~2u;
         status_prompt = 0;
         if ((packet->stage != NULL && packet->stage->type == STATUS_STAGE_SAVE) || packet->stage->type == STATUS_STAGE_EXIT) {
-            ResetRumble((RUMBLE_PACKET_RESOURCE *)&packet->player0_rumble_amount);
-            ResetRumble((RUMBLE_PACKET_RESOURCE *)&packet->player1_rumble_amount);
+            ResetRumble(&packet->rumble[0]);
+            ResetRumble(&packet->rumble[1]);
         }
         if (packet->stage != NULL && packet->stage->type == STATUS_STAGE_SAVE) {
             ReCalculateCompletionPoints();
@@ -460,8 +460,8 @@ extern "C" {
         p->flags_word &= ~1u;
         StatusNewMinikitCount = 0;
         currentminikit = 0;
-        ResetRumble((RUMBLE_PACKET_RESOURCE *)&p->player0_rumble_amount);
-        ResetRumble((RUMBLE_PACKET_RESOURCE *)&p->player1_rumble_amount);
+        ResetRumble(&p->rumble[0]);
+        ResetRumble(&p->rumble[1]);
         CoinTotalScale = 1.0f;
         goldbrickmsgcount = 0;
         if (netclient == 0) {

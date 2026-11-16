@@ -32,10 +32,7 @@ typedef struct GAMEPAD {           // size 0x5c
     f32 previous_input_magnitude;  // 0x38
     f32 waggle_magnitude;          // 0x3c
 
-    union { // size 0x14
-        u8 unknown_40[0x14];
-        RUMBLE_PACKET_RESOURCE rumble;
-    }; // 0x40
+    RUMBLE_PACKET_RESOURCE rumble; // 0x40
 
     NUVEC *operator_data;     // 0x54
     u16 previous_input_angle; // 0x58

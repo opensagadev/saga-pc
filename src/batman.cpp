@@ -406,7 +406,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
             for (i = 0; i < 8; ++i) {
                 object = Player[i];
                 if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->pad->bound_pad != NULL) {
-                    UpdateRumble((RUMBLE_PACKET_RESOURCE *)object->pad->unknown_40);
+                    UpdateRumble(&object->pad->rumble);
                 }
             }
         }

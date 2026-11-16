@@ -88,3 +88,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | writable char arrays inlined as literals (stream C) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
 | writable char arrays inlined as literals (stream C) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.97 % |
 | nufpar wide word buffer, typed WORLDINFO.guidelines (stream B) | BoulderSpawn | legogame/episodeIII.c | exact | different |
+| status rumble pair and Factory B net packet (stream C) | BoulderSpawn | legogame/episodeIII.c | different | exact |
