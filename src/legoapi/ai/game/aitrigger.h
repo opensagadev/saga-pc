@@ -16,7 +16,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-typedef struct trigger_system_s TRIGGER_SYSTEM;
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -162,7 +162,7 @@ typedef struct CUT_LOAD_SUBTITLE { // size 0x28
     f32 fade_time;                 // 0x24
 } CUT_LOAD_SUBTITLE;
 
-typedef struct CUT_LOAD_RECORD {            // size 0x190
+struct CUT_LOAD_RECORD {            // size 0x190
     void *scene;                            // 0x000
     INSTNUGCUTSCENE *instance;              // 0x004
     char name[64];                          // 0x008
@@ -196,7 +196,7 @@ typedef struct CUT_LOAD_RECORD {            // size 0x190
     u8 end_flags;                           // 0x18a
     u8 unknown_18b;                         // 0x18b
     i32 music_handle;                       // 0x18c
-} CUT_LOAD_RECORD;
+};
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 CutscenesFabs(f32 f) {
@@ -206,18 +206,18 @@ static f32 CutscenesFabs(f32 f) {
     return rv;
 }
 
-typedef struct CUT_LOAD_SYS {  // size 0xc
+struct CUT_LOAD_SYS {  // size 0xc
     CUT_LOAD_RECORD **records; // 0x0
     i32 count;                 // 0x4
     u32 *character_bits;       // 0x8
-} CUT_LOAD_SYS;
+};
 
-typedef struct CUT_LOAD_LIST_ENTRY { // size 0xc
+struct CUT_LOAD_LIST_ENTRY { // size 0xc
     char *directory;                 // 0x0
     char *name;                      // 0x4
     i16 level;                       // 0x8
     u8 unknown_0a[2];                // 0xa
-} CUT_LOAD_LIST_ENTRY;
+};
 
 typedef struct CUT_DRAW_LOCATOR CUT_DRAW_LOCATOR;
 

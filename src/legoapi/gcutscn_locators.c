@@ -51,7 +51,7 @@ typedef struct CUT_LOOKAT_LOCATOR_INFO { // size 0x60
     u8 tertiary_material;                // 0x5f
 } CUT_LOOKAT_LOCATOR_INFO;
 
-typedef struct CUT_LOOKAT_STATE {     // size 0x18
+struct CUT_LOOKAT_STATE {     // size 0x18
     NUHGOBJ_EVAL *hierarchy;          // 0x00
     f32 blend;                        // 0x04
     u16 character;                    // 0x08
@@ -61,7 +61,7 @@ typedef struct CUT_LOOKAT_STATE {     // size 0x18
     u16 tertiary_material;            // 0x10
     u16 joint;                        // 0x12
     CUT_LOOKAT_LOCATOR_INFO *locator; // 0x14
-} CUT_LOOKAT_STATE;
+};
 
 i32 FindMtlInHGObj(NUHGOBJ_EVAL *hierarchy, i32 material_type) {
     CUT_LOOKAT_HIERARCHY *view = (CUT_LOOKAT_HIERARCHY *)hierarchy;

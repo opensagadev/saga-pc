@@ -1029,8 +1029,6 @@ INSTNUGCUTSCENE *instNuGCutSceneCreate(void *asset, NUGSCN *gscene, void *extra_
     return instance;
 }
 
-typedef void (*CUT_DRAW_EVAL_CALLBACK)(INSTNUGCUTSCENE *, void *, void *, void *, f32);
-typedef void (*CUT_DRAW_RIGID_CALLBACK)(void *, nuhspecial_s *, NUMTX *);
 
 void fun_005000c0(void) {
     CutSceneBackgroundInstances = NULL;
