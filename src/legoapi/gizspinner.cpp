@@ -1504,10 +1504,10 @@ extern "C" ADDGIZMOTYPE *Spinner_RegisterGizmo(i32 type_id) {
     addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizSpinner_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizSpinner_GetPos;
     addtype->fns.using_special_fn = (void *)GizSpinner_UsingSpecial;
-    addtype->fns.bolt_hit_plat_fn = (void *)GizSpinner_BoltHitPlatAll;
+    addtype->fns.bolt_hit_plat_fn = (GIZMO_BOLT_HIT_PLAT_FN)GizSpinner_BoltHitPlatAll;
     addtype->fns.get_best_bolt_target_fn =
         (GIZMO * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)) GizSpinner_GetBestBoltTarget;
-    addtype->fns.bolt_hit_fn = (void *)GizSpinner_HasBoltHit;
+    addtype->fns.bolt_hit_fn = (GIZMO_BOLT_HIT_FN)GizSpinner_HasBoltHit;
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizSpinner_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizSpinner_ClearProgress;
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizSpinner_StoreProgressData;

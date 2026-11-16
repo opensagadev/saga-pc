@@ -20,6 +20,11 @@ typedef struct gizmo_s { // size 0x8
 
 struct gizmoset_s;
 
+/* A gizmo type's bolt hooks: a bolt hitting the type's platforms, and a bolt hitting one of its gizmos. */
+typedef i32 (*GIZMO_BOLT_HIT_PLAT_FN)(void *world, void *data, struct bolt_s *bolt, u8 *hit_flags);
+typedef i32 (*GIZMO_BOLT_HIT_FN)(void *world, void *data, struct gameobject_s *owner, NUVEC *points, i32 mode, f32 radius, NUVEC *minimum,
+                                 NUVEC *maximum, struct bolt_s *bolt, i32 hit_type, u8 *hit_flags);
+
 typedef struct gizmofns_s {                                                     // size 0x70
     i16 options;                                                                // 0x00
     u16 padding;                                                                // 0x02
@@ -39,10 +44,10 @@ typedef struct gizmofns_s {                                                     
     i32 (*get_visibility_fn)(struct gizmo_s *gizmo);                            // 0x38
     void *get_pos_fn;                                                           // 0x3c
     void *using_special_fn;                                                     // 0x40
-    void *bolt_hit_plat_fn;                                                     // 0x44
+    GIZMO_BOLT_HIT_PLAT_FN bolt_hit_plat_fn;                                    // 0x44
     struct gizmo_s *(*get_best_bolt_target_fn)(struct gizmoset_s *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32,
                                                i32);                                   // 0x48
-    void *bolt_hit_fn;                                                                 // 0x4c
+    GIZMO_BOLT_HIT_FN bolt_hit_fn;                                                     // 0x4c
     void *(*allocate_progress_data_fn)(union variptr_u *buffer, union variptr_u *end); // 0x50
     void (*clear_progress_fn)(void *world, void *progress);                            // 0x54
     void (*store_progress_fn)(void *world, void *data, void *progress);                // 0x58

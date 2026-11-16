@@ -1168,10 +1168,9 @@ static i32 GizObstacles_BoltHitPlat(void *world, void *data, BOLT *bolt, u8 *hit
     return 0;
 }
 
-static i32 GizObstacles_BoltHit(void *world, void *data, void *attacker_ptr, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
-                                NUVEC *maximum, BOLT *bolt, u32 hit_type, u8 *hit_flags) {
+static i32 GizObstacles_BoltHit(void *world, void *data, GAMEOBJECT *attacker, NUVEC *points, i32 point_count, f32 radius, NUVEC *minimum,
+                                NUVEC *maximum, BOLT *bolt, i32 hit_type, u8 *hit_flags) {
     GIZOBSTACLE_SYSTEM *system = data;
-    GAMEOBJECT *attacker = attacker_ptr;
     GIZOBSTACLE *nearest = NULL;
     f32 nearest_distance = 1000000000.0f;
     i32 i;

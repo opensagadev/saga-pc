@@ -16,14 +16,6 @@
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
-typedef struct bolt_gizmo_type_s {
-    u8 unknown_00[0x6c];
-    i32 (*hit_platform)(WORLDINFO *, void *, BOLT *, u8 *);
-    u8 unknown_70[4];
-    i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT *, i32, u8 *);
-    u8 unknown_78[0x24];
-} BOLT_GIZMO_TYPE;
-
 i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *object, NUVEC *position, NUVEC *direction, f32 radius,
                                f32 range_squared, i32 directional, i32 planar, i32 bolt_id) {
     GIZMOTYPES *registry = gizmotypes;
@@ -88,7 +80,7 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT *bolt, NUVEC *points, 
     NUVEC *hit_points;
     i32 mode;
     i32 i;
-    BOLT_GIZMO_TYPE *type;
+    GIZMOTYPE *type;
     GIZMOSET *set;
     if (bolt->flags & 0x200) {
         hit_points = points + 1;
@@ -98,11 +90,11 @@ i32 GizmoSys_BoltHit(void *system, WORLDINFO *world, BOLT *bolt, NUVEC *points, 
         mode = 3;
     }
     if (gizmotypes != NULL && system != NULL && (bolt->hit_flags & OBJHIT_HITS_GIZMOS) != 0) {
-        type = (BOLT_GIZMO_TYPE *)gizmotypes->types;
+        type = gizmotypes->types;
         set = ((GIZMOSYS_PREFIX *)system)->sets;
         for (i = 0; i < gizmotypes->count; ++i, ++set, ++type) {
-            if (type->hit_bolt != NULL &&
-                type->hit_bolt(world, set->data, bolt->owner, hit_points, mode, radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
+            if (type->fns.bolt_hit_fn != NULL &&
+                type->fns.bolt_hit_fn(world, set->data, bolt->owner, hit_points, mode, radius, minimum, maximum, bolt, 1, hit_flags) != 0) {
                 BoltSys->debris(bolt, points, -1, NULL, 0);
                 if (bolt->owner != NULL) {
                     NewRumble(bolt->owner->pad->bound_pad, .6f, 0);

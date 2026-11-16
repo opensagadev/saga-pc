@@ -1454,7 +1454,7 @@ extern "C" ADDGIZMOTYPE *Push_RegisterGizmo(i32 type_id) {
     addtype.fns.get_visibility_fn = NULL;
     addtype.fns.get_pos_fn = NULL;
     addtype.fns.using_special_fn = NULL;
-    addtype.fns.bolt_hit_plat_fn = reinterpret_cast<void *>(Pushblocks_BoltHitPlat);
+    addtype.fns.bolt_hit_plat_fn = Pushblocks_BoltHitPlat;
     addtype.fns.get_best_bolt_target_fn = NULL;
     addtype.fns.bolt_hit_fn = NULL;
     addtype.fns.allocate_progress_data_fn = Push_AllocateProgressData;

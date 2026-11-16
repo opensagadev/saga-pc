@@ -1476,11 +1476,11 @@ extern "C" {
         addtype->fns.activate_rev_fn = (i32(*)(GIZMO *, i32, i32))GizmoTurret_ActivateRev;
         addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizmoTurret_SetVisibility;
         addtype->fns.get_pos_fn = (void *)GizmoTurret_GetPos;
-        addtype->fns.bolt_hit_plat_fn = (void *)GizTurrets_BoltHitPlat;
+        addtype->fns.bolt_hit_plat_fn = (GIZMO_BOLT_HIT_PLAT_FN)GizTurrets_BoltHitPlat;
         addtype->fns.get_best_bolt_target_fn =
             (GIZMO * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32))
                 GizTurrets_GetBestBoltTarget;
-        addtype->fns.bolt_hit_fn = (void *)GizTurrets_BoltHit;
+        addtype->fns.bolt_hit_fn = (GIZMO_BOLT_HIT_FN)GizTurrets_BoltHit;
         addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizTurrets_AllocateProgressData;
         addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizTurrets_ClearProgress;
         addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizTurrets_StoreProgress;

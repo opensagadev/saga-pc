@@ -40,26 +40,9 @@ void GizmoNameDiagnostic(char *name);
         (result) = (type)allocation_;                                                                                                      \
     } while (0)
 
-typedef struct bolt_gizmo_type_s {                          // size 0x9c
-    u8 unknown_00[0x6c];                                    // 0x00
-    i32 (*hit_platform)(WORLDINFO *, void *, BOLT *, u8 *); // 0x6c
-    u8 unknown_70[4];                                       // 0x70
-    i32 (*hit_bolt)(WORLDINFO *, void *, GAMEOBJECT *, NUVEC *, i32, f32, NUVEC *, NUVEC *, BOLT *, i32,
-                    u8 *); // 0x74
-    u8 unknown_78[0x24];   // 0x78
-} BOLT_GIZMO_TYPE;
-
 typedef NUVEC *(*GIZMO_GET_POS_FN)(GIZMO *gizmo);
 void EdFileWriteInt(i32 value);
 void EdFileWriteChar(char value);
-
-typedef struct GIZMO_NAME_TYPE {     // size 0x9c
-    u8 unknown_00[0x20];             // 0x00
-    char prefix[0x20];               // 0x20
-    u8 unknown_40[4];                // 0x40
-    char *(*get_gizmo_name)(void *); // 0x44
-    u8 unknown_48[0x54];             // 0x48
-} GIZMO_NAME_TYPE;
 
 static i32 DefaultGizmo_GetNumOutputs(GIZMO *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO *gizmo, i32 output, i32 mode);
@@ -917,14 +900,14 @@ i32 GizmoGetUniqueName(GIZMOSYS_PREFIX *system, char *prefix, char *name, char *
 }
 
 i32 GizmoSys_BoltHitPlat(void *system, WORLDINFO *world, BOLT *bolt, u8 *hit_flags) {
-    BOLT_GIZMO_TYPE *type;
+    GIZMOTYPE *type;
     GIZMOSET *set;
     i32 i;
     if (gizmotypes != NULL && system != NULL && bolt != NULL) {
-        type = (BOLT_GIZMO_TYPE *)gizmotypes->types;
+        type = gizmotypes->types;
         set = ((GIZMOSYS_PREFIX *)system)->sets;
         for (i = 0; i < gizmotypes->count; ++i, ++set, ++type) {
-            if (type->hit_platform != NULL && type->hit_platform(world, set->data, bolt, hit_flags) != 0) {
+            if (type->fns.bolt_hit_plat_fn != NULL && type->fns.bolt_hit_plat_fn(world, set->data, bolt, hit_flags) != 0) {
                 return 1;
             }
         }

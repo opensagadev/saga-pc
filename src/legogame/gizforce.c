@@ -1839,10 +1839,10 @@ ADDGIZMOTYPE *GizForce_RegisterGizmo(i32 type_id) {
     addtype->fns.activate_rev_fn = (i32(*)(GIZMO *, i32, i32))GizmoForce_ActivateRev;
     addtype->fns.set_visibility_fn = (void (*)(GIZMO *, i32))GizmoForce_SetVisibility;
     addtype->fns.get_pos_fn = (void *)GizmoForce_GetPos;
-    addtype->fns.bolt_hit_plat_fn = (void *)GizForces_BoltHitPlatAll;
+    addtype->fns.bolt_hit_plat_fn = (GIZMO_BOLT_HIT_PLAT_FN)GizForces_BoltHitPlatAll;
     addtype->fns.get_best_bolt_target_fn =
         (GIZMO * (*)(GIZMOSET *, f32 *, NUVEC *, NUVEC *, void *, NUVEC *, NUVEC *, f32, f32, i32, i32, i32)) GizForces_GetBestBoltTarget;
-    addtype->fns.bolt_hit_fn = (void *)GizForces_BoltHit;
+    addtype->fns.bolt_hit_fn = (GIZMO_BOLT_HIT_FN)GizForces_BoltHit;
     addtype->fns.allocate_progress_data_fn = (void *(*)(VARIPTR *, VARIPTR *))GizForces_AllocateProgressData;
     addtype->fns.clear_progress_fn = (void (*)(void *, void *))GizForces_ClearProgress;
     addtype->fns.store_progress_fn = (void (*)(void *, void *, void *))GizForces_StoreProgress;
