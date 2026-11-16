@@ -144,7 +144,7 @@ static void SecurityDoorInitRecord(SECURITY_DOOR_RECORD *door) {
         FindAnglesZX(&ShadNorm, &door->terrain_angle_z, &door->terrain_angle_x);
     }
     door->opening = 0.0f;
-    door->state = 0;
+    door->state = SECURITYDOOR_STATE_CLOSED;
     door->flags = (door->flags & ~(SECURITYDOOR_OPENED | SECURITYDOOR_DRAWN)) | SECURITYDOOR_ACTIVE | SECURITYDOOR_VISIBLE;
     SecurityDoorUpdateMatrices(door, 0);
     PlatInstRotate(door->platform_id[0], 1);
@@ -172,7 +172,7 @@ void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS 
         door->bits.opened = (progress->opened_mask[word] & mask) != 0;
         if (door->bits.opened) {
             door->opening = 1.0f;
-            door->state = 2;
+            door->state = SECURITYDOOR_STATE_OPEN;
             SecurityDoorUpdateMatrices(door, 0x4000);
         }
     }
@@ -187,7 +187,7 @@ void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     door = (SECURITY_DOOR_RECORD *)world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         NUANG angle;
-        if (door->state == 2 && door->opening < 1.0f) {
+        if (door->state == SECURITYDOOR_STATE_OPEN && door->opening < 1.0f) {
             f32 opening = (f64)door->opening + (f64)FRAMETIME;
             door->opening = opening;
             if (opening >= 1.0f) {
@@ -216,7 +216,7 @@ SECURITY_DOOR_RECORD *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position
         f32 candidate;
         if (object != NULL) {
             if ((door->flags & SECURITYDOOR_VISIBLE) == 0 || (door->flags & SECURITYDOOR_ACTIVE) == 0 ||
-                (door->flags & SECURITYDOOR_OPENED) != 0 || door->state != 0 || door->opening != 0.0f) {
+                (door->flags & SECURITYDOOR_OPENED) != 0 || door->state != SECURITYDOOR_STATE_CLOSED || door->opening != 0.0f) {
                 continue;
             }
             candidate = NuVecDistSqr(position, &door->player_position, NULL);
@@ -420,7 +420,7 @@ static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD *door, i3
     object->context_variant_flags |= 0x20;
     if (facing != 0) {
         object->movement_facing_angle = object->security_door->yaw + 0x8000;
-        object->security_door->state = 1;
+        object->security_door->state = SECURITYDOOR_STATE_IN_USE;
     } else {
         object->movement_facing_angle = object->security_door->yaw;
     }
@@ -455,7 +455,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if ((object->context_variant_flags & 0x20) != 0) {
             object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-            object->security_door->state = 2;
+            object->security_door->state = SECURITYDOOR_STATE_OPEN;
             NewRumble(object->pad->bound_pad, 0.6f, 0);
         }
         return;

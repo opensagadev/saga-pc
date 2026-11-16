@@ -21,6 +21,8 @@ extern "C" {
         f32 multiplier_time;              // 0xc
     } PLAYER_COIN_PACKET;
 
+#define PLAYER_COIN_MAX_MULTIPLIER 10 /* the coin pickups raise multiplier up to this */
+
     void DrawPanel(void);
     extern f32 PANEL_REDBRICKSCALE;
     extern f32 REDBRICKPOSX;

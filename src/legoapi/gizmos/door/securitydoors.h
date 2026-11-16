@@ -11,6 +11,11 @@
 #define SECURITYDOOR_OPENED 0x4 /* fully open: the gizmo output */
 #define SECURITYDOOR_DRAWN 0x8  /* a leaf was drawn this frame */
 
+/* SECURITYDOOR_s.state (security_door_record_s.state in securitydoor.c) */
+#define SECURITYDOOR_STATE_CLOSED 0
+#define SECURITYDOOR_STATE_IN_USE 1 /* a character works the panel (CHARACTER_CONTEXT_SECURITY) */
+#define SECURITYDOOR_STATE_OPEN 2   /* opening, then open */
+
 typedef struct SECURITYDOOR_s SECURITYDOOR_s;
 
 struct SECURITYDOOR_s {   // size 0xc0

@@ -299,10 +299,10 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         if (machine == NULL) {
             return;
         }
-        if (machine->configured_hat == 6) {
+        if (machine->configured_hat == HELMET_BOUNTY_HUNTER) {
             PlaySfx("Hunter_Granted", &object->collision_position);
         }
-        if (object->hat_machine->configured_hat == 5) {
+        if (object->hat_machine->configured_hat == HELMET_STORMTROOPER) {
             PlaySfx("Trooper_Granted", &object->collision_position);
         }
         object->grapple = NULL;
@@ -314,10 +314,10 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         if (object->grapple != NULL) {
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
             object->hat_machine->hat_delay = 0.6f;
-            if (object->hat_machine->configured_hat == 6) {
+            if (object->hat_machine->configured_hat == HELMET_BOUNTY_HUNTER) {
                 PlaySfx("Hunter_Granted", &object->collision_position);
             }
-            if (object->hat_machine->configured_hat == 5) {
+            if (object->hat_machine->configured_hat == HELMET_STORMTROOPER) {
                 PlaySfx("Trooper_Granted", &object->collision_position);
             }
         } else {

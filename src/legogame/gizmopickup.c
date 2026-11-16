@@ -420,7 +420,7 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
                 multiplier = object->coin_packet->multiplier;
                 score *= multiplier;
                 message.score = score;
-                if (object->coin_packet->multiplier < 10) {
+                if (object->coin_packet->multiplier < PLAYER_COIN_MAX_MULTIPLIER) {
                     ++object->coin_packet->multiplier;
                 }
                 object->coin_packet->multiplier_time = 0.5f;
