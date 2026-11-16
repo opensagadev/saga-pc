@@ -133,8 +133,6 @@ typedef struct AIOBSTACLE_PARTIAL { // size 0xa0
 
 void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
 
-typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
-
 /* AISYS PC callbacks. */
 
 typedef struct ai_context_reset_view_s { // size 0x6c5
@@ -261,8 +259,6 @@ SOCK *FindSock(SOCKSYS *system, char *name);
 void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
 
 extern const f64 ActionSnapWeightedRandomZero;
-
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS *, AIPACKET *);
 
 typedef struct ai_force_platform_record_s { // size 0x6c
     u8 unknown_00[0x40];                    // 0x00

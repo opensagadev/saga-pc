@@ -29,6 +29,14 @@ extern "C" {
     extern i32 ai_fighting;
     typedef u8 (*AI_LEVEL_CHARACTER_TYPE_ID)(char *);
     typedef i32 (*AI_LEVEL_CHARACTER_GLOBAL_ID)(u8);
+    /* The game's hooks into the AI system (InitFn_*). */
+    typedef char *(*AI_CHARACTER_NAME)(u8);
+    typedef char *(*AI_GLOBAL_CHARACTER_NAME)(i32);
+    typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ)(i32);
+    typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
+    typedef void (*AI_CLEAR_CREATURES)(void);
+    typedef struct APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
+    typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(struct AISYS *, struct AIPACKET *);
     extern i32 party_under_cover;
     extern f32 alert_timer;
     void MakeBaddiesForgetAboutParty(i32);

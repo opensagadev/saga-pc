@@ -103,9 +103,5 @@ static void Signal_SetGizmoVisibility(GIZMO *gizmo, i32 visible) {
     }
 }
 
-/* Shop state machine. */
-typedef i32 (*SHOP_MENU_CALLBACK)(void *);
-typedef void (*SHOP_DRAW_CALLBACK)(void);
-
 /* The move code is written out per shelf slot: any compiler-unrolled
  * loop in the function makes VC8 schedule the x87 operands differently. */

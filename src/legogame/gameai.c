@@ -100,13 +100,6 @@ typedef struct controller_cut_view_s {
     f32 current_frame;
 } CONTROLLER_CUT_VIEW;
 
-typedef char *(*AI_CHARACTER_NAME)(u8);
-typedef char *(*AI_GLOBAL_CHARACTER_NAME)(i32);
-typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ)(i32);
-typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
-typedef void (*AI_CLEAR_CREATURES)(void);
-typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS *, AIPACKET *);
 extern AIACTIONDEF lego_aiactiondefs[];
 extern AIACTIONDEF api_aiactiondefs[];
 extern AIACTIONDEF *game_aiactiondefs;

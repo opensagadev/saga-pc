@@ -46,8 +46,6 @@
 #include <string.h>
 #include "gameapi/edtools/edui.h"
 
-typedef void (*CHARACTER_UPDATE_CALLBACK)(GAMEOBJECT *);
-
 struct minianimpacket_s {       // size 0x24
     f32 current_time;           // 0x00
     f32 previous_time;          // 0x04

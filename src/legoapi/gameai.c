@@ -11,13 +11,6 @@
 #include <stdio.h>
 
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
-typedef char *(*AI_CHARACTER_NAME)(u8);
-typedef char *(*AI_GLOBAL_CHARACTER_NAME)(i32);
-typedef void *(*AI_GLOBAL_CHARACTER_HGOBJ)(i32);
-typedef void (*AI_GLOBAL_CHARACTER_RENDER)(NUVEC *, i16, i32, i32, void *);
-typedef void (*AI_CLEAR_CREATURES)(void);
-typedef APIOBJECT *(*AI_GET_NAMED_OBJECT)(void *, char *);
-typedef NUVEC *(*AI_GET_CREATURE_ORIGIN)(AISYS *, AIPACKET *);
 
 i32 StarWars_PreparingForSpecialMove(AIPACKET *, APIOBJECT *, i32);
 i32 StarWars_MidSpecialMove(AISYS *, AIPACKET *, APIOBJECT *);
