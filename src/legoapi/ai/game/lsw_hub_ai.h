@@ -9,7 +9,7 @@
 
 struct gizaimessage_s;
 
-typedef struct HUB_AI_MUSIC_VIEW {                   // size 0x150
+typedef struct HUB_AI_STATE {                        // size 0x150
     struct AIAREA *areas[10];                        // 0x000
     struct AIPATH *paths[10];                        // 0x028
     AILOCATOR *area_locators[10][4];                 // 0x050
@@ -26,13 +26,13 @@ typedef struct HUB_AI_MUSIC_VIEW {                   // size 0x150
     AILOCATOR *counter_b[4];                         // 0x11c
     AILOCATOR *table_locators[8];                    // 0x12c
     AILOCATOR *serve_player;                         // 0x14c
-} HUB_AI_MUSIC_VIEW;
+} HUB_AI_STATE;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern i16 dat_007f1910;
-    extern HUB_AI_MUSIC_VIEW HubAiMusicState;
+    extern HUB_AI_STATE HubAiMusicState;
     i32 Hub_Outside(void);
     i32 Hub_GetRandomCharType(void);
     void LSW_Hub_InitAI(WORLDINFO *);

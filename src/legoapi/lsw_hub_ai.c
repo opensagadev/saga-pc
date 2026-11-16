@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
-HUB_AI_MUSIC_VIEW HubAiMusicState = {0};
+HUB_AI_STATE HubAiMusicState = {0};
 
 i32 Hub_CurrentArea(void) {
     if (WORLD->current_level == HUB_LDATA) {
