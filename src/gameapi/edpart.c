@@ -329,7 +329,7 @@ void edpartAddGeneralType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
                 edpartInitType(index);
                 ++part_types_used;
                 part_scene[0] = edbits_things_scene;
-                part_types[index].unknown_b3 = 0;
+                part_types[index].effect_list = 0;
                 part_types[index].page = 0;
                 part_page_on[0] = 1;
                 part_page_used[0] = 1;
@@ -364,7 +364,7 @@ void edpartSelType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
     edpart_type_menu = NULL;
     edpart_active_menu = NULL;
     edpart_create_type = item->data;
-    edpart_effect_list = part_types[edpart_create_type].unknown_b3;
+    edpart_effect_list = part_types[edpart_create_type].effect_list;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
@@ -382,7 +382,7 @@ void edpartGeneralTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(edpart_generaltype_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Add Type"));
     }
     for (index = 0; index < 128; ++index) {
-        if (part_types[index].name[0] != 0 && part_types[index].unknown_b3 == 0) {
+        if (part_types[index].name[0] != 0 && part_types[index].effect_list == 0) {
             selected = edpart_create_type == index;
             eduiMenuAddItem(edpart_generaltype_menu,
                             eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
@@ -407,7 +407,7 @@ void edpartAddLevelType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
                 edpartInitType(index);
                 ++part_types_used;
                 part_scene[1] = edbits_base_scene;
-                part_types[index].unknown_b3 = 1;
+                part_types[index].effect_list = 1;
                 part_types[index].page = 1;
                 part_page_on[1] = 1;
                 part_page_used[1] = 1;
@@ -451,7 +451,7 @@ void edpartLevelTypeMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(edpart_leveltype_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Add Type"));
     }
     for (index = 0; index < 128; ++index) {
-        if (part_types[index].name[0] != 0 && part_types[index].unknown_b3 == 1) {
+        if (part_types[index].name[0] != 0 && part_types[index].effect_list == 1) {
             selected = edpart_create_type == index;
             eduiMenuAddItem(edpart_leveltype_menu, eduiItemCheckCreate(index, edblack, selected, 1, edpartSelType, part_types[index].name));
             if (selected == 1) {
@@ -822,7 +822,7 @@ void edpartInstanceMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         eduiMenuAddItem(edpart_instance_menu,
                         eduiItemToggleCreate(9999, edblack, selected, 2, edpartSetInstanceType, PartNullInstanceName));
         edpart_nullobject_highlight = edui_last_item;
-        if (edpart_nearest_type->unknown_b3 == 1) {
+        if (edpart_nearest_type->effect_list == 1) {
             eduiMenuAddItem(edpart_instance_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartWorldInstanceMenu, "World Scene..."));
         } else {
             eduiMenuAddItem(edpart_instance_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "World Scene..."));
@@ -1020,14 +1020,14 @@ void edpartEmitMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 void edpartMoveList(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     parent = NULL;
-    if (part_types[edpart_create_type].unknown_b3 == 0) {
-        part_types[edpart_create_type].unknown_b3 = 1;
+    if (part_types[edpart_create_type].effect_list == 0) {
+        part_types[edpart_create_type].effect_list = 1;
         part_types[edpart_create_type].page = 1;
     } else {
-        part_types[edpart_create_type].unknown_b3 = 0;
+        part_types[edpart_create_type].effect_list = 0;
         part_types[edpart_create_type].page = 0;
     }
-    edpart_effect_list = part_types[edpart_create_type].unknown_b3;
+    edpart_effect_list = part_types[edpart_create_type].effect_list;
     if (menu->parent) {
         parent = menu->parent;
         eduiMenuDetach(menu);
@@ -1053,7 +1053,7 @@ void edpartDataMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         if (edpart_create_type != -1) {
             eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartCopyType, "Copy Type"));
             eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartDeleteType, "Delete Type"));
-            if (part_types[edpart_create_type].unknown_b3 == 0) {
+            if (part_types[edpart_create_type].effect_list == 0) {
                 eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartMoveList, "Move Type to Level List"));
             } else {
                 eduiMenuAddItem(edpart_data_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartMoveList, "Move Type to General List"));
@@ -1448,7 +1448,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
     i32 emitter_count = 0;
     memset(empty_name, 0, sizeof(empty_name));
     for (index = 0; index < 128; ++index) {
-        if (part_types[index].name[0] != '\0' && part_types[index].unknown_b3 == page) {
+        if (part_types[index].name[0] != '\0' && part_types[index].effect_list == page) {
             ++type_count;
         }
     }
@@ -1460,7 +1460,7 @@ i32 edpartSaveEffects(char *filename, u8 page) {
         EdFileWriteInt(type_count);
 
         for (index = 0; index < 128; ++index) {
-            if (part_types[index].name[0] == '\0' || part_types[index].unknown_b3 != page) {
+            if (part_types[index].name[0] == '\0' || part_types[index].effect_list != page) {
                 continue;
             }
 

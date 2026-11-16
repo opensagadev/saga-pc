@@ -21,7 +21,7 @@ typedef struct parttype_lookup_s { // size 0x178
     i8 variant_count;              // 0x0b0
     u8 variant_mode;               // 0x0b1
     i8 page;                       // 0x0b2
-    u8 unknown_b3;                 // 0x0b3
+    u8 effect_list;                // 0x0b3: 0 general, 1 level
     f32 particle_scale;            // 0x0b4
     f32 effect_scale;              // 0x0b8
     f32 lifetime;                  // 0x0bc

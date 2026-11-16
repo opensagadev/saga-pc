@@ -638,7 +638,7 @@ void edpartPartIndexMenu(eduimenu_s *menu) {
     }
     eduiMenuAddItem(edpart_partindex_menu, eduiItemCheckCreate(-1, edblack, chosen == -1, 1, edpartChangePartIndex, "None"));
     for (index = 0; index < 128; ++index) {
-        if (part_types[index].name[0] != '\0' && (i8)part_types[index].unknown_b3 == edpart_part_list) {
+        if (part_types[index].name[0] != '\0' && (i8)part_types[index].effect_list == edpart_part_list) {
             i32 selected = chosen == index;
             if (index == edpart_nearest_emit->effect_id) {
                 eduiMenuAddItem(edpart_partindex_menu, eduiItemCheckCreate(index, edgrey, 0, 0, NULL, part_types[index].name));
@@ -724,7 +724,7 @@ void edpartTrail1DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     edpart_trail1debris_menu = eduiMenuCreate(70, 70, 300, 300, ed_fnt, edpartCancelTrail1DebrisMenu, "Trail 1 Debris");
     if (edpart_trail1debris_menu != NULL) {
         eduiMenuAddItem(edpart_trail1debris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->unknown_b3 == 1) {
+        if (edpart_nearest_type->effect_list == 1) {
             eduiMenuAddItem(edpart_trail1debris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
         } else {
             eduiMenuAddItem(edpart_trail1debris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
@@ -746,7 +746,7 @@ void edpartTrail2DebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     edpart_trail2debris_menu = eduiMenuCreate(70, 70, 300, 300, ed_fnt, edpartCancelTrail2DebrisMenu, "Trail 2 Debris");
     if (edpart_trail2debris_menu != NULL) {
         eduiMenuAddItem(edpart_trail2debris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->unknown_b3 == 1) {
+        if (edpart_nearest_type->effect_list == 1) {
             eduiMenuAddItem(edpart_trail2debris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
         } else {
             eduiMenuAddItem(edpart_trail2debris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
@@ -768,7 +768,7 @@ void edpartEmitterDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2)
     edpart_emitterdebris_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelEmitterDebrisMenu, "Emitter Debris");
     if (edpart_emitterdebris_menu != NULL) {
         eduiMenuAddItem(edpart_emitterdebris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->unknown_b3 == 1) {
+        if (edpart_nearest_type->effect_list == 1) {
             eduiMenuAddItem(edpart_emitterdebris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
         } else {
             eduiMenuAddItem(edpart_emitterdebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
@@ -787,7 +787,7 @@ void edpartImpactDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
     edpart_impactdebris_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelImpactDebrisMenu, "Impact Debris");
     if (edpart_impactdebris_menu != NULL) {
         eduiMenuAddItem(edpart_impactdebris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->unknown_b3 == 1) {
+        if (edpart_nearest_type->effect_list == 1) {
             eduiMenuAddItem(edpart_impactdebris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
         } else {
             eduiMenuAddItem(edpart_impactdebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
@@ -806,7 +806,7 @@ void edpartImpactPartMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_impactpart_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelImpactPartMenu, "Impact Part");
     if (edpart_impactpart_menu != NULL) {
         eduiMenuAddItem(edpart_impactpart_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralPartIndexMenu, "General List..."));
-        if (edpart_nearest_type->unknown_b3 == 1) {
+        if (edpart_nearest_type->effect_list == 1) {
             eduiMenuAddItem(edpart_impactpart_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartLevelPartIndexMenu, "Level List..."));
         } else {
             eduiMenuAddItem(edpart_impactpart_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
@@ -825,7 +825,7 @@ void edpartDieDebrisMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edpart_diedebris_menu = eduiMenuCreate(70, 70, 250, 300, ed_fnt, edpartCancelDieDebrisMenu, "Die Debris");
     if (edpart_diedebris_menu != NULL) {
         eduiMenuAddItem(edpart_diedebris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartGeneralDebrisIndexMenu, "General List..."));
-        if (edpart_nearest_type->unknown_b3 == 1) {
+        if (edpart_nearest_type->effect_list == 1) {
             eduiMenuAddItem(edpart_diedebris_menu, eduiItemSelCreate(1, edblack, 0, 0, edpartLevelDebrisIndexMenu, "Level List..."));
         } else {
             eduiMenuAddItem(edpart_diedebris_menu, eduiItemSelCreate(1, edgrey, 0, 0, NULL, "Level List..."));
@@ -3567,7 +3567,7 @@ i32 edpartLoadPageEx(char *path, i8 mode, NUGSCN **scenes, i32 scene_count) {
                 edpartLoadSingleType(&part_types[type_slot], version, page);
                 if (part_types[type_slot].name[0] != 0) {
                     part_types[type_slot].page = page;
-                    part_types[type_slot].unknown_b3 = mode;
+                    part_types[type_slot].effect_list = mode;
                     ++part_types_used;
                 }
             }
@@ -4081,7 +4081,7 @@ void edpartDoInput(FRAME_PAD *pad) {
             edpart_emitroty = part_emits[edpart_nearest].rotation_2e;
             edpart_emitrotx = part_emits[edpart_nearest].rotation_30;
             edpart_create_type = part_emits[edpart_nearest].effect_id;
-            edpart_effect_list = part_types[edpart_create_type].unknown_b3;
+            edpart_effect_list = part_types[edpart_create_type].effect_list;
         }
     }
     if (edpart_snap_enabled) {
