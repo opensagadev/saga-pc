@@ -71,3 +71,15 @@ The baseline list is `matching.json` at 5717c76e: take the names with `exact_mat
 - Casts whose removal would change a mangled name (const-taking V2Peer and EdClass signatures).
 - The APIOBJECT/GAMEOBJECT base casts. They need APIOBJECT embedded as GAMEOBJECT's first member.
 - Fields that nothing reads or writes.
+
+## Where everything is
+
+- **main** (30f4fec2e): the proven passes, and the NuInitHardware setup-tag macros.
+  - main has the final NuInitHardware text. The branch carries an earlier version of it: `0X4x` enum members, and no `docs/pc-names.md` entry. Take main's version of those files when merging.
+- **cleanup/quick-run**: the quick run's landed batches, this report, and the gameapi refix (3 functions back to exact). The proof on the branch reads about 13,501 exact functions, against 13,516 on main. The refix list above still applies, apart from the gameapi rows.
+- **Parked work** that is built but was not gated onto the branch. Rebase each one onto cleanup/quick-run and run the quick gate:
+  - `cleanup/parked-saga-pc-b`: nu2api, 13 commits. Macros, declarations, views and field names; its match was never measured.
+  - `cleanup/parked-saga-pc-b2`: legoapi, 3 commits. The weapon-rate view and about 70 field names.
+  - `cleanup/parked-saga-pc-c2`: legogame, 3 commits. 54 declarations moved into headers, which fails the standalone header check (13 headers).
+  - `cleanup/parked-saga-pc-c2w`: legogame, 3 commits that never went through a gate. Customise, the hub pad readers, and the episode I countdown.
+- **Worktrees:** all quick-run worktrees are removed. The older worktrees saga-pc-a, saga-pc-b2 (work/gate-speed) and saga-pc-c are untouched.
