@@ -111,8 +111,8 @@ extern "C" void CreateFadeMaterials(void) {
     FadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     FadeMtl->attribs.filter_mode = 1;
     FadeMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
-    FadeMtl->attribs.u_clamp = 1;
-    FadeMtl->attribs.v_clamp = 1;
+    FadeMtl->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    FadeMtl->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     FadeMtl->attribs.vertex_colour = 1;
     FadeMtl->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
     NuMtlUpdate(FadeMtl);
@@ -121,16 +121,16 @@ extern "C" void CreateFadeMaterials(void) {
     FadeMtl2->attribs.z_mode = NUMTL_ZMODE_OFF;
     FadeMtl2->attribs.filter_mode = 1;
     FadeMtl2->attribs.lighting = NUMTL_LIGHTING_NONE;
-    FadeMtl2->attribs.u_clamp = 1;
-    FadeMtl2->attribs.v_clamp = 1;
+    FadeMtl2->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    FadeMtl2->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     FadeMtl2->attribs.vertex_colour = 1;
     FadeMtl2->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(FadeMtl2);
 
     ScreenFadeMtl = NuMtlCreate(1);
     ScreenFadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ScreenFadeMtl->attribs.u_clamp = 1;
-    ScreenFadeMtl->attribs.v_clamp = 1;
+    ScreenFadeMtl->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    ScreenFadeMtl->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     ScreenFadeMtl->attribs.filter_mode = 1;
     ScreenFadeMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
     ScreenFadeMtl->attribs.vertex_colour = 1;

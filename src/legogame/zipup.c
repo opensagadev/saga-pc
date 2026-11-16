@@ -1038,8 +1038,8 @@ void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
     char path[64] = "stuff\\";
     if (name != NULL) {
         ropemtl = NuMtlCreate3D(1);
-        ropemtl->attribs.u_clamp = 0;
-        ropemtl->attribs.v_clamp = 0;
+        ropemtl->attribs.u_address = NUMTL_ADDRESS_WRAP;
+        ropemtl->attribs.v_address = NUMTL_ADDRESS_WRAP;
         ((ZIPUP_ROPE_MATERIAL *)ropemtl)->opacity = 1.0f;
         ropemtl->attribs.z_mode = NUMTL_ZMODE_NORMAL;
         ropemtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;

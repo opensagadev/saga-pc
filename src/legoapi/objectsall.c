@@ -124,8 +124,8 @@ void MessageBoxInitMtl(void) {
     MessageMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     MessageMtl->attribs.filter_mode = 1;
     MessageMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
-    MessageMtl->attribs.u_clamp = 1;
-    MessageMtl->attribs.v_clamp = 1;
+    MessageMtl->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    MessageMtl->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     MessageMtl->attribs.vertex_colour = 1;
     MessageMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(MessageMtl);

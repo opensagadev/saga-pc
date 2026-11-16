@@ -6151,7 +6151,7 @@ void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
         NuMtlSetShaderDescPS(ms_pZOnlyMtl2D, &desc2d);
         ms_pZOnlyMtl2D->attribs.z_mode = NUMTL_ZMODE_NORMAL;
         ms_pZOnlyMtl2D->attribs.alpha_mode = NUMTL_ALPHA_NO_COLOUR;
-        ms_pZOnlyMtl2D->attribs.unknown_2_8 = 0;
+        ms_pZOnlyMtl2D->attribs.alpha_write = 0;
         ms_pZOnlyMtl2D->attribs.cull_mode = NUMTL_CULL_NONE;
         NuMtlUpdate(ms_pZOnlyMtl2D);
         NUSHADERMTLDESC desc3d;
@@ -6162,7 +6162,7 @@ void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
         NuMtlSetShaderDescPS(ms_pZOnlyMtl3D, &desc3d);
         ms_pZOnlyMtl3D->attribs.z_mode = NUMTL_ZMODE_NORMAL;
         ms_pZOnlyMtl3D->attribs.alpha_mode = NUMTL_ALPHA_NO_COLOUR;
-        ms_pZOnlyMtl3D->attribs.unknown_2_8 = 0;
+        ms_pZOnlyMtl3D->attribs.alpha_write = 0;
         ms_pZOnlyMtl3D->attribs.cull_mode = NUMTL_CULL_NONE;
         NuMtlUpdate(ms_pZOnlyMtl3D);
         ms_pAlphaMtl2D->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;

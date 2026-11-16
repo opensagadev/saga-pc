@@ -2373,8 +2373,8 @@ void NuHGobjRestoreEvaluation(void) {
 
 void APITransparentInit(void) {
     APITrans_Mtl[0] = NuMtlCreate3D(1);
-    APITrans_Mtl[0]->attribs.u_clamp = 1;
-    APITrans_Mtl[0]->attribs.v_clamp = 1;
+    APITrans_Mtl[0]->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    APITrans_Mtl[0]->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     APITrans_Mtl[0]->diffuse_r = 0.0f;
     APITrans_Mtl[0]->diffuse_g = 0.0f;
     APITrans_Mtl[0]->diffuse_b = 0.0f;
@@ -2386,8 +2386,8 @@ void APITransparentInit(void) {
     NuMtlUpdate(APITrans_Mtl[0]);
 
     APITrans_Mtl[1] = NuMtlCreate3D(1);
-    APITrans_Mtl[1]->attribs.u_clamp = 1;
-    APITrans_Mtl[1]->attribs.v_clamp = 1;
+    APITrans_Mtl[1]->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    APITrans_Mtl[1]->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     APITrans_Mtl[1]->diffuse_r = 0.0f;
     APITrans_Mtl[1]->diffuse_g = 0.0f;
     APITrans_Mtl[1]->diffuse_b = 0.0f;

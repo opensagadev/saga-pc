@@ -332,8 +332,8 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streaks_free = StreakNodes;
     StreakNodesUsed = NULL;
     streakmtl = NuMtlCreate3D(1);
-    streakmtl->attribs.u_clamp = 0;
-    streakmtl->attribs.v_clamp = 0;
+    streakmtl->attribs.u_address = NUMTL_ADDRESS_WRAP;
+    streakmtl->attribs.v_address = NUMTL_ADDRESS_WRAP;
     streakmtl->opacity = 1.0f;
     streakmtl->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
     streakmtl->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
@@ -347,8 +347,8 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakmtl->texture_id = static_cast<i16>(NuTexRead(name, buffer, end));
     NuMtlUpdate(streakmtl);
     streakmtl_ref = NuMtlCreate3D(1);
-    streakmtl_ref->attribs.u_clamp = 0;
-    streakmtl_ref->attribs.v_clamp = 0;
+    streakmtl_ref->attribs.u_address = NUMTL_ADDRESS_WRAP;
+    streakmtl_ref->attribs.v_address = NUMTL_ADDRESS_WRAP;
     streakmtl_ref->opacity = 1.0f;
     streakmtl_ref->attribs.z_mode = NUMTL_ZMODE_NORMAL;
     streakmtl_ref->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;

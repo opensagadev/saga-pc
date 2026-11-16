@@ -59,8 +59,8 @@ void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_cou
     MenuFadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     MenuFadeMtl->attribs.filter_mode = 1;
     MenuFadeMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
-    MenuFadeMtl->attribs.u_clamp = 1;
-    MenuFadeMtl->attribs.v_clamp = 1;
+    MenuFadeMtl->attribs.u_address = NUMTL_ADDRESS_CLAMP;
+    MenuFadeMtl->attribs.v_address = NUMTL_ADDRESS_CLAMP;
     MenuFadeMtl->attribs.vertex_colour = 1;
     MenuFadeMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(MenuFadeMtl);
