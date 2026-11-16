@@ -412,14 +412,14 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
     }
     i32 version = compiler->dictionary.profile;
     if (PcWindowOptions.usehires == 0) {
-        version = 1;
+        version = PC_SHADER_MODEL_1_1;
     }
     switch (version) {
-        case 3:
+        case PC_SHADER_MODEL_2_X:
             desc->flags &= 0xff77dffb;
             desc->layer_flags &= 0xe7fadffb;
             break;
-        case 2:
+        case PC_SHADER_MODEL_2_0:
             desc->flags &= 0xff7efffb;
             desc->layer_flags &= 0xbffbfffb;
             if ((desc->flags & 0x20) != 0) {
@@ -486,7 +486,7 @@ void ShaderManagerHLSLPc::AdaptDescriptor(const PC_SHADER_FILTER_DESC_VIEW *inpu
             desc->flags &= 0xfff7ffff;
             desc->layer_flags &= 0xe7feffff;
             break;
-        case 1: {
+        case PC_SHADER_MODEL_1_1: {
             bool layer = (desc->layer_flags & PC_SHADER_LAYER_REFRACTION) != 0;
             if ((desc->flags & 0x40200) == 0) {
                 desc->flags &= ~0x400U;
@@ -659,7 +659,7 @@ extern "C" {
 
 void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
-    if (compiler->dictionary.profile != 4) {
+    if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
         if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
@@ -7985,7 +7985,7 @@ extern "C" void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
 
 void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
-    if (compiler->dictionary.profile != 4) {
+    if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
         if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
@@ -8025,7 +8025,7 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
 
 void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
-    if (compiler->dictionary.profile != 4) {
+    if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
         if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
@@ -8057,7 +8057,7 @@ void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element,
 
 void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
-    if (compiler->dictionary.profile != 4) {
+    if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
         if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);

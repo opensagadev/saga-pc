@@ -16,6 +16,12 @@ typedef struct MISSION_SAVE_READER { // size 0x64
 extern "C" {
 #endif
 
+/* MISSIONSYS.state, Mission_CurrentState, STATUSPACKET_s.mission_state (InitMission, CheckMissionEnd, EndMission) */
+#define MISSION_STATE_NONE 0
+#define MISSION_STATE_ACTIVE 1
+#define MISSION_STATE_COMPLETE 2 /* a player reached the mission's character */
+#define MISSION_STATE_TIME_UP 3
+
     typedef struct mission_sys_s {             // size 0x30
         struct mission_data_s *missions;       // 0x00
         struct mission_data_s *active_mission; // 0x04

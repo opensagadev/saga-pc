@@ -256,7 +256,7 @@ void CruiserDUpdate(WORLDINFO *world) {
                 MiscTime -= FRAMETIME;
                 if (MiscTime <= 0.0f) {
                     MiscTime = 0.0f;
-                    if (ChallengeMode != 3) {
+                    if (ChallengeMode != CHALLENGE_TIME_UP) {
                         ResetLevel(NULL, NULL, 1);
                     }
                 }
@@ -735,8 +735,8 @@ void VaderC_Update(WORLDINFO *world) {
     i32 i;
     if (netclient == 0) {
         GIZAIMESSAGE *final_fight = vader_c.final_fight_message;
-        if (final_fight != NULL && ChallengeMode == 0 && final_fight->value == 0.0f && vader_c.big_jump_locator != NULL && player != NULL &&
-            player->supporting_platform_id != -1) {
+        if (final_fight != NULL && ChallengeMode == CHALLENGE_OFF && final_fight->value == 0.0f && vader_c.big_jump_locator != NULL &&
+            player != NULL && player->supporting_platform_id != -1) {
             vader_c.big_jump_locator->position = player->lower_position;
             for (i = 0; i < 10; i++) {
                 if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && Player[0]->unknown_281 != 0 &&
@@ -789,7 +789,7 @@ void VaderC_Update(WORLDINFO *world) {
               (second->flags_1f8 & 0x40000) == 0)) &&
             (((u8 *)vaderc_netpacket)[0] == 0 || first == NULL || (first->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
              second == NULL || (second->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) &&
-            (ChallengeMode == 0 || AreaGlobals.unknown_1c < 10)) {
+            (ChallengeMode == CHALLENGE_OFF || AreaGlobals.unknown_1c < 10)) {
             vader_c.players_dead = 1;
             ResetLevel(NULL, NULL, 1);
         }

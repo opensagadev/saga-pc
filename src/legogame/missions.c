@@ -213,7 +213,7 @@ void MenuDrawEndMission(MENU *menu) {
     if (MenuStopDraw != 0) {
         return;
     }
-    if (MissionSys->state == 2) {
+    if (MissionSys->state == MISSION_STATE_COMPLETE) {
         if ((f64)NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
             index = (i8)MissionSys->active_mission->index;
             remaining = (f32)(i32)MissionSys->missions[index].time - BonusTimer.time_elapsed;
@@ -236,7 +236,7 @@ void MenuDrawEndMission(MENU *menu) {
 
 void InitMission(MISSIONSYS *system, i32 index) {
     system->active_mission = &system->missions[index];
-    system->state = 1;
+    system->state = MISSION_STATE_ACTIVE;
     ResetTimer(&system->timer, 0.0f);
     Cheats_TurnOff(0);
 }
@@ -251,7 +251,7 @@ void EndMission(MISSIONSYS *system, i32 state, i32 show_message) {
         BonusWinFlag = 0;
         NewMenu(MENU_END_MISSION, -1, -1);
         ResetGameMessages();
-        if (state == 3) {
+        if (state == MISSION_STATE_TIME_UP) {
             PlaySfx(ScorePanelName, NULL);
         }
     }
@@ -288,7 +288,7 @@ void CheckMissionEnd(MISSIONSYS *system) {
             if (netclient != 0) {
                 return;
             }
-            system->state = 2;
+            system->state = MISSION_STATE_COMPLETE;
             SetBonusWinner(qrand() / 0x8000);
             if (Player[BonusWinner] == NULL || ((Player[BonusWinner]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0)) {
                 BonusWinner = BonusWinner == 0;
@@ -355,7 +355,7 @@ void MenuUpdateMissions(MENU *menu) {
     if (start != 0) {
         system = MissionSys;
         system->active_mission = &system->missions[MissionMenuSelection];
-        system->state = 1;
+        system->state = MISSION_STATE_ACTIVE;
         ResetTimer(&system->timer, 0.0f);
         Cheats_TurnOff(0);
         GameAudio_PlaySfx(0x30, NULL, 0, 0);

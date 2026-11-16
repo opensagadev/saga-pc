@@ -625,7 +625,7 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
             if (FreePlay != 0 && (NewLData->flags & LEVEL_OUTRO) != 0) {
                 NewLData = Area_FindStatusLevel(WORLD->area, NULL);
                 if (NewLData != NULL) {
-                    if (ChallengeMode != 0) {
+                    if (ChallengeMode != CHALLENGE_OFF) {
                         ChallengeMode = 4;
                     }
                 } else {

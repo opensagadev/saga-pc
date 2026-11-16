@@ -106,7 +106,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             }
             return;
         }
-        if ((object->unknown_281 & 2) != 0) {
+        if ((object->unknown_281 & GROUND_NEAR) != 0) {
             object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
@@ -295,9 +295,9 @@ void Climb_MoveCode(GAMEOBJECT *object) {
             return;
         }
         input_angle = GamePad_InputAngle(object, object->pad);
-        if ((object->unknown_281 & 2) != 0 && object->jump_animation_state == object->context_variant) {
+        if ((object->unknown_281 & GROUND_NEAR) != 0 && object->jump_animation_state == object->context_variant) {
             object->character_context = CHARACTER_CONTEXT_NONE;
-        } else if ((object->unknown_281 & 2) != 0 && object->jump_animation_state != object->context_variant &&
+        } else if ((object->unknown_281 & GROUND_NEAR) != 0 && object->jump_animation_state != object->context_variant &&
                    object->pad->input_magnitude > 0.0f && PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f) {
             object->character_context = CHARACTER_CONTEXT_NONE;
         } else if (object->contact_count != 0 && object->contact_material[0] == object->context_variant) {

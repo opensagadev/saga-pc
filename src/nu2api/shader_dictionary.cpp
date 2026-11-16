@@ -1,6 +1,7 @@
 #include "gamelib/util/CRC16.h"
 #include "gamelib/util/gamelib_util_types.h"
 #include "legoapi/items/collect/bolts.h"
+#include "nu2api/PCInput.h"
 #include "nu2api/nu3d/ShaderManager.h"
 #include "nu2api/nu3d/nushader.h"
 #include "nu2api/nucore/nustring.h"
@@ -20,7 +21,7 @@ ShaderCompilerDictionary::ShaderCompilerDictionary(VirtualStackAllocator &parent
     emit_definitions = 1;
     unknown_965 = 0;
     unknown_966 = 0;
-    profile = 4;
+    profile = PC_SHADER_MODEL_3_0;
     first_version = 8;
     second_version = 2;
     force_mode = false;
@@ -50,7 +51,7 @@ void ShaderCompilerDictionary::SetProfile(i32 input_profile, i32 first, i32 seco
     first_version = first;
     second_version = second;
     if (mode == 0) {
-        if (profile == 2 || profile == 3 || profile == 4) {
+        if (profile == PC_SHADER_MODEL_2_0 || profile == PC_SHADER_MODEL_2_X || profile == PC_SHADER_MODEL_3_0) {
             profile_name = "_centroid";
         } else {
             profile_name = "";
@@ -802,7 +803,7 @@ void ShaderCompilerDictionary::EmitProgram(ShaderCompilerBufferAllocator *output
             if (record != NULL) {
                 index = record->register_index;
             }
-            if (index >= 0 && (profile == 4 || profile == 5)) {
+            if (index >= 0 && (profile == PC_SHADER_MODEL_3_0 || profile == 5)) {
                 sprintf(register_suffix, register_format, index);
             } else {
                 register_suffix[0] = 0;

@@ -1539,7 +1539,7 @@ void DebFreeAllPanelEffects(void) {
     i32 j;
     i32 key;
     for (j = 0; j < maxdebkeys; ++j) {
-        if (debkeydata[j].effect_index != 0 && debtab[debkeydata[j].effect_index]->time_group == 4) {
+        if (debkeydata[j].effect_index != 0 && debtab[debkeydata[j].effect_index]->time_group == DEBRIS_DRAW_PANEL) {
             key = j;
             DebFreeInstantly(&key);
         }
@@ -1659,7 +1659,7 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
         return;
     }
 
-    now = effect->time_group == 4 ? panelglobaltime : globaltime;
+    now = effect->time_group == DEBRIS_DRAW_PANEL ? panelglobaltime : globaltime;
     debkeydata[key_index].effect_index = (i16)(effect_index);
     debkeydata[key_index].finite = 0;
     DebrisStartOffset(key_index, effect->emission_start_offset);
@@ -1882,7 +1882,7 @@ void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC 
     if (effect == NULL || effect->disabled != 0 || count <= 0) {
         return;
     }
-    if (4 != effect->time_group) {
+    if (DEBRIS_DRAW_PANEL != effect->time_group) {
         NUVEC extent;
         clipped_position.x = position->x;
         clipped_position.y = position->y;
@@ -1902,7 +1902,7 @@ void AddVariableShotDebrisEffectTimed5(i32 effect_index, NUVEC *position, NUVEC 
     if (particle_orientation == NULL) {
         particle_orientation = &NuMtxSetIdentityTemplate;
     }
-    if (effect->time_group == 4) {
+    if (effect->time_group == DEBRIS_DRAW_PANEL) {
         now = panelglobaltime;
         panel_time = 1;
     } else {

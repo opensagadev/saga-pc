@@ -210,6 +210,10 @@ extern "C" {
 #define HELMET_STORMTROOPER 5  /* opens stormtrooper panels, the baddies forget the party */
 #define HELMET_BOUNTY_HUNTER 6 /* opens bounty hunter panels */
 
+/* gameobject_s.unknown_281: the floor test of the character update (0 while airborne) */
+#define GROUND_CONTACT 0x1 /* the collision box reaches the floor height */
+#define GROUND_NEAR 0x2    /* GameObjectNearFloor */
+
 /* gameobject_s.attack_override, the "attack_override=" keywords of the SetOpponent and EngageOpponent script actions */
 #define ATTACK_OVERRIDE_NONE 0
 #define ATTACK_OVERRIDE_PUNCH_1 1

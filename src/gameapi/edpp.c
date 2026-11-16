@@ -3352,10 +3352,14 @@ void edptlcbDrawflagMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     if (edptl_drawflag_menu == NULL) {
         return;
     }
-    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(1, edblack, effect->time_group == 1, 1, edptlcbSetDrawflag, "Before Fog"));
-    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(0, edblack, effect->time_group == 0, 1, edptlcbSetDrawflag, "After Fog"));
-    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(3, edblack, effect->time_group == 3, 1, edptlcbSetDrawflag, "Super Early"));
-    eduiMenuAddItem(edptl_drawflag_menu, eduiItemCheckCreate(4, edblack, effect->time_group == 4, 1, edptlcbSetDrawflag, "Panel Mode"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(1, edblack, effect->time_group == DEBRIS_DRAW_BEFORE_FOG, 1, edptlcbSetDrawflag, "Before Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(0, edblack, effect->time_group == DEBRIS_DRAW_AFTER_FOG, 1, edptlcbSetDrawflag, "After Fog"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(3, edblack, effect->time_group == DEBRIS_DRAW_SUPER_EARLY, 1, edptlcbSetDrawflag, "Super Early"));
+    eduiMenuAddItem(edptl_drawflag_menu,
+                    eduiItemCheckCreate(4, edblack, effect->time_group == DEBRIS_DRAW_PANEL, 1, edptlcbSetDrawflag, "Panel Mode"));
     eduiMenuAttach(parent, edptl_drawflag_menu);
     edptl_drawflag_menu->x = parent->x + 10;
     edptl_drawflag_menu->y = parent->y + 40;

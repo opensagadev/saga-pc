@@ -654,37 +654,37 @@ void TextDecodeCodeword(char *source, char *destination) {
     NuStrCpy(destination, source);
     button = -1;
     if (NuStrICmp(source, "padup") == 0) {
-        button = 8;
+        button = PC_COMMAND_PAD_UP;
     } else if (NuStrICmp(source, "padright") == 0) {
-        button = 9;
+        button = PC_COMMAND_PAD_RIGHT;
     } else if (NuStrICmp(source, "paddown") == 0) {
-        button = 10;
+        button = PC_COMMAND_PAD_DOWN;
     } else if (NuStrICmp(source, "padleft") == 0) {
-        button = 11;
+        button = PC_COMMAND_PAD_LEFT;
     } else if (NuStrICmp(source, "triangle") == 0) {
-        button = 12;
+        button = PC_COMMAND_TRIANGLE;
     } else if (NuStrICmp(source, "circle") == 0) {
-        button = 13;
+        button = PC_COMMAND_CIRCLE;
     } else if (NuStrICmp(source, "cross") == 0) {
-        button = 14;
+        button = PC_COMMAND_CROSS;
     } else if (NuStrICmp(source, "square") == 0) {
-        button = 15;
+        button = PC_COMMAND_SQUARE;
     } else if (NuStrICmp(source, "l1") == 0) {
-        button = 16;
+        button = PC_COMMAND_L1;
     } else if (NuStrICmp(source, "l2") == 0) {
-        button = 17;
+        button = PC_COMMAND_L2;
     } else if (NuStrICmp(source, "r1") == 0) {
-        button = 18;
+        button = PC_COMMAND_R1;
     } else if (NuStrICmp(source, "r2") == 0) {
-        button = 19;
+        button = PC_COMMAND_R2;
     } else if (NuStrICmp(source, "l3") == 0) {
-        button = 20;
+        button = PC_COMMAND_L3;
     } else if (NuStrICmp(source, "r3") == 0) {
-        button = 21;
+        button = PC_COMMAND_R3;
     } else if (NuStrICmp(source, "select") == 0) {
-        button = 22;
+        button = PC_COMMAND_SELECT;
     } else if (NuStrICmp(source, "start") == 0) {
-        button = 23;
+        button = PC_COMMAND_START;
     }
     device = PcInput_GetCtrlStringPlayer();
     if (device < 0) {
@@ -898,8 +898,8 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
     } else if ((alignment & 1) != 0) {
         y = (f32)((f64)y + half_height);
     }
-    if ((alignment & 2) == 0) {
-        if ((alignment & 8) != 0) {
+    if ((alignment & TEXT_ALIGN_LEFT) == 0) {
+        if ((alignment & TEXT_ALIGN_RIGHT) != 0) {
             x -= width;
         } else {
             x -= width * 0.5;

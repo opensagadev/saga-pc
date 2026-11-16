@@ -28,16 +28,16 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     const char *vertex_uvs[4] = {"vs_uvSet0", "vs_uvSet1", "vs_uvSet2", "vs_uvSet3"};
     const char *combine[5] = {"DISABLE", "COMBINE_OVER", "COMBINE_ADD", "COMBINE_SUBTRACT", "COMBINE_MULTIPLY"};
     const char *numbers[17] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
-    if (profile == 4) {
+    if (profile == PC_SHADER_MODEL_3_0) {
         definitions->AddDefinition("VERTEX_SHADER_VERSION", "30", 0);
         definitions->AddDefinition("PIXEL_SHADER_VERSION", "30", 0);
-    } else if (profile == 3) {
+    } else if (profile == PC_SHADER_MODEL_2_X) {
         definitions->AddDefinition("VERTEX_SHADER_VERSION", "21", 0);
         definitions->AddDefinition("PIXEL_SHADER_VERSION", "21", 0);
-    } else if (profile == 2) {
+    } else if (profile == PC_SHADER_MODEL_2_0) {
         definitions->AddDefinition("VERTEX_SHADER_VERSION", "20", 0);
         definitions->AddDefinition("PIXEL_SHADER_VERSION", "20", 0);
-    } else if (profile == 1) {
+    } else if (profile == PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("VERTEX_SHADER_VERSION", "11", 0);
         definitions->AddDefinition("PIXEL_SHADER_VERSION", "11", 0);
     } else {
@@ -45,7 +45,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         definitions->AddDefinition("PIXEL_SHADER_VERSION", "0", 0);
     }
     definitions->AddDefinition("BUILD_EFFECT", NULL, 0);
-    bool nvidia_profile = profile == 4 && 0x10de == PCDeviceBackend.identifier.vendor;
+    bool nvidia_profile = profile == PC_SHADER_MODEL_3_0 && 0x10de == PCDeviceBackend.identifier.vendor;
     if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_VTF_NORMAL_MAP)) {
         used_uvs[descriptor->sampler_indices[5] - 1] = 1;
         definitions->AddDefinition(uv_functions[descriptor->sampler_indices[5] - 1], "UVSET_ANIMATION", 0);
@@ -137,7 +137,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         }
     }
     // The three layer paths are distinct and ordered. Their record indices are fixed 1,2,3.
-    if (filter->HasLayer(1) && profile != 1) {
+    if (filter->HasLayer(1) && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("COMBINE_OP_1", combine[descriptor->blend_ops[0]], 1);
         if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 1) {
             definitions->AddDefinition("LAYER1_ALPHA", NULL, 0);
@@ -150,7 +150,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
             definitions->AddDefinition("LAYER1_DIFFUSEENABLE", NULL, 0);
         }
     }
-    if (filter->HasLayer(2) && profile != 1) {
+    if (filter->HasLayer(2) && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("COMBINE_OP_2", combine[descriptor->blend_ops[1]], 1);
         if ((0 == filter->variant || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) >= 2) {
             definitions->AddDefinition("LAYER2_ALPHA", NULL, 0);
@@ -163,7 +163,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
             definitions->AddDefinition("LAYER2_DIFFUSEENABLE", NULL, 0);
         }
     }
-    if (filter->HasLayer(3) && profile != 1) {
+    if (filter->HasLayer(3) && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("COMBINE_OP_3", combine[descriptor->blend_ops[2]], 1);
         if ((filter->variant == 0 || filter->descriptor->override_mode != 0) && ((filter->descriptor->vertex_format >> 9) & 3) > 2) {
             definitions->AddDefinition("LAYER3_ALPHA", NULL, 0);
@@ -214,7 +214,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     }
     definitions->AddDefinition("LIGHTING_LIGHTS_COUNT", "3", 0);
     if (filter->variant == 0 && ((i32)filter->descriptor->flags < 0) && descriptor->texture_units > 0) {
-        if (profile == 1) {
+        if (profile == PC_SHADER_MODEL_1_1) {
             u32 selector = (descriptor->selectors >> 2) & 3;
             if (selector == 0) {
                 definitions->AddDefinition("LIGHTMAP_UVSET", uv_names[descriptor->texture_units - 1], 1);
@@ -236,12 +236,12 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         definitions->AddDefinition("LIGHTMAP_STAGE", "DISABLE", 0);
     }
     bool environment = false;
-    if (filter->variant == 0 &&
-        ((filter->descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_CUBE) ||
-         ((filter->descriptor->layer_flags & (PC_SHADER_LAYER_REFRACTED_GLASS | PC_SHADER_LAYER_LEGO)) && profile != 1))) {
+    if (filter->variant == 0 && ((filter->descriptor->layer_flags & PC_SHADER_LAYER_ENVMAP_CUBE) ||
+                                 ((filter->descriptor->layer_flags & (PC_SHADER_LAYER_REFRACTED_GLASS | PC_SHADER_LAYER_LEGO)) &&
+                                  profile != PC_SHADER_MODEL_1_1))) {
         environment = true;
         definitions->AddDefinition("ENVMAP_STAGE", "ENVMAP_CUBE", 0);
-        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) && profile != 1) {
+        if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_REFRACTED_GLASS) && profile != PC_SHADER_MODEL_1_1) {
             definitions->AddDefinition("SPECULAR_STAGE", "SPECULAR_PHONG", 0);
         }
     } else if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_SHINEMAP)) {
@@ -250,7 +250,7 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
     }
     const bool lighting = filter->variant == 0 && (filter->descriptor->layer_flags & (PC_SHADER_LAYER_PHONG | PC_SHADER_LAYER_ANISO)) != 0;
     if (environment || lighting) {
-        if (profile != 1) {
+        if (profile != PC_SHADER_MODEL_1_1) {
             definitions->AddDefinition("REFLECTIVITY_STAGE", NULL, 0);
         }
         if (filter->variant == 0 && filter->descriptor->specular_threshold > filter->parameter) {
@@ -314,10 +314,10 @@ void ShaderCompilerBase::Configure(PC_SHADER_MATERIAL_FILTER_VIEW *filter, Shade
         definitions->AddDefinition("HACK_MOTION_VECTOR_NULL", NULL, 0);
     }
     definitions->AddDefinition("COLOR_FACTOR", "1.0", 1);
-    if (!(filter->descriptor->vertex_format & 0x40000) && filter->variant == 0 && profile != 1) {
+    if (!(filter->descriptor->vertex_format & 0x40000) && filter->variant == 0 && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("FOG_STAGE", "FOG_VERTEX_CLAMP_EXPONENTIAL2", 0);
     }
-    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_DAPPLE) && profile != 1) {
+    if (filter->variant == 0 && (filter->descriptor->layer_flags & PC_SHADER_LAYER_DAPPLE) && profile != PC_SHADER_MODEL_1_1) {
         definitions->AddDefinition("DAPPLE", NULL, 0);
     }
     if (filter->variant == 0 && (PC_SHADER_LAYER_FRACTAL & filter->descriptor->layer_flags)) {
@@ -637,70 +637,70 @@ static void FormatColour(i32 colour, char *out) {
 /* The default value of shader parameter id as an HLSL literal; ids without one leave out untouched. */
 void __stdcall ShaderParameterDefault(const PC_SHADER_DEFAULTS_VIEW *material, i32 id, char *out, i32 unused) {
     switch (id) {
-        case 0:
+        case SHADER_UNIFORM_AMBIENT_COLOR:
             FormatColour(material->diffuse_colour, out);
             break;
-        case 2: {
+        case SHADER_UNIFORM_INCANDESCENT_GLOW: {
             i32 colour = material->specular_colour;
             FormatFloat4(out, (f32)(colour & 0xff) / 255.0f, (f32)((colour >> 8) & 0xff) / 255.0f, (f32)((colour >> 16) & 0xff) / 255.0f,
                          material->parameter_1b4);
             break;
         }
-        case 9:
+        case SHADER_UNIFORM_BITANGENT_FLIP:
             FormatFloat(out, material->flip_sign ? 1.0f : 0.0f);
             break;
-        case 10:
+        case SHADER_UNIFORM_SURFACE_PARAMS:
             FormatFloat4(out, material->parameter_134, 0.0f, material->parameter_138, material->parameter_14c);
             break;
-        case 11:
+        case SHADER_UNIFORM_SURFACE_PARAMS2:
             FormatFloat4(out, material->texture_lerp, 0.0f, 0.0f, 0.0f);
             break;
-        case 12:
+        case SHADER_UNIFORM_SPECULAR_PARAMS:
             FormatFloat4(out, material->parameter_130, material->parameter_12c, material->parameter_144, material->parameter_148);
             break;
-        case 13:
+        case SHADER_UNIFORM_ENVMAP_PARAMS:
             FormatFloat4(out, material->parameter_13c, material->parameter_140, 0.0f, 0.0f);
             break;
-        case 15:
+        case SHADER_UNIFORM_VTF_K_NORMAL:
             FormatFloat(out, material->parameter_118);
             break;
-        case 51:
+        case SHADER_UNIFORM_LAYER0_DIFFUSE:
             FormatColour(material->channel_colours[0], out);
             break;
-        case 52:
+        case SHADER_UNIFORM_LAYER1_DIFFUSE:
             FormatColour(material->channel_colours[1], out);
             break;
-        case 53:
+        case SHADER_UNIFORM_LAYER2_DIFFUSE:
             FormatColour(material->channel_colours[2], out);
             break;
-        case 54:
+        case SHADER_UNIFORM_LAYER3_DIFFUSE:
             FormatColour(material->channel_colours[3], out);
             break;
-        case 55:
+        case SHADER_UNIFORM_LAYER_K_OPACITIES:
             FormatFloat4(out, material->parameter_d8, material->parameter_dc, material->parameter_e0, material->parameter_e4);
             break;
-        case 57:
+        case SHADER_UNIFORM_SPECULAR_SPECULAR:
             FormatColour(material->shadow_colour, out);
             break;
-        case 59:
+        case SHADER_UNIFORM_REFRACTION_COLOR:
             FormatColour(material->tint_colour, out);
             break;
-        case 60:
+        case SHADER_UNIFORM_REFRACTION_K_INDEX:
             FormatFloat(out, (material->parameter_150 - 1.0) * (f64)0.1f);
             break;
-        case 64:
+        case SHADER_UNIFORM_UV_OFFSET0:
             FormatFloat2(out, &material->uv_upload_lanes[0]);
             break;
-        case 65:
+        case SHADER_UNIFORM_UV_OFFSET1:
             FormatFloat2(out, &material->uv_upload_lanes[2]);
             break;
-        case 66:
+        case SHADER_UNIFORM_UV_OFFSET2:
             FormatFloat2(out, &material->uv_upload_lanes[4]);
             break;
-        case 67:
+        case SHADER_UNIFORM_UV_OFFSET3:
             FormatFloat2(out, &material->uv_upload_lanes[6]);
             break;
-        case 16:
+        case SHADER_UNIFORM_GOOCH_PARAMS:
             FormatFloat4(out, material->parameter_1b8, material->parameter_1bc, 0.0f, 0.0f);
             break;
     }

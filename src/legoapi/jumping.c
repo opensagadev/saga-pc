@@ -472,7 +472,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 return;
             }
 
-            if ((movement_state == 5 && (0 != ((object->unknown_281 & 1)) ||
+            if ((movement_state == 5 && (0 != ((object->unknown_281 & GROUND_CONTACT)) ||
                                          (player_flag == 0 && object->contact_count != 0 && object->jump_variant_state == 3))) ||
                 (movement_state != 5 && object->unknown_281 != 0 && object->context_timer >= 0.1f) ||
                 ((movement_state == JUMP_KIND_SLAM || movement_state == JUMP_KIND_LUNGE) && object->context_timer >= 2.5f)) {

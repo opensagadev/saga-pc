@@ -2057,14 +2057,14 @@ f32 Condition_MissionMode(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *pac
 }
 
 f32 Condition_MissionWon(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (MissionSys != NULL && MissionSys->state == 2) {
+    if (MissionSys != NULL && MissionSys->state == MISSION_STATE_COMPLETE) {
         return 1.0f;
     }
     return 0.0f;
 }
 
 f32 Condition_ChallengeMode(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (ChallengeMode != 0) {
+    if (ChallengeMode != CHALLENGE_OFF) {
         return 1.0f;
     }
     return 0.0f;
@@ -3273,7 +3273,7 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
     (void)param_6;
     range_squared = 0.0f;
     distance_squared = 0.0f;
-    side = 0;
+    side = AISIDE_NEUTRAL;
     type_count = 0;
     object = NULL;
     if (param_5 != 0) {
@@ -3284,15 +3284,15 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
 
         for (index = 0; index < param_4; ++index) {
             if (NuStrICmp(params[index], "neutral") == 0) {
-                side = 0;
+                side = AISIDE_NEUTRAL;
             } else if (NuStrICmp(params[index], "goodie") == 0 || NuStrICmp(params[index], "goody") == 0) {
-                side = -1;
+                side = AISIDE_GOODIE;
             } else if (NuStrICmp(params[index], "baddie") == 0 || NuStrICmp(params[index], "baddy") == 0) {
-                side = 1;
+                side = AISIDE_BADDIE;
             } else if (NuStrICmp(params[index], "goodiebaddie") == 0 || NuStrICmp(params[index], "goodybaddy") == 0) {
-                side = 2;
+                side = AISIDE_GOODIE_BADDIE;
             } else if (NuStrICmp(params[index], "default") == 0) {
-                side = 3;
+                side = AISIDE_DEFAULT;
             } else if ((value = NuStrIStr(params[index], "type")) != NULL) {
                 if (LevelCharacterTypeIDFn != NULL && LevelCharacterGlobalIDFn != NULL) {
                     local_type = LevelCharacterTypeIDFn(value + 5);
@@ -3316,16 +3316,16 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                 old_side = object->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL | APIOBJECT_SIDE_GOODIE_BADDIE);
                 object->flags_1f8 &= 0xfffefffau;
                 switch (side) {
-                    case 0:
+                    case AISIDE_NEUTRAL:
                         object->flags_1f8 |= APIOBJECT_SIDE_NEUTRAL;
                         break;
-                    case 1:
+                    case AISIDE_BADDIE:
                         object->flags_1f8 |= APIOBJECT_SIDE_BADDIE;
                         break;
-                    case 2:
+                    case AISIDE_GOODIE_BADDIE:
                         object->flags_1f8 |= APIOBJECT_SIDE_GOODIE_BADDIE;
                         break;
-                    case 3:
+                    case AISIDE_DEFAULT:
                         if ((object->flags_1f8 & APIOBJECT_CREATURE) != 0 && object->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
                             creature = sys->creatures + object->ai_packet.creature_index;
                             model_flags = apicharsys->char_data[creature->type].model_flags;
@@ -3375,16 +3375,16 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                     old_side = candidate->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL | APIOBJECT_SIDE_GOODIE_BADDIE);
                     candidate->flags_1f8 &= 0xfffefffau;
                     switch (side) {
-                        case 0:
+                        case AISIDE_NEUTRAL:
                             candidate->flags_1f8 |= APIOBJECT_SIDE_NEUTRAL;
                             break;
-                        case 1:
+                        case AISIDE_BADDIE:
                             candidate->flags_1f8 |= APIOBJECT_SIDE_BADDIE;
                             break;
-                        case 2:
+                        case AISIDE_GOODIE_BADDIE:
                             candidate->flags_1f8 |= APIOBJECT_SIDE_GOODIE_BADDIE;
                             break;
-                        case 3:
+                        case AISIDE_DEFAULT:
                             if ((candidate->flags_1f8 & APIOBJECT_CREATURE) != 0 &&
                                 candidate->ai_packet.creature_index != AIPACKET_NO_CREATURE) {
                                 creature = sys->creatures + candidate->ai_packet.creature_index;

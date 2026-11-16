@@ -184,7 +184,7 @@ i32 SoundQueue::Stop() {
     if (active == 0) {
         return 0;
     }
-    return SendCommand(3, 0);
+    return SendCommand(SOUNDQUEUE_CMD_STOP, 0);
 }
 
 /* Command 4 stops a playing buffer and keeps its position (pause). */
@@ -195,7 +195,7 @@ i32 SoundQueue::Pause() {
     if (active == 0) {
         return 0;
     }
-    return SendCommand(4, 0);
+    return SendCommand(SOUNDQUEUE_CMD_PAUSE, 0);
 }
 
 /* Command 5 restarts a paused buffer (resume). */
@@ -206,7 +206,7 @@ i32 SoundQueue::Resume() {
     if (active == 0) {
         return 0;
     }
-    return SendCommand(5, 0);
+    return SendCommand(SOUNDQUEUE_CMD_RESUME, 0);
 }
 
 i32 SoundQueue::SetVolume(i32 volume) {
@@ -243,7 +243,7 @@ i32 SoundQueue::IsStreamIdle() {
     if (count != 0) {
         return 0;
     }
-    if (stream_state != 0 && (stream_state != 3 || stream_flags == 0)) {
+    if (stream_state != SOUNDQUEUE_STATE_STOPPED && (stream_state != SOUNDQUEUE_STATE_PAUSED || stream_flags == 0)) {
         return 0;
     }
     return 1;
@@ -253,10 +253,10 @@ i32 SoundQueue::GetStatus() {
     if (this == NULL) {
         return 0;
     }
-    if (HasCommand(3) != 0) {
+    if (HasCommand(SOUNDQUEUE_CMD_STOP) != 0) {
         return 2;
     }
-    if (stream_state == 2 || (stream_state == 3 && stream_flags != 0)) {
+    if (stream_state == SOUNDQUEUE_STATE_PLAYING || (stream_state == SOUNDQUEUE_STATE_PAUSED && stream_flags != 0)) {
         return 1;
     }
     return IsStreamIdle() != 0 ? 0 : 2;
@@ -285,7 +285,7 @@ i32 SoundQueue::SetStreamFile(const char *path, f32 offset) {
     }
     NuStrNCpy(stream_path, path, sizeof(stream_path));
     start_offset = offset;
-    return SendCommand(1, 0);
+    return SendCommand(SOUNDQUEUE_CMD_SET_FILE, 0);
 }
 
 i32 SoundQueue::SetStreamFlags(i32 flags) {
@@ -295,7 +295,7 @@ i32 SoundQueue::SetStreamFlags(i32 flags) {
     if (active == 0) {
         return 0;
     }
-    return SendCommand(2, flags);
+    return SendCommand(SOUNDQUEUE_CMD_PLAY, flags);
 }
 
 extern "C" void NuSound3StopStereoStream(i32 index) {
@@ -360,7 +360,7 @@ void SoundQueue::CancelPause(void) {
     }
     EnterCriticalSection(&volume_lock);
     IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
-    if (stream_state == 2 && buffer != NULL) {
+    if (stream_state == SOUNDQUEUE_STATE_PLAYING && buffer != NULL) {
         buffer->vtable->play(buffer, 0, 0, 1);
     }
     LeaveCriticalSection(&volume_lock);
@@ -377,9 +377,9 @@ SoundQueue::~SoundQueue(void) {
             CancelPause();
         }
         if (active != 0) {
-            SendCommand(3, 0);
+            SendCommand(SOUNDQUEUE_CMD_STOP, 0);
         }
-        SendCommand(6, 0);
+        SendCommand(SOUNDQUEUE_CMD_QUIT, 0);
         if (thread != NULL) {
             do {
                 Sleep(10);
@@ -455,7 +455,7 @@ extern "C" {
 }
 
 i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
-    if (stream_state != 1 && stream_state != 2) {
+    if (stream_state != SOUNDQUEUE_STATE_PRELOADING && stream_state != SOUNDQUEUE_STATE_PLAYING) {
         return 0;
     }
     IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
@@ -521,7 +521,7 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
                 decoded = 0;
                 buffer = (IDirectSoundBuffer *)volume_sink;
                 if (SUCCEEDED(buffer->vtable->stop(buffer))) {
-                    stream_state = 0;
+                    stream_state = SOUNDQUEUE_STATE_STOPPED;
                 }
             }
         }
@@ -542,7 +542,7 @@ i32 SoundQueue::FillBuffer(i32 bytes, u32 flags) {
                         memset(data, 0, requested);
                         buffer = (IDirectSoundBuffer *)volume_sink;
                         if (SUCCEEDED(buffer->vtable->stop(buffer))) {
-                            stream_state = 0;
+                            stream_state = SOUNDQUEUE_STATE_STOPPED;
                         }
                         decoded = block;
                         break;
@@ -602,10 +602,10 @@ DWORD SoundQueue::Run(void) {
                 EnterCriticalSection(&operation_lock);
                 IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
                 switch (cmd) {
-                    case 1: {
+                    case SOUNDQUEUE_CMD_SET_FILE: {
                         NuStrNCpy(current_path, stream_path, 0x104);
                         current_offset = start_offset;
-                        if (stream_state == 2) {
+                        if (stream_state == SOUNDQUEUE_STATE_PLAYING) {
                             if (timer_id != 0) {
                                 timeKillEvent(timer_id);
                             }
@@ -616,7 +616,7 @@ DWORD SoundQueue::Run(void) {
                             }
                         }
                         stream_flags = 0;
-                        stream_state = 0;
+                        stream_state = SOUNDQUEUE_STATE_STOPPED;
                         pending_bytes = 0;
                         decoded_bytes = 0;
                         buffer_write_position = 0;
@@ -631,13 +631,13 @@ DWORD SoundQueue::Run(void) {
                         }
                         break;
                     }
-                    case 2:
+                    case SOUNDQUEUE_CMD_PLAY:
                         if ((i32)unknown_0004 < 0) {
                             if (timer_id != 0) {
                                 timeKillEvent(timer_id);
                             }
                             timer_id = 0;
-                        } else if (stream_state != 2) {
+                        } else if (stream_state != SOUNDQUEUE_STATE_PLAYING) {
                             pending_bytes = 0;
                             stream_flags = 0;
                             decoded_bytes = 0;
@@ -649,7 +649,7 @@ DWORD SoundQueue::Run(void) {
                                 duration = 2000;
                             }
                             u32 preload = (u32)(wave_format.nAvgBytesPerSec * duration) / 1000;
-                            stream_state = 1;
+                            stream_state = SOUNDQUEUE_STATE_PRELOADING;
                             decoded_bytes = decoder->SeekTime(current_offset);
                             buffer = (IDirectSoundBuffer *)volume_sink;
                             if (buffer != NULL) {
@@ -659,7 +659,7 @@ DWORD SoundQueue::Run(void) {
                             buffer = (IDirectSoundBuffer *)volume_sink;
                             if (buffer != NULL && SUCCEEDED(buffer->vtable->set_current_position(buffer, 0))) {
                                 if ((command_arg & 2) != 0) {
-                                    stream_state = 3;
+                                    stream_state = SOUNDQUEUE_STATE_PAUSED;
                                     loop_flags = command_arg;
                                     StartTimer();
                                     break;
@@ -667,7 +667,7 @@ DWORD SoundQueue::Run(void) {
                                 buffer = (IDirectSoundBuffer *)volume_sink;
                                 if (SUCCEEDED(buffer->vtable->play(buffer, 0, 0, 1))) {
                                     stream_flags = 1;
-                                    stream_state = 2;
+                                    stream_state = SOUNDQUEUE_STATE_PLAYING;
                                     loop_flags = command_arg;
                                     StartTimer();
                                     break;
@@ -679,7 +679,7 @@ DWORD SoundQueue::Run(void) {
                             timer_id = 0;
                         }
                         break;
-                    case 3:
+                    case SOUNDQUEUE_CMD_STOP:
                         if (timer_id != 0) {
                             timeKillEvent(timer_id);
                         }
@@ -689,23 +689,23 @@ DWORD SoundQueue::Run(void) {
                             buffer_write_position = 0;
                             FillBuffer(buffer_seconds * wave_format.nAvgBytesPerSec, 3);
                         }
-                        stream_state = 0;
+                        stream_state = SOUNDQUEUE_STATE_STOPPED;
                         break;
-                    case 4:
-                        if (stream_state == 2) {
+                    case SOUNDQUEUE_CMD_PAUSE:
+                        if (stream_state == SOUNDQUEUE_STATE_PLAYING) {
                             if (timer_id != 0) {
                                 timeKillEvent(timer_id);
                             }
                             timer_id = 0;
                             buffer = (IDirectSoundBuffer *)volume_sink;
                             if (buffer != NULL && SUCCEEDED(buffer->vtable->stop(buffer))) {
-                                stream_state = 3;
+                                stream_state = SOUNDQUEUE_STATE_PAUSED;
                             }
                         }
                         break;
-                    case 5:
-                        if (stream_state == 3 && buffer != NULL && SUCCEEDED(buffer->vtable->play(buffer, 0, 0, 1))) {
-                            stream_state = 2;
+                    case SOUNDQUEUE_CMD_RESUME:
+                        if (stream_state == SOUNDQUEUE_STATE_PAUSED && buffer != NULL && SUCCEEDED(buffer->vtable->play(buffer, 0, 0, 1))) {
+                            stream_state = SOUNDQUEUE_STATE_PLAYING;
                             stream_flags = 1;
                             if (timer_id != 0) {
                                 timeKillEvent(timer_id);
@@ -713,7 +713,7 @@ DWORD SoundQueue::Run(void) {
                             timer_id = timeSetEvent(500, 100, timer_callback, 0, 0x21);
                         }
                         break;
-                    case 6:
+                    case SOUNDQUEUE_CMD_QUIT:
                         thread = NULL;
                         quitting = 1;
                         break;
@@ -740,12 +740,12 @@ DWORD SoundQueue::Run(void) {
             }
         } else if (wait == WAIT_OBJECT_0 && (i32)unknown_0004 >= 0) {
             FillBuffer((u32)(buffer_seconds * wave_format.nAvgBytesPerSec) >> 2, 0);
-            if (pending_bytes > 0 && stream_state == 2) {
+            if (pending_bytes > 0 && stream_state == SOUNDQUEUE_STATE_PLAYING) {
                 IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
                 if (buffer != NULL) {
                     buffer->vtable->stop(buffer);
                 }
-                stream_state = 0;
+                stream_state = SOUNDQUEUE_STATE_STOPPED;
                 if (timer_id != 0) {
                     timeKillEvent(timer_id);
                 }
@@ -859,7 +859,7 @@ SoundQueue::SoundQueue(IDirectSound8 *factory_value, i32 mode) {
     requested_volume = 0;
     applied_volume = 1;
     decoder = new OggReader;
-    stream_state = 0;
+    stream_state = SOUNDQUEUE_STATE_STOPPED;
     InitializeCriticalSection(&lock);
     InitializeCriticalSection(&operation_lock);
     InitializeCriticalSection(&volume_lock);
@@ -886,7 +886,7 @@ void SoundQueue::SuspendForFocus(void) {
     EnterCriticalSection(&operation_lock);
     EnterCriticalSection(&volume_lock);
     IDirectSoundBuffer *buffer = (IDirectSoundBuffer *)volume_sink;
-    if (stream_state == 2 && buffer != NULL) {
+    if (stream_state == SOUNDQUEUE_STATE_PLAYING && buffer != NULL) {
         buffer->vtable->stop(buffer);
     }
     LeaveCriticalSection(&volume_lock);

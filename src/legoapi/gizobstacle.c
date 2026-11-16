@@ -548,7 +548,7 @@ void GizObstacle_Stop(GIZOBSTACLE *obstacle) {
 
 static i32 GizObstacle_PosWithinBox(GIZOBSTACLE *obstacle, NUVEC *position) {
     NUVEC local;
-    if (obstacle->mode != 5 && obstacle->mode != 6) {
+    if (obstacle->mode != OBSTACLE_TRIGGER_IN_BOX && obstacle->mode != OBSTACLE_TRIGGER_IN_BOX_AND_GROUND) {
         return 1;
     }
     NuVecSub(&local, position, &obstacle->secondary_position);
@@ -609,8 +609,10 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
         f32 distance;
         i32 i;
         GAMEOBJECT *object;
-        if (obstacle->mode == 1 || obstacle->mode == 2 || obstacle->mode == 5 || obstacle->mode == 6) {
-            if ((obstacle->mode == 1 || obstacle->mode == 5) && GameCam->mode != GAMECAM_MODE_NONE && obstacle->trigger_mode == 0xff &&
+        if (obstacle->mode == OBSTACLE_TRIGGER_PROXIMITY || obstacle->mode == OBSTACLE_TRIGGER_PROXIMITY_GROUND ||
+            obstacle->mode == OBSTACLE_TRIGGER_IN_BOX || obstacle->mode == OBSTACLE_TRIGGER_IN_BOX_AND_GROUND) {
+            if ((obstacle->mode == OBSTACLE_TRIGGER_PROXIMITY || obstacle->mode == OBSTACLE_TRIGGER_IN_BOX) &&
+                GameCam->mode != GAMECAM_MODE_NONE && obstacle->trigger_mode == 0xff &&
                 !(obstacle->config_flags &
                   (GIZOBSTACLE_CONFIG_INVERTED | GIZOBSTACLE_CONFIG_PLAYERS_ONLY | GIZOBSTACLE_CONFIG_STAND_ON |
                    GIZOBSTACLE_CONFIG_ACTIVE_PLAYERS_ONLY | GIZOBSTACLE_CONFIG_RIDERS_ONLY | GIZOBSTACLE_CONFIG_BADDIES_ONLY))) {
@@ -655,8 +657,8 @@ static void GizObstacleUpdate_Proximity(GIZOBSTACLE *obstacle) {
                 (GizObstacleExcludeFn && GizObstacleExcludeFn(obstacle, object))) {
                 continue;
             }
-            if ((obstacle->mode == 2 || obstacle->mode == 6) && !object->unknown_281 && !(object->flags_ef4 & 0x20000000) &&
-                object->jump_variant_state != 1) {
+            if ((obstacle->mode == OBSTACLE_TRIGGER_PROXIMITY_GROUND || obstacle->mode == OBSTACLE_TRIGGER_IN_BOX_AND_GROUND) &&
+                !object->unknown_281 && !(object->flags_ef4 & 0x20000000) && object->jump_variant_state != 1) {
                 GAMEANIMOBJ *anim_object = obstacle->anim_set ? obstacle->anim_set->objects : NULL;
                 while (anim_object) {
                     i16 platform = ((GIZOBSTACLE_OBJECT_DATA *)anim_object->object_data)->platform_id;
@@ -777,7 +779,7 @@ void GizObstacles_Update(void *world_ptr, void *data, f32 time) {
             (obstacle->progress_flags & 0x100) || (obstacle->runtime_flags & GIZOBSTACLE_DESTROYED)) {
             continue;
         }
-        if (obstacle->mode == 7) {
+        if (obstacle->mode == OBSTACLE_TRIGGER_PUSH_ONLY) {
             if (obstacle->progress_flags & OBSTACLE_PUSH_CONTROLLED) {
                 obstacle->triggering_object = previous;
             } else if (obstacle->playback_state == 1) {

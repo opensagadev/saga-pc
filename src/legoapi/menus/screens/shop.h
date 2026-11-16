@@ -36,6 +36,7 @@ extern "C" {
 #define SHOP_SHELF_HINTS 0       /* HintItems */
 #define SHOP_SHELF_CHARACTERS 1  /* CharItems */
 #define SHOP_SHELF_EXTRAS 2      /* ExtraItems */
+#define SHOP_SHELF_CODES 3       /* CodeItems ("Code") */
 #define SHOP_SHELF_GOLD_BRICKS 4 /* BrickItems */
 #define SHOP_SHELF_CUTSCENES 5   /* CutItems */
     extern CHEAT ExtrasCheats[46];

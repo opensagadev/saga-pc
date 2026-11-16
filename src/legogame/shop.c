@@ -449,7 +449,7 @@ void InitExtraList(void) {
         NuStrCpy(ExtraItems[i].special_name, ExtrasCheats[i].extra_name);
         NuSpecialFind(WORLD->current_gscn, &ExtraItems[i].special, ExtraItems[i].special_name, 1);
         ExtraItems[i].item_id = (i16)i;
-        ExtraItems[i].type = 2;
+        ExtraItems[i].type = SHOP_SHELF_EXTRAS;
         ExtraItems[i].unlocked = 0;
         // MATCH-EXCEPTION: the original keeps the word's byte offset in a register (add r, r twice)
         // instead of scaling the index, which only a byte-offset form reproduces.
@@ -515,27 +515,27 @@ void InitShop(WORLDINFO *world) {
     if (CharItems == NULL || HintItems == NULL || ExtraItems == NULL || CodeItems == NULL || BrickItems == NULL) {
         return;
     }
-    TopShelf[0].type = 0;
+    TopShelf[0].type = SHOP_SHELF_HINTS;
     NuStrCpy(TopShelf[0].name, "Hint");
     NuStrCpy(TopShelf[0].special_name, "info");
     NuSpecialFind(things_scene, &TopShelf[0].special, "info", 1);
-    TopShelf[1].type = 1;
+    TopShelf[1].type = SHOP_SHELF_CHARACTERS;
     TopShelf[1].name[0] = 0;
     TopShelf[1].special_name[0] = 0;
     memset(&TopShelf[1].special, 0, sizeof(TopShelf[1].special));
-    TopShelf[2].type = 2;
+    TopShelf[2].type = SHOP_SHELF_EXTRAS;
     NuStrCpy(TopShelf[2].name, "Extra");
     NuStrCpy(TopShelf[2].special_name, "tool_box");
     NuSpecialFind(WORLD->current_gscn, &TopShelf[2].special, "tool_box", 1);
-    TopShelf[3].type = 3;
+    TopShelf[3].type = SHOP_SHELF_CODES;
     NuStrCpy(TopShelf[3].name, "Code");
     NuStrCpy(TopShelf[3].special_name, "shop_question");
     NuSpecialFind(WORLD->current_gscn, &TopShelf[3].special, "shop_question", 1);
-    TopShelf[4].type = 4;
+    TopShelf[4].type = SHOP_SHELF_GOLD_BRICKS;
     NuStrCpy(TopShelf[4].name, "Gold Bricks");
     NuStrCpy(TopShelf[4].special_name, "gold_brick");
     NuSpecialFind(things_scene, &TopShelf[4].special, "gold_brick", 1);
-    TopShelf[5].type = 5;
+    TopShelf[5].type = SHOP_SHELF_CUTSCENES;
     NuStrCpy(TopShelf[5].name, "Cut Scenes");
     NuStrCpy(TopShelf[5].special_name, "FMV");
     NuSpecialFind(world->current_gscn, &TopShelf[5].special, "fmv", 1);
@@ -549,7 +549,7 @@ void InitShop(WORLDINFO *world) {
         if (collect != NULL) {
             i32 character_id = collect->id;
             shopitem_s *item;
-            CharItems[SHOPCHARCOUNT].type = 1;
+            CharItems[SHOPCHARCOUNT].type = SHOP_SHELF_CHARACTERS;
             CharItems[SHOPCHARCOUNT].unlocked = 0;
             if (((u64)save->character_purchased_bits[SHOPCHARCOUNT / 32] & ((u64)1 << (SHOPCHARCOUNT % 32))) != 0) {
                 CharItems[SHOPCHARCOUNT].unlocked = 1;
@@ -595,7 +595,7 @@ void InitShop(WORLDINFO *world) {
     InitAlphaList();
     for (i = 0; i < SHOPHINTCOUNT; ++i) {
         HINT *hint = Hint_FindHint(ShopHintIds[i]);
-        HintItems[i].type = 0;
+        HintItems[i].type = SHOP_SHELF_HINTS;
         HintItems[i].item_id = (i16)i;
         HintItems[i].price = hint != NULL ? hint->price : 0;
         HintItems[i].unlocked = 0;
@@ -640,7 +640,7 @@ void InitShop(WORLDINFO *world) {
     }
     price = 10000;
     for (i = 0; i < SHOPGOLDBRICKS; ++i) {
-        BrickItems[i].type = 4;
+        BrickItems[i].type = SHOP_SHELF_GOLD_BRICKS;
         BrickItems[i].item_id = (i16)i;
         BrickItems[i].price = price;
         BrickItems[i].special = TopShelf[4].special;
@@ -661,7 +661,7 @@ void InitShop(WORLDINFO *world) {
         shopitem_s *item = &CutItems[i];
         item->special = TopShelf[5].special;
         item->item_id = (i16)i;
-        item->type = 5;
+        item->type = SHOP_SHELF_CUTSCENES;
         item->price = 0;
         item->unlocked = 0;
     }
@@ -736,15 +736,15 @@ f32 ShopPurchasePulseDuration = 0.35f;
 i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
     SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
     u32 *bits = NULL;
-    if (items[index].type == 0) {
+    if (items[index].type == SHOP_SHELF_HINTS) {
         bits = save->hint_purchased_bits;
-    } else if (items[index].type == 1) {
+    } else if (items[index].type == SHOP_SHELF_CHARACTERS) {
         bits = save->character_purchased_bits;
-    } else if (items[index].type == 2) {
+    } else if (items[index].type == SHOP_SHELF_EXTRAS) {
         bits = save->extra_unlocked_bits;
-    } else if (items[index].type == 4) {
+    } else if (items[index].type == SHOP_SHELF_GOLD_BRICKS) {
         bits = save->gold_brick_purchased_bits;
-    } else if (items[index].type == 5) {
+    } else if (items[index].type == SHOP_SHELF_CUTSCENES) {
         PlaySfx("MenuSelect", NULL);
         return 1;
     }
@@ -768,7 +768,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
     i32 id;
     i32 i;
     switch (items[index].type) {
-        case 1:
+        case SHOP_SHELF_CHARACTERS:
             if (items[index].unlocked == 1) {
                 return 0;
             }
@@ -791,7 +791,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
                 BuyShopItem(items, index, 1);
             }
             return 1;
-        case 0:
+        case SHOP_SHELF_HINTS:
             id = (u16)items[index].item_id;
             if (items[index].unlocked == 1 || items[index].price == 0) {
                 return 1;
@@ -806,7 +806,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
                 hint->flags |= 2;
             }
             goto buy;
-        case 2:
+        case SHOP_SHELF_EXTRAS:
             id = (u16)items[index].item_id;
             if (items[index].unlocked == 1 || (save->extra_purchased_bits[id / 32] & (1u << (id & 31))) != 0) {
                 return 0;
@@ -823,7 +823,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
             save->extra_purchased_bits[id / 32] |= 1u << (id & 31);
             AddToCompletionPoints(POINTS_PER_CHEAT);
             goto buy;
-        case 4:
+        case SHOP_SHELF_GOLD_BRICKS:
             if (items[index].unlocked == 1 || items[index].price == 0) {
                 return 0;
             }
@@ -839,7 +839,7 @@ i32 SelectShopItem(shopitem_s *items, i32 index) {
             AddToCompletionPoints(POINTS_PER_GOLDBRICK);
             AddToGoldBricks();
             goto buy;
-        case 5:
+        case SHOP_SHELF_CUTSCENES:
             if (CutScenePlayer_CanStart(index) == 0) {
                 PlaySfx("MenuNoEntry", NULL);
                 ShopLockedScale = 1.5f;
@@ -1123,13 +1123,13 @@ i32 SubItemMenu(void *menu) {
         }
         if (ShopMoveItems == 1) {
             if (MoveSubItemsLeft(ids, positions, *count) != 0 && items != NULL) {
-                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1) {
+                if (items[ids[3]].type == SHOP_SHELF_HINTS && items[ids[3]].unlocked == 1) {
                     SelectSubItem();
                 }
             }
         } else if (ShopMoveItems == 2) {
             if (MoveSubItemsRight(ids, positions, *count) != 0 && items != NULL) {
-                if (items[ids[3]].type == 0 && items[ids[3]].unlocked == 1) {
+                if (items[ids[3]].type == SHOP_SHELF_HINTS && items[ids[3]].unlocked == 1) {
                     SelectSubItem();
                 }
             }
@@ -1936,7 +1936,7 @@ void DrawSubItemMenu2D(void) {
         return;
     }
     name = items[ids[3]].name;
-    if (items[ids[3]].type == 1) {
+    if (items[ids[3]].type == SHOP_SHELF_CHARACTERS) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
@@ -1948,10 +1948,10 @@ void DrawSubItemMenu2D(void) {
             SmartTextEx(TTab[dat_00880708], 0.0f, (f32)((HubEpisodeTitleY + (f64)HubEpisodeSubtitleY) * 0.5), 1.0f, scale, scale, scale, 0,
                         255, 0, 0, 1.7f, 1, NULL, 0, (i32)((f64)ShopNameAlpha * 128.0));
         }
-    } else if (items[ids[3]].type == 0) {
+    } else if (items[ids[3]].type == SHOP_SHELF_HINTS) {
         show_name = 0;
         buyable = items[ids[3]].unlocked == 1 ? 0 : (u32)items[ids[3]].price > 0;
-    } else if (items[ids[3]].type == 2) {
+    } else if (items[ids[3]].type == SHOP_SHELF_EXTRAS) {
         id = (u16)items[ids[3]].item_id;
         // MATCH-EXCEPTION: the original selects the 16-bit text id before sign-extending it once, which the
         // casts reproduce; the plain ternary widens each arm separately.
@@ -1973,7 +1973,7 @@ void DrawSubItemMenu2D(void) {
                 buyable = show_name = 0;
             }
         }
-    } else if (items[ids[3]].type == 4) {
+    } else if (items[ids[3]].type == SHOP_SHELF_GOLD_BRICKS) {
         id = (u16)items[ids[3]].item_id;
         sprintf(title, "%s %i", TTab[dat_00880778], id + 1);
         name = title;
@@ -1990,7 +1990,7 @@ void DrawSubItemMenu2D(void) {
         } else {
             buyable = show_name = 1;
         }
-    } else if (items[ids[3]].type == 5) {
+    } else if (items[ids[3]].type == SHOP_SHELF_CUTSCENES) {
         id = (u16)items[ids[3]].item_id;
         available = CutScenePlayer_CanStart(id);
         CutScenePlayer_GetText(id, title, subtitle, available);
@@ -2014,19 +2014,19 @@ void DrawSubItemMenu2D(void) {
         }
         if (buyable != 0) {
             switch (items[ids[3]].type) {
-                case 1:
+                case SHOP_SHELF_CHARACTERS:
                     price = items[CharShelfIds[3]].price;
                     break;
-                case 0:
+                case SHOP_SHELF_HINTS:
                     price = items[HintShelfIds[3]].price;
                     break;
-                case 2:
+                case SHOP_SHELF_EXTRAS:
                     price = items[ExtraShelfIds[3]].price;
                     break;
-                case 4:
+                case SHOP_SHELF_GOLD_BRICKS:
                     price = items[BrickShelfIds[3]].price;
                     break;
-                case 5:
+                case SHOP_SHELF_CUTSCENES:
                     return;
                 default:
                     price = items[CharShelfIds[3]].price;
@@ -2218,7 +2218,7 @@ i32 ItemMenu(void *menu) {
         ShopMenuParent[ShopMenuLevel] = menuptr;
         ShopSubMenu = 0;
         ShopEaseSubIn = 1;
-        if (TopShelf[ShopLastItem].type == 3) {
+        if (TopShelf[ShopLastItem].type == SHOP_SHELF_CODES) {
             memset(ShopUserCode, 'A', sizeof(ShopUserCode));
             ShopMenu = 11;
             ShopColumn = 0;

@@ -60,6 +60,7 @@ extern "C" {
 #endif
 
 /* sock_s.flags: set by the sock config keywords (the SockPar* handlers of socksys.c). */
+#define SOCK_FLAG_NO_CD 0x1                             /* no c and d splines of the b spline's length: the sock runs on a and b alone */
 #define SOCK_FLAG_MID_FORCE_Y 0x2                       /* mid_force y */
 #define SOCK_FLAG_MID_FORCE_XZ 0x4                      /* mid_force xz (xyz sets and clears it) */
 #define SOCK_FLAG_MID_FORCE_DOWN 0x8                    /* mid_force_down */

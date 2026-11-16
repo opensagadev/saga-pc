@@ -23,6 +23,12 @@ struct eduimenu_s;
 #define DEBRIS_PARTICLE_SUBTRACTIVE 3
 #define DEBRIS_PARTICLE_GLASS 7
 
+/* debris_info_s.time_group: the particle editor's "Draw Flag" menu (2 is set for glass) */
+#define DEBRIS_DRAW_AFTER_FOG 0
+#define DEBRIS_DRAW_BEFORE_FOG 1
+#define DEBRIS_DRAW_SUPER_EARLY 3
+#define DEBRIS_DRAW_PANEL 4 /* timed by panelglobaltime */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

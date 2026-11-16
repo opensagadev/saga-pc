@@ -19,6 +19,9 @@ typedef struct textcrawl_s {   // size 0x10
 extern "C" {
 #endif
     void Text3DStringEncode(char *source, u16 *destination);
+/* Text3DEx alignment: the horizontal anchor (neither bit: centred on x) */
+#define TEXT_ALIGN_LEFT 0x2  /* the text starts at x */
+#define TEXT_ALIGN_RIGHT 0x8 /* the text ends at x */
     void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue,
                   u8 alpha);
     void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue);

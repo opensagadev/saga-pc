@@ -142,6 +142,13 @@ struct AICONDITION {                   // size 0x2c
 #define AICONDITION_PARAM 0x4                 /* compares with a script parameter ("param" or its name) */
 #define AICONDITION_COMPLEX 0x8               /* compares with an expression evaluated at run time */
 
+/* Action_SetSide sides, by its keywords */
+#define AISIDE_GOODIE -1
+#define AISIDE_NEUTRAL 0
+#define AISIDE_BADDIE 1
+#define AISIDE_GOODIE_BADDIE 2
+#define AISIDE_DEFAULT 3
+
 /* AISCRIPTPROCESS.flags */
 #define AISCRIPTPROCESS_NEW_ACTION 0x1            /* the current action has not run yet: its first_time call is due */
 #define AISCRIPTPROCESS_INACTIVE 0x2              /* a level script switched off by its AI gizmo */

@@ -123,6 +123,12 @@ struct PC_CONTROL_CONFIG {                  // size 0x14
     const char *blocked_keys;               // 0x10
 };
 
+/* PC_CONTROL_SCREEN.phase: the fade of PC_CONTROL_SCREEN::Update */
+#define PC_CONTROL_CLOSED 0
+#define PC_CONTROL_FADE_IN 1
+#define PC_CONTROL_OPEN 2
+#define PC_CONTROL_FADE_OUT 3
+
 struct PC_CONTROL_SCREEN {                  // size 0xec4
     i32 result;                             // 0x000
     i32 player_count;                       // 0x004

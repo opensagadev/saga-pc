@@ -66,8 +66,10 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
         if (!PcWindowOptions.speedblurenabled) {
             scene->unknown_188 = 0;
         }
-        if ((scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) || (scene->unknown_ac != 0 && NuPostEffectIsInitialised(8)) ||
-            (scene->unknown_48 != 0 && NuPostEffectIsInitialised(0x20)) || (scene->unknown_188 != 0 && NuPostEffectIsInitialised(0x80))) {
+        if ((scene->unknown_58 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) ||
+            (scene->unknown_ac != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DOF)) ||
+            (scene->unknown_48 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_DEFERRED)) ||
+            (scene->unknown_188 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_SPEED_BLUR))) {
             last_effect_scene = i;
         }
     }
@@ -97,22 +99,22 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             scene->scene_id = -1;
         }
         if (scene->unknown_ac != 0) {
-            NuPostEffectIsInitialised(8);
+            NuPostEffectIsInitialised(NUPOSTEFFECT_DOF);
         }
-        if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(4)) {
-            NuPostEffectEnable(4);
+        if (scene->unknown_58 != 0 && NuPostEffectIsInitialised(NUPOSTEFFECT_BLOOM)) {
+            NuPostEffectEnable(NUPOSTEFFECT_BLOOM);
             NuPostEffectBloom(reinterpret_cast<const NU_POST_BLOOM_PARAMETERS *>(&scene->burnout_parameters));
             scene->unknown_58 = 0;
             rendered_effect = 1;
         }
         if (scene->unknown_48 != 0) {
-            NuPostEffectEnable(0x20);
+            NuPostEffectEnable(NUPOSTEFFECT_DEFERRED);
             NuPostEffectDeferredShading(reinterpret_cast<const f32 *>(&scene->unknown_48));
             scene->unknown_48 = 0;
             rendered_effect = 1;
         }
         if (scene->unknown_188 != 0) {
-            NuPostEffectEnable(0x80);
+            NuPostEffectEnable(NUPOSTEFFECT_SPEED_BLUR);
             NuPostEffectSpeedBlur(reinterpret_cast<const NU_POST_SPEED_PARAMETERS *>(&scene->unknown_188));
             rendered_effect = 1;
         }

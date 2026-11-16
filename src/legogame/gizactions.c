@@ -312,21 +312,21 @@ void GizActions_ChangeObstTriggerType(GIZFLOW *flow, FLOWBOX *unused1, char **pa
         if (value != NULL) {
             name = value + NuStrLen("name=");
         } else if (NuStrICmp(params[index], "AUTOSTART") == 0) {
-            mode = 0;
+            mode = OBSTACLE_TRIGGER_AUTOSTART;
         } else if (NuStrICmp(params[index], "PROXIMITY") == 0) {
-            mode = 1;
+            mode = OBSTACLE_TRIGGER_PROXIMITY;
         } else if (NuStrICmp(params[index], "PROXIMITYGROUND") == 0) {
-            mode = 2;
+            mode = OBSTACLE_TRIGGER_PROXIMITY_GROUND;
         } else if (NuStrICmp(params[index], "NOTRIGGER") == 0) {
-            mode = 3;
+            mode = OBSTACLE_TRIGGER_NONE;
         } else if (NuStrICmp(params[index], "TECHNOONLY") == 0) {
-            mode = 4;
+            mode = OBSTACLE_TRIGGER_TECHNO_ONLY;
         } else if (NuStrICmp(params[index], "INBOXANDGROUND") == 0) {
-            mode = 6;
+            mode = OBSTACLE_TRIGGER_IN_BOX_AND_GROUND;
         } else if (NuStrICmp(params[index], "INBOX") == 0) {
-            mode = 5;
+            mode = OBSTACLE_TRIGGER_IN_BOX;
         } else if (NuStrICmp(params[index], "PUSHONLY") == 0) {
-            mode = 7;
+            mode = OBSTACLE_TRIGGER_PUSH_ONLY;
         }
     }
     if (name == NULL || mode == -1) {

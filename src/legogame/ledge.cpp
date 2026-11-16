@@ -220,7 +220,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
             return;
         }
-        if (object->unknown_281 & 2) {
+        if (object->unknown_281 & GROUND_NEAR) {
             object->character_context = CHARACTER_CONTEXT_NONE;
             return;
         }

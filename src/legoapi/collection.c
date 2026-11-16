@@ -268,7 +268,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
             continue;
         }
 
-        entry->type = 0;
+        entry->type = COLLECTION_UNLOCK_NONE;
         entry->area_index = 0xff;
         entry->can_buy = 0;
         entry->buy_price = 0;
@@ -278,23 +278,23 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
 
         while (NuFParGetWord(parser) != 0) {
             if (NuStrICmp(parser->word_buffer_ptr, "story") == 0) {
-                entry->type = 1;
+                entry->type = COLLECTION_UNLOCK_STORY;
             } else if (NuStrICmp(parser->word_buffer_ptr, "area_complete") == 0) {
                 if (NuFParGetWord(parser) != 0 && Area_FindByName(parser->word_buffer_ptr, &area) != NULL) {
-                    entry->type = 2;
+                    entry->type = COLLECTION_UNLOCK_AREA_COMPLETE;
                     entry->area_index = (u8)area;
                 }
             } else if (NuStrICmp(parser->word_buffer_ptr, "all_episodes_complete") == 0) {
-                entry->type = 3;
+                entry->type = COLLECTION_UNLOCK_ALL_EPISODES_COMPLETE;
             } else if (NuStrICmp(parser->word_buffer_ptr, "100_percent") == 0) {
-                entry->type = 7;
+                entry->type = COLLECTION_UNLOCK_100_PERCENT;
             } else if (NuStrICmp(parser->word_buffer_ptr, "gold_bricks") == 0) {
-                entry->type = 6;
+                entry->type = COLLECTION_UNLOCK_GOLD_BRICKS;
                 entry->gold_bricks = (u16)abs(NuFParGetInt(parser));
             } else if (NuStrICmp(parser->word_buffer_ptr, "all_minikits_complete") == 0) {
-                entry->type = 4;
+                entry->type = COLLECTION_UNLOCK_ALL_MINIKITS_COMPLETE;
             } else if (NuStrICmp(parser->word_buffer_ptr, "minikit") == 0) {
-                entry->type = 5;
+                entry->type = COLLECTION_UNLOCK_MINIKIT;
             } else if (NuStrICmp(parser->word_buffer_ptr, "buy_in_shop") == 0) {
                 entry->can_buy = 1;
                 entry->buy_price = NuFParGetInt(parser);
@@ -304,7 +304,7 @@ void Collection_Configure(char *file, VARIPTR *buffer, VARIPTR *end) {
                 NuStrUpr(entry->cheat_code, entry->cheat_code);
             }
         }
-        if ((entry->type != 0 || entry->can_buy != 0) && entry->type != 7) {
+        if ((entry->type != COLLECTION_UNLOCK_NONE || entry->can_buy != 0) && entry->type != COLLECTION_UNLOCK_100_PERCENT) {
             entry->counts_towards_completion = 1;
             ++COLLECTION_COMPLETIONCOUNT;
         }

@@ -838,7 +838,7 @@ extern "C" int NuMain(int argc, char **argv) {
         if (StartupGameFlag1 != 0) {
             message = CheckGizAIMessage(gizaimessagesys, "MissionMode", NULL);
             if (message != NULL) {
-                if (MissionSys != NULL && MissionSys->state != 0) {
+                if (MissionSys != NULL && MissionSys->state != MISSION_STATE_NONE) {
                     message->value = 1.0f;
                 }
                 message->flags |= 1;
@@ -848,7 +848,7 @@ extern "C" int NuMain(int argc, char **argv) {
             }
             message = CheckGizAIMessage(gizaimessagesys, "ChallengeMode", NULL);
             if (message != NULL) {
-                if (ChallengeMode != 0) {
+                if (ChallengeMode != CHALLENGE_OFF) {
                     message->value = 1.0f;
                 }
                 message->flags |= 1;
@@ -859,7 +859,7 @@ extern "C" int NuMain(int argc, char **argv) {
         }
         if (Area == -1 || ADataList[Area].episode_index == -1 || (ADataList[Area].flags & AREAFLAG_MINIKIT) == 0 ||
             (ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0) {
-            ChallengeMode = 0;
+            ChallengeMode = CHALLENGE_OFF;
             Mission_Clear(NULL);
         }
 
@@ -973,9 +973,9 @@ extern "C" int NuMain(int argc, char **argv) {
                 InitPanel(GetMenuID() == MENU_OPTIONS ? TempOptions.widescreen : Game.options_save.widescreen);
                 saved_frametime = FRAMETIME;
                 if ((waiting_for_level == -1 || gone_through_door_to_new_level == 0) && screendump == 0) {
-                    if (ChallengeMode == 1 && AreaGlobals.unknown_20 >= 10 && WORLD->current_level != HUB_LDATA && MiniCutCam == 0 &&
-                        CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
-                        EndChallenge(2, 1);
+                    if (ChallengeMode == CHALLENGE_RUNNING && AreaGlobals.unknown_20 >= 10 && WORLD->current_level != HUB_LDATA &&
+                        MiniCutCam == 0 && CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
+                        EndChallenge(CHALLENGE_WON, 1);
                     }
                     LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before update: world=%p", (void *)WORLD);
                     SAGA_SOUND_CHECK("before frame update");

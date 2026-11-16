@@ -130,7 +130,9 @@ i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
         return 1;
     } else if (gizmo->type_id == obstacle_gizmotype_id) {
         GIZOBSTACLE *obstacle = gizmo->object;
-        if (obstacle->mode != 1 && obstacle->mode != 2 && obstacle->mode != 5 && obstacle->mode != 6 && obstacle->mode != 7) {
+        if (obstacle->mode != OBSTACLE_TRIGGER_PROXIMITY && obstacle->mode != OBSTACLE_TRIGGER_PROXIMITY_GROUND &&
+            obstacle->mode != OBSTACLE_TRIGGER_IN_BOX && obstacle->mode != OBSTACLE_TRIGGER_IN_BOX_AND_GROUND &&
+            obstacle->mode != OBSTACLE_TRIGGER_PUSH_ONLY) {
             return 0;
         }
         set->gizmos[set->trigger_count] = gizmo;
@@ -413,7 +415,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                                     continue;
                                 }
                             } else if (gizmo->type_id == obstacle_gizmotype_id) {
-                                if (((GIZOBSTACLE *)gizmo->object)->mode == 7) {
+                                if (((GIZOBSTACLE *)gizmo->object)->mode == OBSTACLE_TRIGGER_PUSH_ONLY) {
                                     continue;
                                 }
                             } else if (gizmo->type_id == grapple_gizmotype_id) {

@@ -2475,26 +2475,26 @@ static i32 EduiPropKeyboard(edui_prop_s *property, eduimenu_s *menu) {
         return 0;
     }
     switch (key) {
-        case 0x1c:
+        case DIK_RETURN:
             eduiItemPropSetText(property, eduiPropTextEdit);
             if (property->changed) {
                 property->changed(menu, &property->base, 0);
             }
-        case 1:
+        case DIK_ESCAPE:
             property->editing = 0;
             eduiPropTextPos = -1;
             return 0;
-        case 0xcb:
+        case DIK_LEFT:
             if (eduiPropTextPos > 0) {
                 eduiPropTextPos--;
             }
             return 0;
-        case 0xcd:
+        case DIK_RIGHT:
             if (eduiPropTextPos < length) {
                 eduiPropTextPos++;
             }
             return 0;
-        case 0x0e:
+        case DIK_BACK:
             if (eduiPropTextPos > 0) {
                 eduiPropTextPos--;
                 for (cursor = &eduiPropTextEdit[eduiPropTextPos]; *cursor; cursor++) {
@@ -2502,7 +2502,7 @@ static i32 EduiPropKeyboard(edui_prop_s *property, eduimenu_s *menu) {
                 }
             }
             return 0;
-        case 0xd3:
+        case DIK_DELETE:
             if (eduiPropTextPos < length) {
                 for (cursor = &eduiPropTextEdit[eduiPropTextPos]; *cursor; cursor++) {
                     *cursor = cursor[1];
@@ -3409,26 +3409,26 @@ static i32 EduiTextPickKeyboard(edui_textpicker_s *picker, eduimenu_s *menu, FRA
     NuStrLen(picker->value);
     if (key != -1) {
         switch (key) {
-            case 1:
-            case 0x1c:
+            case DIK_ESCAPE:
+            case DIK_RETURN:
                 if (picker->callback) {
                     picker->callback(menu, &picker->base, pad->digital_buttons);
                 }
                 break;
-            case 0xcb:
+            case DIK_LEFT:
                 EduiTextPickPreviousColumn(picker);
                 break;
-            case 0xcd:
+            case DIK_RIGHT:
                 EduiTextPickNextColumn(picker);
                 break;
-            case 0xc8:
+            case DIK_UP:
                 EduiTextPickPreviousRow(picker);
                 break;
-            case 0xd0:
+            case DIK_DOWN:
                 EduiTextPickNextRow(picker);
                 break;
-            case 0x0e:
-            case 0xd3:
+            case DIK_BACK:
+            case DIK_DELETE:
                 EduiTextPickDelete(picker);
                 break;
             default: {

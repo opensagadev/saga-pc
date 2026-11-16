@@ -50,15 +50,15 @@ void PCShaderObjectInitHLSLPc(NuShaderObject *shader, const u32 *key, i32 index,
     DWORD flags;
     HRESULT result;
     switch (version) {
-        case 1:
+        case PC_SHADER_MODEL_1_1:
             vertex_profile = "vs_1_1";
             pixel_profile = "ps_1_1";
             break;
-        case 2:
+        case PC_SHADER_MODEL_2_0:
             vertex_profile = "vs_2_0";
             pixel_profile = "ps_2_0";
             break;
-        case 3:
+        case PC_SHADER_MODEL_2_X:
             vertex_profile = "vs_2_a";
             pixel_profile = "ps_2_a";
             break;

@@ -11,6 +11,14 @@ struct NU_POST_SPEED_PARAMETERS;
 struct NuDynamicLight;
 struct PC_FRAMEBUFFER;
 
+/* NuPostEffectInit flags and the NuPostEffectEnable/Disable/IsEnabled masks: the filter each bit creates */
+#define NUPOSTEFFECT_BLOOM 0x4         /* NuMainFilter bloom */
+#define NUPOSTEFFECT_DOF 0x8           /* NuMainFilter depth of field */
+#define NUPOSTEFFECT_MOTION 0x10       /* NuMotionFilter */
+#define NUPOSTEFFECT_DEFERRED 0x20     /* NuDeferredFilter */
+#define NUPOSTEFFECT_MOTION_ACCUM 0x40 /* NuMotionAccumFilter */
+#define NUPOSTEFFECT_SPEED_BLUR 0x80   /* NuSpeedBlurFilter */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

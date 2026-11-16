@@ -243,14 +243,14 @@ static void PartExtraCoinsPrivate(NUVEC *position, i32 index) {
 
 void Pup_UpdateBlueCoin(WORLDINFO *world, GIZMOPICKUP *pickup) {
     (void)world;
-    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0) {
+    if ((pickup->flags & GIZMOPICKUP_STATE_DRAWN) != 0 && (pickup->flags & GIZMOPICKUP_STATE_DRAW_VISIBLE) != 0) {
         PartExtraCoinsPrivate(&pickup->position, 56);
     }
 }
 
 void Pup_UpdatePurpleCoin(WORLDINFO *world, GIZMOPICKUP *pickup) {
     (void)world;
-    if ((pickup->flags & 0x10) != 0 && (pickup->flags & 0x20) != 0) {
+    if ((pickup->flags & GIZMOPICKUP_STATE_DRAWN) != 0 && (pickup->flags & GIZMOPICKUP_STATE_DRAW_VISIBLE) != 0) {
         PartExtraCoinsPrivate(&pickup->position, 57);
     }
 }
@@ -1046,8 +1046,8 @@ void GizmoPickups_SetOnOff(void) {
     world = WORLD;
     for (index = 0; index < 10; ++index) {
         if (index == 7) {
-            off = challenge != 0;
-        } else if (challenge != 0) {
+            off = challenge != CHALLENGE_OFF;
+        } else if (challenge != CHALLENGE_OFF) {
             off = 0;
         } else {
             off = 1;
@@ -1129,11 +1129,11 @@ static void PartStop_Coin(PART *part) {
     if (WORLD->pickup_runtime_sys->temporary_cursor >= 64) {
         WORLD->pickup_runtime_sys->temporary_cursor = 0;
     }
-    if ((pickup->flags & 1) != 0) {
+    if ((pickup->flags & GIZMOPICKUP_STATE_ACTIVE) != 0) {
         GizmoPickup_CollectCoin(WORLD, &pickup->position, pickup->type_index, pickup->model_variant, NULL, 1);
     }
     SetCoinType(part->part_id, pickup);
-    pickup->flags = (pickup->flags & 0xf7) | 0x17;
+    pickup->flags = (pickup->flags & 0xf7) | GIZMOPICKUP_STATE_ACTIVE | GIZMOPICKUP_STATE_ENABLED | GIZMOPICKUP_STATE_VISIBLE | GIZMOPICKUP_STATE_DRAWN;
     pickup->position = part->position;
     pickup->rotation = 0;
     pickup->room = WORLD->current_gscn != NULL ? NuPortalWhichRoom(WORLD->current_gscn, &pickup->position) : -1;
@@ -1141,7 +1141,7 @@ static void PartStop_Coin(PART *part) {
     pickup->timer = 5.0f;
     pickup->shadow_x = 0;
     pickup->shadow_z = 0;
-    pickup->flags = (pickup->flags | 0x20) & ~GIZMOPICKUP_STATE_ALTERNATE_TYPE;
+    pickup->flags = (pickup->flags | GIZMOPICKUP_STATE_DRAW_VISIBLE) & ~GIZMOPICKUP_STATE_ALTERNATE_TYPE;
     part->active &= ~PART_IN_USE;
 }
 
@@ -1215,7 +1215,7 @@ void AddCoinsToPanel(i32 coins, NUVEC *position, i32 player, f32 unused, GAMEOBJ
     if (coins == 0) {
         return;
     }
-    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL) {
+    if (ChallengeMode != CHALLENGE_OFF || Mission_Active(NULL) != NULL) {
         coins = 0;
     }
     memset(counts, 0, sizeof(counts));
@@ -1343,7 +1343,7 @@ void AddPickups(i32 coins, i32 hearts, i32 torpedoes, i32 powerups, NUVEC *posit
     } else {
         to_panel = player_id == -1 ? 0 : panel;
     }
-    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL) {
+    if (ChallengeMode != CHALLENGE_OFF || Mission_Active(NULL) != NULL) {
         coins = 0;
     }
     if (speed == 1.0f) {

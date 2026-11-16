@@ -322,7 +322,7 @@ void DebReAlloc2(DEBRISKEY *key) {
         } else {
             freechunkcontrols[freechunkcontrolsptr]->active = 0;
         }
-        if (effect->time_group == 4) {
+        if (effect->time_group == DEBRIS_DRAW_PANEL) {
             freechunkcontrols[freechunkcontrolsptr]->expiry_time =
                 debtab[key->effect_index]->trail_count * debtab[key->effect_index]->trail_time +
                 (debtab[key->effect_index]->particle_lifetime + panelglobaltime);
@@ -439,7 +439,7 @@ void DebFreeChunksInstantly(i32 *handle) {
             freechunkcontrols[freechunkcontrolsptr]->active = 2;
         }
         freechunkcontrols[freechunkcontrolsptr]->owner = NULL;
-        if (effect->time_group == 4) {
+        if (effect->time_group == DEBRIS_DRAW_PANEL) {
             freechunkcontrols[freechunkcontrolsptr]->expiry_time = panelglobaltime;
             panel_time = 1;
         } else {
@@ -484,7 +484,7 @@ void DebFreeOrphansInstantly(DEBRIS_INFO *effect) {
                 freechunkcontrols[freechunkcontrolsptr]->active = 2;
             }
             freechunkcontrols[freechunkcontrolsptr]->owner = NULL;
-            if (effect->time_group == 4) {
+            if (effect->time_group == DEBRIS_DRAW_PANEL) {
                 freechunkcontrols[freechunkcontrolsptr]->expiry_time = panelglobaltime;
                 panel_time = 1;
             } else {
@@ -597,7 +597,7 @@ void DebFree(i32 *handle) {
                 freechunkcontrols[freechunkcontrolsptr]->active = 0;
             }
             freechunkcontrols[freechunkcontrolsptr]->owner = NULL;
-            if (effect->time_group == 4) {
+            if (effect->time_group == DEBRIS_DRAW_PANEL) {
                 freechunkcontrols[freechunkcontrolsptr]->expiry_time =
                     debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->trail_count *
                         debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->trail_time +
@@ -911,14 +911,14 @@ void DebrisProcessGeneration(void) {
         emission = 0;
         next = key->previous;
         effect = debtab[key->effect_index];
-        now = effect->time_group == 4 ? panelglobaltime : globaltime;
+        now = effect->time_group == DEBRIS_DRAW_PANEL ? panelglobaltime : globaltime;
         if (key->emission_disabled != 0) {
             continue;
         }
         key->cutoff_distance = CameraEmitterDistance(&key->position);
         if (key->finite != 0) {
             if (key->cutoff_distance < effect->cut_on || (effect->clip_extent > 0.0f && effect->clip_extent < key->cutoff_distance)) {
-                if (effect->use_explicit_clip_box == 0 && effect->time_group != 4) {
+                if (effect->use_explicit_clip_box == 0 && effect->time_group != DEBRIS_DRAW_PANEL) {
                     key->finite = 0;
                 }
             }
@@ -1137,7 +1137,7 @@ void DebrisTimeSlip(i32 group) {
     }
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRIS_INFO *effect = debtab[DEBRIS_ENGINE_KEYS[i].effect_index];
-        if ((effect->time_group == 4 && group == 1) || (effect->time_group != 4 && group == 0)) {
+        if ((effect->time_group == DEBRIS_DRAW_PANEL && group == 1) || (effect->time_group != DEBRIS_DRAW_PANEL && group == 0)) {
             glass = effect->particle_type == DEBRIS_PARTICLE_GLASS;
             DEBRIS_ENGINE_KEYS[i].last_update_time -= 800.0;
             DEBRIS_ENGINE_KEYS[i].emission_epoch -= 800.0;
@@ -1160,7 +1160,8 @@ void DebrisTimeSlip(i32 group) {
         }
     }
     for (i = 1; i < debinf_count; ++i) {
-        if (debtab[i] != NULL && ((debtab[i]->time_group == 4 && group == 1) || (debtab[i]->time_group != 4 && group == 0))) {
+        if (debtab[i] != NULL &&
+            ((debtab[i]->time_group == DEBRIS_DRAW_PANEL && group == 1) || (debtab[i]->time_group != DEBRIS_DRAW_PANEL && group == 0))) {
             debtab[i]->last_render_time -= 800.0;
             if (debtab[i]->native_data != NULL) {
                 debtab[i]->native_data->last_render_time -= 800.0;
@@ -1189,7 +1190,7 @@ void DebrisFreeOldestDmaDebTypeTable(void) {
     f32 age;
     for (i = 1; i < debinf_count; ++i) {
         if (debtab[i] != NULL && debtab[i]->native_data != NULL) {
-            age = (debtab[i]->time_group == 4 ? panelglobaltime : globaltime) - debtab[i]->last_render_time;
+            age = (debtab[i]->time_group == DEBRIS_DRAW_PANEL ? panelglobaltime : globaltime) - debtab[i]->last_render_time;
             if (age > oldest_age) {
                 oldest_age = age;
                 oldest = i;
@@ -1293,7 +1294,7 @@ i32 CreateScaledEffect(i32 effect_index, f32 requested_scale) {
                         debtab[result]->particle_keys[i] = -1;
                     }
                     DebrisReScale(result, requested_scale);
-                    debtab[result]->last_render_time = debtab[result]->time_group == 4 ? panelglobaltime : globaltime;
+                    debtab[result]->last_render_time = debtab[result]->time_group == DEBRIS_DRAW_PANEL ? panelglobaltime : globaltime;
                     debtab[result]->scale = requested_scale;
                     debtab[result]->base_effect_index = effect_index;
                     if (strlen(debtab[effect_index]->name) <= 12) {
@@ -1395,7 +1396,7 @@ void DebrisPopulateInstance(i32 handle, f32 duration) {
     if (duration == 0.0f) {
         duration = effect->particle_lifetime;
     }
-    if (effect->time_group == 4) {
+    if (effect->time_group == DEBRIS_DRAW_PANEL) {
         end_time = panelglobaltime + debris_time_increment;
         emission_time = panelglobaltime - duration;
     } else {
@@ -1947,7 +1948,7 @@ void AddFiniteShotDebrisEffect2(i32 *handle, i32 effect, NUVEC *position, NUVEC 
         return;
     }
     debkeydata[*handle].finite_count = count;
-    now = debtab[effect]->time_group == 4 ? panelglobaltime : globaltime;
+    now = debtab[effect]->time_group == DEBRIS_DRAW_PANEL ? panelglobaltime : globaltime;
     debkeydata[*handle].emission_disabled = 0;
     offset = debkeydata[*handle].emission_time - now;
     debkeydata[*handle].emission_time -= offset;
@@ -2022,7 +2023,7 @@ void DebrisCleanUpDmaDebTypeTables(void) {
             DebrisDmaCleanupDelay = 0;
             effect = table[index];
             if (effect->native_data != NULL) {
-                f32 now = effect->time_group == 4 ? panelglobaltime : globaltime;
+                f32 now = effect->time_group == DEBRIS_DRAW_PANEL ? panelglobaltime : globaltime;
                 if (now > effect->last_render_time + 5.0) {
                     DmaDebTypes[--freeDmaDebType] = table[index]->native_data;
                     debtab[index]->native_data = NULL;
@@ -2108,7 +2109,7 @@ void DebrisShift(NUMTX *transform) {
                 break;
             }
         }
-        group = effect->time_group == 4;
+        group = effect->time_group == DEBRIS_DRAW_PANEL;
         if (found) {
             if (key->controlled_chunk_count != 0) {
                 i32 chunk;

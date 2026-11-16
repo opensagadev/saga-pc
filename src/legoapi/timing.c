@@ -131,17 +131,17 @@ void GameTiming(WORLDINFO *world, f32 *game_time) {
                     }
                 }
                 if (world->area != NULL && (world->area->flags & AREAFLAG_MINIKIT) != 0) {
-                    if (ChallengeMode == 1) {
+                    if (ChallengeMode == CHALLENGE_RUNNING) {
                         UpdateTimer(&ChallengeTimer);
                         if (Game_AreaSave != NULL && ChallengeTimer.time_elapsed >=
                                                          ((GAME_TIMING_AREA_SAVE *)Game_AreaSave)[world->area_index].challenge_trial_time) {
-                            EndChallenge(3, 1);
+                            EndChallenge(CHALLENGE_TIME_UP, 1);
                         }
-                    } else if (Mission_CurrentState(NULL) == 1) {
+                    } else if (Mission_CurrentState(NULL) == MISSION_STATE_ACTIVE) {
                         time_limit = (f32)((GAME_TIMING_MISSION_DATA *)MissionSys->active_mission)->time;
                         UpdateTimer(&MissionSys->timer);
                         if (MissionSys->timer.time_elapsed >= time_limit && netclient == 0) {
-                            EndMission(MissionSys, 3, 1);
+                            EndMission(MissionSys, MISSION_STATE_TIME_UP, 1);
                         }
                     }
                 }

@@ -6,6 +6,16 @@
 #include "legoapi/lib/hub.h"
 #include "legoapi/menus/screens/store.h"
 
+/* collection_config_entry_s.type: how a collection entry is unlocked, by its config keyword (0: only bought) */
+#define COLLECTION_UNLOCK_NONE 0
+#define COLLECTION_UNLOCK_STORY 1                 /* story */
+#define COLLECTION_UNLOCK_AREA_COMPLETE 2         /* area_complete */
+#define COLLECTION_UNLOCK_ALL_EPISODES_COMPLETE 3 /* all_episodes_complete */
+#define COLLECTION_UNLOCK_ALL_MINIKITS_COMPLETE 4 /* all_minikits_complete */
+#define COLLECTION_UNLOCK_MINIKIT 5               /* minikit */
+#define COLLECTION_UNLOCK_GOLD_BRICKS 6           /* gold_bricks */
+#define COLLECTION_UNLOCK_100_PERCENT 7           /* 100_percent */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

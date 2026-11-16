@@ -1287,6 +1287,16 @@ typedef struct gizobstacle_s {              // size 0xa0
 #define OBSTACLE_TECHNO_CONTROLLED 0x4 /* GizObstacle_SetTechnoControlled */
 #define OBSTACLE_PUSH_CONTROLLED 0x8   /* GizObstacle_SetPushControlled */
 
+/* gizobstacle_s.mode: the trigger keywords of the ChangeObstTriggerType flow action (GizObstacleUpdateFns) */
+#define OBSTACLE_TRIGGER_AUTOSTART 0
+#define OBSTACLE_TRIGGER_PROXIMITY 1
+#define OBSTACLE_TRIGGER_PROXIMITY_GROUND 2
+#define OBSTACLE_TRIGGER_NONE 3 /* "NOTRIGGER" */
+#define OBSTACLE_TRIGGER_TECHNO_ONLY 4
+#define OBSTACLE_TRIGGER_IN_BOX 5
+#define OBSTACLE_TRIGGER_IN_BOX_AND_GROUND 6
+#define OBSTACLE_TRIGGER_PUSH_ONLY 7
+
 /* GizmoObstacle_GetOutput outputs, named after GizmoObstacle_GetOutputName. */
 #define OBSTACLE_OUTPUT_AT_END 0
 #define OBSTACLE_OUTPUT_NOT_AT_START 1

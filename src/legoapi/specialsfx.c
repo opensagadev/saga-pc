@@ -456,7 +456,7 @@ void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category
     if (version >= 17) {
         effect->time_group = EdFileReadChar();
     } else {
-        effect->time_group = 0;
+        effect->time_group = DEBRIS_DRAW_AFTER_FOG;
     }
     if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
         effect->time_group = 2;

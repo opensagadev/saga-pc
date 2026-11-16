@@ -1185,7 +1185,7 @@ void PC_INPUT_RUNTIME::CaptureBinding(i32 port) {
                         break;
                     }
                     if (keyboard_state[key]) {
-                        captures[10].kind[0] = 7;
+                        captures[10].kind[0] = PC_BINDING_KEY;
                         captures[10].value[0] = (i16)key;
                         break;
                     }
@@ -1197,7 +1197,7 @@ void PC_INPUT_RUNTIME::CaptureBinding(i32 port) {
             nu_keyboard_owner.mouse_buttons >= 2) {
             for (i32 button = 0; button < 8; ++button) {
                 if (mouse.buttons[button]) {
-                    captures[10].kind[1] = 4;
+                    captures[10].kind[1] = PC_BINDING_MOUSE_BUTTON;
                     captures[10].value[1] = (i16)button;
                     break;
                 }
@@ -1208,28 +1208,28 @@ void PC_INPUT_RUNTIME::CaptureBinding(i32 port) {
             if (abs(x) > abs(y)) {
                 if (abs(x) > motion_threshold) {
                     if (x > 0) {
-                        captures[10].kind[2] = 5;
+                        captures[10].kind[2] = PC_BINDING_MOUSE_AXIS;
                         captures[10].value[2] = 0;
                     } else {
-                        captures[10].kind[2] = 6;
+                        captures[10].kind[2] = PC_BINDING_MOUSE_AXIS_REVERSED;
                         captures[10].value[2] = 0;
                     }
                 }
             } else if (abs(y) > motion_threshold) {
                 if (y > 0) {
-                    captures[10].kind[2] = 5;
+                    captures[10].kind[2] = PC_BINDING_MOUSE_AXIS;
                     captures[10].value[2] = 1;
                 } else {
-                    captures[10].kind[2] = 6;
+                    captures[10].kind[2] = PC_BINDING_MOUSE_AXIS_REVERSED;
                     captures[10].value[2] = 1;
                 }
             }
             if (z) {
                 if (z > 0) {
-                    captures[10].kind[2] = 5;
+                    captures[10].kind[2] = PC_BINDING_MOUSE_AXIS;
                     captures[10].value[2] = 2;
                 } else {
-                    captures[10].kind[2] = 6;
+                    captures[10].kind[2] = PC_BINDING_MOUSE_AXIS_REVERSED;
                     captures[10].value[2] = 2;
                 }
             }
@@ -1238,26 +1238,26 @@ void PC_INPUT_RUNTIME::CaptureBinding(i32 port) {
     }
     for (i32 axis = 0; axis < 32; ++axis) {
         if (raw_sample.axes[axis] > 16384) {
-            captures[port].kind[2] = 2;
+            captures[port].kind[2] = PC_BINDING_JOYSTICK_AXIS;
             captures[port].value[2] = (i16)axis;
             break;
         }
         if (raw_sample.axes[axis] < -16384) {
-            captures[port].kind[2] = 3;
+            captures[port].kind[2] = PC_BINDING_JOYSTICK_AXIS_REVERSED;
             captures[port].value[2] = (i16)axis;
             break;
         }
     }
     for (i32 button = 0; button < devices[port].button_count; ++button) {
         if (raw_sample.buttons[button]) {
-            captures[port].kind[0] = 1;
+            captures[port].kind[0] = PC_BINDING_JOYSTICK_BUTTON;
             captures[port].value[0] = (i16)button;
             break;
         }
     }
     for (i32 button = 128; button <= 131; ++button) {
         if (raw_sample.buttons[button]) {
-            captures[port].kind[0] = 1;
+            captures[port].kind[0] = PC_BINDING_JOYSTICK_BUTTON;
             captures[port].value[0] = (i16)button;
             break;
         }
@@ -1346,9 +1346,9 @@ void PC_INPUT_RUNTIME::ServicePendingCapture() {
 void PC_INPUT_RUNTIME::AdvanceCaptureRecords() {
     for (i32 port = 0; port < 14; ++port) {
         staged_capture[port] = captures[port];
-        captures[port].kind[2] = 0;
-        captures[port].kind[0] = 0;
-        captures[port].kind[1] = 0;
+        captures[port].kind[2] = PC_BINDING_NONE;
+        captures[port].kind[0] = PC_BINDING_NONE;
+        captures[port].kind[1] = PC_BINDING_NONE;
         if (mouse.port_activity[port]) {
             --mouse.port_activity[port];
             if (staged_capture[port].kind[2] || staged_capture[port].kind[0] || staged_capture[port].kind[1]) {

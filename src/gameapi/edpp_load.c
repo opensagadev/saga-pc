@@ -186,7 +186,7 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
             }
         }
         if (item->data != 7 && effect->particle_type == DEBRIS_PARTICLE_GLASS) {
-            effect->time_group = 0;
+            effect->time_group = DEBRIS_DRAW_AFTER_FOG;
         }
         if (item->data == 7) {
             effect->time_group = 2;

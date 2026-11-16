@@ -283,7 +283,7 @@ void DebrisStartOffsetEx(DEBRISKEY *key, f32 offset) {
         return;
     }
     effect = debtab[key->effect_index];
-    now = effect->time_group == 4 ? panelglobaltime : globaltime;
+    now = effect->time_group == DEBRIS_DRAW_PANEL ? panelglobaltime : globaltime;
 
     if (effect->emission_period_random == 0.0f && effect->emission_pause_random == 0.0f) {
         interval = effect->emission_period + effect->emission_pause;

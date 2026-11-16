@@ -566,17 +566,17 @@ void SockSysFindInScene(SOCKSYS *sock_sys, NUGSCN *gscn) {
                 sprintf(name, "%s%.2i", tSockC, i);
                 sock->c = NuSplineFind(gscn, name);
                 if (sock->c == NULL) {
-                    sock->flags |= 1;
+                    sock->flags |= SOCK_FLAG_NO_CD;
                 } else if (sock->c->length != len) {
-                    sock->flags |= 1;
+                    sock->flags |= SOCK_FLAG_NO_CD;
                 }
-                if ((sock->flags & 1) == 0) {
+                if ((sock->flags & SOCK_FLAG_NO_CD) == 0) {
                     sprintf(name, "%s%.2i", tSockD, i);
                     sock->d = NuSplineFind(gscn, name);
                     if (sock->d == NULL) {
-                        sock->flags |= 1;
+                        sock->flags |= SOCK_FLAG_NO_CD;
                     } else if (sock->d->length != len) {
-                        sock->flags |= 1;
+                        sock->flags |= SOCK_FLAG_NO_CD;
                     }
                 }
                 sprintf(name, "%s%.2i", tSockMID, i);
@@ -616,7 +616,7 @@ void SockSysFindInScene(SOCKSYS *sock_sys, NUGSCN *gscn) {
                 for (j = 0; j < len; j++) {
                     AdjustMinMaxBox(&sock->a->pts[j], &sock->min, &sock->max);
                     AdjustMinMaxBox(&sock->b->pts[j], &sock->min, &sock->max);
-                    if ((sock->flags & 1) == 0) {
+                    if ((sock->flags & SOCK_FLAG_NO_CD) == 0) {
                         AdjustMinMaxBox(&sock->c->pts[j], &sock->min, &sock->max);
                         AdjustMinMaxBox(&sock->d->pts[j], &sock->min, &sock->max);
                     }
@@ -866,7 +866,7 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         for (segment_index = 0; segment_index < sock->cam->length; ++segment_index, ++segment) {
             i32 next = (segment_index + 1) % sock->cam->length;
 
-            if ((sock->flags & 1) == 0) {
+            if ((sock->flags & SOCK_FLAG_NO_CD) == 0) {
                 NuVecSurfaceNormal(&segment->planes[0], &sock->a->pts[segment_index], &sock->b->pts[segment_index],
                                    &sock->d->pts[segment_index]);
                 NuVecSurfaceNormal(&segment->planes[1], &sock->a->pts[next], &sock->b->pts[next], &sock->b->pts[segment_index]);
@@ -948,7 +948,7 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
             if (sock_index == other_index || other->valid == 0) {
                 continue;
             }
-            if ((sock->flags & 1) != 0 || (other->flags & 1) != 0) {
+            if ((sock->flags & SOCK_FLAG_NO_CD) != 0 || (other->flags & SOCK_FLAG_NO_CD) != 0) {
                 ignore_y = 1;
             } else {
                 ignore_y = 0;
@@ -1141,7 +1141,7 @@ static f32 BestSockPosition(SOCKSYS *sock_sys, NUVEC *point, SOCKPOSITION *resul
         return 0.0f;
     }
 
-    if ((sock->flags & 1) == 0) {
+    if ((sock->flags & SOCK_FLAG_NO_CD) == 0) {
         if (point->x < sock->min.x || point->x > sock->max.x || point->y < sock->min.y || point->y > sock->max.y ||
             point->z < sock->min.z || point->z > sock->max.z) {
             return 0.0f;
@@ -1189,7 +1189,7 @@ static f32 BestSockPosition(SOCKSYS *sock_sys, NUVEC *point, SOCKPOSITION *resul
             b1 = &sock->b->pts[next];
             segment_data = &sock->segments[segment];
             inside = 0;
-            if ((sock->flags & 1) == 0) {
+            if ((sock->flags & SOCK_FLAG_NO_CD) == 0) {
                 c0 = &sock->c->pts[segment];
                 d0 = &sock->d->pts[segment];
                 c1 = &sock->c->pts[next];
@@ -1217,7 +1217,7 @@ static f32 BestSockPosition(SOCKSYS *sock_sys, NUVEC *point, SOCKPOSITION *resul
             if (inside != 0) {
                 result->sock_index = (i8)sock_index;
                 result->segment = (i16)segment;
-                if ((sock->flags & 1) == 0) {
+                if ((sock->flags & SOCK_FLAG_NO_CD) == 0) {
                     result->ratio = RatioBetweenPlanes(point, a0, &segment_data->planes[0], c1, &segment_data->planes[5]);
                 } else {
                     result->ratio = SockRatioBetweenEdgesXZ(point, b0, a0, b1, a1);
@@ -2262,12 +2262,12 @@ f32 CalculateDistanceToNearestEnd(NUVEC *position, SOCKPOSITION *resolved, i32 u
     NUVEC end_temporary;
     flat.y = 0.0f;
     first_a = sock->a->pts;
-    first_b = (sock->flags & 1) ? sock->b->pts : sock->d->pts;
+    first_b = (sock->flags & SOCK_FLAG_NO_CD) ? sock->b->pts : sock->d->pts;
     a = *first_a;
     b = *first_b;
     a.y = b.y = 0.0f;
     last_a = &sock->a->pts[sock->a->length - 1];
-    last_b = (sock->flags & 1) ? &sock->b->pts[sock->b->length - 1] : &sock->d->pts[sock->d->length - 1];
+    last_b = (sock->flags & SOCK_FLAG_NO_CD) ? &sock->b->pts[sock->b->length - 1] : &sock->d->pts[sock->d->length - 1];
     c = *last_a;
     d = *last_b;
     c.y = d.y = 0.0f;
@@ -2358,7 +2358,7 @@ f32 CalculateDistanceToNearestSide(NUVEC *position, SOCKPOSITION *resolved, i32 
     sock = &system->socks[resolved->sock_index];
     distance = 0.0f;
     flat.y = 0.0f;
-    if (sock->flags & 1) {
+    if (sock->flags & SOCK_FLAG_NO_CD) {
         a0 = &sock->a->pts[resolved->next_segment - 1];
         a1 = &sock->a->pts[resolved->next_segment];
         a.x = a0->x + (a1->x - a0->x) * resolved->ratio;

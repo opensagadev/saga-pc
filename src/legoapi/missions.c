@@ -109,7 +109,7 @@ void Mission_Clear(MISSIONSYS *ms) {
         }
     }
     ms->active_mission = NULL;
-    ms->state = 0;
+    ms->state = MISSION_STATE_NONE;
     ResetTimer(&ms->timer, 0.0f);
 }
 
@@ -120,7 +120,7 @@ MISSIONDATA *Mission_Active(MISSIONSYS *system) {
             return NULL;
         }
     }
-    if (system->state != 0 && system->active_mission != NULL) {
+    if (system->state != MISSION_STATE_NONE && system->active_mission != NULL) {
         return system->active_mission;
     }
     return NULL;
@@ -131,12 +131,12 @@ i32 Mission_CurrentState(MISSIONSYS *system) {
         system = MissionSys;
     }
     if (system == NULL) {
-        return 0;
+        return MISSION_STATE_NONE;
     }
-    if (system->state != 0 && system->active_mission != NULL) {
+    if (system->state != MISSION_STATE_NONE && system->active_mission != NULL) {
         return system->state;
     }
-    return 0;
+    return MISSION_STATE_NONE;
 }
 
 i32 Missions_PartyAvailable(MISSIONSYS *system) {
@@ -201,7 +201,7 @@ i32 Missions_PickupsOff(MISSIONSYS *system) {
     if (system == NULL) {
         return 0;
     }
-    if (system->state == 0 || system->active_mission == NULL || (system->flags & 1) != 0) {
+    if (system->state == MISSION_STATE_NONE || system->active_mission == NULL || (system->flags & 1) != 0) {
         return 0;
     }
     return 1;

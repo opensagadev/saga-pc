@@ -191,7 +191,7 @@ extern "C" {
             redbrickslidetime = 0.0f;
             DrawRedBrickTime = 0.0f;
         } else {
-            if (ChallengeMode != 0) {
+            if (ChallengeMode != CHALLENGE_OFF) {
                 DrawMiniKitTime = 2.0f;
             }
             if (DrawMiniKitTime > 0.0f) {
@@ -202,7 +202,7 @@ extern "C" {
             } else {
                 target = 0.0f;
             }
-            if (ChallengeMode != 0) {
+            if (ChallengeMode != CHALLENGE_OFF) {
                 f32 hint_alpha = CurrentHintAlpha();
                 if (hint_alpha > 0.0f) {
                     target *= 1.0f - hint_alpha;
@@ -210,7 +210,7 @@ extern "C" {
             }
             minikittime = SeekLinearF(minikittime, target, FRAMETIME);
             MiniKitScale = SeekLinearF(MiniKitScale, 1.0f, (f32)(5.0 * (f64)FRAMETIME));
-            if (ChallengeMode != 0) {
+            if (ChallengeMode != CHALLENGE_OFF) {
                 DrawBuildUpTime = 0.0f;
                 builduptime = 0.0f;
                 BuildUpScale = 1.0f;
@@ -610,7 +610,7 @@ extern "C" {
             } else {
                 x -= (f32)((f32)(hitpoints - 1) * spacing * 0.5);
             }
-        } else if (alignment == 8) {
+        } else if (alignment == TEXT_ALIGN_RIGHT) {
             spacing = -spacing;
         }
         draw_y = PANEL3DMULY * y;
@@ -674,12 +674,12 @@ void DrawBonusScore(f32 y, i32 active0, i32 active1, f32 alpha, i32 *scores) {
     char text[32];
     if (!(in_arcade != 0 && goal > 0 && Arcade_Points[0] == goal - 1 && menu_flash != 0)) {
         sprintf(text, "%i", scores[0]);
-        Text3DEx(text, -0.015f, y, 1.0f, .7f, .7f, .7f, 8, 255, 255, 255, (u8)(i32)((active0 != 0 ? 128 : 32) * alpha));
+        Text3DEx(text, -0.015f, y, 1.0f, .7f, .7f, .7f, TEXT_ALIGN_RIGHT, 255, 255, 255, (u8)(i32)((active0 != 0 ? 128 : 32) * alpha));
     }
     Text3DEx(":", 0.0f, y, 1.0f, .7f, .7f, .7f, 0, 255, 191, 0, (u8)(i32)(alpha * 128.0));
     if (!(in_arcade != 0 && goal > 0 && Arcade_Points[1] == goal - 1 && menu_flash != 0)) {
         sprintf(text, "%i", scores[1]);
-        Text3DEx(text, 0.015f, y, 1.0f, .7f, .7f, .7f, 2, 255, 255, 255, (u8)(i32)((active1 != 0 ? 128 : 32) * alpha));
+        Text3DEx(text, 0.015f, y, 1.0f, .7f, .7f, .7f, TEXT_ALIGN_LEFT, 255, 255, 255, (u8)(i32)((active1 != 0 ? 128 : 32) * alpha));
     }
     if (in_arcade != 0 && goal > 0) {
         sprintf(text, "(%i)", goal);
@@ -730,7 +730,7 @@ extern "C" {
         arcade_mode = Arcade_GetMode(&arcade_flags);
         status_y = (STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y;
         raised_hearts = (WORLD->area != NULL && (WORLD->area == HUB_ADATA || (WORLD->area->flags & AREAFLAG_SUPER_BONUS) != 0)) ||
-                        SuperStory != 0 || ChallengeMode != 0 || Mission_Active(NULL) != NULL || arcade_mode == 0;
+                        SuperStory != 0 || ChallengeMode != CHALLENGE_OFF || Mission_Active(NULL) != NULL || arcade_mode == 0;
         GetMenuID();
         flash_alpha =
             (i32)((f64)NuTrigTable[((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0) >> 1)] * 16.0 +
@@ -753,11 +753,11 @@ extern "C" {
             }
             base_alpha = paused != 0 && player != pause_i_pad && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 ? 0.5f : 1.0f;
             if (player == 0) {
-                alignment = 2;
+                alignment = TEXT_ALIGN_LEFT;
                 icon_x = -ICONX;
                 frame_model = 166;
             } else {
-                alignment = 8;
+                alignment = TEXT_ALIGN_RIGHT;
                 icon_x = ICONX;
                 frame_model = 165;
             }
@@ -880,7 +880,7 @@ extern "C" {
         if (MenuInMemoryCard() == 0) {
             if (WORLD->area != NULL) {
                 i32 freeplay = GAMEDEMO != 0 ? 0 : FreePlay;
-                if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
+                if (SuperStory == 0 && ChallengeMode == CHALLENGE_OFF && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&
                     (HubBothTrueJediGoldBricks != 0 ? Game.area_save[WORLD->area_index].true_hero_complete[freeplay] == 0
                                                     : Game.area_save[WORLD->area_index].true_hero_complete[0] == 0 &&
@@ -895,10 +895,10 @@ extern "C" {
                 if (SuperStory == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     ((WORLD->area->flags & AREAFLAG_MINIKIT) != 0 ||
                      ((WORLD->current_level->flags & LEVEL_TEST) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
-                    DrawMiniKitCount(minikittime, MiniKitScale, ChallengeMode != 0 ? AreaGlobals.unknown_20 : AreaGlobals.progress_flags,
-                                     10);
+                    DrawMiniKitCount(minikittime, MiniKitScale,
+                                     ChallengeMode != CHALLENGE_OFF ? AreaGlobals.unknown_20 : AreaGlobals.progress_flags, 10);
                 }
-                if (SuperStory == 0 && ChallengeMode == 0 && Mission_Active(NULL) == NULL && Arcade == 0 &&
+                if (SuperStory == 0 && ChallengeMode == CHALLENGE_OFF && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&
                     (AreaGlobals.unknown_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
                     redbrickslidetime > 0.0f) {
@@ -1426,7 +1426,7 @@ extern "C" {
                         -((STATSPOSY - STATSPOS2Y) * NuTrigTable[((i32)((f64)statstime * 16384.0) >> 1) & 0x7fff] + STATSPOS2Y),
                         BonusTimer.time_elapsed, Game.area_save[WORLD->area_index].challenge_trial_time, 0, 1);
                 }
-            } else if (BonusArea == 0 && ChallengeMode != 0) {
+            } else if (BonusArea == 0 && ChallengeMode != CHALLENGE_OFF) {
                 f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
                 if (remaining < 0.0f) {
                     remaining = 0.0f;

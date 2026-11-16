@@ -1878,7 +1878,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 object->jump_variant_state == 0 && object->character_context != CHARACTER_CONTEXT_JUMP &&
                 object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED && api->jump_animation_state != 8 &&
                 (GameTimer.update_count >= 2 || (api->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) != 0) &&
-                (api->unknown_281 & 3) != 0 && api->supporting_platform_id == -1 &&
+                (api->unknown_281 & (GROUND_CONTACT | GROUND_NEAR)) != 0 && api->supporting_platform_id == -1 &&
                 movement_threshold * movement_threshold >= speed_squared && object->character_context != CHARACTER_CONTEXT_TELEPORT &&
                 object->character_context != CHARACTER_CONTEXT_INTERFACE && object->character_context != CHARACTER_CONTEXT_FORCE_FROZEN) {
                 api->flags_1fc_word |= 4;
@@ -1946,12 +1946,12 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
                     api->unknown_281 = 0;
                     if (GameObjectNearFloor(object, 1.0f, NULL) != 0) {
-                        api->unknown_281 |= 2;
+                        api->unknown_281 |= GROUND_NEAR;
                     }
                     if (api->collision_min.y <= api->floor_height) {
-                        api->unknown_281 |= 1;
+                        api->unknown_281 |= GROUND_CONTACT;
                     }
-                    if ((api->unknown_281 & 1) != 0) {
+                    if ((api->unknown_281 & GROUND_CONTACT) != 0) {
                         object->contact_count = 1;
                         object->contact_position.x = api->position.x;
                         object->contact_position.y = api->floor_height;
@@ -2219,7 +2219,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
                 api->unknown_281 = object->unknown_1050 != 0 ? 1 : 0;
                 if (GameObjectNearFloor(object, 1.0f, NULL) != 0) {
-                    api->unknown_281 |= 2;
+                    api->unknown_281 |= GROUND_NEAR;
                 }
                 if (api->unknown_281 != 0) {
                     object->flags_ef0 |= 0x2000000;

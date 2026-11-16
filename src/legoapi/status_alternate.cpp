@@ -459,8 +459,8 @@ extern "C" {
                                     (packet->flags_word & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0 &&
                                     (packet->next_area == -1 || (packet->area->flags & AREAFLAG_ENDING_AREA) != 0 ||
                                      Game.area_save[packet->next_area].complete != 0)) ||
-                                   (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != 0 ||
-                                   packet->mission_state != 0) {
+                                   (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != CHALLENGE_OFF ||
+                                   packet->mission_state != MISSION_STATE_NONE) {
                             if (status_prompt > 0) {
                                 if (((pad->menu_directions | buttons) & GAMEPAD_DUP) != 0) {
                                     GameAudio_PlaySfx(0x2f, NULL, 0, 0);
@@ -507,10 +507,10 @@ extern "C" {
 
     /* Stage types 8, 13, 14, 23 and 26. */
     void LevelComplete_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
+        if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) {
             *packet->score = packet->reward_score;
         }
-        if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
+        if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON) {
             *packet->score = packet->reward_score;
         }
         NextStatusStage(packet);
@@ -569,7 +569,7 @@ extern "C" {
             if (stage->step_time >= stage->step_duration) {
                 u32 flags = packet->flags_word;
                 if ((flags & STATUSPACKET_SUPER_STORY_MODE) == 0 && packet->prompt_choice == 0 && (flags & STATUSPACKET_FREE_PLAY) == 0 &&
-                    packet->mission_state == 0 && packet->challenge_state == 0) {
+                    packet->mission_state == MISSION_STATE_NONE && packet->challenge_state == CHALLENGE_OFF) {
                     FinishStatusPacket(0);
                 } else {
                     NextStatusStage(packet);
@@ -2182,7 +2182,7 @@ extern "C" {
                     i32 red;
                     i32 green;
                     i32 blue;
-                    if (packet->challenge_state == 2) {
+                    if (packet->challenge_state == CHALLENGE_WON) {
                         red = green = blue = 0xff;
                     } else {
                         red = StatusRed;
@@ -2196,7 +2196,7 @@ extern "C" {
                     i32 green;
                     i32 blue;
                     i16 id;
-                    if (packet->mission_state == 2) {
+                    if (packet->mission_state == MISSION_STATE_COMPLETE) {
                         id = dat_008806e4;
                         red = green = blue = 0xff;
                     } else {
@@ -2211,8 +2211,8 @@ extern "C" {
             }
         }
         if (stage->type == STATUS_STAGE_CHALLENGE || stage->type == STATUS_STAGE_MISSION) {
-            if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
-                (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
+            if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) ||
+                (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON)) {
                 f32 progress;
                 f32 slide;
                 f32 coin_slide;
@@ -2291,10 +2291,10 @@ extern "C" {
                     StatusAltSpin = 0;
                 }
                 if (stage->step_time >= stage->step_duration) {
-                    if (packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
+                    if (packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) {
                         *packet->score = packet->reward_score;
                     }
-                    if (packet->stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
+                    if (packet->stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON) {
                         *packet->score = packet->reward_score;
                     }
                     NextStatusStage(packet);
@@ -2302,8 +2302,8 @@ extern "C" {
                 }
                 if ((previous < dat_007f8220 && stage->step_time >= dat_007f8220) ||
                     (previous < (f64)dat_007f8220 * 2.0 + dat_007f8224 && stage->step_time >= (f64)dat_007f8220 * 2.0 + dat_007f8224)) {
-                    if ((packet->stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 3) ||
-                        (packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == 3)) {
+                    if ((packet->stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_TIME_UP) ||
+                        (packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_TIME_UP)) {
                         GameAudio_PlaySfx(0x32, NULL, 0, 0);
                     } else {
                         PlaySfx("StatusAward", NULL);
@@ -2311,8 +2311,8 @@ extern "C" {
                     NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                     return;
                 }
-                if ((packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
-                    (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
+                if ((packet->stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) ||
+                    (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON)) {
                     f32 reward_end = stage->step_duration - 0.75;
                     if (previous < reward_end && stage->step_time >= reward_end) {
                         CoinTotalScale = 1.5f;

@@ -169,6 +169,11 @@ extern "C" {
 }
 #endif
 
+/* cut_load_locator_s.flags */
+#define CUTLOC_PIVOT 0x4        /* the matrix is moved by the locator's pivot */
+#define CUTLOC_FINITE_SHOT 0x10 /* its debris effect fires once (AddScaledFiniteShotDebrisEffect) */
+#define CUTLOC_PERSISTENT 0x20  /* its debris effect is one instance that follows the locator (AddDebrisEffect) */
+
 typedef struct cut_load_locator_s { // size 0x64
     NUMTX matrix;                   // 0x00
     NUVEC pivot;                    // 0x40

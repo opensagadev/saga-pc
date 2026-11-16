@@ -23,9 +23,12 @@ typedef struct game_message_s GAME_MESSAGE;
 
 /* GIZMOPICKUP.flags: GizmoPickup_TurnOnPickup sets ENABLED and VISIBLE, the draw loop skips a pickup without
  * VISIBLE or with COLLECTED, collecting sets COLLECTED, and a minikit already saved draws the alternate type. */
+#define GIZMOPICKUP_STATE_ACTIVE 0x1 /* the slot holds a pickup: both loops skip one without it */
 #define GIZMOPICKUP_STATE_ENABLED 0x2
 #define GIZMOPICKUP_STATE_VISIBLE 0x4
 #define GIZMOPICKUP_STATE_COLLECTED 0x8
+#define GIZMOPICKUP_STATE_DRAWN 0x10        /* drawn this frame (cleared at the start of the draw loop) */
+#define GIZMOPICKUP_STATE_DRAW_VISIBLE 0x20 /* set by the update loop; the draw loop skips a pickup without it */
 #define GIZMOPICKUP_STATE_ALTERNATE_TYPE 0x40
 
 typedef struct GIZMOPICKUP { // size 0x2c

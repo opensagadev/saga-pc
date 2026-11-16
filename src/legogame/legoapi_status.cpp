@@ -496,7 +496,7 @@ extern "C" {
         if (p->mission != NULL) {
             p->mission_state = (u8)Mission_CurrentState(NULL);
         } else {
-            p->mission_state = 0;
+            p->mission_state = MISSION_STATE_NONE;
         }
         p->challenge_state = (u8)ChallengeMode;
         PauseSaveAndExit = 0;
@@ -651,13 +651,13 @@ extern "C" {
             StatusDrawPlayerIcons = 1;
             return;
         }
-        if (p->mission_state != 0) {
+        if (p->mission_state != MISSION_STATE_NONE) {
             i32 gold = 0;
             p->newly_completed = 0;
             p->original_score = *p->score;
             p->reward_score = p->original_score;
             p->elapsed_time = MissionSys->timer.time_elapsed;
-            if (p->mission_state == 2) {
+            if (p->mission_state == MISSION_STATE_COMPLETE) {
                 if (Game_MissionSave == NULL || Game_MissionSave->completed[(i8)MissionSys->active_mission->index] == 0) {
                     if (Game_MissionSave != NULL) {
                         Game_MissionSave->completed[(i8)MissionSys->active_mission->index] = 1;
@@ -699,12 +699,12 @@ extern "C" {
             cointotal_i_obj[1] = cointotal_i_obj[0] = 0xc3;
             return;
         }
-        if (p->challenge_state != 0) {
+        if (p->challenge_state != CHALLENGE_OFF) {
             i32 first = 0;
             p->elapsed_time = ChallengeTimer.time_elapsed;
             p->original_score = *p->score;
             p->reward_score = p->original_score;
-            if (p->challenge_state == 2) {
+            if (p->challenge_state == CHALLENGE_WON) {
                 if (Game.area_save[p->area_id].challenge_unlocked == 0) {
                     AddToCompletionPoints(POINTS_PER_CHALLENGE);
                     Game.area_save[p->area_id].challenge_unlocked = 1;
@@ -721,7 +721,7 @@ extern "C" {
                 }
             }
             AddStatusStage(p, STATUS_STAGE_CHALLENGE, 0);
-            if (p->challenge_state == 2 && first != 0) {
+            if (p->challenge_state == CHALLENGE_WON && first != 0) {
                 AddStatusStage(p, STATUS_STAGE_CHALLENGE_CASH, 0);
             }
             AddStatusStage(p, STATUS_STAGE_PROMPT, 0);
@@ -1142,10 +1142,10 @@ extern "C" {
         if ((packet->flags_word & STATUSPACKET_BONUS_MODE) != 0) {
             labels[0] = dat_0088083c;
             labels[1] = dat_008806f8;
-        } else if (packet->challenge_state != 0) {
+        } else if (packet->challenge_state != CHALLENGE_OFF) {
             labels[0] = dat_0088083c;
             labels[1] = dat_008806f8;
-        } else if (packet->mission_state != 0) {
+        } else if (packet->mission_state != MISSION_STATE_NONE) {
             labels[0] = dat_0088083c;
             labels[1] = dat_008806f8;
         } else if ((packet->flags_word & STATUSPACKET_FREE_PLAY) != 0) {
@@ -1439,8 +1439,9 @@ extern "C" void FinishStatusPacket(i32 choice) {
         return;
     }
     NewLData = HUB_LDATA;
-    if (choice == 0 && ((StatusPacket.flags_word & STATUSPACKET_BONUS_MODE) != 0 ||
-                        (StartupGameFlag1 != 0 && (StatusPacket.challenge_state != 0 || StatusPacket.mission_state != 0)))) {
+    if (choice == 0 &&
+        ((StatusPacket.flags_word & STATUSPACKET_BONUS_MODE) != 0 ||
+         (StartupGameFlag1 != 0 && (StatusPacket.challenge_state != CHALLENGE_OFF || StatusPacket.mission_state != MISSION_STATE_NONE)))) {
         NewLData = Area_FindNextPlayLevel(ADataList[StatusPacket.area->index].levels[0]);
         ResetBits = 0xffffffbfu;
         reset_area = 1;
@@ -1448,10 +1449,10 @@ extern "C" void FinishStatusPacket(i32 choice) {
         FadeSys.SetFade(fade, 0);
         NeedScreenGrab(1);
         GrabStillScreen();
-        if (StatusPacket.challenge_state != 0) {
+        if (StatusPacket.challenge_state != CHALLENGE_OFF) {
             InitChallenge(StatusPacket.area->index);
         }
-        if (StatusPacket.mission_state != 0) {
+        if (StatusPacket.mission_state != MISSION_STATE_NONE) {
             InitMission(MissionSys, (i8)MissionSys->active_mission->index);
             NewLData = &LDataList[MissionSys->active_mission->level];
         }
@@ -1472,8 +1473,8 @@ extern "C" void FinishStatusPacket(i32 choice) {
     if ((StatusPacket.flags_word & STATUSPACKET_SAVED_AND_EXITED) != 0) {
         NewLData = HUB_LDATA;
     }
-    if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & AREAFLAG_HUB_AREA) != 0 && StatusPacket.mission_state != 0 &&
-        MissionSys->active_mission != NULL) {
+    if (NewLData->area_index != -1 && (ADataList[NewLData->area_index].flags & AREAFLAG_HUB_AREA) != 0 &&
+        StatusPacket.mission_state != MISSION_STATE_NONE && MissionSys->active_mission != NULL) {
         hub_from_mission = (i8)MissionSys->active_mission->index;
     }
     if (NewLData == HUB_LDATA) {

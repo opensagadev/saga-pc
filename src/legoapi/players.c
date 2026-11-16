@@ -843,7 +843,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
                         object->position.x = (f32)((f64)object->position.x + 12.0);
                     }
                 } else if (DOGFIGHT_ADATA != NULL && WORLD->area == DOGFIGHT_ADATA) {
-                    if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & 1) == 0) {
+                    if ((WORLD->sock_sys->socks[object->sock_position.sock_index].flags & SOCK_FLAG_NO_CD) == 0) {
                         object->position = object->sock_position.midpoint;
                         if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
                             (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {

@@ -1562,7 +1562,7 @@ static void SurfaceInfo_ExtraReflect(GAMEOBJECT *object) {
 }
 
 static f32 Hint_AlphaTarget(void) {
-    if (minikittime > 0.0f && ChallengeMode == 0) {
+    if (minikittime > 0.0f && ChallengeMode == CHALLENGE_OFF) {
         return 0.0f;
     }
     return 1.0f;
@@ -1974,7 +1974,7 @@ extern "C" {
 
 extern "C" void InitChallenge(i32 area) {
     (void)area;
-    ChallengeMode = 1;
+    ChallengeMode = CHALLENGE_RUNNING;
     ResetTimer(&ChallengeTimer, 0);
     Cheats_TurnOff(0);
     AreaGlobals.unknown_1c = 0;
@@ -1994,7 +1994,7 @@ extern "C" {
     void MenuDrawEndChallenge(MENU *menu) {
         (void)menu;
         if (MenuStopDraw == 0) {
-            if (ChallengeMode == 2) {
+            if (ChallengeMode == CHALLENGE_WON) {
                 if (NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
                     char text[64];
                     f32 remaining = (f32)ADataList[WORLD->area_index].challenge_trial_time - ChallengeTimer.time_elapsed;
@@ -3020,7 +3020,7 @@ extern "C" {
     }
 
     void GizObstacle_SetDefaultSFXFn_LSW(void *world, GIZOBSTACLE *obstacle) {
-        if (obstacle->mode == 2 && obstacle->trigger_radius < 0.25f) {
+        if (obstacle->mode == OBSTACLE_TRIGGER_PROXIMITY_GROUND && obstacle->trigger_radius < 0.25f) {
             obstacle->start_sfx_id = (i16)GetSfxId("SwPPad");
         }
     }
@@ -3625,7 +3625,7 @@ extern "C" {
             BonusWinFlag = 0;
             NewMenu(MENU_END_CHALLENGE, -1, -1);
             ResetGameMessages();
-            if (state == 3) {
+            if (state == CHALLENGE_TIME_UP) {
                 PlaySfx(ScorePanelName, NULL);
             }
         }

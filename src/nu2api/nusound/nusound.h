@@ -313,6 +313,18 @@ extern "C" {
 
 #ifdef __cplusplus
 
+/* SoundQueue commands (SendCommand, the switch of SoundQueue::Run) and stream states */
+#define SOUNDQUEUE_CMD_SET_FILE 1 /* SetStreamFile */
+#define SOUNDQUEUE_CMD_PLAY 2     /* SetStreamFlags: preload and play (flag 0x2: start paused) */
+#define SOUNDQUEUE_CMD_STOP 3
+#define SOUNDQUEUE_CMD_PAUSE 4
+#define SOUNDQUEUE_CMD_RESUME 5
+#define SOUNDQUEUE_CMD_QUIT 6 /* ends the thread */
+#define SOUNDQUEUE_STATE_STOPPED 0
+#define SOUNDQUEUE_STATE_PRELOADING 1
+#define SOUNDQUEUE_STATE_PLAYING 2
+#define SOUNDQUEUE_STATE_PAUSED 3
+
 struct SoundQueue {                    // size 0x400
     i32 active;                        // 0x000
     u32 unknown_0004;                  // 0x004

@@ -1022,7 +1022,7 @@ static CUT_LOAD_LOCATOR_INSTANCE_SYSTEM *CutLocatorInstanceCreate(CUT_LOAD_LOCAT
             CUT_LOAD_LOCATOR_INSTANCE *target = &instance->locators[i];
             u8 flags = system->types[locator->type_index].flags;
             if ((flags & CUTLOCATOR_DEBRIS) != 0) {
-                if ((locator->flags & 0x20) != 0) {
+                if ((locator->flags & CUTLOC_PERSISTENT) != 0) {
                     target->effect.index = -1;
                 }
             } else if ((flags & CUTLOCATOR_FUNCTION) != 0) {
@@ -1560,7 +1560,7 @@ static void CutSceneCameraSysUpdate(INSTNUGCUTSCENE *owner, f32 frame) {
                 if (locator->animation != NULL) {
                     NUMTX focus_matrix;
                     NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &focus_matrix, NULL);
-                    if ((locator->flags & 4) != 0) {
+                    if ((locator->flags & CUTLOC_PIVOT) != 0) {
                         NuMtxPreTranslate(&focus_matrix, &locator->pivot);
                     }
                     if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {

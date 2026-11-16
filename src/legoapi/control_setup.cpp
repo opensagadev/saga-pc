@@ -258,7 +258,7 @@ PC_CONTROL_SCREEN *PC_CONTROL_SCREEN::fun_00420190(void) {
     selected_player = 0;
     y_scale = 0.8f;
     missing_binding = 0;
-    phase = 0;
+    phase = PC_CONTROL_CLOSED;
     for (i32 i = 3; i >= 0; --i) {
         saved_ports[i] = -1;
     }
@@ -296,7 +296,7 @@ void PC_CONTROL_SCREEN::Register(PC_CONTROL_CONFIG *config, VARIPTR *, VARIPTR *
 }
 
 void PC_CONTROL_SCREEN::fun_00420320(i32) {
-    phase = 3;
+    phase = PC_CONTROL_FADE_OUT;
 }
 
 i32 PC_CONTROL_SCREEN::HashConfiguration(void) {
@@ -372,7 +372,7 @@ void PC_CONTROL_SCREEN::Initialize(i32 count, i32 player, i32 resolve_bank, u8 i
     }
     active = 1;
     missing_binding = 0;
-    phase = 1;
+    phase = PC_CONTROL_FADE_IN;
     for (i32 i = 0; i < 4; ++i) {
         ports[i] = -1;
         original_ports[i] = -1;
@@ -559,26 +559,26 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
     elapsed = dt;
     active = 1;
     switch (phase) {
-        case 0:
+        case PC_CONTROL_CLOSED:
             active = 0;
             return 0;
-        case 1:
+        case PC_CONTROL_FADE_IN:
             fade = fade + dt;
             if (fade > 1.0f) {
                 fade = 1.0f;
-                phase = 2;
+                phase = PC_CONTROL_OPEN;
             }
             opacity = fade;
             break;
         case 4:
-            phase = 3;
+            phase = PC_CONTROL_FADE_OUT;
             return 4;
-        case 3:
+        case PC_CONTROL_FADE_OUT:
             fade = fade - dt;
             if (fade < 0.0f) {
                 PcInputSuppressKeyOne(0);
                 fade = 0.0f;
-                phase = 0;
+                phase = PC_CONTROL_CLOSED;
                 active = 0;
                 for (i32 i = 0; i < player_count; ++i) {
                     saved_ports[i] = ports[i];
@@ -597,7 +597,7 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
             }
             opacity = fade;
             break;
-        case 2: {
+        case PC_CONTROL_OPEN: {
             FRAME_PAD *pads[2] = {first, second};
             i32 escape = NuKeyboard(1);
             for (i32 i = 0; i < player_count; ++i) {
@@ -836,7 +836,7 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
                         if (play_sound) {
                             play_sound(0);
                         }
-                        phase = 3;
+                        phase = PC_CONTROL_FADE_OUT;
                         result = 2;
                     } else if (PcControlButtons & 0x40) {
                         PC_CONTROL_ITEM *item = &row->items[row->selected];
@@ -901,7 +901,7 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
                                         if (play_sound) {
                                             play_sound(0);
                                         }
-                                        phase = 3;
+                                        phase = PC_CONTROL_FADE_OUT;
                                         result = 2;
                                         break;
                                     case 0:
@@ -909,12 +909,12 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
                                             if (play_sound) {
                                                 play_sound(1);
                                             }
-                                            phase = 3;
+                                            phase = PC_CONTROL_FADE_OUT;
                                         }
                                         missing_binding = HasMissingBindings();
                                         if (!missing_binding) {
                                             result = 3;
-                                            phase = 3;
+                                            phase = PC_CONTROL_FADE_OUT;
                                             if (play_sound) {
                                                 play_sound(1);
                                             }

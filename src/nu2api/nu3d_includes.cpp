@@ -11496,30 +11496,30 @@ void NuPostEffectEnable(i32 mask) {
         return;
     }
     switch (mask) {
-        case 4:
+        case NUPOSTEFFECT_BLOOM:
             flag = &mainFilter->bloom_enabled;
             if (!*flag) {
                 ++mainFilter->active_filter_count;
                 *flag = 1;
             }
             break;
-        case 8:
+        case NUPOSTEFFECT_DOF:
             flag = &mainFilter->dof_enabled;
             if (!*flag) {
                 ++mainFilter->active_filter_count;
                 *flag = 1;
             }
             break;
-        case 0x20:
+        case NUPOSTEFFECT_DEFERRED:
             deferredFilter->enabled = 1;
             break;
-        case 0x10:
+        case NUPOSTEFFECT_MOTION:
             motionFilter->enabled = 1;
             break;
-        case 0x40:
+        case NUPOSTEFFECT_MOTION_ACCUM:
             motionAccumFilter->enabled = 1;
             break;
-        case 0x80:
+        case NUPOSTEFFECT_SPEED_BLUR:
             speedBlurFilter->enabled = 1;
             break;
     }
@@ -11528,30 +11528,30 @@ void NuPostEffectEnable(i32 mask) {
 void NuPostEffectDisable(u32 mask) {
     u8 *flag;
     switch (mask) {
-        case 4:
+        case NUPOSTEFFECT_BLOOM:
             flag = &mainFilter->bloom_enabled;
             if (*flag) {
                 --mainFilter->active_filter_count;
                 *flag = 0;
             }
             break;
-        case 8:
+        case NUPOSTEFFECT_DOF:
             flag = &mainFilter->dof_enabled;
             if (*flag) {
                 --mainFilter->active_filter_count;
                 *flag = 0;
             }
             break;
-        case 0x20:
+        case NUPOSTEFFECT_DEFERRED:
             deferredFilter->enabled = 0;
             break;
-        case 0x10:
+        case NUPOSTEFFECT_MOTION:
             motionFilter->enabled = 0;
             break;
-        case 0x40:
+        case NUPOSTEFFECT_MOTION_ACCUM:
             motionFilter->enabled = 0;
             break;
-        case 0x80:
+        case NUPOSTEFFECT_SPEED_BLUR:
             speedBlurFilter->enabled = 0;
             break;
     }
@@ -11562,17 +11562,17 @@ extern "C" i32 NuPostEffectIsEnabled(i32 mask) {
         return 0;
     }
     switch (mask) {
-        case 4:
+        case NUPOSTEFFECT_BLOOM:
             return mainFilter->bloom_enabled != 0;
-        case 8:
+        case NUPOSTEFFECT_DOF:
             return mainFilter->dof_enabled != 0;
-        case 0x20:
+        case NUPOSTEFFECT_DEFERRED:
             return ((NuPostFilterGen *)deferredFilter)->isEnabled() ? 1 : 0;
-        case 0x10:
+        case NUPOSTEFFECT_MOTION:
             return ((NuPostFilterGen *)motionFilter)->isEnabled() ? 1 : 0;
-        case 0x40:
+        case NUPOSTEFFECT_MOTION_ACCUM:
             return ((NuPostFilterGen *)motionAccumFilter)->isEnabled() ? 1 : 0;
-        case 0x80:
+        case NUPOSTEFFECT_SPEED_BLUR:
             return ((NuPostFilterGen *)speedBlurFilter)->isEnabled() ? 1 : 0;
     }
     return 0;
@@ -11905,32 +11905,32 @@ extern "C" void NuPostEffectInit(u32 flags, VARIPTR *buffer, VARIPTR end) {
     u32 deferred_mask;
     void *object;
     NuPostEffectInitialisedFlags = flags;
-    main_mask = flags & 0xc;
+    main_mask = flags & (NUPOSTEFFECT_BLOOM | NUPOSTEFFECT_DOF);
     if (main_mask) {
         object = NuPostFilterAllocator.cursor;
         NuPostFilterAllocator.cursor += sizeof(NuMainFilter);
         mainFilter = object ? (NU_POST_MAIN_VIEW *)new (object) NuMainFilter : NULL;
     }
-    motion_mask = flags & 0x10;
+    motion_mask = flags & NUPOSTEFFECT_MOTION;
     if (motion_mask) {
         object = NuPostFilterAllocator.cursor;
         NuPostFilterAllocator.cursor += sizeof(NuMotionFilter);
         motionFilter = object ? (NU_POST_MOTION_VIEW *)new (object) NuMotionFilter : NULL;
         NuPostShaderEngineFlags |= 0x20;
     }
-    accum_mask = flags & 0x40;
+    accum_mask = flags & NUPOSTEFFECT_MOTION_ACCUM;
     if (accum_mask) {
         object = NuPostFilterAllocator.cursor;
         NuPostFilterAllocator.cursor += sizeof(NuMotionAccumFilter);
         motionAccumFilter = object ? (NU_POST_ACCUM_VIEW *)new (object) NuMotionAccumFilter : NULL;
     }
-    speed_mask = flags & 0x80;
+    speed_mask = flags & NUPOSTEFFECT_SPEED_BLUR;
     if (speed_mask) {
         object = NuPostFilterAllocator.cursor;
         NuPostFilterAllocator.cursor += sizeof(NuSpeedBlurFilter);
         speedBlurFilter = object ? (NU_POST_SPEED_VIEW *)new (object) NuSpeedBlurFilter : NULL;
     }
-    deferred_mask = flags & 0x20;
+    deferred_mask = flags & NUPOSTEFFECT_DEFERRED;
     if (deferred_mask) {
         object = NuPostFilterAllocator.cursor;
         NuPostFilterAllocator.cursor += sizeof(NuDeferredFilter);

@@ -634,7 +634,7 @@ static i32 PreResetCanAccelerateFall(GAMEOBJECT *object) {
     if (!(object->pad->input_magnitude > 0.0f) && object->velocity.x == 0.0f && object->velocity.z == 0.0f) {
         return 0;
     }
-    if ((object->unknown_281 & 2) != 0 || object->contact_count == 0) {
+    if ((object->unknown_281 & GROUND_NEAR) != 0 || object->contact_count == 0) {
         return 0;
     }
     if (!(object->contact_normal.y > NuTrigTable[0x4000]) || !(object->contact_normal.y < NuTrigTable[0x3000])) {
@@ -9060,11 +9060,11 @@ void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_r
         }
     }
     if (object->character_context != CHARACTER_CONTEXT_SLIDE) {
-        if ((object->unknown_281 & 1) != 0 && object->contact_count == 0 && !object->velocity.y &&
+        if ((object->unknown_281 & GROUND_CONTACT) != 0 && object->contact_count == 0 && !object->velocity.y &&
             object->surface_normal.y > NuTrigTable[0x21c7]) {
-            object->unknown_281 &= ~1;
+            object->unknown_281 &= ~GROUND_CONTACT;
         }
-        if (hover_height == 0.0f && (object->unknown_281 & 1) != 0) {
+        if (hover_height == 0.0f && (object->unknown_281 & GROUND_CONTACT) != 0) {
             object->velocity.y = 0.0f;
             return;
         }
@@ -9190,7 +9190,7 @@ void ApplyGravity(GAMEOBJECT *object, f32 *gravity, f32 hover_height, f32 seek_r
         }
     }
     previous_velocity = object->velocity.y;
-    if (object->unknown_281 == 0 || object->unknown_281 == 2 || object->id == id_DRAGBOMB) {
+    if (object->unknown_281 == 0 || object->unknown_281 == GROUND_NEAR || object->id == id_DRAGBOMB) {
         object->velocity.y = FRAMETIME * acceleration + object->velocity.y;
     }
     if (object->character_context == CHARACTER_CONTEXT_DOOMED) {
@@ -10740,7 +10740,7 @@ i32 MovePlayer_TWIST(GAMEOBJECT *object) {
     }
     sock = object->sock_position.sock_index;
     object->movement_mode = 4;
-    if (sock == -1 || (world->sock_sys->socks[sock].flags & 1) != 0) {
+    if (sock == -1 || (world->sock_sys->socks[sock].flags & SOCK_FLAG_NO_CD) != 0) {
         return 0;
     }
     object->movement_mode = 4;

@@ -190,28 +190,28 @@ static void CutSceneLocatorDebrisUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCA
         NuAnimData2CalcTime(locator->animation, frame, &time);
     }
     if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC *)locator, frame, &time, &scale, &rate) != 0) {
-        if (scale < 0.0f && (locator->flags & 0x10) == 0) {
+        if (scale < 0.0f && (locator->flags & CUTLOC_FINITE_SHOT) == 0) {
             // MATCH-EXCEPTION: the original negates with fldz/fsubrp (0 - scale), unary minus gives fchs.
             scale = (f32)debtab[effect]->frequency * (0.0f - scale);
         }
         if ((f64)scale > 0.10000000149011612) {
-            if ((locator->flags & 0x10) != 0 && instance->effect.index != 0) {
+            if ((locator->flags & CUTLOC_FINITE_SHOT) != 0 && instance->effect.index != 0) {
                 return;
             }
             NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &matrix, &time);
-            if ((locator->flags & 4) != 0) {
+            if ((locator->flags & CUTLOC_PIVOT) != 0) {
                 NuMtxPreTranslate(&matrix, &locator->pivot);
             }
             if (parent != NULL) {
                 NuMtxMul(&matrix, &matrix, parent);
             }
             position = (NUVEC *)&matrix.m30;
-            if ((locator->flags & 0x10) != 0) {
+            if ((locator->flags & CUTLOC_FINITE_SHOT) != 0) {
                 finite = -1;
                 AddScaledFiniteShotDebrisEffect(&finite, effect, position, 0, 0, 1, rate);
                 DebrisEmitterOrientationMtx(finite, &matrix);
                 instance->effect.index = 1;
-            } else if ((locator->flags & 0x20) != 0) {
+            } else if ((locator->flags & CUTLOC_PERSISTENT) != 0) {
                 if (instance->effect.index == -1) {
                     AddDebrisEffect(&instance->effect.index, effect, position->x, position->y, position->z);
                     DebrisPopulateInstance(instance->effect.index, 0.0f);
@@ -234,7 +234,7 @@ static void CutSceneLocatorDebrisUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCA
             return;
         }
     }
-    if ((locator->flags & 0x20) != 0) {
+    if ((locator->flags & CUTLOC_PERSISTENT) != 0) {
         if (instance->effect.index > -1) {
             DebFreeInstantly(&instance->effect.index);
         }
@@ -278,7 +278,7 @@ static void CutSceneLocatorVfxUpdate(CUT_LOAD_LOCATOR *locator, CUT_LOAD_LOCATOR
     }
     if (NuGCutLocatorIsVisble((CUT_LOCATOR_GENERIC *)locator, frame, &time, &scale, NULL) != 0 && (f64)scale > 0.10000000149011612) {
         NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &matrix, &time);
-        if ((locator->flags & 4) != 0) {
+        if ((locator->flags & CUTLOC_PIVOT) != 0) {
             NuMtxPreTranslate(&matrix, &locator->pivot);
         }
         if (parent != NULL) {
@@ -352,7 +352,7 @@ static void CutSceneLocatorLookAtUpdate(CUT_LOAD_LOCATOR_INSTANCE *instance, CUT
     hierarchy = state->hierarchy;
     hierarchy_view = (CUT_LOOKAT_HIERARCHY *)hierarchy;
     values = NuGCutLocatorCalcMtx((CUT_LOCATOR_GENERIC *)locator, frame, &locator_matrix, NULL);
-    if ((locator->flags & 4) != 0) {
+    if ((locator->flags & CUTLOC_PIVOT) != 0) {
         NuMtxPreTranslate(&locator_matrix, &locator->pivot);
     }
     if (parent != NULL) {

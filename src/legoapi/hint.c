@@ -352,7 +352,7 @@ void Hint_Process(f32 elapsed) {
         (world->area != NULL && world->area == HUB_ADATA && Hub_PanelBusyFn != NULL && Hub_PanelBusyFn() != 0)) {
         available = 0;
     }
-    if (ChallengeMode != 0 || Mission_Active(NULL) != NULL) {
+    if (ChallengeMode != CHALLENGE_OFF || Mission_Active(NULL) != NULL) {
         available = 0;
     }
 

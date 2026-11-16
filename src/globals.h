@@ -118,6 +118,11 @@ extern "C" {
     extern i32 CUTSTOPGAME;
     extern i32 LevelChange;
     extern i32 Arcade;
+/* ChallengeMode, STATUSPACKET_s.challenge_state: the minikit challenge (InitChallenge, EndChallenge) */
+#define CHALLENGE_OFF 0
+#define CHALLENGE_RUNNING 1
+#define CHALLENGE_WON 2     /* the tenth minikit collected */
+#define CHALLENGE_TIME_UP 3 /* the challenge trial time ran out */
     extern i32 ChallengeMode;
     extern i32 EDITBUFFERENDSIZE;
     extern VARIPTR permbuffer_base;

@@ -266,12 +266,12 @@ static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 cou
     maximum_distance_squared = world->pickup_runtime_sys->draw_distance * world->pickup_runtime_sys->draw_distance;
     shadow_distance_squared = (f32)((world->pickup_runtime_sys->draw_distance * 0.5) * (world->pickup_runtime_sys->draw_distance * 0.5));
     for (index = 0; index < count; ++index, ++pickup) {
-        if (!(pickup->flags & 1)) {
+        if (!(pickup->flags & GIZMOPICKUP_STATE_ACTIVE)) {
             continue;
         }
-        pickup->flags &= ~0x10;
-        if (!(pickup->flags & GIZMOPICKUP_STATE_VISIBLE) || (pickup->flags & GIZMOPICKUP_STATE_COLLECTED) || !(pickup->flags & 0x20) ||
-            (pickup->room >= 0 && world->rooms_visible_ptr[pickup->room] == 0)) {
+        pickup->flags &= ~GIZMOPICKUP_STATE_DRAWN;
+        if (!(pickup->flags & GIZMOPICKUP_STATE_VISIBLE) || (pickup->flags & GIZMOPICKUP_STATE_COLLECTED) ||
+            !(pickup->flags & GIZMOPICKUP_STATE_DRAW_VISIBLE) || (pickup->room >= 0 && world->rooms_visible_ptr[pickup->room] == 0)) {
             continue;
         }
         if ((pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) && GizmoPickupSys->alternate_type != -1) {
@@ -846,8 +846,9 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
     pickup = pickups;
     for (index = 0; index < count; ++index, ++pickup) {
         type = &GizmoPickupSys->types[pickup->type_index];
-        if ((type->flags & 0x10) != 0 || (pickup->flags & 1) == 0 || (pickup->flags & GIZMOPICKUP_STATE_COLLECTED) != 0 ||
-            (pickup->flags & GIZMOPICKUP_STATE_ENABLED) == 0 || ((pickup->flags & 0x10) == 0 && (pickup->unknown_14[1] & 4) == 0)) {
+        if ((type->flags & 0x10) != 0 || (pickup->flags & GIZMOPICKUP_STATE_ACTIVE) == 0 ||
+            (pickup->flags & GIZMOPICKUP_STATE_COLLECTED) != 0 || (pickup->flags & GIZMOPICKUP_STATE_ENABLED) == 0 ||
+            ((pickup->flags & GIZMOPICKUP_STATE_DRAWN) == 0 && (pickup->unknown_14[1] & 4) == 0)) {
             continue;
         }
         if ((pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) != 0 && GizmoPickupSys->alternate_type != -1) {
@@ -910,7 +911,7 @@ GIZMOPICKUP *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unus
     if (pickup != NULL) {
         pickup->flags |= GIZMOPICKUP_STATE_COLLECTED;
         if (temporary) {
-            pickup->flags &= ~1u;
+            pickup->flags &= ~GIZMOPICKUP_STATE_ACTIVE;
         }
         type_index = (pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) != 0 && GizmoPickupSys->alternate_type != -1
                          ? GizmoPickupSys->alternate_type
@@ -1290,11 +1291,11 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
     }
     SuperCounters_ResetProcessed(world);
     for (index = 0; index < count; ++index, ++pickup) {
-        if (!(pickup->flags & 1)) {
+        if (!(pickup->flags & GIZMOPICKUP_STATE_ACTIVE)) {
             continue;
         }
         pickup->rotation += FRAMETIME * 16384.0;
-        pickup->flags |= 0x20;
+        pickup->flags |= GIZMOPICKUP_STATE_DRAW_VISIBLE;
         if ((pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) && GizmoPickupSys->alternate_type != -1) {
             type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
         } else {
@@ -1352,14 +1353,14 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
                 if (pickup->timer <= 0.0f) {
                     pickup->flags &= ~GIZMOPICKUP_STATE_ENABLED;
                 } else if (GameTimer.update_count % 6 >= 3) {
-                    pickup->flags &= ~0x20;
+                    pickup->flags &= ~GIZMOPICKUP_STATE_DRAW_VISIBLE;
                 }
             }
             if (MiniCutCam != 2) {
                 timer = pickup->timer - FRAMETIME;
                 pickup->timer = timer;
                 if (timer < 0.0f) {
-                    pickup->flags &= ~1;
+                    pickup->flags &= ~GIZMOPICKUP_STATE_ACTIVE;
                 }
             }
         }

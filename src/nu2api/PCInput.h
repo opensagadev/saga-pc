@@ -129,6 +129,23 @@ struct TEXT_INPUT_LABELS { // size 0xc0
 extern "C" {
 #endif
     i32 PcInput_GetCtrlStringPlayer(void);
+/* PcInput_GetCtrlInputString commands, by the button words of TextDecodeCodeword */
+#define PC_COMMAND_PAD_UP 8
+#define PC_COMMAND_PAD_RIGHT 9
+#define PC_COMMAND_PAD_DOWN 10
+#define PC_COMMAND_PAD_LEFT 11
+#define PC_COMMAND_TRIANGLE 12
+#define PC_COMMAND_CIRCLE 13
+#define PC_COMMAND_CROSS 14
+#define PC_COMMAND_SQUARE 15
+#define PC_COMMAND_L1 16
+#define PC_COMMAND_L2 17
+#define PC_COMMAND_R1 18
+#define PC_COMMAND_R2 19
+#define PC_COMMAND_L3 20
+#define PC_COMMAND_R3 21
+#define PC_COMMAND_SELECT 22
+#define PC_COMMAND_START 23
     i32 PcInput_GetCtrlInputString(i32 device, i32 button, char *destination);
     extern char *TextInputKeyNameTable[238];
     extern char **TextInputKeyNames;

@@ -251,7 +251,7 @@ i32 AllMiniKitsDone(AREASAVE_s *save) {
 }
 
 void DrawMiniKitCount(f32 time, f32 scale, i32 amount, i32 total) {
-    i32 model = ChallengeMode != 0 ? CharKitModelId : MiniKitModelId;
+    i32 model = ChallengeMode != CHALLENGE_OFF ? CharKitModelId : MiniKitModelId;
     f32 factor;
     f32 x;
     f32 y;
@@ -293,7 +293,7 @@ void MiniKit_GameMsg_End(GAME_MESSAGE *message) {
         } else if ((i16)message->icon == CharKitModelId && AreaGlobals.unknown_20 < AreaGlobals.unknown_1c) {
             ++AreaGlobals.unknown_20;
             if (AreaGlobals.unknown_20 == AreaGlobals.unknown_1c && AreaGlobals.unknown_1c >= 10) {
-                EndChallenge(2, 1);
+                EndChallenge(CHALLENGE_WON, 1);
             }
         }
     }

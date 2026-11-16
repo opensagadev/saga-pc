@@ -912,11 +912,11 @@ void Coins_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 current) 
                 i32 align;
                 if (player == 0) {
                     coin_x = -PANEL_COINX;
-                    align = 2;
+                    align = TEXT_ALIGN_LEFT;
                     score_x = -HudScoreX;
                 } else {
                     coin_x = PANEL_COINX;
-                    align = 8;
+                    align = TEXT_ALIGN_RIGHT;
                     score_x = HudScoreX;
                 }
                 coins = packet->coins_remaining[player];
@@ -1057,7 +1057,7 @@ void GoldBrick_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 curre
             CoinTotal_Draw((i32)*packet->score, coin_y, CoinTotalScale, 1, 1.0f, 255, 191, 0);
         }
     }
-    if ((stage->step == STATUS_STEP_START || stage->step_time < 1.0f) && packet->mission_state != 0 &&
+    if ((stage->step == STATUS_STEP_START || stage->step_time < 1.0f) && packet->mission_state != MISSION_STATE_NONE &&
         Game.gold_bricks > packet->previous_gold_bricks) {
         iconalphaoverride = 0.0f;
     }
@@ -1081,8 +1081,8 @@ void Prompt_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapse
                                 (packet->flags_word & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0 &&
                                 (packet->next_area == -1 || (packet->area->flags & AREAFLAG_ENDING_AREA) != 0 ||
                                  Game.area_save[packet->next_area].complete != 0)) ||
-                               (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != 0 ||
-                               packet->mission_state != 0) {
+                               (packet->flags_word & STATUSPACKET_BONUS_MODE) != 0 || packet->challenge_state != CHALLENGE_OFF ||
+                               packet->mission_state != MISSION_STATE_NONE) {
                         if (status_prompt > 0 &&
                             ((pad->menu_directions & GAMEPAD_DUP) != 0 || (pad->menu_buttons_pressed & GAMEPAD_DUP) != 0)) {
                             GameAudio_PlaySfx(0x2f, NULL, 0, 0);
@@ -1304,10 +1304,10 @@ void CollectCharactersOff_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i3
 }
 
 void LevelComplete_LSW_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-    if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
+    if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) {
         *packet->score = packet->reward_score;
     }
-    if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
+    if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON) {
         *packet->score = packet->reward_score;
     }
     NextStatusStage(packet);
@@ -1326,18 +1326,18 @@ void LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
             previous = stage->step_time;
             stage->step_time += elapsed;
             if (stage->step_time >= stage->step_duration) {
-                if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
+                if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) {
                     *packet->score = packet->reward_score;
                 }
-                if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2) {
+                if (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON) {
                     *packet->score = packet->reward_score;
                 }
                 NextStatusStage(packet);
                 return;
             }
             if (previous < 0.5f && stage->step_time >= 0.5f) {
-                if ((stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 3) ||
-                    (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 3)) {
+                if ((stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_TIME_UP) ||
+                    (stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_TIME_UP)) {
                     GameAudio_PlaySfx(0x32, NULL, 0, 0);
                 } else {
                     PlaySfx("StatusAward", NULL);
@@ -1345,8 +1345,8 @@ void LevelComplete_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32
                 NewStatusRumbleBuzz(-1, 0.6f, 0.0f, 0);
                 return;
             }
-            if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
-                (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
+            if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) ||
+                (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON)) {
                 f32 reward_end = stage->step_duration - 0.75;
                 if (previous < reward_end && stage->step_time >= reward_end) {
                     CoinTotalScale = 1.5f;
@@ -1415,14 +1415,14 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                     u32 red;
                     u32 green;
                     u32 blue;
-                    if (packet->challenge_state == 2) {
+                    if (packet->challenge_state == CHALLENGE_WON) {
                         label = dat_008806e8;
                         red = green = blue = 255;
                     } else {
                         red = StatusRed;
                         green = StatusGreen;
                         blue = StatusBlue;
-                        label = packet->challenge_state == 3 ? dat_008806f4 : dat_0088100c;
+                        label = packet->challenge_state == CHALLENGE_TIME_UP ? dat_008806f4 : dat_0088100c;
                     }
                     SmartTextEx(TTab[label], 0.0f, 0.0f, 1.0f, StatusTextScale, StatusTextScale, StatusTextScale, 0, red, green, blue, 1.7f,
                                 1, NULL, 0, opacity);
@@ -1431,7 +1431,7 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                     u32 red;
                     u32 green;
                     u32 blue;
-                    if (packet->mission_state == 2) {
+                    if (packet->mission_state == MISSION_STATE_COMPLETE) {
                         label = dat_008806e4;
                         red = green = blue = 255;
                     } else {
@@ -1477,11 +1477,11 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
                 iconalphaoverride = (stage->step_time - fade_start) * 2.0f;
             }
         }
-        if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) {
+        if (stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) {
             if (Game.gold_bricks > packet->previous_gold_bricks) {
                 iconalphaoverride = 0.0f;
             }
-        } else if (stage->type != STATUS_STAGE_CHALLENGE || packet->challenge_state != 2) {
+        } else if (stage->type != STATUS_STAGE_CHALLENGE || packet->challenge_state != CHALLENGE_WON) {
             return;
         }
         if (stage->step_time < 0.75f) {
@@ -1525,8 +1525,8 @@ void LevelComplete_LSW_Draw(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, i32 c
         }
     } else if (stage->unknown_12 != 0) {
         f32 alpha = getFinishedStatusAlpha(packet);
-        if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == 2) ||
-            (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == 2)) {
+        if ((stage->type == STATUS_STAGE_MISSION && packet->mission_state == MISSION_STATE_COMPLETE) ||
+            (stage->type == STATUS_STAGE_CHALLENGE && packet->challenge_state == CHALLENGE_WON)) {
             CoinTotal_Draw((i32)*packet->score, STATSPOSY, CoinTotalScale, 1, alpha, 255, 191, 0);
         }
     }
@@ -2077,7 +2077,7 @@ void Save_LSW_Update(STATUS_STAGE_s *stage, STATUSPACKET_s *packet, f32 elapsed)
         if (stage->step_time >= stage->step_duration) {
             u32 flags = packet->flags_word;
             if ((flags & STATUSPACKET_SUPER_STORY_MODE) == 0 && packet->prompt_choice == 0 && (flags & STATUSPACKET_FREE_PLAY) == 0 &&
-                packet->mission_state == 0 && packet->challenge_state == 0) {
+                packet->mission_state == MISSION_STATE_NONE && packet->challenge_state == CHALLENGE_OFF) {
                 packet->flags_word = flags | STATUSPACKET_CONTINUE_STORY;
             }
             NextStatusStage(packet);
