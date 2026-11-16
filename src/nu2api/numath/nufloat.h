@@ -29,3 +29,18 @@ extern "C" {
 #define NU_FABS_GE_BITS(a, b, temp, bits_a, bits_b)                                                                                        \
     ((temp) = (a), (bits_a) = *(u32 *)&(temp) & 0x7fffffff, (temp) = (b), (bits_b) = *(u32 *)&(temp) & 0x7fffffff,                         \
      *(f32 *)&(bits_a) >= *(f32 *)&(bits_b))
+
+/* Preserve the f32 load/store before clearing the sign, including NaNs. */
+#define NU_FABS_STORE(destination, source)                                                                                                 \
+    do {                                                                                                                                   \
+        union {                                                                                                                            \
+            f32 value;                                                                                                                     \
+            u32 bits;                                                                                                                      \
+        } storage;                                                                                                                         \
+        u32 bits;                                                                                                                          \
+        storage.value = (source);                                                                                                          \
+        bits = storage.bits;                                                                                                               \
+        bits &= 0x7fffffff;                                                                                                                \
+        storage.bits = bits;                                                                                                               \
+        (destination) = storage.value;                                                                                                     \
+    } while (0)

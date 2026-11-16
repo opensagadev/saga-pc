@@ -13,3 +13,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/* Radian <-> NUANG (65536 per turn) factors, written as float-precision double literals. */
+#define PC_NUANG_PER_RADIAN 10430.3779296875
+#define PC_RADIAN_PER_NUANG 9.58738019107841e-05

@@ -56,6 +56,9 @@ typedef u32 usize;
 #endif
 #ifndef MAX
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+/* Rounds `value` up to a multiple of the power of two `alignment`. */
+#define ALIGN_UP(value, alignment) (((value) + (alignment) - 1) & ~((alignment) - 1u))
 #endif
 
 typedef union variptr_u { // size 0x4

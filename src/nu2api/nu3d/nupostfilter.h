@@ -43,3 +43,25 @@ extern "C" {
 }
 #endif
 #endif
+
+#define POST_FILTER_BIND_TEXTURE(stage, texture)                                                                                           \
+    do {                                                                                                                                   \
+        GRAPHICS_RENDER_TEXTURE *bound_texture = (texture);                                                                                \
+        if (bound_texture != NULL) {                                                                                                       \
+            u32 *sampler_tuple = PCGraphicsEffectTextureSampler(bound_texture);                                                            \
+            if ((u32)PCDeviceSamplerInvalidation[stage][0] != sampler_tuple[0] ||                                                          \
+                (u32)PCDeviceSamplerInvalidation[stage][1] != sampler_tuple[1])                                                            \
+                PCGraphicsSetSamplerTuple(stage, PCGraphicsEffectTextureSampler(bound_texture));                                           \
+        }                                                                                                                                  \
+        PCGraphicsBindEffectTexture(bound_texture, stage);                                                                                 \
+    } while (0)
+
+#define POST_FILTER_RELEASE(filter)                                                                                                        \
+    do {                                                                                                                                   \
+        if ((filter) != NULL) {                                                                                                            \
+            NuPostFilterGen *released = (NuPostFilterGen *)(filter);                                                                       \
+            released->destroyTextureResources();                                                                                           \
+            released->destroyResources();                                                                                                  \
+            (filter) = NULL;                                                                                                               \
+        }                                                                                                                                  \
+    } while (0)

@@ -62,3 +62,21 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+/* Interpolated key value of a 16-bit (12-bit fraction) animation curve, scaled into the channel range. */
+#define NUANIM_1648_VALUE(scale_min, start, end, fraction)                                                                                 \
+    (((f32)((i32)(end) - (i32)(start)) * (fraction) / 4095.0 + (start)) * (scale_min)->scale + (scale_min)->minimum)
+#define NUANIM_1648_LAST_KEY(keys) ((u16)(((keys)[2] & 0xf000) >> 8 | ((keys)[3] & 0xf000) >> 4 | (keys)[1] >> 12))
+
+#define NUANIM_REBASE_POINTER(pointer, amount) ((pointer) == NULL ? NULL : (void *)((u32)(pointer) + (u32)(amount)))
+
+#define PC_LEGACY_LIMIT_ANGLE(destination, maximum, minimum)                                                                               \
+    do {                                                                                                                                   \
+        (destination) = (i32)((u32)(destination) & 0xffff);                                                                                \
+        if ((destination) >= 0x8000)                                                                                                       \
+            (destination) -= 0x10000;                                                                                                      \
+        if ((destination) > (maximum))                                                                                                     \
+            (destination) = (maximum);                                                                                                     \
+        else if ((destination) < (minimum))                                                                                                \
+            (destination) = (minimum);                                                                                                     \
+    } while (0)
