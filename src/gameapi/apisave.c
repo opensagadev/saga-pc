@@ -89,22 +89,21 @@ i32 ChecksumSaveData(void *buffer, i32 size) {
     return (i32)sum;
 }
 
-/* Counts down a message delay, then the result delay that follows it. */
-static void AdvanceSaveDelay(f32 *message, f32 *result, f32 elapsed) {
-    if (*message > 0.0f) {
-        *message -= elapsed;
-    } else if (*result > 0.0f) {
-        *result -= elapsed;
-    }
-}
-
 void UpdateSaveSlots(void) {
     const f32 elapsed = NuTimeGetFrameTime();
     if (memcard_autosavecanceldelay > 0.0f) {
         memcard_autosavecanceldelay -= elapsed;
     }
-    AdvanceSaveDelay(&memcard_loadmessage_delay, &memcard_loadresult_delay, elapsed);
-    AdvanceSaveDelay(&memcard_savemessage_delay, &memcard_saveresult_delay, elapsed);
+    if (memcard_loadmessage_delay > 0.0f) {
+        memcard_loadmessage_delay -= elapsed;
+    } else if (memcard_loadresult_delay > 0.0f) {
+        memcard_loadresult_delay -= elapsed;
+    }
+    if (memcard_savemessage_delay > 0.0f) {
+        memcard_savemessage_delay -= elapsed;
+    } else if (memcard_saveresult_delay > 0.0f) {
+        memcard_saveresult_delay -= elapsed;
+    }
     if (memcard_autosavepredelay > 0.0f) {
         memcard_autosavepredelay -= elapsed;
     } else if (memcard_autosavepostdelay > 0.0f) {
@@ -113,10 +112,26 @@ void UpdateSaveSlots(void) {
             memcard_autosaveinprogress = 0;
         }
     }
-    AdvanceSaveDelay(&memcard_formatmessage_delay, &memcard_formatresult_delay, elapsed);
-    AdvanceSaveDelay(&memcard_createmessage_delay, &memcard_createresult_delay, elapsed);
-    AdvanceSaveDelay(&memcard_deletemessage_delay, &memcard_deleteresult_delay, elapsed);
-    AdvanceSaveDelay(&memcard_message_delay, &memcard_result_delay, elapsed);
+    if (memcard_formatmessage_delay > 0.0f) {
+        memcard_formatmessage_delay -= elapsed;
+    } else if (memcard_formatresult_delay > 0.0f) {
+        memcard_formatresult_delay -= elapsed;
+    }
+    if (memcard_createmessage_delay > 0.0f) {
+        memcard_createmessage_delay -= elapsed;
+    } else if (memcard_createresult_delay > 0.0f) {
+        memcard_createresult_delay -= elapsed;
+    }
+    if (memcard_deletemessage_delay > 0.0f) {
+        memcard_deletemessage_delay -= elapsed;
+    } else if (memcard_deleteresult_delay > 0.0f) {
+        memcard_deleteresult_delay -= elapsed;
+    }
+    if (memcard_message_delay > 0.0f) {
+        memcard_message_delay -= elapsed;
+    } else if (memcard_result_delay > 0.0f) {
+        memcard_result_delay -= elapsed;
+    }
 
     if (saveload_cardtype != 2) {
         memcard_justformatted = 0;

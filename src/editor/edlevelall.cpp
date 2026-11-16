@@ -2365,56 +2365,83 @@ void EdDrawLineCross(NUVEC *position, f32 size, i32 colour) {
     EdDrawLineSegment(&start.xyz, &end.xyz, colour);
 }
 
-/* Draws a circle of SEGMENTS lines around CENTRE, turning the start point (0, BASE_Y, BASE_Z) with ROTATE. */
-static void EdDrawLineCircle(NUVEC *centre, i32 colour, i32 segments, void (*rotate)(NUVEC *, NUVEC *, NUANG), f32 base_y, f32 base_z) {
+void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
     VuVec &origin = *(VuVec *)centre;
     VuVec base;
     VuVec point;
     __declspec(align(16)) VuVec previous;
     i32 i;
     base.x = 0.0f;
-    base.y = base_y;
-    base.z = base_z;
+    base.y = 0.0f;
+    base.z = radius;
     VuVecCopy(point, base + origin);
     for (i = 1; i <= segments; i++) {
         VuVecCopy(previous, point);
-        rotate(&point.xyz, &base.xyz, i * (0x10000 / segments));
+        NuVecRotateX(&point.xyz, &base.xyz, i * (0x10000 / segments));
         VuVecCopy(point, point + origin);
         EdDrawLineSegment(&previous.xyz, &point.xyz, colour);
     }
 }
 
-void EdDrawLineCircleX(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
-    EdDrawLineCircle(centre, colour, segments, NuVecRotateX, 0.0f, radius);
-}
-
 void EdDrawLineCircleY(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
-    EdDrawLineCircle(centre, colour, segments, NuVecRotateY, 0.0f, radius);
+    VuVec &origin = *(VuVec *)centre;
+    VuVec base;
+    VuVec point;
+    __declspec(align(16)) VuVec previous;
+    i32 i;
+    base.x = 0.0f;
+    base.y = 0.0f;
+    base.z = radius;
+    VuVecCopy(point, base + origin);
+    for (i = 1; i <= segments; i++) {
+        VuVecCopy(previous, point);
+        NuVecRotateY(&point.xyz, &base.xyz, i * (0x10000 / segments));
+        VuVecCopy(point, point + origin);
+        EdDrawLineSegment(&previous.xyz, &point.xyz, colour);
+    }
 }
 
 void EdDrawLineCircleZ(NUVEC *centre, f32 radius, i32 colour, i32 segments) {
-    EdDrawLineCircle(centre, colour, segments, NuVecRotateZ, radius, 0.0f);
-}
-
-/* Sets V to (X, Y, Z, 0). */
-static void EdDrawSetPoint(VuVec &v, f32 x, f32 y, f32 z) {
-    v.x = x;
-    v.y = y;
-    v.z = z;
-    v.w = 0.0f;
+    VuVec &origin = *(VuVec *)centre;
+    VuVec base;
+    VuVec point;
+    __declspec(align(16)) VuVec previous;
+    i32 i;
+    base.x = 0.0f;
+    base.y = radius;
+    base.z = 0.0f;
+    VuVecCopy(point, base + origin);
+    for (i = 1; i <= segments; i++) {
+        VuVecCopy(previous, point);
+        NuVecRotateZ(&point.xyz, &base.xyz, i * (0x10000 / segments));
+        VuVecCopy(point, point + origin);
+        EdDrawLineSegment(&previous.xyz, &point.xyz, colour);
+    }
 }
 
 void EdDrawLineArrow(NUMTX *transform, f32 size, i32 colour) {
     VuVec points[4];
     __declspec(align(16)) VuVec point;
     i32 i;
-    EdDrawSetPoint(point, 0.0f, 0.0f, -size);
+    point .0.0f = 0.0f;
+    point .0.0f = 0.0f;
+    point.- size = -size;
+    point.w = 0.0f;
     VuVecCopy(points[0], point);
-    EdDrawSetPoint(point, 0.0f, 0.0f, size);
+    point .0.0f = 0.0f;
+    point .0.0f = 0.0f;
+    point.size = size;
+    point.w = 0.0f;
     VuVecCopy(points[1], point);
-    EdDrawSetPoint(point, size * 0.5f, 0.0f, 0.0f);
+    point.(size * 0.5f) = (size * 0.5f);
+    point .0.0f = 0.0f;
+    point .0.0f = 0.0f;
+    point.w = 0.0f;
     VuVecCopy(points[2], point);
-    EdDrawSetPoint(point, -size * 0.5f, 0.0f, 0.0f);
+    point.(-size * 0.5f) = (-size * 0.5f);
+    point .0.0f = 0.0f;
+    point .0.0f = 0.0f;
+    point.w = 0.0f;
     VuVecCopy(points[3], point);
     for (i = 0; i < 4; i++) {
         NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
@@ -2429,23 +2456,50 @@ void EdDrawLineCube(NUMTX *transform, f32 size, i32 colour) {
     VuVec points[9];
     __declspec(align(16)) VuVec point;
     i32 i;
-    EdDrawSetPoint(point, size, size, -size);
+    point.size = size;
+    point.size = size;
+    point.- size = -size;
+    point.w = 0.0f;
     VuVecCopy(points[0], point);
-    EdDrawSetPoint(point, size, size, size);
+    point.size = size;
+    point.size = size;
+    point.size = size;
+    point.w = 0.0f;
     VuVecCopy(points[1], point);
-    EdDrawSetPoint(point, -size, size, size);
+    point.- size = -size;
+    point.size = size;
+    point.size = size;
+    point.w = 0.0f;
     VuVecCopy(points[2], point);
-    EdDrawSetPoint(point, -size, size, -size);
+    point.- size = -size;
+    point.size = size;
+    point.- size = -size;
+    point.w = 0.0f;
     VuVecCopy(points[3], point);
-    EdDrawSetPoint(point, size, -size, -size);
+    point.size = size;
+    point.- size = -size;
+    point.- size = -size;
+    point.w = 0.0f;
     VuVecCopy(points[4], point);
-    EdDrawSetPoint(point, size, -size, size);
+    point.size = size;
+    point.- size = -size;
+    point.size = size;
+    point.w = 0.0f;
     VuVecCopy(points[5], point);
-    EdDrawSetPoint(point, -size, -size, size);
+    point.- size = -size;
+    point.- size = -size;
+    point.size = size;
+    point.w = 0.0f;
     VuVecCopy(points[6], point);
-    EdDrawSetPoint(point, -size, -size, -size);
+    point.- size = -size;
+    point.- size = -size;
+    point.- size = -size;
+    point.w = 0.0f;
     VuVecCopy(points[7], point);
-    EdDrawSetPoint(point, 0.0f, 0.0f, size);
+    point .0.0f = 0.0f;
+    point .0.0f = 0.0f;
+    point.size = size;
+    point.w = 0.0f;
     VuVecCopy(points[8], point);
     for (i = 0; i < 9; i++) {
         NuVecMtxTransform(&points[i].xyz, &points[i].xyz, transform);
@@ -2804,14 +2858,14 @@ void EdDrawPolyArrow(NUVEC *from, NUVEC *to, i32 segments, i32 colour, f32 min_r
     }
 }
 
-/* Draws one axis arrow of length SIZE from ORIGIN along the matrix row (ROW_X, ROW_Y, ROW_Z). */
-static void EdDrawAxisArrow(NUVEC *origin, f32 size, f32 row_x, f32 row_y, f32 row_z, i32 colour) {
+void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity) {
     NUVEC4 tip;
     __declspec(align(16)) NUVEC4 sum;
+    NUVEC *origin = &transform->translation;
     f32 width;
-    tip.x = row_x * size;
-    tip.y = row_y * size;
-    tip.z = row_z * size;
+    tip.x = transform->m00 * size;
+    tip.y = transform->m01 * size;
+    tip.z = transform->m02 * size;
     sum.x = origin->x + tip.x;
     sum.y = origin->y + tip.y;
     sum.z = tip.z + origin->z;
@@ -2820,14 +2874,31 @@ static void EdDrawAxisArrow(NUVEC *origin, f32 size, f32 row_x, f32 row_y, f32 r
     tip.z = sum.z;
     tip.w = sum.w;
     width = size * (f64)0.02f;
-    EdDrawPolyArrow(origin, &tip.xyz, 8, colour, width, width, 0.02f, 0.0f);
-}
-
-void EdDrawPolyAxis(NUMTX *transform, f32 size, i32 opacity) {
-    NUVEC *origin = &transform->translation;
-    EdDrawAxisArrow(origin, size, transform->m00, transform->m01, transform->m02, (opacity & 0xff) | 0xff000000);
-    EdDrawAxisArrow(origin, size, transform->m10, transform->m11, transform->m12, ((opacity & 0xff) << 8) | 0xff000000);
-    EdDrawAxisArrow(origin, size, transform->m20, transform->m21, transform->m22, ((opacity & 0xff) << 16) | 0xff000000);
+    EdDrawPolyArrow(origin, &tip.xyz, 8, ((opacity & 0xff) | 0xff000000), width, width, 0.02f, 0.0f);
+    tip.x = transform->m10 * size;
+    tip.y = transform->m11 * size;
+    tip.z = transform->m12 * size;
+    sum.x = origin->x + tip.x;
+    sum.y = origin->y + tip.y;
+    sum.z = tip.z + origin->z;
+    tip.x = sum.x;
+    tip.y = sum.y;
+    tip.z = sum.z;
+    tip.w = sum.w;
+    width = size * (f64)0.02f;
+    EdDrawPolyArrow(origin, &tip.xyz, 8, (((opacity & 0xff) << 8) | 0xff000000), width, width, 0.02f, 0.0f);
+    tip.x = transform->m20 * size;
+    tip.y = transform->m21 * size;
+    tip.z = transform->m22 * size;
+    sum.x = origin->x + tip.x;
+    sum.y = origin->y + tip.y;
+    sum.z = tip.z + origin->z;
+    tip.x = sum.x;
+    tip.y = sum.y;
+    tip.z = sum.z;
+    tip.w = sum.w;
+    width = size * (f64)0.02f;
+    EdDrawPolyArrow(origin, &tip.xyz, 8, (((opacity & 0xff) << 16) | 0xff000000), width, width, 0.02f, 0.0f);
 }
 
 void eduiSetPinnedMenu(eduimenu_s *menu) {
