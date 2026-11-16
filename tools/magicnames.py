@@ -120,7 +120,12 @@ class Fields:
             return decl.kind in (ci.CursorKind.PARM_DECL, ci.CursorKind.VAR_DECL) and \
                 record[len(LOCAL):] in function_names(decl.semantic_parent)
         if not record:
-            return decl.kind == ci.CursorKind.VAR_DECL and decl.semantic_parent.kind == ci.CursorKind.TRANSLATION_UNIT
+            parent = decl.semantic_parent
+            # a global inside `extern "C" { }` of a C++ unit has the linkage specification as its parent
+            while parent is not None and parent.kind in (ci.CursorKind.LINKAGE_SPEC, ci.CursorKind.UNEXPOSED_DECL):
+                parent = parent.semantic_parent
+            return decl.kind == ci.CursorKind.VAR_DECL and parent is not None and \
+                parent.kind == ci.CursorKind.TRANSLATION_UNIT
         if decl.kind != ci.CursorKind.FIELD_DECL:
             return False
         parent = decl.semantic_parent

@@ -157,6 +157,21 @@ class MagicNamesTests(unittest.TestCase):
         self.assertIn("thing->sides[0] = THING_ALIVE;", text)
         self.assertIn("(flags & 0x4) != 0", text)  # another field
 
+    def test_a_global_inside_extern_c_of_a_cpp_unit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / "src").mkdir()
+            (root / "src/thing.h").write_text(HEADER)
+            (root / "src/unit.cpp").write_text('#include "thing.h"\nextern "C" {\n    i32 Level = 0;\n}\n'
+                                               'i32 Check() {\n    return Level == 3;\n}\n')
+            args = ["--target=i686-pc-windows-msvc", "-x", "c++", f"-I{root / 'src'}"]
+            tu = magicnames.cindex().Index.create().parse(str(root / "src/unit.cpp"), args=args)
+            facts = magicnames.collect(tu, [("Level", False)], root)
+            names = magicnames.name_table(["MODE_"], facts[0]["enums"], root)
+            edits, _, _, _ = magicnames.plan(facts, names, False)
+            magicnames.apply(edits, root)
+            self.assertIn("Level == MODE_RUN", (root / "src/unit.cpp").read_text())
+
     def test_one_walk_serves_several_fields(self):
         alone = plan("THING.mode", "MODE_", False)
         self.assertEqual(plan("THING.mode", "MODE_", False, ("thing_s.flags", True)), alone)
