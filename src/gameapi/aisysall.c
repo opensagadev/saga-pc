@@ -15416,7 +15416,7 @@ i32 Action_FollowOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         }
     }
 
-    target = (APIOBJECT *)(packet->opponent);
+    target = packet->opponent;
     if (target != NULL && target->ai != NULL) {
         FollowAPIObject(((APIOBJECT *)packet->owner), target, processor->action_data_1, packet->movement_instruction_parameter);
     }

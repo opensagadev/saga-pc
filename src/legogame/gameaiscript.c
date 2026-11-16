@@ -4752,7 +4752,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         object->attack_override = (u8)(processor->action_data_6);
     }
     if (opponent == NULL) {
-        api_opponent = (APIOBJECT *)(packet->opponent);
+        api_opponent = packet->opponent;
         if (api_opponent == NULL || api_opponent->ai == NULL || (opponent = api_opponent->owner) == NULL) {
             return 0;
         }
