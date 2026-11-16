@@ -73,23 +73,6 @@ typedef struct custom_piece_anim_s {
     u8 unknown_12[2];
 } CUSTOM_PIECE_ANIM;
 
-typedef struct custom_resource_update_s {
-    u8 unknown_00[0x14];
-    u32 texture_id;
-    u8 unknown_18[8];
-} CUSTOM_RESOURCE_UPDATE;
-
-typedef struct custom_hierarchy_update_s {
-    u8 unknown_00[0xc];
-    NUMTL **materials;
-    i32 material_count;
-} CUSTOM_HIERARCHY_UPDATE;
-
-typedef struct custom_material_update_s {
-    u8 unknown_00[0x9a];
-    u8 material_tag;
-} CUSTOM_MATERIAL_UPDATE;
-
 extern NUVEC CustomisePos[2];
 
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
@@ -1059,7 +1042,7 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
         angle = CustomiseYRot[side] + 0xc000;
         for (category = 0; category < 9; ++category) {
             i32 locator;
-            CUSTOM_RESOURCE_UPDATE *resources;
+            KILLPARTS_ACCESSORY *resources;
             i32 material;
             if (category == CustomiseMenuY[side] && GetMenuID() == MENU_CUSTOMISER && customiser_quit == 0 &&
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
@@ -1083,7 +1066,7 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
                 message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
                 AddGameMsg(&message);
             }
-            resources = (CUSTOM_RESOURCE_UPDATE *)world->customiser_resources[category];
+            resources = world->customiser_resources[category];
             if (resources == NULL || customiser->piece_counts[category] <= 0) {
                 continue;
             }
@@ -1094,11 +1077,11 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
             if (resources->texture_id == 0) {
                 continue;
             }
-            for (material = 0; material < ((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->material_count; ++material) {
-                if (((CUSTOM_MATERIAL_UPDATE *)((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->materials[material])->material_tag ==
+            for (material = 0; material < model->hierarchy->material_count; ++material) {
+                if (model->hierarchy->materials[material]->override_slot ==
                     customiser->categories[category]->material_tag) {
-                    ((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->materials[material]->texture_id = (u16)resources->texture_id;
-                    NuMtlUpdate(((CUSTOM_HIERARCHY_UPDATE *)model->hierarchy)->materials[material]);
+                    model->hierarchy->materials[material]->texture_id = (u16)resources->texture_id;
+                    NuMtlUpdate(model->hierarchy->materials[material]);
                 }
             }
         }

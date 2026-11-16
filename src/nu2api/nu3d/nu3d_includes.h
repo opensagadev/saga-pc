@@ -959,7 +959,10 @@ typedef struct nudisplay_list_s {            // size 0x90
 } NUDISPLAY_LIST;
 
 typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
-    u8 unknown_0[0x110];                      // 0x000
+    u8 unknown_0[0xc];                        // 0x000
+    struct numtl_s **materials;               // 0x00c
+    i32 material_count;                       // 0x010
+    u8 unknown_14[0xfc];                      // 0x014
     struct nudisplay_list_s *display_list;    // 0x110
     u8 data_0x114[84];                        // 0x114
     i32 joint_count;                          // 0x168

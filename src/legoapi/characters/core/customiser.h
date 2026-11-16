@@ -80,7 +80,9 @@ extern "C" {
 typedef struct KILLPARTS_ACCESSORY { // size 0x20
     void *scene;                     // 0x00
     nuhspecial_s special;            // 0x04
-    u8 unknown_10[0x10];             // 0x10
+    u8 unknown_10[0x4];              // 0x10
+    u32 texture_id;                  // 0x14: the piece texture the customiser puts on the model's tagged material
+    u8 unknown_18[0x8];              // 0x18
 } KILLPARTS_ACCESSORY;
 
 #ifdef __cplusplus
