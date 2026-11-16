@@ -217,7 +217,7 @@ typedef struct ADDPART {               // size 0xc8
     NUVEC *velocity;                   // 0x08
     struct gameobject_s *owner;        // 0x0c
     struct gameobject_s *recipient;    // 0x10
-    f32 start_radius;                    // 0x14
+    f32 start_radius;                  // 0x14
     f32 end_radius;                    // 0x18
     f32 gravity;                       // 0x1c
     f32 unknown_20;                    // 0x20
@@ -246,16 +246,16 @@ typedef struct ADDPART {               // size 0xc8
     f32 effect_scale;                  // 0x7c
     i32 *lighting_handle;              // 0x80
     i32 lighting_id;                   // 0x84
-    f32 lifetime;                    // 0x88
+    f32 lifetime;                      // 0x88
     f32 time_step;                     // 0x8c
     u32 hostility_group;               // 0x90
     PART_LIGHTING_DATA *lighting_data; // 0x94
     f32 lighting_scale_x;              // 0x98
     f32 lighting_scale_y;              // 0x9c
     f32 lighting_scale_z;              // 0xa0
-    f32 fade_time;                    // 0xa4
+    f32 fade_time;                     // 0xa4
     u32 unknown_a8[6];                 // 0xa8
-    f32 model_scale;                    // 0xc0
+    f32 model_scale;                   // 0xc0
     u8 unknown_c4;                     // 0xc4
 } ADDPART;
 

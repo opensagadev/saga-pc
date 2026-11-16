@@ -34,6 +34,7 @@
 #include "legoapi/core/input/timer.h"
 #include "legoapi/gizmo/base/GizBlowupObjectInterface.h"
 #include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/gizmo/object/gizmopickup.h"
 #include "legoapi/gizmos/door/securitydoors.h"
@@ -160,11 +161,6 @@ typedef struct movement_suit_s {
 
 extern f32 DirectionalGrappleSeekScale;
 extern f32 DirectionalZipUpSeekRate;
-
-typedef struct directional_buildit_s {
-    u8 unknown_00[0x72];
-    u8 state_flags;
-} DIRECTIONAL_BUILDIT;
 
 typedef struct fire_target_view_s {
     u8 unknown_0[0xc8c];
@@ -4387,8 +4383,8 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                 } else {
                     CHARACTERANIM_CONFIG *info = object->character_model->animation_configs[object->player.context_animation];
                     f32 blend_out = info->blend_out_time;
-                    if (blend_out > 0.0f &&
-                        AnimDuration((i16)object->id, object->player.context_animation, object->anim_packet.current_time, 0.0f, 0) < blend_out) {
+                    if (blend_out > 0.0f && AnimDuration((i16)object->id, object->player.context_animation,
+                                                         object->anim_packet.current_time, 0.0f, 0) < blend_out) {
                         object->player.context_variant_flags |= APIOBJECT_COMBO_ENDED;
                         object->player.character_context = CHARACTER_CONTEXT_NONE;
                     }
@@ -4478,7 +4474,8 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                     }
                     return;
                 }
-                if ((object->player.flags_e20 & 4) != 0 || (!player_active && object->player.weapon_draw_state != 0) || !object->ground_flags ||
+                if ((object->player.flags_e20 & 4) != 0 || (!player_active && object->player.weapon_draw_state != 0) ||
+                    !object->ground_flags ||
                     (context != CHARACTER_CONTEXT_NONE && context != CHARACTER_CONTEXT_LAND_JUMP &&
                      context != CHARACTER_CONTEXT_LAND_JUMP_2 && context != CHARACTER_CONTEXT_LAND_COMBO_JUMP &&
                      context != CHARACTER_CONTEXT_LAND_FLIP && context != CHARACTER_CONTEXT_WEAPON_IN &&
@@ -4708,7 +4705,7 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
         return;
     }
     if (object->ground_flags && (object->player.character_context == CHARACTER_CONTEXT_NONE ||
-                                (U64_PAIR(&CInfo[object->player.character_context].flags) & 4) != 0)) {
+                                 (U64_PAIR(&CInfo[object->player.character_context].flags) & 4) != 0)) {
         if (((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && pressed) || (object->player.pad->runtime_flags & GAMEPAD_AI_USE_FORCE) ||
             (previous && held)) {
             start = 1;
@@ -6939,8 +6936,8 @@ void PooCode(GAMEOBJECT *object) {
                 PlaySfx("Lego_Poo", &position);
                 velocity.x = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) - 0.5 - (f64)NuTrigTable[object->movement_angle >> 1]);
                 velocity.y = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) - 0.5);
-                velocity.z =
-                    (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) - 0.5 - (f64)NuTrigTable[((object->movement_angle + 0x4000) >> 1) & 0x7fff]);
+                velocity.z = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) - 0.5 -
+                                   (f64)NuTrigTable[((object->movement_angle + 0x4000) >> 1) & 0x7fff]);
                 if (Cheat_IsOn(9)) {
                     NUVEC direction;
                     f32 random;
@@ -7627,10 +7624,11 @@ void Animate_JEDI(GAMEOBJECT *object) {
         } else if (object->anim_packet.requested_animation != ACTION_FALL) {
             if ((object->player.pad->runtime_flags & GAMEPAD_AI_ATTACK) == 0 && object->player.pad->input_magnitude > 0.0f) {
                 if (object->id == (u16)id_YODA || object->id == (u16)id_YODAGHOST) {
-                    object->anim_packet.requested_animation = (object->player.weapon_scale == 1.0f || object->player.weapon_draw_state == 1) &&
-                                                                      object->character_model->action_animations[63] != NULL
-                                                                  ? 63
-                                                                  : 4;
+                    object->anim_packet.requested_animation =
+                        (object->player.weapon_scale == 1.0f || object->player.weapon_draw_state == 1) &&
+                                object->character_model->action_animations[63] != NULL
+                            ? 63
+                            : 4;
                 } else {
                     MoveAnim_Manage(object, object->player.pad->input_magnitude,
                                     (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_NO_TIPTOE) == 0, 1);
@@ -8094,8 +8092,8 @@ static void DroidekaRollingCode(GAMEOBJECT *object) {
         }
     } else if (object->player.character_context == CHARACTER_CONTEXT_ROLL) {
         PlaySfx("DDekaRoll", &object->collision_position);
-        if (AnimPlaying(&object->anim_packet, object->player.context_animation, 0, 0) != NULL && object->player.pad->input_magnitude == 0.0f &&
-            object->ground_flags != 0) {
+        if (AnimPlaying(&object->anim_packet, object->player.context_animation, 0, 0) != NULL &&
+            object->player.pad->input_magnitude == 0.0f && object->ground_flags != 0) {
             ResetAnimPacket(&object->anim_packet, -1);
             if (object->character_model->model_data_b[0x23] != NULL) {
                 StartDroidekaFold(object);
@@ -9360,7 +9358,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
             }
         } else if (object->player.character_context == CHARACTER_CONTEXT_BUILD_IT) {
             if ((object->flags_1f8 & 0x40000) == 0) {
-                DIRECTIONAL_BUILDIT *buildit;
+                GIZBUILDIT *buildit;
                 GizGetBuildItPlayerPos(object, NULL, &position);
                 buildit = object->player.grapple;
                 if ((buildit->state_flags & 0x20) != 0) {
@@ -9642,7 +9640,8 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                                 : object->movement_facing_angle;
                         object->target_velocity.x = NuTrigTable[angle >> 1] * speed;
                         object->target_velocity.z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * speed;
-                        if (object->player.character_context == CHARACTER_CONTEXT_DODGE && object->player.context_animation != ACTION_FORWARDS) {
+                        if (object->player.character_context == CHARACTER_CONTEXT_DODGE &&
+                            object->player.context_animation != ACTION_FORWARDS) {
                             NuVecRotateY(&object->target_velocity, &object->target_velocity, 0x4000);
                         }
                     }
@@ -9797,8 +9796,9 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                         move_vertical = 1;
                     } else if (object->player.character_context == CHARACTER_CONTEXT_SWIPE) {
                         f32 speed;
-                        speed = object->player.context_animation == ACTION_WEAPONBACK ? AnimSpeed(object->character_model, ACTION_WEAPONBACK)
-                                                                                : object->character_data->game_character->run_speed;
+                        speed = object->player.context_animation == ACTION_WEAPONBACK
+                                    ? AnimSpeed(object->character_model, ACTION_WEAPONBACK)
+                                    : object->character_data->game_character->run_speed;
                         object->target_velocity.x = NuTrigTable[object->movement_facing_angle >> 1] * speed;
                         object->target_velocity.z = NuTrigTable[((object->movement_facing_angle + 0x4000) >> 1) & 0x7fff] * speed;
                     } else if (object->player.character_context == CHARACTER_CONTEXT_ROLL &&
@@ -10359,7 +10359,8 @@ void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object) {
                             } else {
                                 tangent = normal_yaw + 0x4000;
                             }
-                            if (object->player.boundary_turn_timer > 0.0f && RotDiff(object->player.previous_boundary_angle, normal_yaw) > 0x2aaa &&
+                            if (object->player.boundary_turn_timer > 0.0f &&
+                                RotDiff(object->player.previous_boundary_angle, normal_yaw) > 0x2aaa &&
                                 abs(RotDiff(object->movement_angle, normal_yaw)) >= 0x4000) {
                                 object->movement_facing_angle =
                                     (u16)(object->player.previous_boundary_angle +
@@ -11912,7 +11913,8 @@ i32 ShootCode(GAMEOBJECT *object, i32 pressed, i32 special_pressed, i32 weapon_m
         if (pressed != 0 && ammunition && object->player.quick_shoot_timer <= 0.0f &&
             object->player.context_animation == ACTION_COMBATROLL_FIRE && state->action_suppressed < 3) {
             if (object->player.pad->input_magnitude > 0.0f) {
-                object->facing_angle = object->movement_facing_angle = object->movement_angle = GamePad_InputAngle(object, object->player.pad);
+                object->facing_angle = object->movement_facing_angle = object->movement_angle =
+                    GamePad_InputAngle(object, object->player.pad);
             }
             StartQuickShoot(object, 0x57);
             if (state->action_suppressed == 3) {

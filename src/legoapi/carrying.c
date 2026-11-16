@@ -121,13 +121,16 @@ void SuperCarry_DrawObject(struct gameobject_s *object) {
     struct GIZMOBLOWUP *blowup;
     if ((object->player.flags_e20 & 0x800000) != 0 ||
         (LEGOCONTEXT_SUPERCARRY != -1 && object->player.character_context == LEGOCONTEXT_SUPERCARRY &&
-         ((object->player.context_phase == SUPERCARRY_PICKUP && (object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) ||
+         ((object->player.context_phase == SUPERCARRY_PICKUP &&
+           (object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) ||
           (object->player.context_phase == SUPERCARRY_PUTDOWN &&
            (object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) ||
           object->player.context_phase == SUPERCARRY_IDLE || object->player.context_phase == SUPERCARRY_WALK ||
           object->player.context_phase == SUPERCARRY_JUMP || object->player.context_phase == SUPERCARRY_LAND ||
-          (object->player.context_phase == SUPERCARRY_THROW && (object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) ||
-          (object->player.context_phase == SUPERCARRY_BASH && (object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0)))) {
+          (object->player.context_phase == SUPERCARRY_THROW &&
+           (object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) ||
+          (object->player.context_phase == SUPERCARRY_BASH &&
+           (object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0)))) {
         translation = NULL;
         if (SuperCarry_AlignObject != 0) {
             NuVecRotateY(&offset, &((CARRY_BASIS *)object)->basis[0], object->movement_angle);
@@ -463,7 +466,8 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                                 object->player.context_phase = SUPERCARRY_BASH;
                                 object->player.context_animation = LEGOACT_SUPERCARRY_BASH;
                                 object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                                object->player.context_timer = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
+                                object->player.context_timer =
+                                    AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                                 if (object->player.context_timer <= 0.0f) {
                                     object->player.context_timer = 0.5f;
                                 }
@@ -476,7 +480,8 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                                 object->player.context_phase = SUPERCARRY_THROW;
                                 object->player.context_animation = LEGOACT_SUPERCARRY_THROW;
                                 object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-                                object->player.context_timer = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
+                                object->player.context_timer =
+                                    AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                                 if (object->player.context_timer <= 0.0f) {
                                     object->player.context_timer = 0.5f;
                                 }
@@ -633,8 +638,8 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                             }
                             ResetAnimPacket(&object->anim_packet, -1);
                             object->velocity.x = object->velocity.z = 0.0f;
-                            NewBuzzFrames(object->player.pad->bound_pad, object->player.context_animation == LEGOACT_SUPERCARRY_FALLLAND ? 2 : 1,
-                                          0);
+                            NewBuzzFrames(object->player.pad->bound_pad,
+                                          object->player.context_animation == LEGOACT_SUPERCARRY_FALLLAND ? 2 : 1, 0);
                             return;
                         }
                     }
@@ -749,7 +754,8 @@ i32 SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     object->target_velocity.z = 0.0f;
     if (input_speed > 0.0f) {
         if ((object->player.context_phase == SUPERCARRY_WALK || object->player.context_phase == SUPERCARRY_PUTDOWN) &&
-            object->player.context_animation != ACTION_NONE && object->character_model->model_data_b[object->player.context_animation] != NULL) {
+            object->player.context_animation != ACTION_NONE &&
+            object->character_model->model_data_b[object->player.context_animation] != NULL) {
             speed = AnimSpeed(object->character_model, object->player.context_animation);
         } else if (object->player.context_phase == SUPERCARRY_WALK || object->player.context_phase == SUPERCARRY_JUMP) {
             if (object->player.context_phase == SUPERCARRY_JUMP && LEGOACT_SUPERCARRY_WALK != 0 &&

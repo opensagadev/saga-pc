@@ -905,8 +905,8 @@ void GameObjectRotation(GAMEOBJECT *object, i32 mode) {
     }
 
     reflection = 0 != (CHARACTER_MODEL_VEHICLE & object->character_data->model_flags) &&
-                 object->character_data->game_character->unknown_028 > 0.0f && (object->ground_layer == 7 || object->ground_layer == 0x10) &&
-                 object->player_index == -1;
+                 object->character_data->game_character->unknown_028 > 0.0f &&
+                 (object->ground_layer == 7 || object->ground_layer == 0x10) && object->player_index == -1;
 
     if (mode == 1) {
         object->shadow_pitch = x;

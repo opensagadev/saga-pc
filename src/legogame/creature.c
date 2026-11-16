@@ -1761,7 +1761,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
 
             if (VehicleArea == 0 && api->dead == 0 &&
                 (api->ground_flags != 0 || (player_edge_probe && object->player.character_context == CHARACTER_CONTEXT_NONE &&
-                                           object->player.jump_variant_state != 1))) {
+                                            object->player.jump_variant_state != 1))) {
                 i32 walkable_floor;
                 i32 probe_edge;
 

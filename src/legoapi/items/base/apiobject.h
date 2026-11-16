@@ -906,7 +906,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     u8 unknown_774[0x4];                   // 0x0b0
     f32 context_hover_target_y;            // 0x0b4
     f32 context_timer;                     // 0x0b8
-    f32 last_countdown_second;                       // 0x0bc
+    f32 last_countdown_second;             // 0x0bc
     f32 context_duration;                  // 0x0c0
     f32 airborne_action_timer;             // 0x0c4
     f32 jump_start_height;                 // 0x0c8
@@ -945,8 +945,8 @@ typedef struct PLAYERPACKET {        // size 0x788
 
     u16 saved_pitch;              // 0x0e0
     u16 takeover_start_angle;     // 0x0e2
-    u16 saved_roll;              // 0x0e4
-    i16 context_animation;              // 0x0e6
+    u16 saved_roll;               // 0x0e4
+    i16 context_animation;        // 0x0e6
     i16 queued_context_animation; // 0x0e8
     u8 combo_branch;              // 0x0ea
     u8 unknown_07af;              // 0x0eb
@@ -958,7 +958,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     }; // 0x0ed
 
     u8 combo_stage;           // 0x0ee
-    u8 context_phase;           // 0x0ef
+    u8 context_phase;         // 0x0ef
     u8 big_jump_animation;    // 0x0f0
     i8 character_context;     // 0x0f1
     u8 context_variant;       // 0x0f2
@@ -1080,7 +1080,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     void *glow_object;                              // 0x650
     void *glow_pending;                             // 0x654
     struct gameobject_s *airborne_collision_target; // 0x658
-    u32 force_action_target;                                // 0x65c
+    u32 force_action_target;                        // 0x65c
     f32 ground_contact_grace_timer;                 // 0x660
     f32 jump_reentry_timer;                         // 0x664
     f32 airborne_input_timer;                       // 0x668
@@ -1093,7 +1093,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 delayed_turn_timer;                         // 0x684
     f32 combo_input_timer;                          // 0x688
     f32 ai_combo_cooldown;                          // 0x68c
-    f32 hit_cooldown;                                // 0x690
+    f32 hit_cooldown;                               // 0x690
     f32 quick_shoot_timer;                          // 0x694
     f32 torpedo_fire_cooldown;                      // 0x698
     f32 hud_icon_timer;                             // 0x69c
@@ -1120,9 +1120,9 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 fall_recovery_timer;         // 0x6d8
     f32 nearby_floor_distance;       // 0x6dc
     f32 input_toggle_hold_time;      // 0x6e0
-    f32 keep_time;                 // 0x6e4
+    f32 keep_time;                   // 0x6e4
     f32 fall_animation_timer;        // 0x6e8
-    f32 use_cooldown;                 // 0x6ec
+    f32 use_cooldown;                // 0x6ec
     f32 fall_hover_height;           // 0x6f0
     f32 pre_reset_hover_height;      // 0x6f4
     f32 field_dbc;                   // 0x6f8
@@ -1133,8 +1133,8 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 takeover_timer;              // 0x70c
     f32 arrow_blend;                 // 0x710
     f32 block_cooldown;              // 0x714
-    f32 boundary_turn_timer;                   // 0x718
-    f32 detonator_hold_time;                 // 0x71c
+    f32 boundary_turn_timer;         // 0x718
+    f32 detonator_hold_time;         // 0x71c
     f32 hold_timer;                  // 0x720
     f32 ai_hop_timer;                // 0x724
     f32 powerup_time;                // 0x728
@@ -1147,7 +1147,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     u16 current_input_angle;         // 0x748
     u16 previous_boundary_angle;     // 0x74a
     i16 previous_block_animation;    // 0x74c
-    i16 alternate_animation;                 // 0x74e
+    i16 alternate_animation;         // 0x74e
     i16 held_movement_animation;     // 0x750
     i16 released_movement_animation; // 0x752
     i16 movement_lean_angle;         // 0x754
@@ -1192,7 +1192,7 @@ typedef struct PLAYERPACKET {        // size 0x788
     u8 quick_shoot_flags;  // 0x76c
     u8 unknown_0e31;       // 0x76d
     u8 jump_variant_state; // 0x76e
-    u8 weapon_draw_state;        // 0x76f
+    u8 weapon_draw_state;  // 0x76f
     u8 sabre_flags;        // 0x770
     u8 sabre_damage;       // 0x771
     u8 unknown_0e36;       // 0x772
@@ -1332,7 +1332,7 @@ typedef struct gameobject_s { // size 0x10d8
     struct CHARACTERANIM_CONFIG *previous_blend_target_root_info; // 0x0268
     NUVEC animation_root_delta;                                   // 0x026c
     u16 pitch_angle;                                              // 0x0278
-    u16 movement_angle;                                              // 0x027a
+    u16 movement_angle;                                           // 0x027a
     u16 roll_angle;                                               // 0x027c
     i16 supporting_platform_id;                                   // 0x027e
 
@@ -1341,9 +1341,9 @@ typedef struct gameobject_s { // size 0x10d8
         i8 player_index; /* -1 when no player controls the object */
     }; // 0x0280
 
-    u8 ground_flags; // 0x0281
+    u8 ground_flags;          // 0x0281
     u8 previous_ground_flags; // 0x0282
-    i8 ground_layer; // 0x0283
+    i8 ground_layer;          // 0x0283
 
     union { // size 0x1
         u8 unknown_0284;
@@ -1556,7 +1556,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     i32 route_frame_state; // 0x0f08
     f32 big_jump_height;   // 0x0f0c
-    f32 offscreen_time;       // 0x0f10
+    f32 offscreen_time;    // 0x0f10
 
     union { // size 0x4
         u32 unknown_f14;
@@ -1579,7 +1579,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 collision_y_scale;                     // 0x1004
     f32 death_timer;                           // 0x1008
     f32 death_delay;                           // 0x100c
-    f32 invulnerable_timer;                          // 0x1010
+    f32 invulnerable_timer;                    // 0x1010
     f32 reflection_height;                     // 0x1014
     f32 vehicle_hit_timer;                     // 0x1018
     f32 ai_update_distance;                    // 0x101c
@@ -1602,14 +1602,14 @@ typedef struct gameobject_s { // size 0x10d8
     }; // 0x1050
 
     u16 shadow_pitch;            // 0x1052
-    u16 shadow_roll;            // 0x1054
-    u16 surface_pitch;            // 0x1056
+    u16 shadow_roll;             // 0x1054
+    u16 surface_pitch;           // 0x1056
     u16 surface_roll;            // 0x1058
     u16 shadow_joint_mask;       // 0x105a
-    u16 tilt_target_pitch;            // 0x105c
-    u16 tilt_target_roll;            // 0x105e
+    u16 tilt_target_pitch;       // 0x105c
+    u16 tilt_target_roll;        // 0x105e
     u16 previous_movement_angle; // 0x1060
-    u16 attract_count;            // 0x1062
+    u16 attract_count;           // 0x1062
     u16 id;                      // 0x1064
     i16 route_character_id;      // 0x1066
 
@@ -1623,9 +1623,9 @@ typedef struct gameobject_s { // size 0x10d8
         u16 reflection_z;
     }; // 0x106a
 
-    i16 terrain_platform_id; // 0x106c
-    i16 excluded_platform_id;        // 0x106e
-    i16 level_object_index;  // 0x1070
+    i16 terrain_platform_id;  // 0x106c
+    i16 excluded_platform_id; // 0x106e
+    i16 level_object_index;   // 0x1070
 
     union { // size 0x6
         u8 unknown_1072[6];
@@ -1654,7 +1654,7 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x107c
 
-    u8 max_hitpoints;         // 0x107e
+    u8 max_hitpoints;        // 0x107e
     i8 current_hp;           // 0x107f
     i8 head_target_priority; // 0x1080
     u8 route_start_index;    // 0x1081
@@ -1662,9 +1662,9 @@ typedef struct gameobject_s { // size 0x10d8
     u8 unknown_1083;         // 0x1083
     u8 one_at_once_player;   // 0x1084
     u8 attack_override;      // 0x1085
-    u8 helper_type;         // 0x1086
-    u8 helper_wait;         // 0x1087
-    u8 helper_retry_delay;         // 0x1088
+    u8 helper_type;          // 0x1086
+    u8 helper_wait;          // 0x1087
+    u8 helper_retry_delay;   // 0x1088
     u8 route_search_index;   // 0x1089
     u8 unknown_108a[2];      // 0x108a
 

@@ -80,9 +80,9 @@ i32 Pushing(GAMEOBJECT *object, u16 *normal_angle, i32 *surface, i32 *angle_diff
             *angle_difference = difference;
         }
         difference = abs(difference);
-        if (difference > 0x4e38 ||
-            (difference > 0x1555 && object->player.context_animation != ACTION_NONE &&
-             (object->player.context_animation == LEGOACT_WALLSHUFFLE_RIGHT || object->player.context_animation == LEGOACT_WALLSHUFFLE_LEFT))) {
+        if (difference > 0x4e38 || (difference > 0x1555 && object->player.context_animation != ACTION_NONE &&
+                                    (object->player.context_animation == LEGOACT_WALLSHUFFLE_RIGHT ||
+                                     object->player.context_animation == LEGOACT_WALLSHUFFLE_LEFT))) {
             if (normal_angle != NULL) {
                 *normal_angle = angle;
             }

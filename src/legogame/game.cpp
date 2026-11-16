@@ -1701,7 +1701,8 @@ static nuhspecial_s *GameMsg_GetExtraObj(GAME_MESSAGE *message) {
 static void Jump_EndOfLandContext(GAMEOBJECT *object) {
     GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
     if ((i16)object->id == id_THEEMPEROR && object->player.character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferred != -1 &&
-        object->player.context_animation == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->player.weapon_draw_state == 2)) {
+        object->player.context_animation == BigJumpLandPreferred &&
+        ((weapon->weapon_flags & 1) == 0 || object->player.weapon_draw_state == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }

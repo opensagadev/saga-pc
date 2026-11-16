@@ -44,7 +44,8 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                             object->player.context_animation = LEGOACT_WHIP_GRAB;
                             object->player.context_timer = 0.0f;
                             object->player.context_phase = WHIP_GRAB;
-                            object->player.context_duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
+                            object->player.context_duration =
+                                AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                             object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                             target = object->player.grapple;
                             object->movement_facing_angle =
@@ -59,7 +60,8 @@ void Whip_MoveCode(GAMEOBJECT *object) {
                             object->player.context_animation = LEGOACT_WHIP_BREAK;
                             object->player.context_timer = 0.0f;
                             object->player.context_phase = WHIP_BREAK;
-                            object->player.context_duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
+                            object->player.context_duration =
+                                AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                             object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                             target = object->player.grapple;
                             object->movement_facing_angle =

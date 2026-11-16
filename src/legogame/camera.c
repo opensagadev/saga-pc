@@ -695,8 +695,7 @@ mode_selected:
                     camera->lateral_target = SeekLinearF(camera->lateral_target, lateral, FRAMETIME);
                     camera->lateral = SeekValF(camera->lateral, camera->lateral_target, 3.0f);
                     NuVecRotateY(&(*pullback_offset), &(*pullback_direction), 0x4000);
-                    NuVecScale(&(*pullback_offset), &(*pullback_offset),
-                               (0.5f * WORLD->current_level->cam_lateral_dist) * camera->lateral);
+                    NuVecScale(&(*pullback_offset), &(*pullback_offset), (0.5f * WORLD->current_level->cam_lateral_dist) * camera->lateral);
                     NuVecSub(&position, &position, &(*pullback_offset));
                     NuVecSub(&target, &target, &(*pullback_offset));
                 }

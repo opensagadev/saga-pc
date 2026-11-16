@@ -636,7 +636,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                                 } else {
                                     object->player.context_animation = BigJumpLandSecondary;
                                 }
-                                object->player.context_timer = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
+                                object->player.context_timer =
+                                    AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                                 if (!restart_jump) {
                                     ResetAnimPacket(&object->anim_packet, -1);
                                 }
@@ -659,7 +660,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                                     object->character_model->model_data_b[LEGOACT_MAGNET_JUMP] != NULL) {
                                     object->player.context_animation = LEGOACT_MAGNET_JUMP;
                                 }
-                                object->player.context_timer = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
+                                object->player.context_timer =
+                                    AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                                 object->player.jump_reentry_timer = object->player.jump_sequence > 1 ? 0.0f : 0.2f;
                                 if (!restart_jump) {
                                     ResetAnimPacket(&object->anim_packet, -1);
@@ -753,7 +755,8 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                             object->player.action_movement_state = JUMP_KIND_COMBAT_ROLL;
                             object->player.context_variant_flags &= ~APIOBJECT_JUMP_FALLING;
                             object->player.context_animation = LEGOACT_COMBATROLL_JUMP;
-                            object->player.context_duration = AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
+                            object->player.context_duration =
+                                AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1);
                         }
                     } else {
                         i16 action;
@@ -840,8 +843,9 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                             MakeJumpReachHeight(object, HIGHJUMPHEIGHT, 1);
                         }
                     } else {
-                        if ((animation_set & 0x40) != 0 && (object->player.context_animation == ACTION_NONE ||
-                                                            object->character_model->model_data_b[object->player.context_animation] == NULL)) {
+                        if ((animation_set & 0x40) != 0 &&
+                            (object->player.context_animation == ACTION_NONE ||
+                             object->character_model->model_data_b[object->player.context_animation] == NULL)) {
                             object->player.context_animation = LEGOACT_FALL;
                         }
                         object->velocity.y = object->character_data->game_character->jump_speed;

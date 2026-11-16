@@ -1311,8 +1311,9 @@ f32 Condition_OnObject(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet
 f32 Condition_OnSameObjectAsPlayer(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && player != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
-        if ((object->ground_flags != 0 || object->previous_ground_flags != 0) && (player->ground_flags != 0 || player->previous_ground_flags != 0) &&
-            object->supporting_platform_id != -1 && object->supporting_platform_id == player->supporting_platform_id) {
+        if ((object->ground_flags != 0 || object->previous_ground_flags != 0) &&
+            (player->ground_flags != 0 || player->previous_ground_flags != 0) && object->supporting_platform_id != -1 &&
+            object->supporting_platform_id == player->supporting_platform_id) {
             return 1.0f;
         }
     }

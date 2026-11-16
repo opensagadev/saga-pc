@@ -33,15 +33,15 @@ struct TIGHTROPE_s { // size 0x48
         NUVEC end;
     }; // 0x1c
 
-    u16 start_pitch;  // 0x28
-    u16 end_pitch;  // 0x2a
-    u16 start_yaw;  // 0x2c
-    u16 end_yaw;  // 0x2e
-    u8 start_post_variant;   // 0x30
+    u16 start_pitch;       // 0x28
+    u16 end_pitch;         // 0x2a
+    u16 start_yaw;         // 0x2c
+    u16 end_yaw;           // 0x2e
+    u8 start_post_variant; // 0x30
     u8 end_post_variant;   // 0x31
-    i8 show_start_post;   // 0x32
-    u8 pad_33;       // 0x33
-    NUVEC direction; // 0x34
+    i8 show_start_post;    // 0x32
+    u8 pad_33;             // 0x33
+    NUVEC direction;       // 0x34
 
     union { // size 0x4
         f32 length;

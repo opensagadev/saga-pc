@@ -591,8 +591,8 @@ extern "C" {
         if (two_rows != 0 && hitpoints < 2) {
             two_rows = 0;
         }
-        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && hitpoints > 1 && object->dead != 0 && object->invulnerable_timer > 0.0f &&
-            object->invulnerable_timer < 1.0f) {
+        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && hitpoints > 1 && object->dead != 0 &&
+            object->invulnerable_timer > 0.0f && object->invulnerable_timer < 1.0f) {
             transitioning = 1;
             current_hp = (i32)((1.0f - object->invulnerable_timer) * (f32)object->max_hitpoints);
         }
@@ -896,7 +896,8 @@ extern "C" {
                     ((WORLD->area->flags & AREAFLAG_MINIKIT) != 0 ||
                      ((WORLD->current_level->flags & LEVEL_TEST) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
                     DrawMiniKitCount(minikittime, MiniKitScale,
-                                     ChallengeMode != CHALLENGE_OFF ? AreaGlobals.challenge_minikits_shown : AreaGlobals.progress_flags, 10);
+                                     ChallengeMode != CHALLENGE_OFF ? AreaGlobals.challenge_minikits_shown : AreaGlobals.progress_flags,
+                                     10);
                 }
                 if (SuperStory == 0 && ChallengeMode == CHALLENGE_OFF && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&

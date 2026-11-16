@@ -229,8 +229,8 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
     }
 
     object->unknown_0286 = (object->ground_layer == 1 || object->ground_layer == 9) && object->collision_position.y <= object->water_height;
-    object->water_intersects = (object->ground_layer == 1 || object->ground_layer == 9) && object->water_height <= object->collision_max.y &&
-                               object->water_height >= object->collision_min.y;
+    object->water_intersects = (object->ground_layer == 1 || object->ground_layer == 9) &&
+                               object->water_height <= object->collision_max.y && object->water_height >= object->collision_min.y;
 
     object->water_height = LevelConfigFarDistance;
     object->roof_height = LevelConfigFarDistance;

@@ -923,8 +923,9 @@ extern "C" int NuMain(int argc, char **argv) {
                 InitPanel(GetMenuID() == MENU_OPTIONS ? TempOptions.widescreen : Game.options_save.widescreen);
                 saved_frametime = FRAMETIME;
                 if ((waiting_for_level == -1 || gone_through_door_to_new_level == 0) && screendump == 0) {
-                    if (ChallengeMode == CHALLENGE_RUNNING && AreaGlobals.challenge_minikits_shown >= 10 && WORLD->current_level != HUB_LDATA &&
-                        MiniCutCam == 0 && CutScene_PlayingOrRequested(NULL) == 0 && FadeSys.fade == 0.0f) {
+                    if (ChallengeMode == CHALLENGE_RUNNING && AreaGlobals.challenge_minikits_shown >= 10 &&
+                        WORLD->current_level != HUB_LDATA && MiniCutCam == 0 && CutScene_PlayingOrRequested(NULL) == 0 &&
+                        FadeSys.fade == 0.0f) {
                         EndChallenge(CHALLENGE_WON, 1);
                     }
                     LOG_INFO_IF(GameTimer.update_count < 2, "NuMain before update: world=%p", (void *)WORLD);

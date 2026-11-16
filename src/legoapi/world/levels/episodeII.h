@@ -78,7 +78,7 @@ typedef struct JEDIB_CREATURE {     // size 0x60
     GAMEOBJECT *object;             // 0x14
     struct JEDIB_CREATURE *partner; // 0x18
     AILOCATOR locator;              // 0x1c
-    i32 saved_layer_mask;                 // 0x58
+    i32 saved_layer_mask;           // 0x58
     u32 flags;                      // 0x5c
 } JEDIB_CREATURE;
 
