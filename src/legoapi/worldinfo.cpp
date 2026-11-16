@@ -77,27 +77,6 @@ extern "C" {
         char disabled_effect_names[12][16];    // 0x2d68
     } LEVEL_PROGRESS_TRANSFER;
 
-    typedef struct world_persistence_flags_s { // size 0x5174
-        u8 unknown_0000[0x5170];               // 0x0000
-        u32 progress_flags;                    // 0x5170
-    } WORLD_PERSISTENCE_FLAGS;
-
-    typedef struct world_initial_progress_s { // size 0x2804
-        SCENEPROGRESS scene;                  // 0x0000
-        u32 initialized_flags;                // 0x2800
-    } WORLD_INITIAL_PROGRESS;
-
-    typedef struct world_initial_final_s { // size 0x5174
-        u8 unknown_0000[0x5170];           // 0x0000
-        i32 initialized;                   // 0x5170
-    } WORLD_INITIAL_FINAL;
-
-    typedef struct world_initial_reset_s { // size 0x11c
-        u8 unknown_0000[0x114];            // 0x000
-        u32 initialized;                   // 0x114
-        u32 reset_flags;                   // 0x118
-    } WORLD_INITIAL_RESET;
-
     typedef struct world_resource_icons_reader_s { // size 0x2968
         u8 unknown_0000[0x2964];                   // 0x0000
         NUGSCN *icons_scene;                       // 0x2964
@@ -573,7 +552,7 @@ extern "C" {
         void (*init_fn)(WORLDINFO *);
         i32 menu_id = -1;
         i32 menu_y = -1;
-        ((WORLD_INITIAL_RESET *)world)->reset_flags = 0;
+        world->reset_flags = 0;
         disable_narrow_socks = 0;
         script_spline_selected = NULL;
         switch (world->current_level->shadow_type) {
@@ -632,9 +611,9 @@ extern "C" {
         if (NOSOUND == 0) {
             NuSound3Update();
         }
-        if (world->level_progress != NULL && (((WORLD_INITIAL_PROGRESS *)world->level_progress)->initialized_flags & 1) == 0) {
-            memcpy(&((WORLD_INITIAL_PROGRESS *)world->level_progress)->scene, &world->scene_progress, sizeof(SCENEPROGRESS));
-            ((WORLD_INITIAL_PROGRESS *)world->level_progress)->initialized_flags |= 1;
+        if (world->level_progress != NULL && (world->level_progress->flags & 1) == 0) {
+            memcpy(&world->level_progress->scene_progress, &world->scene_progress, sizeof(SCENEPROGRESS));
+            world->level_progress->flags |= 1;
         }
         Doors_Init(world);
         Players_InitPositions(world);
@@ -687,10 +666,10 @@ extern "C" {
         if ((world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0) {
             WorldInfo_LoadObjectAnimFile(world);
         }
-        ((WORLD_INITIAL_RESET *)world)->initialized = 1;
+        world->initialized = 1;
         reset_restart = 1;
         InitGameObjectLights();
-        ((WORLD_INITIAL_FINAL *)world)->initialized = 1;
+        world->belt_active = 1;
         TerSurface[14].movement_scale = 1.0f;
         TerSurface[14].flags = 0x2000;
         TerSurface[15].movement_scale = 1.0f;
