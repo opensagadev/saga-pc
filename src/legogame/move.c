@@ -307,7 +307,7 @@ typedef struct GLOW_ANIMATION_DATA {
 
 typedef struct cable_view_s {
     u8 unknown_000[0xd18];
-    GAMEOBJECT *glow_candidate;
+    GAMEOBJECT *glow_pending;
     u8 unknown_d1c[0xd80 - 0xd1c];
     f32 glow_alpha;
     u8 unknown_d84[0xe2d - 0xd84];
@@ -3671,9 +3671,9 @@ start_attack:
             } else if (has_second) {
                 object->combo_style = 1;
             } else {
-                object->combo_style = 0xff;
+                object->combo_style = COMBO_STYLE_NONE;
             }
-            if (object->combo_style != 0xff) {
+            if (object->combo_style != COMBO_STYLE_NONE) {
                 i32 selected = object->combo_style != 0 ? 0x35 : 0x2e;
                 if (model->model_data_b[selected] != NULL) {
                     object->context_variant_flags |= APIOBJECT_PUNCH_COMBO;
@@ -4668,7 +4668,7 @@ void EndForce(GAMEOBJECT *object, i32 mode) {
     if (object != NULL && !(object->flags_1f8 & 0x40000)) {
         object->flags_e20 &= ~0x20000;
         object->glow_object = NULL;
-        object->glow_candidate = NULL;
+        object->glow_pending = NULL;
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
@@ -4678,8 +4678,8 @@ static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE *force, GAMEANIMOB
     NUVEC *position;
     object->flags_e20 |= 0x20000;
     if (animation != NULL) {
-        object->glow_candidate = animation;
-        object->glow_candidate_kind = 1;
+        object->glow_pending = animation;
+        object->glow_pending_kind = 1;
         if (force != NULL) {
             object->glow_radius = force->horizontal_range;
         } else {
@@ -4688,8 +4688,8 @@ static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE *force, GAMEANIMOB
         position = NuSpecialGetDrawPos(&animation->special);
         SetHeadTarget(object, position, 1, 2.0f, 5.0f, 10.0f);
     } else {
-        object->glow_candidate = force;
-        object->glow_candidate_kind = 0;
+        object->glow_pending = force;
+        object->glow_pending_kind = 0;
         if (force != NULL) {
             SetHeadTarget(object, &force->file_position, 1, 2.0f, 5.0f, 10.0f);
         }
@@ -4931,8 +4931,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
         SetObjAsHeadTarget(object, target, 2, 1.0f, 0.0f, 0.0f);
         SetObjAsHeadTarget(target, object, 2, 1.0f, 0.0f, 0.0f);
         if ((object->flags_e20 & APIOBJECT_FORCE_HIGHLIGHT_ONLY) != 0) {
-            object->glow_candidate = target;
-            object->glow_candidate_kind = 2;
+            object->glow_pending = target;
+            object->glow_pending_kind = 2;
             if ((object->flags_e20 & APIOBJECT_FORCE_LIGHTNING) != 0) {
                 DrawLightningBolts(object, target, 0);
             }
@@ -4944,8 +4944,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             if ((object->flags_e20 & APIOBJECT_FORCE_LIGHTNING) != 0) {
                 DrawLightningBolts(object, target, 1);
             }
-            object->glow_candidate = target;
-            object->glow_candidate_kind = 2;
+            object->glow_pending = target;
+            object->glow_pending_kind = 2;
             if (target->character_context != CHARACTER_CONTEXT_FORCE_PUSHED ||
                 (target->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 ||
                 target->character_model->model_data_b[target->unknown_7aa] == NULL ||
@@ -5611,12 +5611,12 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                     if (force->anim_set != NULL && force->anim_set->object_count == 1) {
                         part = Part_FindFromHSpecial(&force->anim_set->objects->special);
                         if (part != NULL) {
-                            object->glow_candidate = part;
-                            object->glow_candidate_kind = 3;
+                            object->glow_pending = part;
+                            object->glow_pending_kind = 3;
                             SetHeadTarget(object, &part->position, 2, 1.0f, 0.0f, 0.0f);
                             object->force_heading = NuAtan2D(part->position.x - object->position.x, part->position.z - object->position.z);
-                            object->glow_object = object->glow_candidate;
-                            object->glow_kind = object->glow_candidate_kind;
+                            object->glow_object = object->glow_pending;
+                            object->glow_kind = object->glow_pending_kind;
                         }
                     }
                 } else {
@@ -5876,7 +5876,7 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
         object->glow_target = 0.0f;
         object->glow_object = NULL;
         object->glow_hold = 0.0f;
-        object->glow_candidate = NULL;
+        object->glow_pending = NULL;
         object->glow_recovery = 0.2f;
         return;
     }
@@ -5885,10 +5885,10 @@ static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
         return;
     }
     if (object->glow_alpha == 0.0f) {
-        object->glow_object = object->glow_candidate;
-        object->glow_kind = object->glow_candidate_kind;
+        object->glow_object = object->glow_pending;
+        object->glow_kind = object->glow_pending_kind;
     }
-    if (object->glow_object == NULL || object->glow_object != object->glow_candidate) {
+    if (object->glow_object == NULL || object->glow_object != object->glow_pending) {
         if (object->glow_alpha == FORCEGLOWTIME && object->glow_hold > 0.0f) {
             object->glow_hold -= FRAMETIME;
             target = FORCEGLOWTIME;
@@ -6688,16 +6688,16 @@ void CableCode(GAMEOBJECT *object, i32 special_pressed, f32 unused) {
                 view->cable = CreateCable(object, target, 1);
                 Hint_SetComplete(0x28e);
             } else {
-                view->glow_candidate = target;
+                view->glow_pending = target;
                 view->candidate_kind = 2;
             }
         }
     }
     ForceGlowCode(object, 0xe3);
-    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && view->candidate_kind != 0 && view->glow_candidate != NULL &&
+    if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && view->candidate_kind != 0 && view->glow_pending != NULL &&
         view->glow_alpha > 0.0f) {
         message = AddGameMessage(
-            "X", &view->glow_candidate->collision_position, AreaPickupScale * CableTargetScale, NULL, 0.0f, 0xff, 0, 0,
+            "X", &view->glow_pending->collision_position, AreaPickupScale * CableTargetScale, NULL, 0.0f, 0xff, 0, 0,
             GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         if (message != NULL) {
             message->target_is_coin_total = 5;
@@ -11021,8 +11021,8 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
             }
             NuVecScale(&velocity, &direction, ForceDeflectSpeed);
             SeekVec(&object->force_part->velocity, &object->force_part->velocity, &velocity, ForceDeflectSeekRate);
-            object->glow_candidate = object->force_part;
-            object->glow_candidate_kind = 3;
+            object->glow_pending = object->force_part;
+            object->glow_pending_kind = 3;
             SetHeadTarget(object, &object->force_part->position, 2, 1.0f, 0.0f, 0.0f);
             part = object->force_part;
             if (part->move_fn == BobaRocket_Move) {
@@ -11077,8 +11077,8 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
         return;
     }
     object->flags_e20 |= 0x20000;
-    object->glow_candidate = part;
-    object->glow_candidate_kind = 3;
+    object->glow_pending = part;
+    object->glow_pending_kind = 3;
     SetHeadTarget(object, &part->position, 2, 1.0f, 0.0f, 0.0f);
     if (pressed == 0 && assist == NULL && !waiting) {
         return;
