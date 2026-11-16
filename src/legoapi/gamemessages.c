@@ -158,7 +158,7 @@ found:
     }
     slot->player_index = message->player_index;
     slot->score = message->score;
-    slot->parameter_c4 = message->unknown_30;
+    slot->parameter_c4 = message->parameter_c4;
     slot->parameter_c8 = message->drift;
     slot->parameter_e0 = 0;
     slot->parameter_e2 = 0;
@@ -167,7 +167,7 @@ found:
     slot->tick_fn = message->tick_fn;
     slot->update_fn = message->update_fn;
     slot->end_fn = message->end_fn;
-    slot->parameter_10c = message->unknown_44;
+    slot->parameter_10c = message->draw_fn;
     slot->allow_temporary = message->allow_temporary;
     slot->target_is_coin_total = message->target_is_coin_total;
     slot->delay = message->delay;

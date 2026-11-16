@@ -26,11 +26,11 @@ typedef struct GIZBUILDIT {              // size 0x7c
     f32 step_timer;                      // 0x44
     f32 step_duration;                   // 0x48
     f32 interaction_radius;              // 0x4c
-    f32 unknown_50;                      // 0x50
+    f32 reflection_height;               // 0x50
     i16 wobble_parameter;                // 0x54
     i16 completion_score;                // 0x56
-    i16 unknown_58;                      // 0x58
-    i16 unknown_5a;                      // 0x5a
+    i16 reward_pitch;                    // 0x58
+    i16 reward_yaw;                      // 0x5a
     NUVEC effect_position;               // 0x5c
     f32 activation_radius;               // 0x68
     u8 anim_object_count;                // 0x6c

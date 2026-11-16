@@ -147,8 +147,8 @@ struct PART { // size 0x220
     f32 collision_radius;           // 0x0e4
     f32 gravity;                    // 0x0e8
     f32 bounce;                     // 0x0ec
-    f32 unknown_f0;                 // 0x0f0
-    f32 unknown_f4;                 // 0x0f4
+    f32 cutoff_height;              // 0x0f0
+    f32 time_of_impact;             // 0x0f4
     f32 time_step;                  // 0x0f8
     f32 scale_time;                 // 0x0fc
     f32 time_remaining;             // 0x100
@@ -187,8 +187,8 @@ struct PART { // size 0x220
     i32 *lighting_handle;         // 0x1dc
     i32 effect_id_1e0;            // 0x1e0
     i32 effect_id_1e4;            // 0x1e4
-    f32 unknown_1e8;              // 0x1e8
-    f32 unknown_1ec;              // 0x1ec
+    f32 trail_rate_a;             // 0x1e8
+    f32 trail_rate_b;             // 0x1ec
     i32 effect_id_1f0;            // 0x1f0
     i32 effect_id_1f4;            // 0x1f4
     i32 effect_id_1f8;            // 0x1f8
@@ -197,8 +197,8 @@ struct PART { // size 0x220
     u16 damage;                   // 0x204
     i8 player_mask;               // 0x206
     u8 hostility_group;           // 0x207
-    u8 unknown_208;               // 0x208
-    u8 unknown_209;               // 0x209
+    u8 first_frame;               // 0x208
+    u8 surface_type;              // 0x209
     u8 flicker_flags;             // 0x20a
     i8 unknown_20b;               // 0x20b
 
@@ -212,11 +212,11 @@ struct PART { // size 0x220
         struct GIZMOBLOWUP *carried_blowup; /* the blowup the grabber drops (Grabber_Drop) */
     }; // 0x210
 
-    f32 unknown_214; // 0x214
-    u32 force_flags; // 0x218
+    f32 particle_scale; // 0x214
+    u32 force_flags;    // 0x218
 
     union { // size 0x4
-        u32 unknown_21c;
+        u32 trail_state;
         f32 reflection_height;
     }; // 0x21c
 };
@@ -248,8 +248,8 @@ typedef struct ADDPART {               // size 0xc8
     i32 *debris_handle;                // 0x5c
     i32 effect_id_60;                  // 0x60
     i32 effect_id_64;                  // 0x64
-    f32 unknown_68;                    // 0x68
-    f32 unknown_6c;                    // 0x6c
+    f32 trail_rate_a;                  // 0x68
+    f32 trail_rate_b;                  // 0x6c
     i32 effect_id_70;                  // 0x70
     i32 effect_id_74;                  // 0x74
     i32 effect_id_78;                  // 0x78

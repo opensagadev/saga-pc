@@ -623,7 +623,7 @@ void cbPtlChangeCameraCutOff(eduimenu_s *unused0, eduiitem_s *item, u32 unused2)
         return;
     }
     effect = debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index];
-    effect->unknown_044 = ((edui_slider_s *)item)->value;
+    effect->render_parameter_c = ((edui_slider_s *)item)->value;
 }
 
 void cbPtlChangeRepeatFlag(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -774,7 +774,7 @@ static void cbPtlCutOffMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeSoundCutOff, 0.0f, 25.0f * edptl_superscale,
                                                         effect->sound_range_override, "SoundCutOff Rad"));
     eduiMenuAddItem(ptlcutoffmenu, eduiItemSliderCreate(0, edblack, 0, cbPtlChangeCameraCutOff, 0.0f, 5.0f * edptl_superscale,
-                                                        effect->unknown_044, "CameraCutOff Rad"));
+                                                        effect->render_parameter_c, "CameraCutOff Rad"));
     eduiMenuAttach(parent, ptlcutoffmenu);
     ptlcutoffmenu->x = parent->x + 10;
     ptlcutoffmenu->y = parent->y + 40;
@@ -2019,7 +2019,7 @@ i32 edppSaveEffects(char *filename, u8 page) {
             EdFileWriteFloat(effecttypes[index].clip_extent);
             EdFileWriteFloat(effecttypes[index].sound_range);
             EdFileWriteFloat(effecttypes[index].sound_range_override);
-            EdFileWriteFloat(effecttypes[index].unknown_044);
+            EdFileWriteFloat(effecttypes[index].render_parameter_c);
             EdFileWriteFloat(effecttypes[index].momentum_base);
             EdFileWriteNuVec((NUVEC *)&effecttypes[index].momentum_random_x);
             EdFileWriteNuVec(&effecttypes[index].emitter_random_extent);
@@ -2076,12 +2076,12 @@ i32 edppSaveEffects(char *filename, u8 page) {
                 EdFileWriteFloat(effecttypes[index].rotation_keys[key].value);
             }
             for (key = 0; key < 8; ++key) {
-                EdFileWriteFloat(effecttypes[index].field_218_keys[key].time);
-                EdFileWriteFloat(effecttypes[index].field_218_keys[key].value);
+                EdFileWriteFloat(effecttypes[index].scale_keys[key].time);
+                EdFileWriteFloat(effecttypes[index].scale_keys[key].value);
             }
             for (key = 0; key < 8; ++key) {
-                EdFileWriteFloat(effecttypes[index].field_258_keys[key].time);
-                EdFileWriteFloat(effecttypes[index].field_258_keys[key].value);
+                EdFileWriteFloat(effecttypes[index].extra_keys[key].time);
+                EdFileWriteFloat(effecttypes[index].extra_keys[key].value);
             }
             EdFileWriteFloat(effecttypes[index].texture_u0);
             EdFileWriteFloat(effecttypes[index].texture_v0);

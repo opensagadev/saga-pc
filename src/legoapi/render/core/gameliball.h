@@ -884,7 +884,7 @@ extern "C" {
         i32 particle_index;                             // 0x14
         f32 collision_time;                             // 0x18
         i16 effect_index;                               // 0x1c
-        i16 unknown_01e;                                // 0x1e
+        i16 frame;                                      // 0x1e
         i16 rotation_y;                                 // 0x20
         i16 unknown_022;                                // 0x22
         f32 collision_plane;                            // 0x24

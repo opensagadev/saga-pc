@@ -739,11 +739,11 @@ extern "C" {
                                     }
                                     i32 scatter_pitch = 0;
                                     i32 scatter_yaw = 0;
-                                    if (bolt_type->unknown_40 != 0) {
-                                        f32 spread = static_cast<f32>(static_cast<i32>(bolt_type->unknown_40));
+                                    if (bolt_type->spread != 0) {
+                                        f32 spread = static_cast<f32>(static_cast<i32>(bolt_type->spread));
                                         f32 random = NuRandFloat();
                                         scatter_pitch = static_cast<i32>(spread - ((random * spread) + (random * spread))) / 2;
-                                        spread = static_cast<f32>(static_cast<i32>(bolt_type->unknown_40));
+                                        spread = static_cast<f32>(static_cast<i32>(bolt_type->spread));
                                         random = NuRandFloat();
                                         scatter_yaw = static_cast<i32>(spread - ((random * spread) + (random * spread)));
                                     }
@@ -764,7 +764,7 @@ extern "C" {
                                             NuMtxPreRotateX(&direction_matrix, turret->pitch);
                                         }
                                         NuMtxPreRotateY(&direction_matrix, 0x8000);
-                                        if (bolt_type->unknown_40 != 0) {
+                                        if (bolt_type->spread != 0) {
                                             NuMtxPreRotateX(&direction_matrix, scatter_pitch);
                                             NuMtxPreRotateY(&direction_matrix, scatter_yaw);
                                         }
@@ -1226,7 +1226,7 @@ extern "C" {
                                    (owner->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
                             damage = 0;
                         } else {
-                            damage = type->unknown_3c;
+                            damage = type->damage;
                         }
                         player = owner != NULL ? owner->player_index : -1;
                         GizTurrets_Hit(world, turret, &bolt->position, player, damage);
@@ -1415,7 +1415,7 @@ extern "C" {
             type = BoltType_FindByID(bolt->type_id, world);
             owner = bolt->owner;
             player = owner != NULL ? owner->player_index : -1;
-            if (GizTurrets_Hit(world, best, &bolt->position, player, type->unknown_3c) != 0) {
+            if (GizTurrets_Hit(world, best, &bolt->position, player, type->damage) != 0) {
                 if (object != NULL) {
                     NewRumble(object->player.pad->bound_pad, 0.4f, 0);
                     GameCam_HitJudder();

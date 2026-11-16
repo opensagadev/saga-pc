@@ -24,7 +24,7 @@ struct textcrawl_s;
 
 typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
     u8 kind;                         // 0x0
-    u8 unknown_01;                   // 0x1
+    u8 use_alpha;                    // 0x1
     i16 reflection;                  // 0x2
     char *name;                      // 0x4
 } LEVEL_OBJECT_CONFIG;

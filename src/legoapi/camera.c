@@ -154,12 +154,12 @@ void GameCam_ResetLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
-    camera->unknown_214 = 0.0f;
+    camera->adjusted_pitch_offset = 0.0f;
     camera->adjusted_yaw_offset = 0.0f;
-    camera->unknown_20c = 0.0f;
-    camera->unknown_210 = 0.0f;
-    camera->unknown_204 = 0.0f;
-    camera->unknown_208 = 0.0f;
+    camera->look_pitch = 0.0f;
+    camera->look_yaw = 0.0f;
+    camera->look_pitch_target = 0.0f;
+    camera->look_yaw_target = 0.0f;
 }
 
 void GameCam_UpdateLookRot(GAMECAMERA *camera) {
@@ -168,8 +168,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
     if (camera == NULL) {
         camera = GameCam;
     }
-    camera->unknown_204 = 0.0f;
-    camera->unknown_208 = 0.0f;
+    camera->look_pitch_target = 0.0f;
+    camera->look_yaw_target = 0.0f;
     if (MiniCutCam == 0) {
         players = 0.0f;
         for (i = 0; i < 2; i++) {
@@ -208,8 +208,8 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                         y = (f32)Player[i]->player.pad->bound_pad->analog_left_y - 127.5f;
                         y *= 1.0f / 127.5f;
                     }
-                    camera->unknown_204 += (f32)((GameCamLookRotX << 16) / 360) * y;
-                    camera->unknown_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
+                    camera->look_pitch_target += (f32)((GameCamLookRotX << 16) / 360) * y;
+                    camera->look_yaw_target += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 } else if (look == 1) {
                     FRAME_PAD *bound_pad = Player[i]->player.pad->bound_pad;
@@ -217,22 +217,23 @@ void GameCam_UpdateLookRot(GAMECAMERA *camera) {
                     x *= 1.0f / 127.5f;
                     y = (f32)bound_pad->analog_right_y - 127.5f;
                     y *= 1.0f / 127.5f;
-                    camera->unknown_204 += y * (f32)((GameCamLookRotX << 16) / 360);
-                    camera->unknown_208 += (f32)((GameCamLookRotY << 16) / 360) * x;
+                    camera->look_pitch_target += y * (f32)((GameCamLookRotX << 16) / 360);
+                    camera->look_yaw_target += (f32)((GameCamLookRotY << 16) / 360) * x;
                     players += 1.0f;
                 }
             }
             if (players > 1.0f) {
                 f32 scale = 1.0f / players;
-                camera->unknown_204 *= scale;
-                camera->unknown_208 *= scale;
+                camera->look_pitch_target *= scale;
+                camera->look_yaw_target *= scale;
             }
         }
     }
-    camera->unknown_20c = SeekLinearF(camera->unknown_20c, camera->unknown_204, (f32)((GameCamLookRotX << 16) / 360) * FRAMETIME * 2.0f);
-    camera->unknown_210 = SeekLinearF(camera->unknown_210, camera->unknown_208, (f32)((GameCamLookRotY << 16) / 360) * FRAMETIME * 2.0f);
-    camera->unknown_214 = SeekValF(camera->unknown_214, camera->unknown_20c, 3.0f);
-    camera->adjusted_yaw_offset = SeekValF(camera->adjusted_yaw_offset, camera->unknown_210, 3.0f);
+    camera->look_pitch =
+        SeekLinearF(camera->look_pitch, camera->look_pitch_target, (f32)((GameCamLookRotX << 16) / 360) * FRAMETIME * 2.0f);
+    camera->look_yaw = SeekLinearF(camera->look_yaw, camera->look_yaw_target, (f32)((GameCamLookRotY << 16) / 360) * FRAMETIME * 2.0f);
+    camera->adjusted_pitch_offset = SeekValF(camera->adjusted_pitch_offset, camera->look_pitch, 3.0f);
+    camera->adjusted_yaw_offset = SeekValF(camera->adjusted_yaw_offset, camera->look_yaw, 3.0f);
 }
 
 typedef struct PLAY_CORNER {
@@ -352,9 +353,9 @@ void GameCam_Reset(GAMECAMERA *camera) {
     camera->unknown_1b8 = 0;
     camera->pullback_target = camera->pullback = 0.0f;
     camera->lateral_target = camera->lateral = 0.0f;
-    camera->adjusted_yaw_offset = camera->unknown_214 = 0.0f;
-    camera->unknown_210 = camera->unknown_20c = 0.0f;
-    camera->unknown_208 = camera->unknown_204 = 0.0f;
+    camera->adjusted_yaw_offset = camera->adjusted_pitch_offset = 0.0f;
+    camera->look_yaw = camera->look_pitch = 0.0f;
+    camera->look_yaw_target = camera->look_pitch_target = 0.0f;
     Minicam_InitSystem();
 }
 

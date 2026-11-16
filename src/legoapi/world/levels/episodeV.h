@@ -44,12 +44,12 @@ struct HOTHBATTLE_MELEE_WAVE_s {       // size 0x28
 
     union { // size 0x1
         u8 remaining_count;
-        u8 unknown_18;
+        u8 creature_type_a;
     }; // 0x14
 
     union { // size 0x1
         u8 initial_count;
-        u8 unknown_19;
+        u8 creature_type_b;
     }; // 0x15
 
     union { // size 0x1
@@ -70,12 +70,12 @@ struct HOTHBATTLE_MELEE_s { // size 0xc8
 
     union { // size 0x1
         u8 next_wave;
-        u8 unknown_1;
+        u8 phase;
     }; // 0x01
 
     union { // size 0x1
         u8 initialize_wave;
-        u8 unknown_2;
+        u8 restart;
     }; // 0x02
 
     u8 unknown_3; // 0x03

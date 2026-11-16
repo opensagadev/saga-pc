@@ -283,9 +283,9 @@ typedef struct area_data_s {                    // size 0x9c
 
     union { // size 0x8
 
-        struct {              // size 0x8
-            u32 unknown_008c; // 0x8c
-            u32 unknown_0090; // 0x90
+        struct {                // size 0x8
+            u32 story_coins;    // 0x8c
+            u32 freeplay_coins; // 0x90
         };
 
         u32 true_hero_targets[2];

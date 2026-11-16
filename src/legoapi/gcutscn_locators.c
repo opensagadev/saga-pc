@@ -102,7 +102,7 @@ void instGetLookAtLocatorInfo(INSTNUGCUTSCENE *instance, CUT_LOOKAT_STATE *state
     scene = instance->scene;
     animations = scene->character_animations;
     for (i = 0; i < scene->character_system->count; ++i) {
-        if ((u8)animations[i].unknown_00 == character_id) {
+        if ((u8)animations[i].character_id == character_id) {
             state->character = (u16)(i + 1);
             break;
         }

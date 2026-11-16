@@ -224,7 +224,7 @@ void CruiserDUpdate(WORLDINFO *world) {
     if (netclient == 0) {
         CruiserD_LiftChase_msg->value = 0.0f;
         if (CruiserD_direction >= 0 && LevGizmo[0] != NULL && LevGizmo[0]->object != NULL &&
-            (((GIZPANEL_s *)LevGizmo[0]->object)->unknown_62[0] & 2) != 0) {
+            (((GIZPANEL_s *)LevGizmo[0]->object)->state_flags[0] & 2) != 0) {
             CruiserD_LiftAnim->playing = 1;
             CruiserD_LiftAnim->tfactor = -CruiserD_LiftSpeed;
             CruiserD_direction = -1;

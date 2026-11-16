@@ -26,7 +26,7 @@ typedef struct vehicle_weapon_item_s { // size 0xa
 typedef struct weapon_ammo_s { // size 0x8
     VEHICLE_WEAPON_ITEM *type; // 0x0
     u8 ammo;                   // 0x4
-    u8 unknown_05;             // 0x5
+    u8 reserve_ammo;           // 0x5
 } WEAPON_AMMO;
 
 #ifdef __cplusplus

@@ -230,7 +230,7 @@ typedef struct coin_reset_packet_s { // size 0x10
 } COIN_RESET_PACKET;
 
 typedef struct cut_load_character_animation_s { // size 0x10
-    u32 unknown_00;                             // 0x0
+    u32 character_id;                           // 0x0
     void *animation;                            // 0x4
     u8 unknown_08[8];                           // 0x8
 } CUT_LOAD_CHARACTER_ANIMATION;

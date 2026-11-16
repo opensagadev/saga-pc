@@ -92,7 +92,7 @@ typedef struct sock_s {          // size 0x13c
     u8 valid;                    // 0x032
 
     union { // size 0x1
-        u8 unknown_33;
+        u8 looped;
         u8 looping;
     }; // 0x033
     struct socksegment_s *segments;  // 0x034
@@ -146,12 +146,12 @@ typedef struct sock_s {          // size 0x13c
     }; // 0x078
 
     union { // size 0x4
-        f32 unknown_7c;
+        f32 look_scale;
         f32 vertical_scale;
     }; // 0x07c
 
-    f32 unknown_80;                 // 0x080
-    f32 unknown_84;                 // 0x084
+    f32 look_width;                 // 0x080
+    f32 look_height;                // 0x084
     f32 look_ratio_xz;              // 0x088
     f32 look_ratio_y;               // 0x08c
     f32 camera_position_seek;       // 0x090

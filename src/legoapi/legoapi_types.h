@@ -649,26 +649,26 @@ typedef struct gamecamera_s { // size 0x230
         i32 input_yaw;
     }; // 0x1fc
 
-    i32 roll;                // 0x200
-    f32 unknown_204;         // 0x204
-    f32 unknown_208;         // 0x208
-    f32 unknown_20c;         // 0x20c
-    f32 unknown_210;         // 0x210
-    f32 unknown_214;         // 0x214
-    f32 adjusted_yaw_offset; // 0x218
-    u16 blend_start_pitch;   // 0x21c
-    u16 desired_pitch;       // 0x21e
-    u16 blend_start_yaw;     // 0x220
-    u16 desired_yaw;         // 0x222
-    u16 blend_start_roll;    // 0x224
-    u16 desired_roll;        // 0x226
-    u8 judder_reverse;       // 0x228
-    u8 judder_axis;          // 0x229
-    u8 reset_blend;          // 0x22a
-    u8 blend_mode;           // 0x22b
-    i8 mode;                 // 0x22c
-    i8 previous_mode;        // 0x22d
-    u8 previous_camera_mode; // 0x22e
+    i32 roll;                  // 0x200
+    f32 look_pitch_target;     // 0x204
+    f32 look_yaw_target;       // 0x208
+    f32 look_pitch;            // 0x20c
+    f32 look_yaw;              // 0x210
+    f32 adjusted_pitch_offset; // 0x214
+    f32 adjusted_yaw_offset;   // 0x218
+    u16 blend_start_pitch;     // 0x21c
+    u16 desired_pitch;         // 0x21e
+    u16 blend_start_yaw;       // 0x220
+    u16 desired_yaw;           // 0x222
+    u16 blend_start_roll;      // 0x224
+    u16 desired_roll;          // 0x226
+    u8 judder_reverse;         // 0x228
+    u8 judder_axis;            // 0x229
+    u8 reset_blend;            // 0x22a
+    u8 blend_mode;             // 0x22b
+    i8 mode;                   // 0x22c
+    i8 previous_mode;          // 0x22d
+    u8 previous_camera_mode;   // 0x22e
 } GAMECAMERA;
 
 struct AITRIGGERSET_TARGET { // size 0x3c
@@ -685,15 +685,15 @@ struct GIZSPINNERARM_s { // size 0x44
     u8 unknown_42[2];    // 0x42
 };
 
-struct GIZPANEL_s {   // size 0x9c
-    NUMTX matrix;     // 0x00
-    char name[16];    // 0x40
-    NUVEC position;   // 0x50
-    u16 y_rotation;   // 0x5c
-    u8 unknown_5e[3]; // 0x5e
-    u8 model_variant; // 0x61
-    u8 unknown_62[2]; // 0x62
-    f32 flash_timer;  // 0x64
+struct GIZPANEL_s {    // size 0x9c
+    NUMTX matrix;      // 0x00
+    char name[16];     // 0x40
+    NUVEC position;    // 0x50
+    u16 y_rotation;    // 0x5c
+    u8 unknown_5e[3];  // 0x5e
+    u8 model_variant;  // 0x61
+    u8 state_flags[2]; // 0x62
+    f32 flash_timer;   // 0x64
 
     union { // size 0x1
         u8 flags;
@@ -1050,7 +1050,7 @@ struct FADEINFO_s {              // size 0x2c
     i32 stage;                   // 0x10
     FadeBase *fades[4];          // 0x14
     FADETYPE_VALUE pending_type; // 0x24
-    i32 unknown_28;              // 0x28
+    i32 fade_started;            // 0x28
 };
 
 class FadeSystem : public FADEINFO_s { // size 0x2c
@@ -2148,12 +2148,12 @@ struct GIZSPINNER_s {                       // size 0x304
     i8 room_index;                  // 0x089
     u8 state;                       // 0x08a
     u8 type;                        // 0x08b
-    u16 unknown_08c;                // 0x08c
+    u16 angle_offset;               // 0x08c
     u8 unknown_08e[2];              // 0x08e
     f32 spin_timer;                 // 0x090
-    f32 unknown_094;                // 0x094
-    f32 unknown_098;                // 0x098
-    f32 unknown_09c;                // 0x09c
+    f32 radius;                     // 0x094
+    f32 height_offset;              // 0x098
+    f32 half_extent;                // 0x09c
     f32 ground_height;              // 0x0a0
     u8 output_count;                // 0x0a4
     u8 unknown_0a5[7];              // 0x0a5
@@ -2168,7 +2168,7 @@ struct GIZSPINNER_s {                       // size 0x304
         f32 output_pause_time;
     }; // 0x2d4
 
-    f32 unknown_2d8;                  // 0x2d8
+    f32 output_pause_duration;        // 0x2d8
     f32 animation_points[9];          // 0x2dc
     struct GAMEANTINODE_s *anti_node; // 0x300
 };

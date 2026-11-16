@@ -355,8 +355,8 @@ AREA_DATA *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end,
             area->area_index = -1;
             area->area_music = -1;
             area->minikit_id = -1;
-            area->unknown_008c = 0;
-            area->unknown_0090 = 0;
+            area->story_coins = 0;
+            area->freeplay_coins = 0;
             area->text_id = -1;
             area->text_id_value = 1;
             area->hub_player_ids = NULL;
@@ -762,9 +762,9 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
             }
         } else if (area != -1) {
             if (NuStrICmp(fp->word_buffer_ptr, "story_coins") == 0) {
-                ADataList[area].unknown_008c = NuFParGetInt(fp);
+                ADataList[area].story_coins = NuFParGetInt(fp);
             } else if (NuStrICmp(fp->word_buffer_ptr, "freeplay_coins") == 0) {
-                ADataList[area].unknown_0090 = NuFParGetInt(fp);
+                ADataList[area].freeplay_coins = NuFParGetInt(fp);
             } else if (NuStrICmp(fp->word_buffer_ptr, "timetrial_time") == 0) {
                 ADataList[area].challenge_trial_time = static_cast<u16>(NuFParGetInt(fp));
             }

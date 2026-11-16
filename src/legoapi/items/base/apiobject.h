@@ -1202,9 +1202,9 @@ typedef struct PLAYERPACKET {        // size 0x788
     union { // size 0x4
         u32 flags_e20;
 
-        struct {            // size 0x4
-            u8 unknown_e20; // 0x75c
-            u8 unknown_e21; // 0x75d
+        struct {               // size 0x4
+            u8 ai_state_flags; // 0x75c
+            u8 unknown_e21;    // 0x75d
             /* bit 0 the weapon is out (weapon_animation) */
             u8 weapon_flags; // 0x75e
             /* bit 0 is APIOBJECT_FORCE_BLOCKED, read as a byte */
@@ -1407,7 +1407,7 @@ typedef struct gameobject_s { // size 0x10d8
     u8 jump_animation_state; // 0x0285
 
     union { // size 0x1
-        u8 unknown_0286;
+        u8 in_water;
         u8 is_underwater;
     }; // 0x0286
 
@@ -1510,7 +1510,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0xc
         NUVEC unknown_ea0;
-        struct gameobject_s *field_ea0_target;
+        struct gameobject_s *aim_target;
 
         struct {                                     // size 0xc
             struct gameobject_s *script_fire_target; // 0x0ea0
@@ -1565,11 +1565,11 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x4
         u32 flags_ef0;
 
-        struct {            // size 0x4
-            u8 unknown_ef0; // 0x0ef0
-            u8 unknown_ef1; // 0x0ef1
-            u8 unknown_ef2; // 0x0ef2
-            u8 flags_ef3;   // 0x0ef3
+        struct {              // size 0x4
+            u8 bolt_flags;    // 0x0ef0
+            u8 unknown_ef1;   // 0x0ef1
+            u8 turning_flags; // 0x0ef2
+            u8 flags_ef3;     // 0x0ef3
         };
 
         struct {                               // size 0x4
