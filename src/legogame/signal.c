@@ -463,7 +463,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             SUIT_INITIALIZER_RECORD *new_suit;
             i32 index;
             /* Context 0x4c uses the attachment union and the full 24-byte suit record. */
-            ((SIGNAL_s *)object->grapple)->flags |= SIGNAL_IN_USE;
+            object->signal->flags |= SIGNAL_IN_USE;
             object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
             old_suit = (SUIT_INITIALIZER_RECORD *)object->suit;
             object->ai_packet.capabilities &= ~old_suit->character_flags;

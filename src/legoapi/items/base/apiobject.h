@@ -1139,6 +1139,14 @@ typedef struct gameobject_s { // size 0x10d8
         struct techno_s *techno;
         struct zipup_s *attached_zipup;
         struct TUBE *attached_tube;
+        struct GIZMO_LEVER *lever;
+        struct panel_movement_s *panel;
+        struct security_door_record_s *security_door;
+        struct SIGNAL_s *signal;
+        struct TELEPORT_MOTION *teleport;
+        struct TIGHTROPE_MOTION *tightrope;
+        struct HATMACHINE *hat_machine;
+        struct DETONATOR_s *detonator;
     }; // 0x0798
 
     i32 panel_use_request; // 0x079c
@@ -1207,7 +1215,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     i16 *weapon_model_override;                        // 0x07f4
     u8 unknown_7f8[0x4];                               // 0x07f8
-    void *coin_packet;                                 // 0x07fc
+    struct player_coin_packet_s *coin_packet;          // 0x07fc
     struct player_force_los_slot_s *gizforce_los_info; // 0x0800
     NUMTX locator_matrices[16];                        // 0x0804
     NUMTX vehicle_orientation;                         // 0x0c04

@@ -282,13 +282,6 @@ typedef struct character_ai_capabilities_s {
     u32 path_capabilities;
 } CHARACTER_AI_CAPABILITIES;
 
-typedef struct coin_packet_s { // size 0xc
-    u32 coins;                 // 0x0
-    f32 scale;                 // 0x4
-    i16 last_coin;             // 0x8
-    u8 unknown_0a[2];          // 0xa
-} COIN_PACKET;
-
 typedef struct coin_reset_packet_s { // size 0x10
     u8 unknown_00[4];                // 0x0
     f32 scale;                       // 0x4

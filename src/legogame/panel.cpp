@@ -259,10 +259,10 @@ extern "C" {
                         if (BuildUpTotal == 0) {
                             BuildUpDone = 0;
                             if (Player[0] != NULL && Player[0]->coin_packet != NULL) {
-                                BuildUpDone = ((PLAYER_COIN_PACKET *)Player[0]->coin_packet)->coins;
+                                BuildUpDone = Player[0]->coin_packet->coins;
                             }
                             if (Player[1] != NULL && Player[1]->coin_packet != NULL) {
-                                BuildUpDone += ((PLAYER_COIN_PACKET *)Player[1]->coin_packet)->coins;
+                                BuildUpDone += Player[1]->coin_packet->coins;
                             }
                             if ((u32)BuildUpDone >= maximum) {
                                 BuildUpScale = 2.5f;
@@ -839,12 +839,12 @@ extern "C" {
                     sprintf(text, "%i/%i", AreaGlobals.arcade_ai_kills[player], Arcade_Mode[ArcadeItem.mode].target);
                     score_x = player == 0 ? -HudScoreX : HudScoreX;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = ((PLAYER_COIN_PACKET *)object->coin_packet)->scale * HudScoreScale;
+                    scale = object->coin_packet->scale * HudScoreScale;
                     y = status_y + PANEL_COINY;
                     Text3DEx(text, score_x, y + HudCoinAdjustY, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
                     model = 53;
                     if (WORLD->level_objects[model].active != 0) {
-                        packet = (PLAYER_COIN_PACKET *)object->coin_packet;
+                        packet = object->coin_packet;
                         scale = packet->scale * PANEL_COINSCALE_END;
                         DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0, &WORLD->level_objects[model].special, 0, alpha);
                     }
@@ -852,13 +852,13 @@ extern "C" {
                     if (object->coin_packet == NULL) {
                         continue;
                     }
-                    Text_MakeScore(((PLAYER_COIN_PACKET *)object->coin_packet)->coins, text);
+                    Text_MakeScore(object->coin_packet->coins, text);
                     score_x = player == 0 ? -HudScoreX : HudScoreX;
                     coin_x = player == 0 ? -PANEL_COINX : PANEL_COINX;
-                    scale = ((PLAYER_COIN_PACKET *)object->coin_packet)->scale * HudScoreScale;
+                    scale = object->coin_packet->scale * HudScoreScale;
                     y = status_y + PANEL_COINY;
                     Text3DEx(text, score_x, y + HudCoinAdjustY, 1.0f, scale, scale, scale, alignment, 255, 191, 0, (u8)icon_alpha);
-                    packet = (PLAYER_COIN_PACKET *)object->coin_packet;
+                    packet = object->coin_packet;
                     model = packet->last_coin;
                     if (model >= 183 && model <= 186) {
                         model -= 4;
@@ -870,7 +870,7 @@ extern "C" {
                         model += 4;
                     }
                     if (WORLD->level_objects[model].active != 0) {
-                        packet = (PLAYER_COIN_PACKET *)object->coin_packet;
+                        packet = object->coin_packet;
                         scale = packet->scale * PANEL_COINSCALE_END;
                         DrawPanel3DObject(coin_x, y, 1.0f, scale, scale, scale, 0, 0, 0, &WORLD->level_objects[model].special, 0, alpha);
                     }

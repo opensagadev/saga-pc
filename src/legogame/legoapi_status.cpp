@@ -472,7 +472,7 @@ extern "C" {
                     models->model[i] = object->id;
                     p->player_active[i] = (u8)((object->flags_1fc_word >> 7) & 1);
                     if (object->coin_packet != NULL) {
-                        p->coins_remaining[i] = ((PLAYER_COIN_PACKET *)object->coin_packet)->coins;
+                        p->coins_remaining[i] = object->coin_packet->coins;
                         ++p->status_flags;
                     } else {
                         p->coins_remaining[i] = 0;

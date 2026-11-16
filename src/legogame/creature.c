@@ -911,7 +911,7 @@ i32 MakePlayerList(i32 count) {
             progress->unknown_7 = 0;
         }
         if (player->coin_packet != NULL) {
-            progress->coins = ((PLAYER_COIN_PACKET *)player->coin_packet)->coins;
+            progress->coins = player->coin_packet->coins;
         } else {
             progress->coins = 0;
         }
@@ -4987,11 +4987,11 @@ void Players_Init(void) {
     for (index = 0; index < 2; ++index) {
         if (players[index] != NULL) {
             players[index]->coin_packet = &CoinPacket[index];
-            ((PLAYER_COIN_PACKET *)players[index]->coin_packet)->last_coin = LEGOOBJ_DEFAULTLASTCOIN.low_word;
+            players[index]->coin_packet->last_coin = LEGOOBJ_DEFAULTLASTCOIN.low_word;
             if (Area == last_area) {
-                ((PLAYER_COIN_PACKET *)players[index]->coin_packet)->coins = progress[index].coins;
+                players[index]->coin_packet->coins = progress[index].coins;
             } else {
-                ((PLAYER_COIN_PACKET *)players[index]->coin_packet)->coins = 0;
+                players[index]->coin_packet->coins = 0;
             }
             players[index]->gizforce_los_info = &GizForceLOSInfo[index];
             memcpy(&BackUpPlayers[index], players[index], sizeof(BackUpPlayers[index]));

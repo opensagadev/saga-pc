@@ -419,10 +419,10 @@ static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD *door, i3
     }
     object->context_variant_flags |= 0x20;
     if (facing != 0) {
-        object->movement_facing_angle = ((SECURITY_DOOR_RECORD *)object->grapple)->yaw + 0x8000;
-        ((SECURITY_DOOR_RECORD *)object->grapple)->state = 1;
+        object->movement_facing_angle = object->security_door->yaw + 0x8000;
+        object->security_door->state = 1;
     } else {
-        object->movement_facing_angle = ((SECURITY_DOOR_RECORD *)object->grapple)->yaw;
+        object->movement_facing_angle = object->security_door->yaw;
     }
 }
 
@@ -455,7 +455,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if ((object->context_variant_flags & 0x20) != 0) {
             object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-            ((SECURITY_DOOR_RECORD *)object->grapple)->state = 2;
+            object->security_door->state = 2;
             NewRumble(object->pad->bound_pad, 0.6f, 0);
         }
         return;

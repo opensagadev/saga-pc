@@ -167,16 +167,6 @@ typedef struct move_gunship_level_flags_s {
 extern f32 DirectionalGrappleSeekScale;
 extern f32 DirectionalZipUpSeekRate;
 
-typedef struct directional_tube_s {
-    u8 unknown_00[0x24];
-    f32 momentum_y;
-} DIRECTIONAL_TUBE;
-
-typedef struct directional_lever_s {
-    u8 unknown_00[0x40];
-    NUVEC floor_position;
-} DIRECTIONAL_LEVER;
-
 typedef struct directional_hatmachine_s {
     u8 unknown_00[0x64];
     NUVEC player_position;
@@ -9504,7 +9494,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
         }
     }
     if (ObjInTube(object)) {
-        object->target_velocity.y = ((DIRECTIONAL_TUBE *)(object->grapple))->momentum_y;
+        object->target_velocity.y = object->attached_tube->momentum_y;
         if (WORLD->current_level == CRUISERD_LDATA) {
             object->target_velocity.y += object->target_velocity.y;
         }
@@ -9549,7 +9539,7 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 move_vertical = Grapple_SetTargetMom(object);
             } else if (object->character_context == CHARACTER_CONTEXT_PULL_LEVER) {
                 if ((object->flags_1f8 & 0x40000) == 0) {
-                    target = ((DIRECTIONAL_LEVER *)(object->grapple))->floor_position;
+                    target = object->lever->floor_position;
                     turn_rate = 10.0f * object->context_hover_target_y + 5.0f;
                     object->target_velocity.x = (target.x - object->position.x) * turn_rate;
                     object->target_velocity.z = (target.z - object->position.z) * turn_rate;

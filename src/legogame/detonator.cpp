@@ -244,7 +244,7 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
                 object->grapple = nearest;
                 object->movement_facing_angle =
                     NuAtan2D(nearest->position.x - object->position.x, nearest->position.z - object->position.z);
-                nearest = (DETONATOR_s *)object->grapple;
+                nearest = object->detonator;
                 object->launch_origin.x = nearest->position.x - NU_SIN_LUT(object->movement_facing_angle) * 0.1684f;
                 object->launch_origin.z = nearest->position.z - NU_COS_LUT(object->movement_facing_angle) * 0.1684f;
                 object->takeover_start_angle = (u16)RotDiff(object->movement_facing_angle, nearest->rotation_y);
@@ -320,12 +320,12 @@ extern "C" void Detonator_MoveCode(GAMEOBJECT *object) {
     }
     object->unknown_7b3 = 1;
     if (object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR) {
-        DETONATOR_s *detonator = (DETONATOR_s *)object->grapple;
+        DETONATOR_s *detonator = object->detonator;
         if (detonator != NULL) {
             detonator->active = 0;
-            if (((DETONATOR_s *)object->grapple)->unknown_34 != NULL) {
-                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, ((DETONATOR_s *)object->grapple)->unknown_34);
-                ((DETONATOR_s *)object->grapple)->unknown_34 = NULL;
+            if (object->detonator->unknown_34 != NULL) {
+                GameAntinode_UnregisterAntiNode(WORLD->game_antinode_sys, object->detonator->unknown_34);
+                object->detonator->unknown_34 = NULL;
             }
         }
         return;

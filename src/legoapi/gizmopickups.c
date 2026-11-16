@@ -1033,15 +1033,15 @@ void UpdateCoinPacket(PLAYER_COIN_PACKET *packet, i32 active, i32 player_index) 
             if (packet->multiplier_time > 0.0f) {
                 packet->multiplier_time -= FRAMETIME;
                 if (packet->multiplier_time <= 0.0f) {
-                    packet->active = 1;
+                    packet->multiplier = 1;
                 }
             }
         } else {
             packet->multiplier_time = 0.0f;
-            packet->active = 1;
+            packet->multiplier = 1;
         }
     } else {
-        packet->active = 1;
+        packet->multiplier = 1;
         packet->scale = 1.0f;
         packet->multiplier_time = 0.0f;
         if (BonusArea != 0) {

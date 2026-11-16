@@ -2149,9 +2149,9 @@ extern "C" void InitGameMode(void) {
     for (i = 0; i < 2; ++i) {
         if (players[i] != NULL && players[i]->coin_packet != NULL) {
             type = &GizmoPickupType[GetRandomCoinType()];
-            ((PLAYER_COIN_PACKET *)players[i]->coin_packet)->last_coin = type->first_model_id;
+            players[i]->coin_packet->last_coin = type->first_model_id;
             if (type->random_model_count > 0) {
-                ((PLAYER_COIN_PACKET *)players[i]->coin_packet)->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
+                players[i]->coin_packet->last_coin += (i16)(qrand() / (0xffff / type->random_model_count + 1));
             }
         }
     }

@@ -163,7 +163,7 @@ struct HAT_USE_REQUEST {   // size 0x7a4
 extern "C" i16 id_PRINCESSLEIABOUSHH;
 
 extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 special_pressed) {
-    HATMACHINE *machine = (HATMACHINE *)object->grapple;
+    HATMACHINE *machine = object->hat_machine;
     if (object->unknown_db0 > 0.0f) {
         object->unknown_db0 -= FRAMETIME;
     }
@@ -208,7 +208,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
             }
             AlertSurroundingCreatures(object, &object->collision_position);
             object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
-            ((HATMACHINE *)object->grapple)->state_duration = object->context_timer;
+            object->hat_machine->state_duration = object->context_timer;
             if (object->context_timer <= 0.0f) {
                 object->context_timer = 2.0f;
             }
@@ -274,7 +274,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                 if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_ALREADY_GOT_HAT) == 0 &&
                     (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0)) {
                     PlaySfx("HatOn", &object->upper_position);
-                    object->helmet = ((HATMACHINE *)object->grapple)->displayed_hat;
+                    object->helmet = object->hat_machine->displayed_hat;
                     if (object->helmet == HELMET_STORMTROOPER) {
                         MakeBaddiesForgetAboutParty(1);
                     }
@@ -295,14 +295,14 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         object->character_context = CHARACTER_CONTEXT_NONE;
         object->context_timer = 0.0f;
-        machine = (HATMACHINE *)object->grapple;
+        machine = object->hat_machine;
         if (machine == NULL) {
             return;
         }
         if (machine->configured_hat == 6) {
             PlaySfx("Hunter_Granted", &object->collision_position);
         }
-        if (((HATMACHINE *)object->grapple)->configured_hat == 5) {
+        if (object->hat_machine->configured_hat == 5) {
             PlaySfx("Trooper_Granted", &object->collision_position);
         }
         object->grapple = NULL;
@@ -313,11 +313,11 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
         }
         if (object->grapple != NULL) {
             NewBuzz(object->pad->bound_pad, 0.1f, 0);
-            ((HATMACHINE *)object->grapple)->hat_delay = 0.6f;
-            if (((HATMACHINE *)object->grapple)->configured_hat == 6) {
+            object->hat_machine->hat_delay = 0.6f;
+            if (object->hat_machine->configured_hat == 6) {
                 PlaySfx("Hunter_Granted", &object->collision_position);
             }
-            if (((HATMACHINE *)object->grapple)->configured_hat == 5) {
+            if (object->hat_machine->configured_hat == 5) {
                 PlaySfx("Trooper_Granted", &object->collision_position);
             }
         } else {

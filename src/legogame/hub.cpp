@@ -162,11 +162,6 @@ extern "C" char AreaFixUpName_Tatooine[];
 extern "C" char AreaFixUpName_Podsprint[];
 extern "C" char AreaFixUpName_Negotiations[];
 
-typedef struct ARCADE_COIN_PACKET {
-    u32 coins;
-    f32 scale;
-} ARCADE_COIN_PACKET;
-
 extern "C" {
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG0;
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
@@ -972,7 +967,7 @@ extern "C" {
             PlaySfx("env_padLight_on", NULL);
             object = Player[player_index];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
+                object->coin_packet->scale = 1.5f;
             }
             if (AreaGlobals.arcade_ai_kills[player_index] >= (u32)Arcade_Mode[ArcadeItem.mode].target) {
                 Arcade_AwardPoint(player_index, 0, 0);
@@ -980,14 +975,14 @@ extern "C" {
                 AreaGlobals.arcade_ai_kills[1] = 0;
                 object = Player[player_index == 0 ? 1 : 0];
                 if (object != NULL && object->coin_packet != NULL) {
-                    ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
+                    object->coin_packet->scale = 1.5f;
                 }
             }
         } else {
             GameAudio_PlaySfx(0x32, NULL, 0, 0);
             object = Player[player_index];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
+                object->coin_packet->scale = 1.5f;
             }
             Arcade_NeedTwoPlayers_Scale = 1.5f;
         }
@@ -995,7 +990,7 @@ extern "C" {
 
     void Arcade_CoinCollected(i32 player_index, u32 *score, u32 previous_score) {
         GAMEOBJECT *object;
-        ARCADE_COIN_PACKET *packet;
+        PLAYER_COIN_PACKET *packet;
         if ((player_index != 0 && player_index != 1) || (Arcade_Mode[ArcadeItem.mode].flags & 4) == 0) {
             return;
         }
@@ -1004,22 +999,22 @@ extern "C" {
             if (object == NULL || object->coin_packet == NULL) {
                 return;
             }
-            packet = (ARCADE_COIN_PACKET *)object->coin_packet;
+            packet = object->coin_packet;
             if (packet->coins < (u32)Arcade_Mode[ArcadeItem.mode].target) {
                 return;
             }
             Arcade_AwardPoint(player_index, 0, 0);
             object = Player[0];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET *)object->coin_packet)->coins = 0;
+                object->coin_packet->coins = 0;
             }
             object = Player[1];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET *)object->coin_packet)->coins = 0;
+                object->coin_packet->coins = 0;
             }
             object = Player[player_index == 0 ? 1 : 0];
             if (object != NULL && object->coin_packet != NULL) {
-                ((ARCADE_COIN_PACKET *)object->coin_packet)->scale = 1.5f;
+                object->coin_packet->scale = 1.5f;
             }
         } else {
             *score = previous_score;

@@ -807,8 +807,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             object->context_timer -= FRAMETIME;
             if (object->context_timer <= 0.0f) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
-                ((PANEL_MOVEMENT *)object->grapple)->flags &= (u8)~1;
-                ((PANEL_MOVEMENT *)object->grapple)->flags |= 2;
+                object->panel->flags &= (u8)~1;
+                object->panel->flags |= 2;
                 object->grapple = NULL;
             }
             if ((object->flags_e20 & 0x1000) == 0) {
@@ -819,17 +819,17 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             if (object->context_timer <= 0.0f) {
                 if (object->grapple != NULL) {
                     NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                    if (((PANEL_MOVEMENT *)object->grapple)->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
+                    if (object->panel->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
                         PlaySfx("Hunter_Granted", &object->collision_position);
                     }
-                    if (((PANEL_MOVEMENT *)object->grapple)->model_variant == PANEL_VARIANT_STORMTROOPER) {
+                    if (object->panel->model_variant == PANEL_VARIANT_STORMTROOPER) {
                         PlaySfx("Trooper_Granted", &object->collision_position);
                     }
                 } else {
                     NewRumble(object->pad->bound_pad, 0.5f, 0);
                 }
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-                    u8 variant = ((PANEL_MOVEMENT *)object->grapple)->model_variant;
+                    u8 variant = object->panel->model_variant;
                     if (variant == PANEL_VARIANT_ASTROMECH || variant == PANEL_VARIANT_PROTOCOL_DROID) {
                         if (StartupGameFlag1 != 0 && Mission_Active(NULL) != NULL) {
                             Hint_SetComplete(0x2b9);
@@ -844,8 +844,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                     }
                 }
                 object->character_context = CHARACTER_CONTEXT_NONE;
-                ((PANEL_MOVEMENT *)object->grapple)->flags &= (u8)~1;
-                ((PANEL_MOVEMENT *)object->grapple)->flags |= 2;
+                object->panel->flags &= (u8)~1;
+                object->panel->flags |= 2;
                 object->grapple = NULL;
             } else if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                 SetProtocolDroidInterfaceAction(object);
@@ -894,14 +894,14 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         } else {
             object->unknown_7aa = ACTION_INTERFACE;
             if (panel->model_variant == PANEL_VARIANT_PROTOCOL_DROID) {
-                if (!InStory() || (((PANEL_MOVEMENT *)object->grapple)->draw_flags & 4) == 0) {
+                if (!InStory() || (object->panel->draw_flags & 4) == 0) {
                     GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
                 if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                     SetProtocolDroidInterfaceAction(object);
                 }
             } else {
-                if (!InStory() || (((PANEL_MOVEMENT *)object->grapple)->draw_flags & 4) == 0) {
+                if (!InStory() || (object->panel->draw_flags & 4) == 0) {
                     GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
             }

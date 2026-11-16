@@ -12,7 +12,7 @@ typedef struct TUBE {             // size 0x40
     NUVEC position;               // 0x10
     f32 height;                   // 0x1c
     f32 radius;                   // 0x20
-    u8 unknown_24[0x4];           // 0x24
+    f32 momentum_y;               // 0x24
     f32 top;                      // 0x28
     f32 radius_squared;           // 0x2c
     u8 unknown_30[4];             // 0x30

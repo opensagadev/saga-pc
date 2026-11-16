@@ -61,13 +61,6 @@
 #include <string.h>
 #include <float.h>
 
-typedef struct coinpacket_pickup_s {
-    u8 unknown_0[0xa];
-    u8 multiplier;
-    u8 unknown_b;
-    f32 timer;
-} COINPACKET_PICKUP;
-
 u32 GizObstacles_TotalScore(WORLDINFO *world);
 u32 GizTurrets_TotalScore(WORLDINFO *world);
 
@@ -252,7 +245,7 @@ void GameMsg_DrawAdjustNewPos_CoinToTotal(GAME_MESSAGE *message) {
 
 void EndScoreMessage(GAME_MESSAGE *message) {
     i32 icon;
-    OBJECT_COIN_PACKET *player;
+    GAMEOBJECT *player;
     u32 old_coins;
     WORLDINFO *world;
     if (CoinsGoToMainTotal()) {
@@ -294,7 +287,7 @@ void EndScoreMessage(GAME_MESSAGE *message) {
         if (message->player_index != 0 && message->player_index != 1) {
             goto counter_sound;
         }
-        player = (OBJECT_COIN_PACKET *)Player[message->player_index];
+        player = Player[message->player_index];
         if (player == NULL || player->coin_packet == NULL) {
             goto counter_sound;
         }
@@ -424,13 +417,13 @@ void GizmoPickup_CollectCoin(WORLDINFO *world, NUVEC *position, i32 type_index, 
                 score += score;
                 message.score = score;
             } else {
-                multiplier = ((COINPACKET_PICKUP *)object->coin_packet)->multiplier;
+                multiplier = object->coin_packet->multiplier;
                 score *= multiplier;
                 message.score = score;
-                if (((COINPACKET_PICKUP *)object->coin_packet)->multiplier < 10) {
-                    ++((COINPACKET_PICKUP *)object->coin_packet)->multiplier;
+                if (object->coin_packet->multiplier < 10) {
+                    ++object->coin_packet->multiplier;
                 }
-                ((COINPACKET_PICKUP *)object->coin_packet)->timer = 0.5f;
+                object->coin_packet->multiplier_time = 0.5f;
                 score = message.score;
             }
         }

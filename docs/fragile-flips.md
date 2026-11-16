@@ -90,3 +90,4 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | nufpar wide word buffer, typed WORLDINFO.guidelines (stream B) | BoulderSpawn | legogame/episodeIII.c | exact | different |
 | status rumble pair and Factory B net packet (stream C) | BoulderSpawn | legogame/episodeIII.c | different | exact |
 | typed VARIPTR members, prim vertex copies merged into NULGTVERTEX (stream B) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 95.18 % |
+| grapple union records and the player coin packet (stream C) | BoulderSpawn | legogame/episodeIII.c | exact | different |

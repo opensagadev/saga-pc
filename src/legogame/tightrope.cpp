@@ -455,14 +455,14 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
     i32 result = 1;
     if (object->pad->input_magnitude > 0.0f && object->unknown_7aa != ACTION_TIGHTROPE_GETON) {
         NUVEC previous = object->launch_origin;
-        TIGHTROPE_MOTION *rope = ((TIGHTROPE_MOTION *)(object->grapple));
+        TIGHTROPE_MOTION *rope = object->tightrope;
         f32 input = PushingTowardsAngle(GamePad_InputAngle(object, object->pad), rope->rotation);
         f32 direction;
         f32 speed;
         if (input > NuTrigTable[0x3000]) {
             direction = 1.0f;
             if (jumping == 0) {
-                rope = ((TIGHTROPE_MOTION *)(object->grapple));
+                rope = object->tightrope;
                 object->movement_facing_angle = rope->rotation;
                 object->unknown_7aa = ACTION_TIGHTROPE_MOVE;
                 speed = AnimSpeed(object->character_model, ACTION_TIGHTROPE_MOVE);
@@ -472,7 +472,7 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
         } else if (-NuTrigTable[0x3000] > input) {
             direction = -1.0f;
             if (jumping == 0) {
-                rope = ((TIGHTROPE_MOTION *)(object->grapple));
+                rope = object->tightrope;
                 object->movement_facing_angle = rope->rotation + 0x8000;
                 object->unknown_7aa = ACTION_TIGHTROPE_MOVE;
                 speed = AnimSpeed(object->character_model, ACTION_TIGHTROPE_MOVE);
@@ -486,10 +486,10 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
             return result;
         }
         NUVEC movement;
-        rope = ((TIGHTROPE_MOTION *)(object->grapple));
+        rope = object->tightrope;
         NuVecScale(&movement, &rope->direction, speed * direction * FRAMETIME);
         NuVecAdd(&object->launch_origin, &object->launch_origin, &movement);
-        rope = ((TIGHTROPE_MOTION *)(object->grapple));
+        rope = object->tightrope;
         result = TightRopeSetPosition(rope, &object->launch_origin, object);
         if (jumping == 0 && object->launch_origin.x == previous.x && object->launch_origin.y == previous.y &&
             object->launch_origin.z == previous.z) {
@@ -518,19 +518,19 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
             object->unknown_7aa = ACTION_TIGHTROPE_IDLE;
         }
         object->launch_origin = position;
-        if (abs(RotDiff(((TIGHTROPE_MOTION *)(object->grapple))->rotation, object->movement_facing_angle)) <= 0x4000) {
-            rope = ((TIGHTROPE_MOTION *)(object->grapple));
+        if (abs(RotDiff(object->tightrope->rotation, object->movement_facing_angle)) <= 0x4000) {
+            rope = object->tightrope;
             object->movement_facing_angle = rope->rotation;
         } else {
-            rope = ((TIGHTROPE_MOTION *)(object->grapple));
+            rope = object->tightrope;
             object->movement_facing_angle = rope->rotation + 0x8000;
         }
         object->context_hover_target_y = NuVecXZDist(&object->collision_position, &rope->start, NULL);
-        rope = ((TIGHTROPE_MOTION *)(object->grapple));
+        rope = object->tightrope;
         f32 square = rope->direction.x * rope->direction.x + rope->direction.z * rope->direction.z;
-        i32 slope = NuAtan2D(((TIGHTROPE_MOTION *)(object->grapple))->direction.y, NuFsqrt(square));
+        i32 slope = NuAtan2D(object->tightrope->direction.y, NuFsqrt(square));
         NuVecRotateX(&position, &v010, -slope);
-        rope = ((TIGHTROPE_MOTION *)(object->grapple));
+        rope = object->tightrope;
         NuVecRotateY(&position, &position, rope->rotation);
         FindAnglesZX(&position, &object->unknown_7a4, &object->unknown_7a8);
         if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TIGHTROPE_TILT) != 0) {
@@ -605,8 +605,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
             }
             if (object->character_context == CHARACTER_CONTEXT_TIGHTROPE && object->grapple == rope) {
                 TightRope_MoveUpdate(object, 1);
-                object->context_hover_target_y =
-                    NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION *)(object->grapple))->start, NULL);
+                object->context_hover_target_y = NuVecXZDist(&object->collision_position, &object->tightrope->start, NULL);
             }
             return;
         }
@@ -633,8 +632,8 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 f32 frame = AnimListFrame(object->character_model, object->unknown_7aa, 0);
 
                 if (frame >= 1.0f && *playing >= frame && object->pad->input_magnitude > 0.0f &&
-                    TightropeFabs(PushingTowardsAngle(GamePad_InputAngle(object, object->pad),
-                                                      ((TIGHTROPE_MOTION *)(object->grapple))->rotation)) > NuTrigTable[0x3000]) {
+                    TightropeFabs(PushingTowardsAngle(GamePad_InputAngle(object, object->pad), object->tightrope->rotation)) >
+                        NuTrigTable[0x3000]) {
                     TightRope_MoveUpdate(object, 0);
                 } else {
                     object->context_timer -= FRAMETIME;
@@ -652,7 +651,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 object->velocity.y = 1.8f;
             }
         }
-        object->context_hover_target_y = NuVecXZDist(&object->collision_position, &((TIGHTROPE_MOTION *)(object->grapple))->start, NULL);
+        object->context_hover_target_y = NuVecXZDist(&object->collision_position, &object->tightrope->start, NULL);
         return;
     }
     if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) || object->character_model->model_data_b[0x88] == NULL) {

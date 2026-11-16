@@ -4,8 +4,6 @@
 
 #include "legoapi/text_tables.h"
 
-struct coin_packet_s;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -116,11 +114,6 @@ typedef struct kaminoc_packet_s {
     u8 complete;
     u8 reserved_0d;
 } KAMINOC_PACKET;
-
-typedef struct object_coin_packet_s {  // size 0x800
-    u8 unknown_000[0x7fc];             // 0x000
-    struct coin_packet_s *coin_packet; // 0x7fc
-} OBJECT_COIN_PACKET;
 
 typedef struct {                   // size 0x8
     BOMB_PROGRESS_RECORD *records; // 0x0

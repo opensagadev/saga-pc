@@ -86,8 +86,8 @@ typedef struct LEVER_NET_WAIT { // size 0x7a4
 
 void ReleaseLever(GAMEOBJECT *object) {
     if (object->character_context == CHARACTER_CONTEXT_PULL_LEVER) {
-        if (object->grapple != NULL && !LEVER_BITS((GIZMO_LEVER *)object->grapple)->being_pulled) {
-            LEVER_BITS((GIZMO_LEVER *)object->grapple)->interacting = 0;
+        if (object->grapple != NULL && !LEVER_BITS(object->lever)->being_pulled) {
+            LEVER_BITS(object->lever)->interacting = 0;
         }
     }
 }
@@ -177,11 +177,11 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_BADDIE) != 0) {
-            ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_BADDIE;
+            object->lever->flags |= LEVER_FLAG_BADDIE;
         } else if ((object->character_data->model_flags & CHARACTER_MODEL_NEUTRAL) == 0) {
-            ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_GOODIE;
+            object->lever->flags |= LEVER_FLAG_GOODIE;
         }
-        ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_INTERACTION_FINISHED;
+        object->lever->flags |= LEVER_FLAG_INTERACTION_FINISHED;
         object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
@@ -218,10 +218,10 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->context_duration = 1.0f;
         }
         object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-        object->movement_facing_angle = ((GIZMO_LEVER *)object->grapple)->yaw;
-        ((GIZMO_LEVER *)object->grapple)->flags |= LEVER_FLAG_INTERACTING;
-        ((GIZMO_LEVER *)object->grapple)->pull_progress = 0.0f;
-        ((GIZMO_LEVER *)object->grapple)->auto_reset_timer = 0.0f;
+        object->movement_facing_angle = object->lever->yaw;
+        object->lever->flags |= LEVER_FLAG_INTERACTING;
+        object->lever->pull_progress = 0.0f;
+        object->lever->auto_reset_timer = 0.0f;
     }
 }
 
