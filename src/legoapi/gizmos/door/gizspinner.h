@@ -13,6 +13,7 @@ struct gizmoset_s;
 extern "C" {
 #endif
     struct GIZSPINNER_s *GizSpinner_Find(WORLDINFO *, NUVEC *, i32);
+    struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
     i32 GizSpinner_Push(struct GIZSPINNER_s *, i32);
     void GizSpinner_PushFail(GAMEOBJECT *, struct GIZSPINNER_s *);
     void GizSpinner_Activate(void *gizmo, i32 active);

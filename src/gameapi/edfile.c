@@ -2357,7 +2357,6 @@ NUMTL *uimtls[5] = {0};
 struct eduiitem_s *edui_last_item = 0;
 char FS_FileList[65536] = {0};
 f32 EduiPropLabelWidth = 50.0f;
-extern void NuKeyFlush(void);
 
 i32 eduiItemPropSetText(edui_prop_s *item, char *text) {
     if (item->property_text && NuStrLen(item->property_text) < NuStrLen(text)) {

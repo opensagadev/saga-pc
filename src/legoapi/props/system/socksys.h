@@ -220,6 +220,7 @@ extern "C" {
     f32 MidDistanceFromSockStart(SOCKSYS *, SOCKPOSITION *);
     void MoveSockPosition(SOCKSYS *, SOCKPOSITION *, f32, SOCKPOSITION *);
     i32 SockSysTrackInSplineInfo(SOCKSYS *, SOCKPOSITION *, NUVEC *, f32 *);
+    SOCK *FindSock(SOCKSYS *sys, char *name);
 #ifdef __cplusplus
 }
 #endif

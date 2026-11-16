@@ -20,6 +20,7 @@ extern "C" {
     i32 NuKeyboard(i32);
     i32 NuKeyboard_db(i32);
     i32 NuKeyGet(u32 *modifiers);
+    void NuKeyFlush(void);
 #ifdef __cplusplus
 }
 #endif

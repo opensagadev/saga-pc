@@ -27,6 +27,7 @@
 #include "legoapi/characters/motion/gameanim.h"
 #include "legoapi/cutscenes/gcutscn.h"
 #include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/gizmos/door/gizspinner.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/collect/bolts.h"
 #include "legoapi/legoapi_types.h"
@@ -528,10 +529,6 @@ extern IMAGE_DOS_HEADER __ImageBase;
    GameAISysInit calls them out of line. */
 
 typedef void (*AI_LOAD)(AISYS *, i32, NUGSCN *, VARIPTR *, VARIPTR *);
-
-struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
-
-SOCK *FindSock(SOCKSYS *system, char *name);
 
 static f32 AIPathSafeDivide(f32 numerator, f32 denominator) {
     if (numerator == 0.0f || denominator == 0.0f) {
