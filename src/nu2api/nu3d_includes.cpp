@@ -12083,7 +12083,7 @@ void NuMainFilterGen::preprocessDofMotionBlur(GRAPHICS_RENDER_TEXTURE *depth) {
     }
 }
 
-void NuMotionFilterGen::fun_005c2de0(bool enable) {
+void NuMotionFilterGen::setEnabled(bool enable) {
     enabled = enable;
 }
 
@@ -12101,15 +12101,15 @@ extern "C" void fun_005c2ea0(void) {
 extern "C" void fun_005c2ed0(void) {
 }
 
-i32 PC_SPECIAL_SHADOW_LIGHT::fun_005c2eb0() {
+i32 PC_SPECIAL_SHADOW_LIGHT::GetUsedOnSpecials() {
     return used_on_specials;
 }
 
-void PC_SPECIAL_SHADOW_LIGHT::fun_005c2ec0(i32 used) {
+void PC_SPECIAL_SHADOW_LIGHT::SetUsedOnSpecials(i32 used) {
     used_on_specials = used;
 }
 
-i32 PC_SPECIAL_SHADOW_LIGHT::fun_005c2f20() {
+i32 PC_SPECIAL_SHADOW_LIGHT::GetActiveRenderSetCount() {
     return active_render_set_count;
 }
 
@@ -12183,7 +12183,7 @@ void PC_SPECIAL_SHADOW_LIGHT::fun_005c3070(i32 set, i32 scene) {
     ++record->count;
 }
 
-void NuDeferredFilterGen::fun_005c30a0(bool enable) {
+void NuDeferredFilterGen::setEnabled(bool enable) {
     enabled = enable;
 }
 
@@ -12191,7 +12191,7 @@ void NuDeferredFilterGen::fun_005c30b0(NuDynamicLight *light) {
     dynamic_lights[dynamic_light_count++] = light;
 }
 
-i32 NuDeferredFilterGen::fun_005c30d0() {
+i32 NuDeferredFilterGen::getDynamicLightCount() {
     return dynamic_light_count;
 }
 
@@ -12199,7 +12199,7 @@ void NuDeferredFilterGen::fun_005c30e0(const f32 *parameters) {
     memcpy(this->parameters, parameters, sizeof(this->parameters));
 }
 
-void NuMotionAccumFilterGen::fun_005c3100(bool enable) {
+void NuMotionAccumFilterGen::setEnabled(bool enable) {
     enabled = enable;
 }
 
@@ -12209,11 +12209,11 @@ void NuMotionAccumFilterGen::fun_005c3110(i32 frames, f32 blend, f32 mode) {
     this->blend = blend;
 }
 
-void NuSpeedBlurFilterGen::fun_005c3130(bool enable) {
+void NuSpeedBlurFilterGen::setEnabled(bool enable) {
     enabled = enable;
 }
 
-void NuSpeedBlurFilterGen::fun_005c3140(const NU_POST_SPEED_PARAMETERS *parameters) {
+void NuSpeedBlurFilterGen::setParameters(const NU_POST_SPEED_PARAMETERS *parameters) {
     this->parameters = parameters;
 }
 
@@ -13141,19 +13141,19 @@ i32 PC_POST_DATA_PORT_MANAGER::Register(const char *name, void *data) {
     return -1;
 }
 
-u32 OccluderSet::fun_005c5250() {
+u32 OccluderSet::GetCount() {
     return count;
 }
 
-u32 OccluderSet::fun_005c5260() {
+u32 OccluderSet::GetCapacity() {
     return capacity;
 }
 
-bool OccluderSet::fun_005c5270() {
+bool OccluderSet::QueriesPrepared() {
     return queries_prepared;
 }
 
-bool OcclusionManager::fun_005c5280() {
+bool OcclusionManager::IsInitialized() {
     return initialized;
 }
 
@@ -13169,7 +13169,7 @@ void OcclusionManager::fun_005c52c0(f32 threshold) {
     unknown_15c = threshold;
 }
 
-OccluderSet *OcclusionManager::fun_005c52d0() {
+OccluderSet *OcclusionManager::GetCurrentSet() {
     return current_set;
 }
 

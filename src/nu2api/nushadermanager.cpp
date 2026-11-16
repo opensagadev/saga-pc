@@ -394,7 +394,7 @@ void NuShaderObject::fun_00745470(const u32 *key, i32 index, const char *vertex_
     PCShaderObjectInitHLSLPc(this, key, index, vertex_source, vertex_length, pixel_source, pixel_length, version);
 }
 
-i32 NuShaderObject::fun_007454a0() {
+i32 NuShaderObject::GetMarker() {
     return marker;
 }
 

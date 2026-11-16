@@ -282,7 +282,7 @@ class NuShaderObject { // size 0x4d8
     u32 *fun_007412d0();
     void fun_00745470(const u32 *key, i32 index, const char *vertex_source, i32 vertex_length, const char *pixel_source, i32 pixel_length,
                       i32 version);
-    i32 fun_007454a0();
+    i32 GetMarker();
 };
 
 template <class T> class ShaderManagerTemplate {

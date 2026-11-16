@@ -76,3 +76,45 @@ fun_006df260,PCDeviceGetBackBufferWidth,returns the presentation width
 fun_006df2f0,PCDeviceGetBackBufferHeight,returns the presentation height
 fun_006786e0,TerrainSetWallOver,setter of wallover
 fun_0067eab0,TerrainSetPlatformDistance,setter of TerrPlatDis
+fun_005c2de0,setEnabled,NuMotionFilterGen: enabled = enable
+fun_005c30a0,setEnabled,NuDeferredFilterGen: enabled = enable
+fun_005c3100,setEnabled,NuMotionAccumFilterGen: enabled = enable
+fun_005c3130,setEnabled,NuSpeedBlurFilterGen: enabled = enable
+fun_005c2eb0,GetUsedOnSpecials,PC_SPECIAL_SHADOW_LIGHT getter of used_on_specials
+fun_005c2ec0,SetUsedOnSpecials,PC_SPECIAL_SHADOW_LIGHT setter of used_on_specials
+fun_005c2f20,GetActiveRenderSetCount,PC_SPECIAL_SHADOW_LIGHT getter of active_render_set_count
+fun_005c30d0,getDynamicLightCount,NuDeferredFilterGen getter of dynamic_light_count
+fun_005c3140,setParameters,NuSpeedBlurFilterGen setter of parameters
+fun_005c5250,GetCount,OccluderSet getter of count
+fun_005c5260,GetCapacity,OccluderSet getter of capacity
+fun_005c5270,QueriesPrepared,OccluderSet getter of queries_prepared
+fun_005c5280,IsInitialized,OcclusionManager getter of initialized
+fun_005c52d0,GetCurrentSet,OcclusionManager getter of current_set
+fun_005f7860,GetMultisampleQuality,PC_DEVICE_BACKEND: quality[multisample_index]
+fun_005f7890,GetTargetCount,PC_DEVICE_BACKEND getter of target_count
+fun_006e18e0,SetRequestedFeature,PC_DEVICE_BACKEND setter of requested_feature
+fun_006e18f0,SetRequestedTargetCount,PC_DEVICE_BACKEND setter of requested_target_count
+fun_006e1900,GetDeviceType,PC_DEVICE_BACKEND: caps.device_type
+fun_005090a0,GetMultisampleIndex,PC_DEVICE_BACKEND getter of multisample_index
+fun_00509110,GetRequestedMode,PC_DEVICE_BACKEND getter of requested_mode
+fun_00509120,GetRequestedMultisample,PC_DEVICE_BACKEND getter of requested_multisample
+fun_00509130,SetRequestedMultisample,PC_DEVICE_BACKEND setter of requested_multisample
+fun_005f7af0,GetTexture,PC_EFFECT_SURFACE getter of texture
+fun_005f7b00,GetLevel,PC_EFFECT_SURFACE getter of level
+fun_005f7b20,GetWidth,PC_EFFECT_SURFACE getter of width
+fun_005f7b30,GetHeight,PC_EFFECT_SURFACE getter of height
+fun_007454a0,GetMarker,NuShaderObject getter of marker
+fun_00742180,GetRegisterIndex,PC_SHADER_PARAMETER_LOCAL getter of register_index
+fun_00742190,GetNext,PC_SHADER_PARAMETER_LOCAL getter of next
+fun_007421a0,SetNext,PC_SHADER_PARAMETER_LOCAL setter of next
+fun_00509030,IsBloomEnabled,PC_WINDOW_OPTIONS getter of bloomenabled
+fun_00509040,AreShadowsEnabled,PC_WINDOW_OPTIONS getter of shadowsenabled
+fun_00509050,IsSpeedBlurEnabled,PC_WINDOW_OPTIONS getter of speedblurenabled
+fun_00509060,IsHiresEnabled,PC_WINDOW_OPTIONS getter of usehires
+fun_00509070,IsHiresPending,PC_WINDOW_OPTIONS getter of usehirespending
+fun_00748810,SetOutputStage,ShaderCompilerDictionary setter of output_stage
+fun_007451c0,SetForceMode,ShaderCompilerDictionary setter of force_mode
+fun_00745290,GetDictionaryForceMode,ShaderCompilerBase: dictionary.force_mode
+fun_007452a0,GetDictionaryProfile,ShaderCompilerBase: dictionary.profile
+fun_00746620,GetComponentCount,ShaderSourceNode: ShaderCompilerTypeComponents[type]
+fun_00746630,GetTypeName,ShaderSourceNode: ShaderCompilerTypeNames[type]

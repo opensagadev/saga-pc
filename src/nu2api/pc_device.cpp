@@ -377,15 +377,15 @@ i32 PC_DEVICE_BACKEND::fun_006e18d0() {
     return device == NULL;
 }
 
-void PC_DEVICE_BACKEND::fun_006e18e0(u8 feature) {
+void PC_DEVICE_BACKEND::SetRequestedFeature(u8 feature) {
     requested_feature = feature;
 }
 
-void PC_DEVICE_BACKEND::fun_006e18f0(u16 count) {
+void PC_DEVICE_BACKEND::SetRequestedTargetCount(u16 count) {
     requested_target_count = count;
 }
 
-i32 PC_DEVICE_BACKEND::fun_006e1900() {
+i32 PC_DEVICE_BACKEND::GetDeviceType() {
     return caps.device_type;
 }
 
@@ -1383,23 +1383,23 @@ u32 PC_DEVICE_BACKEND::CaptureScreenshot(u32 width, u32 height, void **data) {
     return size;
 }
 
-u8 PC_WINDOW_OPTIONS::fun_00509030() {
+u8 PC_WINDOW_OPTIONS::IsBloomEnabled() {
     return bloomenabled;
 }
 
-u8 PC_WINDOW_OPTIONS::fun_00509040() {
+u8 PC_WINDOW_OPTIONS::AreShadowsEnabled() {
     return shadowsenabled;
 }
 
-u8 PC_WINDOW_OPTIONS::fun_00509050() {
+u8 PC_WINDOW_OPTIONS::IsSpeedBlurEnabled() {
     return speedblurenabled;
 }
 
-u8 PC_WINDOW_OPTIONS::fun_00509060() {
+u8 PC_WINDOW_OPTIONS::IsHiresEnabled() {
     return usehires;
 }
 
-u8 PC_WINDOW_OPTIONS::fun_00509070() {
+u8 PC_WINDOW_OPTIONS::IsHiresPending() {
     return usehirespending;
 }
 
@@ -1411,7 +1411,7 @@ GRAPHICS_DISPLAY_MODE *PC_DEVICE_BACKEND::fun_00509090(i32 index) {
     return &modes[index];
 }
 
-i32 PC_DEVICE_BACKEND::fun_005090a0() {
+i32 PC_DEVICE_BACKEND::GetMultisampleIndex() {
     return multisample_index;
 }
 
@@ -1428,15 +1428,15 @@ u8 PC_DEVICE_BACKEND::fun_005090e0() {
     return 0;
 }
 
-u32 PC_DEVICE_BACKEND::fun_00509110() {
+u32 PC_DEVICE_BACKEND::GetRequestedMode() {
     return requested_mode;
 }
 
-i32 PC_DEVICE_BACKEND::fun_00509120() {
+i32 PC_DEVICE_BACKEND::GetRequestedMultisample() {
     return requested_multisample;
 }
 
-void PC_DEVICE_BACKEND::fun_00509130(i32 multisample) {
+void PC_DEVICE_BACKEND::SetRequestedMultisample(i32 multisample) {
     requested_multisample = multisample;
 }
 

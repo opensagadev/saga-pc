@@ -14,7 +14,7 @@ class NuMotionAccumFilterGen : public NuPostFilter { // size 0x28
     NuMotionAccumFilterGen() : frames(0), blend(1.0f), weight_exponent(0.0f) {
     }
 
-    void fun_005c3100(bool enable);
+    void setEnabled(bool enable);
     void fun_005c3110(i32 frames, f32 blend, f32 mode);
     f32 GetTiming(i32 *last_frame);
     virtual void initResources();

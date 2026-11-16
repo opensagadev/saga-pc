@@ -41,8 +41,8 @@ class ShaderBuilderGen { // size 0xbd0
     i32 CompileEffect(const char *source, i32 length, void *output, i32 unused);
     void Generate(struct PC_SHADER_MATERIAL_FILTER_VIEW *, ShaderCompilerBufferAllocator *, ShaderCompilerBufferAllocator *);
     void fun_00745270(const char *name, i32 count);
-    bool fun_00745290();
-    i32 fun_007452a0();
+    bool GetDictionaryForceMode();
+    i32 GetDictionaryProfile();
 };
 
 typedef ShaderBuilderGen ShaderCompilerBase;

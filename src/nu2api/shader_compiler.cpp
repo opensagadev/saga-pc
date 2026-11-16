@@ -395,11 +395,11 @@ void ShaderCompilerBase::SetForceMode(bool force) {
     dictionary.force_mode = force;
 }
 
-bool ShaderCompilerBase::fun_00745290() {
+bool ShaderCompilerBase::GetDictionaryForceMode() {
     return dictionary.force_mode;
 }
 
-i32 ShaderCompilerBase::fun_007452a0() {
+i32 ShaderCompilerBase::GetDictionaryProfile() {
     return dictionary.profile;
 }
 

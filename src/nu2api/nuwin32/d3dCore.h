@@ -238,11 +238,11 @@ struct PC_EFFECT_SURFACE {                                                      
     void Attach(struct GRAPHICS_RENDER_TEXTURE *, i32, bool);
     static void ReleaseResources();
     static void RestoreResources();
-    struct GRAPHICS_RENDER_TEXTURE *fun_005f7af0();
-    u16 fun_005f7b00();
+    struct GRAPHICS_RENDER_TEXTURE *GetTexture();
+    u16 GetLevel();
     u32 fun_005f7b10();
-    u16 fun_005f7b20();
-    u16 fun_005f7b30();
+    u16 GetWidth();
+    u16 GetHeight();
     void fun_005fb920(PC_EFFECT_SURFACE *source);
 #endif
 };
@@ -369,21 +369,21 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     void CopyCurrentSurface(struct GRAPHICS_RENDER_TEXTURE *);
 
     GRAPHICS_DISPLAY_MODE *fun_00509090(i32 index);
-    i32 fun_005090a0();
+    i32 GetMultisampleIndex();
     u8 SupportsMultisample(i32);
     u8 HasRequestedModeChanged();
     void RestoreSavedMode();
 
     u8 fun_005090e0();
-    u32 fun_00509110();
-    i32 fun_00509120();
-    void fun_00509130(i32 multisample);
+    u32 GetRequestedMode();
+    i32 GetRequestedMultisample();
+    void SetRequestedMultisample(i32 multisample);
     void fun_00509140(i32 mode);
     GRAPHICS_RENDER_TEXTURE *GetTargetTexture(u16 index);
-    i32 fun_005f7860();
+    i32 GetMultisampleQuality();
     GRAPHICS_CAPS *fun_005f7870();
     GRAPHICS_PRESENT_PARAMETERS *fun_005f7880();
-    u16 fun_005f7890();
+    u16 GetTargetCount();
     i32 fun_005f78a0();
     void fun_005f78c0();
     u16 fun_006e2140();
@@ -396,9 +396,9 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     u32 fun_006df060();
     u32 fun_006df070();
     i32 fun_006e18d0();
-    void fun_006e18e0(u8 feature);
-    void fun_006e18f0(u16 count);
-    i32 fun_006e1900();
+    void SetRequestedFeature(u8 feature);
+    void SetRequestedTargetCount(u16 count);
+    i32 GetDeviceType();
     i32 IsWindowed();
     GRAPHICS_DISPLAY_MODE *fun_006daee0();
     u32 fun_006dbae0();

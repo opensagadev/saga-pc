@@ -173,15 +173,15 @@ void PC_SHADER_PARAMETER_LOCAL::SetMatrixValues(i32 first_element, i32 count, co
     }
 }
 
-i32 PC_SHADER_PARAMETER_LOCAL::fun_00742180() {
+i32 PC_SHADER_PARAMETER_LOCAL::GetRegisterIndex() {
     return register_index;
 }
 
-PC_SHADER_PARAMETER_LOCAL *PC_SHADER_PARAMETER_LOCAL::fun_00742190() {
+PC_SHADER_PARAMETER_LOCAL *PC_SHADER_PARAMETER_LOCAL::GetNext() {
     return next;
 }
 
-void PC_SHADER_PARAMETER_LOCAL::fun_007421a0(PC_SHADER_PARAMETER_LOCAL *parameter) {
+void PC_SHADER_PARAMETER_LOCAL::SetNext(PC_SHADER_PARAMETER_LOCAL *parameter) {
     next = parameter;
 }
 

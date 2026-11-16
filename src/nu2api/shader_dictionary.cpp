@@ -79,7 +79,7 @@ PC_SHADER_MATERIAL_FILTER_VIEW::PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTL
     Initialize(descriptor, NULL, flags, parameter);
 }
 
-void ShaderCompilerDictionary::fun_007451c0(bool force) {
+void ShaderCompilerDictionary::SetForceMode(bool force) {
     force_mode = force;
 }
 
@@ -698,11 +698,11 @@ ShaderCompilerBufferAllocator &ShaderCompilerBufferAllocator::operator<<(i32 val
 ShaderMacroDefinition::ShaderMacroDefinition(const char *name, const char *value, u8 emit) : name(name), value(value), emit(emit) {
 }
 
-i32 ShaderSourceNode::fun_00746620() {
+i32 ShaderSourceNode::GetComponentCount() {
     return ShaderCompilerTypeComponents[type];
 }
 
-const char *ShaderSourceNode::fun_00746630() {
+const char *ShaderSourceNode::GetTypeName() {
     return ShaderCompilerTypeNames[type];
 }
 

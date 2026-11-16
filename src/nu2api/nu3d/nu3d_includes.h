@@ -1365,11 +1365,11 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void RenderConstants(void *);
     void SetEnabled(i32 enabled);
     void SetParameterf(i32 parameter, f32 value);
-    i32 fun_005c2eb0();
-    void fun_005c2ec0(i32 used);
+    i32 GetUsedOnSpecials();
+    void SetUsedOnSpecials(i32 used);
     NUDISPLAYLIST *fun_005c2ee0(i32 set, NUMTL *material);
     void fun_005c6d90(NUMTX *view, NUMTX *projection);
-    i32 fun_005c2f20();
+    i32 GetActiveRenderSetCount();
     NUMTX *fun_005c2f30();
     NUMTX *fun_005c2f40();
     f32 GetParameterf(i32 parameter);
