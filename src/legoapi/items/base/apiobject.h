@@ -657,22 +657,19 @@ typedef struct APIOBJECT {                          // size 0x2b8
     u8 unknown_a8[0x4];                             // 0x0a8
     f32 collision_radius;                           // 0x0ac
 
-    union { // size 0x148
-        u8 unknown_0b0[0x148];
-
-        struct {                            // size 0x148
-            u8 unknown_b0_to_1b4[0x104];    // 0x0b0
-            NUVEC last_safe_position;       // 0x1b4
-            NUVEC previous_position;        // 0x1c0
-            NUVEC respawn_position;         // 0x1cc
-            u8 unknown_1d8[0x4];            // 0x1d8
-            f32 bounds_radius;              // 0x1dc
-            f32 bounds_half_height;         // 0x1e0
-            u8 unknown_1e4[0x4];            // 0x1e4
-            u32 collision_identity_mask[2]; // 0x1e8
-            u32 collision_contact_mask[2];  // 0x1f0
-        };
-    }; // 0x0b0
+    u8 unknown_0b0[0xc8];           // 0x0b0
+    NUVEC collision_min;            // 0x178
+    NUVEC collision_max;            // 0x184
+    u8 unknown_190[0x24];           // 0x190
+    NUVEC last_safe_position;       // 0x1b4
+    NUVEC previous_position;        // 0x1c0
+    NUVEC respawn_position;         // 0x1cc
+    f32 respawn_timer;              // 0x1d8
+    f32 bounds_radius;              // 0x1dc
+    f32 bounds_half_height;         // 0x1e0
+    u8 unknown_1e4[0x4];            // 0x1e4
+    u32 collision_identity_mask[2]; // 0x1e8
+    u32 collision_contact_mask[2];  // 0x1f0
 
     u32 motion_flags; // 0x1f8
 

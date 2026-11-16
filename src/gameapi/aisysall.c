@@ -148,24 +148,9 @@ typedef struct AILOCALMESSAGE {  // size 0x30
     struct AILOCALMESSAGE *next; // 0x2c
 } AILOCALMESSAGE;
 
-typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
-    u8 unknown[0x50];                      // 0x00
-    u64 excluded_character_types;          // 0x50
-} INTERACTION_ANTINODE_VIEW;
-
-#define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
-
 typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 
 extern CHECK_ANTINODE_FN checkantinodefns[3];
-
-typedef struct INTERACTION_ANTINODE_SHAPE_VIEW { // size 0x48
-    u8 unknown[0x40];                            // 0x00
-    f32 base_radius;                             // 0x40
-    f32 base_height;                             // 0x44
-} INTERACTION_ANTINODE_SHAPE_VIEW;
-
-#define INTERACTION_ANTINODE_SHAPE(a) ((INTERACTION_ANTINODE_SHAPE_VIEW *)(a))
 
 /* Forward declarations for functions used before their definition. */
 
@@ -3408,7 +3393,7 @@ static void AISysCheckAntinode_Circle(APIOBJECT *object, AIANTINODE *antinode, N
         turn = NuAngSub(turn, angle);
         if (object->ai->antinode_timer > 0.0f) {
             if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                 INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+                 object->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3466,14 +3451,14 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
     f32 outer_distance;
     distance_squared = difference->x * difference->x + difference->z * difference->z;
     if (distance_squared < radius * radius) {
-        aspect = INTERACTION_ANTINODE_SHAPE(antinode)->base_height / INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+        aspect = antinode->base_height / antinode->base_radius;
 
         difference->y = 0.0f;
         NuVecRotateY(&local_position, difference, -antinode->rotation);
         angle = NuAtan2D(aspect * local_position.x, local_position.z);
-        boundary.x = NU_SIN_LUT(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+        boundary.x = NU_SIN_LUT(angle) * antinode->base_radius;
         boundary.y = 0.0f;
-        boundary.z = NU_COS_LUT(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+        boundary.z = NU_COS_LUT(angle) * antinode->base_height;
         NuVecNorm(difference, &boundary);
         NuVecScale(difference, difference, object->ai->mover_height);
         NuVecAdd(&boundary, &boundary, difference);
@@ -3484,9 +3469,9 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             difference->z = object->position.z - antinode->position.z;
             NuVecRotateY(&local_object, difference, -antinode->rotation);
             object_angle = NuAtan2D(aspect * local_object.x, local_object.z);
-            object_boundary.x = NU_SIN_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+            object_boundary.x = NU_SIN_LUT(object_angle) * antinode->base_radius;
             object_boundary.y = 0.0f;
-            object_boundary.z = NU_COS_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            object_boundary.z = NU_COS_LUT(object_angle) * antinode->base_height;
             NuVecNorm(difference, &object_boundary);
             NuVecScale(difference, difference, object->ai->mover_height);
             NuVecAdd(&object_boundary, &object_boundary, difference);
@@ -3498,7 +3483,7 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             turn = NuAngSub(turn, object_angle);
             if (object->ai->antinode_timer > 0.0f) {
                 if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                     INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+                     object->respawn_timer > 1.0f) &&
                     object->ai->antinode_timer < antinode_time) {
                     object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                     object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3518,8 +3503,8 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_timer = antinode_time;
             }
-            gradient.x = NU_COS_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
-            gradient.z = -NU_SIN_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            gradient.x = NU_COS_LUT(object_angle) * antinode->base_radius;
+            gradient.z = -NU_SIN_LUT(object_angle) * antinode->base_height;
             if (turn < 0) {
                 gradient.x = -gradient.x;
                 gradient.z = -gradient.z;
@@ -3556,13 +3541,13 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         return;
     }
     difference->z = object->ai->movement_position.z - antinode->position.z;
-    if (difference->z > radius || difference->z < -radius || INTERACTION_GEOMETRY(object)->collision_min.y > antinode->max_y ||
-        antinode->min_y > INTERACTION_GEOMETRY(object)->collision_max.y) {
+    if (difference->z > radius || difference->z < -radius || object->collision_min.y > antinode->max_y ||
+        antinode->min_y > object->collision_max.y) {
         return;
     }
     NuVecRotateY(difference, difference, -antinode->rotation);
-    if (AIPathFabs(difference->x) < INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height &&
-        AIPathFabs(difference->z) < INTERACTION_ANTINODE_SHAPE(antinode)->base_height + object->ai->mover_height) {
+    if (AIPathFabs(difference->x) < antinode->base_radius + object->ai->mover_height &&
+        AIPathFabs(difference->z) < antinode->base_height + object->ai->mover_height) {
         difference->x = object->position.x - antinode->position.x;
         difference->y = 0.0f;
         difference->z = object->position.z - antinode->position.z;
@@ -3576,7 +3561,7 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         turn = NuAngSub(turn, object_angle);
         if (object->ai->antinode_timer > 0.0f) {
             if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                 INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+                 object->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3596,39 +3581,39 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
             object->ai->antinode_timer = antinode_time;
         }
-        corner_angle = NuAtan2D(INTERACTION_ANTINODE_SHAPE(antinode)->base_radius, INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+        corner_angle = NuAtan2D(antinode->base_radius, antinode->base_height);
         angle = NuAngAdd(object_angle, 0);
 
         if (angle > 0x8000 - corner_angle) {
             gradient.x = -1.0f;
             gradient.z = 0.0f;
             object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
-            object->ai->movement_position.z = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+                (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.z = -(object->ai->mover_height + antinode->base_height);
         } else if (angle > corner_angle) {
             gradient.x = 0.0f;
             gradient.z = -1.0f;
-            object->ai->movement_position.x = object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+            object->ai->movement_position.x = object->ai->mover_height + antinode->base_radius;
             object->ai->movement_position.z =
-                NU_COS_LUT(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+                NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
         } else if (angle > -corner_angle) {
             gradient.x = 1.0f;
             gradient.z = 0.0f;
             object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
-            object->ai->movement_position.z = object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+                (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.z = object->ai->mover_height + antinode->base_height;
         } else if (angle > corner_angle - 0x8000) {
             gradient.x = 0.0f;
             gradient.z = 1.0f;
-            object->ai->movement_position.x = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius);
+            object->ai->movement_position.x = -(object->ai->mover_height + antinode->base_radius);
             object->ai->movement_position.z =
-                NU_COS_LUT(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+                NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
         } else {
             gradient.x = -1.0f;
             gradient.z = 0.0f;
             object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
-            object->ai->movement_position.z = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+                (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.z = -(object->ai->mover_height + antinode->base_height);
         }
         if (turn + turn_offset < 0) {
             gradient.x = -gradient.x;
@@ -3764,7 +3749,7 @@ void AISysCreatureAntinodeInteraction(AISYS *system, i32 object_count, APIOBJECT
                         NuSpecialCompare(&object->collision_special, &antinode->special_handle)) {
                         continue;
                     }
-                    if (((u64)1 << object->object_id) & ((INTERACTION_ANTINODE_VIEW *)antinode)->excluded_character_types) {
+                    if (((u64)1 << object->object_id) & U64_PAIR(antinode->excluded_character_types)) {
                         continue;
                     }
                     radius = object->ai->mover_height + antinode->radius;
@@ -3774,11 +3759,11 @@ void AISysCreatureAntinodeInteraction(AISYS *system, i32 object_count, APIOBJECT
                     }
                     difference.z = object->ai->movement_position.z - antinode->position.z;
                     if (difference.z > radius || difference.z < -radius ||
-                        INTERACTION_GEOMETRY(object)->collision_min.y > antinode->max_y) {
+                        object->collision_min.y > antinode->max_y) {
                         continue;
                     }
                     /* An unordered min-height comparison continues to the callback. */
-                    if (!(antinode->min_y > INTERACTION_GEOMETRY(object)->collision_max.y)) {
+                    if (!(antinode->min_y > object->collision_max.y)) {
                         checkantinodefns[antinode->type](object, antinode, &difference, radius);
                     }
                 }

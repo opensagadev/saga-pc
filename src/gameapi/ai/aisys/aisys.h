@@ -329,8 +329,7 @@ typedef struct AIANTINODE {      // size 0x58
     u8 type;                     // 0x4a
     u8 has_special;              // 0x4b
     u8 unknown_4c_b[0x4];        // 0x4c
-    u8 special_type;             // 0x50
-    u8 unknown_51[0x7];          // 0x51
+    u32 excluded_character_types[2]; // 0x50: one bit per object id
 } AIANTINODE;
 #ifdef __cplusplus
 extern "C" {
