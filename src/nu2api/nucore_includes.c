@@ -4810,11 +4810,11 @@ static void NuAllocManagerSetPrevious(NUALLOC_MANAGER_BLOCK *block, NUALLOC_MANA
 }
 
 static void *NuAllocManagerPayload(NUALLOC_MANAGER_BLOCK *block) {
-    return (void *)((u32)block + sizeof(NUALLOC_MANAGER_BLOCK));
+    return block + 1;
 }
 
 static void NuAllocManagerSetTrailer(NUALLOC_MANAGER_BLOCK *block) {
-    ((NUALLOC_MANAGER_TRAILER *)((u32)block + NuAllocManagerGetSize(block) + sizeof(NUALLOC_MANAGER_BLOCK)))->previous_block = block;
+    ((NUALLOC_MANAGER_TRAILER *)((u8 *)(block + 1) + NuAllocManagerGetSize(block)))->previous_block = block;
 }
 
 static void NuAllocManagerUnlink(NUALLOC_MANAGER_BLOCK *block) {
@@ -4834,11 +4834,11 @@ static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK **allocated, NUALLOC_MANAG
                                 u32 *size, u32 alignment) {
     u32 remainder_size = (block->size_flags & 0x7fffffffU) - *size - 16;
     *remainder = block;
-    *allocated = (NUALLOC_MANAGER_BLOCK *)((u32)block + remainder_size + 16);
+    *allocated = (NUALLOC_MANAGER_BLOCK *)((u8 *)block + remainder_size + 16);
     if (alignment > 0) {
-        u32 payload = (u32)*allocated + 12;
+        u32 payload = (u32)(*allocated + 1);
         u32 aligned_payload = (payload + alignment - 1) & ~(alignment - 1);
-        *allocated = (NUALLOC_MANAGER_BLOCK *)((u32)*allocated + aligned_payload - payload);
+        *allocated = (NUALLOC_MANAGER_BLOCK *)((u8 *)*allocated + aligned_payload - payload);
         *size -= aligned_payload - payload;
         remainder_size += aligned_payload - payload;
     }
@@ -4846,23 +4846,21 @@ static void NuAllocManagerSplit(NUALLOC_MANAGER_BLOCK **allocated, NUALLOC_MANAG
     (*allocated)->size_flags = ((*allocated)->size_flags & 0x80000000U) | *size;
     (*allocated)->next = NULL;
     (*allocated)->previous = NULL;
-    ((NUALLOC_MANAGER_TRAILER *)((u32)*allocated + ((*allocated)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))
-        ->previous_block = *allocated;
+    ((NUALLOC_MANAGER_TRAILER *)((u8 *)(*allocated + 1) + ((*allocated)->size_flags & 0x7fffffffU)))->previous_block = *allocated;
     (*remainder)->size_flags &= 0x7fffffffU;
     (*remainder)->size_flags = ((*remainder)->size_flags & 0x80000000U) | remainder_size;
     (*remainder)->next = NULL;
     (*remainder)->previous = NULL;
-    ((NUALLOC_MANAGER_TRAILER *)((u32)*remainder + ((*remainder)->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))
-        ->previous_block = *remainder;
+    ((NUALLOC_MANAGER_TRAILER *)((u8 *)(*remainder + 1) + ((*remainder)->size_flags & 0x7fffffffU)))->previous_block = *remainder;
 }
 
 static NUALLOC_MANAGER_BLOCK *NuAllocManagerNextBlock(NUALLOC_MANAGER_BLOCK *block) {
-    return (NUALLOC_MANAGER_BLOCK *)((u32)block + NuAllocManagerGetSize(block) + 16);
+    return (NUALLOC_MANAGER_BLOCK *)((u8 *)block + NuAllocManagerGetSize(block) + 16);
 }
 
 /* Carves a heap of size bytes from *buffer: a free-list sentinel, two used guard blocks and one free block. */
 NUALLOC_MANAGER_PREFIX *NuAllocManagerCreate(VARIPTR *buffer, VARIPTR buffer_end, u32 size) {
-    NUALLOC_MANAGER_PREFIX *manager;
+    NUALLOC_MANAGER_HEAP *heap;
     NUALLOC_MANAGER_BLOCK *list;
     NUALLOC_MANAGER_BLOCK *first;
     NUALLOC_MANAGER_BLOCK *last;
@@ -4871,12 +4869,12 @@ NUALLOC_MANAGER_PREFIX *NuAllocManagerCreate(VARIPTR *buffer, VARIPTR buffer_end
     if (size < 0x50) {
         return NULL;
     }
-    manager = buffer->void_ptr;
+    heap = buffer->void_ptr;
     buffer->addr += size;
-    list = (NUALLOC_MANAGER_BLOCK *)((u32)manager + 0x10);
-    first = (NUALLOC_MANAGER_BLOCK *)((u32)manager + 0x20);
-    last = (NUALLOC_MANAGER_BLOCK *)((u32)manager + size - 0x10);
-    free_block = (NUALLOC_MANAGER_BLOCK *)((u32)manager + 0x30);
+    list = &heap->list.block;
+    first = &heap->first.block;
+    last = &((NUALLOC_MANAGER_MARKER *)buffer->void_ptr)[-1].block;
+    free_block = &heap->free_block;
     NuAllocManagerSetPrevious(list, NULL);
     list->size = 0;
     list->used = 0;
@@ -4896,11 +4894,11 @@ NUALLOC_MANAGER_PREFIX *NuAllocManagerCreate(VARIPTR *buffer, VARIPTR buffer_end
     NuAllocManagerSetNext(free_block, NULL);
     NuAllocManagerSetPrevious(free_block, list);
     NuAllocManagerSetTrailer(free_block);
-    manager->size = size;
-    manager->block_count = 0;
-    manager->used_bytes = 0;
-    manager->base = manager;
-    return manager;
+    heap->prefix.size = size;
+    heap->prefix.block_count = 0;
+    heap->prefix.used_bytes = 0;
+    heap->prefix.base = heap;
+    return &heap->prefix;
 }
 
 void NuAllocManagerDestroy(NUALLOC_MANAGER_PREFIX *manager) {
@@ -4910,7 +4908,7 @@ void NuAllocManagerDump(NUALLOC_MANAGER_PREFIX *manager) {
 }
 
 void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 alignment, u32 unused) {
-    NUALLOC_MANAGER_BLOCK *list = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK *list = &manager->base->list.block;
     NUALLOC_MANAGER_BLOCK *block;
     NUALLOC_MANAGER_BLOCK *allocated;
     NUALLOC_MANAGER_BLOCK *remainder;
@@ -4942,15 +4940,15 @@ void *NuAllocManagerAllocate(NUALLOC_MANAGER_PREFIX *manager, u32 size, u32 alig
 }
 
 void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
-    void *base = manager->base;
-    NUALLOC_MANAGER_BLOCK *sentinel = (NUALLOC_MANAGER_BLOCK *)((u32)base + 16);
+    NUALLOC_MANAGER_HEAP *base = manager->base;
+    NUALLOC_MANAGER_BLOCK *sentinel = &base->list.block;
     NUALLOC_MANAGER_BLOCK *block;
     NUALLOC_MANAGER_BLOCK *next;
     NUALLOC_MANAGER_BLOCK *previous;
     if (payload == NULL || (u32)payload < (u32)base || (u32)payload > (u32)base + manager->size) {
         return;
     }
-    block = (NUALLOC_MANAGER_BLOCK *)((u32)payload - 12);
+    block = (NUALLOC_MANAGER_BLOCK *)payload - 1;
     block->size_flags &= 0x7fffffffU;
     manager->block_count -= 1;
     manager->used_bytes -= (block->size_flags & 0x7fffffffU) + 16;
@@ -4960,20 +4958,18 @@ void NuAllocManagerFree(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
     block->next = sentinel->next;
     block->previous = sentinel;
     sentinel->next = block;
-    next = (NUALLOC_MANAGER_BLOCK *)((u32)block + (block->size_flags & 0x7fffffffU) + 16);
+    next = (NUALLOC_MANAGER_BLOCK *)((u8 *)block + (block->size_flags & 0x7fffffffU) + 16);
     if (!(next->size_flags & 0x80000000U)) {
         NuAllocManagerUnlink(next);
         block->size_flags = (block->size_flags & 0x80000000U) | ((next->size_flags & 0x7fffffffU) + (block->size_flags & 0x7fffffffU) + 16);
-        ((NUALLOC_MANAGER_TRAILER *)((u32)block + (block->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))->previous_block =
-            block;
+        ((NUALLOC_MANAGER_TRAILER *)((u8 *)(block + 1) + (block->size_flags & 0x7fffffffU)))->previous_block = block;
     }
     previous = ((NUALLOC_MANAGER_TRAILER *)block)[-1].previous_block;
     if (!(previous->size_flags & 0x80000000U)) {
         NuAllocManagerUnlink(block);
         previous->size_flags =
             (previous->size_flags & 0x80000000U) | ((block->size_flags & 0x7fffffffU) + (previous->size_flags & 0x7fffffffU) + 16);
-        ((NUALLOC_MANAGER_TRAILER *)((u32)previous + (previous->size_flags & 0x7fffffffU) + sizeof(NUALLOC_MANAGER_BLOCK)))
-            ->previous_block = previous;
+        ((NUALLOC_MANAGER_TRAILER *)((u8 *)(previous + 1) + (previous->size_flags & 0x7fffffffU)))->previous_block = previous;
     }
 }
 
@@ -4982,7 +4978,7 @@ u32 NuAllocManagerGetBlockCount(NUALLOC_MANAGER_PREFIX *manager) {
 }
 
 u32 NuAllocManagerGetFreeBlockCount(NUALLOC_MANAGER_PREFIX *manager) {
-    NUALLOC_MANAGER_BLOCK *block = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK *block = &manager->base->list.block;
     u32 count = 0;
     while (block != NULL) {
         block = NuAllocManagerGetNext(block);
@@ -4996,7 +4992,7 @@ u32 NuAllocManagerGetUsedBytes(NUALLOC_MANAGER_PREFIX *manager) {
 }
 
 u32 NuAllocManagerGetFreeBytes(NUALLOC_MANAGER_PREFIX *manager) {
-    NUALLOC_MANAGER_BLOCK *block = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
+    NUALLOC_MANAGER_BLOCK *block = &manager->base->list.block;
     u32 total = 0;
     while (block != NULL) {
         total += NuAllocManagerGetSize(block);
@@ -5023,7 +5019,7 @@ void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
     if (payload == NULL) {
         return NULL;
     }
-    block = (NUALLOC_MANAGER_BLOCK *)((u32)payload - 12);
+    block = (NUALLOC_MANAGER_BLOCK *)payload - 1;
     size = NuAllocManagerGetSize(block);
     next = NuAllocManagerNextBlock(block);
     if (NuAllocManagerIsUsed(next)) {
@@ -5036,7 +5032,7 @@ void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
     for (i = size - 1; i >= 0; i--) {
         dst[i] = src[i];
     }
-    moved = (NUALLOC_MANAGER_BLOCK *)((u32)payload + next_size + 0x10);
+    moved = (NUALLOC_MANAGER_BLOCK *)dst - 1;
     NuAllocManagerSetNext(moved, NULL);
     NuAllocManagerSetPrevious(moved, NULL);
     moved->size = size;
@@ -5048,7 +5044,7 @@ void *NuAllocManagerDefrag(NUALLOC_MANAGER_PREFIX *manager, void *payload) {
     NuAllocManagerSetNext(free_block, NULL);
     NuAllocManagerSetPrevious(free_block, NULL);
     NuAllocManagerSetTrailer(free_block);
-    list = (NUALLOC_MANAGER_BLOCK *)((u32)manager->base + 16);
+    list = &manager->base->list.block;
     if (NuAllocManagerGetNext(list) != NULL) {
         NuAllocManagerSetPrevious(NuAllocManagerGetNext(list), free_block);
     }

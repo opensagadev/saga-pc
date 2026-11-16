@@ -228,13 +228,16 @@ extern "C" {
 }
 #endif
 
+struct nualloc_manager_heap_s;
+
 typedef struct nualloc_manager_prefix_s { // size 0x10
-    void *base;                           // 0x0
+    struct nualloc_manager_heap_s *base;  // 0x0
     u32 size;                             // 0x4
     u32 block_count;                      // 0x8
     u32 used_bytes;                       // 0xc
 } NUALLOC_MANAGER_PREFIX;
 
+/* Header of a heap block. `size` payload bytes and a trailer follow it, so a block spans size + 16 bytes. */
 typedef struct nualloc_manager_block_s { // size 0xc
 
     union { // size 0x4
@@ -248,3 +251,23 @@ typedef struct nualloc_manager_block_s { // size 0xc
     struct nualloc_manager_block_s *next;     // 0x4
     struct nualloc_manager_block_s *previous; // 0x8
 } NUALLOC_MANAGER_BLOCK;
+
+/* Ends every block and points back at its header, so a block finds the one in front of it. */
+typedef struct nualloc_manager_trailer_s { // size 0x4
+    NUALLOC_MANAGER_BLOCK *previous_block; // 0x0
+} NUALLOC_MANAGER_TRAILER;
+
+/* A block without payload: the free-list sentinel and the two used guards around the heap's blocks. */
+typedef struct nualloc_manager_marker_s { // size 0x10
+    NUALLOC_MANAGER_BLOCK block;          // 0x0
+    NUALLOC_MANAGER_TRAILER trailer;      // 0xc
+} NUALLOC_MANAGER_MARKER;
+
+/* The start of a heap: the prefix, the free-list sentinel, the front guard and the first block. The back
+   guard is the heap's last 16 bytes. */
+typedef struct nualloc_manager_heap_s { // size 0x3c
+    NUALLOC_MANAGER_PREFIX prefix;      // 0x00
+    NUALLOC_MANAGER_MARKER list;        // 0x10
+    NUALLOC_MANAGER_MARKER first;       // 0x20
+    NUALLOC_MANAGER_BLOCK free_block;   // 0x30
+} NUALLOC_MANAGER_HEAP;
