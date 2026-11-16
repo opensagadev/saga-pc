@@ -49,20 +49,10 @@ typedef struct parttype_lookup_s { // size 0x178
     i32 sounds[4];                 // 0x148
     u8 sound_modes[4];             // 0x158
     f32 maximum_distance;          // 0x15c
-
-    union { // size 0xc
-        NUVEC lighting_scale;
-
-        struct {             // size 0xc
-            f32 unknown_160; // 0x160
-            f32 unknown_164; // 0x164
-            f32 unknown_168; // 0x168
-        };
-    }; // 0x160
-
-    f32 last_used_time; // 0x16c
-    f32 scale;          // 0x170
-    u32 unknown_174;    // 0x174
+    NUVEC lighting_scale;          // 0x160
+    f32 last_used_time;  // 0x16c
+    f32 scale;           // 0x170
+    u32 source_type;     // 0x174: the type a scaled copy was made from
 } PARTTYPE_LOOKUP;
 
 typedef struct partdebrisentry_s { // size 0x14
@@ -156,7 +146,7 @@ extern "C" {
     extern NUVEC PartEditorCameraPos;
     extern i32 PartGeneralPage;
     extern i32 PartLevelPage;
-    void edpartLoadSingleType(PARTTYPE_LOOKUP *record, i32 version, i32 page);
+    void edpartLoadSingleType(PARTTYPE_LOOKUP *type, i32 version, i32 page);
     void edpartDetermineNearest(f32 distance);
     void UpdatePartEmits(f32 time);
     i32 PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags);

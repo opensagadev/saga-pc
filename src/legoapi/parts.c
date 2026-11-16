@@ -2850,7 +2850,7 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
     }
     if (part_types[effect_index].scale != 1.0f) {
         // The final word identifies the original, unscaled type.
-        effect_index = part_types[effect_index].unknown_174;
+        effect_index = part_types[effect_index].source_type;
         if (part_types[effect_index].effect_ids[0] == -1) {
             return -1;
         }
@@ -2872,7 +2872,8 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
         closest_index = effect_index;
         closest_distance = ratio;
         for (i = 0; i < 128; ++i) {
-            if (part_types[i].effect_ids[0] != -1 && part_types[i].unknown_174 == (u32)effect_index) {
+            if (part_types[i].effect_ids[0] != -1 &&
+                part_types[i].source_type == (u32)effect_index) {
                 ratio = requested_scale / part_types[i].scale;
                 ratio = ratio <= 1.0f ? 1.0f - ratio : ratio - 1.0f;
                 if (ratio < closest_distance) {
@@ -2896,7 +2897,7 @@ i32 CreateScaledPARTEffect(i32 effect_index, f32 requested_scale) {
             edpartScaleType(i, requested_scale);
             scaled->last_used_time = partglobaltime;
             scaled->scale = requested_scale;
-            scaled->unknown_174 = effect_index;
+            scaled->source_type = effect_index;
             if (strlen(source->name) > 12) {
                 char shortened[16];
                 sprintf(shortened, "%s", source->name);
@@ -2958,8 +2959,7 @@ i32 fun_006489a0(char *name) {
     return LookupDebrisEffectPageOnly(name, edpart_load_particle_page);
 }
 
-void edpartLoadSingleType(PARTTYPE_LOOKUP *record, i32 version, i32 page) {
-    PARTTYPE_LOOKUP *type = record;
+void edpartLoadSingleType(PARTTYPE_LOOKUP *type, i32 version, i32 page) {
     char name[16];
     i32 i;
     i32 scene;
@@ -3179,16 +3179,16 @@ void edpartLoadSingleType(PARTTYPE_LOOKUP *record, i32 version, i32 page) {
         type->maximum_distance = 25.0f;
     }
     if (version >= 15) {
-        type->unknown_160 = EdFileReadFloat();
-        type->unknown_164 = EdFileReadFloat();
-        type->unknown_168 = EdFileReadFloat();
+        type->lighting_scale.x = EdFileReadFloat();
+        type->lighting_scale.y = EdFileReadFloat();
+        type->lighting_scale.z = EdFileReadFloat();
     } else {
-        type->unknown_160 = 1.0f;
-        type->unknown_164 = 1.0f;
-        type->unknown_168 = 1.0f;
+        type->lighting_scale.x = 1.0f;
+        type->lighting_scale.y = 1.0f;
+        type->lighting_scale.z = 1.0f;
     }
     type->scale = 1.0f;
-    type->unknown_174 = 0;
+    type->source_type = 0;
 }
 
 void edpartDetermineNearest(f32 distance) {
@@ -3286,19 +3286,19 @@ void edpartCopyType(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
 void edpartChangeTintR(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
-        edpart_nearest_type->unknown_160 = ((edui_slider_s *)item)->value;
+        edpart_nearest_type->lighting_scale.x = ((edui_slider_s *)item)->value;
     }
 }
 
 void edpartChangeTintG(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
-        edpart_nearest_type->unknown_164 = ((edui_slider_s *)item)->value;
+        edpart_nearest_type->lighting_scale.y = ((edui_slider_s *)item)->value;
     }
 }
 
 void edpartChangeTintB(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
     if (edpart_nearest_type) {
-        edpart_nearest_type->unknown_168 = ((edui_slider_s *)item)->value;
+        edpart_nearest_type->lighting_scale.z = ((edui_slider_s *)item)->value;
     }
 }
 
@@ -3323,11 +3323,11 @@ void edpartTintMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
         edpart_tint_menu = eduiMenuCreate(70, 70, 250, 250, ed_fnt, edpartCancelTintMenu, "Instance Tint");
         if (edpart_tint_menu != NULL) {
             eduiMenuAddItem(edpart_tint_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeTintR, 0.0f, 2.0f,
-                                                                   edpart_nearest_type->unknown_160, "Red Tint"));
+                                                                   edpart_nearest_type->lighting_scale.x, "Red Tint"));
             eduiMenuAddItem(edpart_tint_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeTintG, 0.0f, 2.0f,
-                                                                   edpart_nearest_type->unknown_164, "Green Tint"));
+                                                                   edpart_nearest_type->lighting_scale.y, "Green Tint"));
             eduiMenuAddItem(edpart_tint_menu, eduiItemSliderCreate(0, edblack, 0, edpartChangeTintB, 0.0f, 2.0f,
-                                                                   edpart_nearest_type->unknown_168, "Blue Tint"));
+                                                                   edpart_nearest_type->lighting_scale.z, "Blue Tint"));
             eduiMenuAttach(menu, edpart_tint_menu);
             edpart_tint_menu->x = menu->x + 10;
             edpart_tint_menu->y = menu->y + 40;
@@ -3869,9 +3869,9 @@ void UpdatePartEmits(f32 time) {
                 }
                 params.effect_id_74 = type->impact_part;
                 params.effect_scale = type->effect_scale;
-                params.lighting_scale_x = type->unknown_160;
-                params.lighting_scale_y = type->unknown_164;
-                params.lighting_scale_z = type->unknown_168;
+                params.lighting_scale_x = type->lighting_scale.x;
+                params.lighting_scale_y = type->lighting_scale.y;
+                params.lighting_scale_z = type->lighting_scale.z;
                 params.effect_id_78 = type->kill_effect;
                 AddPart(&params);
                 if (emitter->unknown_3c != 0) {
