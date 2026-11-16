@@ -1265,7 +1265,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
                 }
                 if (parameters->directional) {
                     {
-                        f32 dot = NuVecDot(&parameters->direction, (NUVEC *)&direction);
+                        f32 dot = NuVecDot(&parameters->direction, &direction.xyz);
                         f32 angle = (i16)(0x4000 - RenderPostASin(dot)) * 0.0054931640625;
                         if (angle < parameters->direction_near_angle) {
                             brightness += parameters->direction_far_scale * 128.0;
@@ -1308,7 +1308,7 @@ void DrawAlphaImage(i32 rows, i32 cols, NUMTL *material, i32 use_pixel_offsets, 
             }
             if (parameters->directional) {
                 {
-                    f32 dot = NuVecDot(&parameters->direction, (NUVEC *)&direction);
+                    f32 dot = NuVecDot(&parameters->direction, &direction.xyz);
                     f32 angle = (i16)(0x4000 - RenderPostASin(dot)) * 0.0054931640625;
                     if (angle < parameters->direction_near_angle) {
                         brightness += parameters->direction_far_scale * 128.0;
