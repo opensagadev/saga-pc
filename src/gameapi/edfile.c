@@ -34,7 +34,7 @@ static eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 static struct eduimenu_s *ed_cfg_menu = 0;
 NUCAMERA *edinternalcam = 0;
 NUVEC *ed_loc = 0;
-void *ed_fnt = 0;
+struct vufnt_s *ed_fnt = 0;
 i32 edmain_render_interacts = 0;
 i32 edmain_cursor_enabled = 0;
 static struct ed_module_s *ed_curr = 0;
@@ -445,13 +445,6 @@ static void eduiFilePickAllocDirList(void) {
     }
 }
 
-typedef struct EDUI_PRIM_VERTEX { // size 0x10
-    f32 x;                        // 0x0
-    f32 y;                        // 0x4
-    f32 z;                        // 0x8
-    u32 colour;                   // 0xc
-} EDUI_PRIM_VERTEX;
-
 static void EduiPrimSetColour(i32 colour) {
     u32 converted;
     if (NuPrimNeedsOverbrightening != 0) {
@@ -459,7 +452,7 @@ static void EduiPrimSetColour(i32 colour) {
     } else {
         converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
-    ((EDUI_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
 void fun_00617d30(void) {
@@ -619,7 +612,7 @@ eduiitem_s *eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
     return item;
 }
 
-eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback, char *title) {
+eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, struct vufnt_s *font, void *callback, char *title) {
     u32 bytes;
     eduimenu_s *menu;
     if (title != NULL) {
@@ -1364,7 +1357,7 @@ f32 edmainSetMenuScale(f32 scale) {
     return previous;
 }
 
-void edmainInit(void *font, char *configuration_file) {
+void edmainInit(struct vufnt_s *font, char *configuration_file) {
     ed_module_s *module;
     if (ed_init != 0) {
         edmainClose();
@@ -1390,7 +1383,7 @@ void edmainInit(void *font, char *configuration_file) {
     ed_init = 1;
 }
 
-void edmainInitEx(void *font, char *configuration_file, eduiiattr_s *colours, i32 x, i32 y, i32 width, i32 height) {
+void edmainInitEx(struct vufnt_s *font, char *configuration_file, eduiiattr_s *colours, i32 x, i32 y, i32 width, i32 height) {
     ed_attr = *colours;
     ed_main_menu_x = x;
     ed_main_menu_y = y;
@@ -1854,7 +1847,7 @@ void eduiInit(void) {
     eduiFilePickAllocDirList();
 }
 
-void eduiSetFont(void *font) {
+void eduiSetFont(struct vufnt_s *font) {
     edui_font = font;
 }
 
@@ -2202,7 +2195,7 @@ static void EduiDrawRect(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL 
     }
 }
 
-static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
+static void eduiFntPrintClipEx(struct vufnt_s *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
     if (edui_donotdraw == 0) {
         char text[1024];
         va_list args;
@@ -5051,7 +5044,7 @@ eduiitem_s *eduiItemFileSelCreate(u32 data, void *colours, void *callback, char 
     return NULL;
 }
 
-void CreateTestMenu(void *font) {
+void CreateTestMenu(struct vufnt_s *font) {
     u32 colours[4] = {0x80000000u, 0x80ff0000u, 0x80808080u, 0x80404040u};
     eduiInitMaterials();
 

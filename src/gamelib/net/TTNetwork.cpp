@@ -341,7 +341,7 @@ NetAddress::NetAddress() {
 }
 
 void NetFtpManager::fun_0060e6f0(i32 value) {
-    unknown_1604 = value;
+    transfer_id = value;
 }
 
 NetStats *NetworkObjectManager::fun_0060e740(i32 class_id) {
@@ -391,19 +391,19 @@ void TTNetwork::Start() {
     if (state != 0) {
         return;
     }
-    unknown_2148 = -1;
-    ftp.unknown_1604 = -1;
-    nos.unknown_08 = -1;
+    active_transfer = -1;
+    ftp.transfer_id = -1;
+    nos.push_owner = -1;
     theNetSessionManager = (NetSessionManager *)V2SessionManager::mpSessionManager;
     session_manager = theNetSessionManager;
     frame_count = 0;
-    unknown_2138 = 0;
+    elapsed_frames = 0;
     ftp.Init();
     nos.Init();
     session_manager->Init(NULL);
     theNetSessionManager->GetLocalAddress(&my_address);
     state = 1;
-    unknown_2144 = 0;
+    error_count = 0;
     theNuNetEmu.enabled = 1;
     theNuNetEmu.SetConditions(NuNetEmu::CONDITIONS_NORMAL);
     refpack_init();
@@ -504,7 +504,7 @@ TTNetwork::TTNetwork() : state(0) {
     display_x = 0.3f;
     display_y = -0.3f;
     has_my_host_address = 0;
-    unknown_213c = 0;
+    connect_attempts = 0;
     display_page = 0;
     display_width = 0.5f;
     display_height = 0.3f;

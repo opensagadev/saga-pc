@@ -91,16 +91,6 @@ const char YesText[4] = "Yes";
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
 const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
 
-/* Path-build view of the runtime path system (AIPATHSYS is opaque here). */
-typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
-    u8 path_count;                      // 0x0
-    u8 unknown_1;                       // 0x1
-    u16 special_route_count;            // 0x2
-    AIPATH **paths;                     // 0x4
-    AIPATH *active_path;                // 0x8
-    AIPATHSPECIALROUTE *special_routes; // 0xc
-} AI_PATH_BUILD_SYSTEM;
-
 static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
 NUVEC edpath_addoffset = {0};
@@ -173,117 +163,13 @@ i32 AiEditorAreasModeId = -1;
 i32 AiEditorLocatorsModeId = -1;
 i32 AiEditorAntinodeModeId = -1;
 
-typedef struct ai_area_load_s { // size 0x40
-    char name[16];              // 0x00
-    NUVEC minimum;              // 0x10
-    NUVEC maximum;              // 0x1c
-    u16 flags;                  // 0x28
-    u8 unknown_2a;              // 0x2a
-    u8 game_flags;              // 0x2b
-    u8 unknown_2c[12];          // 0x2c
-    AISYS *system;              // 0x38
-    u8 unknown_3c[4];           // 0x3c
-} AI_AREA_LOAD;
-
-typedef struct ai_creature_load_s { // size 0xa4
-    char name[16];                  // 0x00
-    char script_name[16];           // 0x10
-    NUVEC position;                 // 0x20
-    i32 y_rotation;                 // 0x2c
-    AIPATHINFO path_info;           // 0x30
-    i32 flags;                      // 0x48
-    u8 set;                         // 0x4c
-    u8 unknown_4d;                  // 0x4d
-    i16 type;                       // 0x4e
-    u8 count;                       // 0x50
-    u8 count_across;                // 0x51
-    u8 unknown_52[6];               // 0x52
-    u32 active_mask;                // 0x58
-    f32 x_spacing;                  // 0x5c
-    f32 z_spacing;                  // 0x60
-    f32 script_params[4];           // 0x64
-    AIAREA *activate_area;          // 0x74
-    AIAREA *area;                   // 0x78
-    AILOCATOR *locator;             // 0x7c
-    AILOCATOR *respawn_locator;     // 0x80
-    u8 activation_difficulty;       // 0x84
-    i8 min_respawn_count;           // 0x85
-    i8 max_respawn_count;           // 0x86
-    u8 activation_type;             // 0x87
-    f32 min_respawn_time;           // 0x88
-    f32 max_respawn_time;           // 0x8c
-    f32 start_stagger;              // 0x90
-    f32 view_distance;              // 0x94
-    f32 hear_distance;              // 0x98
-    f32 max_view_height;            // 0x9c
-    f32 min_view_height;            // 0xa0
-} AI_CREATURE_LOAD;
-
-typedef struct ai_antinode_load_s { // size 0x58
-    NUVEC position;                 // 0x00
-    f32 radius;                     // 0x0c
-    f32 min_y;                      // 0x10
-    f32 min_y_offset;               // 0x14
-    f32 max_y;                      // 0x18
-    f32 max_y_offset;               // 0x1c
-    nuhspecial_s special_handle;    // 0x20
-    NUVEC special_position;         // 0x2c
-    i32 flags;                      // 0x38
-    i32 rotation_offset;            // 0x3c
-    f32 base_radius;                // 0x40
-    f32 base_height;                // 0x44
-    u8 enabled;                     // 0x48
-    u8 game_flags;                  // 0x49
-    u8 type;                        // 0x4a
-    u8 has_special;                 // 0x4b
-    u8 unknown_4c[12];              // 0x4c
-} AI_ANTINODE_LOAD;
-
-typedef struct ai_system_load_s { // size 0x1398
-    void *storage;                // 0x0000
-    VARIPTR storage_end;          // 0x0004
-    VARIPTR storage_cursor;       // 0x0008
-    i32 storage_size;             // 0x000c
-    AIPATHSYS *path_sys;          // 0x0010
-    i32 creature_count;           // 0x0014
-    AI_CREATURE_LOAD *creatures;  // 0x0018
-    NULISTHDR scripts;            // 0x001c
-    i32 locator_count;            // 0x0024
-    AILOCATOR *locators;          // 0x0028
-    i32 locator_set_count;        // 0x002c
-    AILOCATORSET *locator_sets;   // 0x0030
-    i32 area_count;               // 0x0034
-    AI_AREA_LOAD *areas;          // 0x0038
-    AIGROUP groups[16];           // 0x003c
-    i32 antinode_count;           // 0x137c
-    AI_ANTINODE_LOAD *antinodes;  // 0x1380
-    u8 unknown_1384[8];           // 0x1384
-    APIOBJECT *player_1;          // 0x138c
-    APIOBJECT *player_2;          // 0x1390
-    NUGSCN *scene;                // 0x1394
-} AI_SYSTEM_LOAD;
-
 static f32 AiLoadStartStagger = 0.0f;
-
-typedef struct ai_path_system_load_s {  // size 0x10
-    u8 path_count;                      // 0x0
-    u8 unknown_01;                      // 0x1
-    u16 special_route_count;            // 0x2
-    AIPATH **paths;                     // 0x4
-    AIPATH *active_path;                // 0x8
-    AIPATHSPECIALROUTE *special_routes; // 0xc
-} AI_PATH_SYSTEM_LOAD;
 
 // Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
 // allocation memset. Size arithmetic is unsigned 32-bit.
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
-
-typedef struct condition_trigger_process_s { // size 0xa4
-    u8 unknown_000[0xa0];                    // 0x00
-    AIAREA *trigger_area;                    // 0xa0
-} CONDITION_TRIGGER_PROCESS;
 
 typedef struct AI_EDITOR_MODE_ENTRY {    // size 0x30
     char name[32];                       // 0x00
@@ -350,17 +236,6 @@ extern i32 AIPathConnectionTypeCount;
 
 extern AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32];
 
-typedef struct AI_EDITOR_SPECIAL_PLATFORM { // size 0x6c
-    u8 unknown_00[0x4a];                    // 0x00
-    i16 instance_index;                     // 0x4a
-    u8 unknown_4c[0x20];                    // 0x4c
-} AI_EDITOR_SPECIAL_PLATFORM;
-
-typedef struct AI_EDITOR_SPECIAL_TERRAIN { // size 0x6c
-    u8 unknown_00[0x68];                   // 0x00
-    AI_EDITOR_SPECIAL_PLATFORM *platforms; // 0x68
-} AI_EDITOR_SPECIAL_TERRAIN;
-
 i16 disable_cylinder_check = 0;
 i32 AIPathConnectionTypeCount = 0;
 AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32] = {0};
@@ -380,13 +255,6 @@ i32 aisys_maxnumcreaturesets = 32;
 f32 AiEditorPickHeightTolerance = 0.1f;
 
 extern EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius);
-
-/* Draw-family field views. */
-typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
-    NULISTLNK link;                 // 0x0
-    u8 unknown_08[2];               // 0x8
-    i16 flags;                      // 0xa
-} AI_PATH_DRAW_FLAGS;
 
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
 
@@ -535,10 +403,10 @@ static i32 AiAngDiff(i32 a, i32 b) {
 i16 PCPathArcSine(f32 sin) {
     f32 abs;
     f32 sqrt;
-    f32 unknown_a;
-    f32 unknown_b;
-    f32 unknown_c;
-    f32 unknown_d;
+    f32 reduced;
+    f32 upper_step;
+    f32 sign;
+    f32 quadrant;
 
     union {
         f32 value;
@@ -550,20 +418,20 @@ i16 PCPathArcSine(f32 sin) {
     abs = absolute.value;
     sqrt = NuFsqrt(1.0f - sin * sin);
 
-    unknown_a = MIN(sqrt, abs);
+    reduced = MIN(sqrt, abs);
 
-    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+    upper_step = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
 
-    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
-    unknown_c = MAX(unknown_c, -1.0f);
+    sign = MIN(sin * 3.40282e+38f, 1.0f);
+    sign = MAX(sign, -1.0f);
 
-    unknown_d = unknown_b * unknown_c + unknown_c;
+    quadrant = upper_step * sign + sign;
 
-    return (NEG_3_OVER_40 * POW2(unknown_b * unknown_c * unknown_a) * POW3(unknown_b * unknown_c * unknown_a) +
-            (unknown_d * PI_OVER_4 - (unknown_b * unknown_c * unknown_a) +
-             NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * POW2(unknown_b * unknown_c * unknown_a)) +
-            NEG_5_OVER_112 * POW3(unknown_b * unknown_c * unknown_a) * POW4(unknown_b * unknown_c * unknown_a) +
-            NEG_35_OVER_1152 * POW4(unknown_b * unknown_c * unknown_a) * POW5(unknown_b * unknown_c * unknown_a)) *
+    return (NEG_3_OVER_40 * POW2(upper_step * sign * reduced) * POW3(upper_step * sign * reduced) +
+            (quadrant * PI_OVER_4 - (upper_step * sign * reduced) +
+             NEG_1_OVER_6 * (upper_step * sign * reduced) * POW2(upper_step * sign * reduced)) +
+            NEG_5_OVER_112 * POW3(upper_step * sign * reduced) * POW4(upper_step * sign * reduced) +
+            NEG_35_OVER_1152 * POW4(upper_step * sign * reduced) * POW5(upper_step * sign * reduced)) *
            MAX_SHORT_OVER_PI;
 }
 
@@ -1405,7 +1273,7 @@ static i32 AIScriptNextAction(AISCRIPTPROCESS *processor) {
 void AIScriptSetState(AISCRIPTPROCESS *processor, AISTATE *state) {
     if (processor != NULL && state != NULL) {
         if ((processor->flags & AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES) == 0) {
-            processor->unknown_b2 = 0;
+            processor->blocked_message_count = 0;
         }
         processor->flags &= ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
         processor->state = state;
@@ -1448,7 +1316,7 @@ void AIScriptProcessorInit(AISYS *system, AIPACKET *packet, AISCRIPTPROCESS *pro
         return;
     }
     processor->flags &= ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
-    processor->unknown_b2 = 0;
+    processor->blocked_message_count = 0;
     if (script == NULL) {
         script = AIScriptFind(system, script_name, can_use_default, 1, 1);
         processor->local_messages = NULL;
@@ -1699,7 +1567,7 @@ f32 Condition_InTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
         GAMEOBJECT *object = packet->owner;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
+            area = process->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -1807,7 +1675,7 @@ f32 Condition_PlayerInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPAC
         GAMEOBJECT *object = (GAMEOBJECT *)system->player_1;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
+            area = process->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -1899,7 +1767,7 @@ f32 Condition_OpponentInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIP
         APIOBJECT *object = packet->opponent;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
+            area = process->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -2962,7 +2830,7 @@ i32 AIPathCheckExtents(AIPATH *path, NUVEC *position) {
 }
 
 static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
-    AI_PATH_SYSTEM_LOAD *system = NULL;
+    AIPATHSYS *system = NULL;
     i32 count = EdFileReadInt();
     i32 path_index;
     i32 index;
@@ -2972,7 +2840,7 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
     i32 character_count;
     char special_name[256];
     if (count != 0) {
-        AISYS_BUFFER_ALLOCATE(AI_PATH_SYSTEM_LOAD *, system, cursor, end, sizeof(*system));
+        AISYS_BUFFER_ALLOCATE(AIPATHSYS *, system, cursor, end, sizeof(*system));
         if (system != NULL) {
             system->path_count = (u8)count;
             system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH *));
@@ -3169,7 +3037,7 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
             }
         }
     }
-    return (AIPATHSYS *)system;
+    return system;
 }
 
 AIGROUP *CreateAIGroup(AISYS *system, i32 count_across, f32 x_spacing, f32 z_spacing, f32 max_speed) {
@@ -6779,7 +6647,7 @@ i32 NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result, i32 pl
     memset(result, 0, sizeof(*result));
     if (scene != NULL && CurrentTerrain != NULL && platform_id != -1) {
         count = NuGScnNumSpecials(scene);
-        instance_index = ((AI_EDITOR_SPECIAL_TERRAIN *)CurrentTerrain)->platforms[platform_id].instance_index;
+        instance_index = CurrentTerrain->platforms[platform_id].scene_object_index;
         for (index = 0; index < count; ++index) {
             NuGScnGetSpecial(&candidate, scene, index);
             if (NuSpecialGetInstanceix(&candidate) == instance_index) {
@@ -6942,7 +6810,7 @@ static EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotati
         if (size != NULL) {
             area->size = *size;
         }
-        area->rotation = (u16)rotation;
+        area->rotation = (i16)rotation;
         area->flags = (u8)flags;
     }
     return area;
@@ -7003,7 +6871,7 @@ static EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
                         nearest = area;
                     }
                 } else {
-                    NuVecRotateY(&difference, &difference, -(i16)area->rotation);
+                    NuVecRotateY(&difference, &difference, -area->rotation);
                     if (difference.x < area->size.x && difference.y < area->size.y && difference.z < area->size.z &&
                         difference.x > -area->size.x && difference.y > -2.0f && difference.z > -area->size.z) {
                         nearest = area;
@@ -7110,7 +6978,7 @@ void areaEditorDrawAreas(void) {
             f32 radius = area->size.x < area->size.z ? area->size.x : area->size.z;
             LocaledbitsDrawSolidCircleXY(position, radius, position->y, area->size.y + position->y, colour, 0, 16);
         } else {
-            DrawAreaBox(&area->position, &area->size, (i16)area->rotation, colour);
+            DrawAreaBox(&area->position, &area->size, area->rotation, colour);
         }
     }
     AiRndrSetCullDistance(previous_distance);
@@ -8058,7 +7926,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                                node_colour, 0, segments, solid);
             if (node->shared_node != NULL && !(node->shared_node->draw_flags & 1)) {
                 AiPathDrawCross(&node->position, node->radius, node_colour);
-                ((AI_PATH_DRAW_FLAGS *)node->shared_node)->flags |= 1;
+                node->shared_node->draw_flags |= 1;
             }
             if (node->route_mask & active_route) {
                 if (path == aieditor->current_path && path->current_node == node) {
@@ -8133,7 +8001,7 @@ void fun_00524180(void) {
 void pathEditorDrawPaths(void) {
     EDAIPATHWALL_s *wall = (EDAIPATHWALL_s *)NuLinkedListGetHead(&aieditor->path_walls);
     while (wall != NULL) {
-        ((AI_PATH_DRAW_FLAGS *)wall)->flags &= ~1;
+        wall->draw_flags &= ~1;
         wall = (EDAIPATHWALL_s *)NuLinkedListGetNext(&aieditor->path_walls, &wall->link);
     }
 
@@ -8496,7 +8364,7 @@ static void pathEditorPopulateRouteMatrix(AIPATH *path, i32 route_mask, f32 **di
 }
 
 void pathEditorSaveData(AIPATHSYS *path_system) {
-    AI_PATH_SYSTEM_LOAD *system = (AI_PATH_SYSTEM_LOAD *)path_system;
+    AIPATHSYS *system = path_system;
     i32 path_index;
     i32 index;
     i32 row;
@@ -12288,14 +12156,14 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
     char member_path[32];
     char character_name[32];
     char reference_name[16];
-    AI_SYSTEM_LOAD *system;
+    AISYS *system;
     i32 is_open;
     i32 version;
     i32 index;
     i32 search;
     u16 connection_index;
     sprintf(ai2_path, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, load_directory, parameter, name);
-    AISYS_BUFFER_ALLOCATE(AI_SYSTEM_LOAD *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD));
+    AISYS_BUFFER_ALLOCATE(AISYS *, system, buffer, buffer_end, sizeof(AISYS));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
         system->storage_size = storage_size;
@@ -12321,19 +12189,18 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
             if (version >= 4) {
                 system->area_count = EdFileReadInt();
                 if (system->area_count != 0) {
-                    system->areas =
-                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->area_count * sizeof(AI_AREA_LOAD));
+                    system->areas = AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->area_count * sizeof(AIAREA));
                     for (index = 0; index < system->area_count; ++index) {
-                        AI_AREA_LOAD *area = &system->areas[index];
+                        AIAREA *area = &system->areas[index];
                         EdFileRead(area->name, 16);
-                        area->minimum.x = EdFileReadFloat();
-                        area->minimum.y = EdFileReadFloat();
-                        area->minimum.z = EdFileReadFloat();
-                        area->maximum.x = EdFileReadFloat();
-                        area->maximum.y = EdFileReadFloat();
-                        area->maximum.z = EdFileReadFloat();
-                        area->flags = EdFileReadShort();
-                        area->system = (AISYS *)system;
+                        area->position.x = EdFileReadFloat();
+                        area->position.y = EdFileReadFloat();
+                        area->position.z = EdFileReadFloat();
+                        area->half_width = EdFileReadFloat();
+                        area->height = EdFileReadFloat();
+                        area->half_depth = EdFileReadFloat();
+                        area->rotation = EdFileReadShort();
+                        area->system = system;
                         if (version > 19) {
                             area->game_flags = (u8)EdFileReadChar();
                         } else {
@@ -12391,9 +12258,9 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                 system->creature_count = EdFileReadInt();
                 if (system->creature_count != 0) {
                     system->creatures =
-                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->creature_count * sizeof(AI_CREATURE_LOAD));
+                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->creature_count * sizeof(AICREATURE));
                     for (index = 0; index < system->creature_count; ++index) {
-                        AI_CREATURE_LOAD *creature = &system->creatures[index];
+                        AICREATURE *creature = &system->creatures[index];
                         EdFileRead(creature->name, 16);
                         EdFileRead(creature->script_name, 16);
                         if (strlen(creature->script_name) == 0) {
@@ -12433,9 +12300,9 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                         if (version >= 4 && EdFileReadInt() != 0) {
                             EdFileRead(reference_name, 16);
                             for (search = 0; search < system->area_count; ++search) {
-                                AI_AREA_LOAD *entry = &system->areas[search];
+                                AIAREA *entry = &system->areas[search];
                                 if (NuStrICmp(reference_name, entry->name) == 0) {
-                                    creature->area = (AIAREA *)entry;
+                                    creature->area = entry;
                                     break;
                                 }
                             }
@@ -12483,9 +12350,9 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                             case 1:
                                 EdFileRead(reference_name, 16);
                                 for (search = 0; search < system->area_count; ++search) {
-                                    AI_AREA_LOAD *entry = &system->areas[search];
+                                    AIAREA *entry = &system->areas[search];
                                     if (NuStrICmp(reference_name, entry->name) == 0) {
-                                        creature->activate_area = (AIAREA *)entry;
+                                        creature->activate_area = entry;
                                         break;
                                     }
                                 }
@@ -12536,10 +12403,10 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                 if (version > 12) {
                     system->antinode_count = EdFileReadInt();
                     if (system->antinode_count != 0) {
-                        AISYS_BUFFER_ALLOCATE(AI_ANTINODE_LOAD *, system->antinodes, &system->storage_cursor, &system->storage_end,
-                                              system->antinode_count * sizeof(AI_ANTINODE_LOAD));
+                        AISYS_BUFFER_ALLOCATE(AIANTINODE *, system->antinodes, &system->storage_cursor, &system->storage_end,
+                                              system->antinode_count * sizeof(AIANTINODE));
                         for (index = 0; index < system->antinode_count; ++index) {
-                            AI_ANTINODE_LOAD *antinode = &system->antinodes[index];
+                            AIANTINODE *antinode = &system->antinodes[index];
                             i32 length;
                             antinode->enabled = 1;
                             antinode->position.x = EdFileReadFloat();
@@ -12553,7 +12420,7 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                             antinode->min_y_offset = antinode->min_y - antinode->position.y;
                             antinode->max_y_offset = antinode->max_y - antinode->position.y;
                             if (version > 14) {
-                                antinode->flags = EdFileReadInt();
+                                antinode->rotation = EdFileReadInt();
                                 antinode->base_radius = EdFileReadFloat();
                                 antinode->base_height = EdFileReadFloat();
                                 antinode->type = (u8)EdFileReadChar();
@@ -12578,16 +12445,16 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                     }
                 }
                 if (version > 6 && GameAILoadFn != NULL) {
-                    GameAILoadFn((AISYS *)system, version, scene, buffer, buffer_end);
+                    GameAILoadFn(system, version, scene, buffer, buffer_end);
                 }
             }
             EdFileClose();
         }
         sprintf(script_path, "%sLevels\\%s\\%s", AiLevelPathName, directory, parameter);
-        AIScriptLoadAllPakFile(pak, script_path, buffer, buffer_end, (AISYS *)system);
-        AISysSetLevelPath((AISYS *)system, NULL);
+        AIScriptLoadAllPakFile(pak, script_path, buffer, buffer_end, system);
+        AISysSetLevelPath(system, NULL);
     }
-    return (AISYS *)system;
+    return system;
 }
 
 AISYS *AISysLoadEx(VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size, NUGSCN *scene, char *directory, char *name, char *parameter,
@@ -13995,7 +13862,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
     NUVEC difference;
     i32 path_count;
     EDAIPATH_s *path_iter;
-    AI_PATH_BUILD_SYSTEM *system;
+    AIPATHSYS *system;
     VARIPTR *scratch_limit;
     EDAISHAREDPATHNODE_s *shared;
     i32 path_index;
@@ -14011,7 +13878,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
             path_iter->draw_index = path_count++;
         }
         if (path_count != 0) {
-            system = AISysBufferAlloc(cursor, end, sizeof(AI_PATH_BUILD_SYSTEM));
+            system = AISysBufferAlloc(cursor, end, sizeof(AIPATHSYS));
             if (system != NULL) {
                 memset(system, 0, sizeof(*system));
                 system->path_count = path_count;
@@ -14250,7 +14117,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
         }
     }
     distance_tables = NULL;
-    return (AIPATHSYS *)system;
+    return system;
 }
 
 static void pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -16951,7 +16818,7 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         if (aieditor->hovered_area != NULL) {
             if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
                 aieditor->selected_area = aieditor->hovered_area;
-                aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+                aieditorsettings.locator_rotation = aieditor->selected_area->rotation;
                 edcamSetPos(&aieditor->selected_area->position);
             } else {
                 if (aieditor->selected_area == NULL) {
@@ -17019,7 +16886,7 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         }
     } else if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+            aieditorsettings.locator_rotation = aieditor->selected_area->rotation;
         }
         if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
             aieditor->rotation_repeat = 20;
@@ -17031,11 +16898,11 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         }
         aieditorsettings.locator_rotation = NuAngAdd(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
+            aieditor->selected_area->rotation = aieditorsettings.locator_rotation;
         }
     } else if (pad->digital_buttons & PAD_BUTTON_LEFT) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+            aieditorsettings.locator_rotation = aieditor->selected_area->rotation;
         }
         if (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) {
             aieditor->rotation_repeat = 20;
@@ -17047,7 +16914,7 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         }
         aieditorsettings.locator_rotation = NuAngSub(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
+            aieditor->selected_area->rotation = aieditorsettings.locator_rotation;
         }
     } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {

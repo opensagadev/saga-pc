@@ -75,31 +75,6 @@ typedef struct CHARACTER_PACK_ANIMATION { // size 0x8
     u32 animation_magic;                  // 0x4
 } CHARACTER_PACK_ANIMATION;
 
-typedef struct CHARACTER_LIST_ENTRY {      // size 0x4c
-    i32 name_id;                           // 0x00
-    u32 model_flags;                       // 0x04
-    char *dir;                             // 0x08
-    char *name;                            // 0x0c
-    CHARACTERANIM_CONFIG *animations;      // 0x10
-    u16 animation_count;                   // 0x14
-    u8 unknown_16[2];                      // 0x16
-    void (*move_fn)(GAMEOBJECT *);         // 0x18
-    void (*animate_fn)(GAMEOBJECT *);      // 0x1c
-    void (*post_animate_fn)(GAMEOBJECT *); // 0x20
-    PLAYERCHARACTERCONFIG *game_character; // 0x24
-    CHARACTER_EFFECT_CONFIG *effects;      // 0x28
-    f32 scaled_radius;                     // 0x2c
-    f32 collision_radius;                  // 0x30
-    f32 bottom;                            // 0x34
-    f32 top;                               // 0x38
-    f32 model_scale;                       // 0x3c
-    u8 flags;                              // 0x40
-    u8 unknown_41;                         // 0x41
-    i16 icon_model;                        // 0x42
-    u32 unknown_44;                        // 0x44
-    u32 unknown_48;                        // 0x48
-} CHARACTER_LIST_ENTRY;
-
 static f32 APIObjectFabs(f32 value);
 
 static f32 APIObjectSafeDivide(f32 a, f32 b) {
@@ -2762,8 +2737,8 @@ i32 ActionFromName(const char *name) {
 CHARACTERDATA *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR *buffer_end, i32 maximum, i32 *count_out, i32 game_stride,
                                       PLAYERCHARACTERCONFIG **game_data_out) {
     NUFPAR *parser;
-    CHARACTER_LIST_ENTRY *first;
-    CHARACTER_LIST_ENTRY *current;
+    CHARACTERDATA *first;
+    CHARACTERDATA *current;
     i16 directory_offsets[500];
     i16 filename_offsets[500];
     char strings[10000];
@@ -2839,8 +2814,8 @@ CHARACTERDATA *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR
             current->model_scale = 1.0f;
             current->flags &= 0xfe;
             current->icon_model = -1;
-            current->unknown_44 = 0;
-            current->unknown_48 = 0;
+            current->extra_data = 0;
+            current->extra_flags = 0;
         }
     }
     NuFParDestroy(parser);
@@ -2865,7 +2840,7 @@ CHARACTERDATA *ConfigureCharacterList(char *file, VARIPTR *buffer_start, VARIPTR
         if (count_out != NULL) {
             *count_out = count;
         }
-        return (CHARACTERDATA *)first;
+        return first;
     }
     PCCharacterSystemExistingNoOp(file);
     return NULL;

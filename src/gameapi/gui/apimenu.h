@@ -227,7 +227,7 @@ typedef struct MENU_s MENU_s;
 
 struct MENU_s {                     // size 0x2678
     f32 menu_time;                  // 0x0000
-    f32 unk;                        // 0x0004
+    f32 state_time;                 // 0x0004
     i16 selected_column;            // 0x0008
     i16 selected_row;               // 0x000a
     i16 first_column;               // 0x000c

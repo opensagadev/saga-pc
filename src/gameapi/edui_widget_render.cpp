@@ -21,7 +21,7 @@
 i32 ui_bgmtl = 0;
 extern "C" NUMTL *uimtls[5];
 
-static void EduiPrintAlignedText(void *font, i32 x, i32 y, i32 alignment, char *format, ...) {
+static void EduiPrintAlignedText(VUFNT *font, i32 x, i32 y, i32 alignment, char *format, ...) {
     if (edui_donotdraw == 0) {
         char text[1024];
         va_list args;
@@ -31,7 +31,7 @@ static void EduiPrintAlignedText(void *font, i32 x, i32 y, i32 alignment, char *
         va_start(args, format);
         NuVSPrintf(text, format, args);
         va_end(args);
-        width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        width = (i32)NuQFntPrintLenU(font, text);
         switch (alignment) {
             case EDUI_ALIGN_LEFT:
                 left = x;
@@ -46,8 +46,8 @@ static void EduiPrintAlignedText(void *font, i32 x, i32 y, i32 alignment, char *
                 left = x;
                 break;
         }
-        NuQFntMove((VUFNT *)font, (f32)left, (f32)y, 0.0f);
-        NuQFntPrintU((VUFNT *)font, text);
+        NuQFntMove(font, (f32)left, (f32)y, 0.0f);
+        NuQFntPrintU(font, text);
         NuQFntPopPrintMode();
     }
 }
@@ -56,7 +56,7 @@ extern "C" f32 EduiScaleX;
 extern "C" f32 EduiScaleY;
 
 /* Prints at a 640x448 position, scaled to the 2D renderer's sub-pixels. */
-extern "C" void EduiFntPrintScaled(void *font, f32 x, f32 y, i32 alignment, char *text) {
+extern "C" void EduiFntPrintScaled(VUFNT *font, f32 x, f32 y, i32 alignment, char *text) {
     EduiPrintAlignedText(font, (i32)(x * EduiScaleX), (i32)(y * EduiScaleY), alignment, text);
 }
 
@@ -788,7 +788,7 @@ static void EduiAddInteraction(f32 x, f32 y, f32 width, f32 height, eduimenu_s *
     }
 }
 
-static void EduiPrintClippedText(void *font, i32 x, i32 y, i32 alignment, i32 clip_x, i32 clip_width, char *format, ...) {
+static void EduiPrintClippedText(VUFNT *font, i32 x, i32 y, i32 alignment, i32 clip_x, i32 clip_width, char *format, ...) {
     if (edui_donotdraw == 0) {
         char text[1024];
         va_list args;
@@ -796,7 +796,7 @@ static void EduiPrintClippedText(void *font, i32 x, i32 y, i32 alignment, i32 cl
         va_start(args, format);
         NuVSPrintf(text, format, args);
         va_end(args);
-        i32 width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+        i32 width = (i32)NuQFntPrintLenU(font, text);
         i32 left;
         switch (alignment) {
             case EDUI_ALIGN_LEFT:
@@ -818,10 +818,10 @@ static void EduiPrintClippedText(void *font, i32 x, i32 y, i32 alignment, i32 cl
         char *end = text + NuStrLen(text) - 1;
         while (width > clip_width && end > text) {
             *end-- = 0;
-            width = (i32)NuQFntPrintLenU((VUFNT *)font, text);
+            width = (i32)NuQFntPrintLenU(font, text);
         }
-        NuQFntMove((VUFNT *)font, (f32)left, (f32)y, 0.0f);
-        NuQFntPrintU((VUFNT *)font, text);
+        NuQFntMove(font, (f32)left, (f32)y, 0.0f);
+        NuQFntPrintU(font, text);
         NuQFntPopPrintMode();
     }
 }

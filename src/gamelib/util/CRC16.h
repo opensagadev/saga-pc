@@ -262,10 +262,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     const char *profile_name;                      // 0x988
     ShaderCompilerBufferAllocator register_buffer; // 0x98c
 
-    union { // size 0x4
-        i32 unknown_99c;
-        ShaderCompilerBufferAllocator *active_output;
-    }; // 0x99c
+    ShaderCompilerBufferAllocator *active_output; // 0x99c
 
     u32 unknown_9a0; // 0x9a0
     ShaderCompilerDictionary(VirtualStackAllocator &, i32);

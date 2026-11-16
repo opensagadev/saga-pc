@@ -341,7 +341,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
     if (set != NULL) {
         lights = set;
         light = lights->lights;
-        grid = (RTL_INDEX *)(lights + 1);
+        grid = RTL_SET_INDEX(lights);
         dbg_rtlindex = grid;
         if (grid->enabled != 0 && position != NULL && (x = (i32)(grid->scale * (position->x + grid->offset_x))) < grid->width && x >= 0 &&
             (z = (i32)(grid->scale * (position->z + grid->offset_z))) < grid->depth && z >= 0) {
@@ -1360,16 +1360,12 @@ void edrtlCalculateBurnoutEx(BURN_SET *set, BURN_PARAMETERS *parameters, NUVEC *
     edrtlCalculateBurnout(set, &parameters->threshold, &parameters->intensity, &parameters->dispersion, camera_position, frame_time);
 }
 
-typedef struct rtl_direction_lookup_s { // size 0x4690
-    u32 header;                         // 0x0000
-    RTL_LIGHT lights[129];              // 0x0004
-} RTL_DIRECTION_LOOKUP;
-
 i32 rtlGetDirection(RTL_SET *set, i32 index, NUVEC **out) {
     if (set == NULL || out == NULL || (u32)index > 128u) {
         return 0;
     }
-    *out = &((RTL_DIRECTION_LOOKUP *)set)->lights[index].direction;
+    /* Index 128 is accepted: it reads the first fog entry's bytes behind the light table. */
+    *out = &set->lights[index].direction;
     return 1;
 }
 

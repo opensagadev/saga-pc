@@ -289,7 +289,7 @@ struct eduimenu_s {                                                     // size 
     i32 height;                                                         // 0x20
     i32 drawn_width;                                                    // 0x24
     i32 drawn_height;                                                   // 0x28
-    void *font;                                                         // 0x2c
+    struct vufnt_s *font;                                               // 0x2c
     void (*callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1); // 0x30
     char *title;                                                        // 0x34
 
@@ -414,7 +414,7 @@ struct edui_colour_slider_s {  // size 0x70
 extern "C" {
 #endif
     struct eduiitem_s *eduiMenuAddItem(struct eduimenu_s *menu, struct eduiitem_s *item);
-    struct eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback, char *title);
+    struct eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, struct vufnt_s *font, void *callback, char *title);
     void eduiMenuAddItemFirst(struct eduimenu_s *menu, struct eduiitem_s *item);
     struct eduimenu_s *eduiGetActiveMenu(void);
     void eduicbPickCFGCancel(struct eduimenu_s *menu, struct eduimenu_s *arg1);
@@ -591,7 +591,7 @@ extern "C" {
     extern char EduiTextCopyBuffer[64];
     extern f32 EduiSliderGlobalAcceleration;
     extern i32 edui_filepick_listsize;
-    void EduiFntPrintScaled(void *font, f32 x, f32 y, i32 alignment, char *text);
+    void EduiFntPrintScaled(struct vufnt_s *font, f32 x, f32 y, i32 alignment, char *text);
     i32 eduiGradPickRead(eduiitem_s *item, struct edui_gradient_stage_s *stages, i32 capacity);
     i32 eduicbInteractColourPick(edui_interact_s *interact);
     i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);

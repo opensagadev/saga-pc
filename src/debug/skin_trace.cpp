@@ -32,7 +32,7 @@ namespace {
         unsigned int ordinal;
     };
 
-    struct Item {
+    struct TraceItem {
         TraceWord item;
         TraceWord palette;
         TraceWord geometry;
@@ -85,7 +85,7 @@ namespace {
         unsigned int selected_draw;
         Stream stream[2];
         Owner owner[32];
-        Item item[64];
+        TraceItem item[64];
         Thread thread[4];
         Instance instance[32];
         Register vertex[256];
@@ -314,7 +314,7 @@ extern "C" void skin_trace_item(TraceWord draw_item, TraceWord palette, TraceWor
     if (!owner || owner->ordinal != state.selected) {
         return;
     }
-    Item &i = state.item[state.next_item++ % 64];
+    TraceItem &i = state.item[state.next_item++ % 64];
     i.item = draw_item;
     i.palette = palette;
     i.geometry = geometry;
@@ -468,10 +468,10 @@ extern "C" void skin_trace_capture(const TraceDraw *draw) {
             return;
         }
         TraceWord current = t->item[t->depth - 1];
-        Item *item = 0;
+        TraceItem *item = 0;
         unsigned int total = state.next_item < 64 ? state.next_item : 64;
         for (unsigned int n = 0; n < total; ++n) {
-            Item &v = state.item[(state.next_item - 1 - n) % 64];
+            TraceItem &v = state.item[(state.next_item - 1 - n) % 64];
             if (v.item == current && v.geometry == draw->geometry && v.epoch == state.stream[v.stream].epoch) {
                 item = &v;
                 break;

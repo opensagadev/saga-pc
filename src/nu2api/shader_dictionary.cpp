@@ -12,7 +12,7 @@ extern "C" void ShaderLexicalClassesInit(void);
 
 ShaderCompilerDictionary::ShaderCompilerDictionary(VirtualStackAllocator &parent, i32 input_mode)
     : scratch(parent, 0x3000), output_memory(parent, 0x4000), register_buffer(parent, 0x100) {
-    unknown_99c = 0;
+    active_output = NULL;
     ShaderLexicalClassesInit();
     mode = input_mode;
     program_count = 0;

@@ -466,14 +466,14 @@ extern "C" {
         } else {
             converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
         }
-        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+        NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
     }
 
     /* Appends a vertex position and moves the stream to the next vertex. */
     static inline void EdDrawAddXYZ(f32 x, f32 y, f32 z) {
-        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x;
-        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y;
-        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z;
+        NuPrimStreamBufferPointer->vertex_ptr->x = x;
+        NuPrimStreamBufferPointer->vertex_ptr->y = y;
+        NuPrimStreamBufferPointer->vertex_ptr->z = z;
         NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
         NuPrimVertexCount++;
     }
@@ -3488,7 +3488,7 @@ void PlaceableNameControl::cbSelectObject(eduimenu_s *, eduiitem_s *item, u32) {
 void PlaceableNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
     edObjectNameControl = static_cast<EdStringControl *>(item->data_ptr);
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -4416,7 +4416,7 @@ void EdSpecialObjectControl::cbSelectObject(eduimenu_s *, eduiitem_s *item, u32)
 void EdSpecialObjectControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
     active_special_object_control = static_cast<EdSpecialObjectControl *>(item->data_ptr);
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -5255,7 +5255,7 @@ void ClassEditor::cbEdClassRemoveDuplicates(eduimenu_s *, eduiitem_s *, u32) {
 
 void ClassEditor::cbEdClassToolsMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -5267,7 +5267,7 @@ void ClassEditor::cbEdClassToolsMenu(eduimenu_s *parent, eduiitem_s *item, u32) 
 
 void ClassEditor::cbEdClassSnapMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -5313,7 +5313,7 @@ void ClassEditor::cbEdClassSetPinned(eduimenu_s *menu, eduiitem_s *item, u32) {
 /* Shows or hides the LED scenes and, per class, the objects in the view. */
 void ClassEditor::cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     i32 shortcuts[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
     char label[128];
     if (menu == NULL) {
@@ -5623,7 +5623,7 @@ void EdEnumControl::cbSelectItem(eduimenu_s *menu, eduiitem_s *item, u32 flags) 
 void EdEnumControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     active_enum_control = static_cast<EdEnumControl *>(item->data_ptr);
     eduimenu_s *choices =
-        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (choices == NULL) {
         return;
     }
@@ -5658,7 +5658,7 @@ void EdBitControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     edBitControl = static_cast<EdBitControl *>(item->data_ptr);
     edBitIndex = edBitItem->extra_data;
     eduimenu_s *choices =
-        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (choices == NULL) {
         return;
     }
@@ -5695,7 +5695,7 @@ void EdColourControl::cbColourSelected(eduimenu_s *menu, eduiitem_s *item, u32 f
 void EdColourControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     edColourControl = static_cast<EdColourControl *>(item->data_ptr);
     eduimenu_s *picker_menu =
-        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (picker_menu == NULL) {
         return;
     }
@@ -5711,7 +5711,7 @@ void EdColourControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
 void EdSfxNameControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     sfxNameControl = static_cast<EdSfxNameControl *>(item->data_ptr);
     eduimenu_s *choices =
-        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + menu->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (choices != NULL) {
         char value[128];
         sfxNameControl->GetVal(value, sizeof(value));
@@ -5762,7 +5762,7 @@ void LevelEditor::Flush() {
 /* Lists every registered editor in a submenu next to the selected item. */
 void LevelEditor::CreateEditorList(eduimenu_s *parent, eduiitem_s *item) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, "Editor List");
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, "Editor List");
     if (menu == NULL) {
         return;
     }
@@ -7814,7 +7814,7 @@ void ClassEditor::DestroySelectedObjects() {
     eduiGetCursorCoords(&x, &y);
     x *= 640.0;
     y *= 448.0;
-    eduimenu_s *menu = eduiMenuCreate((i32)x, (i32)y, 300, 50, reinterpret_cast<void *>(EdLevelFnt), cbDestroyMenu, title);
+    eduimenu_s *menu = eduiMenuCreate((i32)x, (i32)y, 300, 50, reinterpret_cast<VUFNT *>(EdLevelFnt), cbDestroyMenu, title);
     if (menu == NULL) {
         return;
     }
@@ -7946,7 +7946,7 @@ void ClassEditor::cbEdClassSetMode(eduimenu_s *menu, eduiitem_s *item, u32) {
 
 void ClassEditor::cbEdClassModeMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -8127,7 +8127,7 @@ void EdClassObjectNameControl::cbSelectClass(eduimenu_s *parent, eduiitem_s *ite
     EdClass *object_class = theRegistry.GetClass(item->data);
     edClassObjectNameControl->selected.ed_class = object_class;
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -8154,7 +8154,7 @@ void EdClassObjectNameControl::cbSelectClass(eduimenu_s *parent, eduiitem_s *ite
 /* Lists every registered class that has objects. */
 void EdClassObjectNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     edClassObjectNameControl = static_cast<EdClassObjectNameControl *>(item->data_ptr);
     if (menu == NULL) {
         return;
@@ -8986,7 +8986,7 @@ PropertyMenu *PropertyTool::CreatePropertyMenu(ClassObject &object) {
         }
         NuSPrintf(title, "%s - %s", object.ed_class->name, name);
         eduimenu_s *menu =
-            eduiMenuCreate(metrics.x, metrics.y, metrics.width, metrics.height, reinterpret_cast<void *>(EdLevelFnt), NULL, title);
+            eduiMenuCreate(metrics.x, metrics.y, metrics.width, metrics.height, reinterpret_cast<VUFNT *>(EdLevelFnt), NULL, title);
         if (menu != NULL) {
             AddPropertyMenuItems(menu, object.ed_class, object.object, NULL);
             menu->selected = menu->first;
@@ -9811,7 +9811,7 @@ void ClassEditor::cbEdClassSelectObjectMenu(eduimenu_s *parent, eduiitem_s *item
     EdClass *object_class = theRegistry.GetClass(item->data);
     theClassEditor.pending_object.ed_class = object_class;
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -9838,7 +9838,7 @@ void ClassEditor::cbEdClassSelectObjectMenu(eduimenu_s *parent, eduiitem_s *item
 
 void ClassEditor::cbEdClassSelectClassMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -10203,7 +10203,7 @@ i32 LevelEditor::SaveState(variptr_u *buffer, variptr_u *buffer_end) {
 void cbEdLevelSave(eduimenu_s *parent, eduiitem_s *item, u32) {
     theLevelEditor.Save();
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, "Save File");
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, "Save File");
     char message[128];
     if (theLevelEditor.active) {
         for (i32 index = 0; index < theLevelEditor.reset_pending; index++) {
@@ -10236,7 +10236,7 @@ void cbEdLevelSave(eduimenu_s *parent, eduiitem_s *item, u32) {
 
 void cbEdLevelSettingsMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, "Options");
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, "Options");
     if (menu == NULL) {
         return;
     }
@@ -10257,7 +10257,7 @@ void LevelEditor::CreateMenu() {
     x *= 640.0f;
     y *= 448.0f;
     if (NuKeyboard(0x0f) != 0) {
-        menu = eduiMenuCreate((i32)x, (i32)y, 100, 200, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, "Level Editor");
+        menu = eduiMenuCreate((i32)x, (i32)y, 100, 200, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, "Level Editor");
         if (menu != NULL) {
             eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelEditorList, "Editors..."));
             eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdLevelSettingsMenu, "Options..."));
@@ -10265,7 +10265,7 @@ void LevelEditor::CreateMenu() {
             eduiMenuFitOnScreen(menu, 1);
         }
     } else {
-        menu = eduiMenuCreate((i32)x, (i32)y, 100, 200, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        menu = eduiMenuCreate((i32)x, (i32)y, 100, 200, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
         if (menu != NULL) {
             if (active_editor != NULL) {
                 active_editor->AddMenuItems(menu);
@@ -10709,7 +10709,7 @@ void ClassEditor::SelectLED(i32 class_id) {
     x *= 640.0;
     y *= 448.0;
     class_editor_create_pending = class_id;
-    eduimenu_s *menu = eduiMenuCreate(static_cast<i32>(x), static_cast<i32>(y), 300, 250, reinterpret_cast<void *>(EdLevelFnt),
+    eduimenu_s *menu = eduiMenuCreate(static_cast<i32>(x), static_cast<i32>(y), 300, 250, reinterpret_cast<VUFNT *>(EdLevelFnt),
                                       cbEdLevelDestroy, "Select LED File");
     if (menu == NULL) {
         return;
@@ -10727,7 +10727,7 @@ void ClassEditor::SelectLED(i32 class_id) {
 
 void ClassEditor::cbEdClassFileMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }
@@ -10953,7 +10953,7 @@ void ClassEditor::cbEdClassNewObject(eduimenu_s *parent, eduiitem_s *item, u32) 
         return;
     }
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, "Error!");
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, "Error!");
     if (menu == NULL) {
         return;
     }
@@ -10970,7 +10970,7 @@ void ClassEditor::cbEdClassNewObject(eduimenu_s *parent, eduiitem_s *item, u32) 
 
 void ClassEditor::cbEdClassNewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     eduimenu_s *menu =
-        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<void *>(EdLevelFnt), cbEdLevelDestroy, NULL);
+        eduiMenuCreate(item->x + parent->width, item->y, 180, 250, reinterpret_cast<VUFNT *>(EdLevelFnt), cbEdLevelDestroy, NULL);
     if (menu == NULL) {
         return;
     }

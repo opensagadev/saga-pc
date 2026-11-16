@@ -71,7 +71,7 @@ extern "C" {
     void edanimDetermineNearestAnim(f32);
 
     i32 edanimLoadPage(char *, NUGSCN *);
-    extern void *ed_fnt;
+    extern struct vufnt_s *ed_fnt;
     void edanimDrawCursor(void);
     void edanimRenderParticleEmitters(i32 parameter_index);
     void edanimRenderSoundEmitters(i32 parameter_index);
