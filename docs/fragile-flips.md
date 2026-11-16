@@ -69,3 +69,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | EQUIVALENT_GROUP in world.h | InitGameAfterConfig | legogame/game.cpp | 82.2397 % | 82.2372 % |
 | pc marker renames (renames/17-*.csv, no code change) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
 | pc marker renames (renames/17-*.csv, no code change) | DebrisSetup2 | legoapi/parts.c | 99.95 % | exact |
+| one NUDISPLAYLIST record (0x44) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
+| one NUDISPLAYLIST record (0x44) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |

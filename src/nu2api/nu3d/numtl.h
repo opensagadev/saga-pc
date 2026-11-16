@@ -19,7 +19,7 @@ typedef struct PC_MATERIAL_SHADER_DESC_VIEW { // size 0x208
 } PC_MATERIAL_SHADER_DESC_VIEW;
 
 struct PC_MATERIAL_SHADER_DESC_VIEW;
-struct nudisplaylist_pc_s;
+struct nudisplaylist_s;
 
 typedef struct numtlattrib_s { // size 0x4
     u32 alpha_mode : 4;        // 0x0:0
@@ -35,27 +35,27 @@ typedef struct numtlattrib_s { // size 0x4
     u32 unknown_20_31 : 12;    // 0x0:20
 } NUMTLATTRIB;
 
-typedef struct numtl_s {                     // size 0x9c
-    u16 flags;                               // 0x00
-    u8 unknown_0002[0x2e];                   // 0x02
-    struct numtl_s *next;                    // 0x30
-    u8 unknown_0034[0x8];                    // 0x34
-    struct nudisplaylist_pc_s *display_list; // 0x3c
-    NUMTLATTRIB attribs;                     // 0x40
-    u32 unknown_0044_0_4 : 5;                // 0x44:0
-    u32 unknown_0044_5 : 1;                  // 0x44:5
-    u32 unknown_0044_6 : 1;                  // 0x44:6
-    u32 unknown_0044_7_31 : 25;              // 0x44:7
-    u8 unknown_0048[0xc];                    // 0x48
-    f32 diffuse_r;                           // 0x54
-    f32 diffuse_g;                           // 0x58
-    f32 diffuse_b;                           // 0x5c
-    u8 unknown_0060[0x10];                   // 0x60
-    f32 opacity;                             // 0x70
-    i16 texture_id;                          // 0x74
-    i16 unknown_076;                         // 0x76
-    u8 unknown_078[0x21];                    // 0x78
-    i8 particle_type_tag;                    // 0x99
+typedef struct numtl_s {                  // size 0x9c
+    u16 flags;                            // 0x00
+    u8 unknown_0002[0x2e];                // 0x02
+    struct numtl_s *next;                 // 0x30
+    u8 unknown_0034[0x8];                 // 0x34
+    struct nudisplaylist_s *display_list; // 0x3c
+    NUMTLATTRIB attribs;                  // 0x40
+    u32 unknown_0044_0_4 : 5;             // 0x44:0
+    u32 unknown_0044_5 : 1;               // 0x44:5
+    u32 unknown_0044_6 : 1;               // 0x44:6
+    u32 unknown_0044_7_31 : 25;           // 0x44:7
+    u8 unknown_0048[0xc];                 // 0x48
+    f32 diffuse_r;                        // 0x54
+    f32 diffuse_g;                        // 0x58
+    f32 diffuse_b;                        // 0x5c
+    u8 unknown_0060[0x10];                // 0x60
+    f32 opacity;                          // 0x70
+    i16 texture_id;                       // 0x74
+    i16 unknown_076;                      // 0x76
+    u8 unknown_078[0x21];                 // 0x78
+    i8 particle_type_tag;                 // 0x99
 } NUMTL;
 
 #ifdef __cplusplus

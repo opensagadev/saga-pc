@@ -132,7 +132,7 @@ i32 NuDisplayListAddRenderScene(void) {
     NUSORTPRI **pris;
     NUSORTPRI *node;
     NUSORTPRI *rebuilt;
-    NUDISPLAYSCENE *sub;
+    NUDISPLAY_LIST *sub;
     NUDISPLAYLIST *dlist;
     NUDISPLAYLISTITEM *item;
     i32 count;
@@ -147,7 +147,7 @@ i32 NuDisplayListAddRenderScene(void) {
     cursor->addr = (u32)(pris + nused_sort_pris + 1);
 
     for (node = sort_list; node != NULL; node = node->sys_next) {
-        sub = node->legacy_display_scene;
+        sub = node->display_scene;
         if (sub != NULL && (sub->render_flags & 0x10) != 0) {
             if ((sub->render_flags & 0x2) == 0) {
                 continue;
@@ -161,7 +161,7 @@ i32 NuDisplayListAddRenderScene(void) {
             rebuilt->mtl_first = node->mtl_first;
             n = 0;
             for (m = 0; m < node->nmtls; m++) {
-                dlist = node->legacy_display_scene->dlist_mtls[node->mtl_first + m];
+                dlist = node->display_scene->material_lists[node->mtl_first + m];
                 if (dlist->mtl_last == dlist->first) {
                     continue;
                 }

@@ -178,7 +178,7 @@ typedef struct nuprim_vertex_group_source_s { // size 0x8
 
 typedef struct nurndrlibstate_s { // size 0x34
     u8 opaque_00_08[0x8];         // 0x00
-    void *mtl;                    // 0x08
+    struct numtl_s *mtl;          // 0x08
     u8 opaque_0c_14[0x8];         // 0x0c
     i32 tex_id;                   // 0x14
     u8 opaque_18_1e[0x6];         // 0x18
@@ -188,7 +188,8 @@ typedef struct nurndrlibstate_s { // size 0x34
     u8 opaque_26_2c[0x6];         // 0x26
     i16 camera_id;                // 0x2c
     i16 fog_id;                   // 0x2e
-    u8 opaque_30_34[0x4];         // 0x30
+    i16 vertex_groups_id;         // 0x30
+    i16 reflection_id;            // 0x32
 } NURNDRLIBSTATE;
 
 typedef struct GRAPHICS_RENDER_TEXTURE GRAPHICS_RENDER_TEXTURE;
@@ -949,42 +950,43 @@ typedef struct NUHGOBJ_EVAL {                 // size 0x1c4
 
 typedef void (*NUJOINTPROCANIMFN)(ANI3_BUFFER *, NUHGOBJ_EVAL *, i32, NUHGOBJ_JOINT_OVERRIDE *);
 
-/* PC NuDynamicLight::RenderSet. */
-typedef struct NU_LIGHT_SHADOW_LIST_VIEW {     // size 0x44
-    u8 unknown_000[8];                         // 0x00
-    struct nurndrlibstate_s *state;            // 0x08
-    u8 unknown_00c[4];                         // 0x0c
-    struct nudisplaylistitem_s *first;         // 0x10
-    struct nudisplaylistitem_s *material_last; // 0x14
-    u8 unknown_018[0x2c];                      // 0x18
-} NU_LIGHT_SHADOW_LIST_VIEW;
+typedef struct nurndrlightrecord_s {  // size 0x380
+    NUMTX view;                       // 0x000
+    NUMTX projection;                 // 0x040
+    NUMTX shadow_matrix;              // 0x080
+    NUMTX texture_matrix;             // 0x0c0
+    f32 parameter_100;                // 0x100
+    f32 parameter_104;                // 0x104
+    i32 enabled;                      // 0x108
+    f32 parameter_10c;                // 0x10c
+    f32 parameter_110;                // 0x110
+    u8 opaque_114_120[0xc];           // 0x114
+    NUVEC4 corners[8];                // 0x120
+    NUVEC4 planes[12];                // 0x1a0
+    i32 shadow_plane_count;           // 0x260
+    u8 opaque_264_270[0xc];           // 0x264
+    NUVEC4 far_plane;                 // 0x270
+    NUVEC4 endpoint0;                 // 0x280
+    NUVEC4 endpoint1;                 // 0x290
+    f32 shadow_radius;                // 0x2a0
+    NUDISPLAYLIST shadow_lists[2];    // 0x2a4
+    NURNDRLIBSTATE *render_states[2]; // 0x32c
+    NUDISPLAYLISTITEM *list_items[2]; // 0x334
 
-typedef struct nurndrlightrecord_s {           // size 0x380
-    NUMTX view;                                // 0x000
-    NUMTX projection;                          // 0x040
-    NUMTX shadow_matrix;                       // 0x080
-    NUMTX texture_matrix;                      // 0x0c0
-    f32 parameter_100;                         // 0x100
-    f32 parameter_104;                         // 0x104
-    i32 enabled;                               // 0x108
-    f32 parameter_10c;                         // 0x10c
-    f32 parameter_110;                         // 0x110
-    u8 opaque_114_120[0xc];                    // 0x114
-    NUVEC4 corners[8];                         // 0x120
-    NUVEC4 planes[12];                         // 0x1a0
-    i32 shadow_plane_count;                    // 0x260
-    u8 opaque_264_270[0xc];                    // 0x264
-    NUVEC4 far_plane;                          // 0x270
-    NUVEC4 endpoint0;                          // 0x280
-    NUVEC4 endpoint1;                          // 0x290
-    f32 shadow_radius;                         // 0x2a0
-    NU_LIGHT_SHADOW_LIST_VIEW shadow_lists[2]; // 0x2a4
-    NURNDRLIBSTATE *render_states[2];          // 0x32c
-    NUDISPLAYLISTITEM *list_items[2];          // 0x334
-    u32 unknown_33c[6];                        // 0x33c
-    i32 pending[8];                            // 0x354
-    i32 count;                                 // 0x374
-    u8 opaque_378_380[0x8];                    // 0x378
+    /* The shadow producer chains RenderSceneShadow builds per list; operator= copies them as one array. */
+    union { // size 0x18
+        NUDISPLAYLISTITEM *producer_items[6];
+
+        struct {                                   // size 0x18
+            NUDISPLAYLISTITEM *producer_cursor[2]; // 0x33c
+            NUDISPLAYLISTITEM *producer_first[2];  // 0x344
+            NUDISPLAYLISTITEM *producer_last[2];   // 0x34c
+        };
+    }; // 0x33c
+
+    i32 pending[8];         // 0x354
+    i32 count;              // 0x374
+    u8 opaque_378_380[0x8]; // 0x378
 #ifdef __cplusplus
     nurndrlightrecord_s();
     nurndrlightrecord_s &operator=(const nurndrlightrecord_s &other);
@@ -1321,7 +1323,7 @@ struct PC_SPECIAL_SHADOW_LIGHT {      // size 0x828
     void SetParameterf(i32 parameter, f32 value);
     i32 fun_005c2eb0();
     void fun_005c2ec0(i32 used);
-    NU_LIGHT_SHADOW_LIST_VIEW *fun_005c2ee0(i32 set, NUMTL *material);
+    NUDISPLAYLIST *fun_005c2ee0(i32 set, NUMTL *material);
     void fun_005c6d90(NUMTX *view, NUMTX *projection);
     i32 fun_005c2f20();
     NUMTX *fun_005c2f30();

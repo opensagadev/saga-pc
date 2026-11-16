@@ -5256,7 +5256,7 @@ extern "C" {
         u32 retained_2c;                         // 0x02c
         NUMTL *next;                             // 0x030
         u8 unknown_034[8];                       // 0x034
-        NUDISPLAYLIST_PC *display_list;          // 0x03c
+        NUDISPLAYLIST *display_list;             // 0x03c
         u32 attributes;                          // 0x040
         u32 attributes_high;                     // 0x044
         u8 unknown_048[0xc];                     // 0x048
@@ -10061,10 +10061,10 @@ extern "C" {
                     material = (PC_DISPLAY_MATERIAL *)scene->display_materials[index];
                     if (scene->local_state != NULL && (scene->render_flags & 4) != 0) {
                         if (list->mtl_last != list->first) {
-                            DisplayListUpdateRenderState((NUDISPLAYLIST_PC *)list, scene->local_state);
+                            DisplayListUpdateRenderState(list, scene->local_state);
                             last_local = scene->local_state;
                         } else if (last_local != scene->local_state) {
-                            DisplayListUpdateRenderState((NUDISPLAYLIST_PC *)list, scene->local_state);
+                            DisplayListUpdateRenderState(list, scene->local_state);
                             last_local = scene->local_state;
                         }
                     } else {
@@ -10210,12 +10210,6 @@ extern "C" {
 #undef CLIP_MARK_MATERIALS
 }
 
-typedef struct PC_CLONE_LIST_VIEW { // size 0x44
-    NUDISPLAYLIST list;             // 0x00
-    i32 scene_item_count;           // 0x38
-    u8 unknown_003c[8];             // 0x3c
-} PC_CLONE_LIST_VIEW;
-
 typedef struct PC_CLONE_MATERIAL_VIEW { // size 0x2c4
     u8 unknown_0000[0x3c];              // 0x000
     NUDISPLAYLIST *display_list;        // 0x03c
@@ -10238,12 +10232,11 @@ typedef struct PC_CLONE_SORT_SELF_VIEW { // size 0x24
 
 #define CLONE_ALIGN(buffer, alignment) (((buffer)->addr + (alignment) - 1) & ~((alignment) - 1u))
 #define CLONE_ITEMS(scene) (scene)->items
-#define CLONE_LIST(scene, index) reinterpret_cast<PC_CLONE_LIST_VIEW *>((scene)->material_lists[index])
 #define CLONE_MATERIAL(scene, index) reinterpret_cast<PC_CLONE_MATERIAL_VIEW *>((scene)->display_materials[index])
 
 extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *buffer) {
     NUDISPLAY_LIST *scene;
-    PC_CLONE_LIST_VIEW *first_list;
+    NUDISPLAYLIST *first_list;
     NURNDRLIBSTATE *states;
     NUDISPLAYLISTITEM *heads;
     PC_CLONE_MATERIAL_VIEW *materials;
@@ -10273,7 +10266,7 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
     buffer->addr = CLONE_ALIGN(buffer, 16) + material_bytes;
     memset(scene->material_used[0], 0, material_bytes);
     memset(scene->material_used[1], 0, material_bytes);
-    first_list = reinterpret_cast<PC_CLONE_LIST_VIEW *>(CLONE_ALIGN(buffer, 4));
+    first_list = reinterpret_cast<NUDISPLAYLIST *>(CLONE_ALIGN(buffer, 4));
     buffer->addr = CLONE_ALIGN(buffer, 4);
     buffer->addr += source->material_count * sizeof(*first_list);
     scene->material_lists = reinterpret_cast<NUDISPLAYLIST **>(CLONE_ALIGN(buffer, 4));
@@ -10288,8 +10281,8 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
     buffer->addr += source->material_count * sizeof(*heads);
     memset(heads, 0, source->material_count * sizeof(*heads));
     for (i = 0; i < static_cast<i32>(source->material_count); ++i) {
-        scene->material_lists[i] = &first_list[i].list;
-        *CLONE_LIST(scene, i) = *CLONE_LIST(source, i);
+        scene->material_lists[i] = &first_list[i];
+        *scene->material_lists[i] = *source->material_lists[i];
         scene->material_lists[i]->scene = scene;
         scene->material_lists[i]->state = &states[i];
         scene->material_lists[i]->mtl_item = CLONE_ITEMS(scene) + (source->material_lists[i]->mtl_item - CLONE_ITEMS(source));
@@ -10299,10 +10292,10 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
         scene->material_lists[i]->mtl_last = scene->material_lists[i]->first;
         scene->material_lists[i]->scene_first[0] = reinterpret_cast<NUDISPLAYLISTITEM *>(CLONE_ALIGN(buffer, 16));
         buffer->addr = CLONE_ALIGN(buffer, 16);
-        buffer->addr += CLONE_LIST(source, i)->scene_item_count * sizeof(NUDISPLAYLISTITEM);
+        buffer->addr += source->material_lists[i]->scene_item_count * sizeof(NUDISPLAYLISTITEM);
         scene->material_lists[i]->scene_first[1] = reinterpret_cast<NUDISPLAYLISTITEM *>(CLONE_ALIGN(buffer, 16));
         buffer->addr = CLONE_ALIGN(buffer, 16);
-        buffer->addr += CLONE_LIST(source, i)->scene_item_count * sizeof(NUDISPLAYLISTITEM);
+        buffer->addr += source->material_lists[i]->scene_item_count * sizeof(NUDISPLAYLISTITEM);
         {
             NUDISPLAYLISTITEM *head = scene->material_lists[i]->first;
             head->type = NUDLIST_NEXT;
@@ -10319,8 +10312,7 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
     for (i = 0; i < static_cast<i32>(source->material_count); ++i) {
         scene->display_materials[i] = reinterpret_cast<NUMTL *>(&materials[i]);
         *CLONE_MATERIAL(scene, i) = *CLONE_MATERIAL(source, i);
-        CLONE_MATERIAL(scene, i)->display_list =
-            &first_list[reinterpret_cast<PC_CLONE_LIST_VIEW *>(CLONE_MATERIAL(source, i)->display_list) - CLONE_LIST(source, 0)].list;
+        CLONE_MATERIAL(scene, i)->display_list = &first_list[CLONE_MATERIAL(source, i)->display_list - source->material_lists[0]];
         {
             NUMTL *material = scene->display_materials[i];
             NuMtlUpdatePS(material);
@@ -10389,7 +10381,7 @@ typedef struct PC_SPECIAL_RENDER_MATERIAL {  // size 0x26c
     u8 unknown_0000[0x30];                   // 0x000
     struct PC_SPECIAL_RENDER_MATERIAL *next; // 0x030
     u8 unknown_0034[8];                      // 0x034
-    NUDISPLAYLIST_PC *display_list;          // 0x03c
+    NUDISPLAYLIST *display_list;             // 0x03c
     u32 attributes;                          // 0x040
     u8 unknown_0044[0x56];                   // 0x044
     u8 override_slot;                        // 0x09a
@@ -10426,134 +10418,106 @@ typedef union PC_SPECIAL_RENDER_SCENE { // size 0x90
     };
 } PC_SPECIAL_RENDER_SCENE;
 
-// Kept as an assert, not a layout comment: the declaration count of this unit steers
-// NuDeferredFilterGen::render (docs/cleanup-audit.md, section 6).
-
-/* PC render-set's second list begins at +0x44, not sizeof the public list prefix. */
-typedef struct PC_SHADOW_RENDER_LISTS { // size 0x380
-    NUDISPLAYLIST_PC regular;           // 0x000
-    u8 unknown_0028[0x1c];              // 0x028
-    NUDISPLAYLIST_PC variant;           // 0x044
-    u8 unknown_006c[0x314];             // 0x06c
-} PC_SHADOW_RENDER_LISTS;
-
-typedef union PC_SPECIAL_SHADOW_LIGHT_VIEW { // size 0x714
-
-    struct {                                   // size 0x624
-        u8 unknown_0000[0x2a4];                // 0x000
-        PC_SHADOW_RENDER_LISTS render_sets[1]; // 0x2a4
-    };
-
-    struct {                            // size 0x714
-        u8 unknown_count_prefix[0x710]; // 0x000
-        i32 render_set_count;           // 0x710
-    };
-} PC_SPECIAL_SHADOW_LIGHT_VIEW;
-
 extern "C" {
 
-#define PC_LIST_ITEM (static_cast<NUDISPLAYLISTITEM *>(list->items))
-
-    static void DisplayListProcessGeomPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
+    static void DisplayListProcessGeomPC(NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
                                          void **packet, f32 alpha, i32 shadow) {
         VARIPTR *buffer = NuDisplayListLinkItems(list, 2);
         void *next = geometry->next;
-        void *transform = DisplayListCreateGeomTransformPS(
-            buffer, matrix, reinterpret_cast<NUDISPLAY_LIST *>(list->scene)->display_materials[list->material_id], next, *packet);
+        void *transform =
+            DisplayListCreateGeomTransformPS(buffer, matrix, list->scene->display_materials[list->material_id], next, *packet);
         *packet = transform;
-        PC_LIST_ITEM->type = NUDLIST_TRANSFORM_REF;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = transform;
-        list->items = PC_LIST_ITEM + 1;
-        output[0] = PC_LIST_ITEM - 1;
-        PC_LIST_ITEM->type = NUDLIST_GEOMCALL;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = next;
-        list->items = PC_LIST_ITEM + 1;
-        output[1] = PC_LIST_ITEM - 1;
+        list->items->type = NUDLIST_TRANSFORM_REF;
+        list->items->id = 3;
+        list->items->next = transform;
+        list->items++;
+        output[0] = list->items - 1;
+        list->items->type = NUDLIST_GEOMCALL;
+        list->items->id = 3;
+        list->items->next = next;
+        list->items++;
+        output[1] = list->items - 1;
         DisplayListSetAlphaPS(output[0], output[1], alpha);
         DisplayListSetShadowCasterFlagPS(output[0], output[1], shadow);
     }
 
-    static void DisplayListProcessLightmappedPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output,
-                                                NUMTX *matrix, void **packet, f32 alpha) {
+    static void DisplayListProcessLightmappedPC(NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
+                                                void **packet, f32 alpha) {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
         void *next = geometry->next;
         void *lightmap = geometry[-2].next;
-        PC_LIST_ITEM->type = geometry[-2].type;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = lightmap;
-        list->items = PC_LIST_ITEM + 1;
-        output[0] = PC_LIST_ITEM - 1;
-        void *transform = DisplayListCreateGeomTransformPS(
-            buffer, matrix, reinterpret_cast<NUDISPLAY_LIST *>(list->scene)->display_materials[list->material_id], next, *packet);
+        list->items->type = geometry[-2].type;
+        list->items->id = 3;
+        list->items->next = lightmap;
+        list->items++;
+        output[0] = list->items - 1;
+        void *transform =
+            DisplayListCreateGeomTransformPS(buffer, matrix, list->scene->display_materials[list->material_id], next, *packet);
         *packet = transform;
-        PC_LIST_ITEM->type = NUDLIST_TRANSFORM_REF;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = transform;
-        list->items = PC_LIST_ITEM + 1;
-        output[1] = PC_LIST_ITEM - 1;
-        PC_LIST_ITEM->type = NUDLIST_GEOMCALL;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = next;
-        list->items = PC_LIST_ITEM + 1;
-        output[2] = PC_LIST_ITEM - 1;
+        list->items->type = NUDLIST_TRANSFORM_REF;
+        list->items->id = 3;
+        list->items->next = transform;
+        list->items++;
+        output[1] = list->items - 1;
+        list->items->type = NUDLIST_GEOMCALL;
+        list->items->id = 3;
+        list->items->next = next;
+        list->items++;
+        output[2] = list->items - 1;
         DisplayListSetAlphaPS(output[1], output[2], alpha);
     }
 
-    static void DisplayListProcessSkinPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
+    static void DisplayListProcessSkinPC(NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
                                          void **packet, NUMTX *skin, void *weights, i32 shadow) {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         VARIPTR *buffer = NuDisplayListLinkItems(list, 3);
         void *next = geometry->next;
-        void *transform = DisplayListCreateGeomTransformPS(
-            buffer, matrix, reinterpret_cast<NUDISPLAY_LIST *>(list->scene)->display_materials[list->material_id], next, *packet);
+        void *transform =
+            DisplayListCreateGeomTransformPS(buffer, matrix, list->scene->display_materials[list->material_id], next, *packet);
         *packet = transform;
-        PC_LIST_ITEM->type = NUDLIST_TRANSFORM_REF;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = transform;
-        list->items = PC_LIST_ITEM + 1;
-        output[0] = PC_LIST_ITEM - 1;
+        list->items->type = NUDLIST_TRANSFORM_REF;
+        list->items->id = 3;
+        list->items->next = transform;
+        list->items++;
+        output[0] = list->items - 1;
         void *render_geometry;
         void *skin_packet = DisplayListCreateSkinTransformPS(buffer, skin, weights, next, &render_geometry, output + 2);
-        PC_LIST_ITEM->type = 0x99;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = skin_packet;
-        list->items = PC_LIST_ITEM + 1;
-        output[1] = PC_LIST_ITEM - 1;
-        PC_LIST_ITEM->type = 0x98;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = render_geometry;
-        SAGA_SKIN_CALL(skin_trace_item, (unsigned)PC_LIST_ITEM, (unsigned)skin_packet, (unsigned)render_geometry, (unsigned)skin);
-        list->items = PC_LIST_ITEM + 1;
-        output[1] = PC_LIST_ITEM - 1;
+        list->items->type = 0x99;
+        list->items->id = 3;
+        list->items->next = skin_packet;
+        list->items++;
+        output[1] = list->items - 1;
+        list->items->type = 0x98;
+        list->items->id = 3;
+        list->items->next = render_geometry;
+        SAGA_SKIN_CALL(skin_trace_item, (unsigned)list->items, (unsigned)skin_packet, (unsigned)render_geometry, (unsigned)skin);
+        list->items++;
+        output[1] = list->items - 1;
         DisplayListSetAlphaPS(output[0], output[1], 1.0f);
         DisplayListSetShadowCasterFlagPS(output[0], output[1], shadow);
     }
 
-    static void DisplayListProcessFaceonPC(NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
+    static void DisplayListProcessFaceonPC(NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry, NUDISPLAYLISTITEM **output, NUMTX *matrix,
                                            f32 alpha) {
         VARIPTR *buffer = NuDisplayListLinkItems(list, 2);
-        NUDISPLAY_LIST *scene = reinterpret_cast<NUDISPLAY_LIST *>(list->scene);
+        NUDISPLAY_LIST *scene = list->scene;
         void *packet = DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id], geometry->next);
-        PC_LIST_ITEM->type = NUDLIST_FACEON_TRANSFORM;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = packet;
-        list->items = PC_LIST_ITEM + 1;
-        output[0] = PC_LIST_ITEM - 1;
+        list->items->type = NUDLIST_FACEON_TRANSFORM;
+        list->items->id = 3;
+        list->items->next = packet;
+        list->items++;
+        output[0] = list->items - 1;
         packet = NuDisplayListPrepareFaceonPS(buffer, geometry->next, matrix);
-        PC_LIST_ITEM->type = NUDLIST_FACEON;
-        PC_LIST_ITEM->id = 3;
-        PC_LIST_ITEM->next = packet;
-        list->items = PC_LIST_ITEM + 1;
-        output[1] = PC_LIST_ITEM - 1;
+        list->items->type = NUDLIST_FACEON;
+        list->items->id = 3;
+        list->items->next = packet;
+        list->items++;
+        output[1] = list->items - 1;
         DisplayListSetAlphaPS(output[0], output[1], alpha);
     }
 
-#undef PC_LIST_ITEM
-
-    static void DisplayListProcessSpecialItemPC(PC_SPECIAL_RENDER_MATERIAL *material, NUDISPLAYLIST_PC *list, NUDISPLAYLISTITEM *geometry,
+    static void DisplayListProcessSpecialItemPC(PC_SPECIAL_RENDER_MATERIAL *material, NUDISPLAYLIST *list, NUDISPLAYLISTITEM *geometry,
                                                 i32 index, NUDISPLAYLISTITEM **output, NUMTX *matrix, void **packet, NUMTX *skin,
                                                 void *weights, f32 alpha, i32 shadow) {
         if (geometry->type != NUDLIST_FACEON) {
@@ -10692,10 +10656,9 @@ extern "C" {
                     continue;
                 }
                 if (clip != 0) {
-                    NUDISPLAYLIST_PC *list = material->display_list;
+                    NUDISPLAYLIST *list = material->display_list;
                     list->scene->render_flags |= 2;
-                    u8 *used =
-                        (list->scene->render_flags & 0x8000) != 0 ? list->scene->material_used_back : list->scene->material_used_front;
+                    u8 *used = (list->scene->render_flags & 0x8000) != 0 ? list->scene->material_used[1] : list->scene->material_used[0];
                     used[list->material_id / 8] |= static_cast<u8>(1u << (list->material_id % 8));
                     RndrStateSetConstAlphaTint(nuspecial_const_alpha_enabled, nuspecial_const_tint_enabled, nuspecial_const_alpha,
                                                &nuspecial_const_tint, reinterpret_cast<NUMTL *>(material));
@@ -10709,18 +10672,17 @@ extern "C" {
                 u32 alpha_mode = (material->attributes >> 14) & 3;
                 if (shadow_clip != 0 && PCSpecialReflectionPass == 0 && alpha_mode != 1 && alpha_mode != 3) {
                     for (i32 light_index = 0; light_index < PCSpecialActiveShadowLights; ++light_index) {
-                        PC_SPECIAL_SHADOW_LIGHT_VIEW *light =
-                            reinterpret_cast<PC_SPECIAL_SHADOW_LIGHT_VIEW *>(PCSpecialShadowLights[light_index]);
+                        PC_SPECIAL_SHADOW_LIGHT *light = PCSpecialShadowLights[light_index];
                         u32 visible = PCSpecialShadowClipResultsPresent == 0 ? ~0u : PCSpecialShadowClipResults[light_index];
-                        for (i32 set = 0; set < light->render_set_count; ++set) {
+                        for (i32 set = 0; set < light->active_render_set_count; ++set) {
                             if (((visible >> (set & 31)) & 1) == 0) {
                                 continue;
                             }
-                            NUDISPLAYLIST_PC *list =
-                                material->shadow_set > 0 ? &light->render_sets[set].variant : &light->render_sets[set].regular;
-                            list->scene = reinterpret_cast<NUDISPLAYSCENE *>(scene);
+                            NUDISPLAYLIST *list = material->shadow_set > 0 ? &light->render_sets[set].shadow_lists[1]
+                                                                           : &light->render_sets[set].shadow_lists[0];
+                            list->scene = scene;
                             NuDisplayListLinkItems(list, 1);
-                            NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);
+                            NUDISPLAYLISTITEM *item = list->items;
                             item->type = NUDLIST_MTL;
                             item->id = 3;
                             item->next = material;
@@ -10787,11 +10749,6 @@ extern "C" {
     }
 }
 
-typedef struct display_list_allocation_s { // size 0x44
-    NUDISPLAYLIST base;                    // 0x00
-    u8 unknown_0038[0xc];                  // 0x38
-} DISPLAY_LIST_ALLOCATION;
-
 typedef struct display_material_allocation_s { // size 0x2c4
     NUMTL base;                                // 0x000
     u8 unknown_tail[0x2c4 - sizeof(NUMTL)];    // 0x09c
@@ -10801,7 +10758,7 @@ extern "C" void NuDisplayListCreate(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARI
                                     i32 unused6, i32 sort_count, i32 unused8, i32 allocate_materials) {
     i32 i;
     i32 used_size;
-    DISPLAY_LIST_ALLOCATION *lists;
+    NUDISPLAYLIST *lists;
     NUDISPLAYLISTITEM *first;
     (void)unused5;
     (void)unused6;
@@ -10826,16 +10783,16 @@ extern "C" void NuDisplayListCreate(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARI
             scene->display_materials[i] = &materials[i].base;
         }
     }
-    DLIST_ALLOC(lists, DISPLAY_LIST_ALLOCATION *, material_count * sizeof(*lists));
+    DLIST_ALLOC(lists, NUDISPLAYLIST *, material_count * sizeof(*lists));
     memset(lists, 0, material_count * sizeof(*lists));
     DLIST_ALLOC(first, NUDISPLAYLISTITEM *, material_count * sizeof(*first));
     memset(first, 0, material_count * sizeof(*first));
     for (i = 0; i < material_count; ++i) {
-        scene->material_lists[i] = &lists->base;
-        lists->base.state = (NURNDRLIBSTATE *)((buffer->addr + 3) & ~3u);
+        scene->material_lists[i] = lists;
+        lists->state = (NURNDRLIBSTATE *)((buffer->addr + 3) & ~3u);
         buffer->addr = ((buffer->addr + 3) & ~3u) + sizeof(NURNDRLIBSTATE);
-        lists->base.first = &first[i];
-        NuDisplayListResetStateCache(lists->base.state);
+        lists->first = &first[i];
+        NuDisplayListResetStateCache(lists->state);
         ++lists;
     }
     scene->local_state = NULL;
@@ -11377,10 +11334,10 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
     for (u32 material = 0; material < static_cast<u32>(object->material_count); ++material) {
         PC_SPECIAL_RENDER_MATERIAL *material_view =
             reinterpret_cast<PC_SPECIAL_RENDER_MATERIAL *>(scene->display_materials[object->material_ids[material]]);
-        NUDISPLAYLIST *list = reinterpret_cast<NUDISPLAYLIST *>(material_view->display_list);
+        NUDISPLAYLIST *list = material_view->display_list;
         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] |= 1 << (list->material_id % 8);
-        DisplayListUpdateRenderState(reinterpret_cast<NUDISPLAYLIST_PC *>(list), &render_state);
-        VARIPTR *buffer = NuDisplayListLinkItems(reinterpret_cast<NUDISPLAYLIST_PC *>(list), visible_count * 2);
+        DisplayListUpdateRenderState(list, &render_state);
+        VARIPTR *buffer = NuDisplayListLinkItems(list, visible_count * 2);
         if (scene->items[object->item_indices[material]].type != NUDLIST_FACEON) {
             void *geometry_data = scene->items[object->item_indices[material]].next;
             for (u32 i = 0; i < visible_count; ++i) {
@@ -13380,73 +13337,54 @@ extern "C" {
 } // extern "C"
 
 /* nuprim's nu3d material linker; the packet builders are in nu3d_platform.cpp. */
-typedef struct nuprim_command_s { // size 0x10
-    u8 type;                      // 0x0
-    u8 id;                        // 0x1
-    u16 unknown_0002;             // 0x2
-    void *target;                 // 0x4
-    u32 unknown_0008[2];          // 0x8
-} NUPRIM_COMMAND;
-
-typedef struct nuprim_material_state_s { // size 0x18
-    u32 unknown_0000[2];                 // 0x00
-    NUMTL *material;                     // 0x08
-    u32 unknown_000c;                    // 0x0c
-    u32 unknown_0010;                    // 0x10
-    i32 texture_id;                      // 0x14
-} NUPRIM_MATERIAL_STATE;
-
-void NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, NUMTL *material) {
-#define LINK_MTL_STATE ((NUPRIM_MATERIAL_STATE *)list->render_state)
-    NUPRIM_COMMAND *command;
+void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
+    NUDISPLAYLISTITEM *command;
     VARIPTR *cursor;
 
-    if (material == LINK_MTL_STATE->material) {
+    if (material == list->state->mtl) {
         return;
     }
 
     NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
     cursor = NuDisplayListStreamCursor;
-    ((NUPRIM_COMMAND *)list->material_last)->target = cursor->void_ptr;
+    list->mtl_last->next = cursor->void_ptr;
 
-    if (material->texture_id > 0 && material->texture_id != LINK_MTL_STATE->texture_id) {
-        command = (NUPRIM_COMMAND *)cursor->void_ptr;
+    if (material->texture_id > 0 && material->texture_id != list->state->tex_id) {
+        command = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->void_ptr = command + 6;
-        command->type = 0x87;
-        command->target = NULL;
+        command->type = NUDLIST_DUMMY;
+        command->next = NULL;
         command->id = 0;
         command++;
-        command->type = 0x87;
-        command->target = NULL;
+        command->type = NUDLIST_DUMMY;
+        command->next = NULL;
         command->id = 0;
         command++;
-        LINK_MTL_STATE->texture_id = material->texture_id;
+        list->state->tex_id = material->texture_id;
     } else {
-        command = (NUPRIM_COMMAND *)cursor->void_ptr;
+        command = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->void_ptr = command + 4;
     }
 
-    command->type = 0x80;
-    command->target = material;
+    command->type = NUDLIST_MTL;
+    command->next = material;
     command->id = 3;
     command++;
-    command->type = 0x87;
-    command->target = NULL;
+    command->type = NUDLIST_DUMMY;
+    command->next = NULL;
     command->id = 0;
     command++;
-    command->type = 0x87;
-    command->target = NULL;
+    command->type = NUDLIST_DUMMY;
+    command->next = NULL;
     command->id = 0;
     command++;
-    command->target = NULL;
-    command->type = 0x8d;
+    command->next = NULL;
+    command->type = NUDLIST_NEXT;
     command->id = 1;
 
-    list->material_last = command;
-    LINK_MTL_STATE->material = material;
+    list->mtl_last = command;
+    list->state->mtl = material;
 }
-
-#undef LINK_MTL_STATE
 
 /* nudlist_pc's display-list debug printers. */
 extern "C" {
@@ -14007,8 +13945,7 @@ extern "C" void NuDynamicLightLookAt(PC_SPECIAL_SHADOW_LIGHT *light, NUVEC *eye,
     light->LookAt(eye, target, up);
 }
 
-extern "C" NU_LIGHT_SHADOW_LIST_VIEW *NuDynamicLightGetDList(PC_SPECIAL_SHADOW_LIGHT *light, i32 render_set,
-                                                             PC_SPECIAL_RENDER_MATERIAL *material) {
+extern "C" NUDISPLAYLIST *NuDynamicLightGetDList(PC_SPECIAL_SHADOW_LIGHT *light, i32 render_set, PC_SPECIAL_RENDER_MATERIAL *material) {
     if (material->shadow_set > 0) {
         return &light->render_sets[render_set].shadow_lists[1];
     }
@@ -14066,25 +14003,7 @@ extern "C" void NuDynamicLightSetUsedOnSpecials(PC_SPECIAL_SHADOW_LIGHT *light, 
     light->used_on_specials = enabled;
 }
 
-/* Access-only views; storage remains PC_SPECIAL_SHADOW_LIGHT/NUGSCN. */
-struct SHADOW_PRODUCER_SET { // size 0x380
-    u8 unknown_000[0x280];   // 0x000
-    NUVEC4 endpoint0;        // 0x280
-    NUVEC4 endpoint1;        // 0x290
-    f32 radius;              // 0x2a0
-
-    struct List {              // size 0x44
-        NUDISPLAYLIST_PC list; // 0x2a4
-        u8 unknown_028[0x1c];  // 0x2cc
-    } lists[2];                // 0x2a4
-
-    u8 unknown_32c[0x10];         // 0x32c
-    NUDISPLAYLISTITEM *cursor[2]; // 0x33c
-    NUDISPLAYLISTITEM *first[2];  // 0x344
-    NUDISPLAYLISTITEM *last[2];   // 0x34c
-    u8 unknown_354[0x2c];         // 0x354
-};
-
+/* Access-only views; storage remains NUGSCN and the material. */
 struct SHADOW_PRODUCER_BOUNDS { // size 0x20
     NUVEC4 center_radius;       // 0x00
     NUVEC4 extent;              // 0x10
@@ -14117,7 +14036,7 @@ static i32 ShadowSegmentClip(const NUVEC *point, const NUVEC *end, const NUVEC *
     return difference_squared > distance ? 1 : 2;
 }
 
-NU_LIGHT_SHADOW_LIST_VIEW *PC_SPECIAL_SHADOW_LIGHT::fun_005c2ee0(i32 set, NUMTL *material) {
+NUDISPLAYLIST *PC_SPECIAL_SHADOW_LIGHT::fun_005c2ee0(i32 set, NUMTL *material) {
     if (reinterpret_cast<SHADOW_PRODUCER_MATERIAL *>(material)->alternate > 0) {
         return &render_sets[set].shadow_lists[1];
     }
@@ -14125,10 +14044,10 @@ NU_LIGHT_SHADOW_LIST_VIEW *PC_SPECIAL_SHADOW_LIGHT::fun_005c2ee0(i32 set, NUMTL 
 }
 
 void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
-    SHADOW_PRODUCER_SET *sets = reinterpret_cast<SHADOW_PRODUCER_SET *>(render_sets);
     for (i32 set = 0; set < render_set_count; ++set) {
         for (i32 variant = 0; variant < 2; ++variant) {
-            sets[set].cursor[variant] = sets[set].first[variant] = sets[set].last[variant] = NULL;
+            render_sets[set].producer_cursor[variant] = render_sets[set].producer_first[variant] = render_sets[set].producer_last[variant] =
+                NULL;
         }
     }
     NUDISPLAY_LIST *display = scene->display_list;
@@ -14148,8 +14067,8 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                 SHADOW_PRODUCER_BOUNDS *world_bounds = static_cast<SHADOW_PRODUCER_BOUNDS *>(scene->portal_boxes) + instance;
                 __declspec(align(16)) NUVEC4 sphere = {world_bounds->center_radius.x, world_bounds->center_radius.y,
                                                        world_bounds->center_radius.z, world_bounds->center_radius.w};
-                if (ShadowSegmentClip(reinterpret_cast<NUVEC *>(&sphere), reinterpret_cast<NUVEC *>(&sets[set].endpoint1),
-                                      reinterpret_cast<NUVEC *>(&sets[set].endpoint0), sets[set].radius,
+                if (ShadowSegmentClip(reinterpret_cast<NUVEC *>(&sphere), reinterpret_cast<NUVEC *>(&render_sets[set].endpoint1),
+                                      reinterpret_cast<NUVEC *>(&render_sets[set].endpoint0), render_sets[set].shadow_radius,
                                       world_bounds->center_radius.w) != 0) {
                     world_bounds = static_cast<SHADOW_PRODUCER_BOUNDS *>(scene->portal_boxes) + instance;
                     NUVEC extent = {world_bounds->extent.x, world_bounds->extent.y, world_bounds->extent.z};
@@ -14159,28 +14078,30 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                     if (reinterpret_cast<PCFrustumClipSet *>(this)->TestBox(&minimum, &maximum, set)) {
                         for (i32 material_index = 0; material_index < object->material_count; ++material_index) {
                             NUMTL *material = scene->materials[object->material_ids[material_index]];
-                            SHADOW_PRODUCER_SET &record = sets[set];
-                            SHADOW_PRODUCER_SET::List *list =
-                                reinterpret_cast<SHADOW_PRODUCER_MATERIAL *>(material)->alternate > 0 ? &record.lists[1] : &record.lists[0];
-                            i32 variant = list - record.lists;
-                            if (record.cursor[variant] >= record.last[variant]) {
-                                if (record.cursor[variant] > record.last[variant]) {
+                            NURNDRLIGHTRECORD &record = render_sets[set];
+                            NUDISPLAYLIST *list = reinterpret_cast<SHADOW_PRODUCER_MATERIAL *>(material)->alternate > 0
+                                                      ? &record.shadow_lists[1]
+                                                      : &record.shadow_lists[0];
+                            i32 variant = list - record.shadow_lists;
+                            if (record.producer_cursor[variant] >= record.producer_last[variant]) {
+                                if (record.producer_cursor[variant] > record.producer_last[variant]) {
                                     AnimationDiagnosticNoOp();
                                 }
                                 NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
-                                record.cursor[variant] =
+                                record.producer_cursor[variant] =
                                     reinterpret_cast<NUDISPLAYLISTITEM *>((NuDisplayListStreamCursor->addr + 15) & ~15u);
                                 NuDisplayListStreamCursor->addr = ((NuDisplayListStreamCursor->addr + 15) & ~15u) + 0x310;
-                                if (record.last[variant] != NULL) {
-                                    record.last[variant]->next = record.cursor[variant];
-                                    record.last[variant]->type = NUDLIST_NEXT;
-                                    record.last[variant]->id = 1;
+                                if (record.producer_last[variant] != NULL) {
+                                    record.producer_last[variant]->next = record.producer_cursor[variant];
+                                    record.producer_last[variant]->type = NUDLIST_NEXT;
+                                    record.producer_last[variant]->id = 1;
                                 } else {
-                                    record.first[variant] = record.cursor[variant];
+                                    record.producer_first[variant] = record.producer_cursor[variant];
                                 }
-                                record.last[variant] = reinterpret_cast<NUDISPLAYLISTITEM *>(NuDisplayListStreamCursor->addr - 0x10);
+                                record.producer_last[variant] =
+                                    reinterpret_cast<NUDISPLAYLISTITEM *>(NuDisplayListStreamCursor->addr - 0x10);
                             }
-                            NUDISPLAYLISTITEM *item = record.cursor[variant];
+                            NUDISPLAYLISTITEM *item = record.producer_cursor[variant];
                             item->next = material;
                             item->type = NUDLIST_MTL;
                             item->id = 3;
@@ -14189,7 +14110,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                             item[2] = geometry[0];
                             item[1].id = 3;
                             item[2].id = 3;
-                            record.cursor[variant] += 3;
+                            record.producer_cursor[variant] += 3;
                         }
                     }
                 }
@@ -14202,21 +14123,20 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
     DisplaySceneRndrSpecials(display, 0, 0);
     for (i32 set = 0; set < render_set_count; ++set) {
         for (i32 variant = 0; variant < 2; ++variant) {
-            SHADOW_PRODUCER_SET &record = sets[set];
-            if (record.first[variant] != NULL) {
-                NUDISPLAYLIST_PC *list = &record.lists[variant].list;
+            NURNDRLIGHTRECORD &record = render_sets[set];
+            if (record.producer_first[variant] != NULL) {
+                NUDISPLAYLIST *list = &record.shadow_lists[variant];
                 NuDisplayListLinkItems(list, 1);
-                NUDISPLAYLISTITEM *item = static_cast<NUDISPLAYLISTITEM *>(list->items);
+                NUDISPLAYLISTITEM *item = list->items;
                 item->type = NUDLIST_MTL;
                 item->id = 3;
                 item->next = scene->materials[0];
                 list->items = item + 1;
-                NUDISPLAYLIST *full_list = reinterpret_cast<NUDISPLAYLIST *>(list);
-                full_list->mtl_last->next = record.first[variant];
-                record.cursor[variant]->type = NUDLIST_NEXT;
-                record.cursor[variant]->next = full_list->dynamic_geometry + 1;
-                record.cursor[variant]->id = 1;
-                full_list->mtl_last = record.cursor[variant];
+                list->mtl_last->next = record.producer_first[variant];
+                record.producer_cursor[variant]->type = NUDLIST_NEXT;
+                record.producer_cursor[variant]->next = list->dynamic_geometry + 1;
+                record.producer_cursor[variant]->id = 1;
+                list->mtl_last = record.producer_cursor[variant];
             }
         }
     }
@@ -17012,7 +16932,7 @@ void NuDynamicLight::resetGeometry() {
         for (i32 j = 0; j < 2; ++j) {
             NuDisplayListResetStateCache(set.shadow_lists[j].state);
             NUDISPLAYLISTITEM *item = set.shadow_lists[j].first;
-            set.shadow_lists[j].material_last = item;
+            set.shadow_lists[j].mtl_last = item;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
             item->id = 1;
@@ -17136,10 +17056,10 @@ nurndrlightrecord_s::nurndrlightrecord_s() {
         item->type = NUDLIST_NEXT;
         item->next = NULL;
         item->id = 1;
-        shadow_lists[i].material_last = shadow_lists[i].first;
+        shadow_lists[i].mtl_last = shadow_lists[i].first;
         shadow_lists[i].state = render_states[i];
         NuDisplayListResetStateCache(render_states[i]);
-        shadow_lists[i].material_last = shadow_lists[i].first;
+        shadow_lists[i].mtl_last = shadow_lists[i].first;
     }
 }
 
@@ -17187,7 +17107,7 @@ nurndrlightrecord_s &nurndrlightrecord_s::operator=(const nurndrlightrecord_s &o
     list_items[0] = other.list_items[0];
     list_items[1] = other.list_items[1];
     for (i = 0; i < 6; ++i) {
-        unknown_33c[i] = other.unknown_33c[i];
+        producer_items[i] = other.producer_items[i];
     }
     for (i = 0; i < 8; ++i) {
         pending[i] = other.pending[i];
@@ -18548,7 +18468,7 @@ PC_SPECIAL_SHADOW_LIGHT *PC_SPECIAL_SHADOW_LIGHT::Clone(VARIPTR *arena, VARIPTR)
         for (i32 j = 0; j < 2; ++j) {
             NuDisplayListResetStateCache(set.shadow_lists[j].state);
             NUDISPLAYLISTITEM *item = set.shadow_lists[j].first;
-            set.shadow_lists[j].material_last = item;
+            set.shadow_lists[j].mtl_last = item;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
             item->id = 1;
@@ -18584,7 +18504,7 @@ void PC_SPECIAL_SHADOW_LIGHT::SetupShadow(NURNDRLIGHTRECORD *set) {
 
 void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
     NURNDRLIGHTRECORD &set = render_sets[index];
-    if (set.shadow_lists[0].material_last == set.shadow_lists[0].first && set.shadow_lists[1].material_last == set.shadow_lists[1].first &&
+    if (set.shadow_lists[0].mtl_last == set.shadow_lists[0].first && set.shadow_lists[1].mtl_last == set.shadow_lists[1].first &&
         set.count == 0) {
         return;
     }
@@ -18611,9 +18531,9 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
     NuMtxMulH(&view_projection, &set.shadow_matrix, &axis);
     PcUpdateGeometryCameraOrigin(&view_projection, &NuMtxSetIdentityTemplate);
     for (i32 i = 0; i < 2; ++i) {
-        NU_LIGHT_SHADOW_LIST_VIEW &list = set.shadow_lists[i];
-        if (list.material_last != list.first) {
-            NUDISPLAYLISTITEM *item = list.material_last;
+        NUDISPLAYLIST &list = set.shadow_lists[i];
+        if (list.mtl_last != list.first) {
+            NUDISPLAYLISTITEM *item = list.mtl_last;
             item->type = NUDLIST_TERMINATE;
             item->next = NULL;
             item->id = 4;
@@ -18624,7 +18544,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
             NuDisplayHandlerTint = PostShadowWhite;
             NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &PostShadowWhite.x);
             NuDisplayListDrawItems(list.first);
-            list.material_last = list.first;
+            list.mtl_last = list.first;
         }
     }
     for (i32 i = 0; i < set.count; ++i) {

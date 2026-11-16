@@ -61,8 +61,8 @@ typedef struct nuglobalrndrstate_s { // size 0x1a4
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void DisplayListUpdateRenderStateShadow(NUDISPLAYLIST_PC *, NUGLOBALRNDRSTATE *);
-    void DisplayListUpdateRenderState(NUDISPLAYLIST_PC *list, NUGLOBALRNDRSTATE *state);
+    void DisplayListUpdateRenderStateShadow(NUDISPLAYLIST *, NUGLOBALRNDRSTATE *);
+    void DisplayListUpdateRenderState(NUDISPLAYLIST *list, NUGLOBALRNDRSTATE *state);
     void RndrStateCopyGlobalState(NUGLOBALRNDRSTATE *state);
     void RndrStateResetGlobalState(NUGLOBALRNDRSTATE *state);
     void RndrStateResetSharedGlobalState(void);

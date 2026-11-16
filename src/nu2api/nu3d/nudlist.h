@@ -8,21 +8,6 @@ struct numtx_s;
 struct nurndrlibstate_s;
 struct nuhspecial_s;
 
-typedef struct nudisplaylist_pc_s NUDISPLAYLIST_PC;
-
-typedef struct nudisplayscene_s {        // size 0x78
-    u8 unknown_0000[0x54];               // 0x00
-    struct nudisplaylist_s **dlist_mtls; // 0x54
-    u8 *material_used_front;             // 0x58
-    u8 *material_used_back;              // 0x5c
-    u8 unknown_0060[0x14];               // 0x60
-
-    union { // size 0x4
-        u16 flags;
-        u32 render_flags;
-    }; // 0x74
-} NUDISPLAYSCENE;
-
 /* NUDISPLAYLISTITEM.type, named after the text DisplayListPrintItem prints for each. */
 #define NUDLIST_MTL 0x80
 #define NUDLIST_TXTRLOAD 0x81
@@ -90,38 +75,7 @@ extern "C" {
 }
 #endif
 
-struct nudisplaylist_pc_s { // size 0x28
-    NUDISPLAYSCENE *scene;  // 0x00
-    i32 material_id;        // 0x04
-    void *render_state;     // 0x08
-    u8 unknown_000c[8];     // 0x0c
-    void *material_last;    // 0x14
-    void *dynamic_geometry; // 0x18
-    u8 unknown_001c[8];     // 0x1c
-    void *items;            // 0x24
-};
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-    i32 NuDisplayListRndrSpecial(struct nuhspecial_s *, struct numtx_s *, i32, struct numtx_s *, void *);
-    VARIPTR *NuDisplayListLinkItems(NUDISPLAYLIST_PC *, i32);
-    void *DisplayListCreateGeomTransformPS(VARIPTR *, struct numtx_s *, struct numtl_s *, void *, void *);
-    void *DisplayListCreateSkinTransformPS(VARIPTR *, struct numtx_s *, void *, void *, void **, void *);
-    void *NuDisplayListPrepareFaceonPS(VARIPTR *, void *, struct numtx_s *);
-    VARIPTR *NuDisplayListLinkItem(NUDISPLAYLIST_PC *list, u8 type, void *target);
-    void NuDisplayListLinkMtl(NUDISPLAYLIST_PC *list, struct numtl_s *material);
-    void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *, struct numtl_s *);
-    void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *, struct numtl_s *);
-    void NuDisplayListAddLightState(NUDISPLAYLISTITEM *, struct numtl_s *);
-    void NuDisplayListUpdateSpecial(struct nuhspecial_s *special);
-    void DisplayListUpdateSpecialTransformPS(struct nuhspecial_s *special, struct numtx_s *matrix);
-#ifdef __cplusplus
-}
-#endif
-
-typedef struct nudisplaylist_s {         // size 0x38
+typedef struct nudisplaylist_s {         // size 0x44
     struct nudisplay_list_s *scene;      // 0x00
     i32 material_id;                     // 0x04
     struct nurndrlibstate_s *state;      // 0x08
@@ -131,11 +85,33 @@ typedef struct nudisplaylist_s {         // size 0x38
     NUDISPLAYLISTITEM *dynamic_geometry; // 0x18
     u32 texture_slots;                   // 0x1c
     u32 bitfield;                        // 0x20
-    struct nudisplaylistitem_s *items;   // 0x24
+    NUDISPLAYLISTITEM *items;            // 0x24
     NUDISPLAYLISTITEM *scene_first[2];   // 0x28
     NUDISPLAYLISTITEM *scene_next;       // 0x30
     i32 scene_buffer;                    // 0x34
+    i32 scene_item_count;                // 0x38
+    u8 unknown_003c[8];                  // 0x3c
 } NUDISPLAYLIST;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+    i32 NuDisplayListRndrSpecial(struct nuhspecial_s *, struct numtx_s *, i32, struct numtx_s *, void *);
+    VARIPTR *NuDisplayListLinkItems(NUDISPLAYLIST *, i32);
+    void *DisplayListCreateGeomTransformPS(VARIPTR *, struct numtx_s *, struct numtl_s *, void *, void *);
+    void *DisplayListCreateSkinTransformPS(VARIPTR *, struct numtx_s *, void *, void *, void **, void *);
+    void *NuDisplayListPrepareFaceonPS(VARIPTR *, void *, struct numtx_s *);
+    VARIPTR *NuDisplayListLinkItem(NUDISPLAYLIST *list, u8 type, void *target);
+    void NuDisplayListLinkMtl(NUDISPLAYLIST *list, struct numtl_s *material);
+    void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *, struct numtl_s *);
+    void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *, struct numtl_s *);
+    void NuDisplayListAddLightState(NUDISPLAYLISTITEM *, struct numtl_s *);
+    void NuDisplayListUpdateSpecial(struct nuhspecial_s *special);
+    void DisplayListUpdateSpecialTransformPS(struct nuhspecial_s *special, struct numtx_s *matrix);
+#ifdef __cplusplus
+}
+#endif
 
 typedef struct nusortpri_s {      // size 0x24
     i32 sort_pri;                 // 0x00
@@ -145,10 +121,7 @@ typedef struct nusortpri_s {      // size 0x24
     u32 flags;                    // 0x14
     u32 sort_flags;               // 0x18
 
-    union { // size 0x4
-        struct nudisplay_list_s *display_scene;
-        struct nudisplayscene_s *legacy_display_scene;
-    }; // 0x1c
+    struct nudisplay_list_s *display_scene; // 0x1c
 
     u16 nmtls;     // 0x20
     u16 mtl_first; // 0x22

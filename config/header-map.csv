@@ -567,7 +567,7 @@ assert:-#372,assert,,2260,2260,2,legoapi/characters/core/players.h,follow-type,P
 assert:-#373,assert,,2261,2261,1,legoapi/characters/core/players.h,follow-type,PLAYERPROGRESS
 struct:numtlattrib_s,struct,numtlattrib_s NUMTLATTRIB,2263,2275,14,nu2api/nu3d/numtl.h,android,numtlattrib_s
 assert:-#374,assert,,2277,2277,2,nu2api/nu3d/numtl.h,follow-type,NUMTLATTRIB
-forward:nudisplaylist_pc_s,forward,nudisplaylist_pc_s NUDISPLAYLIST_PC,2278,2278,1,nu2api/nu3d/nudlist.h,android-stem,nudisplaylist_pc_s -> nudisplaylist_s
+forward:nudisplaylist_s,forward,nudisplaylist_s NUDISPLAYLIST,2278,2278,1,nu2api/nu3d/nudlist.h,android-stem,nudisplaylist_s -> nudisplaylist_s
 struct:numtl_s,struct,numtl_s NUMTL,2280,2295,17,nu2api/nu3d/numtl.h,android,numtl_s
 assert:-#375,assert,,2297,2297,2,nu2api/nu3d/numtl.h,follow-type,NUMTL
 assert:-#376,assert,,2298,2298,1,nu2api/nu3d/numtl.h,follow-type,NUMTL
@@ -581,13 +581,13 @@ assert:-#382,assert,,2317,2317,2,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCEN
 assert:-#383,assert,,2318,2318,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE
 assert:-#384,assert,,2319,2319,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE
 assert:-#385,assert,,2320,2320,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYSCENE
-struct:nudisplaylist_pc_s,struct,nudisplaylist_pc_s,2322,2331,11,nu2api/nu3d/nudlist.h,android-stem,nudisplaylist_pc_s -> nudisplaylist_s
-assert:-#386,assert,,2333,2333,2,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
-assert:-#387,assert,,2334,2334,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
-assert:-#388,assert,,2335,2335,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
-assert:-#389,assert,,2336,2336,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
-assert:-#390,assert,,2337,2337,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
-assert:-#391,assert,,2338,2338,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST_PC
+struct:nudisplaylist_s,struct,nudisplaylist_s,2322,2331,11,nu2api/nu3d/nudlist.h,android-stem,nudisplaylist_s -> nudisplaylist_s
+assert:-#386,assert,,2333,2333,2,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST
+assert:-#387,assert,,2334,2334,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST
+assert:-#388,assert,,2335,2335,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST
+assert:-#389,assert,,2336,2336,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST
+assert:-#390,assert,,2337,2337,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST
+assert:-#391,assert,,2338,2338,1,nu2api/nu3d/nudlist.h,follow-type,NUDISPLAYLIST
 struct:PC_TEXTURE_LEVEL_DESC,struct,PC_TEXTURE_LEVEL_DESC,2340,2348,10,nu2api/nuwin32/d3dCore.h,rule,used most in nu2api/nu3d_pc_includes.cpp[nustencilshadows_PC.cpp] (4) pc-path
 assert:-#392,assert,,2350,2350,2,nu2api/nustencilshadows_PC.h,follow-type,PC_TEXTURE_LEVEL_DESC
 assert:-#393,assert,,2351,2351,1,nu2api/nustencilshadows_PC.h,follow-type,PC_TEXTURE_LEVEL_DESC

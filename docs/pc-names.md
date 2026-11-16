@@ -30,5 +30,4 @@ by field merge (which layout is real, which fields the users touch), not a renam
 
 | Name | Twin |
 |------|------|
-| `NUDISPLAYLIST_PC` (`nudisplaylist_pc_s`, 0x28) | `NUDISPLAYLIST` (`nudisplaylist_s`, 0x38) in `nu3d/nudlist.h` |
 | `NUVISIBOXTREENODE_PC`, `NUVISIBOXTREE_PC`, `NUBOXTREEVISIBILITY_PC` | the compact box tree `NUVISIBOXTREENODE`, `NUVISIBOXTREE`, `NUBOXTREEVISIBILITY` in `nu3d_includes.cpp` |

@@ -7336,7 +7336,7 @@ address,symbol,size,ctype
 0x5c2eb0,?fun_005c2eb0@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,7,
 0x5c2ec0,?fun_005c2ec0@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z,13,
 0x5c2ed0,_fun_005c2ed0,1,
-0x5c2ee0,?fun_005c2ee0@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUNU_LIGHT_SHADOW_LIST_VIEW@@HPAUnumtl_s@@@Z,53,
+0x5c2ee0,?fun_005c2ee0@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnudisplaylist_s@@HPAUnumtl_s@@@Z,53,
 0x5c2f20,?fun_005c2f20@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,7,
 0x5c2f30,?fun_005c2f30@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
 0x5c2f40,?fun_005c2f40@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,7,
@@ -42377,7 +42377,7 @@ address,symbol,size,ctype
 0x973e84,_PCDisplayMaterialStreamStart,4,VARIPTR
 0x973e88,_PCDisplayMaterialStreamEnd,4,VARIPTR
 0x973e8c,_PCDisplayMaterialStreamUsed,4,u8 *
-0x973e90,_PCDisplayList2d,56,NUDISPLAYLIST
+0x973e90,_PCDisplayList2d,68,NUDISPLAYLIST
 0x00973ed4,_nudlist_2d_static,16,NUDISPLAYLISTITEM
 0x00973ee8,_nused_sort_pris,4,i32
 0x00973eec,_sort_list,4,NUSORTPRI *

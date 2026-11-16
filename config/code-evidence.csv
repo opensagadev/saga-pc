@@ -892,7 +892,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x005c2eb0,7,?fun_005c2eb0@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c2ec0,13,?fun_005c2ec0@PC_SPECIAL_SHADOW_LIGHT@@QAEXH@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c2ed0,1,_fun_005c2ed0,extent,,nu2api/nu3d_includes.cpp,unreferenced,
-0x005c2ee0,53,?fun_005c2ee0@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUNU_LIGHT_SHADOW_LIST_VIEW@@HPAUnumtl_s@@@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,
+0x005c2ee0,53,?fun_005c2ee0@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnudisplaylist_s@@HPAUnumtl_s@@@Z,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c2f20,7,?fun_005c2f20@PC_SPECIAL_SHADOW_LIGHT@@QAEHXZ,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c2f30,7,?fun_005c2f30@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,extent,,nu2api/nu3d_includes.cpp,unreferenced,
 0x005c2f40,7,?fun_005c2f40@PC_SPECIAL_SHADOW_LIGHT@@QAEPAUnumtx_s@@XZ,extent,,nu2api/nu3d_includes.cpp,unreferenced,

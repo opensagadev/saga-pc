@@ -498,8 +498,8 @@ extern "C" {
         if (enabled != 0 && light->enabled == 0) {
             i32 i;
             for (i = 0; i < light->render_set_count; ++i) {
-                light->render_sets[i].shadow_lists[0].material_last = light->render_sets[i].shadow_lists[0].first;
-                light->render_sets[i].shadow_lists[1].material_last = light->render_sets[i].shadow_lists[1].first;
+                light->render_sets[i].shadow_lists[0].mtl_last = light->render_sets[i].shadow_lists[0].first;
+                light->render_sets[i].shadow_lists[1].mtl_last = light->render_sets[i].shadow_lists[1].first;
             }
         }
         light->enabled = enabled;

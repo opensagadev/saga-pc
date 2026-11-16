@@ -110,8 +110,8 @@ extern "C" {
         if (enabled != 0 && this->enabled == 0) {
             i32 index;
             for (index = 0; index < render_set_count; ++index) {
-                render_sets[index].shadow_lists[0].material_last = render_sets[index].shadow_lists[0].first;
-                render_sets[index].shadow_lists[1].material_last = render_sets[index].shadow_lists[1].first;
+                render_sets[index].shadow_lists[0].mtl_last = render_sets[index].shadow_lists[0].first;
+                render_sets[index].shadow_lists[1].mtl_last = render_sets[index].shadow_lists[1].first;
             }
         }
         this->enabled = enabled;
