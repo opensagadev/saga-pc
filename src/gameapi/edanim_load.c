@@ -957,8 +957,6 @@ void edanimDrawCursor(void) {
     NuQFntPopCoordinateSystem();
 }
 
-extern struct eduimenu_s *edanim_localsound_menu;
-
 void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     u32 colours[4] = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
     nuhspecial_s special;

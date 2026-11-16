@@ -5,10 +5,20 @@
 #include "legoapi/legoapi_types.h"
 #include "nu2api/numath/nuvec.h"
 
+struct eduimenu_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern i32 edpp_page_used[8];
+    extern struct eduimenu_s *ptlemitvelmenu;
+    extern struct eduimenu_s *ptlgravmenu;
+    extern struct eduimenu_s *ptlvaremitmenu;
+    extern struct eduimenu_s *ptlstartvelmenu;
+    extern struct eduimenu_s *ptlrotmenu;
+    extern struct eduimenu_s *ptlsizemenu;
+    extern struct eduimenu_s *ptlcolmenu;
+    extern struct eduimenu_s *emittimemenu;
     extern i32 edpp_page_on[8];
     extern i32 edpp_instances_used;
     extern i32 edpp_types_used;

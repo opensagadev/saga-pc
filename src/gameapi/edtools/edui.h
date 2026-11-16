@@ -241,6 +241,8 @@ extern "C" {
     extern char ed_levelfile[256];
     void eduiInitMaterials(void);
     void cbGradChange(void);
+    edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green, f32 blue);
+    void eduiGradStageDelete(edui_gradient_pick_s *item, edui_gradient_node_s *stage);
     struct eduiitem_s *eduiItemGradPickCreate(u32 data, void *colours, void *callback, char *text);
     struct eduiitem_s *eduiItemSliderCreate(u32 data, void *colours, i32 group, void *callback, f32 minimum, f32 maximum, f32 value,
                                             char *text);

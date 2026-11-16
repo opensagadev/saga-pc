@@ -2431,9 +2431,6 @@ void cbPtlEmitMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern struct eduimenu_s *ptlemitvelmenu;
-extern struct eduimenu_s *ptlgravmenu;
-
 static void cbPtlCancelEmitVelMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlemitvelmenu);
     ptlemitvelmenu = NULL;
@@ -2570,9 +2567,7 @@ void edptlcbGhostMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern struct eduimenu_s *ptlvaremitmenu;
 extern struct eduimenu_s *ptlvarstartmenu;
-extern struct eduimenu_s *ptlstartvelmenu;
 
 void cbPtlCancelCutOffMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlcutoffmenu);
@@ -2896,9 +2891,6 @@ void cbPtlStartVelMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
 }
 
 extern struct eduimenu_s *edptl_torus_menu;
-extern struct eduimenu_s *ptlrotmenu;
-
-struct edui_gradient_node_s *eduiGradStageAddRGB(edui_gradient_pick_s *item, f32 time, f32 red, f32 green, f32 blue);
 
 void edppClose(void) {
     eduiMenuDestroy(ptloptmenu);
@@ -3489,9 +3481,6 @@ void cbPtlRotMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     ptlrotmenu->y = parent->y + 40;
 }
 
-extern struct eduimenu_s *ptlsizemenu;
-void eduiGradStageDelete(edui_gradient_pick_s *item, struct edui_gradient_node_s *stage);
-
 static void cbPtlCancelSizeMenu(eduimenu_s *unused0, eduimenu_s *unused1) {
     eduiMenuDestroy(ptlsizemenu);
     ptlsizemenu = NULL;
@@ -3905,8 +3894,6 @@ void edptlcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     edptl_switch_menu->x = parent->x + 10;
     edptl_switch_menu->y = parent->y + 40;
 }
-
-extern struct eduimenu_s *ptlcolmenu;
 
 void cbPtlApplyGrad(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     EDUI_GRADIENT_STAGE stages[8];

@@ -11,9 +11,12 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+struct eduimenu_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+    extern struct eduimenu_s *edanim_localsound_menu;
     void RootFnEx(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32, i32);
     void RootFn(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);
     void RootFnY(NUMTX *, void *, NUVEC *, NUVEC *, NUVEC *, f32);

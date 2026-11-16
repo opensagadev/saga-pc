@@ -616,7 +616,6 @@ void cbPtlAddEffect(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
 
 extern struct eduimenu_s *changegenratemenu;
 extern struct eduimenu_s *etimemenu;
-extern struct eduimenu_s *emittimemenu;
 
 struct eduimenu_s *changegenratemenu = 0;
 
