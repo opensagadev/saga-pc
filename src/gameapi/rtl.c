@@ -37,17 +37,9 @@ NUVEC rtl_shadow_flicker = {0.1f, 0.1f, 0.1f};
 static u16 rtl_uid = 1;
 static i32 rtl_dynamic_cnt = 0;
 
-typedef union RTL_FRAME_TIMER_VIEW { // size 0x4
-    i32 value;
-
-    struct {      // size 0x4
-        u16 low;  // 0x0
-        u16 high; // 0x2
-    } words;
-} RTL_FRAME_TIMER_VIEW;
-
 void rtlFrameUpdate(f32 frame_time) {
-    ((RTL_FRAME_TIMER_VIEW *)&rtltimer1)->words.low += (u16)(i32)(rtltimer1adv * frame_time);
+    /* Only the low 16 bits advance: the timer is an angle that wraps without touching the high half. */
+    *(u16 *)&rtltimer1 += (u16)(i32)(rtltimer1adv * frame_time);
     NuTimeBarSlotReset(0, 6);
 }
 
