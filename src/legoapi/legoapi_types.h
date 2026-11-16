@@ -153,14 +153,24 @@ typedef struct SoundTable { // size 0xc8
     u16 bits[100];          // 0x00
 } SoundTable;
 
-typedef struct cutinfo_s { // size 0xf0
-    u8 opaque_00_04[0x4];  // 0x00
-    void *instance;        // 0x04
-    char name[0x40];       // 0x08
-    u8 unknown_48[0x8];    // 0x48
-    u32 flags;             // 0x50
-    u8 unknown_54[0x98];   // 0x54
-    i16 skip_level;        // 0xec
+/* An object a cut scene shows (flag 1), hides (2) or holds at its last frame (4) when the players take over
+ * (CutScenePlayer_SetObjects). */
+typedef struct cut_player_state_s { // size 0x10
+    nuhspecial_s special;           // 0x0
+    u8 flags;                       // 0xc
+    u8 unknown_0d[3];               // 0xd
+} CUT_PLAYER_STATE;
+
+typedef struct cutinfo_s {           // size 0xf0
+    u8 opaque_00_04[0x4];            // 0x00
+    void *instance;                  // 0x04
+    char name[0x40];                 // 0x08
+    CUT_PLAYER_STATE *player_states; // 0x48
+    u8 player_state_count;           // 0x4c
+    u8 unknown_4d[3];                // 0x4d
+    u32 flags;                       // 0x50
+    u8 unknown_54[0x98];             // 0x54
+    i16 skip_level;                  // 0xec
 } CUTINFO;
 
 typedef struct gameanimset_s GAMEANIMSET;

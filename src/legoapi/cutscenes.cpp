@@ -392,18 +392,6 @@ extern "C" {
     void GizmoSysDraw(void *, WORLDINFO *, f32);
 }
 
-typedef struct CUT_PLAYER_STATE {
-    nuhspecial_s special;
-    u8 flags;
-    u8 unknown_0d[3];
-} CUT_PLAYER_STATE;
-
-typedef struct CUT_PLAYER_RECORD {
-    u8 unknown_00[0x48];
-    CUT_PLAYER_STATE *states;
-    u8 state_count;
-} CUT_PLAYER_RECORD;
-
 extern "C" {
     static void LocatorFunction_Blaster(INSTNUGCUTSCENE *, CUT_DRAW_LOCATOR_SYS *, CUT_DRAW_LOCATOR_INSTANCE *, CUT_DRAW_LOCATOR *locator,
                                         f32 frame, NUMTX *parent, i32);
@@ -2231,25 +2219,24 @@ extern "C" {
     }
 
     void CutScenePlayer_SetObjects(CUTINFO *owner) {
-        // MATCH-EXCEPTION: cast at each use; a cast local lets VC8 pack the end frame into the dead parameter
-        // slot.
+        // MATCH-EXCEPTION: owner->player_states at each use; a local copy lets VC8 pack the end frame into the dead
+        // parameter slot.
         i32 i;
         if (CutScenePlayer == NULL || CutScenePlayer->active == NULL) {
             return;
         }
-        if (((CUT_PLAYER_RECORD *)owner)->states == NULL) {
+        if (owner->player_states == NULL) {
             return;
         }
-        for (i = 0; i < ((CUT_PLAYER_RECORD *)owner)->state_count; ++i) {
-            u8 flags = ((CUT_PLAYER_RECORD *)owner)->states[i].flags;
+        for (i = 0; i < owner->player_state_count; ++i) {
+            u8 flags = owner->player_states[i].flags;
             if ((flags & 1) != 0) {
-                NuSpecialSetVisibility(&((CUT_PLAYER_RECORD *)owner)->states[i].special, 1);
+                NuSpecialSetVisibility(&owner->player_states[i].special, 1);
             } else if ((flags & 2) != 0) {
-                NuSpecialSetVisibility(&((CUT_PLAYER_RECORD *)owner)->states[i].special, 0);
+                NuSpecialSetVisibility(&owner->player_states[i].special, 0);
             } else if ((flags & 4) != 0) {
-                f32 time = NuSpecialGetAnimEndFrame(&((CUT_PLAYER_RECORD *)owner)->states[i].special);
-                CUT_PLAYER_INST_ANIM *animation =
-                    (CUT_PLAYER_INST_ANIM *)NuSpecialGetInstAnim(&((CUT_PLAYER_RECORD *)owner)->states[i].special);
+                f32 time = NuSpecialGetAnimEndFrame(&owner->player_states[i].special);
+                CUT_PLAYER_INST_ANIM *animation = (CUT_PLAYER_INST_ANIM *)NuSpecialGetInstAnim(&owner->player_states[i].special);
                 if (animation != NULL) {
                     animation->flags |= 1;
                     animation->time = time;

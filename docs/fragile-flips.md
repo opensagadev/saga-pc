@@ -78,3 +78,7 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | force records: one GIZFORCE, GIZFORCEGROUP, GIZFORCESYS | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | 90.96 % | exact |
 | episode records: one PODSPRINT, the unused copies go | InitGameAfterConfig | legogame/game.cpp | 82.2397 % | 82.2372 % |
 | legoapi declarations into module headers (both passes, on 103b32b2) | DebrisSetup2 | legoapi/parts.c | 99.95 % | exact |
+| dead type copies, AI hook typedefs, CUT_PLAYER_STATE in CUTINFO | InitGameAfterConfig | legogame/game.cpp | 82.2397 % | 82.2372 % |
+| dead type copies, AI hook typedefs, CUT_PLAYER_STATE in CUTINFO | NuRndrParticleGroup | nu2api/nu3d_platform.cpp | 95.92 % | 95.37 % |
+| dead type copies, AI hook typedefs, CUT_PLAYER_STATE in CUTINFO | DebrisSetup2 | legoapi/parts.c | 99.95 % | exact |
+| dead type copies, AI hook typedefs, CUT_PLAYER_STATE in CUTINFO | DrawSubItems | legogame/shop.c | 82.95 % | 82.98 % (newly fragile: no change to its unit's source) |
