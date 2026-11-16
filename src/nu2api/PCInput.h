@@ -108,7 +108,7 @@ struct TEXT_INPUT_LABELS { // size 0xc0
     char *direction_negative[3]; // 0xa0
     char *hat_names[3];          // 0xac
     char *hat_format;            // 0xb8
-    char *unknown;               // 0xbc
+    char *fallback_name;         // 0xbc
 };
 
 #ifdef __cplusplus

@@ -331,3 +331,10 @@ config/castscan-budget.json truncation 2186 quick run, settled in the refix
 config/oddscan-budget.json magic-mask 1048 quick run, settled in the refix
 config/castscan-budget.json raw-offset 359 quick run, settled in the refix
 config/oddscan-budget.json magic-flag 2473 quick run, settled in the refix
+config/castscan-budget.json float-int 3118 quick run, settled in the refix
+config/castscan-budget.json float-width 3987 quick run, settled in the refix
+config/castscan-budget.json signedness 1898 quick run, settled in the refix
+config/declscan-budget.json A 24 quick run, settled in the refix
+config/oddscan-budget.json dense-function 1180 quick run, settled in the refix
+config/castscan-budget.json embedded-base 919 quick run, settled in the refix
+config/castscan-budget.json field-address 309 quick run, settled in the refix
