@@ -8065,13 +8065,12 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average, f32 &radius) {
     average.z = 0.0f;
     average.w = 1.0f;
     for (ClassObjectListEntry *entry = first; entry != NULL && count < 64; entry = entry->next) {
-        ClassObject &object = *entry;
-        if (object.GetAttributeData(8, EdType_VuVec, &positions[count], 0)) {
+        if (entry->GetAttributeData(8, EdType_VuVec, &positions[count], 0)) {
             average.x += positions[count].x;
             average.y += positions[count].y;
             average.z += positions[count].z;
             radii[count] = 1.0f;
-            object.GetAttributeData(0x40, EdType_Float, &radii[count], 0);
+            entry->GetAttributeData(0x40, EdType_Float, &radii[count], 0);
             count++;
         }
     }
@@ -8581,7 +8580,7 @@ i32 EdManipulator::Process(EdInputContext &input, ClassObjectList &objects) {
 
 void EdManipulator::Render(ClassObjectList &objects) {
     for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
-        theClassEditor.DrawObjectSphere(*entry, 0xff800000);
+        theClassEditor.DrawObjectSphere(entry->Self(), 0xff800000);
     }
 }
 
@@ -10664,7 +10663,7 @@ void ClassEditor::Render() {
             manipulator->Render(selected_objects);
         } else {
             for (entry = selected_objects.first; entry != NULL; entry = entry->next) {
-                DrawObjectSphere(*entry, 0xff800000);
+                DrawObjectSphere(entry->Self(), 0xff800000);
             }
         }
         for (entry = selected_objects.first; entry != NULL; entry = entry->next) {

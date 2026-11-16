@@ -550,6 +550,11 @@ struct ClassObject {   // size 0xc
     i32 SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
     void CopyObject(ClassObject &source);
 
+    /* The object as a plain ClassObject; selection nodes reach it through this call. */
+    ClassObject &Self() {
+        return *this;
+    }
+
     void fun_006b89c0(EdClass *object_class, void *object_data);
     void fun_006b89d0();
     i32 fun_006b89e0();
