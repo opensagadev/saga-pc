@@ -548,7 +548,7 @@ static u32 CustomiserPreviewLayerMask(CUSTOMISER_CONFIG *customiser, const u16 *
     }
     if (character->cape_layer != -1) {
         mask |= 1u << character->cape_layer;
-        if ((selected == -1 || GetMenuID() != 12 || customiser_quit != 0 || selected != 5) &&
+        if ((selected == -1 || GetMenuID() != MENU_CUSTOMISER || customiser_quit != 0 || selected != 5) &&
             (customiser->piece_sets[5][selection[5]].availability_flags & CUSTOM_PIECE_CAPE_OFF) != 0) {
             mask &= ~(1u << character->cape_layer);
         }
@@ -1150,7 +1150,7 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
             i32 locator;
             CUSTOM_RESOURCE_UPDATE *resources;
             i32 material;
-            if (category == CustomiseMenuY[side] && GetMenuID() == 12 && customiser_quit == 0 &&
+            if (category == CustomiseMenuY[side] && GetMenuID() == MENU_CUSTOMISER && customiser_quit == 0 &&
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
                 (locator = customiser->locator_indices[category]) != -1 && model->points_of_interest[locator] != NULL) {
                 NUVEC position;
@@ -1193,7 +1193,7 @@ void Customiser_Update(CUSTOMISER_LAYERS *input, WORLDINFO *world) {
         }
     }
     {
-        const f32 target = GetMenuID() == 12 && customiser_quit == 0 ? 1.0f : 0.0f;
+        const f32 target = GetMenuID() == MENU_CUSTOMISER && customiser_quit == 0 ? 1.0f : 0.0f;
         CustomiseNameAlpha = SeekLinearF(CustomiseNameAlpha, target, 1.5 * FRAMETIME);
     }
 }
@@ -1257,7 +1257,8 @@ void Customiser_Draw3D(CUSTOMISER_LAYERS *input) {
                     continue;
                 }
                 piece = &customiser->piece_sets[category][Game.customiser_start[side].pieces[category]];
-                if (GetMenuID() == 12 && customiser_quit == 0 && category == selected && (active_count == 2 || side == preview_side)) {
+                if (GetMenuID() == MENU_CUSTOMISER && customiser_quit == 0 && category == selected &&
+                    (active_count == 2 || side == preview_side)) {
                     NuFmod(CustomiseMenuTime[side], 0.3f);
                 } else if (category == 0 && (piece->availability_flags & CUSTOM_PIECE_HAT_OFF) != 0) {
                     continue;

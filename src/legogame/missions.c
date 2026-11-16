@@ -275,7 +275,7 @@ void CheckMissionEnd(MISSIONSYS *system) {
     if (((MISSION_END_SYSTEM_VIEW *)system)->elapsed_time < 3.0f) {
         return;
     }
-    if (GetMenuID() == 9) {
+    if (GetMenuID() == MENU_END_MISSION) {
         return;
     }
     if (target != NULL) {

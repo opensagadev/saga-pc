@@ -1526,7 +1526,7 @@ void MovePlayer(GAMEOBJECT *object) {
             object->flags_ef0 &= ~0x400;
             menu_id = GetMenuID();
             if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (object->flags_1fc_word & 0x100) == 0) {
-                if (FadeSys.fade > 0.0f || newgamecam != 0 || MiniCutCam == 2 || (menu_id != -1 && menu_id != 0x0e)) {
+                if (FadeSys.fade > 0.0f || newgamecam != 0 || MiniCutCam == 2 || (menu_id != -1 && menu_id != MENU_MINIKIT)) {
                     input.x = input.z = 0.0f;
                     pad->input_mode = 1;
                     pad->input_direction_x = pad->input_direction_z = pad->input_magnitude = 0.0f;
@@ -1663,7 +1663,7 @@ void MovePlayer(GAMEOBJECT *object) {
                 }
                 object->pad->operator_data = object->ai_packet.movement_look_target;
             }
-            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && menu_id == 0x0e &&
+            if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && menu_id == MENU_MINIKIT &&
                 (object == Player[0] || object == Player[1])) {
                 index = object != Player[0];
                 Hub_PadSpeed[index] = pad->input_magnitude;
@@ -3065,7 +3065,8 @@ void UpdateCharacterLoad(void) {
     i32 required;
     i32 count;
     i32 id;
-    if (menu == 13 || menu == 15 || menu == 16 || menu == 17 || LOADEROFF != 0 || BGLOAD == 0) {
+    if (menu == MENU_SHOP || menu == MENU_SELECT_MODE || menu == MENU_BONUS_MODE || menu == MENU_FREE_PLAY || LOADEROFF != 0 ||
+        BGLOAD == 0) {
         return;
     }
     if (waiting_for_character != -1 || hub_character_ready != -1 || bgGetProcActive() != NULL || (i32)nudlist_field_9d8 > 0xfd) {

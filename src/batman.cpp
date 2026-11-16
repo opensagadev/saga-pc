@@ -973,7 +973,7 @@ extern "C" int NuMain(int argc, char **argv) {
                 NuTimeBarSlotReset(0, 0xf);
                 _NuTimeBarSlotBegin(0, 0xf, "frmtmr");
                 DebrisSetTimeIncrement(FRAMETIME);
-                InitPanel(GetMenuID() == 4 ? TempOptions.widescreen : Game.options_save.widescreen);
+                InitPanel(GetMenuID() == MENU_OPTIONS ? TempOptions.widescreen : Game.options_save.widescreen);
                 saved_frametime = FRAMETIME;
                 if ((waiting_for_level == -1 || gone_through_door_to_new_level == 0) && screendump == 0) {
                     if (ChallengeMode == 1 && AreaGlobals.unknown_20 >= 10 && WORLD->current_level != HUB_LDATA && MiniCutCam == 0 &&
@@ -993,7 +993,7 @@ extern "C" int NuMain(int argc, char **argv) {
                     WaitingForCharacterTime += FRAMETIME;
                 }
                 FRAMETIME = saved_frametime;
-                WidescreenCode(GetMenuID() == 4 ? TempOptions.widescreen : Game.options_save.widescreen);
+                WidescreenCode(GetMenuID() == MENU_OPTIONS ? TempOptions.widescreen : Game.options_save.widescreen);
                 UpdateBackgroundMusic();
                 NuFrameBegin();
                 if (SoundVoiceEnabledGate != 0) {

@@ -800,7 +800,7 @@ static void HubDrawArcadeStats(f32 alpha) {
     }
     DrawBonusScore(STATSPOSY, first, second, alpha, Arcade_Score);
     i32 text;
-    if (GetMenuID() == 16) {
+    if (GetMenuID() == MENU_BONUS_MODE) {
         if (bonusmodearcade == 0 || hub_bonusmode != 4) {
             return;
         }
@@ -1756,7 +1756,7 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
     i32 count[72];
     f32 speed = 0.0f;
     u16 angle = 0;
-    const i32 viewer = GetMenuID() == 14;
+    const i32 viewer = GetMenuID() == MENU_MINIKIT;
     if (viewer && hub_minikitviewer_movewait <= 0.0f) {
         if (Hub_PadSpeed[0] > 0.0f) {
             if (Hub_PadSpeed[1] > 0.0f) {
@@ -2466,7 +2466,8 @@ extern "C" {
 
     i32 Hub_InMenu(void) {
         i32 id = GetMenuID();
-        return id == 13 || id == 12 || id == 14 || id == 15 || id == 16 || id == 17 || id == 8;
+        return id == MENU_SHOP || id == MENU_CUSTOMISER || id == MENU_MINIKIT || id == MENU_SELECT_MODE || id == MENU_BONUS_MODE ||
+               id == MENU_FREE_PLAY || id == MENU_MISSIONS;
     }
 }
 
@@ -3210,13 +3211,13 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         cointotaltime = 0;
         goldbricktime = 0;
         HubPreventDropOutTime = 1;
-    } else if (menu == 12 || menu == 13 || menu == 14) {
+    } else if (menu == MENU_CUSTOMISER || menu == MENU_SHOP || menu == MENU_MINIKIT) {
         HubPreventDropOutTime = 1;
     }
     HubTrueJediTypeAlpha =
         (i32)((f64)NuTrigTable[((u16)(i32)((f64)(NuFmod(GlobalTimer.time_elapsed_mod_seconds, 0.5f) * 2.0f) * 65536.0)) >> 1] * 16.0 +
               80.0);
-    if (menu == 8) {
+    if (menu == MENU_MISSIONS) {
         HubJabbaAwake = 1;
     } else if (HubJabbaAwake > 0) {
         HubJabbaAwake = (f32)((f64)HubJabbaAwake - (f64)FRAMETIME * ApplyGravityVelocityFactor);
@@ -3236,7 +3237,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     i32 available = 0;
     if (SHOPACTIVE != 0) {
         DrawCoinTotalTime = 1;
-    } else if (GetMenuID() != 12) {
+    } else if (GetMenuID() != MENU_CUSTOMISER) {
         if (HUB_MENU_PLAYER(Player[0], 14)) {
             available = 1;
         }
@@ -3461,7 +3462,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
             HubMiniKitOpenTime += FRAMETIME;
             target = 1;
         }
-        if (GetMenuID() == 14) {
+        if (GetMenuID() == MENU_MINIKIT) {
             target = 1;
         }
         HubMiniKitPanelTime = SeekLinearF(HubMiniKitPanelTime, target, FRAMETIME * 2);
@@ -3524,7 +3525,7 @@ extern "C" void Hub_Update(WORLDINFO *world) {
         Hint_CancelCurrent();
     } else {
         const i32 active_menu = GetMenuID();
-        if (active_menu != -1 && active_menu != 13) {
+        if (active_menu != -1 && active_menu != MENU_SHOP) {
             Hint_CancelCurrent();
         }
     }
@@ -3686,7 +3687,7 @@ extern "C" void Hub_DrawPanel(WORLDINFO *) {
             HubDrawAreaStats(HubEpisodeTime, HubLastArea, -1);
         }
     }
-    if (GetMenuID() == 14) {
+    if (GetMenuID() == MENU_MINIKIT) {
         HubDrawMiniKitStats(hub_minikitviewer_area, HubMiniKitViewerAlpha);
     }
 

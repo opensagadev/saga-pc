@@ -896,11 +896,11 @@ extern "C" void Titles_Init(WORLDINFO *world) {
 extern "C" void Titles_Update(WORLDINFO *world) {
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
         i32 menu = GetMenuID();
-        f32 target = (menu == -1 || menu == 0 || menu == 1) ? 1.0f : 0.0f;
+        f32 target = (menu == -1 || menu == MENU_TITLES || menu == MENU_NEW_GAME) ? 1.0f : 0.0f;
         LevAlpha = SeekLinearF(LevAlpha, target, FRAMETIME + FRAMETIME);
     }
     TitlesAlpha = SeekLinearF(TitlesAlpha, 1.0f, FRAMETIME + FRAMETIME);
-    LevTime[1] = (GetMenuID() == 0 && GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
+    LevTime[1] = (GetMenuID() == MENU_TITLES && GameTimer.time_elapsed >= 4.0f) ? 1.0f : 0.0f;
     LevTime[0] = SeekLinearF(LevTime[0], LevTime[1], FRAMETIME + FRAMETIME);
 }
 

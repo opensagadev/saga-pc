@@ -419,8 +419,8 @@ i32 PlayersDropInOut(void) {
         force_join = 0;
     }
     if (VehicleArea != 0 || CUTSTOPGAME != 0 || MiniCutCam != 0 ||
-        (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0) || menu == 0xd || menu == 0xc || menu == 0xe ||
-        menu == 0xf || menu == 0x10 || menu == 0x11 || menu == 8) {
+        (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0) || menu == MENU_SHOP || menu == MENU_CUSTOMISER ||
+        menu == MENU_MINIKIT || menu == MENU_SELECT_MODE || menu == MENU_BONUS_MODE || menu == MENU_FREE_PLAY || menu == MENU_MISSIONS) {
         return changed;
     }
     drop_index = -1;

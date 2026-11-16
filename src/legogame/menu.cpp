@@ -743,7 +743,7 @@ extern "C" {
             both_pads = 1;
         } else if (menu_id != -1 && WORLD->current_level == TITLES_LDATA) {
             both_pads = 0;
-        } else if (menu_id == 0x12 && PlayerProgress[0].active != 0 && PlayerProgress[1].active != 0) {
+        } else if (menu_id == MENU_CREDITS && PlayerProgress[0].active != 0 && PlayerProgress[1].active != 0) {
             both_pads = 1;
         } else if (Player[0] != NULL && (Player[0]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[1] != NULL &&
                    (Player[1]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -804,7 +804,7 @@ extern "C" {
             u32 pressed;
             u32 alternate_held;
             u32 alternate_pressed;
-            if (menu_id == 1 && GameTimer.time_elapsed < 4.0f) {
+            if (menu_id == MENU_NEW_GAME && GameTimer.time_elapsed < 4.0f) {
                 held = 0;
                 pressed = 0;
                 alternate_held = 0;

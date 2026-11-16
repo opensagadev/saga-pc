@@ -601,7 +601,7 @@ extern "C" {
             current_hp = (i32)((1.0f - object->unknown_1010) * (f32)object->unknown_107e);
         }
         spacing = PanelHeartSpacing * scale;
-        if (GetMenuID() == 4) {
+        if (GetMenuID() == MENU_OPTIONS) {
             if (TempOptions.widescreen != 0) {
                 spacing *= PanelHeartWidescreen;
             }
@@ -1384,8 +1384,9 @@ extern "C" {
         if (BonusWinner != -1) {
             goto draw_menu;
         }
-        if (menu != 15 && menu != 16 && menu != 17 && CUTSTOPGAME == 0) {
-            if ((menu != 12 || customiser_quit != 0) && (menu != 13 || shop_quit != 0) && menu != 14 && menu != 8) {
+        if (menu != MENU_SELECT_MODE && menu != MENU_BONUS_MODE && menu != MENU_FREE_PLAY && CUTSTOPGAME == 0) {
+            if ((menu != MENU_CUSTOMISER || customiser_quit != 0) && (menu != MENU_SHOP || shop_quit != 0) && menu != MENU_MINIKIT &&
+                menu != MENU_MISSIONS) {
                 DrawPlayerHud(paused);
             }
             if (StartupGameFlag1 == 0 && LevelNameTime > 0.0f &&

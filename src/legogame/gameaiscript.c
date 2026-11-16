@@ -2616,7 +2616,7 @@ f32 Condition_HeadTurnRestricted(AISYS *system, AISCRIPTPROCESS *process, AIPACK
 }
 
 f32 Condition_ShopActive(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (GetMenuID() == 13) {
+    if (GetMenuID() == MENU_SHOP) {
         return 1.0f;
     }
     return 0.0f;

@@ -462,13 +462,13 @@ void MoveGameCamera(GAMECAMERA *camera) {
             newgamecam = 0;
         }
     }
-    if (menu_id == 14 && HubMiniKitViewerSpline != NULL) {
+    if (menu_id == MENU_MINIKIT && HubMiniKitViewerSpline != NULL) {
         camera->mode = GAMECAM_MODE_MINIKIT_VIEWER;
-    } else if (menu_id == 8 && WORLD->camera_splines[24] != NULL) {
+    } else if (menu_id == MENU_MISSIONS && WORLD->camera_splines[24] != NULL) {
         camera->mode = GAMECAM_MODE_MISSION;
     } else if (SHOPACTIVE && shopcampos != NULL && shopcamlookat != NULL) {
         camera->mode = GAMECAM_MODE_SHOP;
-    } else if (menu_id == 12 && WORLD->camera_splines[15] != NULL) {
+    } else if (menu_id == MENU_CUSTOMISER && WORLD->camera_splines[15] != NULL) {
         camera->mode = GAMECAM_MODE_CUSTOMISE;
     } else if (ObstacleCamSpl != NULL && (ObstacleCamTime <= ObstacleCamEnd || ObstacleCamHoldUntilPlayersMove)) {
         f32 old_time = ObstacleCamTime;

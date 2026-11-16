@@ -1464,7 +1464,7 @@ static void BackDrop_Alpha(f32 *alpha) {
             return;
         }
     }
-    if (GetMenuID() == 15 && selectmodemode == 4) {
+    if (GetMenuID() == MENU_SELECT_MODE && selectmodemode == 4) {
         if (selectmodetime < 0.5f) {
             *alpha = 1.0f - selectmodetime * 2.0f;
         } else {
@@ -1621,7 +1621,7 @@ static i32 Tag_NoHiddenIcon(GAMEOBJECT *object) {
 
 static void Collection_GetSelectingPlayerIDs(i16 *ids) {
     i32 count;
-    if (WORLD->area == NULL || WORLD->area != HUB_ADATA || GetMenuID() != 17 ||
+    if (WORLD->area == NULL || WORLD->area != HUB_ADATA || GetMenuID() != MENU_FREE_PLAY ||
         !(freeplaymode == FREEPLAY_MENU_OPENING || freeplaymode == FREEPLAY_MENU_CHOOSING || freeplaymode == FREEPLAY_MENU_CANCELLED ||
           freeplaymode == FREEPLAY_MENU_CONFIRMED)) {
         return;
