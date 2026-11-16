@@ -570,7 +570,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             NuSpecialDrawAt(&world->level_objects[base].special, &base_matrix);
         }
         if ((panel->flags & 0x20) == 0) {
-            if ((panel->flags & 2) != 0) {
+            if ((panel->flags & PANEL_USED) != 0) {
                 if (state_on != -1 && world->level_objects[state_on].active != 0) {
                     NuSpecialDrawAt(&world->level_objects[state_on].special, &base_matrix);
                 }
@@ -636,7 +636,8 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             }
             NuMtxTranslate(&base_matrix, &target_position);
             NuMtxPreScaleU(&base_matrix, panel->target_scale);
-            NuSpecialDrawAtAlpha(&world->level_objects[target].special, &base_matrix, (panel->flags & 1) != 0 ? 0.0f : target_alpha);
+            NuSpecialDrawAtAlpha(&world->level_objects[target].special, &base_matrix,
+                                 (panel->flags & PANEL_IN_USE) != 0 ? 0.0f : target_alpha);
         }
         if ((panel->flags & 0x20) == 0 && arm != -1 && world->level_objects[arm].active != 0) {
             NUVEC arm_offset;
@@ -688,7 +689,7 @@ char *GizPanel_GetGizmoName(void *input) {
 }
 
 i32 fun_0046eb50(PANEL_MOVEMENT *panel) {
-    return panel->flags & 1;
+    return panel->flags & PANEL_IN_USE;
 }
 
 i32 GizPanel_GetOutput(void *input, i32 output, i32 mode) {
@@ -807,8 +808,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             object->context_timer -= FRAMETIME;
             if (object->context_timer <= 0.0f) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
-                object->panel->flags &= (u8)~1;
-                object->panel->flags |= 2;
+                object->panel->flags &= (u8)~PANEL_IN_USE;
+                object->panel->flags |= PANEL_USED;
                 object->grapple = NULL;
             }
             if ((object->flags_e20 & 0x1000) == 0) {
@@ -844,8 +845,8 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                     }
                 }
                 object->character_context = CHARACTER_CONTEXT_NONE;
-                object->panel->flags &= (u8)~1;
-                object->panel->flags |= 2;
+                object->panel->flags &= (u8)~PANEL_IN_USE;
+                object->panel->flags |= PANEL_USED;
                 object->grapple = NULL;
             } else if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                 SetProtocolDroidInterfaceAction(object);
@@ -894,14 +895,14 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         } else {
             object->unknown_7aa = ACTION_INTERFACE;
             if (panel->model_variant == PANEL_VARIANT_PROTOCOL_DROID) {
-                if (!InStory() || (object->panel->draw_flags & 4) == 0) {
+                if (!InStory() || (object->panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
                     GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
                 if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                     SetProtocolDroidInterfaceAction(object);
                 }
             } else {
-                if (!InStory() || (object->panel->draw_flags & 4) == 0) {
+                if (!InStory() || (object->panel->draw_flags & PANEL_NO_VOICE_IN_STORY) == 0) {
                     GizPanel_PlaySfx("R2D2_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
             }
@@ -1052,7 +1053,7 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
             i32 word = index / 32;
             u32 bit = 1u << (index % 32);
             if (progress[word] & bit) {
-                panel->flags |= 2;
+                panel->flags |= PANEL_USED;
             }
             state->flags.bits.progress_2 = (progress[word + 2] & bit) != 0;
             state->flags.bits.progress_3 = (progress[word + 1] & bit) != 0;

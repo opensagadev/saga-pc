@@ -6,6 +6,13 @@
 #include "legoapi/menus/core/hint.h"
 #include "legoapi/world/world.h"
 
+/* TELEPORT_MOTION.flags: the teleport config keywords (Tel_*) */
+#define TELEPORT_ONE_WAY 0x1    /* 1_way */
+#define TELEPORT_RANGE 0x2      /* range */
+#define TELEPORT_CRAWL 0x4      /* crawl */
+#define TELEPORT_FLIP_FLAP 0x8  /* flip_flap */
+#define TELEPORT_HACKY_CAM 0x10 /* Hacky_Cam: the camera blends when the teleport ends */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

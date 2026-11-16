@@ -15,6 +15,11 @@
 #define PANEL_VARIANT_BOUNTY_HUNTER 2 /* "Hunter_Granted" */
 #define PANEL_VARIANT_STORMTROOPER 3  /* "Trooper_Granted" */
 
+/* PANEL_MOVEMENT.flags runtime bits, PANEL_MOVEMENT.draw_flags */
+#define PANEL_IN_USE 0x1            /* a character works the panel */
+#define PANEL_USED 0x2              /* worked to the end: the panel shows its on state */
+#define PANEL_NO_VOICE_IN_STORY 0x4 /* draw_flags, an editor option (file version 8): no droid interface line in story mode */
+
 /* A wall panel that a character of the right kind uses (protocol droid, bounty hunter, storm trooper). */
 typedef struct panel_movement_s { // size 0x90
     NUMTX matrix;                 // 0x00

@@ -178,27 +178,27 @@ extern "C" {
 
     static void Tel_range(NUFPAR *parser) {
         f32 range = NuFParGetFloat(parser);
-        Tel_teleport->flags |= 2;
+        Tel_teleport->flags |= TELEPORT_RANGE;
         Tel_teleport->range_squared = range * range;
     }
 
     static void Tel_1_way(NUFPAR *parser) {
-        Tel_teleport->flags |= 1;
+        Tel_teleport->flags |= TELEPORT_ONE_WAY;
         (void)parser;
     }
 
     static void Tel_crawl(NUFPAR *parser) {
-        Tel_teleport->flags |= 4;
+        Tel_teleport->flags |= TELEPORT_CRAWL;
         (void)parser;
     }
 
     static void Tel_flip_flap(NUFPAR *parser) {
-        Tel_teleport->flags |= 8;
+        Tel_teleport->flags |= TELEPORT_FLIP_FLAP;
         (void)parser;
     }
 
     static void Tel_Hacky_Cam(NUFPAR *parser) {
-        Tel_teleport->flags |= 0x10;
+        Tel_teleport->flags |= TELEPORT_HACKY_CAM;
         (void)parser;
     }
 
@@ -334,7 +334,7 @@ extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared)
                 continue;
             }
         }
-        i32 range_flag = teleport->flags & 2;
+        i32 range_flag = teleport->flags & TELEPORT_RANGE;
         f32 distance = NuVecDistSqr(&object->collision_position, teleport->path->pts, NULL);
         if (((range_squared != 0.0f && distance < range_squared) ||
              (range_flag != 0 ? distance < teleport->range_squared : distance < radius_squared)) &&
@@ -343,7 +343,7 @@ extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared)
             FindTeleport_Direction = 0;
             nearest_distance = distance;
         }
-        if ((teleport->flags & 1) != 0) {
+        if ((teleport->flags & TELEPORT_ONE_WAY) != 0) {
             continue;
         }
         distance = NuVecDistSqr(&object->collision_position, &teleport->path->pts[teleport->path->length - 1], NULL);
@@ -363,7 +363,7 @@ extern "C" TELEPORT_MOTION *Teleport_Find(GAMEOBJECT *object, f32 range_squared)
 
 static void TeleportGetSegment(i32 *start, i32 *end, GAMEOBJECT *object) {
     TELEPORT_MOTION *teleport = object->teleport;
-    if ((teleport->flags & 4) != 0) {
+    if ((teleport->flags & TELEPORT_CRAWL) != 0) {
         if ((object->context_variant_flags & APIOBJECT_TELEPORT_REVERSE) != 0) {
             *start = 0;
             *end = 3;
@@ -402,7 +402,7 @@ static void Teleport_SetCrawlTime(GAMEOBJECT *object, i32 start, i32 end) {
             return;
         }
     }
-    if ((object->teleport->flags & 4) != 0) {
+    if ((object->teleport->flags & TELEPORT_CRAWL) != 0) {
         object->context_duration = 3.0f;
     } else {
         object->context_duration = 1.0f;
@@ -447,7 +447,8 @@ extern "C" void Teleports_UpdateAfterGameObjects(WORLDINFO *world) {
             teleport->flap_angle[flap] = SeekRot(teleport->flap_angle[flap], teleport->flap_target[flap], 5.0f);
             if (NuSpecialExistsFn(&(&teleport->flap1_special)[flap])) {
                 matrix = (&teleport->flap1_matrix)[flap];
-                NuMtxPreRotateX(&matrix, (teleport->flags & 8) != 0 ? -teleport->flap_angle[flap] : teleport->flap_angle[flap]);
+                NuMtxPreRotateX(&matrix,
+                                (teleport->flags & TELEPORT_FLIP_FLAP) != 0 ? -teleport->flap_angle[flap] : teleport->flap_angle[flap]);
                 NuSpecialSetDrawMtx(&(&teleport->flap1_special)[flap], &matrix);
                 NuSpecialUpdate(&(&teleport->flap1_special)[flap]);
             }
@@ -510,7 +511,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                         object->context_timer = 0.0f;
                         object->teleport->active = 0;
                         completed = 1;
-                        if ((object->teleport->flags & 0x10) != 0) {
+                        if ((object->teleport->flags & TELEPORT_HACKY_CAM) != 0) {
                             GameCam_Blend(GameCam, 1.0f, 0.0f, 1);
                         }
                         AlertSurroundingCreatures(object, &object->collision_position);
@@ -540,7 +541,7 @@ extern "C" void Teleport_MoveCode(GAMEOBJECT *object, i32 start_immediately) {
                     return;
                 }
                 teleport = object->teleport;
-                if ((teleport->flags & 4) != 0 || object->big_jump_animation != 0) {
+                if ((teleport->flags & TELEPORT_CRAWL) != 0 || object->big_jump_animation != 0) {
                     object->velocity.y = -0.1f;
                     object->unknown_281 = 0;
                     return;

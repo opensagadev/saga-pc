@@ -9926,7 +9926,7 @@ i32 Action_UsePanel(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
             }
             panel = gizmo->object;
             processor->action_data_3 = panel;
-            if ((panel->flags & 2) != 0) {
+            if ((panel->flags & PANEL_USED) != 0) {
                 continue;
             }
             processor->action_pos = panel->floor_position;
@@ -9938,7 +9938,7 @@ i32 Action_UsePanel(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
         }
     }
     panel = processor->action_data_3;
-    if (panel == NULL || (panel->flags & 2) != 0) {
+    if (panel == NULL || (panel->flags & PANEL_USED) != 0) {
         return 1;
     }
     AIMoveInstruction(packet, &processor->action_pos, 0.0f, &processor->path_info, AIMOVE_TO_DESTINATION, 0.0f);
