@@ -960,10 +960,10 @@ extern "C" void RayImpact(NUVEC *movement) {
     TerrainMoveImpactData();
     TerrainQuery_s *query = TerI;
     switch (query->hit_type) {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
+        case TERRAIN_HIT_TYPE_FACE:
+        case TERRAIN_HIT_TYPE_CYLINDER:
+        case TERRAIN_HIT_TYPE_VERTEX:
+        case TERRAIN_HIT_TYPE_SPHERE:
             query->hit_time -= query->separation_epsilon;
             if (query->hit_time < 0.0f) {
                 query->hit_time = 0.0f;
@@ -972,10 +972,10 @@ extern "C" void RayImpact(NUVEC *movement) {
             movement->y = query->movement.y * query->hit_time;
             movement->z = query->movement.z * query->hit_time;
             break;
-        case 0x11:
-        case 0x12:
-        case 0x13:
-        case 0x14:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_FACE:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_CYLINDER:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_VERTEX:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_SPHERE:
             movement->x = 0.0f;
             movement->y = 0.0f;
             movement->z = 0.0f;
@@ -2178,10 +2178,10 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
     HitTerrPoly(TerrPoly, TerrPolyObj);
     query = TerI;
     switch (query->hit_type) {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
+        case TERRAIN_HIT_TYPE_FACE:
+        case TERRAIN_HIT_TYPE_CYLINDER:
+        case TERRAIN_HIT_TYPE_VERTEX:
+        case TERRAIN_HIT_TYPE_SPHERE:
             query->hit_time -= backoff;
             if (query->hit_time < 0.0f) {
                 query->hit_time = 0.0f;
@@ -2190,11 +2190,11 @@ extern "C" i32 TerrainTrackBack(NUVEC *position, NUVEC *direction, f32 radius, f
             result->y = query->movement.y * query->hit_time + query->position.y;
             result->z = query->movement.z * query->hit_time + query->position.z;
             break;
-        case 0:
-        case 17:
-        case 18:
-        case 19:
-        case 20:
+        case TERRAIN_HIT_TYPE_NONE:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_FACE:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_CYLINDER:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_VERTEX:
+        case TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_SPHERE:
             result->x = query->position.x;
             result->y = query->position.y;
             result->z = query->position.z;
@@ -2346,23 +2346,23 @@ extern "C" void TerrainPolyEdge(NUVEC *first, NUVEC *second) {
     }
     TERRAIN_GROUP *groups;
     switch (query->hit_edge) {
-        case 1:
+        case TERRAIN_HIT_EDGE_0_1:
             groups = CurrentTerrain->groups;
             TERRAIN_TPE_EDGE(0, 1);
             break;
-        case 2:
+        case TERRAIN_HIT_EDGE_1_2:
             groups = CurrentTerrain->groups;
             TERRAIN_TPE_EDGE(1, 2);
             break;
-        case 3:
+        case TERRAIN_HIT_EDGE_2_0:
             groups = CurrentTerrain->groups;
             TERRAIN_TPE_EDGE(2, 0);
             break;
-        case 4:
+        case TERRAIN_HIT_EDGE_1_3:
             groups = CurrentTerrain->groups;
             TERRAIN_TPE_EDGE(1, 3);
             break;
-        case 5:
+        case TERRAIN_HIT_EDGE_3_2:
             groups = CurrentTerrain->groups;
             TERRAIN_TPE_EDGE(3, 2);
             break;

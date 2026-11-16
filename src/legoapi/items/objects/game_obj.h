@@ -269,6 +269,12 @@ typedef struct KILLPARTS_BIKE { // size 0x34
     NUVEC rider_position;       // 0x28
 } KILLPARTS_BIKE;
 
+/* KillGameObject and KillPlayer reasons; the reason folds into 2 before it is stored in the object's `dead` */
+#define KILL_REASON_KILLED 2     /* an ordinary death: debris, the "BeenKilled" script */
+#define KILL_REASON_FELL 3       /* fell below the terrain or was crushed (the creature movement's terrain checks) */
+#define KILL_REASON_REMOVED 4    /* removed without debris or script; its rider goes too and the creature may respawn */
+#define KILL_REASON_TAKEN_OVER 5 /* removed like 4, but stays out of play: no longer a character, its AI reset disabled */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

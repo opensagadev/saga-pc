@@ -4533,7 +4533,7 @@ extern "C" {
         }
         if (owner->unknown_1087 != 0) {
             --owner->unknown_1087;
-            if (owner->unknown_1087 == 0 || (owner->ai_packet.fallback_path_info.flags & 1)) {
+            if (owner->unknown_1087 == 0 || (owner->ai_packet.fallback_path_info.flags & AIPATHINFO_FLAG_ON_PATH)) {
                 ClearSpecialMove(owner);
                 return 0;
             }
@@ -4654,7 +4654,7 @@ extern "C" {
 
         owner = object->owner;
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
-        if ((packet->path_info.flags & 1) != 0) {
+        if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
             source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
             destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
             destination = &packet->path_info.path->nodes[destination_index];
@@ -5129,17 +5129,17 @@ extern "C" {
     }
 
     void PlayerInitCapabilitiesVariant0(GAMEOBJECT *object) {
-        object->ai_packet.capabilities = 0x20000000;
+        object->ai_packet.capabilities = AIPATHCNX_LINK_OBSTACLE;
         if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
-            object->ai_packet.capabilities |= 0x200;
+            object->ai_packet.capabilities |= INDY_AIPATHCNX_FORBADDIES;
         } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
-            object->ai_packet.capabilities |= 0x100;
+            object->ai_packet.capabilities |= INDY_AIPATHCNX_FORGOODIES;
         }
         if (object->character_model->action_animations[6] != NULL) {
             object->ai_packet.capabilities |= 3;
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_CANNOT_BIG_JUMP) == 0) {
-            object->ai_packet.capabilities |= 4;
+            object->ai_packet.capabilities |= INDY_AIPATHCNX_BIGJUMP;
         }
         if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) != 0) {
             object->ai_packet.capabilities |= 8;
@@ -5148,7 +5148,7 @@ extern "C" {
             object->ai_packet.capabilities |= 0x400;
         }
         if (object->character_model->action_animations[0xcd] != NULL) {
-            object->ai_packet.capabilities |= 0x10;
+            object->ai_packet.capabilities |= INDY_AIPATHCNX_VARIANT_FLAG0;
         }
     }
 

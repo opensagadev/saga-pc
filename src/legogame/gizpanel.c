@@ -941,14 +941,14 @@ i32 GizPanel_UpdateHint(HINT *hint) {
                 radius *= radius;
                 if (distance < radius) {
                     switch (panel->model_variant) {
-                        case 3:
+                        case PANEL_VARIANT_STORMTROOPER:
                             storm = 1;
                             break;
-                        case 0:
-                        case 1:
+                        case PANEL_VARIANT_ASTROMECH:
+                        case PANEL_VARIANT_PROTOCOL_DROID:
                             droid = 1;
                             break;
-                        case 2:
+                        case PANEL_VARIANT_BOUNTY_HUNTER:
                             bountyhunter = 1;
                             break;
                     }

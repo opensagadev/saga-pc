@@ -774,21 +774,21 @@ extern "C" {
                 if (NuStrICmp(fp->word_buffer_ptr, "centre") == 0) {
                     subtitle->alignment = 0;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "top") == 0) {
-                    subtitle->alignment = 1;
+                    subtitle->alignment = TEXT_ALIGN_TOP;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "top_right") == 0) {
-                    subtitle->alignment = 9;
+                    subtitle->alignment = TEXT_ALIGN_TOP | TEXT_ALIGN_RIGHT;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "right") == 0) {
-                    subtitle->alignment = 8;
+                    subtitle->alignment = TEXT_ALIGN_RIGHT;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "bottom_right") == 0) {
-                    subtitle->alignment = 12;
+                    subtitle->alignment = TEXT_ALIGN_BOTTOM | TEXT_ALIGN_RIGHT;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "bottom") == 0) {
-                    subtitle->alignment = 4;
+                    subtitle->alignment = TEXT_ALIGN_BOTTOM;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "bottom_left") == 0) {
-                    subtitle->alignment = 6;
+                    subtitle->alignment = TEXT_ALIGN_BOTTOM | TEXT_ALIGN_LEFT;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "left") == 0) {
-                    subtitle->alignment = 2;
+                    subtitle->alignment = TEXT_ALIGN_LEFT;
                 } else if (NuStrICmp(fp->word_buffer_ptr, "top_left") == 0) {
-                    subtitle->alignment = 3;
+                    subtitle->alignment = TEXT_ALIGN_TOP | TEXT_ALIGN_LEFT;
                 }
             } else if (NuStrICmp(fp->word_buffer_ptr, "start_time") == 0) {
                 subtitle->start_frame = CutscenesFabs(NuFParGetFloat(fp));
@@ -1021,8 +1021,8 @@ extern "C" {
     static void CutSceneFindCharacterPrivate(CUT_DRAW_SCENE *scene, CUT_DRAW_CHARACTER *character, CUT_LOAD_SYS *system) {
         i32 id;
         CUT_DRAW_LOCATOR_SYS *locators = reinterpret_cast<CUT_DRAW_REGISTRATION_SCENE *>(scene)->locators;
-        character->flags |= 2;
-        character->character_model = CutSceneFindModel(character->name, character->flags & 2, &id);
+        character->flags |= CUT_CHARACTER_MODEL_ONLY;
+        character->character_model = CutSceneFindModel(character->name, character->flags & CUT_CHARACTER_MODEL_ONLY, &id);
         if (character->character_model == NULL) {
             CutSceneConfigMissing(character->name);
         } else if (id != -1) {
@@ -1307,7 +1307,7 @@ extern "C" {
         GAMEOBJECT *object = NULL;
         NUMTX matrix;
         i32 visible;
-        if ((character->flags & 2) == 0) {
+        if ((character->flags & CUT_CHARACTER_MODEL_ONLY) == 0) {
             object = static_cast<GAMEOBJECT *>(instance->character_model);
         }
         NuGCutCharAnimProcess(reinterpret_cast<CUT_CHARACTER_GENERIC *>(character), frame, &matrix, &visible, NULL, NULL, NULL, NULL, NULL);
@@ -1322,7 +1322,7 @@ extern "C" {
     }
 
     static void CutScene_CreateCharacterInstance(CUT_DRAW_CHARACTER *character, CUT_DRAW_CHAR_INSTANCE *instance, VARIPTR *) {
-        if ((character->flags & 2) != 0) {
+        if ((character->flags & CUT_CHARACTER_MODEL_ONLY) != 0) {
             instance->character_model = character->character_model;
         }
     }
@@ -1626,7 +1626,7 @@ extern "C" {
             (replacement_id = CutScene_ReplaceCharacterModelFn(cut, reinterpret_cast<CUTSCENECHARACTER *>(character))) != -1 &&
             apicharsys->playermodelids[replacement_id] != -1) {
             model = &apicharsys->models[apicharsys->playermodelids[replacement_id]];
-        } else if ((character->flags & 2) != 0) {
+        } else if ((character->flags & CUT_CHARACTER_MODEL_ONLY) != 0) {
             model = static_cast<CHARACTER_MODEL_LAYERS *>(instance->character_model);
         } else {
             scene_object = static_cast<GAMEOBJECT *>(instance->character_model);
@@ -1819,8 +1819,8 @@ extern "C" {
             FindAndSetLights(reinterpret_cast<NUVEC *>(&world_matrix.m30), 1.0f, world->rtl_set);
         }
 
-        if ((character->flags & 0x20) == 0 && (character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 &&
-            (character->flags & 0x10) != 0) {
+        if ((character->flags & CUT_CHARACTER_REFLECTION) == 0 && (character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) != 0 &&
+            (character->flags & CUT_CHARACTER_SHADOW) != 0) {
             reinterpret_cast<CUT_DRAW_HIERARCHY *>(hierarchy)->suppress_shadow_surface_points = 0;
         } else {
             reinterpret_cast<CUT_DRAW_HIERARCHY *>(hierarchy)->suppress_shadow_surface_points = 1;
@@ -1847,7 +1847,7 @@ extern "C" {
         i32 surface = -1;
         i32 platform = -1;
         i32 shadow_sampled = 0;
-        if ((character->flags & 0x10) != 0 && CutBlobShadowAlpha > 0 &&
+        if ((character->flags & CUT_CHARACTER_SHADOW) != 0 && CutBlobShadowAlpha > 0 &&
             (character_data->model_flags & CHARACTER_MODEL_COMPLEX_SHADOW) == 0 && PcWindowOptions.shadowmethod == 1 &&
             PcWindowOptions.shadowsenabled != 0) {
             i32 shadow_alpha;
@@ -1913,7 +1913,7 @@ extern "C" {
             }
         }
 
-        if ((character->flags & 0x20) != 0 && (game_data->flags_090 & CHARACTER_RUNTIME_GHOST) == 0 &&
+        if ((character->flags & CUT_CHARACTER_REFLECTION) != 0 && (game_data->flags_090 & CHARACTER_RUNTIME_GHOST) == 0 &&
             NuVecDistSqr(reinterpret_cast<NUVEC *>(&world_matrix.m30),
                          reinterpret_cast<NUVEC *>(&reinterpret_cast<CUT_DRAW_CAMERA *>(GameCam)->render_matrix.m30),
                          NULL) < CutReflectRange2) {

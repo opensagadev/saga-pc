@@ -3586,9 +3586,9 @@ i32 Action_Kill(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                     KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
                 }
                 if (debris) {
-                    KillGameObject(candidate, 2, 0);
+                    KillGameObject(candidate, KILL_REASON_KILLED, 0);
                 } else {
-                    KillGameObject(candidate, 4, 0);
+                    KillGameObject(candidate, KILL_REASON_REMOVED, 0);
                 }
             }
         }
@@ -3604,9 +3604,9 @@ i32 Action_Kill(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                     KillParts(candidate, -1, -1, 1, 0.0f, 0, NULL);
                 }
                 if (debris) {
-                    KillGameObject(candidate, 2, 0);
+                    KillGameObject(candidate, KILL_REASON_KILLED, 0);
                 } else {
-                    KillGameObject(candidate, 4, 0);
+                    KillGameObject(candidate, KILL_REASON_REMOVED, 0);
                 }
             }
         }
@@ -3617,9 +3617,9 @@ i32 Action_Kill(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
             KillParts(object, -1, -1, 1, 0.0f, 0, NULL);
         }
         if (!debris) {
-            KillGameObject(object, 4, 0);
+            KillGameObject(object, KILL_REASON_REMOVED, 0);
         } else {
-            KillGameObject(object, 2, 0);
+            KillGameObject(object, KILL_REASON_KILLED, 0);
         }
     }
     return 1;
@@ -9741,7 +9741,7 @@ i32 Action_MoveForward(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pack
                 processor->action_data_4 = (f32)NuAngAdd((NUANG)processor->action_data_4, turn);
             }
         }
-        if ((packet->path_info.flags & 1) == 0) {
+        if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) {
             return 0;
         }
         destination.x = 0.0f;

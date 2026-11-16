@@ -422,6 +422,11 @@ typedef struct APIDEBRISSYS {        // size 0xc
 #define AIPACKET_CIRCLE_CLOCKWISE 0x200        /* SetCircleDirection Clockwise / AntiClockwise / Reverse / Random */
 #define AIPACKET_PATH_BLOCKED 0x400000         /* the PathBlocked and CannotReachDestination conditions */
 #define AIPACKET_FORMATION_COMMANDER 0x1000000 /* SetFormationCommander */
+/* AIPACKET.navigation_flags (the code sets 0x1 and 0x8; 0x2 and 0x4 have no setter in the source) */
+#define AIPACKET_NAV_SPECIAL_CONNECTION 0x1 /* the next connection has traversal flags the packet's capabilities allow */
+#define AIPACKET_NAV_FIRST_PATH 0x2         /* follows path_sys->paths[0] instead of the active path, without position checks */
+#define AIPACKET_NAV_SPECIAL_ROUTES 0x4     /* may take the path's special routes */
+#define AIPACKET_NAV_ORIGIN_SET 0x8         /* creature_origin holds its place in the creature's formation */
 /* AIPACKET.reset_mode: a creature's spawn state in UpdateGameObjects and ResetCreatures. */
 #define AIPACKET_RESET_INACTIVE 0  /* waits for its activation (the "InActive" script state, an area, the difficulty) */
 #define AIPACKET_RESET_STAGGERED 1 /* a group member waits spawn_delay before it appears */

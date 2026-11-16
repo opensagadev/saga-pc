@@ -246,7 +246,7 @@ void CruiserDUpdate(WORLDINFO *world) {
                 if (victim != NULL && victim->dead == 0 &&
                     (victim->supporting_platform_id == CruiserD_Lift_plat_id || victim->collision_position.z > lift_pos->z)) {
                     ObjHitObj(NULL, victim, -1, 0, 0, 1);
-                    KillGameObject(victim, 2, 0);
+                    KillGameObject(victim, KILL_REASON_KILLED, 0);
                     if (CruiserD_direction >= 0 && MiscTime == 0.0f) {
                         MiscTime = CruiserD_ResetTime;
                     }
@@ -648,7 +648,7 @@ void VaderA_Update(WORLDINFO *world) {
             if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 LoseCoins(object, 1);
             }
-            KillGameObject(player, 2, 0);
+            KillGameObject(player, KILL_REASON_KILLED, 0);
         }
     }
     if (vader_a.reset_flag == 0 && ((Player[0] != NULL && Player[0]->dead != 0 && (Player[0]->flags_1f8 & 0x40000) == 0) ||

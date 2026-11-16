@@ -348,30 +348,30 @@ COLLECTID *CollectIDUnlocked(i32 id) {
         } else {
             entry = &list[index];
             switch (entry->type) {
-                case 0:
+                case COLLECTION_UNLOCK_NONE:
                     unlocked = 1;
                     break;
-                case 2:
+                case COLLECTION_UNLOCK_AREA_COMPLETE:
                     area = (i8)entry->field2_0x3;
                     if (area != -1 && ((SHOP_UNLOCK_AREA *)Game_AreaSave)[area].area_complete != 0) {
                         unlocked = 1;
                     }
                     break;
-                case 3:
+                case COLLECTION_UNLOCK_ALL_EPISODES_COMPLETE:
                     if (Episodes_Completed() == EPISODECOUNT) {
                         unlocked = 1;
                     }
                     break;
-                case 6:
+                case COLLECTION_UNLOCK_GOLD_BRICKS:
                     if (CustomiserCompletionSave != NULL &&
                         ((SHOP_UNLOCK_COMPLETION *)CustomiserCompletionSave)->gold_bricks >= entry->field6_0xa) {
                         unlocked = 1;
                     }
                     break;
-                case 7:
+                case COLLECTION_UNLOCK_100_PERCENT:
                     unlocked = Game_100PercentComplete();
                     break;
-                case 4:
+                case COLLECTION_UNLOCK_ALL_MINIKITS_COMPLETE:
                     unlocked = AllMiniKitsDone((AREASAVE_s *)Game_AreaSave);
                     break;
             }

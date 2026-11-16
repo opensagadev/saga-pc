@@ -858,7 +858,7 @@ NUFILE NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 quiet)
 
     device = NuFileGetDeviceFromPath(filepath);
     if (device == NULL) {
-        if (header != NULL && mode != 1 && mode != 2) {
+        if (header != NULL && mode != NUFILE_WRITE && mode != NUFILE_APPEND) {
             NUFILE file = NuDatFileOpen(header, (char *)filepath, mode);
             if (file != 0) {
                 return file;
@@ -891,7 +891,7 @@ NUFILE NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 quiet)
     file_info[ps_index].handle = file_index;
     file_info[ps_index].mode = mode;
 
-    if (mode != 1) {
+    if (mode != NUFILE_WRITE) {
         if (file_index <= 16) {
             do {
                 length = NuFileSeek(ps_index + 1, 0, 2);
@@ -901,7 +901,7 @@ NUFILE NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 quiet)
             } while (length < 0);
             file_info[ps_index].file_len = length;
 
-            if (mode == 3) {
+            if (mode == NUFILE_READ_ASYNC) {
                 while (NuFileStatus(ps_index + 1) != 0) {
                 }
             }
@@ -913,7 +913,7 @@ NUFILE NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 quiet)
                 }
             } while (length < 0);
 
-            if (mode == 3) {
+            if (mode == NUFILE_READ_ASYNC) {
                 while (NuFileStatus(ps_index + 1) != 0) {
                 }
             }
@@ -922,7 +922,7 @@ NUFILE NuFileOpenDF(const char *filepath, i32 mode, NUDATHDR *header, i32 quiet)
         file_info[ps_index].file_len = 0;
     }
 
-    if (mode == 0) {
+    if (mode == NUFILE_READ) {
         file_info[ps_index].use_buf = nufile_buffering_enabled;
     }
     return ps_index + 1;
@@ -1940,7 +1940,7 @@ i32 NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destination, i32
     nufile_lasterror = 0;
     file = NuDatFileOpen(header, filepath, 0);
     if (file != 0) {
-        if (header->mode == 3) {
+        if (header->mode == NUFILE_READ_ASYNC) {
             while (NuFileStatus(file) != 0) {
             }
         }
@@ -1959,7 +1959,7 @@ i32 NuDatFileLoadBuffer(NUDATHDR *header, char *filepath, void *destination, i32
                 }
             }
 
-            if (header->mode == 3) {
+            if (header->mode == NUFILE_READ_ASYNC) {
                 while (NuFileStatus(file) != 0) {
                 }
             }
@@ -2319,7 +2319,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
     i32 index;
 
     if (file != 0) {
-        if (mode == 3) {
+        if (mode == NUFILE_READ_ASYNC) {
             while (NuFileStatus(file) != 0) {
             }
         }
@@ -2332,7 +2332,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
                 NuFileRetry();
             } while (NuFileSeek(file, datsys_offset, 0) < 0);
         }
-        if (mode == 3) {
+        if (mode == NUFILE_READ_ASYNC) {
             while (NuFileStatus(file) != 0) {
             }
         }
@@ -2345,7 +2345,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
         while (NuFileSeek(file, metadata_pos, 0) < 0) {
             NuFileRetry();
         }
-        if (mode == 3) {
+        if (mode == NUFILE_READ_ASYNC) {
             while (NuFileStatus(file) != 0) {
             }
         }
@@ -2370,7 +2370,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
                     NuFileRetry();
                 } while (NuFileSeek(file, metadata_pos, 0) < 0);
             }
-            if (mode == 3) {
+            if (mode == NUFILE_READ_ASYNC) {
                 while (NuFileStatus(file) != 0) {
                 }
             }

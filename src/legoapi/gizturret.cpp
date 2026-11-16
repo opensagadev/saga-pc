@@ -1412,7 +1412,7 @@ extern "C" {
             }
         }
         if (best != NULL) {
-            if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
+            if (hit_type != BLOWUP_HIT_BATARANG && hit_type != BLOWUP_HIT_CARRIED && bolt != NULL) {
                 (void)BoltType_FindByID(bolt->type_id, WORLD);
                 (void)Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE);
             }

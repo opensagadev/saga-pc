@@ -269,6 +269,11 @@ enum { EDUI_ITEM_HIGHLIGHTED = 1 };
 #define EDUI_ALIGN_RIGHT 0x20
 #define EDUI_ALIGN_CENTRE 0x40
 
+/* eduimenu_s.flags, the bits of its bit-fields */
+#define EDUI_MENU_FIXED 0x1      /* neither the title bar nor the pad moves it */
+#define EDUI_MENU_HORIZONTAL 0x2 /* horizontal */
+#define EDUI_MENU_PINNED 0x4     /* pinned: kept open when it loses the focus */
+
 struct eduimenu_s {                                                     // size 0x44
     struct eduiitem_s *first;                                           // 0x00
     struct eduiitem_s *last;                                            // 0x04

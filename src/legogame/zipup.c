@@ -314,9 +314,9 @@ static i32 ZipUp_ActivateRev(GIZMO *gizmo, i32 active, i32 query) {
     }
     if (active != 0) {
         zipup->direction = 1;
-        zipup->flags_word &= ~0x40;
+        zipup->flags_word &= ~ZIPUP_FLAG_ACTIVE;
     } else {
-        zipup->flags_word |= 0x40;
+        zipup->flags_word |= ZIPUP_FLAG_ACTIVE;
         zipup->direction = 0;
     }
     return 1;
@@ -452,7 +452,7 @@ ZIPUP *ZipUp_FindNearest(WORLDINFO *world, NUVEC *position, f32 radius, f32 *dis
             }
         }
         for (end = 0; end < 3; ++end) {
-            if (object != NULL && (end == 1 || (end == 2 && (zipup->flags & 8) == 0))) {
+            if (object != NULL && (end == 1 || (end == 2 && (zipup->flags & ZIPUP_FLAG_CONFIG_3) == 0))) {
                 continue;
             }
             square_distance = NuVecDistSqr(position, &zipup->endpoints[end], NULL);
@@ -564,7 +564,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
         zipup = object->grapple;
         hook = &zipup->hook_origin;
         destination = object->unknown_7b3 == 0 ? &zipup->upper_position : &zipup->lower_position;
-        if ((zipup->flags_word & 1) == 0) {
+        if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
             if (NuVecDistSqr(&object->position, hook, NULL) < 0.1f * 0.1f || object->context_timer >= 5.0f) {
                 StartJump(object, JUMP_KIND_ZIPUP);
                 PlaySfx(GrapDetach_text, &object->collision_position);
@@ -584,15 +584,15 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             }
         }
         zipup = object->grapple;
-        if ((zipup->flags_word & 0x40) == 0 || (zipup->flags_word & 0x80) == 0 || (zipup->flags_word & 0x100) == 0 ||
-            (object->context_variant_flags & 0x20) == 0) {
+        if ((zipup->flags_word & ZIPUP_FLAG_ACTIVE) == 0 || (zipup->flags_word & ZIPUP_FLAG_VISIBLE) == 0 ||
+            (zipup->flags_word & 0x100) == 0 || (object->context_variant_flags & 0x20) == 0) {
             object->context_variant_flags &= ~0x20u;
             object->character_context = CHARACTER_CONTEXT_NONE;
             zipup->flags_word &= ~0x100u;
             object->grapple = NULL;
             return;
         }
-        if ((zipup->flags_word & 1) != 0) {
+        if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) != 0) {
             if (object->context_timer >= ZipUpSwingDuration) {
                 object->context_timer = 0.0f;
                 object->character_context = CHARACTER_CONTEXT_NONE;
@@ -689,7 +689,8 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
     if (zipup == NULL) {
         return;
     }
-    if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) && ((zipup->flags_word & 1) == 0 || (zipup->flags_word & 0x100) == 0)) {
+    if ((special_pressed != 0 || objInNetWaitContext(object, 0x47)) &&
+        ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0 || (zipup->flags_word & 0x100) == 0)) {
         if ((object->character_data->model_flags & CHARACTER_MODEL_ZIPUP) == 0) {
             destination = endpoint == 0 ? &zipup->upper_position : &zipup->lower_position;
             if (StartBigJump(object, destination, 0, 0.5f, 1.0f, 0)) {
@@ -774,7 +775,7 @@ void ZipUp_MoveCode(GAMEOBJECT *object, i32 special_pressed) {
             pitch = 0x4000 - abs(angle);
             object->unknown_7a4 = angle < 0 ? -pitch : pitch;
             zipup = object->grapple;
-            if ((zipup->flags_word & 1) == 0) {
+            if ((zipup->flags_word & ZIPUP_FLAG_CONFIG_0) == 0) {
                 return;
             }
             NuVecSub(&zipup->rider_start_offset, start, hook);
@@ -937,7 +938,7 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
                 }
 
                 ZipUp_DrawFloorTarget(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
-                if ((zipup->flags & 8) != 0) {
+                if ((zipup->flags & ZIPUP_FLAG_CONFIG_3) != 0) {
                     ZipUp_DrawFloorTarget(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_MARKER, pulse_alpha);
                 }
                 continue;
@@ -970,7 +971,7 @@ static void ZipUps_Draw(WORLDINFO *world, void *unused, f32 time) {
             }
 
             ZipUp_DrawFloorTarget(zipup, 0, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
-            if ((zipup->flags & 8) != 0) {
+            if ((zipup->flags & ZIPUP_FLAG_CONFIG_3) != 0) {
                 ZipUp_DrawFloorTarget(zipup, 2, world, spin_angle, ZIPUP_SPECIAL_GROUND_SWIRL, pulse_alpha);
             }
         }
@@ -983,9 +984,9 @@ static void ZipUp_Activate(GIZMO *gizmo, i32 active) {
     zipup = gizmo->object;
     if (active) {
         zipup->direction = 0;
-        zipup->flags_word |= 0x40;
+        zipup->flags_word |= ZIPUP_FLAG_ACTIVE;
     } else {
-        zipup->flags_word &= ~0x40;
+        zipup->flags_word &= ~ZIPUP_FLAG_ACTIVE;
     }
 }
 
@@ -1048,10 +1049,10 @@ static void ZipUps_StoreProgress(WORLDINFO *world, void *unused, ZIPUP_PROGRESS 
             }
             word = i / 32;
             mask = 1 << (i & 31);
-            if (!(zipup->flags & 0x80)) {
+            if (!(zipup->flags & ZIPUP_FLAG_VISIBLE)) {
                 progress->visible_mask[word] &= ~mask;
             }
-            if (!(zipup->flags & 0x40)) {
+            if (!(zipup->flags & ZIPUP_FLAG_ACTIVE)) {
                 progress->active_mask[word] &= ~mask;
             }
         }

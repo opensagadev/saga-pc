@@ -385,7 +385,7 @@ void Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
     SHARD_LOST_OWNER *shard = world->shards;
     i32 i;
     for (i = 0; i < world->shard_count; ++i, ++shard) {
-        if (!(shard->state_flags & 8) && (shard->state_flags & 4) && shard->collector == object) {
+        if (!(shard->state_flags & SHARD_COLLECTED) && (shard->state_flags & 4) && shard->collector == object) {
             shard->state_flags &= (u8)~4;
             shard->collection_time = 0.0f;
             shard->collector = NULL;

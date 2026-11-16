@@ -2165,7 +2165,7 @@ void FlattenCode(GAMEOBJECT *object) {
 static void WalkerDelayedKill(GAMEOBJECT *object) {
     if (object->character_context == CHARACTER_CONTEXT_FLATTEN && object->context_timer > object->context_duration + 0.5) {
         KillParts(object, -1, -1, 0, 0.0f, 0, NULL);
-        KillGameObject(object, 2, 0);
+        KillGameObject(object, KILL_REASON_KILLED, 0);
     }
 }
 
@@ -2207,7 +2207,7 @@ void TakeHitCode(GAMEOBJECT *object) {
             }
         kill_object:
             KillParts(object, -1, -1, 1, 0.0f, mode == 2, NULL);
-            KillGameObject(object, 2, 0);
+            KillGameObject(object, KILL_REASON_KILLED, 0);
             coins = 0;
             if (object->player_index != -1) {
                 return;
@@ -2303,7 +2303,7 @@ static i32 DeactivatedMindTrickFilter(GAMEOBJECT *target, GAMEOBJECT *owner) {
 void ReleaseEat(GAMEOBJECT *object) {
     GAMEOBJECT *eaten = object->force_target;
     if (eaten != NULL && (object->flags_e24 & APIOBJECT_GOT_VICTIM) != 0) {
-        KillGameObject(eaten, 2, 0);
+        KillGameObject(eaten, KILL_REASON_KILLED, 0);
         object->force_target = NULL;
     }
     if (object->character_context == CHARACTER_CONTEXT_EATEN || object->character_context == CHARACTER_CONTEXT_GRAB) {
@@ -2449,7 +2449,7 @@ static void BeastCrushCode(GAMEOBJECT *object) {
         }
     }
     if (object->force_target != NULL) {
-        KillGameObject(object->force_target, 2, 0);
+        KillGameObject(object->force_target, KILL_REASON_KILLED, 0);
     }
     object->flags_e24 &= ~APIOBJECT_GOT_VICTIM;
     object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
@@ -7156,7 +7156,7 @@ static void SelfDestructCode(GAMEOBJECT *object, i32 pressed) {
         explosion->flags |= 0x10000;
         explosion->owner = object;
     }
-    KillPlayer(object, 2, 1, NULL);
+    KillPlayer(object, KILL_REASON_KILLED, 1, NULL);
     if (object->camera_screen_position.z > 0.0f) {
         AddFancyMessage(TTab[dat_00881060], object->camera_screen_position.x, object->camera_screen_position.y, 0.25f, 1.0f, 1, 0);
     }
@@ -11628,7 +11628,7 @@ void Move_DRAGBOMB(GAMEOBJECT *object) {
         object->velocity.y = 1.0f;
     }
     if (((MOTION_PLATFORM_CONTACT_READER *)object)->contacted_platform != -1) {
-        KillGameObject(object, 2, 0);
+        KillGameObject(object, KILL_REASON_KILLED, 0);
     } else if ((object->collision_contact_mask[0] | object->collision_contact_mask[1]) != 0) {
         player_mask0 = player->collision_identity_mask[0];
         player_mask1 = player->collision_identity_mask[1];
@@ -11637,14 +11637,14 @@ void Move_DRAGBOMB(GAMEOBJECT *object) {
             player_mask1 |= player2->collision_identity_mask[1];
         }
         if (((object->collision_contact_mask[0] & ~player_mask0) | (object->collision_contact_mask[1] & ~player_mask1)) != 0) {
-            KillGameObject(object, 2, 0);
+            KillGameObject(object, KILL_REASON_KILLED, 0);
         }
     }
     if (object->character_context == CHARACTER_CONTEXT_BEEN_DRAGGED) {
         timer = object->context_timer + FRAMETIME;
         object->context_timer = timer;
         if (timer > 10.0f) {
-            KillGameObject(object, 2, 1);
+            KillGameObject(object, KILL_REASON_KILLED, 1);
         }
     }
 }

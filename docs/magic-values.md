@@ -231,9 +231,7 @@ same function initialises and steps (its values are indexes).
 
 Counted like the magic-state and magic-flag classes of `oddscan.py --magic` (a
 comparison, assignment or `case` with a value other than 0, 1 and -1, or a
-one-bit mask), per field. On 16 November 2026 the named constants stood at 26961
-sites and the literals at 7089 (79.2 % named); the 51 fields below hold 2115 of
-the literals, and 1630 more fields have fewer than 20 sites each (4974 in all;
+one-bit mask), per field. On 16 November 2026 the named constants stood at 27196 sites and the literals at 6851 (79.9 % named); the 47 fields below hold 2002 of the literals, and 1613 more fields have fewer than 20 sites each (4849 in all;
 `oddscan.py --magic` lists them by use).
 
 | Field | Sites | Values | Where | What is known |
@@ -241,7 +239,7 @@ the literals, and 1630 more fields have fewer than 20 sites each (4974 in all;
 | `flags` | 145 | 0x0 0x1 0x2 0x3 0x4 0x8 0x10 0x17 ... | nu2api/nu3d_includes.cpp, gamelib/net/NetworkObjectManager.cpp | bare `flags` locals and parameters of many functions; `magicnames.py --locals flags` lists them per function (GizSpinner_*, ObjHitObj, NuAnimBuff*, UpdateGameMessages) |
 | `gameobject_s.flags_e20` | 135 | 0x1 0x2 0x4 0x8 0x20 0x1000 0x4000 0x20000 ... | legogame/move.c, legogame/creature.c | runtime bits; 0x20 is tested to skip an object almost everywhere and cleared by UpdateGameObjects, its setter is not in the source yet |
 | `*.flags` | 131 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | nu2api/nu3d_includes.cpp, gameapi/aisysall.c | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
-| `mode` | 104 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
+| `mode` | 94 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
 | `gameobject_s.flags_ef0` | 93 | 0x4 0x40 0x80 0x200 0x400 0x1000 0x2000 0x4000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code, no keyword |
 | `AIPACKET.flags` | 78 | 0x8 0x20 0x40 0x400 0x800 0x1000 0x2000 0x4000 ... | gameapi/aisysall.c, legogame/gameai.c | path following and movement state (AISysProcessCharacter, AIMoveToDestination) |
 | `nurnd_vertex3d_s.colour` | 72 | 32768 842150450 4278190080 4278190335 4278255360 4294901760 4294967295 | legoapi/parts.c, gameapi/edbri.c | the editors' debug line colours: 0xffffffff, 0xff00ff00 and 0xff0000ff repeat, but the vertex colour's channel order (which of 0xff0000ff and 0xffff0000 is red) is not settled, so they stay hex |
@@ -259,10 +257,8 @@ the literals, and 1630 more fields have fewer than 20 sites each (4974 in all;
 | `type` | 36 | 0 1 2 3 4 5 6 7 ... | legoapi/audio.cpp, nu2api/bgproc.c | bare `type` locals and parameters; per function in `--locals type` (CutScriptNodeAlloc, TEXT_INPUT_MANAGER::ButtonName, ShaderCompilerParser::ParseDeclaration) |
 | `gameobject_s.context_variant_flags` | 34 | 0x8 0x10 0x20 0x100 0x800 0x1000 0x2000 0x8000 | legogame/move.c, legogame/zipup.c | per character context: 0x8000 the jump hold time ran out / the carry throw timer ended, 0x100 grapple, whip and zip-up, 0x80 and 0x1-0x10 sabre combo |
 | `value` | 34 | -32768 -32767 1 6 7 10 12 13 ... | nu2api/input_runtime.cpp, legogame/gizpanel.c | no name table, keyword or label found yet |
-| `*.capabilities` | 33 | 0x1 0x2 0x4 0x8 0x10 0x20 0x80 0x100 ... | legoapi/batarang.cpp, legogame/starwars_gameai.c | no name table, keyword or label found yet |
 | `axis` | 31 | 0 1 2 3 4 5 6 7 | editor/edlevelall.cpp, legoapi/utilities.c | no name table, keyword or label found yet |
 | `PC_SHADER_FILTER_DESC_VIEW.flags` | 30 | 0x1 0x2 0x8 0x20 0x80 0x100 0x400 0x4000 ... | nu2api/nushadermanager.cpp, nu2api/shader_compiler.cpp | no name table, keyword or label found yet |
-| `eduiitem_s.data` | 30 | 0 1 2 3 7 9999 99999 | gameapi/aisysall.c, gameapi/edpp_load.c | some of its sites already use DEBRIS_GENERATOR_* (anonymous enum/#define) names |
 | `gameobject_s.flags_1fc_word` | 30 | 0x4 0x10 0x20 0x40 0x100 0x2000 0x10000 0x40000 | legogame/creature.c, legogame/game_obj.c | some of its sites already use APIOBJECT_FLAG_* (anonymous enum/#define) names |
 | `animpacket_s.flags` | 29 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | gameapi/apiobject.c, legogame/move.c | no name table, keyword or label found yet |
 | `gameobject_s.unknown_283` | 29 | 3 5 6 7 9 16 | legogame/move.c, legogame/creature.c | no name table, keyword or label found yet |
@@ -273,19 +269,17 @@ the literals, and 1630 more fields have fewer than 20 sites each (4974 in all;
 | `index` | 25 | 0 1 2 3 4 8 15 32 ... | nu2api/nu3d_includes.cpp, nu2api/nurndr.c | some of its sites already use ACTION_STUN_* (anonymous enum/#define) names |
 | `models` | 25 | 12 13 89 101 102 103 104 105 ... | legogame/creature.c | no name table, keyword or label found yet |
 | `debris` | 24 | 34 38 44 45 52 69 73 74 ... | legogame/game_obj.c, legogame/game.cpp | no name table, keyword or label found yet |
+| `eduiitem_s.data` | 24 | 0 1 2 3 9999 99999 | gameapi/aisysall.c, gameapi/edpart.c | some of its sites already use DEBRIS_GENERATOR_* (anonymous enum/#define) names |
 | `gameobject_s.movement_mode` | 24 | 0 1 2 3 4 5 | legogame/move.c, legogame/creature.c | no name table, keyword or label found yet |
 | `panel_movement_s.flags` | 24 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | legogame/gizpanel.c, legogame/gameaiscript.c | no name table, keyword or label found yet |
 | `starfighter_s.model_id` | 24 | -307 -300 -299 -298 -297 54 | legogame/chris.cpp | no name table, keyword or label found yet |
-| `eduiitem_s.flags` | 23 | 0x1 0x2 0x4 | gameapi/aisysall.c, gameapi/rtl.c | some of its sites already use EDUI_ITEM_* (anonymous enum/#define) names |
 | `*.flags_low` | 22 | 0x1 0x80 0x100 0x200 0x400 0x4000 0x100000 | gameapi/apiobject.c, gameapi/aisysall.c | no name table, keyword or label found yet |
 | `APIOBJECT.flags_low` | 22 | 0x1 0x4 0x80 0x100 0x800 0x1000 0x40000 0x80000 | gameapi/aisysall.c, legogame/gameai.c | no name table, keyword or label found yet |
 | `green` | 22 | 31 63 143 191 223 255 65280 | legogame/panel.cpp, legogame/menu.cpp | no name table, keyword or label found yet |
-| `buildit_reset_s.state_flags` | 21 | 0x1 0x2 0x4 0x8 0x10 0x40 0x80 0x100 ... | legoapi/gizbuildit.cpp | some of its sites already use GIZBUILDIT_STATE_* (anonymous enum/#define) names |
 | `model` | 21 | -307 14 25 53 54 84 85 86 ... | legogame/chris.cpp, legogame/creature.c | no name table, keyword or label found yet |
 | `*.active` | 20 | 2 3 5 6 7 9 | nu2api/input_runtime.cpp, legoapi/debris_engine.c | some of its sites already use PART_IN_* (anonymous enum/#define) names |
-| `alignment` | 20 | 1 2 4 8 16 32 64 | legoapi/text.c, legogame/game_obj.c | no name table, keyword or label found yet |
 | `buildit_reset_s.availability_flags` | 20 | 0x1 0x2 0x4 0x80 0x200 | legoapi/gizbuildit.cpp | no name table, keyword or label found yet |
+| `buildit_reset_s.state_flags` | 20 | 0x2 0x4 0x8 0x10 0x40 0x80 0x100 0x200 ... | legoapi/gizbuildit.cpp | some of its sites already use GIZBUILDIT_STATE_* (anonymous enum/#define) names |
 | `gameobject_s.action_movement_state` | 20 | 2 3 4 5 7 | legogame/move.c, legoapi/jumping.c | jump and movement mode of the jump code (JumpCode states 2-9) |
-| `hit_type` | 20 | 2 3 7 8 9 10 12 | legoapi/gizmoblowups.c, legoapi/explosions.c | some of its sites already use BLOWUP_HIT_* (anonymous enum/#define) names |
 | `mask` | 20 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x100 ... | nu2api/pc_input.cpp, editor/edlevelall.cpp | no name table, keyword or label found yet |
 | `red` | 20 | 63 191 255 | legogame/menu.cpp, legogame/panel.cpp | no name table, keyword or label found yet |

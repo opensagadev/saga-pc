@@ -583,7 +583,7 @@ static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD *pickup) {
     pickup->room = world->current_gscn != NULL ? NuPortalWhichRoom(world->current_gscn, &pickup->position) : -1;
     pickup->rotation = (u16)qrand();
     pickup->timer = 0.0f;
-    pickup->flags = (pickup->flags & ~0x40) | 0x20;
+    pickup->flags = (pickup->flags & ~GIZMOPICKUP_STATE_ALTERNATE_TYPE) | GIZMOPICKUP_STATE_DRAW_VISIBLE;
 }
 
 void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
@@ -624,14 +624,14 @@ void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
             }
             if (GizmoPickupSys->gizmo_type_id != -1 && pickup->type_index == GizmoPickupSys->gizmo_type_id && Game_LevelSave != NULL) {
                 if (SuperStory != 0) {
-                    pickup->flags |= 0x40;
+                    pickup->flags |= GIZMOPICKUP_STATE_ALTERNATE_TYPE;
                 } else {
                     i32 saved_index;
                     for (saved_index = 0; saved_index < ((struct LEVELSAVE_s *)Game_LevelSave)[world->level_idx].minikit_count;
                          ++saved_index) {
                         if (NuStrICmp(pickup->name, ((struct LEVELSAVE_s *)Game_LevelSave)[world->level_idx].minikit_names[saved_index]) ==
                             0) {
-                            pickup->flags |= 0x40;
+                            pickup->flags |= GIZMOPICKUP_STATE_ALTERNATE_TYPE;
                             break;
                         }
                     }

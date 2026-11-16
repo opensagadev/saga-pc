@@ -359,10 +359,10 @@ extern "C" void DrawPlayerIconPrompts(i32 active0, i32 select0, f32 alpha0, i32 
         i32 align;
         if (player == 0) {
             x = -HubPromptX;
-            align = 2;
+            align = TEXT_ALIGN_LEFT;
         } else {
             x = HubPromptX;
-            align = 8;
+            align = TEXT_ALIGN_RIGHT;
         }
         if (active[player] == 0) {
             continue;
@@ -784,13 +784,13 @@ extern "C" {
                 i32 name_alpha = (i32)((f64)base_alpha * 128.0);
                 f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidth : HudNameWidth;
                 SmartTextEx(GameObj_GetName(-1, object, auxiliary), name_x, name_y, 1.0f, HudNameScale, HudNameScale, HudNameScale,
-                            alignment | 1, (u8)HudNameRed, (u8)HudNameGreen, (u8)HudNameBlue, width, 2, NULL, 0, name_alpha);
+                            alignment | TEXT_ALIGN_TOP, (u8)HudNameRed, (u8)HudNameGreen, (u8)HudNameBlue, width, 2, NULL, 0, name_alpha);
             }
             if (HudPausePromptEnabled != 0 && paused != 0 && player == pause_i_pad) {
                 f32 width = Game.options_save.widescreen != 0 ? HudNameWideWidth : HudNameWidth;
                 SmartTextEx(TTab[dat_00880834], name_x, status_y + HudPausePromptOffsetY, 1.0f, HudNameScale, HudNameScale, HudNameScale,
-                            alignment | 1, (u8)HudPausePromptRed, (u8)HudPausePromptGreen, HudPausePromptBlue, width, 1, NULL, 0,
-                            flash_alpha);
+                            alignment | TEXT_ALIGN_TOP, (u8)HudPausePromptRed, (u8)HudPausePromptGreen, HudPausePromptBlue, width, 1, NULL,
+                            0, flash_alpha);
             }
             if (StartupGameFlag1 != 0 && paused == 0 && FadeSys.fade == 0.0f && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 if (ONEPLAYERPOWERUPS != 0 && object->powerup_time > 0.0f) {

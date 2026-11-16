@@ -138,6 +138,11 @@ typedef struct CUT_RIGID_GENERIC {          // size 0x50
     struct NUANIMDATA2_SKELETAL *animation; // 0x4c
 } CUT_RIGID_GENERIC;
 
+/* CUT_CHARACTER_GENERIC.flags (CUT_DRAW_CHARACTER.flags in cutscenes.cpp) */
+#define CUT_CHARACTER_MODEL_ONLY 0x2  /* drawn from a loaded character model (CutSceneFindModel's model_only), not a player */
+#define CUT_CHARACTER_SHADOW 0x10     /* casts the blob shadow */
+#define CUT_CHARACTER_REFLECTION 0x20 /* drawn reflected within CutReflectRange */
+
 typedef struct CUT_CHARACTER_GENERIC {      // size 0x64
     NUMTX base_matrix;                      // 0x00
     char *name;                             // 0x40

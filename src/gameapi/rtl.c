@@ -2532,13 +2532,13 @@ void cbSetControls(eduimenu_s *menu, eduiitem_s *item, u32 value) {
 void cbNoZBuffer(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)value;
-    rtl_zoff = item->flags & 1u;
+    rtl_zoff = item->flags & EDUI_ITEM_HIGHLIGHTED;
 }
 
 void cbHideType(eduimenu_s *menu, eduiitem_s *item, u32 value) {
     (void)menu;
     (void)value;
-    hide_types[item->data] = item->flags & 1u;
+    hide_types[item->data] = item->flags & EDUI_ITEM_HIGHLIGHTED;
 }
 
 void cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {

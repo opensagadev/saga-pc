@@ -925,7 +925,7 @@ edui_textpicker_s *eduiAddTextPickEntEx(eduimenu_s *menu, eduiitem_s *source, Ed
     struct edui_textpicker_s *picker;
     static eduimenu_s *tpent = 0;
     tpent = eduiMenuCreate(source->x + 10, source->y + 10, 180, 50, menu->font, NULL, ((char *)("Enter Text")));
-    tpent->flags |= 2;
+    tpent->flags |= EDUI_MENU_HORIZONTAL;
     picker = ((edui_textpicker_s *)(eduiItemTextPickCreate(((size_t)(source)), &ed_attr, callback, ((char *)("")))));
     eduiMenuAddItem(tpent, &picker->base);
     eduiMenuAttach(menu, tpent);
@@ -1126,14 +1126,14 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 i
         }
     }
     if (!menu->pinned && !menu->horizontal) {
-        if ((pad->digital_buttons & PAD_BUTTON_LEFT) && !(menu->flags & 1)) {
+        if ((pad->digital_buttons & PAD_BUTTON_LEFT) && !(menu->flags & EDUI_MENU_FIXED)) {
             i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1) {
                 distance = 1;
             }
             menu->x -= distance;
         }
-        if ((pad->digital_buttons & PAD_BUTTON_RIGHT) && !(menu->flags & 1)) {
+        if ((pad->digital_buttons & PAD_BUTTON_RIGHT) && !(menu->flags & EDUI_MENU_FIXED)) {
             i32 distance = (i32)(delta_time * 1500.0f);
             if (distance < 1) {
                 distance = 1;

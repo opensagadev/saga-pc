@@ -306,8 +306,8 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                     }
                 } else if (gizmo->type_id == spinner_gizmotype_id) {
                     TRIGGER_SPINNER *spinner = gizmo->object;
-                    if ((spinner->flags & 6) != 0 || ((spinner->flags & 8) != 0 && ShadowMode == 0) || spinner->progress == 1.0f ||
-                        (spinner->state_flags & 0x20) != 0) {
+                    if ((spinner->flags & 6) != 0 || ((spinner->flags & GIZSPINNER_FLAG_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0) ||
+                        spinner->progress == 1.0f || (spinner->state_flags & SPINNER_STATE_HALTED) != 0) {
                         set->occupied &= ~(1 << index);
                     } else if (player->character_context == CHARACTER_CONTEXT_PUSH_SPINNER && player->grapple == spinner) {
                         set->occupied |= 1 << index;

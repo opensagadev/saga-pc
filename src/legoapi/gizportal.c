@@ -111,7 +111,7 @@ static void Portals_StoreProgress(void *world_ptr, void *data, void *progress_pt
     for (index = 0; index < world->current_gscn->max_portals; ++index) {
         if (world->current_gscn->portals[index].id != 0 && bit_index < 32) {
             i32 word = bit_index / 32;
-            if ((world->current_gscn->portals[index].flags & 1) != 0) {
+            if ((world->current_gscn->portals[index].flags & NUPORTAL_FLAG_ACTIVE) != 0) {
                 progress[word] |= 1u << (bit_index & 31);
             }
             ++bit_index;
@@ -136,7 +136,7 @@ static void Portals_Reset(void *world_ptr, void *data, void *progress_ptr) {
         NuPortalSetActiveDirect(&world->current_gscn->portals[index], 1);
         if (progress != NULL && bit_index < 32) {
             i32 word = bit_index / 32;
-            if ((world->current_gscn->portals[index].flags & 1) != 0) {
+            if ((world->current_gscn->portals[index].flags & NUPORTAL_FLAG_ACTIVE) != 0) {
                 progress[word] |= 1u << (bit_index & 31);
             }
         }

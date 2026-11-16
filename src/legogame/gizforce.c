@@ -1178,7 +1178,7 @@ i32 GizForces_BoltHit(WORLDINFO *world, void *system_pointer, GAMEOBJECT *object
         }
     }
     if (best != NULL) {
-        if (hit_type != 2 && hit_type != 7 && bolt != NULL) {
+        if (hit_type != BLOWUP_HIT_BATARANG && hit_type != BLOWUP_HIT_CARRIED && bolt != NULL) {
             (void)BoltType_FindByID(bolt->type_id, WORLD);
             (void)Player_HasDoubleBoltDamage_FromBolt(bolt);
         }

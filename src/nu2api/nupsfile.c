@@ -28,15 +28,15 @@ i32 NuPSFileOpen(const char *path, i32 mode) {
     i32 index;
 
     switch (mode) {
-        case 0:
+        case NUFILE_READ:
             access = GENERIC_READ;
             creation = OPEN_EXISTING;
             break;
-        case 1:
+        case NUFILE_WRITE:
             access = GENERIC_WRITE;
             creation = CREATE_ALWAYS;
             break;
-        case 2:
+        case NUFILE_APPEND:
             access = GENERIC_WRITE;
             creation = OPEN_ALWAYS;
             break;

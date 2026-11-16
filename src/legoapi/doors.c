@@ -105,7 +105,7 @@ void Doors_Init(WORLDINFO *world) {
         NuVecAdd(&door->opposite_midpoint, &door->opposite_midpoint, &door->point0);
         NuVecSurfaceNormal(&door->normal, &door->point0, &door->point1, &door->point3);
         NuPlnEqn(&door->plane, &door->point0, &door->point1, &door->point3);
-        if (view->start_door == NULL && (door->flags & 8) != 0 && door->spline->point_count >= 6) {
+        if (view->start_door == NULL && (door->flags & DOOR_FLAG_USE_AS_START) != 0 && door->spline->point_count >= 6) {
             view->start_door = door;
         }
     }
@@ -201,7 +201,7 @@ void *Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
     nearest_distance = 1000000.0f;
     nearest = NULL;
     for (index = 0; index < ((PLAYER_WORLD_DOORS *)world)->door_count; ++index, ++door) {
-        if ((door->flags & 4) == 0 && door->level != -1 &&
+        if ((door->flags & DOOR_FLAG_DO_NOT_USE) == 0 && door->level != -1 &&
             ((level != -1 && door->level == level) || (area != -1 && LDataList[door->level].area_index == area))) {
             if (position == NULL) {
                 return door;

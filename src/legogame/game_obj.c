@@ -2663,8 +2663,8 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     i32 i;
     terminal_kill = 0;
     requested_reason = reason;
-    if (reason == 5) {
-        reason = 4;
+    if (reason == KILL_REASON_TAKEN_OVER) {
+        reason = KILL_REASON_REMOVED;
     }
     if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
         ++AreaGlobals.unknown_00;
@@ -2680,7 +2680,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     debris[1] = -1;
     debris[2] = -1;
     debris[3] = -1;
-    if (reason != 4) {
+    if (reason != KILL_REASON_REMOVED) {
         if ((object->character_data->model_flags & CHARACTER_MODEL_MINIKIT) != 0) {
             debris[0] = 73;
             debris[1] = 74;
@@ -2770,9 +2770,9 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
         }
     }
-    if (reason == 4) {
+    if (reason == KILL_REASON_REMOVED) {
         terminal_kill = 1;
-        reason = 2;
+        reason = KILL_REASON_KILLED;
     } else if (WORLD->current_level == SPEEDERCHASEA_LDATA && object->ai_packet.creature_set == 2) {
         GIZAIMESSAGE *message = CheckGizAIMessage(gizaimessagesys, "SpeedersKilled", NULL);
         if (message != NULL) {
@@ -2788,8 +2788,8 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         object->velocity.y = (f32)(0.5 * ((f64)object->velocity.y));
         object->velocity.z = (f32)((f64)object->velocity.z * 0.5);
     }
-    if (reason == 3) {
-        reason = 2;
+    if (reason == KILL_REASON_FELL) {
+        reason = KILL_REASON_KILLED;
     }
     object->dead = (u8)reason;
     object->current_hp = 0;
@@ -2804,7 +2804,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     rider = object->rider;
     Player_ClearContext(object, 1);
     if (terminal_kill != 0 && NULL != rider) {
-        KillGameObject(rider, 4, 0);
+        KillGameObject(rider, KILL_REASON_REMOVED, 0);
     }
     ReleaseLever(object);
     Player_ResetContexts(object->ai_player_packet);
@@ -2986,7 +2986,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
         i32 respawn;
         u32 limit;
         f32 delay;
-        if (requested_reason == 5) {
+        if (requested_reason == KILL_REASON_TAKEN_OVER) {
             object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
             object->ai_packet.reset_mode = AIPACKET_RESET_DISABLED;
         } else {
@@ -3075,7 +3075,7 @@ void SpeederPart_Kill(PART *part, i32 unused) {
             (rider->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
             KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider->flags_ef0 &= ~0x400000;
             KillParts(KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider, -1, -1, 1, 0.0f, 0, NULL);
-            KillGameObject(KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider, 2, 0);
+            KillGameObject(KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))].rider, KILL_REASON_KILLED, 0);
         }
         memset(&KillPartsBikes[((i32)(((KILLPARTS_PART *)part)->speeder_index))], 0, sizeof(KILLPARTS_BIKE));
     }
@@ -3784,10 +3784,10 @@ impact:
         }
         if (no_impact && target->rider) {
             KillParts(target->rider, -1, target->rider->id == (u16)id_BODYGUARD ? 4 : -1, 1, 0.0f, 0, (u16 *)(parts_angle));
-            KillGameObject(target->rider, 2, 0);
+            KillGameObject(target->rider, KILL_REASON_KILLED, 0);
         }
         KillParts(target, -1, (u16)id_BODYGUARD == target->id ? 4 : -1, 1, throw_up ? 1.0f : 0.0f, 0, (u16 *)(parts_angle));
-        KillGameObject(target, 2, 0);
+        KillGameObject(target, KILL_REASON_KILLED, 0);
         if ((target->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
             GameCam_Judder(GameCam, 0.2f, 0, NULL);
         }

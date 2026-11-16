@@ -305,7 +305,7 @@ i32 Action_SpeederBeingChased(AISYS *system, AISCRIPTPROCESS *processor, AIPACKE
                 can_fire = 1;
             }
             if (speeder_kill_dist < distance) {
-                KillGameObject(object, 4, 0);
+                KillGameObject(object, KILL_REASON_REMOVED, 0);
                 return 1;
             }
             error = distance - speedervals[processor->action_data_1].distance;

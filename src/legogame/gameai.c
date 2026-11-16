@@ -1229,7 +1229,7 @@ NUVEC *GetAICreatureOrigin(AISYS *system, AIPACKET *packet) {
     if (system == NULL || packet == NULL || packet->creature_index == AIPACKET_NO_CREATURE) {
         return NULL;
     }
-    if ((packet->navigation_flags & 8u) == 0) {
+    if ((packet->navigation_flags & AIPACKET_NAV_ORIGIN_SET) == 0) {
         creature = &system->creatures[packet->creature_index];
         across = (packet->group_column + 1) / 2;
         offset.x = across * creature->x_spacing;
@@ -1240,7 +1240,7 @@ NUVEC *GetAICreatureOrigin(AISYS *system, AIPACKET *packet) {
         offset.z = -creature->z_spacing * packet->group_row;
         NuVecRotateY(&offset, &offset, creature->y_rotation);
         NuVecAdd(&packet->creature_origin, &offset, &creature->position);
-        packet->navigation_flags |= 8u;
+        packet->navigation_flags |= AIPACKET_NAV_ORIGIN_SET;
     }
     return &packet->creature_origin;
 }
@@ -1279,7 +1279,7 @@ void GameAILoad(AISYS *system, i32 version, NUGSCN *unused2, VARIPTR *buffer, VA
 
 i32 AIRespawnOnPath(APIOBJECT *apiobject) {
     GAMEOBJECT *object = (GAMEOBJECT *)apiobject;
-    if (object->dead == 0 && (apiobject->ai->path_info.flags & 1) == 0 && (object->flags_1fc_word & 0x2000) != 0 &&
+    if (object->dead == 0 && (apiobject->ai->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0 && (object->flags_1fc_word & 0x2000) != 0 &&
         (object->character_data->model_flags & CHARACTER_MODEL_NO_OFFPATH_TELEPORT) == 0 &&
         object->objptr->character_context != CHARACTER_CONTEXT_DOOMED && object->objptr->takeover_source == NULL &&
         object->respawn_timer > 2.0f) {
@@ -1391,7 +1391,7 @@ void GameAISysInit(void) {
 
 i32 TryToTeleportToNextNode(GAMEOBJECT *object, AIPATHNODE *node, i32 tightrope) {
     NUVEC position;
-    if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0 && (object->ai_packet.path_info.flags & 1) != 0 &&
+    if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0 && (object->ai_packet.path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0 &&
         (object->unknown_f10 >= OFFSCREEN_CATCHUP_TIME ||
          (object->model_draw_result == 0 && (object->tag_flags & APIOBJECT_TAG_DISABLED) == 0 && drop_back_in_timer > 0.0f))) {
         position = node->position;
@@ -2781,7 +2781,7 @@ void GameAIProcess(void) {
                 if ((object->ai_packet.flags & 0x40000000u) != 0) {
                     object->ai_collision_priority |= 0x2000;
                 }
-                if ((object->ai_packet.navigation_flags & 1) != 0) {
+                if ((object->ai_packet.navigation_flags & AIPACKET_NAV_SPECIAL_CONNECTION) != 0) {
                     object->ai_collision_priority |= 0x1000;
                 }
                 if ((object->pad->runtime_flags & GAMEPAD_AI_ATTACK) != 0) {

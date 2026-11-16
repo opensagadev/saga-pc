@@ -520,7 +520,7 @@ void UpdatePodRaceMines(void) {
                 distance = delta.x * delta.x + delta.z * delta.z;
                 if (distance < reach * reach) {
                     if (object->player_index == -1) {
-                        KillPlayer(object, 2, 1, NULL);
+                        KillPlayer(object, KILL_REASON_KILLED, 1, NULL);
                         objects[j] = NULL;
                     } else {
                         PodRaceExplodeMine(entry, object);
@@ -921,7 +921,7 @@ void PodRaceUpdate(WORLDINFO *world, f32 dt) {
                     LoseCoins(Player[1], 1);
                 }
                 ActivePodRace->flags |= 2;
-                KillPlayer(player, 2, 1, NULL);
+                KillPlayer(player, KILL_REASON_KILLED, 1, NULL);
                 ActivePodRace->attempts++;
                 if (ActivePodRace->previous_lap_display < ActivePodRace->max_lap_time && ActivePodRace->attempts_per_increment != 0 &&
                     ActivePodRace->attempts % ActivePodRace->attempts_per_increment == 0) {

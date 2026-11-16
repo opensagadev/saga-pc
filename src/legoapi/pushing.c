@@ -114,7 +114,7 @@ void SetPushAngle(GAMEOBJECT *object) {
         if (spinner != NULL && LEGOCONTEXT_PUSHSPINNER != -1 && object->character_context == LEGOCONTEXT_PUSHSPINNER &&
             (spinner->state_flags & SPINNER_STATE_PUSHED)) {
             adjustment = PlayerPushSpinnerDegrees;
-            if (spinner->state_flags & 1) {
+            if (spinner->state_flags & SPINNER_STATE_TURNING_POSITIVE) {
                 adjustment = -adjustment;
             }
         }

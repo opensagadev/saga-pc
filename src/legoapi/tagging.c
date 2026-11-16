@@ -139,7 +139,7 @@ void ReStoreStatusTakeOverObjectSys(i32 restore_progress) {
                 }
             }
             if (takeoverobjects[index].object != NULL && takeoverobjects[index].current_level != level) {
-                KillGameObject(takeoverobjects[index].object, 5, 0);
+                KillGameObject(takeoverobjects[index].object, KILL_REASON_TAKEN_OVER, 0);
                 takeoverobjects[index].object = NULL;
             }
         } else if (takeoverobjects[index].current_level == level && takeoverobjects[index].object == NULL) {

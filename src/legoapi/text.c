@@ -893,9 +893,9 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
     } else {
         button_scale = x_scale;
     }
-    if ((alignment & 4) != 0) {
+    if ((alignment & TEXT_ALIGN_BOTTOM) != 0) {
         y = (f32)((f64)y - half_height);
-    } else if ((alignment & 1) != 0) {
+    } else if ((alignment & TEXT_ALIGN_TOP) != 0) {
         y = (f32)((f64)y + half_height);
     }
     if ((alignment & TEXT_ALIGN_LEFT) == 0) {
@@ -1254,9 +1254,9 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     if (suppress_draw == 0) {
         if (last_line > 0) {
             for (line = 0; line <= last_line; ++line) {
-                if ((alignment & 1) != 0) {
+                if ((alignment & TEXT_ALIGN_TOP) != 0) {
                     line_y = y + line_height * line;
-                } else if ((alignment & 4) != 0) {
+                } else if ((alignment & TEXT_ALIGN_BOTTOM) != 0) {
                     line_y = y - last_line * line_height + line_height * line;
                 } else {
                     line_y = y - last_line * 0.5f * line_height + line_height * line;
@@ -1634,13 +1634,13 @@ void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_sca
     width = NuQFntPrintLenW(font, encoded);
     height = NuQFntHeight(font);
     y -= height * 0.5;
-    if ((alignment & 4) != 0) {
+    if ((alignment & TEXT_ALIGN_BOTTOM) != 0) {
         y -= height * 0.5;
-    } else if ((alignment & 1) != 0) {
+    } else if ((alignment & TEXT_ALIGN_TOP) != 0) {
         y += height * 0.5;
     }
-    if ((alignment & 2) == 0) {
-        if ((alignment & 8) != 0) {
+    if ((alignment & TEXT_ALIGN_LEFT) == 0) {
+        if ((alignment & TEXT_ALIGN_RIGHT) != 0) {
             x -= width;
         } else {
             x -= width * 0.5;

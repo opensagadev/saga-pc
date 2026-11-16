@@ -7762,7 +7762,7 @@ extern "C" {
             if (next_room == previous_room) {
                 continue;
             }
-            clip = (portal->flags & 1) != 0 ? clipPortalAgainstFrustrum(scene, room_id, portal, frustum, next_room) : 0;
+            clip = (portal->flags & NUPORTAL_FLAG_ACTIVE) != 0 ? clipPortalAgainstFrustrum(scene, room_id, portal, frustum, next_room) : 0;
             switch (clip) {
                 case 0:
                     break;
@@ -8051,7 +8051,7 @@ extern "C" {
     void NuPortalSetActiveDirect(NUPORTAL *portal, i32 active) {
         if (portal != NULL) {
             if (active != 0) {
-                portal->flags |= 1;
+                portal->flags |= NUPORTAL_FLAG_ACTIVE;
             } else {
                 portal->flags = 0;
             }

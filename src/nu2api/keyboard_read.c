@@ -58,7 +58,7 @@ i32 cbInteractMenuTitle(edui_interact_s *interact) {
     static f32 offsety = 0;
     i32 result = (edui_cursor_buttons & EDUI_CURSOR_PRIMARY) != 0;
     eduimenu_s *menu = interact->menu;
-    if (!(menu->flags & 1)) {
+    if (!(menu->flags & EDUI_MENU_FIXED)) {
         f32 mouse_x = (f32)(NuMouseReadX() * 640.0);
         f32 mouse_y = (f32)(NuMouseReadY() * 448.0);
         if (!eduiInteractLocked) {

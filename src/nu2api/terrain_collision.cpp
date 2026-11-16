@@ -565,9 +565,9 @@ extern "C" {
                     side = -edge.x * (x - TERRAIN_HWS_B.x) - (z - TERRAIN_HWS_B.z) * edge.z;
                     if (side >= -0.00005f && time < query->hit_time) {
                         if (start_distance > 0.0f) {
-                            query->hit_type = 1;
+                            query->hit_type = TERRAIN_HIT_TYPE_FACE;
                         } else {
-                            query->hit_type = 0x11;
+                            query->hit_type = TERRAIN_HIT_TYPE_SECOND_NORMAL | TERRAIN_HIT_TYPE_FACE;
                         }
                         query->hit_time = time;
                         TerrWallInfo = 1;

@@ -201,7 +201,7 @@ static void CutSceneEndCharactersPC(INSTNUGCUTSCENE *owner, f32 frame) {
         CUT_CHARACTER_GENERIC *source = &system->characters[i];
         CUT_CHARACTER_INSTANCE *character = &characters->characters[i];
         if (character->model != NULL) {
-            if ((source->flags & 2) == 0 && NuCutSceneCharacterEval != NULL) {
+            if ((source->flags & CUT_CHARACTER_MODEL_ONLY) == 0 && NuCutSceneCharacterEval != NULL) {
                 NuCutSceneCharacterEval(owner, scene, character, source, frame);
             }
             if (nu_current_thread_id == 0 && NuCutSceneCharacterRelease != NULL) {
@@ -297,7 +297,7 @@ static void CutSceneEndLocatorsPC(CUT_LOCATOR_INSTANCE_SYSTEM *instance, CUT_LOC
                 }
             }
         } else if ((type->flags & CUTLOCATOR_DEBRIS) != 0) {
-            if ((locator->flags & 0x20) != 0 && state->effect_handle > -1) {
+            if ((locator->flags & CUTLOC_PERSISTENT) != 0 && state->effect_handle > -1) {
                 DebFreeInstantly(&state->effect_handle);
             }
         } else if ((type->flags & CUTLOCATOR_VFX) != 0) {

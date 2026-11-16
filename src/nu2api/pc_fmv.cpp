@@ -22,40 +22,40 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
     i32 (*callback)(void) = NULL;
     char path[256];
     va_start(args, option);
-    while (option != 1) {
+    while (option != NUFMV_END) {
         ++count;
         switch (option) {
-            case 0:
+            case NUFMV_NONE:
             case 3:
             case 9:
                 break;
-            case 2:
+            case NUFMV_NAME:
                 name = va_arg(args, char *);
                 break;
-            case 4:
+            case NUFMV_MODE:
                 mode = va_arg(args, i32) == 3;
                 break;
-            case 5:
+            case NUFMV_SUBTITLES:
             case 6:
             case 10:
             case 11:
             case 12:
                 va_arg(args, i32);
                 break;
-            case 14:
+            case NUFMV_VOLUME:
                 volume = *va_arg(args, f32 *);
                 break;
-            case 7:
+            case NUFMV_INPUT_CALLBACK:
                 callback = va_arg(args, FMV_INPUT_CALLBACK);
                 break;
-            case 15:
+            case NUFMV_DRAW_CALLBACK:
                 FmvDrawCallback = va_arg(args, FMV_DRAW_CALLBACK);
                 break;
-            case 8:
+            case NUFMV_BUFFER:
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case 13:
+            case NUFMV_KEEP_SOUND:
                 stop_sound = 0;
                 break;
             default: {
@@ -108,6 +108,6 @@ extern "C" i32 NuFmvPlayV(i32 option, ...) {
 
 extern "C" i32 NuFmvPlay(u32 argument0, i32 enabled, u32 argument2, u32 argument3, u32 argument4, u32 argument5, u32 argument6,
                          u32 argument7) {
-    return NuFmvPlayV(2, argument0, enabled != 0 ? 3 : 0, 4, argument2, 5, argument3, 6, argument4, 7, argument5, 8, argument6, argument7,
-                      1);
+    return NuFmvPlayV(NUFMV_NAME, argument0, enabled != 0 ? 3 : NUFMV_NONE, NUFMV_MODE, argument2, NUFMV_SUBTITLES, argument3, 6, argument4,
+                      NUFMV_INPUT_CALLBACK, argument5, NUFMV_BUFFER, argument6, argument7, NUFMV_END);
 }

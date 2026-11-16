@@ -201,7 +201,7 @@ static void BlockadeRunnerDKillEjectedCreature(PART *part, i32 reason) {
     for (i = 0; i < 8; i++) {
         if (LevGamePart[i] == part) {
             if (LevGameObject[i] != NULL) {
-                KillGameObject(LevGameObject[i], 4, 0);
+                KillGameObject(LevGameObject[i], KILL_REASON_REMOVED, 0);
                 LevGameObject[i] = NULL;
             }
             LevGamePart[i] = NULL;
@@ -261,7 +261,7 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
             LevGamePart[i] = AddPart(&params);
             LevGamePart[i]->time_remaining = 30.0f;
             if (LevGamePart[i] == NULL) {
-                KillGameObject(LevGameObject[i], 4, 0);
+                KillGameObject(LevGameObject[i], KILL_REASON_REMOVED, 0);
                 LevGameObject[i] = NULL;
             }
             return;
@@ -292,7 +292,7 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
             LevGameObject[i]->ai_update_position = LevGameObject[i]->position;
         }
         if ((LevGamePart[i]->active & PART_IN_USE) == 0 || LevGamePart[i]->kill_fn != BlockadeRunnerDKillEjectedCreature) {
-            KillGameObject(LevGameObject[i], 4, 0);
+            KillGameObject(LevGameObject[i], KILL_REASON_REMOVED, 0);
             LevGameObject[i] = NULL;
         }
     }
@@ -609,7 +609,7 @@ void DeathStarBattleDUpdate(WORLDINFO *world) {
             if (free_play == 0 && trenchrun.midtro_played == 0) {
                 for (index = 0; index < 3; ++index) {
                     if (trenchrun.objects[index] != NULL) {
-                        KillGameObject(trenchrun.objects[index], 4, 0);
+                        KillGameObject(trenchrun.objects[index], KILL_REASON_REMOVED, 0);
                         trenchrun.objects[index] = NULL;
                     }
                 }

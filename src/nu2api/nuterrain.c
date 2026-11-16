@@ -2254,7 +2254,7 @@ void TerrainPlatformNewUpdate(void) {
         i32 index = group->scene_index;
         TERRAIN_PLATFORM_LIFECYCLE *platform = &TERRAIN_TPNU_PLATFORM(index);
         if (platform->instance_flags != NULL) {
-            if ((platform->flags & 4) != 0) {
+            if ((platform->flags & TERRAIN_PLATFORM_FLAG_DISPLAY_LIST_BACKED) != 0) {
                 if ((*platform->instance_flags & 2) == 0) {
                     continue;
                 }
@@ -2507,7 +2507,7 @@ void terrainpickupinit(char *path, void **buffer) {
                 if (shape->material[0] == 0xff) {
                     shape->material[0] = shape->material[1];
                     shape->material[1] = 0;
-                    shape->flags |= 0x80;
+                    shape->flags |= TERRAIN_SHAPE_FLAG_MATERIAL_ALIAS;
                 }
                 if (shape->min_x < min_x) {
                     min_x = shape->min_x;

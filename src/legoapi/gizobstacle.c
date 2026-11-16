@@ -1215,7 +1215,7 @@ static i32 GizObstacles_BoltHit(void *world, void *data, GAMEOBJECT *attacker, N
             BOLTTYPE *type;
             GAMEOBJECT *owner;
             i32 player;
-            if (hit_type != 2 && hit_type != 7 && bolt) {
+            if (hit_type != BLOWUP_HIT_BATARANG && hit_type != BLOWUP_HIT_CARRIED && bolt) {
                 BoltType_FindByID(bolt->type_id, WORLD);
                 Cheats_CheckFlags(CHEAT_DOUBLE_BOLT_DAMAGE);
             }

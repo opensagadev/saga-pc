@@ -907,7 +907,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
                 EduiAddInteraction((f32)x, (f32)y, (f32)menu->width, (f32)item_height, menu, item, ((edui_sel_s *)item)->interact, 0x40, 0);
             }
             item = item->next;
-            if (menu->flags & 2) {
+            if (menu->flags & EDUI_MENU_HORIZONTAL) {
                 x += menu->width;
             } else {
                 y += item_height;
@@ -941,7 +941,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
             menu->unknown_0c = menu->unknown_0c->next;
         }
     }
-    if ((menu->flags & 2) == 0) {
+    if ((menu->flags & EDUI_MENU_HORIZONTAL) == 0) {
         x = menu->x + menu->width;
     } else {
         y += max_item_height;
@@ -2336,7 +2336,7 @@ extern "C" i32 near_clip_at_cursor;
 extern "C" void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
     (void)menu;
     (void)buttons;
-    near_clip_at_cursor = item->flags & 1;
+    near_clip_at_cursor = item->flags & EDUI_ITEM_HIGHLIGHTED;
 }
 
 extern "C" void fun_00623900(NUVEC *position, u8 red, u8 green, u8 blue) {

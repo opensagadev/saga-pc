@@ -496,8 +496,9 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             object->flags_ef4 |= 0x400000;
             object->last_safe_position = object->position;
             object->fall_recovery_timer = 0.0f;
-            if ((object->ai_packet.path_info.flags & 1) != 0 && (object->ai_packet.path_info.connection->traversal_flags[1] |
-                                                                 object->ai_packet.path_info.connection->traversal_flags[0]) == 0) {
+            if ((object->ai_packet.path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0 &&
+                (object->ai_packet.path_info.connection->traversal_flags[1] | object->ai_packet.path_info.connection->traversal_flags[0]) ==
+                    0) {
                 if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
                     (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
                     object->takeover_owner = NULL;
@@ -531,7 +532,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
 safe_position_done:
     if ((object->flags_ef4 & APIOBJECT_IGNORE_LAST_SAFE_PATH_POS) == 0 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
         (LEGOCONTEXT_EATEN == -1 || object->character_context != LEGOCONTEXT_EATEN) && (object->flags_1fc_word & 0x2000) != 0) {
-        if ((object->ai_packet.path_info.flags & 1) != 0) {
+        if ((object->ai_packet.path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
             if (object->takeover_owner != NULL && (LEGOCONTEXT_GETIN == -1 || object->character_context != LEGOCONTEXT_GETIN) &&
                 (LEGOCONTEXT_BEENTAKENOVER == -1 || object->character_context != LEGOCONTEXT_BEENTAKENOVER)) {
                 object->takeover_owner = NULL;

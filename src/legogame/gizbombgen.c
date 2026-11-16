@@ -108,7 +108,7 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
         if (generator->generated_bomb != NULL && (system->flags & 2) != 0 &&
             (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
             (generator->generated_bomb->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0) {
-            KillGameObject(generator->generated_bomb, 4, 0);
+            KillGameObject(generator->generated_bomb, KILL_REASON_REMOVED, 0);
         }
         generator->generated_bomb = NULL;
         if (progress != NULL && index < 96) {
@@ -129,7 +129,7 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
         player = Player[index];
         if (player != NULL && BombGenerator_PlayerBomb[index] != NULL && player->cable != NULL &&
             ((CABLE_s *)player->cable)->target != NULL && ((CABLE_s *)player->cable)->target->id == id_DRAGBOMB) {
-            KillGameObject(((CABLE_s *)player->cable)->target, 4, 0);
+            KillGameObject(((CABLE_s *)player->cable)->target, KILL_REASON_REMOVED, 0);
             Player[index]->cable = NULL;
         }
         player = Player[index];
@@ -176,7 +176,7 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
         }
         generator = system->bomb_generators;
         for (index = 0; index < system->count; ++index, ++generator) {
-            if ((generator->flags & 2) == 0 || (generator->flags & 1) == 0 || generator->anim_set == NULL) {
+            if ((generator->flags & GIZBOMBGEN_FLAG_VISIBLE) == 0 || (generator->flags & 1) == 0 || generator->anim_set == NULL) {
                 continue;
             }
             if (generator->generated_bomb != NULL) {

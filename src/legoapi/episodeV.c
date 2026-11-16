@@ -1433,7 +1433,7 @@ i32 SpawnMeleeCreatureType(i32 type) {
     for (index = 0; index < melee.waves[type].active_count; ++index) {
         if (melee.waves[type].character_id != id_ATAT && melee.waves[type].creatures[index] != NULL &&
             melee.waves[type].creatures[index]->unknown_f10 > 5.0f) {
-            KillGameObject(melee.waves[type].creatures[index], 4, 0);
+            KillGameObject(melee.waves[type].creatures[index], KILL_REASON_REMOVED, 0);
             melee.waves[type].creatures[index] = NULL;
             --melee.waves[type].active_count;
         }
@@ -1631,7 +1631,7 @@ void HothBattleE_UpdateWave(void) {
                         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
                             (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->id != (u16)id_ATAT &&
                             object->player_index == -1 && (object->character_data->model_flags & CHARACTER_MODEL_BADDIE) != 0) {
-                            KillGameObject(object, 4, 0);
+                            KillGameObject(object, KILL_REASON_REMOVED, 0);
                         }
                     }
                     memset(melee.background_creatures, 0, sizeof(melee.background_creatures));

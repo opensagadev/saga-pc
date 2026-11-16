@@ -240,3 +240,9 @@ extern "C" {
 enum { NUFILE_READ = 0 };
 
 enum { NUFILE_WRITE = 1 };
+
+/* NuPSFileOpen opens it for writing without truncating it (OPEN_ALWAYS) */
+#define NUFILE_APPEND 2
+
+/* a read whose seeks and reads complete in the background: the dat file code waits on NuFileStatus after each */
+#define NUFILE_READ_ASYNC 3

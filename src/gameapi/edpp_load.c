@@ -175,23 +175,23 @@ void cbPtlSelTextureType(eduimenu_s *menu, eduiitem_s *item, u32 unused2) {
         i32 type = debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index;
         DEBRIS_INFO *effect = debtab[type];
         if (effect->particle_type != item->data) {
-            if (item->data == 2) {
+            if (item->data == DEBRIS_PARTICLE_MODULATIVE) {
                 edpp_ptls[edpp_nearest].render_priority = 40000;
-            } else if (item->data == 3) {
+            } else if (item->data == DEBRIS_PARTICLE_SUBTRACTIVE) {
                 edpp_ptls[edpp_nearest].render_priority = 30000;
-            } else if (item->data == 0) {
+            } else if (item->data == DEBRIS_PARTICLE_ADDITIVE) {
                 edpp_ptls[edpp_nearest].render_priority = 20000;
-            } else if (item->data == 7) {
+            } else if (item->data == DEBRIS_PARTICLE_GLASS) {
                 edpp_ptls[edpp_nearest].render_priority = 10000;
             }
         }
-        if (item->data != 7 && effect->particle_type == DEBRIS_PARTICLE_GLASS) {
+        if (item->data != DEBRIS_PARTICLE_GLASS && effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             effect->time_group = DEBRIS_DRAW_AFTER_FOG;
         }
-        if (item->data == 7) {
+        if (item->data == DEBRIS_PARTICLE_GLASS) {
             effect->time_group = 2;
         }
-        if (item->data == 7 ||
+        if (item->data == DEBRIS_PARTICLE_GLASS ||
             debtab[debkeydata[edpp_ptls[edpp_nearest].instance_id].effect_index]->particle_type == DEBRIS_PARTICLE_GLASS) {
             i32 index;
             for (index = 0; index < 512; ++index) {

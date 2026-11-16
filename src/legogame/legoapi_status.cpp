@@ -185,10 +185,10 @@ extern "C" {
         NuQFntSetScale(QFont3DZ, scale, scale);
         Text3DStringEncode(text, encoded);
         switch (alignment) {
-            case 2:
+            case TEXT_ALIGN_LEFT:
                 NuQFntMove(QFont3DZ, 0.0f, (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
                 break;
-            case 8:
+            case TEXT_ALIGN_RIGHT:
                 NuQFntMove(QFont3DZ, -NuQFntPrintLenW(QFont3DZ, encoded), (f32)(-NuQFntHeight(QFont3DZ) * 0.5), 0.0f);
                 break;
             default:

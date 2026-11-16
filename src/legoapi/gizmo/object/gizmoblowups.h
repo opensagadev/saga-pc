@@ -46,6 +46,10 @@ extern "C" {
 }
 #endif
 
+/* GIZMOBLOWUPTYPE.animation_flags: the blowup sits at its animated special's own draw position, so the special is the
+   blowup itself (the load sets it; it moves with the special and is hidden when the blowup breaks) */
+#define GIZMOBLOWUPTYPE_AT_SPECIAL 0x2000
+
 typedef struct GIZMOBLOWUPTYPE {        // size 0x100
     nuhspecial_s alternate_specials[4]; // 0x00
     nuhspecial_s animated_special;      // 0x30

@@ -974,7 +974,7 @@ extern "C" {
 
         owner = object->owner;
         flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
-        if ((packet->path_info.flags & 1) != 0) {
+        if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
             source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
             destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
             destination = &packet->path_info.path->nodes[destination_index];
@@ -1744,13 +1744,13 @@ extern "C" {
             }
         }
         if (model->action_animations[0x8a] != NULL && model->action_animations[0x8b] != NULL && model->action_animations[0x8c] != NULL) {
-            object->ai_packet.capabilities |= 0x400000;
+            object->ai_packet.capabilities |= BATMAN_AIPATHCNX_WALLSHUFFLE;
         }
         if (model->action_animations[0xcd] != NULL) {
-            object->ai_packet.capabilities |= 0x100000;
+            object->ai_packet.capabilities |= BATMAN_AIPATHCNX_VARIANT_FLAG0;
         }
         if (model->action_animations[6] != NULL) {
-            object->ai_packet.capabilities |= 1;
+            object->ai_packet.capabilities |= BATMAN_AIPATHCNX_JUMP;
         }
         if ((character->game_character->flags_090 & CHARACTER_RUNTIME_HIGH_JUMP) != 0) {
             object->ai_packet.capabilities |= 0x20;
@@ -1762,11 +1762,11 @@ extern "C" {
             object->ai_packet.capabilities |= ((SUIT_AI_CAPABILITIES *)object->suit)->path_capabilities;
         }
         if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
-            object->ai_packet.capabilities |= 0x100;
+            object->ai_packet.capabilities |= BATMAN_AIPATHCNX_FORBADDIES;
         } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
-            object->ai_packet.capabilities |= 0x80;
+            object->ai_packet.capabilities |= BATMAN_AIPATHCNX_FORGOODIES;
         }
-        object->ai_packet.capabilities |= 0x1000;
+        object->ai_packet.capabilities |= BATMAN_AIPATHCNX_BIGJUMP;
         if ((character->model_flags & CHARACTER_MODEL_TELEPORT) != 0) {
             object->ai_packet.capabilities |= 0x10;
         }

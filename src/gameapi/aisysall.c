@@ -1853,7 +1853,7 @@ f32 Condition_GotLocatorSet(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
 }
 
 f32 Condition_OnPath(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && (packet->path_info.flags & 1) != 0) {
+    if (packet != NULL && (packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -1861,7 +1861,7 @@ f32 Condition_OnPath(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, 
 
 f32 Condition_PlayerOnPath(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     APIOBJECT *player = system->player_1;
-    if (player != NULL && (player->ai->path_info.flags & 1) != 0) {
+    if (player != NULL && (player->ai->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -5720,7 +5720,7 @@ static void AIMoveFindDivertNode(AISYS *system, AIPATH *path, AIPACKET *packet, 
     i32 initial_index;
     f32 distance;
 
-    if (path->special_route_count > 0 && (packet->navigation_flags & 4u) != 0) {
+    if (path->special_route_count > 0 && (packet->navigation_flags & AIPACKET_NAV_SPECIAL_ROUTES) != 0) {
         links = path->special_routes;
         if (packet->divert_node_index >= path->node_count) {
             packet->divert_node_index = 0xff;
@@ -5908,7 +5908,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
             packet->movement_stopping_distance = 0.0f;
             return;
         }
-        if ((packet->navigation_flags & 4) != 0) {
+        if ((packet->navigation_flags & AIPACKET_NAV_SPECIAL_ROUTES) != 0) {
             packet->fallback_destination = saved_destination;
             packet->fallback_stopping_distance = saved_stopping_distance;
             packet->movement_parameter = saved_parameter;
@@ -6108,7 +6108,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
     }
     if (current_2 == destination_connection &&
         (packet->current_route == AIPACKET_NO_ROUTE || (((u64)1 << packet->current_route) & (destination_connection->route_mask)) != 0)) {
-        if ((packet->path_info.flags & 1u) == 0 || packet->movement_parameter == 0.0f) {
+        if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0 || packet->movement_parameter == 0.0f) {
             packet->movement_stopping_distance = packet->fallback_stopping_distance;
             packet->movement_destination = packet->fallback_destination;
             return;
@@ -6119,7 +6119,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                 packet->movement_stopping_distance = 0.0f;
                 return;
             }
-            if ((packet->navigation_flags & 4) != 0) {
+            if ((packet->navigation_flags & AIPACKET_NAV_SPECIAL_ROUTES) != 0) {
                 packet->fallback_destination = saved_destination;
                 packet->fallback_stopping_distance = saved_stopping_distance;
                 packet->movement_parameter = saved_parameter;
@@ -6177,7 +6177,7 @@ void AIMoveToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32
                 packet->frame_state = next->traversal_flags[direction];
                 next = NULL;
             } else {
-                packet->navigation_flags |= 1;
+                packet->navigation_flags |= AIPACKET_NAV_SPECIAL_CONNECTION;
             }
         }
         if (next != NULL) {
@@ -7303,7 +7303,7 @@ void areaEditor_cbCylinderToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) 
     (void)menu;
     (void)event;
     if (aieditor->selected_area != NULL) {
-        if (item->flags & 1) {
+        if (item->flags & EDUI_ITEM_HIGHLIGHTED) {
             aieditor->selected_area->flags |= 1;
         } else {
             aieditor->selected_area->flags &= ~1;
@@ -9031,7 +9031,8 @@ void pathEditor_cbRenameNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
 void pathEditor_cbDrawWallsplinesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_DRAW_WALLSPLINES) | (((u32)item->flags & 1) << 9);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_DRAW_WALLSPLINES) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 9);
 }
 
 void pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -9372,10 +9373,10 @@ static void AiEditorSetRouteUsers(eduimenu_s *menu, eduiitem_s *item, u32 event)
     mask = (u64)1 << item->data;
     if ((route->user_mask & mask) != 0) {
         aieditor->current_path->current_route->user_mask &= ~mask;
-        item->flags &= ~1;
+        item->flags &= ~EDUI_ITEM_HIGHLIGHTED;
     } else {
         aieditor->current_path->current_route->user_mask |= mask;
-        item->flags |= 1;
+        item->flags |= EDUI_ITEM_HIGHLIGHTED;
     }
 }
 
@@ -9619,44 +9620,50 @@ static void AiEditorClearMainMenu(void) {
 void aieditor_cbDrawAllToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_DRAW_ALL_PATHS) | (((u32)item->flags & 1) << 1);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_DRAW_ALL_PATHS) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 1);
 }
 
 static void AiEditorDisplayBit4(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SNAP_HEIGHT) | (((u32)item->flags & 1) << 4);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_SNAP_HEIGHT) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 4);
 }
 
 void aieditor_cbSolidPathDisplayToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SOLID_PATH_DISPLAY) | (((u32)item->flags & 1) << 7);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_SOLID_PATH_DISPLAY) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 7);
 }
 
 static void AiEditorDisplayBit8(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
     aieditorsettings.display_options =
-        (aieditorsettings.display_options & ~AIEDITOR_SOLID_ANTINODE_DISPLAY) | (((u32)item->flags & 1) << 8);
+        (aieditorsettings.display_options & ~AIEDITOR_SOLID_ANTINODE_DISPLAY) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 8);
 }
 
 static void AiEditorDisplayBit6(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_STOP_PLATFORMS) | (((u32)item->flags & 1) << 6);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_STOP_PLATFORMS) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 6);
 }
 
 void aieditor_cbShowCreaturesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SHOW_CREATURES) | (((u32)item->flags & 1) << 3);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_SHOW_CREATURES) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 3);
 }
 
 void aieditor_cbShowCreaturesSetToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     (void)menu;
     (void)event;
-    aieditorsettings.display_options = (aieditorsettings.display_options & ~AIEDITOR_SHOW_CURRENT_SET) | (((u32)item->flags & 1) << 10);
+    aieditorsettings.display_options =
+        (aieditorsettings.display_options & ~AIEDITOR_SHOW_CURRENT_SET) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 10);
 }
 
 static void AiEditorModeCancel(eduimenu_s *menu, eduimenu_s *child) {
@@ -13336,7 +13343,7 @@ void AISysGetCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *packet
 
     path = packet->path_info.path;
     if (path == NULL) {
-        if ((packet->navigation_flags & 2) != 0) {
+        if ((packet->navigation_flags & AIPACKET_NAV_FIRST_PATH) != 0) {
             AISysCharacterSetPath(packet, system->path_sys->paths[0]);
         } else {
             AISysCharacterSetPath(packet, system->path_sys->active_path);
@@ -13388,7 +13395,7 @@ void AISysGetCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *packet
         }
     }
 
-    if ((packet->navigation_flags & 2) == 0) {
+    if ((packet->navigation_flags & AIPACKET_NAV_FIRST_PATH) == 0) {
         path = packet->path_info.path;
         remaining_checks = checks;
         if (remaining_checks > path->node_count) {
@@ -13598,7 +13605,7 @@ void AIRetreatFromDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object
         AIRetreatFromDestination2(system, packet, object, checks);
         return;
     }
-    if ((packet->path_info.flags & 1u) != 0) {
+    if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
         distance = NuVecXZDist(&object->position, &packet->fallback_destination, &difference);
         if (distance == 0.0f) {
             difference.x = packet->movement_parameter;
@@ -14622,7 +14629,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
                         for (node_index = 0; node_index < path->node_count; ++node_index) {
                             AIPATHNODE *node = &path->nodes[node_index];
                             AISysGetPathPosEx(aieditor->ai_system, &node->position, &info, first_path, 0xff, 0, NULL);
-                            if ((info.flags & 1)) {
+                            if ((info.flags & AIPATHINFO_FLAG_ON_PATH)) {
                                 f64 half = 0.5f;
                                 f64 path_distance = info.distance;
                                 node->path_flags = info.connection - path->connections;
@@ -14795,7 +14802,7 @@ void pathEditor_cbSetShareNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
             ++path_number;
         }
         if (match_count != 0) {
-            if (item->data != 0 && !(item->flags & 1)) {
+            if (item->data != 0 && !(item->flags & EDUI_ITEM_HIGHLIGHTED)) {
                 if (aieditor->current_path->current_node->shared_node != NULL) {
                     for (index = 0; index < match_count; ++index) {
                         node = matches[index];
@@ -16258,8 +16265,10 @@ i32 Action_MoveAwayFromNode(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
 }
 
 void AISysUpdateCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *packet, i32 ground, f32 elapsed) {
-    i32 should_find_path = (packet->flags & 0x02000000) == 0 &&
-                           (((object->flags_low & 4) == 0 || (packet->path_info.flags & 1) == 0) || object->supporting_platform_id != -1);
+    i32 should_find_path =
+        (packet->flags & 0x02000000) == 0 && (((object->flags_low & 4) == 0 || (packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) ||
+                                              object->supporting_platform_id != -1);
+
     if (should_find_path) {
         if (packet->path_info.path != NULL) {
             if (object->flags_low & 0x80000) {
@@ -16271,7 +16280,7 @@ void AISysUpdateCharacterPathPos(AISYS *system, APIOBJECT *object, AIPACKET *pac
             packet->last_path_position = object->position;
         }
         packet->flags &= ~0x02000000u;
-        if ((packet->path_info.flags & 1) == 0) {
+        if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0) {
             packet->time_off_path += elapsed;
         } else {
             packet->time_off_path = 0.0f;
@@ -16328,7 +16337,7 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
             packet->path_target = NULL;
             packet->movement_destination = object->position;
             packet->flags &= 0x3f0fffffu;
-            packet->navigation_flags &= ~1u;
+            packet->navigation_flags &= ~AIPACKET_NAV_SPECIAL_CONNECTION;
         } else {
             u32 source;
             if (AIRespawnOnPathFn != NULL && AIRespawnOnPathFn(object) != 0) {
@@ -16340,7 +16349,7 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
                 AIScriptProcess(system, object, packet, processor, elapsed);
             }
             packet->flags &= 0x3f0fffffu;
-            packet->navigation_flags &= ~1u;
+            packet->navigation_flags &= ~AIPACKET_NAV_SPECIAL_CONNECTION;
             packet->frame_state = 0;
             if ((packet->flags & 0x10000000u) != 0) {
                 switch ((packet->flags >> 26) & 3) {

@@ -1461,7 +1461,7 @@ extern "C" {
                     }
                     f32 sine = NU_SIN_LUT((f64)progress * 32768.0);
                     f32 offset = (f64)sine * (f64)0.2f;
-                    if ((buildit->state_flags & 1) != 0) {
+                    if ((buildit->state_flags & GIZBUILDIT_STATE_ROTATING_WOBBLE) != 0) {
                         displacement.x = displacement.y = 0.0f;
                         displacement.z = offset;
                         NuVecRotateY(&displacement, &displacement, (i32)((u32)(u16)buildit->wobble_parameter << 16) / 360);

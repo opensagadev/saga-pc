@@ -848,7 +848,7 @@ void DeactivateGameObject(GAMEOBJECT *object) {
         if ((object->flags_1f8 & 0x4000) != 0) {
             ReleaseTakeOver(object, 1);
         } else {
-            KillGameObject(object->rider, 4, 0);
+            KillGameObject(object->rider, KILL_REASON_REMOVED, 0);
         }
     }
     object->flags_1fc_word &= ~APIOBJECT_FLAG_CHARACTER;
@@ -1729,7 +1729,7 @@ static i32 TerrainKillPlayer(GAMEOBJECT *object, i32 surface, NUVEC *normal) {
         coins = LoseCoins(object, 1);
         AddPickups(coins, 0, 0, 0, &object->collision_position, NULL, 2.0f, -1, 1.0f, 2000000.0f, object, 1, 0);
     }
-    KillPlayer(object, 2, 1, NULL);
+    KillPlayer(object, KILL_REASON_KILLED, 1, NULL);
     return 1;
 }
 
@@ -1808,15 +1808,15 @@ void TerrainPlayer(GAMEOBJECT *object) {
             } else if ((api->flags_1fc_word & 0x40) == 0 && (U64_PAIR(&CInfo[object->character_context].flags) & 0x8000) == 0) {
                 i32 ordinary_ai_path;
 
-                ordinary_ai_path = ai_controlled && object->movement_spline_position.spline == NULL && (path_info->flags & 1) != 0 &&
-                                   (path_info->flags & AIPATHINFO_FLAG_NARROW_PATH) == 0 &&
-                                   object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED && object->context_target_position == NULL &&
-                                   !special_path_endpoints && Technos_FindControllingTechno(object) == NULL &&
-                                   (api->flags_1fc_word & 0x40000) == 0 &&
-                                   !AIPATHCNX_FLAG_SET(path_info->connection, original_traversal_flags, LEGO_AIPATHCNX_BLOCKAGE) &&
-                                   !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_WALLSHUFFLE) &&
-                                   !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_FULLTERRAIN) &&
-                                   (object->character_context != CHARACTER_CONTEXT_STUNNED || object->unknown_7b3 != 0);
+                ordinary_ai_path =
+                    ai_controlled && object->movement_spline_position.spline == NULL && (path_info->flags & AIPATHINFO_FLAG_ON_PATH) != 0 &&
+                    (path_info->flags & AIPATHINFO_FLAG_NARROW_PATH) == 0 && object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED &&
+                    object->context_target_position == NULL && !special_path_endpoints && Technos_FindControllingTechno(object) == NULL &&
+                    (api->flags_1fc_word & 0x40000) == 0 &&
+                    !AIPATHCNX_FLAG_SET(path_info->connection, original_traversal_flags, LEGO_AIPATHCNX_BLOCKAGE) &&
+                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_WALLSHUFFLE) &&
+                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_FULLTERRAIN) &&
+                    (object->character_context != CHARACTER_CONTEXT_STUNNED || object->unknown_7b3 != 0);
                 if (ordinary_ai_path) {
                     retain_floor = (api->flags_1fc_word & 0x10) != 0;
                     shadow_grounding = 1;
@@ -2299,7 +2299,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                         if (api->model_draw_result != 0) {
                             InstantKillParts(object, 0, 0.0f);
                         }
-                        KillPlayer(object, 3, 1, NULL);
+                        KillPlayer(object, KILL_REASON_FELL, 1, NULL);
                         if (WORLD->current_level == CRUISERD_LDATA && object->wall_run_state == 3) {
                             MiscTime = 0.1f;
                         }
@@ -2338,7 +2338,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                         if (((api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0)) {
                                             LoseCoins(object, 2);
                                         }
-                                        KillPlayer(object, 2, 1, NULL);
+                                        KillPlayer(object, KILL_REASON_KILLED, 1, NULL);
                                         break;
                                     }
                                 } else if (((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) != 0 ||
@@ -2473,7 +2473,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                                     }
                                 }
                                 InstantKillParts(object, 1, 2.0f);
-                                KillPlayer(object, 3, 1, NULL);
+                                KillPlayer(object, KILL_REASON_FELL, 1, NULL);
                             }
                         }
                     }
@@ -2529,7 +2529,7 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 if (api->model_draw_result != 0) {
                     InstantKillParts(object, 0, 0.0f);
                 }
-                KillPlayer(object, 3, 1, NULL);
+                KillPlayer(object, KILL_REASON_FELL, 1, NULL);
             }
         }
     }

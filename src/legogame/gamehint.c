@@ -89,7 +89,7 @@ void DrawHint_LSW(HINT *hint, i32 max_lines) {
         alignment = 0;
         text_x = 0.0f;
     } else {
-        alignment = 2;
+        alignment = TEXT_ALIGN_LEFT;
         text_x = (f32)(-(f64)ICONX + (f64)0.09f);
     }
     icon_x = -ICONX;

@@ -103,6 +103,19 @@ struct PC_FMV_MOVIE {                // size 0x48
     f32 y_scale;                     // 0x44
 };
 
+/* NuFmvPlayV option tags, each followed by its arguments; the list ends with NUFMV_END. Tags 3, 9 (no argument),
+   6, 10, 11, 12 (one) are read and ignored on the PC. */
+#define NUFMV_NONE 0           /* no argument; NuFmvPlay passes it in place of tag 3 */
+#define NUFMV_END 1            /* ends the list */
+#define NUFMV_NAME 2           /* char *: the movie file */
+#define NUFMV_MODE 4           /* i32: 3 sets the option FmvOpen keeps in the movie */
+#define NUFMV_SUBTITLES 5      /* i32, ignored (the movie player passes its subtitles) */
+#define NUFMV_INPUT_CALLBACK 7 /* i32 (*)(void): polled to end the movie early */
+#define NUFMV_BUFFER 8         /* two words: the work buffer's start and end, ignored */
+#define NUFMV_KEEP_SOUND 13    /* no argument: the game's sound keeps playing */
+#define NUFMV_VOLUME 14        /* f32 *: the volume */
+#define NUFMV_DRAW_CALLBACK 15 /* void (*)(void): FmvDrawCallback */
+
 extern "C" {
     extern PC_FMV_MOVIE FmvMovie;
     extern i32 FmvInitialized;

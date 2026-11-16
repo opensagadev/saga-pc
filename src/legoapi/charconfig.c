@@ -275,7 +275,7 @@ static void CC_ReadAnimEffect(NUFPAR *parser, CHARACTERANIM_CONFIG *animation, i
     effect->character_id = character_id;
     effect->debris_id = -1;
     effect->action_id = animation->action_id;
-    effect->flags = 0x8000;
+    effect->flags = CHAREFFECT_SFX_3D;
     effect->locators = 0;
     effect->random = 0;
     effect->particle_count = 0;

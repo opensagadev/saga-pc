@@ -2999,7 +2999,7 @@ i32 LevelEditor::IsEditable(i32 index) {
 /* Menu close callback for the level editor's menus: tears the menu down,
  * re-enables the camera and falls back to the pinned menu. */
 void cbEdLevelDestroy(eduimenu_s *menu, eduimenu_s *) {
-    if (menu->flags & 4) {
+    if (menu->flags & EDUI_MENU_PINNED) {
         return;
     }
     eduiMenuDetach(menu);
@@ -3449,7 +3449,7 @@ void PlaceableNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32) {
             menu->selected = edui_last_item;
         }
     }
-    menu->flags |= 1;
+    menu->flags |= EDUI_MENU_FIXED;
     eduiMenuAttach(parent, menu);
     eduiMenuFitWidth(menu, 5);
     reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
@@ -4380,7 +4380,7 @@ void EdSpecialObjectControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u32)
         }
     }
     eduiMenuSortItemsByTxt(menu);
-    menu->flags |= 1;
+    menu->flags |= EDUI_MENU_FIXED;
     eduiMenuAttach(parent, menu);
     eduiMenuFitWidth(menu, 5);
     eduiMenuFitOnScreen(menu, 30);
@@ -5242,9 +5242,9 @@ void ClassEditor::cbEdFilterLED(eduimenu_s *, eduiitem_s *item, u32) {
 
 /* Pinning keeps the menu open when it loses the focus; unpinning closes it. */
 void ClassEditor::cbEdClassSetPinned(eduimenu_s *menu, eduiitem_s *item, u32) {
-    menu->flags ^= 4;
+    menu->flags ^= EDUI_MENU_PINNED;
     item->highlighted = !item->highlighted;
-    if (menu->flags & 4) {
+    if (menu->flags & EDUI_MENU_PINNED) {
         eduiMenuDetach(menu);
         edLevelPinnedMenu = menu;
     } else {
@@ -5267,7 +5267,7 @@ void ClassEditor::cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
         return;
     }
     eduiMenuAddItem(menu, eduiItemCheckCreate(0, &EdLevelAttr, 0, 0, cbEdClassSetPinned, "Pinned"));
-    menu->flags &= ~4;
+    menu->flags &= ~EDUI_MENU_PINNED;
     for (i32 index = 0; index < 10; index++) {
         LevelEditorScene *scene = theLevelEditor.GetEdScene(index);
         if (scene != NULL && scene->active) {
@@ -5577,7 +5577,7 @@ void EdEnumControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     for (Item *entry = active_enum_control->items; entry->name != NULL; entry++) {
         eduiMenuAddItem(choices, eduiItemSelCreate((u32)entry, item->colours, 0, 0, cbSelectItem, entry->name));
     }
-    choices->flags |= 1;
+    choices->flags |= EDUI_MENU_FIXED;
     eduiMenuAttach(menu, choices);
     eduiMenuFitWidth(choices, 5);
     eduiMenuFitOnScreen(choices, 30);
@@ -5612,7 +5612,7 @@ void EdBitControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
     for (Item *entry = edBitControl->items; entry->name != NULL; entry++) {
         eduiMenuAddItem(choices, eduiItemSelCreate((u32)entry, item->colours, 0, 0, cbSelectItem, entry->name));
     }
-    choices->flags |= 1;
+    choices->flags |= EDUI_MENU_FIXED;
     eduiMenuAttach(menu, choices);
     eduiMenuFitWidth(choices, 5);
     reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
@@ -5670,7 +5670,7 @@ void EdSfxNameControl::cbButton(eduimenu_s *menu, eduiitem_s *item, u32) {
             }
             eduiMenuAddItem(choices, eduiItemSelCreate(id, item->colours, 0, 0, cbSelectSfx, name));
         }
-        choices->flags |= 1;
+        choices->flags |= EDUI_MENU_FIXED;
         eduiMenuAttach(menu, choices);
         eduiMenuFitWidth(choices, 5);
         reinterpret_cast<edui_prop_s *>(item)->button_held = 0;
@@ -8091,7 +8091,7 @@ void EdClassObjectNameControl::cbSelectClass(eduimenu_s *parent, eduiitem_s *ite
     if (menu->first == NULL) {
         eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "No Object"));
     }
-    menu->flags |= 1;
+    menu->flags |= EDUI_MENU_FIXED;
     eduiMenuAttach(parent, menu);
     eduiSetActiveMenu(menu);
     eduiMenuFitWidth(menu, 5);
@@ -8116,7 +8116,7 @@ void EdClassObjectNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u3
     if (menu->first == NULL) {
         eduiMenuAddItem(menu, eduiItemSelCreate(0, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "No Registered Classes"));
     }
-    menu->flags |= 1;
+    menu->flags |= EDUI_MENU_FIXED;
     eduiMenuAttach(parent, menu);
     eduiMenuFitWidth(menu, 5);
     eduiMenuFitOnScreen(menu, 5);

@@ -87,7 +87,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *
     }
     if (owner->ai_packet.special_move_node != NULL) {
         if ((capabilities & 0x40) == 0) {
-            if ((capabilities & 4) != 0) {
+            if ((capabilities & STARWARS_AIPATHCNX_R2D2GLIDE) != 0) {
                 if (packet->terrain_origin.y >= destination->min_height) {
                     owner->pad->buttons_held |= GAMEPAD_JUMP;
                     if (owner->jump_variant_state == 0 || owner->jump_variant_state == 3) {
@@ -514,15 +514,15 @@ void PlayerInitCapabilitiesVariant1(GAMEOBJECT *object) {
     CHARACTERDATA *character = object->character_data;
     object->ai_packet.capabilities = ((CHARACTER_AI_CAPABILITIES *)character)->path_capabilities | 0x20180040;
     if ((object->flags_1f8 & APIOBJECT_SIDE_BADDIE) != 0) {
-        object->ai_packet.capabilities |= 0x100;
+        object->ai_packet.capabilities |= STARWARS_AIPATHCNX_FORBADDIES;
     } else if ((object->flags_1f8 & APIOBJECT_SIDE_NEUTRAL) == 0) {
-        object->ai_packet.capabilities |= 0x80;
+        object->ai_packet.capabilities |= STARWARS_AIPATHCNX_FORGOODIES;
     }
     if (object->character_model->action_animations[6] != NULL) {
-        object->ai_packet.capabilities |= 1;
+        object->ai_packet.capabilities |= STARWARS_AIPATHCNX_JUMP;
     }
     if ((character->model_flags & CHARACTER_MODEL_CANNOT_BIG_JUMP) == 0 && (character->model_flags & CHARACTER_MODEL_JEDI) != 0) {
-        object->ai_packet.capabilities |= 0x1000;
+        object->ai_packet.capabilities |= STARWARS_AIPATHCNX_BIGJUMP;
     }
     if ((character->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         object->ai_packet.capabilities |= 3;
@@ -636,7 +636,7 @@ i32 StarWars_PrepareJump(AIPACKET *packet, APIOBJECT *object, i32 checks) {
         return StarWars_PrepareBigJump(packet, object, checks);
     }
     flags = packet->path_info.connection->traversal_flags[packet->path_info.direction] & packet->capabilities;
-    if ((packet->path_info.flags & 1) != 0) {
+    if ((packet->path_info.flags & AIPATHINFO_FLAG_ON_PATH) != 0) {
         source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         destination_index = packet->path_info.connection->node_indices[packet->path_info.direction == 0];
         destination = &packet->path_info.path->nodes[destination_index];

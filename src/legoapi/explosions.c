@@ -233,13 +233,13 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
     }
     if (!hit_character && (explosion->flags & EXPLOSION_HITS_BLOWUPS) != 0) {
         if ((explosion->flags & EXPLOSION_AS_BOLT) != 0) {
-            hit_type = 3;
+            hit_type = BLOWUP_HIT_BOLT;
         } else if ((explosion->flags & EXPLOSION_CARRIED) != 0) {
-            hit_type = 7;
+            hit_type = BLOWUP_HIT_CARRIED;
         } else if ((explosion->flags & EXPLOSION_TRANSFORM) != 0) {
-            hit_type = 8;
+            hit_type = BLOWUP_HIT_TRANSFORM;
         } else {
-            hit_type = (explosion->flags & EXPLOSION_BLOWUP_EXPLOSION) != 0 ? 9 : 2;
+            hit_type = (explosion->flags & EXPLOSION_BLOWUP_EXPLOSION) != 0 ? BLOWUP_HIT_EXPLOSION : BLOWUP_HIT_BATARANG;
         }
         if (GizmoBlowUp_Hit(explosion->owner, &explosion->position, 1, radius, &minimum, &maximum, NULL, hit_type, NULL)) {
             Explosion_Feedback(explosion);
