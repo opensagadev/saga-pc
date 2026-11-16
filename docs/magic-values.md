@@ -81,6 +81,8 @@ same function initialises and steps (its values are indexes).
 | `PLAYERCHARACTERCONFIG.variant` (was `weapon_action`), the special moves' attacker and victim variant | `CHARVARIANT_*` (character.h) | the variant names table `StartupCharVariantNames` (`CharVariant_Find`); `SetMoveAndAnimateFunctions` installs the walker, AT-AT, hover droid, critter and Fett functions per variant; variant 21 has no name |
 | `eduiitem_s.text_alignment`, the edui print alignment | `EDUI_ALIGN_*` (edui.h) | where `EduiPrintAlignedText` starts the text |
 | `TERRAIN_PLATFORM.flags` 0x1, 0x2 | `TERRAIN_PLATFORM_FLAG_ROTATING`, `_COLLIDED` (legoapi_types.h) | `PlatInstRotate` and `AddPickupTerrRot`'s rotating argument; the collision sets 0x2 |
+| `freeplaymode` | `FREEPLAY_MENU_*` (hub.h) | what the hub's free play update and draw do in each step |
+| `gameobject_s.unknown_7b3` in the super carry and whip contexts, `gameobject_s.whip_action` | `SUPERCARRY_*` (carrying.h), `WHIP_*` (whip.h) | the LEGOACT_SUPERCARRY_* and LEGOACT_WHIP_* animation each step plays; the whip action chosen on the button press |
 | `GIZMOPICKUP.flags` (4 bits) | `GIZMOPICKUP_STATE_*` (gizmopickups.h) | `GizmoPickup_TurnOnPickup`, the draw loop, collecting, the saved-minikit alternate type |
 | cut scene instance `flags_88` (all views, 6 bits) | `NUGCUTSCENE_INST_*` (nugcutscene.h) | what `instNuGCutSceneStart`/`End`/`Reset`, the `instNuGCutSceneSet*` transforms and `instNuGCutSceneClipTest` set and test |
 | `EdRef.member_offset` pseudo ids (0x8000000n) | `EDREF_LIGHT_*`, `EDREF_FOG_*`, `EDREF_PLACEABLE_*`, `EDREF_SPLINE_*`, `EDREF_KNOT_*`, `EDREF_SPECIAL_OBJECT_*` (edlevelall.h) | the member label each editor class registers with the id; `EdRefPlaceable` 0x80000006 is registered as both "Pos" and "Mtx" and stays literal |
@@ -168,7 +170,7 @@ same function initialises and steps (its values are indexes).
 | `STATUS_STAGE_s.type`, 5-7, 24, 27-34 | ~15 | | the LevelComplete and BonusTime stages and the Stage5/6 ones of the alternate table; their text ids are unnamed globals |
 | `gameobject_s.action_movement_state`, other contexts | ~15 | 1-4 | the force pushed context (2 zapped by lightning, 3 choked, 4 the push cheat) and the deactivated one (2 zapped, 1 mind trick); jump kinds 5 and 7 |
 | `AIPACKET.path_connection_state`, other handlers | ~20 | 0..2 | the tube, door and lift connection handlers count their own steps |
-| `gameobject_s.unknown_7b3` | 57 | 0..7 | a per-context sub-state (batarang, techno); meaning differs per context |
+| `gameobject_s.unknown_7b3` | 57 | 0..7 | a per-context sub-state; named in the super carry and whip contexts, the others (zip-up, grapple, ledge, jump, batarang) mostly use 0 and 1 |
 | `gameobject_s.flags_1fc`, other bits | 45 | 0x4, 0x10, 0x20, 0x40, 0x100, 0x400, 0x2000, 0x10000, 0x40000 | 0x4 is set by the player movement update under many conditions, 0x20 when riding a bike (with 0x400 for a cheap zip), 0x2000 when a respawn position is saved off a path; not settled |
 | `gameobject_s.flags_1f8`, other bits | ~70 | 0x2, 0x40, 0x80, 0x100, 0x200, 0x800, 0x1000, 0x4000, 0x20000, 0x40000 | 0x40000 is tested by the pause menu, the network camera and the game update; the sibling build's `APIOBJECT_STATE_FLAG_IGNORE_DOORS` (transitional/unused.h) is unverified |
 | `gameobject_s.flags_e20`, other bits | ~130 | 0x20 (tested to skip an object almost everywhere, cleared by `UpdateGameObjects`; its setter is not in the source yet), 0x1000 (`GizPanel_MoveCode`), 0x1-0x8, 0x4000, 0x20000, 0x80000-0x80000000 | runtime state bits set in code; read each setter |
@@ -191,8 +193,8 @@ same function initialises and steps (its values are indexes).
 Counted like the magic-state and magic-flag classes of `oddscan.py --magic` (a
 comparison, assignment or `case` with a value other than 0, 1 and -1, or a
 one-bit mask), per field. On 15 November 2026 the named constants stood at
-25746 sites and the literals at 8060 (76.2 % named); the 64 fields below hold
-2590 of the literals, and 1671 more fields have fewer than 20 sites each (5470
+25827 sites and the literals at 7999 (76.4 % named); the 63 fields below hold
+2533 of the literals, and 1670 more fields have fewer than 20 sites each (5466
 in all; `oddscan.py --magic` lists them by use).
 
 | Field | Sites | Values | Where | What is known |
@@ -206,7 +208,6 @@ in all; `oddscan.py --magic` lists them by use).
 | `type` | 73 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, nu2api/nupad_text.cpp | bare `type` locals and parameters; per function in `--locals type` (CutScriptNodeAlloc, TEXT_INPUT_MANAGER::ButtonName, ShaderCompilerParser::ParseDeclaration) |
 | `nurnd_vertex3d_s.colour` | 72 | 32768 842150450 4278190080 4278190335 4278255360 4294901760 4294967295 | legoapi/parts.c, gameapi/edbri.c | the editors' debug line colours: 0xffffffff, 0xff00ff00 and 0xff0000ff repeat, but the vertex colour's channel order (which of 0xff0000ff and 0xffff0000 is red) is not settled, so they stay hex |
 | `gameobject_s.flags_1f8` | 70 | 0x2 0x40 0x80 0x100 0x200 0x800 0x1000 0x4000 ... | gameapi/apiobject.c, legogame/creature.c | 0x40000 tested by the pause menu, network camera and game update |
-| `gameobject_s.unknown_7b3` | 57 | 0 1 2 3 4 5 6 7 | legoapi/carrying.c, legogame/move.c | a per-context sub-state (carrying, batarang, techno); meaning differs per context |
 | `gameobject_s.portal_flags` | 56 | 0x1 0x4 0x20 0x400 0x800 0x1000 0x8000 0x10000 ... | legogame/gameaiscript.c, legogame/game_obj.c | runtime bits (AttackOpponent sets 0x20 and 0x400) |
 | `count` | 51 | -2 1 2 3 4 5 6 8 ... | legogame/hub.cpp, nu2api/shader_dictionary.cpp | no name table, keyword or label found yet |
 | `parameter` | 49 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, legoapi/lighting_unit.cpp | no name table, keyword or label found yet |
