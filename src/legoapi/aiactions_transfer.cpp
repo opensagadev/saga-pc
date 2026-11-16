@@ -86,7 +86,7 @@ extern "C" {
         i32 version = EdFileReadInt();
         world->ledge_count = EdFileReadInt();
         for (i32 i = 0; i < world->ledge_count; ++i) {
-            LEDGE_s *ledge = &static_cast<LEDGE_s *>(world->ledges)[i];
+            LEDGE_s *ledge = &world->ledges[i];
             EdFileRead(ledge->name, 8);
             EdFileReadNuVec(&ledge->position);
             ledge->y_rotation = EdFileReadShort();

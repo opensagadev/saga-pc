@@ -14,6 +14,7 @@ struct APIDEBRISSYS;
 struct APIOBJECTSYS;
 struct GIZMOBLOWUPTYPE;
 struct GIZMOBLOWUP;
+struct LEDGE_s;
 struct LEVEL_OBJECT_RUNTIME;
 struct NUGSCN_s;
 struct TUBE;
@@ -249,7 +250,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     i32 attracto_count;                                  // 0x509c
     void *guidelines;                                    // 0x50a0
     i32 guideline_count;                                 // 0x50a4
-    void *ledges;                                        // 0x50a8
+    struct LEDGE_s *ledges;                              // 0x50a8
     i32 ledge_count;                                     // 0x50ac
     struct SECURITYDOOR_s *security_doors;               // 0x50b0
     i32 security_door_count;                             // 0x50b4

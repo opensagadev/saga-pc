@@ -8,6 +8,7 @@
 #include "legoapi/core/input/gamepads.h"
 #include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/gizmos/transport/ledge.h"
+#include "legoapi/gizmos/transport/ledges.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/misc/gamemain.h"
 #include "legoapi/misc/utilities.h"
@@ -19,37 +20,6 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
-
-typedef struct LEDGE_MOTION { // size 0x38
-    char name[8];             // 0x00
-    NUVEC position;           // 0x08
-    u16 y_rotation;           // 0x14
-    i8 type_code;             // 0x16
-
-    union { // size 0x1
-        u8 state_flags;
-
-        struct {            // size 0x1
-            u8 active : 1;  // 0x17:0
-            u8 visible : 1; // 0x17:1
-            u8 unused : 6;  // 0x17:2
-        } state_bits;
-    }; // 0x17
-
-    u8 type_index;     // 0x18
-    u8 flags;          // 0x19
-    u8 unknown_01a[2]; // 0x1a
-    i16 unknown_1c;    // 0x1c
-    i16 unknown_1e;    // 0x1e
-    NUVEC bounds_min;  // 0x20
-    NUVEC bounds_max;  // 0x2c
-} LEDGE_MOTION;
-
-typedef struct LEDGE_WORLD { // size 0x50b0
-    u8 unknown_000[0x50a8];  // 0x0000
-    LEDGE_MOTION *ledges;    // 0x50a8
-    i32 count;               // 0x50ac
-} LEDGE_WORLD;
 
 typedef struct LEDGEPIECE { // size 0x20
     i16 object_id;          // 0x00
@@ -87,10 +57,10 @@ extern "C" {
     }
 }
 
-static LEDGE_MOTION *LedgeAttachPoint(WORLDINFO *world, NUVEC *position, NUVEC *bounds_min, NUVEC *bounds_max, u16 *angle) {
-    LEDGE_MOTION *ledge = ((LEDGE_WORLD *)world)->ledges;
-    LEDGE_MOTION *nearest_segment;
-    LEDGE_MOTION *nearest_endpoint;
+static LEDGE_s *LedgeAttachPoint(WORLDINFO *world, NUVEC *position, NUVEC *bounds_min, NUVEC *bounds_max, u16 *angle) {
+    LEDGE_s *ledge = world->ledges;
+    LEDGE_s *nearest_segment;
+    LEDGE_s *nearest_endpoint;
     f32 segment_distance;
     f32 endpoint_distance;
     f32 distance;
@@ -113,7 +83,7 @@ static LEDGE_MOTION *LedgeAttachPoint(WORLDINFO *world, NUVEC *position, NUVEC *
     nearest_endpoint = NULL;
     segment_angle = 0;
     endpoint_angle = 0;
-    for (i32 i = 0; i < ((LEDGE_WORLD *)world)->count; ++i, ++ledge) {
+    for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
         if ((ledge->state_flags & 2) == 0 || (ledge->state_flags & 1) == 0) {
             continue;
         }
@@ -314,7 +284,7 @@ typedef struct LEDGE_PROGRESS { // size 0x20
 extern "C" {
     extern char *LedgeOutputName;
 
-    static void Ledge_Reset(LEDGE_MOTION *ledge) {
+    static void Ledge_Reset(LEDGE_s *ledge) {
         i32 type;
         for (type = 0; type < 6; ++type) {
             if (ledge->type_code == LedgePiece[type].type_code) {
@@ -367,21 +337,21 @@ extern "C" {
             i32 version = EdFileReadInt();
             world->ledge_count = EdFileReadInt();
             for (i32 i = 0; i < world->ledge_count; ++i) {
-                EdFileRead(((LEDGE_MOTION *)world->ledges)[i].name, 8);
-                EdFileReadNuVec(&((LEDGE_MOTION *)world->ledges)[i].position);
-                ((LEDGE_MOTION *)world->ledges)[i].y_rotation = EdFileReadShort();
-                ((LEDGE_MOTION *)world->ledges)[i].type_code = EdFileReadChar();
+                EdFileRead(world->ledges[i].name, 8);
+                EdFileReadNuVec(&world->ledges[i].position);
+                world->ledges[i].y_rotation = EdFileReadShort();
+                world->ledges[i].type_code = EdFileReadChar();
                 if (version >= 2) {
-                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1c = EdFileReadShort();
-                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1e = EdFileReadShort();
+                    world->ledges[i].unknown_1c = EdFileReadShort();
+                    world->ledges[i].unknown_1e = EdFileReadShort();
                 } else {
-                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1c = -1;
-                    ((LEDGE_MOTION *)world->ledges)[i].unknown_1e = -1;
+                    world->ledges[i].unknown_1c = -1;
+                    world->ledges[i].unknown_1e = -1;
                 }
                 if (version >= 3) {
-                    ((LEDGE_MOTION *)world->ledges)[i].flags = EdFileReadUnsignedChar();
+                    world->ledges[i].flags = EdFileReadUnsignedChar();
                 } else {
-                    ((LEDGE_MOTION *)world->ledges)[i].flags = 0;
+                    world->ledges[i].flags = 0;
                 }
             }
             return 1;
@@ -395,23 +365,23 @@ extern "C" {
         world->ledge_count = 0;
         if (level->max_ledges > 0) {
             world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-            world->ledges = world->giz_buffer.void_ptr;
-            world->giz_buffer.addr += level->max_ledges * sizeof(LEDGE_MOTION);
+            world->ledges = static_cast<LEDGE_s *>(world->giz_buffer.void_ptr);
+            world->giz_buffer.addr += level->max_ledges * sizeof(LEDGE_s);
         }
         return world->ledges;
     }
 
     void Ledge_SetVisibility(GIZMO *gizmo, i32 visible) {
         if (gizmo != NULL) {
-            LEDGE_MOTION *ledge = (LEDGE_MOTION *)gizmo->object;
-            ledge->state_bits.visible = visible != 0;
+            LEDGE_s *ledge = (LEDGE_s *)gizmo->object;
+            ledge->visible = visible != 0;
         }
     }
 
     void Ledge_Activate(GIZMO *gizmo, i32 active) {
         if (gizmo != NULL) {
-            LEDGE_MOTION *ledge = (LEDGE_MOTION *)gizmo->object;
-            ledge->state_bits.active = active != 0;
+            LEDGE_s *ledge = (LEDGE_s *)gizmo->object;
+            ledge->active = active != 0;
         }
     }
 
@@ -419,26 +389,26 @@ extern "C" {
         if (world == NULL || world->ledges == NULL) {
             return;
         }
-        LEDGE_MOTION *ledge = (LEDGE_MOTION *)world->ledges;
+        LEDGE_s *ledge = world->ledges;
         for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
             Ledge_Reset(ledge);
             if (progress != NULL && i < 128) {
                 i32 word = i / 32;
                 u32 mask = 1u << (i & 31);
-                ledge->state_bits.visible = (progress->visible[word] & mask) != 0;
-                ledge->state_bits.active = (progress->active[word] & mask) != 0;
+                ledge->visible = (progress->visible[word] & mask) != 0;
+                ledge->active = (progress->active[word] & mask) != 0;
             }
         }
     }
 
-    LEDGE_MOTION *Ledge_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared) {
-        LEDGE_MOTION *ledge = (LEDGE_MOTION *)world->ledges;
-        LEDGE_MOTION *nearest = NULL;
+    LEDGE_s *Ledge_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance_squared) {
+        LEDGE_s *ledge = world->ledges;
+        LEDGE_s *nearest = NULL;
         f32 best_distance = 1000000000.0f;
         f32 distance;
         for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
             if (object != NULL) {
-                if (!ledge->state_bits.visible || !ledge->state_bits.active) {
+                if (!ledge->visible || !ledge->active) {
                     continue;
                 }
                 if ((ledge->flags & 1) != 0 && ShadowMode == 0) {
@@ -460,7 +430,7 @@ extern "C" {
     }
 
     void Ledges_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
-        LEDGE_MOTION *ledge = (LEDGE_MOTION *)world->ledges;
+        LEDGE_s *ledge = world->ledges;
         NUMTX matrix;
         if (ledge == NULL) {
             return;
@@ -480,8 +450,8 @@ extern "C" {
 
     void Ledges_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, void *unused) {
         for (i32 i = 0; i < world->ledge_count; ++i) {
-            if (NuStrLen(((LEDGE_MOTION *)world->ledges)[i].name) != 0) {
-                AddGizmo(system, type_id, NULL, &((LEDGE_MOTION *)world->ledges)[i]);
+            if (NuStrLen(world->ledges[i].name) != 0) {
+                AddGizmo(system, type_id, NULL, &world->ledges[i]);
             }
         }
     }
@@ -491,7 +461,7 @@ extern "C" {
     }
 
     i32 Ledge_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {
-        LEDGE_MOTION *ledge = (LEDGE_MOTION *)gizmo->object;
+        LEDGE_s *ledge = (LEDGE_s *)gizmo->object;
         return (ledge->state_flags & 2) != 0 && (ledge->state_flags & 1) != 0;
     }
 
@@ -523,17 +493,17 @@ extern "C" {
         if (world == NULL || world->ledges == NULL) {
             return;
         }
-        LEDGE_MOTION *ledge = (LEDGE_MOTION *)world->ledges;
+        LEDGE_s *ledge = world->ledges;
         for (i32 i = 0; i < world->ledge_count; ++i, ++ledge) {
             if (i >= 128) {
                 break;
             }
             i32 word = i / 32;
             u32 mask = 1u << (i & 31);
-            if (!ledge->state_bits.visible) {
+            if (!ledge->visible) {
                 progress->visible[word] &= ~mask;
             }
-            if (!ledge->state_bits.active) {
+            if (!ledge->active) {
                 progress->active[word] &= ~mask;
             }
         }

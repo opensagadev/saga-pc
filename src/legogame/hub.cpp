@@ -150,8 +150,8 @@ typedef struct hub_area_info_s {
     AREA_DATA *area;
     void *door;
     nuhspecial_s lock;
-    void *bonus_gizmo;
-    void *second_bonus_gizmo;
+    GIZMO *bonus_gizmo;
+    GIZMO *second_bonus_gizmo;
 } HUB_AREA_INFO;
 
 extern "C" char AreaFixUpName_Senate[];
@@ -415,8 +415,8 @@ static void HubResolveAreaInfo(HUB_AREA_INFO *info, WORLDINFO *world) {
     HUB_INIT_WORLD_READER *w = (HUB_INIT_WORLD_READER *)world;
     for (; info->area_name != NULL; ++info) {
         info->door = GizmoFindByName(w->gizmo_system, -1, (char *)info->door_name);
-        info->bonus_gizmo = GizmoFindByName(w->gizmo_system, -1, (char *)info->bonus_name);
-        info->second_bonus_gizmo = GizmoFindByName(w->gizmo_system, -1, (char *)info->second_bonus_name);
+        info->bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(w->gizmo_system, -1, (char *)info->bonus_name));
+        info->second_bonus_gizmo = static_cast<GIZMO *>(GizmoFindByName(w->gizmo_system, -1, (char *)info->second_bonus_name));
         info->area = Area_FindByName((char *)info->area_name, NULL);
         NuSpecialFind(w->scene, &info->lock, (char *)info->lock_name, 1);
     }
@@ -483,7 +483,7 @@ extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT *buildit) {
     if (HubAreaInfo[0].area_name != NULL) {
         HUB_AREA_INFO *info = HubAreaInfo;
         do {
-            if (info->bonus_gizmo != NULL && ((GIZMO *)info->bonus_gizmo)->object == buildit) {
+            if (info->bonus_gizmo != NULL && info->bonus_gizmo->object == buildit) {
                 return 1;
             }
             ++info;
@@ -495,7 +495,7 @@ extern "C" i32 Hub_BonusBuildIt(GIZBUILDIT *buildit) {
 static void HubRestoreBuildIts(void) {
     i32 bit = 0;
     for (i32 i = 0; HubAreaInfo[i].area_name != NULL; ++i) {
-        GIZMO *gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
+        GIZMO *gizmo = HubAreaInfo[i].bonus_gizmo;
         if (gizmo != NULL) {
             if (((1U << bit) & Game.hub_buildit_completed) != 0) {
                 GizBuildIt_SetToEnd((GIZBUILDIT *)gizmo->object);
@@ -528,12 +528,12 @@ static void HubUpdateBonusBuildIts(WORLDINFO *world) {
     i32 bit = 0;
     const i32 gold_bricks = Game.gold_bricks;
     for (; HubAreaInfo[i].area_name != NULL; ++i) {
-        GIZMO *gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
+        GIZMO *gizmo = HubAreaInfo[i].bonus_gizmo;
         if (gizmo == NULL) {
             continue;
         }
         if (GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
-            gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
+            gizmo = HubAreaInfo[i].bonus_gizmo;
             GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
             if (buildit->anim_object_count <= gold_bricks) {
                 if ((buildit->availability_flags & 1) == 0) {
@@ -3468,12 +3468,12 @@ extern "C" void Hub_Update(WORLDINFO *world) {
     } else {
         i32 selected = -1;
         for (i32 i = 0; HubAreaInfo[i].area_name != NULL && selected == -1; ++i) {
-            GIZMO *gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
+            GIZMO *gizmo = HubAreaInfo[i].bonus_gizmo;
             if (gizmo != NULL && GizmoGetOutput(world->gizmo_sys, gizmo, 0, 0) == 0) {
                 GAMEOBJECT *player = Player[0];
                 if (player != NULL && (player->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
                     player->character_context != CHARACTER_CONTEXT_BUILD_IT) {
-                    gizmo = (GIZMO *)HubAreaInfo[i].bonus_gizmo;
+                    gizmo = HubAreaInfo[i].bonus_gizmo;
                     GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
                     if ((buildit->availability_flags & 4) != 0 || (nearest != NULL && nearest == buildit)) {
                         selected = i;

@@ -48,7 +48,7 @@ struct HATMACHINE {         // size 0xa0
     u8 displayed_hat;       // 0x5f
     i8 animation_state;     // 0x60
     u8 model_letter;        // 0x61
-    u8 model_special_index; // 0x62
+    i8 model_special_index; // 0x62
 
     union { // size 0x1
         u8 flags;
@@ -751,8 +751,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 EvalAnim(specials[0], frame, &matrix, 0);
                 NuMtxMulVU0(&matrix, &matrix, &machine->matrix);
                 NuSpecialDrawAt(specials[0], &matrix);
-                if (world->level_objects[(i8)machine->model_special_index].active != 0) {
-                    NuSpecialDrawAt(&world->level_objects[(i8)machine->model_special_index].special, &matrix);
+                if (world->level_objects[machine->model_special_index].active != 0) {
+                    NuSpecialDrawAt(&world->level_objects[machine->model_special_index].special, &matrix);
                 }
                 if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0 &&
                     (machine->flags & (HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) == 0 && world->level_objects[41].active != 0) {
@@ -817,8 +817,8 @@ extern "C" void HatMachine_Draw(void *world_ptr, void *, f32) {
                 }
                 NuMtxTranslate(&matrix, &machine->position);
                 NuSpecialDrawAt(&world->level_objects[30].special, &matrix);
-                if (world->level_objects[(i8)machine->model_special_index].active != 0) {
-                    NuSpecialDrawAt(&world->level_objects[(i8)machine->model_special_index].special, &matrix);
+                if (world->level_objects[machine->model_special_index].active != 0) {
+                    NuSpecialDrawAt(&world->level_objects[machine->model_special_index].special, &matrix);
                 }
                 if ((machine->flags & HATMACHINE_FLAG_ENABLED) != 0 &&
                     (machine->flags & (HATMACHINE_FLAG_IN_USE | HATMACHINE_FLAG_OUTPUT)) == 0 && world->level_objects[41].active != 0) {
