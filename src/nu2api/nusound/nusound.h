@@ -313,7 +313,7 @@ extern "C" {
 
 struct SoundQueue {                  // size 0x400
     i32 active;                      // 0x000
-    u32 unknown_0004;                // 0x004
+    u32 decoder_state;               // 0x004
     i32 stream_state;                // 0x008
     i32 stream_flags;                // 0x00c
     i32 requested_volume;            // 0x010
@@ -324,19 +324,6 @@ struct SoundQueue {                  // size 0x400
     PC_DS_BUFFER_DESC descriptor;    // 0x030
     IDirectSoundBuffer *volume_sink; // 0x054
     i32 buffer_seconds;              // 0x058
-struct SoundQueue {                    // size 0x400
-    i32 active;                        // 0x000
-    u32 decoder_state;                 // 0x004
-    i32 stream_state;                  // 0x008
-    i32 stream_flags;                  // 0x00c
-    i32 requested_volume;              // 0x010
-    i32 applied_volume;                // 0x014
-    i32 format_mode;                   // 0x018
-    WAVEFORMATEX wave_format;          // 0x01c
-    u8 unknown_02e[2];                 // 0x02e
-    PC_DS_BUFFER_DESC_VIEW descriptor; // 0x030
-    IDirectSoundBuffer *volume_sink;   // 0x054
-    i32 buffer_seconds;                // 0x058
 
     union { // size 0x8
 
