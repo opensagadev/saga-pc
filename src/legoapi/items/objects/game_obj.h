@@ -160,7 +160,8 @@ struct PART { // size 0x220
         i32 rotation_parameters[6];
     }; // 0x10c
 
-    i32 spin_rates[5];            // 0x124: rotation speeds (x, y, z) and the random spin of the part
+    /* rotation speeds (x, y, z) and the random spin of the part */
+    i32 spin_rates[5];            // 0x124
     u16 rotation_x;               // 0x138
     u16 rotation_y;               // 0x13a
     u16 rotation_z;               // 0x13c

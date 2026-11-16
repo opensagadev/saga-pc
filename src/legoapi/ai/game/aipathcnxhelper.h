@@ -6,9 +6,10 @@ struct AIPATHCNX;
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct ai_helper_slot_s {  // size 0x10
-    struct AIPATHCNX *connection;  // 0x0
-    struct GRAPPLE_MOTION *target; // 0x4: the grapple (type 1, the only kind)
+typedef struct ai_helper_slot_s { // size 0x10
+    struct AIPATHCNX *connection; // 0x0
+    /* the grapple (type 1, the only kind) */
+    struct GRAPPLE_MOTION *target; // 0x4
     u8 direction;                  // 0x8
     u8 type;                       // 0x9
     u8 padding[2];                 // 0xa

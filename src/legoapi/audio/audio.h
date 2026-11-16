@@ -28,7 +28,8 @@ typedef struct optionssave_s { // size 0xd
         struct {               // size 0x3
             u8 rumble_player1; // 0x0
             u8 rumble_player2; // 0x1
-            u8 dolby_surround; // 0x2: NuSound3SetDPL
+            /* NuSound3SetDPL */
+            u8 dolby_surround; // 0x2
         };
     }; // 0x0
 

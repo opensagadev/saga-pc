@@ -922,7 +922,8 @@ struct AITRIGGERSET_s { // size 0x214
 
     u8 trigger_count; // 0x20c
     u8 unknown_20d;   // 0x20d
-    u16 occupied;     // 0x20e: one bit per trigger a player holds
+    /* one bit per trigger a player holds */
+    u16 occupied; // 0x20e
 
     union { // size 0x2
         u16 flags_word;
@@ -938,9 +939,11 @@ struct AITRIGGERSET_s { // size 0x214
 
 struct AITRIGGERSETSYS_s {          // size 0x4304
     struct AITRIGGERSET_s sets[32]; // 0x0000
-    i8 assigned_set[64];            // 0x4280: per object id, the set it helps with
-    i8 assigned_trigger[64];        // 0x42c0: per object id, the trigger in that set
-    i32 unknown_4300;               // 0x4300
+    /* per object id, the set it helps with */
+    i8 assigned_set[64]; // 0x4280
+    /* per object id, the trigger in that set */
+    i8 assigned_trigger[64]; // 0x42c0
+    i32 unknown_4300;        // 0x4300
 };
 
 struct shopitem_s {              // size 0x74
@@ -1006,9 +1009,10 @@ struct TRAFFICANIM_s {           // size 0x140
     u8 rooms[256];               // 0x038
     i8 vehicle_count;            // 0x138
     u8 disabled;                 // 0x139
-    i8 direction;                // 0x13a: the pursuit's travel direction test, 1 or -1 (0 unknown)
-    u8 reserved_13b;             // 0x13b
-    f32 next_spawn_time;         // 0x13c
+    /* the pursuit's travel direction test, 1 or -1 (0 unknown) */
+    i8 direction;        // 0x13a
+    u8 reserved_13b;     // 0x13b
+    f32 next_spawn_time; // 0x13c
 };
 
 struct LevelEditorScene {    // size 0xa8
@@ -1158,7 +1162,8 @@ struct TRAFFICANIMSYS_s {                        // size 0x77e4
     i8 animation_count;                          // 0x77e0
     i8 vehicle_count;                            // 0x77e1
     u8 reserved_77e2;                            // 0x77e2
-    i8 side;                                     // 0x77e3: the pursuit's active side, 1 or -1
+    /* the pursuit's active side, 1 or -1 */
+    i8 side; // 0x77e3
 };
 
 struct GIZMOPICKUPRUNTIMESYS_s {           // size 0x1c
@@ -1392,19 +1397,20 @@ typedef struct GIZMO_PICKUP_TYPE { // size 0x38
     u8 letter;                     // 0x0c
     u8 random_model_count;         // 0x0d
     u8 flags;                      // 0x0e
-    u8 disabled;                   // 0x0f: switched off for this area (GizmoPickups_SetOnOff)
-    i16 first_model_id;            // 0x10
-    u16 score;                     // 0x12
-    f32 shadow_radius_x;           // 0x14
-    f32 shadow_radius_z;           // 0x18
-    f32 draw_distance;             // 0x1c
-    f32 bob_height;                // 0x20
-    PICKUP_UPDATE_FN update_fn;    // 0x24
-    PICKUP_COLLECT_FN collect_fn;  // 0x28
-    i16 debris_id;                 // 0x2c
-    i16 overlay_model_id;          // 0x2e
-    f32 shadow_extent_x;           // 0x30
-    f32 shadow_extent_z;           // 0x34
+    /* switched off for this area (GizmoPickups_SetOnOff) */
+    u8 disabled;                  // 0x0f
+    i16 first_model_id;           // 0x10
+    u16 score;                    // 0x12
+    f32 shadow_radius_x;          // 0x14
+    f32 shadow_radius_z;          // 0x18
+    f32 draw_distance;            // 0x1c
+    f32 bob_height;               // 0x20
+    PICKUP_UPDATE_FN update_fn;   // 0x24
+    PICKUP_COLLECT_FN collect_fn; // 0x28
+    i16 debris_id;                // 0x2c
+    i16 overlay_model_id;         // 0x2e
+    f32 shadow_extent_x;          // 0x30
+    f32 shadow_extent_z;          // 0x34
 } GIZMO_PICKUP_TYPE;
 
 struct gizforce_s {                    // size 0xa4
@@ -2125,8 +2131,9 @@ struct GIZSPINNER_s {                       // size 0x304
     union { // size 0x8
         u8 unknown_070[8];
 
-        struct {            // size 0x8
-            f32 progress;   // 0x070: the anim set's completion ratio
+        struct { // size 0x8
+            /* the anim set's completion ratio */
+            f32 progress;   // 0x070
             u32 unknown_74; // 0x074
         };
     }; // 0x070

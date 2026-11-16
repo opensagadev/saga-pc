@@ -846,9 +846,10 @@ typedef struct apicharacterdata_s {               // size 0x4c
     f32 field17_0x3c;                             // 0x3c
     u8 flags;                                     // 0x40
     u8 field19_0x41;                              // 0x41
-    i16 icon_model;                               // 0x42: the HUD icon of the character
-    u32 ai_path_capabilities;                     // 0x44
-    u32 field22_0x48;                             // 0x48
+    /* the HUD icon of the character */
+    i16 icon_model;           // 0x42
+    u32 ai_path_capabilities; // 0x44
+    u32 field22_0x48;         // 0x48
 } APICHARACTERDATA;
 
 typedef struct apicharsys_s {                 // size 0x38
@@ -1122,26 +1123,27 @@ typedef struct PLAYERPACKET {        // size 0x788
     f32 ground_contact_grace_timer;                 // 0x660
     f32 jump_reentry_timer;                         // 0x664
     f32 airborne_input_timer;                       // 0x668
-    f32 shield_scale;                               // 0x66c: the shield paraphernalia (1: fully up)
-    f32 shield_timer;                               // 0x670
-    f32 communicate_blend;                          // 0x674
-    f32 weapon_scale;                               // 0x678
-    f32 weapon_scale_rate;                          // 0x67c
-    f32 sabre_collision_radius;                     // 0x680
-    f32 delayed_turn_timer;                         // 0x684
-    f32 combo_input_timer;                          // 0x688
-    f32 ai_combo_cooldown;                          // 0x68c
-    f32 hit_cooldown;                               // 0x690
-    f32 quick_shoot_timer;                          // 0x694
-    f32 torpedo_fire_cooldown;                      // 0x698
-    f32 hud_icon_timer;                             // 0x69c
-    f32 jump_variant_timer;                         // 0x6a0
-    f32 jump_chain_timer;                           // 0x6a4
-    f32 surface_flag8_scale;                        // 0x6a8
-    f32 movement_animation_hold_timer;              // 0x6ac
-    f32 movement_animation_release_timer;           // 0x6b0
-    f32 directional_seek_multiplier;                // 0x6b4
-    f32 terrain_origin_floor_offset;                // 0x6b8
+    /* the shield paraphernalia (1: fully up) */
+    f32 shield_scale;                     // 0x66c
+    f32 shield_timer;                     // 0x670
+    f32 communicate_blend;                // 0x674
+    f32 weapon_scale;                     // 0x678
+    f32 weapon_scale_rate;                // 0x67c
+    f32 sabre_collision_radius;           // 0x680
+    f32 delayed_turn_timer;               // 0x684
+    f32 combo_input_timer;                // 0x688
+    f32 ai_combo_cooldown;                // 0x68c
+    f32 hit_cooldown;                     // 0x690
+    f32 quick_shoot_timer;                // 0x694
+    f32 torpedo_fire_cooldown;            // 0x698
+    f32 hud_icon_timer;                   // 0x69c
+    f32 jump_variant_timer;               // 0x6a0
+    f32 jump_chain_timer;                 // 0x6a4
+    f32 surface_flag8_scale;              // 0x6a8
+    f32 movement_animation_hold_timer;    // 0x6ac
+    f32 movement_animation_release_timer; // 0x6b0
+    f32 directional_seek_multiplier;      // 0x6b4
+    f32 terrain_origin_floor_offset;      // 0x6b8
 
     union { // size 0x4
         f32 glow_alpha;
@@ -1200,10 +1202,11 @@ typedef struct PLAYERPACKET {        // size 0x788
     union { // size 0x4
         u32 flags_e20;
 
-        struct {             // size 0x4
-            u8 unknown_e20;  // 0x75c
-            u8 unknown_e21;  // 0x75d
-            u8 weapon_flags; // 0x75e: bit 0 the weapon is out (weapon_animation)
+        struct {            // size 0x4
+            u8 unknown_e20; // 0x75c
+            u8 unknown_e21; // 0x75d
+            /* bit 0 the weapon is out (weapon_animation) */
+            u8 weapon_flags; // 0x75e
             u8 unknown_e23;  // 0x75f
         };
 
@@ -1285,7 +1288,8 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x0000
 
-    f32 anim_overlay_weight;                 // 0x004c: the weight of anim_packet.overlay_animation
+    /* the weight of anim_packet.overlay_animation */
+    f32 anim_overlay_weight;                 // 0x004c
     CHARACTER_MODEL_LAYERS *character_model; // 0x0050
     struct characterdata_s *character_data;  // 0x0054
     u16 facing_angle;                        // 0x0058
@@ -1299,26 +1303,27 @@ typedef struct gameobject_s { // size 0x10d8
     f32 scaled_radius;                       // 0x00a4
     f32 origin_scale;                        // 0x00a8
     f32 collision_radius;                    // 0x00ac
-    f32 collision_half_height;               // 0x00b0: collision_radius scaled by collision_y_scale
-    f32 scaled_height;                       // 0x00b4
-    NUMTX transform;                         // 0x00b8
-    NUMTX draw_secondary_mtx;                // 0x00f8
-    NUMTX draw_tertiary_mtx;                 // 0x0138
-    NUVEC collision_min;                     // 0x0178
-    NUVEC collision_max;                     // 0x0184
-    NUVEC upper_position;                    // 0x0190
-    NUVEC lower_position;                    // 0x019c
-    NUVEC collision_origin;                  // 0x01a8
-    NUVEC last_safe_position;                // 0x01b4
-    NUVEC previous_position;                 // 0x01c0
-    NUVEC respawn_position;                  // 0x01cc
-    f32 respawn_timer;                       // 0x01d8
-    f32 bounds_radius;                       // 0x01dc
-    f32 bounds_half_height;                  // 0x01e0
-    u8 unknown_01e4[4];                      // 0x01e4
-    u32 collision_identity_mask[2];          // 0x01e8
-    u32 collision_contact_mask[2];           // 0x01f0
-    u32 flags_1f8;                           // 0x01f8
+    /* collision_radius scaled by collision_y_scale */
+    f32 collision_half_height;      // 0x00b0
+    f32 scaled_height;              // 0x00b4
+    NUMTX transform;                // 0x00b8
+    NUMTX draw_secondary_mtx;       // 0x00f8
+    NUMTX draw_tertiary_mtx;        // 0x0138
+    NUVEC collision_min;            // 0x0178
+    NUVEC collision_max;            // 0x0184
+    NUVEC upper_position;           // 0x0190
+    NUVEC lower_position;           // 0x019c
+    NUVEC collision_origin;         // 0x01a8
+    NUVEC last_safe_position;       // 0x01b4
+    NUVEC previous_position;        // 0x01c0
+    NUVEC respawn_position;         // 0x01cc
+    f32 respawn_timer;              // 0x01d8
+    f32 bounds_radius;              // 0x01dc
+    f32 bounds_half_height;         // 0x01e0
+    u8 unknown_01e4[4];             // 0x01e4
+    u32 collision_identity_mask[2]; // 0x01e8
+    u32 collision_contact_mask[2];  // 0x01f0
+    u32 flags_1f8;                  // 0x01f8
 
     union { // size 0x4
         u8 flags_1fc;
@@ -1419,7 +1424,8 @@ typedef struct gameobject_s { // size 0x10d8
 
     u8 dead;               // 0x028b
     u8 origin_joint_ready; // 0x028c
-    u8 object_id;          // 0x028d: slot index in the object system (APIObjectCreate)
+    /* slot index in the object system (APIObjectCreate) */
+    u8 object_id; // 0x028d
 
     union { // size 0xa
         u8 unknown_028e[0xa];
@@ -1461,7 +1467,8 @@ typedef struct gameobject_s { // size 0x10d8
     u8 unknown_4d4[0x4];      // 0x04d4
     RTL_DATA lighting_packet; // 0x04d8
     u8 unknown_61c[0xc];      // 0x061c
-    NUVEC light_intensity[2]; // 0x0628: the speeder chase bike riders are lit full white
+    /* the speeder chase bike riders are lit full white */
+    NUVEC light_intensity[2]; // 0x0628
     u8 unknown_640[0x21];     // 0x0640
     u8 unknown_661;           // 0x0661
     i16 sock_segment;         // 0x0662
@@ -1491,8 +1498,9 @@ typedef struct gameobject_s { // size 0x10d8
         u8 contact_material[4];
     }; // 0x06c0
 
-    PLAYERPACKET player;                   // 0x06c4
-    NUVEC script_target_position;          // 0x0e4c: the AI script's fire target
+    PLAYERPACKET player; // 0x06c4
+    /* the AI script's fire target */
+    NUVEC script_target_position;          // 0x0e4c
     NUVEC previous_script_target_position; // 0x0e58
     SPLINEPOS movement_spline_position;    // 0x0e64
     NUVEC movement_spline_offset;          // 0x0e84
@@ -1601,8 +1609,9 @@ typedef struct gameobject_s { // size 0x10d8
 
     union { // size 0x4
 
-        struct {                  // size 0x4
-            u8 use_action;        // 0x0f00: what can_use_object is used for (GameObjectSetCanUse)
+        struct { // size 0x4
+            /* what can_use_object is used for (GameObjectSetCanUse) */
+            u8 use_action;        // 0x0f00
             u8 use_action_frames; // 0x0f01
             u8 unknown_f02[0x2];  // 0x0f02
         };
@@ -1711,14 +1720,15 @@ typedef struct gameobject_s { // size 0x10d8
     i8 head_target_priority; // 0x1080
     u8 route_start_index;    // 0x1081
     u8 helmet;               // 0x1082
-    u8 attack_count;         // 0x1083: hits this attacker has landed (ObjHitObj)
-    u8 one_at_once_player;   // 0x1084
-    u8 attack_override;      // 0x1085
-    u8 helper_type;          // 0x1086
-    u8 helper_wait;          // 0x1087
-    u8 helper_retry_delay;   // 0x1088
-    u8 route_search_index;   // 0x1089
-    u8 unknown_108a[2];      // 0x108a
+    /* hits this attacker has landed (ObjHitObj) */
+    u8 attack_count;       // 0x1083
+    u8 one_at_once_player; // 0x1084
+    u8 attack_override;    // 0x1085
+    u8 helper_type;        // 0x1086
+    u8 helper_wait;        // 0x1087
+    u8 helper_retry_delay; // 0x1088
+    u8 route_search_index; // 0x1089
+    u8 unknown_108a[2];    // 0x108a
 
     union { // size 0x4
 
