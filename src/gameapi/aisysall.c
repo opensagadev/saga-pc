@@ -10693,7 +10693,7 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, "Script = NONE, %s", set_name);
         }
         if (display->trigger_area != NULL) {
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "Area = \"%s\"", ((EDLOCATOR_s *)display->trigger_area)->name);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "Area = \"%s\"", display->trigger_area->name);
         }
         if (display->locator != NULL) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "Locator = \"%s\"", display->locator->name);
@@ -10851,7 +10851,7 @@ void creatureEditor_Enter(void) {
                     if (source->activate_area != NULL) {
                         for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
                              area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
-                            if (NuStrICmp(area->name, (char *)source->activate_area) == 0) {
+                            if (NuStrICmp(area->name, source->activate_area->name) == 0) {
                                 creature->activation_area = area;
                                 creature->activation = 1;
                                 break;
@@ -16128,8 +16128,8 @@ i32 aieditor_Save(void) {
     char *separator;
     i32 result = 1;
 
-    cursor.char_ptr = (char *)aieditor->save_scratch;
-    end.char_ptr = (char *)aieditor->save_scratch + sizeof(aieditor->save_scratch);
+    cursor.u8_ptr = aieditor->save_scratch;
+    end.u8_ptr = aieditor->save_scratch + sizeof(aieditor->save_scratch);
     memset(cursor.char_ptr, 0, sizeof(aieditor->save_scratch));
     paths = pathEditorCreateData(&cursor, &end, &aieditorsettings.path_scratch_cursor, &aieditorsettings.path_scratch_end);
     if (paths == NULL) {
