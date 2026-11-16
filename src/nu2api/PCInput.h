@@ -195,10 +195,10 @@ struct PC_DI_CAPS {               // size 0x2c
 
 /* DIPROPHEADER: every DirectInput property starts with it; SetProperty takes a pointer to it. */
 struct PC_DI_PROPERTY_HEADER { // size 0x10
-    DWORD size;                // 0x00
-    DWORD header_size;         // 0x04
-    DWORD object;              // 0x08
-    DWORD how;                 // 0x0c
+    DWORD size;                // 0x0
+    DWORD header_size;         // 0x4
+    DWORD object;              // 0x8
+    DWORD how;                 // 0xc
 };
 
 struct PC_DI_PROPERTY {           // size 0x14

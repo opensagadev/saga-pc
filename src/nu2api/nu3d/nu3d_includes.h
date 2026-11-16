@@ -1267,7 +1267,8 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
                 };
             }; // 0x20
 
-            u32 sampler_extra; // 0x24: second word of the sampler tuple
+            // Second word of the sampler tuple.
+            u32 sampler_extra; // 0x24
         };
     }; // 0x0c
 
