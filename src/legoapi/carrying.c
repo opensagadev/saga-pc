@@ -95,10 +95,10 @@ extern u8 SuperCarryPlayerRgb[2][3];
 #define SUPER_CARRY_IDLE_OR_WALK(object)                                                                                                   \
     do {                                                                                                                                   \
         if ((object)->pad->input_magnitude > 0.0f) {                                                                                       \
-            (object)->unknown_7b3 = 3;                                                                                                     \
+            (object)->unknown_7b3 = SUPERCARRY_WALK;                                                                                       \
             (object)->unknown_7aa = LEGOACT_SUPERCARRY_WALK;                                                                               \
         } else {                                                                                                                           \
-            (object)->unknown_7b3 = 2;                                                                                                     \
+            (object)->unknown_7b3 = SUPERCARRY_IDLE;                                                                                       \
             (object)->unknown_7aa = LEGOACT_SUPERCARRY_IDLE;                                                                               \
         }                                                                                                                                  \
     } while (0)
@@ -160,11 +160,12 @@ void SuperCarry_DrawObject(struct gameobject_s *object) {
     struct GIZMOBLOWUP *blowup;
     if ((object->flags_e20 & 0x800000) != 0 ||
         (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
-         ((object->unknown_7b3 == 0 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) ||
-          (object->unknown_7b3 == 1 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) || object->unknown_7b3 == 2 ||
-          object->unknown_7b3 == 3 || object->unknown_7b3 == 6 || object->unknown_7b3 == 7 ||
-          (object->unknown_7b3 == 4 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) ||
-          (object->unknown_7b3 == 5 && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0)))) {
+         ((object->unknown_7b3 == SUPERCARRY_PICKUP && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) ||
+          (object->unknown_7b3 == SUPERCARRY_PUTDOWN && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) ||
+          object->unknown_7b3 == SUPERCARRY_IDLE || object->unknown_7b3 == SUPERCARRY_WALK || object->unknown_7b3 == SUPERCARRY_JUMP ||
+          object->unknown_7b3 == SUPERCARRY_LAND ||
+          (object->unknown_7b3 == SUPERCARRY_THROW && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) ||
+          (object->unknown_7b3 == SUPERCARRY_BASH && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0)))) {
         translation = NULL;
         if (SuperCarry_AlignObject != 0) {
             NuVecRotateY(&offset, &((CARRY_BASIS *)object)->basis[0], object->unknown_276);
@@ -322,7 +323,7 @@ void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP *blowup, i32 imme
     object->action_movement_state = 0;
     object->grapple = blowup;
     if (immediate == 0 && LEGOACT_SUPERCARRY_PICKUP != -1 && object->character_model->model_data_b[LEGOACT_SUPERCARRY_PICKUP] != NULL) {
-        object->unknown_7b3 = 0;
+        object->unknown_7b3 = SUPERCARRY_PICKUP;
         object->unknown_7aa = LEGOACT_SUPERCARRY_PICKUP;
         object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
         if (object->context_timer <= 0.0f) {
@@ -331,7 +332,7 @@ void SuperCarry_Start(struct gameobject_s *object, GIZMOBLOWUP *blowup, i32 imme
         object->movement_facing_angle =
             NuAtan2D(blowup->mid_position.x - object->collision_position.x, blowup->mid_position.z - object->collision_position.z);
     } else {
-        object->unknown_7b3 = 2;
+        object->unknown_7b3 = SUPERCARRY_IDLE;
         object->unknown_7aa = LEGOACT_SUPERCARRY_IDLE;
         object->context_timer = 0.0f;
         if (immediate == 0) {
@@ -401,7 +402,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
             }
         }
         switch (object->unknown_7b3) {
-            case 0: {
+            case SUPERCARRY_PICKUP: {
                 i32 event = 0;
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     GIZMOBLOWUP *blowup = object->grapple;
@@ -416,7 +417,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f) {
-                    object->unknown_7b3 = 2;
+                    object->unknown_7b3 = SUPERCARRY_IDLE;
                     object->unknown_7aa = LEGOACT_SUPERCARRY_IDLE;
                     if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                         event = 1;
@@ -429,7 +430,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 return;
             }
-            case 1: {
+            case SUPERCARRY_PUTDOWN: {
                 i32 event = 0;
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     if (frame != NULL) {
@@ -465,8 +466,8 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 return;
             }
-            case 2:
-            case 3: {
+            case SUPERCARRY_IDLE:
+            case SUPERCARRY_WALK: {
                 i32 throw_object = 0;
                 i32 put_down = 0;
                 object->context_timer = object->context_timer + FRAMETIME;
@@ -495,7 +496,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                                 object->force_target = ObjOpponent(object, 1.0f, PUNCHGAP, 1, 0, 2);
                             }
                             if (object->force_target != NULL) {
-                                object->unknown_7b3 = 5;
+                                object->unknown_7b3 = SUPERCARRY_BASH;
                                 object->unknown_7aa = LEGOACT_SUPERCARRY_BASH;
                                 object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                                 object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
@@ -508,7 +509,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                         if (throw_object) {
                             if (LEGOACT_SUPERCARRY_THROW != -1 &&
                                 ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_THROW] != NULL) {
-                                object->unknown_7b3 = 4;
+                                object->unknown_7b3 = SUPERCARRY_THROW;
                                 object->unknown_7aa = LEGOACT_SUPERCARRY_THROW;
                                 object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                                 object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
@@ -527,7 +528,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                             ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_PUTDOWN] != NULL &&
                             object->floor_height != 2000000.0f && object->lower_position.y - object->floor_height < 0.1f) {
                             NUVEC offset;
-                            object->unknown_7b3 = 1;
+                            object->unknown_7b3 = SUPERCARRY_PUTDOWN;
                             object->unknown_7aa = LEGOACT_SUPERCARRY_PUTDOWN;
                             object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                             object->context_timer = AnimDuration((i16)object->id, object->unknown_7aa, 0.0f, 0.0f, 1);
@@ -546,7 +547,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 if (CombatRollEnable != 0 && LEGOACT_SUPERCARRY_JUMP != -1 && (object->pad->buttons_pressed & GAMEPAD_JUMP) != 0 &&
                     object->unknown_281 != 0) {
-                    object->unknown_7b3 = 6;
+                    object->unknown_7b3 = SUPERCARRY_JUMP;
                     object->unknown_7aa = LEGOACT_SUPERCARRY_JUMP;
                     object->context_timer = 0.0f;
                     object->velocity.y = SUPERCARRY_JUMPSPEED;
@@ -565,7 +566,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 SUPER_CARRY_IDLE_OR_WALK(object);
                 return;
             }
-            case 4: {
+            case SUPERCARRY_THROW: {
                 i32 event;
                 if (object->context_timer <= 0.0f && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     object->character_context = CHARACTER_CONTEXT_NONE;
@@ -594,7 +595,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 NewRumble(object->pad->bound_pad, 0.6f, 0);
                 return;
             }
-            case 5: {
+            case SUPERCARRY_BASH: {
                 i32 event;
                 if (object->context_timer <= 0.0f && (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                     object->character_context = CHARACTER_CONTEXT_NONE;
@@ -640,7 +641,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 return;
             }
-            case 6: {
+            case SUPERCARRY_JUMP: {
                 object->context_timer += FRAMETIME;
                 if (object->context_timer >= object->context_duration) {
                     object->context_variant_flags |= APIOBJECT_JUMP_FALLING;
@@ -648,7 +649,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 if (object->context_timer >= 0.1f && object->unknown_281 != 0) {
                     i32 fell = (object->context_variant_flags >> 15) & 1;
                     if (fell || object->pad->input_magnitude == 0.0f) {
-                        object->unknown_7b3 = 7;
+                        object->unknown_7b3 = SUPERCARRY_LAND;
                         if (fell && LEGOACT_SUPERCARRY_FALLLAND != -1 &&
                             ((CARRY_MODEL *)object->character_model)->model_data_b[LEGOACT_SUPERCARRY_FALLLAND] != NULL) {
                             object->unknown_7aa = LEGOACT_SUPERCARRY_FALLLAND;
@@ -670,7 +671,7 @@ void SuperCarry_MoveCode(WORLDINFO *world, struct gameobject_s *object) {
                 }
                 return;
             }
-            case 7:
+            case SUPERCARRY_LAND:
                 object->context_timer -= FRAMETIME;
                 if (object->context_timer <= 0.0f ||
                     ((object->context_variant_flags & APIOBJECT_JUMP_FALLING) == 0 && object->pad->input_magnitude > 0.0f)) {
@@ -764,11 +765,11 @@ i32 SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
     object->target_velocity.x = 0.0f;
     object->target_velocity.z = 0.0f;
     if (input_speed > 0.0f) {
-        if ((object->unknown_7b3 == 3 || object->unknown_7b3 == 1) && object->unknown_7aa != ACTION_NONE &&
+        if ((object->unknown_7b3 == SUPERCARRY_WALK || object->unknown_7b3 == SUPERCARRY_PUTDOWN) && object->unknown_7aa != ACTION_NONE &&
             object->character_model->model_data_b[object->unknown_7aa] != NULL) {
             speed = AnimSpeed(object->character_model, object->unknown_7aa);
-        } else if (object->unknown_7b3 == 3 || object->unknown_7b3 == 6) {
-            if (object->unknown_7b3 == 6 && LEGOACT_SUPERCARRY_WALK != 0 &&
+        } else if (object->unknown_7b3 == SUPERCARRY_WALK || object->unknown_7b3 == SUPERCARRY_JUMP) {
+            if (object->unknown_7b3 == SUPERCARRY_JUMP && LEGOACT_SUPERCARRY_WALK != 0 &&
                 object->character_model->model_data_b[LEGOACT_SUPERCARRY_WALK] != NULL) {
                 speed = AnimSpeed(object->character_model, LEGOACT_SUPERCARRY_WALK);
             } else {
@@ -786,17 +787,17 @@ i32 SuperCarry_SetTargetMom(GAMEOBJECT *object, f32 input_speed) {
 const f64 TerrainSkinSampleCount = 8.0;
 
 i32 SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
-    if (object->unknown_7b3 == 0) {
+    if (object->unknown_7b3 == SUPERCARRY_PICKUP) {
         object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 12.0f);
         object->unknown_276 = object->facing_angle;
-    } else if (object->unknown_7b3 == 5) {
+    } else if (object->unknown_7b3 == SUPERCARRY_BASH) {
         if (object->force_target != NULL) {
             object->movement_facing_angle = NuAtan2D(object->force_target->collision_position.x - object->collision_position.x,
                                                      object->force_target->collision_position.z - object->collision_position.z);
         }
         object->facing_angle = SeekRot(object->facing_angle, object->movement_facing_angle, 8.0f);
         object->unknown_276 = object->facing_angle;
-    } else if (object->unknown_7b3 == 2 || object->unknown_7b3 == 3 || object->unknown_7b3 == 6) {
+    } else if (object->unknown_7b3 == SUPERCARRY_IDLE || object->unknown_7b3 == SUPERCARRY_WALK || object->unknown_7b3 == SUPERCARRY_JUMP) {
         if (object->pad->input_magnitude > 0.0f) {
             object->facing_angle = TurnRot(object->facing_angle, input_angle,
                                            (i32)(VehicleTurnPhaseOffset * object->context_hover_target_y * TerrainSkinSampleCount), NULL);
@@ -809,7 +810,7 @@ i32 SuperCarry_YRotation(GAMEOBJECT *object, u16 input_angle) {
 
 i32 SuperCarry_Carrying(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY) {
-        if (object->unknown_7b3 == 2 || object->unknown_7b3 == 3 || object->unknown_7b3 == 6) {
+        if (object->unknown_7b3 == SUPERCARRY_IDLE || object->unknown_7b3 == SUPERCARRY_WALK || object->unknown_7b3 == SUPERCARRY_JUMP) {
             return 1;
         }
     }
@@ -818,7 +819,7 @@ i32 SuperCarry_Carrying(GAMEOBJECT *object) {
 
 void SuperCarry_Release(GAMEOBJECT *object) {
     if (LEGOCONTEXT_SUPERCARRY != -1 && object->character_context == LEGOCONTEXT_SUPERCARRY &&
-        (object->unknown_7b3 == 2 || object->unknown_7b3 == 3 || object->unknown_7b3 == 6)) {
+        (object->unknown_7b3 == SUPERCARRY_IDLE || object->unknown_7b3 == SUPERCARRY_WALK || object->unknown_7b3 == SUPERCARRY_JUMP)) {
         SuperCarry_Throw(object, 1);
         object->character_context = CHARACTER_CONTEXT_NONE;
     }

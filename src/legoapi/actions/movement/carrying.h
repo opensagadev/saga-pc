@@ -7,6 +7,17 @@
 #include "legoapi/items/objects/objectsall.h"
 #include "nu2api/numath/nuvec.h"
 
+/* gameobject_s.unknown_7b3 in the super carry context: the step, after the LEGOACT_SUPERCARRY_* animation
+ * each plays. */
+#define SUPERCARRY_PICKUP 0
+#define SUPERCARRY_PUTDOWN 1
+#define SUPERCARRY_IDLE 2
+#define SUPERCARRY_WALK 3
+#define SUPERCARRY_THROW 4
+#define SUPERCARRY_BASH 5
+#define SUPERCARRY_JUMP 6
+#define SUPERCARRY_LAND 7
+
 #ifdef __cplusplus
 extern "C" {
 #endif
