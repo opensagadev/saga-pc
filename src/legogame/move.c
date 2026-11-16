@@ -398,24 +398,6 @@ typedef struct lunge_target_slots_s {
     GIZMOBLOWUP *gizmo_target;
 } LUNGE_TARGET_SLOTS;
 
-typedef struct jump_auxiliary_fields_s {
-    u8 unknown_000[0x7b1];
-    u8 landing_followup;
-    u8 unknown_7b2[0x1e];
-    MINIANIMPACKET mini_animation;
-    u8 unknown_7f4[0x530];
-    f32 ground_grace_timer;
-    f32 jump_reentry_timer;
-    u8 unknown_d2c[0xc];
-    f32 communication_blend;
-    u8 unknown_d3c[0x2c];
-    f32 jump_chain_timer;
-    u8 unknown_d6c[0x40];
-    f32 fall_animation_timer;
-    u8 unknown_db0[0x8b];
-    u8 action_suppressed;
-} JUMP_AUXILIARY_FIELDS;
-
 extern u8 DroidCheat32Enabled;
 
 typedef struct critter_object_reader_s {
@@ -2904,9 +2886,8 @@ void Glide_MoveCode(GAMEOBJECT *object) {
             object->collision_min.y - object->floor_height > object->bounds_half_height &&
             (object->pad->buttons_held & GAMEPAD_ACTION) != 0 && object->character_model->model_data_b[0x21] != NULL &&
             Slam_Start(object, SLAMJUMPSPEED)) {
-            JUMP_AUXILIARY_FIELDS *aux = (JUMP_AUXILIARY_FIELDS *)object;
             ResetAnimPacket(&object->anim_packet, -1);
-            ResetMiniAnimPacket(&aux->mini_animation, -1);
+            ResetMiniAnimPacket(&object->mini_anim_packet, -1);
             return;
         }
         object->flags_e24 |= APIOBJECT_NO_JUMP;
@@ -3111,8 +3092,7 @@ void JetPackCode(GAMEOBJECT *object, i32 jump_pressed, i32 fall, i32 unused) {
         object->character_context = CHARACTER_CONTEXT_NONE;
         return;
     }
-    if (jump_pressed == 0 || (object->unknown_281 == 0 && !(((JUMP_AUXILIARY_FIELDS *)object)->ground_grace_timer > 0.0f)) ||
-        ObjLandReady(object) == 0) {
+    if (jump_pressed == 0 || (object->unknown_281 == 0 && !(object->ground_contact_grace_timer > 0.0f)) || ObjLandReady(object) == 0) {
         return;
     }
     if (object->character_context == CHARACTER_CONTEXT_WEAPON_IN) {
