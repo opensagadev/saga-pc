@@ -36,20 +36,6 @@ extern const f64 GameObjectNearFloorNoFloorHeight;
 
 /* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
 
-/* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
- */
-typedef struct shadow_platform_entry_s { // size 0x14
-    GAMEOBJECT *object;                  // 0x00
-    u8 unknown_04_14[0x10];              // 0x04
-} SHADOW_PLATFORM_ENTRY;
-
-struct shadow_platform_list_s {       // size 0x2c
-    u8 unknown_00_04[4];              // 0x00
-    i32 count;                        // 0x04
-    u8 unknown_08_18[0x10];           // 0x08
-    SHADOW_PLATFORM_ENTRY entries[1]; // 0x18
-};
-
 typedef struct gameobject_collision_reset_s { // size 0x2b8
     u8 unknown_000[0x2b0];                    // 0x000
     u32 collision_overlap_low;                // 0x2b0
@@ -585,41 +571,3 @@ void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused,
 }
 
 /* Bitwise absolute value through a float temporary. */
-
-// Copies the antinode timer and its 0x8000 flag from one creature's packet to the other's.
-typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
-extern CHECK_ANTINODE_FN checkantinodefns[3];
-
-typedef struct OPPONENT_PACKET {         // size 0x1ec
-    u8 unknown_000[0xd4];                // 0x000
-    APIOBJECT *nearest_opponent_object;  // 0x0d4
-    f32 nearest_opponent_metric;         // 0x0d8
-    APIOBJECT *pending_nearest_opponent; // 0x0dc
-    f32 pending_nearest_metric;          // 0x0e0
-    APIOBJECT *opponent_object;          // 0x0e4
-    f32 opponent_metric;                 // 0x0e8
-    APIOBJECT *pending_opponent;         // 0x0ec
-    f32 pending_opponent_metric;         // 0x0f0
-    u8 unknown_0f4[0xf4];                // 0x0f4
-    u32 flags;                           // 0x1e8
-} OPPONENT_PACKET;
-
-typedef struct OPPONENT_GAME { // size 0xec8
-    u8 unknown_000[0xeb0];     // 0x000
-    u64 seen;                  // 0xeb0
-    u64 exclusion;             // 0xeb8
-    APIOBJECT *alert_target;   // 0xec0
-    f32 alert_timer;           // 0xec4
-} OPPONENT_GAME;
-
-typedef struct OPPONENT_LOS { // size 0x208
-    u32 object_size;          // 0x000
-    GAMEOBJECT *objects;      // 0x004
-    u64 line_of_sight[64];    // 0x008
-} OPPONENT_LOS;
-
-typedef struct ai_frame_world_s {        // size 0x4670
-    u8 unknown_0000[0x2aec];             // 0x0000
-    i32 processor_count;                 // 0x2aec
-    LEVEL_SCRIPT_PROCESS processors[32]; // 0x2af0
-} AI_FRAME_WORLD;

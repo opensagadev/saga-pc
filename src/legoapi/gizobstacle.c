@@ -1279,35 +1279,6 @@ ADDGIZMOTYPE *GizObstacles_RegisterGizmo(i32 type_id) {
     return addtype;
 }
 
-typedef struct bomb_generator_runtime_s { // size 0x2c
-    char name[16];                        // 0x00
-    NUVEC position;                       // 0x10
-    GAMEANIMSET *anim_set;                // 0x1c
-    i32 interval;                         // 0x20
-    GAMEOBJECT *generated_bomb;           // 0x24
-    u16 unknown_28;                       // 0x28
-
-    union { // size 0x2
-        u16 flags;
-
-        struct {                    // size 0x2
-            u16 active : 1;         // 0x2a:0
-            u16 visible : 1;        // 0x2a:1
-            u16 unknown_flags : 14; // 0x2a:2
-        };
-    }; // 0x2a
-} BOMB_GENERATOR_RUNTIME;
-
-typedef struct bomb_generator_system_runtime_s { // size 0x14
-    BOMB_GENERATOR_RUNTIME *items;               // 0x00
-    u16 count;                                   // 0x04
-    u16 capacity;                                // 0x06
-    void *pool;                                  // 0x08
-    i16 flags;                                   // 0x0c
-    u16 unknown_0e;                              // 0x0e
-    void *progress;                              // 0x10
-} BOMB_GENERATOR_SYSTEM_RUNTIME;
-
 /* Studs the level's obstacles release (TotalLevelCoinTally). */
 u32 GizObstacles_TotalScore(WORLDINFO *world) {
     GIZOBSTACLESYS_s *system;

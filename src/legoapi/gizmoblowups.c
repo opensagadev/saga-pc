@@ -52,28 +52,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct {          // size 0x7c
-    char name[16];        // 0x00
-    u8 opaque[0x7c - 16]; // 0x10
-} ADD_BUILDIT;
-
-typedef struct {          // size 0xf8
-    char name[16];        // 0x00
-    u8 opaque[0xf8 - 16]; // 0x10
-} ADD_GRAPPLE;
-
-typedef struct {     // size 0xc
-    ADD_TORP *items; // 0x0
-    i32 count;       // 0x4
-    f32 scale;       // 0x8
-} ADD_TORP_SYS;
-
-typedef struct {         // size 0x4688
-    u8 opaque[0x4680];   // 0x0000
-    ADD_TELEPORT *items; // 0x4680
-    i32 count;           // 0x4684
-} ADD_TELEPORT_WORLD;
-
 typedef struct {         // size 0x3c
     u8 unknown_00[0x30]; // 0x00
     NUVEC position;      // 0x30

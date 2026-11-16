@@ -64,10 +64,3 @@ GAMEOBJECT *BossKilled(i32 character_id) {
    physical calling convention and finite reader cohorts independently reviewed.
    PC-only reaction and adaptive branches and PC DWORD masks are preserved.
    Existing partial part/object providers retain their explicit runtime gaps. */
-
-typedef struct collision_exclusion_view_s { // size 0x2a8
-    u8 unknown_0000[0x298];                 // 0x000
-    GAMEOBJECT *excluded_object;            // 0x298
-    u8 unknown_029c[4];                     // 0x29c
-    u64 exclusion_mask;                     // 0x2a0
-} COLLISION_EXCLUSION_VIEW;

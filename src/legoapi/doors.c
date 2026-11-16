@@ -134,15 +134,6 @@ typedef struct player_world_doors_s { // size 0x46a4
     PLAYER_DOOR *start_door;          // 0x46a0
 } PLAYER_WORLD_DOORS;
 
-typedef union player_position_sock_u { // size 0x38
-    SOCKPOSITION sock;
-
-    struct {          // size 0x8
-        i32 location; // 0x00
-        f32 ratio;    // 0x04
-    } start;
-} PLAYER_POSITION_SOCK;
-
 void *Door_FindByName(WORLDINFO *world, char *name) {
     PLAYER_WORLD_DOORS *view = (PLAYER_WORLD_DOORS *)world;
     PLAYER_DOOR *door = view->doors;

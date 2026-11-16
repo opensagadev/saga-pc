@@ -93,18 +93,6 @@ void fun_00500490(INSTNUGCUTSCENE *owner, i32 count, VARIPTR *buffer) {
 void fun_005004d0(void) {
 }
 
-typedef struct CUT_PLAYER_STATE { // size 0x10
-    nuhspecial_s special;         // 0x0
-    u8 flags;                     // 0xc
-    u8 unknown_0d[3];             // 0xd
-} CUT_PLAYER_STATE;
-
-typedef struct CUT_PLAYER_RECORD { // size 0x50
-    u8 unknown_00[0x48];           // 0x00
-    CUT_PLAYER_STATE *states;      // 0x48
-    u8 state_count;                // 0x4c
-} CUT_PLAYER_RECORD;
-
 typedef struct cut_average_rigid_system_s { // size 0x8
     void *rigids;                           // 0x0
     u16 count;                              // 0x4

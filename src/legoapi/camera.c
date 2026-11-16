@@ -362,11 +362,6 @@ void GameCam_Reset(GAMECAMERA *camera) {
     Minicam_InitSystem();
 }
 
-typedef struct CAMERA_CABLE { // size 0x8
-    GAMEOBJECT *source;       // 0x0
-    GAMEOBJECT *target;       // 0x4
-} CAMERA_CABLE;
-
 #define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
     do {                                                                                                                                   \
         union {                                                                                                                            \
