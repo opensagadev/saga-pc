@@ -645,15 +645,12 @@ class Placeable { // size 0x18
     void fun_006c22b0(const char *value);
 };
 
-struct ClassObjectListEntry : public CSListLink<ClassObjectListEntry> { // size 0x14
+/* A selection list node: the list link, then the selected ClassObject (0x08). */
+struct ClassObjectListEntry : public CSListLink<ClassObjectListEntry>, public ClassObject { // size 0x14
     static void *operator new(size_t size);
     static void operator delete(void *memory);
 
     ClassObjectListEntry();
-
-    struct EdClass *ed_class; // 0x08
-    void *object;             // 0x0c
-    EdRef *reference;         // 0x10
 };
 
 struct ClassObjectList {         // size 0xc

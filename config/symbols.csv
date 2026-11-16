@@ -9656,9 +9656,9 @@ address,symbol,size,ctype
 0x00618180,?eduiHSVToRGB@@YAXMMMAAM00@Z,328,"private HSV conversion; three f32 inputs and three RGB output references; no original linkage claim"
 0x6182d0,_fun_006182d0,17,
 0x6182f0,_fun_006182f0,20,
-0x618310,?EduiPrintAlignedText@@YAXPAXHHHPADZZ,197,"void(void *, i32, i32, i32, char *, ...)"
+0x618310,?EduiPrintAlignedText@@YAXPAUvufnt_s@@HHHPADZZ,197,"void(VUFNT *, i32, i32, i32, char *, ...)"
 0x6183e0,_EduiFntPrintScaled,57,
-0x00618420,?EduiPrintClippedText@@YAXPAXHHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
+0x00618420,?EduiPrintClippedText@@YAXPAUvufnt_s@@HHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
 0x618550,_eduiFntPrintClipEx,365,
 0x6186c0,_fun_006186c0,40,
 0x6186f0,_fun_006186f0,40,

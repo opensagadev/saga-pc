@@ -7352,7 +7352,7 @@ void ClassObjectListEntry::operator delete(void *memory) {
     theMemoryManager.FreePool(memory, sizeof(ClassObjectListEntry));
 }
 
-ClassObjectListEntry::ClassObjectListEntry() : ed_class(NULL), object(NULL), reference(NULL) {
+ClassObjectListEntry::ClassObjectListEntry() : ClassObject() {
 }
 
 void ClassObject::fun_006b89c0(EdClass *object_class, void *object_data) {
@@ -8038,7 +8038,7 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average) {
     i32 count = 0;
     for (ClassObjectListEntry *entry = first; entry != NULL; entry = entry->next) {
         __declspec(align(16)) VuVec position;
-        if (reinterpret_cast<ClassObject *>(&entry->ed_class)->GetAttributeData(8, EdType_VuVec, &position, 0)) {
+        if (entry->GetAttributeData(8, EdType_VuVec, &position, 0)) {
             average.x += position.x;
             average.y += position.y;
             average.z += position.z;
@@ -8065,7 +8065,7 @@ i32 ClassObjectList::GetAveragePosition(VuVec &average, f32 &radius) {
     average.z = 0.0f;
     average.w = 1.0f;
     for (ClassObjectListEntry *entry = first; entry != NULL && count < 64; entry = entry->next) {
-        ClassObject &object = *reinterpret_cast<ClassObject *>(&entry->ed_class);
+        ClassObject &object = *entry;
         if (object.GetAttributeData(8, EdType_VuVec, &positions[count], 0)) {
             average.x += positions[count].x;
             average.y += positions[count].y;
@@ -8581,7 +8581,7 @@ i32 EdManipulator::Process(EdInputContext &input, ClassObjectList &objects) {
 
 void EdManipulator::Render(ClassObjectList &objects) {
     for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
-        theClassEditor.DrawObjectSphere(*reinterpret_cast<ClassObject *>(&entry->ed_class), 0xff800000);
+        theClassEditor.DrawObjectSphere(*entry, 0xff800000);
     }
 }
 
@@ -8599,7 +8599,7 @@ i32 EdManMove::Process(EdInputContext &input, ClassObjectList &objects) {
             return axis != 0;
         }
         for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
-            ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
+            ClassObject *object = &static_cast<ClassObject &>(*entry);
             i32 moved;
             VuVecSetOrigin(position);
             object->GetAttributeData(8, EdType_VuVec, &position, 0);
@@ -8684,7 +8684,7 @@ i32 EdManRotate::RotateItem(EdInputContext &, ClassObjectList &objects, i32 angl
         return axis;
     }
     for (; entry != NULL; entry = entry->next) {
-        ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
+        ClassObject *object = &static_cast<ClassObject &>(*entry);
         __declspec(align(16)) VuMtx matrix;
         VuMtxCopy(matrix, *(const VuMtx *)&ANI3_EVAL_IDENTITY_MATRIX);
         if (!object->GetAttributeData(0x10, EdType_VuMtx, &matrix, 0)) {
@@ -8770,7 +8770,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
         return 0;
     }
     VuMtx transform;
-    reinterpret_cast<ClassObject *>(&objects.first->ed_class)->GetAttributeData(0x10, EdType_VuMtx, &transform, 0);
+    objects.first->GetAttributeData(0x10, EdType_VuMtx, &transform, 0);
     __declspec(align(16)) VuVec first;
     VuVec second;
     i32 axis = SelectAxis(input, position, first, second, &transform);
@@ -8779,7 +8779,7 @@ i32 EdManScale::Process(EdInputContext &input, ClassObjectList &objects) {
         return axis != 0;
     }
     for (ClassObjectListEntry *entry = objects.first; entry != NULL; entry = entry->next) {
-        ClassObject *object = reinterpret_cast<ClassObject *>(&entry->ed_class);
+        ClassObject *object = &static_cast<ClassObject &>(*entry);
         VuMtx scaling;
         VuMtx result;
         __declspec(align(16)) VuVec scale;
@@ -8872,7 +8872,7 @@ void EdManScale::Render(ClassObjectList &objects) {
         EdManipulator::Render(objects);
     }
     if (objects.GetAveragePosition(position)) {
-        reinterpret_cast<ClassObject *>(&objects.first->ed_class)->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
+        objects.first->GetAttributeData(0x20, EdType_VuMtx, &transform, 0);
         DrawAxis(position, &transform);
     }
 }
@@ -9871,7 +9871,7 @@ void ClassEditor::cbFileSelected(eduimenu_s *, eduiitem_s *item, u32) {
     theLevelEditor.current_led_file = static_cast<i16>(item->data);
     if (class_editor_create_pending == -1) {
         if (theClassEditor.selected_objects.first != NULL) {
-            theClassEditor.CreateObject(*reinterpret_cast<ClassObject *>(&theClassEditor.selected_objects.first->ed_class));
+            theClassEditor.CreateObject(*theClassEditor.selected_objects.first);
         }
     } else {
         theClassEditor.CreateObject(class_editor_create_pending);
@@ -10287,7 +10287,7 @@ i32 PropertyTool::ProcessMenu(EdInputContext &input) {
         menu->order = order++;
     }
     for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
-        ClassObject &object = *reinterpret_cast<ClassObject *>(&entry->ed_class);
+        ClassObject &object = *entry;
         menu = FindItemMenu(menus.First(), entry);
         if (menu != NULL) {
             menu->ClearObjecs();
@@ -10664,7 +10664,7 @@ void ClassEditor::Render() {
             manipulator->Render(selected_objects);
         } else {
             for (entry = selected_objects.first; entry != NULL; entry = entry->next) {
-                DrawObjectSphere(*(ClassObject *)&entry->ed_class, 0xff800000);
+                DrawObjectSphere(*entry, 0xff800000);
             }
         }
         for (entry = selected_objects.first; entry != NULL; entry = entry->next) {
@@ -10916,7 +10916,7 @@ i32 ClassEditor::CreateObject(ClassObject &source) {
 
 i32 ClassEditor::cbEdCopySelectedObject(EdInputContext &) {
     if (theClassEditor.selected_objects.first != NULL) {
-        return theClassEditor.CreateObject(*reinterpret_cast<ClassObject *>(&theClassEditor.selected_objects.first->ed_class));
+        return theClassEditor.CreateObject(*theClassEditor.selected_objects.first);
     }
     return 0;
 }
@@ -10928,7 +10928,7 @@ i32 ClassEditor::cbEdCreateClassNewObject(i32 class_id) {
     i32 created = 0;
     for (ClassObjectListEntry *entry = theClassEditor.selected_objects.first; entry != NULL; entry = entry->next) {
         if (entry->ed_class == object_class) {
-            return theClassEditor.CreateObject(*reinterpret_cast<ClassObject *>(&entry->ed_class));
+            return theClassEditor.CreateObject(*entry);
         }
     }
     if (!(object_class->flags & EDCLASS_CLONE_ONLY)) {
@@ -11045,7 +11045,7 @@ i32 CursorTool::Process(EdInputContext &input) {
     }
     ClassObject after;
     if (theClassEditor.selected_objects.count > 0) {
-        after = *reinterpret_cast<ClassObject *>(&theClassEditor.selected_objects.first->ed_class);
+        after = *theClassEditor.selected_objects.first;
     }
     if (theClassEditor.FindNearestObject(input.ray_start, input.ray_direction, hover, 1)) {
         theClassEditor.current_object = hover;
@@ -11152,7 +11152,7 @@ void ClassEditor::Process(EdInputContext &input) {
     }
     if (input.GetPress(39) != 0.0f) {
         __declspec(align(16)) VuVec position;
-        reinterpret_cast<ClassObject *>(&selected_objects.first->ed_class)->GetAttributeData(8, EdType_VuVec, &position, 0);
+        selected_objects.first->GetAttributeData(8, EdType_VuVec, &position, 0);
         theLevelEditor.SetCameraPosition(position);
         thePropertyTool.Process(input);
         if (mode == 0) {
