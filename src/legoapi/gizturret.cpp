@@ -266,7 +266,7 @@ extern "C" {
     void GizmoTurret_Activate(GIZMO *gizmo, i32 active) {
         GIZTURRET_s *turret;
         if (gizmo != NULL) {
-            turret = (GIZTURRET_s *)gizmo->object;
+            turret = gizmo->turret;
             turret->active = active != 0;
             if (turret->active) {
                 turret->flags &= (u16) ~(TURRET_FLAG_AIM_AT_FIXED_ANGLES | TURRET_FLAG_UPDATE_DISABLED);
@@ -280,7 +280,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return 0;
         }
-        turret = (GIZTURRET_s *)gizmo->object;
+        turret = gizmo->turret;
         if ((mode & 1) != 0) {
             if (turret->active) {
                 return reverse;
@@ -295,7 +295,7 @@ extern "C" {
     void GizmoTurret_SetVisibility(GIZMO *gizmo, i32 visible) {
         GIZTURRET_s *turret;
         if (gizmo != NULL && gizmo->object != NULL) {
-            turret = (GIZTURRET_s *)gizmo->object;
+            turret = gizmo->turret;
             GameAnimSet_SetVisibility(turret->anim_set, visible);
             turret->visible = visible != 0;
         }
@@ -305,7 +305,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
-        return &((GIZTURRET_s *)gizmo->object)->position;
+        return &gizmo->turret->position;
     }
 
     static void GizTurrets_Reset(GIZTURRET_s *turret, WORLDINFO *world) {
@@ -1013,13 +1013,13 @@ extern "C" {
 
     char *GizmoTurret_GetGizmoName(GIZMO *gizmo) {
         if (gizmo != NULL) {
-            return ((GIZTURRET_s *)gizmo->object)->name;
+            return gizmo->turret->name;
         }
         return NULL;
     }
 
     i32 GizmoTurret_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-        GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
+        GIZTURRET_s *turret = gizmo->turret;
         (void)mode;
         switch (output) {
             case TURRET_OUTPUT_DESTROYED:
@@ -1048,7 +1048,7 @@ extern "C" {
             case TURRET_OUTPUT_FIRED:
                 return "fired";
             case TURRET_OUTPUT_FIRED_SHOTS: {
-                GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
+                GIZTURRET_s *turret = gizmo->turret;
                 if (turret != NULL) {
                     sprintf(TurretOutputBuffer, "Fired %d Shots", turret->shots_required);
                     return TurretOutputBuffer;
@@ -1288,7 +1288,7 @@ extern "C" {
             }
             gizmo = set->gizmos;
             for (index = 0; index < set->count; ++index, ++gizmo) {
-                turret = (GIZTURRET_s *)gizmo->object;
+                turret = gizmo->turret;
                 if ((turret->flags & TURRET_FLAG_VISIBLE) == 0 || (turret->flags & TURRET_FLAG_ACTIVE) == 0 ||
                     (turret->flags & (TURRET_FLAG_AIM_AT_FIXED_ANGLES | TURRET_FLAG_UPDATE_DISABLED)) != 0 ||
                     turret->primary_anim_obj == NULL) {

@@ -33,6 +33,15 @@ typedef struct gizmo_s { // size 0x8
         struct GIZBUILDIT *buildit;
         struct level_script_process_s *script_process;
         struct GIZMOBLOWUP *blowup;
+        struct GIZTURRET_s *turret;
+        struct GIZSPINNER_s *spinner;
+        struct GIZSPECIAL_s *special;
+        struct gizrandom_s *random;
+        struct GIZMOPICKUP *pickup;
+        struct giztimer_s *timer;
+        struct gizaimessage_s *message;
+        struct carry_plug_s *plug;
+        struct GRAPPLE_MOTION *grapple;
     }; // 0x0
 
     i16 unknown_04; // 0x4

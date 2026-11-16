@@ -371,7 +371,7 @@ char *GizmoPickup_GetGizmoName(GIZMO *gizmo) {
 i32 GizmoPickup_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     (void)output;
     (void)mode;
-    return (((GIZMOPICKUP *)gizmo->object)->flags >> 3) & 1;
+    return (gizmo->pickup->flags >> 3) & 1;
 }
 
 char *GizmoPickup_OutputName = "Collected";
@@ -648,7 +648,7 @@ NUVEC *GizmoPickup_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((GIZMOPICKUP *)gizmo->object)->position;
+    return &gizmo->pickup->position;
 }
 
 i32 GizmoPickups_Load(void *world_ptr, void *unused) {

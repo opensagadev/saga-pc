@@ -28,7 +28,7 @@ void GizRandom_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_
 }
 
 char *GizRandom_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((GIZRANDOM *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->random->name : NULL;
 }
 
 i32 GizRandom_GetOutput(GIZMO *gizmo, i32 output_index, i32 unused) {
@@ -45,7 +45,7 @@ char *GizRandom_GetOutputName(GIZMO *unused0, i32 unused1) {
 
 i32 GizRandom_GetNumOutputs(void *gizmo_pointer) {
     GIZMO *gizmo = gizmo_pointer;
-    return ((GIZRANDOM *)gizmo->object)->output_count;
+    return gizmo->random->output_count;
 }
 
 void GizRandom_Activate(GIZMO *gizmo, i32 active) {

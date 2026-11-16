@@ -549,7 +549,7 @@ extern "C" void Grapple_DrawLine(GAMEOBJECT *object) {
 extern "C" void Grapple_Activate(GIZMO *gizmo, i32 active) {
     GRAPPLE_MOTION *grapple;
     if (gizmo != NULL) {
-        grapple = (GRAPPLE_MOTION *)gizmo->object;
+        grapple = gizmo->grapple;
         grapple->active = active != 0;
         if (grapple->active) {
             grapple->activation_progress = 1.0f;
@@ -560,7 +560,7 @@ extern "C" void Grapple_Activate(GIZMO *gizmo, i32 active) {
 extern "C" void Grapple_SetVisibility(GIZMO *gizmo, i32 visible) {
     GRAPPLE_MOTION *grapple;
     if (gizmo != NULL) {
-        grapple = (GRAPPLE_MOTION *)gizmo->object;
+        grapple = gizmo->grapple;
         grapple->visible = visible != 0;
     }
 }
@@ -589,13 +589,13 @@ extern "C" {
 
 extern "C" char *Grapple_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
-        return ((GRAPPLE_MOTION *)gizmo->object)->name;
+        return gizmo->grapple->name;
     }
     return NULL;
 }
 
 extern "C" i32 Grapple_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-    GRAPPLE_MOTION *grapple = (GRAPPLE_MOTION *)gizmo->object;
+    GRAPPLE_MOTION *grapple = gizmo->grapple;
     (void)mode;
     if (!grapple->visible || !grapple->active) {
         return 0;

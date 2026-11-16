@@ -1185,7 +1185,7 @@ void SarlaccPitB_Update(WORLDINFO *world) {
         panel = GizmoFindByName(world->gizmo_sys, gizspecial_gizmotype_id, "qaz_panel2");
         GizmoGetOutput(world->gizmo_sys, panel, 0, 0);
         ready = GizBuildIt_AtEnd(SarlaccLevelBuildits[0]) && GizBuildIt_AtEnd(SarlaccLevelBuildits[1]) &&
-                ((struct GIZSPECIAL_s *)panel->object)->anim_set->state == GAMEANIMSET_STATE_AT_END;
+                panel->special->anim_set->state == GAMEANIMSET_STATE_AT_END;
         if (ready && sarlaccdisco.complete_message->value == 0.0f) {
             SetGizAIMessage(gizaimessagesys, "discoflooropen", 1.0f, NULL);
         }

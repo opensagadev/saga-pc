@@ -88,7 +88,7 @@ static void GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, 
 }
 
 static char *GizSpecial_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((GIZSPECIAL_s *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->special->name : NULL;
 }
 
 static i32 GizSpecial_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
@@ -167,7 +167,7 @@ static i32 GizSpecial_ActivateRev(GIZMO *gizmo, i32 reverse, i32 check) {
 
 static void GizSpecial_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL && gizmo->object != NULL) {
-        GameAnimSet_SetVisibility(((GIZSPECIAL_s *)gizmo->object)->anim_set, visible);
+        GameAnimSet_SetVisibility(gizmo->special->anim_set, visible);
     }
 }
 

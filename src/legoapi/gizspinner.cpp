@@ -498,7 +498,7 @@ extern "C" void GizSpinner_AddGizmos(GIZMOSYS *giz, i32 type, void *world_ptr, v
 
 extern "C" char *GizSpinner_GetGizmoName(void *gizmo_pointer) {
     GIZMO *gizmo = (GIZMO *)gizmo_pointer;
-    return gizmo != NULL ? ((GIZSPINNER_s *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->spinner->name : NULL;
 }
 
 extern "C" char *GizSpinner_GetOutputName(void *gizmo, i32 output) {
@@ -894,7 +894,7 @@ extern "C" NUVEC *GizSpinner_GetPos(void *gizmo_pointer) {
     if (gizmo == NULL || gizmo->object == NULL) {
         return NULL;
     }
-    return &((GIZSPINNER_s *)gizmo->object)->position;
+    return &gizmo->spinner->position;
 }
 
 extern "C" void GizSpinner_SetVisibility(void *gizmo_pointer, i32 visible) {

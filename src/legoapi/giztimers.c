@@ -42,7 +42,7 @@ void GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
 }
 
 char *GizTimer_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((GIZTIMER *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->timer->name : NULL;
 }
 
 i32 GizTimer_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {

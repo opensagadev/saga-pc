@@ -141,7 +141,7 @@ static i32 GizAIMessage_GetNumOutputs(GIZMO *gizmo) {
     if ((gizmo == NULL) || (gizmo->object == NULL)) {
         return 0;
     }
-    return ((GIZAIMESSAGE *)gizmo->object)->output_count;
+    return gizmo->message->output_count;
 }
 
 ADDGIZMOTYPE *GizAIMessage_RegisterGizmo(i32 type_id) {

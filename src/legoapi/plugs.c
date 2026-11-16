@@ -168,7 +168,7 @@ static void Plugs_AddGizmos(void *system, i32 type_id, void *world_ptr, void *da
 }
 
 static char *Plug_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((CARRY_PLUG *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->plug->name : NULL;
 }
 
 static i32 Plug_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
@@ -195,7 +195,7 @@ static NUVEC *Plug_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((CARRY_PLUG *)gizmo->object)->position;
+    return &gizmo->plug->position;
 }
 
 static void *Plugs_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

@@ -85,7 +85,7 @@ struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
     do {                                                                                                                                   \
         GIZMO *gizmo = LevGizmo[gizmo_index];                                                                                              \
         if (gizmo != NULL && gizmo->object != NULL) {                                                                                      \
-            GIZMOPICKUP *pickup = (GIZMOPICKUP *)gizmo->object;                                                                            \
+            GIZMOPICKUP *pickup = gizmo->pickup;                                                                                           \
             if ((pickup->flags & 0x48) == 0 && *(counter) < 10) {                                                                          \
                 ++*(counter);                                                                                                              \
                 if (*(counter) == 10) {                                                                                                    \
