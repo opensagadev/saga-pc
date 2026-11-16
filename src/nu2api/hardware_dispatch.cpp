@@ -99,29 +99,29 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     do {
         selector = va_arg(args, i32);
         switch (selector) {
-            case NUHW_ANIMATION_COUNT:
+            case NUAPI_SETUP_ANIMATIONCOUNT:
                 animation_count = va_arg(args, i32);
                 break;
-            case NUHW_FILE_MODE:
+            case NUAPI_SETUP_IOPRESET:
                 file_mode = va_arg(args, i32);
                 break;
-            case NUHW_EJECT:
+            case NUAPI_SETUP_EJECTDISC:
                 eject = va_arg(args, i32);
                 break;
-            case NUHW_HOSTFS:
+            case NUAPI_SETUP_HOSTFS:
                 hostfs = va_arg(args, i32);
                 break;
-            case 5:
-            case 21:
-            case 27:
-            case 31:
-            case 32:
-            case 34:
-            case 38:
-            case 39:
-            case 40:
-            case 41:
-            case 42:
+            case NUAPI_SETUP_CDDVDMODE:
+            case NUAPI_SETUP_GLASSRPLANE:
+            case NUAPI_SETUP_TEXFILTERMODE:
+            case NUAPI_SETUP_ENABLE_PROFILE:
+            case NUAPI_SETUP_FLICKERFIX:
+            case NUAPI_SETUP_SWAPMODE:
+            case NUAPI_SETUP_ZMODE:
+            case NUAPI_SETUP_IOPSTEREOSIZE:
+            case NUAPI_SETUP_IOPMONOSIZE:
+            case NUAPI_SETUP_IOPDATASIZE:
+            case NUAPI_SETUP_FRAMEBUFFERDEPTH:
             case 54:
             case 55:
             case 59:
@@ -134,67 +134,67 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             case 78:
                 va_arg(args, i32);
                 break;
-            case NUHW_DFS_NAME:
+            case NUAPI_SETUP_DFSNAME:
                 NuHwDfsName = va_arg(args, const char *);
                 break;
-            case NUHW_SOUND_DFS_NAME:
+            case NUAPI_SETUP_SFXDFSNAME:
                 NuHwSoundDfsName = va_arg(args, const char *);
                 break;
-            case NUHW_DAT_NAMES:
+            case NUAPI_SETUP_DATNAMES:
                 dat_names = va_arg(args, const char **);
                 dat_count = va_arg(args, i32);
                 break;
-            case 25:
+            case NUAPI_SETUP_PARAMETER19:
                 NuHwParameter19 = va_arg(args, u32);
                 break;
-            case NUHW_STREAM_SIZE:
+            case NUAPI_SETUP_STREAMSIZE:
                 stream_size = va_arg(args, i32);
                 break;
-            case 9:
-            case 20:
-            case 30:
+            case NUAPI_SETUP_TB:
+            case NUAPI_SETUP_SCREENPOS:
+            case NUAPI_SETUP_FILEPARSER:
             case 53:
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case NUHW_AUDIO:
+            case NUAPI_SETUP_SOUND:
                 audio_enabled = 1;
                 audio_gate = va_arg(args, i32);
                 audio_buffer_size = va_arg(args, i32);
                 audio_names = va_arg(args, void *);
                 audio_parameter = va_arg(args, void *);
                 break;
-            case NUHW_NO_AUDIO:
+            case NUAPI_SETUP_NOSOUND:
                 audio_enabled = 0;
                 va_arg(args, i32);
                 va_arg(args, i32);
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case 35:
+            case NUAPI_SETUP_SOUNDSTREAM:
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case 36:
+            case NUAPI_SETUP_STREAMCHANCOUNT:
                 video_parameter = va_arg(args, i32);
                 break;
-            case NUHW_AUDIO_CHANNELS:
+            case NUAPI_SETUP_REVERB:
                 audio_channels = va_arg(args, i32);
                 audio_capacity = va_arg(args, i32);
                 break;
-            case NUHW_PAD0:
+            case NUAPI_SETUP_PAD0:
                 pads[0] = va_arg(args, void **);
                 break;
-            case NUHW_PAD1:
+            case NUAPI_SETUP_PAD1:
                 pads[1] = va_arg(args, void **);
                 break;
-            case NUHW_PAD2:
+            case NUAPI_SETUP_PAD2:
                 pads[2] = va_arg(args, void **);
                 break;
-            case NUHW_PAD3:
+            case NUAPI_SETUP_PAD3:
                 pads[3] = va_arg(args, void **);
                 break;
-            case NUHW_VIDEO_MODE: {
+            case NUAPI_SETUP_VIDEOMODE: {
                 i32 mode = va_arg(args, i32);
                 if (video_height == 224) {
                     switch (mode) {
@@ -206,46 +206,46 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
                 }
                 break;
             }
-            case NUHW_VIDEO_HEIGHT:
+            case NUAPI_SETUP_VIDEORES:
                 va_arg(args, i32);
                 video_height = va_arg(args, i32);
                 break;
-            case 19:
+            case NUAPI_SETUP_MULTIPURPOSEBUFFER:
                 va_arg(args, i32);
                 va_arg(args, i32);
                 va_arg(args, i32);
                 break;
-            case NUHW_TEXTURE_COUNT:
+            case NUAPI_SETUP_MAXTEXID:
                 texture_count = va_arg(args, i32);
                 break;
-            case NUHW_MATERIAL_COUNT:
+            case NUAPI_SETUP_MAXMTL:
                 material_count = va_arg(args, i32);
                 break;
-            case 46:
+            case NUAPI_SETUP_PC_WINDOWTITLE:
                 parameter_2e = va_arg(args, const char *);
                 break;
-            case NUHW_CONFIG_NAME:
+            case NUAPI_SETUP_PC_REGISTRYKEY:
                 config_name = va_arg(args, const char *);
                 break;
-            case 45:
+            case NUAPI_SETUP_PC_TITLE:
                 parameter_2d = va_arg(args, void *);
                 break;
-            case NUHW_SAVE_FOLDER_COMPANY:
+            case NUAPI_SETUP_PC_SAVEFOLDERPUBLISHER:
                 parameter_30 = va_arg(args, void *);
                 break;
-            case NUHW_SAVE_FOLDER_GAME:
+            case NUAPI_SETUP_PC_SAVEFOLDERGAMETITLE:
                 parameter_31 = va_arg(args, void *);
                 break;
-            case 50:
+            case NUAPI_SETUP_PC_SAVEMETADATA:
                 parameter_32 = va_arg(args, void *);
                 break;
-            case 51:
+            case NUAPI_SETUP_PARAMETER33:
                 parameter_33 = va_arg(args, void *);
                 break;
-            case NUHW_SHOW_COMMAND:
+            case NUAPI_SETUP_PC_WINDOWED:
                 show = va_arg(args, i32);
                 break;
-            case NUHW_WINDOW:
+            case NUAPI_SETUP_PC_WINDOW:
                 supplied_window = va_arg(args, HWND);
                 break;
             case 56:
@@ -253,22 +253,22 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             case 58:
                 va_arg(args, i32);
                 continue;
-            case NUHW_MAX_GAME_PADS:
+            case NUAPI_SETUP_MAXGAMEPADS:
                 NuPadSetMaxGamePads(va_arg(args, i32));
                 break;
-            case NUHW_OCCLUSION_CAPACITY:
+            case NUAPI_SETUP_OCCLUSIONCAPACITY:
                 occlusion_capacity = va_arg(args, u32);
                 break;
-            case 79:
+            case NUAPI_SETUP_PARAMETER4F:
                 NuHwParameter4f = va_arg(args, u32);
                 /* fall through */
-            case NUHW_ICON:
+            case NUAPI_SETUP_ICON:
                 icon = va_arg(args, u32);
                 break;
             default:
                 break;
         }
-    } while (selector != NUHW_END);
+    } while (selector != NUAPI_SETUP_END);
     va_end(args);
     if (parameter_30 != NULL && parameter_31 != NULL) {
         PcRegisterSaveFolder((const char *)parameter_30, (const char *)parameter_31, parameter_2e, 0);

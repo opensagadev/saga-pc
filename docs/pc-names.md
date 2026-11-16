@@ -20,4 +20,5 @@ the end state is the kept names below (about 20 lines).
 | `LevelConfigGenericKeyword_farclip_pc`, `LevelConfigGenericKeyword_nearclip_pc` | name the PC-only level and cutscene keywords `farclip_pc` and `nearclip_pc` |
 | `apitxt_PCPRESSSTARTFE`, `apitxt_PCPRESSSTARTP1`, `apitxt_PCPRESSSTARTP2` | the PC "press start" texts, named after their string table keys `GEN_PCPRESSSTART*` |
 | string literals: retail source paths, `"_PC. \| _360. \| _PS3."`, `pc\stuff\LegoCubeMap_PC.dds`, `"%s_pc%03d.bmp"` | retail data; never changed |
+| `NUAPI_SETUP_PC_*` and their `NUHW_PC_*` argument macros (`NUAPI_SETUP_PC_WINDOWTITLE`, `NUAPI_SETUP_PC_REGISTRYKEY`, ...) | original enum members of NuInitHardware's setup tags (build/reference, the structs header); the macros follow their names |
 | `ov_pcm_total`, `ov_pcm_tell` | Ogg Vorbis PCM, not a marker |
