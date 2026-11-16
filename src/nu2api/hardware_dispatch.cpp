@@ -126,11 +126,11 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
             case 55:
             case 59:
             case 69:
-            case NUAPI_SETUP_0x46:
-            case NUAPI_SETUP_0x47:
+            case NUAPI_SETUP_0X46:
+            case NUAPI_SETUP_0X47:
             case 72:
-            case NUAPI_SETUP_0x49:
-            case NUAPI_SETUP_0x4b:
+            case NUAPI_SETUP_0X49:
+            case NUAPI_SETUP_0X4B:
             case 78:
                 va_arg(args, i32);
                 break;

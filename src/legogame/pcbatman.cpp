@@ -106,10 +106,10 @@ extern "C" void InitOnce(i32 argc, char **argv) {
                    NUHW_PC_SAVEFOLDERPUBLISHER("LucasArts"),                          //
                    NUHW_PC_SAVEFOLDERGAMETITLE("LEGO Star Wars - The Complete Saga"), //
                    NUHW_PC_WINDOWED(InitOnceSelector34),                              //
-                   NUHW_SETUP_0x46(1),                                                //
-                   NUHW_SETUP_0x47(1),                                                //
-                   NUHW_SETUP_0x49(1),                                                //
-                   NUHW_SETUP_0x4b(1),                                                //
+                   NUHW_SETUP_0X46(1),                                                //
+                   NUHW_SETUP_0X47(1),                                                //
+                   NUHW_SETUP_0X49(1),                                                //
+                   NUHW_SETUP_0X4B(1),                                                //
                    NUHW_END);
     NuTimeBarInit();
     pNuCam = NuCameraCreate();

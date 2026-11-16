@@ -172,10 +172,10 @@ enum NUAPI_SETUP {
     NUAPI_SETUP_PC_WINDOWED = 52,     /* windowed when the value is 1 */
     NUAPI_SETUP_PC_WINDOW = 60,       /* guessed: a window the game draws into */
     NUAPI_SETUP_ANIMATIONCOUNT = 68,  /* guessed */
-    NUAPI_SETUP_0x46 = 70,
-    NUAPI_SETUP_0x47 = 71,
-    NUAPI_SETUP_0x49 = 73,
-    NUAPI_SETUP_0x4b = 75,
+    NUAPI_SETUP_0X46 = 70,
+    NUAPI_SETUP_0X47 = 71,
+    NUAPI_SETUP_0X49 = 73,
+    NUAPI_SETUP_0X4B = 75,
     NUAPI_SETUP_OCCLUSIONCAPACITY = 76, /* guessed */
     NUAPI_SETUP_PARAMETER4F = 79,       /* guessed: stored in NuHwParameter4f */
     NUAPI_SETUP_MAXGAMEPADS = 82,       /* guessed */
@@ -217,10 +217,10 @@ enum NUAPI_SETUP {
 #define NUHW_OCCLUSIONCAPACITY(capacity) NUAPI_SETUP_OCCLUSIONCAPACITY, capacity
 #define NUHW_MAXGAMEPADS(count) NUAPI_SETUP_MAXGAMEPADS, count
 #define NUHW_ICON(icon) NUAPI_SETUP_ICON, icon
-#define NUHW_SETUP_0x46(value) NUAPI_SETUP_0x46, value
-#define NUHW_SETUP_0x47(value) NUAPI_SETUP_0x47, value
-#define NUHW_SETUP_0x49(value) NUAPI_SETUP_0x49, value
-#define NUHW_SETUP_0x4b(value) NUAPI_SETUP_0x4b, value
+#define NUHW_SETUP_0X46(value) NUAPI_SETUP_0X46, value
+#define NUHW_SETUP_0X47(value) NUAPI_SETUP_0X47, value
+#define NUHW_SETUP_0X49(value) NUAPI_SETUP_0X49, value
+#define NUHW_SETUP_0X4B(value) NUAPI_SETUP_0X4B, value
 
 #ifdef __cplusplus
 extern "C" {
