@@ -86,8 +86,8 @@ extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 extern i32 ai_onlyusepackfile;
 
 const char AIScriptFalse[6] = "false";
-const char dat_0075f2c0[3] = "No";
-const char dat_0075f2c4[4] = "Yes";
+const char NoText[3] = "No";
+const char YesText[4] = "Yes";
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
 const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
 
@@ -9720,9 +9720,9 @@ eduimenu_s *antinodeEditor_DeleteAntinodeMenu(void) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancel, "Delete Antinode??");
         if (menu != NULL) {
             eduiMenuAddItem(menu,
-                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)dat_0075f2c0));
+                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)NoText));
             eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)dat_0075f2c4));
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)YesText));
             return menu;
         }
     }
@@ -13637,9 +13637,9 @@ void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current locator set?");
             if (menu != NULL) {
                 eduiMenuAddItem(
-                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)dat_0075f2c0));
+                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)NoText));
                 eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)dat_0075f2c4));
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)YesText));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -13667,9 +13667,9 @@ void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 e
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Empty current locator set?");
             if (menu != NULL) {
                 eduiMenuAddItem(
-                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)dat_0075f2c0));
+                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)NoText));
                 eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)dat_0075f2c4));
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)YesText));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -16362,9 +16362,9 @@ eduimenu_s *locatorEditor_DeleteLocatorMenu(void) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancel, "Delete locator??");
         if (menu != NULL) {
             eduiMenuAddItem(menu,
-                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)dat_0075f2c0));
+                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)NoText));
             eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)dat_0075f2c4));
+                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)YesText));
             return menu;
         }
     }
@@ -17156,9 +17156,9 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD *pad) {
             menu = eduiMenuCreate(100, 70, 440, 270, ed_fnt, AiEditorMessageCloseMenu, title);
             if (menu != NULL) {
                 eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)dat_0075f2c0));
+                                                        (char *)NoText));
                 eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)dat_0075f2c4));
+                                                        (char *)YesText));
                 return menu;
             }
         }

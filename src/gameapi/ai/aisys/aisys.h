@@ -579,8 +579,8 @@ extern "C" {
 #endif
     void locatorEditor_cbCancelSelectLocatorSet(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     void pathEditor_cbCancelSelectMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    extern const char dat_0075f2c0[3];
-    extern const char dat_0075f2c4[4];
+    extern const char NoText[3];
+    extern const char YesText[4];
 #ifdef __cplusplus
 }
 #endif
