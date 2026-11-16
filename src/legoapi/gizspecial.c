@@ -65,30 +65,6 @@ GIZSPECIAL_s *GizSpecial_FindByName(char *name, WORLDINFO *world) {
     return NULL;
 }
 
-typedef struct gizspecial_callback_s { // size 0x28
-    char name[32];                     // 0x00
-    GAMEANIMSET *anim_set;             // 0x20
-
-    union { // size 0x1
-        u8 flags;
-
-        struct {                  // size 0x1
-            u8 reversed : 1;      // 0x24:0
-            u8 active : 1;        // 0x24:1
-            u8 reserved_bits : 6; // 0x24:2
-        };
-    }; // 0x24
-
-    u8 reserved_25[3]; // 0x25
-} GIZSPECIAL_CALLBACK;
-
-typedef struct gizspecial_system_callback_s { // size 0x10
-    GIZSPECIAL_CALLBACK *specials;            // 0x0
-    i32 count;                                // 0x4
-    u32 reserved_08;                          // 0x8
-    GAMEANIMOBJPOOL *anim_pool;               // 0xc
-} GIZSPECIAL_SYSTEM_CALLBACK;
-
 typedef struct gizspecial_progress_s { // size 0x40
     u32 active[8];                     // 0x00
     u32 reversed[8];                   // 0x20
@@ -112,11 +88,11 @@ static void GizSpecial_AddGizmos(void *gizmo_sys, i32 type_id, void *world_ptr, 
 }
 
 static char *GizSpecial_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((GIZSPECIAL_CALLBACK *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? ((GIZSPECIAL_s *)gizmo->object)->name : NULL;
 }
 
 static i32 GizSpecial_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
-    GIZSPECIAL_CALLBACK *special;
+    GIZSPECIAL_s *special;
     if (gizmo == NULL || gizmo->object == NULL) {
         return 0;
     }
@@ -152,7 +128,7 @@ static i32 GizSpecial_GetNumOutputs(GIZMO *gizmo) {
 }
 
 static void GizSpecial_Activate(GIZMO *gizmo, i32 active) {
-    GIZSPECIAL_CALLBACK *special;
+    GIZSPECIAL_s *special;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }
@@ -168,7 +144,7 @@ static void GizSpecial_Activate(GIZMO *gizmo, i32 active) {
 }
 
 static i32 GizSpecial_ActivateRev(GIZMO *gizmo, i32 reverse, i32 check) {
-    GIZSPECIAL_CALLBACK *special;
+    GIZSPECIAL_s *special;
     if (gizmo == NULL) {
         return 0;
     }
@@ -191,12 +167,12 @@ static i32 GizSpecial_ActivateRev(GIZMO *gizmo, i32 reverse, i32 check) {
 
 static void GizSpecial_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL && gizmo->object != NULL) {
-        GameAnimSet_SetVisibility(((GIZSPECIAL_CALLBACK *)gizmo->object)->anim_set, visible);
+        GameAnimSet_SetVisibility(((GIZSPECIAL_s *)gizmo->object)->anim_set, visible);
     }
 }
 
 static NUVEC *GizSpecial_GetPos(GIZMO *gizmo) {
-    GIZSPECIAL_CALLBACK *special;
+    GIZSPECIAL_s *special;
     if (gizmo != NULL) {
         special = gizmo->object;
         if (special == NULL || special->anim_set->object_count == 0 || !NuSpecialExistsFn(&special->anim_set->objects->special)) {
@@ -245,7 +221,7 @@ static void GizSpecial_ClearProgress(void *world_ptr, void *progress_ptr) {
 static void GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     GIZSPECIAL_PROGRESS *progress = progress_ptr;
-    GIZSPECIAL_CALLBACK *special;
+    GIZSPECIAL_s *special;
     i32 index;
     i32 word;
     u32 bit;
@@ -256,14 +232,14 @@ static void GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress
     if (world == NULL || world->giz_special_sys == NULL || world->giz_special_sys->count == 0) {
         return;
     }
-    special = (GIZSPECIAL_CALLBACK *)world->giz_special_sys->specials;
+    special = world->giz_special_sys->specials;
     for (index = 0; index < world->giz_special_sys->count; ++index, ++special) {
         word = index / 32;
         bit = 1u << (index & 31);
-        if (!special->active) {
+        if (!special->is_active) {
             progress->active[word] &= ~bit;
         }
-        if (special->reversed) {
+        if (special->is_reversed) {
             progress->reversed[word] |= bit;
         }
     }
@@ -272,40 +248,40 @@ static void GizSpecial_StoreProgress(void *world_ptr, void *data, void *progress
 static void GizSpecial_Reset(void *world_ptr, void *data, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     GIZSPECIAL_PROGRESS *progress = progress_ptr;
-    GIZSPECIAL_CALLBACK *special;
+    GIZSPECIAL_s *special;
     i32 index;
     i32 word;
     u32 bit;
     if (world == NULL || world->giz_special_sys == NULL || world->giz_special_sys->count == 0) {
         return;
     }
-    special = (GIZSPECIAL_CALLBACK *)world->giz_special_sys->specials;
+    special = world->giz_special_sys->specials;
     for (index = 0; index < world->giz_special_sys->count; ++index, ++special) {
-        special->reversed = 0;
-        special->active = 1;
+        special->is_reversed = 0;
+        special->is_active = 1;
         if (progress != NULL && index < 256) {
             word = index / 32;
             bit = 1u << (index & 31);
-            special->active = (progress->active[word] & bit) != 0;
-            special->reversed = (progress->reversed[word] & bit) != 0;
+            special->is_active = (progress->active[word] & bit) != 0;
+            special->is_reversed = (progress->reversed[word] & bit) != 0;
         }
     }
 }
 
 static void *GizSpecial_ReserveBuffer(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    GIZSPECIAL_SYSTEM_CALLBACK *system;
+    GIZSPECIALSYS *system;
     i32 index;
     if (world->current_level->max_gizspecials != 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         world->giz_special_sys = (GIZSPECIALSYS *)world->giz_buffer.addr;
-        system = (GIZSPECIAL_SYSTEM_CALLBACK *)world->giz_special_sys;
-        world->giz_buffer.addr += 16;
+        system = world->giz_special_sys;
+        world->giz_buffer.addr += sizeof(GIZSPECIALSYS);
         system->anim_pool = GameAnimSet_CreateObjectPool(&world->giz_buffer, &world->buffer_end, 0, world->current_level->max_gizspecials);
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        system->specials = (GIZSPECIAL_CALLBACK *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->current_level->max_gizspecials * sizeof(GIZSPECIAL_CALLBACK);
-        memset(system->specials, 0, world->current_level->max_gizspecials * sizeof(GIZSPECIAL_CALLBACK));
+        system->specials = (GIZSPECIAL_s *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_gizspecials * sizeof(GIZSPECIAL_s);
+        memset(system->specials, 0, world->current_level->max_gizspecials * sizeof(GIZSPECIAL_s));
         for (index = 0; index < world->current_level->max_gizspecials; ++index) {
             system->specials[index].anim_set =
                 GameAnimSet_Create(&world->giz_buffer, &world->buffer_end, system->anim_pool, world->game_anim_sys);

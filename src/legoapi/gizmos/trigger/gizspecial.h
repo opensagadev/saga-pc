@@ -4,9 +4,13 @@
 
 #include "legoapi/gizmo/base/gizmo.h"
 
-typedef struct gizspecialsys_s {   // size 0x8
-    struct GIZSPECIAL_s *specials; // 0x0
-    i32 count;                     // 0x4
+struct gameanimobjpool_s;
+
+typedef struct gizspecialsys_s {         // size 0x10
+    struct GIZSPECIAL_s *specials;       // 0x0
+    i32 count;                           // 0x4
+    u32 unknown_08;                      // 0x8
+    struct gameanimobjpool_s *anim_pool; // 0xc
 } GIZSPECIALSYS;
 
 #ifdef __cplusplus
