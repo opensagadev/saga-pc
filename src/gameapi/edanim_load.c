@@ -1021,19 +1021,19 @@ void edanimInit(void) {
     edanim_mtl->diffuse_r = 0.5f;
     edanim_mtl->diffuse_g = 0.5f;
     edanim_mtl->diffuse_b = 0.5f;
-    edanim_mtl->attribs.cull_mode = 2;
-    edanim_mtl->attribs.z_mode = 0;
+    edanim_mtl->attribs.cull_mode = NUMTL_CULL_NONE;
+    edanim_mtl->attribs.z_mode = NUMTL_ZMODE_NORMAL;
     edanim_mtl->opacity = 1.0f;
-    edanim_mtl->attribs.alpha_mode = 0;
+    edanim_mtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate(edanim_mtl);
     edanim_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)edanim_mtl_zoff)->diffuse_r = 0.5f;
     ((NUMTL *)edanim_mtl_zoff)->diffuse_g = 0.5f;
     ((NUMTL *)edanim_mtl_zoff)->diffuse_b = 0.5f;
-    ((NUMTL *)edanim_mtl_zoff)->attribs.cull_mode = 2;
-    ((NUMTL *)edanim_mtl_zoff)->attribs.z_mode = 3;
+    ((NUMTL *)edanim_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((NUMTL *)edanim_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
     ((NUMTL *)edanim_mtl_zoff)->opacity = 1.0f;
-    ((NUMTL *)edanim_mtl_zoff)->attribs.alpha_mode = 0;
+    ((NUMTL *)edanim_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate((NUMTL *)edanim_mtl_zoff);
     edanim_options_menu = eduiMenuCreate(70, 70, 220, 300, ed_fnt, edanimcbCancelOptMenu, (char *)("Options"));
     if (!edanim_options_menu) {

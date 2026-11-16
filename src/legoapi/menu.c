@@ -59,13 +59,13 @@ void MenuInitialiseEx(MENUFNINFO *menu_info, i32 menu_id_count, i32 language_cou
     MenuFadeEnabled = is_fade_enabled;
     MenuDrawDropShadows = is_shadow_enabled;
     MenuFadeMtl = NuMtlCreate(1);
-    MenuFadeMtl->attribs.z_mode = 3;
+    MenuFadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     MenuFadeMtl->attribs.filter_mode = 1;
     MenuFadeMtl->attribs.unknown_2_1_2 = 2;
     MenuFadeMtl->attribs.unknown_1_1_2 = 1;
     MenuFadeMtl->attribs.unknown_1_4_8 = 1;
     MenuFadeMtl->attribs.unknown_2_4 = 1;
-    MenuFadeMtl->attribs.alpha_mode = 1;
+    MenuFadeMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(MenuFadeMtl);
     MenuSetPlatformState(-1);
 }

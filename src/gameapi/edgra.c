@@ -409,19 +409,19 @@ void edgraInit(void) {
     ((NUMTL *)edgra_mtl)->diffuse_r = 0.5f;
     ((NUMTL *)edgra_mtl)->diffuse_g = 0.5f;
     ((NUMTL *)edgra_mtl)->diffuse_b = 0.5f;
-    ((NUMTL *)edgra_mtl)->attribs.cull_mode = 2;
-    ((NUMTL *)edgra_mtl)->attribs.z_mode = 0;
+    ((NUMTL *)edgra_mtl)->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((NUMTL *)edgra_mtl)->attribs.z_mode = NUMTL_ZMODE_NORMAL;
     ((NUMTL *)edgra_mtl)->opacity = 1.0f;
-    ((NUMTL *)edgra_mtl)->attribs.alpha_mode = 0;
+    ((NUMTL *)edgra_mtl)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate((NUMTL *)edgra_mtl);
     edgra_mtl_zoff = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)edgra_mtl_zoff)->diffuse_r = 0.5f;
     ((NUMTL *)edgra_mtl_zoff)->diffuse_g = 0.5f;
     ((NUMTL *)edgra_mtl_zoff)->diffuse_b = 0.5f;
-    ((NUMTL *)edgra_mtl_zoff)->attribs.cull_mode = 2;
-    ((NUMTL *)edgra_mtl_zoff)->attribs.z_mode = 3;
+    ((NUMTL *)edgra_mtl_zoff)->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((NUMTL *)edgra_mtl_zoff)->attribs.z_mode = NUMTL_ZMODE_OFF;
     ((NUMTL *)edgra_mtl_zoff)->opacity = 1.0f;
-    ((NUMTL *)edgra_mtl_zoff)->attribs.alpha_mode = 0;
+    ((NUMTL *)edgra_mtl_zoff)->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate((NUMTL *)edgra_mtl_zoff);
     buffer = gra_ptr;
     if (buffer == NULL) {

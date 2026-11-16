@@ -47,6 +47,12 @@ extern "C" {
     i32 NuQFntReadPS(VUFNT *, i32, i32, i32, VARIPTR *, VARIPTR);
     VUFNT *NuQFntReadBuffer(VARIPTR *, VARIPTR *, VARIPTR);
     VUFNT *NuQFntRead(char *, VARIPTR *, VARIPTR);
+/* The flags of NuQFntCreate, NuQFntDuplicate and the atlas font read: the material each sets up. 0x4 and 0x10 set
+ * material attribute bits 4-5 to 1 or 2; their effect is not known. */
+#define NUQFNT_OPAQUE 0x2       /* NUMTL_ALPHA_OPAQUE, not NUMTL_ALPHA_BLEND */
+#define NUQFNT_3D 0x8           /* a 3D material (NuMtlCreate3D) */
+#define NUQFNT_Z_READ_ONLY 0x20 /* NUMTL_ZMODE_READ_ONLY, not NUMTL_ZMODE_OFF */
+#define NUQFNT_Z_BUFFERED 0x40  /* NUMTL_ZMODE_NORMAL */
     VUFNT *NuQFntDuplicate(VUFNT *, i32, i32, VARIPTR *, VARIPTR *);
     VUFNT *NuQFntLoadPtr(char *, char *, i32, i32, VARIPTR *, VARIPTR *);
     void NuQFntWrite(char *, VUFNT *);

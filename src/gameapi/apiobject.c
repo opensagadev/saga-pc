@@ -2394,8 +2394,8 @@ void APITransparentInit(void) {
     APITrans_Mtl[0]->diffuse_g = 0.0f;
     APITrans_Mtl[0]->diffuse_b = 0.0f;
     APITrans_Mtl[0]->opacity = 1.0f;
-    APITrans_Mtl[0]->attribs.alpha_mode = 2;
-    APITrans_Mtl[0]->attribs.z_mode = 0;
+    APITrans_Mtl[0]->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
+    APITrans_Mtl[0]->attribs.z_mode = NUMTL_ZMODE_NORMAL;
     APITrans_Mtl[0]->attribs.unknown_20_31 &= 0x807;
     APITrans_Mtl[0]->unknown_076 = 0;
     NuMtlUpdate(APITrans_Mtl[0]);
@@ -2407,8 +2407,8 @@ void APITransparentInit(void) {
     APITrans_Mtl[1]->diffuse_g = 0.0f;
     APITrans_Mtl[1]->diffuse_b = 0.0f;
     APITrans_Mtl[1]->opacity = 1.0f;
-    APITrans_Mtl[1]->attribs.alpha_mode = 2;
-    APITrans_Mtl[1]->attribs.z_mode = 1;
+    APITrans_Mtl[1]->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
+    APITrans_Mtl[1]->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
     APITrans_Mtl[1]->attribs.unknown_20_31 &= 0x807;
     APITrans_Mtl[1]->unknown_076 = 0;
     NuMtlUpdate(APITrans_Mtl[1]);

@@ -2626,7 +2626,7 @@ NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 dept
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
     material->opacity = 0.999f;
-    material->attribs.cull_mode = 2;
+    material->attribs.cull_mode = NUMTL_CULL_NONE;
     material->attribs.z_mode = (u32)depth_mode & 3;
     material->attribs.filter_mode = (u32)filter_mode & 3;
     material->attribs.alpha_mode = (u32)alpha_mode & 15;
@@ -2705,7 +2705,7 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     numtoruscolldata = maxdebkeys;
     DebMat[0] = CreateAlphaBlendTexture(buffer, buffer_end, texture_name, 1, 2, 256, 0);
     texture_id = ((DEBRIS_MATERIAL *)DebMat[0])->texture_id;
-    ((DEBRIS_MATERIAL *)DebMat[0])->attribs.z_mode = 1;
+    ((DEBRIS_MATERIAL *)DebMat[0])->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
     ((DEBRIS_MATERIAL *)DebMat[0])->attribs.alpha_test = 1;
     NuMtlUpdate(DebMat[0]);
     DebMat[1] = CreateCopyMat(DebMat[0], 0, 0, 3, 0);
@@ -2732,15 +2732,15 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.x = 1.0f;
     ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.y = 1.0f;
     ((DEBRIS_MATERIAL *)DebMat[7])->diffuse.z = 1.0f;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.cull_mode = 2;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.z_mode = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.filter_mode = 0;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_2_1_2 = 2;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_2_4 = 1;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_1_1_2 = 1;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_1_4_8 = 1;
     ((DEBRIS_MATERIAL *)DebMat[7])->opacity = 0.999f;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.alpha_mode = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     ((DEBRIS_MATERIAL *)DebMat[7])->secondary.alpha_fail = 1;
     ((DEBRIS_MATERIAL *)DebMat[7])->texture_id = 1;
     ((DEBRIS_MATERIAL *)DebMat[7])->sort_priority = 128;

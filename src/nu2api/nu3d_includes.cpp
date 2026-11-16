@@ -3576,7 +3576,7 @@ extern "C" {
             }
             found = 1;
             for (; material != NULL; material = material->next) {
-                material->attribs.alpha_mode = 1;
+                material->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
                 NuMtlUpdate(material);
             }
         }
@@ -5503,7 +5503,7 @@ extern "C" {
             duplicate->unicode_map = (VUCHARIDX *)((u32)duplicate->unicode_map + (u32)duplicate - (u32)font);
         }
         previous_plane = NuMtlSetCurrentRenderPlane(plane);
-        duplicate->material = (flags & 8) ? NuMtlCreate3D(1) : NuMtlCreate(1);
+        duplicate->material = (flags & NUQFNT_3D) ? NuMtlCreate3D(1) : NuMtlCreate(1);
         material = (PC_MATERIAL_CREATE_VIEW *)duplicate->material;
         original = (PC_MATERIAL_CREATE_VIEW *)font->material;
         material->attributes = original->attributes;
@@ -5512,10 +5512,10 @@ extern "C" {
         ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->sort_priority = ((PC_MATERIAL_CREATE_VIEW *)font->material)->sort_priority;
         ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes =
             (((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes & ~0x10000U) | 0x20000U;
-        if (flags & 8) {
+        if (flags & NUQFNT_3D) {
             ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes_high &= ~0x800000U;
         }
-        if (flags & 0x40) {
+        if (flags & NUQFNT_Z_BUFFERED) {
             ((PC_MATERIAL_CREATE_VIEW *)duplicate->material)->attributes &= ~0xc000U;
         }
         NuMtlUpdate(duplicate->material);
@@ -5645,22 +5645,22 @@ extern "C" {
         buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(PC_MATERIAL_CREATE_VIEW);
         memcpy(result->material, font->material, sizeof(PC_MATERIAL_CREATE_VIEW));
         NuMtlSetRenderPlane(result->material, options);
-        if (flags & 8) {
+        if (flags & NUQFNT_3D) {
             ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes_high &= ~4U;
         } else {
             ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes_high |= 4U;
         }
         ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
             (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x10000U) | 0x20000U;
-        if (flags & 2) {
+        if (flags & NUQFNT_OPAQUE) {
             ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~15U;
         } else {
             ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
                 (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~14U) | 1U;
         }
-        if (flags & 0x40) {
+        if (flags & NUQFNT_Z_BUFFERED) {
             ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes &= ~0xc000U;
-        } else if (flags & 0x20) {
+        } else if (flags & NUQFNT_Z_READ_ONLY) {
             ((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes =
                 (((PC_MATERIAL_CREATE_VIEW *)result->material)->attributes & ~0x8000U) | 0x4000U;
         } else {
@@ -6270,10 +6270,10 @@ void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
         desc2d.diffuse_map_id = 0;
         desc2d.vertex_format |= 0x40001;
         NuMtlSetShaderDescPS(ms_pZOnlyMtl2D, &desc2d);
-        ms_pZOnlyMtl2D->attribs.z_mode = 0;
-        ms_pZOnlyMtl2D->attribs.alpha_mode = 13;
+        ms_pZOnlyMtl2D->attribs.z_mode = NUMTL_ZMODE_NORMAL;
+        ms_pZOnlyMtl2D->attribs.alpha_mode = NUMTL_ALPHA_NO_COLOUR;
         ms_pZOnlyMtl2D->attribs.unknown_2_8 = 0;
-        ms_pZOnlyMtl2D->attribs.cull_mode = 2;
+        ms_pZOnlyMtl2D->attribs.cull_mode = NUMTL_CULL_NONE;
         NuMtlUpdate(ms_pZOnlyMtl2D);
         PC_MATERIAL_SHADER_DESC_VIEW desc3d;
         memset(&desc3d, 0, sizeof(desc3d));
@@ -6281,14 +6281,14 @@ void OccluderSet::Init(u32 max_occluders, VARIPTR *buffer, VARIPTR buffer_end) {
         desc3d.diffuse_map_id = 0;
         desc3d.vertex_format |= 1;
         NuMtlSetShaderDescPS(ms_pZOnlyMtl3D, &desc3d);
-        ms_pZOnlyMtl3D->attribs.z_mode = 0;
-        ms_pZOnlyMtl3D->attribs.alpha_mode = 13;
+        ms_pZOnlyMtl3D->attribs.z_mode = NUMTL_ZMODE_NORMAL;
+        ms_pZOnlyMtl3D->attribs.alpha_mode = NUMTL_ALPHA_NO_COLOUR;
         ms_pZOnlyMtl3D->attribs.unknown_2_8 = 0;
-        ms_pZOnlyMtl3D->attribs.cull_mode = 2;
+        ms_pZOnlyMtl3D->attribs.cull_mode = NUMTL_CULL_NONE;
         NuMtlUpdate(ms_pZOnlyMtl3D);
-        ms_pAlphaMtl2D->attribs.z_mode = 1;
-        ms_pAlphaMtl2D->attribs.alpha_mode = 1;
-        ms_pAlphaMtl2D->attribs.cull_mode = 2;
+        ms_pAlphaMtl2D->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
+        ms_pAlphaMtl2D->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
+        ms_pAlphaMtl2D->attribs.cull_mode = NUMTL_CULL_NONE;
         NuMtlUpdate(ms_pAlphaMtl2D);
     }
 }
@@ -9112,7 +9112,7 @@ extern "C" {
         CreateTimeBar(buffer, unused_buffer, NULL, 7);
         CreateTimeBar(buffer, unused_buffer, NULL, 16);
         material = NuMtlCreate(1);
-        material->attribs.alpha_mode = 2;
+        material->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
         NuTimeBar_FrameOutMtl = material;
         NuMtlUpdatePS(material);
         ((PC_SCENE_MTL_VIEW *)material)->version += 1;

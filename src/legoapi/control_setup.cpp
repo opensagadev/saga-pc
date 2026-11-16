@@ -275,9 +275,9 @@ void PC_CONTROL_SCREEN::Register(PC_CONTROL_CONFIG *config, VARIPTR *, VARIPTR *
     PcInputSetBlockedKeys(config->blocked_keys);
     i32 plane = NuMtlSetCurrentRenderPlane(2);
     material = NuMtlCreate(1);
-    material->attribs.alpha_mode = 1;
-    material->attribs.cull_mode = 2;
-    material->attribs.z_mode = 3;
+    material->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
+    material->attribs.cull_mode = NUMTL_CULL_NONE;
+    material->attribs.z_mode = NUMTL_ZMODE_OFF;
     NuMtlUpdate(material);
     NuMtlSetCurrentRenderPlane(plane);
     row_count = 0;

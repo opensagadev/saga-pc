@@ -212,8 +212,8 @@ void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
             (*result)->attribs.unknown_1_1_2 = 0;
             (*result)->attribs.unknown_1_4_8 = 0;
             ((RIPPLE_MATERIAL_READER *)*result)->opacity = 1.0f;
-            (*result)->attribs.z_mode = 1;
-            (*result)->attribs.alpha_mode = 2;
+            (*result)->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
+            (*result)->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
             (*result)->attribs.filter_mode = 1;
             (*result)->attribs.unknown_2_1_2 = 2;
             (*result)->texture_id = (i16)texture;

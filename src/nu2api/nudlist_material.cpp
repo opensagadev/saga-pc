@@ -42,22 +42,22 @@ typedef struct PC_DL_MATERIAL_READER { // size 0x44
 static void PCDisplayHandlerSetZMode(i32 mode) {
     NuDisplayHandlerZMode = mode;
     switch (mode) {
-        case 0:
+        case NUMTL_ZMODE_NORMAL:
             PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             break;
-        case 1:
+        case NUMTL_ZMODE_READ_ONLY:
             PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
             PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
             break;
-        case 2:
+        case NUMTL_ZMODE_ALWAYS:
             PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZFUNC, 8);
             break;
-        case 3:
+        case NUMTL_ZMODE_OFF:
             PCDeviceSetRenderState(D3DRS_ZENABLE, 0);
             break;
     }
@@ -79,7 +79,7 @@ extern "C" void NuDisplayListTransform(void *arg) {
     if (NuDisplayHandlerOpacity != opacity) {
         if (opacity < 1.0f) {
             tint.w *= opacity;
-            NuDisplayHandlerZMode = 1;
+            NuDisplayHandlerZMode = NUMTL_ZMODE_READ_ONLY;
             PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
             PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
@@ -113,7 +113,7 @@ extern "C" void NuDisplayListTransformTranspose(void *arg) {
     if (NuDisplayHandlerOpacity != opacity) {
         if (opacity < 1.0f) {
             tint.w *= opacity;
-            NuDisplayHandlerZMode = 1;
+            NuDisplayHandlerZMode = NUMTL_ZMODE_READ_ONLY;
             PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
             PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
@@ -172,7 +172,7 @@ extern "C" void NuDisplayListFaceOnTransform(void *arg) {
     tint = NuDisplayHandlerTint;
     if (opacity < 1.0f) {
         tint.w *= opacity;
-        NuDisplayHandlerZMode = 1;
+        NuDisplayHandlerZMode = NUMTL_ZMODE_READ_ONLY;
         PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
         PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 0);
         PCDeviceSetRenderState(D3DRS_ZFUNC, 4);
@@ -412,53 +412,53 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
         }
     }
     switch (material->attributes & 15) {
-        case 0:
+        case NUMTL_ALPHA_OPAQUE:
             PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
             break;
-        case 1:
+        case NUMTL_ALPHA_BLEND:
             PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
             PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
             PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
             PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
             break;
-        case 2:
+        case NUMTL_ALPHA_ADDITIVE:
             PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
             PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
             PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
             PCDeviceSetRenderState(D3DRS_DESTBLEND, 2);
             break;
-        case 3:
+        case NUMTL_ALPHA_SUBTRACTIVE:
             PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 1);
             PCDeviceSetRenderState(D3DRS_BLENDOP, 3);
             PCDeviceSetRenderState(D3DRS_SRCBLEND, 1);
             PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
             break;
-        case 10:
+        case NUMTL_ALPHA_TEST:
             PCDeviceSetRenderState(D3DRS_ALPHABLENDENABLE, 0);
             PCDeviceSetRenderState(D3DRS_ALPHATESTENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ALPHAREF, (material->attributes >> 23) & 0xff);
             PCDeviceSetRenderState(D3DRS_ALPHAFUNC, 7);
             break;
-        case 13:
+        case NUMTL_ALPHA_NO_COLOUR:
             write_colour = 0;
             break;
     }
     switch ((material->attributes >> 12) & 3) {
-        case 0:
+        case NUMTL_CULL_BACK:
             if (NuDisplayHandlerReflection != 0) {
                 PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
             } else {
                 PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
             }
             break;
-        case 1:
+        case NUMTL_CULL_FRONT:
             if (NuDisplayHandlerReflection != 0) {
                 PCDeviceSetRenderState(D3DRS_CULLMODE, 3);
             } else {
                 PCDeviceSetRenderState(D3DRS_CULLMODE, 2);
             }
             break;
-        case 2:
+        case NUMTL_CULL_NONE:
             PCDeviceSetRenderState(D3DRS_CULLMODE, 1);
             break;
     }
@@ -467,7 +467,7 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
     }
     if (RenderFrameSceneFlags != 0) {
         PCDeviceBackend.SetColorWriteMask(1, 1, 0);
-        NuDisplayHandlerZMode = 0;
+        NuDisplayHandlerZMode = NUMTL_ZMODE_NORMAL;
         PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
         PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);
         PCDeviceSetRenderState(D3DRS_ZFUNC, 4);

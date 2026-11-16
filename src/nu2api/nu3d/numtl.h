@@ -35,6 +35,21 @@ typedef struct numtlattrib_s { // size 0x4
     u32 unknown_20_31 : 12;    // 0x0:20
 } NUMTLATTRIB;
 
+/* NUMTLATTRIB modes, from the render states NuMtlSetRenderStatesPS and PCDisplayHandlerSetZMode set for each. */
+#define NUMTL_ALPHA_OPAQUE 0      /* no blending */
+#define NUMTL_ALPHA_BLEND 1       /* source alpha, inverse source alpha */
+#define NUMTL_ALPHA_ADDITIVE 2    /* source alpha, one */
+#define NUMTL_ALPHA_SUBTRACTIVE 3 /* reverse subtract: one, inverse source alpha */
+#define NUMTL_ALPHA_TEST 10       /* no blending; alpha test against the reference in attribute bits 23-30 */
+#define NUMTL_ALPHA_NO_COLOUR 13  /* no colour write */
+#define NUMTL_CULL_BACK 0         /* counter-clockwise faces culled (clockwise in a reflection) */
+#define NUMTL_CULL_FRONT 1        /* clockwise faces culled (counter-clockwise in a reflection) */
+#define NUMTL_CULL_NONE 2         /* both sides drawn */
+#define NUMTL_ZMODE_NORMAL 0      /* z test (less or equal) and z write */
+#define NUMTL_ZMODE_READ_ONLY 1   /* z test, no z write */
+#define NUMTL_ZMODE_ALWAYS 2      /* z write without a z test */
+#define NUMTL_ZMODE_OFF 3         /* no z buffer */
+
 typedef struct numtl_s {                  // size 0x9c
     u16 flags;                            // 0x00
     u8 unknown_0002[0x2e];                // 0x02

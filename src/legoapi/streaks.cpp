@@ -342,8 +342,8 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakmtl->attribs.unknown_1_1_2 = 0;
     streakmtl->attribs.unknown_1_4_8 = 0;
     streakmtl->opacity = 1.0f;
-    streakmtl->attribs.z_mode = 1;
-    streakmtl->attribs.alpha_mode = 2;
+    streakmtl->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
+    streakmtl->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     streakmtl->attribs.filter_mode = 1;
     reinterpret_cast<PC_SCENE_MTL_VIEW *>(streakmtl)->sort_pri = 500;
     streakmtl->attribs.unknown_2_1_2 = 2;
@@ -357,8 +357,8 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakmtl_ref->attribs.unknown_1_1_2 = 0;
     streakmtl_ref->attribs.unknown_1_4_8 = 0;
     streakmtl_ref->opacity = 1.0f;
-    streakmtl_ref->attribs.z_mode = 0;
-    streakmtl_ref->attribs.alpha_mode = 2;
+    streakmtl_ref->attribs.z_mode = NUMTL_ZMODE_NORMAL;
+    streakmtl_ref->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     streakmtl_ref->attribs.filter_mode = 1;
     streakmtl_ref->attribs.unknown_2_1_2 = 2;
     streakmtl_ref->attribs.unknown_2_4 = 1;

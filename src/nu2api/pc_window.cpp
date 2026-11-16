@@ -529,10 +529,10 @@ extern "C" void PcCreateCursorMaterial(void) {
     PcCursorMaterial->diffuse_r = 1.0f;
     PcCursorMaterial->diffuse_g = 1.0f;
     PcCursorMaterial->diffuse_b = 1.0f;
-    PcCursorMaterial->attribs.cull_mode = 2;
-    PcCursorMaterial->attribs.z_mode = 3;
+    PcCursorMaterial->attribs.cull_mode = NUMTL_CULL_NONE;
+    PcCursorMaterial->attribs.z_mode = NUMTL_ZMODE_OFF;
     PcCursorMaterial->opacity = 1.0f;
-    PcCursorMaterial->attribs.alpha_mode = 1;
+    PcCursorMaterial->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     PcCursorMaterial->attribs.unknown_2_4 = 1;
     PcCursorMaterial->texture_id = (i16)PcCursorTextureId;
     NuMtlUpdate(PcCursorMaterial);

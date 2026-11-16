@@ -1797,9 +1797,9 @@ void DebrisGlassInit(void) {
         material->texture_id = 1;
         material->attribs.unknown_1_1_2 = 1;
         material->attribs.unknown_1_4_8 = 1;
-        material->attribs.cull_mode = 2;
-        material->attribs.z_mode = 3;
-        material->attribs.alpha_mode = 0;
+        material->attribs.cull_mode = NUMTL_CULL_NONE;
+        material->attribs.z_mode = NUMTL_ZMODE_OFF;
+        material->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
         material->attribs.filter_mode = 0;
         material->attribs.unknown_2_1_2 = 2;
         material->attribs.unknown_2_4 = 1;

@@ -15,7 +15,7 @@ NUMTL *CreateAlphaBlendTexture(VARIPTR *buffer, VARIPTR buffer_end, char *name, 
     material->diffuse.y = 1.0f;
     material->diffuse.z = 1.0f;
     material->opacity = 0.999f;
-    material->attribs.cull_mode = 2;
+    material->attribs.cull_mode = NUMTL_CULL_NONE;
     material->attribs.z_mode = (u32)depth_mode & 3;
     material->attribs.unknown_2_1_2 = 2;
     material->attribs.alpha_mode = (u32)alpha_mode & 15;

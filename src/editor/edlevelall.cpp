@@ -2532,13 +2532,13 @@ void EdSfxNameControl::cbSelectSfx(eduimenu_s *menu, eduiitem_s *item, u32) {
 void EdDrawBegin(i32 index) {
     if (EdDrawMtl[0] == NULL) {
         EdDrawMtl[0] = NuMtlCreate3D(1);
-        EdDrawMtl[0]->attribs.cull_mode = 2;
-        EdDrawMtl[0]->attribs.alpha_mode = 1;
+        EdDrawMtl[0]->attribs.cull_mode = NUMTL_CULL_NONE;
+        EdDrawMtl[0]->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
         NuMtlUpdate(EdDrawMtl[0]);
         EdDrawMtl[1] = NuMtlCreate3D(1);
-        EdDrawMtl[1]->attribs.cull_mode = 2;
-        EdDrawMtl[1]->attribs.z_mode = 3;
-        EdDrawMtl[1]->attribs.alpha_mode = 1;
+        EdDrawMtl[1]->attribs.cull_mode = NUMTL_CULL_NONE;
+        EdDrawMtl[1]->attribs.z_mode = NUMTL_ZMODE_OFF;
+        EdDrawMtl[1]->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
         NuMtlUpdate(EdDrawMtl[1]);
     }
     NewMtl = index;
@@ -8515,10 +8515,10 @@ void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_f
     edLevel2dMtl->diffuse_r = 0.5f;
     edLevel2dMtl->diffuse_g = 0.5f;
     edLevel2dMtl->diffuse_b = 0.5f;
-    edLevel2dMtl->attribs.cull_mode = 2;
-    edLevel2dMtl->attribs.z_mode = 3;
+    edLevel2dMtl->attribs.cull_mode = NUMTL_CULL_NONE;
+    edLevel2dMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     edLevel2dMtl->opacity = 1.0f;
-    edLevel2dMtl->attribs.alpha_mode = 1;
+    edLevel2dMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     edLevel2dMtl->attribs.unknown_2_4 = 1;
     NuMtlUpdate(edLevel2dMtl);
 
@@ -8527,7 +8527,7 @@ void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_f
     edLevel3dMtl->diffuse_g = 0.5f;
     edLevel3dMtl->diffuse_b = 0.5f;
     edLevel3dMtl->opacity = 1.0f;
-    edLevel3dMtl->attribs.alpha_mode = 0;
+    edLevel3dMtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     edLevel3dMtl->attribs.unknown_2_1_2 = 2;
     edLevel3dMtl->attribs.unknown_2_4 = 1;
     NuMtlUpdate(edLevel3dMtl);
@@ -8536,10 +8536,10 @@ void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_f
     edLevelTexMtl->diffuse_r = 0.5f;
     edLevelTexMtl->diffuse_g = 0.5f;
     edLevelTexMtl->diffuse_b = 0.5f;
-    edLevelTexMtl->attribs.cull_mode = 2;
-    edLevelTexMtl->attribs.z_mode = 3;
+    edLevelTexMtl->attribs.cull_mode = NUMTL_CULL_NONE;
+    edLevelTexMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     edLevelTexMtl->opacity = 1.0f;
-    edLevelTexMtl->attribs.alpha_mode = 0;
+    edLevelTexMtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     edLevelTexMtl->attribs.unknown_2_4 = 1;
     NuMtlUpdate(edLevelTexMtl);
 

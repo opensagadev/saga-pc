@@ -2915,21 +2915,21 @@ extern "C" {
             ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes |= 0x40000U;
             ((NUQFNT_ATLAS_MATERIAL *)font->material)->texture_id = (i16)texture_id;
             material = (NUQFNT_ATLAS_MATERIAL *)font->material;
-            if (flags & 8) {
+            if (flags & NUQFNT_3D) {
                 material->attributes_high &= ~4U;
             } else {
                 material->attributes_high |= 4U;
             }
             ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes =
                 (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~0x10000U) | 0x20000U;
-            if (flags & 2) {
+            if (flags & NUQFNT_OPAQUE) {
                 ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes &= ~15U;
             } else {
                 ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes = (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~14U) | 1U;
             }
-            if (flags & 0x40) {
+            if (flags & NUQFNT_Z_BUFFERED) {
                 ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes &= ~0xc000U;
-            } else if (flags & 0x20) {
+            } else if (flags & NUQFNT_Z_READ_ONLY) {
                 ((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes =
                     (((NUQFNT_ATLAS_MATERIAL *)font->material)->attributes & ~0x8000U) | 0x4000U;
             } else {

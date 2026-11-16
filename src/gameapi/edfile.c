@@ -3715,37 +3715,37 @@ u32 EdFileReadUnsignedInt(void) {
 
 void eduiInitMaterials(void) {
     uimtls[0] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
-    ((NUMTL *)uimtls[0])->attribs.cull_mode = 2;
-    ((NUMTL *)uimtls[0])->attribs.z_mode = 3;
+    ((NUMTL *)uimtls[0])->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((NUMTL *)uimtls[0])->attribs.z_mode = NUMTL_ZMODE_OFF;
     ((NUMTL *)uimtls[0])->opacity = 1.0f;
-    ((NUMTL *)uimtls[0])->attribs.alpha_mode = 0;
+    ((NUMTL *)uimtls[0])->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate(((NUMTL *)uimtls[0]));
     uimtls[1] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)uimtls[1])->diffuse_r = 0.2f;
     ((NUMTL *)uimtls[1])->diffuse_g = 0.2f;
     ((NUMTL *)uimtls[1])->diffuse_b = 0.2f;
-    ((NUMTL *)uimtls[1])->attribs.cull_mode = 2;
-    ((NUMTL *)uimtls[1])->attribs.z_mode = 3;
+    ((NUMTL *)uimtls[1])->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((NUMTL *)uimtls[1])->attribs.z_mode = NUMTL_ZMODE_OFF;
     ((NUMTL *)uimtls[1])->opacity = 0.999f;
-    ((NUMTL *)uimtls[1])->attribs.alpha_mode = 3;
+    ((NUMTL *)uimtls[1])->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
     NuMtlUpdate(((NUMTL *)uimtls[1]));
     uimtls[2] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)uimtls[2])->diffuse_r = 0.2f;
     ((NUMTL *)uimtls[2])->diffuse_g = 0.2f;
     ((NUMTL *)uimtls[2])->diffuse_b = 0.2f;
-    ((NUMTL *)uimtls[2])->attribs.cull_mode = 2;
-    ((NUMTL *)uimtls[2])->attribs.z_mode = 3;
+    ((NUMTL *)uimtls[2])->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((NUMTL *)uimtls[2])->attribs.z_mode = NUMTL_ZMODE_OFF;
     ((NUMTL *)uimtls[2])->opacity = 0.999f;
-    ((NUMTL *)uimtls[2])->attribs.alpha_mode = 2;
+    ((NUMTL *)uimtls[2])->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     NuMtlUpdate(((NUMTL *)uimtls[2]));
     uimtls[3] = (struct PC_SCENE_MTL_VIEW *)NuMtlCreate(1);
     ((NUMTL *)uimtls[3])->diffuse_r = 0.2f;
     ((NUMTL *)uimtls[3])->diffuse_g = 0.2f;
     ((NUMTL *)uimtls[3])->diffuse_b = 0.2f;
-    ((NUMTL *)uimtls[3])->attribs.cull_mode = 2;
-    ((NUMTL *)uimtls[3])->attribs.z_mode = 3;
+    ((NUMTL *)uimtls[3])->attribs.cull_mode = NUMTL_CULL_NONE;
+    ((NUMTL *)uimtls[3])->attribs.z_mode = NUMTL_ZMODE_OFF;
     ((NUMTL *)uimtls[3])->opacity = 0.999f;
-    ((NUMTL *)uimtls[3])->attribs.alpha_mode = 1;
+    ((NUMTL *)uimtls[3])->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(((NUMTL *)uimtls[3]));
 }
 

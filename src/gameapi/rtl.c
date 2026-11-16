@@ -3233,20 +3233,20 @@ void edrtlInit(void) {
     clipboard_light.type = 0;
     mtls[0] = NuMtlCreate3D(1);
     if (mtls[0] != NULL) {
-        mtls[0]->attribs.z_mode = 0;
-        mtls[0]->attribs.alpha_mode = 0;
+        mtls[0]->attribs.z_mode = NUMTL_ZMODE_NORMAL;
+        mtls[0]->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
         NuMtlUpdate(mtls[0]);
     }
     mtls[1] = NuMtlCreate3D(1);
     if (mtls[1] != NULL) {
-        mtls[1]->attribs.z_mode = 3;
-        mtls[1]->attribs.alpha_mode = 0;
+        mtls[1]->attribs.z_mode = NUMTL_ZMODE_OFF;
+        mtls[1]->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
         NuMtlUpdate(mtls[1]);
     }
     mtls[2] = NuMtlCreate3D(1);
     if (mtls[2] != NULL) {
-        mtls[2]->attribs.z_mode = 3;
-        mtls[2]->attribs.alpha_mode = 1;
+        mtls[2]->attribs.z_mode = NUMTL_ZMODE_OFF;
+        mtls[2]->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
         NuMtlUpdate(mtls[2]);
     }
     InitUI();
