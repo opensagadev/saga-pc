@@ -255,11 +255,11 @@ extern "C" {
         i32 *accumulators[2];    // 0x08
         NuTime *start_times;     // 0x10
         u32 *peak_times;         // 0x14
-        u32 *frame_peak_times;         // 0x18
+        u32 *frame_peak_times;   // 0x18
         i32 *colours;            // 0x1c
         i32 *toggle_flags;       // 0x20
         const char **slot_names; // 0x24
-        i32 visible;          // 0x28
+        i32 visible;             // 0x28
     } TimeBarSet;
 
     extern TimeBarSet *NuTimeBar_SetList[16];
@@ -1142,16 +1142,16 @@ typedef struct nurndrlibscene_s { // size 0x218
     f32 viewport_y;               // 0x018
     f32 calc_1c;                  // 0x01c
     f32 calc_20;                  // 0x020
-    u32 render_frame_flags;               // 0x024
-    u32 burnout_enabled;               // 0x028
+    u32 render_frame_flags;       // 0x024
+    u32 burnout_enabled;          // 0x028
     u8 burnout_intensity;         // 0x02c
     f32 burnout_flare;            // 0x030
     f32 burnout_threshold;        // 0x034
     i32 dyn_light_count;          // 0x038
     void *dyn_light_ptr;          // 0x03c
-    i32 light_render_set;               // 0x040
+    i32 light_render_set;         // 0x040
     u8 opaque_44_48[0x4];         // 0x044
-    u32 deferred_shading_enabled;               // 0x048
+    u32 deferred_shading_enabled; // 0x048
 
     union { // size 0xc
 
@@ -1166,7 +1166,7 @@ typedef struct nurndrlibscene_s { // size 0x218
     union { // size 0x54
 
         struct {                   // size 0x54
-            u32 bloom_enabled;        // 0x058
+            u32 bloom_enabled;     // 0x058
             u8 opaque_5c_ac[0x50]; // 0x05c
         };
 
@@ -1499,6 +1499,7 @@ extern "C" {
     void NuMtlAnimateSetMask(i32 mask);
     void NuMtlAnimateSetSpeedScale(f32 scale);
     void SetSpotLightMode(void);
+
     typedef struct screengrab_tile_params_s { // size 0x6
         i8 channels[4];                       // 0x0
         u16 width;                            // 0x4
@@ -1511,7 +1512,7 @@ extern "C" {
 #ifdef __cplusplus
     void PCSpecialEmptyHandler(...);
 #else
-    void PCSpecialEmptyHandler();
+void PCSpecialEmptyHandler();
 #endif
 #ifdef __cplusplus
 }

@@ -26,14 +26,14 @@ typedef struct SoundVoiceSlotPC { // size 0x34
     u32 is_spatial;               // 0x0c
     i32 sample_id;                // 0x10
     i32 sound_key;                // 0x14
-    u8 fading;                // 0x18
-    u8 hold_expired;                // 0x19
+    u8 fading;                    // 0x18
+    u8 hold_expired;              // 0x19
     u8 unknown_1a[2];             // 0x1a
     f32 fade_start;               // 0x1c
-    f32 fade_end;               // 0x20
+    f32 fade_end;                 // 0x20
     i32 volume_index;             // 0x24
-    i32 start_clock;               // 0x28
-    i32 hold_time;               // 0x2c
+    i32 start_clock;              // 0x28
+    i32 hold_time;                // 0x2c
     i32 parameter;                // 0x30
 } SoundVoiceSlotPC;
 
@@ -326,7 +326,7 @@ struct SoundQueue {                  // size 0x400
     i32 buffer_seconds;              // 0x058
 struct SoundQueue {                    // size 0x400
     i32 active;                        // 0x000
-    u32 decoder_state;                  // 0x004
+    u32 decoder_state;                 // 0x004
     i32 stream_state;                  // 0x008
     i32 stream_flags;                  // 0x00c
     i32 requested_volume;              // 0x010

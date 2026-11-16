@@ -96,8 +96,8 @@ template <> NuShaderObject *PC_SHADER_MANAGER_VIEW::FindShader(const u32 *key) {
 }
 
 template <>
-NuShaderObject *PC_SHADER_MANAGER_VIEW::Retrieve(const NUSHADERMTLDESC *desc, const NUMTL *material,
-                                                 i32 variant, i32 flags, bool pixel_stage) {
+NuShaderObject *PC_SHADER_MANAGER_VIEW::Retrieve(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 variant, i32 flags,
+                                                 bool pixel_stage) {
     PC_SHADER_MATERIAL_FILTER_VIEW filter;
     u32 key;
     NuShaderObject *shader;
@@ -128,13 +128,11 @@ extern "C" {
     PC_SHADER_SLOT_VIEW *PCShaderSlots = 0;
 }
 
-extern "C" NuShaderObject *NuShaderManagerRetrieveShader(const NUSHADERMTLDESC *desc,
-                                                         const NUMTL *material) {
+extern "C" NuShaderObject *NuShaderManagerRetrieveShader(const NUSHADERMTLDESC *desc, const NUMTL *material) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, 0, 0, false);
 }
 
-extern "C" NuShaderObject *NuShaderManagerRetrieveShaderVariant(const NUSHADERMTLDESC *desc,
-                                                                const NUMTL *material, i32 variant) {
+extern "C" NuShaderObject *NuShaderManagerRetrieveShaderVariant(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 variant) {
     return reinterpret_cast<PC_SHADER_MANAGER_VIEW *>(PCShaderSlots)->Retrieve(desc, material, variant, 0, false);
 }
 

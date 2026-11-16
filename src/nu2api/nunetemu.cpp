@@ -11,7 +11,6 @@
 
 /* Network condition emulator. */
 
-
 NuNetEmu theNuNetEmu;
 
 NuNetEmu::PackStats::PackStats(const char *name) : NetStats(name) {

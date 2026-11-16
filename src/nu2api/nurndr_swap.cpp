@@ -159,7 +159,8 @@ extern "C" i32 NuRndrSwapScreen(i32 mode) {
             PCDeviceResetSamplerDefaults();
         }
         if (scene->backbuffer_copy_texture != 0) {
-            FRAME_NATIVE_TEXTURE *texture = reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions(scene->backbuffer_copy_texture));
+            FRAME_NATIVE_TEXTURE *texture =
+                reinterpret_cast<FRAME_NATIVE_TEXTURE *>(NuTextureGetDimensions(scene->backbuffer_copy_texture));
             i32 index = (i32)((u32)texture - (u32)&FrameNativeTexturePool.records[0]) / (i32)sizeof(FRAME_NATIVE_TEXTURE);
             if ((u32)index <= 15u) {
                 GRAPHICS_RENDER_TEXTURE *render_texture = texture->render_texture;

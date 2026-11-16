@@ -16,7 +16,6 @@
 #undef _ov_header_fseek_wrap
 #include "nu2api/oggreader.h"
 
-
 extern "C" {
     struct PC_OGG_CACHE_RECORD *PCOggCachePool = 0;
     i32 PCOggCriticalSection = 0;

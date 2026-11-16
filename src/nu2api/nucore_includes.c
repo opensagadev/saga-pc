@@ -182,7 +182,6 @@ f32 FrameStartupDelay = 6.0f;
 
 extern void FmvPlatformUpdate(void);
 
-
 static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);
 static PC_FILEPAKITEM *GetItems(PC_FILEPAKHDR_V0 *header);
@@ -8758,7 +8757,6 @@ void NuVideoSetBrightness(f32 brightness) {
     nuapi.video_brightness = brightness;
     NuVideoSetBrightnessPS();
 }
-
 
 i32 NuOnlineAchievementAchieved(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     return NuOnlineAchievementAchievedPS(achievement, callback);

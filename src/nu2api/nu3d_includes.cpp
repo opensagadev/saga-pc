@@ -234,7 +234,6 @@ extern "C" {
         void *animation;                   // 0x8
     } NuAnimData2FileHeader;
 
-
     typedef struct ANIMATION_PACK_HEADER { // size 0x8
         u32 first_word;                    // 0x0
         i32 format_tag;                    // 0x4
@@ -8083,7 +8082,6 @@ extern "C" {
         RenderPostViewportReset();
     }
 
-
     static i32 dump_state = -1;
 
     i32 NuRndrHighResScreenGrab(char *prefix, f32 scale, f32 a, f32 b, f32 c, i32 number) {
@@ -8771,7 +8769,8 @@ extern "C" {
             timebar->start_times =
                 (NuTime *)NuAlloc(slot_count * sizeof(NuTime), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf7);
             timebar->peak_times = (u32 *)NuAlloc(slot_count * sizeof(u32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf8);
-            timebar->frame_peak_times = (u32 *)NuAlloc(slot_count * sizeof(u32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf9);
+            timebar->frame_peak_times =
+                (u32 *)NuAlloc(slot_count * sizeof(u32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xf9);
             timebar->colours = (i32 *)NuAlloc(slot_count * sizeof(u32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xfa);
             timebar->toggle_flags =
                 (i32 *)NuAlloc(slot_count * sizeof(u32), "d:\\projects\\game_saga\\nu2api.saga\\nu3d\\nutimebar.c", 0xfb);
@@ -9492,8 +9491,7 @@ extern "C" {
                 link = PCMaterialLinkItemIndex;
                 for (i = 0; i < count; ++i) {
                     NUDISPLAYLISTITEM *previous =
-                        (scene->display_materials[scene->sort_pris[sort_index].mtl_first + i])
-                            ->display_list->mtl_item;
+                        (scene->display_materials[scene->sort_pris[sort_index].mtl_first + i])->display_list->mtl_item;
                     if (previous[link].next == items) {
                         previous[link].next = items[link].next;
                         goto unlink;
@@ -9742,8 +9740,7 @@ extern "C" {
                         list->dynamic_geometry->next = list->dynamic_geometry + 1;
                     }
                     RndrStateUpdate(&state, (NUMTL *)material, list->mtl_item);
-                    if ((u8)(scene->render_flags >> 5) != 0 &&
-                        ((u8)(scene->render_flags >> 5) & (u8)(material->attribs2 >> 14)) != 0) {
+                    if ((u8)(scene->render_flags >> 5) != 0 && ((u8)(scene->render_flags >> 5) & (u8)(material->attribs2 >> 14)) != 0) {
                         list->mtl_item->id = NUDLISTITEM_JUMP;
                         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] &=
                             (u8) ~(1u << (list->material_id % 8));
@@ -14875,7 +14872,7 @@ extern "C" {
 
     typedef struct visibility_extent_scratch_s { // size 0x10
         NUVEC xyz;                               // 0x0
-        f32 w;                           // 0xc
+        f32 w;                                   // 0xc
     } VISIBILITY_EXTENT_SCRATCH;
 
     // noinline: the original calls VisibilityAbsoluteFour out of line from NuCameraBuildClipPlanes; VC8 would inline

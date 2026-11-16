@@ -41,8 +41,6 @@
 #include "nu2api/save_folder.h"
 #include "gameframework/saveload.h"
 
-
-
 extern "C" {
     const char *NuHwSoundDfsName = "";
     const char *NuHwDfsName = "";

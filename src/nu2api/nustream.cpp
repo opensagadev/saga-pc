@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include "nu2api/nu3d/nushaderobject.h"
 
-
 extern "C" void NuSound3GetStreamInfo(i32 stream_index, void *info) {
 }
 

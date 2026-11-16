@@ -733,7 +733,6 @@ void NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
     NuPrim3DEnd();
 }
 
-
 i32 NuRndrLine3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix) {
     NuPrim3DBegin(14, 7, material, matrix);
     {

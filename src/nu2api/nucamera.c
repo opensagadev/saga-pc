@@ -326,7 +326,6 @@ rejected:
     return 1;
 }
 
-
 void NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     global_camera = *camera;
     FaceYDirStream(NuAtan2D(-global_camera.mtx.m20, -global_camera.mtx.m22));

@@ -8,7 +8,8 @@
 #include "nu2api/numath/nuvec4.h"
 
 // Closes the open scan group: writes its shape count and group index into the header slot and opens the next one.
-static __forceinline void TerrainFinishScanGroup(u8 *&group_header, TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 group_index) {
+static __forceinline void TerrainFinishScanGroup(u8 *&group_header, TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count,
+                                                 i32 group_index) {
     if (group_shape_count != 0) {
         i16 *header = reinterpret_cast<i16 *>(group_header);
         header[0] = static_cast<i16>(group_shape_count);
@@ -22,8 +23,8 @@ static __forceinline void TerrainFinishScanGroup(u8 *&group_header, TERRAIN_POLY
 // The unit normal of a shape with its y stretched by the object scale.
 static __forceinline void TerrainScaleNormal(NUVEC &out, const NUVEC &normal) {
     TerrainQuery_s *query = TerI;
-    const f32 inverse_length = TerrainDivideNonzeroPC(
-        1.0f, NuFsqrt(normal.x * normal.x + normal.y * normal.y * query->object_scale_sq + normal.z * normal.z));
+    const f32 inverse_length =
+        TerrainDivideNonzeroPC(1.0f, NuFsqrt(normal.x * normal.x + normal.y * normal.y * query->object_scale_sq + normal.z * normal.z));
     query = TerI;
     out.x = normal.x * inverse_length;
     out.y = query->object_scale * normal.y * inverse_length;
@@ -32,7 +33,7 @@ static __forceinline void TerrainScaleNormal(NUVEC &out, const NUVEC &normal) {
 
 // Appends a candidate shape to the scan list; under a non-unit object scale it appends a scaled copy from ScaleTerrain.
 static __forceinline void TerrainStoreScanShape(TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 &scaled_shape_count,
-                                  TERRAIN_POLYGON_INFO *source, const TERRAIN_GROUP &group) {
+                                                TERRAIN_POLYGON_INFO *source, const TERRAIN_GROUP &group) {
     TerrainQuery_s *query = TerI;
     if (query->object_scale == 1.0f) {
         *cursor++ = source;

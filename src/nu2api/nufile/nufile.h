@@ -43,7 +43,7 @@ struct nudathdr_s {                  // size 0xc0
     NUDATOPENFILEINFO open_files[8]; // 0x30
     i16 unknown_b0;                  // 0xb0
     i16 mode;                        // 0xb2
-    i32 start_lsn;                  // 0xb4
+    i32 start_lsn;                   // 0xb4
     char *name;                      // 0xb8
 };
 

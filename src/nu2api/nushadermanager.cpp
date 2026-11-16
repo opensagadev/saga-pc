@@ -18,8 +18,7 @@
 template <> bool PC_SHADER_MANAGER_VIEW::CreateShader(const PC_SHADER_MATERIAL_FILTER_VIEW *, bool, NuShaderObject *, i32);
 template <> void PC_SHADER_MANAGER_VIEW::AdaptDescriptor(const NUSHADERMTLDESC *, const NUMTL *);
 
-void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const NUSHADERMTLDESC *desc, const NUMTL *mtl,
-                                                i32 input_flags, i32 input_parameter) {
+void PC_SHADER_MATERIAL_FILTER_VIEW::Initialize(const NUSHADERMTLDESC *desc, const NUMTL *mtl, i32 input_flags, i32 input_parameter) {
     descriptor = desc;
     material = mtl;
     flags = input_flags;

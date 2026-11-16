@@ -6,7 +6,6 @@
 #include "nu2api/nu3d/nushaderobject.h"
 #include "nu2api/nu3d/nushaderobjectbase.h"
 
-
 /* NUSHADERMTLDESC.layer_flags, named after the shader definitions each bit selects when the shader source
  * is built (shader_compiler.cpp) and the filter's Has* tests (nushadermanager.cpp). */
 #define PC_SHADER_LAYER_NORMAL_MAP 0x1             /* SURFACE_NORMAL_MAP */
@@ -139,7 +138,6 @@
 #define SHADER_UNIFORM_TEX_ANIM_CURVES_SAMPLER 98
 #define SHADER_UNIFORM_SHADOW_CASTING_OBJECT 99
 
-
 #ifdef __cplusplus
 struct PC_SHADER_MATERIAL_FILTER_VIEW {
     const NUSHADERMTLDESC *descriptor;
@@ -157,8 +155,7 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
 
     PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *descriptor, i32 flags, i32 parameter);
 
-    PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags,
-                                   i32 variant);
+    PC_SHADER_MATERIAL_FILTER_VIEW(const NUSHADERMTLDESC *desc, const NUMTL *material, i32 flags, i32 variant);
     void Initialize(const NUSHADERMTLDESC *, const NUMTL *, i32, i32);
     bool UnfilteredHasLayer(i32) const;
     bool HasDiffuse(i32) const;
