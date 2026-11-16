@@ -227,6 +227,13 @@ and prints one line:
 proof: PASS; functions 13513->13513 (+0 -0); data 15111->15111 (+0 -0); file data 972838->972838 bytes; bss ...; 47 s
 ```
 
+`--smoke` (or `SAGA_SMOKE=1`) adds `tools/smoke.py`: the
+Debug build starts under Wine with `-NoFocus_Process` from `build/smoke/` (links
+to the game data in `SAGA_GAME_DATA` or `res/`, so saves stay there) and must
+load the title level and render a frame with no fault record in its log before
+the timeout (300 s); without game data, a display or Wine, and under CI, it
+skips.
+
 Losses are listed by address; a loss of a function named in
 [docs/fragile-flips.md](docs/fragile-flips.md) is counted as a fragile flip, not
 a regression. Logs are in `build/proof/`. Tools that load libclang translation units (the scans, clang-tidy) use 4

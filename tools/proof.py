@@ -13,6 +13,8 @@ Steps, each timed:
             tools/check.py (it reads the report)
   sse_align tools/sse_align.py: globals of aligned SSE instructions are 16-aligned and declared so (also
             with --no-checks)
+  smoke     only with --smoke or SAGA_SMOKE=1: tools/smoke.py starts the Debug build under Wine and checks
+            that it reaches the title screen without a fault (skips without game data, a display or under CI)
 
 The verdict compares matching.json with the committed one (HEAD): exact functions and data
 gained and lost by address, losses of functions listed in docs/fragile-flips.md counted apart, and
@@ -258,6 +260,8 @@ def main(argv=None):
     parser.add_argument("--jobs", type=int, default=min(12, os.cpu_count() or 4), help="compiler jobs (default 12)")
     parser.add_argument("--no-checks", action="store_true",
                         help="build, identity and match only (scans and tests ran before with --checks-only)")
+    parser.add_argument("--smoke", action="store_true",
+                        help="also run the Debug title-screen smoke test (tools/smoke.py; SAGA_SMOKE=1 does the same)")
     parser.add_argument("--checks-only", action="store_true",
                         help="scans and tool tests only, without build or match (no lock on the shared base needed)")
     args = parser.parse_args(argv)
@@ -332,6 +336,12 @@ def main(argv=None):
                stderr=subprocess.STDOUT):
             failures.append("sse_align")
             print("sse_align failed: see build/proof/sse_align.log")
+        # Opt-in: it opens a game window and needs the retail data; it skips itself without them and under CI.
+        if args.smoke or os.environ.get("SAGA_SMOKE") == "1":
+            if run("smoke", [sys.executable, "tools/smoke.py"], timings, stdout=open(logs / "smoke.log", "w"),
+                   stderr=subprocess.STDOUT):
+                failures.append("smoke")
+                print("smoke failed: see build/proof/smoke.log")
         for watcher in watchers:
             watcher.join()
         for name, seconds, code in results:
