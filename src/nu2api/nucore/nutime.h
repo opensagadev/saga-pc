@@ -22,3 +22,13 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
+    if ((now).low >= (start).low) {                                                                                                        \
+        (elapsed).low = (now).low - (start).low;                                                                                           \
+        (elapsed).high = (now).high - (start).high;                                                                                        \
+    } else {                                                                                                                               \
+        (elapsed).high = (now).high - (start).high;                                                                                        \
+        (elapsed).low = (now).low - (start).low;                                                                                           \
+        (elapsed).high -= 1;                                                                                                               \
+    }

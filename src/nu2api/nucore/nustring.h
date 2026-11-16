@@ -75,3 +75,12 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#define NU_WIDE_LENGTH(text, length)                                                                                                       \
+    do {                                                                                                                                   \
+        const u16 *nu_cursor = (const u16 *)(text);                                                                                        \
+        (length) = 0;                                                                                                                      \
+        while (*nu_cursor++ != 0) {                                                                                                        \
+            ++(length);                                                                                                                    \
+        }                                                                                                                                  \
+    } while (0)

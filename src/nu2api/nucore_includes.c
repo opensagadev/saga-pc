@@ -92,17 +92,6 @@ struct NUPPHEADER {    // size 0xc
     u32 packed_size;   // 0x8
 };
 
-#define NUPP_SWAP32(value) (((value) >> 24) | (((value) & 0x00ff0000) >> 8) | (((value) & 0x0000ff00) << 8) | ((value) << 24))
-
-#define NU_WIDE_LENGTH(text, length)                                                                                                       \
-    do {                                                                                                                                   \
-        const u16 *nu_cursor = (const u16 *)(text);                                                                                        \
-        (length) = 0;                                                                                                                      \
-        while (*nu_cursor++ != 0) {                                                                                                        \
-            ++(length);                                                                                                                    \
-        }                                                                                                                                  \
-    } while (0)
-
 static i32 old_line_pos;
 static i32 fpk_err;
 static i32 file_time_count;
@@ -111,11 +100,6 @@ i32 nufile_try_packed = 0;
 i32 datsys_offset = 0;
 i32 NuFile_SwapEndianOnWrite = 0;
 i32 nufile_lasterror = 0;
-
-#define CLAMP_LINE(position) ((position) & (parser->line_buffer_size - 1))
-#define CLAMP_WORD(position) ((position) & (parser->word_buffer_size - 1))
-#define CLAMP_WIDE_LINE(position) ((position) & ((parser->line_buffer_size >> 1) - 1))
-#define CLAMP_WIDE_WORD(position) ((position) & ((parser->word_buffer_size >> 1) - 1))
 
 typedef struct nurdpfcontext_s {               // size 0x14
     i32 token;                                 // 0x00
@@ -164,14 +148,6 @@ enum {
 
 static i32 NuRDPIExpression(NURDPICTX *context);
 
-/* PC manager prefix and block header touched by the allocator. */
-
-#define NUGENERICPAD FRAME_SCANNED_PAD
-#define ANALOG_CENTER 0x80
-#define NUPAD_PLAY 2
-#define NUPAD_RECORD 1
-#define NUPAD_NORM 0
-
 typedef struct FRAME_PAD_RAMP {
     f32 threshold;
     f32 value;
@@ -196,27 +172,6 @@ static i32 inlen = 0;
 
 static unsigned char ImplodeRingBuffer[0x2000] = {0};
 
-#define SELECT(dst, table, shift, count, initial_mask, len)                                                                                \
-    do {                                                                                                                                   \
-        (dst) = (table)[implode_bitbuf >> shift];                                                                                          \
-                                                                                                                                           \
-        if ((dst) > (count)) {                                                                                                             \
-            u32 mask = (initial_mask);                                                                                                     \
-                                                                                                                                           \
-            do {                                                                                                                           \
-                if ((implode_bitbuf & mask) != 0) {                                                                                        \
-                    (dst) = implode_right[(dst)];                                                                                          \
-                } else {                                                                                                                   \
-                    (dst) = implode_left[(dst)];                                                                                           \
-                }                                                                                                                          \
-                                                                                                                                           \
-                mask >>= 1;                                                                                                                \
-            } while ((dst) > (count));                                                                                                     \
-        }                                                                                                                                  \
-                                                                                                                                           \
-        ImplodeFillBuf((len)[(dst)]);                                                                                                      \
-    } while (0)
-
 static u32 blocksize = 0;
 FILEBUFF file_buff[4] = {0};
 
@@ -237,16 +192,6 @@ f32 FrameStartupDelay = 6.0f;
 extern f32 NuFrameAccumulatedTime;
 extern const char *GetPCStartupMessage(void);
 extern void FmvPlatformUpdate(void);
-
-#define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
-    if ((now).low >= (start).low) {                                                                                                        \
-        (elapsed).low = (now).low - (start).low;                                                                                           \
-        (elapsed).high = (now).high - (start).high;                                                                                        \
-    } else {                                                                                                                               \
-        (elapsed).high = (now).high - (start).high;                                                                                        \
-        (elapsed).low = (now).low - (start).low;                                                                                           \
-        (elapsed).high -= 1;                                                                                                               \
-    }
 
 typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
 
@@ -2952,7 +2897,7 @@ i32 NuFParGetLineW(NUFPAR *parser) {
             case '"':
                 in_quoted_text = 1 - in_quoted_text;
                 is_done = 1;
-                line[CLAMP_WIDE_WORD(len)] = c;
+                line[(len & ((parser->word_buffer_size >> 1) - 1))] = c;
                 len++;
                 break;
             case ';':
@@ -3002,7 +2947,7 @@ i32 NuFParGetLineW(NUFPAR *parser) {
                 is_done = 1;
             case '\t':
             case ' ':
-                line[CLAMP_WIDE_WORD(len)] = c;
+                line[(len & ((parser->word_buffer_size >> 1) - 1))] = c;
                 len++;
                 break;
         }
@@ -3045,7 +2990,7 @@ i32 NuFParGetLine(NUFPAR *parser) {
             case '"':
                 in_quoted_text = 1 - in_quoted_text;
                 is_done = 1;
-                parser->line_buffer_ptr[CLAMP_LINE(len)] = c;
+                parser->line_buffer_ptr[(len & (parser->line_buffer_size - 1))] = c;
                 len++;
                 break;
             case ';':
@@ -3095,7 +3040,7 @@ i32 NuFParGetLine(NUFPAR *parser) {
                 is_done = 1;
             case '\t':
             case ' ':
-                parser->line_buffer_ptr[CLAMP_LINE(len)] = c;
+                parser->line_buffer_ptr[(len & (parser->line_buffer_size - 1))] = c;
                 len++;
                 break;
         }
@@ -7451,8 +7396,11 @@ i32 NuPPLoadBuffer(NUFILE file, void *buf, i32 buf_size) {
         }
     } while (loaded < 0);
     if (header.magic == 0x02434e52) {
-        header.unpacked_size = NUPP_SWAP32(header.unpacked_size);
-        header.packed_size = NUPP_SWAP32(header.packed_size) + 18;
+        header.unpacked_size = ((header.unpacked_size >> 24) | ((header.unpacked_size & 0x00ff0000) >> 8) |
+                                ((header.unpacked_size & 0x0000ff00) << 8) | (header.unpacked_size << 24));
+        header.packed_size = ((header.packed_size >> 24) | ((header.packed_size & 0x00ff0000) >> 8) |
+                              ((header.packed_size & 0x0000ff00) << 8) | (header.packed_size << 24)) +
+                             18;
         source = buf;
         source += header.unpacked_size + 256;
         source -= header.packed_size;
@@ -8099,7 +8047,7 @@ static f32 CalcRamp(f32 ramp) {
     return FramePadRampValues[i].value;
 }
 
-void NuPadProcessReadData(NUGENERICPAD *pad) {
+void NuPadProcessReadData(FRAME_SCANNED_PAD *pad) {
     f32 ramp_rate_normal;
 
     pad->digital_buttons_pressed = (pad->digital_buttons ^ pad->digital_buttons_prev) & pad->digital_buttons;
@@ -8584,7 +8532,7 @@ void NuPadSetStatus(i32 pad, i32 status) {
     g_nupadMapping[pad].is_active = status;
 }
 
-void NuPadRecordPlay(NUGENERICPAD *pad) {
+void NuPadRecordPlay(FRAME_SCANNED_PAD *pad) {
     FRAME_RECORD_CURSOR *record_ptr;
 
     if (pad->is_valid && nuapi.pad_record.mode == NUPAD_PLAY && (pad->digital_buttons & nuapi.pad_record.end_play_buttons) != 0) {
@@ -9219,7 +9167,19 @@ static void ImplodeReadLiteralLengthsPrivate() {
 
     i = 0;
     while (i < n) {
-        SELECT(value, ImplodeOffsetTable, 0x18, 0x12, 0x800000, ImplodeOffsetLengths);
+        value = ImplodeOffsetTable[implode_bitbuf >> 0x18];
+        if (value > 0x12) {
+            u32 mask = 0x800000;
+            do {
+                if ((implode_bitbuf & mask) != 0) {
+                    value = implode_right[value];
+                } else {
+                    value = implode_left[value];
+                }
+                mask >>= 1;
+            } while (value > 0x12);
+        }
+        ImplodeFillBuf(ImplodeOffsetLengths[value]);
 
         if (value <= 2) {
             if (value == 0) {
@@ -9321,7 +9281,19 @@ u32 ImplodeDecodeC() {
 
     blocksize--;
 
-    SELECT(value, ImplodeLiteralTable, 0x14, sizeof(ImplodeLiteralLengths) - 1, 0x80000, ImplodeLiteralLengths);
+    value = ImplodeLiteralTable[implode_bitbuf >> 0x14];
+    if (value > (sizeof(ImplodeLiteralLengths) - 1)) {
+        u32 mask = 0x80000;
+        do {
+            if ((implode_bitbuf & mask) != 0) {
+                value = implode_right[value];
+            } else {
+                value = implode_left[value];
+            }
+            mask >>= 1;
+        } while (value > (sizeof(ImplodeLiteralLengths) - 1));
+    }
+    ImplodeFillBuf(ImplodeLiteralLengths[value]);
 
     return value;
 }
@@ -9329,7 +9301,19 @@ u32 ImplodeDecodeC() {
 u32 ImplodeDecodeOffset() {
     u32 offset;
 
-    SELECT(offset, ImplodeOffsetTable, 0x18, 0xd, 0x800000, ImplodeOffsetLengths);
+    offset = ImplodeOffsetTable[implode_bitbuf >> 0x18];
+    if (offset > 0xd) {
+        u32 mask = 0x800000;
+        do {
+            if ((implode_bitbuf & mask) != 0) {
+                offset = implode_right[offset];
+            } else {
+                offset = implode_left[offset];
+            }
+            mask >>= 1;
+        } while (offset > 0xd);
+    }
+    ImplodeFillBuf(ImplodeOffsetLengths[offset]);
 
     if (offset != 0) {
         offset = (1u << (offset - 1)) + ImplodeGetBits(offset - 1);

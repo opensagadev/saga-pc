@@ -46,6 +46,8 @@ extern "C" {
 }
 #endif
 
-enum { NUPAD_PLAY = 2 };
+/* FRAME_PAD_RECORD.mode: pads read live, recorded to the buffer, or played back from it. */
+typedef enum NUPAD_RECORD_MODE { NUPAD_NORM = 0, NUPAD_RECORD = 1, NUPAD_PLAY = 2 } NUPAD_RECORD_MODE;
 
-enum { NUPAD_RECORD = 1 };
+/* Resting value of an analog stick axis byte. */
+#define ANALOG_CENTER 0x80
