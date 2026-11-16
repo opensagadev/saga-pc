@@ -8553,7 +8553,7 @@ address,symbol,size,ctype
 0x5f9fa0,_NuHGobjSubmitShadowGroups,187,"void __cdecl(NUHGOBJ_EVAL *,NUMTX *,NUMTX *)"
 0x5fa060,_fun_005fa060,28,
 0x5fa080,_fun_005fa080,28,
-0x005fa0a0,?PCDisplayHandlerBindPrograms@@YAXPAUPC_DL_SHADER_PROGRAM_PAIR@@@Z,98,
+0x005fa0a0,?PCDisplayHandlerBindPrograms@@YAXPAUPOST_SHADER_PROGRAM@@@Z,98,
 0x5fa110,_fun_005fa110,13,
 0x5fa120,_fun_005fa120,19,
 0x5fa140,_fun_005fa140,33,
@@ -42501,11 +42501,11 @@ address,symbol,size,ctype
 0x02854d3c,_NuPrimCSPos,4,i32
 0x02854d40,_NuPrimXBias,4,f32
 0x02854d44,_NuPrimYBias,4,f32
-0x2854d48,_NuDisplayMaterialDebrisPrograms,4,struct PC_DL_SHADER_PROGRAM_PAIR *
-0x2854d4c,_NuDisplayMaterialGlassPrograms,4,struct PC_DL_SHADER_PROGRAM_PAIR *
-0x2854d50,_NuDisplayMaterialFaceOnDecalPrograms,4,struct PC_DL_SHADER_PROGRAM_PAIR *
-0x2854d54,_NuDisplayMaterialFaceOnPrograms,4,struct PC_DL_SHADER_PROGRAM_PAIR *
-0x2854d58,_NuDisplayMaterialDefaultPrograms,4,struct PC_DL_SHADER_PROGRAM_PAIR *
+0x2854d48,_NuDisplayMaterialDebrisPrograms,4,struct POST_SHADER_PROGRAM *
+0x2854d4c,_NuDisplayMaterialGlassPrograms,4,struct POST_SHADER_PROGRAM *
+0x2854d50,_NuDisplayMaterialFaceOnDecalPrograms,4,struct POST_SHADER_PROGRAM *
+0x2854d54,_NuDisplayMaterialFaceOnPrograms,4,struct POST_SHADER_PROGRAM *
+0x2854d58,_NuDisplayMaterialDefaultPrograms,4,struct POST_SHADER_PROGRAM *
 0x2854d5c,_NuDisplayMaterialDebrisDeclaration,4,PC_TEXTURE_RESOURCE *
 0x2854d60,_NuDisplayMaterialFaceOnDeclaration,4,PC_TEXTURE_RESOURCE *
 0x2854d64,_NuDisplayMaterialDefaultDeclaration,4,PC_TEXTURE_RESOURCE *

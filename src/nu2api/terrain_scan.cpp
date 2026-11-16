@@ -8,7 +8,7 @@
 #include "nu2api/numath/nuvec4.h"
 
 // Closes the open scan group: writes its shape count and group index into the header slot and opens the next one.
-static void TerrainFinishScanGroup(u8 *&group_header, TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 group_index) {
+static __forceinline void TerrainFinishScanGroup(u8 *&group_header, TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 group_index) {
     if (group_shape_count != 0) {
         i16 *header = reinterpret_cast<i16 *>(group_header);
         header[0] = static_cast<i16>(group_shape_count);
@@ -20,7 +20,7 @@ static void TerrainFinishScanGroup(u8 *&group_header, TERRAIN_POLYGON_INFO **&cu
 }
 
 // The unit normal of a shape with its y stretched by the object scale.
-static void TerrainScaleNormal(NUVEC &out, const NUVEC &normal) {
+static __forceinline void TerrainScaleNormal(NUVEC &out, const NUVEC &normal) {
     TerrainQuery_s *query = TerI;
     const f32 inverse_length = TerrainDivideNonzeroPC(
         1.0f, NuFsqrt(normal.x * normal.x + normal.y * normal.y * query->object_scale_sq + normal.z * normal.z));
@@ -31,7 +31,7 @@ static void TerrainScaleNormal(NUVEC &out, const NUVEC &normal) {
 }
 
 // Appends a candidate shape to the scan list; under a non-unit object scale it appends a scaled copy from ScaleTerrain.
-static void TerrainStoreScanShape(TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 &scaled_shape_count,
+static __forceinline void TerrainStoreScanShape(TERRAIN_POLYGON_INFO **&cursor, i32 &group_shape_count, i32 &scaled_shape_count,
                                   TERRAIN_POLYGON_INFO *source, const TERRAIN_GROUP &group) {
     TerrainQuery_s *query = TerI;
     if (query->object_scale == 1.0f) {
@@ -65,7 +65,7 @@ static void TerrainStoreScanShape(TERRAIN_POLYGON_INFO **&cursor, i32 &group_sha
 
 // The scan box around the query's sweep; returns the scan radius. Scan result 1 boxes the swept segment, the others a
 // sphere around the start position.
-static f32 TerrainComputeScanBounds(f32 &min_x, f32 &min_y, f32 &min_z, f32 &max_x, f32 &max_y, f32 &max_z) {
+static __forceinline f32 TerrainComputeScanBounds(f32 &min_x, f32 &min_y, f32 &min_z, f32 &max_x, f32 &max_y, f32 &max_z) {
     TerrainQuery_s *query = TerI;
     f32 scan_radius;
     if (query->scan_result != 1) {

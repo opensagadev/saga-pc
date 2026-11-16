@@ -3,8 +3,6 @@
 #include "nu2api/nualloc.h"
 #include "nu2api/nucore/common.h"
 #include "nu2api/wavreader.h"
-/* Units define _ov_header_fseek_wrap before their first vorbisfile.h include (see nustream.cpp). */
-#include "vorbis/vorbisfile.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,7 +14,9 @@ extern "C" {
 }
 #endif
 
-#ifdef __cplusplus
+/* The reader needs OggVorbis_File: units include vorbis/vorbisfile.h first, with their own name for its static
+ * seek callback (see nustream.cpp). */
+#if defined(__cplusplus) && defined(_OV_FILE_H_)
 #pragma pack(push, 4)
 
 class OggReader : public WavReader { // size 0x338

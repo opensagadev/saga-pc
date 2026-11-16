@@ -2871,7 +2871,7 @@ void TerrDrawSitu(TERRAIN_POLYGON_INFO *terrain, NUVEC *situation) {
 }
 
 /* Debug lines between the a..b and c..d edges of a platform shape, at both edge ends (a == b fans from one corner). */
-static void TerrDrawEdgeLines(const NUVEC4 *points, i16 index, i32 a, i32 b, i32 c, i32 d, i32 colour) {
+static __forceinline void TerrDrawEdgeLines(const NUVEC4 *points, i16 index, i32 a, i32 b, i32 c, i32 d, i32 colour) {
     i32 i;
     for (i = 0; i <= 1; ++i) {
         f32 t = (f32)i;

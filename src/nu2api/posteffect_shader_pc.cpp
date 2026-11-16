@@ -4,7 +4,6 @@
 #include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
-#include "nu2api/posteffect_shader_tokens_pc.h"
 #include <vector>
 
 struct POST_VERTEX_SHADER_CACHE_ENTRY { // size 0x8

@@ -32,7 +32,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-struct PC_DL_SHADER_PROGRAM_PAIR;
+struct POST_SHADER_PROGRAM;
 #ifdef __cplusplus
 extern "C" {
 #endif

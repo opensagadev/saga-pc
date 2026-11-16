@@ -27,7 +27,7 @@ i32 PCVertexDeclarationCountPC = 0;
 PC_VERTEX_DECL_ENTRY PCVertexDeclarationCachePC[256] = {0};
 
 // Fills one vertex element of stream 0 at the given byte offset; returns the offset after it.
-static i32 PCVertexElementSet(PC_VERTEX_ELEMENT *element, i32 offset, u8 type, u8 usage, u8 usage_index, i32 byte_count) {
+static __forceinline i32 PCVertexElementSet(PC_VERTEX_ELEMENT *element, i32 offset, u8 type, u8 usage, u8 usage_index, i32 byte_count) {
     element->stream = 0;
     element->offset = (u16)offset;
     element->type = type;

@@ -262,15 +262,15 @@ struct PC_SHADER_MATERIAL_FILTER_VIEW {
 
     // Inline forms of the layer and type predicates (the shader key generator inlines these; the out-of-line ones
     // above reread the descriptor the same way).
-    u8 LayerBit(i32 bit) const {
+    __forceinline u8 LayerBit(i32 bit) const {
         return variant == 0 ? (u8)((descriptor->layer_flags >> bit) & 1) : (u8)0;
     }
 
-    bool IsPlainType() const {
+    __forceinline bool IsPlainType() const {
         return variant == 0 && (descriptor->flags & 0x80000000) && (descriptor->flags & 0x800000) == 0;
     }
 
-    bool IsAlternateType() const {
+    __forceinline bool IsAlternateType() const {
         return variant == 0 && (descriptor->flags & 0x80000000) && (descriptor->flags & 0x800000) != 0;
     }
 };

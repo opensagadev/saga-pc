@@ -7,6 +7,9 @@
 
 #ifdef __cplusplus
 
+/* RefPack decompressor (unref.cpp); returns the number of bytes written to destination. */
+i32 unref(u8 *source, u8 *destination);
+
 /* Network condition emulator (nunetemu, 0x610a50-0x611889): batches outgoing
  * payloads into packets, applies latency/loss and keeps statistics. */
 struct NuNetEmu {

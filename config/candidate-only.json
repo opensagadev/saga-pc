@@ -390,6 +390,86 @@
    "unit": "src/nu2api/input_runtime.cpp",
    "symbol": "?EndFrame@PC_INPUT_RUNTIME@@QAEXXZ",
    "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nucore_includes.c",
+   "symbol": "_NuPPGetBit",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nudebug_pc.cpp",
+   "symbol": "?DebugPoint@@YAXPAUPC_NATIVE_DEBUG_VERTEX@@MM@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nudebug_pc.cpp",
+   "symbol": "?DebugRect@@YAXPAUPC_NATIVE_DEBUG_VERTEX@@MMMM@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nudlist_material.cpp",
+   "symbol": "?PostBlurLowSetOffset@@YAXAAUPOST_BLUR_LOW_OFFSET@@MM@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nurndr.c",
+   "symbol": "_NuRndrPrimUV",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nushaderkey.cpp",
+   "symbol": "?IsAlternateType@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nushaderkey.cpp",
+   "symbol": "?IsPlainType@PC_SHADER_MATERIAL_FILTER_VIEW@@QBE_NXZ",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nushaderkey.cpp",
+   "symbol": "?LayerBit@PC_SHADER_MATERIAL_FILTER_VIEW@@QBEEH@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nuterrain.c",
+   "symbol": "_TerrDrawEdgeLines",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/nuvertexdecl.c",
+   "symbol": "_PCVertexElementSet",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?AppendNode@ShaderCompilerParser@@QAEXPAUShaderParserNode@@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/shader_parser.cpp",
+   "symbol": "?CopyToArena@ShaderCompilerParser@@QAEPADPBD@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/terrain_scan.cpp",
+   "symbol": "?TerrainComputeScanBounds@@YAMAAM00000@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/terrain_scan.cpp",
+   "symbol": "?TerrainFinishScanGroup@@YAXAAPAEAAPAPAUTERRAIN_POLYGON_INFO@@AAHH@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/terrain_scan.cpp",
+   "symbol": "?TerrainScaleNormal@@YAXAAUnuvec_s@@ABU1@@Z",
+   "kind": "function"
+  },
+  {
+   "unit": "src/nu2api/terrain_scan.cpp",
+   "symbol": "?TerrainStoreScanShape@@YAXAAPAPAUTERRAIN_POLYGON_INFO@@AAH1PAU1@ABUTERRAIN_GROUP@@@Z",
+   "kind": "function"
   }
  ]
 }

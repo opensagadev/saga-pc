@@ -8,7 +8,6 @@
 #include "nu2api/nucore/NuNetEmu.h"
 #include "nu2api/nucore/nucore_includes.h"
 #include "nu2api/numath/nurand.h"
-#include "nu2api/unref.h"
 
 /* Network condition emulator. */
 
