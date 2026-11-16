@@ -2038,10 +2038,10 @@ i32 edppSaveEffects(char *filename, u8 page) {
             EdFileWriteFloat(effecttypes[index].unknown_070[11]);
             EdFileWriteFloat(effecttypes[index].gravity);
             EdFileWriteFloat(effecttypes[index].particle_lifetime);
-            EdFileWriteShort(effecttypes[index].unknown_0a8);
-            EdFileWriteChar(effecttypes[index].unknown_0aa);
-            EdFileWriteChar(effecttypes[index].unknown_0ab);
-            EdFileWriteFloat(effecttypes[index].unknown_0ac);
+            EdFileWriteShort(effecttypes[index].texture_frames);
+            EdFileWriteChar(effecttypes[index].texture_rows);
+            EdFileWriteChar(effecttypes[index].frame_divisor);
+            EdFileWriteFloat(effecttypes[index].animation_rate.rate);
             EdFileWriteFloat(effecttypes[index].jib_x_frequency);
             EdFileWriteFloat(effecttypes[index].jib_x_amplitude);
             EdFileWriteFloat(effecttypes[index].jib_y_frequency);

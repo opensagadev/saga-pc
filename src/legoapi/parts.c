@@ -955,18 +955,6 @@ void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2
     }
 }
 
-typedef struct debris_animation_effect_s { // size 0xb0
-    u8 unknown_000[0xa8];                  // 0x00
-    i16 texture_frames;                    // 0xa8
-    i8 texture_rows;                       // 0xaa
-    i8 frame_divisor;                      // 0xab
-
-    union { // size 0x4
-        f32 rate;
-        u32 packed_rate;
-    } animation_rate; // 0xac
-} DEBRIS_ANIMATION_EFFECT;
-
 extern NUMTL *edpart_mtl;
 void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
                     i32 outer_y, i32 colour, NUMTL *material);
@@ -2732,15 +2720,12 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     NuMtlUpdate(DebMat[7]);
     DebMat[8] = CreateCopyMat(DebMat[0], 0, 6, 0, 1);
     for (i = 0; debtab[i] != NULL; ++i) {
-        if (((DEBRIS_ANIMATION_EFFECT *)debtab[i])->frame_divisor == 0) {
-            ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->frame_divisor = 1;
+        if (debtab[i]->frame_divisor == 0) {
+            debtab[i]->frame_divisor = 1;
         }
-        ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->animation_rate.rate =
-            (f32)((((DEBRIS_ANIMATION_EFFECT *)debtab[i])->texture_frames * 60) / ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->frame_divisor);
-        ((DEBRIS_ANIMATION_EFFECT *)debtab[i])->animation_rate.packed_rate =
-            (((DEBRIS_ANIMATION_EFFECT *)debtab[i])->animation_rate.packed_rate & 0xfffff800) +
-            (((u16)((DEBRIS_ANIMATION_EFFECT *)debtab[i])->texture_frames * (((DEBRIS_ANIMATION_EFFECT *)debtab[i])->texture_rows - 1)) &
-             0x3ff);
+        debtab[i]->animation_rate.rate = (f32)((debtab[i]->texture_frames * 60) / debtab[i]->frame_divisor);
+        debtab[i]->animation_rate.packed_rate = (debtab[i]->animation_rate.packed_rate & 0xfffff800) +
+                                                (((u16)debtab[i]->texture_frames * (debtab[i]->texture_rows - 1)) & 0x3ff);
         debtab[i]->alpha_keys[0].value /= debtab[i]->particle_lifetime;
         debtab[i]->texture_u0 += 524288.0;
         debtab[i]->texture_u1 += 524288.0;

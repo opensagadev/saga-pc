@@ -52,11 +52,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct {         // size 0x3c
-    u8 unknown_00[0x30]; // 0x00
-    NUVEC position;      // 0x30
-} FLOW_BLOWUP_POSITION;
-
 typedef struct {       // size 0x100
     u32 triggered[16]; // 0x00
     u32 enabled[16];   // 0x40
@@ -287,7 +282,7 @@ NUVEC *GizmoBlowup_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((FLOW_BLOWUP_POSITION *)gizmo->object)->position;
+    return &gizmo->blowup->position;
 }
 
 void *Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

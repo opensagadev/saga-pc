@@ -432,12 +432,6 @@ extern "C" i8 Area_CharIDInCurrentList(i32 character_id) {
     return -1;
 }
 
-typedef struct AREA_MISSION_READER { // size 0x30
-    u8 unknown_00[0x1f];             // 0x00
-    u8 character_count;              // 0x1f
-    i16 character_ids[8];            // 0x20
-} AREA_MISSION_READER;
-
 typedef struct AREA_MISSION_DATA_READER { // size 0x2
     i16 find_char;                        // 0x0
 } AREA_MISSION_DATA_READER;
@@ -519,22 +513,20 @@ extern "C" void Area_Configure(i32 area, i32 param, AREA_EXTRA_MODEL *models, i1
         AreaMusic = -1;
     }
 
-    if (Mission_Active(MissionSys) != NULL && ((AREA_MISSION_READER *)MissionSys)->character_count > 0) {
+    if (Mission_Active(MissionSys) != NULL && MissionSys->character_count > 0) {
         i16 mission_characters[48];
-        PCByteCopy(mission_characters, ((AREA_MISSION_READER *)MissionSys)->character_ids,
-                   ((AREA_MISSION_READER *)MissionSys)->character_count * sizeof(i16));
-        const u8 shuffle_count = ((AREA_MISSION_READER *)MissionSys)->character_count;
+        PCByteCopy(mission_characters, MissionSys->character_ids, MissionSys->character_count * sizeof(i16));
+        const u8 shuffle_count = MissionSys->character_count;
         if (shuffle_count > 2) {
             for (index = 0; index < shuffle_count * 3; ++index) {
-                const i32 first = qrand() / (0xffff / ((AREA_MISSION_READER *)MissionSys)->character_count + 1);
-                const i32 second = (qrand() / (0xffff / (((AREA_MISSION_READER *)MissionSys)->character_count - 1) + 1) + first) %
-                                   ((AREA_MISSION_READER *)MissionSys)->character_count;
+                const i32 first = qrand() / (0xffff / MissionSys->character_count + 1);
+                const i32 second = (qrand() / (0xffff / (MissionSys->character_count - 1) + 1) + first) % MissionSys->character_count;
                 const i16 held = mission_characters[first];
                 mission_characters[first] = mission_characters[second];
                 mission_characters[second] = held;
             }
         }
-        for (index = 0; index < ((AREA_MISSION_READER *)MissionSys)->character_count; ++index) {
+        for (index = 0; index < MissionSys->character_count; ++index) {
             if (Area_MissionModelCount < 0x30) {
                 Area_MissionModelList[Area_MissionModelCount].model_id = mission_characters[index];
                 Area_MissionModelList[Area_MissionModelCount].count = (i16)(1);

@@ -1233,12 +1233,6 @@ static i32 Bolt_HitPlatPrivate(BOLT *, u8 *);
 
 extern "C" i32 i_temp_xrot;
 
-typedef struct bolt_context_info_s { // size 0x10
-    const char *name;                // 0x0
-    i32 action;                      // 0x4
-    u64 flags;                       // 0x8
-} BOLT_CONTEXT_INFO;
-
 typedef struct BOLT_UPDATE_TYPE_s { // size 0xa4
     u8 unknown_000[0x98];           // 0x00
     nuhspecial_s shadow_special;    // 0x98
@@ -1999,12 +1993,11 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
     }
     NewRumble(object->player.pad->bound_pad, 0.5f, 0);
     if (((bolt->flags & BOLT_NO_DEFLECT) == 0 || deflect) &&
-        ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x4000000) != 0 ||
-         ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x8000000) != 0 &&
+        ((CInfo[object->player.character_context].flags & 0x4000000) != 0 ||
+         ((CInfo[object->player.character_context].flags & 0x8000000) != 0 &&
           (object->player.context_variant_flags & APIOBJECT_CONTEXT_INVULNERABLE) != 0) ||
-         deflect || (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x800000) != 0 ||
-         ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x1000000) != 0 &&
-          (object->player.jump_flags & 1) != 0) ||
+         deflect || (CInfo[object->player.character_context].flags & 0x800000) != 0 ||
+         ((CInfo[object->player.character_context].flags & 0x1000000) != 0 && (object->player.jump_flags & 1) != 0) ||
          CannotKill(object))) {
         BoltSys->debris(bolt, points, hit, &object->velocity, 1);
         if (LEGOCONTEXT_HOLD != -1 && object->player.character_context == LEGOCONTEXT_HOLD) {
@@ -2098,9 +2091,8 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
         }
         objhitobj_bolt = bolt;
         ObjHitObj(owner, object, damage, bolt->hit_flags, 0, 0);
-        if ((bolt->flags & 0x800000) != 0 &&
-            (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x10000000) == 0 &&
-            (reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x8000) == 0 &&
+        if ((bolt->flags & 0x800000) != 0 && (CInfo[object->player.character_context].flags & 0x10000000) == 0 &&
+            (CInfo[object->player.character_context].flags & 0x8000) == 0 &&
             (object->character_data->model_flags & CHARACTER_MODEL_DROID) != 0 && BoltDeactivatedAction != -1 &&
             object->character_model->model_data_b[BoltDeactivatedAction] != NULL) {
             DeactivatePlayer(object, DEACTIVATEDTIME, NULL);
@@ -2288,8 +2280,7 @@ extern "C" i32 Bolt_HitGameObjects(BOLT *bolt, NUVEC *points, NUVEC *minimum, NU
             (object->player.rider == NULL || object->player.rider->player_index == -1)) {
             continue;
         }
-        if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x8080) != 0 ||
-            (object->player.flags_e24 & APIOBJECT_BOLTS_PASS) != 0) {
+        if ((CInfo[object->player.character_context].flags & 0x8080) != 0 || (object->player.flags_e24 & APIOBJECT_BOLTS_PASS) != 0) {
             continue;
         }
         if (VehicleArea != 0 && BonusArea == 0 && owner != NULL && owner->player_index != -1 && object->player_index != -1) {
@@ -2730,7 +2721,7 @@ extern "C" void Bolts_Update(WORLDINFO *world) {
                     (object->player.rider == NULL || object->player.rider->player_index == -1)) {
                     continue;
                 }
-                if ((reinterpret_cast<BOLT_CONTEXT_INFO *>(CInfo)[object->player.character_context].flags & 0x8080) != 0 ||
+                if ((CInfo[object->player.character_context].flags & 0x8080) != 0 ||
                     (object->player.flags_e24 & APIOBJECT_BOLTS_PASS) != 0) {
                     continue;
                 }

@@ -266,12 +266,17 @@ extern "C" {
             f32 file_parameters[12];
         }; // 0x070
 
-        f32 gravity;                              // 0x0a0
-        f32 particle_lifetime;                    // 0x0a4
-        i16 unknown_0a8;                          // 0x0a8
-        i8 unknown_0aa;                           // 0x0aa
-        i8 unknown_0ab;                           // 0x0ab
-        f32 unknown_0ac;                          // 0x0ac
+        f32 gravity;           // 0x0a0
+        f32 particle_lifetime; // 0x0a4
+        i16 texture_frames;    // 0x0a8
+        i8 texture_rows;       // 0x0aa
+        i8 frame_divisor;      // 0x0ab
+
+        union { // size 0x4
+            f32 rate;
+            u32 packed_rate;
+        } animation_rate; // 0x0ac
+
         f32 jib_x_frequency;                      // 0x0b0
         f32 jib_x_amplitude;                      // 0x0b4
         f32 jib_y_frequency;                      // 0x0b8

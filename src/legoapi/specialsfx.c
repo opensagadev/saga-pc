@@ -380,10 +380,10 @@ void FileLoadSingleEffectType(DEBRIS_INFO *destination, i32 version, i8 category
     effect->file_parameters[11] = EdFileReadFloat();
     effect->gravity = EdFileReadFloat();
     effect->particle_lifetime = EdFileReadFloat();
-    effect->unknown_0a8 = EdFileReadShort();
-    effect->unknown_0aa = (u8)(EdFileReadChar());
-    effect->unknown_0ab = (u8)(EdFileReadChar());
-    effect->unknown_0ac = EdFileReadFloat();
+    effect->texture_frames = EdFileReadShort();
+    effect->texture_rows = (u8)(EdFileReadChar());
+    effect->frame_divisor = (u8)(EdFileReadChar());
+    effect->animation_rate.rate = EdFileReadFloat();
     effect->jib_x_frequency = EdFileReadFloat();
     effect->jib_x_amplitude = EdFileReadFloat();
     effect->jib_y_frequency = EdFileReadFloat();

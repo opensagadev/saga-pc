@@ -50,13 +50,6 @@ extern "C" {
     void LevelObjectsArenaDiagnostic(i32 size);
 }
 
-typedef struct startup_level_object_s { // size 0x10
-    nuhspecial_s special;               // 0x0
-    i16 platform_id;                    // 0xc
-    u8 active;                          // 0xe
-    u8 unknown_f;                       // 0xf
-} STARTUP_LEVEL_OBJECT;
-
 typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
     u8 unknown_0000[0x2964];               // 0x0000
     NUGSCN *icons_gscn;                    // 0x2964
@@ -961,17 +954,15 @@ extern "C" {
             return;
         }
         for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
-            ((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].platform_id = -1;
-            if (world->terrain != NULL && NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].special) &&
-                ObjTabList[index].kind == 1) {
-                ((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].platform_id =
-                    (i16)FindPlatInst(NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].special));
+            world->level_objects[index].platform_id = -1;
+            if (world->terrain != NULL && NuSpecialExistsFn(&world->level_objects[index].special) && ObjTabList[index].kind == 1) {
+                world->level_objects[index].platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&world->level_objects[index].special));
             }
         }
     }
 
     void *LevObj_FindByPlatID(WORLDINFO *world, i32 platform_id) {
-        STARTUP_LEVEL_OBJECT *object = (STARTUP_LEVEL_OBJECT *)world->level_objects;
+        LEVEL_OBJECT_RUNTIME *object = world->level_objects;
         i32 i;
         for (i = 0; i < LEVELOBJECTCOUNT; ++i, ++object) {
             if (object->platform_id == platform_id) {

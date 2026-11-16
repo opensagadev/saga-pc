@@ -73,7 +73,7 @@ extern "C" {
 
 typedef struct LEVEL_OBJECT_RUNTIME { // size 0x10
     nuhspecial_s special;             // 0x0
-    u8 unknown_c[2];                  // 0xc
+    i16 platform_id;                  // 0xc
     u8 active;                        // 0xe
     u8 padding_f;                     // 0xf
 } LEVEL_OBJECT_RUNTIME;

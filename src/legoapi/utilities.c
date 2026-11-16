@@ -67,11 +67,6 @@ struct shadow_platform_list_s {
     SHADOW_PLATFORM_ENTRY entries[1];
 };
 
-typedef struct USEFUL_MATERIAL {
-    u8 unknown_00[0x40];
-    u32 attributes;
-} USEFUL_MATERIAL;
-
 static f32 UtilitiesFabs(f32 value);
 
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
@@ -1645,14 +1640,14 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
 
 void CreateUsefulMaterials(void) {
     SolidMtl = NuMtlCreate(1);
-    ((USEFUL_MATERIAL *)SolidMtl)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL *)SolidMtl)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL *)SolidMtl)->attributes |= 0x40000u;
+    SolidMtl->attribs.word &= 0xffff3fffu;
+    SolidMtl->attribs.word &= 0xfffffff0u;
+    SolidMtl->attribs.word |= 0x40000u;
     NuMtlUpdate(SolidMtl);
     ZipUpLineMaterial = NuMtlCreate3D(1);
-    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes |= 0x40000u;
+    ZipUpLineMaterial->attribs.word &= 0xffff3fffu;
+    ZipUpLineMaterial->attribs.word &= 0xfffffff0u;
+    ZipUpLineMaterial->attribs.word |= 0x40000u;
     NuMtlUpdate(ZipUpLineMaterial);
 }
 

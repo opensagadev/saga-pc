@@ -12,6 +12,7 @@
 #include "legoapi/core/save_values.h"
 #include "legoapi/core/startup/text.h"
 #include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
 #include "legoapi/gizmo/object/gizmopickup.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/gizmos/object/newblowup.h"
@@ -95,21 +96,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
-
-typedef struct pickup_counter_turret_s { // size 0x13c
-    u8 unknown_000[0x13a];               // 0x000
-    u16 flags;                           // 0x13a
-} PICKUP_COUNTER_TURRET;
-
-typedef struct pickup_counter_blowup_s { // size 0x95
-    u8 unknown_00[0x94];                 // 0x00
-    u8 output_flags;                     // 0x94
-} PICKUP_COUNTER_BLOWUP;
-
-typedef struct pickup_counter_buildit_s { // size 0x6e
-    u8 unknown_00[0x6d];                  // 0x00
-    u8 build_state;                       // 0x6d
-} PICKUP_COUNTER_BUILDIT;
 
 typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
     u8 unknown_00[0x17];                // 0x00
@@ -1278,15 +1264,15 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
                         counter_pickup->position_gizmo != NULL) {
                         gizmo = counter_pickup->position_gizmo;
                         if (gizmo->type_id == turret_gizmotype_id) {
-                            if (((PICKUP_COUNTER_TURRET *)gizmo->object)->flags & 0x20) {
+                            if (gizmo->turret->flags & 0x20) {
                                 complete = 1;
                             }
                         } else if (gizmo->type_id == blowup_gizmotype_id) {
-                            if (((PICKUP_COUNTER_BLOWUP *)gizmo->object)->output_flags & 1) {
+                            if (gizmo->blowup->blown_up) {
                                 complete = 1;
                             }
                         } else if (gizmo->type_id == gizbuildit_gizmotype_id) {
-                            if (((PICKUP_COUNTER_BUILDIT *)gizmo->object)->build_state == 2) {
+                            if (gizmo->buildit->build_state == 2) {
                                 complete = 1;
                             }
                         }
