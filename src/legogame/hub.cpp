@@ -132,12 +132,6 @@ extern "C" {
     extern i32 LEGO_AIPATHCNX_VARIANT_FLAG1;
 }
 
-typedef struct hub_pad_reader_s {
-    void *pad;
-    u32 held;
-    u8 unknown_08[0x58];
-} HUB_PAD_READER;
-
 typedef struct hub_episode_info_s {
     i16 episode;
     u16 flags;
@@ -201,11 +195,6 @@ extern "C" f32 BlipD[2];
 extern "C" i32 freeplaymode;
 extern "C" i32 freeplay_selected[2];
 extern "C" i32 fpcount;
-
-typedef struct hub_freeplay_pad_reader_s {
-    u8 unknown_00[0x78];
-    u32 digital_buttons_pressed;
-} HUB_FREEPLAY_PAD_READER;
 
 extern "C" {
     extern char AreaFixUpName_Senate[8] = "senate";
@@ -1307,7 +1296,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 if (MissionMenuPacket.active_player[player] == 0) {
                     continue;
                 }
-                const u32 digital = ((HUB_FREEPLAY_PAD_READER *)GamePadStorage[player].pad)->digital_buttons_pressed;
+                const u32 digital = GamePadStorage[player].pad->digital_buttons_pressed;
                 if ((digital & GAMEPAD_MENUSELECT) != 0) {
                     select = 1;
                 } else if ((digital & GAMEPAD_MENUCANCEL) != 0) {
@@ -1711,10 +1700,9 @@ extern "C" void Hub_UpdateMiniKits(WORLDINFO *world) {
                 kit->target_rotation = TurnRot(kit->target_rotation, angle + 0x8000, (u16)(i32)((f64)kit->scale * 32768.0), NULL);
             }
             kit->target_piece_count = count[i];
-            const HUB_PAD_READER *pads = (const HUB_PAD_READER *)GamePadStorage;
             if (viewer && count[i] >= pieces->piece_count &&
-                ((MissionMenuPacket.active_player[0] != 0 && (pads[0].held & GAMEPAD_JUMP) != 0) ||
-                 (MissionMenuPacket.active_player[1] != 0 && (pads[1].held & GAMEPAD_JUMP) != 0))) {
+                ((MissionMenuPacket.active_player[0] != 0 && (GamePadStorage[0].menu_buttons_held & GAMEPAD_JUMP) != 0) ||
+                 (MissionMenuPacket.active_player[1] != 0 && (GamePadStorage[1].menu_buttons_held & GAMEPAD_JUMP) != 0))) {
                 kit->target_piece_count = 1;
             }
         } else if (count[i] == 0) {
