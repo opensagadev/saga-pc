@@ -1,6 +1,6 @@
 {
-  "redundant-identity": 64,
-  "redundant-implicit": 68,
+  "redundant-identity": 18,
+  "redundant-implicit": 20,
   "codegen-steering": 53,
   "discard": 32,
   "null-pointer": 4,
@@ -8,7 +8,7 @@
   "raw-offset": 372,
   "embedded-base": 921,
   "view-type": 153,
-  "duplicate-type": 849,
+  "duplicate-type": 848,
   "declaration-type": 842,
   "layout-compatible": 103,
   "function-pointer": 806,

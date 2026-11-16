@@ -2202,7 +2202,7 @@ extern "C" void CheckResetBits(void) {
     Hint_CancelCurrent();
     Teleports_Reset(WORLD);
     TrafficAnimSys_Reset(WORLD->trafficanim_sys);
-    Pulses_Reset((LEVEL_SFX_PULSE *)WORLD->pulses_sys);
+    Pulses_Reset(WORLD->pulses_sys);
     NuSound3StopRumble();
     ResetTimer(&GameTimer, 0.0f);
     ResetTimer(&GamePlayTimer, 0.0f);

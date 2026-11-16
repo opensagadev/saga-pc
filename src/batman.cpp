@@ -416,7 +416,7 @@ static void NuMainUpdateFrame(WORLDINFO *world, i32 *frame_flag) {
                 adaptivedifficulty.accumulator = 0.0f;
             }
             Teleports_UpdateAfterGameObjects(world);
-            Pulses_Update((LEVEL_SFX_PULSE *)world->pulses_sys);
+            Pulses_Update(world->pulses_sys);
             Detonators_Update();
             Batarangs_Update();
             UpdateCables();

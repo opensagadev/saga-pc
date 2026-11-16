@@ -49,7 +49,7 @@
   "undef-in-unit": 25,
   "dup-macro": 21,
   "dup-macro-conflict": 6,
-  "dup-type": 98,
+  "dup-type": 90,
   "dup-type-conflict": 2,
   "local-extern": 51,
   "magic-state": 4332,
