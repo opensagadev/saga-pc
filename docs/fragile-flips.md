@@ -71,3 +71,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | pc marker renames (renames/17-*.csv, no code change) | DebrisSetup2 | legoapi/parts.c | 99.95 % | exact |
 | one NUDISPLAYLIST record (0x44) | BoulderSpawn | legogame/episodeIII.c | 83.28 % | exact |
 | one NUDISPLAYLIST record (0x44) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 90.96 % |
+| one NUDISPLAYLIST record, after rebase onto e1a372f4 | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
+| one NUDISPLAYLIST record, after rebase onto e1a372f4 | SubItemMenu | legogame/shop.c | 97.72 % | 98.31 % |

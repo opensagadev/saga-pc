@@ -14123,11 +14123,12 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                 item->id = 3;
                 item->next = scene->materials[0];
                 list->items = item + 1;
-                list->mtl_last->next = record.producer_first[variant];
+                NUDISPLAYLIST *dlist = list;
+                dlist->mtl_last->next = record.producer_first[variant];
                 record.producer_cursor[variant]->type = NUDLIST_NEXT;
-                record.producer_cursor[variant]->next = list->dynamic_geometry + 1;
+                record.producer_cursor[variant]->next = dlist->dynamic_geometry + 1;
                 record.producer_cursor[variant]->id = 1;
-                list->mtl_last = record.producer_cursor[variant];
+                dlist->mtl_last = record.producer_cursor[variant];
             }
         }
     }
