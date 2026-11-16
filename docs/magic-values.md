@@ -82,6 +82,8 @@ same function initialises and steps (its values are indexes).
 | `eduiitem_s.text_alignment`, the edui print alignment | `EDUI_ALIGN_*` (edui.h) | where `EduiPrintAlignedText` starts the text |
 | `TERRAIN_PLATFORM.flags` 0x1, 0x2 | `TERRAIN_PLATFORM_FLAG_ROTATING`, `_COLLIDED` (legoapi_types.h) | `PlatInstRotate` and `AddPickupTerrRot`'s rotating argument; the collision sets 0x2 |
 | `freeplaymode` | `FREEPLAY_MENU_*` (hub.h) | what the hub's free play update and draw do in each step |
+| `NuSound3PlayStereoV` tags | `NUSOUND3_TAG_*` (nusound.h) | the packet field the switch fills for each tag; 9, 11 and 12 stay literal |
+| `PC_WINDOW_OPTIONS.aspect_mode`, `PC_DEVICE_BACKEND.active_aspect_mode`, `MENU_VIDEO_OPTIONS.aspect_mode` | `PC_ASPECT_*` (pcapi.h) | the ratio `PcInputAspectRatio` returns for each (4:3, 16:9, 1.6, the display's) |
 | `gameobject_s.unknown_7b3` in the super carry and whip contexts, `gameobject_s.whip_action` | `SUPERCARRY_*` (carrying.h), `WHIP_*` (whip.h) | the LEGOACT_SUPERCARRY_* and LEGOACT_WHIP_* animation each step plays; the whip action chosen on the button press |
 | `GIZMOPICKUP.flags` (4 bits) | `GIZMOPICKUP_STATE_*` (gizmopickups.h) | `GizmoPickup_TurnOnPickup`, the draw loop, collecting, the saved-minikit alternate type |
 | cut scene instance `flags_88` (all views, 6 bits) | `NUGCUTSCENE_INST_*` (nugcutscene.h) | what `instNuGCutSceneStart`/`End`/`Reset`, the `instNuGCutSceneSet*` transforms and `instNuGCutSceneClipTest` set and test |
@@ -184,7 +186,7 @@ same function initialises and steps (its values are indexes).
 | cheat indices (`Cheat_IsOn`) | 57 | 0..0x2c | come from the game's cheat config file, which is not among the retail files here |
 | `AIPACKET.flags`, other bits | ~100 | 0x1-0x80000000 | path following and movement state set in `AISysProcessCharacter`, `AIMoveToDestination`, `AISysCharacterMovement`; no keyword |
 | cut scene instance `flags_88`, other bits | ~6 | 0x40000, 0x3e000 (the 5-bit repeat_count) | 0x40000 makes the camera, character and rigid systems run with the frame counted from the end; its setter is not in the source |
-| `NuSound3PlayStereoV` tags | ~30 | 0..12 | each tag fills one `PC_STEREO_PLAY_PACKET` field; tags 9, 11 and 12 set fields whose meaning is not settled (`option9_mode`, `option11`) |
+| `NuSound3PlayStereoV` tags 9, 11, 12 | ~10 | 9, 11, 12 | tag 9 carries a track's pitch at one caller but defaults to -1 and is cleared by tag 12 for one-shot streams; 11 sets `option11` |
 | `mode`, `state`, `type`, `kind`, `index` (locals and parameters) | 50-150 each | | many unrelated locals share these names; name per function where the callee says what it takes |
 | `pushblock_s.packed_state_flags`, other bits | ~50 | 0x1-0x800, 0x38000 (a 3-bit snap index), 0x4000000, 0x8000000, 0x10000000-0x40000000 | 0x4000000, 0x8000000, 0x20000000 and 0x40000000 are editor booleans `edpush_Load` reads without labels; the low bits are push and snap state in `UpdatePushBlocks` |
 
@@ -193,8 +195,8 @@ same function initialises and steps (its values are indexes).
 Counted like the magic-state and magic-flag classes of `oddscan.py --magic` (a
 comparison, assignment or `case` with a value other than 0, 1 and -1, or a
 one-bit mask), per field. On 15 November 2026 the named constants stood at
-25827 sites and the literals at 7999 (76.4 % named); the 63 fields below hold
-2533 of the literals, and 1670 more fields have fewer than 20 sites each (5466
+25878 sites and the literals at 7954 (76.5 % named); the 62 fields below hold
+2508 of the literals, and 1668 more fields have fewer than 20 sites each (5446
 in all; `oddscan.py --magic` lists them by use).
 
 | Field | Sites | Values | Where | What is known |
@@ -202,7 +204,7 @@ in all; `oddscan.py --magic` lists them by use).
 | `flags` | 149 | 0x0 0x1 0x2 0x3 0x4 0x8 0x10 0x17 ... | nu2api/nu3d_includes.cpp, gamelib/net/NetworkObjectManager.cpp | bare `flags` locals and parameters of many functions; `magicnames.py --locals flags` lists them per function (GizSpinner_*, ObjHitObj, NuAnimBuff*, UpdateGameMessages) |
 | `*.flags` | 143 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | gameapi/aisysall.c, nu2api/nu3d_includes.cpp | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
 | `gameobject_s.flags_e20` | 135 | 0x1 0x2 0x4 0x8 0x20 0x1000 0x4000 0x20000 ... | legogame/move.c, legogame/creature.c | runtime bits; 0x20 is tested to skip an object almost everywhere and cleared by UpdateGameObjects, its setter is not in the source yet |
-| `mode` | 111 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
+| `mode` | 110 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
 | `gameobject_s.flags_ef0` | 93 | 0x4 0x40 0x80 0x200 0x400 0x1000 0x2000 0x4000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code, no keyword |
 | `AIPACKET.flags` | 78 | 0x8 0x20 0x40 0x400 0x800 0x1000 0x2000 0x4000 ... | gameapi/aisysall.c, legogame/gameai.c | path following and movement state (AISysProcessCharacter, AIMoveToDestination) |
 | `type` | 73 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, nu2api/nupad_text.cpp | bare `type` locals and parameters; per function in `--locals type` (CutScriptNodeAlloc, TEXT_INPUT_MANAGER::ButtonName, ShaderCompilerParser::ParseDeclaration) |
@@ -239,7 +241,6 @@ in all; `oddscan.py --magic` lists them by use).
 | `alignment` | 25 | 1 2 4 8 16 32 64 | legoapi/text.c, legogame/panel.cpp | no name table, keyword or label found yet |
 | `index` | 25 | 0 1 2 3 4 8 15 32 ... | nu2api/nu3d_includes.cpp, nu2api/nurndr.c | some of its sites already use ACTION_STUN_* (anonymous enum/#define) names |
 | `models` | 25 | 12 13 89 101 102 103 104 105 ... | legogame/creature.c | no name table, keyword or label found yet |
-| `*.aspect_mode` | 24 | 0 1 2 3 | nu2api/pc_device.cpp, legogame/camera.c | no name table, keyword or label found yet |
 | `NewPrim` | 24 | 2 3 | editor/edlevelall.cpp | no name table, keyword or label found yet |
 | `debris` | 24 | 34 38 44 45 52 69 73 74 ... | legogame/game_obj.c, legogame/game.cpp | no name table, keyword or label found yet |
 | `gameobject_s.movement_mode` | 24 | 0 1 2 3 4 5 | legogame/move.c, legogame/creature.c | no name table, keyword or label found yet |
