@@ -93,3 +93,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | grapple union records and the player coin packet (stream C) | BoulderSpawn | legogame/episodeIII.c | exact | different |
 | teleport and panel bit names (stream C) | BoulderSpawn | legogame/episodeIII.c | different | exact |
 | teleport and panel bit names (stream C) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
+| allocator sizes, animation magics, gameapi header declarations (stream B, dc4618c5) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
+| allocator sizes, animation magics, gameapi header declarations (stream B, dc4618c5) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | different | exact |
