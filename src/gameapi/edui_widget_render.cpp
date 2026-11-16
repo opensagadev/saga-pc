@@ -846,7 +846,7 @@ extern "C" void eduiMenuRender(eduimenu_s *menu) {
     i32 max_item_height = 0;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     if (edui_donotdraw == 0) {
         NuQFntSet(edui_font);

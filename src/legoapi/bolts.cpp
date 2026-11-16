@@ -1060,7 +1060,7 @@ extern "C" void Bolt_HitGameObjectRC(NETMESSAGE &message) {
             NuVecSub(&direction, &bolt->previous_position, &points[hit]);
         }
         FindAnglesXY(&direction, NULL, NULL);
-        if (((bolt->flags & 0x40) == 0 || deflect) && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
+        if (((bolt->flags & BOLT_DONT_GET_DEFLECTED_BACK) == 0 || deflect) && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
             ((BoltBlockContext != -1 && object->character_context == BoltBlockContext) || cheat_deflect) &&
             (object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
             if (bolt->owner == NULL || (bolt->owner->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
@@ -1413,11 +1413,11 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
     u32 flags = type->flags_60;
     if (owner != NULL) {
         if ((owner->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-            flags |= 0x28;
+            flags |= BOLT_KEEP | BOLT_KEEP_OFF_SCREEN;
             if (owner->unknown_280 == 0) {
-                flags |= 1;
+                flags |= BOLT_PLAYER_1;
             } else if (owner->unknown_280 == 1) {
-                flags |= 2;
+                flags |= BOLT_PLAYER_2;
             }
         }
         bool add_speed = InitBolt_AddMomentumType != NULL && InitBolt_AddMomentumType(bolt, owner, &momentum) != 0;
@@ -1434,7 +1434,7 @@ extern "C" void Bolt_Init(void *storage, NETMESSAGE &message) {
             bolt->speed += speed;
         }
         if (owner->rider != NULL) {
-            flags |= 0x40000;
+            flags |= BOLT_OWNER_RIDDEN;
         }
         if (BoltInitSfxFn != NULL) {
             shoot_id = BoltInitSfxFn(owner);
@@ -1834,15 +1834,15 @@ extern "C" {
         u16 heading;
 
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
-            flags |= 0x20;
+            flags |= BOLT_KEEP_OFF_SCREEN;
             if (object->unknown_280 == 0) {
-                flags |= 1;
+                flags |= BOLT_PLAYER_1;
             } else if (object->unknown_280 == 1) {
-                flags |= 2;
+                flags |= BOLT_PLAYER_2;
             }
         }
         if ((object->flags_ef0 & APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK) != 0) {
-            flags |= 0x40;
+            flags |= BOLT_DONT_GET_DEFLECTED_BACK;
         }
         aimed_position = object->attack_target_position;
         BoltSys->shoot_origin(object, &origin);

@@ -42,12 +42,14 @@ extern "C" {
 #define BOLT_SINGLE_DEBRIS 0x40000000  /* single_debris */
 
 /* bolt_s.flags set when a bolt is shot or deflected (Bolt_Add, Bolt_HitGameObjects). */
-#define BOLT_PLAYER_1 0x1             /* shot by the first player; hits obstructions */
-#define BOLT_PLAYER_2 0x2             /* shot by the second player; hits obstructions */
-#define BOLT_KEEP 0x8                 /* an active player's: Bolt_Alloc does not take it while it flies */
-#define BOLT_SHOOTS_OBSTRUCTIONS 0x10 /* hits obstruction platforms like a player's (a turret option, Kamino) */
-#define BOLT_KEEP_OFF_SCREEN 0x20     /* an active player's: not dropped when it is no longer drawn */
-#define BOLT_DEFLECTED 0x10000000     /* deflected back: no double bolt damage */
+#define BOLT_PLAYER_1 0x1                 /* shot by the first player; hits obstructions */
+#define BOLT_PLAYER_2 0x2                 /* shot by the second player; hits obstructions */
+#define BOLT_KEEP 0x8                     /* an active player's: Bolt_Alloc does not take it while it flies */
+#define BOLT_SHOOTS_OBSTRUCTIONS 0x10     /* hits obstruction platforms like a player's (a turret option, Kamino) */
+#define BOLT_KEEP_OFF_SCREEN 0x20         /* an active player's: not dropped when it is no longer drawn */
+#define BOLT_DONT_GET_DEFLECTED_BACK 0x40 /* the owner's APIOBJECT_BOLTS_DONT_GET_DEFLECTED_BACK */
+#define BOLT_OWNER_RIDDEN 0x40000         /* the owner had a rider when it shot */
+#define BOLT_DEFLECTED 0x10000000         /* deflected back: no double bolt damage */
 
 typedef struct bolt_s {         // size 0x138
     struct BOLTTYPE_s *type;    // 0x000

@@ -2911,7 +2911,7 @@ void InitUI(void) {
     if (rtl_ui_initialised) {
         return;
     }
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
     rtl_ui_initialised = 1;
     CreateColourPicker();
@@ -3280,7 +3280,7 @@ void eduiItemSliderSetValEx(edui_slider_s *item, f32 value, i32 reset_timer, i32
 void RefreshUI(void) {
     i32 i;
 
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSetScale(system_qfont, edrtl_text_scale, edrtl_text_scale);
 
     prop_item->disabled = 1;
@@ -4317,7 +4317,7 @@ void edrtlDrawBurnouts(void) {
 }
 
 static void edrtlRender(void) {
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     if (rtl_near_clip_at_cursor) {
         usr_cam->near_clip = NuVecDist(&burn_editor_position, (NUVEC *)&usr_cam->mtx.m30, NULL) - 1.0f;

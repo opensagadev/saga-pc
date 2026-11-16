@@ -7688,7 +7688,7 @@ void PrintStartupString(u32 colour, const char *format, ...) {
     va_start(args, format);
     vsprintf(buffer, format, args);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSet(system_qfont);
     NuQFntSetColour(system_qfont, colour);
     NuQFntSetScale(system_qfont, 0.7f, 0.7f);
@@ -7770,7 +7770,7 @@ void NuErrorSleep(void) {
         NuRndrClear(0xb00, 0xff00ffff, 1.0f);
         NuQFntSet(system_qfont);
         NuQFntPushPrintMode(NUQFNT_MODE_2D);
-        NuQFntPushCoordinateSystem(1);
+        NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
         NuQFntSet(system_qfont);
         while (*(message = NuGetErrN(index++)) != '\0') {
             NuQFntSetColour(system_qfont, 0xff000000);

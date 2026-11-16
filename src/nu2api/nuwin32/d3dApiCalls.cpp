@@ -300,7 +300,7 @@ extern "C" {
         f32 line_height;
         f32 fps;
         NuQFntPushPrintMode(NUQFNT_MODE_2D);
-        NuQFntPushCoordinateSystem(1);
+        NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
         NuQFntSet(system_qfont);
         NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
         line_height = NuQFntHeight(system_qfont) * 0.800000011920929;

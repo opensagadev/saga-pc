@@ -69,6 +69,11 @@ extern "C" {
 #define NUQFNT_MODE_FIXED_DIGITS 0x1
 #define NUQFNT_MODE_2D 0x2
 #define NUQFNT_MODE_3D 0x4
+/* NuQFntSetCoordinateSystem's modes: the text scale and offset each sets. */
+#define NUQFNT_CS_SIXTEENTHS 1  /* the default: 16 units to a unit of the font scale */
+#define NUQFNT_CS_HALF_HEIGHT 2 /* unit width, half height */
+#define NUQFNT_CS_640X224 3     /* a 640 by 224 screen, y down from the top left */
+#define NUQFNT_CS_UNIT_Y_DOWN 4 /* unit scale, y down */
     extern u32 NuQFntMode;
     extern i32 NuQFntModeStackIndex;
     extern u32 NuQFntModeStack[16];

@@ -429,7 +429,7 @@ extern "C" i32 NuInitHardware(VARIPTR *buffer, VARIPTR *end, i32 allocate, ...) 
     }
     NuSound3Update();
     NuPrimSetCoordinateSystem(0);
-    NuQFntSetCoordinateSystem(1);
+    NuQFntSetCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuPadInit();
     if (pads[0]) {
         *pads[0] = NuPadOpen(0, 0);

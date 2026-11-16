@@ -7103,7 +7103,7 @@ void aieditor_Render(f32 x_scale, f32 y_scale) {
     NuRndrLine2di(0x2810, 0x9b0, 0x2810, 0xe40, 0x80000000, aieditorsettings.overlay_material);
     NuRndrLine2di(0x1670, 0xe40, 0x2810, 0xe40, 0x80000000, aieditorsettings.overlay_material);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSet(system_qfont);
     NuQFntSetColour(system_qfont, 0x80808080);
     NuQFntSetScale(system_qfont, x_scale, y_scale);

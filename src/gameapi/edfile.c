@@ -1305,7 +1305,7 @@ void cbmcfgCancel(eduimenu_s *menu, eduimenu_s *unused1) {
 
 void edmainCreateMenus(void) {
     ed_module_s *module;
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSetScale(system_qfont, edmain_menu_scale, edmain_menu_scale);
     ed_cfg_menu = eduiMenuCreate(220, 50, 180, 320, ed_fnt, cbmcfgCancel, "Editor Config");
     if (ed_cfg_menu != NULL) {
@@ -1356,7 +1356,7 @@ void edmainClose(void) {
 void edmainRender(void) {
     if (ed_main_menu != NULL) {
         NuQFntPushPrintMode(NUQFNT_MODE_2D);
-        NuQFntPushCoordinateSystem(1);
+        NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
         NuQFntSet(system_qfont);
         NuQFntSetScale(system_qfont, edmain_menu_scale, edmain_menu_scale);
         eduiMenuRender(ed_main_menu);
@@ -3767,7 +3767,7 @@ void eduiMenuFitWidth(eduimenu_s *menu, i32 padding) {
     i32 item_text_width = 0;
     i32 property_width;
     eduicbMenuOpenAllexpanders(menu);
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSetScale(edui_font, edui_font_scale_x, edui_font_scale_y);
     if (menu->title != NULL) {
         item_text_width = (i32)NuQFntPrintLenU(edui_font, menu->title) >> 4;
@@ -4696,7 +4696,7 @@ void RenderFileSel3(i32 draw_title) {
     y = FS_Y;
     width = FS_Width;
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSet(system_qfont);
     NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
     height = NuQFntHeight(system_qfont);
@@ -4951,7 +4951,7 @@ i32 ProcessFileSel3(f32 elapsed, FRAME_PAD *pad) {
     }
     if (FS_RefreshDir != 0) {
         FS_GetDirList(FS_Path, FS_Filter, FS_FilterOut);
-        NuQFntPushCoordinateSystem(1);
+        NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
         NuQFntSet(system_qfont);
         NuQFntSetPointSize(system_qfont, 1.0f, 1.0f);
         width = FS_GetDirTextWidth() * 0.0625;

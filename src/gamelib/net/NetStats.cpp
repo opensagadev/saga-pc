@@ -113,7 +113,7 @@ void NetSmallStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo) {
     NuPrim2DEnd();
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 
-    NuQFntPushCoordinateSystem(3);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_640X224);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     VUFNT *font = system_qfont;
     f32 font_height = NuQFntHeight(font);
@@ -216,7 +216,7 @@ void NetStats::Draw(f32 x, f32 y, f32 width, f32 height, eInfo info) {
 
     NuPrimSetCoordinateSystem(NuPrimCoordSystemStack[--NuPrimCSPos]);
 
-    NuQFntPushCoordinateSystem(3);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_640X224);
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
     VUFNT *font = system_qfont;
     f32 font_height = NuQFntHeight(font);

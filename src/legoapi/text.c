@@ -987,7 +987,7 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
 
 // noinline: the original calls SetQFont2D out of line from IntroText_Draw; VC8 would inline it there.
 __declspec(noinline) void SetQFont2D(void) {
-    NuQFntSetCoordinateSystem(3);
+    NuQFntSetCoordinateSystem(NUQFNT_CS_640X224);
     NuQFntSet(QFont2D);
     NuQFntSetSpaceWidth(QFont2D, 12.0f);
 }
@@ -1462,7 +1462,7 @@ void TextCrawl_Draw(f32 dt, i32 paragraphs, f32 alpha, char *text) {
     NuQFntSet(QFont3DZ);
     NuQFntSetMtx(QFont3DZ, &matrix);
     NuQFntPushPrintMode(NUQFNT_MODE_3D);
-    NuQFntSetCoordinateSystem(4);
+    NuQFntSetCoordinateSystem(NUQFNT_CS_UNIT_Y_DOWN);
     alpha_scale = 128.0f;
     red = TextCrawlRed;
     green = TextCrawlGreen;
@@ -1636,7 +1636,7 @@ void MatrixText(VUFNT *font, unsigned char *text, f32 x, f32 y, f32 z, f32 x_sca
         return;
     }
     NuQFntPushPrintMode(NUQFNT_MODE_3D);
-    NuQFntPushCoordinateSystem(4);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_UNIT_Y_DOWN);
     NuQFntSet(font);
     MatrixTextStringEncode(font, text, encoded);
     NuQFntSetScale(font, x_scale * MatrixTextScale, y_scale * MatrixTextScale);

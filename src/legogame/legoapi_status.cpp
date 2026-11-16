@@ -189,7 +189,7 @@ extern "C" {
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &RenderStatusMatrixPrivate);
         NuQFntPushPrintMode(NUQFNT_MODE_3D);
-        NuQFntSetCoordinateSystem(4);
+        NuQFntSetCoordinateSystem(NUQFNT_CS_UNIT_Y_DOWN);
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, scale, scale);
         Text3DStringEncode(text, encoded);
@@ -206,7 +206,7 @@ extern "C" {
         }
         NuQFntPrintW(QFont3DZ, encoded);
         NuQFntPopPrintMode();
-        NuQFntSetCoordinateSystem(3);
+        NuQFntSetCoordinateSystem(NUQFNT_CS_640X224);
     }
 
     void DrawStatusTextFraction(i32 current, i32 total, f32 x, f32 y, u16 angle, f32 scale, u32 colour, f32 animation,
@@ -229,7 +229,7 @@ extern "C" {
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
         NuQFntPushPrintMode(NUQFNT_MODE_3D);
-        NuQFntSetCoordinateSystem(4);
+        NuQFntSetCoordinateSystem(NUQFNT_CS_UNIT_Y_DOWN);
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, scale, scale);
         sprintf(text, "%i/%i", current, total);
@@ -277,7 +277,7 @@ extern "C" {
             NuQFntPrintW(QFont3DZ, encoded);
         }
         NuQFntPopPrintMode();
-        NuQFntSetCoordinateSystem(3);
+        NuQFntSetCoordinateSystem(NUQFNT_CS_640X224);
     }
 
     STATUS_STAGE_s *FindStatusStage(i32 type) {

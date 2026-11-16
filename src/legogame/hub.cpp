@@ -2386,7 +2386,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
-        NuQFntSetCoordinateSystem(4);
+        NuQFntSetCoordinateSystem(NUQFNT_CS_UNIT_Y_DOWN);
         colour = ((((u32)alpha << 8) | (u8)HubStatsHighColour) << 8 | (u8)HubStatsMiddleColour) << 8 | HubStatsLowColour;
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, 0.00375f, 0.005f);
@@ -2401,7 +2401,7 @@ extern "C" void Hub_Draw3D(WORLDINFO *world) {
         NuQFntPushPrintMode(NUQFNT_MODE_3D);
         NuQFntSet(QFont3DZ);
         NuQFntSetMtx(QFont3DZ, &matrix);
-        NuQFntSetCoordinateSystem(4);
+        NuQFntSetCoordinateSystem(NUQFNT_CS_UNIT_Y_DOWN);
         colour = ((((u32)alpha << 8) | (u8)HubStatsHighColour) << 8 | (u8)HubStatsMiddleColour) << 8 | HubStatsLowColour;
         NuQFntSetColour(QFont3DZ, colour);
         NuQFntSetScale(QFont3DZ, 0.0028124998f, 0.00375f);

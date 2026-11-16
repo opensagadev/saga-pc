@@ -1361,7 +1361,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
         secondary = -0.65f;
     }
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
-    NuQFntPushCoordinateSystem(3);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_640X224);
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);
     i32 port0 = ports[0];

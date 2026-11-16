@@ -5774,7 +5774,7 @@ extern "C" {
         i32 previous = nuqfnt_cs_mode;
         nuqfnt_cs_mode = mode;
         switch (mode) {
-            case 2:
+            case NUQFNT_CS_HALF_HEIGHT:
                 qfnt_rezscale_w = 1.0f;
                 qfnt_rezscale_h = 0.5f;
                 qfnt_offscale_x = 1.0f;
@@ -5782,7 +5782,7 @@ extern "C" {
                 qfnt_len_scale = 1.0f;
                 qfnt_height_scale = 1.0f;
                 break;
-            case 3:
+            case NUQFNT_CS_640X224:
                 qfnt_rezscale_w = 320.0f;
                 qfnt_rezscale_h = -112.0f;
                 qfnt_offscale_x = 320.0f;
@@ -5790,7 +5790,7 @@ extern "C" {
                 qfnt_len_scale = 0.003125f;
                 qfnt_height_scale = -0.008928572f;
                 break;
-            case 4:
+            case NUQFNT_CS_UNIT_Y_DOWN:
                 qfnt_rezscale_w = 1.0f;
                 qfnt_rezscale_h = 1.0f;
                 qfnt_offscale_x = 0.0f;
@@ -6471,7 +6471,7 @@ void OcclusionManager::RenderStats() const {
         return;
     }
     NuQFntPushPrintMode(NUQFNT_MODE_2D);
-    NuQFntPushCoordinateSystem(1);
+    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
     NuQFntSet(system_qfont);
     NuQFntSetScale(system_qfont, 0.7f, 0.7f);
     NuQFntSetPointSize(system_qfont, 0.7f, 0.7f);
@@ -9156,7 +9156,7 @@ extern "C" {
         }
 
         NuQFntPushPrintMode(NUQFNT_MODE_2D);
-        NuQFntPushCoordinateSystem(1);
+        NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
         NuQFntSet(system_qfont);
         NuQFntSetColour(system_qfont, 0xe0e0e0e0);
         NuQFntSetScale(system_qfont, NuTimeBarFontScale, NuTimeBarFontScale);
@@ -9313,7 +9313,7 @@ extern "C" {
                     NuRndrRect2di((i32)(left * screen_width), (i32)(0.05f * screen_height), (i32)((right - left) * screen_width),
                                   (i32)((bottom - 0.05f) * screen_height), timebar->colours[slot], NULL);
                     NuQFntPushPrintMode(NUQFNT_MODE_2D);
-                    NuQFntPushCoordinateSystem(1);
+                    NuQFntPushCoordinateSystem(NUQFNT_CS_SIXTEENTHS);
                     NuQFntSet(system_qfont);
                     NuQFntSetScale(system_qfont, 1.0f, 1.0f);
                     NuQFntSetColour(system_qfont, 0xe0e0e0e0);
