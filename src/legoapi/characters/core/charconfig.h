@@ -10,6 +10,7 @@ struct PLAYERCHARACTERCONFIG;
 struct animpacket_s;
 struct apicharacterdata_s;
 struct apicharactermodellist_s;
+struct characterdata_s;
 struct gameobject_s;
 struct nufpcomjmp_s;
 struct numtx_s;
@@ -76,6 +77,40 @@ typedef struct CHARACTER_EFFECT_CONFIG { // size 0x34
     f32 minimum;                         // 0x2c
     f32 maximum;                         // 0x30
 } CHARACTER_EFFECT_CONFIG;
+
+typedef struct CHARCONFIG {                // size 0xfc8
+    struct characterdata_s *character;     // 0x000
+    struct PLAYERCHARACTERCONFIG *runtime; // 0x004
+    GAMECHARACTERLAYER *layer_scratch;     // 0x008
+
+    union { // size 0x4
+        u32 flags;
+
+        struct {                 // size 0x4
+            u32 flags_low : 6;   // 0x00c:0
+            u32 permanent : 1;   // 0x00c:6
+            u32 flags_high : 25; // 0x00c:7
+        };
+    }; // 0x00c
+
+    u8 named_layers;                         // 0x010
+    u8 unknown_11[3];                        // 0x011
+    i32 effect_count;                        // 0x014
+    CHARACTER_EFFECT_CONFIG *effect_scratch; // 0x018
+    i16 character_id;                        // 0x01c
+    u16 animation_count;                     // 0x01e
+    VARIPTR *arena;                          // 0x020
+    VARIPTR *arena_end;                      // 0x024
+    char animation_names[100][40];           // 0x028
+} CHARCONFIG;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    extern CHARCONFIG charconfig;
+#ifdef __cplusplus
+}
+#endif
 
 #ifdef __cplusplus
 extern "C" {

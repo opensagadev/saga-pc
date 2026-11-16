@@ -59,40 +59,11 @@ typedef struct customiser_names_s {
     char display_names[2][128];
 } CUSTOMISER_NAMES;
 
-typedef struct customiser_config_s {
-    CUSTOM_CATEGORY_CONFIG *categories[9];
-    CUSTOM_PIECE_CONFIG *piece_sets[9];
-    i32 piece_counts[9];
-    i16 character_ids[2];
-    u8 unknown_70[0x100];
-    i32 (*piece_available)(CUSTOMPIECE_LAYERS *);
-    CUSTOM_SAVE_CONFIG *save;
-    u8 unknown_178[0xd8];
-    i8 locator_indices[9];
-    u8 unknown_259[3];
-    i8 layer_indices[9];
-    u8 unknown_265[0x803];
-    u16 *animation_ids_to_load;
-    u8 unknown_a6c[0x1bc];
-    u16 default_pieces[2][10];
-    f32 locator_x_offsets[9];
-    f32 locator_y_offsets[9];
-} CUSTOMISER_CONFIG;
-
 typedef struct customiser_game_setting_s {
     char *name;
     u32 model_flags;
     u32 gameplay_flags;
 } CUSTOMISER_GAME_SETTING;
-
-typedef struct custom_accessory_resource_s {
-    NUGSCN *scene;
-    nuhspecial_s special;
-    i32 original_texture_id;
-    i32 texture_id;
-    i32 material_index;
-    CHARACTER_MODEL_LAYERS *character_model;
-} CUSTOM_ACCESSORY_RESOURCE;
 
 /* Source-private views for customise.c. Config/piece/category types already defined there. */
 typedef struct custom_piece_anim_s {

@@ -4,34 +4,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufpar.h"
 
-typedef struct CHARCONFIG {
-    CHARACTERDATA *character;
-    PLAYERCHARACTERCONFIG *runtime;
-    GAMECHARACTERLAYER *layer_scratch;
-
-    union {
-        u32 flags;
-
-        struct {
-            u32 flags_low : 6;
-            u32 permanent : 1;
-            u32 flags_high : 25;
-        };
-    };
-
-    u8 named_layers;
-    u8 unknown_11[3];
-    i32 effect_count;
-    struct CHARACTER_EFFECT_CONFIG *effect_scratch;
-    i16 character_id;
-    u16 animation_count;
-    VARIPTR *arena;
-    VARIPTR *arena_end;
-    char animation_names[100][40];
-} CHARCONFIG;
-
-extern CHARCONFIG charconfig;
-
 typedef struct charconfig_variant_reader_s {
     u8 unknown_000[0x116];
     i8 variant_type;
