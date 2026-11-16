@@ -14,6 +14,8 @@ extern "C" {
     void GizTurrets_OpponentSelection(struct GIZTURRETSYS_s *, i32, APIOBJECT **, i32, APIOBJECT **);
     extern i32 gizturret_test_ang;
     extern f32 gizturret_rapid_fire_rate;
+    ADDGIZMOTYPE *GizTurrets_RegisterGizmo(i32);
+    u32 GizTurrets_TotalScore(WORLDINFO *world);
 #ifdef __cplusplus
 }
 #endif

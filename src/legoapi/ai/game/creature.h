@@ -83,6 +83,7 @@ extern "C" {
     extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
     i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
     void DeactivateCharacter(char *);
+    i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
 #ifdef __cplusplus
 }
 #endif

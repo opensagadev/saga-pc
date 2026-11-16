@@ -122,6 +122,16 @@ extern "C" {
     void RetakeG_Init(WORLDINFO *);
     void RetakeG_Panel(WORLDINFO *);
     void RetakeG_Update(WORLDINFO *);
+    void AnakinsFlightB_Draw(WORLDINFO *);
+    void AnakinsFlightB_Update(WORLDINFO *);
+    void KaminoEGizmoMissing(char *name);
+    void MaulA_Update(WORLDINFO *);
+    void MaulD_Init(WORLDINFO *);
+    void MaulD_Update(WORLDINFO *);
+    void MaulE_Init(WORLDINFO *);
+    void MaulE_Update(WORLDINFO *);
+    void MaulF_Update(WORLDINFO *);
+    void RetakeG_Reset(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif

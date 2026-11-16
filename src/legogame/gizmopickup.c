@@ -61,8 +61,7 @@
 #include <string.h>
 #include <float.h>
 #include "legoapi/gizmos/object/gizobstacle.h"
-
-u32 GizTurrets_TotalScore(WORLDINFO *world);
+#include "legoapi/gizmos/traps/gizturret.h"
 
 PICKUP_TYPE_SYSTEM GizmoPickupSys_Game = {GizmoPickupType, CoinTab, 10, 4, 4, 2, 0, 0};
 

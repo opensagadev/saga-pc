@@ -190,6 +190,18 @@ extern "C" {
     void HothEscapeD_Reset(struct WORLDINFO_s *);
     void HothEscapeD_Update(struct WORLDINFO_s *);
     extern u32 LEGO_AIPATHCNX_BIGJUMP;
+    void BountyHunterPursuitA_Init(WORLDINFO *);
+    void BountyHunterPursuitA_Reset(WORLDINFO *);
+    void BountyHunterPursuitA_Update(WORLDINFO *);
+    void BountyHunterPursuitB_Init(WORLDINFO *);
+    void BountyHunterPursuitB_Reset(WORLDINFO *);
+    void BountyHunterPursuitB_Update(WORLDINFO *);
+    void BountyHunterPursuitC_Init(WORLDINFO *);
+    void BountyHunterPursuitC_Reset(WORLDINFO *);
+    void BountyHunterPursuitC_Update(WORLDINFO *);
+    void BountyHunterPursuitD_Init(WORLDINFO *);
+    void BountyHunterPursuitD_Reset(WORLDINFO *);
+    void BountyHunterPursuitD_Update(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif

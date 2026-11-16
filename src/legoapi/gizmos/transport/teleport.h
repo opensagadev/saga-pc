@@ -46,6 +46,7 @@ extern "C" {
     void Teleports_UpdateBeforeGameObjects(WORLDINFO *);
     void Teleports_UpdateAfterGameObjects(WORLDINFO *);
     void Teleport_NetMoveCode(GAMEOBJECT *);
+    ADDGIZMOTYPE *Teleport_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif
