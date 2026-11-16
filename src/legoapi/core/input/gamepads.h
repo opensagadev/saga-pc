@@ -70,6 +70,7 @@ extern "C" {
     void GameFog_Set(void);
     void NuMainRenderLeaf(void);
     void ViewCamDraw(void);
+    i32 GamePads_SkipMovie(void);
 #ifdef __cplusplus
 }
 #endif

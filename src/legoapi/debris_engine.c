@@ -29,6 +29,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "legoapi/render/fx/parts.h"
+#include "nu2api/numath/numath_includes.h"
 
 void DebrisGetControlStackLock(void) {
     while (debris_control_stack_lock != 0) {
@@ -1790,8 +1792,6 @@ void DebrisReleaseResources(void) {
 void DebrisRestoreResources(void) {
 }
 
-i32 NuPower2(i32 value);
-
 f32 DebrisGlassV1 = 0;
 f32 DebrisGlassU1 = 0;
 
@@ -1946,9 +1946,6 @@ void UpdateDebrisRenderStackPriority(void) {
         }
     }
 }
-
-void DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z);
-void DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
 
 i32 update_debris_enabled = 1;
 i32 debris_suspended = 0;

@@ -45,6 +45,7 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 #include "gameapi/edtools/edui.h"
+#include "legoapi/characters/motion/camera.h"
 
 /* Private helpers and combo provider. */
 
@@ -59,8 +60,6 @@ typedef union player_position_sock_u { // size 0x38
         f32 ratio;    // 0x04
     } start;
 } PLAYER_POSITION_SOCK;
-
-extern i32 movegamecamera_forcesock;
 
 PLAYERPROGRESS PlayerProgress[8] = {0};
 PLAYER_START_INITIALIZER_RECORD PlayerStart[8] = {0};

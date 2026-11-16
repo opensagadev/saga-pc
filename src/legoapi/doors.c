@@ -24,6 +24,7 @@
 #include "nu2api/numath/nuplane.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/numath_includes.h"
 
 void Door_Reset(void) {
     DoorExitName[0] = '\0';
@@ -32,7 +33,7 @@ void Door_Reset(void) {
 }
 
 void Doors_Init(WORLDINFO *world) {
-        DOOR_s *door;
+    DOOR_s *door;
     i32 index;
     LastDoorPointer = NULL;
     world->start_door = NULL;
@@ -78,7 +79,7 @@ void Doors_Init(WORLDINFO *world) {
 }
 
 void *Door_FindByName(WORLDINFO *world, char *name) {
-        DOOR_s *door = world->doors;
+    DOOR_s *door = world->doors;
     i32 index;
     if (door != NULL) {
         for (index = 0; index < world->door_count; ++index, ++door) {
@@ -469,8 +470,6 @@ void Doors_Configure(WORLDINFO *world, char *config) {
         world->doors = NULL;
     }
 }
-
-i32 NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
 
 void Door_SetCutCam(DOOR_s *door) {
     Door_UseCutCam = 0;

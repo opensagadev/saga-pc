@@ -52,6 +52,8 @@ extern "C" {
     void edpartCopyType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
     void edpartDebrisSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
     void edpartDeleteType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z);
+    void DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
 #ifdef __cplusplus
 }
 #endif

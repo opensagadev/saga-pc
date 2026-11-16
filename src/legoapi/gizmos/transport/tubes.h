@@ -7,15 +7,15 @@
 struct WORLDINFO_s;
 struct gameobject_s;
 
-typedef struct TUBE {             // size 0x40
-    char name[16];                // 0x00
-    NUVEC position;               // 0x10
-    f32 height;                   // 0x1c
-    f32 radius;                   // 0x20
-    f32 momentum_y;               // 0x24
-    f32 top;                      // 0x28
-    f32 radius_squared;           // 0x2c
-    f32 audio_cooldown;           // 0x30
+typedef struct TUBE {   // size 0x40
+    char name[16];      // 0x00
+    NUVEC position;     // 0x10
+    f32 height;         // 0x1c
+    f32 radius;         // 0x20
+    f32 momentum_y;     // 0x24
+    f32 top;            // 0x28
+    f32 radius_squared; // 0x2c
+    f32 audio_cooldown; // 0x30
 
     union { // size 0x1
         u8 flags;

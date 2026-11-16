@@ -18,10 +18,10 @@
 #include "nu2api/nugscn_gen.h"
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
-void GizmoNameDiagnostic(char *name);
 
 typedef NUVEC *(*GIZMO_GET_POS_FN)(GIZMO *gizmo);
 

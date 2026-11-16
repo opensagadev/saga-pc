@@ -237,9 +237,8 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                         }
                     }
                 } else if (LEGOCONTEXT_PUSHOBSTACLE != -1 && CanPushObstaclesFn != NULL && CanPushObstaclesFn(object) != 0) {
-                    GIZOBSTACLE *obstacle =
-                        GizObstacle_FindNearest(WORLD->giz_obstacle_sys, &object->collision_position, object,
-                                                &distance, OBSTACLE_TRIGGER_PUSH_ONLY);
+                    GIZOBSTACLE *obstacle = GizObstacle_FindNearest(WORLD->giz_obstacle_sys, &object->collision_position, object, &distance,
+                                                                    OBSTACLE_TRIGGER_PUSH_ONLY);
                     if (obstacle != NULL && distance < 6.25) {
                         object->player.character_context = LEGOCONTEXT_PUSHOBSTACLE;
                         ((PUSH_OBJECT_LOCAL *)object)->obstacle_timer = 0.75f;

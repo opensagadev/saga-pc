@@ -43,15 +43,13 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
+#include "legoapi/core/startup/text.h"
 
 /* A second status-screen stage set, registered from the non-LSW branch of
    LoadPermData. The functions below compile to the same code as their LSW
    counterparts; the stage type in each comment comes from its stage table. */
 
 extern "C" {
-
-    void Text_FillInExtendedSaveInfo(void);
-    i32 TriggerAutoSave(void);
 
     i16 dat_007f195c = -1;
     /* Install in extern C data section. */

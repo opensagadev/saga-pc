@@ -28,6 +28,7 @@ extern "C" {
     void IncrementMinikitCounter(struct gameobject_s *object);
     extern f32 KITPOS2YPc;
     i32 AllMiniKitsDone(struct AREASAVE_s *);
+    i32 AllMiniKitsDone(struct AREASAVE_s *);
 #ifdef __cplusplus
 }
 #endif

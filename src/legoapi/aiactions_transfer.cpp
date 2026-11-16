@@ -12,6 +12,7 @@
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/numtx.h"
+#include "legoapi/characters/motion/move.h"
 
 extern "C" i32 special_debug;
 extern "C" void PCSpecialEmptyHandler(...);
@@ -108,7 +109,6 @@ extern "C" {
         return 1;
     }
 }
-extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
 extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS *, AIPATH *, char *, char *, i32, char *, i32,
                                                                    i32);

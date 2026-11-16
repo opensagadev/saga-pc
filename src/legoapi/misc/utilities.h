@@ -51,6 +51,7 @@ extern "C" {
     extern u64 CharacterMaskAll;
     i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
     void SetTexAnimSignals(void);
+    extern u64 CharacterMaskAll;
 #ifdef __cplusplus
 }
 #endif

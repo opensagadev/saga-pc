@@ -14,6 +14,8 @@ extern "C" {
     extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
     extern const char *LEGOASCII_UP;
     void TextInputGlyphName(i32, char *);
+    i32 TriggerAutoSave(void);
+    void Text_FillInExtendedSaveInfo(void);
 #ifdef __cplusplus
 }
 #endif

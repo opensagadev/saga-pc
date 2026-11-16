@@ -324,8 +324,7 @@ extern "C" GRAPPLE_MOTION *Grapple_FindNearest(WORLDINFO *world, NUVEC *position
     } else {
         nearest_distance = 1000000000.0f;
     }
-    Grapple_FindNearestInList(position, world->grapples, world->grapple_count,
-                              object, &nearest, &nearest_distance);
+    Grapple_FindNearestInList(position, world->grapples, world->grapple_count, object, &nearest, &nearest_distance);
     if (object != NULL) {
         Grapple_FindNearestInList(position, DynamicGrapple, 4, object, &nearest, &nearest_distance);
     }
@@ -892,8 +891,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
     }
 
     if (object->player.character_context == LEGOCONTEXT_GRAPPLE) {
-        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
-            object->can_use_object != object->player.grapple) {
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->can_use_object != object->player.grapple) {
             object->player.grapple_motion->activation_progress = 0.0f;
             object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
@@ -1144,8 +1142,7 @@ extern "C" void Grapple_MoveCode(GAMEOBJECT *object) {
         if (!((grapple->disabled && grapple->activation_progress <= 0.0f &&
                (object->player.pad->input_magnitude > 0.0f || object->unknown_281 == 0)) ||
               (!grapple->disabled && ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0 ||
-                                      (4 == object->player.panel_use_request &&
-                                       object->player.panel_request_data != NULL))))) {
+                                      (4 == object->player.panel_use_request && object->player.panel_request_data != NULL))))) {
             SetHeadTarget(object, &grapple->hook_position, 4, 2.0f, 1.0f, 2.0f);
             return;
         }

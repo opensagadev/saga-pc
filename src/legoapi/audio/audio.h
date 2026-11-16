@@ -81,8 +81,6 @@ extern "C" {
     void GameAudio_PlaySfx(i32, NUVEC *, i32, i32);
     void AddLevSfx(struct WORLDINFO_s *, NUVEC *, char *, i32);
     void UpdateLevelSfx(struct WORLDINFO_s *, i32);
-    extern const char AITransferLiteral757a38[12];
-    extern const char AITransferLiteral757a70[11];
     extern i32 BeenAttacked;
     extern REPEAT_SFX_ENTRY RepeatSfxQueue[32];
     extern i32 RepeatSfxQueueHead;

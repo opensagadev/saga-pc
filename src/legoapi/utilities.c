@@ -48,6 +48,7 @@
 #include "nu2api/numath/nuvec.h"
 
 #include <stdlib.h>
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 void NuTexAnimScriptMissing(char *path);
 extern const f64 GameObjectNearFloorNoFloorHeight;
@@ -70,8 +71,6 @@ typedef struct USEFUL_MATERIAL {
     u8 unknown_00[0x40];
     u32 attributes;
 } USEFUL_MATERIAL;
-
-extern NUMTL *SolidMtl;
 
 static f32 UtilitiesFabs(f32 value);
 

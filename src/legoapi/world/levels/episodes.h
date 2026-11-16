@@ -13,6 +13,7 @@ extern "C" {
     extern i32 EpBuildUpTotal;
     extern i32 EpGoldBrickCount;
     extern i32 EpGoldBrickTotal;
+    i32 Episodes_Completed(void);
 #ifdef __cplusplus
 }
 #endif

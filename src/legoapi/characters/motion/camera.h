@@ -12,6 +12,7 @@ extern "C" {
     extern VIEWCAM ViewCam;
     i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *);
     extern NUVEC ObstacleCamCutPts[2];
+    extern i32 movegamecamera_forcesock;
 #ifdef __cplusplus
 }
 #endif

@@ -27,10 +27,9 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
-
-extern void *Door_Last;
-extern u64 CharacterMaskAll;
-i8 Area_CharIDInCurrentList(i32 character_id);
+#include "legoapi/misc/utilities.h"
+#include "legoapi/props/doors/doors.h"
+#include "legoapi/world/areas.h"
 
 TAKEOVEROBJECT takeoverobjects[8] = {0};
 i32 num_takeoverobjects = 0;

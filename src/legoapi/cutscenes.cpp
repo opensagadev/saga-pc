@@ -58,6 +58,7 @@
 #include "nu2api/nuwin32/pcapi.h"
 #include "nu2api/trigger.h"
 #include <stdio.h>
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 static i32 CS_area = 0;
 static i32 CS_fadefogcount = 0;
@@ -106,7 +107,6 @@ extern "C" {
 }
 static f32 CutBlobShadowFadeNear = 0;
 static f32 CutReflectRange2 = 0;
-extern "C" void GameFog_Reset(void);
 
 typedef struct cut_record_cleanup_s { // size 0x8
     void *scene;                      // 0x0

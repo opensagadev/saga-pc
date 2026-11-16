@@ -9,6 +9,7 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufpar.h"
 #include "nu2api/nusound/nusound.h"
+#include "legoapi/core/input/gamepads.h"
 
 extern "C" {
     extern i32 movie_skipped;
@@ -21,7 +22,6 @@ extern "C" {
     void MoviesListNoOp(char *path);
 }
 extern "C" {
-    i32 GamePads_SkipMovie(void);
     i32 NuFmvPlayV(i32 tag, ...);
 }
 

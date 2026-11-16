@@ -31,8 +31,7 @@
 #include "nu2api/numusic/numusic.h"
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
-
-extern "C" void BackDrop_Dump(void);
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 extern "C" {
     i32 SuperStoryEpisode = -1;

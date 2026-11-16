@@ -335,6 +335,8 @@ extern "C" {
 extern "C" {
 #endif
     extern struct eduimenu_s *active_menu;
+    void LostTempleC_Reset(struct WORLDINFO_s *);
+    void LostTempleC_Update(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif

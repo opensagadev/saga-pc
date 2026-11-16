@@ -297,3 +297,8 @@ config/castscan-budget.json truncation 2189 quick run, settled in the refix
 config/castscan-budget.json view-type 173 quick run, settled in the refix
 config/castscan-budget.json widening 201 quick run, settled in the refix
 config/castscan-budget.json record-pun 595 quick run, settled in the refix
+config/oddscan-budget.json candidate-name 30 quick run, settled in the refix
+config/oddscan-budget.json magic-flag 2516 quick run, settled in the refix
+config/oddscan-budget.json magic-state 4332 quick run, settled in the refix
+config/castscan-budget.json redundant-identity 64 quick run, settled in the refix
+config/declscan-budget.json A 25 quick run, settled in the refix

@@ -78,6 +78,14 @@ extern "C" {
     void Save_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     extern i32 status_prompt;
     void GameFog_Reset(void);
+    extern struct numtl_s *SolidMtl;
+    void BackDrop_Dump(void);
+    void DrawFadeScreenWipe(void);
+    void DrawPauseScreenWipe(void);
+    void DrawStillScreen(i32 clear);
+    void GameAnimMissingAnimDiagnostic(char *name);
+    void GameFog_Reset(void);
+    void GizmoNameDiagnostic(char *name);
 #ifdef __cplusplus
 }
 #endif

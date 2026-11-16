@@ -569,6 +569,7 @@ extern "C" {
     void PodLoseSpeed(struct gameobject_s *object, i32 hit, i32 rumble);
     void SetProtocolDroidInterfaceAction(struct gameobject_s *object);
     void GameObjectStuffAfterAnimation(void);
+    void StartBallooning(struct gameobject_s *, i32);
 #ifdef __cplusplus
 }
 #endif

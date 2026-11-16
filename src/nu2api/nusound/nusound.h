@@ -291,6 +291,7 @@ extern "C" {
     void NuSound3UpdateRumble(f32 frame_time);
     void RestoreGameCut(void);
     void SoundUpdate(f32 frame_time);
+    void SoundKillAll(void);
 #ifdef __cplusplus
 }
 #endif

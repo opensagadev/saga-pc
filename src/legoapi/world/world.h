@@ -238,7 +238,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct numtx_s *mini_trooper_storage;               // 0x5044
     struct PORTALDOOR_s *portal_doors;                  // 0x5048
     i32 portal_door_count;                              // 0x504c
-    struct level_sfx_pulse_prefix_s *pulses_sys;                                // 0x5050
+    struct level_sfx_pulse_prefix_s *pulses_sys;        // 0x5050
     struct SPECIALMINIKITSYS_s *special_minikits;       // 0x5054
     struct TIGHTROPE_s *tightropes;                     // 0x5058
     i32 tightrope_count;                                // 0x505c
@@ -250,7 +250,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct HATMACHINE_SYS *hat_machine_sys;             // 0x5074
     struct techno_s *technos;                           // 0x5078
     i32 techno_count;                                   // 0x507c
-    struct GRAPPLE_MOTION *grapples;                   // 0x5080
+    struct GRAPPLE_MOTION *grapples;                    // 0x5080
     i32 grapple_count;                                  // 0x5084
     u8 unknown_5088[0x8];                               // 0x5088
     struct SHARD_s *shards;                             // 0x5090
@@ -272,8 +272,8 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct GIZMOBLOWUP **blowup_target_candidates;      // 0x50d0
     char pad_12a[20];                                   // 0x50d4
     struct numtx_s *gizmo_blowup_mtx_buffer;            // 0x50e8
-    struct minicut_s *minicuts;                                     // 0x50ec
-    struct minicut_part_s *minicut_parts;                                // 0x50f0
+    struct minicut_s *minicuts;                         // 0x50ec
+    struct minicut_part_s *minicut_parts;               // 0x50f0
     i32 minicut_count;                                  // 0x50f4
     struct giztimer_s *giz_timers;                      // 0x50f8
     i32 giz_timers_count;                               // 0x50fc
@@ -294,7 +294,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct KILLPARTS_ACCESSORY *customiser_resources[9]; // 0x5120
     struct NUGSCN_s *customiser_shared_scenes[9];        // 0x5144
     struct TRAFFICANIMSYS_s *trafficanim_sys;            // 0x5168
-    struct carry_plug_sys_s *plug_sys;                                      // 0x516c
+    struct carry_plug_sys_s *plug_sys;                   // 0x516c
     u32 progress_flag_5174;                              // 0x5170
     char pad_15[56];                                     // 0x5174
 } WORLDINFO;

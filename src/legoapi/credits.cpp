@@ -17,6 +17,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numusic/numusic.h"
 #include <stdio.h>
+#include "nu2api/nusound/nusound.h"
 
 struct credit_record_s { // size 0x18
     char *text;          // 0x00
@@ -267,8 +268,6 @@ static void CreditsDrawList(CREDIT_RECORD *credit, f32 time) {
 void Credits_DrawPanel(WORLDINFO *world) {
     CreditsDrawList(CreditList, CreditsTime);
 }
-
-extern "C" void SoundKillAll(void);
 
 extern "C" void Credits_UpdateMenu(MENU *menu) {
     f32 volume = Game_OptionsSave != NULL ? GameSetMusicVolume(Game_OptionsSave) : 1.0f;

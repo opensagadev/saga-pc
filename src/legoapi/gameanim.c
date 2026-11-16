@@ -27,8 +27,7 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-
-void GameAnimMissingAnimDiagnostic(char *name);
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 GAMEANIMPROGRESS gameanimsysprogress = {0};
 

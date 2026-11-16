@@ -34,6 +34,7 @@
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 #include <string.h>
+#include "nu2api/nucore/nucore_includes.h"
 
 static char **TTab_Original = 0;
 char **TTab = 0;
@@ -63,9 +64,6 @@ f32 TextCrawlLineSpacing = 1.3f;
 static i32 Text_MaxStrings_Overall = 0;
 static u32 *Text_StringBits = 0;
 void (*Text_GameSetLanguageFn)(i32) = 0;
-
-extern i32 NuFParGetLineW(NUFPAR *parser);
-extern i32 NuFParGetWordW(NUFPAR *parser);
 
 void Text_InitLanguageList(LANGUAGEDATA *language_list) {
     if (language_list != NULL) {
