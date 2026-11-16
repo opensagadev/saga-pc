@@ -1317,8 +1317,8 @@ void edppDrawCursor(void) {
         line[1].position.x = edpp_cam_pos.x + vector.x;
         line[1].position.y = edpp_cam_pos.y + vector.y;
         line[1].position.z = edpp_cam_pos.z + vector.z;
-        line[0] .0xff0000ff = 0xff0000ff;
-        line[1] .0xff0000ff = 0xff0000ff;
+        line[0].colour = 0xff0000ff;
+        line[1].colour = 0xff0000ff;
         NuRndrLine3d(line, edpp_mtl, NULL);
         vector.x = 0.0f;
         vector.y = 0.375f;
@@ -1347,8 +1347,8 @@ void edppDrawCursor(void) {
             line[1].position.x = edpp_cam_pos.x + vector.x;
             line[1].position.y = edpp_cam_pos.y + vector.y;
             line[1].position.z = edpp_cam_pos.z + vector.z;
-            line[0] .0xffff0000 = 0xffff0000;
-            line[1] .0xffff0000 = 0xffff0000;
+            line[0].colour = 0xffff0000;
+            line[1].colour = 0xffff0000;
             NuRndrLine3d(line, edpp_mtl, NULL);
             if (edpp_nearest != -1) {
                 vector.x = 0.0f;
@@ -1374,8 +1374,8 @@ void edppDrawCursor(void) {
             line[1].position.x = edpp_cam_pos.x + vector.x;
             line[1].position.y = edpp_cam_pos.y + vector.y;
             line[1].position.z = edpp_cam_pos.z + vector.z;
-            line[0] .0xffff0000 = 0xffff0000;
-            line[1] .0xffff0000 = 0xffff0000;
+            line[0].colour = 0xffff0000;
+            line[1].colour = 0xffff0000;
             NuRndrLine3d(line, edpp_mtl, NULL);
             edbitsDrawBasicCube(edpp_cam_pos.x, edpp_cam_pos.y, edpp_cam_pos.z, 0.25f, 0.25f, 0.0f, edpp_facrotx, edpp_facroty, 0,
                                 0xffff0000, edpp_mtl);
