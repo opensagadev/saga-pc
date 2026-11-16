@@ -1862,7 +1862,7 @@ f32 Condition_OpponentOnPath(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *
     (void)process;
     (void)name;
     (void)argument;
-    if (packet != NULL && packet->opponent != NULL && ((((APIOBJECT *)packet->opponent)->ai->path_info.flags & 1) != 0)) {
+    if (packet != NULL && packet->opponent != NULL && ((packet->opponent->ai->path_info.flags & 1) != 0)) {
         return 1.0f;
     }
     return 0.0f;
@@ -2084,7 +2084,7 @@ f32 Condition_GoodyInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACK
 
 f32 Condition_OpponentInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->opponent != NULL && packet->owner != NULL) {
-        GAMEOBJECT *object = packet->opponent;
+        APIOBJECT *object = packet->opponent;
         AIAREA *area = argument;
         if (area == NULL) {
             area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
@@ -2121,7 +2121,7 @@ f32 Condition_OpponentOnSamePath(AISYS *system, AISCRIPTPROCESS *process, AIPACK
     if (packet == NULL || packet->opponent == NULL || packet->path_info.path == NULL) {
         return 0.0f;
     }
-    opponent = (APIOBJECT *)packet->opponent;
+    opponent = packet->opponent;
     if (opponent->ai != NULL && packet->path_info.path == opponent->ai->path_info.path) {
         return 1.0f;
     }
@@ -2554,7 +2554,7 @@ i32 Action_FaceOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
         }
     }
 
-    opponent = processor->action_data_1 != 0 ? ((APIOBJECT *)packet->nearest_opponent) : ((APIOBJECT *)packet->opponent);
+    opponent = processor->action_data_1 != 0 ? packet->nearest_opponent : packet->opponent;
     if (opponent != NULL && opponent->ai != NULL) {
         if (processor->action_data_4 == 0.0f) {
             packet->movement_look_target = &opponent->position;
@@ -5358,8 +5358,7 @@ static i32 RowMoveWander(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT 
                 if (group->is_reversed) {
                     for (i = group->member_count - 1; i >= 0; --i) {
                         object = group->members[i];
-                        if (object != NULL && (object->flags_low & 1) && (object->flags_low & 0x1000) &&
-                            object->leader_selection_state == 0) {
+                        if (object != NULL && (object->flags_low & 1) && (object->flags_low & 0x1000) && object->dead == 0) {
                             group->leader = group->members[i];
                             return 1;
                         }
@@ -5367,8 +5366,7 @@ static i32 RowMoveWander(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT 
                 } else {
                     for (i = 0; i < group->member_count; ++i) {
                         object = group->members[i];
-                        if (object->owner != NULL && (object->flags_low & 1) && (object->flags_low & 0x1000) &&
-                            object->leader_selection_state == 0) {
+                        if (object->owner != NULL && (object->flags_low & 1) && (object->flags_low & 0x1000) && object->dead == 0) {
                             group->leader = group->members[i];
                             return 1;
                         }
@@ -5521,8 +5519,7 @@ static i32 RowMoveTowards(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT
                     if (group->is_reversed) {
                         for (i = group->member_count - 1; i >= 0; --i) {
                             object = group->members[i];
-                            if (object != NULL && (object->flags_low & 1) != 0 && (object->flags_low & 0x1000) != 0 &&
-                                object->leader_selection_state == 0) {
+                            if (object != NULL && (object->flags_low & 1) != 0 && (object->flags_low & 0x1000) != 0 && object->dead == 0) {
                                 group->leader = group->members[i];
                                 break;
                             }
@@ -5531,7 +5528,7 @@ static i32 RowMoveTowards(AIGROUP *group, AIROW *row, AIROW *previous, APIOBJECT
                         for (i = 0; i < group->member_count; ++i) {
                             object = group->members[i];
                             if (object->owner != NULL && (object->flags_low & 1) != 0 && (object->flags_low & 0x1000) != 0 &&
-                                object->leader_selection_state == 0) {
+                                object->dead == 0) {
                                 group->leader = group->members[i];
                                 break;
                             }
@@ -15622,15 +15619,15 @@ i32 Action_CircleOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
             }
         }
     }
-    if (((APIOBJECT *)packet->opponent) != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
+    if (packet->opponent != NULL && packet->opponent->ai != NULL) {
         if ((processor->action_data_1 & AICIRCLE_CURRENT_DIST) != 0) {
             packet->movement_instruction_parameter =
-                NuVecXZDist(&packet->terrain_origin, &((APIOBJECT *)packet->opponent)->ai->last_path_position, &difference);
+                NuVecXZDist(&packet->terrain_origin, &packet->opponent->ai->last_path_position, &difference);
         }
-        position = (processor->action_data_1 & AICIRCLE_TARGET_ORIGIN) != 0 ? &((APIOBJECT *)packet->opponent)->ai->terrain_origin
-                                                                            : &((APIOBJECT *)packet->opponent)->ai->last_path_position;
-        AIMoveInstruction(packet, position, ((APIOBJECT *)packet->opponent)->ai->mover_height,
-                          &((APIOBJECT *)packet->opponent)->ai->path_info, AIMOVE_CIRCLE, packet->movement_instruction_parameter);
+        position = (processor->action_data_1 & AICIRCLE_TARGET_ORIGIN) != 0 ? &packet->opponent->ai->terrain_origin
+                                                                            : &packet->opponent->ai->last_path_position;
+        AIMoveInstruction(packet, position, packet->opponent->ai->mover_height, &packet->opponent->ai->path_info, AIMOVE_CIRCLE,
+                          packet->movement_instruction_parameter);
         if ((processor->action_data_1 & AICIRCLE_FACING) != 0) {
             packet->movement_look_target = position;
         }
@@ -15657,12 +15654,11 @@ i32 Action_MoveAwayFromOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET
             }
         }
     }
-    if (packet->opponent != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
-        AIMoveInstruction(packet, &((APIOBJECT *)packet->opponent)->ai->last_path_position,
-                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info,
-                          AIMOVE_RETREAT, packet->movement_instruction_parameter);
+    if (packet->opponent != NULL && packet->opponent->ai != NULL) {
+        AIMoveInstruction(packet, &packet->opponent->ai->last_path_position, packet->opponent->ai->mover_height,
+                          &packet->opponent->ai->path_info, AIMOVE_RETREAT, packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
-            packet->movement_look_target = &((APIOBJECT *)packet->opponent)->position;
+            packet->movement_look_target = &packet->opponent->position;
         }
     }
     return 0;
@@ -15741,10 +15737,9 @@ i32 Action_RetreatFromOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
             }
         }
     }
-    if (packet->opponent != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
-        AIMoveInstruction(packet, &((APIOBJECT *)packet->opponent)->ai->last_path_position,
-                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info,
-                          AIMOVE_RETREAT, packet->movement_instruction_parameter);
+    if (packet->opponent != NULL && packet->opponent->ai != NULL) {
+        AIMoveInstruction(packet, &packet->opponent->ai->last_path_position, packet->opponent->ai->mover_height,
+                          &packet->opponent->ai->path_info, AIMOVE_RETREAT, packet->movement_instruction_parameter);
     }
     return 0;
 }
@@ -15766,7 +15761,7 @@ i32 Action_RetreatFromNearestOpponent(AISYS *system, AISCRIPTPROCESS *processor,
         }
     }
     if (packet->nearest_opponent != NULL) {
-        target = ((APIOBJECT *)packet->nearest_opponent)->ai;
+        target = packet->nearest_opponent->ai;
         AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, AIMOVE_RETREAT,
                           packet->movement_instruction_parameter);
     }

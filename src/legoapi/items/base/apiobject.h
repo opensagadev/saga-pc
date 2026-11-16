@@ -43,7 +43,7 @@ struct gameobject_s;
 typedef struct APIOBJECTSYS {     // size 0x218
     u32 object_size;              // 0x000
     struct gameobject_s *objects; // 0x004
-    u64 hostility_masks[64];      // 0x008
+    u64 line_of_sight[64];        // 0x008
     i32 los_cursor_208;           // 0x208
     i32 los_cursor_20c;           // 0x20c
 
@@ -488,21 +488,21 @@ struct AIPACKET { // size 0x20c
             AISCRIPTPROCESS *alternate_processor; // 0x0cc
         };
     }; // 0x000
-    struct gameobject_s *owner;                // 0x0d0
-    struct gameobject_s *nearest_opponent;     // 0x0d4
-    f32 nearest_opponent_metric;               // 0x0d8
-    struct gameobject_s *target_dc;            // 0x0dc
-    f32 target_metric_e0;                      // 0x0e0
-    struct gameobject_s *opponent;             // 0x0e4
-    f32 opponent_metric;                       // 0x0e8
-    struct gameobject_s *target_ec;            // 0x0ec
-    f32 target_metric_f0;                      // 0x0f0
-    struct gameobject_s *dont_avoid_character; // 0x0f4
-    NUVEC creature_origin;                     // 0x0f8
-    NUVEC movement_destination;                // 0x104
-    f32 movement_stopping_distance;            // 0x110
-    NUVEC movement_position;                   // 0x114
-    f32 mover_height;                          // 0x120
+    struct gameobject_s *owner;                 // 0x0d0
+    struct APIOBJECT *nearest_opponent;         // 0x0d4
+    f32 nearest_opponent_metric;                // 0x0d8
+    struct APIOBJECT *pending_nearest_opponent; // 0x0dc
+    f32 pending_nearest_metric;                 // 0x0e0
+    struct APIOBJECT *opponent;                 // 0x0e4
+    f32 opponent_metric;                        // 0x0e8
+    struct APIOBJECT *pending_opponent;         // 0x0ec
+    f32 pending_opponent_metric;                // 0x0f0
+    struct gameobject_s *dont_avoid_character;  // 0x0f4
+    NUVEC creature_origin;                      // 0x0f8
+    NUVEC movement_destination;                 // 0x104
+    f32 movement_stopping_distance;             // 0x110
+    NUVEC movement_position;                    // 0x114
+    f32 mover_height;                           // 0x120
 
     union { // size 0x2
         u16 unknown_124;
@@ -601,7 +601,9 @@ struct AIPACKET { // size 0x20c
     f32 time_off_path;          // 0x208
 };
 
-typedef struct APIOBJECT {                          // size 0x29c
+/* The AI library's object: the first 0x2b8 bytes of every GAMEOBJECT (AISysGetPathPos2 builds one of this size on
+   the stack). owner points back at the GAMEOBJECT itself. */
+typedef struct APIOBJECT {                          // size 0x2b8
     struct gameobject_s *owner;                     // 0x000
     AIPACKET *ai;                                   // 0x004
     u8 unknown_008[0x48];                           // 0x008
@@ -673,7 +675,7 @@ typedef struct APIOBJECT {                          // size 0x29c
     i8 locator_name_index;                                        // 0x280
     u8 grounded;                                                  // 0x281
     u8 unknown_282[9];                                            // 0x282
-    u8 leader_selection_state;                                    // 0x28b
+    u8 dead;                                                      // 0x28b
     u8 unknown_28c;                                               // 0x28c
     u8 object_id;                                                 // 0x28d
     u8 unknown_28e[0x4];                                          // 0x28e
@@ -681,6 +683,10 @@ typedef struct APIOBJECT {                          // size 0x29c
     u16 ai_resolved_collision_priority;                           // 0x294
     u8 unknown_296[0x2];                                          // 0x296
     struct APIOBJECT *collision_link;                             // 0x298
+    u8 unknown_29c[0x4];                                          // 0x29c
+    u32 collision_exclusion_mask[2];                              // 0x2a0
+    u64 awareness;                                                // 0x2a8
+    u32 ai_area_mask[2];                                          // 0x2b0
 } APIOBJECT;
 
 /* CHARACTERANIM_CONFIG.flags: the keywords of an anim_start block of a character config (CC_anim_start). */
@@ -856,7 +862,7 @@ typedef struct gameobject_s { // size 0x10d8
 
         struct {                         // size 0x4c
             struct gameobject_s *objptr; // 0x0000
-            u8 unknown_0004[4];          // 0x0004
+            AIPACKET *ai;                // 0x0004
             ANIMPACKET anim_packet;      // 0x0008
         };
 
@@ -1018,14 +1024,7 @@ typedef struct gameobject_s { // size 0x10d8
     u8 unknown_29c[0x4];              // 0x029c
     u32 collision_exclusion_mask[2];  // 0x02a0
 
-    union { // size 0x8
-        u32 hostility_mask[2];
-
-        struct {                   // size 0x8
-            u32 ai_awareness_mask; // 0x02a8
-            u32 ai_seen_mask;      // 0x02ac
-        };
-    }; // 0x02a8
+    u64 awareness; // 0x02a8
 
     u32 ai_area_mask[2];         // 0x02b0
     f32 idle_total_time;         // 0x02b8
@@ -1422,11 +1421,10 @@ typedef struct gameobject_s { // size 0x10d8
     }; // 0x0ea0
 
     NUVEC *context_target_position;    // 0x0eac
-    u32 unknown_eb0;                   // 0x0eb0
-    u32 unknown_eb4;                   // 0x0eb4
-    u32 ai_opponent_exclusion_mask[2]; // 0x0eb8
+    u64 seen_opponents;                // 0x0eb0
+    u64 excluded_opponents;            // 0x0eb8
     struct gameobject_s *alert_target; // 0x0ec0
-    f32 unknown_ec4;                   // 0x0ec4
+    f32 alert_timer;                   // 0x0ec4
     f32 movement_speed_scale;          // 0x0ec8
     f32 timer_ecc;                     // 0x0ecc
 

@@ -878,13 +878,12 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
         }
     }
     if (LevGameObject[0] != NULL) {
-        LevGameObject[0]->ai_opponent_exclusion_mask[0] = 0;
-        LevGameObject[0]->ai_opponent_exclusion_mask[1] = 0;
+        LevGameObject[0]->excluded_opponents = 0;
         if (aicreature_sets_alive[0] != 0) {
             for (i = 0; i < 8; ++i) {
                 player = Player[i];
                 if (player != NULL) {
-                    U64_PAIR(LevGameObject[0]->ai_opponent_exclusion_mask) |= (u64)1 << player->hostility_group;
+                    LevGameObject[0]->excluded_opponents |= (u64)1 << player->hostility_group;
                 }
             }
         } else {
@@ -893,7 +892,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
                 if (player != NULL && ((LevArea[0] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 0)) ||
                                        (LevArea[1] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 1)) ||
                                        (LevArea[2] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 2)))) {
-                    U64_PAIR(LevGameObject[0]->ai_opponent_exclusion_mask) |= (u64)1 << player->hostility_group;
+                    LevGameObject[0]->excluded_opponents |= (u64)1 << player->hostility_group;
                 }
             }
         }

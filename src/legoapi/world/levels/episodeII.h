@@ -108,14 +108,7 @@ typedef struct JEDIB_STATE {                    // size 0x63f0
     GAMEOBJECT *boss;                           // 0x63d8
     f32 wave_timer;                             // 0x63dc
 
-    union { // size 0x8
-        u64 exclusion_mask;
-
-        struct {                     // size 0x8
-            u32 exclusion_mask_low;  // 0x63e0
-            u32 exclusion_mask_high; // 0x63e4
-        };
-    }; // 0x63e0
+    u64 exclusion_mask; // 0x63e0
 
     u32 unique_spawned; // 0x63e8
 } JEDIB_STATE;

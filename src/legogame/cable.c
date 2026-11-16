@@ -404,7 +404,7 @@ void UpdateCables(void) {
                                     if (target->id != (u16)id_ATAT) {
                                         target->flags_ef4 |= 0x200;
                                         AIScriptSetBaseScriptStateByName(&cable->target->ai_packet.script_processor, "BeingTowed");
-                                        cable->target->ai_packet.opponent = cable->source;
+                                        cable->target->ai_packet.opponent = (APIOBJECT *)cable->source;
                                         FaceOpponent(cable->target, &cable->source->collision_position);
                                         target = cable->target;
                                         if ((target->flags_ef0 & APIOBJECT_WALK_BACKWARDS) &&

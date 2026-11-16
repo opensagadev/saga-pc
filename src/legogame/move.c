@@ -2492,8 +2492,8 @@ GAMEOBJECT *ObjOpponent(GAMEOBJECT *object, f32 range, f32 extra_radius, i32 all
         f32 distance;
         i32 behind;
         if (test_ai_combo != 0 && (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->ai_packet.opponent != NULL &&
-            ((APIOBJECT *)object->ai_packet.opponent)->owner != NULL) {
-            target = ((APIOBJECT *)object->ai_packet.opponent)->owner;
+            object->ai_packet.opponent->owner != NULL) {
+            target = object->ai_packet.opponent->owner;
             i = HIGHGAMEOBJECT;
         }
         if (target == object || (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
@@ -5229,7 +5229,7 @@ void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
                     continue;
                 }
                 if ((candidate->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) != 0 &&
-                    (((u64)1 << candidate->hostility_group) & WORLD->object_sys->hostility_masks[object->hostility_group]) == 0) {
+                    (((u64)1 << candidate->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
                     continue;
                 }
             } else if (target_filter == 2 && candidate->player_index == -1) {

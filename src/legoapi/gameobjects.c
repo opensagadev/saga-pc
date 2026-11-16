@@ -100,9 +100,9 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++other) {
         // Shifts through __allshl, which yields 0 for groups >= 64.
         U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
-        U64_PAIR(other->hostility_mask) &= ~((u64)1 << object->hostility_group);
-        U64_PAIR(&other->unknown_eb0) &= ~((u64)1 << object->hostility_group);
-        U64_PAIR(other->ai_opponent_exclusion_mask) &= ~((u64)1 << object->hostility_group);
+        other->awareness &= ~((u64)1 << object->hostility_group);
+        other->seen_opponents &= ~((u64)1 << object->hostility_group);
+        other->excluded_opponents &= ~((u64)1 << object->hostility_group);
     }
     if (object->pad != NULL) {
         object->pad->runtime_flags &= ~1u;

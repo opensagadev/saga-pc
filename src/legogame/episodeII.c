@@ -753,7 +753,7 @@ void JediB_Update(WORLDINFO *world) {
         }
     } else if (jedi_b.phase == 7) {
         if (jedi_b.boss != NULL) {
-            if (player2 != NULL && jedi_b.boss->ai_packet.opponent == player2) {
+            if (player2 != NULL && jedi_b.boss->ai_packet.opponent == (APIOBJECT *)player2) {
                 shift = player2->hostility_group;
             } else {
                 shift = player->hostility_group;
@@ -776,13 +776,11 @@ void JediB_Update(WORLDINFO *world) {
         if (object == NULL) {
             continue;
         }
-        object->ai_opponent_exclusion_mask[0] = 0;
-        object->ai_opponent_exclusion_mask[1] = 0;
+        object->excluded_opponents = 0;
         object = Player[slot];
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && jedi_b.boss != NULL && jedi_b.phase == 7) {
             mask = (u64)1 << jedi_b.boss->hostility_group;
-            object->ai_opponent_exclusion_mask[0] |= (u32)mask;
-            object->ai_opponent_exclusion_mask[1] |= (u32)(mask >> 32);
+            object->excluded_opponents |= mask;
         }
     }
     switch (jedi_b.state) {
@@ -809,7 +807,7 @@ void JediB_Update(WORLDINFO *world) {
                      baddie->object->character_data->game_character->variant != CHARVARIANT_BATTLEDROID)) {
                     target = player;
                 } else {
-                    if (baddie->object->ai_packet.opponent == player) {
+                    if (baddie->object->ai_packet.opponent == (APIOBJECT *)player) {
                         baddie->object->ai_packet.opponent = NULL;
                     }
                     if (player2 != NULL) {
@@ -818,13 +816,13 @@ void JediB_Update(WORLDINFO *world) {
                             (player->character_data->game_character->variant != CHARVARIANT_BATTLEDROID ||
                              baddie->object->character_data->game_character->variant != CHARVARIANT_BATTLEDROID)) {
                             target = player2;
-                        } else if (baddie->object->ai_packet.opponent == player2) {
+                        } else if (baddie->object->ai_packet.opponent == (APIOBJECT *)player2) {
                             baddie->object->ai_packet.opponent = NULL;
                         }
                     }
                 }
                 if (target != NULL) {
-                    baddie->object->ai_packet.opponent = target;
+                    baddie->object->ai_packet.opponent = (APIOBJECT *)target;
                 }
             } else {
                 in_range = (OnOrInsidePlane(&baddie->object->position, &PlayPlane[1].point, &PlayPlane[1].normal, NULL, 2.0f, NULL) == 0 &&
@@ -841,8 +839,8 @@ void JediB_Update(WORLDINFO *world) {
                 if (baddie->object == NULL) {
                     continue;
                 }
-                if (((APIOBJECT *)baddie->object)->ai->opponent == NULL && baddie->partner != NULL && baddie->partner->object != NULL) {
-                    ((APIOBJECT *)baddie->object)->ai->opponent = baddie->partner->object;
+                if (baddie->object->ai->opponent == NULL && baddie->partner != NULL && baddie->partner->object != NULL) {
+                    baddie->object->ai->opponent = (APIOBJECT *)baddie->partner->object;
                 }
             }
         } else if ((baddie->flags & 0x10) == 0 &&
@@ -891,8 +889,7 @@ void JediB_Update(WORLDINFO *world) {
         }
         JediBActiveCount++;
         if ((baddie->flags & 0x10) == 0) {
-            object->ai_opponent_exclusion_mask[0] |= jedi_b.exclusion_mask_low;
-            object->ai_opponent_exclusion_mask[1] |= jedi_b.exclusion_mask_high;
+            object->excluded_opponents |= jedi_b.exclusion_mask;
         }
     }
 }

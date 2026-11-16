@@ -218,21 +218,6 @@ struct MUSIC_PAIR_ARENA {
     u8 unknown_03a[2];
 };
 
-typedef struct OPPONENT_OBJECT {    // size 0x2b0
-    u8 unknown_000[0x230];          // 0x000
-    f32 view_distance;              // 0x230
-    u8 unknown_234[0xc];            // 0x234
-    f32 visibility_range_extension; // 0x240
-    u8 unknown_244[0x64];           // 0x244
-    u64 awareness;                  // 0x2a8
-} OPPONENT_OBJECT;
-
-typedef struct OPPONENT_SYS { // size 0x1388
-    u8 unknown_000[0x1385];   // 0x0000
-    u8 goody_cursor;          // 0x1385
-    u16 assignment_flags;     // 0x1386
-} OPPONENT_SYS;
-
 typedef struct OPTIONS_MENU_READER { // size 0x2
     u8 player_control[2];            // 0x0
 } OPTIONS_MENU_READER;

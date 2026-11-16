@@ -427,10 +427,7 @@ struct AISYS {              // size 0x1394
     u8 next_area_check;         // 0x1384
     u8 goody_idx;               // 0x1385
 
-    union { // size 0x2
-        u8 unknown_1386[0x2];
-        i16 reset_flags;
-    }; // 0x1386
+    i16 reset_flags; // 0x1386
 
     void *game_sys;             // 0x1388
     struct APIOBJECT *player_1; // 0x138c

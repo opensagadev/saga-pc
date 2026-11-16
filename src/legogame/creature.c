@@ -260,11 +260,6 @@ typedef struct AI_RESET_EXTRA {
     f32 reset_timer;
 } AI_RESET_EXTRA;
 
-typedef struct AI_CREATURE_RESET_FLAGS {
-    u8 unknown_0000[0x1386];
-    u16 reset_flags;
-} AI_CREATURE_RESET_FLAGS;
-
 typedef struct moveplayer_pad_bits_s {
     u16 low : 3;
     u16 waggle : 1;
@@ -3566,27 +3561,24 @@ void InitPlayerAI(GAMEOBJECT *object) {
         object->portal_flags &= ~APIOBJECT_RESPAWNABLE;
     }
     object->tag_flags &= ~APIOBJECT_TAG_DISABLED;
-    object->unknown_ec4 = 0.0f;
+    object->alert_timer = 0.0f;
     object->ai_packet.flags &= 0xffffafff;
-    object->ai_packet.target_metric_e0 = 1000000000.0f;
-    object->ai_packet.target_metric_f0 = 1000000000.0f;
+    object->ai_packet.pending_nearest_metric = 1000000000.0f;
+    object->ai_packet.pending_opponent_metric = 1000000000.0f;
     object->ai_packet.antinode_timer = 0.0f;
     object->portal_flags &= 0xfadff7fe;
     object->timer_ecc = 0.0f;
     object->flags_ef0 &= ~APIOBJECT_NOT_WITH_PARTY;
     object->alert_target = NULL;
     object->ai_packet.nearest_opponent = NULL;
-    object->ai_packet.target_dc = NULL;
+    object->ai_packet.pending_nearest_opponent = NULL;
     object->ai_packet.opponent = NULL;
-    object->ai_packet.target_ec = NULL;
-    object->ai_awareness_mask = 0;
-    object->ai_seen_mask = 0;
-    object->unknown_eb0 = 0;
-    object->unknown_eb4 = 0;
+    object->ai_packet.pending_opponent = NULL;
+    object->awareness = 0;
+    object->seen_opponents = 0;
     object->opponent = NULL;
     object->last_attacker = NULL;
-    object->ai_opponent_exclusion_mask[0] = 0;
-    object->ai_opponent_exclusion_mask[1] = 0;
+    object->excluded_opponents = 0;
     memset(object->joint_overrides, 0, 2 * sizeof(object->joint_overrides[0]));
     character = object->character_data;
     object->joint_override_count = 0;
@@ -3856,10 +3848,10 @@ void ResetAICreatures(AISYS *system) {
     GAMEOBJECT *object;
     AICREATURE *creature;
     i32 index;
-    if (system == NULL || (((AI_CREATURE_RESET_FLAGS *)system)->reset_flags & 1) != 0) {
+    if (system == NULL || (system->reset_flags & 1) != 0) {
         return;
     }
-    ((AI_CREATURE_RESET_FLAGS *)system)->reset_flags |= 1;
+    system->reset_flags |= 1;
     object = Obj;
     for (index = 0; index < HIGHGAMEOBJECT; ++index, ++object) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 || (object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
@@ -5014,23 +5006,20 @@ void Players_Init(void) {
             object->ai_packet.flags &= ~0x5000u;
             object->portal_flags &= ~0x801u;
             object->flags_ef4 |= 0x40;
-            object->ai_packet.target_metric_e0 = 1.0e9f;
-            object->ai_packet.target_metric_f0 = 1.0e9f;
+            object->ai_packet.pending_nearest_metric = 1.0e9f;
+            object->ai_packet.pending_opponent_metric = 1.0e9f;
             object->ai_packet.nearest_opponent = NULL;
-            object->ai_packet.target_dc = NULL;
+            object->ai_packet.pending_nearest_opponent = NULL;
             object->ai_packet.opponent = NULL;
-            object->ai_packet.target_ec = NULL;
-            object->unknown_ec4 = 0.0f;
+            object->ai_packet.pending_opponent = NULL;
+            object->alert_timer = 0.0f;
             extra->unknown_454 = 0.0f;
-            object->ai_awareness_mask = 0;
-            object->ai_seen_mask = 0;
-            object->unknown_eb0 = 0;
-            object->unknown_eb4 = 0;
+            object->awareness = 0;
+            object->seen_opponents = 0;
             object->opponent = NULL;
             object->last_attacker = NULL;
             object->alert_target = NULL;
-            object->ai_opponent_exclusion_mask[0] = 0;
-            object->ai_opponent_exclusion_mask[1] = 0;
+            object->excluded_opponents = 0;
             object->timer_ecc = 0.0f;
         }
     }

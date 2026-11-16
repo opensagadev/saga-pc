@@ -868,8 +868,8 @@ void *Condition_OpponentIsAInit(AISYS *system, char *name, AISCRIPT *script) {
 }
 
 f32 Condition_OpponentIsA(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->opponent != NULL && packet->opponent->objptr != NULL &&
-        (i16)packet->opponent->objptr->id == (i32)argument) {
+    if (packet != NULL && packet->opponent != NULL && packet->opponent->owner != NULL &&
+        (i16)packet->opponent->owner->id == (i32)argument) {
         return 1.0f;
     }
     return 0.0f;
@@ -1551,7 +1551,7 @@ f32 Condition_HitPoints(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packe
 }
 
 f32 Condition_CollidingWithOpponent(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    GAMEOBJECT *opponent;
+    APIOBJECT *opponent;
     GAMEOBJECT *owner;
     if (packet != NULL && (opponent = packet->opponent) != NULL && (owner = packet->owner) != NULL &&
         (U64_PAIR(opponent->collision_identity_mask) & U64_PAIR(owner->collision_contact_mask)) != 0) {
@@ -1695,7 +1695,7 @@ f32 Condition_InContext(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packe
 }
 
 f32 Condition_OpponentContext(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (packet != NULL && packet->opponent != NULL && packet->opponent->objptr->character_context == (i32)argument) {
+    if (packet != NULL && packet->opponent != NULL && packet->opponent->owner->character_context == (i32)argument) {
         return 1.0f;
     }
     return 0.0f;
@@ -1957,7 +1957,7 @@ f32 Condition_SockDistanceToPlayer(AISYS *unused0, AISCRIPTPROCESS *unused1, AIP
 f32 Condition_SockDistanceToOpponent(AISYS *unused0, AISCRIPTPROCESS *unused1, AIPACKET *packet, char *unused3, void *unused4) {
     if (packet != NULL && packet->owner != NULL && packet->opponent != NULL) {
         GAMEOBJECT *object = packet->owner->objptr;
-        GAMEOBJECT *target = packet->opponent->objptr;
+        GAMEOBJECT *target = packet->opponent->owner;
         if (target->sock_position.sock_index != -1 && target->sock_position.sock_index == object->sock_position.sock_index) {
             f64 distance = MidDistanceFromSockStart(WORLD->sock_sys, &target->sock_position);
             return (f32)(distance - MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position));
@@ -2304,9 +2304,9 @@ f32 Condition_TakenOver(AISYS *unused0, AISCRIPTPROCESS *unused1, AIPACKET *pack
     if (object == NULL) {
         if (name != NULL) {
             if (NuStrICmp(name, "Opponent") == 0) {
-                GAMEOBJECT *opponent = packet->owner->objptr->ai_packet.opponent;
+                APIOBJECT *opponent = packet->owner->objptr->ai_packet.opponent;
                 if (opponent != NULL) {
-                    object = opponent->objptr;
+                    object = opponent->owner;
                 }
             } else if (NuStrICmp(name, "TakeoverTarget") == 0) {
                 object = packet->owner->objptr;
@@ -2513,11 +2513,11 @@ f32 Condition_GotOpponentLOS(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *
     if (object->character_context == CHARACTER_CONTEXT_FORCE_PUSH) {
         opponent = object->force_target;
     } else {
-        opponent = packet->opponent;
+        opponent = (GAMEOBJECT *)packet->opponent;
     }
     /* hostility_group is below 64 for every live object; __allshl yields 0 otherwise. */
     if (opponent != NULL &&
-        (WORLD->object_sys->hostility_masks[packet->owner->hostility_group] & ((u64)1 << opponent->hostility_group)) != 0) {
+        (WORLD->object_sys->line_of_sight[packet->owner->hostility_group] & ((u64)1 << opponent->hostility_group)) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -2687,7 +2687,7 @@ f32 Condition_OpponentToPlayerRange(AISYS *system, AISCRIPTPROCESS *process, AIP
 
 f32 Condition_OpponentPathPosRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (packet != NULL && packet->owner != NULL && packet->opponent != NULL) {
-        AIPACKET *opponent_packet = ((APIOBJECT *)packet->opponent)->ai;
+        AIPACKET *opponent_packet = packet->opponent->ai;
         if (opponent_packet != NULL) {
             NUVEC difference;
             return NuVecDist(&packet->owner->position, &opponent_packet->last_path_position, &difference);
@@ -2857,14 +2857,14 @@ f32 Condition_AreaComplete(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *pa
 
 f32 Condition_ShouldAttackOpponent(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     GAMEOBJECT *object;
-    GAMEOBJECT *opponent;
+    APIOBJECT *opponent;
     if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 0.0f;
     }
     object = packet->owner->objptr;
     opponent = object->ai_packet.opponent;
-    if (opponent != NULL && opponent->objptr != NULL && (object->ai_packet.flags & 0x800) != 0 &&
-        object->ai_packet.opponent_metric < 1.0f && (opponent->objptr->id == (u16)id_BAT || opponent->objptr->id == (u16)id_SNAKE)) {
+    if (opponent != NULL && opponent->owner != NULL && (object->ai_packet.flags & 0x800) != 0 && object->ai_packet.opponent_metric < 1.0f &&
+        (opponent->owner->id == (u16)id_BAT || opponent->owner->id == (u16)id_SNAKE)) {
         return 1.0f;
     }
     return 0.0f;
@@ -3347,7 +3347,7 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                     object->ai_packet.flags &= ~0x800u;
                     object->ai_packet.opponent = NULL;
                     object->alert_target = NULL;
-                    object->unknown_ec4 = 0.0f;
+                    object->alert_timer = 0.0f;
                 }
             }
         } else {
@@ -3407,7 +3407,7 @@ i32 Action_SetSide(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
                         candidate->ai_packet.flags &= ~0x800u;
                         candidate->ai_packet.opponent = NULL;
                         candidate->alert_target = NULL;
-                        candidate->unknown_ec4 = 0.0f;
+                        candidate->alert_timer = 0.0f;
                     }
                 }
             }
@@ -3547,7 +3547,7 @@ i32 Action_Kill(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, cha
             object = found != NULL ? found->owner : NULL;
         } else if (NuStrIStr(params[index], "opponent") != NULL) {
             if (packet->opponent != NULL) {
-                object = ((APIOBJECT *)packet->opponent)->owner;
+                object = packet->opponent->owner;
             }
         } else if (NuStrICmp(params[index], "respawn") == 0) {
             respawn = 1;
@@ -4581,7 +4581,7 @@ i32 Action_AttackOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
     if (processor->action_data_6 != ATTACK_OVERRIDE_NONE) {
         object->attack_override = (u8)processor->action_data_6;
     }
-    opponent = (APIOBJECT *)packet->opponent;
+    opponent = packet->opponent;
     if (opponent == NULL || opponent->ai == NULL) {
         return 0;
     }
@@ -4594,7 +4594,7 @@ i32 Action_AttackOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
     }
     distance_squared = NuVecDistSqr(&target->position, &((APIOBJECT *)packet->owner)->position, &delta);
     if ((object->flags_ef4 & APIOBJECT_USE_ONE_AT_ONCE) != 0) {
-        reloaded_opponent = (APIOBJECT *)object->ai_packet.opponent;
+        reloaded_opponent = object->ai_packet.opponent;
         if (oneAtOnce_CanAttack(object, reloaded_opponent->owner) != 0) {
             packet->movement_instruction_parameter = 0.0f;
             processor->action_data_1 &= ~AIENGAGE_KEEP_RANGE;
@@ -4767,7 +4767,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
     distance_squared = NuVecDistSqr(&opponent->position, &packet->owner->position, &difference);
 
     if ((object->flags_ef4 & APIOBJECT_USE_ONE_AT_ONCE) != 0) {
-        if (oneAtOnce_CanAttack(object, ((APIOBJECT *)object->ai_packet.opponent)->owner)) {
+        if (oneAtOnce_CanAttack(object, object->ai_packet.opponent->owner)) {
             processor->action_data_1 &= (u8)(~AIENGAGE_KEEP_RANGE);
             goal_range = 0.1f;
         } else {
@@ -4776,8 +4776,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         }
     } else if (packet->movement_instruction_parameter != 0.0f &&
                (((opponent->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->model_draw_result == 0) ||
-                (((u64)1 << opponent->hostility_group) & WORLD->object_sys->hostility_masks[((APIOBJECT *)packet->owner)->object_id]) ==
-                    0)) {
+                (((u64)1 << opponent->hostility_group) & WORLD->object_sys->line_of_sight[((APIOBJECT *)packet->owner)->object_id]) == 0)) {
         goal_range = 0.1f;
     } else {
         goal_range = packet->movement_instruction_parameter;
@@ -4842,7 +4841,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         }
     }
 
-    if ((((u64)1 << opponent->hostility_group) & WORLD->object_sys->hostility_masks[object->hostility_group]) == 0) {
+    if ((((u64)1 << opponent->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
         return 0;
     }
     character_flags_2 = object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE;
@@ -4930,8 +4929,7 @@ i32 Action_ShootAtOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
     opponent = processor->action_data_3;
     if (opponent == NULL || (opponent->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
         (opponent->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || (opponent->dead != 0 && !(opponent->unknown_1010 > 0.0f))) {
-        if (packet->opponent == NULL || ((APIOBJECT *)packet->opponent)->ai == NULL ||
-            (opponent = ((APIOBJECT *)packet->opponent)->owner) == NULL) {
+        if (packet->opponent == NULL || packet->opponent->ai == NULL || (opponent = packet->opponent->owner) == NULL) {
             return 0;
         }
     }
@@ -4946,7 +4944,7 @@ i32 Action_ShootAtOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
             outside_arc = 0;
         }
     }
-    if ((((u64)1 << opponent->hostility_group) & WORLD->object_sys->hostility_masks[object->hostility_group]) == 0) {
+    if ((((u64)1 << opponent->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
         return 0;
     }
     if (object->model_draw_result == 0 && (processor->action_data_1 & AIENGAGE_OFFSCREEN) == 0) {
@@ -5070,7 +5068,7 @@ i32 Action_GrabVictim(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
         return 1;
     }
     if (object->ai_packet.opponent != NULL) {
-        victim = ((APIOBJECT *)object->ai_packet.opponent)->owner;
+        victim = object->ai_packet.opponent->owner;
     }
     for (index = 0; index < count; ++index) {
         value = NuStrIStr(params[index], "victim=");
@@ -5156,18 +5154,18 @@ i32 Action_FollowDirection(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
     }
     NuVecAdd(&destination, &object->position, &processor->action_pos);
     AIMoveInstruction(packet, &destination, 0.0f, NULL, AIMOVE_TO_DESTINATION, 0.0f);
-    if (processor->action_data_4 > 0.0f && packet->opponent != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
-        distance_squared = NuVecDistSqr(&((APIOBJECT *)packet->owner)->position, &((APIOBJECT *)packet->opponent)->position, &difference);
-        opponent = (APIOBJECT *)packet->opponent;
-        if ((((u64)1 << opponent->object_id) & WORLD->object_sys->hostility_masks[object->hostility_group]) != 0 &&
+    if (processor->action_data_4 > 0.0f && packet->opponent != NULL && packet->opponent->ai != NULL) {
+        distance_squared = NuVecDistSqr(&((APIOBJECT *)packet->owner)->position, &packet->opponent->position, &difference);
+        opponent = packet->opponent;
+        if ((((u64)1 << opponent->object_id) & WORLD->object_sys->line_of_sight[object->hostility_group]) != 0 &&
             object->model_draw_result != 0 && distance_squared < processor->action_data_4 * processor->action_data_4) {
             target = opponent->owner;
-            if (opponent->leader_selection_state == 0 || target->unknown_1010 > 0.0f) {
+            if (opponent->dead == 0 || target->unknown_1010 > 0.0f) {
                 processor->action_timer -= elapsed;
-                if (((APIOBJECT *)packet->opponent)->leader_selection_state == 0 && processor->action_timer <= 0.0f) {
+                if (packet->opponent->dead == 0 && processor->action_timer <= 0.0f) {
                     processor->action_timer = (f32)(NuRandFloat() * processor->action_data_5 + 0.5 * processor->action_data_5);
                     object->pad->buttons_pressed |= GAMEPAD_ACTION;
-                    object->script_fire_target = ((APIOBJECT *)packet->opponent)->owner;
+                    object->script_fire_target = packet->opponent->owner;
                 }
             }
         }
@@ -8545,8 +8543,8 @@ i32 Action_TakeDamage(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
                 damage = (i32)AIParamToFloat(processor, value + 7);
             } else if (NuStrIStr(params[index], "opponent") != NULL) {
                 if (packet != NULL && packet->opponent != NULL) {
-                    if (packet->opponent->objptr != NULL) {
-                        object = packet->opponent->objptr;
+                    if (packet->opponent->owner != NULL) {
+                        object = packet->opponent->owner;
                         if (packet->owner != NULL && packet->owner->objptr != NULL) {
                             hitter = packet->owner->objptr;
                         }
@@ -10318,7 +10316,7 @@ i32 Action_GetLocatorFromSet(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *p
     if (use_player) {
         reference_position = &player->position;
     } else if (use_opponent && object->ai_packet.opponent != NULL) {
-        reference_position = &((APIOBJECT *)object->ai_packet.opponent)->position;
+        reference_position = &object->ai_packet.opponent->position;
     } else {
         reference_position = &target->position;
     }
@@ -10468,7 +10466,7 @@ i32 Action_SetLastAttacker(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
         }
         if (NuStrICmp(params[index], "attacker=opponent") == 0) {
             if (packet != NULL && packet->opponent != NULL) {
-                attacker = ((APIOBJECT *)packet->opponent)->owner;
+                attacker = packet->opponent->owner;
             }
             continue;
         }
@@ -10566,7 +10564,7 @@ i32 Action_TakeOver(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, ch
                     }
                 } else if (NuStrIStr(params[index], "Opponent") != NULL) {
                     if (packet->opponent != NULL) {
-                        target = ((APIOBJECT *)packet->opponent)->owner;
+                        target = packet->opponent->owner;
                     }
                 } else if (NuStrIStr(params[index], "release") != NULL) {
                     release = 1;
@@ -11090,7 +11088,7 @@ i32 Action_WalkBackwards(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
         }
     }
 
-    opponent = (APIOBJECT *)packet->opponent;
+    opponent = packet->opponent;
     if (opponent != NULL && opponent->ai != NULL) {
         owner = packet->owner->objptr;
         AIMoveInstruction(packet, &opponent->ai->last_path_position, opponent->ai->mover_height, &opponent->ai->path_info, AIMOVE_RETREAT,
@@ -11775,8 +11773,8 @@ i32 Action_RaceOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pac
     }
 
     MoveSockPosition(WORLD->sock_sys, &actor->sock_position, 10.0f, &projected_position);
-    opponent = packet->opponent;
-    if (opponent != NULL && ((APIOBJECT *)opponent)->ai != NULL) {
+    opponent = (GAMEOBJECT *)packet->opponent;
+    if (opponent != NULL && opponent->ai != NULL) {
         actor_distance = MidDistanceFromSockStart(WORLD->sock_sys, &actor->sock_position);
         distance_delta = (f32)(actor_distance - MidDistanceFromSockStart(WORLD->sock_sys, &opponent->sock_position));
         distance_delta = distance_delta - processor->action_data_4;

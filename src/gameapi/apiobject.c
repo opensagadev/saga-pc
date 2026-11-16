@@ -249,9 +249,9 @@ GAMEOBJECT *APIObjectCreate(APIOBJECTSYS *system) {
 
 void APIObjectRemoveFromLOSTable(APIOBJECTSYS *system, GAMEOBJECT *source, GAMEOBJECT *target) {
     if (source != NULL) {
-        system->hostility_masks[source->hostility_group] &= ~((u64)1 << target->hostility_group);
+        system->line_of_sight[source->hostility_group] &= ~((u64)1 << target->hostility_group);
     } else {
-        system->hostility_masks[target->hostility_group] = 0;
+        system->line_of_sight[target->hostility_group] = 0;
     }
 }
 
@@ -259,7 +259,7 @@ void APIObjectDestroy(APIOBJECTSYS *system, GAMEOBJECT *object) {
     i32 index;
     GAMEOBJECT *other;
     if (system != NULL && object != NULL && system->object_size != 0) {
-        if (system->hostility_masks != NULL) {
+        if (system->line_of_sight != NULL) {
             other = system->objects;
             for (index = 0; index < 64; ++index, other = (GAMEOBJECT *)((u8 *)other + system->object_size)) {
                 if ((other->flags_1fc & APIOBJECT_FLAG_IN_USE) != 0) {
@@ -358,7 +358,7 @@ void APIObjectLOSChecks(APIOBJECTSYS *system, i32 checks, i32 source_count, APIO
             if ((source->flags_low & 0x200)) {
                 source_visible = 1;
             } else if (((source->flags_low & 0x4000) || (target->flags_low & 0x4000)) &&
-                       (system->hostility_masks[source_index] & ((u64)1 << target->object_id)) != 0 &&
+                       (system->line_of_sight[source_index] & ((u64)1 << target->object_id)) != 0 &&
                        distance_squared < source_range * source_range) {
                 source_visible = 1;
             } else if (distance_squared < source_range * source_range &&
@@ -371,7 +371,7 @@ void APIObjectLOSChecks(APIOBJECTSYS *system, i32 checks, i32 source_count, APIO
             if ((target->flags_low & 0x200)) {
                 target_visible = 1;
             } else if (((target->flags_low & 0x4000) || (source->flags_low & 0x4000)) &&
-                       (system->hostility_masks[target_index] & ((u64)1 << source->object_id)) != 0 &&
+                       (system->line_of_sight[target_index] & ((u64)1 << source->object_id)) != 0 &&
                        distance_squared < target_range * target_range) {
                 target_visible = 1;
             } else if (distance_squared < target_range * target_range &&
@@ -384,41 +384,41 @@ void APIObjectLOSChecks(APIOBJECTSYS *system, i32 checks, i32 source_count, APIO
             if ((source_visible | target_visible) != 0) {
                 if ((system->flags & 1) || (target->flags_low & 0x400) || (source->flags_low & 0x400)) {
                     if (source_visible != 0) {
-                        system->hostility_masks[source_index] |= (u64)1 << target_index;
+                        system->line_of_sight[source_index] |= (u64)1 << target_index;
                     } else {
-                        system->hostility_masks[source_index] &= ~((u64)1 << target_index);
+                        system->line_of_sight[source_index] &= ~((u64)1 << target_index);
                     }
                     if (target_visible != 0) {
-                        system->hostility_masks[target_index] |= (u64)1 << source_index;
+                        system->line_of_sight[target_index] |= (u64)1 << source_index;
                     } else {
-                        system->hostility_masks[target_index] &= ~((u64)1 << source_index);
+                        system->line_of_sight[target_index] &= ~((u64)1 << source_index);
                     }
                 } else if (QuickNewRayCast(&source->collision_position, &difference, 0.0f, 0, 100.0f, ray_step) == 0) {
                     if (source_visible != 0) {
-                        system->hostility_masks[source_index] |= (u64)1 << target_index;
+                        system->line_of_sight[source_index] |= (u64)1 << target_index;
                     } else {
-                        system->hostility_masks[source_index] &= ~((u64)1 << target_index);
+                        system->line_of_sight[source_index] &= ~((u64)1 << target_index);
                     }
                     if (target_visible != 0) {
-                        system->hostility_masks[target_index] |= (u64)1 << source_index;
+                        system->line_of_sight[target_index] |= (u64)1 << source_index;
                     } else {
-                        system->hostility_masks[target_index] &= ~((u64)1 << source_index);
+                        system->line_of_sight[target_index] &= ~((u64)1 << source_index);
                     }
                 } else {
                     if (source_visible != 0 && (source->flags_low & 0x400)) {
-                        system->hostility_masks[source_index] |= (u64)1 << target_index;
+                        system->line_of_sight[source_index] |= (u64)1 << target_index;
                     } else {
-                        system->hostility_masks[source_index] &= ~((u64)1 << target_index);
+                        system->line_of_sight[source_index] &= ~((u64)1 << target_index);
                     }
                     if (target_visible != 0 && (target->flags_low & 0x400)) {
-                        system->hostility_masks[target_index] |= (u64)1 << source_index;
+                        system->line_of_sight[target_index] |= (u64)1 << source_index;
                     } else {
-                        system->hostility_masks[target_index] &= ~((u64)1 << source_index);
+                        system->line_of_sight[target_index] &= ~((u64)1 << source_index);
                     }
                 }
             } else {
-                system->hostility_masks[target_index] &= ~((u64)1 << source_index);
-                system->hostility_masks[source_index] &= ~((u64)1 << target_index);
+                system->line_of_sight[target_index] &= ~((u64)1 << source_index);
+                system->line_of_sight[source_index] &= ~((u64)1 << target_index);
             }
             ++system->los_cursor_208;
             --checks;

@@ -470,9 +470,9 @@ void ManageGameObjects(void) {
                         other = Obj;
                         for (j = 0; j < HIGHGAMEOBJECT; ++j, ++other) {
                             U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
-                            U64_PAIR(other->hostility_mask) &= ~((u64)1 << object->hostility_group);
-                            U64_PAIR(&other->unknown_eb0) &= ~((u64)1 << object->hostility_group);
-                            U64_PAIR(other->ai_opponent_exclusion_mask) &= ~((u64)1 << object->hostility_group);
+                            other->awareness &= ~((u64)1 << object->hostility_group);
+                            other->seen_opponents &= ~((u64)1 << object->hostility_group);
+                            other->excluded_opponents &= ~((u64)1 << object->hostility_group);
                         }
                         if ((object->flags_1f8 & 0x4000) != 0) {
                             if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
@@ -1732,7 +1732,7 @@ GAMEOBJECT *TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *directi
             continue;
         }
         if (arcade == 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (target->flags_ef4 & 0x800000) == 0) {
-            if ((((u64)1 << target->hostility_group) & WORLD->object_sys->hostility_masks[object->hostility_group]) == 0) {
+            if ((((u64)1 << target->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
                 continue;
             }
         }
@@ -2897,17 +2897,16 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     }
     object->ai_packet.flags &= ~0x5000;
     object->ai_packet.nearest_opponent = NULL;
-    object->ai_packet.target_dc = NULL;
-    object->ai_packet.target_ec = NULL;
-    object->ai_packet.target_metric_e0 = 1000000000.0f;
-    object->ai_packet.target_metric_f0 = 1000000000.0f;
-    object->ai_awareness_mask = 0;
-    object->ai_seen_mask = 0;
-    object->unknown_eb4 = object->unknown_eb0 = 0;
+    object->ai_packet.pending_nearest_opponent = NULL;
+    object->ai_packet.pending_opponent = NULL;
+    object->ai_packet.pending_nearest_metric = 1000000000.0f;
+    object->ai_packet.pending_opponent_metric = 1000000000.0f;
+    object->awareness = 0;
+    object->seen_opponents = 0;
     object->opponent = NULL;
     object->ai_packet.opponent = NULL;
     object->alert_target = NULL;
-    object->unknown_ec4 = 0.0f;
+    object->alert_timer = 0.0f;
     if (object->reciprocal_target != NULL) {
         object->reciprocal_target->reciprocal_target = NULL;
         object->reciprocal_target = NULL;
