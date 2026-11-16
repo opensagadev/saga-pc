@@ -459,19 +459,6 @@ PropertyMenuMetrics menu_startmetrics = {20, 5, 200, 400};
  * them declare them. */
 extern "C" {
 
-#define EDDRAW_SET_VEC4(v, px, py, pz)                                                                                                     \
-    do {                                                                                                                                   \
-        (v)->x = (px);                                                                                                                     \
-        (v)->y = (py);                                                                                                                     \
-        (v)->z = (pz);                                                                                                                     \
-        (v)->w = 1.0f;                                                                                                                     \
-    } while (0)
-
-#define EDDRAW_DARKEN_CHANNEL(colour, shift) ((u8)((((colour) >> (shift)) & 0xff) * 0xdc / 256))
-#define EDDRAW_DARKEN(colour)                                                                                                              \
-    ((((EDDRAW_DARKEN_CHANNEL(colour, 16) << 8) | EDDRAW_DARKEN_CHANNEL(colour, 8)) << 8) | ((((colour) & 0xff) * 0xdc / 256) & 0xff) |    \
-     ((colour) & 0xff000000))
-
     static void EdDrawSetVertexColour(i32 colour) {
         i32 converted;
         if (NuPrimNeedsOverbrightening != 0) {
@@ -2644,7 +2631,8 @@ void EdDrawPolyCylinder(NUMTX *matrix, f32 half_height, f32 radius, f32 top_radi
     __declspec(align(16)) VuVec b;
     VuVec c;
     f32 scale = top_radius / radius;
-    i32 dark = EDDRAW_DARKEN(colour);
+    i32 dark = ((((((u8)(((colour >> 16) & 0xff) * 0xdc / 256)) << 8) | ((u8)(((colour >> 8) & 0xff) * 0xdc / 256))) << 8) |
+                (((colour & 0xff) * 0xdc / 256) & 0xff) | (colour & 0xff000000));
     i32 tri_colour = 0;
     f32 s0;
     f32 c0;

@@ -373,10 +373,6 @@ GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, oppon
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-#define ACTION_MUSIC_PLAYER_FIGHTING(player)                                                                                               \
-    ((player) != NULL && ((player)->ai_packet.opponent != NULL ||                                                                          \
-                          ((player)->ai_packet.nearest_opponent != NULL && (player)->ai_packet.nearest_opponent->dead == 0 &&              \
-                           (player)->ai_packet.nearest_opponent_metric < 3.0f)))
 GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
 GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
 GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, score) == 0xdc);
@@ -1586,10 +1582,14 @@ static i32 ActionMusicFn(void) {
         if (WORLD->current_level == HUB_LDATA) {
             return ai_fighting != 0;
         }
-        if (ACTION_MUSIC_PLAYER_FIGHTING(Player[0])) {
+        if (((Player[0]) != NULL && (Player[0]->ai_packet.opponent != NULL ||
+                                     (Player[0]->ai_packet.nearest_opponent != NULL && Player[0]->ai_packet.nearest_opponent->dead == 0 &&
+                                      Player[0]->ai_packet.nearest_opponent_metric < 3.0f)))) {
             return 1;
         }
-        if (ACTION_MUSIC_PLAYER_FIGHTING(Player[1])) {
+        if (((Player[1]) != NULL && (Player[1]->ai_packet.opponent != NULL ||
+                                     (Player[1]->ai_packet.nearest_opponent != NULL && Player[1]->ai_packet.nearest_opponent->dead == 0 &&
+                                      Player[1]->ai_packet.nearest_opponent_metric < 3.0f)))) {
             return 1;
         }
     }
@@ -2028,7 +2028,7 @@ extern "C" {
         }
         for (i = 0; i < 44; ++i) {
             CompletionPointInfoRecalculate[4] += POINTS_PER_CHEAT;
-            // MATCH-EXCEPTION: unsigned word index (shr) with a signed loop counter (jl).
+            // MATCH-EXCEPTION: unsigned word index (shr) with a signed loop counter jl.
             if ((save->purchased_extra_bits[(u32)i >> 5] & (1U << (i & 31))) != 0) {
                 AddToCompletionPoints(POINTS_PER_CHEAT);
             }

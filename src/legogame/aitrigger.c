@@ -64,13 +64,6 @@ typedef struct trigger_system_s { // size 0x4304
     i32 unknown_4300;             // 0x4300
 } TRIGGER_SYSTEM;
 
-#define AITRIGGER_RELEASE(system, set, index)                                                                                              \
-    if ((set)->trigger_indices[index] != -1) {                                                                                             \
-        (system)->assigned_set[(set)->trigger_indices[index]] = -1;                                                                        \
-        (system)->assigned_trigger[(set)->trigger_indices[index]] = -1;                                                                    \
-        (set)->trigger_indices[index] = -1;                                                                                                \
-    }
-
 void AITriggerSetSysReset(TRIGGER_SYSTEM *system) {
     i32 index;
     if (system == NULL) {
@@ -286,7 +279,11 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                         object = &Obj[set->trigger_indices[index]];
                         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 ||
                             (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || !GameObjectUsingLever(object, lever)) {
-                            AITRIGGER_RELEASE(system, set, index);
+                            if (set->trigger_indices[index] != -1) {
+                                system->assigned_set[set->trigger_indices[index]] = -1;
+                                system->assigned_trigger[set->trigger_indices[index]] = -1;
+                                set->trigger_indices[index] = -1;
+                            }
                         }
                     }
                 } else if (gizmo->type_id == obstacle_gizmotype_id) {
@@ -302,7 +299,11 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                             set->occupied &= ~(1 << index);
                         }
                     } else if ((obstacle->progress_flags & OBSTACLE_VISIBLE) == 0 || (obstacle->progress_flags & OBSTACLE_ACTIVE) == 0) {
-                        AITRIGGER_RELEASE(system, set, index);
+                        if (set->trigger_indices[index] != -1) {
+                            system->assigned_set[set->trigger_indices[index]] = -1;
+                            system->assigned_trigger[set->trigger_indices[index]] = -1;
+                            set->trigger_indices[index] = -1;
+                        }
                     }
                 } else if (gizmo->type_id == spinner_gizmotype_id) {
                     TRIGGER_SPINNER *spinner = gizmo->object;
@@ -326,7 +327,11 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                     } else if ((set->occupied & (1 << index)) != 0) {
                         set->occupied &= ~(1 << index);
                     } else if (GizForce_Complete(force)) {
-                        AITRIGGER_RELEASE(system, set, index);
+                        if (set->trigger_indices[index] != -1) {
+                            system->assigned_set[set->trigger_indices[index]] = -1;
+                            system->assigned_trigger[set->trigger_indices[index]] = -1;
+                            set->trigger_indices[index] = -1;
+                        }
                     }
                 } else if (gizmo->type_id == grapple_gizmotype_id) {
                     void *grapple = gizmo->object;
@@ -338,14 +343,22 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                     } else if ((set->occupied & (1 << index)) != 0) {
                         set->occupied &= ~(1 << index);
                     } else if (Grapple_Occupied(grapple, object, NULL) != NULL) {
-                        AITRIGGER_RELEASE(system, set, index);
+                        if (set->trigger_indices[index] != -1) {
+                            system->assigned_set[set->trigger_indices[index]] = -1;
+                            system->assigned_trigger[set->trigger_indices[index]] = -1;
+                            set->trigger_indices[index] = -1;
+                        }
                     }
                 } else {
                     set->occupied &= ~(1 << index);
                 }
             } else {
                 set->occupied &= ~(1 << index);
-                AITRIGGER_RELEASE(system, set, index);
+                if (set->trigger_indices[index] != -1) {
+                    system->assigned_set[set->trigger_indices[index]] = -1;
+                    system->assigned_trigger[set->trigger_indices[index]] = -1;
+                    set->trigger_indices[index] = -1;
+                }
             }
         }
         player_count = (player2 != NULL) + 1;
@@ -442,7 +455,11 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
             }
         } else if (has_assignments != 0) {
             for (index = 0; index < set->trigger_count; ++index) {
-                AITRIGGER_RELEASE(system, set, index);
+                if (set->trigger_indices[index] != -1) {
+                    system->assigned_set[set->trigger_indices[index]] = -1;
+                    system->assigned_trigger[set->trigger_indices[index]] = -1;
+                    set->trigger_indices[index] = -1;
+                }
             }
         }
         set->flags &= ~2;

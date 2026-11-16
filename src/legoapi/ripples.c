@@ -131,9 +131,6 @@ void AddRipple(RIPPLE_SET *set, NUMTX *matrix, f32 size, f32 growth, f32 lifetim
     }
 }
 
-#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW *)WORLD)
-#undef RIPPLE_WORLD
-
 static WORLDINFO *RippleEffectsWorldInfo = 0;
 static RIPPLE_EFFECT *RippleEffectsCurrent = 0;
 static const char *RippleEffectNames[2] = {"water", "forcefield"};

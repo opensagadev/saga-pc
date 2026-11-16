@@ -45,8 +45,6 @@ enum {
     THING_SKIP_EFFECTS = 9
 };
 
-#define THING_TAKES_PASS(thing, bit) ((~((thing)->flags >> (bit)) & 1) != 0)
-
 extern "C" {
     ThingManager *theThingManager = NULL;
 }
@@ -126,7 +124,7 @@ void ThingManager::RemoveTemporaryThings() {
 i32 ThingManager::RemoveDependanciesThings(ThingRemoveData *data) {
     i32 removed = 1;
     for (i32 i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_REMOVE_DEPENDANCIES)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_REMOVE_DEPENDANCIES)) & 1) != 0)) {
             removed &= things[i]->RemoveDependancies(data);
         }
     }
@@ -135,7 +133,7 @@ i32 ThingManager::RemoveDependanciesThings(ThingRemoveData *data) {
 
 void ThingManager::ResetThings(ThingResetData *data) {
     for (i32 i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_RESET)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_RESET)) & 1) != 0)) {
             if (things[i]->profiling != 0) {
                 _NuTimeBarSlotBegin(timebar, 4, "Res");
             }
@@ -149,7 +147,7 @@ void ThingManager::ResetThings(ThingResetData *data) {
 
 void ThingManager::EnterLevelThings(ThingLevelData *data) {
     for (i32 i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_ENTER_LEVEL)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_ENTER_LEVEL)) & 1) != 0)) {
             things[i]->EnterLevel(data);
         }
     }
@@ -157,7 +155,7 @@ void ThingManager::EnterLevelThings(ThingLevelData *data) {
 
 void ThingManager::ExitLevelThings(ThingLevelData *data) {
     for (i32 i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_EXIT_LEVEL)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_EXIT_LEVEL)) & 1) != 0)) {
             things[i]->ExitLevel(data);
         }
     }
@@ -167,7 +165,7 @@ void ThingManager::ExitLevelThings(ThingLevelData *data) {
 void ThingManager::ProcessThings(ThingProcessData *data) {
     i32 i;
     for (i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_PROCESS_EVEN_WHEN_PAUSED)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_PROCESS_EVEN_WHEN_PAUSED)) & 1) != 0)) {
             if (things[i]->profiling != 0) {
                 _NuTimeBarSlotBegin(timebar, 0, "PROC");
             }
@@ -179,7 +177,7 @@ void ThingManager::ProcessThings(ThingProcessData *data) {
     }
     if (data->paused != 0) {
         for (i = 0; i < count; i++) {
-            if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_PROCESS_ONLY_WHEN_PAUSED)) {
+            if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_PROCESS_ONLY_WHEN_PAUSED)) & 1) != 0)) {
                 if (things[i]->profiling != 0) {
                     _NuTimeBarSlotBegin(timebar, 0, "PROC");
                 }
@@ -191,7 +189,7 @@ void ThingManager::ProcessThings(ThingProcessData *data) {
         }
     } else {
         for (i = 0; i < count; i++) {
-            if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_PROCESS)) {
+            if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_PROCESS)) & 1) != 0)) {
                 if (things[i]->profiling != 0) {
                     _NuTimeBarSlotBegin(timebar, 0, "PROC");
                 }
@@ -206,7 +204,7 @@ void ThingManager::ProcessThings(ThingProcessData *data) {
 
 void ThingManager::RenderThings(ThingRenderData *data) {
     for (i32 i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_RENDER)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_RENDER)) & 1) != 0)) {
             if (things[i]->profiling != 0) {
                 _NuTimeBarSlotBegin(timebar, 1, "Rnd");
             }
@@ -220,7 +218,7 @@ void ThingManager::RenderThings(ThingRenderData *data) {
 
 void ThingManager::DisplayThings(ThingRenderData *data) {
     for (i32 i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_DISPLAY)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_DISPLAY)) & 1) != 0)) {
             if (things[i]->profiling != 0) {
                 _NuTimeBarSlotBegin(timebar, 3, "Dis");
             }
@@ -234,7 +232,7 @@ void ThingManager::DisplayThings(ThingRenderData *data) {
 
 void ThingManager::EffectsThings(ThingRenderData *data) {
     for (i32 i = 0; i < count; i++) {
-        if (things[i] != NULL && THING_TAKES_PASS(things[i], THING_SKIP_EFFECTS)) {
+        if (things[i] != NULL && ((~(things[i]->flags >> (THING_SKIP_EFFECTS)) & 1) != 0)) {
             if (things[i]->profiling != 0) {
                 _NuTimeBarSlotBegin(timebar, 5, "Fx");
             }

@@ -88,8 +88,6 @@ bool PC_SHADER_MATERIAL_FILTER_VIEW::HasLayer(i32 which) const {
     return UnfilteredHasLayer(which);
 }
 
-#define SHADER_VERTEX_FORMAT_HAS_UV_SETS(format, count) ((i8)(((format) >> 9) & 3) >= (count))
-
 u32 PC_SHADER_MATERIAL_FILTER_VIEW::GetVertexFlags() const {
     u32 v = descriptor->vertex_format;
     u32 result = 0;
@@ -246,8 +244,6 @@ i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAbove() const {
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasSurfaceLayerAtOrBelow() const {
     return variant == 0 && (descriptor->layer_flags & PC_SHADER_LAYER_REFLECTIVITY2) != 0 && descriptor->surface_threshold <= parameter;
 }
-
-#undef SHADER_VERTEX_FORMAT_HAS_UV_SETS
 
 i32 PC_SHADER_MATERIAL_FILTER_VIEW::HasAnisoFlip() const {
     if (variant != 0) {

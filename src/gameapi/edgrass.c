@@ -895,8 +895,6 @@ void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
 
-#define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
-
 void edgraClumpPlace(i32 index, NUVEC *position) {
     GrassClumps[index].position = *position;
     GrassClumps[index].size = edgra_size;
@@ -1047,14 +1045,18 @@ void edgraInstanceDestroy(i32 index) {
     if (edgra_nearest != -1 && GrassClumps[edgra_nearest].element_count != 1) {
         if (index != GrassClumps[edgra_nearest].element_count - 1) {
             for (i = index; i < GrassClumps[edgra_nearest].element_count - 1; ++i) {
-                EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i)->position =
-                    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i + 1)->position;
-                EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i)->unknown_0c =
-                    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i + 1)->unknown_0c;
-                EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i)->unknown_10 =
-                    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i + 1)->unknown_10;
-                EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i)->unknown_12 =
-                    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, i + 1)->unknown_12;
+                (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + i])->position =
+                    (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + (i + 1)])
+                        ->position;
+                (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + i])->unknown_0c =
+                    (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + (i + 1)])
+                        ->unknown_0c;
+                (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + i])->unknown_10 =
+                    (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + (i + 1)])
+                        ->unknown_10;
+                (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + i])->unknown_12 =
+                    (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) + (i + 1)])
+                        ->unknown_12;
             }
         }
         --GrassClumps[edgra_nearest].element_count;
@@ -1161,10 +1163,11 @@ void edgraDoInput(FRAME_PAD *pad) {
             if (edgra_nearest != -1 && edgra_nearest_instance != -1) {
                 NUVEC position;
                 i32 individual = GrassClumps[edgra_nearest].individual_index;
-                NuVecAdd(&position, &GrassClumps[edgra_nearest].position, &EDGRA_INDIVIDUAL(individual, edgra_nearest_instance)->position);
+                NuVecAdd(&position, &GrassClumps[edgra_nearest].position,
+                         &IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * individual + edgra_nearest_instance].position);
                 edcamSetPos(&position);
-                edgra_rotz = EDGRA_INDIVIDUAL(individual, edgra_nearest_instance)->unknown_10;
-                edgra_roty = EDGRA_INDIVIDUAL(individual, edgra_nearest_instance)->unknown_12;
+                edgra_rotz = IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * individual + edgra_nearest_instance].unknown_10;
+                edgra_roty = IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * individual + edgra_nearest_instance].unknown_12;
             }
         } else {
             if (edgra_nearest != -1) {
@@ -1219,15 +1222,25 @@ void edgraDoInput(FRAME_PAD *pad) {
     if (edgra_dpadmode == 0) {
         if (edgra_mode == 3) {
             if (edgra_nearest != -1 && edgra_nearest_instance != -1) {
-                EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->unknown_0c +=
-                    (f32)pad->analog_left_pad_up / 5000.0f;
-                EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->unknown_0c -=
-                    (f32)pad->analog_left_pad_down / 5000.0f;
-                if (EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->unknown_0c > 1.0f) {
-                    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->unknown_0c = 1.0f;
+                (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) +
+                                 edgra_nearest_instance])
+                    ->unknown_0c += (f32)pad->analog_left_pad_up / 5000.0f;
+                (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) +
+                                 edgra_nearest_instance])
+                    ->unknown_0c -= (f32)pad->analog_left_pad_down / 5000.0f;
+                if ((&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) +
+                                     edgra_nearest_instance])
+                        ->unknown_0c > 1.0f) {
+                    (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) +
+                                     edgra_nearest_instance])
+                        ->unknown_0c = 1.0f;
                 }
-                if (EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->unknown_0c < 0.1f) {
-                    EDGRA_INDIVIDUAL(GrassClumps[edgra_nearest].individual_index, edgra_nearest_instance)->unknown_0c = 0.1f;
+                if ((&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) +
+                                     edgra_nearest_instance])
+                        ->unknown_0c < 0.1f) {
+                    (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (GrassClumps[edgra_nearest].individual_index) +
+                                     edgra_nearest_instance])
+                        ->unknown_0c = 0.1f;
                 }
             }
             if (pad->analog_left_pad_up || pad->analog_left_pad_down) {

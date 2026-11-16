@@ -232,8 +232,6 @@ typedef struct TERRAIN_PLAYER_CHARACTER { // size 0x1c
     void (*move_callback)(GAMEOBJECT *);  // 0x18
 } TERRAIN_PLAYER_CHARACTER;
 
-#define AIPATHCNX_FLAG_SET(connection, field, flag) ((connection) != NULL && ((connection)->field[0] & (u32)(flag)) != 0)
-
 typedef struct level_ai_progress_s {
     u8 unknown_0000[0x2808];
 
@@ -1522,12 +1520,10 @@ void MovePlayer(GAMEOBJECT *object) {
                     } else {
                         goto skip_pad_history;
                     }
-                    {
-                        PlayerPadPreviousSpeed[index] = PlayerPadCurrentSpeed[index];
-                        PlayerPadPreviousAngle[index] = PlayerPadCurrentAngle[index];
-                        PlayerPadCurrentSpeed[index] = pad->input_magnitude;
-                        PlayerPadCurrentAngle[index] = pad->input_angle;
-                    }
+                    PlayerPadPreviousSpeed[index] = PlayerPadCurrentSpeed[index];
+                    PlayerPadPreviousAngle[index] = PlayerPadCurrentAngle[index];
+                    PlayerPadCurrentSpeed[index] = pad->input_magnitude;
+                    PlayerPadCurrentAngle[index] = pad->input_angle;
                 skip_pad_history:
                     if ((f64)0.2f > magnitude) {
                         pad->input_magnitude = 0.0f;
@@ -1797,9 +1793,12 @@ void TerrainPlayer(GAMEOBJECT *object) {
                     (path_info->flags & AIPATHINFO_FLAG_NARROW_PATH) == 0 && object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED &&
                     object->context_target_position == NULL && !special_path_endpoints && Technos_FindControllingTechno(object) == NULL &&
                     (api->flags_1fc_word & 0x40000) == 0 &&
-                    !AIPATHCNX_FLAG_SET(path_info->connection, original_traversal_flags, LEGO_AIPATHCNX_BLOCKAGE) &&
-                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_WALLSHUFFLE) &&
-                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_FULLTERRAIN) &&
+                    !(path_info->connection != NULL &&
+                      (path_info->connection->original_traversal_flags[0] & (u32)(LEGO_AIPATHCNX_BLOCKAGE)) != 0) &&
+                    !(path_info->connection != NULL &&
+                      (path_info->connection->traversal_flags[0] & (u32)(LEGO_AIPATHCNX_WALLSHUFFLE)) != 0) &&
+                    !(path_info->connection != NULL &&
+                      (path_info->connection->traversal_flags[0] & (u32)(LEGO_AIPATHCNX_FULLTERRAIN)) != 0) &&
                     (object->character_context != CHARACTER_CONTEXT_STUNNED || object->unknown_7b3 != 0);
                 if (ordinary_ai_path) {
                     retain_floor = (api->flags_1fc_word & 0x10) != 0;

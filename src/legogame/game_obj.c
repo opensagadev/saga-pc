@@ -125,8 +125,6 @@ typedef struct collision_exclusion_view_s {
     u64 exclusion_mask;
 } COLLISION_EXCLUSION_VIEW;
 
-#define PANEL_PLAYER_ACTIVE(flags) (((flags) & 0x1000) != 0 && ((flags) & 0x80) != 0)
-
 typedef struct KILLPARTS_MINIKIT_PIECE {
     nuhspecial_s special;
     NUMTX matrix;
@@ -1788,7 +1786,7 @@ i32 Tag_UpdateHint(HINT *hint) {
         GAMEOBJECT *object = Player[i];
         if (object != NULL) {
             u32 flags = object->flags_1fc_word;
-            if (PANEL_PLAYER_ACTIVE(flags) && (i16)object->id == tc14_id) {
+            if (((flags & 0x1000) != 0 && (flags & 0x80) != 0) && (i16)object->id == tc14_id) {
                 hint_flags |= 2;
                 LswForceUsedHintFlags = hint_flags;
             }
@@ -1826,7 +1824,7 @@ i32 Tag_UpdateHint(HINT *hint) {
                 if (object != NULL) {
                     u32 flags = object->flags_1fc_word;
                     ++total;
-                    if (PANEL_PLAYER_ACTIVE(flags)) {
+                    if (((flags & 0x1000) != 0 && (flags & 0x80) != 0)) {
                         ++controlled;
                     }
                 }

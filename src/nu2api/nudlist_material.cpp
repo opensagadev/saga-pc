@@ -455,37 +455,6 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *material) {
 }
 
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
-#define POST_BLUR_BIND_PROGRAM(bound_program)                                                                                              \
-    do {                                                                                                                                   \
-        POST_SHADER_PROGRAM *bound = (bound_program);                                                                                      \
-        if (bound != NULL) {                                                                                                               \
-            if (NuDisplayHandlerVertexShaderCache != bound->vertex_shader) {                                                               \
-                PCDeviceSetVertexShader(bound->vertex_shader);                                                                             \
-                NuDisplayHandlerVertexShaderCache = bound->vertex_shader;                                                                  \
-            }                                                                                                                              \
-            if (NuDisplayHandlerPixelShaderCache != bound->pixel_shader) {                                                                 \
-                PCDeviceSetPixelShader(bound->pixel_shader);                                                                               \
-                NuDisplayHandlerPixelShaderCache = bound->pixel_shader;                                                                    \
-            }                                                                                                                              \
-        } else {                                                                                                                           \
-            PCDeviceSetVertexShader(NULL);                                                                                                 \
-            PCDeviceSetPixelShader(NULL);                                                                                                  \
-            NuDisplayHandlerVertexShaderCache = NULL;                                                                                      \
-            NuDisplayHandlerPixelShaderCache = NULL;                                                                                       \
-        }                                                                                                                                  \
-    } while (0)
-#define POST_BLUR_LOW_ATTACH(texture, lod)                                                                                                 \
-    do {                                                                                                                                   \
-        PC_FRAMEBUFFER *framebuffer = PostBlurFramebuffer;                                                                                 \
-        framebuffer->targets[0].Attach((texture), (lod), false);                                                                           \
-        framebuffer->changed = 1;                                                                                                          \
-    } while (0)
-#define POST_BLUR_LOW_BIND_INPUT(stage)                                                                                                    \
-    do {                                                                                                                                   \
-        if ((u32)PCDeviceSamplerInvalidation[stage][0] != input->flags || (u32)PCDeviceSamplerInvalidation[stage][1] != input->unknown_24) \
-            PCGraphicsSetSamplerTuple(stage, &input->flags);                                                                               \
-        PCDeviceSetTexture(stage, input->resource);                                                                                        \
-    } while (0)
 #define POST_BIND_GLOBAL_TEXTURE(stage, global)                                                                                            \
     do {                                                                                                                                   \
         GRAPHICS_RENDER_TEXTURE *bound = (global);                                                                                         \
@@ -576,7 +545,11 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             f32 bias[4] = {1, 1, PostBlurInputBias / (f32)width, PostBlurInputBias / (f32)height};
             f32 output_bias[4] = {(f32)output_width / (f32)work_width, (f32)output_height / (f32)work_height, 1.0f / (f32)work_width,
                                   1.0f / (f32)work_height};
-            POST_BLUR_LOW_ATTACH(PCGraphicsPostEffectWorkTexture, 0);
+            {
+                PC_FRAMEBUFFER *framebuffer = PostBlurFramebuffer;
+                framebuffer->targets[0].Attach((PCGraphicsPostEffectWorkTexture), 0, false);
+                framebuffer->changed = 1;
+            }
             PCGraphicsBindFramebuffer(PostBlurFramebuffer);
             viewport.x = 0;
             viewport.y = 0;
@@ -590,13 +563,45 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             PCDeviceSetPixelShaderConstantsF(0, weights, 1);
             u32 level = input_lod & 15;
             input->flags = (((input->flags & 0xfca5dbf0) | level) & 0xffffff0f) | ((level | 0xa41b0) << 4);
-            POST_BLUR_LOW_BIND_INPUT(0);
-            POST_BLUR_LOW_BIND_INPUT(1);
-            POST_BLUR_LOW_BIND_INPUT(2);
-            POST_BLUR_LOW_BIND_INPUT(3);
+            if ((u32)PCDeviceSamplerInvalidation[0][0] != input->flags || (u32)PCDeviceSamplerInvalidation[0][1] != input->unknown_24) {
+                PCGraphicsSetSamplerTuple(0, &input->flags);
+            }
+            PCDeviceSetTexture(0, input->resource);
+            if ((u32)PCDeviceSamplerInvalidation[1][0] != input->flags || (u32)PCDeviceSamplerInvalidation[1][1] != input->unknown_24) {
+                PCGraphicsSetSamplerTuple(1, &input->flags);
+            }
+            PCDeviceSetTexture(1, input->resource);
+            if ((u32)PCDeviceSamplerInvalidation[2][0] != input->flags || (u32)PCDeviceSamplerInvalidation[2][1] != input->unknown_24) {
+                PCGraphicsSetSamplerTuple(2, &input->flags);
+            }
+            PCDeviceSetTexture(2, input->resource);
+            if ((u32)PCDeviceSamplerInvalidation[3][0] != input->flags || (u32)PCDeviceSamplerInvalidation[3][1] != input->unknown_24) {
+                PCGraphicsSetSamplerTuple(3, &input->flags);
+            }
+            PCDeviceSetTexture(3, input->resource);
             PCDeviceBackend.DrawPostEffectQuad();
-            POST_BLUR_BIND_PROGRAM(PostBlurAuxProgram);
-            POST_BLUR_LOW_BIND_INPUT(0);
+            {
+                POST_SHADER_PROGRAM *bound = (PostBlurAuxProgram);
+                if (bound != NULL) {
+                    if (NuDisplayHandlerVertexShaderCache != bound->vertex_shader) {
+                        PCDeviceSetVertexShader(bound->vertex_shader);
+                        NuDisplayHandlerVertexShaderCache = bound->vertex_shader;
+                    }
+                    if (NuDisplayHandlerPixelShaderCache != bound->pixel_shader) {
+                        PCDeviceSetPixelShader(bound->pixel_shader);
+                        NuDisplayHandlerPixelShaderCache = bound->pixel_shader;
+                    }
+                } else {
+                    PCDeviceSetVertexShader(NULL);
+                    PCDeviceSetPixelShader(NULL);
+                    NuDisplayHandlerVertexShaderCache = NULL;
+                    NuDisplayHandlerPixelShaderCache = NULL;
+                }
+            }
+            if ((u32)PCDeviceSamplerInvalidation[0][0] != input->flags || (u32)PCDeviceSamplerInvalidation[0][1] != input->unknown_24) {
+                PCGraphicsSetSamplerTuple(0, &input->flags);
+            }
+            PCDeviceSetTexture(0, input->resource);
             if (output_height < work_height) {
                 f32 edge[4] = {1, 0, 0, 1};
                 PCDeviceSetVertexShaderConstantsF(0, edge, 1);
@@ -621,7 +626,11 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
                 PCDeviceSetVertexShaderConstantsF(0, edge, 1);
                 PCDeviceBackend.DrawPostEffectQuad();
             }
-            POST_BLUR_LOW_ATTACH(output, output_lod);
+            {
+                PC_FRAMEBUFFER *framebuffer = PostBlurFramebuffer;
+                framebuffer->targets[0].Attach(output, output_lod, false);
+                framebuffer->changed = 1;
+            }
             PCGraphicsBindFramebuffer(PostBlurFramebuffer);
             viewport.x = 0;
             viewport.y = 0;
@@ -630,7 +639,24 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             viewport.min_z = 0;
             viewport.max_z = 1;
             NuVpSubmit(&viewport);
-            POST_BLUR_BIND_PROGRAM(program);
+            {
+                POST_SHADER_PROGRAM *bound = program;
+                if (bound != NULL) {
+                    if (NuDisplayHandlerVertexShaderCache != bound->vertex_shader) {
+                        PCDeviceSetVertexShader(bound->vertex_shader);
+                        NuDisplayHandlerVertexShaderCache = bound->vertex_shader;
+                    }
+                    if (NuDisplayHandlerPixelShaderCache != bound->pixel_shader) {
+                        PCDeviceSetPixelShader(bound->pixel_shader);
+                        NuDisplayHandlerPixelShaderCache = bound->pixel_shader;
+                    }
+                } else {
+                    PCDeviceSetVertexShader(NULL);
+                    PCDeviceSetPixelShader(NULL);
+                    NuDisplayHandlerVertexShaderCache = NULL;
+                    NuDisplayHandlerPixelShaderCache = NULL;
+                }
+            }
             PCDeviceSetVertexShaderConstantsF(0, &vertical[0].x, 4);
             PCDeviceSetVertexShaderConstantsF(4, output_bias, 1);
             PCDeviceSetPixelShaderConstantsF(0, weights, 1);

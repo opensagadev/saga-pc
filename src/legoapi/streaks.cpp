@@ -228,11 +228,11 @@ extern "C" void UpdateStreaks(f32 elapsed) {
 }
 
 extern "C" f32 StreakAlphaScale;
-#define STREAK_FADE(node) MAX(0.0f, (node)->remaining_time)
-#define STREAK_ALPHA(colour, node) ((f64)(i32)((colour) >> 24) * STREAK_FADE(node) * StreakAlphaScale)
 #define STREAK_SET_ALPHA(colour, header, node)                                                                                             \
     (colour) = (header)->colour;                                                                                                           \
-    ((u8 *)&(colour))[3] = (u8)(STREAK_ALPHA(colour, node) > 255.0 ? 255.0 : STREAK_ALPHA(colour, node))
+    ((u8 *)&(colour))[3] = (u8)(((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale) > 255.0                    \
+                                    ? 255.0                                                                                                \
+                                    : ((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale))
 
 extern "C" void DrawStreaks(void) {
     for (STREAK_HEADER *header = streakhdrs_used; header != NULL; header = header->next) {
@@ -273,8 +273,6 @@ extern "C" void DrawStreaks(void) {
 }
 
 #undef STREAK_SET_ALPHA
-#undef STREAK_ALPHA
-#undef STREAK_FADE
 
 extern "C" void ResetStreaks(void) {
     STREAK_HEADER *header = streakhdrs_used;

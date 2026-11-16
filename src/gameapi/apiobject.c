@@ -63,8 +63,6 @@ void (*APIObjEnableShadowMapRenderingFn)(void) = 0;
 static API_ACTION_INFO *APIActionInfo = 0;
 static API_EXTRA_ACTION *APIExtraActionData = 0;
 
-#define PC_WIND_SIN(radians) NuTrigTable[((i32)((radians) * 10430.3779296875) >> 1) & 0x7fff]
-#define PC_WIND_COS(radians) NuTrigTable[((0x4000 - (i32)((radians) * -10430.3779296875)) >> 1) & 0x7fff]
 typedef struct PC_ANIMATION_RENDER_VIEW PC_ANIMATION_RENDER_VIEW;
 typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
 typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
@@ -2940,11 +2938,15 @@ static void WindShearComponentsPC(f32 *shear_x, f32 *shear_z, i32 wind_scale, i3
     u32 seed = (u32)wind_speed;
     f32 random_phase = (f32)((f64)NuRandFloatSeeded(&seed) * (f64)3.142f * 2.0);
     f32 phase = (f32)PCWindFrameCount * speed + random_phase;
-    f32 cos_half = (f32)(PC_WIND_COS((f32)(phase * (f64)2.3f)) * 0.5);
-    f32 cos_quarter = (f32)(PC_WIND_COS((f32)(phase * (f64)4.4f)) * 0.25);
-    f64 sin_sum = (f32)(PC_WIND_SIN((f32)(phase * (f64)2.1f)) * 0.5) + PC_WIND_SIN(phase);
-    *shear_x = (f32)((sin_sum + (f32)(0.25 * PC_WIND_SIN((f32)(phase * (f64)4.2f)))) * amplitude);
-    *shear_z = (f32)(((f64)PC_WIND_COS((f32)(phase * (f64)1.1f)) + cos_half + cos_quarter) * amplitude);
+    f32 cos_half = (f32)(NuTrigTable[((0x4000 - (i32)(((f32)(phase * (f64)2.3f)) * -10430.3779296875)) >> 1) & 0x7fff] * 0.5);
+    f32 cos_quarter = (f32)(NuTrigTable[((0x4000 - (i32)(((f32)(phase * (f64)4.4f)) * -10430.3779296875)) >> 1) & 0x7fff] * 0.25);
+    f64 sin_sum = (f32)(NuTrigTable[((i32)(((f32)(phase * (f64)2.1f)) * 10430.3779296875) >> 1) & 0x7fff] * 0.5) +
+                  NuTrigTable[((i32)(phase * 10430.3779296875) >> 1) & 0x7fff];
+    *shear_x =
+        (f32)((sin_sum + (f32)(0.25 * NuTrigTable[((i32)(((f32)(phase * (f64)4.2f)) * 10430.3779296875) >> 1) & 0x7fff])) * amplitude);
+    *shear_z = (f32)(((f64)NuTrigTable[((0x4000 - (i32)(((f32)(phase * (f64)1.1f)) * -10430.3779296875)) >> 1) & 0x7fff] + cos_half +
+                      cos_quarter) *
+                     amplitude);
 }
 
 void WindShear(NUMTX *output, NUMTX *input, i32 wind_scale, i32 wind_speed) {

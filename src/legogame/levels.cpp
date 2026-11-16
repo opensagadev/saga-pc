@@ -168,10 +168,6 @@ extern "C" {
     void name(NUFPAR *parser) {                                                                                                            \
         levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                                               \
     }
-#define LEVEL_WORD_CALLBACK(name, field)                                                                                                   \
-    void name(NUFPAR *parser) {                                                                                                            \
-        levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                                              \
-    }
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void LostTempleC_Reset(WORLDINFO *);
 extern "C" void LostTempleC_Update(WORLDINFO *);
@@ -332,7 +328,7 @@ static i32 World_RandomImperialPrivate(APICHARACTERMODELLIST *excluded) {
         if (excluded != NULL && InModelList(excluded, id, NULL) != 0) {
             continue;
         }
-        if (Game_Customiser != NULL && (id == (Game_Customiser)->character_ids[0] || id == (Game_Customiser)->character_ids[1])) {
+        if (Game_Customiser != NULL && (id == Game_Customiser->character_ids[0] || id == Game_Customiser->character_ids[1])) {
             continue;
         }
         if (CDataList[id].move_fn == Move_DEFAULT || Collection_Got(id) == 0) {
@@ -1817,13 +1813,17 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_obstacles, max_obstacles)
 
-    LEVEL_WORD_CALLBACK(LC_BL_max_obstacle_objects, max_obstacle_objects)
+    void LC_BL_max_obstacle_objects(NUFPAR *parser) {
+        levelconfig_ldata->max_obstacle_objects = (i16)NuFParGetInt(parser);
+    }
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_turrets, max_turrets)
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_buildits, max_buildits)
 
-    LEVEL_WORD_CALLBACK(LC_BL_max_buildit_objects, max_buildit_objects)
+    void LC_BL_max_buildit_objects(NUFPAR *parser) {
+        levelconfig_ldata->max_buildit_objects = (i16)NuFParGetInt(parser);
+    }
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_spinneranim_objs, max_spinneranim_objs)
 
@@ -1882,9 +1882,13 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_tubes, max_tubes)
 
-    LEVEL_WORD_CALLBACK(LC_BL_max_pickups, max_pickups)
+    void LC_BL_max_pickups(NUFPAR *parser) {
+        levelconfig_ldata->max_pickups = (i16)NuFParGetInt(parser);
+    }
 
-    LEVEL_WORD_CALLBACK(LC_BL_max_gameantinodes, max_gameantinodes)
+    void LC_BL_max_gameantinodes(NUFPAR *parser) {
+        levelconfig_ldata->max_gameantinodes = (i16)NuFParGetInt(parser);
+    }
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_gizpanels, max_gizpanels)
 
@@ -1892,9 +1896,13 @@ extern "C" {
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_force, max_force)
 
-    LEVEL_WORD_CALLBACK(LC_BL_max_force_objects, max_force_objects)
+    void LC_BL_max_force_objects(NUFPAR *parser) {
+        levelconfig_ldata->max_force_objects = (i16)NuFParGetInt(parser);
+    }
 
-    LEVEL_WORD_CALLBACK(LC_BL_max_bombgen_objects, max_bombgen_objects)
+    void LC_BL_max_bombgen_objects(NUFPAR *parser) {
+        levelconfig_ldata->max_bombgen_objects = (i16)NuFParGetInt(parser);
+    }
 
     LEVEL_BYTE_CALLBACK(LC_BL_max_bombgens, max_bombgens)
 

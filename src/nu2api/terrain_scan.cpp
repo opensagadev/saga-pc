@@ -7,16 +7,6 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
 
-#define TERRAIN_PLATFORM_OF(group_arg) (CurrentTerrain->platforms[(group_arg).scene_index])
-#define TERRAIN_PLATFORM_MATRIX(group_arg) (TERRAIN_PLATFORM_OF(group_arg).scene_object)
-#define TERRAIN_CROSS_PRODUCT(result_arg, a_arg, b_arg)                                                                                    \
-    do {                                                                                                                                   \
-        NUVEC cross;                                                                                                                       \
-        cross.x = (a_arg).y * (b_arg).z - (a_arg).z * (b_arg).y;                                                                           \
-        cross.y = (a_arg).z * (b_arg).x - (b_arg).z * (a_arg).x;                                                                           \
-        cross.z = (a_arg).x * (b_arg).y - (b_arg).x * (a_arg).y;                                                                           \
-        (result_arg) = cross;                                                                                                              \
-    } while (0)
 #define TERRAIN_FINISH_LOCAL_SCAN_GROUP(group_index_arg)                                                                                   \
     do {                                                                                                                                   \
         if (group_shape_count != 0) {                                                                                                      \
@@ -307,32 +297,41 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
             f32 local_max_y;
             f32 local_max_z;
             if (platform.scene_object != NULL) {
-                if (TERRAIN_PLATFORM_MATRIX(group)->m30 > TERRAIN_PLATFORM_OF(group).previous_matrix.m30) {
+                if ((CurrentTerrain->platforms[group.scene_index].scene_object)->m30 >
+                    CurrentTerrain->platforms[group.scene_index].previous_matrix.m30) {
                     local_min_x = min_x - group.origin.x;
-                    local_max_x =
-                        (TERRAIN_PLATFORM_MATRIX(group)->m30 - TERRAIN_PLATFORM_OF(group).previous_matrix.m30) + max_x - group.origin.x;
+                    local_max_x = ((CurrentTerrain->platforms[group.scene_index].scene_object)->m30 -
+                                   CurrentTerrain->platforms[group.scene_index].previous_matrix.m30) +
+                                  max_x - group.origin.x;
                 } else {
                     local_max_x = max_x - group.origin.x;
-                    local_min_x =
-                        (TERRAIN_PLATFORM_MATRIX(group)->m30 - TERRAIN_PLATFORM_OF(group).previous_matrix.m30) + min_x - group.origin.x;
+                    local_min_x = ((CurrentTerrain->platforms[group.scene_index].scene_object)->m30 -
+                                   CurrentTerrain->platforms[group.scene_index].previous_matrix.m30) +
+                                  min_x - group.origin.x;
                 }
-                if (TERRAIN_PLATFORM_MATRIX(group)->m31 > TERRAIN_PLATFORM_OF(group).previous_matrix.m31) {
+                if ((CurrentTerrain->platforms[group.scene_index].scene_object)->m31 >
+                    CurrentTerrain->platforms[group.scene_index].previous_matrix.m31) {
                     local_min_y = min_y - group.origin.y;
-                    local_max_y =
-                        (TERRAIN_PLATFORM_MATRIX(group)->m31 - TERRAIN_PLATFORM_OF(group).previous_matrix.m31) + max_y - group.origin.y;
+                    local_max_y = ((CurrentTerrain->platforms[group.scene_index].scene_object)->m31 -
+                                   CurrentTerrain->platforms[group.scene_index].previous_matrix.m31) +
+                                  max_y - group.origin.y;
                 } else {
                     local_max_y = max_y - group.origin.y;
-                    local_min_y =
-                        (TERRAIN_PLATFORM_MATRIX(group)->m31 - TERRAIN_PLATFORM_OF(group).previous_matrix.m31) + min_y - group.origin.y;
+                    local_min_y = ((CurrentTerrain->platforms[group.scene_index].scene_object)->m31 -
+                                   CurrentTerrain->platforms[group.scene_index].previous_matrix.m31) +
+                                  min_y - group.origin.y;
                 }
-                if (TERRAIN_PLATFORM_MATRIX(group)->m32 > TERRAIN_PLATFORM_OF(group).previous_matrix.m32) {
+                if ((CurrentTerrain->platforms[group.scene_index].scene_object)->m32 >
+                    CurrentTerrain->platforms[group.scene_index].previous_matrix.m32) {
                     local_min_z = min_z - group.origin.z;
-                    local_max_z =
-                        (TERRAIN_PLATFORM_MATRIX(group)->m32 - TERRAIN_PLATFORM_OF(group).previous_matrix.m32) + max_z - group.origin.z;
+                    local_max_z = ((CurrentTerrain->platforms[group.scene_index].scene_object)->m32 -
+                                   CurrentTerrain->platforms[group.scene_index].previous_matrix.m32) +
+                                  max_z - group.origin.z;
                 } else {
                     local_max_z = max_z - group.origin.z;
-                    local_min_z =
-                        (TERRAIN_PLATFORM_MATRIX(group)->m32 - TERRAIN_PLATFORM_OF(group).previous_matrix.m32) + min_z - group.origin.z;
+                    local_min_z = ((CurrentTerrain->platforms[group.scene_index].scene_object)->m32 -
+                                   CurrentTerrain->platforms[group.scene_index].previous_matrix.m32) +
+                                  min_z - group.origin.z;
                 }
             } else {
                 local_max_x = max_x - group.origin.x;
@@ -383,13 +382,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                         vertices[2].y = shape->vertices[2].y;
                         vertices[2].z = shape->vertices[2].z;
                         vertices[2].w = 0.0f;
-                        NuVec4MtxTransformVU0x3(vertices, vertices, TERRAIN_PLATFORM_MATRIX(group));
+                        NuVec4MtxTransformVU0x3(vertices, vertices, (CurrentTerrain->platforms[group.scene_index].scene_object));
                         if (shape->normals[1].y < 65535.0f) {
                             vertices[3].x = shape->vertices[3].x;
                             vertices[3].y = shape->vertices[3].y;
                             vertices[3].z = shape->vertices[3].z;
                             vertices[3].w = 0.0f;
-                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], TERRAIN_PLATFORM_MATRIX(group));
+                            NuVec4MtxTransformVU0(&vertices[3], &vertices[3], (CurrentTerrain->platforms[group.scene_index].scene_object));
                         } else {
                             vertices[3] = vertices[2];
                         }
@@ -439,7 +438,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             vertices[1].x = transformed->vertices[2].x - transformed->vertices[3].x;
                             vertices[1].y = transformed->vertices[2].y - transformed->vertices[3].y;
                             vertices[1].z = transformed->vertices[2].z - transformed->vertices[3].z;
-                            TERRAIN_CROSS_PRODUCT(transformed->normals[1], vertices[0], vertices[1]);
+                            {
+                                NUVEC cross;
+                                cross.x = vertices[0].y * vertices[1].z - vertices[0].z * vertices[1].y;
+                                cross.y = vertices[0].z * vertices[1].x - vertices[1].z * vertices[0].x;
+                                cross.z = vertices[0].x * vertices[1].y - vertices[1].x * vertices[0].y;
+                                transformed->normals[1] = cross;
+                            }
                             const f32 inverse =
                                 TerrainDivideNonzeroPC(1.0f, NuFsqrt(transformed->normals[1].x * transformed->normals[1].x +
                                                                      transformed->normals[1].y * transformed->normals[1].y +
@@ -458,7 +463,13 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
                             vertices[1].x = transformed->vertices[1].x - transformed->vertices[0].x;
                             vertices[1].y = transformed->vertices[1].y - transformed->vertices[0].y;
                             vertices[1].z = transformed->vertices[1].z - transformed->vertices[0].z;
-                            TERRAIN_CROSS_PRODUCT(transformed->normals[0], vertices[0], vertices[1]);
+                            {
+                                NUVEC cross;
+                                cross.x = vertices[0].y * vertices[1].z - vertices[0].z * vertices[1].y;
+                                cross.y = vertices[0].z * vertices[1].x - vertices[1].z * vertices[0].x;
+                                cross.z = vertices[0].x * vertices[1].y - vertices[1].x * vertices[0].y;
+                                transformed->normals[0] = cross;
+                            }
                             const f32 length = NuFsqrt(transformed->normals[0].x * transformed->normals[0].x +
                                                        transformed->normals[0].y * transformed->normals[0].y +
                                                        transformed->normals[0].z * transformed->normals[0].z);

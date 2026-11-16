@@ -2679,8 +2679,6 @@ CUT_SCENE_LOAD *RelocateCutScene(CUT_SCENE_LOAD *source, VARIPTR *buffer) {
     return scene;
 }
 
-#define CUT_SCENE_DEAD_MAGIC 0x44454144
-
 typedef struct cut_cleanup_entry_s { // size 0x10
     void *handle;                    // 0x0
     CUT_SCENE_LOAD *scene;           // 0x4
@@ -2726,9 +2724,9 @@ void *instNuGCutSceneCleanUp(void) {
             continue;
         }
         scene = entry->scene;
-        if (*(u32 *)scene != CUT_SCENE_DEAD_MAGIC) {
+        if (*(u32 *)scene != 0x44454144) {
             NuGCutSceneDestroy(scene);
-            *(u32 *)entry->scene = CUT_SCENE_DEAD_MAGIC;
+            *(u32 *)entry->scene = 0x44454144;
         }
     }
 

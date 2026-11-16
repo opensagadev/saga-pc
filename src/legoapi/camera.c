@@ -357,20 +357,6 @@ void GameCam_Reset(GAMECAMERA *camera) {
     Minicam_InitSystem();
 }
 
-#define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
-    do {                                                                                                                                   \
-        union {                                                                                                                            \
-            f32 value;                                                                                                                     \
-            u32 bits;                                                                                                                      \
-        } storage;                                                                                                                         \
-        u32 bits;                                                                                                                          \
-        storage.value = (source);                                                                                                          \
-        bits = storage.bits;                                                                                                               \
-        bits &= 0x7fffffff;                                                                                                                \
-        storage.bits = bits;                                                                                                               \
-        (destination) = storage.value;                                                                                                     \
-    } while (0)
-
 static void SetCameraEffectMatrix(void) {
     NUMTX effect_matrix;
     NUVEC scale;
@@ -395,8 +381,6 @@ void SetCameraMatrices(void) {
     NuRndrSetSpecularLightPS(NULL, NULL);
     SetCameraEffectMatrix();
 }
-
-#undef GAME_CAMERA_ABSOLUTE
 
 static i32 NarrowSockPositionAllowed(SOCKSYS *system, SOCKPOSITION *position, i32 level_index) {
     NARROWSOCKEXCEPTION *exception;

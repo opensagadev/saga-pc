@@ -50,10 +50,6 @@
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
 
-#define SHOP_FMIN(a, b) ((a) < (b) ? (a) : (b))
-#define SHOP_FMAX(a, b) ((a) > (b) ? (a) : (b))
-#define SHOP_CLAMP01(x) SHOP_FMAX(0.0f, SHOP_FMIN(x, 1.0f))
-#define SHOP_LERP(a, b, t) ((a) + (t) * ((b) - (a)))
 extern shopitem_s *CodeItems;
 extern i32 SHOPEXTRACOUNT;
 extern i32 SHOPCUTCOUNT;
@@ -218,16 +214,8 @@ extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
 extern i32 HubForceShopSave;
 extern f32 ShopPurchasePulseDuration;
-#define SHOP_RESET_SHELF_POSITIONS()                                                                                                       \
-    positions[0] = SubShelfPos[0];                                                                                                         \
-    positions[1] = SubShelfPos[1];                                                                                                         \
-    positions[2] = SubShelfPos[2];                                                                                                         \
-    positions[3] = SubShelfPos[3];                                                                                                         \
-    positions[4] = SubShelfPos[4];                                                                                                         \
-    positions[5] = SubShelfPos[5];                                                                                                         \
-    positions[6] = SubShelfPos[6];
 #define SHOP_SLIDE_SLOT(i, j)                                                                                                              \
-    t = SHOP_CLAMP01(t);                                                                                                                   \
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));                                                                 \
     positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                                         \
     positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                                         \
     positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
@@ -898,7 +886,13 @@ i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
         scale4 = scalenorm;
         scale3 = scalepicked;
         scale2 = scalenorm;
-        SHOP_RESET_SHELF_POSITIONS()
+        positions[0] = SubShelfPos[0];
+        positions[1] = SubShelfPos[1];
+        positions[2] = SubShelfPos[2];
+        positions[3] = SubShelfPos[3];
+        positions[4] = SubShelfPos[4];
+        positions[5] = SubShelfPos[5];
+        positions[6] = SubShelfPos[6];
         subpush[0] = SubNormCharPush;
         subpush[1] = SubBigCharPush;
         subpush[2] = SubNormCharPush;
@@ -922,13 +916,13 @@ i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     SHOP_SLIDE_SLOT(4, 3)
     SHOP_SLIDE_SLOT(5, 4)
     SHOP_SLIDE_SLOT(6, 5)
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale3 = scalepicked + (scalenorm - scalepicked) * t;
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale2 = scalenorm + (scalepicked - scalenorm) * t;
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * t;
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     subpush[2] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * t;
     ShopScaleOverride[0] = reverse_phase;
     ShopScaleOverride[6] = phase;
@@ -955,7 +949,13 @@ i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
         scale4 = scalenorm;
         scale3 = scalepicked;
         scale2 = scalenorm;
-        SHOP_RESET_SHELF_POSITIONS()
+        positions[0] = SubShelfPos[0];
+        positions[1] = SubShelfPos[1];
+        positions[2] = SubShelfPos[2];
+        positions[3] = SubShelfPos[3];
+        positions[4] = SubShelfPos[4];
+        positions[5] = SubShelfPos[5];
+        positions[6] = SubShelfPos[6];
         subpush[0] = SubNormCharPush;
         subpush[1] = SubBigCharPush;
         subpush[2] = SubNormCharPush;
@@ -979,13 +979,13 @@ i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     SHOP_SLIDE_SLOT(2, 3)
     SHOP_SLIDE_SLOT(1, 2)
     SHOP_SLIDE_SLOT(0, 1)
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale4 = scalenorm + (scalepicked - scalenorm) * t;
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale3 = scalepicked + (scalenorm - scalepicked) * t;
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     subpush[0] = SubNormCharPush + (SubBigCharPush - SubNormCharPush) * t;
-    t = SHOP_CLAMP01(t);
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     subpush[1] = SubBigCharPush + (SubNormCharPush - SubBigCharPush) * t;
     ShopScaleOverride[0] = phase;
     ShopScaleOverride[6] = reverse_phase;
@@ -1109,10 +1109,10 @@ i32 SubItemMenu(void *menu) {
         angle = (i32)((f64)phase * 32768.0 + 16384.0);
         factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
         if (ShopEaseSubIn == 1) {
-            factor = SHOP_CLAMP01(factor);
+            factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
             ShopInOutScale = 0.0f + factor;
         } else if (ShopEaseSubIn == -1) {
-            factor = SHOP_CLAMP01(factor);
+            factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
             ShopInOutScale = (f32)(1.0f + (factor * -1.0));
         }
     }
@@ -1265,10 +1265,10 @@ i32 CodeMenu(void *menu) {
         angle = (i32)((f64)phase * 32768.0 + 16384.0);
         factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
         if (ShopEaseSubIn == 1) {
-            factor = SHOP_CLAMP01(factor);
-            ShopInOutScale = SHOP_LERP(0.0f, 1.0f, factor);
+            factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+            ShopInOutScale = (0.0f + factor * (1.0f - 0.0f));
         } else if (ShopEaseSubIn == -1) {
-            factor = SHOP_CLAMP01(factor);
+            factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
             ShopInOutScale = (f32)(1.0f + (factor * -1.0));
         }
     }
@@ -1431,38 +1431,41 @@ i32 CodeMenu(void *menu) {
         factor = (f32)(1.0 - ((f64)NuTrigTable[(angle >> 1) & 0x7fff] + 1.0) * 0.5);
         if (ShopLastItem != -1) {
             if (ShopEaseSubIn == 1) {
-                factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopLastItem] = SHOP_LERP(codemenuscale[ShopLastItem], codebigscale[ShopLastItem], factor);
-                factor = SHOP_CLAMP01(factor);
-                subpush[2] = SHOP_LERP(SubNormCharPush, SubBigCharPush, factor);
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                codeshelfscale[ShopLastItem] =
+                    (codemenuscale[ShopLastItem] + factor * (codebigscale[ShopLastItem] - codemenuscale[ShopLastItem]));
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                subpush[2] = ((SubNormCharPush) + factor * ((SubBigCharPush) - (SubNormCharPush)));
             } else if (ShopEaseSubIn == -1) {
-                factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopLastItem] = SHOP_LERP(codebigscale[ShopLastItem], codemenuscale[ShopLastItem], factor);
-                factor = SHOP_CLAMP01(factor);
-                subpush[2] = SHOP_LERP(SubBigCharPush, SubNormCharPush, factor);
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                codeshelfscale[ShopLastItem] =
+                    (codebigscale[ShopLastItem] + factor * (codemenuscale[ShopLastItem] - codebigscale[ShopLastItem]));
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                subpush[2] = ((SubBigCharPush) + factor * ((SubNormCharPush) - (SubBigCharPush)));
             } else {
-                factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopLastItem] = SHOP_LERP(codebigscale[ShopLastItem], codemenuscale[ShopLastItem], factor);
-                factor = SHOP_CLAMP01(factor);
-                subpush[2] = SHOP_LERP(SubBigCharPush, SubNormCharPush, factor);
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                codeshelfscale[ShopLastItem] =
+                    (codebigscale[ShopLastItem] + factor * (codemenuscale[ShopLastItem] - codebigscale[ShopLastItem]));
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                subpush[2] = ((SubBigCharPush) + factor * ((SubNormCharPush) - (SubBigCharPush)));
             }
         }
         if (ShopColumn != -1) {
             if (ShopEaseSubIn == 1) {
-                factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopColumn] = SHOP_LERP(codemenuscale[ShopColumn], codebigscale[ShopColumn], factor);
-                factor = SHOP_CLAMP01(factor);
-                subpush[1] = SHOP_LERP(SubNormCharPush, SubBigCharPush, factor);
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                codeshelfscale[ShopColumn] = (codemenuscale[ShopColumn] + factor * (codebigscale[ShopColumn] - codemenuscale[ShopColumn]));
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                subpush[1] = ((SubNormCharPush) + factor * ((SubBigCharPush) - (SubNormCharPush)));
             } else if (ShopEaseSubIn == -1) {
-                factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopColumn] = SHOP_LERP(codebigscale[ShopColumn], codemenuscale[ShopColumn], factor);
-                factor = SHOP_CLAMP01(factor);
-                subpush[1] = SHOP_LERP(SubBigCharPush, SubNormCharPush, factor);
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                codeshelfscale[ShopColumn] = (codebigscale[ShopColumn] + factor * (codemenuscale[ShopColumn] - codebigscale[ShopColumn]));
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                subpush[1] = ((SubBigCharPush) + factor * ((SubNormCharPush) - (SubBigCharPush)));
             } else {
-                factor = SHOP_CLAMP01(factor);
-                codeshelfscale[ShopColumn] = SHOP_LERP(codemenuscale[ShopColumn], codebigscale[ShopColumn], factor);
-                factor = SHOP_CLAMP01(factor);
-                subpush[1] = SHOP_LERP(SubNormCharPush, SubBigCharPush, factor);
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                codeshelfscale[ShopColumn] = (codemenuscale[ShopColumn] + factor * (codebigscale[ShopColumn] - codemenuscale[ShopColumn]));
+                factor = (0.0f > ((factor < 1.0f ? factor : 1.0f)) ? 0.0f : ((factor < 1.0f ? factor : 1.0f)));
+                subpush[1] = ((SubNormCharPush) + factor * ((SubBigCharPush) - (SubNormCharPush)));
             }
         }
     } else {
@@ -2195,15 +2198,17 @@ i32 ItemMenu(void *menu) {
             forward_angle = (i32)((f64)reverse_phase * 32768.0 + 16384.0);
             forward_factor = (f32)(1.0 - ((f64)NuTrigTable[(forward_angle >> 1) & 0x7fff] + 1.0) * 0.5);
             if (ShopLastItem != -1) {
-                old_factor = SHOP_CLAMP01(old_factor);
+                old_factor = (0.0f > ((old_factor < 1.0f ? old_factor : 1.0f)) ? 0.0f : ((old_factor < 1.0f ? old_factor : 1.0f)));
                 topscale[ShopLastItem] = TopBigScale[ShopLastItem] + (TopShelfScale[ShopLastItem] - TopBigScale[ShopLastItem]) * old_factor;
-                forward_factor = SHOP_CLAMP01(forward_factor);
+                forward_factor =
+                    (0.0f > ((forward_factor < 1.0f ? forward_factor : 1.0f)) ? 0.0f : ((forward_factor < 1.0f ? forward_factor : 1.0f)));
                 toppush[ShopLastItem] = TopBigPush[ShopLastItem] + (TopShelfPush[ShopLastItem] - TopBigPush[ShopLastItem]) * forward_factor;
             }
             if (picked != -1 && ShopLastItem != -1) {
-                old_factor = SHOP_CLAMP01(old_factor);
+                old_factor = (0.0f > ((old_factor < 1.0f ? old_factor : 1.0f)) ? 0.0f : ((old_factor < 1.0f ? old_factor : 1.0f)));
                 topscale[picked] = TopShelfScale[picked] + (TopBigScale[picked] - TopShelfScale[picked]) * old_factor;
-                forward_factor = SHOP_CLAMP01(forward_factor);
+                forward_factor =
+                    (0.0f > ((forward_factor < 1.0f ? forward_factor : 1.0f)) ? 0.0f : ((forward_factor < 1.0f ? forward_factor : 1.0f)));
                 toppush[picked] = TopShelfPush[picked] + (TopBigPush[picked] - TopShelfPush[picked]) * forward_factor;
             }
         }

@@ -1071,7 +1071,6 @@ i32 CutTriggerSetTest(CUT_TRIGGER_SET *set, char *name, NUVEC *pos, f32 radius, 
 void CutSceneMissingObjectDiagnostic(char *format, ...) {
 }
 
-#define CUT_SCRIPT_DIAG0() ((void (*)(void))CutSceneMissingObjectDiagnostic)()
 #define CUT_SCRIPT_DIAG2(a, b) CutSceneMissingObjectDiagnostic((char *)(a), (b))
 
 void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set) {
@@ -1231,7 +1230,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                 break;
         }
         if (done == 0) {
-            CUT_SCRIPT_DIAG0();
+            ((void (*)(void))CutSceneMissingObjectDiagnostic)();
         }
     }
 }
@@ -1330,14 +1329,6 @@ void CutTriggerUpdate(NUVEC *pos, f32 radius, i32 include_hidden) {
     }
 }
 
-#define CUT_TRIGGER_HIT(set, entry, state, amount)                                                                                         \
-    {                                                                                                                                      \
-        (state)->count += (amount);                                                                                                        \
-        if ((state)->count >= (entry)->threshold)                                                                                          \
-            CutTriggerFire((set), (entry), (state), 1);                                                                                    \
-        return 1;                                                                                                                          \
-    }
-
 i32 CutTriggerHit(NUVEC *pos, f32 radius, i16 amount) {
     CUT_TRIGGER_SET *set;
     CUT_TRIGGER_FILE *file;
@@ -1367,13 +1358,25 @@ i32 CutTriggerHit(NUVEC *pos, f32 radius, i16 amount) {
                         }
                         if (instance->animated_matrix != NULL) {
                             if (CutTriggerEntryTestMtx(entry, instance->animated_matrix, pos, radius) != 0) {
-                                CUT_TRIGGER_HIT(set, entry, state, amount);
+                                state->count += amount;
+                                if (state->count >= entry->threshold) {
+                                    CutTriggerFire(set, entry, state, 1);
+                                }
+                                return 1;
                             }
                         } else if (CutTriggerEntryTestMtx(entry, &instance->matrix, pos, radius) != 0) {
-                            CUT_TRIGGER_HIT(set, entry, state, amount);
+                            state->count += amount;
+                            if (state->count >= entry->threshold) {
+                                CutTriggerFire(set, entry, state, 1);
+                            }
+                            return 1;
                         }
                     } else if (CutTriggerEntryTest(entry, pos, radius) != 0) {
-                        CUT_TRIGGER_HIT(set, entry, state, amount);
+                        state->count += amount;
+                        if (state->count >= entry->threshold) {
+                            CutTriggerFire(set, entry, state, 1);
+                        }
+                        return 1;
                     }
                     break;
             }

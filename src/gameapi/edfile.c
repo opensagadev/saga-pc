@@ -54,9 +54,6 @@ i32 edui_donotdraw = 0;
 static struct eduimenu_s *submenu1 = 0;
 static struct eduimenu_s *testmenu0 = 0;
 
-#define EDUI_MIN(a, b) ((a) < (b) ? (a) : (b))
-#define EDUI_MAX(a, b) ((a) > (b) ? (a) : (b))
-
 static i32 edfile_media = 0;
 static void *edfile_pakfile = 0;
 i32 edfile_handle = -1;
@@ -2208,29 +2205,6 @@ static void EduiDrawRect(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL 
     }
 }
 
-/* Line primitives in 640x448 units; the coordinates are rounded to f32 first. */
-#define EDUI_DRAW_LINE(x0, y0, x1, y1, colour, material)                                                                                   \
-    do {                                                                                                                                   \
-        f32 line_x0 = (x0);                                                                                                                \
-        f32 line_y0 = (y0);                                                                                                                \
-        f32 line_x1 = (x1);                                                                                                                \
-        f32 line_y1 = (y1);                                                                                                                \
-        if (edui_donotdraw == 0)                                                                                                           \
-            NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),                           \
-                          (i32)(line_y1 * EduiScaleY), colour, material);                                                                  \
-    } while (0)
-
-#define EDUI_DRAW_LINE_RECT(x, y, width, height, colour, material)                                                                         \
-    do {                                                                                                                                   \
-        f32 rect_x = (x);                                                                                                                  \
-        f32 rect_y = (y);                                                                                                                  \
-        f32 rect_width = (width);                                                                                                          \
-        f32 rect_height = (height);                                                                                                        \
-        if (edui_donotdraw == 0)                                                                                                           \
-            NuRndrLineRect2di((i32)(rect_x * EduiScaleX), (i32)(rect_y * EduiScaleY), (i32)(rect_width * EduiScaleX),                      \
-                              (i32)(rect_height * EduiScaleY), colour, material);                                                          \
-    } while (0)
-
 static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
     if (edui_donotdraw == 0) {
         char text[1024];
@@ -2301,21 +2275,52 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
     }
     for (depth = 0; depth < expander->depth; depth++) {
         f32 guide_x = item_x + ((f32)depth + 0.5) * (row_height - 2.0);
-        EDUI_DRAW_LINE(guide_x, item_y, guide_x, item_y + row_height, 0xff000000, uimtls[0]);
+        {
+            f32 line_x0 = guide_x;
+            f32 line_y0 = item_y;
+            f32 line_x1 = guide_x;
+            f32 line_y1 = (item_y + row_height);
+            if (edui_donotdraw == 0) {
+                NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),
+                              (i32)(line_y1 * EduiScaleY), 0xff000000, uimtls[0]);
+            }
+        }
     }
     expander->button_size = row_height - 2.0f;
     expander->button_x = item_x + expander->depth * expander->button_size + 1.0f;
     expander->button_y = item_y + 1.0f;
     if (expander->first_child) {
-        EDUI_DRAW_LINE_RECT(expander->button_x, expander->button_y, expander->button_size, expander->button_size, 0xff000000,
-                            uimtls[EduiSelectionMaterial]);
-        EDUI_DRAW_LINE(expander->button_x + 2.0f, expander->button_y + expander->button_size * 0.5,
-                       expander->button_x + expander->button_size - 2.0f, expander->button_y + expander->button_size * 0.5,
-                       button_colours[expander->hover], uimtls[0]);
+        {
+            f32 rect_x = expander->button_x;
+            f32 rect_y = expander->button_y;
+            f32 rect_width = expander->button_size;
+            f32 rect_height = expander->button_size;
+            if (edui_donotdraw == 0) {
+                NuRndrLineRect2di((i32)(rect_x * EduiScaleX), (i32)(rect_y * EduiScaleY), (i32)(rect_width * EduiScaleX),
+                                  (i32)(rect_height * EduiScaleY), 0xff000000, uimtls[EduiSelectionMaterial]);
+            }
+        }
+        {
+            f32 line_x0 = (expander->button_x + 2.0f);
+            f32 line_y0 = (expander->button_y + expander->button_size * 0.5);
+            f32 line_x1 = (expander->button_x + expander->button_size - 2.0f);
+            f32 line_y1 = (expander->button_y + expander->button_size * 0.5);
+            if (edui_donotdraw == 0) {
+                NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),
+                              (i32)(line_y1 * EduiScaleY), button_colours[expander->hover], uimtls[0]);
+            }
+        }
         if (!expander->open) {
-            EDUI_DRAW_LINE(expander->button_x + expander->button_size * 0.5, expander->button_y + 2.0f,
-                           expander->button_x + expander->button_size * 0.5, expander->button_y + expander->button_size - 2.0f,
-                           button_colours[expander->hover], uimtls[0]);
+            {
+                f32 line_x0 = (expander->button_x + expander->button_size * 0.5);
+                f32 line_y0 = (expander->button_y + 2.0f);
+                f32 line_x1 = (expander->button_x + expander->button_size * 0.5);
+                f32 line_y1 = (expander->button_y + expander->button_size - 2.0f);
+                if (edui_donotdraw == 0) {
+                    NuRndrLine2di((i32)(line_x0 * EduiScaleX), (i32)(line_y0 * EduiScaleY), (i32)(line_x1 * EduiScaleX),
+                                  (i32)(line_y1 * EduiScaleY), button_colours[expander->hover], uimtls[0]);
+                }
+            }
         }
     }
     text_x = expander->button_x + expander->button_size + 2.0f;
@@ -2653,7 +2658,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
         f32 text_width = NuQFntPrintLenU(edui_font, eduiPropTextEdit) * (1.0f / EduiScaleX);
         f32 edit_width = draw_width - property->label_width - 4.0;
         f32 caret_x;
-        text_width = EDUI_MAX(text_width, edit_width);
+        text_width = (text_width > edit_width ? text_width : edit_width);
         EduiDrawRect(draw_x, draw_y, draw_width, row_height, item->colours[2 + item->highlighted], uimtls[0]);
         if (edui_donotdraw == 0) {
             NuRndrRect2di((i32)((draw_x + property->label_width + 2.0) * EduiScaleX), (i32)((draw_y + 2.0) * EduiScaleY),
@@ -3077,8 +3082,12 @@ static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delt
     }
     pick->uv_x[pick->selected_corner] += stick_x / (pick->zoom * 8192.0);
     pick->uv_y[pick->selected_corner] += stick_y / (pick->zoom * 8192.0);
-    pick->uv_x[pick->selected_corner] = EDUI_MIN(1.0f, EDUI_MAX(0.0f, pick->uv_x[pick->selected_corner]));
-    pick->uv_y[pick->selected_corner] = EDUI_MIN(1.0f, EDUI_MAX(0.0f, pick->uv_y[pick->selected_corner]));
+    pick->uv_x[pick->selected_corner] = (1.0f < ((0.0f > (pick->uv_x[pick->selected_corner]) ? 0.0f : (pick->uv_x[pick->selected_corner])))
+                                             ? 1.0f
+                                             : ((0.0f > (pick->uv_x[pick->selected_corner]) ? 0.0f : (pick->uv_x[pick->selected_corner]))));
+    pick->uv_y[pick->selected_corner] = (1.0f < ((0.0f > (pick->uv_y[pick->selected_corner]) ? 0.0f : (pick->uv_y[pick->selected_corner])))
+                                             ? 1.0f
+                                             : ((0.0f > (pick->uv_y[pick->selected_corner]) ? 0.0f : (pick->uv_y[pick->selected_corner]))));
     left = pad->analog_l2;
     right = pad->analog_r2;
     if (pad->analog_l1) {
@@ -3088,11 +3097,11 @@ static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delt
         right = pad->analog_r1;
     }
     if (left) {
-        pick->zoom = EDUI_MAX(1.0f, pick->zoom - left / 4192.0);
+        pick->zoom = (1.0f > (pick->zoom - left / 4192.0) ? 1.0f : (pick->zoom - left / 4192.0));
         return 1;
     }
     if (right) {
-        pick->zoom = EDUI_MIN(16.0f, right / 4192.0 + pick->zoom);
+        pick->zoom = (16.0f < (right / 4192.0 + pick->zoom) ? 16.0f : (right / 4192.0 + pick->zoom));
         return 1;
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_SELECT) {
@@ -3296,7 +3305,7 @@ static void EduiTextPickInsert(edui_textpicker_s *picker, char character) {
 }
 
 static void EduiTextPickCursorRight(edui_textpicker_s *picker) {
-    picker->cursor = EDUI_MIN(NuStrLen(picker->value), picker->cursor + 1);
+    picker->cursor = ((NuStrLen(picker->value)) < (picker->cursor + 1) ? (NuStrLen(picker->value)) : (picker->cursor + 1));
 }
 
 static void EduiTextPickDelete(edui_textpicker_s *picker) {
@@ -3445,7 +3454,7 @@ static i32 EduiTextPickPad(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PA
         picker->value[sizeof(EduiTextCopyBuffer) - 1] = '\0';
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_L1) {
-        picker->cursor = EDUI_MAX(0, picker->cursor - 1);
+        picker->cursor = (0 > (picker->cursor - 1) ? 0 : (picker->cursor - 1));
     }
     if (pad->digital_buttons_pressed & PAD_BUTTON_R1) {
         EduiTextPickCursorRight(picker);
@@ -3639,37 +3648,37 @@ u32 EdFileReadUnsignedInt(void) {
 
 void eduiInitMaterials(void) {
     uimtls[0] = NuMtlCreate(1);
-    (uimtls[0])->attribs.cull_mode = NUMTL_CULL_NONE;
-    (uimtls[0])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    (uimtls[0])->opacity = 1.0f;
-    (uimtls[0])->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
+    uimtls[0]->attribs.cull_mode = NUMTL_CULL_NONE;
+    uimtls[0]->attribs.z_mode = NUMTL_ZMODE_OFF;
+    uimtls[0]->opacity = 1.0f;
+    uimtls[0]->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate((uimtls[0]));
     uimtls[1] = NuMtlCreate(1);
-    (uimtls[1])->diffuse_r = 0.2f;
-    (uimtls[1])->diffuse_g = 0.2f;
-    (uimtls[1])->diffuse_b = 0.2f;
-    (uimtls[1])->attribs.cull_mode = NUMTL_CULL_NONE;
-    (uimtls[1])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    (uimtls[1])->opacity = 0.999f;
-    (uimtls[1])->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
+    uimtls[1]->diffuse_r = 0.2f;
+    uimtls[1]->diffuse_g = 0.2f;
+    uimtls[1]->diffuse_b = 0.2f;
+    uimtls[1]->attribs.cull_mode = NUMTL_CULL_NONE;
+    uimtls[1]->attribs.z_mode = NUMTL_ZMODE_OFF;
+    uimtls[1]->opacity = 0.999f;
+    uimtls[1]->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
     NuMtlUpdate((uimtls[1]));
     uimtls[2] = NuMtlCreate(1);
-    (uimtls[2])->diffuse_r = 0.2f;
-    (uimtls[2])->diffuse_g = 0.2f;
-    (uimtls[2])->diffuse_b = 0.2f;
-    (uimtls[2])->attribs.cull_mode = NUMTL_CULL_NONE;
-    (uimtls[2])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    (uimtls[2])->opacity = 0.999f;
-    (uimtls[2])->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
+    uimtls[2]->diffuse_r = 0.2f;
+    uimtls[2]->diffuse_g = 0.2f;
+    uimtls[2]->diffuse_b = 0.2f;
+    uimtls[2]->attribs.cull_mode = NUMTL_CULL_NONE;
+    uimtls[2]->attribs.z_mode = NUMTL_ZMODE_OFF;
+    uimtls[2]->opacity = 0.999f;
+    uimtls[2]->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     NuMtlUpdate((uimtls[2]));
     uimtls[3] = NuMtlCreate(1);
-    (uimtls[3])->diffuse_r = 0.2f;
-    (uimtls[3])->diffuse_g = 0.2f;
-    (uimtls[3])->diffuse_b = 0.2f;
-    (uimtls[3])->attribs.cull_mode = NUMTL_CULL_NONE;
-    (uimtls[3])->attribs.z_mode = NUMTL_ZMODE_OFF;
-    (uimtls[3])->opacity = 0.999f;
-    (uimtls[3])->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
+    uimtls[3]->diffuse_r = 0.2f;
+    uimtls[3]->diffuse_g = 0.2f;
+    uimtls[3]->diffuse_b = 0.2f;
+    uimtls[3]->attribs.cull_mode = NUMTL_CULL_NONE;
+    uimtls[3]->attribs.z_mode = NUMTL_ZMODE_OFF;
+    uimtls[3]->opacity = 0.999f;
+    uimtls[3]->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate((uimtls[3]));
 }
 
@@ -3803,22 +3812,24 @@ i32 EduiRenderItem(eduiitem_s *item, eduimenu_s *menu, i32 x, i32 y, i32 width, 
     return height;
 }
 
-#define EDUI_DRAW_LINE_I(x0, y0, x1, y1, colour, material)                                                                                 \
-    do {                                                                                                                                   \
-        if (!edui_donotdraw)                                                                                                               \
-            NuRndrLine2di(x0, y0, x1, y1, colour, material);                                                                               \
-    } while (0)
-
 static void EduiDrawDisabledItem(eduiitem_s *item, i32 x, i32 y, i32 width, i32 height) {
     if (item->disabled) {
         i32 left = x << 4;
         i32 top = y << 3;
         i32 span = width << 4;
         i32 bottom = top + (height << 3);
-        EDUI_DRAW_LINE_I(left, top, left + span / 4, bottom, item->colours[0], uimtls[ui_bgmtl]);
-        EDUI_DRAW_LINE_I(left + span / 4, top, left + span / 2, bottom, item->colours[0], uimtls[ui_bgmtl]);
-        EDUI_DRAW_LINE_I(left + span / 2, top, left + span * 3 / 4, bottom, item->colours[0], uimtls[ui_bgmtl]);
-        EDUI_DRAW_LINE_I(left + span * 3 / 4, top, left + span, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        if (!edui_donotdraw) {
+            NuRndrLine2di(left, top, left + span / 4, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        }
+        if (!edui_donotdraw) {
+            NuRndrLine2di(left + span / 4, top, left + span / 2, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        }
+        if (!edui_donotdraw) {
+            NuRndrLine2di(left + span / 2, top, left + span * 3 / 4, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        }
+        if (!edui_donotdraw) {
+            NuRndrLine2di(left + span * 3 / 4, top, left + span, bottom, item->colours[0], uimtls[ui_bgmtl]);
+        }
     }
 }
 

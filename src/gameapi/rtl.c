@@ -368,7 +368,6 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
         identity &= 15;
     }
     // These three fixed paths and their falloff expressions are distinct in the reference.
-#define RTL_RADIUS_FRACTION ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))
     if (light != NULL) {
         while (light != NULL) {
             if (light->type == 0) {
@@ -411,9 +410,14 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                 strength = 1.0f;
                             } else {
                                 distance = NuFsqrt(distance_sq);
-                                strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f
-                                                       ? 0.0f
-                                                       : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));
+                                strength =
+                                    1.0f - ((((distance - light->inner_radius) / (light->outer_radius - light->inner_radius)) > 1.0f
+                                                 ? 1.0f
+                                                 : ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))) < 0.0f
+                                                ? 0.0f
+                                                : (((distance - light->inner_radius) / (light->outer_radius - light->inner_radius)) > 1.0f
+                                                       ? 1.0f
+                                                       : ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))));
                             }
                             if (light->unknown_79 == -1 && light->unknown_7a == -1) {
                                 strength *= modifiers[light->unknown_7b];
@@ -440,9 +444,14 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                 strength = 1.0f;
                             } else {
                                 distance = NuFsqrt(distance_sq);
-                                strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f
-                                                       ? 0.0f
-                                                       : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));
+                                strength =
+                                    1.0f - ((((distance - light->inner_radius) / (light->outer_radius - light->inner_radius)) > 1.0f
+                                                 ? 1.0f
+                                                 : ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))) < 0.0f
+                                                ? 0.0f
+                                                : (((distance - light->inner_radius) / (light->outer_radius - light->inner_radius)) > 1.0f
+                                                       ? 1.0f
+                                                       : ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))));
                             }
                             if (light->unknown_79 == -1 && light->unknown_7a == -1) {
                                 strength *= modifiers[light->unknown_7b];
@@ -504,9 +513,14 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                 strength = 1.0f;
                             } else {
                                 distance = NuFsqrt(distance_sq);
-                                strength = 1.0f - ((RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION) < 0.0f
-                                                       ? 0.0f
-                                                       : (RTL_RADIUS_FRACTION > 1.0f ? 1.0f : RTL_RADIUS_FRACTION));
+                                strength =
+                                    1.0f - ((((distance - light->inner_radius) / (light->outer_radius - light->inner_radius)) > 1.0f
+                                                 ? 1.0f
+                                                 : ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))) < 0.0f
+                                                ? 0.0f
+                                                : (((distance - light->inner_radius) / (light->outer_radius - light->inner_radius)) > 1.0f
+                                                       ? 1.0f
+                                                       : ((distance - light->inner_radius) / (light->outer_radius - light->inner_radius))));
                             }
                             if (light->unknown_79 == -1 && light->unknown_7a == -1) {
                                 strength *= modifiers[light->unknown_7b];
@@ -524,7 +538,6 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
             NuVecNorm(&lighting_data->unknown_134, &lighting_data->unknown_134);
         }
     }
-#undef RTL_RADIUS_FRACTION
 }
 
 static void rtlCalcShadow(RTL_DATA *data) {

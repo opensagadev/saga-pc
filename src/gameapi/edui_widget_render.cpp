@@ -207,20 +207,18 @@ i32 eduicbRenderSliderInt(eduimenu_s *unused_menu, eduiitem_s *item, i32 x, i32 
     NuStrCat(format, slider->format);
     EduiPrintAlignedText(edui_font, (x * 2 + width) << 3, (y << 3) + baseline, 64, format, (i32)slider->value);
     y += height;
-    {
+    if (edui_donotdraw == 0) {
+        i32 bottom = (y + height - 1) << 3;
+        f32 span = (f32)(width);
+        i32 marker = (i32)(span * slider->normalized_value + (x + 1)) << 4;
+        i32 top = y << 3;
+        NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
         if (edui_donotdraw == 0) {
-            i32 bottom = (y + height - 1) << 3;
-            f32 span = (f32)(width);
-            i32 marker = (i32)(span * slider->normalized_value + (x + 1)) << 4;
-            i32 top = y << 3;
+            marker = (i32)(span * slider->normalized_value + x) << 4;
             NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
             if (edui_donotdraw == 0) {
-                marker = (i32)(span * slider->normalized_value + x) << 4;
+                marker = (i32)(span * slider->normalized_value + (x - 1)) << 4;
                 NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
-                if (edui_donotdraw == 0) {
-                    marker = (i32)(span * slider->normalized_value + (x - 1)) << 4;
-                    NuRndrLine2di(marker, top, marker, bottom, item->colours[item->highlighted], uimtls[0]);
-                }
             }
         }
     }
@@ -1512,9 +1510,6 @@ extern "C" i32 eduicbRenderTexturePick(eduimenu_s *unused_menu, eduiitem_s *item
     return width + height;
 }
 
-#define EDUI_GRAPH_MIN(a, b) ((a) < (b) ? (a) : (b))
-#define EDUI_GRAPH_MAX(a, b) ((a) > (b) ? (a) : (b))
-
 extern "C" void eduiItemGraphAddOnionSkin(eduiitem_s *item, nugraph_s *graph) {
     edui_graph_s *picker = (edui_graph_s *)item;
     i32 slot;
@@ -1531,8 +1526,8 @@ extern "C" void eduiItemGraphAddOnionSkin(eduiitem_s *item, nugraph_s *graph) {
 extern "C" void eduiItemGraphSetCursor(eduiitem_s *item, f32 x, f32 y) {
     edui_graph_s *picker = (edui_graph_s *)item;
     if (item->type == EDUIITEM_GRAPH) {
-        picker->cursor_x = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, x));
-        picker->cursor_y = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, y));
+        picker->cursor_x = (1.0f < ((0.0f > x ? 0.0f : x)) ? 1.0f : ((0.0f > x ? 0.0f : x)));
+        picker->cursor_y = (1.0f < ((0.0f > y ? 0.0f : y)) ? 1.0f : ((0.0f > y ? 0.0f : y)));
     }
 }
 
@@ -1590,8 +1585,10 @@ extern "C" i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_
     }
     picker->cursor_x = stick_x * (1.0 / 8192.0) + picker->cursor_x;
     picker->cursor_y = -stick_y * (1.0 / 8192.0) + picker->cursor_y;
-    picker->cursor_x = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, picker->cursor_x));
-    picker->cursor_y = EDUI_GRAPH_MIN(1.0f, EDUI_GRAPH_MAX(0.0f, picker->cursor_y));
+    picker->cursor_x =
+        (1.0f < ((0.0f > picker->cursor_x ? 0.0f : picker->cursor_x)) ? 1.0f : ((0.0f > picker->cursor_x ? 0.0f : picker->cursor_x)));
+    picker->cursor_y =
+        (1.0f < ((0.0f > picker->cursor_y ? 0.0f : picker->cursor_y)) ? 1.0f : ((0.0f > picker->cursor_y ? 0.0f : picker->cursor_y)));
     if (pad->analog_l2 && pad->analog_r2) {
         picker->graph->x_scale = 1.0f;
         show_x_scale_help = 60;

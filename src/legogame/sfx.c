@@ -117,7 +117,6 @@ void SetLevelSfxBits(WORLDINFO *world) {
     i32 sfx_count = 0;
 
 #define ADD_SFX(name) AddLevelSfxFromName(name, sfx_ids, &sfx_count, 0x400)
-#define ADD_GAME_SFX(id) GameAudio_AddSfx(id, sfx_ids, &sfx_count, 0x400)
 
     for (i = 0; i < world->level_sfx_count; ++i) {
         sfx_ids[sfx_count++] = world->level_sfx[i].id;
@@ -131,9 +130,9 @@ void SetLevelSfxBits(WORLDINFO *world) {
         ADD_SFX("env_door_flap");
     }
 
-    ADD_GAME_SFX(0x50);
-    ADD_GAME_SFX(0x51);
-    ADD_GAME_SFX(0x52);
+    GameAudio_AddSfx(0x50, sfx_ids, &sfx_count, 0x400);
+    GameAudio_AddSfx(0x51, sfx_ids, &sfx_count, 0x400);
+    GameAudio_AddSfx(0x52, sfx_ids, &sfx_count, 0x400);
     ADD_SFX("Grv_GuardWeaponLp");
 
     if (view->grabber != NULL) {
@@ -196,34 +195,32 @@ void SetLevelSfxBits(WORLDINFO *world) {
     ADD_SFX("Explode1");
 
     level = world->current_level;
-    {
-        if (level->sfx_ambient != -1) {
-            sfx_ids[sfx_count++] = level->sfx_ambient;
-        }
-        if (level == STATUS_LDATA || (level->flags & LEVEL_STATUS) != 0) {
-            ADD_SFX("StatusAward");
-            ADD_SFX("Status_GoldBarDec");
-            ADD_SFX("TrueJedi_100pc");
-            ADD_SFX("TrueJedi_NOT");
-            ADD_SFX("MK-Panel");
-            ADD_SFX("Char_Icon_App");
-            ADD_SFX("Char_Icon_Slide");
-            ADD_SFX("LegoClicks");
-            ADD_SFX("Shop_BuyCheat");
-            ADD_SFX("Explode1");
-            ADD_SFX("Jp_Ana_Jump");
-            ADD_SFX("PickupCoin");
-        } else if (world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0) {
-            ADD_SFX("Victory");
-            ADD_SFX("exp_debris");
-        } else if (level == CREDITS_LDATA) {
-            ADD_SFX("StatusAward");
-        }
+    if (level->sfx_ambient != -1) {
+        sfx_ids[sfx_count++] = level->sfx_ambient;
+    }
+    if (level == STATUS_LDATA || (level->flags & LEVEL_STATUS) != 0) {
+        ADD_SFX("StatusAward");
+        ADD_SFX("Status_GoldBarDec");
+        ADD_SFX("TrueJedi_100pc");
+        ADD_SFX("TrueJedi_NOT");
+        ADD_SFX("MK-Panel");
+        ADD_SFX("Char_Icon_App");
+        ADD_SFX("Char_Icon_Slide");
+        ADD_SFX("LegoClicks");
+        ADD_SFX("Shop_BuyCheat");
+        ADD_SFX("Explode1");
+        ADD_SFX("Jp_Ana_Jump");
+        ADD_SFX("PickupCoin");
+    } else if (world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0) {
+        ADD_SFX("Victory");
+        ADD_SFX("exp_debris");
+    } else if (level == CREDITS_LDATA) {
+        ADD_SFX("StatusAward");
     }
 
     if (world->area != NULL) {
         if (world->area->super_counter_count != 0) {
-            ADD_GAME_SFX(0x53);
+            GameAudio_AddSfx(0x53, sfx_ids, &sfx_count, 0x400);
         }
         if (world->area == PODRACE_ADATA || world->area == PODSPRINT_ADATA) {
             ADD_SFX("PodX_TuskenBlast");
@@ -473,8 +470,8 @@ void SetLevelSfxBits(WORLDINFO *world) {
 
     level = world->current_level;
     if (apicharsys->loaded_model_count > 0 && (level->flags & LEVEL_GAMEPLAY) != 0 && VehicleArea == 0) {
-        ADD_GAME_SFX(0x14);
-        ADD_GAME_SFX(0x15);
+        GameAudio_AddSfx(0x14, sfx_ids, &sfx_count, 0x400);
+        GameAudio_AddSfx(0x15, sfx_ids, &sfx_count, 0x400);
     }
 
     for (character_id = 0; character_id < apicharsys->character_count; ++character_id) {
@@ -490,19 +487,19 @@ void SetLevelSfxBits(WORLDINFO *world) {
             sfx_ids[sfx_count++] = game_character->sfx_die;
         } else if ((character->model_flags &
                     (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) == 0) {
-            ADD_GAME_SFX(((i32)(game_character->flags_090 << 14) >> 31) + 0x1c);
+            GameAudio_AddSfx(((i32)(game_character->flags_090 << 14) >> 31) + 0x1c, sfx_ids, &sfx_count, 0x400);
         }
         if (game_character->sfx_hurt != -1) {
             sfx_ids[sfx_count++] = game_character->sfx_hurt;
         } else if ((character->model_flags &
                     (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) == 0) {
-            ADD_GAME_SFX(((i32)(game_character->flags_090 << 14) >> 31) + 0x17);
+            GameAudio_AddSfx(((i32)(game_character->flags_090 << 14) >> 31) + 0x17, sfx_ids, &sfx_count, 0x400);
         }
         if (game_character->sfx_grunt != -1) {
             sfx_ids[sfx_count++] = game_character->sfx_grunt;
         } else if ((character->model_flags &
                     (CHARACTER_MODEL_DROID | CHARACTER_MODEL_VEHICLE | CHARACTER_MODEL_MINIKIT | CHARACTER_MODEL_BEAST)) == 0) {
-            ADD_GAME_SFX(((i32)(game_character->flags_090 << 14) >> 31) + 0x15);
+            GameAudio_AddSfx(((i32)(game_character->flags_090 << 14) >> 31) + 0x15, sfx_ids, &sfx_count, 0x400);
         }
 
         if (game_character->sfx_engine != -1) {
@@ -571,9 +568,9 @@ void SetLevelSfxBits(WORLDINFO *world) {
             ADD_SFX("ForceChokeCrunch");
         }
         if ((game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {
-            ADD_GAME_SFX(0x4c);
-            ADD_GAME_SFX(0x4d);
-            ADD_GAME_SFX(0x4e);
+            GameAudio_AddSfx(0x4c, sfx_ids, &sfx_count, 0x400);
+            GameAudio_AddSfx(0x4d, sfx_ids, &sfx_count, 0x400);
+            GameAudio_AddSfx(0x4e, sfx_ids, &sfx_count, 0x400);
         }
 
         effect = character->effects;
@@ -617,7 +614,6 @@ void SetLevelSfxBits(WORLDINFO *world) {
     }
     SfxBitsStore(&CurrentSFXTAB);
 
-#undef ADD_GAME_SFX
 #undef ADD_SFX
 }
 

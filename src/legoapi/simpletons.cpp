@@ -28,7 +28,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#define ALIGN(value, alignment) (((value) + (alignment) - 1) & ~((alignment) - 1))
 
 extern "C" {
     void NuSpecialBurstDrawAt(struct nuhspecial_s *, u32, NUMTX *, i32);
@@ -344,25 +343,25 @@ extern "C" {
             trooperteamcount = team_count;
 
             if (world->mini_trooper_teams == NULL) {
-                u32 teams = ALIGN(world->giz_buffer.addr, 4);
+                u32 teams = ((world->giz_buffer.addr + 4 - 1) & ~(4 - 1));
                 world->mini_trooper_teams = reinterpret_cast<minitrooperteam_s *>(teams);
-                world->giz_buffer.addr = ALIGN(teams + team_count * sizeof(minitrooperteam_s), 4);
+                world->giz_buffer.addr = (((teams + team_count * sizeof(minitrooperteam_s)) + 4 - 1) & ~(4 - 1));
             }
 
             if (world->mini_trooper_packets == NULL) {
-                world->giz_buffer.addr = ALIGN(world->giz_buffer.addr, 4);
+                world->giz_buffer.addr = ((world->giz_buffer.addr + 4 - 1) & ~(4 - 1));
                 for (i32 i = 0; i < team_count; ++i) {
                     world->mini_trooper_packets = world->giz_buffer.void_ptr;
                     world->mini_trooper_teams[i].troopers = static_cast<minisnowtrooper_s *>(world->giz_buffer.void_ptr);
                     world->giz_buffer.addr += trooper_count * sizeof(minisnowtrooper_s);
                 }
-                world->giz_buffer.addr = ALIGN(world->giz_buffer.addr, 4);
+                world->giz_buffer.addr = ((world->giz_buffer.addr + 4 - 1) & ~(4 - 1));
             }
 
             if (world->mini_trooper_storage == NULL) {
-                u32 storage = ALIGN(world->giz_buffer.addr, 0x40);
+                u32 storage = ((world->giz_buffer.addr + 0x40 - 1) & ~(0x40 - 1));
                 world->mini_trooper_storage = reinterpret_cast<void *>(storage);
-                world->giz_buffer.addr = ALIGN(storage + team_count * trooper_count * 0xc0, 0x40);
+                world->giz_buffer.addr = (((storage + team_count * trooper_count * 0xc0) + 0x40 - 1) & ~(0x40 - 1));
             }
 
             for (i32 i = 0; i < team_count; ++i) {
@@ -749,10 +748,8 @@ extern "C" {
                         trooper->rotation =
                             SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));
                         if ((trooper->state_flags & 0x40) == 0) {
-                            {
-                                MiniTrooperMove(trooper);
-                                MiniTrooperStep(trooper);
-                            }
+                            MiniTrooperMove(trooper);
+                            MiniTrooperStep(trooper);
                         } else {
                             trooper->rotation =
                                 SeekRot(trooper->rotation, trooper->target_rotation, ((f32)qrand() * (MiniTrooperTurnRate / 65535.0f)));

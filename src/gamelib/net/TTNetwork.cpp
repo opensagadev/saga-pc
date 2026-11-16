@@ -424,22 +424,20 @@ void TTNetwork::Update() {
     }
 }
 
-#define TT_PAD(data, index) reinterpret_cast<FRAME_PAD *>((data)->pads[index])
-
 void TTNetwork::ProcessEvenWhenPaused(ThingProcessData *data) {
     if (state != 0) {
         Update();
         if (display_page != 0) {
-            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & PAD_BUTTON_L1)) {
+            if (data->pads[0] != NULL && (reinterpret_cast<FRAME_PAD *>(data->pads[0])->digital_buttons_pressed & PAD_BUTTON_L1)) {
                 display_page++;
             }
-            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & PAD_BUTTON_L1)) {
+            if (data->pads[1] != NULL && (reinterpret_cast<FRAME_PAD *>(data->pads[1])->digital_buttons_pressed & PAD_BUTTON_L1)) {
                 display_page++;
             }
-            if (data->pads[0] != NULL && (TT_PAD(data, 0)->digital_buttons_pressed & PAD_BUTTON_R1)) {
+            if (data->pads[0] != NULL && (reinterpret_cast<FRAME_PAD *>(data->pads[0])->digital_buttons_pressed & PAD_BUTTON_R1)) {
                 display_page--;
             }
-            if (data->pads[1] != NULL && (TT_PAD(data, 1)->digital_buttons_pressed & PAD_BUTTON_R1)) {
+            if (data->pads[1] != NULL && (reinterpret_cast<FRAME_PAD *>(data->pads[1])->digital_buttons_pressed & PAD_BUTTON_R1)) {
                 display_page--;
             }
             if (display_page < 1) {

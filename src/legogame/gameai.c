@@ -103,9 +103,6 @@ typedef struct controller_cut_view_s {
 i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
-#define INTERACTION_COPY_ANTINODE(source, target)                                                                                          \
-    (target)->ai->antinode_timer = (source)->ai->antinode_timer;                                                                           \
-    (target)->ai->flags ^= ((source)->ai->flags ^ (target)->ai->flags) & 0x8000
 
 void __movsd(unsigned long *, unsigned long const *, unsigned int);
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
@@ -362,19 +359,17 @@ void GameCreatureOpponentSelection(AISYS *system, i32 count, APIOBJECT **objects
                         }
                     }
                 } while (++i < baddy_count);
-                {
-                    if (best_baddy != NULL && best_baddy->ai->pending_opponent != goody) {
-                        best_baddy->ai->pending_opponent = goody;
-                        best_baddy->ai->pending_opponent_metric = best_distance;
-                        system->reset_flags |= 2;
-                        if (!(goody->owner->excluded_opponents & ((u64)1 << best_baddy->object_id)) &&
-                            (goody->awareness & ((u64)1 << best_baddy->object_id))) {
-                            if (!(goody->ai->flags & AIPACKET_PENDING_OPPONENT_IS_A_THREAT) ||
-                                goody->ai->pending_opponent_metric > best_distance) {
-                                goody->ai->pending_opponent = best_baddy;
-                                goody->ai->pending_opponent_metric = best_distance;
-                                goody->ai->flags |= AIPACKET_PENDING_OPPONENT_IS_A_THREAT;
-                            }
+                if (best_baddy != NULL && best_baddy->ai->pending_opponent != goody) {
+                    best_baddy->ai->pending_opponent = goody;
+                    best_baddy->ai->pending_opponent_metric = best_distance;
+                    system->reset_flags |= 2;
+                    if (!(goody->owner->excluded_opponents & ((u64)1 << best_baddy->object_id)) &&
+                        (goody->awareness & ((u64)1 << best_baddy->object_id))) {
+                        if (!(goody->ai->flags & AIPACKET_PENDING_OPPONENT_IS_A_THREAT) ||
+                            goody->ai->pending_opponent_metric > best_distance) {
+                            goody->ai->pending_opponent = best_baddy;
+                            goody->ai->pending_opponent_metric = best_distance;
+                            goody->ai->flags |= AIPACKET_PENDING_OPPONENT_IS_A_THREAT;
                         }
                     }
                 }
@@ -680,14 +675,18 @@ void GameCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT **obje
             }
             if (first->ai->antinode_timer > antinode_time && second->ai->antinode_timer > antinode_time) {
                 if (first->ai->antinode_timer > second->ai->antinode_timer) {
-                    INTERACTION_COPY_ANTINODE(first, second);
+                    second->ai->antinode_timer = first->ai->antinode_timer;
+                    second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
                 } else {
-                    INTERACTION_COPY_ANTINODE(second, first);
+                    first->ai->antinode_timer = second->ai->antinode_timer;
+                    first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
                 }
             } else if (second->ai->antinode_timer > antinode_time) {
-                INTERACTION_COPY_ANTINODE(second, first);
+                first->ai->antinode_timer = second->ai->antinode_timer;
+                first->ai->flags ^= (second->ai->flags ^ first->ai->flags) & 0x8000;
             } else if (first->ai->antinode_timer > 0.0f) {
-                INTERACTION_COPY_ANTINODE(first, second);
+                second->ai->antinode_timer = first->ai->antinode_timer;
+                second->ai->flags ^= (first->ai->flags ^ second->ai->flags) & 0x8000;
             }
             if ((first->motion_flags ^ second->motion_flags) & 1) {
                 first->ai->flags |= AIPACKET_DRAWS_ATTENTION;

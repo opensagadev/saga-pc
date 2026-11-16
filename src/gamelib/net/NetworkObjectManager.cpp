@@ -119,9 +119,6 @@ class NetInputStream : public EdInputStream { // size 0x24
     NETMESSAGE *message; // 0x20
 };
 
-/* Replicator data is a packed run of word-aligned per-object records. */
-#define REPLICATOR_ALIGN(cursor) (((u32)(cursor) + 3) & ~3)
-
 /* Replicators the game binds to its classes. They are never constructed, so
  * no vtables or RTTI are emitted. */
 class NetSimpleReplicator : public NetReplicator {
@@ -1678,7 +1675,7 @@ i32 NetReplicator::DoPrediction(const EdClass *, void *, ReplicatorData &, i32) 
 }
 
 i32 NetConstReplicator::AllowPush(const EdClass *, const void *, ReplicatorData &data, i32 force, i32) {
-    u32 *last_push = (u32 *)REPLICATOR_ALIGN(data.cursor);
+    u32 *last_push = (u32 *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(last_push + 1);
     u32 now = UtilGetFrameStartTime();
     i32 allowed = 0;
@@ -1690,7 +1687,7 @@ i32 NetConstReplicator::AllowPush(const EdClass *, const void *, ReplicatorData 
 }
 
 i32 NetSimpleReplicator::AllowPush(const EdClass *, const void *, ReplicatorData &data, i32 force, i32) {
-    u32 *last_push = (u32 *)REPLICATOR_ALIGN(data.cursor);
+    u32 *last_push = (u32 *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(last_push + 1);
     u32 now = UtilGetFrameStartTime();
     i32 allowed = 0;
@@ -1723,9 +1720,9 @@ void NetChangedReplicator::CheckSumObject(const EdClass *object_class, const voi
 }
 
 i32 NetChangedReplicator::AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32 skip_checksum) {
-    u32 *last_push = (u32 *)REPLICATOR_ALIGN(data.cursor);
+    u32 *last_push = (u32 *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(last_push + 1);
-    u32 *last_checksum = (u32 *)REPLICATOR_ALIGN(data.cursor);
+    u32 *last_checksum = (u32 *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(last_checksum + 1);
     u32 checksum = 0xffffffff;
     u32 now = UtilGetFrameStartTime();
@@ -1747,9 +1744,9 @@ i32 NetChangedReplicator::AllowPush(const EdClass *object_class, const void *obj
 }
 
 i32 NetPredictor::AllowPush(const EdClass *object_class, const void *object, ReplicatorData &data, i32 force, i32) {
-    u32 *last_push = (u32 *)REPLICATOR_ALIGN(data.cursor);
+    u32 *last_push = (u32 *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(last_push + 1);
-    u32 *failed_predictions = (u32 *)REPLICATOR_ALIGN(data.cursor);
+    u32 *failed_predictions = (u32 *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(failed_predictions + 1);
     u32 now = UtilGetFrameStartTime();
     i32 allowed = 0;
@@ -1826,7 +1823,7 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
             }
             PredictorData *samples[3];
             for (i32 i = 0; i < count; i++) {
-                samples[i] = (PredictorData *)REPLICATOR_ALIGN(data.cursor);
+                samples[i] = (PredictorData *)(((u32)(data.cursor) + 3) & ~3);
                 data.cursor = (u8 *)(samples[i] + 1);
             }
             StoreSampleData(object_class, object, time, samples, values, count);
@@ -1869,7 +1866,7 @@ i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, Replic
             PCByteCopy(actual, values, count * sizeof(f32));
             PredictorData *samples[3];
             for (i32 i = 0; i < count; i++) {
-                samples[i] = (PredictorData *)REPLICATOR_ALIGN(data.cursor);
+                samples[i] = (PredictorData *)(((u32)(data.cursor) + 3) & ~3);
                 data.cursor = (u8 *)(samples[i] + 1);
             }
             PredictValue(object_class, object, time, samples, values, count);
@@ -1916,7 +1913,7 @@ void NetworkObjectManager::ImportObjects() {
 
 i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass *object_class, void *object, ReplicatorData &data,
                                   i16 *class_mapping) {
-    PredictorTime *time = (PredictorTime *)REPLICATOR_ALIGN(data.cursor);
+    PredictorTime *time = (PredictorTime *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(time + 1);
     u8 continuity_break = (replication_group >> 3) & 1;
     UtilGetFrameStartTime();
@@ -1953,7 +1950,7 @@ i32 NetPredictor::SerialiseObject(EdStream &stream, V2Peer *peer, const EdClass 
 }
 
 i32 NetPredictor::DoPrediction(const EdClass *object_class, void *object, ReplicatorData &data, i32 check_only) {
-    PredictorTime *time = (PredictorTime *)REPLICATOR_ALIGN(data.cursor);
+    PredictorTime *time = (PredictorTime *)(((u32)(data.cursor) + 3) & ~3);
     data.cursor = (u8 *)(time + 1);
     if (time->sample_count < 3) {
         return 1;

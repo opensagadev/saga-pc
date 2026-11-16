@@ -152,7 +152,6 @@ typedef struct emperor_update_packet_s { // size 0x8
     u8 reserved;                         // 0x7
 } EMPEROR_UPDATE_PACKET;
 
-#define RANCOR_PLAYER_IN_AREA(player, world, n) (U64_PAIR((player)->ai_area_mask) & (1 << (LevArea[n] - (world)->ai_sys->areas)))
 /* Fairground party split locator. */
 static AILOCATOR *FairgroundSplitPartyLocator;
 
@@ -165,7 +164,6 @@ typedef struct JABBA_ANTINODE_VIEW { // size 0x4c
 } JABBA_ANTINODE_VIEW;
 
 #define EMPEROR_PACKET ((EMPEROR_UPDATE_PACKET *)emperorfighta_netpacket)
-#define EMPEROR_FLOOR_AREA_MASK(world, area) (1 << ((area) - (world)->ai_sys->areas))
 
 void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *world) {
     if (FreePlay == 0 && dat_0087b284 != NULL) {
@@ -530,12 +528,12 @@ void EmperorFightA_Update(WORLDINFO *world) {
         EMPEROR_PACKET->player_floor_mask = 0;
         player = Player[0];
         if (player != NULL && !player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
-            (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0]))) {
+            (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas)))) {
             EMPEROR_PACKET->player_floor_mask |= 1;
         }
         player = Player[1];
         if (player != NULL && !player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
-            (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0]))) {
+            (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas)))) {
             EMPEROR_PACKET->player_floor_mask |= 2;
         }
         message = LevAIMessage[1];
@@ -725,14 +723,14 @@ void EmperorFightA_Update(WORLDINFO *world) {
             player = Player[0];
             minimum = EmperorFloorSafeXMinimum;
             if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
-                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
+                (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas))) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 Player[0]->last_safe_position.x = (f32)minimum;
                 Player[0]->respawn_position.x = (f32)minimum;
             }
             player = Player[1];
             if (!player->dead && player->unknown_1010 <= 0.0f && LevArea[0] != NULL &&
-                (U64_PAIR(player->ai_area_mask) & EMPEROR_FLOOR_AREA_MASK(world, LevArea[0])) && player->collision_position.x < minimum) {
+                (U64_PAIR(player->ai_area_mask) & (1 << ((LevArea[0]) - world->ai_sys->areas))) && player->collision_position.x < minimum) {
                 player->flags_ef4 |= 4;
                 Player[1]->last_safe_position.x = (f32)minimum;
                 Player[1]->respawn_position.x = (f32)minimum;
@@ -889,9 +887,10 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
         } else {
             for (i = 0; i < 8; ++i) {
                 player = Player[i];
-                if (player != NULL && ((LevArea[0] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 0)) ||
-                                       (LevArea[1] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 1)) ||
-                                       (LevArea[2] != NULL && RANCOR_PLAYER_IN_AREA(player, world, 2)))) {
+                if (player != NULL &&
+                    ((LevArea[0] != NULL && (U64_PAIR(player->ai_area_mask) & (1 << (LevArea[0] - world->ai_sys->areas)))) ||
+                     (LevArea[1] != NULL && (U64_PAIR(player->ai_area_mask) & (1 << (LevArea[1] - world->ai_sys->areas)))) ||
+                     (LevArea[2] != NULL && (U64_PAIR(player->ai_area_mask) & (1 << (LevArea[2] - world->ai_sys->areas)))))) {
                     LevGameObject[0]->excluded_opponents |= (u64)1 << player->hostility_group;
                 }
             }
@@ -1194,8 +1193,8 @@ void SarlaccPitB_Update(WORLDINFO *world) {
             case 0:
                 sarlaccb_netpacket->disco_active = 0;
                 if (NuSpecialExistsFn(&SarlaccLevSpecial[0]) && ready &&
-                    ((player != NULL && (U64_PAIR((player)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))) ||
-                     (player2 != NULL && (U64_PAIR((player2)->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))))) {
+                    ((player != NULL && (U64_PAIR(player->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))) ||
+                     (player2 != NULL && (U64_PAIR(player2->ai_area_mask) & (i32)(1u << (sarlaccdisco.area - world->ai_sys->areas)))))) {
                     sarlaccdisco.timer = 0.0f;
                     sarlaccdisco.phase = 1;
                     sarlaccdisco.first_panel = (i8)SarlaccDiscoPickPanel(0, -1);
@@ -1902,5 +1901,4 @@ void FairgroundbadA_Update(WORLDINFO *world) {
 void FairgroundbadA_Draw(WORLDINFO *world) {
 }
 
-#undef EMPEROR_FLOOR_AREA_MASK
 #undef EMPEROR_PACKET

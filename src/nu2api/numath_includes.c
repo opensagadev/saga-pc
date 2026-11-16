@@ -37,9 +37,6 @@ typedef struct NuMtxIndexedView { // size 0x40
     f32 elements[4][4];           // 0x00
 } NuMtxIndexedView;
 
-#define NU_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
-#define NU_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
-
 static f32 NumathIncludesFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
         return 0.0f;
@@ -54,8 +51,6 @@ static f32 NumathIncludesFabs(f32 f) {
     return rv;
 }
 
-#define QUAT_SIN(angle) NuTrigTable[((angle) >> 1) & 0x7fff]
-#define QUAT_COS(angle) NuTrigTable[(((angle) + 0x4000) >> 1) & 0x7fff]
 static i32 curve_points;
 static NUVEC *curve;
 NUVEC4 PcGeometryDefaultOrigin = {0};
@@ -1185,12 +1180,12 @@ void NuMtxPreRotateZ(NUMTX *m, NUANG angle) {
 }
 
 void NuMtxSetRotateXYZ(NUMTX *m, NUANGVEC *a) {
-    f32 cosx = NU_COS(a->x);
-    f32 sinx = NU_SIN(a->x);
-    f32 cosy = NU_COS(a->y);
-    f32 siny = NU_SIN(a->y);
-    f32 cosz = NU_COS(a->z);
-    f32 sinz = NU_SIN(a->z);
+    f32 cosx = NuTrigTable[((a->x + 0x4000) >> 1) & 0x7fff];
+    f32 sinx = NuTrigTable[(a->x >> 1) & 0x7fff];
+    f32 cosy = NuTrigTable[((a->y + 0x4000) >> 1) & 0x7fff];
+    f32 siny = NuTrigTable[(a->y >> 1) & 0x7fff];
+    f32 cosz = NuTrigTable[((a->z + 0x4000) >> 1) & 0x7fff];
+    f32 sinz = NuTrigTable[(a->z >> 1) & 0x7fff];
 
     m->m00 = cosy * cosz;
     m->m01 = cosy * sinz;
@@ -2270,14 +2265,14 @@ void NuQuatFromEulerXYZ(NUQUAT *out, NUANG psi, NUANG theta, NUANG phi) {
     theta /= 2;
     phi /= 2;
 
-    cos_psi_over_2 = QUAT_COS(psi);
-    sin_psi_over_2 = QUAT_SIN(psi);
+    cos_psi_over_2 = NuTrigTable[((psi + 0x4000) >> 1) & 0x7fff];
+    sin_psi_over_2 = NuTrigTable[(psi >> 1) & 0x7fff];
 
-    sin_theta_over_2 = QUAT_SIN(theta);
-    cos_theta_over_2 = QUAT_COS(theta);
+    sin_theta_over_2 = NuTrigTable[(theta >> 1) & 0x7fff];
+    cos_theta_over_2 = NuTrigTable[((theta + 0x4000) >> 1) & 0x7fff];
 
-    cos_phi_over_2 = QUAT_COS(phi);
-    sin_phi_over_2 = QUAT_SIN(phi);
+    cos_phi_over_2 = NuTrigTable[((phi + 0x4000) >> 1) & 0x7fff];
+    sin_phi_over_2 = NuTrigTable[(phi >> 1) & 0x7fff];
 
     cos_phi_times_cos_theta = cos_phi_over_2 * cos_theta_over_2;
     sin_phi_times_sin_theta = sin_phi_over_2 * sin_theta_over_2;

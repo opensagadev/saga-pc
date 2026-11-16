@@ -777,8 +777,6 @@ f32 TextPrintSubstring(u8 *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, 
     return width;
 }
 
-#define TEXT3D_FONT() (SmartTextFont != NULL ? SmartTextFont : QFont2D)
-
 void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_scale, u32 alignment, u8 red, u8 green, u8 blue, u8 alpha) {
     u8 alpha_byte = alpha;
     f32 width;
@@ -807,7 +805,7 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
 
     text3d_width = 0.0f;
     text3d_height = 0.0f;
-    if (TEXT3D_FONT() == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0) {
+    if ((SmartTextFont != NULL ? SmartTextFont : QFont2D) == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0) {
         return;
     }
     x_scale = TextScaleX * x_scale;
@@ -823,17 +821,17 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
 
     TextDecode(text, decoded);
     if (followon_line == 0) {
-        NuQFntSet(TEXT3D_FONT());
+        NuQFntSet((SmartTextFont != NULL ? SmartTextFont : QFont2D));
     }
 
     Text3DStringEncode((char *)decoded, encoded);
-    NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
-    text3d_width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+    NuQFntSetScale((SmartTextFont != NULL ? SmartTextFont : QFont2D), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
+    text3d_width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded);
     width = text3d_width;
-    text3d_height = NuQFntHeight(TEXT3D_FONT());
+    text3d_height = NuQFntHeight((SmartTextFont != NULL ? SmartTextFont : QFont2D));
     height = text3d_height;
     half_height = (f64)height * 0.5;
-    baseline_y = NuQFntBaseline(TEXT3D_FONT()) + y;
+    baseline_y = NuQFntBaseline((SmartTextFont != NULL ? SmartTextFont : QFont2D)) + y;
     y = (f32)((f64)baseline_y - half_height);
     if (y_scale != x_scale) {
         button_width = 0.0f;
@@ -870,13 +868,13 @@ void Text3DEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_s
 
         if (button_count != 0) {
             Text3DStringEncode((char *)buttons, button_encoded);
-            NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * button_scale, QFONTSCALEY * button_scale);
-            button_width = NuQFntPrintLenW(TEXT3D_FONT(), button_encoded);
+            NuQFntSetScale((SmartTextFont != NULL ? SmartTextFont : QFont2D), QFONTSCALEX * button_scale, QFONTSCALEY * button_scale);
+            button_width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), button_encoded);
         }
         if (normal_count != 0) {
             Text3DStringEncode((char *)normal, normal_encoded);
-            NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
-            normal_width = NuQFntPrintLenW(TEXT3D_FONT(), normal_encoded);
+            NuQFntSetScale((SmartTextFont != NULL ? SmartTextFont : QFont2D), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
+            normal_width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), normal_encoded);
         }
         if (normal_width != 0.0f) {
             ratio = (width - button_width) / normal_width;
@@ -1058,7 +1056,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     u16 encoded[512];
     unsigned char candidate[512];
     unsigned char lines[8][512];
-    if (TEXT3D_FONT() == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0) {
+    if ((SmartTextFont != NULL ? SmartTextFont : QFont2D) == NULL || text == NULL || text[0] == '\0' || MenuStopDraw != 0) {
         return;
     }
 
@@ -1072,12 +1070,12 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
     x = STCOORDSCALE * x;
     max_width = STCOORDSCALE * max_width;
     TextDecode(text, decoded);
-    Text3DStringEncodeFont(decoded, encoded, TEXT3D_FONT());
-    NuQFntSet(TEXT3D_FONT());
-    NuQFntSetScale(TEXT3D_FONT(), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
-    width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
-    line_height = NuQFntHeight(TEXT3D_FONT());
-    NuQFntBaseline(TEXT3D_FONT());
+    Text3DStringEncodeFont(decoded, encoded, (SmartTextFont != NULL ? SmartTextFont : QFont2D));
+    NuQFntSet((SmartTextFont != NULL ? SmartTextFont : QFont2D));
+    NuQFntSetScale((SmartTextFont != NULL ? SmartTextFont : QFont2D), QFONTSCALEX * x_scale, QFONTSCALEY * y_scale);
+    width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded);
+    line_height = NuQFntHeight((SmartTextFont != NULL ? SmartTextFont : QFont2D));
+    NuQFntBaseline((SmartTextFont != NULL ? SmartTextFont : QFont2D));
 
     if (max_width <= 0.0f) {
         max_width = SmartTextDefaultWidth;
@@ -1129,8 +1127,8 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
             }
             PCByteCopy(lines[line], decoded + begin, length);
             lines[line][length] = '\0';
-            Text3DStringEncodeFont(lines[line], encoded, TEXT3D_FONT());
-            width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+            Text3DStringEncodeFont(lines[line], encoded, (SmartTextFont != NULL ? SmartTextFont : QFont2D));
+            width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded);
             if (width > longest) {
                 longest = width;
                 widest_line = line;
@@ -1172,8 +1170,8 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                         }
                         PCByteCopy(candidate, decoded + begin, length);
                         candidate[length] = '\0';
-                        Text3DStringEncodeFont(candidate, encoded, TEXT3D_FONT());
-                    } while (NuQFntPrintLenW(TEXT3D_FONT(), encoded) < max_width);
+                        Text3DStringEncodeFont(candidate, encoded, (SmartTextFont != NULL ? SmartTextFont : QFont2D));
+                    } while (NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded) < max_width);
                 }
                 length = end - begin + 1;
                 if (length > 511) {
@@ -1182,7 +1180,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 PCByteCopy(lines[line], decoded + begin, length);
                 lines[line][length] = '\0';
                 Text3DStringEncode((char *)(lines[line]), encoded);
-                width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+                width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded);
                 if (width > longest) {
                     longest = width;
                     widest_line = line;
@@ -1216,7 +1214,7 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
                 PCByteCopy(lines[line], decoded + begin, length);
                 lines[line][length] = '\0';
                 Text3DStringEncode((char *)(lines[line]), encoded);
-                width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+                width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded);
                 if (width > longest) {
                     longest = width;
                     widest_line = line;
@@ -1237,10 +1235,10 @@ void SmartTextEx(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 
         draw_x_scale = x_scale;
     }
     if (box != NULL) {
-        NuQFntSetScale(TEXT3D_FONT(), draw_x_scale, y_scale);
+        NuQFntSetScale((SmartTextFont != NULL ? SmartTextFont : QFont2D), draw_x_scale, y_scale);
         if (widest_line > -1) {
             Text3DStringEncode((char *)(lines[widest_line]), encoded);
-            width = NuQFntPrintLenW(TEXT3D_FONT(), encoded);
+            width = NuQFntPrintLenW((SmartTextFont != NULL ? SmartTextFont : QFont2D), encoded);
         } else {
             width = longest;
         }

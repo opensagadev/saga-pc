@@ -34,13 +34,6 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nusound/nusound.h"
 
-#define DROPIN_SCREEN_INSIDE(object)                                                                                                       \
-    ((object)->camera_screen_position.x > -0.8500000238418579 && (object)->camera_screen_position.x < 0.8500000238418579 &&                \
-     (object)->camera_screen_position.y > -0.8500000238418579 && (object)->camera_screen_position.y < 0.8500000238418579)
-#define DROPIN_SCREEN_OUTSIDE(object)                                                                                                      \
-    ((object)->camera_screen_position.x < -1.0f || (object)->camera_screen_position.x > 1.0f ||                                            \
-     (object)->camera_screen_position.y < -1.0f || (object)->camera_screen_position.y > 1.0f)
-
 void CheckForPlayersTurnedOff(void) {
     i32 source_index;
     for (source_index = 0; source_index < 2; ++source_index) {
@@ -348,7 +341,8 @@ i32 PlayersDropInOut(void) {
         if (!join && CUTSTOPGAME == 0 && MiniCutCam != 2 && !(object->tag_flags & APIOBJECT_TAG_DISABLED) &&
             !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN) && object->character_context != CHARACTER_CONTEXT_DROP_OUT &&
             object->character_context != CHARACTER_CONTEXT_BIG_JUMP) {
-            if (DROPIN_SCREEN_INSIDE(object) &&
+            if ((object->camera_screen_position.x > -0.8500000238418579 && object->camera_screen_position.x < 0.8500000238418579 &&
+                 object->camera_screen_position.y > -0.8500000238418579 && object->camera_screen_position.y < 0.8500000238418579) &&
                 (force_join || object->unknown_281 != 0 || object->id == (u16)id_SPEEDERBIKE ||
                  (object->jump_variant_state == 1 && object->character_data->game_character->unknown_028 > 0.0f))) {
                 join = 1;
@@ -370,7 +364,8 @@ i32 PlayersDropInOut(void) {
                     target->character_context != CHARACTER_CONTEXT_BIG_JUMP && target->model_draw_result != 0 &&
                     (target->unknown_281 != 0 ||
                      (target->jump_variant_state == 1 && target->character_data->game_character->unknown_028 > 0.0f)) &&
-                    DROPIN_SCREEN_INSIDE(target)) {
+                    (target->camera_screen_position.x > -0.8500000238418579 && target->camera_screen_position.x < 0.8500000238418579 &&
+                     target->camera_screen_position.y > -0.8500000238418579 && target->camera_screen_position.y < 0.8500000238418579)) {
                     tag = 1;
                 }
                 if (tag && TagCharacter(object, target, 1)) {
@@ -426,7 +421,9 @@ i32 PlayersDropInOut(void) {
             continue;
         }
         if (object->flags_ef0 & 0x200000) {
-            if (DROPIN_SCREEN_INSIDE(object) && object->camera_screen_position.z < 1.0f) {
+            if ((object->camera_screen_position.x > -0.8500000238418579 && object->camera_screen_position.x < 0.8500000238418579 &&
+                 object->camera_screen_position.y > -0.8500000238418579 && object->camera_screen_position.y < 0.8500000238418579) &&
+                object->camera_screen_position.z < 1.0f) {
                 i32 clear_index;
                 for (clear_index = 0; clear_index < 8; ++clear_index) {
                     if (Player[clear_index] != NULL) {
@@ -438,13 +435,16 @@ i32 PlayersDropInOut(void) {
             if (object->unknown_da8 >= 2.0f) {
                 continue;
             }
-            if ((object->model_draw_result != 0 || DROPIN_SCREEN_OUTSIDE(object)) && !(object->tag_flags & APIOBJECT_TAG_DISABLED) &&
-                !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN)) {
+            if ((object->model_draw_result != 0 || (object->camera_screen_position.x < -1.0f || object->camera_screen_position.x > 1.0f ||
+                                                    object->camera_screen_position.y < -1.0f || object->camera_screen_position.y > 1.0f)) &&
+                !(object->tag_flags & APIOBJECT_TAG_DISABLED) && !(object->portal_flags & APIOBJECT_CANNOT_DROP_IN)) {
                 drop_back_in_timer = 0.000001f;
             }
         } else if (Player[0] != NULL && (Player[0]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) && Player[1] != NULL &&
                    (Player[1]->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
-            if (object->unknown_da8 >= 2.0f || (object->model_draw_result == 0 && DROPIN_SCREEN_OUTSIDE(object))) {
+            if (object->unknown_da8 >= 2.0f ||
+                (object->model_draw_result == 0 && (object->camera_screen_position.x < -1.0f || object->camera_screen_position.x > 1.0f ||
+                                                    object->camera_screen_position.y < -1.0f || object->camera_screen_position.y > 1.0f))) {
                 drop_index = index;
             }
         }

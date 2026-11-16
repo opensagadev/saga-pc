@@ -978,8 +978,6 @@ typedef struct PART_TERRAIN_STATE { // size 0x20c
     i8 impact_material;             // 0x209
 } PART_TERRAIN_STATE;
 
-#define PART_NORM PartImpactNormalPrivate
-
 static i32 PartCleanupCursorPrivate = 0;
 static i32 PartCleanupFramesPrivate = 0;
 i32 part_page_on[8] = {0};
@@ -3898,7 +3896,7 @@ void UpdatePartEmits(f32 time) {
 
 i32 PartRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 flags) {
     i32 hit = NewRayCast(position, movement, radius, flags);
-    NewRayCastGetImpactNormal(&PART_NORM);
+    NewRayCastGetImpactNormal(&PartImpactNormalPrivate);
     return hit;
 }
 
@@ -3942,13 +3940,14 @@ void CastPart(PART *part, f32 time) {
             return;
         }
         state->impact_material = NewRayCastGetImpactTerrainType();
-        if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) && ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
+        if ((NewRayCastGetTOFI() > 0.0f || PartImpactNormalPrivate.y > 0.5f) &&
+            ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
             goto impact;
         }
         if (hit > 0x10) {
-            part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
-            part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
-            part->position.z -= PART_NORM.z * NewRayCastGetEmbedDist() * 1.05f;
+            part->position.x -= PartImpactNormalPrivate.x * NewRayCastGetEmbedDist() * 1.05f;
+            part->position.y -= PartImpactNormalPrivate.y * NewRayCastGetEmbedDist() * 1.05f;
+            part->position.z -= PartImpactNormalPrivate.z * NewRayCastGetEmbedDist() * 1.05f;
         }
     }
     part->active &= ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN);
@@ -3959,29 +3958,28 @@ void CastPart(PART *part, f32 time) {
         return;
     }
     state->impact_material = NewRayCastGetImpactTerrainType();
-    if ((NewRayCastGetTOFI() > 0.0f || PART_NORM.y > 0.5f) && ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
+    if ((NewRayCastGetTOFI() > 0.0f || PartImpactNormalPrivate.y > 0.5f) &&
+        ((part->flags & 0x10000000) == 0 || NewRayCastHitWallSpline() != 4)) {
         goto impact;
     }
     if (hit > 0x10) {
-        part->position.x -= PART_NORM.x * NewRayCastGetEmbedDist() * 1.05f;
-        part->position.y -= PART_NORM.y * NewRayCastGetEmbedDist() * 1.05f;
-        part->position.z -= PART_NORM.z * NewRayCastGetEmbedDist() * 1.05f;
+        part->position.x -= PartImpactNormalPrivate.x * NewRayCastGetEmbedDist() * 1.05f;
+        part->position.y -= PartImpactNormalPrivate.y * NewRayCastGetEmbedDist() * 1.05f;
+        part->position.z -= PartImpactNormalPrivate.z * NewRayCastGetEmbedDist() * 1.05f;
     }
-    {
-        radius = (part->time_step - time) / PARTSCALEUPTIME * part->radius;
-        if (!(radius > 0.0f)) {
-            return;
-        }
-        part->active = (part->active & ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN)) | PART_STATE_SCALING_DOWN;
-        cast_movement = movement;
-        if (PartRayCast(&part->position, &cast_movement, radius, 0) == 0) {
-            state->impact_material = -1;
-            return;
-        }
-        state->impact_material = NewRayCastGetImpactTerrainType();
-        if ((part->flags & 0x10000000) != 0 && NewRayCastHitWallSpline() == 4) {
-            return;
-        }
+    radius = (part->time_step - time) / PARTSCALEUPTIME * part->radius;
+    if (!(radius > 0.0f)) {
+        return;
+    }
+    part->active = (part->active & ~(PART_STATE_SCALING_UP | PART_STATE_SCALING_DOWN)) | PART_STATE_SCALING_DOWN;
+    cast_movement = movement;
+    if (PartRayCast(&part->position, &cast_movement, radius, 0) == 0) {
+        state->impact_material = -1;
+        return;
+    }
+    state->impact_material = NewRayCastGetImpactTerrainType();
+    if ((part->flags & 0x10000000) != 0 && NewRayCastHitWallSpline() == 4) {
+        return;
     }
 impact:
     part->active |= PART_STATE_IMPACT_PENDING;
@@ -3991,7 +3989,7 @@ impact:
     part->impact_position.x = part->position.x + cast_movement.x;
     part->impact_position.y = part->position.y + cast_movement.y;
     part->impact_position.z = part->position.z + cast_movement.z;
-    part->impact_normal = PART_NORM;
+    part->impact_normal = PartImpactNormalPrivate;
 }
 
 void edpartDestroy(i32 index) {

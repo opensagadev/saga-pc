@@ -41,7 +41,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 typedef void (*LEVELSETDEFAULTS)(LEVELDATA *level);
 extern "C" {
     void LevelsConfigDiagnostic(char *message);
