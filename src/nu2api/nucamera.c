@@ -226,24 +226,6 @@ void NuMtxCalcDebrisFaceOn(NUMTX *m) {
     m->m33 = 1.0f;
 }
 
-#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                                                 \
-    {                                                                                                                                      \
-        if ((v).z < global_camera.near_clip && (near_enabled))                                                                             \
-            (code) |= NUCAMERA_CLIP_NEAR;                                                                                                  \
-        if ((v).z > far_clip)                                                                                                              \
-            (code) |= NUCAMERA_CLIP_FAR;                                                                                                   \
-        if ((v).x < -(v).z * (horizontal))                                                                                                 \
-            (code) |= NUCAMERA_CLIP_LEFT;                                                                                                  \
-        if ((v).x > (v).z * (horizontal))                                                                                                  \
-            (code) |= NUCAMERA_CLIP_RIGHT;                                                                                                 \
-        if ((v).y < -(v).z * (vertical))                                                                                                   \
-            (code) |= NUCAMERA_CLIP_BOTTOM;                                                                                                \
-        if ((v).y > (v).z * (vertical))                                                                                                    \
-            (code) |= NUCAMERA_CLIP_TOP;                                                                                                   \
-    }
-
-#define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
-
 /* Reconstructed storage qualifiers express the original F32 checkpoints;
    they do not assert historical declarations. */
 void NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast) {
@@ -697,7 +679,7 @@ i32 NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32
         if (view[i].z < *min_depth) {
             *min_depth = view[i].z;
         }
-        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, zx, zy);
+        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, far_clip, zx, zy);
     }
     if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0) {
         return 0;
@@ -710,10 +692,10 @@ i32 NuCameraClipTestExtentsGeneric(NUVEC *min, NUVEC *max, NUMTX *world_mtx, f32
     }
     memset(results, 0, sizeof(results));
     for (i = 0; i < 8; i += 4) {
-        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
-        NUCAMERA_CLIP_CODE_EX(results[i + 1], view[i + 1], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
-        NUCAMERA_CLIP_CODE_EX(results[i + 2], view[i + 2], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
-        NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, VISIBILITY_ALTERNATE_WIDTH, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i], view[i], (flags & 2) == 0, far_clip, VISIBILITY_ALTERNATE_WIDTH, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 1], view[i + 1], (flags & 2) == 0, far_clip, VISIBILITY_ALTERNATE_WIDTH, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 2], view[i + 2], (flags & 2) == 0, far_clip, VISIBILITY_ALTERNATE_WIDTH, zys);
+        NUCAMERA_CLIP_CODE_EX(results[i + 3], view[i + 3], (flags & 2) == 0, far_clip, VISIBILITY_ALTERNATE_WIDTH, zys);
     }
     if ((results[0] & results[1] & results[2] & results[3] & results[4] & results[5] & results[6] & results[7]) != 0 ||
         (results[0] | results[1] | results[2] | results[3] | results[4] | results[5] | results[6] | results[7]) == 0) {

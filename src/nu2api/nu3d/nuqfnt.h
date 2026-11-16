@@ -160,3 +160,7 @@ extern "C" {
         NuPrimStreamBufferPointer->addr += sizeof(*vertex);                                                                                \
         ++NuPrimVertexCount;                                                                                                               \
     } while (0)
+
+#define NUQFNT_ATLAS_MAP_SIZE 808
+
+#define NUQFNT_ATLAS_GLYPH_SIZE 750

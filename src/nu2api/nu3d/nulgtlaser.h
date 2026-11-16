@@ -62,3 +62,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#define NU_LGT_RAND() ((i32)(NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff))
+
+#define NU_LGT_ARC_VERTEX(vertex, position, colour, tex_u, tex_v)                                                                          \
+    do {                                                                                                                                   \
+        NuLgtSetVertexColor(colour);                                                                                                       \
+        vertex = (NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr;                                                                       \
+        vertex->u = (tex_u);                                                                                                               \
+        vertex->v = (tex_v);                                                                                                               \
+        NuPrim2DAddXYZ((position)->x, (position)->y, (position)->z);                                                                       \
+    } while (0)

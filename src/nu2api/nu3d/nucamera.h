@@ -100,3 +100,19 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, far_clip, horizontal, vertical)                                                       \
+    {                                                                                                                                      \
+        if ((v).z < global_camera.near_clip && (near_enabled))                                                                             \
+            (code) |= NUCAMERA_CLIP_NEAR;                                                                                                  \
+        if ((v).z > (far_clip))                                                                                                            \
+            (code) |= NUCAMERA_CLIP_FAR;                                                                                                   \
+        if ((v).x < -(v).z * (horizontal))                                                                                                 \
+            (code) |= NUCAMERA_CLIP_LEFT;                                                                                                  \
+        if ((v).x > (v).z * (horizontal))                                                                                                  \
+            (code) |= NUCAMERA_CLIP_RIGHT;                                                                                                 \
+        if ((v).y < -(v).z * (vertical))                                                                                                   \
+            (code) |= NUCAMERA_CLIP_BOTTOM;                                                                                                \
+        if ((v).y > (v).z * (vertical))                                                                                                    \
+            (code) |= NUCAMERA_CLIP_TOP;                                                                                                   \
+    }

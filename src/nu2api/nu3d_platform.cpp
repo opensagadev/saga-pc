@@ -781,28 +781,6 @@ extern "C" {
         dst->m33 = src->m33;
     }
 
-#define PC_GEOMETRY_SCALE(out, v, s)                                                                                                       \
-    {                                                                                                                                      \
-        f32 scale = (s);                                                                                                                   \
-        (out).x = (v).x * scale;                                                                                                           \
-        (out).y = (v).y * scale;                                                                                                           \
-        (out).z = (v).z * scale;                                                                                                           \
-    }
-#define PC_GEOMETRY_ADD(out, a, b)                                                                                                         \
-    {                                                                                                                                      \
-        (out).x = (a).x + (b).x;                                                                                                           \
-        (out).y = (a).y + (b).y;                                                                                                           \
-        (out).z = (a).z + (b).z;                                                                                                           \
-    }
-#define PC_GEOMETRY_ROTATE(out, v, m)                                                                                                      \
-    {                                                                                                                                      \
-        f32 x = (v).x * (m)->m00 + (v).y * (m)->m10 + (v).z * (m)->m20;                                                                    \
-        f32 y = (v).x * (m)->m01 + (v).y * (m)->m11 + (v).z * (m)->m21;                                                                    \
-        (out).z = (v).x * (m)->m02 + (v).y * (m)->m12 + (v).z * (m)->m22;                                                                  \
-        (out).x = x;                                                                                                                       \
-        (out).y = y;                                                                                                                       \
-    }
-
     typedef struct PC_GEOMETRY_FORMAT_RECORD { // size 0x78
         u8 unknown_00[0x18];                   // 0x00
         i32 strip_segments;                    // 0x18
@@ -1430,16 +1408,7 @@ extern "C" {
         return 0;
     }
 
-#define NUQFNT_ATLAS_MAP_SIZE 808
-#define NUQFNT_ATLAS_GLYPH_SIZE 750
-
-/* Finds the next glyph cell with the scanner that suits the strip's format. */
-#define NUQFNT_ATLAS_NEXT_GLYPH()                                                                                                          \
-    if (bitmap->type == 5) {                                                                                                               \
-        NuQFntNextGlyph8(bitmap, cell_height, key_colour, &x, &y, &width);                                                                 \
-    } else {                                                                                                                               \
-        NuQFntNextGlyph32(bitmap, cell_height, &x, &y, &width);                                                                            \
-    }
+    /* Finds the next glyph cell with the scanner that suits the strip's format. */
 
     extern "C" {}
 
@@ -1481,29 +1450,9 @@ extern "C" {
         i32 NuLgtArcLaserFrame = 0;
     }
 
-#define NU_LGT_RAND() ((i32)(NuLgtSeed = (NuLgtSeed * 0x24cd + 1) & 0xffff))
-#define NU_LGT_ARC_VERTEX(position, colour, tex_u, tex_v)                                                                                  \
-    do {                                                                                                                                   \
-        NuLgtSetVertexColor(colour);                                                                                                       \
-        vertex = (NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr;                                                                       \
-        vertex->u = (tex_u);                                                                                                               \
-        vertex->v = (tex_v);                                                                                                               \
-        NuPrim2DAddXYZ((position)->x, (position)->y, (position)->z);                                                                       \
-    } while (0)
-
     extern f32 NuFrameAccumulatedTime;
     extern const char *GetPCStartupMessage(void);
     extern void FmvPlatformUpdate(void);
-
-#define NUFRAME_ELAPSED(elapsed, now, start)                                                                                               \
-    if ((now).low >= (start).low) {                                                                                                        \
-        (elapsed).low = (now).low - (start).low;                                                                                           \
-        (elapsed).high = (now).high - (start).high;                                                                                        \
-    } else {                                                                                                                               \
-        (elapsed).high = (now).high - (start).high;                                                                                        \
-        (elapsed).low = (now).low - (start).low;                                                                                           \
-        (elapsed).high -= 1;                                                                                                               \
-    }
 
     typedef struct screengrab_tile_params_s SCREENGRAB_TILE_PARAMS;
     PC_BUFFER_RESOURCE *NuWaterVertexBuffer = 0;
@@ -1550,7 +1499,6 @@ extern "C" {
         NUVEC specular_colour;             // 0xb0
     } NUPRIM_LIGHT_PACKET;
 
-#undef LINK_MTL_STATE
 
     typedef struct AMBIENT_SPECULAR_RENDER_VIEW { // size 0x90
         u8 unknown_00[0x8c];                      // 0x00
@@ -2978,13 +2926,21 @@ extern "C" {
             }
             if ((*text >= 'a' && *text <= 'z') || (*text >= 'A' && *text <= 'Z') || (*text >= '0' && *text <= '9') || *text == '!' ||
                 *text == '?' || *text == '.' || *text == ',' || *text == '%' || *text == '[' || *text == ']') {
-                NUQFNT_ATLAS_NEXT_GLYPH();
+                if (bitmap->type == 5) {
+                    NuQFntNextGlyph8(bitmap, cell_height, key_colour, &x, &y, &width);
+                } else {
+                    NuQFntNextGlyph32(bitmap, cell_height, &x, &y, &width);
+                }
                 glyphs[*text].x = x;
                 glyphs[*text].y = y;
                 glyphs[*text].width = width;
                 next = NuQFntMapAdd(map, *text, *text, *text);
             } else {
-                NUQFNT_ATLAS_NEXT_GLYPH();
+                if (bitmap->type == 5) {
+                    NuQFntNextGlyph8(bitmap, cell_height, key_colour, &x, &y, &width);
+                } else {
+                    NuQFntNextGlyph32(bitmap, cell_height, &x, &y, &width);
+                }
                 glyphs[index].x = x;
                 glyphs[index].y = y;
                 glyphs[index].width = width;
@@ -3306,31 +3262,88 @@ extern "C" {
                 PC_GEOMETRY_BASIS_VECTOR p02;
                 PC_GEOMETRY_BASIS_VECTOR partial0;
                 PC_GEOMETRY_BASIS_VECTOR row0;
-                PC_GEOMETRY_SCALE(p02, basis->matrices[2].rows[0], input->basis_weights.z);
-                PC_GEOMETRY_SCALE(p01, basis->matrices[1].rows[0], input->basis_weights.y);
-                PC_GEOMETRY_SCALE(p00, basis->matrices[0].rows[0], input->basis_weights.x);
-                PC_GEOMETRY_ADD(partial0, p00, p01);
-                PC_GEOMETRY_ADD(row0, partial0, p02);
+                {
+                    f32 scale = input->basis_weights.z;
+                    p02.x = basis->matrices[2].rows[0].x * scale;
+                    p02.y = basis->matrices[2].rows[0].y * scale;
+                    p02.z = basis->matrices[2].rows[0].z * scale;
+                }
+                {
+                    f32 scale = input->basis_weights.y;
+                    p01.x = basis->matrices[1].rows[0].x * scale;
+                    p01.y = basis->matrices[1].rows[0].y * scale;
+                    p01.z = basis->matrices[1].rows[0].z * scale;
+                }
+                {
+                    f32 scale = input->basis_weights.x;
+                    p00.x = basis->matrices[0].rows[0].x * scale;
+                    p00.y = basis->matrices[0].rows[0].y * scale;
+                    p00.z = basis->matrices[0].rows[0].z * scale;
+                }
+                partial0.x = p00.x + p01.x;
+                partial0.y = p00.y + p01.y;
+                partial0.z = p00.z + p01.z;
+                row0.x = partial0.x + p02.x;
+                row0.y = partial0.y + p02.y;
+                row0.z = partial0.z + p02.z;
                 PC_GEOMETRY_BASIS_VECTOR p10;
                 PC_GEOMETRY_BASIS_VECTOR p11;
                 PC_GEOMETRY_BASIS_VECTOR p12;
                 PC_GEOMETRY_BASIS_VECTOR partial1;
                 PC_GEOMETRY_BASIS_VECTOR row1;
-                PC_GEOMETRY_SCALE(p12, basis->matrices[2].rows[1], input->basis_weights.z);
-                PC_GEOMETRY_SCALE(p11, basis->matrices[1].rows[1], input->basis_weights.y);
-                PC_GEOMETRY_SCALE(p10, basis->matrices[0].rows[1], input->basis_weights.x);
-                PC_GEOMETRY_ADD(partial1, p10, p11);
-                PC_GEOMETRY_ADD(row1, partial1, p12);
+                {
+                    f32 scale = input->basis_weights.z;
+                    p12.x = basis->matrices[2].rows[1].x * scale;
+                    p12.y = basis->matrices[2].rows[1].y * scale;
+                    p12.z = basis->matrices[2].rows[1].z * scale;
+                }
+                {
+                    f32 scale = input->basis_weights.y;
+                    p11.x = basis->matrices[1].rows[1].x * scale;
+                    p11.y = basis->matrices[1].rows[1].y * scale;
+                    p11.z = basis->matrices[1].rows[1].z * scale;
+                }
+                {
+                    f32 scale = input->basis_weights.x;
+                    p10.x = basis->matrices[0].rows[1].x * scale;
+                    p10.y = basis->matrices[0].rows[1].y * scale;
+                    p10.z = basis->matrices[0].rows[1].z * scale;
+                }
+                partial1.x = p10.x + p11.x;
+                partial1.y = p10.y + p11.y;
+                partial1.z = p10.z + p11.z;
+                row1.x = partial1.x + p12.x;
+                row1.y = partial1.y + p12.y;
+                row1.z = partial1.z + p12.z;
                 PC_GEOMETRY_BASIS_VECTOR p20;
                 PC_GEOMETRY_BASIS_VECTOR p21;
                 PC_GEOMETRY_BASIS_VECTOR p22;
                 PC_GEOMETRY_BASIS_VECTOR partial2;
                 PC_GEOMETRY_BASIS_VECTOR row2;
-                PC_GEOMETRY_SCALE(p22, basis->matrices[2].rows[2], input->basis_weights.z);
-                PC_GEOMETRY_SCALE(p21, basis->matrices[1].rows[2], input->basis_weights.y);
-                PC_GEOMETRY_SCALE(p20, basis->matrices[0].rows[2], input->basis_weights.x);
-                PC_GEOMETRY_ADD(partial2, p20, p21);
-                PC_GEOMETRY_ADD(row2, partial2, p22);
+                {
+                    f32 scale = input->basis_weights.z;
+                    p22.x = basis->matrices[2].rows[2].x * scale;
+                    p22.y = basis->matrices[2].rows[2].y * scale;
+                    p22.z = basis->matrices[2].rows[2].z * scale;
+                }
+                {
+                    f32 scale = input->basis_weights.y;
+                    p21.x = basis->matrices[1].rows[2].x * scale;
+                    p21.y = basis->matrices[1].rows[2].y * scale;
+                    p21.z = basis->matrices[1].rows[2].z * scale;
+                }
+                {
+                    f32 scale = input->basis_weights.x;
+                    p20.x = basis->matrices[0].rows[2].x * scale;
+                    p20.y = basis->matrices[0].rows[2].y * scale;
+                    p20.z = basis->matrices[0].rows[2].z * scale;
+                }
+                partial2.x = p20.x + p21.x;
+                partial2.y = p20.y + p21.y;
+                partial2.z = p20.z + p21.z;
+                row2.x = partial2.x + p22.x;
+                row2.y = partial2.y + p22.y;
+                row2.z = partial2.z + p22.z;
                 PC_GEOMETRY_BASIS_VECTOR cross;
                 NuVecCross((NUVEC *)&cross, (NUVEC *)&row1, (NUVEC *)&row2);
                 PC_GEOMETRY_CORNER *corners = output->corners;
@@ -4134,18 +4147,31 @@ extern "C" {
         colour2 = record->colours.colour[2];
         colour3 = record->colours.colour[3];
         colour4 = record->colours.colour[4];
-#define AD_COLOUR_CONSTANT(n)                                                                                                              \
-    values.x = colour##n.x;                                                                                                                \
-    values.y = colour##n.y;                                                                                                                \
-    values.z = colour##n.z;                                                                                                                \
-    values.w = 1.0f;                                                                                                                       \
-    PCDeviceSetPixelShaderConstantsF(0xca + (n), &values.x, 1)
-        AD_COLOUR_CONSTANT(0);
-        AD_COLOUR_CONSTANT(1);
-        AD_COLOUR_CONSTANT(2);
-        AD_COLOUR_CONSTANT(3);
-        AD_COLOUR_CONSTANT(4);
-#undef AD_COLOUR_CONSTANT
+        values.x = colour0.x;
+        values.y = colour0.y;
+        values.z = colour0.z;
+        values.w = 1.0f;
+        PCDeviceSetPixelShaderConstantsF(0xca, &values.x, 1);
+        values.x = colour1.x;
+        values.y = colour1.y;
+        values.z = colour1.z;
+        values.w = 1.0f;
+        PCDeviceSetPixelShaderConstantsF(0xcb, &values.x, 1);
+        values.x = colour2.x;
+        values.y = colour2.y;
+        values.z = colour2.z;
+        values.w = 1.0f;
+        PCDeviceSetPixelShaderConstantsF(0xcc, &values.x, 1);
+        values.x = colour3.x;
+        values.y = colour3.y;
+        values.z = colour3.z;
+        values.w = 1.0f;
+        PCDeviceSetPixelShaderConstantsF(0xcd, &values.x, 1);
+        values.x = colour4.x;
+        values.y = colour4.y;
+        values.z = colour4.z;
+        values.w = 1.0f;
+        PCDeviceSetPixelShaderConstantsF(0xce, &values.x, 1);
         values.x = record->pixel_parameter;
         values.y = record->pixel_parameter_x;
         values.z = record->pixel_parameter_y;
@@ -5987,41 +6013,136 @@ extern "C" {
                 PC_GEOMETRY_BASIS_VECTOR p2;
                 PC_GEOMETRY_BASIS_VECTOR partial;
                 PC_GEOMETRY_BASIS_VECTOR sum;
-                PC_GEOMETRY_SCALE(p2, t2, input->weights.z);
-                PC_GEOMETRY_SCALE(p1, t1, input->weights.y);
-                PC_GEOMETRY_SCALE(p0, t0, input->weights.x);
-                PC_GEOMETRY_ADD(partial, p0, p1);
-                PC_GEOMETRY_ADD(sum, partial, p2);
+                {
+                    f32 scale = input->weights.z;
+                    p2.x = t2.x * scale;
+                    p2.y = t2.y * scale;
+                    p2.z = t2.z * scale;
+                }
+                {
+                    f32 scale = input->weights.y;
+                    p1.x = t1.x * scale;
+                    p1.y = t1.y * scale;
+                    p1.z = t1.z * scale;
+                }
+                {
+                    f32 scale = input->weights.x;
+                    p0.x = t0.x * scale;
+                    p0.y = t0.y * scale;
+                    p0.z = t0.z * scale;
+                }
+                partial.x = p0.x + p1.x;
+                partial.y = p0.y + p1.y;
+                partial.z = p0.z + p1.z;
+                sum.x = partial.x + p2.x;
+                sum.y = partial.y + p2.y;
+                sum.z = partial.z + p2.z;
                 ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[0] = sum;
             }
-            PC_GEOMETRY_ROTATE(t0, input->rows[1], matrices[0])
-            PC_GEOMETRY_ROTATE(t1, input->rows[1], matrices[1])
-            PC_GEOMETRY_ROTATE(t2, input->rows[1], matrices[2]) {
+            {
+                f32 x = input->rows[1].x * matrices[0]->m00 + input->rows[1].y * matrices[0]->m10 + input->rows[1].z * matrices[0]->m20;
+                f32 y = input->rows[1].x * matrices[0]->m01 + input->rows[1].y * matrices[0]->m11 + input->rows[1].z * matrices[0]->m21;
+                t0.z = input->rows[1].x * matrices[0]->m02 + input->rows[1].y * matrices[0]->m12 + input->rows[1].z * matrices[0]->m22;
+                t0.x = x;
+                t0.y = y;
+            }
+            {
+                f32 x = input->rows[1].x * matrices[1]->m00 + input->rows[1].y * matrices[1]->m10 + input->rows[1].z * matrices[1]->m20;
+                f32 y = input->rows[1].x * matrices[1]->m01 + input->rows[1].y * matrices[1]->m11 + input->rows[1].z * matrices[1]->m21;
+                t1.z = input->rows[1].x * matrices[1]->m02 + input->rows[1].y * matrices[1]->m12 + input->rows[1].z * matrices[1]->m22;
+                t1.x = x;
+                t1.y = y;
+            }
+            {
+                f32 x = input->rows[1].x * matrices[2]->m00 + input->rows[1].y * matrices[2]->m10 + input->rows[1].z * matrices[2]->m20;
+                f32 y = input->rows[1].x * matrices[2]->m01 + input->rows[1].y * matrices[2]->m11 + input->rows[1].z * matrices[2]->m21;
+                t2.z = input->rows[1].x * matrices[2]->m02 + input->rows[1].y * matrices[2]->m12 + input->rows[1].z * matrices[2]->m22;
+                t2.x = x;
+                t2.y = y;
+            }
+            {
                 PC_GEOMETRY_BASIS_VECTOR p0;
                 PC_GEOMETRY_BASIS_VECTOR p1;
                 PC_GEOMETRY_BASIS_VECTOR p2;
                 PC_GEOMETRY_BASIS_VECTOR partial;
                 PC_GEOMETRY_BASIS_VECTOR sum;
-                PC_GEOMETRY_SCALE(p2, t2, input->weights.z);
-                PC_GEOMETRY_SCALE(p1, t1, input->weights.y);
-                PC_GEOMETRY_SCALE(p0, t0, input->weights.x);
-                PC_GEOMETRY_ADD(partial, p0, p1);
-                PC_GEOMETRY_ADD(sum, partial, p2);
+                {
+                    f32 scale = input->weights.z;
+                    p2.x = t2.x * scale;
+                    p2.y = t2.y * scale;
+                    p2.z = t2.z * scale;
+                }
+                {
+                    f32 scale = input->weights.y;
+                    p1.x = t1.x * scale;
+                    p1.y = t1.y * scale;
+                    p1.z = t1.z * scale;
+                }
+                {
+                    f32 scale = input->weights.x;
+                    p0.x = t0.x * scale;
+                    p0.y = t0.y * scale;
+                    p0.z = t0.z * scale;
+                }
+                partial.x = p0.x + p1.x;
+                partial.y = p0.y + p1.y;
+                partial.z = p0.z + p1.z;
+                sum.x = partial.x + p2.x;
+                sum.y = partial.y + p2.y;
+                sum.z = partial.z + p2.z;
                 ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[1] = sum;
             }
-            PC_GEOMETRY_ROTATE(t0, input->rows[2], matrices[0])
-            PC_GEOMETRY_ROTATE(t1, input->rows[2], matrices[1])
-            PC_GEOMETRY_ROTATE(t2, input->rows[2], matrices[2]) {
+            {
+                f32 x = input->rows[2].x * matrices[0]->m00 + input->rows[2].y * matrices[0]->m10 + input->rows[2].z * matrices[0]->m20;
+                f32 y = input->rows[2].x * matrices[0]->m01 + input->rows[2].y * matrices[0]->m11 + input->rows[2].z * matrices[0]->m21;
+                t0.z = input->rows[2].x * matrices[0]->m02 + input->rows[2].y * matrices[0]->m12 + input->rows[2].z * matrices[0]->m22;
+                t0.x = x;
+                t0.y = y;
+            }
+            {
+                f32 x = input->rows[2].x * matrices[1]->m00 + input->rows[2].y * matrices[1]->m10 + input->rows[2].z * matrices[1]->m20;
+                f32 y = input->rows[2].x * matrices[1]->m01 + input->rows[2].y * matrices[1]->m11 + input->rows[2].z * matrices[1]->m21;
+                t1.z = input->rows[2].x * matrices[1]->m02 + input->rows[2].y * matrices[1]->m12 + input->rows[2].z * matrices[1]->m22;
+                t1.x = x;
+                t1.y = y;
+            }
+            {
+                f32 x = input->rows[2].x * matrices[2]->m00 + input->rows[2].y * matrices[2]->m10 + input->rows[2].z * matrices[2]->m20;
+                f32 y = input->rows[2].x * matrices[2]->m01 + input->rows[2].y * matrices[2]->m11 + input->rows[2].z * matrices[2]->m21;
+                t2.z = input->rows[2].x * matrices[2]->m02 + input->rows[2].y * matrices[2]->m12 + input->rows[2].z * matrices[2]->m22;
+                t2.x = x;
+                t2.y = y;
+            }
+            {
                 PC_GEOMETRY_BASIS_VECTOR p0;
                 PC_GEOMETRY_BASIS_VECTOR p1;
                 PC_GEOMETRY_BASIS_VECTOR p2;
                 PC_GEOMETRY_BASIS_VECTOR partial;
                 PC_GEOMETRY_BASIS_VECTOR sum;
-                PC_GEOMETRY_SCALE(p2, t2, input->weights.z);
-                PC_GEOMETRY_SCALE(p1, t1, input->weights.y);
-                PC_GEOMETRY_SCALE(p0, t0, input->weights.x);
-                PC_GEOMETRY_ADD(partial, p0, p1);
-                PC_GEOMETRY_ADD(sum, partial, p2);
+                {
+                    f32 scale = input->weights.z;
+                    p2.x = t2.x * scale;
+                    p2.y = t2.y * scale;
+                    p2.z = t2.z * scale;
+                }
+                {
+                    f32 scale = input->weights.y;
+                    p1.x = t1.x * scale;
+                    p1.y = t1.y * scale;
+                    p1.z = t1.z * scale;
+                }
+                {
+                    f32 scale = input->weights.x;
+                    p0.x = t0.x * scale;
+                    p0.y = t0.y * scale;
+                    p0.z = t0.z * scale;
+                }
+                partial.x = p0.x + p1.x;
+                partial.y = p0.y + p1.y;
+                partial.z = p0.z + p1.z;
+                sum.x = partial.x + p2.x;
+                sum.y = partial.y + p2.y;
+                sum.z = partial.z + p2.z;
                 ((PC_GEOMETRY_INITIALIZED_BASIS_RECORD *)PcGeometryTransforms)[i].rows[2] = sum;
             }
         }
@@ -6863,12 +6984,12 @@ extern "C" {
                 vertices[2].z = vertices[5].z;
                 if (!(corner_x < -50.0 && vertices[1].x < 50.0) && !(corner_x > 700.0f && vertices[1].x > 700.0f) &&
                     !(corner_y < -50.0 && vertices[1].y < -50.0) && !(corner_y > 530.0f && vertices[1].y > 530.0f)) {
-                    NU_LGT_ARC_VERTEX(&vertices[0], NuLgtArcLaserData[i].colour, u, tex_v[0]);
-                    NU_LGT_ARC_VERTEX(&vertices[1], NuLgtArcLaserData[i].colour, u1, tex_v[0]);
-                    NU_LGT_ARC_VERTEX(&vertices[2], NuLgtArcLaserData[i].colour, u, tex_v[2]);
-                    NU_LGT_ARC_VERTEX(&vertices[1], NuLgtArcLaserData[i].colour, u1, tex_v[0]);
-                    NU_LGT_ARC_VERTEX(&vertices[3], NuLgtArcLaserData[i].colour, u1, tex_v[2]);
-                    NU_LGT_ARC_VERTEX(&vertices[2], NuLgtArcLaserData[i].colour, u, tex_v[2]);
+                    NU_LGT_ARC_VERTEX(vertex, &vertices[0], NuLgtArcLaserData[i].colour, u, tex_v[0]);
+                    NU_LGT_ARC_VERTEX(vertex, &vertices[1], NuLgtArcLaserData[i].colour, u1, tex_v[0]);
+                    NU_LGT_ARC_VERTEX(vertex, &vertices[2], NuLgtArcLaserData[i].colour, u, tex_v[2]);
+                    NU_LGT_ARC_VERTEX(vertex, &vertices[1], NuLgtArcLaserData[i].colour, u1, tex_v[0]);
+                    NU_LGT_ARC_VERTEX(vertex, &vertices[3], NuLgtArcLaserData[i].colour, u1, tex_v[2]);
+                    NU_LGT_ARC_VERTEX(vertex, &vertices[2], NuLgtArcLaserData[i].colour, u, tex_v[2]);
                 }
                 vertices[1].x = vertices[0].x;
                 vertices[1].y = vertices[0].y;
@@ -8553,24 +8674,6 @@ extern "C" {
         return matrix;
     }
 
-#define NUCAMERA_CLIP_CODE_EX(code, v, near_enabled, horizontal, vertical)                                                                 \
-    {                                                                                                                                      \
-        if ((v).z < global_camera.near_clip && (near_enabled))                                                                             \
-            (code) |= NUCAMERA_CLIP_NEAR;                                                                                                  \
-        if ((v).z > far_clip)                                                                                                              \
-            (code) |= NUCAMERA_CLIP_FAR;                                                                                                   \
-        if ((v).x < -(v).z * (horizontal))                                                                                                 \
-            (code) |= NUCAMERA_CLIP_LEFT;                                                                                                  \
-        if ((v).x > (v).z * (horizontal))                                                                                                  \
-            (code) |= NUCAMERA_CLIP_RIGHT;                                                                                                 \
-        if ((v).y < -(v).z * (vertical))                                                                                                   \
-            (code) |= NUCAMERA_CLIP_BOTTOM;                                                                                                \
-        if ((v).y > (v).z * (vertical))                                                                                                    \
-            (code) |= NUCAMERA_CLIP_TOP;                                                                                                   \
-    }
-
-#define NUCAMERA_CLIP_CODE(code, v) NUCAMERA_CLIP_CODE_EX(code, v, 1, zx, zy)
-
     i32 NuCameraClipTestExtents(NUVEC *min, NUVEC *max, NUMTX *world, f32 far_clip, i32 clip_screen) {
         NUVEC corners[8];
         NUVEC transformed[8];
@@ -8626,10 +8729,10 @@ extern "C" {
             NuVecMtxTransformBlock(transformed, corners, &clip_test_mtx, 8);
             memset(codes, 0, sizeof(codes));
             for (i = 0; i < 8; i += 4) {
-                NUCAMERA_CLIP_CODE(codes[i], transformed[i]);
-                NUCAMERA_CLIP_CODE(codes[i + 1], transformed[i + 1]);
-                NUCAMERA_CLIP_CODE(codes[i + 2], transformed[i + 2]);
-                NUCAMERA_CLIP_CODE(codes[i + 3], transformed[i + 3]);
+                NUCAMERA_CLIP_CODE_EX(codes[i], transformed[i], 1, far_clip, zx, zy);
+                NUCAMERA_CLIP_CODE_EX(codes[i + 1], transformed[i + 1], 1, far_clip, zx, zy);
+                NUCAMERA_CLIP_CODE_EX(codes[i + 2], transformed[i + 2], 1, far_clip, zx, zy);
+                NUCAMERA_CLIP_CODE_EX(codes[i + 3], transformed[i + 3], 1, far_clip, zx, zy);
             }
             if ((codes[0] & codes[1] & codes[2] & codes[3] & codes[4] & codes[5] & codes[6] & codes[7]) != 0) {
                 return 0;
@@ -8682,9 +8785,6 @@ extern "C" {
     NUMTX *fun_00604a70(void) {
         return &smtx;
     }
-
-#undef NUCAMERA_CLIP_CODE
-#undef NUCAMERA_CLIP_CODE_EX
 
     void NuCameraSetProjectionMtx(NUMTX *out, f32 fov, f32 aspect, f32 near_clip, f32 far_clip) {
         f32 half_fov = (f32)((f64)fov * 0.5);
