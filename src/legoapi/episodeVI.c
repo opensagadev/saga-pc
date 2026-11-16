@@ -888,7 +888,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
             }
         }
     }
-    blowup = LevGizmo[0] != NULL ? (GIZMOBLOWUP *)LevGizmo[0]->object : NULL;
+    blowup = LevGizmo[0] != NULL ? LevGizmo[0]->blowup : NULL;
     if (blowup != NULL && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         if (!flags[6]) {
             PlaySfx("exp_minecart", &blowup->position);
@@ -897,7 +897,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
     } else {
         flags[6] = 0;
     }
-    blowup = LevGizmo[1] != NULL ? (GIZMOBLOWUP *)LevGizmo[1]->object : NULL;
+    blowup = LevGizmo[1] != NULL ? LevGizmo[1]->blowup : NULL;
     if (blowup != NULL && (blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
         if (!flags[7]) {
             PlaySfx("exp_minecart", &blowup->position);

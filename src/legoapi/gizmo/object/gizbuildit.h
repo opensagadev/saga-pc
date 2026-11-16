@@ -10,6 +10,9 @@ struct gameanimobj_s;
 struct gameanimset_s;
 struct gameobject_s;
 
+/* GIZBUILDIT.availability_flags */
+#define GIZBUILDIT_AVAILABLE_ACTIVE 0x1
+
 typedef struct GIZBUILDIT {              // size 0x7c
     char name[16];                       // 0x00
     struct gameanimset_s *anim_set;      // 0x10

@@ -4690,7 +4690,7 @@ static void ForceCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 unused) {
                 }
                 if (can_use && WORLD->current_level == DAGOBAHC_LDATA && object->id == (u16)id_LUKESKYWALKERDAGOBAH &&
                     LevGizmo[0] != NULL && object->gizforce_target == LevGizmo[0]->object &&
-                    GameAnimSet_GetCompletionRatio(((GIZFORCE *)LevGizmo[0]->object)->anim_set) > 0.5f) {
+                    GameAnimSet_GetCompletionRatio(LevGizmo[0]->force->anim_set) > 0.5f) {
                     can_use = 0;
                 }
                 if (can_use) {

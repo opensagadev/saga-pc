@@ -342,6 +342,9 @@ struct STATUSPACKET_LSW_s { // size 0x4
     i32 unknown_00;         // 0x0
 };
 
+/* GIZFORCEANIMDATA_s.unknown_04 */
+#define GIZFORCEANIMDATA_GLOW_ACTIVE 0x1
+
 struct GIZFORCEANIMDATA_s { // size 0x8
     u16 flags;              // 0x0
     i16 platform_id;        // 0x2
@@ -477,6 +480,10 @@ enum { EDCAM_FREEDOM_YAW = 16 };
 enum { GAMEANIMSET_VISIBILITY_ALL = 2 };
 
 enum { GIZBUILDIT_BUILD_IDLE = 0 };
+
+/* GIZBUILDIT.build_state past idle */
+#define GIZBUILDIT_BUILD_BUILDING 1
+#define GIZBUILDIT_BUILD_BUILT 2
 
 enum { GIZBUILDIT_STATE_ROTATING_WOBBLE = 1 };
 #ifdef __cplusplus
@@ -1188,7 +1195,12 @@ struct gameanimobj_s {              // size 0x28
         u32 serialized_flags;
     }; // 0x20
 
-    void *object_data; // 0x24
+    /* The owning gizmo type's data for this object. */
+    union { // size 0x4
+        void *object_data;
+        struct GIZFORCEANIMDATA_s *force_data;
+        struct GIZBUILDITANIMDATA_s *buildit_data;
+    }; // 0x24
 };
 
 struct gameanimobjpool_s {     // size 0x14

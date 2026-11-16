@@ -910,7 +910,7 @@ f32 Condition_OnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIPACKET 
     }
     animation = force->anim_set->objects;
     while (animation != NULL) {
-        if (platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
+        if (platform_id == animation->force_data->platform_id) {
             return 1.0f;
         }
         animation = animation->next;
@@ -941,7 +941,7 @@ f32 Condition_PlayerOnForcePlatform(AISYS *system, AISCRIPTPROCESS *process, AIP
     }
     animation = force->anim_set->objects;
     while (animation != NULL) {
-        if (platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
+        if (platform_id == animation->force_data->platform_id) {
             return 1.0f;
         }
         animation = animation->next;
@@ -978,12 +978,10 @@ f32 Condition_EitherPlayerOnForcePlatform(AISYS *system, AISCRIPTPROCESS *proces
             if (eligible != 0) {
                 animation = force->anim_set->objects;
                 while (animation != NULL) {
-                    if ((eligible & 1) != 0 &&
-                        first->supporting_platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
+                    if ((eligible & 1) != 0 && first->supporting_platform_id == animation->force_data->platform_id) {
                         return 1.0f;
                     }
-                    if ((eligible & 2) != 0 &&
-                        second->supporting_platform_id == ((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id) {
+                    if ((eligible & 2) != 0 && second->supporting_platform_id == animation->force_data->platform_id) {
                         return 1.0f;
                     }
                     animation = animation->next;

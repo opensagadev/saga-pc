@@ -499,7 +499,7 @@ static void HubRestoreBuildIts(void) {
         }
     }
     if ((Game.hub_buildit_completed & 0x80) != 0 && LevGizmo[0] != NULL) {
-        GizBuildIt_SetToEnd((GIZBUILDIT *)LevGizmo[0]->object);
+        GizBuildIt_SetToEnd(LevGizmo[0]->buildit);
     }
 }
 
@@ -3487,8 +3487,8 @@ extern "C" void Hub_Update(WORLDINFO *world) {
                 }
                 if ((f64)Game.gold_bricks < 160.0) {
                     GizmoSetVisibility(world->gizmo_sys, LevGizmo[0], 0, 0);
-                    HubSetBuildItPiecesVisible((GIZBUILDIT *)LevGizmo[0]->object, (i32)((f64)Game.gold_bricks * 0.5));
-                } else if ((((GIZBUILDIT *)LevGizmo[0]->object)->availability_flags & 1) == 0) {
+                    HubSetBuildItPiecesVisible(LevGizmo[0]->buildit, (i32)((f64)Game.gold_bricks * 0.5));
+                } else if ((LevGizmo[0]->buildit->availability_flags & GIZBUILDIT_AVAILABLE_ACTIVE) == 0) {
                     GizmoActivate(world->gizmo_sys, LevGizmo[0], 1, 0);
                 }
             } else if (GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {

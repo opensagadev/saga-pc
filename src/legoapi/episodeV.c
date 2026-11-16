@@ -986,7 +986,7 @@ void CloudCityEscapeA_Update(WORLDINFO *world) {
         }
     }
     if (LevGizmo[0] != NULL && LevAIMessage[1] != NULL && LevAIMessage[1]->value == 0.0f && LevGizmo[0]->object != NULL &&
-        ((GIZBUILDIT *)LevGizmo[0]->object)->build_state == 2) {
+        LevGizmo[0]->buildit->build_state == GIZBUILDIT_BUILD_BUILT) {
         LevAIMessage[1]->value = 1.0f;
     }
 }

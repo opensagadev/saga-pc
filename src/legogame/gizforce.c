@@ -667,7 +667,7 @@ i32 GizForce_StoodOnForce(GIZFORCE *force, GAMEOBJECT *object) {
         return 0;
     }
     for (animation = force->anim_set->objects; animation != NULL; animation = animation->next) {
-        if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == object->terrain_platform_id) {
+        if (animation->force_data->platform_id == object->terrain_platform_id) {
             return 1;
         }
     }
@@ -1001,7 +1001,7 @@ i32 GizForces_BoltHitPlatAll(WORLDINFO *world, void *system_pointer, BOLT *bolt,
             }
             animation = force->anim_set->objects;
             while (animation != NULL) {
-                if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == bolt->hit_platform) {
+                if (animation->force_data->platform_id == bolt->hit_platform) {
                     (void)BoltType_FindByID(bolt->type_id, world);
                     GizForces_BoltHitPlat(force, world, bolt->owner != NULL ? bolt->owner->player_index : -1);
                     return 1;
@@ -1596,7 +1596,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
             if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
                     GIZFORCEANIMDATA_s *data = object->object_data;
-                    if ((data->unknown_04 & 1) != 0 || !NuSpecialExistsFn(&object->special)) {
+                    if ((data->unknown_04 & GIZFORCEANIMDATA_GLOW_ACTIVE) != 0 || !NuSpecialExistsFn(&object->special)) {
                         continue;
                     }
                     radius = 0.0f;
@@ -1649,7 +1649,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         force->runtime_flags &= ~0x20000u;
         if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
             for (object = force->anim_set->objects; object != NULL; object = object->next) {
-                ((GIZFORCEANIMDATA_s *)object->object_data)->unknown_04 &= ~1u;
+                object->force_data->unknown_04 &= ~GIZFORCEANIMDATA_GLOW_ACTIVE;
             }
         }
     }
@@ -1766,7 +1766,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                         if (TerrainPlatId() == -1) {
                             goto choose;
                         }
-                        if (((GIZFORCEANIMDATA_s *)oldest->animation->object_data)->platform_id != TerrainPlatId()) {
+                        if (oldest->animation->force_data->platform_id != TerrainPlatId()) {
                             goto choose;
                         }
                     }
@@ -1784,7 +1784,7 @@ i32 GizForce_FindBestForceTarget(void *system_ptr, GAMEOBJECT *object) {
                             if (animation == NULL) {
                                 goto choose;
                             }
-                            if (((GIZFORCEANIMDATA_s *)animation->object_data)->platform_id == TerrainPlatId()) {
+                            if (animation->force_data->platform_id == TerrainPlatId()) {
                                 break;
                             }
                         }
