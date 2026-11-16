@@ -1449,7 +1449,7 @@ i32 Action_Sebulba(AISYS *unused0, AISCRIPTPROCESS *process, AIPACKET *packet, c
         object->movement_speed_scale = 1.0f;
     }
 
-    AIMoveInstruction(packet, &goal, 0.0f, NULL, 1, 0.0f);
+    AIMoveInstruction(packet, &goal, 0.0f, NULL, AIMOVE_TO_DESTINATION, 0.0f);
     return 0;
 }
 

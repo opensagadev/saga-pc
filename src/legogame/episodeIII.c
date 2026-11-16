@@ -582,8 +582,8 @@ i32 Action_BoulderSection(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
         }
     } else {
         AIPACKET *player_packet = system->player_1->ai;
-        AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height, &player_packet->path_info, 1,
-                          packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, &player_packet->last_path_position, player_packet->mover_height, &player_packet->path_info,
+                          AIMOVE_TO_DESTINATION, packet->movement_instruction_parameter);
     }
     return 0;
 }

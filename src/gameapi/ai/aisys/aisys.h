@@ -458,6 +458,16 @@ extern "C" {
     void AISysProcess(AISYS *, struct APIOBJECT *, struct APIOBJECT *);
     typedef f32 (*AI_CHARACTER_GOAL_SPEED)(struct APIOBJECT *);
     void AISysGetCharacterPathPos(AISYS *, struct APIOBJECT *, struct AIPACKET *, i32, i32);
+/* AIMoveInstruction's mode, kept in the low three bits of AIPACKET.flags until AISysCharacterMovement runs the
+ * movement function of the mode. */
+#define AIPACKET_MOVE_MODE 0x7
+#define AIMOVE_TO_DESTINATION 1          /* AIMoveToDestination; a formation moves towards it */
+#define AIMOVE_RETREAT 2                 /* AIRetreatFromDestination */
+#define AIMOVE_CIRCLE 3                  /* AICircle */
+#define AIMOVE_WANDER 4                  /* AIWander; a formation wanders */
+#define AIMOVE_TO_DESTINATION_ALONE 5    /* AIMoveToDestination, also for a member of a formation */
+#define AIMOVE_AVOIDING_CAMERA 6         /* AIMoveToDestinationAvoidingCamera */
+#define AIMOVE_DIRECTLY_TO_DESTINATION 7 /* AIMoveDirectlyToDestination */
     void AIMoveInstruction(struct AIPACKET *, NUVEC *, f32, AIPATHINFO *, i32, f32);
     void AIFormationFollow(struct AIPACKET *);
     void AISysUpdateCharacterPathPos(AISYS *, struct APIOBJECT *, struct AIPACKET *, i32, f32);

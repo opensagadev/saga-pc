@@ -67,6 +67,32 @@ struct AISCRIPTPROCESS {                 // size 0xc8
     void *local_messages;     // 0xc4
 };
 
+/* AISCRIPTPROCESS.action_data_1 holds each action's own options; the bits below are set by the keyword in
+ * the comment. The follow actions (FollowOpponent, FollowPlayer, FollowCharacter, GameFollowPlayer) pass them
+ * on as FollowAPIObject's flags. */
+#define AIFOLLOW_CAN_GO_OFF_PATH 0x1 /* can_go_off_path: leave the path to reach a target on it */
+#define AIFOLLOW_IGNORE_RADIUS 0x2   /* ignore_radius: no stopping distance around the target */
+/* Circle, CirclePlayer and CircleOpponent. */
+#define AICIRCLE_FACING 0x1           /* facing: look at the centre */
+#define AICIRCLE_TARGET_ORIGIN 0x2    /* can_go_off_path: circle the target's terrain origin, not its path position */
+#define AICIRCLE_CURRENT_DIST 0x4     /* currentdist: the radius is the distance when the action starts */
+#define AICIRCLE_CURRENT_POSITION 0x8 /* current_position (Circle's default): circle the start position */
+#define AICIRCLE_LOCATOR 0x10         /* locator=: circle a locator */
+#define AICIRCLE_ORIGIN 0x20          /* origin: circle the creature's origin */
+/* GoToLocator. */
+#define AIGOTO_ON_GROUND 0x1               /* on_ground */
+#define AIGOTO_XZ_RANGECHECK 0x2           /* xz_rangecheck */
+#define AIGOTO_FACE_OPPONENT 0x4           /* face_opponent */
+#define AIGOTO_IGNORE_PATH 0x8             /* ignore_path */
+#define AIGOTO_MUST_REACH_DESTINATION 0x10 /* must_reach_destination: jump when the path is blocked */
+/* AttackOpponent, EngageOpponent and ShootAtOpponent. */
+#define AIENGAGE_OFFSCREEN 0x1          /* offscreen: also fire while not drawn */
+#define AIENGAGE_KEEP_RANGE 0x2         /* minrange=, or held back by the one-at-once rule: keep the goal range */
+#define AIENGAGE_NO_FIRE_IN_MINICUT 0x4 /* no_fire_in_minicut */
+#define AIENGAGE_CIRCLE 0x8             /* circle: circle the opponent inside the goal range */
+#define AIENGAGE_BACKING_OFF 0x10       /* walking backwards inside the goal range (turning circle characters) */
+#define AIENGAGE_BACK_OFF 0x20          /* set in LSW1: back off inside the goal range */
+
 typedef struct AIACTIONMACRO AIACTIONMACRO;
 typedef struct AICONDITIONMACRO AICONDITIONMACRO;
 

@@ -13498,20 +13498,20 @@ void AIMoveInstruction(AIPACKET *packet, NUVEC *destination, f32 stopping_distan
     group = packet->group;
     if (group != NULL && (group->flags & AIGROUP_FORMATION)) {
         switch (mode) {
-            case 1:
+            case AIMOVE_TO_DESTINATION:
                 if (group->leader == (APIOBJECT *)packet->owner) {
                     FormationMove(group, RowMoveTowards);
                 }
                 AIFormationFollow(packet);
                 return;
-            case 4:
+            case AIMOVE_WANDER:
                 if (group->leader == (APIOBJECT *)packet->owner) {
                     FormationMove(group, RowMoveWander);
                 }
                 AIFormationFollow(packet);
                 return;
-            case 5:
-                mode = 1;
+            case AIMOVE_TO_DESTINATION_ALONE:
+                mode = AIMOVE_TO_DESTINATION;
                 break;
         }
     }
@@ -13522,7 +13522,7 @@ void AIMoveInstruction(AIPACKET *packet, NUVEC *destination, f32 stopping_distan
         packet->fallback_path_info = *path_info;
     }
     packet->fallback_stopping_distance = stopping_distance;
-    packet->flags = (packet->flags & ~7u) | (mode & 7);
+    packet->flags = (packet->flags & ~AIPACKET_MOVE_MODE) | (mode & AIPACKET_MOVE_MODE);
     packet->movement_parameter = movement_parameter;
 }
 
@@ -13566,7 +13566,7 @@ void AIFormationFollow(AIPACKET *packet) {
         packet->fallback_destination = destination;
         packet->fallback_path_info = row->path_info;
         packet->fallback_stopping_distance = 0.0f;
-        packet->flags = (packet->flags & ~7u) | (mode & 7);
+        packet->flags = (packet->flags & ~AIPACKET_MOVE_MODE) | (mode & AIPACKET_MOVE_MODE);
         packet->movement_parameter = 0.0f;
         packet->script_action_position.x = 0.0f;
         packet->script_action_position.y = 0.0f;
@@ -13646,36 +13646,36 @@ void AISysCharacterMovement(AISYS *system, AIPACKET *packet, APIOBJECT *object, 
     if (packet->path_info.path != NULL && packet->path_info.connection != NULL) {
         packet->movement_destination = object->position;
         packet->movement_stopping_distance = 0.0f;
-        switch (packet->flags & 7) {
-            case 1:
+        switch (packet->flags & AIPACKET_MOVE_MODE) {
+            case AIMOVE_TO_DESTINATION:
                 AIMoveToDestination(system, packet, object, checks);
                 break;
-            case 6:
+            case AIMOVE_AVOIDING_CAMERA:
                 AIMoveToDestinationAvoidingCamera(system, packet, object, checks);
                 break;
-            case 2:
+            case AIMOVE_RETREAT:
                 AIRetreatFromDestination(system, packet, object, checks);
                 break;
-            case 3:
+            case AIMOVE_CIRCLE:
                 AICircle(system, packet, object, checks);
                 break;
-            case 4:
+            case AIMOVE_WANDER:
                 AIWander(system, packet, object, checks);
                 break;
-            case 7:
+            case AIMOVE_DIRECTLY_TO_DESTINATION:
                 AIMoveDirectlyToDestination(system, packet, object, checks);
                 break;
         }
-        packet->flags &= ~7u;
+        packet->flags &= ~AIPACKET_MOVE_MODE;
     } else {
         packet->movement_destination = object->position;
         packet->movement_stopping_distance = 0.0f;
-        mode = packet->flags & 7;
-        if (mode == 1 || mode == 7 || mode == 6) {
+        mode = packet->flags & AIPACKET_MOVE_MODE;
+        if (mode == AIMOVE_TO_DESTINATION || mode == AIMOVE_DIRECTLY_TO_DESTINATION || mode == AIMOVE_AVOIDING_CAMERA) {
             packet->movement_stopping_distance = packet->fallback_stopping_distance;
             packet->movement_destination = packet->fallback_destination;
         }
-        packet->flags &= ~7u;
+        packet->flags &= ~AIPACKET_MOVE_MODE;
     }
 }
 
@@ -15390,31 +15390,32 @@ void FollowAPIObject(APIOBJECT *object, APIOBJECT *target, u8 flags, f32 movemen
     i32 movement_mode;
     NUVEC *destination;
     f32 stopping_distance;
-    if ((flags & 1) != 0) {
+    if ((flags & AIFOLLOW_CAN_GO_OFF_PATH) != 0) {
         if (object->ai->path_info.path != NULL && object->ai->path_info.path == target->ai->path_info.path) {
-            if ((target->ai->path_info.flags & 1) == 0 && object->ai->path_info.connection == target->ai->path_info.connection) {
-                movement_mode = 7;
+            if ((target->ai->path_info.flags & AIPATHINFO_FLAG_ON_PATH) == 0 &&
+                object->ai->path_info.connection == target->ai->path_info.connection) {
+                movement_mode = AIMOVE_DIRECTLY_TO_DESTINATION;
                 destination = &target->ai->terrain_origin;
             } else if (object->ai->path_info.connection != NULL && target->ai->path_info.connection != NULL &&
                        (object->ai->flags & 0x100000u) == 0 &&
                        (object->ai->path_info.path->route_matrix[object->ai->path_info.connection->node_indices[0]]
                                                                 [target->ai->path_info.connection->node_indices[0]] != 0xff ||
                         object->ai->path_info.connection->node_indices[0] == target->ai->path_info.connection->node_indices[0])) {
-                movement_mode = 1;
+                movement_mode = AIMOVE_TO_DESTINATION;
                 destination = &target->ai->last_path_position;
             } else {
-                movement_mode = 7;
+                movement_mode = AIMOVE_DIRECTLY_TO_DESTINATION;
                 destination = &target->ai->terrain_origin;
             }
         } else {
-            movement_mode = 7;
+            movement_mode = AIMOVE_DIRECTLY_TO_DESTINATION;
             destination = &target->ai->terrain_origin;
         }
     } else {
-        movement_mode = 1;
+        movement_mode = AIMOVE_TO_DESTINATION;
         destination = &target->ai->last_path_position;
     }
-    stopping_distance = (flags & 2) != 0 ? 0.0f : target->ai->mover_height;
+    stopping_distance = (flags & AIFOLLOW_IGNORE_RADIUS) != 0 ? 0.0f : target->ai->mover_height;
     AIMoveInstruction(object->ai, destination, stopping_distance, &target->ai->path_info, movement_mode, movement_parameter);
 }
 
@@ -15433,9 +15434,9 @@ i32 Action_FollowOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
                 continue;
             }
             if (NuStrICmp(params[index], "ignore_radius") == 0) {
-                processor->action_data_1 |= 2;
+                processor->action_data_1 |= AIFOLLOW_IGNORE_RADIUS;
             } else if (NuStrICmp(params[index], "can_go_off_path") == 0) {
-                processor->action_data_1 |= 1;
+                processor->action_data_1 |= AIFOLLOW_CAN_GO_OFF_PATH;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
             }
@@ -15462,9 +15463,9 @@ i32 Action_FollowPlayer(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
                 continue;
             }
             if (NuStrICmp(params[index], "ignore_radius") == 0) {
-                processor->action_data_1 |= 2;
+                processor->action_data_1 |= AIFOLLOW_IGNORE_RADIUS;
             } else if (NuStrICmp(params[index], "can_go_off_path") == 0) {
-                processor->action_data_1 |= 1;
+                processor->action_data_1 |= AIFOLLOW_CAN_GO_OFF_PATH;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
             }
@@ -15504,40 +15505,40 @@ i32 Action_Circle(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char
                 // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~AIPACKET_CIRCLE_CLOCKWISE) | (~packet->flags & AIPACKET_CIRCLE_CLOCKWISE);
             } else if (NuStrICmp(params[i], "facing") == 0) {
-                processor->action_data_1 |= 1;
+                processor->action_data_1 |= AICIRCLE_FACING;
             } else if (NuStrICmp(params[i], "currentdist") == 0) {
-                processor->action_data_1 |= 4;
+                processor->action_data_1 |= AICIRCLE_CURRENT_DIST;
             } else if ((value = NuStrIStr(params[i], "locator=")) != NULL) {
                 processor->action_data_3 = AIPathFindLocator(sys, value + 8);
                 if (processor->action_data_3 != NULL) {
-                    processor->action_data_1 |= 0x10;
+                    processor->action_data_1 |= AICIRCLE_LOCATOR;
                 }
             } else if (NuStrIStr(params[i], "current_position") != NULL) {
-                processor->action_data_1 |= 8;
+                processor->action_data_1 |= AICIRCLE_CURRENT_POSITION;
                 processor->action_pos = packet->terrain_origin;
             } else if (NuStrICmp(params[i], "origin") == 0) {
                 if (packet->creature_index != AIPACKET_NO_CREATURE) {
-                    processor->action_data_1 |= 0x20;
+                    processor->action_data_1 |= AICIRCLE_ORIGIN;
                 }
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
             }
         }
         if ((processor->action_data_1 & 0x38) == 0) {
-            processor->action_data_1 |= 8;
+            processor->action_data_1 |= AICIRCLE_CURRENT_POSITION;
             processor->action_pos = packet->terrain_origin;
         }
     }
     position = NULL;
     path = NULL;
-    if ((processor->action_data_1 & 8) != 0) {
+    if ((processor->action_data_1 & AICIRCLE_CURRENT_POSITION) != 0) {
         path = &packet->path_info;
         position = &processor->action_pos;
-    } else if ((processor->action_data_1 & 0x10) != 0) {
+    } else if ((processor->action_data_1 & AICIRCLE_LOCATOR) != 0) {
         locator = processor->action_data_3;
         path = &locator->path_info;
         position = &locator->position;
-    } else if ((processor->action_data_1 & 0x20) != 0) {
+    } else if ((processor->action_data_1 & AICIRCLE_ORIGIN) != 0) {
         creature = &sys->creatures[packet->creature_index];
         path = &creature->path_info;
         position = GetOriginPositionFn != NULL ? GetOriginPositionFn(sys, packet) : NULL;
@@ -15546,11 +15547,11 @@ i32 Action_Circle(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char
         }
     }
     if (path != NULL && position != NULL) {
-        if ((processor->action_data_1 & 4) != 0) {
+        if ((processor->action_data_1 & AICIRCLE_CURRENT_DIST) != 0) {
             packet->movement_instruction_parameter = NuVecXZDist(&packet->terrain_origin, position, &difference);
         }
-        AIMoveInstruction(packet, position, 0.0f, path, 3, packet->movement_instruction_parameter);
-        if ((processor->action_data_1 & 1) != 0) {
+        AIMoveInstruction(packet, position, 0.0f, path, AIMOVE_CIRCLE, packet->movement_instruction_parameter);
+        if ((processor->action_data_1 & AICIRCLE_FACING) != 0) {
             packet->movement_look_target = position;
         }
     }
@@ -15580,25 +15581,26 @@ i32 Action_CirclePlayer(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
                 // flags has no bitfield view, so the flip is a masked merge.
                 packet->flags = (packet->flags & ~AIPACKET_CIRCLE_CLOCKWISE) | (~packet->flags & AIPACKET_CIRCLE_CLOCKWISE);
             } else if (NuStrICmp(params[i], "facing") == 0) {
-                processor->action_data_1 |= 1;
+                processor->action_data_1 |= AICIRCLE_FACING;
             } else if (NuStrICmp(params[i], "can_go_off_path") == 0) {
-                processor->action_data_1 |= 2;
+                processor->action_data_1 |= AICIRCLE_TARGET_ORIGIN;
             } else if (NuStrICmp(params[i], "currentdist") == 0) {
-                processor->action_data_1 |= 4;
+                processor->action_data_1 |= AICIRCLE_CURRENT_DIST;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
             }
         }
     }
     if (sys->player_1 != NULL) {
-        if ((processor->action_data_1 & 4) != 0) {
+        if ((processor->action_data_1 & AICIRCLE_CURRENT_DIST) != 0) {
             packet->movement_instruction_parameter =
                 NuVecXZDist(&packet->terrain_origin, &sys->player_1->ai->last_path_position, &difference);
         }
-        position = (processor->action_data_1 & 2) != 0 ? &sys->player_1->ai->terrain_origin : &sys->player_1->ai->last_path_position;
-        AIMoveInstruction(packet, position, sys->player_1->ai->mover_height, &sys->player_1->ai->path_info, 3,
+        position = (processor->action_data_1 & AICIRCLE_TARGET_ORIGIN) != 0 ? &sys->player_1->ai->terrain_origin
+                                                                            : &sys->player_1->ai->last_path_position;
+        AIMoveInstruction(packet, position, sys->player_1->ai->mover_height, &sys->player_1->ai->path_info, AIMOVE_CIRCLE,
                           packet->movement_instruction_parameter);
-        if ((processor->action_data_1 & 1) != 0) {
+        if ((processor->action_data_1 & AICIRCLE_FACING) != 0) {
             packet->movement_look_target = position;
         }
     }
@@ -15634,26 +15636,26 @@ i32 Action_CircleOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
                     packet->flags |= AIPACKET_CIRCLE_CLOCKWISE;
                 }
             } else if (NuStrICmp(params[i], "facing") == 0) {
-                processor->action_data_1 |= 1;
+                processor->action_data_1 |= AICIRCLE_FACING;
             } else if (NuStrICmp(params[i], "can_go_off_path") == 0) {
-                processor->action_data_1 |= 2;
+                processor->action_data_1 |= AICIRCLE_TARGET_ORIGIN;
             } else if (NuStrICmp(params[i], "currentdist") == 0) {
-                processor->action_data_1 |= 4;
+                processor->action_data_1 |= AICIRCLE_CURRENT_DIST;
             } else {
                 packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[i]);
             }
         }
     }
     if (((APIOBJECT *)packet->opponent) != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
-        if ((processor->action_data_1 & 4) != 0) {
+        if ((processor->action_data_1 & AICIRCLE_CURRENT_DIST) != 0) {
             packet->movement_instruction_parameter =
                 NuVecXZDist(&packet->terrain_origin, &((APIOBJECT *)packet->opponent)->ai->last_path_position, &difference);
         }
-        position = (processor->action_data_1 & 2) != 0 ? &((APIOBJECT *)packet->opponent)->ai->terrain_origin
-                                                       : &((APIOBJECT *)packet->opponent)->ai->last_path_position;
+        position = (processor->action_data_1 & AICIRCLE_TARGET_ORIGIN) != 0 ? &((APIOBJECT *)packet->opponent)->ai->terrain_origin
+                                                                            : &((APIOBJECT *)packet->opponent)->ai->last_path_position;
         AIMoveInstruction(packet, position, ((APIOBJECT *)packet->opponent)->ai->mover_height,
-                          &((APIOBJECT *)packet->opponent)->ai->path_info, 3, packet->movement_instruction_parameter);
-        if ((processor->action_data_1 & 1) != 0) {
+                          &((APIOBJECT *)packet->opponent)->ai->path_info, AIMOVE_CIRCLE, packet->movement_instruction_parameter);
+        if ((processor->action_data_1 & AICIRCLE_FACING) != 0) {
             packet->movement_look_target = position;
         }
     }
@@ -15681,8 +15683,8 @@ i32 Action_MoveAwayFromOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET
     }
     if (packet->opponent != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
         AIMoveInstruction(packet, &((APIOBJECT *)packet->opponent)->ai->last_path_position,
-                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info, 2,
-                          packet->movement_instruction_parameter);
+                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info,
+                          AIMOVE_RETREAT, packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
             packet->movement_look_target = &((APIOBJECT *)packet->opponent)->position;
         }
@@ -15710,8 +15712,8 @@ i32 Action_MoveAwayFromPlayer(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *
         }
     }
     if (sys->player_1 != NULL) {
-        AIMoveInstruction(packet, &sys->player_1->ai->last_path_position, sys->player_1->ai->mover_height, &sys->player_1->ai->path_info, 2,
-                          packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, &sys->player_1->ai->last_path_position, sys->player_1->ai->mover_height, &sys->player_1->ai->path_info,
+                          AIMOVE_RETREAT, packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
             packet->movement_look_target = &sys->player_1->position;
         }
@@ -15739,8 +15741,8 @@ i32 Action_MoveAwayFromPlayer2(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET 
         }
     }
     if (sys->player_2 != NULL) {
-        AIMoveInstruction(packet, &sys->player_2->ai->last_path_position, sys->player_2->ai->mover_height, &sys->player_2->ai->path_info, 2,
-                          packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, &sys->player_2->ai->last_path_position, sys->player_2->ai->mover_height, &sys->player_2->ai->path_info,
+                          AIMOVE_RETREAT, packet->movement_instruction_parameter);
         if (processor->action_data_1 != 0) {
             packet->movement_look_target = &sys->player_2->position;
         }
@@ -15765,8 +15767,8 @@ i32 Action_RetreatFromOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACK
     }
     if (packet->opponent != NULL && ((APIOBJECT *)packet->opponent)->ai != NULL) {
         AIMoveInstruction(packet, &((APIOBJECT *)packet->opponent)->ai->last_path_position,
-                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info, 2,
-                          packet->movement_instruction_parameter);
+                          ((APIOBJECT *)packet->opponent)->ai->mover_height, &((APIOBJECT *)packet->opponent)->ai->path_info,
+                          AIMOVE_RETREAT, packet->movement_instruction_parameter);
     }
     return 0;
 }
@@ -15789,7 +15791,7 @@ i32 Action_RetreatFromNearestOpponent(AISYS *system, AISCRIPTPROCESS *processor,
     }
     if (packet->nearest_opponent != NULL) {
         target = ((APIOBJECT *)packet->nearest_opponent)->ai;
-        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, 2,
+        AIMoveInstruction(packet, &target->last_path_position, target->mover_height, &target->path_info, AIMOVE_RETREAT,
                           packet->movement_instruction_parameter);
     }
     return 0;
@@ -15830,7 +15832,8 @@ i32 Action_GoToNode(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, ch
                 processor->path_info.direction = 0;
                 processor->path_info.flags_word |= 1;
                 processor->path_info.width = 0.0f;
-                AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1, packet->movement_instruction_parameter);
+                AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, AIMOVE_TO_DESTINATION,
+                                  packet->movement_instruction_parameter);
             } else {
                 return 1;
             }
@@ -15843,7 +15846,8 @@ i32 Action_GoToNode(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, ch
         return 1;
     }
     distance_squared = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
-    AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 1, packet->movement_instruction_parameter);
+    AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, AIMOVE_TO_DESTINATION,
+                      packet->movement_instruction_parameter);
     if (!(distance_squared < node_2->radius_squared)) {
         return 0;
     }
@@ -15884,7 +15888,8 @@ i32 Action_GoToNodeRandom(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
                 processor->path_info.direction = 0;
                 processor->path_info.flags_word |= 1;
                 processor->path_info.width = 0.0f;
-                AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 1, packet->movement_instruction_parameter);
+                AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, AIMOVE_TO_DESTINATION,
+                                  packet->movement_instruction_parameter);
             } else {
                 return 1;
             }
@@ -15896,7 +15901,8 @@ i32 Action_GoToNodeRandom(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         return 1;
     }
     distance_squared = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
-    AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 1, packet->movement_instruction_parameter);
+    AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, AIMOVE_TO_DESTINATION,
+                      packet->movement_instruction_parameter);
     if (!(distance_squared < node_2->radius_squared)) {
         return 0;
     }
@@ -15955,7 +15961,7 @@ i32 Action_GoToOrigin(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
                 processor->action_timer = 0.01f;
             }
         }
-        AIMoveInstruction(packet, origin, 0.0f, &creature->path_info, 1, packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, origin, 0.0f, &creature->path_info, AIMOVE_TO_DESTINATION, packet->movement_instruction_parameter);
         processor->action_pos.x = 0.0f;
         processor->action_pos.y = 0.0f;
         processor->action_pos.z = 1.0f;
@@ -15964,7 +15970,7 @@ i32 Action_GoToOrigin(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
         return 0;
     }
 
-    AIMoveInstruction(packet, origin, 0.0f, &creature->path_info, 1, packet->movement_instruction_parameter);
+    AIMoveInstruction(packet, origin, 0.0f, &creature->path_info, AIMOVE_TO_DESTINATION, packet->movement_instruction_parameter);
     distance_squared = processor->action_data_2 != 0 ? NuVecXZDistSqr(&packet->terrain_origin, origin, &difference)
                                                      : NuVecDistSqr(&packet->terrain_origin, origin, &difference);
     range = packet->movement_instruction_parameter + ai_moveradius;
@@ -16077,15 +16083,15 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
                 }
 
                 if (NuStrICmp(params[index], "on_ground") == 0) {
-                    processor->action_data_1 |= 1u;
+                    processor->action_data_1 |= AIGOTO_ON_GROUND;
                 } else if (NuStrICmp(params[index], "xz_rangecheck") == 0) {
-                    processor->action_data_1 |= 2u;
+                    processor->action_data_1 |= AIGOTO_XZ_RANGECHECK;
                 } else if (NuStrICmp(params[index], "face_opponent") == 0) {
-                    processor->action_data_1 |= 4u;
+                    processor->action_data_1 |= AIGOTO_FACE_OPPONENT;
                 } else if (NuStrICmp(params[index], "ignore_path") == 0) {
-                    processor->action_data_1 |= 8u;
+                    processor->action_data_1 |= AIGOTO_IGNORE_PATH;
                 } else if (NuStrICmp(params[index], "must_reach_destination") == 0) {
-                    processor->action_data_1 |= 16u;
+                    processor->action_data_1 |= AIGOTO_MUST_REACH_DESTINATION;
                 } else {
                     packet->movement_instruction_parameter = AIParamToFloatEx(packet, processor, params[index]);
                 }
@@ -16105,10 +16111,12 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
             return 1;
         }
 
-        if ((processor->action_data_1 & 8u) != 0) {
-            AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 7, packet->movement_instruction_parameter);
+        if ((processor->action_data_1 & AIGOTO_IGNORE_PATH) != 0) {
+            AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, AIMOVE_DIRECTLY_TO_DESTINATION,
+                              packet->movement_instruction_parameter);
         } else {
-            AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, 1, packet->movement_instruction_parameter);
+            AIMoveInstruction(packet, &locator_3->position, 0.0f, &locator_3->path_info, AIMOVE_TO_DESTINATION,
+                              packet->movement_instruction_parameter);
         }
 
         processor->action_pos.x = 0.0f;
@@ -16123,25 +16131,28 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
         return 1;
     }
 
-    if ((processor->action_data_1 & 8u) != 0) {
-        AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 7, packet->movement_instruction_parameter);
+    if ((processor->action_data_1 & AIGOTO_IGNORE_PATH) != 0) {
+        AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, AIMOVE_DIRECTLY_TO_DESTINATION,
+                          packet->movement_instruction_parameter);
     } else {
-        AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, 1, packet->movement_instruction_parameter);
+        AIMoveInstruction(packet, &locator->position, 0.0f, &locator->path_info, AIMOVE_TO_DESTINATION,
+                          packet->movement_instruction_parameter);
     }
 
-    if ((processor->action_data_1 & 4u) != 0 && packet->opponent != NULL) {
+    if ((processor->action_data_1 & AIGOTO_FACE_OPPONENT) != 0 && packet->opponent != NULL) {
         packet->movement_look_target = &packet->opponent->position;
     }
-    if ((processor->action_data_1 & 1u) != 0 && ((APIOBJECT *)packet->owner)->grounded == 0) {
+    if ((processor->action_data_1 & AIGOTO_ON_GROUND) != 0 && ((APIOBJECT *)packet->owner)->grounded == 0) {
         return 0;
     }
 
-    distance_squared = (processor->action_data_1 & 2u) != 0 ? NuVecXZDistSqr(&packet->terrain_origin, &locator->position, &distance_vector)
-                                                            : NuVecDistSqr(&packet->terrain_origin, &locator->position, &distance_vector);
+    distance_squared = (processor->action_data_1 & AIGOTO_XZ_RANGECHECK) != 0
+                           ? NuVecXZDistSqr(&packet->terrain_origin, &locator->position, &distance_vector)
+                           : NuVecDistSqr(&packet->terrain_origin, &locator->position, &distance_vector);
     reach_distance = packet->movement_instruction_parameter + ai_moveradius;
     reach_distance = elapsed * packet->owner->horizontal_velocity_magnitude + reach_distance;
     if (distance_squared < reach_distance * reach_distance) {
-        if ((processor->action_data_1 & 4u) == 0 || packet->opponent == NULL) {
+        if ((processor->action_data_1 & AIGOTO_FACE_OPPONENT) == 0 || packet->opponent == NULL) {
             packet->movement_look_target = &processor->action_pos;
         }
         if (processor->action_timer > 0.0f) {
@@ -16152,8 +16163,8 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
         } else {
             return 1;
         }
-    } else if ((packet->flags & AIPACKET_PATH_BLOCKED) != 0 && (processor->action_data_1 & 16u) != 0 && AIBigJumpToDestinationFn != NULL &&
-               AIBigJumpToDestinationFn(((APIOBJECT *)packet->owner), &locator->position) != 0) {
+    } else if ((packet->flags & AIPACKET_PATH_BLOCKED) != 0 && (processor->action_data_1 & AIGOTO_MUST_REACH_DESTINATION) != 0 &&
+               AIBigJumpToDestinationFn != NULL && AIBigJumpToDestinationFn(((APIOBJECT *)packet->owner), &locator->position) != 0) {
         return 1;
     }
     return 0;
@@ -16207,7 +16218,7 @@ i32 Action_FollowPath(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
         }
     }
 
-    AIMoveInstruction(packet, NULL, 0.0f, NULL, 4, packet->movement_instruction_parameter);
+    AIMoveInstruction(packet, NULL, 0.0f, NULL, AIMOVE_WANDER, packet->movement_instruction_parameter);
 
     if (processor->action_timer > completion_time) {
         processor->action_timer -= elapsed;
@@ -16251,7 +16262,7 @@ i32 Action_MoveAwayFromNode(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
             processor->path_info.direction = 0;
             processor->path_info.flags_word |= 1;
             processor->path_info.width = 0.0f;
-            AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, 2, packet->movement_instruction_parameter);
+            AIMoveInstruction(packet, &node->position, 0.0f, &processor->path_info, AIMOVE_RETREAT, packet->movement_instruction_parameter);
         }
         return 0;
     }
@@ -16259,7 +16270,8 @@ i32 Action_MoveAwayFromNode(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pa
     if (node_2 != NULL) {
         distance = NuVecXZDistSqr(&packet->terrain_origin, &node_2->position, &difference);
         if (!(distance < node_2->radius_squared)) {
-            AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, 2, packet->movement_instruction_parameter);
+            AIMoveInstruction(packet, &node_2->position, 0.0f, &processor->path_info, AIMOVE_RETREAT,
+                              packet->movement_instruction_parameter);
             return 0;
         }
     }
@@ -16356,12 +16368,13 @@ void AISysProcessCharacter(AISYS *system, APIOBJECT *object, AIPACKET *packet, i
                     case 1:
                         if (packet->creature_index != AIPACKET_NO_CREATURE) {
                             AICREATURE *creature = &system->creatures[packet->creature_index];
-                            AIMoveInstruction(packet, &creature->position, 0.0f, &creature->path_info, 1, 0.0f);
+                            AIMoveInstruction(packet, &creature->position, 0.0f, &creature->path_info, AIMOVE_TO_DESTINATION, 0.0f);
                         }
                         break;
                     case 2:
                         if (packet->locator != NULL) {
-                            AIMoveInstruction(packet, &packet->locator->position, 0.0f, &packet->locator->path_info, 1, 0.0f);
+                            AIMoveInstruction(packet, &packet->locator->position, 0.0f, &packet->locator->path_info, AIMOVE_TO_DESTINATION,
+                                              0.0f);
                         }
                         break;
                     default:
@@ -18308,28 +18321,28 @@ void aieditor_Init(AIEDITOR_RENDER_STATE *state, void **scratch_cursor, void **s
     aieditorsettings.path_material->diffuse_r = 0.5f;
     aieditorsettings.path_material->diffuse_g = 0.5f;
     aieditorsettings.path_material->diffuse_b = 0.5f;
-    aieditorsettings.path_material->attribs.cull_mode = 2;
-    aieditorsettings.path_material->attribs.z_mode = 0;
+    aieditorsettings.path_material->attribs.cull_mode = NUMTL_CULL_NONE;
+    aieditorsettings.path_material->attribs.z_mode = NUMTL_ZMODE_NORMAL;
     aieditorsettings.path_material->opacity = 1.0f;
-    aieditorsettings.path_material->attribs.alpha_mode = 0;
+    aieditorsettings.path_material->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate(aieditorsettings.path_material);
     aieditorsettings.route_material = NuMtlCreate3D(1);
     aieditorsettings.route_material->diffuse_r = 0.5f;
     aieditorsettings.route_material->diffuse_g = 0.5f;
     aieditorsettings.route_material->diffuse_b = 0.5f;
-    aieditorsettings.route_material->attribs.cull_mode = 2;
-    aieditorsettings.route_material->attribs.z_mode = 0;
+    aieditorsettings.route_material->attribs.cull_mode = NUMTL_CULL_NONE;
+    aieditorsettings.route_material->attribs.z_mode = NUMTL_ZMODE_NORMAL;
     aieditorsettings.route_material->opacity = 1.0f;
-    aieditorsettings.route_material->attribs.alpha_mode = 2;
+    aieditorsettings.route_material->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
     NuMtlUpdate(aieditorsettings.route_material);
     aieditorsettings.overlay_material = NuMtlCreate(1);
     aieditorsettings.overlay_material->diffuse_r = 0.5f;
     aieditorsettings.overlay_material->diffuse_g = 0.5f;
     aieditorsettings.overlay_material->diffuse_b = 0.5f;
-    aieditorsettings.overlay_material->attribs.cull_mode = 2;
-    aieditorsettings.overlay_material->attribs.z_mode = 3;
+    aieditorsettings.overlay_material->attribs.cull_mode = NUMTL_CULL_NONE;
+    aieditorsettings.overlay_material->attribs.z_mode = NUMTL_ZMODE_OFF;
     aieditorsettings.overlay_material->opacity = 1.0f;
-    aieditorsettings.overlay_material->attribs.alpha_mode = 0;
+    aieditorsettings.overlay_material->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
     NuMtlUpdate(aieditorsettings.overlay_material);
     aieditorsettings.height_offset = 0.01f;
     aieditorsettings.script_params[0] = 0.0f;
