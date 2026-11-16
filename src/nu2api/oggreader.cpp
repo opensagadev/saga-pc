@@ -6,7 +6,6 @@
 #include "nu2api/nucore/nuthread.h"
 #include "nu2api/nudir_gen.h"
 #include "nu2api/nufile/nufile.h"
-#include "nu2api/oggreader.h"
 #include "nu2api/wavreader.h"
 #include <string.h>
 /* vorbisfile.h's static seek callback (the OV_CALLBACKS tables use it): each unit including the header carries
@@ -15,36 +14,8 @@
 #define _ov_header_fseek_wrap OggreaderOvHeaderFseekWrap
 #include "vorbis/vorbisfile.h"
 #undef _ov_header_fseek_wrap
+#include "nu2api/oggreader.h"
 
-#pragma pack(push, 4)
-
-class OggReader : public WavReader { // size 0x338
-  public:
-    OggReader(void);
-    virtual ~OggReader(void);
-    virtual HRESULT Open(NUDATHDR *, char *, WAVEFORMATEX *);
-    virtual HRESULT Unknown08(u32, u32);
-    virtual HRESULT Close(void);
-    virtual WAVEFORMATEX *GetFormat(void);
-    virtual i32 GetSize(void);
-    virtual HRESULT Reset(void);
-    virtual HRESULT Read(void *, u32, u32 *);
-    virtual i32 SeekTime(f32);
-    static u32 ReadCallback(void *, u32, u32, void *);
-    static i32 SeekCallback(void *, i64, i32);
-    static i32 CloseCallback(void *);
-    // NOLINTNEXTLINE(google-runtime-int): the upstream long type keeps the C ABI.
-    static long TellCallback(void *);
-    u8 compressed;                  // 0x040
-    u8 unknown_041[7];              // 0x041
-    OggVorbis_File vorbis_state;    // 0x048
-    PC_OGG_CACHE_RECORD *cache;     // 0x318
-    i32 position;                   // 0x31c
-    WAVEFORMATEX compressed_format; // 0x320
-    u8 unknown_332[6];              // 0x332
-};
-
-#pragma pack(pop)
 
 extern "C" {
     struct PC_OGG_CACHE_RECORD *PCOggCachePool = 0;

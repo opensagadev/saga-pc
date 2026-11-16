@@ -235,14 +235,7 @@ extern "C" void PCDeviceCreateCubeTextureFromMemory(const void *data, u32 size, 
                                                                reinterpret_cast<IDirect3DCubeTexture9 **>(resource));
 }
 
-struct PC_MATERIAL_DEVICE_CAPS_VIEW { // size 0x655
-    u8 unknown_000[0x654];            // 0x000
-    u8 shader_caps;                   // 0x654
-    i32 ShaderVariant16();
-    i32 ShaderVariant1();
-};
-
-i32 PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16() {
+i32 PC_DEVICE_BACKEND::ShaderVariant16() {
     i32 variant = 0;
     if (shader_caps & 0x20) {
         variant = 16;
@@ -250,7 +243,7 @@ i32 PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16() {
     return variant;
 }
 
-i32 PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1() {
+i32 PC_DEVICE_BACKEND::ShaderVariant1() {
     i32 variant = 0;
     if (shader_caps & 0x20) {
         variant = 1;
@@ -275,21 +268,6 @@ extern "C" __declspec(noinline) HRESULT PCDeviceUnlockVertexBuffer(PC_BUFFER_RES
     return resource->methods->unlock(resource);
 }
 
-struct PRIMITIVE_D3D_DEVICE_VIEW;
-
-struct PRIMITIVE_D3D_VTABLE_VIEW {                                                                   // size 0x168
-    void *unknown_000[83];                                                                           // 0x000
-    HRESULT(__stdcall *draw_primitive_up)(PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, const void *, u32); // 0x14c
-    HRESULT(__stdcall *draw_indexed_primitive_up)                                                    // 0x150
-    (PRIMITIVE_D3D_DEVICE_VIEW *, i32, u32, u32, u32, const void *, i32, const void *, u32);
-    void *unknown_154[4];                                          // 0x154
-    HRESULT(__stdcall *set_fvf)(PRIMITIVE_D3D_DEVICE_VIEW *, u32); // 0x164
-};
-
-struct PRIMITIVE_D3D_DEVICE_VIEW {
-    PRIMITIVE_D3D_VTABLE_VIEW *methods;
-};
-
 /* Clears the frame counters after the stats overlay has shown them. */
 extern "C" void PcFrameStatsReset(void) {
     memset(&PcFrameStats, 0, sizeof(PcFrameStats));
@@ -299,7 +277,7 @@ extern "C" void PCDeviceDrawPrimitiveUPPc(i32 type, u32 count, const void *verti
     ++PcFrameStats.primitive_up_calls;
     PCDeviceStateCache.vertex_buffer = NULL;
     PCDeviceStateCache.index_buffer = NULL;
-    PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
+    PC_D3D9_DEVICE *device = PCDeviceBackend.device;
     PCDeviceLastResult = device->methods->draw_primitive_up(device, type, count, vertices, stride);
 }
 
@@ -317,7 +295,7 @@ extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitiveUPPc(i32 type, 
     ++PcFrameStats.indexed_primitive_up_calls;
     PCDeviceStateCache.vertex_buffer = NULL;
     PCDeviceStateCache.index_buffer = NULL;
-    PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
+    PC_D3D9_DEVICE *device = PCDeviceBackend.device;
     PCDeviceLastResult = device->methods->draw_indexed_primitive_up(device, type, minimum_vertex, vertex_count, primitive_count, indices,
                                                                     index_format, vertices, stride);
 }
@@ -325,7 +303,7 @@ extern "C" __declspec(noinline) void PCDeviceDrawIndexedPrimitiveUPPc(i32 type, 
 // noinline: the original calls PCDeviceSetFVFPc out of line from PCGraphicsDrawUnitBox; VC8 would inline it there.
 extern "C" __declspec(noinline) void PCDeviceSetFVFPc(u32 fvf) {
     PCDeviceStateCache.vertex_declaration = NULL;
-    PRIMITIVE_D3D_DEVICE_VIEW *device = reinterpret_cast<PRIMITIVE_D3D_DEVICE_VIEW *>(PCDeviceBackend.device);
+    PC_D3D9_DEVICE *device = PCDeviceBackend.device;
     PCDeviceLastResult = device->methods->set_fvf(device, fvf);
 }
 
@@ -430,14 +408,14 @@ PC_DEVICE_BACKEND::PC_DEVICE_BACKEND() {
     unknown_5f9 = 0;
     multithreaded = 1;
     present_result = 0;
-    state600 = 1;
-    state604 = 1;
+    enabled_option_0 = 1;
+    enabled_option_1 = 1;
     mode_count = 0;
     modes = NULL;
     active_mode = 0;
     aspect_mode = PC_ASPECT_4_3;
     active_aspect_mode = PC_ASPECT_4_3;
-    feature634 = 0;
+    active_feature = 0;
     multisample_index = 0;
     multisample_tested = 0;
     shader_flags = 0;
@@ -446,17 +424,17 @@ PC_DEVICE_BACKEND::PC_DEVICE_BACKEND() {
     requested_feature = 0;
     requested_multisample = 0;
     requested_target_count = 1;
-    declaration684 = NULL;
-    buffer688 = NULL;
-    declaration68c = NULL;
-    buffer690 = NULL;
-    buffer694 = NULL;
-    buffer698 = NULL;
-    state69c = 1;
-    state6a0 = 1;
-    state6a4 = 0;
-    state6a8 = 0;
-    declaration6ac = NULL;
+    screen_uv_declaration = NULL;
+    triangle_buffer = NULL;
+    position_uv_declaration = NULL;
+    quad_buffer = NULL;
+    grid_vertex_buffer = NULL;
+    grid_index_buffer = NULL;
+    grid_rows = 1;
+    grid_columns = 1;
+    grid_vertex_count = 0;
+    grid_triangle_count = 0;
+    screen_colour_uv_declaration = NULL;
     back_buffer = NULL;
     target_count = 1;
     current_surface = NULL;
@@ -529,21 +507,21 @@ void PC_DEVICE_BACKEND::ReleaseDefaultPoolResources() {
         depth_surface->methods->release(depth_surface);
         depth_surface = NULL;
     }
-    if (buffer690 != NULL) {
-        buffer690->methods->release(buffer690);
-        buffer690 = NULL;
+    if (quad_buffer != NULL) {
+        quad_buffer->methods->release(quad_buffer);
+        quad_buffer = NULL;
     }
-    if (buffer694 != NULL) {
-        buffer694->methods->release(buffer694);
-        buffer694 = NULL;
+    if (grid_vertex_buffer != NULL) {
+        grid_vertex_buffer->methods->release(grid_vertex_buffer);
+        grid_vertex_buffer = NULL;
     }
-    if (buffer698 != NULL) {
-        buffer698->methods->release(buffer698);
-        buffer698 = NULL;
+    if (grid_index_buffer != NULL) {
+        grid_index_buffer->methods->release(grid_index_buffer);
+        grid_index_buffer = NULL;
     }
-    if (buffer688 != NULL) {
-        buffer688->methods->release(buffer688);
-        buffer688 = NULL;
+    if (triangle_buffer != NULL) {
+        triangle_buffer->methods->release(triangle_buffer);
+        triangle_buffer = NULL;
     }
     for (i32 i = 0; i != 4; ++i) {
         if (target_surfaces[i] != NULL) {
@@ -562,13 +540,13 @@ void PC_DEVICE_BACKEND::Shutdown() {
         modes = NULL;
     }
     ReleaseDefaultPoolResources();
-    if (declaration68c != NULL) {
-        declaration68c->methods->release(declaration68c);
-        declaration68c = NULL;
+    if (position_uv_declaration != NULL) {
+        position_uv_declaration->methods->release(position_uv_declaration);
+        position_uv_declaration = NULL;
     }
-    if (declaration6ac != NULL) {
-        declaration6ac->methods->release(declaration6ac);
-        declaration6ac = NULL;
+    if (screen_colour_uv_declaration != NULL) {
+        screen_colour_uv_declaration->methods->release(screen_colour_uv_declaration);
+        screen_colour_uv_declaration = NULL;
     }
     if (device != NULL) {
         PC_TEXTURE_RESOURCE *release_view = reinterpret_cast<PC_TEXTURE_RESOURCE *>(device);
@@ -585,55 +563,23 @@ PC_DEVICE_BACKEND::~PC_DEVICE_BACKEND() {
     Shutdown();
 }
 
-struct GRAPHICS_DEVICE;
-
-struct GRAPHICS_DEVICE_METHODS {                                                                       // size 0x138
-    void *unknown_0000[3];                                                                             // 0x000
-    HRESULT(__stdcall *test_cooperative_level)(GRAPHICS_DEVICE *);                                     // 0x00c
-    void *get_available_texture_memory;                                                                // 0x010
-    HRESULT(__stdcall *evict_managed_resources)(GRAPHICS_DEVICE *);                                    // 0x014
-    void *get_direct3d;                                                                                // 0x018
-    HRESULT(__stdcall *get_device_caps)(GRAPHICS_DEVICE *, GRAPHICS_CAPS *);                           // 0x01c
-    void *unknown_0020[8];                                                                             // 0x020
-    HRESULT(__stdcall *reset)(GRAPHICS_DEVICE *, GRAPHICS_PRESENT_PARAMETERS *);                       // 0x040
-    HRESULT(__stdcall *present)(GRAPHICS_DEVICE *, const RECT *, const RECT *, HWND, const RGNDATA *); // 0x044
-    HRESULT(__stdcall *get_back_buffer)(GRAPHICS_DEVICE *, u32, u32, i32, PC_TEXTURE_RESOURCE **);     // 0x048
-    void *unknown_004c[15];                                                                            // 0x04c
-    HRESULT(__stdcall *stretch_rect)                                                                   // 0x088
-    (GRAPHICS_DEVICE *, PC_TEXTURE_RESOURCE *, const RECT *, PC_TEXTURE_RESOURCE *, const RECT *, i32);
-    void *unknown_008c[2];                                                                    // 0x08c
-    HRESULT(__stdcall *set_render_target)(GRAPHICS_DEVICE *, u32, PC_TEXTURE_RESOURCE *);     // 0x094
-    void *get_render_target;                                                                  // 0x098
-    HRESULT(__stdcall *set_depth_stencil_surface)(GRAPHICS_DEVICE *, PC_TEXTURE_RESOURCE *);  // 0x09c
-    HRESULT(__stdcall *get_depth_stencil_surface)(GRAPHICS_DEVICE *, PC_TEXTURE_RESOURCE **); // 0x0a0
-    HRESULT(__stdcall *begin_scene)(GRAPHICS_DEVICE *);                                       // 0x0a4
-    HRESULT(__stdcall *end_scene)(GRAPHICS_DEVICE *);                                         // 0x0a8
-    HRESULT(__stdcall *clear)(GRAPHICS_DEVICE *, u32, const RECT *, u32, u32, f32, u32);      // 0x0ac
-    void *unknown_00b0[33];                                                                   // 0x0b0
-    HRESULT(__stdcall *set_software_vertex_processing)(GRAPHICS_DEVICE *, BOOL);              // 0x134
-};
-
-struct GRAPHICS_DEVICE {
-    const GRAPHICS_DEVICE_METHODS *methods;
-};
-
 // noinline: the original calls EndScene out of line from PCDeviceEndScene; VC8 would inline it there.
 __declspec(noinline) HRESULT PC_DEVICE_BACKEND::EndScene() {
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     return view->methods->end_scene(view);
 }
 
 // noinline: the original calls PCDeviceClear out of line from PC_DEVICE_BACKEND::CreateOrResetDevice; VC8 would
 // inline it there.
 extern "C" __declspec(noinline) void PCDeviceClear(u32 count, const RECT *rectangles, u32 flags, u32 colour, f32 depth, u32 stencil) {
-    GRAPHICS_DEVICE *device = reinterpret_cast<GRAPHICS_DEVICE *>(PCDeviceBackend.device);
+    PC_D3D9_DEVICE *device = PCDeviceBackend.device;
     PCDeviceLastResult = device->methods->clear(device, count, rectangles, flags, colour, depth, stencil);
 }
 
 // noinline: the original calls PCDeviceTestCooperativeLevel out of line from PC_DEVICE_BACKEND::CreateOrResetDevice;
 // VC8 would inline it there.
 extern "C" __declspec(noinline) HRESULT PCDeviceTestCooperativeLevel() {
-    GRAPHICS_DEVICE *device = reinterpret_cast<GRAPHICS_DEVICE *>(PCDeviceBackend.device);
+    PC_D3D9_DEVICE *device = PCDeviceBackend.device;
     return device->methods->test_cooperative_level(device);
 }
 
@@ -1048,7 +994,7 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     NudxFw_D3DBeginCriticalSection();
     saved_windowed = parameters.windowed == 1;
     saved_mode = active_mode;
-    saved_feature = feature634;
+    saved_feature = active_feature;
     saved_multisample = multisample_index;
     saved_target_count = target_count;
     saved_aspect = PcWindowOptions.aspect_mode;
@@ -1063,7 +1009,7 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     if (requested_feature != 0 && (caps.caps2 & 1) == 0) {
         requested_feature = 0;
     }
-    feature634 = requested_feature;
+    active_feature = requested_feature;
     parameters.count = 2;
     parameters.interval = 1;
     if (parameters.windowed != 0 && reposition_window != 0) {
@@ -1181,7 +1127,7 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
         PS2_VCNTR_Y = PS2_REZ_H / 2;
     } else if (SoundVoiceEnabledGate != 0) {
         HRESULT cooperative = PCDeviceTestCooperativeLevel();
-        GRAPHICS_DEVICE *view;
+        PC_D3D9_DEVICE *view;
         if (cooperative < 0) {
             switch (cooperative) {
                 case static_cast<HRESULT>(0x88760827):
@@ -1194,7 +1140,7 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
                     PCDeviceEvictManagedResources();
                     PcRendererShutdown(0);
                     SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
-                    view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+                    view = device;
                     if (view->methods->reset(view, &parameters) >= 0) {
                         SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
                         PCGraphicsRecreateResources(0);
@@ -1213,7 +1159,7 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
             PCDeviceEvictManagedResources();
             PcRendererShutdown(1);
             SAGA_SKIN_CALL(skin_trace_reset_begin, (unsigned)device);
-            view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+            view = device;
             view->methods->reset(view, &parameters);
             SAGA_SKIN_CALL(skin_trace_reset_end, (unsigned)device);
             PS2_REZ_W = parameters.width;
@@ -1236,14 +1182,14 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     nuapi.video_aspect = PcWindowOptions.aspect_mode == PC_ASPECT_AUTO ? active_aspect_mode : PcWindowOptions.aspect_mode;
     u32 refresh = parameters.windowed != 0 ? modes[requested_mode].refresh_rate : parameters.refresh_rate;
     active_mode = FindMode(parameters.width, parameters.height, refresh);
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     view->methods->get_device_caps(view, &caps);
     if (rebuild_resources) {
         BuildDefaultPoolResources();
     }
     ResetTargets();
     PCDeviceClear(0, NULL, 1, 0, 1.0f, 0);
-    view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    view = device;
     present_result = view->methods->present(view, NULL, NULL, NULL, NULL);
     for (i32 i = 0; i != 8; ++i) {
         PCDeviceSetSamplerState(i, D3DSAMP_MAGFILTER, 2);
@@ -1272,7 +1218,7 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     full_viewport.max_z = 1.0f;
     requested_windowed = parameters.windowed == 1;
     requested_mode = active_mode;
-    requested_feature = feature634;
+    requested_feature = active_feature;
     requested_multisample = multisample_index;
     requested_target_count = target_count;
     NudxFw_D3DEndCriticalSection();
@@ -1281,19 +1227,19 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
 // noinline: the original calls PCDeviceEvictManagedResources out of line from
 // PC_DEVICE_BACKEND::CreateOrResetDevice; VC8 would inline it there.
 __declspec(noinline) void PCDeviceEvictManagedResources() {
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(PCDeviceBackend.device);
+    PC_D3D9_DEVICE *view = PCDeviceBackend.device;
     PCDeviceLastResult = view->methods->evict_managed_resources(view);
 }
 
 // noinline: the original calls PCDeviceSetSoftwareVertexProcessing out of line from
 // PC_DEVICE_BACKEND::CreateOrResetDevice; VC8 would inline it there.
 __declspec(noinline) void PCDeviceSetSoftwareVertexProcessing(BOOL enabled) {
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(PCDeviceBackend.device);
+    PC_D3D9_DEVICE *view = PCDeviceBackend.device;
     PCDeviceLastResult = view->methods->set_software_vertex_processing(view, enabled);
 }
 
 void PC_DEVICE_BACKEND::Present(const RECT *source, const RECT *destination, HWND window, const RGNDATA *region) {
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     present_result = view->methods->present(view, source, destination, window, region);
     if (present_result < 0) {
         if (present_result == static_cast<HRESULT>(0x88760868)) {
@@ -1317,7 +1263,7 @@ __declspec(noinline) void PC_DEVICE_BACKEND::BeginScene() {
     PCGraphicsFrameScratchCount.reset_word = 0;
     PCGraphicsBoundShader = -1;
     PCGraphicsFrameState = -1;
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     view->methods->begin_scene(view);
     BeginDefaultTargets();
 }
@@ -1359,16 +1305,16 @@ void PC_DEVICE_BACKEND::InitializeAdapter() {
     CreateOrResetDevice(1);
     PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
     PCDeviceSetRenderState(D3DRS_LIGHTING, 0);
-    PCDeviceCreateVertexDeclaration(PCGraphicsPositionUvDeclaration, &declaration68c);
-    PCDeviceCreateVertexDeclaration(PCGraphicsScreenUvDeclaration, &declaration684);
-    PCDeviceCreateVertexDeclaration(PCGraphicsScreenColourUvDeclaration, &declaration6ac);
+    PCDeviceCreateVertexDeclaration(PCGraphicsPositionUvDeclaration, &position_uv_declaration);
+    PCDeviceCreateVertexDeclaration(PCGraphicsScreenUvDeclaration, &screen_uv_declaration);
+    PCDeviceCreateVertexDeclaration(PCGraphicsScreenColourUvDeclaration, &screen_colour_uv_declaration);
 }
 
 void PC_DEVICE_BACKEND::SetRenderTarget(i32 index, PC_TEXTURE_RESOURCE *surface) {
     u16 limit = multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2 ? (u16)caps.simultaneous_render_targets : 1;
     if (index <= limit - 1 && target_cache[index] != surface) {
         target_cache[index] = surface;
-        GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        PC_D3D9_DEVICE *view = device;
         view->methods->set_render_target(view, index, surface);
     }
 }
@@ -1505,7 +1451,7 @@ void PC_DEVICE_BACKEND::fun_00509140(i32 mode) {
 }
 
 u8 PC_DEVICE_BACKEND::HasRequestedModeChanged() {
-    return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode || requested_feature != feature634 ||
+    return requested_windowed != (parameters.windowed == 1) || requested_mode != active_mode || requested_feature != active_feature ||
            requested_multisample != multisample_index || requested_target_count != target_count;
 }
 
@@ -1538,11 +1484,11 @@ void PC_DEVICE_BACKEND::ResetTargets() {
         u16 limit = multisample_index == 0 && PCDeviceHardwareVertexProcessingPC >= 2 ? (u16)caps.simultaneous_render_targets : 1;
         if (i <= limit - 1 && target_cache[i] != NULL) {
             target_cache[i] = NULL;
-            GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+            PC_D3D9_DEVICE *view = device;
             view->methods->set_render_target(view, i, NULL);
         }
     }
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     view->methods->set_depth_stencil_surface(view, depth_surface);
     PS2_REZ_W = parameters.width;
     PS2_REZ_H = parameters.height;
@@ -1552,11 +1498,11 @@ void PC_DEVICE_BACKEND::ResetTargets() {
 }
 
 void PC_DEVICE_BACKEND::ConfigureCurrentTargets() {
-    GRAPHICS_DEVICE *view;
+    PC_D3D9_DEVICE *view;
     if (multisample_index != 0) {
         SetRenderTarget(0, back_buffer);
         current_surface = back_buffer;
-        view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        view = device;
         view->methods->set_depth_stencil_surface(view, depth_surface);
     } else {
         for (i32 i = 0; i != 4; ++i) {
@@ -1579,7 +1525,7 @@ void PC_DEVICE_BACKEND::ConfigureCurrentTargets() {
                 current_surface = back_buffer;
             }
         }
-        view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        view = device;
         view->methods->set_depth_stencil_surface(view, depth_surface);
     }
     PS2_REZ_W = parameters.width;
@@ -1590,20 +1536,20 @@ void PC_DEVICE_BACKEND::ConfigureCurrentTargets() {
 }
 
 void PC_DEVICE_BACKEND::BeginDefaultTargets() {
-    GRAPHICS_DEVICE *view;
+    PC_D3D9_DEVICE *view;
     if (multisample_index != 0) {
         SetRenderTarget(0, back_buffer);
-        view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        view = device;
         view->methods->set_depth_stencil_surface(view, depth_surface);
-        view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        view = device;
         view->methods->clear(view, 0, NULL, 7, 0, 1.0f, 0);
         ConfigureCurrentTargets();
         return;
     }
     SetRenderTarget(0, back_buffer);
-    view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    view = device;
     view->methods->set_depth_stencil_surface(view, depth_surface);
-    view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    view = device;
     if (depth_surface != NULL) {
         view->methods->clear(view, 0, NULL, 7, 0, 1.0f, 0xc0);
     } else {
@@ -1617,16 +1563,16 @@ void PC_DEVICE_BACKEND::BeginDefaultTargets() {
                 } else {
                     SetRenderTarget(0, back_buffer);
                 }
-                view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+                view = device;
                 view->methods->set_depth_stencil_surface(view, depth_surface);
-                view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+                view = device;
                 view->methods->clear(view, 0, NULL, 1, 0, 1.0f, 0);
                 break;
             case 1:
                 if (target_surfaces[1] != NULL) {
                     SetRenderTarget(1, NULL);
                     SetRenderTarget(0, target_surfaces[1]);
-                    view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+                    view = device;
                     view->methods->clear(view, 0, NULL, 1, 0xff000000, 1.0f, 0);
                 }
                 break;
@@ -1634,7 +1580,7 @@ void PC_DEVICE_BACKEND::BeginDefaultTargets() {
                 if (target_surfaces[2] != NULL) {
                     SetRenderTarget(2, NULL);
                     SetRenderTarget(0, target_surfaces[2]);
-                    view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+                    view = device;
                     view->methods->clear(view, 0, NULL, 1, 0, 1.0f, 0);
                 }
                 break;
@@ -1656,17 +1602,6 @@ struct PC_GRAPHICS_SCREEN_VERTEX { // size 0x10
     f32 y;                         // 0x4
     f32 u;                         // 0x8
     f32 v;                         // 0xc
-};
-
-struct GRAPHICS_TEXTURE_SURFACE_VIEW;
-
-struct GRAPHICS_TEXTURE_SURFACE_METHODS {                                                                // size 0x4c
-    void *unknown_000[18];                                                                               // 0x00
-    HRESULT(__stdcall *get_surface_level)(GRAPHICS_TEXTURE_SURFACE_VIEW *, u32, PC_TEXTURE_RESOURCE **); // 0x48
-};
-
-struct GRAPHICS_TEXTURE_SURFACE_VIEW {               // size 0x4
-    const GRAPHICS_TEXTURE_SURFACE_METHODS *methods; // 0x0
 };
 
 // noinline: the original calls PCDeviceLockIndexBuffer out of line from
@@ -1805,25 +1740,25 @@ void PC_DEVICE_BACKEND::BuildDefaultPoolResources() {
         depth_surface->methods->release(depth_surface);
         depth_surface = NULL;
     }
-    if (buffer690 != NULL) {
-        buffer690->methods->release(buffer690);
-        buffer690 = NULL;
+    if (quad_buffer != NULL) {
+        quad_buffer->methods->release(quad_buffer);
+        quad_buffer = NULL;
     }
-    if (buffer694 != NULL) {
-        buffer694->methods->release(buffer694);
-        buffer694 = NULL;
+    if (grid_vertex_buffer != NULL) {
+        grid_vertex_buffer->methods->release(grid_vertex_buffer);
+        grid_vertex_buffer = NULL;
     }
-    if (buffer698 != NULL) {
-        buffer698->methods->release(buffer698);
-        buffer698 = NULL;
+    if (grid_index_buffer != NULL) {
+        grid_index_buffer->methods->release(grid_index_buffer);
+        grid_index_buffer = NULL;
     }
-    if (buffer688 != NULL) {
-        buffer688->methods->release(buffer688);
-        buffer688 = NULL;
+    if (triangle_buffer != NULL) {
+        triangle_buffer->methods->release(triangle_buffer);
+        triangle_buffer = NULL;
     }
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     view->methods->get_back_buffer(view, 0, 0, 0, &back_buffer);
-    view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    view = device;
     view->methods->get_depth_stencil_surface(view, &depth_surface);
     ConfigureTargetKinds();
     for (i32 i = 0; i != 4; ++i) {
@@ -1853,7 +1788,7 @@ void PC_DEVICE_BACKEND::BuildDefaultPoolResources() {
                 break;
         }
         if (textures[i] != NULL) {
-            GRAPHICS_TEXTURE_SURFACE_VIEW *texture = reinterpret_cast<GRAPHICS_TEXTURE_SURFACE_VIEW *>(textures[i]->resource);
+            PC_TEXTURE_RESOURCE *texture = textures[i]->resource;
             texture->methods->get_surface_level(texture, 0, &target_surfaces[i]);
         }
     }
@@ -1862,49 +1797,49 @@ void PC_DEVICE_BACKEND::BuildDefaultPoolResources() {
                                              {(f32)((f32)parameters.width * 3.0), 0.0f, 3.0f, 0.0f}};
     PC_GRAPHICS_CLIP_VERTEX quad[4] = {
         {-1.0f, 1.0f, 0.0f, 0.0f, 0.0f}, {-1.0f, -1.0f, 0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 1.0f, 0.0f}, {1.0f, -1.0f, 0.0f, 1.0f, 1.0f}};
-    PCDeviceCreateVertexBuffer(sizeof(quad), 8, 0, 0, &buffer690);
-    PCDeviceCreateVertexBuffer(sizeof(triangle), 8, 0, 0, &buffer688);
+    PCDeviceCreateVertexBuffer(sizeof(quad), 8, 0, 0, &quad_buffer);
+    PCDeviceCreateVertexBuffer(sizeof(triangle), 8, 0, 0, &triangle_buffer);
     void *data = NULL;
-    PCDeviceLockVertexBuffer(0, sizeof(quad), &data, 0, buffer690);
+    PCDeviceLockVertexBuffer(0, sizeof(quad), &data, 0, quad_buffer);
     PCByteCopy(data, quad, sizeof(quad));
-    PCDeviceUnlockVertexBuffer(buffer690);
-    PCDeviceLockVertexBuffer(0, sizeof(triangle), &data, 0, buffer688);
+    PCDeviceUnlockVertexBuffer(quad_buffer);
+    PCDeviceLockVertexBuffer(0, sizeof(triangle), &data, 0, triangle_buffer);
     PCByteCopy(data, triangle, sizeof(triangle));
-    PCDeviceUnlockVertexBuffer(buffer688);
-    state6a0 = 16;
-    state69c = (u32)(((f64)PS2_REZ_H / PS2_REZ_W) * 16.0);
-    state6a4 = (i32)((state69c + 1) * 17);
-    state6a8 = (i32)(state69c * 32);
-    PCDeviceCreateVertexBuffer((u32)state6a4 * 20, 8, 0, 0, &buffer694);
-    PCDeviceCreateIndexBuffer((u32)state6a8 * 6, 8, 101, 0, &buffer698, NULL);
-    PCDeviceLockVertexBuffer(0, (u32)state6a4 * 20, &data, 0, buffer694);
+    PCDeviceUnlockVertexBuffer(triangle_buffer);
+    grid_columns = 16;
+    grid_rows = (u32)(((f64)PS2_REZ_H / PS2_REZ_W) * 16.0);
+    grid_vertex_count = (i32)((grid_rows + 1) * 17);
+    grid_triangle_count = (i32)(grid_rows * 32);
+    PCDeviceCreateVertexBuffer((u32)grid_vertex_count * 20, 8, 0, 0, &grid_vertex_buffer);
+    PCDeviceCreateIndexBuffer((u32)grid_triangle_count * 6, 8, 101, 0, &grid_index_buffer, NULL);
+    PCDeviceLockVertexBuffer(0, (u32)grid_vertex_count * 20, &data, 0, grid_vertex_buffer);
     PC_GRAPHICS_CLIP_VERTEX *vertex = static_cast<PC_GRAPHICS_CLIP_VERTEX *>(data);
-    for (u32 row = 0; row != state69c + 1; ++row) {
-        for (u32 column = 0; column != (u32)state6a0 + 1; ++column) {
+    for (u32 row = 0; row != grid_rows + 1; ++row) {
+        for (u32 column = 0; column != (u32)grid_columns + 1; ++column) {
             f32 rounded_row = (f32)row;
             f32 rounded_column = (f32)column;
-            vertex->x = rounded_column / (f32)(u32)state6a0 * 2.0 - 1.0;
-            vertex->y = 1.0 - rounded_row / (f32)state69c * 2.0;
+            vertex->x = rounded_column / (f32)(u32)grid_columns * 2.0 - 1.0;
+            vertex->y = 1.0 - rounded_row / (f32)grid_rows * 2.0;
             vertex->z = 0.0f;
-            vertex->u = rounded_column / (f32)(u32)state6a0;
-            vertex->v = rounded_row / (f32)state69c;
+            vertex->u = rounded_column / (f32)(u32)grid_columns;
+            vertex->v = rounded_row / (f32)grid_rows;
             ++vertex;
         }
     }
-    PCDeviceUnlockVertexBuffer(buffer694);
-    PCDeviceLockIndexBuffer(0, (u32)state6a8 * 6, &data, 0, buffer698);
+    PCDeviceUnlockVertexBuffer(grid_vertex_buffer);
+    PCDeviceLockIndexBuffer(0, (u32)grid_triangle_count * 6, &data, 0, grid_index_buffer);
     u16 *index = static_cast<u16 *>(data);
-    for (u32 row = 0; row != state69c; ++row) {
-        for (u32 column = 0; column != (u32)state6a0; ++column) {
-            *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column);
-            *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column + 1);
-            *index++ = (u16)(((u16)state6a0 + 1) * (u16)(row + 1) + (u16)column);
-            *index++ = (u16)(((u16)state6a0 + 1) * (u16)(row + 1) + (u16)column);
-            *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column + 1);
-            *index++ = (u16)(((u16)state6a0 + 1) * (u16)(row + 1) + (u16)column + 1);
+    for (u32 row = 0; row != grid_rows; ++row) {
+        for (u32 column = 0; column != (u32)grid_columns; ++column) {
+            *index++ = (u16)(((u16)grid_columns + 1) * (u16)row + (u16)column);
+            *index++ = (u16)(((u16)grid_columns + 1) * (u16)row + (u16)column + 1);
+            *index++ = (u16)(((u16)grid_columns + 1) * (u16)(row + 1) + (u16)column);
+            *index++ = (u16)(((u16)grid_columns + 1) * (u16)(row + 1) + (u16)column);
+            *index++ = (u16)(((u16)grid_columns + 1) * (u16)row + (u16)column + 1);
+            *index++ = (u16)(((u16)grid_columns + 1) * (u16)(row + 1) + (u16)column + 1);
         }
     }
-    PCDeviceUnlockIndexBuffer(buffer698);
+    PCDeviceUnlockIndexBuffer(grid_index_buffer);
 }
 
 void PC_DEVICE_BACKEND::ConfigureTargetKinds() {
@@ -2120,26 +2055,26 @@ void PC_DEVICE_BACKEND::PreviousRefresh() {
 void PC_DEVICE_BACKEND::ResetRequestedMode() {
     requested_windowed = parameters.windowed == 1;
     requested_mode = active_mode;
-    requested_feature = feature634;
+    requested_feature = active_feature;
     requested_multisample = multisample_index;
 }
 
 void PC_DEVICE_BACKEND::SetDepthStencilSurface(PC_EFFECT_SURFACE *target) {
     if (target != NULL && target->surface != NULL) {
-        GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        PC_D3D9_DEVICE *view = device;
         view->methods->set_depth_stencil_surface(view, target->surface);
     } else if (multisample_index != 0) {
         /* Keeps a separate multisample branch that binds the same depth surface. */
-        GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        PC_D3D9_DEVICE *view = device;
         view->methods->set_depth_stencil_surface(view, depth_surface);
     } else {
-        GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+        PC_D3D9_DEVICE *view = device;
         view->methods->set_depth_stencil_surface(view, depth_surface);
     }
 }
 
 void PC_DEVICE_BACKEND::ClearDepthStencilSurface() {
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     view->methods->set_depth_stencil_surface(view, NULL);
 }
 
@@ -2186,7 +2121,7 @@ void PC_DEVICE_BACKEND::CopyBackBuffer(GRAPHICS_RENDER_TEXTURE *texture) {
     if (multisample_index != 0 || source == NULL) {
         source = back_buffer;
     }
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     view->methods->stretch_rect(view, source, NULL, target.surface, NULL, resize ? 2 : 1);
 }
 
@@ -2194,7 +2129,7 @@ void PC_DEVICE_BACKEND::CopyCurrentSurface(GRAPHICS_RENDER_TEXTURE *texture) {
     PC_EFFECT_SURFACE target;
     target.Attach(texture, 0, false);
     bool resize = PCGraphicsEffectTextureWidth(texture) != PS2_REZ_W || PCGraphicsEffectTextureHeight(texture) != PS2_REZ_H;
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     view->methods->stretch_rect(view, current_surface, NULL, target.surface, NULL, resize ? 2 : 1);
 }
 
@@ -2209,7 +2144,7 @@ extern "C" void PCDeviceSetPixelShaderConstantsF(UINT start, const f32 *values, 
 }
 
 HRESULT PC_DEVICE_BACKEND::CopySurfaceTarget(PC_EFFECT_SURFACE *target, i32 filter, i32 unused) {
-    GRAPHICS_DEVICE *view = reinterpret_cast<GRAPHICS_DEVICE *>(device);
+    PC_D3D9_DEVICE *view = device;
     return view->methods->stretch_rect(view, current_surface, NULL, target->surface, NULL, filter);
 }
 
@@ -2655,18 +2590,18 @@ extern "C" void fun_006e45d0(void) {
 // noinline: the original calls DrawPostEffectQuad out of line from PCGraphicsDrawPostEffectQuad; VC8 would inline
 // it there.
 __declspec(noinline) void PC_DEVICE_BACKEND::DrawPostEffectQuad() {
-    PCDeviceSetVertexDeclaration(declaration68c);
-    PCDeviceSetStreamSource(0, buffer690, 0, 20);
+    PCDeviceSetVertexDeclaration(position_uv_declaration);
+    PCDeviceSetStreamSource(0, quad_buffer, 0, 20);
     PCDeviceDrawPrimitive(5, 0, 2);
 }
 
 // noinline: the original calls DrawPostEffectIndexed out of line from PCGraphicsDrawPostEffectIndexed; VC8 would
 // inline it there.
 __declspec(noinline) void PC_DEVICE_BACKEND::DrawPostEffectIndexed() {
-    PCDeviceSetVertexDeclaration(declaration68c);
-    PCDeviceSetStreamSource(0, buffer694, 0, 20);
-    PCDeviceSetIndices(buffer698);
-    PCDeviceDrawIndexedPrimitive(4, 0, 0, state6a4, 0, state6a8);
+    PCDeviceSetVertexDeclaration(position_uv_declaration);
+    PCDeviceSetStreamSource(0, grid_vertex_buffer, 0, 20);
+    PCDeviceSetIndices(grid_index_buffer);
+    PCDeviceDrawIndexedPrimitive(4, 0, 0, grid_vertex_count, 0, grid_triangle_count);
 }
 
 void PC_DEVICE_BACKEND::PostEffectBarrier() {
@@ -2703,7 +2638,7 @@ void PC_DEVICE_BACKEND::fun_006e2350() {
 void PC_DEVICE_BACKEND::fun_006e2af0() {
     saved_windowed = parameters.windowed == 1;
     saved_mode = active_mode;
-    saved_feature = feature634;
+    saved_feature = active_feature;
     saved_multisample = multisample_index;
     saved_target_count = target_count;
     saved_aspect = PcWindowOptions.aspect_mode;

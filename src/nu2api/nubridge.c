@@ -109,11 +109,11 @@ void NuBridgeDraw(NUMTL *material) {
                 NuMtxSetRotationY(&matrix, bridge->rotation_y);
                 offsets[0].x = 0.0f;
                 offsets[0].y = 0.0f;
-                offsets[0].z = -bridge->unknown_b04;
+                offsets[0].z = -bridge->half_width;
                 offsets[0].w = 1.0f;
                 offsets[1].x = 0.0f;
                 offsets[1].y = 0.0f;
-                offsets[1].z = bridge->unknown_b04;
+                offsets[1].z = bridge->half_width;
                 offsets[1].w = 1.0f;
                 for (i = 0; i < bridge->platform_count; ++i) {
                     if (NuSpecialExistsFn(&bridge->special)) {
@@ -121,11 +121,11 @@ void NuBridgeDraw(NUMTL *material) {
                             bridge->was_drawn = 1;
                         }
                     }
-                    if (i % (i8)bridge->unknown_ae7 == 0 && NuSpecialExistsFn(&bridge->second_special)) {
+                    if (i % (i8)bridge->special_spacing == 0 && NuSpecialExistsFn(&bridge->second_special)) {
                         NuVec4MtxTransformVU0(&point, &offsets[0], &bridge->platform_matrices[i]);
                         if (n < 512) {
                             first[n].x = point.x;
-                            first[n].y = point.y + bridge->unknown_b08;
+                            first[n].y = point.y + bridge->height_offset;
                             first[n].z = point.z;
                         }
                         matrix.m30 = point.x;
@@ -139,7 +139,7 @@ void NuBridgeDraw(NUMTL *material) {
                         NuVec4MtxTransformVU0(&point, &offsets[1], &bridge->platform_matrices[i]);
                         if (n < 512) {
                             second[n].x = point.x;
-                            second[n].y = point.y + bridge->unknown_b08;
+                            second[n].y = point.y + bridge->height_offset;
                             second[n].z = point.z;
                             ++n;
                         }
@@ -535,9 +535,9 @@ i32 NuBridgeCreate(NUGSCN *scene, nuhspecial_s *first, nuhspecial_s *second, NUV
         bridge->width = width;
         bridge->gravity = gravity;
         bridge->load_multiplier = load_multiplier;
-        bridge->unknown_b04 = unknown_b04;
-        bridge->unknown_b08 = unknown_b08;
-        bridge->unknown_ae7 = (u8)unknown_ae7;
+        bridge->half_width = unknown_b04;
+        bridge->height_offset = unknown_b08;
+        bridge->special_spacing = (u8)unknown_ae7;
         bridge->colour = colour;
 
         bridge->centre.x = (end->x + start->x) * 0.5f;

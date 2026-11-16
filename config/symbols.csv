@@ -8443,7 +8443,7 @@ address,symbol,size,ctype
 0x5f7ca0,_fun_005f7ca0,8,
 0x5f7cb0,_fun_005f7cb0,8,
 0x5f7cc0,_PCGraphicsEffectTextureSetLowNibbles,38,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32,i32)"
-0x5f7cf0,_PCGraphicsEffectTextureSetField24,12,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32)"
+0x5f7cf0,_PCGraphicsEffectTextureSetSamplerExtra,12,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32)"
 0x5f7d00,_PCGraphicsEffectTextureSetFilterFields,296,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32,i32,i32)"
 0x5f7e30,_fun_005f7e30,152,
 0x5f7ed0,_PCGraphicsEffectTextureSetWrapFields,220,"void __cdecl(GRAPHICS_RENDER_TEXTURE *,i32,i32)"
@@ -13452,7 +13452,7 @@ address,symbol,size,ctype
 0x6d8370,?CombineUiButtons@PC_INPUT_RUNTIME@@QAEIHI@Z,285,"u32 __thiscall(i32,u32)"
 0x6d8490,?CaptureBinding@PC_INPUT_RUNTIME@@QAEXH@Z,706,void __thiscall(i32)
 0x6d8760,?ServicePendingCapture@PC_INPUT_RUNTIME@@QAEXXZ,135,void __thiscall(void)
-0x6d87f0,?ButtonName@TEXT_INPUT_MANAGER@@QAEHHHPADHHHH0@Z,1328,"i32 __thiscall(i32,i32,char*,i32,i32,i32,i32,char*)"
+0x6d87f0,?ButtonName@PC_INPUT_RUNTIME@@QAEHHHPADHHHH0@Z,1328,"i32 __thiscall(i32,i32,char*,i32,i32,i32,i32,char*)"
 0x6d8d20,?AddInputRecord@PC_INPUT_RUNTIME@@QAEXHHHG@Z,53,"void __thiscall (i32, i32, i32, u16)"
 0x6d8d60,?AssignBinding@PC_INPUT_RUNTIME@@QAEXHHHHHHHI@Z,725,
 0x6d9040,?Shutdown@NuKeyboardOwner@@QAEXXZ,224,void __thiscall NuKeyboardOwner::Shutdown(void)
@@ -13483,7 +13483,7 @@ address,symbol,size,ctype
 0x6d9b10,?SaveConfiguration@PC_INPUT_RUNTIME@@QAEXXZ,97,
 0x6d9b80,?BindPreferredConfig@PC_INPUT_RUNTIME@@QAEXHH@Z,70,"void __thiscall(i32,i32)"
 0x6d9bd0,?InitKeyboardProfiles@PC_INPUT_RUNTIME@@QAEXXZ,496,void __thiscall(void)
-0x6d9dc0,?fun_006d9dc0@TEXT_INPUT_MANAGER@@QAEHHHPADHH@Z,42,
+0x6d9dc0,?fun_006d9dc0@PC_INPUT_RUNTIME@@QAEHHHPADHH@Z,42,
 0x6d9df0,_InputEnumDevices@8,1027,"BOOL __stdcall(const PC_DI_INSTANCE*,void*)"
 0x6da200,?RescanDevices@NuKeyboardOwner@@QAEXXZ,338,void __thiscall(void)
 0x6da360,_fun_006da360,106,
@@ -13850,8 +13850,8 @@ address,symbol,size,ctype
 0x006e2470,?ApplyViewport@PC_DEVICE_BACKEND@@QAEXPBUPC_VIEWPORT@@@Z,159,
 0x6e2510,?ResetViewport@PC_DEVICE_BACKEND@@QAEXXZ,255,void __thiscall PC_DEVICE_BACKEND::ResetViewport(void)
 0x6e2610,?ConfigureTargetKinds@PC_DEVICE_BACKEND@@QAEXXZ,433,void __thiscall PC_DEVICE_BACKEND::ConfigureTargetKinds(void)
-0x6e27d0,?ShaderVariant16@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant16(void)
-0x6e27f0,?ShaderVariant1@PC_MATERIAL_DEVICE_CAPS_VIEW@@QAEHXZ,17,i32 __thiscall PC_MATERIAL_DEVICE_CAPS_VIEW::ShaderVariant1(void)
+0x6e27d0,?ShaderVariant16@PC_DEVICE_BACKEND@@QAEHXZ,17,i32 __thiscall PC_DEVICE_BACKEND::ShaderVariant16(void)
+0x6e27f0,?ShaderVariant1@PC_DEVICE_BACKEND@@QAEHXZ,17,i32 __thiscall PC_DEVICE_BACKEND::ShaderVariant1(void)
 0x006e2810,?SetColorWriteMask@PC_DEVICE_BACKEND@@QAEXEEH@Z,107,"void __thiscall(u8,u8,i32)"
 0x6e2880,?SetRenderTarget@PC_DEVICE_BACKEND@@QAEXHPAUPC_TEXTURE_RESOURCE@@@Z,87,"void __thiscall PC_DEVICE_BACKEND::SetRenderTarget(i32,PC_TEXTURE_RESOURCE*)"
 0x6e28e0,?CaptureScreenshot@PC_DEVICE_BACKEND@@QAEIIIPAPAX@Z,520,
@@ -42177,7 +42177,7 @@ address,symbol,size,ctype
 0x971890,_nextx,4,f32
 0x971898,_RendererArenaIndexCount,4,i32
 0x9718a0,_VisibilityDepthPlane,16,NUPLANE
-0x009718b0,_nudlist_field_18b0,4,char *
+0x009718b0,_PCDisplayCaptureFlushLimit,4,char *
 0x9718b4,_NuPortalWorldCamera,12,NUVEC
 0x009718c0,_currentScene,536,NURNDRLIBSCENE
 0x9718fc,_PCDisplayClipSet,4,void *
@@ -42288,7 +42288,7 @@ address,symbol,size,ctype
 0x97397c,_force_camera_farclip,4,i32
 0x973980,_VisibilityUsingOcclusion,4,i32
 0x973984,_do_boxtree,4,i32
-0x00973988,_nudlist_field_988,4,NUFILE
+0x00973988,_NuHtmlFile,4,NUFILE
 0x0097398c,_NuTimeBar_Initialised,4,i32
 0x00973990,_NuTimeBar_EngineEnabled,4,i32
 0x00973994,_NuTimeBar_GpuFrameOutEnabled,4,i32
@@ -42329,7 +42329,7 @@ address,symbol,size,ctype
 0x00973fbc,_nudlist_alloc_end,4,u32
 0x00973fc0,_nudlist_item_base,4,u32
 0x00973fc4,_nudlist_field_fc4,4,i32
-0x00973fc8,_nudlist_field_fc8,4,u32
+0x00973fc8,_PCMaterialAnimSets,4,PC_MATERIAL_ANIM_SET *
 0x00973fe4,_nudlist_field_fe4,4,u32
 0x973fec,_DisplaySceneRenderDisabled,4,i32
 0x973ff0,_noscenespecials,4,i32
@@ -42458,7 +42458,7 @@ address,symbol,size,ctype
 0x02854c00,_nu_water_reset_status,4,i32
 0x2854c0c,_NuWaterVertexBuffer,4,PC_BUFFER_RESOURCE *
 0x2854c10,_RendererQuadVertexBuffer,4,PC_BUFFER_RESOURCE *
-0x2854c14,_PCShadowState,16,PC_HG_SHADOW_STATE_VIEW
+0x2854c14,_PCShadowState,16,PC_HG_SHADOW_STATE
 0x2854c24,_RendererVertexDeclaration,4,PC_TEXTURE_RESOURCE *
 0x2854c28,_RendererGeometryVertexBuffer,4,PC_BUFFER_RESOURCE *
 0x2854c2c,_RendererGeometryIndexBuffer,4,PC_BUFFER_RESOURCE *

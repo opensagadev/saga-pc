@@ -29,7 +29,6 @@ void NuDebugMsgPrint(char *text) {
     PCNativeDebugPrint(&PCNativeWarningDebugState, "%s", text);
 }
 
-typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
 
 /* The PC build has no online service: achievements report success and no
  * player is ever signed in. */
@@ -142,7 +141,6 @@ static void NuDebugMsgFunction(char *format, ...) {
 static void NuDebugMsgFunctionTTY(i32 channel, char *format, ...) {
 }
 
-typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
 
 NUDEBUGMSGFUNCTION NuDebugMsgProlog(char *file, i32 line) {
     nufile = file;

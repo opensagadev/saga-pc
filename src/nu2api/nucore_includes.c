@@ -45,6 +45,7 @@
 #include <string.h>
 #include "gamelib/util/CRC16.h"
 #include "nu2api/nufile_pc.h"
+#include "nu2api/nucore_pc_includes.h"
 
 static char *NuFParBufferBase = 0;
 void (*fnInterpreterError)(NUFPAR *parser) = 0;
@@ -179,11 +180,8 @@ static i32 NUAPI_PADREC_DEFAULT_BUFFERSIZE = 0x500000;
 i32 min_delay = 20;
 f32 FrameStartupDelay = 6.0f;
 
-extern f32 NuFrameAccumulatedTime;
-extern const char *GetPCStartupMessage(void);
 extern void FmvPlatformUpdate(void);
 
-typedef void (*NUDEBUGMSGFUNCTION)(char *, ...);
 
 static void DecryptData(PC_FILEPAKHDR *header, u32 length, const u8 *key, i32 key_length);
 static void AquireFileBuffer(FILEINFO *info);
@@ -2374,7 +2372,7 @@ NUDATHDR *NuDatOpenEx(const char *filepath, VARIPTR *arena, i32 *size_out, i16 m
                 NuStrCat(formatted_name, filepath);
                 NuStrCat(formatted_name, ";1");
             }
-            header->unknown_b4 = 0;
+            header->start_lsn = 0;
             nufile_buffering_enabled = saved_buffering;
             return header;
         }
@@ -8116,10 +8114,10 @@ void NuPadProcessReadData(FRAME_SCANNED_PAD *pad) {
     if ((pad->analog_button_flags & 1) != 0) {
         // The right-hand side values never appear to be written. This may be a
         // platform difference.
-        pad->analog_left_pad_left = pad->unknown_7c;
-        pad->analog_left_pad_right = pad->unknown_7d;
-        pad->analog_left_pad_up = pad->unknown_7e;
-        pad->analog_left_pad_down = pad->unknown_7f;
+        pad->analog_left_pad_left = pad->raw_pad_left;
+        pad->analog_left_pad_right = pad->raw_pad_right;
+        pad->analog_left_pad_up = pad->raw_pad_up;
+        pad->analog_left_pad_down = pad->raw_pad_down;
     } else {
         ramp_rate_normal = FramePadRampRate / 30.0f;
 
@@ -8154,11 +8152,11 @@ void NuPadProcessReadData(FRAME_SCANNED_PAD *pad) {
     }
 
     if ((pad->analog_button_flags & 2) != 0) {
-        pad->unknown_82 = pad->unknown_80;
-        pad->unknown_83 = pad->unknown_81;
+        pad->extra_axis_x = pad->raw_extra_axis_x;
+        pad->extra_axis_y = pad->raw_extra_axis_y;
     } else {
-        pad->unknown_82 = 0x7f;
-        pad->unknown_83 = 0x7f;
+        pad->extra_axis_x = 0x7f;
+        pad->extra_axis_y = 0x7f;
     }
 }
 
@@ -8206,7 +8204,7 @@ void NuPadUpdatePads(void) {
             i, &g_nupadScannedPads[i].analog_left_x, &g_nupadScannedPads[i].analog_left_y, &g_nupadScannedPads[i].analog_right_x,
             &g_nupadScannedPads[i].analog_right_y, &g_nupadScannedPads[i].analog_l1, &g_nupadScannedPads[i].analog_l2,
             &g_nupadScannedPads[i].analog_r1, &g_nupadScannedPads[i].analog_r2, &g_nupadScannedPads[i].digital_buttons,
-            &g_nupadScannedPads[i].unknown_7c, &g_nupadScannedPads[i].analog_button_flags);
+            &g_nupadScannedPads[i].raw_pad_left, &g_nupadScannedPads[i].analog_button_flags);
 
         NuPadRecordPlay(g_nupadScannedPads + i);
 
@@ -8442,8 +8440,8 @@ i32 NuPadRead(FRAME_PAD *pad) {
         pad->analog_left_pad_up = g_nupadScannedPads[device].analog_left_pad_up;
         pad->analog_left_pad_down = g_nupadScannedPads[device].analog_left_pad_down;
 
-        pad->unknown_b0 = g_nupadScannedPads[device].unknown_82;
-        pad->unknown_b1 = g_nupadScannedPads[device].unknown_83;
+        pad->unknown_b0 = g_nupadScannedPads[device].extra_axis_x;
+        pad->unknown_b1 = g_nupadScannedPads[device].extra_axis_y;
 
         pad->is_valid = g_nupadScannedPads[device].is_valid;
 
@@ -8761,7 +8759,6 @@ void NuVideoSetBrightness(f32 brightness) {
     NuVideoSetBrightnessPS();
 }
 
-typedef void (*NUONLINEACHIEVEMENTCALLBACK)(i32, i32);
 
 i32 NuOnlineAchievementAchieved(i32 achievement, NUONLINEACHIEVEMENTCALLBACK callback) {
     return NuOnlineAchievementAchievedPS(achievement, callback);
@@ -9214,9 +9211,9 @@ i32 NuDatGetFileInfo(NUDATHDR *header, char *name, i64 *position, i32 *length) {
     index = NuDatFileFindTree(header, name);
     if (index >= 0) {
         file_position = NuDatCalcPos(header, header->file_info[index].file_offset);
-        if (nufile_lsn_allowed != 0 && header->unknown_b4 != 0) {
+        if (nufile_lsn_allowed != 0 && header->start_lsn != 0) {
             if (position != NULL) {
-                *position = header->unknown_b4 + (i32)(file_position / 0x800);
+                *position = header->start_lsn + (i32)(file_position / 0x800);
             }
             if (length != NULL) {
                 *length = header->file_info[index].file_len;

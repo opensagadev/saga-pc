@@ -94,6 +94,10 @@
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/posteffect_shader_tokens_pc.h"
+#include "nu2api/nuwin32/nu2api_windows.h"
+#include "nu2api/nucore/nucore_includes.h"
+#include "nu2api/pc_fmv_native.h"
 #include <float.h>
 #include <stdio.h>
 #include <string.h>
@@ -147,24 +151,6 @@ extern "C" {
 
     // @@PREAMBLE
     struct POST_SHADER_PROGRAM;
-    extern const DWORD dat_007662d8[168];
-    extern const DWORD dat_00766578[94];
-    extern const DWORD dat_007666f0[75];
-    extern const DWORD dat_00766820[261];
-    extern const DWORD dat_00766c38[168];
-    extern const DWORD dat_00766ed8[94];
-    extern const DWORD dat_00767050[75];
-    extern const DWORD dat_00767180[261];
-    extern const DWORD dat_00767598[85];
-    extern const DWORD dat_007676f0[566];
-    extern const DWORD dat_00767fc8[554];
-    extern const DWORD dat_00768870[155];
-    extern const DWORD dat_00768ae0[143];
-    extern const DWORD dat_00768d20[48];
-    extern const DWORD dat_00768de0[180];
-    extern const DWORD dat_007690b0[131];
-    extern const DWORD dat_007692c0[175];
-    extern const DWORD dat_00769580[100];
 
     typedef struct SCENE_TEXTURE_PACKET_B0 { // size 0x14
         i32 kind;                            // 0x00
@@ -177,18 +163,6 @@ extern "C" {
     } SCENE_TEXTURE_PACKET_AE;
 
     /* numtl PS half. */
-
-    typedef struct FRAME_MTL_ANIM_SET {  // size 0x10
-        NUDISPLAY_LIST *scene;           // 0x0
-        i32 material_count;              // 0x4
-        i32 *material_indices;           // 0x8
-        struct FRAME_MTL_ANIM_SET *next; // 0xc
-    } FRAME_MTL_ANIM_SET;
-
-    typedef struct FRAME_MTL_SCENE {          // size 0x15c
-        u8 reserved00[0x158];                 // 0x000
-        i32 shader_texture_animation_enabled; // 0x158
-    } FRAME_MTL_SCENE;
 
     i32 NuMainRendererControl = 1;
 
@@ -645,16 +619,6 @@ extern "C" {
     f32 NuPrimXScale = 1.0f;
     f32 NuPrimYScale = 1.0f;
 
-    typedef struct PC_TRANSFORM_MATERIAL_VIEW PC_TRANSFORM_MATERIAL_VIEW;
-
-    struct PC_TRANSFORM_MATERIAL_VIEW {   // size 0x9c
-        u8 unknown_00[0x30];              // 0x00
-        PC_TRANSFORM_MATERIAL_VIEW *next; // 0x30
-        u8 unknown_34[0x2c];              // 0x34
-        f32 transform_scale;              // 0x60
-        u8 unknown_64[0x35];              // 0x64
-        u8 transform_kind;                // 0x99
-    };
 
     static VARIPTR rndrstream_b = {0};
     f32 NuCameraProjectionGlobalOffsetX = 0;
@@ -862,17 +826,6 @@ extern "C" {
 
     extern "C" PC_GEOMETRY_BASIS *PcGeometryTransforms;
     extern "C" PC_GEOMETRY_OUTPUT *PcGeometryOutput;
-
-    typedef struct PC_SHADER_HANDLE_VIEW { // size 0x2
-        i16 handle;                        // 0x0
-    } PC_SHADER_HANDLE_VIEW;
-
-    struct PC_MATERIAL_DEVICE_CAPS_VIEW { // size 0x655
-        u8 unknown_000[0x654];            // 0x000
-        u8 shader_caps;                   // 0x654
-        i32 ShaderVariant16();
-        i32 ShaderVariant1();
-    };
 
     extern "C" {
         extern const DWORD dat_00769710[76] = {
@@ -1441,11 +1394,7 @@ extern "C" {
         i32 NuLgtArcLaserFrame = 0;
     }
 
-    extern f32 NuFrameAccumulatedTime;
-    extern const char *GetPCStartupMessage(void);
-    extern void FmvPlatformUpdate(void);
 
-    typedef struct screengrab_tile_params_s SCREENGRAB_TILE_PARAMS;
     PC_BUFFER_RESOURCE *NuWaterVertexBuffer = 0;
 
     typedef struct nuprim_packet_s { // size 0x38
@@ -1557,7 +1506,7 @@ extern "C" {
     }
 
     void PC_DEVICE_BACKEND::fun_005f78c0() {
-        PCDeviceSetVertexDeclaration(declaration6ac);
+        PCDeviceSetVertexDeclaration(screen_colour_uv_declaration);
     }
 
     static i32 fun_005f7900(i32 mode) {
@@ -1702,8 +1651,8 @@ extern "C" {
         texture->flags = (texture->flags & ~0xffu) | (((u32)high & 0xfu) << 4) | ((u32)low & 0xfu);
     }
 
-    void PCGraphicsEffectTextureSetField24(GRAPHICS_RENDER_TEXTURE *texture, i32 value) {
-        texture->unknown_24 = (u32)value;
+    void PCGraphicsEffectTextureSetSamplerExtra(GRAPHICS_RENDER_TEXTURE *texture, i32 value) {
+        texture->sampler_extra = (u32)value;
     }
 
     /* Sampler fields packed into GRAPHICS_RENDER_TEXTURE::flags. */
@@ -1775,7 +1724,7 @@ extern "C" {
         texture->pool = 0;
         texture->resource = NULL;
         texture->external_id = -1;
-        texture->unknown_24 = 0;
+        texture->sampler_extra = 0;
         texture->flags = 0x012449d0;
         if (texture->surface != NULL) {
             texture->surface->methods->release(texture->surface);
@@ -1809,7 +1758,7 @@ extern "C" {
         texture->usage = description.usage & 1;
         texture->pool = description.pool;
         texture->external_id = id;
-        texture->unknown_24 = 0;
+        texture->sampler_extra = 0;
         texture->flags = 0x012449d0;
     }
 
@@ -1835,7 +1784,7 @@ extern "C" {
         texture->pool = pool;
         texture->external_id = -1;
         texture->surface = NULL;
-        texture->unknown_24 = 0;
+        texture->sampler_extra = 0;
         texture->flags = 0x012449d0;
         if (format == PC_GRAPHICS_FORMAT_D24S8) {
             texture->pool = 0;
@@ -2407,7 +2356,7 @@ extern "C" {
         PCDeviceSetRenderState(D3DRS_BLENDOP, 1);
         PCDeviceSetRenderState(D3DRS_SRCBLEND, 5);
         PCDeviceSetRenderState(D3DRS_DESTBLEND, 6);
-        PCDeviceSetVertexDeclaration(PCDeviceBackend.declaration6ac);
+        PCDeviceSetVertexDeclaration(PCDeviceBackend.screen_colour_uv_declaration);
         PCDeviceSetStreamSource(0, RendererQuadVertexBuffer, 0, 0x1c);
         PCDeviceDrawPrimitive(6, 0, 2);
     }
@@ -3744,13 +3693,13 @@ extern "C" {
     }
 
     void NuRndrStateGetTransform(NUMTX *output, const NUMTL *material) {
-        const PC_TRANSFORM_MATERIAL_VIEW *selected = (const PC_TRANSFORM_MATERIAL_VIEW *)material;
+        const NUMTL *selected = material;
         f32 scale;
         NUVEC scaling;
         if (selected->next != NULL) {
             selected = selected->next;
         }
-        if (selected->transform_kind != 0x81 && selected->transform_kind != 0x85) {
+        if (selected->material_kind != 0x81 && selected->material_kind != 0x85) {
             *output = RndrStateTransform;
             return;
         }
@@ -4834,9 +4783,9 @@ extern "C" {
     }
 
     void NuMtlUpdatePS(NUMTL *mtl) {
-        PC_MATERIAL_DEVICE_CAPS_VIEW *device = reinterpret_cast<PC_MATERIAL_DEVICE_CAPS_VIEW *>(&PCDeviceBackend);
-        PC_SHADER_HANDLE_VIEW *shader;
-        PC_SHADER_HANDLE_VIEW *variant;
+        PC_DEVICE_BACKEND *device = &PCDeviceBackend;
+        NuShaderObject *shader;
+        NuShaderObject *variant;
         NudxFw_D3DBeginCriticalSection();
         if (mtl->texture_id > 0) {
             mtl->shader.diffuse_map_ids[0] = mtl->texture_id;
@@ -4857,19 +4806,18 @@ extern "C" {
             NuShaderManagerReleaseShader(PCShaderRecordFromHandle(mtl->shader.shader_handles[1]));
         }
         if ((mtl->attribs2 & 0x800000) != 0 && mtl->display_list == NULL) {
-            shader = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(
-                NuShaderManagerRetrieveShader(reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                                              reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl)));
-            mtl->shader.shader_handles[0] = shader->handle;
+            shader = NuShaderManagerRetrieveShader(reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
+                                              reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl));
+            mtl->shader.shader_handles[0] = (i16)shader->marker;
         } else {
-            shader = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(NuShaderManagerRetrieveShaderVariant(
+            shader = NuShaderManagerRetrieveShaderVariant(
                 reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant16()));
-            variant = reinterpret_cast<PC_SHADER_HANDLE_VIEW *>(NuShaderManagerRetrieveShaderVariant(
+                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant16());
+            variant = NuShaderManagerRetrieveShaderVariant(
                 reinterpret_cast<const PC_SHADER_FILTER_DESC_VIEW *>(&mtl->shader),
-                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant1()));
-            mtl->shader.shader_handles[0] = shader->handle;
-            mtl->shader.shader_handles[1] = variant->handle;
+                reinterpret_cast<const PC_SHADER_FILTER_MATERIAL_VIEW *>(mtl), device->ShaderVariant1());
+            mtl->shader.shader_handles[0] = (i16)shader->marker;
+            mtl->shader.shader_handles[1] = (i16)variant->marker;
         }
         mtl->vertex_declaration = NuGetVertexDeclaration(mtl->shader.vertex_format);
         if (mtl->texture_id == 0) {
@@ -7050,7 +6998,7 @@ extern "C" {
         f32 u1;
         f32 v1;
         i32 i;
-        if (material->particle_type_tag == -105) {
+        if (material->material_kind == 0x97) {
             u0 = 0.0f;
             u1 = 1.0f;
             v1 = 1.0f;
@@ -7225,7 +7173,7 @@ extern "C" {
             NuDebrisLastHeader = NULL;
             return;
         }
-        if (material == NULL || (material->particle_type_tag == -105 && PCDeviceHardwareVertexProcessingPC < 2)) {
+        if (material == NULL || (material->material_kind == 0x97 && PCDeviceHardwareVertexProcessingPC < 2)) {
             return;
         }
         if (header != NuDebrisLastHeader) {
@@ -7566,7 +7514,7 @@ extern "C" {
         nudlist_field_9d8 = 0;
         nudlist_field_e80 = 0;
         sort_list = NULL;
-        nudlist_field_fc8 = 0;
+        PCMaterialAnimSets = NULL;
         PCDisplayList2d.first = &nudlist_2d_static;
         {
             VARIPTR end;
@@ -8196,7 +8144,7 @@ extern "C" {
         if (FrameShaderMaterialFirstCall != 0) {
             for (i = 0; i < nudlist_field_9d8; ++i) {
                 NUDISPLAY_LIST *scene = PCDisplayScenes[i];
-                if (((FRAME_MTL_SCENE *)scene->gscene)->shader_texture_animation_enabled != 0) {
+                if (scene->gscene->shader_texture_animation_enabled != 0) {
                     i32 j;
                     for (j = 0; j < (i32)scene->material_count; ++j) {
                         NUMTL *material = scene->display_materials[j];

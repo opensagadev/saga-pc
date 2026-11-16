@@ -39,12 +39,9 @@
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include "nu2api/nuwin32/pcapi.h"
 #include "nu2api/save_folder.h"
+#include "gameframework/saveload.h"
 
-extern "C" {
-    void PcCreateCursorMaterial(void);
-}
 
-extern "C" void PcRegisterSaveMetadata(const void *);
 
 extern "C" {
     const char *NuHwSoundDfsName = "";

@@ -23,13 +23,9 @@
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
+#include "nu2api/pc_fmv_native.h"
+#include "legoapi/core/input/gamepads.h"
 
-extern "C" {
-    i32 GameReleaseResources(void);
-    i32 GameRestoreResources(void);
-    void NuFmvTextureRelease(void);
-    void NuFmvTextureRestore(void);
-}
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */
 struct D3DXMATRIX { // size 0x40
@@ -79,11 +75,11 @@ i32 PC_DEVICE_BACKEND::fun_006df050() {
 }
 
 u32 PC_DEVICE_BACKEND::fun_006df060() {
-    return state600;
+    return enabled_option_0;
 }
 
 u32 PC_DEVICE_BACKEND::fun_006df070() {
-    return state604;
+    return enabled_option_1;
 }
 
 extern "C" {
@@ -446,11 +442,11 @@ extern "C" PC_TEXTURE_LEVEL_DESC *fun_006dfcc0(PC_TEXTURE_RESOURCE *texture, u32
 }
 
 extern "C" u32 fun_006dfcf0(void) {
-    return PCDeviceBackend.state600;
+    return PCDeviceBackend.enabled_option_0;
 }
 
 extern "C" u32 fun_006dfd00(void) {
-    return PCDeviceBackend.state604;
+    return PCDeviceBackend.enabled_option_1;
 }
 
 extern "C" void fun_006dfd20(void) {

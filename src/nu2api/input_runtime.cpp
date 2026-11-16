@@ -243,64 +243,6 @@ extern "C" void PcInput_SetIsUsedCallBack(i32 (*filter)(i32, i32)) {
     PcInputCommandFilter = filter;
 }
 
-typedef struct NuKeyboardInitKeyRecord { // size 0x6
-    u8 unknown_00;                       // 0x0
-    u8 unknown_01;                       // 0x1
-    u8 unknown_02;                       // 0x2
-    u8 unknown_03;                       // 0x3
-    u16 unknown_04;                      // 0x4
-} NuKeyboardInitKeyRecord;
-
-typedef struct NuKeyboardInitTriplet { // size 0xa
-    u8 unknown_00;                     // 0x0
-    u8 unknown_01;                     // 0x1
-    u8 unknown_02;                     // 0x2
-    u8 unknown_03_to_09[7];            // 0x3
-} NuKeyboardInitTriplet;
-
-typedef struct NuKeyboardInitLayout {                // size 0x68b4
-    u8 cleared_0000_to_26ff[0x2700];                 // 0x0000
-    u8 cleared_2700_to_4dff[0x2700];                 // 0x2700
-    i32 unknown_4e00;                                // 0x4e00
-    i32 unknown_4e04;                                // 0x4e04
-    i32 unknown_4e08;                                // 0x4e08
-    i32 unknown_4e0c;                                // 0x4e0c
-    u8 keyboard_polled;                              // 0x4e10
-    u8 unknown_4e11;                                 // 0x4e11
-    u8 unknown_4e12;                                 // 0x4e12
-    u8 unknown_4e13;                                 // 0x4e13
-    u8 unknown_4e14_to_4e33[0x20];                   // 0x4e14
-    u8 cleared_4e34_to_62fb[0x14c8];                 // 0x4e34
-    u8 cleared_62fc_to_6343[0x48];                   // 0x62fc
-    u8 unknown_6344;                                 // 0x6344
-    u8 unknown_6345_to_6352[14];                     // 0x6345
-    u8 unknown_6353;                                 // 0x6353
-    i32 unknown_6354;                                // 0x6354
-    u8 cleared_6358_to_6557[0x200];                  // 0x6358
-    u8 unknown_6558_to_6567[0x10];                   // 0x6558
-    i32 unknown_6568;                                // 0x6568
-    i32 unknown_656c;                                // 0x656c
-    f32 unknown_6570;                                // 0x6570
-    u8 unknown_6574_to_6575[2];                      // 0x6574
-    NuKeyboardInitTriplet unknown_6576_triplets[14]; // 0x6576
-    u8 unknown_6602_to_6603[2];                      // 0x6602
-    i32 unknown_6604;                                // 0x6604
-    i32 unknown_6608;                                // 0x6608
-    NuKeyboardInitTriplet unknown_660c_triplets[14]; // 0x660c
-    u8 unknown_6698_to_6719[0x82];                   // 0x6698
-    u8 unknown_671a;                                 // 0x671a
-    u8 unknown_671b;                                 // 0x671b
-    u8 cleared_671c_to_67df[0xc4];                   // 0x671c
-    u8 unknown_67e0;                                 // 0x67e0
-    u8 unknown_67e1;                                 // 0x67e1
-    u8 unknown_67e2_to_67e3[2];                      // 0x67e2
-    i32 unknown_67e4;                                // 0x67e4
-    i32 unknown_67e8;                                // 0x67e8
-    i32 unknown_67ec;                                // 0x67ec
-    NuKeyboardInitKeyRecord key_records[32];         // 0x67f0
-    u8 *keyboard_state;                              // 0x68b0
-} NuKeyboardInitLayout;
-
 void PC_INPUT_RUNTIME::ReadConfiguration(PC_INPUT_CONFIG *records, const char *directory) {
     char path[1024];
     u32 version = 0;
@@ -348,54 +290,53 @@ extern "C" {
 }
 
 PC_INPUT_RUNTIME::PC_INPUT_RUNTIME() {
-    NuKeyboardInitLayout *layout = (NuKeyboardInitLayout *)this;
     memset(devices, 0, sizeof(devices));
     memset(primary, 0, sizeof(primary));
     memset(secondary, 0, sizeof(secondary));
-    memset(layout->cleared_62fc_to_6343, 0, sizeof(layout->cleared_62fc_to_6343));
+    memset(&mouse, 0, offsetof(PC_INPUT_MOUSE_RUNTIME, unknown_48));
     keyboard_state = NULL;
-    memset(layout->cleared_671c_to_67df, 0, sizeof(layout->cleared_671c_to_67df));
+    memset(&raw_sample, 0, sizeof(raw_sample));
     memset(auxiliary_bindings, 0, sizeof(auxiliary_bindings));
     for (i32 i = 0; i < 32; ++i) {
         commands[i].active = 0;
         commands[i].axis = -1;
         commands[i].button = -1;
-        commands[i].unknown_04 = 0;
+        commands[i].value = 0;
     }
-    layout->unknown_67e4 = 0;
+    shutdown_state = 0;
     InitConfiguration();
-    layout->unknown_4e00 = -1;
-    layout->unknown_671a = 1;
-    layout->unknown_4e08 = 0;
-    layout->unknown_4e0c = 0;
+    field_4e00 = -1;
+    first_mouse = 1;
+    action_mask = 0;
+    completed_mask = 0;
     for (i32 i = 0; i < 14; ++i) {
-        layout->unknown_6345_to_6352[i] = 0;
-        layout->unknown_660c_triplets[i].unknown_00 = 0;
-        layout->unknown_660c_triplets[i].unknown_01 = 0;
-        layout->unknown_660c_triplets[i].unknown_02 = 0;
-        layout->unknown_6576_triplets[i].unknown_00 = 0;
-        layout->unknown_6576_triplets[i].unknown_01 = 0;
-        layout->unknown_6576_triplets[i].unknown_02 = 0;
+        mouse.port_activity[i] = 0;
+        captures[i].kind[0] = 0;
+        captures[i].kind[1] = 0;
+        captures[i].kind[2] = 0;
+        staged_capture[i].kind[0] = 0;
+        staged_capture[i].kind[1] = 0;
+        staged_capture[i].kind[2] = 0;
     }
-    layout->unknown_6608 = -1;
-    layout->unknown_67e0 = 0;
+    captured_port = -1;
+    keyboard_ui_override = 0;
     preferred_key = 0;
-    layout->unknown_6354 = 0;
-    layout->unknown_4e12 = 0;
-    layout->unknown_4e13 = 0xff;
+    mouse.custom_bindings_active = 0;
+    suppress_key_1 = 0;
+    unknown_4e13 = 0xff;
     for (i32 i = 0; i < 14; ++i) {
         for (i32 j = 0; j < 32; ++j) {
             devices[i].reset_pairs[j].first = 0;
             devices[i].reset_pairs[j].second = 0;
         }
     }
-    layout->unknown_6570 = PCKeyboardDefaultValue;
-    layout->unknown_6568 = 0x1fff;
-    layout->unknown_656c = 32;
-    layout->unknown_4e04 = 0;
-    layout->keyboard_polled = 0;
-    layout->unknown_4e11 = 0;
-    layout->unknown_67e1 = 0;
+    ramp_seconds = PCKeyboardDefaultValue;
+    axis_threshold = 0x1fff;
+    motion_threshold = 32;
+    read_mask = 0;
+    keyboard_polled = 0;
+    mouse_polled = 0;
+    unknown_67e1 = 0;
     InitializeDefaultRecords();
     if (PcInputStateInitializedCallback) {
         PcInputStateInitializedCallback(this);
@@ -630,11 +571,11 @@ i32 PC_INPUT_RUNTIME::ReadSample(i32 port, u8 *lx, u8 *ly, u8 *rx, u8 *ry, u8 *l
         return 0;
     }
     if (!keyboard_polled) {
-        if (nu_keyboard_owner.unknown_0004 > 0) {
-            nu_keyboard_owner.unknown_0008 = (f32)((f64)nu_keyboard_owner.unknown_0008 - NuTimeGetFrameTime());
-            if (nu_keyboard_owner.unknown_0008 <= 0.0f) {
-                nu_keyboard_owner.unknown_0008 += nu_keyboard_owner.unknown_0000;
-                --nu_keyboard_owner.unknown_0004;
+        if (nu_keyboard_owner.rescan_count > 0) {
+            nu_keyboard_owner.rescan_timer = (f32)((f64)nu_keyboard_owner.rescan_timer - NuTimeGetFrameTime());
+            if (nu_keyboard_owner.rescan_timer <= 0.0f) {
+                nu_keyboard_owner.rescan_timer += nu_keyboard_owner.rescan_interval;
+                --nu_keyboard_owner.rescan_count;
                 nu_keyboard_owner.RescanDevices();
             }
         }
@@ -1403,13 +1344,13 @@ void PC_INPUT_RUNTIME::ResetInputRecords() {
         commands[i].active = 0;
         commands[i].button = -1;
         commands[i].axis = -1;
-        commands[i].unknown_04 = 0;
+        commands[i].value = 0;
     }
     shutdown_state = 0;
 }
 
 void PC_INPUT_RUNTIME::fun_006d4e20(i32 value) {
-    mouse.unknown_58 = value;
+    mouse.custom_bindings_active = value;
 }
 
 i32 PC_INPUT_RUNTIME::GetInputRecordCount() {
@@ -1441,7 +1382,7 @@ void PC_INPUT_RUNTIME::InsertInputRecord(i32 index, i32 unknown_00, i32 field_01
     commands[index].active = (i8)unknown_00;
     commands[index].axis = (i8)field_01;
     commands[index].button = (i8)unknown_02;
-    commands[index].unknown_04 = unknown_04;
+    commands[index].value = unknown_04;
 }
 
 i32 PC_INPUT_RUNTIME::fun_006d4ef0(i32 action, i32 *active, i32 *axis, i32 *button, i32 *value) {
@@ -1458,7 +1399,7 @@ i32 PC_INPUT_RUNTIME::fun_006d4ef0(i32 action, i32 *active, i32 *axis, i32 *butt
         *button = commands[action].button;
     }
     if (value != NULL) {
-        *value = commands[action].unknown_04;
+        *value = commands[action].value;
     }
     return 1;
 }
@@ -1678,7 +1619,7 @@ extern "C" void PcInputSuppressKeyOne(i32 value) {
 }
 
 extern "C" void PcInputSetMouseField(i32 value) {
-    nu_input_state->mouse.unknown_58 = value;
+    nu_input_state->mouse.custom_bindings_active = value;
 }
 
 extern "C" void PcInputSetCapturedPort(i32 port) {
@@ -2232,8 +2173,8 @@ void PC_INPUT_RUNTIME::FormatConfigText(char *destination, PC_INPUT_CONFIG *conf
     }
     NuStrCpy(destination, text);
     sprintf(text, "\t%d,%d,%d,%d,%d,%d,0,0,\t//NumButtons etc.\n", config->button_count, config->pov_count, config->axis_count,
-            (i16)((u16)config->deadzone | ((u16)config->unknown_5b << 8)),
-            (i16)((u16)config->alternate_deadzone | ((u16)config->unknown_5d << 8)), config->key);
+            (i16)((u16)config->deadzone | ((u16)config->deadzone_high << 8)),
+            (i16)((u16)config->alternate_deadzone | ((u16)config->alternate_deadzone_high << 8)), config->key);
     NuStrCat(destination, text);
     NuStrCpy(text, "\t");
     for (i32 i = 0; i < 4; ++i) {
@@ -2244,8 +2185,8 @@ void PC_INPUT_RUNTIME::FormatConfigText(char *destination, PC_INPUT_CONFIG *conf
     NuStrCat(destination, text);
     NuStrCpy(text, "\t");
     for (i32 i = 0; i < 4; ++i) {
-        sprintf(part, "%s,%d,%d, ", PcInputBindingKindNames[config->unknown_axes[i][0]], config->unknown_axes[i][1],
-                config->unknown_axes[i][2]);
+        sprintf(part, "%s,%d,%d, ", PcInputBindingKindNames[config->axis_bindings[i][0]], config->axis_bindings[i][1],
+                config->axis_bindings[i][2]);
         NuStrCat(text, part);
     }
     NuStrCat(text, "//analogue shoulder buttons\n");

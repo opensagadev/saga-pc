@@ -54,6 +54,8 @@ extern "C" {
     extern char *PcArgv[];
     extern PC_WINDOW_CALLBACK PcWindowCallbacks[];
     void PcQuitToWindows(void);
+    void PcCreateCursorMaterial(void);
+    const char *GetPCStartupMessage(void);
 #ifdef __cplusplus
 }
 #endif

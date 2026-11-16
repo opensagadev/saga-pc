@@ -254,12 +254,12 @@ extern "C" {
         i32 slot_count;          // 0x04
         i32 *accumulators[2];    // 0x08
         NuTime *start_times;     // 0x10
-        i32 *unknown_14;         // 0x14
-        i32 *unknown_18;         // 0x18
+        u32 *peak_times;         // 0x14
+        u32 *frame_peak_times;         // 0x18
         i32 *colours;            // 0x1c
         i32 *toggle_flags;       // 0x20
         const char **slot_names; // 0x24
-        i32 unknown_28;          // 0x28
+        i32 visible;          // 0x28
     } TimeBarSet;
 
     extern TimeBarSet *NuTimeBar_SetList[16];
@@ -299,7 +299,7 @@ extern "C" {
     extern u32 nudlist_item_base;
     extern i32 nudlist_frame_active;
     extern u32 nudlist_field_e80;
-    extern u32 nudlist_field_fc8;
+    extern struct PC_MATERIAL_ANIM_SET *PCMaterialAnimSets;
     extern i32 nudlist_field_fc4;
     extern u32 nudlist_field_9d0;
     extern i32 nudlist_field_9d8;
@@ -468,7 +468,7 @@ extern "C" {
     extern f32 (*nuspecial_vertex_offsets)[4];
     extern u32 NuPostEffectInitialisedFlags;
     extern char *PCDisplayCaptureCursor;
-    extern char *nudlist_field_18b0;
+    extern char *PCDisplayCaptureFlushLimit;
     extern char PCDisplayCaptureBuffer[0x1000];
     i32 NuTexGetWidth(i32 id);
     i32 NuTexGetHeight(i32 id);
@@ -1051,8 +1051,11 @@ extern "C" {
     NUDISPLAYLISTITEM *NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *, NUMTL *, VARIPTR *, VARIPTR);
     i32 NuRndrLineStrip2d(NURND_VERTEX2D *vertices, NUMTL *material, i32 count);
 
+    /* The UV-animated materials of one display-list scene, linked into PCMaterialAnimSets. */
     typedef struct PC_MATERIAL_ANIM_SET {  // size 0x10
-        u8 unknown_0[12];                  // 0x0
+        NUDISPLAY_LIST *scene;             // 0x0
+        i32 material_count;                // 0x4
+        i32 *material_indices;             // 0x8
         struct PC_MATERIAL_ANIM_SET *next; // 0xc
     } PC_MATERIAL_ANIM_SET;
 
@@ -1135,20 +1138,20 @@ typedef struct nurndrlibscene_s { // size 0x218
     u32 clear_flags_08;           // 0x008
     i32 bg_colour;                // 0x00c
     f32 clear_alpha;              // 0x010
-    f32 unknown_14;               // 0x014
-    f32 unknown_18;               // 0x018
+    f32 viewport_x;               // 0x014
+    f32 viewport_y;               // 0x018
     f32 calc_1c;                  // 0x01c
     f32 calc_20;                  // 0x020
-    u32 unknown_24;               // 0x024
-    u32 unknown_28;               // 0x028
+    u32 render_frame_flags;               // 0x024
+    u32 burnout_enabled;               // 0x028
     u8 burnout_intensity;         // 0x02c
     f32 burnout_flare;            // 0x030
     f32 burnout_threshold;        // 0x034
     i32 dyn_light_count;          // 0x038
     void *dyn_light_ptr;          // 0x03c
-    i32 unknown_40;               // 0x040
+    i32 light_render_set;               // 0x040
     u8 opaque_44_48[0x4];         // 0x044
-    u32 unknown_48;               // 0x048
+    u32 deferred_shading_enabled;               // 0x048
 
     union { // size 0xc
 
@@ -1163,7 +1166,7 @@ typedef struct nurndrlibscene_s { // size 0x218
     union { // size 0x54
 
         struct {                   // size 0x54
-            u32 unknown_58;        // 0x058
+            u32 bloom_enabled;        // 0x058
             u8 opaque_5c_ac[0x50]; // 0x05c
         };
 
@@ -1264,7 +1267,7 @@ struct GRAPHICS_RENDER_TEXTURE {   // size 0x30
                 };
             }; // 0x20
 
-            u32 unknown_24; // 0x24
+            u32 sampler_extra; // 0x24: second word of the sampler tuple
         };
     }; // 0x0c
 
@@ -1278,7 +1281,7 @@ extern "C" {
     void NuTexAnimResetList(TEXTURE_ANIMATION *animation);
 
     extern NUFILE nudlist_field_958;
-    extern NUFILE nudlist_field_988;
+    extern NUFILE NuHtmlFile;
     extern GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferTexture;
     extern GRAPHICS_RENDER_TEXTURE *NuPostEffectBackBufferCopy;
 #ifdef __cplusplus
@@ -1496,6 +1499,20 @@ extern "C" {
     void NuMtlAnimateSetMask(i32 mask);
     void NuMtlAnimateSetSpeedScale(f32 scale);
     void SetSpotLightMode(void);
+    typedef struct screengrab_tile_params_s { // size 0x6
+        i8 channels[4];                       // 0x0
+        u16 width;                            // 0x4
+    } SCREENGRAB_TILE_PARAMS;
+
+    void NuRndrScreenGrabTileInit(SCREENGRAB_TILE_PARAMS *params, i32 tiles, f32 b, f32 a, f32 c);
+    void NuRndrScreenGrabTileDeInit(SCREENGRAB_TILE_PARAMS *params);
+    i32 NuRndrSetViewMtx(NUMTX *view_projection, NUMTX *viewport_clip, NUMTX *scissor_clip);
+    /* An empty hook the callers pass their arguments to; C callers see it unprototyped. */
+#ifdef __cplusplus
+    void PCSpecialEmptyHandler(...);
+#else
+    void PCSpecialEmptyHandler();
+#endif
 #ifdef __cplusplus
 }
 #endif

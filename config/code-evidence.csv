@@ -2196,7 +2196,7 @@ address,size,symbol,evidence,proposed,compiland,signals,port
 0x006d9490,26,_fun_006d9490,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006d94b0,59,_fun_006d94b0,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006d99e0,26,?fun_006d99e0@PC_INPUT_RUNTIME@@QAEHHE@Z,extent,,nu2api/PCInput.cpp,unreferenced,
-0x006d9dc0,42,?fun_006d9dc0@TEXT_INPUT_MANAGER@@QAEHHHPADHH@Z,extent,,nu2api/PCInput.cpp,unreferenced,
+0x006d9dc0,42,?fun_006d9dc0@PC_INPUT_RUNTIME@@QAEHHHPADHH@Z,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006da360,106,_fun_006da360,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006da460,232,_fun_006da460,extent,,nu2api/PCInput.cpp,unreferenced,
 0x006daec0,28,_fun_006daec0,copy,VuVecMake,,bytes equal ?VuVecMake@@YA?AUVuVec@@MMMM@Z,
