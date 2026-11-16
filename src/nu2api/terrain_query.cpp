@@ -743,8 +743,8 @@ extern "C" {
                             vertices[1].y = surface->vertices[2].y - surface->vertices[3].y;
                             vertices[1].z = surface->vertices[2].z - surface->vertices[3].z;
                             {
-                                NUVEC *cross_a = (reinterpret_cast<NUVEC *>(&vertices[0]));
-                                NUVEC *cross_b = (reinterpret_cast<NUVEC *>(&vertices[1]));
+                                NUVEC *cross_a = &vertices[0].xyz;
+                                NUVEC *cross_b = &vertices[1].xyz;
                                 NUVEC cross;
                                 cross.x = cross_b->z * cross_a->y - cross_b->y * cross_a->z;
                                 cross.y = cross_a->z * cross_b->x - cross_b->z * cross_a->x;
@@ -769,8 +769,8 @@ extern "C" {
                         vertices[1].y = surface->vertices[1].y - surface->vertices[0].y;
                         vertices[1].z = surface->vertices[1].z - surface->vertices[0].z;
                         {
-                            NUVEC *cross_a = (reinterpret_cast<NUVEC *>(&vertices[0]));
-                            NUVEC *cross_b = (reinterpret_cast<NUVEC *>(&vertices[1]));
+                            NUVEC *cross_a = &vertices[0].xyz;
+                            NUVEC *cross_b = &vertices[1].xyz;
                             NUVEC cross;
                             cross.x = cross_b->z * cross_a->y - cross_b->y * cross_a->z;
                             cross.y = cross_a->z * cross_b->x - cross_b->z * cross_a->x;
@@ -1756,8 +1756,8 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                                     vertices[1].y = surface->vertices[2].y - surface->vertices[3].y;
                                     vertices[1].z = surface->vertices[2].z - surface->vertices[3].z;
                                     {
-                                        NUVEC *cross_a = (reinterpret_cast<NUVEC *>(&vertices[0]));
-                                        NUVEC *cross_b = (reinterpret_cast<NUVEC *>(&vertices[1]));
+                                        NUVEC *cross_a = &vertices[0].xyz;
+                                        NUVEC *cross_b = &vertices[1].xyz;
                                         NUVEC cross;
                                         cross.x = cross_b->z * cross_a->y - cross_b->y * cross_a->z;
                                         cross.y = cross_a->z * cross_b->x - cross_b->z * cross_a->x;
@@ -1782,8 +1782,8 @@ i16 *NewScanHandelFull(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_ty
                                 vertices[1].y = surface->vertices[1].y - surface->vertices[0].y;
                                 vertices[1].z = surface->vertices[1].z - surface->vertices[0].z;
                                 {
-                                    NUVEC *cross_a = (reinterpret_cast<NUVEC *>(&vertices[0]));
-                                    NUVEC *cross_b = (reinterpret_cast<NUVEC *>(&vertices[1]));
+                                    NUVEC *cross_a = &vertices[0].xyz;
+                                    NUVEC *cross_b = &vertices[1].xyz;
                                     NUVEC cross;
                                     cross.x = cross_b->z * cross_a->y - cross_b->y * cross_a->z;
                                     cross.y = cross_a->z * cross_b->x - cross_b->z * cross_a->x;

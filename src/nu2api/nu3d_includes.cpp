@@ -15627,8 +15627,8 @@ extern "C" {
                                            &special->scene->objects[NUSPECIAL_LEGACY_OF(special)->instance->object_index]->bounds_max,
                                            matrix, 0.0f, 0);
         }
-        return NuCameraClipTestExtents((NUVEC *)&special->display_special->bounds_min, (NUVEC *)&special->display_special->bounds_max,
-                                       matrix, 0.0f, 0);
+        return NuCameraClipTestExtents(&special->display_special->bounds_min.xyz, &special->display_special->bounds_max.xyz, matrix, 0.0f,
+                                       0);
     }
 
     void *NuSpecialGetInstAnim(nuhspecial_s *special) {
@@ -16477,8 +16477,8 @@ extern "C" {
             *minimum = object->bounds_min;
             *maximum = object->bounds_max;
         } else if (special->display_special != NULL) {
-            *minimum = *(NUVEC *)&special->display_special->bounds_min;
-            *maximum = *(NUVEC *)&special->display_special->bounds_max;
+            *minimum = special->display_special->bounds_min.xyz;
+            *maximum = special->display_special->bounds_max.xyz;
         }
     }
 
@@ -16491,8 +16491,8 @@ extern "C" {
                 object->bounds_max = *maximum;
             }
         } else {
-            *(NUVEC *)&special->display_special->bounds_min = *minimum;
-            *(NUVEC *)&special->display_special->bounds_max = *maximum;
+            special->display_special->bounds_min.xyz = *minimum;
+            special->display_special->bounds_max.xyz = *maximum;
         }
     }
 
@@ -17983,7 +17983,7 @@ void PC_SPECIAL_SHADOW_LIGHT::ComputeShadowMatrix(NURNDRLIGHTRECORD *set) {
         basis_copy.m31 = basis.m31;
         basis_copy.m32 = basis.m32;
         basis_copy.m33 = basis.m33;
-        NuVecMtxTransformH((NUVEC *)&result, (NUVEC *)&corners[i], &basis_copy);
+        NuVecMtxTransformH((NUVEC *)&result, &corners[i].xyz, &basis_copy);
         projected[i].x = result.x;
         projected[i].y = result.y;
         projected[i].z = result.z;
