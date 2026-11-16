@@ -1086,7 +1086,7 @@ void fun_004daa50(void) {
 }
 
 i32 PodRace_InStartCountdown(WORLDINFO *world) {
-    POD_RACE_COUNTDOWN_READER *race = (POD_RACE_COUNTDOWN_READER *)ActivePodRace;
+    PODRACE_RESOURCE *race = ActivePodRace;
     return world->area != NULL && world->area == PODRACE_ADATA && race != NULL && race->lap_countdown > 0.0f;
 }
 
