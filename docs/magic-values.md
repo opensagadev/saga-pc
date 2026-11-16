@@ -200,6 +200,7 @@ same function initialises and steps (its values are indexes).
 | `Action_SetSide` sides, `PC_CONTROL_SCREEN.phase`, `SoundQueue` commands and stream states | `AISIDE_*` (aiscript_types.h), `PC_CONTROL_*` (apitext.h), `SOUNDQUEUE_CMD_*`, `SOUNDQUEUE_STATE_*` (nusound.h) | the side keywords; the fade of `PC_CONTROL_SCREEN::Update`; the senders of each command and the switch of `SoundQueue::Run` |
 | `PC_INPUT_CAPTURE.kind`, `GIZMOPICKUP.flags` 0x1, 0x10, 0x20, `Text3DEx` horizontal alignment | `PC_BINDING_*`, `GIZMOPICKUP_STATE_ACTIVE`/`_DRAWN`/`_DRAW_VISIBLE`, `TEXT_ALIGN_LEFT`/`_RIGHT` (text.h) | the capture writes binding kinds; the pickup bitfields and the draw and update loops; the x offset `Text3DEx` applies |
 | `collection_config_entry_s.type`, `cut_load_locator_s.flags` | `COLLECTION_UNLOCK_*` (collection.h), `CUTLOC_*` (gcutscn.h) | the collection config keywords; the pivot and the debris calls of the locator updates |
+| `AIPACKET.flags` runtime bits, `gameobject_s.portal_flags` | `AIPACKET_*`, `AIRANGE_*`, `APIOBJECT_BEEN_HIT` and friends (apiobject.h) | SetZeroAcceleration, SetMaxMovementRange (`AISysProcessCharacter` reads the range source), GameOpponentIsAThreat, BeenHit, GotGun, EngageObject predictive and `PortalGameObject`; the other bits from their setters and readers |
 
 ## Still literal (meaning not known yet)
 
@@ -214,14 +215,15 @@ same function initialises and steps (its values are indexes).
 | `gameobject_s.flags_1f8`, other bits | ~70 | 0x2, 0x40, 0x80, 0x100, 0x200, 0x800, 0x1000, 0x4000, 0x20000, 0x40000 | 0x40000 is tested by the pause menu, the network camera and the game update; the sibling build's `APIOBJECT_STATE_FLAG_IGNORE_DOORS` (transitional/unused.h) is unverified |
 | `gameobject_s.flags_e20`, other bits | ~130 | 0x20 (tested to skip an object almost everywhere, cleared by `UpdateGameObjects`; its setter is not in the source yet), 0x1000 (`GizPanel_MoveCode`), 0x1-0x8, 0x4000, 0x20000, 0x80000-0x80000000 | runtime state bits set in code; read each setter |
 | `gameobject_s.context_variant_flags`, other bits | ~60 | 0x8-0x1000 | the jump, punch and combo bits are named; left: 0x100 in the whip, zip-up and dying contexts (the grapple's is `APIOBJECT_GRAPPLE_CLIMB`; the teleport's 0x400 is `APIOBJECT_TELEPORT_REVERSE`), 0x20 (security door, zip-up), 0x1000 (jump, sets flags_e24 0x8000), 0x8 and 0x10 (the combo's second event frame) |
-| `gameobject_s.flags_ef0`, `flags_ef4`, `portal_flags`, other bits | 30-50 each | bit sets | runtime state bits set in code (`AttackOpponent` sets portal 0x20 and 0x400), no keywords; the sibling build's names are guesses |
+| `gameobject_s.flags_ef0`, `flags_ef4`, other bits | 30-90 each | bit sets | runtime state bits set in code, no keywords; the sibling build's names are guesses |
+| `gameobject_s.portal_flags`, other bits | ~10 | 0x20, 0x400, 0x1000000, 0x20000000 | 0x20 is set by every attack and engage action and 0x400 by AttackOpponent and PressActionButton (`LightSabreComboCode` tests it); 0x1000000 by `JediBStartPhase`, 0x20000000 by UseWeapon; no reader settles them |
 | `GIZMOBLOWUP.status_flags`, other bits | ~60 | 0x400, 0x1000, 0x10000-0x400000, 0x1000000, 0x2000000 | 0x400 and 0x1000 are hit types 10 and 12; 0x10000 makes `GizmoBlowupEarlyUpdate` recompute the mid point; 0x20000 is the decal after the blow up; 0x80000 waits for the animation's end frame |
 | `GIZMOBLOWUP.draw_flags`, other bits | ~5 | 0x2000, 0x4000, 0x10000, 0x10000000 | 0x10000 lets a hit of type 0 through `GizmoBlowUp_Hit`, 0x10000000 adds explosion flag 0x8, 0x2000 with SHARED_PLATFORM chooses the platform instance, 0x4000 is passed to `GameAntinode_RegisterAntiNodeUsingData` |
 | `gameobject_s.flags_e24`, other bits | ~2 | 0x70000 (a 3-bit vehicle hit flicker) | `SetFlicker` clears it, the vehicle movement reads it as a value; its setter is not in the source |
 | `bolt_s.flags`, other bits | ~40 | 0x200, 0x1000, 0x20000, 0x100000, 0x800000, 0x4000000, ... | 0x200 makes a one-point bolt (its collision radius is the full radius); 0x1000 orients the effect along the bolt |
 | cheat flags, other bits | ~6 | 0x2000, 0x40000, 0x100000, 0x200, 0x400000 | 0x200 and 0x40000 turn on the two pickup detectors (`detectors` bits 1 and 2), 0x100000 a deflect for active players in `Bolt_HitGameObjects`, 0x400000 a force speed; the cheat config is not among the retail files |
 | cheat indices (`Cheat_IsOn`) | 57 | 0..0x2c | come from the game's cheat config file, which is not among the retail files here |
-| `AIPACKET.flags`, other bits | ~100 | 0x1-0x80000000 | path following and movement state set in `AISysProcessCharacter`, `AIMoveToDestination`, `AISysCharacterMovement`; no keyword |
+| `AIPACKET.flags`, other bits | ~10 | 0x400, 0x10000, 0x800000 | 0x400 is set at the end of the circle movement and 0x800000 by the special move hooks when they choose the destination themselves (both cleared every update, no reader in the source); 0x10000 is set once the Initialise state ran and cleared by `InitPlayerAI`, no reader |
 | cut scene instance `flags_88`, other bits | ~6 | 0x40000, 0x3e000 (the 5-bit repeat_count) | 0x40000 makes the camera, character and rigid systems run with the frame counted from the end; its setter is not in the source |
 | `NuSound3PlayStereoV` tags 9, 11, 12 | ~10 | 9, 11, 12 | tag 9 carries a track's pitch at one caller but defaults to -1 and is cleared by tag 12 for one-shot streams; 11 sets `option11` |
 | `mode`, `state`, `type`, `kind`, `index` (locals and parameters) | 50-150 each | | many unrelated locals share these names; name per function where the callee says what it takes |
@@ -231,55 +233,54 @@ same function initialises and steps (its values are indexes).
 
 Counted like the magic-state and magic-flag classes of `oddscan.py --magic` (a
 comparison, assignment or `case` with a value other than 0, 1 and -1, or a
-one-bit mask), per field. On 16 November 2026 the named constants stood at 27196 sites and the literals at 6851 (79.9 % named); the 47 fields below hold 2002 of the literals, and 1613 more fields have fewer than 20 sites each (4849 in all;
+one-bit mask), per field. On 16 November 2026 the named constants stood at 27369 sites and the literals at 6770 (80.2 % named); the 46 fields below hold 1890 of the literals, and 1603 more fields have fewer than 20 sites each (4880 in all;
 `oddscan.py --magic` lists them by use).
 
 | Field | Sites | Values | Where | What is known |
 |---|---:|---|---|---|
 | `flags` | 145 | 0x0 0x1 0x2 0x3 0x4 0x8 0x10 0x17 ... | nu2api/nu3d_includes.cpp, gamelib/net/NetworkObjectManager.cpp | bare `flags` locals and parameters of many functions; `magicnames.py --locals flags` lists them per function (GizSpinner_*, ObjHitObj, NuAnimBuff*, UpdateGameMessages) |
 | `gameobject_s.flags_e20` | 135 | 0x1 0x2 0x4 0x8 0x20 0x1000 0x4000 0x20000 ... | legogame/move.c, legogame/creature.c | runtime bits; 0x20 is tested to skip an object almost everywhere and cleared by UpdateGameObjects, its setter is not in the source yet |
-| `*.flags` | 131 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | nu2api/nu3d_includes.cpp, gameapi/aisysall.c | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
+| `*.flags` | 132 | 0x1 0x2 0x3 0x4 0x8 0x10 0x11 0x20 ... | nu2api/nu3d_includes.cpp, gameapi/aisysall.c | `.flags` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
 | `mode` | 94 | -1 0 1 2 3 4 5 6 ... | nu2api/nucore_includes.c, nu2api/nu3d_platform.cpp | bare `mode` locals and parameters; NuQFntPushPrintMode/NuQFntSetCoordinateSystem modes, EdFileOpen and NuFileOpenDF open modes |
 | `gameobject_s.flags_ef0` | 93 | 0x4 0x40 0x80 0x200 0x400 0x1000 0x2000 0x4000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code, no keyword |
-| `AIPACKET.flags` | 78 | 0x8 0x20 0x40 0x400 0x800 0x1000 0x2000 0x4000 ... | gameapi/aisysall.c, legogame/gameai.c | path following and movement state (AISysProcessCharacter, AIMoveToDestination) |
 | `nurnd_vertex3d_s.colour` | 72 | 32768 842150450 4278190080 4278190335 4278255360 4294901760 4294967295 | legoapi/parts.c, gameapi/edbri.c | the editors' debug line colours: 0xffffffff, 0xff00ff00 and 0xff0000ff repeat, but the vertex colour's channel order (which of 0xff0000ff and 0xffff0000 is red) is not settled, so they stay hex |
 | `gameobject_s.flags_1f8` | 70 | 0x2 0x40 0x80 0x100 0x200 0x800 0x1000 0x4000 ... | gameapi/apiobject.c, legogame/creature.c | 0x40000 tested by the pause menu, network camera and game update |
-| `gameobject_s.portal_flags` | 56 | 0x1 0x4 0x20 0x400 0x800 0x1000 0x8000 0x10000 ... | legogame/gameaiscript.c, legogame/game_obj.c | runtime bits (AttackOpponent sets 0x20 and 0x400) |
-| `count` | 51 | -2 1 2 3 4 5 6 8 ... | legogame/hub.cpp, nu2api/shader_dictionary.cpp | no name table, keyword or label found yet |
-| `parameter` | 49 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, legoapi/lighting_unit.cpp | no name table, keyword or label found yet |
+| `count` | 51 | -2 1 2 3 4 5 6 8 ... | legogame/hub.cpp, nu2api/shader_dictionary.cpp | bare `count` locals and parameters of many functions: element counts, list sizes and retry limits, not states; a name would only restate the number |
+| `parameter` | 49 | 0 1 2 3 4 5 6 7 ... | nu2api/nu3d_includes.cpp, legoapi/lighting_unit.cpp | the `parameter` locals of `NuInitHardware` (the values of tags it skips) and the parameter index of the lighting unit's per-light switch, which no table or text names |
 | `pushblock_s.packed_state_flags` | 49 | 0x1 0x2 0x4 0x8 0x20 0x40 0x80 0x100 ... | legoapi/pushblocks.cpp | push and snap state in UpdatePushBlocks; 0x4000000, 0x8000000, 0x20000000, 0x40000000 are unlabelled editor booleans |
-| `result` | 44 | 1 2 3 4 5 6 7 8 ... | nu2api/nushadermanager.cpp, legogame/game_obj.c | no name table, keyword or label found yet |
+| `result` | 44 | 1 2 3 4 5 6 7 8 ... | nu2api/nushadermanager.cpp, legogame/game_obj.c | bare `result` locals: return codes of unrelated functions (shader manager, NuMath, the control setup); each needs its callee's meaning first |
 | `gameobject_s.flags_ef4` | 42 | 0x4 0x40 0x100 0x200 0x4000 0x8000 0x10000 0x100000 ... | legogame/creature.c, legogame/move.c | runtime bits set in code |
 | `GIZMOBLOWUP.status_flags` | 40 | 0x400 0x1000 0x10000 0x20000 0x40000 0x80000 0x100000 0x400000 ... | legoapi/gizmoblowups.c, legoapi/episodeV.c | 0x400 and 0x1000 are hit types 10 and 12; 0x80000 waits for the animation end frame |
-| `colours` | 40 | 8421504 2147483648 2147483776 2147532800 2155839359 2155872256 2155905152 2164260863 | legoapi/objectsall.c, legoapi/screen.cpp | no name table, keyword or label found yet |
-| `*.device_id` | 39 | 243 335 353 354 355 479 545 785 ... | nu2api/hardware_dispatch.cpp, nu2api/input_runtime.cpp | no name table, keyword or label found yet |
+| `colours` | 40 | 8421504 2147483648 2147483776 2147532800 2155839359 2155872256 2155905152 2164260863 | legoapi/objectsall.c, legoapi/screen.cpp | ARGB colour constants of the screen and object tables; they are colours, written in hex, not states |
+| `*.device_id` | 39 | 243 335 353 354 355 479 545 785 ... | nu2api/hardware_dispatch.cpp, nu2api/input_runtime.cpp | USB vendor and product ids of the pads `hardware_dispatch.cpp` recognises; numbers from the hardware, kept as data |
 | `selector` | 37 | 5 9 19 20 21 25 27 30 ... | nu2api/hardware_dispatch.cpp | the `NuInitHardware` tags whose values the function skips or keeps in unnamed `parameter_*` locals; the tags it uses are `NUHW_*` |
 | `type` | 36 | 0 1 2 3 4 5 6 7 ... | legoapi/audio.cpp, nu2api/bgproc.c | bare `type` locals and parameters; per function in `--locals type` (CutScriptNodeAlloc, TEXT_INPUT_MANAGER::ButtonName, ShaderCompilerParser::ParseDeclaration) |
 | `gameobject_s.context_variant_flags` | 34 | 0x8 0x10 0x20 0x100 0x800 0x1000 0x2000 0x8000 | legogame/move.c, legogame/zipup.c | per character context: 0x8000 the jump hold time ran out / the carry throw timer ended, 0x100 grapple, whip and zip-up, 0x80 and 0x1-0x10 sabre combo |
-| `value` | 34 | -32768 -32767 1 6 7 10 12 13 ... | nu2api/input_runtime.cpp, legogame/gizpanel.c | no name table, keyword or label found yet |
-| `axis` | 31 | 0 1 2 3 4 5 6 7 | editor/edlevelall.cpp, legoapi/utilities.c | no name table, keyword or label found yet |
-| `PC_SHADER_FILTER_DESC_VIEW.flags` | 30 | 0x1 0x2 0x8 0x20 0x80 0x100 0x400 0x4000 ... | nu2api/nushadermanager.cpp, nu2api/shader_compiler.cpp | no name table, keyword or label found yet |
-| `gameobject_s.flags_1fc_word` | 30 | 0x4 0x10 0x20 0x40 0x100 0x2000 0x10000 0x40000 | legogame/creature.c, legogame/game_obj.c | some of its sites already use APIOBJECT_FLAG_* (anonymous enum/#define) names |
-| `animpacket_s.flags` | 29 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | gameapi/apiobject.c, legogame/move.c | no name table, keyword or label found yet |
-| `gameobject_s.unknown_283` | 29 | 3 5 6 7 9 16 | legogame/move.c, legogame/creature.c | no name table, keyword or label found yet |
-| `JEDIB_STATE.phase` | 28 | 1 2 3 4 5 6 7 | legogame/episodeII.c | no name table, keyword or label found yet |
-| `*.type` | 27 | 0 1 2 3 4 12 13 14 ... | nu2api/nu3d_platform.cpp, gameapi/aisysall.c | some of its sites already use NUDLIST_* (anonymous enum/#define) names |
-| `source` | 27 | 1 2 128 129 130 133 159 188 ... | legoapi/text.c, nu2api/nucore_includes.c | no name table, keyword or label found yet |
-| `*.kind` | 25 | 0 1 2 3 6 12 13 14 ... | nu2api/nu3d_platform.cpp, legogame/move.c | some of its sites already use SHADER_NODE_* (anonymous enum/#define) names |
-| `index` | 25 | 0 1 2 3 4 8 15 32 ... | nu2api/nu3d_includes.cpp, nu2api/nurndr.c | some of its sites already use ACTION_STUN_* (anonymous enum/#define) names |
-| `models` | 25 | 12 13 89 101 102 103 104 105 ... | legogame/creature.c | no name table, keyword or label found yet |
-| `debris` | 24 | 34 38 44 45 52 69 73 74 ... | legogame/game_obj.c, legogame/game.cpp | no name table, keyword or label found yet |
-| `eduiitem_s.data` | 24 | 0 1 2 3 9999 99999 | gameapi/aisysall.c, gameapi/edpart.c | some of its sites already use DEBRIS_GENERATOR_* (anonymous enum/#define) names |
-| `gameobject_s.movement_mode` | 24 | 0 1 2 3 4 5 | legogame/move.c, legogame/creature.c | no name table, keyword or label found yet |
-| `panel_movement_s.flags` | 24 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | legogame/gizpanel.c, legogame/gameaiscript.c | no name table, keyword or label found yet |
-| `starfighter_s.model_id` | 24 | -307 -300 -299 -298 -297 54 | legogame/chris.cpp | no name table, keyword or label found yet |
-| `*.flags_low` | 22 | 0x1 0x80 0x100 0x200 0x400 0x4000 0x100000 | gameapi/apiobject.c, gameapi/aisysall.c | no name table, keyword or label found yet |
-| `APIOBJECT.flags_low` | 22 | 0x1 0x4 0x80 0x100 0x800 0x1000 0x40000 0x80000 | gameapi/aisysall.c, legogame/gameai.c | no name table, keyword or label found yet |
-| `green` | 22 | 31 63 143 191 223 255 65280 | legogame/panel.cpp, legogame/menu.cpp | no name table, keyword or label found yet |
-| `model` | 21 | -307 14 25 53 54 84 85 86 ... | legogame/chris.cpp, legogame/creature.c | no name table, keyword or label found yet |
-| `*.active` | 20 | 2 3 5 6 7 9 | nu2api/input_runtime.cpp, legoapi/debris_engine.c | some of its sites already use PART_IN_* (anonymous enum/#define) names |
-| `buildit_reset_s.availability_flags` | 20 | 0x1 0x2 0x4 0x80 0x200 | legoapi/gizbuildit.cpp | no name table, keyword or label found yet |
-| `buildit_reset_s.state_flags` | 20 | 0x2 0x4 0x8 0x10 0x40 0x80 0x100 0x200 ... | legoapi/gizbuildit.cpp | some of its sites already use GIZBUILDIT_STATE_* (anonymous enum/#define) names |
+| `value` | 34 | -32768 -32767 1 6 7 10 12 13 ... | nu2api/input_runtime.cpp, legogame/gizpanel.c | bare `value` locals: input axis limits (-32768, -32767), key codes and editor values; unrelated per function |
+| `axis` | 31 | 0 1 2 3 4 5 6 7 | editor/edlevelall.cpp, legoapi/utilities.c | the editor's axis selector (0-2 x, y, z and their combinations up to 7); the editor menus give no labels |
+| `PC_SHADER_FILTER_DESC_VIEW.flags` | 30 | 0x1 0x2 0x8 0x20 0x80 0x100 0x400 0x4000 ... | nu2api/nushadermanager.cpp, nu2api/shader_compiler.cpp | shader feature bits the shader manager derives from material attributes; no string or table names them |
+| `gameobject_s.flags_1fc_word` | 30 | 0x4 0x10 0x20 0x40 0x100 0x2000 0x10000 0x40000 | legogame/creature.c, legogame/game_obj.c | the named bits are `APIOBJECT_FLAG_*`; the rest (0x4, 0x10, 0x40, 0x100, 0x2000) are set by the player movement under many conditions and not settled |
+| `animpacket_s.flags` | 29 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | gameapi/apiobject.c, legogame/move.c | animation playback bits of `apiobject.c` (0x2 and 0x8 pick the end-of-animation test); their setters do not settle a meaning |
+| `gameobject_s.unknown_283` | 29 | 3 5 6 7 9 16 | legogame/move.c, legogame/creature.c | the character's medium or surface state (`surfaces.c` tests 1 and 9 with the water height); the field itself has no name yet |
+| `JEDIB_STATE.phase` | 28 | 1 2 3 4 5 6 7 | legogame/episodeII.c | the steps of the Jedi battle in `JediBStartPhase`; numbered steps without text |
+| `*.type` | 27 | 0 1 2 3 4 12 13 14 ... | nu2api/nu3d_platform.cpp, gameapi/aisysall.c | `.type` members whose record the scan cannot resolve (unions, views, casts); name them through their record |
+| `APIOBJECT.flags_low` | 25 | 0x1 0x4 0x80 0x100 0x800 0x1000 0x40000 0x80000 | gameapi/aisysall.c, legogame/gameai.c | AI object bits (0x1 is tested before an object is taken as an opponent, 0x80 marks players for PrefersPlayers, 0x80000 turns the path position checks off); their setters are spread over the AI update, none is a keyword |
+| `index` | 25 | 0 1 2 3 4 8 15 32 ... | nu2api/nu3d_includes.cpp, nu2api/nurndr.c | bare `index` locals; indexes into tables, not states |
+| `models` | 25 | 12 13 89 101 102 103 104 105 ... | legogame/creature.c | fixed character model indices the creature set-ups pass; the character list is loaded at run time, so the source has no table to name them from |
+| `source` | 25 | 2 128 129 130 133 159 188 227 ... | legoapi/text.c, nu2api/nucore_includes.c | UTF-8 bytes and Unicode code points of the text conversions; character codes, not magic values |
+| `debris` | 24 | 34 38 44 45 52 69 73 74 ... | legogame/game_obj.c, legogame/game.cpp | debris type indices of the loaded debris table; no table in the source names them |
+| `eduiitem_s.data` | 24 | 0 1 2 3 9999 99999 | gameapi/aisysall.c, gameapi/edpart.c | editor menu item values (9999 and 99999 are the editors' unset markers); the menus that carry labels are named |
+| `gameobject_s.movement_mode` | 24 | 0 1 2 3 4 5 | legogame/move.c, legogame/creature.c | the character movement mode of `move.c` and `creature.c` (0-5); not settled |
+| `numtlattrib_u.word` | 24 | 0x10 0x20 0x200 0x800 0x1000 0x8000 0x10000 0x40000 ... | nu2api/nu3d_platform.cpp, nu2api/nu3d_includes.cpp | material attribute bits; the material attribute layout is not named yet |
+| `panel_movement_s.flags` | 24 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x80 | legogame/gizpanel.c, legogame/gameaiscript.c | panel movement state bits of `gizpanel.c`; no keyword, not settled |
+| `starfighter_s.model_id` | 24 | -307 -300 -299 -298 -297 54 | legogame/chris.cpp | fixed model ids of the space level (negative ids pick built-in models); no table |
+| `*.flags_low` | 22 | 0x1 0x80 0x100 0x200 0x400 0x4000 0x100000 | gameapi/apiobject.c, gameapi/aisysall.c | `.flags_low` through views and casts; the `APIOBJECT` row is the same field |
+| `green` | 22 | 31 63 143 191 223 255 65280 | legogame/panel.cpp, legogame/menu.cpp | colour components (0-255); not magic values |
+| `*.kind` | 21 | 2 3 6 12 13 14 15 17 ... | nu2api/nu3d_platform.cpp, gameapi/edbits.c | `.kind` members whose record the scan cannot resolve |
+| `model` | 21 | -307 14 25 53 54 84 85 86 ... | legogame/chris.cpp, legogame/creature.c | fixed model ids, as `models` and `starfighter_s.model_id` |
+| `*.active` | 20 | 2 3 5 6 7 9 | nu2api/input_runtime.cpp, legoapi/debris_engine.c | `.active` counters of unrelated records (debris chunk controls, input commands); per record |
+| `buildit_reset_s.availability_flags` | 20 | 0x1 0x2 0x4 0x80 0x200 | legoapi/gizbuildit.cpp | build-it availability bits of `gizbuildit.cpp`; the editor reads them without labels |
+| `buildit_reset_s.state_flags` | 20 | 0x2 0x4 0x8 0x10 0x40 0x80 0x100 0x200 ... | legoapi/gizbuildit.cpp | the named bits are `GIZBUILDIT_STATE_*`; the rest are build progress bits without a keyword |
 | `gameobject_s.action_movement_state` | 20 | 2 3 4 5 7 | legogame/move.c, legoapi/jumping.c | jump and movement mode of the jump code (JumpCode states 2-9) |
-| `mask` | 20 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x100 ... | nu2api/pc_input.cpp, editor/edlevelall.cpp | no name table, keyword or label found yet |
-| `red` | 20 | 63 191 255 | legogame/menu.cpp, legogame/panel.cpp | no name table, keyword or label found yet |
+| `mask` | 20 | 0x1 0x2 0x4 0x8 0x10 0x20 0x40 0x100 ... | nu2api/pc_input.cpp, editor/edlevelall.cpp | bare `mask` locals: input and editor masks; the post effect masks are named |
+| `red` | 20 | 63 191 255 | legogame/menu.cpp, legogame/panel.cpp | colour components (0-255); not magic values |
