@@ -1250,8 +1250,8 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x0d0c
 
-    void *transform_target;                         // 0x0d14
-    u8 unknown_d18[4];                              // 0x0d18
+    void *glow_object;                              // 0x0d14
+    void *glow_candidate;                           // 0x0d18
     struct gameobject_s *airborne_collision_target; // 0x0d1c
     u32 unknown_d20;                                // 0x0d20
     f32 ground_contact_grace_timer;                 // 0x0d24
@@ -1278,22 +1278,16 @@ typedef struct gameobject_s { // size 0x10d8
     f32 directional_seek_multiplier;                // 0x0d78
     f32 terrain_origin_floor_offset;                // 0x0d7c
 
-    union { // size 0x18
-        f32 unknown_d80;
-        f32 force_glow_target;
-        f32 force_glow_step;
-        f32 unknown_d8c;
-        f32 force_hold_time;
-        f32 force_use_volume;
+    f32 glow_alpha;    // 0x0d80
+    f32 glow_target;   // 0x0d84
+    f32 glow_recovery; // 0x0d88
+    f32 glow_radius;   // 0x0d8c
+    f32 glow_hold;     // 0x0d90
 
-        struct {                          // size 0x18
-            f32 transform_alpha;          // 0x0d80
-            u8 transform_reserved_d84[8]; // 0x0d84
-            f32 transform_target_scale;   // 0x0d8c
-            u32 transform_reserved_d90;   // 0x0d90
-            f32 engine_level;             // 0x0d94
-        };
-    }; // 0x0d80
+    union { // size 0x4
+        f32 engine_level;
+        f32 force_use_volume;
+    }; // 0x0d94
 
     f32 turn_braking;                // 0x0d98
     f32 fall_recovery_timer;         // 0x0d9c
@@ -1332,7 +1326,7 @@ typedef struct gameobject_s { // size 0x10d8
     i16 movement_lean_angle;         // 0x0e18
     i16 secondary_lean_angle;        // 0x0e1a
     i16 tertiary_lean_angle;         // 0x0e1c
-    i16 unknown_e1e;                 // 0x0e1e
+    i16 glow_model;                  // 0x0e1e
 
     union { // size 0x4
         u32 flags_e20;
@@ -1363,19 +1357,20 @@ typedef struct gameobject_s { // size 0x10d8
         };
     }; // 0x0e24
 
-    u8 effect_noise[4];    // 0x0e28
-    u8 glow_kind;          // 0x0e2c
-    u8 unknown_0e2d[2];    // 0x0e2d
-    u8 block_latch;        // 0x0e2f
-    u8 quick_shoot_flags;  // 0x0e30
-    u8 unknown_0e31;       // 0x0e31
-    u8 jump_variant_state; // 0x0e32
-    u8 unknown_e33;        // 0x0e33
-    u8 sabre_flags;        // 0x0e34
-    u8 sabre_damage;       // 0x0e35
-    u8 unknown_0e36;       // 0x0e36
-    u8 wall_run_state;     // 0x0e37
-    u8 shield_hitpoints;   // 0x0e38
+    u8 effect_noise[4];     // 0x0e28
+    u8 glow_kind;           // 0x0e2c
+    u8 glow_candidate_kind; // 0x0e2d
+    u8 unknown_0e2e;        // 0x0e2e
+    u8 block_latch;         // 0x0e2f
+    u8 quick_shoot_flags;   // 0x0e30
+    u8 unknown_0e31;        // 0x0e31
+    u8 jump_variant_state;  // 0x0e32
+    u8 unknown_e33;         // 0x0e33
+    u8 sabre_flags;         // 0x0e34
+    u8 sabre_damage;        // 0x0e35
+    u8 unknown_0e36;        // 0x0e36
+    u8 wall_run_state;      // 0x0e37
+    u8 shield_hitpoints;    // 0x0e38
 
     union { // size 0x1
         u8 saved_hitpoints;

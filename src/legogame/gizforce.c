@@ -608,8 +608,8 @@ i32 GizForce_UpdateHint(HINT *hint) {
     }
     for (index = 0; index < 2; ++index) {
         GAMEOBJECT *object = Player[index];
-        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->transform_alpha > 0.0f &&
-            object->transform_target != NULL && object->glow_kind == 0) {
+        if (object != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->glow_alpha > 0.0f &&
+            object->glow_object != NULL && object->glow_kind == 0) {
             return 1;
         }
     }

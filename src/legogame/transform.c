@@ -122,10 +122,10 @@ void Transform_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         if (nearest != NULL) {
             object->glow_kind = 4;
-            object->transform_target = nearest;
+            object->glow_object = nearest;
             object->glow_position = nearest->mid_position;
-            object->transform_target_scale = nearest->target_scale;
-            object->transform_alpha = 1.0f;
+            object->glow_radius = nearest->target_scale;
+            object->glow_alpha = 1.0f;
             if (object->pad->buttons_held & GAMEPAD_SPECIAL) {
                 object->context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
                 object->context_timer = 0.0f;
@@ -192,8 +192,8 @@ GAMEOBJECT *Transform_TargettedByObj(void *target) {
     i32 index;
     for (index = 0; index < count; ++index, ++object) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) && (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) && object->dead == 0 &&
-            (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 && object->transform_alpha > 0.0f &&
-            object->transform_target_scale > 0.0f && object->transform_target == target) {
+            (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 && object->glow_alpha > 0.0f &&
+            object->glow_radius > 0.0f && object->glow_object == target) {
             return object;
         }
     }

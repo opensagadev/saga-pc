@@ -142,12 +142,6 @@ typedef struct pod_camera_reader_s {
 
 extern i32 LandspeederExhaustJoints[3];
 
-typedef struct force_glow_reader_s {
-    u8 unknown_0000[0xd14];
-    GAMEOBJECT *force_glow_object;
-    GAMEOBJECT *force_glow_candidate;
-} FORCE_GLOW_READER;
-
 void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
@@ -276,11 +270,6 @@ typedef struct beast_ground_contact_view_s {
     f32 ground_contact_grace_timer;
 } BEAST_GROUND_CONTACT_VIEW;
 
-typedef struct beast_poo_volume_view_s {
-    u8 unknown_0[0xd94];
-    f32 force_use_volume;
-} BEAST_POO_VOLUME_VIEW;
-
 typedef struct punch_style_view_s {
     u8 unknown_0[0xe41];
     u8 combo_style;
@@ -325,36 +314,6 @@ typedef struct FORCE_ATTENTION {
     u8 unknown_c60[4];
     f32 attention_timer;
 } FORCE_ATTENTION;
-
-typedef struct FORCE_GLOW {
-    u8 unknown_000[0xd18];
-    void *candidate;
-    u8 unknown_d1c[0x70];
-    f32 horizontal_range;
-    u8 unknown_d90[0x9d];
-    u8 candidate_kind;
-} FORCE_GLOW;
-
-typedef struct GLOW_OBJECT {
-    u8 unused_0000[0x6c4];
-    u8 player_packet[0x64];
-    u8 unused_0728[0x540];
-    NUVEC position;
-    u8 unused_0c74[0xa0];
-    void *object;
-    void *candidate;
-    u8 unused_0d1c[0x64];
-    f32 alpha;
-    f32 target;
-    f32 recovery;
-    f32 radius;
-    f32 hold;
-    u8 unused_0d94[0x8a];
-    i16 model;
-    u8 unused_0e20[0xc];
-    u8 kind;
-    u8 candidate_kind;
-} GLOW_OBJECT;
 
 typedef struct GLOW_ANIMATION_DATA {
     u8 unused_0000[0x4];
@@ -4723,32 +4682,30 @@ static void SwipeCode(GAMEOBJECT *object, i32 pressed, i32 held) {
 
 void EndForce(GAMEOBJECT *object, i32 mode) {
     if (object != NULL && !(object->flags_1f8 & 0x40000)) {
-        FORCE_GLOW_READER *glow = (FORCE_GLOW_READER *)object;
         object->flags_e20 &= ~0x20000;
-        glow->force_glow_object = NULL;
-        glow->force_glow_candidate = NULL;
+        object->glow_object = NULL;
+        object->glow_candidate = NULL;
         object->character_context = CHARACTER_CONTEXT_NONE;
     }
     GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
 }
 
 static void HighlightForceObject(GAMEOBJECT *object, GIZFORCE *force, GAMEANIMOBJ *animation) {
-    FORCE_GLOW *glow = (FORCE_GLOW *)object;
     NUVEC *position;
     object->flags_e20 |= 0x20000;
     if (animation != NULL) {
-        glow->candidate = animation;
-        glow->candidate_kind = 1;
+        object->glow_candidate = animation;
+        object->glow_candidate_kind = 1;
         if (force != NULL) {
-            glow->horizontal_range = force->horizontal_range;
+            object->glow_radius = force->horizontal_range;
         } else {
-            glow->horizontal_range = 1.0f;
+            object->glow_radius = 1.0f;
         }
         position = NuSpecialGetDrawPos(&animation->special);
         SetHeadTarget(object, position, 1, 2.0f, 5.0f, 10.0f);
     } else {
-        glow->candidate = force;
-        glow->candidate_kind = 0;
+        object->glow_candidate = force;
+        object->glow_candidate_kind = 0;
         if (force != NULL) {
             SetHeadTarget(object, &force->file_position, 1, 2.0f, 5.0f, 10.0f);
         }
@@ -4990,8 +4947,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
         SetObjAsHeadTarget(object, target, 2, 1.0f, 0.0f, 0.0f);
         SetObjAsHeadTarget(target, object, 2, 1.0f, 0.0f, 0.0f);
         if ((object->flags_e20 & APIOBJECT_FORCE_HIGHLIGHT_ONLY) != 0) {
-            ((FORCE_GLOW *)object)->candidate = target;
-            ((FORCE_GLOW *)object)->candidate_kind = 2;
+            object->glow_candidate = target;
+            object->glow_candidate_kind = 2;
             if ((object->flags_e20 & APIOBJECT_FORCE_LIGHTNING) != 0) {
                 DrawLightningBolts(object, target, 0);
             }
@@ -5003,8 +4960,8 @@ static void ForcePushCode(GAMEOBJECT *object, i32 held) {
             if ((object->flags_e20 & APIOBJECT_FORCE_LIGHTNING) != 0) {
                 DrawLightningBolts(object, target, 1);
             }
-            ((FORCE_GLOW *)object)->candidate = target;
-            ((FORCE_GLOW *)object)->candidate_kind = 2;
+            object->glow_candidate = target;
+            object->glow_candidate_kind = 2;
             if (target->character_context != CHARACTER_CONTEXT_FORCE_PUSHED ||
                 (target->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 ||
                 target->character_model->model_data_b[target->unknown_7aa] == NULL ||
@@ -5633,7 +5590,6 @@ i32 ForcePushed_SuperPush_Occurring(GAMEOBJECT *first, GAMEOBJECT *second) {
 
 static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
     f32 distance = 1.0e9f;
-    FORCE_GLOW *glow = (FORCE_GLOW *)object;
     PART *part;
     if (object->character_context == CHARACTER_CONTEXT_FORCE_THROW) {
         f32 previous;
@@ -5671,12 +5627,12 @@ static void ForceThrowCode(GAMEOBJECT *object, i32 pressed) {
                     if (force->anim_set != NULL && force->anim_set->object_count == 1) {
                         part = Part_FindFromHSpecial(&force->anim_set->objects->special);
                         if (part != NULL) {
-                            glow->candidate = part;
-                            glow->candidate_kind = 3;
+                            object->glow_candidate = part;
+                            object->glow_candidate_kind = 3;
                             SetHeadTarget(object, &part->position, 2, 1.0f, 0.0f, 0.0f);
                             object->force_heading = NuAtan2D(part->position.x - object->position.x, part->position.z - object->position.z);
-                            ((GLOW_OBJECT *)object)->object = glow->candidate;
-                            ((GLOW_OBJECT *)object)->kind = glow->candidate_kind;
+                            object->glow_object = object->glow_candidate;
+                            object->glow_kind = object->glow_candidate_kind;
                         }
                     }
                 } else {
@@ -5929,133 +5885,132 @@ void DrawForceGlowSprite(NUVEC *position, f32 radius, i32 model, f32 alpha, GAME
 }
 
 static void ForceGlowCode(GAMEOBJECT *object, i32 model) {
-    GLOW_OBJECT *glow = (GLOW_OBJECT *)object;
     f32 target;
     f32 previous;
     if (object->dead != 0 || FadeSys.fade != 0.0f) {
-        glow->alpha = 0.0f;
-        glow->target = 0.0f;
-        glow->object = NULL;
-        glow->hold = 0.0f;
-        glow->candidate = NULL;
-        glow->recovery = 0.2f;
+        object->glow_alpha = 0.0f;
+        object->glow_target = 0.0f;
+        object->glow_object = NULL;
+        object->glow_hold = 0.0f;
+        object->glow_candidate = NULL;
+        object->glow_recovery = 0.2f;
         return;
     }
-    if (glow->recovery > 0.0f) {
-        glow->recovery -= FRAMETIME;
+    if (object->glow_recovery > 0.0f) {
+        object->glow_recovery -= FRAMETIME;
         return;
     }
-    if (glow->alpha == 0.0f) {
-        glow->object = glow->candidate;
-        glow->kind = glow->candidate_kind;
+    if (object->glow_alpha == 0.0f) {
+        object->glow_object = object->glow_candidate;
+        object->glow_kind = object->glow_candidate_kind;
     }
-    if (glow->object == NULL || glow->object != glow->candidate) {
-        if (glow->alpha == FORCEGLOWTIME && glow->hold > 0.0f) {
-            glow->hold -= FRAMETIME;
+    if (object->glow_object == NULL || object->glow_object != object->glow_candidate) {
+        if (object->glow_alpha == FORCEGLOWTIME && object->glow_hold > 0.0f) {
+            object->glow_hold -= FRAMETIME;
             target = FORCEGLOWTIME;
         } else {
             target = 0.0f;
         }
-    } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && glow->kind == 0 &&
+    } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->glow_kind == 0 &&
                object->character_context != CHARACTER_CONTEXT_FORCE && AnimPlaying(&object->anim_packet, ACTION_FORCE, 1, 1) == NULL &&
                AnimPlaying(&object->anim_packet, ACTION_FORCE2, 1, 1) == NULL) {
         target = 0.0f;
     } else {
         target = FORCEGLOWTIME;
     }
-    if (glow->alpha == glow->target) {
-        glow->target = target;
+    if (object->glow_alpha == object->glow_target) {
+        object->glow_target = target;
     } else {
-        previous = glow->alpha;
-        if (glow->target < glow->alpha) {
-            glow->alpha = (f32)((f64)glow->alpha - (f64)FRAMETIME * 0.5);
-            if (glow->alpha < 0.0f) {
-                glow->alpha = 0.0f;
+        previous = object->glow_alpha;
+        if (object->glow_target < object->glow_alpha) {
+            object->glow_alpha = (f32)((f64)object->glow_alpha - (f64)FRAMETIME * 0.5);
+            if (object->glow_alpha < 0.0f) {
+                object->glow_alpha = 0.0f;
             }
         } else {
-            glow->alpha = glow->alpha + FRAMETIME;
-            if (glow->alpha > glow->target) {
-                glow->alpha = glow->target;
+            object->glow_alpha = object->glow_alpha + FRAMETIME;
+            if (object->glow_alpha > object->glow_target) {
+                object->glow_alpha = object->glow_target;
             }
         }
-        if (glow->alpha == FORCEGLOWTIME && previous != FORCEGLOWTIME) {
-            glow->hold = PCForceGlowHoldDuration;
+        if (object->glow_alpha == FORCEGLOWTIME && previous != FORCEGLOWTIME) {
+            object->glow_hold = PCForceGlowHoldDuration;
         }
     }
-    if (glow->alpha > 0.0f && glow->object == NULL) {
-        ResetForceGlow(glow->player_packet);
+    if (object->glow_alpha > 0.0f && object->glow_object == NULL) {
+        ResetForceGlow(object->ai_player_packet);
     }
-    if (!(glow->alpha > 0.0f) || glow->object == NULL) {
+    if (!(object->glow_alpha > 0.0f) || object->glow_object == NULL) {
         return;
     }
-    switch (glow->kind) {
+    switch (object->glow_kind) {
         case 0: {
-            GIZFORCE *force = glow->object;
+            GIZFORCE *force = object->glow_object;
             if ((force->runtime_flags & GIZFORCE_ENABLED) == 0) {
-                ResetForceGlow(glow->player_packet);
+                ResetForceGlow(object->ai_player_packet);
                 return;
             }
-            glow->radius = force->radius;
-            glow->radius *= force->horizontal_range;
-            glow->model = (i16)model;
-            glow->position = force->position;
+            object->glow_radius = force->radius;
+            object->glow_radius *= force->horizontal_range;
+            object->glow_model = (i16)model;
+            object->glow_position = force->position;
             force->runtime_flags |= 0x20000;
             break;
         }
         case 1: {
-            GAMEANIMOBJ *animation = glow->object;
-            f32 scale = glow->radius;
+            GAMEANIMOBJ *animation = object->glow_object;
+            f32 scale = object->glow_radius;
             if (!NuSpecialExistsFn(&animation->special)) {
-                ResetForceGlow(glow->player_packet);
+                ResetForceGlow(object->ai_player_packet);
                 return;
             }
-            NuSpecialGetRadius(&animation->special, &glow->position, &glow->radius);
-            NuVecMtxTransformVU0(&glow->position, &glow->position, NuSpecialGetDrawMtx(&animation->special));
-            glow->model = (i16)model;
-            glow->radius *= scale;
+            NuSpecialGetRadius(&animation->special, &object->glow_position, &object->glow_radius);
+            NuVecMtxTransformVU0(&object->glow_position, &object->glow_position, NuSpecialGetDrawMtx(&animation->special));
+            object->glow_model = (i16)model;
+            object->glow_radius *= scale;
             if (animation->object_data != NULL) {
                 ((GLOW_ANIMATION_DATA *)animation->object_data)->flags |= 1;
             }
             break;
         }
         case 2: {
-            GAMEOBJECT *target_object = glow->object;
+            GAMEOBJECT *target_object = object->glow_object;
             f32 radius;
             if ((target_object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0 &&
                 (target_object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0) {
-                ResetForceGlow(glow->player_packet);
+                ResetForceGlow(object->ai_player_packet);
                 return;
             }
             radius = target_object->bounds_radius > target_object->bounds_half_height ? target_object->bounds_radius
                                                                                       : target_object->bounds_half_height;
-            glow->model = (i16)model;
-            glow->radius = (f32)((f64)radius * 1.75);
-            glow->position.x = target_object->collision_position.x;
-            glow->position.y =
+            object->glow_model = (i16)model;
+            object->glow_radius = (f32)((f64)radius * 1.75);
+            object->glow_position.x = target_object->collision_position.x;
+            object->glow_position.y =
                 (f32)(target_object->origin_scale * target_object->character_bottom + target_object->position.y +
                       ((f64)target_object->character_top - target_object->character_bottom) * 0.5 * target_object->origin_scale);
-            glow->position.z = target_object->collision_position.z;
+            object->glow_position.z = target_object->collision_position.z;
             break;
         }
         case 3: {
-            PART *part = glow->object;
+            PART *part = object->glow_object;
             if ((part->active & PART_IN_USE) == 0) {
-                ResetForceGlow(glow->player_packet);
+                ResetForceGlow(object->ai_player_packet);
                 return;
             }
             if (NuSpecialExistsFn(&part->special)) {
                 NUVEC center;
-                NuSpecialGetRadius(&part->special, &center, &glow->radius);
-                glow->radius += glow->radius;
+                NuSpecialGetRadius(&part->special, &center, &object->glow_radius);
+                object->glow_radius += object->glow_radius;
             } else {
-                glow->radius = part->unknown_e0 + part->unknown_e0;
+                object->glow_radius = part->unknown_e0 + part->unknown_e0;
             }
-            glow->model = (i16)model;
-            glow->position = part->position;
+            object->glow_model = (i16)model;
+            object->glow_position = part->position;
             break;
         }
     }
-    glow->radius *= PCForceGlowRadiusMultiplier;
+    object->glow_radius *= PCForceGlowRadiusMultiplier;
 }
 
 static void MoveAnim_Manage(GAMEOBJECT *object, f32 speed, i32 allow_tiptoe, i32 weapon_variant) {
@@ -7023,7 +6978,6 @@ static void BeastStartFallCode(GAMEOBJECT *object) {
 void PooCode(GAMEOBJECT *object) {
     NUVEC position;
     i32 locator;
-    BEAST_POO_VOLUME_VIEW *volume_view = (BEAST_POO_VOLUME_VIEW *)object;
     if (WORLD->level_objects[24].active == 0) {
         return;
     }
@@ -7101,13 +7055,13 @@ void PooCode(GAMEOBJECT *object) {
         object->context_duration = 0.6f;
     }
     if ((object->flags_ef4 & APIOBJECT_AI_EVERY_FRAME) == 0 || (object->unknown_280 != 0 && object->unknown_280 != 1)) {
-        volume_view->force_use_volume = 0.0f;
+        object->force_use_volume = 0.0f;
     } else {
         PART *part = FindPart(NULL, -1, object);
-        volume_view->force_use_volume = SeekLinearF(volume_view->force_use_volume, part != NULL ? 1.0f : 0.0f, FRAMETIME);
-        if (volume_view->force_use_volume > 0.0f) {
+        object->force_use_volume = SeekLinearF(object->force_use_volume, part != NULL ? 1.0f : 0.0f, FRAMETIME);
+        if (object->force_use_volume > 0.0f) {
             PooPosition[object->player_index] = position;
-            PlaySfxAndSetVolume("FliesLp", &PooPosition[object->player_index], volume_view->force_use_volume);
+            PlaySfxAndSetVolume("FliesLp", &PooPosition[object->player_index], object->force_use_volume);
         }
     }
 }
@@ -11060,7 +11014,6 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
     PART *assist = NULL;
     i32 waiting = objInNetWaitContext(object, 0x1d);
     PART *part;
-    FORCE_GLOW *glow = (FORCE_GLOW *)object;
     if (object->character_context == CHARACTER_CONTEXT_FORCE_DEFLECT) {
         object->flags_e20 |= 0x20000;
         object->context_timer += FRAMETIME;
@@ -11085,8 +11038,8 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
             }
             NuVecScale(&velocity, &direction, ForceDeflectSpeed);
             SeekVec(&object->force_part->velocity, &object->force_part->velocity, &velocity, ForceDeflectSeekRate);
-            glow->candidate = object->force_part;
-            glow->candidate_kind = 3;
+            object->glow_candidate = object->force_part;
+            object->glow_candidate_kind = 3;
             SetHeadTarget(object, &object->force_part->position, 2, 1.0f, 0.0f, 0.0f);
             part = object->force_part;
             if (part->move_fn == BobaRocket_Move) {
@@ -11141,8 +11094,8 @@ static void ForceDeflectCode(GAMEOBJECT *object, i32 pressed, i32 held) {
         return;
     }
     object->flags_e20 |= 0x20000;
-    glow->candidate = part;
-    glow->candidate_kind = 3;
+    object->glow_candidate = part;
+    object->glow_candidate_kind = 3;
     SetHeadTarget(object, &part->position, 2, 1.0f, 0.0f, 0.0f);
     if (pressed == 0 && assist == NULL && !waiting) {
         return;
@@ -11732,7 +11685,6 @@ void Move_JEDI(GAMEOBJECT *object) {
     u32 jump_animations;
     f32 force_volume;
     i32 effect;
-    BEAST_POO_VOLUME_VIEW *volume = (BEAST_POO_VOLUME_VIEW *)object;
     if (object->id == (u16)id_BODYGUARD) {
         KeepWeaponOut(object);
     }
@@ -11836,9 +11788,9 @@ void Move_JEDI(GAMEOBJECT *object) {
                            object->character_context == CHARACTER_CONTEXT_FORCE
                        ? 1.0f
                        : 0.0f;
-    volume->force_use_volume = SeekLinearF(volume->force_use_volume, force_volume, FRAMETIME);
-    if (volume->force_use_volume > 0.0f) {
-        PlaySfxAndSetVolume("JForceUse", &object->collision_position, volume->force_use_volume);
+    object->force_use_volume = SeekLinearF(object->force_use_volume, force_volume, FRAMETIME);
+    if (object->force_use_volume > 0.0f) {
+        PlaySfxAndSetVolume("JForceUse", &object->collision_position, object->force_use_volume);
     }
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && force_volume == 1.0f && !Cheat_PowerUpActive(object->player_index)) {
         /* Computes and pushes hostility_group*.3f before qrand; qrand reads no arguments. */
@@ -13122,7 +13074,7 @@ void MovePlayer_NETWORK(GAMEOBJECT *object) {
     }
     Tag_Check(object);
     ForcePushCode(object, 0);
-    object->transform_target_scale = 1.0f;
+    object->glow_radius = 1.0f;
     ForceGlowCode(object, glow_model);
     if ((object->flags_e20 & 0x20) == 0) {
         TorpedoCode(object, 0, 0.0f);

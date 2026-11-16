@@ -4694,10 +4694,10 @@ void DrawParaphernalia(GAMEOBJECT *object) {
             }
             DrawForceGlowSprite(&glow_position, glow_radius, 0xdf, glow_alpha, object);
         }
-    } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f && WORLD->level_objects[object->unknown_e1e].active != 0 &&
+    } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f && WORLD->level_objects[object->glow_model].active != 0 &&
                (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS) == 0) {
         held_glow_alpha = (extra->force_alpha / FORCEGLOWTIME);
-        DrawForceGlowSprite(&extra->force_position, extra->force_radius, object->unknown_e1e, held_glow_alpha, object);
+        DrawForceGlowSprite(&extra->force_position, extra->force_radius, object->glow_model, held_glow_alpha, object);
     }
     if (Cheat_IsOn(2)) {
         DrawObjectOnCharacter(WORLD, object, 0xe7, NULL, object->character_data->game_character->head_locator, -1, object->locator_matrices,
@@ -4839,11 +4839,10 @@ void DrawGameObjectsDraw(i32 pass) {
         if (drawn != 0) {
             DrawParaphernalia(object);
         } else if (((object->flags_e20 & APIOBJECT_FORCE_HIGHLIGHT_ONLY) != 0 || object->character_context == CHARACTER_CONTEXT_FORCE) &&
-                   object->transform_alpha > 0.0f && object->transform_target_scale > 0.0f &&
-                   WORLD->level_objects[object->unknown_e1e].active != 0 &&
+                   object->glow_alpha > 0.0f && object->glow_radius > 0.0f && WORLD->level_objects[object->glow_model].active != 0 &&
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS) == 0) {
-            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA *)object)->force_position, object->transform_target_scale, object->unknown_e1e,
-                                object->transform_alpha / FORCEGLOWTIME, object);
+            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA *)object)->force_position, object->glow_radius, object->glow_model,
+                                object->glow_alpha / FORCEGLOWTIME, object);
         }
         if (object->snake_body != NULL) {
             DrawSnakeBody(object);
