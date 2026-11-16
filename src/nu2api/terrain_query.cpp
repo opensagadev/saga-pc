@@ -2266,14 +2266,8 @@ extern "C" void FullReflectTest(NUVEC *normal, NUVEC *movement, NUVEC *result) {
 
 extern "C" void CubeImpact(NUMTX *current, NUMTX *previous, NUVEC *normal, f32 scale, NUVEC *impact) {
     NUVEC corners[8] = {
-        {-1.0f, -1.0f, -1.0f},
-        {1.0f,  -1.0f, -1.0f},
-        {1.0f,  1.0f,  -1.0f},
-        {-1.0f, 1.0f,  -1.0f},
-        {-1.0f, -1.0f, 1.0f },
-        {1.0f,  -1.0f, 1.0f },
-        {1.0f,  1.0f,  1.0f },
-        {-1.0f, 1.0f,  1.0f },
+        {-1.0f, -1.0f, -1.0f}, {1.0f, -1.0f, -1.0f}, {1.0f, 1.0f, -1.0f}, {-1.0f, 1.0f, -1.0f},
+        {-1.0f, -1.0f, 1.0f},  {1.0f, -1.0f, 1.0f},  {1.0f, 1.0f, 1.0f},  {-1.0f, 1.0f, 1.0f},
     };
     NUVEC4 transformed[8];
     NUVEC4 old_position;

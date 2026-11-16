@@ -791,30 +791,28 @@ static void TextureAnimationExternalReferencePrivate(NUFPAR *parser) {
 }
 
 u16 script_mask = 0xffff;
-static NUFPCOMJMP TextureAnimationCommandsPrivate[] = {
-    {"scriptmask", TextureAnimationScriptMaskPrivate        },
-    {"tex",        TextureAnimationTexPrivate               },
-    {"texr",       TextureAnimationTexRandomPrivate         },
-    {"texadj",     TextureAnimationTexAdjustPrivate         },
-    {"texadjr",    TextureAnimationTexAdjustRandomPrivate   },
-    {"wait",       TextureAnimationWaitPrivate              },
-    {"rate",       TextureAnimationRatePrivate              },
-    {"on",         TextureAnimationOnPrivate                },
-    {"off",        TextureAnimationOffPrivate               },
-    {"label",      TextureAnimationLabelPrivate             },
-    {"goto",       TextureAnimationGotoPrivate              },
-    {"btex",       TextureAnimationBranchPrivate            },
-    {"gosub",      TextureAnimationGosubPrivate             },
-    {"ret",        TextureAnimationReturnPrivate            },
-    {"repeat",     TextureAnimationRepeatPrivate            },
-    {"repend",     TextureAnimationRepeatEndPrivate         },
-    {"untiltex",   TextureAnimationUntilPrivate             },
-    {"end",        TextureAnimationEndPrivate               },
-    {"scriptname", TextureAnimationScriptNamePrivate        },
-    {"xdef",       TextureAnimationExternalDefinitionPrivate},
-    {"xref",       TextureAnimationExternalReferencePrivate },
-    {NULL,         NULL                                     }
-};
+static NUFPCOMJMP TextureAnimationCommandsPrivate[] = {{"scriptmask", TextureAnimationScriptMaskPrivate},
+                                                       {"tex", TextureAnimationTexPrivate},
+                                                       {"texr", TextureAnimationTexRandomPrivate},
+                                                       {"texadj", TextureAnimationTexAdjustPrivate},
+                                                       {"texadjr", TextureAnimationTexAdjustRandomPrivate},
+                                                       {"wait", TextureAnimationWaitPrivate},
+                                                       {"rate", TextureAnimationRatePrivate},
+                                                       {"on", TextureAnimationOnPrivate},
+                                                       {"off", TextureAnimationOffPrivate},
+                                                       {"label", TextureAnimationLabelPrivate},
+                                                       {"goto", TextureAnimationGotoPrivate},
+                                                       {"btex", TextureAnimationBranchPrivate},
+                                                       {"gosub", TextureAnimationGosubPrivate},
+                                                       {"ret", TextureAnimationReturnPrivate},
+                                                       {"repeat", TextureAnimationRepeatPrivate},
+                                                       {"repend", TextureAnimationRepeatEndPrivate},
+                                                       {"untiltex", TextureAnimationUntilPrivate},
+                                                       {"end", TextureAnimationEndPrivate},
+                                                       {"scriptname", TextureAnimationScriptNamePrivate},
+                                                       {"xdef", TextureAnimationExternalDefinitionPrivate},
+                                                       {"xref", TextureAnimationExternalReferencePrivate},
+                                                       {NULL, NULL}};
 i32 nutexanim_usepakfile = 1;
 
 void NuTexAnimProgInit(TEXTURE_ANIM_PROGRAM *program) {

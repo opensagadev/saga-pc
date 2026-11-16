@@ -63,7 +63,4 @@ static void CC_variant(NUFPAR *parser) {
     }
 }
 
-NUFPCOMJMP ConfigChar_GameKeywords[2] = {
-    {"variant", CC_variant},
-    {NULL,      NULL      }
-};
+NUFPCOMJMP ConfigChar_GameKeywords[2] = {{"variant", CC_variant}, {NULL, NULL}};

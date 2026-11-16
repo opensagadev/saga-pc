@@ -337,11 +337,7 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
 }
 
 static f32 jedib_create_step_Normal = 2.0f;
-NUVEC jedib_offsets[3] = {
-    {0.1f,  -0.1f, -0.1f},
-    {-0.1f, -0.1f, -0.1f},
-    {-0.1f, -0.1f, 0.1f }
-};
+NUVEC jedib_offsets[3] = {{0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, -0.1f}, {-0.1f, -0.1f, 0.1f}};
 i32 jedib_yrot[3] = {0x6000, 0xa000, 0xe000};
 i16 *JediB_playerids[3] = {&dat_007f19c8, &id_ANAKINPADAWAN, &dat_007f19d0};
 static f32 jedib_inner = 3.0f;
@@ -1576,10 +1572,7 @@ NUVEC KaminoShipCentre = {56.5f, -2.89f, 8.0f};
 f32 KaminoShipRadius = 6.5f;
 i32 KaminoShipOrbitPitch = -3640;
 i32 KaminoShipOrbitYaw = 0x4000;
-NUVEC KaminoShipGunOffset[2] = {
-    {0.2f,  -1.1f, 0.9f},
-    {-0.2f, -1.1f, 0.9f}
-};
+NUVEC KaminoShipGunOffset[2] = {{0.2f, -1.1f, 0.9f}, {-0.2f, -1.1f, 0.9f}};
 f32 KaminoShipFireInterval = 0.15f;
 f32 KaminoShipSeekRate = 1.0f;
 f32 KaminoShipAimScale = 30.0f;
@@ -2132,36 +2125,22 @@ char *paint_name[6] = {"red_juice", "yellow_juice", "blue_juice", "orange_juice"
 char *paint_panel_name[3] = {"redp", "yellp", "bluep"};
 char *paint_target_colour[3] = {"but_orange", "but_green", "but_purple"};
 char *paint_light_name[3] = {"off_purple", "off_green", "off_orange"};
-JEDIB_PHASE jedi_b_phase1[8] = {
-    {&id_DROIDEKA,            "phase_droids"},
-    {&id_DROIDEKA,            "phase_droids"},
-    {&id_BATTLEDROIDSECURITY, "phase_droids"},
-    {&id_BATTLEDROIDSECURITY, "phase_droids"},
-    {&id_BATTLEDROIDSECURITY, "phase_droids"},
-    {&id_BATTLEDROIDSECURITY, "phase_droids"},
-    {&id_BATTLEDROIDSECURITY, "phase_droids"},
-    {NULL,                    NULL          }
-};
-JEDIB_PHASE jedi_b_phase2[8] = {
-    {&id_DROIDEKA,         "phase_droids"},
-    {&id_DROIDEKA,         "phase_droids"},
-    {&id_SUPERBATTLEDROID, "phase_droids"},
-    {&id_SUPERBATTLEDROID, "phase_droids"},
-    {&id_SUPERBATTLEDROID, "phase_droids"},
-    {&id_SUPERBATTLEDROID, "phase_droids"},
-    {&id_SUPERBATTLEDROID, "phase_droids"},
-    {NULL,                 NULL          }
-};
-JEDIB_PHASE jedi_b_phase3[8] = {
-    {&id_SUPERBATTLEDROID, "phase_droids"},
-    {&id_SUPERBATTLEDROID, "phase_droids"},
-    {&id_DROIDEKA,         "phase_droids"},
-    {&id_DROIDEKA,         "phase_droids"},
-    {&id_DROIDEKA,         "phase_droids"},
-    {&id_DROIDEKA,         "phase_droids"},
-    {&id_DROIDEKA,         "phase_droids"},
-    {NULL,                 NULL          }
-};
+JEDIB_PHASE jedi_b_phase1[8] = {{&id_DROIDEKA, "phase_droids"},
+                                {&id_DROIDEKA, "phase_droids"},
+                                {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                {&id_BATTLEDROIDSECURITY, "phase_droids"},
+                                {NULL, NULL}};
+JEDIB_PHASE jedi_b_phase2[8] = {{&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                {&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                {&id_SUPERBATTLEDROID, "phase_droids"}, {NULL, NULL}};
+JEDIB_PHASE jedi_b_phase3[8] = {{&id_SUPERBATTLEDROID, "phase_droids"}, {&id_SUPERBATTLEDROID, "phase_droids"},
+                                {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                {&id_DROIDEKA, "phase_droids"},         {&id_DROIDEKA, "phase_droids"},
+                                {&id_DROIDEKA, "phase_droids"},         {NULL, NULL}};
 
 void InitPaintPuzzle(WORLDINFO *world) {
     i32 i;

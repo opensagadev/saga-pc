@@ -804,10 +804,7 @@ void SuperCarry_Release(GAMEOBJECT *object) {
 i32 SuperCarry_PutDownDrop = 1;
 f32 SUPERCARRY_JUMPSPEED = 1.4f;
 f32 SuperCarryImpactSpeed = 4.0f;
-u8 SuperCarryPlayerRgb[2][3] = {
-    {0, 127, 255},
-    {0, 255, 0  }
-};
+u8 SuperCarryPlayerRgb[2][3] = {{0, 127, 255}, {0, 255, 0}};
 f32 PUNCHGAP = 0.3f;
 f32 SUPERCARRY_THROWSPEED_XZ = 3.0f;
 f32 SUPERCARRY_THROWSPEED_Y = 3.0f;

@@ -742,15 +742,8 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
 
 /* Light types offered by the "Type" row. */
 static EdEnumControl::Item rtl_helper_type_items[] = {
-    {"AMBIENT",      1},
-    {"POINT",        2},
-    {"POINTFLICKER", 3},
-    {"DIRECTIONAL",  4},
-    {"CAMDIR",       5},
-    {"POINTBLEND",   6},
-    {"ANTILIGHT",    7},
-    {"JONFLICKER",   8},
-    {NULL,           0},
+    {"AMBIENT", 1},    {"POINT", 2},     {"POINTFLICKER", 3}, {"DIRECTIONAL", 4}, {"CAMDIR", 5},
+    {"POINTBLEND", 6}, {"ANTILIGHT", 7}, {"JONFLICKER", 8},   {NULL, 0},
 };
 extern "C" {
     f32 rtl_helper_radius = 0.25f;

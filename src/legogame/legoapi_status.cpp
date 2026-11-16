@@ -1230,16 +1230,8 @@ extern "C" {
     }
 
     f32 StatusBonusTimeY = -0.5f;
-    NUVEC PanelLightingColours[3] = {
-        {1.0f, 0.5f, 0.5f},
-        {0.5f, 1.0f, 0.5f},
-        {0.5f, 0.5f, 1.0f}
-    };
-    NUVEC PanelLightingDirections[3] = {
-        {-1.0f, 0.0f, 0.0f },
-        {0.0f,  1.0f, 1.0f },
-        {0.0f,  0.0f, -1.0f}
-    };
+    NUVEC PanelLightingColours[3] = {{1.0f, 0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}, {0.5f, 0.5f, 1.0f}};
+    NUVEC PanelLightingDirections[3] = {{-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, -1.0f}};
     NUVEC PanelLightingAmbient = {1.0f, 1.0f, 1.0f};
 
     void DrawBonusTime(STATUSPACKET_s *packet, f32 position, i32 alpha) {

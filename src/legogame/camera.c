@@ -253,10 +253,7 @@ f32 CamPodSprintHeight = 0.65f;
 f32 CamPodSprintRollScale = 0.6f;
 f32 CamPodSprintAngleSeek = 7.0f;
 f32 CamPodShakeScale = 2.0f;
-VIEWCAM ViewCam = {
-    0, {1000000000.0f, 0.0f, 0.0f},
-     -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL
-};
+VIEWCAM ViewCam = {0, {1000000000.0f, 0.0f, 0.0f}, -8192, -29500, 2.66f, 0.0f, 120.0f, 0x43480000, NULL};
 f32 CamWalkerRadius = 5.0f;
 f32 CamWalkerLift = 4.0f;
 f32 CamDewbackRadius = 5.0f;

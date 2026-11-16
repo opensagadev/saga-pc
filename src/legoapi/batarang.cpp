@@ -1627,17 +1627,17 @@ extern "C" {
     }
 
     BATMAN_PREPARE batman_prepareforspecialmove[11] = {
-        {4,          Batman_PrepareJump        },
-        {0x23,       Batman_PrepareJump        },
-        {8,          Batman_PrepareGrapple     },
-        {0x20000000, Batman_PrepareObstacle    },
-        {0x10,       Batman_PrepareSpecialUse  },
-        {0x40,       Batman_PrepareHoverTube   },
-        {0x1000,     Batman_PrepareBigJump     },
-        {0x8000,     Batman_PrepareTakeOverJump},
-        {0xc0000,    Batman_PrepareGlide       },
-        {0x300000,   Batman_PrepareClimb       },
-        {0,          NULL                      },
+        {4, Batman_PrepareJump},
+        {0x23, Batman_PrepareJump},
+        {8, Batman_PrepareGrapple},
+        {0x20000000, Batman_PrepareObstacle},
+        {0x10, Batman_PrepareSpecialUse},
+        {0x40, Batman_PrepareHoverTube},
+        {0x1000, Batman_PrepareBigJump},
+        {0x8000, Batman_PrepareTakeOverJump},
+        {0xc0000, Batman_PrepareGlide},
+        {0x300000, Batman_PrepareClimb},
+        {0, NULL},
     };
     i16 ID_DEFAULTCHARACTER_B = -1;
 

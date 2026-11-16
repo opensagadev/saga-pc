@@ -34,8 +34,7 @@ extern "C" {}
 extern "C" {
     LEVELFIXUP LevelFixupStartup[2] = {
         {"losttemple_c", &UpdateSockets_LDATA, NULL, NULL, (void *)LostTempleC_Reset, (void *)LostTempleC_Update, NULL, NULL, NULL},
-        {NULL,           NULL,                 NULL, NULL, NULL,                      NULL,                       NULL, NULL, NULL}
-    };
+        {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}};
 }
 
 extern "C" void Hub_LockUnlockDoors(WORLDINFO *world) {

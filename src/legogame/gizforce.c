@@ -154,13 +154,11 @@ static void GizForceSFX_returnsfx(NUFPAR *parser) {
 
 i32 force_gizmotype_id = -1;
 static i32 GizForceSFX_load_version = 99999;
-static NUFPCOMJMP GizForceSFX_ConfigKeywords[] = {
-    {"forcename",   GizForceSFX_forcename  },
-    {"processsfx",  GizForceSFX_processsfx },
-    {"completesfx", GizForceSFX_completesfx},
-    {"returnsfx",   GizForceSFX_returnsfx  },
-    {NULL,          NULL                   }
-};
+static NUFPCOMJMP GizForceSFX_ConfigKeywords[] = {{"forcename", GizForceSFX_forcename},
+                                                  {"processsfx", GizForceSFX_processsfx},
+                                                  {"completesfx", GizForceSFX_completesfx},
+                                                  {"returnsfx", GizForceSFX_returnsfx},
+                                                  {NULL, NULL}};
 
 void GizForceSFX_Configure(WORLDINFO *world, char *config) {
     NUFPAR *parser;

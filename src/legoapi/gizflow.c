@@ -709,21 +709,21 @@ static void GizFlowConfigRand_OutputChance(NUFPAR *parser) {
 }
 
 static NUFPCOMJMP cfgtab_gizmo[] = {
-    {"Type",               GizFlowConfigGizmoType        },
-    {"Name",               GizFlowConfigGizmoName        },
-    {"StartInvisible",     GizFlowConfigStartInvis       },
-    {"FinishedInvisible",  GizFlowConfigEndInvis         },
-    {"FinishedDeactive",   GizFlowConfigEndDeact         },
-    {"Reverse",            GizFlowConfigReverse          },
-    {"RevInvis",           GizFlowConfigReverseInvis     },
-    {"NotStoryMode",       GizFlowConfigNotStoryMode     },
-    {"NotFreeplay",        GizFlowConfigNotFreeplay      },
-    {"OutputOnly",         GizFlowConfigOutputOnly       },
-    {"Timer",              GizFlowConfigGizTimer         },
-    {"RandomTime",         GizFlowConfigGizRandomTime    },
-    {"NumRandomOutputs",   GizFlowConfigRand_NumOutputs  },
+    {"Type", GizFlowConfigGizmoType},
+    {"Name", GizFlowConfigGizmoName},
+    {"StartInvisible", GizFlowConfigStartInvis},
+    {"FinishedInvisible", GizFlowConfigEndInvis},
+    {"FinishedDeactive", GizFlowConfigEndDeact},
+    {"Reverse", GizFlowConfigReverse},
+    {"RevInvis", GizFlowConfigReverseInvis},
+    {"NotStoryMode", GizFlowConfigNotStoryMode},
+    {"NotFreeplay", GizFlowConfigNotFreeplay},
+    {"OutputOnly", GizFlowConfigOutputOnly},
+    {"Timer", GizFlowConfigGizTimer},
+    {"RandomTime", GizFlowConfigGizRandomTime},
+    {"NumRandomOutputs", GizFlowConfigRand_NumOutputs},
     {"RandomOutputChance", GizFlowConfigRand_OutputChance},
-    {NULL,                 NULL                          },
+    {NULL, NULL},
 };
 
 static void GizFlowConfigGizmo(NUFPAR *parser) {
@@ -937,8 +937,8 @@ static void GizFlowConfigParentCollapse(NUFPAR *parser) {
 
 static NUFPCOMJMP cfgtab_collapse[] = {
     {"Parent", GizFlowConfigParentCollapse},
-    {"Child",  GizFlowConfigChildCollapse },
-    {NULL,     NULL                       },
+    {"Child", GizFlowConfigChildCollapse},
+    {NULL, NULL},
 };
 
 static void GizFlowConfigCollapse(NUFPAR *parser) {
@@ -979,18 +979,15 @@ struct GIZFLOW_CONDITION_TYPE { // size 0xc
 };
 
 const FLOWBOX_CALLBACKS flowbox_callbacks[3] = {
-    {ResetGizmoFlowBox, ProcessGizmoFlowBox,     CheckOutputGizmoFlowBox    },
-    {NULL,              ProcessConditionFlowBox, CheckOutputConditionFlowBox},
-    {NULL,              ProcessActionFlowBox,    CheckOutputActionFlowBox   },
+    {ResetGizmoFlowBox, ProcessGizmoFlowBox, CheckOutputGizmoFlowBox},
+    {NULL, ProcessConditionFlowBox, CheckOutputConditionFlowBox},
+    {NULL, ProcessActionFlowBox, CheckOutputActionFlowBox},
 };
 static GIZFLOW_CONDITION_TYPE gizflow_condition_types[] = {
-    {0,  "All",     NULL               },
-    {1,  "Any",     NULL               },
-    {2,  "None",    NULL               },
-    {3,  "Sum",     GizFlowConfigSumBox},
-    {4,  "loop",    NULL               },
-    {5,  "exactly", GizFlowConfigSumBox},
-    {-1, NULL,      NULL               },
+    {0, "All", NULL},  {1, "Any", NULL},
+    {2, "None", NULL}, {3, "Sum", GizFlowConfigSumBox},
+    {4, "loop", NULL}, {5, "exactly", GizFlowConfigSumBox},
+    {-1, NULL, NULL},
 };
 
 static void GizFlowConfigConditionType(NUFPAR *parser) {
@@ -1014,9 +1011,9 @@ static void GizFlowConfigMonitorInputs(NUFPAR *parser) {
 }
 
 static NUFPCOMJMP cfgtab_condition[] = {
-    {"Type",          GizFlowConfigConditionType},
+    {"Type", GizFlowConfigConditionType},
     {"MonitorInputs", GizFlowConfigMonitorInputs},
-    {NULL,            NULL                      },
+    {NULL, NULL},
 };
 
 static void GizFlowConfigCondition(NUFPAR *parser) {
@@ -1161,15 +1158,9 @@ static void GizFlowConfigFlowBoxCount(NUFPAR *parser) {
 }
 
 static NUFPCOMJMP cfgtab_flowbox[] = {
-    {"Parent",     GizFlowConfigParent    },
-    {"Child",      GizFlowConfigChild     },
-    {"Gizmo",      GizFlowConfigGizmo     },
-    {"Condition",  GizFlowConfigCondition },
-    {"Action",     GizFlowConfigAction    },
-    {"Name",       GizFlowConfigName      },
-    {"Num_Gizmos", GizFlowConfigNumGizmos },
-    {"AIAssistId", GizFlowConfigAIAssistID},
-    {NULL,         NULL                   },
+    {"Parent", GizFlowConfigParent},        {"Child", GizFlowConfigChild},           {"Gizmo", GizFlowConfigGizmo},
+    {"Condition", GizFlowConfigCondition},  {"Action", GizFlowConfigAction},         {"Name", GizFlowConfigName},
+    {"Num_Gizmos", GizFlowConfigNumGizmos}, {"AIAssistId", GizFlowConfigAIAssistID}, {NULL, NULL},
 };
 
 static void GizFlowConfigFlowBox(NUFPAR *parser) {
@@ -1211,15 +1202,8 @@ static void GizFlowConfigFlowBox(NUFPAR *parser) {
     ++load_flowbox;
 }
 
-static NUFPCOMJMP cfgtab_gitcount[] = {
-    {"FlowBox", GizFlowConfigFlowBoxCount},
-    {NULL,      NULL                     }
-};
-static NUFPCOMJMP cfgtab_git[] = {
-    {"FlowBox",  GizFlowConfigFlowBox },
-    {"Collapse", GizFlowConfigCollapse},
-    {NULL,       NULL                 }
-};
+static NUFPCOMJMP cfgtab_gitcount[] = {{"FlowBox", GizFlowConfigFlowBoxCount}, {NULL, NULL}};
+static NUFPCOMJMP cfgtab_git[] = {{"FlowBox", GizFlowConfigFlowBox}, {"Collapse", GizFlowConfigCollapse}, {NULL, NULL}};
 
 void *LoadGizFlow(void *world, void *system, char *path, VARIPTR *buffer, VARIPTR *end) {
     GIZFLOW_REMAP remaps[96];

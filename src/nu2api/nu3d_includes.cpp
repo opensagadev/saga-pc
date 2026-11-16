@@ -6044,16 +6044,10 @@ bool OccluderSet::IsOccludedOBB(NUVEC const *minimum, NUVEC const *maximum, NUMT
     if (!queries_prepared) {
         return false;
     }
-    NUVEC4 corners[8] = {
-        {minimum->x, maximum->y, minimum->z, 1.0f},
-        {minimum->x, maximum->y, maximum->z, 1.0f},
-        {maximum->x, maximum->y, maximum->z, 1.0f},
-        {maximum->x, maximum->y, minimum->z, 1.0f},
-        {minimum->x, minimum->y, minimum->z, 1.0f},
-        {minimum->x, minimum->y, maximum->z, 1.0f},
-        {maximum->x, minimum->y, maximum->z, 1.0f},
-        {maximum->x, minimum->y, minimum->z, 1.0f}
-    };
+    NUVEC4 corners[8] = {{minimum->x, maximum->y, minimum->z, 1.0f}, {minimum->x, maximum->y, maximum->z, 1.0f},
+                         {maximum->x, maximum->y, maximum->z, 1.0f}, {maximum->x, maximum->y, minimum->z, 1.0f},
+                         {minimum->x, minimum->y, minimum->z, 1.0f}, {minimum->x, minimum->y, maximum->z, 1.0f},
+                         {maximum->x, minimum->y, maximum->z, 1.0f}, {maximum->x, minimum->y, minimum->z, 1.0f}};
     NUMTX transform;
     if (matrix) {
         NuMtxMulH(&transform, const_cast<NUMTX *>(matrix), &projection_matrix);
@@ -6611,16 +6605,9 @@ void OcclusionManager::AddOccluder(const NUVEC *minimum, const NUVEC *maximum, c
     const f32 max_x = maximum->x;
     const f32 max_y = maximum->y;
     const f32 max_z = maximum->z;
-    __declspec(align(16)) NUVEC4 corners[8] = {
-        {min_x, max_y, min_z, 1.0f},
-        {max_x, max_y, max_z, 1.0f},
-        {max_x, min_y, max_z, 1.0f},
-        {min_x, min_y, min_z, 1.0f},
-        {min_x, max_y, max_z, 1.0f},
-        {max_x, max_y, min_z, 1.0f},
-        {max_x, min_y, min_z, 1.0f},
-        {min_x, min_y, max_z, 1.0f}
-    };
+    __declspec(align(16)) NUVEC4 corners[8] = {{min_x, max_y, min_z, 1.0f}, {max_x, max_y, max_z, 1.0f}, {max_x, min_y, max_z, 1.0f},
+                                               {min_x, min_y, min_z, 1.0f}, {min_x, max_y, max_z, 1.0f}, {max_x, max_y, min_z, 1.0f},
+                                               {max_x, min_y, min_z, 1.0f}, {min_x, min_y, max_z, 1.0f}};
     for (i32 i = 0; i < 8; ++i) {
         NUVEC *vertex = reinterpret_cast<NUVEC *>(&corners[i]);
         NuVecMtxTransform(vertex, vertex, const_cast<NUMTX *>(matrix));
@@ -6769,26 +6756,10 @@ extern "C" void PostShadowComputeBoundingSpace(const NUVEC4 *points, NUMTX *matr
 
 extern "C" void PostShadowComputeClippingPlanes(const NUMTX *matrix, bool zero_near, NUVEC4 *left, NUVEC4 *right, NUVEC4 *bottom,
                                                 NUVEC4 *top, NUVEC4 *near_plane, NUVEC4 *far_plane) {
-    const NUVEC4 symmetric[8] = {
-        {-1, -1, -1, 1},
-        {-1, 1,  -1, 1},
-        {1,  1,  -1, 1},
-        {1,  -1, -1, 1},
-        {-1, -1, 1,  1},
-        {-1, 1,  1,  1},
-        {1,  1,  1,  1},
-        {1,  -1, 1,  1}
-    };
-    const NUVEC4 positive[8] = {
-        {-1, -1, 0, 1},
-        {-1, 1,  0, 1},
-        {1,  1,  0, 1},
-        {1,  -1, 0, 1},
-        {-1, -1, 1, 1},
-        {-1, 1,  1, 1},
-        {1,  1,  1, 1},
-        {1,  -1, 1, 1}
-    };
+    const NUVEC4 symmetric[8] = {{-1, -1, -1, 1}, {-1, 1, -1, 1}, {1, 1, -1, 1}, {1, -1, -1, 1},
+                                 {-1, -1, 1, 1},  {-1, 1, 1, 1},  {1, 1, 1, 1},  {1, -1, 1, 1}};
+    const NUVEC4 positive[8] = {{-1, -1, 0, 1}, {-1, 1, 0, 1}, {1, 1, 0, 1}, {1, -1, 0, 1},
+                                {-1, -1, 1, 1}, {-1, 1, 1, 1}, {1, 1, 1, 1}, {1, -1, 1, 1}};
     const NUVEC4 *source = zero_near ? positive : symmetric;
     NUVEC4 corners[8];
     for (i32 i = 0; i < 8; ++i) {
@@ -11354,43 +11325,10 @@ extern "C" {
     i32 dat_00806b94 = 1;
     f32 nuspecial_const_alpha = 1.0f;
     /* Static-shadow frustum topology and mutable extrusion distance. */
-    i32 PostShadowCubeFaceIndices[6][4] = {
-        {0, 1, 2, 3},
-        {3, 2, 6, 7},
-        {7, 6, 5, 4},
-        {4, 5, 1, 0},
-        {1, 5, 6, 2},
-        {4, 0, 3, 7}
-    };
+    i32 PostShadowCubeFaceIndices[6][4] = {{0, 1, 2, 3}, {3, 2, 6, 7}, {7, 6, 5, 4}, {4, 5, 1, 0}, {1, 5, 6, 2}, {4, 0, 3, 7}};
     // Each of the 12 cube edges has two vertex indices and two incident faces.
-    i32 cubeEdgeIndices[12][2] = {
-        {0, 1},
-        {1, 2},
-        {2, 3},
-        {3, 0},
-        {4, 5},
-        {5, 6},
-        {6, 7},
-        {7, 4},
-        {0, 4},
-        {1, 5},
-        {2, 6},
-        {3, 7}
-    };
-    i32 cubeEdgeTopologies[12][2] = {
-        {3, 0},
-        {4, 0},
-        {1, 0},
-        {5, 0},
-        {2, 3},
-        {2, 4},
-        {2, 1},
-        {2, 5},
-        {5, 3},
-        {3, 4},
-        {4, 1},
-        {1, 5}
-    };
+    i32 cubeEdgeIndices[12][2] = {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}};
+    i32 cubeEdgeTopologies[12][2] = {{3, 0}, {4, 0}, {1, 0}, {5, 0}, {2, 3}, {2, 4}, {2, 1}, {2, 5}, {5, 3}, {3, 4}, {4, 1}, {1, 5}};
     NUVEC nuspecial_const_tint = {1.0f, 1.0f, 1.0f};
     i32 PCSpecialClipState = -1;
 }
@@ -13849,13 +13787,11 @@ extern "C" void NuPostEffectRender(PC_FRAMEBUFFER *output) {
 
 extern "C" {
     PC_POST_DATA_PORT PostLocalPortOutFramebuffer = {-1, NULL};
-    PC_POST_BUFFER_PROXY PostProxyBuffers[5] = {
-        {NULL, 0, true, true, {0, 0}},
-        {NULL, 0, true, true, {0, 0}},
-        {NULL, 0, true, true, {0, 0}},
-        {NULL, 0, true, true, {0, 0}},
-        {NULL, 0, true, true, {0, 0}}
-    };
+    PC_POST_BUFFER_PROXY PostProxyBuffers[5] = {{NULL, 0, true, true, {0, 0}},
+                                                {NULL, 0, true, true, {0, 0}},
+                                                {NULL, 0, true, true, {0, 0}},
+                                                {NULL, 0, true, true, {0, 0}},
+                                                {NULL, 0, true, true, {0, 0}}};
     PC_POST_DATA_PORT PostLocalPortMainNormalBuffer = {-1, NULL};
     PC_POST_DATA_PORT PostLocalPortMainDepthBuffer = {-1, NULL};
     PC_POST_DATA_PORT PostLocalPortMotionVelocityBuffer = {-1, NULL};

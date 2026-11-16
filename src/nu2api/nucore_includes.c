@@ -179,13 +179,7 @@ typedef struct FRAME_PAD_RAMP {
 
 static FRAME_SCANNED_PAD g_nupadScannedPads[16] = {0};
 static f32 FramePadRampRate = 0.1f;
-static FRAME_PAD_RAMP FramePadRampValues[5] = {
-    {0.0f,  0.0f },
-    {0.5f,  0.1f },
-    {0.75f, 0.25f},
-    {0.85f, 0.5f },
-    {1.0f,  1.0f }
-};
+static FRAME_PAD_RAMP FramePadRampValues[5] = {{0.0f, 0.0f}, {0.5f, 0.1f}, {0.75f, 0.25f}, {0.85f, 0.5f}, {1.0f, 1.0f}};
 i32 FramePadProfilePort = -1;
 i32 MaxGamePads = 2;
 i16 PlayerLastPort[8] = {-1, -1, -1, -1, -1, -1, -1, -1};

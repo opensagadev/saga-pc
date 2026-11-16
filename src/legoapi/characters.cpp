@@ -57,24 +57,20 @@ struct KILLPARTS_WORLD_SCENES {
 
 extern "C" {
     CHAR_CATEGORY_RECORD StartupCharCategoriesDefault[6] = {
-        {"SuperJump",        0x0u, 0x400000u },
-        {"SuperStrength",    0x0u, 0x800000u },
-        {"Transformatron",   0x0u, 0x1000000u},
-        {"BypassSecurity",   0x0u, 0x2000000u},
-        {"HazardProtection", 0x0u, 0x4000000u},
-        {NULL,               0x0u, 0x0u      },
+        {"SuperJump", 0x0u, 0x400000u},       {"SuperStrength", 0x0u, 0x800000u},     {"Transformatron", 0x0u, 0x1000000u},
+        {"BypassSecurity", 0x0u, 0x2000000u}, {"HazardProtection", 0x0u, 0x4000000u}, {NULL, 0x0u, 0x0u},
     };
     CHAR_CATEGORY_RECORD StartupCharCategoriesLsw[10] = {
-        {(char *)AreaFixUpName_Jedi, 0x8u,       0x0u     },
-        {"JediBaddie",               0xcu,       0x0u     },
-        {"BountyHunter",             0x1100080u, 0x0u     },
-        {"Teleport",                 0x40000u,   0x0u     },
-        {"HighJump",                 0x0u,       0x400000u},
-        {"Astromech",                0x40u,      0x0u     },
-        {"Protocol",                 0x20u,      0x0u     },
-        {"ZipUp",                    0x100080u,  0x0u     },
-        {"Blaster",                  0x80u,      0x0u     },
-        {NULL,                       0x0u,       0x0u     },
+        {(char *)AreaFixUpName_Jedi, 0x8u, 0x0u},
+        {"JediBaddie", 0xcu, 0x0u},
+        {"BountyHunter", 0x1100080u, 0x0u},
+        {"Teleport", 0x40000u, 0x0u},
+        {"HighJump", 0x0u, 0x400000u},
+        {"Astromech", 0x40u, 0x0u},
+        {"Protocol", 0x20u, 0x0u},
+        {"ZipUp", 0x100080u, 0x0u},
+        {"Blaster", 0x80u, 0x0u},
+        {NULL, 0x0u, 0x0u},
     };
     char *StartupCharVariantNames[23] = {
         "weirdo",       "stormtrooper", "fett",       "macewindu", "battledroid",

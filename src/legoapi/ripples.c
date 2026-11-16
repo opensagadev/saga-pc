@@ -190,16 +190,14 @@ static void RippleEffectType(NUFPAR *parser) {
     }
 }
 
-static NUFPCOMJMP RippleEffectConfigKeywords[8] = {
-    {"texture_name", RippleTextureName},
-    {"effect_type",  RippleEffectType },
-    {"start_colour", RippleStartColour},
-    {"end_colour",   RippleEndColour  },
-    {"life",         RippleLife       },
-    {"start_radius", RippleStartRadius},
-    {"end_radius",   RippleEndRadius  },
-    {NULL,           NULL             }
-};
+static NUFPCOMJMP RippleEffectConfigKeywords[8] = {{"texture_name", RippleTextureName},
+                                                   {"effect_type", RippleEffectType},
+                                                   {"start_colour", RippleStartColour},
+                                                   {"end_colour", RippleEndColour},
+                                                   {"life", RippleLife},
+                                                   {"start_radius", RippleStartRadius},
+                                                   {"end_radius", RippleEndRadius},
+                                                   {NULL, NULL}};
 
 void RippleEffects_Configure(WORLDINFO *world, char *config) {
     WORLD_RIPPLE_VIEW *view = (WORLD_RIPPLE_VIEW *)world;

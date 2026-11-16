@@ -1251,36 +1251,32 @@ void NuMusic::xsAttenuation(NUFPAR *p, void *ctx) {
     ((NuMusic *)ctx)->xAttenuation(p);
 }
 
-NUFPCOMJMPCTX NuMusic::top_jmp_tab[11] = {
-    {"ALBUM",             xsAlbum            },
-    {"ACTION",            xsAction           },
-    {"QUIET",             xsQuiet            },
-    {"OVERLAY",           xsOverlay          },
-    {"SIGNATURE",         xsSignature        },
-    {"CUTSCENE",          xsCutscene         },
-    {"NOMUSIC",           xsNoMusicC         },
-    {"GLOBALATTENUATION", xsGlobalAttenuation},
-    {"PATH",              xsPath             },
-    {"STRICT",            xsStrict           },
-    {NULL,                NULL               }
-};
-NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {
-    {"IDENT",       xsIdent      },
-    {"ID",          xsIdent      },
-    {"IDENT",       xsIdent      },
-    {"INDEX",       xsIndex      },
-    {"IX",          xsIndex      },
-    {"NOMUSIC",     xsNoMusic    },
-    {"STARTPOINT",  xsIndex      },
-    {"NODUCK",      xsNoDuck     },
-    {"DUCK",        xsDuck       },
-    {"LOOPING",     xsLooping    },
-    {"LOOP",        xsLooping    },
-    {"NONLOOPING",  xsNonLooping },
-    {"NOLOOP",      xsNonLooping },
-    {"ATTENUATION", xsAttenuation},
-    {NULL,          NULL         }
-};
+NUFPCOMJMPCTX NuMusic::top_jmp_tab[11] = {{"ALBUM", xsAlbum},
+                                          {"ACTION", xsAction},
+                                          {"QUIET", xsQuiet},
+                                          {"OVERLAY", xsOverlay},
+                                          {"SIGNATURE", xsSignature},
+                                          {"CUTSCENE", xsCutscene},
+                                          {"NOMUSIC", xsNoMusicC},
+                                          {"GLOBALATTENUATION", xsGlobalAttenuation},
+                                          {"PATH", xsPath},
+                                          {"STRICT", xsStrict},
+                                          {NULL, NULL}};
+NUFPCOMJMPCTX NuMusic::track_jmp_tab[15] = {{"IDENT", xsIdent},
+                                            {"ID", xsIdent},
+                                            {"IDENT", xsIdent},
+                                            {"INDEX", xsIndex},
+                                            {"IX", xsIndex},
+                                            {"NOMUSIC", xsNoMusic},
+                                            {"STARTPOINT", xsIndex},
+                                            {"NODUCK", xsNoDuck},
+                                            {"DUCK", xsDuck},
+                                            {"LOOPING", xsLooping},
+                                            {"LOOP", xsLooping},
+                                            {"NONLOOPING", xsNonLooping},
+                                            {"NOLOOP", xsNonLooping},
+                                            {"ATTENUATION", xsAttenuation},
+                                            {NULL, NULL}};
 
 i32 NuMusic::Voice::Load(Track *track, i32 subtrack) {
     if (track == tracks[track_index]) {

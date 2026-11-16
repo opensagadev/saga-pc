@@ -1418,11 +1418,12 @@ void rtlSetUserIdName(i32 index, char *name) {
 
 static void edrtlDrawHelp(void) {
     static const char *help_text[2][6] = {
-        {NULL, "SQR=ADD, O=SELECT",    "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
-         "SQR=ADD, TRI=DEL, L-UP=LOCK, X=ADJUST, O=SELECT\n",                                                        "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-LEFT=EDIT ALTERNATES",
-         "L-LEFT=PREV, L-RIGHT=NEXT"                                                                                                                                                                                                              },
+        {NULL, "SQR=ADD, O=SELECT", "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
+         "SQR=ADD, TRI=DEL, L-UP=LOCK, X=ADJUST, O=SELECT\n", "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-LEFT=EDIT ALTERNATES",
+         "L-LEFT=PREV, L-RIGHT=NEXT"},
         {NULL, "X=ADD, SELECT=SELECT", "L-UP/DOWN=ADJ FALLOFF, L-LEFT/RIGHT=ADJ INNER RADIUS\nL-STICK=MOVE, R-STICK=ADJ DIR",
-         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EDIT / ADD ALTERNATE SETTINGS", "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EXIT ALTERNATE SETTINGS MODE", "L1-PREV, R1-NEXT"},
+         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EDIT / ADD ALTERNATE SETTINGS",
+         "X=ADD, TRI=DEL,L-UP=LOCK,O=ADJUST, SELECT=SELECT\nL-DOWN=FOG EDITOR L-LEFT=EXIT ALTERNATE SETTINGS MODE", "L1-PREV, R1-NEXT"},
     };
     i32 y;
     const char *source;
@@ -3743,8 +3744,8 @@ f32 min_r = 1.0f;
 f32 def_fr = 2.0f;
 static i32 edrtl_mode = 0;
 u32 ctl[2][8] = {
-    {0x80, 0x10, 0x40, 0x1000, 0x100, 0x20,  0x8000, 0x2000},
-    {0x40, 0x10, 0x20, 0x1000, 0x80,  0x100, 0x4,    0x8   },
+    {0x80, 0x10, 0x40, 0x1000, 0x100, 0x20, 0x8000, 0x2000},
+    {0x40, 0x10, 0x20, 0x1000, 0x80, 0x100, 0x4, 0x8},
 };
 i32 edrtl_dragging = 0;
 RTL_LIGHT *edrtl_drag_rtl = NULL;

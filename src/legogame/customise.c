@@ -211,14 +211,8 @@ static void UpdateCustomPieceAnim(CUSTOM_PIECE_ANIM *anim, u16 minimum, u16 maxi
 }
 
 static CUSTOMISER_GAME_SETTING CustomiserGameSettingsPrivate[] = {
-    {"bountyhunter",       0x1000000, 0         },
-    {"jedi",               8,         0         },
-    {"sith",               0xc,       2         },
-    {"blaster",            0x100080,  0x40000000},
-    {"alreadygothat",      0,         0x10      },
-    {"stormtrooperhelmet", 0,         0x40000   },
-    {NULL,                 0,         0         }
-};
+    {"bountyhunter", 0x1000000, 0},     {"jedi", 8, 0}, {"sith", 0xc, 2}, {"blaster", 0x100080, 0x40000000}, {"alreadygothat", 0, 0x10},
+    {"stormtrooperhelmet", 0, 0x40000}, {NULL, 0, 0}};
 
 void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR *parser) {
     CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;

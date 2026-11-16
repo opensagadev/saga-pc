@@ -103,10 +103,7 @@ static void Traffic_vehicle(NUFPAR *parser) {
 }
 
 i32 traffic_portalling = 1;
-static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {
-    {"yoffset", TrafficAnim_yoffset},
-    {NULL,      NULL               }
-};
+static NUFPCOMJMP TrafficAnim_ConfigKeywords[] = {{"yoffset", TrafficAnim_yoffset}, {NULL, NULL}};
 
 static void Traffic_animobj(NUFPAR *parser) {
     nuhspecial_s special;
@@ -135,14 +132,12 @@ static void Traffic_animobj(NUFPAR *parser) {
     NuFParPopCom(parser);
 }
 
-static NUFPCOMJMP Traffic_ConfigKeywords[] = {
-    {"animobj",        Traffic_animobj       },
-    {"frame_interval", Traffic_frame_interval},
-    {"rand_interval",  Traffic_rand_interval },
-    {"tfactor",        Traffic_tfactor       },
-    {"vehicle",        Traffic_vehicle       },
-    {NULL,             NULL                  }
-};
+static NUFPCOMJMP Traffic_ConfigKeywords[] = {{"animobj", Traffic_animobj},
+                                              {"frame_interval", Traffic_frame_interval},
+                                              {"rand_interval", Traffic_rand_interval},
+                                              {"tfactor", Traffic_tfactor},
+                                              {"vehicle", Traffic_vehicle},
+                                              {NULL, NULL}};
 
 void TrafficAnimSys_Configure(WORLDINFO *world, char *config) {
     TRAFFIC_WORLD_VIEW *view = (TRAFFIC_WORLD_VIEW *)world;

@@ -17,16 +17,7 @@ extern "C" {
 }
 
 // PC reads pairs of 16-bit code points, ending with a zero pair.
-u16 bad_equiv[8][2] = {
-    {'a', '@'},
-    {'a', '4'},
-    {'e', '3'},
-    {'i', '1'},
-    {'l', '1'},
-    {'o', '0'},
-    {'t', '7'},
-    {0,   0  }
-};
+u16 bad_equiv[8][2] = {{'a', '@'}, {'a', '4'}, {'e', '3'}, {'i', '1'}, {'l', '1'}, {'o', '0'}, {'t', '7'}, {0, 0}};
 
 extern "C" {
     // C++ objects with a constructor and destructor; in their units (pc_device.cpp, pc_input.cpp) the
@@ -36,27 +27,12 @@ extern "C" {
     PC_DEVICE_STATE_CACHE PCDeviceStateCache;
 
     // legoapi/text.c is C; this initialiser copies string pointers at startup, which only C++ does.
-    LANGUAGEDATA Text_LanguageList_Default[7] = {
-        {1,  apitxt_ENGLISH},
-        {2,  apitxt_FRENCH },
-        {4,  apitxt_GERMAN },
-        {5,  apitxt_ITALIAN},
-        {3,  apitxt_SPANISH},
-        {8,  apitxt_DANISH },
-        {-1, NULL          }
-    };
+    LANGUAGEDATA Text_LanguageList_Default[7] = {{1, apitxt_ENGLISH}, {2, apitxt_FRENCH}, {4, apitxt_GERMAN}, {5, apitxt_ITALIAN},
+                                                 {3, apitxt_SPANISH}, {8, apitxt_DANISH}, {-1, NULL}};
 
     // nu2api/nuparticle_state.c: with the table in its unit VC8 compiles NuRndrSetDebBox differently.
-    extern const NUVEC debris_box_corners[8] = {
-        {-0.2f, -0.2f, -0.05f},
-        {0.2f,  -0.2f, -0.05f},
-        {-0.2f, 0.2f,  -0.05f},
-        {0.2f,  0.2f,  -0.05f},
-        {-0.5f, -0.5f, 0.8f  },
-        {0.5f,  -0.5f, 0.8f  },
-        {-0.5f, 0.5f,  0.8f  },
-        {0.5f,  0.5f,  0.8f  }
-    };
+    extern const NUVEC debris_box_corners[8] = {{-0.2f, -0.2f, -0.05f}, {0.2f, -0.2f, -0.05f}, {-0.2f, 0.2f, -0.05f}, {0.2f, 0.2f, -0.05f},
+                                                {-0.5f, -0.5f, 0.8f},   {0.5f, -0.5f, 0.8f},   {-0.5f, 0.5f, 0.8f},   {0.5f, 0.5f, 0.8f}};
 
     // legogame/game_obj.c: with either id in its unit VC8 compiles Tag_UpdateHint differently.
     i16 id_GRABCONTROL = -1;

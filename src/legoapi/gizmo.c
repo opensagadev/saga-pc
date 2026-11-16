@@ -48,12 +48,10 @@ static i32 DefaultGizmo_GetNumOutputs(GIZMO *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO *gizmo, i32 output, i32 mode);
 static char *DefaultGizmo_GetOutputName(GIZMO *gizmo, i32 output);
 i32 gizmoerrorlogsize = 2048;
-ADDGIZMOTYPE Default_ADDGIZMOTYPE = {
-    NULL,
-    NULL,
-    {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, (void *)DefaultGizmo_GetOutput, (void *)DefaultGizmo_GetOutputName,
-      (void *)DefaultGizmo_GetNumOutputs}
-};
+ADDGIZMOTYPE Default_ADDGIZMOTYPE = {NULL,
+                                     NULL,
+                                     {-1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, (void *)DefaultGizmo_GetOutput,
+                                      (void *)DefaultGizmo_GetOutputName, (void *)DefaultGizmo_GetNumOutputs}};
 
 i32 GizmoFileReadName(char *name) {
     i32 length = EdFileReadChar();

@@ -1305,12 +1305,7 @@ static void fnAudioAudio(NUFPAR *parser) {
     SfxAudioVersion = NuFParGetFloat(parser);
 }
 
-static NUFPCOMJMP audioCom[] = {
-    {"Audio",  fnAudioAudio    },
-    {"Sample", fnAudioSample   },
-    {"Group",  AudioGroup_Parse},
-    {NULL,     NULL            }
-};
+static NUFPCOMJMP audioCom[] = {{"Audio", fnAudioAudio}, {"Sample", fnAudioSample}, {"Group", AudioGroup_Parse}, {NULL, NULL}};
 MUSICPLAYBACK Music = {0, -1, 0, -1, 0, -1, 0, 0, 0, 0, 0, 0, 0.0f, 0.0f, 0, -1, NULL};
 
 void InitSoundInfo(i32 index) {

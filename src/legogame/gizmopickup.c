@@ -329,26 +329,19 @@ counter_sound:
 }
 
 GIZMO_PICKUP_TYPE GizmoPickupType[10] = {
-    {"Silver Coin", NULL,          NULL,        's', 4, 64, 0, 183, 10,    0.045f, 0.045f, 10.0f, 0.0f,  //
-     NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-    {"Gold Coin",   NULL,          NULL,        'g', 4, 64, 0, 191, 100,   0.045f, 0.045f, 10.0f, 0.0f,  //
-     NULL,                 Pup_CollectCoin,     -1, -1,  0.0f, 0.0f},
-    {"Blue Coin",   "PickupCoinB", NULL,        'b', 4, 64, 0, 199, 1000,  0.045f, 0.045f, 6.0f,  0.0f,  //
-     Pup_UpdateBlueCoin,   Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
-    {"Purple Coin", "PickupCoinB", NULL,        'p', 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f,  0.0f,  //
-     Pup_UpdatePurpleCoin, Pup_CollectCoin,     8,  -1,  0.0f, 0.0f},
-    {"Minikit",     "MK-Appear",   NULL,        'm', 0, 69, 0, 206, 0,     0.125f, 0.15f,  2.0f,  0.05f, //
-     NULL,                Pup_CollectMinikit,  20, -1,  0.0f, 0.0f},
-    {"Heart",       NULL,          NULL,        'h', 0, 2,  0, 203, 0,     0.1f,   0.08f,  4.0f,  0.0f,  //
-     NULL,                 Pup_CollectHeart,    -1, -1,  0.0f, 0.0f},
-    {"Red Brick",   "MK-Appear",   NULL,        'r', 0, 73, 0, 210, 0,     0.12f,  0.06f,  2.0f,  0.1f,  //
-     NULL,                 Pup_CollectRedBrick, 99, -1,  0.0f, 0.0f},
-    {"Charkit",     "MK-Appear",   "MK-Pickup", 'c', 0, 33, 0, 207, 0,     0.125f, 0.15f,  2.0f,  0.05f, //
-     NULL,                Pup_CollectCharKit,  20, -1,  0.0f, 0.0f},
-    {"Torpedo",     NULL,          NULL,        't', 0, 2,  0, 121, 0,     0.1f,   0.1f,   5.0f,  0.0f,  //
-     NULL,                 NULL,                -1, -1,  0.0f, 0.0f},
-    {"Power Up",    "MK-Appear",   NULL,        'u', 0, 1,  0, 208, 0,     0.125f, 0.125f, 2.0f,  0.05f, //
-     Pup_UpdatePowerUp,   Pup_CollectPowerUp,  -1, 209, 0.0f, 0.0f},
+    {"Silver Coin", NULL, NULL, 's', 4, 64, 0, 183, 10, 0.045f, 0.045f, 10.0f, 0.0f, NULL, Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
+    {"Gold Coin", NULL, NULL, 'g', 4, 64, 0, 191, 100, 0.045f, 0.045f, 10.0f, 0.0f, NULL, Pup_CollectCoin, -1, -1, 0.0f, 0.0f},
+    {"Blue Coin", "PickupCoinB", NULL, 'b', 4, 64, 0, 199, 1000, 0.045f, 0.045f, 6.0f, 0.0f, Pup_UpdateBlueCoin, Pup_CollectCoin, 8, -1,
+     0.0f, 0.0f},
+    {"Purple Coin", "PickupCoinB", NULL, 'p', 4, 64, 0, 213, 10000, 0.045f, 0.045f, 6.0f, 0.0f, Pup_UpdatePurpleCoin, Pup_CollectCoin, 8,
+     -1, 0.0f, 0.0f},
+    {"Minikit", "MK-Appear", NULL, 'm', 0, 69, 0, 206, 0, 0.125f, 0.15f, 2.0f, 0.05f, NULL, Pup_CollectMinikit, 20, -1, 0.0f, 0.0f},
+    {"Heart", NULL, NULL, 'h', 0, 2, 0, 203, 0, 0.1f, 0.08f, 4.0f, 0.0f, NULL, Pup_CollectHeart, -1, -1, 0.0f, 0.0f},
+    {"Red Brick", "MK-Appear", NULL, 'r', 0, 73, 0, 210, 0, 0.12f, 0.06f, 2.0f, 0.1f, NULL, Pup_CollectRedBrick, 99, -1, 0.0f, 0.0f},
+    {"Charkit", "MK-Appear", "MK-Pickup", 'c', 0, 33, 0, 207, 0, 0.125f, 0.15f, 2.0f, 0.05f, NULL, Pup_CollectCharKit, 20, -1, 0.0f, 0.0f},
+    {"Torpedo", NULL, NULL, 't', 0, 2, 0, 121, 0, 0.1f, 0.1f, 5.0f, 0.0f, NULL, NULL, -1, -1, 0.0f, 0.0f},
+    {"Power Up", "MK-Appear", NULL, 'u', 0, 1, 0, 208, 0, 0.125f, 0.125f, 2.0f, 0.05f, Pup_UpdatePowerUp, Pup_CollectPowerUp, -1, 209, 0.0f,
+     0.0f},
 };
 f32 PANEL_COINSCALE_START = 1.0f;
 

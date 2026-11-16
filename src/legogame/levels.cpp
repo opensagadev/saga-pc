@@ -602,9 +602,7 @@ extern "C" {
     i32 loadareacharacters_loadedlevel = 0;
     i32 loadareadata_loadlevel = 0;
     i32 textcrawlactive = 0;
-    NUFPCOMJMP WorldLoadAfterKeywords[1] = {
-        {NULL, NULL}
-    };
+    NUFPCOMJMP WorldLoadAfterKeywords[1] = {{NULL, NULL}};
 }
 
 static void PicturesFixUp(WORLDINFO *world) {
@@ -732,51 +730,51 @@ extern "C" {
     f32 AreaCrawlPromptY = 0.745000005f;
     f32 AreaCrawlPromptScale = 0.400000006f;
     NUFPCOMJMP LevelConfigKeywords_BeforeLoad[45] = {
-        {const_cast<char *>("max_tightropes"),       LC_BL_max_tightropes      },
-        {const_cast<char *>("max_signals"),          LC_BL_max_signals         },
-        {const_cast<char *>("max_levers"),           LC_BL_max_levers          },
-        {const_cast<char *>("max_technos"),          LC_BL_max_technos         },
-        {const_cast<char *>("max_zipups"),           LC_BL_max_zipups          },
-        {const_cast<char *>("max_grapples"),         LC_BL_max_grapples        },
-        {const_cast<char *>("max_obstacles"),        LC_BL_max_obstacles       },
+        {const_cast<char *>("max_tightropes"), LC_BL_max_tightropes},
+        {const_cast<char *>("max_signals"), LC_BL_max_signals},
+        {const_cast<char *>("max_levers"), LC_BL_max_levers},
+        {const_cast<char *>("max_technos"), LC_BL_max_technos},
+        {const_cast<char *>("max_zipups"), LC_BL_max_zipups},
+        {const_cast<char *>("max_grapples"), LC_BL_max_grapples},
+        {const_cast<char *>("max_obstacles"), LC_BL_max_obstacles},
         {const_cast<char *>("max_obstacle_objects"), LC_BL_max_obstacle_objects},
-        {const_cast<char *>("max_turrets"),          LC_BL_max_turrets         },
-        {const_cast<char *>("max_buildits"),         LC_BL_max_buildits        },
-        {const_cast<char *>("max_buildit_objects"),  LC_BL_max_buildit_objects },
+        {const_cast<char *>("max_turrets"), LC_BL_max_turrets},
+        {const_cast<char *>("max_buildits"), LC_BL_max_buildits},
+        {const_cast<char *>("max_buildit_objects"), LC_BL_max_buildit_objects},
         {const_cast<char *>("max_spinneranim_objs"), LC_BL_max_spinneranim_objs},
-        {const_cast<char *>("max_shards"),           LC_BL_max_shards          },
-        {const_cast<char *>("max_spinners"),         LC_BL_max_spinners        },
-        {const_cast<char *>("max_minicuts"),         LC_BL_max_minicuts        },
-        {const_cast<char *>("max_minicut_stages"),   LC_BL_max_minicutParts    },
-        {const_cast<char *>("maxgizmoblowuptypes"),  LC_BL_max_gizmoblowuptypes},
-        {const_cast<char *>("maxgizmoblowups"),      LC_BL_max_gizmoblowups    },
-        {const_cast<char *>("max_climb_objects"),    LC_BL_max_climb_objects   },
-        {const_cast<char *>("max_attractos"),        LC_BL_max_attractos       },
-        {const_cast<char *>("max_timers"),           LC_BL_max_timers          },
-        {const_cast<char *>("max_guidelines"),       LC_BL_max_guidelines      },
-        {const_cast<char *>("max_ledges"),           LC_BL_max_ledges          },
-        {const_cast<char *>("max_securitydoors"),    LC_BL_max_securitydoors   },
-        {const_cast<char *>("max_tubes"),            LC_BL_max_tubes           },
-        {const_cast<char *>("max_pickups"),          LC_BL_max_pickups         },
-        {const_cast<char *>("max_gameantinodes"),    LC_BL_max_gameantinodes   },
-        {const_cast<char *>("max_gizpanels"),        LC_BL_max_gizpanels       },
-        {const_cast<char *>("max_force"),            LC_BL_max_force           },
-        {const_cast<char *>("max_force_objects"),    LC_BL_max_force_objects   },
-        {const_cast<char *>("max_pushblocks"),       LC_BL_max_pushblocks      },
+        {const_cast<char *>("max_shards"), LC_BL_max_shards},
+        {const_cast<char *>("max_spinners"), LC_BL_max_spinners},
+        {const_cast<char *>("max_minicuts"), LC_BL_max_minicuts},
+        {const_cast<char *>("max_minicut_stages"), LC_BL_max_minicutParts},
+        {const_cast<char *>("maxgizmoblowuptypes"), LC_BL_max_gizmoblowuptypes},
+        {const_cast<char *>("maxgizmoblowups"), LC_BL_max_gizmoblowups},
+        {const_cast<char *>("max_climb_objects"), LC_BL_max_climb_objects},
+        {const_cast<char *>("max_attractos"), LC_BL_max_attractos},
+        {const_cast<char *>("max_timers"), LC_BL_max_timers},
+        {const_cast<char *>("max_guidelines"), LC_BL_max_guidelines},
+        {const_cast<char *>("max_ledges"), LC_BL_max_ledges},
+        {const_cast<char *>("max_securitydoors"), LC_BL_max_securitydoors},
+        {const_cast<char *>("max_tubes"), LC_BL_max_tubes},
+        {const_cast<char *>("max_pickups"), LC_BL_max_pickups},
+        {const_cast<char *>("max_gameantinodes"), LC_BL_max_gameantinodes},
+        {const_cast<char *>("max_gizpanels"), LC_BL_max_gizpanels},
+        {const_cast<char *>("max_force"), LC_BL_max_force},
+        {const_cast<char *>("max_force_objects"), LC_BL_max_force_objects},
+        {const_cast<char *>("max_pushblocks"), LC_BL_max_pushblocks},
         {const_cast<char *>("max_pushblock_endpos"), LC_BL_max_pushblock_endpos},
-        {const_cast<char *>("max_gizspecials"),      LC_BL_max_gizspecials     },
-        {const_cast<char *>("max_hatmachines"),      LC_BL_max_hatmachines     },
-        {const_cast<char *>("max_doors"),            LC_BL_max_doors           },
-        {const_cast<char *>("max_teleports"),        LC_BL_max_teleports       },
-        {const_cast<char *>("max_gizrandoms"),       LC_BL_max_gizrandoms      },
-        {const_cast<char *>("max_torpmachines"),     LC_BL_max_torpmachines    },
-        {const_cast<char *>("max_bridges"),          LC_BL_max_bridges         },
-        {const_cast<char *>("max_plugs"),            LC_BL_max_plugs           },
-        {const_cast<char *>("max_bombgen_objects"),  LC_BL_max_bombgen_objects },
-        {const_cast<char *>("max_bombgens"),         LC_BL_max_bombgens        },
-        {const_cast<char *>("windspeed"),            LC_BL_wind_speed          },
-        {const_cast<char *>("windsize"),             LC_BL_wind_size           },
-        {NULL,                                       NULL                      },
+        {const_cast<char *>("max_gizspecials"), LC_BL_max_gizspecials},
+        {const_cast<char *>("max_hatmachines"), LC_BL_max_hatmachines},
+        {const_cast<char *>("max_doors"), LC_BL_max_doors},
+        {const_cast<char *>("max_teleports"), LC_BL_max_teleports},
+        {const_cast<char *>("max_gizrandoms"), LC_BL_max_gizrandoms},
+        {const_cast<char *>("max_torpmachines"), LC_BL_max_torpmachines},
+        {const_cast<char *>("max_bridges"), LC_BL_max_bridges},
+        {const_cast<char *>("max_plugs"), LC_BL_max_plugs},
+        {const_cast<char *>("max_bombgen_objects"), LC_BL_max_bombgen_objects},
+        {const_cast<char *>("max_bombgens"), LC_BL_max_bombgens},
+        {const_cast<char *>("windspeed"), LC_BL_wind_speed},
+        {const_cast<char *>("windsize"), LC_BL_wind_size},
+        {NULL, NULL},
     };
 }
 
@@ -1356,9 +1354,7 @@ extern "C" {
     i32 netnewgame = 0;
 }
 
-extern "C" TEXTCRAWL TextCrawlLsw = {
-    &TextCrawlChapterId, &TextCrawlVehicleBonusId, &TextCrawlCharacterBonusId, 3, 0, {0, 0}
-};
+extern "C" TEXTCRAWL TextCrawlLsw = {&TextCrawlChapterId, &TextCrawlVehicleBonusId, &TextCrawlCharacterBonusId, 3, 0, {0, 0}};
 
 void LoadAreaCharacters(void) {
     static const char *crawl_music[] = {"Ep1_TextCrawl", "Ep2_TextCrawl", "Ep3_TextCrawl",
@@ -2176,18 +2172,18 @@ extern "C" {
     f32 CreditsPictureBaseZ = 1.0f;
     AREAFIXUP AreaFixUpLostTemple[2] = {
         {AreaFixUpName_Losttemple, &LOSTTEMPLE_ADATA},
-        {NULL,                     NULL             },
+        {NULL, NULL},
     };
     extern char AreaFixUpName_Fairground[12] = "Fairground";
     extern char AreaFixUpName_Rooftops[12] = "Rooftops";
     extern char AreaFixUpName_Gothamstreets[16] = "GothamStreets";
     AREA_DATA *FAIRGROUND_ADATA = 0;
     AREAFIXUP AreaFixUpGotham[5] = {
-        {"batcave",                   &HUB_ADATA          },
+        {"batcave", &HUB_ADATA},
         {AreaFixUpName_Gothamstreets, &GOTHAMSTREETS_ADATA},
-        {AreaFixUpName_Rooftops,      &ROOFTOPS_ADATA     },
-        {AreaFixUpName_Fairground,    &FAIRGROUND_ADATA   },
-        {NULL,                        NULL                },
+        {AreaFixUpName_Rooftops, &ROOFTOPS_ADATA},
+        {AreaFixUpName_Fairground, &FAIRGROUND_ADATA},
+        {NULL, NULL},
     };
     i32 WorldLightUserId = 1;
     i32 BGLOAD = 1;
@@ -2232,14 +2228,9 @@ extern "C" void Credits_Update_Game(WORLDINFO *world) {
 
 extern "C" {
     i16 dat_007f17d0 = -1;
-    AREA_EXTRA_MODEL ExtraModelList[6] = {
-        {&ID_DEFAULTCHARACTER_A, &dat_007f17bc         },
-        {&PunchRangeUnitId,      &PunchRangeCompanionId},
-        {&dat_007f17c8,          &dat_007f17cc         },
-        {&dat_007f17d0,          &PunchRangeCompanionId},
-        {&dat_007f17d4,          &PunchRangeCompanionId},
-        {NULL,                   NULL                  }
-    };
+    AREA_EXTRA_MODEL ExtraModelList[6] = {{&ID_DEFAULTCHARACTER_A, &dat_007f17bc}, {&PunchRangeUnitId, &PunchRangeCompanionId},
+                                          {&dat_007f17c8, &dat_007f17cc},          {&dat_007f17d0, &PunchRangeCompanionId},
+                                          {&dat_007f17d4, &PunchRangeCompanionId}, {NULL, NULL}};
     i16 id_DEFAULTCHARACTER[2] = {-1, -1};
     i16 id_JEDISTARFIGHTERYELLOWEP3 = -1;
     i16 dat_007f19e8 = -1;
@@ -2254,9 +2245,7 @@ extern "C" {
     i16 id_ANAKINSNEWPOD = -1;
     i16 dat_007f1b40 = -1;
     i16 dat_007f1b44 = -1;
-    APICHARACTERMODELLIST PermModelList[1] = {
-        {-1, 0}
-    };
+    APICHARACTERMODELLIST PermModelList[1] = {{-1, 0}};
     i16 PermanentCustomiserActions[5] = {97, 190, 98, 99, -1};
     char *TexAnimScriptNamesTitle[3] = {"coin", "coin_pause", 0};
     char *TexAnimScriptNamesGame[32] = {
@@ -2519,71 +2508,71 @@ extern "C" {
     AREA_DATA *ANEWHOPE_ADATA = 0;
     AREA_DATA *LEGOCITY_ADATA = 0;
     AREAFIXUP AreaFixUpLSW[65] = {
-        {"map",                          &HUB_ADATA                },
-        {AreaFixUpName_Negotiations,     &NEGOTIATIONS_ADATA       },
-        {AreaFixUpName_Gungan,           &GUNGAN_ADATA             },
-        {AreaFixUpName_Palacerescue,     &RESCUE_ADATA             },
-        {AreaFixUpName_Podsprint,        &PODSPRINT_ADATA          },
-        {AreaFixUpName_Retakepalace,     &RETAKE_ADATA             },
-        {AreaFixUpName_Maul,             &MAUL_ADATA               },
-        {"pursuit",                      &BOUNTYHUNTERPURSUIT_ADATA},
-        {AreaFixUpName_Kamino,           &KAMINO_ADATA             },
-        {"Factory",                      &FACTORY_ADATA            },
-        {AreaFixUpName_Jedi,             &JEDI_ADATA               },
-        {"gunship",                      &GUNSHIP_ADATA            },
-        {AreaFixUpName_Dooku,            &DOOKU_ADATA              },
-        {AreaFixUpName_Dogfight,         &DOGFIGHT_ADATA           },
-        {AreaFixUpName_Dogfight,         &BATTLEOVERCORUSCANT_ADATA},
-        {"Cruiser",                      &CRUISER_ADATA            },
-        {AreaFixUpName_Grievous,         &GRIEVOUS_ADATA           },
-        {AreaFixUpName_Kashyyyk,         &KASHYYYK_ADATA           },
-        {AreaFixUpName_Temple,           &TEMPLE_ADATA             },
-        {AreaFixUpName_Vader,            &VADER_ADATA              },
-        {AreaFixUpName_Blockaderunner,   &BLOCKADERUNNER_ADATA     },
-        {AreaFixUpName_Tatooine,         &TATOOINE_ADATA           },
-        {AreaFixUpName_Moseisley,        &MOSEISLEY_ADATA          },
-        {"DeathStarRescue",              &DEATHSTARRESCUE_ADATA    },
-        {"DeathStarEscape",              &DEATHSTARESCAPE_ADATA    },
-        {"DeathStarBattle",              &DEATHSTARBATTLE_ADATA    },
-        {AreaFixUpName_Hothbattle,       &HOTHBATTLE_ADATA         },
-        {AreaFixUpName_Hothescape,       &HOTHESCAPE_ADATA         },
-        {AreaFixUpName_Asteroidchase,    &ASTEROIDCHASE_ADATA      },
-        {"Dagobah",                      &DAGOBAH_ADATA            },
-        {AreaFixUpName_Cloudcitytrap,    &CLOUDCITYTRAP_ADATA      },
-        {"CloudCityEscape",              &CLOUDCITYESCAPE_ADATA    },
-        {AreaFixUpName_Jabbaspalace,     &JABBASPALACE_ADATA       },
-        {AreaFixUpName_Sarlaccpit,       &SARLACCPIT_ADATA         },
-        {AreaFixUpName_Speederchase,     &SPEEDERCHASE_ADATA       },
-        {"EndorBattle",                  &ENDORBATTLE_ADATA        },
-        {AreaFixUpName_Deathstar2battle, &DEATHSTARBATTLE2_ADATA   },
-        {AreaFixUpName_Emperorfight,     &EMPERORFIGHT_ADATA       },
-        {AreaFixUpName_E1characterbonus, &E1CHARACTER_ADATA        },
-        {AreaFixUpName_E2characterbonus, &E2CHARACTER_ADATA        },
-        {AreaFixUpName_E3characterbonus, &E3CHARACTER_ADATA        },
-        {AreaFixUpName_E4characterbonus, &E4CHARACTER_ADATA        },
-        {AreaFixUpName_E5characterbonus, &E5CHARACTER_ADATA        },
-        {AreaFixUpName_E6characterbonus, &E6CHARACTER_ADATA        },
-        {AreaFixUpName_E1characterbonus, &E1VEHICLE_ADATA          },
-        {AreaFixUpName_E2characterbonus, &E2VEHICLE_ADATA          },
-        {AreaFixUpName_E3characterbonus, &E3VEHICLE_ADATA          },
-        {AreaFixUpName_E4characterbonus, &E4VEHICLE_ADATA          },
-        {AreaFixUpName_E5characterbonus, &E5VEHICLE_ADATA          },
-        {AreaFixUpName_E6characterbonus, &E6VEHICLE_ADATA          },
-        {"PodRace",                      &PODRACE_ADATA            },
-        {AreaFixUpName_Anakinsflight,    &ANAKINSFLIGHT_ADATA      },
-        {AreaFixUpName_BonusGunship,     &BONUS_GUNSHIP_ADATA      },
-        {AreaFixUpName_Anewhope,         &ANEWHOPE_ADATA           },
-        {AreaFixUpName_Bonus2,           &LEGOCITY_ADATA           },
-        {AreaFixUpName_Bonus,            &NEWTOWN_ADATA            },
-        {AreaFixUpName_LostTemple,       &LOSTTEMPLE_ADATA         },
-        {AreaFixUpName_Senate,           &SENATE_ADATA             },
-        {AreaFixUpName_Utapau,           &UTAPAU_ADATA             },
-        {AreaFixUpName_Hoth,             &HOTH_ADATA               },
-        {AreaFixUpName_NbDagobah,        &BONUSDAGOBAH_ADATA       },
-        {AreaFixUpName_NbKamino,         &BONUSKAMINO_ADATA        },
-        {"nb_kashyyyk",                  &BONUSKASHYYYK_ADATA      },
-        {"JimTest",                      &JIMTEST_ADATA            },
-        {NULL,                           NULL                      },
+        {"map", &HUB_ADATA},
+        {AreaFixUpName_Negotiations, &NEGOTIATIONS_ADATA},
+        {AreaFixUpName_Gungan, &GUNGAN_ADATA},
+        {AreaFixUpName_Palacerescue, &RESCUE_ADATA},
+        {AreaFixUpName_Podsprint, &PODSPRINT_ADATA},
+        {AreaFixUpName_Retakepalace, &RETAKE_ADATA},
+        {AreaFixUpName_Maul, &MAUL_ADATA},
+        {"pursuit", &BOUNTYHUNTERPURSUIT_ADATA},
+        {AreaFixUpName_Kamino, &KAMINO_ADATA},
+        {"Factory", &FACTORY_ADATA},
+        {AreaFixUpName_Jedi, &JEDI_ADATA},
+        {"gunship", &GUNSHIP_ADATA},
+        {AreaFixUpName_Dooku, &DOOKU_ADATA},
+        {AreaFixUpName_Dogfight, &DOGFIGHT_ADATA},
+        {AreaFixUpName_Dogfight, &BATTLEOVERCORUSCANT_ADATA},
+        {"Cruiser", &CRUISER_ADATA},
+        {AreaFixUpName_Grievous, &GRIEVOUS_ADATA},
+        {AreaFixUpName_Kashyyyk, &KASHYYYK_ADATA},
+        {AreaFixUpName_Temple, &TEMPLE_ADATA},
+        {AreaFixUpName_Vader, &VADER_ADATA},
+        {AreaFixUpName_Blockaderunner, &BLOCKADERUNNER_ADATA},
+        {AreaFixUpName_Tatooine, &TATOOINE_ADATA},
+        {AreaFixUpName_Moseisley, &MOSEISLEY_ADATA},
+        {"DeathStarRescue", &DEATHSTARRESCUE_ADATA},
+        {"DeathStarEscape", &DEATHSTARESCAPE_ADATA},
+        {"DeathStarBattle", &DEATHSTARBATTLE_ADATA},
+        {AreaFixUpName_Hothbattle, &HOTHBATTLE_ADATA},
+        {AreaFixUpName_Hothescape, &HOTHESCAPE_ADATA},
+        {AreaFixUpName_Asteroidchase, &ASTEROIDCHASE_ADATA},
+        {"Dagobah", &DAGOBAH_ADATA},
+        {AreaFixUpName_Cloudcitytrap, &CLOUDCITYTRAP_ADATA},
+        {"CloudCityEscape", &CLOUDCITYESCAPE_ADATA},
+        {AreaFixUpName_Jabbaspalace, &JABBASPALACE_ADATA},
+        {AreaFixUpName_Sarlaccpit, &SARLACCPIT_ADATA},
+        {AreaFixUpName_Speederchase, &SPEEDERCHASE_ADATA},
+        {"EndorBattle", &ENDORBATTLE_ADATA},
+        {AreaFixUpName_Deathstar2battle, &DEATHSTARBATTLE2_ADATA},
+        {AreaFixUpName_Emperorfight, &EMPERORFIGHT_ADATA},
+        {AreaFixUpName_E1characterbonus, &E1CHARACTER_ADATA},
+        {AreaFixUpName_E2characterbonus, &E2CHARACTER_ADATA},
+        {AreaFixUpName_E3characterbonus, &E3CHARACTER_ADATA},
+        {AreaFixUpName_E4characterbonus, &E4CHARACTER_ADATA},
+        {AreaFixUpName_E5characterbonus, &E5CHARACTER_ADATA},
+        {AreaFixUpName_E6characterbonus, &E6CHARACTER_ADATA},
+        {AreaFixUpName_E1characterbonus, &E1VEHICLE_ADATA},
+        {AreaFixUpName_E2characterbonus, &E2VEHICLE_ADATA},
+        {AreaFixUpName_E3characterbonus, &E3VEHICLE_ADATA},
+        {AreaFixUpName_E4characterbonus, &E4VEHICLE_ADATA},
+        {AreaFixUpName_E5characterbonus, &E5VEHICLE_ADATA},
+        {AreaFixUpName_E6characterbonus, &E6VEHICLE_ADATA},
+        {"PodRace", &PODRACE_ADATA},
+        {AreaFixUpName_Anakinsflight, &ANAKINSFLIGHT_ADATA},
+        {AreaFixUpName_BonusGunship, &BONUS_GUNSHIP_ADATA},
+        {AreaFixUpName_Anewhope, &ANEWHOPE_ADATA},
+        {AreaFixUpName_Bonus2, &LEGOCITY_ADATA},
+        {AreaFixUpName_Bonus, &NEWTOWN_ADATA},
+        {AreaFixUpName_LostTemple, &LOSTTEMPLE_ADATA},
+        {AreaFixUpName_Senate, &SENATE_ADATA},
+        {AreaFixUpName_Utapau, &UTAPAU_ADATA},
+        {AreaFixUpName_Hoth, &HOTH_ADATA},
+        {AreaFixUpName_NbDagobah, &BONUSDAGOBAH_ADATA},
+        {AreaFixUpName_NbKamino, &BONUSKAMINO_ADATA},
+        {"nb_kashyyyk", &BONUSKASHYYYK_ADATA},
+        {"JimTest", &JIMTEST_ADATA},
+        {NULL, NULL},
     };
     LEVELDATA *NEGOTIATIONSA_LDATA = 0;
     LEVELDATA *NEGOTIATIONSB_LDATA = 0;

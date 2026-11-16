@@ -8,8 +8,7 @@ NamespaceIndentation: All
 IndentExternBlock: Indent
 IndentCaseLabels: true
 
-# Initializer tables: one row per line, columns aligned.
-AlignArrayOfStructures: Left
+# Initializer tables: clang-format packs each row like any other initializer; a row wider than the column limit wraps.
 
 # Include order steers VC8 code generation in a few units (the audit lists them): never reorder.
 SortIncludes: Never

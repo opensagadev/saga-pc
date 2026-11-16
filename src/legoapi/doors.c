@@ -477,28 +477,26 @@ static void D_cut_scene(NUFPAR *parser) {
 }
 
 i32 Door_NextSock = -1;
-static NUFPCOMJMP Door_ConfigKeywords[] = {
-    {"spline",            D_spline           },
-    {"level",             D_level            },
-    {"level_freeplay",    D_level_freeplay   },
-    {"cam_spline",        D_cam_spline       },
-    {"cam_wait",          D_cam_wait         },
-    {"cam_blend_time",    D_cam_blend_time   },
-    {"cam_lookatplayers", D_cam_lookatplayers},
-    {"1_way",             D_one_way          },
-    {"one_way",           D_one_way          },
-    {"2_player_only",     D_two_player_only  },
-    {"2_players_only",    D_two_player_only  },
-    {"two_player_only",   D_two_player_only  },
-    {"two_players_only",  D_two_player_only  },
-    {"do_not_use",        D_do_not_use       },
-    {"next_sock",         D_next_sock        },
-    {"vehicle",           D_vehicle          },
-    {"use_as_start",      D_use_as_start     },
-    {"cut_scene",         D_cut_scene        },
-    {"cutscene",          D_cut_scene        },
-    {NULL,                NULL               }
-};
+static NUFPCOMJMP Door_ConfigKeywords[] = {{"spline", D_spline},
+                                           {"level", D_level},
+                                           {"level_freeplay", D_level_freeplay},
+                                           {"cam_spline", D_cam_spline},
+                                           {"cam_wait", D_cam_wait},
+                                           {"cam_blend_time", D_cam_blend_time},
+                                           {"cam_lookatplayers", D_cam_lookatplayers},
+                                           {"1_way", D_one_way},
+                                           {"one_way", D_one_way},
+                                           {"2_player_only", D_two_player_only},
+                                           {"2_players_only", D_two_player_only},
+                                           {"two_player_only", D_two_player_only},
+                                           {"two_players_only", D_two_player_only},
+                                           {"do_not_use", D_do_not_use},
+                                           {"next_sock", D_next_sock},
+                                           {"vehicle", D_vehicle},
+                                           {"use_as_start", D_use_as_start},
+                                           {"cut_scene", D_cut_scene},
+                                           {"cutscene", D_cut_scene},
+                                           {NULL, NULL}};
 char door_gizmotype_id = -1;
 
 void Doors_Configure(WORLDINFO *world_ptr, char *config) {

@@ -209,10 +209,7 @@ static void BlockadeRunnerDKillEjectedCreature(PART *part, i32 reason) {
     }
 }
 
-static NUVEC BlockadeRunnerDEjectVec[2] = {
-    {13.0f, 1.6f, 7.93f},
-    {13.0f, 1.6f, 6.55f}
-};
+static NUVEC BlockadeRunnerDEjectVec[2] = {{13.0f, 1.6f, 7.93f}, {13.0f, 1.6f, 6.55f}};
 static NUVEC BlockadeRunnerDEjectMom = {-0.5f, 0.0f, 0.0f};
 
 static i32 BlockadeRunnerDDrawCreature(PART *part) {

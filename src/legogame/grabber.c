@@ -267,18 +267,16 @@ static void Grab_shadow(NUFPAR *parser) {
 i16 GrabMachineId = -1;
 i16 GrabMagnetId = -1;
 i16 RobotBaseId = -1;
-static GRAB_CONFIG_DATA GrabConfigData = {
-    -0.3f,
-    {{"radius", Grab_radius},
-          {"speed", Grab_speed},
-          {"rotate", Grab_rotate},
-          {"scale", Grab_scale},
-          {"move_xy", Grab_move_xy},
-          {"type", Grab_type},
-          {"invert_x", Grab_invert_x},
-          {"shadow", Grab_shadow},
-          {NULL, NULL}}
-};
+static GRAB_CONFIG_DATA GrabConfigData = {-0.3f,
+                                          {{"radius", Grab_radius},
+                                           {"speed", Grab_speed},
+                                           {"rotate", Grab_rotate},
+                                           {"scale", Grab_scale},
+                                           {"move_xy", Grab_move_xy},
+                                           {"type", Grab_type},
+                                           {"invert_x", Grab_invert_x},
+                                           {"shadow", Grab_shadow},
+                                           {NULL, NULL}}};
 
 void Grabber_Configure(WORLDINFO *world_ptr, char *config) {
     WORLD_GRABBER *world = (WORLD_GRABBER *)world_ptr;

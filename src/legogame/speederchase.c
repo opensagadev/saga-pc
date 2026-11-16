@@ -240,10 +240,10 @@ f32 speeder_kill_dist = 75.0f;
 f32 speeder_shootrate = 1.0f;
 f32 speederfirerange = -1.0f;
 SPEEDERCHASEVALUES speedervals[4] = {
-    {9.0f,  -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
-    {-3.0f, -3.0f, 1.5f, 5.0f, 5.0f,  0.3f, 5.0f},
-    {-3.0f, -3.0f, 1.5f, 5.0f, 2.0f,  0.3f, 5.0f},
-    {4.0f,  -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
+    {9.0f, -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
+    {-3.0f, -3.0f, 1.5f, 5.0f, 5.0f, 0.3f, 5.0f},
+    {-3.0f, -3.0f, 1.5f, 5.0f, 2.0f, 0.3f, 5.0f},
+    {4.0f, -3.0f, 1.5f, 5.0f, 10.0f, 0.5f, 5.0f},
 };
 f32 speeder_level_height = 1.0f;
 f32 speeder_level_height_lerpf = 5.0f;

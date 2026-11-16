@@ -7,18 +7,16 @@
 #include "legoapi/world/levels.h"
 #include "legogame/game.h"
 
-SUIT_INITIALIZER_RECORD SuitRecordInit[10] = {
-    {"batman", "batman",            &tBATMANSUIT,     0,   98,  'b', 0x0,      0, 0, 0},
-    {"batman", "batman_shadow",     &tSHADOWSUIT,     1,   98,  'i', 0x0,      0, 0, 0},
-    {"batman", "batman_glide",      &tGLIDESUIT,      258, 98,  'a', 0x4,      0, 0, 0},
-    {"batman", "batman_demolition", &tDEMOLITIONSUIT, 260, 98,  'c', 0x0,      0, 0, 0},
-    {"batman", "batman_sonar",      &tSONARSUIT,      8,   98,  'h', 0x0,      0, 0, 0},
-    {"robin",  "robin",             &tROBINSUIT,      0,   114, 'r', 0x0,      0, 0, 0},
-    {"robin",  "robin_water",       &tWATERSUIT,      272, 114, 'w', 0x0,      0, 0, 0},
-    {"robin",  "robin_technology",  &tTECHNOLOGYSUIT, 288, 114, 't', 0x0,      0, 0, 0},
-    {"robin",  "robin_magnet",      &tMAGNETSUIT,     64,  114, 'm', 0x200000, 0, 0, 0},
-    {"robin",  "robin_attract",     &tATTRACTSUIT,    384, 114, 'd', 0x0,      0, 0, 0}
-};
+SUIT_INITIALIZER_RECORD SuitRecordInit[10] = {{"batman", "batman", &tBATMANSUIT, 0, 98, 'b', 0x0, 0, 0, 0},
+                                              {"batman", "batman_shadow", &tSHADOWSUIT, 1, 98, 'i', 0x0, 0, 0, 0},
+                                              {"batman", "batman_glide", &tGLIDESUIT, 258, 98, 'a', 0x4, 0, 0, 0},
+                                              {"batman", "batman_demolition", &tDEMOLITIONSUIT, 260, 98, 'c', 0x0, 0, 0, 0},
+                                              {"batman", "batman_sonar", &tSONARSUIT, 8, 98, 'h', 0x0, 0, 0, 0},
+                                              {"robin", "robin", &tROBINSUIT, 0, 114, 'r', 0x0, 0, 0, 0},
+                                              {"robin", "robin_water", &tWATERSUIT, 272, 114, 'w', 0x0, 0, 0, 0},
+                                              {"robin", "robin_technology", &tTECHNOLOGYSUIT, 288, 114, 't', 0x0, 0, 0, 0},
+                                              {"robin", "robin_magnet", &tMAGNETSUIT, 64, 114, 'm', 0x200000, 0, 0, 0},
+                                              {"robin", "robin_attract", &tATTRACTSUIT, 384, 114, 'd', 0x0, 0, 0, 0}};
 
 SUIT_LAYERS *Suit_GetDefault(i32 character_id) {
     i32 index;

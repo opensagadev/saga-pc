@@ -1219,11 +1219,7 @@ static EdSfxNameControl *sfxNameControl;
 static EdStringControl *edObjectNameControl;
 static EdClassObjectNameControl *edClassObjectNameControl;
 
-EdEnumControl::Item EdEnumControl::YesNoItems[] = {
-    {"Yes", 1},
-    {"No",  0},
-    {NULL,  0}
-};
+EdEnumControl::Item EdEnumControl::YesNoItems[] = {{"Yes", 1}, {"No", 0}, {NULL, 0}};
 
 /* The editor message hooks; the format strings were compiled out, leaving
  * empty variadic bodies. */

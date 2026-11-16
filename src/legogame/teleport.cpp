@@ -131,21 +131,19 @@ extern "C" {
 extern "C" {
     static TELEPORT_CONFIG *Tel_teleport = 0;
     static WORLD_TELEPORT_CONFIG *Tel_worldinfo = 0;
-    static TELEPORT_KEYWORDS TeleportConfigData = {
-        "TLT_",
-        {{"spline", Tel_spline},
-          {"duration", Tel_duration},
-          {"range", Tel_range},
-          {"1_way", Tel_1_way},
-          {"crawl", Tel_crawl},
-          {"flip_flap", Tel_flip_flap},
-          {"hackycam", Tel_Hacky_Cam},
-          {"obj", Tel_obj},
-          {"flap1", Tel_flap},
-          {"flap2", Tel_flap},
-          {"name", Tel_name},
-          {NULL, NULL}}
-    };
+    static TELEPORT_KEYWORDS TeleportConfigData = {"TLT_",
+                                                   {{"spline", Tel_spline},
+                                                    {"duration", Tel_duration},
+                                                    {"range", Tel_range},
+                                                    {"1_way", Tel_1_way},
+                                                    {"crawl", Tel_crawl},
+                                                    {"flip_flap", Tel_flip_flap},
+                                                    {"hackycam", Tel_Hacky_Cam},
+                                                    {"obj", Tel_obj},
+                                                    {"flap1", Tel_flap},
+                                                    {"flap2", Tel_flap},
+                                                    {"name", Tel_name},
+                                                    {NULL, NULL}}};
 
     static void Tel_spline(NUFPAR *parser) {
         i32 index;

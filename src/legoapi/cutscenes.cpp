@@ -873,52 +873,50 @@ extern "C" {
     f32 CUTSUBTITLEDEFAULT_SCALEX = 1.0f;
     f32 CUTSUBTITLEDEFAULT_SCALEY = 1.0f;
     f32 CUTSUBTITLEDEFAULT_FITWIDTH = 1.7f;
-    NUFPCOMJMP CutScene_ConfigKeywords[] = {
-        {const_cast<char *>("fpsec"),                        CS_fpsec                       },
-        {const_cast<char *>("no_fog"),                       CS_no_fog                      },
-        {const_cast<char *>("draw_world"),                   CS_draw_world                  },
-        {const_cast<char *>("in_game"),                      CS_in_game                     },
-        {const_cast<char *>("blobshadow_alpha"),             CS_blobshadow_alpha            },
-        {const_cast<char *>("blobshadow_fadenear"),          CS_blobshadow_fadenear         },
-        {const_cast<char *>("blobshadow_fadefar"),           CS_blobshadow_fadefar          },
-        {const_cast<char *>("reflect_range"),                CS_reflect_range               },
-        {const_cast<char *>("render_group"),                 CS_render_group                },
-        {const_cast<char *>("deb_page"),                     CS_deb_page                    },
-        {const_cast<char *>("snap_out"),                     CS_snap_out                    },
-        {const_cast<char *>("wipe_out"),                     CS_wipe_out                    },
-        {const_cast<char *>("new_mode"),                     CS_new_mode                    },
-        {const_cast<char *>("cam_only"),                     CS_cam_only                    },
-        {const_cast<char *>("replace_players"),              CS_replace_players             },
-        {const_cast<char *>("burnout_threshold"),            CS_burnout_threshold           },
-        {const_cast<char *>("burnout_intensity"),            CS_burnout_intensity           },
-        {const_cast<char *>("burnout_flare"),                CS_burnout_flare               },
-        {const_cast<char *>("looping"),                      CS_looping                     },
-        {const_cast<char *>("start_cam"),                    CS_start_cam                   },
-        {const_cast<char *>("super_widescreen"),             CS_super_widescreen            },
-        {const_cast<char *>("go_through_door"),              CS_go_through_door             },
-        {const_cast<char *>("sfx"),                          CS_sfx                         },
-        {const_cast<char *>("play_sfx"),                     CS_play_sfx                    },
-        {const_cast<char *>("goto_level"),                   CS_goto_level                  },
-        {const_cast<char *>("next_cut_scene"),               CS_next_cut_scene              },
-        {const_cast<char *>("holdaudio"),                    CS_hold_audio                  },
-        {const_cast<char *>("hold_audio"),                   CS_hold_audio                  },
-        {const_cast<char *>("level_intro"),                  CS_level_intro                 },
-        {const_cast<char *>("tex_anim"),                     CS_tex_anim                    },
-        {const_cast<char *>("fadefog"),                      CS_fadefog                     },
-        {const_cast<char *>("subtitle"),                     CS_subtitle                    },
-        {const_cast<char *>("play_once"),                    CS_playonce                    },
-        {const_cast<char *>("nextcutscene_inplayablelevel"), CS_nextcutscene_inplayablelevel},
-        {const_cast<char *>("cutsceneplayerobj"),            CS_cutsceneplayerobj           },
-        {const_cast<char *>("cutsceneplayer_obj"),           CS_cutsceneplayerobj           },
-        {const_cast<char *>("nearclip_360"),                 CS_nearclip                    },
-        {const_cast<char *>("farclip_360"),                  CS_farclip                     },
-        {const_cast<char *>("nearclip_pc"),                  CS_nearclip                    },
-        {const_cast<char *>("farclip_pc"),                   CS_farclip                     },
-        {const_cast<char *>("nearclip"),                     CS_nearclip                    },
-        {const_cast<char *>("farclip"),                      CS_farclip                     },
-        {const_cast<char *>("drawgizmosys"),                 CS_draw_gizmo_sys              },
-        {NULL,                                               NULL                           }
-    };
+    NUFPCOMJMP CutScene_ConfigKeywords[] = {{const_cast<char *>("fpsec"), CS_fpsec},
+                                            {const_cast<char *>("no_fog"), CS_no_fog},
+                                            {const_cast<char *>("draw_world"), CS_draw_world},
+                                            {const_cast<char *>("in_game"), CS_in_game},
+                                            {const_cast<char *>("blobshadow_alpha"), CS_blobshadow_alpha},
+                                            {const_cast<char *>("blobshadow_fadenear"), CS_blobshadow_fadenear},
+                                            {const_cast<char *>("blobshadow_fadefar"), CS_blobshadow_fadefar},
+                                            {const_cast<char *>("reflect_range"), CS_reflect_range},
+                                            {const_cast<char *>("render_group"), CS_render_group},
+                                            {const_cast<char *>("deb_page"), CS_deb_page},
+                                            {const_cast<char *>("snap_out"), CS_snap_out},
+                                            {const_cast<char *>("wipe_out"), CS_wipe_out},
+                                            {const_cast<char *>("new_mode"), CS_new_mode},
+                                            {const_cast<char *>("cam_only"), CS_cam_only},
+                                            {const_cast<char *>("replace_players"), CS_replace_players},
+                                            {const_cast<char *>("burnout_threshold"), CS_burnout_threshold},
+                                            {const_cast<char *>("burnout_intensity"), CS_burnout_intensity},
+                                            {const_cast<char *>("burnout_flare"), CS_burnout_flare},
+                                            {const_cast<char *>("looping"), CS_looping},
+                                            {const_cast<char *>("start_cam"), CS_start_cam},
+                                            {const_cast<char *>("super_widescreen"), CS_super_widescreen},
+                                            {const_cast<char *>("go_through_door"), CS_go_through_door},
+                                            {const_cast<char *>("sfx"), CS_sfx},
+                                            {const_cast<char *>("play_sfx"), CS_play_sfx},
+                                            {const_cast<char *>("goto_level"), CS_goto_level},
+                                            {const_cast<char *>("next_cut_scene"), CS_next_cut_scene},
+                                            {const_cast<char *>("holdaudio"), CS_hold_audio},
+                                            {const_cast<char *>("hold_audio"), CS_hold_audio},
+                                            {const_cast<char *>("level_intro"), CS_level_intro},
+                                            {const_cast<char *>("tex_anim"), CS_tex_anim},
+                                            {const_cast<char *>("fadefog"), CS_fadefog},
+                                            {const_cast<char *>("subtitle"), CS_subtitle},
+                                            {const_cast<char *>("play_once"), CS_playonce},
+                                            {const_cast<char *>("nextcutscene_inplayablelevel"), CS_nextcutscene_inplayablelevel},
+                                            {const_cast<char *>("cutsceneplayerobj"), CS_cutsceneplayerobj},
+                                            {const_cast<char *>("cutsceneplayer_obj"), CS_cutsceneplayerobj},
+                                            {const_cast<char *>("nearclip_360"), CS_nearclip},
+                                            {const_cast<char *>("farclip_360"), CS_farclip},
+                                            {const_cast<char *>("nearclip_pc"), CS_nearclip},
+                                            {const_cast<char *>("farclip_pc"), CS_farclip},
+                                            {const_cast<char *>("nearclip"), CS_nearclip},
+                                            {const_cast<char *>("farclip"), CS_farclip},
+                                            {const_cast<char *>("drawgizmosys"), CS_draw_gizmo_sys},
+                                            {NULL, NULL}};
 
     static void CutScene_Configure(CUT_LOAD_RECORD *cut, char *name, VARIPTR *buf, VARIPTR *buf_end) {
         CUT_LOAD_STATE states[32];
@@ -1981,10 +1979,8 @@ extern "C" {
         }
     }
 
-    static CUT_DRAW_LOCATOR_ENTRY cutscene_locatorfns[] = {
-        {const_cast<char *>("blaster"), 0, 0, 0, LocatorFunction_Blaster},
-        {NULL,                          0, 0, 0, NULL                   }
-    };
+    static CUT_DRAW_LOCATOR_ENTRY cutscene_locatorfns[] = {{const_cast<char *>("blaster"), 0, 0, 0, LocatorFunction_Blaster},
+                                                           {NULL, 0, 0, 0, NULL}};
 
     void CutScenes_InitSystem(CUT_DRAW_SETTINGS *system) {
         CutSceneSys = system;

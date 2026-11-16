@@ -192,13 +192,11 @@ typedef struct techno_progress_s { // size 0x8
     u32 visible[1];                // 0x4
 } TECHNO_PROGRESS;
 
-TECHNO_CONFIG TechnoSys = {
-    0.2f,
-    {85, 44, -1, -1},
-    {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
-    {45, 46},
-    {{0.0991f, 0.0f, 0.0762f}, {-0.0991f, 0.0f, 0.0762f}}
-};
+TECHNO_CONFIG TechnoSys = {0.2f,
+                           {85, 44, -1, -1},
+                           {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}},
+                           {45, 46},
+                           {{0.0991f, 0.0f, 0.0762f}, {-0.0991f, 0.0f, 0.0762f}}};
 
 static void Techno_ResetFields(TECHNO_CALLBACK *techno) {
     f32 floor_height;

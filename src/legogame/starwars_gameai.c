@@ -818,13 +818,7 @@ AI_MID_SPECIAL_MOVE starwars_midspecialmovefns[4] = {
     StarWars_MidSpecialMove_UseHatch,
     StarWars_MidSpecialMove_BigJump,
 };
-STARWARS_PREPARE starwars_prepareforspecialmove[8] = {
-    {0x23,       StarWars_PrepareJump        },
-    {0x4,        StarWars_PrepareR2D2Glide   },
-    {0x18,       StarWars_PrepareHatch       },
-    {0x40,       StarWars_PrepareHoverTube   },
-    {0x1000,     StarWars_PrepareBigJump     },
-    {0x8000,     StarWars_PrepareTakeOverJump},
-    {0x20000000, StarWars_PrepareObstacle    },
-    {0,          NULL                        }
-};
+STARWARS_PREPARE starwars_prepareforspecialmove[8] = {{0x23, StarWars_PrepareJump},           {0x4, StarWars_PrepareR2D2Glide},
+                                                      {0x18, StarWars_PrepareHatch},          {0x40, StarWars_PrepareHoverTube},
+                                                      {0x1000, StarWars_PrepareBigJump},      {0x8000, StarWars_PrepareTakeOverJump},
+                                                      {0x20000000, StarWars_PrepareObstacle}, {0, NULL}};

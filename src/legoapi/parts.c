@@ -77,51 +77,51 @@ i32 edpart_superscale = 1;
 char PartNullInstanceName[14] = "NULL instance";
 i32 MAXPARTS = 32;
 ADDPART Default_ADDPART = {
-    0, // matrix
-    0, // position
-    0, // velocity
-    0, // owner
-    0, // recipient
-    0.1f, // unknown_14
-    0.1f, // unknown_18
-    -5.0f, // gravity
-    0.75f, // unknown_20
-    0, // special
-    -1, // part_id
-    0x00000000u, // flags
-    0, // callback_30
-    0, // callback_34
-    0, // callback_38
-    0, // callback_3c
-    0, // callback_40
-    0, // callback_44
-    0, // callback_48
-    0, // callback_4c
-    0, // callback_50
-    0, // callback_54
-    -1, // effect_id_58
-    0, // debris_handle
-    -1, // effect_id_60
-    -1, // effect_id_64
-    60.0f, // unknown_68
-    60.0f, // unknown_6c
-    -1, // effect_id_70
-    -1, // effect_id_74
-    -1, // effect_id_78
-    1.0f, // effect_scale
-    0, // lighting_handle
-    -1, // lighting_id
-    2000000.0f, // unknown_88
-    0.016666668f, // time_step
-    0xffffffffu, // hostility_group
-    0, // lighting_data
-    1.0f, // lighting_scale_x
-    1.0f, // lighting_scale_y
-    1.0f, // lighting_scale_z
-    0.0f, // unknown_a4
+    0,                                    // matrix
+    0,                                    // position
+    0,                                    // velocity
+    0,                                    // owner
+    0,                                    // recipient
+    0.1f,                                 // unknown_14
+    0.1f,                                 // unknown_18
+    -5.0f,                                // gravity
+    0.75f,                                // unknown_20
+    0,                                    // special
+    -1,                                   // part_id
+    0x00000000u,                          // flags
+    0,                                    // callback_30
+    0,                                    // callback_34
+    0,                                    // callback_38
+    0,                                    // callback_3c
+    0,                                    // callback_40
+    0,                                    // callback_44
+    0,                                    // callback_48
+    0,                                    // callback_4c
+    0,                                    // callback_50
+    0,                                    // callback_54
+    -1,                                   // effect_id_58
+    0,                                    // debris_handle
+    -1,                                   // effect_id_60
+    -1,                                   // effect_id_64
+    60.0f,                                // unknown_68
+    60.0f,                                // unknown_6c
+    -1,                                   // effect_id_70
+    -1,                                   // effect_id_74
+    -1,                                   // effect_id_78
+    1.0f,                                 // effect_scale
+    0,                                    // lighting_handle
+    -1,                                   // lighting_id
+    2000000.0f,                           // unknown_88
+    0.016666668f,                         // time_step
+    0xffffffffu,                          // hostility_group
+    0,                                    // lighting_data
+    1.0f,                                 // lighting_scale_x
+    1.0f,                                 // lighting_scale_y
+    1.0f,                                 // lighting_scale_z
+    0.0f,                                 // unknown_a4
     {0x0u, 0x0u, 0x0u, 0x0u, 0x0u, 0x0u}, // unknown_a8
-    1.0f, // unknown_c0
-    0, // unknown_c4
+    1.0f,                                 // unknown_c0
+    0,                                    // unknown_c4
 };
 i32 part_slot_cursor = -1;
 f32 PartCollisionInterval = 0.1f;
@@ -1033,13 +1033,13 @@ DEBRIS_INFO DebrisNullEffect = {
     0.0f,
     0.0f,
     {{0.0f, 64, 64, 64, 0},
-      {1.0f, 0, 0, 0, 0},
-      {0.0f, 0, 0, 0, 0},
-      {0.0f, 0, 0, 0, 0},
-      {0.0f, 0, 0, 0, 0},
-      {0.0f, 0, 0, 0, 0},
-      {0.0f, 0, 0, 0, 0},
-      {0.0f, 0, 0, 0, 0}},
+     {1.0f, 0, 0, 0, 0},
+     {0.0f, 0, 0, 0, 0},
+     {0.0f, 0, 0, 0, 0},
+     {0.0f, 0, 0, 0, 0},
+     {0.0f, 0, 0, 0, 0},
+     {0.0f, 0, 0, 0, 0},
+     {0.0f, 0, 0, 0, 0}},
     {{0.0f, 64.0f}, {1.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}, {0.0f, 0.0f}},
     0.125f,
     0.125f,
@@ -1081,8 +1081,7 @@ DEBRIS_INFO DebrisNullEffect = {
     0.0f,
     0.5f,
     1.0f,
-    0
-};
+    0};
 i32 DebrisSuspendDrawObjectSwitch = -1;
 f32 debris_render_scale = 1.0f;
 i32 PartLevelPage = 1;

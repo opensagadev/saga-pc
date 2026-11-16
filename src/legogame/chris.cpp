@@ -195,25 +195,12 @@ extern "C" {
     NUVEC4 DogfightDrawScale = {0.0f, 0.0f, 0.0f, 0.0f};
     f32 DogfightResetTimer = 0.0f;
     DOGFIGHT_ACTION DogfightAnakinActions[10] = {
-        {0, 1.0f},
-        {2, 7.5f},
-        {0, 1.5f},
-        {2, 7.5f},
-        {0, 7.5f},
-        {1, 8.0f},
-        {0, 4.0f},
-        {1, 8.0f},
-        {0, 8.0f},
-        {3, 0.0f},
+        {0, 1.0f}, {2, 7.5f}, {0, 1.5f}, {2, 7.5f}, {0, 7.5f}, {1, 8.0f}, {0, 4.0f}, {1, 8.0f}, {0, 8.0f}, {3, 0.0f},
     };
     DOGFIGHT_DOOR DogfightDoors[7] = {
-        {"door_to_a2", 33.0359993f, 11.5f      },
-        {"door_to_a3", 121.769997f, 31.2399998f},
-        {"door_to_b",  196.729996f, 60.3320007f},
-        {"door_to_b2", 334.369995f, 97.558197f },
-        {"door_to_c",  435.119995f, 131.429993f},
-        {"door_to_c1", 508.679993f, 147.050003f},
-        {"door_to_c2", 583.72998f,  167.5f     },
+        {"door_to_a2", 33.0359993f, 11.5f},      {"door_to_a3", 121.769997f, 31.2399998f}, {"door_to_b", 196.729996f, 60.3320007f},
+        {"door_to_b2", 334.369995f, 97.558197f}, {"door_to_c", 435.119995f, 131.429993f},  {"door_to_c1", 508.679993f, 147.050003f},
+        {"door_to_c2", 583.72998f, 167.5f},
     };
 
     extern void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity);
@@ -225,15 +212,8 @@ extern "C" {
 
     f32 DogfightSpeedRate = 0.25f;
     DOGFIGHT_SPEEDUP DogfightSpeedList[9] = {
-        {58.0f,  0.5f},
-        {72.0f,  1.0f},
-        {174.0f, 0.5f},
-        {183.0f, 1.0f},
-        {207.0f, 0.5f},
-        {220.0f, 1.0f},
-        {313.0f, 0.5f},
-        {335.0f, 1.0f},
-        {0.0f,   0.0f},
+        {58.0f, 0.5f},  {72.0f, 1.0f},  {174.0f, 0.5f}, {183.0f, 1.0f}, {207.0f, 0.5f},
+        {220.0f, 1.0f}, {313.0f, 0.5f}, {335.0f, 1.0f}, {0.0f, 0.0f},
     };
 
     f32 DogfightWingSpeed = 35.0f;
@@ -334,21 +314,21 @@ extern "C" {
 
     /* Anakin C door pairs; the table ends with an empty name. */
     anakin_door_setup_s DoorSetupList[15] = {
-        {"door1",  "door1r",  15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door2",  "door2r",  15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
-        {"door3",  "door3r",  15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
-        {"door4",  "door4r",  15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door5",  "door5r",  15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
-        {"door6",  "door6r",  15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door7",  "door7r",  15.0f, 1.0f, 0, {0}, {1.0f, 1.0f, 0.0f},  -0.5f, 0.0f},
-        {"door8",  "door8r",  15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
-        {"door9",  "door9r",  15.0f, 1.0f, 0, {0}, {0.0f, 1.0f, 0.0f},  -0.5f, 0.0f},
+        {"door1", "door1r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door2", "door2r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door3", "door3r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door4", "door4r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door5", "door5r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door6", "door6r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
+        {"door7", "door7r", 15.0f, 1.0f, 0, {0}, {1.0f, 1.0f, 0.0f}, -0.5f, 0.0f},
+        {"door8", "door8r", 15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
+        {"door9", "door9r", 15.0f, 1.0f, 0, {0}, {0.0f, 1.0f, 0.0f}, -0.5f, 0.0f},
         {"door10", "door10r", 15.0f, 1.0f, 0, {0}, {0.0f, -1.0f, 0.0f}, -0.5f, 0.0f},
-        {"door11", "door11r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
+        {"door11", "door11r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
         {"door12", "door12r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"door15", "door15r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f},  -0.5f, 0.0f},
+        {"door15", "door15r", 15.0f, 1.0f, 0, {0}, {1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
         {"door16", "door16r", 15.0f, 1.0f, 0, {0}, {-1.0f, 0.0f, 0.0f}, -0.5f, 0.0f},
-        {"",       NULL,      0.0f,  0.0f, 0, {0}, {0.0f, 0.0f, 0.0f},  0.0f,  0.0f},
+        {"", NULL, 0.0f, 0.0f, 0, {0}, {0.0f, 0.0f, 0.0f}, 0.0f, 0.0f},
     };
 
     /* PC file records share the established 0x530-byte evaluator layout. */

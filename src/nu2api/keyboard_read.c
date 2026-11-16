@@ -181,33 +181,31 @@ void do_mouse_flymode_camera(edcam_s *camera, f32 delta_time) {
     }
 }
 
-edcam_s edcam_default = {
-    {0.0f, 0.0f, 0.0f},
-    0,
-    0,
-    -2.0f,
-    {0.0f, 0.0f, 0.0f},
-    {0.0f, 0.0f, 0.0f},
-    {1.0f, 1.0f, 1.0f},
-    1,
-    1,
-    {0.0f, 0.0f, 0.0f},
-    0,
-    0,
-    {0.0015625f, 0.0015625f, 0.0015625f},
-    2,
-    2,
-    0.0078125f,
-    0.5f,
-    0.2f,
-    0.2f,
-    4.0f,
-    0.15f,
-    0.2f,
-    0.01f,
-    0.1f,
-    {0x3f}
-};
+edcam_s edcam_default = {{0.0f, 0.0f, 0.0f},
+                         0,
+                         0,
+                         -2.0f,
+                         {0.0f, 0.0f, 0.0f},
+                         {0.0f, 0.0f, 0.0f},
+                         {1.0f, 1.0f, 1.0f},
+                         1,
+                         1,
+                         {0.0f, 0.0f, 0.0f},
+                         0,
+                         0,
+                         {0.0015625f, 0.0015625f, 0.0015625f},
+                         2,
+                         2,
+                         0.0078125f,
+                         0.5f,
+                         0.2f,
+                         0.2f,
+                         4.0f,
+                         0.15f,
+                         0.2f,
+                         0.01f,
+                         0.1f,
+                         {0x3f}};
 edcam_s *gp_cam = &edcam_default;
 
 void edcamMoveEx(FRAME_PAD *pad, f32 delta_time) {

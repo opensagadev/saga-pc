@@ -684,17 +684,15 @@ i32 Customiser_GetIcon(CUSTOMISER_CONFIG *customiser, const void *save_input, i3
     return PCArcadeUnpairedIconModel;
 }
 
-static CUSTOM_CATEGORY_CONFIG CustomiserSetDataPrivate[9] = {
-    {"hat_hair",    1, -1, {1, 0}, "chars\\weirdo\\all\\hat_hair_all.gsc"},
-    {"head",        1, -1, {0, 0}, "chars\\weirdo\\all\\head_all.gsc"    },
-    {NULL,          0, -1, {0, 0}, NULL                                  },
-    {"arm",         0, 2,  {1, 0}, NULL                                  },
-    {"hand",        0, 4,  {0, 0}, NULL                                  },
-    {"cape",        0, 3,  {2, 0}, NULL                                  },
-    {"body",        0, 1,  {3, 0}, NULL                                  },
-    {"under_pants", 0, 6,  {1, 0}, NULL                                  },
-    {"leg",         0, 5,  {2, 0}, NULL                                  }
-};
+static CUSTOM_CATEGORY_CONFIG CustomiserSetDataPrivate[9] = {{"hat_hair", 1, -1, {1, 0}, "chars\\weirdo\\all\\hat_hair_all.gsc"},
+                                                             {"head", 1, -1, {0, 0}, "chars\\weirdo\\all\\head_all.gsc"},
+                                                             {NULL, 0, -1, {0, 0}, NULL},
+                                                             {"arm", 0, 2, {1, 0}, NULL},
+                                                             {"hand", 0, 4, {0, 0}, NULL},
+                                                             {"cape", 0, 3, {2, 0}, NULL},
+                                                             {"body", 0, 1, {3, 0}, NULL},
+                                                             {"under_pants", 0, 6, {1, 0}, NULL},
+                                                             {"leg", 0, 5, {2, 0}, NULL}};
 
 CUSTOMISER_CONFIG *Game_Customiser = 0;
 

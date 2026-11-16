@@ -40,15 +40,7 @@ extern "C" i32 RadFmvCheckFormat(GRAPHICS_FACTORY *factory, u32 format, u32 disp
 }
 
 extern "C" i32 RadFmvInitializeFormats(GRAPHICS_FACTORY *factory, u32 display_format, RADFMV_CONTEXT *context) {
-    const u32 formats[7][4] = {
-        {22, 0, 4, 0},
-        {20, 8, 3, 0},
-        {23, 3, 2, 0},
-        {24, 2, 2, 0},
-        {21, 1, 4, 1},
-        {26, 5, 2, 1},
-        {25, 4, 2, 1}
-    };
+    const u32 formats[7][4] = {{22, 0, 4, 0}, {20, 8, 3, 0}, {23, 3, 2, 0}, {24, 2, 2, 0}, {21, 1, 4, 1}, {26, 5, 2, 1}, {25, 4, 2, 1}};
     u32 i;
     for (i = 0; i < sizeof(formats) / sizeof(formats[0]); ++i) {
         if (RadFmvCheckFormat(factory, formats[i][0], display_format)) {
