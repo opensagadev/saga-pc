@@ -74,12 +74,9 @@ The baseline list is `matching.json` at 5717c76e: take the names with `exact_mat
 
 ## Where everything is
 
-- **main** (30f4fec2e): the proven passes, and the NuInitHardware setup-tag macros.
-  - main has the final NuInitHardware text. The branch carries an earlier version of it: `0X4x` enum members, and no `docs/pc-names.md` entry. Take main's version of those files when merging.
-- **cleanup/quick-run**: the quick run's landed batches, this report, and the gameapi refix (3 functions back to exact). The proof on the branch reads about 13,501 exact functions, against 13,516 on main. The refix list above still applies, apart from the gameapi rows.
-- **Parked work** that is built but was not gated onto the branch. Rebase each one onto cleanup/quick-run and run the quick gate:
-  - `cleanup/parked-saga-pc-b`: nu2api, 13 commits. Macros, declarations, views and field names; its match was never measured.
-  - `cleanup/parked-saga-pc-b2`: legoapi, 3 commits. The weapon-rate view and about 70 field names.
-  - `cleanup/parked-saga-pc-c2`: legogame, 3 commits. 54 declarations moved into headers, which fails the standalone header check (13 headers).
-  - `cleanup/parked-saga-pc-c2w`: legogame, 3 commits that never went through a gate. Customise, the hub pad readers, and the episode I countdown.
-- **Worktrees:** all quick-run worktrees are removed. The older worktrees saga-pc-a, saga-pc-b2 (work/gate-speed) and saga-pc-c are untouched.
+- **main** (46c0d6aed) has the quick run merged, as the owner asked: fix all the issues first in a quick run, then check what dropped and refix that.
+  - Exact functions: 13,516 before the quick run, 13,502 after (proof). Data symbols: 17,063 before and after.
+  - The 14 dropped functions are the refix list above: mainly move.c, plus a few in legoapi. The gameapi rows are already fixed.
+  - Counts that rose carry "quick run, settled in the refix" lines in config/budget-raises.txt, including 8 module headers that no longer compile standalone.
+- **Parked**, not merged, because they never went through a gate: `cleanup/parked-saga-pc-b` (nu2api, 13 commits), `-b2` (legoapi, 3 commits), `-c2` (legogame, 3 commits; fails the standalone check) and `-c2w` (legogame, 3 commits). Rebase each one onto main and run the push gate.
+- **cleanup/quick-run** is merged into main and can be deleted once the owner agrees.
