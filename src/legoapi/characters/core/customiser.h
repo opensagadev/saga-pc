@@ -2,7 +2,9 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/items/base/animpacket.h"
 #include "nu2api/nu3d/nuhspecial.h"
+#include "nu2api/numath/numtx.h"
 
 struct CHARACTER_MODEL_LAYERS;
 struct customiser_config_s;
@@ -21,21 +23,32 @@ typedef struct CUSTOMPIECE_LAYERS { // size 0x28
     u8 unknown_13[0x15];            // 0x13
 } CUSTOMPIECE_LAYERS;
 
+/* Customiser animation packets are allocated with a 0x48 stride: an ANIMPACKET and four more bytes. */
+typedef struct customiser_anim_packet_s { // size 0x48
+    ANIMPACKET packet;                    // 0x00
+    u8 unknown_44[4];                     // 0x44
+} CUSTOMISER_ANIM_PACKET;
+
 typedef struct customiser_config_s {                // size 0xc98
     struct custom_category_config_s *categories[9]; // 0x000
     struct custom_piece_config_s *piece_sets[9];    // 0x024
     i32 piece_counts[9];                            // 0x048
     i16 character_ids[2];                           // 0x06c
-    u8 unknown_70[0x100];                           // 0x070
+    char display_names[2][128];                     // 0x070
     i32 (*piece_available)(CUSTOMPIECE_LAYERS *);   // 0x170
     struct custom_save_config_s *save;              // 0x174
-    u8 unknown_178[0xd8];                           // 0x178
+    CUSTOMISER_ANIM_PACKET animation_packets[2];    // 0x178
+    i32 model_texture_ids[18];                      // 0x208
     i8 locator_indices[9];                          // 0x250
     u8 unknown_259[3];                              // 0x259
     i8 layer_indices[9];                            // 0x25c
-    u8 unknown_265[0x803];                          // 0x265
+    u8 unknown_265[3];                              // 0x265
+    NUMTX joint_matrices[2][16];                    // 0x268
     u16 *animation_ids_to_load;                     // 0xa68
-    u8 unknown_a6c[0x1bc];                          // 0xa6c
+    u8 animation_active[2];                         // 0xa6c
+    u8 animation_state[2];                          // 0xa6e
+    f32 animation_values[2];                        // 0xa70
+    u8 unknown_a78[0x1b0];                          // 0xa78
     u16 default_pieces[2][10];                      // 0xc28
     f32 locator_x_offsets[9];                       // 0xc50
     f32 locator_y_offsets[9];                       // 0xc74

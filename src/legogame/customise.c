@@ -53,12 +53,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct customiser_names_s {
-    u8 unknown_00[0x6c];
-    i16 character_ids[2];
-    char display_names[2][128];
-} CUSTOMISER_NAMES;
-
 typedef struct customiser_game_setting_s {
     char *name;
     u32 model_flags;
@@ -75,24 +69,6 @@ typedef struct custom_piece_anim_s {
     u16 current_angle;
     u8 unknown_12[2];
 } CUSTOM_PIECE_ANIM;
-
-/* Native customiser packet allocation stride is 0x48; canonical API view
- * currently covers offsets 0..0x43. Preserve its unknown four-byte tail. */
-typedef struct customiser_anim_packet_s {
-    ANIMPACKET packet;
-    u8 unknown_44[4];
-} CUSTOMISER_ANIM_PACKET;
-
-typedef struct customiser_update_s {
-    u8 unknown_00[0x178];
-    CUSTOMISER_ANIM_PACKET animation_packets[2];
-    u8 unknown_208[0x60];
-    NUMTX joint_matrices[2][16];
-    u8 unknown_a68[4];
-    u8 animation_active[2];
-    u8 animation_state[2];
-    f32 animation_values[2];
-} CUSTOMISER_UPDATE;
 
 typedef struct custom_resource_update_s {
     u8 unknown_00[0x14];
@@ -117,16 +93,6 @@ i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMT
 void Hub_ClearStats(void);
 void Text_FillInExtendedSaveInfo(void);
 i32 TriggerAutoSave(void);
-
-/* 424750/92. Can share the fuller Customiser canonical type once integrated. */
-typedef struct hub_customiser_menu_reader_s {
-    u8 unknown_00[0x6c];
-    i16 character_ids[2];
-    u8 unknown_70[0x142];
-    i16 first_animation;
-    u8 unknown_1b4[0x46];
-    i16 second_animation;
-} HUB_CUSTOMISER_MENU_READER;
 
 static void CustomiserMtxSetRotateZ(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -267,17 +233,16 @@ void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR *parser) {
 }
 
 void Customiser_InitNames(CUSTOMISER_CONFIG *customiser) {
-    CUSTOMISER_NAMES *view = (CUSTOMISER_NAMES *)customiser;
     i32 index;
     if (customiser == NULL) {
         return;
     }
     for (index = 0; index < 2; ++index) {
-        if (view->character_ids[index] != -1) {
-            i32 text = CDataList[view->character_ids[index]].name_id;
+        if (customiser->character_ids[index] != -1) {
+            i32 text = CDataList[customiser->character_ids[index]].name_id;
             if (text != -1) {
-                NuStrCpy(view->display_names[index], TTab[text]);
-                TTab[text] = view->display_names[index];
+                NuStrCpy(customiser->display_names[index], TTab[text]);
+                TTab[text] = customiser->display_names[index];
             }
         }
     }
@@ -286,7 +251,6 @@ void Customiser_InitNames(CUSTOMISER_CONFIG *customiser) {
 /* 00423c30 / 874. Native contains class/name-part accumulation even though
  * the final displayed name is the generic stranger label. */
 void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
-    CUSTOMISER_NAMES *names = (CUSTOMISER_NAMES *)customiser;
     i32 best = -1;
     i32 side;
     i32 category;
@@ -307,7 +271,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
         if (index != -1 && side != index) {
             continue;
         }
-        names->display_names[side][0] = 0;
+        customiser->display_names[side][0] = 0;
         third = NULL;
         parts[1].piece = NULL;
         parts[0].piece = NULL;
@@ -344,7 +308,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
                 best = group;
             }
         }
-        sprintf(names->display_names[side], "%s %i", TTab[dat_00880fa0], side + 1);
+        sprintf(customiser->display_names[side], "%s %i", TTab[dat_00880fa0], side + 1);
         CDataList[customiser->character_ids[side]].icon_model = (i16)Customiser_GetIcon(customiser, &Game.customiser_start[side], side);
     }
 }
@@ -403,17 +367,16 @@ static f32 CustomiseNameLetterBlipScale[2] = {0};
 
 /* 00424040 / 775 */
 void Customiser_Init(CUSTOMISER_CONFIG *customiser) {
-    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
     i32 side;
     i32 category;
     if (customiser == NULL) {
         return;
     }
     for (side = 0; side < 2; ++side) {
-        ResetAnimPacket(&runtime->animation_packets[side].packet, -1);
-        runtime->animation_active[side] = 0;
-        runtime->animation_values[side] = 0.0f;
-        runtime->animation_state[side] = 2;
+        ResetAnimPacket(&customiser->animation_packets[side].packet, -1);
+        customiser->animation_active[side] = 0;
+        customiser->animation_values[side] = 0.0f;
+        customiser->animation_state[side] = 2;
         CustomiseMode[side] = 2;
     }
     if (WORLD->camera_splines[18] != NULL) {
@@ -470,17 +433,16 @@ static f32 CustomiseMenuTime[2] = {0};
 f32 BlipU[2] = {0};
 
 void Customiser_Reset(CUSTOMISER_CONFIG *customiser) {
-    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
     i32 side;
     if (customiser == NULL) {
         return;
     }
     for (side = 0; side < 2; ++side) {
         CustomiseMenuTime[side] = 0.0f;
-        ResetAnimPacket(&runtime->animation_packets[side].packet, -1);
-        runtime->animation_active[side] = 0;
-        runtime->animation_values[side] = 0.0f;
-        runtime->animation_state[side] = 2;
+        ResetAnimPacket(&customiser->animation_packets[side].packet, -1);
+        customiser->animation_active[side] = 0;
+        customiser->animation_values[side] = 0.0f;
+        customiser->animation_state[side] = 2;
     }
 }
 
@@ -575,17 +537,18 @@ void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count) {
 }
 
 i32 Customiser_MenuAvailable(CUSTOMISER_CONFIG *customiser) {
-    HUB_CUSTOMISER_MENU_READER *c = (HUB_CUSTOMISER_MENU_READER *)customiser;
-    if (c == NULL || APICharacterLoaded(c->character_ids[0]) == NULL) {
+    if (customiser == NULL || APICharacterLoaded(customiser->character_ids[0]) == NULL) {
         return 0;
     }
-    if (c->first_animation != 190 && c->first_animation != 99) {
+    if (customiser->animation_packets[0].packet.requested_animation != 190 &&
+        customiser->animation_packets[0].packet.requested_animation != 99) {
         return 0;
     }
-    if (APICharacterLoaded(c->character_ids[1]) == NULL) {
+    if (APICharacterLoaded(customiser->character_ids[1]) == NULL) {
         return 0;
     }
-    return c->second_animation == 190 || c->second_animation == 99;
+    return customiser->animation_packets[1].packet.requested_animation == 190 ||
+           customiser->animation_packets[1].packet.requested_animation == 99;
 }
 
 i32 Customise_GetToggleString(i32 index) {
@@ -1012,7 +975,6 @@ static f32 CustomiseHeadOffset = 0.21f;
 char CustomiseLetter[39] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ- 0123456789";
 
 void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
-    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)customiser;
     /* Native conversions must all happen before the NULL test. */
     const i32 rotation_step = (i32)(10922.0 * FRAMETIME);
     const i32 tilt_x_step = (i32)(12379.0 * FRAMETIME);
@@ -1080,27 +1042,27 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
             continue;
         }
         saber_colour = LightSabre_ColourFromObj(customiser->piece_sets[2][Game.customiser_start[side].pieces[2]].weapon_model, NULL);
-        if (runtime->animation_state[side] > 0) {
-            --runtime->animation_state[side];
+        if (customiser->animation_state[side] > 0) {
+            --customiser->animation_state[side];
         }
-        packet = &runtime->animation_packets[side].packet;
-        if (runtime->animation_active[side] == 0 && model->model_data_b[intro = saber_colour == -1 ? 0x62 : 0x61] != NULL) {
-            if (runtime->animation_values[side] == 0.0f) {
-                runtime->animation_values[side] = AnimDuration(model->model_id, intro, 0.0f, 0.0f, 1);
+        packet = &customiser->animation_packets[side].packet;
+        if (customiser->animation_active[side] == 0 && model->model_data_b[intro = saber_colour == -1 ? 0x62 : 0x61] != NULL) {
+            if (customiser->animation_values[side] == 0.0f) {
+                customiser->animation_values[side] = AnimDuration(model->model_id, intro, 0.0f, 0.0f, 1);
             } else {
-                runtime->animation_values[side] -= FRAMETIME;
-                if (runtime->animation_values[side] <= 0.0f) {
-                    runtime->animation_active[side] = 1;
+                customiser->animation_values[side] -= FRAMETIME;
+                if (customiser->animation_values[side] <= 0.0f) {
+                    customiser->animation_active[side] = 1;
                 }
             }
         } else {
-            runtime->animation_active[side] = 1;
+            customiser->animation_active[side] = 1;
         }
         packet->previous_animation = packet->animation_index;
         if (saber_colour != -1) {
-            packet->requested_animation = runtime->animation_active[side] == 0 ? 0x61 : 0xbe;
+            packet->requested_animation = customiser->animation_active[side] == 0 ? 0x61 : 0xbe;
         } else {
-            packet->requested_animation = runtime->animation_active[side] == 0 ? 0x62 : 0x63;
+            packet->requested_animation = customiser->animation_active[side] == 0 ? 0x62 : 0x63;
         }
         UpdateAnimPacket(model, packet, (f64)FRAMETIME * 30.0, 0.0f, FRAMETIME, 0.0f);
         angle = CustomiseYRot[side] + 0xc000;
@@ -1112,7 +1074,7 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
                 (locator = customiser->locator_indices[category]) != -1 && model->points_of_interest[locator] != NULL) {
                 NUVEC position;
-                position = *(NUVEC *)&runtime->joint_matrices[side][locator].m30;
+                position = *(NUVEC *)&customiser->joint_matrices[side][locator].m30;
                 message.text = InitAsciiLeft;
                 message.unknown_4f = 2;
                 if (customiser->locator_x_offsets[category] != 0.0f) {
@@ -1160,7 +1122,6 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
 void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     CUSTOMISER_CONFIG *customiser = input;
-    CUSTOMISER_UPDATE *runtime = (CUSTOMISER_UPDATE *)input;
     i32 active_side;
     i32 active_count;
     i32 preview_side;
@@ -1183,7 +1144,7 @@ void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
         RTL_DATA light_data;
         NUMTX matrix;
         u32 mask;
-        if (model == NULL || runtime->animation_state[side] > 0) {
+        if (model == NULL || customiser->animation_state[side] > 0) {
             continue;
         }
         character = &GCDataList[character_id];
@@ -1198,8 +1159,8 @@ void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
         mask = CustomiserPreviewLayerMask(customiser, Game.customiser_start[side].pieces, selected, character);
         NuMtxSetRotationY(&matrix, CustomiseYRot[side] + 0x8000);
         NuMtxTranslate(&matrix, &CustomisePos[side]);
-        if (GameDrawCharacterModel(model, &runtime->animation_packets[side].packet, &matrix, NULL, NULL, runtime->joint_matrices[side],
-                                   NULL, mask) == 0) {
+        if (GameDrawCharacterModel(model, &customiser->animation_packets[side].packet, &matrix, NULL, NULL,
+                                   customiser->joint_matrices[side], NULL, mask) == 0) {
             continue;
         }
         if (helmet != -1) {
@@ -1221,7 +1182,7 @@ void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
                 } else if (category == 0 && (piece->availability_flags & CUSTOM_PIECE_HAT_OFF) != 0) {
                     continue;
                 }
-                matrix = runtime->joint_matrices[side][helmet];
+                matrix = customiser->joint_matrices[side][helmet];
                 if (category == 0) {
                     NuMtxPreTranslate(&matrix, &CustomiseNoHatPos[side]);
                 }
@@ -1243,7 +1204,7 @@ void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
             if (object->active != 0) {
                 i32 blade;
                 nuhspecial_s *special;
-                matrix = runtime->joint_matrices[side][hand];
+                matrix = customiser->joint_matrices[side][hand];
                 NuSpecialDrawAt(&object->special, &matrix);
                 if (LightSabre_ColourFromObj(weapon->weapon_model, &blade) != -1) {
                     if (blade != -1) {

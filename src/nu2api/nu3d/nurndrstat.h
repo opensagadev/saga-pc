@@ -8,14 +8,16 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+/* The first 0x34 bytes hold the current ids in NURNDRLIBSTATE's layout; a display list's state is brought up
+   to date by comparing its ids with these. */
 typedef struct nuglobalrndrstate_s { // size 0x1a4
     u8 unknown_0000[8];              // 0x000
-    i32 state_0008;                  // 0x008
+    i32 mtl;                         // 0x008
     u8 unknown_000c[8];              // 0x00c
-    i32 state_0014;                  // 0x014
+    i32 tex_id;                      // 0x014
     u8 unknown_0018[6];              // 0x018
-    u16 counter_001e;                // 0x01e
-    u32 counter_0020;                // 0x020
+    u16 konst_id;                    // 0x01e
+    u32 global_id;                   // 0x020
     u16 lights_id;                   // 0x024
     u16 unknown_0026[3];             // 0x026
     u16 camera_id;                   // 0x02c

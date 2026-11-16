@@ -1548,7 +1548,7 @@ typedef struct gameobject_s { // size 0x10d8
     f32 collision_scale_override;              // 0x102c
     f32 terrain_impact_speed;                  // 0x1030
     f32 animation_speed_multiplier;            // 0x1034
-    f32 unknown_1038;                          // 0x1038
+    f32 pod_boost_timer;                       // 0x1038
     f32 fall_acceleration_timer;               // 0x103c
     void *cable;                               // 0x1040
     u32 flags_1044;                            // 0x1044

@@ -36,15 +36,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct customiser_anims_load_s {
-    u8 unknown_00[0x6c];
-    i16 character_ids[2];
-    u8 unknown_70[0x198];
-    i32 model_texture_ids[18];
-    u8 unknown_250[0x818];
-    u16 *animation_ids_to_load;
-} CUSTOMISER_ANIMS_LOAD;
-
 typedef struct custom_accessory_hierarchy_s {
     u8 unknown_00[0xc];
     NUMTL **materials;
@@ -113,8 +104,7 @@ static i32 CustomiserFindSetFromNamePrivate(char *name) {
     return -1;
 }
 
-void Customiser_SetAnimsToLoad(CUSTOMISER_CONFIG *input, i32 enabled) {
-    CUSTOMISER_ANIMS_LOAD *customiser = (CUSTOMISER_ANIMS_LOAD *)input;
+void Customiser_SetAnimsToLoad(CUSTOMISER_CONFIG *customiser, i32 enabled) {
     i32 character;
     if (customiser == NULL) {
         return;
@@ -528,8 +518,7 @@ void Customiser_DumpAll(void *input, WORLDINFO *world) {
     }
 }
 
-void Customiser_ResetModelTextureIDs(CUSTOMISER_CONFIG *input) {
-    CUSTOMISER_ANIMS_LOAD *customiser = (CUSTOMISER_ANIMS_LOAD *)input;
+void Customiser_ResetModelTextureIDs(CUSTOMISER_CONFIG *customiser) {
     i32 side;
     i32 category;
     if (customiser == NULL) {
@@ -544,7 +533,6 @@ void Customiser_ResetModelTextureIDs(CUSTOMISER_CONFIG *input) {
 
 void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS *model) {
     CUSTOMISER_CONFIG *customiser = input;
-    CUSTOMISER_ANIMS_LOAD *textures = input;
     i32 side;
     i32 category;
     i32 material;
@@ -559,7 +547,7 @@ void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS *model) 
             for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->material_count; ++material) {
                 NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material];
                 if (((CUSTOM_ACCESSORY_MATERIAL *)entry)->material_tag == customiser->categories[category]->material_tag) {
-                    textures->model_texture_ids[side * 9 + category] = entry->texture_id;
+                    customiser->model_texture_ids[side * 9 + category] = entry->texture_id;
                 }
             }
         }
@@ -568,7 +556,6 @@ void Customiser_SaveModelTextureIDs(void *input, CHARACTER_MODEL_LAYERS *model) 
 
 void Customiser_RestoreModelTextureIDs(void *input) {
     CUSTOMISER_CONFIG *customiser = input;
-    CUSTOMISER_ANIMS_LOAD *textures = input;
     i32 side;
     i32 category;
     i32 material;
@@ -581,14 +568,14 @@ void Customiser_RestoreModelTextureIDs(void *input) {
             continue;
         }
         for (category = 0; category < 9; ++category) {
-            if (textures->model_texture_ids[side * 9 + category] == 0) {
+            if (customiser->model_texture_ids[side * 9 + category] == 0) {
                 continue;
             }
             for (material = 0; material < ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->material_count; ++material) {
                 NUMTL *entry = ((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material];
                 if (((CUSTOM_ACCESSORY_MATERIAL *)entry)->material_tag == customiser->categories[category]->material_tag) {
                     ((CUSTOM_ACCESSORY_MATERIAL *)((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material])->texture_id =
-                        (i16)textures->model_texture_ids[side * 9 + category];
+                        (i16)customiser->model_texture_ids[side * 9 + category];
                     NuMtlUpdate(((CUSTOM_ACCESSORY_HIERARCHY *)model->hierarchy)->materials[material]);
                 }
             }

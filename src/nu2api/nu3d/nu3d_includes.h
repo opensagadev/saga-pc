@@ -185,15 +185,19 @@ typedef struct nuprim_vertex_group_source_s { // size 0x8
 } NUPRIM_VERTEX_GROUP_SOURCE;
 
 typedef struct nurndrlibstate_s { // size 0x34
-    u8 opaque_00_08[0x8];         // 0x00
+    u32 unknown_00[2];            // 0x00
     struct numtl_s *mtl;          // 0x08
-    u8 opaque_0c_14[0x8];         // 0x0c
+    u32 unknown_0c[2];            // 0x0c
     i32 tex_id;                   // 0x14
-    u8 opaque_18_1e[0x6];         // 0x18
+    u16 unknown_18;               // 0x18
+    u16 unknown_1a;               // 0x1a
+    u16 unknown_1c;               // 0x1c
     i16 konst_id;                 // 0x1e
     i32 global_id;                // 0x20
     i16 lights_id;                // 0x24
-    u8 opaque_26_2c[0x6];         // 0x26
+    u16 unknown_26;               // 0x26
+    u16 unknown_28;               // 0x28
+    u16 unknown_2a;               // 0x2a
     i16 camera_id;                // 0x2c
     i16 fog_id;                   // 0x2e
     i16 vertex_groups_id;         // 0x30

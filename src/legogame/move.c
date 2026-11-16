@@ -281,17 +281,14 @@ typedef struct vehicle_joint_view_s {
     u8 joint_count;
 } VEHICLE_JOINT_VIEW;
 
+/* SmartBombCode's timer is GAMEOBJECT.combo_input_timer (0xd4c), which vehicles do not use otherwise. Accessed
+   through GAMEOBJECT itself, VC8 swaps the operands of the two fadd instructions, so the function keeps this view. */
 typedef struct VEHICLE_WEAPONS_STATE {
     u8 unknown_000[0xd24];
     f32 ground_contact_grace_timer;
     u8 unknown_d28[0x24];
     f32 smartbomb_timer;
 } VEHICLE_WEAPONS_STATE;
-
-typedef struct pod_boost_view_s {
-    u8 unknown_0000[0x1038];
-    f32 boost_timer;
-} POD_BOOST_VIEW;
 
 typedef struct FORCE_ATTENTION {
     u8 unknown_000[0xc5c];
@@ -8276,7 +8273,6 @@ void CatchUpCode(GAMEOBJECT *object, f32 divisor, f32 maximum, i32 mode) {
 }
 
 static void PodBoostCode(GAMEOBJECT *object) {
-    POD_BOOST_VIEW *pod = (POD_BOOST_VIEW *)object;
     if (object->player_index == -1) {
         return;
     }
@@ -8289,17 +8285,17 @@ static void PodBoostCode(GAMEOBJECT *object) {
         } else {
             object->current_speed_mul = PodSprintBoostSpeed;
         }
-        pod->boost_timer = 1.0f;
+        object->pod_boost_timer = 1.0f;
         if ((object->flags_e20 & 1) == 0) {
             PlaySfx("PodX_Booster", &object->collision_position);
             object->flags_e20 |= 1;
         }
     } else {
         object->flags_e20 &= ~1u;
-        if (pod->boost_timer > 0.0f) {
-            pod->boost_timer -= FRAMETIME;
-            if (pod->boost_timer < 0.0f) {
-                pod->boost_timer = 0.0f;
+        if (object->pod_boost_timer > 0.0f) {
+            object->pod_boost_timer -= FRAMETIME;
+            if (object->pod_boost_timer < 0.0f) {
+                object->pod_boost_timer = 0.0f;
             }
         }
     }
@@ -8311,7 +8307,6 @@ static void PodBoostCode(GAMEOBJECT *object) {
 static void PodSpeedCode(GAMEOBJECT *object, i32 jump_held) {
     f32 target;
     f32 rate;
-    POD_BOOST_VIEW *pod = (POD_BOOST_VIEW *)object;
     if (object->player_index == -1) {
         return;
     }
@@ -8325,12 +8320,12 @@ static void PodSpeedCode(GAMEOBJECT *object, i32 jump_held) {
         } else {
             base = 1.0f;
         }
-        target = base + (PodRaceBoostSpeed - base) * pod->boost_timer;
+        target = base + (PodRaceBoostSpeed - base) * object->pod_boost_timer;
         if (jump_held != 0) {
             rate = (f32)((f64)FRAMETIME * 5.0);
         }
     } else {
-        target = PodSprintMinimumSpeed + (PodSprintBoostSpeed - PodSprintMinimumSpeed) * pod->boost_timer;
+        target = PodSprintMinimumSpeed + (PodSprintBoostSpeed - PodSprintMinimumSpeed) * object->pod_boost_timer;
     }
     object->current_speed_mul = SeekLinearF(object->current_speed_mul, target, rate);
 }
@@ -12925,7 +12920,7 @@ void Move_POD(GAMEOBJECT *object) {
     }
     TakeHitCode(object);
     if ((object->flags_1f8 & 0x40000) != 0) {
-        ((POD_BOOST_VIEW *)object)->boost_timer = 0.0f;
+        object->pod_boost_timer = 0.0f;
     } else {
         PodSpeedCode(object, object->pad->buttons_held & GAMEPAD_JUMP);
         PodBoostCode(object);

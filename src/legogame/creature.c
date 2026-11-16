@@ -363,17 +363,6 @@ typedef struct PLAYER_LAYER_FLAGS {
     u32 unknown_10 : 22;
 } PLAYER_LAYER_FLAGS;
 
-typedef struct PARAPHERNALIA_EXTRA {
-    u8 prefix[0xc68];
-    NUVEC force_position;
-    u8 gap_c74[0x10c];
-    f32 force_alpha;
-    u8 gap_d84[8];
-    f32 force_radius;
-    u8 gap_d90[0x2ec];
-    u8 draw_reflection;
-} PARAPHERNALIA_EXTRA;
-
 typedef struct draw_objects_flags_s {
     u8 unknown_000[0xe24];
     u32 flags_e24_bits_0_2 : 3;
@@ -3602,7 +3591,7 @@ void InitPlayerAI(GAMEOBJECT *object) {
     object->animation_speed_multiplier = 1.0f;
     object->flags_ef0 &= 0xfbbfffff;
     object->flags_ef8_word &= 0xfffffff3;
-    object->unknown_1038 = 0.0f;
+    object->pod_boost_timer = 0.0f;
     object->indy_climb = NULL;
     object->unknown_1083 = 0;
     object->gizforce_target = NULL;
@@ -4530,9 +4519,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     NUMTX reflected;
     NUMTX special_reflected;
     NUMTX attachments[16];
-    PARAPHERNALIA_EXTRA *extra;
     GAMEOBJECT *carried;
-    PARAPHERNALIA_EXTRA *carried_extra;
     i32 ride_locator;
     NUVEC carried_position;
     NUMTX *carried_reflection;
@@ -4561,7 +4548,6 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     NUVEC special_scaling;
     i32 special_phase;
 
-    extra = ((PARAPHERNALIA_EXTRA *)(object));
     if (DrawParaphernaliaEnabled == 0) {
         return;
     }
@@ -4569,8 +4555,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     carried = object->takeover_source;
     if (carried != NULL && object->character_context != CHARACTER_CONTEXT_BEEN_TAKEN_OVER &&
         !object->character_data->game_character->dont_draw_rider) {
-        carried_extra = ((PARAPHERNALIA_EXTRA *)(carried));
-        carried_extra->draw_reflection = extra->draw_reflection;
+        carried->reflection_active = object->reflection_active;
         carried->reflection_enabled = object->reflection_enabled;
         carried->reflection_height = object->reflection_height;
         ride_locator = object->character_data->game_character->ride_locator;
@@ -4597,11 +4582,11 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                                    carried_layers)) {
             if (carried->helmet != HELMET_NONE) {
                 DrawObjectOnCharacter(WORLD, carried, carried->helmet + 0xf9, NULL, carried->character_data->game_character->helmet_locator,
-                                      -1, attachments, carried_extra->draw_reflection, carried_layers, NULL, NULL, 1.0f, 1.0f);
+                                      -1, attachments, carried->reflection_active, carried_layers, NULL, NULL, 1.0f, 1.0f);
             }
             if (Cheat_IsOn(2)) {
                 DrawObjectOnCharacter(WORLD, carried, 0xe7, NULL, carried->character_data->game_character->head_locator, -1, attachments,
-                                      carried_extra->draw_reflection, carried_layers, NULL, NULL, 1.0f, 1.0f);
+                                      carried->reflection_active, carried_layers, NULL, NULL, 1.0f, 1.0f);
             }
             DrawCharacterAttachments(carried, attachments);
             if (((i16)(carried->id)) == PermanentWeirdo1Id || ((i16)(carried->id)) == PermanentWeirdo2Id) {
@@ -4636,7 +4621,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                      ? object->locator_matrices[scene_locator]
                      : object->transform;
         reflected = object->draw_tertiary_mtx;
-        CharScene_Draw(WORLD, ((i16)(object->id)), &matrix, extra->draw_reflection ? &reflected : NULL);
+        CharScene_Draw(WORLD, ((i16)(object->id)), &matrix, object->reflection_active ? &reflected : NULL);
     } else if (((i16)(object->id)) == id_CATAPULT &&
                (object->character_context != CHARACTER_CONTEXT_SHOOT ||
                 (object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 || object->quick_shoot_bolt_id != -1 ||
@@ -4648,24 +4633,24 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     if (object->character_data->game_character->variant == CHARVARIANT_STORMTROOPER &&
         AnimPlaying(&object->anim_packet, ACTION_IDLE5, 1, 1) != NULL) {
         DrawObjectOnCharacter(WORLD, object, 9, NULL, object->character_data->game_character->weapon_joints[0], -1,
-                              object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                              object->locator_matrices, object->reflection_active, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     } else if (object->weapon_scale > 0.0f) {
-        DrawWeapons(object, extra->draw_reflection, object->weapon_scale);
+        DrawWeapons(object, object->reflection_active, object->weapon_scale);
         if (object->unknown_d54 > 0.0f) {
             dco_locatorposonly = 1;
             DrawObjectOnCharacter(WORLD, object, 0x35, NULL, object->character_data->game_character->weapon_shoot_joints[0], -1,
-                                  object->locator_matrices, extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                                  object->locator_matrices, object->reflection_active, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
         }
     } else {
-        DrawWeapons(object, extra->draw_reflection, ParaphernaliaWeaponScale(object));
+        DrawWeapons(object, object->reflection_active, ParaphernaliaWeaponScale(object));
     }
     if (object->origin_scale_override > 0.0f || object->timer_d34 > 0.0f) {
         ResetShadowMapRendering();
-        ParaphernaliaShield(object, extra->draw_reflection);
+        ParaphernaliaShield(object, object->reflection_active);
         EnableShadowMapRendering(0);
     }
     if (object->communicate_blend > 0.0f) {
-        ParaphernaliaCommunicate(object, extra->draw_reflection);
+        ParaphernaliaCommunicate(object, object->reflection_active);
     }
     if (object->character_context == CHARACTER_CONTEXT_FORCED_BACK) {
         if ((WORLD->area != NULL && WORLD->area == HUB_ADATA) || WORLD->current_level == dat_0087b194 ||
@@ -4686,14 +4671,14 @@ void DrawParaphernalia(GAMEOBJECT *object) {
             }
             DrawForceGlowSprite(&glow_position, glow_radius, 0xdf, glow_alpha, object);
         }
-    } else if (extra->force_alpha > 0.0f && extra->force_radius > 0.0f && WORLD->level_objects[object->glow_model].active != 0 &&
+    } else if (object->glow_alpha > 0.0f && object->glow_radius > 0.0f && WORLD->level_objects[object->glow_model].active != 0 &&
                (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS) == 0) {
-        held_glow_alpha = (extra->force_alpha / FORCEGLOWTIME);
-        DrawForceGlowSprite(&extra->force_position, extra->force_radius, object->glow_model, held_glow_alpha, object);
+        held_glow_alpha = (object->glow_alpha / FORCEGLOWTIME);
+        DrawForceGlowSprite(&object->glow_position, object->glow_radius, object->glow_model, held_glow_alpha, object);
     }
     if (Cheat_IsOn(2)) {
         DrawObjectOnCharacter(WORLD, object, 0xe7, NULL, object->character_data->game_character->head_locator, -1, object->locator_matrices,
-                              extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                              object->reflection_active, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
     if (object->helmet != HELMET_NONE) {
         if ((((i16)(object->id)) == id_CHEWBACCA || ((i16)(object->id)) == id_WOOKIEE) && object->helmet != HELMET_STORMTROOPER &&
@@ -4703,27 +4688,27 @@ void DrawParaphernalia(GAMEOBJECT *object) {
             helmet_locator = object->character_data->game_character->helmet_locator;
         }
         DrawObjectOnCharacter(WORLD, object, object->helmet + 0xf9, NULL, helmet_locator, -1, object->locator_matrices,
-                              extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                              object->reflection_active, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
     if (object->model_draw_result != 0 && object->character_data->game_character->thrust_locators != 0 &&
         object->thrust_effect_scale > 0.0f) {
-        ParaphernaliaThrust(object, extra->draw_reflection);
+        ParaphernaliaThrust(object, object->reflection_active);
     }
     if (object->character_context == CHARACTER_CONTEXT_BUILD_IT) {
-        GizDrawBuildItPiece(object, extra->draw_reflection);
+        GizDrawBuildItPiece(object, object->reflection_active);
     }
     if (object->character_context == CHARACTER_CONTEXT_PLACE_DETONATOR &&
         object->character_model->model_data_b[object->unknown_7aa] != NULL && object->unknown_7b3 == 0) {
-        ParaphernaliaPlace(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
+        ParaphernaliaPlace(object, 0xec, object->reflection_active, object->character_data->game_character->place_locator);
     } else if (object->character_context == CHARACTER_CONTEXT_PICK_UP_DETONATOR &&
                object->character_model->model_data_b[object->unknown_7aa] != NULL && object->unknown_7b3 != 0) {
-        ParaphernaliaRemove(object, 0xec, extra->draw_reflection, object->character_data->game_character->place_locator);
+        ParaphernaliaRemove(object, 0xec, object->reflection_active, object->character_data->game_character->place_locator);
     }
     if ((object->flags_e20 & 0x400000) != 0) {
         dco_prerotatez = 0x4000;
         DrawObjectOnCharacter(WORLD, object, BatarangGetObjectFromCharId(((i16)(object->id))), NULL,
-                              object->character_data->game_character->throw_locator, -1, object->locator_matrices, extra->draw_reflection,
-                              object->layer_mask, NULL, NULL, 1.0f, 1.0f);
+                              object->character_data->game_character->throw_locator, -1, object->locator_matrices,
+                              object->reflection_active, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
     if (object->character_context == CHARACTER_CONTEXT_GRAPPLE) {
         Grapple_DrawLine(object);
@@ -4733,7 +4718,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     }
     DrawCharacterAttachments(object, object->locator_matrices);
     if (object->character_context == CHARACTER_CONTEXT_BALLOONING) {
-        ParaphernaliaHand(object, extra->draw_reflection);
+        ParaphernaliaHand(object, object->reflection_active);
     }
     if (object->torpedo != NULL && object->torpedo->count > 0) {
         DrawTorpedos(object);
@@ -4741,11 +4726,11 @@ void DrawParaphernalia(GAMEOBJECT *object) {
     if (object->character_data->game_character->variant == CHARVARIANT_WEIRDO) {
         CustomiserDrawAccessories(CharacterCustomiser, object, NULL);
     }
-    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 && extra->force_alpha > 0.0f &&
-        extra->force_radius > 0.0f) {
-        transform_alpha = ((f32)(extra->force_alpha * 0.6000000238418579 + 0.4000000059604645));
-        transform_radius = ((f32)((extra->force_alpha * 0.20000004768371582 + 1.399999976158142) * extra->force_radius));
-        TransformDrawTarget(&extra->force_position, transform_radius, transform_alpha);
+    if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TRANSFORMATRON) != 0 && object->glow_alpha > 0.0f &&
+        object->glow_radius > 0.0f) {
+        transform_alpha = ((f32)(object->glow_alpha * 0.6000000238418579 + 0.4000000059604645));
+        transform_radius = ((f32)((object->glow_alpha * 0.20000004768371582 + 1.399999976158142) * object->glow_radius));
+        TransformDrawTarget(&object->glow_position, transform_radius, transform_alpha);
     }
     config = object->character_data->game_character;
 
@@ -4759,8 +4744,8 @@ void DrawParaphernalia(GAMEOBJECT *object) {
             matrix = object->locator_matrices[special_locator];
             NuMtxPreRotateZ(&matrix, -0x4000);
             NuSpecialDrawAt(&WORLD->level_objects[10].special, &matrix);
-            if (extra->draw_reflection != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
-                                                                WORLD->current_level->reflection_y, &special_reflected)) {
+            if (object->reflection_active != 0 && MatrixReflection(&matrix, object->reflection_enabled, object->reflection_height,
+                                                                   WORLD->current_level->reflection_y, &special_reflected)) {
                 NuSpecialDrawAt(&WORLD->level_objects[10].special, &special_reflected);
             }
         } else {
@@ -4801,7 +4786,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
                 NuMtxTranslate(&matrix, &object->locator_matrices[0].translation);
                 special_phase = ((i32)(fraction * 32768.0));
                 matrix.m31 = matrix.m31 + NuTrigTable[(special_phase >> 1) & 0x7fff] * 0.20000000298023224;
-                DrawObjectOnCharacter(WORLD, object, 0xf9, NULL, 0, -1, &matrix, extra->draw_reflection, object->layer_mask, NULL, NULL,
+                DrawObjectOnCharacter(WORLD, object, 0xf9, NULL, 0, -1, &matrix, object->reflection_active, object->layer_mask, NULL, NULL,
                                       1.0f, 1.0f);
             }
         }
@@ -4833,8 +4818,8 @@ void DrawGameObjectsDraw(i32 pass) {
         } else if (((object->flags_e20 & APIOBJECT_FORCE_HIGHLIGHT_ONLY) != 0 || object->character_context == CHARACTER_CONTEXT_FORCE) &&
                    object->glow_alpha > 0.0f && object->glow_radius > 0.0f && WORLD->level_objects[object->glow_model].active != 0 &&
                    (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS) == 0) {
-            DrawForceGlowSprite(&((PARAPHERNALIA_EXTRA *)object)->force_position, object->glow_radius, object->glow_model,
-                                object->glow_alpha / FORCEGLOWTIME, object);
+            DrawForceGlowSprite(&object->glow_position, object->glow_radius, object->glow_model, object->glow_alpha / FORCEGLOWTIME,
+                                object);
         }
         if (object->snake_body != NULL) {
             DrawSnakeBody(object);

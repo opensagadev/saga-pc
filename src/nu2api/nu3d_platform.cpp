@@ -3550,7 +3550,7 @@ extern "C" {
         render_state.ambient_intensity.x = colour->x;
         render_state.ambient_intensity.y = colour->y;
         render_state.ambient_intensity.z = colour->z;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.lights_id;
         render_state.light_packet_cache = NULL;
         return 1;
@@ -3567,7 +3567,7 @@ extern "C" {
         NuVecNorm(&render_state.light_direction[0], &render_state.light_direction[0]);
         NuVecNorm(&render_state.light_direction[1], &render_state.light_direction[1]);
         NuVecNorm(&render_state.light_direction[2], &render_state.light_direction[2]);
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.lights_id;
         render_state.light_packet_cache = NULL;
         return 1;
@@ -3576,7 +3576,7 @@ extern "C" {
     i32 fun_005fcbc0(const NUMTX *matrix, const NUVEC *colour) {
         render_state.specular_mtx = *matrix;
         render_state.specular_colour = *colour;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.lights_id;
         render_state.light_packet_cache = NULL;
         return 1;
@@ -3587,7 +3587,7 @@ extern "C" {
         render_state.specular_mtx = *matrix;
         render_state.specular_colour = *colour;
         state->direction = *direction;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.lights_id;
         render_state.light_packet_cache = NULL;
     }
@@ -3612,14 +3612,14 @@ extern "C" {
         render_state.viewport_y = (f32)(render_state.viewport_y * vertical);
         render_state.viewport_height = (f32)(render_state.viewport_height * vertical);
         render_state.camera_packet_cache = NULL;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.camera_id;
         return 1;
     }
 
     void NuRndrStateSetFogEnabled(u32 enabled) {
         render_state.fog_state_word = enabled;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.fog_id;
         render_state.fog_packet_cache = NULL;
     }
@@ -3630,7 +3630,7 @@ extern "C" {
         render_state.fog_pointer_0178 = colour;
         render_state.fog_value_017c = density;
         render_state.fog_packet_cache = NULL;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.fog_id;
     }
 
@@ -3775,13 +3775,13 @@ extern "C" {
         state->konst_packet_cache = NULL;
         state->reflection_packet_cache = NULL;
 
-        render_state.state_0008 = 0;
-        render_state.state_0014 = -1;
-        render_state.counter_0020 = -1;
+        render_state.mtl = 0;
+        render_state.tex_id = -1;
+        render_state.global_id = -1;
         memset(&render_state.lights_id, 0xff, sizeof(render_state.lights_id));
         memset(&render_state.camera_id, 0xff, sizeof(render_state.camera_id));
         memset(&render_state.fog_id, 0xff, sizeof(render_state.fog_id));
-        memset(&render_state.counter_001e, 0xff, sizeof(render_state.counter_001e));
+        memset(&render_state.konst_id, 0xff, sizeof(render_state.konst_id));
     }
 
     void RndrStateResetSharedGlobalState(void) {
@@ -3792,13 +3792,13 @@ extern "C" {
         render_state.camera_packet_cache = NULL;
         render_state.konst_packet_cache = NULL;
         render_state.reflection_packet_cache = NULL;
-        render_state.state_0008 = 0;
-        render_state.state_0014 = -1;
-        render_state.counter_0020 = -1;
+        render_state.mtl = 0;
+        render_state.tex_id = -1;
+        render_state.global_id = -1;
         memset(&render_state.lights_id, 0xff, sizeof(render_state.lights_id));
         memset(&render_state.camera_id, 0xff, sizeof(render_state.camera_id));
         memset(&render_state.fog_id, 0xff, sizeof(render_state.fog_id));
-        memset(&render_state.counter_001e, 0xff, sizeof(render_state.counter_001e));
+        memset(&render_state.konst_id, 0xff, sizeof(render_state.konst_id));
     }
 
     NUGLOBALRNDRSTATE *fun_005fd1b0(void) {
@@ -3810,7 +3810,7 @@ extern "C" {
         NuMtxSetIdentity(&RndrStateTransform);
         NuMtxSetIdentity(&RndrStateScaledTransform);
         RndrStateTransformScale = 1.0f;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.fog_id;
         render_state.fog_state_word = 0;
         render_state.fog_packet_cache = NULL;
@@ -3822,8 +3822,8 @@ extern "C" {
         (void)tint;
         render_state.state_00f8 = alpha;
         render_state.const_alpha_material = material;
-        ++render_state.counter_0020;
-        ++render_state.counter_001e;
+        ++render_state.global_id;
+        ++render_state.konst_id;
         render_state.state_00f4 = alpha_enabled;
         render_state.konst_packet_cache = NULL;
     }
@@ -3871,7 +3871,7 @@ extern "C" {
 
     void RndrStateSetReflection(i32 reflection) {
         render_state.reflection_state = (u32)reflection;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.reflection_id;
         render_state.reflection_packet_cache = NULL;
     }
@@ -6115,7 +6115,7 @@ extern "C" {
         if (global == NULL) {
             return;
         }
-        if (list->state->global_id == global->counter_0020) {
+        if (list->state->global_id == global->global_id) {
             return;
         }
 
@@ -6141,7 +6141,7 @@ extern "C" {
                 NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
                 cursor = NuDisplayListStreamCursor;
                 global->camera_packet_cache = cursor->void_ptr;
-                *(i32 *)cursor->void_ptr = ((i16)global->camera_id + 5) * (global->counter_0020 + 13) + nuapi.frame_count;
+                *(i32 *)cursor->void_ptr = ((i16)global->camera_id + 5) * (global->global_id + 13) + nuapi.frame_count;
                 cursor->addr += sizeof(i32);
                 *(NUMTX *)cursor->void_ptr = global->camera_matrix;
                 cursor->addr += sizeof(NUMTX);
@@ -6169,12 +6169,12 @@ extern "C" {
             list->state->fog_id = global->fog_id;
         }
 
-        if ((u16)list->state->konst_id != global->counter_001e) {
+        if ((u16)list->state->konst_id != global->konst_id) {
             if (global->konst_packet_cache == NULL) {
                 global->konst_packet_cache = DisplayListBuildKonstPacket(global);
             }
             NuDisplayListLinkItem(list, NUDLIST_KONST, global->konst_packet_cache);
-            list->state->konst_id = global->counter_001e;
+            list->state->konst_id = global->konst_id;
         }
 
         if ((u16)list->state->reflection_id != global->reflection_id) {
@@ -6193,14 +6193,14 @@ extern "C" {
             list->state->vertex_groups_id = global->vertex_groups_id;
         }
 
-        list->state->global_id = global->counter_0020;
+        list->state->global_id = global->global_id;
     }
 
     void DisplayListUpdateRenderStateShadow(NUDISPLAYLIST *list, NUGLOBALRNDRSTATE *state) {
         if (state == NULL) {
             return;
         }
-        if (list->state->global_id == state->counter_0020) {
+        if (list->state->global_id == state->global_id) {
             return;
         }
         if ((u16)list->state->vertex_groups_id != state->vertex_groups_id) {
@@ -6210,7 +6210,7 @@ extern "C" {
             }
             list->state->vertex_groups_id = state->vertex_groups_id;
         }
-        list->state->global_id = state->counter_0020;
+        list->state->global_id = state->global_id;
     }
 
     void NuDisplayListDrawGeometry(void *arg) {
@@ -6356,8 +6356,8 @@ extern "C" {
             NuDisplayListLinkMtl(list, material);
         }
 
-        render_state.counter_0020++;
-        render_state.counter_001e++;
+        render_state.global_id++;
+        render_state.konst_id++;
         render_state.state_00f8 = 0;
         render_state.const_alpha_material = NULL;
         render_state.state_00f4 = 0;

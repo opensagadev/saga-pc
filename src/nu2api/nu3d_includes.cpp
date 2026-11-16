@@ -10009,36 +10009,16 @@ extern "C" {
         return items;
     }
 
-    /* Same layout as NURNDRLIBSTATE without 1- or 2-byte arrays, so the stack copy carries no /GS cookie. */
-    typedef struct pc_rndr_state_local_s { // size 0x34
-        u32 opaque_00_08[2];               // 0x00
-        void *mtl;                         // 0x08
-        u32 opaque_0c_14[2];               // 0x0c
-        i32 tex_id;                        // 0x14
-        u16 opaque_18;                     // 0x18
-        u16 opaque_1a;                     // 0x1a
-        u16 opaque_1c;                     // 0x1c
-        i16 konst_id;                      // 0x1e
-        i32 global_id;                     // 0x20
-        i16 lights_id;                     // 0x24
-        u16 opaque_26;                     // 0x26
-        u16 opaque_28;                     // 0x28
-        u16 opaque_2a;                     // 0x2a
-        i16 camera_id;                     // 0x2c
-        i16 fog_id;                        // 0x2e
-        u32 opaque_30_34;                  // 0x30
-    } PC_RNDR_STATE_LOCAL;
-
     void DisplayProcessMaterialRenderStatesPC(void) {
-        PC_RNDR_STATE_LOCAL state;
+        NURNDRLIBSTATE state;
         NUGLOBALRNDRSTATE *last_local = NULL;
         NUSORTPRI *sort;
         i32 i;
-        NuDisplayListResetStateCache((NURNDRLIBSTATE *)&state);
+        NuDisplayListResetStateCache(&state);
         for (sort = sort_list; sort != NULL; sort = sort->sys_next) {
             NUDISPLAY_LIST *scene = sort->display_scene;
             if (scene == NULL) {
-                RndrStateUpdateFx((NURNDRLIBSTATE *)&state, sort->items);
+                RndrStateUpdateFx(&state, sort->items);
             } else if ((scene->render_flags & 6) != 0) {
                 for (i = 0; i < sort->nmtls; ++i) {
                     i32 index = sort->mtl_first + i;
@@ -10078,7 +10058,7 @@ extern "C" {
                     } else {
                         list->dynamic_geometry->next = list->dynamic_geometry + 1;
                     }
-                    RndrStateUpdate((NURNDRLIBSTATE *)&state, (NUMTL *)material, list->mtl_item);
+                    RndrStateUpdate(&state, (NUMTL *)material, list->mtl_item);
                     if ((u8)(scene->render_flags >> 5) != 0 &&
                         ((u8)(scene->render_flags >> 5) & (u8)(material->visibility_flags >> 14)) != 0) {
                         list->mtl_item->id = NUDLISTITEM_JUMP;
@@ -15918,7 +15898,7 @@ extern "C" {
 
     void NuSpecialVertexStates(NUPRIM_VERTEX_GROUP_SOURCE *states) {
         NuPrimVertexGroupSource = states;
-        ++render_state.counter_0020;
+        ++render_state.global_id;
         ++render_state.vertex_groups_id;
     }
 

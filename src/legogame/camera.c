@@ -1370,9 +1370,9 @@ mode_selected:
                             break;
                         }
                         object = Player[i];
-                        if (object->unknown_1038 > 0.0f && WORLD->area != NULL &&
+                        if (object->pod_boost_timer > 0.0f && WORLD->area != NULL &&
                             (WORLD->area == PODRACE_ADATA || WORLD->area == PODSPRINT_ADATA)) {
-                            camera_shake = object->unknown_1038 * CamPodShakeScale;
+                            camera_shake = object->pod_boost_timer * CamPodShakeScale;
                             break;
                         }
                     }
