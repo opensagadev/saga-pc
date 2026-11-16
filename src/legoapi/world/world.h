@@ -265,11 +265,11 @@ typedef struct WORLDINFO_s { // size 0x51ac
     void *minicuts;                                      // 0x50ec
     void *minicut_parts;                                 // 0x50f0
     i32 minicut_count;                                   // 0x50f4
-    void *giz_timers;                                    // 0x50f8
+    struct giztimer_s *giz_timers;                       // 0x50f8
     i32 giz_timers_count;                                // 0x50fc
     struct TORPEDO_MACHINE_SYS *torpedo_machine_sys;     // 0x5100
-    void *giz_randoms;                                   // 0x5104
-    void *giz_special_sys;                               // 0x5108
+    struct gizrandomsys_s *giz_randoms;                  // 0x5104
+    struct gizspecialsys_s *giz_special_sys;             // 0x5108
     void *game_antinode_sys;                             // 0x510c
     struct edgizshadow_s *shadow_editor;                 // 0x5110
     struct GIZBOMBGENSYS_s *giz_bombgen_sys;             // 0x5114

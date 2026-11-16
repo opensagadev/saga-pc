@@ -9,58 +9,6 @@
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nucore/nustring.h"
 
-typedef struct GIZFLOW_TIMER { // size 0x1c
-    f32 time_remaining;        // 0x00
-    f32 start_time;            // 0x04
-    u8 unknown_008[2];         // 0x08
-    u8 flags;                  // 0x0a
-    u8 unknown_00b;            // 0x0b
-    char name[16];             // 0x0c
-} GIZFLOW_TIMER;
-
-typedef struct GIZFLOW_RANDOM { // size 0x3c
-    char name[16];              // 0x00
-    i32 output_count;           // 0x10
-    i32 output_weights[8];      // 0x14
-    i32 selected_output;        // 0x34
-    u8 flags;                   // 0x38
-    u8 unknown_039[3];          // 0x39
-} GIZFLOW_RANDOM;
-
-typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0xc
-    GIZFLOW_RANDOM *randoms;           // 0x0
-    i32 count;                         // 0x4
-    i32 capacity;                      // 0x8
-} GIZFLOW_RANDOM_SYSTEM;
-
-typedef struct GIZFLOW_SPECIAL { // size 0x28
-    char name[32];               // 0x00
-    GAMEANIMSET *anim_set;       // 0x20
-    u8 unknown_024[4];           // 0x24
-} GIZFLOW_SPECIAL;
-
-typedef struct GIZFLOW_SPECIAL_SYSTEM { // size 0x8
-    GIZFLOW_SPECIAL *specials;          // 0x0
-    i32 count;                          // 0x4
-} GIZFLOW_SPECIAL_SYSTEM;
-
-typedef struct GIZFLOW_LOAD_WORLD {   // size 0x510c
-    u8 unknown_000[0x104];            // 0x0000
-    VARIPTR giz_buffer;               // 0x0104
-    u8 unknown_108[0x20];             // 0x0108
-    GIZFLOW_LOAD_LEVEL *level;        // 0x0128
-    u8 unknown_12c[0x10];             // 0x012c
-    NUGSCN *current_gscn;             // 0x013c
-    u8 unknown_140[0x2988];           // 0x0140
-    void *gizmo_sys;                  // 0x2ac8
-    u8 unknown_2acc[0x262c];          // 0x2acc
-    GIZFLOW_TIMER *timers;            // 0x50f8
-    i32 timer_count;                  // 0x50fc
-    u8 unknown_5100[4];               // 0x5100
-    GIZFLOW_RANDOM_SYSTEM *randoms;   // 0x5104
-    GIZFLOW_SPECIAL_SYSTEM *specials; // 0x5108
-} GIZFLOW_LOAD_WORLD;
-
 i32 GizRandom_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
     if (world == NULL || world->current_level == NULL) {
@@ -70,21 +18,21 @@ i32 GizRandom_GetMaxGizmos(void *world_ptr) {
 }
 
 void GizRandom_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_ptr, void *unused) {
-    GIZFLOW_LOAD_WORLD *world = world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 i;
-    for (i = 0; i < world->randoms->count; ++i) {
-        if (NuStrLen(world->randoms->randoms[i].name) != 0) {
-            AddGizmo(gizmo_sys, type_id, NULL, &world->randoms->randoms[i]);
+    for (i = 0; i < world->giz_randoms->count; ++i) {
+        if (NuStrLen(world->giz_randoms->randoms[i].name) != 0) {
+            AddGizmo(gizmo_sys, type_id, NULL, &world->giz_randoms->randoms[i]);
         }
     }
 }
 
 char *GizRandom_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((GIZFLOW_RANDOM *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? ((GIZRANDOM *)gizmo->object)->name : NULL;
 }
 
 i32 GizRandom_GetOutput(GIZMO *gizmo, i32 output_index, i32 unused) {
-    GIZFLOW_RANDOM *random = gizmo->object;
+    GIZRANDOM *random = gizmo->object;
     if ((random->flags & 1) == 0) {
         return 0;
     }
@@ -97,11 +45,11 @@ char *GizRandom_GetOutputName(GIZMO *unused0, i32 unused1) {
 
 i32 GizRandom_GetNumOutputs(void *gizmo_pointer) {
     GIZMO *gizmo = gizmo_pointer;
-    return ((GIZFLOW_RANDOM *)gizmo->object)->output_count;
+    return ((GIZRANDOM *)gizmo->object)->output_count;
 }
 
 void GizRandom_Activate(GIZMO *gizmo, i32 active) {
-    GIZFLOW_RANDOM *random = gizmo->object;
+    GIZRANDOM *random = gizmo->object;
     i32 roll;
     i32 cumulative_weight = 0;
     i32 i;
@@ -122,39 +70,39 @@ void GizRandom_Activate(GIZMO *gizmo, i32 active) {
 }
 
 void *GizRandom_ReserveBufferSpace(void *world_ptr) {
-    GIZFLOW_LOAD_WORLD *world = world_ptr;
-    world->randoms = NULL;
-    if (world->level->max_randoms > 0) {
+    WORLDINFO *world = world_ptr;
+    world->giz_randoms = NULL;
+    if (world->current_level->max_gizrandoms > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->randoms = (GIZFLOW_RANDOM_SYSTEM *)world->giz_buffer.addr;
-        world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(GIZFLOW_RANDOM_SYSTEM) + 3) & ~3u;
-        world->randoms->randoms = (GIZFLOW_RANDOM *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->level->max_randoms * sizeof(GIZFLOW_RANDOM);
-        world->randoms->capacity = world->level->max_randoms;
+        world->giz_randoms = (GIZRANDOMSYS *)world->giz_buffer.addr;
+        world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(GIZRANDOMSYS) + 3) & ~3u;
+        world->giz_randoms->randoms = (GIZRANDOM *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_gizrandoms * sizeof(GIZRANDOM);
+        world->giz_randoms->capacity = world->current_level->max_gizrandoms;
     }
-    return world->randoms;
+    return world->giz_randoms;
 }
 
 i32 gizrandom_gizmotype_id = -1;
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 GIZMO *createGizRandom(void *unused, i32 output_count, i32 *weights, char *name) {
-    GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
-    GIZFLOW_RANDOM *random;
+    WORLDINFO *world = WorldInfo_CurrentlyLoading();
+    GIZRANDOM *random;
     i32 i;
     if (world == NULL) {
         return NULL;
     }
-    if (world->randoms->count == world->level->max_randoms) {
+    if (world->giz_randoms->count == world->current_level->max_gizrandoms) {
         return NULL;
     }
-    random = &world->randoms->randoms[world->randoms->count];
+    random = &world->giz_randoms->randoms[world->giz_randoms->count];
     random->output_count = output_count;
     for (i = 0; i < output_count; ++i) {
         random->output_weights[i] = weights[i];
     }
     NuStrNCpy(random->name, name, sizeof(random->name));
-    ++world->randoms->count;
+    ++world->giz_randoms->count;
     return AddGizmo(world->gizmo_sys, gizrandom_gizmotype_id, NULL, random);
 }
 

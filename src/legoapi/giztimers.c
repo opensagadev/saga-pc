@@ -10,58 +10,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct GIZFLOW_TIMER { // size 0x1c
-    f32 time_remaining;        // 0x00
-    f32 start_time;            // 0x04
-    u8 unknown_008[2];         // 0x08
-    u8 flags;                  // 0x0a
-    u8 unknown_00b;            // 0x0b
-    char name[16];             // 0x0c
-} GIZFLOW_TIMER;
-
-typedef struct GIZFLOW_RANDOM { // size 0x3c
-    char name[16];              // 0x00
-    i32 output_count;           // 0x10
-    i32 output_weights[8];      // 0x14
-    i32 selected_output;        // 0x34
-    u8 flags;                   // 0x38
-    u8 unknown_039[3];          // 0x39
-} GIZFLOW_RANDOM;
-
-typedef struct GIZFLOW_RANDOM_SYSTEM { // size 0xc
-    GIZFLOW_RANDOM *randoms;           // 0x0
-    i32 count;                         // 0x4
-    i32 capacity;                      // 0x8
-} GIZFLOW_RANDOM_SYSTEM;
-
-typedef struct GIZFLOW_SPECIAL { // size 0x28
-    char name[32];               // 0x00
-    GAMEANIMSET *anim_set;       // 0x20
-    u8 unknown_024[4];           // 0x24
-} GIZFLOW_SPECIAL;
-
-typedef struct GIZFLOW_SPECIAL_SYSTEM { // size 0x8
-    GIZFLOW_SPECIAL *specials;          // 0x0
-    i32 count;                          // 0x4
-} GIZFLOW_SPECIAL_SYSTEM;
-
-typedef struct GIZFLOW_LOAD_WORLD {   // size 0x510c
-    u8 unknown_000[0x104];            // 0x0000
-    VARIPTR giz_buffer;               // 0x0104
-    u8 unknown_108[0x20];             // 0x0108
-    GIZFLOW_LOAD_LEVEL *level;        // 0x0128
-    u8 unknown_12c[0x10];             // 0x012c
-    NUGSCN *current_gscn;             // 0x013c
-    u8 unknown_140[0x2988];           // 0x0140
-    void *gizmo_sys;                  // 0x2ac8
-    u8 unknown_2acc[0x262c];          // 0x2acc
-    GIZFLOW_TIMER *timers;            // 0x50f8
-    i32 timer_count;                  // 0x50fc
-    u8 unknown_5100[4];               // 0x5100
-    GIZFLOW_RANDOM_SYSTEM *randoms;   // 0x5104
-    GIZFLOW_SPECIAL_SYSTEM *specials; // 0x5108
-} GIZFLOW_LOAD_WORLD;
-
 i32 GizTimer_GetMaxGizmos(void *world_info) {
     WORLDINFO *world = world_info;
 
@@ -73,20 +21,20 @@ i32 GizTimer_GetMaxGizmos(void *world_info) {
 }
 
 void GizTimer_AddGizmos(struct gizmosys_s *gizmo_sys, i32 type_id, void *world_info, void *unused) {
-    GIZFLOW_LOAD_WORLD *world = world_info;
+    WORLDINFO *world = world_info;
     i32 i;
-    for (i = 0; i < world->timer_count; ++i) {
-        if (NuStrLen(world->timers[i].name) != 0) {
-            AddGizmo(gizmo_sys, type_id, NULL, &world->timers[i]);
+    for (i = 0; i < world->giz_timers_count; ++i) {
+        if (NuStrLen(world->giz_timers[i].name) != 0) {
+            AddGizmo(gizmo_sys, type_id, NULL, &world->giz_timers[i]);
         }
     }
 }
 
 void GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
-    GIZFLOW_LOAD_WORLD *world = world_info;
+    WORLDINFO *world = world_info;
     i32 i;
-    for (i = 0; i < world->timer_count; ++i) {
-        GIZFLOW_TIMER *timer = &world->timers[i];
+    for (i = 0; i < world->giz_timers_count; ++i) {
+        GIZTIMER *timer = &world->giz_timers[i];
         if (timer->time_remaining >= 0.0f) {
             timer->time_remaining -= delta_time;
         }
@@ -94,11 +42,11 @@ void GizTimer_Update(void *world_info, void *unused, f32 delta_time) {
 }
 
 char *GizTimer_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((GIZFLOW_TIMER *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? ((GIZTIMER *)gizmo->object)->name : NULL;
 }
 
 i32 GizTimer_GetOutput(GIZMO *gizmo, i32 unused1, i32 unused2) {
-    GIZFLOW_TIMER *timer = gizmo->object;
+    GIZTIMER *timer = gizmo->object;
     if (timer->flags & 1) {
         return timer->time_remaining <= 0.0f;
     }
@@ -114,7 +62,7 @@ i32 GizTimer_GetNumOutputs(GIZMO *gizmo) {
 }
 
 void GizTimer_Activate(GIZMO *gizmo, i32 active) {
-    GIZFLOW_TIMER *timer = gizmo->object;
+    GIZTIMER *timer = gizmo->object;
     if (timer->flags & 2) {
         timer->time_remaining = (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)timer->start_time);
     } else {
@@ -128,31 +76,31 @@ void GizTimer_Activate(GIZMO *gizmo, i32 active) {
 }
 
 void *GizTimer_ReserveBufferSpace(void *world_info) {
-    GIZFLOW_LOAD_WORLD *world = world_info;
-    world->timers = NULL;
-    world->timer_count = 0;
-    if (world->level->max_timers > 0) {
+    WORLDINFO *world = world_info;
+    world->giz_timers = NULL;
+    world->giz_timers_count = 0;
+    if (world->current_level->max_timers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        world->timers = (GIZFLOW_TIMER *)world->giz_buffer.addr;
-        world->giz_buffer.addr += world->level->max_timers * sizeof(GIZFLOW_TIMER);
+        world->giz_timers = (GIZTIMER *)world->giz_buffer.addr;
+        world->giz_buffer.addr += world->current_level->max_timers * sizeof(GIZTIMER);
     }
-    return world->timers;
+    return world->giz_timers;
 }
 
 i32 giztimer_gizmotype_id = -1;
 
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 GIZMO *createGizTimer(void *unused, f32 time, i32 random_time, char *name) {
-    GIZFLOW_LOAD_WORLD *world = (GIZFLOW_LOAD_WORLD *)WorldInfo_CurrentlyLoading();
-    GIZFLOW_TIMER *timer;
-    if (world == NULL || world->timers == NULL || world->timer_count == world->level->max_timers) {
+    WORLDINFO *world = WorldInfo_CurrentlyLoading();
+    GIZTIMER *timer;
+    if (world == NULL || world->giz_timers == NULL || world->giz_timers_count == world->current_level->max_timers) {
         return NULL;
     }
-    timer = &world->timers[world->timer_count];
+    timer = &world->giz_timers[world->giz_timers_count];
     timer->start_time = time;
     timer->flags = (u8)((timer->flags & ~2) | ((random_time & 1) << 1));
     NuStrNCpy(timer->name, name, sizeof(timer->name));
-    ++world->timer_count;
+    ++world->giz_timers_count;
     return AddGizmo(world->gizmo_sys, giztimer_gizmotype_id, NULL, timer);
 }
 
