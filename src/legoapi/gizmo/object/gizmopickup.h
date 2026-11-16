@@ -186,6 +186,9 @@ extern "C" {
     extern char ScorePanelName[9];
     extern char dat_00758c14[10];
     void GizmoPickups_SetOnOff(void);
+    i32 GetRandomCoinType(void);
+    u32 TotalLevelCoinTally(struct WORLDINFO_s *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces, u32 *obstacles, u32 *turrets,
+                            u32 *characters);
 #ifdef __cplusplus
 }
 #endif

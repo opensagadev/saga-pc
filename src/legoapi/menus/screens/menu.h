@@ -77,6 +77,8 @@ extern "C" {
     void MenuUpdateBonusComplete(MENU *);
     void MenuUpdateBonusWin(MENU *);
     void MenuUpdateMiniKit(MENU *);
+    void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r, u8 header_g, u8 header_b,
+                        u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r, u8 flash1_g, u8 flash1_b);
 #ifdef __cplusplus
 }
 #endif

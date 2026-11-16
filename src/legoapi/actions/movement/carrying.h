@@ -7,6 +7,8 @@
 #include "legoapi/items/objects/objectsall.h"
 #include "nu2api/numath/nuvec.h"
 
+struct WORLDINFO_s;
+
 /* gameobject_s.unknown_7b3 in the super carry context: the step, after the LEGOACT_SUPERCARRY_* animation
  * each plays. */
 #define SUPERCARRY_PICKUP 0
@@ -48,6 +50,7 @@ extern "C" {
     extern u8 SuperCarryPlayerRgb[2][3];
     i32 SuperCarry_Possible(GAMEOBJECT *, i32);
     void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP *, i32);
+    void SuperCarry_MoveCode(struct WORLDINFO_s *, GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

@@ -130,9 +130,7 @@
 #include "legoapi/world/levels/hub.h"
 
 extern "C" void FmvPlatformUpdate(void);
-extern "C" void Particles_LoadAreaPage(char *);
 extern "C" {
-    void NewAreaMusicChanges(void);
     void ClearTakeOverObjectSys(void);
     extern void *Door_Last;
 }
@@ -142,13 +140,6 @@ extern "C" {
 }
 
 extern "C" {
-    void SoundKillAll(void);
-    void GamePlayMusic(LEVELDATA *, i32, OPTIONSSAVE *);
-}
-extern "C" {
-    void NuLgtSetArcMat(NUMTL *material, f32 u0, f32 v0, f32 u1, f32 v1);
-    void PermanentGraphicsResourceSetup(void);
-    void NuRndrShadowInit(u8 *random);
     void InitTexAnimScripts(char **table);
     extern char *TexAnimScriptNamesTitle[3];
     extern char *TexAnimScriptNamesGame[32];
@@ -156,8 +147,6 @@ extern "C" {
 extern "C" void CreateUsefulMaterials(void);
 extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
 extern "C" void ParticleReset(void);
-
-extern "C" void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
 
 typedef struct permanent_customiser_save_s {
     u16 pieces[9];
@@ -183,72 +172,18 @@ extern "C" {
     void name(NUFPAR *parser) {                                                                                                            \
         levelconfig_ldata->field = (i16)NuFParGetInt(parser);                                                                              \
     }
-extern "C" void KashyyykD_Init(WORLDINFO *);
-extern "C" void KashyyykD_Reset(WORLDINFO *);
-extern "C" void KashyyykD_Update(WORLDINFO *);
-extern "C" void GunshipA_Init(WORLDINFO *);
-extern "C" void GunshipA_Update(WORLDINFO *);
-extern "C" void GunshipA_Draw(WORLDINFO *);
-extern "C" void GunshipB_Reset(WORLDINFO *);
-extern "C" void HothBattleE_Init(WORLDINFO *);
-extern "C" void HothBattleE_Update(WORLDINFO *);
-extern "C" void HothBattleE_Draw(WORLDINFO *);
-extern "C" void HothBattleE_Panel(WORLDINFO *);
-extern "C" void HothBattleA_Init(WORLDINFO *);
-extern "C" void HothBattleA_Reset(WORLDINFO *);
-extern "C" void HothBattleA_Update(WORLDINFO *);
-extern "C" void HothBattleA_Draw(WORLDINFO *);
-extern "C" void HothBattleC_Init(WORLDINFO *);
-extern "C" void HothBattleC_Reset(WORLDINFO *);
-extern "C" void HothBattleC_Update(WORLDINFO *);
-extern "C" void HothBattleC_Draw(WORLDINFO *);
-extern "C" void CloudCityEscapeA_Init(WORLDINFO *);
-extern "C" void CloudCityEscapeA_Reset(WORLDINFO *);
-extern "C" void CloudCityEscapeA_Update(WORLDINFO *);
-extern "C" void CloudCityEscapeA_Panel(WORLDINFO *);
-extern "C" void CloudCityTrapA_Init(WORLDINFO *);
-extern "C" void CloudCityTrapA_Reset(WORLDINFO *);
-extern "C" void CloudCityTrapA_Update(WORLDINFO *);
 /* Per-level callbacks installed by FixUpLevels. */
-extern "C" void DrawStatusScreen(WORLDINFO *);
 extern "C" void LostTempleC_Reset(WORLDINFO *);
 extern "C" void LostTempleC_Update(WORLDINFO *);
-extern "C" void GunganA_Init(WORLDINFO *);
-extern "C" void GunganA_Update(WORLDINFO *);
-extern "C" void PodRaceBInit(WORLDINFO *);
-extern "C" void PodRaceBReset(WORLDINFO *);
-extern "C" void PodRaceBUpdate(WORLDINFO *);
-extern "C" void PodRaceAInit(WORLDINFO *);
-extern "C" void PodRaceAReset(WORLDINFO *);
-extern "C" void PodRaceA_Update(WORLDINFO *);
-extern "C" void PodRaceA_AlwaysUpdate(WORLDINFO *);
-extern "C" void PodRaceA_Draw(WORLDINFO *);
-extern "C" void PodRaceCInit(WORLDINFO *);
-extern "C" void PodRaceCReset(WORLDINFO *);
-extern "C" void PodRaceCUpdate(WORLDINFO *);
-extern "C" void PodSprintA_Init(WORLDINFO *);
-extern "C" void PodSprintA_Reset(WORLDINFO *);
-extern "C" void PodSprintA_Update(WORLDINFO *);
-extern "C" void PodSprintA_Panel(WORLDINFO *);
-extern "C" void AnakinsFlightB_Init(WORLDINFO *);
 extern "C" void AnakinsFlightB_Update(WORLDINFO *);
 extern "C" void AnakinsFlightB_Draw(WORLDINFO *);
-extern "C" void RetakeG_Init(WORLDINFO *);
 extern "C" void RetakeG_Reset(WORLDINFO *);
-extern "C" void RetakeG_Update(WORLDINFO *);
-extern "C" void RetakeG_Panel(WORLDINFO *);
-extern "C" void MaulA_Init(WORLDINFO *);
-extern "C" void MaulA_Reset(WORLDINFO *);
 extern "C" void MaulA_Update(WORLDINFO *);
-extern "C" void MaulA_Panel(WORLDINFO *);
 extern "C" void MaulD_Init(WORLDINFO *);
 extern "C" void MaulD_Update(WORLDINFO *);
 extern "C" void MaulE_Init(WORLDINFO *);
 extern "C" void MaulE_Update(WORLDINFO *);
-extern "C" void MaulF_Init(WORLDINFO *);
-extern "C" void MaulF_Reset(WORLDINFO *);
 extern "C" void MaulF_Update(WORLDINFO *);
-extern "C" void MaulF_Panel(WORLDINFO *);
 extern "C" void BountyHunterPursuitA_Init(WORLDINFO *);
 extern "C" void BountyHunterPursuitA_Reset(WORLDINFO *);
 extern "C" void BountyHunterPursuitA_Update(WORLDINFO *);
@@ -261,58 +196,16 @@ extern "C" void BountyHunterPursuitC_Update(WORLDINFO *);
 extern "C" void BountyHunterPursuitD_Init(WORLDINFO *);
 extern "C" void BountyHunterPursuitD_Reset(WORLDINFO *);
 extern "C" void BountyHunterPursuitD_Update(WORLDINFO *);
-extern "C" void FactoryB_Init(WORLDINFO *);
-extern "C" void FactoryB_Reset(WORLDINFO *);
-extern "C" void FactoryB_Update(WORLDINFO *);
-extern "C" void FactoryB_Draw(WORLDINFO *);
-extern "C" void FactoryG_Init(WORLDINFO *);
-extern "C" void FactoryG_Update(WORLDINFO *);
-extern "C" void DookuC_Reset(WORLDINFO *);
-extern "C" void DookuC_Update(WORLDINFO *);
-extern "C" void DookuC_DrawPanel(WORLDINFO *);
-extern "C" void KaminoA_AlwaysUpdate(WORLDINFO *);
-extern "C" void KaminoC_Reset(WORLDINFO *);
-extern "C" void KaminoC_Init(WORLDINFO *);
-extern "C" void KaminoC_Update(WORLDINFO *);
-extern "C" void KaminoOutro_Init(WORLDINFO *);
-extern "C" void KaminoE_Reset(WORLDINFO *);
-extern "C" void KaminoE_Init(WORLDINFO *);
-extern "C" void KaminoE_AlwaysUpdate(WORLDINFO *);
-extern "C" void KaminoE_Update(WORLDINFO *);
-extern "C" void KaminoE_Draw(WORLDINFO *);
-extern "C" void CruiserAInit(WORLDINFO *);
-extern "C" void CruiserAUpdate(WORLDINFO *);
-extern "C" void CruiserCReset(WORLDINFO *);
-extern "C" void CruiserCUpdate(WORLDINFO *);
-extern "C" void CruiserCPanel(WORLDINFO *);
-extern "C" void CruiserDInit(WORLDINFO *);
-extern "C" void CruiserDReset(WORLDINFO *);
-extern "C" void CruiserDUpdate(WORLDINFO *);
 extern "C" void GrievousA_Init(WORLDINFO *);
-extern "C" void GrievousA_Reset(WORLDINFO *);
-extern "C" void GrievousA_Update(WORLDINFO *);
-extern "C" void TempleC_AlwaysUpdate(WORLDINFO *);
 extern "C" void KashyyykA_Init(WORLDINFO *);
-extern "C" void KashyyykA_Reset(WORLDINFO *);
 extern "C" void KashyyykA_Update(WORLDINFO *);
-extern "C" void KashyyykA_Panel(WORLDINFO *);
 extern "C" void KashyyykB_Init(WORLDINFO *);
 extern "C" void KashyyykB_Reset(WORLDINFO *);
 extern "C" void KashyyykB_Update(WORLDINFO *);
 extern "C" void KashyyykC_Init(WORLDINFO *);
 extern "C" void KashyyykC_Update(WORLDINFO *);
-extern "C" void VaderA_Init(WORLDINFO *);
-extern "C" void VaderA_Reset(WORLDINFO *);
-extern "C" void VaderA_Update(WORLDINFO *);
-extern "C" void VaderA_DrawPanel(WORLDINFO *);
 extern "C" void VaderB_Init(WORLDINFO *);
-extern "C" void VaderB_Reset(WORLDINFO *);
-extern "C" void VaderB_Update(WORLDINFO *);
 extern "C" void VaderB_DrawPanel(WORLDINFO *);
-extern "C" void VaderC_Init(WORLDINFO *);
-extern "C" void VaderC_Reset(WORLDINFO *);
-extern "C" void VaderC_Update(WORLDINFO *);
-extern "C" void VaderC_DrawPanel(WORLDINFO *);
 extern "C" void BlockadeRunnerB_Init(WORLDINFO *);
 extern "C" void BlockadeRunnerB_Update(WORLDINFO *);
 extern "C" void BlockadeRunnerC_Init(WORLDINFO *);
@@ -339,74 +232,6 @@ extern "C" void DeathStarBattleDInit(WORLDINFO *);
 extern "C" void DeathStarBattleDUpdate(WORLDINFO *);
 extern "C" void DeathStarBattleDDraw(WORLDINFO *);
 extern "C" void DeathStarBattleDReset(WORLDINFO *);
-extern "C" void HothEscapeA_Init(WORLDINFO *);
-extern "C" void HothEscapeA_Update(WORLDINFO *);
-extern "C" void HothEscapeA_Reset(WORLDINFO *);
-extern "C" void HothEscapeB_Init(WORLDINFO *);
-extern "C" void HothEscapeB_Update(WORLDINFO *);
-extern "C" void HothEscapeB_Reset(WORLDINFO *);
-extern "C" void HothEscapeC_Init(WORLDINFO *);
-extern "C" void HothEscapeC_Update(WORLDINFO *);
-extern "C" void HothEscapeC_AlwaysUpdate(WORLDINFO *);
-extern "C" void HothEscapeC_Reset(WORLDINFO *);
-extern "C" void HothEscapeD_Init(WORLDINFO *);
-extern "C" void HothEscapeD_Update(WORLDINFO *);
-extern "C" void HothEscapeD_Reset(WORLDINFO *);
-extern "C" void AsteroidChaseA_Init(WORLDINFO *);
-extern "C" void AsteroidChaseA_Reset(WORLDINFO *);
-extern "C" void AsteroidChaseA_Update(WORLDINFO *);
-extern "C" void AsteroidChaseB_Init(WORLDINFO *);
-extern "C" void AsteroidChaseB_Reset(WORLDINFO *);
-extern "C" void AsteroidChaseB_Update(WORLDINFO *);
-extern "C" void AsteroidChaseC_Init(WORLDINFO *);
-extern "C" void AsteroidChaseC_Reset(WORLDINFO *);
-extern "C" void AsteroidChaseC_Update(WORLDINFO *);
-extern "C" void AsteroidChaseD_Init(WORLDINFO *);
-extern "C" void AsteroidChaseD_Update(WORLDINFO *);
-extern "C" void AsteroidChaseD_Panel(WORLDINFO *);
-extern "C" void DagobahE_Init(WORLDINFO *);
-extern "C" void DagobahB_Init(WORLDINFO *);
-extern "C" void DagobahB_Reset(WORLDINFO *);
-extern "C" void DagobahC_Init(WORLDINFO *);
-extern "C" void DagobahC_Panel(WORLDINFO *);
-extern "C" void CloudCityTrapB_Init(WORLDINFO *);
-extern "C" void CloudCityTrapB_Update(WORLDINFO *);
-extern "C" void CloudCityTrapC_Reset(WORLDINFO *);
-extern "C" void CloudCityTrapC_Update(WORLDINFO *);
-extern "C" void CloudCityTrapC_Panel(WORLDINFO *);
-extern "C" void CloudCityEscapeC_Init(WORLDINFO *);
-extern "C" void CloudCityEscapeC_Update(WORLDINFO *);
-extern "C" void JabbasPalaceA_Init(WORLDINFO *);
-extern "C" void JabbasPalaceA_Reset(WORLDINFO *);
-extern "C" void JabbasPalaceA_Update(WORLDINFO *);
-extern "C" void JabbasPalaceB_Init(WORLDINFO *);
-extern "C" void JabbasPalaceB_Reset(WORLDINFO *);
-extern "C" void JabbasPalaceD_Reset(WORLDINFO *);
-extern "C" void JabbasPalaceE_Init(WORLDINFO *);
-extern "C" void JabbasPalaceE_Reset(WORLDINFO *);
-extern "C" void JabbasPalaceE_Update(WORLDINFO *);
-extern "C" void JabbasPalaceE_Panel(WORLDINFO *);
-extern "C" void EndorBattleA_Init(WORLDINFO *);
-extern "C" void EndorBattleA_Update(WORLDINFO *);
-extern "C" void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStar2BattleD_Init(WORLDINFO *);
-extern "C" void DeathStar2BattleD_Update(WORLDINFO *);
-extern "C" void DeathStar2BattleFire_Init(WORLDINFO *);
-extern "C" void EmperorFightA_Panel(WORLDINFO *);
-extern "C" void SarlaccPitA_Reset(WORLDINFO *);
-extern "C" void SarlaccPitA_Draw(WORLDINFO *);
-extern "C" void SarlaccPitB_Init(WORLDINFO *);
-extern "C" void SarlaccPitB_Reset(WORLDINFO *);
-extern "C" void SarlaccPitB_Update(WORLDINFO *);
-extern "C" void SarlaccPitC_Init(WORLDINFO *);
-extern "C" void LegoCity_Reset(WORLDINFO *);
-extern "C" void LegoCity_Update(WORLDINFO *);
-extern "C" void NewTown_Init(WORLDINFO *);
-extern "C" void NewTown_Reset(WORLDINFO *);
-extern "C" void NewTown_Update(WORLDINFO *);
-extern "C" void FairgroundbadA_Init(WORLDINFO *);
-extern "C" void FairgroundbadA_Update(WORLDINFO *);
-extern "C" void FairgroundbadA_Draw(WORLDINFO *);
 extern "C" {
     extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 }
@@ -438,7 +263,6 @@ extern "C" {
         u32 progress_flags;
     } WORLD_PERSISTENCE_FLAGS;
 
-    void GizmoSysStoreProgress(void *system, void *world, i32 index);
     void LoadGrassFile(WORLDINFO *world);
     void LoadBridgeFile(WORLDINFO *world);
     void LoadTerrainFile(WORLDINFO *world);
@@ -468,12 +292,7 @@ typedef struct world_load_reader_s {
     void *climb_object_system;
 } WORLD_LOAD_READER;
 
-extern "C" {
-    void Level_LoadConfigFile(WORLDINFO *);
-    void LevelConfig_BeforeLoad(LEVELDATA *, char *, NUFPCOMJMP *);
-    void LevelConfig_AfterLoad(LEVELDATA *, char *, NUFPCOMJMP *);
-    void *CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
-}
+extern "C" void *CreateGizmoSys(WORLDINFO *, VARIPTR *, VARIPTR *);
 extern "C" void Attractos_InitTerrain(WORLDINFO *);
 extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
 extern "C" void GizSpinners_InitTerrain(WORLDINFO *world);

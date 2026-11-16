@@ -19,6 +19,7 @@ extern "C" {
     void ComboHitFrame(GAMEOBJECT *, i32);
     void HoldCode(GAMEOBJECT *);
     i32 ObjZappedBlue(GAMEOBJECT *);
+    void KeepWeaponIn(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

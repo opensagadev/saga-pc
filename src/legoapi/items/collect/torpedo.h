@@ -38,6 +38,7 @@ extern "C" {
     f32 Torpedo_Scale(BOLT *);
     void TorpedoHitTarget(BOLT *);
     void Torpedo_EndBolt(BOLT *);
+    void DrawTorpedos(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

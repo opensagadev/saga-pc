@@ -65,6 +65,9 @@ extern "C" {
     void Customiser_TransformToPanel(struct CUSTOMISER_LAYERS *);
     i32 Customiser_NextPieceLeft(struct CUSTOMISER_LAYERS *, i32, i32, i32, i32);
     void CustomiserLoadTrace(char *path);
+    i32 Customiser_GetIcon(struct CUSTOMISER_LAYERS *input, const void *save_input, i32 unused);
+    i32 Customiser_NextPieceRight(struct CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category);
+    void CustomiserDrawAccessories(struct CUSTOMISER_LAYERS *, struct gameobject_s *, NUMTX *);
 #ifdef __cplusplus
 }
 #endif

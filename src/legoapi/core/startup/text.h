@@ -13,6 +13,7 @@ extern "C" {
     void Text_DecodeButtons(char *source, char *destination);
     extern i32 (*Tag_NoHiddenIconFn)(GAMEOBJECT *);
     extern const char *LEGOASCII_UP;
+    void TextInputGlyphName(i32, char *);
 #ifdef __cplusplus
 }
 #endif

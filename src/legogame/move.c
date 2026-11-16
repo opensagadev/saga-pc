@@ -145,7 +145,6 @@ typedef struct pod_camera_reader_s {
     f32 camera_shake_strength;
 } POD_CAMERA_READER;
 
-extern i32 FalconDebKey[2];
 extern i32 LandspeederExhaustJoints[3];
 
 typedef struct force_glow_reader_s {
@@ -155,12 +154,8 @@ typedef struct force_glow_reader_s {
 } FORCE_GLOW_READER;
 
 void SecurityDoor_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void Techno_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void Signal_MoveCode(WORLDINFO *, GAMEOBJECT *);
-void KeepWeaponIn(GAMEOBJECT *);
 void Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
-void SuperCarry_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void Detonator_MoveCode(GAMEOBJECT *);
 void Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void Whip_MoveCode(GAMEOBJECT *);
@@ -171,7 +166,6 @@ typedef struct movement_suit_s {
     u8 store_flag;
 } MOVEMENT_SUIT;
 
-TUBE *Tube_InAnyCylinder(WORLDINFO *, GAMEOBJECT *, i32);
 /* Subtracts the shared 0.0 double literal without folding it. */
 extern const f64 ActionSnapWeightedRandomZero;
 
@@ -266,8 +260,6 @@ typedef struct vehicle_shoot_state_s {
     u8 bolt_fire_phase;
     u8 action_suppressed;
 } VEHICLE_SHOOT_STATE;
-
-extern f32 animduration_blendouttime;
 
 typedef struct communicate_move_view_s {
     u8 unknown_000[0xd38];
@@ -395,8 +387,6 @@ typedef struct default_motion_batarang_pointer_s {
     u8 unknown_0000[0xcc0];
     void *batarang;
 } DEFAULT_MOTION_BATARANG_POINTER;
-
-void SuitBlowupCode(WORLDINFO *, GAMEOBJECT *);
 
 typedef struct MOTION_PLATFORM_CONTACT_READER {
     u8 unknown_000[0x27e];

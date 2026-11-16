@@ -60,9 +60,6 @@ extern "C" {
     void GameDrawMenuEntry(MENU *, char *);
     extern f32 ExtrasFadeStart;
     extern f32 ExtrasFadeEnd;
-    extern i16 dat_0088074c;
-    extern i16 dat_00880708;
-    extern i16 dat_00880764;
 }
 
 struct EXTRAS_AREA_SAVE_READER { // size 0xc
@@ -80,8 +77,6 @@ struct EXTRAS_SAVE_READER {            // size 0x7c08
 
 extern "C" {
     extern i32 HubForceShopSave;
-    i32 UpdateShop(void *);
-    void NuMainStatusHelper(STATUSPACKET_s *);
     void Text_FillInExtendedSaveInfo(void);
     void Hub_ClearStats(void);
     i32 TriggerAutoSave(void);
@@ -90,31 +85,10 @@ extern "C" {
     extern f32 MenuTitlesPromptY;
     extern f32 MenuTitlesWidePromptY;
     void Hub_UpdateKit(void);
-    extern i16 dat_00880fc4;
-    extern i16 dat_00880838;
-    extern i16 dat_0088089c;
-    extern i16 dat_008808ec;
-    extern i16 dat_008806f8;
-    extern i16 dat_00880860;
-}
-extern "C" {
-    extern i16 dat_00880840;
-    extern i16 dat_008806fc;
-    extern i16 dat_00880910;
-    extern i16 dat_008808f0;
-    extern i16 dat_008807d0;
-    extern i16 dat_008807d4;
-    extern i16 dat_00880914;
-    extern i16 dat_0088084c;
-    extern i16 dat_00880794;
-    extern i16 dat_00880700;
-    extern i16 dat_00880754;
 }
 extern "C" {
     void SoundKillAll(void);
-    void GamePlayMusic(LEVELDATA *, i32, OPTIONSSAVE *);
     i32 Movie_Play(char *, VARIPTR *, VARIPTR *, f32, i32 (*)(void), f32);
-    extern char *Trailer[6];
 }
 extern "C" f32 MenuNewGameY;
 extern "C" {
@@ -122,10 +96,6 @@ extern "C" {
 }
 
 extern "C" {
-    extern i16 dat_0088081c;
-    extern i16 dat_00880820;
-    extern i16 dat_008809ec;
-    extern i16 dat_00880b0c;
     extern f32 MenuSaveSlotsWidth;
     extern f32 MenuSaveSlotsStepY;
 }
@@ -138,14 +108,6 @@ typedef struct MENU_INPUT_PAD {
     u32 alternate_pressed;
     u8 unknown_14[0x4c];
 } MENU_INPUT_PAD;
-
-extern "C" {
-    extern i8 DropInPendingPlayer;
-    extern i8 DropInConfigurationPlayer;
-    void PcControlInitialize(i32, i32, i32, u8);
-    i32 PcControlUpdate(FRAME_PAD *, FRAME_PAD *, f32);
-    void PcControlDraw(void);
-}
 
 extern "C" {
 

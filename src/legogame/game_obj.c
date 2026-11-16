@@ -110,13 +110,9 @@ typedef struct creature_crate_part_view_s {
 } CREATURE_CRATE_PART_VIEW;
 
 i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused);
-void MovePlayer_NETWORK(GAMEOBJECT *);
-GAMEOBJECT *fun_0055e2b0(i32 id);
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern u8 SuperCarryPlayerRgb[2][3];
-extern i32 FalconDebKey[2];
-void DieRumble(GAMEOBJECT *);
 void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
 
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,

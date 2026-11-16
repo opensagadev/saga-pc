@@ -60,6 +60,13 @@ extern "C" {
     void DoInput(WORLDINFO *world);
     void PadOutPause(i32, WORLDINFO *);
     extern i32 PlayPlanesUseRenderMtx;
+    void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference);
+    void DieRumble(GAMEOBJECT *);
+    void GameCam_ResetLookRot(GAMECAMERA *camera);
+    void GameCam_UpdateLookRot(GAMECAMERA *camera);
+    void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);
+    void MakePlayPlanes(GAMECAMERA *camera);
+    void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION *);
 #ifdef __cplusplus
 }
 #endif

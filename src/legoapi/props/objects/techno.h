@@ -5,6 +5,7 @@
 #include "nu2api/numath/nuvec.h"
 
 struct GAMEPAD;
+struct WORLDINFO_s;
 struct addgizmotype_s;
 struct gameobject_s;
 struct nuhspecial_s;
@@ -96,6 +97,8 @@ extern "C" {
     TECHNO *Technos_FindControllingTechno(struct gameobject_s *);
 
     i32 Techno_FindOperator(void *, struct GAMEPAD **, struct gameobject_s **);
+    void *Technos_FindTgt(TECHNO_s *techno);
+    void Techno_MoveCode(struct WORLDINFO_s *, struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif

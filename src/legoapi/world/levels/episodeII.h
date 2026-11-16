@@ -148,6 +148,29 @@ extern "C" {
     extern i32 jedib_yrot[3];
     extern i16 *JediB_playerids[3];
     void JediB_DrawPanel(WORLDINFO *);
+    void DookuC_DrawPanel(WORLDINFO *);
+    void DookuC_Reset(WORLDINFO *);
+    void DookuC_Update(WORLDINFO *);
+    void FactoryB_Draw(WORLDINFO *);
+    void FactoryB_Init(WORLDINFO *);
+    void FactoryB_Reset(WORLDINFO *);
+    void FactoryB_Update(WORLDINFO *);
+    void FactoryG_Init(WORLDINFO *);
+    void FactoryG_Update(WORLDINFO *);
+    void GunshipA_Draw(WORLDINFO *);
+    void GunshipA_Init(WORLDINFO *);
+    void GunshipA_Update(WORLDINFO *);
+    void GunshipB_Reset(WORLDINFO *);
+    void KaminoA_AlwaysUpdate(WORLDINFO *);
+    void KaminoC_Init(WORLDINFO *);
+    void KaminoC_Reset(WORLDINFO *);
+    void KaminoC_Update(WORLDINFO *);
+    void KaminoE_AlwaysUpdate(WORLDINFO *);
+    void KaminoE_Draw(WORLDINFO *);
+    void KaminoE_Init(WORLDINFO *);
+    void KaminoE_Reset(WORLDINFO *);
+    void KaminoE_Update(WORLDINFO *);
+    void KaminoOutro_Init(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif

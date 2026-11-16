@@ -209,6 +209,7 @@ extern "C" {
     void APIObjectRegisterAnimRedirect(i32 (*)(char *, void *, CHARACTERANIM_CONFIG *, char *), void *, char *);
     extern i32 makeplayerlist_freeplay;
     i32 PlayersDropInOut(void);
+    GAMEOBJECT *fun_0055e2b0(i32 id);
 #ifdef __cplusplus
 }
 #endif

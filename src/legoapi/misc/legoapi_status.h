@@ -122,6 +122,8 @@ extern "C" {
     extern struct STATUS_STAGE_s *StatusStages;
     void DrawStatusTextFraction(i32, i32, f32, f32, u16, f32, u32, f32, f32);
     void Status_DrawPromptMenu(STATUSPACKET_s *packet, i32 selected, f32 alpha);
+    void DrawStatusScreen(struct WORLDINFO_s *);
+    void NuMainStatusHelper(STATUSPACKET_s *);
 #ifdef __cplusplus
 }
 #endif

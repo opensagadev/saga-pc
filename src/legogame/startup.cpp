@@ -87,20 +87,13 @@
 #include "legoapi/world/levels/episodeVI.h"
 
 extern "C" char *lsw_memcard_objname;
-extern "C" void TextInputGlyphName(i32, char *);
 extern "C" void RegisterLswGizmoTypes(VARIPTR *, VARIPTR *);
 extern "C" void RegisterAlternateGizmoTypes(VARIPTR *, VARIPTR *);
 extern "C" void RegisterDefaultGizmoTypes(VARIPTR *, VARIPTR *);
 extern "C" void Alt_registerStatusScreen(void);
-extern "C" void Alt_registerStatusScreenExtra(void);
 extern "C" {
     void MiniKits_Init(VARIPTR *, VARIPTR *);
-    void CharCategories_Init(CHAR_CATEGORY_RECORD *);
-    extern CHAR_CATEGORY_RECORD StartupCharCategoriesDefault[6];
-    extern CHAR_CATEGORY_RECORD StartupCharCategoriesLsw[10];
-    extern char *StartupCharVariantNames[23];
 }
-extern "C" void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));
 
 static i32 PcInputCommandAllowed(i32 port, i32 command) {
     if (PcInput_PortIsKeyboard(port) && ((command >= 4 && command <= 7) || (u32)(command - 8) <= 3)) {
@@ -130,12 +123,9 @@ extern "C" {
     void RegisterHelpers(void);
     void LSW_registerStatusScreen(void);
 
-    extern LEVELDATA *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out,
-                                           void *set_defaults_fn);
     extern AREA_DATA *Areas_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out);
 
     extern "C" {
-        extern NUMTL *FadeMtl;
 
         typedef struct nuprimvertex_s { // size 0x18
             f32 x;                      // 0x00

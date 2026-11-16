@@ -122,9 +122,8 @@ typedef struct retakeg_netpacket_s {
 
 void ChrisAllocLevelStuff(WORLDINFO *world);
 void FlightSpline_Init(WORLDINFO *world, FLIGHT_SPLINE_RESOURCE *splines, i32 capacity);
+
 /* PodRace_A mine spawner and renderer. */
-i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
-void PodLoseSpeed(GAMEOBJECT *object, i32 hit, i32 rumble);
 
 typedef struct podrace_netpacket_s {
     f32 start_countdown;
@@ -134,15 +133,11 @@ typedef struct podrace_netpacket_s {
     i32 lap;
 } PODRACE_NETPACKET;
 
-i32 NuSpecialClipTestExtents(nuhspecial_s *special, NUMTX *matrix);
-
 /* Pod sprint (Episode I bonus) level callbacks. */
 
 #define PODSPRINT_NET ((PODSPRINT_NETPACKET *)podsprint_netpacket)
 /* Last player positions used for the finish line tests. */
 static NUVEC pod_old_pos[2];
-extern f32 HudBossIconY;
-i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, f32 *first, f32 *second);
 
 /* The engine's VuVec helpers; this unit carries its own copies. */
 static void EpisodeIVuVecSetOrigin(NUVEC4 *v) {

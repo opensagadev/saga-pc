@@ -2116,6 +2116,9 @@ extern "C" {
     extern DEBRISMOMENTUMADJUSTER gencodetab[7];
     extern i32 FRAMES_TO_WAIT;
     extern i32 NuMainSkipCutBorders;
+    extern struct numtl_s *FadeMtl;
+    extern char *Trailer[6];
+    extern i32 DRAWBGLOAD;
 #ifdef __cplusplus
 }
 #endif

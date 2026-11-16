@@ -119,6 +119,7 @@ extern "C" {
     void CutScene_SnapToEnd(void *cut);
     i32 CutScene_IsSkippable(struct cutinfo_s *cut);
     i32 CutScene_HasPlayed(struct cutinfo_s *cutscene);
+    void CutScene_StartAudio(void);
 #ifdef __cplusplus
 }
 #endif

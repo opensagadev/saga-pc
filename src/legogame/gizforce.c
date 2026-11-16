@@ -71,13 +71,7 @@
 #include "nu2api/numusic/sfx.h"
 #include "legoapi/gizmo/base/gizactions.h"
 
-void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
-
-void RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
 ADDGIZMOTYPE *GizBuildIts_RegisterGizmo(i32);
-ADDGIZMOTYPE *NewBlowup_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizmoPickups_RegisterGizmo(i32);
-ADDGIZMOTYPE *Shards_RegisterGizmo(i32);
 ADDGIZMOTYPE *Signals_RegisterGizmo(i32);
 ADDGIZMOTYPE *Grapples_RegisterGizmo(i32);
 ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32);
@@ -87,7 +81,6 @@ ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32);
 ADDGIZMOTYPE *Attractos_RegisterGizmo(i32);
 ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32);
 ADDGIZMOTYPE *GizTurrets_RegisterGizmo(i32);
-ADDGIZMOTYPE *AI_RegisterGizmo(i32);
 ADDGIZMOTYPE *GizTimer_RegisterGizmo(i32);
 ADDGIZMOTYPE *GizRandom_RegisterGizmo(i32);
 ADDGIZMOTYPE *Door_RegisterGizmo(i32);

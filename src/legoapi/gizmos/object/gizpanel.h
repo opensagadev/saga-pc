@@ -65,6 +65,7 @@ extern "C" {
     void GizPanels_StoreProgress(void *world_ptr, void *arg1, void *progress_ptr);
 
     void GizPanel_MoveCode(WORLDINFO *, GAMEOBJECT *, i32);
+    void GizPanel_Reset(void *panel);
 #ifdef __cplusplus
 }
 #endif

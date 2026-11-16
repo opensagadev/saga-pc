@@ -60,7 +60,6 @@ extern f32 GizPanelFloorLift;
 extern u8 PanelStormActive;
 extern u8 PanelDroidActive;
 extern u8 PanelBountyHunterActive;
-void SetProtocolDroidInterfaceAction(GAMEOBJECT *object);
 
 /* Terrain helper private to these callers (panel arrives in ESI). */
 static void GizPanel_CreateTerrain(PANEL_MOVEMENT *panel) {

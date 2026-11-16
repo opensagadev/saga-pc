@@ -235,6 +235,10 @@ extern "C" {
     extern u32 PcControlPressed[2];
     i32 PcControlWrapText(char *, f32);
     void PcControlFontScale(struct vufnt_s *, f32, f32, f32 *, f32 *);
+    i32 PC_CtrlConfigGetPlayerPort(i32 player_index);
+    i32 PcControlUpdate(struct FRAME_PAD *, struct FRAME_PAD *, f32);
+    void PcControlDraw(void);
+    void PcControlInitialize(i32, i32, i32, u8);
 #ifdef __cplusplus
 }
 #endif

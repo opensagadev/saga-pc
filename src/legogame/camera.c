@@ -56,11 +56,6 @@
 
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
-void GameCam_ResetLookRot(GAMECAMERA *camera);
-void GameCam_UpdateLookRot(GAMECAMERA *camera);
-void MakePlayPlanes(GAMECAMERA *camera);
-void GameCam_UpdateShake(GAMECAMERA *camera, f32 ambient_amount);
-void CentreTwoPlayerCamera(NUVEC *center, NUVEC *player_a, NUVEC *player_b, NUVEC *reference);
 extern NUMTX CutCamMtx;
 extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 extern struct nuvec_s *shopcamlookat;
@@ -94,7 +89,6 @@ i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i
                   struct nuvec_s *camera_position, struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
                   f32 *camera_shake, f32 *separation_scale);
 struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
-f32 getPodRoll(i32 arg0);
 
 typedef struct CAMERA_CABLE {
     GAMEOBJECT *source;

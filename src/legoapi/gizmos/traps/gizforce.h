@@ -6,6 +6,7 @@
 #include "nu2api/numath/nuvec.h"
 
 struct PART;
+struct WORLDINFO_s;
 struct addgizmotype_s;
 struct gameanimobj_s;
 struct gameanimobjpool_s;
@@ -101,6 +102,10 @@ extern "C" {
     struct PART *GizForce_Throw(struct gameobject_s *, struct gizforce_s *, f32, f32, i32);
     void GizForce_ResetLOS(struct gameobject_s *);
     i32 GizForce_GameObjUsingForce(struct gameobject_s *, struct gizforce_s *);
+    struct gizforce_s *GizForces_FindForce(struct WORLDINFO_s *world, char *name);
+    i32 ForceAnimationDone(struct gizforce_s *force);
+    void GizForce_PlayBackwards(struct gizforce_s *force);
+    void GizForce_PlayForwards(struct gizforce_s *force);
 #ifdef __cplusplus
 }
 #endif

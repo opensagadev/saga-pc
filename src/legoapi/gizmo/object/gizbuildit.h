@@ -5,8 +5,10 @@
 #include "nu2api/numath/nuvec.h"
 
 struct GIZBUILDIT_s;
+struct WORLDINFO_s;
 struct gameanimobj_s;
 struct gameanimset_s;
+struct gameobject_s;
 
 typedef struct GIZBUILDIT {              // size 0x7c
     char name[16];                       // 0x00
@@ -40,6 +42,10 @@ extern "C" {
     i32 GizBuildIt_AtEnd(void *);
     void GizBuildIt_KillParts(struct GIZBUILDIT_s *);
     void GizBuildit_SetVisibility(struct GIZBUILDIT_s *, i32);
+    u32 GizBuildIts_TotalScore(struct WORLDINFO_s *world);
+    void GizDrawBuildItPiece(struct gameobject_s *, i32);
+    void Hub_LockUnlockDoors(struct WORLDINFO_s *world);
+    void Indy_GameAISysInit(void);
 #ifdef __cplusplus
 }
 #endif

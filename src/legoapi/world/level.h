@@ -264,6 +264,11 @@ extern "C" {
 #endif
     struct bolt_s *Bolt_Add(struct gameobject_s *, NUVEC *, struct numtx_s *, i32, i32);
     void LevelStreaming_DoorOverride(struct WORLDINFO_s *world, LEVELDATA *level, f32 radius, f32 *distance);
+    extern LEVELDATA *Levels_ConfigureList(char *path, VARIPTR *buffer, VARIPTR *buffer_end, i32 max_count, i32 *count_out,
+                                           void *set_defaults_fn);
+    void LevelConfig_AfterLoad(LEVELDATA *, char *, struct nufpcomjmp_s *);
+    void LevelConfig_BeforeLoad(LEVELDATA *, char *, struct nufpcomjmp_s *);
+    void Level_LoadConfigFile(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif

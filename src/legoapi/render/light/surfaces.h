@@ -20,6 +20,8 @@ extern "C" {
     extern void (*SurfaceInfo_ExtraReflectFn)(GAMEOBJECT *object);
     extern u16 SURFACEBITS_DUST;
     extern TERRAIN_SURFACE TerSurface[32];
+    void SurfaceMaskOff(u32 *surface_mask);
+    void SurfaceMaskOn(u32 *surface_mask);
 #ifdef __cplusplus
 }
 #endif

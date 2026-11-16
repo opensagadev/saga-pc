@@ -99,7 +99,6 @@
 extern "C" {
     extern i32 HubDoorNewLevel;
     extern void *Door_Last;
-    void InitSuperStory(i32 episode);
 }
 
 typedef struct hub_minikit_runtime_s {

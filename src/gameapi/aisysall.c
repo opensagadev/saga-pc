@@ -633,8 +633,6 @@ NULISTHDR *aiscript_load_actions = 0;
 i32 condition_has_no_goto = 0;
 AICONDITIONDEF *game_aiconditiondefs = 0;
 
-extern AIACTIONDEF api_aiactiondefs[];
-
 extern AICONDITIONDEF api_aiconditiondefs[];
 
 static i32 ExpressionRequiredNameLookup = 0;

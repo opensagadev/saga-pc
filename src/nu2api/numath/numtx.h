@@ -130,6 +130,7 @@ extern "C" {
     void NuMtxGetFrustumBlend(NUMTX *mtx, f32 *l, f32 *r, f32 *b, f32 *t, f32 *n, f32 *f);
     void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
     f32 NuVecMagVU0(NUVEC *);
+    void NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
 #ifdef __cplusplus
 }
 #endif

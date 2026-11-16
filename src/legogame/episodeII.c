@@ -67,9 +67,6 @@ typedef struct dooku_c_s {
     nuhspecial_s node;
 } DOOKU_C;
 
-void DrawForceBackEffect(nuhspecial_s *special);
-void GizPanel_Reset(void *panel);
-
 typedef struct kaminodisco_s {
     AIAREA *area;
     nuhspecial_s off[16];

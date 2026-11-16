@@ -6,6 +6,8 @@
 #include "legoapi/world/levels/episodeIII_types.h"
 #include "nu2api/numath/nuvec.h"
 
+struct WORLDINFO_s;
+
 typedef union LEVEL_INST_ANIM_RESET_VIEW { // size 0x30
     u32 reset_words[12];
     NUINSTANIM *animations[12];
@@ -35,6 +37,32 @@ extern "C" {
     void Boulder_Kill(PART *, i32);
     extern VADERA vader_a;
     extern i16 dat_007f1a0c;
+    void CruiserAInit(struct WORLDINFO_s *);
+    void CruiserAUpdate(struct WORLDINFO_s *);
+    void CruiserCPanel(struct WORLDINFO_s *);
+    void CruiserCReset(struct WORLDINFO_s *);
+    void CruiserCUpdate(struct WORLDINFO_s *);
+    void CruiserDInit(struct WORLDINFO_s *);
+    void CruiserDReset(struct WORLDINFO_s *);
+    void CruiserDUpdate(struct WORLDINFO_s *);
+    void GrievousA_Reset(struct WORLDINFO_s *);
+    void GrievousA_Update(struct WORLDINFO_s *);
+    void KashyyykA_Panel(struct WORLDINFO_s *);
+    void KashyyykA_Reset(struct WORLDINFO_s *);
+    void KashyyykD_Init(struct WORLDINFO_s *);
+    void KashyyykD_Reset(struct WORLDINFO_s *);
+    void KashyyykD_Update(struct WORLDINFO_s *);
+    void TempleC_AlwaysUpdate(struct WORLDINFO_s *);
+    void VaderA_DrawPanel(struct WORLDINFO_s *);
+    void VaderA_Init(struct WORLDINFO_s *);
+    void VaderA_Reset(struct WORLDINFO_s *);
+    void VaderA_Update(struct WORLDINFO_s *);
+    void VaderB_Reset(struct WORLDINFO_s *);
+    void VaderB_Update(struct WORLDINFO_s *);
+    void VaderC_DrawPanel(struct WORLDINFO_s *);
+    void VaderC_Init(struct WORLDINFO_s *);
+    void VaderC_Reset(struct WORLDINFO_s *);
+    void VaderC_Update(struct WORLDINFO_s *);
 #ifdef __cplusplus
 }
 #endif

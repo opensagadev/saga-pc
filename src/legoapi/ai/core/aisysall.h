@@ -94,6 +94,25 @@ extern "C" {
     void xInclude(NUFPAR *parser);
     void xParam(NUFPAR *parser);
     void xState(NUFPAR *parser);
+    extern AIACTIONDEF *game_aiactiondefs;
+    extern AIACTIONDEF api_aiactiondefs[];
+    extern AICONDITIONDEF *game_aiconditiondefs;
+    void InitFn_AIActionParseSpeed(AI_PARSE_SPEED);
+    void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION);
+    void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH);
+    void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *);
+    void InitFn_GameAILoad(void (*)(AISYS *, i32, NUGSCN *, VARIPTR *, VARIPTR *));
+    void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE);
+    void InitFn_GetViewRange(AI_CHARACTER_DISTANCE);
+    void InitFn_GlobalCharacterTypeID(i32 (*)(char *));
+    void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE);
+    void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE);
+    void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID);
+    void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
+    void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
+    void RegisterAIScriptActions(AIACTIONDEF *);
+    void RegisterAIScriptConditions(AICONDITIONDEF *);
+    void SetScriptErrorLevel(i32);
 #ifdef __cplusplus
 }
 #endif

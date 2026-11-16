@@ -306,6 +306,7 @@ extern "C" {
     void fun_00697eb0(void);
     void PauseGameCut(void);
     void ResetSounds(void);
+    void SoundKillAll(void);
 #ifdef __cplusplus
 }
 #endif

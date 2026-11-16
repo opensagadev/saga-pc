@@ -20,8 +20,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
-extern i32 come_from_an_editor;
-
 typedef struct bombgen_activation_reader_s {
     u8 unknown_00[0x1c];
     GAMEANIMSET *anim_set;

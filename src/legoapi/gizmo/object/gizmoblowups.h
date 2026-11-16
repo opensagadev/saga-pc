@@ -6,6 +6,7 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+struct addgizmotype_s;
 struct nuhspecial_s;
 
 struct WORLDINFO_s;
@@ -283,6 +284,8 @@ extern "C" {
     extern char *GizmoRegistryGizTurretsNamePtr;
     extern char SpinnerOutputBuffer[14];
     extern char TurretOutputBuffer[32];
+    struct addgizmotype_s *NewBlowup_RegisterGizmo(i32);
+    u32 GizmoBlowups_TotalScore(struct WORLDINFO_s *world);
 #ifdef __cplusplus
 }
 #endif

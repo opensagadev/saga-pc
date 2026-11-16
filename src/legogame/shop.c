@@ -216,7 +216,6 @@ extern char ShopUserCode[6];
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
-void AddToCompletionPoints(u32 points);
 extern i32 HubForceShopSave;
 extern f32 ShopPurchasePulseDuration;
 #define SHOP_RESET_SHELF_POSITIONS()                                                                                                       \
@@ -240,8 +239,6 @@ extern i32 ShopCodeItemChanged;
 extern f32 ShopCodeRepeatTimer;
 extern f32 ShopCodeRepeatInterval;
 extern char ShopCodeCharacters[37];
-extern i16 dat_00880708;
-extern i16 dat_0088074c;
 
 /* Same-unit matrix helpers, also kept as standalone copies (source in EAX, destination in ECX). */
 static void ShopMtxCopy(NUMTX *destination, const NUMTX *source) {

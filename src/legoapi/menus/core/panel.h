@@ -84,6 +84,13 @@ extern "C" {
     void DrawMeleeTargetsNumber(i16 *targets, u8 *counts, i32 count, u8 reset, struct nuhspecial_s *special);
     void DrawMeleeTargetsRows(i16 *targets, char *defeated, f32 *values, i32 count);
     void Panel_Clear(void);
+    extern f32 HudBossIconY;
+    void DrawAutoSaveIcon(void);
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+void Tag_DrawIcon_Batman(struct gameobject_s *object);
+void Tag_DrawIcon_LSW(struct gameobject_s *object);
 #endif

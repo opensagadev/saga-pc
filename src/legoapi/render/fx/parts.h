@@ -42,6 +42,9 @@ extern "C" {
     void AddPartDebris(PARTDEBRISSYS *, i32, NUVEC *);
     i32 edpartPlace(i32 index, NUVEC *position);
     void AddDebrisEffectToStack(struct debris_key_s *key);
+    void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
+    void InitPartTable(char **names);
+    void ResetParts(void);
 #ifdef __cplusplus
 }
 #endif

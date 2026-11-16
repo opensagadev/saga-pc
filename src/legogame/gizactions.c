@@ -37,10 +37,7 @@
 #include "nu2api/numath/nuvec.h"
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
-extern i32 Action_HelpWithTriggers(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 SOCK *FindSock(SOCKSYS *system, char *name);
-void GizForce_PlayForwards(GIZFORCE *force);
-void GizForce_PlayBackwards(GIZFORCE *force);
 i32 turret_gizmotype_id;
 
 i32 obstacle_gizmotype_id;
@@ -55,7 +52,6 @@ const char GizObstacleActionStayShutPC[9] = "STAYSHUT";
 const char GizObstacleActionStayOpenPC[9] = "STAYOPEN";
 const char GizmoSnapOptionName[5];
 const char GizmoSnapOptionName[5] = "SNAP";
-GIZMOPICKUP *GizmoPickup_FindByName(WORLDINFO *, char *);
 const char dat_007589f0[];
 const char dat_007589f0[] = "NO_TARGET";
 const char dat_007589fc[];
@@ -74,7 +70,6 @@ const char dat_00758a48[];
 const char dat_00758a48[] = "Move_Waggle";
 const char dat_00758a54[];
 const char dat_00758a54[] = "techno=";
-void *Technos_FindTgt(TECHNO_s *techno);
 
 typedef struct ACTIVATE_CHAR_BUILDIT_VIEW {
     u8 unknown_00[0x34];

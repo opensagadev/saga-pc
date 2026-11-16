@@ -97,8 +97,6 @@ typedef struct vaderc_s {
     u8 reserved_96[2];
 } VADERC;
 
-GIZFORCE *GizForces_FindForce(WORLDINFO *world, char *name);
-
 void CruiserAInit(WORLDINFO *world) {
     ((CRUISERA_LEVFLAG *)LevFlag)->starfighter_state = 0;
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "starfighter1", 1);

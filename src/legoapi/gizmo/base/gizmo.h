@@ -2,6 +2,7 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "legoapi/gizmos/traps/gizforce.h"
 #include "nu2api/numath/nuvec.h"
 
 struct NUGSCN_s;
@@ -171,6 +172,9 @@ extern "C" {
     void ResetPaintPuzzle(struct WORLDINFO_s *world);
     i32 GizmoGetTypeIDByName(void *, char *);
     void GizmoDiagnostic(char *format, ...);
+    void GizmoSysReset(void *system, void *world, i32 progress_index);
+    void GizmoSysStoreProgress(void *system, void *world, i32 index);
+    void RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
 #ifdef __cplusplus
 }
 #endif

@@ -59,7 +59,6 @@ typedef struct cable_context_info_s { // size 0x10
 } CABLE_CONTEXT_INFO;
 
 extern const f64 GameObjectNearFloorNoFloorHeight;
-i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
 
 // The unit carries a private copy of the safe divide used by the cable code.
 static f32 CableFdiv(f32 a, f32 b) {

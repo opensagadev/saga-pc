@@ -141,16 +141,8 @@ typedef struct custom_material_update_s {
 } CUSTOM_MATERIAL_UPDATE;
 
 extern NUVEC CustomisePos[2];
-i32 Customiser_NextPieceRight(CUSTOMISER_LAYERS *input, i32 index, i32 count, i32 unused, i32 category);
 i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
-i32 Customiser_GetIcon(CUSTOMISER_LAYERS *input, const void *save_input, i32 unused);
-extern i16 dat_00880fa0;
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
-extern i16 dat_00880750;
-extern i16 dat_00880754;
-extern i16 dat_00880758;
-extern i16 dat_00880760;
-extern i16 dat_00880858;
 void Hub_ClearStats(void);
 void Text_FillInExtendedSaveInfo(void);
 i32 TriggerAutoSave(void);

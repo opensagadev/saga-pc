@@ -5,7 +5,9 @@
 #include "nu2api/numath/nuvec.h"
 
 struct GIZMO_PICKUP_TYPE;
+struct PART;
 struct WORLDINFO_s;
+struct addgizmotype_s;
 struct gameobject_s;
 struct player_coin_packet_s;
 
@@ -130,6 +132,13 @@ extern "C" {
     void GameMsg_Draw_MiniKitDetector(struct game_message_s *arg0, struct nuvec_s *arg1, f32 arg2);
     extern char *GizmoPickup_OutputName;
     void GizmoPickups_PostLoad(void *, void *);
+    struct addgizmotype_s *GizmoPickups_RegisterGizmo(i32);
+    GIZMOPICKUP *GizmoPickup_FindByName(struct WORLDINFO_s *, char *);
+    GIZMOPICKUP *GizmoPickup_InBox(struct WORLDINFO_s *world, i32 type_index, NUVEC *minimum, NUVEC *maximum);
+    i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP *);
+    u32 GizmoPickups_TotalScore(struct WORLDINFO_s *world);
+    void GizmoPickup_TurnOnPickup(GIZMOPICKUP *);
+    void PartUpdate_Heart(struct PART *part);
 #ifdef __cplusplus
 }
 #endif

@@ -83,6 +83,7 @@ extern "C" {
     extern void (*ShopDrawPanelFn)(void);
     void InitShop(WORLDINFO *);
     void DrawShop3D(WORLDINFO *);
+    i32 UpdateShop(void *);
 #ifdef __cplusplus
 }
 #endif

@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 #include "gameapi/ai/aisys/aipath.h"
+#include "gameapi/ai/aisys/aisys.h"
 #include "nu2api/numath/nuvec.h"
 
 struct AIPACKET;
@@ -215,6 +216,9 @@ extern "C" {
 #endif
     struct gameobject_s *GetNamedGameObject(void *, char *);
     extern i32 turret_gizmotype_id;
+    extern AIACTIONDEF lego_aiactiondefs[];
+    extern AICONDITIONDEF lego_aiconditiondefs[];
+    extern i32 Action_HelpWithTriggers(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
 #ifdef __cplusplus
 }
 #endif

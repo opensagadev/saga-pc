@@ -74,6 +74,37 @@ extern "C" {
     extern i32 fire_clip_dist;
     extern i16 dat_007f1a7c;
     extern i16 dat_007f1a88;
+    void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *);
+    void DeathStar2BattleD_Init(WORLDINFO *);
+    void DeathStar2BattleD_Update(WORLDINFO *);
+    void DeathStar2BattleFire_Init(WORLDINFO *);
+    void EmperorFightA_Panel(WORLDINFO *);
+    void EndorBattleA_Init(WORLDINFO *);
+    void EndorBattleA_Update(WORLDINFO *);
+    void FairgroundbadA_Draw(WORLDINFO *);
+    void FairgroundbadA_Init(WORLDINFO *);
+    void FairgroundbadA_Update(WORLDINFO *);
+    void JabbasPalaceA_Init(WORLDINFO *);
+    void JabbasPalaceA_Reset(WORLDINFO *);
+    void JabbasPalaceA_Update(WORLDINFO *);
+    void JabbasPalaceB_Init(WORLDINFO *);
+    void JabbasPalaceB_Reset(WORLDINFO *);
+    void JabbasPalaceD_Reset(WORLDINFO *);
+    void JabbasPalaceE_Init(WORLDINFO *);
+    void JabbasPalaceE_Panel(WORLDINFO *);
+    void JabbasPalaceE_Reset(WORLDINFO *);
+    void JabbasPalaceE_Update(WORLDINFO *);
+    void LegoCity_Reset(WORLDINFO *);
+    void LegoCity_Update(WORLDINFO *);
+    void NewTown_Init(WORLDINFO *);
+    void NewTown_Reset(WORLDINFO *);
+    void NewTown_Update(WORLDINFO *);
+    void SarlaccPitA_Draw(WORLDINFO *);
+    void SarlaccPitA_Reset(WORLDINFO *);
+    void SarlaccPitB_Init(WORLDINFO *);
+    void SarlaccPitB_Reset(WORLDINFO *);
+    void SarlaccPitB_Update(WORLDINFO *);
+    void SarlaccPitC_Init(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif

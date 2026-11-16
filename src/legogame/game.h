@@ -388,6 +388,10 @@ extern "C" {
     void MenuUpdateEndChallenge(struct menu_s *);
     extern TIMER OverallGamePlayTimer;
     void GizmoBlowupCreateStuff(struct GIZMOBLOWUP *);
+    extern i32 FalconDebKey[2];
+    extern i32 GameDrawCharacterModelFlag;
+    extern i32 come_from_an_editor;
+    void InitGameBeforeConfig(void);
 #ifdef __cplusplus
 }
 #endif

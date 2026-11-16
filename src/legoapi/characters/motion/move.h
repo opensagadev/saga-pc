@@ -554,6 +554,22 @@ extern "C" {
     extern AREA_DATA *EMPERORFIGHT_ADATA;
     extern i16 dat_007f1a78;
     extern i16 id_WATTO;
+    f32 getPodRoll(i32 arg0);
+    i32 MovePlayer_CIRCLE(struct gameobject_s *object);
+    i32 MovePlayer_GUNSHIPIN(struct gameobject_s *object);
+    i32 MovePlayer_POD(struct gameobject_s *object);
+    i32 MovePlayer_TWIST(struct gameobject_s *object);
+    void ApplyExtraRotation(struct gameobject_s *, NUMTX *);
+    void ApplyGravity(struct gameobject_s *, f32 *, f32, f32, f32 *);
+    void DrawForceBackEffect(nuhspecial_s *special);
+    void DrawForceGlowSprite(NUVEC *, f32, i32, f32, struct gameobject_s *);
+    void FindForcePushTarget(struct gameobject_s *object, i32 activate, i32 target_filter);
+    void MovePlayer_DIRECTIONAL(struct gameobject_s *object);
+    void MovePlayer_NETWORK(struct gameobject_s *);
+    void MovePlayer_ROLLING(struct gameobject_s *object);
+    void MovePlayer_VEHICLEDIRECTIONAL(struct gameobject_s *object);
+    void PodLoseSpeed(struct gameobject_s *object, i32 hit, i32 rumble);
+    void SetProtocolDroidInterfaceAction(struct gameobject_s *object);
 #ifdef __cplusplus
 }
 #endif

@@ -35,6 +35,8 @@ extern "C" {
     void DropOut(i32, i32, i32, i32);
     extern i32 PlayerDevicePorts[2];
     f32 DropInOutScale(struct gameobject_s *object);
+    extern i8 DropInConfigurationPlayer;
+    extern i8 DropInPendingPlayer;
 #ifdef __cplusplus
 }
 #endif

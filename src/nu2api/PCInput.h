@@ -744,6 +744,9 @@ extern "C" {
     char *TextInputActionLabel(i32, i32, i32, i32);
     f32 fun_006d5c50(void);
     f32 fun_006d5c60(void);
+    i32 PcInput_GetFirstKeyboardPort(void);
+    u8 PcInput_MappingIsGood(i32 port, i32 player_index);
+    void PcInput_SetStringUCGfxRemapFn(void (*)(i32, char *));
 #ifdef __cplusplus
 }
 #endif

@@ -25,6 +25,7 @@ extern "C" {
     i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
     void ReleaseTakeOver(GAMEOBJECT *, i32);
     void TakeOverGameObject(struct gameobject_s *rider, struct gameobject_s *vehicle, i32 blend_camera, i32 immediate);
+    void Tag_SetMode(i32 mode);
 #ifdef __cplusplus
 }
 #endif

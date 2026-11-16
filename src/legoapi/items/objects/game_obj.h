@@ -306,6 +306,8 @@ extern "C" {
     void SpeederPart_Kill(struct PART *, i32);
     void SpeederPart_Update(struct PART *);
     i32 SpeederPart_Draw(struct PART *);
+    extern struct gameobject_s *player_tag_from;
+    void GameObjectRotation(struct gameobject_s *, i32);
 #ifdef __cplusplus
 }
 #endif

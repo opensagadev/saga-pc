@@ -35,6 +35,7 @@ extern "C" {
 extern "C" {
 #endif
     void Tube_MoveCode(struct gameobject_s *, struct WORLDINFO_s *);
+    TUBE *Tube_InAnyCylinder(struct WORLDINFO_s *, struct gameobject_s *, i32);
 #ifdef __cplusplus
 }
 #endif

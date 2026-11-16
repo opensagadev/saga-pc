@@ -61,8 +61,6 @@
 #include <string.h>
 #include <float.h>
 
-void PartUpdate_Heart(PART *part);
-
 typedef struct coinpacket_pickup_s {
     u8 unknown_0[0xa];
     u8 multiplier;
@@ -70,13 +68,9 @@ typedef struct coinpacket_pickup_s {
     f32 timer;
 } COINPACKET_PICKUP;
 
-u32 GizmoPickups_TotalScore(WORLDINFO *world);
-u32 GizmoBlowups_TotalScore(WORLDINFO *world);
-u32 GizBuildIts_TotalScore(WORLDINFO *world);
 u32 GizForce_TotalScore(WORLDINFO *world);
 u32 GizObstacles_TotalScore(WORLDINFO *world);
 u32 GizTurrets_TotalScore(WORLDINFO *world);
-u32 GameAI_TotalScore(void);
 
 char dat_00758c20[8] = "Charkit";
 char dat_00758c28[10] = "Red Brick";

@@ -48,6 +48,8 @@ extern "C" {
     struct level_data_s *CanSaveAndExit(struct WORLDINFO_s *world);
     void AddToGoldBricks(void);
     void PauseGame(i32);
+    void AddToCompletionPoints(u32);
+    void InitSuperStory(i32 episode);
 #ifdef __cplusplus
 }
 #endif

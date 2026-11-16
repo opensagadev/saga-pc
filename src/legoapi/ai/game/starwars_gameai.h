@@ -16,6 +16,7 @@ extern "C" {
     i32 StarWars_PrepareTakeOverJump(AIPACKET *, APIOBJECT *, i32);
     i32 StarWars_PrepareObstacle(AIPACKET *, APIOBJECT *, i32);
     i32 StarWars_PrepareJump(AIPACKET *, APIOBJECT *, i32);
+    void StarWars_GameAISysInit(void);
 #ifdef __cplusplus
 }
 #endif

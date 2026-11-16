@@ -48,6 +48,9 @@ extern "C" {
                        f32 *first_fraction, f32 *second_fraction);
     extern char **TexAnimScriptTable;
     i32 MatrixReflectionVU0_AXISY(NUMTX *, f32, f32, NUMTX *);
+    extern u64 CharacterMaskAll;
+    i32 XZLinesIntersect(NUVEC *a, NUVEC *b, NUVEC *c, NUVEC *d, float *first, float *second);
+    void SetTexAnimSignals(void);
 #ifdef __cplusplus
 }
 #endif

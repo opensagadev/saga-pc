@@ -1721,6 +1721,10 @@ extern "C" {
 #endif
     void AnimPacketMiniToFull(struct DRAW_ATTACHMENTS_MINI *, ANIMPACKET *);
     void AnimPacketFullToMini(ANIMPACKET *, struct DRAW_ATTACHMENTS_MINI *);
+    extern f32 animduration_blendouttime;
+    i32 AnimPacketModelsCompatible(ANIMPACKET *packet, i32 source_id, i32 target_id);
+    i32 QuickNewRayCast(NUVEC *position, NUVEC *movement, f32 radius, i32 scan_flags, f32 max_distance, f32 step);
+    void SetAnimBlendMode(i32 mode);
 #ifdef __cplusplus
 }
 #endif

@@ -11,6 +11,7 @@ extern "C" {
     void Particles_Start(WORLDINFO *);
     void SetEffectVisibility(char *name, i32 visible);
     void Particles_DumpAreaPage(void);
+    void Particles_LoadAreaPage(char *);
 #ifdef __cplusplus
 }
 #endif

@@ -403,7 +403,6 @@ extern "C" {
     static void DrawStarFighter(DOGFIGHT_FIGHTER *record);
     static DOGFIGHT_GROUP *SelectFreeFlightGroup(void);
     static void ProcessFlightGroup(DOGFIGHT_GROUP *group, DOGFIGHT_QUICK_BUFFER *buffer);
-    void NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
     void SpaceAudioPoint(void);
     static void DogfightResetSpace(WORLDINFO *world, DOGFIGHT_SPACE *space);
     void SpaceRumbleProcess(void);

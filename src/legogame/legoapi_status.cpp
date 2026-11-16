@@ -78,17 +78,8 @@ typedef struct status_world_minikit_reader_s {
 } STATUS_WORLD_MINIKIT_READER;
 
 extern "C" i16 dat_00880bc0;
-extern "C" {
-    extern i16 dat_008806f8;
-    extern i16 dat_00880704;
-    extern i16 dat_00880744;
-    extern i16 dat_0088078c;
-    extern i16 dat_00880790;
-    extern i16 dat_0088083c;
-}
 
 extern "C" {
-    void AddToCompletionPoints(u32 points);
     i32 AllMiniKitsDone(AREASAVE_s *save);
 }
 extern "C" {

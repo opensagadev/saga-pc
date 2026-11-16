@@ -113,6 +113,41 @@ extern "C" {
     extern i16 dat_008811bc;
     extern i16 dat_008811c0;
     extern i16 dat_00880778;
+    extern i16 dat_008806f8;
+    extern i16 dat_008806fc;
+    extern i16 dat_00880700;
+    extern i16 dat_00880704;
+    extern i16 dat_00880708;
+    extern i16 dat_00880744;
+    extern i16 dat_0088074c;
+    extern i16 dat_00880750;
+    extern i16 dat_00880754;
+    extern i16 dat_00880758;
+    extern i16 dat_00880760;
+    extern i16 dat_00880764;
+    extern i16 dat_0088078c;
+    extern i16 dat_00880790;
+    extern i16 dat_00880794;
+    extern i16 dat_008807d0;
+    extern i16 dat_008807d4;
+    extern i16 dat_0088081c;
+    extern i16 dat_00880820;
+    extern i16 dat_00880838;
+    extern i16 dat_0088083c;
+    extern i16 dat_00880840;
+    extern i16 dat_0088084c;
+    extern i16 dat_00880858;
+    extern i16 dat_00880860;
+    extern i16 dat_0088089c;
+    extern i16 dat_008808ec;
+    extern i16 dat_008808f0;
+    extern i16 dat_00880910;
+    extern i16 dat_00880914;
+    extern i16 dat_0088098c;
+    extern i16 dat_008809ec;
+    extern i16 dat_00880b0c;
+    extern i16 dat_00880fa0;
+    extern i16 dat_00880fc4;
 #ifdef __cplusplus
 }
 #endif

@@ -58,6 +58,7 @@ extern "C" {
     extern i16 dat_00880890;
     extern u8 downrepeatcount[2];
     extern u8 rightrepeatcount[2];
+    void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *customiser);
 #ifdef __cplusplus
 }
 #endif

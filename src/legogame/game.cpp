@@ -149,12 +149,8 @@ static f32 BuckSnowmobRadius = 0.2f;
 extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world);
 extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
 
-extern "C" void MenuSetColours(u8 normal_r, u8 normal_g, u8 normal_b, u8 entry_r, u8 entry_g, u8 entry_b, u8 header_r, u8 header_g,
-                               u8 header_b, u8 warn_r, u8 warn_g, u8 warn_b, u8 flash0_r, u8 flash0_g, u8 flash0_b, u8 flash1_r,
-                               u8 flash1_g, u8 flash1_b);
 #include <string.h>
 #include <stdio.h>
-extern "C" void NarrowSockExceptions_Init(NARROWSOCKEXCEPTION *);
 extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d",  -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
@@ -232,14 +228,8 @@ extern "C" {
     const char *InitAsciiRight = ">";
     const char *InitAsciiBigArrow = "\xC2\xA4";
 }
-extern "C" void SurfaceMaskOn(u32 *surface_mask);
 extern "C" void Grabber_Reset(WORLDINFO *world);
-extern "C" void Customiser_SetUpCharacterData(CUSTOMISER_LAYERS *customiser);
-extern "C" u32 TotalLevelCoinTally(WORLDINFO *world, u32 *pickups, u32 *blowups, u32 *buildits, u32 *forces, u32 *obstacles, u32 *turrets,
-                                   u32 *characters);
-extern "C" void SurfaceMaskOff(u32 *surface_mask);
 extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
-extern "C" void PodRace_IncreaseLap(void);
 
 typedef struct SHOP_COMPLETION_GAME {     // size 0x7e4c
     u8 reserved_0000[0x782c];             // 0x0000
@@ -257,10 +247,6 @@ typedef struct SHOP_COMPLETION_GAME {     // size 0x7e4c
 } SHOP_COMPLETION_GAME;
 
 extern "C" {
-    i32 AllMiniKitsDone(AREASAVE_s *);
-    void AddToCompletionPoints(u32);
-}
-extern "C" {
     extern u16 PodRaceBDieAngle;
     extern u16 PodRaceCDieAngle;
     extern void *game_cutscenes_podrace_avalanche;
@@ -272,7 +258,6 @@ extern "C" {
 extern "C" TIMER ChallengeTimer;
 extern "C" {
     extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
-    void Hub_LockUnlockDoors(WORLDINFO *world);
     extern void *game_cutscenes_droid_factory_conveyor;
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
@@ -349,34 +334,15 @@ GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS, area_phase) == 0xc);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, saved_hitpoints) == 0xe39);
 GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
-    void SetTexAnimSignals(void);
     void Bolts_Reset(void);
     void Detonators_Reset(void);
-    void ResetParts(void);
-    void Hint_Reset(void);
     void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system);
     void Faders_Reset(WORLDINFO *world);
-    void GizmoSysReset(void *system, void *world, i32 progress_index);
-    void ClearAICreatures(void);
     void CharPlatforms_Reset(CHARPLATFORMSYS_s *system);
-    void ResetRepeatSfx(void);
-    void SetSoundFadeDist(WORLDINFO *world, OPTIONSSAVE *options);
-    void CutScene_StartAudio(void);
-    void Tag_SetMode(i32 mode);
     extern i32 makebaddiesforgetinresetbits;
-    extern i32 FalconDebKey[2];
-    extern i32 come_from_an_editor;
 }
-extern "C" i32 GetRandomCoinType(void);
-extern "C" void GameFog_Reset(void);
 extern "C" {
-    void SetAnimBlendMode(i32 mode);
     void GameRegisterGizActions(void);
-    void DrawAutoSaveIcon(void);
-    void InitPartTable(char **names);
-    void GameAudio_Reset(void);
-    u8 NuAnimSetForceEulerToQuat(u8 force);
-    i32 NuWindowsGetConfigValue(i32 index);
 }
 
 typedef struct game_door_callback_s {
@@ -487,9 +453,6 @@ typedef struct GAME_CUSTOMISER_REWARD_READER {
 
 GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x174);
 
-extern "C" i32 fun_0041aec0(GAMEOBJECT *object);
-void Tag_DrawIcon_LSW(GAMEOBJECT *object);
-void Tag_DrawIcon_Batman(GAMEOBJECT *object);
 extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP *target);
 static void LEGO_AllGoldBricksFn(void);
 extern "C" {

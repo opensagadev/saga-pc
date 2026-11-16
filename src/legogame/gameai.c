@@ -113,27 +113,13 @@ void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
 void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
 void InitFn_LevelCharacterName(AI_CHARACTER_NAME);
 void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME);
-void InitFn_LevelCharacterGlobalID(AI_LEVEL_CHARACTER_GLOBAL_ID);
-void InitFn_GlobalCharacterTypeID(i32 (*)(char *));
 void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME);
 void InitFn_GlobalCharacterRender(AI_GLOBAL_CHARACTER_RENDER);
 void InitFn_GlobalCharacterHGobj(AI_GLOBAL_CHARACTER_HGOBJ);
 void InitFn_ClearAICreatures(AI_CLEAR_CREATURES);
-void InitFn_GameAILoad(void (*)(AISYS *, i32, NUGSCN *, VARIPTR *, VARIPTR *));
-void InitFn_AIActionParseSpeed(AI_PARSE_SPEED);
-void InitFn_AIRespawnOnPath(AI_RESPAWN_ON_PATH);
-void InitFn_GetViewRange(AI_CHARACTER_DISTANCE);
-void InitFn_GetHearDistance(AI_CHARACTER_DISTANCE);
-void InitFn_GlobalGetMaxViewHeight(AI_CHARACTER_DISTANCE);
-void InitFn_GlobalGetMinViewHeight(AI_CHARACTER_DISTANCE);
 void InitFn_GetNamedAPIObject(AI_GET_NAMED_OBJECT);
 void InitFn_GetAICreatureOrigin(AI_GET_CREATURE_ORIGIN);
-void InitFn_AIBigJumpToDestination(AI_BIG_JUMP_TO_DESTINATION);
-void InitFn_FindAlternativeSpecialObjectFn(AIFINDALTERNATIVESPECIALOBJECT *);
 i32 EquivalentObject_Find(WORLDINFO *, nuhspecial_s *);
-void ClearAICreatures(void);
-void StarWars_GameAISysInit(void);
-void Indy_GameAISysInit(void);
 i32 TightRope_SnapTo(GAMEOBJECT *, NUVEC *);
 #define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
 #define INTERACTION_COPY_ANTINODE(source, target)                                                                                          \

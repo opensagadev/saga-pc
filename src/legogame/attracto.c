@@ -118,7 +118,6 @@ typedef struct attracto_shard_reader_s { // size 0x54
     NUVEC velocity;        // 0x48
 } ATTRACTO_SHARD_READER;
 
-extern void Shard_Collect(SHARD_s *, GAMEOBJECT *);
 extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */

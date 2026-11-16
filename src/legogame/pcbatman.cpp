@@ -15,10 +15,6 @@
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
 
-extern "C" void NuRndrConfigureLeaf(f32, f32, i32);
-
-extern "C" void InitGameBeforeConfig(void);
-
 extern "C" {
     i32 SUPERBUFFERSIZE = 0x09600000;
     i32 CHARACTERBUFFERSIZE = 0x02800000;

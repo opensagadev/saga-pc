@@ -7,6 +7,8 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+struct AREASAVE_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,6 +27,7 @@ extern "C" {
     extern const char *LEGOASCII_BIGARROW;
     void IncrementMinikitCounter(struct gameobject_s *object);
     extern f32 KITPOS2YPc;
+    i32 AllMiniKitsDone(struct AREASAVE_s *);
 #ifdef __cplusplus
 }
 #endif

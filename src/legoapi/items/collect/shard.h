@@ -2,8 +2,10 @@
 
 #include "nu2api/nucore/common.h"
 
+struct SHARD_s;
 struct SIGNAL_s;
 struct WORLDINFO_s;
+struct addgizmotype_s;
 struct gameobject_s;
 
 typedef struct AREA_SAVE_PICKUP { // size 0xc
@@ -43,6 +45,8 @@ extern "C" {
 #endif
     void Shards_HandleLostObj(struct WORLDINFO_s *, struct gameobject_s *);
     void Signal_SetVisibility(struct SIGNAL_s *signal, i32 visible);
+    struct addgizmotype_s *Shards_RegisterGizmo(i32);
+    extern void Shard_Collect(struct SHARD_s *, struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif

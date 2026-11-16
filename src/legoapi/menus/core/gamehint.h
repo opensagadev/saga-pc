@@ -33,6 +33,7 @@ typedef struct REGISTER_STATUS_PACKET {                                         
 extern "C" {
 #endif
     f32 CurrentHintAlpha(void);
+    void Alt_registerStatusScreenExtra(void);
 #ifdef __cplusplus
 }
 #endif

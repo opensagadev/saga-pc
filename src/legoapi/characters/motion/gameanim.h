@@ -97,6 +97,7 @@ extern "C" {
     i16 FindAnimIX(struct characterdata_s *character, char *name);
     void edanimClose(void);
     void edanimEnter(void);
+    void GameAnimSet_SetOffset(GAMEANIMSET *, NUVEC *);
 #ifdef __cplusplus
 }
 #endif

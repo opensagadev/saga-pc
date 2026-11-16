@@ -157,7 +157,6 @@ extern "C" {
     void WorldInfo_Activate(void);
     void FindGameCutScenes(void);
     void DebrisGlassInit(void);
-    void GamePlayMusic(LEVELDATA *level, i32 start, OPTIONSSAVE *options);
     void CheckResetBits(void);
     void Movie_Play(char *name, VARIPTR *buffer, VARIPTR *end, f32 frame_time, void *callback, f32 volume);
     void Areas_OpenAll(i32 mode);
@@ -705,8 +704,6 @@ typedef struct NU_MAIN_STATUS_PACKET { // size 0xb6
 
 extern "C" {
     u8 StatusPlayerActive[8] = {0};
-    void NuMainStatusHelper(STATUSPACKET_s *);
-    void SoundKillAll(void);
     void ClearUpAreaData(void);
     void WorldInfo_ClearAllIfScreenFaded(void);
     i32 MakePlayerList(i32);

@@ -523,6 +523,7 @@ extern "C" {
     extern char *(*GlobalCharacterNameFn)(i32);
     extern void (*GlobalCharacterRenderFn)(NUVEC *, i16, i32, i32, void *);
     extern void *(*GlobalCharacterHGobjFn)(i32);
+    i32 NuHGobjRndr(NUHGOBJ_EVAL *, NUMTX *, i32, i16 *);
 #ifdef __cplusplus
 }
 #endif

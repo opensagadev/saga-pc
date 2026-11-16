@@ -129,6 +129,11 @@ extern "C" {
     extern i32 sticky_attack;
     i32 AmbientFromQuiet(i32);
     void MusicClearAll(void);
+    void GameAudio_Reset(void);
+    void GamePlayMusic(struct level_data_s *, i32, OPTIONSSAVE *);
+    void NewAreaMusicChanges(void);
+    void ResetRepeatSfx(void);
+    void SetSoundFadeDist(struct WORLDINFO_s *world, OPTIONSSAVE *options);
 #ifdef __cplusplus
 }
 #endif

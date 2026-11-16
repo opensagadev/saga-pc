@@ -233,9 +233,7 @@ typedef struct TERRAIN_PLAYER_CHARACTER { // size 0x1c
 } TERRAIN_PLAYER_CHARACTER;
 
 void TakeOverCode(GAMEOBJECT *, i32);
-void ApplyGravity(GAMEOBJECT *, f32 *, f32, f32, f32 *);
 void Tag_Check(GAMEOBJECT *);
-void GameObjectRotation(GAMEOBJECT *, i32);
 #define AIPATHCNX_FLAG_SET(connection, field, flag) ((connection) != NULL && ((connection)->field[0] & (u32)(flag)) != 0)
 
 typedef struct level_ai_progress_s {
@@ -268,14 +266,6 @@ typedef struct AI_CREATURE_RESET_FLAGS {
     u8 unknown_0000[0x1386];
     u16 reset_flags;
 } AI_CREATURE_RESET_FLAGS;
-
-void MovePlayer_VEHICLEDIRECTIONAL(GAMEOBJECT *object);
-void MovePlayer_ROLLING(GAMEOBJECT *object);
-i32 MovePlayer_TWIST(GAMEOBJECT *object);
-i32 MovePlayer_CIRCLE(GAMEOBJECT *object);
-i32 MovePlayer_GUNSHIPIN(GAMEOBJECT *object);
-i32 MovePlayer_POD(GAMEOBJECT *object);
-void MovePlayer_DIRECTIONAL(GAMEOBJECT *object);
 
 typedef struct moveplayer_pad_bits_s {
     u16 low : 3;
@@ -341,7 +331,6 @@ i32 TerrainPlayerShadowFix = 1;
 i32 DrawParaphernaliaEnabled = 1;
 f32 ComplexShadowBase = 25.0f;
 i32 CharacterLoadAreaModels = 1;
-i32 AnimPacketModelsCompatible(ANIMPACKET *packet, i32 source_id, i32 target_id);
 
 typedef struct SPECIAL_LAYER_s {
     i16 *character_id;
@@ -375,8 +364,6 @@ typedef struct PLAYER_ROUTE_MASK_WORDS {
     u32 high;
 } PLAYER_ROUTE_MASK_WORDS;
 
-extern u64 CharacterMaskAll;
-
 typedef struct PLAYER_LAYER_FLAGS {
     u32 unknown_0 : 9;
     u32 bob : 1;
@@ -393,9 +380,6 @@ typedef struct PARAPHERNALIA_EXTRA {
     u8 gap_d90[0x2ec];
     u8 draw_reflection;
 } PARAPHERNALIA_EXTRA;
-
-void DrawForceGlowSprite(NUVEC *, f32, i32, f32, GAMEOBJECT *);
-void DrawSnakeBody(GAMEOBJECT *);
 
 typedef struct draw_objects_flags_s {
     u8 unknown_000[0xe24];
@@ -451,7 +435,6 @@ typedef struct CHARACTER_DRAW_HIERARCHY {
 } CHARACTER_DRAW_HIERARCHY;
 
 extern i32 GameKeepMergeAction;
-extern i32 GameDrawCharacterModelFlag;
 
 typedef struct DRAW_PREPASS_TELEPORT {
     u8 unknown_00[0x4c];
@@ -463,9 +446,6 @@ typedef struct DRAW_PREPASS_TELEPORT_OBJECT {
     DRAW_PREPASS_TELEPORT *teleport;
 } DRAW_PREPASS_TELEPORT_OBJECT;
 
-f32 PodSprint_RollMul(GAMEOBJECT *);
-void ApplyExtraRotation(GAMEOBJECT *, NUMTX *);
-
 typedef struct draw_process_flags_s {
     u8 unknown_000[0xe20];
     u32 flags_e20_bits_0_26 : 27;
@@ -476,11 +456,8 @@ typedef struct draw_process_flags_s {
     u32 previous_model_draw_result : 1;
 } DRAW_PROCESS_FLAGS;
 
-void CustomiserDrawAccessories(CUSTOMISER_LAYERS *, GAMEOBJECT *, NUMTX *);
 void Grapple_DrawLine(GAMEOBJECT *);
 void SuperCarry_DrawObject(GAMEOBJECT *);
-void DrawTorpedos(GAMEOBJECT *);
-void GizDrawBuildItPiece(GAMEOBJECT *, i32);
 void TransformDrawTarget(NUVEC *, f32, f32);
 
 typedef struct ai_creature_init_packet_s {

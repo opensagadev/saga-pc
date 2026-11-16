@@ -85,6 +85,9 @@ extern "C" {
     extern i32 (*Hub_PanelBusyFn)(void);
     extern f32 (*Hint_AlphaTargetFn)(void);
     void Hint_Draw(i32);
+    i32 Hint_isAvailable(i32 hint_id);
+    i32 Hint_isCompleteById(i32 hint_id);
+    void Hint_Reset(void);
 #ifdef __cplusplus
 }
 #endif

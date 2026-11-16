@@ -66,7 +66,6 @@
 #include <string.h>
 
 extern "C" {
-    extern f32 HudBossIconY;
     extern f32 HudBossIconScale;
     extern f32 MeleeRowsSpacing;
     extern f32 MeleeRowsScale;
@@ -92,19 +91,16 @@ extern "C" {
     extern f32 PanelHeartWidescreen;
     extern f32 DoubleScoreTextY;
     extern f32 DoubleScoreTextScale;
-    extern i16 dat_0088098c;
     extern f32 CoinTotalScoreOffsetY;
     extern f32 CoinTotalTargetOffsetY;
     extern f32 DrawCoinTotalY;
     extern f32 HudBossHeartY;
     extern f32 HudBossHeartScale;
-    i32 PcInput_GetFirstKeyboardPort(void);
     extern f32 HudLevelTitleY;
     extern f32 HudLevelTitleScale;
     extern f32 HudLevelTitleScaleX;
     extern f32 HudLevelTitleWidth;
     void CutScene_DrawSubtitles(void);
-    extern i32 DRAWBGLOAD;
     extern i32 FPSDISPLAY;
     extern f32 HudNameScale;
     extern f32 HudNameWidth;

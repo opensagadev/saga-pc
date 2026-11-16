@@ -96,6 +96,38 @@ extern "C" {
     extern i16 dat_007f19ac;
     extern i16 dat_007f19b0;
     extern i16 dat_007f19b4;
+    f32 PodSprint_RollMul(GAMEOBJECT *);
+    i32 Action_MushroomCollapse(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
+    i32 Action_NewSebulba(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
+    i32 Action_Sebulba(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
+    void AnakinsFlightB_Init(WORLDINFO *);
+    void GunganA_Init(WORLDINFO *);
+    void GunganA_Update(WORLDINFO *);
+    void MaulA_Init(WORLDINFO *);
+    void MaulA_Panel(WORLDINFO *);
+    void MaulA_Reset(WORLDINFO *);
+    void MaulF_Init(WORLDINFO *);
+    void MaulF_Panel(WORLDINFO *);
+    void MaulF_Reset(WORLDINFO *);
+    void PodRaceAInit(WORLDINFO *);
+    void PodRaceAReset(WORLDINFO *);
+    void PodRaceA_AlwaysUpdate(WORLDINFO *);
+    void PodRaceA_Draw(WORLDINFO *);
+    void PodRaceA_Update(WORLDINFO *);
+    void PodRaceBInit(WORLDINFO *);
+    void PodRaceBReset(WORLDINFO *);
+    void PodRaceBUpdate(WORLDINFO *);
+    void PodRaceCInit(WORLDINFO *);
+    void PodRaceCReset(WORLDINFO *);
+    void PodRaceCUpdate(WORLDINFO *);
+    void PodRace_IncreaseLap(void);
+    void PodSprintA_Init(WORLDINFO *);
+    void PodSprintA_Panel(WORLDINFO *);
+    void PodSprintA_Reset(WORLDINFO *);
+    void PodSprintA_Update(WORLDINFO *);
+    void RetakeG_Init(WORLDINFO *);
+    void RetakeG_Panel(WORLDINFO *);
+    void RetakeG_Update(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif

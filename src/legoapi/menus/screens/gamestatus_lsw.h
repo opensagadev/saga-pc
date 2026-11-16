@@ -77,6 +77,7 @@ extern "C" {
     void CollectCharactersOff_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     void Save_LSW_Update(STATUS_STAGE_s *, STATUSPACKET_s *, f32);
     extern i32 status_prompt;
+    void GameFog_Reset(void);
 #ifdef __cplusplus
 }
 #endif

@@ -61,6 +61,11 @@ extern "C" {
     void CharScenes_AreaLoad(APICHARACTERMODELLIST *, VARIPTR *, VARIPTR);
     extern struct KILLPARTS_CHARSCENE *CharScene_Area;
     extern char AreaFixUpName_Jedi[8];
+    extern CHAR_CATEGORY_RECORD StartupCharCategoriesDefault[6];
+    extern CHAR_CATEGORY_RECORD StartupCharCategoriesLsw[10];
+    extern char *StartupCharVariantNames[23];
+    i32 CharCategory_FindByName(char *);
+    void CharCategories_Init(CHAR_CATEGORY_RECORD *);
 #ifdef __cplusplus
 }
 #endif

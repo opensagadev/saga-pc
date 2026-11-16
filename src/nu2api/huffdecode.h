@@ -225,6 +225,7 @@ extern "C" {
     extern i32 enum_numdevices;
     extern i32 min_delay;
     extern u32 dat_0091ef20;
+    i32 NuWindowsGetConfigValue(i32 index);
 #ifdef __cplusplus
 }
 #endif

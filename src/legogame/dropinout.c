@@ -34,11 +34,6 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nusound/nusound.h"
 
-void PcControlInitialize(i32, i32, i32, u8);
-u8 PcInput_MappingIsGood(i32 port, i32 player_index);
-i32 PcInput_GetFirstKeyboardPort(void);
-i32 PC_CtrlConfigGetPlayerPort(i32 player_index);
-void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints);
 #define DROPIN_SCREEN_INSIDE(object)                                                                                                       \
     ((object)->camera_screen_position.x > -0.8500000238418579 && (object)->camera_screen_position.x < 0.8500000238418579 &&                \
      (object)->camera_screen_position.y > -0.8500000238418579 && (object)->camera_screen_position.y < 0.8500000238418579)

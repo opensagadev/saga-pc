@@ -9,6 +9,7 @@ struct AIAREA;
 struct AIPACKET;
 struct AISYS;
 struct APIOBJECT;
+struct addgizmotype_s;
 struct gameobject_s;
 struct gizmosys_s;
 
@@ -131,6 +132,8 @@ extern "C" {
 extern "C" {
 #endif
     void ClearSpecialMove(struct gameobject_s *);
+    struct addgizmotype_s *AI_RegisterGizmo(i32);
+    u32 GameAI_TotalScore(void);
 #ifdef __cplusplus
 }
 #endif

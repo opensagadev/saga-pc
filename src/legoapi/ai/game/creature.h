@@ -73,6 +73,9 @@ extern "C" {
     void InitAICreatures(AISYS *);
     extern i16 dat_007f1810;
     extern i16 dat_007f1820;
+    i32 fun_0041aec0(GAMEOBJECT *object);
+    void ClearAICreatures(void);
+    void PlayerSetCurrentHp(GAMEOBJECT *object, i8 hitpoints);
 #ifdef __cplusplus
 }
 #endif

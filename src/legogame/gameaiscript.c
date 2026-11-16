@@ -158,16 +158,11 @@ typedef struct torpedo_action_packet_s { // size 0x88
 void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
 
 void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
-
 f32 debug_condition = 0;
 NUGSPLINE *script_spline_selected = 0;
 static i32 prev_droid_ix = 0;
 
 void LevelScriptReStoreProgress(WORLDINFO *, LEVEL_SCRIPT_PROCESS *);
-
-GIZMOPICKUP *GizmoPickup_FindByName(WORLDINFO *, char *);
-
-void GizmoPickup_TurnOnPickup(GIZMOPICKUP *);
 
 i16 id_BATTLEDROIDCOMMANDER = -1;
 i16 id_BATTLEDROIDGEONOSIAN = -1;
@@ -199,27 +194,17 @@ typedef struct ai_cable_object_s { // size 0x1044
 
 i32 CanFightLikeAJedi(GAMEOBJECT *);
 
-i32 CharCategory_FindByName(char *);
-
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
-
-i32 GizmoPickup_BeenTurnedOn(GIZMOPICKUP *);
 
 typedef struct AI_CONDITION_TURRET { // size 0x13c
     u8 unknown_000[0x13a];           // 0x000
     u16 flags;                       // 0x13a
 } AI_CONDITION_TURRET;
 
-i32 Hint_isAvailable(i32 hint_id);
-
-i32 Hint_isCompleteById(i32 hint_id);
-
 typedef struct ai_global_trigger_world_s { // size 0x467c
     u8 unknown_0000[0x4678];               // 0x0000
     AITRIGGERSETSYS_s *trigger_system;     // 0x4678
 } AI_GLOBAL_TRIGGER_WORLD;
-
-i32 ForceAnimationDone(GIZFORCE *force);
 
 typedef struct condition_trigger_process_reader_s { // size 0xa4
     u8 unknown_00[0xa0];                            // 0x00
@@ -12221,9 +12206,6 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
 }
 
 i32 Action_SpeederBeingChased(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
-i32 Action_MushroomCollapse(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
-i32 Action_Sebulba(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
-i32 Action_NewSebulba(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 i32 Action_BoulderSection(AISYS *, AISCRIPTPROCESS *, AIPACKET *, char **, i32, i32, f32);
 
 AIACTIONDEF lego_aiactiondefs[208] = {

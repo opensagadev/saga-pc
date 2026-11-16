@@ -6,6 +6,7 @@
 #include "nu2api/nuwin32/pcapi.h"
 
 struct PC_BUFFER_RESOURCE;
+struct numtl_s;
 
 struct GRAPHICS_FACTORY;
 struct GRAPHICS_RENDER_TEXTURE;
@@ -382,6 +383,10 @@ extern "C" {
     i32 NuTexReserve(i32 size);
     void NuLightSpotFadeSet(u32 fade);
     void NuTexUnReserve(void);
+    void NuLgtSetArcMat(struct numtl_s *material, f32 u0, f32 v0, f32 u1, f32 v1);
+    void NuRndrConfigureLeaf(f32, f32, i32);
+    void NuRndrShadowInit(u8 *random);
+    void PermanentGraphicsResourceSetup(void);
 #ifdef __cplusplus
 }
 #endif
