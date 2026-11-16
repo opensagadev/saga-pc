@@ -2538,7 +2538,7 @@ extern "C" {
             if (context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN) {
                 continue;
             }
-            if ((part->flags & PART_FLAG_IGNORE_CREATURE) != 0 && (i8)part->hostility_group == api->hostility_group) {
+            if ((part->flags & PART_FLAG_IGNORE_CREATURE) != 0 && (i8)part->hostility_group == api->object_id) {
                 continue;
             }
             if ((part->flags & PART_FLAG_ACTIVE_CHARACTERS_ONLY) != 0 && (api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {

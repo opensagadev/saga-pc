@@ -2029,7 +2029,7 @@ f32 Condition_NumBaddiesThatCanSeePlayers(AISYS *system, AISCRIPTPROCESS *proces
 
 f32 Condition_HelpWithTriggers(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     if (((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL) {
-        i32 index = packet->owner->hostility_group;
+        i32 index = packet->owner->object_id;
         if (((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system->unknown_42c0[index] != -1 &&
             ((AI_GLOBAL_TRIGGER_WORLD *)WORLD)
                     ->trigger_system->sets[((AI_GLOBAL_TRIGGER_WORLD *)WORLD)->trigger_system->unknown_4280[index]]
@@ -2375,9 +2375,8 @@ f32 Condition_GotOpponentLOS(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *
     } else {
         opponent = (GAMEOBJECT *)packet->opponent;
     }
-    /* hostility_group is below 64 for every live object; __allshl yields 0 otherwise. */
-    if (opponent != NULL &&
-        (WORLD->object_sys->line_of_sight[packet->owner->hostility_group] & ((u64)1 << opponent->hostility_group)) != 0) {
+    /* object_id is below 64 for every live object; __allshl yields 0 otherwise. */
+    if (opponent != NULL && (WORLD->object_sys->line_of_sight[packet->owner->object_id] & ((u64)1 << opponent->object_id)) != 0) {
         return 1.0f;
     }
     return 0.0f;
@@ -4596,7 +4595,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         }
     } else if (packet->movement_instruction_parameter != 0.0f &&
                (((opponent->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->model_draw_result == 0) ||
-                (((u64)1 << opponent->hostility_group) & WORLD->object_sys->line_of_sight[((APIOBJECT *)packet->owner)->object_id]) == 0)) {
+                (((u64)1 << opponent->object_id) & WORLD->object_sys->line_of_sight[((APIOBJECT *)packet->owner)->object_id]) == 0)) {
         goal_range = 0.1f;
     } else {
         goal_range = packet->movement_instruction_parameter;
@@ -4661,7 +4660,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
         }
     }
 
-    if ((((u64)1 << opponent->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
+    if ((((u64)1 << opponent->object_id) & WORLD->object_sys->line_of_sight[object->object_id]) == 0) {
         return 0;
     }
     character_flags_2 = object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TURNING_CIRCLE;
@@ -4764,7 +4763,7 @@ i32 Action_ShootAtOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
             outside_arc = 0;
         }
     }
-    if ((((u64)1 << opponent->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
+    if ((((u64)1 << opponent->object_id) & WORLD->object_sys->line_of_sight[object->object_id]) == 0) {
         return 0;
     }
     if (object->model_draw_result == 0 && (processor->action_data_1 & AIENGAGE_OFFSCREEN) == 0) {
@@ -4964,7 +4963,7 @@ i32 Action_FollowDirection(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
     if (processor->action_data_4 > 0.0f && packet->opponent != NULL && packet->opponent->ai != NULL) {
         distance_squared = NuVecDistSqr(&((APIOBJECT *)packet->owner)->position, &packet->opponent->position, &difference);
         opponent = packet->opponent;
-        if ((((u64)1 << opponent->object_id) & WORLD->object_sys->line_of_sight[object->hostility_group]) != 0 &&
+        if ((((u64)1 << opponent->object_id) & WORLD->object_sys->line_of_sight[object->object_id]) != 0 &&
             object->model_draw_result != 0 && distance_squared < processor->action_data_4 * processor->action_data_4) {
             target = opponent->owner;
             if (opponent->dead == 0 || target->unknown_1010 > 0.0f) {
@@ -9428,11 +9427,11 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
     NUVEC spinner_direction;
     if (((AI_TRIGGER_WORLD *)WORLD)->trigger_system != NULL && packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL) {
         system = ((AI_TRIGGER_WORLD *)WORLD)->trigger_system;
-        if (system->unknown_42c0[packet->owner->hostility_group] == -1) {
+        if (system->unknown_42c0[packet->owner->object_id] == -1) {
             return 0;
         }
-        set = &system->sets[system->unknown_4280[packet->owner->hostility_group]];
-        trigger_index = system->unknown_42c0[packet->owner->hostility_group];
+        set = &system->sets[system->unknown_4280[packet->owner->object_id]];
+        trigger_index = system->unknown_42c0[packet->owner->object_id];
         object = packet->owner->objptr;
         target = &set->targets[trigger_index];
         gizmo = set->triggers[trigger_index];
@@ -11754,7 +11753,7 @@ i32 Action_CreateCreatures(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pac
                         i32 i;
                         for (i = 0; i < locator_set->locator_count; ++i) {
                             if (locator_set->locator_entries[i] == object->ai_packet.locator - sys->locators) {
-                                locator_set->assigned[i] = object->hostility_group;
+                                locator_set->assigned[i] = object->object_id;
                                 break;
                             }
                         }

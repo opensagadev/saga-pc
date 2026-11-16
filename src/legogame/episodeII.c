@@ -748,29 +748,29 @@ void JediB_Update(WORLDINFO *world) {
     jedi_b.exclusion_mask = 0;
     if (jedi_b.timer < 4.0f) {
         if (player != NULL) {
-            jedi_b.exclusion_mask = (u64)1 << player->hostility_group;
+            jedi_b.exclusion_mask = (u64)1 << player->object_id;
         }
         if (player2 != NULL) {
-            jedi_b.exclusion_mask |= (u64)1 << player2->hostility_group;
+            jedi_b.exclusion_mask |= (u64)1 << player2->object_id;
         }
     } else if (jedi_b.phase == 7) {
         if (jedi_b.boss != NULL) {
             if (player2 != NULL && jedi_b.boss->ai_packet.opponent == (APIOBJECT *)player2) {
-                shift = player2->hostility_group;
+                shift = player2->object_id;
             } else {
-                shift = player->hostility_group;
+                shift = player->object_id;
             }
             jedi_b.exclusion_mask = (u64)1 << shift;
         }
     } else {
         if (player->collision_position.x * player->collision_position.x + player->collision_position.z * player->collision_position.z >
             jedib_safe_r * jedib_safe_r) {
-            jedi_b.exclusion_mask = (u64)1 << player->hostility_group;
+            jedi_b.exclusion_mask = (u64)1 << player->object_id;
         }
         if (player2 != NULL &&
             player2->collision_position.x * player2->collision_position.x + player2->collision_position.z * player2->collision_position.z >
                 jedib_safe_r * jedib_safe_r) {
-            jedi_b.exclusion_mask |= (u64)1 << player2->hostility_group;
+            jedi_b.exclusion_mask |= (u64)1 << player2->object_id;
         }
     }
     for (slot = 0; slot < 8; slot++) {
@@ -781,7 +781,7 @@ void JediB_Update(WORLDINFO *world) {
         object->excluded_opponents = 0;
         object = Player[slot];
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && jedi_b.boss != NULL && jedi_b.phase == 7) {
-            mask = (u64)1 << jedi_b.boss->hostility_group;
+            mask = (u64)1 << jedi_b.boss->object_id;
             object->excluded_opponents |= mask;
         }
     }

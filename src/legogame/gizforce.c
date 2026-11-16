@@ -741,7 +741,7 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
                    PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_NO_BOUNCE | PART_FLAG_SLOT_CANNOT_BE_STOLEN |
                    PART_FLAG_IGNORE_CREATURE | PART_FLAG_THROWN;
     params.owner = object;
-    params.hostility_group = object->hostility_group;
+    params.hostility_group = object->object_id;
     params.collision_fn = PartCollide_3D;
     params.kill_fn = PartKill_ForceThrow;
     params.time_step = FRAMETIME;

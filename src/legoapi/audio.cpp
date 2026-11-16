@@ -265,7 +265,7 @@ extern "C" {
             volume = (f32)((f64)volume * (f64).6f);
         }
         pitch = (f32)((f64)object->player.engine_level * (f64).4f + (f64).6f);
-        pitch += (f32)(((f64)object->hostility_group / 63.0) * (f64).05f - (f64).025f);
+        pitch += (f32)(((f64)object->object_id / 63.0) * (f64).05f - (f64).025f);
         pitch = (f32)(((f64)qrand() * (f64)1.5259022e-5f * (f64).03f + (f64).985f) * (f64)pitch);
         PlaySfxByIdAndSetVolumeAndPitch(sfx_id, &object->collision_position, volume, pitch);
     }

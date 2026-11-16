@@ -192,7 +192,7 @@ void GameCreatureOpponentSelection(AISYS *system, i32 count, APIOBJECT **objects
         (alert_obj->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
         for (i = 0; i < baddy_count; ++i) {
             object = baddies[i];
-            if ((((u64)1 << alert_obj->hostility_group) & object->awareness) != 0) {
+            if ((((u64)1 << alert_obj->object_id) & object->awareness) != 0) {
                 object->owner->alert_target = alert_obj;
                 object->owner->alert_timer = 5.0f;
             } else if (WORLD->rooms_visible_ptr[object->owner->portal_room] != 0) {
@@ -206,14 +206,14 @@ void GameCreatureOpponentSelection(AISYS *system, i32 count, APIOBJECT **objects
                             if (!(distance < object->hear_distance * object->hear_distance)) {
                                 continue;
                             }
-                            if ((((u64)1 << alert_obj->hostility_group) & WORLD->object_sys->line_of_sight[object->object_id]) != 0 ||
+                            if ((((u64)1 << alert_obj->object_id) & WORLD->object_sys->line_of_sight[object->object_id]) != 0 ||
                                 ((f64)alert_obj->collision_position.x - (f64)object->collision_position.x) *
                                             ((f64)alert_obj->collision_position.x - (f64)object->collision_position.x) +
                                         ((f64)alert_obj->collision_position.z - (f64)object->collision_position.z) *
                                             ((f64)alert_obj->collision_position.z - (f64)object->collision_position.z) >
                                     (f64)object->view_distance * (f64)object->view_distance) {
                                 object->owner->alert_target = alert_obj;
-                                object->awareness |= (u64)1 << alert_obj->hostility_group;
+                                object->awareness |= (u64)1 << alert_obj->object_id;
                                 awareness |= object->awareness;
                                 object->owner->alert_timer = 5.0f;
                             }
@@ -433,8 +433,8 @@ void GameCreatureOpponentSelection(AISYS *system, i32 count, APIOBJECT **objects
         }
         object->owner->portal_flags &= ~APIOBJECT_MADE_NOISE;
         object->owner->excluded_opponents = 0;
-        if ((player != NULL && (object->owner->seen_opponents & ((u64)1 << player->hostility_group))) ||
-            (player2 != NULL && (object->owner->seen_opponents & ((u64)1 << player2->hostility_group)))) {
+        if ((player != NULL && (object->owner->seen_opponents & ((u64)1 << player->object_id))) ||
+            (player2 != NULL && (object->owner->seen_opponents & ((u64)1 << player2->object_id)))) {
             ++nbaddies_can_see_players;
         }
         if (object->owner->opponent != NULL) {
@@ -476,8 +476,8 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
     if (check_hostility != 0) {
         for (i = 0; i < baddie_count; ++i) {
             for (j = 0; j < party_count; ++j) {
-                if ((party[j]->awareness & ((u64)1 << baddies[i]->hostility_group)) != 0 &&
-                    (WORLD->object_sys->line_of_sight[party[j]->hostility_group] & ((u64)1 << baddies[i]->hostility_group)) != 0) {
+                if ((party[j]->awareness & ((u64)1 << baddies[i]->object_id)) != 0 &&
+                    (WORLD->object_sys->line_of_sight[party[j]->object_id] & ((u64)1 << baddies[i]->object_id)) != 0) {
                     return;
                 }
             }
@@ -485,8 +485,8 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
     }
     for (i = 0; i < baddie_count; ++i) {
         for (j = 0; j < party_count; ++j) {
-            party[j]->awareness &= ~((u64)1 << baddies[i]->hostility_group);
-            baddies[i]->awareness &= ~((u64)1 << party[j]->hostility_group);
+            party[j]->awareness &= ~((u64)1 << baddies[i]->object_id);
+            baddies[i]->awareness &= ~((u64)1 << party[j]->object_id);
         }
     }
     object = Obj;
@@ -2431,7 +2431,7 @@ void GameAIProcess(void) {
                 ++interactive_count;
                 *interactive_cursor++ = (APIOBJECT *)object;
                 object->ai_packet.flags |= AIPACKET_INTERACTIVE;
-                object->ai_collision_priority = HIGHGAMEOBJECT - object->hostility_group;
+                object->ai_collision_priority = HIGHGAMEOBJECT - object->object_id;
                 object->ai_resolved_collision_priority = 0;
             } else if (object->unknown_1010 > 0.0f) {
                 object->ai_packet.flags |= AIPACKET_INTERACTIVE;
@@ -2709,7 +2709,7 @@ void GameAIProcess(void) {
             (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
             ++interactive_count;
             *interactive_cursor++ = (APIOBJECT *)object;
-            object->ai_collision_priority = HIGHGAMEOBJECT - object->hostility_group;
+            object->ai_collision_priority = HIGHGAMEOBJECT - object->object_id;
             object->ai_resolved_collision_priority = 0;
             if ((object->flags_1fc_word & APIOBJECT_FLAG_DONT_PUSH) != 0 || (object->flags_ef0 & 0x80000000u) != 0) {
                 object->ai_collision_priority = 0x8000;
@@ -2748,9 +2748,9 @@ void GameAIProcess(void) {
                 object->ai_packet.opponent_metric = 1.0e9f;
             }
             if ((object->flags_ef0 & 0x8000000u) != 0 || debug_ignore_players != 0 || Hub_InMenu() != 0) {
-                object->excluded_opponents |= (u64)1 << player->hostility_group;
+                object->excluded_opponents |= (u64)1 << player->object_id;
                 if (player2 != NULL) {
-                    object->excluded_opponents |= (u64)1 << player2->hostility_group;
+                    object->excluded_opponents |= (u64)1 << player2->object_id;
                 }
             }
             if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->unknown_281 != 0 &&

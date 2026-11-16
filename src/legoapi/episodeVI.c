@@ -873,7 +873,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
             for (i = 0; i < 8; ++i) {
                 player = Player[i];
                 if (player != NULL) {
-                    LevGameObject[0]->excluded_opponents |= (u64)1 << player->hostility_group;
+                    LevGameObject[0]->excluded_opponents |= (u64)1 << player->object_id;
                 }
             }
         } else {
@@ -883,7 +883,7 @@ void JabbasPalaceE_Update(WORLDINFO *world) {
                     ((LevArea[0] != NULL && (U64_PAIR(player->ai_area_mask) & (1 << (LevArea[0] - world->ai_sys->areas)))) ||
                      (LevArea[1] != NULL && (U64_PAIR(player->ai_area_mask) & (1 << (LevArea[1] - world->ai_sys->areas)))) ||
                      (LevArea[2] != NULL && (U64_PAIR(player->ai_area_mask) & (1 << (LevArea[2] - world->ai_sys->areas)))))) {
-                    LevGameObject[0]->excluded_opponents |= (u64)1 << player->hostility_group;
+                    LevGameObject[0]->excluded_opponents |= (u64)1 << player->object_id;
                 }
             }
         }

@@ -2741,7 +2741,7 @@ void LetGoOfBalloon(GAMEOBJECT *object) {
     params.time_step = FRAMETIME;
     params.gravity = 0.5f;
     params.owner = object;
-    params.hostility_group = object->hostility_group;
+    params.hostility_group = object->object_id;
     params.collision_fn = PartCollide_3D;
     part = AddPart(&params);
     if (part != NULL) {
@@ -5199,7 +5199,7 @@ void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter) {
                     continue;
                 }
                 if ((candidate->flags_1f8 & (APIOBJECT_SIDE_BADDIE | APIOBJECT_SIDE_NEUTRAL)) != 0 &&
-                    (((u64)1 << candidate->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
+                    (((u64)1 << candidate->object_id) & WORLD->object_sys->line_of_sight[object->object_id]) == 0) {
                     continue;
                 }
             } else if (target_filter == 2 && candidate->player_index == -1) {
@@ -11242,7 +11242,7 @@ void GameObjectStuffAfterAnimation(void) {
                 part.special = &WORLD->level_objects[232].special;
                 part.flags = player ? 0xc11b : 0xc31b;
                 part.owner = object;
-                part.hostility_group = object->hostility_group;
+                part.hostility_group = object->object_id;
                 part.move_fn = BobaRocket_Move;
                 part.kill_fn = BobaRocket_Kill;
                 part.collision_fn = PartCollide_3D;
@@ -11778,8 +11778,8 @@ void Move_JEDI(GAMEOBJECT *object) {
         PlaySfxAndSetVolume("JForceUse", &object->collision_position, object->player.force_use_volume);
     }
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && force_volume == 1.0f && !Cheat_PowerUpActive(object->player_index)) {
-        /* Computes and pushes hostility_group*.3f before qrand; qrand reads no arguments. */
-        ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.5f), (f32)((f64)object->hostility_group * (f64)0.3f));
+        /* Computes and pushes object_id*.3f before qrand; qrand reads no arguments. */
+        ConstantRumble(object, (f32)((f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.5f), (f32)((f64)object->object_id * (f64)0.3f));
     }
 }
 

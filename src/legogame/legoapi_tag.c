@@ -60,7 +60,7 @@ void Tag_SetMode(i32 mode) {
 
 i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
     i32 remaining = HIGHGAMEOBJECT - 1;
-    i32 index = object->hostility_group;
+    i32 index = object->object_id;
     GAMEOBJECT *candidate;
     while (remaining > 0) {
         if (++index == HIGHGAMEOBJECT) {

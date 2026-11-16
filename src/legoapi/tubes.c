@@ -395,8 +395,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                 object->movement_direction_x = NuTrigTable[angle >> 1];
                 object->movement_direction_z = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
                 object->context_target_position = &tube->position;
-                if (Tube_IsObjBitSet(tube, object->hostility_group) != 0 || object->contact_count == 0 ||
-                    !(distance < 0.1224999949336052)) {
+                if (Tube_IsObjBitSet(tube, object->object_id) != 0 || object->contact_count == 0 || !(distance < 0.1224999949336052)) {
                     continue;
                 }
                 if (TubesFabs(object->contact_normal.y) < NuTrigTable[0x3c71]) {
@@ -405,7 +404,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
                     tz *= inverse;
                     if (tx * object->contact_normal.x + tz * object->contact_normal.z < -NuTrigTable[0x238e]) {
                         GameAudio_PlaySfx(0x2e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 0);
-                        Tube_SetObjBit(tube, object->hostility_group);
+                        Tube_SetObjBit(tube, object->object_id);
                     }
                 }
             }

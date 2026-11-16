@@ -1371,7 +1371,7 @@ typedef struct gameobject_s { // size 0x10d8
 
     u8 dead;               // 0x028b
     u8 origin_joint_ready; // 0x028c
-    u8 hostility_group;    // 0x028d
+    u8 object_id;          // 0x028d: slot index in the object system (APIObjectCreate)
 
     union { // size 0xa
         u8 unknown_028e[0xa];

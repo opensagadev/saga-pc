@@ -222,7 +222,7 @@ NUVEC *Player_StartPos(GAMEOBJECT *object) {
     i32 index;
     NUVEC *position;
     if (object->player_index < 0 || object->player_index >= 8) {
-        index = object->hostility_group;
+        index = object->object_id;
     } else {
         index = object->player_index;
     }
@@ -808,7 +808,7 @@ void ResetPlayer(GAMEOBJECT *object, i32 reset_moves, NUVEC *position, i32 snap_
         if (object->player_index >= 0 && object->player_index < 8) {
             player_index = object->player_index;
         } else {
-            player_index = object->hostility_group;
+            player_index = object->object_id;
         }
         facing = (u16)starts[player_index].angle;
         object->pitch_angle = 0;

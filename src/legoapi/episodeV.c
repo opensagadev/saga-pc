@@ -1372,7 +1372,7 @@ void HothBattle_ManageBackgroundCreatures(void) {
             entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
             if (entry == spawn) {
                 object->ai_packet.locator = entry;
-                set->assigned[index] = object->hostility_group;
+                set->assigned[index] = object->object_id;
                 break;
             }
         }
@@ -1411,7 +1411,7 @@ void HothBattle_ManageBackgroundCreatures(void) {
             entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
             if (entry == spawn) {
                 object->ai_packet.locator = entry;
-                set->assigned[index] = object->hostility_group;
+                set->assigned[index] = object->object_id;
                 break;
             }
         }
@@ -1651,10 +1651,10 @@ void HothBattleE_UpdateWave(void) {
     if (melee.current_wave == 3 && melee.waves[0].creatures[0] != NULL && melee.waves[0].creatures[1] != NULL) {
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
-        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[1]->hostility_group);
+        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[1]->object_id);
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
-        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[0]->hostility_group);
+        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[0]->object_id);
     }
     for (wave_index = 0; wave_index < 4; ++wave_index) {
         count = 0;

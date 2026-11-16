@@ -68,7 +68,7 @@ GAMEOBJECT *AddGameObject(void) {
         object->reflection_height = 2000000.0f;
         object->sock_index = 0xff;
         object->movement_mode = 2;
-        identity = (u64)1 << object->hostility_group;
+        identity = (u64)1 << object->object_id;
         object->collision_identity_mask[0] = (u32)identity;
         object->roof_height = 2000000.0f;
         object->collision_identity_mask[1] = (u32)(identity >> 32);
@@ -99,9 +99,9 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++other) {
         // Shifts through __allshl, which yields 0 for groups >= 64.
         U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
-        other->awareness &= ~((u64)1 << object->hostility_group);
-        other->seen_opponents &= ~((u64)1 << object->hostility_group);
-        other->excluded_opponents &= ~((u64)1 << object->hostility_group);
+        other->awareness &= ~((u64)1 << object->object_id);
+        other->seen_opponents &= ~((u64)1 << object->object_id);
+        other->excluded_opponents &= ~((u64)1 << object->object_id);
     }
     if (object->player.pad != NULL) {
         object->player.pad->runtime_flags &= ~1u;

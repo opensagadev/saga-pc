@@ -4905,12 +4905,12 @@ void Players_Init(void) {
                     }
                 }
             } else {
-                if (object->hostility_group == 0) {
+                if (object->object_id == 0) {
                     object->flags_1fc_word |= APIOBJECT_FLAG_PLAYER_ACTIVE;
                 } else {
                     object->flags_1fc_word &= ~APIOBJECT_FLAG_PLAYER_ACTIVE;
                 }
-                progress[object->hostility_group].hitpoints = object->current_hp;
+                progress[object->object_id].hitpoints = object->current_hp;
                 extra->previous_state = 0;
             }
             api->view_distance = apicharsys->char_data[(i16)object->id].game_character->viewdistance;

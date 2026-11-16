@@ -469,9 +469,9 @@ void ManageGameObjects(void) {
                         other = Obj;
                         for (j = 0; j < HIGHGAMEOBJECT; ++j, ++other) {
                             U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
-                            other->awareness &= ~((u64)1 << object->hostility_group);
-                            other->seen_opponents &= ~((u64)1 << object->hostility_group);
-                            other->excluded_opponents &= ~((u64)1 << object->hostility_group);
+                            other->awareness &= ~((u64)1 << object->object_id);
+                            other->seen_opponents &= ~((u64)1 << object->object_id);
+                            other->excluded_opponents &= ~((u64)1 << object->object_id);
                         }
                         if ((object->flags_1f8 & 0x4000) != 0) {
                             if ((object->flags_1f8 & APIOBJECT_CREATURE) == 0) {
@@ -643,7 +643,7 @@ void CollideGameObjects(WORLDINFO *world) {
         if (!(flags & APIOBJECT_FLAG_IN_USE)) {
             continue;
         }
-        bit = (u64)1 << object->hostility_group;
+        bit = (u64)1 << object->object_id;
         if (object->player_index != -1) {
             player_slot_mask |= bit;
         }
@@ -722,7 +722,7 @@ void CollideGameObjects(WORLDINFO *world) {
             }
         }
         if (object->player.character_context == CHARACTER_CONTEXT_JUMP && object->player.airborne_collision_target != NULL) {
-            exclusion->exclusion_mask |= (u64)1 << object->player.airborne_collision_target->hostility_group;
+            exclusion->exclusion_mask |= (u64)1 << object->player.airborne_collision_target->object_id;
         }
         if (WORLD->current_level == SPEEDERCHASEA_LDATA && disable_narrow_socks == 0 && object->id == (u16)id_SPEEDERBIKE &&
             object->player_index != -1) {
@@ -1715,7 +1715,7 @@ GAMEOBJECT *TargetGameObject(GAMEOBJECT *object, NUVEC *position, NUVEC *directi
             continue;
         }
         if (arcade == 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (target->flags_ef4 & 0x800000) == 0) {
-            if ((((u64)1 << target->hostility_group) & WORLD->object_sys->line_of_sight[object->hostility_group]) == 0) {
+            if ((((u64)1 << target->object_id) & WORLD->object_sys->line_of_sight[object->object_id]) == 0) {
                 continue;
             }
         }
@@ -2139,7 +2139,7 @@ void UpdateGameObjects(WORLDINFO *world) {
             } else {
                 object->flags_ef4 |= APIOBJECT_AI_EVERY_FRAME;
             }
-            if (((u32)object->hostility_group + GameTimer.update_count) % interval == 0) {
+            if (((u32)object->object_id + GameTimer.update_count) % interval == 0) {
                 object->flags_ef4 |= APIOBJECT_AI_UPDATE_NOW;
                 if ((object->flags_1f8 & APIOBJECT_CREATURE) != 0 && (object->flags_1f8 & 0x40000) == 0) {
                     object->position = object->ai_update_position;
@@ -2496,7 +2496,7 @@ void UpdateGameObjects(WORLDINFO *world) {
                 }
                 position.y = position.y + height;
                 amplitude = (f32)((f64)object->bounds_radius * (f64)0.05f);
-                base = (u16)((object->hostility_group & 7) << 13);
+                base = (u16)((object->object_id & 7) << 13);
                 position.x =
                     NuTrigTable[((base + (u16)(i32)(NuFmod(GameTimer.time_elapsed, 1.5f) / 1.5 * 65536.0)) >> 1) & 0x7fff] * amplitude +
                     position.x;

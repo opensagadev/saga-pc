@@ -237,7 +237,7 @@ GAMEOBJECT *APIObjectCreate(APIOBJECTSYS *system) {
             if ((object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) == 0) {
                 memset(object, 0, system->object_size);
                 object->flags_1fc_word |= APIOBJECT_FLAG_IN_USE;
-                object->hostility_group = (u8)index;
+                object->object_id = (u8)index;
                 return object;
             }
         }
@@ -247,9 +247,9 @@ GAMEOBJECT *APIObjectCreate(APIOBJECTSYS *system) {
 
 void APIObjectRemoveFromLOSTable(APIOBJECTSYS *system, GAMEOBJECT *source, GAMEOBJECT *target) {
     if (source != NULL) {
-        system->line_of_sight[source->hostility_group] &= ~((u64)1 << target->hostility_group);
+        system->line_of_sight[source->object_id] &= ~((u64)1 << target->object_id);
     } else {
-        system->line_of_sight[target->hostility_group] = 0;
+        system->line_of_sight[target->object_id] = 0;
     }
 }
 
@@ -802,10 +802,10 @@ void APIObjectCollisions(i32 count, APIOBJECT **objects, NUVEC *minimums, NUVEC 
             if ((GAMEOBJECT *)(*first)->collision_link == *second || (GAMEOBJECT *)(*second)->collision_link == *first) {
                 goto no_collision;
             }
-            if (((u64)1 << (*second)->hostility_group) & U64_PAIR((*first)->collision_exclusion_mask)) {
+            if (((u64)1 << (*second)->object_id) & U64_PAIR((*first)->collision_exclusion_mask)) {
                 goto no_collision;
             }
-            if (((u64)1 << (*first)->hostility_group) & U64_PAIR((*second)->collision_exclusion_mask)) {
+            if (((u64)1 << (*first)->object_id) & U64_PAIR((*second)->collision_exclusion_mask)) {
                 goto no_collision;
             }
             if (first_min->x > second_max->x || first_max->x < second_min->x || first_min->z > second_max->z ||

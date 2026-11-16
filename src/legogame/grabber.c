@@ -1036,7 +1036,7 @@ void Grabber_Update(WORLDINFO *world) {
                 continue;
             }
             if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_GHOST) == 0) {
-                mask |= (i32)((i64)1 << object->hostility_group);
+                mask |= (i32)((i64)1 << object->object_id);
             } else {
                 found = 1;
             }
