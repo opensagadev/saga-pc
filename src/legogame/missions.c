@@ -33,15 +33,6 @@
 #include "nu2api/nucore/nucore_includes.h"
 #include "nu2api/numath/nufloat.h"
 
-typedef struct MENU_INPUT_PAD {
-    FRAME_PAD *bound_pad;
-    u32 held;
-    u32 pressed;
-    u32 alternate_held;
-    u32 alternate_pressed;
-    u8 unknown_14[0x4c];
-} MENU_INPUT_PAD;
-
 // noinline: the original calls EndMissionsMenu out of line from MenuUpdateMissions; VC8 would inline it there.
 __declspec(noinline) void EndMissionsMenu(void) {
     LevLock[3] = 1;
@@ -323,7 +314,7 @@ void MenuUpdateMissions(MENU *menu) {
         cancel = 1;
     }
     for (player = 0; player < 2; ++player) {
-        MENU_INPUT_PAD *pad;
+        GAMEPAD_INIT_RECORD *pad;
         u32 pressed;
         u32 directions;
         if (start != 0 || cancel != 0) {
@@ -332,8 +323,8 @@ void MenuUpdateMissions(MENU *menu) {
         if (MissionMenuPacket.active_player[player] == 0) {
             continue;
         }
-        pad = (MENU_INPUT_PAD *)&GamePadStorage[player];
-        pressed = pad->pressed;
+        pad = &GamePadStorage[player];
+        pressed = pad->menu_buttons_pressed;
         if ((pressed & GAMEPAD_MENUSELECT) != 0) {
             if (MissionMenuPacket.active_player[0] == 0 || MissionMenuPacket.active_player[1] == 0) {
                 start = 1;
@@ -354,9 +345,9 @@ void MenuUpdateMissions(MENU *menu) {
                 GameAudio_PlaySfx(0x31, NULL, 0, 0);
             }
         } else if (MissionMenuPacket.selected[0] == 0 && MissionMenuPacket.selected[1] == 0) {
-            if ((pad->alternate_pressed & GAMEPAD_DLEFT) != 0 || (pressed & GAMEPAD_DLEFT) != 0) {
+            if ((pad->menu_directions & GAMEPAD_DLEFT) != 0 || (pressed & GAMEPAD_DLEFT) != 0) {
                 left = 1;
-            } else if ((pad->alternate_pressed & GAMEPAD_DRIGHT) != 0 || (pressed & GAMEPAD_DRIGHT) != 0) {
+            } else if ((pad->menu_directions & GAMEPAD_DRIGHT) != 0 || (pressed & GAMEPAD_DRIGHT) != 0) {
                 right = 1;
             }
         }

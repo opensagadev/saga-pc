@@ -100,15 +100,6 @@ extern "C" {
     extern f32 MenuSaveSlotsStepY;
 }
 
-typedef struct MENU_INPUT_PAD {
-    FRAME_PAD *bound_pad;
-    u32 held;
-    u32 pressed;
-    u32 alternate_held;
-    u32 alternate_pressed;
-    u8 unknown_14[0x4c];
-} MENU_INPUT_PAD;
-
 extern "C" {
 
     void MenuEnterControlSetup(MENU *) {
@@ -772,18 +763,18 @@ extern "C" {
                 alternate_held = 0;
                 alternate_pressed = 0;
             } else if (both_pads != 0) {
-                MENU_INPUT_PAD *first = (MENU_INPUT_PAD *)&GamePadStorage[0];
-                MENU_INPUT_PAD *second = (MENU_INPUT_PAD *)&GamePadStorage[1];
-                held = first->held | second->held;
-                pressed = first->pressed | second->pressed;
-                alternate_held = first->alternate_held | second->alternate_held;
-                alternate_pressed = first->alternate_pressed | second->alternate_pressed;
+                GAMEPAD_INIT_RECORD *first = &GamePadStorage[0];
+                GAMEPAD_INIT_RECORD *second = &GamePadStorage[1];
+                held = first->menu_buttons_held | second->menu_buttons_held;
+                pressed = first->menu_buttons_pressed | second->menu_buttons_pressed;
+                alternate_held = first->menu_directions_held | second->menu_directions_held;
+                alternate_pressed = first->menu_directions | second->menu_directions;
             } else {
-                MENU_INPUT_PAD *input = (MENU_INPUT_PAD *)pad;
-                held = input->held;
-                pressed = input->pressed;
-                alternate_held = input->alternate_held;
-                alternate_pressed = input->alternate_pressed;
+                GAMEPAD_INIT_RECORD *input = (GAMEPAD_INIT_RECORD *)pad;
+                held = input->menu_buttons_held;
+                pressed = input->menu_buttons_pressed;
+                alternate_held = input->menu_directions_held;
+                alternate_pressed = input->menu_directions;
             }
             previous_item = menu->selected_item;
             previous_column = menu->selected_item_column;
