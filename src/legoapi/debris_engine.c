@@ -29,6 +29,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "legoapi/render/fx/parts.h"
+#include "nu2api/numath/numath_includes.h"
 
 void DebrisGetControlStackLock(void) {
     while (debris_control_stack_lock != 0) {
@@ -260,7 +262,7 @@ void DebReAlloc2(DEBRISKEY *key) {
                         ParticleChunkToRender[i].effect = effect;
                         ParticleChunkToRender[i].key = key;
                         ParticleChunkToRender[i].render_priority = key->render_priority;
-                        if (key->unknown_2f6 != 0) {
+                        if (key->visible != 0) {
                             AddChunkToRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[effect->time_group]);
                         }
                         break;
@@ -293,7 +295,7 @@ void DebReAlloc2(DEBRISKEY *key) {
                         ParticleChunkToRender[i].effect = effect;
                         ParticleChunkToRender[i].key = key;
                         ParticleChunkToRender[i].render_priority = key->render_priority;
-                        if (key->unknown_2f6 != 0) {
+                        if (key->visible != 0) {
                             AddChunkToRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[effect->time_group]);
                         }
                         break;
@@ -362,7 +364,7 @@ void DebReAlloc2(DEBRISKEY *key) {
                 ParticleChunkToRender[i].position.y = key->position.y;
                 ParticleChunkToRender[i].position.z = key->position.z;
                 ParticleChunkToRender[i].render_priority = key->render_priority;
-                if (key->unknown_2f6 != 0) {
+                if (key->visible != 0) {
                     AddChunkToRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[debtab[key->effect_index]->time_group]);
                 }
                 break;
@@ -398,8 +400,6 @@ void DebReAlloc(DEBRISKEY *key, i32 particle_count) {
     }
 }
 
-#define DEBRIS_ENGINE_KEYS ((DEBRISKEY *)debkeydata)
-
 DEBRISKEY *debris_keystack = 0;
 
 void RemoveDebrisEffectFromStack(DEBRISKEY *key) {
@@ -422,17 +422,17 @@ void DebFreeChunksInstantly(i32 *handle) {
     DEBRIS_INFO *effect;
     i32 i;
     i32 panel_time;
-    if (DEBRIS_ENGINE_KEYS[*handle].effect_index == 0) {
+    if (debkeydata[*handle].effect_index == 0) {
         return;
     }
-    effect = debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index];
-    if (DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count == 0) {
+    effect = debtab[debkeydata[*handle].effect_index];
+    if (debkeydata[*handle].allocated_chunk_count == 0) {
         return;
     }
     DebrisGetControlStackLock();
-    for (i = 0; i < DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count; ++i) {
-        RemoveAnyChunkControls(DEBRIS_ENGINE_KEYS[*handle].particle_chunks[i]);
-        freechunkcontrols[freechunkcontrolsptr]->particle_chunk = DEBRIS_ENGINE_KEYS[*handle].particle_chunks[i];
+    for (i = 0; i < debkeydata[*handle].allocated_chunk_count; ++i) {
+        RemoveAnyChunkControls(debkeydata[*handle].particle_chunks[i]);
+        freechunkcontrols[freechunkcontrolsptr]->particle_chunk = debkeydata[*handle].particle_chunks[i];
         if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
             freechunkcontrols[freechunkcontrolsptr]->active = 9;
         } else {
@@ -451,23 +451,23 @@ void DebFreeChunksInstantly(i32 *handle) {
     }
     DebrisReleaseControlStackLock();
     for (i = 0; i < debrischunks + debrischunksglass; ++i) {
-        if (ParticleChunkToRender[i].particle_chunk == DEBRIS_ENGINE_KEYS[*handle].particle_chunks[0]) {
-            if (DEBRIS_ENGINE_KEYS[*handle].unknown_2f6 != 0) {
+        if (ParticleChunkToRender[i].particle_chunk == debkeydata[*handle].particle_chunks[0]) {
+            if (debkeydata[*handle].visible != 0) {
                 RemoveChunkFromRenderStack(&ParticleChunkToRender[i], &ParticleChunkRenderStack[effect->time_group]);
             }
             ParticleChunkToRender[i].particle_chunk = NULL;
             ParticleChunkToRender[i].effect = NULL;
         }
     }
-    for (i = 0; i < DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count; ++i) {
-        DEBRIS_ENGINE_KEYS[*handle].particle_chunks[i] = NULL;
+    for (i = 0; i < debkeydata[*handle].allocated_chunk_count; ++i) {
+        debkeydata[*handle].particle_chunks[i] = NULL;
     }
-    DEBRIS_ENGINE_KEYS[*handle].particle_count = 0;
-    DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count = 0;
-    DEBRIS_ENGINE_KEYS[*handle].previous_particle_count = 0;
-    DEBRIS_ENGINE_KEYS[*handle].previous_allocated_chunk_count = 0;
-    DEBRIS_ENGINE_KEYS[*handle].controlled_chunk_count = 0;
-    DEBRIS_ENGINE_KEYS[*handle].particle_cursor = 0;
+    debkeydata[*handle].particle_count = 0;
+    debkeydata[*handle].allocated_chunk_count = 0;
+    debkeydata[*handle].previous_particle_count = 0;
+    debkeydata[*handle].previous_allocated_chunk_count = 0;
+    debkeydata[*handle].controlled_chunk_count = 0;
+    debkeydata[*handle].particle_cursor = 0;
 }
 
 void DebFreeOrphansInstantly(DEBRIS_INFO *effect) {
@@ -523,22 +523,22 @@ void DebFreeInstantly(i32 *handle) {
     if (*handle == -1) {
         return;
     }
-    if (DEBRIS_ENGINE_KEYS[*handle].allocation_locked != 0) {
+    if (debkeydata[*handle].allocation_locked != 0) {
         return;
     }
-    DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 1;
+    debkeydata[*handle].allocation_locked = 1;
     for (i = freedebkeyptr; i < maxdebkeys; ++i) {
         if (freedebkeys[i] == *handle) {
-            DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 0;
+            debkeydata[*handle].allocation_locked = 0;
             *handle = -1;
             return;
         }
     }
-    if (DEBRIS_ENGINE_KEYS[*handle].effect_index == 0) {
-        DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 0;
+    if (debkeydata[*handle].effect_index == 0) {
+        debkeydata[*handle].allocation_locked = 0;
         return;
     }
-    effect = debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index];
+    effect = debtab[debkeydata[*handle].effect_index];
     DebFreeChunksInstantly(handle);
     linked = 0;
     for (i = 0; i < 8; ++i) {
@@ -548,12 +548,12 @@ void DebFreeInstantly(i32 *handle) {
         }
     }
     if (linked == 0) {
-        RemoveDebrisEffectFromStack(&DEBRIS_ENGINE_KEYS[*handle]);
+        RemoveDebrisEffectFromStack(&debkeydata[*handle]);
     }
-    DEBRIS_ENGINE_KEYS[*handle].effect_index = 0;
-    DEBRIS_ENGINE_KEYS[*handle].allocation_index = -1;
+    debkeydata[*handle].effect_index = 0;
+    debkeydata[*handle].allocation_index = -1;
     freedebkeys[--freedebkeyptr] = (i16)*handle;
-    DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 0;
+    debkeydata[*handle].allocation_locked = 0;
     *handle = -1;
 }
 
@@ -570,27 +570,27 @@ void DebFree(i32 *handle) {
     if (*handle == -1) {
         return;
     }
-    if (DEBRIS_ENGINE_KEYS[*handle].allocation_locked != 0) {
+    if (debkeydata[*handle].allocation_locked != 0) {
         return;
     }
-    DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 1;
+    debkeydata[*handle].allocation_locked = 1;
     for (i = freedebkeyptr; i < maxdebkeys; ++i) {
         if (freedebkeys[i] == *handle) {
-            DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 0;
+            debkeydata[*handle].allocation_locked = 0;
             *handle = -1;
             return;
         }
     }
-    if (DEBRIS_ENGINE_KEYS[*handle].effect_index == 0) {
-        DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 0;
+    if (debkeydata[*handle].effect_index == 0) {
+        debkeydata[*handle].allocation_locked = 0;
         return;
     }
-    effect = debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index];
-    if (DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count != 0) {
+    effect = debtab[debkeydata[*handle].effect_index];
+    if (debkeydata[*handle].allocated_chunk_count != 0) {
         DebrisGetControlStackLock();
-        for (i = 0; i < DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count; ++i) {
-            RemoveAnyChunkControls(DEBRIS_ENGINE_KEYS[*handle].particle_chunks[i]);
-            freechunkcontrols[freechunkcontrolsptr]->particle_chunk = DEBRIS_ENGINE_KEYS[*handle].particle_chunks[i];
+        for (i = 0; i < debkeydata[*handle].allocated_chunk_count; ++i) {
+            RemoveAnyChunkControls(debkeydata[*handle].particle_chunks[i]);
+            freechunkcontrols[freechunkcontrolsptr]->particle_chunk = debkeydata[*handle].particle_chunks[i];
             if (effect->particle_type == DEBRIS_PARTICLE_GLASS) {
                 freechunkcontrols[freechunkcontrolsptr]->active = 7;
             } else {
@@ -599,15 +599,13 @@ void DebFree(i32 *handle) {
             freechunkcontrols[freechunkcontrolsptr]->owner = NULL;
             if (effect->time_group == DEBRIS_DRAW_PANEL) {
                 freechunkcontrols[freechunkcontrolsptr]->expiry_time =
-                    debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->trail_count *
-                        debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->trail_time +
-                    (debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->particle_lifetime + panelglobaltime);
+                    debtab[debkeydata[*handle].effect_index]->trail_count * debtab[debkeydata[*handle].effect_index]->trail_time +
+                    (debtab[debkeydata[*handle].effect_index]->particle_lifetime + panelglobaltime);
                 panel_time = 1;
             } else {
                 freechunkcontrols[freechunkcontrolsptr]->expiry_time =
-                    debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->trail_count *
-                        debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->trail_time +
-                    (debtab[DEBRIS_ENGINE_KEYS[*handle].effect_index]->particle_lifetime + globaltime);
+                    debtab[debkeydata[*handle].effect_index]->trail_count * debtab[debkeydata[*handle].effect_index]->trail_time +
+                    (debtab[debkeydata[*handle].effect_index]->particle_lifetime + globaltime);
                 panel_time = 0;
             }
             AddChunkControlToStack(freechunkcontrols[freechunkcontrolsptr], &debris_chunk_control_stack[panel_time]);
@@ -615,13 +613,13 @@ void DebFree(i32 *handle) {
         }
         DebrisReleaseControlStackLock();
         for (i = 0; i < debrischunks + debrischunksglass; ++i) {
-            if (ParticleChunkToRender[i].particle_chunk == DEBRIS_ENGINE_KEYS[*handle].particle_chunks[0]) {
+            if (ParticleChunkToRender[i].particle_chunk == debkeydata[*handle].particle_chunks[0]) {
                 ParticleChunkToRender[i].effect = effect;
                 ParticleChunkToRender[i].key = NULL;
-                ParticleChunkToRender[i].effect_orientation = DEBRIS_ENGINE_KEYS[*handle].effect_orientation;
-                ParticleChunkToRender[i].position.x = DEBRIS_ENGINE_KEYS[*handle].position.x;
-                ParticleChunkToRender[i].position.y = DEBRIS_ENGINE_KEYS[*handle].position.y;
-                ParticleChunkToRender[i].position.z = DEBRIS_ENGINE_KEYS[*handle].position.z;
+                ParticleChunkToRender[i].effect_orientation = debkeydata[*handle].effect_orientation;
+                ParticleChunkToRender[i].position.x = debkeydata[*handle].position.x;
+                ParticleChunkToRender[i].position.y = debkeydata[*handle].position.y;
+                ParticleChunkToRender[i].position.z = debkeydata[*handle].position.z;
                 break;
             }
         }
@@ -634,16 +632,16 @@ void DebFree(i32 *handle) {
         }
     }
     if (linked == 0) {
-        RemoveDebrisEffectFromStack(&DEBRIS_ENGINE_KEYS[*handle]);
+        RemoveDebrisEffectFromStack(&debkeydata[*handle]);
     }
-    for (i = 0; i < DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count; ++i) {
-        DEBRIS_ENGINE_KEYS[*handle].particle_chunks[i] = NULL;
+    for (i = 0; i < debkeydata[*handle].allocated_chunk_count; ++i) {
+        debkeydata[*handle].particle_chunks[i] = NULL;
     }
-    DEBRIS_ENGINE_KEYS[*handle].allocated_chunk_count = 0;
-    DEBRIS_ENGINE_KEYS[*handle].effect_index = 0;
-    DEBRIS_ENGINE_KEYS[*handle].allocation_index = -1;
+    debkeydata[*handle].allocated_chunk_count = 0;
+    debkeydata[*handle].effect_index = 0;
+    debkeydata[*handle].allocation_index = -1;
     freedebkeys[--freedebkeyptr] = (i16)*handle;
-    DEBRIS_ENGINE_KEYS[*handle].allocation_locked = 0;
+    debkeydata[*handle].allocation_locked = 0;
     *handle = -1;
 }
 
@@ -812,7 +810,7 @@ void DebrisProcessControlChunks(i32 panel_time) {
                 LinkDmaParticalSets(control->owner->particle_chunks, control->owner->allocated_chunk_count);
             } else {
                 for (i = 0; i < 8; ++i) {
-                    if (effect->particle_keys[i] != -1 && &DEBRIS_ENGINE_KEYS[effect->particle_keys[i]] == control->owner) {
+                    if (effect->particle_keys[i] != -1 && &debkeydata[effect->particle_keys[i]] == control->owner) {
                         control->owner->effect_index = 0;
                         control->owner->allocation_index = -1;
                         --freedebkeyptr;
@@ -847,14 +845,6 @@ void DebrisProcessControlChunks(i32 panel_time) {
 }
 
 /* Original inline sound-event loop, kept private to the debris source group. */
-#define DEBRIS_EMISSION_SOUND(key, effect, event, volume)                                                                                  \
-    do {                                                                                                                                   \
-        i32 sound_index;                                                                                                                   \
-        for (sound_index = 0; sound_index < 4; ++sound_index) {                                                                            \
-            if ((effect)->sound_data[sound_index * 3] != -1 && (effect)->sound_data[sound_index * 3 + 1] == (event))                       \
-                PlaySfxByIdEx((effect)->sound_data[sound_index * 3], &(key)->position, (volume), 1.0f);                                    \
-        }                                                                                                                                  \
-    } while (0)
 
 f32 CameraEmitterDistance(NUVEC *position) {
     if (debris_cutoff_camera_vec == NULL) {
@@ -875,19 +865,6 @@ void DebrisProcessAllocation(void) {
 }
 
 /* SetSfxBit_On/SetSfxBit_OnEx are inlined into the emitter sound loop. */
-#define DEBRIS_SET_SFX_BIT_ON(sound_id)                                                                                                    \
-    do {                                                                                                                                   \
-        i32 sample_id;                                                                                                                     \
-        i32 word;                                                                                                                          \
-        if ((sound_id) >= 0) {                                                                                                             \
-            sample_id = (i32)(SfxInfo[(sound_id)].sample_id_flags << 17) >> 17;                                                            \
-            if ((u32)sample_id <= 0x63f) {                                                                                                 \
-                word = sample_id / 16;                                                                                                     \
-                if (word < 100)                                                                                                            \
-                    SfxBits[word] |= (u16)(1 << (sample_id & 0xf));                                                                        \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-    } while (0)
 
 void DebrisProcessGeneration(void) {
     DEBRISKEY *next;
@@ -934,13 +911,32 @@ void DebrisProcessGeneration(void) {
         if (sound_range > key->cutoff_distance) {
             for (i = 0; i < 4; ++i) {
                 if (effect->sound_data[i * 3] != -1) {
-                    DEBRIS_SET_SFX_BIT_ON(effect->sound_data[i * 3]);
+                    {
+                        i32 sample_id;
+                        i32 word;
+                        if ((effect->sound_data[i * 3]) >= 0) {
+                            sample_id = (i32)(SfxInfo[(effect->sound_data[i * 3])].sample_id_flags << 17) >> 17;
+                            if ((u32)sample_id <= 0x63f) {
+                                word = sample_id / 16;
+                                if (word < 100) {
+                                    SfxBits[word] |= (u16)(1 << (sample_id & 0xf));
+                                }
+                            }
+                        }
+                    }
                 }
             }
             volume = (sound_range - key->cutoff_distance) / sound_range;
         }
         if (key->process_collision_sound != 0 && key->finite != 0 && sound_range > key->cutoff_distance) {
-            DEBRIS_EMISSION_SOUND(key, effect, 4, volume);
+            {
+                i32 sound_index;
+                for (sound_index = 0; sound_index < 4; ++sound_index) {
+                    if (effect->sound_data[sound_index * 3] != -1 && effect->sound_data[sound_index * 3 + 1] == 4) {
+                        PlaySfxByIdEx(effect->sound_data[sound_index * 3], &key->position, volume, 1.0f);
+                    }
+                }
+            }
         }
         if (effect->status == 0) {
             key->finite = 0;
@@ -948,10 +944,10 @@ void DebrisProcessGeneration(void) {
         if (effect->status == 2) {
             key->finite = 1;
         }
-        if (key->unknown_2f4 == 0) {
+        if (key->status == 0) {
             key->finite = 0;
         }
-        if (key->unknown_2f4 == 2) {
+        if (key->status == 2) {
             key->finite = 1;
         }
         if (key->finite != 0 && key->previous_allocated_chunk_count == 0) {
@@ -987,11 +983,18 @@ void DebrisProcessGeneration(void) {
                         }
                     }
                     if (key->finite_count < 0 && ++key->finite_count == 0) {
-                        key->unknown_2f4 = 0;
+                        key->status = 0;
                         key->finite = 0;
                     }
                     if (key->process_collision_sound != 0 && key->finite != 0 && key->cutoff_distance < sound_range) {
-                        DEBRIS_EMISSION_SOUND(key, effect, 1, volume);
+                        {
+                            i32 sound_index;
+                            for (sound_index = 0; sound_index < 4; ++sound_index) {
+                                if (effect->sound_data[sound_index * 3] != -1 && effect->sound_data[sound_index * 3 + 1] == 1) {
+                                    PlaySfxByIdEx(effect->sound_data[sound_index * 3], &key->position, volume, 1.0f);
+                                }
+                            }
+                        }
                     }
                 } else {
                     key->previous_emission_time = key->emission_time;
@@ -1001,7 +1004,14 @@ void DebrisProcessGeneration(void) {
                         key->finite = 0;
                     }
                     if (key->process_collision_sound != 0 && key->finite != 0 && key->cutoff_distance < sound_range) {
-                        DEBRIS_EMISSION_SOUND(key, effect, 2, volume);
+                        {
+                            i32 sound_index;
+                            for (sound_index = 0; sound_index < 4; ++sound_index) {
+                                if (effect->sound_data[sound_index * 3] != -1 && effect->sound_data[sound_index * 3 + 1] == 2) {
+                                    PlaySfxByIdEx(effect->sound_data[sound_index * 3], &key->position, volume, 1.0f);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1013,14 +1023,21 @@ void DebrisProcessGeneration(void) {
                     DebrisProcessSpheres(particle, emission_time, effect, key, 0);
                 }
                 if (key->process_collision_sound != 0 && key->cutoff_distance < sound_range) {
-                    DEBRIS_EMISSION_SOUND(key, effect, 3, volume);
+                    {
+                        i32 sound_index;
+                        for (sound_index = 0; sound_index < 4; ++sound_index) {
+                            if (effect->sound_data[sound_index * 3] != -1 && effect->sound_data[sound_index * 3 + 1] == 3) {
+                                PlaySfxByIdEx(effect->sound_data[sound_index * 3], &key->position, volume, 1.0f);
+                            }
+                        }
+                    }
                 }
             }
             key->emission_epoch = emission_time;
             emission_time += emission_interval;
         }
         if (key->finite == 0) {
-            if (key->unknown_2f4 != 0 && key->trigger_second == -1 && key->cutoff_distance >= effect->cut_on &&
+            if (key->status != 0 && key->trigger_second == -1 && key->cutoff_distance >= effect->cut_on &&
                 (effect->clip_extent == 0.0f || key->cutoff_distance <= effect->clip_extent) &&
                 (debris_render_group == 0 || key->render_group == 0 || key->render_group == debris_render_group) &&
                 ((i8)key->orientation_flags & debris_detail_level) != 0) {
@@ -1104,7 +1121,14 @@ void DebrisProcessTriggers(void) {
                     volume = (range - key->cutoff_distance) / range;
                 }
                 if (range > key->cutoff_distance) {
-                    DEBRIS_EMISSION_SOUND(key, effect, 1, volume);
+                    {
+                        i32 sound_index;
+                        for (sound_index = 0; sound_index < 4; ++sound_index) {
+                            if (effect->sound_data[sound_index * 3] != -1 && effect->sound_data[sound_index * 3 + 1] == 1) {
+                                PlaySfxByIdEx(effect->sound_data[sound_index * 3], &key->position, volume, 1.0f);
+                            }
+                        }
+                    }
                 }
                 break;
         }
@@ -1136,23 +1160,23 @@ void DebrisTimeSlip(i32 group) {
         }
     }
     for (i = 0; i < maxdebkeys; ++i) {
-        DEBRIS_INFO *effect = debtab[DEBRIS_ENGINE_KEYS[i].effect_index];
+        DEBRIS_INFO *effect = debtab[debkeydata[i].effect_index];
         if ((effect->time_group == DEBRIS_DRAW_PANEL && group == 1) || (effect->time_group != DEBRIS_DRAW_PANEL && group == 0)) {
             glass = effect->particle_type == DEBRIS_PARTICLE_GLASS;
-            DEBRIS_ENGINE_KEYS[i].last_update_time -= 800.0;
-            DEBRIS_ENGINE_KEYS[i].emission_epoch -= 800.0;
-            DEBRIS_ENGINE_KEYS[i].emission_time -= 800.0;
-            DEBRIS_ENGINE_KEYS[i].previous_emission_time -= 800.0;
-            DEBRIS_ENGINE_KEYS[i].emission_end_time -= 800.0;
+            debkeydata[i].last_update_time -= 800.0;
+            debkeydata[i].emission_epoch -= 800.0;
+            debkeydata[i].emission_time -= 800.0;
+            debkeydata[i].previous_emission_time -= 800.0;
+            debkeydata[i].emission_end_time -= 800.0;
             for (chunk_index = 0; chunk_index < 32; ++chunk_index) {
-                if (DEBRIS_ENGINE_KEYS[i].particle_chunks[chunk_index] != NULL) {
+                if (debkeydata[i].particle_chunks[chunk_index] != NULL) {
                     if (glass) {
                         for (particle_index = 0; particle_index < 12; ++particle_index) {
-                            DEBRIS_ENGINE_KEYS[i].particle_chunks[chunk_index]->particles[particle_index].start_time -= 800.0;
+                            debkeydata[i].particle_chunks[chunk_index]->particles[particle_index].start_time -= 800.0;
                         }
                     } else {
                         for (particle_index = 0; particle_index < 32; ++particle_index) {
-                            DEBRIS_ENGINE_KEYS[i].particle_chunks[chunk_index]->particles[particle_index].start_time -= 800.0;
+                            debkeydata[i].particle_chunks[chunk_index]->particles[particle_index].start_time -= 800.0;
                         }
                     }
                 }
@@ -1215,7 +1239,7 @@ void DebFreeAllCreatedEffects(void) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRISKEY *key = &debkeydata[i];
-        if (key->effect_index != 0 && key->unknown_2f9 != 0) {
+        if (key->effect_index != 0 && key->runtime_created != 0) {
             i32 handle = i;
             DebFreeInstantly(&handle);
         }
@@ -1388,7 +1412,7 @@ void DebrisPopulateInstance(i32 handle, f32 duration) {
     if (duration < 0.0f || handle == -1) {
         return;
     }
-    key = &DEBRIS_ENGINE_KEYS[handle];
+    key = &debkeydata[handle];
     effect = debtab[key->effect_index];
     if (effect->frequency == 0.0) {
         return;
@@ -1453,12 +1477,12 @@ i32 DebrisSingleCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f32 rad
     DEBRIS_INFO *effect;
     DEBRIS_COLLISION_EFFECT *collision;
     i32 i;
-    if (DEBRIS_ENGINE_KEYS[key_index].effect_index != 0 && DEBRIS_ENGINE_KEYS[key_index].effect_index != -1) {
-        effect = debtab[DEBRIS_ENGINE_KEYS[key_index].effect_index];
+    if (debkeydata[key_index].effect_index != 0 && debkeydata[key_index].effect_index != -1) {
+        effect = debtab[debkeydata[key_index].effect_index];
         if (effect != NULL && (effect->collision_flags & flags) != 0 && effect->process_spheres != 0) {
             collision = (DEBRIS_COLLISION_EFFECT *)effect;
             for (i = 0; i < effect->process_spheres; ++i) {
-                DEBRIS_PROCESS_SPHERE *sphere = &DEBRIS_ENGINE_KEYS[key_index].process_spheres[i];
+                DEBRIS_PROCESS_SPHERE *sphere = &debkeydata[key_index].process_spheres[i];
                 f32 age = globaltime - sphere->time;
                 f32 time;
                 f32 effect_radius;
@@ -1521,10 +1545,10 @@ i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f3
     f32 dx;
     f32 dy;
     f32 dz;
-    if (DEBRIS_ENGINE_KEYS[key_index].effect_index == 0 || DEBRIS_ENGINE_KEYS[key_index].effect_index == -1) {
+    if (debkeydata[key_index].effect_index == 0 || debkeydata[key_index].effect_index == -1) {
         return 0;
     }
-    effect = debtab[DEBRIS_ENGINE_KEYS[key_index].effect_index];
+    effect = debtab[debkeydata[key_index].effect_index];
     if (effect == NULL || (effect->collision_flags & flags) == 0) {
         return 0;
     }
@@ -1535,8 +1559,8 @@ i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f3
     ring_radius = 0.0f;
     horizontal_radius = 0.0f;
     vertical_radius = 0.0f;
-    age = globaltime > DEBRIS_ENGINE_KEYS[key_index].emission_time ? globaltime - DEBRIS_ENGINE_KEYS[key_index].emission_time
-                                                                   : globaltime - DEBRIS_ENGINE_KEYS[key_index].previous_emission_time;
+    age = globaltime > debkeydata[key_index].emission_time ? globaltime - debkeydata[key_index].emission_time
+                                                           : globaltime - debkeydata[key_index].previous_emission_time;
     if (!(age > 0.0f && age < collision->torus_lifetime)) {
         return 0;
     }
@@ -1589,14 +1613,14 @@ i32 DebrisSingleTorusCollisionCheckScaleYFlag(i32 key_index, NUVEC *position, f3
     ring_radius *= collision->torus_radius1;
     horizontal_radius *= collision->torus_radius2;
     vertical_radius *= collision->torus_radius2;
-    debris_collide_pt.x = position->x - DEBRIS_ENGINE_KEYS[key_index].position.x;
+    debris_collide_pt.x = position->x - debkeydata[key_index].position.x;
     debris_collide_pt.y = 0.0f;
-    debris_collide_pt.z = position->z - DEBRIS_ENGINE_KEYS[key_index].position.z;
+    debris_collide_pt.z = position->z - debkeydata[key_index].position.z;
     NuVecNorm(&debris_collide_pt, &debris_collide_pt);
     NuVecScale(&debris_collide_pt, &debris_collide_pt, ring_radius);
-    debris_collide_pt.x += DEBRIS_ENGINE_KEYS[key_index].position.x;
-    debris_collide_pt.y += DEBRIS_ENGINE_KEYS[key_index].position.y;
-    debris_collide_pt.z += DEBRIS_ENGINE_KEYS[key_index].position.z;
+    debris_collide_pt.x += debkeydata[key_index].position.x;
+    debris_collide_pt.y += debkeydata[key_index].position.y;
+    debris_collide_pt.z += debkeydata[key_index].position.z;
     dx = position->x - debris_collide_pt.x;
     dy = position->y - debris_collide_pt.y;
     dz = position->z - debris_collide_pt.z;
@@ -1768,8 +1792,6 @@ void DebrisReleaseResources(void) {
 void DebrisRestoreResources(void) {
 }
 
-i32 NuPower2(i32 value);
-
 f32 DebrisGlassV1 = 0;
 f32 DebrisGlassU1 = 0;
 
@@ -1924,9 +1946,6 @@ void UpdateDebrisRenderStackPriority(void) {
         }
     }
 }
-
-void DebrisEmitterMomentum(i32 handle, f32 x, f32 y, f32 z);
-void DebrisParticleMomentum(i32 handle, f32 x, f32 y, f32 z);
 
 i32 update_debris_enabled = 1;
 i32 debris_suspended = 0;
@@ -2093,7 +2112,7 @@ static void edbricbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
 void DebrisShift(NUMTX *transform) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
-        DEBRISKEY *key = &DEBRIS_ENGINE_KEYS[i];
+        DEBRISKEY *key = &debkeydata[i];
         DEBRIS_INFO *effect;
         i32 slot;
         i32 found;
@@ -2125,11 +2144,11 @@ void DebrisShift(NUMTX *transform) {
                 }
                 key->controlled_chunk_count = 0;
             }
-            DebReAlloc(&DEBRIS_ENGINE_KEYS[i], 0);
+            DebReAlloc(&debkeydata[i], 0);
         } else {
-            NuMtxMulR(&DEBRIS_ENGINE_KEYS[i].effect_orientation, transform, &DEBRIS_ENGINE_KEYS[i].effect_orientation);
-            NuVecMtxTransform(&DEBRIS_ENGINE_KEYS[i].position, &DEBRIS_ENGINE_KEYS[i].position, transform);
-            DEBRIS_ENGINE_KEYS[i].orientation_dirty = 0.0f;
+            NuMtxMulR(&debkeydata[i].effect_orientation, transform, &debkeydata[i].effect_orientation);
+            NuVecMtxTransform(&debkeydata[i].position, &debkeydata[i].position, transform);
+            debkeydata[i].orientation_dirty = 0.0f;
         }
     }
     for (i = 0; i < debrischunks + debrischunksglass; ++i) {
@@ -2144,12 +2163,12 @@ i32 DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles, i32 ca
     i32 count = 0;
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
-        if (DEBRIS_ENGINE_KEYS[i].effect_index == effect_index && (active_only == 0 || DEBRIS_ENGINE_KEYS[i].allocated_chunk_count != 0)) {
+        if (debkeydata[i].effect_index == effect_index && (active_only == 0 || debkeydata[i].allocated_chunk_count != 0)) {
             if (count - skip >= 0 && count - skip < capacity) {
                 if (positions != NULL) {
-                    positions[count - skip].x = DEBRIS_ENGINE_KEYS[i].position.x;
-                    positions[count - skip].y = DEBRIS_ENGINE_KEYS[i].position.y;
-                    positions[count - skip].z = DEBRIS_ENGINE_KEYS[i].position.z;
+                    positions[count - skip].x = debkeydata[i].position.x;
+                    positions[count - skip].y = debkeydata[i].position.y;
+                    positions[count - skip].z = debkeydata[i].position.z;
                 }
                 if (handles != NULL) {
                     handles[count - skip] = i;
@@ -2162,8 +2181,8 @@ i32 DebrisFindAllOfType(i32 effect_index, NUVEC *positions, i32 *handles, i32 ca
 }
 
 i32 DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *radius) {
-    DEBRIS_INFO *effect = debtab[DEBRIS_ENGINE_KEYS[handle].effect_index];
-    DEBRISKEY *key = &DEBRIS_ENGINE_KEYS[handle];
+    DEBRIS_INFO *effect = debtab[debkeydata[handle].effect_index];
+    DEBRISKEY *key = &debkeydata[handle];
     NUVEC axis;
     if (effect == NULL) {
         return 0;
@@ -2195,8 +2214,8 @@ i32 DebrisGetRingProperties(i32 handle, NUVEC *origin, NUVEC *direction, f32 *ra
 
 i32 DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_radius, f32 *end_radius, NUVEC *direction, f32 *length,
                             f32 *speed) {
-    DEBRIS_INFO *effect = debtab[DEBRIS_ENGINE_KEYS[handle].effect_index];
-    DEBRISKEY *key = &DEBRIS_ENGINE_KEYS[handle];
+    DEBRIS_INFO *effect = debtab[debkeydata[handle].effect_index];
+    DEBRISKEY *key = &debkeydata[handle];
     NUVEC axis;
     f32 cone_length;
     if (effect == NULL) {
@@ -2231,18 +2250,18 @@ i32 DebrisGetConeProperties(i32 handle, NUVEC *origin, NUVEC *end, f32 *start_ra
 
 void DebrisStatusAlwaysOff(i32 *handle) {
     if (*handle != -1) {
-        debkeydata[*handle].unknown_2f4 = 0;
+        debkeydata[*handle].status = 0;
     }
 }
 
 void fun_006552e0(i32 *handle) {
     if (*handle != -1) {
-        debkeydata[*handle].unknown_2f4 = 2;
+        debkeydata[*handle].status = 2;
     }
 }
 
 void fun_00655300(i32 *handle) {
     if (*handle != -1) {
-        debkeydata[*handle].unknown_2f4 = 1;
+        debkeydata[*handle].status = 1;
     }
 }

@@ -142,10 +142,10 @@ extern "C" void fun_006104b0() {
 }
 
 V2SessionManager::V2SessionManager(const char *session_name) : stats("SessionAll") {
-    unknown_7c = 0;
+    host_lost = 0;
     slot_mode = 2;
     num_local_players = 0;
     mpSessionManager = this;
     NuStrCpy(name, session_name);
-    unknown_78 = 0;
+    joining = 0;
 }

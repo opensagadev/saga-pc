@@ -52,11 +52,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct {         // size 0x3c
-    u8 unknown_00[0x30]; // 0x00
-    NUVEC position;      // 0x30
-} FLOW_BLOWUP_POSITION;
-
 typedef struct {       // size 0x100
     u32 triggered[16]; // 0x00
     u32 enabled[16];   // 0x40
@@ -287,7 +282,7 @@ NUVEC *GizmoBlowup_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((FLOW_BLOWUP_POSITION *)gizmo->object)->position;
+    return &gizmo->blowup->position;
 }
 
 void *Blowup_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
@@ -623,7 +618,7 @@ void GizmoBlowUp_AddEffects(NUVEC *position, GIZMOBLOWUP *blowup, i32 offset, i3
                 part.time_step = FRAMETIME;
                 part.matrix = &matrix;
                 part.velocity = &velocity;
-                part.unknown_c4 = 1;
+                part.flicker_flags = 1;
                 part.stop_fn = PartStop_Flickerer;
                 part.draw_fn = PartDraw_Flickerer;
                 part.flags |= PART_FLAG_ROTATE_RANDOMLY;
@@ -765,7 +760,7 @@ i32 GizmoBlowupBlowup(GIZMOBLOWUP *blowup, i32 effects, i32 hit_type, i32 damage
             for (player = 0; player < 8; ++player) {
                 target = Player[player];
                 if (target != NULL && (target->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-                    (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && target->dead == 0 && !(target->unknown_1010 > 0.0f)) {
+                    (target->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && target->dead == 0 && !(target->invulnerable_timer > 0.0f)) {
                     x = blowup->mid_position.x - target->collision_position.x;
                     y = blowup->mid_position.y - target->collision_position.y;
                     z = blowup->mid_position.z - target->collision_position.z;
@@ -1670,7 +1665,7 @@ GIZMOBLOWUP *GizmoBlowUp_Hit(GAMEOBJECT *object, NUVEC *points, i32 point_count,
     i32 damage;
     i32 cause;
     if (object != NULL) {
-        airborne_damage = object->character_data->game_character->unknown_028 > 0.0f;
+        airborne_damage = object->character_data->game_character->hover_height > 0.0f;
     }
     blowup = WORLD->gizmo_blowups;
     if (blowup == NULL) {

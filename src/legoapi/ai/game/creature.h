@@ -79,6 +79,10 @@ extern "C" {
     i32 DrawGameObjectsProcess(void);
     i32 MakePlayerList(i32);
     void DrawGameObjects(void);
+    GAMEOBJECT *ActivateCharacter(char *, NUVEC *, i32);
+    extern i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
+    i32 ActivePlayerInRange(NUVEC *position, f32 range_squared, f32 *distance_squared);
+    void DeactivateCharacter(char *);
 #ifdef __cplusplus
 }
 #endif

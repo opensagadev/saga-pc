@@ -609,7 +609,7 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
                 }
             }
             PcControlPulseAngle += (i32)(elapsed * 65535.0);
-            unknown_10 = (f32)((f32)(NuTrigTable[(PcControlPulseAngle >> 1) & 0x7fff] + 1.0) * 0.5);
+            pulse_level = (f32)((f32)(NuTrigTable[(PcControlPulseAngle >> 1) & 0x7fff] + 1.0) * 0.5);
             PcControlButtons = PcControlPressed[device];
             if (!WaitForRelease()) {
                 return active;
@@ -1327,7 +1327,7 @@ void PC_CONTROL_SCREEN::Draw(void) {
         label_x = 0.3f;
     }
     DrawText(PcControlText[2], 0.0f, 0.9f, 0.0f, 0x40, 2.0f, 2.0f, 0x80ff2080, 2, 0.0f);
-    f32 pulse = (f32)(unknown_10 + unknown_10 * 0.5);
+    f32 pulse = (f32)(pulse_level + pulse_level * 0.5);
     if (missing_binding) {
         missing_colour = ScaleColour(pulse, pulse, 0x800000ff);
     }

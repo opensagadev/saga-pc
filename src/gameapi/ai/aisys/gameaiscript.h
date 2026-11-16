@@ -12,11 +12,6 @@ struct AISYS;
 struct climb_slot_s;
 struct gameobject_s;
 
-typedef struct AITRIGGERSET_PARTIAL { // size 0x211
-    u8 unknown_00[0x210];             // 0x000
-    u8 flags_low;                     // 0x210
-} AITRIGGERSET_PARTIAL;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -55,17 +50,6 @@ extern "C" {
     extern const char AIExpressionTrueName[5];
     extern const char AIActionNumName[4];
 
-    extern const char AICameraLiteral758070[18];
-    extern const char AICameraLiteral757ffc[10];
-    extern const char AICameraLiteral758160[18];
-    extern const char AICameraLiteral75814c[20];
-    extern const char AICameraLiteral758140[12];
-    extern const char AICameraLiteral758134[10];
-    extern const char AICameraLiteral758128[11];
-    extern const char AICameraLiteral75811c[11];
-    extern const char AICameraLiteral758110[11];
-    extern const char AICameraLiteral758104[11];
-    extern const char AICameraLiteral7580fc[6];
     extern const char AreaConfigKeyword_area_start[11];
     extern const char AreaConfigKeyword_redbrick_extra[15];
     extern const char AIControlSeekName[6];
@@ -76,36 +60,6 @@ extern "C" {
 
     extern const char GameAIPlayer2Name[9];
     extern const char GameAIPlayerFormat[9];
-    extern const char AITransferLiteral757844[14];
-    extern const char AITransferLiteral757860[10];
-    extern const char AITransferLiteral757bb4[13];
-    extern const char AITransferLiteral757ba8[11];
-    extern const char AITransferLiteral757b9c[10];
-    extern const char AITransferLiteral757ec4[10];
-    extern const char AITransferLiteral757a5c[12];
-    extern const char AITransferLiteral757cd8[5];
-    extern const char AITransferLiteral757cc8[7];
-    extern const char AITransferLiteral757e68[5];
-    extern const char AITransferLiteral757e70[15];
-    extern const char AITransferLiteral757a44[23];
-    extern const char AITransferLiteral75773c[8];
-    extern const char AITransferLiteral7576e0[10];
-    extern const char AITransferLiteral7576d0[14];
-    extern const char AITransferLiteral757744[7];
-    extern const char AITransferLiteral757eb4[8];
-    extern const char AITransferLiteral757ea8[10];
-    extern const char AITransferLiteral7583d0[18];
-    extern const char AITransferLiteral7583c4[10];
-    extern const char AITransferLiteral7583b4[16];
-    extern const char AITransferLiteral7583e4[12];
-    extern const char AITransferLiteral7583f0[8];
-    extern const char AITransferLiteral757a8c[7];
-    extern const char AITransferLiteral757884[12];
-    extern const char AITransferLiteral757c10[13];
-    extern const char AITransferLiteral758194[11];
-    extern const char AITransferLiteral758188[11];
-    extern const char AITransferLiteral7581a0[8];
-    extern const char AITransferLiteral758174[19];
     extern const char AIActionCircleAnticlockwiseName[14];
     extern const char AIActionCircleClockwiseName[10];
     extern const char PlayCountArgPrefix[11];
@@ -216,6 +170,11 @@ extern "C" {
     extern AIACTIONDEF lego_aiactiondefs[];
     extern AICONDITIONDEF lego_aiconditiondefs[];
     extern i32 Action_HelpWithTriggers(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
+    extern i32 turret_gizmotype_id;
+    extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_JUMP_NOW;
+    extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
+    extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
 #ifdef __cplusplus
 }
 #endif

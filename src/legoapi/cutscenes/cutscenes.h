@@ -11,8 +11,6 @@ struct cutsys_s;
 
 typedef NUANIMDATA2_SKELETAL CUT_ANIMATION;
 
-typedef struct CUT_LOAD_RECORD CUT_LOAD_RECORD;
-
 typedef struct CUT_LOAD_SYS CUT_LOAD_SYS;
 typedef struct CUT_LOAD_LIST_ENTRY CUT_LOAD_LIST_ENTRY;
 #ifdef __cplusplus
@@ -121,6 +119,7 @@ extern "C" {
     i32 CutScene_HasPlayed(struct cutinfo_s *cutscene);
     void CutScene_StartAudio(void);
     void CutScenes_BGLoadManager(void);
+    void CutScene_DrawSubtitles(void);
 #ifdef __cplusplus
 }
 #endif
@@ -137,7 +136,7 @@ typedef struct cut_player_config_s {
     i16 *ending_text;
 } CUT_PLAYER_CONFIG;
 
-/* CUT_LOAD_RECORD.flags: the cutscene config keywords that set them (the CS_* handlers). */
+/* CUTINFO.flags: the cutscene config keywords that set them (the CS_* handlers). */
 #define CUTINFO_DRAW_WORLD 0x2          /* draw_world on */
 #define CUTINFO_NO_FOG 0x4              /* no_fog */
 #define CUTINFO_LEVEL_DEBRIS_PAGE 0x8   /* deb_page level */

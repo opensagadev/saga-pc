@@ -10,6 +10,7 @@ extern "C" {
 #endif
     void QuatInterpolateRotationMatrix(NUMTX *, NUMTX *, NUMTX *, f32);
     GAMEOBJECT *Transform_TargettedByObj(void *);
+    void TransformDrawTarget(NUVEC *, f32, f32);
 #ifdef __cplusplus
 }
 #endif

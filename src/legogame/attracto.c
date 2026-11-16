@@ -32,6 +32,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
+#include "legoapi/items/collect/batarang.h"
 
 typedef struct attracto_progress_recovered_s { // size 0x2c
     u8 counts[32];                             // 0x00
@@ -39,37 +40,6 @@ typedef struct attracto_progress_recovered_s { // size 0x2c
     u32 active[1];                             // 0x24
     u32 filled[1];                             // 0x28
 } ATTRACTO_PROGRESS;
-
-typedef struct attracto_shard_reader_s { // size 0x54
-    char name[16];                       // 0x00
-    NUVEC position;                      // 0x10
-    NUVEC current_position;              // 0x1c
-    NUVEC screen_position;               // 0x28
-    i16 model;                           // 0x34
-    u16 angle_x;                         // 0x36
-    u16 angle_z;                         // 0x38
-    u16 spin;                            // 0x3a
-
-    union { // size 0x1
-        u8 flags;
-
-        struct {                   // size 0x1
-            u8 active : 1;         // 0x3c:0
-            u8 visible : 1;        // 0x3c:1
-            u8 collecting : 1;     // 0x3c:2
-            u8 collected : 1;      // 0x3c:3
-            u8 drawn : 1;          // 0x3c:4
-            u8 random_offset : 1;  // 0x3c:5
-            u8 tumble_x : 1;       // 0x3c:6
-            u8 reserved_state : 1; // 0x3c:7
-        };
-    }; // 0x3c
-
-    u8 unknown_3d[3];      // 0x3d
-    f32 collection_time;   // 0x40
-    GAMEOBJECT *collector; // 0x44
-    NUVEC velocity;        // 0x48
-} ATTRACTO_SHARD_READER;
 
 extern void Batarang_GetSightInfo(i32, i32 *, i32 *, i32 *, char *);
 
@@ -424,10 +394,10 @@ ADDGIZMOTYPE *Attractos_RegisterGizmo(i32 unused_type_id) {
     return &AttractoAddType;
 }
 
-static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *object) {
-    ATTRACTO_SHARD_READER *shard;
-    ATTRACTO_SHARD_READER *nearest;
-    ATTRACTO_SHARD_READER *result;
+static SHARD_s *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *object) {
+    SHARD_s *shard;
+    SHARD_s *nearest;
+    SHARD_s *result;
     NUVEC delta;
     NUVEC origin;
     NUVEC target;
@@ -435,7 +405,7 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
     f32 best;
     i32 index;
 
-    shard = (ATTRACTO_SHARD_READER *)world->shards;
+    shard = world->shards;
     if (shard == NULL) {
         return NULL;
     }
@@ -485,7 +455,7 @@ static ATTRACTO_SHARD_READER *AttractoSelectShard(WORLDINFO *world, GAMEOBJECT *
 static void AttractoStartSuction(GAMEOBJECT *object) {
     object->player.character_context = CHARACTER_CONTEXT_ATTRACTO_TARGET;
     object->player.context_timer = 0.0f;
-    object->player.unknown_7aa = ACTION_ATTRACT;
+    object->player.context_animation = ACTION_ATTRACT;
     object->player.context_duration = 0.2f;
     object->player.external_force.x = object->player.camera_screen_position.x;
     object->player.external_force.y = object->player.camera_screen_position.y;
@@ -503,7 +473,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         (object->player.suit->flags & SUIT_ATTRACT) != 0) {
         GAME_MESSAGE *message;
         available = 1;
-        sprintf(text, "%i", object->unknown_1062);
+        sprintf(text, "%i", object->attract_count);
         NuVecMtxRotate(&position, &AttractoBackPackCountPos, &object->transform);
         NuVecAdd(&position, &position, &object->position);
         message = AddGameMessage(text, &position, 1.3f, NULL, 0.0f, 255, 255, 255,
@@ -513,8 +483,8 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
     }
     if (object->player.character_context == CHARACTER_CONTEXT_ATTRACTO_DEPOSIT) {
-        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
+        if (object->character_model->action_animations[object->player.context_animation] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) == NULL) {
             return;
         }
         if ((object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
@@ -523,16 +493,16 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (!(object->player.context_duration <= 0.0f)) {
                 return;
             }
-            if (object->unknown_1062 > 0) {
+            if (object->attract_count > 0) {
                 ATTRACTO *attracto = object->player.grapple;
                 if (attracto->collected_count < attracto->capacity) {
-                    --object->unknown_1062;
+                    --object->attract_count;
                     ++attracto->collected_count;
                     object->player.context_duration = 0.2f;
                     attracto = object->player.grapple;
                     if (attracto->collected_count == attracto->capacity) {
                         attracto->filled = 1;
-                    } else if (object->unknown_1062 != 0) {
+                    } else if (object->attract_count != 0) {
                         goto check_context;
                     }
                 }
@@ -558,11 +528,11 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (object->character_model->action_animations[object->player.unknown_7aa] == NULL ||
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
+        if (object->character_model->action_animations[object->player.context_animation] == NULL ||
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) != NULL) {
             f32 x;
             f32 y;
-            ATTRACTO_SHARD_READER *nearest;
+            SHARD_s *nearest;
             object->player.context_timer = (f64)object->player.context_timer + (f64)FRAMETIME;
             x = (f64)object->player.pad->input_direction_z * 1.25;
             y = (f64)object->player.pad->input_direction_x * 1.25;
@@ -580,9 +550,9 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 object->movement_facing_angle = NuAtan2D((f64)nearest->position.x - (f64)object->collision_position.x,
                                                          (f64)nearest->position.z - (f64)object->collision_position.z);
                 if (ParticlesPerSecond(3.0f, FRAMETIME) > 0) {
-                    Shard_Collect((SHARD_s *)nearest, object);
+                    Shard_Collect(nearest, object);
                 } else {
-                    nearest->flags |= SHARD_RANDOM_OFFSET;
+                    nearest->state_flags |= SHARD_RANDOM_OFFSET;
                     NewRumble(object->player.pad->bound_pad, (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
                 }
             }
@@ -592,17 +562,17 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         AddGameMessage("[  ]", &object->player.external_force, 1.0f, NULL, 0.0f, red, green, blue, GAMEMSG_ONE_FRAME | GAMEMSG_KEEP, 0.0f);
         return;
     }
-    if (available && object->unknown_281 != 0 && ObjLandReady(object)) {
+    if (available && object->ground_flags != 0 && ObjLandReady(object)) {
         f32 radius = (f64)object->bounds_radius + 0.25;
         f32 distance;
         ATTRACTO *attracto = Attracto_FindNearest(world, &object->lower_position, object, &distance);
         if (attracto != NULL) {
             radius = (f64)radius * (f64)radius;
-            if (distance < radius && object->unknown_1062 > 0 && (object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
+            if (distance < radius && object->attract_count > 0 && (object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) != 0) {
                 object->player.character_context = CHARACTER_CONTEXT_ATTRACTO_DEPOSIT;
                 object->player.context_timer = 0.0f;
                 object->player.grapple = attracto;
-                object->player.unknown_7aa = ACTION_TRANSFER;
+                object->player.context_animation = ACTION_TRANSFER;
                 object->movement_facing_angle = attracto->angle;
                 return;
             }

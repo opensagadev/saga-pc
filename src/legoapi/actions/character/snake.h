@@ -19,6 +19,7 @@ extern "C" {
     extern f32 SnakeYawSeekRate;
     extern u8 snakebodies[0x440];
     void DrawSnakeBody(GAMEOBJECT *);
+    void UpdateSnakeBody(GAMEOBJECT *object);
 #ifdef __cplusplus
 }
 #endif

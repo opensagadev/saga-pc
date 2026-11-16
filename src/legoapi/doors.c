@@ -24,6 +24,7 @@
 #include "nu2api/numath/nuplane.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/numath_includes.h"
 
 void Door_Reset(void) {
     DoorExitName[0] = '\0';
@@ -31,73 +32,39 @@ void Door_Reset(void) {
     Door_NextSock = -1;
 }
 
-typedef struct startup_door_spline_s { // size 0xc
-    i16 point_count;                   // 0x0
-    u8 unknown_02[6];                  // 0x2
-    NUVEC *points;                     // 0x8
-} STARTUP_DOOR_SPLINE;
-
-typedef struct startup_door_s {  // size 0x128
-    u8 unknown_00[0xa0];         // 0x000
-    STARTUP_DOOR_SPLINE *spline; // 0x0a0
-    NUVEC point0;                // 0x0a4
-    NUVEC point1;                // 0x0b0
-    NUVEC opposite_midpoint;     // 0x0bc
-    NUVEC point3;                // 0x0c8
-    NUVEC position;              // 0x0d4
-    f32 radius;                  // 0x0e0
-    NUVEC normal;                // 0x0e4
-    u8 unknown_f0[4];            // 0x0f0
-    u8 next_sock;                // 0x0f4
-    u8 flags;                    // 0x0f5
-    u8 vehicle;                  // 0x0f6
-    u8 active;                   // 0x0f7
-    u8 unknown_f8[0x18];         // 0x0f8
-    NUPLANE plane;               // 0x110
-    u8 unknown_120[8];           // 0x120
-} STARTUP_DOOR;
-
-typedef struct startup_world_doors_s { // size 0x46a4
-    u8 unknown_00[0x4698];             // 0x0000
-    STARTUP_DOOR *doors;               // 0x4698
-    i32 door_count;                    // 0x469c
-    STARTUP_DOOR *start_door;          // 0x46a0
-} STARTUP_WORLD_DOORS;
-
 void Doors_Init(WORLDINFO *world) {
-    STARTUP_WORLD_DOORS *view = (STARTUP_WORLD_DOORS *)world;
-    STARTUP_DOOR *door;
+    DOOR_s *door;
     i32 index;
     LastDoorPointer = NULL;
-    view->start_door = NULL;
-    door = view->doors;
+    world->start_door = NULL;
+    door = world->doors;
     if (door == NULL) {
         return;
     }
-    for (index = 0; index < view->door_count; ++index, ++door) {
+    for (index = 0; index < world->door_count; ++index, ++door) {
         f32 distance;
-        NuVecAdd(&door->position, &door->spline->points[0], &door->spline->points[1]);
-        NuVecAdd(&door->position, &door->position, &door->spline->points[2]);
-        NuVecAdd(&door->position, &door->position, &door->spline->points[3]);
-        NuVecScale(&door->position, &door->position, 0.25f);
-        door->radius = NuVecDist(&door->position, &door->spline->points[0], NULL);
-        distance = NuVecDist(&door->position, &door->spline->points[1], NULL);
+        NuVecAdd(&door->pos, &door->spline->pts[0], &door->spline->pts[1]);
+        NuVecAdd(&door->pos, &door->pos, &door->spline->pts[2]);
+        NuVecAdd(&door->pos, &door->pos, &door->spline->pts[3]);
+        NuVecScale(&door->pos, &door->pos, 0.25f);
+        door->radius = NuVecDist(&door->pos, &door->spline->pts[0], NULL);
+        distance = NuVecDist(&door->pos, &door->spline->pts[1], NULL);
         if (distance > door->radius) {
             door->radius = distance;
         }
-        distance = NuVecDist(&door->position, &door->spline->points[2], NULL);
+        distance = NuVecDist(&door->pos, &door->spline->pts[2], NULL);
         if (distance > door->radius) {
             door->radius = distance;
         }
-        distance = NuVecDist(&door->position, &door->spline->points[3], NULL);
+        distance = NuVecDist(&door->pos, &door->spline->pts[3], NULL);
         if (distance > door->radius) {
             door->radius = distance;
         }
         door->radius *= 1.01f;
-        NuVecSurfaceNormal(&door->normal, &door->spline->points[0], &door->spline->points[1], &door->spline->points[3]);
-        door->point0 = door->spline->points[0];
-        door->point1 = door->spline->points[1];
-        door->point3 = door->spline->points[3];
+        NuVecSurfaceNormal(&door->normal, &door->spline->pts[0], &door->spline->pts[1], &door->spline->pts[3]);
+        door->point0 = door->spline->pts[0];
+        door->point1 = door->spline->pts[1];
+        door->point3 = door->spline->pts[3];
         NuVecAdd(&door->opposite_midpoint, &door->point1, &door->point3);
         NuVecScale(&door->opposite_midpoint, &door->opposite_midpoint, 0.5f);
         NuVecSub(&door->opposite_midpoint, &door->opposite_midpoint, &door->point0);
@@ -105,41 +72,17 @@ void Doors_Init(WORLDINFO *world) {
         NuVecAdd(&door->opposite_midpoint, &door->opposite_midpoint, &door->point0);
         NuVecSurfaceNormal(&door->normal, &door->point0, &door->point1, &door->point3);
         NuPlnEqn(&door->plane, &door->point0, &door->point1, &door->point3);
-        if (view->start_door == NULL && (door->flags & DOOR_FLAG_USE_AS_START) != 0 && door->spline->point_count >= 6) {
-            view->start_door = door;
+        if (world->start_door == NULL && (door->flags & DOOR_FLAG_USE_AS_START) != 0 && door->spline->length >= 6) {
+            world->start_door = door;
         }
     }
 }
 
-typedef struct player_door_s { // size 0x128
-    char name[128];            // 0x000
-    char camera_name[32];      // 0x080
-    NUGSPLINE *spline;         // 0x0a0
-    u8 unknown_a4[0x30];       // 0x0a4
-    NUVEC position;            // 0x0d4
-    u8 unknown_e0[0x10];       // 0x0e0
-    i16 level;                 // 0x0f0
-    i16 freeplay_area;         // 0x0f2
-    u8 next_sock;              // 0x0f4
-    u8 flags;                  // 0x0f5
-    u8 vehicle;                // 0x0f6
-    u8 active;                 // 0x0f7
-    u8 unknown_f8[0x30];       // 0x0f8
-} PLAYER_DOOR;
-
-typedef struct player_world_doors_s { // size 0x46a4
-    u8 unknown_00[0x4698];            // 0x0000
-    PLAYER_DOOR *doors;               // 0x4698
-    i32 door_count;                   // 0x469c
-    PLAYER_DOOR *start_door;          // 0x46a0
-} PLAYER_WORLD_DOORS;
-
 void *Door_FindByName(WORLDINFO *world, char *name) {
-    PLAYER_WORLD_DOORS *view = (PLAYER_WORLD_DOORS *)world;
-    PLAYER_DOOR *door = view->doors;
+    DOOR_s *door = world->doors;
     i32 index;
     if (door != NULL) {
-        for (index = 0; index < view->door_count; ++index, ++door) {
+        for (index = 0; index < world->door_count; ++index, ++door) {
             if (NuStrICmp(name, door->name) == 0) {
                 return door;
             }
@@ -151,15 +94,15 @@ void *Door_FindByName(WORLDINFO *world, char *name) {
 i16 PlayerList[8] = {0};
 
 i32 StartDoorPositions(void) {
-    PLAYER_DOOR *door;
+    DOOR_s *door;
     PLAYER_POSITION_RECORD *start;
     i32 index;
     i32 point;
     Door_Start = 0;
     if (DoorExitName[0] != '\0') {
-        door = ((PLAYER_WORLD_DOORS *)WORLD)->doors;
+        door = WORLD->doors;
         if (door != NULL) {
-            for (index = 0; index < ((PLAYER_WORLD_DOORS *)WORLD)->door_count; ++index, ++door) {
+            for (index = 0; index < WORLD->door_count; ++index, ++door) {
                 if (door->spline != NULL && NuStrICmp(door->name, DoorExitName) == 0) {
                     start = (PLAYER_POSITION_RECORD *)PlayerStart;
                     for (point = 5; point < 21; point += 2, ++start) {
@@ -190,8 +133,8 @@ i32 StartDoorPositions(void) {
 }
 
 void *Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
-    PLAYER_DOOR *door = ((PLAYER_WORLD_DOORS *)world)->doors;
-    PLAYER_DOOR *nearest;
+    DOOR_s *door = world->doors;
+    DOOR_s *nearest;
     f32 nearest_distance;
     f32 distance;
     i32 index;
@@ -200,13 +143,13 @@ void *Door_FindByIndex(WORLDINFO *world, i32 area, i32 level, NUVEC *position) {
     }
     nearest_distance = 1000000.0f;
     nearest = NULL;
-    for (index = 0; index < ((PLAYER_WORLD_DOORS *)world)->door_count; ++index, ++door) {
+    for (index = 0; index < world->door_count; ++index, ++door) {
         if ((door->flags & DOOR_FLAG_DO_NOT_USE) == 0 && door->level != -1 &&
             ((level != -1 && door->level == level) || (area != -1 && LDataList[door->level].area_index == area))) {
             if (position == NULL) {
                 return door;
             }
-            distance = NuVecDistSqr(position, &door->position, NULL);
+            distance = NuVecDistSqr(position, &door->pos, NULL);
             if (distance < nearest_distance) {
                 nearest_distance = distance;
                 nearest = door;
@@ -310,42 +253,7 @@ ADDGIZMOTYPE *Door_RegisterGizmo(i32 type_id) {
     return &addtype;
 }
 
-typedef struct door_config_s {  // size 0x128
-    char name[128];             // 0x000
-    char camera_name[32];       // 0x080
-    NUGSPLINE *spline;          // 0x0a0
-    u8 unknown_a4[0xd4 - 0xa4]; // 0x0a4
-    NUVEC position;             // 0x0d4
-    f32 radius;                 // 0x0e0
-    NUVEC normal;               // 0x0e4
-    i16 level;                  // 0x0f0
-    i16 freeplay_level;         // 0x0f2
-    i8 next_sock;               // 0x0f4
-    u8 flags;                   // 0x0f5
-    i8 vehicle;                 // 0x0f6
-    u8 active;                  // 0x0f7
-    NUGSPLINE *camera_spline;   // 0x0f8
-    f32 camera_wait;            // 0x0fc
-    f32 camera_blend;           // 0x100
-    u8 unknown_104[4];          // 0x104
-    u32 vehicle_mask_low;       // 0x108
-    u32 vehicle_mask_high;      // 0x10c
-    u8 unknown_110[0x10];       // 0x110
-    CUTINFO *cutscene;          // 0x120
-    u8 unknown_124[4];          // 0x124
-} DOOR_CONFIG;
-
-typedef struct world_door_config_s { // size 0x46a0
-    u8 unknown_000[0x104];           // 0x0000
-    void *giz_buffer;                // 0x0104
-    u8 unknown_108[0x13c - 0x108];   // 0x0108
-    NUGSCN *scene;                   // 0x013c
-    u8 unknown_140[0x4698 - 0x140];  // 0x0140
-    DOOR_CONFIG *doors;              // 0x4698
-    i32 door_count;                  // 0x469c
-} WORLD_DOOR_CONFIG;
-
-static WORLD_DOOR_CONFIG *D_worldinfo = 0;
+static WORLDINFO *D_worldinfo = 0;
 f32 Door_CutCamWaitTime = 0;
 i32 door_cutscenesnap = 0;
 i32 gone_through_door_to_new_level = 0;
@@ -358,8 +266,8 @@ i32 Door_UseCutCam = 0;
 i32 Door_CutLookAtPlayers = 0;
 i32 gone_through_door_to_new_mode = 0;
 void *LastDoorPointer = 0;
-void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct game_door_callback_s *door) = NULL;
-static DOOR_CONFIG *D_door = 0;
+void (*Door_GoThrough_ExtraCodeFn)(WORLDINFO *world, struct DOOR_s *door) = NULL;
+static DOOR_s *D_door = 0;
 f32 Door_CutCamWait = 0;
 NUVEC DoorCutCameraPosition1 = {0};
 f32 Door_CutCamBlendTime = 0;
@@ -371,7 +279,7 @@ static void D_spline(NUFPAR *parser) {
         return;
     }
     NuStrCpy(D_door->name, parser->word_buffer_ptr);
-    D_door->spline = NuSplineFind(D_worldinfo->scene, D_door->name);
+    D_door->spline = NuSplineFind(D_worldinfo->current_gscn, D_door->name);
     if (D_door->spline != NULL && D_door->spline->length >= 4) {
         for (i = 0; i < D_worldinfo->door_count; ++i) {
             if (D_worldinfo->doors[i].spline == D_door->spline) {
@@ -413,11 +321,11 @@ static void D_cam_spline(NUFPAR *parser) {
     if (NuFParGetWord(parser) == 0 || NuStrLen(parser->word_buffer_ptr) >= 32) {
         return;
     }
-    NuStrCpy(D_door->camera_name, parser->word_buffer_ptr);
-    D_door->camera_spline = NuSplineFind(D_worldinfo->scene, D_door->camera_name);
+    NuStrCpy(D_door->camera_spline_name, parser->word_buffer_ptr);
+    D_door->camera_spline = NuSplineFind(D_worldinfo->current_gscn, D_door->camera_spline_name);
     if (D_door->camera_spline != NULL && D_door->camera_spline->length != 2) {
         D_door->camera_spline = NULL;
-        D_door->camera_name[0] = '\0';
+        D_door->camera_spline_name[0] = '\0';
     }
 }
 
@@ -426,7 +334,7 @@ static void D_cam_wait(NUFPAR *parser) {
 }
 
 static void D_cam_blend_time(NUFPAR *parser) {
-    D_door->camera_blend = NuFParGetFloat(parser);
+    D_door->camera_blend_time = NuFParGetFloat(parser);
 }
 
 static void D_cam_lookatplayers(NUFPAR *parser) {
@@ -455,12 +363,12 @@ static void D_next_sock(NUFPAR *parser) {
 static void D_vehicle(NUFPAR *parser) {
     if (NuFParGetWord(parser) != 0) {
         if (NuStrICmp(parser->word_buffer_ptr, "all") == 0) {
-            D_door->vehicle_mask_low = 0xffff;
-            D_door->vehicle_mask_high = 0;
+            D_door->takeover_mask_low = 0xffff;
+            D_door->takeover_mask_high = 0;
         } else {
             i32 type = LevelCharacterTypeIDFn(parser->word_buffer_ptr);
             if (type < 64) {
-                D_door->vehicle_mask_low |= 1 << type;
+                D_door->takeover_mask_low |= 1 << type;
             }
         }
     }
@@ -499,21 +407,20 @@ static NUFPCOMJMP Door_ConfigKeywords[] = {{"spline", D_spline},
                                            {NULL, NULL}};
 char door_gizmotype_id = -1;
 
-void Doors_Configure(WORLDINFO *world_ptr, char *config) {
-    WORLD_DOOR_CONFIG *world = (WORLD_DOOR_CONFIG *)world_ptr;
+void Doors_Configure(WORLDINFO *world, char *config) {
     NUFPAR *parser;
-    DOOR_CONFIG *door;
+    DOOR_s *door;
     i32 in_door;
     world->doors = NULL;
-    if (world->scene == NULL) {
+    if (world->current_gscn == NULL) {
         return;
     }
     parser = NuFParCreateMem("doors", config, 0xffff);
     if (parser == NULL) {
         return;
     }
-    world->giz_buffer = (void *)(((u32)world->giz_buffer + 3) & ~3u);
-    world->doors = door = world->giz_buffer;
+    world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
+    world->doors = door = world->giz_buffer.void_ptr;
     NuFParPushCom(parser, Door_ConfigKeywords);
     in_door = 0;
     while (NuFParGetLine(parser) != 0) {
@@ -538,9 +445,9 @@ void Doors_Configure(WORLDINFO *world_ptr, char *config) {
             D_worldinfo = world;
             D_door = door;
             door->name[0] = '\0';
-            door->camera_name[0] = '\0';
+            door->camera_spline_name[0] = '\0';
             door->spline = NULL;
-            door->position = v000;
+            door->pos = v000;
             door->radius = 1.0f;
             door->normal = v001;
             door->level = -1;
@@ -551,20 +458,18 @@ void Doors_Configure(WORLDINFO *world_ptr, char *config) {
             door->active = 0;
             door->camera_spline = NULL;
             door->camera_wait = 0.0f;
-            door->camera_blend = 1.0f;
-            door->vehicle_mask_low = 0;
-            door->vehicle_mask_high = 0;
+            door->camera_blend_time = 1.0f;
+            door->takeover_mask_low = 0;
+            door->takeover_mask_high = 0;
         }
     }
     NuFParDestroy(parser);
     if (world->door_count > 0) {
-        world->giz_buffer = (void *)(((u32)door + 15) & ~15u);
+        world->giz_buffer.addr = ((u32)door + 15) & ~15u;
     } else {
         world->doors = NULL;
     }
 }
-
-i32 NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
 
 void Door_SetCutCam(DOOR_s *door) {
     Door_UseCutCam = 0;
@@ -635,8 +540,8 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
             for (index = 0; index < 8; ++index) {
                 GAMEOBJECT *object = Player[index];
                 if (object != NULL) {
-                    PlayerProgress[index].field_b = object->player.jump_variant_state == 1;
-                    PlayerProgress[index].unknown_9 = object->dead != 0 ? 4 : object->player.saved_hitpoints;
+                    PlayerProgress[index].jump_variant = object->player.jump_variant_state == 1;
+                    PlayerProgress[index].saved_hitpoints = object->dead != 0 ? 4 : object->player.saved_hitpoints;
                 }
             }
             gone_through_door_to_new_mode = 1;
@@ -654,7 +559,7 @@ void Door_GoThrough(WORLDINFO *world, DOOR_s *door, i32 player_triggered) {
     }
     Door_Last = door;
     if (Door_GoThrough_ExtraCodeFn != NULL) {
-        Door_GoThrough_ExtraCodeFn(world, (struct game_door_callback_s *)door);
+        Door_GoThrough_ExtraCodeFn(world, door);
     }
 }
 

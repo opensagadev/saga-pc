@@ -22,11 +22,11 @@ struct LEDGE_s {    // size 0x38
         };
     }; // 0x17
 
-    u8 type_index;    // 0x18
-    u8 flags;         // 0x19
-    u8 pad_1a[2];     // 0x1a
-    i16 unknown_1c;   // 0x1c
-    i16 unknown_1e;   // 0x1e
-    NUVEC bounds_min; // 0x20
-    NUVEC bounds_max; // 0x2c
+    u8 type_index;     // 0x18
+    u8 flags;          // 0x19
+    u8 pad_1a[2];      // 0x1a
+    i16 link_previous; // 0x1c
+    i16 link_next;     // 0x1e
+    NUVEC bounds_min;  // 0x20
+    NUVEC bounds_max;  // 0x2c
 };

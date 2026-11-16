@@ -245,7 +245,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     VirtualStackAllocator scratch;                 // 0x944
     VirtualStackAllocator output_memory;           // 0x954
     u8 emit_definitions;                           // 0x964
-    u8 unknown_965;                                // 0x965
+    u8 output_suppressed;                          // 0x965
     u8 unknown_966;                                // 0x966
     u8 emit_semantics;                             // 0x967
     u8 emit_registers;                             // 0x968
@@ -262,10 +262,7 @@ struct ShaderCompilerDictionary {                  // size 0x9a4
     const char *profile_name;                      // 0x988
     ShaderCompilerBufferAllocator register_buffer; // 0x98c
 
-    union { // size 0x4
-        i32 unknown_99c;
-        ShaderCompilerBufferAllocator *active_output;
-    }; // 0x99c
+    ShaderCompilerBufferAllocator *active_output; // 0x99c
 
     u32 unknown_9a0; // 0x9a0
     ShaderCompilerDictionary(VirtualStackAllocator &, i32);

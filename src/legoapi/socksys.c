@@ -14,16 +14,6 @@
 #include "nu2api/numath/nuquat.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
-#define SOCK_BOUNDS_OVERLAP(a, b, c, d, ignore_y)                                                                                          \
-    ((c)->x <= (b)->x && (a)->x <= (d)->x && (c)->z <= (b)->z && (a)->z <= (d)->z && ((ignore_y) || ((c)->y <= (b)->y && (a)->y <= (d)->y)))
-#define SOCK_BOUNDS_SEPARATE(a, b, c, d, ignore_y)                                                                                         \
-    ((b)->x < (c)->x || (a)->x > (d)->x || (b)->z < (c)->z || (a)->z > (d)->z || (!(ignore_y) && ((b)->y < (c)->y || (a)->y > (d)->y)))
-#define SOCK_BOUNDS_TOUCH(a, b, c, d, ignore_y)                                                                                            \
-    ((b)->x >= (c)->x && (a)->x <= (d)->x && (b)->z >= (c)->z && (a)->z <= (d)->z && ((ignore_y) || ((b)->y >= (c)->y && (a)->y <= (d)->y)))
-#define SOCK_ROTATION_DELTA(from, to)                                                                                                      \
-    (((i32)(to) - (i32)(from) > 0x8000)    ? (i32)(to) - (i32)(from) - 0x10000                                                             \
-     : ((i32)(to) - (i32)(from) < -0x8000) ? (i32)(to) - (i32)(from) + 0x10000                                                             \
-                                           : (i32)(to) - (i32)(from))
 
 // The SDK's NuFdiv: 0 when either operand is 0.
 static f32 SockFdiv(f32 a, f32 b) {
@@ -689,19 +679,33 @@ SOCKROT *SockRailAngles(SOCK *sock, NUGSPLINE *spline, SOCKROT *rotations) {
             position = spline->pts[point];
             next_pos = spline->pts[next];
         } else {
-#define SOCK_RAIL_CORNER_SAMPLE(out, index)                                                                                                \
-    NuVecAdd(&(out), &sock->a->pts[index], &sock->b->pts[index]);                                                                          \
-    if ((sock->flags & 1) == 0) {                                                                                                          \
-        NuVecAdd(&(out), &(out), &sock->c->pts[index]);                                                                                    \
-        NuVecAdd(&(out), &(out), &sock->d->pts[index]);                                                                                    \
-        midpoint_scale = 0.25f;                                                                                                            \
-    } else                                                                                                                                 \
-        midpoint_scale = 0.5f;                                                                                                             \
-    NuVecScale(&(out), &(out), midpoint_scale)
-            SOCK_RAIL_CORNER_SAMPLE(previous_pos, previous);
-            SOCK_RAIL_CORNER_SAMPLE(position, point);
-            SOCK_RAIL_CORNER_SAMPLE(next_pos, next);
-#undef SOCK_RAIL_CORNER_SAMPLE
+            NuVecAdd(&previous_pos, &sock->a->pts[previous], &sock->b->pts[previous]);
+            if ((sock->flags & 1) == 0) {
+                NuVecAdd(&previous_pos, &previous_pos, &sock->c->pts[previous]);
+                NuVecAdd(&previous_pos, &previous_pos, &sock->d->pts[previous]);
+                midpoint_scale = 0.25f;
+            } else {
+                midpoint_scale = 0.5f;
+            }
+            NuVecScale(&previous_pos, &previous_pos, midpoint_scale);
+            NuVecAdd(&position, &sock->a->pts[point], &sock->b->pts[point]);
+            if ((sock->flags & 1) == 0) {
+                NuVecAdd(&position, &position, &sock->c->pts[point]);
+                NuVecAdd(&position, &position, &sock->d->pts[point]);
+                midpoint_scale = 0.25f;
+            } else {
+                midpoint_scale = 0.5f;
+            }
+            NuVecScale(&position, &position, midpoint_scale);
+            NuVecAdd(&next_pos, &sock->a->pts[next], &sock->b->pts[next]);
+            if ((sock->flags & 1) == 0) {
+                NuVecAdd(&next_pos, &next_pos, &sock->c->pts[next]);
+                NuVecAdd(&next_pos, &next_pos, &sock->d->pts[next]);
+                midpoint_scale = 0.25f;
+            } else {
+                midpoint_scale = 0.5f;
+            }
+            NuVecScale(&next_pos, &next_pos, midpoint_scale);
         }
         x[0] = x[1] = 0;
         y[0] = y[1] = 0;
@@ -911,17 +915,17 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
         }
 
         if (sock->mid != NULL) {
-            sock->unknown_98 = SockSplineLength(sock->mid, sock->unknown_33);
+            sock->loop_length = SockSplineLength(sock->mid, sock->unknown_33);
         } else {
             i32 segment_count;
 
-            sock->unknown_98 = 0.0f;
+            sock->loop_length = 0.0f;
             segment_count = sock->length;
             if (sock->unknown_33 != 0) {
                 ++segment_count;
             }
             for (segment_index = 0; segment_index < segment_count; ++segment_index) {
-                sock->unknown_98 += NuVecDist(&sock->segments[segment_index].midpoint, &sock->segments[segment_index].next_midpoint, NULL);
+                sock->loop_length += NuVecDist(&sock->segments[segment_index].midpoint, &sock->segments[segment_index].next_midpoint, NULL);
             }
         }
         buf->void_ptr = segment;
@@ -951,7 +955,8 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
             } else {
                 ignore_y = 0;
             }
-            if (SOCK_BOUNDS_SEPARATE(&sock->min, &sock->max, &other->min, &other->max, ignore_y)) {
+            if ((sock->max.x < other->min.x || sock->min.x > other->max.x || sock->max.z < other->min.z || sock->min.z > other->max.z ||
+                 (!ignore_y && (sock->max.y < other->min.y || sock->min.y > other->max.y)))) {
                 SetSockBit(sock, other_index);
             } else {
                 segment_count = sock->length;
@@ -966,8 +971,12 @@ void SockSys_GenerateData(SOCKSYS *sock_sys, VARIPTR *buf, VARIPTR buf_end) {
                     i32 other_segment;
 
                     for (other_segment = 0; other_segment < other_segment_count; ++other_segment) {
-                        if (SOCK_BOUNDS_TOUCH(&sock->segments[segment].min, &sock->segments[segment].max,
-                                              &other->segments[other_segment].min, &other->segments[other_segment].max, ignore_y)) {
+                        if ((sock->segments[segment].max.x >= other->segments[other_segment].min.x &&
+                             sock->segments[segment].min.x <= other->segments[other_segment].max.x &&
+                             sock->segments[segment].max.z >= other->segments[other_segment].min.z &&
+                             sock->segments[segment].min.z <= other->segments[other_segment].max.z &&
+                             (ignore_y || (sock->segments[segment].max.y >= other->segments[other_segment].min.y &&
+                                           sock->segments[segment].min.y <= other->segments[other_segment].max.y)))) {
                             goto next_other;
                         }
                     }
@@ -2197,30 +2206,39 @@ i32 SockSysCamera(SOCKSYS *sock_sys, NUVEC *fallback_camera_position, i32 socket
     }
     if (player_count == 2 && two_player_pullback != 0.0f) {
         // The reference has distinct spatial and planar pullback blocks.
-#define SOCK_CAMERA_PAIR_PULLBACK(distance_service, with_y)                                                                                \
-    do {                                                                                                                                   \
-        if ((sock_sys->socks[camera_socket_position->sock_index].flags & SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION) != 0) {                 \
-            f32 vertical_separation = (f64)player_camera_positions[0].y - player_camera_positions[1].y;                                    \
-            *(u32 *)&pair_offset = *(u32 *)&vertical_separation & 0x7fffffff;                                                              \
-        } else                                                                                                                             \
-            pair_offset = distance_service(&player_camera_positions[0], &player_camera_positions[1], NULL);                                \
-        pair_offset *= -two_player_pullback;                                                                                               \
-        working_scale = distance_service(camera_target, camera_position, &scratch);                                                        \
-        NuVecNorm(&scratch, &scratch);                                                                                                     \
-        if ((f64)working_scale - pair_offset < 1.0)                                                                                        \
-            pair_offset = working_scale - 1.0f;                                                                                            \
-        camera_position->x = (f64)scratch.x * pair_offset + camera_position->x;                                                            \
-        if (with_y)                                                                                                                        \
-            camera_position->y = (f64)scratch.y * pair_offset + camera_position->y;                                                        \
-        camera_position->z = (f64)scratch.z * pair_offset + camera_position->z;                                                            \
-    } while (0)
         if (camera_socket_position->sock_index != -1 &&
             (sock_sys->socks[camera_socket_position->sock_index].flags & SOCK_FLAG_TWO_PLAYER_PLANAR_PULLBACK) != 0) {
-            SOCK_CAMERA_PAIR_PULLBACK(NuVecXZDist, 0);
+            if ((sock_sys->socks[camera_socket_position->sock_index].flags & SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION) != 0) {
+                f32 vertical_separation = (f64)player_camera_positions[0].y - player_camera_positions[1].y;
+                *(u32 *)&pair_offset = *(u32 *)&vertical_separation & 0x7fffffff;
+            } else {
+                pair_offset = NuVecXZDist(&player_camera_positions[0], &player_camera_positions[1], NULL);
+            }
+            pair_offset *= -two_player_pullback;
+            working_scale = NuVecXZDist(camera_target, camera_position, &scratch);
+            NuVecNorm(&scratch, &scratch);
+            if ((f64)working_scale - pair_offset < 1.0) {
+                pair_offset = working_scale - 1.0f;
+            }
+            camera_position->x = (f64)scratch.x * pair_offset + camera_position->x;
+            camera_position->z = (f64)scratch.z * pair_offset + camera_position->z;
         } else {
-            SOCK_CAMERA_PAIR_PULLBACK(NuVecDist, 1);
+            if ((sock_sys->socks[camera_socket_position->sock_index].flags & SOCK_FLAG_TWO_PLAYER_VERTICAL_SEPARATION) != 0) {
+                f32 vertical_separation = (f64)player_camera_positions[0].y - player_camera_positions[1].y;
+                *(u32 *)&pair_offset = *(u32 *)&vertical_separation & 0x7fffffff;
+            } else {
+                pair_offset = NuVecDist(&player_camera_positions[0], &player_camera_positions[1], NULL);
+            }
+            pair_offset *= -two_player_pullback;
+            working_scale = NuVecDist(camera_target, camera_position, &scratch);
+            NuVecNorm(&scratch, &scratch);
+            if ((f64)working_scale - pair_offset < 1.0) {
+                pair_offset = working_scale - 1.0f;
+            }
+            camera_position->x = (f64)scratch.x * pair_offset + camera_position->x;
+            camera_position->y = (f64)scratch.y * pair_offset + camera_position->y;
+            camera_position->z = (f64)scratch.z * pair_offset + camera_position->z;
         }
-#undef SOCK_CAMERA_PAIR_PULLBACK
     }
     return 1;
 }

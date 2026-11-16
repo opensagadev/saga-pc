@@ -68,7 +68,7 @@ GAMEOBJECT *AddGameObject(void) {
         object->reflection_height = 2000000.0f;
         object->sock_index = 0xff;
         object->movement_mode = 2;
-        identity = (u64)1 << object->hostility_group;
+        identity = (u64)1 << object->object_id;
         object->collision_identity_mask[0] = (u32)identity;
         object->roof_height = 2000000.0f;
         object->collision_identity_mask[1] = (u32)(identity >> 32);
@@ -76,7 +76,7 @@ GAMEOBJECT *AddGameObject(void) {
         object->layer_mask = 1;
         object->floor_height = 2000000.0f;
         object->roof_surface_id = 0xff;
-        object->unknown_283 = -1;
+        object->ground_layer = -1;
         object->jump_animation_state = 0xff;
         RecomputeHighGameObject();
         ((APIOBJECT *)object)->owner = object;
@@ -99,9 +99,9 @@ void RemoveGameObject(GAMEOBJECT *object, i32 unused) {
     for (i = 0; i < HIGHGAMEOBJECT; ++i, ++other) {
         // Shifts through __allshl, which yields 0 for groups >= 64.
         U64_PAIR(other->collision_contact_mask) &= ~U64_PAIR(object->collision_identity_mask);
-        other->awareness &= ~((u64)1 << object->hostility_group);
-        other->seen_opponents &= ~((u64)1 << object->hostility_group);
-        other->excluded_opponents &= ~((u64)1 << object->hostility_group);
+        other->awareness &= ~((u64)1 << object->object_id);
+        other->seen_opponents &= ~((u64)1 << object->object_id);
+        other->excluded_opponents &= ~((u64)1 << object->object_id);
     }
     if (object->player.pad != NULL) {
         object->player.pad->runtime_flags &= ~1u;
@@ -121,7 +121,7 @@ void (*GameObjectDimensionsExtraFn)(GAMEOBJECT *) = 0;
 
 void GameObjectDimensions(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *config;
-    if (object->use_model_origin > 0 && object->player.origin_scale_override == 1.0f) {
+    if (object->use_model_origin > 0 && object->player.shield_scale == 1.0f) {
         config = object->character_data->game_character;
         if (config->collision_origin_joint != -1 && object->character_model->points_of_interest[config->collision_origin_joint] != NULL &&
             object->origin_joint_ready != 0) {
@@ -132,7 +132,7 @@ void GameObjectDimensions(GAMEOBJECT *object) {
         }
     }
     object->bounds_radius = object->collision_radius;
-    object->bounds_half_height = object->unknown_b0;
+    object->bounds_half_height = object->collision_half_height;
 extra:
     if (GameObjectDimensionsExtraFn != NULL) {
         GameObjectDimensionsExtraFn(object);
@@ -143,7 +143,7 @@ void ScaleGameObject(GAMEOBJECT *object) {
     CHARACTERDATA *character = object->character_data;
     object->scaled_radius = character->scaled_radius * object->origin_scale;
     object->collision_radius = object->collision_radius_unscaled * object->origin_scale;
-    object->unknown_b0 = object->collision_radius * object->collision_y_scale;
+    object->collision_half_height = object->collision_radius * object->collision_y_scale;
     object->scaled_height = (character->top - character->bottom) * object->collision_scale;
 }
 
@@ -346,7 +346,7 @@ void GameObjectOrigin(GAMEOBJECT *object) {
         object->collision_position.x += object->previous_velocity.x * FRAMETIME;
         object->collision_position.y += object->previous_velocity.y * FRAMETIME;
         object->collision_position.z += object->previous_velocity.z * FRAMETIME;
-    } else if (object->use_model_origin > 0 && object->player.origin_scale_override == 1.0f &&
+    } else if (object->use_model_origin > 0 && object->player.shield_scale == 1.0f &&
                object->character_data->game_character->collision_origin_joint != -1 &&
                object->character_model->points_of_interest[object->character_data->game_character->collision_origin_joint] != NULL &&
                object->origin_joint_ready != 0) {
@@ -410,7 +410,7 @@ NUVEC plr_lastpos = {0};
 
 void SnapCreaturePos(GAMEOBJECT *object, NUVEC *position, i32 angle, AIPATHINFO *path_info, i32 set_on_surface) {
     object->position = *position;
-    object->unknown_276 = (u16)angle;
+    object->movement_angle = (u16)angle;
     object->facing_angle = (u16)angle;
     object->movement_facing_angle = (u16)angle;
     object->collision_position = object->position;
@@ -455,9 +455,9 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                              : object;
         surface = terrain_object->jump_animation_state;
         if ((surface != -1 && (TerSurface[surface].flags & 0xc041) != 0) ||
-            ((layer = terrain_object->unknown_283) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
+            ((layer = terrain_object->ground_layer) != -1 && ((TerLayer[layer].flags & 1) != 0 || layer == 9))) {
             unsafe = 1;
-            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->unknown_028 > 0.0f) {
+            if (VehicleArea && BonusArea && terrain_object->character_data->game_character->hover_height > 0.0f) {
                 unsafe = 0;
             }
         } else {
@@ -471,12 +471,12 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             if ((U64_PAIR(&CInfo[context].flags) & 0x800000000ULL) != 0) {
                 break;
             }
-            if (object->unknown_281 == 0 &&
+            if (object->ground_flags == 0 &&
                 (context == CHARACTER_CONTEXT_NONE ||
                  (context != LEGOCONTEXT_BEENTAKENOVER && context != LEGOCONTEXT_EATEN && context != LEGOCONTEXT_GETIN)) &&
                 !VehicleArea) {
                 model_flags = object->character_data->model_flags;
-                if (((model_flags & CHARACTER_MODEL_VEHICLE) == 0 || !(object->character_data->game_character->unknown_028 > 0.0f)) &&
+                if (((model_flags & CHARACTER_MODEL_VEHICLE) == 0 || !(object->character_data->game_character->hover_height > 0.0f)) &&
                     ((model_flags & CHARACTER_MODEL_JETPACK) == 0 || object->player.jump_variant_state != 1)) {
                     break;
                 }
@@ -508,7 +508,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
                 object->respawn_position = object->last_safe_position;
                 object->flags_1fc_word |= 0x2000;
             }
-            if ((object->unknown_280 == 0 || object->unknown_280 == 1) && object->player.unknown_da8 <= 0.0f &&
+            if ((object->player_slot == 0 || object->player_slot == 1) && object->player.keep_time <= 0.0f &&
                 GameCam->blend_time >= GameCam->blend_duration && object->sock_index != 0xff) {
                 if (object->player.takeover_owner != NULL &&
                     (LEGOCONTEXT_GETIN == -1 || object->player.character_context != LEGOCONTEXT_GETIN) &&
@@ -519,7 +519,7 @@ void UpdateLastSafePosition(GAMEOBJECT *object) {
             }
             goto safe_position_done;
         } while (0);
-        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (layer = object->unknown_283) != -1 &&
+        if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && (layer = object->ground_layer) != -1 &&
             (TerLayer[layer].flags & 1) != 0 && !NoLayerKill(object)) {
             if (object->player.fall_recovery_timer <= 0.0f) {
                 object->player.fall_hover_height = object->position.y;
@@ -559,7 +559,7 @@ TERRAIN_LAYER TerLayer[17] = {
 
 void GameObjectSetCanUse(GAMEOBJECT *object, void *target, u8 action, u8 unused, f32 parameter) {
     object->can_use_object = target;
-    object->unknown_f00 = action;
+    object->use_action = action;
     object->use_action_frames = grapple_attach_frames;
     object->use_action_parameter = parameter;
 }

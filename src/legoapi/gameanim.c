@@ -27,8 +27,7 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numath/nuvec4.h"
-
-void GameAnimMissingAnimDiagnostic(char *name);
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 GAMEANIMPROGRESS gameanimsysprogress = {0};
 
@@ -989,7 +988,7 @@ i32 edanimFileSave(char *path) {
             EdFileWriteInt(AnimParams[i].control_mode);
             EdFileWriteInt(AnimParams[i].control_switch);
             EdFileWriteFloat(AnimParams[i].control_distance);
-            EdFileWriteFloat(AnimParams[i].unknown_018);
+            EdFileWriteFloat(AnimParams[i].switch_delay);
             for (index = 0; index < AnimParams[i].effect_count; ++index) {
                 EdFileWrite(AnimParams[i].effect_names[index], sizeof(AnimParams[i].effect_names[index]));
                 EdFileWriteInt(AnimParams[i].effect_intervals[index]);
@@ -1043,7 +1042,7 @@ void edanimcbSetSwitchDelay(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) 
     if (edanim_nearest == -1 || edanim_nearest_param_id == -1) {
         return;
     }
-    AnimParams[edanim_nearest_param_id].unknown_018 = ((edui_slider_s *)item)->value;
+    AnimParams[edanim_nearest_param_id].switch_delay = ((edui_slider_s *)item)->value;
 }
 
 void edanimcbSetSwitchVar(eduimenu_s *unused0, eduiitem_s *item, u32 unused2) {
@@ -1168,7 +1167,7 @@ void edanimcbSwitchMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2) {
     eduiMenuAddItem(edanim_switch_menu, eduiItemSliderCreateInt(0, colours, 0, edanimcbSetSwitchId, -1, 129,
                                                                 AnimParams[edanim_nearest_param_id].control_switch, (char *)("Switch ID")));
     eduiMenuAddItem(edanim_switch_menu, eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchDelay, 0.0f, 20.0f,
-                                                             AnimParams[edanim_nearest_param_id].unknown_018, (char *)("Switch Delay")));
+                                                             AnimParams[edanim_nearest_param_id].switch_delay, (char *)("Switch Delay")));
     eduiMenuAddItem(edanim_switch_menu, eduiItemSliderCreate(0, colours, 0, edanimcbSetSwitchVar, 0.0f, 20.0f,
                                                              AnimParams[edanim_nearest_param_id].control_distance, (char *)("Switch Var")));
     eduiMenuAttach(parent, edanim_switch_menu);

@@ -12,9 +12,7 @@
 #include "nu2api/nucore/nustring.h"
 #include <stdio.h>
 #include <string.h>
-
-extern i16 dat_00880894;
-extern i16 dat_00880898;
+#include "legoapi/text_tables.h"
 
 void Text_SetLanguage_Game(i32 language) {
     switch (language) {
@@ -89,8 +87,6 @@ void Text_LoadStrings(VARIPTR *buffer, VARIPTR *buffer_end) {
     char language[32];
     char path[256];
     u8 *string_buffer = buffer->void_ptr;
-
-    (void)buffer_end;
 
     TextRegisterButtonMapFn(Text_DecodeButtons);
     NuStrCpy(language, Text_GetLanguagePath(Text_Language));

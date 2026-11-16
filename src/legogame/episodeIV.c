@@ -64,18 +64,13 @@ void DeathStarEscapeC_Reset(WORLDINFO *unused0) {
     LevAIMessage[0] = CheckGizAIMessage(gizaimessagesys, "RescuedDroids", NULL);
 }
 
-typedef struct TORPEDO_MUSIC_FLAGS_VIEW { // size 0x2
-    u8 count;                             // 0x0
-    u8 flags;                             // 0x1
-} TORPEDO_MUSIC_FLAGS_VIEW;
-
 // Kept as an assert, not a layout comment: the declaration count of this unit steers
 // BlockadeRunnerDEjectCreature (docs/cleanup-audit.md, section 6).
 
 i32 DeathStarShieldDown(void) {
     GIZMOBLOWUP *blowup;
     GAMEOBJECT *player;
-    TORPEDO_MUSIC_FLAGS_VIEW *packet;
+    TORPEDOPACKET *packet;
     if (LevGizmo[0] == NULL) {
         LevGizmo[0] = GizmoFindByName(WORLD->gizmo_sys, blowup_gizmotype_id, "bigbang1");
     }
@@ -93,7 +88,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL &&
         (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[0];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->player.torpedo;
+        packet = player->player.torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -102,7 +97,7 @@ i32 DeathStarShieldDown(void) {
     if (player != NULL &&
         (WORLD->current_level != DEATHSTARBATTLED_LDATA || ObjInNarrowSock(player, WORLD->sock_sys, WORLD->level_idx) == 0)) {
         player = Player[1];
-        packet = (TORPEDO_MUSIC_FLAGS_VIEW *)player->player.torpedo;
+        packet = player->player.torpedo;
         if (packet != NULL && (packet->count > 0 || (packet->flags & 2) != 0)) {
             return 1;
         }
@@ -245,8 +240,8 @@ static void BlockadeRunnerDEjectCreature(i32 eject_index) {
             params = Default_ADDPART;
             params.matrix = &matrix;
             params.velocity = &BlockadeRunnerDEjectMom;
-            params.unknown_14 = 0.15f;
-            params.unknown_18 = 0.15f;
+            params.start_radius = 0.15f;
+            params.end_radius = 0.15f;
             params.gravity = 0.0f;
             params.special = &WORLD->level_objects[254].special;
             params.flags = PART_FLAG_DAMAGE_CHARACTERS | PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY |
@@ -283,7 +278,7 @@ void BlockadeRunnerD_Update(WORLDINFO *world) {
             continue;
         }
         if ((LevGamePart[i]->active & PART_IN_USE) != 0) {
-            LevGameObject[i]->flags_107a = 5;
+            LevGameObject[i]->movement_mode = 5;
             LevGameObject[i]->player.vehicle_orientation = LevGamePart[i]->transform;
             LevGameObject[i]->position = LevGameObject[i]->player.vehicle_orientation.translation;
             LevGameObject[i]->ai_update_position = LevGameObject[i]->position;
@@ -488,18 +483,18 @@ void TrenchMove(GAMEOBJECT *object) {
     pad = object->player.pad;
     object->start_position = object->position;
     object->initial_position = object->collision_position;
-    object->unknown_282 = object->unknown_281;
+    object->previous_ground_flags = object->ground_flags;
     input_magnitude = pad->input_magnitude;
     input_angle = pad->input_angle;
     pad->previous_input_magnitude = input_magnitude;
     pad->previous_input_angle = input_angle;
-    object->previous_movement_angle = object->unknown_276;
+    object->previous_movement_angle = object->movement_angle;
     object->flags_ef0 &= ~0x4000;
-    object->flags_107a = 0;
+    object->movement_mode = 0;
     if (object->model_draw_result != 0) {
-        object->unknown_f10 = 0.0f;
+        object->offscreen_time = 0.0f;
     } else {
-        object->unknown_f10 = FRAMETIME + object->unknown_f10;
+        object->offscreen_time = FRAMETIME + object->offscreen_time;
     }
     if (object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
         object->player.turn_braking += FRAMETIME;
@@ -512,7 +507,7 @@ void TrenchMove(GAMEOBJECT *object) {
         } else if (object->player.character_context != CHARACTER_CONTEXT_LOOP &&
                    player->player.character_context == CHARACTER_CONTEXT_LOOP && player->player.context_timer < 0.75 * VehicleLoopTime) {
             object->player.character_context = player->player.character_context;
-            object->player.unknown_7aa = ACTION_IDLE;
+            object->player.context_animation = ACTION_IDLE;
             object->player.context_duration = VehicleLoopTime;
             object->player.context_timer = VehicleLoopTime;
         }

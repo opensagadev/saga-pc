@@ -13,12 +13,23 @@ extern "C" {
     typedef struct flight_spline_resource_s { // size 0x530
         NUVEC4 points[64];                    // 0x000
         i32 point_count;                      // 0x400
-        u8 unknown_0404[12];                  // 0x404
-        f32 length;                           // 0x410
-        f32 cumulative_distances[64];         // 0x414
-        u8 unknown_0514[16];                  // 0x514
-        i32 id;                               // 0x524
-        u8 unknown_0528[8];                   // 0x528
+        /* the dogfight time of the next fighter, -1 when done */
+        f32 next_spawn;  // 0x404
+        f32 reset_spawn; // 0x408
+        /* 0 for one fighter */
+        f32 spawn_interval;           // 0x40c
+        f32 length;                   // 0x410
+        f32 cumulative_distances[64]; // 0x414
+        /* 0 for no limit */
+        i32 repeat_limit; // 0x514
+        i32 remaining;    // 0x518
+        /* the spline the fighter chases, -1 for none */
+        i32 target_id; // 0x51c
+        i32 object_id; // 0x520
+        /* also the fighter's model for playback splines */
+        i32 id;          // 0x524
+        i32 enabled;     // 0x528
+        u32 unknown_52c; // 0x52c
     } FLIGHT_SPLINE_RESOURCE;
 
     void CalcSplinePointFromDist(FLIGHT_SPLINE_RESOURCE *spline, NUVEC4 *result, f32 distance);

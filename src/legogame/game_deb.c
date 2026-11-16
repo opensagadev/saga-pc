@@ -38,14 +38,6 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Cut resource access prefix; the cut loader owns the resource. */
-typedef struct BURNOUT_CUT_PREFIX { // size 0x54
-    u8 unknown_00[0x50];            // 0x00
-    u32 flags;                      // 0x50
-} BURNOUT_CUT_PREFIX;
-
-#define RIPPLE_WORLD ((WORLD_RIPPLE_VIEW *)WORLD)
-
 void DebrisKillPlayers(void) {
     i32 i;
     GAMEOBJECT *player;
@@ -88,7 +80,7 @@ void AddSurfaceDebris(GAMEOBJECT *object) {
     if (object->player.character_context == CHARACTER_CONTEXT_DOOMED) {
         return;
     }
-    layer = object->unknown_283;
+    layer = object->ground_layer;
     if (layer != -1 && (TerLayer[layer].flags & 1)) {
         return;
     }
@@ -211,7 +203,7 @@ void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
             *result = NuMtlCreateEx3D(1, 1);
             (*result)->attribs.u_address = NUMTL_ADDRESS_WRAP;
             (*result)->attribs.v_address = NUMTL_ADDRESS_WRAP;
-            ((RIPPLE_MATERIAL_READER *)*result)->opacity = 1.0f;
+            (*result)->opacity = 1.0f;
             (*result)->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
             (*result)->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
             (*result)->attribs.filter_mode = 1;
@@ -225,8 +217,6 @@ void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
 }
 
 void BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x, u16 unused_y) {
-    (void)unused_x;
-    (void)unused_y;
     FindAnglesXY(normal, NULL, NULL);
     NuMtxSetRotationX(matrix, temp_zrot);
     NuMtxRotateY(matrix, temp_yrot);
@@ -236,18 +226,18 @@ void BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x,
 void BurnoutApply(i32 view) {
     BURN_PARAMETERS parameters;
     NUVEC average;
-    parameters.unknown_00 = 0;
-    memset(&parameters.unknown_04, 0, 0x50);
-    if ((CutStopInfo == NULL || (((BURNOUT_CUT_PREFIX *)CutStopInfo)->flags & 0x80) == 0) && WORLD->page_unknown != 0) {
-        edrtlCalculateBurnoutEx((BURN_SET *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
+    parameters.enabled = 0;
+    memset(&parameters.start_angle, 0, 0x50);
+    if ((CutStopInfo == NULL || (CutStopInfo->flags & 0x80) == 0) && WORLD->burnset != NULL) {
+        edrtlCalculateBurnoutEx(WORLD->burnset, &parameters, &global_camera.mtx.translation, FRAMETIME);
     }
-    if (parameters.unknown_14 > 0.0f) {
+    if (parameters.intensity > 0.0f) {
         NuRndrSetBurnoutParameters(view, &parameters);
     }
     if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->enabled != 0) {
-        NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->unknown_24);
-        NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->unknown_28);
-        NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->unknown_2c);
+        NuRndrSetShadowCoefficient(0, WORLD->shadow_editor->coefficient_0);
+        NuRndrSetShadowCoefficient(1, WORLD->shadow_editor->coefficient_1);
+        NuRndrSetShadowCoefficient(2, WORLD->shadow_editor->coefficient_2);
         NuDeferredShadingRender();
     }
 }
@@ -259,7 +249,6 @@ f32 RippleSfxCooldown = 0.5f;
 f32 ForceFieldRippleRate = 100.0f;
 
 void AddSurfaceRipples(GAMEOBJECT *object) {
-    RIPPLE_CONTACT_TIMER_VIEW *contact_timer = (RIPPLE_CONTACT_TIMER_VIEW *)object;
     NUVEC position;
     NUVEC normal;
     NUVEC seed;
@@ -271,7 +260,7 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
     f32 swap_x;
     i32 count;
     i32 i;
-    if (RIPPLE_WORLD->effects == NULL || object->dead != 0) {
+    if (WORLD->ripple_effects == NULL || object->dead != 0) {
         return;
     }
     if (object->contact_count == 1) {
@@ -298,22 +287,22 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
                     u16 angle = (u16)qrand();
                     velocity = seed;
                     VecRotateAxis(&velocity, angle, &normal);
-                    AddRipple(RippleSet, &matrix, RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].initial_size,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_size,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].lifetime, 0.0f,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].start_color,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].end_color, 15,
-                              RIPPLE_WORLD->effects[RIPPLE_WORLD->sabre_effect].material, &velocity);
+                    AddRipple(RippleSet, &matrix, WORLD->ripple_effects[WORLD->sabre_ripple_effect].initial_size,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].end_size,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].lifetime, 0.0f,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].start_color,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].end_color, 15,
+                              WORLD->ripple_effects[WORLD->sabre_ripple_effect].material, &velocity);
                 }
             }
             /* The sound position stays unwritten when no particles are emitted. */
-            if (contact_timer->timer <= 0) {
+            if (object->player.sabre_contact_sfx_timer <= 0) {
                 PlaySfx("SabFField", &position);
-                contact_timer->timer = RippleSfxCooldown;
+                object->player.sabre_contact_sfx_timer = RippleSfxCooldown;
             }
         }
-        if (contact_timer->timer > 0) {
-            contact_timer->timer -= FRAMETIME;
+        if (object->player.sabre_contact_sfx_timer > 0) {
+            object->player.sabre_contact_sfx_timer -= FRAMETIME;
         }
     } else {
         if (object->water_intersects == 0 || object->model_draw_result == 0) {
@@ -337,10 +326,10 @@ void AddSurfaceRipples(GAMEOBJECT *object) {
             matrix.m31 = (f32)(object->water_height + (f64).001f);
             matrix.m32 = (f32)(((f64)qrand() * (f64)(1.0f / 65535.0f) - .5) * RipplePerturbation + object->collision_position.z);
             RippleRandomRadius = object->bounds_radius + object->bounds_radius + object->bounds_radius;
-            AddRipple(RippleSet, &matrix, size, RippleRandomRadius, RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].lifetime, 0.0f,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].start_color,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].end_color, 7,
-                      RIPPLE_WORLD->effects[RIPPLE_WORLD->water_effect].material, NULL);
+            AddRipple(RippleSet, &matrix, size, RippleRandomRadius, WORLD->ripple_effects[WORLD->water_ripple_effect].lifetime, 0.0f,
+                      WORLD->ripple_effects[WORLD->water_ripple_effect].start_color,
+                      WORLD->ripple_effects[WORLD->water_ripple_effect].end_color, 7,
+                      WORLD->ripple_effects[WORLD->water_ripple_effect].material, NULL);
         }
     }
 }

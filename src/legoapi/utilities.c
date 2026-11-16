@@ -48,31 +48,10 @@
 #include "nu2api/numath/nuvec.h"
 
 #include <stdlib.h>
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 void NuTexAnimScriptMissing(char *path);
-#define SPLINE_POINT(spline, index) ((NUVEC *)((u8 *)(spline)->pts + (index) * (i16)(spline)->pt_size))
 extern const f64 GameObjectNearFloorNoFloorHeight;
-
-/* Shadow platform entries. Tail[1] holds the counted traversal, not an allocation count.
- */
-typedef struct shadow_platform_entry_s {
-    GAMEOBJECT *object;
-    u8 unknown_04_14[0x10];
-} SHADOW_PLATFORM_ENTRY;
-
-struct shadow_platform_list_s {
-    u8 unknown_00_04[4];
-    i32 count;
-    u8 unknown_08_18[0x10];
-    SHADOW_PLATFORM_ENTRY entries[1];
-};
-
-typedef struct USEFUL_MATERIAL {
-    u8 unknown_00[0x40];
-    u32 attributes;
-} USEFUL_MATERIAL;
-
-extern NUMTL *SolidMtl;
 
 static f32 UtilitiesFabs(f32 value);
 
@@ -495,17 +474,17 @@ f32 GameShadow(GAMEOBJECT *object, NUVEC *position, f32 probe, i32 mask) {
         }
         if (world != NULL && world->shadow_platform_list != NULL && VehicleArea == 0 &&
             (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
-            struct shadow_platform_list_s *list = world->shadow_platform_list;
-            for (i = 0; i < list->count; ++i) {
-                if (list->entries[i].object != NULL) {
-                    handles[handle_count++] = list->entries[i].object->level_object_index;
+            CHARPLATFORMSYS_s *list = world->shadow_platform_list;
+            for (i = 0; i < list->platform_count; ++i) {
+                if (list->platforms[i].object != NULL) {
+                    handles[handle_count++] = list->platforms[i].object->level_object_index;
                 }
             }
         }
         for (i = 0; i < handle_count; ++i) {
             PlatOnOff(handles[i], 0);
         }
-        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->unknown_028 == 0.0f) {
+        if (LAYER_HOVERIGNORE != 0xffffffffu && object->character_data->game_character->hover_height == 0.0f) {
             mask &= (i32)~LAYER_HOVERIGNORE;
         }
     }
@@ -934,8 +913,9 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
             do {
                 position->segment_distance += distance;
                 if (!(position->segment_distance >= position->segment_length)) {
-                    current = SPLINE_POINT(position->spline, position->segment);
-                    next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
+                    current = ((NUVEC *)((u8 *)(position->spline)->pts + position->segment * (i16)(position->spline)->pt_size));
+                    next = ((NUVEC *)((u8 *)(position->spline)->pts +
+                                      ((position->segment + 1) % position->spline->length) * (i16)(position->spline)->pt_size));
                     NuVecSub(&offset, next, current);
                     fraction = position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
                     NuVecScale(&offset, &offset, fraction);
@@ -947,7 +927,8 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
                 if (position->segment >= points - 1) {
                     if (!position->looping) {
                         position->finished = 1;
-                        position->position = *SPLINE_POINT(position->spline, position->segment);
+                        position->position =
+                            *((NUVEC *)((u8 *)(position->spline)->pts + position->segment * (i16)(position->spline)->pt_size));
                         position->segment--;
                         position->along = 1.0f;
                         position->segment_distance = position->segment_length;
@@ -955,8 +936,9 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
                     }
                     position->segment = 0;
                 }
-                current = SPLINE_POINT(position->spline, position->segment);
-                next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
+                current = ((NUVEC *)((u8 *)(position->spline)->pts + position->segment * (i16)(position->spline)->pt_size));
+                next = ((NUVEC *)((u8 *)(position->spline)->pts +
+                                  ((position->segment + 1) % position->spline->length) * (i16)(position->spline)->pt_size));
                 position->segment_distance = 0.0f;
                 position->segment_length = NuVecDist(next, current, &offset);
                 if (distance == 0.0f) {
@@ -968,8 +950,9 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
         do {
             position->segment_distance += distance;
             if (!(position->segment_distance < 0.0f)) {
-                current = SPLINE_POINT(position->spline, position->segment);
-                next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
+                current = ((NUVEC *)((u8 *)(position->spline)->pts + position->segment * (i16)(position->spline)->pt_size));
+                next = ((NUVEC *)((u8 *)(position->spline)->pts +
+                                  ((position->segment + 1) % position->spline->length) * (i16)(position->spline)->pt_size));
                 NuVecSub(&offset, next, current);
                 fraction = position->segment_length != 0.0f ? position->segment_distance / position->segment_length : 0.0f;
                 NuVecScale(&offset, &offset, fraction);
@@ -981,7 +964,7 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
             if (position->segment < 0) {
                 if (!position->looping) {
                     position->finished = 1;
-                    position->position = *SPLINE_POINT(position->spline, 0);
+                    position->position = *((NUVEC *)((u8 *)(position->spline)->pts + 0 * (i16)(position->spline)->pt_size));
                     position->segment++;
                     position->along = 0.0f;
                     position->segment_distance = 0.0f;
@@ -989,8 +972,9 @@ void MoveSplinePosition(SPLINEPOS *position, f32 distance) {
                 }
                 position->segment = (i16)(points - 2);
             }
-            current = SPLINE_POINT(position->spline, position->segment);
-            next = SPLINE_POINT(position->spline, (position->segment + 1) % position->spline->length);
+            current = ((NUVEC *)((u8 *)(position->spline)->pts + position->segment * (i16)(position->spline)->pt_size));
+            next = ((NUVEC *)((u8 *)(position->spline)->pts +
+                              ((position->segment + 1) % position->spline->length) * (i16)(position->spline)->pt_size));
             position->segment_length = NuVecDist(next, current, &offset);
             position->segment_distance = position->segment_length;
             if (distance == 0.0f) {
@@ -1034,7 +1018,7 @@ void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i3
     if (last_point < 0 || last_point > point_count) {
         last_point = point_count;
     }
-    point = SPLINE_POINT(spline, index);
+    point = ((NUVEC *)((u8 *)(spline)->pts + index * (i16)(spline)->pt_size));
     do {
         f32 distance = NuVecDistSqr(origin, point, &offset);
         if (distance < nearest) {
@@ -1046,8 +1030,8 @@ void GetNearestSplinePos(NUVEC *origin, SPLINEPOS *result, NUGSPLINE *spline, i3
     } while (index < last_point);
 
     spline = result->spline;
-    current = SPLINE_POINT(spline, result->segment);
-    next = SPLINE_POINT(spline, (result->segment + 1) % spline->length);
+    current = ((NUVEC *)((u8 *)(spline)->pts + result->segment * (i16)(spline)->pt_size));
+    next = ((NUVEC *)((u8 *)(spline)->pts + ((result->segment + 1) % spline->length) * (i16)(spline)->pt_size));
     result->segment_distance = 0.0f;
     result->segment_length = NuVecDist(next, current, &offset);
     result->position = *current;
@@ -1642,14 +1626,14 @@ void DrawObjectOnCharacter(WORLDINFO *world, GAMEOBJECT *object, i32 object_id, 
 
 void CreateUsefulMaterials(void) {
     SolidMtl = NuMtlCreate(1);
-    ((USEFUL_MATERIAL *)SolidMtl)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL *)SolidMtl)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL *)SolidMtl)->attributes |= 0x40000u;
+    SolidMtl->attribs.word &= 0xffff3fffu;
+    SolidMtl->attribs.word &= 0xfffffff0u;
+    SolidMtl->attribs.word |= 0x40000u;
     NuMtlUpdate(SolidMtl);
     ZipUpLineMaterial = NuMtlCreate3D(1);
-    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes &= 0xffff3fffu;
-    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes &= 0xfffffff0u;
-    ((USEFUL_MATERIAL *)ZipUpLineMaterial)->attributes |= 0x40000u;
+    ZipUpLineMaterial->attribs.word &= 0xffff3fffu;
+    ZipUpLineMaterial->attribs.word &= 0xfffffff0u;
+    ZipUpLineMaterial->attribs.word |= 0x40000u;
     NuMtlUpdate(ZipUpLineMaterial);
 }
 
@@ -1708,8 +1692,8 @@ void InitSplinePosition(SPLINEPOS *position, NUGSPLINE *spline, f32 distance, i3
     }
     position->spline = spline;
     position->looping = (i8)looping;
-    first = SPLINE_POINT(spline, 0);
-    second = SPLINE_POINT(spline, 1);
+    first = ((NUVEC *)((u8 *)(spline)->pts + 0 * (i16)(spline)->pt_size));
+    second = ((NUVEC *)((u8 *)(spline)->pts + 1 * (i16)(spline)->pt_size));
     position->segment_length = NuVecDist(second, first, &offset);
     if (distance > 0.0f) {
         MoveSplinePosition(position, distance);

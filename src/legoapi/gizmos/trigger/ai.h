@@ -11,9 +11,3 @@ struct LEVELSCRIPTPROCESS_s {  // size 0xdc
     AISCRIPTPROCESS processor; // 0x10
     u32 unknown_d8;            // 0xd8
 };
-
-typedef struct {                           // size 0x4670
-    u8 opaque[0x2aec];                     // 0x0000
-    i32 count;                             // 0x2aec
-    struct LEVELSCRIPTPROCESS_s items[32]; // 0x2af0
-} ADD_AI_WORLD;

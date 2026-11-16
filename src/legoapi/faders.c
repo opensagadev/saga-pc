@@ -13,23 +13,11 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct FADER {            // size 0x18
-    nuhspecial_s special;         // 0x00
-    nuhspecial_s while_animating; // 0x0c
-} FADER;
-
-typedef struct FADERS_WORLD_VIEW { // size 0x503c
-    u8 unknown_000[0x5034];        // 0x0000
-    FADER *faders;                 // 0x5034
-    i32 fader_count;               // 0x5038
-} FADERS_WORLD_VIEW;
-
 void Faders_Configure(WORLDINFO *world, char *config) {
-    FADERS_WORLD_VIEW *view = (FADERS_WORLD_VIEW *)world;
     NUFPAR *parser;
-    FADER *fader;
-    view->faders = NULL;
-    view->fader_count = 0;
+    FADER_s *fader;
+    world->faders = NULL;
+    world->fader_count = 0;
     if (world->current_gscn == NULL) {
         return;
     }
@@ -38,8 +26,8 @@ void Faders_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    view->faders = (FADER *)world->giz_buffer.addr;
-    fader = view->faders;
+    world->faders = (FADER_s *)world->giz_buffer.addr;
+    fader = world->faders;
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
         if (NuStrICmp(parser->word_buffer_ptr, "fader") != 0) {
@@ -60,13 +48,13 @@ void Faders_Configure(WORLDINFO *world, char *config) {
             }
         }
         ++fader;
-        ++view->fader_count;
+        ++world->fader_count;
     }
     NuFParDestroy(parser);
-    if (view->fader_count > 0) {
+    if (world->fader_count > 0) {
         world->giz_buffer.addr = ((u32)fader + 3) & ~3u;
     } else {
-        view->faders = NULL;
+        world->faders = NULL;
     }
 }
 

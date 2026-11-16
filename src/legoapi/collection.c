@@ -12,6 +12,8 @@
 #include "legoapi/world/area.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufpar.h"
+#include "legoapi/items/collect/minikits.h"
+#include "legoapi/world/levels/episodes.h"
 
 static i32 CollectCount = 0;
 static COLLECTID *CollectList = 0;
@@ -325,11 +327,6 @@ typedef struct SHOP_UNLOCK_AREA { // size 0xc
     u8 unknown_02[10];            // 0x2
 } SHOP_UNLOCK_AREA;
 
-typedef struct SHOP_UNLOCK_COMPLETION { // size 0x3
-    u8 unknown_00[2];                   // 0x0
-    u8 gold_bricks;                     // 0x2
-} SHOP_UNLOCK_COMPLETION;
-
 i32 Episodes_Completed(void);
 i32 AllMiniKitsDone(AREASAVE_s *);
 
@@ -360,8 +357,7 @@ COLLECTID *CollectIDUnlocked(i32 id) {
                     }
                     break;
                 case COLLECTION_UNLOCK_GOLD_BRICKS:
-                    if (CustomiserCompletionSave != NULL &&
-                        ((SHOP_UNLOCK_COMPLETION *)CustomiserCompletionSave)->gold_bricks >= entry->field6_0xa) {
+                    if (CustomiserCompletionSave != NULL && CustomiserCompletionSave->gold_bricks >= entry->field6_0xa) {
                         unlocked = 1;
                     }
                     break;

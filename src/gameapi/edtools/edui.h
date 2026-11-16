@@ -76,7 +76,10 @@ typedef struct FRAME_PAD {        // size 0xa4
     u8 analog_left_pad_left;  // 0x95
     u8 analog_left_pad_up;    // 0x96
     u8 analog_left_pad_down;  // 0x97
-    u8 reserved98[4];         // 0x98
+    u8 analog_triangle;       // 0x98
+    u8 analog_circle;         // 0x99
+    u8 analog_cross;          // 0x9a
+    u8 analog_square;         // 0x9b
     u8 analog_l1;             // 0x9c
     u8 analog_r1;             // 0x9d
     u8 analog_l2;             // 0x9e
@@ -153,7 +156,7 @@ struct eduiitem_s {              // size 0x48
         u8 unknown_0c[4];
     }; // 0x0c
 
-    u8 unknown_10; // 0x10
+    u8 colour_index; // 0x10
 
     union { // size 0x1
         u8 flags;
@@ -281,15 +284,15 @@ struct eduimenu_s {                                                     // size 
     struct eduiitem_s *first;                                           // 0x00
     struct eduiitem_s *last;                                            // 0x04
     struct eduiitem_s *selected;                                        // 0x08
-    struct eduiitem_s *unknown_0c;                                      // 0x0c
-    struct eduiitem_s *unknown_10;                                      // 0x10
+    struct eduiitem_s *first_visible;                                   // 0x0c
+    struct eduiitem_s *last_visible;                                    // 0x10
     i32 x;                                                              // 0x14
     i32 y;                                                              // 0x18
     i32 width;                                                          // 0x1c
     i32 height;                                                         // 0x20
-    i32 unknown_24;                                                     // 0x24
-    i32 unknown_28;                                                     // 0x28
-    void *font;                                                         // 0x2c
+    i32 drawn_width;                                                    // 0x24
+    i32 drawn_height;                                                   // 0x28
+    struct vufnt_s *font;                                               // 0x2c
     void (*callback)(struct eduimenu_s *arg0, struct eduimenu_s *arg1); // 0x30
     char *title;                                                        // 0x34
 
@@ -414,7 +417,7 @@ struct edui_colour_slider_s {  // size 0x70
 extern "C" {
 #endif
     struct eduiitem_s *eduiMenuAddItem(struct eduimenu_s *menu, struct eduiitem_s *item);
-    struct eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback, char *title);
+    struct eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, struct vufnt_s *font, void *callback, char *title);
     void eduiMenuAddItemFirst(struct eduimenu_s *menu, struct eduiitem_s *item);
     struct eduimenu_s *eduiGetActiveMenu(void);
     void eduicbPickCFGCancel(struct eduimenu_s *menu, struct eduimenu_s *arg1);
@@ -496,7 +499,7 @@ struct edui_interact_s {                           // size 0x24
     struct eduiitem_s *item;                       // 0x14
     i32 (*callback)(struct edui_interact_s *arg0); // 0x18
     u32 buttons;                                   // 0x1c
-    i32 unknown_20;                                // 0x20
+    i32 needs_debounce;                            // 0x20
 };
 
 struct edui_sel_s {                                                               // size 0x54
@@ -591,7 +594,7 @@ extern "C" {
     extern char EduiTextCopyBuffer[64];
     extern f32 EduiSliderGlobalAcceleration;
     extern i32 edui_filepick_listsize;
-    void EduiFntPrintScaled(void *font, f32 x, f32 y, i32 alignment, char *text);
+    void EduiFntPrintScaled(struct vufnt_s *font, f32 x, f32 y, i32 alignment, char *text);
     i32 eduiGradPickRead(eduiitem_s *item, struct edui_gradient_stage_s *stages, i32 capacity);
     i32 eduicbInteractColourPick(edui_interact_s *interact);
     i32 eduicbProcessColourPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad);

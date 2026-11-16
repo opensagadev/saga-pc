@@ -52,33 +52,35 @@ struct numtx_s;
 #define CHARACTER_MODEL_BEAST 0x40000000                       /* beast */
 #define CHARACTER_MODEL_PREFERS_BRAWLING 0x80000000            /* prefers_brawling */
 
-typedef struct characterdata_s {               // size 0x4c
-    i32 name_id;                               // 0x00
-    u32 model_flags;                           // 0x04
-    char *dir;                                 // 0x08
-    char *name;                                // 0x0c
-    struct CHARACTERANIM_CONFIG *animations;   // 0x10
-    u16 animation_count;                       // 0x14
-    u8 field6_0x16;                            // 0x16
-    u8 field7_0x17;                            // 0x17
-    void (*move_fn)(struct gameobject_s *);    // 0x18
-    void (*animate_fn)(struct gameobject_s *); // 0x1c
-    void *draw_fn;                             // 0x20
-    PLAYERCHARACTERCONFIG *game_character;     // 0x24
-    struct CHARACTER_EFFECT_CONFIG *effects;   // 0x28
-    f32 scaled_radius;                         // 0x2c
-    f32 collision_radius;                      // 0x30
-    f32 bottom;                                // 0x34
-    f32 top;                                   // 0x38
-    f32 model_scale;                           // 0x3c
-    u8 flags;                                  // 0x40
-    u8 unknown_0041;                           // 0x41
-    i16 icon_model;                            // 0x42
-    u8 unknown_44[0x4];                        // 0x44
-    u32 field22_0x48;                          // 0x48
+typedef struct characterdata_s {                    // size 0x4c
+    i32 name_id;                                    // 0x00
+    u32 model_flags;                                // 0x04
+    char *dir;                                      // 0x08
+    char *name;                                     // 0x0c
+    struct CHARACTERANIM_CONFIG *animations;        // 0x10
+    u16 animation_count;                            // 0x14
+    u8 field6_0x16;                                 // 0x16
+    u8 field7_0x17;                                 // 0x17
+    void (*move_fn)(struct gameobject_s *);         // 0x18
+    void (*animate_fn)(struct gameobject_s *);      // 0x1c
+    void (*post_animate_fn)(struct gameobject_s *); // 0x20
+    PLAYERCHARACTERCONFIG *game_character;          // 0x24
+    struct CHARACTER_EFFECT_CONFIG *effects;        // 0x28
+    f32 scaled_radius;                              // 0x2c
+    f32 collision_radius;                           // 0x30
+    f32 bottom;                                     // 0x34
+    f32 top;                                        // 0x38
+    f32 model_scale;                                // 0x3c
+    u8 flags;                                       // 0x40
+    u8 unknown_0041;                                // 0x41
+    i16 icon_model;                                 // 0x42
+    /* cleared by ConfigureCharacterList, otherwise unused */
+    u32 extra_data; // 0x44
+    /* cleared by ConfigureCharacterList, otherwise unused */
+    u32 extra_flags; // 0x48
 } CHARACTERDATA;
 
-/* Character action ids (gameobject_s.unknown_7aa, the ANIMPACKET animations, the index into a model's
+/* Character action ids (gameobject_s.player.context_animation, the ANIMPACKET animations, the index into a model's
    action_animations): PlayerActionInfoList[1 + action] holds each one's name (ActionFromName). */
 #define ACTION_NONE (-1)
 #define ACTION_WALK 0
@@ -438,7 +440,9 @@ extern "C" {
 #define CHARVARIANT_HOVERDROID 17
 #define CHARVARIANT_CRITTER 18
 #define CHARVARIANT_NABOOSTARFIGHTER 19
-#define CHARVARIANT_HENCHMAN 20
+#define CHARVARIANT_POD 20
+#define CHARVARIANT_REPUBLICGUNSHIP 21
+#define CHARVARIANT_HENCHMAN 22
     i32 CharVariant_Find(char *);
     void CharVariants_Init(char **, i32);
     void IconScenes_Init(char *, VARIPTR *, VARIPTR *);

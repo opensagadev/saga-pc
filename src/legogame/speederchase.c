@@ -30,7 +30,6 @@
 #include "nu2api/numath/nuvec.h"
 
 i32 SpeederBlowupHack(GIZMOBLOWUP *blowup, i32 hit_type) {
-    (void)hit_type;
     if (blowup != NULL) {
         if (NuStrCmp(blowup->name, "thermocrate_011") == 0) {
             return 0;
@@ -73,8 +72,8 @@ void SpeederChaseA_Init(WORLDINFO *world) {
     NuSpecialFind(world->current_gscn, &LevHSpecial[7], "clear4_ffield1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[8], "clear4_ffield2", 1);
     SpeederChaseTime0 = SpeederChaseTime1 = 0.0f;
-    LevSfxFlag[1] = LevSfxFlag[0] = 0;
-    ((u8 *)LevSfxFlag)[8] = 0;
+    LevSfxFlag.words[1] = LevSfxFlag.words[0] = 0;
+    LevSfxFlag.playing[8] = 0;
     SpeederChaseState0 = SpeederChaseState1 = 0;
 }
 
@@ -136,12 +135,12 @@ void SpeederChaseA_Update(WORLDINFO *world) {
         position = NuSpecialGetDrawPos(&LevHSpecial[i]);
         if (animation != NULL) {
             animation_data = WORLD->current_gscn->instance_animation_data[animation->animation_index];
-            if (((u8 *)LevSfxFlag)[i] == 0) {
+            if (LevSfxFlag.playing[i] == 0) {
                 if (animation->ltime > 0.0f) {
                     animation_time = animation->ltime;
                     if (animation_time != NuAnimEndFrameOld(animation_data)) {
                         PlaySfx("env_laser_gate_on", position);
-                        ((u8 *)LevSfxFlag)[i] = 1;
+                        LevSfxFlag.playing[i] = 1;
                     }
                 }
             } else {
@@ -149,7 +148,7 @@ void SpeederChaseA_Update(WORLDINFO *world) {
                     animation_time = animation->ltime;
                     if (animation_time == NuAnimEndFrameOld(animation_data)) {
                         PlaySfx("env_laser_gate_off", position);
-                        ((u8 *)LevSfxFlag)[i] = 0;
+                        LevSfxFlag.playing[i] = 0;
                         continue;
                     }
                 }
@@ -165,7 +164,6 @@ void SpeederChaseA_Panel(WORLDINFO *world) {
     i32 count;
     i32 killed;
     i32 i;
-    (void)world;
     if (netclient != 0) {
         if (SpeederChaseNetPacket == NULL || SpeederChaseNetPacket->phase != 1 || SpeederChaseNetPacket->target_count == 0) {
             return;
@@ -280,10 +278,10 @@ i32 Action_SpeederBeingChased(AISYS *system, AISCRIPTPROCESS *processor, AIPACKE
             if (player2 != NULL) {
                 error = MidDistanceFromSockStart(WORLD->sock_sys, &player2->sock_position) -
                         MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
-                if (error > sock->unknown_98 * 0.5) {
-                    error -= sock->unknown_98;
-                } else if (error < sock->unknown_98 * -0.5) {
-                    error += sock->unknown_98;
+                if (error > sock->loop_length * 0.5) {
+                    error -= sock->loop_length;
+                } else if (error < sock->loop_length * -0.5) {
+                    error += sock->loop_length;
                 }
                 if (speedervals[processor->action_data_1].distance < 0.0f) {
                     reference = error > 0.0f ? player : player2;
@@ -296,10 +294,10 @@ i32 Action_SpeederBeingChased(AISYS *system, AISCRIPTPROCESS *processor, AIPACKE
                 distance = MidDistanceFromSockStart(WORLD->sock_sys, &object->sock_position) -
                            MidDistanceFromSockStart(WORLD->sock_sys, &player->sock_position);
             }
-            if (distance > sock->unknown_98 * 0.5) {
-                distance -= sock->unknown_98;
-            } else if (distance < sock->unknown_98 * -0.5) {
-                distance += sock->unknown_98;
+            if (distance > sock->loop_length * 0.5) {
+                distance -= sock->loop_length;
+            } else if (distance < sock->loop_length * -0.5) {
+                distance += sock->loop_length;
             }
             if (speederfirerange > distance) {
                 can_fire = 1;

@@ -12,6 +12,7 @@
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/numtx.h"
+#include "legoapi/characters/motion/move.h"
 
 extern "C" i32 special_debug;
 extern "C" void PCSpecialEmptyHandler(...);
@@ -92,23 +93,22 @@ extern "C" {
             ledge->y_rotation = EdFileReadShort();
             ledge->type_code = EdFileReadChar();
             if (version > 1) {
-                ledge->unknown_1c = EdFileReadShort();
-                ledge->unknown_1e = EdFileReadShort();
+                ledge->link_previous = EdFileReadShort();
+                ledge->link_next = EdFileReadShort();
                 if (version == 2) {
                     ledge->flags = 0;
                 } else {
                     ledge->flags = EdFileReadUnsignedChar();
                 }
             } else {
-                ledge->unknown_1c = -1;
-                ledge->unknown_1e = -1;
+                ledge->link_previous = -1;
+                ledge->link_next = -1;
                 ledge->flags = 0;
             }
         }
         return 1;
     }
 }
-extern "C" void StartBallooning(GAMEOBJECT *, i32);
 
 extern "C" struct AIPATHCNXCONTROLLER_s *AIPathCnxControllerCreate(AI_CONTROL_SYSTEM *, AISYS *, AIPATH *, char *, char *, i32, char *, i32,
                                                                    i32);

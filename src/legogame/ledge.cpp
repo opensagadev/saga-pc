@@ -191,7 +191,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             }
             return;
         }
-        if (object->unknown_281 & GROUND_NEAR) {
+        if (object->ground_flags & GROUND_NEAR) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
@@ -202,20 +202,20 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             f32 speed;
             if (push > NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9f] != NULL) {
-                    object->player.unknown_7aa = ACTION_LEDGE_RIGHT;
+                    object->player.context_animation = ACTION_LEDGE_RIGHT;
                     speed = AnimSpeed(object->character_model, ACTION_LEDGE_RIGHT);
                 } else {
                     speed = 0.5f;
                 }
             } else if (push < -NuTrigTable[0x3555]) {
                 if (object->character_model->model_data_b[0x9e] != NULL) {
-                    object->player.unknown_7aa = ACTION_LEDGE_LEFT;
+                    object->player.context_animation = ACTION_LEDGE_LEFT;
                     speed = -AnimSpeed(object->character_model, ACTION_LEDGE_LEFT);
                 } else {
                     speed = -0.5f;
                 }
             } else {
-                object->player.unknown_7aa = ACTION_LEDGE_IDLE;
+                object->player.context_animation = ACTION_LEDGE_IDLE;
                 return;
             }
             if (speed == 0.0f) {
@@ -233,20 +233,20 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                             NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * (FRAMETIME * speed)};
             NuVecAdd(&position, &object->player.external_force, &offset);
             if (LedgeAttachPoint(world, &position, &minimum, &maximum, &angle) == NULL) {
-                object->player.unknown_7aa = ACTION_LEDGE_IDLE;
+                object->player.context_animation = ACTION_LEDGE_IDLE;
                 return;
             }
             LedgeSetAttachPosition(object, &position, angle + 0x8000);
             if (object->player.external_force.x == previous.x && object->player.external_force.y == previous.y &&
                 object->player.external_force.z == previous.z) {
-                object->player.unknown_7aa = ACTION_LEDGE_IDLE;
+                object->player.context_animation = ACTION_LEDGE_IDLE;
             }
             return;
         }
-        object->player.unknown_7aa = ACTION_LEDGE_IDLE;
+        object->player.context_animation = ACTION_LEDGE_IDLE;
         return;
     }
-    if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f)) {
+    if (object->ground_flags != 0 || !(object->velocity.y <= 0.0f)) {
         return;
     }
 
@@ -272,7 +272,7 @@ extern "C" void Ledge_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
     object->player.character_context = CHARACTER_CONTEXT_LEDGE;
-    object->player.unknown_7aa = ACTION_LEDGE_IDLE;
+    object->player.context_animation = ACTION_LEDGE_IDLE;
     object->velocity = v000;
     LedgeSetAttachPosition(object, &position, angle + 0x8000);
 }
@@ -343,11 +343,11 @@ extern "C" {
                 world->ledges[i].y_rotation = EdFileReadShort();
                 world->ledges[i].type_code = EdFileReadChar();
                 if (version >= 2) {
-                    world->ledges[i].unknown_1c = EdFileReadShort();
-                    world->ledges[i].unknown_1e = EdFileReadShort();
+                    world->ledges[i].link_previous = EdFileReadShort();
+                    world->ledges[i].link_next = EdFileReadShort();
                 } else {
-                    world->ledges[i].unknown_1c = -1;
-                    world->ledges[i].unknown_1e = -1;
+                    world->ledges[i].link_previous = -1;
+                    world->ledges[i].link_next = -1;
                 }
                 if (version >= 3) {
                     world->ledges[i].flags = EdFileReadUnsignedChar();

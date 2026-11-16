@@ -123,7 +123,6 @@ void MenuDrawMissions(MENU *menu) {
     i32 select1;
     i32 back1;
     i32 status1;
-    (void)menu;
     if (MenuStopDraw) {
         return;
     }
@@ -209,7 +208,6 @@ void MenuDrawEndMission(MENU *menu) {
     char text[32];
     i32 index;
     f32 remaining;
-    (void)menu;
     if (MenuStopDraw != 0) {
         return;
     }
@@ -262,8 +260,8 @@ void CheckMissionEnd(MISSIONSYS *system) {
     GAMEOBJECT *candidate;
     u64 mask;
     i32 index;
-    target = FindGameObject(((MISSION_END_DATA_VIEW *)system->active_mission)->find_character, 0, 0, 1, 0);
-    if (((MISSION_END_SYSTEM_VIEW *)system)->elapsed_time < 3.0f) {
+    target = FindGameObject(system->active_mission->find_character, 0, 0, 1, 0);
+    if (system->timer.time_elapsed < 3.0f) {
         return;
     }
     if (GetMenuID() == MENU_END_MISSION) {
@@ -316,7 +314,6 @@ void MenuUpdateMissions(MENU *menu) {
     for (player = 0; player < 2; ++player) {
         GAMEPAD_INIT_RECORD *pad;
         u32 pressed;
-        u32 directions;
         if (start != 0 || cancel != 0) {
             break;
         }

@@ -425,7 +425,7 @@ address,symbol,size,ctype
 0x428b20,?InitOptionsSaveDefaults@@YAXPAUoptionssave_s@@@Z,81,
 0x428b80,?MakeSaveHash@@YAHXZ,8,
 0x428b90,_InitGameBeforeConfig,466,
-0x00428d70,?GoThroughDoor_ExtraCode@@YAXPAUWORLDINFO_s@@PAUgame_door_callback_s@@@Z,176,
+0x00428d70,?GoThroughDoor_ExtraCode@@YAXPAUWORLDINFO_s@@PAUDOOR_s@@@Z,176,
 0x00428e20,?CanMagnetClimb_Game@@YAHPAUgameobject_s@@@Z,29,
 0x00428e40,?CanPushObstacles_Game@@YAIPAUgameobject_s@@@Z,38,
 0x00428e70,?CanSuperCarry_Game@@YAIPAUgameobject_s@@@Z,38,
@@ -2419,7 +2419,7 @@ address,symbol,size,ctype
 0x4d0800,_TightRopeInitRecord,99,
 0x004d0870,_TightRopes_Reset,112,"void __cdecl(WORLDINFO *, void *, TIGHTROPE_PROGRESS *)"
 0x4d08e0,_TightRope_FindNearest,179,
-0x4d09a0,_TightRope_InRange,477,"TIGHTROPE_MOTION * __cdecl(GAMEOBJECT *, WORLDINFO *, NUVEC *)"
+0x4d09a0,_TightRope_InRange,477,"TIGHTROPE_s * __cdecl(GAMEOBJECT *, WORLDINFO *, NUVEC *)"
 0x4d0b80,_TightRopes_Draw,1069,"void __cdecl(WORLDINFO *, void *, f32)"
 0x004d0fb0,_TightRope_Activate,22,"void __cdecl(GIZMO *, i32)"
 0x004d0fd0,_TightRope_SetVisibility,22,"void __cdecl(GIZMO *, i32)"
@@ -2433,7 +2433,7 @@ address,symbol,size,ctype
 0x004d10f0,_TightRopes_ClearProgress,22,"void __cdecl(void *, TIGHTROPE_PROGRESS *)"
 0x004d1110,_TightRopes_StoreProgress,127,"void __cdecl(WORLDINFO *, void *, TIGHTROPE_PROGRESS *)"
 0x004d1190,_TightRopes_RegisterGizmo,268,ADDGIZMOTYPE *__cdecl(i32)
-0x4d12a0,?TightRopeSetPosition@@YAHPAUTIGHTROPE_MOTION@@PAUnuvec_s@@PAUgameobject_s@@@Z,183,
+0x4d12a0,?TightRopeSetPosition@@YAHPAUTIGHTROPE_s@@PAUnuvec_s@@PAUgameobject_s@@@Z,183,
 0x4d1360,?TightRope_MoveUpdate@@YAHPAUgameobject_s@@H@Z,422,
 0x4d1510,?TightRope_Attach@@YAHPAUgameobject_s@@PAUWORLDINFO_s@@@Z,614,
 0x4d1780,_TightRope_SnapTo,278,
@@ -9656,9 +9656,9 @@ address,symbol,size,ctype
 0x00618180,?eduiHSVToRGB@@YAXMMMAAM00@Z,328,"private HSV conversion; three f32 inputs and three RGB output references; no original linkage claim"
 0x6182d0,_fun_006182d0,17,
 0x6182f0,_fun_006182f0,20,
-0x618310,?EduiPrintAlignedText@@YAXPAXHHHPADZZ,197,"void(void *, i32, i32, i32, char *, ...)"
+0x618310,?EduiPrintAlignedText@@YAXPAUvufnt_s@@HHHPADZZ,197,"void(VUFNT *, i32, i32, i32, char *, ...)"
 0x6183e0,_EduiFntPrintScaled,57,
-0x00618420,?EduiPrintClippedText@@YAXPAXHHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
+0x00618420,?EduiPrintClippedText@@YAXPAUvufnt_s@@HHHHHPADZZ,290,private EDI font and ECX x; stack y/alignment/clip_x/clip_width/format and varargs
 0x618550,_eduiFntPrintClipEx,365,
 0x6186c0,_fun_006186c0,40,
 0x6186f0,_fun_006186f0,40,
@@ -20994,9 +20994,9 @@ address,symbol,size,ctype
 0x75f2b4,??_C@_06FMBNCPDL@Cancel?$AA@,7,char[7]
 0x75f2bc,??_C@_02GIPFHKNO@OK?$AA@HMDOKFMK@,3,char[3]
 0x75f2bc,??_C@_02GIPFHKNO@OK?$AA@,3,char[3]
-0x75f2c0,_dat_0075f2c0,3,const char[3]
+0x75f2c0,_NoText,3,const char[3]
 0x75f2c0,??_C@_02JINPPBEP@No?$AA@,3,const char [3]
-0x75f2c4,_dat_0075f2c4,4,const char[4]
+0x75f2c4,_YesText,4,const char[4]
 0x75f2c4,??_C@_03CCLAEDDF@Yes?$AA@,4,const char [4]
 0x0075f2d4,??_C@_05HFOBKMIO@Dansk?$AA@,6,char[6]
 0x0075f2dc,??_C@_08BFECEPM@Espa?C?$LBol?$AA@,9,char[9]

@@ -262,6 +262,11 @@
    "kind": "function"
   },
   {
+   "unit": "src/editor/edlevelall.cpp",
+   "symbol": "?Self@ClassObject@@QAEAAU1@XZ",
+   "kind": "function"
+  },
+  {
    "unit": "src/gamelib/net/NetworkObjectManager.cpp",
    "symbol": "?Write@NETMESSAGE@@QAEXPBXI@Z",
    "kind": "function"

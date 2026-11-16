@@ -9,11 +9,9 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 #include <stdio.h>
+#include "legoapi/ai/game/starwars_gameai.h"
 
 /* Native PC startup and callback providers; insert in gameai.c before GameAISysSetGame. */
-
-i32 StarWars_PreparingForSpecialMove(AIPACKET *, APIOBJECT *, i32);
-i32 StarWars_MidSpecialMove(AISYS *, AIPACKET *, APIOBJECT *);
 
 AI_CHARACTER_NAME LevelCharacterNameFn = 0;
 AI_CHARACTER_NAME SpecialRouteCharacterNameFn = 0;

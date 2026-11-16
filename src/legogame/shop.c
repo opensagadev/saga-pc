@@ -212,13 +212,7 @@ extern char ShopUserCode[6];
  * Movement mode is 1=left, 2=right. */
 extern i32 ShopMoveItems;
 extern i32 ShopSubMoveSfxLock;
-extern i32 HubForceShopSave;
 extern f32 ShopPurchasePulseDuration;
-#define SHOP_SLIDE_SLOT(i, j)                                                                                                              \
-    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));                                                                 \
-    positions[i].x = SubShelfPos[i].x + (SubShelfPos[j].x - SubShelfPos[i].x) * t;                                                         \
-    positions[i].y = SubShelfPos[i].y + (SubShelfPos[j].y - SubShelfPos[i].y) * t;                                                         \
-    positions[i].z = SubShelfPos[i].z + (SubShelfPos[j].z - SubShelfPos[i].z) * t;
 extern AREA_DATA *ANEWHOPE_ADATA;
 extern i32 ShopCodeCharacter;
 extern i32 ShopCodeValid;
@@ -305,7 +299,7 @@ static void NuMtxRotateZInline(NUMTX *m, i32 a) {
 /* Same-unit helper taking EAX; includes the vehicle exception. */
 static i32 Shop_CharacterUnlocked(i32 character_id) {
     if (character_id == dat_007f17d4) {
-        return ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0;
+        return Game.bolt_unlocked != 0;
     }
     return CollectIDUnlocked(character_id) != 0;
 }
@@ -432,7 +426,7 @@ void LoadShelfSplines(void) {
 void InitExtraList(void) {
     i32 i;
     i32 word;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     for (i = 0; i < 44; ++i) {
         NuStrCpy(ExtraItems[i].special_name, ExtrasCheats[i].extra_name);
         NuSpecialFind(WORLD->current_gscn, &ExtraItems[i].special, ExtraItems[i].special_name, 1);
@@ -494,7 +488,7 @@ void InitShop(WORLDINFO *world) {
     i32 i;
     i32 code_count;
     i32 price;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     CharItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 100 * sizeof(shopitem_s));
     HintItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
     ExtraItems = GameBufferAlloc(&world->giz_buffer, &world->buffer_end, 64 * sizeof(shopitem_s));
@@ -722,7 +716,7 @@ i32 CheckCash(shopitem_s *items, i32 item) {
 f32 ShopPurchasePulseDuration = 0.35f;
 
 i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     u32 *bits = NULL;
     if (items[index].type == SHOP_SHELF_HINTS) {
         bits = save->hint_purchased_bits;
@@ -751,7 +745,7 @@ i32 BuyShopItem(shopitem_s *items, i32 index, i32 charge) {
 }
 
 i32 SelectShopItem(shopitem_s *items, i32 index) {
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     HINT *hint;
     i32 id;
     i32 i;
@@ -910,12 +904,30 @@ i32 MoveSubItemsRight(i32 *ids, NUVEC *positions, i32 count) {
     reverse_phase = 1.0f - t;
     angle = (i32)(t * 32768.0f + 16384.0f);
     t = 1.0f - (NuTrigTable[(angle >> 1) & 0x7fff] + 1.0f) * 0.5f;
-    SHOP_SLIDE_SLOT(1, 0)
-    SHOP_SLIDE_SLOT(2, 1)
-    SHOP_SLIDE_SLOT(3, 2)
-    SHOP_SLIDE_SLOT(4, 3)
-    SHOP_SLIDE_SLOT(5, 4)
-    SHOP_SLIDE_SLOT(6, 5)
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[1].x = SubShelfPos[1].x + (SubShelfPos[0].x - SubShelfPos[1].x) * t;
+    positions[1].y = SubShelfPos[1].y + (SubShelfPos[0].y - SubShelfPos[1].y) * t;
+    positions[1].z = SubShelfPos[1].z + (SubShelfPos[0].z - SubShelfPos[1].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[2].x = SubShelfPos[2].x + (SubShelfPos[1].x - SubShelfPos[2].x) * t;
+    positions[2].y = SubShelfPos[2].y + (SubShelfPos[1].y - SubShelfPos[2].y) * t;
+    positions[2].z = SubShelfPos[2].z + (SubShelfPos[1].z - SubShelfPos[2].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[3].x = SubShelfPos[3].x + (SubShelfPos[2].x - SubShelfPos[3].x) * t;
+    positions[3].y = SubShelfPos[3].y + (SubShelfPos[2].y - SubShelfPos[3].y) * t;
+    positions[3].z = SubShelfPos[3].z + (SubShelfPos[2].z - SubShelfPos[3].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[4].x = SubShelfPos[4].x + (SubShelfPos[3].x - SubShelfPos[4].x) * t;
+    positions[4].y = SubShelfPos[4].y + (SubShelfPos[3].y - SubShelfPos[4].y) * t;
+    positions[4].z = SubShelfPos[4].z + (SubShelfPos[3].z - SubShelfPos[4].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[5].x = SubShelfPos[5].x + (SubShelfPos[4].x - SubShelfPos[5].x) * t;
+    positions[5].y = SubShelfPos[5].y + (SubShelfPos[4].y - SubShelfPos[5].y) * t;
+    positions[5].z = SubShelfPos[5].z + (SubShelfPos[4].z - SubShelfPos[5].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[6].x = SubShelfPos[6].x + (SubShelfPos[5].x - SubShelfPos[6].x) * t;
+    positions[6].y = SubShelfPos[6].y + (SubShelfPos[5].y - SubShelfPos[6].y) * t;
+    positions[6].z = SubShelfPos[6].z + (SubShelfPos[5].z - SubShelfPos[6].z) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale3 = scalepicked + (scalenorm - scalepicked) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
@@ -973,12 +985,30 @@ i32 MoveSubItemsLeft(i32 *ids, NUVEC *positions, i32 count) {
     reverse_phase = 1.0f - t;
     angle = (i32)(t * 32768.0f + 16384.0f);
     t = 1.0f - (NuTrigTable[(angle >> 1) & 0x7fff] + 1.0f) * 0.5f;
-    SHOP_SLIDE_SLOT(5, 6)
-    SHOP_SLIDE_SLOT(4, 5)
-    SHOP_SLIDE_SLOT(3, 4)
-    SHOP_SLIDE_SLOT(2, 3)
-    SHOP_SLIDE_SLOT(1, 2)
-    SHOP_SLIDE_SLOT(0, 1)
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[5].x = SubShelfPos[5].x + (SubShelfPos[6].x - SubShelfPos[5].x) * t;
+    positions[5].y = SubShelfPos[5].y + (SubShelfPos[6].y - SubShelfPos[5].y) * t;
+    positions[5].z = SubShelfPos[5].z + (SubShelfPos[6].z - SubShelfPos[5].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[4].x = SubShelfPos[4].x + (SubShelfPos[5].x - SubShelfPos[4].x) * t;
+    positions[4].y = SubShelfPos[4].y + (SubShelfPos[5].y - SubShelfPos[4].y) * t;
+    positions[4].z = SubShelfPos[4].z + (SubShelfPos[5].z - SubShelfPos[4].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[3].x = SubShelfPos[3].x + (SubShelfPos[4].x - SubShelfPos[3].x) * t;
+    positions[3].y = SubShelfPos[3].y + (SubShelfPos[4].y - SubShelfPos[3].y) * t;
+    positions[3].z = SubShelfPos[3].z + (SubShelfPos[4].z - SubShelfPos[3].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[2].x = SubShelfPos[2].x + (SubShelfPos[3].x - SubShelfPos[2].x) * t;
+    positions[2].y = SubShelfPos[2].y + (SubShelfPos[3].y - SubShelfPos[2].y) * t;
+    positions[2].z = SubShelfPos[2].z + (SubShelfPos[3].z - SubShelfPos[2].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[1].x = SubShelfPos[1].x + (SubShelfPos[2].x - SubShelfPos[1].x) * t;
+    positions[1].y = SubShelfPos[1].y + (SubShelfPos[2].y - SubShelfPos[1].y) * t;
+    positions[1].z = SubShelfPos[1].z + (SubShelfPos[2].z - SubShelfPos[1].z) * t;
+    t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
+    positions[0].x = SubShelfPos[0].x + (SubShelfPos[1].x - SubShelfPos[0].x) * t;
+    positions[0].y = SubShelfPos[0].y + (SubShelfPos[1].y - SubShelfPos[0].y) * t;
+    positions[0].z = SubShelfPos[0].z + (SubShelfPos[1].z - SubShelfPos[0].z) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
     scale4 = scalenorm + (scalepicked - scalenorm) * t;
     t = (0.0f > ((t < 1.0f ? t : 1.0f)) ? 0.0f : ((t < 1.0f ? t : 1.0f)));
@@ -1048,7 +1078,6 @@ i32 SubItemMenu(void *menu) {
     f32 phase;
     f32 factor;
     i32 angle;
-    (void)menu;
     Shop_GetInput(&input);
     if (ShopHintDrawWait > 0.0f) {
         ShopHintDrawWait -= FRAMETIME;
@@ -1243,7 +1272,7 @@ i32 CodeMenu(void *menu) {
     i32 confirm = 0;
     i32 cancel = 0;
     SHOP_INPUT input;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     f32 factor;
     f32 phase;
     i32 i;
@@ -1251,7 +1280,6 @@ i32 CodeMenu(void *menu) {
     i8 area;
     char code[7];
     u32 crc;
-    (void)menu;
     Shop_GetInput(&input);
     if (ShopSlideTimer >= 0.0f) {
         ShopSlideTimer -= FRAMETIME;
@@ -1513,13 +1541,10 @@ static void Shop_DrawCharacter(shopitem_s *item, NUVEC *position, f32 scale_valu
 
         character_id = item->item_id;
         unavailable = 1;
-        if ((character_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) &&
-            item->unlocked == 1) {
+        if ((character_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) && item->unlocked == 1) {
             unavailable = 0;
         }
-        alpha = (character_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL)
-                    ? 1.0f
-                    : 0.5f;
+        alpha = (character_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(character_id) != NULL) ? 1.0f : 0.5f;
 
         scale.x = scale.y = scale.z = scale_value;
         NuMtxSetScale(&matrix, &scale);
@@ -1556,7 +1581,7 @@ void DrawItem(nuhspecial_s *special, NUVEC *position, float scale_value, float u
 
             scale.x = scale.y = scale.z = scale_value;
             NuMtxScaleVU0(&matrix, &scale);
-            *(NUVEC *)(&matrix.m30) = *position;
+            matrix.translation = *position;
             matrix.m31 += y_push;
             NuSpecialDrawAt(special, &matrix);
         }
@@ -1589,7 +1614,7 @@ static void Shop_DrawItem(shopitem_s *item, NUVEC *position, f32 scale_value, f3
     NuMtxSetRotateXYZVU0(&matrix, &rotation);
     scale.x = scale.y = scale.z = scale_value;
     NuMtxScaleVU0(&matrix, &scale);
-    *(NUVEC *)&matrix.m30 = *position;
+    matrix.translation = *position;
     matrix.m31 += ypush;
     if (opaque != 0) {
         NuSpecialDrawAt(&item->special, &matrix);
@@ -1695,7 +1720,7 @@ void DrawSubItems(void) {
     nuhspecial_s *blank;
     nuhspecial_s *film;
     LEVELDATA *level;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     if (ShopPurchasePulse > 0.0f) {
         bing = ShopPurchasePulse / ShopPurchasePulseDuration;
         ShopPurchasePulse -= FRAMETIME;
@@ -1943,8 +1968,7 @@ void DrawSubItemMenu2D(void) {
         if (items[ids[3]].unlocked == 1) {
             show_name = 1;
             buyable = 0;
-        } else if (items[ids[3]].item_id == dat_007f17d4 ? ((SHOP_SAVE_VIEW *)&Game)->bolt_unlocked != 0
-                                                         : CollectIDUnlocked(items[ids[3]].item_id) != 0) {
+        } else if (items[ids[3]].item_id == dat_007f17d4 ? Game.bolt_unlocked != 0 : CollectIDUnlocked(items[ids[3]].item_id) != 0) {
             buyable = show_name = 1;
         } else {
             scale = (f32)((f64)ShopLockedScale * (f64)0.7f);
@@ -2060,7 +2084,7 @@ void DrawShopPanel(void) {
 
 static i32 Shop_CanSelect(void) {
     shopitem_s *item;
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     i32 id;
     i32 index;
     switch (picked) {
@@ -2093,7 +2117,7 @@ static i32 Shop_CanSelect(void) {
 }
 
 void Shop_CollectAllCharacters(i32 mode) {
-    SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+    GAMESAVE *save = &Game;
     i32 i;
     if (mode != 0) {
         return;
@@ -2123,7 +2147,6 @@ i32 ItemMenu(void *menu) {
     f32 forward_factor;
     i32 old_angle;
     i32 forward_angle;
-    (void)menu;
     Shop_GetInput(&input);
     if (ShopSlideTimer >= 0.0f) {
         ShopSlideTimer -= FRAMETIME;
@@ -2308,7 +2331,7 @@ void DrawQuestion(NUVEC *position, f32 scale_value, f32 y_push) {
         ShopMtxSetIdentity(&matrix);
         scale.x = scale.y = scale.z = scale_value;
         NuMtxSetScale(&matrix, &scale);
-        *(NUVEC *)&matrix.m30 = *position;
+        matrix.translation = *position;
         matrix.m31 += y_push;
         NuSpecialDrawAt(&question, &matrix);
     }

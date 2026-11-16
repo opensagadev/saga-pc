@@ -33,7 +33,6 @@ i32 GizmoSys_SetBestBoltTarget(void *system, WORLDINFO *world, GAMEOBJECT *objec
     NUVEC target_position;
     NUVEC target_velocity;
     i32 i;
-    (void)world;
     if (registry != NULL && system != NULL && object != NULL && (ObjHitObj_Flags(object) & OBJHIT_HITS_GIZMOS) != 0) {
         registry = gizmotypes;
         type = registry->types;

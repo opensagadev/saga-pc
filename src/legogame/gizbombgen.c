@@ -145,7 +145,7 @@ static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PRO
             position.x = 0.0f;
             position.y = 0.0f;
             position.z = -2.0f;
-            NuVecRotateY(&position, &position, Player[index]->unknown_276);
+            NuVecRotateY(&position, &position, Player[index]->movement_angle);
             NuVecAdd(&position, &position, &Player[index]->collision_position);
             bomb = AddDynamicCreature((i16)id_DRAGBOMB, &position, 0, "dragbomb", NULL, NULL, 0, NULL, NULL, 0, 0);
         }
@@ -166,7 +166,6 @@ void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_tim
     u16 model;
     GAMEOBJECT *player;
     CABLE_s *cable;
-    (void)delta_time;
     if (system != NULL) {
         GIZBOMBGEN_s *generator;
         i32 index;
@@ -237,7 +236,6 @@ i32 GizBombGens_GetMaxGizmos(void *world_ptr) {
 void GizBombGens_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
     GIZBOMBGENSYS_s *s = data;
     i32 i;
-    (void)world;
     if (s == NULL) {
         return;
     }
@@ -256,8 +254,6 @@ char *GizmoBombGen_GetGizmoName(GIZMO *gizmo) {
 }
 
 i32 GizmoBombGen_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
-    (void)output;
-    (void)mode;
     return gizmo->bomb_generator->flags & GIZBOMBGEN_FLAG_ACTIVE;
 }
 

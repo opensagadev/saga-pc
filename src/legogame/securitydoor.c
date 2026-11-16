@@ -383,7 +383,7 @@ static void SecurityDoorStart(GAMEOBJECT *object, SECURITY_DOOR_RECORD *door, i3
     object->player.context_timer = 0.0f;
     object->player.character_context = CHARACTER_CONTEXT_SECURITY;
     object->player.grapple = door;
-    object->player.unknown_7aa = ACTION_SECURITY;
+    object->player.context_animation = ACTION_SECURITY;
     object->player.context_duration = AnimDuration((i16)object->id, 0xad, 0.0f, 0.0f, 1);
     if (object->player.context_duration <= 0.0f) {
         object->player.context_duration = 1.0f;
@@ -401,8 +401,8 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 *playing = NULL;
     if (object->player.character_context == CHARACTER_CONTEXT_SECURITY) {
         f32 elapsed;
-        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
-            playing = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+        if (object->character_model->action_animations[object->player.context_animation] != NULL) {
+            playing = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
             if (playing == NULL) {
                 return;
             }
@@ -419,7 +419,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if (playing == NULL) {
                 return;
             }
-            frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+            frame = AnimListFrame(object->character_model, object->player.context_animation, 0);
             if (!(frame >= 1.0f && *playing >= frame)) {
                 return;
             }
@@ -432,7 +432,7 @@ void SecurityDoor_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         return;
     }
     if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_BYPASS_SECURITY) == 0 ||
-        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || object->unknown_281 == 0 || ObjLandReady(object) == 0) {
+        (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 || object->ground_flags == 0 || ObjLandReady(object) == 0) {
         return;
     }
     {

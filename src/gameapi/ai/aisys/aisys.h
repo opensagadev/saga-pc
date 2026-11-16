@@ -305,7 +305,8 @@ typedef struct AIPATHSPECIALROUTE { // size 0x8
 
 typedef struct AIPATHSYS {              // size 0x10
     u8 path_count;                      // 0x0
-    u8 unknown_01[3];                   // 0x1
+    u8 pad_01;                          // 0x1
+    u16 special_route_count;            // 0x2
     AIPATH **paths;                     // 0x4
     AIPATH *active_path;                // 0x8
     AIPATHSPECIALROUTE *special_routes; // 0xc
@@ -329,8 +330,18 @@ typedef struct AIANTINODE {      // size 0x58
     u8 type;                     // 0x4a
     u8 has_special;              // 0x4b
     u8 unknown_4c_b[0x4];        // 0x4c
-    u8 special_type;             // 0x50
-    u8 unknown_51[0x7];          // 0x51
+
+    union { // size 0x8
+
+        struct {                // size 0x8
+            u8 special_type;    // 0x50
+            u8 unknown_51[0x7]; // 0x51
+        };
+
+        i64 object_mask; /* the grabber's single-frame node: the objects it keeps away */
+
+        u32 excluded_character_types[2]; /* one bit per object id */
+    }; // 0x50
 } AIANTINODE;
 #ifdef __cplusplus
 extern "C" {
@@ -401,17 +412,14 @@ typedef struct AIGROUP {           // size 0x134
     f32 max_speed; // 0x130
 } AIGROUP;
 
-struct AISYS {              // size 0x1394
+struct AISYS {              // size 0x1398
     void *storage;          // 0x0000
     VARIPTR storage_end;    // 0x0004
     VARIPTR storage_cursor; // 0x0008
     i32 storage_size;       // 0x000c
     AIPATHSYS *path_sys;    // 0x0010
 
-    union { // size 0x4
-        u8 unknown_14[4];
-        i32 creature_count;
-    }; // 0x0014
+    i32 creature_count; // 0x0014
 
     AICREATURE *creatures;      // 0x0018
     NULISTHDR scripts;          // 0x001c
@@ -432,6 +440,7 @@ struct AISYS {              // size 0x1394
     void *game_sys;             // 0x1388
     struct APIOBJECT *player_1; // 0x138c
     struct APIOBJECT *player_2; // 0x1390
+    struct NUGSCN_s *scene;     // 0x1394
 };
 
 typedef void (*AI_SCRIPT_FIRST_ACTION)(AISYS *, struct AIPACKET *, struct AISCRIPTPROCESS *);
@@ -580,8 +589,8 @@ extern "C" {
 #endif
     void locatorEditor_cbCancelSelectLocatorSet(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
     void pathEditor_cbCancelSelectMenu(struct eduimenu_s *arg0, struct eduimenu_s *arg1);
-    extern const char dat_0075f2c0[3];
-    extern const char dat_0075f2c4[4];
+    extern const char NoText[3];
+    extern const char YesText[4];
 #ifdef __cplusplus
 }
 #endif

@@ -45,51 +45,6 @@ typedef struct FILE_DIRECTORY_HOST_ENTRY { // size 0x144
     char name[MAX_PATH];                   // 0x040
 } FILE_DIRECTORY_HOST_ENTRY;
 
-typedef struct part_runtime_type_s { // size 0x178
-    char name[16];                   // 0x000
-    char object_names[8][16];        // 0x010
-    i16 effect_ids[8];               // 0x090
-    i8 effect_pages[8];              // 0x0a0
-    i8 scene_indices[8];             // 0x0a8
-    i8 variant_count;                // 0x0b0
-    u8 variant_mode;                 // 0x0b1
-    i8 page;                         // 0x0b2
-    u8 unknown_b3;                   // 0x0b3
-    f32 particle_scale;              // 0x0b4
-    f32 effect_scale;                // 0x0b8
-    f32 lifetime;                    // 0x0bc
-    f32 lifetime_random;             // 0x0c0
-    f32 speed;                       // 0x0c4
-    f32 gravity;                     // 0x0c8
-    f32 emission_rate;               // 0x0cc
-    f32 bounce;                      // 0x0d0
-    NUVEC position_random;           // 0x0d4
-    NUVEC velocity_random;           // 0x0e0
-    f32 emission_period;             // 0x0ec
-    f32 emission_period_random;      // 0x0f0
-    f32 emission_pause;              // 0x0f4
-    f32 emission_pause_random;       // 0x0f8
-    i32 rotation[3];                 // 0x0fc
-    i32 rotation_random[3];          // 0x108
-    u32 flags;                       // 0x114
-    i32 trail_effects[2];            // 0x118
-    f32 trail_rates[2];              // 0x120
-    i32 attached_effect;             // 0x128
-    i32 impact_effect;               // 0x12c
-    i32 impact_part;                 // 0x130
-    char impact_part_name[16];       // 0x134
-    i32 kill_effect;                 // 0x144
-    i32 sounds[4];                   // 0x148
-    u8 sound_modes[4];               // 0x158
-    f32 maximum_distance;            // 0x15c
-    f32 unknown_160;                 // 0x160
-    f32 unknown_164;                 // 0x164
-    f32 unknown_168;                 // 0x168
-    f32 last_used_time;              // 0x16c
-    f32 scale;                       // 0x170
-    u32 unknown_174;                 // 0x174
-} PART_RUNTIME_TYPE;
-
 typedef struct FILE_DIRECTORY_TIME { // size 0x8
     i8 second;                       // 0x0
     i8 minute;                       // 0x1

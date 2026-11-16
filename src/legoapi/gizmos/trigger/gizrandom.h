@@ -32,6 +32,7 @@ extern "C" {
     i32 GizRandom_GetOutput(GIZMO *gizmo, i32 output_index, i32 arg2);
     char *GizRandom_GetOutputName(GIZMO *arg0, i32 arg1);
     void *GizRandom_ReserveBufferSpace(void *world_ptr);
+    ADDGIZMOTYPE *GizRandom_RegisterGizmo(i32);
 #ifdef __cplusplus
 }
 #endif

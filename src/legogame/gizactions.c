@@ -12,6 +12,7 @@
 #include "legoapi/gizmo/base/gizflow.h"
 #include "legoapi/gizmo/base/gizmessage.h"
 #include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/gizmos/object/gizobstacles.h"
@@ -35,23 +36,18 @@
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
+#include "legoapi/ai/core/aisysall.h"
+#include "legoapi/ai/game/creature.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
 
-void FollowAPIObject(APIOBJECT *, APIOBJECT *, i32, f32);
 i32 turret_gizmotype_id;
 
 i32 obstacle_gizmotype_id;
 
-typedef struct ACTIVATE_CHAR_BUILDIT_VIEW {
-    u8 unknown_00[0x34];
-    NUVEC position;
-    u8 unknown_40[0x34];
-    u16 angle;
-} ACTIVATE_CHAR_BUILDIT_VIEW;
-
 extern i32 gizbuildit_gizmotype_id;
 GAMEOBJECT *ActivateCharacter(char *, NUVEC *, i32);
 void DeactivateCharacter(char *);
-void GizBuildIt_KillParts(GIZBUILDIT_s *);
+void GizBuildIt_KillParts(GIZBUILDIT *);
 
 void GizAction_ActivateEffect(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     char *name;
@@ -220,12 +216,11 @@ void GizActions_ActivateGizmo(GIZFLOW *flow, FLOWBOX *unused, char **params, i32
 void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 count) {
     char *name = NULL;
     i32 active = 1;
-    ACTIVATE_CHAR_BUILDIT_VIEW *buildit = NULL;
+    GIZBUILDIT *buildit = NULL;
     i32 index = 0;
     WORLDINFO *world = WorldInfo_CurrentlyActive();
     GAMEOBJECT *player;
     AICREATURE *creature;
-    (void)unused;
     for (; index < count; ++index) {
         char *value = NuStrIStr(params[index], "name=");
         if (value != NULL) {
@@ -246,10 +241,10 @@ void GizActions_ActivateChar(GIZFLOW *flow, FLOWBOX *unused, char **params, i32 
         i32 angle = 0;
         if (buildit != NULL) {
             position = &buildit->position;
-            angle = buildit->angle;
+            angle = buildit->linked_rotation;
         }
         if (ActivateCharacter(name, position, angle) == NULL && buildit != NULL) {
-            GizBuildIt_KillParts((GIZBUILDIT_s *)buildit);
+            GizBuildIt_KillParts(buildit);
         }
     } else if (active == 0 && name != NULL) {
         player = Player[0];
@@ -727,8 +722,6 @@ void GizActions_HitBlowup(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32
     i8 gizmo_type = 0;
     char *name = NULL;
     i32 damage = 0;
-    (void)unused0;
-    (void)unused1;
     if (0 >= count) {
         return;
     }
@@ -776,7 +769,7 @@ static void GizActions_ActivateBelt(GIZFLOW *unused0, FLOWBOX *unused1, char **p
             active = 1;
         }
     }
-    WorldInfo_CurrentlyActive()->progress_flag_5174 = active;
+    WorldInfo_CurrentlyActive()->belt_active = active;
 }
 
 void GizActions_EnableSock(GIZFLOW *unused0, FLOWBOX *unused1, char **params, i32 count) {

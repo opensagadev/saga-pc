@@ -21,8 +21,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-extern "C" void LostTempleC_Reset(WORLDINFO *);
-extern "C" void LostTempleC_Update(WORLDINFO *);
 /* Draw3D on PC has no sign/episode scene branch. */
 struct GIZBUILDIT;
 /* Takes action, player0 and player1; the last two are char* values tested

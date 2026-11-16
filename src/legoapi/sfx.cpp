@@ -26,12 +26,6 @@ extern "C" void PlaySfxByIdAndSetPitch(i32 sfx_id, NUVEC *position, f32 pitch) {
     PlaySfxByIdEx(sfx_id, position, 1.0f, pitch);
 }
 
-extern "C" {
-    typedef struct footstep_audio_callbacks_s {      // size 0x4
-        i32 (*override_footstep)(GAMEOBJECT *, i32); // 0x0
-    } FOOTSTEP_AUDIO_CALLBACKS;
-}
-
 extern "C" i32 IsSfxLooping(i32 id) {
     if (id != -1) {
         return (SfxInfo[id].sample_id_flags >> 15) & 1;

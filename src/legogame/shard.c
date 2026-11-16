@@ -15,6 +15,7 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
+#include "legoapi/gizmos/traps/attracto.h"
 
 typedef struct shard_progress_recovered_s { // size 0x30
     u32 collected[4];                       // 0x00
@@ -23,22 +24,6 @@ typedef struct shard_progress_recovered_s { // size 0x30
 } SHARD_PROGRESS;
 
 extern char *Shard_OutputName;
-void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
-
-typedef struct SHARD_LOST_OWNER {
-    u8 unknown_00[0x3c];
-    u8 state_flags;
-    u8 unknown_3d[3];
-    f32 collection_time;
-    GAMEOBJECT *collector;
-    u8 unknown_48[0xc];
-} SHARD_LOST_OWNER;
-
-typedef struct WORLD_SHARDS_READER {
-    u8 unknown_0000[0x5090];
-    SHARD_LOST_OWNER *shards;
-    i32 shard_count;
-} WORLD_SHARDS_READER;
 
 i32 Shards_Load(WORLDINFO *world, void *unused) {
     i32 index;
@@ -172,7 +157,7 @@ void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time
             shard->current_position.z = (f64)shard->current_position.z + (f64)shard->collection_velocity.z * (f64)FRAMETIME;
             if (NuVecDistSqr(&shard->current_position, &target, NULL) < ForcePushApproachOuterSquare) {
                 shard->state_flags = (shard->state_flags & ~SHARD_COLLECTING) | SHARD_COLLECTED;
-                ++shard->collector->unknown_1062;
+                ++shard->collector->attract_count;
                 NewBuzzFrames(shard->collector->player.pad->bound_pad, 1, 0);
             }
         } else if ((shard->state_flags & SHARD_RANDOM_OFFSET) != 0) {
@@ -380,13 +365,12 @@ void Shard_Collect(SHARD_s *shard, GAMEOBJECT *object) {
     shard->tumble_x = qrand() < 0x8000;
 }
 
-void Shards_HandleLostObj(WORLDINFO *opaque_world, GAMEOBJECT *object) {
-    WORLD_SHARDS_READER *world = (WORLD_SHARDS_READER *)opaque_world;
-    SHARD_LOST_OWNER *shard = world->shards;
+void Shards_HandleLostObj(WORLDINFO *world, GAMEOBJECT *object) {
+    SHARD_s *shard = world->shards;
     i32 i;
     for (i = 0; i < world->shard_count; ++i, ++shard) {
-        if (!(shard->state_flags & SHARD_COLLECTED) && (shard->state_flags & 4) && shard->collector == object) {
-            shard->state_flags &= (u8)~4;
+        if (!(shard->state_flags & SHARD_COLLECTED) && shard->collecting && shard->collector == object) {
+            shard->collecting = 0;
             shard->collection_time = 0.0f;
             shard->collector = NULL;
         }

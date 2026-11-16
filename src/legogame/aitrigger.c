@@ -29,42 +29,7 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-typedef struct trigger_lever_s { // size 0x96
-    u8 unknown_000[0x94];        // 0x00
-    u16 flags;                   // 0x94
-} TRIGGER_LEVER;
-
-typedef struct trigger_spinner_s { // size 0xb0
-    u8 unknown_000[0x70];          // 0x00
-    f32 progress;                  // 0x70
-    u8 unknown_074[0x10];          // 0x74
-    u8 state_flags;                // 0x84
-    u8 unknown_085[4];             // 0x85
-    i8 room_index;                 // 0x89
-    u8 unknown_08a[0x22];          // 0x8a
-    u8 flags;                      // 0xac
-} TRIGGER_SPINNER;
-
-typedef struct trigger_set_s { // size 0x214
-    FLOWBOX *flowbox;          // 0x000
-    GIZMO *gizmos[8];          // 0x004
-    AILOCATOR locators[8];     // 0x024
-    i8 trigger_indices[8];     // 0x204
-    u8 trigger_count;          // 0x20c
-    u8 unknown_20d;            // 0x20d
-    u16 occupied;              // 0x20e
-    u16 flags;                 // 0x210
-    u8 unknown_212[2];         // 0x212
-} TRIGGER_SET;
-
-typedef struct trigger_system_s { // size 0x4304
-    TRIGGER_SET sets[32];         // 0x0000
-    i8 assigned_set[64];          // 0x4280
-    i8 assigned_trigger[64];      // 0x42c0
-    i32 unknown_4300;             // 0x4300
-} TRIGGER_SYSTEM;
-
-void AITriggerSetSysReset(TRIGGER_SYSTEM *system) {
+void AITriggerSetSysReset(AITRIGGERSETSYS_s *system) {
     i32 index;
     if (system == NULL) {
         return;
@@ -83,7 +48,7 @@ AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX *box) {
     i32 index;
     if (system != NULL) {
         for (index = 0; index < 32; ++index) {
-            if (!(system->sets[index].flags & 1)) {
+            if (!(system->sets[index].flags_word & 1)) {
                 system->sets[index].flags_word |= 1;
                 system->sets[index].flowbox = box;
                 return &system->sets[index];
@@ -96,7 +61,7 @@ AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *system, FLOWBOX *box) {
 i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
     char *name;
     struct AILOCATOR *locator = NULL;
-    if (system == NULL || set == NULL || !(set->flags & 1) || set->trigger_count >= 8 || gizmo == NULL) {
+    if (system == NULL || set == NULL || !(set->flags_word & 1) || set->trigger_count >= 8 || gizmo == NULL) {
         return 0;
     }
 
@@ -177,7 +142,7 @@ i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == grapple_gizmotype_id) {
-        GRAPPLE_DYNAMIC *grapple = gizmo->object;
+        GRAPPLE_MOTION *grapple = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;
@@ -203,8 +168,8 @@ i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
 
 static i32 TriggerGizmoAvailable(GIZMO *gizmo) {
     if (gizmo->type_id == lever_gizmotype_id) {
-        TRIGGER_LEVER *lever = gizmo->object;
-        if ((lever->flags & 0x80) && !(lever->flags & 2)) {
+        GIZMO_LEVER *lever = gizmo->object;
+        if ((lever->flags & LEVER_FLAG_ENABLED) && !(lever->flags & LEVER_FLAG_BEING_PULLED)) {
             return 1;
         }
     } else if (gizmo->type_id == obstacle_gizmotype_id) {
@@ -213,7 +178,7 @@ static i32 TriggerGizmoAvailable(GIZMO *gizmo) {
             return 1;
         }
     } else if (gizmo->type_id == spinner_gizmotype_id) {
-        if (((TRIGGER_SPINNER *)gizmo->object)->room_index == -1) {
+        if (gizmo->spinner->room_index == -1) {
             return 1;
         }
     } else if (gizmo->type_id == force_gizmotype_id) {
@@ -234,9 +199,9 @@ i32 GameObjectUsingLever(GAMEOBJECT *object, void *lever) {
     return object->player.character_context == CHARACTER_CONTEXT_PULL_LEVER && object->player.grapple == lever;
 }
 
-void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
+void AITriggerSetSysProcess(AITRIGGERSETSYS_s *system) {
     u64 character_mask = 0;
-    TRIGGER_SET *set;
+    AITRIGGERSET_s *set;
     i32 set_index;
     i32 complete;
     i32 has_assignments;
@@ -251,7 +216,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
     }
     set = system->sets;
     for (set_index = 0; set_index < 32; ++set_index, ++set) {
-        if ((set->flags & 1) == 0) {
+        if ((set->flags_word & 1) == 0) {
             continue;
         }
         complete = 0;
@@ -267,7 +232,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
             gizmo = set->gizmos[index];
             if (gizmo != NULL) {
                 if (gizmo->type_id == lever_gizmotype_id) {
-                    TRIGGER_LEVER *lever = gizmo->object;
+                    GIZMO_LEVER *lever = gizmo->object;
                     if (player->player.character_context == CHARACTER_CONTEXT_PULL_LEVER && player->player.grapple == lever) {
                         set->occupied |= 1 << index;
                     } else if (player2 != NULL && player2->player.character_context == CHARACTER_CONTEXT_PULL_LEVER &&
@@ -307,7 +272,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                         }
                     }
                 } else if (gizmo->type_id == spinner_gizmotype_id) {
-                    TRIGGER_SPINNER *spinner = gizmo->object;
+                    GIZSPINNER_s *spinner = gizmo->spinner;
                     if ((spinner->flags & 6) != 0 || ((spinner->flags & GIZSPINNER_FLAG_SHADOW_MODE_ONLY) != 0 && ShadowMode == 0) ||
                         spinner->progress == 1.0f || (spinner->state_flags & SPINNER_STATE_HALTED) != 0) {
                         set->occupied &= ~(1 << index);
@@ -364,7 +329,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
             }
         }
         player_count = (player2 != NULL) + 1;
-        if ((set->occupied != 0 || (set->flags & 2) != 0) && complete == 0) {
+        if ((set->occupied != 0 || (set->flags_word & 2) != 0) && complete == 0) {
             if (has_assignments != 0 && set->occupied == 0) {
                 for (index = 0; index < set->trigger_count; ++index) {
                     if (set->trigger_indices[index] != -1 && Obj[set->trigger_indices[index]].active_trigger_set != set) {
@@ -464,7 +429,7 @@ void AITriggerSetSysProcess(TRIGGER_SYSTEM *system) {
                 }
             }
         }
-        set->flags &= ~2;
+        set->flags_word &= ~2;
     }
 }
 
@@ -498,8 +463,8 @@ void AITriggerSysAutoSetUp(WORLDINFO *world, AITRIGGERSETSYS_s *system) {
     }
 }
 
-void *AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
-    TRIGGER_SYSTEM *system = AISysBufferAlloc(buffer, end, sizeof(*system));
+AITRIGGERSETSYS_s *AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
+    AITRIGGERSETSYS_s *system = AISysBufferAlloc(buffer, end, sizeof(*system));
     AITriggerSetSysReset(system);
     return system;
 }
@@ -541,7 +506,6 @@ static void Attracto_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (attracto->visible && attracto->platform_id == -1) {
         NUMTX matrix;
         FindPlatInst(NuSpecialGetInstanceix(&WORLD->level_objects[72].special));
-        matrix = matrix;
         NuMtxSetIdentity(&matrix);
         NuMtxSetRotationY(&matrix, 0);
         NuMtxRotateY(&matrix, attracto->angle);

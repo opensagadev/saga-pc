@@ -10,20 +10,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    typedef struct trigger_system_s TRIGGER_SYSTEM;
     i32 GameObjectUsingLever(GAMEOBJECT *, void *);
-    void AITriggerSetSysProcess(TRIGGER_SYSTEM *);
+    void AITriggerSetSysProcess(AITRIGGERSETSYS_s *);
 #ifdef __cplusplus
 }
 #endif
-typedef struct trigger_system_s TRIGGER_SYSTEM;
 #ifdef __cplusplus
 extern "C" {
 #endif
     extern const char DeathStarEscapeBWindowClean[12];
     extern const char DeathStarEscapeBWasher2[9];
     extern const char DeathStarEscapeBWasher1[9];
-    void AITriggerSetSysReset(TRIGGER_SYSTEM *);
+    void AITriggerSetSysReset(AITRIGGERSETSYS_s *);
     AITRIGGERSET_s *AITriggerSetCreate(AITRIGGERSETSYS_s *, FLOWBOX *);
     void AITriggerSysAutoSetUp(WORLDINFO *, AITRIGGERSETSYS_s *);
 #ifdef __cplusplus

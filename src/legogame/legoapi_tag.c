@@ -36,21 +36,12 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
-
-#define TAG_CAN_TARGET(source, target)                                                                                                     \
-    ((target) != NULL && ((target)->flags_1fc_word & 1) != 0 && ((target)->flags_1fc_word & 0x1000) != 0 && (target) != (source) &&        \
-     (target)->dead == 0 && ((target)->flags_1fc_word & 0x80) == 0 && ((target)->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0)
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 /* A copy of the 33-DWORD script cohort (script processor plus takeover link), without extending the
    packet. Held as words so the copy is one block move and the local is not treated as a /GS buffer. */
 
-#define TAG_SCRIPT_STATE(object) (*(TAGSCRIPTSTATE *)&(object)->ai_packet.script_processor)
-
-/* Bitfield view of flags_1fc: bit 7 marks a player-controlled object, bit 8 an AI-driven one. */
-
-#define TAG_FLAGS(object) ((TAGFLAGS1FC *)&(object)->flags_1fc_word)
 /* Defined in render.c; an empty body in this unit would let the call be dropped. */
-void TakeOverReleaseDiagnostic(char *rider_name, char *object_name);
 
 i32 Tag_Mode = 2;
 
@@ -60,7 +51,7 @@ void Tag_SetMode(i32 mode) {
 
 i32 Tag_FindGameObject_CYCLICAL(GAMEOBJECT *object) {
     i32 remaining = HIGHGAMEOBJECT - 1;
-    i32 index = object->hostility_group;
+    i32 index = object->object_id;
     GAMEOBJECT *candidate;
     while (remaining > 0) {
         if (++index == HIGHGAMEOBJECT) {
@@ -100,7 +91,7 @@ static GAMEOBJECT *Tag_FindGameObject_TRANSFER(GAMEOBJECT *object) {
         }
         distance = NuVecDistSqr(&object->position, &candidate->position, &direction);
         if (distance < nearest_distance) {
-            NuVecRotateY(&direction, &direction, -object->unknown_276);
+            NuVecRotateY(&direction, &direction, -object->movement_angle);
             if (direction.z < 0.0f) {
                 nearest_distance = distance;
                 nearest = candidate;
@@ -131,7 +122,7 @@ static void SetRiderPos(GAMEOBJECT *object, NUVEC *position) {
         }
         object->pitch_angle = 0;
         object->roll_angle = 0;
-        object->unknown_276 = object->player.rider->facing_angle;
+        object->movement_angle = object->player.rider->facing_angle;
         object->facing_angle = object->player.rider->facing_angle;
         object->movement_facing_angle = object->player.rider->facing_angle;
     }
@@ -188,15 +179,14 @@ static void TakeOver_SetAction(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
         goto no_action;
     }
     if (rider->character_model->action_animations[action] != NULL) {
-        rider->player.unknown_7aa = (i16)action;
+        rider->player.context_animation = (i16)action;
         return;
     }
 no_action:
-    rider->player.unknown_7aa = ACTION_RIDE;
+    rider->player.context_animation = ACTION_RIDE;
 }
 
 i32 TakeOverYoda(GAMEOBJECT *rider, GAMEOBJECT *vehicle, i32 blend_camera, i32 unused) {
-    (void)unused;
     ReleaseForce(rider, 0);
     ReleaseBuildIt(rider, 0);
     ReleasePush(rider);
@@ -241,10 +231,10 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     model = rider->character_model;
     if (model->action_animations[6] != NULL) {
         ResetAnimPacket(&rider->anim_packet, -1);
-        rider->player.unknown_7aa = ACTION_JUMP;
+        rider->player.context_animation = ACTION_JUMP;
         rider->player.context_duration = AnimDuration((i16)rider->id, 6, 0.0f, 0.0f, 1);
     } else {
-        rider->player.unknown_7aa = ACTION_FALL;
+        rider->player.context_animation = ACTION_FALL;
         rider->player.context_duration = 0.5f;
     }
     if (vehicle->id == (u16)id_ATAT && WORLD->current_level == SPEEDERCHASEA_LDATA) {
@@ -254,7 +244,7 @@ void TakeOver2GetIn(GAMEOBJECT *rider, GAMEOBJECT *vehicle) {
     }
     rider->player.context_timer = 0.0f;
     rider->player.external_force = rider->position;
-    rider->player.takeover_start_angle = rider->unknown_276;
+    rider->player.takeover_start_angle = rider->movement_angle;
     rider->player.force_target = vehicle;
     rider->takeover_target = NULL;
     vehicle->takeover_target = NULL;
@@ -280,37 +270,36 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
     u32 saved_flags;
     u32 mask;
     void (*callback)(GAMEOBJECT *);
-    (void)unused;
     if (CUTSKIPLOCK == 0) {
         source_pad = source->player.pad;
         destination_pad = destination->player.pad;
-        source_da8 = source->player.unknown_da8;
+        source_da8 = source->player.keep_time;
         source_hp = source->current_hp;
         destination_hp = destination->current_hp;
-        source_player = TAG_FLAGS(source)->player;
-        destination_player = TAG_FLAGS(destination)->player;
+        source_player = source->player_controlled;
+        destination_player = destination->player_controlled;
         source_ai = 0;
         destination_ai = 0;
         if (takeover != 0) {
-            source_script = TAG_SCRIPT_STATE(source);
-            destination_script = TAG_SCRIPT_STATE(destination);
-            source_ai = TAG_FLAGS(source)->ai;
-            destination_ai = TAG_FLAGS(destination)->ai;
+            source_script = *(TAGSCRIPTSTATE *)&source->ai_packet.script_processor;
+            destination_script = *(TAGSCRIPTSTATE *)&destination->ai_packet.script_processor;
+            source_ai = source->ai_controlled;
+            destination_ai = destination->ai_controlled;
         }
         ResetForceGlow(&source->player);
         ResetForceGlow(&destination->player);
         destination->player.pad = source_pad;
         source->player.pad = destination_pad;
-        TAG_FLAGS(source)->player = destination_player;
-        TAG_FLAGS(destination)->player = source_player;
-        source->player.unknown_da8 = destination->player.unknown_da8;
-        destination->player.unknown_da8 = source_da8;
+        source->player_controlled = destination_player;
+        destination->player_controlled = source_player;
+        source->player.keep_time = destination->player.keep_time;
+        destination->player.keep_time = source_da8;
         pointer = source->player.coin_packet;
         source->player.coin_packet = destination->player.coin_packet;
         destination->player.coin_packet = pointer;
         player_index = source->player_index;
-        source->unknown_280 = destination->unknown_280;
-        destination->unknown_280 = player_index;
+        source->player_slot = destination->player_slot;
+        destination->player_slot = player_index;
         timer = source->player.powerup_time;
         source->player.powerup_time = destination->player.powerup_time;
         destination->player.powerup_time = timer;
@@ -353,31 +342,31 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
                 Player[source->player_index] = source;
                 if (source->player.rider == NULL) {
                     if (WORLD->current_level != VADERC_LDATA) {
-                        source->unknown_107e = DEFAULT_PLAYERHITPOINTS;
+                        source->max_hitpoints = DEFAULT_PLAYERHITPOINTS;
                     }
                 } else {
-                    source->unknown_107e = source->character_data->game_character->hitpoints;
+                    source->max_hitpoints = source->character_data->game_character->hitpoints;
                 }
             } else {
-                source->unknown_107e = source->character_data->game_character->hitpoints;
+                source->max_hitpoints = source->character_data->game_character->hitpoints;
             }
             if (destination->player_index != -1) {
                 Player[destination->player_index] = destination;
                 if (destination->player.rider == NULL) {
                     if (WORLD->current_level != VADERC_LDATA) {
-                        destination->unknown_107e = DEFAULT_PLAYERHITPOINTS;
+                        destination->max_hitpoints = DEFAULT_PLAYERHITPOINTS;
                     }
                 } else {
-                    destination->unknown_107e = destination->character_data->game_character->hitpoints;
+                    destination->max_hitpoints = destination->character_data->game_character->hitpoints;
                 }
             } else {
-                destination->unknown_107e = destination->character_data->game_character->hitpoints;
+                destination->max_hitpoints = destination->character_data->game_character->hitpoints;
             }
             destination->current_hp = (i8)source_hp;
-            if (destination->current_hp > destination->unknown_107e) {
-                destination->current_hp = (i8)destination->unknown_107e;
+            if (destination->current_hp > destination->max_hitpoints) {
+                destination->current_hp = (i8)destination->max_hitpoints;
             }
-            if (destination->current_hp == 0 && destination->unknown_107e > 0) {
+            if (destination->current_hp == 0 && destination->max_hitpoints > 0) {
                 destination->current_hp = 1;
             }
             if (WORLD->current_level == VADERC_LDATA || (source->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
@@ -385,7 +374,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             } else if ((source->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
                 source->current_hp = (i8)source->player.saved_hitpoints;
             } else {
-                source->current_hp = (i8)source->unknown_107e;
+                source->current_hp = (i8)source->max_hitpoints;
             }
         }
         destination->flags_ef0 &= ~0x180000u;
@@ -403,13 +392,13 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
                 AIScriptProcess(WORLD->ai_sys, (APIOBJECT *)destination, &destination->ai_packet, &destination->ai_packet.script_processor,
                                 FRAMETIME);
             }
-            TAG_SCRIPT_STATE(source) = destination_script;
-            TAG_SCRIPT_STATE(destination) = source_script;
+            *(TAGSCRIPTSTATE *)&source->ai_packet.script_processor = destination_script;
+            *(TAGSCRIPTSTATE *)&destination->ai_packet.script_processor = source_script;
             source->ai_packet.creature_set = source_script.fields.creature_set;
             destination->ai_packet.creature_set = destination_script.fields.creature_set;
             AICreatureResumeScript(source);
-            TAG_FLAGS(source)->ai = destination_ai;
-            TAG_FLAGS(destination)->ai = source_ai;
+            source->ai_controlled = destination_ai;
+            destination->ai_controlled = source_ai;
             ReleaseForce(source, 0);
             ReleaseBuildIt(source, 0);
             ReleasePush(source);
@@ -429,7 +418,7 @@ i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend
             if (blend_camera != 0) {
                 GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             }
-            if (destination->character_data->game_character->unknown_028 > 0.0f) {
+            if (destination->character_data->game_character->hover_height > 0.0f) {
                 destination->velocity.y -= (f64)source->character_data->game_character->jump_speed * 0.5;
             }
         }
@@ -443,10 +432,12 @@ i32 TagCharacter(GAMEOBJECT *source, GAMEOBJECT *target, i32 mode) {
     u32 source_active;
     u32 target_active;
     i32 result;
-    if (!TAG_CAN_TARGET(source, target)) {
+    if (!(target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0 && target != source &&
+          target->dead == 0 && (target->flags_1fc_word & 0x80) == 0 && (target->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0)) {
         for (index = 0; index < 8; ++index) {
             target = Player[index];
-            if (TAG_CAN_TARGET(source, target)) {
+            if ((target != NULL && (target->flags_1fc_word & 1) != 0 && (target->flags_1fc_word & 0x1000) != 0 && target != source &&
+                 target->dead == 0 && (target->flags_1fc_word & 0x80) == 0 && (target->player.tag_flags & APIOBJECT_TAG_DISABLED) == 0)) {
                 goto found;
             }
         }
@@ -605,7 +596,7 @@ tagged_result:
         if (Tag_Mode == 1 || Tag_Mode == 3) {
             Tag_NewTransfer(object, target);
         }
-        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && (target->unknown_280 == 0 || target->unknown_280 == 1)) {
+        if ((object->player_slot == 0 || object->player_slot == 1) && (target->player_slot == 0 || target->player_slot == 1)) {
             ResetTimer(&JoinInTimer, 0.0f);
         }
     }
@@ -627,7 +618,6 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
     u32 rider_flag;
     u32 object_flag;
     PLAYERCHARACTERCONFIG *character;
-    (void)unused;
     if (target->player.rider == NULL) {
         return;
     }
@@ -638,26 +628,26 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         rider = target->player.rider;
         object = target;
     }
-    rider_script = TAG_SCRIPT_STATE(rider);
-    object_script = TAG_SCRIPT_STATE(object);
-    rider_flag = TAG_FLAGS(rider)->ai;
-    object_flag = TAG_FLAGS(object)->ai;
+    rider_script = *(TAGSCRIPTSTATE *)&rider->ai_packet.script_processor;
+    object_script = *(TAGSCRIPTSTATE *)&object->ai_packet.script_processor;
+    rider_flag = rider->ai_controlled;
+    object_flag = object->ai_controlled;
     if ((rider->flags_ef4 & APIOBJECT_CAN_BE_CARRIED) == 0 && TagCode(rider, object, 1, 0, 0) == 0) {
         return;
     }
     TakeOverReleaseDiagnostic(rider->character_data->name, object->character_data->name);
-    TAG_SCRIPT_STATE(rider) = object_script;
-    TAG_SCRIPT_STATE(object) = rider_script;
+    *(TAGSCRIPTSTATE *)&rider->ai_packet.script_processor = object_script;
+    *(TAGSCRIPTSTATE *)&object->ai_packet.script_processor = rider_script;
     rider->ai_packet.creature_set = rider_script.fields.creature_set;
     object->ai_packet.creature_set = object_script.fields.creature_set;
     AICreatureResumeScript(object);
-    TAG_FLAGS(rider)->ai = object_flag;
-    TAG_FLAGS(object)->ai = rider_flag;
+    rider->ai_controlled = object_flag;
+    object->ai_controlled = rider_flag;
     if (rider->player.rider != NULL) {
         GetTakeOverPos(rider->player.rider, &rider->position);
         rider->pitch_angle = 0;
         rider->roll_angle = 0;
-        rider->unknown_276 = rider->player.rider->facing_angle;
+        rider->movement_angle = rider->player.rider->facing_angle;
         rider->facing_angle = rider->player.rider->facing_angle;
         rider->movement_facing_angle = rider->player.rider->facing_angle;
     }
@@ -674,7 +664,7 @@ void ReleaseTakeOver(GAMEOBJECT *target, i32 unused) {
         Buck_StartRiderJump(rider, object);
     }
     character = object->character_data->game_character;
-    if (character->unknown_028 > 0.0f) {
+    if (character->hover_height > 0.0f) {
         object->velocity.y -= (f64)rider->velocity.y * 0.5;
     } else if ((character->flags_094 & CHARACTER_OPTION_BUCK_RIDER) != 0) {
         Buck_Start(object, rider);
@@ -787,7 +777,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         object->position.y = (destination.y - object->player.external_force.y) * fraction + object->player.external_force.y;
         object->position.z = (destination.z - object->player.external_force.z) * fraction + object->player.external_force.z;
         height = target->bounds_half_height;
-        if (object->player.unknown_7aa == ACTION_JUMP || object->player.unknown_7aa == ACTION_MAGNET_JUMP) {
+        if (object->player.context_animation == ACTION_JUMP || object->player.context_animation == ACTION_MAGNET_JUMP) {
             if (object->character_data->game_character->jump_height > height) {
                 height = object->character_data->game_character->jump_height;
             }
@@ -797,9 +787,9 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         }
         phase = (f64)fraction * 32768.0;
         object->position.y += height * NuTrigTable[((i32)phase >> 1) & 0x7fff];
-        object->facing_angle = object->movement_facing_angle = object->unknown_276 =
+        object->facing_angle = object->movement_facing_angle = object->movement_angle =
             (u16)((f64)object->player.takeover_start_angle +
-                  (f64)RotDiff(object->player.takeover_start_angle, object->player.force_target->unknown_276) *
+                  (f64)RotDiff(object->player.takeover_start_angle, object->player.force_target->movement_angle) *
                       (1.0 - ((f64)NuTrigTable[((i32)(phase + 16384.0) >> 1) & 0x7fff] + 1.0) * 0.5));
         return;
     }
@@ -832,7 +822,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
             target = object->player.rider;
             model = target->character_model;
             if (model->action_animations[animation] != NULL) {
-                target->player.unknown_7aa = (i16)animation;
+                target->player.context_animation = (i16)animation;
             }
         }
         return;
@@ -858,7 +848,7 @@ void TakeOverCode(GAMEOBJECT *object, i32 tag_pressed) {
         f32 range;
         f32 range_squared;
         f32 distance;
-        if (object->unknown_281 == 0) {
+        if (object->ground_flags == 0) {
             return;
         }
         candidate = Obj;

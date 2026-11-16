@@ -38,9 +38,9 @@ typedef struct GIZMOPICKUP { // size 0x2c
     union { // size 0x2
         u8 unknown_14[2];
 
-        struct {                // size 0x2
-            u8 filter_byte;     // 0x14
-            u8 filter_reserved; // 0x15
+        struct {             // size 0x2
+            u8 type_code;    // 0x14
+            u8 config_flags; // 0x15
         };
     }; // 0x14
 

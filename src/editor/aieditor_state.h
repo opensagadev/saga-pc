@@ -95,8 +95,8 @@ struct AIEDITOR_RENDER_STATE { // size 0xc3940
     char *level_subdirectory; // 0x43834
     u8 save_scratch[524288];  // 0x43838
     char warning[256];        // 0xc3838
-    u32 pad_buttons;          // 0xc3938
-    u32 pad_pressed;          // 0xc393c
+    u32 buttons;              // 0xc3938
+    u32 buttons_pressed;      // 0xc393c
 };
 
 #ifdef __cplusplus

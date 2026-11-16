@@ -143,10 +143,10 @@ struct PART { // size 0x220
     struct gameobject_s *owner;     // 0x0d4
     struct gameobject_s *recipient; // 0x0d8
     f32 radius;                     // 0x0dc
-    f32 unknown_e0;                 // 0x0e0
-    f32 unknown_e4;                 // 0x0e4
+    f32 glow_radius;                // 0x0e0
+    f32 collision_radius;           // 0x0e4
     f32 gravity;                    // 0x0e8
-    f32 field_ec;                   // 0x0ec
+    f32 bounce;                     // 0x0ec
     f32 unknown_f0;                 // 0x0f0
     f32 unknown_f4;                 // 0x0f4
     f32 time_step;                  // 0x0f8
@@ -156,11 +156,12 @@ struct PART { // size 0x220
     u32 flags;                      // 0x108
 
     union { // size 0x18
-        u32 unknown_10c[6];
+        u32 pickup_data[6];
         i32 rotation_parameters[6];
     }; // 0x10c
 
-    i32 unknown_124[5];           // 0x124
+    /* rotation speeds (x, y, z) and the random spin of the part */
+    i32 spin_rates[5];            // 0x124
     u16 rotation_x;               // 0x138
     u16 rotation_y;               // 0x13a
     u16 rotation_z;               // 0x13c
@@ -193,17 +194,26 @@ struct PART { // size 0x220
     i32 effect_id_1f8;            // 0x1f8
     f32 effect_scale;             // 0x1fc
     u32 unknown_200;              // 0x200
-    u16 unknown_204;              // 0x204
-    i8 unknown_206;               // 0x206
+    u16 damage;                   // 0x204
+    i8 player_mask;               // 0x206
     u8 hostility_group;           // 0x207
     u8 unknown_208;               // 0x208
     u8 unknown_209;               // 0x209
     u8 flicker_flags;             // 0x20a
     i8 unknown_20b;               // 0x20b
-    f32 crate_spawn_delay;        // 0x20c
-    u32 unknown_210;              // 0x210
-    f32 unknown_214;              // 0x214
-    u32 force_flags;              // 0x218
+
+    union { // size 0x4
+        f32 crate_spawn_delay;
+        f32 speeder_index; /* the speeder chase bike parts: the KillPartsBikes slot, -1 for none */
+    }; // 0x20c
+
+    union { // size 0x4
+        u32 unknown_210;
+        struct GIZMOBLOWUP *carried_blowup; /* the blowup the grabber drops (Grabber_Drop) */
+    }; // 0x210
+
+    f32 unknown_214; // 0x214
+    u32 force_flags; // 0x218
 
     union { // size 0x4
         u32 unknown_21c;
@@ -217,10 +227,10 @@ typedef struct ADDPART {               // size 0xc8
     NUVEC *velocity;                   // 0x08
     struct gameobject_s *owner;        // 0x0c
     struct gameobject_s *recipient;    // 0x10
-    f32 unknown_14;                    // 0x14
-    f32 unknown_18;                    // 0x18
+    f32 start_radius;                  // 0x14
+    f32 end_radius;                    // 0x18
     f32 gravity;                       // 0x1c
-    f32 unknown_20;                    // 0x20
+    f32 bounce;                        // 0x20
     struct nuhspecial_s *special;      // 0x24
     i32 part_id;                       // 0x28
     u32 flags;                         // 0x2c
@@ -246,17 +256,17 @@ typedef struct ADDPART {               // size 0xc8
     f32 effect_scale;                  // 0x7c
     i32 *lighting_handle;              // 0x80
     i32 lighting_id;                   // 0x84
-    f32 unknown_88;                    // 0x88
+    f32 lifetime;                      // 0x88
     f32 time_step;                     // 0x8c
     u32 hostility_group;               // 0x90
     PART_LIGHTING_DATA *lighting_data; // 0x94
     f32 lighting_scale_x;              // 0x98
     f32 lighting_scale_y;              // 0x9c
     f32 lighting_scale_z;              // 0xa0
-    f32 unknown_a4;                    // 0xa4
-    u32 unknown_a8[6];                 // 0xa8
-    f32 unknown_c0;                    // 0xc0
-    u8 unknown_c4;                     // 0xc4
+    f32 fade_time;                     // 0xa4
+    u32 rotation_parameters[6];        // 0xa8
+    f32 model_scale;                   // 0xc0
+    u8 flicker_flags;                  // 0xc4
 } ADDPART;
 
 typedef struct KILLPARTS_BIKE { // size 0x34

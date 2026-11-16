@@ -128,46 +128,30 @@
 #include <string.h>
 #include <stdio.h>
 #include "legoapi/world/levels/hub.h"
+#include "gameapi/edbits.h"
+#include "legoapi/actions/character/tagging.h"
+#include "legoapi/audio/specialsfx.h"
+#include "legoapi/gizmos/door/gizspinner.h"
+#include "legoapi/gizmos/traps/attracto.h"
+#include "legoapi/misc/utilities.h"
+#include "legoapi/props/doors/doors.h"
+#include "legoapi/world/levels/episodeIV.h"
 
 extern "C" void FmvPlatformUpdate(void);
-extern "C" {
-    void ClearTakeOverObjectSys(void);
-    extern void *Door_Last;
-}
 
 extern "C" {
     extern AREA_DATA *ANEWHOPE_ADATA;
 }
 
 extern "C" {
-    void InitTexAnimScripts(char **table);
     extern char *TexAnimScriptNamesTitle[3];
     extern char *TexAnimScriptNamesGame[32];
 }
-extern "C" void CreateUsefulMaterials(void);
-extern "C" void edbitsRegisterThingsScene(NUGSCN *scene);
-extern "C" void ParticleReset(void);
-
-typedef struct permanent_customiser_save_s {
-    u16 pieces[9];
-    u8 unknown_12[0x26];
-    u16 secondary_pieces[9];
-    u8 unknown_4a[0x26];
-} PERMANENT_CUSTOMISER_SAVE;
-
-typedef struct permanent_customiser_game_s {
-    u8 unknown_0000[0x7c24];
-    PERMANENT_CUSTOMISER_SAVE customiser;
-} PERMANENT_CUSTOMISER_GAME;
 
 extern "C" {
     extern NUFPCOMJMP ConfigChar_GameKeywords[2];
     extern f32 PermCollectionScale;
 }
-#define LEVEL_BYTE_CALLBACK(name, field)                                                                                                   \
-    void name(NUFPAR *parser) {                                                                                                            \
-        levelconfig_ldata->field = (u8)NuFParGetInt(parser);                                                                               \
-    }
 /* Per-level callbacks installed by FixUpLevels. */
 extern "C" void LostTempleC_Reset(WORLDINFO *);
 extern "C" void LostTempleC_Update(WORLDINFO *);
@@ -202,32 +186,6 @@ extern "C" void KashyyykC_Init(WORLDINFO *);
 extern "C" void KashyyykC_Update(WORLDINFO *);
 extern "C" void VaderB_Init(WORLDINFO *);
 extern "C" void VaderB_DrawPanel(WORLDINFO *);
-extern "C" void BlockadeRunnerB_Init(WORLDINFO *);
-extern "C" void BlockadeRunnerB_Update(WORLDINFO *);
-extern "C" void BlockadeRunnerC_Init(WORLDINFO *);
-extern "C" void BlockadeRunnerD_Reset(WORLDINFO *);
-extern "C" void BlockadeRunnerD_Update(WORLDINFO *);
-extern "C" void MosEisleyB_Init(WORLDINFO *);
-extern "C" void MosEisleyD_AlwaysUpdate(WORLDINFO *);
-extern "C" void MosEisleyE_Init(WORLDINFO *);
-extern "C" void MosEisleyE_Reset(WORLDINFO *);
-extern "C" void MosEisleyE_Update(WORLDINFO *);
-extern "C" void DeathStarRescueB_Init(WORLDINFO *);
-extern "C" void DeathStarRescueB_Update(WORLDINFO *);
-extern "C" void DeathStarRescueB_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarRescueC_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarEscapeA_Update(WORLDINFO *);
-extern "C" void DeathStarEscapeB_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarEscapeB_Draw(WORLDINFO *);
-extern "C" void DeathStarEscapeC_Init(WORLDINFO *);
-extern "C" void DeathStarEscapeC_Update(WORLDINFO *);
-extern "C" void DeathStarEscapeC_Reset(WORLDINFO *);
-extern "C" void DeathStarEscapeD_Update(WORLDINFO *);
-extern "C" void DeathStarBattleC_AlwaysUpdate(WORLDINFO *);
-extern "C" void DeathStarBattleDInit(WORLDINFO *);
-extern "C" void DeathStarBattleDUpdate(WORLDINFO *);
-extern "C" void DeathStarBattleDDraw(WORLDINFO *);
-extern "C" void DeathStarBattleDReset(WORLDINFO *);
 extern "C" {
     extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 }
@@ -236,61 +194,15 @@ extern "C" void ChrisDogFightAReset(WORLDINFO *);
 extern "C" void ChrisDogFightAUpdate(WORLDINFO *);
 extern "C" void ChrisDogFightADraw(WORLDINFO *);
 
-#define WORLD_PORTAL_BOUNDS(scene) ((NUVEC4 *)(scene)->portal_boxes)
 extern "C" {
-    void SaveSceneObjectAnimTFactors(NUGSCN *scene);
-
-    typedef struct world_script_progress_s {
-        char name[16];
-        f32 params[4];
-    } WORLD_SCRIPT_PROGRESS;
-
-    typedef struct level_progress_transfer_s {
-        SCENEPROGRESS scene_progress;
-        u32 flags;
-        u8 unknown_2804[0x20];
-        WORLD_SCRIPT_PROGRESS scripts[32];
-        GIZFLOWPROGRESS giz_flow_progress;
-        char disabled_effect_names[12][16];
-    } LEVEL_PROGRESS_TRANSFER;
-
-    typedef struct world_persistence_flags_s {
-        u8 unknown_0000[0x5170];
-        u32 progress_flags;
-    } WORLD_PERSISTENCE_FLAGS;
 
     void LoadGrassFile(WORLDINFO *world);
     void LoadBridgeFile(WORLDINFO *world);
     void LoadTerrainFile(WORLDINFO *world);
 }
 
-typedef struct world_minikit_load_s {
-    NUGSCN *scene;
-    u8 unknown_04[0x14];
-} WORLD_MINIKIT_LOAD;
-
-typedef struct world_load_reader_s {
-    u8 unknown_0000[0x2964];
-    NUGSCN *icons_scene;
-    WORLD_MINIKIT_LOAD minikit;
-    void *character_scenes;
-    u8 unknown_2984[0x2ab8 - 0x2984];
-    i32 light_index;
-    NUVEC *light_direction;
-    u8 unknown_2ac0[0xc];
-    GIZFLOW *giz_flow;
-    u8 unknown_2ad0[0x14];
-    i32 ai_loaded;
-    u8 unknown_2ae8[0x4670 - 0x2ae8];
-    void *ai_connection_control;
-    void *ai_connection_helper;
-    void *ai_trigger_set;
-    void *climb_object_system;
-} WORLD_LOAD_READER;
-
 extern "C" void Attractos_InitTerrain(WORLDINFO *);
 extern "C" void SecurityDoors_InitTerrain(WORLDINFO *);
-extern "C" void GizSpinners_InitTerrain(WORLDINFO *world);
 extern "C" void Signals_InitTerrain(WORLDINFO *);
 
 extern "C" {
@@ -879,7 +791,7 @@ extern "C" {
         if (index >= 0) {
             memset(&LevelProgressData[index], 0, sizeof(LEVEL_PROGRESS));
             LevelProgressData[index].progress_state = 0;
-            LevelProgressData[index].minimum_tfactor = 2000000.0f;
+            LevelProgressData[index].grabber_position.y = 2000000.0f;
             if (world != NULL) {
                 memcpy(&LevelProgressData[index].scene_progress, &world->scene_progress, sizeof(SCENEPROGRESS));
             }
@@ -896,15 +808,15 @@ extern "C" {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].name) == 0) {
-                NuStrCpy(((LEVEL_PROGRESS_TRANSFER *)world->level_progress)->scripts[index].name, processor->name);
+            if (NuStrLen(progress->scripts[index].name) == 0) {
+                NuStrCpy(world->level_progress->scripts[index].name, processor->name);
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
+                    progress->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
-            } else if (NuStrICmp(((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].name, processor->name) == 0) {
+            } else if (NuStrICmp(progress->scripts[index].name, processor->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    ((LEVEL_PROGRESS_TRANSFER *)progress)->scripts[index].params[parameter] = processor->processor.params[parameter];
+                    progress->scripts[index].params[parameter] = processor->processor.params[parameter];
                 }
                 break;
             }
@@ -918,13 +830,12 @@ extern "C" {
             return;
         }
         for (index = 0; index < 32; ++index) {
-            if (NuStrLen(((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].name) == 0) {
+            if (NuStrLen(world->level_progress->scripts[index].name) == 0) {
                 break;
             }
-            if (NuStrICmp(((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].name, process->name) == 0) {
+            if (NuStrICmp(world->level_progress->scripts[index].name, process->name) == 0) {
                 for (parameter = 0; parameter < 4; ++parameter) {
-                    process->processor.params[parameter] =
-                        ((AI_SCRIPT_PROGRESS_VIEW *)world->level_progress)->scripts[index].params[parameter];
+                    process->processor.params[parameter] = world->level_progress->scripts[index].params[parameter];
                 }
                 break;
             }
@@ -946,17 +857,17 @@ void NewArea_ResetGlobalsPC(void) {
     phase = Area != -1 ? Game.area_save[Area].minikit_count : 0;
     AreaGlobals.area_phase = phase;
     AreaGlobals.progress_flags = phase;
-    AreaGlobals.unknown_1c = 0;
+    AreaGlobals.challenge_minikits = 0;
     Door_UseCutCam = 0;
     BuildUpDone = 0;
     BuildUpTotal = 0;
-    AreaGlobals.unknown_00 = 0;
-    AreaGlobals.unknown_08 = 0;
+    AreaGlobals.player_deaths = 0;
+    AreaGlobals.red_brick_state = 0;
     AreaGlobals.arcade_player_kills[0] = 0;
     AreaGlobals.arcade_ai_kills[0] = 0;
     AreaGlobals.arcade_player_kills[1] = 0;
     AreaGlobals.arcade_ai_kills[1] = 0;
-    AreaGlobals.unknown_18 = 0;
+    AreaGlobals.special_pickups_collected = 0;
     if (WORLD->area == HOTHBATTLE_ADATA) {
         ResetMinikitCounter();
     }
@@ -966,7 +877,7 @@ extern "C" {
 
     void ClearLevData(void) {
         memset(&LevFlag, 0, sizeof(LevFlag));
-        memset(LevSfxFlag, 0, sizeof(LevSfxFlag));
+        memset(&LevSfxFlag, 0, sizeof(LevSfxFlag));
         memset(LevHSpecial, 0, sizeof(LevHSpecial));
         memset(dynamic_antinodes, 0, sizeof(dynamic_antinodes));
         memset(&LevInstAnimReset, 0, sizeof(LevInstAnimReset));
@@ -1006,7 +917,7 @@ void LoadPerm1(void) {
     u8 shadow_random[0x800];
     i32 index;
     i32 texture_id;
-    PERMANENT_MATERIAL_READER *material;
+    NUMTL *material;
     NUGSCN *terrain_scene;
     VARIPTR native_end_address;
     rtlInitDynamic(&permbuffer_ptr, superbuffer_end, 0x40);
@@ -1017,19 +928,19 @@ void LoadPerm1(void) {
         edgraSetup(&permbuffer_ptr, permbuffer_end, 0x200, 0x20, 0x40);
     }
     PermanentEffectsMaterial = NuMtlCreateEx(1, 10);
-    material = (PERMANENT_MATERIAL_READER *)PermanentEffectsMaterial;
-    material->diffuse[2] = 1.0f;
-    material->diffuse[1] = 1.0f;
-    material->diffuse[0] = 1.0f;
-    material->attributes = (material->attributes & ~0x1000u) | 0x2000u;
-    material->attributes = (material->attributes & ~0x8000u) | 0x4000u;
-    material->attributes = (material->attributes & ~0x20u) | 0x10u;
+    material = PermanentEffectsMaterial;
+    material->diffuse_b = 1.0f;
+    material->diffuse_g = 1.0f;
+    material->diffuse_r = 1.0f;
+    material->attribs.word = (material->attribs.word & ~0x1000u) | 0x2000u;
+    material->attribs.word = (material->attribs.word & ~0x8000u) | 0x4000u;
+    material->attribs.word = (material->attribs.word & ~0x20u) | 0x10u;
     material->opacity = 0.999f;
-    material->attributes = (material->attributes & ~0xdu) | 2u;
-    material->attributes = (material->attributes & ~0x200u) | 0x100u;
-    material->attributes = (material->attributes & ~0x800u) | 0x400u;
-    material->texture_id = ((PERMANENT_MATERIAL_READER *)DebMat[5])->texture_id;
-    material->shader_flags = (material->shader_flags & ~2u) | 1u;
+    material->attribs.word = (material->attribs.word & ~0xdu) | 2u;
+    material->attribs.word = (material->attribs.word & ~0x200u) | 0x100u;
+    material->attribs.word = (material->attribs.word & ~0x800u) | 0x400u;
+    material->texture_id = DebMat[5]->texture_id;
+    material->attribs2 = (material->attribs2 & ~2u) | 1u;
     NuMtlUpdate(PermanentEffectsMaterial);
     NuLgtSetArcMat(PermanentEffectsMaterial, 0.0f, 0.50390625f, 0.25f, 0.5625f);
     PermanentGraphicsResourceSetup();
@@ -1053,19 +964,19 @@ void LoadPerm1(void) {
     InitRipples(&RippleSet, &permbuffer_ptr, &permbuffer_end, 0x40);
     permbuffer_ptr.addr = (permbuffer_ptr.addr + 0xff) & ~0xffu;
     PermanentShadowMaterial = NuMtlCreate3D(1);
-    material = (PERMANENT_MATERIAL_READER *)PermanentShadowMaterial;
-    material->diffuse[0] = 1.0f;
-    material->diffuse[1] = 1.0f;
-    material->diffuse[2] = 1.0f;
-    material->attributes = (material->attributes & ~0x1000u) | 0x2000u;
-    material->attributes = (material->attributes & ~0x8000u) | 0x4000u;
+    material = PermanentShadowMaterial;
+    material->diffuse_r = 1.0f;
+    material->diffuse_g = 1.0f;
+    material->diffuse_b = 1.0f;
+    material->attribs.word = (material->attribs.word & ~0x1000u) | 0x2000u;
+    material->attribs.word = (material->attribs.word & ~0x8000u) | 0x4000u;
     material->opacity = 0.999f;
-    material->attributes = (material->attributes & ~0xeu) | 1u;
-    material->attributes = (material->attributes & ~0x600000u) | 0x100000u;
+    material->attribs.word = (material->attribs.word & ~0xeu) | 1u;
+    material->attribs.word = (material->attribs.word & ~0x600000u) | 0x100000u;
     material->sort_priority = 0xff;
-    material->attributes = (material->attributes & ~0x10000u) | 0x20000u;
+    material->attribs.word = (material->attribs.word & ~0x10000u) | 0x20000u;
     texture_id = NuTexRead("stuff\\gradient", &permbuffer_ptr, permbuffer_end);
-    ((PERMANENT_MATERIAL_READER *)PermanentShadowMaterial)->texture_id = (i16)texture_id;
+    PermanentShadowMaterial->texture_id = (i16)texture_id;
     NuMtlUpdate(PermanentShadowMaterial);
     for (index = 0; index < 0x800; ++index) {
         shadow_random[index] = (u8)(qrand() >> 8);
@@ -1137,10 +1048,9 @@ extern "C" {
         Collection_CreateCustom("BountyHunters", &PermanentBountyTitleId, &BountyHunterCollection, CHARACTER_MODEL_BOUNTY_HUNTER, 0, 0, 0,
                                 4, &permbuffer_ptr, &permbuffer_end, 0, PermCollectionScale);
         Areas_ConfigureResidents(&permbuffer_ptr, &permbuffer_end);
-        CharacterCustomiser =
-            Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1Id, PermanentWeirdo2Id,
-                                 PermanentCustomPieceAvailable, PermanentCustomPieceConfig, LevelObject_FindIndexFromName,
-                                 &((PERMANENT_CUSTOMISER_GAME *)&Game)->customiser, PermanentCustomiserActions);
+        CharacterCustomiser = Customiser_Configure("chars\\customiser.txt", &permbuffer_ptr, &permbuffer_end, PermanentWeirdo1Id,
+                                                   PermanentWeirdo2Id, PermanentCustomPieceAvailable, PermanentCustomPieceConfig,
+                                                   LevelObject_FindIndexFromName, Game.customiser_start, PermanentCustomiserActions);
         SpecialMoves_Configure("chars\\specialmoves.txt", &permbuffer_ptr, &permbuffer_end);
         for (i32 index = 0; index < LEVELCOUNT; ++index) {
             if ((LDataList[index].flags & LEVEL_STATUS) != 0) {
@@ -1185,7 +1095,6 @@ extern "C" {
         APICHARACTERMODELLIST *list;
         APICHARACTERMODELLIST *story;
         NUGSCN *scene;
-        (void)bg_info;
         if (area != -1) {
             if (area != last_area) {
                 characterbuffer_ptr.addr = (characterbuffer_ptr.addr + 3) & ~3u;
@@ -1328,7 +1237,7 @@ extern "C" {
     AIPATHCNX *LevPathCnx[16] = {0};
     LEVFLAG LevFlag = {0};
     i32 CharacterDataLoad = 0;
-    i32 LevSfxFlag[4] = {0};
+    LEVSFXFLAG LevSfxFlag = {0};
     GIZMOBLOWUP *LevBlowUp[2] = {0};
     f32 LevAlpha = 0.0f;
     f32 TargetDist_Mid2 = 0;
@@ -1369,7 +1278,7 @@ void LoadAreaCharacters(void) {
     saved_override = AreaGetKeyboardOverride();
     VehicleArea = Area != -1 && (ADataList[Area].flags & AREAFLAG_VEHICLE_AREA) != 0;
     BonusArea = -1 != Area && (ADataList[Area].flags & AREAFLAG_BONUS_AREA) != 0;
-    AreaGlobals.unknown_04 = VehicleArea != 0 && BonusArea == 0;
+    AreaGlobals.vehicle_area = VehicleArea != 0 && BonusArea == 0;
     AreaDataLoaded = 0;
     loadareadata_loadlevel = 0;
     loadareacharacters_loadedlevel = 0;
@@ -1442,8 +1351,9 @@ void LoadAreaCharacters(void) {
             }
         } else if (AreaDataLoaded != 0 && LoadWait == LOADWAITTIME && LoadTime < AreaCrawlMaximumTime && skip_text_scroll == 0 &&
                    (NuSound3LoadingSfx() == 0 || !(LoadTime < AreaCrawlSoundWaitTime))) {
-            AREA_LOADING_PAD_READER *pads = (AREA_LOADING_PAD_READER *)GamePadStorage;
-            if ((pads[0].buttons_pressed & GAMEPAD_START) != 0 || (pads[1].buttons_pressed & GAMEPAD_START) != 0 || NuKeyboard_db(1) != 0) {
+            GAMEPAD_INIT_RECORD *pads = GamePadStorage;
+            if ((pads[0].menu_buttons_pressed & GAMEPAD_START) != 0 || (pads[1].menu_buttons_pressed & GAMEPAD_START) != 0 ||
+                NuKeyboard_db(1) != 0) {
                 skip_text_scroll = 1;
             } else {
                 draw_touch_prompt = 1;
@@ -1451,7 +1361,7 @@ void LoadAreaCharacters(void) {
             touch_prompt_time += FRAMETIME;
         }
         UpdateTimer(&GlobalTimer);
-        ((AREA_LOADING_CLOCK_READER *)&Game)->elapsed_time = ((AREA_LOADING_CLOCK_READER *)&Game)->elapsed_time + FRAMETIME;
+        Game.game_time = Game.game_time + FRAMETIME;
         LoadTime += FRAMETIME;
         if (icon_stage == 0) {
             if (CharacterDataLoad == 2 ||
@@ -1614,20 +1524,6 @@ void LoadAreaCharacters(void) {
 
 extern "C" {
 
-    /* Bitfield view of SCENESPECIALPROGRESS.flags. */
-    typedef struct scene_special_state_s { // size 0x8
-        u32 frame : 11;                    // 0x0:0
-        u32 visible : 1;                   // 0x0:11
-        u32 playing : 1;                   // 0x0:12
-        u32 waiting : 1;                   // 0x0:13
-        u32 repeating : 1;                 // 0x0:14
-        u32 unused : 17;                   // 0x0:15
-        f32 tfactor;                       // 0x4
-    } SCENE_SPECIAL_STATE;
-
-    /* progress->specials[i] read through the bitfield view (stands in for the header field). */
-#define SCENE_STATE(progress, i) (((SCENE_SPECIAL_STATE *)(progress)->specials)[i])
-
     void StoreSceneProgress(NUGSCN *scene, SCENEPROGRESS *progress, i32 copy_tfactor) {
         nuhspecial_s special;
         NUINSTANIM *animation;
@@ -1645,7 +1541,7 @@ extern "C" {
             } else {
                 NuSpecialGetFirst(scene, &special, 1);
             }
-            SCENE_STATE(progress, i).visible = NuSpecialGetVisibilityFn(&special);
+            progress->specials[i].visible = NuSpecialGetVisibilityFn(&special);
             if (scene->instance_animation_data == NULL) {
                 continue;
             }
@@ -1654,14 +1550,14 @@ extern "C" {
                 continue;
             }
             if (animation->ltime <= 2048.0f && animation->ltime >= 0.0f) {
-                SCENE_STATE(progress, i).frame = (u32)animation->ltime;
+                progress->specials[i].frame = (u32)animation->ltime;
             } else {
-                SCENE_STATE(progress, i).frame = 1;
+                progress->specials[i].frame = 1;
             }
-            SCENE_STATE(progress, i).playing = animation->flags & NUINSTANIM_FLAG_PLAYING;
-            SCENE_STATE(progress, i).waiting = (animation->flags >> 2) & 1;
-            SCENE_STATE(progress, i).repeating = (animation->flags >> 3) & 1;
-            SCENE_STATE(progress, i).tfactor = animation->tfactor;
+            progress->specials[i].playing = animation->flags & NUINSTANIM_FLAG_PLAYING;
+            progress->specials[i].waiting = (animation->flags >> 2) & 1;
+            progress->specials[i].repeating = (animation->flags >> 3) & 1;
+            progress->specials[i].tfactor = animation->tfactor;
             if (copy_tfactor != 0) {
                 animation->fparam1 = animation->tfactor;
             }
@@ -1756,24 +1652,25 @@ extern "C" {
         if (world == NULL || world->current_gscn == NULL) {
             return;
         }
-        for (index = 0; index < world->current_gscn->portal_instance_count * 2; index += 2) {
+        for (index = 0; index < world->current_gscn->portal_instance_count; index++) {
+            NUGSCN_INSTANCE_BOUNDS *box = &world->current_gscn->portal_boxes[index];
             NUVEC box_minimum;
             NUVEC box_maximum;
 
             if (world->current_gscn->display_list != NULL && (world->current_gscn->display_list->render_flags & 0x4000) > 0) {
-                box_minimum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z - WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x + WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y + WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z + WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z;
+                box_minimum.x = box->center.x - box->extent.x;
+                box_minimum.y = box->center.y - box->extent.y;
+                box_minimum.z = box->center.z - box->extent.z;
+                box_maximum.x = box->center.x + box->extent.x;
+                box_maximum.y = box->center.y + box->extent.y;
+                box_maximum.z = box->extent.z + box->center.z;
             } else {
-                box_minimum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].x;
-                box_minimum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].y;
-                box_minimum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index].z;
-                box_maximum.x = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].x;
-                box_maximum.y = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].y;
-                box_maximum.z = WORLD_PORTAL_BOUNDS(world->current_gscn)[index + 1].z;
+                box_minimum.x = box->center.x;
+                box_minimum.y = box->center.y;
+                box_minimum.z = box->center.z;
+                box_maximum.x = box->extent.x;
+                box_maximum.y = box->extent.y;
+                box_maximum.z = box->extent.z;
             }
             if (box_minimum.x < minimum.x) {
                 minimum.x = box_minimum.x;
@@ -1798,37 +1695,61 @@ extern "C" {
         world->level_min = minimum;
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_tightropes, max_tightropes)
+    void LC_BL_max_tightropes(NUFPAR *parser) {
+        levelconfig_ldata->max_tightropes = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_signals, max_signals)
+    void LC_BL_max_signals(NUFPAR *parser) {
+        levelconfig_ldata->max_signals = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_levers, max_levers)
+    void LC_BL_max_levers(NUFPAR *parser) {
+        levelconfig_ldata->max_levers = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_technos, max_technos)
+    void LC_BL_max_technos(NUFPAR *parser) {
+        levelconfig_ldata->max_technos = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_zipups, max_zipups)
+    void LC_BL_max_zipups(NUFPAR *parser) {
+        levelconfig_ldata->max_zipups = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_grapples, max_grapples)
+    void LC_BL_max_grapples(NUFPAR *parser) {
+        levelconfig_ldata->max_grapples = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_obstacles, max_obstacles)
+    void LC_BL_max_obstacles(NUFPAR *parser) {
+        levelconfig_ldata->max_obstacles = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_obstacle_objects(NUFPAR *parser) {
         levelconfig_ldata->max_obstacle_objects = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_turrets, max_turrets)
+    void LC_BL_max_turrets(NUFPAR *parser) {
+        levelconfig_ldata->max_turrets = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_buildits, max_buildits)
+    void LC_BL_max_buildits(NUFPAR *parser) {
+        levelconfig_ldata->max_buildits = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_buildit_objects(NUFPAR *parser) {
         levelconfig_ldata->max_buildit_objects = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_spinneranim_objs, max_spinneranim_objs)
+    void LC_BL_max_spinneranim_objs(NUFPAR *parser) {
+        levelconfig_ldata->max_spinneranim_objs = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_climb_objects, max_climb_objects)
+    void LC_BL_max_climb_objects(NUFPAR *parser) {
+        levelconfig_ldata->max_climb_objects = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_shards, max_shards)
+    void LC_BL_max_shards(NUFPAR *parser) {
+        levelconfig_ldata->max_shards = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_spinners(NUFPAR *parser) {
         levelconfig_ldata->max_spinners = (u8)NuFParGetInt(parser);
@@ -1837,9 +1758,13 @@ extern "C" {
         }
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_minicuts, max_minicuts)
+    void LC_BL_max_minicuts(NUFPAR *parser) {
+        levelconfig_ldata->max_minicuts = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_minicutParts, max_minicut_stages)
+    void LC_BL_max_minicutParts(NUFPAR *parser) {
+        levelconfig_ldata->max_minicut_stages = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_gizmoblowuptypes(NUFPAR *parser) {
         levelconfig_ldata->max_gizmoblowuptypes = (i16)NuFParGetInt(parser);
@@ -1869,17 +1794,29 @@ extern "C" {
         }
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_attractos, max_attractos)
+    void LC_BL_max_attractos(NUFPAR *parser) {
+        levelconfig_ldata->max_attractos = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_timers, max_timers)
+    void LC_BL_max_timers(NUFPAR *parser) {
+        levelconfig_ldata->max_timers = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_guidelines, max_guidelines)
+    void LC_BL_max_guidelines(NUFPAR *parser) {
+        levelconfig_ldata->max_guidelines = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_ledges, max_ledges)
+    void LC_BL_max_ledges(NUFPAR *parser) {
+        levelconfig_ldata->max_ledges = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_securitydoors, max_securitydoors)
+    void LC_BL_max_securitydoors(NUFPAR *parser) {
+        levelconfig_ldata->max_securitydoors = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_tubes, max_tubes)
+    void LC_BL_max_tubes(NUFPAR *parser) {
+        levelconfig_ldata->max_tubes = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_pickups(NUFPAR *parser) {
         levelconfig_ldata->max_pickups = (i16)NuFParGetInt(parser);
@@ -1889,11 +1826,17 @@ extern "C" {
         levelconfig_ldata->max_gameantinodes = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_gizpanels, max_gizpanels)
+    void LC_BL_max_gizpanels(NUFPAR *parser) {
+        levelconfig_ldata->max_gizpanels = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_hatmachines, max_hatmachines)
+    void LC_BL_max_hatmachines(NUFPAR *parser) {
+        levelconfig_ldata->max_hatmachines = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_force, max_force)
+    void LC_BL_max_force(NUFPAR *parser) {
+        levelconfig_ldata->max_force = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_max_force_objects(NUFPAR *parser) {
         levelconfig_ldata->max_force_objects = (i16)NuFParGetInt(parser);
@@ -1903,21 +1846,37 @@ extern "C" {
         levelconfig_ldata->max_bombgen_objects = (i16)NuFParGetInt(parser);
     }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_bombgens, max_bombgens)
+    void LC_BL_max_bombgens(NUFPAR *parser) {
+        levelconfig_ldata->max_bombgens = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_gizspecials, max_gizspecials)
+    void LC_BL_max_gizspecials(NUFPAR *parser) {
+        levelconfig_ldata->max_gizspecials = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_doors, max_doors)
+    void LC_BL_max_doors(NUFPAR *parser) {
+        levelconfig_ldata->max_doors = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_teleports, max_teleports)
+    void LC_BL_max_teleports(NUFPAR *parser) {
+        levelconfig_ldata->max_teleports = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_gizrandoms, max_gizrandoms)
+    void LC_BL_max_gizrandoms(NUFPAR *parser) {
+        levelconfig_ldata->max_gizrandoms = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_torpmachines, max_torpmachines)
+    void LC_BL_max_torpmachines(NUFPAR *parser) {
+        levelconfig_ldata->max_torpmachines = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_bridges, max_bridges)
+    void LC_BL_max_bridges(NUFPAR *parser) {
+        levelconfig_ldata->max_bridges = (u8)NuFParGetInt(parser);
+    }
 
-    LEVEL_BYTE_CALLBACK(LC_BL_max_plugs, max_plugs)
+    void LC_BL_max_plugs(NUFPAR *parser) {
+        levelconfig_ldata->max_plugs = (u8)NuFParGetInt(parser);
+    }
 
     void LC_BL_wind_speed(NUFPAR *parser) {
         levelconfig_ldata->wind_speed = NuFParGetFloat(parser);
@@ -1934,7 +1893,6 @@ void WorldInfo_Load(WORLDINFO *world) {
     char ai_name[32];
     char title_light_path[] = "levels\\titles\\titles";
     NUGSCN *cutscene_scene;
-    WORLD_LOAD_READER *resource = (WORLD_LOAD_READER *)world;
     i32 index;
     LOG_INFO("World load begin: world=%p area=%d level=%d config=%s", (void *)world, world->area_index, world->level_idx,
              world->config_file);
@@ -1972,7 +1930,7 @@ void WorldInfo_Load(WORLDINFO *world) {
                 goto archive_selected;
             }
         }
-        NuWin32SetDFS((i8)world->current_level->unknown_00a2 + 1);
+        NuWin32SetDFS((i8)world->current_level->dfs_mode + 1);
     archive_selected:
         if (PcWindowOptions.shadowmethod == 2) {
             world->current_gscn = PCGraphicsSceneReadClones(&world->giz_buffer, world->buffer_end, path, 2);
@@ -2026,16 +1984,16 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     } else if ((world->current_level->flags & LEVEL_STATUS) != 0 && world->area != NULL && world->area->minikit_id != -1) {
-        MiniKit_Load((MINIKIT *)&resource->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
-        if (resource->minikit.scene != NULL) {
-            MiniKit_InitPieces((MINIKIT *)&resource->minikit, 10, &world->giz_buffer, &world->buffer_end);
+        MiniKit_Load(&world->minikit, world->area->minikit_id, &world->giz_buffer, &world->buffer_end, NULL);
+        if (world->minikit.scene != NULL) {
+            MiniKit_InitPieces(&world->minikit, 10, &world->giz_buffer, &world->buffer_end);
         }
         if (abort_load != 0) {
             goto abort;
         }
     }
     if ((world->current_level == HUB_LDATA || (world->current_level->flags & LEVEL_STATUS) != 0) && big_icon_scene == NULL) {
-        resource->icons_scene = NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
+        world->icons_scene = NuGScnRead(&world->giz_buffer, world->buffer_end, "stuff\\icons\\starwars_icons_all.gsc");
     }
     cutscene_scene = area_scene;
     if (cutscene_scene == NULL || world->area == NULL || (world->area->flags & AREAFLAG_OVERRIDE_THINGS_SCENE) == 0) {
@@ -2047,7 +2005,7 @@ void WorldInfo_Load(WORLDINFO *world) {
         goto abort;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-    resource->character_scenes = world->giz_buffer.void_ptr;
+    world->character_scenes = world->giz_buffer.void_ptr;
     world->giz_buffer.addr += CHARCOUNT * 0x10;
     CharScenes_LevelLoad(world);
     if ((world->current_level->flags & LEVEL_GAMEPLAY) != 0 &&
@@ -2100,20 +2058,20 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (abort_load != 0) {
         goto abort;
     }
-    resource->ai_loaded = (world->current_level->flags & LEVEL_GAMEPLAY) == 0 ||
-                          (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0;
-    if (resource->ai_loaded == 0) {
+    world->ai_loaded = (world->current_level->flags & LEVEL_GAMEPLAY) == 0 ||
+                       (world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) != 0;
+    if (world->ai_loaded == 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         sprintf(ai_name, "ai");
         world->ai_sys = AISysLoad(&world->giz_buffer, &world->buffer_end, 0x1cc00, world->current_gscn, world->current_level->dir,
                                   world->current_level->name, ai_name);
-        resource->ai_connection_control = AIPathCnxControlSysCreate(&world->giz_buffer, &world->buffer_end, 32);
-        resource->ai_connection_helper = AIPathCnxHelperSysCreate(&world->giz_buffer, &world->buffer_end, 32);
-        resource->ai_trigger_set = AITriggerSetSysCreate(&world->giz_buffer, &world->buffer_end);
+        world->ai_path_cnx_control_sys = (ai_control_system_s *)AIPathCnxControlSysCreate(&world->giz_buffer, &world->buffer_end, 32);
+        world->ai_connection_helpers = (ai_helper_system_s *)AIPathCnxHelperSysCreate(&world->giz_buffer, &world->buffer_end, 32);
+        world->ai_trigger_set = AITriggerSetSysCreate(&world->giz_buffer, &world->buffer_end);
         GameAIScriptAddLevelSfx(world, &global_aiscripts);
         GameAIScriptAddLevelSfx(world, &world->ai_sys->scripts);
-        resource->climb_object_system =
-            CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end, world->current_level->max_climb_objects);
+        world->climb_objects =
+            (climb_system_s *)CreateClimbObjectSys(&world->giz_buffer, &world->buffer_end, world->current_level->max_climb_objects);
     }
     if (abort_load != 0) {
         goto abort;
@@ -2124,15 +2082,15 @@ void WorldInfo_Load(WORLDINFO *world) {
     }
     if ((world->current_level->flags & 4) != 0) {
         LoadLights(world, world->current_level == TITLES_LDATA ? title_light_path : world->config_file);
-        resource->light_index = rtlFindByUserId((RTL_SET *)world->rtl_set, WorldLightUserId);
-        if (resource->light_index == -1) {
-            resource->light_direction = NULL;
+        world->rtl_id = rtlFindByUserId(world->rtl_set, WorldLightUserId);
+        if (world->rtl_id == -1) {
+            world->light_dir = NULL;
         } else {
-            rtlGetDirection((RTL_SET *)world->rtl_set, resource->light_index, &resource->light_direction);
+            rtlGetDirection(world->rtl_set, world->rtl_id, &world->light_dir);
         }
     } else {
-        resource->light_index = -1;
-        resource->light_direction = NULL;
+        world->rtl_id = -1;
+        world->light_dir = NULL;
     }
     if (abort_load != 0) {
         goto abort;
@@ -2144,13 +2102,13 @@ void WorldInfo_Load(WORLDINFO *world) {
             goto abort;
         }
     }
-    GizmoSysAddGizmos(world->gizmo_sys, resource->giz_flow, world);
+    GizmoSysAddGizmos(world->gizmo_sys, world->giz_flow, world);
     if (abort_load != 0) {
         goto abort;
     }
     NuStrCpy(path, world->config_file);
     NuStrCat(path, ".git");
-    resource->giz_flow = (GIZFLOW *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
+    world->giz_flow = (GIZFLOW *)LoadGizFlow(world, world->gizmo_sys, path, &world->giz_buffer, &world->buffer_end);
     if (abort_load != 0) {
         goto abort;
     }
@@ -2159,8 +2117,8 @@ void WorldInfo_Load(WORLDINFO *world) {
     if (abort_load != 0) {
         goto abort;
     }
-    if (world->current_level->callbacks[0] != NULL) {
-        ((void (*)(WORLDINFO *, VARIPTR *, VARIPTR *))world->current_level->callbacks[0])(world, &world->giz_buffer, &world->buffer_end);
+    if (world->current_level->load != NULL) {
+        world->current_level->load(world, &world->giz_buffer, &world->buffer_end);
     }
     SetAreaPickupGravity(world->area_index, world->level_idx);
     world->loaded = 1;
@@ -2605,9 +2563,9 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
     level = Level_FindByName("titles", NULL);
     TITLES_LDATA = level;
     if (level != NULL) {
-        TITLES_LDATA->callbacks[1] = (void *)Titles_Init;
-        TITLES_LDATA->callbacks[3] = (void *)Titles_Update;
-        TITLES_LDATA->callbacks[5] = (void *)Titles_Draw;
+        TITLES_LDATA->init = Titles_Init;
+        TITLES_LDATA->update = Titles_Update;
+        TITLES_LDATA->draw = Titles_Draw;
         TITLES_LDATA->flags &= ~(LEVEL_GAMEPLAY | LEVEL_TERRAIN);
         TITLES_LDATA->music_index = GetMusicIndex("titles", MusicInfo, -1);
         TITLES_LDATA->music_tracks[0] = TITLES_LDATA->music_tracks[1] = music_man.GetTrackHandle(1, "titles");
@@ -2617,8 +2575,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
     level = Level_FindByName("status", NULL);
     STATUS_LDATA = level;
     if (level != NULL) {
-        STATUS_LDATA->callbacks[3] = (void *)UpdateStatusScreen;
-        STATUS_LDATA->callbacks[6] = (void *)DrawStatusScreen;
+        STATUS_LDATA->update = UpdateStatusScreen;
+        STATUS_LDATA->draw_panel = DrawStatusScreen;
         STATUS_LDATA->flags |= LEVEL_STATUS;
         STATUS_LDATA->flags &= ~(LEVEL_GAMEPLAY | LEVEL_TERRAIN);
     }
@@ -2626,11 +2584,11 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
     CREDITS_LDATA = level;
     if (level != NULL) {
         level->flags = 0;
-        CREDITS_LDATA->callbacks[0] = (void *)Credits_Load;
-        CREDITS_LDATA->callbacks[1] = (void *)Credits_Init_Game;
-        CREDITS_LDATA->callbacks[3] = (void *)Credits_Update_Game;
-        CREDITS_LDATA->callbacks[5] = (void *)Credits_Draw_Game;
-        CREDITS_LDATA->callbacks[6] = (void *)Credits_DrawPanel;
+        CREDITS_LDATA->load = Credits_Load;
+        CREDITS_LDATA->init = Credits_Init_Game;
+        CREDITS_LDATA->update = Credits_Update_Game;
+        CREDITS_LDATA->draw = Credits_Draw_Game;
+        CREDITS_LDATA->draw_panel = Credits_DrawPanel;
     }
     if (StartupGameFlag0 == 0) {
         if (StartupGameFlag1 != 0) {
@@ -2639,8 +2597,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("losttemple_c", NULL);
             UpdateSockets_LDATA = level;
             if (level != NULL) {
-                UpdateSockets_LDATA->callbacks[2] = (void *)LostTempleC_Reset;
-                UpdateSockets_LDATA->callbacks[3] = (void *)LostTempleC_Update;
+                UpdateSockets_LDATA->reset = LostTempleC_Reset;
+                UpdateSockets_LDATA->update = LostTempleC_Update;
             }
             level = Level_FindByName("losttemple_d", NULL);
             dat_0087b2cc = level;
@@ -2655,20 +2613,20 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("map", NULL);
             HUB_LDATA = level;
             if (level != NULL) {
-                HUB_LDATA->callbacks[0] = (void *)Hub_Load;
-                HUB_LDATA->callbacks[1] = (void *)Hub_Init;
-                HUB_LDATA->callbacks[2] = (void *)Hub_Reset;
-                HUB_LDATA->callbacks[3] = (void *)Hub_Update;
-                HUB_LDATA->callbacks[5] = (void *)Hub_Draw3D;
-                HUB_LDATA->callbacks[6] = (void *)Hub_DrawPanel;
+                HUB_LDATA->load = Hub_Load;
+                HUB_LDATA->init = Hub_Init;
+                HUB_LDATA->reset = Hub_Reset;
+                HUB_LDATA->update = Hub_Update;
+                HUB_LDATA->draw = Hub_Draw3D;
+                HUB_LDATA->draw_panel = Hub_DrawPanel;
             }
             level = Level_FindByName("speederchase_a", NULL);
             SPEEDERCHASEA_LDATA = level;
             if (level != NULL) {
-                SPEEDERCHASEA_LDATA->callbacks[1] = (void *)SpeederChaseA_Init;
-                SPEEDERCHASEA_LDATA->callbacks[2] = (void *)SpeederChaseA_Reset;
-                SPEEDERCHASEA_LDATA->callbacks[3] = (void *)SpeederChaseA_Update;
-                SPEEDERCHASEA_LDATA->callbacks[6] = (void *)SpeederChaseA_Panel;
+                SPEEDERCHASEA_LDATA->init = SpeederChaseA_Init;
+                SPEEDERCHASEA_LDATA->reset = SpeederChaseA_Reset;
+                SPEEDERCHASEA_LDATA->update = SpeederChaseA_Update;
+                SPEEDERCHASEA_LDATA->draw_panel = SpeederChaseA_Panel;
             }
             level = Level_FindByName("negotiations_a", NULL);
             NEGOTIATIONSA_LDATA = level;
@@ -2679,8 +2637,8 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("gungan_a", NULL);
             GUNGAN_A_LDATA = level;
             if (level != NULL) {
-                GUNGAN_A_LDATA->callbacks[1] = (void *)GunganA_Init;
-                GUNGAN_A_LDATA->callbacks[3] = (void *)GunganA_Update;
+                GUNGAN_A_LDATA->init = GunganA_Init;
+                GUNGAN_A_LDATA->update = GunganA_Update;
             }
             level = Level_FindByName("rescue_c", NULL);
             RESCUEC_LDATA = level;
@@ -2717,25 +2675,25 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("podrace_b", NULL);
             PODRACEB_LDATA = level;
             if (level != NULL) {
-                PODRACEB_LDATA->callbacks[1] = (void *)PodRaceBInit;
-                PODRACEB_LDATA->callbacks[2] = (void *)PodRaceBReset;
-                PODRACEB_LDATA->callbacks[3] = (void *)PodRaceBUpdate;
+                PODRACEB_LDATA->init = PodRaceBInit;
+                PODRACEB_LDATA->reset = PodRaceBReset;
+                PODRACEB_LDATA->update = PodRaceBUpdate;
             }
             level = Level_FindByName("podrace_a", NULL);
             PODRACEA_LDATA = level;
             if (level != NULL) {
-                PODRACEA_LDATA->callbacks[1] = (void *)PodRaceAInit;
-                PODRACEA_LDATA->callbacks[2] = (void *)PodRaceAReset;
-                PODRACEA_LDATA->callbacks[3] = (void *)PodRaceA_Update;
-                PODRACEA_LDATA->callbacks[4] = (void *)PodRaceA_AlwaysUpdate;
-                PODRACEA_LDATA->callbacks[5] = (void *)PodRaceA_Draw;
+                PODRACEA_LDATA->init = PodRaceAInit;
+                PODRACEA_LDATA->reset = PodRaceAReset;
+                PODRACEA_LDATA->update = PodRaceA_Update;
+                PODRACEA_LDATA->always_update = PodRaceA_AlwaysUpdate;
+                PODRACEA_LDATA->draw = PodRaceA_Draw;
             }
             level = Level_FindByName("podrace_c", NULL);
             dat_0087b0b4 = level;
             if (level != NULL) {
-                dat_0087b0b4->callbacks[1] = (void *)PodRaceCInit;
-                dat_0087b0b4->callbacks[2] = (void *)PodRaceCReset;
-                dat_0087b0b4->callbacks[3] = (void *)PodRaceCUpdate;
+                dat_0087b0b4->init = PodRaceCInit;
+                dat_0087b0b4->reset = PodRaceCReset;
+                dat_0087b0b4->update = PodRaceCUpdate;
             }
             level = Level_FindByName("PodRace_Outro1", NULL);
             dat_0087b0b8 = level;
@@ -2744,17 +2702,17 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("PodSprint_A", NULL);
             PODSPRINTA_LDATA = level;
             if (level != NULL) {
-                PODSPRINTA_LDATA->callbacks[1] = (void *)PodSprintA_Init;
-                PODSPRINTA_LDATA->callbacks[2] = (void *)PodSprintA_Reset;
-                PODSPRINTA_LDATA->callbacks[3] = (void *)PodSprintA_Update;
-                PODSPRINTA_LDATA->callbacks[6] = (void *)PodSprintA_Panel;
+                PODSPRINTA_LDATA->init = PodSprintA_Init;
+                PODSPRINTA_LDATA->reset = PodSprintA_Reset;
+                PODSPRINTA_LDATA->update = PodSprintA_Update;
+                PODSPRINTA_LDATA->draw_panel = PodSprintA_Panel;
             }
             level = Level_FindByName("AnakinsFlight_B", NULL);
             dat_0087b0d4 = level;
             if (level != NULL) {
-                dat_0087b0d4->callbacks[1] = (void *)AnakinsFlightB_Init;
-                dat_0087b0d4->callbacks[3] = (void *)AnakinsFlightB_Update;
-                dat_0087b0d4->callbacks[5] = (void *)AnakinsFlightB_Draw;
+                dat_0087b0d4->init = AnakinsFlightB_Init;
+                dat_0087b0d4->update = AnakinsFlightB_Update;
+                dat_0087b0d4->draw = AnakinsFlightB_Draw;
             }
             level = Level_FindByName("retake_b", NULL);
             RETAKEB_LDATA = level;
@@ -2765,122 +2723,122 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("retake_g", NULL);
             dat_0087b0d0 = level;
             if (level != NULL) {
-                dat_0087b0d0->callbacks[1] = (void *)RetakeG_Init;
-                dat_0087b0d0->callbacks[2] = (void *)RetakeG_Reset;
-                dat_0087b0d0->callbacks[3] = (void *)RetakeG_Update;
-                dat_0087b0d0->callbacks[6] = (void *)RetakeG_Panel;
+                dat_0087b0d0->init = RetakeG_Init;
+                dat_0087b0d0->reset = RetakeG_Reset;
+                dat_0087b0d0->update = RetakeG_Update;
+                dat_0087b0d0->draw_panel = RetakeG_Panel;
             }
             level = Level_FindByName("Maul_A", NULL);
             MAULA_LDATA = level;
             if (level != NULL) {
-                MAULA_LDATA->callbacks[1] = (void *)MaulA_Init;
-                MAULA_LDATA->callbacks[2] = (void *)MaulA_Reset;
-                MAULA_LDATA->callbacks[3] = (void *)MaulA_Update;
-                MAULA_LDATA->callbacks[6] = (void *)MaulA_Panel;
+                MAULA_LDATA->init = MaulA_Init;
+                MAULA_LDATA->reset = MaulA_Reset;
+                MAULA_LDATA->update = MaulA_Update;
+                MAULA_LDATA->draw_panel = MaulA_Panel;
             }
             level = Level_FindByName("Maul_B", NULL);
             dat_0087b0dc = level;
             level = Level_FindByName("Maul_D", NULL);
             MAULD_LDATA = level;
             if (level != NULL) {
-                MAULD_LDATA->callbacks[1] = (void *)MaulD_Init;
-                MAULD_LDATA->callbacks[3] = (void *)MaulD_Update;
+                MAULD_LDATA->init = MaulD_Init;
+                MAULD_LDATA->update = MaulD_Update;
             }
             level = Level_FindByName("Maul_E", NULL);
             dat_0087b0e4 = level;
             if (level != NULL) {
-                dat_0087b0e4->callbacks[1] = (void *)MaulE_Init;
-                dat_0087b0e4->callbacks[3] = (void *)MaulE_Update;
+                dat_0087b0e4->init = MaulE_Init;
+                dat_0087b0e4->update = MaulE_Update;
             }
             level = Level_FindByName("Maul_F", NULL);
             MAULF_LDATA = level;
             if (level != NULL) {
-                MAULF_LDATA->callbacks[1] = (void *)MaulF_Init;
-                MAULF_LDATA->callbacks[2] = (void *)MaulF_Reset;
-                MAULF_LDATA->callbacks[3] = (void *)MaulF_Update;
-                MAULF_LDATA->callbacks[6] = (void *)MaulF_Panel;
+                MAULF_LDATA->init = MaulF_Init;
+                MAULF_LDATA->reset = MaulF_Reset;
+                MAULF_LDATA->update = MaulF_Update;
+                MAULF_LDATA->draw_panel = MaulF_Panel;
             }
             level = Level_FindByName("Jedi_B", NULL);
             JEDI_B_LDATA = level;
             if (level != NULL) {
-                JEDI_B_LDATA->callbacks[1] = (void *)JediB_Init;
-                JEDI_B_LDATA->callbacks[2] = (void *)JediB_Reset;
-                JEDI_B_LDATA->callbacks[3] = (void *)JediB_Update;
-                JEDI_B_LDATA->callbacks[6] = (void *)JediB_DrawPanel;
+                JEDI_B_LDATA->init = JediB_Init;
+                JEDI_B_LDATA->reset = JediB_Reset;
+                JEDI_B_LDATA->update = JediB_Update;
+                JEDI_B_LDATA->draw_panel = JediB_DrawPanel;
             }
             level = Level_FindByName("Jedi_Outro", NULL);
             dat_0087b0f0 = level;
             level = Level_FindByName("gunship_a", NULL);
             GUNSHIPA_LDATA = level;
             if (level != NULL) {
-                GUNSHIPA_LDATA->callbacks[1] = (void *)GunshipA_Init;
-                GUNSHIPA_LDATA->callbacks[3] = (void *)GunshipA_Update;
-                GUNSHIPA_LDATA->callbacks[5] = (void *)GunshipA_Draw;
+                GUNSHIPA_LDATA->init = GunshipA_Init;
+                GUNSHIPA_LDATA->update = GunshipA_Update;
+                GUNSHIPA_LDATA->draw = GunshipA_Draw;
             }
             level = Level_FindByName("gunship_b", NULL);
             GUNSHIPB_LDATA = level;
             if (level != NULL) {
-                GUNSHIPB_LDATA->callbacks[2] = (void *)GunshipB_Reset;
+                GUNSHIPB_LDATA->reset = GunshipB_Reset;
             }
             level = Level_FindByName("bonus_gunship_a", NULL);
             BONUS_GUNSHIPA_LDATA = level;
             if (level != NULL) {
-                BONUS_GUNSHIPA_LDATA->callbacks[2] = (void *)BonusGunshipA_Reset;
-                BONUS_GUNSHIPA_LDATA->callbacks[3] = (void *)BonusGunshipA_Update;
+                BONUS_GUNSHIPA_LDATA->reset = BonusGunshipA_Reset;
+                BONUS_GUNSHIPA_LDATA->update = BonusGunshipA_Update;
             }
             level = Level_FindByName("bonus_gunship_b", NULL);
             BONUS_GUNSHIPB_LDATA = level;
             if (level != NULL) {
-                BONUS_GUNSHIPB_LDATA->callbacks[1] = (void *)BonusGunshipB_Init;
-                BONUS_GUNSHIPB_LDATA->callbacks[2] = (void *)BonusGunshipB_Reset;
-                BONUS_GUNSHIPB_LDATA->callbacks[3] = (void *)BonusGunshipB_Update;
-                BONUS_GUNSHIPB_LDATA->callbacks[6] = (void *)BonusGunshipB_Panel;
+                BONUS_GUNSHIPB_LDATA->init = BonusGunshipB_Init;
+                BONUS_GUNSHIPB_LDATA->reset = BonusGunshipB_Reset;
+                BONUS_GUNSHIPB_LDATA->update = BonusGunshipB_Update;
+                BONUS_GUNSHIPB_LDATA->draw_panel = BonusGunshipB_Panel;
             }
             level = Level_FindByName("pursuit_a", NULL);
             CollisionVehicleExcludedLevel = level;
             if (level != NULL) {
-                CollisionVehicleExcludedLevel->callbacks[1] = (void *)BountyHunterPursuitA_Init;
-                CollisionVehicleExcludedLevel->callbacks[2] = (void *)BountyHunterPursuitA_Reset;
-                CollisionVehicleExcludedLevel->callbacks[3] = (void *)BountyHunterPursuitA_Update;
+                CollisionVehicleExcludedLevel->init = BountyHunterPursuitA_Init;
+                CollisionVehicleExcludedLevel->reset = BountyHunterPursuitA_Reset;
+                CollisionVehicleExcludedLevel->update = BountyHunterPursuitA_Update;
             }
             level = Level_FindByName("pursuit_b", NULL);
             dat_0087b108 = level;
             if (level != NULL) {
-                dat_0087b108->callbacks[1] = (void *)BountyHunterPursuitB_Init;
-                dat_0087b108->callbacks[2] = (void *)BountyHunterPursuitB_Reset;
-                dat_0087b108->callbacks[3] = (void *)BountyHunterPursuitB_Update;
+                dat_0087b108->init = BountyHunterPursuitB_Init;
+                dat_0087b108->reset = BountyHunterPursuitB_Reset;
+                dat_0087b108->update = BountyHunterPursuitB_Update;
             }
             level = Level_FindByName("pursuit_c", NULL);
             dat_0087b10c = level;
             if (level != NULL) {
-                dat_0087b10c->callbacks[1] = (void *)BountyHunterPursuitC_Init;
-                dat_0087b10c->callbacks[2] = (void *)BountyHunterPursuitC_Reset;
-                dat_0087b10c->callbacks[3] = (void *)BountyHunterPursuitC_Update;
+                dat_0087b10c->init = BountyHunterPursuitC_Init;
+                dat_0087b10c->reset = BountyHunterPursuitC_Reset;
+                dat_0087b10c->update = BountyHunterPursuitC_Update;
             }
             level = Level_FindByName("pursuit_d", NULL);
             dat_0087b110 = level;
             if (level != NULL) {
-                dat_0087b110->callbacks[1] = (void *)BountyHunterPursuitD_Init;
-                dat_0087b110->callbacks[2] = (void *)BountyHunterPursuitD_Reset;
-                dat_0087b110->callbacks[3] = (void *)BountyHunterPursuitD_Update;
+                dat_0087b110->init = BountyHunterPursuitD_Init;
+                dat_0087b110->reset = BountyHunterPursuitD_Reset;
+                dat_0087b110->update = BountyHunterPursuitD_Update;
             }
             level = Level_FindByName("pursuit_e", NULL);
             BOUNTYHUNTERPURSUITE_LDATA = level;
             level = Level_FindByName("dogfight_a", NULL);
             DOGFIGHTA_LDATA = level;
             if (level != NULL) {
-                DOGFIGHTA_LDATA->callbacks[1] = (void *)ChrisDogFightAInit;
-                DOGFIGHTA_LDATA->callbacks[2] = (void *)ChrisDogFightAReset;
-                DOGFIGHTA_LDATA->callbacks[3] = (void *)ChrisDogFightAUpdate;
-                DOGFIGHTA_LDATA->callbacks[5] = (void *)ChrisDogFightADraw;
+                DOGFIGHTA_LDATA->init = ChrisDogFightAInit;
+                DOGFIGHTA_LDATA->reset = ChrisDogFightAReset;
+                DOGFIGHTA_LDATA->update = ChrisDogFightAUpdate;
+                DOGFIGHTA_LDATA->draw = ChrisDogFightADraw;
             }
             level = Level_FindByName("Factory_B", NULL);
             FACTORYB_LDATA = level;
             if (level != NULL) {
-                FACTORYB_LDATA->callbacks[1] = (void *)FactoryB_Init;
-                FACTORYB_LDATA->callbacks[2] = (void *)FactoryB_Reset;
-                FACTORYB_LDATA->callbacks[3] = (void *)FactoryB_Update;
-                FACTORYB_LDATA->callbacks[5] = (void *)FactoryB_Draw;
+                FACTORYB_LDATA->init = FactoryB_Init;
+                FACTORYB_LDATA->reset = FactoryB_Reset;
+                FACTORYB_LDATA->update = FactoryB_Update;
+                FACTORYB_LDATA->draw = FactoryB_Draw;
             }
             level = Level_FindByName("Factory_D", NULL);
             FACTORYD_LDATA = level;
@@ -2889,34 +2847,34 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("Factory_G", NULL);
             FACTORYG_LDATA = level;
             if (level != NULL) {
-                FACTORYG_LDATA->callbacks[1] = (void *)FactoryG_Init;
-                FACTORYG_LDATA->callbacks[3] = (void *)FactoryG_Update;
+                FACTORYG_LDATA->init = FactoryG_Init;
+                FACTORYG_LDATA->update = FactoryG_Update;
             }
             level = Level_FindByName("Dooku_C", NULL);
             DOOKUC_LDATA = level;
             if (level != NULL) {
-                DOOKUC_LDATA->callbacks[2] = (void *)DookuC_Reset;
-                DOOKUC_LDATA->callbacks[3] = (void *)DookuC_Update;
-                DOOKUC_LDATA->callbacks[6] = (void *)DookuC_DrawPanel;
+                DOOKUC_LDATA->reset = DookuC_Reset;
+                DOOKUC_LDATA->update = DookuC_Update;
+                DOOKUC_LDATA->draw_panel = DookuC_DrawPanel;
             }
             level = Level_FindByName("Dooku_Outro", NULL);
             dat_0087b140 = level;
             level = Level_FindByName("Kamino_A", NULL);
             dat_0087b12c = level;
             if (level != NULL) {
-                dat_0087b12c->callbacks[4] = (void *)KaminoA_AlwaysUpdate;
+                dat_0087b12c->always_update = KaminoA_AlwaysUpdate;
             }
             level = Level_FindByName("Kamino_C", NULL);
             KAMINOC_LDATA = level;
             if (level != NULL) {
-                KAMINOC_LDATA->callbacks[2] = (void *)KaminoC_Reset;
-                KAMINOC_LDATA->callbacks[1] = (void *)KaminoC_Init;
-                KAMINOC_LDATA->callbacks[3] = (void *)KaminoC_Update;
+                KAMINOC_LDATA->reset = KaminoC_Reset;
+                KAMINOC_LDATA->init = KaminoC_Init;
+                KAMINOC_LDATA->update = KaminoC_Update;
             }
             level = Level_FindByName("Kamino_Outro1", NULL);
             dat_0087b138 = level;
             if (level != NULL) {
-                dat_0087b138->callbacks[1] = (void *)KaminoOutro_Init;
+                dat_0087b138->init = KaminoOutro_Init;
             }
             level = Level_FindByName("Kamino_A", NULL);
             dat_0087b12c = level;
@@ -2925,33 +2883,33 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("Kamino_E", NULL);
             KAMINOE_LDATA = level;
             if (level != NULL) {
-                KAMINOE_LDATA->callbacks[2] = (void *)KaminoE_Reset;
-                KAMINOE_LDATA->callbacks[1] = (void *)KaminoE_Init;
-                KAMINOE_LDATA->callbacks[4] = (void *)KaminoE_AlwaysUpdate;
-                KAMINOE_LDATA->callbacks[3] = (void *)KaminoE_Update;
-                KAMINOE_LDATA->callbacks[5] = (void *)KaminoE_Draw;
+                KAMINOE_LDATA->reset = KaminoE_Reset;
+                KAMINOE_LDATA->init = KaminoE_Init;
+                KAMINOE_LDATA->always_update = KaminoE_AlwaysUpdate;
+                KAMINOE_LDATA->update = KaminoE_Update;
+                KAMINOE_LDATA->draw = KaminoE_Draw;
             }
             level = Level_FindByName("Dogfight_A", NULL);
             DOGFIGHTA_LDATA = level;
             level = Level_FindByName("Cruiser_A", NULL);
             dat_0087b164 = level;
             if (level != NULL) {
-                dat_0087b164->callbacks[1] = (void *)CruiserAInit;
-                dat_0087b164->callbacks[3] = (void *)CruiserAUpdate;
+                dat_0087b164->init = CruiserAInit;
+                dat_0087b164->update = CruiserAUpdate;
             }
             level = Level_FindByName("Cruiser_C", NULL);
             CRUISERC_LDATA = level;
             if (level != NULL) {
-                CRUISERC_LDATA->callbacks[2] = (void *)CruiserCReset;
-                CRUISERC_LDATA->callbacks[3] = (void *)CruiserCUpdate;
-                CRUISERC_LDATA->callbacks[6] = (void *)CruiserCPanel;
+                CRUISERC_LDATA->reset = CruiserCReset;
+                CRUISERC_LDATA->update = CruiserCUpdate;
+                CRUISERC_LDATA->draw_panel = CruiserCPanel;
             }
             level = Level_FindByName("Cruiser_D", NULL);
             CRUISERD_LDATA = level;
             if (level != NULL) {
-                CRUISERD_LDATA->callbacks[1] = (void *)CruiserDInit;
-                CRUISERD_LDATA->callbacks[2] = (void *)CruiserDReset;
-                CRUISERD_LDATA->callbacks[3] = (void *)CruiserDUpdate;
+                CRUISERD_LDATA->init = CruiserDInit;
+                CRUISERD_LDATA->reset = CruiserDReset;
+                CRUISERD_LDATA->update = CruiserDUpdate;
             }
             level = Level_FindByName("Cruiser_E", NULL);
             dat_0087b170 = level;
@@ -2960,108 +2918,108 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("Grievous_A", NULL);
             dat_0087b144 = level;
             if (level != NULL) {
-                dat_0087b144->callbacks[1] = (void *)GrievousA_Init;
-                dat_0087b144->callbacks[2] = (void *)GrievousA_Reset;
-                dat_0087b144->callbacks[3] = (void *)GrievousA_Update;
+                dat_0087b144->init = GrievousA_Init;
+                dat_0087b144->reset = GrievousA_Reset;
+                dat_0087b144->update = GrievousA_Update;
             }
             level = Level_FindByName("temple_b", NULL);
             dat_0087b148 = level;
             level = Level_FindByName("temple_c", NULL);
             dat_0087b14c = level;
             if (level != NULL) {
-                dat_0087b14c->callbacks[4] = (void *)TempleC_AlwaysUpdate;
+                dat_0087b14c->always_update = TempleC_AlwaysUpdate;
             }
             level = Level_FindByName("temple_status", NULL);
             dat_0087b150 = level;
             level = Level_FindByName("Kashyyyk_A", NULL);
             dat_0087b154 = level;
             if (level != NULL) {
-                dat_0087b154->callbacks[1] = (void *)KashyyykA_Init;
-                dat_0087b154->callbacks[2] = (void *)KashyyykA_Reset;
-                dat_0087b154->callbacks[3] = (void *)KashyyykA_Update;
-                dat_0087b154->callbacks[6] = (void *)KashyyykA_Panel;
+                dat_0087b154->init = KashyyykA_Init;
+                dat_0087b154->reset = KashyyykA_Reset;
+                dat_0087b154->update = KashyyykA_Update;
+                dat_0087b154->draw_panel = KashyyykA_Panel;
             }
             level = Level_FindByName("Kashyyyk_B", NULL);
             dat_0087b158 = level;
             if (level != NULL) {
-                dat_0087b158->callbacks[1] = (void *)KashyyykB_Init;
-                dat_0087b158->callbacks[2] = (void *)KashyyykB_Reset;
-                dat_0087b158->callbacks[3] = (void *)KashyyykB_Update;
+                dat_0087b158->init = KashyyykB_Init;
+                dat_0087b158->reset = KashyyykB_Reset;
+                dat_0087b158->update = KashyyykB_Update;
             }
             level = Level_FindByName("Kashyyyk_C", NULL);
             dat_0087b15c = level;
             if (level != NULL) {
-                dat_0087b15c->callbacks[1] = (void *)KashyyykC_Init;
-                dat_0087b15c->callbacks[3] = (void *)KashyyykC_Update;
+                dat_0087b15c->init = KashyyykC_Init;
+                dat_0087b15c->update = KashyyykC_Update;
             }
             level = Level_FindByName("Kashyyyk_D", NULL);
             KASHYYYKD_LDATA = level;
             if (level != NULL) {
-                KASHYYYKD_LDATA->callbacks[1] = (void *)KashyyykD_Init;
-                KASHYYYKD_LDATA->callbacks[2] = (void *)KashyyykD_Reset;
-                KASHYYYKD_LDATA->callbacks[3] = (void *)KashyyykD_Update;
+                KASHYYYKD_LDATA->init = KashyyykD_Init;
+                KASHYYYKD_LDATA->reset = KashyyykD_Reset;
+                KASHYYYKD_LDATA->update = KashyyykD_Update;
             }
             level = Level_FindByName("vader_a", NULL);
             VADERA_LDATA = level;
             if (level != NULL) {
-                VADERA_LDATA->callbacks[1] = (void *)VaderA_Init;
-                VADERA_LDATA->callbacks[2] = (void *)VaderA_Reset;
-                VADERA_LDATA->callbacks[3] = (void *)VaderA_Update;
-                VADERA_LDATA->callbacks[6] = (void *)VaderA_DrawPanel;
+                VADERA_LDATA->init = VaderA_Init;
+                VADERA_LDATA->reset = VaderA_Reset;
+                VADERA_LDATA->update = VaderA_Update;
+                VADERA_LDATA->draw_panel = VaderA_DrawPanel;
             }
             level = Level_FindByName("vader_b", NULL);
             dat_0087b17c = level;
             if (level != NULL) {
-                dat_0087b17c->callbacks[1] = (void *)VaderB_Init;
-                dat_0087b17c->callbacks[2] = (void *)VaderB_Reset;
-                dat_0087b17c->callbacks[3] = (void *)VaderB_Update;
-                dat_0087b17c->callbacks[6] = (void *)VaderB_DrawPanel;
+                dat_0087b17c->init = VaderB_Init;
+                dat_0087b17c->reset = VaderB_Reset;
+                dat_0087b17c->update = VaderB_Update;
+                dat_0087b17c->draw_panel = VaderB_DrawPanel;
             }
             level = Level_FindByName("vader_c", NULL);
             VADERC_LDATA = level;
             if (level != NULL) {
-                VADERC_LDATA->callbacks[1] = (void *)VaderC_Init;
-                VADERC_LDATA->callbacks[2] = (void *)VaderC_Reset;
-                VADERC_LDATA->callbacks[3] = (void *)VaderC_Update;
-                VADERC_LDATA->callbacks[6] = (void *)VaderC_DrawPanel;
+                VADERC_LDATA->init = VaderC_Init;
+                VADERC_LDATA->reset = VaderC_Reset;
+                VADERC_LDATA->update = VaderC_Update;
+                VADERC_LDATA->draw_panel = VaderC_DrawPanel;
             }
             level = Level_FindByName("BlockadeRunner_B", NULL);
             dat_0087b194 = level;
             if (level != NULL) {
-                dat_0087b194->callbacks[1] = (void *)BlockadeRunnerB_Init;
-                dat_0087b194->callbacks[3] = (void *)BlockadeRunnerB_Update;
+                dat_0087b194->init = BlockadeRunnerB_Init;
+                dat_0087b194->update = BlockadeRunnerB_Update;
             }
             level = Level_FindByName("BlockadeRunner_C", NULL);
             ObstacleReturnLevel = level;
             if (level != NULL) {
-                ObstacleReturnLevel->callbacks[1] = (void *)BlockadeRunnerC_Init;
+                ObstacleReturnLevel->init = BlockadeRunnerC_Init;
             }
             level = Level_FindByName("BlockadeRunner_D", NULL);
             dat_0087b19c = level;
             if (level != NULL) {
-                dat_0087b19c->callbacks[2] = (void *)BlockadeRunnerD_Reset;
-                dat_0087b19c->callbacks[3] = (void *)BlockadeRunnerD_Update;
+                dat_0087b19c->reset = BlockadeRunnerD_Reset;
+                dat_0087b19c->update = BlockadeRunnerD_Update;
             }
             level = Level_FindByName("moseisley_a", NULL);
             MOSEISLEYA_LDATA = level;
             level = Level_FindByName("moseisley_b", NULL);
             MOSEISLEYB_LDATA = level;
             if (level != NULL) {
-                MOSEISLEYB_LDATA->callbacks[1] = (void *)MosEisleyB_Init;
+                MOSEISLEYB_LDATA->init = MosEisleyB_Init;
             }
             level = Level_FindByName("moseisley_c", NULL);
             MOSEISLEYC_LDATA = level;
             level = Level_FindByName("moseisley_d", NULL);
             dat_0087b1bc = level;
             if (level != NULL) {
-                dat_0087b1bc->callbacks[4] = (void *)MosEisleyD_AlwaysUpdate;
+                dat_0087b1bc->always_update = MosEisleyD_AlwaysUpdate;
             }
             level = Level_FindByName("moseisley_e", NULL);
             dat_0087b1c0 = level;
             if (level != NULL) {
-                dat_0087b1c0->callbacks[1] = (void *)MosEisleyE_Init;
-                dat_0087b1c0->callbacks[2] = (void *)MosEisleyE_Reset;
-                dat_0087b1c0->callbacks[3] = (void *)MosEisleyE_Update;
+                dat_0087b1c0->init = MosEisleyE_Init;
+                dat_0087b1c0->reset = MosEisleyE_Reset;
+                dat_0087b1c0->update = MosEisleyE_Update;
             }
             level = Level_FindByName("tatooine_a", NULL);
             TATOOINEA_LDATA = level;
@@ -3076,14 +3034,14 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("deathstarrescue_b", NULL);
             DEATHSTARRESCUEB_LDATA = level;
             if (level != NULL) {
-                DEATHSTARRESCUEB_LDATA->callbacks[1] = (void *)DeathStarRescueB_Init;
-                DEATHSTARRESCUEB_LDATA->callbacks[3] = (void *)DeathStarRescueB_Update;
-                DEATHSTARRESCUEB_LDATA->callbacks[4] = (void *)DeathStarRescueB_AlwaysUpdate;
+                DEATHSTARRESCUEB_LDATA->init = DeathStarRescueB_Init;
+                DEATHSTARRESCUEB_LDATA->update = DeathStarRescueB_Update;
+                DEATHSTARRESCUEB_LDATA->always_update = DeathStarRescueB_AlwaysUpdate;
             }
             level = Level_FindByName("deathstarrescue_c", NULL);
             DEATHSTARRESCUEC_LDATA = level;
             if (level != NULL) {
-                DEATHSTARRESCUEC_LDATA->callbacks[4] = (void *)DeathStarRescueC_AlwaysUpdate;
+                DEATHSTARRESCUEC_LDATA->always_update = DeathStarRescueC_AlwaysUpdate;
             }
             level = Level_FindByName("deathstarrescue_d", NULL);
             dat_0087b1d0 = level;
@@ -3092,27 +3050,27 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("deathstarescape_a", NULL);
             DEATHSTARESCAPEA_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPEA_LDATA->callbacks[3] = (void *)DeathStarEscapeA_Update;
+                DEATHSTARESCAPEA_LDATA->update = DeathStarEscapeA_Update;
             }
             level = Level_FindByName("deathstarescape_b", NULL);
             DEATHSTARESCAPEB_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPEB_LDATA->callbacks[1] = (void *)DeathStarEscapeB_Init;
-                DEATHSTARESCAPEB_LDATA->callbacks[3] = (void *)DeathStarEscapeB_Update;
-                DEATHSTARESCAPEB_LDATA->callbacks[4] = (void *)DeathStarEscapeB_AlwaysUpdate;
-                DEATHSTARESCAPEB_LDATA->callbacks[5] = (void *)DeathStarEscapeB_Draw;
+                DEATHSTARESCAPEB_LDATA->init = DeathStarEscapeB_Init;
+                DEATHSTARESCAPEB_LDATA->update = DeathStarEscapeB_Update;
+                DEATHSTARESCAPEB_LDATA->always_update = DeathStarEscapeB_AlwaysUpdate;
+                DEATHSTARESCAPEB_LDATA->draw = DeathStarEscapeB_Draw;
             }
             level = Level_FindByName("deathstarescape_c", NULL);
             DEATHSTARESCAPEC_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPEC_LDATA->callbacks[1] = (void *)DeathStarEscapeC_Init;
-                DEATHSTARESCAPEC_LDATA->callbacks[3] = (void *)DeathStarEscapeC_Update;
-                DEATHSTARESCAPEC_LDATA->callbacks[2] = (void *)DeathStarEscapeC_Reset;
+                DEATHSTARESCAPEC_LDATA->init = DeathStarEscapeC_Init;
+                DEATHSTARESCAPEC_LDATA->update = DeathStarEscapeC_Update;
+                DEATHSTARESCAPEC_LDATA->reset = DeathStarEscapeC_Reset;
             }
             level = Level_FindByName("deathstarescape_d", NULL);
             DEATHSTARESCAPED_LDATA = level;
             if (level != NULL) {
-                DEATHSTARESCAPED_LDATA->callbacks[3] = (void *)DeathStarEscapeD_Update;
+                DEATHSTARESCAPED_LDATA->update = DeathStarEscapeD_Update;
             }
             level = Level_FindByName("deathstarbattle_a", NULL);
             DEATHSTARBATTLEA_LDATA = level;
@@ -3121,102 +3079,102 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("deathstarbattle_c", NULL);
             DEATHSTARBATTLEC_LDATA = level;
             if (level != NULL) {
-                DEATHSTARBATTLEC_LDATA->callbacks[4] = (void *)DeathStarBattleC_AlwaysUpdate;
+                DEATHSTARBATTLEC_LDATA->always_update = DeathStarBattleC_AlwaysUpdate;
             }
             level = Level_FindByName("deathstarbattle_d", NULL);
             DEATHSTARBATTLED_LDATA = level;
             if (level != NULL) {
-                DEATHSTARBATTLED_LDATA->callbacks[1] = (void *)DeathStarBattleDInit;
-                DEATHSTARBATTLED_LDATA->callbacks[3] = (void *)DeathStarBattleDUpdate;
-                DEATHSTARBATTLED_LDATA->callbacks[5] = (void *)DeathStarBattleDDraw;
-                DEATHSTARBATTLED_LDATA->callbacks[2] = (void *)DeathStarBattleDReset;
+                DEATHSTARBATTLED_LDATA->init = DeathStarBattleDInit;
+                DEATHSTARBATTLED_LDATA->update = DeathStarBattleDUpdate;
+                DEATHSTARBATTLED_LDATA->draw = DeathStarBattleDDraw;
+                DEATHSTARBATTLED_LDATA->reset = DeathStarBattleDReset;
             }
             level = Level_FindByName("hothbattle_a", NULL);
             HOTHBATTLEA_LDATA = level;
             if (level != NULL) {
-                HOTHBATTLEA_LDATA->callbacks[1] = (void *)HothBattleA_Init;
-                HOTHBATTLEA_LDATA->callbacks[2] = (void *)HothBattleA_Reset;
-                HOTHBATTLEA_LDATA->callbacks[3] = (void *)HothBattleA_Update;
-                HOTHBATTLEA_LDATA->callbacks[5] = (void *)HothBattleA_Draw;
+                HOTHBATTLEA_LDATA->init = HothBattleA_Init;
+                HOTHBATTLEA_LDATA->reset = HothBattleA_Reset;
+                HOTHBATTLEA_LDATA->update = HothBattleA_Update;
+                HOTHBATTLEA_LDATA->draw = HothBattleA_Draw;
             }
             level = Level_FindByName("hothbattle_b", NULL);
             dat_0087b200 = level;
             level = Level_FindByName("hothbattle_c", NULL);
             dat_0087b204 = level;
             if (level != NULL) {
-                dat_0087b204->callbacks[1] = (void *)HothBattleC_Init;
-                dat_0087b204->callbacks[2] = (void *)HothBattleC_Reset;
-                dat_0087b204->callbacks[3] = (void *)HothBattleC_Update;
-                dat_0087b204->callbacks[5] = (void *)HothBattleC_Draw;
+                dat_0087b204->init = HothBattleC_Init;
+                dat_0087b204->reset = HothBattleC_Reset;
+                dat_0087b204->update = HothBattleC_Update;
+                dat_0087b204->draw = HothBattleC_Draw;
             }
             level = Level_FindByName("hothbattle_d", NULL);
             dat_0087b208 = level;
             level = Level_FindByName("hothbattle_e", NULL);
             dat_0087b20c = level;
             if (level != NULL) {
-                dat_0087b20c->callbacks[1] = (void *)HothBattleE_Init;
-                dat_0087b20c->callbacks[3] = (void *)HothBattleE_Update;
-                dat_0087b20c->callbacks[5] = (void *)HothBattleE_Draw;
-                dat_0087b20c->callbacks[6] = (void *)HothBattleE_Panel;
+                dat_0087b20c->init = HothBattleE_Init;
+                dat_0087b20c->update = HothBattleE_Update;
+                dat_0087b20c->draw = HothBattleE_Draw;
+                dat_0087b20c->draw_panel = HothBattleE_Panel;
             }
             level = Level_FindByName("HothBattle_Outro", NULL);
             dat_0087b210 = level;
             level = Level_FindByName("hothescape_a", NULL);
             HOTHESCAPEA_LDATA = level;
             if (level != NULL) {
-                HOTHESCAPEA_LDATA->callbacks[1] = (void *)HothEscapeA_Init;
-                HOTHESCAPEA_LDATA->callbacks[3] = (void *)HothEscapeA_Update;
-                HOTHESCAPEA_LDATA->callbacks[2] = (void *)HothEscapeA_Reset;
+                HOTHESCAPEA_LDATA->init = HothEscapeA_Init;
+                HOTHESCAPEA_LDATA->update = HothEscapeA_Update;
+                HOTHESCAPEA_LDATA->reset = HothEscapeA_Reset;
             }
             level = Level_FindByName("hothescape_b", NULL);
             dat_0087b218 = level;
             if (level != NULL) {
-                dat_0087b218->callbacks[1] = (void *)HothEscapeB_Init;
-                dat_0087b218->callbacks[3] = (void *)HothEscapeB_Update;
-                dat_0087b218->callbacks[2] = (void *)HothEscapeB_Reset;
+                dat_0087b218->init = HothEscapeB_Init;
+                dat_0087b218->update = HothEscapeB_Update;
+                dat_0087b218->reset = HothEscapeB_Reset;
             }
             level = Level_FindByName("hothescape_c", NULL);
             HOTHESCAPEC_LDATA = level;
             if (level != NULL) {
-                HOTHESCAPEC_LDATA->callbacks[1] = (void *)HothEscapeC_Init;
-                HOTHESCAPEC_LDATA->callbacks[3] = (void *)HothEscapeC_Update;
-                HOTHESCAPEC_LDATA->callbacks[4] = (void *)HothEscapeC_AlwaysUpdate;
-                HOTHESCAPEC_LDATA->callbacks[2] = (void *)HothEscapeC_Reset;
+                HOTHESCAPEC_LDATA->init = HothEscapeC_Init;
+                HOTHESCAPEC_LDATA->update = HothEscapeC_Update;
+                HOTHESCAPEC_LDATA->always_update = HothEscapeC_AlwaysUpdate;
+                HOTHESCAPEC_LDATA->reset = HothEscapeC_Reset;
             }
             level = Level_FindByName("hothescape_d", NULL);
             dat_0087b220 = level;
             if (level != NULL) {
-                dat_0087b220->callbacks[1] = (void *)HothEscapeD_Init;
-                dat_0087b220->callbacks[3] = (void *)HothEscapeD_Update;
-                dat_0087b220->callbacks[2] = (void *)HothEscapeD_Reset;
+                dat_0087b220->init = HothEscapeD_Init;
+                dat_0087b220->update = HothEscapeD_Update;
+                dat_0087b220->reset = HothEscapeD_Reset;
             }
             level = Level_FindByName("AsteroidChase_A", NULL);
             ASTEROIDCHASEA_LDATA = level;
             if (level != NULL) {
-                ASTEROIDCHASEA_LDATA->callbacks[1] = (void *)AsteroidChaseA_Init;
-                ASTEROIDCHASEA_LDATA->callbacks[2] = (void *)AsteroidChaseA_Reset;
-                ASTEROIDCHASEA_LDATA->callbacks[3] = (void *)AsteroidChaseA_Update;
+                ASTEROIDCHASEA_LDATA->init = AsteroidChaseA_Init;
+                ASTEROIDCHASEA_LDATA->reset = AsteroidChaseA_Reset;
+                ASTEROIDCHASEA_LDATA->update = AsteroidChaseA_Update;
             }
             level = Level_FindByName("AsteroidChase_B", NULL);
             dat_0087b228 = level;
             if (level != NULL) {
-                dat_0087b228->callbacks[1] = (void *)AsteroidChaseB_Init;
-                dat_0087b228->callbacks[2] = (void *)AsteroidChaseB_Reset;
-                dat_0087b228->callbacks[3] = (void *)AsteroidChaseB_Update;
+                dat_0087b228->init = AsteroidChaseB_Init;
+                dat_0087b228->reset = AsteroidChaseB_Reset;
+                dat_0087b228->update = AsteroidChaseB_Update;
             }
             level = Level_FindByName("AsteroidChase_C", NULL);
             ASTEROIDCHASEC_LDATA = level;
             if (level != NULL) {
-                ASTEROIDCHASEC_LDATA->callbacks[1] = (void *)AsteroidChaseC_Init;
-                ASTEROIDCHASEC_LDATA->callbacks[2] = (void *)AsteroidChaseC_Reset;
-                ASTEROIDCHASEC_LDATA->callbacks[3] = (void *)AsteroidChaseC_Update;
+                ASTEROIDCHASEC_LDATA->init = AsteroidChaseC_Init;
+                ASTEROIDCHASEC_LDATA->reset = AsteroidChaseC_Reset;
+                ASTEROIDCHASEC_LDATA->update = AsteroidChaseC_Update;
             }
             level = Level_FindByName("AsteroidChase_D", NULL);
             ASTEROIDCHASED_LDATA = level;
             if (level != NULL) {
-                ASTEROIDCHASED_LDATA->callbacks[1] = (void *)AsteroidChaseD_Init;
-                ASTEROIDCHASED_LDATA->callbacks[3] = (void *)AsteroidChaseD_Update;
-                ASTEROIDCHASED_LDATA->callbacks[5] = (void *)AsteroidChaseD_Panel;
+                ASTEROIDCHASED_LDATA->init = AsteroidChaseD_Init;
+                ASTEROIDCHASED_LDATA->update = AsteroidChaseD_Update;
+                ASTEROIDCHASED_LDATA->draw = AsteroidChaseD_Panel;
             }
             level = Level_FindByName("AsteroidChase_Midtro", NULL);
             ASTEROIDCHASEMITRO_LDATA = level;
@@ -3229,91 +3187,91 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("dagobah_e", NULL);
             dat_0087b268 = level;
             if (level != NULL) {
-                dat_0087b268->callbacks[1] = (void *)DagobahE_Init;
+                dat_0087b268->init = DagobahE_Init;
             }
             level = Level_FindByName("dagobah_b", NULL);
             dat_0087b25c = level;
             if (level != NULL) {
-                dat_0087b25c->callbacks[1] = (void *)DagobahB_Init;
-                dat_0087b25c->callbacks[2] = (void *)DagobahB_Reset;
+                dat_0087b25c->init = DagobahB_Init;
+                dat_0087b25c->reset = DagobahB_Reset;
             }
             level = Level_FindByName("dagobah_c", NULL);
             DAGOBAHC_LDATA = level;
             if (level != NULL) {
-                DAGOBAHC_LDATA->callbacks[1] = (void *)DagobahC_Init;
-                DAGOBAHC_LDATA->callbacks[6] = (void *)DagobahC_Panel;
+                DAGOBAHC_LDATA->init = DagobahC_Init;
+                DAGOBAHC_LDATA->draw_panel = DagobahC_Panel;
             }
             level = Level_FindByName("CloudCityTrap_A", NULL);
             CLOUDCITYTRAPA_LDATA = level;
             if (level != NULL) {
-                CLOUDCITYTRAPA_LDATA->callbacks[1] = (void *)CloudCityTrapA_Init;
-                CLOUDCITYTRAPA_LDATA->callbacks[3] = (void *)CloudCityTrapA_Update;
-                CLOUDCITYTRAPA_LDATA->callbacks[2] = (void *)CloudCityTrapA_Reset;
+                CLOUDCITYTRAPA_LDATA->init = CloudCityTrapA_Init;
+                CLOUDCITYTRAPA_LDATA->update = CloudCityTrapA_Update;
+                CLOUDCITYTRAPA_LDATA->reset = CloudCityTrapA_Reset;
             }
             level = Level_FindByName("CloudCityTrap_B", NULL);
             CLOUDCITYTRAPB_LDATA = level;
             if (level != NULL) {
-                CLOUDCITYTRAPB_LDATA->callbacks[1] = (void *)CloudCityTrapB_Init;
-                CLOUDCITYTRAPB_LDATA->callbacks[3] = (void *)CloudCityTrapB_Update;
+                CLOUDCITYTRAPB_LDATA->init = CloudCityTrapB_Init;
+                CLOUDCITYTRAPB_LDATA->update = CloudCityTrapB_Update;
             }
             level = Level_FindByName("CloudCityTrap_C", NULL);
             dat_0087b24c = level;
             if (level != NULL) {
-                dat_0087b24c->callbacks[2] = (void *)CloudCityTrapC_Reset;
-                dat_0087b24c->callbacks[3] = (void *)CloudCityTrapC_Update;
-                dat_0087b24c->callbacks[6] = (void *)CloudCityTrapC_Panel;
+                dat_0087b24c->reset = CloudCityTrapC_Reset;
+                dat_0087b24c->update = CloudCityTrapC_Update;
+                dat_0087b24c->draw_panel = CloudCityTrapC_Panel;
             }
             level = Level_FindByName("CloudCityTrap_Outro", NULL);
             dat_0087b250 = level;
             level = Level_FindByName("cloudcityescape_a", NULL);
             CLOUDCITYESCAPEA_LDATA = level;
             if (level != NULL) {
-                CLOUDCITYESCAPEA_LDATA->callbacks[1] = (void *)CloudCityEscapeA_Init;
-                CLOUDCITYESCAPEA_LDATA->callbacks[2] = (void *)CloudCityEscapeA_Reset;
-                CLOUDCITYESCAPEA_LDATA->callbacks[3] = (void *)CloudCityEscapeA_Update;
-                CLOUDCITYESCAPEA_LDATA->callbacks[6] = (void *)CloudCityEscapeA_Panel;
+                CLOUDCITYESCAPEA_LDATA->init = CloudCityEscapeA_Init;
+                CLOUDCITYESCAPEA_LDATA->reset = CloudCityEscapeA_Reset;
+                CLOUDCITYESCAPEA_LDATA->update = CloudCityEscapeA_Update;
+                CLOUDCITYESCAPEA_LDATA->draw_panel = CloudCityEscapeA_Panel;
             }
             level = Level_FindByName("cloudcityescape_b", NULL);
             dat_0087b23c = level;
             level = Level_FindByName("cloudcityescape_c", NULL);
             CLOUDCITYESCAPEC_LDATA = level;
             if (level != NULL) {
-                CLOUDCITYESCAPEC_LDATA->callbacks[1] = (void *)CloudCityEscapeC_Init;
-                CLOUDCITYESCAPEC_LDATA->callbacks[3] = (void *)CloudCityEscapeC_Update;
+                CLOUDCITYESCAPEC_LDATA->init = CloudCityEscapeC_Init;
+                CLOUDCITYESCAPEC_LDATA->update = CloudCityEscapeC_Update;
             }
             level = Level_FindByName("jabbaspalace_a", NULL);
             JABBASPALACEA_LDATA = level;
             if (level != NULL) {
-                JABBASPALACEA_LDATA->callbacks[1] = (void *)JabbasPalaceA_Init;
-                JABBASPALACEA_LDATA->callbacks[2] = (void *)JabbasPalaceA_Reset;
-                JABBASPALACEA_LDATA->callbacks[3] = (void *)JabbasPalaceA_Update;
+                JABBASPALACEA_LDATA->init = JabbasPalaceA_Init;
+                JABBASPALACEA_LDATA->reset = JabbasPalaceA_Reset;
+                JABBASPALACEA_LDATA->update = JabbasPalaceA_Update;
             }
             level = Level_FindByName("jabbaspalace_b", NULL);
             JABBASPALACEB_LDATA = level;
             if (level != NULL) {
-                JABBASPALACEB_LDATA->callbacks[1] = (void *)JabbasPalaceB_Init;
-                JABBASPALACEB_LDATA->callbacks[2] = (void *)JabbasPalaceB_Reset;
+                JABBASPALACEB_LDATA->init = JabbasPalaceB_Init;
+                JABBASPALACEB_LDATA->reset = JabbasPalaceB_Reset;
             }
             level = Level_FindByName("jabbaspalace_d", NULL);
             JABBASPALACED_LDATA = level;
             if (level != NULL) {
-                JABBASPALACED_LDATA->callbacks[2] = (void *)JabbasPalaceD_Reset;
+                JABBASPALACED_LDATA->reset = JabbasPalaceD_Reset;
             }
             level = Level_FindByName("jabbaspalace_e", NULL);
             JABBASPALACEE_LDATA = level;
             if (level != NULL) {
-                JABBASPALACEE_LDATA->callbacks[1] = (void *)JabbasPalaceE_Init;
-                JABBASPALACEE_LDATA->callbacks[2] = (void *)JabbasPalaceE_Reset;
-                JABBASPALACEE_LDATA->callbacks[3] = (void *)JabbasPalaceE_Update;
-                JABBASPALACEE_LDATA->callbacks[6] = (void *)JabbasPalaceE_Panel;
+                JABBASPALACEE_LDATA->init = JabbasPalaceE_Init;
+                JABBASPALACEE_LDATA->reset = JabbasPalaceE_Reset;
+                JABBASPALACEE_LDATA->update = JabbasPalaceE_Update;
+                JABBASPALACEE_LDATA->draw_panel = JabbasPalaceE_Panel;
             }
             level = Level_FindByName("jabbaspalace_Outro", NULL);
             dat_0087b2b0 = level;
             level = Level_FindByName("endorbattle_a", NULL);
             ENDORBATTLEA_LDATA = level;
             if (level != NULL) {
-                ENDORBATTLEA_LDATA->callbacks[1] = (void *)EndorBattleA_Init;
-                ENDORBATTLEA_LDATA->callbacks[3] = (void *)EndorBattleA_Update;
+                ENDORBATTLEA_LDATA->init = EndorBattleA_Init;
+                ENDORBATTLEA_LDATA->update = EndorBattleA_Update;
             }
             level = Level_FindByName("endorbattle_b", NULL);
             ENDORBATTLEB_LDATA = level;
@@ -3324,73 +3282,73 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("DeathStar2Battle_A", NULL);
             DEATHSTAR2BATTLEA_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEA_LDATA->callbacks[4] = (void *)DeathStar2BattleA_AlwaysUpdate;
+                DEATHSTAR2BATTLEA_LDATA->always_update = DeathStar2BattleA_AlwaysUpdate;
             }
             level = Level_FindByName("DeathStar2Battle_B", NULL);
             DEATHSTAR2BATTLEB_LDATA = level;
             level = Level_FindByName("DeathStar2Battle_D", NULL);
             DEATHSTAR2BATTLED_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLED_LDATA->callbacks[1] = (void *)DeathStar2BattleD_Init;
-                DEATHSTAR2BATTLED_LDATA->callbacks[3] = (void *)DeathStar2BattleD_Update;
+                DEATHSTAR2BATTLED_LDATA->init = DeathStar2BattleD_Init;
+                DEATHSTAR2BATTLED_LDATA->update = DeathStar2BattleD_Update;
             }
             level = Level_FindByName("DeathStar2Battle_E", NULL);
             DEATHSTAR2BATTLEE_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEE_LDATA->callbacks[1] = (void *)DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEE_LDATA->init = DeathStar2BattleFire_Init;
             }
             level = Level_FindByName("DeathStar2Battle_F", NULL);
             DEATHSTAR2BATTLEF_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEF_LDATA->callbacks[1] = (void *)DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEF_LDATA->init = DeathStar2BattleFire_Init;
             }
             level = Level_FindByName("DeathStar2Battle_G", NULL);
             DEATHSTAR2BATTLEG_LDATA = level;
             if (level != NULL) {
-                DEATHSTAR2BATTLEG_LDATA->callbacks[1] = (void *)DeathStar2BattleFire_Init;
+                DEATHSTAR2BATTLEG_LDATA->init = DeathStar2BattleFire_Init;
             }
             level = Level_FindByName("DeathStar2Battle_Midtro", NULL);
             dat_0087b284 = level;
             level = Level_FindByName("EmperorFight_A", NULL);
             EMPERORFIGHTA_LDATA = level;
             if (level != NULL) {
-                EMPERORFIGHTA_LDATA->callbacks[1] = (void *)EmperorFightA_Init;
-                EMPERORFIGHTA_LDATA->callbacks[2] = (void *)EmperorFightA_Reset;
-                EMPERORFIGHTA_LDATA->callbacks[3] = (void *)EmperorFightA_Update;
-                EMPERORFIGHTA_LDATA->callbacks[6] = (void *)EmperorFightA_Panel;
+                EMPERORFIGHTA_LDATA->init = EmperorFightA_Init;
+                EMPERORFIGHTA_LDATA->reset = EmperorFightA_Reset;
+                EMPERORFIGHTA_LDATA->update = EmperorFightA_Update;
+                EMPERORFIGHTA_LDATA->draw_panel = EmperorFightA_Panel;
             }
             level = Level_FindByName("SarlaccPit_A", NULL);
             SARLACCPITA_LDATA = level;
             if (level != NULL) {
-                SARLACCPITA_LDATA->callbacks[2] = (void *)SarlaccPitA_Reset;
-                SARLACCPITA_LDATA->callbacks[5] = (void *)SarlaccPitA_Draw;
+                SARLACCPITA_LDATA->reset = SarlaccPitA_Reset;
+                SARLACCPITA_LDATA->draw = SarlaccPitA_Draw;
             }
             level = Level_FindByName("SarlaccPit_B", NULL);
             SARLACCPITB_LDATA = level;
             if (level != NULL) {
-                SARLACCPITB_LDATA->callbacks[1] = (void *)SarlaccPitB_Init;
-                SARLACCPITB_LDATA->callbacks[2] = (void *)SarlaccPitB_Reset;
-                SARLACCPITB_LDATA->callbacks[3] = (void *)SarlaccPitB_Update;
+                SARLACCPITB_LDATA->init = SarlaccPitB_Init;
+                SARLACCPITB_LDATA->reset = SarlaccPitB_Reset;
+                SARLACCPITB_LDATA->update = SarlaccPitB_Update;
             }
             level = Level_FindByName("SarlaccPit_C", NULL);
             SARLACCPITC_LDATA = level;
             if (level != NULL) {
-                SARLACCPITC_LDATA->callbacks[1] = (void *)SarlaccPitC_Init;
-                SARLACCPITC_LDATA->callbacks[2] = (void *)SarlaccPitC_Reset;
-                SARLACCPITC_LDATA->callbacks[3] = (void *)SarlaccPitC_Update;
+                SARLACCPITC_LDATA->init = SarlaccPitC_Init;
+                SARLACCPITC_LDATA->reset = SarlaccPitC_Reset;
+                SARLACCPITC_LDATA->update = SarlaccPitC_Update;
             }
             level = Level_FindByName("lego_city", NULL);
             dat_0087b298 = level;
             if (level != NULL) {
-                dat_0087b298->callbacks[2] = (void *)LegoCity_Reset;
-                dat_0087b298->callbacks[3] = (void *)LegoCity_Update;
+                dat_0087b298->reset = LegoCity_Reset;
+                dat_0087b298->update = LegoCity_Update;
             }
             level = Level_FindByName("new_town", NULL);
             dat_0087b29c = level;
             if (level != NULL) {
-                dat_0087b29c->callbacks[1] = (void *)NewTown_Init;
-                dat_0087b29c->callbacks[2] = (void *)NewTown_Reset;
-                dat_0087b29c->callbacks[3] = (void *)NewTown_Update;
+                dat_0087b29c->init = NewTown_Init;
+                dat_0087b29c->reset = NewTown_Reset;
+                dat_0087b29c->update = NewTown_Update;
             }
         } else {
             level = Level_FindByName("batcave_a", NULL);
@@ -3401,16 +3359,16 @@ extern "C" void FixUpLevels(struct level_fixup_s *fixup) {
             level = Level_FindByName("fairgroundbad_a", NULL);
             dat_0087af60 = level;
             if (level != NULL) {
-                dat_0087af60->callbacks[1] = (void *)FairgroundbadA_Init;
-                dat_0087af60->callbacks[3] = (void *)FairgroundbadA_Update;
-                dat_0087af60->callbacks[5] = (void *)FairgroundbadA_Draw;
+                dat_0087af60->init = FairgroundbadA_Init;
+                dat_0087af60->update = FairgroundbadA_Update;
+                dat_0087af60->draw = FairgroundbadA_Draw;
             }
         }
     }
     for (index = 0, level = LDataList; index < LEVELCOUNT; ++index, ++level) {
         if ((level->flags & LEVEL_STATUS) != 0 || level == STATUS_LDATA) {
-            level->callbacks[3] = (void *)UpdateStatusScreen;
-            level->callbacks[6] = (void *)DrawStatusScreen;
+            level->update = UpdateStatusScreen;
+            level->draw_panel = DrawStatusScreen;
         }
     }
 }
@@ -3553,8 +3511,8 @@ extern "C" {
             }
             GizmoSysStoreProgress(world->gizmo_sys, world, index);
             if (progress != NULL) {
-                GizFlowStoreProgress(world->giz_flow, &((LEVEL_PROGRESS_TRANSFER *)progress)->giz_flow_progress);
-                StoreSceneProgress(world->current_gscn, &((LEVEL_PROGRESS_TRANSFER *)progress)->scene_progress, 0);
+                GizFlowStoreProgress(world->giz_flow, &progress->giz_flow_progress);
+                StoreSceneProgress(world->current_gscn, &progress->scene_progress, 0);
             }
             GameAnimSys_StoreProgress(world->game_anim_sys, index);
             WorldStoreScriptsProgressPC(world, progress);
@@ -3562,11 +3520,10 @@ extern "C" {
     store_flags:
         if (progress != NULL) {
             if (progress != world->level_progress) {
-                PCByteCopy(((LEVEL_PROGRESS_TRANSFER *)progress)->disabled_effect_names, world->level_progress->disabled_effect_names,
-                           sizeof(((LEVEL_PROGRESS_TRANSFER *)progress)->disabled_effect_names));
+                PCByteCopy(progress->disabled_effect_names, world->level_progress->disabled_effect_names,
+                           sizeof(progress->disabled_effect_names));
             }
-            ((LEVEL_PROGRESS_TRANSFER *)progress)->flags =
-                (((LEVEL_PROGRESS_TRANSFER *)progress)->flags & ~4U) | ((((WORLD_PERSISTENCE_FLAGS *)world)->progress_flags << 2) & 4) | 2;
+            progress->flags = (progress->flags & ~4U) | ((world->belt_active << 2) & 4) | 2;
         }
     }
 
@@ -3602,9 +3559,9 @@ void NewArea(void) {
     SuperCounters_Reset(Area);
     NewArea_ResetGlobalsPC();
     for (i = 0; i < 8; ++i) {
-        ((PLAYER_PROGRESS_HP *)PlayerProgress)[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
+        PlayerProgress[i].hitpoints = (u8)DEFAULT_PLAYERHITPOINTS;
         if (Player[i] != NULL) {
-            Player[i]->current_hp = (i8)Player[i]->unknown_107e;
+            Player[i]->current_hp = (i8)Player[i]->max_hitpoints;
         }
     }
     ResetTimer(&AreaTimer, 0.0f);

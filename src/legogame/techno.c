@@ -143,21 +143,6 @@ void *Technos_FindTgt(TECHNO *techno) {
     }
 }
 
-typedef struct techno_level_view_s { // size 0xed
-    u8 reserved_000[0xec];           // 0x00
-    u8 max_technos;                  // 0xec
-} TECHNO_LEVEL_VIEW;
-
-typedef struct techno_gizmo_type_name_s { // size 0x9c
-    char name[32];                        // 0x00
-    u8 reserved_20[0x7c];                 // 0x20
-} TECHNO_GIZMO_TYPE_NAME;
-
-typedef struct techno_obstacle_view_s { // size 0x38
-    u8 reserved_00[0x34];               // 0x00
-    GAMEANIMSET *anim_set;              // 0x34
-} TECHNO_OBSTACLE_VIEW;
-
 typedef struct techno_progress_s { // size 0x8
     u32 active[1];                 // 0x0
     u32 visible[1];                // 0x4
@@ -228,8 +213,6 @@ static void Technos_Reset(void *world_ptr, void *data, void *progress_ptr) {
 }
 
 i32 GizTechno_CanUseTechno(GAMEOBJECT *object, TECHNO *techno) {
-    (void)object;
-    (void)techno;
     return 1;
 }
 
@@ -325,7 +308,7 @@ static void Technos_Draw(void *world_ptr, void *data, f32 delta_time) {
 
 static i32 Technos_GetMaxGizmos(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    return world != NULL ? ((TECHNO_LEVEL_VIEW *)world->current_level)->max_technos : 0;
+    return world != NULL ? world->current_level->max_technos : 0;
 }
 
 static void Technos_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
@@ -360,9 +343,9 @@ static i32 Techno_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) {
         case TECHNO_TARGET_CHARACTER:
             return (techno->flags >> 3) & 1;
         case TECHNO_TARGET_GIZMO:
-            if (NuStrICmp(((TECHNO_GIZMO_TYPE_NAME *)gizmotypes->types)[techno->controlled_gizmo->type_id].name, "GIZOBSTACLE") == 0) {
+            if (NuStrICmp(gizmotypes->types[techno->controlled_gizmo->type_id].name, "GIZOBSTACLE") == 0) {
                 target = techno->controlled_object;
-                return ((TECHNO_OBSTACLE_VIEW *)target->object)->anim_set->state == GAMEANIMSET_STATE_AT_END;
+                return ((GIZOBSTACLE *)target->object)->anim_set->state == GAMEANIMSET_STATE_AT_END;
             }
     }
     return 0;
@@ -428,7 +411,7 @@ static void Technos_StoreProgress(void *world_ptr, void *data, void *progress_pt
 
 static void *Technos_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    TECHNO_LEVEL_VIEW *level = (TECHNO_LEVEL_VIEW *)world->current_level;
+    LEVELDATA *level = world->current_level;
     world->technos = NULL;
     world->techno_count = 0;
     if (level->max_technos > 0) {
@@ -601,7 +584,7 @@ void Technos_MoveTarget(TECHNO *techno_pointer, GAMEOBJECT *object) {
     GIZOBSTACLE *obstacle;
     if (object == NULL) {
         speed = 0.0f;
-    } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 == 2) {
+    } else if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->use_action == 2) {
         speed = 1.0f;
     } else if ((techno->movement & TECHNO_MOVE_WAGGLE) != 0) {
         speed = (object->player.pad->runtime_flags & GAMEPAD_WAGGLE) != 0 ? 1.0f : 0.0f;
@@ -633,7 +616,7 @@ void Technos_MoveTarget(TECHNO *techno_pointer, GAMEOBJECT *object) {
         return;
     }
     obstacle = techno->controlled_gizmo->object;
-    if ((techno->movement & TECHNO_MOVE_SPIN) != 0 && object != NULL && (object->unknown_280 == 0 || object->unknown_280 == 1)) {
+    if ((techno->movement & TECHNO_MOVE_SPIN) != 0 && object != NULL && (object->player_slot == 0 || object->player_slot == 1)) {
         rate = object->player.pad->waggle_magnitude != 0.0f ? (f32)(3.0 * FRAMETIME) : (f32)(2.0 * FRAMETIME);
         TechnoMoveSpeed[object->player_index] = SeekLinearF(TechnoMoveSpeed[object->player_index], speed, rate);
         GizObstacle_SetTechnoControlled(obstacle, TechnoMoveSpeed[object->player_index]);
@@ -649,13 +632,13 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
     f32 hint_range;
     if (object->player.character_context == CHARACTER_CONTEXT_TECHNO) {
         object->player.techno->flags |= TECHNO_FLAG_USED_THIS_FRAME;
-        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
+        if (object->character_model->model_data_b[object->player.context_animation] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) == NULL) {
             return;
         }
         object->player.context_timer += FRAMETIME;
         if ((object->player.pad->buttons_pressed & GAMEPAD_TAG) != 0 ||
-            ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->unknown_f00 != 2)) {
+            ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->use_action != 2)) {
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
             object->player.tag_flags |= 1;
             object->movement_facing_angle += 0x8000;
@@ -665,7 +648,7 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             Technos_MoveTarget(object->player.techno, object);
         }
     } else {
-        if (!((((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || object->unknown_f00 == 2) && object->player.suit != NULL &&
+        if (!((((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || object->use_action == 2) && object->player.suit != NULL &&
                (object->player.suit->flags & SUIT_TECHNOLOGY) != 0) ||
               (StartupGameFlag1 != 0 && StartupGameFlag0 != 0))) {
             return;
@@ -679,18 +662,18 @@ void Techno_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         if (distance < (f64)hint_range * hint_range) {
             techno->flags |= TECHNO_FLAG_USED_THIS_FRAME;
         }
-        if (object->unknown_281 == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
-            ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->unknown_f00 != 2)) {
+        if (object->ground_flags == 0 || ObjLandReady(object) == 0 || !(distance < (f64)range * range) ||
+            ((object->player.pad->buttons_pressed & GAMEPAD_SPECIAL) == 0 && object->use_action != 2)) {
             return;
         }
         if (Techno_isReady(techno) != 0) {
             object->player.character_context = CHARACTER_CONTEXT_TECHNO;
             object->player.context_timer = 0.0f;
             object->player.techno = techno;
-            object->player.unknown_7aa = ACTION_HACK;
+            object->player.context_animation = ACTION_HACK;
             object->movement_facing_angle = techno->y_rotation + 0x8000;
             GameCam_Blend(GameCam, 0.5f, 0.0f, 1);
-            if (object->unknown_280 == 0 || object->unknown_280 == 1) {
+            if (object->player_slot == 0 || object->player_slot == 1) {
                 TechnoMoveSpeed[object->player_index] = 0.0f;
             }
         } else {

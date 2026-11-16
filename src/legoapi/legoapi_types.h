@@ -157,21 +157,94 @@ typedef struct SoundTable { // size 0xc8
  * (CutScenePlayer_SetObjects). */
 typedef struct cut_player_state_s { // size 0x10
     nuhspecial_s special;           // 0x0
-    u8 flags;                       // 0xc
-    u8 unknown_0d[3];               // 0xd
+
+    union { // size 0x1
+        u8 flags;
+
+        struct {                // size 0x1
+            u8 on : 1;          // 0xc:0
+            u8 off : 1;         // 0xc:1
+            u8 end_anim : 1;    // 0xc:2
+            u8 unused_bits : 5; // 0xc:3
+        };
+    }; // 0xc
+
+    u8 unknown_0d[3]; // 0xd
 } CUT_PLAYER_STATE;
 
-typedef struct cutinfo_s {              // size 0xf0
-    u8 opaque_00_04[0x4];               // 0x00
-    struct instnugcutscene_s *instance; // 0x04
-    char name[0x40];                    // 0x08
-    CUT_PLAYER_STATE *player_states;    // 0x48
-    u8 player_state_count;              // 0x4c
-    u8 unknown_4d[3];                   // 0x4d
-    u32 flags;                          // 0x50
-    f32 previous_frame;                 // 0x54
-    u8 unknown_58[0x94];                // 0x58
-    i16 skip_level;                     // 0xec
+/* A cut scene's sound cue, texture animation cue, fog fade key and subtitle (the cutscene config). */
+typedef struct CUT_LOAD_SFX { // size 0x14
+    i16 id;                   // 0x00
+    u8 flags;                 // 0x02
+    u8 unknown_03;            // 0x03
+    f32 frame;                // 0x04
+    NUVEC position;           // 0x08
+} CUT_LOAD_SFX;
+
+typedef struct CUT_LOAD_TEXANIM { // size 0x8
+    f32 frame;                    // 0x0
+    i32 index;                    // 0x4
+} CUT_LOAD_TEXANIM;
+
+typedef struct CUT_LOAD_FADE_FOG { // size 0x10
+    f32 frame;                     // 0x0
+    f32 near_distance;             // 0x4
+    f32 far_distance;              // 0x8
+    f32 value;                     // 0xc
+} CUT_LOAD_FADE_FOG;
+
+typedef struct CUT_LOAD_SUBTITLE { // size 0x28
+    i16 text_id;                   // 0x00
+    u8 red;                        // 0x02
+    u8 green;                      // 0x03
+    u8 blue;                       // 0x04
+    u8 alpha;                      // 0x05
+    u8 alignment;                  // 0x06
+    u8 unknown_07;                 // 0x07
+    f32 start_frame;               // 0x08
+    f32 end_frame;                 // 0x0c
+    f32 x;                         // 0x10
+    f32 y;                         // 0x14
+    f32 x_scale;                   // 0x18
+    f32 y_scale;                   // 0x1c
+    f32 max_width;                 // 0x20
+    f32 fade_time;                 // 0x24
+} CUT_LOAD_SUBTITLE;
+
+typedef struct cutinfo_s {                  // size 0x190
+    void *scene;                            // 0x000
+    struct instnugcutscene_s *instance;     // 0x004
+    char name[64];                          // 0x008
+    CUT_PLAYER_STATE *player_states;        // 0x048
+    u8 player_state_count;                  // 0x04c
+    u8 unknown_4d[3];                       // 0x04d
+    u32 flags;                              // 0x050
+    f32 previous_frame;                     // 0x054
+    f32 current_frame;                      // 0x058
+    f32 frames_per_second;                  // 0x05c
+    f32 burnout_threshold;                  // 0x060
+    f32 burnout_intensity;                  // 0x064
+    f32 burnout_flare;                      // 0x068
+    f32 camera_near_clip;                   // 0x06c
+    CUT_LOAD_SFX sfx[6];                    // 0x070
+    u16 camera_far_clip;                    // 0x0e8
+    i16 legacy_music_index;                 // 0x0ea
+    i16 skip_level;                         // 0x0ec
+    u8 linked_audio;                        // 0x0ee
+    u8 blob_shadow_alpha;                   // 0x0ef
+    u8 blob_shadow_fade_near;               // 0x0f0
+    u8 blob_shadow_fade_far;                // 0x0f1
+    u8 reflection_range;                    // 0x0f2
+    i8 debris_render_group;                 // 0x0f3
+    char door_name[16];                     // 0x0f4
+    char next_cutscene[64];                 // 0x104
+    CUT_LOAD_TEXANIM texture_animations[4]; // 0x144
+    CUT_LOAD_FADE_FOG fade_fog[2];          // 0x164
+    CUT_LOAD_SUBTITLE *subtitle_data;       // 0x184
+    u16 subtitle_count;                     // 0x188
+    u8 end_flags;                           // 0x18a
+    u8 subtitle_shown;                      // 0x18b
+    i32 music_handle;                       // 0x18c
 } CUTINFO;
 
 typedef struct gameanimset_s GAMEANIMSET;
@@ -298,7 +371,6 @@ typedef struct CHARPLATFORMSYS_s CHARPLATFORMSYS_s;
 typedef struct CHARPLATFORM_s CHARPLATFORM_s;
 typedef struct GAMEANTINODE_s GAMEANTINODE_s;
 typedef struct GIZBUILDITANIMDATA_s GIZBUILDITANIMDATA_s;
-typedef struct GIZBUILDIT_s GIZBUILDIT_s;
 typedef struct GIZFORCEANIMDATA_s GIZFORCEANIMDATA_s;
 typedef struct GIZOBSTACLESYS_s GIZOBSTACLESYS_s;
 typedef struct GIZPANEL_s GIZPANEL_s;
@@ -339,10 +411,10 @@ struct AREASAVE_s {           // size 0xc
 };
 
 struct STATUSPACKET_LSW_s { // size 0x4
-    i32 unknown_00;         // 0x0
+    i32 flags;              // 0x0
 };
 
-/* GIZFORCEANIMDATA_s.unknown_04 */
+/* GIZFORCEANIMDATA_s.glow_flags */
 #define GIZFORCEANIMDATA_GLOW_ACTIVE 0x1
 
 struct GIZFORCEANIMDATA_s { // size 0x8
@@ -350,7 +422,7 @@ struct GIZFORCEANIMDATA_s { // size 0x8
     i16 platform_id;        // 0x2
 
     union { // size 0x4
-        u32 unknown_04;
+        u32 glow_flags;
 
         struct {                       // size 0x4
             u32 force_glow_active : 1; // 0x4:0
@@ -566,10 +638,10 @@ typedef struct gamecamera_s { // size 0x230
     f32 shake_freq;                   // 0x1dc
     f32 position_seek;                // 0x1e0
     f32 angle_seek;                   // 0x1e4
-    f32 unknown_1e8;                  // 0x1e8
-    f32 unknown_1ec;                  // 0x1ec
-    f32 unknown_1f0;                  // 0x1f0
-    f32 unknown_1f4;                  // 0x1f4
+    f32 pullback_target;              // 0x1e8
+    f32 pullback;                     // 0x1ec
+    f32 lateral_target;               // 0x1f0
+    f32 lateral;                      // 0x1f4
     i32 pitch;                        // 0x1f8
 
     union { // size 0x4
@@ -848,35 +920,30 @@ struct AITRIGGERSET_s { // size 0x214
 
     i8 trigger_indices[8]; // 0x204
 
-    union { // size 0x8
-        u8 unknown_20c[0x2];
-        u16 field_20e;
-        u8 unknown_210[0x4];
+    u8 trigger_count; // 0x20c
+    u8 unknown_20d;   // 0x20d
+    /* one bit per trigger a player holds */
+    u16 occupied; // 0x20e
 
-        struct {              // size 0x8
-            u8 trigger_count; // 0x20c
-            u8 unknown_20d;   // 0x20d
-            u16 field_0x20e;  // 0x20e
+    union { // size 0x2
+        u16 flags_word;
 
-            union { // size 0x2
-                u16 flags_word;
-
-                struct {             // size 0x2
-                    u8 flags;        // 0x210
-                    u8 reserved_211; // 0x211
-                };
-            }; // 0x210
-
-            u8 reserved_212[2]; // 0x212
+        struct {             // size 0x2
+            u8 flags;        // 0x210
+            u8 reserved_211; // 0x211
         };
-    }; // 0x20c
+    }; // 0x210
+
+    u8 reserved_212[2]; // 0x212
 };
 
 struct AITRIGGERSETSYS_s {          // size 0x4304
     struct AITRIGGERSET_s sets[32]; // 0x0000
-    i8 unknown_4280[64];            // 0x4280
-    i8 unknown_42c0[64];            // 0x42c0
-    i32 unknown_4300;               // 0x4300
+    /* per object id, the set it helps with */
+    i8 assigned_set[64]; // 0x4280
+    /* per object id, the trigger in that set */
+    i8 assigned_trigger[64]; // 0x42c0
+    i32 unknown_4300;        // 0x4300
 };
 
 struct shopitem_s {              // size 0x74
@@ -942,8 +1009,10 @@ struct TRAFFICANIM_s {           // size 0x140
     u8 rooms[256];               // 0x038
     i8 vehicle_count;            // 0x138
     u8 disabled;                 // 0x139
-    u8 reserved_13a[2];          // 0x13a
-    f32 next_spawn_time;         // 0x13c
+    /* the pursuit's travel direction test, 1 or -1 (0 unknown) */
+    i8 direction;        // 0x13a
+    u8 reserved_13b;     // 0x13b
+    f32 next_spawn_time; // 0x13c
 };
 
 struct LevelEditorScene {    // size 0xa8
@@ -1092,7 +1161,9 @@ struct TRAFFICANIMSYS_s {                        // size 0x77e4
     NULISTHDR active_instances;                  // 0x77d8
     i8 animation_count;                          // 0x77e0
     i8 vehicle_count;                            // 0x77e1
-    u8 reserved_77e2[2];                         // 0x77e2
+    u8 reserved_77e2;                            // 0x77e2
+    /* the pursuit's active side, 1 or -1 */
+    i8 side; // 0x77e3
 };
 
 struct GIZMOPICKUPRUNTIMESYS_s {           // size 0x1c
@@ -1110,16 +1181,16 @@ struct SPECIALMINIKITSYS_s {        // size 0x8
     i32 count;                      // 0x4
 };
 
-struct SPECIALMINIKIT_s {          // size 0x3c
-    struct nuhspecial_s special;   // 0x00
-    void *inst_anim;               // 0x0c
-    void *anim_data;               // 0x10
-    f32 end_frame;                 // 0x14
-    char special_name[16];         // 0x18
-    char pickup_name[8];           // 0x28
-    struct gizmo_s *special_gizmo; // 0x30
-    struct gizmo_s *pickup_gizmo;  // 0x34
-    u8 flags;                      // 0x38
+struct SPECIALMINIKIT_s {           // size 0x3c
+    struct nuhspecial_s special;    // 0x00
+    NUINSTANIM *instance_animation; // 0x0c
+    void *animation_data;           // 0x10
+    f32 end_frame;                  // 0x14
+    char special_name[16];          // 0x18
+    char pickup_name[8];            // 0x28
+    struct gizmo_s *at_gizmo;       // 0x30
+    struct gizmo_s *pickup;         // 0x34
+    u32 flags;                      // 0x38
 };
 
 struct FADER_s {                         // size 0x18
@@ -1326,19 +1397,20 @@ typedef struct GIZMO_PICKUP_TYPE { // size 0x38
     u8 letter;                     // 0x0c
     u8 random_model_count;         // 0x0d
     u8 flags;                      // 0x0e
-    u8 unknown_0f;                 // 0x0f
-    i16 first_model_id;            // 0x10
-    u16 score;                     // 0x12
-    f32 shadow_radius_x;           // 0x14
-    f32 shadow_radius_z;           // 0x18
-    f32 draw_distance;             // 0x1c
-    f32 bob_height;                // 0x20
-    PICKUP_UPDATE_FN update_fn;    // 0x24
-    PICKUP_COLLECT_FN collect_fn;  // 0x28
-    i16 debris_id;                 // 0x2c
-    i16 overlay_model_id;          // 0x2e
-    f32 shadow_extent_x;           // 0x30
-    f32 shadow_extent_z;           // 0x34
+    /* switched off for this area (GizmoPickups_SetOnOff) */
+    u8 disabled;                  // 0x0f
+    i16 first_model_id;           // 0x10
+    u16 score;                    // 0x12
+    f32 shadow_radius_x;          // 0x14
+    f32 shadow_radius_z;          // 0x18
+    f32 draw_distance;            // 0x1c
+    f32 bob_height;               // 0x20
+    PICKUP_UPDATE_FN update_fn;   // 0x24
+    PICKUP_COLLECT_FN collect_fn; // 0x28
+    i16 debris_id;                // 0x2c
+    i16 overlay_model_id;         // 0x2e
+    f32 shadow_extent_x;          // 0x30
+    f32 shadow_extent_z;          // 0x34
 } GIZMO_PICKUP_TYPE;
 
 struct gizforce_s {                    // size 0xa4
@@ -1351,9 +1423,9 @@ struct gizforce_s {                    // size 0xa4
     u32 reset_word;                    // 0x3c
     struct gizforcegroup_s *group;     // 0x40
     f32 force_strength;                // 0x44
-    f32 unknown_48;                    // 0x48
+    f32 hold_timer;                    // 0x48
     f32 force_range;                   // 0x4c
-    f32 unknown_50;                    // 0x50
+    f32 shake_timer;                   // 0x50
     f32 interaction_radius;            // 0x54
     f32 animation_speed;               // 0x58
     f32 start_frame;                   // 0x5c
@@ -1495,46 +1567,6 @@ struct CABLE_s {                 // size 0x1ec
     u16 flags;                   // 0x1ea
 };
 
-struct GIZBUILDIT_s {                                  // size 0x84
-    char name[16];                                     // 0x00
-    struct gameanimset_s *anim_set;                    // 0x10
-    struct gameanimobj_s **anim_objects;               // 0x14
-    struct GIZBUILDIT_s *linked_buildit;               // 0x18
-    struct MechObjectInterface *mech_object_interface; // 0x1c
-    NUVEC file_position;                               // 0x20
-    NUVEC start_position;                              // 0x2c
-    NUVEC position;                                    // 0x38
-    f32 bounds_radius;                                 // 0x44
-    f32 step_timer;                                    // 0x48
-    f32 step_duration;                                 // 0x4c
-    f32 interaction_radius;                            // 0x50
-    f32 unknown_54;                                    // 0x54
-    f32 radius_scale;                                  // 0x58
-    i16 unknown_5c;                                    // 0x5c
-
-    union { // size 0x2
-        i16 unknown_5e;
-        u16 completion_score;
-    }; // 0x5e
-
-    i16 unknown_60;        // 0x60
-    i16 unknown_62;        // 0x62
-    NUVEC effect_position; // 0x64
-    f32 activation_radius; // 0x70
-    u8 anim_object_count;  // 0x74
-    u8 build_state;        // 0x75
-    u8 builders_active;    // 0x76
-    u8 built_object_count; // 0x77
-    u8 unknown_78;         // 0x78
-    u8 progress;           // 0x79
-    u16 state_flags;       // 0x7a
-    u16 unknown_7c;        // 0x7c
-    i16 room_index;        // 0x7e
-    i16 blowup_type;       // 0x80
-    u8 availability_flags; // 0x82
-    u8 unknown_83;         // 0x83
-};
-
 /* STATUS_STAGE_s.step: StatusStage_Reset sets STATUS_STEP_WAITING until the status background starts the stage
  * (DrawStatusBG_*); each update callback sets itself up in STATUS_STEP_START. The stages with one timed step run
  * it as STATUS_STEP_RUNNING; the others name their steps in gamestatus.c and status_alternate.cpp. The prompt
@@ -1637,7 +1669,7 @@ struct STATUSPACKET_s {                                                         
     f32 previous_best_time;                                                                  // 0x05c
     f32 new_best_time;                                                                       // 0x060
     f32 elapsed_time;                                                                        // 0x064
-    f32 unknown_68;                                                                          // 0x068
+    f32 stage_delay;                                                                         // 0x068
     u32 previous_best_score;                                                                 // 0x06c
     u32 new_best_score;                                                                      // 0x070
     u32 original_score;                                                                      // 0x074
@@ -1648,11 +1680,19 @@ struct STATUSPACKET_s {                                                         
     u32 coins_collected[2];                                                                  // 0x08c
     i32 new_minikits;                                                                        // 0x094
     u32 unknown_98;                                                                          // 0x098
-    u16 player0_model;                                                                       // 0x09c
-    u16 player1_model;                                                                       // 0x09e
-    i16 area_id;                                                                             // 0x0a0
-    i8 episode_id;                                                                           // 0x0a2
-    u8 unknown_a3;                                                                           // 0x0a3
+
+    union { // size 0x4
+        u16 player_models[2];
+
+        struct {               // size 0x4
+            u16 player0_model; // 0x09c
+            u16 player1_model; // 0x09e
+        };
+    }; // 0x09c
+
+    i16 area_id;   // 0x0a0
+    i8 episode_id; // 0x0a2
+    u8 unknown_a3; // 0x0a3
 
     union { // size 0x2
         u8 player_active[2];
@@ -1674,7 +1714,7 @@ struct STATUSPACKET_s {                                                         
         struct { // size 0x4
 
             union { // size 0x1
-                u8 unknown_b0;
+                u8 result_flags;
 
                 struct {                         // size 0x1
                     u8 : 2;                      // 0x0b0:0
@@ -1715,8 +1755,8 @@ struct STATUSPACKET_s {                                                         
     u8 previous_completion;                  // 0x0bc
     u8 previous_gold_bricks;                 // 0x0bd
     u8 displayed_gold_bricks;                // 0x0be
-    u8 field_0xbd;                           // 0x0bf
-    i8 field_0xbe;                           // 0x0c0
+    u8 completion_shown;                     // 0x0bf
+    i8 pending_area;                         // 0x0c0
     u8 field_0xbf[7];                        // 0x0c1
     i8 stage_types[40];                      // 0x0c8
     u8 gold_brick_enabled[40];               // 0x0f0
@@ -1727,7 +1767,7 @@ struct STATUSPACKET_s {                                                         
     struct STATUS_STAGE_s *previous_stage;   // 0x120
     struct STATUS_STAGE_s *stage;            // 0x124
     struct STATUS_STAGE_s *next_stage;       // 0x128
-    u8 unknown_12c[32];                      // 0x12c
+    i16 gold_brick_messages[16];             // 0x12c
 };
 
 /* STATUSPACKET_s.flags_word: the bits of the bit-fields above, set from the area flags and the game globals
@@ -1777,7 +1817,7 @@ struct STATUS_STAGE_s {                                                         
     void (*skip_callback)(struct STATUS_STAGE_s *arg0, struct STATUSPACKET_s *arg1);             // 0x08
     i32 type;                                                                                    // 0x0c
     i16 panel_object;  // 0x10 level object drawn on the background grid
-    u8 unknown_12;     // 0x12
+    u8 shown;          // 0x12
     u8 pad_13;         // 0x13
     i32 step;          // 0x14
     f32 step_time;     // 0x18
@@ -1955,7 +1995,7 @@ struct CHARPLATFORMSYS_s {              // size 0x1c
 };
 
 struct GIZBUILDITSYS_s {                 // size 0x14
-    struct GIZBUILDIT_s *buildits;       // 0x00
+    struct GIZBUILDIT *buildits;         // 0x00
     u16 count;                           // 0x04
     u16 capacity;                        // 0x06
     u16 max_animation_objects;           // 0x08
@@ -2091,8 +2131,9 @@ struct GIZSPINNER_s {                       // size 0x304
     union { // size 0x8
         u8 unknown_070[8];
 
-        struct {            // size 0x8
-            f32 unknown_70; // 0x070
+        struct { // size 0x8
+            /* the anim set's completion ratio */
+            f32 progress;   // 0x070
             u32 unknown_74; // 0x074
         };
     }; // 0x070

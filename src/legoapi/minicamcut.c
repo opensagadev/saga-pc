@@ -15,21 +15,6 @@
 
 #include <string.h>
 
-typedef struct MINICAM_CAMERA { // size 0x230
-    u8 unknown_000[0xe8];       // 0x000
-    NUVEC render_position;      // 0x0e8
-    u8 unknown_0f4[0x28];       // 0x0f4
-    NUVEC position;             // 0x11c
-    u8 unknown_128[0xd0];       // 0x128
-    u16 pitch;                  // 0x1f8
-    u8 unknown_1fa[2];          // 0x1fa
-    u16 yaw;                    // 0x1fc
-    u8 unknown_1fe[0x2e];       // 0x1fe
-    i8 mode;                    // 0x22c
-} MINICAM_CAMERA;
-
-#define MINI_CAM_CAMERA (*(MINICAM_CAMERA *)GameCam)
-
 /* The SDK's inline NuFdiv: a quotient that is 0 when either operand is 0. */
 static f32 MinicamcutFdiv(f32 a, f32 b) {
     if (a == 0.0f || b == 0.0f) {
@@ -477,7 +462,7 @@ void Minicam_Update(void) {
         Minicam_CalcCamPos();
         ObstacleCamEnd = 0.0f;
         if (ObstacleCamBlendOutTime == 0.0f) {
-            MINI_CAM_CAMERA.mode = -1;
+            GameCam->mode = GAMECAM_MODE_NONE;
             Minicam_ResetForNextCommand();
         }
         if (MiniCutCam == 0) {
@@ -496,13 +481,13 @@ void Minicam_Update(void) {
             MiniCam.delta_time += FRAMETIME;
         } else {
             NUVEC delta;
-            MiniCam.distance = NuVecDist(&MINI_CAM_CAMERA.render_position, MiniCam.focus, &delta);
+            MiniCam.distance = NuVecDist((NUVEC *)&GameCam->render_mtx.m30, MiniCam.focus, &delta);
             MiniCam.start_distance = MiniCam.distance;
-            MiniCam.pitch = MINI_CAM_CAMERA.pitch + 0x8000;
+            MiniCam.pitch = (u16)GameCam->pitch + 0x8000;
             MiniCam.start_pitch = MiniCam.pitch;
-            MiniCam.yaw = MINI_CAM_CAMERA.yaw;
+            MiniCam.yaw = (u16)GameCam->yaw;
             MiniCam.start_yaw = MiniCam.yaw;
-            MiniCam.position = MINI_CAM_CAMERA.position;
+            MiniCam.position = GameCam->position;
             Minicam_ResetForNextCommand();
         }
         return;
@@ -518,7 +503,7 @@ void Minicam_Update(void) {
         Minicam_CalcCamPos();
         ObstacleCamEnd = 0.0f;
         if (ObstacleCamBlendOutTime == 0.0f) {
-            MINI_CAM_CAMERA.mode = -1;
+            GameCam->mode = GAMECAM_MODE_NONE;
             Minicam_ResetForNextCommand();
         }
         if (MiniCutCam == 0) {
@@ -536,7 +521,7 @@ void Minicam_Update(void) {
             MiniCam.yaw = yaw;
             MiniCam.roll = roll;
             Minicam_ClearDeltas();
-            MINI_CAM_CAMERA.mode = -1;
+            GameCam->mode = GAMECAM_MODE_NONE;
         } else {
             if (pitch_rate == 0) {
                 MiniCam.target_pitch = pitch;

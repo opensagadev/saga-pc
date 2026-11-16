@@ -25,6 +25,8 @@
 #include "nu2api/nuanimation_gen.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
+#include "gameapi/ai/aisys/gameaiscript.h"
+#include "legoapi/world/levels/episodeV.h"
 
 extern f32 StarWarsJumpDistance[3];
 
@@ -35,11 +37,6 @@ typedef struct STARWARS_PREPARE {      // size 0x8
 
 extern STARWARS_PREPARE starwars_prepareforspecialmove[8];
 extern AI_MID_SPECIAL_MOVE starwars_midspecialmovefns[4];
-extern u32 LEGO_AIPATHCNX_BIGJUMP;
-extern u32 LEGO_AIPATHCNX_REQUIRESPERMISSION;
-extern u32 LEGO_AIPATHCNX_NO_DESTINATION_CHECK;
-extern u32 LEGO_AIPATHCNX_JUMP_NOW;
-extern u32 LEGO_AIPATHCNX_DONT_JUMP_NOW;
 
 i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
@@ -65,7 +62,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *
                 AIPathNodeUpdatePos(system, path, owner->ai_packet.special_move_node);
             }
         }
-        if (owner->unknown_281 != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
+        if (owner->ground_flags != 0 && owner->supporting_platform_id != -1 && CurrentTerrain != NULL &&
             NuSpecialGetInstanceix(&owner->ai_packet.special_move_node->special_handle) ==
                 CurrentTerrain->platforms[owner->supporting_platform_id].scene_object_index) {
             skip_inside = 0;
@@ -80,7 +77,7 @@ i32 StarWars_MidSpecialMove_Default(AISYS *system, AIPACKET *packet, APIOBJECT *
     } else if (owner->player.character_context != CHARACTER_CONTEXT_JUMP &&
                (owner->position.y < owner->ai_packet.special_move_node->min_height ||
                 (packet->path_info.connection->traversal_flags[packet->path_info.direction] & AIPATHCNX_TEMPORARY_BLOCK) != 0 ||
-                ((capabilities & 0x40) != 0 && owner->unknown_281 != 0))) {
+                ((capabilities & 0x40) != 0 && owner->ground_flags != 0))) {
         ClearSpecialMove(owner);
     }
     if (owner->ai_packet.special_move_node != NULL) {
@@ -216,7 +213,7 @@ i32 StarWars_PrepareHatch(AIPACKET *packet, APIOBJECT *object, i32 checks_unused
 
 i32 StarWars_MidSpecialMove_UseHatch(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
     GAMEOBJECT *owner = object->owner;
-    switch ((i8)owner->unknown_1087) {
+    switch ((i8)owner->helper_wait) {
         case 0:
             if (owner->player.character_context == CHARACTER_CONTEXT_TELEPORT ||
                 owner->player.character_context == CHARACTER_CONTEXT_ZIP_UP ||
@@ -226,7 +223,7 @@ i32 StarWars_MidSpecialMove_UseHatch(AISYS *system, AIPACKET *packet, APIOBJECT 
                 ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
                 return 1;
             }
-            owner->unknown_1087 = 1;
+            owner->helper_wait = 1;
             owner->special_move_timer = 1.0f;
         case 1:
             owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -479,7 +476,7 @@ i32 StarWars_MidSpecialMove(AISYS *system, AIPACKET *packet, APIOBJECT *apiobjec
         if (TryToTeleportToNextNode(owner, owner->ai_packet.special_move_node, 0) != 0) {
             ClearSpecialMove(owner);
         } else {
-            function = starwars_midspecialmovefns[(i8)owner->unknown_1086];
+            function = starwars_midspecialmovefns[(i8)owner->helper_type];
             if (function != NULL) {
                 return function(system, packet, apiobject);
             }

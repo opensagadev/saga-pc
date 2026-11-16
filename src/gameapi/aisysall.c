@@ -86,20 +86,10 @@ extern void (*AiEditorMovePlayersCallback)(NUVEC *);
 extern i32 ai_onlyusepackfile;
 
 const char AIScriptFalse[6] = "false";
-const char dat_0075f2c0[3] = "No";
-const char dat_0075f2c4[4] = "Yes";
+const char NoText[3] = "No";
+const char YesText[4] = "Yes";
 static const u32 iAISysPathColoursG[5] = {0xffff0000, 0xff00ff00, 0xff00ffff, 0xffff00ff, 0xffffff00};
 const f64 NuAnimDataFloatMax = 3.4028234663852886e38;
-
-/* Path-build view of the runtime path system (AIPATHSYS is opaque here). */
-typedef struct AI_PATH_BUILD_SYSTEM {   // size 0x10
-    u8 path_count;                      // 0x0
-    u8 unknown_1;                       // 0x1
-    u16 special_route_count;            // 0x2
-    AIPATH **paths;                     // 0x4
-    AIPATH *active_path;                // 0x8
-    AIPATHSPECIALROUTE *special_routes; // 0xc
-} AI_PATH_BUILD_SYSTEM;
 
 static i32 iterator_count = 0;
 static f32 ***distance_tables = NULL;
@@ -148,24 +138,9 @@ typedef struct AILOCALMESSAGE {  // size 0x30
     struct AILOCALMESSAGE *next; // 0x2c
 } AILOCALMESSAGE;
 
-typedef struct INTERACTION_ANTINODE_VIEW { // size 0x58
-    u8 unknown[0x50];                      // 0x00
-    u64 excluded_character_types;          // 0x50
-} INTERACTION_ANTINODE_VIEW;
-
-#define INTERACTION_GEOMETRY(p) ((GAMEOBJECT *)(p))
-
 typedef void (*CHECK_ANTINODE_FN)(APIOBJECT *, AIANTINODE *, NUVEC *, f32);
 
 extern CHECK_ANTINODE_FN checkantinodefns[3];
-
-typedef struct INTERACTION_ANTINODE_SHAPE_VIEW { // size 0x48
-    u8 unknown[0x40];                            // 0x00
-    f32 base_radius;                             // 0x40
-    f32 base_height;                             // 0x44
-} INTERACTION_ANTINODE_SHAPE_VIEW;
-
-#define INTERACTION_ANTINODE_SHAPE(a) ((INTERACTION_ANTINODE_SHAPE_VIEW *)(a))
 
 /* Forward declarations for functions used before their definition. */
 
@@ -188,117 +163,13 @@ i32 AiEditorAreasModeId = -1;
 i32 AiEditorLocatorsModeId = -1;
 i32 AiEditorAntinodeModeId = -1;
 
-typedef struct ai_area_load_s { // size 0x40
-    char name[16];              // 0x00
-    NUVEC minimum;              // 0x10
-    NUVEC maximum;              // 0x1c
-    u16 flags;                  // 0x28
-    u8 unknown_2a;              // 0x2a
-    u8 game_flags;              // 0x2b
-    u8 unknown_2c[12];          // 0x2c
-    AISYS *system;              // 0x38
-    u8 unknown_3c[4];           // 0x3c
-} AI_AREA_LOAD;
-
-typedef struct ai_creature_load_s { // size 0xa4
-    char name[16];                  // 0x00
-    char script_name[16];           // 0x10
-    NUVEC position;                 // 0x20
-    i32 y_rotation;                 // 0x2c
-    AIPATHINFO path_info;           // 0x30
-    i32 flags;                      // 0x48
-    u8 set;                         // 0x4c
-    u8 unknown_4d;                  // 0x4d
-    i16 type;                       // 0x4e
-    u8 count;                       // 0x50
-    u8 count_across;                // 0x51
-    u8 unknown_52[6];               // 0x52
-    u32 active_mask;                // 0x58
-    f32 x_spacing;                  // 0x5c
-    f32 z_spacing;                  // 0x60
-    f32 script_params[4];           // 0x64
-    AIAREA *activate_area;          // 0x74
-    AIAREA *area;                   // 0x78
-    AILOCATOR *locator;             // 0x7c
-    AILOCATOR *respawn_locator;     // 0x80
-    u8 activation_difficulty;       // 0x84
-    i8 min_respawn_count;           // 0x85
-    i8 max_respawn_count;           // 0x86
-    u8 activation_type;             // 0x87
-    f32 min_respawn_time;           // 0x88
-    f32 max_respawn_time;           // 0x8c
-    f32 start_stagger;              // 0x90
-    f32 view_distance;              // 0x94
-    f32 hear_distance;              // 0x98
-    f32 max_view_height;            // 0x9c
-    f32 min_view_height;            // 0xa0
-} AI_CREATURE_LOAD;
-
-typedef struct ai_antinode_load_s { // size 0x58
-    NUVEC position;                 // 0x00
-    f32 radius;                     // 0x0c
-    f32 min_y;                      // 0x10
-    f32 min_y_offset;               // 0x14
-    f32 max_y;                      // 0x18
-    f32 max_y_offset;               // 0x1c
-    nuhspecial_s special_handle;    // 0x20
-    NUVEC special_position;         // 0x2c
-    i32 flags;                      // 0x38
-    i32 rotation_offset;            // 0x3c
-    f32 base_radius;                // 0x40
-    f32 base_height;                // 0x44
-    u8 enabled;                     // 0x48
-    u8 game_flags;                  // 0x49
-    u8 type;                        // 0x4a
-    u8 has_special;                 // 0x4b
-    u8 unknown_4c[12];              // 0x4c
-} AI_ANTINODE_LOAD;
-
-typedef struct ai_system_load_s { // size 0x1398
-    void *storage;                // 0x0000
-    VARIPTR storage_end;          // 0x0004
-    VARIPTR storage_cursor;       // 0x0008
-    i32 storage_size;             // 0x000c
-    AIPATHSYS *path_sys;          // 0x0010
-    i32 creature_count;           // 0x0014
-    AI_CREATURE_LOAD *creatures;  // 0x0018
-    NULISTHDR scripts;            // 0x001c
-    i32 locator_count;            // 0x0024
-    AILOCATOR *locators;          // 0x0028
-    i32 locator_set_count;        // 0x002c
-    AILOCATORSET *locator_sets;   // 0x0030
-    i32 area_count;               // 0x0034
-    AI_AREA_LOAD *areas;          // 0x0038
-    AIGROUP groups[16];           // 0x003c
-    i32 antinode_count;           // 0x137c
-    AI_ANTINODE_LOAD *antinodes;  // 0x1380
-    u8 unknown_1384[8];           // 0x1384
-    APIOBJECT *player_1;          // 0x138c
-    APIOBJECT *player_2;          // 0x1390
-    NUGSCN *scene;                // 0x1394
-} AI_SYSTEM_LOAD;
-
 static f32 AiLoadStartStagger = 0.0f;
-
-typedef struct ai_path_system_load_s {  // size 0x10
-    u8 path_count;                      // 0x0
-    u8 unknown_01;                      // 0x1
-    u16 special_route_count;            // 0x2
-    AIPATH **paths;                     // 0x4
-    AIPATH *active_path;                // 0x8
-    AIPATHSPECIALROUTE *special_routes; // 0xc
-} AI_PATH_SYSTEM_LOAD;
 
 // Inlined AISysBufferAlloc: the failure diagnostic and publication follow the
 // allocation memset. Size arithmetic is unsigned 32-bit.
 
 /* AISYS callback family: seven-argument callbacks. */
 extern i32 TagCharacter(GAMEOBJECT *, GAMEOBJECT *, i32);
-
-typedef struct condition_trigger_process_s { // size 0xa4
-    u8 unknown_000[0xa0];                    // 0x00
-    AIAREA *trigger_area;                    // 0xa0
-} CONDITION_TRIGGER_PROCESS;
 
 typedef struct AI_EDITOR_MODE_ENTRY {    // size 0x30
     char name[32];                       // 0x00
@@ -365,17 +236,6 @@ extern i32 AIPathConnectionTypeCount;
 
 extern AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32];
 
-typedef struct AI_EDITOR_SPECIAL_PLATFORM { // size 0x6c
-    u8 unknown_00[0x4a];                    // 0x00
-    i16 instance_index;                     // 0x4a
-    u8 unknown_4c[0x20];                    // 0x4c
-} AI_EDITOR_SPECIAL_PLATFORM;
-
-typedef struct AI_EDITOR_SPECIAL_TERRAIN { // size 0x6c
-    u8 unknown_00[0x68];                   // 0x00
-    AI_EDITOR_SPECIAL_PLATFORM *platforms; // 0x68
-} AI_EDITOR_SPECIAL_TERRAIN;
-
 i16 disable_cylinder_check = 0;
 i32 AIPathConnectionTypeCount = 0;
 AI_PATH_CONNECTION_TYPE AIPathConnectionTypes[32] = {0};
@@ -395,13 +255,6 @@ i32 aisys_maxnumcreaturesets = 32;
 f32 AiEditorPickHeightTolerance = 0.1f;
 
 extern EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius);
-
-/* Draw-family field views. */
-typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
-    NULISTLNK link;                 // 0x0
-    u8 unknown_08[2];               // 0x8
-    i16 flags;                      // 0xa
-} AI_PATH_DRAW_FLAGS;
 
 eduiitem_s *creatureEditor_ResetParamsItem = NULL;
 
@@ -550,10 +403,10 @@ static i32 AiAngDiff(i32 a, i32 b) {
 i16 PCPathArcSine(f32 sin) {
     f32 abs;
     f32 sqrt;
-    f32 unknown_a;
-    f32 unknown_b;
-    f32 unknown_c;
-    f32 unknown_d;
+    f32 reduced;
+    f32 upper_step;
+    f32 sign;
+    f32 quadrant;
 
     union {
         f32 value;
@@ -565,20 +418,20 @@ i16 PCPathArcSine(f32 sin) {
     abs = absolute.value;
     sqrt = NuFsqrt(1.0f - sin * sin);
 
-    unknown_a = MIN(sqrt, abs);
+    reduced = MIN(sqrt, abs);
 
-    unknown_b = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
+    upper_step = MAX(MIN((abs - 0.70710677f) * 3.40282e+38f, 1.0f), -1.0f);
 
-    unknown_c = MIN(sin * 3.40282e+38f, 1.0f);
-    unknown_c = MAX(unknown_c, -1.0f);
+    sign = MIN(sin * 3.40282e+38f, 1.0f);
+    sign = MAX(sign, -1.0f);
 
-    unknown_d = unknown_b * unknown_c + unknown_c;
+    quadrant = upper_step * sign + sign;
 
-    return (NEG_3_OVER_40 * POW2(unknown_b * unknown_c * unknown_a) * POW3(unknown_b * unknown_c * unknown_a) +
-            (unknown_d * PI_OVER_4 - (unknown_b * unknown_c * unknown_a) +
-             NEG_1_OVER_6 * (unknown_b * unknown_c * unknown_a) * POW2(unknown_b * unknown_c * unknown_a)) +
-            NEG_5_OVER_112 * POW3(unknown_b * unknown_c * unknown_a) * POW4(unknown_b * unknown_c * unknown_a) +
-            NEG_35_OVER_1152 * POW4(unknown_b * unknown_c * unknown_a) * POW5(unknown_b * unknown_c * unknown_a)) *
+    return (NEG_3_OVER_40 * POW2(upper_step * sign * reduced) * POW3(upper_step * sign * reduced) +
+            (quadrant * PI_OVER_4 - (upper_step * sign * reduced) +
+             NEG_1_OVER_6 * (upper_step * sign * reduced) * POW2(upper_step * sign * reduced)) +
+            NEG_5_OVER_112 * POW3(upper_step * sign * reduced) * POW4(upper_step * sign * reduced) +
+            NEG_35_OVER_1152 * POW4(upper_step * sign * reduced) * POW5(upper_step * sign * reduced)) *
            MAX_SHORT_OVER_PI;
 }
 
@@ -968,7 +821,6 @@ void xState(NUFPAR *parser) {
     VARIPTR *buffer;
     VARIPTR *end_buffer;
     AISTATE *state;
-    u32 state_address;
     char *name;
 
     if (aiscript_load_script == NULL || NuFParGetWord(parser) == 0) {
@@ -986,7 +838,7 @@ void xState(NUFPAR *parser) {
         AI_SCRIPT_DIAGNOSTIC_BARE(AIScriptMissingStateDiagnostic);
     }
     aiscript_load_state = state;
-    aiscript_load_refs = (NULISTHDR *)((u32)state + offsetof(AISTATE, reference_scripts));
+    aiscript_load_refs = &state->reference_scripts;
     if (state == NULL) {
         return;
     }
@@ -994,17 +846,16 @@ void xState(NUFPAR *parser) {
     name = AIScriptCopyString(parser->word_buffer_ptr, buffer, end_buffer);
     aiscript_load_state->name = name;
     if (NuStrICmp(name, "Base") == 0) {
-        NuLinkedListInsert((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT, states)), (NULISTLNK *)aiscript_load_state);
+        NuLinkedListInsert(&aiscript_load_script->states, (NULISTLNK *)aiscript_load_state);
     } else {
-        NuLinkedListAppend((NULISTHDR *)((u32)aiscript_load_script + offsetof(AISCRIPT, states)), (NULISTLNK *)aiscript_load_state);
+        NuLinkedListAppend(&aiscript_load_script->states, (NULISTLNK *)aiscript_load_state);
     }
 
     NuFParPushCom(parser, AIScriptStateCommands);
     while (NuFParGetLine(parser) != 0) {
         NuFParGetWord(parser);
-        state_address = (u32)aiscript_load_state;
-        aiscript_load_conditions = (NULISTHDR *)(state_address + offsetof(AISTATE, conditions));
-        aiscript_load_actions = (NULISTHDR *)(state_address + offsetof(AISTATE, actions));
+        aiscript_load_conditions = &aiscript_load_state->conditions;
+        aiscript_load_actions = &aiscript_load_state->actions;
         NuFParInterpretWord(parser);
     }
     NuFParPopCom(parser);
@@ -1420,7 +1271,7 @@ static i32 AIScriptNextAction(AISCRIPTPROCESS *processor) {
 void AIScriptSetState(AISCRIPTPROCESS *processor, AISTATE *state) {
     if (processor != NULL && state != NULL) {
         if ((processor->flags & AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES) == 0) {
-            processor->unknown_b2 = 0;
+            processor->blocked_message_count = 0;
         }
         processor->flags &= ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
         processor->state = state;
@@ -1463,7 +1314,7 @@ void AIScriptProcessorInit(AISYS *system, AIPACKET *packet, AISCRIPTPROCESS *pro
         return;
     }
     processor->flags &= ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
-    processor->unknown_b2 = 0;
+    processor->blocked_message_count = 0;
     if (script == NULL) {
         script = AIScriptFind(system, script_name, can_use_default, 1, 1);
         processor->local_messages = NULL;
@@ -1714,7 +1565,7 @@ f32 Condition_InTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
         GAMEOBJECT *object = packet->owner;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
+            area = process->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -1822,7 +1673,7 @@ f32 Condition_PlayerInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIPAC
         GAMEOBJECT *object = (GAMEOBJECT *)system->player_1;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
+            area = process->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -1914,7 +1765,7 @@ f32 Condition_OpponentInTriggerArea(AISYS *system, AISCRIPTPROCESS *process, AIP
         APIOBJECT *object = packet->opponent;
         AIAREA *area = argument;
         if (area == NULL) {
-            area = ((CONDITION_TRIGGER_PROCESS *)process)->trigger_area;
+            area = process->trigger_area;
         }
         if (area != NULL && area->system != NULL) {
             if (((1 << (area - area->system->areas)) & *(u64 *)object->ai_area_mask) != 0) {
@@ -1971,7 +1822,7 @@ f32 Condition_YawToOpponent(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
         difference.x = packet->opponent->position.x - packet->owner->position.x;
         difference.z = packet->opponent->position.z - packet->owner->position.z;
         /* difference.y is left unwritten before this in-place rotation. */
-        NuVecRotateY(&difference, &difference, -packet->owner->unknown_276);
+        NuVecRotateY(&difference, &difference, -packet->owner->movement_angle);
         return (f32)((f64)NuAtan2D(difference.x, difference.z) * (360.0 / 65536.0));
     }
     return -180.0f;
@@ -2502,14 +2353,14 @@ i32 Action_SetViewDistance(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->view_distance = system->creatures[packet->creature_index].view_distance;
+        packet->owner->view_distance = system->creatures[packet->creature_index].view_distance;
     } else if (GetViewRangeFn != NULL) {
-        ((APIOBJECT *)packet->owner)->view_distance = GetViewRangeFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->view_distance = GetViewRangeFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->view_distance = 1.0f;
+        packet->owner->view_distance = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->view_distance = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->view_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2520,14 +2371,14 @@ i32 Action_SetMinViewHeight(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->min_view_height = system->creatures[packet->creature_index].min_view_height;
+        packet->owner->min_view_height = system->creatures[packet->creature_index].min_view_height;
     } else if (GetMinViewHeightFn != NULL) {
-        ((APIOBJECT *)packet->owner)->min_view_height = GetMinViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->min_view_height = GetMinViewHeightFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->min_view_height = 1.0f;
+        packet->owner->min_view_height = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->min_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2538,14 +2389,14 @@ i32 Action_SetMaxViewHeight(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->max_view_height = system->creatures[packet->creature_index].max_view_height;
+        packet->owner->max_view_height = system->creatures[packet->creature_index].max_view_height;
     } else if (GetMaxViewHeightFn != NULL) {
-        ((APIOBJECT *)packet->owner)->max_view_height = GetMaxViewHeightFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->max_view_height = GetMaxViewHeightFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->max_view_height = 1.0f;
+        packet->owner->max_view_height = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->max_view_height = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2556,14 +2407,14 @@ i32 Action_SetHearDistance(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
         return 1;
     }
     if (packet->creature_index != AIPACKET_NO_CREATURE) {
-        ((APIOBJECT *)packet->owner)->hear_distance = system->creatures[packet->creature_index].hear_distance;
+        packet->owner->hear_distance = system->creatures[packet->creature_index].hear_distance;
     } else if (GetHearDistanceFn != NULL) {
-        ((APIOBJECT *)packet->owner)->hear_distance = GetHearDistanceFn(((APIOBJECT *)packet->owner)->character_model->model_id);
+        packet->owner->hear_distance = GetHearDistanceFn(packet->owner->character_model->model_id);
     } else {
-        ((APIOBJECT *)packet->owner)->hear_distance = 1.0f;
+        packet->owner->hear_distance = 1.0f;
     }
     if (count != 0 && NuStrICmp(params[0], "default") != 0) {
-        ((APIOBJECT *)packet->owner)->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
+        packet->owner->hear_distance = AIParamToFloatEx(packet, processor, params[0]);
     }
     return 1;
 }
@@ -2572,7 +2423,7 @@ i32 Action_SetMoveRadius(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
     if (packet == NULL || packet->owner == NULL || param_5 == 0) {
         return 1;
     }
-    packet->mover_height = ((APIOBJECT *)packet->owner)->collision_radius + ((APIOBJECT *)packet->owner)->collision_radius;
+    packet->mover_height = packet->owner->collision_radius + packet->owner->collision_radius;
     if (param_4 != 0 && NuStrICmp(params[0], "default") != 0) {
         packet->mover_height = AIParamToFloatEx(packet, processor, params[0]);
     }
@@ -2977,7 +2828,7 @@ i32 AIPathCheckExtents(AIPATH *path, NUVEC *position) {
 }
 
 static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VARIPTR *end) {
-    AI_PATH_SYSTEM_LOAD *system = NULL;
+    AIPATHSYS *system = NULL;
     i32 count = EdFileReadInt();
     i32 path_index;
     i32 index;
@@ -2987,7 +2838,7 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
     i32 character_count;
     char special_name[256];
     if (count != 0) {
-        AISYS_BUFFER_ALLOCATE(AI_PATH_SYSTEM_LOAD *, system, cursor, end, sizeof(*system));
+        AISYS_BUFFER_ALLOCATE(AIPATHSYS *, system, cursor, end, sizeof(*system));
         if (system != NULL) {
             system->path_count = (u8)count;
             system->paths = AISysBufferAlloc(cursor, end, system->path_count * sizeof(AIPATH *));
@@ -3184,7 +3035,7 @@ static AIPATHSYS *AISysLoadPaths(VARIPTR *cursor, i32 version, NUGSCN *scene, VA
             }
         }
     }
-    return (AIPATHSYS *)system;
+    return system;
 }
 
 AIGROUP *CreateAIGroup(AISYS *system, i32 count_across, f32 x_spacing, f32 z_spacing, f32 max_speed) {
@@ -3407,8 +3258,7 @@ static void AISysCheckAntinode_Circle(APIOBJECT *object, AIANTINODE *antinode, N
         turn = NuAtan2D(difference->x, difference->z);
         turn = NuAngSub(turn, angle);
         if (object->ai->antinode_timer > 0.0f) {
-            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                 INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) || object->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3466,14 +3316,14 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
     f32 outer_distance;
     distance_squared = difference->x * difference->x + difference->z * difference->z;
     if (distance_squared < radius * radius) {
-        aspect = INTERACTION_ANTINODE_SHAPE(antinode)->base_height / INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+        aspect = antinode->base_height / antinode->base_radius;
 
         difference->y = 0.0f;
         NuVecRotateY(&local_position, difference, -antinode->rotation);
         angle = NuAtan2D(aspect * local_position.x, local_position.z);
-        boundary.x = NU_SIN_LUT(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+        boundary.x = NU_SIN_LUT(angle) * antinode->base_radius;
         boundary.y = 0.0f;
-        boundary.z = NU_COS_LUT(angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+        boundary.z = NU_COS_LUT(angle) * antinode->base_height;
         NuVecNorm(difference, &boundary);
         NuVecScale(difference, difference, object->ai->mover_height);
         NuVecAdd(&boundary, &boundary, difference);
@@ -3484,9 +3334,9 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             difference->z = object->position.z - antinode->position.z;
             NuVecRotateY(&local_object, difference, -antinode->rotation);
             object_angle = NuAtan2D(aspect * local_object.x, local_object.z);
-            object_boundary.x = NU_SIN_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
+            object_boundary.x = NU_SIN_LUT(object_angle) * antinode->base_radius;
             object_boundary.y = 0.0f;
-            object_boundary.z = NU_COS_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            object_boundary.z = NU_COS_LUT(object_angle) * antinode->base_height;
             NuVecNorm(difference, &object_boundary);
             NuVecScale(difference, difference, object->ai->mover_height);
             NuVecAdd(&object_boundary, &object_boundary, difference);
@@ -3497,8 +3347,7 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             turn = NuAtan2D(aspect * local_destination.x, local_destination.z);
             turn = NuAngSub(turn, object_angle);
             if (object->ai->antinode_timer > 0.0f) {
-                if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                     INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+                if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) || object->respawn_timer > 1.0f) &&
                     object->ai->antinode_timer < antinode_time) {
                     object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                     object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3518,8 +3367,8 @@ static void AISysCheckAntinode_Ellipse(APIOBJECT *object, AIANTINODE *antinode, 
             if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_timer = antinode_time;
             }
-            gradient.x = NU_COS_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
-            gradient.z = -NU_SIN_LUT(object_angle) * INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            gradient.x = NU_COS_LUT(object_angle) * antinode->base_radius;
+            gradient.z = -NU_SIN_LUT(object_angle) * antinode->base_height;
             if (turn < 0) {
                 gradient.x = -gradient.x;
                 gradient.z = -gradient.z;
@@ -3556,13 +3405,13 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         return;
     }
     difference->z = object->ai->movement_position.z - antinode->position.z;
-    if (difference->z > radius || difference->z < -radius || INTERACTION_GEOMETRY(object)->collision_min.y > antinode->max_y ||
-        antinode->min_y > INTERACTION_GEOMETRY(object)->collision_max.y) {
+    if (difference->z > radius || difference->z < -radius || object->collision_min.y > antinode->max_y ||
+        antinode->min_y > object->collision_max.y) {
         return;
     }
     NuVecRotateY(difference, difference, -antinode->rotation);
-    if (AIPathFabs(difference->x) < INTERACTION_ANTINODE_SHAPE(antinode)->base_radius + object->ai->mover_height &&
-        AIPathFabs(difference->z) < INTERACTION_ANTINODE_SHAPE(antinode)->base_height + object->ai->mover_height) {
+    if (AIPathFabs(difference->x) < antinode->base_radius + object->ai->mover_height &&
+        AIPathFabs(difference->z) < antinode->base_height + object->ai->mover_height) {
         difference->x = object->position.x - antinode->position.x;
         difference->y = 0.0f;
         difference->z = object->position.z - antinode->position.z;
@@ -3575,8 +3424,7 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         turn = NuAtan2D(local_destination.x, local_destination.z);
         turn = NuAngSub(turn, object_angle);
         if (object->ai->antinode_timer > 0.0f) {
-            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) ||
-                 INTERACTION_GEOMETRY(object)->respawn_timer > 1.0f) &&
+            if (((!object->ai->path_info.on_path && object->ai->path_info.was_on_path) || object->respawn_timer > 1.0f) &&
                 object->ai->antinode_timer < antinode_time) {
                 object->ai->antinode_clockwise = !object->ai->antinode_clockwise;
                 object->ai->antinode_timer = antinode_time + antinode_reverse_time;
@@ -3596,39 +3444,34 @@ static void AISysCheckAntinode_Rectangle(APIOBJECT *object, AIANTINODE *antinode
         if ((antinode->game_flags & 2) == 0 && object->ai->antinode_timer < antinode_time) {
             object->ai->antinode_timer = antinode_time;
         }
-        corner_angle = NuAtan2D(INTERACTION_ANTINODE_SHAPE(antinode)->base_radius, INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+        corner_angle = NuAtan2D(antinode->base_radius, antinode->base_height);
         angle = NuAngAdd(object_angle, 0);
 
         if (angle > 0x8000 - corner_angle) {
             gradient.x = -1.0f;
             gradient.z = 0.0f;
-            object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
-            object->ai->movement_position.z = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+            object->ai->movement_position.x = (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.z = -(object->ai->mover_height + antinode->base_height);
         } else if (angle > corner_angle) {
             gradient.x = 0.0f;
             gradient.z = -1.0f;
-            object->ai->movement_position.x = object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius;
-            object->ai->movement_position.z =
-                NU_COS_LUT(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+            object->ai->movement_position.x = object->ai->mover_height + antinode->base_radius;
+            object->ai->movement_position.z = NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
         } else if (angle > -corner_angle) {
             gradient.x = 1.0f;
             gradient.z = 0.0f;
-            object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
-            object->ai->movement_position.z = object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height;
+            object->ai->movement_position.x = (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.z = object->ai->mover_height + antinode->base_height;
         } else if (angle > corner_angle - 0x8000) {
             gradient.x = 0.0f;
             gradient.z = 1.0f;
-            object->ai->movement_position.x = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius);
-            object->ai->movement_position.z =
-                NU_COS_LUT(angle) * (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+            object->ai->movement_position.x = -(object->ai->mover_height + antinode->base_radius);
+            object->ai->movement_position.z = NU_COS_LUT(angle) * (object->ai->mover_height + antinode->base_height);
         } else {
             gradient.x = -1.0f;
             gradient.z = 0.0f;
-            object->ai->movement_position.x =
-                (object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_radius) * NU_SIN_LUT(angle);
-            object->ai->movement_position.z = -(object->ai->mover_height + INTERACTION_ANTINODE_SHAPE(antinode)->base_height);
+            object->ai->movement_position.x = (object->ai->mover_height + antinode->base_radius) * NU_SIN_LUT(angle);
+            object->ai->movement_position.z = -(object->ai->mover_height + antinode->base_height);
         }
         if (turn + turn_offset < 0) {
             gradient.x = -gradient.x;
@@ -3764,7 +3607,7 @@ void AISysCreatureAntinodeInteraction(AISYS *system, i32 object_count, APIOBJECT
                         NuSpecialCompare(&object->collision_special, &antinode->special_handle)) {
                         continue;
                     }
-                    if (((u64)1 << object->object_id) & ((INTERACTION_ANTINODE_VIEW *)antinode)->excluded_character_types) {
+                    if (((u64)1 << object->object_id) & U64_PAIR(antinode->excluded_character_types)) {
                         continue;
                     }
                     radius = object->ai->mover_height + antinode->radius;
@@ -3773,12 +3616,11 @@ void AISysCreatureAntinodeInteraction(AISYS *system, i32 object_count, APIOBJECT
                         continue;
                     }
                     difference.z = object->ai->movement_position.z - antinode->position.z;
-                    if (difference.z > radius || difference.z < -radius ||
-                        INTERACTION_GEOMETRY(object)->collision_min.y > antinode->max_y) {
+                    if (difference.z > radius || difference.z < -radius || object->collision_min.y > antinode->max_y) {
                         continue;
                     }
                     /* An unordered min-height comparison continues to the callback. */
-                    if (!(antinode->min_y > INTERACTION_GEOMETRY(object)->collision_max.y)) {
+                    if (!(antinode->min_y > object->collision_max.y)) {
                         checkantinodefns[antinode->type](object, antinode, &difference, radius);
                     }
                 }
@@ -3836,8 +3678,7 @@ void AISysCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT **obj
             if (difference.z > radius || difference.z < -radius) {
                 continue;
             }
-            if (((GAMEOBJECT *)first)->collision_min.y > ((GAMEOBJECT *)second)->collision_max.y ||
-                ((GAMEOBJECT *)second)->collision_min.y > ((GAMEOBJECT *)first)->collision_max.y) {
+            if (first->collision_min.y > second->collision_max.y || second->collision_min.y > first->collision_max.y) {
                 continue;
             }
             distance = NuFsqrt(difference.x * difference.x + difference.z * difference.z);
@@ -3913,8 +3754,7 @@ void LEGO_AISysCreatureInteraction2D(AISYS *system, i32 object_count, APIOBJECT 
             if (difference.z > radius || difference.z < -radius) {
                 continue;
             }
-            if (((GAMEOBJECT *)first)->collision_min.y > ((GAMEOBJECT *)second)->collision_max.y ||
-                ((GAMEOBJECT *)second)->collision_min.y > ((GAMEOBJECT *)first)->collision_max.y) {
+            if (first->collision_min.y > second->collision_max.y || second->collision_min.y > first->collision_max.y) {
                 continue;
             }
             if (first->collision_link == second || second->collision_link == first) {
@@ -6805,7 +6645,7 @@ i32 NuSpecialFindByPlatformID(NUGSCN *scene, struct nuhspecial_s *result, i32 pl
     memset(result, 0, sizeof(*result));
     if (scene != NULL && CurrentTerrain != NULL && platform_id != -1) {
         count = NuGScnNumSpecials(scene);
-        instance_index = ((AI_EDITOR_SPECIAL_TERRAIN *)CurrentTerrain)->platforms[platform_id].instance_index;
+        instance_index = CurrentTerrain->platforms[platform_id].scene_object_index;
         for (index = 0; index < count; ++index) {
             NuGScnGetSpecial(&candidate, scene, index);
             if (NuSpecialGetInstanceix(&candidate) == instance_index) {
@@ -6968,7 +6808,7 @@ static EDAIAREA_s *areaEditorCreateArea(NUVEC *position, NUVEC *size, i32 rotati
         if (size != NULL) {
             area->size = *size;
         }
-        area->rotation = (u16)rotation;
+        area->rotation = (i16)rotation;
         area->flags = (u8)flags;
     }
     return area;
@@ -7029,7 +6869,7 @@ static EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
                         nearest = area;
                     }
                 } else {
-                    NuVecRotateY(&difference, &difference, -(i16)area->rotation);
+                    NuVecRotateY(&difference, &difference, -area->rotation);
                     if (difference.x < area->size.x && difference.y < area->size.y && difference.z < area->size.z &&
                         difference.x > -area->size.x && difference.y > -2.0f && difference.z > -area->size.z) {
                         nearest = area;
@@ -7136,7 +6976,7 @@ void areaEditorDrawAreas(void) {
             f32 radius = area->size.x < area->size.z ? area->size.x : area->size.z;
             LocaledbitsDrawSolidCircleXY(position, radius, position->y, area->size.y + position->y, colour, 0, 16);
         } else {
-            DrawAreaBox(&area->position, &area->size, (i16)area->rotation, colour);
+            DrawAreaBox(&area->position, &area->size, area->rotation, colour);
         }
     }
     AiRndrSetCullDistance(previous_distance);
@@ -8084,7 +7924,7 @@ static void pathEditorDrawPath(EDAIPATH_s *path, i32 path_index) {
                                node_colour, 0, segments, solid);
             if (node->shared_node != NULL && !(node->shared_node->draw_flags & 1)) {
                 AiPathDrawCross(&node->position, node->radius, node_colour);
-                ((AI_PATH_DRAW_FLAGS *)node->shared_node)->flags |= 1;
+                node->shared_node->draw_flags |= 1;
             }
             if (node->route_mask & active_route) {
                 if (path == aieditor->current_path && path->current_node == node) {
@@ -8159,7 +7999,7 @@ void fun_00524180(void) {
 void pathEditorDrawPaths(void) {
     EDAIPATHWALL_s *wall = (EDAIPATHWALL_s *)NuLinkedListGetHead(&aieditor->path_walls);
     while (wall != NULL) {
-        ((AI_PATH_DRAW_FLAGS *)wall)->flags &= ~1;
+        wall->draw_flags &= ~1;
         wall = (EDAIPATHWALL_s *)NuLinkedListGetNext(&aieditor->path_walls, &wall->link);
     }
 
@@ -8522,7 +8362,7 @@ static void pathEditorPopulateRouteMatrix(AIPATH *path, i32 route_mask, f32 **di
 }
 
 void pathEditorSaveData(AIPATHSYS *path_system) {
-    AI_PATH_SYSTEM_LOAD *system = (AI_PATH_SYSTEM_LOAD *)path_system;
+    AIPATHSYS *system = path_system;
     i32 path_index;
     i32 index;
     i32 row;
@@ -9734,10 +9574,8 @@ eduimenu_s *antinodeEditor_DeleteAntinodeMenu(void) {
     if (aieditor->selected_antinode != NULL && aieditor->selected_antinode == aieditor->nearest_antinode) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteAntinodeCancel, "Delete Antinode??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)dat_0075f2c0));
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)dat_0075f2c4));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)NoText));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteAntinodeAnswer, (char *)YesText));
             return menu;
         }
     }
@@ -10573,7 +10411,7 @@ static void AiEditorSetLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     }
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
-        if ((void *)aieditor->selected_creature->check.path == (void *)locator->path_check.path) {
+        if (aieditor->selected_creature->check.path == locator->path_check.path) {
             if (index == item->data) {
                 aieditor->selected_creature->locator = locator;
                 return;
@@ -10595,7 +10433,7 @@ void AiEditorSelectLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) 
     index = 0;
     for (locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators); locator != NULL;
          locator = (EDLOCATOR_s *)NuLinkedListGetNext(&aieditor->locators, &locator->link)) {
-        if ((void *)aieditor->selected_creature->check.path == (void *)locator->path_check.path) {
+        if (aieditor->selected_creature->check.path == locator->path_check.path) {
             i32 selected = aieditor->selected_creature->locator == locator;
             eduiMenuAddItem(menu, eduiItemCheckCreate(index, &AiEditorSaveMessageColours, selected, 1, AiEditorSetLocator, locator->name));
             if (selected) {
@@ -10855,7 +10693,7 @@ void creatureEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 240, 16, "Script = NONE, %s", set_name);
         }
         if (display->trigger_area != NULL) {
-            NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "Area = \"%s\"", ((EDLOCATOR_s *)display->trigger_area)->name);
+            NuQFntPrintEx(system_qfont, text_x, y * 8 + 360, 16, "Area = \"%s\"", display->trigger_area->name);
         }
         if (display->locator != NULL) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "Locator = \"%s\"", display->locator->name);
@@ -11013,7 +10851,7 @@ void creatureEditor_Enter(void) {
                     if (source->activate_area != NULL) {
                         for (area = (EDAIAREA_s *)NuLinkedListGetHead(&aieditor->areas); area != NULL;
                              area = (EDAIAREA_s *)NuLinkedListGetNext(&aieditor->areas, &area->link)) {
-                            if (NuStrICmp(area->name, (char *)source->activate_area) == 0) {
+                            if (NuStrICmp(area->name, source->activate_area->name) == 0) {
                                 creature->activation_area = area;
                                 creature->activation = 1;
                                 break;
@@ -11994,7 +11832,7 @@ i32 Action_FaceLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
     char *value;
     AILOCATOR *locator;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL) {
         return 1;
     }
@@ -12028,7 +11866,7 @@ i32 Action_SetLocator(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
     i32 random_count = 0;
     char *name = NULL;
     i32 index;
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL || first_time == 0) {
         return 1;
     }
@@ -12051,8 +11889,8 @@ i32 Action_SetLocator(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packe
     if (name != NULL) {
         if (indexed != 0 && ((APIOBJECT *)packet->owner)->locator_name_index != -1) {
             sprintf(buffer, "%s_%d", name, ((APIOBJECT *)packet->owner)->locator_name_index);
-        } else if (personal != 0 && ((APIOBJECT *)packet->owner)->character_data != NULL) {
-            sprintf(buffer, "%s_%s", name, ((APIOBJECT *)packet->owner)->character_data->name);
+        } else if (personal != 0 && packet->owner->character_data != NULL) {
+            sprintf(buffer, "%s_%s", name, packet->owner->character_data->name);
         } else if (random_count != 0) {
             sprintf(buffer, "%s_%d", name, NuRand(NULL) % random_count);
         } else {
@@ -12070,7 +11908,7 @@ i32 Action_SetRespawnLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *p
     i32 i;
     char *value;
 
-    if (packet != NULL && packet->owner != NULL && ((APIOBJECT *)packet->owner)->owner != NULL && first_time != 0) {
+    if (packet != NULL && packet->owner != NULL && packet->owner->objptr != NULL && first_time != 0) {
         packet->respawn_locator = processor->locator;
         count = 0;
         for (i = 0; i < param_count; i++) {
@@ -12316,14 +12154,14 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
     char member_path[32];
     char character_name[32];
     char reference_name[16];
-    AI_SYSTEM_LOAD *system;
+    AISYS *system;
     i32 is_open;
     i32 version;
     i32 index;
     i32 search;
     u16 connection_index;
     sprintf(ai2_path, "%sLevels\\%s\\%s\\%s.ai2", AiLevelPathName, load_directory, parameter, name);
-    AISYS_BUFFER_ALLOCATE(AI_SYSTEM_LOAD *, system, buffer, buffer_end, sizeof(AI_SYSTEM_LOAD));
+    AISYS_BUFFER_ALLOCATE(AISYS *, system, buffer, buffer_end, sizeof(AISYS));
     if (system != NULL) {
         memset(system, 0, sizeof(*system));
         system->storage_size = storage_size;
@@ -12349,19 +12187,18 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
             if (version >= 4) {
                 system->area_count = EdFileReadInt();
                 if (system->area_count != 0) {
-                    system->areas =
-                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->area_count * sizeof(AI_AREA_LOAD));
+                    system->areas = AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->area_count * sizeof(AIAREA));
                     for (index = 0; index < system->area_count; ++index) {
-                        AI_AREA_LOAD *area = &system->areas[index];
+                        AIAREA *area = &system->areas[index];
                         EdFileRead(area->name, 16);
-                        area->minimum.x = EdFileReadFloat();
-                        area->minimum.y = EdFileReadFloat();
-                        area->minimum.z = EdFileReadFloat();
-                        area->maximum.x = EdFileReadFloat();
-                        area->maximum.y = EdFileReadFloat();
-                        area->maximum.z = EdFileReadFloat();
-                        area->flags = EdFileReadShort();
-                        area->system = (AISYS *)system;
+                        area->position.x = EdFileReadFloat();
+                        area->position.y = EdFileReadFloat();
+                        area->position.z = EdFileReadFloat();
+                        area->half_width = EdFileReadFloat();
+                        area->height = EdFileReadFloat();
+                        area->half_depth = EdFileReadFloat();
+                        area->rotation = EdFileReadShort();
+                        area->system = system;
                         if (version > 19) {
                             area->game_flags = (u8)EdFileReadChar();
                         } else {
@@ -12419,9 +12256,9 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                 system->creature_count = EdFileReadInt();
                 if (system->creature_count != 0) {
                     system->creatures =
-                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->creature_count * sizeof(AI_CREATURE_LOAD));
+                        AISysBufferAlloc(&system->storage_cursor, &system->storage_end, system->creature_count * sizeof(AICREATURE));
                     for (index = 0; index < system->creature_count; ++index) {
-                        AI_CREATURE_LOAD *creature = &system->creatures[index];
+                        AICREATURE *creature = &system->creatures[index];
                         EdFileRead(creature->name, 16);
                         EdFileRead(creature->script_name, 16);
                         if (strlen(creature->script_name) == 0) {
@@ -12461,9 +12298,9 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                         if (version >= 4 && EdFileReadInt() != 0) {
                             EdFileRead(reference_name, 16);
                             for (search = 0; search < system->area_count; ++search) {
-                                AI_AREA_LOAD *entry = &system->areas[search];
+                                AIAREA *entry = &system->areas[search];
                                 if (NuStrICmp(reference_name, entry->name) == 0) {
-                                    creature->area = (AIAREA *)entry;
+                                    creature->area = entry;
                                     break;
                                 }
                             }
@@ -12511,9 +12348,9 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                             case 1:
                                 EdFileRead(reference_name, 16);
                                 for (search = 0; search < system->area_count; ++search) {
-                                    AI_AREA_LOAD *entry = &system->areas[search];
+                                    AIAREA *entry = &system->areas[search];
                                     if (NuStrICmp(reference_name, entry->name) == 0) {
-                                        creature->activate_area = (AIAREA *)entry;
+                                        creature->activate_area = entry;
                                         break;
                                     }
                                 }
@@ -12564,10 +12401,10 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                 if (version > 12) {
                     system->antinode_count = EdFileReadInt();
                     if (system->antinode_count != 0) {
-                        AISYS_BUFFER_ALLOCATE(AI_ANTINODE_LOAD *, system->antinodes, &system->storage_cursor, &system->storage_end,
-                                              system->antinode_count * sizeof(AI_ANTINODE_LOAD));
+                        AISYS_BUFFER_ALLOCATE(AIANTINODE *, system->antinodes, &system->storage_cursor, &system->storage_end,
+                                              system->antinode_count * sizeof(AIANTINODE));
                         for (index = 0; index < system->antinode_count; ++index) {
-                            AI_ANTINODE_LOAD *antinode = &system->antinodes[index];
+                            AIANTINODE *antinode = &system->antinodes[index];
                             i32 length;
                             antinode->enabled = 1;
                             antinode->position.x = EdFileReadFloat();
@@ -12581,7 +12418,7 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                             antinode->min_y_offset = antinode->min_y - antinode->position.y;
                             antinode->max_y_offset = antinode->max_y - antinode->position.y;
                             if (version > 14) {
-                                antinode->flags = EdFileReadInt();
+                                antinode->rotation = EdFileReadInt();
                                 antinode->base_radius = EdFileReadFloat();
                                 antinode->base_height = EdFileReadFloat();
                                 antinode->type = (u8)EdFileReadChar();
@@ -12606,16 +12443,16 @@ static AISYS *AISysLoadPrivate(void *pak, NUGSCN *scene, char *directory, VARIPT
                     }
                 }
                 if (version > 6 && GameAILoadFn != NULL) {
-                    GameAILoadFn((AISYS *)system, version, scene, buffer, buffer_end);
+                    GameAILoadFn(system, version, scene, buffer, buffer_end);
                 }
             }
             EdFileClose();
         }
         sprintf(script_path, "%sLevels\\%s\\%s", AiLevelPathName, directory, parameter);
-        AIScriptLoadAllPakFile(pak, script_path, buffer, buffer_end, (AISYS *)system);
-        AISysSetLevelPath((AISYS *)system, NULL);
+        AIScriptLoadAllPakFile(pak, script_path, buffer, buffer_end, system);
+        AISysSetLevelPath(system, NULL);
     }
-    return (AISYS *)system;
+    return system;
 }
 
 AISYS *AISysLoadEx(VARIPTR *buffer, VARIPTR *buffer_end, i32 storage_size, NUGSCN *scene, char *directory, char *name, char *parameter,
@@ -13355,8 +13192,8 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD *pad, f32 frame_delta_time, u32
     f32 distance;
     i32 hit;
     eduimenu_s *(*process)(FRAME_PAD *);
-    aieditor->pad_buttons = pad->digital_buttons;
-    aieditor->pad_pressed = pad->digital_buttons_pressed;
+    aieditor->buttons = pad->digital_buttons;
+    aieditor->buttons_pressed = pad->digital_buttons_pressed;
     if (aieditor->main_menu != NULL) {
         eduiMenuProcess(aieditor->main_menu, menu_delta_time, pad);
         return 0;
@@ -13489,7 +13326,7 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     if (aieditor->hovered_area != NULL) {
         if (aieditor->selected_area == aieditor->hovered_area) {
             NuQFntPrintEx(system_qfont, text_x, y * 8, 16, "X - Move selected/Adjust size");
-            if (aieditor->pad_buttons & 0x40) {
+            if (aieditor->buttons & 0x40) {
                 if (aieditor->hovered_area->flags & 1) {
                     NuQFntPrintEx(system_qfont, text_x, (y + 15) * 8, 16, "LRIGHT/LLEFT - Adjust Radius");
                 } else {
@@ -13651,10 +13488,10 @@ void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Delete current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)dat_0075f2c0));
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)dat_0075f2c4));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)NoText));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbDeleteLocatorSet, (char *)YesText));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -13681,10 +13518,10 @@ void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 e
         case 0:
             menu = eduiMenuCreate(240, 90, 240, 250, ed_fnt, NULL, "Empty current locator set?");
             if (menu != NULL) {
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)dat_0075f2c0));
-                eduiMenuAddItem(
-                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)dat_0075f2c4));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(2, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)NoText));
+                eduiMenuAddItem(menu,
+                                eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbEmptyLocatorSet, (char *)YesText));
                 eduiMenuAttach(parent, menu);
             }
             break;
@@ -14023,7 +13860,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
     NUVEC difference;
     i32 path_count;
     EDAIPATH_s *path_iter;
-    AI_PATH_BUILD_SYSTEM *system;
+    AIPATHSYS *system;
     VARIPTR *scratch_limit;
     EDAISHAREDPATHNODE_s *shared;
     i32 path_index;
@@ -14039,7 +13876,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
             path_iter->draw_index = path_count++;
         }
         if (path_count != 0) {
-            system = AISysBufferAlloc(cursor, end, sizeof(AI_PATH_BUILD_SYSTEM));
+            system = AISysBufferAlloc(cursor, end, sizeof(AIPATHSYS));
             if (system != NULL) {
                 memset(system, 0, sizeof(*system));
                 system->path_count = path_count;
@@ -14278,7 +14115,7 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
         }
     }
     distance_tables = NULL;
-    return (AIPATHSYS *)system;
+    return system;
 }
 
 static void pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
@@ -14763,15 +14600,15 @@ void antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
         if (aieditor->selected_antinode->type == 0) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "LRIGHT - Increase radius, %.2f", aieditor->selected_antinode->radius);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "LLEFT - Decrease radius");
-        } else if (aieditor->pad_buttons & 0x40) {
+        } else if (aieditor->buttons & 0x40) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "LRIGHT - Increase X, %.2f", aieditor->selected_antinode->base_radius);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "LLEFT - Decrease X");
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 720, 16, "LUP - Increase Z, %.2f", aieditor->selected_antinode->base_height);
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 840, 16, "LDOWN - Decrease Z");
-        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->pad_buttons & 0x1000)) {
+        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->buttons & 0x1000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "L1 - Increase upper height");
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "R1 - Decrease upper height");
-        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->pad_buttons & 0x4000)) {
+        } else if (((i32)(aieditorsettings.display_options << 23) >> 31) && (aieditor->buttons & 0x4000)) {
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 480, 16, "L1 - Increase lower height");
             NuQFntPrintEx(system_qfont, text_x, y * 8 + 600, 16, "R1 - Decrease lower height");
         } else {
@@ -15557,7 +15394,7 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
     char *value;
     AILOCATOR *locator_3;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL) {
         return 1;
     }
@@ -15577,8 +15414,8 @@ i32 Action_GoToLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
                     if (index < param_count) {
                         if (use_indexed_name != 0 && ((APIOBJECT *)packet->owner)->locator_name_index != -1) {
                             sprintf(locator_name, "%s_%d", params[index], ((APIOBJECT *)packet->owner)->locator_name_index);
-                        } else if (use_personal_name != 0 && ((APIOBJECT *)packet->owner)->character_data != NULL) {
-                            sprintf(locator_name, "%s_%s", params[index], ((APIOBJECT *)packet->owner)->character_data->name);
+                        } else if (use_personal_name != 0 && packet->owner->character_data != NULL) {
+                            sprintf(locator_name, "%s_%s", params[index], packet->owner->character_data->name);
                         } else if (random_locator_count != 0) {
                             sprintf(locator_name, "%s_%d", params[index], NuRand(NULL) % random_locator_count);
                         } else {
@@ -15731,7 +15568,7 @@ i32 Action_FollowPath(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     f64 first_term;
     f32 random;
 
-    if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
+    if (packet == NULL || packet->owner == NULL || packet->owner->objptr == NULL) {
         return 1;
     }
     if (packet->path_info.path == NULL || packet->path_info.connection == NULL) {
@@ -16291,8 +16128,8 @@ i32 aieditor_Save(void) {
     char *separator;
     i32 result = 1;
 
-    cursor.char_ptr = (char *)aieditor->save_scratch;
-    end.char_ptr = (char *)aieditor->save_scratch + sizeof(aieditor->save_scratch);
+    cursor.u8_ptr = aieditor->save_scratch;
+    end.u8_ptr = aieditor->save_scratch + sizeof(aieditor->save_scratch);
     memset(cursor.char_ptr, 0, sizeof(aieditor->save_scratch));
     paths = pathEditorCreateData(&cursor, &end, &aieditorsettings.path_scratch_cursor, &aieditorsettings.path_scratch_end);
     if (paths == NULL) {
@@ -16376,10 +16213,8 @@ eduimenu_s *locatorEditor_DeleteLocatorMenu(void) {
     if (aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
         menu = eduiMenuCreate(200, 70, 240, 270, ed_fnt, AiEditorDeleteLocatorCancel, "Delete locator??");
         if (menu != NULL) {
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)dat_0075f2c0));
-            eduiMenuAddItem(menu,
-                            eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)dat_0075f2c4));
+            eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)NoText));
+            eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, AiEditorDeleteLocatorSelection, (char *)YesText));
             return menu;
         }
     }
@@ -16981,7 +16816,7 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         if (aieditor->hovered_area != NULL) {
             if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
                 aieditor->selected_area = aieditor->hovered_area;
-                aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+                aieditorsettings.locator_rotation = aieditor->selected_area->rotation;
                 edcamSetPos(&aieditor->selected_area->position);
             } else {
                 if (aieditor->selected_area == NULL) {
@@ -17049,7 +16884,7 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         }
     } else if (pad->digital_buttons & PAD_BUTTON_RIGHT) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+            aieditorsettings.locator_rotation = aieditor->selected_area->rotation;
         }
         if (pad->digital_buttons_pressed & PAD_BUTTON_LEFT) {
             aieditor->rotation_repeat = 20;
@@ -17061,11 +16896,11 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         }
         aieditorsettings.locator_rotation = NuAngAdd(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
+            aieditor->selected_area->rotation = aieditorsettings.locator_rotation;
         }
     } else if (pad->digital_buttons & PAD_BUTTON_LEFT) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditorsettings.locator_rotation = (i16)aieditor->selected_area->rotation;
+            aieditorsettings.locator_rotation = aieditor->selected_area->rotation;
         }
         if (pad->digital_buttons_pressed & PAD_BUTTON_RIGHT) {
             aieditor->rotation_repeat = 20;
@@ -17077,7 +16912,7 @@ eduimenu_s *areaEditor_Process(FRAME_PAD *pad) {
         }
         aieditorsettings.locator_rotation = NuAngSub(aieditorsettings.locator_rotation, aieditor->rotation_repeat);
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
-            aieditor->selected_area->rotation = (u16)aieditorsettings.locator_rotation;
+            aieditor->selected_area->rotation = aieditorsettings.locator_rotation;
         }
     } else if (pad->digital_buttons & PAD_BUTTON_DOWN) {
         if (aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
@@ -17170,10 +17005,10 @@ eduimenu_s *locatorEditor_Process(FRAME_PAD *pad) {
             sprintf(title, "Add locators \"%s\" to set \"%s\"?", aieditor->pending_locator_name, aieditor->current_locator_set->name);
             menu = eduiMenuCreate(100, 70, 440, 270, ed_fnt, AiEditorMessageCloseMenu, title);
             if (menu != NULL) {
-                eduiMenuAddItem(menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)dat_0075f2c0));
-                eduiMenuAddItem(menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo,
-                                                        (char *)dat_0075f2c4));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(0, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo, (char *)NoText));
+                eduiMenuAddItem(
+                    menu, eduiItemSelCreate(1, &AiEditorSaveMessageColours, 0, 0, locatorEditor_cbAddLocatorsByNameYesNo, (char *)YesText));
                 return menu;
             }
         }

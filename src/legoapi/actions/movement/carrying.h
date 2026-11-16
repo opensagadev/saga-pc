@@ -9,7 +9,7 @@
 
 struct WORLDINFO_s;
 
-/* gameobject_s.unknown_7b3 in the super carry context: the step, after the LEGOACT_SUPERCARRY_* animation
+/* gameobject_s.player.context_phase in the super carry context: the step, after the LEGOACT_SUPERCARRY_* animation
  * each plays. */
 #define SUPERCARRY_PICKUP 0
 #define SUPERCARRY_PUTDOWN 1
@@ -48,6 +48,8 @@ extern "C" {
     i32 SuperCarry_Possible(GAMEOBJECT *, i32);
     void SuperCarry_Start(GAMEOBJECT *, GIZMOBLOWUP *, i32);
     void SuperCarry_MoveCode(struct WORLDINFO_s *, GAMEOBJECT *);
+    extern u8 SuperCarryPlayerRgb[2][3];
+    void SuperCarry_DrawObject(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

@@ -624,7 +624,7 @@ class NetFtpManager : public NetListenerInterface { // size 0x1608
     void fun_0060e6f0(i32 value);
 
     FtpFileArray files; // 0x0004
-    i32 unknown_1604;   // 0x1604
+    i32 transfer_id;    // 0x1604
 };
 
 struct NOSContext {
@@ -821,7 +821,7 @@ class NetworkObjectManager : public NetListenerInterface, public EdObjectNotifie
     void UpdateLocalObjectList();
     NetStats *fun_0060e740(i32 class_id);
 
-    i32 unknown_08;                      // 0x0008
+    i32 push_owner;                      // 0x0008
     i32 active;                          // 0x000c
     NOSContext context;                  // 0x0010
     const V2Peer *guid_peers[2];         // 0x0020
@@ -884,11 +884,11 @@ class TTNetwork : public NetTransporter, public BaseThing { // size 0x110f4
 
     NetLogFile log;                    // 0x00020
     u32 frame_count;                   // 0x02134
-    i32 unknown_2138;                  // 0x02138
-    i32 unknown_213c;                  // 0x0213c
+    i32 elapsed_frames;                // 0x02138
+    i32 connect_attempts;              // 0x0213c
     i32 state;                         // 0x02140
-    i32 unknown_2144;                  // 0x02144
-    i32 unknown_2148;                  // 0x02148
+    i32 error_count;                   // 0x02144
+    i32 active_transfer;               // 0x02148
     i32 unknown_214c;                  // 0x0214c
     i32 display_page;                  // 0x02150
     f32 display_x;                     // 0x02154
@@ -1000,9 +1000,9 @@ class V2SessionManager { // size 0x2c0
     f32 timer_6c;          // 0x06c
     u32 unknown_70;        // 0x070
     f32 timer_74;          // 0x074
-    u8 unknown_78;         // 0x078
+    u8 joining;            // 0x078
     u8 unknown_79[3];      // 0x079
-    i32 unknown_7c;        // 0x07c
+    i32 host_lost;         // 0x07c
     u32 unknown_80;        // 0x080
     V2Peer *local_peer;    // 0x084
     V2HostList host_list;  // 0x088

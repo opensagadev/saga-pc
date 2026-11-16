@@ -100,26 +100,26 @@ void GetSurfaceInfo(GAMEOBJECT *object, i32 update_fields, f32 floor_height) {
     object->water_height = EShadY;
     if (object->water_height != GameObjectNearFloorNoFloorHeight) {
         material = (i8)EShadowInfo();
-        object->unknown_283 = material;
+        object->ground_layer = material;
         if (VehicleArea != 0 && BonusArea != 0 && (material == 7 || material == 16)) {
             object->water_height = 2000000.0f;
-            object->unknown_105e = 0;
-            object->unknown_105c = 0;
-            object->unknown_283 = -1;
+            object->tilt_target_roll = 0;
+            object->tilt_target_pitch = 0;
+            object->ground_layer = -1;
         } else {
             if (material < 0 || material >= 17) {
-                object->unknown_283 = 0;
+                object->ground_layer = 0;
             }
             material_mask = GetSurfaceInfoDefaultMask.low | GetSurfaceInfoRuntimeMask.low | 0x40u;
-            object->unknown_283 = (i8)((u8)object->unknown_283 & (u8)~material_mask);
+            object->ground_layer = (i8)((u8)object->ground_layer & (u8)~material_mask);
             FindAnglesZX(&GetSurfaceInfoWaterNormal, NULL, NULL);
-            object->unknown_105c = temp_zrot;
-            object->unknown_105e = temp_xrot;
+            object->tilt_target_pitch = temp_zrot;
+            object->tilt_target_roll = temp_xrot;
         }
     } else {
-        object->unknown_105e = 0;
-        object->unknown_105c = 0;
-        object->unknown_283 = -1;
+        object->tilt_target_roll = 0;
+        object->tilt_target_pitch = 0;
+        object->ground_layer = -1;
     }
 
     object->roof_height = GetSurfaceInfoRoofHeight;
@@ -175,11 +175,11 @@ i32 Conveyor_AdjustSpeed(NUVEC *velocity) {
 }
 
 i32 UnderWater(GAMEOBJECT *object) {
-    return (object->unknown_283 == 1 || object->unknown_283 == 9) && object->collision_position.y <= object->water_height;
+    return (object->ground_layer == 1 || object->ground_layer == 9) && object->collision_position.y <= object->water_height;
 }
 
 i32 IntersectWater(GAMEOBJECT *object) {
-    if (object->unknown_283 != 1 && object->unknown_283 != 9) {
+    if (object->ground_layer != 1 && object->ground_layer != 9) {
         return 0;
     }
     if (object->collision_max.y < object->water_height) {
@@ -216,10 +216,10 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
             object->player.surface_flag8_scale = 0.0f;
         }
         FindAnglesZX(&object->surface_normal, NULL, NULL);
-        object->unknown_1056 = temp_zrot;
-        object->unknown_1052 = temp_zrot;
-        object->unknown_1058 = temp_xrot;
-        object->unknown_1054 = temp_xrot;
+        object->surface_pitch = temp_zrot;
+        object->shadow_pitch = temp_zrot;
+        object->surface_roll = temp_xrot;
+        object->shadow_roll = temp_xrot;
     } else {
         GetSurfaceInfo(object, 0, object->floor_height);
         object->player.surface_flag8_scale = 0.0f;
@@ -228,13 +228,13 @@ void InitSurfaceInfo(GAMEOBJECT *object) {
         object->surface_normal = v010;
     }
 
-    object->unknown_0286 = (object->unknown_283 == 1 || object->unknown_283 == 9) && object->collision_position.y <= object->water_height;
-    object->water_intersects = (object->unknown_283 == 1 || object->unknown_283 == 9) && object->water_height <= object->collision_max.y &&
-                               object->water_height >= object->collision_min.y;
+    object->unknown_0286 = (object->ground_layer == 1 || object->ground_layer == 9) && object->collision_position.y <= object->water_height;
+    object->water_intersects = (object->ground_layer == 1 || object->ground_layer == 9) &&
+                               object->water_height <= object->collision_max.y && object->water_height >= object->collision_min.y;
 
     object->water_height = LevelConfigFarDistance;
     object->roof_height = LevelConfigFarDistance;
-    object->unknown_283 = -1;
+    object->ground_layer = -1;
     object->roof_surface_id = 0xff;
     GetSurfaceInfo(object, 1, object->floor_height);
 

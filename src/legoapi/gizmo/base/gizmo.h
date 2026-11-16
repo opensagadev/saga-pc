@@ -42,6 +42,9 @@ typedef struct gizmo_s { // size 0x8
         struct gizaimessage_s *message;
         struct carry_plug_s *plug;
         struct GRAPPLE_MOTION *grapple;
+        struct TUBE *tube;
+        struct pushblock_s *push_block;
+        struct NUPORTAL *portal;
     }; // 0x0
 
     i16 unknown_04; // 0x4
@@ -210,6 +213,12 @@ extern "C" {
     void RegisterGizmoTypes(VARIPTR *, VARIPTR *, REGISTER_GIZMO_CONFIG_TYPE_FN *, i32);
     void GizmoSysEarlyUpdate(void *system, void *world, f32 delta_time);
     void GizmoSysLateUpdate(void *system, void *world, f32 delta_time);
+    extern f32 HUB_MINIKITVIEWER_CAMDY;
+    extern i32 HubForceShopSave;
+    void Arcade_DrawPanel(i32 paused);
+    void Arcade_ResetPanel(void);
+    void Hub_ClearStats(void);
+    void Hub_UpdateKit(void);
 #ifdef __cplusplus
 }
 #endif

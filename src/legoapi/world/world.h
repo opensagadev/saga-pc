@@ -28,7 +28,6 @@ struct level_progress_s;
 struct minikit_piece_s;
 struct numtx_s;
 struct partdebrissys_s;
-struct rtlset_s;
 struct socksys_s;
 struct techno_s;
 struct zipup_s;
@@ -42,12 +41,12 @@ typedef struct level_sfx_entry_s { // size 0x10
 
 typedef struct BOLTTYPE_s { // size 0xa4
     char name[16];          // 0x00
-    f32 unknown_10;         // 0x10
-    f32 unknown_14;         // 0x14
-    f32 unknown_18;         // 0x18
-    f32 unknown_1c;         // 0x1c
-    f32 unknown_20;         // 0x20
-    f32 unknown_24;         // 0x24
+    f32 speed;              // 0x10
+    f32 lifetime;           // 0x14
+    f32 acceleration_y;     // 0x18
+    f32 radius;             // 0x1c
+    f32 scale;              // 0x20
+    f32 grow_time;          // 0x24
 
     union { // size 0x10
 
@@ -121,6 +120,15 @@ typedef struct EQUIVALENT_GROUP { // size 0x10
     nuhspecial_s objects[1];      // 0x4
 } EQUIVALENT_GROUP;
 
+typedef struct minikit_s {          // size 0x18
+    struct NUGSCN_s *scene;         // 0x00
+    struct minikit_piece_s *pieces; // 0x04
+    u8 piece_count;                 // 0x08
+    i8 area_index;                  // 0x09
+    i16 model_id;                   // 0x0a
+    nuhspecial_s shadow;            // 0x0c
+} MINIKIT;
+
 typedef struct WORLDINFO_s { // size 0x51ac
     char name[0x80];         // 0x0000
     char config_file[0x80];  // 0x0080
@@ -133,50 +141,54 @@ typedef struct WORLDINFO_s { // size 0x51ac
     union { // size 0x8
         u32 unknown_0114[2];
 
-        struct {                    // size 0x8
-            u32 unknown_0114_first; // 0x0114
-            i32 reset_flags;        // 0x0118
+        struct {             // size 0x8
+            u32 initialized; // 0x0114
+            i32 reset_flags; // 0x0118
         };
     }; // 0x0114
 
-    i32 level_idx;                                       // 0x011c
-    i32 area_index;                                      // 0x0120
-    i32 episode_index;                                   // 0x0124
-    struct level_data_s *current_level;                  // 0x0128
-    struct area_data_s *area;                            // 0x012c
-    struct level_progress_s *level_progress;             // 0x0130
-    struct APIDEBRISSYS *game_debris_sys;                // 0x0134
-    struct partdebrissys_s *part_debris_sys;             // 0x0138
-    struct NUGSCN_s *current_gscn;                       // 0x013c
-    struct NUGSCN_s *secondary_gscn;                     // 0x0140
-    NUVEC level_min;                                     // 0x0144
-    NUVEC level_max;                                     // 0x0150
-    SCENEPROGRESS scene_progress;                        // 0x015c
-    void *terrain;                                       // 0x295c
-    struct gameanimsys_s *game_anim_sys;                 // 0x2960
-    u32 unknown_2964[9];                                 // 0x2964
-    struct socksys_s *sock_sys;                          // 0x2988
-    struct APIOBJECTSYS *object_sys;                     // 0x298c
-    u8 room_visibility_flag;                             // 0x2990
-    u8 rooms_visible[0x100];                             // 0x2991
-    u8 unknown_2a91[3];                                  // 0x2a91
-    u8 *rooms_visible_ptr;                               // 0x2a94
-    i32 page_pp;                                         // 0x2a98
-    i32 page_part;                                       // 0x2a9c
-    i32 page_anim;                                       // 0x2aa0
-    i32 page_grass;                                      // 0x2aa4
-    i32 page_bridge;                                     // 0x2aa8
-    i32 page_unknown;                                    // 0x2aac
-    struct cutsys_s *cutscene_sys;                       // 0x2ab0
-    struct rtlset_s *rtl_set;                            // 0x2ab4
+    i32 level_idx;                           // 0x011c
+    i32 area_index;                          // 0x0120
+    i32 episode_index;                       // 0x0124
+    struct level_data_s *current_level;      // 0x0128
+    struct area_data_s *area;                // 0x012c
+    struct level_progress_s *level_progress; // 0x0130
+    struct APIDEBRISSYS *game_debris_sys;    // 0x0134
+    struct partdebrissys_s *part_debris_sys; // 0x0138
+    struct NUGSCN_s *current_gscn;           // 0x013c
+    struct NUGSCN_s *secondary_gscn;         // 0x0140
+    NUVEC level_min;                         // 0x0144
+    NUVEC level_max;                         // 0x0150
+    SCENEPROGRESS scene_progress;            // 0x015c
+    void *terrain;                           // 0x295c
+    struct gameanimsys_s *game_anim_sys;     // 0x2960
+    struct NUGSCN_s *icons_scene;            // 0x2964
+    MINIKIT minikit;                         // 0x2968
+    void *character_scenes;                  // 0x2980
+    MINIKIT **minikit_pieces_by_id;          // 0x2984
+    struct socksys_s *sock_sys;              // 0x2988
+    struct APIOBJECTSYS *object_sys;         // 0x298c
+    u8 room_visibility_flag;                 // 0x2990
+    u8 rooms_visible[0x100];                 // 0x2991
+    u8 unknown_2a91[3];                      // 0x2a91
+    u8 *rooms_visible_ptr;                   // 0x2a94
+    i32 page_pp;                             // 0x2a98
+    i32 page_part;                           // 0x2a9c
+    i32 page_anim;                           // 0x2aa0
+    i32 page_grass;                          // 0x2aa4
+    i32 page_bridge;                         // 0x2aa8
+    struct BURN_SET *burnset;                // 0x2aac
+    struct cutsys_s *cutscene_sys;           // 0x2ab0
+    struct RTL_SET *rtl_set;                 // 0x2ab4
+    /* the world light, -1 for none */
     i32 rtl_id;                                          // 0x2ab8
-    void *light_dir;                                     // 0x2abc
+    NUVEC *light_dir;                                    // 0x2abc
     struct LEVEL_OBJECT_RUNTIME *level_objects;          // 0x2ac0
     struct nugspline_s **camera_splines;                 // 0x2ac4
     struct gizmosys_s *gizmo_sys;                        // 0x2ac8
     struct GIZFLOW *giz_flow;                            // 0x2acc
     char filler4[12];                                    // 0x2ad0
-    struct shadow_platform_list_s *shadow_platform_list; // 0x2adc
+    struct CHARPLATFORMSYS_s *shadow_platform_list;      // 0x2adc
     struct HUBMINIKIT_s *hub_minikits;                   // 0x2ae0
     i32 ai_loaded;                                       // 0x2ae4
     struct AISYS *ai_sys;                                // 0x2ae8
@@ -184,9 +196,10 @@ typedef struct WORLDINFO_s { // size 0x51ac
     LEVEL_SCRIPT_PROCESS script_processors[32];          // 0x2af0
     struct ai_control_system_s *ai_path_cnx_control_sys; // 0x4670
     struct ai_helper_system_s *ai_connection_helpers;    // 0x4674
-    void *ai_trigger_set;                                // 0x4678
+    struct AITRIGGERSETSYS_s *ai_trigger_set;            // 0x4678
     struct climb_system_s *climb_objects;                // 0x467c
-    u8 unknown_4680[8];                                  // 0x4680
+    struct TELEPORT_CONFIG *teleports;                   // 0x4680
+    i32 teleport_count;                                  // 0x4684
     struct zipup_s *zipups;                              // 0x4688
     i32 zipup_count;                                     // 0x468c
     struct TUBE *tubes;                                  // 0x4690
@@ -194,7 +207,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct DOOR_s *doors;                                // 0x4698
     i32 door_count;                                      // 0x469c
     struct DOOR_s *start_door;                           // 0x46a0
-    void *giz_obstacle_sys;                              // 0x46a4
+    struct GIZOBSTACLESYS_s *giz_obstacle_sys;           // 0x46a4
     struct GIZBUILDITSYS_s *giz_buildit_sys;             // 0x46a8
     struct gizforcesys_s *giz_force_sys;                 // 0x46ac
     struct EQUIVALENT_GROUP *equivalent_groups;          // 0x46b0
@@ -212,69 +225,78 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct GIZSPINNER_s *spinners;                       // 0x46e0
     i32 spinner_count;                                   // 0x46e4
     struct gameanimobjpool_s *spinner_anim_pool;         // 0x46e8
-    void *grabber;                                       // 0x46ec
+    struct grabber_s *grabber;                           // 0x46ec
     u8 unknown_46f0[0x4];                                // 0x46f0
-    void *ripple_effects;                                // 0x46f4
+    struct ripple_effect_s *ripple_effects;              // 0x46f4
     i32 ripple_effect_count;                             // 0x46f8
-    i32 water_ripple_effect;                             // 0x46fc
-    i32 sabre_ripple_effect;                             // 0x4700
-    u8 unknown_4704[0xc];                                // 0x4704
-    LEVELSFXENTRY level_sfx[64];                         // 0x4710
-    i32 level_sfx_count;                                 // 0x4b10
-    BOLTTYPE bolt_types[8];                              // 0x4b14
-    struct FADER_s *faders;                              // 0x5034
-    i32 fader_count;                                     // 0x5038
-    void *mini_trooper_packets;                          // 0x503c
-    struct minitrooperteam_s *mini_trooper_teams;        // 0x5040
-    struct numtx_s *mini_trooper_storage;                // 0x5044
-    struct PORTALDOOR_s *portal_doors;                   // 0x5048
-    i32 portal_door_count;                               // 0x504c
-    void *pulses_sys;                                    // 0x5050
-    struct SPECIALMINIKITSYS_s *special_minikits;        // 0x5054
-    struct TIGHTROPE_s *tightropes;                      // 0x5058
-    i32 tightrope_count;                                 // 0x505c
-    struct SIGNAL_s *signals;                            // 0x5060
-    i32 signal_count;                                    // 0x5064
-    struct LEVER_s *levers;                              // 0x5068
-    i32 nlevers;                                         // 0x506c
-    struct panel_load_system_s *giz_panel_sys;           // 0x5070
-    struct HATMACHINE_SYS *hat_machine_sys;              // 0x5074
-    struct techno_s *technos;                            // 0x5078
-    i32 techno_count;                                    // 0x507c
-    struct GRAPPLE_DYNAMIC *grapples;                    // 0x5080
-    i32 grapple_count;                                   // 0x5084
-    u8 unknown_5088[0x8];                                // 0x5088
-    struct SHARD_s *shards;                              // 0x5090
-    i32 shard_count;                                     // 0x5094
-    struct attracto_s *attractos;                        // 0x5098
-    i32 attracto_count;                                  // 0x509c
-    struct guideline_record_s *guidelines;               // 0x50a0
-    i32 guideline_count;                                 // 0x50a4
-    struct LEDGE_s *ledges;                              // 0x50a8
-    i32 ledge_count;                                     // 0x50ac
-    struct security_door_record_s *security_doors;       // 0x50b0
-    i32 security_door_count;                             // 0x50b4
-    struct GIZMOPICKUPRUNTIMESYS_s *pickup_runtime_sys;  // 0x50b8
-    i32 gizmo_blowup_type_count;                         // 0x50bc
-    i32 gizmo_blowup_count;                              // 0x50c0
-    struct GIZMOBLOWUPTYPE *gizmo_blowup_types;          // 0x50c4
-    struct GIZMOBLOWUP *gizmo_blowups;                   // 0x50c8
-    i32 blowup_target_candidate_count;                   // 0x50cc
-    struct GIZMOBLOWUP **blowup_target_candidates;       // 0x50d0
-    char pad_12a[20];                                    // 0x50d4
-    struct numtx_s *gizmo_blowup_mtx_buffer;             // 0x50e8
-    void *minicuts;                                      // 0x50ec
-    void *minicut_parts;                                 // 0x50f0
-    i32 minicut_count;                                   // 0x50f4
-    struct giztimer_s *giz_timers;                       // 0x50f8
-    i32 giz_timers_count;                                // 0x50fc
-    struct TORPEDO_MACHINE_SYS *torpedo_machine_sys;     // 0x5100
-    struct gizrandomsys_s *giz_randoms;                  // 0x5104
-    struct gizspecialsys_s *giz_special_sys;             // 0x5108
-    void *game_antinode_sys;                             // 0x510c
-    struct edgizshadow_s *shadow_editor;                 // 0x5110
-    struct GIZBOMBGENSYS_s *giz_bombgen_sys;             // 0x5114
-    i32 has_level_specific_data;                         // 0x5118
+
+    union { // size 0x8
+
+        struct {                     // size 0x8
+            i32 water_ripple_effect; // 0x46fc
+            i32 sabre_ripple_effect; // 0x4700
+        };
+
+        i32 ripple_effect_of_type[2]; /* indexed by LookupRippleEffectIndex */
+    }; // 0x46fc
+
+    u8 unknown_4704[0xc];                               // 0x4704
+    LEVELSFXENTRY level_sfx[64];                        // 0x4710
+    i32 level_sfx_count;                                // 0x4b10
+    BOLTTYPE bolt_types[8];                             // 0x4b14
+    struct FADER_s *faders;                             // 0x5034
+    i32 fader_count;                                    // 0x5038
+    void *mini_trooper_packets;                         // 0x503c
+    struct minitrooperteam_s *mini_trooper_teams;       // 0x5040
+    struct numtx_s *mini_trooper_storage;               // 0x5044
+    struct PORTALDOOR_s *portal_doors;                  // 0x5048
+    i32 portal_door_count;                              // 0x504c
+    struct level_sfx_pulse_prefix_s *pulses_sys;        // 0x5050
+    struct SPECIALMINIKITSYS_s *special_minikits;       // 0x5054
+    struct TIGHTROPE_s *tightropes;                     // 0x5058
+    i32 tightrope_count;                                // 0x505c
+    struct SIGNAL_s *signals;                           // 0x5060
+    i32 signal_count;                                   // 0x5064
+    struct GIZMO_LEVER *levers;                         // 0x5068
+    i32 nlevers;                                        // 0x506c
+    struct panel_load_system_s *giz_panel_sys;          // 0x5070
+    struct HATMACHINE_SYS *hat_machine_sys;             // 0x5074
+    struct techno_s *technos;                           // 0x5078
+    i32 techno_count;                                   // 0x507c
+    struct GRAPPLE_MOTION *grapples;                    // 0x5080
+    i32 grapple_count;                                  // 0x5084
+    u8 unknown_5088[0x8];                               // 0x5088
+    struct SHARD_s *shards;                             // 0x5090
+    i32 shard_count;                                    // 0x5094
+    struct attracto_s *attractos;                       // 0x5098
+    i32 attracto_count;                                 // 0x509c
+    struct guideline_record_s *guidelines;              // 0x50a0
+    i32 guideline_count;                                // 0x50a4
+    struct LEDGE_s *ledges;                             // 0x50a8
+    i32 ledge_count;                                    // 0x50ac
+    struct security_door_record_s *security_doors;      // 0x50b0
+    i32 security_door_count;                            // 0x50b4
+    struct GIZMOPICKUPRUNTIMESYS_s *pickup_runtime_sys; // 0x50b8
+    i32 gizmo_blowup_type_count;                        // 0x50bc
+    i32 gizmo_blowup_count;                             // 0x50c0
+    struct GIZMOBLOWUPTYPE *gizmo_blowup_types;         // 0x50c4
+    struct GIZMOBLOWUP *gizmo_blowups;                  // 0x50c8
+    i32 blowup_target_candidate_count;                  // 0x50cc
+    struct GIZMOBLOWUP **blowup_target_candidates;      // 0x50d0
+    char pad_12a[20];                                   // 0x50d4
+    struct numtx_s *gizmo_blowup_mtx_buffer;            // 0x50e8
+    struct minicut_s *minicuts;                         // 0x50ec
+    struct minicut_part_s *minicut_parts;               // 0x50f0
+    i32 minicut_count;                                  // 0x50f4
+    struct giztimer_s *giz_timers;                      // 0x50f8
+    i32 giz_timers_count;                               // 0x50fc
+    struct TORPEDO_MACHINE_SYS *torpedo_machine_sys;    // 0x5100
+    struct gizrandomsys_s *giz_randoms;                 // 0x5104
+    struct gizspecialsys_s *giz_special_sys;            // 0x5108
+    void *game_antinode_sys;                            // 0x510c
+    struct edgizshadow_s *shadow_editor;                // 0x5110
+    struct GIZBOMBGENSYS_s *giz_bombgen_sys;            // 0x5114
+    i32 has_level_specific_data;                        // 0x5118
 
     union { // size 0x4 the level's own state, from ChrisAllocLevelStuff
         void *level_specific_data;
@@ -285,13 +307,33 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct KILLPARTS_ACCESSORY *customiser_resources[9]; // 0x5120
     struct NUGSCN_s *customiser_shared_scenes[9];        // 0x5144
     struct TRAFFICANIMSYS_s *trafficanim_sys;            // 0x5168
-    void *plug_sys;                                      // 0x516c
-    u32 progress_flag_5174;                              // 0x5170
+    struct carry_plug_sys_s *plug_sys;                   // 0x516c
+    u32 belt_active;                                     // 0x5170
     char pad_15[56];                                     // 0x5174
 } WORLDINFO;
 
+typedef struct TORPEDO_MACHINE { // size 0x2c
+    char name[16];               // 0x00
+    NUVEC position;              // 0x10
+    f32 activation_time;         // 0x1c
+    u16 y_rotation;              // 0x20
+    u8 unknown_22[9];            // 0x22
+
+    union { // size 0x1
+        u8 flags;
+
+        struct {              // size 0x1
+            u8 active : 1;    // 0x2b:0
+            u8 visible : 1;   // 0x2b:1
+            u8 alternate : 1; // 0x2b:2
+            u8 : 5;           // 0x2b:3
+        };
+    }; // 0x2b
+} TORPEDO_MACHINE;
+
 typedef struct TORPEDO_MACHINE_SYS { // size 0xc
-    u8 unknown_0[8];                 // 0x0
+    TORPEDO_MACHINE *machines;       // 0x0
+    i32 count;                       // 0x4
     f32 scale;                       // 0x8
 } TORPEDO_MACHINE_SYS;
 
@@ -340,15 +382,6 @@ extern "C" {
 }
 #endif
 
-typedef struct minikit_s {          // size 0x18
-    struct NUGSCN_s *scene;         // 0x00
-    struct minikit_piece_s *pieces; // 0x04
-    u8 piece_count;                 // 0x08
-    i8 area_index;                  // 0x09
-    i16 model_id;                   // 0x0a
-    nuhspecial_s shadow;            // 0x0c
-} MINIKIT;
-
 typedef struct HUBMINIKIT_s HUBMINIKIT_s;
 typedef struct PORTALDOOR_s PORTALDOOR_s;
 
@@ -394,12 +427,3 @@ typedef struct level_sfx_gizmotype_s {
     void (*add_level_sfx)(WORLDINFO *, void *, i32 *, i32 *, i32);
     u8 unknown_98[4];
 } LEVEL_SFX_GIZMOTYPE;
-
-typedef struct world_minikit_reader_s { // size 0x2ae4
-    u8 unknown_0000[0x2968];            // 0x0000
-    MINIKIT minikit;                    // 0x2968
-    u8 unknown_2980[4];                 // 0x2980
-    MINIKIT **pieces_by_id;             // 0x2984
-    u8 unknown_2988[0x158];             // 0x2988
-    u8 *hub_minikits;                   // 0x2ae0
-} WORLD_MINIKIT_READER;

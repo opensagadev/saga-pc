@@ -563,7 +563,7 @@ static void SpinnerSeekOutput(GIZSPINNER_s *spinner, i32 output) {
     }
     f32 duration = SpinnerFabs(length / ((f64)spinner->animation_speed * rate * 60.0));
     f32 frequency = SpinnerFabs(60.0 * spinner->animation_speed * rate / length);
-    f32 difference = SpinnerFabs((f64)target - spinner->unknown_70);
+    f32 difference = SpinnerFabs((f64)target - spinner->progress);
     if (difference < 0.001f) {
         GameAnimSet_Stop(spinner->anim_set);
         GameAnimSet_JumpToAnimPos(spinner->anim_set, target);
@@ -571,10 +571,10 @@ static void SpinnerSeekOutput(GIZSPINNER_s *spinner, i32 output) {
         rotation = rotation / length;
         rotation = rotation * (length / 100.0);
         spinner->rotation = (u16)((i32)(direction * ((f64)target * 100.0 * rotation * 65536.0 / 360.0)) + spinner->initial_rotation);
-    } else if (spinner->unknown_70 > target) {
+    } else if (spinner->progress > target) {
         GameAnimSet_Play(spinner->anim_set, -0.25f, 1);
         spinner->rotation -= (i32)(direction * ((f64)frequency * difference * 5461.0));
-    } else if (target > spinner->unknown_70) {
+    } else if (target > spinner->progress) {
         GameAnimSet_Play(spinner->anim_set, 0.25f, 1);
         spinner->rotation += (i32)(direction * ((f64)frequency * difference * 5461.0));
     }
@@ -1000,7 +1000,7 @@ extern "C" {
         if (spinner == NULL || (spinner->state_flags & SPINNER_STATE_PUSHABLE) != 0) {
             return;
         }
-        i32 state = GizSpinner_Spin(spinner, bolt->unknown_104);
+        i32 state = GizSpinner_Spin(spinner, bolt->impact_surface);
         if ((state == 2 || state == 1) && hit_flags != NULL) {
             GameAudio_PlaySfx(0x29, &bolt->position, 0, 0);
             Bolt_AddDeflectedBolt(bolt, &bolt->velocity, &bolt->hit_normal, hit_flags);
@@ -1239,7 +1239,7 @@ extern "C" void GizSpinner_Update(GIZSPINNER_s *spinner) {
     }
     if (stopped) {
         spinner->room_index = -1;
-        spinner->unknown_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
+        spinner->progress = GameAnimSet_GetCompletionRatio(spinner->anim_set);
         return;
     }
     i32 previous_state = spinner->state;
@@ -1324,7 +1324,7 @@ animation_updated:
         spinner->state_flags |= SPINNER_STATE_JUDDERED;
     }
     spinner->room_index = -1;
-    spinner->unknown_70 = GameAnimSet_GetCompletionRatio(spinner->anim_set);
+    spinner->progress = GameAnimSet_GetCompletionRatio(spinner->anim_set);
 }
 
 extern "C" void GizSpinners_Update(void *world_pointer, void *unused, f32 unused_time) {

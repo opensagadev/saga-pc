@@ -25,17 +25,6 @@ extern "C" {
     extern const f32 PlayerBuildItNegativeLimit;
     void SetActionInfo(struct API_ACTION_INFO *, struct API_EXTRA_ACTION *);
     i32 ActionFromName(const char *);
-    extern const char AICameraLiteral7580f0[12];
-    extern const char AICameraLiteral7580e4[12];
-    extern const char AICameraLiteral7580dc[7];
-    extern const char AICameraLiteral7580cc[13];
-    extern const char AICameraLiteral7580c0[9];
-    extern const char AICameraLiteral7580b0[13];
-    extern const char AICameraLiteral7580a4[9];
-    extern const char AITransferLiteral7583f8[8];
-    extern const char AITransferLiteral7581d4[10];
-    extern const char AITransferLiteral7581ec[9];
-    extern const char AITransferLiteral7581e0[9];
     extern const char NuMusicDebugClassInvalid[8];
     extern const char NuMusicDebugClassQuiet[6];
     extern const char NuMusicDebugClassAction[7];
@@ -60,6 +49,7 @@ extern "C" {
     i32 Action_EndCameraCut(struct AISYS *, struct AISCRIPTPROCESS *, struct AIPACKET *, char **, i32, i32, f32);
     void RegisterGizActions(GIZACTIONDEF *definitions);
     extern GIZACTIONDEF game_gizactiondefs[24];
+    void GameRegisterGizActions(void);
 #ifdef __cplusplus
 }
 #endif

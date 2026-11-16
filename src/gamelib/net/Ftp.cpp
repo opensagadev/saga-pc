@@ -191,7 +191,7 @@ void NetFtpManager::PeerLeft(const NetAddress &address, i32 reason) {
 }
 
 NetFtpManager::NetFtpManager() {
-    unknown_1604 = 0;
+    transfer_id = 0;
 }
 
 void NetFtpManager::Term() {

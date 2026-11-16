@@ -136,7 +136,7 @@ i32 SpecialMove_Check(GAMEOBJECT *attacker, GAMEOBJECT *victim) {
     if (moves == NULL) {
         return -1;
     }
-    if ((attacker->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && attacker->player.unknown_da8 > 0.0f) {
+    if ((attacker->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) && attacker->player.keep_time > 0.0f) {
         return -1;
     }
     if (LEGOCONTEXT_SPECIALMOVE_ATTACKER == -1 || LEGOCONTEXT_SPECIALMOVE_VICTIM == -1) {

@@ -350,8 +350,8 @@ void GameCam_Reset(GAMECAMERA *camera) {
     camera->position_seek = (f32)WORLD->current_level->cam_pos_seek;
     camera->angle_seek = (f32)WORLD->current_level->cam_angle_seek;
     camera->unknown_1b8 = 0;
-    camera->unknown_1e8 = camera->unknown_1ec = 0.0f;
-    camera->unknown_1f0 = camera->unknown_1f4 = 0.0f;
+    camera->pullback_target = camera->pullback = 0.0f;
+    camera->lateral_target = camera->lateral = 0.0f;
     camera->adjusted_yaw_offset = camera->unknown_214 = 0.0f;
     camera->unknown_210 = camera->unknown_20c = 0.0f;
     camera->unknown_208 = camera->unknown_204 = 0.0f;

@@ -431,8 +431,8 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         f32 *animation_time = NULL;
         i32 exchange;
         f32 elapsed;
-        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
-            animation_time = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+        if (object->character_model->action_animations[object->player.context_animation] != NULL) {
+            animation_time = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
             if (animation_time == NULL) {
                 return;
             }
@@ -451,7 +451,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 return;
             }
             if (animation_time != NULL) {
-                f32 frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+                f32 frame = AnimListFrame(object->character_model, object->player.context_animation, 0);
                 if (frame >= 1.0f && *animation_time >= frame) {
                     exchange = 1;
                 }
@@ -487,7 +487,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         }
         return;
     }
-    if (object->unknown_281 != 0 || object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
+    if (object->ground_flags != 0 || object->player.character_context == CHARACTER_CONTEXT_BIG_JUMP ||
         object->player.character_context == CHARACTER_CONTEXT_DOOMED || object->player.character_context == CHARACTER_CONTEXT_FLOAT ||
         (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
         (U64_PAIR(&CInfo[object->player.character_context].flags) & 0x800) != 0) {
@@ -500,7 +500,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             object->player.context_timer = 0.0f;
             object->player.character_context = CHARACTER_CONTEXT_SIGNAL;
             object->player.grapple = signal;
-            object->player.unknown_7aa = ACTION_CHANGE;
+            object->player.context_animation = ACTION_CHANGE;
             object->player.context_duration = AnimDuration((i16)object->id, 0x96, 0.0f, 0.0f, 1);
             if (object->player.context_duration <= 0.0f) {
                 object->player.context_duration = 1.0f;
@@ -519,8 +519,8 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
     i32 index;
     f32 remaining;
     if (object->player.character_context == CHARACTER_CONTEXT_SONAR) {
-        if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL &&
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
+        if (object->character_model->model_data_b[object->player.context_animation] != NULL &&
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) == NULL) {
             return;
         }
         object->player.context_timer += FRAMETIME;
@@ -569,10 +569,10 @@ void SuitBlowupCode(WORLDINFO *world, GAMEOBJECT *object) {
             GizmoBlowupBlowup(candidates[qrand() / (65535 / count + 1)], 1, BLOWUP_HIT_SIGNAL, 1, NULL, 1);
         }
     } else {
-        if (object->unknown_281 != 0 && ObjLandReady(object) != 0 && (object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
+        if (object->ground_flags != 0 && ObjLandReady(object) != 0 && (object->player.pad->buttons_held & GAMEPAD_SPECIAL) != 0) {
             object->player.character_context = CHARACTER_CONTEXT_SONAR;
             object->player.context_timer = 0.0f;
-            object->player.unknown_7aa = ACTION_SONAR;
+            object->player.context_animation = ACTION_SONAR;
             object->player.context_duration = 0.3f;
         }
     }

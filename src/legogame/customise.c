@@ -52,6 +52,8 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
+#include "legoapi/core/startup/text.h"
+#include "legoapi/gizmo/base/gizmo.h"
 
 typedef struct customiser_game_setting_s {
     char *name;
@@ -89,10 +91,8 @@ typedef struct custom_material_update_s {
 
 extern NUVEC CustomisePos[2];
 i32 GameDrawCharacterModel(CHARACTER_MODEL_LAYERS *, ANIMPACKET *, NUMTX *, NUMTX *, NUMTX *, NUMTX *, GAMEOBJECT *, u32);
+
 /* Native customiser menu drawing and private matrix helpers; append to customise.c. */
-void Hub_ClearStats(void);
-void Text_FillInExtendedSaveInfo(void);
-i32 TriggerAutoSave(void);
 
 static void CustomiserMtxSetRotateZ(NUMTX *matrix, i32 angle) {
     const f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -214,8 +214,7 @@ static CUSTOMISER_GAME_SETTING CustomiserGameSettingsPrivate[] = {
     {"bountyhunter", 0x1000000, 0},     {"jedi", 8, 0}, {"sith", 0xc, 2}, {"blaster", 0x100080, 0x40000000}, {"alreadygothat", 0, 0x10},
     {"stormtrooperhelmet", 0, 0x40000}, {NULL, 0, 0}};
 
-void PermanentCustomPieceConfig(CUSTOMPIECE_LAYERS *input, NUFPAR *parser) {
-    CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
+void PermanentCustomPieceConfig(CUSTOM_PIECE_CONFIG *piece, NUFPAR *parser) {
     CUSTOMISER_GAME_SETTING *setting;
     for (setting = CustomiserGameSettingsPrivate; setting->name != NULL; ++setting) {
         if (NuStrICmp(parser->word_buffer_ptr, setting->name) == 0) {
@@ -286,14 +285,14 @@ void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
                 continue;
             }
             piece = &customiser->piece_sets[category][selection[category]];
-            if (piece->unknown_10 != -1) {
-                counts[piece->unknown_10] += (i8)customiser->categories[category]->material_indices[0];
+            if (piece->bonus_group != -1) {
+                counts[piece->bonus_group] += (i8)customiser->categories[category]->material_indices[0];
             }
-            if (parts[0].piece == NULL && piece->unknown_indices_0a[0] != 0) {
+            if (parts[0].piece == NULL && piece->part_slots[0] != 0) {
                 parts[0].piece = piece;
-            } else if (parts[1].piece == NULL && piece->unknown_indices_0a[1] != 0) {
+            } else if (parts[1].piece == NULL && piece->part_slots[1] != 0) {
                 parts[1].piece = piece;
-            } else if (third == NULL && piece->unknown_indices_0a[2] != 0) {
+            } else if (third == NULL && piece->part_slots[2] != 0) {
                 third = piece;
             }
         }
@@ -307,8 +306,7 @@ void Customiser_SetNameAndIcon(CUSTOMISER_CONFIG *customiser, i32 index) {
     }
 }
 
-i32 PermanentCustomPieceAvailable(CUSTOMPIECE_LAYERS *input) {
-    CUSTOM_PIECE_CONFIG *piece = (CUSTOM_PIECE_CONFIG *)input;
+i32 PermanentCustomPieceAvailable(CUSTOM_PIECE_CONFIG *piece) {
     if (GAMEDEMO != 0) {
         if ((piece->availability_flags & CUSTOM_PIECE_NOT_DEMO) != 0) {
             return 0;
@@ -444,7 +442,6 @@ static NUVEC CustomiseScreenPos[2] = {0};
 
 /* 004243b0 / 42 */
 void Customiser_TransformToPanel(CUSTOMISER_CONFIG *unused) {
-    (void)unused;
     NuCameraTransformScreenClip(&CustomiseScreenPos[0], &CustomisePos[0], 1, NULL);
     NuCameraTransformScreenClip(&CustomiseScreenPos[1], &CustomisePos[1], 1, NULL);
 }
@@ -811,7 +808,7 @@ i32 CustomiserMenu_Update(void) {
                         i32 piece;
                         do {
                             piece = qrand() / (65535 / customiser->piece_counts[category] + 1);
-                        } while (customiser->piece_available((CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category][piece]) == 0);
+                        } while (customiser->piece_available(&customiser->piece_sets[category][piece]) == 0);
                         Game.customiser_start[side].pieces[category] = (u16)piece;
                     }
                 }
@@ -1068,9 +1065,9 @@ void Customiser_Update(CUSTOMISER_CONFIG *customiser, WORLDINFO *world) {
                 (active_count == 2 || side == preview_side) && control_side != -1 &&
                 (locator = customiser->locator_indices[category]) != -1 && model->points_of_interest[locator] != NULL) {
                 NUVEC position;
-                position = *(NUVEC *)&customiser->joint_matrices[side][locator].m30;
+                position = customiser->joint_matrices[side][locator].translation;
                 message.text = InitAsciiLeft;
-                message.unknown_4f = 2;
+                message.slot_flags = 2;
                 if (customiser->locator_x_offsets[category] != 0.0f) {
                     position.x += NuTrigTable[(angle >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
                     position.z += NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff] * customiser->locator_x_offsets[category];
@@ -1220,7 +1217,6 @@ void Customiser_Draw3D(CUSTOMISER_CONFIG *input) {
 
 void MenuUpdateCustomiser(MENU *menu) {
     i32 quit;
-    (void)menu;
     if (customiser_save_done != 0) {
         CustomiserMenu_End();
         customiser_save_done = 0;
@@ -1264,7 +1260,6 @@ void MenuDrawCustomiser(MENU *menu) {
     f32 x;
     f32 y;
     f32 alpha;
-    (void)menu;
     if (MenuStopDraw != 0 || customiser_quit != 0 || CharacterCustomiser == NULL) {
         return;
     }

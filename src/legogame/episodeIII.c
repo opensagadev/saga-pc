@@ -145,7 +145,7 @@ void CruiserCUpdate(WORLDINFO *world) {
     if (FreePlay == 0 && cruiser_c.palpatine != NULL && cruiser_c.palpatine_locator != NULL && cruiser_c.free_palpatine != NULL &&
         cruiser_c.free_palpatine->value < 2.0f) {
         cruiser_c.palpatine->position = cruiser_c.palpatine_locator->position;
-        cruiser_c.palpatine->unknown_276 = cruiser_c.palpatine_locator->rotation;
+        cruiser_c.palpatine->movement_angle = cruiser_c.palpatine_locator->rotation;
     }
 }
 
@@ -192,7 +192,7 @@ void CruiserDReset(WORLDINFO *world) {
     CruiserD_LiftChase_msg = CheckGizAIMessage(gizaimessagesys, "LiftChase", NULL);
     MiscTime = 0.0f;
     if (NuSpecialExistsFn(&CruiserD_Lift) != 0 && CruiserD_LiftAnim != NULL) {
-        if ((LevelProgressData[CruiserE_ix].unknown_2800[0] & 1) == 0) {
+        if ((LevelProgressData[CruiserE_ix].flags & 1) == 0) {
             CruiserD_LiftAnim->playing = 1;
             CruiserD_LiftAnim->ltime = 1.0f;
             CruiserD_direction = 1;
@@ -415,8 +415,8 @@ static void BoulderSpawn(i32 index) {
         params = Default_ADDPART;
         params.matrix = &NuMtxSetIdentityTemplate;
         params.velocity = &v000;
-        params.unknown_18 = boulder_radius;
-        params.unknown_14 = boulder_radius;
+        params.end_radius = boulder_radius;
+        params.start_radius = boulder_radius;
         params.gravity = 0.0f;
         params.special = &LevHSpecial[index];
         params.flags = 0x80861a;
@@ -735,13 +735,13 @@ void VaderC_Update(WORLDINFO *world) {
             player != NULL && player->supporting_platform_id != -1) {
             vader_c.big_jump_locator->position = player->lower_position;
             for (i = 0; i < 10; i++) {
-                if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && Player[0]->unknown_281 != 0 &&
+                if (Player[0] != NULL && vader_c.platform_ids[i] != -1 && Player[0]->ground_flags != 0 &&
                     Player[0]->supporting_platform_id == vader_c.platform_ids[i] &&
                     Player[0]->position.y >=
                         ((TERRAIN_SET_READER *)CurTerr)->platforms[Player[0]->supporting_platform_id].scene_object->translation.y) {
                     vader_c.progress_mask |= 1;
                 }
-                if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && Player[1]->unknown_281 != 0 &&
+                if (Player[1] != NULL && vader_c.platform_ids[i] != -1 && Player[1]->ground_flags != 0 &&
                     Player[1]->supporting_platform_id == vader_c.platform_ids[i] &&
                     Player[1]->position.y >=
                         ((TERRAIN_SET_READER *)CurTerr)->platforms[Player[1]->supporting_platform_id].scene_object->translation.y) {
@@ -785,7 +785,7 @@ void VaderC_Update(WORLDINFO *world) {
               (second->flags_1f8 & 0x40000) == 0)) &&
             (((u8 *)vaderc_netpacket)[0] == 0 || first == NULL || (first->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 ||
              second == NULL || (second->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) &&
-            (ChallengeMode == CHALLENGE_OFF || AreaGlobals.unknown_1c < 10)) {
+            (ChallengeMode == CHALLENGE_OFF || AreaGlobals.challenge_minikits < 10)) {
             vader_c.players_dead = 1;
             ResetLevel(NULL, NULL, 1);
         }

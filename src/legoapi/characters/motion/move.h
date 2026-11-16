@@ -37,21 +37,25 @@ typedef struct GAMEPAD {           // size 0x5c
 
     NUVEC *operator_data;     // 0x54
     u16 previous_input_angle; // 0x58
-    u16 runtime_flags;        // 0x5a
+
+    union { // size 0x2
+        u16 runtime_flags;
+
+        struct {            // size 0x2
+            u16 : 3;        // 0x5a:0
+            u16 waggle : 1; // 0x5a:3 (GAMEPAD_WAGGLE)
+            u16 : 12;       // 0x5a:4
+        };
+    }; // 0x5a
 } GAMEPAD;
 
-/* GAMEPAD.runtime_flags. The AI script actions set the AI bits on the pads of AI-driven characters; the waggle bit is
- * MOVEPLAYER_PAD_BITS.waggle, written from GamePad_Waggle. */
+/* GAMEPAD.runtime_flags. The AI script actions set the AI bits on the pads of AI-driven characters; the waggle bit
+ * (the waggle bitfield) is written from GamePad_Waggle. */
 #define GAMEPAD_AI_ATTACK 0x2          /* AttackOpponent: attack where the character stands */
 #define GAMEPAD_AI_USE_FORCE 0x4       /* UseForce, HelpWithTriggers on a force object */
 #define GAMEPAD_WAGGLE 0x8             /* GamePad_Waggle: the stick is being waggled */
 #define GAMEPAD_AI_FORCE_PUSH 0x10     /* UseForce in the force push context, ForcePush */
 #define GAMEPAD_MAGNITUDE_CHANGED 0x40 /* input_magnitude differs from previous_input_magnitude */
-
-typedef struct blowup_target_s { // size 0x58
-    u8 unknown_00[0x4c];         // 0x00
-    NUVEC mid_position;          // 0x4c
-} BLOWUP_TARGET;
 
 typedef struct awkward_shape_sphere_s { // size 0xc
     i16 *character_id;                  // 0x0
@@ -274,7 +278,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     f32 run_speed;                                                       // 0x01c
     f32 backwards_factor;                                                // 0x020
     f32 gravity;                                                         // 0x024
-    f32 unknown_028;                                                     // 0x028
+    f32 hover_height;                                                    // 0x028
     f32 jump_speed;                                                      // 0x02c
     f32 jump_duration;                                                   // 0x030
     f32 jump_height;                                                     // 0x034
@@ -316,8 +320,8 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     }; // 0x080
 
     f32 jump_move_speed_scale; // 0x084
-    f32 unknown_088;           // 0x088
-    f32 unknown_08c;           // 0x08c
+    f32 text_height;           // 0x088
+    f32 shadow_radius;         // 0x08c
     u32 flags_090;             // 0x090
 
     union { // size 0x4
@@ -451,6 +455,7 @@ typedef struct PLAYERCHARACTERCONFIG {                                   // size
     union { // size 0x1
         u8 hover_fall_mode;
         i8 variant;
+        u8 use_standard_idle; /* 0: the idle code may pick the character's own idles */
     }; // 0x116
 
     union { // size 0x1
@@ -569,6 +574,7 @@ extern "C" {
     void PodLoseSpeed(struct gameobject_s *object, i32 hit, i32 rumble);
     void SetProtocolDroidInterfaceAction(struct gameobject_s *object);
     void GameObjectStuffAfterAnimation(void);
+    void StartBallooning(struct gameobject_s *, i32);
 #ifdef __cplusplus
 }
 #endif

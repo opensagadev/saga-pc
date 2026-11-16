@@ -29,6 +29,8 @@ extern "C" {
     i32 nugraphCalcCurve(struct nugraph_s *graph, i32 point_count);
     i32 nugraphDeletePoint(struct nugraph_s *graph, i32 index);
     void nugraphInit(struct nugraph_s *graph);
+    i32 NuPower2(i32 value);
+    i32 NuPtInPoly(NUVEC *, NUVEC *, NUVEC *, NUVEC *, NUPLANE *);
 #ifdef __cplusplus
 }
 #endif

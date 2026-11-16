@@ -82,6 +82,13 @@ typedef union levflag_u { // size 0x10
     } emperor_fight;
 } LEVFLAG;
 
+/* LevSfxFlag: per-level sound state, one byte per looping sound (the laser gates of the speeder chase, the
+ * Endor shield sfx); the level code clears it a word at a time. */
+typedef union levsfxflag_u { // size 0x10
+    i32 words[4];
+    u8 playing[16];
+} LEVSFXFLAG;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -120,7 +127,7 @@ extern "C" {
     extern i32 levspl_i_startcam;
     extern i32 LEVELSPLINECOUNT;
     extern i32 LSW1;
-    extern i32 LevSfxFlag[4];
+    extern LEVSFXFLAG LevSfxFlag;
     extern const f32 PCKeyboardDefaultValue;
     extern i32 MAXLDATA;
     extern LEVFLAG LevFlag;

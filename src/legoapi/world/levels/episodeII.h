@@ -18,18 +18,14 @@ typedef struct kaminoeplate_s {
     u8 opaque_13c_140[0x4];
 } KAMINOEPLATE;
 
-typedef struct KAMINO_DISCO_MUSIC_VIEW { // size 0x3e8
-    u8 unknown_00[0x3d5];                // 0x000
-    u8 mode;                             // 0x3d5
-    u8 unknown_3d6[0x12];                // 0x3d6
-} KAMINO_DISCO_MUSIC_VIEW;
+struct kaminodisco_s;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
     i32 KaminoE_CheckPlatHit(struct bolt_s *bolt);
     extern NUVEC GunshipANorm;
-    extern KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState;
+    extern struct kaminodisco_s KaminoDiscoMusicState; /* the disco state the music test reads */
     i32 KaminoInside(void);
     i32 KaminoDiscoOn(void);
     extern AREA_DATA *KAMINO_ADATA;
@@ -78,7 +74,7 @@ typedef struct JEDIB_CREATURE {     // size 0x60
     GAMEOBJECT *object;             // 0x14
     struct JEDIB_CREATURE *partner; // 0x18
     AILOCATOR locator;              // 0x1c
-    i32 unknown_58;                 // 0x58
+    i32 saved_layer_mask;           // 0x58
     u32 flags;                      // 0x5c
 } JEDIB_CREATURE;
 
@@ -164,6 +160,7 @@ extern "C" {
     void KaminoE_Reset(WORLDINFO *);
     void KaminoE_Update(WORLDINFO *);
     void KaminoOutro_Init(WORLDINFO *);
+    void GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

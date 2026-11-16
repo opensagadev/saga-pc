@@ -96,9 +96,9 @@ void PartImpact_ThermalDetonator(PART *part) {
         PlaySfx("ThermalDet_Bnce", &part->position);
     }
     if ((part->active & PART_IN_USE) != 0 && (part->active & PART_STATE_STOPPED) == 0) {
-        trail.x = part->impact_position.x - part->impact_normal.x * part->unknown_e0;
-        trail.y = part->impact_position.y - part->impact_normal.y * part->unknown_e0;
-        trail.z = part->impact_position.z - part->impact_normal.z * part->unknown_e0;
+        trail.x = part->impact_position.x - part->impact_normal.x * part->glow_radius;
+        trail.y = part->impact_position.y - part->impact_normal.y * part->glow_radius;
+        trail.z = part->impact_position.z - part->impact_normal.z * part->glow_radius;
         AddGameDebris(WORLD->game_debris_sys, 1, &trail);
     }
 }
@@ -138,7 +138,7 @@ void PartUpdate_ThermalDetonator(PART *part) {
     if ((u32)layer > 16) {
         return;
     }
-    if ((part->active & PART_STATE_IN_WATER) == 0 && part->position.y + part->unknown_e0 < water &&
+    if ((part->active & PART_STATE_IN_WATER) == 0 && part->position.y + part->glow_radius < water &&
         ((TerLayer[layer].flags & 1) != 0 || layer == 1 || layer == 9)) {
         part->active |= PART_STATE_IN_WATER;
     }
@@ -195,8 +195,8 @@ void PartKill_ThermalDetonator(PART *part, i32 unused1) {
     }
 
     explosion = Detonate(&part->position, flags);
-    if (explosion != NULL && part->owner != NULL && (part->owner->unknown_280 == 0 || part->owner->unknown_280 == 1)) {
-        explosion->player_index = part->owner->unknown_280;
+    if (explosion != NULL && part->owner != NULL && (part->owner->player_slot == 0 || part->owner->player_slot == 1)) {
+        explosion->player_index = part->owner->player_slot;
     }
 }
 
@@ -222,7 +222,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     locator = object->character_data->game_character->throw_locator;
     blocked = 0;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->player.unknown_7aa == ACTION_THROW2) {
+        if (object->id == (u16)id_JANGOFETT && object->player.context_animation == ACTION_THROW2) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
@@ -255,16 +255,16 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     }
     params.matrix = &matrix;
     params.velocity = &velocity;
-    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.unknown_14);
-    params.unknown_18 = params.unknown_14;
-    params.unknown_14 *= 0.75;
+    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.start_radius);
+    params.end_radius = params.start_radius;
+    params.start_radius *= 0.75;
     params.gravity = -5.0f;
     params.special = &WORLD->level_objects[0xe9].special;
     params.time_step = FRAMETIME;
     params.flags = 0x08000292;
-    params.unknown_a4 = 10.0f;
+    params.fade_time = 10.0f;
     params.owner = object;
-    params.unknown_c4 = 1;
+    params.flicker_flags = 1;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PartDraw_ThermalDetonator;
     params.impact_fn = PartImpact_ThermalDetonator;
@@ -273,7 +273,7 @@ void ThermalDetonator_Throw(GAMEOBJECT *object) {
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = ObjHitObj_Flags(object);
-        part->unknown_206 = 0;
+        part->player_mask = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
         part->active &= ~0x38000;
@@ -295,7 +295,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     }
     locator = object->character_data->game_character->throw_locator;
     if (locator != -1 && object->character_model->points_of_interest[locator] != NULL) {
-        if (object->id == (u16)id_JANGOFETT && object->player.unknown_7aa == ACTION_THROW2) {
+        if (object->id == (u16)id_JANGOFETT && object->player.context_animation == ACTION_THROW2) {
             NuMtxSetRotationY(&matrix, qrand());
             NuMtxRotateZ(&matrix, qrand());
             NuMtxRotateX(&matrix, qrand());
@@ -316,16 +316,16 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     }
     params.matrix = &matrix;
     params.velocity = velocity;
-    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.unknown_14);
-    params.unknown_18 = params.unknown_14;
-    params.unknown_14 *= 0.75;
+    NuSpecialGetRadius(&WORLD->level_objects[0xe9].special, &centre, &params.start_radius);
+    params.end_radius = params.start_radius;
+    params.start_radius *= 0.75;
     params.gravity = -5.0f;
     params.special = &WORLD->level_objects[0xe9].special;
     params.time_step = FRAMETIME;
     params.flags = 0x08000292;
-    params.unknown_a4 = 10.0f;
+    params.fade_time = 10.0f;
     params.owner = object;
-    params.unknown_c4 = 1;
+    params.flicker_flags = 1;
     params.stop_fn = PartStop_Flickerer;
     params.draw_fn = PartDraw_ThermalDetonator;
     params.impact_fn = PartImpact_ThermalDetonator;
@@ -334,7 +334,7 @@ void ThermalDetonator_ThrowMom(GAMEOBJECT *object, NUVEC *velocity) {
     part = AddPart(&params);
     if (part != NULL) {
         part->force_flags = ObjHitObj_Flags(object);
-        part->unknown_206 = 0;
+        part->player_mask = 0;
         part->update_fn = PartUpdate_ThermalDetonator;
         part->reflection_height = 2000000.0f;
         part->active &= ~0x38000;
@@ -348,8 +348,8 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     PART *part;
     f32 release_frame;
     if (object->player.character_context == CHARACTER_CONTEXT_THROW_DETONATOR) {
-        if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
-            frame = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+        if (object->character_model->action_animations[object->player.context_animation] != NULL) {
+            frame = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
             if (frame == NULL) {
                 return 0;
             }
@@ -361,8 +361,8 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
                 object->player.flags_e24 |= APIOBJECT_DETONATOR_THROW;
             }
         } else if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
-            if (object->character_model->action_animations[object->player.unknown_7aa] != NULL) {
-                release_frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 2);
+            if (object->character_model->action_animations[object->player.context_animation] != NULL) {
+                release_frame = AnimListFrame(object->character_model, object->player.context_animation, 2);
                 if (frame != NULL && *frame > 0.0f && *frame >= release_frame) {
                     object->player.flags_e24 |= APIOBJECT_DETONATOR_THROW;
                 }
@@ -381,7 +381,7 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     }
     if (((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) == 0 && object->helmet != HELMET_BOUNTY_HUNTER &&
          !SuperWeirdo(object)) ||
-        (object->unknown_281 == 0 && object->player.jump_variant_state != 1)) {
+        (object->ground_flags == 0 && object->player.jump_variant_state != 1)) {
         return 0;
     }
     if (object->player.character_context != CHARACTER_CONTEXT_NONE && object->player.character_context != CHARACTER_CONTEXT_WEAPON_IN &&
@@ -399,21 +399,21 @@ i32 ThermalDetonator_MoveCode(GAMEOBJECT *object) {
     }
     object->player.character_context = CHARACTER_CONTEXT_THROW_DETONATOR;
     if (object->player.jump_variant_state == 1) {
-        object->player.unknown_7aa = ACTION_THROW3;
+        object->player.context_animation = ACTION_THROW3;
     } else if ((object->player.flags_e20 & APIOBJECT_WEAPON_OUT) != 0) {
-        object->player.unknown_7aa = ACTION_THROW2;
+        object->player.context_animation = ACTION_THROW2;
     } else {
-        object->player.unknown_7aa = ACTION_THROW;
+        object->player.context_animation = ACTION_THROW;
     }
-    if (object->character_model->action_animations[object->player.unknown_7aa] == NULL) {
-        object->player.unknown_7aa = ACTION_THROW;
+    if (object->character_model->action_animations[object->player.context_animation] == NULL) {
+        object->player.context_animation = ACTION_THROW;
     }
-    if (AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 1) != NULL) {
+    if (AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 1) != NULL) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
     object->player.context_variant_flags &= ~APIOBJECT_CONTEXT_EVENT_DONE;
-    object->player.context_timer = object->character_model->action_animations[object->player.unknown_7aa] != NULL
-                                       ? AnimDuration((i16)object->id, object->player.unknown_7aa, 0.0f, 0.0f, 1)
+    object->player.context_timer = object->character_model->action_animations[object->player.context_animation] != NULL
+                                       ? AnimDuration((i16)object->id, object->player.context_animation, 0.0f, 0.0f, 1)
                                        : 1.0f;
     return 0;
 }
@@ -450,14 +450,14 @@ static i32 TightRopes_Load(void *world_info, void *unused1) {
         EdFileReadNuVec(&world->tightropes[i].start_position);
         EdFileReadNuVec(&world->tightropes[i].end_position);
         if (version > 1) {
-            world->tightropes[i].unknown_28 = EdFileReadUnsignedShort();
-            world->tightropes[i].unknown_2a = EdFileReadUnsignedShort();
-            world->tightropes[i].unknown_2c = EdFileReadUnsignedShort();
-            world->tightropes[i].unknown_2e = EdFileReadUnsignedShort();
-            world->tightropes[i].unknown_30 = EdFileReadUnsignedChar();
-            world->tightropes[i].unknown_31 = EdFileReadUnsignedChar();
+            world->tightropes[i].start_pitch = EdFileReadUnsignedShort();
+            world->tightropes[i].end_pitch = EdFileReadUnsignedShort();
+            world->tightropes[i].start_yaw = EdFileReadUnsignedShort();
+            world->tightropes[i].end_yaw = EdFileReadUnsignedShort();
+            world->tightropes[i].start_post_variant = EdFileReadUnsignedChar();
+            world->tightropes[i].end_post_variant = EdFileReadUnsignedChar();
             if (version != 2) {
-                world->tightropes[i].unknown_32 = EdFileReadChar();
+                world->tightropes[i].show_start_post = EdFileReadChar();
             }
         }
     }

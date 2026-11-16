@@ -50,13 +50,6 @@ extern "C" {
     void LevelObjectsArenaDiagnostic(i32 size);
 }
 
-typedef struct startup_level_object_s { // size 0x10
-    nuhspecial_s special;               // 0x0
-    i16 platform_id;                    // 0xc
-    u8 active;                          // 0xe
-    u8 unknown_f;                       // 0xf
-} STARTUP_LEVEL_OBJECT;
-
 typedef struct WORLD_OBJECT_SETUP_READER { // size 0x2968
     u8 unknown_0000[0x2964];               // 0x0000
     NUGSCN *icons_gscn;                    // 0x2964
@@ -190,7 +183,7 @@ extern "C" {
                 current_level->unknown_009e = -1;
                 current_level->mipmap_mode = 3;
                 current_level->blob_shadow_alpha = 0x7f;
-                current_level->unknown_00a2 = -1;
+                current_level->dfs_mode = -1;
                 current_level->area_index = -1;
                 current_level->cam_tilt = 0.0f;
                 current_level->hover_height = 0.0f;
@@ -961,17 +954,15 @@ extern "C" {
             return;
         }
         for (index = 0; index < LEVELOBJECTCOUNT; ++index) {
-            ((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].platform_id = -1;
-            if (world->terrain != NULL && NuSpecialExistsFn(&((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].special) &&
-                ObjTabList[index].kind == 1) {
-                ((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].platform_id =
-                    (i16)FindPlatInst(NuSpecialGetInstanceix(&((STARTUP_LEVEL_OBJECT *)world->level_objects)[index].special));
+            world->level_objects[index].platform_id = -1;
+            if (world->terrain != NULL && NuSpecialExistsFn(&world->level_objects[index].special) && ObjTabList[index].kind == 1) {
+                world->level_objects[index].platform_id = (i16)FindPlatInst(NuSpecialGetInstanceix(&world->level_objects[index].special));
             }
         }
     }
 
     void *LevObj_FindByPlatID(WORLDINFO *world, i32 platform_id) {
-        STARTUP_LEVEL_OBJECT *object = (STARTUP_LEVEL_OBJECT *)world->level_objects;
+        LEVEL_OBJECT_RUNTIME *object = world->level_objects;
         i32 i;
         for (i = 0; i < LEVELOBJECTCOUNT; ++i, ++object) {
             if (object->platform_id == platform_id) {
@@ -1039,8 +1030,8 @@ extern "C" {
         if (DoubleScoreTime > 0.0f && (i32)((f64)GameTimer.time_elapsed * 2.0) != (i32)((f64)GameTimer.last_time_elapsed * 2.0)) {
             GameAudio_PlaySfxAndSetVolume(0x35, NULL, DoubleScoreTime);
         }
-        if (AreaGlobals.unknown_00 == 0 && Cheats_CheckFlags(0x2000) != 0) {
-            AreaGlobals.unknown_00 = 1;
+        if (AreaGlobals.player_deaths == 0 && Cheats_CheckFlags(0x2000) != 0) {
+            AreaGlobals.player_deaths = 1;
         }
     }
 

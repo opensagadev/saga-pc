@@ -34,12 +34,6 @@
 #include <string.h>
 
 // The cable code tests the character context flags as a 64-bit field.
-typedef struct cable_context_info_s { // size 0x10
-    const char *name;                 // 0x0
-    i32 action;                       // 0x4
-    u64 flags;                        // 0x8
-} CABLE_CONTEXT_INFO;
-
 extern const f64 GameObjectNearFloorNoFloorHeight;
 
 // The unit carries a private copy of the safe divide used by the cable code.
@@ -58,7 +52,7 @@ f32 targetmomf = 4.0f;
 f32 ownermomf = 5.0f;
 f32 max_cable_length = 15.0f;
 f32 tow_length = 6.0f;
-u8 cables[0xf60] = {0};
+CABLE_s cables[8] = {0};
 
 void InitCables(WORLDINFO *world) {
     memset(cables, 0, sizeof(cables));
@@ -79,7 +73,7 @@ CABLE_s *CreateCable(GAMEOBJECT *source, GAMEOBJECT *target, i32 sound) {
     i32 i;
     CABLE_s *cable;
     if (source != NULL && target != NULL) {
-        cable = (CABLE_s *)cables;
+        cable = cables;
         for (i = 0; i < 8; ++i, ++cable) {
             if ((cable->flags & 1) == 0) {
                 cable->flags |= 1;
@@ -139,7 +133,7 @@ static void CableAtstToppled(GAMEOBJECT *target) {
     GAMEOBJECT *object;
     i32 i;
     target->player.character_context = CHARACTER_CONTEXT_FLATTEN;
-    target->player.unknown_7aa = ACTION_SPLAT;
+    target->player.context_animation = ACTION_SPLAT;
     target->player.context_duration = AnimDuration((i16)target->id, 0x85, 0.0f, 0.0f, 1);
     target->flags_ef4 |= 0x800000;
     target->player.context_timer = 0.0f;
@@ -162,7 +156,7 @@ f32 cable_ground_damping = 20.0f;
 AREA_DATA *HOTHBATTLE_ADATA = 0;
 
 void UpdateCables(void) {
-    CABLE_s *cable = (CABLE_s *)cables;
+    CABLE_s *cable = cables;
     NUVEC closest;
     NUVEC delta;
     NUVEC path[16];
@@ -230,7 +224,8 @@ void UpdateCables(void) {
         }
         source = cable->source;
         if (source == NULL || !(source->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || source->dead != 0 ||
-            (source->player.unknown_e20 & 0x20) || (target != NULL && target->player.character_context == CHARACTER_CONTEXT_DEACTIVATED) ||
+            (source->player.flags_e20 & APIOBJECT_UPDATE_SKIPPED) ||
+            (target != NULL && target->player.character_context == CHARACTER_CONTEXT_DEACTIVATED) ||
             ((flags & 2) && source->player.pad->bound_pad != NULL &&
              (source->player.pad->bound_pad->digital_buttons_pressed & GAMEPAD_SPECIAL))) {
             release = 1;
@@ -349,7 +344,8 @@ void UpdateCables(void) {
                                 f32 squared;
                                 if (!(object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) ||
                                     !(object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) || object->dead != 0 ||
-                                    (object->player.unknown_e20 & 0x20) || (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
+                                    (object->player.flags_e20 & APIOBJECT_UPDATE_SKIPPED) ||
+                                    (object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE)) {
                                     continue;
                                 }
                                 if (WORLD->area != NULL && WORLD->area == HOTHBATTLE_ADATA && object->id != (u16)id_ATAT &&
@@ -391,7 +387,7 @@ void UpdateCables(void) {
                                         FaceOpponent(cable->target, &cable->source->collision_position);
                                         target = cable->target;
                                         if ((target->flags_ef0 & APIOBJECT_WALK_BACKWARDS) &&
-                                            !(((CABLE_CONTEXT_INFO *)CInfo)[target->player.character_context].flags & 1)) {
+                                            !(CInfo[target->player.character_context].flags & 1)) {
                                             target->movement_facing_angle += 0x8000;
                                         }
                                         cable->target->ai_packet.goal_speed_mode = 1;
@@ -497,7 +493,7 @@ i32 nsegments_drawn = 0;
 i32 solid_cable = 0;
 
 void DrawCables(void) {
-    CABLE_s *cable = (CABLE_s *)cables;
+    CABLE_s *cable = cables;
     NURND_VERTEX3D vertices[2];
     NUVEC step;
     i32 index;

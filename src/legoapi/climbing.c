@@ -106,16 +106,16 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             }
             return;
         }
-        if ((object->unknown_281 & GROUND_NEAR) != 0) {
+        if ((object->ground_flags & GROUND_NEAR) != 0) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (object->player.unknown_7b3 != 0 || object->player.unknown_7aa != LEGOACT_LEDGE_GRAB ||
-            AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) != NULL) {
+        if (object->player.context_phase != 0 || object->player.context_animation != LEGOACT_LEDGE_GRAB ||
+            AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) != NULL) {
             object->player.context_timer = FRAMETIME + object->player.context_timer;
         }
-        if (object->player.unknown_7b3 == 0 && object->player.context_timer >= object->player.context_hover_target_y) {
-            object->player.unknown_7b3 = 1;
+        if (object->player.context_phase == 0 && object->player.context_timer >= object->player.context_hover_target_y) {
+            object->player.context_phase = 1;
         }
         if (LedgeTerrain_Attach(object, object->movement_facing_angle, &position, &wall_angle) != 0) {
             f32 x = object->player.external_force.x;
@@ -137,7 +137,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             }
             travelled = 0.0f;
         }
-        if (object->player.unknown_7b3 == 0) {
+        if (object->player.context_phase == 0) {
             return;
         }
         if (object->player.pad->input_magnitude > 0.0f) {
@@ -146,7 +146,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             push = PushingTowardsAngle(input, sideways);
             if (push > NuTrigTable[0x3555]) {
                 if (LEGOACT_LEDGE_RIGHT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_RIGHT] != NULL) {
-                    object->player.unknown_7aa = LEGOACT_LEDGE_RIGHT;
+                    object->player.context_animation = LEGOACT_LEDGE_RIGHT;
                     anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_RIGHT);
                     *(u32 *)&speed = *(u32 *)&anim_speed & 0x7fffffff;
                 } else {
@@ -157,7 +157,7 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
                 }
             } else if (push < -NuTrigTable[0x3555]) {
                 if (LEGOACT_LEDGE_LEFT != -1 && object->character_model->model_data_b[LEGOACT_LEDGE_LEFT] != NULL) {
-                    object->player.unknown_7aa = LEGOACT_LEDGE_LEFT;
+                    object->player.context_animation = LEGOACT_LEDGE_LEFT;
                     anim_speed = AnimSpeed(object->character_model, LEGOACT_LEDGE_LEFT);
                     *(u32 *)&magnitude = *(u32 *)&anim_speed & 0x7fffffff;
                     speed = -magnitude;
@@ -168,13 +168,13 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
                     speed = -0.5f;
                 }
             } else {
-                object->player.unknown_7aa = LEGOACT_LEDGE_IDLE;
+                object->player.context_animation = LEGOACT_LEDGE_IDLE;
                 return;
             }
             if (speed == 0.0f) {
                 return;
             }
-            if (LedgeTerrain_CheckAnims != 0 && AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0) == NULL) {
+            if (LedgeTerrain_CheckAnims != 0 && AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0) == NULL) {
                 return;
             }
             if (speed < 0.0f) {
@@ -186,11 +186,11 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
             NuVecAdd(&object->player.external_force, &object->player.external_force, &offset);
             NuVecAdd(&object->player.launch_origin, &object->player.launch_origin, &offset);
         } else {
-            object->player.unknown_7aa = LEGOACT_LEDGE_IDLE;
+            object->player.context_animation = LEGOACT_LEDGE_IDLE;
         }
         return;
     }
-    if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f)) {
+    if (object->ground_flags != 0 || !(object->velocity.y <= 0.0f)) {
         return;
     }
     if (LedgeTerrain_CheckAnims != 0 && (LEGOACT_LEDGE_IDLE == -1 || object->character_model->model_data_b[LEGOACT_LEDGE_IDLE] == NULL)) {
@@ -213,15 +213,15 @@ void LedgeTerrain_MoveCode(GAMEOBJECT *object) {
     object->player.character_context = (i8)LEGOCONTEXT_LEDGETERRAIN;
     object->velocity = v000;
     object->player.context_timer = 0.0f;
-    object->player.unknown_7b3 = 0;
+    object->player.context_phase = 0;
     animation = LEGOACT_LEDGE_GRAB;
     if (animation != -1 && object->character_model->model_data_b[animation] != NULL) {
-        object->player.unknown_7aa = animation;
+        object->player.context_animation = animation;
         object->player.context_hover_target_y = AnimDuration((i16)object->id, animation, 0.0f, 0.0f, 1);
     } else {
         animation = LEGOACT_LEDGE_IDLE;
         object->player.context_hover_target_y = 0.1f;
-        object->player.unknown_7aa = animation;
+        object->player.context_animation = animation;
         ResetAnimPacket(&object->anim_packet, animation);
     }
     object->player.external_force.x = object->position.x;
@@ -256,19 +256,19 @@ i32 CanClimbSurface(GAMEOBJECT *object, i32 surface) {
 }
 
 void Climb_SetMagnetAction(GAMEOBJECT *object) {
-    object->player.unknown_7aa = LEGOACT_IDLE;
+    object->player.context_animation = LEGOACT_IDLE;
     if (object->player.pad->input_magnitude > 0.0f) {
         if (LEGOACT_MAGNET_WALK_METAL != -1) {
-            object->player.unknown_7aa = LEGOACT_MAGNET_WALK_METAL;
+            object->player.context_animation = LEGOACT_MAGNET_WALK_METAL;
         } else if (LEGOACT_WALK != -1) {
-            object->player.unknown_7aa = LEGOACT_WALK;
+            object->player.context_animation = LEGOACT_WALK;
         }
     }
 }
 
 void Climb_UpdateMagnetRotation(GAMEOBJECT *object) {
     object->movement_mode = 0;
-    object->pitch_angle = SeekRot(object->pitch_angle, (u16)(-0x4000 - object->player.unknown_7a4), 6.0f);
+    object->pitch_angle = SeekRot(object->pitch_angle, (u16)(-0x4000 - object->player.saved_pitch), 6.0f);
     object->roll_angle = SeekRot(object->roll_angle, 0, 10.0f);
 }
 
@@ -295,9 +295,9 @@ void Climb_MoveCode(GAMEOBJECT *object) {
             return;
         }
         input_angle = GamePad_InputAngle(object, object->player.pad);
-        if ((object->unknown_281 & GROUND_NEAR) != 0 && object->jump_animation_state == object->player.context_variant) {
+        if ((object->ground_flags & GROUND_NEAR) != 0 && object->jump_animation_state == object->player.context_variant) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
-        } else if ((object->unknown_281 & GROUND_NEAR) != 0 && object->jump_animation_state != object->player.context_variant &&
+        } else if ((object->ground_flags & GROUND_NEAR) != 0 && object->jump_animation_state != object->player.context_variant &&
                    object->player.pad->input_magnitude > 0.0f && PushingTowardsAngle(input_angle, object->movement_facing_angle) < 0.0f) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
         } else if (object->contact_count != 0 && object->contact_material[0] == object->player.context_variant) {
@@ -306,7 +306,7 @@ void Climb_MoveCode(GAMEOBJECT *object) {
                 NuAtan2D(object->contact_position.x - object->position.x, object->contact_position.z - object->position.z);
             object->player.external_force = object->contact_normal;
             object->player.launch_origin = object->contact_position;
-            FindAnglesXY(&object->player.external_force, &object->player.unknown_7a4, NULL);
+            FindAnglesXY(&object->player.external_force, &object->player.saved_pitch, NULL);
         } else {
             object->player.context_duration -= FRAMETIME;
             if (object->player.context_duration <= 0.0f) {
@@ -327,15 +327,15 @@ void Climb_MoveCode(GAMEOBJECT *object) {
         } else {
             if (object->player.pad->input_magnitude > 0.0f) {
                 if (abs(RotDiff(object->movement_facing_angle, GamePad_InputAngle(object, object->player.pad))) <= 0x4000) {
-                    object->player.unknown_7aa = LEGOACT_CLIMB_UP;
+                    object->player.context_animation = LEGOACT_CLIMB_UP;
                 } else {
-                    object->player.unknown_7aa = LEGOACT_CLIMB_DOWN;
+                    object->player.context_animation = LEGOACT_CLIMB_DOWN;
                 }
-                if (object->character_model->model_data_b[object->player.unknown_7aa] == NULL) {
-                    object->player.unknown_7aa = LEGOACT_CLIMB_IDLE;
+                if (object->character_model->model_data_b[object->player.context_animation] == NULL) {
+                    object->player.context_animation = LEGOACT_CLIMB_IDLE;
                 }
             } else {
-                object->player.unknown_7aa = LEGOACT_CLIMB_IDLE;
+                object->player.context_animation = LEGOACT_CLIMB_IDLE;
             }
         }
     } else {
@@ -390,11 +390,11 @@ void Climb_MoveCode(GAMEOBJECT *object) {
             Climb_SetMagnetAction(object);
             Climb_SetMagnetDrawOffsetTarget(object, &object->player.context_position_offset);
         } else {
-            object->player.unknown_7aa = LEGOACT_CLIMB_IDLE;
+            object->player.context_animation = LEGOACT_CLIMB_IDLE;
         }
         object->player.external_force = normal;
         object->player.launch_origin = object->contact_position;
-        FindAnglesXY(&object->player.external_force, &object->player.unknown_7a4, NULL);
+        FindAnglesXY(&object->player.external_force, &object->player.saved_pitch, NULL);
         object->velocity.z = 0.0f;
         object->velocity.x = 0.0f;
     }
@@ -406,7 +406,7 @@ i32 Climb_SetTargetMom(GAMEOBJECT *object, u16 input_angle) {
         u32 bits;
     } raw_speed, speed;
 
-    i16 animation = object->player.unknown_7aa;
+    i16 animation = object->player.context_animation;
     u16 angle;
     u16 side_angle;
     f32 lateral;
@@ -447,7 +447,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
-        if (object->unknown_281 != 0) {
+        if (object->ground_flags != 0) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
             return;
         }
@@ -460,7 +460,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
         if (!(object->player.pad->input_magnitude > 0.0f) || (animation = LEGOACT_HANG_MOVE) == -1) {
             animation = LEGOACT_HANG_IDLE;
         }
-        object->player.unknown_7aa = animation;
+        object->player.context_animation = animation;
         if (object->contact_count != 0 && object->contact_material[0] == variant) {
             object->player.context_duration = 0.25f;
             object->player.external_force = object->contact_normal;
@@ -472,7 +472,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
         }
         return;
     }
-    if (object->unknown_281 != 0 || object->contact_count == 0 || CanClimbSurface(object, (i8)object->contact_material[0]) == 0 ||
+    if (object->ground_flags != 0 || object->contact_count == 0 || CanClimbSurface(object, (i8)object->contact_material[0]) == 0 ||
         !(object->contact_normal.y < -NuTrigTable[0x3000])) {
         return;
     }
@@ -483,7 +483,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
     }
     object->player.character_context = (i8)LEGOCONTEXT_HANG;
     object->player.context_duration = 0.25f;
-    object->player.unknown_7aa = LEGOACT_HANG_IDLE;
+    object->player.context_animation = LEGOACT_HANG_IDLE;
     object->player.context_variant = object->contact_material[0];
     object->player.external_force = object->contact_normal;
 }
@@ -491,7 +491,7 @@ void Hang_MoveCode(GAMEOBJECT *object) {
 i32 Hang_SetTargetMom(GAMEOBJECT *object) {
     if (object->player.pad->input_magnitude > 0.0f) {
         f32 speed;
-        if (LEGOACT_HANG_MOVE != -1 && ((MOVEMENT_MODEL *)object->character_model)->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
+        if (LEGOACT_HANG_MOVE != -1 && object->character_model->model_data_b[LEGOACT_HANG_MOVE] != NULL) {
             speed = AnimSpeed(object->character_model, LEGOACT_HANG_MOVE);
             if (speed < 0.25f) {
                 speed = 0.25f;

@@ -30,7 +30,7 @@ struct EDAIPATHCNX_s {           // size 0xc
 struct EDAIPATHWALL_s { // size 0xc
     NULISTLNK link;     // 0x0
     u8 unknown_08[2];   // 0x8
-    u8 flags;           // 0xa
+    i16 draw_flags;     // 0xa
 };
 
 struct EDAIPATH_s {                      // size 0x240
@@ -85,5 +85,5 @@ struct EDAISHAREDPATHNODE_s { // size 0xc
     NULISTLNK link;           // 0x0
     i8 reference_count;       // 0x8
     i8 runtime_index;         // 0x9
-    u8 draw_flags;            // 0xa
+    i16 draw_flags;           // 0xa
 };

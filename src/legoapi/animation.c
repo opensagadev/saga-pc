@@ -34,20 +34,6 @@ typedef struct character_joint_movement_s { // size 0x1080
     u8 count;                               // 0x107d
 } CHARACTER_JOINT_MOVEMENT;
 
-#define FOOTSTEP_CHECK(index)                                                                                                              \
-    frame = config->event_frames[index];                                                                                                   \
-    if (frame >= 1.0f && valid_interval) {                                                                                                 \
-        if (frame <= current) {                                                                                                            \
-            if (previous > current)                                                                                                        \
-                crossed = 1;                                                                                                               \
-            else if (frame > previous)                                                                                                     \
-                crossed = 1;                                                                                                               \
-        } else if (previous > current) {                                                                                                   \
-            if (frame > previous)                                                                                                          \
-                crossed = 1;                                                                                                               \
-        }                                                                                                                                  \
-    }
-
 void AddFootSteps(GAMEOBJECT *object) {
     ANIMPACKET *packet = &object->anim_packet;
     CHARACTERANIM_CONFIG *config;
@@ -84,19 +70,69 @@ void AddFootSteps(GAMEOBJECT *object) {
     }
     /* Tests the four-footstep flag again before each of the first two events. */
     if ((config->flags & CHARANIM_FOOTSTEPS_4FRAMES) != 0) {
-        FOOTSTEP_CHECK(0)
+        frame = config->event_frames[0];
+        if (frame >= 1.0f && valid_interval) {
+            if (frame <= current) {
+                if (previous > current) {
+                    crossed = 1;
+                } else if (frame > previous) {
+                    crossed = 1;
+                }
+            } else if (previous > current) {
+                if (frame > previous) {
+                    crossed = 1;
+                }
+            }
+        }
     }
     if ((config->flags & CHARANIM_FOOTSTEPS_4FRAMES) != 0) {
-        FOOTSTEP_CHECK(1)
+        frame = config->event_frames[1];
+        if (frame >= 1.0f && valid_interval) {
+            if (frame <= current) {
+                if (previous > current) {
+                    crossed = 1;
+                } else if (frame > previous) {
+                    crossed = 1;
+                }
+            } else if (previous > current) {
+                if (frame > previous) {
+                    crossed = 1;
+                }
+            }
+        }
     }
-    FOOTSTEP_CHECK(2)
-    FOOTSTEP_CHECK(3)
+    frame = config->event_frames[2];
+    if (frame >= 1.0f && valid_interval) {
+        if (frame <= current) {
+            if (previous > current) {
+                crossed = 1;
+            } else if (frame > previous) {
+                crossed = 1;
+            }
+        } else if (previous > current) {
+            if (frame > previous) {
+                crossed = 1;
+            }
+        }
+    }
+    frame = config->event_frames[3];
+    if (frame >= 1.0f && valid_interval) {
+        if (frame <= current) {
+            if (previous > current) {
+                crossed = 1;
+            } else if (frame > previous) {
+                crossed = 1;
+            }
+        } else if (previous > current) {
+            if (frame > previous) {
+                crossed = 1;
+            }
+        }
+    }
     if (crossed) {
         PlayFootStepSfx(object);
     }
 }
-
-#undef FOOTSTEP_CHECK
 
 void SetHeadTarget(GAMEOBJECT *object, NUVEC *position, i8 priority, f32 time, f32 minimum_delay, f32 maximum_delay) {
     i32 random;

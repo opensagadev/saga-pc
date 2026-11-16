@@ -4,62 +4,56 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufpar.h"
 
-typedef struct charconfig_variant_reader_s {
-    u8 unknown_000[0x116];
-    i8 variant_type;
-    u8 unknown_117[9];
-} CHARCONFIG_VARIANT_READER;
-
 static void CC_variant(NUFPAR *parser) {
     if (NuFParGetWord(parser) == 0) {
         return;
     }
     if (NuStrICmp(parser->word_buffer_ptr, "stormtrooper") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 1;
+        charconfig.runtime->variant = CHARVARIANT_STORMTROOPER;
     } else if (NuStrICmp(parser->word_buffer_ptr, "fett") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 2;
+        charconfig.runtime->variant = CHARVARIANT_FETT;
     } else if (NuStrICmp(parser->word_buffer_ptr, "macewindu") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 3;
+        charconfig.runtime->variant = CHARVARIANT_MACEWINDU;
     } else if (NuStrICmp(parser->word_buffer_ptr, "battledroid") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 4;
+        charconfig.runtime->variant = CHARVARIANT_BATTLEDROID;
     } else if (NuStrICmp(parser->word_buffer_ptr, "hoverdroid") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 17;
+        charconfig.runtime->variant = CHARVARIANT_HOVERDROID;
     } else if (NuStrICmp(parser->word_buffer_ptr, "walker2legs") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 15;
+        charconfig.runtime->variant = CHARVARIANT_WALKER_2LEGS;
     } else if (NuStrICmp(parser->word_buffer_ptr, "walker4legs") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 16;
+        charconfig.runtime->variant = CHARVARIANT_WALKER_4LEGS;
     } else if (NuStrICmp(parser->word_buffer_ptr, "wookiee") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 5;
+        charconfig.runtime->variant = CHARVARIANT_WOOKIEE;
     } else if (NuStrICmp(parser->word_buffer_ptr, "obiwankenobi") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 6;
+        charconfig.runtime->variant = CHARVARIANT_OBIWANKENOBI;
     } else if (NuStrICmp(parser->word_buffer_ptr, "leia") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 7;
+        charconfig.runtime->variant = CHARVARIANT_LEIA;
     } else if (NuStrICmp(parser->word_buffer_ptr, "clone") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 8;
+        charconfig.runtime->variant = CHARVARIANT_CLONE;
     } else if (NuStrICmp(parser->word_buffer_ptr, "rebel") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 9;
+        charconfig.runtime->variant = CHARVARIANT_REBEL;
     } else if (NuStrICmp(parser->word_buffer_ptr, "tie") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 10;
+        charconfig.runtime->variant = CHARVARIANT_TIE;
     } else if (NuStrICmp(parser->word_buffer_ptr, "lando") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 11;
+        charconfig.runtime->variant = CHARVARIANT_LANDO;
     } else if (NuStrICmp(parser->word_buffer_ptr, "weirdo") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 0;
+        charconfig.runtime->variant = CHARVARIANT_WEIRDO;
     } else if (NuStrICmp(parser->word_buffer_ptr, "luke") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 12;
+        charconfig.runtime->variant = CHARVARIANT_LUKE;
     } else if (NuStrICmp(parser->word_buffer_ptr, "hansolo") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 13;
+        charconfig.runtime->variant = CHARVARIANT_HANSOLO;
     } else if (NuStrICmp(parser->word_buffer_ptr, "padme") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 14;
+        charconfig.runtime->variant = CHARVARIANT_PADME;
     } else if (NuStrICmp(parser->word_buffer_ptr, "critter") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 18;
+        charconfig.runtime->variant = CHARVARIANT_CRITTER;
     } else if (NuStrICmp(parser->word_buffer_ptr, "naboostarfighter") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 19;
+        charconfig.runtime->variant = CHARVARIANT_NABOOSTARFIGHTER;
     } else if (NuStrICmp(parser->word_buffer_ptr, "pod") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 20;
+        charconfig.runtime->variant = CHARVARIANT_POD;
     } else if (NuStrICmp(parser->word_buffer_ptr, "republicgunship") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 21;
+        charconfig.runtime->variant = CHARVARIANT_REPUBLICGUNSHIP;
     } else if (NuStrICmp(parser->word_buffer_ptr, "henchman") == 0) {
-        ((CHARCONFIG_VARIANT_READER *)charconfig.runtime)->variant_type = 22;
+        charconfig.runtime->variant = CHARVARIANT_HENCHMAN;
     }
 }
 

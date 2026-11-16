@@ -18,27 +18,10 @@
 #include "nu2api/nugscn_gen.h"
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 /* One empty diagnostic entry is called with varying arguments (none, or the clashing prefix names); it is
  * defined varargs at the end of this unit, so VC8 keeps the calls but knows they preserve every register. */
-#define GIZMO_DIAGNOSTIC_BARE() ((void (*)())GizmoDiagnostic)()
-void GizmoNameDiagnostic(char *name);
-#define GIZMO_BUFFER_ALLOC_CHECKED(result, type, buffer, end, size)                                                                        \
-    do {                                                                                                                                   \
-        void *allocation_ = NULL;                                                                                                          \
-        if ((buffer) != NULL && (end) != NULL) {                                                                                           \
-            if ((buffer)->addr + (size) < (end)->addr) {                                                                                   \
-                allocation_ = (void *)(((buffer)->addr + 15) & ~15u);                                                                      \
-                (buffer)->addr = (((buffer)->addr + 15) & ~15u) + (size);                                                                  \
-                memset(allocation_, 0, (size));                                                                                            \
-            } else {                                                                                                                       \
-                GIZMO_DIAGNOSTIC_BARE();                                                                                                   \
-            }                                                                                                                              \
-        } else {                                                                                                                           \
-            GIZMO_DIAGNOSTIC_BARE();                                                                                                       \
-        }                                                                                                                                  \
-        (result) = (type)allocation_;                                                                                                      \
-    } while (0)
 
 typedef NUVEC *(*GIZMO_GET_POS_FN)(GIZMO *gizmo);
 
@@ -93,7 +76,7 @@ void RegisterGizmoTypes(VARIPTR *buffer, VARIPTR *end, REGISTER_GIZMO_CONFIG_TYP
     i32 level;
 
     if (gizmotypes != NULL) {
-        GIZMO_DIAGNOSTIC_BARE();
+        ((void (*)())GizmoDiagnostic)();
         return;
     }
     if (register_functions == NULL) {
@@ -174,7 +157,21 @@ GIZMOSYS *CreateGizmoSys(void *world, VARIPTR *buffer, VARIPTR *end) {
     i32 index;
 
     if (gizmotypes != NULL) {
-        GIZMO_BUFFER_ALLOC_CHECKED(system, GIZMOSYS *, buffer, end, sizeof(GIZMOSYS));
+        {
+            void *allocation_ = NULL;
+            if (buffer != NULL && end != NULL) {
+                if (buffer->addr + (sizeof(GIZMOSYS)) < end->addr) {
+                    allocation_ = (void *)((buffer->addr + 15) & ~15u);
+                    buffer->addr = ((buffer->addr + 15) & ~15u) + (sizeof(GIZMOSYS));
+                    memset(allocation_, 0, (sizeof(GIZMOSYS)));
+                } else {
+                    ((void (*)())GizmoDiagnostic)();
+                }
+            } else {
+                ((void (*)())GizmoDiagnostic)();
+            }
+            system = allocation_;
+        }
         if (system != NULL) {
             system->sets = GizmoBufferAlloc(buffer, end, gizmotypes->count * sizeof(GIZMOSET));
             if (system->sets != NULL) {
@@ -676,7 +673,7 @@ i32 GizmoGetGizmosUsingSpecial(GIZMOSYS *system, void *world, GIZMO **results, i
                 } else {
                     count += added;
                     if (count > capacity) {
-                        GIZMO_DIAGNOSTIC_BARE();
+                        ((void (*)())GizmoDiagnostic)();
                         return capacity;
                     }
                 }
@@ -960,7 +957,7 @@ void LoadGizmoSys(void *system_ptr, void *world, char *config_file) {
             name_length = EdFileReadInt();
             while (name_length != 0) {
                 if (name_length > (i32)sizeof(gizmo_name)) {
-                    GIZMO_DIAGNOSTIC_BARE();
+                    ((void (*)())GizmoDiagnostic)();
                 }
                 memset(gizmo_name, 0, sizeof(gizmo_name));
                 EdFileRead(gizmo_name, name_length);
@@ -1024,7 +1021,7 @@ i32 GizmoTypeGetProgress(GIZMOSYS *system, void *world, i32 progress_index, i32 
         *result = NULL;
     }
     if (type->fns.options == -1) {
-        GIZMO_DIAGNOSTIC_BARE();
+        ((void (*)())GizmoDiagnostic)();
         return 0;
     }
     return type->fns.options;

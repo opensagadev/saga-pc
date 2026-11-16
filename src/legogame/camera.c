@@ -20,6 +20,7 @@
 #include "legoapi/gizmos/object/newblowup.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/objects/game_obj.h"
+#include "legoapi/items/objects/grabber.h"
 #include "legoapi/items/objects/gameobjects.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/camera.h"
@@ -38,6 +39,8 @@
 #include "legoapi/world/level.h"
 #include "legoapi/world/levels.h"
 #include "legoapi/world/levels/episodeI.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
+#include "legoapi/gizmos/transport/teleport.h"
 #include "legoapi/world/levels/episodeII.h"
 #include "legoapi/world/levels/levels.h"
 #include "legoapi/world/world.h"
@@ -53,6 +56,8 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
+#include "legoapi/gizmos/transport/grapples.h"
+#include "legoapi/menus/screens/customise.h"
 
 /* Retail unit 0x40a4b0-0x40e6fa: definitions in retail address order. */
 
@@ -61,9 +66,7 @@ extern LEVELDATA *CLOUDCITYTRAPB_LDATA;
 extern struct nuvec_s *shopcamlookat;
 extern struct nuvec_s *shopcampos;
 extern f32 CamStopBlend;
-extern NUVEC CustomisePos[2];
 extern NUVEC GunshipAOffset;
-extern f32 HUB_MINIKITVIEWER_CAMDY;
 extern f32 PodCamDist;
 extern i32 movegamecamera_forcesock;
 extern i32 netcamera;
@@ -82,27 +85,11 @@ extern f32 CamWalkerRadius;
 extern f32 CamWalkerLift;
 extern f32 CamDewbackRadius;
 extern f32 CamDewbackLift;
-void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 void GetShopCamLookPos(struct nuvec_s *position);
 i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i32 socket_changed, struct nuvec_s *player_camera_positions,
                   struct nuvec_s *player_positions, i32 player_count, struct sockposition_s *camera_socket_position,
                   struct nuvec_s *camera_position, struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
                   f32 *camera_shake, f32 *separation_scale);
-
-i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
-#define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
-    do {                                                                                                                                   \
-        union {                                                                                                                            \
-            f32 value;                                                                                                                     \
-            u32 bits;                                                                                                                      \
-        } storage;                                                                                                                         \
-        u32 bits;                                                                                                                          \
-        storage.value = (source);                                                                                                          \
-        bits = storage.bits;                                                                                                               \
-        bits &= 0x7fffffff;                                                                                                                \
-        storage.bits = bits;                                                                                                               \
-        (destination) = storage.value;                                                                                                     \
-    } while (0)
 
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 CameraFabs(f32 f) {
@@ -142,8 +129,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             *position = object->previous_position;
         }
         position->y += height;
-        if (VehicleArea != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->unknown_1010 > 0.0f) {
-            f32 blend = 1.0f - object->unknown_1010 * 0.5f;
+        if (VehicleArea != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && object->invulnerable_timer > 0.0f) {
+            f32 blend = 1.0f - object->invulnerable_timer * 0.5f;
             if (blend < 0.5f) {
                 blend = NU_SIN_LUT((blend * 2.0f) * 16384.0f);
             } else {
@@ -155,18 +142,18 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
         return;
     }
     target = NULL;
-    if (object->player.character_context == CHARACTER_CONTEXT_TELEPORT && object->player.techno != NULL &&
-        (((CAMERA_CONTEXT_PATH *)object->player.techno)->flags & 0x10) != 0) {
-        NUVEC *points = ((CAMERA_CONTEXT_PATH *)object->player.techno)->path->pts;
+    if (object->player.character_context == CHARACTER_CONTEXT_TELEPORT && object->player.teleport != NULL &&
+        (object->player.teleport->flags & TELEPORT_HACKY_CAM) != 0) {
+        NUVEC *points = object->player.teleport->path->pts;
         f32 scale;
         NuVecSub(&direction, &points[0], &points[3]);
         NuVecSub(&focus, &points[0], &object->position);
         scale = 1.0f / NuVecMagVU0(&direction);
         direction.x = CameraFabs(points[3].x - points[0].x);
         direction.x *= scale;
-        GAME_CAMERA_ABSOLUTE(direction.y, points[3].y - points[0].y);
+        direction.y = CameraFabs(points[3].y - points[0].y);
         direction.y *= scale;
-        GAME_CAMERA_ABSOLUTE(direction.z, points[3].z - points[0].z);
+        direction.z = CameraFabs(points[3].z - points[0].z);
         direction.z *= scale;
         position->x = points[0].x - direction.x * focus.x;
         position->y = points[0].y - direction.y * focus.y;
@@ -196,8 +183,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             }
             break;
         case CHARACTER_CONTEXT_BUILD_IT:
-            if (object->player.techno != NULL) {
-                target = &((CAMERA_CONTEXT_BUILDIT *)object->player.techno)->position;
+            if (object->player.buildit != NULL) {
+                target = &object->player.buildit->position;
             }
             break;
         case CHARACTER_CONTEXT_TECHNO:
@@ -211,8 +198,8 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             }
             break;
         case CHARACTER_CONTEXT_PUSH_OBSTACLE:
-            if (object->player.techno != NULL) {
-                target = &((CAMERA_CONTEXT_FOCUS *)object->player.techno)->focus;
+            if (object->player.push_obstacle != NULL) {
+                target = &object->player.push_obstacle->evaluated_position;
             }
             break;
         case CHARACTER_CONTEXT_GRAPPLE:
@@ -222,7 +209,7 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             break;
     }
     if ((object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) && world->grabber != NULL) {
-        CAMERA_GRABBER *grabber = world->grabber;
+        GRABBER *grabber = world->grabber;
         focus.x = (grabber->grab_position.x + position->x) * 0.5f;
         focus.y = position->y;
         focus.z = (grabber->grab_position.z + position->z) * 0.5f;
@@ -307,7 +294,7 @@ void UpdatePlayerCameraOcclusion(void) {
             if (FadeSys.fade != 0.0f || object->dead != 0 || object->player.character_context == CHARACTER_CONTEXT_DOOMED ||
                 object->player.hud_icon_timer > 0.0f || GetMenuID() != -1 ||
                 object->player.character_context == CHARACTER_CONTEXT_TELEPORT || object->player.rider != NULL ||
-                (object->player.unknown_e24 & 8) == 0 ||
+                object->player.origin_hold == 0 ||
                 ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 && object->player.communicate_blend > 0.0f)) {
                 object->tag_reset_timer = 0.0f;
                 object->pause_context_state = 0.0f;
@@ -561,25 +548,25 @@ mode_selected:
     blend_duration = 0.5f;
     selected_pad = camera->mode == GAMECAM_MODE_VIEWCAM ? ViewCam.gamepad : (GAMEPAD *)&GamePadStorage[0];
     left_y = ((f32)(((i32)(selected_pad->bound_pad->analog_left_y)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, left_y);
+    magnitude = CameraFabs(left_y);
     if (magnitude < 34.0f) {
         left_y = 0.0f;
     }
     left_y /= 127.5f;
     left_x = ((f32)(((i32)(selected_pad->bound_pad->analog_left_x)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, left_x);
+    magnitude = CameraFabs(left_x);
     if (magnitude < 34.0f) {
         left_x = 0.0f;
     }
     left_x /= 127.5f;
     right_y = ((f32)(((i32)(selected_pad->bound_pad->analog_right_y)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, right_y);
+    magnitude = CameraFabs(right_y);
     if (magnitude < 34.0f) {
         right_y = 0.0f;
     }
     right_y /= 127.5f;
     right_x = ((f32)(((i32)(selected_pad->bound_pad->analog_right_x)))) - 127.5f;
-    GAME_CAMERA_ABSOLUTE(magnitude, right_x);
+    magnitude = CameraFabs(right_x);
     if (magnitude < 34.0f) {
         right_x = 0.0f;
     }
@@ -609,19 +596,19 @@ mode_selected:
                     if ((i16)object->id == id_LANDSPEEDER) {
                         if (landspeeder_lookahead != 0.0f) {
                             landspeeder_lookahead = (landspeeder_lookahead + (object->horizontal_velocity_magnitude * 0.6f)) * 0.5f;
-                            landspeeder_yaw = (landspeeder_yaw + object->unknown_276) * 0.5f;
+                            landspeeder_yaw = (landspeeder_yaw + object->movement_angle) * 0.5f;
                             landspeeder_speed = (landspeeder_speed + object->horizontal_velocity_magnitude) * 0.5f;
                         } else {
                             landspeeder_speed = object->horizontal_velocity_magnitude;
                             landspeeder_lookahead = object->horizontal_velocity_magnitude * 0.6f;
-                            landspeeder_yaw = object->unknown_276;
+                            landspeeder_yaw = object->movement_angle;
                         }
                     }
                 }
                 if (PODRACE_ADATA != NULL && WORLD->area == PODRACE_ADATA) {
                     NUVEC *pod_offset;
                     player_focus[player_count] = Player[i]->collision_position;
-                    pod_offset = &(mode_scratch);
+                    pod_offset = &mode_scratch;
                     (*pod_offset).x = 0.0f;
                     (*pod_offset).y = 0.0f;
                     (*pod_offset).z = 2.0f;
@@ -651,7 +638,7 @@ mode_selected:
                     player_roll[player_count] = 0;
                 }
                 camera_players[player_count] = object;
-                player_yaw[player_count] = object->unknown_276;
+                player_yaw[player_count] = object->movement_angle;
                 player_count++;
             }
             if (player_count != 0) {
@@ -670,8 +657,8 @@ mode_selected:
                     f32 pullback;
                     f32 lateral;
                     i32 angle = NuAtan2D(target.x - position.x, target.z - position.z);
-                    NUVEC *pullback_direction = &(offset);
-                    NUVEC *pullback_offset = &(mode_scratch);
+                    NUVEC *pullback_direction = &offset;
+                    NUVEC *pullback_offset = &mode_scratch;
                     NuVecSub(&(*pullback_direction), &position, &target);
                     (*pullback_direction).y = 0.0f;
                     NuVecNorm(&(*pullback_direction), &(*pullback_direction));
@@ -692,9 +679,9 @@ mode_selected:
                             pullback = (abs(index) - 0x4000) * (1.0f / 16384.0f);
                         }
                     }
-                    camera->unknown_1e8 = SeekLinearF(camera->unknown_1e8, pullback, FRAMETIME);
-                    camera->unknown_1ec = SeekValF(camera->unknown_1ec, camera->unknown_1e8, 3.0f);
-                    NuVecScale(&(*pullback_offset), &(*pullback_direction), camera->unknown_1ec * WORLD->current_level->cam_pullback_dist);
+                    camera->pullback_target = SeekLinearF(camera->pullback_target, pullback, FRAMETIME);
+                    camera->pullback = SeekValF(camera->pullback, camera->pullback_target, 3.0f);
+                    NuVecScale(&(*pullback_offset), &(*pullback_direction), camera->pullback * WORLD->current_level->cam_pullback_dist);
                     NuVecAdd(&position, &position, &(*pullback_offset));
                     NuVecAdd(&target, &target, &(*pullback_offset));
                     lateral = 0.0f;
@@ -705,11 +692,10 @@ mode_selected:
                             lateral = -lateral;
                         }
                     }
-                    camera->unknown_1f0 = SeekLinearF(camera->unknown_1f0, lateral, FRAMETIME);
-                    camera->unknown_1f4 = SeekValF(camera->unknown_1f4, camera->unknown_1f0, 3.0f);
+                    camera->lateral_target = SeekLinearF(camera->lateral_target, lateral, FRAMETIME);
+                    camera->lateral = SeekValF(camera->lateral, camera->lateral_target, 3.0f);
                     NuVecRotateY(&(*pullback_offset), &(*pullback_direction), 0x4000);
-                    NuVecScale(&(*pullback_offset), &(*pullback_offset),
-                               (0.5f * WORLD->current_level->cam_lateral_dist) * camera->unknown_1f4);
+                    NuVecScale(&(*pullback_offset), &(*pullback_offset), (0.5f * WORLD->current_level->cam_lateral_dist) * camera->lateral);
                     NuVecSub(&position, &position, &(*pullback_offset));
                     NuVecSub(&target, &target, &(*pullback_offset));
                 }
@@ -726,7 +712,7 @@ mode_selected:
                         distance = 2.0f;
                     }
                     PodCamDist = SeekLinearF(PodCamDist, distance, FRAMETIME);
-                    average = &(mode_scratch);
+                    average = &mode_scratch;
                     (*average).x = 0.0f;
                     (*average).y = 0.0f;
                     (*average).z = 0.0f;
@@ -769,7 +755,7 @@ mode_selected:
                         distance *= 1.5f;
                     }
                     PodCamDist = distance;
-                    average = &(mode_scratch);
+                    average = &mode_scratch;
                     (*average).x = 0.0f;
                     (*average).y = 0.0f;
                     (*average).z = 0.0f;
@@ -800,7 +786,7 @@ mode_selected:
                         target.x = position.x + NU_SIN_LUT(yaw) * PodCamDist;
                         target.z = position.z + NU_COS_LUT(yaw) * PodCamDist;
                     }
-                    floor_probe = &(mode_scratch);
+                    floor_probe = &mode_scratch;
                     (*floor_probe).x = position.x;
                     (*floor_probe).y = target.y - CamPodSprintHeight;
                     (*floor_probe).z = position.z;
@@ -830,7 +816,7 @@ mode_selected:
                     if (opposite < 0.0f) {
                         opposite += 65536.0f;
                     }
-                    offset = &(mode_scratch);
+                    offset = &mode_scratch;
                     NuVecSub(&(*offset), &position, &target);
                     NuVecNorm(&(*offset), &(*offset));
                     NuVecScale(&(*offset), &(*offset), landspeeder_lookahead);
@@ -873,7 +859,7 @@ mode_selected:
                             distance = NuFsqrt(walker_distance_sq);
                             factor = MAX(0.0f, 1.0f - distance / CamWalkerRadius);
                             factor = (1.0f + NU_SIN_LUT(((i32)(factor * 32768.0f + 16384.0f)))) * 0.5f;
-                            offset = &(mode_scratch);
+                            offset = &mode_scratch;
                             NuVecSub(&(*offset), &position, &target);
                             NuVecNorm(&(*offset), &(*offset));
                             amount = landspeeder_lookahead * (1.0f - factor);
@@ -889,7 +875,7 @@ mode_selected:
                                                   NULL) != NULL) {
                             f32 amount;
                             f32 distance = NuFsqrt(walker_distance_sq);
-                            NUVEC *offset = &(mode_scratch);
+                            NUVEC *offset = &mode_scratch;
                             NuVecSub(&(*offset), &position, &target);
                             NuVecNorm(&(*offset), &(*offset));
                             amount = CamDewbackLift * (1.0f - distance / CamDewbackRadius);
@@ -905,7 +891,7 @@ mode_selected:
                     f32 blend;
                     f32 scale;
                     NUVEC average_position;
-                    NUVEC *offset = &(mode_scratch);
+                    NUVEC *offset = &mode_scratch;
                     Players_AveragePos(&average_position, NULL);
                     NuVecSub(&(*offset), &rail_position, &average_position);
                     magnitude = NuVecMagSqr(&(*offset));
@@ -949,7 +935,7 @@ mode_selected:
                     roll_override = -1;
                 }
                 if (BonusWinner != -1) {
-                    NUVEC *offset = &(mode_scratch);
+                    NUVEC *offset = &mode_scratch;
                     f32 distance = NuVecDist(&position, &target, &(*offset));
                     NuVecNorm(&(*offset), &(*offset));
                     NuVecScale(&(*offset), &(*offset), distance * 0.666f);
@@ -1005,7 +991,7 @@ mode_selected:
         case GAMECAM_MODE_VIEWCAM: {
             f32 speed;
             f32 distance;
-            GAME_CAMERA_ABSOLUTE(distance, ViewCam.distance);
+            distance = CameraFabs(ViewCam.distance);
             speed = distance * testmovef * FRAMETIME;
             if (ViewCam.gamepad != NULL) {
                 offset.x = (left_x * 127.5f) * speed;
@@ -1103,7 +1089,7 @@ mode_selected:
             NuVecRotateY(&lateral, &v001, yaw);
             GunshipANorm = lateral;
             NuVecRotateY(&lateral, &lateral, 0x4000);
-            offset = &(mode_scratch);
+            offset = &mode_scratch;
             (*offset).z = 0.0f;
             (*offset).x = 0.0f;
             (*offset).y = 0.0f;
@@ -1282,13 +1268,13 @@ mode_selected:
         NUMTX orientation = {0};
         shared_count = 0;
         for (i = 0; i < 2; i++) {
-            if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->flags_107a == 4) {
+            if (Player[i] != NULL && (Player[i]->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player[i]->movement_mode == 4) {
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 0), NUMTX_GET_ROW_VEC(&orientation, 0),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 0));
+                         NUMTX_GET_ROW_VEC(&Player[i]->player.vehicle_orientation, 0));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 1), NUMTX_GET_ROW_VEC(&orientation, 1),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 1));
+                         NUMTX_GET_ROW_VEC(&Player[i]->player.vehicle_orientation, 1));
                 NuVecAdd(NUMTX_GET_ROW_VEC(&orientation, 2), NUMTX_GET_ROW_VEC(&orientation, 2),
-                         NUMTX_GET_ROW_VEC(&(Player[i])->player.vehicle_orientation, 2));
+                         NUMTX_GET_ROW_VEC(&Player[i]->player.vehicle_orientation, 2));
                 shared_count++;
             }
         }
@@ -1396,7 +1382,7 @@ i32 GoingForwardsAlongNarrowSock(GAMEOBJECT *object) {
     if (object->player.in_narrow_socket != 0) {
         i32 context;
         u16 heading = object->sock_heading;
-        forwards = abs(RotDiff(heading, object->unknown_276)) < 0x4000;
+        forwards = abs(RotDiff(heading, object->movement_angle)) < 0x4000;
         context = object->player.character_context;
         if (context == CHARACTER_CONTEXT_TURN && object->player.context_timer < object->player.context_duration * (f64)0.8f) {
             forwards = 1 - forwards;

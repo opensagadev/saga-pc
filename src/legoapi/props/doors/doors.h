@@ -16,6 +16,8 @@ extern "C" {
     char *Door_GetOutputName(GIZMO *arg0, i32 arg1);
     extern char door_gizmotype_id;
     extern i32 door_cutscenesnap;
+    ADDGIZMOTYPE *Door_RegisterGizmo(i32);
+    extern void *Door_Last;
 #ifdef __cplusplus
 }
 #endif

@@ -124,18 +124,18 @@ extern "C" {
 extern "C" {
 #endif
     // Access prefix only; the original allocation extent remains unknown.
-    typedef struct area_globals_s { // size 0x34
-        i32 unknown_00;             // 0x00
-        i32 unknown_04;             // 0x04
-        i32 unknown_08;             // 0x08
-        i32 area_phase;             // 0x0c
-        i32 new_minikit_count;      // 0x10
-        i32 progress_flags;         // 0x14
-        i32 unknown_18;             // 0x18
-        i32 unknown_1c;             // 0x1c
-        i32 unknown_20;             // 0x20
-        u32 arcade_player_kills[2]; // 0x24
-        u32 arcade_ai_kills[2];     // 0x2c
+    typedef struct area_globals_s {    // size 0x34
+        i32 player_deaths;             // 0x00
+        i32 vehicle_area;              // 0x04
+        i32 red_brick_state;           // 0x08
+        i32 area_phase;                // 0x0c
+        i32 new_minikit_count;         // 0x10
+        i32 progress_flags;            // 0x14
+        i32 special_pickups_collected; // 0x18
+        i32 challenge_minikits;        // 0x1c
+        i32 challenge_minikits_shown;  // 0x20
+        u32 arcade_player_kills[2];    // 0x24
+        u32 arcade_ai_kills[2];        // 0x2c
     } AREA_GLOBALS;
 
     extern AREA_GLOBALS AreaGlobals;
@@ -144,6 +144,7 @@ extern "C" {
     struct area_data_s *Areas_ConfigureList(char *, VARIPTR *, VARIPTR *, i32, i32 *);
     i32 SuperCounter_AnyCollected(AREA_SUPERCOUNTER *, struct WORLDINFO_s *);
     void SuperCounter_ActivateGizmoPickup(struct gizmo_s *, struct GIZMOPICKUP *);
+    i8 Area_CharIDInCurrentList(i32 character_id);
 #ifdef __cplusplus
 }
 #endif

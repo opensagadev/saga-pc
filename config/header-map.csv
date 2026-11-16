@@ -7856,13 +7856,6 @@ variable:AICameraLiteral75811c,variable,AICameraLiteral75811c,16476,16476,1,game
 variable:AICameraLiteral758110,variable,AICameraLiteral758110,16477,16477,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AICameraLiteral758104,variable,AICameraLiteral758104,16478,16478,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AICameraLiteral7580fc,variable,AICameraLiteral7580fc,16479,16479,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AICameraLiteral7580f0,variable,AICameraLiteral7580f0,16480,16480,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AICameraLiteral7580e4,variable,AICameraLiteral7580e4,16481,16481,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AICameraLiteral7580dc,variable,AICameraLiteral7580dc,16482,16482,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AICameraLiteral7580cc,variable,AICameraLiteral7580cc,16483,16483,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AICameraLiteral7580c0,variable,AICameraLiteral7580c0,16484,16484,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AICameraLiteral7580b0,variable,AICameraLiteral7580b0,16485,16485,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AICameraLiteral7580a4,variable,AICameraLiteral7580a4,16486,16486,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 function:Action_CameraCut,function,Action_CameraCut,16488,16488,2,legoapi/gizmo/base/gizactions.h,android,Action_CameraCut
 function:Action_DynamicCameraCut,function,Action_DynamicCameraCut,16489,16489,1,gameapi/ai/aisys/gameaiscript.h,android,Action_DynamicCameraCut
 function:Action_EndCameraCut,function,Action_EndCameraCut,16490,16490,1,legoapi/gizmo/base/gizactions.h,android,Action_EndCameraCut
@@ -8665,8 +8658,6 @@ variable:PS2_REZ_H,variable,PS2_REZ_H,17328,17328,1,nu2api/nu3d/nurndr.h,android
 variable:AITransferLiteral75782c,variable,AITransferLiteral75782c,17329,17329,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral75782c: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral7583e4,variable,AITransferLiteral7583e4,17330,17330,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral7583f0,variable,AITransferLiteral7583f0,17331,17331,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AITransferLiteral757a38,variable,AITransferLiteral757a38,17332,17332,1,legoapi/audio/audio.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AITransferLiteral757a70,variable,AITransferLiteral757a70,17333,17333,1,legoapi/audio/audio.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:BeenAttacked,variable,BeenAttacked,17334,17334,1,legoapi/audio/audio.h,users,BeenAttacked: only legoapi/audio.cpp android-path
 struct:TAKEOVEROBJECT,struct,TAKEOVEROBJECT,17336,17348,14,legoapi/gizmo/object/takeoverobjects.h,type-users,used by its saga.h users only there
 assert:-#3506,assert,,17350,17350,2,legoapi/gizmo/object/takeoverobjects.h,follow-type,TAKEOVEROBJECT
@@ -8716,7 +8707,6 @@ variable:AITransferLiteral757c64,variable,AITransferLiteral757c64,17394,17394,1,
 variable:AITransferLiteral757c60,variable,AITransferLiteral757c60,17395,17395,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757c60: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral757c5c,variable,AITransferLiteral757c5c,17396,17396,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757c5c: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral757f28,variable,AITransferLiteral757f28,17397,17397,1,legoapi/gizmo/base/gizactions.h,rule,used most in legogame/gizactions.c (2) android-path
-variable:AITransferLiteral7583f8,variable,AITransferLiteral7583f8,17398,17398,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:part_types,variable,part_types,17399,17399,1,legoapi/items/objects/objectsall.h,android,part_types
 variable:script_spline_selected,variable,script_spline_selected,17400,17400,1,globals.h,android-weak,catch-all (needs a module owner); script_spline_selected
 variable:part_types#2,variable,part_types,17402,17402,2,legoapi/items/objects/objectsall.h,android,part_types
@@ -8734,9 +8724,6 @@ variable:AITransferLiteral758194,variable,AITransferLiteral758194,17413,17413,1,
 variable:AITransferLiteral758188,variable,AITransferLiteral758188,17414,17414,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral7581a0,variable,AITransferLiteral7581a0,17415,17415,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral758174,variable,AITransferLiteral758174,17416,17416,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AITransferLiteral7581d4,variable,AITransferLiteral7581d4,17417,17417,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AITransferLiteral7581ec,variable,AITransferLiteral7581ec,17418,17418,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
-variable:AITransferLiteral7581e0,variable,AITransferLiteral7581e0,17419,17419,1,legoapi/gizmo/base/gizactions.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:GizObstacleActionNamePC,variable,GizObstacleActionNamePC,17420,17420,1,legoapi/gizmo/base/gizactions.h,definition,legogame/gizactions.c android-path
 variable:GizObstacleActionBackwardPC,variable,GizObstacleActionBackwardPC,17421,17421,1,legoapi/gizmo/base/gizactions.h,definition,legogame/gizactions.c android-path
 variable:GizObstacleActionForwardPC,variable,GizObstacleActionForwardPC,17422,17422,1,legoapi/gizmo/base/gizactions.h,definition,legogame/gizactions.c android-path

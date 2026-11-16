@@ -28,33 +28,33 @@ extern "C" {
         i32 element_count;         // 0x04
         NUVEC position;            // 0x08
         f32 size;                  // 0x14
-        f32 unknown_18;            // 0x18
+        f32 wind;                  // 0x18
         i32 flags;                 // 0x1c
-        f32 unknown_20;            // 0x20
+        f32 bend_height;           // 0x20
         u8 page;                   // 0x24
-        u8 unknown_25;             // 0x25
-        u8 unknown_26;             // 0x26
+        u8 area_shape;             // 0x25
+        u8 distribution;           // 0x26
         u8 kind;                   // 0x27
         i32 seed;                  // 0x28
-        f32 unknown_2c;            // 0x2c
-        f32 unknown_30;            // 0x30
+        f32 min_model_size;        // 0x2c
+        f32 max_model_size;        // 0x30
         i16 rotation_z;            // 0x34
         i16 rotation_y;            // 0x36
         f32 near_distance;         // 0x38
         f32 far_distance;          // 0x3c
         i16 individual_index;      // 0x40
-        u8 unknown_42;             // 0x42
-        u8 unknown_43;             // 0x43
-        f32 unknown_44;            // 0x44
+        u8 follow_terrain;         // 0x42
+        u8 follow_slope;           // 0x43
+        f32 terrain_offset;        // 0x44
         NUMTX *matrices;           // 0x48
         NUVEC *vector_buffer;      // 0x4c
     } PC_EDGRACLUMP;
 
     typedef struct PC_EDGRAINDIVIDUAL { // size 0x20
         NUVEC position;                 // 0x00
-        f32 unknown_0c;                 // 0x0c
-        i16 unknown_10;                 // 0x10
-        i16 unknown_12;                 // 0x12
+        f32 scale;                      // 0x0c
+        i16 rotation_z;                 // 0x10
+        i16 rotation_y;                 // 0x12
         u8 unknown_14[0xc];             // 0x14
     } PC_EDGRAINDIVIDUAL;
 
@@ -138,14 +138,14 @@ extern "C" {
         f32 reflection_scale;                                // 0x2e4
         i16 collision_timers[4];                             // 0x2e8
         i16 render_group;                                    // 0x2f0
-        i16 unknown_2f2;                                     // 0x2f2
-        u8 unknown_2f4;                                      // 0x2f4
+        i16 portal_room;                                     // 0x2f2
+        u8 status;                                           // 0x2f4
         u8 process_collision_sound;                          // 0x2f5
-        u8 unknown_2f6;                                      // 0x2f6
-        u8 unknown_2f7;                                      // 0x2f7
+        u8 visible;                                          // 0x2f6
+        u8 draw_enabled;                                     // 0x2f7
         i8 timed_flags;                                      // 0x2f8
-        u8 unknown_2f9;                                      // 0x2f9
-        u8 unknown_2fa;                                      // 0x2fa
+        u8 runtime_created;                                  // 0x2f9
+        u8 custom_facing;                                    // 0x2fa
         u8 unknown_2fb;                                      // 0x2fb
         struct NUGSCN_s *gscene;                             // 0x2fc
 

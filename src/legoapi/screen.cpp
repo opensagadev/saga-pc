@@ -59,13 +59,6 @@ extern "C" NUMTL *FadeMtl;
 extern "C" NUMTL *FadeMtl2;
 extern "C" NUMTL *ScreenFadeMtl;
 
-typedef struct CUT_DISPLAY_VIEW { // size 0xec
-    u8 unknown_00[0x6c];          // 0x00
-    f32 camera_near_clip;         // 0x6c
-    u8 unknown_70[0x78];          // 0x70
-    u16 camera_far_clip;          // 0xe8
-} CUT_DISPLAY_VIEW;
-
 extern "C" f32 CutSceneCameraFocalLength;
 
 typedef struct CUT_BORDER_RECORD { // size 0x54
@@ -440,7 +433,7 @@ extern "C" {
 }
 
 extern "C" void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours) {
-    CUT_DISPLAY_VIEW *cut = (CUT_DISPLAY_VIEW *)CutStopInfo;
+    CUTINFO *cut = (CUTINFO *)CutStopInfo;
     i32 top_r;
     i32 top_g;
     i32 top_b;
@@ -454,7 +447,7 @@ extern "C" void GameDisplaySettings(LEVEL_DISPLAY *display, i32 *colours) {
     } else {
         pNuCam->near_clip = display->near_clip;
     }
-    cut = (CUT_DISPLAY_VIEW *)CutStopInfo;
+    cut = (CUTINFO *)CutStopInfo;
     if (cut != NULL && cut->camera_far_clip != 0) {
         pNuCam->far_clip = (f32)cut->camera_far_clip;
     } else {

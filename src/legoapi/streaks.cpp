@@ -228,11 +228,6 @@ extern "C" void UpdateStreaks(f32 elapsed) {
 }
 
 extern "C" f32 StreakAlphaScale;
-#define STREAK_SET_ALPHA(colour, header, node)                                                                                             \
-    (colour) = (header)->colour;                                                                                                           \
-    ((u8 *)&(colour))[3] = (u8)(((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale) > 255.0                    \
-                                    ? 255.0                                                                                                \
-                                    : ((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale))
 
 extern "C" void DrawStreaks(void) {
     for (STREAK_HEADER *header = streakhdrs_used; header != NULL; header = header->next) {
@@ -240,7 +235,10 @@ extern "C" void DrawStreaks(void) {
         i32 vertex_count = 0;
         u32 colour;
         for (STREAK_NODE *node = header->nodes; node != NULL; node = node->next) {
-            STREAK_SET_ALPHA(colour, header, node);
+            colour = header->colour;
+            ((u8 *)&colour)[3] = (u8)(((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale) > 255.0
+                                          ? 255.0
+                                          : ((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale));
             vertices[vertex_count].position = node->position;
             vertices[vertex_count].u = 0.01f;
             vertices[vertex_count].colour = colour;
@@ -250,12 +248,18 @@ extern "C" void DrawStreaks(void) {
             vertex_count += 2;
             if (node->next != NULL) {
                 for (i32 index = 1; index < node->next->segment_count; ++index) {
-                    STREAK_SET_ALPHA(colour, header, node);
+                    colour = header->colour;
+                    ((u8 *)&colour)[3] = (u8)(((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale) > 255.0
+                                                  ? 255.0
+                                                  : ((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale));
                     vertices[vertex_count].position = node->next->positions[index - 1];
                     vertices[vertex_count].colour = colour;
                     vertices[vertex_count].u = 0.01f;
                     ++vertex_count;
-                    STREAK_SET_ALPHA(colour, header, node);
+                    colour = header->colour;
+                    ((u8 *)&colour)[3] = (u8)(((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale) > 255.0
+                                                  ? 255.0
+                                                  : ((f64)(i32)(colour >> 24) * MAX(0.0f, node->remaining_time) * StreakAlphaScale));
                     vertices[vertex_count].position = node->next->tangents[index - 1];
                     vertices[vertex_count].u = 1.01f;
                     vertices[vertex_count].colour = colour;
@@ -271,8 +275,6 @@ extern "C" void DrawStreaks(void) {
         NuRndrTriStrip3dClip(vertices, vertex_count, NULL, header->flags != 0 ? streakmtl_ref : streakmtl);
     }
 }
-
-#undef STREAK_SET_ALPHA
 
 extern "C" void ResetStreaks(void) {
     STREAK_HEADER *header = streakhdrs_used;

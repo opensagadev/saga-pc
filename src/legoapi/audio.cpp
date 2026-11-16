@@ -40,17 +40,11 @@ struct PC_MUSIC_ACTION_PAIR { // size 0x1c
 
 extern "C" void (*ExtraDieSfxFn)(GAMEOBJECT *);
 extern "C" {
-    typedef struct footstep_audio_callbacks_s {
-        i32 (*override_footstep)(GAMEOBJECT *, i32);
-    } FOOTSTEP_AUDIO_CALLBACKS;
-}
-
-extern "C" {
 
     i32 GameAudio_GetPlrSfxBits(void *object_ptr) {
         GAMEOBJECT *object = (GAMEOBJECT *)object_ptr;
         if (object != NULL && object->player_controlled) {
-            return 1 << object->unknown_280;
+            return 1 << object->player_slot;
         }
         return 0;
     }
@@ -251,7 +245,7 @@ extern "C" {
         target = 0.0f;
         if (silent == 0) {
             if (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) {
-                target = AudioFabs(object->player.unknown_dc8);
+                target = AudioFabs(object->player.speed_boost);
             } else {
                 target = object->velocity_magnitude / character->run_speed;
             }
@@ -265,7 +259,7 @@ extern "C" {
             volume = (f32)((f64)volume * (f64).6f);
         }
         pitch = (f32)((f64)object->player.engine_level * (f64).4f + (f64).6f);
-        pitch += (f32)(((f64)object->hostility_group / 63.0) * (f64).05f - (f64).025f);
+        pitch += (f32)(((f64)object->object_id / 63.0) * (f64).05f - (f64).025f);
         pitch = (f32)(((f64)qrand() * (f64)1.5259022e-5f * (f64).03f + (f64).985f) * (f64)pitch);
         PlaySfxByIdAndSetVolumeAndPitch(sfx_id, &object->collision_position, volume, pitch);
     }
@@ -371,7 +365,7 @@ extern "C" {
         if (object->character_data->game_character->sfx_footstep != -1) {
             sound = object->character_data->game_character->sfx_footstep;
         } else {
-            i32 (*override_footstep)(GAMEOBJECT *, i32) = ((FOOTSTEP_AUDIO_CALLBACKS *)GameAudio)->override_footstep;
+            i32 (*override_footstep)(GAMEOBJECT *, i32) = GameAudio->override_footstep_fn;
             if (override_footstep == NULL || (sound = override_footstep(object, on_platform)) == -1) {
                 if (object->is_underwater == 0 && object->water_intersects == 0) {
                     alternate = WorldInfo_CurrentlyActive()->current_level->flags & LEVEL_METAL;
@@ -489,7 +483,7 @@ extern "C" void PlayDieSfx(GAMEOBJECT *object) {
 }
 
 extern "C" void PlaySabreSfx(char *name, GAMEOBJECT *object, NUVEC *position, i32 unused) {
-    u8 player = object->unknown_280;
+    u8 player = object->player_slot;
     i32 bits = 0;
     if (player == 0xff && WORLD->rooms_visible_ptr[object->portal_room] == 0) {
         return;
@@ -841,7 +835,7 @@ extern "C" void ProcessMusicChanges(LEVELDATA *level, OPTIONSSAVE *options) {
         sticky_attack_time = ActionMusicStickyTimeout[MusicActiveReset];
     }
     if (CutStopInfo != NULL) {
-        CUTINFO *cut = (CUTINFO *)CutStopInfo;
+        CUTINFO *cut = CutStopInfo;
         if (cut->skip_level != -1 && (LDataList[cut->skip_level].flags & LEVEL_CONFIG_LOADED) != 0) {
             level = &LDataList[cut->skip_level];
         }

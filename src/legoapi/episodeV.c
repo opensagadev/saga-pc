@@ -75,37 +75,9 @@ GIZMO *GizmoFindByData(void *, i32, void *);
 struct panel_movement_s;
 struct panel_movement_s *GizPanel_FindByName(WORLDINFO *, char *);
 
-#define FALCON_SLOT(object) ((i8)(object)->unknown_280)
-
 /* Asteroid field. */
 
 /* Rotating rock at the end of AsteroidChase C. */
-
-#define INCREMENT_MINIKIT_COUNTER_FOR(world, average, gizmo_index, counter, camera_distance, camera_pitch, camera_yaw)                     \
-    do {                                                                                                                                   \
-        GIZMO *gizmo = LevGizmo[gizmo_index];                                                                                              \
-        if (gizmo != NULL && gizmo->object != NULL) {                                                                                      \
-            GIZMOPICKUP *pickup = gizmo->pickup;                                                                                           \
-            if ((pickup->flags & 0x48) == 0 && *(counter) < 10) {                                                                          \
-                ++*(counter);                                                                                                              \
-                if (*(counter) == 10) {                                                                                                    \
-                    NUVEC camera;                                                                                                          \
-                    NUVEC message_pos;                                                                                                     \
-                    camera.x = 0.0f;                                                                                                       \
-                    camera.y = 0.0f;                                                                                                       \
-                    camera.z = camera_distance;                                                                                            \
-                    NuVecRotateX(&camera, &camera, camera_pitch);                                                                          \
-                    NuVecRotateY(&camera, &camera, camera_yaw);                                                                            \
-                    NuVecAdd(&camera, &camera, &pickup->position);                                                                         \
-                    GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);                                \
-                    GizmoActivate((world)->gizmo_sys, LevGizmo[gizmo_index], 1, 1);                                                        \
-                    AddGameMsgCount(&message_pos, *(counter), 10, 200, 100, 30, 0.75f);                                                    \
-                } else {                                                                                                                   \
-                    AddGameMsgCount(average, *(counter), 10, 200, 100, 30, 0.75f);                                                         \
-                }                                                                                                                          \
-            }                                                                                                                              \
-        }                                                                                                                                  \
-    } while (0)
 
 static void AsteroidChaseD_SetTurretTarget(i32 index, NUVEC *position) {
     if (StarDestroyerTurrets[index] != NULL && StarDestroyerTurrets[index]->opponent == NULL) {
@@ -186,7 +158,7 @@ void ResetTrooperCannons(WORLDINFO *world, i32 trooper_id) {
                 ActivateCharacter(name, NULL, 0);
                 AddGameDebris(world->game_debris_sys, 0x5c, &troopercannons[index].object->collision_position);
                 trooper = AddDynamicCreature(trooper_id, &troopercannons[index].object->collision_position,
-                                             troopercannons[index].object->unknown_276, "CannonTrooper",
+                                             troopercannons[index].object->movement_angle, "CannonTrooper",
                                              &troopercannons[index].object->ai_packet.path_info, NULL, 0, NULL, NULL, 0, 0);
                 if (trooper != NULL) {
                     TakeOverGameObject(trooper, troopercannons[index].object, 0, 1);
@@ -311,7 +283,7 @@ void Asteroid_PartKill(PART *part, i32 reason) {
     AddGameDebris(WORLD->game_debris_sys, 0x5e, &part->position);
     AddGameDebris(WORLD->game_debris_sys, 0x5f, &part->position);
     AddPartDebris(WORLD->part_debris_sys, 4, &part->position);
-    if (part->unknown_206 == 1) {
+    if (part->player_mask == 1) {
         i32 type;
         if (reason == 4) {
             type = 0;
@@ -355,8 +327,8 @@ void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
         params = Default_ADDPART;
         params.matrix = &matrix;
         params.velocity = &velocity;
-        NuSpecialGetRadius(special, &centre, &params.unknown_14);
-        params.unknown_18 = params.unknown_14;
+        NuSpecialGetRadius(special, &centre, &params.start_radius);
+        params.end_radius = params.start_radius;
         params.gravity = 0.0f;
         params.special = special;
         params.flags = 0x8000193;
@@ -366,10 +338,10 @@ void Asteroid_AddParts(GIZMOBLOWUP *blowup) {
         params.time_step = FRAMETIME;
         params.collision_fn = (PART_ACTION)PartCollide_3D;
         params.kill_fn = (PART_KILL)Asteroid_PartKill;
-        params.unknown_a4 = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
+        params.fade_time = (f32)(qrand() * PlayerRandomScale * NuTimeBarColumnStep + 7.0);
         part = AddPart(&params);
         if (part != NULL) {
-            part->unknown_206 = (index != 0) + 1;
+            part->player_mask = (index != 0) + 1;
         }
     }
 }
@@ -502,7 +474,7 @@ i8 melee_wavePhase = -1;
 
 void DrawFalconSpotLights(GAMEOBJECT *object) {
     NUMTX matrix;
-    if ((object->unknown_280 != 0 && object->unknown_280 != 1) || (i16)object->id != dat_007f19a4 ||
+    if ((object->player_slot != 0 && object->player_slot != 1) || (i16)object->id != dat_007f19a4 ||
         WORLD->level_objects[0x127].active == 0) {
         return;
     }
@@ -510,25 +482,25 @@ void DrawFalconSpotLights(GAMEOBJECT *object) {
         matrix = object->player.locator_matrices[4];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
-    spotLightA_yrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightA_yrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightA_yrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightA_yrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightA_yrot[object->player_index] > 1.0f) {
+        spotLightA_yrot[object->player_index] -= 1.0f;
     }
-    spotLightA_zrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightA_zrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightA_zrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightA_zrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightA_zrot[object->player_index] > 1.0f) {
+        spotLightA_zrot[object->player_index] -= 1.0f;
     }
     if (object->character_model->points_of_interest[5] != NULL) {
         matrix = object->player.locator_matrices[5];
         NuSpecialDrawAt(&WORLD->level_objects[0x127].special, &matrix);
     }
-    spotLightB_yrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightB_yrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightB_yrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightB_yrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightB_yrot[object->player_index] > 1.0f) {
+        spotLightB_yrot[object->player_index] -= 1.0f;
     }
-    spotLightB_zrot[FALCON_SLOT(object)] += FRAMETIME / 5.0f;
-    if (spotLightB_zrot[FALCON_SLOT(object)] > 1.0f) {
-        spotLightB_zrot[FALCON_SLOT(object)] -= 1.0f;
+    spotLightB_zrot[object->player_index] += FRAMETIME / 5.0f;
+    if (spotLightB_zrot[object->player_index] > 1.0f) {
+        spotLightB_zrot[object->player_index] -= 1.0f;
     }
 }
 
@@ -1029,7 +1001,7 @@ i32 TakeOverYodaSeekDistanceHack(GAMEOBJECT *object, GAMEOBJECT *luke, NUVEC *of
         !((f64)NuVecDistSqr(&object->position, &luke->position, offset) < (f64)(0.7f * 0.7f))) {
         return 0;
     }
-    NuVecRotateY(offset, offset, -luke->unknown_276);
+    NuVecRotateY(offset, offset, -luke->movement_angle);
     return offset->z > 0.0f;
 }
 
@@ -1106,9 +1078,55 @@ void IncrementMinikitCounter(GAMEOBJECT *unused) {
     NUVEC average;
     Players_AveragePos(&average, NULL);
     if (world->current_level == HOTHBATTLEA_LDATA) {
-        INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 0, &minikitCounter_A, 10.0f, -0xe38, -0x2000);
+        {
+            GIZMO *gizmo = LevGizmo[0];
+            if (gizmo != NULL && gizmo->object != NULL) {
+                GIZMOPICKUP *pickup = gizmo->pickup;
+                if ((pickup->flags & 0x48) == 0 && minikitCounter_A < 10) {
+                    ++minikitCounter_A;
+                    if (minikitCounter_A == 10) {
+                        NUVEC camera;
+                        NUVEC message_pos;
+                        camera.x = 0.0f;
+                        camera.y = 0.0f;
+                        camera.z = 10.0f;
+                        NuVecRotateX(&camera, &camera, -0xe38);
+                        NuVecRotateY(&camera, &camera, -0x2000);
+                        NuVecAdd(&camera, &camera, &pickup->position);
+                        GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);
+                        GizmoActivate(world->gizmo_sys, LevGizmo[0], 1, 1);
+                        AddGameMsgCount(&message_pos, minikitCounter_A, 10, 200, 100, 30, 0.75f);
+                    } else {
+                        AddGameMsgCount(&average, minikitCounter_A, 10, 200, 100, 30, 0.75f);
+                    }
+                }
+            }
+        }
     } else if (world->current_level == dat_0087b204) {
-        INCREMENT_MINIKIT_COUNTER_FOR(world, &average, 1, &minikitCounter_C, 25.0f, -0x1555, -0x871c);
+        {
+            GIZMO *gizmo = LevGizmo[1];
+            if (gizmo != NULL && gizmo->object != NULL) {
+                GIZMOPICKUP *pickup = gizmo->pickup;
+                if ((pickup->flags & 0x48) == 0 && minikitCounter_C < 10) {
+                    ++minikitCounter_C;
+                    if (minikitCounter_C == 10) {
+                        NUVEC camera;
+                        NUVEC message_pos;
+                        camera.x = 0.0f;
+                        camera.y = 0.0f;
+                        camera.z = 25.0f;
+                        NuVecRotateX(&camera, &camera, -0x1555);
+                        NuVecRotateY(&camera, &camera, -0x871c);
+                        NuVecAdd(&camera, &camera, &pickup->position);
+                        GameCameraMakeMiniCut2(&camera, &pickup->position, 0, 0.0f, 4.0f, 0.0f, 0.0f, 0, 0, 0);
+                        GizmoActivate(world->gizmo_sys, LevGizmo[1], 1, 1);
+                        AddGameMsgCount(&message_pos, minikitCounter_C, 10, 200, 100, 30, 0.75f);
+                    } else {
+                        AddGameMsgCount(&average, minikitCounter_C, 10, 200, 100, 30, 0.75f);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -1372,7 +1390,7 @@ void HothBattle_ManageBackgroundCreatures(void) {
             entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
             if (entry == spawn) {
                 object->ai_packet.locator = entry;
-                set->assigned[index] = object->hostility_group;
+                set->assigned[index] = object->object_id;
                 break;
             }
         }
@@ -1411,7 +1429,7 @@ void HothBattle_ManageBackgroundCreatures(void) {
             entry = &WORLD->ai_sys->locators[set->locator_entries[index]];
             if (entry == spawn) {
                 object->ai_packet.locator = entry;
-                set->assigned[index] = object->hostility_group;
+                set->assigned[index] = object->object_id;
                 break;
             }
         }
@@ -1430,7 +1448,7 @@ i32 SpawnMeleeCreatureType(i32 type) {
     NUVEC offset;
     for (index = 0; index < melee.waves[type].active_count; ++index) {
         if (melee.waves[type].character_id != id_ATAT && melee.waves[type].creatures[index] != NULL &&
-            melee.waves[type].creatures[index]->unknown_f10 > 5.0f) {
+            melee.waves[type].creatures[index]->offscreen_time > 5.0f) {
             KillGameObject(melee.waves[type].creatures[index], KILL_REASON_REMOVED, 0);
             melee.waves[type].creatures[index] = NULL;
             --melee.waves[type].active_count;
@@ -1651,10 +1669,10 @@ void HothBattleE_UpdateWave(void) {
     if (melee.current_wave == 3 && melee.waves[0].creatures[0] != NULL && melee.waves[0].creatures[1] != NULL) {
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[0]->position, radius);
-        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[1]->hostility_group);
+        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[1]->object_id);
         radius = (f32)((f64)melee.waves[0].creatures[type]->bounds_radius * 3.0);
         node = (HOTH_ANTINODE *)AIAntinodeCreateSingleFrame(&melee.waves[0].creatures[1]->position, radius);
-        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[0]->hostility_group);
+        node->excluded_character_types = (i32) ~(1u << melee.waves[0].creatures[0]->object_id);
     }
     for (wave_index = 0; wave_index < 4; ++wave_index) {
         count = 0;

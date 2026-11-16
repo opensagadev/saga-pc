@@ -10,6 +10,7 @@
 #include "legoapi/characters/motion/move.h"
 #include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/items/base/apiobject.h"
+#include "legoapi/gizmos/object/hatmachine.h"
 #include "legoapi/items/fx/pulses.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/lib/hub.h"
@@ -26,33 +27,6 @@
 #include "nu2api/numusic/sfx.h"
 #include <string.h>
 #include <stdio.h>
-
-typedef struct level_sfx_world_view_s { // size 0x5078
-    u8 unknown_00[0x4684];              // 0x0000
-    i32 teleport_count;                 // 0x4684
-    u8 unknown_4688[0x38];              // 0x4688
-    i32 push_block_count;               // 0x46c0
-    u8 unknown_46c4[0x20];              // 0x46c4
-    i32 spinner_count;                  // 0x46e4
-    u8 unknown_46e8[4];                 // 0x46e8
-    void *grabber;                      // 0x46ec
-    u8 unknown_46f0[0x960];             // 0x46f0
-    LEVEL_SFX_PULSE *pulses_sys;        // 0x5050
-    u8 unknown_5054[0x18];              // 0x5054
-    i32 nlevers;                        // 0x506c
-    u8 unknown_5070[4];                 // 0x5070
-    i32 *hat_machine_sys;               // 0x5074
-} LEVEL_SFX_WORLD_VIEW;
-
-typedef struct level_sfx_cut_slot_s { // size 0x14
-    i16 id;                           // 0x00
-    u8 unknown_02[0x12];              // 0x02
-} LEVEL_SFX_CUT_SLOT;
-
-typedef struct level_sfx_cut_s { // size 0xe8
-    u8 unknown_00[0x70];         // 0x00
-    LEVEL_SFX_CUT_SLOT sfx[6];   // 0x70
-} LEVEL_SFX_CUT;
 
 AREA_DATA *DEATHSTARRESCUE_ADATA;
 AREA_DATA *DEATHSTARRESCUE_ADATA = 0;
@@ -102,7 +76,6 @@ i32 GameAudio_CheckReverb_LSW(void) {
 }
 
 void SetLevelSfxBits(WORLDINFO *world) {
-    LEVEL_SFX_WORLD_VIEW *view = (LEVEL_SFX_WORLD_VIEW *)world;
     i32 i;
     i32 j;
     i32 character_id;
@@ -116,49 +89,47 @@ void SetLevelSfxBits(WORLDINFO *world) {
     i32 sfx_ids[1024];
     i32 sfx_count = 0;
 
-#define ADD_SFX(name) AddLevelSfxFromName(name, sfx_ids, &sfx_count, 0x400)
-
     for (i = 0; i < world->level_sfx_count; ++i) {
         sfx_ids[sfx_count++] = world->level_sfx[i].id;
     }
 
-    if (view->spinner_count > 0) {
-        ADD_SFX("fly_paddle_rotate_lp");
-        ADD_SFX("fly_paddle_stuck");
+    if (world->spinner_count > 0) {
+        AddLevelSfxFromName("fly_paddle_rotate_lp", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("fly_paddle_stuck", sfx_ids, &sfx_count, 0x400);
     }
-    if (view->teleport_count > 0) {
-        ADD_SFX("env_door_flap");
+    if (world->teleport_count > 0) {
+        AddLevelSfxFromName("env_door_flap", sfx_ids, &sfx_count, 0x400);
     }
 
     GameAudio_AddSfx(0x50, sfx_ids, &sfx_count, 0x400);
     GameAudio_AddSfx(0x51, sfx_ids, &sfx_count, 0x400);
     GameAudio_AddSfx(0x52, sfx_ids, &sfx_count, 0x400);
-    ADD_SFX("Grv_GuardWeaponLp");
+    AddLevelSfxFromName("Grv_GuardWeaponLp", sfx_ids, &sfx_count, 0x400);
 
-    if (view->grabber != NULL) {
+    if (world->grabber != NULL) {
         if (world->current_level == CLOUDCITYTRAPA_LDATA) {
-            ADD_SFX("CarbonFreezeCraneLp");
-            ADD_SFX("CarbonFreezeCrane");
+            AddLevelSfxFromName("CarbonFreezeCraneLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("CarbonFreezeCrane", sfx_ids, &sfx_count, 0x400);
         } else if (world->current_level == JABBASPALACEB_LDATA) {
-            ADD_SFX("env_hover_box_lp");
+            AddLevelSfxFromName("env_hover_box_lp", sfx_ids, &sfx_count, 0x400);
         } else {
-            ADD_SFX("env_crane_mvt_lp");
+            AddLevelSfxFromName("env_crane_mvt_lp", sfx_ids, &sfx_count, 0x400);
         }
-        ADD_SFX("env_crane_in");
-        ADD_SFX("env_grabber_down");
-        ADD_SFX("env_grabber_pickup");
-        ADD_SFX("env_grabber_up");
-        ADD_SFX("Explode2");
+        AddLevelSfxFromName("env_crane_in", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("env_grabber_down", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("env_grabber_pickup", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("env_grabber_up", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("Explode2", sfx_ids, &sfx_count, 0x400);
         if (world->current_level == CLOUDCITYESCAPEC_LDATA) {
-            ADD_SFX("imp_C3PO_magnet");
-            ADD_SFX("imp_C3PO_magnet_drop");
+            AddLevelSfxFromName("imp_C3PO_magnet", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("imp_C3PO_magnet_drop", sfx_ids, &sfx_count, 0x400);
         }
     }
 
     if (world->cutscene_sys != NULL) {
         for (i = 0; i < world->cutscene_sys->count; ++i) {
             for (j = 0; j < 6; ++j) {
-                LEVEL_SFX_CUT *cut = (LEVEL_SFX_CUT *)world->cutscene_sys->records[i];
+                CUTINFO *cut = world->cutscene_sys->records[i];
                 i32 id = cut->sfx[j].id;
                 if (id != -1) {
                     sfx_ids[sfx_count++] = id;
@@ -167,55 +138,55 @@ void SetLevelSfxBits(WORLDINFO *world) {
         }
     }
 
-    Pulses_AddSfx(view->pulses_sys, sfx_ids, &sfx_count, 0x400);
-    if (view->hat_machine_sys != NULL && *view->hat_machine_sys > 0) {
-        ADD_SFX("SwLever");
-        ADD_SFX("HatOn");
+    Pulses_AddSfx(world->pulses_sys, sfx_ids, &sfx_count, 0x400);
+    if (world->hat_machine_sys != NULL && world->hat_machine_sys->count > 0) {
+        AddLevelSfxFromName("SwLever", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("HatOn", sfx_ids, &sfx_count, 0x400);
     }
-    if (view->nlevers > 0) {
-        ADD_SFX("SwLever");
+    if (world->nlevers > 0) {
+        AddLevelSfxFromName("SwLever", sfx_ids, &sfx_count, 0x400);
     }
 
     if (world->area == NULL || (world->area->flags & AREAFLAG_VEHICLE_AREA) == 0) {
-        ADD_SFX("Char_Slide_Lp");
-        if (view->push_block_count > 0) {
-            ADD_SFX("Block_Shove");
-            ADD_SFX("Block_Push_Lp");
+        AddLevelSfxFromName("Char_Slide_Lp", sfx_ids, &sfx_count, 0x400);
+        if (world->push_block_count > 0) {
+            AddLevelSfxFromName("Block_Shove", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Block_Push_Lp", sfx_ids, &sfx_count, 0x400);
         }
-        ADD_SFX("exp_thermalDet");
-        ADD_SFX("imp_thermalDet_attach");
+        AddLevelSfxFromName("exp_thermalDet", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("imp_thermalDet_attach", sfx_ids, &sfx_count, 0x400);
         if (world->area == SPEEDERCHASE_ADATA) {
-            ADD_SFX("XWing_LoopDeLoop");
+            AddLevelSfxFromName("XWing_LoopDeLoop", sfx_ids, &sfx_count, 0x400);
         }
     } else {
-        ADD_SFX("XWing_Torpedo");
-        ADD_SFX("imp_proton_torp");
-        ADD_SFX("XWing_LoopDeLoop");
+        AddLevelSfxFromName("XWing_Torpedo", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("imp_proton_torp", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("XWing_LoopDeLoop", sfx_ids, &sfx_count, 0x400);
     }
-    ADD_SFX("Explode1");
+    AddLevelSfxFromName("Explode1", sfx_ids, &sfx_count, 0x400);
 
     level = world->current_level;
     if (level->sfx_ambient != -1) {
         sfx_ids[sfx_count++] = level->sfx_ambient;
     }
     if (level == STATUS_LDATA || (level->flags & LEVEL_STATUS) != 0) {
-        ADD_SFX("StatusAward");
-        ADD_SFX("Status_GoldBarDec");
-        ADD_SFX("TrueJedi_100pc");
-        ADD_SFX("TrueJedi_NOT");
-        ADD_SFX("MK-Panel");
-        ADD_SFX("Char_Icon_App");
-        ADD_SFX("Char_Icon_Slide");
-        ADD_SFX("LegoClicks");
-        ADD_SFX("Shop_BuyCheat");
-        ADD_SFX("Explode1");
-        ADD_SFX("Jp_Ana_Jump");
-        ADD_SFX("PickupCoin");
+        AddLevelSfxFromName("StatusAward", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("Status_GoldBarDec", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("TrueJedi_100pc", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("TrueJedi_NOT", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("MK-Panel", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("Char_Icon_App", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("Char_Icon_Slide", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("LegoClicks", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("Shop_BuyCheat", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("Explode1", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("Jp_Ana_Jump", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("PickupCoin", sfx_ids, &sfx_count, 0x400);
     } else if (world->area != NULL && (world->area->flags & AREAFLAG_BONUS_AREA) != 0) {
-        ADD_SFX("Victory");
-        ADD_SFX("exp_debris");
+        AddLevelSfxFromName("Victory", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("exp_debris", sfx_ids, &sfx_count, 0x400);
     } else if (level == CREDITS_LDATA) {
-        ADD_SFX("StatusAward");
+        AddLevelSfxFromName("StatusAward", sfx_ids, &sfx_count, 0x400);
     }
 
     if (world->area != NULL) {
@@ -223,249 +194,249 @@ void SetLevelSfxBits(WORLDINFO *world) {
             GameAudio_AddSfx(0x53, sfx_ids, &sfx_count, 0x400);
         }
         if (world->area == PODRACE_ADATA || world->area == PODSPRINT_ADATA) {
-            ADD_SFX("PodX_TuskenBlast");
-            ADD_SFX("Pod_TuskHit");
-            ADD_SFX("PodX_EngSebulba_Lp");
-            ADD_SFX("PodX_EngAnakin_Lp");
-            ADD_SFX("PodX_EngGeneric1_Lp");
-            ADD_SFX("PodX_EngGeneric2_Lp");
-            ADD_SFX("PodX_EngGeneric3_Lp");
-            ADD_SFX("PodX_EngStartup1");
-            ADD_SFX("PodX_EngStartup2");
-            ADD_SFX("Pod_Race_Go");
-            ADD_SFX("Pod_Race_Light");
-            ADD_SFX("PodX_EngGeneric_Lp");
-            ADD_SFX("PodX_Collide");
-            ADD_SFX("PodX_Crash");
-            ADD_SFX("PodX_Booster");
-            ADD_SFX("CountdownTimerTick");
-            ADD_SFX("CountdownTimerTock");
-            ADD_SFX("PodX_PurpCrysHit");
+            AddLevelSfxFromName("PodX_TuskenBlast", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Pod_TuskHit", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngSebulba_Lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngAnakin_Lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngGeneric1_Lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngGeneric2_Lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngGeneric3_Lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngStartup1", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngStartup2", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Pod_Race_Go", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Pod_Race_Light", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_EngGeneric_Lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_Collide", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_Crash", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_Booster", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("CountdownTimerTick", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("CountdownTimerTock", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("PodX_PurpCrysHit", sfx_ids, &sfx_count, 0x400);
         } else if (world->area == GUNSHIP_ADATA || world->area == BONUS_GUNSHIP_ADATA) {
-            ADD_SFX("GC_GunshipBlasterFire");
-            ADD_SFX("GC_GunshipEngineLp");
-            ADD_SFX("GC_GunshipDeath");
-            ADD_SFX("GC_LaserBeam");
-            ADD_SFX("Explode1");
+            AddLevelSfxFromName("GC_GunshipBlasterFire", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("GC_GunshipEngineLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("GC_GunshipDeath", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("GC_LaserBeam", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Explode1", sfx_ids, &sfx_count, 0x400);
         } else if (world->area == HUB_ADATA) {
-            ADD_SFX("Shop_BuyCheat");
-            ADD_SFX("Shop_NotEnufMuny");
-            ADD_SFX("ui_ZoomIn");
-            ADD_SFX("ui_ZoomOut");
-            ADD_SFX("ui_hover_lp");
+            AddLevelSfxFromName("Shop_BuyCheat", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Shop_NotEnufMuny", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ui_ZoomIn", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ui_ZoomOut", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ui_hover_lp", sfx_ids, &sfx_count, 0x400);
         } else if (world->area == JABBASPALACE_ADATA) {
-            ADD_SFX("swdisco");
+            AddLevelSfxFromName("swdisco", sfx_ids, &sfx_count, 0x400);
         } else if (world->area == NEWTOWN_ADATA) {
-            ADD_SFX("BBounce");
+            AddLevelSfxFromName("BBounce", sfx_ids, &sfx_count, 0x400);
         }
     }
 
     level = world->current_level;
     {
         if (level == NEGOTIATIONSA_LDATA) {
-            ADD_SFX("NegA_CoinMDoorUp");
-            ADD_SFX("NegA_CoinMDoorDn");
+            AddLevelSfxFromName("NegA_CoinMDoorUp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("NegA_CoinMDoorDn", sfx_ids, &sfx_count, 0x400);
         } else if (level == NEGOTIATIONSB_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("NegC_Crate");
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("NegC_Crate", sfx_ids, &sfx_count, 0x400);
         } else if (level == NEGOTIATIONSC_LDATA) {
-            ADD_SFX("NegC_MagnetCoil");
-            ADD_SFX("NegC_MagnetCoilH");
-            ADD_SFX("NegC_MagnetCoilS");
-            ADD_SFX("FField");
-            ADD_SFX("NegC_Crate");
+            AddLevelSfxFromName("NegC_MagnetCoil", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("NegC_MagnetCoilH", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("NegC_MagnetCoilS", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("NegC_Crate", sfx_ids, &sfx_count, 0x400);
         } else if (level == GUNGAN_A_LDATA) {
-            ADD_SFX("GunA_TreeFall");
-            ADD_SFX("FS_CreaRun");
-            ADD_SFX("IkopiGrowl");
-            ADD_SFX("KaaduBark");
-            ADD_SFX("KaaduGrowl");
+            AddLevelSfxFromName("GunA_TreeFall", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FS_CreaRun", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("IkopiGrowl", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("KaaduBark", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("KaaduGrowl", sfx_ids, &sfx_count, 0x400);
         } else if (level == RESCUEC_LDATA) {
-            ADD_SFX("ResX_MarbColLp");
-            ADD_SFX("ResX_PoleLift_Rise");
-            ADD_SFX("ResX_PoleLift_Lower");
+            AddLevelSfxFromName("ResX_MarbColLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ResX_PoleLift_Rise", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ResX_PoleLift_Lower", sfx_ids, &sfx_count, 0x400);
         } else if (level == RETAKEB_LDATA) {
-            ADD_SFX("ResX_MarbColLp");
+            AddLevelSfxFromName("ResX_MarbColLp", sfx_ids, &sfx_count, 0x400);
         } else if (level == RETAKED_LDATA) {
-            ADD_SFX("ResX_PortCulLp");
-            ADD_SFX("ResX_PortCulEnd");
-            ADD_SFX("Ep1_5_OutdoorPlatform");
+            AddLevelSfxFromName("ResX_PortCulLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ResX_PortCulEnd", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Ep1_5_OutdoorPlatform", sfx_ids, &sfx_count, 0x400);
         } else if (level == RETAKEE_LDATA) {
-            ADD_SFX("Ep1_5_OutdoorPlatform");
-            ADD_SFX("ResX_PortCulLp");
-            ADD_SFX("ResX_PortCulEnd");
+            AddLevelSfxFromName("Ep1_5_OutdoorPlatform", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ResX_PortCulLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("ResX_PortCulEnd", sfx_ids, &sfx_count, 0x400);
         } else if (level == MAULA_LDATA) {
-            ADD_SFX("Ep1_7_BDroidPlatf");
-            ADD_SFX("Ep1_7_SFPowerUp");
-            ADD_SFX("Ep1_7_SFHoverLp");
-            ADD_SFX("Ep1_7_SFTakeOff");
+            AddLevelSfxFromName("Ep1_7_BDroidPlatf", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Ep1_7_SFPowerUp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Ep1_7_SFHoverLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Ep1_7_SFTakeOff", sfx_ids, &sfx_count, 0x400);
         } else if (level == MAULD_LDATA) {
-            ADD_SFX("Ep1_7_FloatPlatRise");
-            ADD_SFX("NegC_Crate");
+            AddLevelSfxFromName("Ep1_7_FloatPlatRise", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("NegC_Crate", sfx_ids, &sfx_count, 0x400);
         } else if (level == KAMINOE_LDATA) {
-            ADD_SFX("Kam_Slave1BlasterFire");
-            ADD_SFX("Slave1_EngineLp");
+            AddLevelSfxFromName("Kam_Slave1BlasterFire", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Slave1_EngineLp", sfx_ids, &sfx_count, 0x400);
         } else if (level == KAMINOC_LDATA) {
-            ADD_SFX("Kam_DiscoFloorPanelOn");
-            ADD_SFX("Kam_DiscoFloorPanelDone");
-            ADD_SFX("Kam_SparkLp");
-            ADD_SFX("Kam_SparkLp");
-            ADD_SFX("Kam_ForceFieldLp");
-            ADD_SFX("Kam_ForceFieldOff");
+            AddLevelSfxFromName("Kam_DiscoFloorPanelOn", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kam_DiscoFloorPanelDone", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kam_SparkLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kam_SparkLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kam_ForceFieldLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kam_ForceFieldOff", sfx_ids, &sfx_count, 0x400);
         } else if (level == FACTORYB_LDATA) {
-            ADD_SFX("FacB_BeltLp");
-            ADD_SFX("FacB_ConvStop");
-            ADD_SFX("Fac_StampHydros");
-            ADD_SFX("Fac_StampImpacts");
-            ADD_SFX("Fac_BonusCylUp");
-            ADD_SFX("Fac_BonusBeep");
+            AddLevelSfxFromName("FacB_BeltLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FacB_ConvStop", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_StampHydros", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_StampImpacts", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_BonusCylUp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_BonusBeep", sfx_ids, &sfx_count, 0x400);
         } else if (level == FACTORYD_LDATA) {
-            ADD_SFX("Fac_BucketGearUD");
-            ADD_SFX("Fac_BucketAwayFB");
-            ADD_SFX("Fac_BucketLp");
-            ADD_SFX("Fac_BucketArriveLock");
-            ADD_SFX("Fac_BucketOpens");
+            AddLevelSfxFromName("Fac_BucketGearUD", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_BucketAwayFB", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_BucketLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_BucketArriveLock", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Fac_BucketOpens", sfx_ids, &sfx_count, 0x400);
         } else if (level == FACTORYF_LDATA) {
-            ADD_SFX("Fac_LaserGateLoop");
+            AddLevelSfxFromName("Fac_LaserGateLoop", sfx_ids, &sfx_count, 0x400);
         } else if (level == FACTORYG_LDATA) {
-            ADD_SFX("Fac_ObiRestraintLoop");
+            AddLevelSfxFromName("Fac_ObiRestraintLoop", sfx_ids, &sfx_count, 0x400);
         } else if (level == GUNSHIPB_LDATA) {
-            ADD_SFX("CountdownTimerTick");
-            ADD_SFX("CountdownTimerTock");
+            AddLevelSfxFromName("CountdownTimerTick", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("CountdownTimerTock", sfx_ids, &sfx_count, 0x400);
         } else if (level == DOOKUC_LDATA) {
-            ADD_SFX("Dooku_LightningLp");
+            AddLevelSfxFromName("Dooku_LightningLp", sfx_ids, &sfx_count, 0x400);
         } else if (level == DOGFIGHTA_LDATA) {
-            ADD_SFX("Ep3_1_StarDestEngLp");
-            ADD_SFX("Ep3_1_ProtoXWingMissile");
-            ADD_SFX("Ep3_1_ExplosionM");
-            ADD_SFX("Ep3_1_ExplosionXXL");
-            ADD_SFX("Dog_TurretFire");
-            ADD_SFX("Dog_CloneARC170Gun");
-            ADD_SFX("Dog_JediStFighterGun");
-            ADD_SFX("Dog_JediStFighterGun2");
-            ADD_SFX("Dog_JediStFighterGun3");
-            ADD_SFX("Dog_JediStFighterEngLp");
-            ADD_SFX("Dog_CloneARC170EngLp");
-            ADD_SFX("Dog_DroidFighterBlast");
-            ADD_SFX("Dog_TriFighterGuns");
-            ADD_SFX("Dog_TriFighterGuns2");
-            ADD_SFX("Dog_DroidFighterEngLp");
-            ADD_SFX("Dog_TriFighterEngLp");
-            ADD_SFX("Dog_DroidFighterHit");
-            ADD_SFX("Dog_TriFighterHit");
-            ADD_SFX("Dog_HugeBeamGunFire");
-            ADD_SFX("Dog_HugeBeamGunLp");
-            ADD_SFX("Dog_SepShieldPwrDown");
-            ADD_SFX("Dog_ShipBreakExplo");
-            ADD_SFX("Dog_ShipDoorOpen");
-            ADD_SFX("Dog_StDestTurretSpins");
-            ADD_SFX("Dog_TowerBreakExplo");
+            AddLevelSfxFromName("Ep3_1_StarDestEngLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Ep3_1_ProtoXWingMissile", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Ep3_1_ExplosionM", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Ep3_1_ExplosionXXL", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_TurretFire", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_CloneARC170Gun", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_JediStFighterGun", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_JediStFighterGun2", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_JediStFighterGun3", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_JediStFighterEngLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_CloneARC170EngLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_DroidFighterBlast", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_TriFighterGuns", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_TriFighterGuns2", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_DroidFighterEngLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_TriFighterEngLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_DroidFighterHit", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_TriFighterHit", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_HugeBeamGunFire", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_HugeBeamGunLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_SepShieldPwrDown", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_ShipBreakExplo", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_ShipDoorOpen", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_StDestTurretSpins", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dog_TowerBreakExplo", sfx_ids, &sfx_count, 0x400);
         } else if (level == CRUISERD_LDATA) {
-            ADD_SFX("Cru_HugeWallMoveLp");
+            AddLevelSfxFromName("Cru_HugeWallMoveLp", sfx_ids, &sfx_count, 0x400);
         } else if (level == CRUISERG_LDATA) {
-            ADD_SFX("NegA_CoinMDoorUp");
-            ADD_SFX("NegA_CoinMDoorDn");
+            AddLevelSfxFromName("NegA_CoinMDoorUp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("NegA_CoinMDoorDn", sfx_ids, &sfx_count, 0x400);
         } else if (level == KASHYYYKD_LDATA) {
-            ADD_SFX("Kas_BoulderLoop");
-            ADD_SFX("Kas_BoulderExplo");
+            AddLevelSfxFromName("Kas_BoulderLoop", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kas_BoulderExplo", sfx_ids, &sfx_count, 0x400);
         } else if (level == VADERA_LDATA) {
-            ADD_SFX("CountdownTimerTick");
-            ADD_SFX("CountdownTimerTock");
+            AddLevelSfxFromName("CountdownTimerTick", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("CountdownTimerTock", sfx_ids, &sfx_count, 0x400);
         } else if (level == TATOOINEA_LDATA) {
-            ADD_SFX("env_shower_lp");
+            AddLevelSfxFromName("env_shower_lp", sfx_ids, &sfx_count, 0x400);
         } else if (level == TATOOINEB_LDATA) {
-            ADD_SFX("greenlighton");
-            ADD_SFX("env_suckerspit_3PO");
-            ADD_SFX("env_suckerspit_gonk");
-            ADD_SFX("conveyorlp");
+            AddLevelSfxFromName("greenlighton", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_suckerspit_3PO", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_suckerspit_gonk", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("conveyorlp", sfx_ids, &sfx_count, 0x400);
         } else if (level == MOSEISLEYA_LDATA) {
-            ADD_SFX("env_jacuzzi_lp");
+            AddLevelSfxFromName("env_jacuzzi_lp", sfx_ids, &sfx_count, 0x400);
         } else if (level == MOSEISLEYC_LDATA) {
-            ADD_SFX("Droid_BeamLp");
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
-            ADD_SFX("SwPPad");
+            AddLevelSfxFromName("Droid_BeamLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FFieldOff", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("SwPPad", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTARRESCUEB_LDATA) {
-            ADD_SFX("env_tractorbeam_off");
-            ADD_SFX("env_tractorbeam_lp");
+            AddLevelSfxFromName("env_tractorbeam_off", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_tractorbeam_lp", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTARRESCUEC_LDATA) {
-            ADD_SFX("ffield");
+            AddLevelSfxFromName("ffield", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTARRESCUEE_LDATA) {
-            ADD_SFX("Turret_PitchLp");
-            ADD_SFX("Turret_YawLp");
-            ADD_SFX("Turbo_Fire");
+            AddLevelSfxFromName("Turret_PitchLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Turret_YawLp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Turbo_Fire", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTARESCAPEA_LDATA || level == DEATHSTARESCAPED_LDATA) {
-            ADD_SFX("Dianoga_Groan");
-            ADD_SFX("Dianoga_Roar");
+            AddLevelSfxFromName("Dianoga_Groan", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Dianoga_Roar", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTARESCAPEB_LDATA) {
-            ADD_SFX("SqueakWash");
+            AddLevelSfxFromName("SqueakWash", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTARESCAPEC_LDATA || level == DEATHSTARBATTLEA_LDATA || level == DEATHSTARBATTLEB_LDATA ||
                    level == DEATHSTARBATTLEC_LDATA || level == DEATHSTARBATTLED_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FFieldOff", sfx_ids, &sfx_count, 0x400);
         } else if (level == HOTHESCAPEA_LDATA) {
-            ADD_SFX("ThermalDet_Beep");
-            ADD_SFX("env_padLight_on");
+            AddLevelSfxFromName("ThermalDet_Beep", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_padLight_on", sfx_ids, &sfx_count, 0x400);
         } else if (level == HOTHESCAPEC_LDATA) {
-            ADD_SFX("env_padLight_on");
+            AddLevelSfxFromName("env_padLight_on", sfx_ids, &sfx_count, 0x400);
         } else if (level == ASTEROIDCHASED_LDATA) {
-            ADD_SFX("exp_asteroid");
+            AddLevelSfxFromName("exp_asteroid", sfx_ids, &sfx_count, 0x400);
         } else if (level == CLOUDCITYTRAPA_LDATA) {
-            ADD_SFX("Env_Steam_Lp");
+            AddLevelSfxFromName("Env_Steam_Lp", sfx_ids, &sfx_count, 0x400);
         } else if (level == CLOUDCITYESCAPEA_LDATA) {
-            ADD_SFX("env_steam_lp");
-            ADD_SFX("Env_ctrl_desk_on");
+            AddLevelSfxFromName("env_steam_lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Env_ctrl_desk_on", sfx_ids, &sfx_count, 0x400);
         } else if (level == CLOUDCITYESCAPEC_LDATA) {
-            ADD_SFX("env_steam_lp");
+            AddLevelSfxFromName("env_steam_lp", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTAR2BATTLEB_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FFieldOff", sfx_ids, &sfx_count, 0x400);
         } else if (level == DEATHSTAR2BATTLED_LDATA) {
-            ADD_SFX("ForceLightningLp");
+            AddLevelSfxFromName("ForceLightningLp", sfx_ids, &sfx_count, 0x400);
         } else if (level == JABBASPALACEA_LDATA || level == JABBASPALACEB_LDATA || level == JABBASPALACED_LDATA) {
-            ADD_SFX("SwDisco");
+            AddLevelSfxFromName("SwDisco", sfx_ids, &sfx_count, 0x400);
         } else if (level == JABBASPALACEE_LDATA) {
-            ADD_SFX("exp_minecart");
+            AddLevelSfxFromName("exp_minecart", sfx_ids, &sfx_count, 0x400);
         } else if (level == SARLACCPITB_LDATA) {
-            ADD_SFX("env_curtain_lp");
-            ADD_SFX("Kam_DiscoFloorPanelOn");
-            ADD_SFX("Kam_DiscoFloorPanelDone");
+            AddLevelSfxFromName("env_curtain_lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kam_DiscoFloorPanelOn", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Kam_DiscoFloorPanelDone", sfx_ids, &sfx_count, 0x400);
         } else if (level == SARLACCPITC_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
-            ADD_SFX("imp_c3po_magnet_drop");
-            ADD_SFX("env_magnet_on");
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FFieldOff", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("imp_c3po_magnet_drop", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_magnet_on", sfx_ids, &sfx_count, 0x400);
         } else if (level == SPEEDERCHASEA_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FFieldOff", sfx_ids, &sfx_count, 0x400);
         } else if (level == ENDORBATTLEA_LDATA) {
-            ADD_SFX("env_lantern_lp");
+            AddLevelSfxFromName("env_lantern_lp", sfx_ids, &sfx_count, 0x400);
         } else if (level == ENDORBATTLEB_LDATA) {
-            ADD_SFX("waterfall");
-            ADD_SFX("drd_r2_mvt_water_lp");
-            ADD_SFX("env_lantern_lp");
+            AddLevelSfxFromName("waterfall", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("drd_r2_mvt_water_lp", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_lantern_lp", sfx_ids, &sfx_count, 0x400);
         } else if (level == ENDORBATTLED_LDATA) {
-            ADD_SFX("FField");
-            ADD_SFX("FFieldOff");
+            AddLevelSfxFromName("FField", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FFieldOff", sfx_ids, &sfx_count, 0x400);
         } else if (level == EMPERORFIGHTA_LDATA) {
-            ADD_SFX("env_block_light_on");
-            ADD_SFX("env_padlight_on");
+            AddLevelSfxFromName("env_block_light_on", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_padlight_on", sfx_ids, &sfx_count, 0x400);
         }
     }
 
     if (VehicleArea != 0) {
-        ADD_SFX("TieDoorsOpen");
+        AddLevelSfxFromName("TieDoorsOpen", sfx_ids, &sfx_count, 0x400);
     }
     if (Mission_Active(NULL) != NULL) {
-        ADD_SFX("Victory");
+        AddLevelSfxFromName("Victory", sfx_ids, &sfx_count, 0x400);
     }
     if (Arcade != 0) {
-        ADD_SFX("env_padLight_on");
+        AddLevelSfxFromName("env_padLight_on", sfx_ids, &sfx_count, 0x400);
     }
     if (world->area == HOTHESCAPE_ADATA || world->area == JABBASPALACE_ADATA) {
-        ADD_SFX("fs_ice");
+        AddLevelSfxFromName("fs_ice", sfx_ids, &sfx_count, 0x400);
     } else if (world->area == DAGOBAH_ADATA) {
-        ADD_SFX("fs_swamp");
+        AddLevelSfxFromName("fs_swamp", sfx_ids, &sfx_count, 0x400);
     }
 
     level = world->current_level;
@@ -522,50 +493,50 @@ void SetLevelSfxBits(WORLDINFO *world) {
         }
 
         if ((character->model_flags & CHARACTER_MODEL_ASTROMECH) != 0) {
-            ADD_SFX("drd_r2_scope_up");
-            ADD_SFX("drd_r2_scope_down");
-            ADD_SFX("drd_r2_mvt_water_lp");
+            AddLevelSfxFromName("drd_r2_scope_up", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("drd_r2_scope_down", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("drd_r2_mvt_water_lp", sfx_ids, &sfx_count, 0x400);
         }
         if ((game_character->flags_090 & CHARACTER_RUNTIME_CAN_DRAG_BOMBS) != 0) {
-            ADD_SFX("TowCable_Fire");
-            ADD_SFX("TowCable_Latch");
-            ADD_SFX("TowCable_Detach");
-            ADD_SFX("TowCable_Snap");
+            AddLevelSfxFromName("TowCable_Fire", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("TowCable_Latch", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("TowCable_Detach", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("TowCable_Snap", sfx_ids, &sfx_count, 0x400);
         }
         if ((character->model_flags & CHARACTER_MODEL_VEHICLE) != 0) {
-            ADD_SFX("XWing_Torpedo");
-            ADD_SFX("env_tractorbeam_lp");
+            AddLevelSfxFromName("XWing_Torpedo", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("env_tractorbeam_lp", sfx_ids, &sfx_count, 0x400);
             if ((character->model_flags & CHARACTER_MODEL_MINIKIT) == 0) {
-                ADD_SFX("Explode1");
+                AddLevelSfxFromName("Explode1", sfx_ids, &sfx_count, 0x400);
             }
         }
         if (character_id == id_CHEWBACCA) {
-            ADD_SFX("C3_Hurt");
-            ADD_SFX("C3_Death");
+            AddLevelSfxFromName("C3_Hurt", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("C3_Death", sfx_ids, &sfx_count, 0x400);
         }
         if (character->move_fn == Move_BEAST) {
-            ADD_SFX("Lego_Poo");
-            ADD_SFX("Lego_PLOP");
-            ADD_SFX("FliesLp");
+            AddLevelSfxFromName("Lego_Poo", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Lego_PLOP", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("FliesLp", sfx_ids, &sfx_count, 0x400);
         }
         if (game_character->variant == CHARVARIANT_TIE) {
-            ADD_SFX("veh_tie_by");
-            ADD_SFX("Tie_Spins");
+            AddLevelSfxFromName("veh_tie_by", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("Tie_Spins", sfx_ids, &sfx_count, 0x400);
         }
         if (character_id == dat_007f1924 || character_id == dat_007f1928) {
-            ADD_SFX("wpn_bomb_drop");
-            ADD_SFX("exp_bomb");
+            AddLevelSfxFromName("wpn_bomb_drop", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("exp_bomb", sfx_ids, &sfx_count, 0x400);
         }
         if ((game_character->flags_090 & CHARACTER_RUNTIME_LIGHTNING) != 0) {
-            ADD_SFX("ForceLightningLp");
+            AddLevelSfxFromName("ForceLightningLp", sfx_ids, &sfx_count, 0x400);
         } else if ((game_character->flags_090 & CHARACTER_RUNTIME_CHOKE) != 0) {
-            ADD_SFX("ForceChokeCrunch");
+            AddLevelSfxFromName("ForceChokeCrunch", sfx_ids, &sfx_count, 0x400);
         } else if ((character->model_flags & CHARACTER_MODEL_JEDI) != 0) {
-            ADD_SFX("ForceMindTrick");
+            AddLevelSfxFromName("ForceMindTrick", sfx_ids, &sfx_count, 0x400);
         }
         if (game_character->variant == CHARVARIANT_LUKE && (character->model_flags & CHARACTER_MODEL_JEDI) != 0 &&
             id_GAMORREANGUARD != -1 && apicharsys->playermodelids[id_GAMORREANGUARD] != -1) {
-            ADD_SFX("ForceChokeCrunch");
+            AddLevelSfxFromName("ForceChokeCrunch", sfx_ids, &sfx_count, 0x400);
         }
         if ((game_character->flags_094 & CHARACTER_OPTION_HAS_WHIP) != 0) {
             GameAudio_AddSfx(0x4c, sfx_ids, &sfx_count, 0x400);
@@ -583,11 +554,11 @@ void SetLevelSfxBits(WORLDINFO *world) {
             }
         }
         if ((character->model_flags & CHARACTER_MODEL_PROTOCOL) != 0) {
-            ADD_SFX("TC14_VLA");
-            ADD_SFX("TC14_VLN");
+            AddLevelSfxFromName("TC14_VLA", sfx_ids, &sfx_count, 0x400);
+            AddLevelSfxFromName("TC14_VLN", sfx_ids, &sfx_count, 0x400);
         }
         if ((character->model_flags & CHARACTER_MODEL_ASTROMECH) != 0) {
-            ADD_SFX("R2D2_VLA");
+            AddLevelSfxFromName("R2D2_VLA", sfx_ids, &sfx_count, 0x400);
         }
     }
 
@@ -602,8 +573,8 @@ void SetLevelSfxBits(WORLDINFO *world) {
         }
     }
     if (double_score_sfx) {
-        ADD_SFX("ui_DoubleScoreEntry");
-        ADD_SFX("ui_DoubleScoreText");
+        AddLevelSfxFromName("ui_DoubleScoreEntry", sfx_ids, &sfx_count, 0x400);
+        AddLevelSfxFromName("ui_DoubleScoreText", sfx_ids, &sfx_count, 0x400);
     }
 
     AddLevelSfxGizmoSys(world->gizmo_sys, world, sfx_ids, &sfx_count, 0x400);
@@ -613,8 +584,6 @@ void SetLevelSfxBits(WORLDINFO *world) {
         SetSoundBitsById(sfx_ids, SetSfxBit_On);
     }
     SfxBitsStore(&CurrentSFXTAB);
-
-#undef ADD_SFX
 }
 
 void Shadow_SetMode(void) {

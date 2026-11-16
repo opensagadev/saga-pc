@@ -50,15 +50,15 @@ NUCAMERA *NuCameraCreate(void) {
     camera->portal_nearclip = 0.0f;
     camera->far_clip = 10000.0f;
     camera->aspect = 0.75f;
-    camera->unknown_58 = 1.0f;
-    camera->unknown_5c = 1.0f;
+    camera->projection_scale_x = 1.0f;
+    camera->projection_scale_y = 1.0f;
     camera->scale.z = 1.0f;
     camera->scale.y = 1.0f;
     camera->scale.x = 1.0f;
-    camera->unknown_50 = 0.0f;
-    camera->unknown_54 = 0.0f;
-    camera->unknown_64 = 0.0f;
-    camera->unknown_60 = 0.0f;
+    camera->projection_offset_x = 0.0f;
+    camera->projection_offset_y = 0.0f;
+    camera->far_clip_override = 0.0f;
+    camera->near_clip_override = 0.0f;
     return camera;
 }
 
@@ -236,15 +236,15 @@ void NuCameraSetVPortClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fast
         f32 cotangent;
         f32 horizontal;
         i32 angle;
-        if (camera->unknown_64 == 0.0f) {
+        if (camera->far_clip_override == 0.0f) {
             far_clip = camera->far_clip - NuCameraProjectionFarClipBias;
         } else {
-            far_clip = camera->unknown_64 - NuCameraProjectionFarClipBias;
+            far_clip = camera->far_clip_override - NuCameraProjectionFarClipBias;
         }
-        if (camera->unknown_60 == 0.0f) {
+        if (camera->near_clip_override == 0.0f) {
             near_clip = camera->near_clip;
         } else {
-            near_clip = camera->unknown_60;
+            near_clip = camera->near_clip_override;
         }
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
@@ -269,15 +269,15 @@ void NuCameraSetScissorClipMtx(NUMTX *out, NUMTX *view, NUCAMERA *camera, i32 fa
         f32 cotangent;
         f32 horizontal;
         i32 angle;
-        if (camera->unknown_64 == 0.0f) {
+        if (camera->far_clip_override == 0.0f) {
             far_clip = camera->far_clip - NuCameraProjectionFarClipBias;
         } else {
-            far_clip = camera->unknown_64 - NuCameraProjectionFarClipBias;
+            far_clip = camera->far_clip_override - NuCameraProjectionFarClipBias;
         }
-        if (camera->unknown_60 == 0.0f) {
+        if (camera->near_clip_override == 0.0f) {
             near_clip = camera->near_clip;
         } else {
-            near_clip = camera->unknown_60;
+            near_clip = camera->near_clip_override;
         }
         half_fov = (f32)((f64)camera->fov * 0.5);
         angle = (i32)((f64)half_fov * AIPathAngularScale);
@@ -355,10 +355,10 @@ void NuCameraSetEx(NUCAMERA *camera, i32 fast) {
     if (fast == 0) {
         if (NuCameraOrthographic == 0) {
             NuCameraSetProjectionMtx(&pmtx, global_camera.fov, global_camera.aspect, global_camera.near_clip, global_camera.far_clip);
-            pmtx.m00 *= global_camera.unknown_58;
-            pmtx.m11 *= global_camera.unknown_5c;
-            pmtx.m20 += global_camera.unknown_50;
-            pmtx.m21 += global_camera.unknown_54;
+            pmtx.m00 *= global_camera.projection_scale_x;
+            pmtx.m11 *= global_camera.projection_scale_y;
+            pmtx.m20 += global_camera.projection_offset_x;
+            pmtx.m21 += global_camera.projection_offset_y;
         } else {
             NuCameraSetOrthoMtx(&pmtx, global_camera.aspect);
         }

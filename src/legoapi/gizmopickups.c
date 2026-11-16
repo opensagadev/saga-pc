@@ -12,6 +12,7 @@
 #include "legoapi/core/save_values.h"
 #include "legoapi/core/startup/text.h"
 #include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmo/object/gizbuildit.h"
 #include "legoapi/gizmo/object/gizmopickup.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/gizmos/object/newblowup.h"
@@ -53,60 +54,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct SPECIAL_MINIKIT {    // size 0x3c
-    nuhspecial_s special;           // 0x00
-    NUINSTANIM *instance_animation; // 0x0c
-    void *animation_data;           // 0x10
-    f32 end_frame;                  // 0x14
-    char special_name[16];          // 0x18
-    char pickup_name[8];            // 0x28
-    GIZMO *at_gizmo;                // 0x30
-    GIZMO *pickup;                  // 0x34
-    u32 flags;                      // 0x38
-} SPECIAL_MINIKIT;
-
-typedef struct SPECIAL_MINIKIT_SYSTEM { // size 0x8
-    SPECIAL_MINIKIT *items;             // 0x0
-    i32 count;                          // 0x4
-} SPECIAL_MINIKIT_SYSTEM;
-
-typedef struct SPECIAL_MINIKIT_WORLD {        // size 0x5058
-    u8 unknown_0[0x5054];                     // 0x0000
-    SPECIAL_MINIKIT_SYSTEM *special_minikits; // 0x5054
-} SPECIAL_MINIKIT_WORLD;
-
-typedef struct PICKUP_RESET_RECORD { // size 0x2c
-    char name[8];                    // 0x00
-    NUVEC position;                  // 0x08
-    u8 type_code;                    // 0x14
-    u8 config_flags;                 // 0x15
-    u8 model_variant;                // 0x16
-
-    union { // size 0x1
-        u8 flags;
-
-        struct {                   // size 0x1
-            u8 active : 1;         // 0x17:0
-            u8 enabled : 1;        // 0x17:1
-            u8 visible : 1;        // 0x17:2
-            u8 collected : 1;      // 0x17:3
-            u8 drawn : 1;          // 0x17:4
-            u8 draw_visible : 1;   // 0x17:5
-            u8 alternate_type : 1; // 0x17:6
-            u8 activated : 1;      // 0x17:7
-        };
-    }; // 0x17
-
-    u8 unknown_18[4]; // 0x18
-    f32 floor;        // 0x1c
-    u16 shadow_x;     // 0x20
-    u16 shadow_z;     // 0x22
-    i8 room;          // 0x24
-    u8 type_index;    // 0x25
-    u16 rotation;     // 0x26
-    f32 timer;        // 0x28
-} PICKUP_RESET_RECORD;
-
 typedef struct PICKUP_RESET_PROGRESS { // size 0x100
     u32 collected[16];                 // 0x00
     u32 enabled[16];                   // 0x40
@@ -117,33 +64,6 @@ typedef struct PICKUP_RESET_PROGRESS { // size 0x100
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern i32 turret_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
-
-typedef struct pickup_counter_turret_s { // size 0x13c
-    u8 unknown_000[0x13a];               // 0x000
-    u16 flags;                           // 0x13a
-} PICKUP_COUNTER_TURRET;
-
-typedef struct pickup_counter_blowup_s { // size 0x95
-    u8 unknown_00[0x94];                 // 0x00
-    u8 output_flags;                     // 0x94
-} PICKUP_COUNTER_BLOWUP;
-
-typedef struct pickup_counter_buildit_s { // size 0x6e
-    u8 unknown_00[0x6d];                  // 0x00
-    u8 build_state;                       // 0x6d
-} PICKUP_COUNTER_BUILDIT;
-
-typedef struct PICKUP_VISIBILITY_VIEW { // size 0x2c
-    u8 unknown_00[0x17];                // 0x00
-
-    struct {              // size 0x1
-        u8 unknown_0 : 2; // 0x17:0
-        u8 visible : 1;   // 0x17:2
-        u8 unknown_3 : 5; // 0x17:3
-    } flags;              // 0x17
-
-    u8 unknown_18[0x14]; // 0x18
-} PICKUP_VISIBILITY_VIEW;
 
 static NUMTX *PickupSetRotationX(NUMTX *matrix, i32 angle) {
     f32 cosine = NuTrigTable[((angle + 0x4000) >> 1) & 0x7fff];
@@ -279,7 +199,7 @@ static void GizmoPickups_DrawList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 cou
         } else {
             type = &GizmoPickupSys->types[pickup->type_index];
         }
-        if (type->unknown_0f != 0) {
+        if (type->disabled != 0) {
             continue;
         }
         dx = pickup->position.x - GameCam->position.x;
@@ -547,14 +467,14 @@ void *GizmoPickups_ReserveBufferSpace(void *world_ptr) {
 }
 
 void GizmoPickup_SetVisibility(GIZMO *gizmo, i32 visible) {
-    PICKUP_VISIBILITY_VIEW *pickup;
+    GIZMOPICKUP *pickup;
     if (gizmo != NULL) {
         pickup = gizmo->object;
-        pickup->flags.visible = visible != 0;
+        pickup->state_visible = visible != 0;
     }
 }
 
-static void GizmoPickups_Reset(WORLDINFO *world, PICKUP_RESET_RECORD *pickup) {
+static void GizmoPickups_Reset(WORLDINFO *world, GIZMOPICKUP *pickup) {
     f32 floor;
     pickup->type_index = (u8)FindPickupTypeIndex(pickup->type_code);
     NewTerrPlatformsOff();
@@ -584,7 +504,7 @@ void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
     WORLDINFO *world = world_ptr;
     PICKUP_RESET_PROGRESS *progress = progress_ptr;
     struct GIZMOPICKUPRUNTIMESYS_s *system;
-    PICKUP_RESET_RECORD *pickup;
+    GIZMOPICKUP *pickup;
     i32 index;
     for (index = 0; index < GizmoPickupSys->type_count; ++index) {
         GizmoPickupSys->types[index].shadow_extent_x =
@@ -596,24 +516,24 @@ void GizmoPickups_ResetAll(void *world_ptr, void *unused, void *progress_ptr) {
         return;
     }
     system = world->pickup_runtime_sys;
-    pickup = (PICKUP_RESET_RECORD *)system->pickups;
+    pickup = system->pickups;
     if (pickup != NULL) {
         for (index = 0; index < world->pickup_runtime_sys->pickup_count; ++index, ++pickup) {
             GizmoPickups_Reset(world, pickup);
             if (progress != NULL && index < 512) {
                 i32 word = index / 32;
                 u32 bit = 1u << (index & 31);
-                pickup->visible = (progress->visible[word] & bit) != 0;
-                pickup->enabled = (progress->enabled[word] & bit) != 0;
-                pickup->collected = (progress->collected[word] & bit) != 0;
-                pickup->activated = (progress->activated[word] & bit) != 0;
-                if ((pickup->config_flags & 1) != 0 && !pickup->activated) {
-                    pickup->enabled = 0;
-                    pickup->visible = 0;
+                pickup->state_visible = (progress->visible[word] & bit) != 0;
+                pickup->state_enabled = (progress->enabled[word] & bit) != 0;
+                pickup->state_collected = (progress->collected[word] & bit) != 0;
+                pickup->state_activated = (progress->activated[word] & bit) != 0;
+                if ((pickup->config_flags & 1) != 0 && !pickup->state_activated) {
+                    pickup->state_enabled = 0;
+                    pickup->state_visible = 0;
                 }
             } else if ((pickup->config_flags & 1) != 0) {
-                pickup->enabled = 0;
-                pickup->visible = 0;
+                pickup->state_enabled = 0;
+                pickup->state_visible = 0;
             }
             if (GizmoPickupSys->gizmo_type_id != -1 && pickup->type_index == GizmoPickupSys->gizmo_type_id && Game_LevelSave != NULL) {
                 if (SuperStory != 0) {
@@ -713,7 +633,7 @@ i32 GizmoPickup_NumberOfType(WORLDINFO *world, i32 type, u8 filter) {
     if (i > 0) {
         do {
             if (filter != 0) {
-                if (pickup->filter_byte == filter) {
+                if (pickup->type_code == filter) {
                     ++count;
                 }
             } else if (pickup->type_index == type) {
@@ -766,7 +686,7 @@ GIZMOPICKUP *GizmoPickup_InBox(WORLDINFO *world, i32 type_index, NUVEC *minimum,
         return NULL;
     }
     type = &GizmoPickupSys->types[type_index];
-    if (type->unknown_0f != 0) {
+    if (type->disabled != 0) {
         return NULL;
     }
     radius = type->shadow_extent_x * AreaPickupScale;
@@ -846,7 +766,7 @@ static GIZMOPICKUP *GizmoPickups_CollideList(GAMEOBJECT *object, GIZMOPICKUP *pi
         if ((pickup->flags & GIZMOPICKUP_STATE_ALTERNATE_TYPE) != 0 && GizmoPickupSys->alternate_type != -1) {
             type = &GizmoPickupSys->types[GizmoPickupSys->alternate_type];
         }
-        if (type->unknown_0f != 0) {
+        if (type->disabled != 0) {
             continue;
         }
         if ((pickup->unknown_14[1] & 4) != 0) {
@@ -914,7 +834,7 @@ GIZMOPICKUP *GizmoPickups_Collide(WORLDINFO *world, GAMEOBJECT *object, i32 unus
             GizmoPickupSys->types[type_index].collect_fn(world, pickup, type_index, object, 0);
         }
         if ((GizmoPickupSys->types[type_index].flags & 0x40) != 0) {
-            ++AreaGlobals.unknown_18;
+            ++AreaGlobals.special_pickups_collected;
         }
         return pickup;
     }
@@ -999,7 +919,7 @@ void MiniKitDetector(NUVEC *position) {
     message.position = position;
     message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_ONE_FRAME | GAMEMSG_BEHIND_CAMERA;
     message.scale = 0.6f;
-    message.unknown_4f = 4;
+    message.slot_flags = 4;
     message.unknown_44 = ((void *)(GameMsg_Draw_MiniKitDetector));
     AddGameMsg(&message);
 }
@@ -1079,13 +999,12 @@ void PartUpdate_Heart(PART *part) {
 }
 
 void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
-    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
-    SPECIAL_MINIKIT *items;
-    SPECIAL_MINIKIT *cursor;
-    SPECIAL_MINIKIT_SYSTEM *system;
+    SPECIALMINIKIT_s *items;
+    SPECIALMINIKIT_s *cursor;
+    SPECIALMINIKITSYS_s *system;
     i32 count;
     NUFPAR *parser;
-    view->special_minikits = NULL;
+    world->special_minikits = NULL;
     if (world->current_gscn == NULL) {
         return;
     }
@@ -1094,7 +1013,7 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    items = (SPECIAL_MINIKIT *)world->giz_buffer.addr;
+    items = (SPECIALMINIKIT_s *)world->giz_buffer.addr;
     cursor = items;
     count = 0;
     while (NuFParGetLine(parser) != 0 && NuFParGetWord(parser) != 0) {
@@ -1150,21 +1069,20 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (u32)cursor;
-    view->special_minikits = system = (SPECIAL_MINIKIT_SYSTEM *)world->giz_buffer.addr;
+    world->special_minikits = system = (SPECIALMINIKITSYS_s *)world->giz_buffer.addr;
     system->items = items;
     system->count = count;
     world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(*system) + 3U) & ~3U;
 }
 
 void SpecialMiniKits_Reset(WORLDINFO *world) {
-    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
-    SPECIAL_MINIKIT *item;
+    SPECIALMINIKIT_s *item;
     i32 index;
-    if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1) {
+    if (world->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1) {
         return;
     }
-    item = view->special_minikits->items;
-    for (index = 0; index < view->special_minikits->count; ++index, ++item) {
+    item = world->special_minikits->items;
+    for (index = 0; index < world->special_minikits->count; ++index, ++item) {
         item->pickup = GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, item->pickup_name);
         if ((item->flags & SPECIAL_MINIKIT_AT_GIZMO) != 0) {
             item->at_gizmo = GizmoFindByName(world->gizmo_sys, -1, item->special_name);
@@ -1173,8 +1091,7 @@ void SpecialMiniKits_Reset(WORLDINFO *world) {
 }
 
 void SpecialMiniKits_Draw(WORLDINFO *world) {
-    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
-    SPECIAL_MINIKIT *item;
+    SPECIALMINIKIT_s *item;
     GIZMOPICKUP *pickup;
     GIZMO_PICKUP_TYPE *type;
     NUINSTANIM *animation;
@@ -1187,14 +1104,14 @@ void SpecialMiniKits_Draw(WORLDINFO *world) {
     scale.x = AreaPickupScale;
     scale.y = AreaPickupScale;
     scale.z = AreaPickupScale;
-    if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1 ||
-        GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].unknown_0f != 0) {
+    if (world->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1 ||
+        GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].disabled != 0) {
         return;
     }
     spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     tilt = (u16)(i32)((f64)NuTrigTable[((spin * 2) >> 1) & 0x7fff] * 1820.0);
-    item = view->special_minikits->items;
-    for (index = 0; index < view->special_minikits->count; ++index, ++item) {
+    item = world->special_minikits->items;
+    for (index = 0; index < world->special_minikits->count; ++index, ++item) {
         if ((item->flags & SPECIAL_MINIKIT_AT_GIZMO) != 0) {
             if (item->at_gizmo == NULL) {
                 continue;
@@ -1292,7 +1209,7 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
         } else {
             type = &GizmoPickupSys->types[pickup->type_index];
         }
-        if (!(pickup->flags & GIZMOPICKUP_STATE_COLLECTED) && type->unknown_0f == 0) {
+        if (!(pickup->flags & GIZMOPICKUP_STATE_COLLECTED) && type->disabled == 0) {
             effect_flags = type->flags;
             if (effect_flags & 0x2c) {
                 eligible = 1;
@@ -1303,15 +1220,15 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
                         counter_pickup->position_gizmo != NULL) {
                         gizmo = counter_pickup->position_gizmo;
                         if (gizmo->type_id == turret_gizmotype_id) {
-                            if (((PICKUP_COUNTER_TURRET *)gizmo->object)->flags & 0x20) {
+                            if (gizmo->turret->flags & 0x20) {
                                 complete = 1;
                             }
                         } else if (gizmo->type_id == blowup_gizmotype_id) {
-                            if (((PICKUP_COUNTER_BLOWUP *)gizmo->object)->output_flags & 1) {
+                            if (gizmo->blowup->blown_up) {
                                 complete = 1;
                             }
                         } else if (gizmo->type_id == gizbuildit_gizmotype_id) {
-                            if (((PICKUP_COUNTER_BUILDIT *)gizmo->object)->build_state == 2) {
+                            if (gizmo->buildit->build_state == 2) {
                                 complete = 1;
                             }
                         }
@@ -1355,7 +1272,7 @@ static void GizmoPickups_UpdateList(WORLDINFO *world, GIZMOPICKUP *pickup, i32 c
                 }
             }
         }
-        if (type->unknown_0f == 0 && !(pickup->flags & GIZMOPICKUP_STATE_COLLECTED) && (pickup->flags & GIZMOPICKUP_STATE_ENABLED) &&
+        if (type->disabled == 0 && !(pickup->flags & GIZMOPICKUP_STATE_COLLECTED) && (pickup->flags & GIZMOPICKUP_STATE_ENABLED) &&
             (pickup->flags & GIZMOPICKUP_STATE_VISIBLE) && type->update_fn != NULL) {
             type->update_fn(world, pickup);
         }

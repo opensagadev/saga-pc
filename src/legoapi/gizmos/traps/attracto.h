@@ -45,6 +45,10 @@ extern "C" {
 extern "C" {
 #endif
     extern NUVEC AttractoBackPackCountPos;
+    ADDGIZMOTYPE *Attractos_RegisterGizmo(i32);
+    void Attracto_GetSuctionPos(GAMEOBJECT *object, NUVEC *position);
+    void Attracto_MoveCode(WORLDINFO *, GAMEOBJECT *);
+    void Attractos_InitTerrain(WORLDINFO *);
 #ifdef __cplusplus
 }
 #endif

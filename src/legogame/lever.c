@@ -36,11 +36,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct lever_trigger_flags_s { // size 0x95
-    u8 unknown_000[0x94];              // 0x00
-    u8 flags;                          // 0x94
-} LEVER_TRIGGER_FLAGS;
-
 /* The SDK's inline NuFabs (nufloat.h): a masked copy of the float bits. */
 static f32 LeverFabs(f32 f) {
     f32 rv;
@@ -49,45 +44,14 @@ static f32 LeverFabs(f32 f) {
     return rv;
 }
 
-i32 Lever_BeingPulled(void *lever) {
-    return (((LEVER_TRIGGER_FLAGS *)lever)->flags >> 1) & 1;
+i32 Lever_BeingPulled(GIZMO_LEVER *lever) {
+    return (lever->flags >> 1) & 1;
 }
-
-/* GIZMO_LEVER.flags as the u16 bitfields that are read and stored (belongs in the header). */
-typedef struct lever_flag_bits_s { // size 0x2
-    u16 interacting : 1;           // 0x0:0
-    u16 being_pulled : 1;          // 0x0:1
-    u16 goodie : 1;                // 0x0:2
-    u16 baddie : 1;                // 0x0:3
-    u16 visible : 1;               // 0x0:4
-    u16 auto_reset : 1;            // 0x0:5
-    u16 returning : 1;             // 0x0:6
-    u16 enabled : 1;               // 0x0:7
-    u16 hide_base : 1;             // 0x0:8
-    u16 hide_target_indicator : 1; // 0x0:9
-    u16 unused_10 : 1;             // 0x0:10
-    u16 interaction_finished : 1;  // 0x0:11
-    u16 pulled_down : 1;           // 0x0:12
-    u16 unused_13 : 3;             // 0x0:13
-} LEVER_FLAG_BITS;
-
-#define LEVER_BITS(lever) ((LEVER_FLAG_BITS *)&(lever)->flags)
-
-typedef struct LEVER_WORLD { // size 0x5070
-    u8 unknown_000[0x5068];  // 0x0000
-    GIZMO_LEVER *levers;     // 0x5068
-    i32 lever_count;         // 0x506c
-} LEVER_WORLD;
-
-typedef struct LEVER_NET_WAIT { // size 0x7a4
-    u8 unknown_000[0x7a0];      // 0x000
-    void *net_wait_info;        // 0x7a0
-} LEVER_NET_WAIT;
 
 void ReleaseLever(GAMEOBJECT *object) {
     if (object->player.character_context == CHARACTER_CONTEXT_PULL_LEVER) {
-        if (object->player.grapple != NULL && !LEVER_BITS(object->player.lever)->being_pulled) {
-            LEVER_BITS(object->player.lever)->interacting = 0;
+        if (object->player.grapple != NULL && !object->player.lever->being_pulled) {
+            object->player.lever->interacting = 0;
         }
     }
 }
@@ -103,21 +67,21 @@ void Lever_GetAbsTargetPos(GIZMO_LEVER *lever, NUVEC *position) {
 }
 
 void Levers_InitTerrain(WORLDINFO *world) {
-    if (((LEVER_WORLD *)world)->levers != NULL) {
+    if (world->levers != NULL) {
         i32 i;
-        for (i = 0; i < ((LEVER_WORLD *)world)->lever_count; ++i) {
-            ((LEVER_WORLD *)world)->levers[i].platform_id = NewPlatPickupInst(&((LEVER_WORLD *)world)->levers[i], 3);
-            PlatInstRotate(((LEVER_WORLD *)world)->levers[i].platform_id, 1);
+        for (i = 0; i < world->nlevers; ++i) {
+            world->levers[i].platform_id = NewPlatPickupInst(&world->levers[i], 3);
+            PlatInstRotate(world->levers[i].platform_id, 1);
         }
     }
 }
 
 GIZMO_LEVER *Lever_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     GIZMO_LEVER *nearest = NULL;
-    GIZMO_LEVER *lever = ((LEVER_WORLD *)world)->levers;
+    GIZMO_LEVER *lever = world->levers;
     f32 nearest_distance = 1.0e9f;
     i32 index;
-    for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index, ++lever) {
+    for (index = 0; index < world->nlevers; ++index, ++lever) {
         f32 candidate_distance;
         if (object != NULL) {
             NUVEC target;
@@ -164,12 +128,12 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             if ((object->player.context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) != 0) {
                 return;
             }
-            if (object->character_model->model_data_b[object->player.unknown_7aa] != NULL) {
-                f32 *playing = AnimPlaying(&object->anim_packet, object->player.unknown_7aa, 1, 0);
+            if (object->character_model->model_data_b[object->player.context_animation] != NULL) {
+                f32 *playing = AnimPlaying(&object->anim_packet, object->player.context_animation, 1, 0);
                 if (playing == NULL) {
                     return;
                 }
-                if (!(*playing >= AnimListFrame(object->character_model, object->player.unknown_7aa, 0))) {
+                if (!(*playing >= AnimListFrame(object->character_model, object->player.context_animation, 0))) {
                     return;
                 }
             } else if (!(object->player.context_timer >= 0.25f)) {
@@ -185,7 +149,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->player.context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
         return;
     }
-    if (object->character_model->model_data_b[0x5d] == NULL || object->unknown_281 == 0) {
+    if (object->character_model->model_data_b[0x5d] == NULL || object->ground_flags == 0) {
         return;
     }
     if (ObjLandReady(object) == 0 && objInNetWaitContext(object, 0x4a) == 0) {
@@ -196,7 +160,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->player.context_timer -= FRAMETIME;
         if (object->player.context_timer <= 0.0f) {
             object->player.character_context = CHARACTER_CONTEXT_NONE;
-            ((LEVER_NET_WAIT *)object)->net_wait_info = NULL;
+            object->player.net_wait_info = NULL;
         }
     }
     if (lever != NULL) {
@@ -212,7 +176,7 @@ void Lever_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
         object->player.context_hover_target_y = 0.0f;
         object->player.character_context = CHARACTER_CONTEXT_PULL_LEVER;
         object->player.grapple = lever;
-        object->player.unknown_7aa = ACTION_PULLLEVER;
+        object->player.context_animation = ACTION_PULLLEVER;
         object->player.context_duration = AnimDuration((i16)object->id, 0x5d, 0.0f, 0.0f, 1);
         if (object->player.context_duration <= 0.0f) {
             object->player.context_duration = 1.0f;
@@ -301,7 +265,6 @@ static char *Lever_GetGizmoName(GIZMO *gizmo) {
 
 static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     GIZMO_LEVER *lever;
-    (void)mode;
     lever = gizmo->object;
     if ((lever->flags & LEVER_FLAG_ENABLED) != 0) {
         switch (output) {
@@ -326,7 +289,6 @@ static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
 }
 
 static char *Lever_GetOutputName(GIZMO *gizmo, i32 output) {
-    (void)gizmo;
     switch (output) {
         case LEVER_OUTPUT_DOWN:
             return LeverOutputDownNamePtr;
@@ -339,7 +301,6 @@ static char *Lever_GetOutputName(GIZMO *gizmo, i32 output) {
 }
 
 static i32 Lever_GetNumOutputs(GIZMO *gizmo) {
-    (void)gizmo;
     return 3;
 }
 
@@ -349,7 +310,7 @@ static void Lever_Activate(GIZMO *gizmo, i32 enabled) {
         return;
     }
     lever = gizmo->object;
-    LEVER_BITS(lever)->enabled = enabled != 0;
+    lever->enabled = enabled != 0;
     if (enabled != 0) {
         Lever_Reset(lever);
     }
@@ -362,9 +323,9 @@ static i32 Lever_ActivateRev(GIZMO *gizmo, i32 value, i32 query) {
     }
     lever = gizmo->object;
     if ((query & 1) != 0) {
-        return LEVER_BITS(lever)->enabled ? value : value == 0;
+        return lever->enabled ? value : value == 0;
     }
-    LEVER_BITS(lever)->enabled = value == 0;
+    lever->enabled = value == 0;
     return 1;
 }
 
@@ -375,12 +336,12 @@ static void Lever_SetVisibility(GIZMO *gizmo, i32 visible) {
         return;
     }
     lever = gizmo->object;
-    was_visible = LEVER_BITS(lever)->visible;
-    LEVER_BITS(lever)->visible = visible != 0;
-    if (LEVER_BITS(lever)->visible && was_visible == 0) {
+    was_visible = lever->visible;
+    lever->visible = visible != 0;
+    if (lever->visible && was_visible == 0) {
         lever->platform_id = NewPlatPickupInst(lever, 3);
         PlatInstRotate(lever->platform_id, 1);
-    } else if (!LEVER_BITS(lever)->visible && was_visible != 0) {
+    } else if (!lever->visible && was_visible != 0) {
         DeletePlatinst(lever->platform_id);
     }
 }
@@ -391,7 +352,6 @@ static void *Levers_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {
 
 static void Levers_ClearProgress(void *world, void *progress_ptr) {
     LEVER_PROGRESS *progress = progress_ptr;
-    (void)world;
     if (progress == NULL) {
         return;
     }
@@ -405,7 +365,6 @@ static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr
     LEVER_PROGRESS *progress = progress_ptr;
     GIZMO_LEVER *lever;
     i32 index;
-    (void)data;
     if (progress == NULL) {
         return;
     }
@@ -413,20 +372,20 @@ static void Levers_StoreProgress(void *world_ptr, void *data, void *progress_ptr
     if (world == NULL) {
         return;
     }
-    lever = ((LEVER_WORLD *)world)->levers;
+    lever = world->levers;
     if (lever == NULL) {
         return;
     }
-    for (index = 0; index < ((LEVER_WORLD *)world)->lever_count && index < 32; ++index, ++lever) {
+    for (index = 0; index < world->nlevers && index < 32; ++index, ++lever) {
         i32 word = index / 32;
         u32 bit = 1 << (index & 31);
-        if (LEVER_BITS(lever)->being_pulled && lever->pull_progress >= 1.0f) {
+        if (lever->being_pulled && lever->pull_progress >= 1.0f) {
             progress->pulled_down[word] |= bit;
         }
-        if (!LEVER_BITS(lever)->visible) {
+        if (!lever->visible) {
             progress->visible[word] &= ~bit;
         }
-        if (!LEVER_BITS(lever)->enabled) {
+        if (!lever->enabled) {
             progress->enabled[word] &= ~bit;
         }
     }
@@ -437,87 +396,82 @@ static void Levers_Reset(void *world_ptr, void *data, void *progress_ptr) {
     LEVER_PROGRESS *progress = progress_ptr;
     GIZMO_LEVER *lever;
     i32 index;
-    (void)data;
     if (world == NULL) {
         return;
     }
-    lever = ((LEVER_WORLD *)world)->levers;
+    lever = world->levers;
     if (lever == NULL) {
         return;
     }
-    for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index, ++lever) {
+    for (index = 0; index < world->nlevers; ++index, ++lever) {
         Lever_Reset(lever);
         if (progress != NULL && index < 32) {
             i32 word = index / 32;
             u32 bit = 1 << (index & 31);
             if ((progress->pulled_down[word] & bit) != 0) {
                 lever->pull_progress = 1.0f;
-                LEVER_BITS(lever)->being_pulled = 1;
+                lever->being_pulled = 1;
                 lever->animation_frame = 0x8000;
             }
-            LEVER_BITS(lever)->visible = (progress->visible[word] & bit) != 0;
-            LEVER_BITS(lever)->enabled = (progress->enabled[word] & bit) != 0;
+            lever->visible = (progress->visible[word] & bit) != 0;
+            lever->enabled = (progress->enabled[word] & bit) != 0;
         }
     }
 }
 
 static void *Levers_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    ((LEVER_WORLD *)world)->levers = NULL;
-    ((LEVER_WORLD *)world)->lever_count = 0;
+    world->levers = NULL;
+    world->nlevers = 0;
     if (world->current_level->max_levers > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 15) & ~15u;
-        ((LEVER_WORLD *)world)->levers = world->giz_buffer.void_ptr;
+        world->levers = world->giz_buffer.void_ptr;
         world->giz_buffer.addr += world->current_level->max_levers * sizeof(GIZMO_LEVER);
     }
-    return ((LEVER_WORLD *)world)->levers;
+    return world->levers;
 }
 
 static i32 Levers_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 version;
     i32 index;
-    (void)data;
-    if (((LEVER_WORLD *)world)->lever_count == 0) {
+    if (world->nlevers == 0) {
         version = EdFileReadInt();
-        ((LEVER_WORLD *)world)->lever_count = EdFileReadInt();
-        for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index) {
-            EdFileRead(((LEVER_WORLD *)world)->levers[index].name, 16);
-            EdFileReadNuVec(&((LEVER_WORLD *)world)->levers[index].position);
-            ((LEVER_WORLD *)world)->levers[index].yaw = EdFileReadShort();
-            ((LEVER_WORLD *)world)->levers[index].model_variant = EdFileReadChar();
+        world->nlevers = EdFileReadInt();
+        for (index = 0; index < world->nlevers; ++index) {
+            EdFileRead(world->levers[index].name, 16);
+            EdFileReadNuVec(&world->levers[index].position);
+            world->levers[index].yaw = EdFileReadShort();
+            world->levers[index].model_variant = EdFileReadChar();
             if (version >= 2) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags =
-                    (((LEVER_WORLD *)world)->levers[index].flags & ~LEVER_FLAG_AUTO_RESET) | (bit << 5);
+                world->levers[index].flags = (world->levers[index].flags & ~LEVER_FLAG_AUTO_RESET) | (bit << 5);
             }
             if (version >= 3) {
-                ((LEVER_WORLD *)world)->levers[index].auto_reset_delay = EdFileReadFloat();
+                world->levers[index].auto_reset_delay = EdFileReadFloat();
             } else {
-                ((LEVER_WORLD *)world)->levers[index].auto_reset_delay = 2.0f;
+                world->levers[index].auto_reset_delay = 2.0f;
             }
             if (version >= 4) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags =
-                    (((LEVER_WORLD *)world)->levers[index].flags & ~LEVER_FLAG_HIDE_BASE) | (bit << 8);
+                world->levers[index].flags = (world->levers[index].flags & ~LEVER_FLAG_HIDE_BASE) | (bit << 8);
             } else {
-                ((LEVER_WORLD *)world)->levers[index].flags &= ~LEVER_FLAG_HIDE_BASE;
+                world->levers[index].flags &= ~LEVER_FLAG_HIDE_BASE;
             }
             if (version >= 5) {
-                EdFileReadNuVec(&((LEVER_WORLD *)world)->levers[index].target_offset);
-                ((LEVER_WORLD *)world)->levers[index].target_indicator_scale = EdFileReadFloat();
+                EdFileReadNuVec(&world->levers[index].target_offset);
+                world->levers[index].target_indicator_scale = EdFileReadFloat();
             } else {
-                ((LEVER_WORLD *)world)->levers[index].target_offset.y = 0.0f;
-                ((LEVER_WORLD *)world)->levers[index].target_offset.x = 0.0f;
-                ((LEVER_WORLD *)world)->levers[index].target_offset.z = -0.1441f;
-                ((LEVER_WORLD *)world)->levers[index].target_indicator_scale = 1.0f;
+                world->levers[index].target_offset.y = 0.0f;
+                world->levers[index].target_offset.x = 0.0f;
+                world->levers[index].target_offset.z = -0.1441f;
+                world->levers[index].target_indicator_scale = 1.0f;
             }
             if (version >= 6) {
                 char bit = EdFileReadChar() & 1;
-                ((LEVER_WORLD *)world)->levers[index].flags =
-                    (((LEVER_WORLD *)world)->levers[index].flags & ~LEVER_FLAG_HIDE_TARGET_INDICATOR) | (bit << 9);
+                world->levers[index].flags = (world->levers[index].flags & ~LEVER_FLAG_HIDE_TARGET_INDICATOR) | (bit << 9);
             }
-            ((LEVER_WORLD *)world)->levers[index].platform_id = -1;
+            world->levers[index].platform_id = -1;
         }
         return 1;
     }
@@ -527,30 +481,27 @@ static i32 Levers_Load(void *world_ptr, void *data) {
 static void Levers_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
     i32 index;
-    (void)data;
-    for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index) {
-        if (NuStrLen(((LEVER_WORLD *)world)->levers[index].name) != 0) {
-            AddGizmo(system, type_id, NULL, &((LEVER_WORLD *)world)->levers[index]);
+    for (index = 0; index < world->nlevers; ++index) {
+        if (NuStrLen(world->levers[index].name) != 0) {
+            AddGizmo(system, type_id, NULL, &world->levers[index]);
         }
     }
 }
 
 static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
     WORLDINFO *world = world_ptr;
-    GIZMO_LEVER *lever = ((LEVER_WORLD *)world)->levers;
+    GIZMO_LEVER *lever = world->levers;
     i32 index;
-    (void)data;
-    (void)elapsed;
     if (lever == NULL) {
         return;
     }
-    for (index = 0; index < ((LEVER_WORLD *)world)->lever_count; ++index, ++lever) {
-        if (!LEVER_BITS(lever)->being_pulled && (lever->flags & (LEVER_FLAG_INTERACTION_FINISHED | LEVER_FLAG_PULLED_DOWN)) == 0) {
+    for (index = 0; index < world->nlevers; ++index, ++lever) {
+        if (!lever->being_pulled && (lever->flags & (LEVER_FLAG_INTERACTION_FINISHED | LEVER_FLAG_PULLED_DOWN)) == 0) {
             lever->animation_frame = 0;
             continue;
         }
-        if (!LEVER_BITS(lever)->being_pulled) {
-            LEVER_BITS(lever)->being_pulled = 1;
+        if (!lever->being_pulled) {
+            lever->being_pulled = 1;
         }
         if (lever->auto_reset_timer > 0.0f) {
             lever->auto_reset_timer -= FRAMETIME;
@@ -559,7 +510,7 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
                 lever->flags = (lever->flags & ~LEVER_FLAG_INTERACTION_FINISHED) | LEVER_FLAG_RETURNING | LEVER_FLAG_PULLED_DOWN;
                 lever->pull_progress = 0.6f;
             }
-        } else if (!LEVER_BITS(lever)->returning && (lever->flags & LEVER_FLAG_PULLED_DOWN) == 0) {
+        } else if (!lever->returning && (lever->flags & LEVER_FLAG_PULLED_DOWN) == 0) {
             if (lever->pull_progress < 1.0f) {
                 lever->pull_progress += FRAMETIME;
                 if (lever->pull_progress > 1.0f) {
@@ -571,8 +522,8 @@ static void Levers_Update(void *world_ptr, void *data, f32 elapsed) {
                 }
             }
         } else {
-            if (!LEVER_BITS(lever)->returning) {
-                LEVER_BITS(lever)->returning = 1;
+            if (!lever->returning) {
+                lever->returning = 1;
             }
             lever->pull_progress -= FRAMETIME;
             if (lever->pull_progress <= 0.0f) {
@@ -629,17 +580,16 @@ ADDGIZMOTYPE *Levers_RegisterGizmo(i32 type_id) {
 
 static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     WORLDINFO *world = world_ptr;
-    LEVER_WORLD *lever_world = (LEVER_WORLD *)world;
     nuhspecial_s *animated_special;
     GIZMO_LEVER *lever;
     u16 target_spin_angle;
     f32 target_pulse;
     f32 ready_alpha;
     i32 index;
-    if (world->level_objects[30].active == 0 || lever_world->levers == NULL) {
+    if (world->level_objects[30].active == 0 || world->levers == NULL) {
         return;
     }
-    lever = lever_world->levers;
+    lever = world->levers;
     target_spin_angle = (u16)((f64)NuFmod(GameTimer.time_elapsed, 5.0f) / 5.0 * 65536.0);
     target_pulse =
         (f32)((f64)NuTrigTable[((i32)((f64)NuFmod(GameTimer.time_elapsed_mod_seconds, 0.5f) * 2.0 * 65536.0) >> 1) & 0x7fff] * (f64)0.2f +
@@ -658,7 +608,7 @@ static void Levers_Draw(void *world_ptr, void *data, f32 delta_time) {
     } else {
         animated_special = NULL;
     }
-    for (index = 0; index < lever_world->lever_count; ++index, ++lever) {
+    for (index = 0; index < world->nlevers; ++index, ++lever) {
         NUMTX animated_matrix;
         NUMTX base_matrix;
         NUMTX target_matrix;

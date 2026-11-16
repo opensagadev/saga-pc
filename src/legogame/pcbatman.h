@@ -39,10 +39,3 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-typedef struct CAMERA_CONTEXT_PATH { // size 0x50
-    u8 unknown_00[0x40];             // 0x00
-    struct nugspline_s *path;        // 0x40
-    u8 unknown_44[8];                // 0x44
-    u8 flags;                        // 0x4c
-} CAMERA_CONTEXT_PATH;

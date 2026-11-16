@@ -24,14 +24,14 @@ extern "C" {
     extern i32 (*GizBuildit_AutoBuildPosFn)(void *context, NUVEC *position, NUVEC *result, u16 *angle);
     extern i32 (*GizBuildIt_CanStartBuildingFn)(struct GIZBUILDIT *input, GAMEOBJECT *object);
     extern void (*GizBuildIt_FinishFn)(struct GIZBUILDIT *input);
-    void GizBuildIt_Finish(struct GIZBUILDIT_s *buildit);
+    void GizBuildIt_Finish(struct GIZBUILDIT *buildit);
     void GizBuildIt_SetToEnd(GIZBUILDIT *);
     GIZBUILDIT *GizBuildIt_FindNearest(WORLDINFO *, GAMEOBJECT *, i32, i32);
 
     void BuildIt_MoveCode(GAMEOBJECT *);
     void GizBuildItPushAwayFromEnd(GAMEOBJECT *);
-    void GizBuildIt_SetHeadTarget(GIZBUILDIT_s *, GAMEOBJECT *);
-    void GizBuildIt_SetStepTime(GIZBUILDIT_s *, GAMEOBJECT *);
+    void GizBuildIt_SetHeadTarget(GIZBUILDIT *, GAMEOBJECT *);
+    void GizBuildIt_SetStepTime(GIZBUILDIT *, GAMEOBJECT *);
 #ifdef __cplusplus
 }
 #endif

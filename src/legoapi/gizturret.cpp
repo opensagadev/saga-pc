@@ -617,7 +617,7 @@ extern "C" {
                                         }
                                         if ((turret->behavior_flags & TURRET_LEAD_TARGET) && target_velocity != NULL && bolt_type != NULL) {
                                             GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&reference->m30), primary_draw,
-                                                                               target_position, target_velocity, bolt_type->unknown_10,
+                                                                               target_position, target_velocity, bolt_type->speed,
                                                                                &direction, NULL, turret->controller != NULL);
                                         } else {
                                             NuVecSub(&direction, target_position, reinterpret_cast<NUVEC *>(&reference->m30));
@@ -771,7 +771,7 @@ extern "C" {
                                         if (autoaim_target != NULL) {
                                             GizTurret_CalculateInterceptVector(reinterpret_cast<NUVEC *>(&muzzle_matrix.m30), primary_draw,
                                                                                &autoaim_target->collision_position,
-                                                                               &autoaim_target->velocity, bolt_type->unknown_10, &direction,
+                                                                               &autoaim_target->velocity, bolt_type->speed, &direction,
                                                                                NULL, turret->controller != NULL);
                                             FindAnglesXY(&direction, NULL, NULL);
                                             NUANGVEC angles;

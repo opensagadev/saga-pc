@@ -43,15 +43,13 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 #include <stdio.h>
+#include "legoapi/core/startup/text.h"
 
 /* A second status-screen stage set, registered from the non-LSW branch of
    LoadPermData. The functions below compile to the same code as their LSW
    counterparts; the stage type in each comment comes from its stage table. */
 
 extern "C" {
-
-    void Text_FillInExtendedSaveInfo(void);
-    i32 TriggerAutoSave(void);
 
     i16 dat_007f195c = -1;
     /* Install in extern C data section. */
@@ -231,7 +229,7 @@ extern "C" {
     }
 
     void ResetStatusPacket_Alt(STATUSPACKET_s *packet) {
-        packet->lsw_packet->unknown_00 = 0;
+        packet->lsw_packet->flags = 0;
     }
 
     /* Stage types 1 and 2. */
@@ -241,9 +239,9 @@ extern "C" {
 
     /* Stage type 4. */
     void MiniKit_Alt_Skip(STATUS_STAGE_s *stage, STATUSPACKET_s *packet) {
-        if ((packet->unknown_b0 & 2) == 0) {
+        if ((packet->result_flags & 2) == 0) {
             currentminikit = (i32)((u32)currentminikit + (u32)StatusNewMinikitCount);
-            if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 &&
+            if ((packet->result_flags & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 &&
                 (stage->step != 6 || !(stage->step_time >= stage->step_duration))) {
                 IncreaseScore(packet->score, 50000, 0);
             }
@@ -548,7 +546,7 @@ extern "C" {
 
     i32 InitStatusScreen_Alt(WORLDINFO *world, STATUSPACKET_s *packet) {
         /* Sets bit 24 of the packet word with a byte OR on its top byte. */
-        ((u8 *)&packet->lsw_packet->unknown_00)[3] |= 1;
+        ((u8 *)&packet->lsw_packet->flags)[3] |= 1;
         StatusAltBgPos.x = -StatusAltGridStepX;
         StatusAltBgPos.y = -StatusAltGridStepY * 2.0f;
         StatusAltBgPos.z = -3.0f;
@@ -587,11 +585,11 @@ extern "C" {
                     w = 1.0f - w;
                     x = NuTrigTable[((i32)((f64)w * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
                     x = ((f64)StatusAltGridStepX + (f64)0.1f) * (f64)x - (f64)0.1f;
-                } else if (stage->step_time < 2.1f && (packet->unknown_b0 & 2) == 0) {
+                } else if (stage->step_time < 2.1f && (packet->result_flags & 2) == 0) {
                     w = (f64)stage->step_time - 2.0;
                     w = 1.0 - (f64)w / (f64)0.1f;
                     x = (f64)NuTrigTable[((i32)((f64)w * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff] * -(f64)0.1f;
-                } else if (stage->step_time < 3.1f && (packet->unknown_b0 & 2) == 0) {
+                } else if (stage->step_time < 3.1f && (packet->result_flags & 2) == 0) {
                     speed = (f64)stage->step_time - (f64)2.1f;
                     x = 0.0f;
                     if (StatusAltZoom == 1.1f) {
@@ -674,13 +672,13 @@ extern "C" {
             w = NuTrigTable[((i32)((f64)w * 16384.0 + 32768.0 + 16384.0) >> 1) & 0x7fff] + 1.0f;
             StatusAltBgPos.x += ((f32)(-selected % StatusAltColumns) * StatusAltGridStepX - StatusAltBgPos.x) * w;
             StatusAltBgPos.y += ((f32) - (selected / StatusAltColumns) * StatusAltGridStepY - StatusAltBgPos.y) * w;
-        } else if (stage->step_time < 2.1f && (packet->unknown_b0 & 2) == 0) {
+        } else if (stage->step_time < 2.1f && (packet->result_flags & 2) == 0) {
             w = (f64)stage->step_time - 2.0;
             w = 1.0 - (f64)w / (f64)0.1f;
             w = NuTrigTable[((i32)((f64)w * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
             StatusAltBgPos.x += ((f32)(-selected % StatusAltColumns) * StatusAltGridStepX - StatusAltBgPos.x) * w;
             StatusAltBgPos.y += ((f32) - (selected / StatusAltColumns) * StatusAltGridStepY - StatusAltBgPos.y) * w;
-        } else if (stage->step_time < 3.1f && (packet->unknown_b0 & 2) == 0) {
+        } else if (stage->step_time < 3.1f && (packet->result_flags & 2) == 0) {
             f32 u = (f64)stage->step_time - (f64)2.1f;
             if (StatusAltZoom == 1.1f) {
                 stage->step_time = 3.1f;
@@ -908,11 +906,11 @@ extern "C" {
                     position.x = 0.0f;
                     position.y = 0.0375f;
                     position.z = 1.0f;
-                    message_id = ((i16 *)packet->unknown_12c)[packet->displayed_gold_bricks];
+                    message_id = packet->gold_brick_messages[packet->displayed_gold_bricks];
                     if (message_id == dat_00880818) {
                         NuStrCpy(text, TTab[message_id]);
                         NuStrCat(text, " - ");
-                        NuStrCat(text, TTab[(packet->unknown_b0 & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4]);
+                        NuStrCat(text, TTab[(packet->result_flags & STATUSPACKET_FREE_PLAY) != 0 ? dat_008808a8 : dat_008808a4]);
                         message = text;
                     } else {
                         message = TTab[message_id];
@@ -1163,7 +1161,7 @@ extern "C" {
             case TRUEHERO_ALT_STEP_FILL: {
                 f32 target;
                 SetDrawGoldBrick(packet, 3);
-                if ((packet->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) == 0) {
+                if ((packet->result_flags & STATUSPACKET_TRUE_HERO_COMPLETE) == 0) {
                     target = (f64)packet->collected_score * 100.0 / (f64)packet->true_hero_target;
                     if (target > 99.0f) {
                         target = 99.0f;
@@ -1310,7 +1308,7 @@ extern "C" {
                     stage->step = MINIKIT_ALT_STEP_HOLD;
                 }
                 if (stage->step == MINIKIT_ALT_STEP_HOLD) {
-                    if ((packet->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0) {
+                    if ((packet->result_flags & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0) {
                         stage->step_duration = 1.0f;
                         stage->step = MINIKIT_ALT_STEP_COMPLETE;
                     } else {
@@ -1519,7 +1517,7 @@ extern "C" {
         NuStrCpy(text, TTab[dat_00880818]);
         colour = ((u8)(title_alpha * 128.0) << 24) | 0xffffff;
         DrawStatusText(text, title_angle, title_scale * StatusAltTrueHeroX, StatusCoinsTitleY * title_scale, title_scale, colour, 0);
-        NuStrCpy(text, TTab[(packet->unknown_b0 & STATUSPACKET_FREE_PLAY) ? dat_008808a8 : dat_008808a4]);
+        NuStrCpy(text, TTab[(packet->result_flags & STATUSPACKET_FREE_PLAY) ? dat_008808a8 : dat_008808a4]);
         DrawStatusText(text, mode_angle, mode_scale * StatusAltTrueHeroX, -StatusCoinsTitleY * mode_scale, mode_scale, colour, 0);
         if (stage->step == TRUEHERO_ALT_STEP_FULL) {
             colour = ((u8)((1.0f - full_fade) * 64.0) << 24) | 0xbfff;

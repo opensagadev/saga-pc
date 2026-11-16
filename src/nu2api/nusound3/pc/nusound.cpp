@@ -788,7 +788,7 @@ extern "C" {
 i32 SoundVoiceManagerPC::LoadWavSample(const char *name, i32 index) {
     WavReader reader;
     WAVEFORMATEX format;
-    PC_DS_BUFFER_DESC_VIEW descriptor;
+    PC_DS_BUFFER_DESC descriptor;
     char path[0x104];
     char directory[0x104];
     void *first;

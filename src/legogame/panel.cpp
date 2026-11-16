@@ -64,6 +64,8 @@
 #include "nu2api/nustencilshadows_PC.h"
 #include <stdio.h>
 #include <string.h>
+#include "legoapi/cutscenes/cutscenes.h"
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 extern "C" {
     extern f32 HudBossIconScale;
@@ -100,7 +102,6 @@ extern "C" {
     extern f32 HudLevelTitleScale;
     extern f32 HudLevelTitleScaleX;
     extern f32 HudLevelTitleWidth;
-    void CutScene_DrawSubtitles(void);
     extern i32 FPSDISPLAY;
     extern f32 HudNameScale;
     extern f32 HudNameWidth;
@@ -120,11 +121,8 @@ extern "C" {
     extern i32 HudPausePromptRed;
     extern i32 HudPausePromptGreen;
     extern u8 HudPausePromptBlue;
-    void Arcade_ResetPanel(void);
-    void Arcade_DrawPanel(i32 paused);
 }
 extern "C" NUMTL *FadeMtl2;
-extern "C" void DrawPauseFade(void);
 
 typedef struct PANEL_PRIM_VERTEX {
     f32 x;
@@ -223,7 +221,7 @@ extern "C" {
                 }
                 if (FadeSys.fade == 0.0f && CUTSTOPGAME == 0 &&
                     (Paused != 0 ||
-                     (NetPaused != 0 && (AreaGlobals.unknown_08 != 0 ||
+                     (NetPaused != 0 && (AreaGlobals.red_brick_state != 0 ||
                                          (WORLD->area_index != -1 && Game.area_save[WORLD->area_index].red_brick_collected != 0))) ||
                      DrawRedBrickTime > 0.0f) &&
                     screendump == 0) {
@@ -562,7 +560,7 @@ extern "C" {
         f32 spacing;
         f32 draw_y;
         f32 start_x;
-        if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->unknown_107e == 10) {
+        if (SuperStory != 0 && WORLD->current_level == VADERC_LDATA && object->max_hitpoints == 10) {
             two_rows = 1;
         } else if ((object->portal_flags & APIOBJECT_BOSS) != 0) {
             two_rows = DrawBossHitPointsTwoRows != 0;
@@ -574,8 +572,8 @@ extern "C" {
         if (WORLD->level_objects[heart_object].active == 0) {
             return;
         }
-        if (object->unknown_107e > 0) {
-            hitpoints = object->unknown_107e;
+        if (object->max_hitpoints > 0) {
+            hitpoints = object->max_hitpoints;
             current_hp = object->current_hp;
             if ((PlayerHitPointsTwoHearts != 0 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) ||
                 WORLD->current_level == BOUNTYHUNTERPURSUITE_LDATA) {
@@ -591,10 +589,10 @@ extern "C" {
         if (two_rows != 0 && hitpoints < 2) {
             two_rows = 0;
         }
-        if ((object->unknown_280 == 0 || object->unknown_280 == 1) && hitpoints > 1 && object->dead != 0 && object->unknown_1010 > 0.0f &&
-            object->unknown_1010 < 1.0f) {
+        if ((object->player_slot == 0 || object->player_slot == 1) && hitpoints > 1 && object->dead != 0 &&
+            object->invulnerable_timer > 0.0f && object->invulnerable_timer < 1.0f) {
             transitioning = 1;
-            current_hp = (i32)((1.0f - object->unknown_1010) * (f32)object->unknown_107e);
+            current_hp = (i32)((1.0f - object->invulnerable_timer) * (f32)object->max_hitpoints);
         }
         spacing = PanelHeartSpacing * scale;
         if (GetMenuID() == MENU_OPTIONS) {
@@ -896,11 +894,12 @@ extern "C" {
                     ((WORLD->area->flags & AREAFLAG_MINIKIT) != 0 ||
                      ((WORLD->current_level->flags & LEVEL_TEST) != 0 && GizmoPickup_NumberOfType(WORLD, 4, 0) > 0))) {
                     DrawMiniKitCount(minikittime, MiniKitScale,
-                                     ChallengeMode != CHALLENGE_OFF ? AreaGlobals.unknown_20 : AreaGlobals.progress_flags, 10);
+                                     ChallengeMode != CHALLENGE_OFF ? AreaGlobals.challenge_minikits_shown : AreaGlobals.progress_flags,
+                                     10);
                 }
                 if (SuperStory == 0 && ChallengeMode == CHALLENGE_OFF && Mission_Active(NULL) == NULL && Arcade == 0 &&
                     (WORLD->area->flags & AREAFLAG_MINIKIT) != 0 &&
-                    (AreaGlobals.unknown_08 == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
+                    (AreaGlobals.red_brick_state == 2 || Game.area_save[WORLD->area_index].red_brick_collected != 0) &&
                     redbrickslidetime > 0.0f) {
                     f32 factor = NuTrigTable[((i32)((f64)redbrickslidetime * 16384.0) >> 1) & 0x7fff];
                     f32 x = (REDBRICKPOSX - REDBRICKPOS2X) * factor + REDBRICKPOS2X;
@@ -1370,8 +1369,8 @@ extern "C" {
             }
         }
         if (WORLD->current_level == STATUS_LDATA || (WORLD->current_level->flags & LEVEL_STATUS) != 0) {
-            if (WORLD->current_level->callbacks[6] != NULL) {
-                ((void (*)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+            if (WORLD->current_level->draw_panel != NULL) {
+                WORLD->current_level->draw_panel(WORLD);
             }
             DrawGameMessages();
             goto draw_menu;
@@ -1475,7 +1474,7 @@ extern "C" {
             CutScene_DrawSubtitles();
             goto draw_menu;
         }
-        if (WORLD->current_level->callbacks[6] == NULL && (WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
+        if (WORLD->current_level->draw_panel == NULL && (WORLD->current_level->flags & LEVEL_GAMEPLAY) == 0) {
             goto draw_menu;
         }
         for (player_index = 0; player_index < 8; ++player_index) {
@@ -1488,8 +1487,8 @@ extern "C" {
             }
         }
         DebrisDraw(paused, 4);
-        if (WORLD->current_level->callbacks[6] != NULL) {
-            ((void (*)(WORLDINFO *))WORLD->current_level->callbacks[6])(WORLD);
+        if (WORLD->current_level->draw_panel != NULL) {
+            WORLD->current_level->draw_panel(WORLD);
         }
         GizmoSysPanelDraw(WORLD->gizmo_sys, WORLD, FRAMETIME);
         if (paused == 0) {
@@ -1564,7 +1563,7 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
         return;
     }
     message = AddGameMsg_Default;
-    if (object->unknown_280 == 0) {
+    if (object->player_slot == 0) {
         first_red = 0;
         first_green = 127;
         first_blue = 255;
@@ -1603,14 +1602,14 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     }
     message = AddGameMsg_Default;
     message.position = &position;
-    message.unknown_34 = 0.0f;
+    message.drift = 0.0f;
     message.red = (u8)first_red;
     message.target_is_coin_total = 2;
     message.green = (u8)first_green;
     message.blue = (u8)first_blue;
     message.alpha = (u8)alpha;
-    if (object->unknown_280 == 1) {
-        message.unknown_34 += 0.002f;
+    if (object->player_slot == 1) {
+        message.drift += 0.002f;
     }
     message.text = TagAsciiDown;
     message.scale = 2.0f;
@@ -1620,10 +1619,10 @@ void Tag_DrawIcon_Batman(GAMEOBJECT *object) {
     message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.text = NULL;
     message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME | GAMEMSG_KEEP | GAMEMSG_OBJECT_ALPHA;
-    message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
+    message.icon = apicharsys->char_data[(i16)object->id].icon_model;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
-    message.icon = object->unknown_280 != 0 ? 0xa5 : 0xa6;
+    message.icon = object->player_slot != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }
@@ -1655,18 +1654,18 @@ void Tag_DrawIcon_LSW(GAMEOBJECT *object) {
     message.scale = MissionPlayerIconSize + MissionPlayerIconSize;
     message.target_is_coin_total = 2;
     message.flags = GAMEMSG_WORLD_POSITION | GAMEMSG_FOLLOW | GAMEMSG_WORLD_SCALE | GAMEMSG_ONE_FRAME;
-    message.unknown_34 = 0.0f;
-    if (object->unknown_280 == 1) {
-        message.unknown_34 += 0.002f;
+    message.drift = 0.0f;
+    if (object->player_slot == 1) {
+        message.drift += 0.002f;
     }
     id = (i16)object->id;
-    message.icon = ((TAG_CHARACTER_DATA_READER *)apicharsys->char_data)[(i16)object->id].icon_model;
+    message.icon = apicharsys->char_data[(i16)object->id].icon_model;
     if (message.icon != -1 && GCDataList[id].hover_fall_mode == 0 && message.icon != PCArcadeUnpairedIconModel) {
         message.icon++;
     }
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
-    message.icon = object->unknown_280 != 0 ? 0xa5 : 0xa6;
+    message.icon = object->player_slot != 0 ? 0xa5 : 0xa6;
     message.special = &WORLD->level_objects[message.icon];
     AddGameMsg(&message);
 }

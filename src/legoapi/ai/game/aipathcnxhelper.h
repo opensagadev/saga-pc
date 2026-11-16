@@ -8,11 +8,12 @@ struct gameobject_s;
 
 typedef struct ai_helper_slot_s { // size 0x10
     struct AIPATHCNX *connection; // 0x0
-    void *target;                 // 0x4
-    u8 direction;                 // 0x8
-    u8 type;                      // 0x9
-    u8 padding[2];                // 0xa
-    f32 jump_off_dy;              // 0xc
+    /* the grapple (type 1, the only kind) */
+    struct GRAPPLE_MOTION *target; // 0x4
+    u8 direction;                  // 0x8
+    u8 type;                       // 0x9
+    u8 padding[2];                 // 0xa
+    f32 jump_off_dy;               // 0xc
 } AI_HELPER_SLOT;
 
 typedef struct ai_helper_system_s { // size 0x8

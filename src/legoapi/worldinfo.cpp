@@ -77,27 +77,6 @@ extern "C" {
         char disabled_effect_names[12][16];    // 0x2d68
     } LEVEL_PROGRESS_TRANSFER;
 
-    typedef struct world_persistence_flags_s { // size 0x5174
-        u8 unknown_0000[0x5170];               // 0x0000
-        u32 progress_flags;                    // 0x5170
-    } WORLD_PERSISTENCE_FLAGS;
-
-    typedef struct world_initial_progress_s { // size 0x2804
-        SCENEPROGRESS scene;                  // 0x0000
-        u32 initialized_flags;                // 0x2800
-    } WORLD_INITIAL_PROGRESS;
-
-    typedef struct world_initial_final_s { // size 0x5174
-        u8 unknown_0000[0x5170];           // 0x0000
-        i32 initialized;                   // 0x5170
-    } WORLD_INITIAL_FINAL;
-
-    typedef struct world_initial_reset_s { // size 0x11c
-        u8 unknown_0000[0x114];            // 0x000
-        u32 initialized;                   // 0x114
-        u32 reset_flags;                   // 0x118
-    } WORLD_INITIAL_RESET;
-
     typedef struct world_resource_icons_reader_s { // size 0x2968
         u8 unknown_0000[0x2964];                   // 0x0000
         NUGSCN *icons_scene;                       // 0x2964
@@ -312,25 +291,11 @@ extern "C" {
         return 0;
     }
 
-    typedef struct PORTAL_DOOR { // size 0x10
-        nuhspecial_s special;    // 0x0
-        u16 flags;               // 0xc
-        u8 portal_id;            // 0xe
-        u8 unknown_0f;           // 0xf
-    } PORTAL_DOOR;
-
-    typedef struct PORTAL_DOOR_WORLD { // size 0x5050
-        u8 unknown_0000[0x5048];       // 0x0000
-        PORTAL_DOOR *portal_doors;     // 0x5048
-        i32 portal_door_count;         // 0x504c
-    } PORTAL_DOOR_WORLD;
-
     void PortalDoors_Configure(WORLDINFO *world, char *config) {
-        PORTAL_DOOR_WORLD *view = (PORTAL_DOOR_WORLD *)world;
-        PORTAL_DOOR *cursor;
+        PORTALDOOR_s *cursor;
         NUFPAR *parser;
-        view->portal_doors = NULL;
-        view->portal_door_count = 0;
+        world->portal_doors = NULL;
+        world->portal_door_count = 0;
         if (world->current_gscn == NULL) {
             return;
         }
@@ -339,8 +304,8 @@ extern "C" {
             return;
         }
         world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-        cursor = (PORTAL_DOOR *)world->giz_buffer.addr;
-        view->portal_doors = cursor;
+        cursor = (PORTALDOOR_s *)world->giz_buffer.addr;
+        world->portal_doors = cursor;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);
             if (NuStrICmp(parser->word_buffer_ptr, "portaldoor") != 0) {
@@ -356,14 +321,14 @@ extern "C" {
                     cursor->flags |= 1;
                 }
             }
-            ++view->portal_door_count;
+            ++world->portal_door_count;
             ++cursor;
         }
         NuFParDestroy(parser);
-        if (view->portal_door_count > 0) {
+        if (world->portal_door_count > 0) {
             world->giz_buffer.addr = ((u32)cursor + 15U) & ~15U;
         } else {
-            view->portal_doors = NULL;
+            world->portal_doors = NULL;
         }
     }
 
@@ -398,11 +363,10 @@ extern "C" {
     }
 
     void PortalDoors_Reset(WORLDINFO *world) {
-        PORTAL_DOOR_WORLD *view = (PORTAL_DOOR_WORLD *)world;
         i32 index;
-        PORTAL_DOOR *door = view->portal_doors;
+        PORTALDOOR_s *door = world->portal_doors;
         if (door != NULL) {
-            for (index = 0; index < view->portal_door_count; ++index, ++door) {
+            for (index = 0; index < world->portal_door_count; ++index, ++door) {
                 door->flags &= ~6;
             }
         }
@@ -588,7 +552,7 @@ extern "C" {
         void (*init_fn)(WORLDINFO *);
         i32 menu_id = -1;
         i32 menu_y = -1;
-        ((WORLD_INITIAL_RESET *)world)->reset_flags = 0;
+        world->reset_flags = 0;
         disable_narrow_socks = 0;
         script_spline_selected = NULL;
         switch (world->current_level->shadow_type) {
@@ -647,9 +611,9 @@ extern "C" {
         if (NOSOUND == 0) {
             NuSound3Update();
         }
-        if (world->level_progress != NULL && (((WORLD_INITIAL_PROGRESS *)world->level_progress)->initialized_flags & 1) == 0) {
-            memcpy(&((WORLD_INITIAL_PROGRESS *)world->level_progress)->scene, &world->scene_progress, sizeof(SCENEPROGRESS));
-            ((WORLD_INITIAL_PROGRESS *)world->level_progress)->initialized_flags |= 1;
+        if (world->level_progress != NULL && (world->level_progress->flags & 1) == 0) {
+            memcpy(&world->level_progress->scene_progress, &world->scene_progress, sizeof(SCENEPROGRESS));
+            world->level_progress->flags |= 1;
         }
         Doors_Init(world);
         Players_InitPositions(world);
@@ -702,10 +666,10 @@ extern "C" {
         if ((world->current_level->flags & (LEVEL_INTRO | LEVEL_MIDTRO | LEVEL_OUTRO)) == 0) {
             WorldInfo_LoadObjectAnimFile(world);
         }
-        ((WORLD_INITIAL_RESET *)world)->initialized = 1;
+        world->initialized = 1;
         reset_restart = 1;
         InitGameObjectLights();
-        ((WORLD_INITIAL_FINAL *)world)->initialized = 1;
+        world->belt_active = 1;
         TerSurface[14].movement_scale = 1.0f;
         TerSurface[14].flags = 0x2000;
         TerSurface[15].movement_scale = 1.0f;

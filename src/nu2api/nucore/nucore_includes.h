@@ -24,6 +24,9 @@ extern "C" {
     extern i32 FileDeviceFormatDefaultName(char *destination, char *path, i32 maximum_size);
     void NuStrToLower(char *text);
     i32 NuVSPrintf(char *dest, const char *format, va_list args);
+    extern i32 NuFParGetLineW(struct nufpar_s *parser);
+    extern i32 NuFParGetWordW(struct nufpar_s *parser);
+    void NuStringFilterLoad(char *path, VARIPTR *buf, VARIPTR buf_end);
 #ifdef __cplusplus
 }
 #endif

@@ -287,59 +287,84 @@ struct cut_script_s {       // size 0xc
     CUT_SCRIPT_NODE *nodes; // 0x8
 };
 
-#define CUT_SCRIPT_NODE_ALLOC(node, buffer, size)                                                                                          \
-    (node) = (CUT_SCRIPT_NODE *)(buffer)->void_ptr;                                                                                        \
-    (buffer)->addr += (size);                                                                                                              \
-    memset((node), 0, (size))
-
 static CUT_SCRIPT_NODE *CutScriptNodeAlloc(i32 type, VARIPTR *buffer, CUT_SCRIPT_NODE *prev, CUT_SCRIPT_NODE **head) {
     CUT_SCRIPT_NODE *node = NULL;
     buffer->addr = (buffer->addr + 0xf) & ~0xfU;
     switch (type) {
         case CUTSCRIPT_START:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0xc);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0xc;
+            memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_PLAY:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x10);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x10;
+            memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_CHAIN:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x10);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x10;
+            memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_REPEAT:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x10);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x10;
+            memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_RESET:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0xc);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0xc;
+            memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_SET_TRIGGER_FLAG:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x10);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x10;
+            memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_RESET_TRIGGER:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0xc);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0xc;
+            memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_SET_VISIBILITY:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x10);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x10;
+            memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_IF_PARAM:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x18);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x18;
+            memset(node, 0, 0x18);
             break;
         case CUTSCRIPT_SET_PARAM:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x10);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x10;
+            memset(node, 0, 0x10);
             break;
         case CUTSCRIPT_IF_TRIGGER_PULLED:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x14);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x14;
+            memset(node, 0, 0x14);
             break;
         case CUTSCRIPT_ENABLE_TRIGGER:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0xc);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0xc;
+            memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_PAUSE:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0xc);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0xc;
+            memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_UNPAUSE:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0xc);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0xc;
+            memset(node, 0, 0xc);
             break;
         case CUTSCRIPT_APP_COMMAND:
-            CUT_SCRIPT_NODE_ALLOC(node, buffer, 0x10);
+            node = (buffer)->void_ptr;
+            buffer->addr += 0x10;
+            memset(node, 0, 0x10);
             break;
     }
     node->type = type;
@@ -350,12 +375,6 @@ static CUT_SCRIPT_NODE *CutScriptNodeAlloc(i32 type, VARIPTR *buffer, CUT_SCRIPT
     }
     return node;
 }
-
-#define CUT_SCRIPT_READ_WORD(fp, buffer, field)                                                                                            \
-    NuFParGetWord(fp);                                                                                                                     \
-    (field) = (buffer)->char_ptr;                                                                                                          \
-    (buffer)->addr += strlen((fp)->word_buffer_ptr) + 1;                                                                                   \
-    sprintf((field), (fp)->word_buffer_ptr)
 
 CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
     CUT_SCRIPT_NODE *head = NULL;
@@ -369,11 +388,17 @@ CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
         if (NuStrICmp(fp->word_buffer_ptr, "STARTCUTSCENEINST") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_START, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
         } else if (NuStrICmp(fp->word_buffer_ptr, "PLAYCUTSCENEINST") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_PLAY, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
             NuFParGetWord(fp);
             if (NuStrICmp(fp->word_buffer_ptr, "forward") == 0) {
                 node->b.value = 1;
@@ -385,40 +410,67 @@ CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
         } else if (NuStrICmp(fp->word_buffer_ptr, "CHAINCUTSCENEINST") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_CHAIN, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->b.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
+            NuFParGetWord(fp);
+            node->b.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->b.name, fp->word_buffer_ptr);
         } else if (NuStrICmp(fp->word_buffer_ptr, "REPEATCUTSCENEINST") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_REPEAT, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
             node->b.value = NuFParGetInt(fp);
         } else if (NuStrICmp(fp->word_buffer_ptr, "RESETCUTSCENEINST") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_RESET, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
         } else if (NuStrICmp(fp->word_buffer_ptr, "PAUSECUTSCENEINST") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_PAUSE, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
         } else if (NuStrICmp(fp->word_buffer_ptr, "UNPAUSECUTSCENEINST") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_UNPAUSE, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
         } else if (NuStrICmp(fp->word_buffer_ptr, "SETTRIGGERFLAG") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_SET_TRIGGER_FLAG, buffer, prev, &head);
             prev = node;
             node->a.bytes[0] = (u8)NuFParGetInt(fp);
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->b.name);
+            NuFParGetWord(fp);
+            node->b.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->b.name, fp->word_buffer_ptr);
             NuFParGetWord(fp);
             node->a.bytes[1] = NuStrICmp(fp->word_buffer_ptr, "ON") == 0;
         } else if (NuStrICmp(fp->word_buffer_ptr, "RESETTRIGGER") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_RESET_TRIGGER, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
         } else if (NuStrICmp(fp->word_buffer_ptr, "SETVISIBILITY") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_SET_VISIBILITY, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->b.name);
+            NuFParGetWord(fp);
+            node->b.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->b.name, fp->word_buffer_ptr);
             NuFParGetWord(fp);
             node->a.bytes[0] = NuStrICmp(fp->word_buffer_ptr, "ON") == 0;
         } else if (NuStrICmp(fp->word_buffer_ptr, "IFPARAM") == 0) {
@@ -438,7 +490,10 @@ CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
         } else if (NuStrICmp(fp->word_buffer_ptr, "IFTRIGGERPULLED") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_IF_TRIGGER_PULLED, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
             node->b.block = CutScriptParseBlock(fp, buffer, unused);
             if (NuStrICmp(fp->word_buffer_ptr, "ELSE") == 0) {
                 node->c = CutScriptParseBlock(fp, buffer, unused);
@@ -446,7 +501,10 @@ CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
         } else if (NuStrICmp(fp->word_buffer_ptr, "IFTRIGGERNOTPULLED") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_IF_TRIGGER_PULLED, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
             node->c = CutScriptParseBlock(fp, buffer, unused);
             if (NuStrICmp(fp->word_buffer_ptr, "ELSE") == 0) {
                 node->b.block = CutScriptParseBlock(fp, buffer, unused);
@@ -454,7 +512,10 @@ CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
         } else if (NuStrICmp(fp->word_buffer_ptr, "ENABLETRIGGER") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_ENABLE_TRIGGER, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
         } else if (NuStrICmp(fp->word_buffer_ptr, "ELSE") == 0) {
             break;
         } else if (NuStrICmp(fp->word_buffer_ptr, "ENDIF") == 0) {
@@ -462,8 +523,14 @@ CUT_SCRIPT_NODE *CutScriptParseBlock(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
         } else if (NuStrICmp(fp->word_buffer_ptr, "APPCOMMAND") == 0) {
             node = CutScriptNodeAlloc(CUTSCRIPT_APP_COMMAND, buffer, prev, &head);
             prev = node;
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->a.name);
-            CUT_SCRIPT_READ_WORD(fp, buffer, node->b.name);
+            NuFParGetWord(fp);
+            node->a.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->a.name, fp->word_buffer_ptr);
+            NuFParGetWord(fp);
+            node->b.name = buffer->char_ptr;
+            buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+            sprintf(node->b.name, fp->word_buffer_ptr);
         }
     }
     return head;
@@ -475,7 +542,10 @@ static CUT_SCRIPT *CutScriptRead(NUFPAR *fp, VARIPTR *buffer, i32 unused) {
     script = buffer->void_ptr;
     buffer->addr += sizeof(CUT_SCRIPT);
     memset(script, 0, sizeof(CUT_SCRIPT));
-    CUT_SCRIPT_READ_WORD(fp, buffer, script->name);
+    NuFParGetWord(fp);
+    script->name = buffer->char_ptr;
+    buffer->addr += strlen(fp->word_buffer_ptr) + 1;
+    sprintf(script->name, fp->word_buffer_ptr);
     script->nodes = CutScriptParseBlock(fp, buffer, unused);
     return script;
 }
@@ -983,8 +1053,6 @@ i32 CutTriggerSetTest(CUT_TRIGGER_SET *set, char *name, NUVEC *pos, f32 radius, 
 void CutSceneMissingObjectDiagnostic(char *format, ...) {
 }
 
-#define CUT_SCRIPT_DIAG2(a, b) CutSceneMissingObjectDiagnostic((char *)(a), (b))
-
 void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set) {
     INSTNUGCUTSCENE *instance;
     INSTNUGCUTSCENE *chain;
@@ -1025,7 +1093,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                     instance->chained_instance = chain;
                     done = 1;
                 }
-                CUT_SCRIPT_DIAG2(node->a.name, node->b.name);
+                CutSceneMissingObjectDiagnostic(node->a.name, node->b.name);
                 break;
             case CUTSCRIPT_REPEAT:
                 instance = instNuGCutSceneFindActive(node->a.name);
@@ -1038,7 +1106,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                     instance->flags_88 ^= ((u32)(count << 13) ^ instance->flags_88) & 0x3e000;
                     done = 1;
                 }
-                CUT_SCRIPT_DIAG2(node->a.name, node->b.value);
+                CutSceneMissingObjectDiagnostic(node->a.name, node->b.value);
                 break;
             case CUTSCRIPT_RESET:
                 instance = instNuGCutSceneFindActive(node->a.name);
@@ -1054,9 +1122,9 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                     done = 1;
                 }
                 if (node->a.bytes[1] != 0) {
-                    CUT_SCRIPT_DIAG2((i8)node->a.bytes[0], node->b.name);
+                    CutSceneMissingObjectDiagnostic((char *)((i8)node->a.bytes[0]), node->b.name);
                 } else {
-                    CUT_SCRIPT_DIAG2((i8)node->a.bytes[0], node->b.name);
+                    CutSceneMissingObjectDiagnostic((char *)((i8)node->a.bytes[0]), node->b.name);
                 }
                 break;
             case CUTSCRIPT_RESET_TRIGGER:
@@ -1081,10 +1149,10 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                 break;
             case CUTSCRIPT_IF_PARAM:
                 if (node->a.param < 32 && set->params[node->a.param] == node->b.value) {
-                    CUT_SCRIPT_DIAG2(node->a.param, node->b.value);
+                    CutSceneMissingObjectDiagnostic((char *)(node->a.param), node->b.value);
                     CutScriptExecute(node->c, scene, set);
                 } else {
-                    CUT_SCRIPT_DIAG2(node->a.param, node->b.value);
+                    CutSceneMissingObjectDiagnostic((char *)(node->a.param), node->b.value);
                     CutScriptExecute(node->d, scene, set);
                 }
                 break;
@@ -1093,7 +1161,7 @@ void CutScriptExecute(CUT_SCRIPT_NODE *node, NUGSCN *scene, CUT_TRIGGER_SET *set
                     set->params[node->a.param] = (i8)node->b.value;
                     done = 1;
                 }
-                CUT_SCRIPT_DIAG2(node->a.param, node->b.value);
+                CutSceneMissingObjectDiagnostic((char *)(node->a.param), node->b.value);
                 break;
             case CUTSCRIPT_IF_TRIGGER_PULLED:
                 if (CutTriggerIsPulled(set, node->a.name) != 0) {
@@ -1175,12 +1243,12 @@ i32 CutScriptRun(CUT_SCRIPT *scripts, char *name, NUGSCN *scene, CUT_TRIGGER_SET
 void CutTriggerFire(CUT_TRIGGER_SET *set, CUT_TRIGGER_ENTRY *entry, CUT_TRIGGER_STATE *state, i32 on) {
     char name[32];
     if (on != 0) {
-        CUT_SCRIPT_DIAG2(entry->name, entry->name);
+        CutSceneMissingObjectDiagnostic(entry->name, entry->name);
         state->pulled |= 1;
         CutScriptRun(set->scripts, entry->name, set->scene, set);
     } else {
         sprintf(name, "reset_%s", entry->name);
-        CUT_SCRIPT_DIAG2(entry->name, name);
+        CutSceneMissingObjectDiagnostic(entry->name, name);
         state->pulled &= ~1;
         CutScriptRun(set->scripts, name, set->scene, set);
     }

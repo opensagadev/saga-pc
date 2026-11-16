@@ -51,21 +51,18 @@ struct AISCRIPTPROCESS {                 // size 0xc8
     struct AILOCATOR *locator;           // 0xa4
     struct AILOCATORSET *locator_set;    // 0xa8
 
-    union { // size 0x4
-        u32 field_ac;
-        struct nugspline_s *myspline;
-    }; // 0xac
+    struct nugspline_s *myspline; // 0xac
 
-    u8 creature_set;          // 0xb0
-    u8 unknown_b1;            // 0xb1
-    u16 unknown_b2;           // 0xb2
-    u8 interrupt_priority;    // 0xb4
-    u8 interrupt_id;          // 0xb5
-    u16 action_data_7;        // 0xb6
-    f32 interrupt_timer;      // 0xb8
-    AISTATE *interrupt_state; // 0xbc
-    AISTATE *return_to_state; // 0xc0
-    void *local_messages;     // 0xc4
+    u8 creature_set;           // 0xb0
+    u8 unknown_b1;             // 0xb1
+    u16 blocked_message_count; // 0xb2
+    u8 interrupt_priority;     // 0xb4
+    u8 interrupt_id;           // 0xb5
+    u16 action_data_7;         // 0xb6
+    f32 interrupt_timer;       // 0xb8
+    AISTATE *interrupt_state;  // 0xbc
+    AISTATE *return_to_state;  // 0xc0
+    void *local_messages;      // 0xc4
 };
 
 /* AISCRIPTPROCESS.action_data_1 holds each action's own options; the bits below are set by the keyword in

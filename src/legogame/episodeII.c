@@ -58,6 +58,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include "gameapi/ai/aisys/gameaiscript.h"
 
 /* The Factory B paint puzzle state shared with the network partner (SetLevelHack(4)). */
 typedef struct factoryb_netpacket_s { // size 0x4
@@ -121,12 +122,8 @@ typedef struct kamino_e_s {
     i16 platform;
 } KAMINO_E;
 
-extern i32 turret_gizmotype_id;
 void *GizmoFindByData(void *gizmo_sys, i32 type_id, void *data);
 void KaminoEGizmoMissing(char *name);
-#define KAMINO_DISCO_AREA_MASK_SET(world, area)                                                                                            \
-    ((*(u64 *)((GAMEOBJECT *)(world)->ai_sys->player_1)->ai_area_mask & (u64)(i64)(1 << (i32)((area) - (world)->ai_sys->areas))) != 0)
-#define KAMINO_DISCO_PLAYER_IN_AREA(world, who, area) ((who) != NULL && (area) != NULL && KAMINO_DISCO_AREA_MASK_SET(world, area))
 
 static i32 PaintMixColour(i32 first, i32 second) {
     if ((first == 0 && second == 1) || (first == 1 && second == 0)) {
@@ -199,7 +196,7 @@ i32 painttarget = 0;
 i32 paintsused[2] = {0};
 i32 played_sound = 0;
 struct gizmo_s *paintpanel[3] = {0};
-KAMINO_DISCO_MUSIC_VIEW KaminoDiscoMusicState = {0};
+KAMINODISCO KaminoDiscoMusicState = {0};
 
 void UpdatePaintPuzzle(WORLDINFO *world) {
     i32 i;
@@ -339,7 +336,7 @@ static void JediBResetRecord(JEDIB_CREATURE *record) {
         record->id = id_BOB;
     }
     record->flags &= ~0x1cu;
-    record->unknown_58 = 0;
+    record->saved_layer_mask = 0;
 }
 
 static f32 jedib_create_step_Normal = 2.0f;
@@ -738,7 +735,7 @@ void JediB_Update(WORLDINFO *world) {
             jedi_b.heroes[hero]->position = *NuSpecialGetDrawPos(&jedi_b.hero_spawns[hero][spawn]);
             NuVecAdd(&jedi_b.heroes[hero]->position, &jedi_b.heroes[hero]->position, &jedib_offsets[hero]);
             jedi_b.heroes[hero]->ai_update_position = jedi_b.heroes[hero]->position;
-            jedi_b.heroes[hero]->unknown_276 = (u16)jedib_yrot[hero];
+            jedi_b.heroes[hero]->movement_angle = (u16)jedib_yrot[hero];
             jedi_b.heroes[hero]->velocity.x = 0.0f;
             jedi_b.heroes[hero]->velocity.y = 0.0f;
             jedi_b.heroes[hero]->velocity.z = 0.0f;
@@ -748,29 +745,29 @@ void JediB_Update(WORLDINFO *world) {
     jedi_b.exclusion_mask = 0;
     if (jedi_b.timer < 4.0f) {
         if (player != NULL) {
-            jedi_b.exclusion_mask = (u64)1 << player->hostility_group;
+            jedi_b.exclusion_mask = (u64)1 << player->object_id;
         }
         if (player2 != NULL) {
-            jedi_b.exclusion_mask |= (u64)1 << player2->hostility_group;
+            jedi_b.exclusion_mask |= (u64)1 << player2->object_id;
         }
     } else if (jedi_b.phase == 7) {
         if (jedi_b.boss != NULL) {
             if (player2 != NULL && jedi_b.boss->ai_packet.opponent == (APIOBJECT *)player2) {
-                shift = player2->hostility_group;
+                shift = player2->object_id;
             } else {
-                shift = player->hostility_group;
+                shift = player->object_id;
             }
             jedi_b.exclusion_mask = (u64)1 << shift;
         }
     } else {
         if (player->collision_position.x * player->collision_position.x + player->collision_position.z * player->collision_position.z >
             jedib_safe_r * jedib_safe_r) {
-            jedi_b.exclusion_mask = (u64)1 << player->hostility_group;
+            jedi_b.exclusion_mask = (u64)1 << player->object_id;
         }
         if (player2 != NULL &&
             player2->collision_position.x * player2->collision_position.x + player2->collision_position.z * player2->collision_position.z >
                 jedib_safe_r * jedib_safe_r) {
-            jedi_b.exclusion_mask |= (u64)1 << player2->hostility_group;
+            jedi_b.exclusion_mask |= (u64)1 << player2->object_id;
         }
     }
     for (slot = 0; slot < 8; slot++) {
@@ -781,7 +778,7 @@ void JediB_Update(WORLDINFO *world) {
         object->excluded_opponents = 0;
         object = Player[slot];
         if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && jedi_b.boss != NULL && jedi_b.phase == 7) {
-            mask = (u64)1 << jedi_b.boss->hostility_group;
+            mask = (u64)1 << jedi_b.boss->object_id;
             object->excluded_opponents |= mask;
         }
     }
@@ -833,7 +830,7 @@ void JediB_Update(WORLDINFO *world) {
                             OnOrInsidePlane(&baddie->locator.position, &PlayPlane[2].point, &PlayPlane[2].normal, NULL, 2.0f, NULL) == 0);
                 if (in_range == 0) {
                     baddie->position = baddie->object->position;
-                    baddie->angle = baddie->object->unknown_276;
+                    baddie->angle = baddie->object->movement_angle;
                     RemoveGameObject(baddie->object, 1);
                     baddie->object = NULL;
                     continue;
@@ -868,15 +865,15 @@ void JediB_Update(WORLDINFO *world) {
             baddie->object->ai_packet.locator = &baddie->locator;
             baddie->object->tag_object_callback = JediBKilledCallback;
             if (baddie->id == id_BOB) {
-                if (baddie->unknown_58 == 0) {
-                    baddie->unknown_58 = baddie->object->layer_mask;
+                if (baddie->saved_layer_mask == 0) {
+                    baddie->saved_layer_mask = baddie->object->layer_mask;
                     if (baddie->object->flags_ef0 & 0x200) {
                         baddie->flags |= 4;
                     } else {
                         baddie->flags &= ~4u;
                     }
                 } else {
-                    baddie->object->layer_mask = baddie->unknown_58;
+                    baddie->object->layer_mask = baddie->saved_layer_mask;
                     if (baddie->flags & 4) {
                         baddie->object->flags_ef0 |= 0x200;
                     } else {
@@ -1107,7 +1104,7 @@ void FactoryG_Update(WORLDINFO *world) {
         ObiWan->position.z = -10.5f;
         lamp =
             (f32)(NuTrigTable[(u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 2.0f) * NuQFntHalfScale * VehicleTurnPhaseScale) >> 1] * 30.0);
-        ObiWan->unknown_276 = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
+        ObiWan->movement_angle = (u16)(0xc000 - (i16)(i32)((f64)lamp * -182.04444885253906));
         return;
     }
     if (ObiWan == NULL) {
@@ -1333,8 +1330,12 @@ void KaminoC_Update(WORLDINFO *world) {
     SetGizAIMessage(gizaimessagesys, "DiscoComplete", 0.0f, kaminodisco.complete_message);
     switch (kaminodisco.phase) {
         case 0:
-            if (KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_1, kaminodisco.area) ||
-                KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_2, kaminodisco.area)) {
+            if ((world->ai_sys->player_1 != NULL && kaminodisco.area != NULL &&
+                 ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                   (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0)) ||
+                (world->ai_sys->player_2 != NULL && kaminodisco.area != NULL &&
+                 ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                   (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0))) {
                 kaminoc_netpacket->complete = 0;
                 kaminodisco.timer = 0.0f;
                 kaminodisco.phase = 1;
@@ -1359,7 +1360,7 @@ void KaminoC_Update(WORLDINFO *world) {
                 for (i = 0; i < 8; i++) {
                     GAMEOBJECT *object = Player[i];
                     if (object != NULL && (object->flags_1fc_word & APIOBJECT_FLAG_IN_USE) != 0 &&
-                        (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->unknown_281 != 0) {
+                        (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && object->ground_flags != 0) {
                         f32 dx = position->x - object->position.x;
                         f32 dy = position->y - object->position.y;
                         f32 dz = position->z - object->position.z;
@@ -1423,8 +1424,12 @@ void KaminoC_Update(WORLDINFO *world) {
         case 2:
             SetGizAIMessage(gizaimessagesys, "DiscoComplete", 1.0f, kaminodisco.complete_message);
             kaminoc_netpacket->complete = 1;
-            if (!(KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_1, kaminodisco.area) ||
-                  KAMINO_DISCO_PLAYER_IN_AREA(world, world->ai_sys->player_2, kaminodisco.area))) {
+            if (!((world->ai_sys->player_1 != NULL && kaminodisco.area != NULL &&
+                   ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                     (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0)) ||
+                  (world->ai_sys->player_2 != NULL && kaminodisco.area != NULL &&
+                   ((*(u64 *)((GAMEOBJECT *)world->ai_sys->player_1)->ai_area_mask &
+                     (u64)(i64)(1 << (kaminodisco.area - world->ai_sys->areas))) != 0)))) {
                 KaminoC_Reset(world);
                 return;
             }
@@ -1724,7 +1729,7 @@ void KaminoE_UpdateSlave1(WORLDINFO *world) {
                         (object->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) != 0) {
                         continue;
                     }
-                    distance = NuVecDistSqr(&object->collision_position, (NUVEC *)&matrix->m30, &delta);
+                    distance = NuVecDistSqr(&object->collision_position, &matrix->translation, &delta);
                     if (distance < best_distance) {
                         nearest = Player[i];
                         best_distance = distance;
@@ -1858,7 +1863,7 @@ void KaminoE_Update(WORLDINFO *world) {
         return;
     }
     target->position = wait->position;
-    target->unknown_276 = wait->rotation;
+    target->movement_angle = wait->rotation;
     target->facing_angle = wait->rotation;
     target->movement_facing_angle = wait->rotation;
     target->ai_packet.path_info = wait->path_info;
@@ -1908,7 +1913,7 @@ i32 fun_004e2370(void) {
 }
 
 i32 KaminoDiscoOn(void) {
-    return KaminoDiscoMusicState.mode == 2;
+    return KaminoDiscoMusicState.phase == 2;
 }
 
 void KaminoOutro_Init(WORLDINFO *world) {

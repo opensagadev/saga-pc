@@ -149,7 +149,7 @@ found:
     }
     slot->expired = 0;
     slot->active = 1;
-    slot->parameter_fc = message->unknown_4f;
+    slot->parameter_fc = message->slot_flags;
     slot->icon = (u16)message->icon;
     if (message->special != NULL) {
         slot->special = *(nuhspecial_s *)message->special;
@@ -159,7 +159,7 @@ found:
     slot->player_index = message->player_index;
     slot->score = message->score;
     slot->parameter_c4 = message->unknown_30;
-    slot->parameter_c8 = message->unknown_34;
+    slot->parameter_c8 = message->drift;
     slot->parameter_e0 = 0;
     slot->parameter_e2 = 0;
     slot->parameter_e4 = 0;

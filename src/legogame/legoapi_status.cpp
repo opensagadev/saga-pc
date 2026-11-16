@@ -61,27 +61,13 @@
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/Stubs.h"
 #include "nu2api/nuwin32/d3dCore.h"
+#include "legoapi/items/collect/minikits.h"
 static i32 goldbrickmsgcount = 0;
 
 /* Walks the two adjacent 0x14-byte rumble records. */
 
-#define STATUS_APPEND_STAGE_INLINE(packet_arg, type_arg, gold_arg)                                                                         \
-    do {                                                                                                                                   \
-        (packet_arg)->stage_types[(packet_arg)->stage_count] = (i8)(type_arg);                                                             \
-        (packet_arg)->gold_brick_enabled[(packet_arg)->stage_count] = (u8)(gold_arg);                                                      \
-        ++(packet_arg)->stage_count;                                                                                                       \
-    } while (0)
-
-typedef struct status_world_minikit_reader_s {
-    u8 unknown_0000[0x2968];
-    MINIKIT minikit;
-} STATUS_WORLD_MINIKIT_READER;
-
 extern "C" i16 dat_00880bc0;
 
-extern "C" {
-    i32 AllMiniKitsDone(AREASAVE_s *save);
-}
 extern "C" {
 
     f32 StatusScoreRatio(f32 numerator, f32 denominator) {
@@ -153,7 +139,6 @@ extern "C" {
 
     void SetDrawGoldBrick(STATUSPACKET_s *packet, i32 unused) {
         i32 index = packet->current_gold_brick;
-        (void)unused;
         if (packet->gold_brick_enabled[index] != 0) {
             STATUS_STAGE_s *stage = packet->stage;
             DrawGoldBrick_Stage = index;
@@ -285,7 +270,7 @@ extern "C" {
         if (stage != NULL) {
             stage->step = STATUS_STEP_WAITING;
             stage->step_time = 0.0f;
-            stage->unknown_12 = 0;
+            stage->shown = 0;
             stage->step_duration = 1.0f;
         }
     }
@@ -316,7 +301,7 @@ extern "C" {
         for (player = 0; player < 2; ++player, ++packet) {
             i32 motor1;
             UpdateRumble(packet);
-            if (Game.options_save.unknown_0000[player] != 0 && StatusPacket.player_active[player] != 0 &&
+            if (Game.options_save.rumble[player] != 0 && StatusPacket.player_active[player] != 0 &&
                 ((u8)GamePadStorage[player].allocated & 0x20) != 0) {
                 if (packet->amount > 0.0f) {
                     motor1 = (i32)((packet->intensity * packet->amount) * 255.0f / packet->decay_duration);
@@ -331,12 +316,12 @@ extern "C" {
     }
 
     void NextStatusStage(STATUSPACKET_s *packet) {
-        if (packet->stage != NULL && packet->stage->step == STATUS_STEP_WAITING && packet->stage->step_time < packet->unknown_68) {
+        if (packet->stage != NULL && packet->stage->step == STATUS_STEP_WAITING && packet->stage->step_time < packet->stage_delay) {
             packet->flags_word |= 2;
             return;
         }
         if (packet->stage != NULL) {
-            packet->stage->unknown_12 = 1;
+            packet->stage->shown = 1;
         }
         packet->previous_stage_2 = packet->previous_stage;
         packet->current_gold_brick = (i8)((u8)packet->current_gold_brick + 1);
@@ -369,7 +354,7 @@ extern "C" {
 
     i32 AddGoldBrickMessage(STATUSPACKET_s *packet, i16 brick) {
         if (goldbrickmsgcount < 16) {
-            ((i16 *)(packet->unknown_12c))[goldbrickmsgcount] = brick;
+            packet->gold_brick_messages[goldbrickmsgcount] = brick;
             ++goldbrickmsgcount;
         }
         AddToGoldBricks();
@@ -388,7 +373,7 @@ extern "C" {
     i32 newCharactersCollected(STATUSPACKET_s *packet) {
         i32 count = 0;
         if (StartupGameFlag1 == 0) {
-            if ((((u8 *)&packet->lsw_packet->unknown_00)[3] & 1) != 0 && Game.initial_store_pack_flags != areaSuitBits) {
+            if ((packet->lsw_packet->flags & 0x01000000u) != 0 && Game.initial_store_pack_flags != areaSuitBits) {
                 return 1;
             }
         } else {
@@ -428,14 +413,14 @@ extern "C" {
         i32 (*init)(WORLDINFO *, STATUSPACKET_s *) = packet->init_callback;
         i32 (*finish)(WORLDINFO *, STATUSPACKET_s *, i32) = packet->finish_callback;
         void (*draw)(STATUSPACKET_s *) = packet->draw_background_callback;
-        f32 delay = packet->unknown_68;
+        f32 delay = packet->stage_delay;
         reset(packet);
         memset(packet, 0, sizeof(*packet));
         packet->lsw_packet = lsw;
         packet->finish_callback = finish;
         packet->reset_callback = reset;
         packet->draw_background_callback = draw;
-        packet->unknown_68 = delay;
+        packet->stage_delay = delay;
         packet->init_callback = init;
     }
 
@@ -465,11 +450,10 @@ extern "C" {
         CoinTotalScale = 1.0f;
         goldbrickmsgcount = 0;
         if (netclient == 0) {
-            StatusPlayerModelPair *models = (StatusPlayerModelPair *)&p->player0_model;
             for (i = 0; i < 2; ++i) {
                 GAMEOBJECT *object = Player[i];
                 if (object != NULL) {
-                    models->model[i] = object->id;
+                    p->player_models[i] = object->id;
                     p->player_active[i] = (u8)((object->flags_1fc_word >> 7) & 1);
                     if (object->player.coin_packet != NULL) {
                         p->coins_remaining[i] = object->player.coin_packet->coins;
@@ -479,7 +463,7 @@ extern "C" {
                         ++p->status_flags;
                     }
                 } else {
-                    models->model[i] = 0xffff;
+                    p->player_models[i] = 0xffff;
                 }
             }
         }
@@ -502,15 +486,15 @@ extern "C" {
         PauseSaveAndExit = 0;
         area = (i8)world->area_index;
         p->flags_word &= ~STATUSPACKET_NEXT_AREA_UNLOCKED;
-        p->previous_completion = (u8)Game.save_hash;
+        p->previous_completion = (u8)Game.completion_points;
         p->flags_word &= ~(STATUSPACKET_VEHICLE_AREA | STATUSPACKET_BONUS_MODE | STATUSPACKET_SUPER_BONUS_MODE);
         p->next_area = -1;
-        p->field_0xbe = -1;
+        p->pending_area = -1;
         p->score = &Game.coins;
         p->previous_gold_bricks = Game.gold_bricks;
         p->displayed_gold_bricks = Game.gold_bricks;
         p->newly_completed = 0;
-        p->field_0xbd = 0;
+        p->completion_shown = 0;
         p->area_id = (i16)area;
         if (area != -1) {
             p->area = &ADataList[area];
@@ -583,9 +567,15 @@ extern "C" {
                 }
                 p->final_reward_score = p->time_reward_score;
                 IncreaseScore(&p->final_reward_score, p->superstory_score, 0);
-                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_COMPLETE, gold);
-                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_TIME, 0);
-                STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_SUPER_STORY_SCORE, 0);
+                p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_SUPER_STORY_COMPLETE);
+                p->gold_brick_enabled[p->stage_count] = (u8)(gold);
+                ++p->stage_count;
+                p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_SUPER_STORY_TIME);
+                p->gold_brick_enabled[p->stage_count] = (u8)(0);
+                ++p->stage_count;
+                p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_SUPER_STORY_SCORE);
+                p->gold_brick_enabled[p->stage_count] = (u8)(0);
+                ++p->stage_count;
                 if (Game.gold_bricks > p->previous_gold_bricks) {
                     AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
                 }
@@ -594,7 +584,9 @@ extern "C" {
                 }
                 hub_from_superstory = p->area->episode_index;
             }
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_EXIT);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -685,12 +677,18 @@ extern "C" {
             if (Game.gold_bricks > p->previous_gold_bricks) {
                 AddStatusStage(p, STATUS_STAGE_GOLD_BRICK, 0);
             }
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_PROMPT, 0);
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_PROMPT);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_EXIT);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
             if (netclient == 0) {
                 AddStatusStage(p, STATUS_STAGE_SAVE, 0);
             }
-            STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_FADE, 0);
+            p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_FADE);
+            p->gold_brick_enabled[p->stage_count] = (u8)(0);
+            ++p->stage_count;
             p->stage_types[p->stage_count] = -1;
             p->current_gold_brick = -1;
             p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -756,7 +754,7 @@ extern "C" {
             p->collected_score = (f32)(p->coins_remaining[0] + p->coins_remaining[1]);
         }
         p->newly_completed = 0;
-        if ((p->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
+        if ((p->result_flags & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
             p->true_hero_percent = 100.0f;
         } else {
             f32 target = p->true_hero_target;
@@ -768,7 +766,7 @@ extern "C" {
         }
         p->coins_collected[0] = p->coins_remaining[0];
         p->coins_collected[1] = p->coins_remaining[1];
-        if (area != -1 && (p->unknown_b0 & STATUSPACKET_FREE_PLAY) == 0 && p->episode != NULL && p->chapter < p->episode->regular_areas) {
+        if (area != -1 && (p->result_flags & STATUSPACKET_FREE_PLAY) == 0 && p->episode != NULL && p->chapter < p->episode->regular_areas) {
             p->next_area = p->episode->area_ids[p->chapter + 1];
             if (p->chapter < p->episode->regular_areas - 1) {
                 p->flags_word |= STATUSPACKET_NEXT_AREA_UNLOCKED;
@@ -790,7 +788,7 @@ extern "C" {
         {
             i32 gold = 0;
             i32 completed_episode = 0;
-            if (area != -1 && (p->unknown_b0 & STATUSPACKET_FREE_PLAY) == 0 && Game.area_save[area].area_complete == 0 &&
+            if (area != -1 && (p->result_flags & STATUSPACKET_FREE_PLAY) == 0 && Game.area_save[area].area_complete == 0 &&
                 (p->area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_BONUS_AREA | AREAFLAG_TEST_AREA)) == 0) {
                 p->newly_completed = 1;
                 Game.area_save[area].area_complete = 1;
@@ -806,7 +804,7 @@ extern "C" {
                         Game.area_save[EDataList[i].area_ids[0]].complete = 1;
                     }
                 }
-                if ((p->unknown_b0 & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0) {
+                if ((p->result_flags & STATUSPACKET_NEXT_AREA_UNLOCKED) != 0) {
                     Game.area_save[p->next_area].complete = 1;
                 } else if (p->episode != NULL) {
                     i32 bonus = Episode_FindAreaFromFlags(p->episode, AREAFLAG_VEHICLE_AREA | AREAFLAG_BONUS_AREA, 4);
@@ -830,14 +828,15 @@ extern "C" {
         if (GOTHAMSTREETS_ADATA != NULL && p->newly_completed != 0 && p->area == GOTHAMSTREETS_ADATA) {
             AddStatusStage(p, STATUS_STAGE_GOTHAM_COMPLETE, 0);
         }
-        if (p->area != NULL && (u8)p->area->cheat != 0xff && Game.area_save[area].red_brick_collected == 0 && AreaGlobals.unknown_08 != 0) {
+        if (p->area != NULL && (u8)p->area->cheat != 0xff && Game.area_save[area].red_brick_collected == 0 &&
+            AreaGlobals.red_brick_state != 0) {
             AddToCompletionPoints(POINTS_PER_REDBRICK);
             Game.area_save[area].red_brick_collected = 1;
             AddStatusStage(p, STATUS_STAGE_RED_BRICK, 0);
         }
         if (p->newly_completed != 0 && newCharactersCollected(p) > 0) {
             if (StartupGameFlag1 == 0) {
-                if (((u32)p->lsw_packet->unknown_00 & 0x01000000u) != 0) {
+                if ((p->lsw_packet->flags & 0x01000000u) != 0) {
                     AddStatusStage(p, 5, 0);
                 } else {
                     AddStatusStage(p, 6, 0);
@@ -854,7 +853,7 @@ extern "C" {
             if (HubBothTrueJediGoldBricks != 0) {
                 u8 *complete = &Game.area_save[area].true_hero_complete[(p->flags_word >> 6) & 1];
                 if (*complete == 0) {
-                    if ((p->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
+                    if ((p->result_flags & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
                         *complete = 1;
                         AddToCompletionPoints(POINTS_PER_TRUEJEDI);
                         AddStatusStage(p, STATUS_STAGE_TRUE_JEDI, AddGoldBrickMessage(p, dat_00880818));
@@ -863,7 +862,7 @@ extern "C" {
                     }
                 }
             } else if (Game.area_save[area].true_hero_complete[0] == 0 && Game.area_save[area].true_hero_complete[1] == 0) {
-                if ((p->unknown_b0 & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
+                if ((p->result_flags & STATUSPACKET_TRUE_HERO_COMPLETE) != 0) {
                     Game.area_save[area].true_hero_complete[1] = 1;
                     Game.area_save[area].true_hero_complete[0] = 1;
                     AddToCompletionPoints(POINTS_PER_TRUEJEDI);
@@ -890,7 +889,7 @@ extern "C" {
             if (PauseSaveAndExit == 0 || p->new_minikits != 0) {
                 AddStatusStage(p, STATUS_STAGE_MINIKIT, gold);
             }
-            if ((p->unknown_b0 & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
+            if ((p->result_flags & STATUSPACKET_NEW_MINIKIT_COMPLETE) != 0 && AllMiniKitsDone((AREASAVE_s *)Game.area_save) != 0) {
                 AddToCollection(dat_007f195c);
                 AddStatusStage(p, STATUS_STAGE_ALL_MINIKITS, 0);
             }
@@ -901,11 +900,15 @@ extern "C" {
         if ((p->flags_word & STATUSPACKET_SAVED_AND_EXITED) == 0) {
             AddStatusStage(p, STATUS_STAGE_PROMPT, 0);
         }
-        STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_EXIT, 0);
+        p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_EXIT);
+        p->gold_brick_enabled[p->stage_count] = (u8)(0);
+        ++p->stage_count;
         if (netclient == 0) {
             AddStatusStage(p, STATUS_STAGE_SAVE, 0);
         }
-        STATUS_APPEND_STAGE_INLINE(p, STATUS_STAGE_FADE, 0);
+        p->stage_types[p->stage_count] = (i8)(STATUS_STAGE_FADE);
+        p->gold_brick_enabled[p->stage_count] = (u8)(0);
+        ++p->stage_count;
         p->stage_types[p->stage_count] = -1;
         p->current_gold_brick = -1;
         p->next_stage = FindStatusStage(p->stage_types[0]);
@@ -934,8 +937,7 @@ extern "C" {
             }
             weight = packet->player_active[player] != 0 ? 1.0f : 0.25f;
             icon_alpha = weight * alpha;
-            DrawCharIcon((i16)((StatusPlayerModelPair *)&packet->player0_model)->model[player], x, y, 0.0f, MissionPlayerIconSize, frame,
-                         icon_alpha, icon_alpha, 1, NULL);
+            DrawCharIcon((i16)packet->player_models[player], x, y, 0.0f, MissionPlayerIconSize, frame, icon_alpha, icon_alpha, 1, NULL);
         }
     }
 
@@ -953,7 +955,6 @@ extern "C" {
 }
 
 i32 UpdateNewMiniKits(STATUSPACKET_s *packet, STATUS_STAGE_s *stage) {
-    (void)packet;
     if (stage->step_time > stage->step_duration) {
         stage->step_time = 0.0f;
         currentminikit = (i32)((u32)currentminikit + 1u);
@@ -975,8 +976,7 @@ extern "C" {
 }
 
 void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 max_pieces, STATUSPACKET_s *packet, f32 phase) {
-    STATUS_WORLD_MINIKIT_READER *view = (STATUS_WORLD_MINIKIT_READER *)WORLD;
-    if (view->minikit.scene == NULL || view->minikit.pieces == NULL) {
+    if (WORLD->minikit.scene == NULL || WORLD->minikit.pieces == NULL) {
         return;
     }
     NUVEC offset = v000;
@@ -984,7 +984,7 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
     done.x = done.y = done.z = scale;
     NUVEC growing;
     growing.x = growing.y = growing.z = collected_scale;
-    switch ((i8)view->minikit.pieces[currentminikit].direction) {
+    switch ((i8)WORLD->minikit.pieces[currentminikit].direction) {
         case MINIKIT_PIECE_NEG_X:
             offset.x += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
@@ -1005,16 +1005,15 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
             break;
     }
     for (i32 index = 0; index < packet->minikit_max; index++) {
-        view = (STATUS_WORLD_MINIKIT_READER *)WORLD;
-        if (index >= view->minikit.piece_count || index >= max_pieces) {
+        if (index >= WORLD->minikit.piece_count || index >= max_pieces) {
             break;
         }
-        NUMTX matrix = view->minikit.pieces[index].matrix;
+        NUMTX matrix = WORLD->minikit.pieces[index].matrix;
         if (index >= currentminikit) {
             NuMtxScale(&matrix, &growing);
             f32 reveal = index == currentminikit ? slideseek : 1.0f;
             reveal = NuTrigTable[((i32)(reveal * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
-            MINIKIT_PIECE *piece = &((STATUS_WORLD_MINIKIT_READER *)WORLD)->minikit.pieces[index];
+            MINIKIT_PIECE *piece = &WORLD->minikit.pieces[index];
             switch ((i8)piece->direction) {
                 case MINIKIT_PIECE_NEG_X:
                     matrix.m30 -= (piece->direction_index * 0.025f + 0.25) * reveal;
@@ -1053,11 +1052,11 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
         matrix.m32 += z;
         if (index < 10) {
             StatusMiniKitDrawCache[index].matrix = matrix;
-            StatusMiniKitDrawCache[index].piece = &((STATUS_WORLD_MINIKIT_READER *)world)->minikit.pieces[index];
+            StatusMiniKitDrawCache[index].piece = &world->minikit.pieces[index];
             StatusMiniKitDrawCache[index].active = 1;
         }
         if (world->level_objects[206].active != 0) {
-            DrawPanel3DObjectMtxNoAlpha(&((STATUS_WORLD_MINIKIT_READER *)world)->minikit.pieces[index].special, &matrix);
+            DrawPanel3DObjectMtxNoAlpha(&world->minikit.pieces[index].special, &matrix);
         }
     }
 }
@@ -1486,14 +1485,13 @@ extern "C" void NuMainStatusHelper(STATUSPACKET_s *) {
 extern "C" {
 
     void RegisterStatusScreen(STATUS_STAGE_s *stages, i32 *unused, const REGISTER_STATUS_PACKET *registration) {
-        (void)unused;
         StatusStages = stages;
         StatusPacket.lsw_packet = registration->lsw_packet;
         StatusPacket.init_callback = registration->init_callback;
         StatusPacket.finish_callback = registration->finish_callback;
         StatusPacket.reset_callback = registration->reset_callback;
         StatusPacket.draw_background_callback = registration->draw_background_callback;
-        StatusPacket.unknown_68 = registration->stage_delay;
+        StatusPacket.stage_delay = registration->stage_delay;
     }
 
     void UpdateStatusScreen(WORLDINFO *world) {
@@ -1503,7 +1501,6 @@ extern "C" {
         i32 select = 0;
         i32 up = 0;
         i32 down = 0;
-        (void)world;
         CoinTotalScale = SeekLinearF(CoinTotalScale, 1.0f, seek_step);
         DrawGoldBrick_Phase = -1;
         DrawGoldBrick_Stage = -1;
@@ -1576,7 +1573,7 @@ extern "C" {
             u32 button = Text_Language != NULANGUAGE_JAPANESE ? GAMEPAD_JUMP : GAMEPAD_MENUSELECT;
             if ((StatusPacket.player0_active != 0 && (GamePadStorage[0].menu_buttons_pressed & button) != 0) ||
                 (StatusPacket.player1_active != 0 && (GamePadStorage[1].menu_buttons_pressed & button) != 0) ||
-                (StatusPacket.unknown_b0 & 2) != 0) {
+                (StatusPacket.result_flags & 2) != 0) {
                 STATUS_STAGE_s *stage = StatusPacket.stage;
                 if (stage == NULL) {
                     goto status_done;

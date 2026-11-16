@@ -70,6 +70,14 @@
 #include "nu2api/numath/nuvec.h"
 #include "nu2api/numusic/sfx.h"
 #include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/gizmo/base/gizmessage.h"
+#include "legoapi/gizmo/object/giztorpedo.h"
+#include "legoapi/gizmos/object/gizpanel.h"
+#include "legoapi/gizmos/traps/attracto.h"
+#include "legoapi/gizmos/traps/gizbombgen.h"
+#include "legoapi/gizmos/trigger/gizrandom.h"
+#include "legoapi/gizmos/trigger/giztimer.h"
+#include "legoapi/props/doors/doors.h"
 
 ADDGIZMOTYPE *GizBuildIts_RegisterGizmo(i32);
 ADDGIZMOTYPE *Signals_RegisterGizmo(i32);
@@ -78,18 +86,10 @@ ADDGIZMOTYPE *TightRopes_RegisterGizmo(i32);
 ADDGIZMOTYPE *Ledges_RegisterGizmo(i32);
 ADDGIZMOTYPE *Spinner_RegisterGizmo(i32);
 ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32);
-ADDGIZMOTYPE *Attractos_RegisterGizmo(i32);
 ADDGIZMOTYPE *GuideLines_RegisterGizmo(i32);
 ADDGIZMOTYPE *GizTurrets_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizTimer_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizRandom_RegisterGizmo(i32);
-ADDGIZMOTYPE *Door_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizAIMessage_RegisterGizmo(i32);
 ADDGIZMOTYPE *Push_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizBombGen_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizPanel_RegisterGizmo(i32);
 ADDGIZMOTYPE *Teleport_RegisterGizmo(i32);
-ADDGIZMOTYPE *GizTorpMachine_RegisterGizmo(i32);
 
 const f32 PlayerBuildItNegativeLimit = -1000000000.0f;
 const f64 PlayerSlideSpeed = 1.2000000476837158;
@@ -386,7 +386,6 @@ void GizForces_AddLevelSfx(void *world, void *system_pointer, i32 *ids, i32 *cou
     GIZFORCESYS *system = system_pointer;
     GIZFORCE *force;
     i32 index;
-    (void)world;
     if (system == NULL) {
         return;
     }
@@ -459,8 +458,8 @@ static void ForceResetSingle(WORLDINFO *world, GIZFORCE *force) {
     GAMEANIMOBJ *object;
     force->runtime_flags = (force->runtime_flags & 0xffe2049fu) | GIZFORCE_ENABLED | GIZFORCE_VISIBLE;
     force->animation_speed = 1.0f;
-    force->unknown_48 = 0.0f;
-    force->unknown_50 = 0.0f;
+    force->hold_timer = 0.0f;
+    force->shake_timer = 0.0f;
     force->reset_word = 0;
     if (force->anim_set == NULL) {
         return;
@@ -600,7 +599,6 @@ static void ForceGroupPop(GIZFORCE *force) {
 
 i32 GizForce_UpdateHint(HINT *hint) {
     i32 index;
-    (void)hint;
     if (WORLD->area != NULL && WORLD->area == HUB_ADATA) {
         return 0;
     }
@@ -623,7 +621,6 @@ void GizForces_Draw(void *world_pointer, void *system_pointer, f32 unused) {
     NUMTX reflection;
     f32 reflection_height;
     i32 index;
-    (void)unused;
     if (system == NULL) {
         return;
     }
@@ -721,7 +718,6 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
     NUVEC velocity;
     ADDPART params;
     PART *part;
-    (void)unused;
 
     if (WORLD->current_level == MAULF_LDATA) {
         NuMtxSetTranslation(&translated, &ForceThrowMaulPosition);
@@ -732,20 +728,20 @@ PART *GizForce_Throw(GAMEOBJECT *object, GIZFORCE *force, f32 speed, f32 gravity
     if (object == NULL || object->player.force_throw_target == NULL) {
         return NULL;
     }
-    MakeThrowVector(&velocity, (NUVEC *)&matrix->m30, &object->player.force_throw_target->collision_position, &v000, speed, gravity);
+    MakeThrowVector(&velocity, &matrix->translation, &object->player.force_throw_target->collision_position, &v000, speed, gravity);
 
     params = Default_ADDPART;
     params.matrix = matrix;
     params.velocity = &velocity;
-    params.unknown_18 = 0.15f;
-    params.unknown_14 = 0.15f;
+    params.end_radius = 0.15f;
+    params.start_radius = 0.15f;
     params.gravity = gravity;
     params.special = special;
     params.flags = PART_FLAG_DIE_WHEN_STOPPED | PART_FLAG_COLLIDE_WITH_CHARACTERS | PART_FLAG_DAMAGE_CHARACTERS |
                    PART_FLAG_KEEP_OFF_SCREEN | PART_FLAG_ROTATE_RANDOMLY | PART_FLAG_NO_BOUNCE | PART_FLAG_SLOT_CANNOT_BE_STOLEN |
                    PART_FLAG_IGNORE_CREATURE | PART_FLAG_THROWN;
     params.owner = object;
-    params.hostility_group = object->hostility_group;
+    params.hostility_group = object->object_id;
     params.collision_fn = PartCollide_3D;
     params.kill_fn = PartKill_ForceThrow;
     params.time_step = FRAMETIME;
@@ -768,7 +764,6 @@ i32 GizForces_GetMaxGizmos(void *world_ptr) {
 void GizForces_AddGizmos(GIZMOSYS *giz, i32 type, void *world, void *data) {
     GIZFORCESYS *s = data;
     i32 i;
-    (void)world;
     if (s == NULL) {
         return;
     }
@@ -855,7 +850,6 @@ char *GizmoForce_GetOutputName(GIZMO *unused0, i32 output_index) {
 }
 
 i32 GizmoForce_GetNumOutputs(GIZMO *unused) {
-    (void)unused;
     return 8;
 }
 
@@ -1236,8 +1230,8 @@ void GizmoForce_Activate(GIZMO *gizmo, i32 active) {
     }
     force->enabled = active != 0;
     if (active != 0) {
-        force->unknown_48 = 0.0f;
-        force->unknown_50 = 0.0f;
+        force->hold_timer = 0.0f;
+        force->shake_timer = 0.0f;
         force->runtime_flags &= 0xfffeffafu;
         if (force->config_flags & GIZFORCE_CONFIG_REPEAT_REWARD) {
             force->runtime_flags &= ~GIZFORCE_REWARD_RELEASED;
@@ -1350,7 +1344,6 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
     GIZMO *gizmo;
     i32 index;
     i32 group_index;
-    (void)unused_time;
     if (world == NULL || system == NULL) {
         return;
     }
@@ -1389,7 +1382,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         force->being_used = user != NULL;
         was_moving = (force->anim_set->flags >> 1) & 1;
         force->runtime_flags &= ~GIZFORCE_ON_SCREEN;
-        if ((force->runtime_flags & GIZFORCE_SHAKE_OFFSET) != 0 && force->unknown_50 == 0.0f) {
+        if ((force->runtime_flags & GIZFORCE_SHAKE_OFFSET) != 0 && force->shake_timer == 0.0f) {
             offset.x = 0.0f;
             if ((force->runtime_flags & GIZFORCE_IN_STACK) == 0) {
                 offset.y = 0.0f;
@@ -1412,15 +1405,15 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                        GameAnimSet_GetCurrentFrame(force->anim_set) > force->effect_scale && !ForceAnimationDone(force);
         force->animation_speed = ForceUpdateSpeed(force, user);
         if (user == NULL && !still_rising && (force->runtime_flags & GIZFORCE_COMPLETION_PENDING) == 0) {
-            force->unknown_50 = 0.0f;
+            force->shake_timer = 0.0f;
             if (ForceAnimationDone(force)) {
-                if ((force->runtime_flags & GIZFORCE_IN_STACK) == 0 && ((force->config_flags & 2) != 0 || force->unknown_48 > 0.0f)) {
-                    f32 remaining = (f64)force->unknown_48 - FRAMETIME;
-                    force->unknown_48 = remaining;
+                if ((force->runtime_flags & GIZFORCE_IN_STACK) == 0 && ((force->config_flags & 2) != 0 || force->hold_timer > 0.0f)) {
+                    f32 remaining = (f64)force->hold_timer - FRAMETIME;
+                    force->hold_timer = remaining;
                     if (remaining <= 0.0f) {
-                        force->unknown_48 = 0.0f;
+                        force->hold_timer = 0.0f;
                     }
-                    if (force->unknown_48 == 0.0f) {
+                    if (force->hold_timer == 0.0f) {
                         if ((force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0 &&
                             (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) != 0) {
                             GameAnimSet_SetVisibility(force->anim_set, 1);
@@ -1438,22 +1431,22 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
             playing_forwards = 1;
             GizForce_PlayForwards(force);
             if ((force->runtime_flags & GIZFORCE_STACK_COMPLETE) != 0) {
-                force->unknown_48 = 0.0f;
-                force->unknown_50 = 0.0f;
+                force->hold_timer = 0.0f;
+                force->shake_timer = 0.0f;
             } else {
-                force->unknown_48 = force->force_strength;
+                force->hold_timer = force->force_strength;
                 if (force->force_range > 0.0f && (force->runtime_flags & GIZFORCE_SHAKE_DONE) == 0 &&
                     force->anim_set->state == GAMEANIMSET_STATE_AT_END) {
-                    if (force->unknown_50 == 0.0f) {
+                    if (force->shake_timer == 0.0f) {
                         started_shaking = 1;
                     }
-                    force->unknown_50 += FRAMETIME;
-                    if (force->unknown_50 >= force->force_range) {
+                    force->shake_timer += FRAMETIME;
+                    if (force->shake_timer >= force->force_range) {
                         force->runtime_flags |= GIZFORCE_SHAKE_DONE;
-                        force->unknown_50 = 0.0f;
+                        force->shake_timer = 0.0f;
                     }
                 } else {
-                    force->unknown_50 = 0.0f;
+                    force->shake_timer = 0.0f;
                 }
                 if ((force->config_flags & GIZFORCE_CONFIG_BASE_SOCKET) != 0 && (force->runtime_flags & GIZFORCE_SOCKET_HIDDEN) == 0 &&
                     ForceAnimationDone(force) && (force->force_range == 0.0f || (force->runtime_flags & GIZFORCE_SHAKE_DONE) != 0)) {
@@ -1462,7 +1455,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 }
             }
         }
-        if (force->unknown_50 > 0.0f) {
+        if (force->shake_timer > 0.0f) {
             offset.x = (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.05f - (f64)0.025f;
             offset.y = (force->runtime_flags & GIZFORCE_IN_STACK) != 0
                            ? GameAnimSet_GetCompletionRatio(force->anim_set) * force->group->combined_height
@@ -1505,7 +1498,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
                 }
             } else if (((force->anim_set->flags & GAMEANIMSET_PLAYING) != 0 ||
                         (force->anim_set->flags & GAMEANIMSET_IN_ACTIVE_LIST) != 0) &&
-                       force->unknown_50 == 0.0f && playing_forwards) {
+                       force->shake_timer == 0.0f && playing_forwards) {
                 if (force->process_sfx != -1) {
                     if (force->anim_set->state == GAMEANIMSET_STATE_AT_START || IsSfxLooping(force->process_sfx)) {
                         GameAudio_PlaySfxById(force->process_sfx, &force->position, 0, 0);
@@ -1596,7 +1589,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
             if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
                 for (object = force->anim_set->objects; object != NULL; object = object->next) {
                     GIZFORCEANIMDATA_s *data = object->object_data;
-                    if ((data->unknown_04 & GIZFORCEANIMDATA_GLOW_ACTIVE) != 0 || !NuSpecialExistsFn(&object->special)) {
+                    if ((data->glow_flags & GIZFORCEANIMDATA_GLOW_ACTIVE) != 0 || !NuSpecialExistsFn(&object->special)) {
                         continue;
                     }
                     radius = 0.0f;
@@ -1649,7 +1642,7 @@ void GizForces_Update(void *world_pointer, void *system_pointer, f32 unused_time
         force->runtime_flags &= ~0x20000u;
         if ((force->config_flags & GIZFORCE_CONFIG_PER_OBJECT) != 0) {
             for (object = force->anim_set->objects; object != NULL; object = object->next) {
-                object->force_data->unknown_04 &= ~GIZFORCEANIMDATA_GLOW_ACTIVE;
+                object->force_data->glow_flags &= ~GIZFORCEANIMDATA_GLOW_ACTIVE;
             }
         }
     }

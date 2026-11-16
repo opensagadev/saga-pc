@@ -11,6 +11,7 @@
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/nutrig.h"
+#include "legoapi/menus/screens/gamestatus_lsw.h"
 
 extern "C" {
     FadeSystem FadeSys;
@@ -53,9 +54,6 @@ class FadeStill : public FadeBase {
 };
 
 extern "C" {
-    void DrawStillScreen(i32 clear);
-    void DrawPauseScreenWipe(void);
-    void DrawFadeScreenWipe(void);
 
     Fade fade;
     FadeWipe fadeWipe;

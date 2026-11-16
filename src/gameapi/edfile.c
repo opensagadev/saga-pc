@@ -34,7 +34,7 @@ static eduiiattr_s ed_attr = {0x80000000, 0x80ff0000, 0x80808080, 0x80404040};
 static struct eduimenu_s *ed_cfg_menu = 0;
 NUCAMERA *edinternalcam = 0;
 NUVEC *ed_loc = 0;
-void *ed_fnt = 0;
+struct vufnt_s *ed_fnt = 0;
 i32 edmain_render_interacts = 0;
 i32 edmain_cursor_enabled = 0;
 static struct ed_module_s *ed_curr = 0;
@@ -445,13 +445,6 @@ static void eduiFilePickAllocDirList(void) {
     }
 }
 
-typedef struct EDUI_PRIM_VERTEX { // size 0x10
-    f32 x;                        // 0x0
-    f32 y;                        // 0x4
-    f32 z;                        // 0x8
-    u32 colour;                   // 0xc
-} EDUI_PRIM_VERTEX;
-
 static void EduiPrimSetColour(i32 colour) {
     u32 converted;
     if (NuPrimNeedsOverbrightening != 0) {
@@ -459,7 +452,7 @@ static void EduiPrimSetColour(i32 colour) {
     } else {
         converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
-    ((EDUI_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
 void fun_00617d30(void) {
@@ -613,13 +606,13 @@ eduiitem_s *eduiMenuAddItem(eduimenu_s *menu, eduiitem_s *item) {
     item->previous = menu->last;
     item->next = NULL;
     menu->last = item;
-    menu->unknown_0c = menu->first;
+    menu->first_visible = menu->first;
     edui_last_item = item;
-    menu->unknown_10 = NULL;
+    menu->last_visible = NULL;
     return item;
 }
 
-eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void *callback, char *title) {
+eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, struct vufnt_s *font, void *callback, char *title) {
     u32 bytes;
     eduimenu_s *menu;
     if (title != NULL) {
@@ -634,8 +627,8 @@ eduimenu_s *eduiMenuCreate(i32 x, i32 y, i32 width, i32 height, void *font, void
         menu->y = y;
         menu->width = width;
         menu->height = height;
-        menu->unknown_24 = -1;
-        menu->unknown_28 = -1;
+        menu->drawn_width = -1;
+        menu->drawn_height = -1;
         menu->font = font;
         menu->callback = (EdUiMenuCallback)callback;
         menu->flags = 0;
@@ -692,8 +685,8 @@ void eduiMenuDestroyItems(eduimenu_s *menu) {
         }
         menu->last = NULL;
         menu->selected = NULL;
-        menu->unknown_0c = NULL;
-        menu->unknown_10 = NULL;
+        menu->first_visible = NULL;
+        menu->last_visible = NULL;
     }
 }
 
@@ -753,8 +746,8 @@ void eduiMenuSortItemsByTxt(eduimenu_s *menu) {
                         }
                         next->previous = previous;
                         next->next = item;
-                        menu->unknown_0c = menu->first;
-                        menu->unknown_10 = NULL;
+                        menu->first_visible = menu->first;
+                        menu->last_visible = NULL;
                     }
                     if (item == first) {
                         first = item->previous;
@@ -781,7 +774,7 @@ void cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
     if (menu->first != NULL && menu->first->text != NULL) {
         comparison = NuStrICmp(menu->first->text, text);
     }
-    menu->unknown_0c = menu->first;
+    menu->first_visible = menu->first;
     menu->selected = menu->first;
     while (menu->selected->next != NULL && comparison < 0) {
         menu->selected = menu->selected->next;
@@ -791,7 +784,7 @@ void cbInteractMenuScrollTo(eduimenu_s *menu, char *text) {
             comparison = -1;
         }
     }
-    menu->unknown_10 = menu->selected;
+    menu->last_visible = menu->selected;
 }
 
 static i32 eduicbProcessSel(eduimenu_s *menu, eduiitem_s *item, f32 unused2, FRAME_PAD *pad) {
@@ -845,20 +838,20 @@ __declspec(noinline) void cbInteractMenuKeySelect(eduimenu_s *menu) {
 }
 
 void eduiMenuFitOnScreen(eduimenu_s *menu, i32 padding) {
-    if (menu->unknown_24 < 0) {
+    if (menu->drawn_width < 0) {
         i32 saved = edui_donotdraw;
         edui_donotdraw = 1;
         eduiMenuRender(menu);
         edui_donotdraw = saved;
     }
-    if (menu->x + menu->unknown_24 > 640 - padding) {
-        menu->x -= menu->unknown_24;
+    if (menu->x + menu->drawn_width > 640 - padding) {
+        menu->x -= menu->drawn_width;
     }
     if (menu->x < padding) {
         menu->x = padding;
     }
-    if (menu->y + menu->unknown_28 > 448 - padding) {
-        menu->y -= menu->unknown_28;
+    if (menu->y + menu->drawn_height > 448 - padding) {
+        menu->y -= menu->drawn_height;
     }
     if (menu->y < padding) {
         menu->y = padding;
@@ -1151,10 +1144,10 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 i
     if (up && (pad->digital_buttons & PAD_BUTTON_R2)) {
         page_up = 1;
     }
-    if (down && (pad->digital_buttons & PAD_BUTTON_R2) && menu->unknown_10) {
+    if (down && (pad->digital_buttons & PAD_BUTTON_R2) && menu->last_visible) {
         eduiitem_s *item;
         i32 count = 1;
-        for (item = menu->unknown_0c; item && item != menu->unknown_10; item = item->next) {
+        for (item = menu->first_visible; item && item != menu->last_visible; item = item->next) {
             ++count;
         }
         while (count && menu->selected->next) {
@@ -1163,25 +1156,25 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 i
         }
         return 0;
     }
-    if (page_up && menu->unknown_10) {
+    if (page_up && menu->last_visible) {
         eduiitem_s *item;
         i32 count = 1;
-        for (item = menu->unknown_0c; item && item != menu->unknown_10; item = item->next) {
+        for (item = menu->first_visible; item && item != menu->last_visible; item = item->next) {
             ++count;
         }
-        menu->selected = menu->unknown_0c;
+        menu->selected = menu->first_visible;
         while (count && menu->selected->previous) {
             --count;
             menu->selected = menu->selected->previous;
-            menu->unknown_0c = menu->selected;
+            menu->first_visible = menu->selected;
         }
         return 0;
     }
     if (up && menu->selected && menu->selected->previous) {
         do {
             eduiitem_s *item;
-            if (menu->selected == menu->unknown_0c) {
-                menu->unknown_0c = menu->selected->previous;
+            if (menu->selected == menu->first_visible) {
+                menu->first_visible = menu->selected->previous;
             }
             item = menu->selected->previous;
             while (item->type == EDUIITEM_SEPARATOR) {
@@ -1202,13 +1195,13 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 i
         if (to_last) {
             eduiitem_s *item;
             i32 count = 1;
-            for (item = menu->unknown_0c; item && item != menu->unknown_10; item = item->next) {
+            for (item = menu->first_visible; item && item != menu->last_visible; item = item->next) {
                 ++count;
             }
-            menu->unknown_0c = menu->selected;
-            while (count && menu->unknown_0c->previous) {
+            menu->first_visible = menu->selected;
+            while (count && menu->first_visible->previous) {
                 --count;
-                menu->unknown_0c = menu->unknown_0c->previous;
+                menu->first_visible = menu->first_visible->previous;
             }
         }
         return 0;
@@ -1364,7 +1357,7 @@ f32 edmainSetMenuScale(f32 scale) {
     return previous;
 }
 
-void edmainInit(void *font, char *configuration_file) {
+void edmainInit(struct vufnt_s *font, char *configuration_file) {
     ed_module_s *module;
     if (ed_init != 0) {
         edmainClose();
@@ -1390,7 +1383,7 @@ void edmainInit(void *font, char *configuration_file) {
     ed_init = 1;
 }
 
-void edmainInitEx(void *font, char *configuration_file, eduiiattr_s *colours, i32 x, i32 y, i32 width, i32 height) {
+void edmainInitEx(struct vufnt_s *font, char *configuration_file, eduiiattr_s *colours, i32 x, i32 y, i32 width, i32 height) {
     ed_attr = *colours;
     ed_main_menu_x = x;
     ed_main_menu_y = y;
@@ -1482,9 +1475,9 @@ void eduiMenuAddItemFirst(eduimenu_s *menu, eduiitem_s *item) {
     item->previous = NULL;
     item->next = menu->first;
     menu->first = item;
-    menu->unknown_0c = item;
+    menu->first_visible = item;
     edui_last_item = item;
-    menu->unknown_10 = NULL;
+    menu->last_visible = NULL;
 }
 
 eduiitem_s *eduiMenuAddItemLast(eduimenu_s *menu, eduiitem_s *item) {
@@ -1496,9 +1489,9 @@ eduiitem_s *eduiMenuAddItemLast(eduimenu_s *menu, eduiitem_s *item) {
     item->next = NULL;
     item->previous = menu->last;
     menu->last = item;
-    menu->unknown_0c = item;
+    menu->first_visible = item;
     edui_last_item = item;
-    menu->unknown_10 = NULL;
+    menu->last_visible = NULL;
     return item;
 }
 
@@ -1515,8 +1508,8 @@ eduiitem_s *eduiMenuAddItemAfter(eduimenu_s *menu, eduiitem_s *item, eduiitem_s 
     } else {
         item->next->previous = item;
     }
-    menu->unknown_0c = menu->first;
-    menu->unknown_10 = NULL;
+    menu->first_visible = menu->first;
+    menu->last_visible = NULL;
     edui_last_item = item;
     return item;
 }
@@ -1532,8 +1525,8 @@ eduiitem_s *eduiMenuAddItemBefore(eduimenu_s *menu, eduiitem_s *item, eduiitem_s
     if (item->previous == NULL) {
         menu->first = item;
     }
-    menu->unknown_0c = menu->first;
-    menu->unknown_10 = NULL;
+    menu->first_visible = menu->first;
+    menu->last_visible = NULL;
     edui_last_item = item;
     return item;
 }
@@ -1560,8 +1553,8 @@ i32 eduiMenuItemMoveUp(eduimenu_s *menu, eduiitem_s *item) {
     }
     previous->previous = item;
     previous->next = next;
-    menu->unknown_0c = menu->first;
-    menu->unknown_10 = NULL;
+    menu->first_visible = menu->first;
+    menu->last_visible = NULL;
     return 1;
 }
 
@@ -1587,8 +1580,8 @@ i32 eduiMenuItemMoveDown(eduimenu_s *menu, eduiitem_s *item) {
     }
     next->previous = previous;
     next->next = item;
-    menu->unknown_0c = menu->first;
-    menu->unknown_10 = NULL;
+    menu->first_visible = menu->first;
+    menu->last_visible = NULL;
     return 1;
 }
 
@@ -1619,7 +1612,7 @@ void eduicbItemDestroy(eduimenu_s *menu, eduiitem_s *item) {
         item->text = NULL;
     }
     NuFree(item, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x2a2);
-    menu->unknown_0c = menu->first;
+    menu->first_visible = menu->first;
 }
 
 void eduicbItemSliderDestroy(eduimenu_s *menu, eduiitem_s *item) {
@@ -1854,7 +1847,7 @@ void eduiInit(void) {
     eduiFilePickAllocDirList();
 }
 
-void eduiSetFont(void *font) {
+void eduiSetFont(struct vufnt_s *font) {
     edui_font = font;
 }
 
@@ -2202,7 +2195,7 @@ static void EduiDrawRect(f32 x, f32 y, f32 width, f32 height, u32 colour, NUMTL 
     }
 }
 
-static void eduiFntPrintClipEx(void *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
+static void eduiFntPrintClipEx(struct vufnt_s *font, f32 x, f32 y, i32 alignment, f32 clip_x, f32 clip_width, char *format, ...) {
     if (edui_donotdraw == 0) {
         char text[1024];
         va_list args;
@@ -2582,7 +2575,7 @@ static void eduicbItemDestroyProp(eduimenu_s *menu, eduiitem_s *item) {
         property->property_text = NULL;
     }
     NuFree(item, "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0x131c);
-    menu->unknown_0c = menu->first;
+    menu->first_visible = menu->first;
 }
 
 static void EduiDrawLine(f32 x0, f32 y0, f32 x1, f32 y1, u32 colour, NUMTL *material) {
@@ -2621,7 +2614,7 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
     if (edui_donotdraw == 0) {
         NuQFntSet(edui_font);
     }
-    switch (item->unknown_10) {
+    switch (item->colour_index) {
         case 1:
             if (edui_donotdraw == 0) {
                 NuQFntSetColour(edui_font, 0xff000060);
@@ -2957,8 +2950,8 @@ void eduiMenuRemoveItem(eduimenu_s *menu, eduiitem_s *item) {
     if (menu->selected == item) {
         menu->selected = item->next ? item->next : item->previous;
     }
-    menu->unknown_0c = menu->first;
-    menu->unknown_10 = NULL;
+    menu->first_visible = menu->first;
+    menu->last_visible = NULL;
     if (item->next) {
         item->next->previous = item->previous;
     }
@@ -4410,7 +4403,7 @@ char *edui_textrow_lower[4] = {"1234567890", "qwertyuiop", "asdfghjkl_", "zxcvbn
 
 /* Drops a locked interaction whose owner went away. */
 static void EduiReleaseStaleInteract(void) {
-    if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->unknown_20) {
+    if (eduiInteractLocked && (!eduiInteractLocked->menu || !eduiInteractLocked->item) && eduiInteractLocked->needs_debounce) {
         eduiInteractLocked = NULL;
     }
 }
@@ -4453,7 +4446,7 @@ static i32 fun_006272a0(eduimenu_s *menu, edui_interact_s *interact) {
         if (EduiInteractPressed(interact) && EduiInteractionContainsCursor(interact)) {
             result = 1;
             EduiInteractSelectItem(interact);
-            if (interact->unknown_20 != 0) {
+            if (interact->needs_debounce != 0) {
                 if ((interact->buttons & edui_cursor_buttons_db) == 0) {
                     return result;
                 }
@@ -4479,7 +4472,7 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD *pad) {
     edui_interact_s *interact;
     if (edmain_cursor_enabled) {
         if (eduiInteractLocked != NULL) {
-            if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) && eduiInteractLocked->unknown_20) {
+            if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) && eduiInteractLocked->needs_debounce) {
                 eduiInteractLocked = NULL;
             }
         }
@@ -5051,7 +5044,7 @@ eduiitem_s *eduiItemFileSelCreate(u32 data, void *colours, void *callback, char 
     return NULL;
 }
 
-void CreateTestMenu(void *font) {
+void CreateTestMenu(struct vufnt_s *font) {
     u32 colours[4] = {0x80000000u, 0x80ff0000u, 0x80808080u, 0x80404040u};
     eduiInitMaterials();
 

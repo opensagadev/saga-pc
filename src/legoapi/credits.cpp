@@ -5,6 +5,7 @@
 #include "legoapi/audio/audio.h"
 #include "legoapi/core/input/gamepads.h"
 #include "legoapi/legoapi_types.h"
+#include "legoapi/menus/screens/gamestructure.h"
 #include "legoapi/menus/core/text.h"
 #include "legoapi/menus/screens/credits.h"
 #include "legoapi/misc/gamemain.h"
@@ -17,6 +18,7 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numusic/numusic.h"
 #include <stdio.h>
+#include "nu2api/nusound/nusound.h"
 
 struct credit_record_s { // size 0x18
     char *text;          // 0x00
@@ -227,12 +229,6 @@ void Credits_GetInfo(f32 *duration, i32 *flag, f32 *alpha) {
 extern "C" void fun_0059d750() {
 }
 
-typedef struct credits_completion_reader_s { // size 0x4
-    u16 points;                              // 0x0
-    u8 unknown_02;                           // 0x2
-    u8 flags;                                // 0x3
-} CREDITS_COMPLETION_READER;
-
 static void CreditsDrawList(CREDIT_RECORD *credit, f32 time) {
     char percentage[32];
     f32 x;
@@ -250,8 +246,8 @@ static void CreditsDrawList(CREDIT_RECORD *credit, f32 time) {
             ++credit;
         }
     } else {
-        CREDITS_COMPLETION_READER *completion = (CREDITS_COMPLETION_READER *)CustomiserCompletionSave;
-        points = completion != NULL ? completion->points : 0;
+        STATUSCOLLECT_s *completion = CustomiserCompletionSave;
+        points = completion != NULL ? completion->completion_points : 0;
         sprintf(percentage, "%.1f%%", (f64)(points * 100) / HubCompletionPoints);
         x = 0.0f;
         if (CreditsFlag == 1) {
@@ -267,8 +263,6 @@ static void CreditsDrawList(CREDIT_RECORD *credit, f32 time) {
 void Credits_DrawPanel(WORLDINFO *world) {
     CreditsDrawList(CreditList, CreditsTime);
 }
-
-extern "C" void SoundKillAll(void);
 
 extern "C" void Credits_UpdateMenu(MENU *menu) {
     f32 volume = Game_OptionsSave != NULL ? GameSetMusicVolume(Game_OptionsSave) : 1.0f;

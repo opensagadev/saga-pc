@@ -5,7 +5,7 @@
 #include "gameapi/gui/apimenu.h"
 #include "legogame/game.h"
 
-struct CUSTOMPIECE_LAYERS;
+struct custom_piece_config_s;
 struct FRAME_PAD;
 struct customiser_config_s;
 struct WORLDINFO_s;
@@ -29,8 +29,8 @@ typedef struct GAMEPAD_RUNTIME_INPUT { // size 0x60
 extern "C" {
 #endif
     extern i32 PCArcadeUnpairedIconModel;
-    void PermanentCustomPieceConfig(struct CUSTOMPIECE_LAYERS *, struct nufpar_s *);
-    i32 PermanentCustomPieceAvailable(struct CUSTOMPIECE_LAYERS *);
+    void PermanentCustomPieceConfig(struct custom_piece_config_s *, struct nufpar_s *);
+    i32 PermanentCustomPieceAvailable(struct custom_piece_config_s *);
     extern f32 MissionPlayerIconSize;
     extern const char *TagAsciiDown;
     extern const char *InitAsciiUp;
@@ -53,6 +53,8 @@ extern "C" {
     extern u8 downrepeatcount[2];
     extern u8 rightrepeatcount[2];
     void Customiser_SetUpCharacterData(struct customiser_config_s *customiser);
+    extern NUVEC CustomisePos[2];
+    void Customiser_GetActiveWeirdoIndex(i32 *index, i32 *count);
 #ifdef __cplusplus
 }
 #endif

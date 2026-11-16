@@ -138,6 +138,13 @@
 #include "nu2api/numusic/sfx.h"
 #include "nu2api/nusound/nusound.h"
 #include "nu2api/nuwin32/Stubs.h"
+#include <string.h>
+#include <stdio.h>
+#include "legoapi/characters/motion/charplatforms.h"
+#include "legoapi/gizmo/base/gizactions.h"
+#include "legoapi/items/objects/grabber.h"
+#include "legoapi/items/objects/legoapi_traffic.h"
+#include "legoapi/world/world_shared.h"
 
 static NUVEC BuckSnowmobForward = {0.0f, 0.0f, 1.0f};
 static f32 BuckSnowmobJumpDuration = 1.0f;
@@ -149,8 +156,6 @@ static f32 BuckSnowmobRadius = 0.2f;
 extern "C" void Game_WorldInfo_InitLast(WORLDINFO *world);
 extern "C" void Game_WorldInfo_InitMenu(WORLDINFO *world, i32 *menu_id, i32 *menu_y);
 
-#include <string.h>
-#include <stdio.h>
 extern "C" NARROWSOCKEXCEPTION NarrowSockExceptionsLsw[4] = {
     {"deathstarbattle_d", -1, 1, 67.5f, 999.0f},
     {"deathstar2battle_b", -1, 0, 67.5f, 999.0f},
@@ -180,7 +185,7 @@ extern "C" {
     i16 id_CANTINABAND = -1;
     i16 id_ANAKINSPODGREEN = -1;
     i16 id_ANAKINSNEWPODGREEN = -1;
-    ANIM_REDIRECT_VIEW AnimRedirectList_LSW[41] = {
+    ANIM_REDIRECT AnimRedirectList_LSW[41] = {
         {"ride_bantha_new_blasterchar", 112, {0, 0}},
         {"ride_bantha_new_jedichar", 112, {0, 0}},
         {"ride_bantha_old_blasterchar", 112, {0, 0}},
@@ -228,23 +233,7 @@ extern "C" {
     const char *InitAsciiRight = ">";
     const char *InitAsciiBigArrow = "\xC2\xA4";
 }
-extern "C" void Grabber_Reset(WORLDINFO *world);
 extern "C" void VaderA_GoneThroughDoor(WORLDINFO *world, DOOR_s *door);
-
-typedef struct SHOP_COMPLETION_GAME {     // size 0x7e4c
-    u8 reserved_0000[0x782c];             // 0x0000
-    AREASAVE_s area_save[72];             // 0x782c
-    struct EPISODESAVE_s episode_save[6]; // 0x7b8c
-    u32 purchased_hint_bits[9];           // 0x7bd4
-    u32 purchased_gold_brick_bits[2];     // 0x7bf8
-    u32 purchased_extra_bits[2];          // 0x7c00
-    u8 reserved_7c08[0x10];               // 0x7c08
-    u16 completion_points;                // 0x7c18
-    u8 gold_bricks;                       // 0x7c1a
-    u8 reserved_7c1b[0x79];               // 0x7c1b
-    MISSION_SAVE_READER mission_save;     // 0x7c94
-    u8 reserved_7cf8[0x154];              // 0x7cf8
-} SHOP_COMPLETION_GAME;
 
 extern "C" {
     extern u16 PodRaceBDieAngle;
@@ -262,185 +251,15 @@ extern "C" {
     extern i16 dat_007f1828; /* character id fixed up from "PenguinBomb" */
 }
 
-#define GAME_PUBLISHER_ASSERT(expression) typedef char SAGA_JOIN(game_publisher_static_assert_, __COUNTER__)[(expression) ? 1 : -1]
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
-GAME_PUBLISHER_ASSERT(offsetof(SUIT_LAYERS, flags) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_data) == 0x54);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, game_character) == 0x24);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTERDATA, model_flags) == 4);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, flags_090) == 0x90);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, variant) == 0x116);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.flags_e20) == 0xe20);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_e33) == 0xe33);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-GAME_PUBLISHER_ASSERT(sizeof(CUT_PLAYER_CLIP_CONFIG) == 0x44);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, level_id) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, type) == 2);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, guest_episode) == 3);
-GAME_PUBLISHER_ASSERT(offsetof(CUT_PLAYER_CLIP_CONFIG, name) == 4);
-GAME_PUBLISHER_ASSERT(sizeof(LEVELDATA) == 0x130);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, area_index) == 0xa3);
-GAME_PUBLISHER_ASSERT(offsetof(AREA_DATA, index) == 0x7c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, id) == 0x1064);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_model) == 0x50);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.character_context) == 0x7b5);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_7aa) == 0x7aa);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, collision_position) == 0x80);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, lower_position) == 0x19c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_ef0) == 0xef0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, bounds_radius) == 0x1dc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_280) == 0x280);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc_word) == 0x1fc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, dead) == 0x28b);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.rider) == 0xcd0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.locator_matrices) == 0x804);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, translation) == 0x30);
-
-typedef struct buck_rotation_reader_s {
-    u8 unknown_0000[0x27a];
-    u16 rotation;
-} BUCK_ROTATION_READER;
-
-GAME_PUBLISHER_ASSERT(offsetof(BUCK_ROTATION_READER, rotation) == 0x27a);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.pad) == 0xca4);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEPAD, bound_pad) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-
-typedef struct game_callback_weapon_flags_s {
-    u8 unknown_00[0xe22];
-    u8 weapon_flags;
-} GAME_CALLBACK_WEAPON_FLAGS;
-
-GAME_PUBLISHER_ASSERT(offsetof(GAME_CALLBACK_WEAPON_FLAGS, weapon_flags) == 0xe22);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, anim_packet) == 8);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, flags_1fc) == 0x1fc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, floor_height) == 0x21c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, unknown_283) == 0x283);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, jump_animation_state) == 0x285);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.suit) == 0xcbc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, surface_normal) + offsetof(NUVEC, y) == 0xf28);
-GAME_PUBLISHER_ASSERT(sizeof(SUIT_INITIALIZER_RECORD) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(SUIT_INITIALIZER_RECORD, character_id) == 0x14);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, trafficanim_sys) == 0x5168);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, pulses_sys) == 0x5050);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, giz_flow) == 0x2acc);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, reset_flags) == 0x118);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, ai_trigger_set) == 0x4678);
-GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, flags) == 0x2800);
-GAME_PUBLISHER_ASSERT(offsetof(LEVEL_PROGRESS, giz_flow_progress) == 0x2c24);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, progress_flag_5174) == 0x5170);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, callbacks) + 2 * sizeof(void *) == 0x70);
-GAME_PUBLISHER_ASSERT(offsetof(AREA_GLOBALS, area_phase) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.saved_hitpoints) == 0xe39);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, spawn_protection_timer) == 0x1000);
 extern "C" {
     void Bolts_Reset(void);
     void Detonators_Reset(void);
-    void TrafficAnimSys_Reset(TRAFFICANIMSYS_s *system);
-    void Faders_Reset(WORLDINFO *world);
-    void CharPlatforms_Reset(CHARPLATFORMSYS_s *system);
     extern i32 makebaddiesforgetinresetbits;
 }
-extern "C" {
-    void GameRegisterGizActions(void);
-}
 
-typedef struct game_door_callback_s {
-    u8 unknown_00[0xf0];
-    u16 level_id;
-} GAME_DOOR_CALLBACK;
-
-GAME_PUBLISHER_ASSERT(offsetof(GAME_DOOR_CALLBACK, level_id) == 0xf0);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, index) == 0x62);
-GAME_PUBLISHER_ASSERT(offsetof(DOOR_s, level) == offsetof(GAME_DOOR_CALLBACK, level_id));
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, doomed_escape_locator) == 0xf14);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, current_route) == 0x404);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, next_route) == 0x405);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, path_info) == 0x420);
-GAME_PUBLISHER_ASSERT(sizeof(AIPATHINFO) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, frame_state) == 0x4c0);
-GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, flags_word) == 0xb0);
-GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, status_flags) == 0xb4);
-GAME_PUBLISHER_ASSERT(offsetof(STATUSPACKET_s, stage) == 0x124);
-GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, type) == 0xc);
-GAME_PUBLISHER_ASSERT(offsetof(STATUS_STAGE_s, step_time) == 0x18);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, area) == 0x12c);
-GAME_PUBLISHER_ASSERT(offsetof(LEVELDATA, flags) == 0x64);
-GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 1);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent) == 0x39c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, nearest_opponent_metric) == 0x3a0);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, ai_packet) + offsetof(AIPACKET, opponent) == 0x3ac);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, position) == 0x5c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_height) == 0x1014);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, reflection_enabled) == 0x107b);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-GAME_PUBLISHER_ASSERT(offsetof(GAMECAMERA, sock_position.sock_index) == 0x1);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, score) == 0xdc);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, target_is_coin_total) == 0xfe);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, position_a) == 0x7c);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, position) == 0x94);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, has_start_position) == 0xf9);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_MESSAGE, icon) == 0xe6);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, game_debris_sys) == 0x134);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, level_objects) == 0x2ac0);
-GAME_PUBLISHER_ASSERT(sizeof(LEVEL_OBJECT_RUNTIME) == 0x10);
-GAME_PUBLISHER_ASSERT(offsetof(LEVEL_OBJECT_RUNTIME, special) == 0);
 struct GIZBUILDIT;
 
-struct GAME_BUILDIT_READER {
-    u8 opaque_00[0x34];
-    NUVEC position;
-    u8 opaque_40[0x2c];
-    u8 anim_object_count;
-};
-
-GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER, position) == 0x34);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_BUILDIT_READER, anim_object_count) == 0x6c);
-GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, gold_bricks) == 0x7c1a);
-GAME_PUBLISHER_ASSERT(offsetof(GAMESAVE, purchased_extra_bits_high) == 0x7c04);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, part_debris_sys) == 0x138);
 extern "C" i16 dat_00880ff0;
-GAME_PUBLISHER_ASSERT(sizeof(MISSION_MENU_PACKET) == 0xa);
-GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, player_model) == 0);
-GAME_PUBLISHER_ASSERT(offsetof(MISSION_MENU_PACKET, active_player) == 4);
-GAME_PUBLISHER_ASSERT(offsetof(WORLDINFO, current_level) == 0x128);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.unknown_7b3) == 0x7b3);
-
-/* Local minimum reader; no GAMECAMERA size or backing claim. */
-typedef struct GAME_GIZMO_SFX_CAMERA_READER {
-    u8 opaque_00;
-    u8 sock;
-    u8 opaque_02[0x2a];
-    f32 sock_distance;
-} GAME_GIZMO_SFX_CAMERA_READER;
-
-GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock) == 1);
-GAME_PUBLISHER_ASSERT(offsetof(GAME_GIZMO_SFX_CAMERA_READER, sock_distance) == 0x2c);
-
-GAME_PUBLISHER_ASSERT(sizeof(TAG_CHARACTER_DATA_READER) == 0x4c);
-GAME_PUBLISHER_ASSERT(offsetof(TAG_CHARACTER_DATA_READER, icon_model) == 0x42);
-GAME_PUBLISHER_ASSERT(offsetof(APICHARSYS, char_data) == 0x20);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.hud_icon_timer) == 0xd60);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, character_top) == 0xff4);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, origin_scale) == 0xa8);
-GAME_PUBLISHER_ASSERT(offsetof(PLAYERCHARACTERCONFIG, hover_fall_mode) == 0x116);
-/* Reuse TAG_CHARACTER_DATA_READER from the LSW callback contract. */
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, pause_context_state) == 0xee8);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, upper_position) == 0x190);
-GAME_PUBLISHER_ASSERT(offsetof(GAMEOBJECT, player.flags_e24) == 0xe24);
-GAME_PUBLISHER_ASSERT(offsetof(CHARACTER_MODEL_LAYERS, points_of_interest) == 0x14);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m30) == 0x30);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m31) == 0x34);
-GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
-GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, mid_position) == 0x4c);
-GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, target_scale) == 0xa8);
-
-typedef struct GAME_CUSTOMISER_REWARD_READER {
-    u8 opaque_00[0x174];
-    u16 *save_pieces;
-} GAME_CUSTOMISER_REWARD_READER;
-
-GAME_PUBLISHER_ASSERT(offsetof(GAME_CUSTOMISER_REWARD_READER, save_pieces) == 0x174);
 
 extern "C" void GizmoBlowup_TransformDraw_Game(GIZMOBLOWUP *target);
 static void LEGO_AllGoldBricksFn(void);
@@ -508,9 +327,9 @@ extern "C" {
 static void InitOptionsSaveDefaults(OPTIONSSAVE *options) {
     i32 aspect = NuVideoGetAspect();
 
-    options->option_0000 = 0;
-    options->option_0001 = 0;
-    options->option_0002 = 0;
+    options->rumble_player1 = 0;
+    options->rumble_player2 = 0;
+    options->dolby_surround = 0;
     options->music_volume = 10;
     options->sound_volume = 10;
     options->option_0007 = 0;
@@ -528,7 +347,7 @@ static void InitOptionsSaveDefaults(OPTIONSSAVE *options) {
 }
 
 static i32 MakeSaveHash(void) {
-    return Game.save_hash;
+    return Game.completion_points;
 }
 
 extern "C" {
@@ -879,7 +698,7 @@ extern "C" void InitGameBeforeConfig(void) {
     Game_AreaSave = (COLLECTION_AREA_SAVE *)Game.area_save;
     EpisodeSave = Game.episode_save;
     Game_CharacterSave = Game.character_save;
-    CustomiserCompletionSave = (CUSTOMISER_COMPLETION_READER *)&Game.save_hash;
+    CustomiserCompletionSave = &Game.completion;
     Game_MissionSave = &Game.mission_save;
     ResetSeeds();
     ResetTimer(&GlobalTimer, 0.0f);
@@ -908,14 +727,14 @@ extern "C" void InitGameBeforeConfig(void) {
     }
 }
 
-static void GoThroughDoor_ExtraCode(WORLDINFO *world, GAME_DOOR_CALLBACK *door) {
+static void GoThroughDoor_ExtraCode(WORLDINFO *world, DOOR_s *door) {
     VehicleAreaRememberSpeed = GetVehicleAreaRememberSpeed();
     if (world->current_level == VADERA_LDATA) {
-        VaderA_GoneThroughDoor(world, reinterpret_cast<DOOR_s *>(door));
+        VaderA_GoneThroughDoor(world, door);
     }
     LEVELDATA *finish_level = PODRACEB_LDATA;
     if (finish_level != NULL) {
-        u16 door_level = door->level_id;
+        u16 door_level = door->level;
         u16 finish_index = (u16)finish_level->index;
         LEVELDATA *start_level = PODRACEA_LDATA;
         if (door_level == finish_index && world->current_level == start_level && Lap == 3) {
@@ -967,7 +786,7 @@ static i32 CanGlide_Game(GAMEOBJECT *object) {
 }
 
 static i32 UsingExtraActions_Game(GAMEOBJECT *object) {
-    return object->id == (u16)id_GRIEVOUS && (((u8)(object->player.flags_e20 >> 16) & 1) == 0 || object->player.unknown_e33 == 2);
+    return object->id == (u16)id_GRIEVOUS && (((u8)(object->player.flags_e20 >> 16) & 1) == 0 || object->player.weapon_draw_state == 2);
 }
 
 static i32 CanStartHold_Game(GAMEOBJECT *object) {
@@ -1128,7 +947,7 @@ static void Player_ToggledCharacter_Game(GAMEOBJECT *object, i32 owned) {
 }
 
 static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
-    if ((AnimMiscFlags(object->character_model, object->player.unknown_7aa) & 4) != 0) {
+    if ((AnimMiscFlags(object->character_model, object->player.context_animation) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
         } else {
@@ -1139,13 +958,13 @@ static void Punch_HitExtraCode_alternate(GAMEOBJECT *object, NUVEC *position) {
 
 static void Punch_HitExtraCode_LSW(GAMEOBJECT *object, NUVEC *position) {
     if (object->id == (u16)id_GAMORREANGUARD &&
-        ((object->player.character_context == CHARACTER_CONTEXT_PUNCH && object->player.unknown_7aa == ACTION_PUNCH3) ||
+        ((object->player.character_context == CHARACTER_CONTEXT_PUNCH && object->player.context_animation == ACTION_PUNCH3) ||
          object->player.character_context == CHARACTER_CONTEXT_LAND_LUNGE)) {
         NewRumbleAllPlayers(0.4f, 0.0f, 1, 0);
         NewRumble(object->player.pad->bound_pad, 0.7f, 0);
         GameCam_Judder(GameCam, 0.25f, 0, &object->collision_position);
         PlaySfx("fs_gamorr_land", &object->lower_position);
-    } else if ((AnimMiscFlags(object->character_model, object->player.unknown_7aa) & 4) != 0) {
+    } else if ((AnimMiscFlags(object->character_model, object->player.context_animation) & 4) != 0) {
         if (position != NULL) {
             PlaySfx("WhipHit", position);
         } else {
@@ -1290,7 +1109,7 @@ static void BuckStartExtra_LSW(GAMEOBJECT *object) {
             f32 distance = delta.x * delta.x + delta.z * delta.z;
             if (distance < radius * radius) {
                 NUVEC destination;
-                NuVecRotateY(&destination, &BuckSnowmobForward, ((BUCK_ROTATION_READER *)object)->rotation);
+                NuVecRotateY(&destination, &BuckSnowmobForward, object->movement_angle);
                 NuVecAdd(&destination, &destination, &Player[i]->collision_position);
                 f32 height = GameShadow(NULL, &destination, 5.0f, -1);
                 if (height != 2000000.0f) {
@@ -1312,7 +1131,7 @@ static i32 BoltInitSfx_LSW(GAMEOBJECT *object) {
 
 static void GameObjectDimensionsExtra_LSW(GAMEOBJECT *object) {
     if (object->id == (u16)id_ATAT && object->player.character_context == CHARACTER_CONTEXT_DEACTIVATED &&
-        object->player.unknown_7aa == ACTION_DEACTIVATED) {
+        object->player.context_animation == ACTION_DEACTIVATED) {
         object->bounds_radius += object->bounds_radius;
     }
 }
@@ -1463,13 +1282,12 @@ static i32 CheckMusicOther(void) {
 }
 
 static i32 GizBuildIt_CanStartBuildingFn_Game(GIZBUILDIT *input, GAMEOBJECT *object) {
-    GAME_BUILDIT_READER *buildit = (GAME_BUILDIT_READER *)input;
     if (WORLD->area != NULL && (WORLD->area->flags & AREAFLAG_HUB_AREA) != 0) {
         if (input == HubBuildIt) {
-            if (Game.gold_bricks < 2 * buildit->anim_object_count) {
+            if (Game.gold_bricks < 2 * input->anim_object_count) {
                 return 0;
             }
-        } else if (Game.gold_bricks < buildit->anim_object_count && Hub_BonusBuildIt(input) != 0) {
+        } else if (Game.gold_bricks < input->anim_object_count && Hub_BonusBuildIt(input) != 0) {
             return 0;
         }
     }
@@ -1511,8 +1329,7 @@ static void LEGO_100PercentFn(void) {
         i32 piece;
         Customiser_Set100PercentPieces(CharacterCustomiser);
         if (Customiser_FindPieceByName(CharacterCustomiser, "hat_hair_00", &category, &piece) != NULL && category != -1 && piece != -1) {
-            GAME_CUSTOMISER_REWARD_READER *customiser = (GAME_CUSTOMISER_REWARD_READER *)CharacterCustomiser;
-            customiser->save_pieces[category] = (u16)piece;
+            CharacterCustomiser->save->pieces[category] = (u16)piece;
         }
     }
 }
@@ -1523,7 +1340,7 @@ static i32 LastSafePosExtra(GAMEOBJECT *object) {
         return 1;
     }
     if (level == dat_0087b264 && object->jump_animation_state == 0x18 && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
-        object->unknown_283 == -1) {
+        object->ground_layer == -1) {
         return 1;
     }
     if (level == DEATHSTARESCAPEC_LDATA && (i16)object->id == id_SERVICECAR) {
@@ -1681,12 +1498,11 @@ static i32 GizmoBlowUp_NoTarget(WORLDINFO *world, GAMEOBJECT *object) {
 
 void GizmoBlowUp_Sfx(GIZMOBLOWUP *unused, NUVEC *position) {
     LEVELDATA *level = WORLD->current_level;
-    GAME_GIZMO_SFX_CAMERA_READER *camera = (GAME_GIZMO_SFX_CAMERA_READER *)GameCam;
-    (void)unused;
-    if (level == PODSPRINTA_LDATA && (camera->sock == 10 || camera->sock == 11 || camera->sock == 12) && camera->sock_distance > 145.0f &&
-        camera->sock_distance < 195.0f) {
+    SOCKPOSITION *camera = &GameCam->sock_position;
+    if (level == PODSPRINTA_LDATA && (camera->sock_index == 10 || camera->sock_index == 11 || camera->sock_index == 12) &&
+        camera->distance > 145.0f && camera->distance < 195.0f) {
         PlaySfx("PodX_PurpCrysHit", position);
-    } else if (level == PODRACEB_LDATA && camera->sock == 0 && camera->sock_distance > 145.0f) {
+    } else if (level == PODRACEB_LDATA && camera->sock_index == 0 && camera->distance > 145.0f) {
         PlaySfx("PodX_PurpCrysHit", position);
     } else {
         GameAudio_PlaySfx(0x33, position, 0, 0);
@@ -1701,17 +1517,16 @@ static nuhspecial_s *GameMsg_GetExtraObj(GAME_MESSAGE *message) {
 }
 
 static void Jump_EndOfLandContext(GAMEOBJECT *object) {
-    GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
     if ((i16)object->id == id_THEEMPEROR && object->player.character_context == LEGOCONTEXT_LAND_COMBOJUMP && BigJumpLandPreferred != -1 &&
-        object->player.unknown_7aa == BigJumpLandPreferred && ((weapon->weapon_flags & 1) == 0 || object->player.unknown_e33 == 2)) {
+        object->player.context_animation == BigJumpLandPreferred &&
+        ((object->player.weapon_flags & 1) == 0 || object->player.weapon_draw_state == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
 
 static void BigJump_EndOfLand(GAMEOBJECT *object) {
-    GAME_CALLBACK_WEAPON_FLAGS *weapon = (GAME_CALLBACK_WEAPON_FLAGS *)object;
-    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->player.unknown_7aa == BigJumpLandPreferred &&
-        ((weapon->weapon_flags & 1) == 0 || object->player.unknown_e33 == 2)) {
+    if ((i16)object->id == id_THEEMPEROR && BigJumpLandPreferred != -1 && object->player.context_animation == BigJumpLandPreferred &&
+        ((object->player.weapon_flags & 1) == 0 || object->player.weapon_draw_state == 2)) {
         ResetAnimPacket(&object->anim_packet, -1);
     }
 }
@@ -1915,14 +1730,14 @@ extern "C" {
     i32 Hub_UsePlayerList = 0;
 
     void ReCalculateCompletionPoints(void) {
-        SHOP_COMPLETION_GAME *save = reinterpret_cast<SHOP_COMPLETION_GAME *>(&Game);
+        GAMESAVE *save = &Game;
         i32 i;
         AREA_DATA *area;
         AREASAVE_s *area_save;
         save->completion_points = 0;
         save->gold_bricks = 0;
         memset(CompletionPointInfoRecalculate, 0, sizeof(CompletionPointInfoRecalculate));
-        if (AllMiniKitsDone(save->area_save) != 0) {
+        if (AllMiniKitsDone((AREASAVE_s *)save->area_save) != 0) {
             AddToCollection(dat_007f195c);
         }
         for (i = 0; i < MasterCollection.count; ++i) {
@@ -1935,7 +1750,7 @@ extern "C" {
             }
         }
         area = ADataList;
-        area_save = save->area_save;
+        area_save = (AREASAVE_s *)save->area_save;
         for (i = 0; i < AREACOUNT; ++i, ++area_save, ++area) {
             if (area == HUB_ADATA || (area->flags & (AREAFLAG_ENDING_AREA | AREAFLAG_TEST_AREA)) != 0 ||
                 (area->flags & AREAFLAG_NO_COMPLETION_POINTS) != 0) {
@@ -2022,7 +1837,7 @@ extern "C" {
         for (i = 0; i < 44; ++i) {
             CompletionPointInfoRecalculate[4] += POINTS_PER_CHEAT;
             // MATCH-EXCEPTION: unsigned word index (shr) with a signed loop counter jl.
-            if ((save->purchased_extra_bits[(u32)i >> 5] & (1U << (i & 31))) != 0) {
+            if ((save->extra_purchased_bits[(u32)i >> 5] & (1U << (i & 31))) != 0) {
                 AddToCompletionPoints(POINTS_PER_CHEAT);
             }
         }
@@ -2030,14 +1845,14 @@ extern "C" {
             HINT *hint = Hint_FindHint(ShopHintIds[i]);
             if (hint != NULL && hint->price > 0) {
                 CompletionPointInfoRecalculate[5] += POINTS_PER_HINT;
-                if ((save->purchased_hint_bits[i / 32] & (1ULL << (i % 32))) != 0) {
+                if ((save->hint_purchased_bits[i / 32] & (1ULL << (i % 32))) != 0) {
                     AddToCompletionPoints(POINTS_PER_HINT);
                 }
             }
         }
         for (i = 0; i < SHOPGOLDBRICKS; ++i) {
             CompletionPointInfoRecalculate[6] += POINTS_PER_GOLDBRICK;
-            if ((save->purchased_gold_brick_bits[i / 32] & (1ULL << (i % 32))) != 0) {
+            if ((save->gold_brick_purchased_bits[i / 32] & (1ULL << (i % 32))) != 0) {
                 AddToCompletionPoints(POINTS_PER_GOLDBRICK);
                 AddToGoldBricks();
             }
@@ -2046,11 +1861,10 @@ extern "C" {
 }
 
 extern "C" void InitChallenge(i32 area) {
-    (void)area;
     ChallengeMode = CHALLENGE_RUNNING;
     ResetTimer(&ChallengeTimer, 0);
     Cheats_TurnOff(0);
-    AreaGlobals.unknown_1c = 0;
+    AreaGlobals.challenge_minikits = 0;
 }
 
 extern "C" void MenuUpdateEndChallenge(MENU *menu) {
@@ -2065,7 +1879,6 @@ extern "C" void MenuUpdateEndChallenge(MENU *menu) {
 extern "C" {
 
     void MenuDrawEndChallenge(MENU *menu) {
-        (void)menu;
         if (MenuStopDraw == 0) {
             if (ChallengeMode == CHALLENGE_WON) {
                 if (NuFmod(GameTimer.time_elapsed, 0.3f) < (f64)0.2f) {
@@ -2086,7 +1899,7 @@ extern "C" {
                 }
                 SmartText(TTab[dat_008806f4], 0.0f, STATSPOSY, 1.0f, 1.0f, 1.0f, 1.0f, 0, red, green, 0, 1.7f, 1);
             }
-            DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals.unknown_20, 10);
+            DrawMiniKitCount(minikittime, MiniKitScale, AreaGlobals.challenge_minikits_shown, 10);
         }
     }
 
@@ -2097,7 +1910,7 @@ extern "C" {
     }
 
     void BuyAllShopExtras(void) {
-        SHOP_SAVE_VIEW *save = (SHOP_SAVE_VIEW *)&Game;
+        GAMESAVE *save = &Game;
         i32 index;
         i8 area;
         for (index = 0; index < 44; ++index) {
@@ -2136,7 +1949,7 @@ extern "C" void InitGameMode(void) {
     AveragePlayerCurrentSpeedMul();
     SetPlayer();
     AreaGlobals.progress_flags = WORLD->area != NULL ? AreaGlobals.area_phase : 0;
-    AreaGlobals.unknown_20 = AreaGlobals.unknown_1c;
+    AreaGlobals.challenge_minikits_shown = AreaGlobals.challenge_minikits;
     NewLData = NULL;
     NewMode = 0;
     for (i = 0; i < 2; ++i) {
@@ -2206,7 +2019,7 @@ extern "C" void CheckResetBits(void) {
     Hint_CancelCurrent();
     Teleports_Reset(WORLD);
     TrafficAnimSys_Reset(WORLD->trafficanim_sys);
-    Pulses_Reset((LEVEL_SFX_PULSE *)WORLD->pulses_sys);
+    Pulses_Reset(WORLD->pulses_sys);
     NuSound3StopRumble();
     ResetTimer(&GameTimer, 0.0f);
     ResetTimer(&GamePlayTimer, 0.0f);
@@ -2350,8 +2163,8 @@ extern "C" void CheckResetBits(void) {
     ResetRadios();
     SpecialMiniKits_Reset(WORLD);
     SuperCounters_FixUpGizmos(WORLD);
-    AITriggerSetSysReset((TRIGGER_SYSTEM *)WORLD->ai_trigger_set);
-    AITriggerSysAutoSetUp(WORLD, (AITRIGGERSETSYS_s *)WORLD->ai_trigger_set);
+    AITriggerSetSysReset(WORLD->ai_trigger_set);
+    AITriggerSysAutoSetUp(WORLD, WORLD->ai_trigger_set);
     if ((ResetBits & 0x10) != 0) {
         for (i = 0; i < 8; ++i) {
             if (Player[i] != NULL) {
@@ -2367,11 +2180,11 @@ extern "C" void CheckResetBits(void) {
         }
     }
     WORLD->blowup_target_candidate_count = 0;
-    callback = (void (*)(WORLDINFO *))WORLD->current_level->callbacks[2];
+    callback = WORLD->current_level->reset;
     if (callback != NULL) {
         callback(WORLD);
     }
-    CharPlatforms_Reset((CHARPLATFORMSYS_s *)WORLD->shadow_platform_list);
+    CharPlatforms_Reset(WORLD->shadow_platform_list);
     SetSoundFadeDist(WORLD, &Game.options_save);
     TempOptions.sound_volume = Game.options_save.sound_volume;
     TempOptions.music_volume = Game.options_save.music_volume;
@@ -2408,11 +2221,11 @@ extern "C" void CheckResetBits(void) {
     oneAtOnce_SetNumAttackers(1);
     if (WORLD->level_progress != NULL) {
         if ((WORLD->level_progress->flags & 2) != 0) {
-            WORLD->progress_flag_5174 = (WORLD->level_progress->flags >> 2) & 1;
+            WORLD->belt_active = (WORLD->level_progress->flags >> 2) & 1;
         }
     }
     if (WORLD->level_progress != NULL) {
-        ResetGizFlow(WORLD->giz_flow, (GIZFLOWPROGRESS *)WORLD->level_progress->giz_flow_progress);
+        ResetGizFlow(WORLD->giz_flow, &WORLD->level_progress->giz_flow_progress);
     } else {
         ResetGizFlow(WORLD->giz_flow, NULL);
     }
@@ -2446,14 +2259,14 @@ extern "C" {
         i32 type = part->part_id;
         GAMEOBJECT *owner = part->owner;
         nuhspecial_s *special = part->source_special;
-        f32 radius = part->unknown_e4;
+        f32 radius = part->collision_radius;
         NUVEC velocity;
         ADDPART params;
         PART *deflected;
         KillPart(part, 0);
         if (deflect != 0 && owner != NULL) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && owner->player_index == -1) {
-                MakeThrowVector(&velocity, (NUVEC *)&matrix.m30, &owner->collision_position, &owner->velocity, speed, gravity);
+                MakeThrowVector(&velocity, &matrix.translation, &owner->collision_position, &owner->velocity, speed, gravity);
             } else {
                 velocity.x = velocity.y = 0.0f;
                 velocity.z = 2.0f;
@@ -2465,7 +2278,7 @@ extern "C" {
             params.matrix = &matrix;
             params.velocity = &velocity;
             params.special = special;
-            params.unknown_14 = radius;
+            params.start_radius = radius;
             params.gravity = gravity;
             params.part_id = type;
             params.flags = flags;
@@ -2509,12 +2322,12 @@ extern "C" {
         i32 effect;
         f32 speed;
         u16 angle;
-        minimum.x = part->position.x - part->unknown_e4;
-        maximum.x = part->unknown_e4 + part->position.x;
-        minimum.y = part->position.y - part->unknown_e4;
-        maximum.y = part->unknown_e4 + part->position.y;
-        minimum.z = part->position.z - part->unknown_e4;
-        maximum.z = part->unknown_e4 + part->position.z;
+        minimum.x = part->position.x - part->collision_radius;
+        maximum.x = part->collision_radius + part->position.x;
+        minimum.y = part->position.y - part->collision_radius;
+        maximum.y = part->collision_radius + part->position.y;
+        minimum.z = part->position.z - part->collision_radius;
+        maximum.z = part->collision_radius + part->position.z;
         object = Obj;
         api = Obj;
         slot = (i32)(((u8 *)part - (u8 *)Part) / sizeof(PART));
@@ -2527,7 +2340,7 @@ extern "C" {
             if ((U64_PAIR(&CInfo[context].flags) & 0x8000) != 0 || (object->player.flags_e20 & 0x20) != 0) {
                 continue;
             }
-            if (part->unknown_206 == 0) {
+            if (part->player_mask == 0) {
                 if (object == part->owner) {
                     if (part->scale_time < 0.5f) {
                         continue;
@@ -2541,7 +2354,7 @@ extern "C" {
             if (context == CHARACTER_CONTEXT_BEEN_TAKEN_OVER || context == CHARACTER_CONTEXT_EATEN || context == CHARACTER_CONTEXT_GET_IN) {
                 continue;
             }
-            if ((part->flags & PART_FLAG_IGNORE_CREATURE) != 0 && (i8)part->hostility_group == api->hostility_group) {
+            if ((part->flags & PART_FLAG_IGNORE_CREATURE) != 0 && (i8)part->hostility_group == api->object_id) {
                 continue;
             }
             if ((part->flags & PART_FLAG_ACTIVE_CHARACTERS_ONLY) != 0 && (api->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0) {
@@ -2564,7 +2377,7 @@ extern "C" {
                 if ((character->flags_090 & CHARACTER_RUNTIME_GHOST) != 0) {
                     continue;
                 }
-                if (!SphereSphereOverlapScaleY(&part->position, part->unknown_e4, part->unknown_e4, &api->collision_position,
+                if (!SphereSphereOverlapScaleY(&part->position, part->collision_radius, part->collision_radius, &api->collision_position,
                                                api->collision_radius, api->bounds_half_height)) {
                     continue;
                 }
@@ -2589,13 +2402,13 @@ extern "C" {
                         GameCam_Judder(GameCam, 0.2f, 0, NULL);
                         ReleaseBuildIt(object, 0);
                         ReleasePush(object);
-                        if (object->player.origin_scale_override >= 1.0f) {
+                        if (object->player.shield_scale >= 1.0f) {
                             ObjHitShield(part->owner, object, object->player.shield_hitpoints, NULL);
                         } else if (CannotKill(object)) {
                             NewRumble(part->owner->player.pad->bound_pad, 0.5f, 0);
                             NewRumble(object->player.pad->bound_pad, 0.5f, 0);
                         } else {
-                            ObjHitObj((part->flags & PART_FLAG_CAN_DAMAGE_OWNER) != 0 ? NULL : part->owner, object, part->unknown_204,
+                            ObjHitObj((part->flags & PART_FLAG_CAN_DAMAGE_OWNER) != 0 ? NULL : part->owner, object, part->damage,
                                       (u16)(part->force_flags), 0, 1);
                         }
                     }
@@ -2622,7 +2435,7 @@ extern "C" {
             collect_pickup:
                 if ((part->active & PART_STATE_STOPPED) == 0) {
                     if (part->part_id != 0xcb || !(part->scale_time >= 0.5f) ||
-                        (VehicleArea == 0 && (object->current_hp <= 0 || object->current_hp >= object->unknown_107e))) {
+                        (VehicleArea == 0 && (object->current_hp <= 0 || object->current_hp >= object->max_hitpoints))) {
                         if (part->part_id == 0xcb) {
                             continue;
                         }
@@ -2641,7 +2454,7 @@ extern "C" {
                 } else if (part->part_id == 0xd0) {
                     CollectPowerUp(object, &part->position, part->rotation_y, 1);
                     KillPart(part, 2);
-                } else if (part->unknown_206 == 3) {
+                } else if (part->player_mask == 3) {
                     if ((api->character_data->model_flags & CHARACTER_MODEL_VEHICLE) == 0) {
                         continue;
                     }
@@ -2652,10 +2465,10 @@ extern "C" {
                     packet = object->player.torpedo;
                     if (count < getMaxTorpedos(object)) {
                         packet->pickup_positions[count] = part->position;
-                        object->player.torpedo->pickup_data[object->player.torpedo->count] = part->unknown_10c[0];
-                        object->player.torpedo->pickup_flags[object->player.torpedo->count] = part->unknown_10c[1];
+                        object->player.torpedo->pickup_data[object->player.torpedo->count] = part->pickup_data[0];
+                        object->player.torpedo->pickup_flags[object->player.torpedo->count] = part->pickup_data[1];
                         ++object->player.torpedo->count;
-                        object->player.torpedo->steal_timer = 0.0f;
+                        object->player.torpedo->pickup_timer = 0.0f;
                         object->player.torpedo->pickup_state = 0;
                         KillPart(part, 2);
                     }
@@ -2677,12 +2490,12 @@ extern "C" {
     }
 
     void Game_KillPart(PART *part, i32 reason) {
-        if (reason == 1 && part->unknown_206 != -1) {
-            if ((part->unknown_206 & 1) != 0 && Player[0] != NULL) {
+        if (reason == 1 && part->player_mask != -1) {
+            if ((part->player_mask & 1) != 0 && Player[0] != NULL) {
                 NewBuzz(Player[0]->player.pad->bound_pad, 0.2f, 0);
                 NewRumble(Player[0]->player.pad->bound_pad, 0.8f, 0);
             }
-            if ((part->unknown_206 & 2) != 0 && Player[1] != NULL) {
+            if ((part->player_mask & 2) != 0 && Player[1] != NULL) {
                 NewBuzz(Player[1]->player.pad->bound_pad, 0.2f, 0);
                 NewRumble(Player[1]->player.pad->bound_pad, 0.8f, 0);
             }
@@ -2739,7 +2552,7 @@ extern "C" {
                 Game.area_save[i].challenge_unlocked = 1;
             }
         }
-        Game.unknown_game_02[1] = 1;
+        Game.areas_opened = 1;
         if (WORLD != NULL && WORLD->current_level == HUB_LDATA) {
             Hub_LockUnlockDoors(WORLD);
         }
@@ -3146,7 +2959,7 @@ static void GizBuildIt_FinishFn_Game(GIZBUILDIT *input) {
         AddFancyMessageRGB(TTab[dat_00880ff0], 0.0f, 0.0f, 0.6f, 1.25f, 1, 255, 0, 0);
         BuyAllShopExtras();
         ReCalculateCompletionPoints();
-        AddPartDebris(WORLD->part_debris_sys, 15, &((GAME_BUILDIT_READER *)HubBuildIt)->position);
+        AddPartDebris(WORLD->part_debris_sys, 15, &static_cast<GIZBUILDIT *>(HubBuildIt)->position);
     }
 }
 
@@ -3169,7 +2982,7 @@ extern "C" {
 }
 
 extern "C" {
-    ANIM_REDIRECT_VIEW AnimRedirectList_Batman[1] = {
+    ANIM_REDIRECT AnimRedirectList_Batman[1] = {
         {NULL, 0, {0, 0}},
     };
     ADAPTIVEDIFFICULTY adaptivedifficulty = {0};

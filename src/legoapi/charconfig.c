@@ -924,7 +924,7 @@ static void CC_jump_move_speed_scale(NUFPAR *parser) {
 }
 
 static void CC_loop_height(NUFPAR *parser) {
-    charconfig.runtime->unknown_088 = NuFParGetFloat(parser);
+    charconfig.runtime->text_height = NuFParGetFloat(parser);
 }
 
 static void CC_no_tiptoe(NUFPAR *parser) {
@@ -1403,7 +1403,7 @@ static void CC_no_shoot(NUFPAR *parser) {
 }
 
 static void CC_blobshadow_size(NUFPAR *parser) {
-    charconfig.runtime->unknown_08c = CharConfigAbsFloat(NuFParGetFloat(parser));
+    charconfig.runtime->shadow_radius = CharConfigAbsFloat(NuFParGetFloat(parser));
 }
 
 static void CC_blobshadow_alpha(NUFPAR *parser) {
@@ -1411,7 +1411,7 @@ static void CC_blobshadow_alpha(NUFPAR *parser) {
 }
 
 static void CC_hover_height(NUFPAR *parser) {
-    charconfig.runtime->unknown_028 = NuFParGetFloat(parser);
+    charconfig.runtime->hover_height = NuFParGetFloat(parser);
 }
 
 static void CC_hover_time(NUFPAR *parser) {

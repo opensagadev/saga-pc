@@ -355,7 +355,7 @@ class EdStream { // size 0x20
     i32 version;                    // 0x04
     i32 mode;                       // 0x08
     i32 swap_endianness;            // 0x0c
-    i32 unknown_10;                 // 0x10
+    i32 led_file;                   // 0x10
     MemoryBuffer *memory_buffer;    // 0x14
     MemoryBuffer *secondary_buffer; // 0x18
     i32 flags;                      // 0x1c
@@ -550,6 +550,11 @@ struct ClassObject {   // size 0xc
     i32 SetAttributeData(i32 attribute, i32 requested_type, void *data, i32 data_size);
     void CopyObject(ClassObject &source);
 
+    /* The object as a plain ClassObject; selection nodes reach it through this call. */
+    ClassObject &Self() {
+        return *this;
+    }
+
     void fun_006b89c0(EdClass *object_class, void *object_data);
     void fun_006b89d0();
     i32 fun_006b89e0();
@@ -645,15 +650,12 @@ class Placeable { // size 0x18
     void fun_006c22b0(const char *value);
 };
 
-struct ClassObjectListEntry : public CSListLink<ClassObjectListEntry> { // size 0x14
+/* A selection list node: the list link, then the selected ClassObject (0x08). */
+struct ClassObjectListEntry : public CSListLink<ClassObjectListEntry>, public ClassObject { // size 0x14
     static void *operator new(size_t size);
     static void operator delete(void *memory);
 
     ClassObjectListEntry();
-
-    struct EdClass *ed_class; // 0x08
-    void *object;             // 0x0c
-    EdRef *reference;         // 0x10
 };
 
 struct ClassObjectList {         // size 0xc
@@ -769,7 +771,7 @@ class ClassEditor : public BaseEditor { // size 0x70
     EdManipulator *manipulator;       // 0x20
     ClassObjectList selected_objects; // 0x24
     ClassObject current_object;       // 0x30
-    i32 unknown_3c;                   // 0x3c
+    i32 sphere_colour;                // 0x3c
     ClassObject pending_object;       // 0x40
     struct eduimenu_s *menu;          // 0x4c
     VuVec snap_ray;                   // 0x50
@@ -1006,14 +1008,14 @@ class LevelEditor : public BaseThing { // size 0x10b0
     void fun_006bc9d0(struct eduimenu_s *menu);
     char *fun_006bc9e0(char *text);
 
-    f32 background_colour[4];     // 0x0010
-    i32 unknown_20;               // 0x0020
-    i32 unknown_24;               // 0x0024
-    i32 unknown_28;               // 0x0028
-    i32 unknown_2c;               // 0x002c
-    i32 unknown_30;               // 0x0030
+    f32 camera_position[4];       // 0x0010
+    i32 camera_angle_x;           // 0x0020
+    i32 camera_angle_y;           // 0x0024
+    i32 camera_enabled;           // 0x0028
+    i32 cursor_colour;            // 0x002c
+    i32 picking_enabled;          // 0x0030
     f32 overlay_alpha;            // 0x0034
-    i32 unknown_38;               // 0x0038
+    i32 menu_button_enabled;      // 0x0038
     i32 editor_buffer_from_front; // 0x003c
     EdInputContext input;         // 0x0040
     u8 loading;                   // 0x02a0
@@ -1045,14 +1047,14 @@ class LevelEditor : public BaseThing { // size 0x10b0
     u32 info_colour;              // 0x0ef8
     u32 info_background;          // 0x0efc
     u8 reserved_0xf00[0x100];     // 0x0f00
-    i32 pad_x;                    // 0x1000
-    i32 pad_y;                    // 0x1004
-    i32 pad_width;                // 0x1008
-    i32 pad_height;               // 0x100c
-    u32 pad_background;           // 0x1010
-    u32 pad_colour;               // 0x1014
+    i32 button_text_x;            // 0x1000
+    i32 button_text_y;            // 0x1004
+    i32 button_text_width;        // 0x1008
+    i32 button_text_height;       // 0x100c
+    u32 button_text_background;   // 0x1010
+    u32 button_text_colour;       // 0x1014
     u8 reserved_0x1018[4];        // 0x1018
-    char *pad_text[32];           // 0x101c
+    char *button_text[32];        // 0x101c
     EditorSettings settings;      // 0x109c
     i32 editors_entered;          // 0x10a8
     i32 active;                   // 0x10ac

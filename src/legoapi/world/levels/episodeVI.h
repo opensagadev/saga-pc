@@ -7,6 +7,15 @@
 #include "legoapi/world/level.h"
 #include "legoapi/world/world.h"
 
+/* The emperor fight's level-hack packet (SetLevelHack(8)): the floor state and which players stand on it. */
+typedef struct emperor_fight_packet_s { // size 0x8
+    i32 state;                          // 0x0
+    u8 enabled;                         // 0x4
+    u8 zap;                             // 0x5
+    i8 player_floor_mask;               // 0x6
+    u8 reserved;                        // 0x7
+} EMPEROR_FIGHT_PACKET;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,7 +50,7 @@ extern "C" {
     extern const char EpisodeVI_doton10[10];
     extern const char EpisodeVI_doton11[10];
     extern const char EpisodeVI_doton12[10];
-    extern void *emperorfighta_netpacket;
+    extern EMPEROR_FIGHT_PACKET *emperorfighta_netpacket;
     f32 DeathStar2BattleFire_GetSlowDownMul(GAMEOBJECT *);
     extern LEVELDATA *dat_0087b284;
 #ifdef __cplusplus

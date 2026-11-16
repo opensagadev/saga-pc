@@ -27,46 +27,10 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct TIGHTROPE_MOTION { // size 0x48
-    char name[16];                // 0x00
-    NUVEC start;                  // 0x10
-    NUVEC end;                    // 0x1c
-    u16 start_x_rotation;         // 0x28
-    u16 end_x_rotation;           // 0x2a
-    u16 start_y_rotation;         // 0x2c
-    u16 end_y_rotation;           // 0x2e
-    u8 start_model;               // 0x30
-    u8 end_model;                 // 0x31
-    i8 start_visible;             // 0x32
-    u8 reserved_33;               // 0x33
-    NUVEC direction;              // 0x34
-    f32 horizontal_length;        // 0x40
-    u16 rotation;                 // 0x44
-    u8 enabled;                   // 0x46
-    u8 available;                 // 0x47
-} TIGHTROPE_MOTION;
-
-typedef struct WORLD_TIGHTROPE_VIEW { // size 0x5060
-    u8 unknown_0000[0x5058];          // 0x0000
-    TIGHTROPE_MOTION *tightropes;     // 0x5058
-    i32 tightrope_count;              // 0x505c
-} WORLD_TIGHTROPE_VIEW;
-
-typedef struct TIGHTROPE_OBJECT_AUX { // size 0xd2c
-    u8 unknown_0000[0xd28];           // 0x000
-    f32 jump_reentry_timer;           // 0xd28
-} TIGHTROPE_OBJECT_AUX;
-
 typedef struct tightrope_progress_recovered_s {
     u32 active_mask[1];
     u32 visible_mask[1];
 } TIGHTROPE_PROGRESS;
-
-typedef struct tightrope_movement_s {
-    u8 unknown_00[0x40];
-    f32 horizontal_length;
-    u16 rotation;
-} TIGHTROPE_MOVEMENT;
 
 extern "C" {
 
@@ -81,14 +45,14 @@ extern "C" {
                 EdFileReadNuVec(&world->tightropes[index].start_position);
                 EdFileReadNuVec(&world->tightropes[index].end_position);
                 if (version >= 2) {
-                    world->tightropes[index].unknown_28 = EdFileReadUnsignedShort();
-                    world->tightropes[index].unknown_2a = EdFileReadUnsignedShort();
-                    world->tightropes[index].unknown_2c = EdFileReadUnsignedShort();
-                    world->tightropes[index].unknown_2e = EdFileReadUnsignedShort();
-                    world->tightropes[index].unknown_30 = EdFileReadUnsignedChar();
-                    world->tightropes[index].unknown_31 = EdFileReadUnsignedChar();
+                    world->tightropes[index].start_pitch = EdFileReadUnsignedShort();
+                    world->tightropes[index].end_pitch = EdFileReadUnsignedShort();
+                    world->tightropes[index].start_yaw = EdFileReadUnsignedShort();
+                    world->tightropes[index].end_yaw = EdFileReadUnsignedShort();
+                    world->tightropes[index].start_post_variant = EdFileReadUnsignedChar();
+                    world->tightropes[index].end_post_variant = EdFileReadUnsignedChar();
                     if (version >= 3) {
-                        world->tightropes[index].unknown_32 = EdFileReadChar();
+                        world->tightropes[index].show_start_post = EdFileReadChar();
                     }
                 }
             }
@@ -178,12 +142,12 @@ extern "C" {
     }
 }
 
-extern "C" TIGHTROPE_MOTION *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
-    TIGHTROPE_MOTION *rope = ((WORLD_TIGHTROPE_VIEW *)world)->tightropes;
+extern "C" TIGHTROPE_s *TightRope_InRange(GAMEOBJECT *object, WORLDINFO *world, NUVEC *position) {
+    TIGHTROPE_s *rope = world->tightropes;
     f32 width = 3.0f * object->bounds_radius;
     NUVEC origin = object->collision_position;
     NUVEC offset;
-    for (i32 index = 0; index < ((WORLD_TIGHTROPE_VIEW *)world)->tightrope_count; ++index, ++rope) {
+    for (i32 index = 0; index < world->tightrope_count; ++index, ++rope) {
         if (rope->enabled == 0 || rope->available == 0) {
             continue;
         }
@@ -241,22 +205,22 @@ extern "C" {
             i32 point;
             GAMEOBJECT *object;
             for (endpoint = 0; endpoint < 2; ++endpoint) {
-                if (rope->visible != 0 || (rope->unknown_32 != 0 && endpoint < 1)) {
+                if (rope->visible != 0 || (rope->show_start_post != 0 && endpoint < 1)) {
                     i32 model;
                     u16 angle_x;
                     NUVEC *position;
                     if (endpoint == 0) {
-                        model = rope->unknown_30 != 0 ? 64 : 63;
-                        angle_x = rope->unknown_28;
+                        model = rope->start_post_variant != 0 ? 64 : 63;
+                        angle_x = rope->start_pitch;
                         position = &rope->start_position;
                     } else {
-                        model = rope->unknown_31 != 0 ? 64 : 63;
-                        angle_x = rope->unknown_2a;
+                        model = rope->end_post_variant != 0 ? 64 : 63;
+                        angle_x = rope->end_pitch;
                         position = &rope->end_position;
                     }
                     if (WORLD->level_objects[model].active != 0) {
                         NuMtxSetRotationX(&matrix, angle_x);
-                        NuMtxRotateY(&matrix, endpoint == 0 ? rope->unknown_2c : (NUANG)rope->unknown_2e);
+                        NuMtxRotateY(&matrix, endpoint == 0 ? rope->start_yaw : rope->end_yaw);
                         NuMtxTranslate(&matrix, position);
                         NuSpecialDrawAt(&WORLD->level_objects[model].special, &matrix);
                     }
@@ -270,8 +234,8 @@ extern "C" {
             for (object_index = 0; object_index < HIGHGAMEOBJECT; ++object_index, ++object) {
                 if ((object->flags_1fc_word & (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER)) !=
                         (APIOBJECT_FLAG_IN_USE | APIOBJECT_FLAG_CHARACTER) ||
-                    object->player.character_context != CHARACTER_CONTEXT_TIGHTROPE || object->player.unknown_7aa == ACTION_JUMP ||
-                    object->player.unknown_7aa == ACTION_FALL || object->player.grapple != rope) {
+                    object->player.character_context != CHARACTER_CONTEXT_TIGHTROPE || object->player.context_animation == ACTION_JUMP ||
+                    object->player.context_animation == ACTION_FALL || object->player.grapple != rope) {
                     continue;
                 }
                 positions[count] = (object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TIGHTROPE_WALK) != 0
@@ -423,7 +387,7 @@ extern "C" {
     }
 }
 
-static i32 TightRopeSetPosition(TIGHTROPE_MOTION *rope, NUVEC *position, GAMEOBJECT *object) {
+static i32 TightRopeSetPosition(TIGHTROPE_s *rope, NUVEC *position, GAMEOBJECT *object) {
     f32 margin;
     i32 result;
     NuVecSub(position, position, &rope->start);
@@ -453,9 +417,9 @@ static i32 TightRopeSetPosition(TIGHTROPE_MOTION *rope, NUVEC *position, GAMEOBJ
 
 static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
     i32 result = 1;
-    if (object->player.pad->input_magnitude > 0.0f && object->player.unknown_7aa != ACTION_TIGHTROPE_GETON) {
+    if (object->player.pad->input_magnitude > 0.0f && object->player.context_animation != ACTION_TIGHTROPE_GETON) {
         NUVEC previous = object->player.launch_origin;
-        TIGHTROPE_MOTION *rope = object->player.tightrope;
+        TIGHTROPE_s *rope = object->player.tightrope;
         f32 input = PushingTowardsAngle(GamePad_InputAngle(object, object->player.pad), rope->rotation);
         f32 direction;
         f32 speed;
@@ -464,7 +428,7 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
             if (jumping == 0) {
                 rope = object->player.tightrope;
                 object->movement_facing_angle = rope->rotation;
-                object->player.unknown_7aa = ACTION_TIGHTROPE_MOVE;
+                object->player.context_animation = ACTION_TIGHTROPE_MOVE;
                 speed = AnimSpeed(object->character_model, ACTION_TIGHTROPE_MOVE);
             } else {
                 speed = 0.6f;
@@ -474,14 +438,14 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
             if (jumping == 0) {
                 rope = object->player.tightrope;
                 object->movement_facing_angle = rope->rotation + 0x8000;
-                object->player.unknown_7aa = ACTION_TIGHTROPE_MOVE;
+                object->player.context_animation = ACTION_TIGHTROPE_MOVE;
                 speed = AnimSpeed(object->character_model, ACTION_TIGHTROPE_MOVE);
             } else {
                 speed = 0.6f;
             }
         } else {
             if (jumping == 0) {
-                object->player.unknown_7aa = ACTION_TIGHTROPE_IDLE;
+                object->player.context_animation = ACTION_TIGHTROPE_IDLE;
             }
             return result;
         }
@@ -493,17 +457,17 @@ static i32 TightRope_MoveUpdate(GAMEOBJECT *object, i32 jumping) {
         result = TightRopeSetPosition(rope, &object->player.launch_origin, object);
         if (jumping == 0 && object->player.launch_origin.x == previous.x && object->player.launch_origin.y == previous.y &&
             object->player.launch_origin.z == previous.z) {
-            object->player.unknown_7aa = ACTION_TIGHTROPE_IDLE;
+            object->player.context_animation = ACTION_TIGHTROPE_IDLE;
         }
     } else if (jumping == 0) {
-        object->player.unknown_7aa = ACTION_TIGHTROPE_IDLE;
+        object->player.context_animation = ACTION_TIGHTROPE_IDLE;
     }
     return result;
 }
 
 static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
     NUVEC position;
-    TIGHTROPE_MOTION *rope = TightRope_InRange(object, world, &position);
+    TIGHTROPE_s *rope = TightRope_InRange(object, world, &position);
     if (rope != NULL) {
         object->player.character_context = CHARACTER_CONTEXT_TIGHTROPE;
         object->player.grapple = rope;
@@ -512,10 +476,10 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
         if (object->character_model->model_data_b[0x8f] != NULL &&
             ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TIGHTROPE_WALK) == 0 ||
              (object->upper_position.y - object->lower_position.y) * 0.25f + object->lower_position.y < position.y)) {
-            object->player.unknown_7aa = ACTION_TIGHTROPE_GETON;
+            object->player.context_animation = ACTION_TIGHTROPE_GETON;
             object->player.context_timer = AnimDuration((i16)object->id, 0x8f, 0.0f, 0.0f, 1);
         } else {
-            object->player.unknown_7aa = ACTION_TIGHTROPE_IDLE;
+            object->player.context_animation = ACTION_TIGHTROPE_IDLE;
         }
         object->player.launch_origin = position;
         if (abs(RotDiff(object->player.tightrope->rotation, object->movement_facing_angle)) <= 0x4000) {
@@ -532,12 +496,12 @@ static i32 TightRope_Attach(GAMEOBJECT *object, WORLDINFO *world) {
         NuVecRotateX(&position, &v010, -slope);
         rope = object->player.tightrope;
         NuVecRotateY(&position, &position, rope->rotation);
-        FindAnglesZX(&position, &object->player.unknown_7a4, &object->player.unknown_7a8);
+        FindAnglesZX(&position, &object->player.saved_pitch, &object->player.saved_roll);
         if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TIGHTROPE_TILT) != 0) {
             position.x = position.z = 0.0f;
             position.y = object->upper_position.y - object->lower_position.y;
-            NuVecRotateZ(&object->player.context_position_offset, &position, object->player.unknown_7a8);
-            NuVecRotateX(&object->player.context_position_offset, &object->player.context_position_offset, object->player.unknown_7a4);
+            NuVecRotateZ(&object->player.context_position_offset, &position, object->player.saved_roll);
+            NuVecRotateX(&object->player.context_position_offset, &object->player.context_position_offset, object->player.saved_pitch);
             NuVecSub(&object->player.context_position_offset, &position, &object->player.context_position_offset);
         } else {
             object->player.context_position_offset = v000;
@@ -572,7 +536,7 @@ extern "C" i32 TightRope_SnapTo(GAMEOBJECT *object, NUVEC *position) {
 
 extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
     if (object->player.character_context == CHARACTER_CONTEXT_TIGHTROPE) {
-        u16 state = object->player.unknown_7aa;
+        u16 state = object->player.context_animation;
         if (state != ACTION_TIGHTROPE_GETON) {
             object->player.external_force.y = FRAMETIME + object->player.external_force.y;
         }
@@ -585,17 +549,17 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 }
             } else if (state == ACTION_JUMP) {
                 if (object->player.context_timer >= object->player.context_duration) {
-                    object->player.unknown_7aa = ACTION_FALL;
+                    object->player.context_animation = ACTION_FALL;
                 }
             }
-            if (object->velocity.y <= 0.0f && TightRope_Attach(object, WORLD) == 0 && object->unknown_281 != 0) {
+            if (object->velocity.y <= 0.0f && TightRope_Attach(object, WORLD) == 0 && object->ground_flags != 0) {
                 object->player.flags_e24 |= APIOBJECT_FALL_LAND;
-                if (object->player.unknown_7aa != ACTION_FALL || StartFallLand(object, -1) == 0) {
+                if (object->player.context_animation != ACTION_FALL || StartFallLand(object, -1) == 0) {
                     if (object->character_model->model_data_b[7] != NULL && object->player.pad->input_magnitude == 0.0f) {
                         object->player.character_context = CHARACTER_CONTEXT_LAND_JUMP;
-                        object->player.unknown_7aa = ACTION_LAND;
+                        object->player.context_animation = ACTION_LAND;
                         object->player.context_timer = AnimDuration((i16)object->id, 7, 0.0f, 0.0f, 1);
-                        ((TIGHTROPE_OBJECT_AUX *)object)->jump_reentry_timer = 0.2f;
+                        object->player.jump_reentry_timer = 0.2f;
                         ResetAnimPacket(&object->anim_packet, -1);
                     } else {
                         object->player.character_context = CHARACTER_CONTEXT_NONE;
@@ -612,7 +576,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
         if (jump_pressed != 0) {
             if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                 object->velocity.y = 2.0f;
-                object->player.unknown_7aa = ACTION_JUMP;
+                object->player.context_animation = ACTION_JUMP;
                 object->player.context_timer = 0.0f;
                 f32 duration = AnimDuration((i16)object->id, 6, 0.0f, 0.0f, 0);
                 object->player.context_duration = duration;
@@ -629,7 +593,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
         if (state == ACTION_TIGHTROPE_GETON) {
             f32 *playing = AnimPlaying(&object->anim_packet, ACTION_TIGHTROPE_GETON, 1, 0);
             if (playing != NULL) {
-                f32 frame = AnimListFrame(object->character_model, object->player.unknown_7aa, 0);
+                f32 frame = AnimListFrame(object->character_model, object->player.context_animation, 0);
 
                 if (frame >= 1.0f && *playing >= frame && object->player.pad->input_magnitude > 0.0f &&
                     TightropeFabs(PushingTowardsAngle(GamePad_InputAngle(object, object->player.pad), object->player.tightrope->rotation)) >
@@ -638,11 +602,11 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
                 } else {
                     object->player.context_timer -= FRAMETIME;
                     if (object->player.context_timer <= 0.0f) {
-                        object->player.unknown_7aa = ACTION_TIGHTROPE_IDLE;
+                        object->player.context_animation = ACTION_TIGHTROPE_IDLE;
                     }
                 }
             }
-        } else if (TightRope_MoveUpdate(object, 0) == 0 && object->player.unknown_7aa != ACTION_TIGHTROPE_GETON &&
+        } else if (TightRope_MoveUpdate(object, 0) == 0 && object->player.context_animation != ACTION_TIGHTROPE_GETON &&
                    object->player.external_force.y >= 0.5f) {
             StartJump(object, 0);
             if ((object->character_data->game_character->flags_090 & CHARACTER_RUNTIME_TIGHTROPE_WALK) != 0) {
@@ -654,7 +618,7 @@ extern "C" void TightRope_MoveCode(GAMEOBJECT *object, i32 jump_pressed) {
         object->player.context_hover_target_y = NuVecXZDist(&object->collision_position, &object->player.tightrope->start, NULL);
         return;
     }
-    if (object->unknown_281 != 0 || !(object->velocity.y <= 0.0f) || object->character_model->model_data_b[0x88] == NULL) {
+    if (object->ground_flags != 0 || !(object->velocity.y <= 0.0f) || object->character_model->model_data_b[0x88] == NULL) {
         return;
     }
     if (object->player.character_context != CHARACTER_CONTEXT_NONE) {
@@ -677,7 +641,7 @@ extern "C" {
 
     i32 TightRope_SetTargetMom(GAMEOBJECT *object) {
         NUVEC *anchor;
-        TIGHTROPE_MOVEMENT *rope;
+        TIGHTROPE_s *rope;
         u16 rotation;
         f32 fraction;
         f32 amplitude;
@@ -686,7 +650,7 @@ extern "C" {
         object->target_velocity.x = (object->player.launch_origin.x - anchor->x) * 3.0f;
         object->target_velocity.y = (object->player.launch_origin.y - anchor->y) * 3.0f;
         object->target_velocity.z = (object->player.launch_origin.z - anchor->z) * 3.0f;
-        rope = (TIGHTROPE_MOVEMENT *)object->player.grapple;
+        rope = object->player.tightrope;
         rotation = rope->rotation + 0x4000;
         fraction = object->player.context_hover_target_y / rope->horizontal_length;
         if (fraction > 1.0f) {
@@ -697,6 +661,6 @@ extern "C" {
         object->target_velocity.y -= qrand() * PlayerRandomScale * amplitude;
         object->target_velocity.z +=
             (qrand() * PlayerRandomScale - NuQFntHalfScale) * amplitude * NuTrigTable[((rotation + 0x4000) >> 1) & 0x7fff];
-        return object->player.unknown_7aa != ACTION_JUMP && object->player.unknown_7aa != ACTION_FALL;
+        return object->player.context_animation != ACTION_JUMP && object->player.context_animation != ACTION_FALL;
     }
 }

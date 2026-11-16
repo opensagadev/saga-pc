@@ -101,7 +101,7 @@ void ShoveSystemCheckGameObject(GAMEOBJECT *object) {
         if (offset.x == 0.0f && offset.z == 0.0f) {
             object->movement_direction_x = ShoveMaximumSpeed;
             object->movement_direction_z = ShoveMaximumSpeed;
-            object->unknown_106e = shove->platform_id;
+            object->excluded_platform_id = shove->platform_id;
             return;
         }
         distance = NuFsqrt(offset.x * offset.x + offset.z * offset.z);
@@ -114,6 +114,6 @@ void ShoveSystemCheckGameObject(GAMEOBJECT *object) {
         speed = (speed * ShoveMaximumSpeed) / ShoveMaximumPenetration;
         object->movement_direction_x = (offset.x * speed) / distance;
         object->movement_direction_z = (offset.z * speed) / distance;
-        object->unknown_106e = shove->platform_id;
+        object->excluded_platform_id = shove->platform_id;
     }
 }

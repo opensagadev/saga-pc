@@ -176,14 +176,14 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                     if (explosion->owner->player_index == -1 && ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                         continue;
                     }
-                } else if (explosion->owner->player_index != -1 && target->player.origin_scale_override != 1.0f &&
+                } else if (explosion->owner->player_index != -1 && target->player.shield_scale != 1.0f &&
                            ((explosion->owner->flags_1f8 ^ object->flags_1f8) & 1) == 0) {
                     continue;
                 }
             }
             explosion->hit_identity_mask[0] |= object->collision_identity_mask[0];
             explosion->hit_identity_mask[1] |= object->collision_identity_mask[1];
-            if ((f64)target->player.origin_scale_override >= (f64)0.99f) {
+            if ((f64)target->player.shield_scale >= (f64)0.99f) {
                 ObjHitShield(explosion->owner, target, target->player.shield_hitpoints, NULL);
                 if ((explosion->flags & EXPLOSION_KILLS) == 0) {
                     hit_character = 1;
@@ -220,8 +220,8 @@ void UpdateExplosion_Generic(EXPLOSION *explosion) {
                 ++explosion->kill_count;
                 if ((explosion->flags & EXPLOSION_TRANSFORM) != 0 && (explosion->player_index == 0 || explosion->player_index == 1) &&
                     Arcade != 0) {
-                    if (object->unknown_280 <= 1) {
-                        Arcade_PlayerKilled((object->unknown_280 ^ 1) & 1, 0);
+                    if (object->player_slot <= 1) {
+                        Arcade_PlayerKilled((object->player_slot ^ 1) & 1, 0);
                     } else if (object->player_index == -1) {
                         Arcade_AIKilled(explosion->player_index);
                     }
