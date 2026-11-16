@@ -20,48 +20,6 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct bombgen_activation_reader_s {
-    u8 unknown_00[0x1c];
-    GAMEANIMSET *anim_set;
-    u8 unknown_20[0xa];
-    u16 flags;
-} BOMBGEN_ACTIVATION_READER;
-
-typedef struct bombgen_activation_flags_s {
-    u16 active : 1;
-    u16 visible : 1;
-    u16 unknown : 14;
-} BOMBGEN_ACTIVATION_FLAGS;
-
-typedef struct bomb_generator_runtime_s {
-    char name[16];
-    NUVEC position;
-    GAMEANIMSET *anim_set;
-    i32 interval;
-    GAMEOBJECT *generated_bomb;
-    u16 unknown_28;
-
-    union {
-        u16 flags;
-
-        struct {
-            u16 active : 1;
-            u16 visible : 1;
-            u16 unknown_flags : 14;
-        };
-    };
-} BOMB_GENERATOR_RUNTIME;
-
-typedef struct bomb_generator_system_runtime_s { // size 0x14
-    BOMB_GENERATOR_RUNTIME *items;               // 0x00
-    u16 count;                                   // 0x04
-    u16 capacity;                                // 0x06
-    void *pool;                                  // 0x08
-    i16 flags;                                   // 0x0c
-    u16 unknown_0e;                              // 0x0e
-    void *progress;                              // 0x10
-} BOMB_GENERATOR_SYSTEM_RUNTIME;
-
 typedef struct bomb_generator_progress_s {
     u32 active[3];
     u32 visible[3];
@@ -103,19 +61,19 @@ void *GizBombGens_ReserveBufferSpace(void *pointer) {
 }
 
 void GizmoBombGen_Activate(GIZMO *gizmo, i32 active) {
-    BOMBGEN_ACTIVATION_READER *generator;
+    GIZBOMBGEN_s *generator;
     if (gizmo != NULL) {
         generator = gizmo->object;
-        ((BOMBGEN_ACTIVATION_FLAGS *)&generator->flags)->active = active != 0;
+        generator->active = active != 0;
     }
 }
 
 void GizmoBombGen_SetVisibility(GIZMO *gizmo, i32 visible) {
-    BOMBGEN_ACTIVATION_READER *generator;
+    GIZBOMBGEN_s *generator;
     if (gizmo != NULL && gizmo->object != NULL) {
         generator = gizmo->object;
         GameAnimSet_SetVisibility(generator->anim_set, visible);
-        ((BOMBGEN_ACTIVATION_FLAGS *)&generator->flags)->visible = visible != 0;
+        generator->visible = visible != 0;
     }
 }
 
@@ -128,7 +86,7 @@ NUVEC *GizmoBombGen_GetPos(GIZMO *gizmo) {
 
 void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     WORLDINFO *w = world_ptr;
-    ADD_BOMB_RESET_SYS *s = data;
+    GIZBOMBGENSYS_s *s = data;
     s->reset = 1;
     if (come_from_an_editor != 0) {
         s->reset_saved = 0;
@@ -138,8 +96,8 @@ void GizBombGens_SetResetFlag(void *world_ptr, void *data, void *progress) {
     s->progress = progress;
 }
 
-static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME *system, BOMB_GENERATOR_PROGRESS *progress) {
-    BOMB_GENERATOR_RUNTIME *generator = system->items;
+static void BombGeneratorsApplyReset(GIZBOMBGENSYS_s *system, BOMB_GENERATOR_PROGRESS *progress) {
+    GIZBOMBGEN_s *generator = system->bomb_generators;
     i32 index;
     i32 shared_bomb;
     for (index = 0; index < system->count; ++index, ++generator) {
@@ -204,19 +162,19 @@ static void BombGeneratorsApplyReset(BOMB_GENERATOR_SYSTEM_RUNTIME *system, BOMB
 
 void GizBombGens_Update(void *world_pointer, void *system_pointer, f32 delta_time) {
     WORLDINFO *world = world_pointer;
-    BOMB_GENERATOR_SYSTEM_RUNTIME *system = system_pointer;
+    GIZBOMBGENSYS_s *system = system_pointer;
     u16 model;
     GAMEOBJECT *player;
     CABLE_s *cable;
     (void)delta_time;
     if (system != NULL) {
-        BOMB_GENERATOR_RUNTIME *generator;
+        GIZBOMBGEN_s *generator;
         i32 index;
         if ((system->flags & 1) != 0) {
             BombGeneratorsApplyReset(system, system->progress);
             system->flags &= (u16)~1u;
         }
-        generator = system->items;
+        generator = system->bomb_generators;
         for (index = 0; index < system->count; ++index, ++generator) {
             if ((generator->flags & 2) == 0 || (generator->flags & 1) == 0 || generator->anim_set == NULL) {
                 continue;
