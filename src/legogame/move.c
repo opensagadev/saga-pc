@@ -159,7 +159,6 @@ void GunShip_DragBombSeekBlowUp(GAMEOBJECT *);
 void Detonator_MoveCode(GAMEOBJECT *);
 void Transform_MoveCode(WORLDINFO *, GAMEOBJECT *);
 void Whip_MoveCode(GAMEOBJECT *);
-void TakeOverCode(GAMEOBJECT *, i32);
 
 typedef struct movement_suit_s {
     u8 unknown_00[0xc];

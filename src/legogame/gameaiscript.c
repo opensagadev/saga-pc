@@ -131,8 +131,6 @@ typedef struct AIOBSTACLE_PARTIAL { // size 0xa0
     u32 runtime_flags;              // 0x9c
 } AIOBSTACLE_PARTIAL;
 
-void FindForcePushTarget(GAMEOBJECT *object, i32 activate, i32 target_filter);
-
 /* AISYS PC callbacks. */
 
 typedef struct ai_context_reset_view_s { // size 0x6c5
@@ -191,8 +189,6 @@ typedef struct ai_cable_object_s { // size 0x1044
     u8 unknown_000[0x1040];        // 0x0000
     CABLE_RECORD *cable;           // 0x1040
 } AI_CABLE_OBJECT;
-
-i32 CanFightLikeAJedi(GAMEOBJECT *);
 
 struct GIZSPINNER_s *GizSpinner_FindBySpecialName(void *world_ptr, char *name);
 

@@ -134,6 +134,7 @@ extern "C" {
     void ClearSpecialMove(struct gameobject_s *);
     struct addgizmotype_s *AI_RegisterGizmo(i32);
     u32 GameAI_TotalScore(void);
+    i32 CanFightLikeAJedi(struct gameobject_s *);
 #ifdef __cplusplus
 }
 #endif

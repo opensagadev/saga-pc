@@ -68,7 +68,6 @@ typedef struct coinpacket_pickup_s {
     f32 timer;
 } COINPACKET_PICKUP;
 
-u32 GizForce_TotalScore(WORLDINFO *world);
 u32 GizObstacles_TotalScore(WORLDINFO *world);
 u32 GizTurrets_TotalScore(WORLDINFO *world);
 

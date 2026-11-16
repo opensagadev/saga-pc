@@ -106,6 +106,10 @@ extern "C" {
     i32 ForceAnimationDone(struct gizforce_s *force);
     void GizForce_PlayBackwards(struct gizforce_s *force);
     void GizForce_PlayForwards(struct gizforce_s *force);
+    u32 GizForce_TotalScore(struct WORLDINFO_s *world);
+    void RegisterAlternateGizmoTypes(VARIPTR *, VARIPTR *);
+    void RegisterDefaultGizmoTypes(VARIPTR *, VARIPTR *);
+    void RegisterLswGizmoTypes(VARIPTR *, VARIPTR *);
 #ifdef __cplusplus
 }
 #endif

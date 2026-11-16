@@ -232,8 +232,6 @@ typedef struct TERRAIN_PLAYER_CHARACTER { // size 0x1c
     void (*move_callback)(GAMEOBJECT *);  // 0x18
 } TERRAIN_PLAYER_CHARACTER;
 
-void TakeOverCode(GAMEOBJECT *, i32);
-void Tag_Check(GAMEOBJECT *);
 #define AIPATHCNX_FLAG_SET(connection, field, flag) ((connection) != NULL && ((connection)->field[0] & (u32)(flag)) != 0)
 
 typedef struct level_ai_progress_s {

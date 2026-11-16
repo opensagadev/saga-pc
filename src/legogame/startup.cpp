@@ -87,9 +87,6 @@
 #include "legoapi/world/levels/episodeVI.h"
 
 extern "C" char *lsw_memcard_objname;
-extern "C" void RegisterLswGizmoTypes(VARIPTR *, VARIPTR *);
-extern "C" void RegisterAlternateGizmoTypes(VARIPTR *, VARIPTR *);
-extern "C" void RegisterDefaultGizmoTypes(VARIPTR *, VARIPTR *);
 extern "C" void Alt_registerStatusScreen(void);
 extern "C" {
     void MiniKits_Init(VARIPTR *, VARIPTR *);

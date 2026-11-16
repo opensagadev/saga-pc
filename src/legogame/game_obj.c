@@ -109,11 +109,8 @@ typedef struct creature_crate_part_view_s {
     f32 spawn_delay;
 } CREATURE_CRATE_PART_VIEW;
 
-i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused);
-
 extern const f64 GameObjectNearFloorNoFloorHeight;
 extern u8 SuperCarryPlayerRgb[2][3];
-void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
 
 /* Full PC ObjHitObj source contract: complete 5764-byte original interval,
    physical calling convention and finite reader cohorts independently reviewed.

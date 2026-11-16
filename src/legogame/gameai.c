@@ -100,17 +100,6 @@ typedef struct controller_cut_view_s {
     f32 current_frame;
 } CONTROLLER_CUT_VIEW;
 
-extern AIACTIONDEF lego_aiactiondefs[];
-extern AIACTIONDEF api_aiactiondefs[];
-extern AIACTIONDEF *game_aiactiondefs;
-extern AICONDITIONDEF lego_aiconditiondefs[];
-extern AICONDITIONDEF *game_aiconditiondefs;
-i32 NuHGobjRndr(NUHGOBJ_EVAL *, NUMTX *, i32, i16 *);
-void RegisterAIScriptActions(AIACTIONDEF *);
-void RegisterAIScriptConditions(AICONDITIONDEF *);
-void SetScriptErrorLevel(i32);
-void InitFn_LevelCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
-void InitFn_SpecialRouteCharacterTypeID(AI_LEVEL_CHARACTER_TYPE_ID);
 void InitFn_LevelCharacterName(AI_CHARACTER_NAME);
 void InitFn_SpecialRouteCharacterName(AI_CHARACTER_NAME);
 void InitFn_GlobalCharacterName(AI_GLOBAL_CHARACTER_NAME);

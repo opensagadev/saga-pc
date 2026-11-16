@@ -26,6 +26,10 @@ extern "C" {
     void ReleaseTakeOver(GAMEOBJECT *, i32);
     void TakeOverGameObject(struct gameobject_s *rider, struct gameobject_s *vehicle, i32 blend_camera, i32 immediate);
     void Tag_SetMode(i32 mode);
+    i32 TagCode(GAMEOBJECT *source, GAMEOBJECT *destination, i32 takeover, i32 blend_camera, i32 unused);
+    void GetTakeOverPos(GAMEOBJECT *, NUVEC *);
+    void Tag_Check(GAMEOBJECT *);
+    void TakeOverCode(GAMEOBJECT *, i32);
 #ifdef __cplusplus
 }
 #endif
