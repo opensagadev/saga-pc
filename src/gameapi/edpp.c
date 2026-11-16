@@ -260,7 +260,7 @@ void edppStartSingleEffect(i32 index) {
     if (edpp_ptls[index].instance_id == -1) {
         return;
     }
-    debkeydata[edpp_ptls[index].instance_id].editor_flag = 0;
+    debkeydata[edpp_ptls[index].instance_id].runtime_created = 0;
     DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
     DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
                              edpp_ptls[index].emitter_rotation_x);
@@ -1568,7 +1568,7 @@ i32 edppPtlCreate(NUVEC *position, i32 effect_index) {
     }
     AddDebrisEffect(&edpp_ptls[index].instance_id, effect_index, position->x, position->y, position->z);
     if (edpp_ptls[index].instance_id != -1) {
-        debkeydata[edpp_ptls[index].instance_id].editor_flag = 0;
+        debkeydata[edpp_ptls[index].instance_id].runtime_created = 0;
         edpp_ptls[index].reflection_offset = 0.0f;
         edpp_ptls[index].render_group = 0;
         edpp_ptls[index].reflection_bounce = 0.9f;
@@ -1634,7 +1634,7 @@ i32 edppPtlCreateCopy(NUVEC *position, i32 source_index) {
     }
     AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[source_index].effect_index, position->x, position->y, position->z);
     if (edpp_ptls[index].instance_id != -1) {
-        debkeydata[edpp_ptls[index].instance_id].editor_flag = 0;
+        debkeydata[edpp_ptls[index].instance_id].runtime_created = 0;
         edpp_ptls[index].render_group = edpp_ptls[source_index].render_group;
         edpp_ptls[index].page = edpp_ptls[source_index].page;
         edpp_ptls[index].reflection_offset = edpp_ptls[source_index].reflection_offset;
@@ -2365,7 +2365,7 @@ void edppRestartAllEffectsInLevel(void) {
         AddDebrisEffect(&edpp_ptls[index].instance_id, edpp_ptls[index].effect_index, edpp_ptls[index].position.x,
                         edpp_ptls[index].position.y, edpp_ptls[index].position.z);
         if (edpp_ptls[index].instance_id != -1) {
-            debkeydata[edpp_ptls[index].instance_id].editor_flag = 0;
+            debkeydata[edpp_ptls[index].instance_id].runtime_created = 0;
             DebrisOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].rotation_z, edpp_ptls[index].rotation_y);
             DebrisEmitterOrientation(edpp_ptls[index].instance_id, edpp_ptls[index].emitter_rotation_z, edpp_ptls[index].emitter_rotation_y,
                                      edpp_ptls[index].emitter_rotation_x);
@@ -4485,7 +4485,7 @@ i32 edppPtlChangeType(i32 index, i32 effect_index) {
         AddDebrisEffect(&edpp_ptls[index].instance_id, effect_index, edpp_ptls[index].position.x, edpp_ptls[index].position.y,
                         edpp_ptls[index].position.z);
         if (edpp_ptls[index].instance_id != -1) {
-            debkeydata[edpp_ptls[index].instance_id].editor_flag = 0;
+            debkeydata[edpp_ptls[index].instance_id].runtime_created = 0;
         }
         edpp_ptls[index].effect_index = effect_index;
     }

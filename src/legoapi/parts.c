@@ -1684,7 +1684,7 @@ void AddDebrisEffect(i32 *handle, i32 effect_index, f32 x, f32 y, f32 z) {
     debkeydata[key_index].cutoff_distance = 999999.0f;
     debkeydata[key_index].process_collision_sound = 0;
     debkeydata[key_index].last_update_time = now;
-    debkeydata[key_index].editor_flag = 1;
+    debkeydata[key_index].runtime_created = 1;
     debkeydata[key_index].user_data = NULL;
     debkeydata[key_index].custom_facing = 0;
     if (debkeydata[key_index].emission_end_time < now) {

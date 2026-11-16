@@ -1237,7 +1237,7 @@ void DebFreeAllCreatedEffects(void) {
     i32 i;
     for (i = 0; i < maxdebkeys; ++i) {
         DEBRISKEY *key = &debkeydata[i];
-        if (key->effect_index != 0 && key->editor_flag != 0) {
+        if (key->effect_index != 0 && key->runtime_created != 0) {
             i32 handle = i;
             DebFreeInstantly(&handle);
         }

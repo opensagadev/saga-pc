@@ -144,7 +144,7 @@ extern "C" {
         u8 visible;                                          // 0x2f6
         u8 draw_enabled;                                     // 0x2f7
         i8 timed_flags;                                      // 0x2f8
-        u8 editor_flag;                                      // 0x2f9
+        u8 runtime_created;                                  // 0x2f9
         u8 custom_facing;                                    // 0x2fa
         u8 unknown_2fb;                                      // 0x2fb
         struct NUGSCN_s *gscene;                             // 0x2fc
