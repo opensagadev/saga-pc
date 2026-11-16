@@ -19,7 +19,8 @@ struct numtx_s;
 typedef struct level_progress_s { // size 0x2e28
     SCENEPROGRESS scene_progress; // 0x0000
 
-    u32 flags;         // 0x2800: bit 0 the level is complete
+    // Bit 0 the level is complete.
+    u32 flags;         // 0x2800
     u32 reserved_2804; // 0x2804
 
     union { // size 0x8 StoreProgressAICharacter: one bit per level AI object that is switched off
@@ -27,7 +28,8 @@ typedef struct level_progress_s { // size 0x2e28
         u64 disabled_ai_objects;
     }; // 0x2808
 
-    NUVEC grabber_position;            // 0x2810: Grabber_StoreProgress; y 2000000 when none is stored
+    // Grabber_StoreProgress; y 2000000 when none is stored.
+    NUVEC grabber_position;            // 0x2810
     u32 destroyed_trooper_cannon_mask; // 0x281c
     u32 progress_state;                // 0x2820
     LEVEL_SCRIPT_PROGRESS scripts[32]; // 0x2824

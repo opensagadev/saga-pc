@@ -1158,7 +1158,8 @@ struct TRAFFICANIMSYS_s {                        // size 0x77e4
     i8 animation_count;                          // 0x77e0
     i8 vehicle_count;                            // 0x77e1
     u8 reserved_77e2;                            // 0x77e2
-    i8 side;                                     // 0x77e3: the pursuit's active side, 1 or -1
+    // The pursuit's active side, 1 or -1.
+    i8 side; // 0x77e3
 };
 
 struct GIZMOPICKUPRUNTIMESYS_s {           // size 0x1c
@@ -1392,19 +1393,20 @@ typedef struct GIZMO_PICKUP_TYPE { // size 0x38
     u8 letter;                     // 0x0c
     u8 random_model_count;         // 0x0d
     u8 flags;                      // 0x0e
-    u8 disabled;                   // 0x0f: switched off for this area (GizmoPickups_SetOnOff)
-    i16 first_model_id;            // 0x10
-    u16 score;                     // 0x12
-    f32 shadow_radius_x;           // 0x14
-    f32 shadow_radius_z;           // 0x18
-    f32 draw_distance;             // 0x1c
-    f32 bob_height;                // 0x20
-    PICKUP_UPDATE_FN update_fn;    // 0x24
-    PICKUP_COLLECT_FN collect_fn;  // 0x28
-    i16 debris_id;                 // 0x2c
-    i16 overlay_model_id;          // 0x2e
-    f32 shadow_extent_x;           // 0x30
-    f32 shadow_extent_z;           // 0x34
+    // Switched off for this area (GizmoPickups_SetOnOff).
+    u8 disabled;                  // 0x0f
+    i16 first_model_id;           // 0x10
+    u16 score;                    // 0x12
+    f32 shadow_radius_x;          // 0x14
+    f32 shadow_radius_z;          // 0x18
+    f32 draw_distance;            // 0x1c
+    f32 bob_height;               // 0x20
+    PICKUP_UPDATE_FN update_fn;   // 0x24
+    PICKUP_COLLECT_FN collect_fn; // 0x28
+    i16 debris_id;                // 0x2c
+    i16 overlay_model_id;         // 0x2e
+    f32 shadow_extent_x;          // 0x30
+    f32 shadow_extent_z;          // 0x34
 } GIZMO_PICKUP_TYPE;
 
 struct gizforce_s {                    // size 0xa4
@@ -2125,8 +2127,9 @@ struct GIZSPINNER_s {                       // size 0x304
     union { // size 0x8
         u8 unknown_070[8];
 
-        struct {            // size 0x8
-            f32 progress;   // 0x070: the anim set's completion ratio
+        struct { // size 0x8
+            // The anim set's completion ratio.
+            f32 progress;   // 0x070
             u32 unknown_74; // 0x074
         };
     }; // 0x070
