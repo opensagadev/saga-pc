@@ -246,23 +246,23 @@ found:
         light->secondary_colour.z = 0.5f;
         light->type = RTL_LIGHT_POINT;
         light->flags &= static_cast<u8>(~RTL_LIGHT_FLAG_DISABLED);
-        light->unknown_5e = 0;
-        light->unknown_60 = 0;
+        light->association_mask = 0;
+        light->exclusion_mask = 0;
         light->parameters[0] = 0.1f;
         light->parameters[1] = 0.1f;
         light->parameters[2] = 0.1f;
         light->parameters[3] = 0.1f;
-        light->parameter_54 = 0.0f;
+        light->phase_timer = 0.0f;
         light->pitch = 0;
         light->yaw = 0;
         light->direction = RtlUnitDirectionZPc;
-        light->unknown_64 = 0.0f;
+        light->blend_period = 0.0f;
         NuVecRotateX(&light->direction, &light->direction, light->pitch);
         NuVecRotateY(&light->direction, &light->direction, light->yaw);
-        light->unknown_79 = -1;
-        light->unknown_7a = -1;
-        light->unknown_7b = 0;
-        light->unknown_7c = curr_set->lights;
+        light->next_index = -1;
+        light->previous_index = -1;
+        light->modifier = 0;
+        light->chain_lights = curr_set->lights;
         light->led_file = Placeable::CurrentLedFile;
     }
     return light;
@@ -660,19 +660,19 @@ void EdRefRTL::GetMemberData(void *object, i32 requested_type, void *data, i32) 
             *static_cast<f32 *>(data) = light->outer_radius;
             break;
         case EDREF_LIGHT_ASSOCIATE_IDS:
-            *static_cast<i32 *>(data) = static_cast<u16>(light->unknown_5e);
+            *static_cast<i32 *>(data) = static_cast<u16>(light->association_mask);
             break;
         case EDREF_LIGHT_EXCLUDE_IDS:
-            *static_cast<i32 *>(data) = static_cast<u16>(light->unknown_60);
+            *static_cast<i32 *>(data) = static_cast<u16>(light->exclusion_mask);
             break;
         case EDREF_LIGHT_USER_ID:
-            *static_cast<i32 *>(data) = light->unknown_68;
+            *static_cast<i32 *>(data) = light->user_id;
             break;
         case EDREF_LIGHT_GROUP_ID:
             *static_cast<i32 *>(data) = light->group_id;
             break;
         case EDREF_LIGHT_MODIFIER_ID:
-            *static_cast<i32 *>(data) = light->unknown_7b;
+            *static_cast<i32 *>(data) = light->modifier;
             break;
     }
 }
@@ -721,21 +721,21 @@ void EdRefRTL::SetMemberData(void *object, i32 requested_type, void *data, i32, 
             }
             break;
         case EDREF_LIGHT_ASSOCIATE_IDS:
-            light->unknown_5e = *static_cast<i16 *>(data);
-            light->unknown_60 &= ~light->unknown_5e;
+            light->association_mask = *static_cast<i16 *>(data);
+            light->exclusion_mask &= ~light->association_mask;
             break;
         case EDREF_LIGHT_EXCLUDE_IDS:
-            light->unknown_60 = *static_cast<i16 *>(data);
-            light->unknown_5e &= ~light->unknown_60;
+            light->exclusion_mask = *static_cast<i16 *>(data);
+            light->association_mask &= ~light->exclusion_mask;
             break;
         case EDREF_LIGHT_USER_ID:
-            light->unknown_68 = *static_cast<u16 *>(data);
+            light->user_id = *static_cast<u16 *>(data);
             break;
         case EDREF_LIGHT_GROUP_ID:
             light->group_id = *static_cast<u8 *>(data);
             break;
         case EDREF_LIGHT_MODIFIER_ID:
-            light->unknown_7b = *static_cast<i8 *>(data);
+            light->modifier = *static_cast<i8 *>(data);
             break;
     }
 }

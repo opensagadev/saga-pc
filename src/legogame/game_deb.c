@@ -234,12 +234,12 @@ void BuildRippleMtx(NUMTX *matrix, NUVEC *normal, NUVEC *position, u16 unused_x,
 void BurnoutApply(i32 view) {
     BURN_PARAMETERS parameters;
     NUVEC average;
-    parameters.unknown_00 = 0;
-    memset(&parameters.unknown_04, 0, 0x50);
+    parameters.enabled = 0;
+    memset(&parameters.start_angle, 0, 0x50);
     if ((CutStopInfo == NULL || (((BURNOUT_CUT_PREFIX *)CutStopInfo)->flags & 0x80) == 0) && WORLD->page_unknown != 0) {
         edrtlCalculateBurnoutEx((BURN_SET *)WORLD->page_unknown, &parameters, (NUVEC *)&global_camera.mtx.m30, FRAMETIME);
     }
-    if (parameters.unknown_14 > 0.0f) {
+    if (parameters.intensity > 0.0f) {
         NuRndrSetBurnoutParameters(view, &parameters);
     }
     if ((Players_AveragePos(&average, NULL) != 0 || netclient != 0) && PCShadowCurrentLight->enabled != 0) {

@@ -8602,7 +8602,7 @@ extern "C" {
             }
         }
         if (far_clip == 0.0f) {
-            far_clip = global_camera.unknown_64 != 0.0f ? global_camera.unknown_64 : global_camera.far_clip;
+            far_clip = global_camera.far_clip_override != 0.0f ? global_camera.far_clip_override : global_camera.far_clip;
         }
         if (world == NULL || world == &NuMtxSetIdentityTemplate) {
             clip_test_mtx = vmtx;

@@ -8,20 +8,20 @@
 struct CAMERA_CLIP_PACKET;
 struct NUVEC4BLOCK;
 
-typedef struct nucamera_s { // size 0x78
-    NUMTX mtx;              // 0x00
-    f32 fov;                // 0x40
-    f32 aspect;             // 0x44
-    f32 near_clip;          // 0x48
-    f32 far_clip;           // 0x4c
-    f32 unknown_50;         // 0x50
-    f32 unknown_54;         // 0x54
-    f32 unknown_58;         // 0x58
-    f32 unknown_5c;         // 0x5c
-    f32 unknown_60;         // 0x60
-    f32 unknown_64;         // 0x64
-    f32 portal_nearclip;    // 0x68
-    NUVEC scale;            // 0x6c
+typedef struct nucamera_s {  // size 0x78
+    NUMTX mtx;               // 0x00
+    f32 fov;                 // 0x40
+    f32 aspect;              // 0x44
+    f32 near_clip;           // 0x48
+    f32 far_clip;            // 0x4c
+    f32 projection_offset_x; // 0x50
+    f32 projection_offset_y; // 0x54
+    f32 projection_scale_x;  // 0x58
+    f32 projection_scale_y;  // 0x5c
+    f32 near_clip_override;  // 0x60
+    f32 far_clip_override;   // 0x64
+    f32 portal_nearclip;     // 0x68
+    NUVEC scale;             // 0x6c
 } NUCAMERA;
 
 /* The clip codes of a camera space point (NuCameraClipTestPoints returns the codes all points share): the side of

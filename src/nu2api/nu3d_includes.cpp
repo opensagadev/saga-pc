@@ -17223,17 +17223,17 @@ extern "C" {
         currentScene.burnout_intensity = intensity <= 2.0f ? (u8)(127.0 * intensity) : 255;
         currentScene.burnout_flare = flare;
         currentScene.burnout_threshold = threshold;
-        currentScene.burnout_parameters.unknown_00 = 1;
+        currentScene.burnout_parameters.enabled = 1;
         currentScene.burnout_parameters.unknown_18 = 0;
-        currentScene.burnout_parameters.unknown_28 = 0;
-        currentScene.burnout_parameters.unknown_04 = 0.0f;
-        currentScene.burnout_parameters.unknown_08 = 0.0f;
-        currentScene.burnout_parameters.unknown_0c = 180.0f;
-        currentScene.burnout_parameters.unknown_10 = intensity;
-        currentScene.burnout_parameters.unknown_14 = 1.0f;
-        currentScene.burnout_parameters.unknown_1c = flare;
-        currentScene.burnout_parameters.unknown_20 = 0.0f;
-        currentScene.burnout_parameters.unknown_24 = threshold;
+        currentScene.burnout_parameters.source_available = 0;
+        currentScene.burnout_parameters.start_angle = 0.0f;
+        currentScene.burnout_parameters.min_intensity = 0.0f;
+        currentScene.burnout_parameters.end_angle = 180.0f;
+        currentScene.burnout_parameters.max_intensity = intensity;
+        currentScene.burnout_parameters.intensity = 1.0f;
+        currentScene.burnout_parameters.dispersion = flare;
+        currentScene.burnout_parameters.fragment_glow = 0.0f;
+        currentScene.burnout_parameters.threshold = threshold;
     }
 
     i32 NuCameraClipHGobj(NUHGOBJ_EVAL *hierarchy, NUMTX *world, NUMTX *root) {

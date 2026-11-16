@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 #include "nu2api/numath/nuvec.h"
+#include "nu2api/numath/nuvec4.h"
 
 struct debris_info_s;
 struct debris_key_s;
@@ -14,25 +15,25 @@ struct numtx_s;
 struct ripple_set_s;
 
 typedef struct BURN_PARAMETERS { // size 0x54
-    i32 unknown_00;              // 0x00
-    f32 unknown_04;              // 0x04
-    f32 unknown_08;              // 0x08
-    f32 unknown_0c;              // 0x0c
-    f32 unknown_10;              // 0x10
-    f32 unknown_14;              // 0x14
+    i32 enabled;                 // 0x00
+    f32 start_angle;             // 0x04
+    f32 min_intensity;           // 0x08
+    f32 end_angle;               // 0x0c
+    f32 max_intensity;           // 0x10
+    f32 intensity;               // 0x14
     i32 unknown_18;              // 0x18
-    f32 unknown_1c;              // 0x1c
-    f32 unknown_20;              // 0x20
-    f32 unknown_24;              // 0x24
-    i32 unknown_28;              // 0x28
-    f32 unknown_2c;              // 0x2c
-    f32 unknown_30;              // 0x30
-    f32 unknown_34;              // 0x34
-    f32 unknown_38;              // 0x38
-    f32 unknown_3c;              // 0x3c
-    f32 unknown_40;              // 0x40
-    f32 unknown_44;              // 0x44
-    f32 unknown_48;              // 0x48
+    f32 dispersion;              // 0x1c
+    f32 fragment_glow;           // 0x20
+    f32 threshold;               // 0x24
+    i32 source_available;        // 0x28
+    f32 source_direction_x;      // 0x2c
+    f32 source_direction_y;      // 0x30
+    f32 source_direction_z;      // 0x34
+    f32 source_inner_radius;     // 0x38
+    f32 source_inner_intensity;  // 0x3c
+    f32 source_outer_radius;     // 0x40
+    f32 source_outer_intensity;  // 0x44
+    f32 source_falloff_power;    // 0x48
     f32 unknown_4c;              // 0x4c
     f32 unknown_50;              // 0x50
 } BURN_PARAMETERS;
@@ -47,7 +48,7 @@ extern "C" {
         NUVEC intensity[3];                   // 0x30
         NUVEC specular_direction;             // 0x54
         i32 specular_direction_missing;       // 0x60
-        u8 unknown_64[0x10];                  // 0x64
+        NUVEC4 specular_intensity;            // 0x64
         i32 specular_intensity_present;       // 0x74
     } PC_GLOBAL_LIGHTING_STATE;
 

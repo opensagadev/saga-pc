@@ -4765,14 +4765,14 @@ void DrawGameObjectsDraw(i32 pass) {
 }
 
 void DrawGameObjects() {
-    const f32 saved_far_clip = global_camera.unknown_64;
-    global_camera.unknown_64 = VehicleArea != 0 ? DrawGameObjectsVehicleFarClip : DrawGameObjectsFarClip;
-    if (global_camera.unknown_64 > saved_far_clip) {
-        global_camera.unknown_64 = saved_far_clip;
+    const f32 saved_far_clip = global_camera.far_clip_override;
+    global_camera.far_clip_override = VehicleArea != 0 ? DrawGameObjectsVehicleFarClip : DrawGameObjectsFarClip;
+    if (global_camera.far_clip_override > saved_far_clip) {
+        global_camera.far_clip_override = saved_far_clip;
     }
     NuCameraSet(&global_camera);
     DrawGameObjectsDraw(0);
-    global_camera.unknown_64 = saved_far_clip;
+    global_camera.far_clip_override = saved_far_clip;
     NuCameraSet(&global_camera);
 }
 

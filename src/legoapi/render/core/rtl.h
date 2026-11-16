@@ -33,7 +33,7 @@ typedef struct RTL_DATA {                    // size 0x144
     f32 unknown_120;                         // 0x120
     NUVEC blended_shadow_direction;          // 0x124
     f32 blended_shadow_value;                // 0x130
-    NUVEC unknown_134;                       // 0x134
+    NUVEC specular_direction;                // 0x134
     f32 specular_value;                      // 0x140
 } RTL_DATA;
 #ifdef __cplusplus
@@ -60,7 +60,7 @@ extern "C" {
         f32 inner_radius;       // 0x3c
         f32 outer_radius;       // 0x40
         f32 parameters[4];      // 0x44
-        f32 parameter_54;       // 0x54
+        f32 phase_timer;        // 0x54
         u8 type;                // 0x58
 
         union { // size 0x1
@@ -76,20 +76,20 @@ extern "C" {
 
         i16 pitch;                                                               // 0x5a
         i16 yaw;                                                                 // 0x5c
-        i16 unknown_5e;                                                          // 0x5e
-        i16 unknown_60;                                                          // 0x60
+        i16 association_mask;                                                    // 0x5e
+        i16 exclusion_mask;                                                      // 0x60
         u8 unknown_62[2];                                                        // 0x62
-        f32 unknown_64;                                                          // 0x64
-        u16 unknown_68;                                                          // 0x68
+        f32 blend_period;                                                        // 0x64
+        u16 user_id;                                                             // 0x68
         i16 uid;                                                                 // 0x6a
         f32 intensity;                                                           // 0x6c
         f32 blend_rate;                                                          // 0x70
         f32 blend;                                                               // 0x74
         u8 group_id;                                                             // 0x78
-        i8 unknown_79;                                                           // 0x79
-        i8 unknown_7a;                                                           // 0x7a
-        i8 unknown_7b;                                                           // 0x7b
-        struct RTL_LIGHT *unknown_7c;                                            // 0x7c
+        i8 next_index;                                                           // 0x79
+        i8 previous_index;                                                       // 0x7a
+        i8 modifier;                                                             // 0x7b
+        struct RTL_LIGHT *chain_lights;                                          // 0x7c
         i16 led_file; /* Placeable::CurrentLedFile when the editor creates it */ // 0x80
         u8 unknown_82[10];                                                       // 0x82
     } RTL_LIGHT;
@@ -188,22 +188,22 @@ extern "C" {
     typedef struct BURN_SET {            // size 0x564
         BURN_PARAMETERS parameters;      // 0x000
         BURN_PARAMETERS parameters_copy; // 0x054
-        i32 unknown_a8;                  // 0x0a8
-        i32 field_ac;                    // 0x0ac
-        i32 unknown_b0;                  // 0x0b0
-        i32 unknown_b4;                  // 0x0b4
-        f32 unknown_b8;                  // 0x0b8
-        f32 field_bc;                    // 0x0bc
-        f32 unknown_c0;                  // 0x0c0
-        f32 unknown_c4;                  // 0x0c4
-        f32 unknown_c8;                  // 0x0c8
-        f32 field_cc;                    // 0x0cc
+        i32 overshooting_up;             // 0x0a8
+        i32 overshooting_down;           // 0x0ac
+        i32 settling;                    // 0x0b0
+        i32 snap_next;                   // 0x0b4
+        f32 normal_rate;                 // 0x0b8
+        f32 overshoot_rate;              // 0x0bc
+        f32 overshoot_cutin;             // 0x0c0
+        f32 overshoot_amount;            // 0x0c4
+        f32 overbright_cap;              // 0x0c8
+        f32 overdark_cap;                // 0x0cc
         BURN_OUT burnouts[32];           // 0x0d0
         i32 active_count;                // 0x550
         i32 selected_index;              // 0x554
-        f32 unknown_558;                 // 0x558
-        f32 unknown_55c;                 // 0x55c
-        i32 unknown_560;                 // 0x560
+        f32 default_radius;              // 0x558
+        f32 default_falloff;             // 0x55c
+        i32 loaded;                      // 0x560
     } BURN_SET;
 
     void edrtlInitBurnset(BURN_SET *);

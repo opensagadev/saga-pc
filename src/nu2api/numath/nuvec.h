@@ -96,11 +96,11 @@ typedef struct cut_load_bounds_s { // size 0x18
 typedef struct BURN_OUT { // size 0x24
     i32 active;           // 0x00
     NUVEC position;       // 0x04
-    f32 unknown_10;       // 0x10
-    f32 unknown_14;       // 0x14
-    f32 unknown_18;       // 0x18
-    f32 unknown_1c;       // 0x1c
-    f32 unknown_20;       // 0x20
+    f32 threshold;        // 0x10
+    f32 intensity;        // 0x14
+    f32 flare;            // 0x18
+    f32 radius;           // 0x1c
+    f32 falloff;          // 0x20
 } BURN_OUT;
 
 typedef struct CAMERA_CONTEXT_BUILDIT { // size 0x40
