@@ -57,11 +57,6 @@ typedef struct blowup_movement_s {
     f32 target_radius;
 } BLOWUP_MOVEMENT;
 
-typedef struct HOLD_RUNTIME_VIEW { // size 0xde8
-    u8 unknown_000[0xde4];         // 0x000
-    f32 hold_timer;                // 0xde4
-} HOLD_RUNTIME_VIEW;
-
 i32 ObjOpponentStillThere(GAMEOBJECT *object, GAMEOBJECT *opponent, f32 gap) {
     NUVEC forward;
     NUVEC difference;
@@ -520,7 +515,7 @@ void StartHold(GAMEOBJECT *object) {
         return;
     }
     if (CanStartHoldFn(object) == 2) {
-        ((HOLD_RUNTIME_VIEW *)object)->hold_timer = 0.0f;
+        object->player.hold_timer = 0.0f;
         object->player.character_context = CHARACTER_CONTEXT_NONE;
         return;
     }

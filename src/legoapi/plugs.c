@@ -39,11 +39,6 @@ void Plug_MakeDrawMtx(CARRY_PLUG *plug, NUMTX *matrix) {
     NuMtxTranslate(matrix, &plug->position);
 }
 
-typedef struct plug_world_callbacks_s { // size 0x5170
-    u8 unknown[0x516c];                 // 0x0000
-    CARRY_PLUG_SYS *plug_system;        // 0x516c
-} PLUG_WORLD_CALLBACKS;
-
 typedef struct plug_progress_s { // size 0xc
     u32 visible_mask[1];         // 0x0
     u32 active_mask[1];          // 0x4
@@ -52,34 +47,33 @@ typedef struct plug_progress_s { // size 0xc
 
 static void *Plugs_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    PLUG_WORLD_CALLBACKS *view = (PLUG_WORLD_CALLBACKS *)world;
     CARRY_PLUG *plugs;
-    view->plug_system = NULL;
+    world->plug_sys = NULL;
     if (world->current_level->max_plugs > 0) {
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
         plugs = (CARRY_PLUG *)world->giz_buffer.addr;
         world->giz_buffer.addr += world->current_level->max_plugs * sizeof(CARRY_PLUG);
         world->giz_buffer.addr = (world->giz_buffer.addr + 3) & ~3u;
-        view->plug_system = (CARRY_PLUG_SYS *)world->giz_buffer.addr;
+        world->plug_sys = (CARRY_PLUG_SYS *)world->giz_buffer.addr;
         world->giz_buffer.addr += sizeof(CARRY_PLUG_SYS);
-        view->plug_system->plugs = plugs;
-        view->plug_system->count = 0;
+        world->plug_sys->plugs = plugs;
+        world->plug_sys->count = 0;
     }
-    return view->plug_system;
+    return world->plug_sys;
 }
 
 static i32 Plugs_Load(void *world_ptr, void *data) {
-    PLUG_WORLD_CALLBACKS *world = world_ptr;
+    WORLDINFO *world = world_ptr;
     CARRY_PLUG *plug;
     i32 i;
     i32 version;
-    if (world == NULL || world->plug_system == NULL || world->plug_system->count != 0) {
+    if (world == NULL || world->plug_sys == NULL || world->plug_sys->count != 0) {
         return 0;
     }
     version = EdFileReadInt();
-    world->plug_system->count = EdFileReadInt();
-    plug = world->plug_system->plugs;
-    for (i = 0; i < world->plug_system->count; ++i, ++plug) {
+    world->plug_sys->count = EdFileReadInt();
+    plug = world->plug_sys->plugs;
+    for (i = 0; i < world->plug_sys->count; ++i, ++plug) {
         EdFileRead(plug->name, 16);
         EdFileReadNuVec(&plug->position);
         plug->rotation_x = EdFileReadUnsignedShort();
@@ -109,18 +103,18 @@ static void Plug_SetVisibility(GIZMO *gizmo, i32 visible) {
 }
 
 static void Plugs_Reset(void *world_ptr, void *data, void *progress_ptr) {
-    PLUG_WORLD_CALLBACKS *world = world_ptr;
+    WORLDINFO *world = world_ptr;
     PLUG_PROGRESS *progress = progress_ptr;
     CARRY_PLUG *plug;
     i32 i;
-    if (world == NULL || world->plug_system == NULL) {
+    if (world == NULL || world->plug_sys == NULL) {
         return;
     }
-    plug = world->plug_system->plugs;
+    plug = world->plug_sys->plugs;
     if (plug == NULL) {
         return;
     }
-    for (i = 0; i < world->plug_system->count; ++i, ++plug) {
+    for (i = 0; i < world->plug_sys->count; ++i, ++plug) {
         plug->active = 1;
         plug->visible = 1;
         plug->plugged = 0;
@@ -146,14 +140,14 @@ static i32 Plugs_GetMaxGizmos(void *world_ptr) {
 }
 
 static void Plugs_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    PLUG_WORLD_CALLBACKS *world = world_ptr;
+    WORLDINFO *world = world_ptr;
     i32 i;
-    if (world == NULL || world->plug_system == NULL) {
+    if (world == NULL || world->plug_sys == NULL) {
         return;
     }
-    for (i = 0; i < world->plug_system->count; ++i) {
-        if (NuStrLen(world->plug_system->plugs[i].name) != 0) {
-            AddGizmo(system, type_id, NULL, &world->plug_system->plugs[i]);
+    for (i = 0; i < world->plug_sys->count; ++i) {
+        if (NuStrLen(world->plug_sys->plugs[i].name) != 0) {
+            AddGizmo(system, type_id, NULL, &world->plug_sys->plugs[i]);
         }
     }
 }
@@ -198,7 +192,7 @@ static void Plugs_ClearProgress(void *world, void *progress_ptr) {
 }
 
 static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr) {
-    PLUG_WORLD_CALLBACKS *world = world_ptr;
+    WORLDINFO *world = world_ptr;
     PLUG_PROGRESS *progress = progress_ptr;
     CARRY_PLUG *plug;
     i32 i;
@@ -208,14 +202,14 @@ static void Plugs_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
     progress->visible_mask[0] = 0xffffffff;
     progress->active_mask[0] = 0xffffffff;
     progress->plugged_mask[0] = 0;
-    if (world == NULL || world->plug_system == NULL) {
+    if (world == NULL || world->plug_sys == NULL) {
         return;
     }
-    plug = world->plug_system->plugs;
+    plug = world->plug_sys->plugs;
     if (plug == NULL) {
         return;
     }
-    for (i = 0; i < world->plug_system->count && i < 32; ++i, ++plug) {
+    for (i = 0; i < world->plug_sys->count && i < 32; ++i, ++plug) {
         i32 word = i / 32;
         i32 bit = 1 << (i & 31);
         if (!plug->visible) {

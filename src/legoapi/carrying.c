@@ -43,11 +43,6 @@ typedef struct carry_blowup_s { // size 0xac
     f32 target_scale;           // 0xa8
 } CARRY_BLOWUP;
 
-typedef struct carry_world_s { // size 0x5170
-    u8 unknown_0000[0x516c];   // 0x0000
-    CARRY_PLUG_SYS *plug_sys;  // 0x516c
-} CARRY_WORLD;
-
 typedef struct carry_model_s { // size 0x10
     u8 unknown_00[0xc];        // 0x0
     void **model_data_b;       // 0xc
@@ -77,7 +72,7 @@ i32 SuperCarry_TurnBlowupBackOn(GIZMOBLOWUP *blowup, NUVEC *position, u16 angle,
     blowup->status_flags |= BLOWUP_STATUS_VISIBLE | BLOWUP_STATUS_ACTIVE;
     GizBlowup_Respawn(blowup);
     blowup->status_flags |= 0x10000;
-    plug = Plug_FindNearest(((CARRY_WORLD *)WORLD)->plug_sys, position, &distance, 1);
+    plug = Plug_FindNearest(WORLD->plug_sys, position, &distance, 1);
     if (plug != NULL && distance < 0.5625f) {
         Plug_MakeDrawMtx(plug, &view->transform);
         plug->plugged = 1;

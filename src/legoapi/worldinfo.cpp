@@ -312,25 +312,11 @@ extern "C" {
         return 0;
     }
 
-    typedef struct PORTAL_DOOR { // size 0x10
-        nuhspecial_s special;    // 0x0
-        u16 flags;               // 0xc
-        u8 portal_id;            // 0xe
-        u8 unknown_0f;           // 0xf
-    } PORTAL_DOOR;
-
-    typedef struct PORTAL_DOOR_WORLD { // size 0x5050
-        u8 unknown_0000[0x5048];       // 0x0000
-        PORTAL_DOOR *portal_doors;     // 0x5048
-        i32 portal_door_count;         // 0x504c
-    } PORTAL_DOOR_WORLD;
-
     void PortalDoors_Configure(WORLDINFO *world, char *config) {
-        PORTAL_DOOR_WORLD *view = (PORTAL_DOOR_WORLD *)world;
-        PORTAL_DOOR *cursor;
+        PORTALDOOR_s *cursor;
         NUFPAR *parser;
-        view->portal_doors = NULL;
-        view->portal_door_count = 0;
+        world->portal_doors = NULL;
+        world->portal_door_count = 0;
         if (world->current_gscn == NULL) {
             return;
         }
@@ -339,8 +325,8 @@ extern "C" {
             return;
         }
         world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-        cursor = (PORTAL_DOOR *)world->giz_buffer.addr;
-        view->portal_doors = cursor;
+        cursor = (PORTALDOOR_s *)world->giz_buffer.addr;
+        world->portal_doors = cursor;
         while (NuFParGetLine(parser) != 0) {
             NuFParGetWord(parser);
             if (NuStrICmp(parser->word_buffer_ptr, "portaldoor") != 0) {
@@ -356,14 +342,14 @@ extern "C" {
                     cursor->flags |= 1;
                 }
             }
-            ++view->portal_door_count;
+            ++world->portal_door_count;
             ++cursor;
         }
         NuFParDestroy(parser);
-        if (view->portal_door_count > 0) {
+        if (world->portal_door_count > 0) {
             world->giz_buffer.addr = ((u32)cursor + 15U) & ~15U;
         } else {
-            view->portal_doors = NULL;
+            world->portal_doors = NULL;
         }
     }
 
@@ -398,11 +384,10 @@ extern "C" {
     }
 
     void PortalDoors_Reset(WORLDINFO *world) {
-        PORTAL_DOOR_WORLD *view = (PORTAL_DOOR_WORLD *)world;
         i32 index;
-        PORTAL_DOOR *door = view->portal_doors;
+        PORTALDOOR_s *door = world->portal_doors;
         if (door != NULL) {
-            for (index = 0; index < view->portal_door_count; ++index, ++door) {
+            for (index = 0; index < world->portal_door_count; ++index, ++door) {
                 door->flags &= ~6;
             }
         }

@@ -7,17 +7,12 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-typedef struct shadow_world_view_s { // size 0x5114
-    u8 reserved_0000[0x5110];        // 0x0000
-    EDGIZSHADOW *shadow_editor;      // 0x5110
-} SHADOW_WORLD_VIEW;
-
 static i32 Shadow_GetMaxGizmos(void *world) {
     return 1;
 }
 
 static void Shadow_AddGizmos(void *system, i32 type_id, void *world_ptr, void *data) {
-    SHADOW_WORLD_VIEW *world = world_ptr;
+    WORLDINFO *world = world_ptr;
     AddGizmo(system, type_id, NULL, &world->shadow_editor);
 }
 
@@ -43,26 +38,25 @@ static i32 Shadow_GetNumOutputs(GIZMO *gizmo) {
 
 static void *Shadow_ReserveBufferSpace(void *world_ptr) {
     WORLDINFO *world = world_ptr;
-    SHADOW_WORLD_VIEW *view = world_ptr;
     world->giz_buffer.addr = (world->giz_buffer.addr + 3u) & ~3u;
-    view->shadow_editor = (EDGIZSHADOW *)world->giz_buffer.addr;
+    world->shadow_editor = (EDGIZSHADOW *)world->giz_buffer.addr;
     world->giz_buffer.addr += sizeof(EDGIZSHADOW);
-    memset(view->shadow_editor, 0, sizeof(EDGIZSHADOW));
-    view->shadow_editor->direction.x = -2.0f;
-    view->shadow_editor->direction.y = -10.0f;
-    view->shadow_editor->direction.z = -2.0f;
-    view->shadow_editor->unknown_0c = 0.3f;
-    view->shadow_editor->unknown_10 = 2.0f;
-    view->shadow_editor->unknown_14 = 0.5f;
-    view->shadow_editor->unknown_18 = 0.0005f;
-    view->shadow_editor->unknown_1c = 0.01f;
-    view->shadow_editor->unknown_20 = 22.0f;
-    view->shadow_editor->unknown_24 = 0.5f;
-    view->shadow_editor->unknown_28 = 0.0f;
-    view->shadow_editor->unknown_2c = 0.0f;
-    view->shadow_editor->unknown_30 = -2.0f;
-    view->shadow_editor->preset = 0;
-    return view->shadow_editor;
+    memset(world->shadow_editor, 0, sizeof(EDGIZSHADOW));
+    world->shadow_editor->direction.x = -2.0f;
+    world->shadow_editor->direction.y = -10.0f;
+    world->shadow_editor->direction.z = -2.0f;
+    world->shadow_editor->unknown_0c = 0.3f;
+    world->shadow_editor->unknown_10 = 2.0f;
+    world->shadow_editor->unknown_14 = 0.5f;
+    world->shadow_editor->unknown_18 = 0.0005f;
+    world->shadow_editor->unknown_1c = 0.01f;
+    world->shadow_editor->unknown_20 = 22.0f;
+    world->shadow_editor->unknown_24 = 0.5f;
+    world->shadow_editor->unknown_28 = 0.0f;
+    world->shadow_editor->unknown_2c = 0.0f;
+    world->shadow_editor->unknown_30 = -2.0f;
+    world->shadow_editor->preset = 0;
+    return world->shadow_editor;
 }
 
 static void Shadow_ApplyPreset(EDGIZSHADOW *shadow, i32 preset) {
@@ -99,15 +93,14 @@ static void Shadow_ApplyPreset(EDGIZSHADOW *shadow, i32 preset) {
 
 static i32 Shadow_Load(void *world_ptr, void *data) {
     WORLDINFO *world = world_ptr;
-    SHADOW_WORLD_VIEW *view = world_ptr;
     EDGIZSHADOW *shadow;
     i32 version;
     i32 count;
     i32 record;
-    if (world == NULL || view->shadow_editor == NULL) {
+    if (world == NULL || world->shadow_editor == NULL) {
         return 0;
     }
-    shadow = view->shadow_editor;
+    shadow = world->shadow_editor;
     version = EdFileReadChar();
     count = EdFileReadChar();
     for (record = 0; record < count; ++record) {

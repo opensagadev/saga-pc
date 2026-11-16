@@ -93,9 +93,9 @@ struct DOOR_s {                        // size 0x128
     union { // size 0x8
         u64 takeover_character_mask;
 
-        struct {              // size 0x8
-            u32 vehicle_mask; // 0x108
-            i32 vehicle_mode; // 0x10c
+        struct {                   // size 0x8
+            u32 takeover_mask_low;  // 0x108
+            u32 takeover_mask_high; // 0x10c
         };
     }; // 0x108
 

@@ -13,24 +13,13 @@
 #include "nu2api/numath/nuvec.h"
 #include <string.h>
 
-typedef struct ripple_effect_cleanup_s { // size 0x28
-    u8 unknown_00[0x24];                 // 0x00
-    NUMTL *material;                     // 0x24
-} RIPPLE_EFFECT_CLEANUP;
-
-typedef struct world_ripple_cleanup_s { // size 0x46fc
-    u8 unknown_0000[0x46f4];            // 0x0000
-    RIPPLE_EFFECT_CLEANUP *effects;     // 0x46f4
-    i32 count;                          // 0x46f8
-} WORLD_RIPPLE_CLEANUP;
-
 void DestroyRippleMtls(WORLDINFO *world) {
     // MATCH-EXCEPTION: the cast is repeated at each use; a cast local gives the other SIB order (U1)
     i32 i;
-    for (i = 0; i < ((WORLD_RIPPLE_CLEANUP *)world)->count; ++i) {
-        if (((WORLD_RIPPLE_CLEANUP *)world)->effects[i].material != NULL) {
-            NuTexDestroy(((WORLD_RIPPLE_CLEANUP *)world)->effects[i].material->texture_id);
-            NuMtlDestroy(((WORLD_RIPPLE_CLEANUP *)world)->effects[i].material);
+    for (i = 0; i < world->ripple_effect_count; ++i) {
+        if (world->ripple_effects[i].material != NULL) {
+            NuTexDestroy(world->ripple_effects[i].material->texture_id);
+            NuMtlDestroy(world->ripple_effects[i].material);
         }
     }
 }

@@ -1630,6 +1630,7 @@ typedef struct gameobject_s { // size 0x10d8
     union { // size 0x6
         u8 unknown_1072[6];
         u8 ai_frame_event;
+        u8 input_flags;
         AI_SPECIAL_PROGRESS special_move_progress_view;
         INDY_GUIDELINE_STATE indy_guideline_state;
     }; // 0x1072

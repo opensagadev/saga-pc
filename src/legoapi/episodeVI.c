@@ -117,12 +117,6 @@ static f32 slowDownTimer[2] = {0};
 SPLINEPOS fireBackPos = {0};
 f32 FireDeltaPosition = 0.0f;
 
-typedef struct sarlacc_world_s {  // size 0x50d4
-    u8 unknown_0000[0x50cc];      // 0x0000
-    i32 blowup_target_count;      // 0x50cc
-    GIZMOBLOWUP **blowup_targets; // 0x50d0
-} SARLACC_WORLD;
-
 typedef struct sarlacc_panel_s { // size 0x63
     u8 unknown_00[0x62];         // 0x00
     u8 state_flags;              // 0x62
@@ -130,14 +124,6 @@ typedef struct sarlacc_panel_s { // size 0x63
 
 /* Fairground party split locator. */
 static AILOCATOR *FairgroundSplitPartyLocator;
-
-typedef struct JABBA_ANTINODE_VIEW { // size 0x4c
-    u8 unknown_00[0x40];             // 0x00
-    f32 base_radius;                 // 0x40
-    f32 base_height;                 // 0x44
-    u8 unknown_48[2];                // 0x48
-    u8 type;                         // 0x4a
-} JABBA_ANTINODE_VIEW;
 
 void DeathStar2BattleA_AlwaysUpdate(WORLDINFO *world) {
     if (FreePlay == 0 && dat_0087b284 != NULL) {
@@ -793,9 +779,9 @@ void JabbasPalaceA_Reset(WORLDINFO *world) {
 
 void JabbasPalaceA_Update(WORLDINFO *world) {
     NUVEC position = {-0.01503f, 0.7414f, 11.5824f};
-    JABBA_ANTINODE_VIEW *antinode;
+    AIANTINODE *antinode;
     if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 && NuSpecialGetVisibilityFn(&LevHSpecial[0]) == 0) {
-        antinode = (JABBA_ANTINODE_VIEW *)AIAntinodeCreateSingleFrame(&position, 1.0f);
+        antinode = AIAntinodeCreateSingleFrame(&position, 1.0f);
         if (antinode != NULL) {
             antinode->type = 2;
             antinode->base_radius = 0.82443f;
@@ -1400,11 +1386,11 @@ void SarlaccPitC_Reset(WORLDINFO *world) {
 static f32 SarlaccRechargeTimer = 0;
 
 void SarlaccPitC_Update(WORLDINFO *world) {
-    SARLACC_WORLD *script_world = (SARLACC_WORLD *)world;
+    WORLDINFO *script_world = world;
     if (LevGameObject[0] != NULL && SarlaccBlowUpTargetCount == 4) {
         if (LevGameObject[0]->player.rider != NULL) {
-            script_world->blowup_target_count = 4;
-            script_world->blowup_targets = SarlaccBlowUpTargets;
+            script_world->blowup_target_candidate_count = 4;
+            script_world->blowup_target_candidates = SarlaccBlowUpTargets;
             if (!SarlaccTakenOver) {
                 SarlaccTakenOver = 1;
             }
@@ -1424,8 +1410,8 @@ void SarlaccPitC_Update(WORLDINFO *world) {
             }
         } else if (SarlaccTakenOver) {
             SarlaccTakenOver = 0;
-            script_world->blowup_target_count = 0;
-            script_world->blowup_targets = NULL;
+            script_world->blowup_target_candidate_count = 0;
+            script_world->blowup_target_candidates = NULL;
         }
         if (!SarlaccRecharging) {
             if ((u32)SarlaccPower < 8 && LevGizmo[0] != NULL && GizmoGetOutput(world->gizmo_sys, LevGizmo[0], 0, 0) != 0) {

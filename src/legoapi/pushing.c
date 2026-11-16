@@ -48,11 +48,6 @@ typedef struct PUSH_OBJECT_LOCAL {  // size 0x7b4
     u8 landing_followup;            // 0x7b1
 } PUSH_OBJECT_LOCAL;
 
-typedef struct PUSH_OBSTACLE_WORLD { // size 0x46a8
-    u8 unknown_000[0x46a4];          // 0x0000
-    void *obstacle_sys;              // 0x46a4
-} PUSH_OBSTACLE_WORLD;
-
 typedef struct spinner_movement_s {
     u8 unknown_00[0x84];
     u32 state_flags;
@@ -243,7 +238,7 @@ void PushCode(GAMEOBJECT *object, i32 allow_push) {
                     }
                 } else if (LEGOCONTEXT_PUSHOBSTACLE != -1 && CanPushObstaclesFn != NULL && CanPushObstaclesFn(object) != 0) {
                     GIZOBSTACLE *obstacle =
-                        GizObstacle_FindNearest(((PUSH_OBSTACLE_WORLD *)WORLD)->obstacle_sys, &object->collision_position, object,
+                        GizObstacle_FindNearest(WORLD->giz_obstacle_sys, &object->collision_position, object,
                                                 &distance, OBSTACLE_TRIGGER_PUSH_ONLY);
                     if (obstacle != NULL && distance < 6.25) {
                         object->player.character_context = LEGOCONTEXT_PUSHOBSTACLE;

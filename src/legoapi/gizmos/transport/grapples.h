@@ -15,48 +15,7 @@
 #define GRAPPLE_OUTPUT_OCCUPIED 1
 #define GRAPPLE_OUTPUT_OCCUPIED_BY_2 2
 
-typedef struct GRAPPLE_DYNAMIC { // size 0xf8
-    u8 unknown_00[0x1d];         // 0x00
-    u8 retain_attachment;        // 0x1d
-    u8 flags;                    // 0x1e
-    u8 unknown_1f;               // 0x1f
-    u16 y_rotation;              // 0x20
-    u16 x_rotation;              // 0x22
-    NUVEC ground_position;       // 0x24
-    NUVEC hook_position;         // 0x30
-    NUVEC shadow_probe_position; // 0x3c
-    u16 ground_x_rotation;       // 0x48
-    u16 ground_z_rotation;       // 0x4a
-    f32 unknown_4c;              // 0x4c
-    f32 rope_length;             // 0x50
-    GAMEOBJECT *attached_object; // 0x54
-    u8 unknown_58[0xa0];         // 0x58
-} GRAPPLE_DYNAMIC;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-    /* Existing extern C shared block; no new shared layout fields. */
-
-    GRAPPLE_DYNAMIC *Grapple_AddDynamic(void *, i32);
-    GRAPPLE_DYNAMIC *Grapple_RemoveDynamic(void *);
-    extern GRAPPLE_DYNAMIC DynamicGrapple[4];
-    void Grapple_SetRotOrder(GAMEOBJECT *);
-
-    extern i32 PlayerGrappleSwingMode;
-    void Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target);
-    i32 Grapple_SetTargetMom(GAMEOBJECT *object);
-    extern LANGUAGEDATA Text_LanguageList_Default[7];
-    extern NUMTL *ZipUpLineMaterial;
-    GAMEOBJECT *Grapple_Occupied(void *, GAMEOBJECT *, AIPATHCNX *);
-    extern i32 grapple_gizmotype_id;
-    extern i16 Grapple_RopeSwingRotate;
-    extern i32 LEGOHINT_GRAPPLE;
-#ifdef __cplusplus
-}
-#endif
-
-/* Public declarations only; private original grapple views/helpers remain in their owner. */
+/* A grapple point: the level grapples (WORLDINFO.grapples) and the four DynamicGrapple slots that follow objects. */
 typedef struct GRAPPLE_MOTION { // size 0xf8
     char name[16];              // 0x00
     NUVEC position;             // 0x10
@@ -91,6 +50,32 @@ typedef struct GRAPPLE_MOTION { // size 0xf8
     NUVEC target_rope_points[6];  // 0xa4
     nuhspecial_s display_special; // 0xec
 } GRAPPLE_MOTION;
+
+/* The dynamic grapple slots use the same record. */
+typedef GRAPPLE_MOTION GRAPPLE_DYNAMIC;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    /* Existing extern C shared block; no new shared layout fields. */
+
+    GRAPPLE_DYNAMIC *Grapple_AddDynamic(void *, i32);
+    GRAPPLE_DYNAMIC *Grapple_RemoveDynamic(void *);
+    extern GRAPPLE_DYNAMIC DynamicGrapple[4];
+    void Grapple_SetRotOrder(GAMEOBJECT *);
+
+    extern i32 PlayerGrappleSwingMode;
+    void Grapple_SetPlayerTargetPoint(GAMEOBJECT *object, NUVEC *target);
+    i32 Grapple_SetTargetMom(GAMEOBJECT *object);
+    extern LANGUAGEDATA Text_LanguageList_Default[7];
+    extern NUMTL *ZipUpLineMaterial;
+    GAMEOBJECT *Grapple_Occupied(void *, GAMEOBJECT *, AIPATHCNX *);
+    extern i32 grapple_gizmotype_id;
+    extern i16 Grapple_RopeSwingRotate;
+    extern i32 LEGOHINT_GRAPPLE;
+#ifdef __cplusplus
+}
+#endif
 
 #ifdef __cplusplus
 extern "C" {

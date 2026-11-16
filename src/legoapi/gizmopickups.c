@@ -53,28 +53,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct SPECIAL_MINIKIT {    // size 0x3c
-    nuhspecial_s special;           // 0x00
-    NUINSTANIM *instance_animation; // 0x0c
-    void *animation_data;           // 0x10
-    f32 end_frame;                  // 0x14
-    char special_name[16];          // 0x18
-    char pickup_name[8];            // 0x28
-    GIZMO *at_gizmo;                // 0x30
-    GIZMO *pickup;                  // 0x34
-    u32 flags;                      // 0x38
-} SPECIAL_MINIKIT;
-
-typedef struct SPECIAL_MINIKIT_SYSTEM { // size 0x8
-    SPECIAL_MINIKIT *items;             // 0x0
-    i32 count;                          // 0x4
-} SPECIAL_MINIKIT_SYSTEM;
-
-typedef struct SPECIAL_MINIKIT_WORLD {        // size 0x5058
-    u8 unknown_0[0x5054];                     // 0x0000
-    SPECIAL_MINIKIT_SYSTEM *special_minikits; // 0x5054
-} SPECIAL_MINIKIT_WORLD;
-
 typedef struct PICKUP_RESET_RECORD { // size 0x2c
     char name[8];                    // 0x00
     NUVEC position;                  // 0x08
@@ -1079,13 +1057,12 @@ void PartUpdate_Heart(PART *part) {
 }
 
 void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
-    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
-    SPECIAL_MINIKIT *items;
-    SPECIAL_MINIKIT *cursor;
-    SPECIAL_MINIKIT_SYSTEM *system;
+    SPECIALMINIKIT_s *items;
+    SPECIALMINIKIT_s *cursor;
+    SPECIALMINIKITSYS_s *system;
     i32 count;
     NUFPAR *parser;
-    view->special_minikits = NULL;
+    world->special_minikits = NULL;
     if (world->current_gscn == NULL) {
         return;
     }
@@ -1094,7 +1071,7 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (world->giz_buffer.addr + 3U) & ~3U;
-    items = (SPECIAL_MINIKIT *)world->giz_buffer.addr;
+    items = (SPECIALMINIKIT_s *)world->giz_buffer.addr;
     cursor = items;
     count = 0;
     while (NuFParGetLine(parser) != 0 && NuFParGetWord(parser) != 0) {
@@ -1150,21 +1127,20 @@ void SpecialMiniKits_Configure(WORLDINFO *world, char *config) {
         return;
     }
     world->giz_buffer.addr = (u32)cursor;
-    view->special_minikits = system = (SPECIAL_MINIKIT_SYSTEM *)world->giz_buffer.addr;
+    world->special_minikits = system = (SPECIALMINIKITSYS_s *)world->giz_buffer.addr;
     system->items = items;
     system->count = count;
     world->giz_buffer.addr = (world->giz_buffer.addr + sizeof(*system) + 3U) & ~3U;
 }
 
 void SpecialMiniKits_Reset(WORLDINFO *world) {
-    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
-    SPECIAL_MINIKIT *item;
+    SPECIALMINIKIT_s *item;
     i32 index;
-    if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1) {
+    if (world->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1) {
         return;
     }
-    item = view->special_minikits->items;
-    for (index = 0; index < view->special_minikits->count; ++index, ++item) {
+    item = world->special_minikits->items;
+    for (index = 0; index < world->special_minikits->count; ++index, ++item) {
         item->pickup = GizmoFindByName(world->gizmo_sys, gizmopickup_typeid, item->pickup_name);
         if ((item->flags & SPECIAL_MINIKIT_AT_GIZMO) != 0) {
             item->at_gizmo = GizmoFindByName(world->gizmo_sys, -1, item->special_name);
@@ -1173,8 +1149,7 @@ void SpecialMiniKits_Reset(WORLDINFO *world) {
 }
 
 void SpecialMiniKits_Draw(WORLDINFO *world) {
-    SPECIAL_MINIKIT_WORLD *view = (SPECIAL_MINIKIT_WORLD *)world;
-    SPECIAL_MINIKIT *item;
+    SPECIALMINIKIT_s *item;
     GIZMOPICKUP *pickup;
     GIZMO_PICKUP_TYPE *type;
     NUINSTANIM *animation;
@@ -1187,14 +1162,14 @@ void SpecialMiniKits_Draw(WORLDINFO *world) {
     scale.x = AreaPickupScale;
     scale.y = AreaPickupScale;
     scale.z = AreaPickupScale;
-    if (view->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1 ||
+    if (world->special_minikits == NULL || GizmoPickupSys->gizmo_type_id == -1 ||
         GizmoPickupSys->types[GizmoPickupSys->gizmo_type_id].unknown_0f != 0) {
         return;
     }
     spin = (u16)(i32)((f64)NuFmod(GameTimer.time_elapsed, 4.0f) * 0.25 * 65536.0);
     tilt = (u16)(i32)((f64)NuTrigTable[((spin * 2) >> 1) & 0x7fff] * 1820.0);
-    item = view->special_minikits->items;
-    for (index = 0; index < view->special_minikits->count; ++index, ++item) {
+    item = world->special_minikits->items;
+    for (index = 0; index < world->special_minikits->count; ++index, ++item) {
         if ((item->flags & SPECIAL_MINIKIT_AT_GIZMO) != 0) {
             if (item->at_gizmo == NULL) {
                 continue;

@@ -4575,7 +4575,7 @@ extern "C" {
             ClearSpecialMove(owner);
             return 0;
         }
-        if (grapple->unknown_4c == 0.0f) {
+        if (grapple->swing_scale == 0.0f) {
             owner->player.pad->buttons_pressed |= GAMEPAD_JUMP;
             ((GAMEOBJECT *)object)->ai_collision_priority |= 0x4000;
         } else {

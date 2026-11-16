@@ -1110,16 +1110,16 @@ struct SPECIALMINIKITSYS_s {        // size 0x8
     i32 count;                      // 0x4
 };
 
-struct SPECIALMINIKIT_s {          // size 0x3c
-    struct nuhspecial_s special;   // 0x00
-    void *inst_anim;               // 0x0c
-    void *anim_data;               // 0x10
-    f32 end_frame;                 // 0x14
-    char special_name[16];         // 0x18
-    char pickup_name[8];           // 0x28
-    struct gizmo_s *special_gizmo; // 0x30
-    struct gizmo_s *pickup_gizmo;  // 0x34
-    u8 flags;                      // 0x38
+struct SPECIALMINIKIT_s {           // size 0x3c
+    struct nuhspecial_s special;    // 0x00
+    NUINSTANIM *instance_animation; // 0x0c
+    void *animation_data;           // 0x10
+    f32 end_frame;                  // 0x14
+    char special_name[16];          // 0x18
+    char pickup_name[8];            // 0x28
+    struct gizmo_s *at_gizmo;       // 0x30
+    struct gizmo_s *pickup;         // 0x34
+    u32 flags;                      // 0x38
 };
 
 struct FADER_s {                         // size 0x18
