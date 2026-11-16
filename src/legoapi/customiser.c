@@ -642,11 +642,9 @@ void Customiser_CopyDefaultPiecesToSave(CUSTOMISER_CONFIG *customiser, void *sav
     }
 }
 
-CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(CUSTOMISER_CONFIG *input, char *name, i32 *category, i32 *index) {
-    CUSTOMISER_CONFIG *customiser = input; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice
+CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(CUSTOMISER_CONFIG *customiser, char *name, i32 *category, i32 *index) {
     i32 category_index;
     i32 piece_index;
-    i32 *index_local = index; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice
     if (customiser == NULL) {
         return NULL;
     }
@@ -656,8 +654,8 @@ CUSTOMPIECE_LAYERS *Customiser_FindPieceByName(CUSTOMISER_CONFIG *input, char *n
                 if (category != NULL) {
                     *category = category_index;
                 }
-                if (index_local != NULL) {
-                    *index_local = piece_index;
+                if (index != NULL) {
+                    *index = piece_index;
                 }
                 return (CUSTOMPIECE_LAYERS *)&customiser->piece_sets[category_index][piece_index];
             }
