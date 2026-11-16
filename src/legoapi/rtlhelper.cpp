@@ -889,10 +889,11 @@ extern "C" {
 void RTLHelper::Initialise() {
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
-    EdClass *object_class = theRegistry.RegisterClass("Light", this, 0x8400000);
+    EdClass *object_class = theRegistry.RegisterClass("Light", this, EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE);
 #pragma pop_macro("RegisterClass")
     object_class->AddType(RTLHELPER_REF(EdRefRTL, "String", "Name", EDREF_LIGHT_NAME, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x80, 0, 0x10000100, NULL, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Short", "LEDFile", 0x80, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
     object_class->AddType(
         RTLHELPER_REF(EdRefRTL, "Int", "Type", EDREF_LIGHT_TYPE, 0, 0, RTLHELPER_NEW(EdEnumControl)(rtl_helper_type_items)));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
@@ -1021,10 +1022,11 @@ void EdRefFog::SetMemberData(void *object, i32 requested_type, void *data, i32, 
 void FogHelper::Initialise() {
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
-    EdClass *object_class = theRegistry.RegisterClass("Fog", this, 0x8400000);
+    EdClass *object_class = theRegistry.RegisterClass("Fog", this, EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE);
 #pragma pop_macro("RegisterClass")
     object_class->AddType(RTLHELPER_REF(EdRefFog, "String", "Name", EDREF_FOG_NAME, 0x40, 0x10000002, RTLHELPER_NEW(EdStringControl)));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x38, 0, 0x10000100, NULL, 0));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Short", "LEDFile", 0x38, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
     object_class->AddType(RTLHELPER_REF(EdRefFog, "Colour3", "Fog Colour", EDREF_FOG_FOG_COLOUR, 0, 0, RTLHELPER_NEW(EdColourControl)));
     object_class->AddType(
         RTLHELPER_REF(EdRefFog, "Float", "Fog Alpha", EDREF_FOG_FOG_ALPHA, 0, 0x10000000, new EdFloatControl(0.0f, 1.0f)));

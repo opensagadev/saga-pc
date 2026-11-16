@@ -473,6 +473,26 @@ struct EdDefunctList { // size 0xc
 /* EdRef.attributes, the bits the EdRef constructor sets from the member's type name. */
 #define EDREF_ATTR_POINTER 0x40000000 /* the type name ends in '*' */
 #define EDREF_ATTR_CLASS 0x80000000   /* not a registered type: a registered class */
+/* The attributes a class registers a member with; GetAttributeData and FindMember look a member up by one. */
+#define EDREF_ATTR_FLAGS 0x1              /* "Attributes": the object's flag word */
+#define EDREF_ATTR_NAME 0x2               /* the object's name (the knot's spline name) */
+#define EDREF_ATTR_POSITION 0x8           /* "pos x/y/z" in the property editor */
+#define EDREF_ATTR_ROTATION 0x10          /* "rot x/y/z" */
+#define EDREF_ATTR_SCALE 0x20             /* "scale x/y/z" */
+#define EDREF_ATTR_RADIUS 0x40            /* the object's radius (picking, the selection sphere) */
+#define EDREF_ATTR_LED_FILE 0x100         /* "LEDFile": the scene the object belongs to */
+#define EDREF_ATTR_NOT_IN_STATE 0x400000  /* left out of the state streams (SaveState, LoadState) */
+#define EDREF_ATTR_NOT_IN_FILE 0x10000000 /* left out of the .led file streams */
+/* EdClass.flags: the RegisterClass flags; AddType folds the members' EDREF_ATTR_CLASS_MEMBER bits in, so a class
+ * flag EDREF_ATTR_POSITION means it has a position member. The NOT_IN_STATE and NOT_IN_FILE bits apply to the
+ * whole class and also to an object whose flag word has them. */
+#define EDREF_ATTR_CLASS_MEMBER 0x17a
+#define EDCLASS_SELECTED_SPHERE 0x80 /* the editor draws a sphere around its selected objects */
+#define EDCLASS_CLONE_ONLY 0x4000000 /* new objects are clones of the selected one, matched by name in a stream */
+#define EDCLASS_RENDER_ALL 0x8000000 /* the editor renders its objects while they are not selected */
+#define EDCLASS_HIDDEN 0x20000000    /* left out of the class menus */
+/* EdStream.flags. */
+#define EDSTREAM_STATE 0x400000 /* a state stream (SaveState, LoadState), not a .led file */
 
 class EdRef : public CSListLink<EdRef> { // size 0x28
   public:

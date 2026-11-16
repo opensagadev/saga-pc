@@ -5446,7 +5446,7 @@ void ClassEditor::cbEdClassViewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
     if (theRegistry.class_count > 0) {
         for (i32 index = 0; index < theRegistry.class_count; index++) {
             EdClass *ed_class = &theRegistry.classes[index];
-            if (ed_class->flags & 0x20000000) {
+            if (ed_class->flags & EDCLASS_HIDDEN) {
                 continue;
             }
             if (index < 10) {
@@ -6507,11 +6507,11 @@ void EdClass::SerialiseObject(EdStream &stream, void *object) {
         u8 data[256];
         for (EdRef *member = members; member != NULL; member = member->next) {
             i32 skip = 0;
-            if (stream.flags & 0x400000) {
-                if (member->attributes & 0x400000) {
+            if (stream.flags & EDSTREAM_STATE) {
+                if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
                     skip = 1;
                 }
-            } else if (member->attributes & 0x10000000) {
+            } else if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
                 skip = 1;
             }
             if (skip) {
@@ -6582,9 +6582,9 @@ void EdClass::AddType(EdRef *member) {
         members = member;
     }
     member_count++;
-    flags |= member->attributes & 0x17a;
+    flags |= member->attributes & EDREF_ATTR_CLASS_MEMBER;
     if (member->attributes & EDREF_ATTR_CLASS) {
-        flags |= theRegistry.GetClass(member->type_id)->flags & 0x17a;
+        flags |= theRegistry.GetClass(member->type_id)->flags & EDREF_ATTR_CLASS_MEMBER;
     }
 }
 
@@ -6600,11 +6600,11 @@ i32 EdClass::GetStreamClasses(EdStream &stream, i32 *stream_classes, i32 &count,
             continue;
         }
         i32 skip = 0;
-        if (stream.flags & 0x400000) {
-            if (member->attributes & 0x400000) {
+        if (stream.flags & EDSTREAM_STATE) {
+            if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
                 skip = 1;
             }
-        } else if (member->attributes & 0x10000000) {
+        } else if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
             skip = 1;
         }
         if (skip) {
@@ -7549,7 +7549,7 @@ void ClassEditor::Initialise(variptr_u &first, variptr_u &second, i32) {
 i32 ClassEditor::Editable(void *object, EdClass *object_class, i32 index) {
     i16 scene = 0;
     if (object != NULL) {
-        object_class->GetAttributeData(object, 0x100, EdType_Short, &scene, 0);
+        object_class->GetAttributeData(object, EDREF_ATTR_LED_FILE, EdType_Short, &scene, 0);
         if (theLevelEditor.IsEditable(scene)) {
             return 1;
         }
@@ -7590,12 +7590,12 @@ i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, i32 filte
     f32 distance;
     for (i32 class_index = 0; class_index < theRegistry.class_count; class_index++) {
         EdClass *object_class = &theRegistry.classes[class_index];
-        if (!(class_filter & 1 << class_index) || !(object_class->flags & 8)) {
+        if (!(class_filter & 1 << class_index) || !(object_class->flags & EDREF_ATTR_POSITION)) {
             continue;
         }
         for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
              object = object_class->object_interface->GetNextObject(object)) {
-            if (!object_class->FindMember(&member, object, 8, 1)) {
+            if (!object_class->FindMember(&member, object, EDREF_ATTR_POSITION, 1)) {
                 continue;
             }
             VuVec position;
@@ -7616,8 +7616,8 @@ i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, i32 filte
         if (filter != 0) {
             distance = NuFsqrt(best_distance);
             f32 radius = 1.0f;
-            if ((best_class->flags & 0x40) && best_class->FindMember(&member, best_object, 0x40, 1) &&
-                (member.reference->attributes & 0x40)) {
+            if ((best_class->flags & EDREF_ATTR_RADIUS) && best_class->FindMember(&member, best_object, EDREF_ATTR_RADIUS, 1) &&
+                (member.reference->attributes & EDREF_ATTR_RADIUS)) {
                 member.reference->GetMemberData(member.object, EdType_Float, &radius, 0);
             }
             if (distance > radius) {
@@ -7642,13 +7642,13 @@ i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, ClassObje
     i32 count = 0;
     for (i32 class_index = 0; class_index < theRegistry.class_count; class_index++) {
         EdClass *object_class = &theRegistry.classes[class_index];
-        if (!(class_filter & 1 << class_index) || !(object_class->flags & 8)) {
+        if (!(class_filter & 1 << class_index) || !(object_class->flags & EDREF_ATTR_POSITION)) {
             continue;
         }
         for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
              object = object_class->object_interface->GetNextObject(object)) {
             EdMember member;
-            if (!Editable(object, object_class, -1) || !object_class->FindMember(&member, object, 8, 1)) {
+            if (!Editable(object, object_class, -1) || !object_class->FindMember(&member, object, EDREF_ATTR_POSITION, 1)) {
                 continue;
             }
             VuVec position;
@@ -7659,7 +7659,7 @@ i32 ClassEditor::FindNearestObject(VuVec &point, ClassObject &nearest, ClassObje
             delta.z = position.z - point.z;
             f32 distance = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
             f32 radius = 1.0f;
-            if (object_class->FindMember(&member, object, 0x40, 1)) {
+            if (object_class->FindMember(&member, object, EDREF_ATTR_RADIUS, 1)) {
                 member.reference->GetAttributeData(member.object, 0x40, EdType_Float, &radius, 0);
             }
             if (distance < radius * radius && count < 16) {
@@ -7694,7 +7694,7 @@ i32 ClassEditor::FindNearestObject(VuVec &origin, VuVec &direction, ClassObject 
     f32 best_distance = 3.402823466e38f;
     for (i32 class_index = 0; class_index < theRegistry.class_count; class_index++) {
         EdClass *object_class = &theRegistry.classes[class_index];
-        if (!(class_filter & 1 << class_index) || object_class->object_interface == NULL || !(object_class->flags & 8)) {
+        if (!(class_filter & 1 << class_index) || object_class->object_interface == NULL || !(object_class->flags & EDREF_ATTR_POSITION)) {
             continue;
         }
         for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
@@ -7727,7 +7727,7 @@ i32 ClassEditor::FindNearestObject(VuVec &origin, VuVec &direction, ClassObject 
     i32 count = 0;
     for (i32 class_index = 0; class_index < theRegistry.class_count; class_index++) {
         EdClass *object_class = &theRegistry.classes[class_index];
-        if (!(class_filter & 1 << class_index) || object_class->object_interface == NULL || !(object_class->flags & 8)) {
+        if (!(class_filter & 1 << class_index) || object_class->object_interface == NULL || !(object_class->flags & EDREF_ATTR_POSITION)) {
             continue;
         }
         for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
@@ -7818,12 +7818,12 @@ i32 ClassEditor::IsUniqueName(char *name) {
     char object_name[128];
     for (i32 i = 0; i < theRegistry.class_count; i++) {
         EdClass *object_class = &theRegistry.classes[i];
-        if (object_class->object_interface == NULL || !(object_class->flags & 2)) {
+        if (object_class->object_interface == NULL || !(object_class->flags & EDREF_ATTR_NAME)) {
             continue;
         }
         for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
              object = object_class->object_interface->GetNextObject(object)) {
-            if (object_class->FindMember(&member, object, 2, 1)) {
+            if (object_class->FindMember(&member, object, EDREF_ATTR_NAME, 1)) {
                 member.reference->GetAttributeData(member.object, 2, EdType_String, object_name, sizeof(object_name));
                 if (NuStrICmp(name, object_name) == 0) {
                     return 0;
@@ -7867,14 +7867,14 @@ void ClassEditor::MakeUniqueName(char const *name, char *destination, i32 size) 
 /* Gives a new object a unique name and puts it at the manipulator cursor. */
 void ClassEditor::InitialiseObject(ClassObject &object) {
     EdMember member;
-    if (object.ed_class->FindMember(&member, object.object, 2, 1)) {
+    if (object.ed_class->FindMember(&member, object.object, EDREF_ATTR_NAME, 1)) {
         char name[128];
         char unique_name[128];
         member.reference->GetAttributeData(member.object, 2, EdType_String, name, sizeof(name));
         MakeUniqueName(name, unique_name, sizeof(unique_name));
         member.reference->SetAttributeData(member.object, 2, EdType_String, unique_name, 0);
     }
-    if (object.ed_class->FindMember(&member, object.object, 8, 1)) {
+    if (object.ed_class->FindMember(&member, object.object, EDREF_ATTR_POSITION, 1)) {
         member.reference->SetAttributeData(member.object, 8, EdType_VuVec, &manipulator->cursor, 0);
     }
 }
@@ -8113,13 +8113,13 @@ void ClassObject::Set(char *name) {
     *separator = '.';
     NuStrCpy(object_name, separator + 1);
     ed_class = theRegistry.GetClass(class_name);
-    if (ed_class == NULL || !(ed_class->flags & 2) || ed_class->object_interface == NULL) {
+    if (ed_class == NULL || !(ed_class->flags & EDREF_ATTR_NAME) || ed_class->object_interface == NULL) {
         return;
     }
     for (object = ed_class->object_interface->GetNextObject(NULL); object != NULL;
          object = ed_class->object_interface->GetNextObject(object)) {
-        if (ed_class->FindMember(&member, object, 2, 1)) {
-            if (member.reference->attributes & 2) {
+        if (ed_class->FindMember(&member, object, EDREF_ATTR_NAME, 1)) {
+            if (member.reference->attributes & EDREF_ATTR_NAME) {
                 member.reference->GetMemberData(member.object, EdType_String, candidate_name, sizeof(candidate_name));
             }
             if (NuStrICmp(object_name, candidate_name) == 0) {
@@ -8248,7 +8248,7 @@ void EdClassObjectNameControl::cbSelectClass(eduimenu_s *parent, eduiitem_s *ite
         for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
              object = object_class->object_interface->GetNextObject(object)) {
             char name[128];
-            if (name_reference->GetAttributeData(object, 2, EdType_String, name, sizeof(name))) {
+            if (name_reference->GetAttributeData(object, EDREF_ATTR_NAME, EdType_String, name, sizeof(name))) {
                 eduiMenuAddItem(menu, eduiItemSelCreate((u32)object, &EdLevelAttr, 0, 0, cbSelectObject, name));
             }
         }
@@ -8274,7 +8274,7 @@ void EdClassObjectNameControl::cbButton(eduimenu_s *parent, eduiitem_s *item, u3
     i32 class_count = theRegistry.class_count;
     for (i32 index = 0; index < class_count; index++) {
         EdClass *object_class = theRegistry.GetClass(index);
-        if (!(object_class->flags & 0x20000000) && object_class->object_interface != NULL) {
+        if (!(object_class->flags & EDCLASS_HIDDEN) && object_class->object_interface != NULL) {
             eduiMenuAddItem(menu, eduiItemSelCreate(index, &EdLevelAttr, 0, 0, cbSelectClass, object_class->name));
         }
     }
@@ -8400,7 +8400,7 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
     control->item = eduiItemExpanderCreate((u32)control, &EdLevelAttr, cbSelected, member->name);
     eduiMenuAddItem(menu, control->item);
     char value[128];
-    if (member->attributes & 8) {
+    if (member->attributes & EDREF_ATTR_POSITION) {
         NuSPrintf(value, "%.2f", matrix.matrix.m30);
         control->components[0] = eduiItemPropCreate((u32)control, &EdLevelAttr, cbSelected, cbChanged, cbButton, 2, "pos x", value);
         control->components[0]->unknown_10 = 1;
@@ -8414,7 +8414,7 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
         control->components[2]->unknown_10 = 3;
         eduiItemExpanderAddChild(control->item, control->components[2]);
     }
-    if (member->attributes & 0x10) {
+    if (member->attributes & EDREF_ATTR_ROTATION) {
         NUANG x;
         NUANG y;
         NUANG z;
@@ -8432,7 +8432,7 @@ void EdMatrixControl::AddMenuItem(eduimenu_s *menu, EdRef *member, void *target)
         control->components[5]->unknown_10 = 3;
         eduiItemExpanderAddChild(control->item, control->components[5]);
     }
-    if (member->attributes & 0x20) {
+    if (member->attributes & EDREF_ATTR_SCALE) {
         f32 x = VuVecLength(*reinterpret_cast<VuVec *>(&matrix.matrix.m00));
         f32 y = VuVecLength(*reinterpret_cast<VuVec *>(&matrix.matrix.m10));
         f32 z = VuVecLength(*reinterpret_cast<VuVec *>(&matrix.matrix.m20));
@@ -8997,10 +8997,10 @@ void PlaceableHelper::Initialise() {
     EdClass *object_class = theRegistry.RegisterClass("Placeable", NULL, 0);
 #pragma pop_macro("RegisterClass")
     EdRefPlaceable *reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-        EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, 0x10000100, NULL);
+        EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL);
     object_class->AddType(reference);
     reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-        EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, 1, NULL);
+        EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, EDREF_ATTR_FLAGS, NULL);
     object_class->AddType(reference);
     reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
         "String", "Name", EDREF_PLACEABLE_NAME, 250, 2, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
@@ -9009,7 +9009,8 @@ void PlaceableHelper::Initialise() {
         "String", "Params", EDREF_PLACEABLE_PARAMS, 250, 0, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl);
     object_class->AddType(reference);
     reference = new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-        EdRefPlaceable("VuMtx", "Mtx", 0x80000006, 0, 0x38, new (theMemoryManager.AllocPool(sizeof(EdMatrixControl), 1)) EdMatrixControl);
+        EdRefPlaceable("VuMtx", "Mtx", 0x80000006, 0, EDREF_ATTR_SCALE | EDREF_ATTR_ROTATION | EDREF_ATTR_POSITION,
+                       new (theMemoryManager.AllocPool(sizeof(EdMatrixControl), 1)) EdMatrixControl);
     object_class->AddType(reference);
 }
 
@@ -9167,9 +9168,9 @@ f32 EdClassInterface::DistanceToObject(VuVec &origin, VuVec &direction, void *ob
     f32 radius = 1.0f;
     EdMember member;
     f32 distance = 3.402823466e38f;
-    if (object_class->FindMember(&member, object, 8, 1)) {
+    if (object_class->FindMember(&member, object, EDREF_ATTR_POSITION, 1)) {
         member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
-        if (object_class->FindMember(&member, object, 0x40, 1)) {
+        if (object_class->FindMember(&member, object, EDREF_ATTR_RADIUS, 1)) {
             member.reference->GetAttributeData(member.object, 0x40, EdType_Float, &radius, 0);
         }
         f32 line_distance = LineToPointDistance(origin, direction, position, NULL);
@@ -9190,10 +9191,10 @@ f32 EdClassInterface::DistanceToObject(VuVec &point, void *object, EdRef **refer
     f32 radius = 0.0f;
     EdMember member;
     f32 distance = 3.402823466e38f;
-    if (object_class->FindMember(&member, object, 8, 1)) {
+    if (object_class->FindMember(&member, object, EDREF_ATTR_POSITION, 1)) {
         VuVec delta;
         member.reference->GetAttributeData(member.object, 8, EdType_VuVec, &position, 0);
-        if (object_class->FindMember(&member, object, 0x40, 1)) {
+        if (object_class->FindMember(&member, object, EDREF_ATTR_RADIUS, 1)) {
             member.reference->GetAttributeData(member.object, 0x40, EdType_Float, &radius, 0);
         }
         delta.x = point.x - position.x;
@@ -9218,11 +9219,11 @@ void EdRegistry::GetStreamClassMapping(EdStream &stream, i32 *mapping, i32 &coun
     for (i32 index = 0; index < class_count; index++) {
         EdClass *object_class = &classes[index];
         i32 skip = 0;
-        if (stream.flags & 0x400000) {
-            if (object_class->flags & 0x400000) {
+        if (stream.flags & EDSTREAM_STATE) {
+            if (object_class->flags & EDREF_ATTR_NOT_IN_STATE) {
                 skip = 1;
             }
-        } else if (object_class->flags & 0x10000000) {
+        } else if (object_class->flags & EDREF_ATTR_NOT_IN_FILE) {
             skip = 1;
         }
         if (skip) {
@@ -9252,16 +9253,16 @@ static i32 IsStreamObject(EdStream &stream, EdClass *object_class, void *object)
     i16 group = 0;
     i32 object_flags = 0;
     i32 result = 1;
-    object_class->GetAttributeData(object, 1, EdType_Int, &object_flags, 0);
-    object_class->GetAttributeData(object, 0x100, EdType_Short, &group, 0);
+    object_class->GetAttributeData(object, EDREF_ATTR_FLAGS, EdType_Int, &object_flags, 0);
+    object_class->GetAttributeData(object, EDREF_ATTR_LED_FILE, EdType_Short, &group, 0);
     if (stream.unknown_10 != group) {
         result = 0;
     }
-    if (stream.flags & 0x400000) {
-        if (object_flags & 0x400000) {
+    if (stream.flags & EDSTREAM_STATE) {
+        if (object_flags & EDREF_ATTR_NOT_IN_STATE) {
             result = 0;
         }
-    } else if (object_flags & 0x10000000) {
+    } else if (object_flags & EDREF_ATTR_NOT_IN_FILE) {
         result = 0;
     }
     return result;
@@ -9305,12 +9306,12 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
         count = 0;
         for (EdRef *member = members; member != NULL; member = member->next) {
             i32 keep = 1;
-            if (stream.flags & 0x400000) {
-                if (member->attributes & 0x400000) {
+            if (stream.flags & EDSTREAM_STATE) {
+                if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
                     keep = 0;
                 }
             } else {
-                if (member->attributes & 0x10000000) {
+                if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
                     keep = 0;
                 }
                 if ((member->attributes & EDREF_ATTR_CLASS) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
@@ -9325,12 +9326,12 @@ void EdClass::Serialise(EdStream &stream, i32 *class_mapping) {
         stream.SerialiseBuffer(&count, sizeof(count), 1);
         for (EdRef *member = members; member != NULL; member = member->next) {
             i32 keep = 1;
-            if (stream.flags & 0x400000) {
-                if (member->attributes & 0x400000) {
+            if (stream.flags & EDSTREAM_STATE) {
+                if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
                     keep = 0;
                 }
             } else {
-                if (member->attributes & 0x10000000) {
+                if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
                     keep = 0;
                 }
                 if ((member->attributes & EDREF_ATTR_CLASS) && class_mapping != NULL && class_mapping[member->type_id] == -1) {
@@ -9382,11 +9383,11 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
                         continue;
                     }
                     i32 skip = 0;
-                    if (stream.flags & 0x400000) {
-                        if (member->attributes & 0x400000) {
+                    if (stream.flags & EDSTREAM_STATE) {
+                        if (member->attributes & EDREF_ATTR_NOT_IN_STATE) {
                             skip = 1;
                         }
-                    } else if (member->attributes & 0x10000000) {
+                    } else if (member->attributes & EDREF_ATTR_NOT_IN_FILE) {
                         skip = 1;
                     }
                     if (skip) {
@@ -9435,7 +9436,7 @@ void EdClass::SerialiseObject(EdStream &stream, void *object, EdClass *schema, E
 void *EdClass::FindObject(char *object_name) {
     for (void *object = object_interface->GetNextObject(NULL); object != NULL; object = object_interface->GetNextObject(object)) {
         char name[256];
-        if (GetAttributeData(object, 2, EdType_String, name, sizeof(name)) && NuStrICmp(object_name, name) == 0) {
+        if (GetAttributeData(object, EDREF_ATTR_NAME, EdType_String, name, sizeof(name)) && NuStrICmp(object_name, name) == 0) {
             return object;
         }
     }
@@ -9460,7 +9461,7 @@ Placeable *SceneObject::Clone(i32 attributes) const {
 void SceneObjectHelper::Initialise() {
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
-    EdClass *object_class = theRegistry.RegisterClass("SceneObject", this, 0x100);
+    EdClass *object_class = theRegistry.RegisterClass("SceneObject", this, EDREF_ATTR_LED_FILE);
 #pragma pop_macro("RegisterClass")
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Placeable", "Placeable", 0, 0, 0, NULL, 0));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
@@ -9472,14 +9473,14 @@ void SceneObjectHelper::Initialise() {
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpecialObject), 1)) EdRefSpecialObject(
         "Int", "Collision", EDREF_SPECIAL_OBJECT_COLLISION, 0, 0,
         new (theMemoryManager.AllocPool(sizeof(EdEnumControl), 1)) EdEnumControl(EdEnumControl::YesNoItems)));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
+        "Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
+        "Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
+    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1)) EdRefPlaceable(
+        "String", "Name", EDREF_PLACEABLE_NAME, 250, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
     object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("Int", "Attributes", EDREF_PLACEABLE_ATTRIBUTES, 0, 0x10400000, NULL));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("Short", "LEDFile", EDREF_PLACEABLE_LEDFILE, 0, 0x10400000, NULL));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("String", "Name", EDREF_PLACEABLE_NAME, 250, 0x10400000, NULL));
-    object_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefPlaceable), 1))
-                              EdRefPlaceable("VuMtx", "Pos", 0x80000006, 0, 0x10400000, NULL));
+                              EdRefPlaceable("VuMtx", "Pos", 0x80000006, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NOT_IN_STATE, NULL));
     thePlaceableHelper.RegisterObjectType("Scene Object", this);
     theEdSystem.RegisterSubSystem(this);
     for (i32 i = 0; i < 10; i++) {
@@ -9670,11 +9671,12 @@ void EdRefKnot::SetMemberData(void *object, i32 requested_type, void *data, i32 
 void SplineHelper::Initialise() {
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
-    EdClass *spline_class = theRegistry.RegisterClass("Spline", this, 0x8400100);
+    EdClass *spline_class = theRegistry.RegisterClass("Spline", this, EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE | EDREF_ATTR_LED_FILE);
 #pragma pop_macro("RegisterClass")
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef(
         "String", "Spline", 0xc, 0x20, 2, new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl, 0));
-    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x44, 0, 0x10000100, NULL, 0));
+    spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                              EdRef("Short", "LEDFile", 0x44, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
                               EdRefSpline("Float", "Height", EDREF_SPLINE_HEIGHT, 0, 0, new EdFloatControl));
     spline_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefSpline), 1))
@@ -9688,23 +9690,27 @@ void SplineHelper::Initialise() {
 
 #pragma push_macro("RegisterClass")
 #undef RegisterClass
-    EdClass *knot_class = theRegistry.RegisterClass("Knot", &theKnotHelper, 0x18400000);
+    EdClass *knot_class =
+        theRegistry.RegisterClass("Knot", &theKnotHelper, EDREF_ATTR_NOT_IN_FILE | EDCLASS_RENDER_ALL | EDREF_ATTR_NOT_IN_STATE);
 #pragma pop_macro("RegisterClass")
     theKnotHelper.position_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "Pos", EDREF_KNOT_POS, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
-    theKnotHelper.in_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "In", EDREF_KNOT_IN, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+        EdRefKnot("VuVec", "Pos", EDREF_KNOT_POS, 0, EDREF_ATTR_POSITION,
+                  new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+    theKnotHelper.in_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1)) EdRefKnot(
+        "VuVec", "In", EDREF_KNOT_IN, 0, EDREF_ATTR_POSITION, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
     theKnotHelper.out_tangent_ref = new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-        EdRefKnot("VuVec", "Out", EDREF_KNOT_OUT, 0, 8, new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
+        EdRefKnot("VuVec", "Out", EDREF_KNOT_OUT, 0, EDREF_ATTR_POSITION,
+                  new (theMemoryManager.AllocPool(sizeof(EdVectorControl), 1)) EdVectorControl);
     knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-                            EdRefKnot("String", "Spline", EDREF_KNOT_SPLINE, 0x20, 0x10000002,
+                            EdRefKnot("String", "Spline", EDREF_KNOT_SPLINE, 0x20, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_NAME,
                                       new (theMemoryManager.AllocPool(sizeof(EdStringControl), 1)) EdStringControl));
-    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1)) EdRef("Short", "LEDFile", 0x44, 0, 0x10000100, NULL, 0));
+    knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRef), 1))
+                            EdRef("Short", "LEDFile", 0x44, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_LED_FILE, NULL, 0));
     knot_class->AddType(theKnotHelper.position_ref);
     knot_class->AddType(theKnotHelper.in_tangent_ref);
     knot_class->AddType(theKnotHelper.out_tangent_ref);
     knot_class->AddType(new (theMemoryManager.AllocPool(sizeof(EdRefKnot), 1))
-                            EdRefKnot("Float", "Radius", EDREF_KNOT_RADIUS, 0, 0x10000040, NULL));
+                            EdRefKnot("Float", "Radius", EDREF_KNOT_RADIUS, 0, EDREF_ATTR_NOT_IN_FILE | EDREF_ATTR_RADIUS, NULL));
 }
 
 void SplineHelper::PostLoadInitialisation(MemoryBuffer *, MemoryBuffer *) {
@@ -9887,7 +9893,7 @@ __declspec(noinline) i32 ClassEditor::CreateObject(i32 class_id) {
     }
     Placeable::CurrentLedFile = theLevelEditor.current_led_file;
     EdClass *object_class = theRegistry.GetClass(class_id);
-    if (object_class == NULL || (object_class->flags & 0x4000000)) {
+    if (object_class == NULL || (object_class->flags & EDCLASS_CLONE_ONLY)) {
         return 0;
     }
     return CreateObject(object_class);
@@ -9924,7 +9930,7 @@ void ClassEditor::cbEdClassSelectObjectMenu(eduimenu_s *parent, eduiitem_s *item
     EdRef *name_reference = object_class->FindTypeRef(2, 1);
     for (void *object = object_class->object_interface->GetNextObject(NULL); object != NULL;
          object = object_class->object_interface->GetNextObject(object)) {
-        if (name_reference == NULL || !name_reference->GetAttributeData(object, 2, EdType_String, name, sizeof(name))) {
+        if (name_reference == NULL || !name_reference->GetAttributeData(object, EDREF_ATTR_NAME, EdType_String, name, sizeof(name))) {
             NuStrCpy(name, object_class->name);
         }
         if (theClassEditor.Editable(object, object_class, -1)) {
@@ -9957,7 +9963,7 @@ void ClassEditor::cbEdClassSelectClassMenu(eduimenu_s *parent, eduiitem_s *item,
     eduiMenuAddItem(menu, eduiItemSeparatorCreate(0, &EdLevelAttr));
     for (i32 index = 0; index < theRegistry.class_count; index++) {
         EdClass *object_class = &theRegistry.classes[index];
-        if (!(object_class->flags & 0x20000000) && object_class->object_interface != NULL) {
+        if (!(object_class->flags & EDCLASS_HIDDEN) && object_class->object_interface != NULL) {
             eduiMenuAddItem(menu, eduiItemSelCreate(index, &EdLevelAttr, 0, 0, cbEdClassSelectObjectMenu, object_class->name));
         }
     }
@@ -10207,7 +10213,7 @@ i32 LevelEditor::LoadState(variptr_u *buffer, variptr_u *buffer_end, variptr_u *
     if (file) {
         EdFileInputStream stream(&source, &scratch);
         stream.Open(file, 4);
-        stream.flags = 0x400000;
+        stream.flags = EDSTREAM_STATE;
         result = ReadStream(stream);
         stream.Close();
         NuFileClose(file);
@@ -10271,7 +10277,7 @@ i32 LevelEditor::SaveState(i32 scene_index, variptr_u *buffer, variptr_u *buffer
         loading = 1;
         EdFileOutputStream stream;
         stream.Open(file, 4);
-        stream.flags = 0x400000;
+        stream.flags = EDSTREAM_STATE;
         stream.unknown_10 = scene_index;
         WriteStream(stream);
         size = (i32)NuFilePos(file);
@@ -10293,7 +10299,7 @@ i32 LevelEditor::SaveState(variptr_u *buffer, variptr_u *buffer_end) {
         loading = 1;
         EdFileOutputStream stream;
         stream.Open(file, 4);
-        stream.flags = 0x400000;
+        stream.flags = EDSTREAM_STATE;
         result = WriteStream(stream);
         NuFilePos(file);
         stream.Close();
@@ -10519,11 +10525,11 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                 continue;
             }
             i32 skip = 0;
-            if (stream.flags & 0x400000) {
-                if (object_class->flags & 0x400000) {
+            if (stream.flags & EDSTREAM_STATE) {
+                if (object_class->flags & EDREF_ATTR_NOT_IN_STATE) {
                     skip = 1;
                 }
-            } else if (object_class->flags & 0x10000000) {
+            } else if (object_class->flags & EDREF_ATTR_NOT_IN_FILE) {
                 skip = 1;
             }
             if (skip) {
@@ -10538,11 +10544,11 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                 continue;
             }
             i32 skip = 0;
-            if (stream.flags & 0x400000) {
-                if (object_class->flags & 0x400000) {
+            if (stream.flags & EDSTREAM_STATE) {
+                if (object_class->flags & EDREF_ATTR_NOT_IN_STATE) {
                     skip = 1;
                 }
-            } else if (object_class->flags & 0x10000000) {
+            } else if (object_class->flags & EDREF_ATTR_NOT_IN_FILE) {
                 skip = 1;
             }
             if (skip) {
@@ -10565,9 +10571,9 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                     continue;
                 }
                 i32 object_flags = 0;
-                object_class->GetAttributeData(object, 1, EdType_Int, &object_flags, 0);
+                object_class->GetAttributeData(object, EDREF_ATTR_FLAGS, EdType_Int, &object_flags, 0);
                 stream.SerialiseBuffer(&object_flags, sizeof(object_flags), 1);
-                if ((object_flags & 0x2000000) || (object_class->flags & 0x4000000)) {
+                if ((object_flags & 0x2000000) || (object_class->flags & EDCLASS_CLONE_ONLY)) {
                     object_class->GetAttributeData(object, 4, EdType_String, object_name, sizeof(object_name));
                     stream.SerialiseString(object_name, sizeof(object_name));
                 }
@@ -10595,7 +10601,7 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                             if (object_flags & 0x2000000) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
                                 object = object_class->FindObject(object_name);
-                            } else if (object_class->flags & 0x4000000) {
+                            } else if (object_class->flags & EDCLASS_CLONE_ONLY) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
                                 object = object_class->FindObject(object_name);
                                 object = object != NULL ? theRegistry.CreateObject(object_class->object_interface, object, 4, 0, 2) : NULL;
@@ -10625,7 +10631,7 @@ void EdRegistry::SerialiseObjects(EdStream &stream, EdRegistry *source_registry)
                             if (object_flags & 0x2000000) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
                                 object = object_class->FindObject(object_name);
-                            } else if (object_class->flags & 0x4000000) {
+                            } else if (object_class->flags & EDCLASS_CLONE_ONLY) {
                                 stream.SerialiseString(object_name, sizeof(object_name));
                                 object = object_class->FindObject(object_name);
                                 object = object != NULL ? theRegistry.CreateObject(object_class->object_interface, object, 4, 0, 2) : NULL;
@@ -10793,10 +10799,11 @@ void ClassEditor::Render() {
             if (!Editable(selected.object, selected.ed_class, -1)) {
                 continue;
             }
-            if ((selected.ed_class->flags & 0x8000000) && !IsSelectedObject(selected)) {
+            if ((selected.ed_class->flags & EDCLASS_RENDER_ALL) && !IsSelectedObject(selected)) {
                 theRegistry.ClassIFaceRender(selected.ed_class, selected.object, 0);
             }
-            if ((selected.ed_class->flags & 0x80) && IsSelectedObject(selected) && selected.object != current_object.object) {
+            if ((selected.ed_class->flags & EDCLASS_SELECTED_SPHERE) && IsSelectedObject(selected) &&
+                selected.object != current_object.object) {
                 DrawObjectSphere(selected, 0xff000080);
             }
         }
@@ -10998,13 +11005,13 @@ i32 ClassEditor::CreateObject(ClassObject &source) {
     }
     Placeable::CurrentLedFile = theLevelEditor.current_led_file;
     EdClassInterface *object_interface = source.ed_class->object_interface;
-    if (source.ed_class->flags & 0x4000000) {
+    if (source.ed_class->flags & EDCLASS_CLONE_ONLY) {
         created.object = theRegistry.CreateObject(object_interface, source.object, 4, 0, 2);
     } else {
         created.object = theRegistry.CreateObject(object_interface, NULL, 4, 0, 2);
     }
     if (created.object != NULL) {
-        if (source.ed_class->flags & 0x4000000) {
+        if (source.ed_class->flags & EDCLASS_CLONE_ONLY) {
             i32 flags = 0x4000000;
             created.SetAttributeData(1, EdType_Int, &flags, 0);
         } else {
@@ -11036,7 +11043,7 @@ i32 ClassEditor::cbEdCreateClassNewObject(i32 class_id) {
             return theClassEditor.CreateObject(*reinterpret_cast<ClassObject *>(&entry->ed_class));
         }
     }
-    if (!(object_class->flags & 0x4000000)) {
+    if (!(object_class->flags & EDCLASS_CLONE_ONLY)) {
         created = theClassEditor.CreateObject(class_id);
     }
     return created;
@@ -11065,7 +11072,7 @@ void ClassEditor::cbEdClassNewObject(eduimenu_s *parent, eduiitem_s *item, u32) 
     eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "Failed to create new object"));
     if (object_class == NULL) {
         eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "Unknown class id"));
-    } else if (object_class->flags & 0x4000000) {
+    } else if (object_class->flags & EDCLASS_CLONE_ONLY) {
         eduiMenuAddItem(menu, eduiItemSelCreate(1, &EdLevelAttr, 0, 0, cbEdLevelDestroyOnSelect, "No selected objects to clone"));
     }
     eduiMenuFitWidth(menu, 5);
@@ -11080,7 +11087,7 @@ void ClassEditor::cbEdClassNewMenu(eduimenu_s *parent, eduiitem_s *item, u32) {
         return;
     }
     for (i32 index = 0; index < theRegistry.class_count; index++) {
-        if (!(theRegistry.classes[index].flags & 0x20000000)) {
+        if (!(theRegistry.classes[index].flags & EDCLASS_HIDDEN)) {
             eduiMenuAddItem(menu, eduiItemSelCreate(index, &EdLevelAttr, 0, 0, cbEdClassNewObject, theRegistry.classes[index].name));
         }
     }
