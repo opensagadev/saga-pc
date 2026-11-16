@@ -18160,20 +18160,20 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderConstants(void *) {
     NUMTX inverse;
     NuMtxInv(&inverse, &view);
     if (parameter_4 == 0) {
-        f32 vector[4];
-        vector[1] = vector[0] = 0.0f;
-        vector[2] = -1.0f;
-        NuVecMtxRotate((NUVEC *)vector, (NUVEC *)vector, &inverse);
-        NuVecMtxRotate((NUVEC *)vector, (NUVEC *)vector, &PcGeometryViewMatrix);
-        NuVecNorm((NUVEC *)vector, (NUVEC *)vector);
-        PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
+        NUVEC4 vector;
+        vector.y = vector.x = 0.0f;
+        vector.z = -1.0f;
+        NuVecMtxRotate(&vector.xyz, &vector.xyz, &inverse);
+        NuVecMtxRotate(&vector.xyz, &vector.xyz, &PcGeometryViewMatrix);
+        NuVecNorm(&vector.xyz, &vector.xyz);
+        PCDeviceSetPixelShaderConstantsF(0x85, &vector.x, 1);
     } else {
-        f32 vector[4];
-        vector[0] = inverse.m30;
-        vector[1] = inverse.m31;
-        vector[2] = inverse.m32;
-        NuVecMtxTransformH((NUVEC *)vector, (NUVEC *)vector, &PcGeometryViewMatrix);
-        PCDeviceSetPixelShaderConstantsF(0x85, vector, 1);
+        NUVEC4 vector;
+        vector.x = inverse.m30;
+        vector.y = inverse.m31;
+        vector.z = inverse.m32;
+        NuVecMtxTransformH(&vector.xyz, &vector.xyz, &PcGeometryViewMatrix);
+        PCDeviceSetPixelShaderConstantsF(0x85, &vector.x, 1);
     }
     f32 parameters[4];
     parameters[0] = parameter_0;

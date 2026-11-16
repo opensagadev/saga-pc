@@ -417,7 +417,7 @@ extern "C" {
             if (!grapple->visible) {
                 continue;
             }
-            if (NuSpecialExistsFn((nuhspecial_s *)grapple->display_special) == 0 && LEGOOBJ_GRAPPLE_HOOK != -1 &&
+            if (NuSpecialExistsFn(&grapple->display_special) == 0 && LEGOOBJ_GRAPPLE_HOOK != -1 &&
                 world->level_objects[LEGOOBJ_GRAPPLE_HOOK].active != 0) {
                 NuMtxSetRotationX(&matrix, grapple->x_rotation);
                 NuMtxRotateY(&matrix, grapple->y_rotation);
@@ -718,8 +718,8 @@ extern "C" void Grapples_Update(void *world_pointer, void *unused_system, f32 un
         if (grapple->activation_progress > 0.0f) {
             grapple->activation_progress -= FRAMETIME;
         }
-        if (NuSpecialExistsFn((nuhspecial_s *)grapple->display_special)) {
-            grapple->hook_position = *NuSpecialGetDrawPos((nuhspecial_s *)grapple->display_special);
+        if (NuSpecialExistsFn(&grapple->display_special)) {
+            grapple->hook_position = *NuSpecialGetDrawPos(&grapple->display_special);
             grapple->shadow_probe_position.x = grapple->hook_position.x;
             grapple->shadow_probe_position.y = grapple->hook_position.y - (f64)0.1f;
             grapple->shadow_probe_position.z = grapple->hook_position.z;

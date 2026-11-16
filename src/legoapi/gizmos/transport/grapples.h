@@ -6,6 +6,7 @@
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/legoapi_types.h"
 #include "legoapi/world/world.h"
+#include "nu2api/nu3d/nuhspecial.h"
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/nuvec.h"
 
@@ -74,21 +75,21 @@ typedef struct GRAPPLE_MOTION { // size 0xf8
         };
     }; // 0x1e
 
-    u8 unknown_1f;               // 0x1f
-    u16 y_rotation;              // 0x20
-    u16 x_rotation;              // 0x22
-    NUVEC ground_position;       // 0x24
-    NUVEC hook_position;         // 0x30
-    NUVEC shadow_probe_position; // 0x3c
-    u16 ground_x_rotation;       // 0x48
-    u16 ground_z_rotation;       // 0x4a
-    f32 swing_scale;             // 0x4c
-    f32 rope_length;             // 0x50
-    GAMEOBJECT *attached_object; // 0x54
-    f32 activation_progress;     // 0x58
-    NUVEC rope_points[6];        // 0x5c
-    NUVEC target_rope_points[6]; // 0xa4
-    u8 display_special[12];      // 0xec
+    u8 unknown_1f;                // 0x1f
+    u16 y_rotation;               // 0x20
+    u16 x_rotation;               // 0x22
+    NUVEC ground_position;        // 0x24
+    NUVEC hook_position;          // 0x30
+    NUVEC shadow_probe_position;  // 0x3c
+    u16 ground_x_rotation;        // 0x48
+    u16 ground_z_rotation;        // 0x4a
+    f32 swing_scale;              // 0x4c
+    f32 rope_length;              // 0x50
+    GAMEOBJECT *attached_object;  // 0x54
+    f32 activation_progress;      // 0x58
+    NUVEC rope_points[6];         // 0x5c
+    NUVEC target_rope_points[6];  // 0xa4
+    nuhspecial_s display_special; // 0xec
 } GRAPPLE_MOTION;
 
 #ifdef __cplusplus
