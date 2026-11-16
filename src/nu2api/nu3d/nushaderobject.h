@@ -56,6 +56,19 @@ extern "C" {
 #endif
     };
 
+/* D3DX_CONSTANT_DESCRIPTION.class_kind and .type_kind: the D3DXPARAMETER_CLASS and D3DXPARAMETER_TYPE values
+ * (d3dx9shader.h). */
+#define D3DXPC_SCALAR 0
+#define D3DXPC_VECTOR 1
+#define D3DXPC_MATRIX_ROWS 2
+#define D3DXPC_MATRIX_COLUMNS 3
+#define D3DXPT_FLOAT 3
+#define D3DXPT_SAMPLER 10
+#define D3DXPT_SAMPLER1D 11
+#define D3DXPT_SAMPLER2D 12
+#define D3DXPT_SAMPLER3D 13
+#define D3DXPT_SAMPLERCUBE 14
+
     typedef struct D3DX_CONSTANT_DESCRIPTION { // size 0x30
         const char *name;                      // 0x00
         i32 register_set;                      // 0x04

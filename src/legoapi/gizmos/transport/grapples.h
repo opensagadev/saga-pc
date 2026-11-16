@@ -9,6 +9,11 @@
 #include "nu2api/nu3d/numtl.h"
 #include "nu2api/numath/nuvec.h"
 
+/* Grapple_GetOutput outputs, named after Grapple_GetOutputName. */
+#define GRAPPLE_OUTPUT_ACTIVE 0
+#define GRAPPLE_OUTPUT_OCCUPIED 1
+#define GRAPPLE_OUTPUT_OCCUPIED_BY_2 2
+
 typedef struct GRAPPLE_DYNAMIC { // size 0xf8
     u8 unknown_00[0x1d];         // 0x00
     u8 retain_attachment;        // 0x1d

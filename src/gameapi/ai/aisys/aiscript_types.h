@@ -135,6 +135,17 @@ struct AICONDITION {                   // size 0x2c
     AICONDITION *parameter_condition;  // 0x28
 };
 
+/* AICONDITION.flags, set by the script parser */
+#define AICONDITION_AND 0x1                   /* "and": the next condition must hold too */
+#define AICONDITION_KEEP_BLOCKED_MESSAGES 0x2 /* "goto ... KeepBlockedMessages" */
+#define AICONDITION_PARAM 0x4                 /* compares with a script parameter ("param" or its name) */
+#define AICONDITION_COMPLEX 0x8               /* compares with an expression evaluated at run time */
+
+/* AISCRIPTPROCESS.flags */
+#define AISCRIPTPROCESS_NEW_ACTION 0x1            /* the current action has not run yet: its first_time call is due */
+#define AISCRIPTPROCESS_INACTIVE 0x2              /* a level script switched off by its AI gizmo */
+#define AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES 0x4 /* the state change keeps the blocked message count */
+
 struct AIREFSCRIPT {              // size 0x24
     NULISTLNK link;               // 0x00
     char *name;                   // 0x08

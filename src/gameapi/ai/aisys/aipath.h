@@ -37,6 +37,11 @@ typedef struct AIPATHINFO {       // size 0x18
 
 enum { AIPATHINFO_FLAG_ON_PATH = 1 };
 
+/* AIPATHINFO.flags, the rest of its bitfields */
+#define AIPATHINFO_FLAG_WAS_ON_PATH 0x2
+#define AIPATHINFO_FLAG_ROUTE_CHECKED 0x4
+#define AIPATHINFO_FLAG_NARROW_PATH 0x8
+
 typedef struct AILOCATOR { // size 0x3c
     char name[0x10];       // 0x00
     NUVEC position;        // 0x10

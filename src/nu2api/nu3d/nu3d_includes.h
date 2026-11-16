@@ -111,6 +111,14 @@ typedef struct NUHGOBJ_JOINT_OVERRIDE { // size 0x34
 #define ANI3_NODE_BIND_ROTATION 0x20    /* the rotation is applied on top of the joint's bind matrix */
 #define ANI3_NODE_ROOT_UNSCALED 0x40    /* a root joint's accumulated scale restarts at 1 */
 
+/* ANI3 curve key types above the constant ones (0-5 index the animation's curve constants), by how the players
+ * decode a key (sizes in KeyStructSizes). */
+#define ANI3_KEY_BYTE_BLEND 6     /* 8-bit values with a 2-bit blend per quarter (ANI_GetKeyParts2, ANI_GetBlend2) */
+#define ANI3_KEY_1648 7           /* CalcValue1648 */
+#define ANI3_KEY_CONSTANT 8       /* a constant index per quarter */
+#define ANI3_KEY_WORD 9           /* a 16-bit value per quarter */
+#define ANI3_KEY_CONSTANT_PAIR 10 /* two 16-bit constants make an integer */
+
 typedef struct ANI3_SCALEMIN { // size 0x8
     f32 scale;                 // 0x0
     f32 minimum;               // 0x4
@@ -191,6 +199,13 @@ typedef struct nurndrlibstate_s { // size 0x34
     i16 vertex_groups_id;         // 0x30
     i16 reflection_id;            // 0x32
 } NURNDRLIBSTATE;
+
+/* GRAPHICS_RENDER_TEXTURE.format, by the D3DFORMAT PCGraphicsFormatToD3d gives for it. */
+#define PC_GRAPHICS_FORMAT_X8R8G8B8 1
+#define PC_GRAPHICS_FORMAT_A8R8G8B8 2
+#define PC_GRAPHICS_FORMAT_D24S8 4 /* a depth surface, not a texture */
+#define PC_GRAPHICS_FORMAT_D24FS8 5
+#define PC_GRAPHICS_FORMAT_R32F 10
 
 typedef struct GRAPHICS_RENDER_TEXTURE GRAPHICS_RENDER_TEXTURE;
 typedef struct PC_FRAMEBUFFER PC_FRAMEBUFFER;

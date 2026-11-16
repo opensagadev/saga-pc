@@ -45,6 +45,10 @@ typedef struct PODSPRINT {                 // size 0x94
     }; // 0x92
 } PODSPRINT;
 
+/* PODSPRINT.flags, the named bitfields */
+#define PODSPRINT_HALFWAY 0x1
+#define PODSPRINT_RESET_REQUESTED 0x10
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -72,6 +72,11 @@ struct SIGNAL_s {          // size 0x94
     u16 pad_92;                           // 0x92
 };
 
+/* SIGNAL_s.flags, the bitfields */
+#define SIGNAL_VISIBLE 0x1
+#define SIGNAL_ACTIVE 0x2
+#define SIGNAL_IN_USE 0x4
+
 #ifdef __cplusplus
 extern "C" {
 #endif

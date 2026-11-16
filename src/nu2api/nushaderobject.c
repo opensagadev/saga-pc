@@ -62,32 +62,34 @@ void PCShaderProbeHLSLConstants(NuShaderObject *shader, ID3DXConstantTable *vert
             continue;
         }
         description_count = 1;
-        if (PCDeviceHardwareVertexProcessingPC == 4 && uniform->register_index >= 0) {
+        if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_3_0 && uniform->register_index >= 0) {
             continue;
         }
         parameter = PCShaderAllocateParameter(shader, i);
         parameter->metadata = (parameter->metadata & 0x0fffffff) | ((u32)stage << 28);
         table->methods->get_constant_description(table, handle, &description, &description_count);
-        if (description.type_kind == 3) {
-            if (description.class_kind == 0) {
+        if (description.type_kind == D3DXPT_FLOAT) {
+            if (description.class_kind == D3DXPC_SCALAR) {
                 parameter->metadata = (parameter->metadata & 0xf1ffffff) | 0x01000000;
-            } else if (description.class_kind == 1) {
+            } else if (description.class_kind == D3DXPC_VECTOR) {
                 parameter->metadata = (parameter->metadata & 0xf2ffffff) | 0x02000000;
-            } else if (description.class_kind == 3 || description.class_kind == 2) {
+            } else if (description.class_kind == D3DXPC_MATRIX_COLUMNS || description.class_kind == D3DXPC_MATRIX_ROWS) {
                 parameter->metadata = (parameter->metadata & 0xf3ffffff) | 0x03000000;
             }
-        } else if (description.type_kind == 10 || description.type_kind == 11 || description.type_kind == 12 ||
-                   description.type_kind == 13 || description.type_kind == 14) {
+        } else if (description.type_kind == D3DXPT_SAMPLER || description.type_kind == D3DXPT_SAMPLER1D ||
+                   description.type_kind == D3DXPT_SAMPLER2D || description.type_kind == D3DXPT_SAMPLER3D ||
+                   description.type_kind == D3DXPT_SAMPLERCUBE) {
             parameter->metadata = (parameter->metadata & 0xf4ffffff) | 0x04000000;
         }
         parameter->register_index = (i16)description.register_index;
         parameter->register_count = (u8)description.register_count;
         parameter->array_count = (u8)description.elements;
-        if ((uniform->stage_mask & 1) != 0 && (description.type_kind == 10 || description.type_kind == 11 || description.type_kind == 12 ||
-                                               description.type_kind == 13 || description.type_kind == 14)) {
+        if ((uniform->stage_mask & 1) != 0 && (description.type_kind == D3DXPT_SAMPLER || description.type_kind == D3DXPT_SAMPLER1D ||
+                                               description.type_kind == D3DXPT_SAMPLER2D || description.type_kind == D3DXPT_SAMPLER3D ||
+                                               description.type_kind == D3DXPT_SAMPLERCUBE)) {
             parameter->register_index = (i16)(description.register_index + 0x101);
         }
-        if ((PCDeviceHardwareVertexProcessingPC != 4 && uniform->unknown_18 != 0) || uniform->register_index < 0) {
+        if ((PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0 && uniform->unknown_18 != 0) || uniform->register_index < 0) {
             PC_SHADER_PARAMETER_LOCAL *previous = shader->active_parameters;
             if (previous != NULL && parameter->register_index > previous->register_index) {
                 while (previous->next != NULL && previous->next->register_index <= parameter->register_index) {

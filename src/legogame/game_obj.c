@@ -1576,7 +1576,7 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
     ADDPART params;
     (void)unused1;
     (void)unused2;
-    if (object->helmet == 0) {
+    if (object->helmet == HELMET_NONE) {
         return;
     }
     locator = object->character_data->game_character->helmet_locator;
@@ -1600,7 +1600,7 @@ void LoseHelmet(GAMEOBJECT *object, i32 unused1, i32 unused2) {
         params.impact_fn = PartImpact_Brick;
         AddPart(&params);
     }
-    object->helmet = 0;
+    object->helmet = HELMET_NONE;
 }
 
 static f32 SHIELDFLICKERTIME = 0.1f;
@@ -2798,7 +2798,7 @@ i32 KillGameObject(GAMEOBJECT *object, i32 reason, i32 unused) {
     } else if (object->character_context == CHARACTER_CONTEXT_WEAPON_IN || object->unknown_e33 == 2) {
         object->flags_e20 = object->flags_e20 & (~APIOBJECT_WEAPON_OUT);
     }
-    if (object->helmet != 0) {
+    if (object->helmet != HELMET_NONE) {
         LoseHelmet(object, 1, 0);
     }
     rider = object->rider;

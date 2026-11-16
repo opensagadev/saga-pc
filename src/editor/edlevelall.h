@@ -17,6 +17,12 @@ struct eduimenu_s;
 struct nucamera_s;
 struct numtx_s;
 
+/* NewPrim: the primitive the editor's immediate drawing has open (EdDrawBegin, EdDrawLineSegment, EdDrawPolyTri). */
+#define EDDRAW_PRIM_NONE 0
+#define EDDRAW_PRIM_PENDING 1 /* EdDrawBegin set the material, NuPrim3DBegin not called yet */
+#define EDDRAW_PRIM_LINES 2
+#define EDDRAW_PRIM_TRIANGLES 3
+
 #ifdef __cplusplus
 extern "C" {
 #endif

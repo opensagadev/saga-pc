@@ -220,6 +220,17 @@ extern "C" {
     extern u32 TextCrawlGreen;
     extern u8 TextCrawlBlue;
     struct text_crawl_view_s;
+/* The rows of the video and effects option menus (MenuUpdateVideo, MenuUpdateEffects) */
+#define MENU_VIDEO_ROW_RESOLUTION 0
+#define MENU_VIDEO_ROW_REFRESH 1
+#define MENU_VIDEO_ROW_ASPECT 2
+#define MENU_VIDEO_ROW_HIRES 3
+#define MENU_VIDEO_ROW_APPLY 4
+#define MENU_EFFECTS_ROW_MULTISAMPLE 0
+#define MENU_EFFECTS_ROW_SHADOWS 1
+#define MENU_EFFECTS_ROW_BLOOM 2
+#define MENU_EFFECTS_ROW_SPEED_BLUR 3
+#define MENU_EFFECTS_ROW_APPLY 4
     void MenuUpdateVideo(MENU *);
     void MenuUpdateEffects(MENU *);
     void MenuApplyVideo(void);

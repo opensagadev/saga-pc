@@ -1730,7 +1730,7 @@ static void PodSprint_UpdateLaps(WORLDINFO *world) {
     NUVEC *line_end;
     if (podsprint.finish_line != NULL && podsprint.halfway != NULL) {
         podsprint.lap_time += FRAMETIME;
-        if ((podsprint.flags & 1) != 0) {
+        if ((podsprint.flags & PODSPRINT_HALFWAY) != 0) {
             line = podsprint.finish_line->pts;
             line_end = &line[1];
             for (i = 0, old = pod_old_pos; i < 2; i++, old++) {
@@ -1760,7 +1760,7 @@ static void PodSprint_UpdateLaps(WORLDINFO *world) {
             line_end = &line[1];
             for (i = 0, old = pod_old_pos; i < 2; i++, old++) {
                 if (Player[i] != NULL && XZLinesIntersect(line, line_end, &Player[i]->position, old, NULL, NULL) != 0) {
-                    podsprint.flags |= 1;
+                    podsprint.flags |= PODSPRINT_HALFWAY;
                     podsprint.ai_index++;
                     break;
                 }
@@ -1825,8 +1825,8 @@ void PodSprintA_Update(WORLDINFO *world) {
             return;
         }
         if ((podsprint.flags & 0xc) != 0) {
-            if ((podsprint.flags & 0x10) == 0) {
-                podsprint.flags |= 0x10;
+            if ((podsprint.flags & PODSPRINT_RESET_REQUESTED) == 0) {
+                podsprint.flags |= PODSPRINT_RESET_REQUESTED;
                 ResetLevel(world, NULL, 1);
             }
             return;

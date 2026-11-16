@@ -148,7 +148,7 @@ static void SignalResetRecord(SIGNAL_s *signal) {
         signal->animation_1 = 0x38;
         signal->animation_2 = 0x39;
     }
-    signal->flags = (signal->flags & ~4) | 3;
+    signal->flags = (signal->flags & ~SIGNAL_IN_USE) | SIGNAL_VISIBLE | SIGNAL_ACTIVE;
     NuMtxSetRotationY(&signal->matrix, signal->yaw);
     NuMtxRotateZ(&signal->matrix, signal->terrain_roll);
     NuMtxRotateX(&signal->matrix, signal->terrain_pitch);
@@ -266,14 +266,14 @@ void Signals_Draw(WORLDINFO *world, void *unused, f32 unused_time) {
     i32 index;
     for (index = 0; index < world->signal_count; ++index, ++signal) {
         NUMTX matrix;
-        if ((signal->flags & 1) == 0) {
+        if ((signal->flags & SIGNAL_VISIBLE) == 0) {
             continue;
         }
         matrix = signal->matrix;
         if (world->level_objects[0x36].active != 0) {
             NuSpecialDrawAt(&world->level_objects[0x36].special, &matrix);
         }
-        if ((signal->flags & 2) != 0) {
+        if ((signal->flags & SIGNAL_ACTIVE) != 0) {
             if (world->level_objects[signal->animation_1].active != 0) {
                 NuSpecialDrawAt(&world->level_objects[signal->animation_1].special, &matrix);
             }
@@ -340,7 +340,7 @@ char *Signal_GetGizmoName(GIZMO *gizmo) {
 
 i32 Signal_GetOutput(GIZMO *gizmo, i32 unused_index, i32 unused_mode) {
     SIGNAL_s *signal = gizmo->object;
-    if ((signal->flags & 1) != 0 && (signal->flags & 2) != 0) {
+    if ((signal->flags & SIGNAL_VISIBLE) != 0 && (signal->flags & SIGNAL_ACTIVE) != 0) {
         return 1;
     }
     return 0;
@@ -395,7 +395,7 @@ ADDGIZMOTYPE *Signals_RegisterGizmo(i32 unused_type_id) {
     SignalAddType = Default_ADDGIZMOTYPE;
     SignalAddType.name = name;
     SignalAddType.prefix = dat_007516c0;
-    SignalAddType.fns.options = 0x28;
+    SignalAddType.fns.options = sizeof(SIGNALPROGRESS_s);
     SignalAddType.fns.get_max_gizmos_fn = (i32(*)(void *))Signals_GetMaxGizmos;
     SignalAddType.fns.add_gizmos_fn = (void *)Signals_AddGizmos;
     SignalAddType.fns.early_update_fn = NULL;
@@ -463,7 +463,7 @@ void Signal_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
             SUIT_INITIALIZER_RECORD *new_suit;
             i32 index;
             /* Context 0x4c uses the attachment union and the full 24-byte suit record. */
-            ((SIGNAL_s *)object->grapple)->flags |= 4;
+            ((SIGNAL_s *)object->grapple)->flags |= SIGNAL_IN_USE;
             object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
             old_suit = (SUIT_INITIALIZER_RECORD *)object->suit;
             object->ai_packet.capabilities &= ~old_suit->character_flags;

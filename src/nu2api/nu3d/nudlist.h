@@ -43,6 +43,12 @@ struct nuhspecial_s;
 #define NUDLIST_VERTEX_GROUPS 0xa9
 #define NUDLIST_REFLECTION 0xab
 
+/* NUDISPLAYLISTITEM.id, what NuDisplayListExecute does with the item. */
+#define NUDLISTITEM_SKIP 0 /* step to the next item */
+#define NUDLISTITEM_JUMP 1 /* continue at the item `next` points to */
+#define NUDLISTITEM_CALL 3 /* call the handler of `type` with `next`, then step on */
+#define NUDLISTITEM_END 4  /* stop */
+
 typedef struct nudisplaylistitem_s { // size 0x10
     u8 type;                         // 0x0
     u8 id;                           // 0x1

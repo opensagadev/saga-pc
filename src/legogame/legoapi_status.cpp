@@ -985,22 +985,22 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
     NUVEC growing;
     growing.x = growing.y = growing.z = collected_scale;
     switch ((i8)view->minikit.pieces[currentminikit].direction) {
-        case 0:
+        case MINIKIT_PIECE_NEG_X:
             offset.x += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
-        case 1:
+        case MINIKIT_PIECE_POS_X:
             offset.x -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
-        case 2:
+        case MINIKIT_PIECE_NEG_Y:
             offset.y += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
-        case 3:
+        case MINIKIT_PIECE_POS_Y:
             offset.y -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
-        case 4:
+        case MINIKIT_PIECE_NEG_Z:
             offset.z -= NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
-        case 5:
+        case MINIKIT_PIECE_POS_Z:
             offset.z += NuTrigTable[((i32)(phase * 32768.0) >> 1) & 0x7fff] * StatusMiniKitDirectionOffset;
             break;
     }
@@ -1016,22 +1016,22 @@ void DrawStatusMiniKit(f32 x, f32 y, f32 z, f32 scale, f32 collected_scale, i32 
             reveal = NuTrigTable[((i32)(reveal * 16384.0 + 49152.0 + 16384.0) >> 1) & 0x7fff];
             MINIKIT_PIECE *piece = &((STATUS_WORLD_MINIKIT_READER *)WORLD)->minikit.pieces[index];
             switch ((i8)piece->direction) {
-                case 0:
+                case MINIKIT_PIECE_NEG_X:
                     matrix.m30 -= (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
-                case 1:
+                case MINIKIT_PIECE_POS_X:
                     matrix.m30 += (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
-                case 2:
+                case MINIKIT_PIECE_NEG_Y:
                     matrix.m31 -= (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
-                case 3:
+                case MINIKIT_PIECE_POS_Y:
                     matrix.m31 += (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
-                case 4:
+                case MINIKIT_PIECE_NEG_Z:
                     matrix.m32 += (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
-                case 5:
+                case MINIKIT_PIECE_POS_Z:
                     matrix.m32 -= (piece->direction_index * 0.025f + 0.25) * reveal;
                     break;
             }

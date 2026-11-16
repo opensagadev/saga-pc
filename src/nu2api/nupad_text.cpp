@@ -90,12 +90,12 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
     }
     if (use_keyboard_override != 0 && custom_active == 0 && ((u32)(device - 10) <= 3 || device < 0) &&
         TextInputKeyboardOverride[button] > 0) {
-        type = 7;
+        type = PC_BINDING_KEY;
         value = TextInputKeyboardOverride[button];
     }
     i32 expected = 2;
     switch (type) {
-        case 1: {
+        case PC_BINDING_JOYSTICK_BUTTON: {
             char text[5];
             *destination = 0;
             if (simple != 0) {
@@ -122,14 +122,14 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
             }
             break;
         }
-        case 3:
+        case PC_BINDING_JOYSTICK_AXIS_REVERSED:
             expected = 1;
-        case 2: {
+        case PC_BINDING_JOYSTICK_AXIS: {
             if (value < 0) {
                 break;
             }
             TEXT_INPUT_DEVICE_KIND *kind = &device_kind[button];
-            if (kind->kind == 3 && type == 2) {
+            if (kind->kind == 3 && type == PC_BINDING_JOYSTICK_AXIS) {
                 expected = 3;
             }
             if (simple != 0 && value < 8) {
@@ -190,14 +190,14 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
                 NuStrCpy(destination, labels->direction_negative[1]);
             }
             break;
-        case 4:
+        case PC_BINDING_MOUSE_BUTTON:
             if ((u32)value <= 2) {
                 NuStrCpy(destination, labels->hat_names[value]);
             } else {
                 sprintf(destination, labels->hat_format, value + 1);
             }
             break;
-        case 6:
+        case PC_BINDING_MOUSE_AXIS_REVERSED:
             if ((u32)value <= 2) {
                 if (device_kind[button].kind == 2 || device_kind[button].kind == 3) {
                     NuStrCpy(destination, labels->direction_positive[value]);
@@ -206,7 +206,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
                 }
             }
             break;
-        case 5:
+        case PC_BINDING_MOUSE_AXIS:
             if ((u32)value <= 2) {
                 if (device_kind[button].kind == 2 || device_kind[button].kind == 3) {
                     NuStrCpy(destination, labels->direction_negative[value]);
@@ -215,7 +215,7 @@ i32 TEXT_INPUT_MANAGER::ButtonName(i32 device, i32 button, char *destination, i3
                 }
             }
             break;
-        case 7:
+        case PC_BINDING_KEY:
         case 8:
         case 9:
             if (value >= 1) {

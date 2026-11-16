@@ -93,119 +93,119 @@ PC_TEXTURE_RESOURCE *NuGetVertexDeclaration(u32 descriptor) {
     elements[element_count].usage_index = index_value;                                                                                     \
     ++element_count;                                                                                                                       \
     offset += byte_count
-        VERTEX_ELEMENT(2, 0, 0, 12);
+        VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_POSITION, 0, 12);
         switch (normal) {
             case 1:
-                VERTEX_ELEMENT(2, 3, 0, 12);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_NORMAL, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(8, 3, 0, 4);
+                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_NORMAL, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
-                    elements[element_count - 1].type = 4;
+                    elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
                 break;
         }
         switch (tangent) {
             case 1:
-                VERTEX_ELEMENT(2, 6, 0, 12);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_TANGENT, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(8, 6, 0, 4);
+                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TANGENT, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
-                    elements[element_count - 1].type = 4;
+                    elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
                 break;
         }
         switch (binormal) {
             case 1:
-                VERTEX_ELEMENT(2, 6, 1, 12);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_TANGENT, 1, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(8, 6, 1, 4);
+                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TANGENT, 1, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
-                    elements[element_count - 1].type = 4;
+                    elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
                 break;
         }
         if (diffuse) {
-            VERTEX_ELEMENT(4, 10, 0, 4);
+            VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_COLOR, 0, 4);
         }
         if (specular) {
-            VERTEX_ELEMENT(4, 10, 1, 4);
+            VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_COLOR, 1, 4);
         }
         switch (texture_mode) {
             case 1:
-                VERTEX_ELEMENT(1, 5, 0, 8);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_TEXCOORD, 0, 8);
                 break;
             case 2:
-                VERTEX_ELEMENT(3, 5, 0, 16);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
                 break;
             case 3:
-                VERTEX_ELEMENT(3, 5, 0, 16);
-                VERTEX_ELEMENT(1, 5, 1, 8);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_TEXCOORD, 1, 8);
                 break;
             case 4:
-                VERTEX_ELEMENT(3, 5, 0, 16);
-                VERTEX_ELEMENT(3, 5, 1, 16);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 0, 16);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT4, D3DDECLUSAGE_TEXCOORD, 1, 16);
                 break;
         }
         switch (half_texture_mode) {
             case 1:
-                VERTEX_ELEMENT(15, 5, 0, 4);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_2, D3DDECLUSAGE_TEXCOORD, 0, 4);
                 break;
             case 2:
-                VERTEX_ELEMENT(16, 5, 0, 8);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
                 break;
             case 3:
-                VERTEX_ELEMENT(16, 5, 0, 8);
-                VERTEX_ELEMENT(15, 5, 1, 4);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_2, D3DDECLUSAGE_TEXCOORD, 1, 4);
                 break;
             case 4:
-                VERTEX_ELEMENT(16, 5, 0, 8);
-                VERTEX_ELEMENT(16, 5, 1, 8);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 0, 8);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT16_4, D3DDECLUSAGE_TEXCOORD, 1, 8);
                 break;
         }
         switch (weights) {
             case 1:
-                VERTEX_ELEMENT(1, 1, 0, 8);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT2, D3DDECLUSAGE_BLENDWEIGHT, 0, 8);
                 break;
             case 2:
-                VERTEX_ELEMENT(8, 1, 0, 4);
+                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_BLENDWEIGHT, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
-                    elements[element_count - 1].type = 4;
+                    elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
                 break;
         }
         switch (colour2) {
             case 1:
-                VERTEX_ELEMENT(2, 2, 0, 12);
+                VERTEX_ELEMENT(D3DDECLTYPE_FLOAT3, D3DDECLUSAGE_BLENDINDICES, 0, 12);
                 break;
             case 2:
-                VERTEX_ELEMENT(5, 2, 0, 4);
+                VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4, D3DDECLUSAGE_BLENDINDICES, 0, 4);
                 if (PCDeviceHardwareVertexProcessingPC <= 1) {
-                    elements[element_count - 1].type = 4;
+                    elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
                 }
                 break;
         }
         if (skinned) {
-            VERTEX_ELEMENT(8, 5, 6, 4);
+            VERTEX_ELEMENT(D3DDECLTYPE_UBYTE4N, D3DDECLUSAGE_TEXCOORD, 6, 4);
             if (PCDeviceHardwareVertexProcessingPC <= 1) {
-                elements[element_count - 1].type = 4;
+                elements[element_count - 1].type = D3DDECLTYPE_D3DCOLOR;
             }
-            VERTEX_ELEMENT(4, 5, 7, 0);
+            VERTEX_ELEMENT(D3DDECLTYPE_D3DCOLOR, D3DDECLUSAGE_TEXCOORD, 7, 0);
         }
         if (instanced) {
             elements[element_count].stream = 1;
             elements[element_count].offset = 0;
-            elements[element_count].type = 2;
+            elements[element_count].type = D3DDECLTYPE_FLOAT3;
             elements[element_count].method = 0;
-            elements[element_count].usage = 0;
+            elements[element_count].usage = D3DDECLUSAGE_POSITION;
             elements[element_count].usage_index = 1;
             ++element_count;
         }
         elements[element_count].stream = 0xff;
         elements[element_count].offset = 0;
-        elements[element_count].type = 17;
+        elements[element_count].type = D3DDECLTYPE_UNUSED;
         elements[element_count].method = 0;
         elements[element_count].usage = 0;
         elements[element_count].usage_index = 0;

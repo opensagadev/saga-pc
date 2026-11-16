@@ -837,7 +837,7 @@ extern void ZipUps_Update(WORLDINFO *world, void *unused, f32 time) {
     if (zipup == NULL) {
         return;
     }
-    CanDrawZipUpSwirls = AvailableToPlayer(CHARACTER_MODEL_ZIPUP, -1, 0, 0);
+    CanDrawZipUpSwirls = AvailableToPlayer(CHARACTER_MODEL_ZIPUP, -1, HELMET_NONE, 0);
 
     for (index = 0; index < world->zipup_count; ++index, ++zipup) {
         if (zipup->occupant != NULL && zipup->occupant->character_context == CHARACTER_CONTEXT_NONE) {
@@ -1084,7 +1084,7 @@ extern ADDGIZMOTYPE *ZipUps_RegisterGizmo(i32 type_id) {
     ZipUpAddType = Default_ADDGIZMOTYPE;
     ZipUpAddType.name = ZipUpTypeNamePtr;
     ZipUpAddType.prefix = "";
-    ZipUpAddType.fns.options = 8;
+    ZipUpAddType.fns.options = sizeof(ZIPUP_PROGRESS);
     ZipUpAddType.fns.get_max_gizmos_fn = ZipUps_GetMaxGizmos;
     ZipUpAddType.fns.add_gizmos_fn = (void *)ZipUps_AddGizmos;
     ZipUpAddType.fns.early_update_fn = NULL;

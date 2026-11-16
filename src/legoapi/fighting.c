@@ -498,7 +498,7 @@ i32 StepBackFromTarget(GAMEOBJECT *object) {
 
 void ComboHitFrame(GAMEOBJECT *object, i32 damage) {
     object->context_variant_flags |= APIOBJECT_CONTEXT_EVENT_DONE;
-    object->sabre_flags |= 5;
+    object->sabre_flags |= SABRE_PUSH | SABRE_DAMAGE;
     object->sabre_damage = (u8)damage;
     if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Player_HasDoubleWeaponDamage(object)) {
         object->sabre_damage = (u8)(object->sabre_damage + object->sabre_damage);

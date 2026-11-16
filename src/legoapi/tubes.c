@@ -31,7 +31,7 @@ TUBE *Tube_InAnyCylinder(WORLDINFO *world, GAMEOBJECT *object, i32 ignore_height
 
     if (tube != NULL) {
         for (index = 0; index < world->tube_count; ++index, ++tube) {
-            if ((tube->flags & 2) != 0 && (tube->flags & 1) != 0 && (tube->flags & 4) == 0 &&
+            if ((tube->flags & TUBE_VISIBLE) != 0 && (tube->flags & TUBE_ACTIVE) != 0 && (tube->flags & TUBE_MAGNET) == 0 &&
                 Tube_InCylinder(object, tube, NULL, ignore_height) != 0) {
                 return tube;
             }
@@ -109,7 +109,7 @@ void Tube_MoveCode(GAMEOBJECT *object, WORLDINFO *world) {
     tube = world->tubes;
     for (index = 0; index < world->tube_count; ++index, ++tube) {
         TUBE_COOLDOWN_VIEW *cooldown;
-        if ((tube->flags & 2) == 0 || (tube->flags & 1) == 0 || (tube->flags & 4) != 0) {
+        if ((tube->flags & TUBE_VISIBLE) == 0 || (tube->flags & TUBE_ACTIVE) == 0 || (tube->flags & TUBE_MAGNET) != 0) {
             continue;
         }
         if (Tube_InCylinder(object, tube, NULL, 0) == 0 &&
@@ -193,9 +193,9 @@ static i32 Tube_ActivateRev(GIZMO *gizmo, i32 reverse, i32 check_only) {
         return reverse != (((tube->flags >> 3) & 1));
     }
     if (reverse) {
-        tube->flags = (u8)((tube->flags & ~1) | 8);
+        tube->flags = (u8)((tube->flags & ~TUBE_ACTIVE) | TUBE_REVERSED);
     } else {
-        tube->flags = (u8)((tube->flags & ~8) | 1);
+        tube->flags = (u8)((tube->flags & ~TUBE_REVERSED) | TUBE_ACTIVE);
     }
     return 1;
 }
@@ -211,7 +211,7 @@ static void Tube_SetVisibility(GIZMO *gizmo, i32 visible) {
 static void Tube_ResetDerived(TUBE_CALLBACKS *tube) {
     tube->top = tube->position.y + tube->height;
     tube->radius_squared = tube->radius * tube->radius;
-    tube->flags |= 3;
+    tube->flags |= TUBE_ACTIVE | TUBE_VISIBLE;
 }
 
 static void Tubes_Reset(void *world_ptr, void *data, void *progress_ptr) {
@@ -313,10 +313,10 @@ static void Tubes_StoreProgress(void *world_ptr, void *data, void *progress_ptr)
         }
         word = i / 32;
         bit = 1u << (i & 31);
-        if (!(tube->flags & 2)) {
+        if (!(tube->flags & TUBE_VISIBLE)) {
             progress->visible_mask[word] &= ~bit;
         }
-        if (!(tube->flags & 1)) {
+        if (!(tube->flags & TUBE_ACTIVE)) {
             progress->active_mask[word] &= ~bit;
         }
     }
@@ -385,7 +385,7 @@ static void Tubes_Update(void *world_ptr, void *data, f32 frame_time) {
         if (tube->audio_cooldown < 0.0f) {
             tube->audio_cooldown = 0.0f;
         }
-        if ((tube->flags & 4) != 0 && (tube->flags & 1) != 0 && (tube->flags & 2) != 0) {
+        if ((tube->flags & TUBE_MAGNET) != 0 && (tube->flags & TUBE_ACTIVE) != 0 && (tube->flags & TUBE_VISIBLE) != 0) {
             GAMEOBJECT *object;
             GameAudio_PlaySfx(0x2e, &tube->position, 0, 0);
             object = Obj;

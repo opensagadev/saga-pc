@@ -601,12 +601,12 @@ extern "C" i32 Grapple_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
         return 0;
     }
     switch (output) {
-        case 1:
+        case GRAPPLE_OUTPUT_OCCUPIED:
             if (Grapple_Occupied(grapple, NULL, NULL)) {
                 return 1;
             }
             break;
-        case 2:
+        case GRAPPLE_OUTPUT_OCCUPIED_BY_2:
             if (!Grapple_Occupied(grapple, NULL, NULL)) {
                 return 0;
             }
@@ -621,9 +621,9 @@ extern "C" {
 
     char *Grapple_GetOutputName(GIZMO *gizmo, i32 output) {
         switch (output) {
-            case 1:
+            case GRAPPLE_OUTPUT_OCCUPIED:
                 return "Occupied";
-            case 2:
+            case GRAPPLE_OUTPUT_OCCUPIED_BY_2:
                 return "Occupied By 2";
         }
         return "Active";

@@ -1809,9 +1809,10 @@ void TerrainPlayer(GAMEOBJECT *object) {
                 i32 ordinary_ai_path;
 
                 ordinary_ai_path = ai_controlled && object->movement_spline_position.spline == NULL && (path_info->flags & 1) != 0 &&
-                                   (path_info->flags & 8) == 0 && object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED &&
-                                   object->context_target_position == NULL && !special_path_endpoints &&
-                                   Technos_FindControllingTechno(object) == NULL && (api->flags_1fc_word & 0x40000) == 0 &&
+                                   (path_info->flags & AIPATHINFO_FLAG_NARROW_PATH) == 0 &&
+                                   object->character_context != CHARACTER_CONTEXT_FORCE_PUSHED && object->context_target_position == NULL &&
+                                   !special_path_endpoints && Technos_FindControllingTechno(object) == NULL &&
+                                   (api->flags_1fc_word & 0x40000) == 0 &&
                                    !AIPATHCNX_FLAG_SET(path_info->connection, original_traversal_flags, LEGO_AIPATHCNX_BLOCKAGE) &&
                                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_WALLSHUFFLE) &&
                                    !AIPATHCNX_FLAG_SET(path_info->connection, traversal_flags, LEGO_AIPATHCNX_FULLTERRAIN) &&
@@ -3141,7 +3142,7 @@ i32 AvailableToPlayer(u32 character_flags, i32 variant, i32 helmet, i32 require_
                 continue;
             }
         }
-        if (helmet != 0) {
+        if (helmet != HELMET_NONE) {
             if (object->helmet != helmet) {
                 continue;
             }
@@ -3247,7 +3248,7 @@ u32 AdjustLayerBits(u32 mask, GAMEOBJECT *object) {
     i32 hair_layer = data->hair_layer;
     u32 hair = hair_layer != -1 ? 1u << hair_layer : 0;
     SUIT_LAYERS *suit;
-    if (object->helmet != 0) {
+    if (object->helmet != HELMET_NONE) {
         mask &= ~hair;
     }
     suit = object->suit;
@@ -4601,7 +4602,7 @@ void DrawParaphernalia(GAMEOBJECT *object) {
         carried_layers = AdjustLayerBits(carried->character_data->game_character->layer_mask_medium, carried);
         if (GameDrawCharacterModel(carried->character_model, &carried->anim_packet, &matrix, NULL, carried_reflection, attachments, NULL,
                                    carried_layers)) {
-            if (carried->helmet != 0) {
+            if (carried->helmet != HELMET_NONE) {
                 DrawObjectOnCharacter(WORLD, carried, carried->helmet + 0xf9, NULL, carried->character_data->game_character->helmet_locator,
                                       -1, attachments, carried_extra->draw_reflection, carried_layers, NULL, NULL, 1.0f, 1.0f);
             }
@@ -4701,8 +4702,9 @@ void DrawParaphernalia(GAMEOBJECT *object) {
         DrawObjectOnCharacter(WORLD, object, 0xe7, NULL, object->character_data->game_character->head_locator, -1, object->locator_matrices,
                               extra->draw_reflection, object->layer_mask, NULL, NULL, 1.0f, 1.0f);
     }
-    if (object->helmet != 0) {
-        if ((((i16)(object->id)) == id_CHEWBACCA || ((i16)(object->id)) == id_WOOKIEE) && object->helmet != 5 && object->helmet != 6) {
+    if (object->helmet != HELMET_NONE) {
+        if ((((i16)(object->id)) == id_CHEWBACCA || ((i16)(object->id)) == id_WOOKIEE) && object->helmet != HELMET_STORMTROOPER &&
+            object->helmet != HELMET_BOUNTY_HUNTER) {
             helmet_locator = 9;
         } else {
             helmet_locator = object->character_data->game_character->helmet_locator;
@@ -4975,7 +4977,7 @@ void Players_Init(void) {
             ++PLAYERCOUNT;
             object->flags_1044 |= 1;
             object->unknown_107e = (u8)DEFAULT_PLAYERHITPOINTS;
-            object->helmet = 0;
+            object->helmet = HELMET_NONE;
             if (UsePlayerList != 0) {
                 i32 slot = object->player_index;
                 object->player_controlled = PlayerProgress[slot].active;

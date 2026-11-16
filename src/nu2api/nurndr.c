@@ -177,7 +177,7 @@ i32 NuDisplayListAddRenderScene(void) {
                 dlist->mtl_last = dlist->first;
                 NuDisplayListResetStateCache(dlist->state);
             }
-            rebuilt->items[n].id = 4;
+            rebuilt->items[n].id = NUDLISTITEM_END;
             rebuilt->items[n].next = NULL;
             rebuilt->items[n].type = NUDLIST_TERMINATE;
             cursor->addr += (n + 1) * sizeof(NUDISPLAYLISTITEM);
@@ -208,7 +208,7 @@ i32 NuDisplayListAddRenderScene(void) {
         item = PCDisplayList2d.mtl_last;
         item->type = NUDLIST_TERMINATE;
         item->next = NULL;
-        item->id = 4;
+        item->id = NUDLISTITEM_END;
         render_scene_ptrs[render_scene_index]->render_2d_first = *PCDisplayList2d.first;
         NuDisplayListResetStateCache(PCDisplayList2d.state);
         PCDisplayList2d.mtl_last = PCDisplayList2d.first;
@@ -216,7 +216,7 @@ i32 NuDisplayListAddRenderScene(void) {
         item = &render_scene_ptrs[render_scene_index]->render_2d_first;
         item->type = NUDLIST_TERMINATE;
         item->next = NULL;
-        item->id = 4;
+        item->id = NUDLISTITEM_END;
     }
 
     render_scene_index += 1;
@@ -260,7 +260,7 @@ void NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
         item = (NUDISPLAYLISTITEM *)(nudlist_item_base + index * 0x20 + 0x10);
         item->type = NUDLIST_TERMINATE;
         item->next = NULL;
-        item->id = 4;
+        item->id = NUDLISTITEM_END;
     }
 }
 

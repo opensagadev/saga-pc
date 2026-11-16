@@ -201,6 +201,26 @@ extern "C" {
 #define APIOBJECT_TAG_PENDING 0x4          /* a tag to pending_tag_target waits for tag_cooldown */
 #define APIOBJECT_TAG_PENDING_TAKEOVER 0x8 /* the pending tag is a take-over (TagCode's takeover) */
 
+/* gameobject_s.sabre_flags, per blade in the sabre collision code */
+#define SABRE_PUSH 0x1   /* the blade pushes the characters it touches */
+#define SABRE_STREAK 0x2 /* the blade draws its streak */
+#define SABRE_DAMAGE 0x4 /* the blade hurts (ComboHitFrame) */
+
+/* gameobject_s.helmet: the hat a hat machine put on (0 none); two of them work as disguises */
+#define HELMET_NONE 0
+#define HELMET_STORMTROOPER 5  /* opens stormtrooper panels, the baddies forget the party */
+#define HELMET_BOUNTY_HUNTER 6 /* opens bounty hunter panels */
+
+/* gameobject_s.attack_override, the "attack_override=" keywords of the SetOpponent and EngageOpponent script actions */
+#define ATTACK_OVERRIDE_NONE 0
+#define ATTACK_OVERRIDE_PUNCH_1 1
+#define ATTACK_OVERRIDE_PUNCH_2 2
+#define ATTACK_OVERRIDE_PUNCH_3 3
+#define ATTACK_OVERRIDE_PUNCH_BEHIND 4
+#define ATTACK_OVERRIDE_PUNCH_SPECIAL 5
+#define ATTACK_OVERRIDE_BLOCK 6
+#define ATTACK_OVERRIDE_SHOOT 7
+
 /* gameobject_s.portal_flags: the AI script actions that set them (keyword in the action table). */
 #define APIOBJECT_CAN_DEFEND 0x2                    /* CanDefend */
 #define APIOBJECT_CAN_USE_WEAPON 0x8                /* CanUseWeapon */

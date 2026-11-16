@@ -98,16 +98,16 @@ static i32 GizSpecial_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) 
     }
     special = gizmo->object;
     if (special->anim_set->object_count == 0 || !NuSpecialExistsFn(&special->anim_set->objects->special) ||
-        ((special->flags & 2) == 0 && include_inactive == 0)) {
+        ((special->flags & GIZSPECIAL_ACTIVE) == 0 && include_inactive == 0)) {
         return 0;
     }
     if ((special->anim_set->flags & GAMEANIMSET_IN_ACTIVE_LIST) == 0) {
         GameAnimSet_EvaluateState(special->anim_set);
     }
     switch (output) {
-        case 0:
+        case GIZSPECIAL_OUTPUT_AT_END:
             return special->anim_set->state == GAMEANIMSET_STATE_AT_END;
-        case 1:
+        case GIZSPECIAL_OUTPUT_NOT_AT_START:
             return special->anim_set->state != GAMEANIMSET_STATE_AT_START;
     }
     return 0;
@@ -115,9 +115,9 @@ static i32 GizSpecial_GetOutput(GIZMO *gizmo, i32 output, i32 include_inactive) 
 
 static char *GizSpecial_GetOutputName(GIZMO *gizmo, i32 output) {
     switch (output) {
-        case 0:
+        case GIZSPECIAL_OUTPUT_AT_END:
             return "AtEnd";
-        case 1:
+        case GIZSPECIAL_OUTPUT_NOT_AT_START:
             return "NotAtStart";
     }
     return NULL;
@@ -136,10 +136,10 @@ static void GizSpecial_Activate(GIZMO *gizmo, i32 active) {
     if (active != 0) {
         GameAnimSet_JumpToStart(special->anim_set);
         GameAnimSet_Play(special->anim_set, 1.0f, 1);
-        special->flags |= 2;
+        special->flags |= GIZSPECIAL_ACTIVE;
     } else {
         GameAnimSet_Stop(special->anim_set);
-        special->flags &= ~2;
+        special->flags &= ~GIZSPECIAL_ACTIVE;
     }
 }
 
@@ -153,14 +153,14 @@ static i32 GizSpecial_ActivateRev(GIZMO *gizmo, i32 reverse, i32 check) {
     }
     special = gizmo->object;
     if ((check & 1) != 0) {
-        return (special->flags & 1) != reverse;
+        return (special->flags & GIZSPECIAL_REVERSED) != reverse;
     }
     if (reverse != 0) {
         GameAnimSet_Play(special->anim_set, -1.0f, 1);
-        special->flags |= 1;
+        special->flags |= GIZSPECIAL_REVERSED;
     } else {
         GameAnimSet_Play(special->anim_set, 1.0f, 1);
-        special->flags &= ~1;
+        special->flags &= ~GIZSPECIAL_REVERSED;
     }
     return 1;
 }

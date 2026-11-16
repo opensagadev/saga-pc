@@ -245,7 +245,7 @@ found:
         light->secondary_colour.y = 0.5f;
         light->secondary_colour.z = 0.5f;
         light->type = RTL_LIGHT_POINT;
-        light->flags &= static_cast<u8>(~1u);
+        light->flags &= static_cast<u8>(~RTL_LIGHT_FLAG_DISABLED);
         light->unknown_5e = 0;
         light->unknown_60 = 0;
         light->parameters[0] = 0.1f;

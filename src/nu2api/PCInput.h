@@ -77,6 +77,11 @@ typedef struct GRAPHICS_CAPS {       // size 0x130
     u32 unknown_0f4[0xf];            // 0x0f4
 } GRAPHICS_CAPS;
 
+/* GRAPHICS_CAPS bits the game tests (d3d9caps.h). */
+#define D3DDEVCAPS_HWTRANSFORMANDLIGHT 0x10000
+#define D3DPTEXTURECAPS_POW2 0x2
+#define D3DPTEXTURECAPS_NONPOW2CONDITIONAL 0x100
+
 #pragma pack(push, 4)
 
 typedef struct GRAPHICS_ADAPTER_IDENTIFIER { // size 0x44c
@@ -156,6 +161,12 @@ extern "C" {
     extern i32 nu_keyboard_key_index;
     extern i32 nu_keyboard_repeat_countdown;
     void PcInput_EnableKeyboards(const i16 *keys, i32 count);
+/* PCDeviceHardwareVertexProcessingPC: the shader model class PcConfigureInputGraphicsCaps picks from the device's
+ * vertex and pixel shader versions (0 when they are below 1.1). */
+#define PC_SHADER_MODEL_1_1 1 /* vs and ps 1.1 */
+#define PC_SHADER_MODEL_2_0 2 /* vs and ps 2.0 */
+#define PC_SHADER_MODEL_2_X 3 /* vs and ps above 2.0 */
+#define PC_SHADER_MODEL_3_0 4 /* vs and ps 3.0 */
     extern i32 PCDeviceHardwareVertexProcessingPC;
     void NuPadAutoConfigure(i32 count);
     void PcInput_DisableAllKeyboards(void);
@@ -347,6 +358,17 @@ struct PC_INPUT_BINDING { // size 0x4
     u8 unknown_01;        // 0x1
     i16 value;            // 0x2
 };
+
+/* PC_INPUT_BINDING.kind: what PC_INPUT_RUNTIME reads for a command (value is the button, axis or key index).
+ * The saved configurations also use 10-13 (10 a key pair and 11 a button pair on an axis). */
+#define PC_BINDING_NONE 0
+#define PC_BINDING_JOYSTICK_BUTTON 1
+#define PC_BINDING_JOYSTICK_AXIS 2
+#define PC_BINDING_JOYSTICK_AXIS_REVERSED 3 /* the axis value negated */
+#define PC_BINDING_MOUSE_BUTTON 4
+#define PC_BINDING_MOUSE_AXIS 5
+#define PC_BINDING_MOUSE_AXIS_REVERSED 6
+#define PC_BINDING_KEY 7
 
 /* PC_INPUT_DEVICE.kind: InitKeyboardProfiles names devices 10-13 (KeyboardMouse1, Keyboard1, KeyboardMouse2,
  * Keyboard2); a joystick port is a DirectInput device (its DIDEVCAPS) or an XInput pad. */

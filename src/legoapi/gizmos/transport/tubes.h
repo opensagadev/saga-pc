@@ -21,6 +21,12 @@ typedef struct TUBE {             // size 0x40
     u32 occupied_object_masks[2]; // 0x38
 } TUBE;
 
+/* TUBE.flags (the bitfields of TUBE_CALLBACKS) */
+#define TUBE_ACTIVE 0x1
+#define TUBE_VISIBLE 0x2
+#define TUBE_MAGNET 0x4   /* pulls droids that are not immune to magnets in, cannot be entered */
+#define TUBE_REVERSED 0x8 /* Tube_ActivateRev */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

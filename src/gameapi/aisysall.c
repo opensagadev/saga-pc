@@ -1073,15 +1073,15 @@ f32 AiParseExpression(char *expr) {
 static void ConditionsParseFinalise(AICONDITION *cond, NUFPAR *parser) {
     NuFParGetWord(parser);
     if (NuStrICmp(parser->word_buffer_ptr, "goto") == 0) {
-        cond->flags &= (u16)~2;
+        cond->flags &= (u16)~AICONDITION_KEEP_BLOCKED_MESSAGES;
         NuFParGetWord(parser);
         cond->next_state_name = AIScriptCopyString(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
         NuFParGetWord(parser);
         if (NuStrICmp(parser->word_buffer_ptr, "KeepBlockedMessages") == 0) {
-            cond->flags |= 2;
+            cond->flags |= AICONDITION_KEEP_BLOCKED_MESSAGES;
         }
     } else if (NuStrICmp(parser->word_buffer_ptr, "and") == 0) {
-        cond->flags |= 1;
+        cond->flags |= AICONDITION_AND;
     } else if (condition_has_no_goto == 0) {
         if (AIActionDiagnosticMode == 1) {
             AIScriptMissingStateDiagnosticAlternate(aiscript_load_script->name,
@@ -1580,7 +1580,7 @@ static i32 AIScriptNextAction(AISCRIPTPROCESS *processor) {
             action = (AIACTION *)NuLinkedListGetHead(&processor->state->actions);
         }
         if (action != NULL) {
-            processor->flags |= 1;
+            processor->flags |= AISCRIPTPROCESS_NEW_ACTION;
             processor->action_node = action;
         } else {
             processor->action_node = NULL;
@@ -1592,10 +1592,10 @@ static i32 AIScriptNextAction(AISCRIPTPROCESS *processor) {
 
 void AIScriptSetState(AISCRIPTPROCESS *processor, AISTATE *state) {
     if (processor != NULL && state != NULL) {
-        if ((processor->flags & 4) == 0) {
+        if ((processor->flags & AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES) == 0) {
             processor->unknown_b2 = 0;
         }
-        processor->flags &= ~4u;
+        processor->flags &= ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
         processor->state = state;
         processor->action_node = NULL;
         processor->next_state = NULL;
@@ -1635,7 +1635,7 @@ void AIScriptProcessorInit(AISYS *system, AIPACKET *packet, AISCRIPTPROCESS *pro
     if (processor == NULL) {
         return;
     }
-    processor->flags &= ~4u;
+    processor->flags &= ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
     processor->unknown_b2 = 0;
     if (script == NULL) {
         script = AIScriptFind(system, script_name, can_use_default, 1, 1);
@@ -2364,10 +2364,10 @@ i32 Action_SetState(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
     i32 i;
     if (first_time != 0 && count != 0) {
         processor->next_state = AIStateFind(params[0], processor->script);
-        processor->flags &= ~4u;
+        processor->flags &= ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
         for (i = 1; i < count; i++) {
             if (NuStrICmp(params[i], "KeepBlockedMessages") == 0) {
-                processor->flags |= 4;
+                processor->flags |= AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES;
             }
         }
         if (processor->next_state == NULL) {
@@ -11497,7 +11497,7 @@ void xConditions(NUFPAR *parser) {
                         cond->param_index = NuAToI(param);
 
                         if (cond->param_index >= 0 && cond->param_index < 4) {
-                            cond->flags |= 4;
+                            cond->flags |= AICONDITION_PARAM;
                         }
                     } else {
                         for (i = 0; i < 4; i++) {
@@ -11505,14 +11505,14 @@ void xConditions(NUFPAR *parser) {
 
                             if (param_name != NULL && NuStrICmp(param_name, parser->word_buffer_ptr) == 0) {
                                 cond->param_index = i;
-                                cond->flags |= 4;
+                                cond->flags |= AICONDITION_PARAM;
 
                                 break;
                             }
                         }
                     }
 
-                    if (!(cond->flags & 4)) {
+                    if (!(cond->flags & AICONDITION_PARAM)) {
                         for (i = 0; i < AIScriptConstCursor; i++) {
                             char *const_name = AIScriptConstantRecords[i].name;
 
@@ -11527,7 +11527,7 @@ void xConditions(NUFPAR *parser) {
                             cond->param_value = AiParseExpression(parser->word_buffer_ptr);
 
                             if (AiParseExpressionFailed) {
-                                cond->flags |= 8;
+                                cond->flags |= AICONDITION_COMPLEX;
                                 cond->param_index = complex_idx++;
                                 cond->complex_expression =
                                     AIScriptCopyString(parser->word_buffer_ptr, aiscript_load_buffer, aiscript_load_end_buffer);
@@ -11992,7 +11992,7 @@ static void AIScriptFillRemainingComplexOperands(NULISTHDR *conditions, AIPACKET
         if (processor->param_stack[stack_index].is_first_time_state != 0) {
             remaining = (AICONDITION *)NuLinkedListGetNext(conditions, (NULISTLNK *)condition);
             while (remaining != NULL) {
-                if ((remaining->flags & 8) != 0) {
+                if ((remaining->flags & AICONDITION_COMPLEX) != 0) {
                     processor->param_stack[stack_index].complex_params[remaining->param_index] =
                         AIParamToFloatEx(packet, processor, remaining->complex_expression);
                 }
@@ -12028,44 +12028,44 @@ static AICONDITION *AIScriptProcessStateConditions(AISYS *system, NULISTHDR *con
                     comparison_value = comparison_fn != NULL
                                            ? comparison_fn(system, processor, packet, condition->argument, condition->initialized_argument)
                                            : condition_value;
-                } else if ((condition->flags & 8) != 0) {
+                } else if ((condition->flags & AICONDITION_COMPLEX) != 0) {
                     if (processor->param_stack[stack_index].is_first_time_state != 0) {
                         processor->param_stack[stack_index].complex_params[condition->param_index] =
                             AIParamToFloatEx(packet, processor, condition->complex_expression);
                     }
                     comparison_value = processor->param_stack[stack_index].complex_params[condition->param_index];
-                } else if ((condition->flags & 4) != 0) {
+                } else if ((condition->flags & AICONDITION_PARAM) != 0) {
                     comparison_value = processor->params[condition->param_index];
                 } else {
                     comparison_value = condition->param_value;
                 }
                 switch (condition->comparison) {
-                    case 0:
+                    case EQ:
                         if (condition_value == comparison_value) {
                             comparison_passed = 1;
                         }
                         break;
-                    case 1:
+                    case LT:
                         if (condition_value < comparison_value) {
                             comparison_passed = 1;
                         }
                         break;
-                    case 2:
+                    case GT:
                         if (condition_value > comparison_value) {
                             comparison_passed = 1;
                         }
                         break;
-                    case 3:
+                    case LT_EQ:
                         if (condition_value <= comparison_value) {
                             comparison_passed = 1;
                         }
                         break;
-                    case 4:
+                    case GT_EQ:
                         if (condition_value >= comparison_value) {
                             comparison_passed = 1;
                         }
                         break;
-                    case 5:
+                    case NEQ:
                         if (condition_value != comparison_value) {
                             comparison_passed = 1;
                         }
@@ -12073,18 +12073,18 @@ static AICONDITION *AIScriptProcessStateConditions(AISYS *system, NULISTHDR *con
                 }
             }
             if (comparison_passed) {
-                if ((condition->flags & 1) == 0) {
+                if ((condition->flags & AICONDITION_AND) == 0) {
                     AIScriptFillRemainingComplexOperands(conditions, packet, processor, condition, stack_index);
                     processor->param_stack[stack_index].is_first_time_state = 0;
                     return condition;
                 }
             } else {
-                while ((condition->flags & 1) != 0) {
+                while ((condition->flags & AICONDITION_AND) != 0) {
                     condition = (AICONDITION *)NuLinkedListGetNext(conditions, &condition->link);
                     if (condition == NULL) {
                         break;
                     }
-                    if (processor->param_stack[stack_index].is_first_time_state != 0 && (condition->flags & 8) != 0) {
+                    if (processor->param_stack[stack_index].is_first_time_state != 0 && (condition->flags & AICONDITION_COMPLEX) != 0) {
                         processor->param_stack[stack_index].complex_params[condition->param_index] =
                             AIParamToFloatEx(packet, processor, condition->complex_expression);
                         condition->param_value = processor->param_stack[stack_index].complex_params[condition->param_index];
@@ -12199,7 +12199,7 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
             action = processor->action_node;
             if (action->definition != NULL && action->definition->eval_fn != NULL) {
                 first_time = 0;
-                if ((processor->flags & 1) != 0) {
+                if ((processor->flags & AISCRIPTPROCESS_NEW_ACTION) != 0) {
                     processor->action_data_1 = 0;
                     processor->action_data_2 = 0;
                     processor->action_data_3 = NULL;
@@ -12219,7 +12219,7 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
                             ScriptProcessFirstTimeActionFn(system, packet, processor);
                         }
                     }
-                    processor->flags &= ~1u;
+                    processor->flags &= ~AISCRIPTPROCESS_NEW_ACTION;
                     first_time = 1;
                     if (action->definition->replicate_on_first_action != 0) {
                         AINetReplicateAction(action, packet);
@@ -12229,9 +12229,9 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
                     break;
                 }
             } else {
-                processor->flags &= ~1u;
+                processor->flags &= ~AISCRIPTPROCESS_NEW_ACTION;
             }
-            if ((processor->flags & 1) != 0) {
+            if ((processor->flags & AISCRIPTPROCESS_NEW_ACTION) != 0) {
                 continue;
             }
             action = processor->action_node;
@@ -12241,7 +12241,7 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
                 action = (AIACTION *)NuLinkedListGetHead(&processor->state->actions);
             }
             if (action != NULL) {
-                processor->flags |= 1;
+                processor->flags |= AISCRIPTPROCESS_NEW_ACTION;
                 processor->action_node = action;
             } else {
                 processor->action_node = NULL;
@@ -12264,7 +12264,8 @@ void AIScriptProcess(AISYS *system, APIOBJECT *object, AIPACKET *packet, AISCRIP
     if (processor->state != NULL) {
         transition = AIScriptProcessStateConditions(system, &processor->state->conditions, packet, processor, 0);
         if (transition != NULL) {
-            processor->flags = (processor->flags & ~4u) | ((transition->flags & 2u) << 1);
+            processor->flags = (processor->flags & ~AISCRIPTPROCESS_KEEP_BLOCKED_MESSAGES) |
+                               ((transition->flags & AICONDITION_KEEP_BLOCKED_MESSAGES) << 1);
             AIScriptSetState(processor, transition->next_state);
         }
     }

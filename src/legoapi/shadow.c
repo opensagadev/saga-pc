@@ -24,11 +24,11 @@ static void Shards_Draw(void *context, void *unused1, float unused2) {
     for (i = 0; i < world->shard_count; ++i, ++shard) {
         struct LEVEL_OBJECT_RUNTIME *model;
         shard->drawn = 0;
-        if ((shard->state_flags & 0x0a) != 2) {
+        if ((shard->state_flags & (SHARD_VISIBLE | SHARD_COLLECTED)) != SHARD_VISIBLE) {
             continue;
         }
 
-        if (shard->state_flags & 4) {
+        if (shard->state_flags & SHARD_COLLECTING) {
             u16 tumble;
             u16 angle_z;
             u16 angle_x;
@@ -36,14 +36,14 @@ static void Shards_Draw(void *context, void *unused1, float unused2) {
             NuMtxSetRotationY(&matrix, spin);
             tumble = (u16)(60620.0f * shard->collection_time);
             angle_z = shard->angle_z;
-            if ((shard->state_flags & 0x40) == 0) {
+            if ((shard->state_flags & SHARD_TUMBLE_X) == 0) {
                 angle_z += tumble;
             }
             if (angle_z != 0) {
                 NuMtxRotateZ(&matrix, angle_z);
             }
             angle_x = shard->angle_x;
-            if (shard->state_flags & 0x40) {
+            if (shard->state_flags & SHARD_TUMBLE_X) {
                 angle_x += tumble;
             }
             if (angle_x != 0) {

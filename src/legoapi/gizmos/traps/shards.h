@@ -57,3 +57,12 @@ struct SHARD_s {   // size 0x54
         };
     }; // 0x10
 };
+
+/* SHARD_s.state_flags, the bitfields */
+#define SHARD_ACTIVE 0x1
+#define SHARD_VISIBLE 0x2
+#define SHARD_COLLECTING 0x4
+#define SHARD_COLLECTED 0x8
+#define SHARD_DRAWN 0x10
+#define SHARD_RANDOM_OFFSET 0x20
+#define SHARD_TUMBLE_X 0x40

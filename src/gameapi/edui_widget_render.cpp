@@ -1913,7 +1913,7 @@ extern "C" i32 eduicbRenderGraph(eduimenu_s *unused_menu, eduiitem_s *item, i32 
 extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_slider_s *slider = (edui_slider_s *)item;
     u32 buttons = pad->digital_buttons;
-    if ((buttons & 4) && (buttons & 8)) {
+    if ((buttons & PAD_BUTTON_L1) && (buttons & PAD_BUTTON_R1)) {
         f32 value;
         if (slider->minimum <= 0.0f && 0.0f <= slider->minimum + slider->range) {
             value = 0.0f;
@@ -1930,7 +1930,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
             slider->changed(menu, item, pad->digital_buttons);
         }
         EduiSliderRepeatTimer = 30;
-    } else if (buttons & 4) {
+    } else if (buttons & PAD_BUTTON_L1) {
         i32 timer = EduiSliderRepeatTimer - 1;
         if (timer < 0) {
             EduiSliderRepeatTimer = 0;
@@ -1954,7 +1954,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
             EduiSliderAcceleration += EduiSliderGlobalAcceleration;
             return 0;
         }
-    } else if (buttons & 8) {
+    } else if (buttons & PAD_BUTTON_R1) {
         i32 timer = EduiSliderRepeatTimer - 1;
         if (timer < 0) {
             EduiSliderRepeatTimer = 0;
@@ -1984,7 +1984,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
         EduiSliderRepeatTimer = 30;
         u8 l2 = pad->analog_l2;
         if (l2) {
-            if (buttons & 0x20) {
+            if (buttons & PAD_BUTTON_CIRCLE) {
                 EduiSliderDynamicScale *= (f64)1.05f;
                 slider->normalized_value =
                     MAX(0.0f, slider->normalized_value - (u32)l2 * delta_time / EduiNominalFrameTime * EduiSliderDynamicScale);
@@ -2002,7 +2002,7 @@ extern "C" i32 eduicbProcessSlider(eduimenu_s *menu, eduiitem_s *item, f32 delta
         }
         u8 r2 = pad->analog_r2;
         if (r2) {
-            if (buttons & 0x20) {
+            if (buttons & PAD_BUTTON_CIRCLE) {
                 EduiSliderDynamicScale *= (f64)1.05f;
                 slider->normalized_value =
                     MIN(1.0f, slider->normalized_value + (u32)r2 * delta_time / EduiNominalFrameTime * EduiSliderDynamicScale);

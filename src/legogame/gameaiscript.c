@@ -1172,7 +1172,7 @@ f32 Condition_EitherPlayerUsingPanel(AISYS *system, AISCRIPTPROCESS *process, AI
 }
 
 f32 Condition_EitherPlayerWearingHelmet(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    if (player->helmet == 5) {
+    if (player->helmet == HELMET_STORMTROOPER) {
         return 1.0f;
     }
     return 0.0f;
@@ -4565,27 +4565,27 @@ i32 Action_AttackOpponent(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *p
             } else if ((value = NuStrIStr(params[index], "attack_override")) != NULL) {
                 value += 16;
                 if (NuStrICmp(value, "PUNCH_1") == 0) {
-                    processor->action_data_6 = 1;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_1;
                 } else if (NuStrICmp(value, "PUNCH_2") == 0) {
-                    processor->action_data_6 = 2;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_2;
                 } else if (NuStrICmp(value, "PUNCH_3") == 0) {
-                    processor->action_data_6 = 3;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_3;
                 } else if (NuStrICmp(value, "PUNCH_BEHIND") == 0) {
-                    processor->action_data_6 = 4;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_BEHIND;
                 } else if (NuStrICmp(value, "PUNCH_SPECIAL") == 0) {
-                    processor->action_data_6 = 5;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_SPECIAL;
                 } else if (NuStrICmp(value, "BLOCK") == 0) {
-                    processor->action_data_6 = 6;
+                    processor->action_data_6 = ATTACK_OVERRIDE_BLOCK;
                 } else if (NuStrICmp(value, "SHOOT") == 0) {
-                    processor->action_data_6 = 7;
+                    processor->action_data_6 = ATTACK_OVERRIDE_SHOOT;
                 } else {
-                    processor->action_data_6 = 0;
+                    processor->action_data_6 = ATTACK_OVERRIDE_NONE;
                 }
             }
         }
         processor->action_data_4 = 0.2f;
     }
-    if (processor->action_data_6 != 0) {
+    if (processor->action_data_6 != ATTACK_OVERRIDE_NONE) {
         object->attack_override = (u8)processor->action_data_6;
     }
     opponent = (APIOBJECT *)packet->opponent;
@@ -4717,21 +4717,21 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
             } else if ((value = NuStrIStr(params[index], "attack_override")) != NULL) {
                 value += 16;
                 if (NuStrICmp(value, "PUNCH_1") == 0) {
-                    processor->action_data_6 = 1;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_1;
                 } else if (NuStrICmp(value, "PUNCH_2") == 0) {
-                    processor->action_data_6 = 2;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_2;
                 } else if (NuStrICmp(value, "PUNCH_3") == 0) {
-                    processor->action_data_6 = 3;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_3;
                 } else if (NuStrICmp(value, "PUNCH_BEHIND") == 0) {
-                    processor->action_data_6 = 4;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_BEHIND;
                 } else if (NuStrICmp(value, "PUNCH_SPECIAL") == 0) {
-                    processor->action_data_6 = 5;
+                    processor->action_data_6 = ATTACK_OVERRIDE_PUNCH_SPECIAL;
                 } else if (NuStrICmp(value, "BLOCK") == 0) {
-                    processor->action_data_6 = 6;
+                    processor->action_data_6 = ATTACK_OVERRIDE_BLOCK;
                 } else if (NuStrICmp(value, "SHOOT") == 0) {
-                    processor->action_data_6 = 7;
+                    processor->action_data_6 = ATTACK_OVERRIDE_SHOOT;
                 } else {
-                    processor->action_data_6 = 0;
+                    processor->action_data_6 = ATTACK_OVERRIDE_NONE;
                 }
             }
         }
@@ -4755,7 +4755,7 @@ i32 Action_EngageOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
             opponent = NULL;
         }
     }
-    if (processor->action_data_6 != 0) {
+    if (processor->action_data_6 != ATTACK_OVERRIDE_NONE) {
         object->attack_override = (u8)(processor->action_data_6);
     }
     if (opponent == NULL) {

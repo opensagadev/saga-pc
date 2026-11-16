@@ -9,6 +9,12 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+/* PANEL_MOVEMENT.model_variant: who can use the panel (GizPanel_CanUsePanel) */
+#define PANEL_VARIANT_ASTROMECH 0
+#define PANEL_VARIANT_PROTOCOL_DROID 1
+#define PANEL_VARIANT_BOUNTY_HUNTER 2 /* "Hunter_Granted" */
+#define PANEL_VARIANT_STORMTROOPER 3  /* "Trooper_Granted" */
+
 /* A wall panel that a character of the right kind uses (protocol droid, bounty hunter, storm trooper). */
 typedef struct panel_movement_s { // size 0x90
     NUMTX matrix;                 // 0x00

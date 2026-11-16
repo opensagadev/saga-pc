@@ -275,7 +275,7 @@ extern "C" void HatMachine_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 sp
                     (object->id != (u16)id_PRINCESSLEIABOUSHH || FreePlay == 0)) {
                     PlaySfx("HatOn", &object->upper_position);
                     object->helmet = ((HATMACHINE *)object->grapple)->displayed_hat;
-                    if (object->helmet == 5) {
+                    if (object->helmet == HELMET_STORMTROOPER) {
                         MakeBaddiesForgetAboutParty(1);
                     }
                 }
@@ -597,7 +597,7 @@ extern "C" ADDGIZMOTYPE *HatMachine_RegisterGizmo(i32 type_id) {
     HatMachineAddType = Default_ADDGIZMOTYPE;
     HatMachineAddType.name = (char *)"HatMachine";
     HatMachineAddType.prefix = (char *)"";
-    HatMachineAddType.fns.options = 12;
+    HatMachineAddType.fns.options = sizeof(HATMACHINE_PROGRESS);
     HatMachineAddType.fns.get_max_gizmos_fn = HatMachine_GetMaxGizmos;
     HatMachineAddType.fns.add_gizmos_fn = (void *)HatMachine_AddGizmos;
     HatMachineAddType.fns.early_update_fn = NULL;

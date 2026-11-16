@@ -1571,7 +1571,7 @@ static void KaminoEResetTurrets(void) {
     for (i = 0; i < 4; i++) {
         GizmoActivate(WORLD->gizmo_sys, GizmoFindByData(WORLD->gizmo_sys, gizpanel_gizmotype_id, kamino_e.panels[i]), 1, 1);
         kamino_e.turrets[i]->state = 1;
-        kamino_e.turrets[i]->flags &= ~0x10;
+        kamino_e.turrets[i]->flags &= ~TURRET_FLAG_AIM_AT_FIXED_ANGLES;
     }
 }
 
@@ -1609,7 +1609,7 @@ void KaminoE_UpdateSlave1(WORLDINFO *world) {
     f32 phase;
     f32 wave;
     i32 angle;
-    if (kamino_e.active_turret != NULL && (kamino_e.active_turret->flags & 0x10) != 0) {
+    if (kamino_e.active_turret != NULL && (kamino_e.active_turret->flags & TURRET_FLAG_AIM_AT_FIXED_ANGLES) != 0) {
         kamino_e.active_turret = NULL;
     }
     matrix = NuSpecialGetDrawMtx(&kamino_e.slave1);

@@ -13,6 +13,10 @@ typedef struct gizspecialsys_s {         // size 0x10
     struct gameanimobjpool_s *anim_pool; // 0xc
 } GIZSPECIALSYS;
 
+/* GizSpecial_GetOutput outputs, named after GizSpecial_GetOutputName. */
+#define GIZSPECIAL_OUTPUT_AT_END 0
+#define GIZSPECIAL_OUTPUT_NOT_AT_START 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif

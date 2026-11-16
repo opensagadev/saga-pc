@@ -583,9 +583,10 @@ void MakeBaddiesForgetAboutParty(i32 check_hostility) {
                 (player->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) == 0 || player->dead != 0 || (player->flags_ef3 & 1) != 0) {
                 continue;
             }
-            if (player->helmet == 5 || ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
-                                        (player->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
-                                        player->takeover_source == NULL)) {
+            if (player->helmet == HELMET_STORMTROOPER ||
+                ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
+                 (player->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
+                 player->takeover_source == NULL)) {
                 party_under_cover = 1;
             }
             if ((player->character_data->model_flags & CHARACTER_MODEL_UNTARGETABLE) == 0) {
@@ -933,7 +934,7 @@ void GameAISysStartFrame(AISYS *system) {
     }
     for (script_index = 0; script_index < ((AI_FRAME_WORLD *)WORLD)->processor_count; ++script_index) {
         world = (AI_FRAME_WORLD *)WORLD;
-        if ((world->processors[script_index].processor.flags & 2) == 0) {
+        if ((world->processors[script_index].processor.flags & AISCRIPTPROCESS_INACTIVE) == 0) {
             AIScriptProcess(system, NULL, NULL, &world->processors[script_index].processor, FRAMETIME);
         }
     }
@@ -2381,9 +2382,10 @@ void GameAIProcess(void) {
             (object->flags_1fc_word & APIOBJECT_FLAG_CHARACTER) != 0 && (object->dead == 0 || object->unknown_1010 > 0.0f) &&
             (object->flags_ef3 & 1) == 0 && StartupGameFlag1 != 0 && (NULL == VADER_ADATA || WORLD->area != VADER_ADATA) &&
             party_cant_be_under_cover == 0) {
-            if (object->helmet == 5 || ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
-                                        (object->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
-                                        object->takeover_source == NULL)) {
+            if (object->helmet == HELMET_STORMTROOPER ||
+                ((FreePlay != 0 || WORLD->current_level == HUB_LDATA) &&
+                 (object->character_data->model_flags & (CHARACTER_MODEL_BADDIE | CHARACTER_MODEL_NEUTRAL)) != 0 &&
+                 object->takeover_source == NULL)) {
                 if (alert_obj == NULL || alert_obj->player_index == -1 || (alert_obj->flags_ef3 & 1) != 0) {
                     party_under_cover = 1;
                 }

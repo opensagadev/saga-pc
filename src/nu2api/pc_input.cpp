@@ -125,7 +125,7 @@ void PC_INPUT_RUNTIME::InstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key,
     devices[port].config_present = config != NULL;
     devices[port].config_dirty = 0;
     for (i32 i = 0; i < 32; ++i) {
-        bindings[i].kind = 0;
+        bindings[i].kind = PC_BINDING_NONE;
         bindings[i].value = 0;
     }
     if (config != NULL) {
@@ -145,7 +145,7 @@ void PC_INPUT_RUNTIME::InstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key,
                     i32 secondary = config->axes[axis][2];
                     switch (kind) {
                         case 10:
-                            binding->kind = 7;
+                            binding->kind = PC_BINDING_KEY;
                             if (commands[i].active == 2) {
                                 binding->value = secondary;
                             } else {
@@ -153,17 +153,17 @@ void PC_INPUT_RUNTIME::InstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key,
                             }
                             break;
                         case 11:
-                            binding->kind = 1;
+                            binding->kind = PC_BINDING_JOYSTICK_BUTTON;
                             if (commands[i].active == 2) {
                                 binding->value = secondary;
                             } else {
                                 binding->value = primary;
                             }
                             break;
-                        case 2:
-                        case 3:
-                        case 5:
-                        case 6:
+                        case PC_BINDING_JOYSTICK_AXIS:
+                        case PC_BINDING_JOYSTICK_AXIS_REVERSED:
+                        case PC_BINDING_MOUSE_AXIS:
+                        case PC_BINDING_MOUSE_AXIS_REVERSED:
                         case 12:
                         case 13:
                             binding->kind = kind;
@@ -171,17 +171,17 @@ void PC_INPUT_RUNTIME::InstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key,
                             break;
                     }
                 }
-                if ((u32)button <= 15 && binding->kind == 0) {
+                if ((u32)button <= 15 && binding->kind == PC_BINDING_NONE) {
                     u8 kind = config->buttons[button][0];
                     u8 value = config->buttons[button][1];
                     switch (kind) {
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 6:
-                        case 7:
+                        case PC_BINDING_JOYSTICK_BUTTON:
+                        case PC_BINDING_JOYSTICK_AXIS:
+                        case PC_BINDING_JOYSTICK_AXIS_REVERSED:
+                        case PC_BINDING_MOUSE_BUTTON:
+                        case PC_BINDING_MOUSE_AXIS:
+                        case PC_BINDING_MOUSE_AXIS_REVERSED:
+                        case PC_BINDING_KEY:
                             binding->kind = kind;
                             binding->value = value;
                             break;
@@ -2157,7 +2157,7 @@ extern "C" void fun_006d5ce0(i32 device, i32 auxiliary, i32 auxiliary_port) {
         bindings = ((PC_INPUT_RUNTIME *)nu_input_state)->devices[device].bindings;
     }
     for (i = 0; i < 32; ++i) {
-        bindings[i].kind = 0;
+        bindings[i].kind = PC_BINDING_NONE;
         bindings[i].value = 0;
     }
 }

@@ -536,7 +536,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                 {
                     i32 land_sfx = 0;
                     u8 state = object->action_movement_state;
-                    if (state == 3) {
+                    if (state == JUMP_KIND_LUNGE) {
                         if (!(LEGOCONTEXT_LAND_LUNGE != -1 && LEGOACT_LUNGELAND != -1 &&
                               object->character_model->model_data_b[LEGOACT_LUNGELAND] != NULL)) {
                             if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) == 0) {
@@ -566,7 +566,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                             }
                             land_sfx = 1;
                         }
-                    } else if (state == 4) {
+                    } else if (state == JUMP_KIND_SLAM) {
                         if (LEGOCONTEXT_LAND_SLAM != -1 && LEGOACT_SLAMLAND != -1 &&
                             object->character_model->model_data_b[LEGOACT_SLAMLAND] != NULL) {
                             f32 duration;
@@ -590,7 +590,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                             object->character_context = CHARACTER_CONTEXT_NONE;
                             aux->jump_reentry_timer = 0.2f;
                         }
-                    } else if (state == 2 && LEGOCONTEXT_LAND_COMBOJUMP != -1 && BigJumpLandPreferred != -1 &&
+                    } else if (state == JUMP_KIND_COMBO && LEGOCONTEXT_LAND_COMBOJUMP != -1 && BigJumpLandPreferred != -1 &&
                                object->character_model->model_data_b[BigJumpLandPreferred] != NULL) {
                         if ((object->context_variant_flags & APIOBJECT_JUMP_FLIP) == 0) {
                             object->unknown_276 += 0x8000;
@@ -613,7 +613,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                         } else {
                             object->character_context = CHARACTER_CONTEXT_NONE;
                         }
-                    } else if (state == 1 && LEGOCONTEXT_LAND_FLIP != -1 && LEGOACT_FLIPLAND != -1 &&
+                    } else if (state == JUMP_KIND_FLIP && LEGOCONTEXT_LAND_FLIP != -1 && LEGOACT_FLIPLAND != -1 &&
                                object->character_model->model_data_b[LEGOACT_FLIPLAND] != NULL) {
                         aux->jump_reentry_timer = 0.0f;
                         if (object->pad->input_magnitude == 0.0f) {
@@ -626,7 +626,7 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                         } else {
                             object->character_context = CHARACTER_CONTEXT_NONE;
                         }
-                    } else if (state == 8) {
+                    } else if (state == JUMP_KIND_COMBAT_ROLL) {
                         if (ZipUpLandCombatRollContext != -1 && object->character_model->model_data_b[LEGOACT_COMBATROLL_LAND] != NULL) {
                             NewRumble(object->pad->bound_pad, 0.4f, 0);
                             object->character_context = ZipUpLandCombatRollContext;
@@ -675,8 +675,9 @@ void JumpCode(GAMEOBJECT *object, i32 jump_pressed, i32 jump_held, u32 animation
                                     ResetAnimPacket(&object->anim_packet, -1);
                                 }
                             }
-                        } else if ((state == 0 || state == 6 || state == 7 || state == 9) && -1 != LEGOCONTEXT_LAND_JUMP &&
-                                   BigJumpLandFallback != -1 && object->character_model->model_data_b[BigJumpLandFallback] != NULL &&
+                        } else if ((state == 0 || state == JUMP_KIND_ZIPUP || state == 7 || state == JUMP_KIND_PUSH_OFF) &&
+                                   -1 != LEGOCONTEXT_LAND_JUMP && BigJumpLandFallback != -1 &&
+                                   object->character_model->model_data_b[BigJumpLandFallback] != NULL &&
                                    object->pad->input_magnitude == 0.0f) {
                             if (aux->fall_animation_timer >= 0.2f) {
                                 StartFallLand(object, -1);

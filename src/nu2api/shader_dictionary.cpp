@@ -552,7 +552,7 @@ void ShaderCompilerDictionary::EmitAttribute(ShaderCompilerBufferAllocator *outp
         output->AppendText("\r\n");
         AddDefinition(alias, NULL, 0);
         switch (node->semantic) {
-            case 12:
+            case SHADER_SEMANTIC_FOG:
                 output->AppendText("\t#define ");
                 output->AppendText(node->name);
                 output->AppendText(" vout._");
@@ -564,7 +564,7 @@ void ShaderCompilerDictionary::EmitAttribute(ShaderCompilerBufferAllocator *outp
                 AddDefinition(node->name, node->name, 0);
                 ++allocated;
                 break;
-            case 9:
+            case SHADER_SEMANTIC_COLORX:
                 if (colors < second_version) {
                     output->AppendText("\t#define ");
                     output->AppendText(node->name);
@@ -584,7 +584,7 @@ void ShaderCompilerDictionary::EmitAttribute(ShaderCompilerBufferAllocator *outp
                     goto allocate_first;
                 }
                 break;
-            case 13: {
+            case SHADER_SEMANTIC_TEXCOORDX: {
             allocate_first:
                 i32 slot = -1;
                 for (i32 j = 0; j < first_version; ++j) {
@@ -605,8 +605,8 @@ void ShaderCompilerDictionary::EmitAttribute(ShaderCompilerBufferAllocator *outp
                 AddDefinition(node->name, node->name, 0);
                 break;
             }
-            case 14:
-            case 15: {
+            case SHADER_SEMANTIC_TEXCOORD0:
+            case SHADER_SEMANTIC_TEXCOORD1: {
                 i32 slot = node->semantic - 14;
                 i32 count = ShaderCompilerTypeComponents[node->type];
                 used[slot] += count;
@@ -620,7 +620,7 @@ void ShaderCompilerDictionary::EmitAttribute(ShaderCompilerBufferAllocator *outp
                 AddDefinition(node->name, node->name, 0);
                 break;
             }
-            case 2:
+            case SHADER_SEMANTIC_POSITION:
                 output->AppendText("\t#define ");
                 output->AppendText(node->name);
                 output->AppendText(" vout._");
@@ -631,7 +631,7 @@ void ShaderCompilerDictionary::EmitAttribute(ShaderCompilerBufferAllocator *outp
                 output->AppendText(": POSITION;\r\n");
                 AddDefinition(node->name, node->name, 0);
                 break;
-            case 4:
+            case SHADER_SEMANTIC_VPOS:
                 output->AppendText("\t#define ");
                 output->AppendText(node->name);
                 output->AppendText(" vout._");

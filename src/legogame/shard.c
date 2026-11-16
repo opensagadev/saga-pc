@@ -76,7 +76,7 @@ void *Shards_ReserveBufferSpace(WORLDINFO *world) {
 
 static void ShardInitRecord(WORLDINFO *world, SHARD_s *shard) {
     i32 attempt;
-    shard->state_flags = (shard->state_flags & ~0x18u) | 3;
+    shard->state_flags = (shard->state_flags & ~(SHARD_COLLECTED | SHARD_DRAWN)) | SHARD_ACTIVE | SHARD_VISIBLE;
     shard->model_index = (i16)(qrand() / 9363);
     for (attempt = 0; attempt < 7; ++attempt) {
         if (world->level_objects[shard->model_index + 65].active != 0) {
@@ -90,7 +90,7 @@ static void ShardInitRecord(WORLDINFO *world, SHARD_s *shard) {
     shard->model_index += 65;
     shard->spin_angle = (u16)qrand();
     shard->collection_time = 0.0f;
-    shard->state_flags &= ~0x24u;
+    shard->state_flags &= ~(SHARD_COLLECTING | SHARD_RANDOM_OFFSET);
     shard->current_position = shard->position;
     shard->collector = NULL;
 }
@@ -132,7 +132,7 @@ void Shards_UpdateBeforeCharacters(void *data, void *unused, f32 delta_time) {
     WORLDINFO *world = data;
     i32 index;
     for (index = 0; index < world->shard_count; ++index) {
-        world->shards[index].state_flags &= ~0x20u;
+        world->shards[index].state_flags &= ~SHARD_RANDOM_OFFSET;
     }
 }
 
@@ -143,13 +143,13 @@ void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time
     NUVEC offset;
     i32 index;
     for (index = 0; index < world->shard_count; ++index, ++shard) {
-        if ((shard->state_flags & 2) != 0) {
+        if ((shard->state_flags & SHARD_VISIBLE) != 0) {
             NuCameraTransformScreenClip(&shard->screen_position, &shard->current_position, 1, NULL);
         }
-        if ((shard->state_flags & 4) != 0) {
+        if ((shard->state_flags & SHARD_COLLECTING) != 0) {
             f32 acceleration;
             if (shard->collector == NULL) {
-                shard->state_flags &= ~0x2cu;
+                shard->state_flags &= ~(SHARD_COLLECTING | SHARD_COLLECTED | SHARD_RANDOM_OFFSET);
                 shard->collection_time = 0.0f;
                 continue;
             }
@@ -171,11 +171,11 @@ void Shards_UpdateAfterCharacters(WORLDINFO *world, void *unused, f32 delta_time
             shard->current_position.y = (f64)shard->current_position.y + (f64)shard->collection_velocity.y * (f64)FRAMETIME;
             shard->current_position.z = (f64)shard->current_position.z + (f64)shard->collection_velocity.z * (f64)FRAMETIME;
             if (NuVecDistSqr(&shard->current_position, &target, NULL) < ForcePushApproachOuterSquare) {
-                shard->state_flags = (shard->state_flags & ~4u) | 8;
+                shard->state_flags = (shard->state_flags & ~SHARD_COLLECTING) | SHARD_COLLECTED;
                 ++shard->collector->unknown_1062;
                 NewBuzzFrames(shard->collector->pad->bound_pad, 1, 0);
             }
-        } else if ((shard->state_flags & 0x20) != 0) {
+        } else if ((shard->state_flags & SHARD_RANDOM_OFFSET) != 0) {
             f32 scale;
             NuVecRotateZ(&offset, &v010, shard->angle_z);
             NuVecRotateZ(&offset, &offset, shard->angle_x);
@@ -196,7 +196,7 @@ SHARD_s *Shard_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object
     i32 i;
     for (i = 0; i < world->shard_count; ++i, ++shard) {
         if (object != NULL) {
-            if (!shard->active || !shard->visible || (shard->state_flags & 0xc) != 0) {
+            if (!shard->active || !shard->visible || (shard->state_flags & (SHARD_COLLECTING | SHARD_COLLECTED)) != 0) {
                 continue;
             }
         }

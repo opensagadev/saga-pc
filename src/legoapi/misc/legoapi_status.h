@@ -88,6 +88,14 @@ typedef struct minikit_piece_s { // size 0x68
     u8 direction_index;          // 0x67
 } MINIKIT_PIECE;
 
+/* MINIKIT_PIECE.direction, by MiniKitDirectionNames (the piece's special is "<model>_<direction>_<n>") */
+#define MINIKIT_PIECE_NEG_X 0
+#define MINIKIT_PIECE_POS_X 1
+#define MINIKIT_PIECE_NEG_Y 2
+#define MINIKIT_PIECE_POS_Y 3
+#define MINIKIT_PIECE_NEG_Z 4
+#define MINIKIT_PIECE_POS_Z 5
+
 typedef struct status_minikit_draw_cache_s { // size 0x48
     NUMTX matrix;                            // 0x00
     MINIKIT_PIECE *piece;                    // 0x40

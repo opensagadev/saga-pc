@@ -89,7 +89,7 @@ extern "C" void NuDisplayListTransform(void *arg) {
             PCDisplayHandlerSetZMode((material->reflection_flags >> 14) & 3);
             NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
         }
-        if (PCDeviceHardwareVertexProcessingPC == 4) {
+        if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_3_0) {
             NuDisplayHandlerOpacity = opacity;
         }
     }
@@ -125,7 +125,7 @@ extern "C" void NuDisplayListTransformTranspose(void *arg) {
                 NuShaderManagerSetfv(SHADER_UNIFORM_K_TINT, &tint.x);
             }
         }
-        if (PCDeviceHardwareVertexProcessingPC == 4) {
+        if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_3_0) {
             NuDisplayHandlerOpacity = opacity;
         }
     }
@@ -277,7 +277,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
         PCDeviceSetVertexDeclaration(NuDisplayMaterialDebrisDeclaration);
         PCDisplayHandlerBindPrograms((u8)material->common.particle_type_tag == 0x97 ? NuDisplayMaterialGlassPrograms
                                                                                     : NuDisplayMaterialDebrisPrograms);
-        if (PcWindowOptions.usehires == 0 || PCDeviceHardwareVertexProcessingPC != 4) {
+        if (PcWindowOptions.usehires == 0 || PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             NuMtxTranspose(&transposed, &PcGeometryViewProjectionMatrix);
             PCDeviceSetVertexShaderConstantsF(0, &transposed.m00, 4);
             NuMtxTranspose(&transposed, &PcGeometryViewMatrix);
@@ -310,7 +310,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
         PCDisplayHandlerBindPrograms(PCDeviceBackend.textures[1] != NULL && (material->face_on_variant & 0xf) != 0
                                          ? NuDisplayMaterialFaceOnDecalPrograms
                                          : NuDisplayMaterialFaceOnPrograms);
-        if (PCDeviceHardwareVertexProcessingPC != 4) {
+        if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             NuMtxTranspose(&transposed, &PcGeometryViewProjectionMatrix);
             PCDeviceSetVertexShaderConstantsF(0, &transposed.m00, 4);
             NuMtxTranspose(&transposed, &PcGeometryViewMatrix);
@@ -352,7 +352,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
     u32 write_mask = ~shader->stage_flags & 8;
     write_mask >>= 3;
     PCDeviceBackend.SetColorWriteMask(write_mask, write_mask, 3);
-    if (PCDeviceHardwareVertexProcessingPC != 4 && PCShaderCurrentObject() != NULL) {
+    if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0 && PCShaderCurrentObject() != NULL) {
         if (PCShaderCurrentObject() != NULL && ((NuShaderObject *)PCShaderCurrentObject())->parameters[0x4f].register_index >= 0) {
             for (i32 i = 0; i < 32; ++i) {
                 NUVEC4 group;

@@ -70,16 +70,16 @@ static void GizPanel_CreateTerrain(PANEL_MOVEMENT *panel) {
         DeletePlatinst(panel->platform_id);
     }
     switch (panel->model_variant) {
-        case 0:
+        case PANEL_VARIANT_ASTROMECH:
             panel->platform_id = NewPlatPickupInst(panel, 4);
             break;
-        case 1:
+        case PANEL_VARIANT_PROTOCOL_DROID:
             panel->platform_id = NewPlatPickupInst(panel, 7);
             break;
-        case 2:
+        case PANEL_VARIANT_BOUNTY_HUNTER:
             panel->platform_id = NewPlatPickupInst(panel, 5);
             break;
-        case 3:
+        case PANEL_VARIANT_STORMTROOPER:
             panel->platform_id = NewPlatPickupInst(panel, 6);
             break;
         default:
@@ -108,11 +108,11 @@ const f64 PanelVariantThreeTargetY = 0.34f;
 static NUVEC *PanelGetTrackingPosition(PANEL_MOVEMENT *panel, NUVEC *position) {
     *position = panel->position;
     switch (panel->model_variant) {
-        case 3:
+        case PANEL_VARIANT_STORMTROOPER:
             position->y = (f32)((f64)position->y + PanelVariantThreeTargetY);
             position->z = (f32)((f64)position->z - PanelVariantThreeTargetZ);
             break;
-        case 2:
+        case PANEL_VARIANT_BOUNTY_HUNTER:
             position->y = (f32)((f64)position->y + PanelVariantTwoTargetY);
             position->z = (f32)((f64)position->z - PanelVariantTwoTargetZ);
             break;
@@ -266,11 +266,11 @@ void GizPanel_GetAbsTargetPos(void *context, NUVEC *target, i32 player_position)
     if (panel == NULL || target == NULL) {
         return;
     }
-    if (player_position != 0 && panel->model_variant == 0) {
+    if (player_position != 0 && panel->model_variant == PANEL_VARIANT_ASTROMECH) {
         offset.x = -0.04f;
         offset.y = panel->target_offset.y;
         offset.z = -0.3f;
-    } else if (player_position != 0 && panel->model_variant == 1) {
+    } else if (player_position != 0 && panel->model_variant == PANEL_VARIANT_PROTOCOL_DROID) {
         offset.x = 0.035f;
         offset.y = panel->target_offset.y;
         offset.z = -0.25f;
@@ -292,22 +292,22 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, PANEL_MOVEMENT *panel) {
     }
 
     switch (panel->model_variant) {
-        case 0:
+        case PANEL_VARIANT_ASTROMECH:
             if ((object->character_data->model_flags & CHARACTER_MODEL_ASTROMECH) != 0 ||
                 (object->character_data->model_flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) ==
                     (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) {
                 return 1;
             }
             break;
-        case 1:
+        case PANEL_VARIANT_PROTOCOL_DROID:
             if ((object->character_data->model_flags & CHARACTER_MODEL_PROTOCOL) != 0 ||
                 (object->character_data->model_flags & (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) ==
                     (CHARACTER_MODEL_DROID | CHARACTER_MODEL_BOUNTY_HUNTER)) {
                 return 1;
             }
             break;
-        case 3:
-            if (object->helmet == 5 || (object->character_data->game_character->flags_090 & 0x40000) != 0) {
+        case PANEL_VARIANT_STORMTROOPER:
+            if (object->helmet == HELMET_STORMTROOPER || (object->character_data->game_character->flags_090 & 0x40000) != 0) {
                 return 1;
             }
             if (GCDataList[(i16)object->id].variant == CHARVARIANT_STORMTROOPER ||
@@ -319,8 +319,8 @@ i32 GizPanel_CanUsePanel(GAMEOBJECT *object, PANEL_MOVEMENT *panel) {
                 return 1;
             }
             break;
-        case 2:
-            if ((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) != 0 || object->helmet == 6) {
+        case PANEL_VARIANT_BOUNTY_HUNTER:
+            if ((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) != 0 || object->helmet == HELMET_BOUNTY_HUNTER) {
                 return 1;
             }
             break;
@@ -508,7 +508,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
             ResetShadowMapRendering();
         }
         switch (panel->model_variant) {
-            case 0:
+            case PANEL_VARIANT_ASTROMECH:
                 base = (panel->draw_flags & 1) | 0x106;
                 animated = ((u32)panel->flags >> 7) | 0x108;
                 transition = 0x10a;
@@ -519,7 +519,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 arm_y = 0.0f;
                 arm_z = 0.0f;
                 break;
-            case 1:
+            case PANEL_VARIANT_PROTOCOL_DROID:
                 base = (panel->draw_flags & 1) != 0 ? 0x107 : 0x100;
                 animated = (panel->flags & 0x80) != 0 ? 0x102 : 0x101;
                 transition = 0x103;
@@ -530,7 +530,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 arm_y = 0.0f;
                 arm_z = 0.0f;
                 break;
-            case 2:
+            case PANEL_VARIANT_BOUNTY_HUNTER:
                 base = 0x10d;
                 animated = 0x10e;
                 transition = 0x10f;
@@ -541,7 +541,7 @@ void GizPanel_Draw(void *world_pointer, void *unused, f32 unused_time) {
                 arm_y = 0.245f;
                 arm_z = -0.19f;
                 break;
-            case 3:
+            case PANEL_VARIANT_STORMTROOPER:
                 base = 0x114;
                 animated = 0x115;
                 transition = 0x116;
@@ -819,10 +819,10 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             if (object->context_timer <= 0.0f) {
                 if (object->grapple != NULL) {
                     NewBuzz(object->pad->bound_pad, 0.1f, 0);
-                    if (((PANEL_MOVEMENT *)object->grapple)->model_variant == 2) {
+                    if (((PANEL_MOVEMENT *)object->grapple)->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
                         PlaySfx("Hunter_Granted", &object->collision_position);
                     }
-                    if (((PANEL_MOVEMENT *)object->grapple)->model_variant == 3) {
+                    if (((PANEL_MOVEMENT *)object->grapple)->model_variant == PANEL_VARIANT_STORMTROOPER) {
                         PlaySfx("Trooper_Granted", &object->collision_position);
                     }
                 } else {
@@ -830,16 +830,16 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
                 }
                 if ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0) {
                     u8 variant = ((PANEL_MOVEMENT *)object->grapple)->model_variant;
-                    if (variant == 0 || variant == 1) {
+                    if (variant == PANEL_VARIANT_ASTROMECH || variant == PANEL_VARIANT_PROTOCOL_DROID) {
                         if (StartupGameFlag1 != 0 && Mission_Active(NULL) != NULL) {
                             Hint_SetComplete(0x2b9);
                         } else {
                             Hint_SetComplete(0x25f);
                             LswForceUsedHintFlags |= 4;
                         }
-                    } else if (variant == 3) {
+                    } else if (variant == PANEL_VARIANT_STORMTROOPER) {
                         Hint_SetComplete(0x260);
-                    } else if (variant == 2) {
+                    } else if (variant == PANEL_VARIANT_BOUNTY_HUNTER) {
                         Hint_SetComplete(0x261);
                     }
                 }
@@ -874,7 +874,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
         FastWeaponIn(object, 0);
         object->flags_e24 |= APIOBJECT_AT_INTERFACE;
         panel = object->grapple;
-        if (panel->model_variant == 2) {
+        if (panel->model_variant == PANEL_VARIANT_BOUNTY_HUNTER) {
             if (object->character_model->model_data_b[0x46] != NULL) {
                 object->unknown_7aa = ACTION_INTERFACE3;
             } else {
@@ -882,7 +882,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             }
             Hint_SetComplete(0x261);
             Hint_SetComplete(0x26a);
-        } else if (panel->model_variant == 3) {
+        } else if (panel->model_variant == PANEL_VARIANT_STORMTROOPER) {
             if (object->character_model->model_data_b[0x45] == NULL && object->character_model->model_data_b[0x46] != NULL) {
                 object->unknown_7aa = ACTION_INTERFACE3;
             } else {
@@ -893,7 +893,7 @@ void GizPanel_MoveCode(WORLDINFO *world, GAMEOBJECT *object, i32 use) {
             Hint_SetComplete(0x269);
         } else {
             object->unknown_7aa = ACTION_INTERFACE;
-            if (panel->model_variant == 1) {
+            if (panel->model_variant == PANEL_VARIANT_PROTOCOL_DROID) {
                 if (!InStory() || (((PANEL_MOVEMENT *)object->grapple)->draw_flags & 4) == 0) {
                     GizPanel_PlaySfx("TC14_VLA", &object->collision_position, 1 << object->unknown_280);
                 }
@@ -957,7 +957,7 @@ i32 GizPanel_UpdateHint(HINT *hint) {
         }
     }
     if (storm != 0 && ((u16)hint->id == 0x260 || (u16)hint->id == 0x269)) {
-        if (AvailableToPlayer(0, CHARVARIANT_STORMTROOPER, 5, 0) != 0) {
+        if (AvailableToPlayer(0, CHARVARIANT_STORMTROOPER, HELMET_STORMTROOPER, 0) != 0) {
             if ((u16)hint->id == 0x260) {
                 return 1;
             }
@@ -967,7 +967,7 @@ i32 GizPanel_UpdateHint(HINT *hint) {
         return 0;
     }
     if (bountyhunter != 0 && ((u16)hint->id == 0x261 || (u16)hint->id == 0x26a)) {
-        if (AvailableToPlayer(CHARACTER_MODEL_BOUNTY_HUNTER, -1, 6, 0) != 0) {
+        if (AvailableToPlayer(CHARACTER_MODEL_BOUNTY_HUNTER, -1, HELMET_BOUNTY_HUNTER, 0) != 0) {
             if ((u16)hint->id == 0x261) {
                 return 1;
             }
@@ -1062,7 +1062,7 @@ void GizPanels_Reset(void *world_pointer, void *unused, void *progress_pointer) 
 
 void fun_0046f6f0(PANEL_MOVEMENT *panel, NUVEC *position) {
     if (position != NULL) {
-        if (panel != NULL && (panel->model_variant == 3 || panel->model_variant == 2)) {
+        if (panel != NULL && (panel->model_variant == PANEL_VARIANT_STORMTROOPER || panel->model_variant == PANEL_VARIANT_BOUNTY_HUNTER)) {
             GizPanel_GetAbsTargetPos(panel, position, 0);
             return;
         }

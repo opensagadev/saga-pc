@@ -94,6 +94,11 @@ extern "C" {
         u8 unknown_82[10];                                                       // 0x82
     } RTL_LIGHT;
 
+/* RTL_LIGHT.flags, the bitfields */
+#define RTL_LIGHT_FLAG_DISABLED 0x1
+#define RTL_LIGHT_FLAG_CAST_SHADOW 0x2
+#define RTL_LIGHT_FLAG_HAS_SPECULAR 0x4
+
     typedef struct rtl_fog_migration_s {                                         // size 0x4c
         f32 start;                                                               // 0x00
         f32 end;                                                                 // 0x04

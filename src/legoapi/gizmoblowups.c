@@ -257,17 +257,17 @@ i32 Blowup_GetOutput(GIZMO *gizmo, i32 output, i32 ignored) {
     GIZMOBLOWUP *blowup = gizmo->object;
     (void)ignored;
     switch (output) {
-        case 0:
+        case BLOWUP_OUTPUT_BLOWN_UP:
             if ((blowup->status_flags & BLOWUP_STATUS_BLOWN_UP) != 0) {
                 return 1;
             }
             break;
-        case 1:
+        case BLOWUP_OUTPUT_PUNCHED:
             if ((blowup->status_flags & BLOWUP_STATUS_HIT_PUNCH) != 0) {
                 return 1;
             }
             break;
-        case 2:
+        case BLOWUP_OUTPUT_PLUGGING:
             if ((blowup->status_flags & BLOWUP_STATUS_PLUGGING) != 0) {
                 return 1;
             }

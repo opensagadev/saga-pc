@@ -134,6 +134,11 @@ typedef struct GIZMOBLOWUPTYPE {        // size 0x100
 #define BLOWUP_OPTION_FRAGMENTS_PER_HIT 0x80000000 /* fragments fly at every hit, not only the last */
 #define BLOWUP_STATUS_PLUGGING 0x10000000
 
+/* Blowup_GetOutput outputs, named after BlowupOutputNames. */
+#define BLOWUP_OUTPUT_BLOWN_UP 0
+#define BLOWUP_OUTPUT_PUNCHED 1
+#define BLOWUP_OUTPUT_PLUGGING 2
+
 /* GizmoBlowUp_AddEffects flags: what the effects of a hit or a blow up release (GizmoBlowupBlowup and the
  * carried blowups add the explosion when the blowup has an effect delay, the shake for BLOWUP_OPTION_SHAKE). */
 #define BLOWUP_EFFECT_DEBRIS 0x1    /* the type's debris effects (particle types 4-6) */

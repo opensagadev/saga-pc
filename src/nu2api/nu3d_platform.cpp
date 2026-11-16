@@ -1691,7 +1691,7 @@ extern "C" {
     }
 
     i32 PC_DEVICE_BACKEND::fun_005f78a0() {
-        return (caps.texture_caps & 2) == 0 && (caps.texture_caps & 0x100) == 0;
+        return (caps.texture_caps & D3DPTEXTURECAPS_POW2) == 0 && (caps.texture_caps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) == 0;
     }
 
     void PC_DEVICE_BACKEND::fun_005f78c0() {
@@ -1730,16 +1730,16 @@ extern "C" {
 
     static i32 PCGraphicsFormatToD3d(i32 format) {
         switch (format) {
-            case 2:
-                return 21;
-            case 1:
-                return 22;
-            case 4:
-                return 75;
-            case 5:
-                return 83;
-            case 10:
-                return 114;
+            case PC_GRAPHICS_FORMAT_A8R8G8B8:
+                return D3DFMT_A8R8G8B8;
+            case PC_GRAPHICS_FORMAT_X8R8G8B8:
+                return D3DFMT_X8R8G8B8;
+            case PC_GRAPHICS_FORMAT_D24S8:
+                return D3DFMT_D24S8;
+            case PC_GRAPHICS_FORMAT_D24FS8:
+                return D3DFMT_D24FS8;
+            case PC_GRAPHICS_FORMAT_R32F:
+                return D3DFMT_R32F;
             default:
                 return -1;
         }
@@ -1747,13 +1747,13 @@ extern "C" {
 
     static i32 PCGraphicsFormatFromD3d(i32 format) {
         switch (format) {
-            case 21:
-            case 22:
-                return 2;
-            case 75:
-                return 4;
-            case 83:
-                return 5;
+            case D3DFMT_A8R8G8B8:
+            case D3DFMT_X8R8G8B8:
+                return PC_GRAPHICS_FORMAT_A8R8G8B8;
+            case D3DFMT_D24S8:
+                return PC_GRAPHICS_FORMAT_D24S8;
+            case D3DFMT_D24FS8:
+                return PC_GRAPHICS_FORMAT_D24FS8;
             default:
                 return 0;
         }
@@ -1977,7 +1977,7 @@ extern "C" {
         texture->surface = NULL;
         texture->unknown_24 = 0;
         texture->flags = 0x012449d0;
-        if (format == 4) {
+        if (format == PC_GRAPHICS_FORMAT_D24S8) {
             texture->pool = 0;
             texture->mip_count = 1;
             PCDeviceCreateDepthSurface(texture->width, texture->height, PCGraphicsFormatToD3d(format), PCDeviceBackend.GetMultisampleType(),
@@ -4011,7 +4011,7 @@ extern "C" {
 
     void NuDisplayListLights(void *arg) {
         PC_DL_LIGHTS_READER *packet = (PC_DL_LIGHTS_READER *)arg;
-        if (PCDeviceHardwareVertexProcessingPC != 4) {
+        if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             NuShaderManagerSetfv(SHADER_UNIFORM_SCENE_AMBIENT_COLOR, &packet->ambient.x);
             NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_POSITION0, &packet->direction[0].x);
             NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_POSITION1, &packet->direction[1].x);
@@ -4023,7 +4023,7 @@ extern "C" {
         } else {
             NuShaderManagerSetfv(SHADER_UNIFORM_LIGHT_PARAMS, &packet->ambient.x);
         }
-        if (PCDeviceHardwareVertexProcessingPC != 4) {
+        if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             PC_DL_NORMALIZED_DIRECTION direction;
 
             NuVec4Add(&direction.four, &packet->direction[0], &packet->direction[1]);
@@ -4095,7 +4095,7 @@ extern "C" {
         if (packet->mode == 1) {
             NUTEXDIM *texture;
             stage = 0;
-            if (PCDeviceHardwareVertexProcessingPC == 1) {
+            if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_1_1) {
                 stage = 1;
             }
             if (packet->texture_id != -1) {
@@ -5533,34 +5533,34 @@ extern "C" {
         (void)texture_id;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
-        item->id = 0;
+        item->id = NUDLISTITEM_SKIP;
     }
 
     void NuDisplayListAddTexture(NUDISPLAYLISTITEM *item, i32 texture_id) {
         (void)texture_id;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
-        item->id = 0;
+        item->id = NUDLISTITEM_SKIP;
     }
 
     void NuDisplayListAddMaterialState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         item->type = NUDLIST_MTL;
         item->next = material;
-        item->id = 3;
+        item->id = NUDLISTITEM_CALL;
     }
 
     void NuDisplayListAddMicrocode(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
-        item->id = 0;
+        item->id = NUDLISTITEM_SKIP;
     }
 
     void NuDisplayListAddLightState(NUDISPLAYLISTITEM *item, NUMTL *material) {
         (void)material;
         item->type = NUDLIST_DUMMY;
         item->next = NULL;
-        item->id = 0;
+        item->id = NUDLISTITEM_SKIP;
     }
 
     void DisplayListCreatePS(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARIPTR end) {
@@ -5575,14 +5575,14 @@ extern "C" {
         cursor = NuDisplayListStreamCursor;
         list->mtl_last->next = cursor->void_ptr;
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = type;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = 3;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_CALL;
         if (target != NULL) {
             ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = target;
         } else {
             ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = (NUDISPLAYLISTITEM *)cursor->void_ptr + 2;
         }
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)[1].type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)[1].id = 1;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)[1].id = NUDLISTITEM_JUMP;
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)[1].next = list->dynamic_geometry + 1;
         list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr + 1;
         cursor->addr += 2 * sizeof(NUDISPLAYLISTITEM);
@@ -5597,7 +5597,7 @@ extern "C" {
         list->items = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->addr += count * sizeof(NUDISPLAYLISTITEM);
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = 1;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_JUMP;
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = list->dynamic_geometry + 1;
         list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
@@ -6325,12 +6325,12 @@ extern "C" {
         list->items = (NUDISPLAYLISTITEM *)buffer->void_ptr;
         buffer->addr += sizeof(NUDISPLAYLISTITEM);
         ((NUDISPLAYLISTITEM *)buffer->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)buffer->void_ptr)->id = 1;
+        ((NUDISPLAYLISTITEM *)buffer->void_ptr)->id = NUDLISTITEM_JUMP;
         ((NUDISPLAYLISTITEM *)buffer->void_ptr)->next = list->dynamic_geometry + 1;
         list->mtl_last = (NUDISPLAYLISTITEM *)buffer->void_ptr;
         buffer->addr += sizeof(NUDISPLAYLISTITEM);
         list->items->type = 0xa7;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = group;
         list->items++;
     }
@@ -6373,7 +6373,7 @@ extern "C" {
         list->items = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = 1;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_JUMP;
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = list->dynamic_geometry + 1;
         list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
@@ -6385,7 +6385,7 @@ extern "C" {
         NuPrimVertexCountPointer = &packet->vertex_count;
         list->items->type = NUDLIST_GEOMCALL2D;
         NuPrimCurrentPrimitiveType = (i32)primitive_type;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = packet;
         list->items++;
     }
@@ -6416,7 +6416,7 @@ extern "C" {
         list->items = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->addr += 2 * sizeof(NUDISPLAYLISTITEM);
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = 1;
+        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_JUMP;
         ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = list->dynamic_geometry + 1;
         list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
@@ -6431,11 +6431,11 @@ extern "C" {
         geometry->primitive_type = primitive_type;
         NuPrimVertexCountPointer = &geometry->vertex_count;
         list->items->type = NUDLIST_TRANSFORM_REF;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = transform;
         list->items++;
         list->items->type = NUDLIST_GEOMCALL;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = geometry;
         list->items++;
     }
@@ -8449,7 +8449,8 @@ extern "C" {
         if (height >= 512) {
             PCGraphicsPostEffectHeight = 512;
         }
-        if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
+        if ((PCDeviceBackend.caps.texture_caps & D3DPTEXTURECAPS_POW2) != 0 ||
+            (PCDeviceBackend.caps.texture_caps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) != 0) {
             u32 width_power = 1;
             u32 height_power = 1;
             while (width_power <= (width < 512 ? width : 512)) {
@@ -8477,7 +8478,8 @@ extern "C" {
         PCGraphicsPostEffectWidth = target_width;
         target_height = height < 512 ? height : 512;
         PCGraphicsPostEffectHeight = target_height;
-        if ((PCDeviceBackend.caps.texture_caps & 2) != 0 || (PCDeviceBackend.caps.texture_caps & 0x100) != 0) {
+        if ((PCDeviceBackend.caps.texture_caps & D3DPTEXTURECAPS_POW2) != 0 ||
+            (PCDeviceBackend.caps.texture_caps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) != 0) {
             target_width = 1;
             target_height = 1;
             while (target_width <= (width < 512 ? width : 512)) {

@@ -219,7 +219,7 @@ static void CutSceneEndRigidsPC(INSTNUGCUTSCENE *owner, f32 frame) {
     for (i = 0; i < system->count; ++i) {
         CUT_RIGID_LIFECYCLE *source = &system->rigids[i];
         CUT_RIGID_INSTANCE *object = &objects->rigids[i];
-        if ((source->flags & 4) != 0 && (source->flags & 2) == 0) {
+        if ((source->flags & CUTRIGID_FOUND) != 0 && (source->flags & CUTRIGID_INSTANCED) == 0) {
             NUMTX matrix;
             if (source->state_animation != NULL) {
                 u8 visible;
@@ -256,7 +256,7 @@ i32 instNuGCutGetNextRigidInfo(INSTNUGCUTSCENE *owner, f32 frame, i32 index, NUM
     }
     rigid = &system->rigids[index];
     object = &instance->rigid_instance->rigids[index];
-    if ((rigid->flags & 6) != 0) {
+    if ((rigid->flags & (CUTRIGID_INSTANCED | CUTRIGID_FOUND)) != 0) {
         NuGCutRigidCalcMtx(&rigid->generic, frame, matrix);
         if ((instance->flags_88 & NUGCUTSCENE_INST_OWN_MATRIX) != 0) {
             NuMtxMul(matrix, matrix, &instance->matrix);
@@ -737,7 +737,7 @@ static void CutSceneRigidFixUp(CUT_SCENE_LOAD *scene, NUGSCN *gscene) {
         for (i = 0; i < system->count; ++i) {
             CUT_LOAD_RIGID *rigid = &system->rigids[i];
             if (NuSpecialFind(gscene, &handle, rigid->name, 1) != 0) {
-                rigid->flags |= 4;
+                rigid->flags |= CUTRIGID_FOUND;
                 rigid->scene = handle.scene;
                 if (handle.display_special != NULL) {
                     rigid->special = handle.display_special;
@@ -858,9 +858,9 @@ static void CutSceneRigidFixUpExtra(CUT_SCENE_LOAD *scene, NUGSCN *gscene) {
     if (gscene != NULL) {
         for (i = 0; i < system->count; ++i) {
             CUT_LOAD_RIGID *rigid = &system->rigids[i];
-            if ((rigid->flags & 4) == 0) {
+            if ((rigid->flags & CUTRIGID_FOUND) == 0) {
                 if (NuSpecialFind(gscene, &handle, rigid->name, 1) != 0) {
-                    rigid->flags |= 4;
+                    rigid->flags |= CUTRIGID_FOUND;
                     rigid->scene = handle.scene;
                     if (handle.display_special != NULL) {
                         rigid->special = handle.display_special;
@@ -887,7 +887,7 @@ void NuGCutRigidForceInstanced(void *asset) {
     i32 i;
     for (i = 0; i < system->count; ++i) {
         CUT_RIGID_LIFECYCLE *rigid = &system->rigids[i];
-        rigid->flags |= 2;
+        rigid->flags |= CUTRIGID_INSTANCED;
     }
 }
 
@@ -953,8 +953,8 @@ static CUT_LOAD_RIGID_INSTANCE_SYSTEM *CutRigidInstanceCreate(CUT_SCENE_LOAD *sc
                         target->special.special = (NUMTX *)&gscene->specials[index];
                         target->special.display_special = NULL;
                     }
-                    if ((rigid->flags & 2) != 0) {
-                        target->visible = rigid->flags & 1;
+                    if ((rigid->flags & CUTRIGID_INSTANCED) != 0) {
+                        target->visible = rigid->flags & CUTRIGID_VISIBLE;
                     }
                 } else {
                     CutSceneMissingObjectDiagnostic(rigid->name);
@@ -1345,7 +1345,7 @@ static void CutSceneRigidSysRender(INSTNUGCUTSCENE *owner, f32 frame, i32 paused
         CUT_LOAD_RIGID_INSTANCE *object = &objects->rigids[i];
         NUMTX matrix;
         u8 visible;
-        if ((rigid->flags & 2) == 0 || (rigid->flags & 4) == 0) {
+        if ((rigid->flags & CUTRIGID_INSTANCED) == 0 || (rigid->flags & CUTRIGID_FOUND) == 0) {
             continue;
         }
         if (rigid->state_animation != NULL && StateAnimEvaluate(rigid->state_animation, &object->state_index, &visible, frame) != 0) {
@@ -1622,7 +1622,7 @@ static void CutSceneRigidSysUpdate(INSTNUGCUTSCENE *owner, f32 frame, i32 paused
         CUT_LOAD_RIGID_INSTANCE *object = &objects->rigids[i];
         NUMTX matrix;
         u8 visible;
-        if ((rigid->flags & 2) != 0 || (rigid->flags & 4) == 0) {
+        if ((rigid->flags & CUTRIGID_INSTANCED) != 0 || (rigid->flags & CUTRIGID_FOUND) == 0) {
             continue;
         }
         if (rigid->state_animation != NULL && StateAnimEvaluate(rigid->state_animation, &object->state_index, &visible, frame) != 0) {
@@ -1690,8 +1690,8 @@ static void CutSceneRigidSysStart(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_LO
         CUT_LOAD_RIGID *rigid = &system->rigids[i];
         CUT_LOAD_RIGID_INSTANCE *state = &states->rigids[i];
         state->state_index = 0;
-        if ((rigid->flags & 4) != 0 && (rigid->flags & 2) != 0) {
-            state->visible = rigid->flags & 1;
+        if ((rigid->flags & CUTRIGID_FOUND) != 0 && (rigid->flags & CUTRIGID_INSTANCED) != 0) {
+            state->visible = rigid->flags & CUTRIGID_VISIBLE;
         }
     }
 }
@@ -1748,7 +1748,7 @@ i32 fun_00502620(CUT_INSTANCE_LOAD *instance) {
     i32 count = system->count;
     i32 i;
     for (i = 0; i < count; ++i) {
-        if ((system->rigids[i].flags & 4) != 0 && (system->rigids[i].flags & 2) != 0) {
+        if ((system->rigids[i].flags & CUTRIGID_FOUND) != 0 && (system->rigids[i].flags & CUTRIGID_INSTANCED) != 0) {
             return 1;
         }
     }
@@ -1761,11 +1761,11 @@ static void CutSceneRigidSysReset(CUT_LOAD_RIGID_INSTANCE_SYSTEM *states, CUT_LO
         CUT_LOAD_RIGID *rigid = &system->rigids[i];
         CUT_LOAD_RIGID_INSTANCE *state = &states->rigids[i];
         state->state_index = 0;
-        if ((rigid->flags & 4) != 0) {
-            if ((rigid->flags & 2) != 0) {
-                state->visible = rigid->flags & 1;
+        if ((rigid->flags & CUTRIGID_FOUND) != 0) {
+            if ((rigid->flags & CUTRIGID_INSTANCED) != 0) {
+                state->visible = rigid->flags & CUTRIGID_VISIBLE;
             } else {
-                if ((rigid->flags & 1) != 0) {
+                if ((rigid->flags & CUTRIGID_VISIBLE) != 0) {
                     NuSpecialSetVisibility(&state->special, 1);
                 } else {
                     NuSpecialSetVisibility(&state->special, 0);

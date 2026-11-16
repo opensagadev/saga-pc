@@ -225,6 +225,11 @@ typedef struct cut_load_rigid_s { // size 0x5c
     u8 unknown_5b;    // 0x5b
 } CUT_LOAD_RIGID;
 
+/* CUT_LOAD_RIGID.flags */
+#define CUTRIGID_VISIBLE 0x1   /* the state animation's visibility when it is instanced and found */
+#define CUTRIGID_INSTANCED 0x2 /* NuGCutRigidForceInstanced */
+#define CUTRIGID_FOUND 0x4     /* the fix-up found its special in the scene */
+
 typedef struct cut_load_rigid_system_s {
     CUT_LOAD_RIGID *rigids;
     u16 count;

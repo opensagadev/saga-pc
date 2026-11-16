@@ -166,15 +166,15 @@ i32 GizmoObstacle_GetOutput(GIZMO *gizmo, i32 output, i32 ignore_activation) {
         return 0;
     }
     switch (output) {
-        case 0:
+        case OBSTACLE_OUTPUT_AT_END:
             return obstacle->anim_set && obstacle->anim_set->state == GAMEANIMSET_STATE_AT_END;
-        case 1:
+        case OBSTACLE_OUTPUT_NOT_AT_START:
             return obstacle->anim_set && obstacle->anim_set->state != GAMEANIMSET_STATE_AT_START;
-        case 2:
+        case OBSTACLE_OUTPUT_PROXIMITY:
             return obstacle->anim_set && obstacle->proximity_output != 0;
-        case 3:
+        case OBSTACLE_OUTPUT_AT_START:
             return obstacle->anim_set && obstacle->anim_set->state == GAMEANIMSET_STATE_AT_START;
-        case 4:
+        case OBSTACLE_OUTPUT_PLAYING_FORWARD:
             return obstacle->anim_set && obstacle->anim_set->state == GAMEANIMSET_STATE_FORWARD;
         default:
             return 0;
@@ -1119,15 +1119,15 @@ static void GizObstacles_AddGizmos(void *gizmo_sys, i32 type_id, void *world, vo
 static char *GizmoObstacle_GetOutputName(GIZMO *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
-        case 0:
+        case OBSTACLE_OUTPUT_AT_END:
             return "AtEnd";
-        case 1:
+        case OBSTACLE_OUTPUT_NOT_AT_START:
             return "NotAtStart";
-        case 2:
+        case OBSTACLE_OUTPUT_PROXIMITY:
             return "Proximity";
-        case 3:
+        case OBSTACLE_OUTPUT_AT_START:
             return "AtStart";
-        case 4:
+        case OBSTACLE_OUTPUT_PLAYING_FORWARD:
             return "PlayingForward";
         default:
             return NULL;
@@ -1247,7 +1247,7 @@ ADDGIZMOTYPE *GizObstacles_RegisterGizmo(i32 type_id) {
     *addtype = Default_ADDGIZMOTYPE;
     addtype->name = GizObstacleRegistrationNamePtr;
     addtype->prefix = "";
-    addtype->fns.options = 0x70;
+    addtype->fns.options = sizeof(GIZOBSTACLE_PROGRESS);
     addtype->fns.early_update_fn = NULL;
     addtype->fns.panel_draw_fn = NULL;
     addtype->fns.get_visibility_fn = NULL;

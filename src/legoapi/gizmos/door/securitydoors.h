@@ -5,6 +5,12 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+/* SECURITYDOOR_s.flags, the bitfields */
+#define SECURITYDOOR_ACTIVE 0x1
+#define SECURITYDOOR_VISIBLE 0x2
+#define SECURITYDOOR_OPENED 0x4 /* fully open: the gizmo output */
+#define SECURITYDOOR_DRAWN 0x8  /* a leaf was drawn this frame */
+
 typedef struct SECURITYDOOR_s SECURITYDOOR_s;
 
 struct SECURITYDOOR_s {   // size 0xc0

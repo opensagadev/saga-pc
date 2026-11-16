@@ -14,6 +14,13 @@ struct PC_D3D9_DEVICE;
 
 typedef struct PC_TEXTURE_RESOURCE PC_TEXTURE_RESOURCE;
 
+/* The Direct3D 9 D3DFORMAT values the game creates surfaces and textures with (d3d9types.h). */
+#define D3DFMT_A8R8G8B8 21
+#define D3DFMT_X8R8G8B8 22
+#define D3DFMT_D24S8 75
+#define D3DFMT_D24FS8 83
+#define D3DFMT_R32F 114
+
 typedef struct PC_VIEWPORT { // size 0x18
     u32 x;                   // 0x00
     u32 y;                   // 0x04
@@ -62,6 +69,31 @@ typedef struct PC_VERTEX_ELEMENT { // size 0x8
     u8 usage;                      // 0x6
     u8 usage_index;                // 0x7
 } PC_VERTEX_ELEMENT;
+
+/* PC_DEVICE_BACKEND.creation_flags: the Direct3D 9 D3DCREATE behaviour flags (d3d9.h). */
+#define D3DCREATE_MULTITHREADED 0x4
+#define D3DCREATE_PUREDEVICE 0x10
+#define D3DCREATE_SOFTWARE_VERTEXPROCESSING 0x20
+#define D3DCREATE_HARDWARE_VERTEXPROCESSING 0x40
+#define D3DCREATE_MIXED_VERTEXPROCESSING 0x80
+
+/* PC_VERTEX_ELEMENT.type and .usage: the Direct3D 9 D3DDECLTYPE and D3DDECLUSAGE values (d3d9types.h). */
+#define D3DDECLTYPE_FLOAT2 1
+#define D3DDECLTYPE_FLOAT3 2
+#define D3DDECLTYPE_FLOAT4 3
+#define D3DDECLTYPE_D3DCOLOR 4
+#define D3DDECLTYPE_UBYTE4 5
+#define D3DDECLTYPE_UBYTE4N 8
+#define D3DDECLTYPE_FLOAT16_2 15
+#define D3DDECLTYPE_FLOAT16_4 16
+#define D3DDECLTYPE_UNUSED 17 /* the D3DDECL_END element */
+#define D3DDECLUSAGE_POSITION 0
+#define D3DDECLUSAGE_BLENDWEIGHT 1
+#define D3DDECLUSAGE_BLENDINDICES 2
+#define D3DDECLUSAGE_NORMAL 3
+#define D3DDECLUSAGE_TEXCOORD 5
+#define D3DDECLUSAGE_TANGENT 6
+#define D3DDECLUSAGE_COLOR 10
 
 typedef struct GRAPHICS_DISPLAY_MODE { // size 0x10
     u32 width;                         // 0x0

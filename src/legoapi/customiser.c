@@ -346,7 +346,7 @@ void CustomiserDrawAccessories(CUSTOMISER_LAYERS *input, GAMEOBJECT *object, NUM
         if (category == 0) {
             pieces = customiser->save->pieces + side * (offsetof(CUSTOM_SAVE_CONFIG, secondary_pieces) / sizeof(u16));
             if ((customiser->piece_sets[0][pieces[0]].availability_flags & CUSTOM_PIECE_HAT_OFF) != 0 ||
-                (customiser->piece_sets[1][pieces[1]].availability_flags & CUSTOM_PIECE_NO_HAT) != 0 || object->helmet != 0) {
+                (customiser->piece_sets[1][pieces[1]].availability_flags & CUSTOM_PIECE_NO_HAT) != 0 || object->helmet != HELMET_NONE) {
                 continue;
             }
         }

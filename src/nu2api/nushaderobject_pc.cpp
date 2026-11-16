@@ -755,10 +755,10 @@ extern "C" void PCShaderSetMaterialParameters(NuShaderObject *shader, NUMTL *ori
             }
             case SHADER_UNIFORM_ENVMAP_SAMPLER_CUBE: {
                 PC_TEXTURE_RESOURCE *texture;
-                if (PCDeviceHardwareVertexProcessingPC == 1 &&
+                if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_1_1 &&
                     ((material->texture_flags & 8u) != 0 || (material->texture_flags & 0x50000u) != 0)) {
                     texture = NuTexturePhongCube;
-                } else if (PCDeviceHardwareVertexProcessingPC != 1 && (material->texture_flags & 0x50000u) != 0) {
+                } else if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_1_1 && (material->texture_flags & 0x50000u) != 0) {
                     texture = NuTextureEnvironmentCube;
                 } else {
                     texture = material->cube_texture_id > 0 ? NuTextureGetDimensions(material->cube_texture_id)->resource : NULL;

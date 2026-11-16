@@ -1020,17 +1020,17 @@ extern "C" {
         GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
         (void)mode;
         switch (output) {
-            case 0:
+            case TURRET_OUTPUT_DESTROYED:
                 if (turret->aim_at_fixed_angles || turret->update_disabled) {
                     return 1;
                 }
                 break;
-            case 1:
+            case TURRET_OUTPUT_FIRED:
                 if ((turret->flags & TURRET_FLAG_FIRED_THIS_FRAME) != 0) {
                     return 1;
                 }
                 break;
-            case 2:
+            case TURRET_OUTPUT_FIRED_SHOTS:
                 if (turret->shots_fired >= turret->shots_required) {
                     return 1;
                 }
@@ -1041,11 +1041,11 @@ extern "C" {
 
     char *GizmoTurret_GetOutputName(GIZMO *gizmo, i32 output) {
         switch (output) {
-            case 0:
+            case TURRET_OUTPUT_DESTROYED:
                 return "destroyed";
-            case 1:
+            case TURRET_OUTPUT_FIRED:
                 return "fired";
-            case 2: {
+            case TURRET_OUTPUT_FIRED_SHOTS: {
                 GIZTURRET_s *turret = (GIZTURRET_s *)gizmo->object;
                 if (turret != NULL) {
                     sprintf(TurretOutputBuffer, "Fired %d Shots", turret->shots_required);

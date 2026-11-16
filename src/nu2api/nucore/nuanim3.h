@@ -7,6 +7,15 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
+/* NuAnimCurve2CalcValEx curve formats, by the key block each one decodes (0: the cell's constant). */
+#define NUANIMCURVE2_CONSTANT 0
+#define NUANIMCURVE2_FULL 1    /* values.full: float keys with tangents */
+#define NUANIMCURVE2_PACKED4 2 /* values.packed4 */
+#define NUANIMCURVE2_STEP 3    /* values.step: no interpolation */
+#define NUANIMCURVE2_BITS 4    /* one bit per frame in the chunk mask */
+#define NUANIMCURVE2_PACKED6 5 /* values.packed6 */
+#define NUANIMCURVE2_SCALED4 6 /* values.scaled4 */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

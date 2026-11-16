@@ -607,16 +607,16 @@ i32 PC_CONTROL_SCREEN::Update(FRAME_PAD *first, FRAME_PAD *second, f32 dt) {
                 }
                 u32 buttons = pads[i]->digital_buttons;
                 if (pads[i]->analog_left_y > 0xe0) {
-                    buttons |= 0x4000;
+                    buttons |= PAD_BUTTON_DOWN;
                 }
                 if (pads[i]->analog_left_y < 0x20) {
-                    buttons |= 0x1000;
+                    buttons |= PAD_BUTTON_UP;
                 }
                 if (pads[i]->analog_left_x > 0xe0) {
-                    buttons |= 0x2000;
+                    buttons |= PAD_BUTTON_RIGHT;
                 }
                 if (pads[i]->analog_left_x < 0x20) {
-                    buttons |= 0x8000;
+                    buttons |= PAD_BUTTON_LEFT;
                 }
                 if (buttons == PcControlHeld[i] && buttons) {
                     PcControlRepeat[i] = PcControlRepeat[i] - elapsed;

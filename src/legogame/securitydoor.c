@@ -9,6 +9,7 @@
 #include "legoapi/core/input/gamepads.h"
 #include "legoapi/core/input/timer.h"
 #include "legoapi/gizmo/base/gizmo.h"
+#include "legoapi/gizmos/door/securitydoors.h"
 #include "legoapi/items/base/animpacket.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/misc/gamemain.h"
@@ -144,7 +145,7 @@ static void SecurityDoorInitRecord(SECURITY_DOOR_RECORD *door) {
     }
     door->opening = 0.0f;
     door->state = 0;
-    door->flags = (door->flags & ~12u) | 3;
+    door->flags = (door->flags & ~(SECURITYDOOR_OPENED | SECURITYDOOR_DRAWN)) | SECURITYDOOR_ACTIVE | SECURITYDOOR_VISIBLE;
     SecurityDoorUpdateMatrices(door, 0);
     PlatInstRotate(door->platform_id[0], 1);
     PlatInstRotate(door->platform_id[1], 1);
@@ -190,7 +191,7 @@ void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
             f32 opening = (f64)door->opening + (f64)FRAMETIME;
             door->opening = opening;
             if (opening >= 1.0f) {
-                door->flags |= 4;
+                door->flags |= SECURITYDOOR_OPENED;
                 door->opening = 1.0f;
             }
         }
@@ -214,7 +215,8 @@ SECURITY_DOOR_RECORD *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         f32 candidate;
         if (object != NULL) {
-            if ((door->flags & 2) == 0 || (door->flags & 1) == 0 || (door->flags & 4) != 0 || door->state != 0 || door->opening != 0.0f) {
+            if ((door->flags & SECURITYDOOR_VISIBLE) == 0 || (door->flags & SECURITYDOOR_ACTIVE) == 0 ||
+                (door->flags & SECURITYDOOR_OPENED) != 0 || door->state != 0 || door->opening != 0.0f) {
                 continue;
             }
             candidate = NuVecDistSqr(position, &door->player_position, NULL);
@@ -247,23 +249,23 @@ void SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         NUMTX matrix;
         f32 distance;
-        door->flags &= ~8u;
-        if ((door->flags & 2) == 0) {
+        door->flags &= ~SECURITYDOOR_DRAWN;
+        if ((door->flags & SECURITYDOOR_VISIBLE) == 0) {
             continue;
         }
         if (world->level_objects[81].active != 0) {
             matrix = door->leaf_matrix[0];
             if (NuSpecialDrawAt(&world->level_objects[81].special, &matrix) != 0) {
-                door->flags |= 8;
+                door->flags |= SECURITYDOOR_DRAWN;
             }
         }
         if (world->level_objects[82].active != 0) {
             matrix = door->leaf_matrix[1];
             if (NuSpecialDrawAt(&world->level_objects[82].special, &matrix) != 0) {
-                door->flags |= 8;
+                door->flags |= SECURITYDOOR_DRAWN;
             }
         }
-        if ((door->flags & 4) != 0 || (door->flags & 1) == 0 || world->level_objects[85].active == 0) {
+        if ((door->flags & SECURITYDOOR_OPENED) != 0 || (door->flags & SECURITYDOOR_ACTIVE) == 0 || world->level_objects[85].active == 0) {
             continue;
         }
         NuMtxSetRotationY(&matrix, rotation);
@@ -374,7 +376,7 @@ ADDGIZMOTYPE *SecurityDoors_RegisterGizmo(i32 unused_type_id) {
     SecurityDoorAddType = Default_ADDGIZMOTYPE;
     SecurityDoorAddType.name = name;
     SecurityDoorAddType.prefix = dat_007516c0;
-    SecurityDoorAddType.fns.options = 12;
+    SecurityDoorAddType.fns.options = sizeof(SECURITY_DOOR_PROGRESS);
     SecurityDoorAddType.fns.get_max_gizmos_fn = (i32(*)(void *))SecurityDoors_GetMaxGizmos;
     SecurityDoorAddType.fns.add_gizmos_fn = (void *)SecurityDoors_AddGizmos;
     SecurityDoorAddType.fns.early_update_fn = NULL;

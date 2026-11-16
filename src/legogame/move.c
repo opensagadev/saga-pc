@@ -912,7 +912,7 @@ void PreResetCode(GAMEOBJECT *object) {
     }
     object->flags_e20 &= 0xfffddfff;
     object->terrain_origin_floor_offset = 0.0f;
-    object->sabre_flags = 1;
+    object->sabre_flags = SABRE_PUSH;
     reset->force_glow_candidate = NULL;
     object->blade_states[0] = object->blade_states[1] = object->blade_states[2] = object->blade_states[3] = -1;
     object->anim_packet.overlay_animation = ACTION_NONE;
@@ -3497,7 +3497,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
     if (require_target != 0) {
         require_target = StartupGameFlag1 != 0 && object->unknown_f00 != 5 ? 2 : 1;
     }
-    if (object->attack_override == 7) {
+    if (object->attack_override == ATTACK_OVERRIDE_SHOOT) {
         return;
     }
     if (object->unknown_f00 == 5) {
@@ -3554,7 +3554,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                     Punch_Hit(object, object->force_target, punch_gap, punch_charge_gap);
                 }
                 if (suppress_combo == 0 && (object->context_flags & APIOBJECT_PUNCH_BEHIND) == 0 && object->combo_stage < 2 &&
-                    object->combo_input_latched != 0 && object->attack_override != 6) {
+                    object->combo_input_latched != 0 && object->attack_override != ATTACK_OVERRIDE_BLOCK) {
                     object->force_target = NULL;
                     object->blowup_target = NULL;
                     object->force_target = ObjOpponent(object, opponent_range, punch_charge_gap, 1, 1, 1);
@@ -3632,7 +3632,7 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
                             }
                         }
                     }
-                } else if ((held != 0 || object->attack_override == 6) &&
+                } else if ((held != 0 || object->attack_override == ATTACK_OVERRIDE_BLOCK) &&
                            (object->id == (u16)id_GAMORREANGUARD || object->id == (u16)id_CAPTAINTARPALS)) {
                     StartHold(object);
                 }
@@ -3683,8 +3683,8 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
     }
 
     PunchSelectOpponent(object, opponent_range, punch_charge_gap, 1, object->unknown_f00 == 5);
-    if (object->force_target == NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->attack_override == 0 &&
-        object->unknown_f00 != 5) {
+    if (object->force_target == NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 &&
+        object->attack_override == ATTACK_OVERRIDE_NONE && object->unknown_f00 != 5) {
         return;
     }
     if (object->force_target != NULL && (object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 &&
@@ -3708,39 +3708,39 @@ static void PunchCode(GAMEOBJECT *object, i32 pressed, i32 held, i32 require_tar
     }
 
     object->special_move = -1;
-    if (object->attack_override == 0) {
+    if (object->attack_override == ATTACK_OVERRIDE_NONE) {
         object->combo_stage = 0;
         object->unknown_7aa = ACTION_PUNCH;
         object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
     } else {
         switch (object->attack_override) {
-            case 1:
+            case ATTACK_OVERRIDE_PUNCH_1:
                 object->combo_stage = 2;
                 object->unknown_7aa = ACTION_PUNCH;
                 object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
                 break;
-            case 2:
+            case ATTACK_OVERRIDE_PUNCH_2:
                 object->unknown_7aa = ACTION_PUNCH2;
                 object->combo_stage = 2;
                 object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
                 break;
-            case 3:
+            case ATTACK_OVERRIDE_PUNCH_3:
                 object->unknown_7aa = ACTION_PUNCH3;
                 object->combo_stage = 2;
                 object->context_variant_flags &= ~APIOBJECT_PUNCH_BEHIND;
                 break;
-            case 4:
+            case ATTACK_OVERRIDE_PUNCH_BEHIND:
                 object->context_variant_flags |= APIOBJECT_PUNCH_BEHIND;
                 object->unknown_7aa = ACTION_PUNCH_BEHIND;
                 object->combo_stage = 0;
                 goto start_attack;
-            case 5:
+            case ATTACK_OVERRIDE_PUNCH_SPECIAL:
                 object->unknown_7aa = ACTION_ATTACK;
                 break;
-            case 6:
+            case ATTACK_OVERRIDE_BLOCK:
                 StartHold(object);
                 return;
-            case 7:
+            case ATTACK_OVERRIDE_SHOOT:
                 return;
             default:
                 object->combo_stage = 0;
@@ -3971,10 +3971,10 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         (context == CHARACTER_CONTEXT_LAND_LUNGE && object->id != id_THEEMPEROR) || context == CHARACTER_CONTEXT_LAND_SLAM ||
         (context == CHARACTER_CONTEXT_BIG_JUMP && object->unknown_7b3 == 1) ||
         ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 && Cheat_PowerUpActive(object->player_index))) {
-        object->sabre_flags |= 2;
+        object->sabre_flags |= SABRE_STREAK;
     }
     if (object->id == id_IMPERIALGUARD) {
-        object->sabre_flags &= ~3;
+        object->sabre_flags &= ~(SABRE_PUSH | SABRE_STREAK);
     }
     if (object->sabre_flags == 0) {
         return;
@@ -3991,7 +3991,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     points[1].x = object->locator_matrices[joint_b].m30;
     points[1].y = object->locator_matrices[joint_b].m31;
     points[1].z = object->locator_matrices[joint_b].m32;
-    if ((object->sabre_flags & 2) != 0) {
+    if ((object->sabre_flags & SABRE_STREAK) != 0) {
         i32 colour;
         if (object->player_index != -1 && Cheat_IsOn(25)) {
             colour = 0;
@@ -4023,7 +4023,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
             }
         }
     }
-    if ((object->sabre_flags & 7) == 0) {
+    if ((object->sabre_flags & (SABRE_PUSH | SABRE_STREAK | SABRE_DAMAGE)) == 0) {
         return;
     }
     if (object->player_index != -1 && Cheat_IsOn(25)) {
@@ -4052,7 +4052,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
     maximum.x = points[2].x + extent;
     maximum.y = points[2].y + extent;
     maximum.z = points[2].z + extent;
-    if ((object->sabre_flags & 4) != 0) {
+    if ((object->sabre_flags & SABRE_DAMAGE) != 0) {
         NUVEC direction;
         NuVecRotateY(&direction, &v001, (u16)(object->unknown_276 + (object->character_context == CHARACTER_CONTEXT_SWIPE ? 0x8000 : 0)));
         NuVecScale(&difference, &direction, 0.2f);
@@ -4078,7 +4078,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         maximum.y = points[2].y + extent;
         maximum.z = points[2].z + extent;
     }
-    if ((object->sabre_flags & 5) == 0) {
+    if ((object->sabre_flags & (SABRE_PUSH | SABRE_DAMAGE)) == 0) {
         goto particle_contact;
     }
     if (object->player_index != -1 && Cheat_IsOn(25)) {
@@ -4114,7 +4114,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
                                            object->sabre_collision_radius, object->sabre_collision_radius)) {
                 continue;
             }
-            if (0 != (object->sabre_flags & 1)) {
+            if (0 != (object->sabre_flags & SABRE_PUSH)) {
                 if ((target->flags_1fc_word & APIOBJECT_FLAG_DONT_PUSH) == 0 &&
                     (target->character_data->game_character->flags_090 &
                      (CHARACTER_RUNTIME_CAN_TAKE_OVER | CHARACTER_RUNTIME_CAN_FLATTEN)) == 0) {
@@ -4167,7 +4167,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
             }
         }
     }
-    if (nearest != NULL && (object->sabre_flags & 4) != 0) {
+    if (nearest != NULL && (object->sabre_flags & SABRE_DAMAGE) != 0) {
         AddGameDebris(WORLD->game_debris_sys, effect, &points[nearest_point]);
         if (!CannotKill(nearest)) {
             i32 damage = object->sabre_damage;
@@ -4181,8 +4181,9 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         }
         return;
     }
-    if ((object->sabre_flags & 4) != 0 && ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 ||
-                                           (object->portal_flags & APIOBJECT_CAN_HIT_FORCE_OBJECTS) != 0 || object->unknown_f00 == 5)) {
+    if ((object->sabre_flags & SABRE_DAMAGE) != 0 &&
+        ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) != 0 || (object->portal_flags & APIOBJECT_CAN_HIT_FORCE_OBJECTS) != 0 ||
+         object->unknown_f00 == 5)) {
         if ((object->flags_1fc_word & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->model_draw_result == 0) {
             if (object->blowup_target != NULL) {
                 /* Prefix view of the GizmoBlowUpOpponent result. */
@@ -4200,7 +4201,7 @@ static void LightSabreStreakCode(GAMEOBJECT *object, i32 blade, i32 effect) {
         }
     }
 particle_contact:
-    if ((object->sabre_flags & 6) != 0) {
+    if ((object->sabre_flags & (SABRE_STREAK | SABRE_DAMAGE)) != 0) {
         PART *part = HitParts(object, points, 3, object->sabre_collision_radius, &minimum, &maximum, 0x08000008);
         if (part != NULL) {
             if ((part->flags & PART_FLAG_DAMAGE_CHARACTERS) == 0) {
@@ -4222,21 +4223,21 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
     i32 blade;
     if ((data->variant == CHARVARIANT_MACEWINDU || object->id == (u16)id_GRIEVOUS || object->id == (u16)id_DOOKU) &&
         object->character_context == CHARACTER_CONTEXT_JUMP && object->action_movement_state == JUMP_KIND_LUNGE) {
-        object->sabre_flags |= 2;
+        object->sabre_flags |= SABRE_STREAK;
     } else if (object->id == (u16)id_GRIEVOUS &&
                (object->character_context == CHARACTER_CONTEXT_HOLD || object->character_context == CHARACTER_CONTEXT_BLOCK) &&
                object->unknown_7aa == ACTION_BLOCK1) {
         reset_streak = 1;
-        object->sabre_flags |= 2;
+        object->sabre_flags |= SABRE_STREAK;
     } else if (object->id == (u16)id_BODYGUARD &&
                (object->character_context == CHARACTER_CONTEXT_HOLD || object->character_context == CHARACTER_CONTEXT_BLOCK) &&
                (object->unknown_7aa == ACTION_BLOCK1 || object->unknown_7aa == ACTION_BLOCK2)) {
-        object->sabre_flags |= 2;
+        object->sabre_flags |= SABRE_STREAK;
     }
     blade_flags[0] = object->sabre_flags;
     blade_flags[1] = object->sabre_flags;
-    streak = object->sabre_flags & 2;
-    damage = object->sabre_flags & 4;
+    streak = object->sabre_flags & SABRE_STREAK;
+    damage = object->sabre_flags & SABRE_DAMAGE;
     if (object->id == (u16)id_GRIEVOUS) {
         i32 first = -1;
         i32 second = -1;
@@ -4285,22 +4286,22 @@ static void AfterAnimationSabreCode(GAMEOBJECT *object, i32 effect) {
             if (reset_streak != 0 && blade == 2) {
                 streak = 0;
             }
-            object->sabre_flags = streak | 1;
+            object->sabre_flags = streak | SABRE_PUSH;
             if (damage != 0 && (blade == second || blade == first)) {
                 object->sabre_flags |= damage;
             }
             if (object->character_context == CHARACTER_CONTEXT_SWIPE) {
                 if (blade == 2 || blade == 3) {
-                    object->sabre_flags |= 2;
+                    object->sabre_flags |= SABRE_STREAK;
                 } else {
-                    object->sabre_flags &= ~2;
+                    object->sabre_flags &= ~SABRE_STREAK;
                 }
             }
             LightSabreStreakCode(object, blade, effect);
         }
     } else if (object->id == (u16)id_DARTHMAUL) {
         LightSabreStreakCode(object, 0, effect);
-        object->sabre_flags = streak | 1;
+        object->sabre_flags = streak | SABRE_PUSH;
         LightSabreStreakCode(object, 1, effect);
     } else if (object->id == (u16)id_BODYGUARD) {
         if (object->character_context == CHARACTER_CONTEXT_COMBO && damage != 0) {
@@ -4533,7 +4534,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                         object->character_context = CHARACTER_CONTEXT_NONE;
                     }
                 }
-                object->sabre_flags |= 2;
+                object->sabre_flags |= SABRE_STREAK;
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0 &&
                     (((object->context_variant_flags & 8) != 0 && AnimListFrame(object->character_model, object->unknown_7aa, 0) == 0.0f) ||
                      (object->context_variant_flags & APIOBJECT_COMBO_ENDED) != 0)) {
@@ -4551,7 +4552,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                 object->combo_input_timer = 0.2f;
                 object->context_variant_flags |= APIOBJECT_COMBO_WAITING;
                 BlockSfx(object);
-                object->sabre_flags |= 2;
+                object->sabre_flags |= SABRE_STREAK;
                 if ((object->context_variant_flags & APIOBJECT_CONTEXT_EVENT_DONE) == 0) {
                     ComboHitFrame(object, 1);
                 }
@@ -4586,7 +4587,7 @@ static void LightSabreComboCode(GAMEOBJECT *object, i32 action_pressed, i32 acti
                     object->flags_e20 &= ~APIOBJECT_COMBO_IN_TIME;
                 }
             }
-            object->sabre_flags |= 3;
+            object->sabre_flags |= SABRE_PUSH | SABRE_STREAK;
         }
         goto combo_finished;
     }
@@ -6616,7 +6617,7 @@ static void FireBountyHunterRocket(GAMEOBJECT *object) {
     if (object->character_context != CHARACTER_CONTEXT_NONE || (object->pad->buttons_pressed & GAMEPAD_TAG) == 0) {
         return;
     }
-    if ((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) == 0 && object->helmet != 6) {
+    if ((object->character_data->model_flags & CHARACTER_MODEL_BOUNTY_HUNTER) == 0 && object->helmet != HELMET_BOUNTY_HUNTER) {
         return;
     }
     locator = object->character_data->game_character->rocket_locator;
@@ -13079,7 +13080,7 @@ void Move_POD(GAMEOBJECT *object) {
 
 void PostResetCode(GAMEOBJECT *object) {
     PLAYERCHARACTERCONFIG *character;
-    object->attack_override = 0;
+    object->attack_override = ATTACK_OVERRIDE_NONE;
     if (object->character_data->game_character->sfx_chatter != -1) {
         ChatterSfx(object, object->character_data->game_character->sfx_chatter,
                    (f32)(u32)object->character_data->game_character->flags_11e);

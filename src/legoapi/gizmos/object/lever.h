@@ -30,6 +30,11 @@ extern "C" {
 #define LEVER_FLAG_INTERACTION_FINISHED 0x800
 #define LEVER_FLAG_PULLED_DOWN 0x1000
 
+/* Lever_GetOutput outputs, named after Lever_GetOutputName. */
+#define LEVER_OUTPUT_DOWN 0
+#define LEVER_OUTPUT_DOWN_GOODIE 1 /* "Down(Goodie)" */
+#define LEVER_OUTPUT_DOWN_BADDIE 2 /* "Down(Baddie)" */
+
 typedef struct GIZMO_LEVER GIZMO_LEVER;
 
 struct GIZMO_LEVER {            // size 0xa0

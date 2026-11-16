@@ -489,7 +489,7 @@ extern "C" {
         i32 key_offset;
         block = (PCCurveBlock *)curve->encoded;
         key_mask = block->chunk_bits + time->chunk;
-        if (format == 4) {
+        if (format == NUANIMCURVE2_BITS) {
             i32 shift = (i32)NuFloor(time->time_offset) - 1;
             return (f32)((*key_mask >> shift) & 1);
         }
@@ -511,7 +511,7 @@ extern "C" {
         }
         key_offset = block->chunk_starts[time->chunk];
         switch (format) {
-            case 1: {
+            case NUANIMCURVE2_FULL: {
                 PCCurveFullKey *first = &block->values.full[key + key_offset - 1];
                 f32 t = (time->time - first[0].frame) * first[0].inverse_duration;
                 f32 span = first[1].frame - first[0].frame;
@@ -520,7 +520,7 @@ extern "C" {
                 f32 coefficient = PC_CURVE_HERMITE_COEFF(first[0].value, first[1].value, tangent0, tangent1, t);
                 return (coefficient * t + tangent0) * t + first[0].value;
             }
-            case 5: {
+            case NUANIMCURVE2_PACKED6: {
                 PCCurvePacked6 *data = block->values.packed6;
                 f32 tangent_scale = data->tangent_scale;
                 f32 value_scale = data->value_scale;
@@ -537,7 +537,7 @@ extern "C" {
                 f32 coefficient = PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t);
                 return (coefficient * t + tangent0) * t + value0;
             }
-            case 6: {
+            case NUANIMCURVE2_SCALED4: {
                 PCCurveScaled4 *data = block->values.scaled4;
                 f32 tangent_scale = data->tangent_scale;
                 f32 value_scale = data->value_scale;
@@ -567,7 +567,7 @@ extern "C" {
                 coefficient = PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t);
                 return (coefficient * t + tangent0) * t + value0;
             }
-            case 2: {
+            case NUANIMCURVE2_PACKED4: {
                 PCCurvePacked4 *data = block->values.packed4;
                 PCCurvePacked4Key *first = &data->keys[key + key_offset - 1];
                 f32 first_time = (f32)first[0].frame;
@@ -596,9 +596,9 @@ extern "C" {
                 coefficient = PC_CURVE_HERMITE_COEFF(value0, value1, tangent0, tangent1, t);
                 return (coefficient * t + tangent0) * t + value0;
             }
-            case 3:
+            case NUANIMCURVE2_STEP:
                 return block->values.step[key + key_offset - 1].value;
-            case 0:
+            case NUANIMCURVE2_CONSTANT:
                 return 0.0f;
             default:
                 return 0.0f;
@@ -1188,7 +1188,7 @@ extern "C" {
                     for (i = 0; i < 3; ++i) {
                         u16 type = *curve_types++;
                         switch (type) {
-                            case 6: {
+                            case ANI3_KEY_BYTE_BLEND: {
                                 v = *(u32 *)(keys + key_stride);
                                 value0 = ANI_GetKeyParts2(keys, &blend_bits);
                                 value1 = v & 0xff;
@@ -1207,12 +1207,12 @@ extern "C" {
                                 ++scale_min;
                                 break;
                             }
-                            case 7:
+                            case ANI3_KEY_1648:
                                 CalcValue1648Get2Values((char *)keys, quarter, key_stride, scale_min, &first[i], &second[i]);
                                 keys += 8;
                                 ++scale_min;
                                 break;
-                            case 9: {
+                            case ANI3_KEY_WORD: {
                                 u32 next;
                                 first[i] = (f32)((u16 *)keys)[quarter] * scale_min->scale + scale_min->minimum;
                                 if (quarter < 3) {
@@ -1248,7 +1248,7 @@ extern "C" {
                 } else {
                     for (i = 3; i != 0; --i) {
                         u16 type = *curve_types++;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             *out = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
@@ -1380,7 +1380,7 @@ extern "C" {
                     for (i = 0; i < 4; ++i) {
                         u16 type = *curve_types++;
                         switch (type) {
-                            case 6: {
+                            case ANI3_KEY_BYTE_BLEND: {
                                 v = *(u32 *)(keys + key_stride);
                                 value0 = ANI_GetKeyParts2(keys, &blend_bits);
                                 value1 = v & 0xff;
@@ -1399,12 +1399,12 @@ extern "C" {
                                 ++scale_min;
                                 break;
                             }
-                            case 7:
+                            case ANI3_KEY_1648:
                                 CalcValue1648Get2Values((char *)keys, quarter, key_stride, scale_min, &first[i], &second[i]);
                                 keys += 8;
                                 ++scale_min;
                                 break;
-                            case 9: {
+                            case ANI3_KEY_WORD: {
                                 u32 next;
                                 first[i] = (f32)((u16 *)keys)[quarter] * scale_min->scale + scale_min->minimum;
                                 if (quarter < 3) {
@@ -1432,7 +1432,7 @@ extern "C" {
                 } else {
                     for (i = 3; i != 0; --i) {
                         u16 type = *curve_types++;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             *out = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
@@ -1563,7 +1563,7 @@ extern "C" {
                     i32 constant_count = 0;
                     for (i = 0; i < 3; ++i) {
                         u32 type = *curve_types++;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             ++constant_count;
                             second[i] = first[i] = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
@@ -1611,7 +1611,7 @@ extern "C" {
                 } else {
                     for (i = 3; i != 0; --i) {
                         u32 type = *curve_types++;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             *out = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
@@ -1742,7 +1742,7 @@ extern "C" {
                 } else {
                     for (i = 3; i != 0; --i) {
                         type = *curve_types++;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             *out = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             u32 v;
@@ -1896,7 +1896,7 @@ extern "C" {
                     for (i = 0; i < 3; ++i) {
                         u32 type = *curve_types++;
                         switch (type) {
-                            case 6: {
+                            case ANI3_KEY_BYTE_BLEND: {
                                 v = *(u32 *)(keys + key_stride);
                                 value0 = ANI_GetKeyParts2(keys, &blend_bits);
                                 value1 = v & 0xff;
@@ -1915,7 +1915,7 @@ extern "C" {
                                 ++scale_min;
                                 break;
                             }
-                            case 7:
+                            case ANI3_KEY_1648:
                                 CalcValue1648Get2Values((char *)keys, quarter, key_stride, scale_min, &first[i], &second[i]);
                                 keys += 8;
                                 ++scale_min;
@@ -1941,7 +1941,7 @@ extern "C" {
                         u32 type = *curve_types++;
                         f32 value;
                         f32 delta;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
@@ -2109,7 +2109,7 @@ extern "C" {
                     for (i = 0; i < 4; ++i) {
                         u32 type = *curve_types++;
                         switch (type) {
-                            case 6: {
+                            case ANI3_KEY_BYTE_BLEND: {
                                 v = *(u32 *)(keys + key_stride);
                                 value0 = ANI_GetKeyParts2(keys, &blend_bits);
                                 value1 = v & 0xff;
@@ -2128,7 +2128,7 @@ extern "C" {
                                 ++scale_min;
                                 break;
                             }
-                            case 7:
+                            case ANI3_KEY_1648:
                                 CalcValue1648Get2Values((char *)keys, quarter, key_stride, scale_min, &first[i], &second[i]);
                                 keys += 8;
                                 ++scale_min;
@@ -2152,7 +2152,7 @@ extern "C" {
                         u32 type = *curve_types++;
                         f32 value;
                         f32 delta;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
@@ -2317,7 +2317,7 @@ extern "C" {
                     f32 dot;
                     for (i = 0; i < 3; ++i) {
                         u32 type = *curve_types++;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             second[i] = first[i] = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             v = *(u32 *)(keys + key_stride);
@@ -2362,7 +2362,7 @@ extern "C" {
                         u32 type = *curve_types++;
                         f32 value;
                         f32 delta;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
@@ -2518,7 +2518,7 @@ extern "C" {
                         u32 type = *curve_types++;
                         f32 value;
                         f32 delta;
-                        if (type != 6) {
+                        if (type != ANI3_KEY_BYTE_BLEND) {
                             value = (f32)constants[type] * anim->scale + anim->minimum;
                         } else {
                             value0 = ANI_GetKeyParts2(keys, &blend_bits);
@@ -2628,16 +2628,16 @@ extern "C" {
             if (curve_mask != NULL) {
                 if (curve != *curve_mask) {
                     switch (type) {
-                        case 6:
+                        case ANI3_KEY_BYTE_BLEND:
                             keys += 4;
                             ++scale_min;
                             break;
-                        case 7:
+                        case ANI3_KEY_1648:
                             keys += 8;
                             ++scale_min;
                             break;
-                        case 8:
-                        case 10:
+                        case ANI3_KEY_CONSTANT:
+                        case ANI3_KEY_CONSTANT_PAIR:
                             keys += 4;
                             break;
                     }
@@ -2652,7 +2652,7 @@ extern "C" {
                 key_fraction = fraction;
             }
             switch (type) {
-                case 6: {
+                case ANI3_KEY_BYTE_BLEND: {
                     u32 IValue0;
                     u32 IValue1;
                     u32 IBlend0;
@@ -2680,16 +2680,16 @@ extern "C" {
                     ++scale_min;
                     break;
                 }
-                case 7:
+                case ANI3_KEY_1648:
                     *values = CalcValue1648((char *)keys, quarter, stride, key_fraction, scale_min);
                     keys += 8;
                     ++scale_min;
                     break;
-                case 8:
+                case ANI3_KEY_CONSTANT:
                     *values = (f32)constants[keys[quarter]];
                     keys += 4;
                     break;
-                case 10:
+                case ANI3_KEY_CONSTANT_PAIR:
                     *(i32 *)values = constants[keys[quarter] + 1] | (constants[keys[quarter]] << 16);
                     keys += 4;
                     break;
@@ -9665,20 +9665,20 @@ extern "C" {
                     if (code == 0) {
                         for (index = 0; index < counts[object]; index++) {
                             item = &scene->items[indices[index]];
-                            item->id = 0;
-                            item[-1].id = 0;
+                            item->id = NUDLISTITEM_SKIP;
+                            item[-1].id = NUDLISTITEM_SKIP;
                         }
                     } else if (code == 1) {
                         for (index = 0; index < counts[object]; index++) {
                             item = &scene->items[indices[index]];
-                            item->id = 3;
-                            item[-1].id = 3;
+                            item->id = NUDLISTITEM_CALL;
+                            item[-1].id = NUDLISTITEM_CALL;
                         }
                     } else {
                         for (index = 0; index < counts[object]; index++) {
                             item = &scene->items[indices[index]];
-                            item->id = 3;
-                            item[-1].id = 3;
+                            item->id = NUDLISTITEM_CALL;
+                            item[-1].id = NUDLISTITEM_CALL;
                         }
                     }
                     if (++object >= scene->clip_count) {
@@ -9700,7 +9700,7 @@ extern "C" {
             i32 *indices = scene->clip_objects[object].item_indices;
             for (item_index = 0; item_index < *counts; ++item_index) {
                 NUDISPLAYLISTITEM *item = &scene->items[indices[item_index]];
-                if (item->id != 0 && item->type == NUDLIST_GEOMCALL) {
+                if (item->id != NUDLISTITEM_SKIP && item->type == NUDLIST_GEOMCALL) {
                     DisplayListSetAlphaPS(item - 1, item, scene->alpha_values[object]);
                 }
             }
@@ -9734,22 +9734,22 @@ extern "C" {
                     NUDISPLAYLIST *list = lists[material_index];
                     PC_DISPLAY_MATERIAL *material = (PC_DISPLAY_MATERIAL *)scene->display_materials[list->material_id];
                     if (material != NULL && enabled != 0) {
-                        if (PCDeviceHardwareVertexProcessingPC != 1) {
+                        if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_1_1) {
                             enabled = material->blend_operation[0] != 0xff;
                         } else {
                             if (material->blend_operation[0] == 0xff ||
                                 material->blend_operation[0] + material->blend_operation[1] + material->blend_operation[2] == 0) {
-                                list->mtl_item->id = 0;
+                                list->mtl_item->id = NUDLISTITEM_SKIP;
                             } else {
-                                list->mtl_item->id = 1;
+                                list->mtl_item->id = NUDLISTITEM_JUMP;
                             }
                             goto next;
                         }
                     }
                     if (enabled) {
-                        list->mtl_item->id = 0;
+                        list->mtl_item->id = NUDLISTITEM_SKIP;
                     } else {
-                        list->mtl_item->id = 1;
+                        list->mtl_item->id = NUDLISTITEM_JUMP;
                     }
                 next:
                     ++material_index;
@@ -9819,7 +9819,7 @@ extern "C" {
                 goto unlinked;
             }
         unlink:
-            items[link].id = 4;
+            items[link].id = NUDLISTITEM_END;
             items[link].next = NULL;
             items[link].type = NUDLIST_TERMINATE;
         unlinked:
@@ -9956,7 +9956,7 @@ extern "C" {
                         link = PCMaterialLinkItemIndex;
                         items[link].type = NUDLIST_NEXT;
                         items[link].next = anchor[link].next;
-                        items[link].id = 1;
+                        items[link].id = NUDLISTITEM_JUMP;
                         anchor[link].next = items;
                         goto linked;
                     }
@@ -9966,7 +9966,7 @@ extern "C" {
                     link = PCMaterialLinkItemIndex;
                     items[link].type = NUDLIST_NEXT;
                     items[link].next = head;
-                    items[link].id = 1;
+                    items[link].id = NUDLISTITEM_JUMP;
                     scene->sort_pris[sort_index].items = items;
                 }
             } else {
@@ -9996,7 +9996,7 @@ extern "C" {
         cursor->addr += 0x80;
         items[0].type = NUDLIST_MTL_CLIP;
         items[0].next = items + PCMaterialBlockItemCount - 1;
-        items[0].id = 1;
+        items[0].id = NUDLISTITEM_JUMP;
         NuDisplayListAddClut(items + 1, view->texture_id);
         NuDisplayListAddTexture(items + 2, view->texture_id);
         NuDisplayListAddMaterialState(items + 3, material);
@@ -10004,10 +10004,10 @@ extern "C" {
         NuDisplayListAddLightState(items + 5, material);
         items[6].next = items + PCMaterialBlockItemCount - 1;
         items[6].type = NUDLIST_DYNAMIC_GEOMETRY;
-        items[6].id = 1;
+        items[6].id = NUDLISTITEM_JUMP;
         items[7].type = NUDLIST_TERMINATE;
         items[7].next = NULL;
-        items[7].id = 4;
+        items[7].id = NUDLISTITEM_END;
         return items;
     }
 
@@ -10046,7 +10046,7 @@ extern "C" {
                     i32 index = sort->mtl_first + i;
                     NUDISPLAYLIST *list = scene->material_lists[index];
                     PC_DISPLAY_MATERIAL *material;
-                    if (list->mtl_item->id != 0) {
+                    if (list->mtl_item->id != NUDLISTITEM_SKIP) {
                         continue;
                     }
                     material = (PC_DISPLAY_MATERIAL *)scene->display_materials[index];
@@ -10068,14 +10068,14 @@ extern "C" {
                         } else if (list->scene_first[list->scene_buffer] != list->scene_next) {
                             list->mtl_last->next = list->scene_first[list->scene_buffer];
                             list->scene_next->type = NUDLIST_NEXT;
-                            list->scene_next->id = 1;
+                            list->scene_next->id = NUDLISTITEM_JUMP;
                             list->scene_next->next = list->dynamic_geometry + 1;
                         }
                         list->mtl_last = list->first;
                     } else if (list->scene_first[list->scene_buffer] != list->scene_next) {
                         list->dynamic_geometry->next = list->scene_first[list->scene_buffer];
                         list->scene_next->type = NUDLIST_NEXT;
-                        list->scene_next->id = 1;
+                        list->scene_next->id = NUDLISTITEM_JUMP;
                         list->scene_next->next = list->dynamic_geometry + 1;
                     } else {
                         list->dynamic_geometry->next = list->dynamic_geometry + 1;
@@ -10083,7 +10083,7 @@ extern "C" {
                     RndrStateUpdate((NURNDRLIBSTATE *)&state, (NUMTL *)material, list->mtl_item);
                     if ((u8)(scene->render_flags >> 5) != 0 &&
                         ((u8)(scene->render_flags >> 5) & (u8)(material->visibility_flags >> 14)) != 0) {
-                        list->mtl_item->id = 1;
+                        list->mtl_item->id = NUDLISTITEM_JUMP;
                         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] &=
                             (u8) ~(1u << (list->material_id % 8));
                     }
@@ -10291,7 +10291,7 @@ extern "C" NUDISPLAY_LIST *NuDisplaySceneClone(NUDISPLAY_LIST *source, VARIPTR *
             NUDISPLAYLISTITEM *head = scene->material_lists[i]->first;
             head->type = NUDLIST_NEXT;
             head->next = NULL;
-            head->id = 1;
+            head->id = NUDLISTITEM_JUMP;
         }
     }
     materials = reinterpret_cast<PC_CLONE_MATERIAL_VIEW *>(CLONE_ALIGN(buffer, 4));
@@ -10419,12 +10419,12 @@ extern "C" {
             DisplayListCreateGeomTransformPS(buffer, matrix, list->scene->display_materials[list->material_id], next, *packet);
         *packet = transform;
         list->items->type = NUDLIST_TRANSFORM_REF;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = transform;
         list->items++;
         output[0] = list->items - 1;
         list->items->type = NUDLIST_GEOMCALL;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = next;
         list->items++;
         output[1] = list->items - 1;
@@ -10439,7 +10439,7 @@ extern "C" {
         void *next = geometry->next;
         void *lightmap = geometry[-2].next;
         list->items->type = geometry[-2].type;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = lightmap;
         list->items++;
         output[0] = list->items - 1;
@@ -10447,12 +10447,12 @@ extern "C" {
             DisplayListCreateGeomTransformPS(buffer, matrix, list->scene->display_materials[list->material_id], next, *packet);
         *packet = transform;
         list->items->type = NUDLIST_TRANSFORM_REF;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = transform;
         list->items++;
         output[1] = list->items - 1;
         list->items->type = NUDLIST_GEOMCALL;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = next;
         list->items++;
         output[2] = list->items - 1;
@@ -10468,19 +10468,19 @@ extern "C" {
             DisplayListCreateGeomTransformPS(buffer, matrix, list->scene->display_materials[list->material_id], next, *packet);
         *packet = transform;
         list->items->type = NUDLIST_TRANSFORM_REF;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = transform;
         list->items++;
         output[0] = list->items - 1;
         void *render_geometry;
         void *skin_packet = DisplayListCreateSkinTransformPS(buffer, skin, weights, next, &render_geometry, output + 2);
         list->items->type = 0x99;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = skin_packet;
         list->items++;
         output[1] = list->items - 1;
         list->items->type = 0x98;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = render_geometry;
         SAGA_SKIN_CALL(skin_trace_item, (unsigned)list->items, (unsigned)skin_packet, (unsigned)render_geometry, (unsigned)skin);
         list->items++;
@@ -10495,13 +10495,13 @@ extern "C" {
         NUDISPLAY_LIST *scene = list->scene;
         void *packet = DisplayListCreateFaceonTransformPS(buffer, matrix, scene->display_materials[list->material_id], geometry->next);
         list->items->type = NUDLIST_FACEON_TRANSFORM;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = packet;
         list->items++;
         output[0] = list->items - 1;
         packet = NuDisplayListPrepareFaceonPS(buffer, geometry->next, matrix);
         list->items->type = NUDLIST_FACEON;
-        list->items->id = 3;
+        list->items->id = NUDLISTITEM_CALL;
         list->items->next = packet;
         list->items++;
         output[1] = list->items - 1;
@@ -10639,7 +10639,7 @@ extern "C" {
                 }
             }
             for (; material != NULL; material = material->next) {
-                if (PCDeviceHardwareVertexProcessingPC == 1) {
+                if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_1_1) {
                     if (material->colour[0] != 255 && material->colour[0] + material->colour[1] + material->colour[2] != 0) {
                         continue;
                     }
@@ -10675,7 +10675,7 @@ extern "C" {
                             NuDisplayListLinkItems(list, 1);
                             NUDISPLAYLISTITEM *item = list->items;
                             item->type = NUDLIST_MTL;
-                            item->id = 3;
+                            item->id = NUDLISTITEM_CALL;
                             item->next = material;
                             list->items = item + 1;
                             DisplayListUpdateRenderStateShadow(list, &render_state);
@@ -10791,7 +10791,7 @@ extern "C" void NuDisplayListCreate(NUDISPLAY_LIST *scene, VARIPTR *buffer, VARI
         NUDISPLAYLISTITEM *item = scene->material_lists[i]->first;
         item->type = NUDLIST_NEXT;
         item->next = NULL;
-        item->id = 1;
+        item->id = NUDLISTITEM_JUMP;
     }
     used_size = (((material_count + 7) / 8) / 16 + 1) * 16;
     DLIST_ALLOC(scene->material_used[0], u8 *, used_size);
@@ -10868,7 +10868,7 @@ extern "C" void NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer, VARIPTR
     first = PCDisplayList2d.first;
     first->type = NUDLIST_NEXT;
     first->next = NULL;
-    first->id = 1;
+    first->id = NUDLISTITEM_JUMP;
     PCDisplayList2d.mtl_last = PCDisplayList2d.first;
     PCDisplayList2d.state = (NURNDRLIBSTATE *)((buffer->addr + 3) & ~3u);
     buffer->addr = ((buffer->addr + 3) & ~3u) + sizeof(NURNDRLIBSTATE);
@@ -10881,7 +10881,7 @@ extern "C" void NuDisplayListExecute(NUDISPLAYLISTITEM *item, void (**handlers)(
     i32 done = 0;
     while (!done) {
         switch (item->id) {
-            case 3: {
+            case NUDLISTITEM_CALL: {
                 void (*handler)(void *) = handlers[item->type - 0x80];
                 if (handler != NULL) {
                     SAGA_SKIN_CALL(skin_trace_enter_item, (unsigned)item);
@@ -10890,13 +10890,13 @@ extern "C" void NuDisplayListExecute(NUDISPLAYLISTITEM *item, void (**handlers)(
                 }
             }
             /* fall through */
-            case 0:
+            case NUDLISTITEM_SKIP:
                 ++item;
                 break;
-            case 1:
+            case NUDLISTITEM_JUMP:
                 item = (NUDISPLAYLISTITEM *)item->next;
                 break;
-            case 4:
+            case NUDLISTITEM_END:
                 done = 1;
                 break;
             default:
@@ -11189,7 +11189,7 @@ extern "C" void fun_005dfe40(NUDISPLAYLIST *list, void *next, NUDISPLAYLISTITEM 
     NUDISPLAYLISTITEM *target = &list->dynamic_geometry[1];
     item->type = NUDLIST_NEXT;
     item->next = target;
-    item->id = 1;
+    item->id = NUDLISTITEM_JUMP;
     list->mtl_last = item;
 }
 
@@ -11336,11 +11336,11 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
                 void *transform =
                     DisplayListCreateGeomTransformPS(buffer, matrix, scene->display_materials[list->material_id], geometry_data, NULL);
                 list->items->type = NUDLIST_TRANSFORM_REF;
-                list->items->id = 3;
+                list->items->id = NUDLISTITEM_CALL;
                 list->items->next = transform;
                 NUDISPLAYLISTITEM *first = list->items++;
                 list->items->type = NUDLIST_GEOMCALL;
-                list->items->id = 3;
+                list->items->id = NUDLISTITEM_CALL;
                 list->items->next = geometry_data;
                 NUDISPLAYLISTITEM *last = list->items++;
                 DisplayListSetAlphaPS(first, last, 1.0f);
@@ -11352,11 +11352,11 @@ extern "C" void NuDisplayListBurstRndrSpecial(nuhspecial_s *handle, u32 count, N
                                                                      scene->items[object->item_indices[material]].next);
                 void *faceon = NuDisplayListPrepareFaceonPS(buffer, scene->items[object->item_indices[material]].next, matrix);
                 list->items->type = NUDLIST_FACEON_TRANSFORM;
-                list->items->id = 3;
+                list->items->id = NUDLISTITEM_CALL;
                 list->items->next = transform;
                 NUDISPLAYLISTITEM *first = list->items++;
                 list->items->type = NUDLIST_FACEON;
-                list->items->id = 3;
+                list->items->id = NUDLISTITEM_CALL;
                 list->items->next = faceon;
                 NUDISPLAYLISTITEM *last = list->items++;
                 DisplayListSetAlphaPS(first, last, 1.0f);
@@ -13345,11 +13345,11 @@ void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
         cursor->void_ptr = command + 6;
         command->type = NUDLIST_DUMMY;
         command->next = NULL;
-        command->id = 0;
+        command->id = NUDLISTITEM_SKIP;
         command++;
         command->type = NUDLIST_DUMMY;
         command->next = NULL;
-        command->id = 0;
+        command->id = NUDLISTITEM_SKIP;
         command++;
         list->state->tex_id = material->texture_id;
     } else {
@@ -13359,19 +13359,19 @@ void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
 
     command->type = NUDLIST_MTL;
     command->next = material;
-    command->id = 3;
+    command->id = NUDLISTITEM_CALL;
     command++;
     command->type = NUDLIST_DUMMY;
     command->next = NULL;
-    command->id = 0;
+    command->id = NUDLISTITEM_SKIP;
     command++;
     command->type = NUDLIST_DUMMY;
     command->next = NULL;
-    command->id = 0;
+    command->id = NUDLISTITEM_SKIP;
     command++;
     command->next = NULL;
     command->type = NUDLIST_NEXT;
-    command->id = 1;
+    command->id = NUDLISTITEM_JUMP;
 
     list->mtl_last = command;
     list->state->mtl = material;
@@ -13386,7 +13386,7 @@ extern "C" {
         i32 type_index;
         text[0] = '\0';
         if (file_handle != 0) {
-            if (item->id == 0) {
+            if (item->id == NUDLISTITEM_SKIP) {
                 sprintf(text, "<font color = \"#00a000\">");
             } else {
                 sprintf(text, "<font color = \"#0000a0\">");
@@ -13503,7 +13503,7 @@ extern "C" {
             if (file_handle != 0) {
                 NuHtmlWrite(text);
                 NuHtmlWrite("</br>\n");
-                if (item->id == 0) {
+                if (item->id == NUDLISTITEM_SKIP) {
                     NuHtmlWrite("<font color = \"#000000\">");
                 }
             } else {
@@ -13567,7 +13567,7 @@ extern "C" {
             DisplayListPrintItem(item, index, type_count, types, file_handle);
             if (flags & 1) {
                 switch (item->id) {
-                    case 1:
+                    case NUDLISTITEM_JUMP:
                         item = (NUDISPLAYLISTITEM *)item->next;
                         break;
                     default:
@@ -14085,7 +14085,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                                 if (record.producer_last[variant] != NULL) {
                                     record.producer_last[variant]->next = record.producer_cursor[variant];
                                     record.producer_last[variant]->type = NUDLIST_NEXT;
-                                    record.producer_last[variant]->id = 1;
+                                    record.producer_last[variant]->id = NUDLISTITEM_JUMP;
                                 } else {
                                     record.producer_first[variant] = record.producer_cursor[variant];
                                 }
@@ -14095,12 +14095,12 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                             NUDISPLAYLISTITEM *item = record.producer_cursor[variant];
                             item->next = material;
                             item->type = NUDLIST_MTL;
-                            item->id = 3;
+                            item->id = NUDLISTITEM_CALL;
                             NUDISPLAYLISTITEM *geometry = display->items + object->item_indices[material_index];
                             item[1] = geometry[-1];
                             item[2] = geometry[0];
-                            item[1].id = 3;
-                            item[2].id = 3;
+                            item[1].id = NUDLISTITEM_CALL;
+                            item[2].id = NUDLISTITEM_CALL;
                             record.producer_cursor[variant] += 3;
                         }
                     }
@@ -14120,14 +14120,14 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
                 NuDisplayListLinkItems(list, 1);
                 NUDISPLAYLISTITEM *item = list->items;
                 item->type = NUDLIST_MTL;
-                item->id = 3;
+                item->id = NUDLISTITEM_CALL;
                 item->next = scene->materials[0];
                 list->items = item + 1;
                 NUDISPLAYLIST *dlist = list;
                 dlist->mtl_last->next = record.producer_first[variant];
                 record.producer_cursor[variant]->type = NUDLIST_NEXT;
                 record.producer_cursor[variant]->next = dlist->dynamic_geometry + 1;
-                record.producer_cursor[variant]->id = 1;
+                record.producer_cursor[variant]->id = NUDLISTITEM_JUMP;
                 dlist->mtl_last = record.producer_cursor[variant];
             }
         }
@@ -16927,7 +16927,7 @@ void NuDynamicLight::resetGeometry() {
             set.shadow_lists[j].mtl_last = item;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
-            item->id = 1;
+            item->id = NUDLISTITEM_JUMP;
         }
     }
 }
@@ -17047,7 +17047,7 @@ nurndrlightrecord_s::nurndrlightrecord_s() {
         shadow_lists[i].first = item;
         item->type = NUDLIST_NEXT;
         item->next = NULL;
-        item->id = 1;
+        item->id = NUDLISTITEM_JUMP;
         shadow_lists[i].mtl_last = shadow_lists[i].first;
         shadow_lists[i].state = render_states[i];
         NuDisplayListResetStateCache(render_states[i]);
@@ -18461,7 +18461,7 @@ PC_SPECIAL_SHADOW_LIGHT *PC_SPECIAL_SHADOW_LIGHT::Clone(VARIPTR *arena, VARIPTR)
             set.shadow_lists[j].mtl_last = item;
             item->type = NUDLIST_NEXT;
             item->next = NULL;
-            item->id = 1;
+            item->id = NUDLISTITEM_JUMP;
         }
     }
     return copy;
@@ -18526,7 +18526,7 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderShadow(i32 index, PC_FRAMEBUFFER *) {
             NUDISPLAYLISTITEM *item = list.mtl_last;
             item->type = NUDLIST_TERMINATE;
             item->next = NULL;
-            item->id = 4;
+            item->id = NUDLISTITEM_END;
             NuDisplayHandlerZMode = 0;
             PCDeviceSetRenderState(D3DRS_ZENABLE, 1);
             PCDeviceSetRenderState(D3DRS_ZWRITEENABLE, 1);

@@ -1101,21 +1101,21 @@ void PC_DEVICE_BACKEND::CreateOrResetDevice(i32 reposition_window) {
     }
     creation_flags = 0;
     if (force_software == 0) {
-        creation_flags = 0x10;
+        creation_flags = D3DCREATE_PUREDEVICE;
     }
     if (multithreaded != 0) {
-        creation_flags |= 4;
+        creation_flags |= D3DCREATE_MULTITHREADED;
     }
     if (force_software == 0) {
         if (caps.vertex_shader_version >= 0xfffe0101) {
-            creation_flags |= 0x40;
-        } else if ((caps.device_caps & 0x10000) != 0) {
-            creation_flags |= 0x80;
+            creation_flags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
+        } else if ((caps.device_caps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) != 0) {
+            creation_flags |= D3DCREATE_MIXED_VERTEXPROCESSING;
         } else {
-            creation_flags |= 0x20;
+            creation_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
         }
     } else {
-        creation_flags |= 0x20;
+        creation_flags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
     }
     device_type = 1;
     adapter = 0;

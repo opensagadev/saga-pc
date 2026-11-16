@@ -1108,11 +1108,11 @@ i32 eduiMenuProcessInput(eduimenu_s *menu, f32 delta_time, FRAME_PAD *pad, i32 i
         }
     }
     if (menu->horizontal) {
-        down_button = 0x2000;
-        up_button = 0x8000;
+        down_button = PAD_BUTTON_RIGHT;
+        up_button = PAD_BUTTON_LEFT;
     } else {
-        down_button = 0x4000;
-        up_button = 0x1000;
+        down_button = PAD_BUTTON_DOWN;
+        up_button = PAD_BUTTON_UP;
     }
     if (pad->digital_buttons_pressed & up_button) {
         up_rept = 1.0f / 3.0f;

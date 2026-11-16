@@ -412,7 +412,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
             if (light == NULL || light->type == 0) {
                 break;
             }
-            if (!(light->flags & 1)) {
+            if (!(light->flags & RTL_LIGHT_FLAG_DISABLED)) {
                 switch (light->type) {
                     case RTL_LIGHT_AMBIENT:
                         if (position != NULL) {
@@ -443,7 +443,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                 (light->ambient.x != 0.0f || light->ambient.y != 0.0f || light->ambient.z != 0.0f)) {
                                 InsertLight(light, lighting_data, strength);
                             }
-                            if (position != NULL && (light->flags & 4)) {
+                            if (position != NULL && (light->flags & RTL_LIGHT_FLAG_HAS_SPECULAR)) {
                                 lighting_data->unknown_134.x += light->direction.x * strength;
                                 lighting_data->unknown_134.y += light->direction.y * strength;
                                 lighting_data->unknown_134.z += light->direction.z * strength;
@@ -457,7 +457,7 @@ static void rtlApplySetScaleLoop(void *set, RTL_DATA *lighting_data, NUVEC *posi
                                                                     (f32)((i32)(light->intensity) & 15) * rtlwob;
                                 }
                             }
-                            if (position != NULL && (light->flags & 2)) {
+                            if (position != NULL && (light->flags & RTL_LIGHT_FLAG_CAST_SHADOW)) {
                                 if (light != lighting_data->cached_light) {
                                     if (strength != 0.0f && lighting_data->cached_value < strength) {
                                         lighting_data->cached_light = light;
@@ -1535,9 +1535,9 @@ void edrtlDrawRTLInfo(void) {
         y += height;
         NuQFntPrintEx(system_qfont, x, y, 16, "MULTIPLIER: %.0f", curr_rtl->intensity);
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "CAST SHADOW: %s", (curr_rtl->flags & 2) ? "YES" : "NO");
+        NuQFntPrintEx(system_qfont, x, y, 16, "CAST SHADOW: %s", (curr_rtl->flags & RTL_LIGHT_FLAG_CAST_SHADOW) ? "YES" : "NO");
         y += height;
-        NuQFntPrintEx(system_qfont, x, y, 16, "SPECULAR: %s", (curr_rtl->flags & 4) ? "YES" : "NO");
+        NuQFntPrintEx(system_qfont, x, y, 16, "SPECULAR: %s", (curr_rtl->flags & RTL_LIGHT_FLAG_HAS_SPECULAR) ? "YES" : "NO");
         y += height;
         if (curr_rtl->unknown_68 != 0) {
             NuQFntPrintEx(system_qfont, x, y, 16, "USER ID: (%d)%s", curr_rtl->unknown_68, userid_names[curr_rtl->unknown_68]);
@@ -2510,13 +2510,13 @@ void edrtlcbDeleteNo(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
 
 void edrtlcbToggleCastShadow(eduimenu_s *menu, eduiitem_s *item, u32 flags) {
     u8 highlighted = item->highlighted;
-    curr_rtl->flags = (curr_rtl->flags & ~2u) | (highlighted << 1);
+    curr_rtl->flags = (curr_rtl->flags & ~RTL_LIGHT_FLAG_CAST_SHADOW) | (highlighted << 1);
 }
 
 void rtlCbToggleHasSpecular(struct eduimenu_s *menu, struct eduiitem_s *item, u32 buttons) {
     u8 highlighted = item->highlighted;
     RTL_LIGHT *light = curr_rtl;
-    light->flags = (light->flags & ~4u) | ((u32)highlighted << 2);
+    light->flags = (light->flags & ~RTL_LIGHT_FLAG_HAS_SPECULAR) | ((u32)highlighted << 2);
 }
 
 /* UI callbacks with three unused cdecl arguments. */
@@ -3617,7 +3617,7 @@ static i32 rtlCmp(RTL_LIGHT *first, RTL_LIGHT *second) {
     different |= first->parameters[2] == second->parameters[2] ? 0 : 1;
     different |= first->parameters[3] == second->parameters[3] ? 0 : 1;
     different |= first->type != second->type;
-    different |= (first->flags & 1) != (second->flags & 1);
+    different |= (first->flags & RTL_LIGHT_FLAG_DISABLED) != (second->flags & RTL_LIGHT_FLAG_DISABLED);
     different |= first->pitch != second->pitch;
     different |= first->yaw != second->yaw;
     different |= first->unknown_5e != second->unknown_5e;
@@ -3917,7 +3917,7 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD *pad) {
                     curr_rtl->secondary_colour.y = 0.5f;
                     curr_rtl->secondary_colour.z = 0.5f;
                     curr_rtl->type = RTL_LIGHT_POINT;
-                    curr_rtl->flags &= (u8)~1u;
+                    curr_rtl->flags &= (u8)~RTL_LIGHT_FLAG_DISABLED;
                     curr_rtl->unknown_5e = 0;
                     curr_rtl->unknown_60 = 0;
                     curr_rtl->parameters[0] = 0.1f;

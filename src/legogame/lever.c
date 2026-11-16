@@ -307,17 +307,17 @@ static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     lever = gizmo->object;
     if ((lever->flags & LEVER_FLAG_ENABLED) != 0) {
         switch (output) {
-            case 0:
+            case LEVER_OUTPUT_DOWN:
                 if (Lever_FullyPulledDown(lever) != 0) {
                     return 1;
                 }
                 break;
-            case 1:
+            case LEVER_OUTPUT_DOWN_GOODIE:
                 if ((lever->flags & LEVER_FLAG_GOODIE) != 0 && Lever_FullyPulledDown(lever) != 0) {
                     return 1;
                 }
                 break;
-            case 2:
+            case LEVER_OUTPUT_DOWN_BADDIE:
                 if ((lever->flags & LEVER_FLAG_BADDIE) != 0 && Lever_FullyPulledDown(lever) != 0) {
                     return 1;
                 }
@@ -330,11 +330,11 @@ static i32 Lever_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
 static char *Lever_GetOutputName(GIZMO *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
-        case 0:
+        case LEVER_OUTPUT_DOWN:
             return LeverOutputDownNamePtr;
-        case 1:
+        case LEVER_OUTPUT_DOWN_GOODIE:
             return "Down(Goodie)";
-        case 2:
+        case LEVER_OUTPUT_DOWN_BADDIE:
             return "Down(Baddie)";
     }
     return NULL;
@@ -597,7 +597,7 @@ ADDGIZMOTYPE *Levers_RegisterGizmo(i32 type_id) {
     LeversAddType = Default_ADDGIZMOTYPE;
     LeversAddType.name = LeverTypeNamePtr;
     LeversAddType.prefix = "";
-    LeversAddType.fns.options = 12;
+    LeversAddType.fns.options = sizeof(LEVER_PROGRESS);
     LeversAddType.fns.get_max_gizmos_fn = Levers_GetMaxGizmos;
     LeversAddType.fns.add_gizmos_fn = (void *)Levers_AddGizmos;
     LeversAddType.fns.early_update_fn = NULL;

@@ -195,10 +195,10 @@ i32 NuFileReadDir(NUFILE file, FILE_DIRECTORY_ENTRY *entry) {
 i32 FileDirectoryHostRead(i32 file, FILE_DIRECTORY_HOST_ENTRY *entry) {
     SYSTEMTIME time;
     u32 flags = 0x100;
-    if ((FileDirectoryFindData[file].dwFileAttributes & 1) != 0) {
+    if ((FileDirectoryFindData[file].dwFileAttributes & FILE_ATTRIBUTE_READONLY) != 0) {
         flags = 0x180;
     }
-    if ((FileDirectoryFindData[file].dwFileAttributes & 0x10) != 0) {
+    if ((FileDirectoryFindData[file].dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
         flags += 0x2000;
     }
     entry->flags = flags;
@@ -313,9 +313,9 @@ i32 NuFileGetInfo(char *path, AI_EDITOR_FILE_INFO *info) {
     u32 flags;
 
     GetFileAttributesExA(path, GetFileExInfoStandard, &attributes);
-    flags = (attributes.dwFileAttributes & 0x4000) | 0x400;
+    flags = (attributes.dwFileAttributes & FILE_ATTRIBUTE_ENCRYPTED) | 0x400;
     flags >>= 9;
-    flags |= attributes.dwFileAttributes & 0x10;
+    flags |= attributes.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
     flags >>= 1;
     flags |= ~(attributes.dwFileAttributes << 1) & 2;
     info->flags = flags;

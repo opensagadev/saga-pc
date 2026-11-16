@@ -83,7 +83,7 @@ i32 PC_INPUT_RUNTIME::ResolveAuxiliaryConflicts(i32 auxiliary_index, i32 bank_co
                     if (selected_binding->kind && selected_binding->value != 255 && first_binding->value == peer_binding->value &&
                         first_binding->kind == peer_binding->kind) {
                         first_binding->value = 0;
-                        first_binding->kind = 0;
+                        first_binding->kind = PC_BINDING_NONE;
                     }
                 }
             }
@@ -99,7 +99,7 @@ i32 PC_INPUT_RUNTIME::ResolveAuxiliaryConflicts(i32 auxiliary_index, i32 bank_co
                     if (selected_binding->kind && first_binding->value == peer_binding->value &&
                         first_binding->kind == peer_binding->kind) {
                         first_binding->value = 0;
-                        first_binding->kind = 0;
+                        first_binding->kind = PC_BINDING_NONE;
                     }
                 }
             }
@@ -108,7 +108,7 @@ i32 PC_INPUT_RUNTIME::ResolveAuxiliaryConflicts(i32 auxiliary_index, i32 bank_co
     for (i32 index = 0; PcInputActionOrder[index] >= 0; ++index) {
         i32 command = PcInputActionOrder[index];
         if ((PcInputCommandFilter == NULL || PcInputCommandFilter(auxiliary_ports[auxiliary_index], command)) &&
-            bindings[command].kind == 0) {
+            bindings[command].kind == PC_BINDING_NONE) {
             missing = 1;
             break;
         }
@@ -498,18 +498,18 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
     u32 pixel = PCDeviceBackend.caps.pixel_shader_version;
     PcCapsConfigured = 1;
     if (vertex >= 0xfffe0101 && pixel >= 0xffff0101) {
-        PCDeviceHardwareVertexProcessingPC = 1;
+        PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_1_1;
     }
     if (vertex >= 0xfffe0200) {
         if (pixel >= 0xffff0200) {
-            PCDeviceHardwareVertexProcessingPC = 2;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_2_0;
         }
         if (vertex > 0xfffe0200 && pixel > 0xffff0200) {
-            PCDeviceHardwareVertexProcessingPC = 3;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_2_X;
         }
     }
     if (vertex >= 0xfffe0300 && pixel >= 0xffff0300) {
-        PCDeviceHardwareVertexProcessingPC = 4;
+        PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_3_0;
     }
     u32 device = PCDeviceBackend.identifier.device_id;
     u32 vendor = PCDeviceBackend.identifier.vendor;
@@ -517,10 +517,10 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
     if (!original_class) {
         if (pixel >= 0xffff0100) {
             PCDeviceBackend.force_software = 1;
-            PCDeviceHardwareVertexProcessingPC = 1;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_1_1;
         } else if (vendor == 0x8086) {
             PCDeviceBackend.force_software = 1;
-            PCDeviceHardwareVertexProcessingPC = 1;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_1_1;
             if (device == 0x2572 || device == 0x3582 || device == 0x2562 || device == 0x3577) {
                 PcIntelShaderFallback = 1;
             }
@@ -540,24 +540,24 @@ extern "C" i32 PcConfigureInputGraphicsCaps() {
             case 0x343:
             case 0x344:
                 if (original_class > 1) {
-                    PCDeviceHardwareVertexProcessingPC = 1;
+                    PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_1_1;
                 }
                 break;
         }
     } else if (vendor == 0x8086) {
         if (device == 0x2582 || device == 0x2772 || device == 0x29b2) {
-            PCDeviceHardwareVertexProcessingPC = 1;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_1_1;
         }
     }
     switch (PcWindowOptions.forceshadermodel) {
         case 1:
-            PCDeviceHardwareVertexProcessingPC = 1;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_1_1;
             break;
         case 2:
-            PCDeviceHardwareVertexProcessingPC = 2;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_2_0;
             break;
         case 3:
-            PCDeviceHardwareVertexProcessingPC = 4;
+            PCDeviceHardwareVertexProcessingPC = PC_SHADER_MODEL_3_0;
             break;
     }
     if (!original_class) {
@@ -1001,15 +1001,15 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
         if (index >= 0) {
             i32 value;
             switch (binding->kind) {
-                case 4:
+                case PC_BINDING_MOUSE_BUTTON:
                     pressed = motion->buttons[index];
                     break;
-                case 5:
-                case 6:
+                case PC_BINDING_MOUSE_AXIS:
+                case PC_BINDING_MOUSE_AXIS_REVERSED:
                     if (valid) {
                         if (PcMouseAxisModes[index] == 0) {
                             value = (i32)motion->delta[index];
-                            if (binding->kind == 6) {
+                            if (binding->kind == PC_BINDING_MOUSE_AXIS_REVERSED) {
                                 value = -value;
                             }
                             pressed = value > 0;
@@ -1043,7 +1043,7 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
                                 }
                             }
                             value = (i32)motion->accumulated[index];
-                            if (binding->kind == 6) {
+                            if (binding->kind == PC_BINDING_MOUSE_AXIS_REVERSED) {
                                 value = -value;
                             }
                             if (value >= 32) {
@@ -1068,21 +1068,21 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
                         digital = 0;
                     }
                     break;
-                case 7:
+                case PC_BINDING_KEY:
                     if (!suppress_key_1 || index != 1) {
                         pressed = (*keys)[index];
                     }
                     break;
-                case 1:
+                case PC_BINDING_JOYSTICK_BUTTON:
                     if (valid) {
                         pressed = raw->buttons[index];
                     }
                     break;
-                case 2:
-                case 3:
+                case PC_BINDING_JOYSTICK_AXIS:
+                case PC_BINDING_JOYSTICK_AXIS_REVERSED:
                     if (valid) {
                         value = raw->axes[index];
-                        if (binding->kind == 3) {
+                        if (binding->kind == PC_BINDING_JOYSTICK_AXIS_REVERSED) {
                             value = -value;
                         }
                         if (value > 32767) {
@@ -1522,9 +1522,9 @@ extern "C" void PcInput_SetStringUCGfxRemapFn(void (*callback)(i32, char *)) {
 
 i32 PC_INPUT_RUNTIME::fun_006d4de0(i32 port, i32 action, i32 auxiliary, i32 bank) {
     if (auxiliary) {
-        return auxiliary_bindings[bank][action].kind != 0;
+        return auxiliary_bindings[bank][action].kind != PC_BINDING_NONE;
     }
-    return devices[port].bindings[action].kind != 0;
+    return devices[port].bindings[action].kind != PC_BINDING_NONE;
 }
 
 extern "C" i32 fun_006d5d40(i32 port, i32 kind, i32 value) {
@@ -1609,7 +1609,7 @@ extern "C" void fun_006d5e40(u32 *buttons, u32 *axes, i32 bank) {
         i32 axis;
         i32 button;
         if (runtime->fun_006d4ef0(action, &active, &axis, &button, NULL) && active != 0 &&
-            runtime->auxiliary_bindings[bank][action].kind != 0) {
+            runtime->auxiliary_bindings[bank][action].kind != PC_BINDING_NONE) {
             if (button >= 0) {
                 button_mask |= 1 << button;
             }
@@ -1628,7 +1628,7 @@ extern "C" u32 fun_006d5ed0(i32 bank) {
     for (i32 action = 0; action < 32; ++action) {
         i32 active;
         if (runtime->fun_006d4ef0(action, &active, NULL, NULL, NULL) && active != 0 &&
-            runtime->auxiliary_bindings[bank][action].kind != 0) {
+            runtime->auxiliary_bindings[bank][action].kind != PC_BINDING_NONE) {
             mask |= 1 << action;
         }
     }
@@ -1753,8 +1753,8 @@ extern "C" void PcInputInstallConfig(PC_INPUT_CONFIG *config, i32 port, i32 key,
 }
 
 extern "C" i32 PcInputBindingPresent(i32 port, i32 action, i32 auxiliary, i32 bank) {
-    return auxiliary ? ((PC_INPUT_RUNTIME *)nu_input_state)->auxiliary_bindings[bank][action].kind != 0
-                     : ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].bindings[action].kind != 0;
+    return auxiliary ? ((PC_INPUT_RUNTIME *)nu_input_state)->auxiliary_bindings[bank][action].kind != PC_BINDING_NONE
+                     : ((PC_INPUT_RUNTIME *)nu_input_state)->devices[port].bindings[action].kind != PC_BINDING_NONE;
 }
 
 extern "C" PC_INPUT_CONFIG *PcInputFindConfig(u8 mask, i32 port, i32 key) {
@@ -1774,7 +1774,7 @@ i32 PC_INPUT_RUNTIME::BindingAvailable(i32 bank, i32 bank_count, i32 kind, i32 v
     if (port < 10 || port > 13) {
         return 1;
     }
-    if (kind == 7) {
+    if (kind == PC_BINDING_KEY) {
         key = blocked_keys;
         while ((blocked = *key++) != 0) {
             if (value == blocked) {
@@ -1831,7 +1831,7 @@ void PC_INPUT_RUNTIME::ClearOtherBankConflicts(i32 bank, i32 bank_count) {
                 for (action = 0; action < 32; ++action) {
                     if (source[action].value == target[action].value && source[action].kind == target[action].kind) {
                         target[action].value = 0;
-                        target[action].kind = 0;
+                        target[action].kind = PC_BINDING_NONE;
                     }
                 }
             }
@@ -1951,12 +1951,12 @@ void PC_INPUT_RUNTIME::AssignBinding(i32 action, i32 port, i32 kind, i32 value, 
     i32 active = commands[action].active;
     i32 positive;
     i32 negative;
-    if (kind == 5 || kind == 6) {
-        positive = 5;
-        negative = 6;
+    if (kind == PC_BINDING_MOUSE_AXIS || kind == PC_BINDING_MOUSE_AXIS_REVERSED) {
+        positive = PC_BINDING_MOUSE_AXIS;
+        negative = PC_BINDING_MOUSE_AXIS_REVERSED;
     } else {
-        positive = 2;
-        negative = 3;
+        positive = PC_BINDING_JOYSTICK_AXIS;
+        negative = PC_BINDING_JOYSTICK_AXIS_REVERSED;
     }
     if (!(PcInputAxisRemapInitialized & 1)) {
         PcInputAxisRemapInitialized |= 1;
@@ -1970,7 +1970,7 @@ void PC_INPUT_RUNTIME::AssignBinding(i32 action, i32 port, i32 kind, i32 value, 
     if (kind != positive && kind != negative) {
         for (i32 i = 0; i < 32; ++i) {
             if (bindings[i].kind == kind && bindings[i].value == value && !(excluded & (1u << i))) {
-                bindings[i].kind = 0;
+                bindings[i].kind = PC_BINDING_NONE;
                 bindings[i].value = 0;
             }
         }
@@ -2013,7 +2013,7 @@ void PC_INPUT_RUNTIME::AssignBinding(i32 action, i32 port, i32 kind, i32 value, 
     }
     for (i32 i = 0; i < 32; ++i) {
         if ((bindings[i].kind == positive || bindings[i].kind == negative) && bindings[i].value == value && !(excluded & (1u << i))) {
-            bindings[i].kind = 0;
+            bindings[i].kind = PC_BINDING_NONE;
             bindings[i].value = 0;
         }
     }
@@ -2101,34 +2101,35 @@ void PC_INPUT_RUNTIME::ExportConfig(i32 port, PC_INPUT_CONFIG *config, i32 auxil
                 u8 value = (u8)bindings[action].value;
                 triplet[1] = value;
                 triplet[2] = value;
-            } else if (kind == 2 || kind == 3) {
+            } else if (kind == PC_BINDING_JOYSTICK_AXIS || kind == PC_BINDING_JOYSTICK_AXIS_REVERSED) {
                 triplet[1] = (u8)bindings[action].value;
                 triplet[2] = (u8)bindings[action].value;
                 if (active == 3) {
                     triplet[0] = (u8)kind;
-                } else if ((active == 2 && kind == 2) || (active == 1 && kind == 3)) {
+                } else if ((active == 2 && kind == PC_BINDING_JOYSTICK_AXIS) ||
+                           (active == 1 && kind == PC_BINDING_JOYSTICK_AXIS_REVERSED)) {
                     triplet[0] = 2;
                 } else {
                     triplet[0] = 3;
                 }
-            } else if (kind == 5 || kind == 6) {
+            } else if (kind == PC_BINDING_MOUSE_AXIS || kind == PC_BINDING_MOUSE_AXIS_REVERSED) {
                 triplet[1] = (u8)bindings[action].value;
                 triplet[2] = (u8)bindings[action].value;
                 if (active == 3) {
                     triplet[0] = (u8)kind;
-                } else if ((active == 2 && kind == 5) || (active == 1 && kind == 6)) {
+                } else if ((active == 2 && kind == PC_BINDING_MOUSE_AXIS) || (active == 1 && kind == PC_BINDING_MOUSE_AXIS_REVERSED)) {
                     triplet[0] = 5;
                 } else {
                     triplet[0] = 6;
                 }
-            } else if (kind == 1) {
+            } else if (kind == PC_BINDING_JOYSTICK_BUTTON) {
                 triplet[0] = 11;
                 if (active == 2 || active == 3) {
                     triplet[2] = (u8)bindings[action].value;
                 } else {
                     triplet[1] = (u8)bindings[action].value;
                 }
-            } else if (kind == 7) {
+            } else if (kind == PC_BINDING_KEY) {
                 triplet[0] = 10;
                 if (active == 2 || active == 3) {
                     triplet[2] = (u8)bindings[action].value;

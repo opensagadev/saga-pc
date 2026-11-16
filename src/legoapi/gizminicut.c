@@ -80,12 +80,12 @@ static i32 GizMiniCut_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     }
     cut = gizmo->object;
     switch (output) {
-        case 0:
+        case MINICUT_OUTPUT_PLAYED:
             if (MiniCutCam == 0) {
                 return cut->played;
             }
             break;
-        case 1:
+        case MINICUT_OUTPUT_PLAYING:
             return cut->played;
     }
     return 0;
@@ -94,9 +94,9 @@ static i32 GizMiniCut_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
 static const char *GizMiniCut_GetOutputName(GIZMO *gizmo, i32 output) {
     (void)gizmo;
     switch (output) {
-        case 0:
+        case MINICUT_OUTPUT_PLAYED:
             return "Played";
-        case 1:
+        case MINICUT_OUTPUT_PLAYING:
             return "Playing";
     }
     return "Unknown!";

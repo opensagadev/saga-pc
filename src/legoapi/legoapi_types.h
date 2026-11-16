@@ -1287,6 +1287,13 @@ typedef struct gizobstacle_s {              // size 0xa0
 #define OBSTACLE_TECHNO_CONTROLLED 0x4 /* GizObstacle_SetTechnoControlled */
 #define OBSTACLE_PUSH_CONTROLLED 0x8   /* GizObstacle_SetPushControlled */
 
+/* GizmoObstacle_GetOutput outputs, named after GizmoObstacle_GetOutputName. */
+#define OBSTACLE_OUTPUT_AT_END 0
+#define OBSTACLE_OUTPUT_NOT_AT_START 1
+#define OBSTACLE_OUTPUT_PROXIMITY 2
+#define OBSTACLE_OUTPUT_AT_START 3
+#define OBSTACLE_OUTPUT_PLAYING_FORWARD 4
+
 typedef void (*PICKUP_COLLECT_FN)(struct WORLDINFO_s *, struct GIZMOPICKUP *, i32, struct gameobject_s *, i32);
 
 typedef struct GIZMO_PICKUP_TYPE { // size 0x38
@@ -1777,6 +1784,11 @@ struct STATUS_STAGE_s {                                                         
 #define TURRET_FLAG_RAPID_FIRE_PENDING 0x40
 #define TURRET_FLAG_FIRED_THIS_FRAME 0x80
 #define TURRET_FLAG_BLOWUP_PENDING 0x100
+
+/* GizmoTurret_GetOutput outputs, named after GizmoTurret_GetOutputName. */
+#define TURRET_OUTPUT_DESTROYED 0
+#define TURRET_OUTPUT_FIRED 1
+#define TURRET_OUTPUT_FIRED_SHOTS 2 /* "Fired %d Shots" */
 #define TURRET_FLAG_HAS_PLATFORM 0x200
 #define TURRET_FLAG_REWARD_RELEASED 0x400
 #define TURRET_FLAG_ROTATION_SOUND_PLAYING 0x800
@@ -1884,6 +1896,10 @@ struct GIZSPECIAL_s {               // size 0x28
 
     u8 unknown_25[3]; // 0x25
 };
+
+/* GIZSPECIAL_s.flags, the bitfields */
+#define GIZSPECIAL_REVERSED 0x1
+#define GIZSPECIAL_ACTIVE 0x2
 
 struct GIZOBSTACLESYS_s {                // size 0x14
     struct gizobstacle_s *obstacles;     // 0x00

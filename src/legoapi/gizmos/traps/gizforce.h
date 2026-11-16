@@ -58,6 +58,22 @@ typedef struct gizforcegroup_s { // size 0x28
     u8 configured_count; // 0x27
 } GIZFORCEGROUP;
 
+/* GIZFORCEGROUP.runtime_flags: the stack outputs of GizmoForce_GetOutput ("StackComplete", "StackCompleteInOrder")
+ * and a stacked member that moves this frame. */
+#define GIZFORCEGROUP_MOVING 0x1
+#define GIZFORCEGROUP_COMPLETE 0x2
+#define GIZFORCEGROUP_COMPLETE_IN_ORDER 0x4
+
+/* GizmoForce_GetOutput outputs, named after GizmoForce_GetOutputName. */
+#define GIZFORCE_OUTPUT_AT_END 0
+#define GIZFORCE_OUTPUT_NOT_AT_START 1
+#define GIZFORCE_OUTPUT_AT_START 2
+#define GIZFORCE_OUTPUT_STACK_COMPLETE 3
+#define GIZFORCE_OUTPUT_STACK_COMPLETE_IN_ORDER 4
+#define GIZFORCE_OUTPUT_DESTROYED 5 /* "Destroyed/Thrown" */
+#define GIZFORCE_OUTPUT_COMPLETE 6
+#define GIZFORCE_OUTPUT_BEING_USED 7
+
 typedef struct gizforcesys_s {           // size 0x158
     struct gizforce_s *forces;           // 0x000
     struct gizforce_s **visible_forces;  // 0x004

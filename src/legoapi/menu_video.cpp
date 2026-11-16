@@ -129,7 +129,7 @@ extern "C" void MenuUpdateVideo(MENU *menu) {
         return;
     }
     switch (menu->selected_row) {
-        case 0:
+        case MENU_VIDEO_ROW_RESOLUTION:
             if (menu->right_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
                 PCDeviceBackend.NextResolution();
@@ -138,7 +138,7 @@ extern "C" void MenuUpdateVideo(MENU *menu) {
                 PCDeviceBackend.PreviousResolution();
             }
             break;
-        case 1:
+        case MENU_VIDEO_ROW_REFRESH:
             if (menu->right_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
                 PCDeviceBackend.NextRefresh();
@@ -147,7 +147,7 @@ extern "C" void MenuUpdateVideo(MENU *menu) {
                 PCDeviceBackend.PreviousRefresh();
             }
             break;
-        case 2:
+        case MENU_VIDEO_ROW_ASPECT:
             if (menu->right_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
                 if (++MenuVideoOptions.aspect_mode > 3) {
@@ -160,7 +160,7 @@ extern "C" void MenuUpdateVideo(MENU *menu) {
                 }
             }
             break;
-        case 3:
+        case MENU_VIDEO_ROW_HIRES:
             if (menu->right_pressed || menu->left_pressed || menu->confirm_pressed) {
                 if (!PcWindowOptions.option459) {
                     MenuSFX = MENUSFX_MENUNOENTRY;
@@ -170,7 +170,7 @@ extern "C" void MenuUpdateVideo(MENU *menu) {
                 }
             }
             break;
-        case 4:
+        case MENU_VIDEO_ROW_APPLY:
             if (menu->confirm_pressed) {
                 MenuApplyVideo();
             }
@@ -184,7 +184,7 @@ extern "C" void MenuUpdateEffects(MENU *menu) {
         return;
     }
     switch (menu->selected_row) {
-        case 0:
+        case MENU_EFFECTS_ROW_MULTISAMPLE:
             if (menu->right_pressed || menu->left_pressed) {
                 if (PcWindowOptions.usehires) {
                     MenuSFX = MENUSFX_MENUNOENTRY;
@@ -216,7 +216,7 @@ extern "C" void MenuUpdateEffects(MENU *menu) {
                 PCDeviceBackend.requested_multisample = index;
             }
             break;
-        case 1:
+        case MENU_EFFECTS_ROW_SHADOWS:
             if (menu->right_pressed || menu->left_pressed || menu->confirm_pressed) {
                 if (!MenuCanChangeShadows()) {
                     MenuSFX = MENUSFX_MENUNOENTRY;
@@ -226,19 +226,19 @@ extern "C" void MenuUpdateEffects(MENU *menu) {
                 MenuVideoOptions.shadows_enabled = 1 - MenuVideoOptions.shadows_enabled;
             }
             break;
-        case 2:
+        case MENU_EFFECTS_ROW_BLOOM:
             if (menu->right_pressed || menu->left_pressed || menu->confirm_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
                 MenuVideoOptions.bloom_enabled = 1 - MenuVideoOptions.bloom_enabled;
             }
             break;
-        case 3:
+        case MENU_EFFECTS_ROW_SPEED_BLUR:
             if (menu->right_pressed || menu->left_pressed || menu->confirm_pressed) {
                 MenuSFX = MENUSFX_MENUMOVE;
                 MenuVideoOptions.speed_blur_enabled = 1 - MenuVideoOptions.speed_blur_enabled;
             }
             break;
-        case 4:
+        case MENU_EFFECTS_ROW_APPLY:
             if (menu->confirm_pressed) {
                 MenuApplyVideo();
             }

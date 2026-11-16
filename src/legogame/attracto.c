@@ -630,7 +630,7 @@ void Attracto_MoveCode(WORLDINFO *world, GAMEOBJECT *object) {
                 if (ParticlesPerSecond(3.0f, FRAMETIME) > 0) {
                     Shard_Collect((SHARD_s *)nearest, object);
                 } else {
-                    nearest->flags |= 0x20;
+                    nearest->flags |= SHARD_RANDOM_OFFSET;
                     NewRumble(object->pad->bound_pad, (f64)qrand() * (f64)(1.0f / 65535.0f) * (f64)0.4f, 0);
                 }
             }

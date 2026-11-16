@@ -2377,15 +2377,15 @@ void EdDrawBegin(i32 index) {
         NuMtlUpdate(EdDrawMtl[1]);
     }
     NewMtl = index;
-    NewPrim = 1;
+    NewPrim = EDDRAW_PRIM_PENDING;
 }
 
 void EdDrawEnd(void) {
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
 }
 
@@ -2399,9 +2399,9 @@ void EdDrawLineSegment(NUVEC *a, NUVEC *b, i32 colour) {
     // MATCH-EXCEPTION: as in EdDrawPolyTri, a copy of colour frees its
     // parameter slot for the vertex temporaries.
     i32 vertex_colour = colour;
-    if (NewPrim == 1) {
+    if (NewPrim == EDDRAW_PRIM_PENDING) {
         NuPrim3DBegin(0xe, 5, EdDrawMtl[NewMtl], NewMtx);
-        NewPrim = 2;
+        NewPrim = EDDRAW_PRIM_LINES;
     }
     EdDrawSetVertexColour(vertex_colour);
     EdDrawAddXYZ(a->x, a->y, a->z);
@@ -2555,9 +2555,9 @@ void EdDrawPolyTri(NUVEC *a, NUVEC *b, NUVEC *c, i32 colour) {
     // MATCH-EXCEPTION: a copy of colour frees its parameter slot, which the
     // original reuses for the vertex temporaries; no other source form found.
     i32 vertex_colour = colour;
-    if (NewPrim == 1) {
+    if (NewPrim == EDDRAW_PRIM_PENDING) {
         NuPrim3DBegin(0xc, 5, EdDrawMtl[NewMtl], NewMtx);
-        NewPrim = 3;
+        NewPrim = EDDRAW_PRIM_TRIANGLES;
     }
     EdDrawSetVertexColour(vertex_colour);
     EdDrawAddXYZ(a->x, a->y, a->z);
@@ -3170,11 +3170,11 @@ void LevelEditor::Display(ThingRenderData *) {
             edcamSet();
             EdDrawBegin(0);
             EdDrawLineCross(reinterpret_cast<NUVEC *>(background_colour), 1.0f, 0xff000000);
-            if (NewPrim != 0) {
-                if (NewPrim == 2 || NewPrim == 3) {
+            if (NewPrim != EDDRAW_PRIM_NONE) {
+                if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
                     NuPrim3DEnd();
                 }
-                NewPrim = 0;
+                NewPrim = EDDRAW_PRIM_NONE;
             }
         }
         if (active_editor != NULL) {
@@ -3234,20 +3234,20 @@ void EdManipulator::DrawRotator(VuVec &origin) {
     EdDrawLineCircleX(&origin.xyz, radius, attribute_selected ? AxisColour[1] : 0xff808080, 32);
     EdDrawLineCircleY(&origin.xyz, radius, attribute_selected ? AxisColour[2] : 0xff808080, 32);
     EdDrawLineCircleZ(&origin.xyz, radius, attribute_selected ? AxisColour[3] : 0xff808080, 32);
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
     if (start_angle != last_angle && selected_axis != 0) {
         EdDrawBegin(1);
         EdDrawPolySector(&origin.xyz, radius, selected_axis - 1, start_angle, last_angle, 0x80808080, 32);
-        if (NewPrim != 0) {
-            if (NewPrim == 2 || NewPrim == 3) {
+        if (NewPrim != EDDRAW_PRIM_NONE) {
+            if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
                 NuPrim3DEnd();
             }
-            NewPrim = 0;
+            NewPrim = EDDRAW_PRIM_NONE;
         }
     }
 }
@@ -4559,11 +4559,11 @@ void KnotHelper::Render(void *object, i32) {
     }
     EdDrawLineSegment(&knot->position.xyz, &knot->in_tangent.xyz, -1);
     EdDrawLineSegment(&knot->position.xyz, &knot->out_tangent.xyz, -1);
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
 }
 
@@ -5393,8 +5393,8 @@ void EdInputContext::Update(NUCAMERA *camera, FRAME_PAD *new_pad, f32 elapsed, b
         if (!edGetPadDisabled()) {
             if (eduiGetActiveMenu() == NULL) {
                 u32 buttons = pad->digital_buttons;
-                square = buttons & 0x80;
-                Set(38, static_cast<f32>(static_cast<i32>(buttons & 0x40)), elapsed);
+                square = buttons & PAD_BUTTON_SQUARE;
+                Set(38, static_cast<f32>(static_cast<i32>(buttons & PAD_BUTTON_CROSS)), elapsed);
             }
             right_click = NuMouseReadButtons() == 2 || (pad->digital_buttons & PAD_BUTTON_CIRCLE);
         } else {
@@ -5840,11 +5840,11 @@ void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
     box.matrix.m32 = points[7].z;
     box.matrix.m33 = 1.0f;
     EdDrawLineCube(&box.matrix, ManipulatorBoxSize * Scale, attribute_selected ? AxisColour[7] : 0xff808080);
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
     EdDrawBegin(0);
     f32 size = ManipulatorHandleRadius * Scale;
@@ -5864,11 +5864,11 @@ void EdManipulator::DrawAxis(VuVec &origin, VuMtx *matrix) {
     VuVecCopy(start, points[3] - offset * 0.5f);
     VuVecCopy(end, points[3] + offset * 0.5f);
     EdDrawPolyArrow(&start.xyz, &end.xyz, 8, attribute_selected ? AxisColour[3] : 0xff808080, radius, radius, 0.2f, 0.0f);
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
 }
 
@@ -6812,11 +6812,11 @@ void SplineObject::Draw(i32 selected, i32 straight, i32 show_points, f32) {
     if (show_points != 0 && step > SplineMinStep) {
         points.Draw();
     }
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
 }
 
@@ -7639,11 +7639,11 @@ void ClassEditor::DrawObjectSphere(ClassObject &selected, i32 colour) {
         EdDrawBegin(0);
         EdDrawLineSphere(&position.xyz, radius, 1.0f, colour);
     }
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
 }
 
@@ -8979,11 +8979,11 @@ void PropertyTool::RenderMenu(PropertyMenu *property_menu) {
     property_menu->objects[0].GetAttributeData(8, EdType_VuVec, &end, 0);
     EdDrawBegin(0);
     EdDrawLineSegment((NUVEC *)&start, (NUVEC *)&end, (i32)&selected_attr);
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
     if (property_menu->menu != NULL) {
         eduiMenuRender(menu);
@@ -10981,11 +10981,11 @@ i32 CursorTool::Process(EdInputContext &input) {
     i32 colour = NuRandInt();
     EdDrawBegin(0);
     EdDrawLineSegment(&input.ray_start.xyz, &end.xyz, colour);
-    if (NewPrim != 0) {
-        if (NewPrim == 2 || NewPrim == 3) {
+    if (NewPrim != EDDRAW_PRIM_NONE) {
+        if (NewPrim == EDDRAW_PRIM_LINES || NewPrim == EDDRAW_PRIM_TRIANGLES) {
             NuPrim3DEnd();
         }
-        NewPrim = 0;
+        NewPrim = EDDRAW_PRIM_NONE;
     }
     if (theLevelEditor.unknown_30 == 0) {
         return 0;
