@@ -111,7 +111,7 @@ void Areas_ConfigureResidents(VARIPTR *buffer, VARIPTR *buffer_end) {
             }
 
             if (area->hub_player_ids == NULL) {
-                area->hub_player_ids = (i16 *)buffer->void_ptr;
+                area->hub_player_ids = buffer->i16_ptr;
             }
             area->hub_player_ids[resident_count] = (i16)character_id;
             ++resident_count;

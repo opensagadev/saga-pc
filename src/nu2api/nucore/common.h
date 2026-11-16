@@ -61,9 +61,18 @@ typedef u32 usize;
 #define ALIGN_UP(value, alignment) (((value) + (alignment) - 1) & ~((alignment) - 1u))
 #endif
 
+/* A cursor through a load, packet or primitive stream buffer, viewed as whatever the next record is. */
 typedef union variptr_u { // size 0x4
     void *void_ptr;
     char *char_ptr;
+    u8 *u8_ptr;
+    i16 *i16_ptr;
+    i32 *i32_ptr;
+    u32 *u32_ptr;
+    f32 *f32_ptr;
+    struct numtx_s *mtx_ptr;               // packet matrices
+    struct nulgtvertex_s *vertex_ptr;      // NuPrim stream vertices
+    struct nudisplaylistitem_s *dlist_ptr; // display list stream items
     u32 addr;
 } VARIPTR;
 

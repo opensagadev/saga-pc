@@ -17,10 +17,10 @@ extern "C" {
         f32 position_x = (source).x;                                                                                                       \
         f32 position_y = (source).y;                                                                                                       \
         f32 position_z = (source).z;                                                                                                       \
-        ((OCCLUDER_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = position_x;                                                     \
-        ((OCCLUDER_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = position_y;                                                     \
-        ((OCCLUDER_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = position_z;                                                     \
-        NuPrimStreamBufferPointer->addr += sizeof(OCCLUDER_PRIM_VERTEX);                                                                   \
+        NuPrimStreamBufferPointer->vertex_ptr->x = position_x;                                                                             \
+        NuPrimStreamBufferPointer->vertex_ptr->y = position_y;                                                                             \
+        NuPrimStreamBufferPointer->vertex_ptr->z = position_z;                                                                             \
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);                                                                            \
         ++NuPrimVertexCount;                                                                                                               \
     } while (0)
 

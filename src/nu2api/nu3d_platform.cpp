@@ -1457,15 +1457,6 @@ extern "C" {
     typedef struct screengrab_tile_params_s SCREENGRAB_TILE_PARAMS;
     PC_BUFFER_RESOURCE *NuWaterVertexBuffer = 0;
 
-    typedef struct nuprimvertex_s { // size 0x18
-        f32 x;                      // 0x00
-        f32 y;                      // 0x04
-        f32 z;                      // 0x08
-        u32 colour;                 // 0x0c
-        f32 u;                      // 0x10
-        f32 v;                      // 0x14
-    } NUPRIMVERTEX;
-
     typedef struct nuprim_packet_s { // size 0x38
         u32 primitive_type;          // 0x00
         u8 unknown_0004[0x14];       // 0x04
@@ -1498,7 +1489,6 @@ extern "C" {
         NUMTX specular_mtx;                // 0x70
         NUVEC specular_colour;             // 0xb0
     } NUPRIM_LIGHT_PACKET;
-
 
     typedef struct AMBIENT_SPECULAR_RENDER_VIEW { // size 0x90
         u8 unknown_00[0x8c];                      // 0x00
@@ -1546,11 +1536,11 @@ extern "C" {
         } else {
             converted = ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
         }
-        ((NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+        NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
     }
 
     void fun_005f7840(f32 u, f32 v) {
-        NULGTVERTEX *vertex = (NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        NULGTVERTEX *vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = u;
         vertex->v = v;
     }
@@ -3042,7 +3032,7 @@ extern "C" {
         buffer->addr += font->glyph_count * sizeof(VUFNTCHAR);
         memcpy(font->glyphs, glyphs, font->glyph_count * sizeof(VUFNTCHAR));
         for (size = font->glyph_count * sizeof(VUFNTCHAR); size & 15; size += 4) {
-            *(u32 *)buffer->void_ptr = 0;
+            *buffer->u32_ptr = 0;
             buffer->addr += 4;
         }
 
@@ -3614,7 +3604,7 @@ extern "C" {
         f32 *packet;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
-        packet = (f32 *)cursor->void_ptr;
+        packet = cursor->f32_ptr;
         if (state->state_00f4 != 0) {
             *packet = state->state_00f8;
         } else {
@@ -3629,7 +3619,7 @@ extern "C" {
         u32 *packet;
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
-        packet = (u32 *)cursor->void_ptr;
+        packet = cursor->u32_ptr;
         *packet = state->reflection_state;
         cursor->addr += sizeof(*packet);
         return packet;
@@ -3642,18 +3632,18 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
         packet = cursor->void_ptr;
-        *(u32 *)cursor->void_ptr = state->fog_state_word;
+        *cursor->u32_ptr = state->fog_state_word;
         cursor->addr += sizeof(u32);
         if (state->fog_state_word != 0) {
-            *(u32 *)cursor->void_ptr = state->fog_pointer_0178;
+            *cursor->u32_ptr = state->fog_pointer_0178;
             cursor->addr += sizeof(u32);
-            field = (f32 *)cursor->void_ptr;
+            field = cursor->f32_ptr;
             *field = state->fog_value_0170;
             cursor->void_ptr = field + 1;
-            field = (f32 *)cursor->void_ptr;
+            field = cursor->f32_ptr;
             *field = state->fog_value_0174;
             cursor->void_ptr = field + 1;
-            field = (f32 *)cursor->void_ptr;
+            field = cursor->f32_ptr;
             *field = state->fog_value_017c;
             cursor->void_ptr = field + 1;
         }
@@ -3670,12 +3660,12 @@ extern "C" {
         if (NuPrimVertexGroupSource != NULL) {
             NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
             cursor = NuDisplayListStreamCursor;
-            packet = (u32 *)cursor->void_ptr;
+            packet = cursor->u32_ptr;
             *packet = NuPrimVertexGroupSource->count;
             cursor->addr += sizeof(u32);
-            *(u32 *)cursor->void_ptr = NuPrimVertexGroupSource->flags;
+            *cursor->u32_ptr = NuPrimVertexGroupSource->flags;
             cursor->addr += sizeof(u32);
-            output = (f32 *)cursor->void_ptr;
+            output = cursor->f32_ptr;
             cursor->addr += ((NuPrimVertexGroupSource->count + 3) / 4) * 0x10;
             values = NuPrimVertexGroupSource->values;
             for (i = 0; i < NuPrimVertexGroupSource->count; ++i) {
@@ -3692,7 +3682,7 @@ extern "C" {
         if (nuspecial_vertex_noffsets > 0) {
             NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
             cursor = NuDisplayListStreamCursor;
-            packet = (i32 *)cursor->void_ptr;
+            packet = cursor->i32_ptr;
             *packet = nuspecial_vertex_noffsets;
             cursor->addr += 4;
             PCByteCopy(cursor->void_ptr, nuspecial_vertex_offsets, nuspecial_vertex_noffsets * 16);
@@ -4684,15 +4674,15 @@ extern "C" {
     }
 
     void NuPrim2DAddXYZ(f32 x, f32 y, f32 z) {
-        ((NUPRIMVERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = NuPrimXScale * x + NuPrimXBias;
-        ((NUPRIMVERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = NuPrimYScale * y + NuPrimYBias;
-        ((NUPRIMVERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z;
-        NuPrimStreamBufferPointer->addr += sizeof(NUPRIMVERTEX);
+        NuPrimStreamBufferPointer->vertex_ptr->x = NuPrimXScale * x + NuPrimXBias;
+        NuPrimStreamBufferPointer->vertex_ptr->y = NuPrimYScale * y + NuPrimYBias;
+        NuPrimStreamBufferPointer->vertex_ptr->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
         NuPrimVertexCount++;
 
         if (NuPrimCurrentPrimitiveType == 0x10 && (NuPrimVertexCount & 1) == 0) {
             /* Expand the two sprite corners just written into two triangles. */
-            NUPRIMVERTEX *next = (NUPRIMVERTEX *)NuPrimStreamBufferPointer->void_ptr;
+            NULGTVERTEX *next = NuPrimStreamBufferPointer->vertex_ptr;
             NuPrimStreamBufferPointer->void_ptr = next + 4;
             NuPrimVertexCount += 4;
             next[0] = next[-1];
@@ -5524,17 +5514,17 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 0xf) & ~0xfU;
         cursor = NuDisplayListStreamCursor;
         list->mtl_last->next = cursor->void_ptr;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = type;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_CALL;
+        cursor->dlist_ptr->type = type;
+        cursor->dlist_ptr->id = NUDLISTITEM_CALL;
         if (target != NULL) {
-            ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = target;
+            cursor->dlist_ptr->next = target;
         } else {
-            ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = (NUDISPLAYLISTITEM *)cursor->void_ptr + 2;
+            cursor->dlist_ptr->next = cursor->dlist_ptr + 2;
         }
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)[1].type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)[1].id = NUDLISTITEM_JUMP;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)[1].next = list->dynamic_geometry + 1;
-        list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr + 1;
+        cursor->dlist_ptr[1].type = NUDLIST_NEXT;
+        cursor->dlist_ptr[1].id = NUDLISTITEM_JUMP;
+        cursor->dlist_ptr[1].next = list->dynamic_geometry + 1;
+        list->mtl_last = cursor->dlist_ptr + 1;
         cursor->addr += 2 * sizeof(NUDISPLAYLISTITEM);
         return target != NULL ? NULL : cursor;
     }
@@ -5544,12 +5534,12 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         cursor = NuDisplayListStreamCursor;
         list->mtl_last->next = cursor->void_ptr;
-        list->items = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        list->items = cursor->dlist_ptr;
         cursor->addr += count * sizeof(NUDISPLAYLISTITEM);
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_JUMP;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = list->dynamic_geometry + 1;
-        list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        cursor->dlist_ptr->type = NUDLIST_NEXT;
+        cursor->dlist_ptr->id = NUDLISTITEM_JUMP;
+        cursor->dlist_ptr->next = list->dynamic_geometry + 1;
+        list->mtl_last = cursor->dlist_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
         return cursor;
     }
@@ -5572,7 +5562,7 @@ extern "C" {
         translation.y = PCSpecialProjectionAdjust.y_offset;
         NuMtxSetTranslation(&PCSpecialProjectionTranslate, &translation);
         buffer->addr = (buffer->addr + 3) & ~3u;
-        result = (NUMTX *)buffer->void_ptr;
+        result = buffer->mtx_ptr;
         PCSpecialTransposeMatrix(result, matrix);
         buffer->addr += sizeof(NUMTX);
         return result;
@@ -5585,16 +5575,15 @@ extern "C" {
         f32 magnitude;
         (void)material;
         buffer->addr = (buffer->addr + 3) & ~3u;
-        result = (NUMTX *)buffer->void_ptr;
+        result = buffer->mtx_ptr;
         *result = *matrix;
-        magnitude = NuFsqrt(
-            (f32)(((f64)NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m10) + NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m00) +
-                   NuVecMagSqr((NUVEC *)&((NUMTX *)buffer->void_ptr)->m20)) *
-                  (f64)0.33333334f));
+        magnitude = NuFsqrt((f32)(((f64)NuVecMagSqr((NUVEC *)&buffer->mtx_ptr->m10) + NuVecMagSqr((NUVEC *)&buffer->mtx_ptr->m00) +
+                                   NuVecMagSqr((NUVEC *)&buffer->mtx_ptr->m20)) *
+                                  (f64)0.33333334f));
         buffer->addr += sizeof(NUMTX);
-        *(f32 *)buffer->void_ptr = magnitude;
+        *buffer->f32_ptr = magnitude;
         buffer->addr += sizeof(f32);
-        orientation = (NUMTX *)buffer->void_ptr;
+        orientation = buffer->mtx_ptr;
         if (((PC_SPECIAL_FACEON *)faceon)->kind == 0) {
             direction.x = direction.y = direction.z = 0.0f;
             buffer->addr += sizeof(NUMTX);
@@ -5662,11 +5651,11 @@ extern "C" {
             geometry->dynamic_vertices = NULL;
             *render_geometry = geometry;
         }
-        matrix_count = (i32 *)buffer->void_ptr;
+        matrix_count = buffer->i32_ptr;
         buffer->addr += sizeof(*matrix_count);
         *matrix_count = 0;
         for (i = 0; geometry->joint_indices[i] != 255 && i < 8; ++i) {
-            *(NUMTX *)buffer->void_ptr = skin[geometry->joint_indices[i]];
+            *buffer->mtx_ptr = skin[geometry->joint_indices[i]];
             buffer->addr += sizeof(NUMTX);
             ++*matrix_count;
         }
@@ -6189,13 +6178,13 @@ extern "C" {
                 NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
                 cursor = NuDisplayListStreamCursor;
                 global->camera_packet_cache = cursor->void_ptr;
-                *(i32 *)cursor->void_ptr = ((i16)global->camera_id + 5) * (global->global_id + 13) + nuapi.frame_count;
+                *cursor->i32_ptr = ((i16)global->camera_id + 5) * (global->global_id + 13) + nuapi.frame_count;
                 cursor->addr += sizeof(i32);
-                *(NUMTX *)cursor->void_ptr = global->camera_matrix;
+                *cursor->mtx_ptr = global->camera_matrix;
                 cursor->addr += sizeof(NUMTX);
-                *(NUMTX *)cursor->void_ptr = projection;
+                *cursor->mtx_ptr = projection;
                 cursor->addr += sizeof(NUMTX);
-                viewport = (f32 *)cursor->void_ptr;
+                viewport = cursor->f32_ptr;
                 *viewport++ = global->viewport_x;
                 cursor->void_ptr = viewport;
                 *viewport++ = global->viewport_y;
@@ -6352,7 +6341,7 @@ extern "C" {
         NuDebrisMaxVertexCount = NuDebrisIdealDynamicVBSize / 24u;
         NuDebrisVertexBufferSize = NuDebrisMaxVertexCount * 24u;
         for (index = 0; index != 8; ++index) {
-            NuDebrisSystemBuffers[index] = (NULGTVERTEX *)buffer->void_ptr;
+            NuDebrisSystemBuffers[index] = buffer->vertex_ptr;
             buffer->addr += NuDebrisVertexBufferSize;
         }
         debris_InitializeD3D();
@@ -6367,12 +6356,12 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15;
         buffer = NuDisplayListStreamCursor;
         list->mtl_last->next = buffer->void_ptr;
-        list->items = (NUDISPLAYLISTITEM *)buffer->void_ptr;
+        list->items = buffer->dlist_ptr;
         buffer->addr += sizeof(NUDISPLAYLISTITEM);
-        ((NUDISPLAYLISTITEM *)buffer->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)buffer->void_ptr)->id = NUDLISTITEM_JUMP;
-        ((NUDISPLAYLISTITEM *)buffer->void_ptr)->next = list->dynamic_geometry + 1;
-        list->mtl_last = (NUDISPLAYLISTITEM *)buffer->void_ptr;
+        buffer->dlist_ptr->type = NUDLIST_NEXT;
+        buffer->dlist_ptr->id = NUDLISTITEM_JUMP;
+        buffer->dlist_ptr->next = list->dynamic_geometry + 1;
+        list->mtl_last = buffer->dlist_ptr;
         buffer->addr += sizeof(NUDISPLAYLISTITEM);
         list->items->type = 0xa7;
         list->items->id = NUDLISTITEM_CALL;
@@ -6415,12 +6404,12 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         cursor = NuDisplayListStreamCursor;
         list->mtl_last->next = cursor->void_ptr;
-        list->items = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        list->items = cursor->dlist_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_JUMP;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = list->dynamic_geometry + 1;
-        list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        cursor->dlist_ptr->type = NUDLIST_NEXT;
+        cursor->dlist_ptr->id = NUDLISTITEM_JUMP;
+        cursor->dlist_ptr->next = list->dynamic_geometry + 1;
+        list->mtl_last = cursor->dlist_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
         NuPrimStreamBufferPointer = primitive_buffer;
         packet = (NUPRIM_PACKET *)primitive_buffer->void_ptr;
@@ -6458,12 +6447,12 @@ extern "C" {
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         cursor = NuDisplayListStreamCursor;
         list->mtl_last->next = cursor->void_ptr;
-        list->items = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        list->items = cursor->dlist_ptr;
         cursor->addr += 2 * sizeof(NUDISPLAYLISTITEM);
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->type = NUDLIST_NEXT;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->id = NUDLISTITEM_JUMP;
-        ((NUDISPLAYLISTITEM *)cursor->void_ptr)->next = list->dynamic_geometry + 1;
-        list->mtl_last = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        cursor->dlist_ptr->type = NUDLIST_NEXT;
+        cursor->dlist_ptr->id = NUDLISTITEM_JUMP;
+        cursor->dlist_ptr->next = list->dynamic_geometry + 1;
+        list->mtl_last = cursor->dlist_ptr;
         cursor->addr += sizeof(NUDISPLAYLISTITEM);
         NuDisplayListStreamCursor->addr = (NuDisplayListStreamCursor->addr + 15) & ~15u;
         primitive_buffer = NuDisplayListStreamCursor;
@@ -6739,7 +6728,7 @@ extern "C" {
                 for (k = 0; k < 4; ++k) {
                     NuLgtSetVertexColor((alphas[1 - (k & 1)] << 24) | ((blues[1 - (k & 1)] & 0xff) << 16) |
                                         ((greens[1 - (k & 1)] & 0xff) << 8) | (reds[1 - (k & 1)] & 0xff));
-                    vertex = (NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr;
+                    vertex = NuPrimStreamBufferPointer->vertex_ptr;
                     vertex->u = tex_u[k];
                     vertex->v = tex_v[k];
                     neg_y = vertices[k].y * -1.0;

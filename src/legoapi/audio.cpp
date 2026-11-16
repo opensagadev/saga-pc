@@ -742,13 +742,13 @@ extern "C" nusound_filename_info_s *ConfigureMusic(char *ignored_file, VARIPTR *
     music_man.GetSoundFiles(&files, NULL);
     SfxMusicExtension = ".mib";
     buffer.addr = (cursor->addr + 3) & ~3u;
-    *(i32 *)buffer.void_ptr = 0;
+    *buffer.i32_ptr = 0;
     buffer.addr += offsetof(MUSIC_PAIR_ARENA, action_first);
-    *(i16 *)buffer.void_ptr = -1;
+    *buffer.i16_ptr = -1;
     ActionPairTab = (PC_MUSIC_ACTION_PAIR *)buffer.void_ptr;
     buffer.addr += offsetof(MUSIC_PAIR_ARENA, ambient_first) - offsetof(MUSIC_PAIR_ARENA, action_first);
-    *(i16 *)buffer.void_ptr = -1;
-    AmbientPairTab = (i16 *)buffer.void_ptr;
+    *buffer.i16_ptr = -1;
+    AmbientPairTab = buffer.i16_ptr;
     buffer.addr += sizeof(MUSIC_PAIR_ARENA) - offsetof(MUSIC_PAIR_ARENA, ambient_first);
     *cursor = buffer;
     return files;

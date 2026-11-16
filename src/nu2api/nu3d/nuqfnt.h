@@ -149,9 +149,9 @@ extern "C" {
 
 #define QFONT_VERTEX(colour, X, Y, Z, U, V)                                                                                                \
     do {                                                                                                                                   \
-        QFONT_PRIM_VERTEX *vertex;                                                                                                         \
+        NULGTVERTEX *vertex;                                                                                                               \
         NuRndrPrimSetColourPrivate((i32)(colour));                                                                                         \
-        vertex = (QFONT_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr;                                                                 \
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;                                                                                    \
         vertex->u = (U);                                                                                                                   \
         vertex->v = (V);                                                                                                                   \
         vertex->x = (X);                                                                                                                   \

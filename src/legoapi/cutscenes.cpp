@@ -1055,7 +1055,7 @@ extern "C" {
         CS_area = area;
         sys = reinterpret_cast<CUT_LOAD_SYS *>((reinterpret_cast<u32>(initial) + 3) & ~3U);
         buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
-        sys->character_bits = reinterpret_cast<u32 *>(buf->void_ptr);
+        sys->character_bits = buf->u32_ptr;
         CS_cutsys = sys;
         CS_worldinfo = world;
         buf->addr = (buf->addr + ((CHARCOUNT + 31) / 32) * 4 + 3) & ~3U;
@@ -1131,7 +1131,7 @@ extern "C" CUT_LOAD_SYS *CutScenes_Load(char *config, NUGSCN *gscn1, NUGSCN *gsc
     initial = buf->void_ptr;
     sys = (CUT_LOAD_SYS *)((reinterpret_cast<u32>(initial) + 3) & ~3U);
     buf->addr = (reinterpret_cast<u32>(sys) + 15) & ~3U;
-    sys->character_bits = reinterpret_cast<u32 *>(buf->void_ptr);
+    sys->character_bits = buf->u32_ptr;
     CS_worldinfo = world;
     CS_area = param2;
     CS_cutsys = sys;

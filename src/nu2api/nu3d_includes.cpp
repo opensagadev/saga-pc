@@ -2985,7 +2985,7 @@ extern "C" {
         buffer->addr = ((buffer->addr + 15u) & ~15u) + sizeof(ANI3_GLOBALBUFFER);
         header->joints = (ANI3_JOINT *)((buffer->addr + 15u) & ~15u);
         buffer->addr = ((buffer->addr + 15u) & ~15u) + (u32)max_joints * sizeof(ANI3_JOINT);
-        header->joint_flags = (u8 *)buffer->void_ptr;
+        header->joint_flags = buffer->u8_ptr;
         buffer->addr += (u32)max_joints;
         header->scratch_joint_capacity = (i16)max_joints;
         header->joint_count = 0;
@@ -4792,15 +4792,6 @@ extern "C" {
         font->platform_data->matrix = *matrix;
     }
 
-    typedef struct qfont_prim_vertex_s { // size 0x18
-        f32 x;                           // 0x00
-        f32 y;                           // 0x04
-        f32 z;                           // 0x08
-        u32 colour;                      // 0x0c
-        f32 u;                           // 0x10
-        f32 v;                           // 0x14
-    } QFONT_PRIM_VERTEX;
-
     // noinline: the original calls NuRndrPrimSetColourPrivate out of line from NuQFntPrintCharW; VC8 would inline it
     // there.
     static __declspec(noinline) void NuRndrPrimSetColourPrivate(i32 colour) {
@@ -4810,11 +4801,11 @@ extern "C" {
         } else {
             converted = ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
         }
-        ((QFONT_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+        NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
     }
 
     void fun_005c1fe0(f32 u, f32 v) {
-        QFONT_PRIM_VERTEX *vertex = (QFONT_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        NULGTVERTEX *vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = u;
         vertex->v = v;
     }
@@ -4896,7 +4887,7 @@ extern "C" {
                         QFONT_VERTEX(colour, left, bottom, z, u0, v0);
                         QFONT_VERTEX(colour, left, top, z, u0, v1);
                     } else {
-                        QFONT_PRIM_VERTEX *vertex;
+                        NULGTVERTEX *vertex;
                         f32 u0;
                         f32 v0;
                         f32 u1;
@@ -4904,14 +4895,14 @@ extern "C" {
                         NuRndrPrimSetColourPrivate((i32)colour);
                         v0 = inverse_texture_height * glyph->y;
                         u0 = inverse_texture_width * glyph->x;
-                        vertex = (QFONT_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+                        vertex = NuPrimStreamBufferPointer->vertex_ptr;
                         vertex->u = u0;
                         vertex->v = v0;
                         NuPrim2DAddXYZ(left, top, 0.0f);
                         NuRndrPrimSetColourPrivate((i32)colour);
                         v1 = (glyph->y + font->height) * inverse_texture_height;
                         u1 = (glyph->x + glyph->width) * inverse_texture_width;
-                        vertex = (QFONT_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+                        vertex = NuPrimStreamBufferPointer->vertex_ptr;
                         vertex->u = u1;
                         vertex->v = v1;
                         NuPrim2DAddXYZ(right, bottom, 0.0f);
@@ -5490,37 +5481,37 @@ extern "C" {
         result->ic_gap = font->ic_gap;
         result->space_width = font->glyphs[0].u1 * width - font->glyphs[0].u0 * width;
         result->header = buffer->void_ptr;
-        *(f32 *)buffer->void_ptr = result->ic_gap;
+        *buffer->f32_ptr = result->ic_gap;
         buffer->addr += 4;
-        *(f32 *)buffer->void_ptr = result->height;
+        *buffer->f32_ptr = result->height;
         buffer->addr += 4;
-        *(f32 *)buffer->void_ptr = 1.0f / width;
+        *buffer->f32_ptr = 1.0f / width;
         buffer->addr += 4;
-        *(f32 *)buffer->void_ptr = 1.0f / height;
+        *buffer->f32_ptr = 1.0f / height;
         buffer->addr += 4;
         /* The zero words are stored as integers. */
-        *(i32 *)buffer->void_ptr = 0;
+        *buffer->i32_ptr = 0;
         buffer->addr += 4;
-        *(i32 *)buffer->void_ptr = 0;
+        *buffer->i32_ptr = 0;
         buffer->addr += 4;
-        *(f32 *)buffer->void_ptr = result->space_width;
+        *buffer->f32_ptr = result->space_width;
         buffer->addr += 4;
-        *(i32 *)buffer->void_ptr = 0;
+        *buffer->i32_ptr = 0;
         buffer->addr += 4;
-        result->x_scale = (f32 *)buffer->void_ptr;
-        *(f32 *)buffer->void_ptr = 1.0f;
+        result->x_scale = buffer->f32_ptr;
+        *buffer->f32_ptr = 1.0f;
         buffer->addr += 4;
-        result->y_scale = (f32 *)buffer->void_ptr;
-        *(f32 *)buffer->void_ptr = 0.5f;
+        result->y_scale = buffer->f32_ptr;
+        *buffer->f32_ptr = 0.5f;
         buffer->addr += 4;
         result->glyphs = (VUFNTCHAR *)buffer->void_ptr;
         for (i = 0; i < (font->glyph_count < 256 ? font->glyph_count : 256); ++i) {
             f32 x = font->glyphs[i].u0 * width;
-            *(f32 *)buffer->void_ptr = x;
+            *buffer->f32_ptr = x;
             buffer->addr += 4;
-            *(f32 *)buffer->void_ptr = font->glyphs[i].v0 * height;
+            *buffer->f32_ptr = font->glyphs[i].v0 * height;
             buffer->addr += 4;
-            *(f32 *)buffer->void_ptr = font->glyphs[i].u1 * width - font->glyphs[i].u0 * width;
+            *buffer->f32_ptr = font->glyphs[i].u1 * width - font->glyphs[i].u0 * width;
             buffer->addr += 4;
         }
         result->unicode_map = (VUCHARIDX *)buffer->void_ptr;
@@ -6202,15 +6193,6 @@ void OccluderSet::AddOccluder(const NUVEC *a, const NUVEC *b, const NUVEC *c, co
         ++count;
     }
 }
-
-typedef struct OCCLUDER_PRIM_VERTEX { // size 0x18
-    f32 x;                            // 0x00
-    f32 y;                            // 0x04
-    f32 z;                            // 0x08
-    u32 colour;                       // 0x0c
-    f32 u;                            // 0x10
-    f32 v;                            // 0x14
-} OCCLUDER_PRIM_VERTEX;
 
 void OccluderSet::RenderOccluders(bool depth_only) const {
     i32 colour = 0;
@@ -8462,15 +8444,6 @@ extern "C" {
         return 0;
     }
 
-    typedef struct RNDR_MASK_VERTEX { // size 0x18
-        f32 x;                        // 0x00
-        f32 y;                        // 0x04
-        f32 z;                        // 0x08
-        u32 colour;                   // 0x0c
-        f32 u;                        // 0x10
-        f32 v;                        // 0x14
-    } RNDR_MASK_VERTEX;
-
     // PC checks each byte index is less than 16.
     const u8 CurveGroupMasks[4] = {2, 1, 8, 0};
     const u8 KeyStructSizes[16] = {3, 4, 4, 3, 4, 3, 4, 8, 4, 8, 4, 0, 0, 0, 0, 0};
@@ -8478,7 +8451,7 @@ extern "C" {
 
     void RndrMaskScreen(i32 texture, f32 clear_x, f32 clear_y, f32 clear_width, f32 clear_height, f32 mask_x, f32 mask_y, f32 mask_width,
                         f32 mask_height, i32 coordinate_mode) {
-        RNDR_MASK_VERTEX *vertex;
+        NULGTVERTEX *vertex;
         f32 clear_right;
         f32 clear_bottom;
         f32 mask_right;
@@ -8490,24 +8463,24 @@ extern "C" {
         NuPrimSetCoordinateSystem(kPRIM_COORD_LOOKUP[coordinate_mode]);
         NuPrim2DBegin(13, 7, RendererZClearMaterial);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 0.0f;
         vertex->v = 0.0f;
         NuPrim2DAddXYZ(clear_x, clear_y, 0.0f);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 0.0f;
         vertex->v = 0.0f;
         clear_right = clear_x + clear_width;
         NuPrim2DAddXYZ(clear_right, clear_y, 0.0f);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 0.0f;
         vertex->v = 0.0f;
         clear_bottom = clear_y + clear_height;
         NuPrim2DAddXYZ(clear_x, clear_bottom, 0.0f);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 0.0f;
         vertex->v = 0.0f;
         NuPrim2DAddXYZ(clear_right, clear_bottom, 0.0f);
@@ -8517,24 +8490,24 @@ extern "C" {
         NuPrimSetCoordinateSystem(kPRIM_COORD_LOOKUP[coordinate_mode]);
         NuPrim2DBegin(13, 7, RendererAlphaMaskMaterial);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 0.0f;
         vertex->v = 0.0f;
         NuPrim2DAddXYZ(mask_x, mask_y, 1.0f);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 1.0f;
         vertex->v = 0.0f;
         mask_right = mask_x + mask_width;
         NuPrim2DAddXYZ(mask_right, mask_y, 1.0f);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 0.0f;
         vertex->v = 1.0f;
         mask_bottom = mask_y + mask_height;
         NuPrim2DAddXYZ(mask_x, mask_bottom, 1.0f);
         NuRndrPrimSetColourPrivate((i32)0xff000000);
-        vertex = (RNDR_MASK_VERTEX *)NuPrimStreamBufferPointer->void_ptr;
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;
         vertex->u = 1.0f;
         vertex->v = 1.0f;
         NuPrim2DAddXYZ(mask_right, mask_bottom, 1.0f);
@@ -10610,9 +10583,9 @@ extern "C" void NuDisplayListCreateDynMtlList_candidate(VARIPTR *buffer, VARIPTR
     PCDisplayMaterialDeleteCount = 0;
     PCDisplayMaterialDeleteQueue = (NUMTL **)buffer->void_ptr;
     buffer->addr += 600 * sizeof(NUMTL *);
-    PCDisplayMaterialReferenceCounts = (u8 *)buffer->void_ptr;
+    PCDisplayMaterialReferenceCounts = buffer->u8_ptr;
     buffer->addr += 600;
-    PCDisplayMaterialStreamUsed = (u8 *)buffer->void_ptr;
+    PCDisplayMaterialStreamUsed = buffer->u8_ptr;
     buffer->addr += 600;
     memset(PCDisplayMaterialReferenceCounts, 0, 600);
     memset(PCDisplayMaterialStreamUsed, 0, 600);
@@ -12765,7 +12738,7 @@ extern "C" {
         buffer->addr = ((buffer->addr + 15) & ~15u) + sizeof(ANI3_GLOBALBUFFER);
         anim_buffer->joints = (ANI3_JOINT *)((buffer->addr + 15) & ~15u);
         buffer->addr = ((buffer->addr + 15) & ~15u) + max_joints * 48;
-        anim_buffer->joint_flags = (u8 *)buffer->void_ptr;
+        anim_buffer->joint_flags = buffer->u8_ptr;
         buffer->addr += max_joints;
         anim_buffer->scratch_joint_capacity = max_joints;
         anim_buffer->joint_count = 0;
@@ -13014,7 +12987,7 @@ void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
     list->mtl_last->next = cursor->void_ptr;
 
     if (material->texture_id > 0 && material->texture_id != list->state->tex_id) {
-        command = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        command = cursor->dlist_ptr;
         cursor->void_ptr = command + 6;
         command->type = NUDLIST_DUMMY;
         command->next = NULL;
@@ -13026,7 +12999,7 @@ void NuDisplayListLinkMtl(NUDISPLAYLIST *list, NUMTL *material) {
         command++;
         list->state->tex_id = material->texture_id;
     } else {
-        command = (NUDISPLAYLISTITEM *)cursor->void_ptr;
+        command = cursor->dlist_ptr;
         cursor->void_ptr = command + 4;
     }
 

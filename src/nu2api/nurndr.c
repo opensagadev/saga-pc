@@ -525,15 +525,6 @@ void fun_005d5260(f32 offset) {
     PCShaderMaterialSamplerBiasOffset = offset;
 }
 
-typedef struct locator_prim_vertex_s { // size 0x18
-    f32 x;                             // 0x00
-    f32 y;                             // 0x04
-    f32 z;                             // 0x08
-    u32 colour;                        // 0x0c
-    f32 u;                             // 0x10
-    f32 v;                             // 0x14
-} LOCATOR_PRIM_VERTEX;
-
 static void NuRndrPrimSetColourPrivate(i32 colour) {
     i32 converted;
     if (NuPrimNeedsOverbrightening != 0) {
@@ -541,15 +532,15 @@ static void NuRndrPrimSetColourPrivate(i32 colour) {
     } else {
         converted = ((colour & 0xfe) << 15) + ((colour >> 1) & 0x7f00) + ((colour >> 17) & 0x7f) + (colour & 0xff000000);
     }
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
 #define LOCATOR_PRIM_POSITION(X, Y, Z)                                                                                                     \
     do {                                                                                                                                   \
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = (X);                                                             \
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = (Y);                                                             \
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = (Z);                                                             \
-        NuPrimStreamBufferPointer->void_ptr = (LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr + 1;                              \
+        NuPrimStreamBufferPointer->vertex_ptr->x = (X);                                                                                    \
+        NuPrimStreamBufferPointer->vertex_ptr->y = (Y);                                                                                    \
+        NuPrimStreamBufferPointer->vertex_ptr->z = (Z);                                                                                    \
+        NuPrimStreamBufferPointer->void_ptr = NuPrimStreamBufferPointer->vertex_ptr + 1;                                                   \
         ++NuPrimVertexCount;                                                                                                               \
     } while (0)
 
@@ -762,15 +753,15 @@ void NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
     pos = -1.0f;
     for (i = 0; i <= rows; ++i) {
         if (NuPrimNeedsOverbrightening != 0) {
-            ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff00ff00;
+            NuPrimStreamBufferPointer->vertex_ptr->colour = 0xff00ff00;
         } else {
-            ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff007f00;
+            NuPrimStreamBufferPointer->vertex_ptr->colour = 0xff007f00;
         }
         LOCATOR_PRIM_POSITION(-1.0f, 0.0f, pos);
         if (NuPrimNeedsOverbrightening != 0) {
-            ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff00ff00;
+            NuPrimStreamBufferPointer->vertex_ptr->colour = 0xff00ff00;
         } else {
-            ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = 0xff007f00;
+            NuPrimStreamBufferPointer->vertex_ptr->colour = 0xff007f00;
         }
         LOCATOR_PRIM_POSITION(1.0f, 0.0f, pos);
         pos += dz;
@@ -783,7 +774,7 @@ void NuRndrGrid(NUVEC *centre, NUVEC *size, i32 columns, i32 rows) {
 i32 NuRndrLine3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix) {
     NuPrim3DBegin(14, 7, material, matrix);
     {
-        LOCATOR_PRIM_VERTEX *output;
+        NULGTVERTEX *output;
         f32 u;
         f32 v;
         f32 x;
@@ -792,20 +783,20 @@ i32 NuRndrLine3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix) {
         NuRndrPrimSetColourPrivate((i32)vertices[0].colour);
         u = vertices[0].u;
         v = vertices[0].v;
-        output = NuPrimStreamBufferPointer->void_ptr;
+        output = NuPrimStreamBufferPointer->vertex_ptr;
         output->u = u;
         output->v = v;
         x = vertices[0].position.x;
         y = vertices[0].position.y;
         z = vertices[0].position.z;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z;
-        NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+        NuPrimStreamBufferPointer->vertex_ptr->x = x;
+        NuPrimStreamBufferPointer->vertex_ptr->y = y;
+        NuPrimStreamBufferPointer->vertex_ptr->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
         ++NuPrimVertexCount;
     }
     {
-        LOCATOR_PRIM_VERTEX *output;
+        NULGTVERTEX *output;
         f32 u;
         f32 v;
         f32 x;
@@ -814,16 +805,16 @@ i32 NuRndrLine3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix) {
         NuRndrPrimSetColourPrivate((i32)vertices[1].colour);
         u = vertices[1].u;
         v = vertices[1].v;
-        output = NuPrimStreamBufferPointer->void_ptr;
+        output = NuPrimStreamBufferPointer->vertex_ptr;
         output->u = u;
         output->v = v;
         x = vertices[1].position.x;
         y = vertices[1].position.y;
         z = vertices[1].position.z;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z;
-        NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+        NuPrimStreamBufferPointer->vertex_ptr->x = x;
+        NuPrimStreamBufferPointer->vertex_ptr->y = y;
+        NuPrimStreamBufferPointer->vertex_ptr->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
         ++NuPrimVertexCount;
     }
     NuPrim3DEnd();
@@ -837,7 +828,7 @@ i32 NuRndrStrip3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix, i32 
     }
     NuPrim3DBegin(13, 7, material, matrix);
     for (i = 0; i < count; ++i) {
-        LOCATOR_PRIM_VERTEX *output;
+        NULGTVERTEX *output;
         f32 u;
         f32 v;
         f32 x;
@@ -846,16 +837,16 @@ i32 NuRndrStrip3d(NURND_VERTEX3D *vertices, NUMTL *material, NUMTX *matrix, i32 
         NuRndrPrimSetColourPrivate((i32)vertices[i].colour);
         u = vertices[i].u;
         v = vertices[i].v;
-        output = NuPrimStreamBufferPointer->void_ptr;
+        output = NuPrimStreamBufferPointer->vertex_ptr;
         output->u = u;
         output->v = v;
         x = vertices[i].position.x;
         y = vertices[i].position.y;
         z = vertices[i].position.z;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z;
-        NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+        NuPrimStreamBufferPointer->vertex_ptr->x = x;
+        NuPrimStreamBufferPointer->vertex_ptr->y = y;
+        NuPrimStreamBufferPointer->vertex_ptr->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
         ++NuPrimVertexCount;
     }
     NuPrim3DEnd();
@@ -873,7 +864,7 @@ i32 NuRndrTri3dClip(NURND_VERTEX3D *vertices, i32 count, NUMTX *matrix, NUMTL *m
     }
     NuPrim3DBegin(12, 7, material, matrix);
     for (i = 0; i < count; ++i) {
-        LOCATOR_PRIM_VERTEX *output;
+        NULGTVERTEX *output;
         f32 u;
         f32 v;
         f32 x;
@@ -882,16 +873,16 @@ i32 NuRndrTri3dClip(NURND_VERTEX3D *vertices, i32 count, NUMTX *matrix, NUMTL *m
         NuRndrPrimSetColourPrivate((i32)vertices[i].colour);
         u = vertices[i].u;
         v = vertices[i].v;
-        output = NuPrimStreamBufferPointer->void_ptr;
+        output = NuPrimStreamBufferPointer->vertex_ptr;
         output->u = u;
         output->v = v;
         x = vertices[i].position.x;
         y = vertices[i].position.y;
         z = vertices[i].position.z;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y;
-        ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z;
-        NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+        NuPrimStreamBufferPointer->vertex_ptr->x = x;
+        NuPrimStreamBufferPointer->vertex_ptr->y = y;
+        NuPrimStreamBufferPointer->vertex_ptr->z = z;
+        NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
         ++NuPrimVertexCount;
     }
     NuPrim3DEnd();
@@ -902,7 +893,7 @@ extern i32 NuPrimCoordSystemStack[2];
 
 #define NURNDR_PRIM_UV(U, V)                                                                                                               \
     do {                                                                                                                                   \
-        LOCATOR_PRIM_VERTEX *uv_vertex = (LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr;                                       \
+        NULGTVERTEX *uv_vertex = NuPrimStreamBufferPointer->vertex_ptr;                                                                    \
         uv_vertex->u = (U);                                                                                                                \
         uv_vertex->v = (V);                                                                                                                \
     } while (0)
@@ -911,17 +902,17 @@ void NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
     NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
     NuRndrPrimSetColourPrivate(colour);
     NURNDR_PRIM_UV(0.0f, 0.0f);
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x0;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y0;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z0;
-    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+    NuPrimStreamBufferPointer->vertex_ptr->x = x0;
+    NuPrimStreamBufferPointer->vertex_ptr->y = y0;
+    NuPrimStreamBufferPointer->vertex_ptr->z = z0;
+    NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
     ++NuPrimVertexCount;
     NuRndrPrimSetColourPrivate(colour);
     NURNDR_PRIM_UV(1.0f, 1.0f);
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x1;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y1;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z1;
-    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+    NuPrimStreamBufferPointer->vertex_ptr->x = x1;
+    NuPrimStreamBufferPointer->vertex_ptr->y = y1;
+    NuPrimStreamBufferPointer->vertex_ptr->z = z1;
+    NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
     ++NuPrimVertexCount;
     NuPrim3DEnd();
 }
@@ -929,16 +920,16 @@ void NuRndr3dLine(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
 void NuRndrLine3dDbg(f32 x0, f32 y0, f32 z0, f32 x1, f32 y1, f32 z1, i32 colour) {
     NuPrim3DBegin(14, 5, NULL, &NuMtxSetIdentityTemplate);
     NuRndrPrimSetColourPrivate(colour);
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x0;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y0;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z0;
-    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+    NuPrimStreamBufferPointer->vertex_ptr->x = x0;
+    NuPrimStreamBufferPointer->vertex_ptr->y = y0;
+    NuPrimStreamBufferPointer->vertex_ptr->z = z0;
+    NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
     ++NuPrimVertexCount;
     NuRndrPrimSetColourPrivate(colour);
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->x = x1;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->y = y1;
-    ((LOCATOR_PRIM_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->z = z1;
-    NuPrimStreamBufferPointer->addr += sizeof(LOCATOR_PRIM_VERTEX);
+    NuPrimStreamBufferPointer->vertex_ptr->x = x1;
+    NuPrimStreamBufferPointer->vertex_ptr->y = y1;
+    NuPrimStreamBufferPointer->vertex_ptr->z = z1;
+    NuPrimStreamBufferPointer->addr += sizeof(NULGTVERTEX);
     ++NuPrimVertexCount;
     NuPrim3DEnd();
 }
@@ -949,16 +940,16 @@ void NuRndrRectUV2diZ(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u
     f32 sz = (f32)((f64)z * (1.0f / 16777215.0f));
     f32 sw;
     f32 sh;
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(16, 7, material);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u0;
     vertex->v = v0;
     NuRndrPrimSetColourPrivate(colour);
     NuPrim2DAddXYZ(sx, sy, sz);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u1;
     vertex->v = v1;
     NuRndrPrimSetColourPrivate(colour);
@@ -975,27 +966,27 @@ void NuRndrGradRect2di(i32 x, i32 y, i32 width, i32 height, u32 *colours, NUMTL 
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw = (f32)((f64)width * 0.0625);
     f32 sh = (f32)((f64)height * 0.0625);
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(13, 7, material);
     NuRndrPrimSetColourPrivate((i32)colours[0]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(sx, sy, 0.0f);
     NuRndrPrimSetColourPrivate((i32)colours[1]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(sx + sw, sy, 0.0f);
     NuRndrPrimSetColourPrivate((i32)colours[2]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 1.0f;
     NuPrim2DAddXYZ(sx, sy + sh, 0.0f);
     NuRndrPrimSetColourPrivate((i32)colours[3]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 1.0f;
     NuPrim2DAddXYZ(sx + sw, sy + sh, 0.0f);
@@ -1009,27 +1000,27 @@ void NuRndrGradRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f3
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw = (f32)((f64)width * 0.0625);
     f32 sh = (f32)((f64)height * 0.0625);
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(13, 7, material);
     NuRndrPrimSetColourPrivate((i32)colours[0]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u0;
     vertex->v = v0;
     NuPrim2DAddXYZ(sx, sy, 0.0f);
     NuRndrPrimSetColourPrivate((i32)colours[1]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u1;
     vertex->v = v0;
     NuPrim2DAddXYZ(sx + sw, sy, 0.0f);
     NuRndrPrimSetColourPrivate((i32)colours[2]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u0;
     vertex->v = v1;
     NuPrim2DAddXYZ(sx, sy + sh, 0.0f);
     NuRndrPrimSetColourPrivate((i32)colours[3]);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u1;
     vertex->v = v1;
     NuPrim2DAddXYZ(sx + sw, sy + sh, 0.0f);
@@ -1065,11 +1056,11 @@ i32 NuRndrLineStrip2d(NURND_VERTEX2D *vertices, NUMTL *material, i32 count) {
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(14, 7, material);
     for (i = 0; i < count; ++i) {
-        LOCATOR_PRIM_VERTEX *output;
+        NULGTVERTEX *output;
         f32 x;
         f32 y;
         NuRndrPrimSetColourPrivate(-1);
-        output = NuPrimStreamBufferPointer->void_ptr;
+        output = NuPrimStreamBufferPointer->vertex_ptr;
         output->u = 0.0f;
         output->v = 0.0f;
         x = vertices[i].x * 0.0625;
@@ -1153,27 +1144,27 @@ extern i32 NuPrimCoordSystemStack[];
 /* Native EAX-colour calls require the existing genuine private colour/caller owner. */
 void RenderPostClearScreen(void) {
     i32 restore_mode;
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(1);
     NuPrim2DBegin(13, 7, NULL);
     NuRndrPrimSetColourPrivate((i32)0x80000000);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(-1.0f, -1.0f, 0.0f);
     NuRndrPrimSetColourPrivate((i32)0x80000000);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(1.0f, -1.0f, 0.0f);
     NuRndrPrimSetColourPrivate((i32)0x80000000);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 1.0f;
     NuPrim2DAddXYZ(-1.0f, 1.0f, 0.0f);
     NuRndrPrimSetColourPrivate((i32)0x80000000);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 1.0f;
     NuPrim2DAddXYZ(1.0f, 1.0f, 0.0f);
@@ -2026,17 +2017,17 @@ void NuRndrArenaBuildShadowVolumes(i32 unused0, i32 unused1) {
 
 void NuRndrLine2di(i32 x0, i32 y0, i32 x1, i32 y1, i32 colour, NUMTL *material) {
     i32 colour_local = colour; // MATCH-EXCEPTION: parameter copied to a local; VC8 register choice (U20)
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(14, 7, material);
     NuRndrPrimSetColourPrivate(colour_local);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ((f32)((f64)x0 * 0.0625), (f32)((f64)y0 * 0.0625), 0.0f);
     NuRndrPrimSetColourPrivate(colour_local);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 1.0f;
     NuPrim2DAddXYZ((f32)((f64)x1 * 0.0625), (f32)((f64)y1 * 0.0625), 0.0f);
@@ -2099,17 +2090,17 @@ void NuRndrRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *mater
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw;
     f32 sh;
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(16, 7, material);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(sx, sy, 0.0f);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 1.0f;
     sw = (f32)((f64)width * 0.0625);
@@ -2125,16 +2116,16 @@ void NuRndrRectUV2di(i32 x, i32 y, i32 width, i32 height, f32 u0, f32 v0, f32 u1
     f32 sy = (f32)((f64)y * 0.0625);
     f32 sw;
     f32 sh;
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(16, 7, material);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u0;
     vertex->v = v0;
     NuRndrPrimSetColourPrivate(colour);
     NuPrim2DAddXYZ(sx, sy, 0.0f);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = u1;
     vertex->v = v1;
     NuRndrPrimSetColourPrivate(colour);
@@ -2156,34 +2147,34 @@ void NuRndrLineRect2di(i32 x, i32 y, i32 width, i32 height, i32 colour, NUMTL *m
 
     f32 ex;
     f32 ey;
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     ++NuPrimCSPos;
     NuPrimSetCoordinateSystem(0);
     NuPrim2DBegin(15, 7, material);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(rectangle.x, rectangle.y, 0.0f);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 0.0f;
     ex = rectangle.x + rectangle.width;
     NuPrim2DAddXYZ(ex, rectangle.y, 0.0f);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 1.0f;
     ey = rectangle.y + rectangle.height;
     NuPrim2DAddXYZ(ex, ey, 0.0f);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 1.0f;
     NuPrim2DAddXYZ(rectangle.x, ey, 0.0f);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(rectangle.x, rectangle.y, 0.0f);
@@ -2230,7 +2221,7 @@ void NuRndrLineStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *
             NuRndrPrimSetColourPrivate(colour);
             if (uvs != NULL) {
                 f32 v = uvs[i * 2 + 1];
-                LOCATOR_PRIM_VERTEX *vertex = NuPrimStreamBufferPointer->void_ptr;
+                NULGTVERTEX *vertex = NuPrimStreamBufferPointer->vertex_ptr;
                 vertex->u = uvs[i * 2];
                 vertex->v = v;
             }
@@ -2254,7 +2245,7 @@ void NuRndrTriStrip2di(i32 *positions, f32 *uvs, i32 count, i32 colour, NUMTL *m
             NuRndrPrimSetColourPrivate(colour);
             if (uvs != NULL) {
                 f32 v = uvs[i * 2 + 1];
-                LOCATOR_PRIM_VERTEX *vertex = NuPrimStreamBufferPointer->void_ptr;
+                NULGTVERTEX *vertex = NuPrimStreamBufferPointer->vertex_ptr;
                 vertex->u = uvs[i * 2];
                 vertex->v = v;
             }
@@ -2272,15 +2263,15 @@ void fun_005dc3e0(void) {
 }
 
 void NuRndrRect2d(f32 x, f32 y, f32 z, f32 width, f32 height, i32 colour, NUMTL *material) {
-    LOCATOR_PRIM_VERTEX *vertex;
+    NULGTVERTEX *vertex;
     NuPrim2DBegin(16, 7, material);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 0.0f;
     vertex->v = 0.0f;
     NuPrim2DAddXYZ(x, y, z);
     NuRndrPrimSetColourPrivate(colour);
-    vertex = NuPrimStreamBufferPointer->void_ptr;
+    vertex = NuPrimStreamBufferPointer->vertex_ptr;
     vertex->u = 1.0f;
     vertex->v = 1.0f;
     NuPrim2DAddXYZ(x + width, y + height, z);

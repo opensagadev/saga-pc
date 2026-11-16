@@ -143,7 +143,7 @@ extern "C" void NuDisplayListFaceOnTransform(void *arg) {
     NUVEC4 tint;
     f32 opacity;
     packet.void_ptr = arg;
-    NUMTX *matrix = (NUMTX *)packet.void_ptr;
+    NUMTX *matrix = packet.mtx_ptr;
     values.x = matrix->m30;
     values.y = matrix->m31;
     values.z = matrix->m32;
@@ -157,13 +157,13 @@ extern "C" void NuDisplayListFaceOnTransform(void *arg) {
     PCDeviceSetVertexShaderConstantsF(0x50, &matrix->m00, 4);
     packet.char_ptr += sizeof(NUMTX);
     PCDeviceSetVertexShaderConstantsF(0x59, &values.x, 1);
-    values.x = *(f32 *)packet.void_ptr;
+    values.x = *packet.f32_ptr;
     packet.char_ptr += sizeof(f32);
     values.y = 1.0f;
     values.z = values.w = 0.0f;
     PCDeviceSetVertexShaderConstantsF(0x54, &values.x, 1);
-    NuMtxTranspose((NUMTX *)packet.void_ptr, (NUMTX *)packet.void_ptr);
-    PCDeviceSetVertexShaderConstantsF(0x55, (f32 *)packet.void_ptr, 4);
+    NuMtxTranspose(packet.mtx_ptr, packet.mtx_ptr);
+    PCDeviceSetVertexShaderConstantsF(0x55, packet.f32_ptr, 4);
     tint = NuDisplayHandlerTint;
     if (opacity < 1.0f) {
         tint.w *= opacity;

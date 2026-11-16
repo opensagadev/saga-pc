@@ -175,13 +175,6 @@ typedef struct cut_memory_entry_s { // size 0x10
     u8 unknown_0d[3];               // 0xd
 } CUT_MEMORY_ENTRY;
 
-typedef struct cut_memory_vertex_s { // size 0x10
-    f32 x;                           // 0x0
-    f32 y;                           // 0x4
-    f32 z;                           // 0x8
-    u32 colour;                      // 0xc
-} CUT_MEMORY_VERTEX;
-
 void *DefragCutSceneEndMem = NULL;
 void (*ReleaseLocatorVfxFn)(i32) = 0;
 NUVEC CutSceneFocusLocation = {0};
@@ -240,7 +233,7 @@ static void CutSceneSetPrimitiveColour(i32 colour) {
     } else {
         converted = ((colour >> 1) & 0x7f00) + ((colour & 0xfe) << 15) + ((colour >> 17) & 0x7f) + (colour & 0xff000000u);
     }
-    ((CUT_MEMORY_VERTEX *)NuPrimStreamBufferPointer->void_ptr)->colour = converted;
+    NuPrimStreamBufferPointer->vertex_ptr->colour = converted;
 }
 
 void DisplayCutSceneMemory(void) {

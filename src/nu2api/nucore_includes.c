@@ -2001,7 +2001,7 @@ i32 NuDatFileFindHash(NUDATHDR *header, char *name) {
                     ptr.addr++;
                 }
 
-                return *(i16 *)ptr.void_ptr;
+                return *ptr.i16_ptr;
             }
 
             ptr.addr += NuStrLen(ptr.char_ptr) + 3;
@@ -8648,13 +8648,13 @@ void *NuPtrBlockFix(void *block) {
     return_pointer.void_ptr = block;
     return_pointer.addr += 4;
     table.void_ptr = block;
-    table.addr = *(u32 *)table.void_ptr + table.addr;
-    count = *(i32 *)table.void_ptr;
+    table.addr = *table.u32_ptr + table.addr;
+    count = *table.i32_ptr;
     table.addr += 4;
     for (index = 0; index < count; ++index) {
-        entry.addr = *(u32 *)table.void_ptr + table.addr;
-        if (*(u32 *)entry.void_ptr != 0) {
-            *(u32 *)entry.void_ptr += entry.addr;
+        entry.addr = *table.u32_ptr + table.addr;
+        if (*entry.u32_ptr != 0) {
+            *entry.u32_ptr += entry.addr;
         }
         table.addr += 4;
     }

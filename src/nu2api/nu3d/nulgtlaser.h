@@ -68,7 +68,7 @@ extern "C" {
 #define NU_LGT_ARC_VERTEX(vertex, position, colour, tex_u, tex_v)                                                                          \
     do {                                                                                                                                   \
         NuLgtSetVertexColor(colour);                                                                                                       \
-        vertex = (NULGTVERTEX *)NuPrimStreamBufferPointer->void_ptr;                                                                       \
+        vertex = NuPrimStreamBufferPointer->vertex_ptr;                                                                                    \
         vertex->u = (tex_u);                                                                                                               \
         vertex->v = (tex_v);                                                                                                               \
         NuPrim2DAddXYZ((position)->x, (position)->y, (position)->z);                                                                       \
