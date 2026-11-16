@@ -176,15 +176,6 @@ extern "C" {
         i32 texture_ids[3];                  // 0x0
     } SCENE_TEXTURE_PACKET_AE;
 
-    /* nuportal PC backend. */
-
-    typedef struct PORTAL_BOX { // size 0x20
-        NUVEC first;            // 0x00
-        f32 first_w;            // 0x0c
-        NUVEC second;           // 0x10
-        f32 second_w;           // 0x1c
-    } PORTAL_BOX;
-
     /* numtl PS half. */
 
     typedef struct FRAME_MTL_ANIM_SET {  // size 0x10
@@ -4799,8 +4790,8 @@ extern "C" {
                     if ((flags & 1) != 0) {
                         if ((flags & 8) != 0) {
                             NuPortalVisibilityBits[byte_index] |= (u8)(1 << bit);
-                        } else if (NuPortalClipTestBox(&((PORTAL_BOX *)scene->portal_boxes)[index].first,
-                                                       &((PORTAL_BOX *)scene->portal_boxes)[index].second, frustum) != 0) {
+                        } else if (NuPortalClipTestBox(&scene->portal_boxes[index].center.xyz, &scene->portal_boxes[index].extent.xyz,
+                                                       frustum) != 0) {
                             NuPortalVisibilityBits[byte_index] |= (u8)(1 << bit);
                         }
                     }
@@ -4830,8 +4821,8 @@ extern "C" {
                         NuPortalVisibilityBits[byte_index] |= (u8)(1 << bit);
                         break;
                     case 2:
-                        if (clipTestBox(&((PORTAL_BOX *)scene->portal_boxes)[index].first,
-                                        &((PORTAL_BOX *)scene->portal_boxes)[index].second, frustum->planes, frustum->plane_count) != 0) {
+                        if (clipTestBox(&scene->portal_boxes[index].center.xyz, &scene->portal_boxes[index].extent.xyz, frustum->planes,
+                                        frustum->plane_count) != 0) {
                             NuPortalVisibilityBits[byte_index] |= (u8)(1 << bit);
                         }
                         break;

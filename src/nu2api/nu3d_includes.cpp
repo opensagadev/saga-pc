@@ -13634,12 +13634,6 @@ extern "C" void NuDynamicLightSetUsedOnSpecials(PC_SPECIAL_SHADOW_LIGHT *light, 
     light->used_on_specials = enabled;
 }
 
-/* Access-only views; storage remains NUGSCN and the material. */
-struct SHADOW_PRODUCER_BOUNDS { // size 0x20
-    NUVEC4 center_radius;       // 0x00
-    NUVEC4 extent;              // 0x10
-};
-
 /* The local helper's compiler ABI uses ECX, EDX and three caller-clean stack words. */
 static i32 ShadowSegmentClip(const NUVEC *point, const NUVEC *end, const NUVEC *start, f32 radius0, f32 radius1) {
     __declspec(align(16)) NUVEC segment = {end->x - start->x, end->y - start->y, end->z - start->z};
@@ -13690,14 +13684,14 @@ void PC_SPECIAL_SHADOW_LIGHT::RenderSceneShadow(NUGSCN *scene) {
             }
             PC_DISPLAY_CLIP_OBJECT *object = &display->clip_objects[clip];
             for (i32 set = 0; set < render_set_count; ++set) {
-                SHADOW_PRODUCER_BOUNDS *world_bounds = static_cast<SHADOW_PRODUCER_BOUNDS *>(scene->portal_boxes) + instance;
-                __declspec(align(16)) NUVEC4 sphere = {world_bounds->center_radius.x, world_bounds->center_radius.y,
-                                                       world_bounds->center_radius.z, world_bounds->center_radius.w};
+                NUGSCN_INSTANCE_BOUNDS *world_bounds = &scene->portal_boxes[instance];
+                __declspec(align(16)) NUVEC4 sphere = {world_bounds->center.x, world_bounds->center.y, world_bounds->center.z,
+                                                       world_bounds->center.w};
                 if (ShadowSegmentClip(&sphere.xyz, &render_sets[set].endpoint1.xyz, &render_sets[set].endpoint0.xyz,
-                                      render_sets[set].shadow_radius, world_bounds->center_radius.w) != 0) {
-                    world_bounds = static_cast<SHADOW_PRODUCER_BOUNDS *>(scene->portal_boxes) + instance;
+                                      render_sets[set].shadow_radius, world_bounds->center.w) != 0) {
+                    world_bounds = &scene->portal_boxes[instance];
                     NUVEC extent = {world_bounds->extent.x, world_bounds->extent.y, world_bounds->extent.z};
-                    NUVEC center = {world_bounds->center_radius.x, world_bounds->center_radius.y, world_bounds->center_radius.z};
+                    NUVEC center = {world_bounds->center.x, world_bounds->center.y, world_bounds->center.z};
                     NUVEC minimum = {center.x - extent.x, center.y - extent.y, center.z - extent.z};
                     NUVEC maximum = {center.x + extent.x, center.y + extent.y, center.z + extent.z};
                     if (reinterpret_cast<PCFrustumClipSet *>(this)->TestBox(&minimum, &maximum, set)) {

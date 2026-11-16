@@ -2,6 +2,8 @@
 
 #include "nu2api/nucore/common.h"
 
+#include "nu2api/numath/nuvec4.h"
+
 struct NUGSCNROOM_s;
 struct NUPORTAL;
 struct NUPORTALSPHERE;
@@ -12,6 +14,12 @@ struct numtl_s;
 struct nuhspecial_s;
 struct nuspecial_legacy_s;
 struct nutexdim_s;
+
+/* World bounds of a scene instance: the centre (w the bounding radius) and the half extent. */
+typedef struct nugscn_instance_bounds_s { // size 0x20
+    NUVEC4 center;                        // 0x00
+    NUVEC4 extent;                        // 0x10
+} NUGSCN_INSTANCE_BOUNDS;
 
 typedef struct NUGSCN_s {                                      // size 0x20c
     i32 *texture_ids;                                          // 0x000
@@ -54,7 +62,7 @@ typedef struct NUGSCN_s {                                      // size 0x20c
     i32 sphere_count;                                          // 0x0f0
     i32 portal_instance_count;                                 // 0x0f4
     struct NUPORTALSPHERE *portal_spheres;                     // 0x0f8
-    void *portal_boxes;                                        // 0x0fc
+    NUGSCN_INSTANCE_BOUNDS *portal_boxes;                      // 0x0fc
     u32 unknown_100[4];                                        // 0x100
     struct nudisplay_list_s *display_list;                     // 0x110
     u32 unknown_0114[10];                                      // 0x114
