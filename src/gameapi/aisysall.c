@@ -483,8 +483,6 @@ f32 AiEditorPickHeightTolerance = 0.1f;
 
 extern EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius);
 
-void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
-
 /* Draw-family field views. */
 typedef struct AI_PATH_DRAW_FLAGS { // size 0xc
     NULISTLNK link;                 // 0x0

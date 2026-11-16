@@ -232,7 +232,6 @@ extern "C" {
     extern u32 RendererArenaOffsets[];
     extern i32 RendererArenaTypes[];
     extern u32 RendererArenaCount;
-    extern PC_BUFFER_RESOURCE *RendererQuadVertexBuffer;
 
     NUMTX cmtx = {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     u8 NuUnresolvedTextureDds[0x2080] = {
@@ -1463,9 +1462,7 @@ extern "C" {
         u32(__stdcall *get_level_count)(PC_TEXTURE_RESOURCE *); // 0x34
     } PC_TEXTURE_LEVEL_COUNT_METHODS;
 
-    extern "C" {
-        extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
-    }
+    extern "C" {}
 
     /* Font atlas builder: scans a BMP glyph strip for glyph cells and builds a font around it. */
 
@@ -8467,8 +8464,6 @@ extern "C" {
         PCGraphicsInitRenderTexture(texture, PCGraphicsPostEffectWidth, PCGraphicsPostEffectHeight, 0, 1, 0, 2);
         PCGraphicsPostEffectBackBufferTexture = texture;
     }
-
-    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectAuxTexture;
 
     /* Re-sizes the post-effect targets after a mode change, with the same clamps as PCGraphicsCreatePostEffectTextures.
      */

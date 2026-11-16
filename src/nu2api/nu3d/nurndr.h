@@ -6,6 +6,7 @@
 
 struct DWA_WEIGHT_BLOCK;
 struct NUVEC4;
+struct PC_BUFFER_RESOURCE;
 struct numtl_s;
 struct numtx_s;
 
@@ -90,6 +91,8 @@ extern "C" {
     void FaceYDirStream(i32 angle);
     void NuRndrScreenGrabTileBegin(void **tile);
     void NuRndrScreenGrabTileEnd(void **tile);
+    extern struct PC_BUFFER_RESOURCE *RendererQuadVertexBuffer;
+    void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, struct numtx_s *matrix, i32 colour);
 #ifdef __cplusplus
 }
 #endif

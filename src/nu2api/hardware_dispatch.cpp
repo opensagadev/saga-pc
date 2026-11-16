@@ -41,7 +41,6 @@
 #include "nu2api/save_folder.h"
 
 extern "C" {
-    void NuRndrDwaInit(void);
     void PcCreateCursorMaterial(void);
 }
 

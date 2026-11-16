@@ -315,8 +315,6 @@ typedef struct NUMEMBUF {
     u32 pad;
 } NUMEMBUF;
 
-extern NUALLOC_POOL *NuAllocPool;
-
 NUMEMBUF *fun_004ef720(u32 size) {
     NUALLOC_POOL *pool;
     NUMEMBUF *buffer;

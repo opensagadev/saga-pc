@@ -7929,8 +7929,6 @@ extern "C" {
         }
     }
 
-    void NuRndrBoundingBox(NUVEC *minimum, NUVEC *maximum, NUMTX *matrix, i32 colour);
-
     void fun_005ede70(NUVEC *center, NUVEC *extent, i32 colour) {
         __declspec(align(16)) NUVEC maximum;
         __declspec(align(16)) NUVEC minimum;
@@ -11213,8 +11211,6 @@ extern "C" void NuDisplayListCaptureBegin(void) {
     }
 }
 
-extern "C" void NuHtmlEnd(void);
-
 extern "C" void NuDisplayListHtmlEnd(void) {
     if (nudlist_field_fe4 != 0) {
         NuHtmlWrite("<table   width=100%c height=20 bgcolor=#FF0000><tr><td><font face=arial size=+2></font></table>", 0x25);
@@ -11230,7 +11226,6 @@ typedef struct PC_DISPLAY_DEBUG_NAME_READER { // size 0x4
 } PC_DISPLAY_DEBUG_NAME_READER;
 
 extern "C" {
-    void NuHtmlHeading(char *text, ...);
     static void DisplayListPrintItems(NUDISPLAYLISTITEM *item, u32 flags, i32 type_count, i32 *types, i32 file_handle);
 }
 

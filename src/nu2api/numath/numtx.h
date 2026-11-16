@@ -131,6 +131,7 @@ extern "C" {
     void NuMtxSetOrthoBlend(NUMTX *, f32, f32, f32, f32, f32, f32);
     f32 NuVecMagVU0(NUVEC *);
     void NuMtxPreScaleUVU0(NUMTX *matrix, f32 scale);
+    i32 NuVecClipTestPointVU0(NUVEC *point, NUMTX *matrix);
 #ifdef __cplusplus
 }
 #endif

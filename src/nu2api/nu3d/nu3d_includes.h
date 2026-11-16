@@ -1464,6 +1464,10 @@ extern "C" {
     void NuPortalSetActive(NUGSCN *scene, i32 portal_id, i32 active);
     i32 NuSpecialClipTestExtents(nuhspecial_s *special, NUMTX *matrix);
     u8 NuAnimSetForceEulerToQuat(u8 force);
+    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectAuxTexture;
+    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
+    f32 fun_005d0920(void);
+    f32 fun_005d0930(void);
 #ifdef __cplusplus
 }
 #endif

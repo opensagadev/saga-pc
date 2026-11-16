@@ -844,8 +844,6 @@ void NuCameraClearStateBuffer(void) {
     cam_state_count = 0;
 }
 
-i32 NuVecClipTestPointVU0(NUVEC *point, NUMTX *matrix);
-
 i32 NuCameraClipTestPointVport(NUVEC *point) {
     return NuVecClipTestPointVU0(point, &vpc_vport_mtx) == 0;
 }

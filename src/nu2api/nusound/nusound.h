@@ -399,3 +399,7 @@ struct SoundQueue {                    // size 0x400
 };
 
 #endif
+
+#ifdef __cplusplus
+extern SoundQueue *NuSound3StereoStreams[2];
+#endif

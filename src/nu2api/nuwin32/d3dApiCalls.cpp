@@ -25,18 +25,10 @@
 #include "nu2api/nuwin32/pcapi.h"
 
 extern "C" {
-    void PCDeviceBeginScene(void);
-    void NuRndrDwaRelease(void);
     i32 GameReleaseResources(void);
     i32 GameRestoreResources(void);
-    void DebrisReleaseResources(void);
-    void DebrisRestoreResources(void);
-    void NuGScnReleaseDynamicBuffers(void);
-    void NuGScnRestoreDynamicBuffers(void);
     void NuFmvTextureRelease(void);
     void NuFmvTextureRestore(void);
-    f32 fun_005d0920(void);
-    f32 fun_005d0930(void);
 }
 
 /* The D3DX matrix type with its sixteen-float constructor (only the parts used here). */

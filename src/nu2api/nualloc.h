@@ -11,6 +11,7 @@ extern "C" {
     extern u32 NuAllocTrackedBytes;
     extern u32 NuAllocHeaderMetadata[3];
     extern u32 NuAllocTailMetadata[3];
+    extern NUALLOC_POOL *NuAllocPool;
 #ifdef __cplusplus
 }
 #endif

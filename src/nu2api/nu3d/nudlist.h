@@ -154,6 +154,8 @@ extern "C" {
 
     void NuDisplaySceneRndr(struct nudisplay_list_s *);
     void NuDisplayListBurstRndrSpecial(struct nuhspecial_s *handle, u32 count, struct numtx_s *matrices, i32 clip);
+    void NuHtmlEnd(void);
+    void NuHtmlHeading(char *text, ...);
 #ifdef __cplusplus
 }
 #endif

@@ -479,10 +479,6 @@ extern "C" void NuMtlSetRenderStatesPS(NUMTL *arg) {
     NuDisplayHandlerOpacity = -1.0f;
 }
 
-extern "C" {
-    extern GRAPHICS_RENDER_TEXTURE *PCGraphicsPostEffectWorkTexture;
-}
-
 // NuShaderProgramMakeCurrent and the per-stage sampler binds, inlined here.
 #define POST_BLUR_BIND_PROGRAM(bound_program)                                                                                              \
     do {                                                                                                                                   \

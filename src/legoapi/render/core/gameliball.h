@@ -958,6 +958,8 @@ extern "C" {
     extern f32 DebrisGlassV1;
     extern i32 DebrisGlassInitialized;
     extern void *DebrisGlassCopyMaterial;
+    void DebrisReleaseResources(void);
+    void DebrisRestoreResources(void);
 #ifdef __cplusplus
 }
 #endif

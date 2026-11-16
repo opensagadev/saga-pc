@@ -119,10 +119,6 @@ i32 fun_004ff2c0(void) {
     return 0;
 }
 
-extern i32 FileDirectoryMcOpen(i32 port, i32 slot, char *path);
-extern void FileDirectoryMcClose(i32 file);
-extern i32 FileDirectoryMcRead(i32 file, FILE_DIRECTORY_ENTRY *entry);
-
 NUFILE NuFileOpenDir(char *path) {
     char formatted[256];
     NUFILE_DEVICE *device = NuFileGetDeviceFromPath(path);

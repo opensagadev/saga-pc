@@ -3,6 +3,7 @@
 #include "nu2api/nucore/common.h"
 
 struct AI_EDITOR_FILE_INFO;
+struct FILE_DIRECTORY_ENTRY;
 
 typedef struct nudathdr_s NUDATHDR;
 
@@ -229,6 +230,9 @@ extern "C" {
     i32 NuMcCheckCardPresent(i32 port, i32 slot);
     i32 NuMcFormat(i32 port, i32 slot);
     void NuFileWriteString(NUFILE file, const char *text);
+    extern i32 FileDirectoryMcOpen(i32 port, i32 slot, char *path);
+    extern i32 FileDirectoryMcRead(i32 file, struct FILE_DIRECTORY_ENTRY *entry);
+    extern void FileDirectoryMcClose(i32 file);
 #ifdef __cplusplus
 }
 #endif

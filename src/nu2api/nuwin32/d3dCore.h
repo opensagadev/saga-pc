@@ -419,6 +419,12 @@ extern "C" {
     void NuRndrConfigureLeaf(f32, f32, i32);
     void NuRndrShadowInit(u8 *random);
     void PermanentGraphicsResourceSetup(void);
+    i32 PCDeviceShowCursor(i32 show);
+    void NuGScnReleaseDynamicBuffers(void);
+    void NuGScnRestoreDynamicBuffers(void);
+    void NuRndrDwaInit(void);
+    void NuRndrDwaRelease(void);
+    void PCDeviceBeginScene(void);
 #ifdef __cplusplus
 }
 #endif
