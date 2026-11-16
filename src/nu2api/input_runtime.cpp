@@ -46,11 +46,11 @@ extern "C" {
     PC_NATIVE_DEBUG_STATE PCNativeWarningDebugState;
 }
 
-extern "C" u32 fun_006d58c0(void) {
+extern "C" u32 PcMouseGetPressedMask(void) {
     return PcMousePressedMask;
 }
 
-extern "C" u32 fun_006d58f0(i32 button) {
+extern "C" u32 PcMouseButtonPressed(i32 button) {
     if (button >= 0 && button < 4u) {
         return (1 << button) & PcMousePressedMask;
     }
@@ -1328,14 +1328,14 @@ void PC_INPUT_RUNTIME::fun_006d4d20(i32 value) {
     }
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d4d50() {
+i32 PC_INPUT_RUNTIME::GetKeyboardUiOverride() {
     return keyboard_ui_override;
 }
 
 extern "C" void fun_006d4d60(void) {
 }
 
-void PC_INPUT_RUNTIME::fun_006d4d70() {
+void PC_INPUT_RUNTIME::ClearMouseAccumulation() {
     mouse.accumulated[0] = mouse.accumulated[1] = mouse.accumulated[2] = 0.0f;
 }
 
@@ -1349,7 +1349,7 @@ void PC_INPUT_RUNTIME::ResetInputRecords() {
     shutdown_state = 0;
 }
 
-void PC_INPUT_RUNTIME::fun_006d4e20(i32 value) {
+void PC_INPUT_RUNTIME::SetCustomBindingsActive(i32 value) {
     mouse.custom_bindings_active = value;
 }
 
@@ -1423,7 +1423,7 @@ i32 PC_INPUT_RUNTIME::fun_006d4f60(i32 active, i32 code) {
     return -1;
 }
 
-void PC_INPUT_RUNTIME::fun_006d4fc0(const char *keys) {
+void PC_INPUT_RUNTIME::SetBlockedKeys(const char *keys) {
     blocked_keys[0] = 0;
     if (keys != NULL) {
         NuStrCpy(blocked_keys, keys);
@@ -1494,17 +1494,17 @@ extern "C" void PcInputCopyBindings(i32 port, i32 to_auxiliary, i32 bank) {
     nu_input_state->CopyBindings(port, to_auxiliary, bank);
 }
 
-extern "C" f32 fun_006d5b00(void) {
+extern "C" f32 PcMouseGetAccumulatedX(void) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     return runtime->mouse.accumulated[0];
 }
 
-extern "C" f32 fun_006d5b10(void) {
+extern "C" f32 PcMouseGetAccumulatedY(void) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     return runtime->mouse.accumulated[1];
 }
 
-extern "C" f32 fun_006d5b20(void) {
+extern "C" f32 PcMouseGetAccumulatedZ(void) {
     PC_INPUT_RUNTIME *runtime = nu_input_state;
     return runtime->mouse.accumulated[2];
 }
@@ -1532,7 +1532,7 @@ extern "C" i32 fun_006d5df0(i32 player) {
     return 0;
 }
 
-extern "C" i32 fun_006d5e10(i32 player) {
+extern "C" i32 PcInputPlayerOnKeyboardPort(i32 player) {
     i32 port = NuPadGetPort(player);
     return port >= 10 && port <= 13;
 }
@@ -1815,7 +1815,7 @@ void PC_INPUT_RUNTIME::InitializeDefaultRecords() {
     AddInputRecord(3, -1, 11, 0);
 }
 
-i32 PC_INPUT_RUNTIME::fun_006d99e0(i32 port, u8 mask) {
+i32 PC_INPUT_RUNTIME::HasConfig(i32 port, u8 mask) {
     return FindConfig(mask, port, 0) != NULL;
 }
 
@@ -1857,7 +1857,7 @@ extern "C" void NuPadSetMotorsPS(i32 port, i32 motor0, i32 motor1) {
     }
 }
 
-extern "C" i32 fun_006d9490(i32 player) {
+extern "C" i32 PcInputPlayerOnPadPort(i32 player) {
     i32 port = NuPadGetPort(player);
     return port >= 0 && port <= 3;
 }
@@ -2125,7 +2125,7 @@ void PC_INPUT_RUNTIME::PromoteConfig(PC_INPUT_CONFIG *records, i32 count, PC_INP
     PCByteCopy(records, config, sizeof(*records));
 }
 
-void PC_INPUT_RUNTIME::fun_006d3970(PC_INPUT_CONFIG *config) {
+void PC_INPUT_RUNTIME::PromotePrimaryConfig(PC_INPUT_CONFIG *config) {
     PromoteConfig(primary, 64, config);
 }
 
@@ -2238,11 +2238,11 @@ void PC_INPUT_RUNTIME::WriteConfigText(const char *directory, PC_INPUT_CONFIG *c
     }
 }
 
-void PC_INPUT_RUNTIME::fun_006d6eb0(i32 port, PC_INPUT_CONFIG *config) {
+void PC_INPUT_RUNTIME::ExportPortConfig(i32 port, PC_INPUT_CONFIG *config) {
     ExportConfig(port, config, 0, 0, 0);
 }
 
-PC_INPUT_CONFIG *PC_INPUT_RUNTIME::fun_006d6ed0(u8 mask, i32 port) {
+PC_INPUT_CONFIG *PC_INPUT_RUNTIME::FindPortConfig(u8 mask, i32 port) {
     return FindConfig(mask, port, 0);
 }
 

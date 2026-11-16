@@ -1488,7 +1488,7 @@ i32 fun_004ef6c0(void) {
     return 0;
 }
 
-NUALLOC_ARENA *fun_004ef6d0(void) {
+NUALLOC_ARENA *NuAllocGetArena(void) {
     return NuAllocArena;
 }
 
@@ -7549,7 +7549,7 @@ void fun_004f4080(void) {
     nuapi.frame_end_state = 1;
 }
 
-void fun_004f4090(u8 enabled) {
+void NuPadSetCorrectDeadZoning(u8 enabled) {
     UseCorrectDeadZoning = enabled;
 }
 
@@ -8159,7 +8159,7 @@ void NuPadProcessReadData(FRAME_SCANNED_PAD *pad) {
     }
 }
 
-i32 fun_004f4780(void) {
+i32 NuPadGetMaxGamePads(void) {
     return MaxGamePads;
 }
 
@@ -8183,7 +8183,7 @@ void NuPadSetValid(i32 port, i32 valid) {
     g_nupadScannedPads[port].is_valid = (u8)valid;
 }
 
-i32 fun_004f4360(void) {
+i32 NuPadGetProfilePort(void) {
     return FramePadProfilePort;
 }
 

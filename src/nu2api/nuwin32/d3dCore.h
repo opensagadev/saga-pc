@@ -379,7 +379,7 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     i32 fun_00509120();
     void fun_00509130(i32 multisample);
     void fun_00509140(i32 mode);
-    GRAPHICS_RENDER_TEXTURE *fun_005c2190(u16 index);
+    GRAPHICS_RENDER_TEXTURE *GetTargetTexture(u16 index);
     i32 fun_005f7860();
     GRAPHICS_CAPS *fun_005f7870();
     GRAPHICS_PRESENT_PARAMETERS *fun_005f7880();
@@ -399,7 +399,7 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     void fun_006e18e0(u8 feature);
     void fun_006e18f0(u16 count);
     i32 fun_006e1900();
-    i32 fun_006dc750();
+    i32 IsWindowed();
     GRAPHICS_DISPLAY_MODE *fun_006daee0();
     u32 fun_006dbae0();
     u32 fun_006dbaf0();

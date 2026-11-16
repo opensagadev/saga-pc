@@ -1632,7 +1632,7 @@ extern "C" {
         return texture->unknown_10;
     }
 
-    i32 fun_005f7cb0(GRAPHICS_RENDER_TEXTURE *texture) {
+    i32 PCGraphicsTextureGetFormat(GRAPHICS_RENDER_TEXTURE *texture) {
         return texture->format;
     }
 
@@ -1751,7 +1751,7 @@ extern "C" {
         texture->flags = 0x012449d0;
     }
 
-    i32 fun_005f8450(GRAPHICS_RENDER_TEXTURE *texture) {
+    i32 PCGraphicsTextureGetExternalId(GRAPHICS_RENDER_TEXTURE *texture) {
         return texture->external_id;
     }
 
@@ -1913,7 +1913,7 @@ extern "C" {
         return &NuDisplayHandlerTint;
     }
 
-    void *fun_005f8920(void) {
+    void *NuDisplayHandlerGetMaterial(void) {
         return NuDisplayHandlerMaterial;
     }
 
@@ -1972,7 +1972,7 @@ extern "C" {
     void fun_005f8b50(void) {
     }
 
-    void fun_005f8b60(PC_FRAMEBUFFER *framebuffer, i32 index, u32 colour) {
+    void PCFramebufferSetClearColour(PC_FRAMEBUFFER *framebuffer, i32 index, u32 colour) {
         framebuffer->clear_colour[index] = colour;
     }
 
@@ -7648,7 +7648,7 @@ extern "C" {
         }
     }
 
-    void *fun_00602e70(PC_GOBJ_REGISTRY_AUX *aux) {
+    void *PCGobjRegistryAuxPayload(PC_GOBJ_REGISTRY_AUX *aux) {
         return aux->payload;
     }
 
@@ -8620,7 +8620,7 @@ extern "C" {
         }
     }
 
-    void fun_00604930(i32 enabled) {
+    void PCClipSetExtentsEnabled(i32 enabled) {
         PCClipExtentsEnabled = enabled;
     }
 

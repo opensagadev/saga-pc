@@ -1912,7 +1912,7 @@ extern "C" i16 *NewScanHandel(NUVEC *position, NUVEC *movement, f32 radius, i32 
     return handle;
 }
 
-extern "C" void fun_0067eab0(i32 distance) {
+extern "C" void TerrainSetPlatformDistance(i32 distance) {
     TerrPlatDis = distance;
 }
 

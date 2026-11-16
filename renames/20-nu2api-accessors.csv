@@ -1,0 +1,78 @@
+old,new,evidence
+fun_005c6680,NuDisplayList2dGet,returns &PCDisplayList2d
+fun_005c6690,NuDisplayListStreamAlign16,aligns the display list stream cursor to 16 and returns it
+fun_005c6990,NuGeometryVecDot,dot product of two NUVECs
+fun_005c6b30,NuGeometryPlaneDistance,plane xyz dot point plus w
+fun_006d36c0,PcInputGetRuntime,returns nu_input_state
+fun_006d58c0,PcMouseGetPressedMask,returns PcMousePressedMask
+fun_006d58f0,PcMouseButtonPressed,tests one bit of PcMousePressedMask
+fun_006d5b00,PcMouseGetAccumulatedX,returns mouse.accumulated[0]
+fun_006d5b10,PcMouseGetAccumulatedY,returns mouse.accumulated[1]
+fun_006d5b20,PcMouseGetAccumulatedZ,returns mouse.accumulated[2]
+fun_006d9490,PcInputPlayerOnPadPort,the player's port is 0..3
+fun_006d5e10,PcInputPlayerOnKeyboardPort,the player's port is 10..13
+fun_006d6c80,NuKeyboardGetPreviousKeyIndex,returns nu_keyboard_previous_key_index
+fun_006d6c90,NuKeyboardGetKeyIndex,returns nu_keyboard_key_index
+fun_005d08e0,NuQFntGetMode,returns NuQFntMode
+fun_005d0920,NuQFntGetLengthScale,returns qfnt_len_scale
+fun_005d0930,NuQFntGetHeightScale,returns qfnt_height_scale
+fun_005d9290,NuPortalGetRoomCount,returns scene->num_rooms (0 without a scene)
+fun_005da450,NuPortalSetDebugEnabled,setter of NuPortalDebugEnabled
+fun_005da460,NuPortalSetOverrideCamera,setter of NuPortalOverrideCamera
+fun_005c27d0,NuDisplayHandlerResetShaderCache,clears the vertex and pixel shader caches
+fun_005c1fe0,NuPrimSetUV,writes u and v of the current prim vertex
+fun_005c69c0,LengthSquared,NuVec member returning x*x+y*y+z*z
+fun_005c6a00,Inverse,NuMtx member returning NuMtxInvH of this
+fun_005c6a20,Multiply,NuMtx member returning NuMtxMulH(this; other)
+fun_005c68e0,TransformH,NuVec member returning NuVecMtxTransformH of this
+fun_006dc710,GetClientWidth,PC_WINDOW_OPTIONS getter of client_width
+fun_006dc720,GetClientHeight,PC_WINDOW_OPTIONS getter of client_height
+fun_006dc730,GetWindowX,PC_WINDOW_OPTIONS getter of window_x
+fun_006dc740,GetWindowY,PC_WINDOW_OPTIONS getter of window_y
+fun_006dc750,IsWindowed,PC_DEVICE_BACKEND: parameters.windowed == 1
+fun_006d35d0,SetSuppressKey,PC_INPUT_RUNTIME setter of suppress_key_1
+fun_006d35e0,SetActionKeysActive,sets devices[port].action_keys_active
+fun_006d3600,SetCapturedPort,setter of captured_port
+fun_006d3610,GetCapturedPort,getter of captured_port
+fun_006d3620,ResetShutdownState,clears shutdown_state
+fun_006d3630,SetThresholds,sets the axis and motion thresholds and the ramp time
+fun_006d3710,GetDeviceCounts,writes a port's button axis and pov counts
+fun_006d4d50,GetKeyboardUiOverride,getter of keyboard_ui_override
+fun_006d4d70,ClearMouseAccumulation,zeroes mouse.accumulated
+fun_006d4e20,SetCustomBindingsActive,setter of mouse.custom_bindings_active
+fun_006d4fc0,SetBlockedKeys,copies the blocked key string
+fun_006d99e0,HasConfig,FindConfig(mask; port; 0) != NULL
+fun_006d3970,PromotePrimaryConfig,PromoteConfig(primary; 64; config)
+fun_006d6eb0,ExportPortConfig,ExportConfig(port; config; 0; 0; 0)
+fun_006d6ed0,FindPortConfig,FindConfig(mask; port; 0)
+fun_005c2190,GetTargetTexture,PC_DEVICE_BACKEND: returns textures[index]
+fun_005c21e0,IsResolved,PC_POST_BUFFER_PROXY getter of resolved
+fun_005c21f0,Resolve,PC_POST_BUFFER_PROXY: framebuffer barrier then resolved = 1
+fun_005c2210,GetBufferTexture,PC_POST_BUFFER_PROXY getter of texture
+fun_005c22b0,releaseAllResources,NuPostFilterGen: destroyTextureResources then destroyResources
+fun_005c2360,isFilterEnabled,NuMainFilterGen: the per-filter enable flags from dof_enabled on
+fun_005c23a0,setBloomParameters,NuMainFilterGen setter of bloom
+fun_005c2400,setAccumulationParameters,NuMainFilterGen setter of the accumulation frames blend and weight exponent
+fun_005c2470,PCDeviceGetVertexProcessing,returns PCDeviceHardwareVertexProcessingPC
+fun_005e52c0,NuTexGetDimensionTable,returns NuTextureDimensions
+fun_005c1350,NuRndrIsScreenGrabbing,returns NuRndrDoingScreenGrab
+fun_005da970,NuCutSceneSetBoundsTrackRoot,setter of CutSceneBoundingBoxTrackRoot
+fun_005f7cb0,PCGraphicsTextureGetFormat,returns texture->format
+fun_005f8450,PCGraphicsTextureGetExternalId,returns texture->external_id
+fun_005f8920,NuDisplayHandlerGetMaterial,returns NuDisplayHandlerMaterial
+fun_005f8b60,PCFramebufferSetClearColour,sets framebuffer->clear_colour[index]
+fun_00602e70,PCGobjRegistryAuxPayload,returns aux->payload
+fun_00604930,PCClipSetExtentsEnabled,setter of PCClipExtentsEnabled
+fun_004ef6d0,NuAllocGetArena,returns NuAllocArena
+fun_004f4090,NuPadSetCorrectDeadZoning,setter of UseCorrectDeadZoning
+fun_004f4780,NuPadGetMaxGamePads,returns MaxGamePads
+fun_004f4360,NuPadGetProfilePort,returns FramePadProfilePort
+fun_005f8a40,PcGetDefaultFramebuffer,returns PcDefaultFramebuffer
+fun_005d4760,NuRndrGetWindFrameCount,returns PCWindFrameCount
+fun_005d5260,NuRndrSetSamplerBiasOffset,setter of PCShaderMaterialSamplerBiasOffset
+fun_006dd360,NuWindowsGetConfigValues,returns NuWindowsConfigValues
+fun_006dd370,NuWindowsSetConfigValue,sets NuWindowsConfigValues[index]
+fun_006df260,PCDeviceGetBackBufferWidth,returns the presentation width
+fun_006df2f0,PCDeviceGetBackBufferHeight,returns the presentation height
+fun_006786e0,TerrainSetWallOver,setter of wallover
+fun_0067eab0,TerrainSetPlatformDistance,setter of TerrPlatDis

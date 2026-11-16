@@ -62,7 +62,7 @@ extern "C" void fun_005f8a30(void) {
     D3DPERF_EndEvent();
 }
 
-extern "C" PC_FRAMEBUFFER *fun_005f8a40(void) {
+extern "C" PC_FRAMEBUFFER *PcGetDefaultFramebuffer(void) {
     return PcDefaultFramebuffer;
 }
 
