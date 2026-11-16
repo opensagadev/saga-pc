@@ -53,7 +53,18 @@ typedef struct menu_s {       // size 0xe0
     f32 draw_z;               // 0x9c
     f32 draw_offset;          // 0xa0
     f32 centre_offset;        // 0xa4
-    u8 unknown_00a8[0x34];    // 0xa8
+    u8 unknown_00a8[8];       // 0xa8
+    i32 state_b0;             // 0xb0
+    i32 state_b4;             // 0xb4
+    i32 state_b8;             // 0xb8
+    i32 state_bc;             // 0xbc
+    i32 state_c0;             // 0xc0
+    f32 *item_offsets;        // 0xc4
+    f32 item_offset_scale;    // 0xc8
+    u8 unknown_00cc[4];       // 0xcc
+    f32 item_scale_x;         // 0xd0
+    f32 item_spacing;         // 0xd4
+    i32 input_disabled;       // 0xd8
     i32 state;                // 0xdc
 } MENU;
 
