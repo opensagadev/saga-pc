@@ -1588,7 +1588,7 @@ address,symbol,size,ctype
 0x481aa0,_LedgeVuVecMake,28,
 0x481ac0,_Ledges_Load,235,"i32 __cdecl(WORLDINFO *,void *)"
 0x481bb0,_Ledges_ReserveBufferSpace,93,void * __cdecl(WORLDINFO *)
-0x481c10,_Ledge_Reset,347,void __cdecl(LEDGE_MOTION *)
+0x481c10,_Ledge_Reset,347,void __cdecl(LEDGE_s *)
 0x481d70,_Ledge_SetVisibility,30,"void __cdecl(GIZMO *,i32)"
 0x481d90,_Ledge_Activate,28,"void __cdecl(GIZMO *,i32)"
 0x481db0,_Ledges_Reset,133,"void __cdecl(WORLDINFO *,void *,LEDGE_PROGRESS *)"
@@ -1605,7 +1605,7 @@ address,symbol,size,ctype
 0x4820e0,_Ledges_StoreProgress,153,"void __cdecl(WORLDINFO *,void *,LEDGE_PROGRESS *)"
 0x482180,_Ledges_RegisterGizmo,268,ADDGIZMOTYPE * __cdecl(i32)
 0x482290,?LedgeSetAttachPosition@@YAXPAUgameobject_s@@PAUnuvec_s@@G@Z,124,
-0x482310,?LedgeAttachPoint@@YAPAULEDGE_MOTION@@PAUWORLDINFO_s@@PAUnuvec_s@@11PAG@Z,1165,
+0x482310,?LedgeAttachPoint@@YAPAULEDGE_s@@PAUWORLDINFO_s@@PAUnuvec_s@@11PAG@Z,1165,
 0x4827a0,_Ledge_MoveCode,1105,"void __cdecl(WORLDINFO *, GAMEOBJECT *)"
 0x482c00,_LegoapiStatusNuError,1,
 0x00482c10,_StatusScoreRatio,54,"f32 __cdecl(f32, f32)"
