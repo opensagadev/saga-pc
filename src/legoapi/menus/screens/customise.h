@@ -7,6 +7,7 @@
 
 struct CUSTOMPIECE_LAYERS;
 struct FRAME_PAD;
+struct customiser_config_s;
 struct WORLDINFO_s;
 struct nufpar_s;
 
