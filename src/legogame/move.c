@@ -36,6 +36,7 @@
 #include "legoapi/gizmo/base/gizmo.h"
 #include "legoapi/gizmo/object/gizmoblowups.h"
 #include "legoapi/gizmo/object/gizmopickup.h"
+#include "legoapi/gizmos/door/securitydoors.h"
 #include "legoapi/gizmos/door/zipups.h"
 #include "legoapi/gizmos/fx/gizmopickups.h"
 #include "legoapi/gizmos/object/gizbuildits.h"
@@ -46,6 +47,7 @@
 #include "legoapi/gizmos/transport/ledge.h"
 #include "legoapi/gizmos/transport/teleport.h"
 #include "legoapi/gizmos/transport/tubes.h"
+#include "legoapi/gizmos/traps/attracto.h"
 #include "legoapi/gizmos/traps/gizforce.h"
 #include "legoapi/items/base/animpacket.h"
 #include "legoapi/items/base/apiobject.h"
@@ -73,6 +75,7 @@
 #include "legoapi/misc/legoapi_status.h"
 #include "legoapi/misc/supportall.h"
 #include "legoapi/misc/utilities.h"
+#include "legoapi/props/objects/legoapi_signal.h"
 #include "legoapi/props/objects/techno.h"
 #include "legoapi/props/objects/tightrope.h"
 #include "legoapi/props/objects/zipup.h"
@@ -176,21 +179,6 @@ typedef struct directional_techno_s {
     u8 unknown_00[0x1c];
     NUVEC ground_position;
 } DIRECTIONAL_TECHNO;
-
-typedef struct directional_attracto_s {
-    u8 unknown_00[0x64];
-    NUVEC active_position;
-} DIRECTIONAL_ATTRACTO;
-
-typedef struct directional_securitydoor_s {
-    u8 unknown_00[0xa4];
-    NUVEC player_position;
-} DIRECTIONAL_SECURITYDOOR;
-
-typedef struct directional_signal_s {
-    u8 unknown_00[0x84];
-    NUVEC target_position;
-} DIRECTIONAL_SIGNAL;
 
 typedef struct directional_buildit_s {
     u8 unknown_00[0x72];
@@ -9562,18 +9550,15 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                 object->target_velocity.x = (techno->ground_position.x - object->position.x) * 5.0f;
                 object->target_velocity.z = (techno->ground_position.z - object->position.z) * 5.0f;
             } else if (object->character_context == CHARACTER_CONTEXT_ATTRACTO_DEPOSIT) {
-                DIRECTIONAL_ATTRACTO *attracto;
-                attracto = object->grapple;
+                ATTRACTO *attracto = object->attracto;
                 object->target_velocity.x = (attracto->active_position.x - object->position.x) * 5.0f;
                 object->target_velocity.z = (attracto->active_position.z - object->position.z) * 5.0f;
             } else if (object->character_context == CHARACTER_CONTEXT_SECURITY) {
-                DIRECTIONAL_SECURITYDOOR *door;
-                door = object->grapple;
+                SECURITY_DOOR_RECORD *door = object->security_door;
                 object->target_velocity.x = (door->player_position.x - object->position.x) * 5.0f;
                 object->target_velocity.z = (door->player_position.z - object->position.z) * 5.0f;
             } else if (object->character_context == CHARACTER_CONTEXT_SIGNAL) {
-                DIRECTIONAL_SIGNAL *signal;
-                signal = object->grapple;
+                SIGNAL_s *signal = object->signal;
                 object->target_velocity.x = (signal->target_position.x - object->collision_position.x) * 5.0f;
                 object->target_velocity.y = (signal->target_position.y - object->collision_position.y) * 5.0f;
                 object->target_velocity.z = (signal->target_position.z - object->collision_position.z) * 5.0f;

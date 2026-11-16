@@ -27,33 +27,6 @@
 #include "nu2api/numath/nutrig.h"
 #include "nu2api/numath/nuvec.h"
 
-typedef struct security_door_record_s { // size 0xc0
-    NUMTX leaf_matrix[2];               // 0x00
-    char name[16];                      // 0x80
-    NUVEC position;                     // 0x90
-    i16 platform_id[2];                 // 0x9c
-    u16 yaw;                            // 0xa0
-
-    union { // size 0x1
-        u8 flags;
-
-        struct {            // size 0x1
-            u8 active : 1;  // 0xa2:0
-            u8 visible : 1; // 0xa2:1
-            u8 opened : 1;  // 0xa2:2
-            u8 drawn : 1;   // 0xa2:3
-            u8 unused : 4;  // 0xa2:4
-        } bits;
-    }; // 0xa2
-
-    u8 state;              // 0xa3
-    NUVEC player_position; // 0xa4
-    u16 terrain_angle_z;   // 0xb0
-    u16 terrain_angle_x;   // 0xb2
-    f32 opening;           // 0xb4
-    u8 unknown_b8[8];      // 0xb8
-} SECURITY_DOOR_RECORD;
-
 typedef struct security_door_progress_s { // size 0xc
     u32 visible_mask[1];                  // 0x0
     u32 active_mask[1];                   // 0x4
@@ -82,7 +55,7 @@ i32 SecurityDoors_Load(WORLDINFO *world, void *unused) {
     if (world->security_door_count == 0) {
         EdFileReadInt();
         world->security_door_count = EdFileReadInt();
-        door = (SECURITY_DOOR_RECORD *)world->security_doors;
+        door = world->security_doors;
         for (index = 0; index < world->security_door_count; ++index, ++door) {
             EdFileRead(door->name, 16);
             EdFileReadNuVec(&door->position);
@@ -96,10 +69,8 @@ i32 SecurityDoors_Load(WORLDINFO *world, void *unused) {
 void SecurityDoors_InitTerrain(WORLDINFO *world) {
     i32 index;
     for (index = 0; index < world->security_door_count; ++index) {
-        ((SECURITY_DOOR_RECORD *)world->security_doors)[index].platform_id[0] =
-            NewPlatPickupInst(&((SECURITY_DOOR_RECORD *)world->security_doors)[index].leaf_matrix[0], 5);
-        ((SECURITY_DOOR_RECORD *)world->security_doors)[index].platform_id[1] =
-            NewPlatPickupInst(&((SECURITY_DOOR_RECORD *)world->security_doors)[index].leaf_matrix[1], 6);
+        world->security_doors[index].platform_id[0] = NewPlatPickupInst(&world->security_doors[index].leaf_matrix[0], 5);
+        world->security_doors[index].platform_id[1] = NewPlatPickupInst(&world->security_doors[index].leaf_matrix[1], 6);
     }
 }
 
@@ -118,14 +89,14 @@ void *SecurityDoors_ReserveBufferSpace(WORLDINFO *world) {
 void SecurityDoor_Activate(GIZMO *gizmo, i32 active) {
     if (gizmo != NULL) {
         SECURITY_DOOR_RECORD *door = gizmo->object;
-        door->bits.active = active != 0;
+        door->active = active != 0;
     }
 }
 
 void SecurityDoor_SetVisibility(GIZMO *gizmo, i32 visible) {
     if (gizmo != NULL) {
         SECURITY_DOOR_RECORD *door = gizmo->object;
-        door->bits.visible = visible != 0;
+        door->visible = visible != 0;
     }
 }
 
@@ -157,7 +128,7 @@ void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS 
     if (world == NULL || world->security_doors == NULL) {
         return;
     }
-    door = (SECURITY_DOOR_RECORD *)world->security_doors;
+    door = world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         i32 word;
         u32 mask;
@@ -167,10 +138,10 @@ void SecurityDoors_Reset(WORLDINFO *world, void *unused, SECURITY_DOOR_PROGRESS 
         }
         word = index / 32;
         mask = 1u << (index & 31);
-        door->bits.visible = (progress->visible_mask[word] & mask) != 0;
-        door->bits.active = (progress->active_mask[word] & mask) != 0;
-        door->bits.opened = (progress->opened_mask[word] & mask) != 0;
-        if (door->bits.opened) {
+        door->visible = (progress->visible_mask[word] & mask) != 0;
+        door->active = (progress->active_mask[word] & mask) != 0;
+        door->opened = (progress->opened_mask[word] & mask) != 0;
+        if (door->opened) {
             door->opening = 1.0f;
             door->state = SECURITYDOOR_STATE_OPEN;
             SecurityDoorUpdateMatrices(door, 0x4000);
@@ -184,7 +155,7 @@ void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
     if (world == NULL || world->security_doors == NULL) {
         return;
     }
-    door = (SECURITY_DOOR_RECORD *)world->security_doors;
+    door = world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         NUANG angle;
         if (door->state == SECURITYDOOR_STATE_OPEN && door->opening < 1.0f) {
@@ -209,7 +180,7 @@ void SecurityDoors_Update(WORLDINFO *world, void *unused, f32 delta_time) {
 
 SECURITY_DOOR_RECORD *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position, GAMEOBJECT *object, f32 *distance) {
     SECURITY_DOOR_RECORD *nearest = NULL;
-    SECURITY_DOOR_RECORD *door = (SECURITY_DOOR_RECORD *)world->security_doors;
+    SECURITY_DOOR_RECORD *door = world->security_doors;
     f32 best = 1000000000.0f;
     i32 index;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
@@ -235,7 +206,7 @@ SECURITY_DOOR_RECORD *SecurityDoor_FindNearest(WORLDINFO *world, NUVEC *position
 }
 
 void SecurityDoors_Draw(WORLDINFO *world, void *unused, f32 delta_time) {
-    SECURITY_DOOR_RECORD *door = (SECURITY_DOOR_RECORD *)world->security_doors;
+    SECURITY_DOOR_RECORD *door = world->security_doors;
     GAMEOBJECT *nearest_player = NULL;
     u16 rotation;
     f32 pulse;
@@ -292,8 +263,8 @@ i32 SecurityDoors_GetMaxGizmos(WORLDINFO *world) {
 void SecurityDoors_AddGizmos(GIZMOSYS *system, i32 type_id, WORLDINFO *world, void *unused) {
     i32 index;
     for (index = 0; index < world->security_door_count; ++index) {
-        if (NuStrLen(((SECURITY_DOOR_RECORD *)world->security_doors)[index].name) != 0) {
-            AddGizmo(system, type_id, NULL, &((SECURITY_DOOR_RECORD *)world->security_doors)[index]);
+        if (NuStrLen(world->security_doors[index].name) != 0) {
+            AddGizmo(system, type_id, NULL, &world->security_doors[index]);
         }
     }
 }
@@ -338,7 +309,7 @@ void SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURITY_DOOR_P
     if (world == NULL || world->security_doors == NULL) {
         return;
     }
-    door = (SECURITY_DOOR_RECORD *)world->security_doors;
+    door = world->security_doors;
     for (index = 0; index < world->security_door_count; ++index, ++door) {
         i32 word;
         u32 mask;
@@ -347,13 +318,13 @@ void SecurityDoors_StoreProgress(WORLDINFO *world, void *unused, SECURITY_DOOR_P
         }
         word = index / 32;
         mask = 1u << (index & 31);
-        if (!door->bits.visible) {
+        if (!door->visible) {
             progress->visible_mask[word] &= ~mask;
         }
-        if (!door->bits.active) {
+        if (!door->active) {
             progress->active_mask[word] &= ~mask;
         }
-        if (door->bits.opened) {
+        if (door->opened) {
             progress->opened_mask[word] |= mask;
         }
     }

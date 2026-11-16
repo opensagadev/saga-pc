@@ -246,13 +246,13 @@ typedef struct WORLDINFO_s { // size 0x51ac
     u8 unknown_5088[0x8];                                // 0x5088
     struct SHARD_s *shards;                              // 0x5090
     i32 shard_count;                                     // 0x5094
-    void *attractos;                                     // 0x5098
+    struct attracto_s *attractos;                        // 0x5098
     i32 attracto_count;                                  // 0x509c
     struct guideline_record_s *guidelines;               // 0x50a0
     i32 guideline_count;                                 // 0x50a4
     struct LEDGE_s *ledges;                              // 0x50a8
     i32 ledge_count;                                     // 0x50ac
-    struct SECURITYDOOR_s *security_doors;               // 0x50b0
+    struct security_door_record_s *security_doors;       // 0x50b0
     i32 security_door_count;                             // 0x50b4
     struct GIZMOPICKUPRUNTIMESYS_s *pickup_runtime_sys;  // 0x50b8
     i32 gizmo_blowup_type_count;                         // 0x50bc

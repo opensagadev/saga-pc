@@ -5,42 +5,40 @@
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
-/* SECURITYDOOR_s.flags, the bitfields */
+/* SECURITY_DOOR_RECORD.flags, the bitfields */
 #define SECURITYDOOR_ACTIVE 0x1
 #define SECURITYDOOR_VISIBLE 0x2
 #define SECURITYDOOR_OPENED 0x4 /* fully open: the gizmo output */
 #define SECURITYDOOR_DRAWN 0x8  /* a leaf was drawn this frame */
 
-/* SECURITYDOOR_s.state (security_door_record_s.state in securitydoor.c) */
+/* SECURITY_DOOR_RECORD.state */
 #define SECURITYDOOR_STATE_CLOSED 0
 #define SECURITYDOOR_STATE_IN_USE 1 /* a character works the panel (CHARACTER_CONTEXT_SECURITY) */
 #define SECURITYDOOR_STATE_OPEN 2   /* opening, then open */
 
-typedef struct SECURITYDOOR_s SECURITYDOOR_s;
+typedef struct security_door_record_s { // size 0xc0
+    NUMTX leaf_matrix[2];               // 0x00
+    char name[16];                      // 0x80
+    NUVEC position;                     // 0x90
+    i16 platform_id[2];                 // 0x9c
+    u16 yaw;                            // 0xa0
 
-struct SECURITYDOOR_s {   // size 0xc0
-    NUMTX leaf_matrix[2]; // 0x00
-    char name[16];        // 0x80
-    NUVEC position;       // 0x90
-    i16 platform_id[2];   // 0x9c
-    u16 yaw;              // 0xa0
+    union { // size 0x1
+        u8 flags;
 
-    union { // size 0x2
-        u16 flags;
-
-        struct {                    // size 0x2
-            u16 active : 1;         // 0xa2:0
-            u16 visible : 1;        // 0xa2:1
-            u16 opened : 1;         // 0xa2:2
-            u16 flag_08 : 1;        // 0xa2:3
-            u16 reserved_flags : 4; // 0xa2:4
-            u16 state : 8;          // 0xa2:8
+        struct {            // size 0x1
+            u8 active : 1;  // 0xa2:0
+            u8 visible : 1; // 0xa2:1
+            u8 opened : 1;  // 0xa2:2
+            u8 drawn : 1;   // 0xa2:3
+            u8 unused : 4;  // 0xa2:4
         };
     }; // 0xa2
 
+    u8 state;              // 0xa3
     NUVEC player_position; // 0xa4
     u16 terrain_angle_z;   // 0xb0
     u16 terrain_angle_x;   // 0xb2
     f32 opening;           // 0xb4
-    char unknown_b8[8];    // 0xb8
-};
+    u8 unknown_b8[8];      // 0xb8
+} SECURITY_DOOR_RECORD;

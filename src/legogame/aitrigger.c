@@ -504,7 +504,7 @@ void *AITriggerSetSysCreate(VARIPTR *buffer, VARIPTR *end) {
 
 static i32 Attractos_Load(void *context, void *unused1) {
     i32 version;
-    struct ATTRACTO_s *attracto;
+    ATTRACTO *attracto;
     i32 i;
     WORLDINFO *world = context;
     if (world->attracto_count != 0) {
@@ -530,7 +530,7 @@ static i32 Attractos_Load(void *context, void *unused1) {
 }
 
 static void Attracto_SetVisibility(GIZMO *gizmo, i32 visible) {
-    struct ATTRACTO_s *attracto;
+    ATTRACTO *attracto;
     if (gizmo == NULL || gizmo->object == NULL) {
         return;
     }

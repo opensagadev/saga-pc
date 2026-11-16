@@ -435,13 +435,6 @@ GAME_PUBLISHER_ASSERT(offsetof(NUMTX, m32) == 0x38);
 GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, mid_position) == 0x4c);
 GAME_PUBLISHER_ASSERT(offsetof(GIZMOBLOWUP, target_scale) == 0xa8);
 
-typedef struct ATTRACTO_READER {
-    u8 opaque_00[0x5c];
-    u16 angle;
-} ATTRACTO_READER;
-
-GAME_PUBLISHER_ASSERT(offsetof(ATTRACTO_READER, angle) == 0x5c);
-
 typedef struct GAME_CUSTOMISER_REWARD_READER {
     u8 opaque_00[0x174];
     u16 *save_pieces;
@@ -1026,7 +1019,7 @@ static i32 GizBuildit_AutoBuildPos_Game(void *context, NUVEC *position, NUVEC *r
     if (attracto != NULL) {
         Attracto_GetPos_Top(attracto, result);
         if (angle != NULL) {
-            *angle = ((ATTRACTO_READER *)attracto)->angle;
+            *angle = attracto->angle;
         }
         return 1;
     }

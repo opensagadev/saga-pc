@@ -1142,6 +1142,7 @@ typedef struct gameobject_s { // size 0x10d8
         struct GIZMO_LEVER *lever;
         struct panel_movement_s *panel;
         struct security_door_record_s *security_door;
+        struct attracto_s *attracto;
         struct SIGNAL_s *signal;
         struct TELEPORT_MOTION *teleport;
         struct TIGHTROPE_MOTION *tightrope;
