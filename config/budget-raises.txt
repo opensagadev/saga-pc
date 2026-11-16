@@ -302,3 +302,8 @@ config/oddscan-budget.json magic-flag 2516 quick run, settled in the refix
 config/oddscan-budget.json magic-state 4332 quick run, settled in the refix
 config/castscan-budget.json redundant-identity 64 quick run, settled in the refix
 config/declscan-budget.json A 25 quick run, settled in the refix
+config/castscan-budget.json function-pointer 805 quick run, settled in the refix
+config/castscan-budget.json redundant-implicit 67 quick run, settled in the refix
+config/castscan-budget.json truncation 2187 quick run, settled in the refix
+config/oddscan-budget.json magic-flag 2518 quick run, settled in the refix
+config/castscan-budget.json other 7 quick run, settled in the refix
