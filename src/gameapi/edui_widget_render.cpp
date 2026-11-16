@@ -1558,7 +1558,6 @@ extern "C" i32 eduicbProcessGraph(eduimenu_s *menu, eduiitem_s *item, f32 delta_
     i32 stick_y = pad->analog_left_y - 128;
     nugraph_s *graph;
     i32 index;
-    (void)delta_time;
     show_y_scale_help = show_y_scale_help - 1 > 0 ? show_y_scale_help - 1 : 0;
     show_x_scale_help = show_x_scale_help - 1 > 0 ? show_x_scale_help - 1 : 0;
     if (stick_x > 0) {
@@ -2263,7 +2262,6 @@ extern "C" i32 eduicbProcessGreyPick(eduimenu_s *menu, eduiitem_s *item, f32 del
     edui_colour_pick_s *pick = (edui_colour_pick_s *)item;
     i32 left = pad->analog_l1 ? pad->analog_l1 : pad->analog_l2;
     i32 right = pad->analog_r1 ? pad->analog_r1 : pad->analog_r2;
-    (void)delta_time;
     if (left) {
         f64 value = pick->value - left / 4192.0;
         pick->value = value < 0.0 ? 0.0 : value;
@@ -2314,8 +2312,6 @@ extern "C" i32 eduicbRenderSelWithClipColour(eduimenu_s *menu, eduiitem_s *item,
 extern "C" i32 near_clip_at_cursor;
 
 extern "C" void cbNearClipAtCursor(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
-    (void)menu;
-    (void)buttons;
     near_clip_at_cursor = item->flags & EDUI_ITEM_HIGHLIGHTED;
 }
 

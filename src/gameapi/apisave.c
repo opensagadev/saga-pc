@@ -285,12 +285,10 @@ void Text3D(char *text, f32 x, f32 y, f32 z, f32 x_scale, f32 y_scale, f32 z_sca
 
 void MenuEnterSaveConfirm(MENU *menu) {
     i32 slot = Menu_InHeaderSave != 0 ? SAVESLOTS : memcard_slot;
-    (void)menu;
     Menu_Overwriteflag = saveload_slotused[slot] != 0;
 }
 
 void MenuEnterAutoSaveWarning(MENU *menu) {
-    (void)menu;
     memcard_autosaveenabled = 1;
     memcard_autosavedisabled = 0;
 }
@@ -304,37 +302,31 @@ void MenuEnterAutoSaveCancel(MENU *menu) {
 }
 
 void MenuEnterCardWarning(MENU *menu) {
-    (void)menu;
     MenuCardWarningState = 0;
     memcard_cardchanged = 0;
 }
 
 void MenuEnterHeaderSave(MENU *menu) {
-    (void)menu;
     Menu_InHeaderSave = 1;
     BackupMenuNoFn();
     NewMenu(MENU_SAVE, -1, -1);
 }
 
 void MenuEnterStartNewGame(MENU *menu) {
-    (void)menu;
     memcard_autosaveenabled = 0;
     saveload_autosave = -1;
     BackupMenu();
 }
 
 void MenuExitSave(MENU *menu) {
-    (void)menu;
     Menu_InSaveFlow = 0;
 }
 
 void MenuExitLoad(MENU *menu) {
-    (void)menu;
     Menu_InLoadFlow = 0;
 }
 
 void MenuExitCardWarning(MENU *menu) {
-    (void)menu;
     Menu_InWarningFlow = 0;
 }
 
@@ -489,7 +481,6 @@ void MenuUpdateFileCorrupt(MENU *menu) {
 }
 
 void MenuUpdateFormatting(MENU *menu) {
-    (void)menu;
     if (memcard_formatme != 0) {
         memcard_formatmessage_delay = 1.5f;
     }
@@ -525,7 +516,6 @@ void MenuUpdateDeleteConfirm(MENU *menu) {
 }
 
 void MenuUpdateDeleting(MENU *menu) {
-    (void)menu;
     if (memcard_deleteneeded != 0 || memcard_deletemessage_delay > 0.0f) {
         memcard_deleteresult_delay = 1.5f;
         if (memcard_deleteneeded != 0 && memcard_cardchanged != 0) {
@@ -557,7 +547,6 @@ void MenuUpdateSaveConfirm(MENU *menu) {
 }
 
 void MenuUpdateSaving(MENU *menu) {
-    (void)menu;
     if (memcard_saveneeded != 0) {
         memcard_savemessage_delay = 1.5f;
     }
@@ -636,7 +625,6 @@ void MenuUpdateLoadConfirm(MENU *menu) {
 }
 
 void MenuUpdateLoading(MENU *menu) {
-    (void)menu;
     if (memcard_loadneeded != 0) {
         memcard_loadmessage_delay = 1.5f;
     }
@@ -1159,7 +1147,6 @@ void MenuDrawLoadConfirm(MENU *menu) {
 
 void MenuDrawFileCorrupt(MENU *menu) {
     char message[1024];
-    (void)menu;
     sprintf(message, apitxt_CORRUPTLOAD);
     MenuSmartTextEx(message, 0.0f, 0.0f, 1.0f, MenuTextScale, MenuTextScale, MenuTextScale, 0, MENUNORMALR, MENUNORMALG, MENUNORMALB, 1.3f,
                     3, NULL, 0, MenuA);
@@ -1212,7 +1199,6 @@ static void Draw_NODATAAVAILABLE(void) {
 }
 
 void MenuEnterNoMemoryCard(MENU *menu) {
-    (void)menu;
 }
 
 void MenuDrawNoData(MENU *menu) {
@@ -1264,7 +1250,6 @@ i32 saveload_autosavedisabled = 0;
 i32 saveload_filecorrupt = 0;
 
 void MenuDrawLoading(MENU *menu) {
-    (void)menu;
     NuStrCpy(MenuHeader, apitxt_LOADGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -1297,19 +1282,16 @@ void MenuDrawLoading(MENU *menu) {
 }
 
 void MenuEnterInsertCard(MENU *menu) {
-    (void)menu;
 }
 
 void MenuDrawInsertCard(MENU *menu) {
     char message[1024];
-    (void)menu;
     if (0) {
         sprintf(message, "");
     }
 }
 
 void MenuDrawFormatConfirm(MENU *menu) {
-    (void)menu;
 }
 
 static void MenuDrawNotEnoughSpaceMessage(void) {
@@ -1365,7 +1347,6 @@ static void Draw_AUTOSAVEWARNING(void) {
 
 void MenuDrawNotEnoughSpace(MENU *menu) {
     char message[1024];
-    (void)menu;
     if (0) {
         sprintf(message, "");
     }
@@ -1399,7 +1380,6 @@ void MenuDrawFormatting(MENU *menu) {
 static i32 MenuSaveResultShown = 0;
 
 void MenuDrawSaving(MENU *menu) {
-    (void)menu;
     NuStrCpy(MenuHeader, apitxt_SAVEGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;
@@ -1427,7 +1407,6 @@ void MenuDrawSaving(MENU *menu) {
 static i32 MenuDeleteResultShown = 0;
 
 void MenuDrawDeleting(MENU *menu) {
-    (void)menu;
     NuStrCpy(MenuHeader, apitxt_DELETEGAME);
     header_r = MENUHEADERR;
     header_g = MENUHEADERG;

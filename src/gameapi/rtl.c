@@ -942,7 +942,6 @@ void IndexLights(RTL_SET *set, VARIPTR *buffer, i32 buffer_end) {
             }
         }
     }
-    (void)buffer_end;
     grid->enabled = 1;
 }
 
@@ -2566,27 +2565,18 @@ void cbCopyLight(eduimenu_s *menu, eduiitem_s *item, u32 buttons) {
 }
 
 void cbSetControls(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    (void)menu;
-    (void)value;
     ctl_ix = item->data;
 }
 
 void cbNoZBuffer(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    (void)menu;
-    (void)value;
     rtl_zoff = item->flags & EDUI_ITEM_HIGHLIGHTED;
 }
 
 void cbHideType(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    (void)menu;
-    (void)value;
     hide_types[item->data] = item->flags & EDUI_ITEM_HIGHLIGHTED;
 }
 
 void cbCopyFog(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    (void)menu;
-    (void)item;
-    (void)value;
     if (curr_fog != NULL) {
         clipboard_fog = *curr_fog;
     }
@@ -3872,7 +3862,6 @@ i32 edrtlProcRTL(f32 delta_time, FRAME_PAD *pad) {
     } else {
         edcamGetPosAng(&previous_position, NULL, NULL);
         dist = edcamGetDist();
-        (void)dist;
         edcamMoveEx(pad, delta_time);
         previous_yaw = (i16)(peay);
         previous_pitch = (i16)(peax);

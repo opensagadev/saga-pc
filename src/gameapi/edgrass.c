@@ -860,7 +860,6 @@ i32 edgraLoadPage(char *path, void *scene, i32 terrain, VARIPTR *buffer, VARIPTR
         if (edbits_editmode != 1 || edgra_vecbuffer == NULL) {
             buffer->addr = vector_cursor;
         }
-        (void)buffer_end;
         return page;
     }
     return -1;

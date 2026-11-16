@@ -82,7 +82,6 @@ void EdFileSetPakFile(void *pak) {
 }
 
 void EdFileSetReadWrongEndianess(i32 value) {
-    (void)value;
 }
 
 void EdFileResetBuffers(void) {
@@ -1914,7 +1913,6 @@ struct FILE_DIRECTORY_ENTRY *dir_list = 0;
  * key 0x38 locks it, parking the OS cursor where the editor cursor is. */
 void eduiProcessCursorDefault(f32 delta_time, FRAME_PAD *pad) {
     u8 centred = 0;
-    (void)delta_time;
     if (pad != NULL && eduiUsedAlgPad(pad) && !(pad->digital_buttons & PAD_BUTTON_CROSS)) {
         centred = 1;
         edui_cursor_x = 320.0f;
@@ -2055,7 +2053,6 @@ static i32 EduiExpanderOverButton(EDUI_EXPANDER *expander) {
 
 static i32 eduicbProcessExpander(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     EDUI_EXPANDER *expander = (EDUI_EXPANDER *)item;
-    (void)delta_time;
     if (pad->digital_buttons_pressed & PAD_BUTTON_CROSS) {
         if (expander->changed) {
             expander->changed(menu, item, 0);
@@ -2256,7 +2253,6 @@ static i32 eduicbRenderExpander(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y
     f32 baseline;
     f32 text_x;
     i32 depth;
-    (void)height;
     button_colours[0] = 0xff000000;
     button_colours[1] = 0xffffffff;
     item->x = x;
@@ -2482,7 +2478,6 @@ static i32 EduiPropButton(edui_prop_s *property, eduimenu_s *menu, FRAME_PAD *pa
 }
 
 static i32 eduicbProcessProp(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
-    (void)delta_time;
     EduiPropDragLabel((edui_prop_s *)item, menu);
     EduiPropKeyboard((edui_prop_s *)item, menu);
     EduiPropButton((edui_prop_s *)item, menu, pad);
@@ -2612,7 +2607,6 @@ static i32 eduicbRenderProp(eduimenu_s *menu, eduiitem_s *item, i32 x, i32 y, i3
     f32 value_x;
     f32 clip_x;
     i32 depth;
-    (void)height;
     item->x = x;
     item->y = y;
     divider_colours[0] = 0x0ff00000;
@@ -2841,7 +2835,6 @@ static i32 eduicbProcessFilter(eduimenu_s *menu, eduiitem_s *item, f32 delta_tim
     char *query;
     eduiitem_s *candidate;
     eduiitem_s *next;
-    (void)delta_time;
     EduiPropDragLabel(&filter->prop, menu);
     EduiPropKeyboard(&filter->prop, menu);
     EduiPropButton(&filter->prop, menu, pad);
@@ -3056,7 +3049,6 @@ static i32 eduicbProcessTexturePick(eduimenu_s *menu, eduiitem_s *item, f32 delt
     i32 stick_y = pad->analog_left_y - 128;
     i32 left;
     i32 right;
-    (void)delta_time;
     if (stick_x > 0) {
         if (stick_x < 32) {
             stick_x = 0;
@@ -3471,7 +3463,6 @@ static i32 EduiTextPickPad(edui_textpicker_s *picker, eduimenu_s *menu, FRAME_PA
 }
 
 i32 eduicbProcessTextPick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
-    (void)delta_time;
     EduiTextPickKeyboard((edui_textpicker_s *)item, menu, pad);
     EduiTextPickPad((edui_textpicker_s *)item, menu, pad);
     return 0;
@@ -3849,7 +3840,6 @@ void eduicbItemFilePickDestroy(eduimenu_s *menu, eduiitem_s *item) {
 }
 
 void eduicbPickCFGCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
@@ -4188,14 +4178,11 @@ static edui_file_pick_s *filepick_item = 0;
 static i32 dir_size = 0;
 
 static void eduicbDestroyDirectoryList(eduimenu_s *menu, eduimenu_s *parent) {
-    (void)parent;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
 
 static void eduicbSelectDirectoryExit(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    (void)item;
-    (void)value;
     eduiMenuDetach(menu);
     eduiMenuDestroy(menu);
 }
@@ -4296,7 +4283,6 @@ static void eduicbAttachDirectoryList(eduimenu_s *menu, edui_file_pick_s *picker
 
 i32 eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FRAME_PAD *pad) {
     edui_file_pick_s *picker = (edui_file_pick_s *)item;
-    (void)delta_time;
     if ((pad->digital_buttons_pressed & PAD_BUTTON_CROSS) || picker->reopen_directory) {
         eduiMenuHighlight(menu, item);
         eduicbAttachDirectoryList(menu, picker);
@@ -4491,7 +4477,6 @@ i32 eduiProcessInteracts(eduimenu_s *menu, FRAME_PAD *pad) {
     i32 result = 0;
     i32 index;
     edui_interact_s *interact;
-    (void)pad;
     if (edmain_cursor_enabled) {
         if (eduiInteractLocked != NULL) {
             if ((eduiInteractLocked->menu == NULL || eduiInteractLocked->item == NULL) && eduiInteractLocked->unknown_20) {
@@ -4808,7 +4793,6 @@ i32 eduicbProcessGradPickItem(eduimenu_s *menu, eduiitem_s *item, f32 delta_time
     f32 upper;
     i32 decrease;
     i32 increase;
-    (void)delta_time;
     if (gradient->changed) {
         gradient->changed(menu, item, pad->digital_buttons);
     }

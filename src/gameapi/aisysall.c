@@ -1589,19 +1589,10 @@ f32 AIParamToFloatEx(AIPACKET *packet, AISCRIPTPROCESS *processor, char *param) 
 }
 
 f32 Condition_Timer(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char *argument, void *initialized_argument) {
-    (void)sys;
-    (void)packet;
-    (void)argument;
-    (void)initialized_argument;
     return processor->script_timer;
 }
 
 f32 Condition_Random(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char *argument, void *initialized_argument) {
-    (void)sys;
-    (void)processor;
-    (void)packet;
-    (void)argument;
-    (void)initialized_argument;
     return NuRandFloat();
 }
 
@@ -1620,10 +1611,6 @@ f32 Condition_AlwaysTrue(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packe
         f32 value;
     } result;
 
-    (void)sys;
-    (void)processor;
-    (void)packet;
-    (void)argument;
     result.pointer = initialized_argument;
     return result.value;
 }
@@ -1702,10 +1689,6 @@ f32 Condition_PlayerOnPath(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *pa
 }
 
 f32 Condition_OpponentOnPath(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
     if (packet != NULL && packet->opponent != NULL && ((packet->opponent->ai->path_info.flags & 1) != 0)) {
         return 1.0f;
     }
@@ -1950,10 +1933,6 @@ f32 Condition_GotOpponent(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *pac
 }
 
 f32 Condition_OpponentIsAThreat(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
     if (packet != NULL && packet->opponent != NULL && (packet->flags & AIPACKET_OPPONENT_IS_A_THREAT) != 0) {
         return 1.0f;
     }
@@ -1980,10 +1959,6 @@ f32 Condition_OpponentRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
 }
 
 f32 Condition_NearestOpponentRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
     if (packet != NULL && packet->nearest_opponent != NULL) {
         return packet->nearest_opponent_metric;
     }
@@ -2003,10 +1978,6 @@ f32 Condition_YawToOpponent(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
 }
 
 f32 Condition_OpponentBelow(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
-    (void)system;
-    (void)process;
-    (void)name;
-    (void)argument;
     if (packet != NULL && packet->opponent != NULL && (f64)packet->opponent->position.y < (f64)packet->owner->position.y - (f64)0.1f) {
         return 1.0f;
     }
@@ -2015,9 +1986,6 @@ f32 Condition_OpponentBelow(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *p
 
 f32 Condition_OriginRange(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *packet, char *name, void *argument) {
     NUVEC *origin;
-    (void)process;
-    (void)name;
-    (void)argument;
     if (packet != NULL) {
         origin = GetOriginPositionFn != NULL ? GetOriginPositionFn(system, packet) : NULL;
         if (origin != NULL) {
@@ -2371,7 +2339,6 @@ i32 Action_FaceOpponent(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet
     char *value;
     APIOBJECT *opponent;
 
-    (void)sys;
     if (packet == NULL) {
         return 1;
     }
@@ -2460,25 +2427,16 @@ i32 Action_CheckWallSplines(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET 
 }
 
 i32 Action_NoTerrain(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x20u, 1, 0);
     return 1;
 }
 
 i32 Action_NoLosCheck(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x400u, 1, 0);
     return 1;
 }
 
 i32 Action_FlatTerrain(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x10u, 1, 0);
     return 1;
 }
@@ -2501,34 +2459,22 @@ i32 Action_ShadowTerrain(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *pa
 
 i32 Action_DontUseShadowTerrain(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                                 f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x40u, 1, 0);
     return 1;
 }
 
 i32 Action_DontPush(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x2u, 1, 0);
     return 1;
 }
 
 i32 Action_CanSeeBehind(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                         f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x800u, 1, 0);
     return 1;
 }
 
 i32 Action_RequiresLOS(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     {
         i32 i;
         if (packet == NULL || first_time == 0) {
@@ -2546,9 +2492,6 @@ i32 Action_RequiresLOS(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
 
 i32 Action_SetFullPathSearch(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time,
                              f32 delta_time) {
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     AISCRIPT_SET_OWNER_FLAG(packet, params, count, first_time, flags_1fc_word, 0x80000u, 0, 1);
     return 1;
 }
@@ -2626,13 +2569,6 @@ i32 Action_SetHearDistance(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *
 }
 
 i32 Action_SetMoveRadius(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_4, i32 param_5, f32 param_6) {
-    (void)sys;
-    (void)processor;
-    (void)packet;
-    (void)params;
-    (void)param_4;
-    (void)param_5;
-    (void)param_6;
     if (packet == NULL || packet->owner == NULL || param_5 == 0) {
         return 1;
     }
@@ -2682,11 +2618,6 @@ i32 Action_OverrideAnimation(AISYS *system, AISCRIPTPROCESS *process, AIPACKET *
 i32 Action_ResetToOrigin(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_4, i32 param_5, f32 param_6) {
     NUVEC *origin;
 
-    (void)processor;
-    (void)params;
-    (void)param_4;
-    (void)param_5;
-    (void)param_6;
     if (packet == NULL || sys == NULL) {
         return 1;
     }
@@ -2731,9 +2662,6 @@ i32 Action_SetIgnoreAntinodes(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *
 
 i32 Action_NoShadows(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 count, i32 first_time, f32 delta_time) {
     i32 i;
-    (void)sys;
-    (void)processor;
-    (void)delta_time;
     if (packet == NULL || first_time == 0 || packet->owner == NULL) {
         return 1;
     }
@@ -4520,9 +4448,6 @@ __declspec(noinline) i32 WithinConnection(void *context, NUVEC *position, AIPATH
     NUVEC local;
     f32 distance_squared;
 
-    (void)reserved_ground;
-    (void)reserved_check;
-
     if (update_once != 0) {
         if (connection->last_search_checksum == path->search_checksum) {
             return 0;
@@ -6268,8 +6193,6 @@ void AICircle(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
     NUVEC difference;
     NUVEC circle_position;
     i32 angle;
-    (void)system;
-    (void)checks;
     NuVecSub(&difference, &object->position, &packet->fallback_destination);
     angle = NuAtan2D(difference.x, difference.z);
     difference.x = 0.0f;
@@ -6386,8 +6309,6 @@ void AIWander(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
 }
 
 void AIMoveDirectlyToDestination(AISYS *system, AIPACKET *packet, APIOBJECT *object, i32 checks) {
-    (void)system;
-    (void)checks;
     if (packet->movement_parameter > 0.0f) {
         NUVEC delta;
         f32 distance_squared = NuVecDistSqr(&packet->fallback_destination, &object->position, &delta);
@@ -7126,8 +7047,6 @@ static EDAIAREA_s *areaEditorFindHover(i32 check_inside) {
 
 static void AiEditorRenameArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIAREA_s *other;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_area != NULL) {
         char *name = ((edui_textpicker_s *)item)->value;
         if (strlen(name) != 0) {
@@ -7143,8 +7062,6 @@ static void AiEditorRenameArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 }
 
 void areaEditor_cbCylinderToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_area != NULL) {
         if (item->flags & EDUI_ITEM_HIGHLIGHTED) {
             aieditor->selected_area->flags |= 1;
@@ -7155,7 +7072,6 @@ void areaEditor_cbCylinderToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) 
 }
 
 static void AiEditorRenameAreaCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
@@ -7495,8 +7411,6 @@ void locatorEditor_PathNodeMoved(EDAIPATHNODE_s *node) {
 
 static void AiEditorRenameLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATOR_s *other;
-    (void)menu;
-    (void)event;
     if (aieditor->current_locator != NULL) {
         char *name = ((edui_textpicker_s *)item)->value;
         if (strlen(name) != 0) {
@@ -7512,15 +7426,12 @@ static void AiEditorRenameLocator(eduimenu_s *menu, eduiitem_s *item, u32 event)
 }
 
 static void AiEditorRenameLocatorCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 static void AiEditorRenameLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATORSET_s *other;
     char *name;
-    (void)menu;
-    (void)event;
     if (aieditor->current_locator_set == NULL) {
         return;
     }
@@ -7539,8 +7450,6 @@ static void AiEditorRenameLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 eve
 
 static void AiEditorSetPendingLocatorName(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     AIEDITOR_RENDER_STATE *state = aieditor;
-    (void)menu;
-    (void)event;
     if (state->current_locator_set != NULL) {
         char *name = ((edui_textpicker_s *)item)->value;
         if (strlen(name) != 0) {
@@ -7550,7 +7459,6 @@ static void AiEditorSetPendingLocatorName(eduimenu_s *menu, eduiitem_s *item, u3
 }
 
 void locatorEditor_cbCancelSelectLocatorSet(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
@@ -8780,14 +8688,11 @@ void pathEditorSaveData(AIPATHSYS *path_system) {
 }
 
 static void pathEditor_cbCancelSelectMenu(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 static void AiEditorRenamePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATH_s *other;
-    (void)menu;
-    (void)event;
     if (aieditor->current_path != NULL) {
         char *name = ((edui_textpicker_s *)item)->value;
         if (strlen(name) != 0) {
@@ -8803,14 +8708,11 @@ static void AiEditorRenamePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 }
 
 static void AiEditorRenamePathCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 void pathEditor_cbRenamePathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->current_path == NULL || (aieditor->current_path->flags & 1)) {
         return;
     }
@@ -8831,8 +8733,6 @@ static void AiEditorRenameNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATHNODE_s *node;
     EDAIPATHNODE_s *current;
     char *name;
-    (void)menu;
-    (void)event;
     if (aieditor->current_path == NULL) {
         return;
     }
@@ -8856,14 +8756,11 @@ static void AiEditorRenameNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 }
 
 static void AiEditorRenameNodeCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 void pathEditor_cbRenameNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->current_path == NULL || aieditor->current_path->current_node == NULL) {
         return;
     }
@@ -8880,8 +8777,6 @@ void pathEditor_cbRenameNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
 }
 
 void pathEditor_cbDrawWallsplinesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_DRAW_WALLSPLINES) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 9);
 }
@@ -8893,8 +8788,6 @@ void pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) 
     EDAIPATHCNX_s *connection;
     EDAIPATHCNX_s *reverse;
     i32 index;
-    (void)menu;
-    (void)event;
     if (aieditor->current_path == NULL) {
         return;
     }
@@ -8934,8 +8827,6 @@ void pathEditor_cbCnxFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) 
 
 void pathEditor_cbNodeFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATHNODE_s *node = aieditor->current_path->current_node;
-    (void)menu;
-    (void)event;
     if (node == NULL) {
         return;
     }
@@ -9184,8 +9075,6 @@ void pathEditor_Enter(void) {
 
 static void AiEditorRenameRoute(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 index;
-    (void)menu;
-    (void)event;
     if (aieditor->current_path != NULL && aieditor->current_path->current_route != NULL) {
         char *name = ((edui_textpicker_s *)item)->value;
         if (strlen(name) != 0) {
@@ -9200,14 +9089,11 @@ static void AiEditorRenameRoute(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 }
 
 static void AiEditorRenameRouteCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 void routeEditor_cbRenameRouteMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->current_path == NULL || aieditor->current_path->current_route == NULL) {
         return;
     }
@@ -9224,15 +9110,12 @@ void routeEditor_cbRenameRouteMenu(eduimenu_s *parent, eduiitem_s *item, u32 eve
 }
 
 static void AiEditorRouteUsersCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 static void AiEditorSetRouteUsers(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATHROUTE_s *route;
     u64 mask;
-    (void)menu;
-    (void)event;
     if (item == NULL) {
         return;
     }
@@ -9257,8 +9140,6 @@ void routeEditor_cbRouteUsers(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     char *name;
     i32 index;
-    (void)item;
-    (void)event;
     if (SpecialRouteCharacterNameFn == NULL) {
         return;
     }
@@ -9491,62 +9372,45 @@ static void AiEditorClearMainMenu(void) {
 }
 
 void aieditor_cbDrawAllToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_DRAW_ALL_PATHS) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 1);
 }
 
 static void AiEditorDisplayBit4(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_SNAP_HEIGHT) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 4);
 }
 
 void aieditor_cbSolidPathDisplayToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_SOLID_PATH_DISPLAY) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 7);
 }
 
 static void AiEditorDisplayBit8(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_SOLID_ANTINODE_DISPLAY) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 8);
 }
 
 static void AiEditorDisplayBit6(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_STOP_PLATFORMS) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 6);
 }
 
 void aieditor_cbShowCreaturesToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_SHOW_CREATURES) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 3);
 }
 
 void aieditor_cbShowCreaturesSetToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditorsettings.display_options =
         (aieditorsettings.display_options & ~AIEDITOR_SHOW_CURRENT_SET) | (((u32)item->flags & EDUI_ITEM_HIGHLIGHTED) << 10);
 }
 
 static void AiEditorModeCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 static void AiEditorModeSelect(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if ((u32)item->data < (u32)(i32)aieditorsettings.modes.count) {
         AiEditorChangeMode(item->data);
         AiEditorClearMainMenu();
@@ -9556,8 +9420,6 @@ static void AiEditorModeSelect(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 static void AiEditorModeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     i32 index;
-    (void)item;
-    (void)event;
     menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorModeCancel, "Select Editor Mode");
     if (menu == NULL) {
         return;
@@ -9574,8 +9436,6 @@ static void AiEditorModeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
 }
 
 static void AiEditorMessageCloseMenu(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     if (aieditor->main_menu != NULL) {
         eduiMenuDestroy(aieditor->main_menu);
         aieditor->main_menu = NULL;
@@ -9583,9 +9443,6 @@ static void AiEditorMessageCloseMenu(eduimenu_s *menu, eduimenu_s *child) {
 }
 
 static void AiEditorSaveCloseSelection(eduimenu_s *menu, eduiitem_s *item, u32 value) {
-    (void)menu;
-    (void)item;
-    (void)value;
     if (aieditor->main_menu != NULL) {
         eduiMenuDestroy(aieditor->main_menu);
         aieditor->main_menu = NULL;
@@ -9593,9 +9450,6 @@ static void AiEditorSaveCloseSelection(eduimenu_s *menu, eduiitem_s *item, u32 v
 }
 
 static void AiEditorCameraToPlayer(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)item;
-    (void)event;
     if (aieditor->ai_system != NULL && aieditor->ai_system->player_1 != NULL) {
         edcamSetPos(&aieditor->ai_system->player_1->position);
     }
@@ -9607,9 +9461,6 @@ void InitFn_AIEditorMovePlayers(void (*callback)(NUVEC *)) {
 }
 
 static void AiEditorMovePlayers(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)item;
-    (void)event;
     if (AiEditorMovePlayersCallback != NULL) {
         AiEditorMovePlayersCallback(&aieditor->camera_position);
     }
@@ -9679,8 +9530,6 @@ static void antinodeEditor_AntinodeMoved(EDANTINODE_s *node) {
 }
 
 static void AiEditorAntinodeGameFlags(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_antinode != NULL) {
         if ((aieditor->selected_antinode->game_flags & item->data) != 0) {
             aieditor->selected_antinode->game_flags &= ~(u8)item->data;
@@ -9712,14 +9561,11 @@ void antinodeEditor_UpdateAntiNodesOnPlatforms(void) {
 }
 
 static void AiEditorAntinodeTypeCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 static void AiEditorAntinodeTypeSetter(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 previous_type = aieditor->selected_antinode->type;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_antinode != NULL && item != NULL) {
         aieditor->selected_antinode->type = (u8)item->data;
     }
@@ -9740,8 +9586,6 @@ static void AiEditorAntinodeTypeSetter(eduimenu_s *menu, eduiitem_s *item, u32 e
 static void AiEditorAntinodeTypeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     i32 index;
-    (void)item;
-    (void)event;
     if (aieditor->selected_antinode == NULL || LevelCharacterGlobalIDFn == NULL || GlobalCharacterNameFn == NULL) {
         return;
     }
@@ -9867,8 +9711,6 @@ EDANTINODE_s *antinodeEditor_GetNearestAntinode(i32 require_inside) {
 }
 
 static void AiEditorDeleteAntinodeCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     if (aieditor->main_menu != NULL) {
         eduiMenuDestroy(aieditor->main_menu);
         aieditor->main_menu = NULL;
@@ -9876,8 +9718,6 @@ static void AiEditorDeleteAntinodeCancel(eduimenu_s *menu, eduimenu_s *child) {
 }
 
 static void AiEditorDeleteAntinodeAnswer(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (item != NULL && item->data != 0 && aieditor->selected_antinode != NULL &&
         aieditor->selected_antinode == aieditor->nearest_antinode) {
         AiEditorFreeAntinode(aieditor->selected_antinode);
@@ -10307,21 +10147,16 @@ EDAICREATURE_s *creatureEditor_GetNearest(i32 use_radius) {
 }
 
 static void AiEditorRespawnCancelMenu(eduimenu_s *menu, eduimenu_s *child) {
-    (void)child;
     eduiMenuDestroy(menu);
 }
 
 static void AiEditorSetActivation(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     aieditor->selected_creature->activation = (u8)item->data;
 }
 
 static void AiEditorSetAreaActivation(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     NULISTLNK *link;
     i32 index = 0;
-    (void)menu;
-    (void)event;
     if (item != NULL && aieditor->selected_creature != NULL) {
         for (link = NuLinkedListGetHead(&aieditor->areas); link != NULL; ++index, link = NuLinkedListGetNext(&aieditor->areas, link)) {
             if (index == item->data) {
@@ -10335,8 +10170,6 @@ static void AiEditorSetAreaActivation(eduimenu_s *menu, eduiitem_s *item, u32 ev
 
 static void AiEditorActivationDifficulty(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->difficulty = (u8)(i32)slider->value;
     }
@@ -10348,8 +10181,6 @@ void creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *item, u32 e
     i32 index;
     i32 selected;
     char label[32];
-    (void)item;
-    (void)event;
     if (aieditor->selected_creature == NULL) {
         return;
     }
@@ -10379,8 +10210,6 @@ void creatureEditor_cbActivationMenu(eduimenu_s *parent, eduiitem_s *item, u32 e
 
 static void AiEditorRespawnMinCount(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->min_respawns = (i32)slider->value;
         if (aieditor->selected_creature->min_respawns > aieditor->selected_creature->max_respawns) {
@@ -10392,8 +10221,6 @@ static void AiEditorRespawnMinCount(eduimenu_s *menu, eduiitem_s *item, u32 even
 
 static void AiEditorRespawnMaxCount(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->max_respawns = (i32)slider->value;
         if (aieditor->selected_creature->max_respawns < aieditor->selected_creature->min_respawns) {
@@ -10404,8 +10231,6 @@ static void AiEditorRespawnMaxCount(eduimenu_s *menu, eduiitem_s *item, u32 even
 }
 
 static void AiEditorRespawnMinTime(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->min_respawn_time = ((edui_slider_s *)item)->value;
         if (aieditor->selected_creature->min_respawn_time > aieditor->selected_creature->max_respawn_time) {
@@ -10416,8 +10241,6 @@ static void AiEditorRespawnMinTime(eduimenu_s *menu, eduiitem_s *item, u32 event
 }
 
 static void AiEditorRespawnMaxTime(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->max_respawn_time = ((edui_slider_s *)item)->value;
         if (aieditor->selected_creature->max_respawn_time < aieditor->selected_creature->min_respawn_time) {
@@ -10428,8 +10251,6 @@ static void AiEditorRespawnMaxTime(eduimenu_s *menu, eduiitem_s *item, u32 event
 }
 
 void creatureEditor_cb_stagger_start(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->stagger_start = ((edui_slider_s *)item)->value;
     }
@@ -10437,8 +10258,6 @@ void creatureEditor_cb_stagger_start(eduimenu_s *menu, eduiitem_s *item, u32 eve
 
 void creatureEditor_cb_assigntoset(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->set = (u8)slider->value;
     }
@@ -10447,8 +10266,6 @@ void creatureEditor_cb_assigntoset(eduimenu_s *menu, eduiitem_s *item, u32 event
 static void AiEditorSetRespawnLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 index = 0;
     EDLOCATOR_s *locator;
-    (void)menu;
-    (void)event;
     if (item == NULL || aieditor->selected_creature == NULL) {
         return;
     }
@@ -10470,8 +10287,6 @@ static void AiEditorSelectRespawnLocator(eduimenu_s *parent, eduiitem_s *item, u
     eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select Locator");
     EDLOCATOR_s *locator;
     i32 index;
-    (void)item;
-    (void)event;
     if (menu == NULL) {
         return;
     }
@@ -10493,8 +10308,6 @@ static void AiEditorSelectRespawnLocator(eduimenu_s *parent, eduiitem_s *item, u
 void creatureEditor_cbRespawnMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     char label[32];
-    (void)item;
-    (void)event;
     if (aieditor->selected_creature == NULL) {
         return;
     }
@@ -10523,8 +10336,6 @@ void creatureEditor_cbRespawnMenu(eduimenu_s *parent, eduiitem_s *item, u32 even
 }
 
 static void AiEditorViewDistance(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->view_distance = ((edui_slider_s *)item)->value;
         if (aieditor->selected_creature->view_distance < aieditor->selected_creature->hear_distance) {
@@ -10535,8 +10346,6 @@ static void AiEditorViewDistance(eduimenu_s *menu, eduiitem_s *item, u32 event) 
 }
 
 static void AiEditorHearDistance(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->hear_distance = ((edui_slider_s *)item)->value;
         if (aieditor->selected_creature->hear_distance > aieditor->selected_creature->view_distance) {
@@ -10547,16 +10356,12 @@ static void AiEditorHearDistance(eduimenu_s *menu, eduiitem_s *item, u32 event) 
 }
 
 static void AiEditorMaxViewHeight(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->max_view_height = ((edui_slider_s *)item)->value;
     }
 }
 
 static void AiEditorMinViewHeight(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->min_view_height = -((edui_slider_s *)item)->value;
     }
@@ -10564,8 +10369,6 @@ static void AiEditorMinViewHeight(eduimenu_s *menu, eduiitem_s *item, u32 event)
 
 void creatureEditor_cbVisionMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->selected_creature == NULL) {
         return;
     }
@@ -10585,8 +10388,6 @@ void creatureEditor_cbVisionMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
 }
 
 static void creatureEditor_cbSetType(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (item != NULL) {
         aieditorsettings.character_type = item->data;
     }
@@ -10620,8 +10421,6 @@ void creatureEditor_cbSelectType(eduimenu_s *parent, eduiitem_s *item, u32 event
     i32 index;
     i32 type;
     i32 selected;
-    (void)item;
-    (void)event;
     if (LevelCharacterGlobalIDFn == NULL || GlobalCharacterNameFn == NULL) {
         return;
     }
@@ -10674,8 +10473,6 @@ void aieditor_SetCurrentScript(char *name, EDAICREATURE_s *creature) {
 void creatureEditor_cbSetScript(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     char *name;
     i32 i;
-    (void)menu;
-    (void)event;
     if (item != NULL && aieditor->selected_creature != NULL) {
         name = AIScriptNameFromIx(aieditor->ai_system, item->data);
         if (name != NULL) {
@@ -10697,8 +10494,6 @@ void creatureEditor_cbSelectScript(eduimenu_s *parent, eduiitem_s *item, u32 eve
     char *name;
     i32 index;
     i32 selected;
-    (void)item;
-    (void)event;
     menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select Script");
     if (menu != NULL) {
         index = 0;
@@ -10724,8 +10519,6 @@ void creatureEditor_cbSelectScript(eduimenu_s *parent, eduiitem_s *item, u32 eve
 static void AiEditorSetTriggerArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIAREA_s *area;
     i32 index = 0;
-    (void)menu;
-    (void)event;
     if (item == NULL || aieditor->selected_creature == NULL) {
         return;
     }
@@ -10747,8 +10540,6 @@ void creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u3
     EDAIAREA_s *area;
     i32 index;
     i32 selected;
-    (void)item;
-    (void)event;
     if (menu == NULL) {
         return;
     }
@@ -10773,8 +10564,6 @@ void creatureEditor_cbSelectTriggerArea(eduimenu_s *parent, eduiitem_s *item, u3
 static void AiEditorSetLocator(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATOR_s *locator;
     i32 index = 0;
-    (void)menu;
-    (void)event;
     if (item == NULL || aieditor->selected_creature == NULL) {
         return;
     }
@@ -10798,8 +10587,6 @@ void AiEditorSelectLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) 
     eduimenu_s *menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, AiEditorRespawnCancelMenu, "Select Locator");
     EDLOCATOR_s *locator;
     i32 index;
-    (void)item;
-    (void)event;
     if (menu == NULL) {
         return;
     }
@@ -10822,8 +10609,6 @@ void AiEditorSelectLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) 
 
 static void AiEditorRenameCreature(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAICREATURE_s *creature;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         char *name = ((edui_textpicker_s *)item)->value;
         if (strlen(name) != 0) {
@@ -10840,8 +10625,6 @@ static void AiEditorRenameCreature(eduimenu_s *menu, eduiitem_s *item, u32 event
 
 void creatureEditor_cbRenameCreatureMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->selected_creature == NULL) {
         return;
     }
@@ -10858,8 +10641,6 @@ void creatureEditor_cbRenameCreatureMenu(eduimenu_s *parent, eduiitem_s *item, u
 }
 
 void creatureEditor_cbDeleteCreature(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (item != NULL && item->data != 0 && aieditor->selected_creature != NULL &&
         aieditor->selected_creature == aieditor->nearest_creature) {
         creatureEditorDestroyCreature(aieditor->selected_creature);
@@ -10869,14 +10650,10 @@ void creatureEditor_cbDeleteCreature(eduimenu_s *menu, eduiitem_s *item, u32 eve
 }
 
 void pathEditor_cbCancelDeleteCreatureMenu(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     AiEditorClearMainMenu();
 }
 
 void creatureEditor_cbFlagsToggle(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         if (aieditor->selected_creature->flags & item->data) {
             aieditor->selected_creature->flags &= ~item->data;
@@ -12217,7 +11994,6 @@ i32 Action_FaceLocator(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet,
     char *value;
     AILOCATOR *locator;
 
-    (void)elapsed;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL || packet->path_info.path == NULL ||
         packet->path_info.connection == NULL) {
         return 1;
@@ -12359,9 +12135,6 @@ i32 Action_BlockPath(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, c
     i32 index;
     char *value;
 
-    (void)processor;
-    (void)packet;
-    (void)param_6;
     if (sys != NULL && sys->path_sys != NULL && sys->path_sys->path_count != 0 && param_5 != 0) {
         for (index = 0; index < param_4; ++index) {
             value = NuStrIStr(params[index], "from");
@@ -13653,8 +13426,6 @@ i32 aieditor_Proc(f32 menu_delta_time, FRAME_PAD *pad, f32 frame_delta_time, u32
 
 void areaEditor_cbRenameAreaMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->selected_area == NULL) {
         return;
     }
@@ -13672,8 +13443,6 @@ void areaEditor_cbRenameAreaMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
 
 void areaEditor_cbDeleteArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAICREATURE_s *creature;
-    (void)menu;
-    (void)event;
     if (item != NULL && item->data != 0 && aieditor->selected_area != NULL && aieditor->selected_area == aieditor->hovered_area) {
         for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
              creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
@@ -13691,8 +13460,6 @@ void areaEditor_cbDeleteArea(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 }
 
 void areaEditor_cbCancelDeleteAreaMenu(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     AiEditorClearMainMenu();
 }
 
@@ -13701,8 +13468,6 @@ void areaEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
     NUVEC delta;
     f32 range;
     i32 text_x = (x + 10) * 16;
-    (void)xscale;
-    (void)yscale;
 
     NuQFntPrintEx(system_qfont, text_x, y * 8 - 40, 16, "Area Editor");
     NuQFntSetColour(system_qfont, 0x80000000);
@@ -13811,8 +13576,6 @@ void locatorEditor_PathDeleted(EDAIPATH_s *path) {
 
 void locatorEditor_cbRenameLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->current_locator == NULL) {
         return;
     }
@@ -13830,8 +13593,6 @@ void locatorEditor_cbRenameLocatorMenu(eduimenu_s *parent, eduiitem_s *item, u32
 
 static void AiEditorDeleteLocatorSelection(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAICREATURE_s *creature;
-    (void)menu;
-    (void)event;
     if (item != NULL && item->data != 0 && aieditor->current_locator != NULL && aieditor->current_locator == aieditor->nearest_locator) {
         for (creature = (EDAICREATURE_s *)NuLinkedListGetHead(&aieditor->creatures); creature != NULL;
              creature = (EDAICREATURE_s *)NuLinkedListGetNext(&aieditor->creatures, &creature->link)) {
@@ -13849,8 +13610,6 @@ static void AiEditorDeleteLocatorSelection(eduimenu_s *menu, eduiitem_s *item, u
 }
 
 static void AiEditorDeleteLocatorCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     if (aieditor->main_menu != NULL) {
         eduiMenuDestroy(aieditor->main_menu);
         aieditor->main_menu = NULL;
@@ -13863,9 +13622,6 @@ void locatorEditor_cbCreateLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 ev
     char name[16];
     i32 index = 0;
     i32 duplicate;
-    (void)menu;
-    (void)item;
-    (void)event;
     if (set == NULL) {
         return;
     }
@@ -13888,7 +13644,6 @@ void locatorEditor_cbCreateLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 ev
 
 void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)event;
     if (item == NULL) {
         return;
     }
@@ -13919,7 +13674,6 @@ void locatorEditor_cbDeleteLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
 void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
     i32 index;
-    (void)event;
     if (item == NULL) {
         return;
     }
@@ -13949,15 +13703,11 @@ void locatorEditor_cbEmptyLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 e
 }
 
 static void AiEditorRenameLocatorSetCancel(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     AiEditorClearMainMenu();
 }
 
 void locatorEditor_cbRenameLocatorSetMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->current_locator_set == NULL) {
         return;
     }
@@ -13976,8 +13726,6 @@ void locatorEditor_cbRenameLocatorSetMenu(eduimenu_s *parent, eduiitem_s *item, 
 void locatorEditor_cbAddLocatorsByNameYesNo(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATOR_s *locator;
     i32 index;
-    (void)menu;
-    (void)event;
     if (item != NULL && item->data != 0 && NuStrLen(aieditor->pending_locator_name) != 0 && aieditor->current_locator_set != NULL) {
         locator = (EDLOCATOR_s *)NuLinkedListGetHead(&aieditor->locators);
         while (locator != NULL) {
@@ -14012,8 +13760,6 @@ void locatorEditor_cbAddLocatorsByNameYesNo(eduimenu_s *menu, eduiitem_s *item, 
 
 void locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->current_locator_set == NULL) {
         return;
     }
@@ -14037,8 +13783,6 @@ void locatorEditor_cbAddLocatorsByName(eduimenu_s *parent, eduiitem_s *item, u32
 void locatorEditor_cbSetLocatorSet(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDLOCATORSET_s *set;
     i32 index;
-    (void)menu;
-    (void)event;
     if (item != NULL) {
         if (item->data == 0) {
             aieditor->current_locator_set = NULL;
@@ -14074,8 +13818,6 @@ void locatorEditor_cbSelectLocatorSet(eduimenu_s *parent, eduiitem_s *item, u32 
     eduimenu_s *menu;
     EDLOCATORSET_s *set;
     i32 index;
-    (void)item;
-    (void)event;
     menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, locatorEditor_cbCancelSelectLocatorSet, "Select Locator Set");
     if (menu == NULL) {
         return;
@@ -14542,8 +14284,6 @@ AIPATHSYS *pathEditorCreateData(VARIPTR *cursor, VARIPTR *end, void **scratch_cu
 static void pathEditor_cbSetCurrentPath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATH_s *path;
     i32 index = 0;
-    (void)menu;
-    (void)event;
     if (item != NULL) {
         for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
              index++, path = (EDAIPATH_s *)NuLinkedListGetNext(&aieditor->paths, &path->link)) {
@@ -14567,9 +14307,6 @@ void pathEditor_cbCreatePath(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 number;
     i32 duplicate;
     char name[16];
-    (void)menu;
-    (void)item;
-    (void)event;
     path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->free_paths);
     if (path != NULL) {
         NuLinkedListRemove(&aieditor->free_paths, &path->link);
@@ -14600,8 +14337,6 @@ void pathEditor_cbSelectPathMenu(eduimenu_s *parent, eduiitem_s *item, u32 event
     eduimenu_s *menu;
     EDAIPATH_s *path;
     i32 index = 0;
-    (void)item;
-    (void)event;
     menu = eduiMenuCreate(220, 70, 240, 250, ed_fnt, pathEditor_cbCancelSelectMenu, "Select Path");
     if (menu == NULL) {
         return;
@@ -14624,8 +14359,6 @@ void pathEditor_cbSetShareNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 match_count = 0;
     i32 index;
     f32 best;
-    (void)menu;
-    (void)event;
     if (aieditor->current_path != NULL && aieditor->current_path->current_node != NULL) {
         shared = aieditor->current_path->current_node->shared_node;
         for (path = (EDAIPATH_s *)NuLinkedListGetHead(&aieditor->paths); path != NULL;
@@ -14711,8 +14444,6 @@ void pathEditor_cbShareNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event)
     EDAIPATHNODE_s *node;
     i32 row;
     i32 selected;
-    (void)item;
-    (void)event;
     if (aieditor->current_path == NULL || aieditor->current_path->current_node == NULL) {
         return;
     }
@@ -14746,8 +14477,6 @@ void pathEditor_cbShareNodeMenu(eduimenu_s *parent, eduiitem_s *item, u32 event)
 
 void pathEditor_cbDeletePathNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     EDAIPATHNODE_s *node;
-    (void)menu;
-    (void)event;
     if (item != NULL && item->data != 0 && aieditor->current_path->current_node != NULL &&
         aieditor->current_path->current_node == aieditor->current_path->nearest_node) {
         node = aieditor->current_path->current_node;
@@ -14765,14 +14494,10 @@ void pathEditor_cbDeletePathNode(eduimenu_s *menu, eduiitem_s *item, u32 event) 
 }
 
 void pathEditor_cbCancelDeleteNodeMenu(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     AiEditorClearMainMenu();
 }
 
 void pathEditor_cbDisconnectPathNode(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (item != NULL && item->data != 0 && aieditor->current_path->current_node != NULL && aieditor->current_path->nearest_node != NULL &&
         aieditor->current_path->current_node != aieditor->current_path->nearest_node) {
         pathEditor_DisconnectNodes(aieditor->current_path->current_node, aieditor->current_path->nearest_node);
@@ -14786,8 +14511,6 @@ void pathEditor_cbDisconnectPathNode(eduimenu_s *menu, eduiitem_s *item, u32 eve
 }
 
 void pathEditor_cbCancelDisconnectNodeMenu(eduimenu_s *menu, eduimenu_s *child) {
-    (void)menu;
-    (void)child;
     AiEditorClearMainMenu();
 }
 
@@ -14895,9 +14618,6 @@ void routeEditor_cbCreateRoute(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 i;
     i32 taken;
     char name[16];
-    (void)menu;
-    (void)item;
-    (void)event;
     index = aieditor->current_path->current_route != NULL ? aieditor->current_path->current_route - aieditor->current_path->routes : 0;
     for (attempt = 0; attempt < 16; ++attempt) {
         if (++index >= 16) {
@@ -14935,7 +14655,6 @@ void routeEditor_cbDeleteRoute(eduimenu_s *parent, eduiitem_s *item, u32 event) 
     i32 index;
     i32 i;
     EDAIPATH_s *path;
-    (void)event;
     if (item == NULL) {
         return;
     }
@@ -15081,8 +14800,6 @@ void antinodeEditor_Render(i32 x, i32 y, f32 xscale, f32 yscale) {
 
 void creatureEditor_cbResetParams(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     i32 i;
-    (void)item;
-    (void)event;
     aieditor_SetCurrentScript(aieditorsettings.script_name, NULL);
     if (aieditor->selected_creature != NULL) {
         for (i = 0; i < 4; ++i) {
@@ -15103,7 +14820,6 @@ static void creatureEditorAddResetParamsItem(eduimenu_s *menu) {
 }
 
 void creatureEditor_cbSetScriptParam(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)event;
     if (item != NULL && aieditor->selected_creature != NULL &&
         aieditorsettings.script_params[item->data] != ((edui_slider_s *)item)->value) {
         aieditorsettings.script_params[item->data] = ((edui_slider_s *)item)->value;
@@ -15120,8 +14836,6 @@ void creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 eve
     AISCRIPT *script;
     char text[32];
     i32 index;
-    (void)item;
-    (void)event;
     if (aieditor->selected_creature == NULL) {
         return;
     }
@@ -15166,8 +14880,6 @@ void creatureEditor_cbScriptParams(eduimenu_s *parent, eduiitem_s *item, u32 eve
 
 void creatureEditor_cb_ngroup(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->group_count = (u8)slider->value;
         creatureEditor_Updated(aieditor->selected_creature);
@@ -15176,8 +14888,6 @@ void creatureEditor_cb_ngroup(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 
 void creatureEditor_cb_nacross(eduimenu_s *menu, eduiitem_s *item, u32 event) {
     edui_slider_s *slider = (edui_slider_s *)item;
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->across_count = (u8)slider->value;
         creatureEditor_Updated(aieditor->selected_creature);
@@ -15185,8 +14895,6 @@ void creatureEditor_cb_nacross(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 }
 
 void creatureEditor_cb_xspacing(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->x_spacing = ((edui_slider_s *)item)->value;
         creatureEditor_Updated(aieditor->selected_creature);
@@ -15194,8 +14902,6 @@ void creatureEditor_cb_xspacing(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 }
 
 void creatureEditor_cb_zspacing(eduimenu_s *menu, eduiitem_s *item, u32 event) {
-    (void)menu;
-    (void)event;
     if (aieditor->selected_creature != NULL) {
         aieditor->selected_creature->z_spacing = ((edui_slider_s *)item)->value;
         creatureEditor_Updated(aieditor->selected_creature);
@@ -15204,8 +14910,6 @@ void creatureEditor_cb_zspacing(eduimenu_s *menu, eduiitem_s *item, u32 event) {
 
 void creatureEditor_cbGroupMenu(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)item;
-    (void)event;
     if (aieditor->selected_creature == NULL) {
         return;
     }
@@ -15656,8 +15360,6 @@ i32 Action_GoToNode(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, ch
     AIPATHNODE *node_2;
     f32 distance_squared;
 
-    (void)elapsed;
-
     if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL || packet->path_info.connection == NULL) {
         return 1;
     }
@@ -15713,8 +15415,6 @@ i32 Action_GoToNodeRandom(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *pack
     i32 node_index;
     AIPATHNODE *node_2;
     f32 distance_squared;
-
-    (void)elapsed;
 
     if (packet == NULL || packet->owner == NULL || packet->path_info.path == NULL || packet->path_info.connection == NULL) {
         return 1;
@@ -16030,8 +15730,6 @@ i32 Action_FollowPath(AISYS *sys, AISCRIPTPROCESS *processor, AIPACKET *packet, 
     char *value;
     f64 first_term;
     f32 random;
-
-    (void)sys;
 
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
@@ -16704,7 +16402,6 @@ static void pathEditor_DestroyPath(EDAIPATH_s *path) {
 
 void pathEditor_cbDeletePath(eduimenu_s *parent, eduiitem_s *item, u32 event) {
     eduimenu_s *menu;
-    (void)event;
     if (item == NULL) {
         return;
     }
@@ -16766,8 +16463,6 @@ eduimenu_s *pathEditor_DisconnectNodeMenu(void) {
 void aieditor_cbSave(eduimenu_s *parent, eduiitem_s *item, u32 value) {
     eduimenu_s *menu;
     char message[128];
-    (void)item;
-    (void)value;
     if (aieditor_Save() != 0) {
         if (aieditor->main_menu != NULL) {
             eduiMenuDestroy(aieditor->main_menu);
