@@ -238,7 +238,7 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct LEVER_s *levers;                              // 0x5068
     i32 nlevers;                                         // 0x506c
     struct panel_load_system_s *giz_panel_sys;           // 0x5070
-    void *hat_machine_sys;                               // 0x5074
+    struct HATMACHINE_SYS *hat_machine_sys;              // 0x5074
     struct techno_s *technos;                            // 0x5078
     i32 techno_count;                                    // 0x507c
     struct GRAPPLE_DYNAMIC *grapples;                    // 0x5080

@@ -314,7 +314,7 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
     i32 old_complete;
     i32 index;
     GIZMO *gizmo;
-    TECHNO_s *techno;
+    TECHNO *techno;
     GAMEOBJECT *operator_object;
     char *target_name = NULL;
     char *techno_name = NULL;
@@ -327,13 +327,13 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
         } else if ((value = NuStrIStr(params[index], "target=")) != NULL) {
             target_name = value + NuStrLen("target=");
         } else if (NuStrICmp(value, "Move_Waggle") == 0) {
-            movement = 1;
+            movement = TECHNO_MOVE_WAGGLE;
         } else if (NuStrICmp(value, "Move_Spin") == 0) {
-            movement = 2;
+            movement = TECHNO_MOVE_SPIN;
         } else if (NuStrICmp(value, "Move_Horizontal") == 0) {
-            movement = 8;
+            movement = TECHNO_MOVE_HORIZONTAL;
         } else if (NuStrICmp(value, "Move_Vertical") == 0) {
-            movement = 4;
+            movement = TECHNO_MOVE_VERTICAL;
         } else if (NuStrICmp(params[index], "GIZMO") == 0) {
             target_kind = 3;
         } else if (NuStrICmp(params[index], "HSPECIAL") == 0) {
@@ -348,12 +348,12 @@ void GizAction_ChangeTechnoTgt(GIZFLOW *unused0, FLOWBOX *unused1, char **params
         return;
     }
     gizmo = GizmoFindByName(WORLD->gizmo_sys, GizmoGetTypeIDByName(WORLD->gizmo_sys, "Techno"), techno_name);
-    techno = gizmo != NULL ? (TECHNO_s *)gizmo->object : NULL;
+    techno = gizmo != NULL ? gizmo->object : NULL;
     if (techno == NULL) {
         return;
     }
     if (movement != 0xff) {
-        techno->enabled = movement;
+        techno->movement = movement;
     }
     if (target_kind == -1) {
         Techno_FindOperator(techno->controlled_object, NULL, &operator_object);

@@ -271,16 +271,6 @@ typedef struct bulk_ai_lever_s { // size 0x98
     u16 flags;                   // 0x94
 } BULK_AI_LEVER;
 
-typedef struct bulk_ai_techno_s { // size 0x40
-    u8 unknown_00[0x10];          // 0x00
-    NUVEC position;               // 0x10
-    NUVEC ground_position;        // 0x1c
-    u8 unknown_28[0x14];          // 0x28
-    u8 flags;                     // 0x3c
-} BULK_AI_TECHNO;
-
-i32 GizTechno_CanUseTechno(GAMEOBJECT *object, BULK_AI_TECHNO *techno);
-
 typedef struct ai_action_controller_world_s { // size 0x4674
     u8 unknown_0000[0x4670];                  // 0x0000
     AI_CONTROL_SYSTEM *control_system;        // 0x4670
@@ -9959,7 +9949,7 @@ i32 Action_UsePanel(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet,
 i32 Action_UseTechno(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet, char **params, i32 param_count, i32 first_time,
                      f32 elapsed) {
     GAMEOBJECT *object;
-    BULK_AI_TECHNO *techno;
+    TECHNO *techno;
     if (packet == NULL || packet->owner == NULL || ((APIOBJECT *)packet->owner)->owner == NULL) {
         return 1;
     }
@@ -9968,7 +9958,7 @@ i32 Action_UseTechno(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet
         i32 index;
         for (index = 0; index < param_count; ++index) {
             GIZMO *gizmo;
-            BULK_AI_TECHNO *techno;
+            TECHNO *techno;
             f32 height;
             char *name = NuStrIStr(params[index], (char *)"name=");
             if (name == NULL) {
@@ -9989,7 +9979,8 @@ i32 Action_UseTechno(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET *packet
         }
     }
     techno = processor->action_data_3;
-    if (techno == NULL || (techno->flags & 1) == 0 || (techno->flags & 2) == 0 || (techno->flags & 8) != 0) {
+    if (techno == NULL || (techno->flags & TECHNO_FLAG_ACTIVE) == 0 || (techno->flags & TECHNO_FLAG_VISIBLE) == 0 ||
+        (techno->flags & TECHNO_FLAG_COMPLETE) != 0) {
         return 1;
     }
     AIMoveInstruction(packet, &processor->action_pos, 0.0f, &processor->path_info, AIMOVE_TO_DESTINATION, 0.0f);
@@ -11272,7 +11263,7 @@ i32 Action_SetTechnoComplete(AISYS *system, AISCRIPTPROCESS *processor, AIPACKET
             techno = Technos_FindControllingTechno(object);
         }
         if (techno != NULL) {
-            ((TECHNO_s *)techno)->complete = complete;
+            techno->complete = complete;
         }
     }
     return 1;

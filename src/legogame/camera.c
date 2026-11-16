@@ -88,7 +88,6 @@ i32 SockSysCamera(SOCKSYS *sock_sys, struct nuvec_s *fallback_camera_position, i
                   struct nuvec_s *player_positions, i32 player_count, struct sockposition_s *camera_socket_position,
                   struct nuvec_s *camera_position, struct nuvec_s *camera_target, f32 *overlap_blend, f32 *position_seek, f32 *angle_seek,
                   f32 *camera_shake, f32 *separation_scale);
-struct nuvec_s *Technos_TgtPos(struct TECHNO_s *techno);
 
 i32 Grapple_LookAtPos(GAMEOBJECT *object, NUVEC *position);
 #define GAME_CAMERA_ABSOLUTE(destination, source)                                                                                          \
@@ -202,10 +201,10 @@ static void PlayerCamPos(GAMEOBJECT *object, NUVEC *position, NUVEC *reference) 
             }
             break;
         case CHARACTER_CONTEXT_TECHNO:
-            target = Technos_TgtPos((TECHNO_s *)object->techno);
+            target = Technos_TgtPos(object->techno);
             if (target != NULL) {
                 NuVecSub(&direction, target, &object->position);
-                NuVecScale(&direction, &direction, ((TECHNO_s *)object->techno)->scale);
+                NuVecScale(&direction, &direction, object->techno->scale);
                 NuVecAdd(&direction, &direction, &object->position);
                 *position = direction;
                 target = NULL;
@@ -634,7 +633,7 @@ mode_selected:
                 if (object->character_context == CHARACTER_CONTEXT_DOOMED && !object->dead) {
                     source_position = &object->previous_position;
                 } else if (object->character_context == CHARACTER_CONTEXT_TECHNO && object->techno != NULL) {
-                    NUVEC *techno_position = Technos_TgtPos(((TECHNO_s *)(object->techno)));
+                    NUVEC *techno_position = Technos_TgtPos(object->techno);
                     if (techno_position != NULL) {
                         source_position = techno_position;
                     }

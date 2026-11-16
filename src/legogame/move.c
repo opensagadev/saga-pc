@@ -167,25 +167,10 @@ typedef struct move_gunship_level_flags_s {
 extern f32 DirectionalGrappleSeekScale;
 extern f32 DirectionalZipUpSeekRate;
 
-typedef struct directional_hatmachine_s {
-    u8 unknown_00[0x64];
-    NUVEC player_position;
-} DIRECTIONAL_HATMACHINE;
-
-typedef struct directional_techno_s {
-    u8 unknown_00[0x1c];
-    NUVEC ground_position;
-} DIRECTIONAL_TECHNO;
-
 typedef struct directional_buildit_s {
     u8 unknown_00[0x72];
     u8 state_flags;
 } DIRECTIONAL_BUILDIT;
-
-typedef struct directional_world_s {
-    u8 unknown_00[0x46ec];
-    void *grabber;
-} DIRECTIONAL_WORLD;
 
 typedef struct terrain_parent_context_view_s {
     u8 unknown_0[0x6c4];
@@ -9280,9 +9265,9 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
     } else if ((context_flags & 0x4000) != 0) {
         object->movement_facing_angle = (u16)(GameCam->input_yaw + 0x8000);
     } else if (object->id == (u16)id_GRABCONTROL || object->id == (u16)id_GRABR2CONTROL) {
-        if (((DIRECTIONAL_WORLD *)WORLD)->grabber != NULL) {
+        if (WORLD->grabber != NULL) {
             NUVEC *position;
-            position = Grabber_GetGrabPos(((DIRECTIONAL_WORLD *)WORLD)->grabber, NULL);
+            position = Grabber_GetGrabPos(WORLD->grabber, NULL);
             object->movement_facing_angle =
                 NuAtan2D(position->x - object->collision_position.x, position->z - object->collision_position.z);
         }
@@ -9537,13 +9522,12 @@ void MovePlayer_DIRECTIONAL(GAMEOBJECT *object) {
                     object->target_velocity.z = (target.z - object->position.z) * turn_rate;
                 }
             } else if (object->character_context == CHARACTER_CONTEXT_HAT_MACHINE && (object->flags_1f8 & 0x40000) == 0) {
-                target = ((DIRECTIONAL_HATMACHINE *)(object->grapple))->player_position;
+                target = object->hat_machine->player_position;
                 turn_rate = 10.0f * object->context_hover_target_y + 5.0f;
                 object->target_velocity.x = (target.x - object->position.x) * turn_rate;
                 object->target_velocity.z = (target.z - object->position.z) * turn_rate;
             } else if (object->character_context == CHARACTER_CONTEXT_TECHNO) {
-                DIRECTIONAL_TECHNO *techno;
-                techno = object->grapple;
+                TECHNO *techno = object->techno;
                 object->target_velocity.x = (techno->ground_position.x - object->position.x) * 5.0f;
                 object->target_velocity.z = (techno->ground_position.z - object->position.z) * 5.0f;
             } else if (object->character_context == CHARACTER_CONTEXT_ATTRACTO_DEPOSIT) {
