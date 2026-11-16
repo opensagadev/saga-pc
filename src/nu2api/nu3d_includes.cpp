@@ -5148,28 +5148,6 @@ extern "C" {
         return NuQFntPrintLenU(font, text);
     }
 
-    typedef struct FONT_LOAD_READER {      // size 0x4c
-        u8 unknown_00[6];                  // 0x00
-        u16 flags;                         // 0x06
-        i32 size;                          // 0x08
-        i32 glyph_count;                   // 0x0c
-        i32 unicode_count;                 // 0x10
-        f32 height;                        // 0x14
-        f32 baseline;                      // 0x18
-        f32 space_width;                   // 0x1c
-        i32 mode;                          // 0x20
-        f32 ic_gap;                        // 0x24
-        void *legacy_font;                 // 0x28
-        f32 *x_scale;                      // 0x2c
-        f32 *y_scale;                      // 0x30
-        VUFNTCHAR *glyphs;                 // 0x34
-        VUCHARIDX *unicode_map;            // 0x38
-        void *header;                      // 0x3c
-        NUMTL *material;                   // 0x40
-        u32 *colour;                       // 0x44
-        NUQFNT_RENDER_DATA *platform_data; // 0x48
-    } FONT_LOAD_READER;
-
     typedef struct FONT_PTR_BLOCK { // size 0x8
         VUFNT *font;                // 0x0
         void *texture;              // 0x4
@@ -5179,7 +5157,7 @@ extern "C" {
         if (font != NULL) {
             i32 texture_id = font->material->texture_id;
             NuMtlDestroy(font->material);
-            if ((((FONT_LOAD_READER *)font)->flags & 1) == 0) {
+            if ((font->flags & 1) == 0) {
                 NuTexDestroy(texture_id);
             }
         }
@@ -5334,15 +5312,15 @@ extern "C" {
     }
 
     VUFNT *NuQFntDuplicate(VUFNT *font, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR *end) {
-        FONT_LOAD_READER *reader = (FONT_LOAD_READER *)font;
-        FONT_LOAD_READER *duplicate;
+        VUFNT *reader = font;
+        VUFNT *duplicate;
         NUMTL *material;
         NUMTL *original;
         i32 previous_plane;
         if (font == NULL) {
             AnimationDiagnosticNoOp();
         }
-        duplicate = (FONT_LOAD_READER *)((buffer->addr + 15) & ~15U);
+        duplicate = (VUFNT *)((buffer->addr + 15) & ~15U);
         buffer->addr = (buffer->addr + 15) & ~15U;
         buffer->addr += reader->size;
         if (buffer->addr < end->addr) {
@@ -5375,7 +5353,7 @@ extern "C" {
         VUFNT *font = NuQFntRead(path, buffer, *end);
         VARIPTR saved;
         char filename[1024];
-        FONT_LOAD_READER *reader;
+        VUFNT *reader;
         NUQFNT_RENDER_DATA *platform;
         i32 size;
         i32 texture_id;
@@ -5388,7 +5366,7 @@ extern "C" {
         size = NuFileLoadBuffer(filename, buffer->void_ptr, end->addr - buffer->addr);
         if (size != 0) {
             font = (VUFNT *)buffer->void_ptr;
-            reader = (FONT_LOAD_READER *)font;
+            reader = font;
             reader->glyphs = (VUFNTCHAR *)((u32)reader->glyphs + (u32)font);
             reader->unicode_map = (VUCHARIDX *)((u32)reader->unicode_map + (u32)font);
             buffer->addr = (buffer->addr + size + 15) & ~15U;
@@ -5398,7 +5376,7 @@ extern "C" {
             platform = reader->platform_data;
             reader->x_scale = &platform->x_scale;
             reader->y_scale = &platform->y_scale;
-            reader->colour = &platform->colour;
+            reader->color_abgr = &platform->colour;
             if (texture_path == NULL) {
                 sprintf(filename, "%s", path);
             } else {
@@ -5433,7 +5411,7 @@ extern "C" {
         options &= 0xffff;
         f32 width = (f32)NuTextureDimensions[font->material->texture_id - 1]->width;
         f32 height = (f32)NuTextureDimensions[font->material->texture_id - 1]->height;
-        FONT_LOAD_READER *result = (FONT_LOAD_READER *)((buffer->addr + 15) & ~15U);
+        VUFNT *result = (VUFNT *)((buffer->addr + 15) & ~15U);
         i32 i;
         i32 index;
         buffer->addr = ((buffer->addr + 15) & ~15U) + sizeof(*result) + sizeof(NUQFNT_RENDER_DATA);
@@ -5445,7 +5423,7 @@ extern "C" {
         result->baseline = font->baseline;
         result->ic_gap = font->ic_gap;
         result->space_width = font->glyphs[0].u1 * width - font->glyphs[0].u0 * width;
-        result->header = buffer->void_ptr;
+        result->hdr = buffer->void_ptr;
         *buffer->f32_ptr = result->ic_gap;
         buffer->addr += 4;
         *buffer->f32_ptr = result->height;
@@ -5531,7 +5509,7 @@ extern "C" {
         if (file != 0) {
             font->glyphs = (VUFNTCHAR *)((u32)font->glyphs - (u32)font);
             font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map - (u32)font);
-            NuFileWrite(file, font, ((FONT_LOAD_READER *)font)->size);
+            NuFileWrite(file, font, font->size);
             font->glyphs = (VUFNTCHAR *)((u32)font->glyphs + (u32)font);
             font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map + (u32)font);
             NuFileClose(file);
@@ -5575,7 +5553,7 @@ extern "C" {
         if (file != 0 && texture_file != 0) {
             font->glyphs = (VUFNTCHAR *)((u32)font->glyphs - (u32)font);
             font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map - (u32)font);
-            NuFileWrite(file, font, ((FONT_LOAD_READER *)font)->size);
+            NuFileWrite(file, font, font->size);
             font->glyphs = (VUFNTCHAR *)((u32)font->glyphs + (u32)font);
             font->unicode_map = (VUCHARIDX *)((u32)font->unicode_map + (u32)font);
             remaining = NuFileOpenSize(texture_file);
@@ -8364,7 +8342,7 @@ extern "C" {
 
     i32 NuQFntReadPS(VUFNT *font, i32 texture_id, i32 flags, i32 plane, VARIPTR *buffer, VARIPTR end) {
         NUSHADERMTLDESC description;
-        FONT_LOAD_READER *reader = (FONT_LOAD_READER *)font;
+        VUFNT *reader = font;
         NUQFNT_RENDER_DATA *platform;
         font->material = NuMtlCreate(1);
         font->material->diffuse_r = 1.0f;
@@ -8393,8 +8371,8 @@ extern "C" {
         platform = reader->platform_data;
         reader->x_scale = &platform->x_scale;
         reader->y_scale = &platform->y_scale;
-        reader->colour = &platform->colour;
-        reader->header = NULL;
+        reader->color_abgr = &platform->colour;
+        reader->hdr = NULL;
         return 0;
     }
 
