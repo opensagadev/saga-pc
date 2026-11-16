@@ -1630,8 +1630,6 @@ void edrtlDrawRTLInfo(void) {
     edrtlDrawHelp();
 }
 
-void EdFileWriteInt(i32 value);
-
 // NOLINTNEXTLINE(readability-identifier-naming) -- the subsystem's public name.
 i32 edrtlBurnoutSave(char *filename, BURN_SET *set) {
     i32 index;

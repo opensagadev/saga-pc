@@ -24,11 +24,7 @@
 #include "gameapi/ai/aisys/aisys.h"
 
 extern struct eduimenu_s *edgra_sscale_menu;
-void EdFileWriteInt(i32 value);
-void EdFileWriteShort(i16 value);
-void EdFileWriteChar(char value);
 extern NUMTL *edgra_mtl_zoff;
-void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, NUMTL *material, i32 rotation_z, i32 rotation_y);
 
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 

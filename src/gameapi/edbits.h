@@ -79,6 +79,8 @@ extern "C" {
     void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour, struct numtl_s *material);
     void edgracbDpadModeMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
     void edgracbInstanceMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
+    void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct numtl_s *material, i32 rotation_z,
+                              i32 rotation_y);
 #ifdef __cplusplus
 }
 #endif

@@ -50,6 +50,9 @@ extern "C" {
     i32 EduiRenderItem(struct eduiitem_s *, struct eduimenu_s *, i32, i32, i32, i32);
     void EdFileWriteUnsignedShort(u16 value);
     void eduiItemSliderSetValEx(struct edui_slider_s *item, f32 value, i32 reset_timer, i32 notify);
+    void EdFileWriteChar(char value);
+    void EdFileWriteInt(i32 value);
+    void EdFileWriteShort(i16 value);
 #ifdef __cplusplus
 }
 #endif

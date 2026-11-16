@@ -957,8 +957,6 @@ void edanimStartAllPages(void) {
     }
 }
 
-void EdFileWriteInt(i32 value);
-void EdFileWriteShort(i16 value);
 extern struct eduimenu_s *edanim_switch_menu;
 
 i32 edanimFileSave(char *path) {

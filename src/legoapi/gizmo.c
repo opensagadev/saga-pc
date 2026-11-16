@@ -41,8 +41,6 @@ void GizmoNameDiagnostic(char *name);
     } while (0)
 
 typedef NUVEC *(*GIZMO_GET_POS_FN)(GIZMO *gizmo);
-void EdFileWriteInt(i32 value);
-void EdFileWriteChar(char value);
 
 static i32 DefaultGizmo_GetNumOutputs(GIZMO *gizmo);
 static i32 DefaultGizmo_GetOutput(GIZMO *gizmo, i32 output, i32 mode);

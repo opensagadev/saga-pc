@@ -27,9 +27,6 @@
 
 extern struct eduimenu_s *edbri_plankinstance_menu;
 extern struct eduimenu_s *edbri_postinstance_menu;
-void EdFileWriteInt(i32 value);
-void EdFileWriteShort(i16 value);
-void EdFileWriteChar(char value);
 extern NUMTL *edbri_mtl;
 
 i32 edbri_bridges_used = 0;

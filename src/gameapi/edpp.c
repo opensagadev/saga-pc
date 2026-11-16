@@ -1775,10 +1775,6 @@ void edppHighlightNearest(void) {
     }
 }
 
-void EdFileWriteInt(i32 value);
-void EdFileWriteShort(i16 value);
-void EdFileWriteChar(char value);
-
 i32 edppSaveEffects(char *filename, u8 page) {
     i32 effect_count = 0;
     i32 instance_count = 0;
