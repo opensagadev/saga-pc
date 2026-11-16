@@ -45,11 +45,6 @@ typedef struct PUNCH_BLOWUP_VIEW { // size 0x114
     u8 unknown_104[0x10];          // 0x104
 } PUNCH_BLOWUP_VIEW;
 
-typedef struct weapon_rate_s {
-    u8 unknown_000[0xd40];
-    f32 weapon_scale_rate;
-} WEAPON_RATE;
-
 typedef struct blowup_movement_s {
     u8 unknown_00[0x4c];
     NUVEC mid_position;
@@ -113,7 +108,7 @@ void FastWeaponOut(GAMEOBJECT *object, i32 force_sound) {
             }
         }
     }
-    ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
+    object->player.weapon_scale_rate = 5.0f;
     object->player.weapon_draw_state = 1;
 }
 
@@ -189,7 +184,7 @@ void WeaponOutCode(GAMEOBJECT *object) {
     }
     end = AnimListFrame(object->character_model, object->player.context_animation, 1);
     object->player.weapon_draw_state = 1;
-    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.context_animation, start, end, 0);
+    object->player.weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.context_animation, start, end, 0);
     if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3e, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -236,7 +231,7 @@ void FastWeaponIn(GAMEOBJECT *object, i32 force_sound) {
             }
         }
     }
-    ((WEAPON_RATE *)object)->weapon_scale_rate = 5.0f;
+    object->player.weapon_scale_rate = 5.0f;
     object->player.weapon_draw_state = 2;
 }
 
@@ -315,7 +310,7 @@ void WeaponInCode(GAMEOBJECT *object) {
     }
     end = AnimListFrame(object->character_model, object->player.context_animation, 1);
     object->player.weapon_draw_state = 2;
-    ((WEAPON_RATE *)object)->weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.context_animation, start, end, 0);
+    object->player.weapon_scale_rate = 1.0f / AnimDuration((i16)object->id, object->player.context_animation, start, end, 0);
     if ((object->character_data->model_flags & CHARACTER_MODEL_JEDI) != 0) {
         if (object->player_index != -1 || WeaponInOut_NoAIJediSfx == 0) {
             GameAudio_PlaySfx(0x3d, &object->collision_position, GameAudio_GetPlrSfxBits(object), 1);
@@ -373,16 +368,14 @@ void AutoWeaponOnOff(GAMEOBJECT *object) {
 void WeaponScalingCode(GAMEOBJECT *object) {
     switch (object->player.weapon_draw_state) {
         case 1:
-            object->player.weapon_scale =
-                SeekLinearF(object->player.weapon_scale, 1.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
+            object->player.weapon_scale = SeekLinearF(object->player.weapon_scale, 1.0f, object->player.weapon_scale_rate * FRAMETIME);
             if (object->player.weapon_scale >= 1.0f) {
                 object->player.weapon_draw_state = 0;
                 object->player.flags_e20 |= APIOBJECT_WEAPON_OUT;
             }
             break;
         case 2:
-            object->player.weapon_scale =
-                SeekLinearF(object->player.weapon_scale, 0.0f, ((WEAPON_RATE *)object)->weapon_scale_rate * FRAMETIME);
+            object->player.weapon_scale = SeekLinearF(object->player.weapon_scale, 0.0f, object->player.weapon_scale_rate * FRAMETIME);
             if (object->player.weapon_scale <= 0.0f) {
                 object->player.weapon_draw_state = 0;
                 object->player.flags_e20 &= ~APIOBJECT_WEAPON_OUT;
