@@ -1385,7 +1385,7 @@ typedef struct gameobject_s { // size 0x10d8
     i8 debris_joint;                    // 0x0e3e
     i8 quick_shoot_bolt_id;             // 0x0e3f
     i8 slam_effect;                     // 0x0e40
-    u8 unknown_0e41;                    // 0x0e41
+    u8 combo_style;                     // 0x0e41
     u8 raw_surface_id;                  // 0x0e42
     i8 blade_index;                     // 0x0e43
     i8 blade_states[4];                 // 0x0e44

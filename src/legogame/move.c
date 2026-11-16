@@ -260,21 +260,6 @@ typedef struct zap_variant_view_s {
     u32 r2q5_zapped : 1;
 } ZAP_VARIANT_VIEW;
 
-typedef struct BEAST_FALL_VIEW {
-    u8 unknown_000[0xdac];
-    f32 fall_animation_time;
-} BEAST_FALL_VIEW;
-
-typedef struct beast_ground_contact_view_s {
-    u8 unknown_0[0xd24];
-    f32 ground_contact_grace_timer;
-} BEAST_GROUND_CONTACT_VIEW;
-
-typedef struct punch_style_view_s {
-    u8 unknown_0[0xe41];
-    u8 combo_style;
-} PUNCH_STYLE_VIEW;
-
 typedef struct COMBO_AI_VIEW {
     u8 unknown_000[0x39c];
     GAMEOBJECT **primary_target_ref;
@@ -3676,21 +3661,20 @@ start_attack:
     if (StartupGameFlag1 == 0 || StartupGameFlag0 != 0 ||
         (object->id == (u16)dat_007f17d4 && APICharacterLoaded(PunchRangeCompanionId) != NULL)) {
         if (object->unknown_7aa == ACTION_PUNCH && object->combo_stage == 0) {
-            PUNCH_STYLE_VIEW *style = (PUNCH_STYLE_VIEW *)object;
             CHARACTER_MODEL_LAYERS *model = object->character_model;
             i32 has_first = model->model_data_b[0x2e] != NULL;
             i32 has_second = model->model_data_b[0x35] != NULL;
             if (has_first && has_second) {
-                style->combo_style = style->combo_style == 0;
+                object->combo_style = object->combo_style == 0;
             } else if (has_first) {
-                style->combo_style = 0;
+                object->combo_style = 0;
             } else if (has_second) {
-                style->combo_style = 1;
+                object->combo_style = 1;
             } else {
-                style->combo_style = 0xff;
+                object->combo_style = 0xff;
             }
-            if (style->combo_style != 0xff) {
-                i32 selected = style->combo_style != 0 ? 0x35 : 0x2e;
+            if (object->combo_style != 0xff) {
+                i32 selected = object->combo_style != 0 ? 0x35 : 0x2e;
                 if (model->model_data_b[selected] != NULL) {
                     object->context_variant_flags |= APIOBJECT_PUNCH_COMBO;
                     object->queued_context_animation = selected;
@@ -5797,7 +5781,7 @@ void ForcedBackCode(GAMEOBJECT *object) {
             if (object->context_timer <= 0.0f) {
                 object->character_context = CHARACTER_CONTEXT_NONE;
                 object->flags_ef0 &= ~0x02000000;
-                ((BEAST_GROUND_CONTACT_VIEW *)object)->ground_contact_grace_timer = 0.0f;
+                object->ground_contact_grace_timer = 0.0f;
                 object->flags_e24 |= APIOBJECT_FALL_LAND;
             }
         } else if (ForceBackType == 4 && (f64)object->context_timer < (f64)0.2f) {
@@ -6964,7 +6948,7 @@ static void SetDefaultCharacterAnim(GAMEOBJECT *object) {
 static void BeastStartFallCode(GAMEOBJECT *object) {
     if (object->character_context == CHARACTER_CONTEXT_NONE && object->jump_variant_state == 0 && object->unknown_281 != 0 &&
         object->unknown_282 == 0) {
-        if ((((BEAST_FALL_VIEW *)object)->fall_animation_time >= 0.2f || (object->flags_e24 & APIOBJECT_FALL_LAND) != 0) &&
+        if ((object->fall_animation_timer >= 0.2f || (object->flags_e24 & APIOBJECT_FALL_LAND) != 0) &&
             ((object->flags_e24 & APIOBJECT_FALL_LAND) != 0 || object->pad->input_magnitude == 0.0f ||
              ((object->flags_1fc & APIOBJECT_FLAG_PLAYER_ACTIVE) == 0 && object->character_model->model_data_b[0x59] != NULL))) {
             StartFallLand(object, -1);
@@ -8174,10 +8158,9 @@ static void ShieldCode(GAMEOBJECT *object) {
             target = VehicleShieldTarget;
         } else {
             animation = CurrentAnim(&object->anim_packet);
-            if ((object->unknown_281 != 0 || ((VEHICLE_WEAPONS_STATE *)object)->ground_contact_grace_timer > 0.0f) &&
-                animation != ACTION_NONE && animation != ACTION_RUN && animation != ACTION_OPEN && animation != ACTION_FALL &&
-                animation != ACTION_SLIDE && object->character_context != CHARACTER_CONTEXT_DEACTIVATED &&
-                object->character_context != CHARACTER_CONTEXT_FLATTEN) {
+            if ((object->unknown_281 != 0 || object->ground_contact_grace_timer > 0.0f) && animation != ACTION_NONE &&
+                animation != ACTION_RUN && animation != ACTION_OPEN && animation != ACTION_FALL && animation != ACTION_SLIDE &&
+                object->character_context != CHARACTER_CONTEXT_DEACTIVATED && object->character_context != CHARACTER_CONTEXT_FLATTEN) {
                 target = 1.0f;
             }
         }
