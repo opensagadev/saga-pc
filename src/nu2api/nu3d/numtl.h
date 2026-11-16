@@ -131,7 +131,7 @@ typedef struct numtl_s { // size 0x2c4
     f32 diffuse_r;                                  // 0x054
     f32 diffuse_g;                                  // 0x058
     f32 diffuse_b;                                  // 0x05c
-    u8 unknown_060[0x4];                            // 0x060
+    f32 transform_scale;                            // 0x060
     f32 effect_scale;                               // 0x064
     u8 unknown_068[0x8];                            // 0x068
     f32 opacity;                                    // 0x070
@@ -144,7 +144,7 @@ typedef struct numtl_s { // size 0x2c4
     f32 delta_u;                                    // 0x080
     f32 delta_v;                                    // 0x084
     u8 unknown_088[0x11];                           // 0x088
-    i8 particle_type_tag;                           // 0x099
+    u8 material_kind;                               // 0x099 0x97 glass, 0x90 streak, 0x81/0x85 transformed
     u8 override_slot;                               // 0x09a
     u8 unknown_09b[0x19];                           // 0x09b
     NUSHADERMTLDESC shader;                         // 0x0b4

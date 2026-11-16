@@ -258,7 +258,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
         NuDisplayHandlerPixelShaderCache = NULL;
         NuShaderManagerBindShader(NULL);
         PCDeviceSetVertexDeclaration(NuDisplayMaterialDebrisDeclaration);
-        PCDisplayHandlerBindPrograms((u8)material->particle_type_tag == 0x97 ? NuDisplayMaterialGlassPrograms
+        PCDisplayHandlerBindPrograms(material->material_kind == 0x97 ? NuDisplayMaterialGlassPrograms
                                                                              : NuDisplayMaterialDebrisPrograms);
         if (PcWindowOptions.usehires == 0 || PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_3_0) {
             NuMtxTranspose(&transposed, &PcGeometryViewProjectionMatrix);
@@ -268,7 +268,7 @@ extern "C" void NuDisplayListMaterial(void *arg) {
             PCDeviceSetVertexShaderConstantsF(0x30, ShaderUniformRecords[69].values, 1);
         }
         PCDeviceSetPixelShaderConstantsF(0, ShaderUniformRecords[68].values, 1);
-        if ((u8)material->particle_type_tag == 0x97) {
+        if (material->material_kind == 0x97) {
             GRAPHICS_RENDER_TEXTURE *target = NuPostEffectGetBackBuffer(-1);
             if (target != NULL) {
                 PCDeviceSetTexture(0, target->resource);
@@ -558,19 +558,19 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
             PCDeviceSetPixelShaderConstantsF(0, weights, 1);
             u32 level = input_lod & 15;
             input->flags = (((input->flags & 0xfca5dbf0) | level) & 0xffffff0f) | ((level | 0xa41b0) << 4);
-            if ((u32)PCDeviceSamplerInvalidation[0][0] != input->flags || (u32)PCDeviceSamplerInvalidation[0][1] != input->unknown_24) {
+            if ((u32)PCDeviceSamplerInvalidation[0][0] != input->flags || (u32)PCDeviceSamplerInvalidation[0][1] != input->sampler_extra) {
                 PCGraphicsSetSamplerTuple(0, &input->flags);
             }
             PCDeviceSetTexture(0, input->resource);
-            if ((u32)PCDeviceSamplerInvalidation[1][0] != input->flags || (u32)PCDeviceSamplerInvalidation[1][1] != input->unknown_24) {
+            if ((u32)PCDeviceSamplerInvalidation[1][0] != input->flags || (u32)PCDeviceSamplerInvalidation[1][1] != input->sampler_extra) {
                 PCGraphicsSetSamplerTuple(1, &input->flags);
             }
             PCDeviceSetTexture(1, input->resource);
-            if ((u32)PCDeviceSamplerInvalidation[2][0] != input->flags || (u32)PCDeviceSamplerInvalidation[2][1] != input->unknown_24) {
+            if ((u32)PCDeviceSamplerInvalidation[2][0] != input->flags || (u32)PCDeviceSamplerInvalidation[2][1] != input->sampler_extra) {
                 PCGraphicsSetSamplerTuple(2, &input->flags);
             }
             PCDeviceSetTexture(2, input->resource);
-            if ((u32)PCDeviceSamplerInvalidation[3][0] != input->flags || (u32)PCDeviceSamplerInvalidation[3][1] != input->unknown_24) {
+            if ((u32)PCDeviceSamplerInvalidation[3][0] != input->flags || (u32)PCDeviceSamplerInvalidation[3][1] != input->sampler_extra) {
                 PCGraphicsSetSamplerTuple(3, &input->flags);
             }
             PCDeviceSetTexture(3, input->resource);
@@ -593,7 +593,7 @@ extern "C" void PostBlur7x7Low(GRAPHICS_RENDER_TEXTURE *source, i32 source_lod, 
                     NuDisplayHandlerPixelShaderCache = NULL;
                 }
             }
-            if ((u32)PCDeviceSamplerInvalidation[0][0] != input->flags || (u32)PCDeviceSamplerInvalidation[0][1] != input->unknown_24) {
+            if ((u32)PCDeviceSamplerInvalidation[0][0] != input->flags || (u32)PCDeviceSamplerInvalidation[0][1] != input->sampler_extra) {
                 PCGraphicsSetSamplerTuple(0, &input->flags);
             }
             PCDeviceSetTexture(0, input->resource);

@@ -51,7 +51,7 @@ i32 nudlist_alloc_count = 0;
 u32 nudlist_alloc_base = 0;
 u32 nudlist_alloc_end = 0;
 u32 nudlist_item_base = 0;
-u32 nudlist_field_fc8 = 0;
+struct PC_MATERIAL_ANIM_SET *PCMaterialAnimSets = NULL;
 u32 nudlist_field_fe4 = 0;
 i32 DisplaySceneRenderDisabled = 0;
 i32 noscenespecials = 0;
@@ -64,12 +64,12 @@ i32 NuRndrBeginScene(i32 begin_flags) {
     currentScene.clear_alpha_4c = 0.0f;
     currentScene.clear_flags_08 = 0;
     currentScene.clear_flags = 0;
-    currentScene.unknown_24 = 0;
-    currentScene.unknown_28 = 0;
-    currentScene.unknown_58 = 0;
+    currentScene.render_frame_flags = 0;
+    currentScene.burnout_enabled = 0;
+    currentScene.bloom_enabled = 0;
     currentScene.dyn_light_count = 0;
     currentScene.dyn_light_ptr = NULL;
-    currentScene.unknown_48 = 0;
+    currentScene.deferred_shading_enabled = 0;
     currentScene.dof.enabled = 0;
     currentScene.texture_blend_enabled = 0;
     currentScene.motion_effect_set = 0;
@@ -79,7 +79,7 @@ i32 NuRndrBeginScene(i32 begin_flags) {
     currentScene.speed_blur.enabled = 0;
     currentScene.backbuffer_copy_texture = 0;
     currentScene.scene_id = -1;
-    currentScene.unknown_40 = -1;
+    currentScene.light_render_set = -1;
     return 1;
 }
 
@@ -87,7 +87,7 @@ void NuRndrClear(i32 clear_flags, i32 bg_colour, f32 alpha) {
     currentScene.clear_alpha = alpha;
     currentScene.clear_flags_08 |= clear_flags;
     currentScene.bg_colour = bg_colour;
-    NuVpGetPosition2(&currentScene.unknown_14, &currentScene.unknown_18);
+    NuVpGetPosition2(&currentScene.viewport_x, &currentScene.viewport_y);
     currentScene.calc_1c = (f32)(0.0625 * vpCurrent.width / ((f64)PS2_REZ_W / PS2_VREZ_W));
     currentScene.calc_20 = (f32)(0.0625 * vpCurrent.height / ((f64)PS2_REZ_H / PS2_VREZ_H));
 }
@@ -232,7 +232,7 @@ void NuRndrEndScene(void) {
         NURNDRLIGHTRECORD *record;
 
         if (records[2].enabled != 0) {
-            record = &records[currentScene.unknown_40];
+            record = &records[currentScene.light_render_set];
             record->pending[record->count] = scene_id;
             record->count += 1;
         } else {
@@ -263,9 +263,6 @@ void NuDisplayListStreamAlloc(VARIPTR *cursor, i32 arg2, i32 count) {
         item->id = NUDLISTITEM_END;
     }
 }
-
-typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
-typedef struct PC_HG_SHADOW_STATE_VIEW PC_HG_SHADOW_STATE_VIEW;
 
 void NuRndrCalcRandEllipsePos(NUVEC4 *position, NUMTX *matrix, NUVEC *axes) {
     NUVEC random;
@@ -429,7 +426,7 @@ void NuAccumulationMotionBlurEffect(i32 frames, f32 blend, f32 mode) {
 }
 
 void NuDeferredShadingRender(void) {
-    currentScene.unknown_48 = 1;
+    currentScene.deferred_shading_enabled = 1;
 }
 
 void NuRndrSetShadowCoefficient(i32 index, f32 value) {
@@ -489,7 +486,7 @@ f32 fun_005d52b0(f32 value, f32 minimum, f32 maximum) {
 }
 
 void fun_005d5230(void) {
-    currentScene.unknown_24 = 1;
+    currentScene.render_frame_flags = 1;
 }
 
 void fun_005d5250(i32 value) {
@@ -1317,7 +1314,7 @@ u8 NuPrim2DAddCLR(i32 minimum_unused, i32 maximum_unused, f32 value) {
 
 PC_TEXTURE_RESOURCE *RendererVertexDeclaration = 0;
 PC_BUFFER_RESOURCE *RendererQuadVertexBuffer = 0;
-PC_HG_SHADOW_STATE_VIEW PCShadowState = {0};
+PC_HG_SHADOW_STATE PCShadowState = {0};
 
 /* Stencil shadow-volume arena vertex: D3DDECLTYPE_FLOAT3 position and D3DCOLOR. */
 typedef struct RENDERER_ARENA_VERTEX { // size 0x10
@@ -1336,7 +1333,7 @@ i32 RendererArenaCount = 0;
 i32 RendererArenaVertexCount = 0;
 i32 RendererArenaIndexCount = 0;
 __declspec(align(16)) NUPLANE VisibilityDepthPlane = {0};
-char *nudlist_field_18b0 = NULL;
+char *PCDisplayCaptureFlushLimit = NULL;
 
 /* Shadow outline records: a direction or point with a count (or a -1 marker in the arena) in the fourth word. */
 typedef struct pc_shadow_edge_s { // size 0x10

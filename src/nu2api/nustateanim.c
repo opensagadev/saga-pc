@@ -5,6 +5,8 @@
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/numtx.h"
 
+
+// nu3d_platform.cpp defines fun_00601de0 as an empty i32 (void) leaf; this unit calls it as an allocator.
 void *fun_00601de0(i32 size, i32 alignment);
 
 STATE_ANIM *StateAnimFixPtrs(STATE_ANIM *state, i32 delta) {

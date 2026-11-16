@@ -43,7 +43,7 @@ struct nudathdr_s {                  // size 0xc0
     NUDATOPENFILEINFO open_files[8]; // 0x30
     i16 unknown_b0;                  // 0xb0
     i16 mode;                        // 0xb2
-    i32 unknown_b4;                  // 0xb4
+    i32 start_lsn;                  // 0xb4
     char *name;                      // 0xb8
 };
 
@@ -193,7 +193,6 @@ extern "C" {
     i32 NuFileExtConvert(char *destination, char *path);
     void NuPPUnpack(void *, void *);
     i32 NuPPLoadBuffer(NUFILE file, void *buffer, i32 capacity);
-    extern const char AITransferLiteral757a94[9];
     void *NuFileLoad(char *);
     i32 NuFileGetLastError(void);
     NUFILE_DEVICE *NuFileFindDevice(i32, i32);

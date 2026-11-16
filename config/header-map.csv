@@ -3442,13 +3442,13 @@ assert:-#2890,assert,,11003,11003,1,legoapi/gizmos/traps/gizforce.h,follow-type,
 assert:-#2891,assert,,11004,11004,1,legoapi/gizmos/traps/gizforce.h,follow-type,GIZFORCE_TARGET_RECORD
 assert:-#2892,assert,,11005,11005,1,legoapi/gizmos/traps/gizforce.h,follow-type,GIZFORCE_TARGET_RECORD
 struct:PC_HG_SHADOW_PACKET,struct,PC_HG_SHADOW_PACKET,11007,11022,17,nu2api/nustencilshadows_PC.h,rule,used most in nu2api/nu3d_includes.cpp (24) android-path
-struct:PC_HG_SHADOW_STATE_VIEW,struct,PC_HG_SHADOW_STATE_VIEW,11024,11043,21,decomp.h,decomp,view type
+struct:PC_HG_SHADOW_STATE,struct,PC_HG_SHADOW_STATE,11024,11043,21,decomp.h,decomp,view type
 assert:-#2893,assert,,11045,11045,2,nu2api/nustencilshadows_PC.h,follow-type,PC_HG_SHADOW_PACKET
 assert:-#2894,assert,,11046,11046,1,nu2api/nustencilshadows_PC.h,follow-type,PC_HG_SHADOW_PACKET
-assert:-#2895,assert,,11047,11047,1,decomp.h,follow-type,PC_HG_SHADOW_STATE_VIEW
-assert:-#2896,assert,,11048,11048,1,decomp.h,follow-type,PC_HG_SHADOW_STATE_VIEW
-assert:-#2897,assert,,11049,11049,1,decomp.h,follow-type,PC_HG_SHADOW_STATE_VIEW
-assert:-#2898,assert,,11050,11050,1,decomp.h,follow-type,PC_HG_SHADOW_STATE_VIEW
+assert:-#2895,assert,,11047,11047,1,decomp.h,follow-type,PC_HG_SHADOW_STATE
+assert:-#2896,assert,,11048,11048,1,decomp.h,follow-type,PC_HG_SHADOW_STATE
+assert:-#2897,assert,,11049,11049,1,decomp.h,follow-type,PC_HG_SHADOW_STATE
+assert:-#2898,assert,,11050,11050,1,decomp.h,follow-type,PC_HG_SHADOW_STATE
 forward:level_sfx_pulse_prefix_s,forward,level_sfx_pulse_prefix_s LEVEL_SFX_PULSE,11052,11052,2,legoapi/items/fx/pulses.h,users,level_sfx_pulse_prefix_s: only legoapi/pulses.c android-path
 forward:CUT_LOAD_RECORD,forward,CUT_LOAD_RECORD,11054,11054,2,legoapi/cutscenes/cutscenes.h,users,CUT_LOAD_RECORD: only legoapi/cutscenes.cpp android-path
 forward:minianimpacket_s,forward,minianimpacket_s MINIANIMPACKET,11056,11056,2,legoapi/items/base/animpacket.h,android-stem,minianimpacket_s -> MINIANIMPACKET_s
@@ -5350,7 +5350,7 @@ variable:nudlist_alloc_end,variable,nudlist_alloc_end,13368,13368,1,nu2api/nu3d/
 variable:nudlist_item_base,variable,nudlist_item_base,13369,13369,1,nu2api/nu3d/nu3d_includes.h,users,nudlist_item_base: only nu2api/nu3d_includes.cpp android-path
 variable:nudlist_frame_active,variable,nudlist_frame_active,13370,13370,1,nu2api/nu3d/nu3d_includes.h,users,nudlist_frame_active: only nu2api/nu3d_includes.cpp android-path
 variable:nudlist_field_e80,variable,nudlist_field_e80,13371,13371,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x973e80 between 0x973e7c and 0x973e84
-variable:nudlist_field_fc8,variable,nudlist_field_fc8,13372,13372,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x973fc8 between 0x973fc0 and 0x973fe4
+variable:PCMaterialAnimSets,variable,PCMaterialAnimSets,13372,13372,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x973fc8 between 0x973fc0 and 0x973fe4
 variable:nudlist_field_fc4,variable,nudlist_field_fc4,13373,13373,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x973fc4 between 0x973fc0 and 0x973fe4
 variable:nudlist_field_9d0,variable,nudlist_field_9d0,13374,13374,1,nu2api/nu3d/nu3d_includes.h,users,nudlist_field_9d0: only nu2api/nu3d_includes.cpp android-path
 variable:nudlist_field_9d8,variable,nudlist_field_9d8,13375,13375,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9739d8 between 0x9739d0 and 0x973ddc
@@ -8701,7 +8701,6 @@ assert:-#3517,assert,,17388,17388,1,legoapi/items/base/apiobject.h,follow-type,A
 assert:-#3518,assert,,17389,17389,1,legoapi/characters/motion/move.h,follow-type,PLAYERCHARACTERCONFIG
 function:NuPPUnpack,function,NuPPUnpack,17390,17390,1,nu2api/nufile/nufile.h,android,NuPPUnpack
 function:NuPPLoadBuffer,function,NuPPLoadBuffer,17391,17391,1,nu2api/nufile/nufile.h,android,NuPPLoadBuffer
-variable:AITransferLiteral757a94,variable,AITransferLiteral757a94,17392,17392,1,nu2api/nufile/nufile.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral757a8c,variable,AITransferLiteral757a8c,17393,17393,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:AITransferLiteral757c64,variable,AITransferLiteral757c64,17394,17394,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757c64: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral757c60,variable,AITransferLiteral757c60,17395,17395,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral757c60: only legogame/gameaiscript.c android-path
@@ -8713,7 +8712,6 @@ variable:part_types#2,variable,part_types,17402,17402,2,legoapi/items/objects/ob
 variable:script_spline_selected#2,variable,script_spline_selected,17403,17403,1,globals.h,android-weak,catch-all (needs a module owner); script_spline_selected
 function:PARTLookupType,function,PARTLookupType,17404,17404,1,legoapi/render/fx.h,android,PARTLookupType
 function:NuSplineFindAllBeg,function,NuSplineFindAllBeg,17405,17405,1,nu2api/nu3d/nuspline.h,android,NuSplineFindAllBeg
-variable:AITransferLiteral7577dc,variable,AITransferLiteral7577dc,17406,17406,1,nu2api/nu3d/nuspline.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
 variable:dat_00757824,variable,dat_00757824,17407,17407,1,gameapi/ai/aisys/gameaiscript.h,definition,legogame/gameaiscript.c android-path
 variable:AITransferLiteral75781c,variable,AITransferLiteral75781c,17408,17408,1,gameapi/ai/aisys/gameaiscript.h,users,AITransferLiteral75781c: only legogame/gameaiscript.c android-path
 variable:AITransferLiteral757884,variable,AITransferLiteral757884,17409,17409,1,gameapi/ai/aisys/gameaiscript.h,unused,no unit uses it; PC declaration; owner by saga.h neighbour
@@ -12649,9 +12647,9 @@ variable:RenderFrameCallback,variable,RenderFrameCallback,24746,24746,1,nu2api/n
 variable:NuPostEffectInitialisedFlags,variable,NuPostEffectInitialisedFlags,24747,24747,1,nu2api/nu3d/nu3d_includes.h,users,NuPostEffectInitialisedFlags: only nu2api/nu3d_includes.cpp android-path
 variable:FrameNativeTexturePool,variable,FrameNativeTexturePool,24748,24748,1,nu2api/nustencilshadows_PC.h,data-order,retail 0x2855070 between 0x2854ff0 and 0x2856c28
 variable:nudlist_field_958,variable,nudlist_field_958,24749,24749,1,nu2api/nu3d/nu3d_includes.h,users,nudlist_field_958: only nu2api/nu3d_includes.cpp android-path
-variable:nudlist_field_988,variable,nudlist_field_988,24750,24750,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x973988 between 0x973980 and 0x97398c
+variable:NuHtmlFile,variable,NuHtmlFile,24750,24750,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x973988 between 0x973980 and 0x97398c
 variable:PCDisplayCaptureCursor,variable,PCDisplayCaptureCursor,24751,24751,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x96e594 between 0x96e590 and 0x96e598
-variable:nudlist_field_18b0,variable,nudlist_field_18b0,24752,24752,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9718b0 between 0x9718a0 and 0x9718b4
+variable:PCDisplayCaptureFlushLimit,variable,PCDisplayCaptureFlushLimit,24752,24752,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9718b0 between 0x9718a0 and 0x9718b4
 variable:PCDisplayCaptureBuffer,variable,PCDisplayCaptureBuffer,24753,24753,1,nu2api/nu3d/nu3d_includes.h,data-order,retail 0x9720d8 between 0x971b20 and 0x9730d8
 union:PC_BOOT_FRAMEBUFFER_VIEW,union,PC_BOOT_FRAMEBUFFER_VIEW,24758,24765,9,decomp.h,decomp,view type
 assert:-#4598,assert,,24767,24767,2,decomp.h,follow-type,PC_BOOT_FRAMEBUFFER_VIEW

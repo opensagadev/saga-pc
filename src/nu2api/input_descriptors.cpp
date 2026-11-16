@@ -22,9 +22,9 @@ extern "C" void SetPadDescriptor(i32 product_id, const u16 *descriptor) {
         descriptor += 2;
     }
     for (i32 index = 0; index < 4; ++index) {
-        config->unknown_axes[index][0] = 0;
-        config->unknown_axes[index][1] = 0;
-        config->unknown_axes[index][2] = 0;
+        config->axis_bindings[index][0] = 0;
+        config->axis_bindings[index][1] = 0;
+        config->axis_bindings[index][2] = 0;
     }
     for (i32 index = 0; index < 16; ++index) {
         if ((i16)*descriptor != -1) {

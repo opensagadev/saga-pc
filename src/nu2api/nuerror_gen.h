@@ -24,7 +24,7 @@ typedef struct PC_NATIVE_DEBUG_VERTEX { // size 0x14
 } PC_NATIVE_DEBUG_VERTEX;
 
 typedef struct PC_NATIVE_DEBUG_STATE {      // size 0x508
-    u8 unknown_0;                           // 0x000
+    u8 initialised;                           // 0x000
     u8 enabled;                             // 0x001
     u8 unknown_002[2];                      // 0x002
     i32 unknown_004;                        // 0x004

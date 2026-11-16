@@ -656,14 +656,14 @@ extern "C" {
 void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
+        if (uniform->binding_scope != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+        if ((uniform->binding_scope == 0 || uniform->binding_scope == 2) && PCShaderCurrentObject() != NULL) {
             NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv(PCShaderCurrentObject(), semantic, 0, 1, values);
@@ -673,7 +673,7 @@ void ShaderManagerHLSL::SetUniformValues(i32 semantic, const f32 *values) {
     }
     NUMTX transposed;
     const f32 *submitted;
-    if (uniform->field_c == 4) {
+    if (uniform->register_count == 4) {
         NuMtxTranspose(&transposed, (NUMTX *)values);
         submitted = (const f32 *)&transposed;
     } else {
@@ -7982,14 +7982,14 @@ extern "C" void NuShaderManagerInit(VARIPTR *arena, VARIPTR arena_end) {
 void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
+        if (uniform->binding_scope != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+        if ((uniform->binding_scope == 0 || uniform->binding_scope == 2) && PCShaderCurrentObject() != NULL) {
             NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv(PCShaderCurrentObject(), semantic, element, 1, values);
@@ -7999,7 +7999,7 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
     }
     NUMTX transposed;
     const f32 *submitted;
-    if (uniform->field_c == 4) {
+    if (uniform->register_count == 4) {
         NuMtxTranspose(&transposed, (NUMTX *)values);
         submitted = (const f32 *)&transposed;
     } else {
@@ -8007,14 +8007,14 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
     }
     switch (uniform->stage_mask & 3) {
         case 3:
-            PCDeviceSetVertexShaderConstantsF(uniform->register_index + element, submitted, uniform->field_c);
-            PCDeviceSetPixelShaderConstantsF(uniform->register_index + element, submitted, uniform->field_c);
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + element, submitted, uniform->register_count);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + element, submitted, uniform->register_count);
             break;
         case 2:
-            PCDeviceSetPixelShaderConstantsF(uniform->register_index + element, submitted, uniform->field_c);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + element, submitted, uniform->register_count);
             break;
         case 1:
-            PCDeviceSetVertexShaderConstantsF(uniform->register_index + element, submitted, uniform->field_c);
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + element, submitted, uniform->register_count);
             break;
     }
 }
@@ -8022,14 +8022,14 @@ void ShaderManagerHLSL::setElementfv(i32 semantic, i32 element, const f32 *value
 void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
+        if (uniform->binding_scope != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+        if ((uniform->binding_scope == 0 || uniform->binding_scope == 2) && PCShaderCurrentObject() != NULL) {
             NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv_transpose(PCShaderCurrentObject(), semantic, first_element, count, values);
@@ -8039,14 +8039,14 @@ void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element,
     }
     switch (uniform->stage_mask & 3) {
         case 3:
-            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, values, uniform->field_c * count);
-            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, values, uniform->field_c * count);
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, values, uniform->register_count * count);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, values, uniform->register_count * count);
             break;
         case 2:
-            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, values, uniform->field_c * count);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, values, uniform->register_count * count);
             break;
         case 1:
-            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, values, uniform->field_c * count);
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, values, uniform->register_count * count);
             break;
     }
 }
@@ -8054,14 +8054,14 @@ void ShaderManagerHLSL::setElementsfv_transpose(i32 semantic, i32 first_element,
 void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count, const f32 *values) {
     ShaderUniformRecord *uniform = &ShaderUniformRecords[semantic];
     if (compiler->dictionary.profile != PC_SHADER_MODEL_3_0) {
-        if (uniform->unknown_18 != 0 || PCShaderCurrentObject() == NULL) {
+        if (uniform->binding_scope != 0 || PCShaderCurrentObject() == NULL) {
             if (uniform->value_count <= 4) {
                 memcpy(uniform->values, values, uniform->value_count * 16);
             } else {
                 PCShaderCurrentObject();
             }
         }
-        if ((uniform->unknown_18 == 0 || uniform->unknown_18 == 2) && PCShaderCurrentObject() != NULL) {
+        if ((uniform->binding_scope == 0 || uniform->binding_scope == 2) && PCShaderCurrentObject() != NULL) {
             NuShaderObject *bound = PCShaderCurrentObject();
             if (bound->parameters[semantic].register_index >= 0) {
                 NuShaderObjectSetElementsfv(PCShaderCurrentObject(), semantic, first_element, count, values);
@@ -8071,7 +8071,7 @@ void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count
     }
     NUMTX transposed[16];
     const f32 *submitted;
-    if (uniform->field_c == 4) {
+    if (uniform->register_count == 4) {
         const NUMTX *source = (const NUMTX *)values;
         for (i32 i = 0; i < count; ++i) {
             NuMtxTranspose(&transposed[i], (NUMTX *)source++);
@@ -8083,14 +8083,14 @@ void ShaderManagerHLSL::setElementsfv(i32 semantic, i32 first_element, i32 count
     }
     switch (uniform->stage_mask & 3) {
         case 3:
-            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, submitted, uniform->field_c * count);
-            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, submitted, uniform->field_c * count);
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, submitted, uniform->register_count * count);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, submitted, uniform->register_count * count);
             break;
         case 2:
-            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, submitted, uniform->field_c * count);
+            PCDeviceSetPixelShaderConstantsF(uniform->register_index + first_element, submitted, uniform->register_count * count);
             break;
         case 1:
-            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, submitted, uniform->field_c * count);
+            PCDeviceSetVertexShaderConstantsF(uniform->register_index + first_element, submitted, uniform->register_count * count);
             break;
     }
 }

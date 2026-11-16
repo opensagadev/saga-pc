@@ -4,6 +4,7 @@
 #include "nu2api/nustencilshadows_PC.h"
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
+#include "nu2api/posteffect_shader_tokens_pc.h"
 #include <vector>
 
 struct POST_VERTEX_SHADER_CACHE_ENTRY { // size 0x8
@@ -133,15 +134,6 @@ extern "C" POST_SHADER_PROGRAM *PostShaderProgramCreate(i32 mode, const DWORD *v
 }
 
 extern "C" {
-    extern const DWORD dat_007656f0[];
-    extern const DWORD dat_00765798[];
-    extern const DWORD dat_00765848[];
-    extern const DWORD dat_00765aa8[];
-    extern const DWORD dat_00765ca0[];
-    extern const DWORD dat_00765d90[];
-    extern const DWORD dat_00765e40[];
-    extern const DWORD dat_00765f30[];
-    extern const DWORD dat_007660d0[];
     POST_SHADER_PROGRAM *PostCopyTexProgram = 0;
     POST_SHADER_PROGRAM *dat_00973820 = 0;
     POST_SHADER_PROGRAM *PostCopyTexLodProgram = 0;

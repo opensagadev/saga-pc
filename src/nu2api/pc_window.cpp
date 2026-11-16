@@ -305,9 +305,6 @@ extern "C" void PcRelaunchMediaCenter(void) {
     }
 }
 
-extern "C" {
-    void PcCreateCursorMaterial(void);
-}
 
 /* Embedded mouse cursor DDS image (0x1080 bytes). */
 extern "C" u8 PcCursorImage[0x1080] = {

@@ -96,8 +96,6 @@ PC_TEXTURE_ANIM_ENV *NuTexAnimEnvCreate(VARIPTR *buffer, NUMTL *material, u16 *t
     return environment;
 }
 
-typedef struct TEXTURE_ANIM_PROGRAM TEXTURE_ANIM_PROGRAM;
-
 struct TEXTURE_ANIM_PROGRAM {       // size 0x1bc
     TEXTURE_ANIM_PROGRAM *next;     // 0x000
     TEXTURE_ANIM_PROGRAM *previous; // 0x004
@@ -114,8 +112,6 @@ struct TEXTURE_ANIM_PROGRAM {       // size 0x1bc
     u16 mask;                       // 0x1b8
     i16 instructions[1];            // 0x1ba
 };
-
-typedef struct TEXTURE_ANIMATION TEXTURE_ANIMATION;
 
 struct TEXTURE_ANIMATION {            // size 0x20
     TEXTURE_ANIMATION *next;          // 0x00
@@ -1013,7 +1009,6 @@ TEXTURE_ANIM_PROGRAM *NuTexAnimProgReadScript(char *path, VARIPTR *buffer, VARIP
     return program;
 }
 
-extern void PCSpecialEmptyHandler(void);
 
 void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     char filename[128];
@@ -1090,7 +1085,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
                 file = NuMemFileOpen(data, size, 0);
                 if (file != 0) {
                     if (NuTexAnimProgParseFile(file, buffer, list, 0) == NULL) {
-                        ((void (*)(const void *))PCSpecialEmptyHandler)(cursor.char_ptr);
+                        PCSpecialEmptyHandler(cursor.char_ptr);
                     }
                     NuFileClose(file);
                 }
@@ -1100,7 +1095,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
         if (NuTexAnimMissingPakDiagnostic != 0) {
             ((void (*)(const void *))AnimationDiagnosticNoOp)(path);
         } else {
-            ((void (*)(const void *))PCSpecialEmptyHandler)(path);
+            PCSpecialEmptyHandler(path);
         }
         buffer->addr = (buffer->addr + 15) & ~15u;
     }
@@ -1121,7 +1116,7 @@ void NuTexAnimProgReadCFG(char *path, VARIPTR *buffer, VARIPTR end) {
     }
     for (cursor = list; *cursor.char_ptr != '\0'; cursor.char_ptr += NuStrLen(cursor.char_ptr) + 1) {
         if (NuTexAnimProgReadScript(cursor.char_ptr, buffer, list, 0) == NULL) {
-            ((void (*)(const void *))PCSpecialEmptyHandler)(cursor.char_ptr);
+            PCSpecialEmptyHandler(cursor.char_ptr);
         }
     }
     buffer->addr = (buffer->addr + 15) & ~15u;

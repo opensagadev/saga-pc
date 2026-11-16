@@ -344,7 +344,7 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakmtl->attribs.lighting = NUMTL_LIGHTING_NONE;
     streakmtl->attribs.vertex_colour = 1;
     buffer->addr = (buffer->addr + 15) & ~15u;
-    streakmtl->particle_type_tag = -112;
+    streakmtl->material_kind = 0x90;
     streakmtl->effect_scale = 5.0f;
     streakmtl->texture_id = static_cast<i16>(NuTexRead(name, buffer, end));
     NuMtlUpdate(streakmtl);
@@ -357,7 +357,7 @@ extern "C" void InitStreaks(VARIPTR *buffer, VARIPTR end, char *name) {
     streakmtl_ref->attribs.filter_mode = 1;
     streakmtl_ref->attribs.lighting = NUMTL_LIGHTING_NONE;
     streakmtl_ref->attribs.vertex_colour = 1;
-    streakmtl_ref->particle_type_tag = -112;
+    streakmtl_ref->material_kind = 0x90;
     streakmtl_ref->effect_scale = 5.0f;
     streakmtl_ref->sort_priority = 1;
     streakmtl_ref->texture_id = streakmtl->texture_id;

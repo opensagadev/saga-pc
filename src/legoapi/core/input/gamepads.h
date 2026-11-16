@@ -71,6 +71,8 @@ extern "C" {
     void NuMainRenderLeaf(void);
     void ViewCamDraw(void);
     i32 GamePads_SkipMovie(void);
+    i32 GameReleaseResources(void);
+    i32 GameRestoreResources(void);
 #ifdef __cplusplus
 }
 #endif

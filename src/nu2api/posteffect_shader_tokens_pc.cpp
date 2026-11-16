@@ -1,4 +1,5 @@
 #include "nu2api/nucore/common.h"
+#include "nu2api/posteffect_shader_tokens_pc.h"
 
 extern "C" {
     extern const DWORD dat_007656f0[42] = {

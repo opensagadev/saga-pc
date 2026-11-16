@@ -555,7 +555,7 @@ extern "C" void RenderShadowLights(i32 paused) {
         NuRndrBeginScene(1);
         currentScene.dyn_light_count = 1;
         currentScene.dyn_light_ptr = PCShadowCurrentLight;
-        currentScene.unknown_40 = 0;
+        currentScene.light_render_set = 0;
         if (WORLD->current_gscn != NULL) {
             PCShadowCurrentLight->RenderSceneShadow(WORLD->current_gscn);
         }

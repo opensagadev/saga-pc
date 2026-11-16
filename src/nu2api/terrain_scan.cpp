@@ -65,7 +65,7 @@ static void TerrainStoreScanShape(TERRAIN_POLYGON_INFO **&cursor, i32 &group_sha
 
 // The scan box around the query's sweep; returns the scan radius. Scan result 1 boxes the swept segment, the others a
 // sphere around the start position.
-static f32 TerrainScanBounds(f32 &min_x, f32 &min_y, f32 &min_z, f32 &max_x, f32 &max_y, f32 &max_z) {
+static f32 TerrainComputeScanBounds(f32 &min_x, f32 &min_y, f32 &min_z, f32 &max_x, f32 &max_y, f32 &max_z) {
     TerrainQuery_s *query = TerI;
     f32 scan_radius;
     if (query->scan_result != 1) {
@@ -140,7 +140,7 @@ extern "C" void ScanTerrain(i32 scan_type, i32 terrain_mask, i32 scan_flags) {
     f32 max_z;
 
     TerrainQuery_s *query = TerI;
-    f32 scan_radius = TerrainScanBounds(min_x, min_y, min_z, max_x, max_y, max_z);
+    f32 scan_radius = TerrainComputeScanBounds(min_x, min_y, min_z, max_x, max_y, max_z);
     if (query->object_scale > 1.0f) {
         scan_radius += (query->object_scale - 1.0) * query->collision_radius;
     }
@@ -601,7 +601,7 @@ extern "C" void ScanWallSplineTerrain(i32 scan_type, i32 terrain_mask, i32 scan_
     f32 max_x;
     f32 max_y;
     f32 max_z;
-    TerrainScanBounds(min_x, min_y, min_z, max_x, max_y, max_z);
+    TerrainComputeScanBounds(min_x, min_y, min_z, max_x, max_y, max_z);
     terminator[0] = 0;
     terminator[1] = 0;
     min_x -= 0.02f;

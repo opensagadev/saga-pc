@@ -229,7 +229,7 @@ PC_NATIVE_DEBUG_STATE::~PC_NATIVE_DEBUG_STATE() {
 }
 
 void PC_NATIVE_DEBUG_STATE::Initialize() {
-    unknown_0 = 1;
+    initialised = 1;
     left = top = 100.0f;
     right = 600.0f;
     bottom = 500.0f;
@@ -247,8 +247,8 @@ void PC_NATIVE_DEBUG_STATE::Initialize() {
 }
 
 void PC_NATIVE_DEBUG_STATE::Shutdown() {
-    if (unknown_0) {
-        unknown_0 = 0;
+    if (initialised) {
+        initialised = 0;
         if (write_log) {
             NuFileClose(log_file);
         }

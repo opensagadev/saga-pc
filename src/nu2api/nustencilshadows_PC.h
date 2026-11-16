@@ -389,6 +389,8 @@ extern "C" {
         u8 joint_index;                  // 0xf
     };
 
+    typedef struct PC_HG_SHADOW_PACKET PC_HG_SHADOW_PACKET;
+
     struct PC_HG_SHADOW_PACKET { // size 0x68
         NUMTX matrix;            // 0x00
         void *ellipse;           // 0x40
@@ -429,7 +431,9 @@ extern "C" {
 }
 #endif
 
-struct PC_HG_SHADOW_STATE_VIEW { // size 0x10
+typedef struct PC_HG_SHADOW_STATE PC_HG_SHADOW_STATE;
+
+struct PC_HG_SHADOW_STATE { // size 0x10
 
     union { // size 0xc
 
@@ -457,7 +461,7 @@ struct PC_HG_SHADOW_STATE_VIEW { // size 0x10
 extern "C" {
 #endif
     extern struct numtl_s *dat_02854d00;
-    extern struct PC_HG_SHADOW_STATE_VIEW PCShadowState;
+    extern struct PC_HG_SHADOW_STATE PCShadowState;
     void NuHGobjSubmitShadowGroups(struct NUHGOBJ_EVAL *, NUMTX *, NUMTX *);
 
     typedef struct NATIVE_PARTICLE_PACKET { // size 0x14

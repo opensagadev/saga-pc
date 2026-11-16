@@ -55,6 +55,7 @@ extern "C" {
     void saveloadASDelete(i32 slot);
     void saveloadASFormat(void);
     void saveloadASSave(i32 slot, void *buffer, i32 size, u32 hash);
+    void PcRegisterSaveMetadata(const void *metadata);
 #ifdef __cplusplus
 }
 #endif

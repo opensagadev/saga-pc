@@ -16,20 +16,20 @@ void NuHtmlWrite(char *text, ...) {
     vsprintf(PCDisplayCaptureCursor, text, args);
     length = NuStrLen(PCDisplayCaptureCursor);
     PCDisplayCaptureCursor += length;
-    if (PCDisplayCaptureCursor > nudlist_field_18b0) {
-        NuFileWriteString(nudlist_field_988, PCDisplayCaptureBuffer);
+    if (PCDisplayCaptureCursor > PCDisplayCaptureFlushLimit) {
+        NuFileWriteString(NuHtmlFile, PCDisplayCaptureBuffer);
         PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
-        nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;
+        PCDisplayCaptureFlushLimit = PCDisplayCaptureBuffer + 0xc00;
     }
 }
 
 void NuHtmlEnd(void) {
-    if (nudlist_field_18b0 != PCDisplayCaptureCursor) {
-        NuFileWriteString(nudlist_field_988, PCDisplayCaptureBuffer);
+    if (PCDisplayCaptureFlushLimit != PCDisplayCaptureCursor) {
+        NuFileWriteString(NuHtmlFile, PCDisplayCaptureBuffer);
         PCDisplayCaptureCursor = PCDisplayCaptureBuffer;
-        nudlist_field_18b0 = PCDisplayCaptureBuffer + 0xc00;
+        PCDisplayCaptureFlushLimit = PCDisplayCaptureBuffer + 0xc00;
     }
-    nudlist_field_988 = 0;
+    NuHtmlFile = 0;
 }
 
 /* Writes a banner row whose caption is formatted like printf. */
