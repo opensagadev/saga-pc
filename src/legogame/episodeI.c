@@ -2117,7 +2117,7 @@ void PodRaceInit(WORLDINFO *world) {
     if (world->level_specific_data == NULL) {
         ChrisAllocLevelStuff(world);
     }
-    podrace = world->level_specific_data;
+    podrace = world->podrace;
     ActivePodRace = podrace;
     memset(podrace, 0, sizeof(*podrace));
     if (netclient == 0) {

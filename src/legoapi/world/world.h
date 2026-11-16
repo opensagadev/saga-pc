@@ -275,7 +275,13 @@ typedef struct WORLDINFO_s { // size 0x51ac
     struct edgizshadow_s *shadow_editor;                 // 0x5110
     struct GIZBOMBGENSYS_s *giz_bombgen_sys;             // 0x5114
     i32 has_level_specific_data;                         // 0x5118
-    void *level_specific_data;                           // 0x511c
+
+    union { // size 0x4 the level's own state, from ChrisAllocLevelStuff
+        void *level_specific_data;
+        struct DOGFIGHT_SPACE *dogfight_space; /* the space levels (chris.cpp) */
+        struct podrace_resource_s *podrace;    /* the pod race (episodeI.c) */
+    }; // 0x511c
+
     struct KILLPARTS_ACCESSORY *customiser_resources[9]; // 0x5120
     struct NUGSCN_s *customiser_shared_scenes[9];        // 0x5144
     struct TRAFFICANIMSYS_s *trafficanim_sys;            // 0x5168
