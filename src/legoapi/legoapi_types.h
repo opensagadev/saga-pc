@@ -157,21 +157,94 @@ typedef struct SoundTable { // size 0xc8
  * (CutScenePlayer_SetObjects). */
 typedef struct cut_player_state_s { // size 0x10
     nuhspecial_s special;           // 0x0
-    u8 flags;                       // 0xc
-    u8 unknown_0d[3];               // 0xd
+
+    union { // size 0x1
+        u8 flags;
+
+        struct {                // size 0x1
+            u8 on : 1;          // 0xc:0
+            u8 off : 1;         // 0xc:1
+            u8 end_anim : 1;    // 0xc:2
+            u8 unused_bits : 5; // 0xc:3
+        };
+    }; // 0xc
+
+    u8 unknown_0d[3]; // 0xd
 } CUT_PLAYER_STATE;
 
-typedef struct cutinfo_s {              // size 0xf0
-    u8 opaque_00_04[0x4];               // 0x00
-    struct instnugcutscene_s *instance; // 0x04
-    char name[0x40];                    // 0x08
-    CUT_PLAYER_STATE *player_states;    // 0x48
-    u8 player_state_count;              // 0x4c
-    u8 unknown_4d[3];                   // 0x4d
-    u32 flags;                          // 0x50
-    f32 previous_frame;                 // 0x54
-    u8 unknown_58[0x94];                // 0x58
-    i16 skip_level;                     // 0xec
+/* A cut scene's sound cue, texture animation cue, fog fade key and subtitle (the cutscene config). */
+typedef struct CUT_LOAD_SFX { // size 0x14
+    i16 id;                   // 0x00
+    u8 flags;                 // 0x02
+    u8 unknown_03;            // 0x03
+    f32 frame;                // 0x04
+    NUVEC position;           // 0x08
+} CUT_LOAD_SFX;
+
+typedef struct CUT_LOAD_TEXANIM { // size 0x8
+    f32 frame;                    // 0x0
+    i32 index;                    // 0x4
+} CUT_LOAD_TEXANIM;
+
+typedef struct CUT_LOAD_FADE_FOG { // size 0x10
+    f32 frame;                     // 0x0
+    f32 near_distance;             // 0x4
+    f32 far_distance;              // 0x8
+    f32 value;                     // 0xc
+} CUT_LOAD_FADE_FOG;
+
+typedef struct CUT_LOAD_SUBTITLE { // size 0x28
+    i16 text_id;                   // 0x00
+    u8 red;                        // 0x02
+    u8 green;                      // 0x03
+    u8 blue;                       // 0x04
+    u8 alpha;                      // 0x05
+    u8 alignment;                  // 0x06
+    u8 unknown_07;                 // 0x07
+    f32 start_frame;               // 0x08
+    f32 end_frame;                 // 0x0c
+    f32 x;                         // 0x10
+    f32 y;                         // 0x14
+    f32 x_scale;                   // 0x18
+    f32 y_scale;                   // 0x1c
+    f32 max_width;                 // 0x20
+    f32 fade_time;                 // 0x24
+} CUT_LOAD_SUBTITLE;
+
+typedef struct cutinfo_s {                  // size 0x190
+    void *scene;                            // 0x000
+    struct instnugcutscene_s *instance;     // 0x004
+    char name[64];                          // 0x008
+    CUT_PLAYER_STATE *player_states;        // 0x048
+    u8 player_state_count;                  // 0x04c
+    u8 unknown_4d[3];                       // 0x04d
+    u32 flags;                              // 0x050
+    f32 previous_frame;                     // 0x054
+    f32 current_frame;                      // 0x058
+    f32 frames_per_second;                  // 0x05c
+    f32 burnout_threshold;                  // 0x060
+    f32 burnout_intensity;                  // 0x064
+    f32 burnout_flare;                      // 0x068
+    f32 camera_near_clip;                   // 0x06c
+    CUT_LOAD_SFX sfx[6];                    // 0x070
+    u16 camera_far_clip;                    // 0x0e8
+    i16 legacy_music_index;                 // 0x0ea
+    i16 skip_level;                         // 0x0ec
+    u8 linked_audio;                        // 0x0ee
+    u8 blob_shadow_alpha;                   // 0x0ef
+    u8 blob_shadow_fade_near;               // 0x0f0
+    u8 blob_shadow_fade_far;                // 0x0f1
+    u8 reflection_range;                    // 0x0f2
+    i8 debris_render_group;                 // 0x0f3
+    char door_name[16];                     // 0x0f4
+    char next_cutscene[64];                 // 0x104
+    CUT_LOAD_TEXANIM texture_animations[4]; // 0x144
+    CUT_LOAD_FADE_FOG fade_fog[2];          // 0x164
+    CUT_LOAD_SUBTITLE *subtitle_data;       // 0x184
+    u16 subtitle_count;                     // 0x188
+    u8 end_flags;                           // 0x18a
+    u8 subtitle_shown;                      // 0x18b
+    i32 music_handle;                       // 0x18c
 } CUTINFO;
 
 typedef struct gameanimset_s GAMEANIMSET;

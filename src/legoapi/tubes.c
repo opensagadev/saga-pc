@@ -204,7 +204,7 @@ static i32 Tubes_GetMaxGizmos(void *world_ptr) {
 }
 
 static char *Tube_GetGizmoName(GIZMO *gizmo) {
-    return gizmo != NULL ? ((TUBE *)gizmo->object)->name : NULL;
+    return gizmo != NULL ? gizmo->tube->name : NULL;
 }
 
 static i32 Tube_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
@@ -226,7 +226,7 @@ static NUVEC *Tube_GetPos(GIZMO *gizmo) {
     if (gizmo == NULL) {
         return NULL;
     }
-    return &((TUBE *)gizmo->object)->position;
+    return &gizmo->tube->position;
 }
 
 static void *Tubes_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

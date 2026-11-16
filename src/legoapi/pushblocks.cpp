@@ -1156,7 +1156,7 @@ static void Push_Activate(GIZMO *gizmo, i32 active) {
     WORLDINFO *world;
     i32 index;
     if (gizmo != NULL) {
-        block = static_cast<PUSH_BLOCK *>(gizmo->object);
+        block = gizmo->push_block;
         block->push_active = active != 0;
         if (active != 0) {
             world = WORLD;
@@ -1174,7 +1174,7 @@ static void Push_Activate(GIZMO *gizmo, i32 active) {
 }
 
 static void Push_SetVisibility(GIZMO *gizmo, i32 visible) {
-    PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
+    PUSH_BLOCK *block = gizmo->push_block;
     block->push_visible = visible != 0;
     NuSpecialSetVisibility(&block->special, visible);
     for (i32 index = 0; index < block->end_position_count; ++index) {
@@ -1198,13 +1198,13 @@ static void Push_AddGizmos(void *system, i32 type_id, void *world_ptr, void *) {
 
 static char *GizPush_GetGizmoName(GIZMO *gizmo) {
     if (gizmo != NULL) {
-        return static_cast<PUSH_BLOCK *>(gizmo->object)->name;
+        return gizmo->push_block->name;
     }
     return NULL;
 }
 
 static i32 GizPush_GetOutput(GIZMO *gizmo, i32 output_index, i32) {
-    PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
+    PUSH_BLOCK *block = gizmo->push_block;
     if (block != NULL) {
         if (output_index == 0) {
             if (block->completed_snap_positions == 0) {
@@ -1233,7 +1233,7 @@ extern "C" {
 }
 
 static char *GizPush_GetOutputName(GIZMO *gizmo, i32 output_index) {
-    PUSH_BLOCK *block = static_cast<PUSH_BLOCK *>(gizmo->object);
+    PUSH_BLOCK *block = gizmo->push_block;
     if (output_index < 0 || output_index > block->output_count) {
         return NULL;
     }
@@ -1246,7 +1246,7 @@ static char *GizPush_GetOutputName(GIZMO *gizmo, i32 output_index) {
 }
 
 static i32 GizPush_GetNumOutputs(GIZMO *gizmo) {
-    return static_cast<PUSH_BLOCK *>(gizmo->object)->output_count;
+    return gizmo->push_block->output_count;
 }
 
 static void *Push_AllocateProgressData(VARIPTR *buffer, VARIPTR *end) {

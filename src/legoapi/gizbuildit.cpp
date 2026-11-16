@@ -613,7 +613,7 @@ extern "C" {
         if (gizmo == NULL) {
             return;
         }
-        buildit = (GIZBUILDIT *)gizmo->object;
+        buildit = gizmo->buildit;
         if (buildit == NULL) {
             return;
         }
@@ -625,7 +625,7 @@ extern "C" {
         if (gizmo == NULL || gizmo->object == NULL) {
             return NULL;
         }
-        return &((GIZBUILDIT *)gizmo->object)->position;
+        return &gizmo->buildit->position;
     }
 
     void GizBuildit_Reset(GIZBUILDIT *buildit, void *world_ptr) {
@@ -907,7 +907,7 @@ extern "C" {
     }
 
     i32 GizmoBuildit_GetOutput(GIZMO *gizmo, i32 output_index, i32 force_read) {
-        GIZBUILDIT *buildit = (GIZBUILDIT *)gizmo->object;
+        GIZBUILDIT *buildit = gizmo->buildit;
         if (((buildit->availability.visible && buildit->availability.active) || force_read != 0) && buildit->build_state == 2) {
             return 1;
         }
@@ -1206,7 +1206,7 @@ extern "C" {
         if (gizmo == NULL) {
             return;
         }
-        buildit = (GIZBUILDIT *)gizmo->object;
+        buildit = gizmo->buildit;
         buildit->availability.active = active != 0;
         if (!buildit->availability.active) {
             return;

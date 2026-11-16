@@ -42,6 +42,8 @@ typedef struct gizmo_s { // size 0x8
         struct gizaimessage_s *message;
         struct carry_plug_s *plug;
         struct GRAPPLE_MOTION *grapple;
+        struct TUBE *tube;
+        struct pushblock_s *push_block;
     }; // 0x0
 
     i16 unknown_04; // 0x4
