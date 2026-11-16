@@ -296,3 +296,4 @@ config/castscan-budget.json size-literal 4 quick run, settled in the refix
 config/castscan-budget.json truncation 2189 quick run, settled in the refix
 config/castscan-budget.json view-type 173 quick run, settled in the refix
 config/castscan-budget.json widening 201 quick run, settled in the refix
+config/castscan-budget.json record-pun 595 quick run, settled in the refix
