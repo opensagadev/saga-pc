@@ -69,8 +69,6 @@ static VARIPTR *aiscript_load_end_buffer = 0;
 AISCRIPT *aiscript_load_script = 0;
 AISTATE *aiscript_load_state = 0;
 
-extern NULISTLNK *NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
-
 /* Script diagnostics, defined variadic at the end of this unit (no header declares them). */
 void AIScriptMissingStateDiagnostic(const char *format, ...);
 void AIScriptMissingStateDiagnosticAlternate(const char *format, ...);
@@ -617,8 +615,6 @@ static void *AIScriptBufferAllocOrWarn(VARIPTR *buf, VARIPTR *buf_end, u32 size)
             }                                                                                                                              \
         }                                                                                                                                  \
     } while (0)
-
-void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
 
 AIACTIONDEF *game_aiactiondefs = 0;
 NULISTHDR *aiscript_load_refs = 0;

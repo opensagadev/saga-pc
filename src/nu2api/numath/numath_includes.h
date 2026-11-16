@@ -4,6 +4,8 @@
 
 #include "nu2api/numath/numtx.h"
 
+struct nugraph_s;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -21,6 +23,12 @@ extern "C" {
     extern f32 NuPowBases[32];
     extern f32 NuPowExponents[32];
     extern f32 NuPowResults[32];
+    f32 nugraphGetYatX(struct nugraph_s *graph, f32 x, i32 iterations);
+    i32 NuMiscNextPow2(i32 value);
+    i32 nugraphAddPoint(struct nugraph_s *graph, f32 x, f32 y);
+    i32 nugraphCalcCurve(struct nugraph_s *graph, i32 point_count);
+    i32 nugraphDeletePoint(struct nugraph_s *graph, i32 index);
+    void nugraphInit(struct nugraph_s *graph);
 #ifdef __cplusplus
 }
 #endif

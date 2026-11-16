@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "gameapi/edpart.h"
+#include "gameapi/edbits.h"
 #include "gameapi/edptl.h"
 #include "gameapi/edtools/edanim_internal.h"
 #include "gameapi/edtools/edcam.h"
@@ -893,9 +894,6 @@ void edgracbFileLoad(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edgraInitAllClumps();
     eduiCreateMessageMenu(menu, "Loaded OK", 1);
 }
-
-void edgracbInstanceMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
-void edgracbDpadModeMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2);
 
 #define EDGRA_INDIVIDUAL(clump, element) (&IndGrassClumps[EDGRA_MAX_UNITS_PER_INDIVIDUAL_CLUMP * (clump) + (element)])
 

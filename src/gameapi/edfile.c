@@ -24,6 +24,8 @@
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/nufile/nufilepak.h"
+#include "nu2api/nufile_pc.h"
+#include "nu2api/numath/numath_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nurand.h"
 #include "nu2api/numath/nuvec.h"
@@ -3179,9 +3181,6 @@ eduiitem_s *eduiItemTexturePickCreate(u32 data, void *colours, void *callback, c
     return NULL;
 }
 
-void nugraphInit(nugraph_s *graph);
-i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count);
-
 eduiitem_s *eduiItemGraphCreate(u32 data, void *colours, void *callback, nugraph_s *graph, i32 width, i32 height) {
     edui_graph_s *item = NuAlloc(sizeof(edui_graph_s), "d:\\projects\\game_saga\\gameapi.saga\\edtools\\edui.cpp", 0xd9f);
     i32 i;
@@ -4345,8 +4344,6 @@ i32 eduicbProcessFilePick(eduimenu_s *menu, eduiitem_s *item, f32 delta_time, FR
     }
     return 0;
 }
-
-extern i32 NuFileReadDir(i32 file, FILE_DIRECTORY_ENTRY *entry);
 
 typedef struct FS_PACKED_ENTRY_HEADER { // size 0x7
     u8 kind;                            // 0x0

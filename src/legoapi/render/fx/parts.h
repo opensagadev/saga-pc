@@ -10,6 +10,8 @@
 #include "nu2api/numath/nuvec.h"
 
 struct debris_key_s;
+struct eduiitem_s;
+struct eduimenu_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,6 +47,11 @@ extern "C" {
     void DebrisSetup(VARIPTR *, VARIPTR, char *, i32, i32, i32);
     void InitPartTable(char **names);
     void ResetParts(void);
+    extern i32 edpart_nearest_orphans;
+    void edpartChangeNameMenu(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void edpartCopyType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void edpartDebrisSettingsMenu(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
+    void edpartDeleteType(struct eduimenu_s *menu, struct eduiitem_s *item, u32 value);
 #ifdef __cplusplus
 }
 #endif

@@ -118,6 +118,7 @@ extern "C" {
     extern NUVEC edpart_copy_source_vec;
     void edpartChangeMaxLifeMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
     void edpartInstanceOrientMenu(struct eduimenu_s *menu, struct eduiitem_s *unused1, u32 unused2);
+    extern const char dat_0076b274[4];
 #ifdef __cplusplus
 }
 #endif

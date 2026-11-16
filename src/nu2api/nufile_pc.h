@@ -4,6 +4,8 @@
 
 #include "nu2api/nufile/nufile.h"
 
+struct FILE_DIRECTORY_ENTRY;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -38,6 +40,8 @@ extern "C" {
 #endif
     extern struct nufile_device_s host_device;
     extern i32 FileDirectoryHostOpen(char *path);
+    i32 NuFileReadDir(i32 file, struct FILE_DIRECTORY_ENTRY *entry);
+    i32 SaveCreateDirectory(char *path);
 #ifdef __cplusplus
 }
 #endif

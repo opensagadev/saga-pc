@@ -6,6 +6,8 @@
 #include "nu2api/numath/nuvec.h"
 
 struct eduiitem_s;
+struct eduimenu_s;
+struct numtl_s;
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,6 +71,14 @@ extern "C" {
     void edbricbFileSave(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     void edbricbPlankInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
     void edbricbPostInstanceMenu(struct eduimenu_s *arg0, struct eduiitem_s *arg1, u32 arg2);
+    extern i32 edbits_cubecount;
+    void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y, i32 rotation_z,
+                             i32 colour, struct numtl_s *material);
+    void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x,
+                        i32 outer_z, i32 outer_y, i32 colour, struct numtl_s *material);
+    void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour, struct numtl_s *material);
+    void edgracbDpadModeMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
+    void edgracbInstanceMenu(struct eduimenu_s *parent, struct eduiitem_s *unused1, u32 unused2);
 #ifdef __cplusplus
 }
 #endif

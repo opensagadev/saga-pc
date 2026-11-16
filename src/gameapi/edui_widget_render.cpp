@@ -14,6 +14,7 @@
 #include "nu2api/nucore/nucore_includes.h"
 #include "nu2api/nucore/nustring.h"
 #include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numath_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nuvec.h"
 
@@ -1554,9 +1555,6 @@ extern "C" void eduiItemGraphSetLabels(eduiitem_s *item, char *x_label, char *y_
 extern "C" {
     extern i32 show_x_scale_help;
     extern i32 show_y_scale_help;
-    i32 nugraphAddPoint(nugraph_s *graph, f32 x, f32 y);
-    i32 nugraphDeletePoint(nugraph_s *graph, i32 index);
-    i32 nugraphCalcCurve(nugraph_s *graph, i32 point_count);
 }
 
 /* Moves the graph cursor with the left stick, scales the axes with the shoulder buttons and edits points. */
@@ -1673,7 +1671,6 @@ extern "C" {
     i32 near_clip_at_cursor = 0;
     i32 EduiGraphDebugIterations = 3;
     i32 EduiGraphDebugBoundIterations = 10;
-    f32 nugraphGetYatX(nugraph_s *graph, f32 x, i32 iterations);
 
     void eduiRenderGraphLine(nugraph_s *graph, i32 x, i32 y, i32 width, i32 height, u32 colour) {
         if (EduiGraphDrawCurve != 0) {

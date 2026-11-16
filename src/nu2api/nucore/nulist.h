@@ -20,6 +20,7 @@ extern "C" {
     NULISTLNK *NuLinkedListGetHead(NULISTHDR *list);
     NULISTLNK *NuLinkedListGetTail(NULISTHDR *list);
     NULISTLNK *NuLinkedListGetNext(NULISTHDR *list, NULISTLNK *node);
+    NULISTLNK *NuLinkedListGetPrev(NULISTHDR *list, NULISTLNK *node);
 #ifdef __cplusplus
 }
 #endif

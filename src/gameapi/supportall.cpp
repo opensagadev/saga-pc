@@ -1,4 +1,5 @@
 #include "MechInputTouch/MechInputTouch_types.h"
+#include "gameapi/edpart.h"
 #include "gameapi/edtools/edui.h"
 #include "gamelib/util/Refpack.h"
 #include "globals.h"
@@ -48,7 +49,6 @@ enum {
 
 extern "C" {
     ThingManager *theThingManager = NULL;
-    extern const char dat_0076b274[4];
 }
 
 /* Editor "Timings" menu: per-pass time bars, globally or per thing. */

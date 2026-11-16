@@ -113,6 +113,10 @@ extern "C" {
     void RegisterAIScriptActions(AIACTIONDEF *);
     void RegisterAIScriptConditions(AICONDITIONDEF *);
     void SetScriptErrorLevel(i32);
+    extern AIACTIONDEF *game_aiactiondefs;
+    extern AIACTIONDEF api_aiactiondefs[];
+    void AINetTrace(const char *format, ...);
+    void AINetReplicateAction(AIACTION *action, struct AIPACKET *packet);
 #ifdef __cplusplus
 }
 #endif

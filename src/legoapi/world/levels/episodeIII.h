@@ -63,6 +63,7 @@ extern "C" {
     void VaderC_Init(struct WORLDINFO_s *);
     void VaderC_Reset(struct WORLDINFO_s *);
     void VaderC_Update(struct WORLDINFO_s *);
+    extern void *CurTerr;
 #ifdef __cplusplus
 }
 #endif

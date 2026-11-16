@@ -232,8 +232,6 @@ typedef struct condition_hat_name_reader_s { // size 0x50
 
 SOCK *FindSock(SOCKSYS *system, char *name);
 
-void AINetReplicateAction(AIACTION *action, AIPACKET *packet);
-
 extern const f64 ActionSnapWeightedRandomZero;
 
 typedef struct ai_force_platform_record_s { // size 0x6c

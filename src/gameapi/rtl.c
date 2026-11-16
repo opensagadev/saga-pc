@@ -19,6 +19,7 @@
 #include "nu2api/nucore/nulst.h"
 #include "nu2api/nufile/nufile.h"
 #include "nu2api/numath/nufloat.h"
+#include "nu2api/numath/numath_includes.h"
 #include "nu2api/numath/numtx.h"
 #include "nu2api/numath/nurand.h"
 #include "nu2api/numath/nutrig.h"
@@ -2615,8 +2616,6 @@ void rtlSetMinR(f32 radius) {
     min_r = radius;
     def_fr = min_r * 2.0f;
 }
-
-i32 NuMiscNextPow2(i32 value);
 
 /* Carves the undo snapshots (128 lights each), the per-snapshot light pointers and camera positions from the
    editor buffer; at least two snapshots. */

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "gameapi/edanim.h"
+#include "gameapi/edbits.h"
 #include "gameapi/edptl.h"
 #include "gameapi/edtools/edanim_internal.h"
 #include "gameapi/edtools/edcam.h"
@@ -28,9 +29,6 @@
 
 /* edbitsGetSoundName is an inline stub returning NULL in the PC build. */
 #define EDANIM_SOUND_NAME(type) ((char *)0)
-
-void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
-                    i32 outer_y, i32 colour, NUMTL *material);
 
 i32 edanimLookupSpecial(char *name, NUGSCN *scene) {
     nuhspecial_s special;
@@ -1001,8 +999,6 @@ void edanimcbLocalSoundMenu(eduimenu_s *parent, eduiitem_s *unused1, u32 unused2
     edanim_localsound_menu->x = parent->x + 10;
     edanim_localsound_menu->y = parent->y + 40;
 }
-
-extern i32 edbits_cubecount;
 
 void edanimcbCubeMap(eduimenu_s *unused0, eduiitem_s *unused1, u32 unused2) {
     edanim_active_menu = NULL;

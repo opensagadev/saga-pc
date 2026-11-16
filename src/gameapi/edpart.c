@@ -14,6 +14,7 @@
 #include "legoapi/items/objects/objectsall.h"
 #include "legoapi/render/core/gameliball.h"
 #include "legoapi/render/fx/game_deb.h"
+#include "legoapi/render/fx/parts.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nu3d/nugscn.h"
 #include "nu2api/nu3d/nuhspecial.h"
@@ -571,7 +572,6 @@ void edpartGravMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-extern i32 edpart_nearest_orphans;
 extern i32 edpart_nearest_duplicates;
 
 #define EDPART_RUNTIME_NEAREST ((PART_RUNTIME_TYPE *)edpart_nearest_type)
@@ -959,10 +959,6 @@ void edpartEmitMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     }
 }
 
-void edpartCopyType(eduimenu_s *menu, eduiitem_s *item, u32 value);
-void edpartDeleteType(eduimenu_s *menu, eduiitem_s *item, u32 value);
-void edpartChangeNameMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
-
 void edpartMoveList(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     struct eduimenu_s *parent;
     parent = NULL;
@@ -1085,7 +1081,6 @@ void fun_0064a430(void) {
 }
 
 extern struct eduimenu_s *edpart_sscale_menu;
-void edpartDebrisSettingsMenu(eduimenu_s *menu, eduiitem_s *item, u32 value);
 
 #define EDPART_REFRESH_EMITTER_SOUNDS()                                                                                                    \
     for (emitter = 0; emitter < 40; ++emitter) {                                                                                           \

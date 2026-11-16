@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "gameapi/edpart.h"
+#include "gameapi/edbits.h"
 #include "gameapi/edptl.h"
 #include "gameapi/edtools/edanim_internal.h"
 #include "gameapi/edtools/edcam.h"
@@ -27,8 +28,6 @@ void EdFileWriteInt(i32 value);
 void EdFileWriteShort(i16 value);
 void EdFileWriteChar(char value);
 extern struct PC_SCENE_MTL_VIEW *edgra_mtl_zoff;
-void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
-                    i32 outer_y, i32 colour, NUMTL *material);
 void edbitsDrawOvalTilted(NUVEC *centre, f32 radius_x, f32 radius_z, i32 colour, struct PC_SCENE_MTL_VIEW *material, i32 rotation_z,
                           i32 rotation_y);
 

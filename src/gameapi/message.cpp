@@ -4,6 +4,7 @@
 #include "gamelib/util/Refpack.h"
 #include "gamelib/util/gamelib_util_types.h"
 #include "globals.h"
+#include "legoapi/ai/core/aisysall.h"
 #include "legoapi/items/base/apiobject.h"
 #include "legoapi/items/collect/bolts.h"
 #include "nu2api/nucore/nustring.h"
@@ -11,11 +12,6 @@
 /* AI script network replication. AINet is abstract: the game derives from it
  * to map AI packets to network ids. No class derives from it, so
  * AINet::sm_instance stays NULL and replication is a no-op. */
-extern "C" {
-    extern AIACTIONDEF api_aiactiondefs[];
-    extern AIACTIONDEF *game_aiactiondefs;
-    void AINetTrace(const char *format, ...);
-}
 
 typedef i32 (*AINETFILTERFN)(void);
 AINETFILTERFN AINetSendFilter = 0;

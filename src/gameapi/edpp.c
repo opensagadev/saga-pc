@@ -1,4 +1,5 @@
 #include "gameapi/edmain.h"
+#include "gameapi/edbits.h"
 #include "gameapi/edpart.h"
 #include "gameapi/edptl.h"
 #include "gameapi/edtools/edanim_internal.h"
@@ -15,6 +16,7 @@
 #include "legoapi/render/core/terrain.h"
 #include "legoapi/render/fx.h"
 #include "legoapi/render/fx/game_deb.h"
+#include "legoapi/world/levels/episodeIII.h"
 #include "nu2api/nu3d/nu3d_includes.h"
 #include "nu2api/nu3d/nucamera.h"
 #include "nu2api/nu3d/nugscn.h"
@@ -964,12 +966,6 @@ void edptlcbEmptyClipboard(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) {
     edptl_clipboard_entry = -1;
     edpp_create_type = create_type;
 }
-
-void edbitsDrawCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_z, i32 rotation_y, i32 rotation_x, i32 outer_z,
-                    i32 outer_y, i32 colour, NUMTL *material);
-void edbitsDrawBasicCube(f32 x, f32 y, f32 z, f32 half_x, f32 half_y, f32 half_z, i32 rotation_x, i32 rotation_y, i32 rotation_z,
-                         i32 colour, NUMTL *material);
-void edbitsDrawTorus(NUVEC *centre, f32 radius, f32 radial_extent, f32 vertical_extent, i32 colour, NUMTL *material);
 
 void edppDrawSpheres(DEBRIS_INFO *effect, i32 key_index) {
     i32 sphere_index;
@@ -4287,8 +4283,6 @@ void edppInit(void) {
 
 ed_module_s edptldesc = {
     NULL, NULL, "Particle Positioner", edppInit, edppClose, edppEnter, NULL, edppApply, NULL, NULL, 0x706c7470, edppProc, edppRender, NULL};
-
-extern void *CurTerr;
 
 void NewTerrain(NUVEC *position, NUVEC *movement, u8 *hit_flags, i32 object_index, f32 radius, f32 collision_radius, i32 scan_flags) {
     if (CurTerr != NULL) {
