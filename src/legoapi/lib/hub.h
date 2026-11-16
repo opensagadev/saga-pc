@@ -210,6 +210,12 @@ extern "C" {
     extern f32 rightrepeattime[2];
     extern i32 HubIconWibbleRate[4];
     extern i32 freeplay_i[2];
+/* freeplaymode, the hub's free play character menu (HubUpdateFreePlay, HubDrawFreePlay). */
+#define FREEPLAY_MENU_OPENING 0   /* the level stats fade out */
+#define FREEPLAY_MENU_CHOOSING 1  /* the players choose their characters */
+#define FREEPLAY_MENU_CANCELLED 2 /* the menu fades out after the exit button */
+#define FREEPLAY_MENU_CONFIRMED 3 /* a second after both confirmed */
+#define FREEPLAY_MENU_STARTING 4  /* the fade into the level */
     extern i16 PCArcadeModeText;
     extern i16 PCArcadePlayText;
     extern i16 dat_008807cc;

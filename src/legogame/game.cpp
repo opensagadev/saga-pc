@@ -1623,7 +1623,8 @@ static i32 Tag_NoHiddenIcon(GAMEOBJECT *object) {
 static void Collection_GetSelectingPlayerIDs(i16 *ids) {
     i32 count;
     if (WORLD->area == NULL || WORLD->area != HUB_ADATA || GetMenuID() != 17 ||
-        !(freeplaymode == 0 || freeplaymode == 1 || freeplaymode == 2 || freeplaymode == 3)) {
+        !(freeplaymode == FREEPLAY_MENU_OPENING || freeplaymode == FREEPLAY_MENU_CHOOSING || freeplaymode == FREEPLAY_MENU_CANCELLED ||
+          freeplaymode == FREEPLAY_MENU_CONFIRMED)) {
         return;
     }
     count = 0;

@@ -1356,7 +1356,7 @@ extern "C" {
     i32 HubArea = 0;
     i32 HubEpisode = 0;
     i32 freeplay_selected[2] = {0, 0};
-    i32 freeplaymode = 0;
+    i32 freeplaymode = FREEPLAY_MENU_OPENING;
     f32 HubMiniKitOpenTime = 0;
     i32 Arcade_Score[2] = {0};
     f32 HubAreaTime = 0.0f;
@@ -1382,11 +1382,11 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
     }
     HubUpdateIconWibble();
     switch (freeplaymode) {
-        case 0:
+        case FREEPLAY_MENU_OPENING:
             freeplaytime += FRAMETIME;
             if (freeplaytime >= freeplayduration) {
                 freeplaytime = 0;
-                freeplaymode = 1;
+                freeplaymode = FREEPLAY_MENU_CHOOSING;
                 freeplayduration = 0;
                 for (i32 player = 0; player < 2; ++player) {
                     freeplay_i[player] = InCollectList_Index(MissionMenuPacket.player_model[player], collection->list, collection->count);
@@ -1400,7 +1400,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 }
             }
             break;
-        case 1: {
+        case FREEPLAY_MENU_CHOOSING: {
             i32 active = 0;
             i32 confirmed = 0;
             i32 exit = 0;
@@ -1516,27 +1516,27 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 } else if (HubCopyNetworkFreePlayList() == 0) {
                     break;
                 }
-                freeplaymode = 3;
+                freeplaymode = FREEPLAY_MENU_CONFIRMED;
                 freeplaytime = 0;
                 freeplayduration = 1;
             } else if (exit) {
                 freeplaytime = 0;
                 freeplayduration = 0.6f;
-                freeplaymode = 2;
+                freeplaymode = FREEPLAY_MENU_CANCELLED;
                 fpcount = 0;
                 GameAudio_PlaySfx(0x31, NULL, 0, 0);
             }
             break;
         }
-        case 3:
+        case FREEPLAY_MENU_CONFIRMED:
             freeplaytime += FRAMETIME;
             if (freeplaytime >= freeplayduration) {
-                freeplaymode = 4;
+                freeplaymode = FREEPLAY_MENU_STARTING;
                 freeplaytime = 0;
                 freeplayduration = 1.5f;
             }
             break;
-        case 4:
+        case FREEPLAY_MENU_STARTING:
             freeplaytime += FRAMETIME;
             if (freeplaytime >= freeplayduration) {
                 makeplayerlist_freeplay = 1;
@@ -1557,7 +1557,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
                 }
             }
             break;
-        case 2:
+        case FREEPLAY_MENU_CANCELLED:
             freeplaytime += FRAMETIME;
             if (freeplaytime >= freeplayduration) {
                 WipeBackToHub();
@@ -1565,7 +1565,7 @@ extern "C" void Hub_UpdateFreePlaySelect(void) {
             break;
     }
     for (i32 player = 0; player < 2; ++player) {
-        if (freeplaymode == 1) {
+        if (freeplaymode == FREEPLAY_MENU_CHOOSING) {
             BigIconAlpha[player] = SeekLinearF(BigIconAlpha[player], 1, FRAMETIME + FRAMETIME);
         } else {
             BigIconAlpha[player] = 0;
@@ -2818,7 +2818,7 @@ void HubInitFreePlaySelect(i32 area, i32 first_model, i32 second_model) {
         MissionMenuPacket.player_model[0] = Player[0] != NULL ? Player[0]->id : -1;
         MissionMenuPacket.player_model[1] = Player[1] != NULL ? Player[1]->id : -1;
     }
-    freeplaymode = 0;
+    freeplaymode = FREEPLAY_MENU_OPENING;
     freeplaytime = 0;
     freeplay_selected[0] = 0;
     freeplay_selected[1] = 0;
@@ -2855,7 +2855,7 @@ static void Hub_DrawFreePlaySelect(void) {
     if (((FADEINFO *)&FadeSys)->fade > 0.0f) {
         return;
     }
-    if (freeplaymode == 0) {
+    if (freeplaymode == FREEPLAY_MENU_OPENING) {
         f32 alpha = (f32)(freeplaytime / (freeplayduration * .5));
         if (alpha > 1.0f) {
             alpha = 1.0f;
@@ -2880,9 +2880,9 @@ static void Hub_DrawFreePlaySelect(void) {
             }
         }
     }
-    if (freeplaymode != 3 && freeplaymode != 4) {
+    if (freeplaymode != FREEPLAY_MENU_CONFIRMED && freeplaymode != FREEPLAY_MENU_STARTING) {
         f32 fade;
-        if (freeplaymode == 2) {
+        if (freeplaymode == FREEPLAY_MENU_CANCELLED) {
             if (freeplaytime >= freeplayduration - .10000000149011612) {
                 fade = 0.0f;
             } else {
@@ -2923,7 +2923,7 @@ static void Hub_DrawFreePlaySelect(void) {
                 DrawCharIcon(model, ICONX, STATSPOSY, 0.0f, MissionPlayerIconSize, 165, opacity, opacity, 1, NULL);
             }
         }
-        if (freeplaymode == 1) {
+        if (freeplaymode == FREEPLAY_MENU_CHOOSING) {
             for (i32 player = 0; player < 2; ++player) {
                 const i32 other = (player + 1) & 1;
                 if (MissionMenuPacket.active_player[player] == 0) {
@@ -2983,7 +2983,7 @@ static void Hub_DrawFreePlaySelect(void) {
         }
     }
     APICHARACTERMODELLIST *list = HubFreePlayDrawList;
-    if (freeplaymode == 0) {
+    if (freeplaymode == FREEPLAY_MENU_OPENING) {
         list[0].model_id = MissionMenuPacket.player_model[0];
         list[1].model_id = MissionMenuPacket.player_model[1];
         list[2].model_id = -1;
@@ -2993,7 +2993,7 @@ static void Hub_DrawFreePlaySelect(void) {
         HubDrawIconCursors(collection, 1, 1.0f, 1.0f);
         return;
     }
-    if (freeplaymode == 1) {
+    if (freeplaymode == FREEPLAY_MENU_CHOOSING) {
         list[0].model_id = MissionMenuPacket.player_model[0];
         list[1].model_id = MissionMenuPacket.player_model[1];
         list[2].model_id = -1;
@@ -3035,8 +3035,8 @@ static void Hub_DrawFreePlaySelect(void) {
                               MissionMenuPacket.active_player[1], select[1], 1.0f, -1, back[1], -1, status[1]);
         return;
     }
-    if (freeplaymode != 3 && freeplaymode != 4) {
-        if (freeplaymode == 2) {
+    if (freeplaymode != FREEPLAY_MENU_CONFIRMED && freeplaymode != FREEPLAY_MENU_STARTING) {
+        if (freeplaymode == FREEPLAY_MENU_CANCELLED) {
             list[0].model_id = MissionMenuPacket.player_model[0];
             list[1].model_id = MissionMenuPacket.player_model[1];
             i32 count = 2;
@@ -3068,7 +3068,7 @@ static void Hub_DrawFreePlaySelect(void) {
     }
     list[count].model_id = -1;
     const f32 progress = freeplaytime / freeplayduration;
-    if (freeplaymode == 3) {
+    if (freeplaymode == FREEPLAY_MENU_CONFIRMED) {
         const f32 alpha = freeplaytime < .800000011920929 ? (f32)(1.0 - freeplaytime / .800000011920929) : 0.0f;
         Collection_Draw(collection, 0.0f, COLLECTION_Y_HUB, collection->scale, list, alpha, 1);
     }
@@ -3092,7 +3092,7 @@ static void Hub_DrawFreePlaySelect(void) {
         if (Game_OptionsSave != NULL && Game_OptionsSave->widescreen != 0) {
             target_size = (f32)(target_size * .875);
         }
-        if (freeplaymode == 3) {
+        if (freeplaymode == FREEPLAY_MENU_CONFIRMED) {
             f32 source_x;
             f32 source_y;
             f32 source_size;
