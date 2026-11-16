@@ -533,7 +533,7 @@ extern "C" void PcCreateCursorMaterial(void) {
     PcCursorMaterial->attribs.z_mode = NUMTL_ZMODE_OFF;
     PcCursorMaterial->opacity = 1.0f;
     PcCursorMaterial->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
-    PcCursorMaterial->attribs.unknown_2_4 = 1;
+    PcCursorMaterial->attribs.vertex_colour = 1;
     PcCursorMaterial->texture_id = (i16)PcCursorTextureId;
     NuMtlUpdate(PcCursorMaterial);
 }

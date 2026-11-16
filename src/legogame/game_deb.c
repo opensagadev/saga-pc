@@ -209,13 +209,13 @@ void InitRippleMtl(char *name, NUMTL **result, VARIPTR *buffer, VARIPTR *end) {
         texture = NuTexRead(filename, buffer, *end);
         if (texture != 0) {
             *result = NuMtlCreateEx3D(1, 1);
-            (*result)->attribs.unknown_1_1_2 = 0;
-            (*result)->attribs.unknown_1_4_8 = 0;
+            (*result)->attribs.u_clamp = 0;
+            (*result)->attribs.v_clamp = 0;
             ((RIPPLE_MATERIAL_READER *)*result)->opacity = 1.0f;
             (*result)->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
             (*result)->attribs.alpha_mode = NUMTL_ALPHA_ADDITIVE;
             (*result)->attribs.filter_mode = 1;
-            (*result)->attribs.unknown_2_1_2 = 2;
+            (*result)->attribs.lighting = NUMTL_LIGHTING_NONE;
             (*result)->texture_id = (i16)texture;
             NuMtlUpdate(*result);
             return;

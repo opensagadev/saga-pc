@@ -2618,8 +2618,8 @@ NUMTL *CreateCopyMat(NUMTL *source, i32 enable_uv_mode, i32 alpha_mode, i32 dept
     if (enable_uv_mode != 0) {
         material->secondary.disable_depth_write = 1;
     }
-    material->attribs.unknown_1_1_2 = 1;
-    material->attribs.unknown_1_4_8 = 1;
+    material->attribs.u_clamp = 1;
+    material->attribs.v_clamp = 1;
     material->texture_id = original->texture_id;
     material->sort_priority = original->sort_priority;
     material->secondary.alpha_fail = 1;
@@ -2720,10 +2720,10 @@ void DebrisSetup2(VARIPTR *buffer, VARIPTR buffer_end, VARIPTR *trash_buffer, VA
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.cull_mode = NUMTL_CULL_NONE;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.z_mode = NUMTL_ZMODE_READ_ONLY;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.filter_mode = 0;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_2_1_2 = 2;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_2_4 = 1;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_1_1_2 = 1;
-    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.unknown_1_4_8 = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.lighting = NUMTL_LIGHTING_NONE;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.vertex_colour = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.u_clamp = 1;
+    ((DEBRIS_MATERIAL *)DebMat[7])->attribs.v_clamp = 1;
     ((DEBRIS_MATERIAL *)DebMat[7])->opacity = 0.999f;
     ((DEBRIS_MATERIAL *)DebMat[7])->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     ((DEBRIS_MATERIAL *)DebMat[7])->secondary.alpha_fail = 1;

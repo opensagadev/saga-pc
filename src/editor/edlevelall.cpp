@@ -8346,7 +8346,7 @@ void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_f
     edLevel2dMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     edLevel2dMtl->opacity = 1.0f;
     edLevel2dMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
-    edLevel2dMtl->attribs.unknown_2_4 = 1;
+    edLevel2dMtl->attribs.vertex_colour = 1;
     NuMtlUpdate(edLevel2dMtl);
 
     edLevel3dMtl = NuMtlCreate(1);
@@ -8355,8 +8355,8 @@ void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_f
     edLevel3dMtl->diffuse_b = 0.5f;
     edLevel3dMtl->opacity = 1.0f;
     edLevel3dMtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    edLevel3dMtl->attribs.unknown_2_1_2 = 2;
-    edLevel3dMtl->attribs.unknown_2_4 = 1;
+    edLevel3dMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
+    edLevel3dMtl->attribs.vertex_colour = 1;
     NuMtlUpdate(edLevel3dMtl);
 
     edLevelTexMtl = NuMtlCreate(1);
@@ -8367,7 +8367,7 @@ void LevelEditor::Initalise(variptr_u &buffer, variptr_u &buffer_end, i32 from_f
     edLevelTexMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     edLevelTexMtl->opacity = 1.0f;
     edLevelTexMtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
-    edLevelTexMtl->attribs.unknown_2_4 = 1;
+    edLevelTexMtl->attribs.vertex_colour = 1;
     NuMtlUpdate(edLevelTexMtl);
 
     NuFntSet(EdLevelFnt);

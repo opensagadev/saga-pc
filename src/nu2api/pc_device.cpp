@@ -1872,29 +1872,29 @@ void PC_DEVICE_BACKEND::BuildDefaultPoolResources() {
     PCByteCopy(data, triangle, sizeof(triangle));
     PCDeviceUnlockVertexBuffer(buffer688);
     state6a0 = 16;
-    state69c = (i32)(u32)(((f64)PS2_REZ_H / PS2_REZ_W) * 16.0);
-    state6a4 = (i32)(((u32)state69c + 1) * 17);
-    state6a8 = (i32)((u32)state69c * 32);
+    state69c = (u32)(((f64)PS2_REZ_H / PS2_REZ_W) * 16.0);
+    state6a4 = (i32)((state69c + 1) * 17);
+    state6a8 = (i32)(state69c * 32);
     PCDeviceCreateVertexBuffer((u32)state6a4 * 20, 8, 0, 0, &buffer694);
     PCDeviceCreateIndexBuffer((u32)state6a8 * 6, 8, 101, 0, &buffer698, NULL);
     PCDeviceLockVertexBuffer(0, (u32)state6a4 * 20, &data, 0, buffer694);
     PC_GRAPHICS_CLIP_VERTEX *vertex = static_cast<PC_GRAPHICS_CLIP_VERTEX *>(data);
-    for (u32 row = 0; row != (u32)state69c + 1; ++row) {
+    for (u32 row = 0; row != state69c + 1; ++row) {
         for (u32 column = 0; column != (u32)state6a0 + 1; ++column) {
             f32 rounded_row = (f32)row;
             f32 rounded_column = (f32)column;
             vertex->x = rounded_column / (f32)(u32)state6a0 * 2.0 - 1.0;
-            vertex->y = 1.0 - rounded_row / (f32)(u32)state69c * 2.0;
+            vertex->y = 1.0 - rounded_row / (f32)state69c * 2.0;
             vertex->z = 0.0f;
             vertex->u = rounded_column / (f32)(u32)state6a0;
-            vertex->v = rounded_row / (f32)(u32)state69c;
+            vertex->v = rounded_row / (f32)state69c;
             ++vertex;
         }
     }
     PCDeviceUnlockVertexBuffer(buffer694);
     PCDeviceLockIndexBuffer(0, (u32)state6a8 * 6, &data, 0, buffer698);
     u16 *index = static_cast<u16 *>(data);
-    for (u32 row = 0; row != (u32)state69c; ++row) {
+    for (u32 row = 0; row != state69c; ++row) {
         for (u32 column = 0; column != (u32)state6a0; ++column) {
             *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column);
             *index++ = (u16)(((u16)state6a0 + 1) * (u16)row + (u16)column + 1);

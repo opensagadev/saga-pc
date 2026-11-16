@@ -308,7 +308,7 @@ typedef struct PC_DEVICE_BACKEND {          // size 0x700
     struct PC_BUFFER_RESOURCE *buffer690;        // 0x690
     struct PC_BUFFER_RESOURCE *buffer694;        // 0x694
     struct PC_BUFFER_RESOURCE *buffer698;        // 0x698
-    i32 state69c;                                // 0x69c
+    u32 state69c;                                // 0x69c
     i32 state6a0;                                // 0x6a0
     i32 state6a4;                                // 0x6a4
     i32 state6a8;                                // 0x6a8

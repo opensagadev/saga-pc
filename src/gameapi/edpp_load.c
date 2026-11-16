@@ -283,13 +283,13 @@ void cbPtlTextureSelectMenu(eduimenu_s *menu, eduiitem_s *unused1, u32 unused2) 
             texture = (edui_texture_pick_s *)edui_last_item;
             texture->material = NuMtlCreate(1);
             texture->material->texture_id = DebMat[1]->texture_id;
-            texture->material->attribs.unknown_1_1_2 = DebMat[1]->attribs.unknown_1_1_2;
-            texture->material->attribs.unknown_1_4_8 = DebMat[1]->attribs.unknown_1_4_8;
+            texture->material->attribs.u_clamp = DebMat[1]->attribs.u_clamp;
+            texture->material->attribs.v_clamp = DebMat[1]->attribs.v_clamp;
             texture->material->diffuse_r = DebMat[1]->diffuse_r;
             texture->material->diffuse_g = DebMat[1]->diffuse_g;
             texture->material->diffuse_b = DebMat[1]->diffuse_b;
             texture->material->opacity = DebMat[1]->opacity;
-            texture->material->attribs.unknown_2_1_2 = DebMat[1]->attribs.unknown_2_1_2;
+            texture->material->attribs.lighting = DebMat[1]->attribs.lighting;
             texture->material->attribs.alpha_mode = DebMat[1]->attribs.alpha_mode;
             texture->material->attribs.z_mode = DebMat[1]->attribs.z_mode;
             texture->material->attribs.unknown_0_64_128 = DebMat[1]->attribs.unknown_0_64_128;

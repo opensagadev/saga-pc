@@ -1791,14 +1791,14 @@ void DebrisGlassInit(void) {
         material->diffuse_b = 1.0f;
         material->opacity = 0.999f;
         material->texture_id = 1;
-        material->attribs.unknown_1_1_2 = 1;
-        material->attribs.unknown_1_4_8 = 1;
+        material->attribs.u_clamp = 1;
+        material->attribs.v_clamp = 1;
         material->attribs.cull_mode = NUMTL_CULL_NONE;
         material->attribs.z_mode = NUMTL_ZMODE_OFF;
         material->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
         material->attribs.filter_mode = 0;
-        material->attribs.unknown_2_1_2 = 2;
-        material->attribs.unknown_2_4 = 1;
+        material->attribs.lighting = NUMTL_LIGHTING_NONE;
+        material->attribs.vertex_colour = 1;
         DebrisGlassCopyMaterial = material;
         NuMtlUpdate(material);
     }

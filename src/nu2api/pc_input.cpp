@@ -1772,7 +1772,7 @@ u8 *NuKeyboardOwner::PollKeyboard() {
         poll_status = 1;
         if (device->methods->poll(device) < 0) {
             if (device->methods->acquire(device) < 0) {
-                page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
+                page = nu_keyboard_pages + nu_keyboard_page_index * 0x100;
                 memset(page, 0, nu_keyboard_owner.key_count);
                 return page;
             }
@@ -1780,8 +1780,8 @@ u8 *NuKeyboardOwner::PollKeyboard() {
         }
 
         nu_keyboard_page_index ^= 1;
-        if (device->methods->get_state(device, 0x100, nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100) == 0) {
-            page_index = (i8)nu_keyboard_page_index;
+        if (device->methods->get_state(device, 0x100, nu_keyboard_pages + nu_keyboard_page_index * 0x100) == 0) {
+            page_index = nu_keyboard_page_index;
             key_count = nu_keyboard_owner.key_count;
             key_index = nu_keyboard_key_index;
             nu_keyboard_previous_key_index = key_index;
@@ -1814,7 +1814,7 @@ u8 *NuKeyboardOwner::PollKeyboard() {
         }
     }
 
-    page = nu_keyboard_pages + (i8)nu_keyboard_page_index * 0x100;
+    page = nu_keyboard_pages + nu_keyboard_page_index * 0x100;
     memset(page, 0, nu_keyboard_owner.key_count);
     return page;
 }

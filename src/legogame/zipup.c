@@ -1118,13 +1118,13 @@ void InitRopeMtl(char *name, VARIPTR *buffer, VARIPTR *buffer_end) {
     char path[64] = "stuff\\";
     if (name != NULL) {
         ropemtl = NuMtlCreate3D(1);
-        ropemtl->attribs.unknown_1_1_2 = 0;
-        ropemtl->attribs.unknown_1_4_8 = 0;
+        ropemtl->attribs.u_clamp = 0;
+        ropemtl->attribs.v_clamp = 0;
         ((ZIPUP_ROPE_MATERIAL *)ropemtl)->opacity = 1.0f;
         ropemtl->attribs.z_mode = NUMTL_ZMODE_NORMAL;
         ropemtl->attribs.alpha_mode = NUMTL_ALPHA_OPAQUE;
         ropemtl->attribs.filter_mode = 1;
-        ropemtl->attribs.unknown_2_1_2 = 0;
+        ropemtl->attribs.lighting = 0;
         NuStrCat(path, name);
         buffer->addr = ((buffer->addr + 15) & ~15u);
         ropemtl->texture_id = NuTexRead(path, buffer, *buffer_end);

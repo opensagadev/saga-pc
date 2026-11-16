@@ -331,7 +331,7 @@ i32 fun_006d3410(void) {
 }
 
 i32 NuKeyboard_db(i32 key) {
-    i32 page = (i8)nu_keyboard_page_index;
+    i32 page = nu_keyboard_page_index;
     u8 current = nu_keyboard_pages[(page << 8) + key];
     if (current != 0 && (current ^ nu_keyboard_pages[((page ^ 1) << 8) + key]) != 0) {
         return 1;

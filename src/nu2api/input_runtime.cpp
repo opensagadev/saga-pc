@@ -31,7 +31,7 @@ static u32 PcMousePressedMask = 0;
 extern "C" {
     u8 nu_keyboard_pages[0x200] = {0};
     char dat_029753c0[512] = {0};
-    u8 nu_keyboard_page_index = 0;
+    i8 nu_keyboard_page_index = 0;
 }
 void (*PcInputStateInitializedCallback)(PC_INPUT_RUNTIME *) = NULL;
 extern "C" {
@@ -690,7 +690,7 @@ u32 PC_INPUT_RUNTIME::CombineUiButtons(i32 port, u32 buttons) {
     if ((u32)(port - 10) <= 3) {
         buttons = 0;
     }
-    const u8 *keys = nu_keyboard_pages + (i8)nu_keyboard_page_index * 256;
+    const u8 *keys = nu_keyboard_pages + nu_keyboard_page_index * 256;
     if (keys[0x1c]) {
         buttons |= PAD_BUTTON_CROSS;
     }
@@ -1147,7 +1147,7 @@ i32 PC_INPUT_RUNTIME::TranslateBindings(i32 port, PC_INPUT_SAMPLE *out, i32 vali
 }
 
 u32 PC_INPUT_RUNTIME::fun_006d82d0(i32, u32 buttons, i32 key, i32 mouse_button, i32 axis, i32 direction, u32 bit) {
-    if (key >= 0 && nu_keyboard_pages[(i8)nu_keyboard_page_index * 256 + key]) {
+    if (key >= 0 && nu_keyboard_pages[nu_keyboard_page_index * 256 + key]) {
         buttons |= bit;
     }
     if (mouse_button >= 0 && mouse.buttons[mouse_button]) {

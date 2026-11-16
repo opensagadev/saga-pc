@@ -110,34 +110,34 @@ extern "C" void CreateFadeMaterials(void) {
     FadeMtl = NuMtlCreate(1);
     FadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     FadeMtl->attribs.filter_mode = 1;
-    FadeMtl->attribs.unknown_2_1_2 = 2;
-    FadeMtl->attribs.unknown_1_1_2 = 1;
-    FadeMtl->attribs.unknown_1_4_8 = 1;
-    FadeMtl->attribs.unknown_2_4 = 1;
+    FadeMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
+    FadeMtl->attribs.u_clamp = 1;
+    FadeMtl->attribs.v_clamp = 1;
+    FadeMtl->attribs.vertex_colour = 1;
     FadeMtl->attribs.alpha_mode = NUMTL_ALPHA_SUBTRACTIVE;
     NuMtlUpdate(FadeMtl);
 
     FadeMtl2 = NuMtlCreate(1);
     FadeMtl2->attribs.z_mode = NUMTL_ZMODE_OFF;
     FadeMtl2->attribs.filter_mode = 1;
-    FadeMtl2->attribs.unknown_2_1_2 = 2;
-    FadeMtl2->attribs.unknown_1_1_2 = 1;
-    FadeMtl2->attribs.unknown_1_4_8 = 1;
-    FadeMtl2->attribs.unknown_2_4 = 1;
+    FadeMtl2->attribs.lighting = NUMTL_LIGHTING_NONE;
+    FadeMtl2->attribs.u_clamp = 1;
+    FadeMtl2->attribs.v_clamp = 1;
+    FadeMtl2->attribs.vertex_colour = 1;
     FadeMtl2->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(FadeMtl2);
 
     ScreenFadeMtl = NuMtlCreate(1);
     ScreenFadeMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
-    ScreenFadeMtl->attribs.unknown_1_1_2 = 1;
-    ScreenFadeMtl->attribs.unknown_1_4_8 = 1;
+    ScreenFadeMtl->attribs.u_clamp = 1;
+    ScreenFadeMtl->attribs.v_clamp = 1;
     ScreenFadeMtl->attribs.filter_mode = 1;
-    ScreenFadeMtl->attribs.unknown_2_1_2 = 2;
-    ScreenFadeMtl->attribs.unknown_2_4 = 1;
+    ScreenFadeMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
+    ScreenFadeMtl->attribs.vertex_colour = 1;
     ScreenFadeMtl->opacity = 1.0f;
     ScreenFadeMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     ScreenFadeMtl->texture_id = 0;
-    ScreenFadeMtl->unknown_076 = 0x7ffe;
+    ScreenFadeMtl->sort_priority = 0x7ffe;
     NuMtlUpdate(ScreenFadeMtl);
 }
 

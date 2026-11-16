@@ -159,7 +159,7 @@ extern "C" {
     extern struct PC_INPUT_RUNTIME *nu_input_state;
     extern NuKeyboardOwner nu_keyboard_owner;
     extern u8 nu_keyboard_pages[0x200];
-    extern u8 nu_keyboard_page_index;
+    extern i8 nu_keyboard_page_index;
     extern i32 nu_keyboard_device_flags;
     extern i32 nu_keyboard_key_index;
     extern i32 nu_keyboard_repeat_countdown;

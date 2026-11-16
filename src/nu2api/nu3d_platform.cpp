@@ -7187,9 +7187,9 @@ extern "C" {
             NUCAMERA camera;
             VARIPTR *buffer;
             NATIVE_PARTICLE_PACKET *packet;
-            if (material->attribs.unknown_2_1_2 != 2 || material->attribs.unknown_2_4 == 0) {
-                material->attribs.unknown_2_1_2 = 2;
-                material->attribs.unknown_2_4 = 1;
+            if (material->attribs.lighting != NUMTL_LIGHTING_NONE || material->attribs.vertex_colour == 0) {
+                material->attribs.lighting = NUMTL_LIGHTING_NONE;
+                material->attribs.vertex_colour = 1;
                 NuMtlUpdate(material);
             }
             if (NuRndr_DebrisRotMtxPtr == NULL) {

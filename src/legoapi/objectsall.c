@@ -123,10 +123,10 @@ void MessageBoxInitMtl(void) {
     MessageMtl = NuMtlCreate(1);
     MessageMtl->attribs.z_mode = NUMTL_ZMODE_OFF;
     MessageMtl->attribs.filter_mode = 1;
-    MessageMtl->attribs.unknown_2_1_2 = 2;
-    MessageMtl->attribs.unknown_1_1_2 = 1;
-    MessageMtl->attribs.unknown_1_4_8 = 1;
-    MessageMtl->attribs.unknown_2_4 = 1;
+    MessageMtl->attribs.lighting = NUMTL_LIGHTING_NONE;
+    MessageMtl->attribs.u_clamp = 1;
+    MessageMtl->attribs.v_clamp = 1;
+    MessageMtl->attribs.vertex_colour = 1;
     MessageMtl->attribs.alpha_mode = NUMTL_ALPHA_BLEND;
     NuMtlUpdate(MessageMtl);
     MessageMtlInit = 1;

@@ -60,12 +60,12 @@ typedef union numtlattrib_u { // size 0x4
         u32 alpha_mode : 4;       // 0x0:0
         u32 filter_mode : 2;      // 0x0:4
         u32 unknown_0_64_128 : 2; // 0x0:6
-        u32 unknown_1_1_2 : 2;    // 0x0:8
-        u32 unknown_1_4_8 : 2;    // 0x0:10
+        u32 u_clamp : 2;          // 0x0:8
+        u32 v_clamp : 2;          // 0x0:10
         u32 cull_mode : 2;        // 0x0:12
         u32 z_mode : 2;           // 0x0:14
-        u32 unknown_2_1_2 : 2;    // 0x0:16
-        u32 unknown_2_4 : 1;      // 0x0:18
+        u32 lighting : 2;         // 0x0:16
+        u32 vertex_colour : 1;    // 0x0:18
         u32 unknown_2_8 : 1;      // 0x0:19
         u32 unknown_20_31 : 12;   // 0x0:20
     };
@@ -87,6 +87,7 @@ typedef union numtlattrib_u { // size 0x4
 #define NUMTL_ZMODE_READ_ONLY 1   /* z test, no z write */
 #define NUMTL_ZMODE_ALWAYS 2      /* z write without a z test */
 #define NUMTL_ZMODE_OFF 3         /* no z buffer */
+#define NUMTL_LIGHTING_NONE 2     /* unlit: 2D overlays, fades, streaks */
 
 typedef struct numtl_s { // size 0x2c4
 
