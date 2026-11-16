@@ -96,3 +96,5 @@ during the cleanup; each flip is logged here and they get one tuning pass once t
 | allocator sizes, animation magics, gameapi header declarations (stream B, dc4618c5) | BoltTypes_Configure | legoapi/bolts.cpp | exact | 99.88 % |
 | allocator sizes, animation magics, gameapi header declarations (stream B, dc4618c5) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | different | exact |
 | WORLDINFO gizmo_sys, display clip objects, visibility and scene fields typed (stream B) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | different |
+| GIZMO object union, NUVEC4 xyz casts, LEVFLAG union (stream C) | BoulderSpawn | legogame/episodeIII.c | exact | 83.28 % |
+| GIZMO object union, NUVEC4 xyz casts, LEVFLAG union (stream C) | BlockadeRunnerDEjectCreature | legogame/episodeIV.c | exact | 95.18 % |

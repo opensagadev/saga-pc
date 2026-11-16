@@ -29,6 +29,29 @@ typedef struct LEVEL_OBJECT_CONFIG { // size 0x8
     char *name;                      // 0x4
 } LEVEL_OBJECT_CONFIG;
 
+/* LEVFLAG.podrace.state: the pod race's one-off step (B: the hint shown; C: the boosts shown after the
+ * Tusken Raider cut scene). */
+#define PODRACE_STEP_START 0
+#define PODRACE_STEP_TRIGGERED 1
+#define PODRACE_STEP_DONE 2
+
+/* LEVFLAG.podrace.mushroom_state: the collapsing mushroom on lap two. */
+#define PODRACE_MUSHROOM_APPROACH 0  /* until the camera passes mushroom0_along: the first cut scene */
+#define PODRACE_MUSHROOM_FALLING 1   /* until that cut scene ends: the second, and the countdown starts */
+#define PODRACE_MUSHROOM_COUNTDOWN 2 /* until it runs out (the third cut scene) or the camera passes */
+#define PODRACE_MUSHROOM_PASSED 3    /* until the mushroom is out of view */
+#define PODRACE_MUSHROOM_DONE 4
+
+/* LEVFLAG.gunship.progress */
+#define GUNSHIP_PROGRESS_START 0
+#define GUNSHIP_PROGRESS_MIDWAY 1 /* A: the midway checkpoint stored; B: the countdown runs */
+#define GUNSHIP_PROGRESS_LATE 2   /* A: restarted from the checkpoint; B: the countdown is over */
+
+/* LEVFLAG.cruiser.starfighter_state: the two starfighters of Cruiser A. */
+#define CRUISER_STARFIGHTERS_HIDDEN 0
+#define CRUISER_STARFIGHTERS_SHOW 1
+#define CRUISER_STARFIGHTERS_SHOWN 2
+
 /* LevFlag: sixteen bytes of state that the current level's own code keeps, each level its own way. */
 typedef union levflag_u { // size 0x10
     i32 words[4];

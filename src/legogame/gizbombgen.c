@@ -258,7 +258,7 @@ char *GizmoBombGen_GetGizmoName(GIZMO *gizmo) {
 i32 GizmoBombGen_GetOutput(GIZMO *gizmo, i32 output, i32 mode) {
     (void)output;
     (void)mode;
-    return gizmo->bomb_generator->flags & 1;
+    return gizmo->bomb_generator->flags & GIZBOMBGEN_FLAG_ACTIVE;
 }
 
 char *GizmoBombGen_GetOutputName(GIZMO *gizmo, i32 output) {

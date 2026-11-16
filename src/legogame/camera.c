@@ -1088,10 +1088,11 @@ mode_selected:
             NUVEC ahead;
             NUVEC lateral;
             NUVEC *offset;
-            f32 spline_position = (GamePlayTimer.time_elapsed + (LevFlag.bytes[0] == 2 ? CamTitlesBonusTime : 6.0f)) / 100.0f;
+            f32 spline_position =
+                (GamePlayTimer.time_elapsed + (LevFlag.gunship.progress == GUNSHIP_PROGRESS_LATE ? CamTitlesBonusTime : 6.0f)) / 100.0f;
             f32 first_position = spline_position;
             if (spline_position > CamTitlesSplineEnd) {
-                LevFlag.bytes[1] = 1;
+                LevFlag.gunship.secondary = 1;
                 first_position = CamTitlesSplineEnd;
             }
 

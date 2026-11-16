@@ -94,17 +94,17 @@ typedef struct vaderc_s {
 } VADERC;
 
 void CruiserAInit(WORLDINFO *world) {
-    LevFlag.cruiser.starfighter_state = 0;
+    LevFlag.cruiser.starfighter_state = CRUISER_STARFIGHTERS_HIDDEN;
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "starfighter1", 1);
     NuSpecialFind(world->current_gscn, &LevHSpecial[1], "starfighter2", 1);
     if (FreePlay != 0) {
-        LevFlag.cruiser.starfighter_state = 2;
+        LevFlag.cruiser.starfighter_state = CRUISER_STARFIGHTERS_SHOWN;
     }
 }
 
 void CruiserAUpdate(WORLDINFO *world) {
-    if (LevFlag.cruiser.starfighter_state == 1) {
-        LevFlag.cruiser.starfighter_state = 2;
+    if (LevFlag.cruiser.starfighter_state == CRUISER_STARFIGHTERS_SHOW) {
+        LevFlag.cruiser.starfighter_state = CRUISER_STARFIGHTERS_SHOWN;
         if (NuSpecialExistsFn(&LevHSpecial[0]) != 0) {
             NuSpecialSetVisibility(&LevHSpecial[0], 1);
         }

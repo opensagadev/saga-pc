@@ -1201,20 +1201,20 @@ f32 PodDustHeightScale = 2.0f;
 void PodRaceBUpdate(WORLDINFO *world) {
     if (Lap == 2 && ActivePodRace->mushroom_timer > 1.0f && mushroom_collapse != 0) {
         switch (LevFlag.podrace.mushroom_state) {
-            case 0:
+            case PODRACE_MUSHROOM_APPROACH:
                 if (GameCam->sock_position.distance > mushroom0_along) {
                     NewCutScene(NULL, world->cutscene_sys, "ep1_podrace_mushroom0", 1);
-                    LevFlag.podrace.mushroom_state = 1;
+                    LevFlag.podrace.mushroom_state = PODRACE_MUSHROOM_FALLING;
                 }
                 break;
-            case 1:
+            case PODRACE_MUSHROOM_FALLING:
                 if (mushroom0_cut != NULL && (((CUT_INSTANCE_READER *)mushroom0_cut->instance)->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
                     NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM1", 1);
                     mushroom_countdown = mushroom_time_available;
-                    LevFlag.podrace.mushroom_state = 2;
+                    LevFlag.podrace.mushroom_state = PODRACE_MUSHROOM_COUNTDOWN;
                 }
                 break;
-            case 2:
+            case PODRACE_MUSHROOM_COUNTDOWN:
                 mushroom_countdown -= FRAMETIME;
                 if (mushroom_countdown < 0.0f) {
                     NewCutScene(NULL, world->cutscene_sys, "EP1_PODRACE_MUSHROOM2", 1);
@@ -1225,15 +1225,15 @@ void PodRaceBUpdate(WORLDINFO *world) {
                             mushroom_time_available = mushroom_max_time_available;
                         }
                     }
-                    LevFlag.podrace.mushroom_state = 4;
+                    LevFlag.podrace.mushroom_state = PODRACE_MUSHROOM_DONE;
                 } else if (GameCam->sock_position.distance > mushroom2_along) {
-                    LevFlag.podrace.mushroom_state = 3;
+                    LevFlag.podrace.mushroom_state = PODRACE_MUSHROOM_PASSED;
                 }
                 break;
-            case 3:
+            case PODRACE_MUSHROOM_PASSED:
                 if (NuSpecialExistsFn(&LevHSpecial[0]) != 0 &&
                     NuSpecialClipTestExtents(&LevHSpecial[0], NuSpecialGetDrawMtx(&LevHSpecial[0])) == 0) {
-                    LevFlag.podrace.mushroom_state = 4;
+                    LevFlag.podrace.mushroom_state = PODRACE_MUSHROOM_DONE;
                 }
                 break;
         }
@@ -1241,10 +1241,10 @@ void PodRaceBUpdate(WORLDINFO *world) {
     UpdatePacemakerDisplay(world);
     UpdatePodRaceLapDisplay(FRAMETIME);
     PodRaceUpdate(world, FRAMETIME);
-    if (Lap == 1 && LevFlag.podrace.state == 0 && PODRACE_ADATA != NULL && Game.area_save[PODRACE_ADATA->index].area_complete == 0 &&
-        GameTimer.time_elapsed >= 3.0f) {
+    if (Lap == 1 && LevFlag.podrace.state == PODRACE_STEP_START && PODRACE_ADATA != NULL &&
+        Game.area_save[PODRACE_ADATA->index].area_complete == 0 && GameTimer.time_elapsed >= 3.0f) {
         Hint_SetComplete(0x27e);
-        LevFlag.podrace.state = 1;
+        LevFlag.podrace.state = PODRACE_STEP_TRIGGERED;
     }
 }
 
@@ -1254,19 +1254,19 @@ void PodRaceCUpdate(WORLDINFO *world) {
     UpdatePodRaceLapDisplay(FRAMETIME);
     PodRaceUpdate(world, FRAMETIME);
     PodRaceSnipersUpdate();
-    if (LevFlag.podrace.state == 0) {
+    if (LevFlag.podrace.state == PODRACE_STEP_START) {
         CUTINFO *cutscene = CutScene_Find(world->cutscene_sys, "Ep1_Podrace_TuskenRaiders");
         if (cutscene != NULL && (((CUT_INSTANCE_READER *)cutscene->instance)->flags_88 & NUGCUTSCENE_INST_ENDED) != 0) {
-            LevFlag.podrace.state = 1;
+            LevFlag.podrace.state = PODRACE_STEP_TRIGGERED;
         }
     }
-    if (LevFlag.podrace.state == 1) {
+    if (LevFlag.podrace.state == PODRACE_STEP_TRIGGERED) {
         for (i = 0; i < 10; i++) {
             if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 1);
             }
         }
-        LevFlag.podrace.state = 2;
+        LevFlag.podrace.state = PODRACE_STEP_DONE;
     }
 }
 
@@ -2201,8 +2201,8 @@ void PodRaceBReset(WORLDINFO *world) {
             break;
     }
     PodPacemaker = NULL;
-    LevFlag.podrace.state = 0;
-    LevFlag.podrace.mushroom_state = 0;
+    LevFlag.podrace.state = PODRACE_STEP_START;
+    LevFlag.podrace.mushroom_state = PODRACE_MUSHROOM_APPROACH;
     mushroom0_cut = CutScene_Find(world->cutscene_sys, "EP1_PODRACE_MUSHROOM0");
     NuSpecialFind(world->current_gscn, &LevHSpecial[0], "collapsing_mush", 1);
 }
@@ -2211,7 +2211,7 @@ void PodRaceCInit(WORLDINFO *world) {
     char name[256];
     i32 i;
     PodRaceInit(world);
-    LevFlag.podrace.state = 0;
+    LevFlag.podrace.state = PODRACE_STEP_START;
     for (i = 0; i < 10; i++) {
         sprintf(name, "boost0%i", i + 1);
         NuSpecialFind(world->current_gscn, &LevHSpecial[i], name, 1);
@@ -2222,7 +2222,7 @@ void PodRaceCInit(WORLDINFO *world) {
                 NuSpecialSetVisibility(&LevHSpecial[i], 1);
             }
         }
-        LevFlag.podrace.state = 2;
+        LevFlag.podrace.state = PODRACE_STEP_DONE;
     } else {
         for (i = 0; i < 17; i++) {
             if (NuSpecialExistsFn(&LevHSpecial[i]) != 0) {

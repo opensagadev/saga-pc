@@ -2013,15 +2013,15 @@ void BonusGunshipA_Reset(WORLDINFO *world) {
     GunshipPlayerDead = 0;
     LevFlag.gunship.secondary = 0;
     bonus_gunship_store_progress_flag = 0;
-    if (LevFlag.gunship.progress == 1) {
-        LevFlag.gunship.progress = 2;
+    if (LevFlag.gunship.progress == GUNSHIP_PROGRESS_MIDWAY) {
+        LevFlag.gunship.progress = GUNSHIP_PROGRESS_LATE;
     }
 }
 
 void BonusGunshipA_Update(WORLDINFO *world) {
     GAMEOBJECT *first = Player[0];
     GAMEOBJECT *second = Player[1];
-    if (LevFlag.gunship.progress == 0) {
+    if (LevFlag.gunship.progress == GUNSHIP_PROGRESS_START) {
         if ((first != NULL && first->sock_position.sock_index == 0 && first->sock_position.distance > 12.1f) ||
             (second != NULL && second->sock_position.sock_index == 0 && second->sock_position.distance > 12.1f)) {
             if (netclient == 0) {
@@ -2032,7 +2032,7 @@ void BonusGunshipA_Update(WORLDINFO *world) {
                 first = Player[0];
                 bonus_gunship_store_progress_flag = 0;
             }
-            LevFlag.gunship.progress = 1;
+            LevFlag.gunship.progress = GUNSHIP_PROGRESS_MIDWAY;
         }
     }
     if (GunshipPlayerDead == 0 && ((first != NULL && first->dead != 0) || (second != NULL && second->dead != 0))) {
@@ -2050,7 +2050,7 @@ void BonusGunshipB_Init(WORLDINFO *world) {
 
 void BonusGunshipB_Reset(WORLDINFO *world) {
     MiscTime = 0.0f;
-    LevFlag.gunship.progress = 0;
+    LevFlag.gunship.progress = GUNSHIP_PROGRESS_START;
     LevFlag.gunship.secondary = 0;
     GunshipPlayerDead = 0;
     bonus_gunship_store_progress_flag = 0;
@@ -2062,7 +2062,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
             GunshipPlayerDead = 1;
             ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
         }
-        if (LevFlag.gunship.progress == 0) {
+        if (LevFlag.gunship.progress == GUNSHIP_PROGRESS_START) {
             f32 delay = 15.0f;
             if (LevDeaths >= 3) {
                 delay = (f32)((f64)LevDeaths + 15.0);
@@ -2071,7 +2071,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
                 }
             }
             if (GameTimer.time_elapsed >= delay) {
-                LevFlag.gunship.progress = 1;
+                LevFlag.gunship.progress = GUNSHIP_PROGRESS_MIDWAY;
                 if (LevGizObst[0] != NULL) {
                     LevGizObst[0]->runtime_flags |= GIZOBSTACLE_LOCKED_OPEN;
                 }
@@ -2079,7 +2079,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
                 TimerScale = 1.0f;
                 TimerAlpha = 0.0f;
             }
-        } else if (LevFlag.gunship.progress == 1) {
+        } else if (LevFlag.gunship.progress == GUNSHIP_PROGRESS_MIDWAY) {
             f32 previous_time;
             NuFmod(MiscTime, 5.0f);
             previous_time = MiscTime;
@@ -2095,7 +2095,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
                     GunshipPlayerDead = 1;
                     ResetLevel(world, "ep2_bonus_gunshipcavalry_explode", 1);
                 }
-                LevFlag.gunship.progress = 2;
+                LevFlag.gunship.progress = GUNSHIP_PROGRESS_LATE;
             } else if (MiscTime > 0.0f && (i32)MiscTime != (i32)previous_time) {
                 TimerScale = 1.25f;
                 TickTockSfx();
@@ -2112,7 +2112,7 @@ void BonusGunshipB_Update(WORLDINFO *world) {
 }
 
 void BonusGunshipB_Panel(WORLDINFO *world) {
-    if (LevFlag.gunship.progress == 1) {
+    if (LevFlag.gunship.progress == GUNSHIP_PROGRESS_MIDWAY) {
         if (MiscTime > 0.0f) {
             DrawTimer((i32)MiscTime + 1, 0, 0);
         }
