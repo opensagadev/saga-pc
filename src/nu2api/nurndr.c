@@ -855,7 +855,7 @@ i32 NuRndrTri3dClip(NURND_VERTEX3D *vertices, i32 count, NUMTX *matrix, NUMTL *m
 extern i32 NuPrimCoordSystemStack[2];
 
 // Writes the texture coordinates of the current primitive vertex.
-static void NuRndrPrimUV(f32 u, f32 v) {
+static __forceinline void NuRndrPrimUV(f32 u, f32 v) {
     NULGTVERTEX *uv_vertex = NuPrimStreamBufferPointer->vertex_ptr;
     uv_vertex->u = u;
     uv_vertex->v = v;

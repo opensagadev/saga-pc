@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 // Copies a NUL-terminated string into the parse arena.
-inline char *ShaderCompilerParser::CopyToArena(const char *string) {
+__forceinline char *ShaderCompilerParser::CopyToArena(const char *string) {
     VirtualStackAllocator *stack = arena;
     i32 length = (i32)strlen(string);
     char *copy = reinterpret_cast<char *>(stack->cursor);
@@ -18,7 +18,7 @@ inline char *ShaderCompilerParser::CopyToArena(const char *string) {
 }
 
 // Links a new node at the current insertion point.
-inline void ShaderCompilerParser::AppendNode(ShaderParserNode *node) {
+__forceinline void ShaderCompilerParser::AppendNode(ShaderParserNode *node) {
     if (tail == NULL) {
         head = node;
         tail = &node->next;

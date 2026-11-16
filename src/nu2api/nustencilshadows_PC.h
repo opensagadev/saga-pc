@@ -226,6 +226,7 @@ extern "C" {
 
     extern PC_DISPLAY_ITEM_HANDLER PCDisplayItemHandlerPrefix[49];
     extern PC_DISPLAY_ITEM_HANDLER *CurrentItemTable;
+    extern PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49];
 #ifdef __cplusplus
 }
 #endif
@@ -492,11 +493,11 @@ extern "C" {
 
     extern GRAPHICS_RENDER_TEXTURE PCGraphicsRenderTextures[32];
 
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDebrisPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialGlassPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnDecalPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnPrograms;
-    extern struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDefaultPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialDebrisPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialGlassPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnDecalPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnPrograms;
+    extern struct POST_SHADER_PROGRAM *NuDisplayMaterialDefaultPrograms;
 #ifdef __cplusplus
 }
 #endif

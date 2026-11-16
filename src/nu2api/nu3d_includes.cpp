@@ -104,7 +104,6 @@
 #include "nu2api/nustream.h"
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
-#include "nu2api/posteffect_shader_tokens_pc.h"
 
 #include <xmmintrin.h>
 #include <float.h>
@@ -9320,29 +9319,6 @@ extern "C" {
         NuThreadCriticalSectionEnd(nudlist_field_fc4);
     }
 
-    typedef struct pc_display_material_s { // size 0xfc
-
-        union { // size 0x2
-            u16 flags;
-
-            struct {                // size 0x2
-                u16 flags_low : 4;  // 0x00:0
-                i16 sort_layer : 8; // 0x00:4
-                u16 flags_high : 4; // 0x00:12
-            };
-        }; // 0x00
-
-        u8 unknown_0002[0x3a];       // 0x02
-        NUDISPLAYLIST *display_list; // 0x3c
-        u8 unknown_0040[4];          // 0x40
-        u32 visibility_flags;        // 0x44
-        u8 unknown_0048[0x2c];       // 0x48
-        i16 texture_id;              // 0x74
-        i16 sort_priority;           // 0x76
-        u8 unknown_0078[0x80];       // 0x78
-        u8 blend_operation[3];       // 0xf8
-    } PC_DISPLAY_MATERIAL;
-
     /* Staged fragment for the original nudlist caller group. */
     void NuDisplayListRecalculateMaterialStartsPC(NUDISPLAY_LIST *scene) {
         i32 total = 0;
@@ -9355,7 +9331,7 @@ extern "C" {
             NUSORTPRI *sort = &scene->sort_pris[i];
             if (sort->nmtls != 0) {
                 for (j = 0; j < total; ++j) {
-                    PC_DISPLAY_MATERIAL *material = (PC_DISPLAY_MATERIAL *)scene->display_materials[j];
+                    NUMTL *material = scene->display_materials[j];
                     i32 key = material->sort_layer * 131072 + material->sort_priority;
                     if (key == sort->sort_pri) {
                         scene->sort_pris[i].mtl_first = (u16)j;
@@ -9461,13 +9437,13 @@ extern "C" {
                 for (bit = 0; bit < 8; ++bit) {
                     i32 enabled = (value >> bit) & 1;
                     NUDISPLAYLIST *list = lists[material_index];
-                    PC_DISPLAY_MATERIAL *material = (PC_DISPLAY_MATERIAL *)scene->display_materials[list->material_id];
+                    NUMTL *material = scene->display_materials[list->material_id];
                     if (material != NULL && enabled != 0) {
                         if (PCDeviceHardwareVertexProcessingPC != PC_SHADER_MODEL_1_1) {
-                            enabled = material->blend_operation[0] != 0xff;
+                            enabled = material->shader.blend_ops[0] != 0xff;
                         } else {
-                            if (material->blend_operation[0] == 0xff ||
-                                material->blend_operation[0] + material->blend_operation[1] + material->blend_operation[2] == 0) {
+                            if (material->shader.blend_ops[0] == 0xff ||
+                                material->shader.blend_ops[0] + material->shader.blend_ops[1] + material->shader.blend_ops[2] == 0) {
                                 list->mtl_item->id = NUDLISTITEM_SKIP;
                             } else {
                                 list->mtl_item->id = NUDLISTITEM_JUMP;
@@ -9497,7 +9473,7 @@ extern "C" {
             return;
         }
         for (queued = 0; queued < PCDisplayMaterialDeleteCount; ++queued) {
-            PC_DISPLAY_MATERIAL *material = (PC_DISPLAY_MATERIAL *)PCDisplayMaterialDeleteQueue[queued];
+            NUMTL *material = PCDisplayMaterialDeleteQueue[queued];
             NUDISPLAYLISTITEM *items;
             NUSORTPRI *sort;
             i32 index;
@@ -9511,7 +9487,7 @@ extern "C" {
             }
             index = -1;
             for (i = 0; i < (i32)scene->material_count; ++i) {
-                if (scene->display_materials[i] == (NUMTL *)material) {
+                if (scene->display_materials[i] == material) {
                     index = i;
                     break;
                 }
@@ -9538,7 +9514,7 @@ extern "C" {
                 link = PCMaterialLinkItemIndex;
                 for (i = 0; i < count; ++i) {
                     NUDISPLAYLISTITEM *previous =
-                        ((PC_DISPLAY_MATERIAL *)scene->display_materials[scene->sort_pris[sort_index].mtl_first + i])
+                        (scene->display_materials[scene->sort_pris[sort_index].mtl_first + i])
                             ->display_list->mtl_item;
                     if (previous[link].next == items) {
                         previous[link].next = items[link].next;
@@ -9590,7 +9566,7 @@ extern "C" {
             }
             for (i = 0; i < (i32)scene->material_count; ++i) {
                 if (PCDisplayMaterialReferenceCounts[i] != 0) {
-                    PC_DISPLAY_MATERIAL *used = (PC_DISPLAY_MATERIAL *)scene->display_materials[i];
+                    NUMTL *used = scene->display_materials[i];
                     used->display_list->material_id = i;
                 }
             }
@@ -9599,7 +9575,7 @@ extern "C" {
         }
         PCDisplayMaterialDeleteCount = 0;
         for (queued = 0; queued < PCDisplayMaterialAddCount; ++queued) {
-            PC_DISPLAY_MATERIAL *material = (PC_DISPLAY_MATERIAL *)PCDisplayMaterialAddQueue[queued];
+            NUMTL *material = PCDisplayMaterialAddQueue[queued];
             NUDISPLAYLIST *unused;
             NUDISPLAYLISTITEM *items;
             VARIPTR cursor;
@@ -9611,7 +9587,7 @@ extern "C" {
             i32 i;
             i32 link;
             for (i = 0; i < (i32)scene->material_count; ++i) {
-                if (scene->display_materials[i] == (NUMTL *)material) {
+                if (scene->display_materials[i] == material) {
                     index = i;
                     break;
                 }
@@ -9645,7 +9621,7 @@ extern "C" {
             }
             for (i = 0; i < (i32)scene->material_count; ++i) {
                 if (PCDisplayMaterialReferenceCounts[i] != 0) {
-                    PC_DISPLAY_MATERIAL *other = (PC_DISPLAY_MATERIAL *)scene->display_materials[i];
+                    NUMTL *other = scene->display_materials[i];
                     if (key <= other->sort_layer * 131072 + other->sort_priority) {
                         insert = i;
                         break;
@@ -9665,7 +9641,7 @@ extern "C" {
             PCDisplayMaterialReferenceCounts[insert] = 0;
             for (i = 0; i < (i32)scene->material_count; ++i) {
                 if (PCDisplayMaterialReferenceCounts[i] != 0) {
-                    ((PC_DISPLAY_MATERIAL *)scene->display_materials[i])->display_list->material_id = i;
+                    (scene->display_materials[i])->display_list->material_id = i;
                 }
             }
             PCDisplayMaterialReferenceCounts[insert] = 1;
@@ -9679,9 +9655,9 @@ extern "C" {
             material->display_list->material_id = insert;
             if (sort_index != -1) {
                 if (insert != 0) {
-                    PC_DISPLAY_MATERIAL *previous = (PC_DISPLAY_MATERIAL *)scene->display_materials[insert - 1];
+                    NUMTL *previous = scene->display_materials[insert - 1];
                     if (previous->sort_layer * 131072 + previous->sort_priority == key) {
-                        NUDISPLAYLISTITEM *anchor = ((PC_DISPLAY_MATERIAL *)scene->display_materials[insert - 1])->display_list->mtl_item;
+                        NUDISPLAYLISTITEM *anchor = (scene->display_materials[insert - 1])->display_list->mtl_item;
                         link = PCMaterialLinkItemIndex;
                         items[link].type = NUDLIST_NEXT;
                         items[link].next = anchor[link].next;
@@ -9719,7 +9695,7 @@ extern "C" {
 
     NUDISPLAYLISTITEM *NuDisplayListCreateMtlDlist(NUDISPLAYLISTITEM *unused, NUMTL *material, VARIPTR *cursor, VARIPTR end) {
         NUDISPLAYLISTITEM *items = (NUDISPLAYLISTITEM *)cursor->addr;
-        PC_DISPLAY_MATERIAL *view = (PC_DISPLAY_MATERIAL *)material;
+        NUMTL *view = material;
         cursor->addr += 0x80;
         items[0].type = NUDLIST_MTL_CLIP;
         items[0].next = items + PCMaterialBlockItemCount - 1;
@@ -9752,11 +9728,11 @@ extern "C" {
                 for (i = 0; i < sort->nmtls; ++i) {
                     i32 index = sort->mtl_first + i;
                     NUDISPLAYLIST *list = scene->material_lists[index];
-                    PC_DISPLAY_MATERIAL *material;
+                    NUMTL *material;
                     if (list->mtl_item->id != NUDLISTITEM_SKIP) {
                         continue;
                     }
-                    material = (PC_DISPLAY_MATERIAL *)scene->display_materials[index];
+                    material = scene->display_materials[index];
                     if (scene->local_state != NULL && (scene->render_flags & 4) != 0) {
                         if (list->mtl_last != list->first) {
                             DisplayListUpdateRenderState(list, scene->local_state);
@@ -9789,7 +9765,7 @@ extern "C" {
                     }
                     RndrStateUpdate(&state, (NUMTL *)material, list->mtl_item);
                     if ((u8)(scene->render_flags >> 5) != 0 &&
-                        ((u8)(scene->render_flags >> 5) & (u8)(material->visibility_flags >> 14)) != 0) {
+                        ((u8)(scene->render_flags >> 5) & (u8)(material->attribs2 >> 14)) != 0) {
                         list->mtl_item->id = NUDLISTITEM_JUMP;
                         scene->material_used[(scene->render_flags >> 15) & 1][list->material_id / 8] &=
                             (u8) ~(1u << (list->material_id % 8));
@@ -10295,11 +10271,11 @@ extern "C" {
             }
             for (; material != NULL; material = material->next) {
                 if (PCDeviceHardwareVertexProcessingPC == PC_SHADER_MODEL_1_1) {
-                    if (material->shader.colour[0] != 255 &&
-                        material->shader.colour[0] + material->shader.colour[1] + material->shader.colour[2] != 0) {
+                    if (material->shader.blend_ops[0] != 255 &&
+                        material->shader.blend_ops[0] + material->shader.blend_ops[1] + material->shader.blend_ops[2] != 0) {
                         continue;
                     }
-                } else if (material->shader.colour[0] == 255) {
+                } else if (material->shader.blend_ops[0] == 255) {
                     continue;
                 }
                 if (clip != 0) {
@@ -12026,7 +12002,6 @@ void NuSpeedBlurFilterGen::render() {
 }
 
 extern "C" {
-    void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, bool, f32, POST_SHADER_PROGRAM *);
     f32 NuMainFilterDofBlurScale = 1.5f;
     i32 NuPostEffectBackBufferFrame = -1;
     i32 dat_0080bf24 = -1;
@@ -17501,13 +17476,6 @@ extern "C" {
 } // extern "C"
 
 /* nupostdeferred */
-extern "C" {
-    // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
-    void PCGraphicsAttachFramebuffer(PC_FRAMEBUFFER *, i32, GRAPHICS_RENDER_TEXTURE *, i32);
-    // Repeats its header, but deleting it changes NuDeferredFilterGen::render (declaration noise).
-    void PostBlur7x7Dispatch(GRAPHICS_RENDER_TEXTURE *, i32, GRAPHICS_RENDER_TEXTURE *, i32, i32, i32, bool, f32, POST_SHADER_PROGRAM *);
-    extern PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49];
-}
 
 void PC_SPECIAL_SHADOW_LIGHT::fun_005c6d90(NUMTX *view, NUMTX *projection) {
     PostShadowView = *view;

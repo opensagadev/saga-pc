@@ -94,7 +94,6 @@
 #include "nu2api/nuwin32/d3dCalls.h"
 #include "nu2api/nuwin32/d3dCore.h"
 #include "nu2api/nuwin32/pcapi.h"
-#include "nu2api/posteffect_shader_tokens_pc.h"
 #include "nu2api/nuwin32/nu2api_windows.h"
 #include "nu2api/nucore/nucore_includes.h"
 #include "nu2api/pc_fmv_native.h"
@@ -111,11 +110,11 @@ extern "C" {
     i32 NuPrimCSPos = 0;
     f32 NuPrimXBias = 0;
     f32 NuPrimYBias = 0;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDebrisPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialGlassPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnDecalPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialFaceOnPrograms = NULL;
-    struct PC_DL_SHADER_PROGRAM_PAIR *NuDisplayMaterialDefaultPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialDebrisPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialGlassPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnDecalPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialFaceOnPrograms = NULL;
+    struct POST_SHADER_PROGRAM *NuDisplayMaterialDefaultPrograms = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayMaterialDebrisDeclaration = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayMaterialFaceOnDeclaration = NULL;
     PC_TEXTURE_RESOURCE *NuDisplayMaterialDefaultDeclaration = NULL;
@@ -1103,22 +1102,22 @@ extern "C" {
 
     extern "C" void Nu360MtlInit(void) {
         NuDisplayMaterialDebrisPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769710, dat_00769840));
+            PostShaderProgramCreate(2, dat_00769710, dat_00769840);
         if (PCDeviceHardwareVertexProcessingPC > 1) {
             NuDisplayMaterialGlassPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_007698f0, dat_00769a58));
+                PostShaderProgramCreate(2, dat_007698f0, dat_00769a58);
         } else {
             NuDisplayMaterialGlassPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769c48, dat_00769da8));
+                PostShaderProgramCreate(2, dat_00769c48, dat_00769da8);
         }
         if (PCDeviceHardwareVertexProcessingPC > 1) {
             NuDisplayMaterialFaceOnDecalPrograms =
-                reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8));
+                PostShaderProgramCreate(2, dat_00769e80, dat_0076a3c8);
         }
         NuDisplayMaterialFaceOnPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_00769e80, dat_0076a298));
+            PostShaderProgramCreate(2, dat_00769e80, dat_0076a298);
         NuDisplayMaterialDefaultPrograms =
-            reinterpret_cast<PC_DL_SHADER_PROGRAM_PAIR *>(PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8));
+            PostShaderProgramCreate(2, dat_0076a538, dat_0076a5e8);
         PCDeviceCreateVertexDeclaration(NuMaterialFaceOnElements, &NuDisplayMaterialFaceOnDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDebrisElements, &NuDisplayMaterialDebrisDeclaration);
         PCDeviceCreateVertexDeclaration(NuMaterialDefaultElements, &NuDisplayMaterialDefaultDeclaration);
@@ -1222,7 +1221,6 @@ extern "C" {
         NUVEC4 values[1];                        // 0x04
     } PC_DL_VERTEX_OFFSETS_READER;
 
-    extern PC_DISPLAY_ITEM_HANDLER PCDisplayShadowItemHandlers[49];
 
     /* PC-only table slot 0xad. */
     typedef struct PC_DL_AD_COLOURS { // size 0x3c

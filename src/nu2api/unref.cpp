@@ -1,5 +1,5 @@
+#include "nu2api/nucore/NuNetEmu.h"
 #include "nu2api/nucore/common.h"
-#include "nu2api/unref.h"
 
 /* RefPack decompressor, the counterpart of refpack. Returns
  * the number of bytes written to destination. */

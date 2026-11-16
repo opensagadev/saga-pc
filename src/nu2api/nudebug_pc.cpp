@@ -157,7 +157,7 @@ struct PC_NATIVE_DEBUG_POSITION {
     f32 w;
 };
 
-static void DebugPoint(PC_NATIVE_DEBUG_VERTEX *vertex, f32 x, f32 y) {
+static __forceinline void DebugPoint(PC_NATIVE_DEBUG_VERTEX *vertex, f32 x, f32 y) {
     PC_NATIVE_DEBUG_POSITION position;
     position.x = x;
     position.y = y;
@@ -167,7 +167,7 @@ static void DebugPoint(PC_NATIVE_DEBUG_VERTEX *vertex, f32 x, f32 y) {
 }
 
 // Two triangles covering the rectangle, from vertex[0] on.
-static void DebugRect(PC_NATIVE_DEBUG_VERTEX *vertex, f32 left, f32 top, f32 right, f32 bottom) {
+static __forceinline void DebugRect(PC_NATIVE_DEBUG_VERTEX *vertex, f32 left, f32 top, f32 right, f32 bottom) {
     DebugPoint(&vertex[0], left, top);
     DebugPoint(&vertex[1], right, top);
     DebugPoint(&vertex[2], right, bottom);

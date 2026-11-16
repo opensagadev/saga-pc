@@ -26,7 +26,7 @@ typedef struct nushadermtldesc_s { // size 0x208
     u8 unknown_028[0xc];           // 0x028
     i32 lightmap_tids[2];          // 0x034
     u8 unknown_03c[0x8];           // 0x03c
-    u8 colour[3];                  // 0x044
+    u8 blend_ops[3];               // 0x044 per-layer combine ops (0xff: layer off)
     u8 unknown_047;                // 0x047
     i32 specular_map_tid;          // 0x048
     i32 normal_map_tid;            // 0x04c
@@ -101,9 +101,11 @@ typedef struct numtl_s { // size 0x2c4
     union { // size 0x2
         u16 flags;
 
-        struct {             // size 0x2
-            i16 : 2;         // 0x000:0
-            i16 flag_04 : 1; // 0x000:2
+        struct {                // size 0x2
+            i16 : 2;            // 0x000:0
+            i16 flag_04 : 1;    // 0x000:2
+            i16 : 1;            // 0x000:3
+            i16 sort_layer : 8; // 0x000:4 major display sort key
         };
     }; // 0x000
 

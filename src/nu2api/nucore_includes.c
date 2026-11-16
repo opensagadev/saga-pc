@@ -583,7 +583,7 @@ void NuFileInit(i32 device_id) {
 }
 
 // Fetch one control bit; the marker bit refills the buffer from the next input byte.
-static u32 NuPPGetBit(u32 *bits, u8 **src) {
+static __forceinline u32 NuPPGetBit(u32 *bits, u8 **src) {
     u32 bit;
     *bits += *bits;
     bit = (*bits >> 8) & 1;
