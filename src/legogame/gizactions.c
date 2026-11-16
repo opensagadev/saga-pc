@@ -47,7 +47,7 @@ i32 obstacle_gizmotype_id;
 extern i32 gizbuildit_gizmotype_id;
 GAMEOBJECT *ActivateCharacter(char *, NUVEC *, i32);
 void DeactivateCharacter(char *);
-void GizBuildIt_KillParts(GIZBUILDIT_s *);
+void GizBuildIt_KillParts(GIZBUILDIT *);
 
 void GizAction_ActivateEffect(GIZFLOW *unused0, FLOWBOX *unused1, char **params, int count) {
     char *name;

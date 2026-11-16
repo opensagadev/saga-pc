@@ -9346,7 +9346,7 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
                 AIMoveInstruction(packet, &spinner_position, 0.0f, &target->path, AIMOVE_TO_DESTINATION, 0.0f);
             }
         } else if (gizmo->type_id == grapple_gizmotype_id) {
-            GRAPPLE_DYNAMIC *grapple = gizmo->object;
+            GRAPPLE_MOTION *grapple = gizmo->object;
             if (object->player.character_context == LEGOCONTEXT_GRAPPLE && object->player.grapple == grapple) {
                 GAMEOBJECT *found;
                 i32 i;
@@ -9433,7 +9433,7 @@ i32 Action_HelpWithTriggers(AISYS *unused0, AISCRIPTPROCESS *processor, AIPACKET
                 object->gizforce_target = force;
             }
         } else if (gizmo->type_id == grapple_gizmotype_id) {
-            GRAPPLE_DYNAMIC *grapple = gizmo->object;
+            GRAPPLE_MOTION *grapple = gizmo->object;
             if (processor->action_data_1 != 0) {
                 if (object->player.character_context != CHARACTER_CONTEXT_JUMP) {
                     processor->action_data_1 = 1;

@@ -73,7 +73,7 @@ extern "C" {
     void Hub_LockUnlockDoors(struct WORLDINFO_s *world);
     void Indy_GameAISysInit(void);
     extern i32 gizbuildit_gizmotype_id;
-    void GizBuildIt_KillParts(GIZBUILDIT_s *);
+    void GizBuildIt_KillParts(GIZBUILDIT *);
 #ifdef __cplusplus
 }
 #endif

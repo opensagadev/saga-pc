@@ -142,7 +142,7 @@ i32 AITriggerSetAddTrigger(AISYS *system, AITRIGGERSET_s *set, GIZMO *gizmo) {
         ++set->trigger_count;
         return 1;
     } else if (gizmo->type_id == grapple_gizmotype_id) {
-        GRAPPLE_DYNAMIC *grapple = gizmo->object;
+        GRAPPLE_MOTION *grapple = gizmo->object;
         set->gizmos[set->trigger_count] = gizmo;
         if (locator != NULL) {
             set->locators[set->trigger_count] = *locator;

@@ -4318,7 +4318,7 @@ extern "C" {
     }
 
     i32 IndyGrappleHelperOccupied(AI_HELPER_SLOT *helper, GAMEOBJECT *owner, AIPATHCNX *connection, u8 direction, u8 type) {
-        GRAPPLE_DYNAMIC *grapple = helper->target;
+        GRAPPLE_MOTION *grapple = helper->target;
         return Grapple_Occupied(grapple, owner, owner->ai_packet.path_info.connection) != NULL;
     }
 
@@ -4327,7 +4327,7 @@ extern "C" {
         AIPATHNODE *source = &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction]];
         AIPATHNODE *destination =
             &packet->path_info.path->nodes[packet->path_info.connection->node_indices[packet->path_info.direction == 0]];
-        GRAPPLE_DYNAMIC *grapple;
+        GRAPPLE_MOTION *grapple;
         GAMEOBJECT *occupant;
         NUVEC offset;
         f32 radius;
@@ -4395,7 +4395,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_GrappleStart(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        GRAPPLE_DYNAMIC *grapple = owner->indy_connection_helper->target;
+        GRAPPLE_MOTION *grapple = owner->indy_connection_helper->target;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
         if (owner->player.character_context == LEGOCONTEXT_GRAPPLE && owner->player.grapple == grapple) {
             owner->ai_packet.movement_destination = owner->position;
@@ -4423,7 +4423,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_GrappleClimb(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        GRAPPLE_DYNAMIC *grapple = owner->indy_connection_helper->target;
+        GRAPPLE_MOTION *grapple = owner->indy_connection_helper->target;
         f32 difference;
         if (owner->player.character_context != LEGOCONTEXT_GRAPPLE || owner->player.grapple != grapple) {
             ClearSpecialMove(owner);
@@ -4473,7 +4473,7 @@ extern "C" {
 
     i32 Indy_MidSpecialMove_GrappleEnd(AISYS *system, AIPACKET *packet, APIOBJECT *object) {
         GAMEOBJECT *owner = object->owner;
-        GRAPPLE_DYNAMIC *grapple = owner->indy_connection_helper->target;
+        GRAPPLE_MOTION *grapple = owner->indy_connection_helper->target;
         f32 distance;
         GameObjectSetCanUse(owner, grapple, 1, 0x32, 0.0f);
         owner->ai_packet.movement_destination = owner->ai_packet.special_move_node->position;
@@ -4985,7 +4985,7 @@ extern "C" {
         AIPATHNODE *first;
         AIPATHNODE *second;
         NUVEC midpoint;
-        GRAPPLE_DYNAMIC *grapple;
+        GRAPPLE_MOTION *grapple;
         if (world == NULL || world->ai_sys == NULL || world->ai_sys->path_sys == NULL) {
             return;
         }

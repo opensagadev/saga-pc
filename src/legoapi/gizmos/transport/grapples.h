@@ -51,17 +51,14 @@ typedef struct GRAPPLE_MOTION { // size 0xf8
     nuhspecial_s display_special; // 0xec
 } GRAPPLE_MOTION;
 
-/* The dynamic grapple slots use the same record. */
-typedef GRAPPLE_MOTION GRAPPLE_DYNAMIC;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
     /* Existing extern C shared block; no new shared layout fields. */
 
-    GRAPPLE_DYNAMIC *Grapple_AddDynamic(void *, i32);
-    GRAPPLE_DYNAMIC *Grapple_RemoveDynamic(void *);
-    extern GRAPPLE_DYNAMIC DynamicGrapple[4];
+    GRAPPLE_MOTION *Grapple_AddDynamic(void *, i32);
+    GRAPPLE_MOTION *Grapple_RemoveDynamic(void *);
+    extern GRAPPLE_MOTION DynamicGrapple[4];
     void Grapple_SetRotOrder(GAMEOBJECT *);
 
     extern i32 PlayerGrappleSwingMode;
@@ -82,7 +79,7 @@ extern "C" {
 #endif
     GRAPPLE_MOTION *Grapple_FindNearest(WORLDINFO *, NUVEC *, GAMEOBJECT *, f32 *);
     void Grapple_MoveCode(GAMEOBJECT *);
-    GRAPPLE_DYNAMIC *Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position);
+    GRAPPLE_MOTION *Grapple_FindNearestToPos(WORLDINFO *world, NUVEC *position);
     i32 IndyGrappleCanJump(GAMEOBJECT *object);
     extern i32 GrappleCurvedRopeEnabled;
     extern i32 RopeCurveSubdivisions;
